@@ -27,7 +27,9 @@ module Reports
     end
 
     def issuers
-      [*IdentityConfig.store.irs_issuers].reject(&:blank?)
+      # Only using the first issuer. Need to expand to handle multiple if needed.
+      first_issuer = IdentityConfig.store.irs_issuers.reject(&:blank?).first
+      first_issuer ? [first_issuer] : []
     end
 
     def email_addresses
