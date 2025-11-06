@@ -357,7 +357,7 @@ RSpec.describe 'Identity verification', :js do
     expect(profile.proofing_components).to eql(
       'source_check' => 'StateIdMock',
       'threatmetrix' => true,
-      'address_check' => 'lexis_nexis_address',
+      'address_check' => 'AddressMock',
       'document_type_received' => 'drivers_license',
       'document_check' => 'mock',
       'residential_resolution_check' => 'ResidentialAddressNotRequired',

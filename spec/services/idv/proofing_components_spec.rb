@@ -217,7 +217,7 @@ RSpec.describe Idv::ProofingComponents do
       end
 
       it 'returns lexis_nexis_address' do
-        expect(subject.address_check).to eql('lexis_nexis_address')
+        expect(subject.address_check).to eql('AddressMock')
       end
     end
   end

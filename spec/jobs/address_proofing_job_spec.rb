@@ -95,7 +95,7 @@ RSpec.describe AddressProofingJob, type: :job do
         sp_cost = SpCost.last
         expect(sp_cost.issuer).to eq(service_provider.issuer)
         expect(sp_cost.transaction_id).to eq(conversation_id)
-        expect(sp_cost.cost_type).to eq('lexis_nexis_address')
+        expect(sp_cost.cost_type).to eq('AddressMock')
       end
     end
 
