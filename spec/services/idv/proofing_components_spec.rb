@@ -213,7 +213,7 @@ RSpec.describe Idv::ProofingComponents do
 
     context 'using phone verification' do
       before do
-        idv_session.mark_phone_step_started!
+        idv_session.mark_phone_step_started!(vendor_name: 'AddressMock')
       end
 
       it 'returns lexis_nexis_address' do
