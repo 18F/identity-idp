@@ -17,6 +17,8 @@ properties:
     $ref: './identity-proofing/IdvPhoneOtpSubmitted.yml'
   idv-phone-submitted:
     $ref: './identity-proofing/IdvPhoneSubmitted.yml'
+  idv-phone-verified:
+    $ref: './identity-proofing/IdvPhoneVerified.yml'
   idv-rate-limited:
     $ref: './identity-proofing/IdvRateLimited.yml'
   idv-reproof:

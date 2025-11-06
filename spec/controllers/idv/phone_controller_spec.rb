@@ -478,6 +478,11 @@ RSpec.describe Idv::PhoneController do
 
       it 'tracks event with valid phone' do
         proofing_phone = Phonelib.parse(good_phone)
+        expect(@attempts_api_tracker).to receive(:idv_phone_verified).with(
+          success: true,
+          phone_number: proofing_phone.e164,
+          failure_reason: nil,
+        )
 
         put :create, params: { idv_phone_form: { phone: good_phone } }
 
@@ -543,6 +548,12 @@ RSpec.describe Idv::PhoneController do
         context 'when phone risk passes' do
           it 'tracks event with valid phone' do
             proofing_phone = Phonelib.parse(good_phone)
+
+            expect(@attempts_api_tracker).to receive(:idv_phone_verified).with(
+              success: true,
+              phone_number: proofing_phone.e164,
+              failure_reason: nil,
+            )
 
             put :create, params: { idv_phone_form: { phone: good_phone } }
 
@@ -702,6 +713,12 @@ RSpec.describe Idv::PhoneController do
 
       it 'tracks event with invalid phone' do
         proofing_phone = Phonelib.parse(bad_phone)
+
+        expect(@attempts_api_tracker).to receive(:idv_phone_verified).with(
+          success: false,
+          phone_number: Phonelib.parse(bad_phone).e164,
+          failure_reason: { phone: ['The phone number could not be verified.'] },
+        )
 
         put :create, params: { idv_phone_form: { phone: bad_phone } }
 
