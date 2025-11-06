@@ -214,6 +214,15 @@ module Idv
         **opt_in_analytics_properties,
       )
 
+      phone = idv_session.user_phone_confirmation_session&.phone ||
+              formatted_previous_phone_step_params_phone
+
+      attempts_api_tracker.idv_phone_verified(
+        phone_number: Phonelib.parse(phone).e164,
+        success: form_result.success?,
+        failure_reason: attempts_api_tracker.parse_failure_reason(form_result),
+      )
+
       if form_result.success?
         redirect_to_next_step
       else

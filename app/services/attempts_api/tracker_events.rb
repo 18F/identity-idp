@@ -301,6 +301,19 @@ module AttemptsApi
       )
     end
 
+    # @param [Boolean] success
+    # @param [String] phone_number
+    # @param [Hash<Key, Array<String>>] failure_reason
+    # The user provides their phone number for identity verification
+    def idv_phone_verified(success:, phone_number:, failure_reason: nil)
+      track_event(
+        'idv-phone-verified',
+        success:,
+        phone_number:,
+        failure_reason:,
+      )
+    end
+
     # @param [Boolean] resend False indicates this is the initial request
     # User has requested the Address validation letter
     def idv_verify_by_mail_letter_requested(resend:)
