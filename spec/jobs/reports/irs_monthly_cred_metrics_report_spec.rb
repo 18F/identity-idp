@@ -209,15 +209,6 @@ RSpec.describe Reports::IrsMonthlyCredMetricsReport do
       expect(data_column[4]).to eq(expected_existing_credentials_authorized)
       expect(data_column[5]).to eq(expected_total_auths)
     end
-
-    it 'checks that upfront + existing equals year1 total' do
-      upfront = row['issuer_ial2_new_unique_user_events_year1_upfront']
-      existing = row['issuer_ial2_new_unique_user_events_year1_existing']
-      year1 = row['issuer_ial2_new_unique_user_events_year1']
-
-      # TODO: This is not doing the right check
-      expect(upfront + existing).to eq(year1)
-    end
   end
 
   def build_iaa_order(order_number:, date_range:, iaa_gtc:)
