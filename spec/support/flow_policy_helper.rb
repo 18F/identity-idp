@@ -88,7 +88,7 @@ module FlowPolicyHelper
       idv_session.mark_verify_info_step_complete!
       idv_session.applicant = Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN.dup
     when :phone
-      idv_session.mark_phone_step_started!
+      idv_session.mark_phone_step_started!(vendor_name: 'phone_proofing_vendor')
       idv_session.applicant = Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE.dup
     when :otp_verification
       idv_session.mark_phone_step_complete!
