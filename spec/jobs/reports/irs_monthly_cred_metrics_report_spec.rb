@@ -27,7 +27,7 @@ RSpec.describe Reports::IrsMonthlyCredMetricsReport do
 
   let(:mock_reports_partner_emails) { ['mock_partner@example.com'] }
   let(:mock_reports_internal_emails) { ['mock_internal@example.com'] }
-  let(:mock_issuers) { ['Issuer_1'] }
+  let(:mock_issuers) { ['Issuer_4'] }
   let(:mock_partners) { ['Partner_1'] }
   let(:fixture_csv_data) do
     fixture_path = Rails.root.join('spec', 'fixtures', 'partner_cred_metrics_input.csv')
