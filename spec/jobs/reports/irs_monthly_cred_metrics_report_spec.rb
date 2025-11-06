@@ -149,9 +149,9 @@ RSpec.describe Reports::IrsMonthlyCredMetricsReport do
       create(
         :partner_account,
         id: 123,
-        name: 'PARTNER_NAME',
+        name: 'Partner_1',
         description: 'This is a description.',
-        requesting_agency: 'PARTNER_NAME',
+        requesting_agency: 'Partner_1',
       )
     end
 
@@ -165,7 +165,7 @@ RSpec.describe Reports::IrsMonthlyCredMetricsReport do
 
     let(:row) do
       (parsed_invoice_data.find do |r|
-        r['year_month'] == report_year_month
+        r['issuer'] == mock_issuers.first && r['year_month'] == report_year_month
       end).to_h.transform_values(&:to_i)
     end
 
