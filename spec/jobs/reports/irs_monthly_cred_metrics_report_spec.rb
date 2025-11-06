@@ -25,10 +25,10 @@ RSpec.describe Reports::IrsMonthlyCredMetricsReport do
     }
   end
 
-  let(:mock_reports_irs_emails) { ['mock_partner@example.com'] }
+  let(:mock_reports_partner_emails) { ['mock_partner@example.com'] }
   let(:mock_reports_internal_emails) { ['mock_internal@example.com'] }
-  let(:mock_issuers) { ['urn:gov:gsa:openidconnect.profiles:sp:sso:agency_name:partner_app_name'] }
-  let(:irs_partners) { ['PARTNER_NAME'] }
+  let(:mock_issuers) { ['Issuer_1'] }
+  let(:mock_partners) { ['Partner_1'] }
   let(:fixture_csv_data) do
     fixture_path = Rails.root.join('spec', 'fixtures', 'partner_cred_metrics_input.csv')
     File.read(fixture_path)
@@ -40,11 +40,11 @@ RSpec.describe Reports::IrsMonthlyCredMetricsReport do
     allow(Identity::Hostdata).to receive(:aws_account_id).and_return('1234')
     allow(Identity::Hostdata).to receive(:aws_region).and_return('us-west-1')
     allow(IdentityConfig.store).to receive(:irs_credentials_emails)
-      .and_return(mock_reports_irs_emails)
+      .and_return(mock_reports_partner_emails)
     allow(IdentityConfig.store).to receive(:team_daily_reports_emails)
       .and_return(mock_reports_internal_emails)
     allow(IdentityConfig.store).to receive(:irs_partner_strings)
-      .and_return(irs_partners)
+      .and_return(mock_partners)
     allow(IdentityConfig.store).to receive(:irs_issuers)
       .and_return(mock_issuers)
     allow(IdentityConfig.store).to receive(:s3_report_bucket_prefix)
@@ -56,6 +56,10 @@ RSpec.describe Reports::IrsMonthlyCredMetricsReport do
         put_object: {},
       },
     }
+    # Add this at the end of your before block
+    allow_any_instance_of(Reports::IrsMonthlyCredMetricsReport)
+      .to receive(:invoice_report_data)
+      .and_return(fixture_csv_data)
   end
 
   context 'for begining of the month sends out the report to the internal and partner' do
@@ -151,11 +155,21 @@ RSpec.describe Reports::IrsMonthlyCredMetricsReport do
       )
     end
 
-    let(:report_date) { Date.new(2021, 1, 31).in_time_zone('UTC').end_of_day }
+    let(:report_date) { Date.new(2025, 9, 30).in_time_zone('UTC').end_of_day }
 
-    it 'checks authentication counts in ial1 + ial2 & checks partner single issuer cases' do
-      allow(report).to receive(:invoice_report_data).and_return(fixture_csv_data)
+    # Check that report values match expectations from csv fixture
+    # Report should only return values for September 2025 (second row in csv)
 
+    let(:parsed_invoice_data) { CSV.parse(fixture_csv_data, headers: true) }
+    let(:report_year_month) { report_date.strftime('%Y%m') }
+
+    let(:row) do
+      (parsed_invoice_data.find do |r|
+        r['year_month'] == report_year_month
+      end).to_h.transform_values(&:to_i)
+    end
+
+    it 'checks authentication counts in ial1 + ial2 & for single issuer' do
       result = report.perform(report_date)
       data_column =
         result.map do |row|
@@ -168,32 +182,24 @@ RSpec.describe Reports::IrsMonthlyCredMetricsReport do
       expect(result.transpose.length).to eq(2)
       expect(result.length).to eq(6)
 
-      # Check that report values match expectations from csv fixture
-      # Report should only return values for January 2021 (second row in csv)
-      parsed_invoice_data = CSV.parse(fixture_csv_data, headers: true)
-      report_year_month = report_date.strftime('%Y%m')
-      row = (parsed_invoice_data.find do |r|
-        r['year_month'] == report_year_month
-      end).to_h.transform_values(&:to_i)
-
       # Expected values
-      expected_monthly_active_users = row['issuer_unique_users'].to_i
+      expected_monthly_active_users = row['issuer_unique_users']
 
-      expected_new_ial_year1 = row['partner_ial2_new_unique_user_events_year1_upfront'].to_i
+      expected_new_ial_year1 = row['issuer_ial2_new_unique_user_events_year1_upfront']
 
       expected_existing_credentials_authorized =
-        row['partner_ial2_new_unique_user_events_year1_existing'].to_i +
-        row['partner_ial2_new_unique_user_events_year2'].to_i +
-        row['partner_ial2_new_unique_user_events_year3'].to_i +
-        row['partner_ial2_new_unique_user_events_year4'].to_i +
-        row['partner_ial2_new_unique_user_events_year5'].to_i
+        row['issuer_ial2_new_unique_user_events_year1_existing'] +
+        row['issuer_ial2_new_unique_user_events_year2'] +
+        row['issuer_ial2_new_unique_user_events_year3'] +
+        row['issuer_ial2_new_unique_user_events_year4'] +
+        row['issuer_ial2_new_unique_user_events_year5']
 
       # Partner Credentials authorized
       expected_credentials_authorized = expected_new_ial_year1 +
                                         expected_existing_credentials_authorized
 
       # Total Auths
-      expected_total_auths = row['issuer_ial1_plus_2_total_auth_count'].to_i
+      expected_total_auths = row['issuer_ial1_plus_2_total_auth_count']
 
       # Test the processed data
       expect(data_column[0]).to eq('Value') # Column label
@@ -205,15 +211,11 @@ RSpec.describe Reports::IrsMonthlyCredMetricsReport do
     end
 
     it 'checks that upfront + existing equals year1 total' do
-      allow(report).to receive(:invoice_report_data).and_return(fixture_csv_data)
-      parsed_invoice_data = CSV.parse(fixture_csv_data, headers: true)
-      report_year_month = report_date.strftime('%Y%m')
-      row = parsed_invoice_data.find { |r| r['year_month'] == report_year_month }
+      upfront = row['issuer_ial2_new_unique_user_events_year1_upfront']
+      existing = row['issuer_ial2_new_unique_user_events_year1_existing']
+      year1 = row['issuer_ial2_new_unique_user_events_year1']
 
-      upfront = row['partner_ial2_new_unique_user_events_year1_upfront'].to_i
-      existing = row['partner_ial2_new_unique_user_events_year1_existing'].to_i
-      year1 = row['partner_ial2_new_unique_user_events_year1'].to_i
-
+      # TODO: This is not doing the right check
       expect(upfront + existing).to eq(year1)
     end
   end
