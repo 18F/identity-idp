@@ -218,9 +218,6 @@ module Idv
         alternate_result: alternate_result&.to_h,
       )
 
-      phone = idv_session.user_phone_confirmation_session&.phone ||
-              formatted_previous_phone_step_params_phone
-
       attempts_api_tracker.idv_phone_verified(
         phone_number: Phonelib.parse(formatted_previous_phone_step_params_phone).e164,
         success: form_result.success?,
