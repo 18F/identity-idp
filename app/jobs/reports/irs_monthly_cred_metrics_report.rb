@@ -70,7 +70,7 @@ module Reports
       [
         ['Report Timeframe', 'Report Generated', 'Issuers'],
         ["#{report_date.beginning_of_month} to #{report_date.end_of_month}", Time.zone.today.to_s,
-         issuers],
+         issuers.join(', ')],
       ]
     end
 
