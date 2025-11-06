@@ -116,7 +116,7 @@ class UserMailer < ActionMailer::Base
   end
 
   # @param [Array<Hash>] events Array of sign-in Event records (event types "sign_in_before_2fa",
-  # "sign_in_after_2fa", "sign_in_unsuccessful_2fa", "max_attempts_reached")
+  # "sign_in_after_2fa", "sign_in_unsuccessful_2fa")
   # @param [String] disavowal_token Token to generate URL for disavowing event
   def new_device_sign_in_before_2fa(events:, disavowal_token:)
     with_user_locale(user) do
