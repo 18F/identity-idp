@@ -557,4 +557,62 @@ RSpec.describe Idv::DocPiiForm do
       end
     end
   end
+
+  describe '.present_error' do
+    before do
+      described_class.present_error(errors)
+    end
+
+    context 'when the error hash is empty' do
+      let(:errors) { {} }
+
+      it 'does not modify the error hash' do
+        expect(errors).to be_empty
+      end
+    end
+
+    context 'when the error hash contains a verification error' do
+      let(:errors) { { verification: 'I am error' } }
+
+      it 'updates the error hash with font and back errors' do
+        expect(errors).to eq(
+          {
+            **errors,
+            front: [I18n.t('doc_auth.errors.general.multiple_front_id_failures')],
+            back: [I18n.t('doc_auth.errors.general.multiple_back_id_failures')],
+          },
+        )
+      end
+    end
+
+    context 'when the error hash contains a pii error' do
+      let(:errors) { { name: 'invalid name' } }
+
+      it 'updates the error hash with font and back errors' do
+        expect(errors).to eq(
+          {
+            **errors,
+            front: [I18n.t('doc_auth.errors.general.multiple_front_id_failures')],
+            back: [I18n.t('doc_auth.errors.general.multiple_back_id_failures')],
+          },
+        )
+      end
+    end
+
+    context 'when the error hash contians name, dob, dob_min_age, and state errors' do
+      let(:errors) { { name: 'invalid', dob: 'invalid', dob_min_age: 'invalid', state: 'invalid' } }
+
+      it 'updates the error hash with a pii error' do
+        expect(errors).to eq({ **errors, pii: [I18n.t('doc_auth.errors.general.no_liveness')] })
+      end
+    end
+
+    context 'when the error hash contains a non-pii and non-verification error' do
+      let(:errors) { { generic: 'I am generic error' } }
+
+      it 'does not update the error hash' do
+        expect(errors).to eq({ generic: 'I am generic error' })
+      end
+    end
+  end
 end

@@ -88,6 +88,27 @@ RSpec.describe Idv::WelcomePresenter do
         )
       end
     end
+
+    context 'when show_sp_reproof_banner is true' do
+      subject(:presenter) do
+        Idv::WelcomePresenter.new(
+          decorated_sp_session:,
+          show_sp_reproof_banner: true,
+        )
+      end
+
+      let(:user) { build(:user, :proofed) }
+
+      it 'uses the getting started message to avoid repetition' do
+        expect(presenter.explanation_text(help_link)).to eq(
+          t(
+            'doc_auth.info.getting_started_html',
+            sp_name: sp.friendly_name,
+            link_html: help_link,
+          ),
+        )
+      end
+    end
   end
 
   describe 'the bullet points' do

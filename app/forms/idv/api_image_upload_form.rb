@@ -39,6 +39,7 @@ module Idv
       client_response = nil
       doc_pii_response = nil
       mrz_response = nil
+      aamva_response = nil
 
       if form_response.success?
         client_response = post_images_to_client
@@ -52,6 +53,10 @@ module Idv
           if doc_pii_response.success? && passport_requested? && passport_submittal
             mrz_response = validate_mrz(client_response)
           end
+
+          if aamva_enabled? && !passport_requested? && doc_pii_response.success?
+            aamva_response = validate_aamva(doc_pii_response.pii_from_doc)
+          end
         end
       end
 
@@ -60,14 +65,16 @@ module Idv
         client_response:,
         doc_pii_response:,
         mrz_response:,
+        aamva_response:,
       )
 
-      # Store PII and MRZ status after all validations are complete and successful
       if response.success?
-        store_pii(client_response, mrz_response)
+        store_pii(client_response:, mrz_response:, aamva_response:)
       end
 
-      failed_fingerprints = store_failed_images(client_response, doc_pii_response, mrz_response)
+      failed_fingerprints = store_failed_images(
+        client_response:, doc_pii_response:, mrz_response:, aamva_response:,
+      )
       response.extra[:failed_image_fingerprints] = failed_fingerprints
 
       # if there is no client_response, there was no submission attempt
@@ -317,7 +324,8 @@ module Idv
       { selfie_attempts: past_selfie_count + processed_selfie_count }
     end
 
-    def determine_response(form_response:, client_response:, doc_pii_response:, mrz_response:)
+    def determine_response(form_response:, client_response:, doc_pii_response:, mrz_response:,
+                           aamva_response:)
       # image validation failed
       return form_response unless form_response.success?
 
@@ -326,6 +334,8 @@ module Idv
 
       # mrz validation failed
       return mrz_response if mrz_response.present? && !mrz_response.success?
+
+      return aamva_response if aamva_response.present? && !aamva_response.success?
 
       client_response
     end
@@ -540,9 +550,9 @@ module Idv
       end
     end
 
-    def store_pii(client_response, mrz_response)
+    def store_pii(client_response:, mrz_response:, aamva_response:)
       document_capture_session.store_result_from_response(
-        client_response, mrz_response:, attempt: submit_attempts
+        client_response, mrz_response:, aamva_response:, attempt: submit_attempts
       )
     end
 
@@ -575,8 +585,9 @@ module Idv
     # @param client_response [DocAuth::Response] The response from the Image upload request.
     # @param doc_pii_response [DocAuth::Response] The response from PII validation.
     # @param mrz_response [DocAuth::Response] The response from the MRZ api request.
+    # @param aamva_response [DocAuth::Response] The response from the AAMVA state ID check.
     # @return [Hash<Symbol => Array<String>>] latest failed fingerprints
-    def store_failed_images(client_response, doc_pii_response, mrz_response)
+    def store_failed_images(client_response:, doc_pii_response:, mrz_response:, aamva_response:)
       unless image_resubmission_check?
         return {
           front: [],
@@ -650,6 +661,18 @@ module Idv
           mrz_status: :failed,
           attempt: submit_attempts,
         )
+      elsif aamva_response && !aamva_response.success?
+        document_capture_session.store_failed_auth_data(
+          front_image_fingerprint: extra_attributes[:front_image_fingerprint],
+          back_image_fingerprint: extra_attributes[:back_image_fingerprint],
+          passport_image_fingerprint: extra_attributes[:passport_image_fingerprint],
+          selfie_image_fingerprint: extra_attributes[:selfie_image_fingerprint],
+          doc_auth_success: client_response.doc_auth_success?,
+          selfie_status: client_response.selfie_status,
+          errors: aamva_response.errors,
+          aamva_status: :failed,
+          attempt: submit_attempts,
+        )
       end
       # retrieve updated data from session
       captured_result = document_capture_session&.load_result
@@ -663,6 +686,25 @@ module Idv
 
     def image_resubmission_check?
       IdentityConfig.store.doc_auth_check_failed_image_resubmission_enabled
+    end
+
+    def aamva_proofer
+      Proofing::Resolution::Plugins::AamvaPlugin.new
+    end
+
+    def aamva_enabled?
+      IdentityConfig.store.idv_aamva_at_doc_auth_enabled
+    end
+
+    def validate_aamva(pii)
+      aamva_proofer.call(
+        applicant_pii: pii,
+        current_sp: service_provider,
+        state_id_address_resolution_result: nil,
+        ipp_enrollment_in_progress: false,
+        timer: JobHelpers::Timer.new,
+        doc_auth_flow: true,
+      ).to_doc_auth_response
     end
   end
 end
