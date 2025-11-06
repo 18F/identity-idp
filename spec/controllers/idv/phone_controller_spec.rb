@@ -483,6 +483,11 @@ RSpec.describe Idv::PhoneController do
           phone_number: proofing_phone.e164,
           failure_reason: nil,
         )
+        expect(@fraud_ops_tracker).to receive(:idv_phone_verified).with(
+          success: true,
+          phone_number: proofing_phone,
+          failure_reason: nil,
+        )
 
         put :create, params: { idv_phone_form: { phone: good_phone } }
 
@@ -715,6 +720,12 @@ RSpec.describe Idv::PhoneController do
         proofing_phone = Phonelib.parse(bad_phone)
 
         expect(@attempts_api_tracker).to receive(:idv_phone_verified).with(
+          success: false,
+          phone_number: Phonelib.parse(bad_phone).e164,
+          failure_reason: { phone: ['The phone number could not be verified.'] },
+        )
+
+        expect(@fraud_ops_tracker).to receive(:idv_phone_verified).with(
           success: false,
           phone_number: Phonelib.parse(bad_phone).e164,
           failure_reason: { phone: ['The phone number could not be verified.'] },
