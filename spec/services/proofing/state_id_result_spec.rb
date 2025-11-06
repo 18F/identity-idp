@@ -41,4 +41,37 @@ RSpec.describe Proofing::StateIdResult do
       )
     end
   end
+
+  describe '#to_doc_auth_response' do
+    context 'when the state ID result does not have errors' do
+      it 'returns a doc auth response instance' do
+        expect(subject.to_doc_auth_response).to be_instance_of(DocAuth::Response)
+      end
+
+      it 'returns a successful doc auth response' do
+        expect(subject.to_doc_auth_response).to have_attributes(
+          success?: success,
+          errors: {},
+          exception:,
+        )
+      end
+    end
+
+    context 'when the state ID result has errors' do
+      let(:success) { false }
+      let(:errors) { { state_id_number: 'I am error' } }
+
+      it 'returns a doc auth response instance' do
+        expect(subject.to_doc_auth_response).to be_instance_of(DocAuth::Response)
+      end
+
+      it 'returns a unsucessful doc auth response with a verification error' do
+        expect(subject.to_doc_auth_response).to have_attributes(
+          success?: success,
+          errors: { verification: 'Document could not be verified.' },
+          exception:,
+        )
+      end
+    end
+  end
 end
