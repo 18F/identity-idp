@@ -4259,6 +4259,73 @@ module AnalyticsEvents
     )
   end
 
+  # @param [String] exception_class Exception class name
+  # @param [String] exception_message Exception message
+  # @param [String] step Current step in the IPP flow
+  # AAMVA verification exception for IPP user
+  def idv_ipp_aamva_exception(
+    exception_class:,
+    exception_message:,
+    step:,
+    **extra
+  )
+    track_event(
+      :idv_ipp_aamva_exception,
+      exception_class: exception_class,
+      exception_message: exception_message,
+      step: step,
+      **extra,
+    )
+  end
+
+  # @param [String] step Current step in the IPP flow
+  # AAMVA rate limit hit for IPP user
+  def idv_ipp_aamva_rate_limited(
+    step:,
+    **extra
+  )
+    track_event(
+      :idv_ipp_aamva_rate_limited,
+      step: step,
+      **extra,
+    )
+  end
+
+  # @param [String] exception_class Exception class name
+  # @param [String] step Current step in the IPP flow
+  # AAMVA verification timed out for IPP user
+  def idv_ipp_aamva_timeout(
+    exception_class:,
+    step:,
+    **extra
+  )
+    track_event(
+      :idv_ipp_aamva_timeout,
+      exception_class: exception_class,
+      step: step,
+      **extra,
+    )
+  end
+
+  # @param [Boolean] success Whether the AAMVA verification succeeded
+  # @param [String] vendor_name Name of the AAMVA vendor
+  # @param [String] step Current step in the IPP flow
+  # AAMVA verification completed for IPP user
+  def idv_ipp_aamva_verification_completed(
+    success:,
+    vendor_name:,
+    step:,
+    **extra
+  )
+    track_event(
+      :idv_ipp_aamva_verification_completed,
+      success: success,
+      vendor_name: vendor_name,
+      step: step,
+      **extra,
+    )
+  end
+
   # @param [String] enrollment_id
   # A fraud user has been deactivated due to not visting the post office before the deadline
   def idv_ipp_deactivated_for_never_visiting_post_office(

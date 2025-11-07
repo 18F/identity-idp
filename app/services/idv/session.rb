@@ -16,6 +16,7 @@ module Idv
   # @attr idv_consent_given [Boolean, nil]
   # @attr idv_consent_given_at [String, nil]
   # @attr idv_phone_step_document_capture_session_uuid [String, nil]
+  # @attr ipp_aamva_result [Hash, nil]
   # @attr mail_only_warning_shown [Boolean, nil]
   # @attr opted_in_to_in_person_proofing [Boolean, nil]
   # @attr passport_requested [Boolean, nil]
@@ -64,6 +65,7 @@ module Idv
       idv_consent_given
       idv_consent_given_at
       idv_phone_step_document_capture_session_uuid
+      ipp_aamva_result
       mail_only_warning_shown
       opted_in_to_in_person_proofing
       personal_key
@@ -316,6 +318,10 @@ module Idv
     def ipp_state_id_complete?
       has_pii_from_user_in_session? &&
         user_session['idv/in_person'][:pii_from_user].has_key?(:identity_doc_address1)
+    end
+
+    def ipp_already_proofed?
+      ipp_aamva_result.present? && ipp_aamva_result['success'] == true
     end
 
     def ssn_step_complete?
