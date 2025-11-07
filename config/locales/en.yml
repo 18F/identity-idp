@@ -877,6 +877,7 @@ event_types.eastern_timestamp: '%{timestamp} (Eastern)'
 event_types.email_changed: Email address changed
 event_types.email_deleted: Email address deleted
 event_types.gpo_mail_sent: Letter sent
+event_types.max_attempts_reached: Account locked
 event_types.new_personal_key: Personal key changed
 event_types.password_changed: Password changed
 event_types.password_invalidated: Password reset by %{app_name}
@@ -2043,6 +2044,7 @@ user_mailer.new_device_sign_in_after_2fa.info_p2: If you recognize this activity
 user_mailer.new_device_sign_in_after_2fa.info_p3_html: If this wasn’t you, %{reset_password_link_html} and change your %{authentication_methods_link_html} immediately.
 user_mailer.new_device_sign_in_after_2fa.reset_password: reset your password
 user_mailer.new_device_sign_in_after_2fa.subject: New sign-in and authentication with your %{app_name} account
+user_mailer.new_device_sign_in_attempts.events.max_attempts_reached: Account locked
 user_mailer.new_device_sign_in_attempts.events.sign_in_after_2fa: Authenticated
 user_mailer.new_device_sign_in_attempts.events.sign_in_before_2fa: Signed in with password
 user_mailer.new_device_sign_in_attempts.events.sign_in_unsuccessful_2fa: Failed to authenticate
