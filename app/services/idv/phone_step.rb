@@ -43,20 +43,36 @@ module Idv
     end
 
     def async_state_done(async_state)
-      @idv_result = async_state.result
+      result = async_state.result
+      if result.is_a?(Hash) # 50/50
+        result = [result]
+      end
 
-      success = idv_result[:success]
-      if success
+      alt_result = result.many? ? result.first : nil
+      @idv_result = result.last
+      if (success = idv_result[:success])
         handle_successful_proofing_attempt
       else
         handle_failed_proofing_attempt
       end
 
       delete_async
-      FormResponse.new(
-        success: success, errors: idv_result[:errors],
-        extra: extra_analytics_attributes
+      final_result = FormResponse.new(
+        success:,
+        errors: idv_result[:errors],
+        extra: extra_analytics_attributes(idv_result),
       )
+
+      alternate_result = nil
+      if alt_result
+        alternate_result = FormResponse.new(
+          success: alt_result[:success],
+          errors: alt_result[:errors],
+          extra: extra_analytics_attributes(alt_result).slice(:vendor),
+        )
+      end
+
+      { final_result:, alternate_result: }
     end
 
     private
@@ -148,11 +164,11 @@ module Idv
       )
     end
 
-    def extra_analytics_attributes
+    def extra_analytics_attributes(result)
       parsed_phone = Phonelib.parse(applicant[:phone])
 
       {
-        vendor: idv_result.except(:errors, :success),
+        vendor: result.except(:errors, :success),
         area_code: parsed_phone.area_code,
         country_code: parsed_phone.country,
         phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),

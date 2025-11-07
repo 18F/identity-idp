@@ -21,7 +21,7 @@ module Proofing
       applicant_pii:,
       current_sp:
     )
-      result = nil
+      results = []
       address_vendors.each do |address_vendor|
         result = proofer(address_vendor).proof(applicant_pii)
           .tap do |res|
@@ -29,9 +29,10 @@ module Proofing
               current_sp, sp_cost_token(address_vendor), transaction_id: res.transaction_id
             )
           end
+        results << result
         break if result.success?
       end
-      result
+      results
     end
 
     private

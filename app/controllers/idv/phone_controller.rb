@@ -200,18 +200,22 @@ module Idv
     end
 
     def async_state_done(async_state)
-      form_result = step.async_state_done(async_state)
+      results = step.async_state_done(async_state)
+      form_result = results[:final_result]
+      alternate_result = results[:alternate_result]
 
       analytics.idv_phone_confirmation_vendor_submitted(
         **form_result.to_h.merge(
           pii_like_keypaths: [
             [:errors, :phone],
-            [:context, :stages, :address],
+            [:context, :stages, :address], # does this do anything?
+            [:alternate_result, :errors, :phone],
           ],
           new_phone_added: new_phone_added?,
           hybrid_handoff_phone_used: hybrid_handoff_phone_used?,
         ),
         **opt_in_analytics_properties,
+        alternate_result: alternate_result.to_h,
       )
 
       if form_result.success?

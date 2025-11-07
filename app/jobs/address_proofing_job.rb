@@ -30,7 +30,7 @@ class AddressProofingJob < ApplicationJob
     end
 
     document_capture_session = DocumentCaptureSession.new(result_id:)
-    document_capture_session.store_proofing_result(proofer_result.to_h)
+    document_capture_session.store_proofing_result(proofer_result.map(&:to_h))
   ensure
     logger.info(
       {
