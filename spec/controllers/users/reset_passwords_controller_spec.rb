@@ -197,6 +197,7 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
 
         expect(@attempts_api_tracker).to receive(:forgot_password_new_password_submitted).with(
           success: false,
+          user_id: user.uuid,
           failure_reason: {
             password: [:too_short],
             password_confirmation: [:too_short],
@@ -246,6 +247,7 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
 
         expect(@attempts_api_tracker).to receive(:forgot_password_new_password_submitted).with(
           success: false,
+          user_id: user.uuid,
           failure_reason: {
             password: [:too_short],
             password_confirmation: [:too_short],
@@ -292,6 +294,7 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
 
         expect(@attempts_api_tracker).to receive(:forgot_password_new_password_submitted).with(
           success: false,
+          user_id: user.uuid,
           failure_reason: {
             password_confirmation: [:mismatch],
           },
@@ -321,7 +324,7 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
       it 'shows an invalid token error' do
         raw_reset_token, db_confirmation_token =
           Devise.token_generator.generate(User, :reset_password_token)
-        create(
+        user = create(
           :user,
           :unconfirmed,
           reset_password_token: db_confirmation_token,
@@ -335,6 +338,7 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
 
         expect(@attempts_api_tracker).to receive(:forgot_password_new_password_submitted).with(
           success: true,
+          user_id: user.uuid,
           failure_reason: nil,
         )
 
@@ -342,6 +346,7 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
 
         expect(@attempts_api_tracker).to receive(:forgot_password_new_password_submitted).with(
           success: false,
+          user_id: nil,
           failure_reason: { reset_password_token: [:invalid_token] },
         )
         put :update, params: { reset_password_form: form_params }
@@ -383,6 +388,7 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
 
           expect(@attempts_api_tracker).to receive(:forgot_password_new_password_submitted).with(
             success: true,
+            user_id: user.uuid,
             failure_reason: nil,
           )
           put :update, params: { reset_password_form: params }
@@ -433,6 +439,7 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
 
         expect(@attempts_api_tracker).to receive(:forgot_password_new_password_submitted).with(
           success: true,
+          user_id: user.uuid,
           failure_reason: nil,
         )
 
@@ -482,6 +489,7 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
 
         expect(@attempts_api_tracker).to receive(:forgot_password_new_password_submitted).with(
           success: true,
+          user_id: user.uuid,
           failure_reason: nil,
         )
         put :update, params: { reset_password_form: params }

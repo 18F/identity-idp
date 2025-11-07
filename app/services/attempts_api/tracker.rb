@@ -26,7 +26,7 @@ module AttemptsApi
 
       user_id = metadata.delete(:user_id)
 
-      if @user.nil? && user_id.present?
+      if user_blank? && user_id.present?
         @user = User.find_by(uuid: user_id)
       end
 
@@ -60,6 +60,10 @@ module AttemptsApi
     end
 
     private
+
+    def user_blank?
+      @user.blank? || @user.uuid == 'anonymous-uuid'
+    end
 
     def jwe(event)
       event.to_jwe(
