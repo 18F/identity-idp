@@ -17,8 +17,13 @@ RSpec.describe RequestPasswordReset do
         expect(AnonymousMailer).to receive(:with).with(email:).and_return(mailer)
         expect(mailer).to receive(:password_reset_missing_user).with(request_id:).and_return(mail)
         expect(mail).to receive(:deliver_now)
+        expect(attempts_api_tracker).to receive(:forgot_password_email_sent).with(
+          email:,
+          user_id: nil,
+        )
 
         RequestPasswordReset.new(
+          attempts_api_tracker:,
           email: email,
           request_id: request_id,
         ).perform
@@ -65,14 +70,17 @@ RSpec.describe RequestPasswordReset do
       end
 
       it 'records the attempts api event' do
-        expect(attempts_api_tracker).to receive(:forgot_password_email_sent).with(email:)
+        expect(attempts_api_tracker).to receive(:forgot_password_email_sent).with(
+          email:,
+          user_id: user.uuid,
+        )
         subject
       end
     end
 
     context 'when the user is found, but is suspended' do
       subject(:perform) do
-        described_class.new(email:).perform
+        described_class.new(email:, attempts_api_tracker:).perform
       end
 
       before do
@@ -116,6 +124,14 @@ RSpec.describe RequestPasswordReset do
 
         subject
       end
+
+      it 'records the attempts api event' do
+        expect(attempts_api_tracker).to receive(:forgot_password_email_sent).with(
+          email:,
+          user_id: user.uuid,
+        )
+        subject
+      end
     end
 
     context 'when the user is found, not privileged, and not yet confirmed' do
@@ -130,7 +146,10 @@ RSpec.describe RequestPasswordReset do
             impl.call(user, email, **options)
           end
 
-        expect(attempts_api_tracker).to receive(:forgot_password_email_sent).with(email:)
+        expect(attempts_api_tracker).to receive(:forgot_password_email_sent).with(
+          email:,
+          user_id: user.uuid,
+        )
 
         expect do
           RequestPasswordReset.new(email:, attempts_api_tracker:).perform
@@ -147,6 +166,14 @@ RSpec.describe RequestPasswordReset do
         end
       end
 
+      subject do
+        RequestPasswordReset.new(
+          attempts_api_tracker:,
+          email:,
+          request_id:,
+        ).perform
+      end
+
       it 'sends the user missing email' do
         mailer = instance_double(AnonymousMailer)
         mail = instance_double(ActionMailer::MessageDelivery)
@@ -154,10 +181,16 @@ RSpec.describe RequestPasswordReset do
         expect(mailer).to receive(:password_reset_missing_user).with(request_id:).and_return(mail)
         expect(mail).to receive(:deliver_now)
 
-        RequestPasswordReset.new(
+        subject
+      end
+
+      it 'records the attempts api event' do
+        expect(attempts_api_tracker).to receive(:forgot_password_email_sent).with(
           email:,
-          request_id:,
-        ).perform
+          user_id: nil,
+        )
+
+        subject
       end
     end
 
@@ -171,7 +204,9 @@ RSpec.describe RequestPasswordReset do
 
       it 'always finds the user with the confirmed email address' do
         form = RequestPasswordReset.new(**email_param, attempts_api_tracker:)
-        expect(attempts_api_tracker).to receive(:forgot_password_email_sent).with(email_param)
+        expect(attempts_api_tracker).to receive(:forgot_password_email_sent).with(
+          email_param.merge(user_id: @user_confirmed.uuid),
+        )
         form.perform
 
         expect(form.send(:user)).to eq(@user_confirmed)
@@ -184,7 +219,7 @@ RSpec.describe RequestPasswordReset do
         max_attempts = IdentityConfig.store.reset_password_email_max_attempts
 
         expect(attempts_api_tracker).to receive(:forgot_password_email_sent)
-          .with(email:)
+          .with(email:, user_id: user.uuid)
           .exactly(max_attempts - 1)
           .times
 
@@ -223,7 +258,7 @@ RSpec.describe RequestPasswordReset do
           .exactly(max_attempts - 1).times
 
         expect(attempts_api_tracker).to receive(:forgot_password_email_sent)
-          .with(email:)
+          .with(email:, user_id: user.uuid)
           .exactly(max_attempts - 1)
           .times
 
