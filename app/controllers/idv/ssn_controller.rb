@@ -48,13 +48,13 @@ module Idv
 
       attempts_api_tracker.idv_ssn_submitted(
         success: form_response.success?,
-        ssn: ssn_params[:ssn],
+        ssn: SsnFormatter.format(ssn_params[:ssn]),
         failure_reason: attempts_api_tracker.parse_failure_reason(form_response),
       )
 
       fraud_ops_tracker.idv_ssn_submitted(
         success: form_response.success?,
-        ssn: ssn_params[:ssn],
+        ssn: SsnFormatter.format(ssn_params[:ssn]),
         failure_reason: fraud_ops_tracker.parse_failure_reason(form_response),
       )
 

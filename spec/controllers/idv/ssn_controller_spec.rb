@@ -166,7 +166,7 @@ RSpec.describe Idv::SsnController do
       it 'updates idv_session.ssn to the ssn' do
         expect(@attempts_api_tracker).to receive(:idv_ssn_submitted).with(
           success: true,
-          ssn:,
+          ssn: SsnFormatter.format(ssn),
           failure_reason: nil,
         )
         expect { put :update, params: params }.to change { subject.idv_session.ssn }
@@ -263,7 +263,7 @@ RSpec.describe Idv::SsnController do
     end
 
     context 'with invalid ssn' do
-      let(:ssn) { 'i am not an ssn' }
+      let(:ssn) { '9999999999' }
       let(:params) { { doc_auth: { ssn: ssn } } }
       let(:analytics_name) { 'IdV: doc auth ssn submitted' }
       let(:analytics_args) do
@@ -281,7 +281,7 @@ RSpec.describe Idv::SsnController do
       it 'renders the show template with an error message' do
         expect(@attempts_api_tracker).to receive(:idv_ssn_submitted).with(
           success: false,
-          ssn:,
+          ssn: SsnFormatter.format(ssn),
           failure_reason: { ssn: [:invalid] },
         )
         put :update, params: params
