@@ -7,7 +7,7 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
   let(:success_properties) { { success: true } }
 
   describe '#edit' do
-    let(:user) { instance_double('User', uuid: '123') }
+    let(:user) { create(:user) }
     let(:email_address) { instance_double('EmailAddress') }
 
     before do
@@ -31,6 +31,7 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
 
       it 'redirects to page where user enters email for password reset token' do
         expect(@attempts_api_tracker).to receive(:forgot_password_email_confirmed).with(
+          email: nil,
           success: false,
           user_id: nil,
           failure_reason: { user: [:blank] },
@@ -53,12 +54,11 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
       before do
         session[:reset_password_token] = token
       end
-      let(:user) { instance_double('User', uuid: '123') }
+      let(:user) { create(:user) }
 
       before do
         allow(User).to receive(:with_reset_password_token).with(token).and_return(user)
         allow(User).to receive(:with_reset_password_token).with('bar').and_return(nil)
-        allow(user).to receive(:id).and_return(1)
         allow(user).to receive(:reset_password_period_valid?).and_return(false)
       end
 
@@ -71,6 +71,7 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
           expect(@attempts_api_tracker).to receive(:forgot_password_email_confirmed).with(
             success: false,
             user_id: nil,
+            email: nil,
             failure_reason: { user: [:blank] },
           )
 
@@ -87,7 +88,7 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
       end
 
       context 'token expired' do
-        let(:user) { instance_double('User', uuid: '123') }
+        let(:user) { create(:user) }
 
         before do
           allow(User).to receive(:with_reset_password_token).with('foo').and_return(user)
@@ -96,8 +97,9 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
 
         it 'redirects to page where user enters email for password reset token' do
           expect(@attempts_api_tracker).to receive(:forgot_password_email_confirmed).with(
+            email: user.email,
             success: false,
-            user_id: '123',
+            user_id: user.uuid,
             failure_reason: { user: [:token_expired] },
           )
 
@@ -107,7 +109,7 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
             'Password Reset: Token Submitted',
             success: false,
             error_details: { user: { token_expired: true } },
-            user_id: '123',
+            user_id: user.uuid,
           )
           expect(response).to redirect_to new_user_password_path
           expect(flash[:error]).to eq t('devise.passwords.token_expired')
@@ -116,7 +118,7 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
 
       context 'token is valid' do
         render_views
-        let(:user) { instance_double('User', uuid: '123') }
+        let(:user) { create(:user) }
         let(:email_address) { instance_double('EmailAddress') }
 
         before do
@@ -133,8 +135,9 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
           allow(ForbiddenPasswords).to receive(:new).with(email_address.email).and_return(forbidden)
           expect(forbidden).to receive(:call)
           expect(@attempts_api_tracker).to receive(:forgot_password_email_confirmed).with(
+            email: user.email,
             success: true,
-            user_id: '123',
+            user_id: user.uuid,
             failure_reason: nil,
           )
 
@@ -161,8 +164,9 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
           .with(email_address.email).and_return(forbidden)
         expect(forbidden).to receive(:call)
         expect(@attempts_api_tracker).to receive(:forgot_password_email_confirmed).with(
+          email: user.email,
           success: true,
-          user_id: '123',
+          user_id: user.uuid,
           failure_reason: nil,
         )
 
