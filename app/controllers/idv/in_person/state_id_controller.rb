@@ -6,6 +6,7 @@ module Idv
       include Idv::AvailabilityConcern
       include IdvStepConcern
       include Idv::IdConcern
+      include Idv::InPersonAamvaConcern
 
       before_action :set_usps_form_presenter
       before_action :confirm_step_allowed
@@ -68,6 +69,10 @@ module Idv
           analytics.idv_in_person_proofing_state_id_submitted(
             **analytics_arguments.merge(**form_result),
           )
+
+          if redirect_url == idv_in_person_ssn_url
+            return unless perform_aamva_check_and_handle_response
+          end
 
           redirect_to redirect_url
         else

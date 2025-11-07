@@ -129,8 +129,8 @@ RSpec.describe Idv::InPerson::StateIdController do
   end
 
   describe '#update' do
-    let(:first_name) { 'Natalya' }
-    let(:last_name) { 'Rostova' }
+    let(:first_name) { 'Charity' }
+    let(:last_name) { 'Johnson' }
     let(:formatted_dob) { InPersonHelper::GOOD_DOB }
     let(:formatted_expiration) { InPersonHelper::GOOD_STATE_ID_EXPIRATION }
 
@@ -386,6 +386,197 @@ RSpec.describe Idv::InPerson::StateIdController do
   describe '#step_info' do
     it 'returns a valid StepInfo object' do
       expect(Idv::InPerson::StateIdController.step_info).to be_valid
+    end
+  end
+
+  describe 'AAMVA integration' do
+    let(:aamva_response) do
+      DocAuth::Response.new(
+        success: true,
+        errors: {},
+        extra: {},
+      )
+    end
+
+    before do
+      allow(IdentityConfig.store).to receive(:idv_aamva_at_doc_auth_enabled).and_return(true)
+    end
+
+    context 'when redirecting to SSN page (same_address_as_id is true)' do
+      let(:params) do
+        {
+          identity_doc: {
+            first_name: 'Charity',
+            last_name: 'Johnson',
+            same_address_as_id: 'true',
+            identity_doc_address1: InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS1,
+            identity_doc_address2: InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS2,
+            identity_doc_city: InPersonHelper::GOOD_IDENTITY_DOC_CITY,
+            state_id_jurisdiction: 'AL',
+            id_number: 'ABC123234',
+            identity_doc_address_state: InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS_STATE,
+            identity_doc_zipcode: InPersonHelper::GOOD_IDENTITY_DOC_ZIPCODE,
+            dob: { month: '1', day: '1', year: '1980' },
+            id_expiration: { month: '12', day: '31', year: '2030' },
+          },
+        }
+      end
+
+      it 'calls validate_aamva_for_ipp' do
+        expect(subject).to receive(:validate_aamva_for_ipp).and_return(aamva_response)
+
+        put :update, params: params
+      end
+
+      context 'when AAMVA check succeeds' do
+        let(:aamva_plugin_result) do
+          instance_double(
+            Proofing::StateIdResult,
+            vendor_name: 'TestAAMVA',
+            to_doc_auth_response: aamva_response,
+          )
+        end
+
+        before do
+          aamva_plugin = instance_double(Proofing::Resolution::Plugins::AamvaPlugin)
+          allow(Proofing::Resolution::Plugins::AamvaPlugin).to receive(:new)
+            .and_return(aamva_plugin)
+          allow(aamva_plugin).to receive(:call).and_return(aamva_plugin_result)
+        end
+
+        it 'redirects to SSN page' do
+          put :update, params: params
+
+          expect(response).to redirect_to(idv_in_person_ssn_url)
+        end
+
+        it 'stores AAMVA result in idv_session' do
+          put :update, params: params
+
+          expect(subject.idv_session.ipp_aamva_result).to be_present
+          expect(subject.idv_session.ipp_aamva_result['success']).to eq(true)
+        end
+      end
+
+      context 'when AAMVA check fails' do
+        let(:aamva_failure_response) do
+          DocAuth::Response.new(
+            success: false,
+            errors: { state_id: 'Unable to verify state ID' },
+            extra: {},
+          )
+        end
+
+        before do
+          allow(subject).to receive(:validate_aamva_for_ipp).and_return(aamva_failure_response)
+        end
+
+        it 'does not redirect to SSN page' do
+          put :update, params: params
+
+          expect(response).to render_template(:show)
+        end
+
+        it 'displays an error message' do
+          put :update, params: params
+
+          expect(flash[:error]).to eq(I18n.t('idv.failure.verify.heading'))
+        end
+      end
+
+      context 'when AAMVA is disabled' do
+        before do
+          allow(IdentityConfig.store).to receive(:idv_aamva_at_doc_auth_enabled).and_return(false)
+        end
+
+        it 'does not call validate_aamva_for_ipp' do
+          expect(subject).not_to receive(:validate_aamva_for_ipp)
+
+          put :update, params: params
+        end
+
+        it 'redirects to SSN page without AAMVA check' do
+          put :update, params: params
+
+          expect(response).to redirect_to(idv_in_person_ssn_url)
+        end
+      end
+    end
+
+    context 'when redirecting to Address page (same_address_as_id is false)' do
+      let(:params) do
+        {
+          identity_doc: {
+            first_name: 'Charity',
+            last_name: 'Johnson',
+            same_address_as_id: 'false',
+            identity_doc_address1: InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS1,
+            identity_doc_address2: InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS2,
+            identity_doc_city: InPersonHelper::GOOD_IDENTITY_DOC_CITY,
+            state_id_jurisdiction: 'AL',
+            id_number: 'ABC123234',
+            identity_doc_address_state: InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS_STATE,
+            identity_doc_zipcode: InPersonHelper::GOOD_IDENTITY_DOC_ZIPCODE,
+            dob: { month: '1', day: '1', year: '1980' },
+            id_expiration: { month: '12', day: '31', year: '2030' },
+          },
+        }
+      end
+
+      it 'does not call validate_aamva_for_ipp' do
+        expect(subject).not_to receive(:validate_aamva_for_ipp)
+
+        put :update, params: params
+      end
+
+      it 'redirects to Address page' do
+        put :update, params: params
+
+        expect(response).to redirect_to(idv_in_person_address_url)
+      end
+    end
+
+    context 'when rate limited' do
+      before do
+        rate_limiter = instance_double(RateLimiter)
+        allow(RateLimiter).to receive(:new).and_return(rate_limiter)
+        allow(rate_limiter).to receive(:limited?).and_return(true)
+      end
+
+      let(:params) do
+        {
+          identity_doc: {
+            first_name: 'Charity',
+            last_name: 'Johnson',
+            same_address_as_id: 'true',
+            identity_doc_address1: InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS1,
+            identity_doc_address2: InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS2,
+            identity_doc_city: InPersonHelper::GOOD_IDENTITY_DOC_CITY,
+            state_id_jurisdiction: 'AL',
+            id_number: 'ABC123234',
+            identity_doc_address_state: InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS_STATE,
+            identity_doc_zipcode: InPersonHelper::GOOD_IDENTITY_DOC_ZIPCODE,
+            dob: { month: '1', day: '1', year: '1980' },
+            id_expiration: { month: '12', day: '31', year: '2030' },
+          },
+        }
+      end
+
+      it 'renders the show page with error' do
+        put :update, params: params
+
+        expect(response).to render_template(:show)
+        expect(flash[:error]).to eq(I18n.t('idv.failure.phone.rate_limited.heading'))
+      end
+
+      it 'logs rate limit event' do
+        put :update, params: params
+
+        expect(@analytics).to have_logged_event(
+          :idv_ipp_aamva_rate_limited,
+          step: 'state_id',
+        )
+      end
     end
   end
 end
