@@ -116,6 +116,20 @@ RSpec.describe AttemptsApi::Tracker do
         event = subject.track_event(:test_event)
         expect(event.event_metadata[:language]).to eq('en')
       end
+
+      context 'when a user_id is provided' do
+        let(:passed_in_user)  { create(:user) }
+        it 'looks up the user and logs the user_uuid if found' do
+          event = subject.track_event(:test_event, success: true, user_id: passed_in_user.uuid)
+          identity = AgencyIdentityLinker.for(
+            user: passed_in_user,
+            service_provider: service_provider,
+            skip_create: false,
+          )
+
+          expect(event.event_metadata[:user_uuid]).to eq(identity.uuid)
+        end
+      end
     end
 
     context 'with AnonymousUser user' do

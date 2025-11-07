@@ -32,6 +32,7 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
       it 'redirects to page where user enters email for password reset token' do
         expect(@attempts_api_tracker).to receive(:forgot_password_email_confirmed).with(
           success: false,
+          user_id: nil,
           failure_reason: { user: [:blank] },
         )
 
@@ -57,6 +58,7 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
       before do
         allow(User).to receive(:with_reset_password_token).with(token).and_return(user)
         allow(User).to receive(:with_reset_password_token).with('bar').and_return(nil)
+        allow(user).to receive(:id).and_return(1)
         allow(user).to receive(:reset_password_period_valid?).and_return(false)
       end
 
@@ -68,6 +70,7 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
         it 'redirects to page where user enters email for password reset token' do
           expect(@attempts_api_tracker).to receive(:forgot_password_email_confirmed).with(
             success: false,
+            user_id: nil,
             failure_reason: { user: [:blank] },
           )
 
@@ -94,6 +97,7 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
         it 'redirects to page where user enters email for password reset token' do
           expect(@attempts_api_tracker).to receive(:forgot_password_email_confirmed).with(
             success: false,
+            user_id: '123',
             failure_reason: { user: [:token_expired] },
           )
 
@@ -130,6 +134,7 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
           expect(forbidden).to receive(:call)
           expect(@attempts_api_tracker).to receive(:forgot_password_email_confirmed).with(
             success: true,
+            user_id: '123',
             failure_reason: nil,
           )
 
@@ -157,6 +162,7 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
         expect(forbidden).to receive(:call)
         expect(@attempts_api_tracker).to receive(:forgot_password_email_confirmed).with(
           success: true,
+          user_id: '123',
           failure_reason: nil,
         )
 
@@ -503,6 +509,11 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
       let(:email) { 'nonexistent@example.com' }
 
       it 'send an email to tell the user they do not have an account yet' do
+        expect(@attempts_api_tracker).to receive(:forgot_password_email_sent).with(
+          email:,
+          user_id: nil,
+        )
+
         expect do
           put :create, params: {
             password_reset_email_form: { email: email },
@@ -528,7 +539,9 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
       let!(:user) { create(:user, :fully_registered, **email_param) }
 
       it 'sends password reset email to user and tracks event' do
-        expect(@attempts_api_tracker).to receive(:forgot_password_email_sent).with(email_param)
+        expect(@attempts_api_tracker).to receive(:forgot_password_email_sent).with(
+          email_param.merge(user_id: user.uuid),
+        )
 
         expect do
           put :create, params: { password_reset_email_form: email_param }
@@ -556,7 +569,10 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
       end
 
       it 'sends missing user email and tracks event' do
-        expect(@attempts_api_tracker).not_to receive(:forgot_password_email_sent)
+        expect(@attempts_api_tracker).to receive(:forgot_password_email_sent).with(
+          email: user.email,
+          user_id: nil,
+        )
 
         expect { put :create, params: params }
           .to change { ActionMailer::Base.deliveries.count }.by(1)
@@ -580,7 +596,7 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
         user = create(:user, :fully_registered)
         create(:profile, :active, :verified, user: user)
         expect(@attempts_api_tracker).to receive(:forgot_password_email_sent)
-          .with(email: user.email)
+          .with(email: user.email, user_id: user.uuid)
 
         params = { password_reset_email_form: { email: user.email } }
         put :create, params: params
