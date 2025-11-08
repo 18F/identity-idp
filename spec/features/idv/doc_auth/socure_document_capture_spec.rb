@@ -434,6 +434,15 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
         end
 
         it 'displays try again errors' do
+          body = JSON.parse(SocureDocvFixtures.aamva_fail_json)
+
+          remove_request_stub(@docv_stub)
+          stub_docv_verification_data(
+            docv_transaction_token: @docv_transaction_token,
+            body: body.to_json,
+            user:,
+          )
+
           socure_docv_upload_documents(
             docv_transaction_token: @docv_transaction_token,
           )
