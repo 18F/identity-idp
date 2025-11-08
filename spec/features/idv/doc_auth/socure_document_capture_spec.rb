@@ -397,7 +397,54 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
       end
     end
 
-    context 'webhook repearter repeats all webhooks' do
+    context 'standard flow with aamva check enabled' do
+      before do
+        allow(IdentityConfig.store).to receive_messages(
+          idv_aamva_at_doc_auth_enabled: true,
+          proofer_mock_fallback: false,
+        )
+        visit_idp_from_oidc_sp_with_ial2
+        sign_in_and_2fa_user(user)
+        complete_doc_auth_steps_before_hybrid_handoff_step
+        complete_choose_id_type_step
+        click_idv_continue
+      end
+
+      context 'when aamva check is successful' do
+        let(:aamva_response) { AamvaFixtures.verification_response }
+
+        before do
+          stub_aamva_request(aamva_response)
+        end
+
+        it 'navigates the user to the SSN page' do
+          socure_docv_upload_documents(
+            docv_transaction_token: @docv_transaction_token,
+          )
+          visit idv_socure_document_capture_update_path
+          expect(page).to have_current_path(idv_ssn_url)
+        end
+      end
+
+      context 'when aamva check is unsuccessful' do
+        let(:aamva_response) { AamvaFixtures.verification_response_namespaced_failure }
+
+        before do
+          stub_aamva_request(aamva_response)
+        end
+
+        it 'displays try again errors' do
+          socure_docv_upload_documents(
+            docv_transaction_token: @docv_transaction_token,
+          )
+          visit idv_socure_document_capture_update_path
+          expect(page).to have_current_path(idv_socure_document_capture_errors_url)
+          expect(page).to have_content(t('idv.errors.try_again_later'))
+        end
+      end
+    end
+
+    context 'webhook repeater repeats all webhooks' do
       let(:socure_docv_webhook_repeat_endpoints) do # repeat webhooks
         ['https://1.example.test/thepath', 'https://2.example.test/thepath']
       end
@@ -435,53 +482,6 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
           click_idv_continue
           complete_verify_step
           expect(page).to have_current_path(idv_phone_url)
-        end
-      end
-
-      context 'standard flow with aamva check enabled' do
-        before do
-          allow(IdentityConfig.store).to receive_messages(
-            idv_aamva_at_doc_auth_enabled: true,
-            proofer_mock_fallback: false,
-          )
-          visit_idp_from_oidc_sp_with_ial2
-          sign_in_and_2fa_user(user)
-          complete_doc_auth_steps_before_hybrid_handoff_step
-          complete_choose_id_type_step
-          click_idv_continue
-        end
-
-        context 'when aamva check is successful' do
-          let(:aamva_response) { AamvaFixtures.verification_response }
-
-          before do
-            stub_aamva_request(aamva_response)
-          end
-
-          it 'navigates the user to the SSN page' do
-            socure_docv_upload_documents(
-              docv_transaction_token: @docv_transaction_token,
-            )
-            visit idv_socure_document_capture_update_path
-            expect(page).to have_current_path(idv_ssn_url)
-          end
-        end
-
-        context 'when aamva check is unsuccessful' do
-          let(:aamva_response) { AamvaFixtures.verification_response_namespaced_failure }
-
-          before do
-            stub_aamva_request(aamva_response)
-          end
-
-          it 'displays try again errors' do
-            socure_docv_upload_documents(
-              docv_transaction_token: @docv_transaction_token,
-            )
-            visit idv_socure_document_capture_update_path
-            expect(page).to have_current_path(idv_socure_document_capture_errors_url)
-            expect(page).to have_content(t('idv.errors.try_again_later'))
-          end
         end
       end
 
