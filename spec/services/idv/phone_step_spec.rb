@@ -77,6 +77,8 @@ RSpec.describe Idv::PhoneStep do
 
       expect(subject.async_state).to be_done
       result = subject.async_state_done(subject.async_state)
+      expect(result).to be_kind_of(Hash)
+      result = result[:final_result]
       expect(result).to be_kind_of(FormResponse)
       expect(result.success?).to eq(true)
       expect(result.errors).to be_empty
@@ -104,7 +106,8 @@ RSpec.describe Idv::PhoneStep do
       subject.submit(phone: bad_phone)
       expect(subject.async_state.done?).to eq true
       result = subject.async_state_done(subject.async_state)
-
+      expect(result).to be_kind_of(Hash)
+      result = result[:final_result]
       expect(result).to be_kind_of(FormResponse)
       expect(result.success?).to eq(false)
       expect(result.errors).to eq(phone: ['The phone number could not be verified.'])
@@ -138,7 +141,8 @@ RSpec.describe Idv::PhoneStep do
       subject.submit(phone: good_phone)
       expect(subject.async_state.done?).to eq true
       result = subject.async_state_done(subject.async_state)
-
+      expect(result).to be_kind_of(Hash)
+      result = result[:final_result]
       expect(result.success?).to eq(true)
       expect(idv_session.vendor_phone_confirmation).to eq(true)
       expect(idv_session.user_phone_confirmation).to eq(false)
@@ -148,7 +152,8 @@ RSpec.describe Idv::PhoneStep do
       subject.submit(phone: good_phone)
       expect(subject.async_state.done?).to eq true
       result = subject.async_state_done(subject.async_state)
-
+      expect(result).to be_kind_of(Hash)
+      result = result[:final_result]
       expect(result.success?).to eq(true)
       expect(idv_session.vendor_phone_confirmation).to eq(true)
       expect(idv_session.user_phone_confirmation).to be_falsy

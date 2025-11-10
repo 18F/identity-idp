@@ -215,7 +215,7 @@ module Idv
           hybrid_handoff_phone_used: hybrid_handoff_phone_used?,
         ),
         **opt_in_analytics_properties,
-        alternate_result: alternate_result.to_h,
+        alternate_result: alternate_result&.to_h,
       )
 
       if form_result.success?
