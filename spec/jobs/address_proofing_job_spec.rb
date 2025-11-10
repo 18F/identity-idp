@@ -35,8 +35,7 @@ RSpec.describe AddressProofingJob, type: :job do
         user_id:,
       )
 
-      result = document_capture_session.load_proofing_result[:result].last
-      expect(result).to be_present
+      expect(document_capture_session.load_proofing_result[:result]).not_to be_empty
     end
   end
 
@@ -80,7 +79,9 @@ RSpec.describe AddressProofingJob, type: :job do
       it 'runs' do
         perform
 
-        result = document_capture_session.load_proofing_result[:result].last
+        result = document_capture_session.load_proofing_result[:result]
+        expect(result.length).to eq(1)
+        result = result.last
 
         expect(result[:exception]).to be_nil
         expect(result[:errors]).to eq({})
@@ -126,7 +127,9 @@ RSpec.describe AddressProofingJob, type: :job do
       it 'passes proofing' do
         perform
 
-        result = document_capture_session.load_proofing_result[:result].last
+        result = document_capture_session.load_proofing_result[:result]
+        expect(result.length).to eq(1)
+        result = result.last
 
         expect(result[:exception]).to be_nil
         expect(result[:errors]).to eq({})
@@ -150,12 +153,40 @@ RSpec.describe AddressProofingJob, type: :job do
         it 'fails proofing' do
           perform
 
-          result = document_capture_session.load_proofing_result[:result].last
+          result = document_capture_session.load_proofing_result[:result]
+          expect(result.length).to eq(1)
+          result = result.last
 
           expect(result[:exception]).to be_nil
           expect(result[:success]).to be false
           expect(result[:timed_out]).to be false
           expect(result[:vendor_name]).to eq('socure_phonerisk')
+        end
+
+        context 'and passes secondary phone vendor' do
+          before do
+            allow(IdentityConfig.store).to receive(:idv_address_secondary_vendor).and_return(:mock)
+          end
+
+          it 'passes proofing' do
+            perform
+
+            result = document_capture_session.load_proofing_result[:result]
+
+            expect(result.length).to eq(2)
+            primary_result = result.first
+            expect(primary_result[:exception]).to be_nil
+            expect(primary_result[:errors]).to eq({})
+            expect(primary_result[:success]).to be_falsey
+            expect(primary_result[:timed_out]).to be_falsey
+
+            secondary_result = result.last
+            expect(secondary_result[:exception]).to be_nil
+            expect(secondary_result[:errors]).to eq({})
+            expect(secondary_result[:success]).to be_truthy
+            expect(secondary_result[:timed_out]).to be_falsey
+            expect(secondary_result[:vendor_name]).to eq('AddressMock')
+          end
         end
       end
       context 'low name phone correlation score' do
@@ -164,12 +195,47 @@ RSpec.describe AddressProofingJob, type: :job do
         it 'fails proofing' do
           perform
 
-          result = document_capture_session.load_proofing_result[:result].last
+          result = document_capture_session.load_proofing_result[:result]
+          expect(result.length).to eq(1)
+          result = result.last
 
           expect(result[:exception]).to be_nil
           expect(result[:success]).to be false
           expect(result[:timed_out]).to be false
           expect(result[:vendor_name]).to eq('socure_phonerisk')
+        end
+
+        context 'and fails secondary phone vendor' do
+          let(:applicant_pii) do
+            super().merge(
+              phone: Proofing::Mock::AddressMockClient::UNVERIFIABLE_PHONE_NUMBER,
+            )
+          end
+
+          before do
+            allow(IdentityConfig.store).to receive(:idv_address_secondary_vendor).and_return(:mock)
+          end
+
+          it 'passes proofing' do
+            perform
+
+            result = document_capture_session.load_proofing_result[:result]
+
+            expect(result.length).to eq(2)
+            primary_result = result.first
+            expect(primary_result[:exception]).to be_nil
+            expect(primary_result[:errors]).to eq({})
+            expect(primary_result[:success]).to be_falsey
+            expect(primary_result[:timed_out]).to be_falsey
+
+            secondary_result = result.last
+            expect(secondary_result[:exception]).to be_nil
+            expect(secondary_result[:errors])
+              .to eq({ phone: ['The phone number could not be verified.'] })
+            expect(secondary_result[:success]).to be_falsey
+            expect(secondary_result[:timed_out]).to be_falsey
+            expect(secondary_result[:vendor_name]).to eq('AddressMock')
+          end
         end
       end
     end
@@ -186,7 +252,9 @@ RSpec.describe AddressProofingJob, type: :job do
         it 'returns a result' do
           perform
 
-          result = document_capture_session.load_proofing_result[:result].last
+          result = document_capture_session.load_proofing_result[:result]
+          expect(result.length).to eq(1)
+          result = result.last
 
           expect(result[:success]).to eq(false)
         end
