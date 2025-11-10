@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Proofing::Resolution::Plugins::PhoneFinderPlugin do
+RSpec.describe Proofing::Resolution::Plugins::PhonePlugin do
   let(:applicant_pii) do
     Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE.merge(uuid_prefix: '123', uuid: 'abc')
   end

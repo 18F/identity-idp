@@ -14,7 +14,7 @@ module Proofing
                   :user_email,
                   :aamva_plugin,
                   :threatmetrix_plugin,
-                  :phone_finder_plugin,
+                  :phone_plugin,
                   :proofing_vendor
 
       PROOFING_VENDOR_SP_COST_TOKENS = {
@@ -28,7 +28,7 @@ module Proofing
         @user_email = user_email
         @aamva_plugin = Plugins::AamvaPlugin.new
         @threatmetrix_plugin = Plugins::ThreatMetrixPlugin.new
-        @phone_finder_plugin = Plugins::PhoneFinderPlugin.new
+        @phone_plugin = Plugins::PhonePlugin.new
         @proofing_vendor = proofing_vendor
       end
 
@@ -87,7 +87,7 @@ module Proofing
           already_proofed: IdentityConfig.store.idv_aamva_at_doc_auth_enabled,
         )
 
-        phone_finder_result = phone_finder_plugin.call(
+        phone_finder_result = phone_plugin.call(
           applicant_pii:,
           current_sp:,
           residential_address_resolution_result:,
