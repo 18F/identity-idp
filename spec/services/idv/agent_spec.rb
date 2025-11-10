@@ -192,7 +192,7 @@ RSpec.describe Idv::Agent do
 
       subject(:result) do
         proof_address
-        document_capture_session.load_proofing_result[:result]
+        document_capture_session.load_proofing_result[:result].last
       end
 
       it 'proofs addresses successfully with valid information' do
