@@ -2,7 +2,7 @@
 
 module Proofing
   class AddressProofer
-    class InvalidAddressVendorError < Standarderror; end
+    class InvalidAddressVendorError < StandardError; end
 
     attr_reader :user_uuid, :user_email
 
@@ -72,7 +72,7 @@ module Proofing
       when :mock
         Proofing::Mock::AddressMockClient.new
       else
-        raise InvalidProofingVendorError, "#{address_vendor} is not a valid address vendor"
+        raise InvalidAddressVendorError, "#{address_vendor} is not a valid address vendor"
       end
     end
 

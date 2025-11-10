@@ -265,6 +265,16 @@ RSpec.describe AddressProofingJob, type: :job do
       end
     end
 
+    context 'invalid proofing vendor' do
+      before do
+        allow(IdentityConfig.store).to receive(:idv_address_primary_vendor).and_return(:doh)
+      end
+
+      it 'does not add cost data' do
+        expect { perform }.to raise_error(Proofing::AddressProofer::InvalidAddressVendorError)
+      end
+    end
+
     context 'a stale job' do
       before { instance.enqueued_at = 10.minutes.ago }
 
