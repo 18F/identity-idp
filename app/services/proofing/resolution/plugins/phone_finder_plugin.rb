@@ -3,7 +3,7 @@
 module Proofing
   module Resolution
     module Plugins
-      class PhoneFinderPlugin
+      class PhonePlugin
         def call(
           applicant_pii:,
           current_sp:,

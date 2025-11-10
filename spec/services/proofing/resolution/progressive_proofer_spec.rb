@@ -116,7 +116,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
 
       allow(progressive_proofer.aamva_plugin).to receive(:proofer)
         .and_return(aamva_proofer)
-      allow(progressive_proofer.phone_finder_plugin).to receive(:proofer)
+      allow(progressive_proofer.phone_plugin).to receive(:proofer)
         .and_return(phone_finder_proofer)
     end
 
@@ -252,8 +252,8 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
           proof
         end
 
-        it 'calls PhoneFinderPlugin' do
-          expect(progressive_proofer.phone_finder_plugin).to receive(:call).with(
+        it 'calls PhonePlugin' do
+          expect(progressive_proofer.phone_plugin).to receive(:call).with(
             applicant_pii:,
             current_sp:,
             residential_address_resolution_result:,
@@ -335,8 +335,8 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
           proof
         end
 
-        it 'calls PhoneFinderPlugin' do
-          expect(progressive_proofer.phone_finder_plugin).to receive(:call).with(
+        it 'calls PhonePlugin' do
+          expect(progressive_proofer.phone_plugin).to receive(:call).with(
             applicant_pii:,
             current_sp:,
             residential_address_resolution_result:,
@@ -414,8 +414,8 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
         proof
       end
 
-      it 'calls PhoneFinderPlugin' do
-        expect(progressive_proofer.phone_finder_plugin).to receive(:call).with(
+      it 'calls PhonePlugin' do
+        expect(progressive_proofer.phone_plugin).to receive(:call).with(
           applicant_pii:,
           current_sp:,
           residential_address_resolution_result: satisfy do |result|
