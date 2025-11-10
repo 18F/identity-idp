@@ -2,7 +2,7 @@
 
 module Proofing
   class AddressProofer
-    class InvalidAddressVendorError; end
+    class InvalidAddressVendorError < Standarderror; end
 
     attr_reader :user_uuid, :user_email
 
@@ -85,7 +85,7 @@ module Proofing
     end
 
     def address_vendors
-      [primary_vendor, secondary_vendor].compact
+      [primary_vendor, secondary_vendor].uniq.compact
     end
   end
 end
