@@ -35,7 +35,7 @@ RSpec.describe AddressProofingJob, type: :job do
         user_id:,
       )
 
-      result = document_capture_session.load_proofing_result[:result]
+      result = document_capture_session.load_proofing_result[:result].last
       expect(result).to be_present
     end
   end
@@ -80,7 +80,7 @@ RSpec.describe AddressProofingJob, type: :job do
       it 'runs' do
         perform
 
-        result = document_capture_session.load_proofing_result[:result]
+        result = document_capture_session.load_proofing_result[:result].last
 
         expect(result[:exception]).to be_nil
         expect(result[:errors]).to eq({})
@@ -126,7 +126,7 @@ RSpec.describe AddressProofingJob, type: :job do
       it 'passes proofing' do
         perform
 
-        result = document_capture_session.load_proofing_result[:result]
+        result = document_capture_session.load_proofing_result[:result].last
 
         expect(result[:exception]).to be_nil
         expect(result[:errors]).to eq({})
@@ -150,7 +150,7 @@ RSpec.describe AddressProofingJob, type: :job do
         it 'fails proofing' do
           perform
 
-          result = document_capture_session.load_proofing_result[:result]
+          result = document_capture_session.load_proofing_result[:result].last
 
           expect(result[:exception]).to be_nil
           expect(result[:success]).to be false
@@ -164,7 +164,7 @@ RSpec.describe AddressProofingJob, type: :job do
         it 'fails proofing' do
           perform
 
-          result = document_capture_session.load_proofing_result[:result]
+          result = document_capture_session.load_proofing_result[:result].last
 
           expect(result[:exception]).to be_nil
           expect(result[:success]).to be false
@@ -186,7 +186,7 @@ RSpec.describe AddressProofingJob, type: :job do
         it 'returns a result' do
           perform
 
-          result = document_capture_session.load_proofing_result[:result]
+          result = document_capture_session.load_proofing_result[:result].last
 
           expect(result[:success]).to eq(false)
         end

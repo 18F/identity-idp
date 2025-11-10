@@ -36,7 +36,7 @@ class AddressProofingJob < ApplicationJob
       {
         name: 'ProofAddress',
         trace_id: trace_id,
-        success: proofer_result&.success?,
+        success: proofer_result&.any?(&:success?),
         timing: timer.results,
       }.to_json,
     )
