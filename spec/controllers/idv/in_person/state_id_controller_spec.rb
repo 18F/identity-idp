@@ -390,14 +390,6 @@ RSpec.describe Idv::InPerson::StateIdController do
   end
 
   describe 'AAMVA integration' do
-    let(:aamva_response) do
-      DocAuth::Response.new(
-        success: true,
-        errors: {},
-        extra: {},
-      )
-    end
-
     before do
       allow(IdentityConfig.store).to receive(:idv_aamva_at_doc_auth_enabled).and_return(true)
     end
@@ -422,65 +414,129 @@ RSpec.describe Idv::InPerson::StateIdController do
         }
       end
 
-      it 'calls validate_aamva_for_ipp' do
-        expect(subject).to receive(:validate_aamva_for_ipp).and_return(aamva_response)
+      it 'enqueues async AAMVA job and redirects to state_id page for polling' do
+        expect(IppAamvaProofingJob).to receive(:perform_later)
 
         put :update, params: params
+
+        expect(response).to redirect_to(idv_in_person_state_id_url)
+        expect(subject.idv_session.ipp_aamva_document_capture_session_uuid).to be_present
       end
 
-      context 'when AAMVA check succeeds' do
-        let(:aamva_plugin_result) do
-          instance_double(
-            Proofing::StateIdResult,
-            vendor_name: 'TestAAMVA',
-            to_doc_auth_response: aamva_response,
+      context 'when async AAMVA check is in progress' do
+        let(:document_capture_session) do
+          DocumentCaptureSession.create!(
+            user_id: user.id,
+            issuer: nil,
+            requested_at: Time.zone.now,
           )
         end
 
         before do
-          aamva_plugin = instance_double(Proofing::Resolution::Plugins::AamvaPlugin)
-          allow(Proofing::Resolution::Plugins::AamvaPlugin).to receive(:new)
-            .and_return(aamva_plugin)
-          allow(aamva_plugin).to receive(:call).and_return(aamva_plugin_result)
+          document_capture_session.create_proofing_session
+          subject.idv_session.ipp_aamva_document_capture_session_uuid =
+            document_capture_session.uuid
+        end
+
+        it 'renders the wait page' do
+          get :show
+
+          expect(response).to render_template('shared/wait')
+        end
+
+        it 'logs polling wait event' do
+          get :show
+
+          expect(@analytics).to have_logged_event(:idv_ipp_aamva_verification_polling_wait)
+        end
+      end
+
+      context 'when async AAMVA check completes successfully' do
+        let(:document_capture_session) do
+          DocumentCaptureSession.create!(
+            user_id: user.id,
+            issuer: nil,
+            requested_at: Time.zone.now,
+          )
+        end
+
+        let(:successful_result) do
+          {
+            success: true,
+            errors: {},
+            vendor_name: 'TestAAMVA',
+            checked_at: Time.zone.now.iso8601,
+          }
+        end
+
+        before do
+          document_capture_session.create_proofing_session
+          document_capture_session.store_proofing_result(successful_result)
+          subject.idv_session.ipp_aamva_document_capture_session_uuid =
+            document_capture_session.uuid
         end
 
         it 'redirects to SSN page' do
-          put :update, params: params
+          get :show
 
           expect(response).to redirect_to(idv_in_person_ssn_url)
         end
 
         it 'stores AAMVA result in idv_session' do
-          put :update, params: params
+          get :show
 
           expect(subject.idv_session.ipp_aamva_result).to be_present
           expect(subject.idv_session.ipp_aamva_result['success']).to eq(true)
         end
+
+        it 'clears the async state' do
+          get :show
+
+          expect(subject.idv_session.ipp_aamva_document_capture_session_uuid).to be_nil
+        end
       end
 
-      context 'when AAMVA check fails' do
-        let(:aamva_failure_response) do
-          DocAuth::Response.new(
-            success: false,
-            errors: { state_id: 'Unable to verify state ID' },
-            extra: {},
+      context 'when async AAMVA check fails' do
+        let(:document_capture_session) do
+          DocumentCaptureSession.create!(
+            user_id: user.id,
+            issuer: nil,
+            requested_at: Time.zone.now,
           )
         end
 
+        let(:failed_result) do
+          {
+            success: false,
+            errors: { state_id: 'Unable to verify state ID' },
+            vendor_name: 'TestAAMVA',
+            checked_at: Time.zone.now.iso8601,
+          }
+        end
+
         before do
-          allow(subject).to receive(:validate_aamva_for_ipp).and_return(aamva_failure_response)
+          document_capture_session.create_proofing_session
+          document_capture_session.store_proofing_result(failed_result)
+          subject.idv_session.ipp_aamva_document_capture_session_uuid =
+            document_capture_session.uuid
         end
 
         it 'does not redirect to SSN page' do
-          put :update, params: params
+          get :show
 
           expect(response).to render_template(:show)
         end
 
         it 'displays an error message' do
-          put :update, params: params
+          get :show
 
           expect(flash[:error]).to eq(I18n.t('idv.failure.verify.heading'))
+        end
+
+        it 'clears the async state' do
+          get :show
+
+          expect(subject.idv_session.ipp_aamva_document_capture_session_uuid).to be_nil
         end
       end
 
@@ -489,13 +545,13 @@ RSpec.describe Idv::InPerson::StateIdController do
           allow(IdentityConfig.store).to receive(:idv_aamva_at_doc_auth_enabled).and_return(false)
         end
 
-        it 'does not call validate_aamva_for_ipp' do
-          expect(subject).not_to receive(:validate_aamva_for_ipp)
+        it 'does not enqueue job' do
+          expect(IppAamvaProofingJob).not_to receive(:perform_later)
 
           put :update, params: params
         end
 
-        it 'redirects to SSN page without AAMVA check' do
+        it 'redirects directly to SSN page' do
           put :update, params: params
 
           expect(response).to redirect_to(idv_in_person_ssn_url)
@@ -523,16 +579,61 @@ RSpec.describe Idv::InPerson::StateIdController do
         }
       end
 
-      it 'does not call validate_aamva_for_ipp' do
-        expect(subject).not_to receive(:validate_aamva_for_ipp)
+      it 'enqueues AAMVA job and redirects to state_id page for polling' do
+        expect(IppAamvaProofingJob).to receive(:perform_later)
 
         put :update, params: params
+
+        expect(response).to redirect_to(idv_in_person_state_id_url)
+        expect(subject.idv_session.ipp_aamva_document_capture_session_uuid).to be_present
+        expect(subject.idv_session.ipp_aamva_redirect_url).to eq(idv_in_person_address_url)
       end
 
-      it 'redirects to Address page' do
-        put :update, params: params
+      context 'when async AAMVA check completes successfully' do
+        let(:document_capture_session) do
+          DocumentCaptureSession.create!(
+            user_id: user.id,
+            issuer: nil,
+            requested_at: Time.zone.now,
+          )
+        end
 
-        expect(response).to redirect_to(idv_in_person_address_url)
+        let(:successful_result) do
+          {
+            success: true,
+            errors: {},
+            vendor_name: 'TestAAMVA',
+            checked_at: Time.zone.now.iso8601,
+          }
+        end
+
+        before do
+          document_capture_session.create_proofing_session
+          document_capture_session.store_proofing_result(successful_result)
+          subject.idv_session.ipp_aamva_document_capture_session_uuid =
+            document_capture_session.uuid
+          subject.idv_session.ipp_aamva_redirect_url = idv_in_person_address_url
+        end
+
+        it 'redirects to Address page (not SSN)' do
+          get :show
+
+          expect(response).to redirect_to(idv_in_person_address_url)
+        end
+
+        it 'stores AAMVA result in idv_session' do
+          get :show
+
+          expect(subject.idv_session.ipp_aamva_result).to be_present
+          expect(subject.idv_session.ipp_aamva_result['success']).to eq(true)
+        end
+
+        it 'clears the async state and redirect URL' do
+          get :show
+
+          expect(subject.idv_session.ipp_aamva_document_capture_session_uuid).to be_nil
+          expect(subject.idv_session.ipp_aamva_redirect_url).to be_nil
+        end
       end
     end
 
@@ -576,6 +677,12 @@ RSpec.describe Idv::InPerson::StateIdController do
           :idv_ipp_aamva_rate_limited,
           step: 'state_id',
         )
+      end
+
+      it 'does not enqueue AAMVA job when rate limited' do
+        expect(IppAamvaProofingJob).not_to receive(:perform_later)
+
+        put :update, params: params
       end
     end
   end
