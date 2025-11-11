@@ -13,6 +13,11 @@ module Idv
       before_action :initialize_pii_from_user, only: [:show]
 
       def show
+        if idv_session.ipp_aamva_document_capture_session_uuid.present?
+          process_aamva_async_state
+          return
+        end
+
         analytics.idv_in_person_proofing_state_id_visited(**analytics_arguments)
 
         render :show, locals: extra_view_variables
@@ -70,8 +75,12 @@ module Idv
             **analytics_arguments.merge(**form_result),
           )
 
-          if redirect_url == idv_in_person_ssn_url
-            return unless perform_aamva_check_and_handle_response
+          if aamva_enabled?
+            idv_session.ipp_aamva_redirect_url = redirect_url
+            if enqueue_aamva_job_and_redirect
+              redirect_to idv_in_person_state_id_url
+            end
+            return
           end
 
           redirect_to redirect_url

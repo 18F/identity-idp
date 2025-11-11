@@ -4326,6 +4326,11 @@ module AnalyticsEvents
     )
   end
 
+  # User visited polling wait page for IPP AAMVA verification
+  def idv_ipp_aamva_verification_polling_wait
+    track_event(:idv_ipp_aamva_verification_polling_wait)
+  end
+
   # @param [String] enrollment_id
   # A fraud user has been deactivated due to not visting the post office before the deadline
   def idv_ipp_deactivated_for_never_visiting_post_office(

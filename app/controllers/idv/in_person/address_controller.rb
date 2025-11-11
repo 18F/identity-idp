@@ -5,7 +5,6 @@ module Idv
     class AddressController < ApplicationController
       include Idv::AvailabilityConcern
       include IdvStepConcern
-      include Idv::InPersonAamvaConcern
 
       before_action :confirm_step_allowed
       before_action :set_usps_form_presenter
@@ -30,10 +29,6 @@ module Idv
         if form_result.success?
           attrs.each do |attr|
             pii_from_user[attr] = flow_params[attr]
-          end
-
-          unless updating_address?
-            return unless perform_aamva_check_and_handle_response
           end
 
           redirect_to_next_page
