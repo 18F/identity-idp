@@ -519,6 +519,37 @@ RSpec.describe Idv::PhoneController do
         )
       end
 
+      context 'when the vendor is lexisnexis' do
+        let(:endpoint) do
+          [
+            'https://www.example.com',
+            'restws/identity/v2/test_account/customers.gsa2.phonefinder.workflow/conversation',
+          ].join('/')
+        end
+
+        before do
+          allow(IdentityConfig.store).to receive(:idv_address_default_vendor)
+            .and_return(:lexis_nexis)
+          stub_request(:post, endpoint).to_return(
+            status: 200,
+            body: LexisNexisFixtures.phone_finder_rdp1_fail_response_json,
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          )
+        end
+
+        it 'does not send an otp and redirects to the error page' do
+          put :create, params: { idv_phone_form: { phone: good_phone } }
+
+          expect(response).to redirect_to idv_phone_path
+
+          get :new
+
+          expect(response).to redirect_to idv_phone_errors_warning_path
+        end
+      end
+
       context 'when phonerisk is the phone prooving vendor' do
         before do
           allow(IdentityConfig.store).to receive(:idv_address_default_vendor).and_return(:socure)
