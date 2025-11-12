@@ -70,6 +70,13 @@ module Idv
       stored_result.mrz_status == :pass
     end
 
+    def aamva_requirement_met?
+      return true if document_type_received == 'passport'
+      return true unless IdentityConfig.store.idv_aamva_at_doc_auth_enabled
+
+      stored_result.aamva_status == :passed
+    end
+
     def redirect_to_correct_vendor(vendor, in_hybrid_mobile:)
       return if IdentityConfig.store.doc_auth_redirect_to_correct_vendor_disabled
 
@@ -141,7 +148,7 @@ module Idv
     def validation_requirements_met?
       return false if document_type_mismatch?
 
-      selfie_requirement_met? && mrz_requirement_met?
+      selfie_requirement_met? && mrz_requirement_met? && aamva_requirement_met?
     end
 
     def document_type_mismatch?
