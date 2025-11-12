@@ -242,6 +242,25 @@ RSpec.describe AddressProofingJob, type: :job do
 
     context 'mock proofer' do
       let(:address_vendor) { :mock }
+      context 'same primary and secondary vendor' do
+        before do
+          allow(IdentityConfig.store).to receive(:idv_address_secondary_vendor).and_return(:mock)
+        end
+
+        it 'proofs  the vendor once' do
+          expect(Proofing::Mock::AddressMockClient).to receive(:new).once.and_call_original
+          expect_any_instance_of(Proofing::Mock::AddressMockClient)
+            .to receive(:proof).once.and_call_original
+
+          perform
+
+          result = document_capture_session.load_proofing_result[:result]
+          expect(result.length).to eq(1)
+          result = result.last
+
+          expect(result[:success]).to eq(true)
+        end
+      end
       context 'with an unsuccessful response from the proofer' do
         let(:applicant_pii) do
           super().merge(
