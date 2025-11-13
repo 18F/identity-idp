@@ -52,6 +52,8 @@ module Idv
         attributes = { error_code: }.merge(ab_test_analytics_buckets)
         attributes[:remaining_submit_attempts] = remaining_submit_attempts
         attributes[:pii_like_keypaths] = [[:pii]]
+        attributes[:docv_transaction_token] =
+          document_capture_session&.socure_docv_transaction_token
 
         analytics.idv_doc_auth_socure_error_visited(**attributes)
       end

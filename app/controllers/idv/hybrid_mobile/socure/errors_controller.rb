@@ -57,6 +57,8 @@ module Idv
             error_code:,
             remaining_submit_attempts:,
             pii_like_keypaths: [[:pii]],
+            docv_transaction_token:
+              document_capture_session&.socure_docv_transaction_token,
           }
 
           analytics.idv_doc_auth_socure_error_visited(**attributes)
