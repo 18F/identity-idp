@@ -1479,7 +1479,12 @@ instructions.mfa.piv_cac.step_2: Insert your PIV/CAC into your card reader
 instructions.mfa.piv_cac.step_3: Add your PIV/CAC
 instructions.mfa.piv_cac.step_3_info_html: You’ll need to <strong>choose a certificate</strong> (the right one likely has your name in it) and <strong>enter your PIN</strong> (your PIN was created when you set up your PIV/CAC).
 instructions.mfa.piv_cac.try_again: try again
+instructions.mfa.sms.code_expired_html: '<strong>Your one-time code has expired.</strong> Click “Send another code” below to get a new code.'
+instructions.mfa.sms.code_sent_message_html: We sent a text (SMS) with a one-time code to %{number_html}.
+instructions.mfa.sms.minutes_remaining_html: '<strong>%{minutes} minutes</strong> left until you have to request a new code'
 instructions.mfa.sms.number_message_html: We sent a text (SMS) with a one-time code to %{number_html}. This code will expire in %{expiration} minutes.
+instructions.mfa.sms.seconds_remaining_html: '<strong>%{seconds} seconds</strong> left until you have to request a new code'
+instructions.mfa.voice.code_sent_message_html: We made a call with a one-time code to %{number_html}.
 instructions.mfa.voice.number_message_html: We made a call with a one-time code to %{number_html}. This code will expire in %{expiration} minutes.
 instructions.mfa.webauthn_platform.learn_more_help: Learn more about face or touch unlock
 instructions.mfa.webauthn.confirm_webauthn: Present the security key that you associated with your account.
