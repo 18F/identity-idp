@@ -11,9 +11,6 @@ RSpec.describe 'Hybrid Flow' do
   let(:fake_socure_docv_document_request_endpoint) { 'https://fake-socure.test/document-request' }
   let(:fake_analytics) { FakeAnalytics.new }
   let(:socure_docv_webhook_repeat_endpoints) { [] }
-  let(:timeout_socure_route) do
-    idv_hybrid_mobile_socure_document_capture_errors_url(error_code: :timeout)
-  end
 
   before do
     allow(IdentityConfig.store).to receive_messages(
@@ -205,7 +202,11 @@ RSpec.describe 'Hybrid Flow' do
           socure_docv_upload_documents(docv_transaction_token: @docv_transaction_token)
           visit idv_hybrid_mobile_socure_document_capture_update_url
 
-          expect(page).to have_current_path(idv_hybrid_mobile_socure_document_capture_errors_url)
+          expect(page).to have_current_path(
+            idv_hybrid_mobile_socure_document_capture_errors_url(
+              transaction_token: @docv_transaction_token,
+            ),
+          )
           expect(page).to have_content(t('idv.errors.try_again_later'))
           expect(page).to have_content(
             I18n.t('idv.troubleshooting.options.use_another_id_type'),
@@ -297,7 +298,11 @@ RSpec.describe 'Hybrid Flow' do
             )
 
             visit idv_hybrid_mobile_socure_document_capture_update_url
-            expect(page).to have_current_path(idv_hybrid_mobile_socure_document_capture_errors_url)
+            expect(page).to have_current_path(
+              idv_hybrid_mobile_socure_document_capture_errors_url(
+                transaction_token: @docv_transaction_token,
+              ),
+            )
             expect(page).to have_content(t('idv.errors.try_again_later'))
 
             click_on t('idv.failure.button.warning')
@@ -317,8 +322,11 @@ RSpec.describe 'Hybrid Flow' do
             )
 
             visit idv_hybrid_mobile_socure_document_capture_update_url
-            expect(page).to have_current_path(idv_hybrid_mobile_socure_document_capture_errors_url)
-
+            expect(page).to have_current_path(
+              idv_hybrid_mobile_socure_document_capture_errors_url(
+                transaction_token: @docv_transaction_token,
+              ),
+            )
             expect(page).to have_content(t('doc_auth.errors.selfie_fail_heading'))
 
             click_on t('idv.failure.button.warning')
@@ -338,7 +346,11 @@ RSpec.describe 'Hybrid Flow' do
             )
 
             visit idv_hybrid_mobile_socure_document_capture_update_url
-            expect(page).to have_current_path(idv_hybrid_mobile_socure_document_capture_errors_url)
+            expect(page).to have_current_path(
+              idv_hybrid_mobile_socure_document_capture_errors_url(
+                transaction_token: @docv_transaction_token,
+              ),
+            )
             expect(page).to have_content(t('doc_auth.headers.unreadable_id'))
 
             click_on t('idv.failure.button.warning')
@@ -453,6 +465,10 @@ RSpec.describe 'Hybrid Flow' do
             ],
           )
 
+          timeout_socure_route = idv_hybrid_mobile_socure_document_capture_errors_url(
+            error_code: :timeout,
+            transaction_token: @docv_transaction_token,
+          )
           # Go to the wait page
           visit idv_hybrid_mobile_socure_document_capture_update_url
           expect(page).to have_current_path(idv_hybrid_mobile_socure_document_capture_update_path)
@@ -770,7 +786,11 @@ RSpec.describe 'Hybrid Flow' do
           socure_docv_upload_documents(docv_transaction_token: @docv_transaction_token)
           visit idv_hybrid_mobile_socure_document_capture_update_url
 
-          expect(page).to have_current_path(idv_hybrid_mobile_socure_document_capture_errors_url)
+          expect(page).to have_current_path(
+            idv_hybrid_mobile_socure_document_capture_errors_url(
+              transaction_token: @docv_transaction_token,
+            ),
+          )
           expect(page).to have_content(t('idv.errors.try_again_later'))
 
           click_on t('idv.failure.button.warning')
@@ -790,7 +810,11 @@ RSpec.describe 'Hybrid Flow' do
           )
           visit idv_hybrid_mobile_socure_document_capture_update_url
 
-          expect(page).to have_current_path(idv_hybrid_mobile_socure_document_capture_errors_url)
+          expect(page).to have_current_path(
+            idv_hybrid_mobile_socure_document_capture_errors_url(
+              transaction_token: @docv_transaction_token,
+            ),
+          )
           expect(page).to have_content(t('idv.errors.try_again_later'))
 
           click_on t('idv.failure.button.warning')
@@ -809,7 +833,11 @@ RSpec.describe 'Hybrid Flow' do
           )
           visit idv_hybrid_mobile_socure_document_capture_update_url
 
-          expect(page).to have_current_path(idv_hybrid_mobile_socure_document_capture_errors_url)
+          expect(page).to have_current_path(
+            idv_hybrid_mobile_socure_document_capture_errors_url(
+              transaction_token: @docv_transaction_token,
+            ),
+          )
           expect(page).to have_content(t('doc_auth.headers.unreadable_id'))
 
           click_on t('idv.failure.button.warning')
