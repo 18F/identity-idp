@@ -1793,11 +1793,13 @@ module AnalyticsEvents
   # User is shown the Socure timeout error page
   # @param [String] error_code The type of error that occurred
   # @param [Integer] remaining_submit_attempts The number of remaining attempts to submit
+  # @param [String] docv_transaction_token The docvTransactionToken received from Socure
   # @param [Boolean] skip_hybrid_handoff Whether the user skipped the hybrid handoff A/B test
   # @param [Boolean] opted_in_to_in_person_proofing Whether the user opted into in-person proofing
   def idv_doc_auth_socure_error_visited(
     error_code:,
     remaining_submit_attempts:,
+    docv_transaction_token: nil,
     skip_hybrid_handoff: nil,
     opted_in_to_in_person_proofing: nil,
     **extra
@@ -1806,6 +1808,7 @@ module AnalyticsEvents
       :idv_doc_auth_socure_error_visited,
       error_code:,
       remaining_submit_attempts:,
+      docv_transaction_token:,
       skip_hybrid_handoff:,
       opted_in_to_in_person_proofing:,
       **extra,
