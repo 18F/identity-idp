@@ -10,6 +10,8 @@ RequestPasswordReset = RedactedStruct.new(
     rate_limiter.increment!
     if rate_limiter.limited?
       analytics.rate_limit_reached(limiter_type: :reset_password_email)
+
+      return
     elsif user.blank?
       AnonymousMailer.with(email:).password_reset_missing_user(request_id:).deliver_now
     elsif user.suspended?
@@ -26,9 +28,9 @@ RequestPasswordReset = RedactedStruct.new(
 
       event = PushNotification::RecoveryActivatedEvent.new(user: user)
       PushNotification::HttpPush.deliver(event)
-
-      attempts_api_tracker.forgot_password_email_sent(email:)
     end
+
+    attempts_api_tracker.forgot_password_email_sent(email:, user_id: user&.uuid)
   end
 
   private

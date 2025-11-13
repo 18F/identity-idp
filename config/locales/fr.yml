@@ -877,6 +877,7 @@ event_types.eastern_timestamp: '%{timestamp} (heure de l’Est)'
 event_types.email_changed: Adresse e-mail modifiée
 event_types.email_deleted: Adresse e-mail supprimée
 event_types.gpo_mail_sent: Lettre envoyée
+event_types.max_attempts_reached: Compte verrouillé
 event_types.new_personal_key: Clé personnelle modifiée
 event_types.password_changed: Mot de passe modifié
 event_types.password_invalidated: Mot de passe réinitialisé par %{app_name}
@@ -2043,6 +2044,7 @@ user_mailer.new_device_sign_in_after_2fa.info_p2: Si vous reconnaissez cette act
 user_mailer.new_device_sign_in_after_2fa.info_p3_html: Si ce n’est pas vous, %{reset_password_link_html} et modifiez immédiatement vos %{authentication_methods_link_html}.
 user_mailer.new_device_sign_in_after_2fa.reset_password: réinitialisez votre mot de passe
 user_mailer.new_device_sign_in_after_2fa.subject: Nouvelle connexion et authentification avec votre compte %{app_name}
+user_mailer.new_device_sign_in_attempts.events.max_attempts_reached: Compte verrouillé
 user_mailer.new_device_sign_in_attempts.events.sign_in_after_2fa: Authentification réussie
 user_mailer.new_device_sign_in_attempts.events.sign_in_before_2fa: Connecté avec mot de passe
 user_mailer.new_device_sign_in_attempts.events.sign_in_unsuccessful_2fa: Échec de l’authentification

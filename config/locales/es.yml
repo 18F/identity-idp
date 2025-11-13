@@ -888,6 +888,7 @@ event_types.eastern_timestamp: '%{timestamp} (hora del Este)'
 event_types.email_changed: Dirección de correo electrónico modificada
 event_types.email_deleted: Dirección de correo electrónico eliminada
 event_types.gpo_mail_sent: Carta enviada
+event_types.max_attempts_reached: Cuenta bloqueada
 event_types.new_personal_key: Clave personal modificada
 event_types.password_changed: Contraseña modificada
 event_types.password_invalidated: Contraseña restablecida por %{app_name}
@@ -2055,6 +2056,7 @@ user_mailer.new_device_sign_in_after_2fa.info_p2: Si reconoce esta actividad, no
 user_mailer.new_device_sign_in_after_2fa.info_p3_html: Si no fue usted, %{reset_password_link_html} y cambie sus %{authentication_methods_link_html} inmediatamente.
 user_mailer.new_device_sign_in_after_2fa.reset_password: restablezca la contraseña
 user_mailer.new_device_sign_in_after_2fa.subject: Nuevo inicio de sesión y autenticación con su cuenta de %{app_name}
+user_mailer.new_device_sign_in_attempts.events.max_attempts_reached: Cuenta bloqueada
 user_mailer.new_device_sign_in_attempts.events.sign_in_after_2fa: Autenticado
 user_mailer.new_device_sign_in_attempts.events.sign_in_before_2fa: Inicia sesión con contraseña
 user_mailer.new_device_sign_in_attempts.events.sign_in_unsuccessful_2fa: Error al autenticar
