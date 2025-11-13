@@ -6,11 +6,11 @@ module Reports
 
     attr_reader :report_date, :report_receiver
 
-    def initialize(report_date = Time.zone.yesterday.end_of_day, report_receiver = :internal, *args,
+    def initialize(init_date = Time.zone.yesterday.end_of_day, init_receiver = :internal, *args,
                    **rest)
-      @report_date = report_date
-      @report_receiver = report_receiver.to_sym
-      super(*args, **rest)
+      @report_date = init_date
+      @report_receiver = init_receiver.to_sym
+      super(init_date, init_receiver, *args, **rest)
     end
 
     def partner_accounts
@@ -72,11 +72,12 @@ module Reports
       ]
     end
 
-    def perform(perform_date = Time.zone.yesterday.end_of_day, receiver = :internal)
+    def perform(perform_date = Time.zone.yesterday.end_of_day, perform_receiver = :internal)
+      @report_receiver = perform_receiver.to_sym
+      @report_date = perform_date
       reports = as_emailable_partner_report(
         date: perform_date,
       )
-      @report_receiver = receiver.to_sym
 
       reports.each do |report|
         _latest_path, path = generate_s3_paths(
