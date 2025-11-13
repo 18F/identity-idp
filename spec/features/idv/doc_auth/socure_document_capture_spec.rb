@@ -100,10 +100,6 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
               DOCUMENT_BACK_UPLOADED,
             ],
           )
-          timeout_socure_route = idv_socure_document_capture_errors_url(
-            error_code: :timeout,
-            transaction_token: @docv_transaction_token,
-          )
 
           # Go to the wait page
           visit idv_socure_document_capture_update_path
@@ -111,7 +107,12 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
 
           # Timeout
           visit idv_socure_document_capture_update_path
-          expect(page).to have_current_path(timeout_socure_route)
+          expect(page).to have_current_path(
+            idv_socure_document_capture_errors_url(
+              error_code: :timeout,
+              transaction_token: @docv_transaction_token,
+            ),
+          )
           expect(page).to have_content(I18n.t('idv.errors.try_again_later'))
 
           # Try in person
@@ -121,7 +122,11 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
 
           # Go back
           click_on t('forms.buttons.back')
-          expect(page).to have_current_path(timeout_socure_route)
+          expect(page).to have_current_path(
+            idv_socure_document_capture_errors_url(
+              error_code: :timeout,
+            ),
+          )
 
           # Try Socure again
           click_on t('idv.failure.button.warning')

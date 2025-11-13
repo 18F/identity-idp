@@ -465,17 +465,18 @@ RSpec.describe 'Hybrid Flow' do
             ],
           )
 
-          timeout_socure_route = idv_hybrid_mobile_socure_document_capture_errors_url(
-            error_code: :timeout,
-            transaction_token: @docv_transaction_token,
-          )
           # Go to the wait page
           visit idv_hybrid_mobile_socure_document_capture_update_url
           expect(page).to have_current_path(idv_hybrid_mobile_socure_document_capture_update_path)
 
           # Timeout
           visit idv_hybrid_mobile_socure_document_capture_update_url
-          expect(page).to have_current_path(timeout_socure_route)
+          expect(page).to have_current_path(
+            idv_hybrid_mobile_socure_document_capture_errors_url(
+              error_code: :timeout,
+              transaction_token: @docv_transaction_token,
+            ),
+          )
           expect(page).to have_content(I18n.t('idv.errors.try_again_later'))
           expect(page).to have_content(
             I18n.t('idv.troubleshooting.options.use_another_id_type'),
@@ -490,7 +491,11 @@ RSpec.describe 'Hybrid Flow' do
 
           # Go back
           click_on t('forms.buttons.back')
-          expect(page).to have_current_path(timeout_socure_route)
+          expect(page).to have_current_path(
+            idv_hybrid_mobile_socure_document_capture_errors_url(
+              error_code: :timeout,
+            ),
+          )
 
           # Try Socure again
           click_on t('idv.failure.button.warning')
