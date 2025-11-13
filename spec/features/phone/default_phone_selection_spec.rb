@@ -15,7 +15,7 @@ RSpec.describe 'default phone selection' do
       it 'uses the first phone created as the default' do
         sign_in_before_2fa(user)
         expect(page).to have_content t(
-          'instructions.mfa.sms.number_message_html',
+          'instructions.mfa.sms.code_sent_message_html',
           number_html: '(***) ***-1212',
           expiration: TwoFactorAuthenticatable::DIRECT_OTP_VALID_FOR_MINUTES,
         )
@@ -36,7 +36,7 @@ RSpec.describe 'default phone selection' do
         click_button t('forms.buttons.send_one_time_code')
 
         expect(page).to have_content t(
-          'instructions.mfa.sms.number_message_html',
+          'instructions.mfa.sms.code_sent_message_html',
           number_html: '+1 202-555-3434',
           expiration: TwoFactorAuthenticatable::DIRECT_OTP_VALID_FOR_MINUTES,
         )
@@ -49,7 +49,7 @@ RSpec.describe 'default phone selection' do
         set_new_browser_session
         sign_in_before_2fa(user)
         expect(page).to have_content t(
-          'instructions.mfa.sms.number_message_html',
+          'instructions.mfa.sms.code_sent_message_html',
           number_html: '(***) ***-3434',
           expiration: TwoFactorAuthenticatable::DIRECT_OTP_VALID_FOR_MINUTES,
         )
@@ -88,7 +88,7 @@ RSpec.describe 'default phone selection' do
         set_new_browser_session
         sign_in_before_2fa(user)
         expect(page).to have_content t(
-          'instructions.mfa.sms.number_message_html',
+          'instructions.mfa.sms.code_sent_message_html',
           number_html: '(***) ***-3111',
           expiration: TwoFactorAuthenticatable::DIRECT_OTP_VALID_FOR_MINUTES,
         )
@@ -107,7 +107,7 @@ RSpec.describe 'default phone selection' do
         click_button t('forms.buttons.send_one_time_code')
 
         expect(page).to have_content t(
-          'instructions.mfa.voice.number_message_html',
+          'instructions.mfa.voice.code_sent_message_html',
           number_html: '+1 202-555-3434',
           expiration: TwoFactorAuthenticatable::DIRECT_OTP_VALID_FOR_MINUTES,
         )
@@ -120,7 +120,7 @@ RSpec.describe 'default phone selection' do
         set_new_browser_session
         sign_in_before_2fa(user)
         expect(page).to have_content t(
-          'instructions.mfa.voice.number_message_html',
+          'instructions.mfa.voice.code_sent_message_html',
           number_html: '(***) ***-3434',
           expiration: TwoFactorAuthenticatable::DIRECT_OTP_VALID_FOR_MINUTES,
         )
