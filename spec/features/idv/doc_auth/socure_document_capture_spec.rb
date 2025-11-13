@@ -14,7 +14,6 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
   let(:fake_socure_docv_document_request_endpoint) { 'https://fake-socure.test/document-request' }
   let(:fake_socure_document_capture_app_url) { 'https://verify.fake-socure.test/something' }
   let(:socure_docv_webhook_repeat_endpoints) { [] }
-  let(:timeout_socure_route) { idv_socure_document_capture_errors_url(error_code: :timeout) }
 
   before do
     allow(IdentityConfig.store).to receive_messages(
@@ -100,6 +99,10 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
               DOCUMENT_FRONT_UPLOADED,
               DOCUMENT_BACK_UPLOADED,
             ],
+          )
+          timeout_socure_route = idv_socure_document_capture_errors_url(
+            error_code: :timeout,
+            transaction_token: @docv_transaction_token,
           )
 
           # Go to the wait page
@@ -535,7 +538,11 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
             )
             visit idv_socure_document_capture_update_path
 
-            expect(page).to have_current_path(idv_socure_document_capture_errors_url)
+            expect(page).to have_current_path(
+              idv_socure_document_capture_errors_url(
+                transaction_token: @docv_transaction_token,
+              ),
+            )
             expect(page).to have_content(t('idv.errors.try_again_later'))
 
             click_on t('idv.failure.button.warning')
@@ -605,7 +612,11 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
             )
 
             visit idv_socure_document_capture_update_path
-            expect(page).to have_current_path(idv_socure_document_capture_errors_url)
+            expect(page).to have_current_path(
+              idv_socure_document_capture_errors_url(
+                transaction_token: @docv_transaction_token,
+              ),
+            )
             expect(page).to have_content(t('idv.errors.try_again_later'))
 
             click_on t('idv.failure.button.warning')
@@ -625,7 +636,11 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
             )
 
             visit idv_socure_document_capture_update_path
-            expect(page).to have_current_path(idv_socure_document_capture_errors_url)
+            expect(page).to have_current_path(
+              idv_socure_document_capture_errors_url(
+                transaction_token: @docv_transaction_token,
+              ),
+            )
 
             expect(page).to have_content(t('doc_auth.errors.selfie_fail_heading'))
 
@@ -646,7 +661,11 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
             )
 
             visit idv_socure_document_capture_update_path
-            expect(page).to have_current_path(idv_socure_document_capture_errors_url)
+            expect(page).to have_current_path(
+              idv_socure_document_capture_errors_url(
+                transaction_token: @docv_transaction_token,
+              ),
+            )
             expect(page).to have_content(t('doc_auth.headers.unreadable_id'))
 
             click_on t('idv.failure.button.warning')
@@ -711,7 +730,11 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
         )
 
         visit idv_socure_document_capture_update_path
-        expect(page).to have_current_path(idv_socure_document_capture_errors_url)
+        expect(page).to have_current_path(
+          idv_socure_document_capture_errors_url(
+            transaction_token: @docv_transaction_token,
+          ),
+        )
         expect(page).to have_content(t('idv.errors.try_again_later'))
 
         click_on t('idv.failure.button.warning')
@@ -730,7 +753,11 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
         )
 
         visit idv_socure_document_capture_update_path
-        expect(page).to have_current_path(idv_socure_document_capture_errors_url)
+        expect(page).to have_current_path(
+          idv_socure_document_capture_errors_url(
+            transaction_token: @docv_transaction_token,
+          ),
+        )
         expect(page).to have_content(t('idv.errors.try_again_later'))
 
         click_on t('idv.failure.button.warning')
@@ -749,7 +776,11 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
         )
 
         visit idv_socure_document_capture_update_path
-        expect(page).to have_current_path(idv_socure_document_capture_errors_url)
+        expect(page).to have_current_path(
+          idv_socure_document_capture_errors_url(
+            transaction_token: @docv_transaction_token,
+          ),
+        )
         expect(page).to have_content(t('doc_auth.headers.unreadable_id'))
 
         click_on t('idv.failure.button.warning')
