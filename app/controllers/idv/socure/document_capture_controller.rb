@@ -52,17 +52,21 @@ module Idv
         @url = document_response.dig(:data, :url)
 
         track_document_request_event(document_request:, document_response:, timer:)
-
-        # placeholder until we get an error page for url not being present
-        if @url.nil?
-          redirect_to idv_socure_document_capture_errors_url(error_code: :url_not_found)
-          return
-        end
-
-        document_capture_session.socure_docv_transaction_token = document_response.dig(
+        socure_docv_transaction_token = document_response.dig(
           :data,
           :docvTransactionToken,
         )
+
+        # placeholder until we get an error page for url not being present
+        if @url.nil?
+          redirect_to idv_socure_document_capture_errors_url(
+            error_code: :url_not_found,
+            transaction_token: socure_docv_transaction_token,
+          )
+          return
+        end
+
+        document_capture_session.socure_docv_transaction_token = socure_docv_transaction_token
         document_capture_session.socure_docv_capture_app_url = document_response.dig(
           :data,
           :url,
@@ -88,7 +92,9 @@ module Idv
         if result.success?
           redirect_to idv_ssn_url
         else
-          redirect_to idv_socure_document_capture_errors_url
+          redirect_to idv_socure_document_capture_errors_url(
+            transaction_token: document_capture_session.socure_docv_transaction_token,
+          )
         end
       end
 
@@ -130,7 +136,10 @@ module Idv
           document_capture_session.reload
           return false if document_capture_session.load_result.present?
 
-          redirect_to idv_socure_document_capture_errors_url(error_code: :timeout)
+          redirect_to idv_socure_document_capture_errors_url(
+            error_code: :timeout,
+            transaction_token: document_capture_session.socure_docv_transaction_token,
+          )
         else
           @refresh_interval =
             IdentityConfig.store.doc_auth_socure_wait_polling_refresh_max_seconds
