@@ -208,7 +208,7 @@ module Idv
         **form_result.to_h.merge(
           pii_like_keypaths: [
             [:errors, :phone],
-            [:context, :stages, :address], # does this do anything?
+            [:context, :stages, :address],
             [:alternate_result, :errors, :phone],
           ],
           new_phone_added: new_phone_added?,
