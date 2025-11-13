@@ -261,7 +261,7 @@ RSpec.feature 'idv phone step', :js do
       }
     end
     before do
-      allow(IdentityConfig.store).to receive(:idv_address_default_vendor).and_return(:socure)
+      allow(IdentityConfig.store).to receive(:idv_address_primary_vendor).and_return(:socure)
 
       @phonerisk_stub = stub_request(:post, 'https://sandbox.socure.test/api/3.0/EmailAuthScore')
         .to_return(
@@ -325,7 +325,6 @@ RSpec.feature 'idv phone step', :js do
       before do
         start_idv_from_sp
         complete_idv_steps_before_phone_step
-        # fill_out_phone_form_ok(phone_number)
       end
 
       context 'when Socure returns a low phone risk score' do
@@ -528,6 +527,37 @@ RSpec.feature 'idv phone step', :js do
 
           expect(page).to have_content(t('idv.troubleshooting.headings.need_assistance'))
           expect(page).to_not have_content(t('idv.troubleshooting.options.verify_by_mail'))
+        end
+      end
+
+      context 'has a secondary address proofer configured' do
+        before do
+          allow(IdentityConfig.store).to receive(:idv_address_secondary_vendor).and_return(:mock)
+        end
+
+        let(:phonerisk_pass) { false }
+        it 'reports the failed number the user entered' do
+          fill_out_phone_form_ok('')
+          fill_out_phone_form_fail
+          click_idv_send_security_code
+
+          expect(page).to have_content(t('idv.failure.phone.warning.heading'))
+          expect(page).to have_content('+1 703-555-5555')
+          click_on t('idv.failure.phone.warning.try_again_button')
+
+          expect(page).to have_current_path(idv_phone_path)
+
+          # phone field is empty after invalid submission
+          phone_field = find_field(t('two_factor_authentication.phone_label'))
+          expect(phone_field.value).to be_empty
+
+          fill_out_phone_form_fail
+          expect(page).to have_content(t('idv.messages.phone.failed_number.alert_text'))
+          fill_out_phone_form_ok('')
+          expect(page).not_to have_content(t('idv.messages.phone.failed_number.alert_text'))
+          fill_out_phone_form_ok
+          click_idv_send_security_code
+          expect(page).to have_current_path(idv_otp_verification_path)
         end
       end
     end

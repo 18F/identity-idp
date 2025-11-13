@@ -4964,6 +4964,7 @@ module AnalyticsEvents
   # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
   # @param [String] customer_user_id user uuid sent to socure
   # @param [Hash] reason_codes socure internal reason codes for accept reject decision
+  # @param [Hash] alternate_result Details for proofing attempt with primary vendor
   # The vendor finished the process of confirming the users phone
   def idv_phone_confirmation_vendor_submitted(
     success:,
@@ -4981,6 +4982,7 @@ module AnalyticsEvents
     pending_profile_idv_level: nil,
     reason_codes: nil,
     customer_user_id: nil,
+    alternate_result: nil,
     **extra
   )
     track_event(
@@ -5000,6 +5002,7 @@ module AnalyticsEvents
       pending_profile_idv_level:,
       reason_codes:,
       customer_user_id:,
+      alternate_result:,
       **extra,
     )
   end
