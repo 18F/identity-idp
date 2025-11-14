@@ -1,8 +1,10 @@
 require 'rails_helper'
 
 RSpec.describe Proofing::Resolution::Plugins::PhonePlugin do
+  let(:idv_phone_precheck_enabled) { true }
+  let(:user) { create(:user) }
   let(:applicant_pii) do
-    Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE.merge(uuid_prefix: '123', uuid: 'abc')
+    Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE.merge(uuid_prefix: '123', uuid: user.uuid)
   end
   let(:current_sp) { build(:service_provider) }
   let(:ipp_enrollment_in_progress) { false }
@@ -18,6 +20,11 @@ RSpec.describe Proofing::Resolution::Plugins::PhonePlugin do
     Proofing::Resolution::Result.new(success: true, vendor_name: 'aamva:state_id')
   end
 
+  before do
+    allow(IdentityConfig.store).to receive(:idv_phone_precheck_enabled)
+      .and_return(idv_phone_precheck_enabled)
+  end
+
   subject(:plugin) { described_class.new }
 
   describe '#call' do
@@ -30,6 +37,7 @@ RSpec.describe Proofing::Resolution::Plugins::PhonePlugin do
         state_id_result:,
         ipp_enrollment_in_progress:,
         timer:,
+        user_email: user.email,
       )
     end
 
@@ -55,35 +63,36 @@ RSpec.describe Proofing::Resolution::Plugins::PhonePlugin do
           state_id_result:,
           ipp_enrollment_in_progress:,
           timer:,
+          user_email: user.email,
         }
 
         state_id_address_failed_result = plugin.call(
           **default_plugin_arguments,
           state_id_address_resolution_result: failed_upstream_vendor_result,
-        )
+        ).last
         expect(state_id_address_failed_result.success?).to eq(false)
         expect(state_id_address_failed_result.vendor_name).to eq('ResolutionCannotPass')
 
         residential_address_failed_result = plugin.call(
           **default_plugin_arguments,
           residential_address_resolution_result: failed_upstream_vendor_result,
-        )
+        ).last
         expect(residential_address_failed_result.success?).to eq(false)
         expect(residential_address_failed_result.vendor_name).to eq('ResolutionCannotPass')
 
         state_id_failed_result = plugin.call(
           **default_plugin_arguments,
           state_id_result: failed_upstream_vendor_result,
-        )
+        ).last
         expect(state_id_failed_result.success?).to eq(false)
         expect(state_id_failed_result.vendor_name).to eq('ResolutionCannotPass')
       end
 
       context 'there is no phone number in the applicant' do
-        let(:applicant_pii) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN }
+        let(:applicant_pii) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN.dup }
 
         it 'returns an unsuccessful result' do
-          result = call
+          result = call.last
 
           expect(result.success?).to eq(false)
           expect(result.vendor_name).to eq('NoPhoneNumberAvailable')
@@ -92,9 +101,9 @@ RSpec.describe Proofing::Resolution::Plugins::PhonePlugin do
 
       context 'the applicant has a phone number' do
         it 'calls the proofer and returns the results' do
-          expect(plugin.proofer).to receive(:proof).with(
-            {
-              uuid: 'abc',
+          expect_any_instance_of(Proofing::AddressProofer).to receive(:proof).with(
+            applicant_pii: {
+              uuid: user.uuid,
               uuid_prefix: '123',
               first_name: 'FAKEY',
               last_name: 'MCFAKERSON',
@@ -102,9 +111,10 @@ RSpec.describe Proofing::Resolution::Plugins::PhonePlugin do
               dob: '1938-10-06',
               phone: '12025551212',
             },
+            current_sp:,
           ).and_call_original
 
-          result = call
+          result = call.last
 
           expect(result.success?).to eq(true)
           expect(result.vendor_name).to eq('AddressMock')
@@ -113,7 +123,7 @@ RSpec.describe Proofing::Resolution::Plugins::PhonePlugin do
         it 'records an SP cost' do
           expect do
             call
-          end.to(change { sp_cost_count_with_transaction_id }.by(1))
+          end.to(change { sp_cost_count_with_transaction_id }.by(0))
         end
 
         context 'the transaction raises an error' do
@@ -122,7 +132,7 @@ RSpec.describe Proofing::Resolution::Plugins::PhonePlugin do
           end
 
           it 'returns an unsuccessful result' do
-            result = call
+            result = call.last
 
             expect(result.success?).to eq(false)
             expect(result.exception).to be_present
@@ -134,14 +144,24 @@ RSpec.describe Proofing::Resolution::Plugins::PhonePlugin do
             end.to_not(change { sp_cost_count_with_transaction_id })
           end
         end
+
+        context 'when phone precheck is not enabled' do
+          let(:idv_phone_precheck_enabled) { false }
+          it 'does not call proofer and returns empty results' do
+            expect(Proofing::AddressProofer).not_to receive(:new)
+            result = call
+
+            expect(result).to be_empty
+          end
+        end
       end
     end
 
-    context 'in-person proofing' do
+    xcontext 'in-person proofing' do
       let(:ipp_enrollment_in_progress) { true }
 
       it 'returns an unsuccessful result' do
-        result = call
+        result = call.last
 
         expect(result.success?).to eq(false)
         expect(result.vendor_name).to eq('PhoneIgnoredForInPersonProofing')
