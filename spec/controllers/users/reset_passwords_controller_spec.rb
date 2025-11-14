@@ -7,7 +7,7 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
   let(:success_properties) { { success: true } }
 
   describe '#edit' do
-    let(:user) { create(:user, :fully_registered) }
+    let(:user) { create(:user) }
     let(:email_address) { instance_double('EmailAddress') }
 
     before do
@@ -54,7 +54,7 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
       before do
         session[:reset_password_token] = token
       end
-      let(:user) { create(:user, :fully_registered) }
+      let(:user) { create(:user) }
 
       before do
         allow(User).to receive(:with_reset_password_token).with(token).and_return(user)
@@ -88,7 +88,7 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
       end
 
       context 'token expired' do
-        let(:user) { create(:user, :fully_registered) }
+        let(:user) { create(:user) }
 
         before do
           allow(User).to receive(:with_reset_password_token).with('foo').and_return(user)
@@ -118,7 +118,7 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
 
       context 'token is valid' do
         render_views
-        let(:user) { create(:user, :fully_registered) }
+        let(:user) { create(:user) }
         let(:email_address) { instance_double('EmailAddress') }
 
         before do
@@ -200,7 +200,6 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
         }
 
         expect(@attempts_api_tracker).to receive(:forgot_password_new_password_submitted).with(
-          email: user.email,
           success: false,
           user_id: user.uuid,
           failure_reason: {
@@ -251,7 +250,6 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
         }
 
         expect(@attempts_api_tracker).to receive(:forgot_password_new_password_submitted).with(
-          email: user.email,
           success: false,
           user_id: user.uuid,
           failure_reason: {
@@ -299,7 +297,6 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
         }
 
         expect(@attempts_api_tracker).to receive(:forgot_password_new_password_submitted).with(
-          email: user.email,
           success: false,
           user_id: user.uuid,
           failure_reason: {
@@ -344,7 +341,6 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
         }
 
         expect(@attempts_api_tracker).to receive(:forgot_password_new_password_submitted).with(
-          email: user.email,
           success: true,
           user_id: user.uuid,
           failure_reason: nil,
@@ -353,7 +349,6 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
         put :update, params: { reset_password_form: form_params }
 
         expect(@attempts_api_tracker).to receive(:forgot_password_new_password_submitted).with(
-          email: nil,
           success: false,
           user_id: nil,
           failure_reason: { reset_password_token: [:invalid_token] },
@@ -396,7 +391,6 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
           get :edit, params: { reset_password_token: raw_reset_token }
 
           expect(@attempts_api_tracker).to receive(:forgot_password_new_password_submitted).with(
-            email: user.email,
             success: true,
             user_id: user.uuid,
             failure_reason: nil,
@@ -448,7 +442,6 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
         }
 
         expect(@attempts_api_tracker).to receive(:forgot_password_new_password_submitted).with(
-          email: user.email,
           success: true,
           user_id: user.uuid,
           failure_reason: nil,
@@ -499,7 +492,6 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
         get :edit, params: { reset_password_token: raw_reset_token }
 
         expect(@attempts_api_tracker).to receive(:forgot_password_new_password_submitted).with(
-          email: user.email,
           success: true,
           user_id: user.uuid,
           failure_reason: nil,

@@ -188,12 +188,10 @@ module AttemptsApi
     # @param [String] user_id The user's id (will not be used in Redis event)
     # @param [Hash<Symbol,Array<Symbol>>] failure_reason
     # A user submits a new password have requesting a password reset
-    def forgot_password_new_password_submitted(success:, email: nil, user_id: nil,
-                                               failure_reason: nil)
+    def forgot_password_new_password_submitted(success:, user_id: nil, failure_reason: nil)
       track_event(
         'forgot-password-new-password-submitted',
         success:,
-        email:,
         user_id:,
         failure_reason:,
       )
