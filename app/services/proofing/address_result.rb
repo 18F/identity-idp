@@ -13,8 +13,8 @@ module Proofing
 
     def initialize(
       success:,
-      exception:,
       vendor_name:,
+      exception: nil,
       errors: {},
       transaction_id: '',
       reference: '',
