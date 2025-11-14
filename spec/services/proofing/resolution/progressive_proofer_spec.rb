@@ -48,9 +48,8 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
     end
 
     let(:resolution_proofing_results) do
-      # In cases where both calls are made, the residential call is made
-      # before the state id address call
-      [residential_address_resolution_result, state_id_address_resolution_result]
+      # No call is made for residential address on remote unsupervised path
+      [state_id_address_resolution_result]
     end
 
     let(:resolution_proofer) do
@@ -124,11 +123,6 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
     end
 
     context 'remote unsupervised proofing' do
-      let(:resolution_proofing_results) do
-        # No call is made for residential address on remote unsupervised path
-        [state_id_address_resolution_result]
-      end
-
       it 'calls AamvaPlugin' do
         expect(progressive_proofer.aamva_plugin).to receive(:call).with(
           applicant_pii:,
@@ -223,6 +217,12 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
 
     context 'in-person proofing' do
       let(:ipp_enrollment_in_progress) { true }
+
+      let(:resolution_proofing_results) do
+        # In cases where both calls are made, the residential call is made
+        # before the state id address call
+        [residential_address_resolution_result, state_id_address_resolution_result]
+      end
 
       context 'residential address is same as id' do
         let(:applicant_pii) { Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID.dup }
@@ -417,10 +417,6 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
 
     context 'when the applicant has a passport document type' do
       let(:applicant_pii) { Idp::Constants::MOCK_IDV_PROOFING_PASSPORT_APPLICANT.dup }
-      let(:resolution_proofing_results) do
-        # No call is made for residential address on remote unsupervised path
-        [state_id_address_resolution_result]
-      end
 
       it 'calls ThreatMetrixPlugin' do
         expect(progressive_proofer.threatmetrix_plugin).to receive(:call).with(
@@ -561,11 +557,6 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
         Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN.dup.merge(
           best_effort_phone_number_for_socure: { phone: '3608675309' },
         )
-      end
-
-      let(:resolution_proofing_results) do
-        # No call is made for residential address on remote unsupervised path
-        [state_id_address_resolution_result]
       end
 
       it 'does not pass the phone number to plugins' do
