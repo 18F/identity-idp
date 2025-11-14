@@ -25,6 +25,12 @@ module SocureDocvFixtures
       body.to_json
     end
 
+    def aamva_fail_json
+      raw = read_fixture_file_at_path('aamva_fail.json')
+      body = JSON.parse(raw)
+      body.to_json
+    end
+
     private
 
     def read_fixture_file_at_path(filepath)
