@@ -45,7 +45,7 @@ module Proofing
             exception: exception,
             timed_out: timed_out?,
             threatmetrix_review_status: device_profiling_result.review_status,
-            phone_precheck_passed: phone_result&.any?(&:success?),
+            phone_precheck_passed: phone_result.any?(&:success?),
             context: {
               device_profiling_adjudication_reason: device_profiling_reason,
               resolution_adjudication_reason: resolution_reason,
@@ -55,7 +55,7 @@ module Proofing
                 residential_address: residential_resolution_result.to_h,
                 state_id: state_id_result.to_h,
                 threatmetrix:,
-                phone_precheck: phone_result.last&.to_h,
+                phone_precheck:,
               },
             },
             biographical_info: biographical_info,
@@ -146,6 +146,14 @@ module Proofing
           state_id_number: redacted_state_id_number,
           same_address_as_id: applicant_pii[:same_address_as_id],
         }
+      end
+
+      def phone_precheck
+        if phone_result.many?
+          return phone_result.last.to_h.merge(alternate_result: phone_result.first.to_h)
+        end
+
+        phone_result.last.to_h
       end
     end
   end

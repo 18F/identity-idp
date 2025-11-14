@@ -597,12 +597,14 @@ RSpec.describe Idv::VerifyInfoController do
         # Here we're trying to match the store to redis -> read from redis flow this data travels
         adjudicated_result = Proofing::Resolution::ResultAdjudicator.new(
           state_id_result: Proofing::StateIdResult.new(success: true),
-          phone_result: Proofing::AddressResult.new(
-            success: true,
-            errors: {},
-            exception: nil,
-            vendor_name: 'test-phone-vendor',
-          ),
+          phone_result: [
+            Proofing::AddressResult.new(
+              success: true,
+              errors: {},
+              exception: nil,
+              vendor_name: 'test-phone-vendor',
+            ),
+          ],
           device_profiling_result: Proofing::DdpResult.new(success: true),
           ipp_enrollment_in_progress: true,
           residential_resolution_result: Proofing::Resolution::Result.new(success: true),
@@ -645,6 +647,16 @@ RSpec.describe Idv::VerifyInfoController do
       let(:exception) { nil }
       let(:vendor_name) { 'aamva_placeholder' }
       let(:applicant_pii) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN }
+      let(:phone_result) do
+        [
+          Proofing::AddressResult.new(
+            success: true,
+            errors: {},
+            exception: nil,
+            vendor_name: 'test-phone-vendor',
+          ),
+        ]
+      end
 
       let(:async_state) do
         # Here we're trying to match the store to redis -> read from redis flow this data travels
@@ -657,12 +669,7 @@ RSpec.describe Idv::VerifyInfoController do
             transaction_id: 'abc123',
             verified_attributes: [],
           ),
-          phone_result: Proofing::AddressResult.new(
-            success: true,
-            errors: {},
-            exception: nil,
-            vendor_name: 'test-phone-vendor',
-          ),
+          phone_result:,
           device_profiling_result: Proofing::DdpResult.new(success: true),
           ipp_enrollment_in_progress: true,
           residential_resolution_result: Proofing::Resolution::Result.new(success: true),
@@ -686,7 +693,34 @@ RSpec.describe Idv::VerifyInfoController do
       context 'when aamva processes the request normally' do
         it 'redirect to phone confirmation url' do
           put :show
-          expect(response).to redirect_to idv_phone_url
+          expect(response).to redirect_to idv_enter_password_url
+        end
+
+        context 'when phone result fails' do
+          let(:phone_result) do
+            [
+              Proofing::AddressResult.new(
+                success: false,
+                errors: {},
+                exception: nil,
+                vendor_name: 'test-phone-vendor',
+              ),
+            ]
+          end
+
+          it 'redirect to phone confirmation url' do
+            put :show
+            expect(response).to redirect_to idv_phone_url
+          end
+        end
+
+        context 'when there are not phone results' do
+          let(:phone_result) { [] }
+
+          it 'redirect to phone confirmation url' do
+            put :show
+            expect(response).to redirect_to idv_phone_url
+          end
         end
 
         it 'logs an event with analytics_id set' do
@@ -894,12 +928,14 @@ RSpec.describe Idv::VerifyInfoController do
         # Here we're trying to match the store to redis -> read from redis flow this data travels
         adjudicated_result = Proofing::Resolution::ResultAdjudicator.new(
           state_id_result: Proofing::StateIdResult.new(success: true),
-          phone_result: Proofing::AddressResult.new(
-            success: success,
-            errors: {},
-            exception: exception,
-            vendor_name: 'instant_verify_test',
-          ),
+          phone_result: [
+            Proofing::AddressResult.new(
+              success: success,
+              errors: {},
+              exception: exception,
+              vendor_name: 'instant_verify_test',
+            ),
+          ],
           device_profiling_result: Proofing::DdpResult.new(success: true),
           ipp_enrollment_in_progress: false,
           residential_resolution_result: Proofing::Resolution::Result.new(success: true),
@@ -1072,12 +1108,14 @@ RSpec.describe Idv::VerifyInfoController do
             transaction_id: 'abc123',
             verified_attributes: [],
           ),
-          phone_result: Proofing::AddressResult.new(
-            success: true,
-            errors: {},
-            exception: nil,
-            vendor_name: 'test-phone-vendor',
-          ),
+          phone_result: [
+            Proofing::AddressResult.new(
+              success: true,
+              errors: {},
+              exception: nil,
+              vendor_name: 'test-phone-vendor',
+            ),
+          ],
           device_profiling_result: Proofing::DdpResult.new(success: true),
           ipp_enrollment_in_progress: true,
           residential_resolution_result: Proofing::Resolution::Result.new(success: true),
@@ -1201,12 +1239,14 @@ RSpec.describe Idv::VerifyInfoController do
             transaction_id: 'abc123',
             verified_attributes: [],
           ),
-          phone_result: Proofing::AddressResult.new(
-            success: true,
-            errors: {},
-            exception: nil,
-            vendor_name: 'test-phone-vendor',
-          ),
+          phone_result: [
+            Proofing::AddressResult.new(
+              success: true,
+              errors: {},
+              exception: nil,
+              vendor_name: 'test-phone-vendor',
+            ),
+          ],
           device_profiling_result: Proofing::DdpResult.new(success: true),
           ipp_enrollment_in_progress: true,
           residential_resolution_result: Proofing::Resolution::Result.new(
