@@ -87,7 +87,7 @@ module Proofing
           already_proofed: IdentityConfig.store.idv_aamva_at_doc_auth_enabled,
         )
 
-        phone_finder_result = phone_plugin.call(
+        phone_result = phone_plugin.call(
           applicant_pii:,
           current_sp:,
           residential_address_resolution_result:,
@@ -96,18 +96,19 @@ module Proofing
           ipp_enrollment_in_progress:,
           best_effort_phone:,
           timer:,
+          user_email:,
         )
 
         ResultAdjudicator.new(
-          device_profiling_result: device_profiling_result,
-          ipp_enrollment_in_progress: ipp_enrollment_in_progress,
+          device_profiling_result:,
+          ipp_enrollment_in_progress:,
           resolution_result: state_id_address_resolution_result,
           should_proof_state_id: aamva_plugin.aamva_supports_state_id_jurisdiction?(applicant_pii),
-          state_id_result: state_id_result,
+          state_id_result:,
           residential_resolution_result: residential_address_resolution_result,
-          phone_finder_result: phone_finder_result,
+          phone_result:,
           same_address_as_id: applicant_pii[:same_address_as_id],
-          applicant_pii: applicant_pii,
+          applicant_pii:,
         )
       end
 
