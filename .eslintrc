@@ -42,7 +42,11 @@
           "error",
           {
             "devDependencies": true,
-            "packageDir": "."
+            "packageDir": [
+              ".",
+              "app/javascript/packages/address-search",
+              "app/javascript/packages/document-capture"
+            ]
           }
         ],
         "no-restricted-syntax": "off",
