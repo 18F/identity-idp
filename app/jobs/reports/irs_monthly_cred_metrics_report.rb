@@ -4,12 +4,11 @@ module Reports
   class IrsMonthlyCredMetricsReport < BaseReport
     REPORT_NAME = 'irs_monthly_cred_metrics'
 
-    attr_reader :report_date, :report_receiver
+    attr_reader :report_date
 
-    def initialize(report_date = Time.zone.yesterday.end_of_day, report_receiver = :internal, *args,
+    def initialize(report_date = Time.zone.yesterday.end_of_day, *args,
                    **rest)
       @report_date = report_date
-      @report_receiver = report_receiver.to_sym
       super(*args, **rest)
     end
 
@@ -31,12 +30,11 @@ module Reports
     end
 
     def email_addresses
-      internal_emails = [*IdentityConfig.store.team_daily_reports_emails]
-      irs_emails = [*IdentityConfig.store.irs_credentials_emails]
-      case report_receiver
-      when :internal then internal_emails
-      when :both then (internal_emails + irs_emails)
+      emails = [*IdentityConfig.store.team_daily_reports_emails]
+      if report_date.next_day.day == 1
+        emails += IdentityConfig.store.irs_credentials_emails
       end
+      emails
     end
 
     # rubocop:disable Layout/LineLength
@@ -72,11 +70,10 @@ module Reports
       ]
     end
 
-    def perform(perform_date = Time.zone.yesterday.end_of_day, receiver = :internal)
+    def perform(perform_date = Time.zone.yesterday.end_of_day)
       reports = as_emailable_partner_report(
         date: perform_date,
       )
-      @report_receiver = receiver.to_sym
 
       reports.each do |report|
         _latest_path, path = generate_s3_paths(

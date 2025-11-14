@@ -3,8 +3,7 @@ require 'rails_helper'
 RSpec.describe Reports::IrsFraudMetricsReport do
   let(:report_date) { Date.new(2021, 3, 2).in_time_zone('UTC').end_of_day }
   let(:time_range) { report_date.all_month }
-  let(:report_receiver) { :internal }
-  subject(:report) { Reports::IrsFraudMetricsReport.new(report_date, report_receiver) }
+  subject(:report) { Reports::IrsFraudMetricsReport.new(report_date) }
 
   let(:name) { 'irs-fraud-metrics-report' }
   let(:s3_report_bucket_prefix) { 'reports-bucket' }
@@ -69,7 +68,7 @@ RSpec.describe Reports::IrsFraudMetricsReport do
 
   context 'for begining of the month sends out the report to the internal and partner' do
     let(:report_date) { Date.new(2025, 10, 1).prev_day }
-    subject(:report) { described_class.new(report_date, :both) }
+    subject(:report) { described_class.new(report_date) }
     it 'sends out a report to just to team data and partner' do
       expect(ReportMailer).to receive(:tables_report).once.with(
         email: ['mock_internal@example.com', 'mock_feds@example.com',
@@ -80,13 +79,13 @@ RSpec.describe Reports::IrsFraudMetricsReport do
         attachment_format: :csv,
       ).and_call_original
 
-      report.perform(report_date, :both)
+      report.perform(report_date)
     end
   end
 
   context 'for any day of the month sends out the report to the internal' do
     let(:report_date) { Date.new(2025, 9, 27).prev_day }
-    subject(:report) { described_class.new(report_date, :internal) }
+    subject(:report) { described_class.new(report_date) }
     it 'sends out a report to just to team data' do
       expect(ReportMailer).to receive(:tables_report).once.with(
         email: ['mock_internal@example.com'],
@@ -96,7 +95,7 @@ RSpec.describe Reports::IrsFraudMetricsReport do
         attachment_format: :csv,
       ).and_call_original
 
-      report.perform(report_date, :internal)
+      report.perform(report_date)
     end
   end
 
@@ -112,7 +111,7 @@ RSpec.describe Reports::IrsFraudMetricsReport do
         attachment_format: :csv,
       ).and_call_original
 
-      report.perform(report_date, :both)
+      report.perform(report_date)
     end
   end
 

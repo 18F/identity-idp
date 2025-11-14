@@ -7,8 +7,7 @@ RSpec.describe Reports::MonthlyIrsVerificationReport do
   include ActiveSupport::Testing::TimeHelpers
 
   let(:report_date) { (Time.zone.today.beginning_of_month - 1.day).end_of_day }
-  let(:report_receiver) { :internal }
-  let(:report) { described_class.new(report_date, report_receiver) }
+  let(:report) { described_class.new(report_date) }
   let(:dummy_report_data) { [['Header1', 'Header2'], ['Value1', 'Value2']] }
   let(:mock_test_irs_demographic_emails) do
     ['mock_feds@example.com', 'mock_contractors@example.com']
@@ -55,7 +54,7 @@ RSpec.describe Reports::MonthlyIrsVerificationReport do
 
   context 'for begining of the month sends out the report to the internal and partner' do
     let(:report_date) { Date.new(2025, 10, 1).prev_day }
-    subject(:report) { described_class.new(report_date, :both) }
+    subject(:report) { described_class.new(report_date) }
     it 'sends out a report to just to team data and partner' do
       expect(ReportMailer).to receive(:tables_report).once.with(
         email: ['mock_internal@example.com', 'mock_feds@example.com',
@@ -66,13 +65,13 @@ RSpec.describe Reports::MonthlyIrsVerificationReport do
         attachment_format: :csv,
       ).and_call_original
 
-      report.perform(report_date, :both)
+      report.perform(report_date)
     end
   end
 
   context 'for any day of the month sends out the report to the internal' do
     let(:report_date) { Date.new(2025, 9, 27).prev_day }
-    subject(:report) { described_class.new(report_date, :internal) }
+    subject(:report) { described_class.new(report_date) }
     it 'sends out a report to just to team data' do
       expect(ReportMailer).to receive(:tables_report).once.with(
         email: ['mock_internal@example.com'],
@@ -82,7 +81,7 @@ RSpec.describe Reports::MonthlyIrsVerificationReport do
         attachment_format: :csv,
       ).and_call_original
 
-      report.perform(report_date, :internal)
+      report.perform(report_date)
     end
   end
 

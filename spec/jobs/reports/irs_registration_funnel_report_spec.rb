@@ -3,8 +3,7 @@ require 'rails_helper'
 RSpec.describe Reports::IrsRegistrationFunnelReport do
   let(:report_date) { Date.new(2021, 3, 2).in_time_zone('UTC').end_of_day }
   let(:time_range) { report_date.all_month }
-  let(:report_receiver) { :internal }
-  subject(:report) { Reports::IrsRegistrationFunnelReport.new(report_date, report_receiver) }
+  subject(:report) { Reports::IrsRegistrationFunnelReport.new(report_date) }
 
   let(:name) { 'irs-registration-funnel-report' }
   let(:s3_report_bucket_prefix) { 'reports-bucket' }
@@ -100,7 +99,7 @@ RSpec.describe Reports::IrsRegistrationFunnelReport do
 
   context 'begining of the week, it sends out the report to the internal and partner' do
     let(:report_date) { Date.new(2025, 10, 20).prev_day }
-    subject(:report) { described_class.new(report_date, :both) }
+    subject(:report) { described_class.new(report_date) }
     it 'sends out a report to just to team data and partner' do
       expect(ReportMailer).to receive(:tables_report).once.with(
         email: ['mock_internal@example.com', 'mock_partner@example.com'],
@@ -110,7 +109,7 @@ RSpec.describe Reports::IrsRegistrationFunnelReport do
         attachment_format: :csv,
       ).and_call_original
 
-      report.perform(report_date, :both)
+      report.perform(report_date)
     end
   end
 

@@ -7,17 +7,15 @@ module Reports
   class IrsVerificationDemographicsReport < BaseReport
     REPORT_NAME = 'irs-verification-demographics-report'
 
-    attr_reader :report_date, :report_receiver
+    attr_reader :report_date
 
-    def initialize(report_date = nil, report_receiver = :internal, *args, **rest)
+    def initialize(report_date = nil, *args, **rest)
       @report_date = report_date
-      @report_receiver = report_receiver.to_sym
       super(*args, **rest)
     end
 
-    def perform(date = Time.zone.yesterday.end_of_day, receiver = :internal)
+    def perform(date = Time.zone.yesterday.end_of_day)
       @report_date = date
-      @report_receiver = receiver.to_sym
 
       email_addresses = emails.select(&:present?)
       if email_addresses.empty?
@@ -77,13 +75,11 @@ module Reports
     end
 
     def emails
-      internal_emails = [*IdentityConfig.store.team_daily_reports_emails]
-      irs_emails = [*IdentityConfig.store.irs_verification_report_config]
-
-      case report_receiver
-      when :internal then internal_emails
-      when :both then (internal_emails + irs_emails)
+      emails = [*IdentityConfig.store.team_daily_reports_emails]
+      if [1, 4, 7, 10].include?(report_date.next_day.month) && report_date.next_day.day == 1
+        emails += IdentityConfig.store.irs_verification_report_config
       end
+      emails
     end
 
     def upload_to_s3(report_body, report_name: nil)

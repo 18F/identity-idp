@@ -563,6 +563,7 @@ module IdentityConfig
     config.add(:vtm_url)
     config.add(:weekly_auth_funnel_report_config, type: :json)
     config.add(:irs_credentials_emails, type: :json)
+    config.add(:sp_verification_report_configs, type: :json)
   end.freeze
   # rubocop:enable Layout/LineLength
   # rubocop:enable Metrics/BlockLength

@@ -5,8 +5,7 @@ RSpec.describe Reports::IrsVerificationReport do
   include ActiveSupport::Testing::TimeHelpers
 
   let(:report_date) { Time.zone.today.end_of_day }
-  let(:receiver) { :internal }
-  let(:report) { described_class.new(report_date, receiver) }
+  let(:report) { described_class.new(report_date) }
   let(:dummy_report_data) { [['Header1', 'Header2'], ['Value1', 'Value2']] }
   let(:mock_test_irs_verification_emails) do
     ['mock_feds@example.com', 'mock_contractors@example.com']
@@ -56,7 +55,7 @@ RSpec.describe Reports::IrsVerificationReport do
 
   context 'begining of the week, it sends out the report to the internal and partner' do
     let(:report_date) { Date.new(2025, 10, 20).prev_day }
-    subject(:report) { described_class.new(report_date, :both) }
+    subject(:report) { described_class.new(report_date) }
     it 'sends out a report to just to team data and partner' do
       expect(ReportMailer).to receive(:tables_report).once.with(
         email: ['mock_internal@example.com', 'mock_feds@example.com',
@@ -67,7 +66,7 @@ RSpec.describe Reports::IrsVerificationReport do
         attachment_format: :csv,
       ).and_call_original
 
-      report.perform(report_date, :both)
+      report.perform(report_date)
     end
   end
 

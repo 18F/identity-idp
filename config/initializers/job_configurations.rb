@@ -193,7 +193,7 @@ else
       irs_weekly_verification_report: {
         class: 'Reports::IrsVerificationReport',
         cron: cron_every_monday_5am,
-        args: -> { [Time.zone.yesterday.end_of_day, :both] },
+        args: -> { [Time.zone.yesterday.end_of_day] },
       },
 
       # Send Duplicate SSN report to S3
@@ -248,7 +248,7 @@ else
       irs_weekly_registration_funnel_report: {
         class: 'Reports::IrsRegistrationFunnelReport',
         cron: cron_every_monday,
-        args: -> { [Time.zone.yesterday.end_of_day, :both] },
+        args: -> { [Time.zone.yesterday.end_of_day] },
       },
       # Send A/B test reports
       ab_tests_report: {
@@ -268,12 +268,7 @@ else
       irs_fraud_metrics_report: {
         class: 'Reports::IrsFraudMetricsReport',
         cron: cron_24h_and_a_bit,
-        args: -> {
-          JobHelpers::ReportJobConfigurationHelper.build_irs_report_args(
-            Time.zone.yesterday.end_of_day,
-            :monthly,
-          )
-        },
+        args: -> {[Time.zone.yesterday.end_of_day] },
       },
 
       # Previous week's drop off report
@@ -298,12 +293,7 @@ else
       monthly_irs_verification_report: {
         class: 'Reports::MonthlyIrsVerificationReport',
         cron: cron_24h_and_a_bit,
-        args: -> {
-          JobHelpers::ReportJobConfigurationHelper.build_irs_report_args(
-            Time.zone.yesterday.end_of_day,
-            :monthly,
-          )
-        },
+        args: -> { [Time.zone.yesterday.end_of_day] },
       },
 
       # Send irs quarterly metrics report to Team Data - Monthly (For internal review only)
@@ -311,12 +301,7 @@ else
       irs_verification_demographics_report: {
         class: 'Reports::IrsVerificationDemographicsReport',
         cron: cron_monthly,
-        args: -> {
-          JobHelpers::ReportJobConfigurationHelper.build_irs_report_args(
-            Time.zone.yesterday.end_of_day,
-            :quarterly,
-          )
-        },
+        args: -> { [Time.zone.yesterday.end_of_day] },
       },
 
       # Download and store Socure reason codes
@@ -343,12 +328,7 @@ else
       irs_cred_metrics_report: {
         class: 'Reports::IrsMonthlyCredMetricsReport',
         cron: cron_24h_and_a_bit,
-        args: -> {
-          JobHelpers::ReportJobConfigurationHelper.build_irs_report_args(
-            Time.zone.yesterday.end_of_day,
-            :monthly,
-          )
-        },
+        args: -> { [Time.zone.yesterday.end_of_day] },
       },
       # Identity Verification Outcomes Rate Report
       identity_verification_outcomes_report: {
