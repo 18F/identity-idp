@@ -27,7 +27,9 @@ module Reports
     end
 
     def issuers
-      [*IdentityConfig.store.irs_issuers].reject(&:blank?)
+      # Only using the first issuer. Need to expand to handle multiple if needed.
+      first_issuer = IdentityConfig.store.irs_issuers.reject(&:blank?).first
+      first_issuer ? [first_issuer] : []
     end
 
     def email_addresses
@@ -68,7 +70,7 @@ module Reports
       [
         ['Report Timeframe', 'Report Generated', 'Issuers'],
         ["#{report_date.beginning_of_month} to #{report_date.end_of_month}", Time.zone.today.to_s,
-         issuers],
+         issuers.join(', ')],
       ]
     end
 
@@ -167,7 +169,16 @@ module Reports
     private
 
     def build_report_data
-      parsed_invoice_data = CSV.parse(invoice_report_data, headers: true)
+      invoice_data_csv = CSV.parse(invoice_report_data, headers: true)
+
+      issuer_invoice_data = invoice_data_csv.select do |r|
+        issuers.include?(r['issuer'])
+      end
+
+      parsed_invoice_data = CSV::Table.new(
+        issuer_invoice_data,
+        headers: invoice_data_csv.headers,
+      )
 
       report_year_month = report_date.strftime('%Y%m')
       data_row = parsed_invoice_data.filter do |row|
@@ -184,9 +195,9 @@ module Reports
         ] + data_row.map do |invoice_report|
               # Data rows - extract values directly from CSV row
               ['Value',
-               invoice_report['iaa_unique_users'].to_i, # Monthly Active Users
+               invoice_report['issuer_unique_users'].to_i, # Monthly Active Users
                ial2_new_unique_all(invoice_report), # Credentials Authorized
-               invoice_report['partner_ial2_new_unique_user_events_year1_upfront'].to_i, # New identity verification credentials authorized
+               invoice_report['issuer_ial2_new_unique_user_events_year1_upfront'].to_i, # New identity verification credentials authorized
                ial2_existing_credentials(invoice_report), # Existing identity verification credentials authorized
                invoice_report['issuer_ial1_plus_2_total_auth_count'].to_i] # Total Auths
             end
@@ -199,29 +210,29 @@ module Reports
         # Delegate only the CSV building to the existing class
         invoice_reporter = CombinedInvoiceSupplementReportV2.new
         data = invoice_reporter.build_csv(iaas, partner_accounts)
-        save_report(REPORT_NAME, data, extension: 'csv')
+        save_report(REPORT_NAME + '_raw', data, extension: 'csv')
         data
       end
     end
 
     def ial2_existing_credentials(row)
       %w[
-        partner_ial2_new_unique_user_events_year1_existing
-        partner_ial2_new_unique_user_events_year2
-        partner_ial2_new_unique_user_events_year3
-        partner_ial2_new_unique_user_events_year4
-        partner_ial2_new_unique_user_events_year5
+        issuer_ial2_new_unique_user_events_year1_existing
+        issuer_ial2_new_unique_user_events_year2
+        issuer_ial2_new_unique_user_events_year3
+        issuer_ial2_new_unique_user_events_year4
+        issuer_ial2_new_unique_user_events_year5
       ].sum { |key| row[key].to_i }
     end
 
     def ial2_new_unique_all(row)
       %w[
-        partner_ial2_new_unique_user_events_year1_upfront
-        partner_ial2_new_unique_user_events_year1_existing
-        partner_ial2_new_unique_user_events_year2
-        partner_ial2_new_unique_user_events_year3
-        partner_ial2_new_unique_user_events_year4
-        partner_ial2_new_unique_user_events_year5
+        issuer_ial2_new_unique_user_events_year1_upfront
+        issuer_ial2_new_unique_user_events_year1_existing
+        issuer_ial2_new_unique_user_events_year2
+        issuer_ial2_new_unique_user_events_year3
+        issuer_ial2_new_unique_user_events_year4
+        issuer_ial2_new_unique_user_events_year5
       ].sum { |key| row[key].to_i }
     end
   end
