@@ -4,8 +4,8 @@ require 'csv'
 require 'reporting/sp_verification_report'
 
 module Reports
-  class SPVerificationReport < BaseReport
-    # REPORT_NAME = 'irs-verification-report'
+  class SpVerificationReport < BaseReport
+    # REPORT_NAME = 'sp-verification-report'
 
     attr_reader :report_date, :report_receiver, :report_name, :report_title
 
@@ -28,13 +28,13 @@ module Reports
 
       issuers = report_config['issuers']
       agency_abbreviation = report_config['agency_abbreviation']
-      irs_emails = report_config['irs_emails']
+      partner_emails = report_config['partner_emails']
       internal_emails = report_config['internal_emails']
 
       @report_name = "#{agency_abbreviation.downcase}_verification_report"
       @report_title = "#{agency_abbreviation} Verification Report"
 
-      email_addresses = emails(internal_emails,irs_emails).select(&:present?)
+      email_addresses = emails(internal_emails,partner_emails).select(&:present?)
       if email_addresses.empty?
         Rails.logger.warn "No email addresses received - #{@report_title} NOT SENT"
         return false
@@ -83,20 +83,20 @@ module Reports
     end
 
     def sp_verification_report(issuers, agency_abbreviation)
-      @irs_verification_report ||= Reporting::SPVerificationReport.new(
+      @irs_verification_report ||= Reporting::SpVerificationReport.new(
         time_range: previous_week_range,
         issuers: issuers || [],
         agency_abbreviation: agency_abbreviation,
       )
     end
 
-    def emails(internal_emails,irs_emails)
+    def emails(internal_emails,partner_emails)
       # internal_emails = [*IdentityConfig.store.team_daily_reports_emails]
-      # irs_emails = [*IdentityConfig.store.irs_verification_report_config]
+      # partner_emails = [*IdentityConfig.store.irs_verification_report_config]
 
       case report_receiver
       when :internal then internal_emails
-      when :both then (internal_emails + irs_emails)
+      when :both then (internal_emails + partner_emails)
       end
     end
 

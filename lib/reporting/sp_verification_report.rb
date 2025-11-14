@@ -12,10 +12,10 @@ rescue LoadError => e
 end
 
 module Reporting
-  class SPVerificationReport
+  class SpVerificationReport
     include Reporting::CloudwatchQueryQuoting
 
-    attr_reader :issuers, :time_range
+    attr_reader :issuers, :time_range, :agency_abbreviation
 
     module Events
       VERIFICATION_DEMAND = 'IdV: doc auth welcome submitted'
@@ -29,13 +29,14 @@ module Reporting
       end
     end
 
-    def initialize(time_range:, issuers:, verbose: false, progress: false, slice: 1.day, threads: 5)
+    def initialize(time_range:, issuers:, agency_abbreviation:, verbose: false, progress: false, slice: 1.day, threads: 5)
       @issuers = issuers
       @time_range = time_range || previous_week_range
       @verbose = verbose
       @progress = progress
       @slice = slice
       @threads = threads
+      @agency_abbreviation = agency_abbreviation
     end
 
     def verbose?

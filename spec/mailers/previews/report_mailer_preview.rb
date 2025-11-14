@@ -175,6 +175,30 @@ class ReportMailerPreview < ActionMailer::Preview
     )
   end
 
+  def sp_irs_verification_report
+    sp_verification_report = Reports::SpVerificationReport.new(Time.zone.yesterday)
+    
+    agency_abbreviation = "TMP"
+    issuers = ["test"]
+
+    data =[
+      ['Metric', 'Number of accounts', '% of total from start'],
+      ['Registration Demand', 25, '100%'],
+      ['Registration Failures', 10, '40%'],
+      ['Registration Successes', 15, '60%'],
+    ]
+
+    stub_cloudwatch_client(sp_verification_report.sp_verification_report(issuers,agency_abbreviation), data: data)
+
+    ReportMailer.tables_report(
+      email: 'test@example.com',
+      subject: "IRS Verification Report - #{Time.zone.now.to_date}",
+      message: "Report: IRS Verification Report -  #{Time.zone.now.to_date}",
+      attachment_format: :csv,
+      reports: sp_verification_report.reports,
+    )
+  end
+
   def irs_verification_report
     irs_verification_report = Reports::IrsVerificationReport.new(Time.zone.yesterday)
 
