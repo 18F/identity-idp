@@ -32,6 +32,7 @@ module Users
 
         analytics.password_reset_token(**result)
         attempts_api_tracker.forgot_password_email_confirmed(
+          email: token_user&.email,
           success: result.success?,
           user_id: result.extra[:user_id],
           failure_reason: attempts_api_tracker.parse_failure_reason(result),

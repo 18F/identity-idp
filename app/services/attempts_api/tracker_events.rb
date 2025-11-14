@@ -13,11 +13,13 @@ module AttemptsApi
       )
     end
 
+    # @param [String] email email address used in login attempt
     # @param [Boolean] success True if the email and password matched
     # A user has submitted an email address and password for authentication
-    def login_email_and_password_auth(success:)
+    def login_email_and_password_auth(email:, success:)
       track_event(
         'login-email-and-password-auth',
+        email:,
         success:,
       )
     end
@@ -159,13 +161,15 @@ module AttemptsApi
     end
 
     # @param [Boolean] success True if the link user clicked on is valid and not expired
+    # @param [String] email The user's email address
     # @param [String] user_id The user's uuid (will not be used in Redis event)
     # @param [Hash<Symbol,Array<Symbol>>] failure_reason
     # A user clicks the email link to reset their password
-    def forgot_password_email_confirmed(success:, user_id: nil, failure_reason: nil)
+    def forgot_password_email_confirmed(success:, email: nil, user_id: nil, failure_reason: nil)
       track_event(
         'forgot-password-email-confirmed',
         success:,
+        email:,
         user_id:,
         failure_reason:,
       )
