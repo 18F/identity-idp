@@ -6,12 +6,18 @@ module Idv
       include Idv::AvailabilityConcern
       include IdvStepConcern
       include Idv::IdConcern
+      include Idv::InPersonAamvaConcern
 
       before_action :set_usps_form_presenter
       before_action :confirm_step_allowed
       before_action :initialize_pii_from_user, only: [:show]
 
       def show
+        if idv_session.ipp_aamva_document_capture_session_uuid.present?
+          process_aamva_async_state
+          return
+        end
+
         analytics.idv_in_person_proofing_state_id_visited(**analytics_arguments)
 
         render :show, locals: extra_view_variables
@@ -68,6 +74,14 @@ module Idv
           analytics.idv_in_person_proofing_state_id_submitted(
             **analytics_arguments.merge(**form_result),
           )
+
+          if aamva_enabled?
+            idv_session.ipp_aamva_redirect_url = redirect_url
+            if enqueue_aamva_job_and_redirect
+              redirect_to idv_in_person_state_id_url
+            end
+            return
+          end
 
           redirect_to redirect_url
         else
