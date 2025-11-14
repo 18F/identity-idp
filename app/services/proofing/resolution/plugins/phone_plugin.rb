@@ -11,17 +11,23 @@ module Proofing
           residential_address_resolution_result:,
           state_id_result:,
           ipp_enrollment_in_progress:,
+          user_email:,
           timer:,
           best_effort_phone: nil
+
         )
-          if ipp_enrollment_in_progress
-            return ignore_phone_for_in_person_result
-          end
+
+          return [] unless IdentityConfig.store.idv_phone_precheck_enabled
+
+          # why ignore?
+          # if ipp_enrollment_in_progress
+          #   return [ignore_phone_for_in_person_result]
+          # end
 
           if !state_id_address_resolution_result.success? ||
              !residential_address_resolution_result.success? ||
              !state_id_result.success?
-            return resolution_cannot_pass_result
+            return [resolution_cannot_pass_result]
           end
 
           if IdentityConfig.store.idv_phone_precheck_enabled
@@ -29,63 +35,38 @@ module Proofing
           end
 
           if applicant_pii[:phone].blank?
-            return no_phone_available_result
+            return [no_phone_available_result]
           end
 
           phone_finder_applicant = applicant_pii.slice(
             :uuid, :uuid_prefix, :first_name, :last_name, :ssn, :dob, :phone
           )
 
+          proofer = Proofing::AddressProofer.new(user_uuid: phone_finder_applicant[:uuid], user_email:)
           timer.time('phone') do
-            proofer.proof(phone_finder_applicant)
-          end.tap do |result|
-            if result.exception.blank?
-              Db::SpCost::AddSpCost.call(
-                current_sp,
-                :lexis_nexis_address,
-                transaction_id: result.transaction_id,
-              )
-            end
+            proofer.proof(applicant_pii: phone_finder_applicant, current_sp:)
           end
         rescue => e
           byebug
         end
 
-        def proofer
-          @proofer ||=
-            if IdentityConfig.store.proofer_mock_fallback
-              Proofing::Mock::AddressMockClient.new
-            else
-              Proofing::LexisNexis::PhoneFinder::Proofer.new(
-                phone_finder_workflow: IdentityConfig.store.lexisnexis_phone_finder_workflow,
-                account_id: IdentityConfig.store.lexisnexis_account_id,
-                base_url: IdentityConfig.store.lexisnexis_base_url,
-                username: IdentityConfig.store.lexisnexis_username,
-                password: IdentityConfig.store.lexisnexis_password,
-                hmac_key_id: IdentityConfig.store.lexisnexis_hmac_key_id,
-                hmac_secret_key: IdentityConfig.store.lexisnexis_hmac_secret_key,
-                request_mode: IdentityConfig.store.lexisnexis_request_mode,
-              )
-            end
-        end
-
         private
 
         def resolution_cannot_pass_result
-          Proofing::Resolution::Result.new(
-            success: false, vendor_name: 'ResolutionCannotPass',
+          Proofing::AddressResult.new(
+            success: false, vendor_name: 'ResolutionCannotPass', exception: nil,
           )
         end
 
         def ignore_phone_for_in_person_result
-          Proofing::Resolution::Result.new(
-            success: false, vendor_name: 'PhoneIgnoredForInPersonProofing',
+          Proofing::AddressResult.new(
+            success: false, vendor_name: 'PhoneIgnoredForInPersonProofing', exception: nil,
           )
         end
 
         def no_phone_available_result
-          Proofing::Resolution::Result.new(
-            success: false, vendor_name: 'NoPhoneNumberAvailable',
+          Proofing::AddressResult.new(
+            success: false, vendor_name: 'NoPhoneNumberAvailable', exception: nil,
           )
         end
       end
