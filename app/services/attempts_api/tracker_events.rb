@@ -13,11 +13,13 @@ module AttemptsApi
       )
     end
 
+    # @param [String] email email address used in login attempt 
     # @param [Boolean] success True if the email and password matched
     # A user has submitted an email address and password for authentication
-    def login_email_and_password_auth(success:)
+    def login_email_and_password_auth(email:, success:)
       track_event(
         'login-email-and-password-auth',
+        email:,
         success:,
       )
     end
