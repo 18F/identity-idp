@@ -274,7 +274,7 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
             transaction_id: 'abc123',
             verified_attributes: [],
           ),
-          phone_finder_result: Proofing::AddressResult.new(
+          phone_result: Proofing::AddressResult.new(
             success: true,
             errors: {},
             exception: nil,

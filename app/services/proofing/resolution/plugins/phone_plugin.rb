@@ -18,7 +18,6 @@ module Proofing
         )
 
           return [] unless IdentityConfig.store.idv_phone_precheck_enabled
-
           # why ignore?
           # if ipp_enrollment_in_progress
           #   return [ignore_phone_for_in_person_result]
@@ -46,8 +45,8 @@ module Proofing
           timer.time('phone') do
             proofer.proof(applicant_pii: phone_finder_applicant, current_sp:)
           end
-        rescue => e
-          byebug
+        # rescue => e
+        #   byebug
         end
 
         private
