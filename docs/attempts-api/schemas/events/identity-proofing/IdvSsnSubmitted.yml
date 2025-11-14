@@ -6,4 +6,4 @@ allOf:
     properties:
       ssn:
         type: string
-        description: User-submitted Social Security Number
+        description: User-submitted Social Security Number. Formatted with dashes (e.g. 123-45-6789).
