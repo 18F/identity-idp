@@ -218,6 +218,18 @@ module Idv
         alternate_result: alternate_result&.to_h,
       )
 
+      attempts_api_tracker.idv_phone_verified(
+        phone_number: Phonelib.parse(formatted_previous_phone_step_params_phone).e164,
+        success: form_result.success?,
+        failure_reason: attempts_api_tracker.parse_failure_reason(form_result),
+      )
+
+      fraud_ops_tracker.idv_phone_verified(
+        phone_number: Phonelib.parse(formatted_previous_phone_step_params_phone).e164,
+        success: form_result.success?,
+        failure_reason: attempts_api_tracker.parse_failure_reason(form_result),
+      )
+
       if form_result.success?
         redirect_to_next_step
       else
@@ -259,9 +271,6 @@ module Idv
         error = result.to_h[:telephony_response].error.friendly_error_message_key.split('.').last
         { telephony_error: [error] }
       end
-    end
-
-    def otp_submitted_tracker_error(result)
     end
 
     # Migrated from otp_delivery_method_controller
