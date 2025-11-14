@@ -745,6 +745,52 @@ RSpec.describe Idv::VerifyInfoController do
               vendor_name: 'aamva_placeholder',
             ),
           )
+
+          event = @analytics.events['IdV: doc auth verify proofing results'].first
+          phone_precheck = event.dig(:proofing_results, :context, :stages, :phone_precheck)
+          expect(phone_precheck).to match(
+            hash_including(
+              success: true,
+              vendor_name: 'test-phone-vendor',
+            ),
+          )
+        end
+
+        context 'when there is a secondary phone vendor' do
+          let(:phone_result) do
+            [
+              Proofing::AddressResult.new(
+                success: false,
+                errors: {},
+                exception: nil,
+                vendor_name: 'failed-vendor',
+              ),
+              Proofing::AddressResult.new(
+                success: true,
+                errors: {},
+                exception: nil,
+                vendor_name: 'successful-vendor',
+              ),
+            ]
+          end
+          it 'logs an event with analytics_id set' do
+            put :show
+
+            event = @analytics.events['IdV: doc auth verify proofing results'].first
+            phone_precheck = event.dig(:proofing_results, :context, :stages, :phone_precheck)
+            expect(phone_precheck).to match(
+              hash_including(
+                success: true,
+                vendor_name: 'successful-vendor',
+              ),
+            )
+            expect(phone_precheck[:alternate_result]).to match(
+              hash_including(
+                success: false,
+                vendor_name: 'failed-vendor',
+              ),
+            )
+          end
         end
 
         it 'tracks the event for the attempts api' do
