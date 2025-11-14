@@ -24,7 +24,7 @@ properties:
   occurred_at:
     type: number
     format: float64
-    description: The time when the event occurred.
+    description: The time when the event occurred in epoch seconds.
   subject:
     $ref: './Subject.yml'
   useragent_string:
