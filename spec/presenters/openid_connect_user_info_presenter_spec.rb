@@ -10,8 +10,7 @@ RSpec.describe OpenidConnectUserInfoPresenter do
   let(:service_provider_ial) { 2 }
   let(:service_provider) { create(:service_provider, ial: service_provider_ial) }
   let(:profile) { create(:profile, :active, :verified) }
-  let(:vtr) { ['C1.C2.P1'] }
-  let(:acr_values) { nil }
+  let(:acr_values) { Saml::Idp::Constants::IAL_VERIFIED_ACR }
   let(:requested_aal_value) { nil }
   let(:locale) { 'en' }
   let(:identity) do
@@ -21,7 +20,6 @@ RSpec.describe OpenidConnectUserInfoPresenter do
       user: create(:user, profiles: [profile].compact),
       service_provider: service_provider.issuer,
       scope: scope,
-      vtr: vtr,
       acr_values: acr_values,
       requested_aal_value: requested_aal_value,
     )
@@ -65,72 +63,7 @@ RSpec.describe OpenidConnectUserInfoPresenter do
 
     subject(:user_info) { presenter.user_info }
 
-    context 'with a vtr parameter' do
-      let(:acr_values) { nil }
-
-      context 'no identity proofing' do
-        let(:vtr) { ['C1.C2'] }
-        let(:scope) { 'openid email all_emails locale' }
-
-        it 'includes the correct attributes' do
-          aggregate_failures do
-            expect(user_info[:sub]).to eq(identity.uuid)
-            expect(user_info[:iss]).to eq(root_url)
-            expect(user_info[:email]).to eq(identity.user.email_addresses.first.email)
-            expect(user_info[:email_verified]).to eq(true)
-            expect(user_info[:all_emails]).to eq([identity.user.email_addresses.first.email])
-            expect(user_info[:locale]).to eq(locale)
-            expect(user_info).to_not have_key(:ial)
-            expect(user_info).to_not have_key(:aal)
-            expect(user_info[:vot]).to eq('C1.C2')
-          end
-        end
-      end
-
-      context 'identity proofing' do
-        let(:vtr) { ['C1.C2.P1'] }
-        let(:scope) do
-          'openid email all_emails locale address phone profile social_security_number'
-        end
-
-        it 'includes the correct non-proofed attributes' do
-          aggregate_failures do
-            expect(user_info[:sub]).to eq(identity.uuid)
-            expect(user_info[:iss]).to eq(root_url)
-            expect(user_info[:email]).to eq(identity.user.email_addresses.first.email)
-            expect(user_info[:email_verified]).to eq(true)
-            expect(user_info[:all_emails]).to eq([identity.user.email_addresses.first.email])
-            expect(user_info[:locale]).to eq(locale)
-            expect(user_info).to_not have_key(:ial)
-            expect(user_info).to_not have_key(:aal)
-            expect(user_info[:vot]).to eq('C1.C2.P1')
-          end
-        end
-
-        it 'includes the proofed attributes' do
-          aggregate_failures do
-            expect(user_info[:given_name]).to eq('John')
-            expect(user_info[:family_name]).to eq('Smith')
-            expect(user_info[:birthdate]).to eq('1970-12-31')
-            expect(user_info[:phone]).to eq('+17035555555')
-            expect(user_info[:phone_verified]).to eq(true)
-            expect(user_info[:address]).to eq(
-              formatted: "123 Fake St\nApt 456\nWashington, DC 12345",
-              street_address: "123 Fake St\nApt 456",
-              locality: 'Washington',
-              region: 'DC',
-              postal_code: '12345',
-            )
-            expect(user_info[:verified_at]).to eq(profile.verified_at.to_i)
-            expect(user_info[:social_security_number]).to eq('666661234')
-          end
-        end
-      end
-    end
-
     context 'with ACR values' do
-      let(:vtr) { nil }
-
       context 'without identity proofing' do
         context 'with an AAL value requested' do
           let(:acr_values) do

@@ -1272,8 +1272,7 @@ RSpec.describe Idv::VerifyInfoController do
     context 'with an sp' do
       let(:sp) { create(:service_provider) }
       let(:acr_values) { Saml::Idp::Constants::AAL1_AUTHN_CONTEXT_CLASSREF }
-      let(:vtr) { nil }
-      let(:sp_session) { { issuer: sp.issuer, vtr:, acr_values: } }
+      let(:sp_session) { { issuer: sp.issuer, acr_values: } }
 
       before do
         allow(controller).to receive(:sp_session).and_return(sp_session)
@@ -1289,23 +1288,6 @@ RSpec.describe Idv::VerifyInfoController do
         ).and_call_original
 
         put :update
-      end
-
-      context 'with vtr values' do
-        let(:acr_values) { nil }
-        let(:vtr) { ['C1'] }
-
-        it 'modifies PII as expected' do
-          expect(Idv::Agent).to receive(:new).with(
-            hash_including(
-              ssn: Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn],
-              consent_given_at: controller.idv_session.idv_consent_given_at,
-              **Idp::Constants::MOCK_IDV_APPLICANT,
-            ),
-          ).and_call_original
-
-          put :update
-        end
       end
     end
 

@@ -86,32 +86,6 @@ RSpec.describe Idv::ByMail::ResendLetterController do
       )
     end
 
-    context 'when using vtr values' do
-      it 'uses the GPO confirmation maker to send another letter and redirects', :freeze_time do
-        expect(@attempts_api_tracker).to receive(:idv_verify_by_mail_letter_requested)
-          .with(resend: true)
-        expect_to_resend_letter_and_redirect(vtr: true)
-
-        expect(@analytics).to have_logged_event(
-          'IdV: USPS address letter requested',
-          resend: true,
-          first_letter_requested_at: user.pending_profile.gpo_verification_pending_at,
-          hours_since_first_letter: 24,
-          phone_step_attempts: 0,
-        )
-
-        expect(@analytics).to have_logged_event(
-          'IdV: USPS address letter enqueued',
-          hash_including(
-            resend: true,
-            first_letter_requested_at: user.pending_profile.gpo_verification_pending_at,
-            hours_since_first_letter: 24,
-            enqueued_at: Time.zone.now,
-          ),
-        )
-      end
-    end
-
     it 'redirects to capture password controller if the PII is locked' do
       pii_cacher = instance_double(Pii::Cacher)
       allow(pii_cacher).to receive(:fetch).and_return(nil)
@@ -124,7 +98,7 @@ RSpec.describe Idv::ByMail::ResendLetterController do
     end
   end
 
-  def expect_to_resend_letter_and_redirect(vtr: false)
+  def expect_to_resend_letter_and_redirect
     pii = user.pending_profile.decrypt_pii(user.password).to_h
     pii_cacher = instance_double(Pii::Cacher)
     allow(pii_cacher).to receive(:fetch).with(user.pending_profile.id).and_return(pii)
@@ -134,11 +108,7 @@ RSpec.describe Idv::ByMail::ResendLetterController do
     service_provider = create(:service_provider, issuer: '123abc')
     session[:sp] = { issuer: service_provider.issuer }
 
-    if vtr
-      session[:sp][:vtr] = ['C1']
-    else
-      session[:sp][:acr_values] = Saml::Idp::Constants::AAL1_AUTHN_CONTEXT_CLASSREF
-    end
+    session[:sp][:acr_values] = Saml::Idp::Constants::AAL1_AUTHN_CONTEXT_CLASSREF
 
     gpo_confirmation_maker = instance_double(GpoConfirmationMaker)
     allow(GpoConfirmationMaker).to receive(:new)

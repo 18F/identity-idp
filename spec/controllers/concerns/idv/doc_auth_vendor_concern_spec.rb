@@ -105,7 +105,6 @@ RSpec.describe Idv::DocAuthVendorConcern, :controller do
         resolved_authn_context = AuthnContextResolver.new(
           user: user,
           service_provider: nil,
-          vtr: nil,
           acr_values: acr_values,
         ).result
         allow(controller).to receive(:resolved_authn_context_result)

@@ -1,6 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Idv::DocumentCaptureConcern, :controller do
+  let(:acr_values) { Saml::Idp::Constants::IAL_VERIFIED_ACR }
   idv_document_capture_controller_class = Class.new(ApplicationController) do
     def self.name
       'AnonymousController'
@@ -71,7 +72,7 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
       allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled)
         .and_return(passports_enabled)
 
-      resolution_result = Vot::Parser.new(vector_of_trust: 'P1').parse
+      resolution_result = Vot::Parser.new(acr_values:).parse
       allow(controller).to receive(:resolved_authn_context_result).and_return(resolution_result)
     end
 
@@ -142,13 +143,12 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
         stored_result = EncryptedRedisStructStorage.load(id, type: DocumentCaptureSessionResult)
         allow(controller).to receive(:stored_result).and_return(stored_result)
 
-        resolution_result = Vot::Parser.new(vector_of_trust: vot).parse
+        resolution_result = Vot::Parser.new(acr_values:).parse
         allow(controller).to receive(:resolved_authn_context_result).and_return(resolution_result)
       end
 
       context 'SP requires facial_match' do
-        let(:vot) { 'Pb' }
-
+        let(:acr_values) { Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_REQUIRED_ACR }
         context 'selfie check not processed' do
           it 'returns false' do
             expect(controller.selfie_requirement_met?).to eq(false)
@@ -175,7 +175,7 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
       end
 
       context 'SP does not require facial_match' do
-        let(:vot) { 'P1' }
+        let(:acr_values) { Saml::Idp::Constants::IAL_VERIFIED_ACR }
 
         context 'selfie check not processed' do
           it 'returns true' do
