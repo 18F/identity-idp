@@ -105,7 +105,7 @@ RSpec.feature 'Analytics Regression', :js do
       ssn_is_unique: true,
       timed_out: false,
       threatmetrix_review_status: 'pass',
-      phone_finder_precheck_passed: false,
+      phone_precheck_passed: false,
       context: {
         device_profiling_adjudication_reason: 'device_profiling_result_pass',
         resolution_adjudication_reason: 'pass_resolution_and_state_id',
@@ -166,7 +166,7 @@ RSpec.feature 'Analytics Regression', :js do
       ssn_is_unique: true,
       timed_out: false,
       threatmetrix_review_status: 'pass',
-      phone_finder_precheck_passed: false,
+      phone_precheck_passed: false,
       context: {
         device_profiling_adjudication_reason: 'device_profiling_result_pass',
         resolution_adjudication_reason: 'pass_resolution_and_state_id',
