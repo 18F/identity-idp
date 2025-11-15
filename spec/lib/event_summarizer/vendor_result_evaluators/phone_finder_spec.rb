@@ -4,13 +4,13 @@ require 'event_summarizer/vendor_result_evaluators/phone_finder'
 RSpec.describe EventSummarizer::VendorResultEvaluators::PhoneFinder do
   subject(:evaluation) do
     described_class.evaluate_result(
-      JSON.parse(JSON.generate(phone_finder_result)),
+      JSON.parse(JSON.generate(phone_result)),
     )
   end
 
   describe 'failed result' do
     context 'general failure' do
-      let(:phone_finder_result) do
+      let(:phone_result) do
         {
           success: false,
           errors: {
@@ -38,7 +38,7 @@ RSpec.describe EventSummarizer::VendorResultEvaluators::PhoneFinder do
     end
 
     context 'itemized failure' do
-      let(:phone_finder_result) do
+      let(:phone_result) do
         {
           success: false,
           errors: {

@@ -8,7 +8,7 @@ module Proofing
                   :device_profiling_result,
                   :ipp_enrollment_in_progress,
                   :residential_resolution_result,
-                  :phone_finder_result,
+                  :phone_result,
                   :same_address_as_id,
                   :applicant_pii
 
@@ -16,7 +16,7 @@ module Proofing
         resolution_result:, # InstantVerify
         state_id_result:, # AAMVA
         residential_resolution_result:, # InstantVerify Residential
-        phone_finder_result:, # PhoneFinder
+        phone_result:, # PhoneFinder
         should_proof_state_id:,
         ipp_enrollment_in_progress:,
         device_profiling_result:, # ThreatMetrix
@@ -29,7 +29,7 @@ module Proofing
         @ipp_enrollment_in_progress = ipp_enrollment_in_progress
         @device_profiling_result = device_profiling_result
         @residential_resolution_result = residential_resolution_result
-        @phone_finder_result = phone_finder_result
+        @phone_result = phone_result
         @same_address_as_id = same_address_as_id # this is a string, "true" or "false"
         @applicant_pii = applicant_pii
       end
@@ -45,7 +45,7 @@ module Proofing
             exception: exception,
             timed_out: timed_out?,
             threatmetrix_review_status: device_profiling_result.review_status,
-            phone_finder_precheck_passed: phone_finder_result.success?,
+            phone_precheck_passed: phone_result.any?(&:success?),
             context: {
               device_profiling_adjudication_reason: device_profiling_reason,
               resolution_adjudication_reason: resolution_reason,
@@ -55,7 +55,7 @@ module Proofing
                 residential_address: residential_resolution_result.to_h,
                 state_id: state_id_result.to_h,
                 threatmetrix:,
-                phone_precheck: phone_finder_result.to_h,
+                phone_precheck:,
               },
             },
             biographical_info: biographical_info,
@@ -146,6 +146,14 @@ module Proofing
           state_id_number: redacted_state_id_number,
           same_address_as_id: applicant_pii[:same_address_as_id],
         }
+      end
+
+      def phone_precheck
+        if phone_result.many?
+          return phone_result.last.to_h.merge(alternate_result: phone_result.first.to_h)
+        end
+
+        phone_result.last.to_h
       end
     end
   end
