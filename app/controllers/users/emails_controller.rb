@@ -16,6 +16,7 @@ module Users
       analytics.add_email_visit(in_select_email_flow: in_select_email_flow?)
       @add_user_email_form = AddUserEmailForm.new
       @pending_completions_consent = pending_completions_consent?
+      @cancel_link = cancel_link
     end
 
     def add
@@ -78,6 +79,14 @@ module Users
     end
 
     private
+
+    def cancel_link
+      if in_select_email_flow?
+        sign_up_select_email_url
+      else
+        redirect_to account_url(anchor: 'emails')
+      end
+    end
 
     def validate_session_email
       return if session_email.present?
