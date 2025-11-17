@@ -888,6 +888,7 @@ event_types.eastern_timestamp: '%{timestamp}（东部）'
 event_types.email_changed: 电邮地址已更改
 event_types.email_deleted: 电邮地址已删除
 event_types.gpo_mail_sent: 信已发送
+event_types.max_attempts_reached: 帳戶已被鎖定
 event_types.new_personal_key: 个人密钥已更改
 event_types.password_changed: 密码已更改
 event_types.password_invalidated: 密码由 %{app_name}重设
@@ -1491,7 +1492,12 @@ instructions.mfa.piv_cac.step_2: 把 PIV/CAC 插入读卡器
 instructions.mfa.piv_cac.step_3: 添加 PIV/CAC
 instructions.mfa.piv_cac.step_3_info_html: 你将需要<strong>选择一个证书</strong>（恰当的证书可能会有你的名字）而且<strong>输入你的 PIN </strong>（你的 PIN 是在设置 PIV/CAC 时设立的）。
 instructions.mfa.piv_cac.try_again: 再试一次
+instructions.mfa.sms.code_expired_html: '<strong>你的一次性代码已经失效。</strong>点击下方的“再发送一个代码”来获取新代码。'
+instructions.mfa.sms.code_sent_message_html: 我们把带有一次性代码的短信发到了 %{number_html}。
+instructions.mfa.sms.minutes_remaining_html: '还剩 <strong>%{minutes} 分钟时间，</strong>过后你得要求一个新代码。'
 instructions.mfa.sms.number_message_html: 我们把带有一次性代码的短信发到了 %{number_html}。这一代码 %{expiration} 分钟后会作废。
+instructions.mfa.sms.seconds_remaining_html: '还剩 <strong>%{seconds} 秒时间，</strong>过后你得要求一个新代码。'
+instructions.mfa.voice.code_sent_message_html: 我们给 %{number_html}打了电话告知一次性代码。
 instructions.mfa.voice.number_message_html: 我们给 %{number_html}打了电话告知一次性代码。这一代码 %{expiration} 分钟后会作废。
 instructions.mfa.webauthn_platform.learn_more_help: 了解更多有关人脸或触摸解锁的信息
 instructions.mfa.webauthn.confirm_webauthn: 提供与你账户相关的安全密钥。
@@ -2056,6 +2062,7 @@ user_mailer.new_device_sign_in_after_2fa.info_p2: 如果你知道该活动，则
 user_mailer.new_device_sign_in_after_2fa.info_p3_html: 如果不是你，%{reset_password_link_html} 并立即改变你的验%{authentication_methods_link_html}。
 user_mailer.new_device_sign_in_after_2fa.reset_password: 重设密码
 user_mailer.new_device_sign_in_after_2fa.subject: '%{app_name} 账户有新的登录和身份验证'
+user_mailer.new_device_sign_in_attempts.events.max_attempts_reached: 帳戶已被鎖定
 user_mailer.new_device_sign_in_attempts.events.sign_in_after_2fa: 身份已证实
 user_mailer.new_device_sign_in_attempts.events.sign_in_before_2fa: 使用密码登录
 user_mailer.new_device_sign_in_attempts.events.sign_in_unsuccessful_2fa: 身份证实失败

@@ -13,11 +13,13 @@ module AttemptsApi
       )
     end
 
+    # @param [String] email email address used in login attempt
     # @param [Boolean] success True if the email and password matched
     # A user has submitted an email address and password for authentication
-    def login_email_and_password_auth(success:)
+    def login_email_and_password_auth(email:, success:)
       track_event(
         'login-email-and-password-auth',
+        email:,
         success:,
       )
     end
@@ -159,32 +161,40 @@ module AttemptsApi
     end
 
     # @param [Boolean] success True if the link user clicked on is valid and not expired
+    # @param [String] email The user's email address
+    # @param [String] user_id The user's uuid (will not be used in Redis event)
     # @param [Hash<Symbol,Array<Symbol>>] failure_reason
     # A user clicks the email link to reset their password
-    def forgot_password_email_confirmed(success:, failure_reason: nil)
+    def forgot_password_email_confirmed(success:, email: nil, user_id: nil, failure_reason: nil)
       track_event(
         'forgot-password-email-confirmed',
         success:,
+        email:,
+        user_id:,
         failure_reason:,
       )
     end
 
     # @param [String] email The user's email address
+    # @param [String] user_id The user's uuid (will not be used in Redis event)
     #  A user has requested a password reset.
-    def forgot_password_email_sent(email:)
+    def forgot_password_email_sent(email:, user_id: nil)
       track_event(
         'forgot-password-email-sent',
+        user_id:,
         email:,
       )
     end
 
     # @param [Boolean] success True if new password was successfully submitted
+    # @param [String] user_id The user's id (will not be used in Redis event)
     # @param [Hash<Symbol,Array<Symbol>>] failure_reason
     # A user submits a new password have requesting a password reset
-    def forgot_password_new_password_submitted(success:, failure_reason: nil)
+    def forgot_password_new_password_submitted(success:, user_id: nil, failure_reason: nil)
       track_event(
         'forgot-password-new-password-submitted',
         success:,
+        user_id:,
         failure_reason:,
       )
     end

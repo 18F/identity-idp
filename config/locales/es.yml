@@ -888,6 +888,7 @@ event_types.eastern_timestamp: '%{timestamp} (hora del Este)'
 event_types.email_changed: Dirección de correo electrónico modificada
 event_types.email_deleted: Dirección de correo electrónico eliminada
 event_types.gpo_mail_sent: Carta enviada
+event_types.max_attempts_reached: Cuenta bloqueada
 event_types.new_personal_key: Clave personal modificada
 event_types.password_changed: Contraseña modificada
 event_types.password_invalidated: Contraseña restablecida por %{app_name}
@@ -1489,7 +1490,12 @@ instructions.mfa.piv_cac.step_2: Inserte su tarjeta PIV o CAC en su lector de ta
 instructions.mfa.piv_cac.step_3: Agregue su tarjeta PIV o CAC.
 instructions.mfa.piv_cac.step_3_info_html: Tendrá que <strong> elegir un certificado </strong> (es probable que el correcto tenga su nombre) e <strong> ingresar su PIN </strong> (su PIN se creó cuando configuró su tarjeta PIV o CAC)
 instructions.mfa.piv_cac.try_again: vuelva a intentarlo
+instructions.mfa.sms.code_expired_html: '<strong>Su código de un solo uso venció.</strong> Haga clic abajo en “Enviar otro código” para recibir un código nuevo.'
+instructions.mfa.sms.code_sent_message_html: Enviamos un mensaje de texto (SMS) con un código de un solo uso al %{number_html}.
+instructions.mfa.sms.minutes_remaining_html: 'Quedan <strong>%{minutes} minutos</strong> antes de tener que solicitar un nuevo código'
 instructions.mfa.sms.number_message_html: Enviamos un mensaje de texto (SMS) con un código de un solo uso al %{number_html}. Este código vence en %{expiration} minutos.
+instructions.mfa.sms.seconds_remaining_html: 'Quedan <strong>%{seconds} segundos</strong> antes de tener que solicitar un nuevo código'
+instructions.mfa.voice.code_sent_message_html: Hicimos una llamada con un código de un solo uso al %{number_html}.
 instructions.mfa.voice.number_message_html: Hicimos una llamada con un código de un solo uso al %{number_html}. Este código vence en %{expiration} minutos.
 instructions.mfa.webauthn_platform.learn_more_help: Obtenga más información sobre el desbloqueo facial o táctil
 instructions.mfa.webauthn.confirm_webauthn: Presente la clave de seguridad que asoció con su cuenta.
@@ -2055,6 +2061,7 @@ user_mailer.new_device_sign_in_after_2fa.info_p2: Si reconoce esta actividad, no
 user_mailer.new_device_sign_in_after_2fa.info_p3_html: Si no fue usted, %{reset_password_link_html} y cambie sus %{authentication_methods_link_html} inmediatamente.
 user_mailer.new_device_sign_in_after_2fa.reset_password: restablezca la contraseña
 user_mailer.new_device_sign_in_after_2fa.subject: Nuevo inicio de sesión y autenticación con su cuenta de %{app_name}
+user_mailer.new_device_sign_in_attempts.events.max_attempts_reached: Cuenta bloqueada
 user_mailer.new_device_sign_in_attempts.events.sign_in_after_2fa: Autenticado
 user_mailer.new_device_sign_in_attempts.events.sign_in_before_2fa: Inicia sesión con contraseña
 user_mailer.new_device_sign_in_attempts.events.sign_in_unsuccessful_2fa: Error al autenticar

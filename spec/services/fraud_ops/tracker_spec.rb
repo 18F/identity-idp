@@ -52,7 +52,7 @@ RSpec.describe FraudOps::Tracker do
         cookie_device_uuid: cookie_device_uuid,
       )
 
-      new_tracker.login_email_and_password_auth(success: true)
+      new_tracker.login_email_and_password_auth(email: user.email, success: true)
 
       expect(redis_wrapper).to have_received(:write_event)
     end

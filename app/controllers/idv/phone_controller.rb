@@ -200,18 +200,22 @@ module Idv
     end
 
     def async_state_done(async_state)
-      form_result = step.async_state_done(async_state)
+      results = step.async_state_done(async_state)
+      form_result = results[:final_result]
+      alternate_result = results[:alternate_result]
 
       analytics.idv_phone_confirmation_vendor_submitted(
         **form_result.to_h.merge(
           pii_like_keypaths: [
             [:errors, :phone],
             [:context, :stages, :address],
+            [:alternate_result, :errors, :phone],
           ],
           new_phone_added: new_phone_added?,
           hybrid_handoff_phone_used: hybrid_handoff_phone_used?,
         ),
         **opt_in_analytics_properties,
+        alternate_result: alternate_result&.to_h,
       )
 
       if form_result.success?
@@ -234,19 +238,14 @@ module Idv
     end
 
     def new_phone_added?
-      context = MfaContext.new(current_user)
-      configured_phones = context.phone_configurations.map(&:phone).map do |number|
-        PhoneFormatter.format(number)
-      end
-      !configured_phones.include?(formatted_previous_phone_step_params_phone)
+      !mfa_configured_phone?(phone_step_params_phone)
     end
 
     def hybrid_handoff_phone_used?
-      formatted_previous_phone_step_params_phone ==
-        PhoneFormatter.format(idv_session.phone_for_mobile_flow)
+      hybrid_handoff_phone?(phone_step_params_phone)
     end
 
-    def formatted_previous_phone_step_params_phone
+    def phone_step_params_phone
       PhoneFormatter.format(
         idv_session.previous_phone_step_params&.fetch('phone'),
       )

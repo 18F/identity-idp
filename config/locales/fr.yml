@@ -877,6 +877,7 @@ event_types.eastern_timestamp: '%{timestamp} (heure de l’Est)'
 event_types.email_changed: Adresse e-mail modifiée
 event_types.email_deleted: Adresse e-mail supprimée
 event_types.gpo_mail_sent: Lettre envoyée
+event_types.max_attempts_reached: Compte verrouillé
 event_types.new_personal_key: Clé personnelle modifiée
 event_types.password_changed: Mot de passe modifié
 event_types.password_invalidated: Mot de passe réinitialisé par %{app_name}
@@ -1478,7 +1479,12 @@ instructions.mfa.piv_cac.step_2: Insérez votre PIV/CAC dans votre lecteur de ca
 instructions.mfa.piv_cac.step_3: Ajoutez votre carte PIV/CAC
 instructions.mfa.piv_cac.step_3_info_html: Vous devrez <strong>choisir un certificat</strong> (le bon a probablement votre nom) et <strong>saisir votre PIN</strong> (votre PIN a été créé lors de la configuration de votre carte PIV/CAC).
 instructions.mfa.piv_cac.try_again: réessayer
+instructions.mfa.sms.code_expired_html: '<strong>Votre code à usage unique a expiré.</strong> Cliquez sur « Envoyer un autre code » ci-dessous pour en obtenir un nouveau.'
+instructions.mfa.sms.code_sent_message_html: Nous avons envoyé un SMS (texto) avec un code à usage unique au %{number_html}.
+instructions.mfa.sms.minutes_remaining_html: 'Il vous reste <strong>%{minutes} minutes</strong> avant de devoir demander un nouveau code'
 instructions.mfa.sms.number_message_html: Nous avons envoyé un SMS (texto) avec un code à usage unique au %{number_html}. Ce code expirera dans %{expiration} minutes.
+instructions.mfa.sms.seconds_remaining_html: 'Il vous reste <strong>%{seconds} secondes</strong> avant de devoir demander un nouveau code'
+instructions.mfa.voice.code_sent_message_html: Nous avons passé un appel avec un code à usage unique au %{number_html}.
 instructions.mfa.voice.number_message_html: Nous avons passé un appel avec un code à usage unique au %{number_html}. Ce code expirera dans %{expiration} minutes.
 instructions.mfa.webauthn_platform.learn_more_help: En savoir plus sur le déverrouillage facial ou tactile
 instructions.mfa.webauthn.confirm_webauthn: Présentez la clé de sécurité associée à votre compte.
@@ -2043,6 +2049,7 @@ user_mailer.new_device_sign_in_after_2fa.info_p2: Si vous reconnaissez cette act
 user_mailer.new_device_sign_in_after_2fa.info_p3_html: Si ce n’est pas vous, %{reset_password_link_html} et modifiez immédiatement vos %{authentication_methods_link_html}.
 user_mailer.new_device_sign_in_after_2fa.reset_password: réinitialisez votre mot de passe
 user_mailer.new_device_sign_in_after_2fa.subject: Nouvelle connexion et authentification avec votre compte %{app_name}
+user_mailer.new_device_sign_in_attempts.events.max_attempts_reached: Compte verrouillé
 user_mailer.new_device_sign_in_attempts.events.sign_in_after_2fa: Authentification réussie
 user_mailer.new_device_sign_in_attempts.events.sign_in_before_2fa: Connecté avec mot de passe
 user_mailer.new_device_sign_in_attempts.events.sign_in_unsuccessful_2fa: Échec de l’authentification
