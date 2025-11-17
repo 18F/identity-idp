@@ -144,7 +144,7 @@ class SocureDocvResultsJob < ApplicationJob
       failure_reason:,
     )
 
-    fraud_ops_tracker.idv_document_upload_submitted(
+    fraud_ops_tracker.fraud_ops_idv_document_upload_submitted(
       **image_data,
       success:,
       document_state: pii_from_doc[:state],
@@ -160,6 +160,9 @@ class SocureDocvResultsJob < ApplicationJob
       state: pii_from_doc[:state],
       zip: pii_from_doc[:zipcode],
       failure_reason:,
+      vendor: docv_result_response.extra[:vendor],
+      conversation_id: docv_result_response.extra[:conversation_id],
+      reference_id: docv_result_response.extra[:reference_id],
     )
   end
 
