@@ -186,6 +186,7 @@ module Reports
       end
 
       headers = definitions_table.transpose[0]
+      headers[0] = 'Issuer'
 
       # rubocop:disable Layout/LineLength
       report_array =
@@ -201,7 +202,7 @@ module Reports
                ial2_existing_credentials(invoice_report), # Existing identity verification credentials authorized
                invoice_report['issuer_ial1_plus_2_total_auth_count'].to_i] # Total Auths
             end
-      return report_array.transpose
+      return report_array
       # rubocop:enable Layout/LineLength
     end
 
