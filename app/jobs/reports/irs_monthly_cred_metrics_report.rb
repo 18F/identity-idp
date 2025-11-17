@@ -193,7 +193,7 @@ module Reports
           headers,
         ] + data_row.map do |invoice_report|
               # Data rows - extract values directly from CSV row
-              ['Value',
+              [invoice_report['issuer'],
                invoice_report['issuer_unique_users'].to_i, # Monthly Active Users
                ial2_new_unique_all(invoice_report), # Credentials Authorized
                invoice_report['issuer_ial2_new_unique_user_events_year1_upfront'].to_i, # New identity verification credentials authorized
