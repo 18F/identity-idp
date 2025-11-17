@@ -36,7 +36,7 @@
 
   <% if @can_add_email %>
     <%= render ButtonComponent.new(
-          url: add_email_path(in_select_email_flow: true),
+          url: add_email_path(in_select_email_flow: true, identity_id: @identity.id),
           outline: true,
           big: true,
           wide: true,

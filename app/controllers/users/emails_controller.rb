@@ -81,10 +81,10 @@ module Users
     private
 
     def cancel_link
-      if in_select_email_flow?
-        sign_up_select_email_url
+      if in_select_email_flow? && params[:identity_id].present?
+        connected_account_selected_email_url(identity_id: params[:identity_id])
       else
-        redirect_to account_url(anchor: 'emails')
+        account_url(anchor: 'emails')
       end
     end
 
