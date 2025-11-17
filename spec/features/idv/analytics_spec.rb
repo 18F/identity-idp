@@ -10,6 +10,7 @@ RSpec.feature 'Analytics Regression', :js do
   let(:proofing_device_profiling) { :enabled }
   let(:threatmetrix) { true }
   let(:idv_level) { 'in_person' }
+  let(:idv_phone_precheck_enabled) { false }
 
   let(:threatmetrix_response_body) do
     {
@@ -51,8 +52,8 @@ RSpec.feature 'Analytics Regression', :js do
     }
   end
 
-  let(:lexis_nexis_address_proofing_components) do
-    base_proofing_components.merge(address_check: 'lexis_nexis_address')
+  let(:lexis_nexis_address_proofing_components) do # todo: rename
+    base_proofing_components.merge(address_check: 'AddressMock')
   end
 
   let(:gpo_letter_proofing_components) do
@@ -103,7 +104,7 @@ RSpec.feature 'Analytics Regression', :js do
       ssn_is_unique: true,
       timed_out: false,
       threatmetrix_review_status: 'pass',
-      phone_precheck_passed: false,
+      phone_precheck_passed: IdentityConfig.store.idv_phone_precheck_enabled,
       context: {
         device_profiling_adjudication_reason: 'device_profiling_result_pass',
         resolution_adjudication_reason: 'pass_resolution_and_state_id',
@@ -124,18 +125,21 @@ RSpec.feature 'Analytics Regression', :js do
                                  verified_attributes: nil },
           state_id: state_id_resolution,
           threatmetrix: threatmetrix_response,
-          phone_precheck: { attributes_requiring_additional_verification: [],
-                            can_pass_with_additional_verification: false,
+          phone_precheck: IdentityConfig.store.idv_phone_precheck_enabled ?
+                          {
+                            # attributes_requiring_additional_verification: [],
+                            # can_pass_with_additional_verification: false,
                             errors: {},
                             exception: nil,
                             reference: '',
-                            reason_codes: {},
-                            success: false,
+                            result: nil,
+                            success: true,
                             timed_out: false,
-                            transaction_id: '',
-                            vendor_name: 'NoPhoneNumberAvailable',
-                            vendor_workflow: nil,
-                            verified_attributes: nil },
+                            transaction_id: 'address-mock-transaction-id-123',
+                            vendor_name: 'AddressMock',
+                            # vendor_workflow: nil,
+                            # verified_attributes: nil,
+                          } : {},
         },
       },
       biographical_info: {
@@ -281,7 +285,7 @@ RSpec.feature 'Analytics Regression', :js do
       'IdV: doc auth verify proofing results' => {
         success: true, flow_path: 'standard', address_edited: false, address_line2_present: false, last_name_spaced: false, analytics_id: 'Doc Auth', step: 'verify',
         proofing_results: doc_auth_verify_proofing_results,
-        proofing_components: base_proofing_components
+        proofing_components: IdentityConfig.store.idv_phone_precheck_enabled ? lexis_nexis_address_proofing_components : base_proofing_components
       },
       'IdV: phone of record visited' => {
         proofing_components: base_proofing_components,
@@ -869,6 +873,8 @@ RSpec.feature 'Analytics Regression', :js do
   end
 
   before do
+    allow(IdentityConfig.store).to receive(:idv_phone_precheck_enabled)
+      .and_return(idv_phone_precheck_enabled)
     allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled)
       .and_return(false)
     allow(IdentityConfig.store).to receive(:proofing_device_profiling)
@@ -893,7 +899,7 @@ RSpec.feature 'Analytics Regression', :js do
       complete_document_capture_step
       complete_ssn_step
       complete_verify_step
-      complete_phone_step(user)
+      complete_phone_step(user) unless IdentityConfig.store.idv_phone_precheck_enabled
       complete_enter_password_step(user)
       acknowledge_and_confirm_personal_key
       expect(page).to have_current_path(sign_up_completed_path)
@@ -914,6 +920,35 @@ RSpec.feature 'Analytics Regression', :js do
 
         Reports::DailyDropoffsReport::STEPS.each do |step|
           expect(row[step].to_i).to(be > 0, "step #{step} was counted")
+        end
+      end
+    end
+
+    context 'when phone precheck is enabled' do
+      let(:idv_phone_precheck_enabled) { true }
+      it 'records all of the events' do
+        aggregate_failures 'analytics events' do
+          happy_path_events.each do |event, attributes|
+            next if [
+              'IdV: phone of record visited', 'IdV: phone confirmation form',
+              'IdV: phone confirmation vendor', 'IdV: phone confirmation otp sent',
+              'IdV: phone confirmation otp visited', 'IdV: phone confirmation otp submitted',
+            ].include? event
+            expect(fake_analytics).to have_logged_event(event, attributes)
+          end
+        end
+
+        aggregate_failures 'populates data for each step of the Daily Dropoff Report' do
+          row = CSV.parse(
+            Reports::DailyDropoffsReport.new.tap { |r| r.report_date = Time.zone.now }.report_body,
+            headers: true,
+          ).first
+
+          Reports::DailyDropoffsReport::STEPS.each do |step|
+            next if IdentityConfig.store.idv_phone_precheck_enabled &&
+                    ['phone', 'phone_submit'].include?(step)
+            expect(row[step].to_i).to(be > 0, "step #{step} was counted")
+          end
         end
       end
     end
