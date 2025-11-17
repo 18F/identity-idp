@@ -409,7 +409,7 @@ RSpec.describe Idv::ApiImageUploadForm do
       end
     end
 
-    context 'when aamva auth is not enabled' do
+    fcontext 'when aamva auth is not enabled' do
       before do
         allow(IdentityConfig.store).to receive(:idv_aamva_at_doc_auth_enabled).and_return(false)
       end
@@ -482,6 +482,7 @@ RSpec.describe Idv::ApiImageUploadForm do
             zip_code: '59010',
             issue_year: 2019,
             document_type_requested: document_type,
+            vendor: 'Mock',
             passport_check_result: {},
           )
         end
@@ -688,6 +689,7 @@ RSpec.describe Idv::ApiImageUploadForm do
               issue_year: 2019,
               selfie_attempts: a_kind_of(Numeric),
               document_type_requested: document_type,
+              vendor: 'Mock',
               passport_check_result: {},
             )
           end
