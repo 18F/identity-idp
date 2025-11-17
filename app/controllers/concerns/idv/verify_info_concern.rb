@@ -283,8 +283,9 @@ module Idv
         idv_session.mark_phone_step_started!
         idv_session.mark_phone_step_complete!
         # todo: save_in_person_notification_phone - see otp_verificaiton_controller
-      elsif idv_session.precheck_phone&.dig(:phone) == false && phone_precheck&.dig(:exception).blank? &&
-            !ipp_enrollment_in_progress? # IPP currently omitted for phone precheck - see #save_in_person_notification_phone
+      elsif phone_precheck&.dig(:success) == false && idv_session.precheck_phone&.dig(:phone) &&
+            phone_precheck&.dig(:exception).blank? && !ipp_enrollment_in_progress?
+            # IPP currently omitted for phone precheck - see #save_in_person_notification_phone
         idv_session.add_failed_phone_step_number(idv_session.precheck_phone[:phone])
       end
     end
