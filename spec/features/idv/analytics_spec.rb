@@ -53,7 +53,7 @@ RSpec.feature 'Analytics Regression', :js do
   end
 
   let(:lexis_nexis_address_proofing_components) do # todo: rename
-    base_proofing_components.merge(address_check: 'AddressMock')
+    base_proofing_components.merge(address_check: IdentityConfig.store.idv_phone_precheck_enabled ? 'AddressMock' : 'lexis_nexis_address')
   end
 
   let(:gpo_letter_proofing_components) do
