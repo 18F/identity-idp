@@ -220,6 +220,15 @@ RSpec.describe Idv::ProofingComponents do
         expect(subject.address_check).to eql('lexis_nexis_address')
       end
     end
+
+    context 'using socure verification' do
+      before do
+        idv_session.address_verification_mechanism = 'socure'
+      end
+      it 'returns socure_address' do
+        expect(subject.address_check).to eql('socure_address')
+      end
+    end
   end
 
   describe '#threatmetrix' do
