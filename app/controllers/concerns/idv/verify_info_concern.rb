@@ -45,8 +45,6 @@ module Idv
       )
 
       return true
-    rescue => e
-      byebug
     end
 
     def log_event_for_missing_threatmetrix_session_id
@@ -483,13 +481,6 @@ module Idv
           { **value.slice(:vendor_name, :exception, :jurisdiction_in_maintenance_window) }
         end
       end.compact.presence
-    end
-
-    def normalized_phone(phone) # rename normalize_phone ... copied from phone_step
-      return if phone.blank?
-
-      formatted_phone = PhoneFormatter.format(phone)
-      formatted_phone.gsub(/\D/, '')[1..-1] if formatted_phone.present?
     end
 
     VerificationFailures = Struct.new(

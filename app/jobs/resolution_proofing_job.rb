@@ -64,8 +64,6 @@ class ResolutionProofingJob < ApplicationJob
 
     document_capture_session = DocumentCaptureSession.new(result_id: result_id)
     document_capture_session.store_proofing_result(callback_log_data.result)
-  # rescue => e
-  #   byebug
   ensure
     logger_info_hash(
       name: 'ProofResolution',
