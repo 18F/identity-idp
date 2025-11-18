@@ -4327,8 +4327,8 @@ module AnalyticsEvents
   end
 
   # User visited polling wait page for IPP AAMVA verification
-  def idv_ipp_aamva_verification_polling_wait
-    track_event(:idv_ipp_aamva_verification_polling_wait)
+  def idv_ipp_aamva_verification_polling_wait(**extra)
+    track_event(:idv_ipp_aamva_verification_polling_wait, **extra)
   end
 
   # @param [String] enrollment_id

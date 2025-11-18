@@ -494,6 +494,17 @@ RSpec.describe Idv::InPerson::StateIdController do
 
           expect(subject.idv_session.ipp_aamva_document_capture_session_uuid).to be_nil
         end
+
+        it 'logs completion event with success' do
+          get :show
+
+          expect(@analytics).to have_logged_event(
+            :idv_ipp_aamva_verification_completed,
+            success: true,
+            vendor_name: 'TestAAMVA',
+            step: 'state_id',
+          )
+        end
       end
 
       context 'when async AAMVA check fails' do
@@ -537,6 +548,17 @@ RSpec.describe Idv::InPerson::StateIdController do
           get :show
 
           expect(subject.idv_session.ipp_aamva_document_capture_session_uuid).to be_nil
+        end
+
+        it 'logs completion event with failure' do
+          get :show
+
+          expect(@analytics).to have_logged_event(
+            :idv_ipp_aamva_verification_completed,
+            success: false,
+            vendor_name: 'TestAAMVA',
+            step: 'state_id',
+          )
         end
       end
 

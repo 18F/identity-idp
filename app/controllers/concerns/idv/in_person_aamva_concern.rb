@@ -108,6 +108,12 @@ module Idv
     def handle_aamva_async_done(current_state)
       result = current_state.result
 
+      analytics.idv_ipp_aamva_verification_completed(
+        success: result[:success],
+        vendor_name: result[:vendor_name],
+        step: controller_name,
+      )
+
       if result[:success]
         idv_session.ipp_aamva_result = result
         redirect_url = idv_session.ipp_aamva_redirect_url || idv_in_person_ssn_url
