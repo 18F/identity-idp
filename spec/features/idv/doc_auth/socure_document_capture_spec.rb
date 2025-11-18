@@ -403,23 +403,6 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
           expect(page).to have_content(t('doc_auth.errors.unaccepted_id_type'))
         end
       end
-
-      context 'when AAMVA at doc auth is enabled' do
-        before do
-          allow(IdentityConfig.store).to receive(:idv_aamva_at_doc_auth_enabled).and_return(true)
-        end
-
-        it 'skips AAMVA verification and proceeds directly to SSN page' do
-          socure_docv_upload_documents(
-            docv_transaction_token: @docv_transaction_token,
-          )
-          visit idv_socure_document_capture_update_path
-          expect(page).to have_current_path(idv_ssn_url)
-
-          # Verify AAMVA was not called - the Socure flow bypasses AAMVA validation
-          expect(fake_analytics).not_to have_logged_event(:idv_aamva_verification_submitted)
-        end
-      end
     end
 
     context 'standard flow with aamva check enabled' do

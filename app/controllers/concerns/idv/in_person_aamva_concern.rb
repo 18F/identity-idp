@@ -4,18 +4,7 @@ module Idv
   module InPersonAamvaConcern
     extend ActiveSupport::Concern
 
-    AAMVA_REQUIRED_FIELDS = %i[
-      first_name
-      last_name
-      dob
-      state_id_number
-      state_id_jurisdiction
-    ].freeze
-
-    def enqueue_aamva_job_and_redirect
-      return true unless aamva_enabled?
-      return false unless check_aamva_rate_limit
-
+    def start_aamva_async_state
       document_capture_session = DocumentCaptureSession.create!(
         user_id: current_user.id,
         issuer: sp_session[:issuer],
@@ -32,8 +21,10 @@ module Idv
         document_capture_session: document_capture_session,
         encrypted_arguments: encrypted_arguments,
       )
+    end
 
-      true
+    def aamva_rate_limited?
+      aamva_rate_limiter.limited?
     end
 
     def process_aamva_async_state
@@ -63,110 +54,6 @@ module Idv
       IdentityConfig.store.idv_aamva_at_doc_auth_enabled
     end
 
-    def aamva_proofer
-      Proofing::Resolution::Plugins::AamvaPlugin.new
-    end
-
-    def validate_aamva_for_ipp
-      return unless aamva_enabled?
-      return if idv_session.ipp_already_proofed?
-
-      pii = pii_from_user&.deep_dup
-      return unless pii && aamva_required_fields_present?(pii)
-
-      pii_fingerprint = calculate_pii_fingerprint(pii)
-
-      begin
-        aamva_result = aamva_proofer.call(
-          applicant_pii: pii.freeze,
-          current_sp: current_sp,
-          state_id_address_resolution_result: nil,
-          ipp_enrollment_in_progress: true,
-          timer: JobHelpers::Timer.new,
-          doc_auth_flow: true,
-        )
-
-        doc_auth_response = aamva_result.to_doc_auth_response
-
-        store_aamva_result(doc_auth_response, aamva_result, pii_fingerprint)
-
-        analytics.idv_ipp_aamva_verification_completed(
-          success: doc_auth_response.success?,
-          vendor_name: aamva_result.vendor_name,
-          step: controller_name,
-        )
-
-        doc_auth_response
-      rescue Proofing::TimeoutError => e
-        handle_aamva_timeout(e)
-      rescue StandardError => e
-        handle_aamva_exception(e)
-      end
-    end
-
-    def aamva_verification_succeeded?(aamva_response)
-      return true unless aamva_response
-
-      if aamva_response.errors.present?
-        flash[:error] = I18n.t('idv.failure.verify.heading')
-        false
-      else
-        true
-      end
-    end
-
-    def aamva_required_fields_present?(pii)
-      AAMVA_REQUIRED_FIELDS.all? { |field| pii[field].present? }
-    end
-
-    def calculate_pii_fingerprint(pii)
-      relevant_fields = pii.slice(
-        *AAMVA_REQUIRED_FIELDS, :identity_doc_address1,
-        :identity_doc_city, :identity_doc_address_state,
-        :identity_doc_zipcode, :address1, :city, :state, :zipcode
-      )
-      Digest::SHA256.hexdigest(relevant_fields.to_json)
-    end
-
-    def store_aamva_result(doc_auth_response, aamva_result, pii_fingerprint)
-      idv_session.ipp_aamva_result = {
-        'success' => doc_auth_response.success?,
-        'errors' => doc_auth_response.errors,
-        'vendor_name' => aamva_result.vendor_name,
-        'checked_at' => Time.zone.now.iso8601,
-        'pii_fingerprint' => pii_fingerprint,
-      }
-    end
-
-    def handle_aamva_timeout(exception)
-      analytics.idv_ipp_aamva_timeout(
-        exception_class: exception.class.name,
-        step: controller_name,
-      )
-
-      DocAuth::Response.new(
-        success: false,
-        errors: { network: I18n.t('idv.failure.timeout') },
-        exception: exception,
-      )
-    end
-
-    def handle_aamva_exception(exception)
-      analytics.idv_ipp_aamva_exception(
-        exception_class: exception.class.name,
-        exception_message: exception.message,
-        step: controller_name,
-      )
-
-      NewRelic::Agent.notice_error(exception) if defined?(NewRelic)
-
-      DocAuth::Response.new(
-        success: false,
-        errors: { network: I18n.t('idv.failure.exceptions.internal_error') },
-        exception: exception,
-      )
-    end
-
     def aamva_rate_limiter
       @aamva_rate_limiter ||= RateLimiter.new(
         user: current_user,
@@ -174,13 +61,9 @@ module Idv
       )
     end
 
-    def check_aamva_rate_limit
-      return true unless aamva_rate_limiter.limited?
-
+    def handle_aamva_rate_limit
       analytics.idv_ipp_aamva_rate_limited(step: controller_name)
       flash[:error] = I18n.t('idv.failure.phone.rate_limited.heading')
-      render :show, locals: extra_view_variables
-      false
     end
 
     def encrypt_pii_for_job(pii)
