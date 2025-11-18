@@ -78,6 +78,13 @@ module Reports
     def perform(perform_date = Time.zone.yesterday.end_of_day, perform_receiver = :internal)
       @report_receiver = perform_receiver.to_sym
       @report_date = perform_date
+
+      emails = email_addresses.select(&:present?)
+      if emails.empty?
+        Rails.logger.warn 'No email addresses received - IRS Monthly Credential Report NOT SENT'
+        return false
+      end
+
       reports = as_emailable_partner_report(
         date: perform_date,
       )
