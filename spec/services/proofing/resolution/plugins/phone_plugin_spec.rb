@@ -181,7 +181,7 @@ RSpec.describe Proofing::Resolution::Plugins::PhonePlugin do
             .and_raise(Faraday::ConnectionFailed)
         end
 
-        it 'returns a result' do
+        it 'returns an unsuccessful result' do
           result = call.last
 
           expect(result.success?).to eq(false)

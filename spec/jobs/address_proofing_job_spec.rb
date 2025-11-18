@@ -332,7 +332,7 @@ RSpec.describe AddressProofingJob, type: :job do
           )
       end
 
-      it 'returns a result' do
+      it 'returns an unsuccessful result' do
         perform
 
         result = document_capture_session.load_proofing_result[:result]
@@ -351,7 +351,7 @@ RSpec.describe AddressProofingJob, type: :job do
           .and_raise(Faraday::ConnectionFailed)
       end
 
-      it 'returns a result' do
+      it 'returns an unsuccessful result' do
         perform
 
         result = document_capture_session.load_proofing_result[:result]
