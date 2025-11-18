@@ -155,16 +155,38 @@ RSpec.describe Proofing::Resolution::Plugins::PhonePlugin do
           end
         end
       end
-    end
 
-    xcontext 'in-person proofing' do
-      let(:ipp_enrollment_in_progress) { true }
+      context 'when service returns weird HTTP 500 response' do
+        before do
+          allow(IdentityConfig.store).to receive(:idv_address_primary_vendor).and_return(:socure)
+          stub_request(:post, 'https://sandbox.socure.test/api/3.0/EmailAuthScore')
+            .to_return(
+              status: 500,
+              body: 'It works!',
+            )
+        end
 
-      it 'returns an unsuccessful result' do
-        result = call.last
+        it 'returns an unsuccessful result' do
+          result = call.last
 
-        expect(result.success?).to eq(false)
-        expect(result.vendor_name).to eq('PhoneIgnoredForInPersonProofing')
+          expect(result.success?).to eq(false)
+          expect(result.exception).not_to be_nil
+        end
+      end
+
+      context 'when Faraday error' do
+        before do
+          allow(IdentityConfig.store).to receive(:idv_address_primary_vendor).and_return(:socure)
+          allow_any_instance_of(Faraday::Connection).to receive(:post)
+            .and_raise(Faraday::ConnectionFailed)
+        end
+
+        it 'returns a result' do
+          result = call.last
+
+          expect(result.success?).to eq(false)
+          expect(result.exception).not_to be_nil
+        end
       end
     end
   end
