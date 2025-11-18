@@ -235,8 +235,10 @@ module Reports
 
       data_row = data_array.first
 
-      headers = definitions_table.transpose[0]
-      headers[0] = 'Partner'
+      headers_raw = definitions_table.transpose[0]
+      headers_raw[0] = data_row['partner']
+
+      headers = headers_raw.values_at(0, 2, 3, 4)
 
       # rubocop:disable Layout/LineLength
       report_array =
@@ -245,15 +247,13 @@ module Reports
           headers,
           # Data row - wrap in array to match CSV structure
           [
-            data_row['partner'],
-            partner_unique_users(data_array), # Monthly Active Users
+            'Values',
             ial2_new_unique_all(data_row, :partner), # Credentials Authorized
             data_row['partner_ial2_new_unique_user_events_year1_upfront'].to_i, # New identity verification credentials authorized
             ial2_existing_credentials(data_row, :partner), # Existing identity verification credentials authorized
-            partner_ial1_plus_2_total_auth_count(data_array), # Total Auths
           ],
         ]
-      return report_array
+      return report_array.transpose
       # rubocop:enable Layout/LineLength
     end
 
@@ -265,22 +265,6 @@ module Reports
         save_report(REPORT_NAME + '_raw', data, extension: 'csv')
         data
       end
-    end
-
-    def partner_ial1_plus_2_total_auth_count(data_array)
-      auth_count = 0
-      data_array.map do |invoice_report|
-        auth_count += invoice_report['issuer_ial1_plus_2_total_auth_count'].to_i
-      end
-      auth_count
-    end
-
-    def partner_unique_users(data_array)
-      user_count = 0
-      data_array.map do |invoice_report|
-        user_count += invoice_report['issuer_unique_users'].to_i
-      end
-      user_count
     end
 
     def ial2_existing_credentials(row, report_type)
