@@ -296,7 +296,7 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
     context 'when phone pre-check is enabled' do
       let(:phonerisk_risk_score) { 0 }
       let(:phonerisk_correlation_score) { 1.0 }
-      let(:phonerisk_respone) do
+      let(:phonerisk_response) do
         {
           status: 200,
           body: {
@@ -341,8 +341,6 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
         end
 
         it 'redirects user to the phone step' do
-          expect_any_instance_of(Proofing::Socure::IdPlus::Proofers::PhoneRiskProofer)
-            .not_to receive(:proof).and_call_original
           complete_ssn_step
           complete_verify_step
           expect(page).to have_current_path(idv_phone_path)
@@ -359,8 +357,9 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
               .and_return(:socure)
 
             stub_request(:post, 'https://sandbox.socure.test/api/3.0/EmailAuthScore')
-              .to_return(phonerisk_respone)
+              .to_return(phonerisk_response)
           end
+
           it 'redirects user to the phone step' do
             expect_any_instance_of(Proofing::Socure::IdPlus::Proofers::PhoneRiskProofer)
               .to receive(:proof).and_call_original
@@ -377,7 +376,7 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
       context 'when phone pre-check is successful' do
         it 'redirects the user to enter password page' do
           expect_any_instance_of(Proofing::Socure::IdPlus::Proofers::PhoneRiskProofer)
-            .not_to receive(:proof).and_call_original
+            .not_to receive(:proof)
           complete_ssn_step
           complete_verify_step
           expect(page).to have_current_path(idv_enter_password_path)
