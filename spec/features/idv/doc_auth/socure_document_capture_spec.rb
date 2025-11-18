@@ -455,7 +455,11 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
             docv_transaction_token: @docv_transaction_token,
           )
           visit idv_socure_document_capture_update_path
-          expect(page).to have_current_path(idv_socure_document_capture_errors_url)
+          expect(page).to have_current_path(
+            idv_socure_document_capture_errors_url(
+              transaction_token: @docv_transaction_token,
+            ),
+          )
           expect(page).to have_content(t('idv.errors.try_again_later'))
         end
       end
