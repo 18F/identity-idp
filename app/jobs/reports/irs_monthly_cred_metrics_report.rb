@@ -13,8 +13,11 @@ module Reports
       super(init_date, init_receiver, *args, **rest)
     end
 
+    def partner_strings
+      [*IdentityConfig.store.irs_partner_strings].reject(&:blank?)
+    end
+
     def partner_accounts
-      partner_strings = [*IdentityConfig.store.irs_partner_strings].reject(&:blank?)
       IaaReportingHelper.partner_accounts.filter do |account|
         partner_strings.include?(account.partner)
       end
