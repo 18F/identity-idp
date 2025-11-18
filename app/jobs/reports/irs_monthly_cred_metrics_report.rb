@@ -86,14 +86,14 @@ module Reports
       end
 
       reports = as_emailable_partner_report(
-        date: perform_date,
+        date: @report_date,
       )
-
+      if reports.present?
       reports.each do |report|
         _latest_path, path = generate_s3_paths(
           REPORT_NAME, 'csv',
           subname: report.filename,
-          now: perform_date
+            now: @report_date
         )
 
         content_type = Mime::Type.lookup_by_extension('csv').to_s
@@ -102,16 +102,14 @@ module Reports
           path: path, body: report_csv, content_type: content_type,
         )
       end
-
-      emails = email_addresses.select(&:present?)
-      if emails.empty?
-        Rails.logger.warn 'No email addresses received - IRS Monthly Credential Report NOT SENT'
+      else
+        Rails.logger.warn 'No report available - IRS Monthly Credential Report NOT SENT'
         return false
       end
 
       ReportMailer.tables_report(
         email: email_addresses,
-        subject: "IRS Monthly Credential Metrics - #{perform_date.to_date}",
+        subject: "IRS Monthly Credential Metrics - #{@report_date.to_date}",
         message: preamble,
         reports: reports,
         attachment_format: :csv,
