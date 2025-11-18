@@ -89,19 +89,19 @@ module Reports
         date: @report_date,
       )
       if reports.present?
-      reports.each do |report|
-        _latest_path, path = generate_s3_paths(
-          REPORT_NAME, 'csv',
-          subname: report.filename,
+        reports.each do |report|
+          _latest_path, path = generate_s3_paths(
+            REPORT_NAME, 'csv',
+            subname: report.filename,
             now: @report_date
-        )
+          )
 
-        content_type = Mime::Type.lookup_by_extension('csv').to_s
-        report_csv = csv_file(report.table)
-        _url = upload_file_to_s3_bucket(
-          path: path, body: report_csv, content_type: content_type,
-        )
-      end
+          content_type = Mime::Type.lookup_by_extension('csv').to_s
+          report_csv = csv_file(report.table)
+          _url = upload_file_to_s3_bucket(
+            path: path, body: report_csv, content_type: content_type,
+          )
+        end
       else
         Rails.logger.warn 'No report available - IRS Monthly Credential Report NOT SENT'
         return false
@@ -118,29 +118,43 @@ module Reports
     end
 
     def as_emailable_partner_report(date:)
-      [
-        Reporting::EmailableReport.new(
-          title: 'Definitions',
-          table: definitions_table,
-          filename: 'irs_monthly_cred_definitions',
-        ),
-        Reporting::EmailableReport.new(
-          title: 'Overview',
-          table: overview_table,
-          filename: 'irs_monthly_cred_overview',
-        ),
-        Reporting::EmailableReport.new(
-          title: "IRS Monthly Credential Metrics #{date.strftime('%B %Y')}",
-          table: issuer_report_data,
-          filename: 'irs_monthly_cred_metrics',
-        ),
-        Reporting::EmailableReport.new(
-          title: "Treasury Partner Monthly Credential Metrics #{date.strftime('%B %Y')}",
-          table: partner_report_data,
-          filename: 'treasury_monthly_cred_metrics',
-        ),
+      emailable_report_array =
+        [
+          Reporting::EmailableReport.new(
+            title: 'Definitions',
+            table: definitions_table,
+            filename: 'irs_monthly_cred_definitions',
+          ),
+          Reporting::EmailableReport.new(
+            title: 'Overview',
+            table: overview_table,
+            filename: 'irs_monthly_cred_overview',
+          ),
+        ]
 
-      ]
+      if issuer_report_data.present?
+        emailable_report_array <<
+          Reporting::EmailableReport.new(
+            title: "IRS Monthly Credential Metrics #{date.strftime('%B %Y')}",
+            table: issuer_report_data,
+            filename: 'irs_monthly_cred_metrics',
+          )
+      else
+        return nil
+      end
+
+      if partner_report_data.present?
+        emailable_report_array <<
+          Reporting::EmailableReport.new(
+            title: "Treasury Partner Monthly Credential Metrics #{date.strftime('%B %Y')}",
+            table: partner_report_data,
+            filename: 'treasury_monthly_cred_metrics',
+          )
+      else
+        return nil
+      end
+
+      emailable_report_array
     end
 
     def issuer_report_data
@@ -190,6 +204,18 @@ module Reports
         issuers.include?(r['issuer'])
       end
 
+      if issuer_invoice_data.empty?
+        Rails.logger.warn "No data for any issuer in #{issuers}"
+        return nil
+      else
+        # Check if all expected partners have data
+        found_issuers = issuer_invoice_data.map { |row| row['issuer'] }.uniq
+        missing_issuers = issuers - found_issuers
+        if missing_issuers.any?
+          Rails.logger.warn "Missing data for issuers: #{missing_issuers.join(', ')}"
+        end
+      end
+
       parsed_invoice_data = CSV::Table.new(
         issuer_invoice_data,
         headers: invoice_data_csv.headers,
@@ -228,6 +254,18 @@ module Reports
         partner_strings.include?(r['partner'])
       end
 
+      if partner_invoice_data.empty?
+        Rails.logger.warn "No data for any partners in #{partner_strings}"
+        return nil
+      else
+        # Check if all expected partners have data
+        found_partners = partner_invoice_data.map { |row| row['partner'] }.uniq
+        missing_partners = partner_strings - found_partners
+        if missing_partners.any?
+          Rails.logger.warn "Missing data for partners: #{missing_partners.join(', ')}"
+        end
+      end
+
       parsed_invoice_data = CSV::Table.new(
         partner_invoice_data,
         headers: invoice_data_csv.headers,
@@ -238,13 +276,17 @@ module Reports
         row['year_month'] == report_year_month
       end
 
+      if data_array.empty?
+        Rails.logger.warn "No data for #{report_year_month}"
+        return nil
+      end
+
       data_row = data_array.first
 
       headers_raw = definitions_table.transpose[0]
       headers_raw[0] = data_row['partner']
 
-      headers = headers_raw.values_at(0, 2, 3, 4)
-
+      headers = headers_raw.values_at(0, 2, 3, 4) # Drop the MAU and Total Auths
       # rubocop:disable Layout/LineLength
       report_array =
         [
