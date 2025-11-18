@@ -14,6 +14,7 @@ RSpec.describe Reports::IrsMonthlyCredMetricsReport do
   let(:expected_s3_paths) do
     [
       "#{report_folder}/irs_monthly_cred_metrics.csv",
+      "#{report_folder}/treasury_monthly_cred_metrics.csv",
       "#{report_folder}/irs_monthly_cred_overview.csv",
       "#{report_folder}/irs_monthly_cred_definitions.csv",
     ]
@@ -56,7 +57,25 @@ RSpec.describe Reports::IrsMonthlyCredMetricsReport do
         put_object: {},
       },
     }
-    # Add this at the end of your before block
+
+    # Mock the report data methods
+    allow_any_instance_of(Reports::IrsMonthlyCredMetricsReport)
+      .to receive(:issuer_report_data)
+      .and_return([
+                    ['Issuer', 'Monthly active users', 'Credentials authorized', 'New credentials',
+                     'Existing credentials', 'Total auths'],
+                    ['Issuer_4', 100, 50, 30, 20, 200],
+                  ])
+
+    allow_any_instance_of(Reports::IrsMonthlyCredMetricsReport)
+      .to receive(:partner_report_data)
+      .and_return([
+                    ['Partner', 'Credentials authorized', 'New credentials',
+                     'Existing credentials'],
+                    ['Partner_1', 50, 30, 20],
+                  ])
+
+    # Mock the return from the invoice report
     allow_any_instance_of(Reports::IrsMonthlyCredMetricsReport)
       .to receive(:invoice_report_data)
       .and_return(fixture_csv_data)
@@ -169,18 +188,66 @@ RSpec.describe Reports::IrsMonthlyCredMetricsReport do
       end).to_h.transform_values(&:to_i)
     end
 
-    it 'checks authentication counts in ial1 + ial2 & for single issuer' do
+    before do
+      # Override the mocks from the outer before block to use real data
+      allow_any_instance_of(Reports::IrsMonthlyCredMetricsReport)
+        .to receive(:issuer_report_data)
+        .and_call_original
+
+      allow_any_instance_of(Reports::IrsMonthlyCredMetricsReport)
+        .to receive(:partner_report_data)
+        .and_call_original
+    end
+
+    describe 'table sizes' do
+      let(:mock_issuers) { ['Issuer_2', 'Issuer_3', 'Issuer_4'] }
+
+      before do
+        allow(IdentityConfig.store).to receive(:irs_issuers)
+          .and_return(mock_issuers)
+      end
+
+      it 'has the correct table sizes' do
+        result = report.perform(report_date)
+
+        # One Issuer Table and One Partner Table
+        expect(result.length).to eq(2)
+
+        issuer_table = result[0]
+        # Check Report Tables Shape
+
+        # Issuer table
+        # One Column per metric Columns: "Metrics" and "Values"
+        # One Header Column + 5 Data Column"
+        # One row per issuer
+        issuer_count = mock_issuers.count
+
+        aggregate_failures 'issuer table dimensions' do
+          expect(issuer_table.length).to eq(1 + issuer_count)
+          issuer_table.each_with_index do |row, idx|
+            expect(row.length).to eq(6), "Row #{idx} should have 6 columns"
+          end
+        end
+
+        # Check Partner Report Table Shape
+        # One Header Column + 3 Data Columns"
+        partner_table = result[1]
+        aggregate_failures 'partner table dimensions' do
+          expect(partner_table.length).to eq(4)
+          partner_table.each_with_index do |row, idx|
+            expect(row.length).to eq(2), "Row #{idx} should have 2 columns"
+          end
+        end
+      end
+    end
+
+    it 'checks issuer-level counts for a single issuer' do
       result = report.perform(report_date)
+
       data_column =
         result.map do |row|
           row[1]
         end
-
-      # Check Report Table Shape
-      # Two Columns: "Metrics" and "Values"
-      # One Header Row + 5 Data Rows"
-      expect(result.transpose.length).to eq(2)
-      expect(result.length).to eq(6)
 
       # Expected values
       expected_monthly_active_users = row['issuer_unique_users']
@@ -208,6 +275,14 @@ RSpec.describe Reports::IrsMonthlyCredMetricsReport do
       expect(data_column[3]).to eq(expected_new_ial_year1)
       expect(data_column[4]).to eq(expected_existing_credentials_authorized)
       expect(data_column[5]).to eq(expected_total_auths)
+    end
+
+    it 'checks issuer-level counts for a multiple issuers' do
+      fail
+    end
+
+    it 'checks partner-level counts for a single partner' do
+      fail
     end
   end
 
