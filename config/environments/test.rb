@@ -1,5 +1,9 @@
 # frozen_string_literal: true
 
+ActiveSupport.on_load(:active_record_postgresqladapter) do
+  self.create_unlogged_tables = true
+end
+
 Rails.application.configure do
   config.active_job.queue_adapter = :test
   config.cache_classes = false
