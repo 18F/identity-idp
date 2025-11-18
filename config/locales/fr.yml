@@ -993,7 +993,7 @@ headings.account.authentication_apps: Applis d’authentification
 headings.account.connected_accounts: Vos comptes connectés
 headings.account.devices: Appareils
 headings.account.events: Événements
-headings.account.federal_employee_id: Carte d’employé fédéral
+headings.account.government_employee_id: Carte d’employé fédéral
 headings.account.login_info: Votre compte
 headings.account.reactivate: Réactiver votre compte
 headings.account.two_factor: Vos méthodes d’authentification
