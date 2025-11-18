@@ -321,5 +321,46 @@ RSpec.describe AddressProofingJob, type: :job do
         expect { perform }.to raise_error(JobHelpers::StaleJobHelper::StaleJobError)
       end
     end
+
+    context 'when service returns weird HTTP 500 response' do
+      before do
+        allow(IdentityConfig.store).to receive(:idv_address_primary_vendor).and_return(:socure)
+        stub_request(:post, 'https://sandbox.socure.test/api/3.0/EmailAuthScore')
+          .to_return(
+            status: 500,
+            body: 'It works!',
+          )
+      end
+
+      it 'returns a result' do
+        perform
+
+        result = document_capture_session.load_proofing_result[:result]
+        expect(result.length).to eq(1)
+        result = result.last
+
+        expect(result[:success]).to eq(false)
+        expect(result[:exception]).not_to be_nil
+      end
+    end
+
+    context 'when Faraday error' do
+      before do
+        allow(IdentityConfig.store).to receive(:idv_address_primary_vendor).and_return(:socure)
+        allow_any_instance_of(Faraday::Connection).to receive(:post)
+          .and_raise(Faraday::ConnectionFailed)
+      end
+
+      it 'returns a result' do
+        perform
+
+        result = document_capture_session.load_proofing_result[:result]
+        expect(result.length).to eq(1)
+        result = result.last
+
+        expect(result[:success]).to eq(false)
+        expect(result[:exception]).not_to be_nil
+      end
+    end
   end
 end
