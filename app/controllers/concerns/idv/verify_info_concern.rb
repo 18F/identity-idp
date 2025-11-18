@@ -196,6 +196,7 @@ module Idv
             [:errors, :ssn],
             [:errors, :state_id_jurisdiction],
             [:proofing_results, :context, :stages, :phone_precheck, :errors, :phone],
+            [:proofing_results, :context, :stages, :phone_precheck, :alternate_result, :errors, :phone],
             [:proofing_results, :context, :stages, :resolution, :errors, :ssn],
             [:proofing_results, :context, :stages, :resolution, :reason_codes],
             [:proofing_results, :context, :stages, :residential_address, :errors, :ssn],
