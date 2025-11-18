@@ -185,6 +185,34 @@ RSpec.describe 'In Person Proofing', js: true do
       complete_enter_password_step(user)
     end
 
+    context 'when phone mfa is not enbled' do
+      let(:user) do
+        create(:user, :with_backup_code)
+      end
+
+      it 'user must complete phone step', allow_browser_log: true do
+        sign_in_and_2fa_user(user)
+        begin_in_person_proofing
+        complete_all_in_person_proofing_steps
+        fill_out_phone_form_ok('2342255432')
+        verify_phone_otp
+      end
+    end
+
+    context 'when phone precheck fails' do
+      let(:user) do
+        create(:user, :fully_registered, with: { phone: '703-555-5555' })
+      end
+
+      it 'user must complete phone step', allow_browser_log: true do
+        sign_in_and_2fa_user(user)
+        begin_in_person_proofing
+        complete_all_in_person_proofing_steps
+        fill_out_phone_form_ok('2342255432')
+        verify_phone_otp
+      end
+    end
+
     context 'when secondary vendor is enabled' do
       let(:user) do
         create(:user, :fully_registered, with: { phone: '703-555-5555' })
