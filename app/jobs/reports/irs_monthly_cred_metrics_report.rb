@@ -109,7 +109,7 @@ module Reports
         reports: reports,
         attachment_format: :csv,
       ).deliver_now
-      report_data
+      [issuer_report_data, partner_report_data]
     end
 
     def as_emailable_partner_report(date:)
@@ -126,15 +126,24 @@ module Reports
         ),
         Reporting::EmailableReport.new(
           title: "IRS Monthly Credential Metrics #{date.strftime('%B %Y')}",
-          table: report_data,
+          table: issuer_report_data,
           filename: 'irs_monthly_cred_metrics',
+        ),
+        Reporting::EmailableReport.new(
+          title: "Treasury Partner Monthly Credential Metrics #{date.strftime('%B %Y')}",
+          table: partner_report_data,
+          filename: 'treasury_monthly_cred_metrics',
         ),
 
       ]
     end
 
-    def report_data
-      @report_data ||= build_report_data
+    def issuer_report_data
+      @issuer_report_data ||= build_issuer_data
+    end
+
+    def partner_report_data
+      @partner_report_data ||= build_partner_data
     end
 
     # @return [String]
@@ -169,7 +178,7 @@ module Reports
 
     private
 
-    def build_report_data
+    def build_issuer_data
       invoice_data_csv = CSV.parse(invoice_report_data, headers: true)
 
       issuer_invoice_data = invoice_data_csv.select do |r|
@@ -182,7 +191,7 @@ module Reports
       )
 
       report_year_month = report_date.strftime('%Y%m')
-      data_row = parsed_invoice_data.filter do |row|
+      data_array = parsed_invoice_data.filter do |row|
         row['year_month'] == report_year_month
       end
 
@@ -194,15 +203,56 @@ module Reports
         [
           # Headers row
           headers,
-        ] + data_row.map do |invoice_report|
+        ] + data_array.map do |invoice_report|
               # Data rows - extract values directly from CSV row
               [invoice_report['issuer'],
                invoice_report['issuer_unique_users'].to_i, # Monthly Active Users
-               ial2_new_unique_all(invoice_report), # Credentials Authorized
+               ial2_new_unique_all(invoice_report, :issuer), # Credentials Authorized
                invoice_report['issuer_ial2_new_unique_user_events_year1_upfront'].to_i, # New identity verification credentials authorized
-               ial2_existing_credentials(invoice_report), # Existing identity verification credentials authorized
+               ial2_existing_credentials(invoice_report, :issuer), # Existing identity verification credentials authorized
                invoice_report['issuer_ial1_plus_2_total_auth_count'].to_i] # Total Auths
             end
+      return report_array
+      # rubocop:enable Layout/LineLength
+    end
+
+    def build_partner_data
+      invoice_data_csv = CSV.parse(invoice_report_data, headers: true)
+
+      partner_invoice_data = invoice_data_csv.select do |r|
+        partner_strings.include?(r['partner'])
+      end
+
+      parsed_invoice_data = CSV::Table.new(
+        partner_invoice_data,
+        headers: invoice_data_csv.headers,
+      )
+
+      report_year_month = report_date.strftime('%Y%m')
+      data_array = parsed_invoice_data.filter do |row|
+        row['year_month'] == report_year_month
+      end
+
+      data_row = data_array.first
+
+      headers = definitions_table.transpose[0]
+      headers[0] = 'Partner'
+
+      # rubocop:disable Layout/LineLength
+      report_array =
+        [
+          # Headers row
+          headers,
+          # Data row - wrap in array to match CSV structure
+          [
+            data_row['partner'],
+            partner_unique_users(data_array), # Monthly Active Users
+            ial2_new_unique_all(data_row, :partner), # Credentials Authorized
+            data_row['partner_ial2_new_unique_user_events_year1_upfront'].to_i, # New identity verification credentials authorized
+            ial2_existing_credentials(data_row, :partner), # Existing identity verification credentials authorized
+            partner_ial1_plus_2_total_auth_count(data_array), # Total Auths
+          ],
+        ]
       return report_array
       # rubocop:enable Layout/LineLength
     end
@@ -217,25 +267,67 @@ module Reports
       end
     end
 
-    def ial2_existing_credentials(row)
-      %w[
-        issuer_ial2_new_unique_user_events_year1_existing
-        issuer_ial2_new_unique_user_events_year2
-        issuer_ial2_new_unique_user_events_year3
-        issuer_ial2_new_unique_user_events_year4
-        issuer_ial2_new_unique_user_events_year5
-      ].sum { |key| row[key].to_i }
+    def partner_ial1_plus_2_total_auth_count(data_array)
+      auth_count = 0
+      data_array.map do |invoice_report|
+        auth_count += invoice_report['issuer_ial1_plus_2_total_auth_count'].to_i
+      end
+      auth_count
     end
 
-    def ial2_new_unique_all(row)
-      %w[
-        issuer_ial2_new_unique_user_events_year1_upfront
-        issuer_ial2_new_unique_user_events_year1_existing
-        issuer_ial2_new_unique_user_events_year2
-        issuer_ial2_new_unique_user_events_year3
-        issuer_ial2_new_unique_user_events_year4
-        issuer_ial2_new_unique_user_events_year5
-      ].sum { |key| row[key].to_i }
+    def partner_unique_users(data_array)
+      user_count = 0
+      data_array.map do |invoice_report|
+        user_count += invoice_report['issuer_unique_users'].to_i
+      end
+      user_count
+    end
+
+    def ial2_existing_credentials(row, report_type)
+      case report_type
+      when :partner
+        %w[
+          partner_ial2_new_unique_user_events_year1_existing
+          partner_ial2_new_unique_user_events_year2
+          partner_ial2_new_unique_user_events_year3
+          partner_ial2_new_unique_user_events_year4
+          partner_ial2_new_unique_user_events_year5
+        ].sum { |key| row[key].to_i }
+
+      when :issuer
+
+        %w[
+          issuer_ial2_new_unique_user_events_year1_existing
+          issuer_ial2_new_unique_user_events_year2
+          issuer_ial2_new_unique_user_events_year3
+          issuer_ial2_new_unique_user_events_year4
+          issuer_ial2_new_unique_user_events_year5
+        ].sum { |key| row[key].to_i }
+      end
+    end
+
+    def ial2_new_unique_all(row, report_type)
+      case report_type
+      when :partner
+        %w[
+          partner_ial2_new_unique_user_events_year1_upfront
+          partner_ial2_new_unique_user_events_year1_existing
+          partner_ial2_new_unique_user_events_year2
+          partner_ial2_new_unique_user_events_year3
+          partner_ial2_new_unique_user_events_year4
+          partner_ial2_new_unique_user_events_year5
+        ].sum { |key| row[key].to_i }
+      when :issuer
+        %w[
+          issuer_ial2_new_unique_user_events_year1_upfront
+          issuer_ial2_new_unique_user_events_year1_existing
+          issuer_ial2_new_unique_user_events_year2
+          issuer_ial2_new_unique_user_events_year3
+          issuer_ial2_new_unique_user_events_year4
+          issuer_ial2_new_unique_user_events_year5
+        ].sum { |key| row[key].to_i }
+
+      end
     end
   end
 end
