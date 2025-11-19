@@ -1004,7 +1004,7 @@ headings.account.authentication_apps: Aplicaciones de autenticación
 headings.account.connected_accounts: Sus cuentas conectadas
 headings.account.devices: Dispositivos
 headings.account.events: Eventos
-headings.account.federal_employee_id: Identificación de empleado federal
+headings.account.government_employee_id: Identificación de empleado gubernamental
 headings.account.login_info: Su cuenta
 headings.account.reactivate: Reactive su cuenta
 headings.account.two_factor: Sus métodos de autenticación

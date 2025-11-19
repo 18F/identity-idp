@@ -1006,7 +1006,7 @@ headings.account.authentication_apps: 身份证实应用程序
 headings.account.connected_accounts: 你连接的账户
 headings.account.devices: 设备
 headings.account.events: 事件
-headings.account.federal_employee_id: 政府雇员身份证件
+headings.account.government_employee_id: 政府雇员身份证件
 headings.account.login_info: 你的账户
 headings.account.reactivate: 重新激活你的账户
 headings.account.two_factor: 你的身份证实方法。
