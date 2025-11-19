@@ -289,7 +289,33 @@ RSpec.describe Reports::IrsMonthlyCredMetricsReport do
     end
 
     it 'checks partner-level counts for a single partner' do
-      fail
+        report_values = partner_table[1..].to_h
+
+        fixture_values = multi_issuer_yearmonth_data.find do |partner_data|
+          mock_partner.include?(partner_data['partner'])
+        end
+        # rubocop:disable Layout/LineLength
+
+        expected_new_ial_year1 = fixture_values['partner_ial2_new_unique_user_events_year1_upfront'].to_i
+
+        expected_existing_credentials_authorized =
+          %w[
+            partner_ial2_new_unique_user_events_year1_existing
+            partner_ial2_new_unique_user_events_year2
+            partner_ial2_new_unique_user_events_year3
+            partner_ial2_new_unique_user_events_year4
+            partner_ial2_new_unique_user_events_year5
+          ].sum { |key| fixture_values[key].to_i }
+
+        # Partner Credentials authorized
+        expected_credentials_authorized = expected_new_ial_year1 +
+                                          expected_existing_credentials_authorized
+
+        expect(report_values['Credentials authorized for partner']).to eq(expected_credentials_authorized)
+        expect(report_values['New identity verification credentials authorized for partner']).to eq(expected_new_ial_year1)
+        expect(report_values['Existing identity verification credentials authorized for partner']).to eq(expected_existing_credentials_authorized)
+        # rubocop:enable Layout/LineLength
+      end
     end
   end
 
