@@ -25,7 +25,6 @@ module Reports
     end
 
     def send_report(report_config)
-
       issuers = report_config['issuers']
       agency_abbreviation = report_config['agency_abbreviation']
       partner_emails = report_config['partner_emails']
@@ -34,14 +33,14 @@ module Reports
       @report_name = "#{agency_abbreviation.downcase}_verification_report"
       @report_title = "#{agency_abbreviation} Verification Report"
 
-      email_addresses = emails(internal_emails,partner_emails).select(&:present?)
+      email_addresses = emails(internal_emails, partner_emails).select(&:present?)
       if email_addresses.empty?
         Rails.logger.warn "No email addresses received - #{@report_title} NOT SENT"
         return false
       end
 
       emailable_reports = reports(issuers, agency_abbreviation)
-      
+
       emailable_reports.each do |report|
         upload_to_s3(report.table, report_name: report.filename)
       end
@@ -54,7 +53,7 @@ module Reports
         attachment_format: :csv,
       ).deliver_now
     end
-     
+
     # Explanatory text to go before the report in the email
     # @return [String]
     def preamble(env: Identity::Hostdata.env || 'local')
@@ -83,14 +82,14 @@ module Reports
     end
 
     def sp_verification_report(issuers, agency_abbreviation)
-      @irs_verification_report ||= Reporting::SpVerificationReport.new(
+      @sp_verification_report ||= Reporting::SpVerificationReport.new(
         time_range: previous_week_range,
         issuers: issuers || [],
         agency_abbreviation: agency_abbreviation,
       )
     end
 
-    def emails(internal_emails,partner_emails)
+    def emails(internal_emails, partner_emails)
       # internal_emails = [*IdentityConfig.store.team_daily_reports_emails]
       # partner_emails = [*IdentityConfig.store.irs_verification_report_config]
 
