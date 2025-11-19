@@ -37,7 +37,7 @@ class TabNavigationComponent < BaseComponent
           ),
           &block
         ),
-        class: 'usa-button-group__item display-list-item'
+        class: 'usa-button-group__item display-list-item',
       )
     else
       tag.li(class: 'usa-button-group__item', &block)
