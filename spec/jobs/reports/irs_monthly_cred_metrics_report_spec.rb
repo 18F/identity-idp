@@ -29,7 +29,7 @@ RSpec.describe Reports::IrsMonthlyCredMetricsReport do
   let(:mock_reports_partner_emails) { ['mock_partner@example.com'] }
   let(:mock_reports_internal_emails) { ['mock_internal@example.com'] }
   let(:mock_issuers) { ['Issuer_4'] }
-  let(:mock_partners) { ['Partner_1'] }
+  let(:mock_partner) { ['Partner_1'] }
   let(:fixture_csv_data) do
     fixture_path = Rails.root.join('spec', 'fixtures', 'partner_cred_metrics_input.csv')
     File.read(fixture_path)
@@ -45,7 +45,7 @@ RSpec.describe Reports::IrsMonthlyCredMetricsReport do
     allow(IdentityConfig.store).to receive(:team_daily_reports_emails)
       .and_return(mock_reports_internal_emails)
     allow(IdentityConfig.store).to receive(:irs_partner_strings)
-      .and_return(mock_partners)
+      .and_return(mock_partner)
     allow(IdentityConfig.store).to receive(:irs_issuers)
       .and_return(mock_issuers)
     allow(IdentityConfig.store).to receive(:s3_report_bucket_prefix)
@@ -168,9 +168,9 @@ RSpec.describe Reports::IrsMonthlyCredMetricsReport do
       create(
         :partner_account,
         id: 123,
-        name: 'Partner_1',
+        name: mock_partner,
         description: 'This is a description.',
-        requesting_agency: 'Partner_1',
+        requesting_agency: mock_partner,
       )
     end
 
