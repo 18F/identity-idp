@@ -182,12 +182,6 @@ RSpec.describe Reports::IrsMonthlyCredMetricsReport do
     let(:parsed_invoice_data) { CSV.parse(fixture_csv_data, headers: true) }
     let(:report_year_month) { report_date.strftime('%Y%m') }
 
-    let(:row) do
-      (parsed_invoice_data.find do |r|
-        r['issuer'] == mock_issuers.first && r['year_month'] == report_year_month
-      end).to_h.transform_values(&:to_i)
-    end
-
     before do
       # Override the mocks from the outer before block to use real data
       allow_any_instance_of(Reports::IrsMonthlyCredMetricsReport)
@@ -201,6 +195,17 @@ RSpec.describe Reports::IrsMonthlyCredMetricsReport do
 
     describe 'table sizes' do
       let(:mock_issuers) { ['Issuer_2', 'Issuer_3', 'Issuer_4'] }
+      let(:issuer_count) { mock_issuers.count }
+      let(:issuer_table) { result[0] }
+      let(:partner_table) { result[1] }
+      let(:result) { report.perform(report_date) }
+
+      # Get all rows for the specified issuers and year_month
+      let(:multi_issuer_yearmonth_data) do
+        parsed_invoice_data.select do |r|
+          mock_issuers.include?(r['issuer']) && r['year_month'] == report_year_month
+        end.map { |row| row.to_h }
+      end
 
       before do
         allow(IdentityConfig.store).to receive(:irs_issuers)
@@ -208,19 +213,13 @@ RSpec.describe Reports::IrsMonthlyCredMetricsReport do
       end
 
       it 'has the correct table sizes' do
-        result = report.perform(report_date)
-
+        # Check Report Tables Shape
         # One Issuer Table and One Partner Table
         expect(result.length).to eq(2)
 
-        issuer_table = result[0]
-        # Check Report Tables Shape
-
         # Issuer table
-        # One Column per metric Columns: "Metrics" and "Values"
-        # One Header Column + 5 Data Column"
+        # One Header Column + 5 Data Columns"
         # One row per issuer
-        issuer_count = mock_issuers.count
 
         aggregate_failures 'issuer table dimensions' do
           expect(issuer_table.length).to eq(1 + issuer_count)
@@ -231,7 +230,7 @@ RSpec.describe Reports::IrsMonthlyCredMetricsReport do
 
         # Check Partner Report Table Shape
         # One Header Column + 3 Data Columns"
-        partner_table = result[1]
+
         aggregate_failures 'partner table dimensions' do
           expect(partner_table.length).to eq(4)
           partner_table.each_with_index do |row, idx|
@@ -239,46 +238,54 @@ RSpec.describe Reports::IrsMonthlyCredMetricsReport do
           end
         end
       end
-    end
 
-    it 'checks issuer-level counts for a single issuer' do
-      result = report.perform(report_date)
+      it 'checks issuer-level counts for multiple issuers' do
+        issuer_table_header = issuer_table.first
 
-      data_column =
-        result.map do |row|
-          row[1]
+        issuer_table_data = issuer_table[1..]
+
+        hashed_issuer_table = issuer_table_data.map do |row|
+          issuer_table_header.zip(row).to_h
         end
 
-      # Expected values
-      expected_monthly_active_users = row['issuer_unique_users']
+        aggregate_failures 'multiple issuer values' do
+          mock_issuers.each do |issuer|
+            fixture_values = multi_issuer_yearmonth_data.find do |issuer_data|
+              issuer == issuer_data['issuer']
+        end
 
-      expected_new_ial_year1 = row['issuer_ial2_new_unique_user_events_year1_upfront']
+            report_values = hashed_issuer_table.find do |issuer_data|
+              issuer == issuer_data['Issuer']
+            end
+
+            expected_monthly_active_users = fixture_values['issuer_unique_users'].to_i
+            expected_new_ial_year1 =
+              fixture_values['issuer_ial2_new_unique_user_events_year1_upfront'].to_i
 
       expected_existing_credentials_authorized =
-        row['issuer_ial2_new_unique_user_events_year1_existing'] +
-        row['issuer_ial2_new_unique_user_events_year2'] +
-        row['issuer_ial2_new_unique_user_events_year3'] +
-        row['issuer_ial2_new_unique_user_events_year4'] +
-        row['issuer_ial2_new_unique_user_events_year5']
+              (fixture_values['issuer_ial2_new_unique_user_events_year1_existing'].to_i +
+              fixture_values['issuer_ial2_new_unique_user_events_year2'].to_i +
+              fixture_values['issuer_ial2_new_unique_user_events_year3'].to_i +
+              fixture_values['issuer_ial2_new_unique_user_events_year4'].to_i +
+              fixture_values['issuer_ial2_new_unique_user_events_year5'].to_i)
 
-      # Partner Credentials authorized
+            # Issuer Credentials authorized
       expected_credentials_authorized = expected_new_ial_year1 +
                                         expected_existing_credentials_authorized
 
       # Total Auths
-      expected_total_auths = row['issuer_ial1_plus_2_total_auth_count']
+            expected_total_auths = fixture_values['issuer_ial1_plus_2_total_auth_count'].to_i
 
       # Test the processed data
-      expect(data_column[0]).to eq('Value') # Column label
-      expect(data_column[1]).to eq(expected_monthly_active_users)
-      expect(data_column[2]).to eq(expected_credentials_authorized)
-      expect(data_column[3]).to eq(expected_new_ial_year1)
-      expect(data_column[4]).to eq(expected_existing_credentials_authorized)
-      expect(data_column[5]).to eq(expected_total_auths)
-    end
-
-    it 'checks issuer-level counts for a multiple issuers' do
-      fail
+            # rubocop:disable Layout/LineLength
+            expect(report_values['Monthly active users']).to eq(expected_monthly_active_users)
+            expect(report_values['Credentials authorized for partner']).to eq(expected_credentials_authorized)
+            expect(report_values['New identity verification credentials authorized for partner']).to eq(expected_new_ial_year1)
+            expect(report_values['Existing identity verification credentials authorized for partner']).to eq(expected_existing_credentials_authorized)
+            expect(report_values['Total authentications']).to eq(expected_total_auths)
+            # rubocop:enable Layout/LineLength
+          end
+        end
     end
 
     it 'checks partner-level counts for a single partner' do
