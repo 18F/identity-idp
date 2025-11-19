@@ -163,7 +163,7 @@ module Idv
       case idv_result[:vendor_name]
       when 'socure_phonerisk'
         'socure_address'
-      when 'lexis_nexis_address'
+      when 'lexis_nexis_address' || 'AddressMock'
         'lexis_nexis_address'
       else
         idv_result[:vendor_name]
