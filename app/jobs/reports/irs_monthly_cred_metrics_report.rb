@@ -49,17 +49,17 @@ module Reports
 
         ['Monthly active users', 'Count',
          'The total number of unique users across all IAL levels
-          that successfully signed into the partner\'s applications'],
+          that successfully signed into an application'],
 
-        ['Credentials authorized for partner', 'Count',
+        ['Credentials authorized', 'Count',
          'The total number of users (new and existing)
-         that successfully signed into the partner\'s applications'],
+         that successfully signed into an application'],
 
-        ['New identity verification credentials authorized for partner', 'Count',
-         'The number of new unique users who go through the proofing process through a partner\'s request.'],
+        ['New identity verification credentials authorized', 'Count',
+         'The number of new unique users who go through the proofing process at the application\'s request.'],
 
-        ['Existing identity verification credentials authorized for partner', 'Count',
-         'The number of new unique users who authenticated with existing identity verification credentials to the partner.'],
+        ['Existing identity verification credentials authorized', 'Count',
+         'The number of new unique users who authenticated with existing identity verification credentials.'],
 
         ['Total authentications', 'Count',
          'Total number of billable sign-ins at any IAL level in the reporting period'],
