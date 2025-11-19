@@ -233,12 +233,29 @@ class ReportMailerPreview < ActionMailer::Preview
     report_date = Time.zone.yesterday
     report = Reports::IrsMonthlyCredMetricsReport.new(report_date)
 
+    # Use the same fixture CSV data as the spec
+    fixture_csv_data = File.read(
+      Rails.root.join('spec', 'fixtures', 'partner_cred_metrics_input.csv'),
+    )
+
+    # Stub config values like the spec does
+    def report.issuers
+      ['Issuer_4']
+    end
+
+    def report.partner_strings
+      ['Partner_1']
+    end
+
+    # Stub the invoice data method with fixture data
+    report.instance_variable_set(:@invoice_report_data, fixture_csv_data)
+
     # Build emailable report
     emailable_report = report.as_emailable_partner_report(date: report_date)
 
     ReportMailer.tables_report(
       email: 'test@example.com',
-      subject: "Example Credentials Report - #{Time.zone.now.to_date}",
+      subject: "Example Partner Monthly Credentials Report - #{Time.zone.now.to_date}",
       message: report.preamble,
       reports: emailable_report,
       attachment_format: :csv,
