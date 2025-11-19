@@ -81,7 +81,7 @@ module Reports
 
       emails = email_addresses.select(&:present?)
       if emails.empty?
-        Rails.logger.warn 'No email addresses received - IRS Monthly Credential Report NOT SENT'
+        Rails.logger.warn "No email addresses received - #{partner_strings.first} Monthly Credential Report NOT SENT"
         return false
       end
 
@@ -103,13 +103,13 @@ module Reports
           )
         end
       else
-        Rails.logger.warn 'No report available - IRS Monthly Credential Report NOT SENT'
+        Rails.logger.warn "No report available - #{partner_strings.first} Monthly Credential Report NOT SENT"
         return false
       end
 
       ReportMailer.tables_report(
         email: email_addresses,
-        subject: "IRS Monthly Credential Metrics - #{@report_date.to_date}",
+        subject: "#{partner_strings.first} Monthly Credential Metrics - #{@report_date.to_date}",
         message: preamble,
         reports: reports,
         attachment_format: :csv,
@@ -123,21 +123,21 @@ module Reports
           Reporting::EmailableReport.new(
             title: 'Definitions',
             table: definitions_table,
-            filename: 'irs_monthly_cred_definitions',
+            filename: 'partner_monthly_cred_definitions',
           ),
           Reporting::EmailableReport.new(
             title: 'Overview',
             table: overview_table,
-            filename: 'irs_monthly_cred_overview',
+            filename: 'partner_monthly_cred_overview',
           ),
         ]
 
       if issuer_report_data.present?
         emailable_report_array <<
           Reporting::EmailableReport.new(
-            title: "IRS Monthly Credential Metrics #{date.strftime('%B %Y')}",
+            title: "#{partner_strings.first} Monthly Credential Metrics #{date.strftime('%B %Y')}",
             table: issuer_report_data,
-            filename: 'irs_monthly_cred_metrics',
+            filename: 'multi_issuer_monthly_cred_metrics',
           )
       else
         return nil
@@ -146,9 +146,9 @@ module Reports
       if partner_report_data.present?
         emailable_report_array <<
           Reporting::EmailableReport.new(
-            title: "Treasury Partner Monthly Credential Metrics #{date.strftime('%B %Y')}",
+            title: "Partner Monthly Credential Metrics #{date.strftime('%B %Y')}",
             table: partner_report_data,
-            filename: 'treasury_monthly_cred_metrics',
+            filename: 'partner_monthly_cred_metrics',
           )
       else
         return nil

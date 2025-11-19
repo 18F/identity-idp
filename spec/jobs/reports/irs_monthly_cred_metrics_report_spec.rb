@@ -13,10 +13,10 @@ RSpec.describe Reports::IrsMonthlyCredMetricsReport do
 
   let(:expected_s3_paths) do
     [
-      "#{report_folder}/irs_monthly_cred_metrics.csv",
-      "#{report_folder}/treasury_monthly_cred_metrics.csv",
-      "#{report_folder}/irs_monthly_cred_overview.csv",
-      "#{report_folder}/irs_monthly_cred_definitions.csv",
+      "#{report_folder}/multi_issuer_monthly_cred_metrics.csv",
+      "#{report_folder}/partner_monthly_cred_metrics.csv",
+      "#{report_folder}/partner_monthly_cred_overview.csv",
+      "#{report_folder}/partner_monthly_cred_definitions.csv",
     ]
   end
   let(:s3_metadata) do
@@ -88,7 +88,7 @@ RSpec.describe Reports::IrsMonthlyCredMetricsReport do
     it 'sends out a report to team_data and PARTNER' do
       expect(ReportMailer).to receive(:tables_report).once.with(
         email: ['mock_internal@example.com', 'mock_partner@example.com'],
-        subject: 'IRS Monthly Credential Metrics - 2021-02-28',
+        subject: "#{mock_partner.first} Monthly Credential Metrics - #{report_date.to_date}",
         reports: anything,
         message: report.preamble,
         attachment_format: :csv,
