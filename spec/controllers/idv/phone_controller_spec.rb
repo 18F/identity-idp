@@ -509,52 +509,6 @@ RSpec.describe Idv::PhoneController do
         )
       end
 
-      context '50/50 state - old' do
-        before do
-          document_capture_session = create(:document_capture_session, user:)
-          document_capture_session.create_proofing_session
-
-          subject.idv_session.idv_phone_step_document_capture_session_uuid =
-            document_capture_session.uuid
-          proofer_result = Proofing::Mock::AddressMockClient.new.proof({ phone: good_phone })
-          document_capture_session.store_proofing_result(proofer_result.to_h)
-        end
-        it 'tracks event with valid phone' do
-          proofing_phone = Phonelib.parse(good_phone)
-
-          put :create, params: { idv_phone_form: { phone: good_phone } }
-
-          expect(@analytics).to have_logged_event(
-            'IdV: phone confirmation form',
-            hash_including(:success),
-          )
-
-          expect(response).to redirect_to idv_phone_path
-
-          get :new
-
-          expect(@analytics).to have_logged_event(
-            'IdV: phone confirmation vendor',
-            success: true,
-            new_phone_added: true,
-            hybrid_handoff_phone_used: false,
-            phone_fingerprint: Pii::Fingerprinter.fingerprint(proofing_phone.e164),
-            country_code: proofing_phone.country,
-            area_code: proofing_phone.area_code,
-            vendor: {
-              vendor_name: 'AddressMock',
-              exception: nil,
-              timed_out: false,
-              transaction_id: 'address-mock-transaction-id-123',
-              reference: '',
-              result: nil,
-            },
-          )
-
-          expect(response).to redirect_to idv_otp_verification_path
-        end
-      end
-
       context 'when phonerisk is the phone proofing vendor' do
         before do
           allow(IdentityConfig.store).to receive(:idv_address_primary_vendor).and_return(:socure)
