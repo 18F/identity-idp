@@ -43,6 +43,7 @@ module Reports
     end
 
     # rubocop:disable Layout/LineLength
+
     def definitions_table
       [
         ['Metric', 'Unit', 'Definition'],
@@ -65,7 +66,6 @@ module Reports
          'Total number of billable sign-ins at any IAL level in the reporting period'],
       ]
     end
-    # rubocop:enable Layout/LineLength
 
     def overview_table
       [
@@ -106,6 +106,7 @@ module Reports
         Rails.logger.warn "No report available - #{partner_strings.first} Monthly Credential Report NOT SENT"
         return false
       end
+      # rubocop:enable Layout/LineLength
 
       ReportMailer.tables_report(
         email: email_addresses,
@@ -230,6 +231,7 @@ module Reports
       headers[0] = 'Issuer'
 
       # rubocop:disable Layout/LineLength
+
       report_array =
         [
           # Headers row
@@ -244,8 +246,8 @@ module Reports
                invoice_report['issuer_ial1_plus_2_total_auth_count'].to_i] # Total Auths
             end
       return report_array
-      # rubocop:enable Layout/LineLength
     end
+    # rubocop:enable Layout/LineLength
 
     def build_partner_data
       invoice_data_csv = CSV.parse(invoice_report_data, headers: true)
@@ -287,6 +289,7 @@ module Reports
       headers_raw[0] = data_row['partner']
 
       headers = headers_raw.values_at(0, 2, 3, 4) # Drop the MAU and Total Auths
+
       # rubocop:disable Layout/LineLength
       report_array =
         [
@@ -301,8 +304,8 @@ module Reports
           ],
         ]
       return report_array.transpose
-      # rubocop:enable Layout/LineLength
     end
+    # rubocop:enable Layout/LineLength
 
     def invoice_report_data
       @invoice_report_data ||= begin
