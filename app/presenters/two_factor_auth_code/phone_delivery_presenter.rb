@@ -22,9 +22,8 @@ module TwoFactorAuthCode
 
     def phone_number_message
       t(
-        "instructions.mfa.#{otp_delivery_preference}.number_message_html",
+        "instructions.mfa.#{otp_delivery_preference}.code_sent_message_html",
         number_html: content_tag(:strong, phone_number),
-        expiration: TwoFactorAuthenticatable::DIRECT_OTP_VALID_FOR_MINUTES,
       )
     end
 
@@ -50,6 +49,36 @@ module TwoFactorAuthCode
           phone_setup_path(otp_delivery_preference: 'voice'),
         ),
       )
+    end
+
+    def alert_countdown_phases
+      [
+        {
+          at_s: 10.minutes,
+          classes: 'usa-alert--info',
+          label: t('instructions.mfa.sms.minutes_remaining_html', minutes: 10),
+        },
+        {
+          at_s: 5.minutes,
+          classes: 'usa-alert--warning',
+          label: t('instructions.mfa.sms.minutes_remaining_html', minutes: 5),
+        },
+        {
+          at_s: 1.minute,
+          classes: 'usa-alert--warning',
+          label: t('instructions.mfa.sms.minutes_remaining_html', minutes: 1),
+        },
+        {
+          at_s: 30,
+          classes: 'usa-alert--warning',
+          label: t('instructions.mfa.sms.seconds_remaining_html', seconds: 30),
+        },
+        {
+          at_s: 0,
+          classes: 'usa-alert--error',
+          label: t('instructions.mfa.sms.code_expired_html'),
+        },
+      ]
     end
 
     def phone_call_text

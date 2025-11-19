@@ -1479,7 +1479,12 @@ instructions.mfa.piv_cac.step_2: Insérez votre PIV/CAC dans votre lecteur de ca
 instructions.mfa.piv_cac.step_3: Ajoutez votre carte PIV/CAC
 instructions.mfa.piv_cac.step_3_info_html: Vous devrez <strong>choisir un certificat</strong> (le bon a probablement votre nom) et <strong>saisir votre PIN</strong> (votre PIN a été créé lors de la configuration de votre carte PIV/CAC).
 instructions.mfa.piv_cac.try_again: réessayer
+instructions.mfa.sms.code_expired_html: '<strong>Votre code à usage unique a expiré.</strong> Cliquez sur « Envoyer un autre code » ci-dessous pour en obtenir un nouveau.'
+instructions.mfa.sms.code_sent_message_html: Nous avons envoyé un SMS (texto) avec un code à usage unique au %{number_html}.
+instructions.mfa.sms.minutes_remaining_html: 'Il vous reste <strong>%{minutes} minutes</strong> avant de devoir demander un nouveau code'
 instructions.mfa.sms.number_message_html: Nous avons envoyé un SMS (texto) avec un code à usage unique au %{number_html}. Ce code expirera dans %{expiration} minutes.
+instructions.mfa.sms.seconds_remaining_html: 'Il vous reste <strong>%{seconds} secondes</strong> avant de devoir demander un nouveau code'
+instructions.mfa.voice.code_sent_message_html: Nous avons passé un appel avec un code à usage unique au %{number_html}.
 instructions.mfa.voice.number_message_html: Nous avons passé un appel avec un code à usage unique au %{number_html}. Ce code expirera dans %{expiration} minutes.
 instructions.mfa.webauthn_platform.learn_more_help: En savoir plus sur le déverrouillage facial ou tactile
 instructions.mfa.webauthn.confirm_webauthn: Présentez la clé de sécurité associée à votre compte.
