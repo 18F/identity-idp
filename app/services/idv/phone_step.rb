@@ -57,6 +57,7 @@ module Idv
         extra: extra_analytics_attributes(idv_result.except(:alternate_result)),
       )
 
+      alternate_result = nil
       if (alt_result = idv_result[:alternate_result])
         alternate_result = FormResponse.new(
           success: alt_result[:success],
