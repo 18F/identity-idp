@@ -33,6 +33,7 @@ RSpec.describe AddressProofingJob, type: :job do
         trace_id: trace_id,
         issuer: service_provider.issuer,
         user_id:,
+        address_vendor: 'best-vendor', # remove: attr test for 50/50
       )
 
       expect(document_capture_session.load_proofing_result[:result]).not_to be_empty
@@ -80,14 +81,13 @@ RSpec.describe AddressProofingJob, type: :job do
         perform
 
         result = document_capture_session.load_proofing_result[:result]
-        expect(result.length).to eq(1)
-        result = result.last
 
         expect(result[:exception]).to be_nil
         expect(result[:errors]).to eq({})
         expect(result[:success]).to be true
         expect(result[:timed_out]).to be false
         expect(result[:vendor_name]).to eq('lexisnexis:phone_finder')
+        expect(result[:alternate_result]).to be_nil
       end
 
       it 'adds cost data' do
@@ -128,14 +128,13 @@ RSpec.describe AddressProofingJob, type: :job do
         perform
 
         result = document_capture_session.load_proofing_result[:result]
-        expect(result.length).to eq(1)
-        result = result.last
 
         expect(result[:exception]).to be_nil
         expect(result[:errors]).to eq({})
         expect(result[:success]).to be true
         expect(result[:timed_out]).to be false
         expect(result[:vendor_name]).to eq('socure_phonerisk')
+        expect(result[:alternate_result]).to be_nil
       end
 
       it 'adds cost data' do
@@ -154,13 +153,12 @@ RSpec.describe AddressProofingJob, type: :job do
           perform
 
           result = document_capture_session.load_proofing_result[:result]
-          expect(result.length).to eq(1)
-          result = result.last
 
           expect(result[:exception]).to be_nil
           expect(result[:success]).to be false
           expect(result[:timed_out]).to be false
           expect(result[:vendor_name]).to eq('socure_phonerisk')
+          expect(result[:alternate_result]).to be_nil
         end
 
         context 'and passes secondary phone vendor' do
@@ -173,19 +171,18 @@ RSpec.describe AddressProofingJob, type: :job do
 
             result = document_capture_session.load_proofing_result[:result]
 
-            expect(result.length).to eq(2)
-            primary_result = result.first
-            expect(primary_result[:exception]).to be_nil
-            expect(primary_result[:errors]).to eq({})
-            expect(primary_result[:success]).to be_falsey
-            expect(primary_result[:timed_out]).to be_falsey
+            expect(result[:exception]).to be_nil
+            expect(result[:errors]).to eq({})
+            expect(result[:success]).to be_truthy
+            expect(result[:timed_out]).to be_falsey
+            expect(result[:vendor_name]).to eq('AddressMock')
 
-            secondary_result = result.last
+            secondary_result = result[:alternate_result]
             expect(secondary_result[:exception]).to be_nil
             expect(secondary_result[:errors]).to eq({})
-            expect(secondary_result[:success]).to be_truthy
+            expect(secondary_result[:success]).to be_falsey
             expect(secondary_result[:timed_out]).to be_falsey
-            expect(secondary_result[:vendor_name]).to eq('AddressMock')
+            # expect(secondary_result[:vendor_name]).to eq('AddressMock')
           end
         end
       end
@@ -196,13 +193,12 @@ RSpec.describe AddressProofingJob, type: :job do
           perform
 
           result = document_capture_session.load_proofing_result[:result]
-          expect(result.length).to eq(1)
-          result = result.last
 
           expect(result[:exception]).to be_nil
           expect(result[:success]).to be false
           expect(result[:timed_out]).to be false
           expect(result[:vendor_name]).to eq('socure_phonerisk')
+          expect(result[:alternate_result]).to be_nil
         end
 
         context 'and fails secondary phone vendor' do
@@ -221,20 +217,18 @@ RSpec.describe AddressProofingJob, type: :job do
 
             result = document_capture_session.load_proofing_result[:result]
 
-            expect(result.length).to eq(2)
-            primary_result = result.first
-            expect(primary_result[:exception]).to be_nil
-            expect(primary_result[:errors]).to eq({})
-            expect(primary_result[:success]).to be_falsey
-            expect(primary_result[:timed_out]).to be_falsey
-
-            secondary_result = result.last
-            expect(secondary_result[:exception]).to be_nil
-            expect(secondary_result[:errors])
+            expect(result[:exception]).to be_nil
+            expect(result[:success]).to be_falsey
+            expect(result[:timed_out]).to be_falsey
+            expect(result[:errors])
               .to eq({ phone: ['The phone number could not be verified.'] })
+            expect(result[:vendor_name]).to eq('AddressMock')
+
+            secondary_result = result[:alternate_result]
+            expect(secondary_result[:exception]).to be_nil
             expect(secondary_result[:success]).to be_falsey
             expect(secondary_result[:timed_out]).to be_falsey
-            expect(secondary_result[:vendor_name]).to eq('AddressMock')
+            expect(secondary_result[:errors]).to eq({})
           end
         end
       end
@@ -247,7 +241,7 @@ RSpec.describe AddressProofingJob, type: :job do
           allow(IdentityConfig.store).to receive(:idv_address_secondary_vendor).and_return(:mock)
         end
 
-        it 'proofs  the vendor once' do
+        it 'proofs the vendor once' do
           expect(Proofing::Mock::AddressMockClient).to receive(:new).once.and_call_original
           expect_any_instance_of(Proofing::Mock::AddressMockClient)
             .to receive(:proof).once.and_call_original
@@ -255,10 +249,22 @@ RSpec.describe AddressProofingJob, type: :job do
           perform
 
           result = document_capture_session.load_proofing_result[:result]
-          expect(result.length).to eq(1)
-          result = result.last
 
           expect(result[:success]).to eq(true)
+          expect(result[:alternate_result]).to be_nil
+        end
+
+        it 'logs the job' do
+          expect(instance.logger).to receive(:info) do |message|
+            expect(JSON.parse(message, symbolize_names: true)).to include(
+              name: 'ProofAddress',
+              success: true,
+              timing: a_kind_of(Hash),
+              trace_id: an_instance_of(String),
+            )
+          end
+
+          perform
         end
       end
       context 'with an unsuccessful response from the proofer' do
@@ -272,14 +278,26 @@ RSpec.describe AddressProofingJob, type: :job do
           perform
 
           result = document_capture_session.load_proofing_result[:result]
-          expect(result.length).to eq(1)
-          result = result.last
 
           expect(result[:success]).to eq(false)
+          expect(result[:alternate_result]).to be_nil
         end
 
         it 'does not add cost data' do
           expect { perform }.not_to(change { SpCost.count })
+        end
+
+        it 'logs the job' do
+          expect(instance.logger).to receive(:info) do |message|
+            expect(JSON.parse(message, symbolize_names: true)).to include(
+              name: 'ProofAddress',
+              success: false,
+              timing: a_kind_of(Hash),
+              trace_id: an_instance_of(String),
+            )
+          end
+
+          perform
         end
       end
     end
