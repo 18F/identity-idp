@@ -324,10 +324,6 @@ module Idv
         user_session['idv/in_person'][:pii_from_user].has_key?(:identity_doc_address1)
     end
 
-    def ipp_already_proofed?
-      ipp_aamva_result.present? && ipp_aamva_result['success'] == true
-    end
-
     def ssn_step_complete?
       ssn.present?
     end

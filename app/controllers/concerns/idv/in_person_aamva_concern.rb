@@ -41,7 +41,14 @@ module Idv
         return
       end
 
+      if current_state.none?
+        analytics.idv_in_person_proofing_state_id_visited(**analytics_arguments)
+        render :show, locals: extra_view_variables
+        return
+      end
+
       if current_state.missing?
+        analytics.idv_ipp_aamva_proofing_result_missing
         flash[:error] = I18n.t('idv.failure.timeout')
         delete_aamva_async_state
         render :show, locals: extra_view_variables
@@ -63,7 +70,7 @@ module Idv
 
     def handle_aamva_rate_limit
       analytics.idv_ipp_aamva_rate_limited(step: controller_name)
-      flash[:error] = I18n.t('idv.failure.phone.rate_limited.heading')
+      flash[:error] = I18n.t('doc_auth.errors.rate_limited_heading')
     end
 
     def encrypt_pii_for_job(pii)

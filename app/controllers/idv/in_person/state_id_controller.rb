@@ -84,6 +84,7 @@ module Idv
               return
             end
 
+            aamva_rate_limiter.increment!
             start_aamva_async_state
             redirect_to idv_in_person_state_id_url
             return

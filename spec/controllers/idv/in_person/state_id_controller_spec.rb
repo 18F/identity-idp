@@ -394,25 +394,27 @@ RSpec.describe Idv::InPerson::StateIdController do
       allow(IdentityConfig.store).to receive(:idv_aamva_at_doc_auth_enabled).and_return(true)
     end
 
+    def valid_state_id_params(same_address_as_id: 'true')
+      {
+        identity_doc: {
+          first_name: 'Charity',
+          last_name: 'Johnson',
+          same_address_as_id: same_address_as_id,
+          identity_doc_address1: InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS1,
+          identity_doc_address2: InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS2,
+          identity_doc_city: InPersonHelper::GOOD_IDENTITY_DOC_CITY,
+          state_id_jurisdiction: 'AL',
+          id_number: 'ABC123234',
+          identity_doc_address_state: InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS_STATE,
+          identity_doc_zipcode: InPersonHelper::GOOD_IDENTITY_DOC_ZIPCODE,
+          dob: { month: '1', day: '1', year: '1980' },
+          id_expiration: { month: '12', day: '31', year: '2030' },
+        },
+      }
+    end
+
     context 'when redirecting to SSN page (same_address_as_id is true)' do
-      let(:params) do
-        {
-          identity_doc: {
-            first_name: 'Charity',
-            last_name: 'Johnson',
-            same_address_as_id: 'true',
-            identity_doc_address1: InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS1,
-            identity_doc_address2: InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS2,
-            identity_doc_city: InPersonHelper::GOOD_IDENTITY_DOC_CITY,
-            state_id_jurisdiction: 'AL',
-            id_number: 'ABC123234',
-            identity_doc_address_state: InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS_STATE,
-            identity_doc_zipcode: InPersonHelper::GOOD_IDENTITY_DOC_ZIPCODE,
-            dob: { month: '1', day: '1', year: '1980' },
-            id_expiration: { month: '12', day: '31', year: '2030' },
-          },
-        }
-      end
+      let(:params) { valid_state_id_params(same_address_as_id: 'true') }
 
       it 'enqueues async AAMVA job and redirects to state_id page for polling' do
         expect(IppAamvaProofingJob).to receive(:perform_later)
@@ -421,6 +423,18 @@ RSpec.describe Idv::InPerson::StateIdController do
 
         expect(response).to redirect_to(idv_in_person_state_id_url)
         expect(subject.idv_session.ipp_aamva_document_capture_session_uuid).to be_present
+      end
+
+      it 'increments the rate limiter' do
+        rate_limiter = instance_double(RateLimiter)
+        allow(RateLimiter).to receive(:new).with(
+          user: user,
+          rate_limit_type: :idv_doc_auth,
+        ).and_return(rate_limiter)
+        allow(rate_limiter).to receive(:limited?).and_return(false)
+        expect(rate_limiter).to receive(:increment!)
+
+        put :update, params: params
       end
 
       context 'when async AAMVA check is in progress' do
@@ -562,6 +576,65 @@ RSpec.describe Idv::InPerson::StateIdController do
         end
       end
 
+      context 'when async AAMVA state is none' do
+        before do
+          subject.idv_session.ipp_aamva_document_capture_session_uuid = nil
+        end
+
+        it 'renders the show page' do
+          get :show
+
+          expect(response).to render_template(:show)
+        end
+
+        it 'logs state_id visited event' do
+          get :show
+
+          expect(@analytics).to have_logged_event(
+            'IdV: in person proofing state_id visited',
+            analytics_id: 'In Person Proofing',
+            flow_path: 'standard',
+            step: 'state_id',
+            opted_in_to_in_person_proofing: true,
+          )
+        end
+      end
+
+      context 'when async AAMVA state is missing' do
+        let(:document_capture_session) do
+          DocumentCaptureSession.create!(
+            user_id: user.id,
+            issuer: nil,
+            requested_at: Time.zone.now,
+          )
+        end
+
+        before do
+          # Create DCS but don't store any proofing result (simulates expired Redis data)
+          subject.idv_session.ipp_aamva_document_capture_session_uuid =
+            document_capture_session.uuid
+        end
+
+        it 'renders the show page with error' do
+          get :show
+
+          expect(response).to render_template(:show)
+          expect(flash[:error]).to eq(I18n.t('idv.failure.timeout'))
+        end
+
+        it 'clears the async state' do
+          get :show
+
+          expect(subject.idv_session.ipp_aamva_document_capture_session_uuid).to be_nil
+        end
+
+        it 'logs missing result event' do
+          get :show
+
+          expect(@analytics).to have_logged_event(:idv_ipp_aamva_proofing_result_missing)
+        end
+      end
+
       context 'when AAMVA is disabled' do
         before do
           allow(IdentityConfig.store).to receive(:idv_aamva_at_doc_auth_enabled).and_return(false)
@@ -582,24 +655,7 @@ RSpec.describe Idv::InPerson::StateIdController do
     end
 
     context 'when redirecting to Address page (same_address_as_id is false)' do
-      let(:params) do
-        {
-          identity_doc: {
-            first_name: 'Charity',
-            last_name: 'Johnson',
-            same_address_as_id: 'false',
-            identity_doc_address1: InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS1,
-            identity_doc_address2: InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS2,
-            identity_doc_city: InPersonHelper::GOOD_IDENTITY_DOC_CITY,
-            state_id_jurisdiction: 'AL',
-            id_number: 'ABC123234',
-            identity_doc_address_state: InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS_STATE,
-            identity_doc_zipcode: InPersonHelper::GOOD_IDENTITY_DOC_ZIPCODE,
-            dob: { month: '1', day: '1', year: '1980' },
-            id_expiration: { month: '12', day: '31', year: '2030' },
-          },
-        }
-      end
+      let(:params) { valid_state_id_params(same_address_as_id: 'false') }
 
       it 'enqueues AAMVA job and redirects to state_id page for polling' do
         expect(IppAamvaProofingJob).to receive(:perform_later)
@@ -660,36 +716,19 @@ RSpec.describe Idv::InPerson::StateIdController do
     end
 
     context 'when rate limited' do
+      let(:rate_limiter) { instance_double(RateLimiter) }
+      let(:params) { valid_state_id_params(same_address_as_id: 'true') }
+
       before do
-        rate_limiter = instance_double(RateLimiter)
         allow(RateLimiter).to receive(:new).and_return(rate_limiter)
         allow(rate_limiter).to receive(:limited?).and_return(true)
-      end
-
-      let(:params) do
-        {
-          identity_doc: {
-            first_name: 'Charity',
-            last_name: 'Johnson',
-            same_address_as_id: 'true',
-            identity_doc_address1: InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS1,
-            identity_doc_address2: InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS2,
-            identity_doc_city: InPersonHelper::GOOD_IDENTITY_DOC_CITY,
-            state_id_jurisdiction: 'AL',
-            id_number: 'ABC123234',
-            identity_doc_address_state: InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS_STATE,
-            identity_doc_zipcode: InPersonHelper::GOOD_IDENTITY_DOC_ZIPCODE,
-            dob: { month: '1', day: '1', year: '1980' },
-            id_expiration: { month: '12', day: '31', year: '2030' },
-          },
-        }
       end
 
       it 'renders the show page with error' do
         put :update, params: params
 
         expect(response).to render_template(:show)
-        expect(flash[:error]).to eq(I18n.t('idv.failure.phone.rate_limited.heading'))
+        expect(flash[:error]).to eq(I18n.t('doc_auth.errors.rate_limited_heading'))
       end
 
       it 'logs rate limit event' do
@@ -703,6 +742,12 @@ RSpec.describe Idv::InPerson::StateIdController do
 
       it 'does not enqueue AAMVA job when rate limited' do
         expect(IppAamvaProofingJob).not_to receive(:perform_later)
+
+        put :update, params: params
+      end
+
+      it 'does not increment rate limiter when already limited' do
+        expect(rate_limiter).not_to receive(:increment!)
 
         put :update, params: params
       end

@@ -14,9 +14,12 @@ class IppAamvaProofingJob < ApplicationJob
     user_id:,
     service_provider_issuer: nil
   )
+    @user_id = user_id
+    @service_provider_issuer = service_provider_issuer
     timer = JobHelpers::Timer.new
 
     user = User.find_by(id: user_id)
+    raise ArgumentError, 'User not found' if user.nil?
 
     raise_stale_job! if stale_job?(enqueued_at)
 
@@ -36,6 +39,8 @@ class IppAamvaProofingJob < ApplicationJob
       current_sp: current_sp,
       timer: timer,
     )
+
+    log_aamva_analytics(aamva_result, trace_id)
 
     result_hash = build_result_hash(aamva_result)
 
@@ -76,6 +81,40 @@ class IppAamvaProofingJob < ApplicationJob
       aamva_status: doc_auth_response.success? ? :passed : :failed,
       checked_at: Time.zone.now.iso8601,
     }
+  end
+
+  def log_aamva_analytics(aamva_result, trace_id)
+    return unless aamva_result.exception.present?
+
+    analytics_hash = {
+      trace_id: trace_id,
+    }
+
+    if aamva_result.timed_out?
+      NewRelic::Agent.notice_error(aamva_result.exception)
+      analytics.idv_ipp_aamva_timeout(
+        exception_class: aamva_result.exception.class.to_s,
+        step: 'ipp_aamva_proofing_job',
+        **analytics_hash,
+      )
+    elsif aamva_result.mva_exception?
+      NewRelic::Agent.notice_error(aamva_result.exception)
+      analytics.idv_ipp_aamva_exception(
+        exception_class: aamva_result.exception.class.to_s,
+        exception_message: aamva_result.exception.message,
+        step: 'ipp_aamva_proofing_job',
+        **analytics_hash,
+      )
+    end
+  end
+
+  def analytics
+    @analytics ||= Analytics.new(
+      user: User.find_by(id: @user_id),
+      request: nil,
+      session: {},
+      sp: @service_provider_issuer,
+    )
   end
 
   def logger_info_hash(hash)
