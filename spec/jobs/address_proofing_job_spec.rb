@@ -33,6 +33,7 @@ RSpec.describe AddressProofingJob, type: :job do
         trace_id: trace_id,
         issuer: service_provider.issuer,
         user_id:,
+        address_vendor: 'best-vendor', # todo: attr test for 50/50
       )
 
       expect(document_capture_session.load_proofing_result[:result]).not_to be_empty

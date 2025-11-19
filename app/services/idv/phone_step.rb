@@ -45,7 +45,7 @@ module Idv
     def async_state_done(async_state)
       result = async_state.result
       if result.is_a?(Hash) # 50/50
-        result = [result]
+        result = [result.with_indifferent_access]
       end
 
       alt_result = result.many? ? result.first : nil
