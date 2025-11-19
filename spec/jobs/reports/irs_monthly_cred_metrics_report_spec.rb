@@ -252,7 +252,7 @@ RSpec.describe Reports::IrsMonthlyCredMetricsReport do
           mock_issuers.each do |issuer|
             fixture_values = multi_issuer_yearmonth_data.find do |issuer_data|
               issuer == issuer_data['issuer']
-        end
+            end
 
             report_values = hashed_issuer_table.find do |issuer_data|
               issuer == issuer_data['Issuer']
@@ -262,7 +262,7 @@ RSpec.describe Reports::IrsMonthlyCredMetricsReport do
             expected_new_ial_year1 =
               fixture_values['issuer_ial2_new_unique_user_events_year1_upfront'].to_i
 
-      expected_existing_credentials_authorized =
+            expected_existing_credentials_authorized =
               (fixture_values['issuer_ial2_new_unique_user_events_year1_existing'].to_i +
               fixture_values['issuer_ial2_new_unique_user_events_year2'].to_i +
               fixture_values['issuer_ial2_new_unique_user_events_year3'].to_i +
@@ -270,13 +270,13 @@ RSpec.describe Reports::IrsMonthlyCredMetricsReport do
               fixture_values['issuer_ial2_new_unique_user_events_year5'].to_i)
 
             # Issuer Credentials authorized
-      expected_credentials_authorized = expected_new_ial_year1 +
-                                        expected_existing_credentials_authorized
+            expected_credentials_authorized = expected_new_ial_year1 +
+                                              expected_existing_credentials_authorized
 
-      # Total Auths
+            # Total Auths
             expected_total_auths = fixture_values['issuer_ial1_plus_2_total_auth_count'].to_i
 
-      # Test the processed data
+            # Test the processed data
             # rubocop:disable Layout/LineLength
             expect(report_values['Monthly active users']).to eq(expected_monthly_active_users)
             expect(report_values['Credentials authorized for partner']).to eq(expected_credentials_authorized)
@@ -286,9 +286,9 @@ RSpec.describe Reports::IrsMonthlyCredMetricsReport do
             # rubocop:enable Layout/LineLength
           end
         end
-    end
+      end
 
-    it 'checks partner-level counts for a single partner' do
+      it 'checks partner-level counts for a single partner' do
         report_values = partner_table[1..].to_h
 
         fixture_values = multi_issuer_yearmonth_data.find do |partner_data|
