@@ -102,10 +102,10 @@ RSpec.describe Reports::IrsMonthlyCredMetricsReport do
     let(:report_date) { Date.new(2021, 3, 15).prev_day }
     subject(:report) { described_class.new(report_date, :internal) }
 
-    it 'sends out a report to team data' do
+    it 'sends out a report to internal receivers' do
       expect(ReportMailer).to receive(:tables_report).once.with(
-        email: ['mock_internal@example.com'],
-        subject: 'IRS Monthly Credential Metrics - 2021-03-14',
+        email: mock_reports_internal_emails,
+        subject: "#{mock_partner.first} Monthly Credential Metrics - #{report_date}",
         reports: anything,
         message: report.preamble,
         attachment_format: :csv,
@@ -279,9 +279,9 @@ RSpec.describe Reports::IrsMonthlyCredMetricsReport do
             # Test the processed data
             # rubocop:disable Layout/LineLength
             expect(report_values['Monthly active users']).to eq(expected_monthly_active_users)
-            expect(report_values['Credentials authorized for partner']).to eq(expected_credentials_authorized)
-            expect(report_values['New identity verification credentials authorized for partner']).to eq(expected_new_ial_year1)
-            expect(report_values['Existing identity verification credentials authorized for partner']).to eq(expected_existing_credentials_authorized)
+            expect(report_values['Credentials authorized']).to eq(expected_credentials_authorized)
+            expect(report_values['New identity verification credentials authorized']).to eq(expected_new_ial_year1)
+            expect(report_values['Existing identity verification credentials authorized']).to eq(expected_existing_credentials_authorized)
             expect(report_values['Total authentications']).to eq(expected_total_auths)
             # rubocop:enable Layout/LineLength
           end
@@ -306,14 +306,13 @@ RSpec.describe Reports::IrsMonthlyCredMetricsReport do
             partner_ial2_new_unique_user_events_year4
             partner_ial2_new_unique_user_events_year5
           ].sum { |key| fixture_values[key].to_i }
-
         # Partner Credentials authorized
         expected_credentials_authorized = expected_new_ial_year1 +
                                           expected_existing_credentials_authorized
 
-        expect(report_values['Credentials authorized for partner']).to eq(expected_credentials_authorized)
-        expect(report_values['New identity verification credentials authorized for partner']).to eq(expected_new_ial_year1)
-        expect(report_values['Existing identity verification credentials authorized for partner']).to eq(expected_existing_credentials_authorized)
+        expect(report_values['Credentials authorized']).to eq(expected_credentials_authorized)
+        expect(report_values['New identity verification credentials authorized']).to eq(expected_new_ial_year1)
+        expect(report_values['Existing identity verification credentials authorized']).to eq(expected_existing_credentials_authorized)
         # rubocop:enable Layout/LineLength
       end
     end
