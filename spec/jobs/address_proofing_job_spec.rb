@@ -253,6 +253,19 @@ RSpec.describe AddressProofingJob, type: :job do
           expect(result[:success]).to eq(true)
           expect(result[:alternate_result]).to be_nil
         end
+
+        it 'logs the job' do
+          expect(instance.logger).to receive(:info) do |message|
+            expect(JSON.parse(message, symbolize_names: true)).to include(
+              name: 'ProofAddress',
+              success: true,
+              timing: a_kind_of(Hash),
+              trace_id: an_instance_of(String),
+            )
+          end
+
+          perform
+        end
       end
       context 'with an unsuccessful response from the proofer' do
         let(:applicant_pii) do
@@ -272,6 +285,19 @@ RSpec.describe AddressProofingJob, type: :job do
 
         it 'does not add cost data' do
           expect { perform }.not_to(change { SpCost.count })
+        end
+
+        it 'logs the job' do
+          expect(instance.logger).to receive(:info) do |message|
+            expect(JSON.parse(message, symbolize_names: true)).to include(
+              name: 'ProofAddress',
+              success: false,
+              timing: a_kind_of(Hash),
+              trace_id: an_instance_of(String),
+            )
+          end
+
+          perform
         end
       end
     end
