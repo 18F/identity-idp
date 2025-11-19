@@ -30,13 +30,13 @@ class AddressProofingJob < ApplicationJob
     end
 
     document_capture_session = DocumentCaptureSession.new(result_id:)
-    document_capture_session.store_proofing_result(proofer_result.map(&:to_h))
+    document_capture_session.store_proofing_result(proofer_result)
   ensure
     logger.info(
       {
         name: 'ProofAddress',
         trace_id: trace_id,
-        success: proofer_result&.any?(&:success?),
+        success: proofer_result,
         timing: timer.results,
       }.to_json,
     )
