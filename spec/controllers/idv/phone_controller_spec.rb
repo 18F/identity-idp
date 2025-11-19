@@ -509,9 +509,9 @@ RSpec.describe Idv::PhoneController do
         )
       end
 
-      context 'when phonerisk is the phone proofing vendor' do
+      context 'when phonerisk is the phone prooving vendor' do
         before do
-          allow(IdentityConfig.store).to receive(:idv_address_primary_vendor).and_return(:socure)
+          allow(IdentityConfig.store).to receive(:idv_address_default_vendor).and_return(:socure)
           stub_request(:post, 'https://sandbox.socure.test/api/3.0/EmailAuthScore')
             .to_return(
               status: 200,
@@ -566,7 +566,7 @@ RSpec.describe Idv::PhoneController do
                 phonerisk: { reason_codes: {}, score: 0.01 },
               },
               timed_out: false,
-              transaction_id: 'some-reference-id',
+              transaction_id: '',
               vendor_name: 'socure_phonerisk',
             },
           )
@@ -659,82 +659,6 @@ RSpec.describe Idv::PhoneController do
             result: nil,
           },
         )
-      end
-
-      context 'secondary vendor is successful' do
-        before do
-          allow(IdentityConfig.store).to receive(:idv_address_secondary_vendor).and_return(:socure)
-          stub_request(:post, 'https://sandbox.socure.test/api/3.0/EmailAuthScore')
-            .to_return(
-              status: 200,
-              body: {
-                referenceId: 'some-reference-id',
-                namePhoneCorrelation: {
-                  reasonCodes: [],
-                  score: 0.99,
-                },
-                phoneRisk: {
-                  reasonCodes: [],
-                  score: 0.01,
-                },
-                customerProfile: {
-                  customerUserId: user.uuid,
-                },
-              }.to_json,
-              headers: {
-                'Content-Type': 'application/json',
-              },
-            )
-        end
-
-        it 'tracks event with alternate result' do
-          proofing_phone = Phonelib.parse(bad_phone)
-
-          put :create, params: { idv_phone_form: { phone: bad_phone } }
-
-          expect(@analytics).to have_logged_event(
-            'IdV: phone confirmation form',
-            hash_including(:success),
-          )
-
-          expect(response).to redirect_to idv_phone_path
-
-          get :new
-
-          expect(@analytics).to have_logged_event(
-            'IdV: phone confirmation vendor',
-            success: true,
-            new_phone_added: true,
-            hybrid_handoff_phone_used: false,
-            phone_fingerprint: Pii::Fingerprinter.fingerprint(proofing_phone.e164),
-            country_code: proofing_phone.country,
-            area_code: proofing_phone.area_code,
-            vendor: {
-              exception: nil,
-              reference: 'some-reference-id',
-              result: {
-                customer_user_id: user.uuid,
-                name_phone_correlation: { reason_codes: {}, score: 0.99 },
-                phonerisk: { reason_codes: {}, score: 0.01 },
-              },
-              timed_out: false,
-              transaction_id: 'some-reference-id',
-              vendor_name: 'socure_phonerisk',
-            },
-            alternate_result: {
-              errors: { phone: ['The phone number could not be verified.'] },
-              success: false,
-              vendor: {
-                exception: nil,
-                reference: '',
-                result: nil,
-                timed_out: false,
-                transaction_id: 'address-mock-transaction-id-123',
-                vendor_name: 'AddressMock',
-              },
-            },
-          )
-        end
       end
 
       context 'when the user is rate limited by submission' do

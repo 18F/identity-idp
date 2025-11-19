@@ -31,6 +31,7 @@ RSpec.describe IdentityJobLogSubscriber, type: :job do
       trace_id: nil,
       user_id: document_capture_session.user_id,
       issuer: build(:service_provider).issuer,
+      address_vendor: :mock,
     )
   end
 
@@ -57,6 +58,7 @@ RSpec.describe IdentityJobLogSubscriber, type: :job do
         trace_id: nil,
         user_id: SecureRandom.random_number(1000),
         issuer: build(:service_provider).issuer,
+        address_vendor: :mock,
       )
     end.to raise_error(ArgumentError)
   end

@@ -12,24 +12,20 @@ module Proofing
           private
 
           def build_result_from_error(err)
-            reference = err.respond_to?(:reference_id) ? err.reference_id : nil
             AddressResult.new(
               success: false,
               exception: err,
               vendor_name: VENDOR_NAME,
-              reference:,
-              transaction_id: reference,
+              reference: err.respond_to?(:reference_id) ? err.reference_id : nil,
             )
           end
 
           def build_result_from_response(response)
-            reference = response.reference_id
             AddressResult.new(
               success: success?(response),
               exception: nil,
               vendor_name: VENDOR_NAME,
-              reference:,
-              transaction_id: reference,
+              reference: response.reference_id,
               result: response.to_h,
             )
           end

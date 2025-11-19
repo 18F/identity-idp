@@ -143,9 +143,11 @@ RSpec.describe SocureShadowModePhoneRiskJob do
             exception: nil,
             reference:,
             success: true,
-            transaction_id: reference,
+            transaction_id: '',
             vendor_name: 'socure_phonerisk',
             timed_out: false,
+            # vendor_workflow: nil,
+            # verified_attributes: %i[address first_name last_name phone ssn dob].to_set,
           },
         }
       end

@@ -145,18 +145,4 @@ module IdvStepConcern
   def clear_future_steps_from!(controller:)
     flow_policy.undo_future_steps_from_controller!(controller: controller)
   end
-
-  def mfa_configured_phone?(phone)
-    context = MfaContext.new(current_user)
-    configured_phones = context.phone_configurations.map(&:phone).map do |number|
-      PhoneFormatter.format(number)
-    end
-    formatted_phone = PhoneFormatter.format(phone)
-    configured_phones.include?(formatted_phone)
-  end
-
-  def hybrid_handoff_phone?(phone)
-    PhoneFormatter.format(phone) ==
-      PhoneFormatter.format(idv_session.phone_for_mobile_flow)
-  end
 end

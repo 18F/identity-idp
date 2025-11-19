@@ -20,11 +20,7 @@ RSpec.describe AddressProofingJob, type: :job do
   end
   let(:trace_id) { SecureRandom.hex }
   let(:user_id) { document_capture_session.user_id }
-  let(:address_vendor) { :mock }
 
-  before do
-    allow(IdentityConfig.store).to receive(:idv_address_primary_vendor).and_return(address_vendor)
-  end
   describe '.perform_later' do
     it 'stores results' do
       AddressProofingJob.perform_later(
@@ -32,15 +28,19 @@ RSpec.describe AddressProofingJob, type: :job do
         encrypted_arguments: encrypted_arguments,
         trace_id: trace_id,
         issuer: service_provider.issuer,
+        address_vendor: :mock,
         user_id:,
       )
 
-      expect(document_capture_session.load_proofing_result[:result]).not_to be_empty
+      result = document_capture_session.load_proofing_result[:result]
+      expect(result).to be_present
     end
   end
 
   describe '#perform' do
     let(:conversation_id) { SecureRandom.hex }
+    let(:address_vendor) { :lexis_nexis }
+
     let(:instance) { AddressProofingJob.new }
     subject(:perform) do
       instance.perform(
@@ -48,12 +48,12 @@ RSpec.describe AddressProofingJob, type: :job do
         encrypted_arguments: encrypted_arguments,
         trace_id: trace_id,
         issuer: service_provider.issuer,
+        address_vendor:,
         user_id:,
       )
     end
 
-    context 'webmock lexisnexis vendor' do
-      let(:address_vendor) { :lexis_nexis }
+    context 'webmock vendor' do
       before do
         stub_request(
           :post,
@@ -80,8 +80,6 @@ RSpec.describe AddressProofingJob, type: :job do
         perform
 
         result = document_capture_session.load_proofing_result[:result]
-        expect(result.length).to eq(1)
-        result = result.last
 
         expect(result[:exception]).to be_nil
         expect(result[:errors]).to eq({})
@@ -96,7 +94,6 @@ RSpec.describe AddressProofingJob, type: :job do
         sp_cost = SpCost.last
         expect(sp_cost.issuer).to eq(service_provider.issuer)
         expect(sp_cost.transaction_id).to eq(conversation_id)
-        expect(sp_cost.cost_type).to eq('lexis_nexis_address')
       end
     end
 
@@ -110,7 +107,7 @@ RSpec.describe AddressProofingJob, type: :job do
           'https://sandbox.socure.test/api/3.0/EmailAuthScore',
         ).to_return(
           body: {
-            referenceId: conversation_id,
+            reference: '',
             phoneRisk: {
               score: phonerisk_score,
               reasonCodes: [],
@@ -128,8 +125,6 @@ RSpec.describe AddressProofingJob, type: :job do
         perform
 
         result = document_capture_session.load_proofing_result[:result]
-        expect(result.length).to eq(1)
-        result = result.last
 
         expect(result[:exception]).to be_nil
         expect(result[:errors]).to eq({})
@@ -138,13 +133,8 @@ RSpec.describe AddressProofingJob, type: :job do
         expect(result[:vendor_name]).to eq('socure_phonerisk')
       end
 
-      it 'adds cost data' do
-        expect { perform }.to(change { SpCost.count }.by(1))
-
-        sp_cost = SpCost.last
-        expect(sp_cost.issuer).to eq(service_provider.issuer)
-        expect(sp_cost.transaction_id).to eq(conversation_id)
-        expect(sp_cost.cost_type).to eq('socure_address')
+      it 'does not add cost data' do
+        expect { perform }.not_to(change { SpCost.count })
       end
 
       context 'high phonerisk score' do
@@ -154,39 +144,11 @@ RSpec.describe AddressProofingJob, type: :job do
           perform
 
           result = document_capture_session.load_proofing_result[:result]
-          expect(result.length).to eq(1)
-          result = result.last
 
           expect(result[:exception]).to be_nil
           expect(result[:success]).to be false
           expect(result[:timed_out]).to be false
           expect(result[:vendor_name]).to eq('socure_phonerisk')
-        end
-
-        context 'and passes secondary phone vendor' do
-          before do
-            allow(IdentityConfig.store).to receive(:idv_address_secondary_vendor).and_return(:mock)
-          end
-
-          it 'passes proofing' do
-            perform
-
-            result = document_capture_session.load_proofing_result[:result]
-
-            expect(result.length).to eq(2)
-            primary_result = result.first
-            expect(primary_result[:exception]).to be_nil
-            expect(primary_result[:errors]).to eq({})
-            expect(primary_result[:success]).to be_falsey
-            expect(primary_result[:timed_out]).to be_falsey
-
-            secondary_result = result.last
-            expect(secondary_result[:exception]).to be_nil
-            expect(secondary_result[:errors]).to eq({})
-            expect(secondary_result[:success]).to be_truthy
-            expect(secondary_result[:timed_out]).to be_falsey
-            expect(secondary_result[:vendor_name]).to eq('AddressMock')
-          end
         end
       end
       context 'low name phone correlation score' do
@@ -196,71 +158,17 @@ RSpec.describe AddressProofingJob, type: :job do
           perform
 
           result = document_capture_session.load_proofing_result[:result]
-          expect(result.length).to eq(1)
-          result = result.last
 
           expect(result[:exception]).to be_nil
           expect(result[:success]).to be false
           expect(result[:timed_out]).to be false
           expect(result[:vendor_name]).to eq('socure_phonerisk')
         end
-
-        context 'and fails secondary phone vendor' do
-          let(:applicant_pii) do
-            super().merge(
-              phone: Proofing::Mock::AddressMockClient::UNVERIFIABLE_PHONE_NUMBER,
-            )
-          end
-
-          before do
-            allow(IdentityConfig.store).to receive(:idv_address_secondary_vendor).and_return(:mock)
-          end
-
-          it 'passes proofing' do
-            perform
-
-            result = document_capture_session.load_proofing_result[:result]
-
-            expect(result.length).to eq(2)
-            primary_result = result.first
-            expect(primary_result[:exception]).to be_nil
-            expect(primary_result[:errors]).to eq({})
-            expect(primary_result[:success]).to be_falsey
-            expect(primary_result[:timed_out]).to be_falsey
-
-            secondary_result = result.last
-            expect(secondary_result[:exception]).to be_nil
-            expect(secondary_result[:errors])
-              .to eq({ phone: ['The phone number could not be verified.'] })
-            expect(secondary_result[:success]).to be_falsey
-            expect(secondary_result[:timed_out]).to be_falsey
-            expect(secondary_result[:vendor_name]).to eq('AddressMock')
-          end
-        end
       end
     end
 
     context 'mock proofer' do
       let(:address_vendor) { :mock }
-      context 'same primary and secondary vendor' do
-        before do
-          allow(IdentityConfig.store).to receive(:idv_address_secondary_vendor).and_return(:mock)
-        end
-
-        it 'proofs  the vendor once' do
-          expect(Proofing::Mock::AddressMockClient).to receive(:new).once.and_call_original
-          expect_any_instance_of(Proofing::Mock::AddressMockClient)
-            .to receive(:proof).once.and_call_original
-
-          perform
-
-          result = document_capture_session.load_proofing_result[:result]
-          expect(result.length).to eq(1)
-          result = result.last
-
-          expect(result[:success]).to eq(true)
-        end
-      end
       context 'with an unsuccessful response from the proofer' do
         let(:applicant_pii) do
           super().merge(
@@ -272,25 +180,9 @@ RSpec.describe AddressProofingJob, type: :job do
           perform
 
           result = document_capture_session.load_proofing_result[:result]
-          expect(result.length).to eq(1)
-          result = result.last
 
           expect(result[:success]).to eq(false)
         end
-
-        it 'does not add cost data' do
-          expect { perform }.not_to(change { SpCost.count })
-        end
-      end
-    end
-
-    context 'invalid proofing vendor' do
-      before do
-        allow(IdentityConfig.store).to receive(:idv_address_primary_vendor).and_return(:doh)
-      end
-
-      it 'does not add cost data' do
-        expect { perform }.to raise_error(Proofing::AddressProofer::InvalidAddressVendorError)
       end
     end
 

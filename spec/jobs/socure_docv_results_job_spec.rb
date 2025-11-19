@@ -22,8 +22,6 @@ RSpec.describe SocureDocvResultsJob do
   let(:socure_doc_escrow_enabled) { false }
   let(:selfie) { false }
   let(:mrz_response) { 'YES' }
-  let(:aamva_at_doc_auth_enabled) { false }
-  let(:aamva_proofer) { instance_double(Proofing::Resolution::Plugins::AamvaPlugin) }
   let(:rate_limiter) do
     RateLimiter.new(user: document_capture_session.user, rate_limit_type: :idv_doc_auth)
   end
@@ -47,9 +45,6 @@ RSpec.describe SocureDocvResultsJob do
     allow(AttemptsApi::Tracker).to receive(:new).and_return(attempts_api_tracker)
     allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled).and_return(
       doc_auth_passports_enabled,
-    )
-    allow(IdentityConfig.store).to receive(:idv_aamva_at_doc_auth_enabled).and_return(
-      aamva_at_doc_auth_enabled,
     )
     allow(FraudOps::Tracker).to receive(:new).and_return(fraud_opt_tracker)
 
@@ -81,10 +76,6 @@ RSpec.describe SocureDocvResultsJob do
 
     subject(:perform_now) do
       job.perform(document_capture_session_uuid:, async: false)
-    end
-
-    before do
-      allow(Proofing::Resolution::Plugins::AamvaPlugin).to receive(:new).and_return(aamva_proofer)
     end
 
     context 'when we get a 200 OK back from Socure' do
@@ -205,7 +196,6 @@ RSpec.describe SocureDocvResultsJob do
           expect(document_capture_session_result.attention_with_barcode).to eq(false)
           expect(document_capture_session_result.doc_auth_success).to eq(true)
           expect(document_capture_session_result.selfie_status).to eq(:not_processed)
-          expect(document_capture_session_result.aamva_status).to eq(:not_processed)
           expect(document_capture_session_result.attempt).to eq(1)
         end
       end
@@ -611,7 +601,6 @@ RSpec.describe SocureDocvResultsJob do
             expect(document_capture_session_result.pii).to be_nil
             expect(document_capture_session_result.doc_auth_success).to eq(false)
             expect(document_capture_session_result.selfie_status).to eq(:not_processed)
-            expect(document_capture_session_result.aamva_status).to eq(:not_processed)
             expect(fake_analytics).to have_logged_event(
               :idv_socure_verification_data_requested,
               hash_including(
@@ -634,7 +623,6 @@ RSpec.describe SocureDocvResultsJob do
               expect(document_capture_session_result.pii).to be_nil
               expect(document_capture_session_result.doc_auth_success).to eq(false)
               expect(document_capture_session_result.selfie_status).to eq(:not_processed)
-              expect(document_capture_session_result.aamva_status).to eq(:not_processed)
               expect(document_capture_session_result.errors).to eq({ unaccepted_id_type: true })
               expect(fake_analytics).to have_logged_event(
                 :idv_socure_verification_data_requested,
@@ -674,7 +662,6 @@ RSpec.describe SocureDocvResultsJob do
               expect(document_capture_session_result.doc_auth_success).to eq(false)
               expect(document_capture_session_result.selfie_status).to eq(:not_processed)
               expect(document_capture_session_result.mrz_status).to eq(:not_processed)
-              expect(document_capture_session_result.aamva_status).to eq(:not_processed)
             end
 
             context 'when docv passports are enabled' do
@@ -693,8 +680,6 @@ RSpec.describe SocureDocvResultsJob do
                   expect(document_capture_session_result.doc_auth_success).to eq(false)
                   expect(document_capture_session_result.selfie_status).to eq(:not_processed)
                   expect(document_capture_session_result.mrz_status).to eq(:not_processed)
-
-                  expect(document_capture_session_result.aamva_status).to eq(:not_processed)
                   expect(document_capture_session_result.errors).to eq({ unexpected_id_type: true })
                 end
               end
@@ -717,7 +702,6 @@ RSpec.describe SocureDocvResultsJob do
                   expect(document_capture_session_result.selfie_status).to eq(:not_processed)
                   expect(document_capture_session_result.attention_with_barcode).to eq(false)
                   expect(document_capture_session_result.mrz_status).to eq(:pass)
-                  expect(document_capture_session_result.aamva_status).to eq(:not_processed)
                 end
 
                 it 'tracks the attempt with mrz data' do
@@ -824,7 +808,6 @@ RSpec.describe SocureDocvResultsJob do
                     expect(document_capture_session_result.doc_auth_success).to eq(true)
                     expect(document_capture_session_result.selfie_status).to eq(:not_processed)
                     expect(document_capture_session_result.mrz_status).to eq(:not_processed)
-                    expect(document_capture_session_result.aamva_status).to eq(:not_processed)
                   end
                 end
 
@@ -840,7 +823,6 @@ RSpec.describe SocureDocvResultsJob do
                     expect(document_capture_session_result.doc_auth_success).to eq(false)
                     expect(document_capture_session_result.selfie_status).to eq(:not_processed)
                     expect(document_capture_session_result.mrz_status).to eq(:not_processed)
-                    expect(document_capture_session_result.aamva_status).to eq(:not_processed)
                     expect(document_capture_session_result.errors)
                       .to eq({ socure: { reason_codes: } })
                   end
@@ -858,7 +840,6 @@ RSpec.describe SocureDocvResultsJob do
                     expect(document_capture_session_result.pii).to be_nil
                     expect(document_capture_session_result.doc_auth_success).to eq(false)
                     expect(document_capture_session_result.selfie_status).to eq(:not_processed)
-                    expect(document_capture_session_result.aamva_status).to eq(:not_processed)
                     expect(document_capture_session_result.errors)
                       .to eq({ unaccepted_id_type: true })
                     expect(fake_analytics).to have_logged_event(
@@ -877,77 +858,6 @@ RSpec.describe SocureDocvResultsJob do
         end
       end
 
-      context 'when aamva at doc auth is enabled' do
-        let(:aamva_at_doc_auth_enabled) { true }
-        let(:aamva_success) { true }
-        let(:aamva_errors) { {} }
-        let(:aamva_proofing_result) do
-          Proofing::StateIdResult.new(
-            success: aamva_success,
-            errors: aamva_errors,
-          )
-        end
-
-        before do
-          allow(aamva_proofer).to receive(:call).and_return(aamva_proofing_result)
-        end
-
-        context 'when aamva check is successful' do
-          it 'doc auth succeeds' do
-            perform
-
-            document_capture_session.reload
-            document_capture_session_result = document_capture_session.load_result
-            expect(document_capture_session_result).to have_attributes(
-              success: true,
-              pii: include(first_name: 'Dwayne'),
-              attention_with_barcode: false,
-              doc_auth_success: true,
-              selfie_status: :not_processed,
-              aamva_status: :passed,
-            )
-            expect(document_capture_session.last_doc_auth_result).to eq('accept')
-            expect(fake_analytics).to have_logged_event(
-              :idv_socure_verification_data_requested,
-              hash_including(
-                :customer_user_id,
-                :decision,
-                :reference_id,
-              ),
-            )
-          end
-        end
-
-        context 'when aamva check is unsuccessful' do
-          let(:aamva_success) { false }
-          let(:aamva_errors) do
-            { verification: 'Document could not be verified.' }
-          end
-
-          it 'doc auth fails' do
-            perform
-
-            document_capture_session.reload
-            document_capture_session_result = document_capture_session.load_result
-            expect(document_capture_session_result.success).to eq(false)
-            expect(document_capture_session_result.pii).to be_nil
-            expect(document_capture_session_result.doc_auth_success).to eq(true)
-            expect(document_capture_session_result.selfie_status).to eq(:not_processed)
-            expect(document_capture_session_result.aamva_status).to eq(:failed)
-            expect(document_capture_session_result.errors)
-              .to eq(aamva_errors)
-            expect(fake_analytics).to have_logged_event(
-              :idv_socure_verification_data_requested,
-              hash_including(
-                :customer_user_id,
-                :decision,
-                :reference_id,
-              ),
-            )
-          end
-        end
-      end
-
       context 'not accepted document type' do
         let(:document_metadata_type) { 'Non-Document-Type' }
         it 'doc auth fails' do
@@ -961,7 +871,6 @@ RSpec.describe SocureDocvResultsJob do
           expect(document_capture_session_result.doc_auth_success).to eq(false)
           expect(document_capture_session_result.selfie_status).to eq(:not_processed)
           expect(document_capture_session_result.mrz_status).to eq(:not_processed)
-          expect(document_capture_session_result.aamva_status).to eq(:not_processed)
         end
 
         context 'doc escrow is enabled' do

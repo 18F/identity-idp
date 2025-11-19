@@ -192,7 +192,7 @@ RSpec.describe Idv::Agent do
 
       subject(:result) do
         proof_address
-        document_capture_session.load_proofing_result[:result].last
+        document_capture_session.load_proofing_result[:result]
       end
 
       it 'proofs addresses successfully with valid information' do
@@ -210,6 +210,53 @@ RSpec.describe Idv::Agent do
         it 'fails to proof address' do
           expect(result[:vendor_name]).to eq('AddressMock')
           expect(result[:success]).to eq false
+        end
+      end
+
+      describe '#address_vendor_ab_test_bucket' do
+        let(:idv_address_default_vendor) { :mock }
+        let(:idv_address_vendor_lexis_nexis_percent) { 0 }
+        let(:idv_address_vendor_socure_percent) { 0 }
+
+        before do
+          # allow(AddressProofingJob).to receive(:perform)
+          allow(IdentityConfig.store).to receive(:idv_address_vendor_lexis_nexis_percent)
+            .and_return(idv_address_vendor_lexis_nexis_percent)
+          allow(IdentityConfig.store).to receive(:idv_address_vendor_socure_percent)
+            .and_return(idv_address_vendor_socure_percent)
+          allow(IdentityConfig.store).to receive(:idv_address_vendor_switching_enabled)
+            .and_return(idv_address_vendor_switching_enabled)
+          reload_ab_tests
+        end
+
+        context 'when vendor switching is enabled' do
+          let(:idv_address_vendor_switching_enabled) { true }
+          it 'proofs with default vendor' do
+            expect(AddressProofingJob).to receive(:perform_later)
+              .with(hash_including(address_vendor: :mock))
+
+            proof_address
+          end
+
+          context 'when socure is 100' do
+            let(:idv_address_vendor_socure_percent) { 100 }
+            it 'proofs with socure as vendor' do
+              expect(AddressProofingJob).to receive(:perform_later)
+                .with(hash_including(address_vendor: :socure))
+
+              proof_address
+            end
+          end
+
+          context 'when lexis_nexis is 100' do
+            let(:idv_address_vendor_lexis_nexis_percent) { 100 }
+            it 'proofs with lexis nexis as vendor' do
+              expect(AddressProofingJob).to receive(:perform_later)
+                .with(hash_including(address_vendor: :lexis_nexis))
+
+              proof_address
+            end
+          end
         end
       end
     end

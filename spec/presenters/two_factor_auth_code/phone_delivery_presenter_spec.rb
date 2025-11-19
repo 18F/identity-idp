@@ -50,8 +50,9 @@ RSpec.describe TwoFactorAuthCode::PhoneDeliveryPresenter do
   describe '#phone_number_message' do
     it 'specifies when the code will expire' do
       text = t(
-        'instructions.mfa.sms.code_sent_message_html',
+        'instructions.mfa.sms.number_message_html',
         number_html: ActionController::Base.helpers.content_tag(:strong, data[:phone_number]),
+        expiration: TwoFactorAuthenticatable::DIRECT_OTP_VALID_FOR_MINUTES,
       )
       expect(presenter.phone_number_message).to eq text
     end
