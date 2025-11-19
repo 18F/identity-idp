@@ -28,14 +28,16 @@ class TabNavigationComponent < BaseComponent
 
   def nav_list_item(route, &block)
     if current_path?(route[:path])
-      render(
-        ClickObserverComponent.new(
-          event_name: 'tab_navigation_current_page_clicked',
-          payload: { path: route[:path] },
-          role: 'listitem',
-          class: 'usa-button-group__item display-list-item',
+      content_tag(
+        :li,
+        render(
+          ClickObserverComponent.new(
+            event_name: 'tab_navigation_current_page_clicked',
+            payload: { path: route[:path] },
+          ),
+          &block
         ),
-        &block
+        class: 'usa-button-group__item display-list-item'
       )
     else
       tag.li(class: 'usa-button-group__item', &block)
