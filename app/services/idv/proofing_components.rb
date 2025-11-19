@@ -30,10 +30,8 @@ module Idv
     def address_check
       if idv_session.verify_by_mail?
         'gpo_letter'
-      elsif idv_session.address_verification_mechanism == 'phone'
-        'lexis_nexis_address'
-      elsif idv_session.address_verification_mechanism == 'socure'
-        'socure_address'
+      else
+        idv_session.address_verification_vendor
       end
     end
 

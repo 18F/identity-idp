@@ -84,6 +84,7 @@ RSpec.describe Idv::PhoneStep do
       expect(result.errors).to be_empty
       expect(result.extra).to eq(extra)
       expect(idv_session.vendor_phone_confirmation).to eq true
+      expect(idv_session.address_verification_vendor).to eq 'AddressMock'
       expect(idv_session.applicant).to eq(
         original_applicant.merge(
           phone: good_phone,
