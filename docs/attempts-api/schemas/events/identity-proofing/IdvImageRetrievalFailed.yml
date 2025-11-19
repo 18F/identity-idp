@@ -27,7 +27,7 @@ allOf:
       failure_reason:
         type: object
         description: |
-          An associative array of attributes and errors to explain the failure 
+          An associative array of attributes and errors to explain the failure
         properties:
           api_failure:
             type: array

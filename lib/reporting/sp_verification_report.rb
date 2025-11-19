@@ -29,7 +29,8 @@ module Reporting
       end
     end
 
-    def initialize(time_range:, issuers:, agency_abbreviation:, verbose: false, progress: false, slice: 1.day, threads: 5)
+    def initialize(time_range:, issuers:, agency_abbreviation:, verbose: false, progress: false,
+                   slice: 1.day, threads: 5)
       @issuers = issuers
       @time_range = time_range || previous_week_range
       @verbose = verbose

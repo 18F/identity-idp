@@ -17,7 +17,7 @@ RSpec.describe Reporting::SpVerificationReport do
     described_class.new(
       time_range: time_range,
       issuers: issuers,
-      agency_abbreviation: agency_abbreviation
+      agency_abbreviation: agency_abbreviation,
     )
   end
 
@@ -26,7 +26,7 @@ RSpec.describe Reporting::SpVerificationReport do
     mock_results = [
       { 'properties.user_id' => 'user1' },
       { 'properties.user_id' => 'user2' },
-      { 'properties.user_id' => 'user1' } # duplicate to exercise uniq
+      { 'properties.user_id' => 'user1' }, # duplicate to exercise uniq
     ]
     allow_any_instance_of(Reporting::CloudwatchClient)
       .to receive(:fetch)
@@ -43,7 +43,7 @@ RSpec.describe Reporting::SpVerificationReport do
         expect(table).to include(
           ['Report Timeframe', "#{time_range.begin.to_date} to #{time_range.end.to_date}"],
           ['Report Generated', expected_generated_date],
-          ['Issuer', issuers.join(', ')]
+          ['Issuer', issuers.join(', ')],
         )
       end
     end
@@ -67,7 +67,7 @@ RSpec.describe Reporting::SpVerificationReport do
         ['Information Verification Success', 70, 0.7],
         ['Phone Verification Success', 60, 0.6],
         ['Verification Successes', 50, 0.5],
-        ['Verification Failures', 50, 0.5]
+        ['Verification Failures', 50, 0.5],
       )
     end
   end
@@ -92,4 +92,3 @@ RSpec.describe Reporting::SpVerificationReport do
     end
   end
 end
-

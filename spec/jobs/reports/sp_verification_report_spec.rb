@@ -6,7 +6,7 @@ RSpec.describe Reports::SpVerificationReport do
   let(:report_date) { Time.zone.parse('2025-11-14 23:59:59 UTC') } # Friday
   let(:internal_emails) { ['internal1@example.com', 'internal2@example.com'] }
   let(:partner_emails)  { ['partner@example.com'] }
-  let(:issuers)         { ['issuer1','issuer2'] }
+  let(:issuers)         { ['issuer1', 'issuer2'] }
   let(:agency)          { 'Test_partner' }
 
   let(:configs) do
@@ -15,7 +15,7 @@ RSpec.describe Reports::SpVerificationReport do
         'issuers' => issuers,
         'agency_abbreviation' => agency,
         'internal_emails' => internal_emails,
-        'partner_emails'  => partner_emails,
+        'partner_emails' => partner_emails,
       },
     ]
   end
@@ -23,21 +23,22 @@ RSpec.describe Reports::SpVerificationReport do
   let(:emailable_reports) do
     [
       Reporting::EmailableReport.new(
-        title:    'Definitions',
-        table:    [
-            ['Metric', 'Count', 'Rate'],['Verification Demand', 100, 1.0],
-            ['Document Authentication Success', 80, 0.8],
-            ['Information Verification Success', 70, 0.7],
-            ['Phone Verification Success', 60, 0.6],
-            ['Verification Successes', 50, 0.5],
-            ['Verification Failures', 50, 0.5]],
-        filename: 'definitions'
+        title: 'Definitions',
+        table: [
+          ['Metric', 'Count', 'Rate'], ['Verification Demand', 100, 1.0],
+          ['Document Authentication Success', 80, 0.8],
+          ['Information Verification Success', 70, 0.7],
+          ['Phone Verification Success', 60, 0.6],
+          ['Verification Successes', 50, 0.5],
+          ['Verification Failures', 50, 0.5]
+        ],
+        filename: 'definitions',
       ),
       Reporting::EmailableReport.new(
-        title:    'Overview',
-        table:    [['Report Timeframe', 'Report Generated','Issuer']],
-        filename: 'overview'
-      )
+        title: 'Overview',
+        table: [['Report Timeframe', 'Report Generated', 'Issuer']],
+        filename: 'overview',
+      ),
     ]
   end
 
@@ -59,19 +60,25 @@ RSpec.describe Reports::SpVerificationReport do
   end
 
   describe '#perform' do
-    it 'builds the report with the previous-week range, uploads CSVs, and emails both internal + partner when receiver=:both' do
+    it 'builds the report for both internal + partner when receiver=:both' do
       range = expected_previous_week_range(report_date)
 
       # Expect the builder to be constructed with the correct args and return emailable_reports
       expect(Reporting::SpVerificationReport).to receive(:new).with(
         time_range: range,
         issuers: issuers,
-        agency_abbreviation: agency
-      ).and_return(instance_double(Reporting::SpVerificationReport, as_emailable_reports: emailable_reports))
+        agency_abbreviation: agency,
+      ).and_return(instance_double(
+        Reporting::SpVerificationReport,
+        as_emailable_reports: emailable_reports,
+      ))
 
       # Expect uploads (one per emailable report)
       emailable_reports.each do |r|
-        expect_any_instance_of(described_class).to receive(:upload_to_s3).with(r.table, report_name: r.filename)
+        expect_any_instance_of(described_class).to receive(:upload_to_s3).with(
+          r.table,
+          report_name: r.filename,
+        )
       end
 
       # Expect email goes to both internal and partner sets
@@ -80,7 +87,7 @@ RSpec.describe Reports::SpVerificationReport do
         subject: "#{agency} Verification Report - #{report_date.to_date}",
         reports: emailable_reports,
         message: kind_of(String),
-        attachment_format: :csv
+        attachment_format: :csv,
       ).and_call_original
 
       described_class.new.perform(report_date, :both)
@@ -92,15 +99,18 @@ RSpec.describe Reports::SpVerificationReport do
       allow(Reporting::SpVerificationReport).to receive(:new).with(
         time_range: range,
         issuers: issuers,
-        agency_abbreviation: agency
-      ).and_return(instance_double(Reporting::SpVerificationReport, as_emailable_reports: emailable_reports))
+        agency_abbreviation: agency,
+      ).and_return(instance_double(
+        Reporting::SpVerificationReport,
+        as_emailable_reports: emailable_reports,
+      ))
 
       expect(ReportMailer).to receive(:tables_report).with(
         email: internal_emails,
         subject: "#{agency} Verification Report - #{report_date.to_date}",
         reports: emailable_reports,
         message: kind_of(String),
-        attachment_format: :csv
+        attachment_format: :csv,
       ).and_call_original
 
       described_class.new.perform(report_date, :internal)
@@ -132,5 +142,3 @@ RSpec.describe Reports::SpVerificationReport do
     end
   end
 end
-
-
