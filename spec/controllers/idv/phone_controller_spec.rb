@@ -511,9 +511,13 @@ RSpec.describe Idv::PhoneController do
 
       context '50/50 state - old' do
         before do
-          result = Proofing::Mock::AddressMockClient.new.proof({ phone: good_phone })
-          allow_any_instance_of(Proofing::Mock::AddressMockClient)
-            .to receive(:proof).and_return(result)
+          document_capture_session = create(:document_capture_session, user:)
+          document_capture_session.create_proofing_session
+
+          subject.idv_session.idv_phone_step_document_capture_session_uuid =
+            document_capture_session.uuid
+          proofer_result = Proofing::Mock::AddressMockClient.new.proof({ phone: good_phone })
+          document_capture_session.store_proofing_result(proofer_result.to_h)
         end
         it 'tracks event with valid phone' do
           proofing_phone = Phonelib.parse(good_phone)
