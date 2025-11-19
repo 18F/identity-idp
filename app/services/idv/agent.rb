@@ -51,6 +51,7 @@ module Idv
         encrypted_arguments: encrypted_arguments,
         result_id: document_capture_session.result_id,
         trace_id: trace_id,
+        address_vendor: IdentityConfig.store.idv_address_primary_vendor, # remove: 50/50
       }
 
       if IdentityConfig.store.ruby_workers_idv_enabled

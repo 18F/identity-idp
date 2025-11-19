@@ -32,7 +32,12 @@ module Proofing
         results << result
         break if result.success?
       end
-      results
+
+      if results.many?
+        results.last.to_h.merge(alternate_result: results.first.to_h)
+      else
+        results.last.to_h
+      end
     end
 
     private

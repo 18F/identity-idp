@@ -43,13 +43,7 @@ module Idv
     end
 
     def async_state_done(async_state)
-      result = async_state.result
-      if result.is_a?(Hash) # 50/50
-        result = [result]
-      end
-
-      alt_result = result.many? ? result.first : nil
-      @idv_result = result.last
+      @idv_result = async_state.result
       if (success = idv_result[:success])
         handle_successful_proofing_attempt
       else
@@ -60,11 +54,11 @@ module Idv
       final_result = FormResponse.new(
         success:,
         errors: idv_result[:errors],
-        extra: extra_analytics_attributes(idv_result),
+        extra: extra_analytics_attributes(idv_result.except(:alternate_result)),
       )
 
       alternate_result = nil
-      if alt_result
+      if (alt_result = idv_result[:alternate_result])
         alternate_result = FormResponse.new(
           success: alt_result[:success],
           errors: alt_result[:errors],

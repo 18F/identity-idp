@@ -57,18 +57,21 @@ module Idv
 
           track_document_request_event(document_request:, document_response:, timer:)
 
+          socure_docv_transaction_token = document_response.dig(
+            :data,
+            :docvTransactionToken,
+          )
+
           # placeholder until we get an error page for url not being present
           if @url.nil?
             redirect_to idv_hybrid_mobile_socure_document_capture_errors_url(
               error_code: :url_not_found,
+              transaction_token: socure_docv_transaction_token,
             )
             return
           end
 
-          document_capture_session.socure_docv_transaction_token = document_response.dig(
-            :data,
-            :docvTransactionToken,
-          )
+          document_capture_session.socure_docv_transaction_token = socure_docv_transaction_token
           document_capture_session.socure_docv_capture_app_url = document_response.dig(
             :data,
             :url,
@@ -91,7 +94,9 @@ module Idv
           if result.success? || rate_limiter.limited?
             redirect_to idv_hybrid_mobile_capture_complete_url
           else
-            redirect_to idv_hybrid_mobile_socure_document_capture_errors_url
+            redirect_to idv_hybrid_mobile_socure_document_capture_errors_url(
+              transaction_token: document_capture_session.socure_docv_transaction_token,
+            )
           end
         end
 
@@ -139,6 +144,7 @@ module Idv
 
             redirect_to idv_hybrid_mobile_socure_document_capture_errors_url(
               error_code: :timeout,
+              transaction_token: document_capture_session.socure_docv_transaction_token,
             )
           else
             @refresh_interval =

@@ -327,6 +327,7 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
     end
 
     context 'ad hoc proofing' do
+      let(:analytics) { FakeAnalytics.new }
       let(:doc_auth_flow) { true }
 
       subject(:call) do
@@ -336,6 +337,7 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
           state_id_address_resolution_result: nil,
           ipp_enrollment_in_progress:,
           timer: JobHelpers::Timer.new,
+          analytics:,
           doc_auth_flow:,
         )
       end
@@ -376,8 +378,35 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
                 success: true,
                 vendor_name: 'state_id:aamva',
                 transaction_id: proofer_transaction_id,
+                requested_attributes: {
+                  first_name: 1,
+                  last_name: 1,
+                  dob: 1,
+                  state_id_number: 1,
+                  document_type_received: 1,
+                  state_id_expiration: 1,
+                  state_id_jurisdiction: 1,
+                  state_id_issued: 1,
+                  height: 1,
+                  sex: 1,
+                  address: 1,
+                },
+                verified_attributes: [
+                  'first_name',
+                  'last_name',
+                  'state_id_number',
+                  'dob',
+                  'document_type_received',
+                  'state_id_expiration',
+                  'state_id_jurisdiction',
+                  'state_id_issued',
+                  'height',
+                  'sex',
+                  'address',
+                ],
               )
             end
+            let(:proofer_result_hash) { proofer_result.to_h }
 
             before do
               allow(proofer).to receive(:proof).with(applicant_pii).and_return(proofer_result)
@@ -396,6 +425,28 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
                   .to(1),
               )
             end
+
+            it 'logs a idv_state_id_validation event' do
+              call
+              expect(analytics).to have_logged_event(
+                :idv_state_id_validation, {
+                  success: proofer_result_hash[:success],
+                  errors: proofer_result_hash[:errors],
+                  timed_out: proofer_result_hash[:timed_out],
+                  vendor_name: proofer_result_hash[:vendor_name],
+                  transaction_id: proofer_result_hash[:transaction_id],
+                  requested_attributes: proofer_result_hash[:requested_attributes],
+                  verified_attributes: proofer_result_hash[:verified_attributes],
+                  supported_jurisdiction: true,
+                  jurisdiction_in_maintenance_window:
+                    proofer_result_hash[:jurisdiction_in_maintenance_window],
+                  birth_year: applicant_pii[:dob].to_date.year,
+                  state: applicant_pii[:state],
+                  state_id_jurisdiction: applicant_pii[:state_id_jurisdiction],
+                  state_id_number: '#' * applicant_pii[:state_id_number].length,
+                }
+              )
+            end
           end
 
           context 'when the aamva response is unsuccessful' do
@@ -404,9 +455,43 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
                 success: false,
                 vendor_name: 'state_id:aamva',
                 transaction_id: proofer_transaction_id,
-                errors: { first_name: 'does not match' },
+                requested_attributes: {
+                  first_name: 1,
+                  last_name: 1,
+                  dob: 1,
+                  state_id_number: 1,
+                  document_type_received: 1,
+                  state_id_expiration: 1,
+                  state_id_jurisdiction: 1,
+                  state_id_issued: 1,
+                  height: 1,
+                  sex: 1,
+                  address: 1,
+                },
+                verified_attributes: [],
+                errors: {
+                  state_id_expiration: ['MISSING'],
+                  state_id_issued: ['MISSING'],
+                  state_id_number: ['UNVERIFIED'],
+                  document_type_received: ['MISSING'],
+                  dob: ['MISSING'],
+                  height: ['MISSING'],
+                  sex: ['MISSING'],
+                  weight: ['MISSING'],
+                  eye_color: ['MISSING'],
+                  last_name: ['MISSING'],
+                  first_name: ['MISSING'],
+                  middle_name: ['MISSING'],
+                  name_suffix: ['MISSING'],
+                  address1: ['MISSING'],
+                  address2: ['MISSING'],
+                  city: ['MISSING'],
+                  state: ['MISSING'],
+                  zipcode: ['MISSING'],
+                },
               )
             end
+            let(:proofer_result_hash) { proofer_result.to_h }
 
             it 'returns a unsuccessful result', :aggregate_failures do
               call.tap do |result|
@@ -422,6 +507,28 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
                   .to(1),
               )
             end
+
+            it 'logs a idv_state_id_validation event' do
+              call
+              expect(analytics).to have_logged_event(
+                :idv_state_id_validation, {
+                  success: proofer_result_hash[:success],
+                  errors: proofer_result_hash[:errors],
+                  timed_out: proofer_result_hash[:timed_out],
+                  vendor_name: proofer_result_hash[:vendor_name],
+                  transaction_id: proofer_result_hash[:transaction_id],
+                  requested_attributes: proofer_result_hash[:requested_attributes],
+                  verified_attributes: proofer_result_hash[:verified_attributes],
+                  supported_jurisdiction: true,
+                  jurisdiction_in_maintenance_window:
+                    proofer_result_hash[:jurisdiction_in_maintenance_window],
+                  birth_year: applicant_pii[:dob].to_date.year,
+                  state: applicant_pii[:state],
+                  state_id_jurisdiction: applicant_pii[:state_id_jurisdiction],
+                  state_id_number: '#' * applicant_pii[:state_id_number].length,
+                }
+              )
+            end
           end
 
           context 'when the aamva response has an exception' do
@@ -433,6 +540,7 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
                 exception: RuntimeError.new('I am error!'),
               )
             end
+            let(:proofer_result_hash) { proofer_result.to_h }
 
             it 'returns a unsuccessful result', :aggregate_failures do
               call.tap do |result|
@@ -444,6 +552,30 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
 
             it 'does not track an SP cost' do
               expect { call }.to_not change { sp_cost_count_with_transaction_id }
+            end
+
+            it 'logs a idv_state_id_validation event' do
+              call
+              expect(analytics).to have_logged_event(
+                :idv_state_id_validation, {
+                  success: proofer_result_hash[:success],
+                  errors: proofer_result_hash[:errors],
+                  exception: proofer_result_hash[:exception],
+                  mva_exception: proofer_result_hash[:mva_exception],
+                  timed_out: proofer_result_hash[:timed_out],
+                  vendor_name: proofer_result_hash[:vendor_name],
+                  transaction_id: proofer_result_hash[:transaction_id],
+                  requested_attributes: proofer_result_hash[:requested_attributes],
+                  verified_attributes: proofer_result_hash[:verified_attributes],
+                  supported_jurisdiction: true,
+                  jurisdiction_in_maintenance_window:
+                    proofer_result_hash[:jurisdiction_in_maintenance_window],
+                  birth_year: applicant_pii[:dob].to_date.year,
+                  state: applicant_pii[:state],
+                  state_id_jurisdiction: applicant_pii[:state_id_jurisdiction],
+                  state_id_number: '#' * applicant_pii[:state_id_number].length,
+                }
+              )
             end
           end
         end
@@ -466,6 +598,7 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
                 transaction_id: proofer_transaction_id,
               )
             end
+            let(:proofer_result_hash) { proofer_result.to_h }
 
             it 'returns a successful result', :aggregate_failures do
               call.tap do |result|
@@ -480,6 +613,28 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
                   .to(1),
               )
             end
+
+            it 'logs a idv_state_id_validation event' do
+              call
+              expect(analytics).to have_logged_event(
+                :idv_state_id_validation, {
+                  success: proofer_result_hash[:success],
+                  errors: proofer_result_hash[:errors],
+                  timed_out: proofer_result_hash[:timed_out],
+                  vendor_name: proofer_result_hash[:vendor_name],
+                  transaction_id: proofer_result_hash[:transaction_id],
+                  requested_attributes: proofer_result_hash[:requested_attributes],
+                  verified_attributes: proofer_result_hash[:verified_attributes],
+                  supported_jurisdiction: true,
+                  jurisdiction_in_maintenance_window:
+                    proofer_result_hash[:jurisdiction_in_maintenance_window],
+                  birth_year: applicant_pii[:dob].to_date.year,
+                  state: applicant_pii[:state],
+                  state_id_jurisdiction: applicant_pii[:state_id_jurisdiction],
+                  state_id_number: '#' * applicant_pii[:state_id_number].length,
+                }
+              )
+            end
           end
 
           context 'when the aamva response is unsuccessful' do
@@ -488,9 +643,43 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
                 success: false,
                 vendor_name: 'state_id:aamva',
                 transaction_id: proofer_transaction_id,
-                errors: { first_name: 'does not match' },
+                requested_attributes: {
+                  first_name: 1,
+                  last_name: 1,
+                  dob: 1,
+                  state_id_number: 1,
+                  document_type_received: 1,
+                  state_id_expiration: 1,
+                  state_id_jurisdiction: 1,
+                  state_id_issued: 1,
+                  height: 1,
+                  sex: 1,
+                  address: 1,
+                },
+                verified_attributes: [],
+                errors: {
+                  state_id_expiration: ['MISSING'],
+                  state_id_issued: ['MISSING'],
+                  state_id_number: ['UNVERIFIED'],
+                  document_type_received: ['MISSING'],
+                  dob: ['MISSING'],
+                  height: ['MISSING'],
+                  sex: ['MISSING'],
+                  weight: ['MISSING'],
+                  eye_color: ['MISSING'],
+                  last_name: ['MISSING'],
+                  first_name: ['MISSING'],
+                  middle_name: ['MISSING'],
+                  name_suffix: ['MISSING'],
+                  address1: ['MISSING'],
+                  address2: ['MISSING'],
+                  city: ['MISSING'],
+                  state: ['MISSING'],
+                  zipcode: ['MISSING'],
+                },
               )
             end
+            let(:proofer_result_hash) { proofer_result.to_h }
 
             it 'returns a unsuccessful result', :aggregate_failures do
               call.tap do |result|
@@ -506,6 +695,28 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
                   .to(1),
               )
             end
+
+            it 'logs a idv_state_id_validation event' do
+              call
+              expect(analytics).to have_logged_event(
+                :idv_state_id_validation, {
+                  success: proofer_result_hash[:success],
+                  errors: proofer_result_hash[:errors],
+                  timed_out: proofer_result_hash[:timed_out],
+                  vendor_name: proofer_result_hash[:vendor_name],
+                  transaction_id: proofer_result_hash[:transaction_id],
+                  requested_attributes: proofer_result_hash[:requested_attributes],
+                  verified_attributes: proofer_result_hash[:verified_attributes],
+                  supported_jurisdiction: true,
+                  jurisdiction_in_maintenance_window:
+                    proofer_result_hash[:jurisdiction_in_maintenance_window],
+                  birth_year: applicant_pii[:dob].to_date.year,
+                  state: applicant_pii[:state],
+                  state_id_jurisdiction: applicant_pii[:state_id_jurisdiction],
+                  state_id_number: '#' * applicant_pii[:state_id_number].length,
+                }
+              )
+            end
           end
 
           context 'when the aamva response has an exception' do
@@ -517,6 +728,7 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
                 exception: RuntimeError.new('I am error!'),
               )
             end
+            let(:proofer_result_hash) { proofer_result.to_h }
 
             it 'returns a unsuccessful result', :aggregate_failures do
               call.tap do |result|
@@ -529,6 +741,30 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
             it 'does not track an SP cost' do
               expect { call }.to_not change { sp_cost_count_with_transaction_id }
             end
+
+            it 'logs a idv_state_id_validation event' do
+              call
+              expect(analytics).to have_logged_event(
+                :idv_state_id_validation, {
+                  success: proofer_result_hash[:success],
+                  errors: proofer_result_hash[:errors],
+                  exception: proofer_result_hash[:exception],
+                  mva_exception: proofer_result_hash[:mva_exception],
+                  timed_out: proofer_result_hash[:timed_out],
+                  vendor_name: proofer_result_hash[:vendor_name],
+                  transaction_id: proofer_result_hash[:transaction_id],
+                  requested_attributes: proofer_result_hash[:requested_attributes],
+                  verified_attributes: proofer_result_hash[:verified_attributes],
+                  supported_jurisdiction: true,
+                  jurisdiction_in_maintenance_window:
+                    proofer_result_hash[:jurisdiction_in_maintenance_window],
+                  birth_year: applicant_pii[:dob].to_date.year,
+                  state: applicant_pii[:state],
+                  state_id_jurisdiction: applicant_pii[:state_id_jurisdiction],
+                  state_id_number: '#' * applicant_pii[:state_id_number].length,
+                }
+              )
+            end
           end
         end
       end
@@ -540,6 +776,12 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
         let(:applicant_pii) do
           Idp::Constants::MOCK_IPP_APPLICANT.merge(state:, state_id_jurisdiction:)
         end
+        let(:proofer_result_hash) do
+          Proofing::StateIdResult.new(
+            success: true,
+            vendor_name: Idp::Constants::Vendors::AAMVA_UNSUPPORTED_JURISDICTION,
+          ).to_h
+        end
 
         it 'returns an unsupported jurisdiction result' do
           call.tap do |result|
@@ -549,6 +791,28 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
               Idp::Constants::Vendors::AAMVA_UNSUPPORTED_JURISDICTION,
             )
           end
+        end
+
+        it 'logs a idv_state_id_validation event' do
+          call
+          expect(analytics).to have_logged_event(
+            :idv_state_id_validation, {
+              success: proofer_result_hash[:success],
+              errors: proofer_result_hash[:errors],
+              timed_out: proofer_result_hash[:timed_out],
+              vendor_name: proofer_result_hash[:vendor_name],
+              transaction_id: proofer_result_hash[:transaction_id],
+              requested_attributes: proofer_result_hash[:requested_attributes],
+              verified_attributes: proofer_result_hash[:verified_attributes],
+              supported_jurisdiction: false,
+              jurisdiction_in_maintenance_window:
+                proofer_result_hash[:jurisdiction_in_maintenance_window],
+              birth_year: applicant_pii[:dob].to_date.year,
+              state: applicant_pii[:state],
+              state_id_jurisdiction: applicant_pii[:state_id_jurisdiction],
+              state_id_number: '#' * applicant_pii[:state_id_number].length,
+            }
+          )
         end
       end
     end

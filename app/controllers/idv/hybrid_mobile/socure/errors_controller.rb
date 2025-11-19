@@ -41,7 +41,11 @@ module Idv
         private
 
         def error_params
-          params.permit(:error_code)
+          params.permit(:error_code, :transaction_token)
+        end
+
+        def docv_transaction_token
+          error_params[:transaction_token]
         end
 
         def rate_limiter
@@ -57,6 +61,7 @@ module Idv
             error_code:,
             remaining_submit_attempts:,
             pii_like_keypaths: [[:pii]],
+            docv_transaction_token: docv_transaction_token,
           }
 
           analytics.idv_doc_auth_socure_error_visited(**attributes)

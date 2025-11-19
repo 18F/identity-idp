@@ -7,7 +7,7 @@ class AddressProofingJob < ApplicationJob
 
   discard_on JobHelpers::StaleJobHelper::StaleJobError
 
-  def perform(issuer:, result_id:, encrypted_arguments:, trace_id:, user_id:)
+  def perform(issuer:, result_id:, encrypted_arguments:, trace_id:, user_id:, address_vendor: nil) # rubocop:disable Lint/UnusedMethodArgument
     timer = JobHelpers::Timer.new
 
     raise_stale_job! if stale_job?(enqueued_at)
@@ -30,13 +30,13 @@ class AddressProofingJob < ApplicationJob
     end
 
     document_capture_session = DocumentCaptureSession.new(result_id:)
-    document_capture_session.store_proofing_result(proofer_result.map(&:to_h))
+    document_capture_session.store_proofing_result(proofer_result)
   ensure
     logger.info(
       {
         name: 'ProofAddress',
         trace_id: trace_id,
-        success: proofer_result&.any?(&:success?),
+        success: proofer_result&.dig(:success),
         timing: timer.results,
       }.to_json,
     )

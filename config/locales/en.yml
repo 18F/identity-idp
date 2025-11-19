@@ -993,7 +993,7 @@ headings.account.authentication_apps: Authentication apps
 headings.account.connected_accounts: Your connected accounts
 headings.account.devices: Devices
 headings.account.events: Events
-headings.account.federal_employee_id: Federal employee ID
+headings.account.government_employee_id: Government employee ID
 headings.account.login_info: Your account
 headings.account.reactivate: Reactivate your account
 headings.account.two_factor: Your authentication methods
