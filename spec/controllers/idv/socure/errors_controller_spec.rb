@@ -15,5 +15,16 @@ RSpec.describe Idv::Socure::ErrorsController do
 
       expect(@analytics).to have_logged_event(:idv_doc_auth_socure_error_visited)
     end
+
+    it 'uses the transaction token from params' do
+      transaction_token = 'test-transaction-token'
+
+      get(:show, params: { transaction_token: transaction_token })
+
+      expect(@analytics).to have_logged_event(
+        :idv_doc_auth_socure_error_visited,
+        hash_including(docv_transaction_token: transaction_token),
+      )
+    end
   end
 end
