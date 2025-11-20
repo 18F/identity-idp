@@ -329,10 +329,21 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
           ]
         end
 
+        before do
+          allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
+          allow(IdentityConfig.store).to receive(:in_person_send_proofing_notifications_enabled)
+            .and_return(true)
+          allow(user).to receive(:establishing_in_person_enrollment).and_return(enrollment)
+          subject.idv_session.opted_in_to_in_person_proofing = true
+          subject.idv_session.precheck_phone = { phone: '+1 202-555-1212' }
+        end
+
         it 'sets resolution_vendor on idv_session' do
+          expect(enrollment.notification_phone_configuration).to be_nil
           get :show
 
           expect(response).to redirect_to(idv_enter_password_url)
+          expect(enrollment.notification_phone_configuration).not_to be_nil
         end
 
         context 'when both phone vendors proof' do
