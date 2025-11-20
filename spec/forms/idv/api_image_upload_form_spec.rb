@@ -409,7 +409,7 @@ RSpec.describe Idv::ApiImageUploadForm do
       end
     end
 
-    fcontext 'when aamva auth is not enabled' do
+    context 'when aamva auth is not enabled' do
       before do
         allow(IdentityConfig.store).to receive(:idv_aamva_at_doc_auth_enabled).and_return(false)
       end
