@@ -336,11 +336,10 @@ RSpec.describe AddressProofingJob, type: :job do
         perform
 
         result = document_capture_session.load_proofing_result[:result]
-        expect(result.length).to eq(1)
-        result = result.last
 
         expect(result[:success]).to eq(false)
         expect(result[:exception]).not_to be_nil
+        expect(result[:alternate_result]).to be_nil
       end
     end
 
@@ -355,11 +354,10 @@ RSpec.describe AddressProofingJob, type: :job do
         perform
 
         result = document_capture_session.load_proofing_result[:result]
-        expect(result.length).to eq(1)
-        result = result.last
 
         expect(result[:success]).to eq(false)
         expect(result[:exception]).not_to be_nil
+        expect(result[:alternate_result]).to be_nil
       end
     end
   end
