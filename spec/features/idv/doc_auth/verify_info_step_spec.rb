@@ -392,7 +392,7 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
               .and_return(:socure)
 
             stub_request(:post, 'https://sandbox.socure.test/api/3.0/EmailAuthScore')
-              .to_return(phonerisk_respone)
+              .to_return(phonerisk_response)
           end
 
           it 'redirects the user to enter password page' do
