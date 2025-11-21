@@ -379,7 +379,6 @@ RSpec.describe Idv::VerifyInfoController do
 
       context 'when there is a threatmetrix exception' do
         let(:review_status) { nil }
-
         let(:idv_result) do
           {
             context: {
@@ -1227,14 +1226,9 @@ RSpec.describe Idv::VerifyInfoController do
     end
 
     context 'when the resolution proofing job completed successfully' do
-      let(:document_capture_session) do
-        DocumentCaptureSession.create(user:)
-      end
-
+      let(:document_capture_session) { create(:document_capture_session, user:) }
       let(:resolution_vendor_name) { 'ResolutionVendor' }
-
       let(:residential_resolution_vendor_name) { 'ResidentialResolutionVendor' }
-
       let(:adjudicated_result) do
         Proofing::Resolution::ResultAdjudicator.new(
           state_id_result: Proofing::StateIdResult.new(
