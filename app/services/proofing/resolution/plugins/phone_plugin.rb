@@ -17,12 +17,12 @@ module Proofing
 
         )
 
-          return [] unless IdentityConfig.store.idv_phone_precheck_enabled
+          return {} unless IdentityConfig.store.idv_phone_precheck_enabled
 
           if !state_id_address_resolution_result.success? ||
              !residential_address_resolution_result.success? ||
              !state_id_result.success?
-            return [resolution_cannot_pass_result]
+            return resolution_cannot_pass_result.to_h
           end
 
           if IdentityConfig.store.idv_phone_precheck_enabled
@@ -30,7 +30,7 @@ module Proofing
           end
 
           if applicant_pii[:phone].blank?
-            return [no_phone_available_result]
+            return no_phone_available_result.to_h
           end
 
           phone_finder_applicant = applicant_pii.slice(
