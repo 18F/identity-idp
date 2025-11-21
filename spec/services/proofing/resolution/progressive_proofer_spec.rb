@@ -343,7 +343,6 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
             residential_address_resolution_result:,
             state_id_address_resolution_result:,
             state_id_result: aamva_result,
-            ipp_enrollment_in_progress: true,
             timer: an_instance_of(JobHelpers::Timer),
             best_effort_phone: nil,
             user_email:,
@@ -446,7 +445,6 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
             residential_address_resolution_result:,
             state_id_address_resolution_result:,
             state_id_result: aamva_result,
-            ipp_enrollment_in_progress: true,
             timer: an_instance_of(JobHelpers::Timer),
             user_email:,
             best_effort_phone: nil,
@@ -529,7 +527,6 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
             expect(result.success?).to eql(true)
             expect(result.vendor_name).to eql(Idp::Constants::Vendors::AAMVA_CHECK_SKIPPED)
           end,
-          ipp_enrollment_in_progress:,
           timer: an_instance_of(JobHelpers::Timer),
           user_email:,
           best_effort_phone: nil,
