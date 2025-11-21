@@ -81,19 +81,6 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
       )
     end
 
-    let(:phone_result) do
-      Proofing::AddressResult.new(
-        success: false, vendor_name: 'NoPhoneNumberAvailable',
-      )
-    end
-
-    let(:phone_finder_proofer) do
-      instance_double(
-        Proofing::LexisNexis::PhoneFinder::Proofer,
-        proof: phone_result,
-      )
-    end
-
     subject(:proof) do
       progressive_proofer.proof(
         applicant_pii:,
@@ -116,8 +103,6 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
 
       allow(progressive_proofer.aamva_plugin).to receive(:proofer)
         .and_return(aamva_proofer)
-      allow(progressive_proofer.phone_plugin).to receive(:proofer)
-        .and_return([phone_finder_proofer])
       allow(IdentityConfig.store).to receive(:idv_phone_precheck_enabled)
         .and_return(idv_phone_precheck_enabled)
     end
@@ -180,17 +165,89 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
           expect(result.resolution_result).to eql(state_id_address_resolution_result)
           expect(result.state_id_result).to eql(aamva_result)
           expect(result.device_profiling_result).to eql(threatmetrix_result)
-          expect(result.phone_result.length).to eq(1)
-          expect(result.phone_result.last).to satisfy do |phone_result|
-            expect(phone_result.success?).to eq(true)
-            expect(phone_result.vendor_name).to eq('AddressMock')
-          end
+          expect(result.phone_result[:alternate_result]).to be_nil
+          expect(result.phone_result[:success]).to eq(true)
+          expect(result.phone_result[:vendor_name]).to eq('AddressMock')
           expect(result.residential_resolution_result).to satisfy do |result|
             expect(result.success?).to eql(true)
             expect(result.vendor_name).to eql('ResidentialAddressNotRequired')
           end
           expect(result.ipp_enrollment_in_progress).to eql(false)
           expect(result.same_address_as_id).to eql(nil)
+        end
+      end
+
+      context 'when aamva fails' do
+        before do
+          allow(aamva_proofer).to receive(:proof).and_return(
+            Proofing::StateIdResult.new(
+              success: false,
+              transaction_id: 'aamva-failed-123',
+            ),
+          )
+        end
+
+        it 'phone precheck auto fails' do
+          expect(Proofing::AddressProofer).not_to receive(:new)
+
+          proof.tap do |result|
+            expect(result).to be_an_instance_of(Proofing::Resolution::ResultAdjudicator)
+
+            expect(result.resolution_result.success?).to be_truthy
+            expect(result.state_id_result.success?).to be_falsey
+            expect(result.state_id_result.transaction_id).to eq('aamva-failed-123')
+            expect(result.device_profiling_result).to eql(threatmetrix_result)
+            expect(result.phone_result[:alternate_result]).to be_nil
+            expect(result.phone_result[:success]).to be_falsey
+            expect(result.phone_result[:vendor_name]).to eq('ResolutionCannotPass')
+          end
+        end
+      end
+
+      context 'when state_id address resolution fails' do
+        let(:state_id_address_resolution_result) do
+          Proofing::Resolution::Result.new(
+            success: false,
+            transaction_id: 'state-id-resolution-failed-tx',
+          )
+        end
+        it 'phone precheck auto fails and aamva is not called' do
+          expect(Proofing::AddressProofer).not_to receive(:new)
+
+          proof.tap do |result|
+            expect(result.resolution_result.success?).to be_falsey
+            expect(result.state_id_result.success?).to be_truthy
+            expect(result.state_id_result.vendor_name).to eq('UnsupportedJurisdiction')
+            expect(result).to be_an_instance_of(Proofing::Resolution::ResultAdjudicator)
+            expect(result.phone_result[:alternate_result]).to be_nil
+            expect(result.phone_result[:success]).to be_falsey
+            expect(result.phone_result[:vendor_name]).to eq('ResolutionCannotPass')
+          end
+        end
+      end
+
+      context 'when threatmetrix fails' do
+        before do
+          allow(threatmetrix_proofer).to receive(:proof).and_return(
+            Proofing::DdpResult.new(
+              success: false,
+              transaction_id: 'ddp-failed-123',
+            ),
+          )
+        end
+        it 'phone precheck still runs' do
+          expect(Proofing::Mock::AddressMockClient).to receive(:new).and_call_original
+
+          proof.tap do |result|
+            expect(result).to be_an_instance_of(Proofing::Resolution::ResultAdjudicator)
+            expect(result.resolution_result).to eql(state_id_address_resolution_result)
+            expect(result.state_id_result).to eql(aamva_result)
+            expect(result.device_profiling_result.success?).to be_falsey
+            expect(result.device_profiling_result.transaction_id).to eq('ddp-failed-123')
+            expect(result.phone_result[:alternate_result]).to be_nil
+            expect(result.phone_result[:success]).to eq(true)
+            expect(result.phone_result[:vendor_name]).to eq('AddressMock')
+          end
         end
       end
 
@@ -301,11 +358,9 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
             expect(result.resolution_result).to eql(state_id_address_resolution_result)
             expect(result.state_id_result).to eql(aamva_result)
             expect(result.device_profiling_result).to eql(threatmetrix_result)
-            expect(result.phone_result.length).to eq(1)
-            expect(result.phone_result.last).to satisfy do |phone_result|
-              expect(phone_result.success?).to be_falsey
-              expect(phone_result.vendor_name).to eq('NoPhoneNumberAvailable')
-            end
+            expect(result.phone_result[:alternate_result]).to be_nil
+            expect(result.phone_result[:success]).to be_falsey
+            expect(result.phone_result[:vendor_name]).to eq('NoPhoneNumberAvailable')
             expect(result.residential_resolution_result).to(
               eql(state_id_address_resolution_result),
             )
@@ -495,11 +550,9 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
             expect(result.success?).to eql(true)
             expect(result.vendor_name).to eql('ResidentialAddressNotRequired')
           end
-          expect(result.phone_result.length).to eq(1)
-          expect(result.phone_result.last).to satisfy do |phone_result|
-            expect(phone_result.success?).to eq(false)
-            expect(phone_result.vendor_name).to eq('NoPhoneNumberAvailable')
-          end
+          expect(result.phone_result[:alternate_result]).to be_nil
+          expect(result.phone_result[:success]).to eq(false)
+          expect(result.phone_result[:vendor_name]).to eq('NoPhoneNumberAvailable')
           expect(result.ipp_enrollment_in_progress).to eql(false)
           expect(result.same_address_as_id).to eql(nil)
         end
@@ -592,11 +645,9 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
           expect(result.resolution_result).to eql(state_id_address_resolution_result)
           expect(result.state_id_result).to eql(aamva_result)
           expect(result.device_profiling_result).to eql(threatmetrix_result)
-          expect(result.phone_result.length).to eq(1)
-          expect(result.phone_result.last).to satisfy do |phone_result|
-            expect(phone_result.success?).to eq(true)
-            expect(phone_result.vendor_name).to eq('AddressMock')
-          end
+          expect(result.phone_result[:alternate_result]).to be_nil
+          expect(result.phone_result[:success]).to eq(true)
+          expect(result.phone_result[:vendor_name]).to eq('AddressMock')
           expect(result.residential_resolution_result).to satisfy do |result|
             expect(result.success?).to eql(true)
             expect(result.vendor_name).to eql('ResidentialAddressNotRequired')
