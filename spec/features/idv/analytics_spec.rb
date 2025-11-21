@@ -53,7 +53,11 @@ RSpec.feature 'Analytics Regression', :js do
   end
 
   let(:lexis_nexis_address_proofing_components) do # todo: rename
-    base_proofing_components.merge(address_check: IdentityConfig.store.idv_phone_precheck_enabled ? 'AddressMock' : 'lexis_nexis_address')
+    address_check = IdentityConfig.store.idv_phone_precheck_enabled ?
+      'AddressMock' :
+      'lexis_nexis_address'
+
+    base_proofing_components.merge(address_check:)
   end
 
   let(:gpo_letter_proofing_components) do
@@ -921,7 +925,7 @@ RSpec.feature 'Analytics Regression', :js do
             next if [
               'IdV: phone of record visited', 'IdV: phone confirmation form',
               'IdV: phone confirmation vendor', 'IdV: phone confirmation otp sent',
-              'IdV: phone confirmation otp visited', 'IdV: phone confirmation otp submitted',
+              'IdV: phone confirmation otp visited', 'IdV: phone confirmation otp submitted'
             ].include? event
             expect(fake_analytics).to have_logged_event(event, attributes)
           end

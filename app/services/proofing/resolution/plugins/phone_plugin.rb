@@ -16,7 +16,6 @@ module Proofing
           best_effort_phone: nil
 
         )
-
           return {} unless IdentityConfig.store.idv_phone_precheck_enabled
 
           if !state_id_address_resolution_result.success? ||
@@ -37,7 +36,10 @@ module Proofing
             :uuid, :uuid_prefix, :first_name, :last_name, :ssn, :dob, :phone
           )
 
-          proofer = Proofing::AddressProofer.new(user_uuid: phone_finder_applicant[:uuid], user_email:)
+          proofer = Proofing::AddressProofer.new(
+            user_uuid: phone_finder_applicant[:uuid],
+            user_email:,
+          )
           timer.time('phone') do
             proofer.proof(applicant_pii: phone_finder_applicant, current_sp:)
           end
