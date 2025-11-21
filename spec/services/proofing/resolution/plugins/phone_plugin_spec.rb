@@ -69,33 +69,33 @@ RSpec.describe Proofing::Resolution::Plugins::PhonePlugin do
         state_id_address_failed_result = plugin.call(
           **default_plugin_arguments,
           state_id_address_resolution_result: failed_upstream_vendor_result,
-        ).last
-        expect(state_id_address_failed_result.success?).to eq(false)
-        expect(state_id_address_failed_result.vendor_name).to eq('ResolutionCannotPass')
+        )
+        expect(state_id_address_failed_result[:success]).to eq(false)
+        expect(state_id_address_failed_result[:vendor_name]).to eq('ResolutionCannotPass')
 
         residential_address_failed_result = plugin.call(
           **default_plugin_arguments,
           residential_address_resolution_result: failed_upstream_vendor_result,
-        ).last
-        expect(residential_address_failed_result.success?).to eq(false)
-        expect(residential_address_failed_result.vendor_name).to eq('ResolutionCannotPass')
+        )
+        expect(residential_address_failed_result[:success]).to eq(false)
+        expect(residential_address_failed_result[:vendor_name]).to eq('ResolutionCannotPass')
 
         state_id_failed_result = plugin.call(
           **default_plugin_arguments,
           state_id_result: failed_upstream_vendor_result,
-        ).last
-        expect(state_id_failed_result.success?).to eq(false)
-        expect(state_id_failed_result.vendor_name).to eq('ResolutionCannotPass')
+        )
+        expect(state_id_failed_result[:success]).to eq(false)
+        expect(state_id_failed_result[:vendor_name]).to eq('ResolutionCannotPass')
       end
 
       context 'there is no phone number in the applicant' do
         let(:applicant_pii) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN.dup }
 
         it 'returns an unsuccessful result' do
-          result = call.last
+          result = call
 
-          expect(result.success?).to eq(false)
-          expect(result.vendor_name).to eq('NoPhoneNumberAvailable')
+          expect(result[:success]).to eq(false)
+          expect(result[:vendor_name]).to eq('NoPhoneNumberAvailable')
         end
       end
 
@@ -114,10 +114,10 @@ RSpec.describe Proofing::Resolution::Plugins::PhonePlugin do
             current_sp:,
           ).and_call_original
 
-          result = call.last
+          result = call
 
-          expect(result.success?).to eq(true)
-          expect(result.vendor_name).to eq('AddressMock')
+          expect(result[:success]).to eq(true)
+          expect(result[:vendor_name]).to eq('AddressMock')
         end
 
         it 'records an SP cost' do
@@ -132,10 +132,10 @@ RSpec.describe Proofing::Resolution::Plugins::PhonePlugin do
           end
 
           it 'returns an unsuccessful result' do
-            result = call.last
+            result = call
 
-            expect(result.success?).to eq(false)
-            expect(result.exception).to be_present
+            expect(result[:success]).to eq(false)
+            expect(result[:exception]).to be_present
           end
 
           it 'does not record an SP cost' do
@@ -167,10 +167,10 @@ RSpec.describe Proofing::Resolution::Plugins::PhonePlugin do
         end
 
         it 'returns an unsuccessful result' do
-          result = call.last
+          result = call
 
-          expect(result.success?).to eq(false)
-          expect(result.exception).not_to be_nil
+          expect(result[:success]).to eq(false)
+          expect(result[:exception]).not_to be_nil
         end
       end
 
@@ -182,10 +182,10 @@ RSpec.describe Proofing::Resolution::Plugins::PhonePlugin do
         end
 
         it 'returns an unsuccessful result' do
-          result = call.last
+          result = call
 
-          expect(result.success?).to eq(false)
-          expect(result.exception).not_to be_nil
+          expect(result[:success]).to eq(false)
+          expect(result[:exception]).not_to be_nil
         end
       end
     end
