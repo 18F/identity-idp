@@ -419,7 +419,7 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
               perform_in_browser(:desktop) do
                 sign_in_and_2fa_user(user)
                 complete_doc_auth_steps_before_hybrid_handoff_step
-                clear_and_fill_in(:doc_auth_phone, '703-555-5555') # '+1 415-555-0199')
+                clear_and_fill_in(:doc_auth_phone, '703-555-5555')
                 click_send_link
                 expect(page).to have_current_path(idv_link_sent_path)
               end
@@ -454,7 +454,7 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
                 expect(
                   PhoneFormatter.format(prefilled_phone),
                 ).to eq(
-                  PhoneFormatter.format(user.default_phone_configuration.phone), # +1 202-555-1212"
+                  PhoneFormatter.format(user.default_phone_configuration.phone),
                 )
               end
             end
