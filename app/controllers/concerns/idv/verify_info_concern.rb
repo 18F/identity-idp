@@ -412,7 +412,7 @@ module Idv
       idv_session.applicant[:ssn] = idv_session.ssn
       idv_session.applicant['uuid'] = current_user.uuid
       if idv_session.phone_precheck_successful
-        idv_session.applicant[:phone] = idv_session.precheck_phone&.dig(:phone)
+        idv_session.applicant[:phone] = idv_session.precheck_phone[:phone]
         save_in_person_notification_phone
       end
     end
