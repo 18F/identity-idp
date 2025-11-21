@@ -45,6 +45,14 @@ module Proofing
               end.freeze
           end
 
+          def vendor_id
+            kyc('socureId')
+          end
+
+          def source_attribution
+            kyc('sourceAttribution') || []
+          end
+
           private
 
           attr_reader :http_response
