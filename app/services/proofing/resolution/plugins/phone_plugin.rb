@@ -10,7 +10,6 @@ module Proofing
           state_id_address_resolution_result:,
           residential_address_resolution_result:,
           state_id_result:,
-          ipp_enrollment_in_progress:,
           user_email:,
           timer:,
           best_effort_phone: nil
