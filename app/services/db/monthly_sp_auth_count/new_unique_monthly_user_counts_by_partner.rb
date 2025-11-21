@@ -6,7 +6,7 @@ module Db
       extend Reports::QueryHelpers
 
       UserVerifiedKey = Data.define(
-        :user_id, :profile_verified_at, :profile_age
+        :user_id, :profile_verified_at, :profile_age, :is_upfront
       ).freeze
 
       module_function
@@ -24,8 +24,6 @@ module Db
         # Query a month at a time, to keep query time/result size fairly reasonable
         months = Reports::MonthHelper.months(date_range)
         queries = build_queries(issuers: issuers, months: months)
-
-        @user_issuer_ids = Set.new
 
         year_month_to_users_to_profile_age = Hash.new do |ym_h, ym_k|
           ym_h[ym_k] = {}
@@ -57,13 +55,14 @@ module Db
                 profile_requested_issuer = row['profile_requested_issuer']
                 issuer = row['issuer']
 
-                user_unique_id = UserVerifiedKey.new(
-                  user_id:, profile_verified_at:, profile_age:,
-                )
+                is_upfront = profile_requested_issuer == issuer
 
-                if profile_requested_issuer == issuer
-                  @user_issuer_ids << user_id
-                end
+                user_unique_id = UserVerifiedKey.new(
+                  user_id:,
+                  profile_verified_at:,
+                  profile_age:,
+                  is_upfront:,
+                )
 
                 year_month_to_users_to_profile_age[year_month][user_unique_id] = profile_age
               end
@@ -178,18 +177,31 @@ module Db
       end
 
       def bucket_by_upfront_existing(unique_user_events)
-        unique_user_events.group_by do |user_unique_id|
+        year1_events = unique_user_events.select do |user_unique_id|
           age = user_unique_id.profile_age
-          if age.nil? || age.negative?
-            next
-          elsif age == 0
-            if @user_issuer_ids.include?(user_unique_id.user_id)
-              :upfront
-            else
-              :existing
-            end
+          !age.nil? && !age.negative? && age == 0
+        end
+
+        initially_upfront = year1_events.select(&:is_upfront)
+        initially_existing = year1_events.reject(&:is_upfront)
+
+        users_already_upfront = Set.new
+        final_upfront = []
+        final_existing = initially_existing.dup
+
+        initially_upfront.each do |event|
+          if users_already_upfront.include?(event.user_id)
+            final_existing << event
+          else
+            final_upfront << event
+            users_already_upfront << event.user_id
           end
-        end.tap { |counts| counts.default = [] }
+        end
+
+        {
+          upfront: final_upfront,
+          existing: final_existing,
+        }.tap { |counts| counts.default = [] }
       end
     end
   end
