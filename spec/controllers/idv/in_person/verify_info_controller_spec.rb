@@ -263,7 +263,7 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
 
       let(:residential_resolution_vendor_name) { 'ResidentialResolutionVendor' }
 
-      let(:phone_result) { [] }
+      let(:phone_result) { {} }
 
       let(:async_state) do
         # Here we're trying to match the store to redis -> read from redis flow this data travels
@@ -319,14 +319,12 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
 
       context 'when phone precheck' do
         let(:phone_result) do
-          [
-            Proofing::AddressResult.new(
-              success: true,
-              errors: {},
-              exception: nil,
-              vendor_name: 'test-phone-vendor',
-            ),
-          ]
+          Proofing::AddressResult.new(
+            success: true,
+            errors: {},
+            exception: nil,
+            vendor_name: 'test-phone-vendor',
+          ).to_h
         end
 
         before do
@@ -348,20 +346,18 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
 
         context 'when both phone vendors proof' do
           let(:phone_result) do
-            [
-              Proofing::AddressResult.new(
-                success: false,
-                errors: {},
-                exception: nil,
-                vendor_name: 'failed-phone-vendor',
-              ),
-              Proofing::AddressResult.new(
-                success: true,
-                errors: {},
-                exception: nil,
-                vendor_name: 'succesful-phone-vendor',
-              ),
-            ]
+            alternate_result = Proofing::AddressResult.new(
+              success: false,
+              errors: {},
+              exception: nil,
+              vendor_name: 'failed-phone-vendor',
+            ).to_h
+            Proofing::AddressResult.new(
+              success: true,
+              errors: {},
+              exception: nil,
+              vendor_name: 'succesful-phone-vendor',
+            ).to_h.merge(alternate_result:)
           end
 
           it 'sets resolution_vendor on idv_session' do
@@ -372,20 +368,18 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
 
           context 'when both vendors unsuccesful' do
             let(:phone_result) do
-              [
-                Proofing::AddressResult.new(
-                  success: false,
-                  errors: {},
-                  exception: nil,
-                  vendor_name: 'failed-phone-vendor',
-                ),
-                Proofing::AddressResult.new(
-                  success: false,
-                  errors: {},
-                  exception: nil,
-                  vendor_name: 'also-failed-phone-vendor',
-                ),
-              ]
+              alternate_result = Proofing::AddressResult.new(
+                success: false,
+                errors: {},
+                exception: nil,
+                vendor_name: 'failed-phone-vendor',
+              ).to_h
+              Proofing::AddressResult.new(
+                success: false,
+                errors: {},
+                exception: nil,
+                vendor_name: 'also-failed-phone-vendor',
+              ).to_h.merge(alternate_result:)
             end
 
             it 'sets resolution_vendor on idv_session' do
