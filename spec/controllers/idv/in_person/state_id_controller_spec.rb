@@ -425,16 +425,15 @@ RSpec.describe Idv::InPerson::StateIdController do
         expect(subject.idv_session.ipp_aamva_document_capture_session_uuid).to be_present
       end
 
-      it 'increments the rate limiter' do
-        rate_limiter = instance_double(RateLimiter)
-        allow(RateLimiter).to receive(:new).with(
-          user: user,
-          rate_limit_type: :idv_doc_auth,
-        ).and_return(rate_limiter)
-        allow(rate_limiter).to receive(:limited?).and_return(false)
-        expect(rate_limiter).to receive(:increment!)
-
+      it 'does not create duplicate DocumentCaptureSession if one already exists' do
         put :update, params: params
+        first_uuid = subject.idv_session.ipp_aamva_document_capture_session_uuid
+
+        expect do
+          put :update, params: params
+        end.not_to change { DocumentCaptureSession.count }
+
+        expect(subject.idv_session.ipp_aamva_document_capture_session_uuid).to eq(first_uuid)
       end
 
       context 'when async AAMVA check is in progress' do
@@ -521,6 +520,62 @@ RSpec.describe Idv::InPerson::StateIdController do
         end
       end
 
+      context 'when async AAMVA check completes successfully but user is rate limited' do
+        let(:document_capture_session) do
+          DocumentCaptureSession.create!(
+            user_id: user.id,
+            issuer: nil,
+            requested_at: Time.zone.now,
+          )
+        end
+
+        let(:successful_result) do
+          {
+            success: true,
+            errors: {},
+            vendor_name: 'TestAAMVA',
+            checked_at: Time.zone.now.iso8601,
+          }
+        end
+
+        before do
+          document_capture_session.create_proofing_session
+          document_capture_session.store_proofing_result(successful_result)
+          subject.idv_session.ipp_aamva_document_capture_session_uuid =
+            document_capture_session.uuid
+          allow(subject).to receive(:idv_attempter_rate_limited?)
+            .with(:idv_doc_auth).and_return(true)
+        end
+
+        it 'redirects to rate limit error page' do
+          get :show
+
+          expect(response).to redirect_to(idv_session_errors_rate_limited_url)
+        end
+
+        it 'clears the async state' do
+          get :show
+
+          expect(subject.idv_session.ipp_aamva_document_capture_session_uuid).to be_nil
+        end
+
+        it 'logs rate limit event' do
+          get :show
+
+          expect(@analytics).to have_logged_event(
+            'Rate Limit Reached',
+            limiter_type: :idv_doc_auth,
+            step_name: 'ipp_state_id',
+          )
+        end
+
+        it 'does not log completion event' do
+          get :show
+
+          expect(@analytics).not_to have_logged_event(:idv_ipp_aamva_verification_completed)
+        end
+      end
+
       context 'when async AAMVA check fails' do
         let(:document_capture_session) do
           DocumentCaptureSession.create!(
@@ -555,7 +610,7 @@ RSpec.describe Idv::InPerson::StateIdController do
         it 'displays an error message' do
           get :show
 
-          expect(flash[:error]).to eq(I18n.t('idv.failure.verify.heading'))
+          expect(flash.now[:error]).to eq(I18n.t('idv.failure.verify.heading'))
         end
 
         it 'clears the async state' do
@@ -716,38 +771,30 @@ RSpec.describe Idv::InPerson::StateIdController do
     end
 
     context 'when rate limited' do
-      let(:rate_limiter) { instance_double(RateLimiter) }
       let(:params) { valid_state_id_params(same_address_as_id: 'true') }
 
       before do
-        allow(RateLimiter).to receive(:new).and_return(rate_limiter)
-        allow(rate_limiter).to receive(:limited?).and_return(true)
+        allow(subject).to receive(:idv_attempter_rate_limited?).with(:idv_doc_auth).and_return(true)
       end
 
-      it 'renders the show page with error' do
+      it 'redirects to rate limit error page' do
         put :update, params: params
 
-        expect(response).to render_template(:show)
-        expect(flash[:error]).to eq(I18n.t('doc_auth.errors.rate_limited_heading'))
+        expect(response).to redirect_to(idv_session_errors_rate_limited_url)
       end
 
       it 'logs rate limit event' do
         put :update, params: params
 
         expect(@analytics).to have_logged_event(
-          :idv_ipp_aamva_rate_limited,
-          step: 'state_id',
+          'Rate Limit Reached',
+          limiter_type: :idv_doc_auth,
+          step_name: 'ipp_state_id',
         )
       end
 
       it 'does not enqueue AAMVA job when rate limited' do
         expect(IppAamvaProofingJob).not_to receive(:perform_later)
-
-        put :update, params: params
-      end
-
-      it 'does not increment rate limiter when already limited' do
-        expect(rate_limiter).not_to receive(:increment!)
 
         put :update, params: params
       end

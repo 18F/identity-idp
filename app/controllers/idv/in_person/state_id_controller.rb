@@ -78,13 +78,8 @@ module Idv
           if aamva_enabled?
             idv_session.ipp_aamva_redirect_url = redirect_url
 
-            if aamva_rate_limited?
-              handle_aamva_rate_limit
-              render :show, locals: extra_view_variables
-              return
-            end
+            return if rate_limit_redirect!(:idv_doc_auth, step_name: 'ipp_state_id')
 
-            aamva_rate_limiter.increment!
             start_aamva_async_state
             redirect_to idv_in_person_state_id_url
             return

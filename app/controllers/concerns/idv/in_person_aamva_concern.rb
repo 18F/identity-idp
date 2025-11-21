@@ -5,6 +5,8 @@ module Idv
     extend ActiveSupport::Concern
 
     def start_aamva_async_state
+      return if idv_session.ipp_aamva_document_capture_session_uuid
+
       document_capture_session = DocumentCaptureSession.create!(
         user_id: current_user.id,
         issuer: sp_session[:issuer],
@@ -21,10 +23,6 @@ module Idv
         document_capture_session: document_capture_session,
         encrypted_arguments: encrypted_arguments,
       )
-    end
-
-    def aamva_rate_limited?
-      aamva_rate_limiter.limited?
     end
 
     def process_aamva_async_state
@@ -49,7 +47,7 @@ module Idv
 
       if current_state.missing?
         analytics.idv_ipp_aamva_proofing_result_missing
-        flash[:error] = I18n.t('idv.failure.timeout')
+        flash.now[:error] = I18n.t('idv.failure.timeout')
         delete_aamva_async_state
         render :show, locals: extra_view_variables
       end
@@ -59,18 +57,6 @@ module Idv
 
     def aamva_enabled?
       IdentityConfig.store.idv_aamva_at_doc_auth_enabled
-    end
-
-    def aamva_rate_limiter
-      @aamva_rate_limiter ||= RateLimiter.new(
-        user: current_user,
-        rate_limit_type: :idv_doc_auth,
-      )
-    end
-
-    def handle_aamva_rate_limit
-      analytics.idv_ipp_aamva_rate_limited(step: controller_name)
-      flash[:error] = I18n.t('doc_auth.errors.rate_limited_heading')
     end
 
     def encrypt_pii_for_job(pii)
@@ -113,6 +99,11 @@ module Idv
     end
 
     def handle_aamva_async_done(current_state)
+      if rate_limit_redirect!(:idv_doc_auth, step_name: 'ipp_state_id')
+        delete_aamva_async_state
+        return
+      end
+
       result = current_state.result
 
       analytics.idv_ipp_aamva_verification_completed(
@@ -128,7 +119,7 @@ module Idv
         redirect_to redirect_url
       else
         delete_aamva_async_state
-        flash[:error] = I18n.t('idv.failure.verify.heading')
+        flash.now[:error] = I18n.t('idv.failure.verify.heading')
         render :show, locals: extra_view_variables
       end
     end
