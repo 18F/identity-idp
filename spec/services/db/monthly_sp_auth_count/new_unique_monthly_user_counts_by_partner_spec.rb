@@ -470,7 +470,7 @@ RSpec.describe Db::MonthlySpAuthCount::NewUniqueMonthlyUserCountsByPartner do
         )
       end
 
-      it 'only charges upfront once per user per month to avoid double-charging' do
+      it 'only charges upfront once per user across all months to avoid double-charging' do
         expect(results.length).to eq(1)
         august_result = results.first
 
