@@ -592,9 +592,8 @@ RSpec.describe Idv::VerifyInfoController do
     context 'when the user has updated their SSN' do
       let(:document_capture_session) { create(:document_capture_session, user:) }
 
-      let(:async_state) do
-        # Here we're trying to match the store to redis -> read from redis flow this data travels
-        adjudicated_result = Proofing::Resolution::ResultAdjudicator.new(
+      let(:adjudicated_result) do
+        Proofing::Resolution::ResultAdjudicator.new(
           state_id_result: Proofing::StateIdResult.new(success: true),
           phone_result: Proofing::AddressResult.new(
             success: true,
@@ -609,17 +608,18 @@ RSpec.describe Idv::VerifyInfoController do
           same_address_as_id: true,
           should_proof_state_id: true,
           applicant_pii: Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN,
-        ).adjudicated_result.to_h
+        ).adjudicated_result
+      end
 
+      before do
+        # Here we're trying to match the store to redis -> read from redis flow this data travels
         document_capture_session.create_proofing_session
-
-        document_capture_session.store_proofing_result(adjudicated_result)
-
-        document_capture_session.load_proofing_result
+        document_capture_session.store_proofing_result(adjudicated_result.to_h)
+        allow(controller).to receive(:load_async_state)
+          .and_return(document_capture_session.load_proofing_result)
       end
 
       it 'logs the edit distance between SSNs' do
-        allow(controller).to receive(:load_async_state).and_return(async_state)
         controller.idv_session.ssn = Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn]
         controller.idv_session.previous_ssn = '900661256'
 
@@ -635,10 +635,7 @@ RSpec.describe Idv::VerifyInfoController do
     end
 
     context 'for an aamva request' do
-      let(:document_capture_session) do
-        DocumentCaptureSession.create(user:)
-      end
-
+      let(:document_capture_session) { create(:document_capture_session, user:) }
       let(:success) { true }
       let(:errors) { {} }
       let(:exception) { nil }
@@ -653,9 +650,8 @@ RSpec.describe Idv::VerifyInfoController do
         ).to_h
       end
 
-      let(:async_state) do
-        # Here we're trying to match the store to redis -> read from redis flow this data travels
-        adjudicated_result = Proofing::Resolution::ResultAdjudicator.new(
+      let(:adjudicated_result) do
+        Proofing::Resolution::ResultAdjudicator.new(
           state_id_result: Proofing::StateIdResult.new(
             success: success,
             errors: errors,
@@ -672,17 +668,14 @@ RSpec.describe Idv::VerifyInfoController do
           same_address_as_id: true,
           should_proof_state_id: true,
           applicant_pii:,
-        ).adjudicated_result.to_h
-
-        document_capture_session.create_proofing_session
-
-        document_capture_session.store_proofing_result(adjudicated_result)
-
-        document_capture_session.load_proofing_result
+        ).adjudicated_result
       end
 
       before do
-        allow(controller).to receive(:load_async_state).and_return(async_state)
+        document_capture_session.create_proofing_session
+        document_capture_session.store_proofing_result(adjudicated_result.to_h)
+        allow(controller).to receive(:load_async_state)
+          .and_return(document_capture_session.load_proofing_result)
       end
 
       context 'when aamva processes the request normally' do
@@ -909,7 +902,7 @@ RSpec.describe Idv::VerifyInfoController do
       end
 
       context 'when proofing results is missing values' do
-        let(:results) do
+        let(:adjudicated_result) do
           {
             context:,
             errors: {},
@@ -917,12 +910,6 @@ RSpec.describe Idv::VerifyInfoController do
             success: true,
             threatmetrix_review_status: :passed,
           }
-        end
-
-        let(:async_state) do
-          document_capture_session.create_proofing_session
-          document_capture_session.store_proofing_result(results)
-          document_capture_session.load_proofing_result
         end
 
         context 'when context is missing' do
@@ -952,18 +939,15 @@ RSpec.describe Idv::VerifyInfoController do
     end
 
     context 'when instant verify address proofing results in an exception' do
-      let(:document_capture_session) do
-        DocumentCaptureSession.create(user:)
-      end
+      let(:document_capture_session) { create(:document_capture_session, user:) }
       let(:success) { false }
       let(:errors) { {} }
       let(:exception) { nil }
       let(:error_attributes) { nil }
       let(:vendor_name) { 'instantverify_placeholder' }
       let(:applicant_pii) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN }
-      let(:async_state) do
-        # Here we're trying to match the store to redis -> read from redis flow this data travels
-        adjudicated_result = Proofing::Resolution::ResultAdjudicator.new(
+      let(:adjudicated_result) do
+        Proofing::Resolution::ResultAdjudicator.new(
           state_id_result: Proofing::StateIdResult.new(success: true),
           phone_result: Proofing::AddressResult.new(
             success: success,
@@ -984,16 +968,14 @@ RSpec.describe Idv::VerifyInfoController do
           same_address_as_id: nil,
           should_proof_state_id: true,
           applicant_pii:,
-        ).adjudicated_result.to_h
-
-        document_capture_session.create_proofing_session
-
-        document_capture_session.store_proofing_result(adjudicated_result)
-
-        document_capture_session.load_proofing_result
+        ).adjudicated_result
       end
+
       before do
-        allow(controller).to receive(:load_async_state).and_return(async_state)
+        document_capture_session.create_proofing_session
+        document_capture_session.store_proofing_result(adjudicated_result.to_h)
+        allow(controller).to receive(:load_async_state)
+          .and_return(document_capture_session.load_proofing_result)
       end
 
       context 'address is the only exception' do
@@ -1122,19 +1104,10 @@ RSpec.describe Idv::VerifyInfoController do
     end
 
     context 'when the resolution proofing job fails and there is no exception' do
-      before do
-        allow(controller).to receive(:load_async_state).and_return(async_state)
-      end
-
-      let(:document_capture_session) do
-        DocumentCaptureSession.create(user:)
-      end
-
+      let(:document_capture_session) { create(:document_capture_session, user:) }
       let(:applicant_pii) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN }
-
-      let(:async_state) do
-        # Here we're trying to match the store to redis -> read from redis flow this data travels
-        adjudicated_result = Proofing::Resolution::ResultAdjudicator.new(
+      let(:adjudicated_result) do
+        Proofing::Resolution::ResultAdjudicator.new(
           state_id_result: Proofing::StateIdResult.new(
             success: true,
             errors: {},
@@ -1163,13 +1136,14 @@ RSpec.describe Idv::VerifyInfoController do
           same_address_as_id: true,
           should_proof_state_id: true,
           applicant_pii:,
-        ).adjudicated_result.to_h
+        ).adjudicated_result
+      end
 
+      before do
         document_capture_session.create_proofing_session
-
-        document_capture_session.store_proofing_result(adjudicated_result)
-
-        document_capture_session.load_proofing_result
+        document_capture_session.store_proofing_result(adjudicated_result.to_h)
+        allow(controller).to receive(:load_async_state)
+          .and_return(document_capture_session.load_proofing_result)
       end
 
       it 'tracks the attempts api event' do
@@ -1261,9 +1235,8 @@ RSpec.describe Idv::VerifyInfoController do
 
       let(:residential_resolution_vendor_name) { 'ResidentialResolutionVendor' }
 
-      let(:async_state) do
-        # Here we're trying to match the store to redis -> read from redis flow this data travels
-        adjudicated_result = Proofing::Resolution::ResultAdjudicator.new(
+      let(:adjudicated_result) do
+        Proofing::Resolution::ResultAdjudicator.new(
           state_id_result: Proofing::StateIdResult.new(
             success: true,
             errors: {},
@@ -1291,17 +1264,15 @@ RSpec.describe Idv::VerifyInfoController do
           same_address_as_id: true,
           should_proof_state_id: true,
           applicant_pii: Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN,
-        ).adjudicated_result.to_h
-
-        document_capture_session.create_proofing_session
-
-        document_capture_session.store_proofing_result(adjudicated_result)
-
-        document_capture_session.load_proofing_result
+        ).adjudicated_result
       end
 
       before do
-        allow(controller).to receive(:load_async_state).and_return(async_state)
+        # Here we're trying to match the store to redis -> read from redis flow this data travels
+        document_capture_session.create_proofing_session
+        document_capture_session.store_proofing_result(adjudicated_result.to_h)
+        allow(controller).to receive(:load_async_state)
+          .and_return(document_capture_session.load_proofing_result)
       end
 
       it 'sets resolution_vendor on idv_session' do
