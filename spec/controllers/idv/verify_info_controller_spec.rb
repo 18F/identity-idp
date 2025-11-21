@@ -76,6 +76,10 @@ RSpec.describe Idv::VerifyInfoController do
   end
 
   describe '#show' do
+    before do
+      subject.idv_session.precheck_phone = { phone: '703-555-5555' }
+    end
+
     it 'renders the show template' do
       get :show
 
@@ -708,7 +712,7 @@ RSpec.describe Idv::VerifyInfoController do
           end
         end
 
-        context 'when there are not phone results' do
+        context 'when there are no phone results' do
           let(:phone_result) { {} }
 
           it 'redirect to phone confirmation url' do
@@ -1427,20 +1431,6 @@ RSpec.describe Idv::VerifyInfoController do
       expect(subject.best_effort_phone).to eq(nil)
     end
 
-    context 'when there is a hybrid handoff number' do
-      before(:each) do
-        allow(subject.idv_session).to receive(:phone_for_mobile_flow).and_return('202-555-1234')
-      end
-
-      it 'returns the phone number from hybrid handoff' do
-        expect(subject.best_effort_phone[:phone]).to eq('202-555-1234')
-      end
-
-      it 'sets type to :hybrid_handoff' do
-        expect(subject.best_effort_phone[:source]).to eq(:hybrid_handoff)
-      end
-    end
-
     context 'when there was an MFA phone number provided' do
       let(:user) { create(:user, :with_phone) }
 
@@ -1450,6 +1440,20 @@ RSpec.describe Idv::VerifyInfoController do
 
       it 'sets the phone source to :mfa' do
         expect(subject.best_effort_phone[:source]).to eq(:mfa)
+      end
+
+      context 'when there is a hybrid handoff number' do
+        before(:each) do
+          subject.idv_session.phone_for_mobile_flow = '202-555-1234'
+        end
+
+        it 'returns the phone number from hybrid handoff' do
+          expect(subject.best_effort_phone[:phone]).to eq('202-555-1234')
+        end
+
+        it 'sets type to :hybrid_handoff' do
+          expect(subject.best_effort_phone[:source]).to eq(:hybrid_handoff)
+        end
       end
     end
   end
