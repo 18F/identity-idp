@@ -77,7 +77,7 @@ RSpec.describe Idv::VerifyInfoController do
 
   describe '#show' do
     before do
-      subject.idv_session.precheck_phone = { phone: '703-555-5555' }
+      subject.idv_session.precheck_phone = { phone: '+1 703-555-5555' }
     end
 
     it 'renders the show template' do
@@ -696,6 +696,8 @@ RSpec.describe Idv::VerifyInfoController do
           it 'redirect to phone confirmation url' do
             put :show
             expect(response).to redirect_to idv_phone_url
+            expect(controller.idv_session.phone_precheck_successful).to eq(false)
+            expect(controller.idv_session.phone_precheck_vendor).to eq('test-phone-vendor')
           end
         end
 
@@ -705,6 +707,8 @@ RSpec.describe Idv::VerifyInfoController do
           it 'redirect to phone confirmation url' do
             put :show
             expect(response).to redirect_to idv_phone_url
+            expect(controller.idv_session.phone_precheck_successful).to be_nil
+            expect(controller.idv_session.phone_precheck_vendor).to be_nil
           end
         end
 
@@ -739,6 +743,8 @@ RSpec.describe Idv::VerifyInfoController do
               vendor_name: 'test-phone-vendor',
             ),
           )
+          expect(controller.idv_session.phone_precheck_successful).to eq(true)
+          expect(controller.idv_session.phone_precheck_vendor).to eq('test-phone-vendor')
         end
 
         context 'when there is a secondary phone vendor' do
@@ -773,6 +779,45 @@ RSpec.describe Idv::VerifyInfoController do
                 vendor_name: 'failed-vendor',
               ),
             )
+            expect(controller.idv_session.phone_precheck_successful).to eq(true)
+            expect(controller.idv_session.phone_precheck_vendor).to eq('successful-vendor')
+          end
+
+          context 'when both phone vendors fail' do
+            let(:phone_result) do
+              alternate_result = Proofing::AddressResult.new(
+                success: false,
+                errors: {},
+                exception: nil,
+                vendor_name: 'first-failed-vendor',
+              ).to_h
+              Proofing::AddressResult.new(
+                success: false,
+                errors: {},
+                exception: nil,
+                vendor_name: 'second-failed-vendor',
+              ).to_h.merge(alternate_result:)
+            end
+            it 'logs an event with analytics_id set' do
+              put :show
+
+              event = @analytics.events['IdV: doc auth verify proofing results'].first
+              phone_precheck = event.dig(:proofing_results, :context, :stages, :phone_precheck)
+              expect(phone_precheck).to match(
+                hash_including(
+                  success: false,
+                  vendor_name: 'second-failed-vendor',
+                ),
+              )
+              expect(phone_precheck[:alternate_result]).to match(
+                hash_including(
+                  success: false,
+                  vendor_name: 'first-failed-vendor',
+                ),
+              )
+              expect(controller.idv_session.phone_precheck_successful).to eq(false)
+              expect(controller.idv_session.phone_precheck_vendor).to eq('second-failed-vendor')
+            end
           end
         end
 
@@ -1305,6 +1350,17 @@ RSpec.describe Idv::VerifyInfoController do
       expect(response).to redirect_to idv_verify_info_url
     end
 
+    context 'has best effort phone' do
+      before do
+        subject.idv_session.phone_for_mobile_flow = '+1 703-555-5555'
+      end
+
+      it 'stores the precheck phone number in the idv session' do
+        put :update
+
+        expect(subject.idv_session.precheck_phone[:phone]).to eq('+1 703-555-5555')
+      end
+    end
     context 'with an sp' do
       let(:sp) { create(:service_provider) }
       let(:acr_values) { Saml::Idp::Constants::AAL1_AUTHN_CONTEXT_CLASSREF }
