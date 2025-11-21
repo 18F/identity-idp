@@ -219,14 +219,11 @@ RSpec.describe Idv::VerifyInfoController do
         }
       end
 
-      let(:document_capture_session) do
-        document_capture_session = DocumentCaptureSession.create!(user: user)
-        document_capture_session.create_proofing_session
-        document_capture_session.store_proofing_result(idv_result)
-        document_capture_session
-      end
+      let(:document_capture_session) { create(:document_capture_session, user:) }
 
       before do
+        document_capture_session.create_proofing_session
+        document_capture_session.store_proofing_result(idv_result)
         controller
           .idv_session
           .verify_info_step_document_capture_session_uuid = document_capture_session.uuid
@@ -593,9 +590,7 @@ RSpec.describe Idv::VerifyInfoController do
     end
 
     context 'when the user has updated their SSN' do
-      let(:document_capture_session) do
-        DocumentCaptureSession.create(user:)
-      end
+      let(:document_capture_session) { create(:document_capture_session, user:) }
 
       let(:async_state) do
         # Here we're trying to match the store to redis -> read from redis flow this data travels
