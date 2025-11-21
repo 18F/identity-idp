@@ -93,7 +93,6 @@ module Proofing
           residential_address_resolution_result:,
           state_id_address_resolution_result:,
           state_id_result:,
-          ipp_enrollment_in_progress:,
           best_effort_phone:,
           timer:,
           user_email:,

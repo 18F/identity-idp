@@ -35,7 +35,6 @@ RSpec.describe Proofing::Resolution::Plugins::PhonePlugin do
         state_id_address_resolution_result:,
         residential_address_resolution_result:,
         state_id_result:,
-        ipp_enrollment_in_progress:,
         timer:,
         user_email: user.email,
       )
@@ -61,7 +60,6 @@ RSpec.describe Proofing::Resolution::Plugins::PhonePlugin do
           state_id_address_resolution_result:,
           residential_address_resolution_result:,
           state_id_result:,
-          ipp_enrollment_in_progress:,
           timer:,
           user_email: user.email,
         }
