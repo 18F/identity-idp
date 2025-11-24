@@ -8,7 +8,7 @@ variables:
   FF_SCRIPT_SECTIONS: 'true'
   JUNIT_OUTPUT: 'true'
   ECR_REGISTRY: '${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com'
-  SECURE_ANALYZERS_PREFIX: "$ECR_REGISTRY/gitlab/security-products"
+  SECURE_ANALYZERS_PREFIX: '$ECR_REGISTRY/gitlab/security-products'
   IDP_CI_SHA: 'sha256:787f58c3d7e0899d7a622202aa21a9ead24a3fc160d1b158160429bdcc33e4fe'
   PKI_IMAGE_TAG: 'main'
   DASHBOARD_IMAGE_TAG: 'main'
@@ -18,7 +18,7 @@ default:
   image: '${ECR_REGISTRY}/idp/ci@${IDP_CI_SHA}'
 
 .bundle_install: &bundle_install
-  - bundle check || bundle install --deployment --jobs=4 --retry=3 --without deploy development doc production --path vendor/ruby
+  - bundle check || bundle config set deployment true path vendor/ruby --jobs=4 --retry=3
 
 .npm_install: &npm_install
   - npm ci --cache=.npm-cache
@@ -125,25 +125,8 @@ build-idp-image:
       KANIKOCFG="{ ${KANIKOCFG} }"
       echo "${KANIKOCFG}" > /kaniko/.docker/config.json
     - >-
-      /kaniko/executor
-      --context "${CI_PROJECT_DIR}"
-      --dockerfile "${CI_PROJECT_DIR}/dockerfiles/idp_deploy.Dockerfile"
-      --destination "${ECR_REGISTRY}/identity-idp/idp:${CI_COMMIT_SHA}"
-      ${BRANCH_TAGGING_STRING}
-      --cache-repo="${ECR_REGISTRY}/identity-idp/idp/cache"
-      --cache-ttl=168h
-      --cache=true
-      --snapshot-mode=redo
-      --compressed-caching=false
-      --build-arg "http_proxy=${http_proxy}"
-      --build-arg "https_proxy=${https_proxy}"
-      --build-arg "no_proxy=${no_proxy}"
-      --build-arg "ARG_CI_ENVIRONMENT_SLUG=${CI_ENVIRONMENT_SLUG}"
-      --build-arg "ARG_CI_COMMIT_BRANCH=${CI_COMMIT_BRANCH}"
-      --build-arg "ARG_CI_COMMIT_SHA=${CI_COMMIT_SHA}"
-      --build-arg "LARGE_FILES_TOKEN=${LARGE_FILES_TOKEN}"
-      --build-arg "LARGE_FILES_USER=${LARGE_FILES_USER}"
-      --build-arg "SERVICE_PROVIDERS_KEY=${SERVICE_PROVIDERS_KEY}"
+      /kaniko/executor --context "${CI_PROJECT_DIR}" --dockerfile "${CI_PROJECT_DIR}/dockerfiles/idp_deploy.Dockerfile" --destination "${ECR_REGISTRY}/identity-idp/idp:${CI_COMMIT_SHA}" ${BRANCH_TAGGING_STRING} --cache-repo="${ECR_REGISTRY}/identity-idp/idp/cache" --cache-ttl=168h --cache=true --snapshot-mode=redo --compressed-caching=false --build-arg "http_proxy=${http_proxy}" --build-arg "https_proxy=${https_proxy}" --build-arg "no_proxy=${no_proxy}" --build-arg "ARG_CI_ENVIRONMENT_SLUG=${CI_ENVIRONMENT_SLUG}" --build-arg "ARG_CI_COMMIT_BRANCH=${CI_COMMIT_BRANCH}" --build-arg "ARG_CI_COMMIT_SHA=${CI_COMMIT_SHA}" --build-arg "LARGE_FILES_TOKEN=${LARGE_FILES_TOKEN}" --build-arg "LARGE_FILES_USER=${LARGE_FILES_USER}" --build-arg "SERVICE_PROVIDERS_KEY=${SERVICE_PROVIDERS_KEY}"
+
 
 build-nginx-image:
   stage: review
@@ -177,25 +160,8 @@ build-nginx-image:
       KANIKOCFG="{ ${KANIKOCFG} }"
       echo "${KANIKOCFG}" > /kaniko/.docker/config.json
     - >-
-      /kaniko/executor
-      --context "${CI_PROJECT_DIR}"
-      --dockerfile "${CI_PROJECT_DIR}/dockerfiles/nginx.Dockerfile"
-      --destination "${ECR_REGISTRY}/identity-idp/nginx:${CI_COMMIT_SHA}"
-      ${BRANCH_TAGGING_STRING}
-      --cache-repo="${ECR_REGISTRY}/identity-idp/idp/cache"
-      --cache-ttl=168h
-      --cache=true
-      --snapshot-mode=redo
-      --compressed-caching=false
-      --build-arg "http_proxy=${http_proxy}"
-      --build-arg "https_proxy=${https_proxy}"
-      --build-arg "no_proxy=${no_proxy}"
-      --build-arg "ARG_CI_ENVIRONMENT_SLUG=${CI_ENVIRONMENT_SLUG}"
-      --build-arg "ARG_CI_COMMIT_BRANCH=${CI_COMMIT_BRANCH}"
-      --build-arg "ARG_CI_COMMIT_SHA=${CI_COMMIT_SHA}"
-      --build-arg "LARGE_FILES_TOKEN=${LARGE_FILES_TOKEN}"
-      --build-arg "LARGE_FILES_USER=${LARGE_FILES_USER}"
-      --build-arg "SERVICE_PROVIDERS_KEY=${SERVICE_PROVIDERS_KEY}"
+      /kaniko/executor --context "${CI_PROJECT_DIR}" --dockerfile "${CI_PROJECT_DIR}/dockerfiles/nginx.Dockerfile" --destination "${ECR_REGISTRY}/identity-idp/nginx:${CI_COMMIT_SHA}" ${BRANCH_TAGGING_STRING} --cache-repo="${ECR_REGISTRY}/identity-idp/idp/cache" --cache-ttl=168h --cache=true --snapshot-mode=redo --compressed-caching=false --build-arg "http_proxy=${http_proxy}" --build-arg "https_proxy=${https_proxy}" --build-arg "no_proxy=${no_proxy}" --build-arg "ARG_CI_ENVIRONMENT_SLUG=${CI_ENVIRONMENT_SLUG}" --build-arg "ARG_CI_COMMIT_BRANCH=${CI_COMMIT_BRANCH}" --build-arg "ARG_CI_COMMIT_SHA=${CI_COMMIT_SHA}" --build-arg "LARGE_FILES_TOKEN=${LARGE_FILES_TOKEN}" --build-arg "LARGE_FILES_USER=${LARGE_FILES_USER}" --build-arg "SERVICE_PROVIDERS_KEY=${SERVICE_PROVIDERS_KEY}"
+
 
 check_changelog:
   stage: test
@@ -443,12 +409,8 @@ build-ci-image:
       KANIKOCFG="{ ${KANIKOCFG} }"
       echo "${KANIKOCFG}" > /kaniko/.docker/config.json
     - >-
-      /kaniko/executor
-      --context "${CI_PROJECT_DIR}"
-      --dockerfile "${CI_PROJECT_DIR}/dockerfiles/idp_ci.Dockerfile"
-      --destination "${ECR_REGISTRY}/idp/ci:latest"
-      --destination "${ECR_REGISTRY}/idp/ci:${CI_COMMIT_SHA}"
-      --build-arg "http_proxy=${http_proxy}" --build-arg "https_proxy=${https_proxy}" --build-arg "no_proxy=${no_proxy}"
+      /kaniko/executor --context "${CI_PROJECT_DIR}" --dockerfile "${CI_PROJECT_DIR}/dockerfiles/idp_ci.Dockerfile" --destination "${ECR_REGISTRY}/idp/ci:latest" --destination "${ECR_REGISTRY}/idp/ci:${CI_COMMIT_SHA}" --build-arg "http_proxy=${http_proxy}" --build-arg "https_proxy=${https_proxy}" --build-arg "no_proxy=${no_proxy}"
+
 
 # Triggers devops CD to deploy to dev
 trigger_devops:
@@ -489,7 +451,6 @@ trigger_devops:
     - echo https://$CI_ENVIRONMENT_SLUG.pivcac.reviewapps.identitysandbox.gov
     - echo "Address of Dashboard review app:"
     - echo https://$CI_ENVIRONMENT_SLUG-dashboard.reviewapps.identitysandbox.gov
-
 
 review-app:
   stage: review
@@ -601,12 +562,11 @@ secret_detection:
           sleep 15
         fi
       done
+
     - SCAN_FINDINGS=$(aws ecr describe-image-scan-findings --repository-name ${ecr_repo} --image-id imageTag=$CI_COMMIT_SHA)
     - echo $SCAN_FINDINGS
     - >
-      echo $SCAN_FINDINGS |
-      jq -r 'if (.imageScanFindings.enhancedFindings | length > 0) then
-      {
+      echo $SCAN_FINDINGS | jq -r 'if (.imageScanFindings.enhancedFindings | length > 0) then {
         "version": "15.0.4",
         "scan": {
           "start_time": (.imageScanFindings.imageScanCompletedAt | sub("\\.[0-9]+"; "") | strptime("%Y-%m-%dT%H:%M:%S%z") | strftime("%Y-%m-%dT%H:%M:%S")),
@@ -670,9 +630,7 @@ secret_detection:
             }
           }
         ]
-      }
-      else
-      {
+      } else {
         "version": "15.0.4",
         "scan": {
           "start_time": (now | strftime("%Y-%m-%dT%H:%M:%S")),
@@ -697,8 +655,8 @@ secret_detection:
           "type": "container_scanning"
         },
         "vulnerabilities": []
-      }
-      end' > gl-container-scanning-report.json
+      } end' > gl-container-scanning-report.json
+
   artifacts:
     paths:
       - gl-container-scanning-report.json
