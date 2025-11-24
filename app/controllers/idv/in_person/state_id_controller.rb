@@ -24,7 +24,6 @@ module Idv
       end
 
       def update
-        # don't clear the ssn when updating address, clear after SsnController
         clear_future_steps_from!(controller: Idv::InPerson::SsnController)
 
         initial_state_of_same_address_as_id = pii_from_user[:same_address_as_id]
@@ -36,11 +35,9 @@ module Idv
             pii_from_user[attr] = flow_params[attr]
           end
 
-          # Accept Date of Birth from both memorable date and input date components
           formatted_dob = MemorableDateComponent.extract_date_param flow_params&.[](:dob)
           pii_from_user[:dob] = formatted_dob if formatted_dob
 
-          # Accept Expiration Date from both memorable date and input date components
           formatted_exp = MemorableDateComponent.extract_date_param(
             flow_params&.[](:id_expiration),
           )
@@ -80,6 +77,7 @@ module Idv
 
             return if rate_limit_redirect!(:idv_doc_auth, step_name: 'ipp_state_id')
 
+            RateLimiter.new(user: current_user, rate_limit_type: :idv_doc_auth).increment!
             start_aamva_async_state
             redirect_to idv_in_person_state_id_url
             return
@@ -166,11 +164,8 @@ module Idv
 
       def flow_params
         if params.dig(:identity_doc).present?
-          # Transform the top-level params key to accept the renamed form
-          # for autofill handling workaround
           params[:state_id] = params.delete(:identity_doc)
 
-          # Rename nested id_number to state_id_number
           if params[:state_id][:id_number].present?
             params[:state_id][:state_id_number] = params[:state_id].delete(:id_number)
           end

@@ -799,5 +799,30 @@ RSpec.describe Idv::InPerson::StateIdController do
         put :update, params: params
       end
     end
+
+    context 'rate limiter increment' do
+      let(:params) { valid_state_id_params(same_address_as_id: 'true') }
+
+      it 'increments rate limiter on AAMVA submission' do
+        initial_count = RateLimiter.new(user: user, rate_limit_type: :idv_doc_auth).remaining_count
+
+        put :update, params: params
+
+        new_count = RateLimiter.new(user: user, rate_limit_type: :idv_doc_auth).remaining_count
+        expect(new_count).to eq(initial_count - 1)
+      end
+
+      it 'does not increment rate limiter when already rate limited' do
+        allow(subject).to receive(:idv_attempter_rate_limited?).with(:idv_doc_auth).and_return(true)
+        rate_limiter = RateLimiter.new(user: user, rate_limit_type: :idv_doc_auth)
+        rate_limiter.increment_to_limited!
+        initial_count = rate_limiter.remaining_count
+
+        put :update, params: params
+
+        new_count = RateLimiter.new(user: user, rate_limit_type: :idv_doc_auth).remaining_count
+        expect(new_count).to eq(initial_count)
+      end
+    end
   end
 end
