@@ -749,6 +749,7 @@ RSpec.describe Idv::ImageUploadsController do
           zip_code: '59010',
           issue_year: 2019,
           document_type_requested: an_instance_of(String),
+          vendor: 'Mock',
         )
 
         expect(@analytics).to have_logged_event(
@@ -830,6 +831,7 @@ RSpec.describe Idv::ImageUploadsController do
             zip_code: '59010',
             issue_year: 2019,
             document_type_requested: an_instance_of(String),
+            vendor: 'Mock',
           )
 
           expect(@analytics).to have_logged_event(
