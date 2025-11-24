@@ -110,12 +110,12 @@ RSpec.describe Idv::PhoneStep do
           transaction_id: vendor_transaction_id,
           reference: '',
           result: nil,
-        )
+        ).to_h
       end
 
       before do
         allow_any_instance_of(Proofing::AddressProofer).to receive(:proof).and_return(
-          [address_result],
+          address_result,
         )
       end
 
