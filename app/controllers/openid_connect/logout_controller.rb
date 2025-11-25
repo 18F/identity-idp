@@ -23,13 +23,12 @@ module OpenidConnect
         original_method: session[:original_method],
       )
 
-      attempts_api_tracker.logout_initiated(
-        success: result.success?,
-      )
-
       if result.success? && redirect_uri
         handle_successful_logout_request(result, redirect_uri)
       else
+        attempts_api_tracker.logout_initiated(
+          success: false,
+        )
         track_integration_errors(result:, event: :oidc_logout_requested)
 
         render :error
@@ -50,13 +49,13 @@ module OpenidConnect
       redirect_uri = result.extra[:redirect_uri]
 
       analytics.oidc_logout_submitted(**to_event(result))
-      attempts_api_tracker.logout_initiated(
-        success: result.success?,
-      )
 
       if result.success? && redirect_uri
         handle_logout(result, redirect_uri)
       else
+        attempts_api_tracker.logout_initiated(
+          success: false,
+        )
         track_integration_errors(result:, event: :oidc_logout_submitted)
 
         render :error
@@ -109,9 +108,13 @@ module OpenidConnect
     # @param redirect_uri [String] The URL to redirect the user to after logout
     def handle_successful_logout_request(result, redirect_uri)
       apply_logout_secure_headers_override(redirect_uri, @logout_form.service_provider)
+
       if current_user.present?
         analytics.oidc_logout_visited(**to_event(result))
 
+        attempts_api_tracker.logout_initiated(
+          success: result.success?,
+        )
         @params = {
           client_id: logout_params[:client_id],
           post_logout_redirect_uri: logout_params[:post_logout_redirect_uri],
@@ -129,6 +132,10 @@ module OpenidConnect
 
     def handle_logout(result, redirect_uri)
       analytics.logout_initiated(**to_event(result))
+
+      attempts_api_tracker.logout_initiated(
+        success: result.success?,
+      )
 
       redirect_user(redirect_uri)
 
