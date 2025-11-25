@@ -95,6 +95,37 @@ RSpec.describe Proofing::Resolution::Plugins::PhonePlugin do
           expect(result[:success]).to eq(false)
           expect(result[:vendor_name]).to eq('NoPhoneNumberAvailable')
         end
+
+        context 'when best effort phone number is provided' do
+          let(:best_effort_phone) do
+            { phone: '19876543210' }
+          end
+
+          subject(:call) do
+            plugin.call(
+              applicant_pii:,
+              current_sp:,
+              state_id_address_resolution_result:,
+              residential_address_resolution_result:,
+              state_id_result:,
+              timer:,
+              user_email: user.email,
+              best_effort_phone:,
+            )
+          end
+
+          it 'calls the proofer and returns the results' do
+            expect_any_instance_of(Proofing::AddressProofer).to receive(:proof).with(
+              applicant_pii: hash_including({ phone: '19876543210' }),
+              current_sp:,
+            ).and_call_original
+
+            result = call
+
+            expect(result[:success]).to eq(true)
+            expect(result[:vendor_name]).to eq('AddressMock')
+          end
+        end
       end
 
       context 'the applicant has a phone number' do
