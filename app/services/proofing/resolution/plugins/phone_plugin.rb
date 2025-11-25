@@ -23,9 +23,7 @@ module Proofing
             return resolution_cannot_pass_result.to_h
           end
 
-          if IdentityConfig.store.idv_phone_precheck_enabled
-            applicant_pii[:phone] ||= best_effort_phone&.dig(:phone)
-          end
+          applicant_pii[:phone] ||= best_effort_phone&.dig(:phone)
 
           if applicant_pii[:phone].blank?
             return no_phone_available_result.to_h
