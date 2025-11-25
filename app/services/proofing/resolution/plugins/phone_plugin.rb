@@ -29,16 +29,16 @@ module Proofing
             return no_phone_available_result
           end
 
-          phone_finder_applicant = applicant_pii.slice(
+          phone_applicant = applicant_pii.slice(
             :uuid, :uuid_prefix, :first_name, :last_name, :ssn, :dob, :phone
           )
 
           proofer = Proofing::AddressProofer.new(
-            user_uuid: phone_finder_applicant[:uuid],
+            user_uuid: phone_applicant[:uuid],
             user_email:,
           )
           timer.time('phone') do
-            proofer.proof(applicant_pii: phone_finder_applicant, current_sp:)
+            proofer.proof(applicant_pii: phone_applicant, current_sp:)
           end
         end
 
