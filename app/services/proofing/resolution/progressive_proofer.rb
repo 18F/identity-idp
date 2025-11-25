@@ -50,7 +50,8 @@ module Proofing
         current_sp:,
         workflow:
       )
-        best_effort_phone = applicant_pii.delete(:best_effort_phone_number_for_socure)
+        best_effort_phone = applicant_pii[:best_effort_phone_number_for_socure]
+        applicant_pii = applicant_pii.except(:best_effort_phone_number_for_socure)
 
         device_profiling_result = threatmetrix_plugin.call(
           applicant_pii:,
