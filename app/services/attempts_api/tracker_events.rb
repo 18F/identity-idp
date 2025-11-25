@@ -436,7 +436,7 @@ module AttemptsApi
 
     # Tracks when user enrolls their MFA device.
     # @param [Boolean] success
-    # @param mfa_device_type [String<'backup_code', 'otp', 'piv_cac',
+    # @param mfa_device_type [String<'backup_code', 'phone', 'piv_cac',
     # 'totp', 'webauthn', 'webauthn_platform'>]
     # @param [String<'sms','voice'>] otp_delivery_method
     # @param [String] phone_number Enrolled phone number
