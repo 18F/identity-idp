@@ -2241,6 +2241,8 @@ module AnalyticsEvents
   # @option proofing_results [String] context.stages.resolution.transaction_id A unique id for the underlying vendor request
   # @option proofing_results [Boolean] context.stages.resolution.can_pass_with_additional_verification Whether the PII could be verified if another vendor verified certain attributes
   # @option proofing_results [Array<String>] context.stages.resolution.attributes_requiring_additional_verification Attributes that need to be verified by another vendor
+  # @option proofing_results [Array<String>,nil] context.stages.resolution.source_attribution List of sources that contributed to the resolution proofing result
+  # @option proofing_results [String,nil] context.stages.resolution.vendor_id Vendor's internal ID for resolution proofing requests, e.g. socureId
   # @option proofing_results [String] context.stages.resolution.vendor_name Vendor used (e.g. lexisnexis:instant_verify)
   # @option proofing_results [String] context.stages.resolution.vendor_workflow ID of workflow or configuration the vendor used for this transaction
   # @option proofing_results [Boolean] context.stages.residential_address.success Whether the residential address passed proofing
@@ -2250,6 +2252,8 @@ module AnalyticsEvents
   # @option proofing_results [String] context.stages.residential_address.transaction_id Vendor-specific transaction ID for the request made to the residential address proofing vendor
   # @option proofing_results [Boolean] context.stages.residential_address.can_pass_with_additional_verification Whether, if residential address proofing failed, it could pass with additional proofing from another vendor
   # @option proofing_results [Array<String>,nil] context.stages.residential_address.attributes_requiring_additional_verification List of PII attributes that require additional verification for residential address proofing to pass
+  # @option proofing_results [Array<String>,nil] context.stages.residential_address.source_attribution List of sources that contributed to the residential address proofing result
+  # @option proofing_results [String,nil] context.stages.residential_address.vendor_id Vendor's internal ID for residential address proofing requests, e.g. socureId
   # @option proofing_results [String] context.stages.residential_address.vendor_name Vendor used for residential address proofing
   # @option proofing_results [String] context.stages.residential_address.vendor_workflow Vendor-specific workflow or configuration ID associated with the request made.
   # @option proofing_results [Hash] context.stages.state_id Object holding details about the call made to the state ID proofing vendor
