@@ -270,6 +270,7 @@ RSpec.describe Db::MonthlySpAuthCount::NewUniqueMonthlyUserCountsByPartner do
         end
       end
 
+      # rubocop:disable Layout/LineLength
       it 'adds up new unique users from sp_return_log instances and splits based on profile age' do
         rows = [
           {
@@ -289,7 +290,7 @@ RSpec.describe Db::MonthlySpAuthCount::NewUniqueMonthlyUserCountsByPartner do
             new_unique_user_proofed_events: 9,
             partner_ial2_new_unique_user_events_year1_upfront: 1,
             partner_ial2_new_unique_user_events_year1_existing: 2,
-            partner_ial2_new_unique_user_events_year1: 3,
+            partner_ial2_new_unique_user_events_year1: 3, # Note that year_1 = year_1_upfront + year_1_existing
             partner_ial2_new_unique_user_events_year2: 2,
             partner_ial2_new_unique_user_events_year3: 1,
             partner_ial2_new_unique_user_events_year4: 1,
@@ -314,7 +315,7 @@ RSpec.describe Db::MonthlySpAuthCount::NewUniqueMonthlyUserCountsByPartner do
             new_unique_user_proofed_events: 8,
             partner_ial2_new_unique_user_events_year1_upfront: 0,
             partner_ial2_new_unique_user_events_year1_existing: 3,
-            partner_ial2_new_unique_user_events_year1: 3,
+            partner_ial2_new_unique_user_events_year1: 3, # Note that year_1 = year_1_upfront + year_1_existing
             partner_ial2_new_unique_user_events_year2: 2,
             partner_ial2_new_unique_user_events_year3: 0,
             partner_ial2_new_unique_user_events_year4: 0,
@@ -326,6 +327,7 @@ RSpec.describe Db::MonthlySpAuthCount::NewUniqueMonthlyUserCountsByPartner do
         expect(results).to match_array(rows)
       end
     end
+    # rubocop:enable Layout/LineLength
 
     context 'with only partial month data' do
       let(:partner_key) { 'DHS' }

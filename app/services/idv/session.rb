@@ -2,6 +2,7 @@
 
 module Idv
   # @attr address_edited [Boolean, nil]
+  # @attr address_verification_vendor [String, nil]
   # @attr address_verification_mechanism [String, nil]
   # @attr applicant [Struct, nil]
   # @attr doc_auth_vendor [String, nil]
@@ -48,6 +49,7 @@ module Idv
   class Session
     VALID_SESSION_ATTRIBUTES = %i[
       address_edited
+      address_verification_vendor
       address_verification_mechanism
       applicant
       bucketed_doc_auth_vendor
