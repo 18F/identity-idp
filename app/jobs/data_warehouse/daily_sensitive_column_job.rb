@@ -14,7 +14,7 @@ module DataWarehouse
 
     def fetch_columns
       tables = ActiveRecord::Base.connection.tables - %w[schema_migrations ar_internal_metadata
-                                                         awsdms_ddl_audit]
+                                                         awsdms_ddl_audit good_jobs]
 
       sensitive_hash = []
       insensitive_hash = []
