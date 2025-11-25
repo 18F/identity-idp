@@ -4,11 +4,12 @@ RSpec.describe Proofing::Resolution::Plugins::PhonePlugin do
   let(:idv_phone_precheck_enabled) { true }
   let(:user) { create(:user) }
   let(:applicant_pii) do
-    Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE.merge(uuid_prefix: '123', uuid: user.uuid)
+    Idp::Constants::MOCK_IDV_APPLICANT.merge(uuid_prefix: '123', uuid: user.uuid)
   end
   let(:current_sp) { build(:service_provider) }
   let(:ipp_enrollment_in_progress) { false }
   let(:timer) { JobHelpers::Timer.new }
+  let(:best_effort_phone) { { phone: '19876543210' } }
 
   let(:state_id_address_resolution_result) do
     Proofing::Resolution::Result.new(success: true, vendor_name: 'lexisnexis:instant_verify')
@@ -37,6 +38,7 @@ RSpec.describe Proofing::Resolution::Plugins::PhonePlugin do
         state_id_result:,
         timer:,
         user_email: user.email,
+        best_effort_phone:,
       )
     end
 
@@ -86,37 +88,38 @@ RSpec.describe Proofing::Resolution::Plugins::PhonePlugin do
         expect(state_id_failed_result[:vendor_name]).to eq('ResolutionCannotPass')
       end
 
-      context 'there is no phone number in the applicant' do
-        let(:applicant_pii) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN.dup }
+      it 'calls the proofer with best effor phone and returns the results' do
+        expect_any_instance_of(Proofing::AddressProofer).to receive(:proof).with(
+          applicant_pii: hash_including({ phone: '19876543210' }),
+          current_sp:,
+        ).and_call_original
 
-        it 'returns an unsuccessful result' do
-          result = call
+        result = call
 
-          expect(result[:success]).to eq(false)
-          expect(result[:vendor_name]).to eq('NoPhoneNumberAvailable')
+        expect(result[:success]).to eq(true)
+        expect(result[:vendor_name]).to eq('AddressMock')
+      end
+
+      context 'when there is no best effort phone' do
+        let(:best_effort_phone) { nil }
+        context 'and no phone in applicant_pii' do
+          let(:applicant_pii) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN.dup }
+
+          it 'returns an unsuccessful result' do
+            result = call
+
+            expect(result[:success]).to eq(false)
+            expect(result[:vendor_name]).to eq('NoPhoneNumberAvailable')
+          end
         end
 
-        context 'when best effort phone number is provided' do
-          let(:best_effort_phone) do
-            { phone: '19876543210' }
+        context 'and phone in applicant_pii' do
+          let(:applicant_pii) do
+            Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE.merge(uuid_prefix: '123', uuid: user.uuid)
           end
-
-          subject(:call) do
-            plugin.call(
-              applicant_pii:,
-              current_sp:,
-              state_id_address_resolution_result:,
-              residential_address_resolution_result:,
-              state_id_result:,
-              timer:,
-              user_email: user.email,
-              best_effort_phone:,
-            )
-          end
-
-          it 'calls the proofer and returns the results' do
+          it 'calls the proofer with applicant_pii phone number' do
             expect_any_instance_of(Proofing::AddressProofer).to receive(:proof).with(
-              applicant_pii: hash_including({ phone: '19876543210' }),
+              applicant_pii: hash_including({ phone: '12025551212' }),
               current_sp:,
             ).and_call_original
 
@@ -128,18 +131,13 @@ RSpec.describe Proofing::Resolution::Plugins::PhonePlugin do
         end
       end
 
-      context 'the applicant has a phone number' do
-        it 'calls the proofer and returns the results' do
+      context 'the applicant_pii has a phone number' do
+        let(:applicant_pii) do
+          Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE.merge(uuid_prefix: '123', uuid: user.uuid)
+        end
+        it 'calls the proofer with applican_pii phone number and returns the results' do
           expect_any_instance_of(Proofing::AddressProofer).to receive(:proof).with(
-            applicant_pii: {
-              uuid: user.uuid,
-              uuid_prefix: '123',
-              first_name: 'FAKEY',
-              last_name: 'MCFAKERSON',
-              ssn: '900661234',
-              dob: '1938-10-06',
-              phone: '12025551212',
-            },
+            applicant_pii: hash_including({ phone: '12025551212' }),
             current_sp:,
           ).and_call_original
 
