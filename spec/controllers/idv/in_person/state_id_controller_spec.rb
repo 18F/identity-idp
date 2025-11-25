@@ -520,7 +520,7 @@ RSpec.describe Idv::InPerson::StateIdController do
         end
       end
 
-      context 'when async AAMVA check completes successfully but user is rate limited' do
+      context 'when async AAMVA check completes successfully on final attempt (rate limited)' do
         let(:document_capture_session) do
           DocumentCaptureSession.create!(
             user_id: user.id,
@@ -543,8 +543,66 @@ RSpec.describe Idv::InPerson::StateIdController do
           document_capture_session.store_proofing_result(successful_result)
           subject.idv_session.ipp_aamva_document_capture_session_uuid =
             document_capture_session.uuid
-          allow(subject).to receive(:idv_attempter_rate_limited?)
-            .with(:idv_doc_auth).and_return(true)
+          # Simulate user at max attempts (rate limited)
+          RateLimiter.new(user: user, rate_limit_type: :idv_doc_auth).increment_to_limited!
+        end
+
+        it 'redirects to SSN page (allows success on final attempt)' do
+          get :show
+
+          expect(response).to redirect_to(idv_in_person_ssn_url)
+        end
+
+        it 'clears the async state' do
+          get :show
+
+          expect(subject.idv_session.ipp_aamva_document_capture_session_uuid).to be_nil
+        end
+
+        it 'logs completion event with success' do
+          get :show
+
+          expect(@analytics).to have_logged_event(
+            :idv_ipp_aamva_verification_completed,
+            success: true,
+            vendor_name: 'TestAAMVA',
+            step: 'state_id',
+          )
+        end
+
+        it 'does not log rate limit event' do
+          get :show
+
+          expect(@analytics).not_to have_logged_event('Rate Limit Reached')
+        end
+      end
+
+      context 'when async AAMVA check fails on final attempt (rate limited)' do
+        let(:document_capture_session) do
+          DocumentCaptureSession.create!(
+            user_id: user.id,
+            issuer: nil,
+            requested_at: Time.zone.now,
+          )
+        end
+
+        let(:failed_result) do
+          {
+            success: false,
+            errors: { state_id: 'Unable to verify state ID' },
+            vendor_name: 'TestAAMVA',
+            checked_at: Time.zone.now.iso8601,
+          }
+        end
+
+        before do
+          document_capture_session.create_proofing_session
+          document_capture_session.store_proofing_result(failed_result)
+          subject.idv_session.ipp_aamva_document_capture_session_uuid =
+            document_capture_session.uuid
+          # Simulate user at max attempts - 1, so after increment they're at max
+          rate_limiter = RateLimiter.new(user: user, rate_limit_type: :idv_doc_auth)
+          (RateLimiter.max_attempts(:idv_doc_auth) - 1).times { rate_limiter.increment! }
         end
 
         it 'redirects to rate limit error page' do
@@ -569,10 +627,15 @@ RSpec.describe Idv::InPerson::StateIdController do
           )
         end
 
-        it 'does not log completion event' do
+        it 'logs completion event with failure before rate limit redirect' do
           get :show
 
-          expect(@analytics).not_to have_logged_event(:idv_ipp_aamva_verification_completed)
+          expect(@analytics).to have_logged_event(
+            :idv_ipp_aamva_verification_completed,
+            success: false,
+            vendor_name: 'TestAAMVA',
+            step: 'state_id',
+          )
         end
       end
 
@@ -802,11 +865,32 @@ RSpec.describe Idv::InPerson::StateIdController do
 
     context 'rate limiter increment' do
       let(:params) { valid_state_id_params(same_address_as_id: 'true') }
+      let(:document_capture_session) do
+        DocumentCaptureSession.create!(
+          user_id: user.id,
+          issuer: nil,
+          requested_at: Time.zone.now,
+        )
+      end
 
-      it 'increments rate limiter on AAMVA submission' do
+      let(:successful_result) do
+        {
+          success: true,
+          errors: {},
+          vendor_name: 'TestAAMVA',
+          checked_at: Time.zone.now.iso8601,
+        }
+      end
+
+      it 'increments rate limiter when async AAMVA result is processed' do
+        document_capture_session.create_proofing_session
+        document_capture_session.store_proofing_result(successful_result)
+        subject.idv_session.ipp_aamva_document_capture_session_uuid =
+          document_capture_session.uuid
+
         initial_count = RateLimiter.new(user: user, rate_limit_type: :idv_doc_auth).remaining_count
 
-        put :update, params: params
+        get :show
 
         new_count = RateLimiter.new(user: user, rate_limit_type: :idv_doc_auth).remaining_count
         expect(new_count).to eq(initial_count - 1)

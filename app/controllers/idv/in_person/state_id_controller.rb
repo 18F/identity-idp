@@ -77,7 +77,6 @@ module Idv
 
             return if rate_limit_redirect!(:idv_doc_auth, step_name: 'ipp_state_id')
 
-            RateLimiter.new(user: current_user, rate_limit_type: :idv_doc_auth).increment!
             start_aamva_async_state
             redirect_to idv_in_person_state_id_url
             return

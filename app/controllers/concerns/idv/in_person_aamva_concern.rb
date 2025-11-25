@@ -98,13 +98,16 @@ module Idv
       proofing_result
     end
 
+    # Handles the completion of an async AAMVA verification job.
+    #
+    # Rate limiting strategy: We increment the rate limiter AFTER the async result is available,
+    # not when the job is started. This ensures users get their final attempt - if they succeed
+    # on their last try, they proceed forward. Rate limit redirect only happens on failure.
+    # This matches the pattern used in verify_info_concern.rb for resolution proofing.
     def handle_aamva_async_done(current_state)
-      if rate_limit_redirect!(:idv_doc_auth, step_name: 'ipp_state_id')
-        delete_aamva_async_state
-        return
-      end
-
       result = current_state.result
+
+      RateLimiter.new(user: current_user, rate_limit_type: :idv_doc_auth).increment!
 
       analytics.idv_ipp_aamva_verification_completed(
         success: result[:success],
@@ -118,6 +121,12 @@ module Idv
         delete_aamva_async_state
         redirect_to redirect_url
       else
+        # Only check rate limit on failure - successful attempts proceed regardless of count
+        if rate_limit_redirect!(:idv_doc_auth, step_name: 'ipp_state_id')
+          delete_aamva_async_state
+          return
+        end
+
         delete_aamva_async_state
         flash.now[:error] = I18n.t('idv.failure.verify.heading')
         render :show, locals: extra_view_variables
