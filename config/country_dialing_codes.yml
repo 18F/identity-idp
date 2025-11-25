@@ -765,6 +765,11 @@ NE:
   name: Niger
   supports_sms: true
   supports_voice: false
+NF:
+  country_code: '672'
+  name: Norfolk Island
+  supports_sms: true
+  supports_voice: false
 NG:
   country_code: '234'
   name: Nigeria
