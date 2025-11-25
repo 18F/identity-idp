@@ -20,13 +20,13 @@ module Proofing
           if !state_id_address_resolution_result.success? ||
              !residential_address_resolution_result.success? ||
              !state_id_result.success?
-            return resolution_cannot_pass_result.to_h
+            return resolution_cannot_pass_result
           end
 
           applicant_pii[:phone] ||= best_effort_phone&.dig(:phone)
 
           if applicant_pii[:phone].blank?
-            return no_phone_available_result.to_h
+            return no_phone_available_result
           end
 
           phone_finder_applicant = applicant_pii.slice(
@@ -47,19 +47,13 @@ module Proofing
         def resolution_cannot_pass_result
           Proofing::AddressResult.new(
             success: false, vendor_name: 'ResolutionCannotPass', exception: nil,
-          )
-        end
-
-        def ignore_phone_for_in_person_result
-          Proofing::AddressResult.new(
-            success: false, vendor_name: 'PhoneIgnoredForInPersonProofing', exception: nil,
-          )
+          ).to_h
         end
 
         def no_phone_available_result
           Proofing::AddressResult.new(
             success: false, vendor_name: 'NoPhoneNumberAvailable', exception: nil,
-          )
+          ).to_h
         end
       end
     end
