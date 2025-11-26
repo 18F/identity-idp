@@ -288,12 +288,11 @@ module Idv
         :phone_precheck,
       )
 
-      idv_session.phone_precheck_vendor = phone_precheck&.dig(:vendor_name)
-      return if (idv_session.phone_precheck_successful = phone_precheck&.dig(:success))
-
-      if idv_session.phone_precheck_successful == false &&
-         idv_session.precheck_phone&.dig(:phone) &&
-         phone_precheck&.dig(:exception).blank?
+      if (idv_session.phone_precheck_successful = phone_precheck&.dig(:success))
+        idv_session.phone_precheck_vendor = phone_precheck[:vendor_name]
+      elsif idv_session.phone_precheck_successful == false &&
+            idv_session.precheck_phone&.dig(:phone) &&
+            phone_precheck&.dig(:exception).blank?
         idv_session.add_failed_phone_step_number(idv_session.precheck_phone[:phone])
       end
     end

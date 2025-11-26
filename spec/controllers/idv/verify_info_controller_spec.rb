@@ -697,7 +697,7 @@ RSpec.describe Idv::VerifyInfoController do
             put :show
             expect(response).to redirect_to idv_phone_url
             expect(controller.idv_session.phone_precheck_successful).to eq(false)
-            expect(controller.idv_session.phone_precheck_vendor).to eq('test-phone-vendor')
+            expect(controller.idv_session.phone_precheck_vendor).to be_nil
           end
         end
 
@@ -816,7 +816,7 @@ RSpec.describe Idv::VerifyInfoController do
                 ),
               )
               expect(controller.idv_session.phone_precheck_successful).to eq(false)
-              expect(controller.idv_session.phone_precheck_vendor).to eq('second-failed-vendor')
+              expect(controller.idv_session.phone_precheck_vendor).to be_nil
             end
           end
         end
