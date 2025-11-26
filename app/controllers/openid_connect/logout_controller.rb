@@ -26,9 +26,7 @@ module OpenidConnect
       if result.success? && redirect_uri
         handle_successful_logout_request(result, redirect_uri)
       else
-        attempts_api_tracker.logout_initiated(
-          success: false,
-        )
+        track_attempts_api_logout(success: false)
         track_integration_errors(result:, event: :oidc_logout_requested)
 
         render :error
@@ -53,9 +51,7 @@ module OpenidConnect
       if result.success? && redirect_uri
         handle_logout(result, redirect_uri)
       else
-        attempts_api_tracker.logout_initiated(
-          success: false,
-        )
+        track_attempts_api_logout(success: false)
         track_integration_errors(result:, event: :oidc_logout_submitted)
 
         render :error
@@ -112,9 +108,7 @@ module OpenidConnect
       if current_user.present?
         analytics.oidc_logout_visited(**to_event(result))
 
-        attempts_api_tracker.logout_initiated(
-          success: result.success?,
-        )
+        track_attempts_api_logout(success: result.success?)
         @params = {
           client_id: logout_params[:client_id],
           post_logout_redirect_uri: logout_params[:post_logout_redirect_uri],
@@ -133,9 +127,7 @@ module OpenidConnect
     def handle_logout(result, redirect_uri)
       analytics.logout_initiated(**to_event(result))
 
-      attempts_api_tracker.logout_initiated(
-        success: result.success?,
-      )
+      track_attempts_api_logout(success: result.success?)
 
       redirect_user(redirect_uri)
 
@@ -160,6 +152,10 @@ module OpenidConnect
             .merge(event:),
         )
       end
+    end
+
+    def track_attempts_api_logout(success:)
+      attempts_api_tracker.logout_initiated(success:)
     end
   end
 end
