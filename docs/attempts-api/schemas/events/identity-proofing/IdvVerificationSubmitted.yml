@@ -30,6 +30,8 @@ allOf:
         type: string
       state:
         type: string
+      ssn:
+        type: string
       zip:
         type: string
       failure_reason:
