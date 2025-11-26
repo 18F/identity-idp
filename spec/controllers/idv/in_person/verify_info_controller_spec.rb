@@ -263,6 +263,8 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
 
       let(:residential_resolution_vendor_name) { 'ResidentialResolutionVendor' }
 
+      let(:phone_result) { {} }
+
       let(:async_state) do
         # Here we're trying to match the store to redis -> read from redis flow this data travels
         adjudicated_result = Proofing::Resolution::ResultAdjudicator.new(
@@ -274,12 +276,7 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
             transaction_id: 'abc123',
             verified_attributes: [],
           ),
-          phone_finder_result: Proofing::AddressResult.new(
-            success: true,
-            errors: {},
-            exception: nil,
-            vendor_name: 'test-phone-vendor',
-          ),
+          phone_result:,
           device_profiling_result: Proofing::DdpResult.new(success: true),
           ipp_enrollment_in_progress: true,
           residential_resolution_result: Proofing::Resolution::Result.new(
@@ -309,6 +306,7 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
       it 'sets resolution_vendor on idv_session' do
         get :show
         expect(controller.idv_session.resolution_vendor).to eql(resolution_vendor_name)
+        expect(response).to redirect_to(idv_phone_url)
       end
 
       it 'sets residential_resolution_vendor on idv_session' do
@@ -316,6 +314,81 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
         expect(controller.idv_session.residential_resolution_vendor).to(
           eql(residential_resolution_vendor_name),
         )
+        expect(response).to redirect_to(idv_phone_url)
+      end
+
+      context 'when phone precheck' do
+        let(:phone_result) do
+          Proofing::AddressResult.new(
+            success: true,
+            errors: {},
+            exception: nil,
+            vendor_name: 'test-phone-vendor',
+          ).to_h
+        end
+
+        before do
+          allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
+          allow(IdentityConfig.store).to receive(:in_person_send_proofing_notifications_enabled)
+            .and_return(true)
+          allow(user).to receive(:establishing_in_person_enrollment).and_return(enrollment)
+          subject.idv_session.opted_in_to_in_person_proofing = true
+          subject.idv_session.precheck_phone = { phone: '+1 202-555-1212' }
+        end
+
+        it 'sets resolution_vendor on idv_session' do
+          expect(enrollment.notification_phone_configuration).to be_nil
+          get :show
+
+          expect(response).to redirect_to(idv_enter_password_url)
+          expect(enrollment.notification_phone_configuration).not_to be_nil
+        end
+
+        context 'when both phone vendors proof' do
+          let(:phone_result) do
+            alternate_result = Proofing::AddressResult.new(
+              success: false,
+              errors: {},
+              exception: nil,
+              vendor_name: 'failed-phone-vendor',
+            ).to_h
+            Proofing::AddressResult.new(
+              success: true,
+              errors: {},
+              exception: nil,
+              vendor_name: 'succesful-phone-vendor',
+            ).to_h.merge(alternate_result:)
+          end
+
+          it 'sets resolution_vendor on idv_session' do
+            get :show
+
+            expect(response).to redirect_to(idv_enter_password_url)
+          end
+
+          context 'when both vendors unsuccesful' do
+            let(:phone_result) do
+              alternate_result = Proofing::AddressResult.new(
+                success: false,
+                errors: {},
+                exception: nil,
+                vendor_name: 'failed-phone-vendor',
+              ).to_h
+              Proofing::AddressResult.new(
+                success: false,
+                errors: {},
+                exception: nil,
+                vendor_name: 'also-failed-phone-vendor',
+              ).to_h.merge(alternate_result:)
+            end
+
+            it 'sets resolution_vendor on idv_session' do
+              get :show
+
+              expect(response).to redirect_to(idv_phone_url)
+            end
+          end
+        end
       end
     end
   end

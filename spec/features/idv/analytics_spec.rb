@@ -10,6 +10,7 @@ RSpec.feature 'Analytics Regression', :js do
   let(:proofing_device_profiling) { :enabled }
   let(:threatmetrix) { true }
   let(:idv_level) { 'in_person' }
+  let(:idv_phone_precheck_enabled) { false }
 
   let(:threatmetrix_response_body) do
     {
@@ -51,8 +52,12 @@ RSpec.feature 'Analytics Regression', :js do
     }
   end
 
-  let(:lexis_nexis_address_proofing_components) do
-    base_proofing_components.merge(address_check: 'lexis_nexis_address')
+  let(:address_proofing_components) do
+    address_check = IdentityConfig.store.idv_phone_precheck_enabled ?
+      'AddressMock' :
+      'lexis_nexis_address'
+
+    base_proofing_components.merge(address_check:)
   end
 
   let(:gpo_letter_proofing_components) do
@@ -105,7 +110,7 @@ RSpec.feature 'Analytics Regression', :js do
       ssn_is_unique: true,
       timed_out: false,
       threatmetrix_review_status: 'pass',
-      phone_finder_precheck_passed: false,
+      phone_precheck_passed: IdentityConfig.store.idv_phone_precheck_enabled,
       context: {
         device_profiling_adjudication_reason: 'device_profiling_result_pass',
         resolution_adjudication_reason: 'pass_resolution_and_state_id',
@@ -128,20 +133,17 @@ RSpec.feature 'Analytics Regression', :js do
                                  verified_attributes: nil },
           state_id: state_id_resolution,
           threatmetrix: threatmetrix_response,
-          phone_precheck: { attributes_requiring_additional_verification: [],
-                            can_pass_with_additional_verification: false,
+          phone_precheck: IdentityConfig.store.idv_phone_precheck_enabled ?
+                          {
                             errors: {},
                             exception: nil,
                             reference: '',
-                            reason_codes: {},
-                            source_attribution: [],
-                            success: false,
+                            result: nil,
+                            success: true,
                             timed_out: false,
-                            transaction_id: '',
-                            vendor_id: nil,
-                            vendor_name: 'NoPhoneNumberAvailable',
-                            vendor_workflow: nil,
-                            verified_attributes: nil },
+                            transaction_id: 'address-mock-transaction-id-123',
+                            vendor_name: 'AddressMock',
+                          } : {},
         },
       },
       biographical_info: {
@@ -166,7 +168,7 @@ RSpec.feature 'Analytics Regression', :js do
       ssn_is_unique: true,
       timed_out: false,
       threatmetrix_review_status: 'pass',
-      phone_finder_precheck_passed: false,
+      phone_precheck_passed: false,
       context: {
         device_profiling_adjudication_reason: 'device_profiling_result_pass',
         resolution_adjudication_reason: 'pass_resolution_and_state_id',
@@ -189,20 +191,7 @@ RSpec.feature 'Analytics Regression', :js do
                                  verified_attributes: nil },
           state_id: state_id_resolution,
           threatmetrix: threatmetrix_response,
-          phone_precheck: { attributes_requiring_additional_verification: [],
-                            can_pass_with_additional_verification: false,
-                            errors: {},
-                            exception: nil,
-                            reference: '',
-                            reason_codes: {},
-                            source_attribution: [],
-                            success: false,
-                            timed_out: false,
-                            transaction_id: '',
-                            vendor_id: nil,
-                            vendor_name: 'PhoneIgnoredForInPersonProofing',
-                            vendor_workflow: nil,
-                            verified_attributes: nil },
+          phone_precheck: {},
         },
       },
       biographical_info: {
@@ -291,7 +280,7 @@ RSpec.feature 'Analytics Regression', :js do
       'IdV: doc auth verify proofing results' => {
         success: true, flow_path: 'standard', address_edited: false, address_line2_present: false, last_name_spaced: false, analytics_id: 'Doc Auth', step: 'verify',
         proofing_results: doc_auth_verify_proofing_results,
-        proofing_components: base_proofing_components
+        proofing_components: IdentityConfig.store.idv_phone_precheck_enabled ? address_proofing_components : base_proofing_components
       },
       'IdV: phone of record visited' => {
         proofing_components: base_proofing_components,
@@ -302,48 +291,48 @@ RSpec.feature 'Analytics Regression', :js do
       },
       'IdV: phone confirmation vendor' => {
         success: true, vendor: { exception: nil, vendor_name: 'AddressMock', transaction_id: 'address-mock-transaction-id-123', timed_out: false, reference: '', result: nil }, new_phone_added: false, hybrid_handoff_phone_used: false, area_code: '202', country_code: 'US', phone_fingerprint: anything,
-        proofing_components: lexis_nexis_address_proofing_components
+        proofing_components: address_proofing_components
       },
       'IdV: phone confirmation otp sent' => {
         success: true, otp_delivery_preference: :sms, country_code: 'US', area_code: '202', adapter: :test, phone_fingerprint: anything, rate_limit_exceeded: false, telephony_response: anything,
-        proofing_components: lexis_nexis_address_proofing_components
+        proofing_components: address_proofing_components
       },
       'IdV: phone confirmation otp visited' => {
-        proofing_components: lexis_nexis_address_proofing_components,
+        proofing_components: address_proofing_components,
       },
       'IdV: phone confirmation otp submitted' => {
         success: true, code_expired: false, code_matches: true, otp_delivery_preference: :sms, second_factor_attempts_count: 0,
-        proofing_components: lexis_nexis_address_proofing_components
+        proofing_components: address_proofing_components
       },
       :idv_enter_password_visited => {
         address_verification_method: 'phone',
-        proofing_components: lexis_nexis_address_proofing_components,
+        proofing_components: address_proofing_components,
       },
       :idv_enter_password_submitted => {
         success: true, fraud_review_pending: false, fraud_rejection: false, gpo_verification_pending: false, in_person_verification_pending: false, proofing_workflow_time_in_seconds: 0.0,
         active_profile_idv_level: 'legacy_unsupervised',
-        proofing_components: lexis_nexis_address_proofing_components
+        proofing_components: address_proofing_components
       },
       'IdV: final resolution' => {
         success: true, fraud_review_pending: false, fraud_rejection: false, gpo_verification_pending: false, in_person_verification_pending: false, proofing_workflow_time_in_seconds: 0.0,
         active_profile_idv_level: 'legacy_unsupervised',
         profile_history: match_array(kind_of(Idv::ProfileLogging)),
-        proofing_components: lexis_nexis_address_proofing_components
+        proofing_components: address_proofing_components
       },
       'IdV: personal key visited' => {
         address_verification_method: 'phone', encrypted_profiles_missing: false, in_person_verification_pending: false,
         active_profile_idv_level: 'legacy_unsupervised',
-        proofing_components: lexis_nexis_address_proofing_components
+        proofing_components: address_proofing_components
       },
       'IdV: personal key acknowledgment toggled' => {
         checked: true,
         active_profile_idv_level: 'legacy_unsupervised',
-        proofing_components: lexis_nexis_address_proofing_components,
+        proofing_components: address_proofing_components,
       },
       'IdV: personal key submitted' => {
         address_verification_method: 'phone', fraud_review_pending: false, fraud_rejection: false, in_person_verification_pending: false,
         active_profile_idv_level: 'legacy_unsupervised',
-        proofing_components: lexis_nexis_address_proofing_components
+        proofing_components: address_proofing_components
       },
     }.compact
   end
@@ -433,48 +422,48 @@ RSpec.feature 'Analytics Regression', :js do
       },
       'IdV: phone confirmation vendor' => {
         success: true, vendor: { exception: nil, vendor_name: 'AddressMock', transaction_id: 'address-mock-transaction-id-123', timed_out: false, reference: '', result: nil }, new_phone_added: false, hybrid_handoff_phone_used: true, area_code: '202', country_code: 'US', phone_fingerprint: anything,
-        proofing_components: lexis_nexis_address_proofing_components
+        proofing_components: address_proofing_components
       },
       'IdV: phone confirmation otp sent' => {
         success: true, otp_delivery_preference: :sms, country_code: 'US', area_code: '202', adapter: :test, phone_fingerprint: anything, rate_limit_exceeded: false, telephony_response: anything,
-        proofing_components: lexis_nexis_address_proofing_components
+        proofing_components: address_proofing_components
       },
       'IdV: phone confirmation otp visited' => {
-        proofing_components: lexis_nexis_address_proofing_components,
+        proofing_components: address_proofing_components,
       },
       'IdV: phone confirmation otp submitted' => {
         success: true, code_expired: false, code_matches: true, otp_delivery_preference: :sms, second_factor_attempts_count: 0,
-        proofing_components: lexis_nexis_address_proofing_components
+        proofing_components: address_proofing_components
       },
       :idv_enter_password_visited => {
         address_verification_method: 'phone',
-        proofing_components: lexis_nexis_address_proofing_components,
+        proofing_components: address_proofing_components,
       },
       :idv_enter_password_submitted => {
         success: true, fraud_review_pending: false, fraud_rejection: false, gpo_verification_pending: false, in_person_verification_pending: false, proofing_workflow_time_in_seconds: 0.0,
         active_profile_idv_level: 'legacy_unsupervised',
-        proofing_components: lexis_nexis_address_proofing_components
+        proofing_components: address_proofing_components
       },
       'IdV: final resolution' => {
         success: true, fraud_review_pending: false, fraud_rejection: false, gpo_verification_pending: false, in_person_verification_pending: false, proofing_workflow_time_in_seconds: 0.0,
         active_profile_idv_level: 'legacy_unsupervised',
         profile_history: match_array(kind_of(Idv::ProfileLogging)),
-        proofing_components: lexis_nexis_address_proofing_components
+        proofing_components: address_proofing_components
       },
       'IdV: personal key visited' => {
         address_verification_method: 'phone', encrypted_profiles_missing: false, in_person_verification_pending: false,
         active_profile_idv_level: 'legacy_unsupervised',
-        proofing_components: lexis_nexis_address_proofing_components
+        proofing_components: address_proofing_components
       },
       'IdV: personal key acknowledgment toggled' => {
         checked: true,
         active_profile_idv_level: 'legacy_unsupervised',
-        proofing_components: lexis_nexis_address_proofing_components,
+        proofing_components: address_proofing_components,
       },
       'IdV: personal key submitted' => {
         address_verification_method: 'phone', fraud_review_pending: false, fraud_rejection: false, in_person_verification_pending: false,
         active_profile_idv_level: 'legacy_unsupervised',
-        proofing_components: lexis_nexis_address_proofing_components
+        proofing_components: address_proofing_components
       },
     }.compact
   end
@@ -825,48 +814,48 @@ RSpec.feature 'Analytics Regression', :js do
       },
       'IdV: phone confirmation vendor' => {
         success: true, vendor: { exception: nil, vendor_name: 'AddressMock', transaction_id: 'address-mock-transaction-id-123', timed_out: false, reference: '', result: nil }, new_phone_added: false, hybrid_handoff_phone_used: false, area_code: '202', country_code: 'US', phone_fingerprint: anything,
-        proofing_components: lexis_nexis_address_proofing_components
+        proofing_components: address_proofing_components
       },
       'IdV: phone confirmation otp sent' => {
         success: true, otp_delivery_preference: :sms, country_code: 'US', area_code: '202', adapter: :test, phone_fingerprint: anything, rate_limit_exceeded: false, telephony_response: anything,
-        proofing_components: lexis_nexis_address_proofing_components
+        proofing_components: address_proofing_components
       },
       'IdV: phone confirmation otp visited' => {
-        proofing_components: lexis_nexis_address_proofing_components,
+        proofing_components: address_proofing_components,
       },
       'IdV: phone confirmation otp submitted' => {
         success: true, code_expired: false, code_matches: true, otp_delivery_preference: :sms, second_factor_attempts_count: 0,
-        proofing_components: lexis_nexis_address_proofing_components
+        proofing_components: address_proofing_components
       },
       :idv_enter_password_visited => {
         address_verification_method: 'phone',
-        proofing_components: lexis_nexis_address_proofing_components,
+        proofing_components: address_proofing_components,
       },
       :idv_enter_password_submitted => {
         success: true, fraud_review_pending: false, fraud_rejection: false, gpo_verification_pending: false, in_person_verification_pending: false, proofing_workflow_time_in_seconds: 0.0,
         active_profile_idv_level: 'unsupervised_with_selfie',
-        proofing_components: lexis_nexis_address_proofing_components
+        proofing_components: address_proofing_components
       },
       'IdV: final resolution' => {
         success: true, fraud_review_pending: false, fraud_rejection: false, gpo_verification_pending: false, in_person_verification_pending: false, proofing_workflow_time_in_seconds: 0.0,
         active_profile_idv_level: 'unsupervised_with_selfie',
         profile_history: match_array(kind_of(Idv::ProfileLogging)),
-        proofing_components: lexis_nexis_address_proofing_components
+        proofing_components: address_proofing_components
       },
       'IdV: personal key visited' => {
         address_verification_method: 'phone', in_person_verification_pending: false, encrypted_profiles_missing: false,
         active_profile_idv_level: 'unsupervised_with_selfie',
-        proofing_components: lexis_nexis_address_proofing_components
+        proofing_components: address_proofing_components
       },
       'IdV: personal key acknowledgment toggled' => {
         checked: true,
         active_profile_idv_level: 'unsupervised_with_selfie',
-        proofing_components: lexis_nexis_address_proofing_components,
+        proofing_components: address_proofing_components,
       },
       'IdV: personal key submitted' => {
         address_verification_method: 'phone', fraud_review_pending: false, fraud_rejection: false, in_person_verification_pending: false,
         active_profile_idv_level: 'unsupervised_with_selfie',
-        proofing_components: lexis_nexis_address_proofing_components
+        proofing_components: address_proofing_components
       },
     }.compact
   end
@@ -879,6 +868,8 @@ RSpec.feature 'Analytics Regression', :js do
   end
 
   before do
+    allow(IdentityConfig.store).to receive(:idv_phone_precheck_enabled)
+      .and_return(idv_phone_precheck_enabled)
     allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled)
       .and_return(false)
     allow(IdentityConfig.store).to receive(:proofing_device_profiling)
@@ -903,7 +894,7 @@ RSpec.feature 'Analytics Regression', :js do
       complete_document_capture_step
       complete_ssn_step
       complete_verify_step
-      complete_phone_step(user)
+      complete_phone_step(user) unless IdentityConfig.store.idv_phone_precheck_enabled
       complete_enter_password_step(user)
       acknowledge_and_confirm_personal_key
       expect(page).to have_current_path(sign_up_completed_path)
@@ -924,6 +915,35 @@ RSpec.feature 'Analytics Regression', :js do
 
         Reports::DailyDropoffsReport::STEPS.each do |step|
           expect(row[step].to_i).to(be > 0, "step #{step} was counted")
+        end
+      end
+    end
+
+    context 'when phone precheck is enabled' do
+      let(:idv_phone_precheck_enabled) { true }
+      it 'records all of the events' do
+        aggregate_failures 'analytics events' do
+          happy_path_events.each do |event, attributes|
+            next if [
+              'IdV: phone of record visited', 'IdV: phone confirmation form',
+              'IdV: phone confirmation vendor', 'IdV: phone confirmation otp sent',
+              'IdV: phone confirmation otp visited', 'IdV: phone confirmation otp submitted'
+            ].include? event
+            expect(fake_analytics).to have_logged_event(event, attributes)
+          end
+        end
+
+        aggregate_failures 'populates data for each step of the Daily Dropoff Report' do
+          row = CSV.parse(
+            Reports::DailyDropoffsReport.new.tap { |r| r.report_date = Time.zone.now }.report_body,
+            headers: true,
+          ).first
+
+          Reports::DailyDropoffsReport::STEPS.each do |step|
+            next if IdentityConfig.store.idv_phone_precheck_enabled &&
+                    ['phone', 'phone_submit'].include?(step)
+            expect(row[step].to_i).to(be > 0, "step #{step} was counted")
+          end
         end
       end
     end
