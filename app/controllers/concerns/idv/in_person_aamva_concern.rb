@@ -115,19 +115,16 @@ module Idv
         step: controller_name,
       )
 
+      redirect_url = idv_session.ipp_aamva_redirect_url || idv_in_person_ssn_url
+      delete_aamva_async_state
+
       if result[:success]
         idv_session.ipp_aamva_result = result
-        redirect_url = idv_session.ipp_aamva_redirect_url || idv_in_person_ssn_url
-        delete_aamva_async_state
         redirect_to redirect_url
       else
         # Only check rate limit on failure - successful attempts proceed regardless of count
-        if rate_limit_redirect!(:idv_doc_auth, step_name: 'ipp_state_id')
-          delete_aamva_async_state
-          return
-        end
+        return if rate_limit_redirect!(:idv_doc_auth, step_name: 'ipp_state_id')
 
-        delete_aamva_async_state
         flash.now[:error] = I18n.t('idv.failure.verify.heading')
         render :show, locals: extra_view_variables
       end
