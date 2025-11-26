@@ -109,6 +109,7 @@ module Proofing
           phone_result:,
           same_address_as_id: applicant_pii[:same_address_as_id],
           applicant_pii:,
+          precheck_phone_number: phone_plugin.phone_number,
         )
       end
 
