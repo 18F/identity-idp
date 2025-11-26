@@ -628,9 +628,12 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
           ).and_call_original
         end
 
-        expect(progressive_proofer.phone_plugin).to receive(:call)
-          .with(hash_including(applicant_pii:))
-          .and_call_original
+        expect(progressive_proofer.phone_plugin).to receive(:call).with(
+          hash_including(
+            applicant_pii: expected_applicant_pii,
+            best_effort_phone: { phone: '3608675309' },
+          ),
+        ).and_call_original
 
         proof
       end
