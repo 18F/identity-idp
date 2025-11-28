@@ -17,7 +17,8 @@ allOf:
             items:
               type: string
               enum:
-                - The phone number could not be verified.
+                - Fail - Risk Indicators match determined
+                - Failed - Input phone number could not be verified to name
       success:
         type: boolean
         description: |

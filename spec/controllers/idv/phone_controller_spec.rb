@@ -330,6 +330,15 @@ RSpec.describe Idv::PhoneController do
       it 'tracks form error events and does not make a vendor API call' do
         expect_any_instance_of(Idv::Agent).to_not receive(:proof_address)
 
+        expect(@attempts_api_tracker).to receive(:idv_phone_submitted).with(
+          phone_number: Phonelib.parse(improbable_phone_number).e164,
+          success: false,
+          failure_reason: {
+            phone: [:improbable_phone],
+            otp_delivery_preference: [:inclusion],
+          },
+        )
+
         put :create, params: improbable_phone_form
 
         expect(@analytics).to have_logged_event(
@@ -660,6 +669,47 @@ RSpec.describe Idv::PhoneController do
                 vendor_name: 'socure_phonerisk',
               },
             )
+          end
+        end
+      end
+
+      context 'when the vendor is lexisnexis' do
+        context 'with an error' do
+          let(:endpoint) do
+            [
+              'https://www.example.com',
+              'restws/identity/v2/test_account/customers.gsa2.phonefinder.workflow/conversation',
+            ].join('/')
+          end
+
+          before do
+            allow(IdentityConfig.store).to receive(:idv_address_primary_vendor)
+              .and_return(:lexis_nexis)
+            stub_request(:post, endpoint).to_return(
+              status: 200,
+              body: LexisNexisFixtures.phone_finder_rdp1_fail_response_json,
+              headers: {
+                'Content-Type': 'application/json',
+              },
+            )
+          end
+
+          it 'does not send an otp and redirects to the error page' do
+            expect(@attempts_api_tracker).to receive(:idv_phone_verified).with(
+              success: false,
+              phone_number: Phonelib.parse(good_phone).e164,
+              failure_reason: {
+                phone: ['Failed - Input phone number could not be verified to name'],
+              },
+            )
+
+            put :create, params: { idv_phone_form: { phone: good_phone } }
+
+            expect(response).to redirect_to idv_phone_path
+
+            get :new
+
+            expect(response).to redirect_to idv_phone_errors_warning_path
           end
         end
       end
