@@ -65,7 +65,6 @@ module Idv
     def mrz_requirement_met?
       return true if !document_capture_session.passport_requested?
       return false if document_type_received != 'passport'
-      return false if !IdentityConfig.store.doc_auth_passports_enabled
 
       stored_result.mrz_status == :pass
     end
@@ -152,10 +151,6 @@ module Idv
     end
 
     def document_type_mismatch?
-      # Reject passports when feature is disabled but user submitted a passport
-      return true if !IdentityConfig.store.doc_auth_passports_enabled &&
-                     document_type_received == Idp::Constants::DocumentTypes::PASSPORT
-
       # Reject when user requested passport flow but submitted a different document type
       return true if document_capture_session.passport_requested? &&
                      document_type_received != Idp::Constants::DocumentTypes::PASSPORT
