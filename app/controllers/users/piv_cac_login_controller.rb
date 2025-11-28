@@ -17,9 +17,11 @@ module Users
 
     def redirect_to_piv_cac_service
       create_piv_cac_nonce
+      bindng.pry
       redirect_to PivCacService.piv_cac_service_link(
         nonce: piv_cac_nonce,
         redirect_uri: login_piv_cac_url,
+        current_sp: current_sp,
       ), allow_other_host: true
     end
 
