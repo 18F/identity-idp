@@ -41,7 +41,6 @@ module DocAuth
         ## returns full check success status, considering all checks:
         #    vendor (document and selfie if requested)
         def successful_result?
-          return false if passport_detected_but_not_allowed?
           return false if passport_card_detected?
 
           doc_auth_success? &&
@@ -59,9 +58,7 @@ module DocAuth
         def error_messages
           return {} if successful_result?
 
-          if passport_detected_but_not_allowed?
-            { passport: I18n.t('doc_auth.errors.doc.doc_type_check') }
-          elsif passport_card_detected?
+          if passport_card_detected?
             { passport_card: I18n.t('doc_auth.errors.doc.doc_type_check') }
           elsif id_type.present? && !expected_document_type_received?
             { unexpected_id_type: true, expected_id_type: expected_id_type }
@@ -259,11 +256,6 @@ module DocAuth
 
         def doc_issue_type
           true_id_product&.dig(:AUTHENTICATION_RESULT, :DocIssueType)
-        end
-
-        def passport_detected_but_not_allowed?
-          passport_detected = doc_class_name == 'Passport' || passport_card_detected?
-          !IdentityConfig.store.doc_auth_passports_enabled && passport_detected
         end
 
         def passport_card_detected?

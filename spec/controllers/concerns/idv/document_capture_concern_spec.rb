@@ -504,16 +504,6 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
       context 'when mrz_status is pass but additional checks fail' do
         let(:mrz_status) { :pass }
 
-        context 'when passports are disabled' do
-          let(:passports_enabled) { false }
-
-          let(:pii_data) { partial_passport_pii_data }
-
-          it 'returns false' do
-            expect(controller.mrz_requirement_met?).to eq(false)
-          end
-        end
-
         context 'when feature checks pass' do
           let(:pii_data) { partial_passport_pii_data }
 
