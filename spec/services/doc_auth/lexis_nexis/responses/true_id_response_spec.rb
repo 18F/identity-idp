@@ -431,22 +431,6 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
         )
       end
     end
-
-    context 'when passports are not enabled' do
-      before do
-        allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled).and_return(false)
-      end
-
-      it 'is not a successful result' do
-        expect(response.successful_result?).to eq(false)
-      end
-
-      it 'has error messages' do
-        expect(response.error_messages[:passport]).to eq(
-          I18n.t('doc_auth.errors.doc.doc_type_check'),
-        )
-      end
-    end
   end
 
   context 'when the response is a success for passport' do

@@ -267,13 +267,11 @@ module DocAuth
         end
 
         def passports_enabled?
-          IdentityConfig.store.doc_auth_passports_enabled && (
-            (
-              IdentityConfig.store.doc_auth_passport_vendor_switching_enabled &&
-              IdentityConfig.store.doc_auth_passport_vendor_socure_percent > 0
-            ) ||
+          (
+            IdentityConfig.store.doc_auth_passport_vendor_switching_enabled &&
+            IdentityConfig.store.doc_auth_passport_vendor_socure_percent > 0
+          ) ||
             IdentityConfig.store.doc_auth_passport_vendor_default == Idp::Constants::Vendors::SOCURE
-          )
         end
       end
     end

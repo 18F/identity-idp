@@ -395,8 +395,7 @@ module Idv
     end
 
     def in_person_passports_allowed?
-      IdentityConfig.store.doc_auth_passports_enabled &&
-        IdentityConfig.store.in_person_passports_enabled
+      IdentityConfig.store.in_person_passports_enabled
     end
 
     def standard_flow_document_capture_eligible?

@@ -462,50 +462,23 @@ RSpec.describe Idv::Session do
   end
 
   describe '#in_person_passports_allowed?' do
-    context 'when passports are enabled' do
-      let(:doc_auth_passports_enabled) { true }
-      context 'when in person passports are enabled' do
-        before do
-          allow(IdentityConfig.store).to receive(:in_person_passports_enabled).and_return(true)
-        end
-
-        it 'returns true' do
-          expect(subject.in_person_passports_allowed?).to be(true)
-        end
+    context 'when in person passports are enabled' do
+      before do
+        allow(IdentityConfig.store).to receive(:in_person_passports_enabled).and_return(true)
       end
 
-      context 'when in person passports are disabled' do
-        before do
-          allow(IdentityConfig.store).to receive(:in_person_passports_enabled).and_return(false)
-        end
-
-        it 'returns false' do
-          expect(subject.in_person_passports_allowed?).to be(false)
-        end
+      it 'returns true' do
+        expect(subject.in_person_passports_allowed?).to be(true)
       end
     end
 
-    context 'when passports are disabled' do
-      let(:doc_auth_passports_enabled) { false }
-
-      context 'when in person passports are enabled' do
-        before do
-          allow(IdentityConfig.store).to receive(:in_person_passports_enabled).and_return(true)
-        end
-
-        it 'returns false' do
-          expect(subject.in_person_passports_allowed?).to be(false)
-        end
+    context 'when in person passports are disabled' do
+      before do
+        allow(IdentityConfig.store).to receive(:in_person_passports_enabled).and_return(false)
       end
 
-      context 'when in person passports are disabled' do
-        before do
-          allow(IdentityConfig.store).to receive(:in_person_passports_enabled).and_return(false)
-        end
-
-        it 'returns false' do
-          expect(subject.in_person_passports_allowed?).to be(false)
-        end
+      it 'returns false' do
+        expect(subject.in_person_passports_allowed?).to be(false)
       end
     end
   end
