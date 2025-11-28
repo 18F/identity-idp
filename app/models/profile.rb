@@ -30,6 +30,7 @@ class Profile < ApplicationRecord
     gpo_verification_pending_NO_LONGER_USED: 3, # deprecated
     verification_cancelled: 4,
     in_person_verification_pending_NO_LONGER_USED: 5, # deprecated
+    sp_forced_reproofing: 6,
   }
 
   enum :fraud_pending_reason, {
@@ -355,6 +356,10 @@ class Profile < ApplicationRecord
         end
       end
     end
+  end
+
+  def deactivate_due_to_sp_forced_reproofing
+    update!(active: false, deactivation_reason: :sp_forced_reproofing)
   end
 
   def reject_for_fraud(notify_user:)
