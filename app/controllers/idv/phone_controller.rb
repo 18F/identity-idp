@@ -219,13 +219,13 @@ module Idv
       )
 
       attempts_api_tracker.idv_phone_verified(
-        phone_number: Phonelib.parse(formatted_previous_phone_step_params_phone).e164,
+        phone_number: Phonelib.parse(phone_step_params_phone).e164,
         success: form_result.success?,
-        failure_reason: attempts_api_tracker.parse_failure_reason(form_result),
+        failure_reason: attempts_failure_reason(form_result),
       )
 
       fraud_ops_tracker.idv_phone_verified(
-        phone_number: Phonelib.parse(formatted_previous_phone_step_params_phone).e164,
+        phone_number: Phonelib.parse(phone_step_params_phone).e164,
         success: form_result.success?,
         failure_reason: attempts_api_tracker.parse_failure_reason(form_result),
       )
@@ -234,6 +234,18 @@ module Idv
         redirect_to_next_step
       else
         handle_proofing_failure
+      end
+    end
+
+    def attempts_failure_reason(result)
+      if result.errors.key?(:"PhoneFinder Checks")
+        errors = result.errors[:"PhoneFinder Checks"].map do |check|
+          check[:ProductReason][:Description]
+        end
+
+        { phone: errors }
+      else
+        attempts_api_tracker.parse_failure_reason(result)
       end
     end
 
