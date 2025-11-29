@@ -4,6 +4,7 @@ module Proofing
   module Resolution
     module Plugins
       class PhonePlugin
+        attr_reader :phone_number
         def call(
           applicant_pii:,
           current_sp:,
@@ -15,6 +16,7 @@ module Proofing
           best_effort_phone: nil
 
         )
+          @phone_number = nil
           return {} unless IdentityConfig.store.idv_phone_precheck_enabled
 
           if !state_id_address_resolution_result.success? ||
@@ -28,6 +30,8 @@ module Proofing
           if applicant_pii[:phone].blank?
             return no_phone_available_result
           end
+
+          @phone_number = applicant_pii[:phone]
 
           phone_applicant = applicant_pii.slice(
             :uuid, :uuid_prefix, :first_name, :last_name, :ssn, :dob, :phone
