@@ -166,7 +166,7 @@ class Analytics
   def resolved_authn_context_result
     return nil if sp.blank? ||
                   session[:sp].blank? ||
-                  (session[:sp][:vtr].blank? && session[:sp][:acr_values].blank?)
+                  session[:sp][:acr_values].blank?
     return @resolved_authn_context_result if defined?(@resolved_authn_context_result)
 
     service_provider = ServiceProvider.find_by(issuer: sp)
@@ -174,7 +174,6 @@ class Analytics
     @resolved_authn_context_result = AuthnContextResolver.new(
       user: user,
       service_provider:,
-      vtr: session[:sp][:vtr],
       acr_values: session[:sp][:acr_values],
     ).result
   rescue Vot::Parser::ParseException

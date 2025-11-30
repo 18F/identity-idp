@@ -6880,12 +6880,12 @@ module AnalyticsEvents
     client_id:,
     scope:,
     acr_values:,
-    vtr:,
-    vtr_param:,
     unauthorized_scope:,
     user_fully_authenticated:,
     error_details: nil,
     unknown_authn_contexts: nil,
+    vtr: nil,
+    vtr_param: nil,
     **extra
   )
     track_event(
@@ -7759,7 +7759,6 @@ module AnalyticsEvents
     requested_ial:,
     authn_context:,
     requested_aal_authn_context:,
-    requested_vtr_authn_contexts:,
     force_authn:,
     final_auth_request:,
     service_provider:,
@@ -7767,6 +7766,7 @@ module AnalyticsEvents
     matching_cert_serial:,
     unknown_authn_contexts:,
     user_fully_authenticated:,
+    requested_vtr_authn_contexts: nil,
     **extra
   )
     track_event(
@@ -7958,9 +7958,9 @@ module AnalyticsEvents
     ial:,
     billed_ial:,
     sign_in_flow:,
-    vtr:,
     acr_values:,
     sign_in_duration_seconds:,
+    vtr: nil,
     **extra
   )
     track_event(
@@ -7968,8 +7968,8 @@ module AnalyticsEvents
       ial:,
       billed_ial:,
       sign_in_flow:,
-      vtr: vtr,
-      acr_values: acr_values,
+      vtr:,
+      acr_values:,
       sign_in_duration_seconds:,
       **extra,
     )
