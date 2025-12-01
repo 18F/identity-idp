@@ -5882,6 +5882,8 @@ module AnalyticsEvents
   # @param [Hash<String,Numeric>] requested_attributes The values sent in the proofing request.
   #   "1" represents that the value was sent.
   # @param [Array[String], nil] verified_attributes The attributes verified during proofing.
+  # @param [Boolean] ipp_enrollment_in_progress Whether the user has entered the in-person proofing
+  #   flow.
   # @param [Boolean] jurisdiction_in_maintenance_window Whether the target state MVA is under
   #   maintenance.
   # @param [Boolean] supported_jurisdiction Whether the state ID jurisdiction is supported by AAMVA.
@@ -5899,6 +5901,7 @@ module AnalyticsEvents
     transaction_id:,
     requested_attributes:,
     verified_attributes:,
+    ipp_enrollment_in_progress:,
     jurisdiction_in_maintenance_window:,
     supported_jurisdiction:,
     timed_out:,
@@ -5918,6 +5921,7 @@ module AnalyticsEvents
       transaction_id:,
       requested_attributes:,
       verified_attributes:,
+      ipp_enrollment_in_progress:,
       jurisdiction_in_maintenance_window:,
       supported_jurisdiction:,
       timed_out:,
