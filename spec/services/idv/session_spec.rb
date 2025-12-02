@@ -3,15 +3,9 @@ require 'rails_helper'
 RSpec.describe Idv::Session do
   let(:user) { create(:user) }
   let(:user_session) { {} }
-  let(:doc_auth_passports_enabled) { true }
 
   subject do
     Idv::Session.new(user_session: user_session, current_user: user, service_provider: nil)
-  end
-
-  before do
-    allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled)
-      .and_return(doc_auth_passports_enabled)
   end
 
   describe '#initialize' do
