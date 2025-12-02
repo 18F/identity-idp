@@ -182,25 +182,22 @@ module Db
           !age.nil? && !age.negative? && age == 0
         end
 
-        initially_upfront = year1_events.select(&:is_upfront)
-        initially_existing = year1_events.reject(&:is_upfront)
+        initially_upfront, existing = year1_events.partition(&:is_upfront)
 
         users_already_upfront = Set.new
-        final_upfront = []
-        final_existing = initially_existing.dup
+        upfront = []
 
         initially_upfront.each do |event|
-          if users_already_upfront.include?(event.user_id)
-            final_existing << event
+          if users_already_upfront.add?(event.user_id)
+            upfront << event
           else
-            final_upfront << event
-            users_already_upfront << event.user_id
+            existing << event
           end
         end
 
         {
-          upfront: final_upfront,
-          existing: final_existing,
+          upfront: upfront,
+          existing: existing,
         }.tap { |counts| counts.default = [] }
       end
     end

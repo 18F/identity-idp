@@ -403,7 +403,7 @@ RSpec.describe Db::MonthlySpAuthCount::NewUniqueMonthlyUserCountsByPartner do
         )
       end
 
-      it 'classifies each profile event independently, not by user_id globally' do
+      it 'classifies each profile event independently' do
         expect(results.length).to eq(1)
         july_result = results.first
 
