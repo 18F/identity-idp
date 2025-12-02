@@ -134,6 +134,7 @@ RSpec.describe SocureDocvResultsJob do
         {
           success: true,
           issue_year: 2020,
+          expiration_date: expiration_date,
           vendor: 'Socure',
           submit_attempts: 1,
           remaining_submit_attempts: 3,
@@ -511,6 +512,7 @@ RSpec.describe SocureDocvResultsJob do
               :customer_user_id,
               :decision,
               :reference_id,
+              :expiration_date,
             ),
           )
         end
@@ -541,6 +543,7 @@ RSpec.describe SocureDocvResultsJob do
                 :customer_user_id,
                 :decision,
                 :reference_id,
+                :expiration_date,
               ),
             )
           end
@@ -618,6 +621,7 @@ RSpec.describe SocureDocvResultsJob do
                 :customer_user_id,
                 :decision,
                 :reference_id,
+                :expiration_date,
               ),
             )
           end
@@ -642,6 +646,7 @@ RSpec.describe SocureDocvResultsJob do
                   :customer_user_id,
                   :decision,
                   :reference_id,
+                  :expiration_date,
                 ),
               )
             end
@@ -660,6 +665,7 @@ RSpec.describe SocureDocvResultsJob do
                 :customer_user_id,
                 :decision,
                 :reference_id,
+                :expiration_date,
               ),
             )
           end
@@ -867,6 +873,7 @@ RSpec.describe SocureDocvResultsJob do
                         :customer_user_id,
                         :decision,
                         :reference_id,
+                        :expiration_date,
                       ),
                     )
                   end
@@ -913,6 +920,7 @@ RSpec.describe SocureDocvResultsJob do
                 :customer_user_id,
                 :decision,
                 :reference_id,
+                :expiration_date,
               ),
             )
           end
@@ -942,6 +950,7 @@ RSpec.describe SocureDocvResultsJob do
                 :customer_user_id,
                 :decision,
                 :reference_id,
+                :expiration_date,
               ),
             )
           end
