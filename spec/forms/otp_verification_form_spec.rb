@@ -40,7 +40,7 @@ RSpec.describe OtpVerificationForm do
       let(:code) { nil }
       let(:user_otp) { '123456' }
 
-      it 'returns a successful response' do
+      it 'returns an unsuccessful response' do
         expect(result.to_h).to eq(
           success: false,
           error_details: {
