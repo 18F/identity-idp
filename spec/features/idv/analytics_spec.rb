@@ -105,6 +105,22 @@ RSpec.feature 'Analytics Regression', :js do
   end
 
   let(:base_proofing_results) do
+    biographical_info = {
+      birth_year: 1938,
+      identity_doc_address_state: nil,
+      state: 'MT',
+      state_id_jurisdiction: 'ND',
+      state_id_number: '#############',
+    }
+
+    if IdentityConfig.store.idv_phone_precheck_enabled
+      biographical_info[:phone] = {
+        area_code: '202',
+        country_code: 'US',
+        phone_fingerprint: an_instance_of(String),
+      }
+    end
+
     {
       exception: nil,
       ssn_is_unique: true,
@@ -146,13 +162,7 @@ RSpec.feature 'Analytics Regression', :js do
                           } : {},
         },
       },
-      biographical_info: {
-        birth_year: 1938,
-        identity_doc_address_state: nil,
-        state: 'MT',
-        state_id_jurisdiction: 'ND',
-        state_id_number: '#############',
-      },
+      biographical_info:,
     }
   end
 
