@@ -92,9 +92,9 @@ class ApplicationController < ActionController::Base
   end
 
   def browser_id
-    @browser_id ||= request.cookie_jar[:browser_id].presence ||
-                    request.cookie_jar.permanent[:browser_id] =
-                      SecureRandom.hex(UserEventCreator::COOKIE_BYTES)
+    @browser_id ||= cookies[:browser_id].presence ||
+                    cookies.permanent[:browser_id] =
+                      SecureRandom.hex(HighEntropy::COOKIE_LENGTH_IN_BYTES)
   end
 
   def fraud_ops_tracker
