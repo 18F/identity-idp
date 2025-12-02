@@ -4,8 +4,8 @@ cron_5m = '0/5 * * * *'
 cron_12m = '0/12 * * * *'
 cron_1h = '0 * * * *'
 cron_24h = '0 0 * * *'
-cron_24h_4_UTC = '12 4 * * *' # 0400 UTC + 12 min, staggered from whatever else runs at 0400 UTC
-cron_24h_5_UTC = '12 5 * * *' # 0500 UTC + 12 min, staggered from whatever else runs at 0500 UTC
+cron_24h_4 = '12 4 * * *' # 0400 UTC + 12 min, staggered from whatever else runs at 0400 UTC
+cron_24h_5 = '12 5 * * *' # 0500 UTC + 12 min, staggered from whatever else runs at 0500 UTC
 gpo_cron_24h = '0 10 * * *' # 10am UTC is 5am EST/6am EDT
 cron_every_monday = 'every Monday at 0:25 UTC' # equivalent to '25 0 * * 1'
 cron_every_monday_4am = 'every Monday at 4:00 UTC' # equivalent to '0 4 * * 1'
@@ -206,7 +206,7 @@ else
       # Send Identity Verification report to S3
       identity_verification_report: {
         class: 'Reports::IdentityVerificationReport',
-        cron: cron_24h_4_UTC,
+        cron: cron_24h_4,
         args: -> { [Time.zone.yesterday] },
       },
       # Refresh USPS auth tokens
@@ -260,7 +260,7 @@ else
       # Send fraud metrics to Team Judy
       fraud_metrics_report: {
         class: 'Reports::FraudMetricsReport',
-        cron: cron_24h_5_UTC,
+        cron: cron_24h_5,
         args: -> { [Time.zone.yesterday.end_of_day] },
       },
 
@@ -268,7 +268,7 @@ else
       # And, monthly on 1st date (For IRS and Internal)
       irs_fraud_metrics_report: {
         class: 'Reports::IrsFraudMetricsReport',
-        cron: cron_24h_5_UTC,
+        cron: cron_24h_5,
         args: -> {
           JobHelpers::ReportJobConfigurationHelper.build_irs_report_args(
             Time.zone.yesterday.end_of_day,
@@ -298,7 +298,7 @@ else
       # Previous months's irs verification report
       monthly_irs_verification_report: {
         class: 'Reports::MonthlyIrsVerificationReport',
-        cron: cron_24h_5_UTC,
+        cron: cron_24h_5,
         args: -> {
           JobHelpers::ReportJobConfigurationHelper.build_irs_report_args(
             Time.zone.yesterday.end_of_day,
@@ -343,7 +343,7 @@ else
       # And, monthly on 1st date (For IRS and Internal)
       irs_cred_metrics_report: {
         class: 'Reports::IrsMonthlyCredMetricsReport',
-        cron: cron_24h_5_UTC,
+        cron: cron_24h_5,
         args: -> {
           JobHelpers::ReportJobConfigurationHelper.build_irs_report_args(
             Time.zone.yesterday.end_of_day,
