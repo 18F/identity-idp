@@ -230,7 +230,7 @@ class ReportMailerPreview < ActionMailer::Preview
   end
 
   def irs_monthly_credentials_report
-    report_date = Time.zone.yesterday
+    report_date = Time.zone.parse('2025-11-30').end_of_day
     report = Reports::IrsMonthlyCredMetricsReport.new(report_date)
 
     # Use the same fixture CSV data as the spec
