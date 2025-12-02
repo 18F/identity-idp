@@ -196,13 +196,6 @@ else
         cron: cron_every_monday_5am,
         args: -> { [Time.zone.yesterday.end_of_day, :both] },
       },
-
-      # Send Duplicate SSN report to S3
-      duplicate_ssn: {
-        class: 'Reports::DuplicateSsnReport',
-        cron: cron_24h,
-        args: -> { [Time.zone.yesterday] },
-      },
       # Send Identity Verification report to S3
       identity_verification_report: {
         class: 'Reports::IdentityVerificationReport',
