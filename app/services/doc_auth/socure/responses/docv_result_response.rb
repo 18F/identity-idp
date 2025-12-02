@@ -95,6 +95,7 @@ module DocAuth
             flow_path: nil,
             document_type_received:,
             issue_year: state_id_issued&.year,
+            expiration_date: get_data(DATA_PATHS[:expiration_date]),
             liveness_enabled:,
             reason_codes:,
             reference_id: get_data(DATA_PATHS[:reference_id]),
