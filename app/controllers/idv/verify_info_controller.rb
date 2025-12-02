@@ -59,6 +59,10 @@ module Idv
           idv_session.verify_info_step_document_capture_session_uuid = nil
           idv_session.threatmetrix_review_status = nil
           idv_session.applicant = nil
+          idv_session.phone_precheck_successful = nil
+          idv_session.phone_precheck_vendor = nil
+          idv_session.precheck_phone = nil
+          idv_session.invalidate_phone_step!
         end,
       )
     end

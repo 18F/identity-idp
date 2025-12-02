@@ -16,6 +16,9 @@ module Idv
   # @attr idv_consent_given [Boolean, nil]
   # @attr idv_consent_given_at [String, nil]
   # @attr idv_phone_step_document_capture_session_uuid [String, nil]
+  # @attr ipp_aamva_document_capture_session_uuid [String, nil]
+  # @attr ipp_aamva_redirect_url [String, nil]
+  # @attr ipp_aamva_result [Hash, nil]
   # @attr mail_only_warning_shown [Boolean, nil]
   # @attr opted_in_to_in_person_proofing [Boolean, nil]
   # @attr passport_requested [Boolean, nil]
@@ -64,11 +67,17 @@ module Idv
       idv_consent_given
       idv_consent_given_at
       idv_phone_step_document_capture_session_uuid
+      ipp_aamva_document_capture_session_uuid
+      ipp_aamva_redirect_url
+      ipp_aamva_result
       mail_only_warning_shown
       opted_in_to_in_person_proofing
       personal_key
       personal_key_acknowledged
       phone_for_mobile_flow
+      phone_precheck_successful
+      phone_precheck_vendor
+      precheck_phone
       previous_phone_step_params
       previous_ssn
       profile_id
