@@ -1,6 +1,7 @@
 module AttemptsApiTrackingHelper
   class FakeAttemptsTracker
     include AttemptsApi::TrackerEvents
+    include FraudOps::TrackerEvents
 
     attr_reader :events
 
