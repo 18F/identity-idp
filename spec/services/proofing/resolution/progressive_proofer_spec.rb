@@ -5,7 +5,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
   let(:user_uuid) { user.uuid }
   let(:user_email) { user.email }
   let(:proofing_vendor) { :mock }
-  let(:idv_phone_precheck_enabled) { true }
+  let(:idv_phone_precheck_percent) { 100 }
 
   subject(:progressive_proofer) { described_class.new(user_uuid:, proofing_vendor:, user_email:) }
 
@@ -103,8 +103,8 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
 
       allow(progressive_proofer.aamva_plugin).to receive(:proofer)
         .and_return(aamva_proofer)
-      allow(IdentityConfig.store).to receive(:idv_phone_precheck_enabled)
-        .and_return(idv_phone_precheck_enabled)
+      allow(IdentityConfig.store).to receive(:idv_phone_precheck_percent)
+        .and_return(idv_phone_precheck_percent)
     end
 
     context 'remote unsupervised proofing' do
@@ -252,7 +252,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
       end
 
       context 'when precheck is not enabled' do
-        let(:idv_phone_precheck_enabled) { false }
+        let(:idv_phone_precheck_percent) { 0 }
         it 'returns a ResultAdjudicator' do
           proof.tap do |result|
             expect(result).to be_an_instance_of(Proofing::Resolution::ResultAdjudicator)
@@ -369,7 +369,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
         end
 
         context 'when phone precheck is not enabled' do
-          let(:idv_phone_precheck_enabled) { false }
+          let(:idv_phone_precheck_percent) { 0 }
           it 'returns a ResultAdjudicator' do
             proof.tap do |result|
               expect(result).to be_an_instance_of(Proofing::Resolution::ResultAdjudicator)
@@ -556,7 +556,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
       end
 
       context 'when phone precheck is not enabled' do
-        let(:idv_phone_precheck_enabled) { false }
+        let(:idv_phone_precheck_percent) { 0 }
         it 'returns a ResultAdjudicator' do
           proof.tap do |result|
             expect(result).to be_an_instance_of(Proofing::Resolution::ResultAdjudicator)

@@ -210,7 +210,7 @@ idv_available: true
 idv_contact_phone_number: (844) 555-5555
 idv_max_attempts: 5
 idv_min_age_years: 13
-idv_phone_precheck_enabled: false
+idv_phone_precheck_percent: 0
 idv_resolution_default_vendor: mock
 idv_resolution_vendor_instant_verify_percent: 0
 idv_resolution_vendor_socure_kyc_percent: 0
