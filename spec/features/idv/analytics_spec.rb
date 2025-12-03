@@ -878,8 +878,6 @@ RSpec.feature 'Analytics Regression', :js do
   end
 
   before do
-    allow(IdentityConfig.store).to receive(:idv_phone_precheck_enabled)
-      .and_return(idv_phone_precheck_enabled)
     allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled)
       .and_return(false)
     allow(IdentityConfig.store).to receive(:proofing_device_profiling)
