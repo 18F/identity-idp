@@ -21,7 +21,7 @@ module PivCacService
               URI(randomize_uri(IdentityConfig.store.piv_cac_service_url))
             end
       # add the nonce and redirect uri
-      uri.query = { nonce: nonce, redirect_uri: redirect_uri, issuer: current_sp&.issuer }.to_query
+      uri.query = { nonce: nonce, redirect_uri: redirect_uri, current_sp: current_sp&.issuer }.to_query
       uri.to_s
     end
 
