@@ -74,7 +74,7 @@ module Reports
     end
 
     def reports(issuers, agency_abbreviation)
-      @reports ||= sp_verification_report(issuers, agency_abbreviation).as_emailable_reports
+      sp_verification_report(issuers, agency_abbreviation).as_emailable_reports
     end
 
     def previous_week_range
@@ -82,7 +82,7 @@ module Reports
     end
 
     def sp_verification_report(issuers, agency_abbreviation)
-      @sp_verification_report ||= Reporting::SpVerificationReport.new(
+      Reporting::SpVerificationReport.new(
         time_range: previous_week_range,
         issuers: issuers || [],
         agency_abbreviation: agency_abbreviation,
