@@ -12,6 +12,7 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
   let(:user) { create(:user, :with_phone, with: { phone: '+1 (415) 555-0130' }) }
   let(:service_provider) { create(:service_provider) }
   let(:enrollment) { InPersonEnrollment.new }
+  let(:state_id_vendor) { nil }
 
   before do
     stub_analytics
@@ -20,6 +21,7 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
     subject.idv_session.flow_path = 'standard'
     subject.idv_session.ssn = Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID[:ssn]
     subject.idv_session.idv_consent_given_at = Time.zone.now.to_s
+    subject.idv_session.source_check_vendor = state_id_vendor
     subject.user_session['idv/in_person'] = flow_session
     stub_up_to(:ipp_ssn, idv_session: subject.idv_session)
     reload_ab_tests
@@ -417,6 +419,25 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
       put :update
     end
 
+    context 'the state id proofing occurred previously' do
+      let(:state_id_vendor) { 'done_previously' }
+
+      it 'lets the proofer know that the state id was already proofed' do
+        expect_any_instance_of(Idv::Agent).to receive(:proof_resolution)
+          .with(
+            kind_of(DocumentCaptureSession),
+            trace_id: subject.send(:amzn_trace_id),
+            threatmetrix_session_id: 'a-random-session-id',
+            request_ip: request.remote_ip,
+            ipp_enrollment_in_progress: true,
+            proofing_vendor: :mock,
+            state_id_already_proofed: true,
+          )
+
+        put :update
+      end
+    end
+
     context 'a user does not have an establishing in person enrollment associated with them' do
       before do
         allow(user).to receive(:establishing_in_person_enrollment).and_return(nil)
@@ -431,6 +452,7 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
             request_ip: request.remote_ip,
             ipp_enrollment_in_progress: false,
             proofing_vendor: :mock,
+            state_id_already_proofed: false,
           )
 
         put :update
@@ -451,6 +473,7 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
           request_ip: anything,
           ipp_enrollment_in_progress: true,
           proofing_vendor: :mock,
+          state_id_already_proofed: false,
         )
 
         put :update
@@ -479,6 +502,7 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
           request_ip: request.remote_ip,
           ipp_enrollment_in_progress: true,
           proofing_vendor: :mock,
+          state_id_already_proofed: false,
         )
 
       put :update
@@ -557,6 +581,7 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
             request_ip: request.remote_ip,
             ipp_enrollment_in_progress: true,
             proofing_vendor: :default_vendor,
+            state_id_already_proofed: false,
           )
 
         put :update
@@ -574,6 +599,7 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
               request_ip: request.remote_ip,
               ipp_enrollment_in_progress: true,
               proofing_vendor: :instant_verify,
+              state_id_already_proofed: false,
             )
 
           put :update
@@ -592,6 +618,7 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
                 request_ip: request.remote_ip,
                 ipp_enrollment_in_progress: true,
                 proofing_vendor: :socure_kyc,
+                state_id_already_proofed: false,
               )
 
             put :update

@@ -42,6 +42,7 @@ module Idv
         request_ip: request.remote_ip,
         ipp_enrollment_in_progress: ipp_enrollment_in_progress?,
         proofing_vendor:,
+        state_id_already_proofed: idv_session.source_check_vendor.present?,
       )
 
       return true
@@ -304,6 +305,8 @@ module Idv
     end
 
     def save_source_check_vendor(form_response)
+      return if idv_session.source_check_vendor.present?
+
       vendor = form_response.extra.dig(
         :proofing_results,
         :context,

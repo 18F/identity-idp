@@ -47,6 +47,7 @@ module Idv
           idv_session.pii_from_doc = stored_result.pii_from_doc
           idv_session.selfie_check_performed = stored_result.selfie_check_performed?
         end
+        idv_session.source_check_vendor ||= stored_result.state_id_vendor
       end
 
       track_document_issuing_state(user, stored_result.pii_from_doc[:state])

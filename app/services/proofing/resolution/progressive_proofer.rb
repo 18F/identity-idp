@@ -40,6 +40,8 @@ module Proofing
       # @param [JobHelpers::Timer] timer indicates time elapsed to obtain results
       # @param [String] user_uuid user uuid for applicant
       # @param [String] workflow user is in idv or auth workflow
+      # @param [Boolean] state_id_already_proofed indicates the state_id check was previously done,
+      #   e.g. in doc_auth
       # @return [ResultAdjudicator] object which contains the logic to determine proofing's result
       def proof(
         applicant_pii:,
@@ -48,7 +50,8 @@ module Proofing
         timer:,
         ipp_enrollment_in_progress:,
         current_sp:,
-        workflow:
+        workflow:,
+        state_id_already_proofed: false
       )
         best_effort_phone = applicant_pii[:best_effort_phone_number_for_socure]
         applicant_pii = applicant_pii.except(:best_effort_phone_number_for_socure)
@@ -85,7 +88,7 @@ module Proofing
           state_id_address_resolution_result:,
           ipp_enrollment_in_progress:,
           timer:,
-          already_proofed: IdentityConfig.store.idv_aamva_at_doc_auth_enabled,
+          already_proofed: state_id_already_proofed,
         )
 
         phone_result = phone_plugin.call(
