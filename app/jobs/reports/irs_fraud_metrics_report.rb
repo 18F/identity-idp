@@ -86,11 +86,11 @@ module Reports
 
       case report_receiver
       when :internal
-        {to: internal_emails, bcc: []}
-      when :both 
-        {to: irs_emails, bcc: internal_emails}
+        { to: internal_emails, bcc: [] }
+      when :both
+        { to: irs_emails, bcc: internal_emails }
       else
-        {to: [], bcc: []}
+        { to: [], bcc: [] }
       end
     end
 

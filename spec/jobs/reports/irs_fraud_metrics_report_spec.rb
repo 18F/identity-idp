@@ -72,7 +72,7 @@ RSpec.describe Reports::IrsFraudMetricsReport do
     subject(:report) { described_class.new(report_date, :both) }
     it 'sends out a report to just to team data and partner' do
       expect(ReportMailer).to receive(:tables_report).once.with(
-        email: ['mock_feds@example.com','mock_contractors@example.com'],
+        email: ['mock_feds@example.com', 'mock_contractors@example.com'],
         bcc: ['mock_internal@example.com'],
         subject: 'IRS Fraud Metrics Report - 2025-09-30',
         reports: anything,
@@ -106,7 +106,7 @@ RSpec.describe Reports::IrsFraudMetricsReport do
 
     it 'sends out a report to everybody' do
       expect(ReportMailer).to receive(:tables_report).once.with(
-        email: ['mock_feds@example.com','mock_contractors@example.com'],
+        email: ['mock_feds@example.com', 'mock_contractors@example.com'],
         bcc: ['mock_internal@example.com'],
         subject: 'IRS Fraud Metrics Report - 2021-02-28',
         reports: anything,

@@ -32,11 +32,8 @@ class ReportMailer < ActionMailer::Base
   #   an array of tables (which are arrays of rows (arrays of strings))
   #   each table can have a first "row" that is a hash with options
   def tables_report(
-    email:, 
-    bcc: nil,
-    subject:,
-    reports:,
-    attachment_format:,
+    email:,
+    subject:, reports:, attachment_format:, bcc: nil,
     message: nil,
     env: Identity::Hostdata.env || 'local'
   )
