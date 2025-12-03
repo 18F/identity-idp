@@ -510,6 +510,11 @@ RSpec.describe Idv::PhoneController do
       end
 
       context 'when phonerisk is the phone proofing vendor' do
+        let(:phonerisk_low) { true }
+        let(:name_phone_correlation_high) { true }
+        let(:name_phone_reason_codes) { [] }
+        let(:phonerisk_reason_codes) { [] }
+
         before do
           allow(IdentityConfig.store).to receive(:idv_address_primary_vendor).and_return(:socure)
           stub_request(:post, 'https://sandbox.socure.test/api/3.0/EmailAuthScore')
@@ -518,12 +523,12 @@ RSpec.describe Idv::PhoneController do
               body: {
                 referenceId: 'some-reference-id',
                 namePhoneCorrelation: {
-                  reasonCodes: [],
-                  score: 0.99,
+                  reasonCodes: name_phone_reason_codes,
+                  score: name_phone_correlation_high ? 0.99 : 0.01,
                 },
                 phoneRisk: {
-                  reasonCodes: [],
-                  score: 0.01,
+                  reasonCodes: phonerisk_reason_codes,
+                  score: phonerisk_low ? 0.01 : 0.99,
                 },
                 customerProfile: {
                   customerUserId: user.uuid,
@@ -535,41 +540,111 @@ RSpec.describe Idv::PhoneController do
             )
         end
 
-        it 'tracks event with valid phone' do
-          proofing_phone = Phonelib.parse(good_phone)
+        context 'when phone risk passes' do
+          it 'tracks event with valid phone' do
+            proofing_phone = Phonelib.parse(good_phone)
 
-          put :create, params: { idv_phone_form: { phone: good_phone } }
+            put :create, params: { idv_phone_form: { phone: good_phone } }
 
-          expect(@analytics).to have_logged_event(
-            'IdV: phone confirmation form',
-            hash_including(:success),
-          )
+            expect(@analytics).to have_logged_event(
+              'IdV: phone confirmation form',
+              hash_including(:success),
+            )
 
-          expect(response).to redirect_to idv_phone_path
+            expect(response).to redirect_to idv_phone_path
 
-          get :new
+            get :new
 
-          expect(@analytics).to have_logged_event(
-            'IdV: phone confirmation vendor',
-            success: true,
-            new_phone_added: true,
-            hybrid_handoff_phone_used: false,
-            phone_fingerprint: Pii::Fingerprinter.fingerprint(proofing_phone.e164),
-            country_code: proofing_phone.country,
-            area_code: proofing_phone.area_code,
-            vendor: {
-              exception: nil,
-              reference: 'some-reference-id',
-              result: {
-                customer_user_id: user.uuid,
-                name_phone_correlation: { reason_codes: {}, score: 0.99 },
-                phonerisk: { reason_codes: {}, score: 0.01 },
+            expect(@analytics).to have_logged_event(
+              'IdV: phone confirmation vendor',
+              success: true,
+              new_phone_added: true,
+              hybrid_handoff_phone_used: false,
+              phone_fingerprint: Pii::Fingerprinter.fingerprint(proofing_phone.e164),
+              country_code: proofing_phone.country,
+              area_code: proofing_phone.area_code,
+              vendor: {
+                exception: nil,
+                reference: 'some-reference-id',
+                result: {
+                  customer_user_id: user.uuid,
+                  name_phone_correlation: { reason_codes: {}, score: 0.99 },
+                  phonerisk: { reason_codes: {}, score: 0.01 },
+                },
+                timed_out: false,
+                transaction_id: 'some-reference-id',
+                vendor_name: 'socure_phonerisk',
               },
-              timed_out: false,
-              transaction_id: 'some-reference-id',
-              vendor_name: 'socure_phonerisk',
-            },
-          )
+            )
+          end
+        end
+
+        context 'when phone risk fails' do
+          let(:phonerisk_low) { false }
+          let(:name_phone_correlation_high) { false }
+          let(:name_phone_reason_codes) { ['I123', 'R567', 'R890'] }
+          let(:phonerisk_reason_codes) { ['I919', 'I914'] }
+
+          it 'tracks event with failing phonerisk' do
+            proofing_phone = Phonelib.parse(good_phone)
+
+            put :create, params: { idv_phone_form: { phone: good_phone } }
+
+            expect(@analytics).to have_logged_event(
+              'IdV: phone confirmation form',
+              hash_including(:success),
+            )
+
+            expect(response).to redirect_to idv_phone_path
+
+            get :new
+
+            expect(@analytics).to have_logged_event(
+              'IdV: phone confirmation vendor',
+              success: false,
+              errors: {
+                socure: {
+                  reason_codes: {
+                    I123: '[unknown]',
+                    I914: '[unknown]',
+                    I919: '[unknown]',
+                    R567: '[unknown]',
+                    R890: '[unknown]',
+                  },
+                },
+              },
+              new_phone_added: true,
+              hybrid_handoff_phone_used: false,
+              phone_fingerprint: Pii::Fingerprinter.fingerprint(proofing_phone.e164),
+              country_code: proofing_phone.country,
+              area_code: proofing_phone.area_code,
+              vendor: {
+                exception: nil,
+                reference: 'some-reference-id',
+                result: {
+                  customer_user_id: user.uuid,
+                  name_phone_correlation: {
+                    reason_codes: {
+                      I123: '[unknown]',
+                      R567: '[unknown]',
+                      R890: '[unknown]',
+                    },
+                    score: 0.01,
+                  },
+                  phonerisk: {
+                    reason_codes: {
+                      I914: '[unknown]',
+                      I919: '[unknown]',
+                    },
+                    score: 0.99,
+                  },
+                },
+                timed_out: false,
+                transaction_id: 'some-reference-id',
+                vendor_name: 'socure_phonerisk',
+              },
+            )
+          end
         end
       end
     end
