@@ -20,6 +20,7 @@ module Users
       redirect_to PivCacService.piv_cac_service_link(
         nonce: piv_cac_nonce,
         redirect_uri: login_piv_cac_url,
+        current_sp: current_sp,
       ), allow_other_host: true
     end
 
