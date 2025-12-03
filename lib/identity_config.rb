@@ -234,7 +234,7 @@ module IdentityConfig
     config.add(:idv_contact_phone_number, type: :string)
     config.add(:idv_max_attempts, type: :integer)
     config.add(:idv_min_age_years, type: :integer)
-    config.add(:idv_phone_precheck_enabled, type: :boolean)
+    config.add(:idv_phone_precheck_percent, type: :integer)
     config.add(
       :idv_resolution_default_vendor,
       type: :symbol,

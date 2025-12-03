@@ -17,7 +17,7 @@ module Proofing
 
         )
           @phone_number = nil
-          return {} unless IdentityConfig.store.idv_phone_precheck_enabled
+          return {} unless precheck_enabled
 
           if !state_id_address_resolution_result.success? ||
              !residential_address_resolution_result.success? ||
@@ -58,6 +58,10 @@ module Proofing
           Proofing::AddressResult.new(
             success: false, vendor_name: 'NoPhoneNumberAvailable', exception: nil,
           ).to_h
+        end
+
+        def precheck_enabled
+          @precheck_enabled ||= (rand * 100) <= IdentityConfig.store.idv_phone_precheck_percent
         end
       end
     end
