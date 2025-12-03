@@ -607,6 +607,7 @@ RSpec.describe Idv::VerifyInfoController do
           same_address_as_id: true,
           should_proof_state_id: true,
           applicant_pii: Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN,
+          precheck_phone_number: subject.idv_session.precheck_phone[:phone],
         ).adjudicated_result
       end
 
@@ -667,6 +668,7 @@ RSpec.describe Idv::VerifyInfoController do
           same_address_as_id: true,
           should_proof_state_id: true,
           applicant_pii:,
+          precheck_phone_number: subject.idv_session.precheck_phone[:phone],
         ).adjudicated_result
       end
 
@@ -1012,6 +1014,7 @@ RSpec.describe Idv::VerifyInfoController do
           same_address_as_id: nil,
           should_proof_state_id: true,
           applicant_pii:,
+          precheck_phone_number: subject.idv_session.precheck_phone[:phone],
         ).adjudicated_result
       end
 
@@ -1180,6 +1183,7 @@ RSpec.describe Idv::VerifyInfoController do
           same_address_as_id: true,
           should_proof_state_id: true,
           applicant_pii:,
+          precheck_phone_number: subject.idv_session.precheck_phone[:phone],
         ).adjudicated_result
       end
 
@@ -1303,6 +1307,7 @@ RSpec.describe Idv::VerifyInfoController do
           same_address_as_id: true,
           should_proof_state_id: true,
           applicant_pii: Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN,
+          precheck_phone_number: subject.idv_session.precheck_phone[:phone],
         ).adjudicated_result
       end
 

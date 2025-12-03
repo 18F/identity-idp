@@ -104,6 +104,9 @@ RSpec.describe AddressProofingJob, type: :job do
       let(:address_vendor) { :socure }
       let(:phonerisk_score) { 0.01 }
       let(:namephone_correlation_score) { 0.99 }
+      let(:name_phone_reason_codes) { [] }
+      let(:phonerisk_reason_codes) { [] }
+
       before do
         stub_request(
           :post,
@@ -113,11 +116,11 @@ RSpec.describe AddressProofingJob, type: :job do
             referenceId: conversation_id,
             phoneRisk: {
               score: phonerisk_score,
-              reasonCodes: [],
+              reasonCodes: phonerisk_reason_codes,
             },
             namePhoneCorrelation: {
               score: namephone_correlation_score,
-              reasonCodes: [],
+              reasonCodes: name_phone_reason_codes,
             },
           }.to_json,
           headers: { 'Content-Type' => 'application/json' },
@@ -148,12 +151,17 @@ RSpec.describe AddressProofingJob, type: :job do
 
       context 'high phonerisk score' do
         let(:phonerisk_score) { 0.99 }
+        let(:phonerisk_reason_codes) { ['I919', 'I914'] }
 
         it 'fails proofing' do
           perform
 
           result = document_capture_session.load_proofing_result[:result]
 
+          expect(result[:errors]).to eq(
+            { socure: { reason_codes: { I914: '[unknown]',
+                                        I919: '[unknown]' } } },
+          )
           expect(result[:exception]).to be_nil
           expect(result[:success]).to be false
           expect(result[:timed_out]).to be false
@@ -179,7 +187,10 @@ RSpec.describe AddressProofingJob, type: :job do
 
             secondary_result = result[:alternate_result]
             expect(secondary_result[:exception]).to be_nil
-            expect(secondary_result[:errors]).to eq({})
+            expect(secondary_result[:errors]).to eq(
+              { socure: { reason_codes: { I914: '[unknown]',
+                                          I919: '[unknown]' } } },
+            )
             expect(secondary_result[:success]).to be_falsey
             expect(secondary_result[:timed_out]).to be_falsey
             # expect(secondary_result[:vendor_name]).to eq('AddressMock')
@@ -188,12 +199,18 @@ RSpec.describe AddressProofingJob, type: :job do
       end
       context 'low name phone correlation score' do
         let(:namephone_correlation_score) { 0.01 }
+        let(:name_phone_reason_codes) { ['I123', 'R567', 'R890'] }
 
         it 'fails proofing' do
           perform
 
           result = document_capture_session.load_proofing_result[:result]
 
+          expect(result[:errors]).to eq(
+            { socure: { reason_codes: { I123: '[unknown]',
+                                        R567: '[unknown]',
+                                        R890: '[unknown]' } } },
+          )
           expect(result[:exception]).to be_nil
           expect(result[:success]).to be false
           expect(result[:timed_out]).to be false
@@ -228,7 +245,11 @@ RSpec.describe AddressProofingJob, type: :job do
             expect(secondary_result[:exception]).to be_nil
             expect(secondary_result[:success]).to be_falsey
             expect(secondary_result[:timed_out]).to be_falsey
-            expect(secondary_result[:errors]).to eq({})
+            expect(secondary_result[:errors]).to eq(
+              { socure: { reason_codes: { I123: '[unknown]',
+                                          R567: '[unknown]',
+                                          R890: '[unknown]' } } },
+            )
           end
         end
       end

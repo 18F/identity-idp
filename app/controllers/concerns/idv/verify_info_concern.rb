@@ -216,6 +216,7 @@ module Idv
             [:proofing_results, :context, :stages, :state_id, :errors, :state_id_jurisdiction],
             [:proofing_results, :biographical_info, :identity_doc_address_state],
             [:proofing_results, :biographical_info, :state_id_jurisdiction],
+            [:proofing_results, :biographical_info, :phone],
             [:proofing_results, :biographical_info],
           ],
         },

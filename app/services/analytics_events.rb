@@ -4259,6 +4259,90 @@ module AnalyticsEvents
     )
   end
 
+  # @param [String] exception_class Exception class name
+  # @param [String] exception_message Exception message
+  # @param [String] step Current step in the IPP flow
+  # @param [String, nil] trace_id AWS X-Ray trace ID for request tracing
+  # AAMVA verification exception for IPP user
+  def idv_ipp_aamva_exception(
+    exception_class:,
+    exception_message:,
+    step:,
+    trace_id: nil,
+    **extra
+  )
+    track_event(
+      :idv_ipp_aamva_exception,
+      exception_class: exception_class,
+      exception_message: exception_message,
+      step: step,
+      trace_id: trace_id,
+      **extra,
+    )
+  end
+
+  # IPP AAMVA proofing result is missing from Redis (expired or not found)
+  # @param [Hash] extra Additional event data
+  def idv_ipp_aamva_proofing_result_missing(**extra)
+    track_event(:idv_ipp_aamva_proofing_result_missing, **extra)
+  end
+
+  # @param [String] step Current step in the IPP flow
+  # AAMVA rate limit hit for IPP user
+  def idv_ipp_aamva_rate_limited(
+    step:,
+    **extra
+  )
+    track_event(
+      :idv_ipp_aamva_rate_limited,
+      step: step,
+      **extra,
+    )
+  end
+
+  # @param [String] exception_class Exception class name
+  # @param [String] step Current step in the IPP flow
+  # @param [String, nil] trace_id AWS X-Ray trace ID for request tracing
+  # AAMVA verification timed out for IPP user
+  def idv_ipp_aamva_timeout(
+    exception_class:,
+    step:,
+    trace_id: nil,
+    **extra
+  )
+    track_event(
+      :idv_ipp_aamva_timeout,
+      exception_class: exception_class,
+      step: step,
+      trace_id: trace_id,
+      **extra,
+    )
+  end
+
+  # @param [Boolean] success Whether the AAMVA verification succeeded
+  # @param [String] vendor_name Name of the AAMVA vendor
+  # @param [String] step Current step in the IPP flow
+  # AAMVA verification completed for IPP user
+  def idv_ipp_aamva_verification_completed(
+    success:,
+    vendor_name:,
+    step:,
+    **extra
+  )
+    track_event(
+      :idv_ipp_aamva_verification_completed,
+      success: success,
+      vendor_name: vendor_name,
+      step: step,
+      **extra,
+    )
+  end
+
+  # User visited polling wait page for IPP AAMVA verification
+  def idv_ipp_aamva_verification_polling_wait(**extra)
+    track_event(:idv_ipp_aamva_verification_polling_wait, **extra)
+  end
+
   # @param [String] enrollment_id
   # A fraud user has been deactivated due to not visting the post office before the deadline
   def idv_ipp_deactivated_for_never_visiting_post_office(
@@ -5639,6 +5723,7 @@ module AnalyticsEvents
   # @param [Boolean] async whether this worker is running asynchronously
   # @param [Boolean] billed
   # @param [String] birth_year Birth year from document
+  # @param [String] expiration_date Expiration date from document
   # @param [Hash] customer_profile socure customer profile
   # @param [String] customer_user_id user uuid sent to Socure
   # @param [Hash] decision accept or reject of given ID
@@ -5685,6 +5770,7 @@ module AnalyticsEvents
     decision: nil,
     document_metadata: nil,
     docv_transaction_token: nil,
+    expiration_date: nil,
     flow_path: nil,
     document_type_received: nil,
     issue_year: nil,
@@ -5714,6 +5800,7 @@ module AnalyticsEvents
       doc_type_supported:,
       document_metadata:,
       docv_transaction_token:,
+      expiration_date:,
       flow_path:,
       document_type_received:,
       issue_year:,
