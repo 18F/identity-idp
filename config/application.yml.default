@@ -210,6 +210,7 @@ idv_available: true
 idv_contact_phone_number: (844) 555-5555
 idv_max_attempts: 5
 idv_min_age_years: 13
+idv_phone_precheck_enabled: false
 idv_resolution_default_vendor: mock
 idv_resolution_vendor_instant_verify_percent: 0
 idv_resolution_vendor_socure_kyc_percent: 0
@@ -391,8 +392,6 @@ recaptcha_mock_validator: true
 recaptcha_request_timeout_in_seconds: 5
 recaptcha_secret_key: ''
 recaptcha_site_key: ''
-recommend_webauthn_platform_for_sms_ab_test_account_creation_percent: 0
-recommend_webauthn_platform_for_sms_ab_test_authentication_percent: 0
 recovery_code_length: 4
 redis_attempts_api_pool_size: 1
 redis_attempts_api_url: redis://localhost:6379/2

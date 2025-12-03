@@ -303,7 +303,6 @@ class UserMailerPreview < ActionMailer::Preview
 
   # To view this email, set the below in application.yml
   # in_person_passports_enabled: true
-  # doc_auth_passports_enabled: true
   def in_person_failed_passports_enabled
     UserMailer.with(user: user, email_address: email_address_record).in_person_failed(
       enrollment: in_person_enrollment_id_ipp,

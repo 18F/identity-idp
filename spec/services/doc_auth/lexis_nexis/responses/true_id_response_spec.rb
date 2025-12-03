@@ -343,10 +343,6 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
   end
 
   context 'when the id type requested does not match the id type submitted' do
-    before do
-      allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled).and_return(true)
-    end
-
     context 'when passport is requested but drivers_license is submitted' do
       let(:passport_requested) { true }
       let(:response) do
@@ -357,10 +353,6 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
           liveness_checking_enabled:,
           request_context:,
         )
-      end
-
-      before do
-        allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled).and_return(true)
       end
 
       it 'is not a successful result' do
@@ -413,9 +405,6 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
 
     context 'when passports are enabled' do
       let(:passport_requested) { true }
-      before do
-        allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled).and_return(true)
-      end
 
       it 'is not a successful result' do
         expect(response.successful_result?).to eq(false)
@@ -427,22 +416,6 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
 
       it 'has error messages' do
         expect(response.error_messages[:passport_card]).to eq(
-          I18n.t('doc_auth.errors.doc.doc_type_check'),
-        )
-      end
-    end
-
-    context 'when passports are not enabled' do
-      before do
-        allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled).and_return(false)
-      end
-
-      it 'is not a successful result' do
-        expect(response.successful_result?).to eq(false)
-      end
-
-      it 'has error messages' do
-        expect(response.error_messages[:passport]).to eq(
           I18n.t('doc_auth.errors.doc.doc_type_check'),
         )
       end
@@ -461,10 +434,6 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
       )
     end
 
-    before do
-      allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled).and_return(true)
-    end
-
     it 'is a successful result' do
       expect(response.successful_result?).to eq(true)
       expect(response.to_h[:vendor]).to eq('TrueID')
@@ -473,6 +442,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
     it 'has no error messages' do
       expect(response.error_messages).to be_empty
     end
+
     it 'has extra attributes' do
       extra_attributes = response.extra_attributes
       expect(extra_attributes).not_to be_empty
@@ -580,9 +550,6 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
 
   context 'when the response is a failure for passport' do
     let(:passport_requested) { true }
-    before do
-      allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled).and_return(true)
-    end
 
     it 'produces appropriate errors with passport tampering' do
       response = described_class.new(
@@ -946,10 +913,6 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
   context 'when the dob is incorrectly parsed in passport' do
     let(:response) do
       described_class.new(http_response: success_with_passport_failed_to_ocr_dob, config:)
-    end
-
-    before do
-      allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled).and_return(true)
     end
 
     it 'does not throw an exception when getting pii from doc' do

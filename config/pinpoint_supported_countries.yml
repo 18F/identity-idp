@@ -704,6 +704,11 @@ NE:
   name: Niger
   supports_sms: true
   supports_voice: false
+NF:
+  country_code: '672'
+  name: Norfolk Island
+  supports_sms: true
+  supports_voice: false
 NG:
   country_code: '234'
   name: Nigeria
@@ -792,6 +797,11 @@ PS:
 PT:
   country_code: '351'
   name: Portugal
+  supports_sms: true
+  supports_voice: false
+PW:
+  country_code: '680'
+  name: Palau
   supports_sms: true
   supports_voice: false
 PY:
