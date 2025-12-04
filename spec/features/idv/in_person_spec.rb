@@ -173,7 +173,7 @@ RSpec.describe 'In Person Proofing', js: true do
 
   context 'when phone precheck is enabled' do
     before do
-      allow(IdentityConfig.store).to receive(:idv_phone_precheck_enabled).and_return(true)
+      allow(IdentityConfig.store).to receive(:idv_phone_precheck_percent).and_return(100)
     end
 
     it 'user skips phone step', allow_browser_log: true do

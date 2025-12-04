@@ -84,11 +84,17 @@ class ApplicationController < ActionController::Base
       request:,
       user: analytics_user,
       sp: current_sp,
-      cookie_device_uuid: cookies[:device],
+      cookie_device_uuid: browser_id,
       # this only works for oidc
       sp_redirect_uri: attempts_api_redirect_uri,
       enabled_for_session: attempts_api_enabled_for_session?,
     )
+  end
+
+  def browser_id
+    @browser_id ||= cookies[:browser_id].presence ||
+                    cookies.permanent[:browser_id] =
+                      SecureRandom.hex(HighEntropy::COOKIE_LENGTH_IN_BYTES)
   end
 
   def fraud_ops_tracker

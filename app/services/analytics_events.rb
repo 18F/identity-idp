@@ -5723,6 +5723,7 @@ module AnalyticsEvents
   # @param [Boolean] async whether this worker is running asynchronously
   # @param [Boolean] billed
   # @param [String] birth_year Birth year from document
+  # @param [String] expiration_date Expiration date from document
   # @param [Hash] customer_profile socure customer profile
   # @param [String] customer_user_id user uuid sent to Socure
   # @param [Hash] decision accept or reject of given ID
@@ -5769,6 +5770,7 @@ module AnalyticsEvents
     decision: nil,
     document_metadata: nil,
     docv_transaction_token: nil,
+    expiration_date: nil,
     flow_path: nil,
     document_type_received: nil,
     issue_year: nil,
@@ -5798,6 +5800,7 @@ module AnalyticsEvents
       doc_type_supported:,
       document_metadata:,
       docv_transaction_token:,
+      expiration_date:,
       flow_path:,
       document_type_received:,
       issue_year:,

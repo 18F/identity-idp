@@ -193,11 +193,7 @@ module DocAuth
       end
 
       def determine_document_type_received(doc_class_name:, doc_issue_type:)
-        val = if IdentityConfig.store.doc_auth_passports_enabled
-                DocumentClassifications::CLASSIFICATION_TO_DOCUMENT_TYPE[doc_class_name]
-              else
-                DocumentClassifications::STATE_ID_CLASSIFICATION_TO_DOCUMENT_TYPE[doc_class_name]
-              end
+        val = DocumentClassifications::CLASSIFICATION_TO_DOCUMENT_TYPE[doc_class_name]
 
         # If the DocIssueType is 'Passport Card',
         # LN is returning 'Identification Card' as the DocClassName so we need to differentiate
