@@ -358,7 +358,7 @@ class Profile < ApplicationRecord
     end
   end
 
-  def deactivated_due_to_sp_forced_reproofing
+  def deactivate_due_to_sp_forced_reproofing
     update!(deactivation_reason: :sp_forced_reproofing)
   end
 
