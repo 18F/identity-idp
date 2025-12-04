@@ -4,7 +4,6 @@ RSpec.describe OpenidConnectAuthorizeForm do
   subject(:form) do
     OpenidConnectAuthorizeForm.new(
       acr_values: acr_values,
-      vtr: vtr,
       client_id: client_id,
       nonce: nonce,
       prompt: prompt,
@@ -18,8 +17,7 @@ RSpec.describe OpenidConnectAuthorizeForm do
     )
   end
 
-  let(:acr_values) { nil }
-  let(:vtr) { ['C1'].to_json }
+  let(:acr_values) { Saml::Idp::Constants::IAL_AUTH_ONLY_ACR }
   let(:client_id) { 'urn:gov:gsa:openidconnect:test' }
   let(:nonce) { SecureRandom.hex }
   let(:prompt) { 'select_account' }
@@ -47,8 +45,7 @@ RSpec.describe OpenidConnectAuthorizeForm do
           allow_prompt_login: true,
           redirect_uri: nil,
           unauthorized_scope: true,
-          acr_values: '',
-          vtr: JSON.parse(vtr),
+          acr_values:,
           scope: 'openid',
           code_digest: nil,
           code_challenge_present: false,
@@ -72,8 +69,7 @@ RSpec.describe OpenidConnectAuthorizeForm do
             redirect_uri: "#{redirect_uri}?error=invalid_request&error_description=" \
                           "Response+type+is+not+included+in+the+list&state=#{state}",
             unauthorized_scope: true,
-            acr_values: '',
-            vtr: JSON.parse(vtr),
+            acr_values:,
             scope: 'openid',
             code_digest: nil,
             code_challenge_present: false,
@@ -100,44 +96,6 @@ RSpec.describe OpenidConnectAuthorizeForm do
         expect(result.extra[:redirect_uri]).to be_nil
       end
     end
-
-    context 'when use_vot_in_sp_requests flag is false' do
-      before do
-        allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).and_return(false)
-      end
-
-      context 'with only a vtr param' do
-        let(:vtr) { ['C1.P1'].to_json }
-        let(:acr_values) { nil }
-
-        it 'is invalid' do
-          expect(form.vtr).to be_nil
-          expect(form.valid?).to eq(false)
-          expect(form.errors[:acr_values])
-            .to include(t('openid_connect.authorization.errors.no_valid_acr_values'))
-          expect(form.errors[:vtr]).to be_empty
-        end
-      end
-
-      context 'with a vtr and acr_values param' do
-        let(:vtr) { ['C1.P1'].to_json }
-        let(:acr_values) { Saml::Idp::Constants::LOA3_AUTHN_CONTEXT_CLASSREF }
-
-        it 'uses the acr_values param and ignores vtr' do
-          expect(form.vtr).to be_nil
-          expect(form.valid?).to eq(true)
-        end
-      end
-
-      context 'with only an acr_values param' do
-        let(:vtr) { nil }
-        let(:acr_values) { Saml::Idp::Constants::LOA3_AUTHN_CONTEXT_CLASSREF }
-
-        it 'uses the acr_values param' do
-          expect(form.valid?).to eq(true)
-        end
-      end
-    end
   end
 
   describe '#valid?' do
@@ -151,40 +109,19 @@ RSpec.describe OpenidConnectAuthorizeForm do
       end
     end
 
-    context 'with an invalid vtr' do
-      let(:vtr) { ['A1.B2.C3'].to_json }
+    context 'with no acr_value param' do
+      let(:acr_values) { nil }
 
-      it 'has errors' do
-        expect(valid?).to eq(false)
-        expect(form.errors[:vtr])
-          .to include(t('openid_connect.authorization.errors.no_valid_vtr'))
-      end
-    end
-
-    context 'with no valid acr_values' do
-      let(:acr_values) { 'abc def' }
-      let(:vtr) { nil }
-      it 'has errors' do
-        expect(valid?).to eq(false)
+      it 'is invalid' do
+        expect(form.valid?).to eq(false)
         expect(form.errors[:acr_values])
           .to include(t('openid_connect.authorization.errors.no_valid_acr_values'))
-      end
-    end
-
-    context 'with no authorized vtr components' do
-      let(:vtr) { ['C1.P1'].to_json }
-      let(:client_id) { 'urn:gov:gsa:openidconnect:test:loa1' }
-
-      it 'has errors' do
-        expect(valid?).to eq(false)
-        expect(form.errors[:acr_values])
-          .to include(t('openid_connect.authorization.errors.no_auth'))
+        expect(form.errors[:vtr]).to be_empty
       end
     end
 
     context 'with no authorized acr_values' do
       let(:acr_values) { Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF }
-      let(:vtr) { nil }
       let(:client_id) { 'urn:gov:gsa:openidconnect:test:loa1' }
       it 'has errors' do
         expect(valid?).to eq(false)
@@ -195,7 +132,6 @@ RSpec.describe OpenidConnectAuthorizeForm do
 
     context 'with unknown acr_values' do
       let(:acr_values) { 'unknown-value' }
-      let(:vtr) { nil }
 
       it 'has errors' do
         expect(valid?).to eq(false)
@@ -203,7 +139,7 @@ RSpec.describe OpenidConnectAuthorizeForm do
           .to include(t('openid_connect.authorization.errors.no_valid_acr_values'))
       end
 
-      context 'with a known IAL value' do
+      context 'when a known IAL value is included as well' do
         let(:acr_values) do
           [
             'unknown-value',
@@ -219,7 +155,6 @@ RSpec.describe OpenidConnectAuthorizeForm do
 
     context 'with ialmax requested' do
       let(:acr_values) { Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF }
-      let(:vtr) { nil }
 
       context 'with a service provider not in the allow list' do
         it 'has errors' do
@@ -285,7 +220,6 @@ RSpec.describe OpenidConnectAuthorizeForm do
 
     context 'with aal but not ial requested via acr_values' do
       let(:acr_values) { Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF }
-      let(:vtr) { nil }
       it 'has errors' do
         expect(valid?).to eq(false)
         expect(form.errors[:acr_values])
@@ -388,7 +322,6 @@ RSpec.describe OpenidConnectAuthorizeForm do
 
     context 'when scope includes profile:verified_at but the sp is only ial1' do
       let(:client_id) { 'urn:gov:gsa:openidconnect:test:loa1' }
-      let(:vtr) { ['C1'].to_json }
       let(:scope) { 'email profile:verified_at' }
 
       it 'has errors' do
@@ -507,7 +440,6 @@ RSpec.describe OpenidConnectAuthorizeForm do
 
   describe '#requested_aal_value' do
     context 'with ACR values' do
-      let(:vtr) { nil }
       context 'when AAL2 passed' do
         let(:acr_values) { Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF }
 
@@ -742,8 +674,7 @@ RSpec.describe OpenidConnectAuthorizeForm do
         expect(identity.code_challenge).to eq(code_challenge)
         expect(identity.nonce).to eq(nonce)
         expect(identity.ial).to eq(1)
-        expect(identity.acr_values).to eq ''
-        expect(identity.vtr).to eq ['C1'].to_json
+        expect(identity.acr_values).to eq acr_values
       end
     end
   end

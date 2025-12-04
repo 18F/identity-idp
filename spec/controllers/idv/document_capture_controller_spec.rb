@@ -51,8 +51,10 @@ RSpec.describe Idv::DocumentCaptureController do
     subject.idv_session.flow_path = flow_path
     subject.idv_session.document_capture_session_uuid = document_capture_session_uuid
 
-    vot = facial_match_required ? 'Pb' : 'P1'
-    resolved_authn_context = Vot::Parser.new(vector_of_trust: vot).parse
+    acr_values = facial_match_required ?
+      Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_REQUIRED_ACR :
+      Saml::Idp::Constants::IAL_VERIFIED_ACR
+    resolved_authn_context = Vot::Parser.new(acr_values:).parse
     allow(controller).to receive(:resolved_authn_context_result)
       .and_return(resolved_authn_context)
     allow(subject).to receive(:ab_test_analytics_buckets).and_return(ab_test_args)

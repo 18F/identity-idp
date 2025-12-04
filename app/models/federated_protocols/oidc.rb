@@ -22,10 +22,6 @@ module FederatedProtocols
       [aal, ial].compact.join(' ')
     end
 
-    def vtr
-      request.vtr
-    end
-
     def requested_attributes
       OpenidConnectAttributeScoper.new(request.scope).requested_attributes
     end

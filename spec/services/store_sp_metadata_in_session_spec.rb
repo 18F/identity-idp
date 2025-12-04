@@ -21,14 +21,12 @@ RSpec.describe StoreSpMetadataInSession do
       let(:request_url) { 'http://issuer.gov' }
       let(:requested_attributes) { %w[email] }
       let(:request_acr) { Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF }
-      let(:request_vtr) { 'C1.C2' }
       let(:sp_request) do
         ServiceProviderRequestProxy.find_or_create_by(uuid: request_id) do |sp_request|
           sp_request.issuer = issuer
           sp_request.url = request_url
           sp_request.requested_attributes = requested_attributes
           sp_request.acr_values = request_acr
-          sp_request.vtr = request_vtr
         end
       end
 
@@ -42,7 +40,6 @@ RSpec.describe StoreSpMetadataInSession do
             request_url: request_url,
             request_id: request_id,
             requested_attributes: requested_attributes,
-            vtr: request_vtr,
           },
         )
       end

@@ -97,9 +97,11 @@ RSpec.describe Idv::InPerson::UspsLocationsController do
       allow(UspsInPersonProofing::Proofer).to receive(:new).and_return(proofer)
     end
 
-    context 'with a user going through enhanced ipp' do
+    xcontext 'with a user going through enhanced ipp' do
+      # TODO: VoT has been deprecated.
+      # EIPP should not be determined via acr_values
       let(:vtr) { ['C1.C2.P1.Pe'] }
-      let(:enhanced_ipp_sp_session) { { vtr: vtr, acr_values: nil } }
+      let(:enhanced_ipp_sp_session) { { acr_values: nil } }
       let(:user) { build(:user) }
       let(:sp) { build(:service_provider, ial: 2) }
 
@@ -449,7 +451,9 @@ RSpec.describe Idv::InPerson::UspsLocationsController do
       end
     end
 
-    context 'when the user is going through EIPP' do
+    xcontext 'when the user is going through EIPP' do
+      # TODO: VoT has been deprecated.
+      # EIPP should not be determined via acr_values
       let(:vtr) { ['C1.C2.P1.Pe'] }
       let(:enhanced_ipp_sp_session) { { vtr: vtr, acr_values: nil } }
 

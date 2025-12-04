@@ -246,23 +246,6 @@ RSpec.describe AttributeAsserter do
       end
     end
 
-    context 'verified user and proofing VTR request' do
-      let(:authn_context) { 'C1.C2.P1' }
-      let(:attribute_bundle) { %w[email first_name last_name] }
-      before do
-        user.identities << identity
-        subject.build
-      end
-
-      it 'includes the correct bundle attributes' do
-        expect(user.asserted_attributes.keys).to eq(
-          [:uuid, :email, :first_name, :last_name, :verified_at, :vot],
-        )
-        expect(get_asserted_attribute(user, :first_name)).to eq 'Jåné'
-        expect(get_asserted_attribute(user, :vot)).to eq 'C1.C2.P1'
-      end
-    end
-
     context 'when an IAL1 request is made' do
       before do
         user.identities << identity
@@ -386,18 +369,6 @@ RSpec.describe AttributeAsserter do
               expected = %i[uuid email aal ial x509_subject x509_issuer x509_presented]
               expect(user.asserted_attributes.keys).to eq expected
             end
-          end
-        end
-
-        context 'request made with a VTR param' do
-          let(:options) { { authn_context: 'C1.C2' } }
-          let(:attribute_bundle) { %w[email] }
-
-          it 'includes the correct bundle attributes' do
-            expect(user.asserted_attributes.keys).to eq(
-              [:uuid, :email, :vot],
-            )
-            expect(get_asserted_attribute(user, :vot)).to eq 'C1.C2'
           end
         end
       end
