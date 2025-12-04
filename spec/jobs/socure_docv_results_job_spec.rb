@@ -893,7 +893,36 @@ RSpec.describe SocureDocvResultsJob do
         end
 
         before do
-          allow(aamva_proofer).to receive(:call).and_return(aamva_proofing_result)
+          allow(aamva_proofer).to receive(:call).with(
+            applicant_pii: {
+              address1: '123 Example Street',
+              address2: 'Apt 4',
+              city: 'New York City',
+              dob: '2000-01-01',
+              document_type_received: 'drivers_license',
+              eye_color: nil,
+              first_name: 'Dwayne',
+              height: nil,
+              issuing_country_code: 'USA',
+              last_name: 'Denver',
+              middle_name: nil,
+              name_suffix: nil,
+              sex: nil,
+              state: 'NY',
+              state_id_expiration: '2026-01-01',
+              state_id_issued: '2020-01-01',
+              state_id_jurisdiction: 'NY',
+              state_id_number: '000000000',
+              weight: nil,
+              zipcode: '10001',
+            },
+            current_sp: sp,
+            ipp_enrollment_in_progress: false,
+            state_id_address_resolution_result: nil,
+            timer: an_instance_of(JobHelpers::Timer),
+            doc_auth_flow: true,
+            analytics: fake_analytics,
+          ).and_return(aamva_proofing_result)
         end
 
         context 'when aamva check is successful' do
