@@ -5,7 +5,7 @@ RSpec.describe Aws::SES::Base do
     Mail.new(
       to: 'asdf@example.com',
       cc: 'ghjk@example.com',
-      body: 'asdf1234',
+      body: 'asd f1234',
     )
   end
   let(:ses_response) do
@@ -35,6 +35,7 @@ RSpec.describe Aws::SES::Base do
           data: raw_mail_data,
         },
         configuration_set_name: '',
+        destinations: ['asdf@example.com','ghjk@example.com']
       )
     end
 
@@ -49,6 +50,7 @@ RSpec.describe Aws::SES::Base do
           data: raw_mail_data,
         },
         configuration_set_name: 'abc',
+        destinations: ['asdf@example.com','ghjk@example.com'],
       )
     end
 
@@ -56,5 +58,26 @@ RSpec.describe Aws::SES::Base do
       subject.deliver!(mail)
       expect(mail.header['ses-message-id'].value).to eq('123abc')
     end
+
+    it 'includes BCC recipients in destinations' do
+      allow(IdentityConfig.store).to receive(:ses_configuration_set_name).and_return('')
+
+      mail = Mail.new(
+        to: 'to@example.com',
+        cc: 'cc@example.com',
+        bcc: 'bcc@example.com',
+        body: 'body123',
+      )
+      raw_mail_data = mail.to_s
+      subject.deliver!(mail)
+      expect(ses_client).to have_received(:send_raw_email).with(
+        raw_message: { data: raw_mail_data },
+        configuration_set_name: '',
+        destinations: ['to@example.com', 'cc@example.com', 'bcc@example.com'],
+      )
+    end
+
+
+
   end
 end
