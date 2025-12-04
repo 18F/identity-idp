@@ -358,8 +358,8 @@ class Profile < ApplicationRecord
     end
   end
 
-  def deactivate_due_to_sp_forced_reproofing
-    update!(active: false, deactivation_reason: :sp_forced_reproofing)
+  def deactivated_due_to_sp_forced_reproofing
+    update!(deactivation_reason: :sp_forced_reproofing)
   end
 
   def reject_for_fraud(notify_user:)

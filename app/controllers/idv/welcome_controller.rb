@@ -14,6 +14,8 @@ module Idv
     def show
       analytics.idv_doc_auth_welcome_visited(**analytics_arguments)
 
+      add_deactivation_reason
+
       Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer])
         .call('welcome', :view, true)
 
@@ -80,6 +82,13 @@ module Idv
       UspsInPersonProofing::EnrollmentHelper.cancel_establishing_and_in_progress_enrollments(
         current_user,
       )
+    end
+
+    def add_deactivation_reason
+      if IdentityConfig.store.reproof_forcing_service_provider ==
+         current_sp.agency&.name && needs_reproofing?
+        deactivated_due_to_sp_forced_reproofing
+      end
     end
   end
 end
