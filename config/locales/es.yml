@@ -1602,7 +1602,6 @@ openid_connect.authorization.errors.missing_ial: Falta un nivel válido de IAL
 openid_connect.authorization.errors.no_auth: Los acr_values no están autorizados
 openid_connect.authorization.errors.no_valid_acr_values: No se encontraron ial_values aceptables
 openid_connect.authorization.errors.no_valid_scope: No se encontraron valores de ámbito válidos
-openid_connect.authorization.errors.no_valid_vtr: vots encontrados no aceptables
 openid_connect.authorization.errors.prompt_invalid: No se encontraron valores de consulta válidos
 openid_connect.authorization.errors.redirect_uri_invalid: redirect_uri no es válido
 openid_connect.authorization.errors.redirect_uri_no_match: redirect_uri no coincide con el redirect_uri registrado
