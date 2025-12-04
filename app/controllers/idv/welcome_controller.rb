@@ -83,12 +83,5 @@ module Idv
         current_user,
       )
     end
-
-    def add_deactivation_reason
-      if IdentityConfig.store.reproof_forcing_service_provider ==
-         current_sp.agency&.name && needs_reproofing?
-        deactivated_due_to_sp_forced_reproofing
-      end
-    end
   end
 end

@@ -284,5 +284,11 @@ module OpenidConnect
     def needs_to_reproof?
       current_sp.needs_to_reproof?(current_user.active_profile&.initiating_service_provider)
     end
+
+    def add_deactivation_reason
+      if sp_session[:issuer].present?
+        deactivate_due_to_sp_forced_reproofing
+      end
+    end
   end
 end
