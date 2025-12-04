@@ -174,7 +174,6 @@ module OpenidConnect
         **result.to_h.except(:redirect_uri, :code_digest, :integration_errors).merge(
           user_fully_authenticated: user_fully_authenticated?,
           referer: request.referer,
-          vtr_param: params[:vtr],
           unknown_authn_contexts:,
         ),
       )
@@ -235,7 +234,6 @@ module OpenidConnect
         ial: ial_context.ial,
         billed_ial: ial_context.bill_for_ial_1_or_2,
         sign_in_flow: session[:sign_in_flow],
-        vtr: sp_session[:vtr],
         acr_values: sp_session[:acr_values],
         sign_in_duration_seconds:,
       )
@@ -273,7 +271,7 @@ module OpenidConnect
     end
 
     def unknown_authn_contexts
-      return nil if params[:vtr].present? || params[:acr_values].blank?
+      return nil if params[:acr_values].blank?
 
       (params[:acr_values].split - Saml::Idp::Constants::VALID_AUTHN_CONTEXTS)
         .join(' ').presence
