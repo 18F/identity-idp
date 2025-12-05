@@ -357,72 +357,15 @@ RSpec.describe SamlRequestValidator do
       end
     end
 
-    context 'valid VTR and valid SP' do
+    context 'VTR and valid SP' do
       let(:authn_context) { ['C1'] }
 
       it 'returns FormResponse with success true' do
-        expect(response.to_h).to eq(success: true, **extra)
-      end
-    end
-
-    context 'valid VTR for identity proofing with authorized SP for identity proofing' do
-      let(:authn_context) { ['C1.P1'] }
-
-      before { sp.update!(ial: 2) }
-
-      it 'returns FormResponse with success true' do
-        expect(response.to_h).to eq(success: true, **extra)
-      end
-    end
-
-    context 'valid VTR for identity proofing with unauthorized SP for identity proofing' do
-      let(:authn_context) { ['C1.P1'] }
-
-      before { sp.update!(ial: 1) }
-
-      it 'returns FormResponse with success false' do
         expect(response.to_h).to eq(
           success: false,
-          error_details: { authn_context: { unauthorized_authn_context: true } },
-          **extra,
-        )
-      end
-    end
-
-    context 'multiple VTR for identity proofing with unauthorized SP for identity proofing' do
-      let(:authn_context) { ['C1', 'C1.P1'] }
-
-      before { sp.update!(ial: 1) }
-
-      it 'returns FormResponse with success false' do
-        expect(response.to_h).to eq(
-          success: false,
-          error_details: { authn_context: { unauthorized_authn_context: true } },
-          **extra,
-        )
-      end
-    end
-
-    context 'valid VTR but VTR is disallowed by config' do
-      let(:use_vot_in_sp_requests) { false }
-      let(:authn_context) { ['C1'] }
-
-      it 'returns FormResponse with success false' do
-        expect(response.to_h).to eq(
-          success: false,
-          error_details: { authn_context: { unauthorized_authn_context: true } },
-          **extra,
-        )
-      end
-    end
-
-    context 'unparsable VTR' do
-      let(:authn_context) { ['Fa.Ke.Va.Lu.E0'] }
-
-      it 'returns FormResponse with success false' do
-        expect(response.to_h).to eq(
-          success: false,
-          error_details: { authn_context: { unauthorized_authn_context: true } },
+          error_details: {
+            authn_context: { unauthorized_authn_context: true },
+          },
           **extra,
         )
       end
