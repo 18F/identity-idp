@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe OtpVerificationForm do
-  let(:user) { build_stubbed(:user, :with_phone) }
+  let(:user) { create(:user, :with_phone) }
   let(:code) { nil }
   let(:phone_configuration) { user.phone_configurations.first }
   let(:user_otp) { nil }
@@ -40,7 +40,7 @@ RSpec.describe OtpVerificationForm do
       let(:code) { nil }
       let(:user_otp) { '123456' }
 
-      it 'returns a successful response' do
+      it 'returns an unsuccessful response' do
         expect(result.to_h).to eq(
           success: false,
           error_details: {
@@ -86,7 +86,7 @@ RSpec.describe OtpVerificationForm do
         expect(result.to_h).to eq(
           success: false,
           error_details: {
-            code: { wrong_length: true, incorrect: true },
+            code: { wrong_length: true },
           },
           multi_factor_auth_method_created_at: phone_configuration.created_at.strftime('%s%L'),
         )
@@ -107,7 +107,7 @@ RSpec.describe OtpVerificationForm do
         expect(result.to_h).to eq(
           success: false,
           error_details: {
-            code: { pattern_mismatch: true, incorrect: true },
+            code: { pattern_mismatch: true },
           },
           multi_factor_auth_method_created_at: phone_configuration.created_at.strftime('%s%L'),
         )
