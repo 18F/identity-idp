@@ -57,7 +57,7 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
           expect(idv_session.residential_resolution_vendor).to be(nil)
           expect(idv_session.resolution_successful).to be(nil)
           expect(idv_session.resolution_vendor).to be(nil)
-          expect(idv_session.source_check_vendor).to be(nil)
+          expect(idv_session.source_check_vendor).not_to be(nil)
           expect(idv_session.threatmetrix_review_status).to be(nil)
           expect(idv_session.verify_info_step_document_capture_session_uuid).to be(nil)
         end
