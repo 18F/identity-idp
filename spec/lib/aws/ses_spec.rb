@@ -35,7 +35,7 @@ RSpec.describe Aws::SES::Base do
           data: raw_mail_data,
         },
         configuration_set_name: '',
-        destinations: ['asdf@example.com','ghjk@example.com']
+        destinations: ['asdf@example.com', 'ghjk@example.com'],
       )
     end
 
@@ -50,7 +50,7 @@ RSpec.describe Aws::SES::Base do
           data: raw_mail_data,
         },
         configuration_set_name: 'abc',
-        destinations: ['asdf@example.com','ghjk@example.com'],
+        destinations: ['asdf@example.com', 'ghjk@example.com'],
       )
     end
 
@@ -76,8 +76,5 @@ RSpec.describe Aws::SES::Base do
         destinations: ['to@example.com', 'cc@example.com', 'bcc@example.com'],
       )
     end
-
-
-
   end
 end
