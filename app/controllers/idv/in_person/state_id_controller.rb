@@ -96,7 +96,6 @@ module Idv
           end,
           undo_step: ->(idv_session:, user:) do
             idv_session.invalidate_in_person_pii_from_user!
-            idv_session.source_check_vendor = nil
           end,
         )
       end
