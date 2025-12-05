@@ -500,6 +500,7 @@ RSpec.describe Idv::InPerson::StateIdController do
 
           expect(subject.idv_session.ipp_aamva_result).to be_present
           expect(subject.idv_session.ipp_aamva_result['success']).to eq(true)
+          expect(subject.idv_session.source_check_vendor).to be_present
         end
 
         it 'clears the async state' do

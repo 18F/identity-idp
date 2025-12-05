@@ -293,6 +293,7 @@ RSpec.describe Idv::ApiImageUploadForm do
               attempt: 1,
               mrz_status: :not_processed,
               aamva_status: :passed,
+              state_id_vendor: :"state_id:aamva",
             )
           end
         end
@@ -334,6 +335,7 @@ RSpec.describe Idv::ApiImageUploadForm do
               attempt: 1,
               mrz_status: :not_processed,
               aamva_status: :failed,
+              state_id_vendor: nil,
               errors: aamva_doc_auth_response.errors,
             )
           end
@@ -587,6 +589,9 @@ RSpec.describe Idv::ApiImageUploadForm do
             selfie_status: :not_processed,
             errors: {},
             attempt: 1,
+          )
+          expect(document_capture_session.reload.load_result).not_to have_attributes(
+            state_id_vendor: :"state_id:aamva",
           )
         end
 
