@@ -21,6 +21,8 @@ module Idv
         decorated_sp_session:,
         show_sp_reproof_banner: show_sp_reproof_banner?,
       )
+
+      add_deactivation_reason
     end
 
     def update
@@ -80,6 +82,13 @@ module Idv
       UspsInPersonProofing::EnrollmentHelper.cancel_establishing_and_in_progress_enrollments(
         current_user,
       )
+    end
+
+    def add_deactivation_reason
+      if IdentityConfig.store.reproof_forcing_service_provider ==
+         current_sp.agency&.name
+        deactivate_due_to_sp_forced_reproofing
+      end
     end
   end
 end
