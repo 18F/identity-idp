@@ -23,7 +23,7 @@ module FederatedProtocols
     end
 
     def vtr
-      request.vtr
+      nil
     end
 
     def requested_attributes

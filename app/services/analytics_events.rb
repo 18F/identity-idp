@@ -6872,8 +6872,6 @@ module AnalyticsEvents
   # @param [String] client_id
   # @param [String] scope
   # @param [Array] acr_values
-  # @param [Array] vtr
-  # @param [String, nil] vtr_param
   # @param [Boolean] unauthorized_scope
   # @param [Boolean] user_fully_authenticated
   # @param [String] unknown_authn_contexts space separated list of unknown contexts
@@ -6887,8 +6885,6 @@ module AnalyticsEvents
     client_id:,
     scope:,
     acr_values:,
-    vtr:,
-    vtr_param:,
     unauthorized_scope:,
     user_fully_authenticated:,
     error_details: nil,
@@ -6907,8 +6903,6 @@ module AnalyticsEvents
       client_id:,
       scope:,
       acr_values:,
-      vtr:,
-      vtr_param:,
       unauthorized_scope:,
       user_fully_authenticated:,
       unknown_authn_contexts:,
@@ -7965,9 +7959,9 @@ module AnalyticsEvents
     ial:,
     billed_ial:,
     sign_in_flow:,
-    vtr:,
     acr_values:,
     sign_in_duration_seconds:,
+    vtr: nil,
     **extra
   )
     track_event(

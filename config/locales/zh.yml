@@ -1604,7 +1604,6 @@ openid_connect.authorization.errors.missing_ial: 缺失有效的 IAL 级别
 openid_connect.authorization.errors.no_auth: Acr_values 未经授权
 openid_connect.authorization.errors.no_valid_acr_values: 未找到可接受的 acr_values
 openid_connect.authorization.errors.no_valid_scope: 未找到有效的范围值
-openid_connect.authorization.errors.no_valid_vtr: 未找到可接受的vots
 openid_connect.authorization.errors.prompt_invalid: 未找到有效的提示值
 openid_connect.authorization.errors.redirect_uri_invalid: redirect_uri 有误
 openid_connect.authorization.errors.redirect_uri_no_match: redirect_uri 与注册的 redirect_uri 不匹配

@@ -3,7 +3,7 @@
 class AuthnContextResolver
   attr_reader :user, :service_provider, :vtr, :acr_values
 
-  def initialize(user:, service_provider:, vtr:, acr_values:)
+  def initialize(user:, service_provider:, acr_values:, vtr: nil)
     @user = user
     @service_provider = service_provider
     @vtr = vtr
