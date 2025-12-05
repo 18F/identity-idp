@@ -115,11 +115,11 @@ account.items.personal_key: Clave personal
 account.links.delete_account: Eliminar
 account.links.regenerate_personal_key: Restablecer
 account.login.forced_reauthentication_notice_html: '<strong>%{sp_name}</strong> requiere que vuelva a ingresar su correo electrónico y contraseña.'
-account.login.piv_cac: Inicie sesión con su identificación de empleado del gobierno
+account.login.piv_cac: Inicie sesión con su identificación de empleado gubernamental
 account.login.tab_navigation: Pestañas para creación de cuentas
 account.navigation.add_authentication_apps: Agregar aplicaciones de autenticación
 account.navigation.add_email: Agregar dirección de correo electrónico
-account.navigation.add_federal_id: Agregue su identificación de empleado del gobierno.
+account.navigation.add_federal_id: Agregue su identificación de empleado gubernamental.
 account.navigation.add_phone_number: Agregar número de teléfono
 account.navigation.add_platform_authenticator: Agregar desbloqueo facial o táctil
 account.navigation.add_security_key: Agregar clave de seguridad
@@ -1024,18 +1024,18 @@ headings.passwords.confirm_for_personal_key: Introduzca la contraseña y obtenga
 headings.passwords.forgot: '¿Olvidó su contraseña?'
 headings.piv_cac_login.account_not_found: Su tarjeta de empleado del gobierno no está conectada a una cuenta.
 headings.piv_cac_login.add: Use su lector de tarjetas inteligente para configurar su tarjeta de verificación de identidad personal (PIV) o su tarjeta de acceso común (CAC). Puede usar cualquiera de esas dos tarjetas como un método de autenticación de dos factores para iniciar sesión.
-headings.piv_cac_login.new: Inicie sesión con su identificación de empleado del gobierno.
+headings.piv_cac_login.new: Inicie sesión con su identificación de empleado gubernamental.
 headings.piv_cac_login.success: Logró configurar su tarjeta PIV o CAC como un método de autenticación.
 headings.piv_cac_setup.already_associated: La tarjeta PIV o CAC que presentó está asociada con otro usuario.
 headings.piv_cac_setup.new: Use su tarjeta PIV o CAC para proteger su cuenta
-headings.piv_cac.certificate.bad: El certificado de la identificación de empleado del gobierno que seleccionó no es válido.
-headings.piv_cac.certificate.expired: El certificado de la identificación de empleado del gobierno que seleccionó ya venció.
-headings.piv_cac.certificate.invalid: El certificado de la identificación de empleado del gobierno que seleccionó no es válido.
-headings.piv_cac.certificate.none: No podemos detectar un certificado en su tarjeta de identificación de empleado del gobierno.
-headings.piv_cac.certificate.not_auth_cert: Elija un certificado diferente para su tarjeta de identificación de empleado del gobierno.
-headings.piv_cac.certificate.revoked: El certificado de la identificación de empleado del gobierno que seleccionó ha sido revocado de su tarjeta.
-headings.piv_cac.certificate.unverified: El certificado de la identificación de empleado del gobierno que seleccionó no es válido.
-headings.piv_cac.did_not_work: Su identificación de empleado del gobierno no funcionó.
+headings.piv_cac.certificate.bad: El certificado de la identificación de empleado gubernamental que seleccionó no es válido.
+headings.piv_cac.certificate.expired: El certificado de la identificación de empleado gubernamental que seleccionó ya venció.
+headings.piv_cac.certificate.invalid: El certificado de la identificación de empleado gubernamental que seleccionó no es válido.
+headings.piv_cac.certificate.none: No podemos detectar un certificado en su tarjeta de identificación de empleado gubernamental.
+headings.piv_cac.certificate.not_auth_cert: Elija un certificado diferente para su tarjeta de identificación de empleado gubernamental.
+headings.piv_cac.certificate.revoked: El certificado de la identificación de empleado gubernamental que seleccionó ha sido revocado de su tarjeta.
+headings.piv_cac.certificate.unverified: El certificado de la identificación de empleado gubernamental que seleccionó no es válido.
+headings.piv_cac.did_not_work: Su identificación de empleado gubernamental no funcionó.
 headings.piv_cac.token.bad: Error interno.
 headings.piv_cac.token.invalid: El certificado de la tarjeta PIV/CAC que seleccionó no es válido
 headings.piv_cac.token.missing: Error interno.
@@ -1568,7 +1568,7 @@ notices.forgot_password.no_email_sent_explanation_start: '¿No recibió un corre
 notices.forgot_password.resend_email_success: Enviamos otro correo electrónico para restablecer la contraseña.
 notices.password_changed: Cambió su contraseña.
 notices.phone_confirmed: Se agregó un teléfono a su cuenta.
-notices.piv_cac_configured: Agregue su identificación de empleado del gobierno.
+notices.piv_cac_configured: Agregue su identificación de empleado gubernamental.
 notices.privacy.privacy_act_statement: Declaración de privacidad
 notices.privacy.security_and_privacy_practices: Prácticas de seguridad y declaración de privacidad
 notices.resend_confirmation_email.success: Enviamos otro correo electrónico de confirmación.
@@ -1653,7 +1653,7 @@ saml_idp.shared.saml_post_binding.no_js: JavaScript parece estar desactivado en 
 security_check_failed.contact: Contacte con el servicio de asistencia de %{app_name}
 security_check_failed.details: No reconocemos el dispositivo o el navegador desde el que está iniciando sesión.
 security_check_failed.info_p1: 'Utilice el mismo dispositivo y navegador con el que creó su cuenta en %{app_name}.'
-security_check_failed.info_p2_html: Intente <a href="%{piv_cac_url}">iniciar sesión con su identificación de empleado del gobierno</a> si es un empleado del gobierno.
+security_check_failed.info_p2_html: Intente <a href="%{piv_cac_url}">iniciar sesión con su identificación de empleado gubernamental</a> si es un empleado del gobierno.
 security_check_failed.info_p3: Desactive cualquier VPN, bloqueador de anuncios y borre su caché.
 security_check_failed.learn_more: Obtenga más información sobre las comprobaciones de seguridad de %{app_name}
 security_check_failed.title: Falló la comprobación de seguridad
@@ -1749,11 +1749,11 @@ titles.openid_connect.logout: Cierre de sesión de OpenID Connect
 titles.passwords.change: Cambie la contraseña de su cuenta
 titles.passwords.forgot: Restablecer la contraseña
 titles.personal_key: Por si acaso
-titles.piv_cac_login.add: Agregue su identificación de empleado del gobierno
+titles.piv_cac_login.add: Agregue su identificación de empleado gubernamental
 titles.piv_cac_login.new: Use su tarjeta PIV o CAC para iniciar sesión en su cuenta
 titles.piv_cac_setup.new: Use su tarjeta PIV o CAC para proteger su cuenta
-titles.piv_cac_setup.upsell: Agregue su identificación de empleado del gobierno para un inicio de sesión más rápido y más seguro.
-titles.present_piv_cac: Inserte su identificación de empleado del gobierno.
+titles.piv_cac_setup.upsell: Agregue su identificación de empleado gubernamental para un inicio de sesión más rápido y más seguro.
+titles.present_piv_cac: Inserte su identificación de empleado gubernamental.
 titles.present_webauthn: Conecte su clave de seguridad de hardware
 titles.reactivate_account: Reactive su cuenta
 titles.registrations.new: Cree su cuenta
@@ -1862,14 +1862,14 @@ two_factor_authentication.phone_verification.troubleshooting.change_number: Use 
 two_factor_authentication.phone_verification.troubleshooting.code_not_received: No estoy recibiendo el código de un solo uso por mensaje de texto (SMS) ni por llamada telefónica
 two_factor_authentication.phone.delete.failure: No se puede eliminar su teléfono.
 two_factor_authentication.phone.delete.success: Su teléfono fue eliminado.
-two_factor_authentication.piv_cac_header_text: Inserte su identificación de empleado del gobierno
+two_factor_authentication.piv_cac_header_text: Inserte su identificación de empleado gubernamental
 two_factor_authentication.piv_cac_mismatch.2fa_before_add: Debe realizar la autenticación con otro método antes de añadir su tarjeta PIV o CAC.
 two_factor_authentication.piv_cac_mismatch.cta: Autenticar y añadir tarjeta PIV o CAC
 two_factor_authentication.piv_cac_mismatch.delete_account: Eliminar su cuenta
 two_factor_authentication.piv_cac_mismatch.instructions: Haga clic en “Autenticar y añadir tarjeta PIV o CAC” más abajo para autenticar con otro método antes de añadir esta tarjeta PIV o CAC a su cuenta.
 two_factor_authentication.piv_cac_mismatch.instructions_no_other_method: Si se le emitió una nueva tarjeta PIV o CAC, para poder usarla, deberá eliminar su cuenta de %{app_name} y crear una cuenta nueva.
 two_factor_authentication.piv_cac_mismatch.skip: Omitir añadir tarjeta PIV o CAC
-two_factor_authentication.piv_cac_mismatch.title: Esta tarjeta de identificación de empleado del gobierno no está conectada a su cuenta
+two_factor_authentication.piv_cac_mismatch.title: Esta tarjeta de identificación de empleado gubernamental no está conectada a su cuenta
 two_factor_authentication.piv_cac_upsell.add_piv: Agregar tarjeta PIV/CAC
 two_factor_authentication.piv_cac_upsell.choose_other_method: Elegir otros métodos
 two_factor_authentication.piv_cac_upsell.explain: Esto hará que su cuenta sea más segura y no tendrá que ingresar su correo electrónico ni su contraseña cuando inicie sesión.
