@@ -120,6 +120,7 @@ module Idv
 
       if result[:success]
         idv_session.ipp_aamva_result = result
+        idv_session.source_check_vendor = result[:vendor_name]
         redirect_to redirect_url
       else
         # Only check rate limit on failure - successful attempts proceed regardless of count

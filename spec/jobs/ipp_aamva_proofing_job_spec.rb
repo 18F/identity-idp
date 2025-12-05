@@ -22,6 +22,7 @@ RSpec.describe IppAamvaProofingJob, type: :job do
   end
   let(:trace_id) { SecureRandom.hex }
   let(:user_id) { user.id }
+  let(:analytics_spy) { instance_double(Analytics) }
 
   describe '#perform' do
     let(:instance) { IppAamvaProofingJob.new }
@@ -52,6 +53,10 @@ RSpec.describe IppAamvaProofingJob, type: :job do
     end
 
     context 'when AAMVA verification succeeds' do
+      before do
+        allow(Analytics).to receive(:new).and_return(analytics_spy)
+      end
+
       it 'stores a successful result' do
         perform
 
@@ -79,6 +84,7 @@ RSpec.describe IppAamvaProofingJob, type: :job do
             state_id_address_resolution_result: nil,
             ipp_enrollment_in_progress: true,
             doc_auth_flow: true,
+            analytics: analytics_spy,
           ),
         )
 
@@ -131,7 +137,6 @@ RSpec.describe IppAamvaProofingJob, type: :job do
       end
 
       it 'logs timeout analytics event and notifies NewRelic' do
-        analytics_spy = instance_double(Analytics)
         allow(Analytics).to receive(:new).and_return(analytics_spy)
         expect(analytics_spy).to receive(:idv_ipp_aamva_timeout).with(
           exception_class: 'Proofing::TimeoutError',
@@ -171,7 +176,6 @@ RSpec.describe IppAamvaProofingJob, type: :job do
       end
 
       it 'logs exception analytics event and notifies NewRelic' do
-        analytics_spy = instance_double(Analytics)
         allow(Analytics).to receive(:new).and_return(analytics_spy)
         expect(analytics_spy).to receive(:idv_ipp_aamva_exception).with(
           exception_class: 'Proofing::Aamva::VerificationError',

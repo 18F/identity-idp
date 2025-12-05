@@ -114,6 +114,7 @@ module Idv
             idv_session.socure_docv_wait_polling_started_at = nil
             idv_session.invalidate_in_person_pii_from_user!
             idv_session.doc_auth_vendor = nil
+            idv_session.source_check_vendor = nil
           end,
         )
       end

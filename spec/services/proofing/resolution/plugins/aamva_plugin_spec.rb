@@ -440,6 +440,7 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
                   supported_jurisdiction: true,
                   jurisdiction_in_maintenance_window:
                     proofer_result_hash[:jurisdiction_in_maintenance_window],
+                  ipp_enrollment_in_progress: true,
                   birth_year: applicant_pii[:dob].to_date.year,
                   state: applicant_pii[:state],
                   state_id_jurisdiction: applicant_pii[:state_id_jurisdiction],
@@ -522,6 +523,7 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
                   supported_jurisdiction: true,
                   jurisdiction_in_maintenance_window:
                     proofer_result_hash[:jurisdiction_in_maintenance_window],
+                  ipp_enrollment_in_progress: true,
                   birth_year: applicant_pii[:dob].to_date.year,
                   state: applicant_pii[:state],
                   state_id_jurisdiction: applicant_pii[:state_id_jurisdiction],
@@ -570,6 +572,7 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
                   supported_jurisdiction: true,
                   jurisdiction_in_maintenance_window:
                     proofer_result_hash[:jurisdiction_in_maintenance_window],
+                  ipp_enrollment_in_progress: true,
                   birth_year: applicant_pii[:dob].to_date.year,
                   state: applicant_pii[:state],
                   state_id_jurisdiction: applicant_pii[:state_id_jurisdiction],
@@ -628,6 +631,7 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
                   supported_jurisdiction: true,
                   jurisdiction_in_maintenance_window:
                     proofer_result_hash[:jurisdiction_in_maintenance_window],
+                  ipp_enrollment_in_progress: false,
                   birth_year: applicant_pii[:dob].to_date.year,
                   state: applicant_pii[:state],
                   state_id_jurisdiction: applicant_pii[:state_id_jurisdiction],
@@ -710,6 +714,7 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
                   supported_jurisdiction: true,
                   jurisdiction_in_maintenance_window:
                     proofer_result_hash[:jurisdiction_in_maintenance_window],
+                  ipp_enrollment_in_progress: false,
                   birth_year: applicant_pii[:dob].to_date.year,
                   state: applicant_pii[:state],
                   state_id_jurisdiction: applicant_pii[:state_id_jurisdiction],
@@ -758,6 +763,7 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
                   supported_jurisdiction: true,
                   jurisdiction_in_maintenance_window:
                     proofer_result_hash[:jurisdiction_in_maintenance_window],
+                  ipp_enrollment_in_progress: false,
                   birth_year: applicant_pii[:dob].to_date.year,
                   state: applicant_pii[:state],
                   state_id_jurisdiction: applicant_pii[:state_id_jurisdiction],
@@ -807,6 +813,7 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
               supported_jurisdiction: false,
               jurisdiction_in_maintenance_window:
                 proofer_result_hash[:jurisdiction_in_maintenance_window],
+              ipp_enrollment_in_progress: false,
               birth_year: applicant_pii[:dob].to_date.year,
               state: applicant_pii[:state],
               state_id_jurisdiction: applicant_pii[:state_id_jurisdiction],

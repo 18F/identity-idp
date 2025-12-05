@@ -488,7 +488,7 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
           visit idv_socure_document_capture_update_path
           expect(page).to have_current_path(idv_ssn_url)
 
-          expect(DocAuthLog.find_by(user_id: user.id).state).to eq('NY')
+          expect(DocAuthLog.find_by(user_id: user.id).state).to eq('MD')
           expect(fake_analytics).to have_logged_event(
             :idv_socure_document_request_submitted,
           )
