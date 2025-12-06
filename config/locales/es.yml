@@ -119,7 +119,7 @@ account.login.piv_cac: Inicie sesión con su identificación de empleado guberna
 account.login.tab_navigation: Pestañas para creación de cuentas
 account.navigation.add_authentication_apps: Agregar aplicaciones de autenticación
 account.navigation.add_email: Agregar dirección de correo electrónico
-account.navigation.add_federal_id: Agregue su identificación de empleado gubernamental.
+account.navigation.add_federal_id: Agregue su identificación de empleado gubernamental
 account.navigation.add_phone_number: Agregar número de teléfono
 account.navigation.add_platform_authenticator: Agregar desbloqueo facial o táctil
 account.navigation.add_security_key: Agregar clave de seguridad
