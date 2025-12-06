@@ -33,9 +33,7 @@ class ReportMailer < ActionMailer::Base
   #   each table can have a first "row" that is a hash with options
   def tables_report(
     email:,
-    subject:,
-    reports:,
-    attachment_format:,
+    subject:, reports:, attachment_format:, bcc: nil,
     message: nil,
     env: Identity::Hostdata.env || 'local'
   )
@@ -74,6 +72,6 @@ class ReportMailer < ActionMailer::Base
       raise ArgumentError, "unknown attachment_format=#{attachment_format}"
     end
 
-    mail(to: email, subject: "[#{env}] #{subject}")
+    mail(to: email, bcc: bcc, subject: "[#{env}] #{subject}")
   end
 end

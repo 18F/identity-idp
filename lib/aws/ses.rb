@@ -19,10 +19,13 @@ module Aws
       def initialize(*); end
 
       def deliver(mail)
+        destinations = Array(mail.to) + Array(mail.cc) + Array(mail.bcc)
+
         response = SES_CLIENT_POOL.with do |client|
           client.send_raw_email(
             raw_message: { data: mail.to_s },
             configuration_set_name: IdentityConfig.store.ses_configuration_set_name,
+            destinations: destinations, # include BCC recipients
           )
         end
 
