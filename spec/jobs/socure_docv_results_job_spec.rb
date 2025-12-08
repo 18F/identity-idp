@@ -8,7 +8,7 @@ RSpec.describe SocureDocvResultsJob do
   let(:fake_analytics) { FakeAnalytics.new }
   let(:attempts_api_tracker) { AttemptsApiTrackingHelper::FakeAttemptsTracker.new }
   let(:fraud_opt_tracker) { AttemptsApiTrackingHelper::FakeAttemptsTracker.new }
-  let(:sp) { create(:service_provider) }
+  let(:sp) { create(:service_provider, app_id: 'Test123') }
   let(:socure_docv_transaction_token) { 'abcd' }
   let(:document_capture_session) { DocumentCaptureSession.create(user:) }
   let(:document_capture_session_uuid) { document_capture_session.uuid }
@@ -915,6 +915,8 @@ RSpec.describe SocureDocvResultsJob do
               state_id_number: '000000000',
               weight: nil,
               zipcode: '10001',
+              uuid: document_capture_session.user.uuid,
+              uuid_prefix: sp.app_id,
             },
             current_sp: sp,
             ipp_enrollment_in_progress: false,
