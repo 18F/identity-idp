@@ -64,7 +64,8 @@ RSpec.describe Reports::IrsMonthlyCredMetricsReport do
 
     it 'sends out a report to team_data and PARTNER' do
       expect(ReportMailer).to receive(:tables_report).once.with(
-        email: ['mock_internal@example.com', 'mock_partner@example.com'],
+        email: ['mock_partner@example.com'],
+        bcc: ['mock_internal@example.com'],
         subject: 'IRS Monthly Credential Metrics - 2021-02-28',
         reports: anything,
         message: report.preamble,
@@ -82,6 +83,7 @@ RSpec.describe Reports::IrsMonthlyCredMetricsReport do
     it 'sends out a report to team data' do
       expect(ReportMailer).to receive(:tables_report).once.with(
         email: ['mock_internal@example.com'],
+        bcc: [],
         subject: 'IRS Monthly Credential Metrics - 2021-03-14',
         reports: anything,
         message: report.preamble,

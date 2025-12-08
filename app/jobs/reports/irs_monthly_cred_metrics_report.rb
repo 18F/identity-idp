@@ -33,9 +33,14 @@ module Reports
     def email_addresses
       internal_emails = [*IdentityConfig.store.team_daily_reports_emails]
       irs_emails = [*IdentityConfig.store.irs_credentials_emails]
+
       case report_receiver
-      when :internal then internal_emails
-      when :both then (internal_emails + irs_emails)
+      when :internal
+        { to: internal_emails, bcc: [] }
+      when :both
+        { to: irs_emails, bcc: internal_emails }
+      else
+        { to: [], bcc: [] }
       end
     end
 
@@ -93,14 +98,18 @@ module Reports
         )
       end
 
-      emails = email_addresses.select(&:present?)
-      if emails.empty?
-        Rails.logger.warn 'No email addresses received - IRS Monthly Credential Report NOT SENT'
+      emails = email_addresses
+      to_emails = emails[:to].select(&:present?)
+      bcc_emails = emails[:bcc].select(&:present?)
+
+      if to_emails.empty?
+        Rails.logger.warn 'No To email addresses received - IRS Monthly Credential Report NOT SENT'
         return false
       end
 
       ReportMailer.tables_report(
-        email: email_addresses,
+        email: to_emails,
+        bcc: bcc_emails,
         subject: "IRS Monthly Credential Metrics - #{perform_date.to_date}",
         message: preamble,
         reports: reports,

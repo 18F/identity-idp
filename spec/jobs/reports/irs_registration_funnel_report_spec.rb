@@ -66,7 +66,8 @@ RSpec.describe Reports::IrsRegistrationFunnelReport do
 
   it 'sends out a report to just to team data' do
     expect(ReportMailer).to receive(:tables_report).once.with(
-      email: anything,
+      email: ['mock_internal@example.com'],
+      bcc: [],
       subject: 'IRS Registration Funnel Report - 2021-03-02',
       reports: anything,
       message: report.preamble,
@@ -103,7 +104,8 @@ RSpec.describe Reports::IrsRegistrationFunnelReport do
     subject(:report) { described_class.new(report_date, :both) }
     it 'sends out a report to just to team data and partner' do
       expect(ReportMailer).to receive(:tables_report).once.with(
-        email: ['mock_internal@example.com', 'mock_partner@example.com'],
+        email: ['mock_partner@example.com'],
+        bcc: ['mock_internal@example.com'],
         subject: 'IRS Registration Funnel Report - 2025-10-19',
         reports: anything,
         message: report.preamble,

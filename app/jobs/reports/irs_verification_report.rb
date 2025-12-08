@@ -19,9 +19,12 @@ module Reports
       @report_date = perform_date
       @report_receiver = perform_receiver.to_sym
 
-      email_addresses = emails.select(&:present?)
-      if email_addresses.empty?
-        Rails.logger.warn 'No email addresses received - IRS Verification Report NOT SENT'
+      email_addresses = emails
+      to_emails = email_addresses[:to].select(&:present?)
+      bcc_emails = email_addresses[:bcc].select(&:present?)
+
+      if to_emails.empty?
+        Rails.logger.warn 'No To email addresses received - IRS Verification Report NOT SENT'
         return false
       end
 
@@ -30,7 +33,8 @@ module Reports
       end
 
       ReportMailer.tables_report(
-        email: email_addresses,
+        email: to_emails,
+        bcc: bcc_emails,
         subject: "IRS Verification Report - #{report_date.to_date}",
         reports: reports,
         message: preamble,
@@ -77,8 +81,12 @@ module Reports
       irs_emails = [*IdentityConfig.store.irs_verification_report_config]
 
       case report_receiver
-      when :internal then internal_emails
-      when :both then (internal_emails + irs_emails)
+      when :internal
+        { to: internal_emails, bcc: [] }
+      when :both
+        { to: irs_emails, bcc: internal_emails }
+      else
+        { to: [], bcc: [] }
       end
     end
 
