@@ -93,7 +93,7 @@ module Reports
         return { to: internal_emails, bcc: [] }
       end
 
-      # Case 2: receiver = both AND IRS emails exist 
+      # Case 2: receiver = both AND IRS emails exist
       if report_receiver == :both
         return { to: irs_emails, bcc: internal_emails }
       end
