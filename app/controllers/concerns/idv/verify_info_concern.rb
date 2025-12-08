@@ -505,7 +505,8 @@ module Idv
       IdentityConfig.store.idv_aamva_at_doc_auth_enabled &&
         !ipp_enrollment_in_progress? &&
         (idv_session.source_check_vendor == 'aamva:state_id' ||
-          idv_session.source_check_vendor == 'aamva')
+          idv_session.source_check_vendor == 'aamva' ||
+          idv_session.source_check_vendor == 'StateIdMock')
     end
 
     VerificationFailures = Struct.new(
