@@ -12,7 +12,7 @@ en:
       Don't want to delete your account? Sign in to your %{app_name} account to cancel.
     authentication_otp:
       sms: |-
-        %{app_name}: Your one-time code is %{code}. It expires in %{expiration} minutes. Don't share this code with anyone.
+        %{app_name} will NEVER contact you for this code. Don't share it with anyone. Your code is %{code}. It expires in %{expiration} minutes.
 
         @%{domain} #%{code}
       voice: Hello! Your 6-%{format_type} %{app_name} one-time code is, %{code}. Your one-time code is, %{code}. Again, your one-time code is %{code}. This code expires in %{expiration} minutes.
