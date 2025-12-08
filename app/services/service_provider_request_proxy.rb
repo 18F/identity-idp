@@ -39,7 +39,6 @@ class ServiceProviderRequestProxy
       url: nil,
       requested_attributes: nil,
       acr_values: nil,
-      vtr: nil,
     )
 
     yield(spr)
@@ -49,7 +48,6 @@ class ServiceProviderRequestProxy
       url: spr.url,
       requested_attributes: spr.requested_attributes,
       acr_values: spr.acr_values,
-      vtr: spr.vtr,
     )
   end
 
@@ -59,7 +57,6 @@ class ServiceProviderRequestProxy
       :issuer,
       :url,
       :requested_attributes,
-      :vtr,
       :acr_values,
     )
     write(obj, uuid)
