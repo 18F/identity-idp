@@ -178,16 +178,9 @@ class InPersonEnrollment < ApplicationRecord
   def days_to_expire
     if enhanced_ipp?
       IdentityConfig.store.in_person_eipp_enrollment_validity_in_days.days
-    elsif use_legacy_validity?
-      IdentityConfig.store.in_person_enrollment_validity_in_days_legacy.days
     else
       IdentityConfig.store.in_person_enrollment_validity_in_days.days
     end
-  end
-
-  def use_legacy_validity?
-    enrollment_established_at.present? &&
-      enrollment_established_at < IdentityConfig.store.in_person_enrollment_validity_cutoff_date
   end
 
   def on_notification_sent_at_updated
