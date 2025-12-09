@@ -64,6 +64,63 @@ RSpec.describe Reports::IrsRegistrationFunnelReport do
       .and_return(mock_funnel_metrics_data)
   end
 
+  context 'recipient is both but IRS emails are empty' do
+    let(:report_receiver) { :both }
+    let(:report_date) { Date.new(2025, 10, 20).prev_day } # 2025-10-19
+    subject(:report) { described_class.new(report_date, report_receiver) }
+
+    before do
+      allow(IdentityConfig.store).to receive(:irs_registration_funnel_emails)
+        .and_return([]) # no external emails
+      allow(IdentityConfig.store).to receive(:team_daily_reports_emails)
+        .and_return(mock_reports_internal_emails)
+    end
+
+    it 'logs a warning and sends the report only to internal emails' do
+      expect(Rails.logger).to receive(:warn).with(
+        'IRS Registration Funnel Report: recipient is :both but no external email specified',
+      )
+
+      expect(ReportMailer).to receive(:tables_report).once.with(
+        email: mock_reports_internal_emails,
+        bcc: [],
+        subject: 'IRS Registration Funnel Report - 2025-10-19',
+        reports: anything,
+        message: report.preamble,
+        attachment_format: :csv,
+      ).and_call_original
+
+      report.perform(report_date, :both)
+    end
+  end
+
+  context 'recipient is internal but internal emails are empty' do
+    let(:report_receiver) { :internal }
+    let(:report_date) { Date.new(2021, 3, 2).in_time_zone('UTC').end_of_day }
+    subject(:report) { described_class.new(report_date, report_receiver) }
+
+    before do
+      allow(IdentityConfig.store).to receive(:team_daily_reports_emails)
+        .and_return([]) # no internal emails
+      allow(IdentityConfig.store).to receive(:irs_registration_funnel_emails)
+        .and_return(mock_reports_irs_emails)
+    end
+
+    it 'logs a warning and does not send the report' do
+      expect(Rails.logger).to receive(:warn).with(
+        'No email addresses received - IRS Registration Funnel Report NOT SENT',
+      )
+
+      expect(ReportMailer).not_to receive(:tables_report)
+      expect(report).not_to receive(:reports)
+
+      report.perform(report_date, :internal)
+    end
+  end
+
+
+
+
   it 'sends out a report to just to team data' do
     expect(ReportMailer).to receive(:tables_report).once.with(
       email: ['mock_internal@example.com'],

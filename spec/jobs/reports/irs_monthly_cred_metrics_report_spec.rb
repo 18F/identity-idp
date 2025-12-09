@@ -117,6 +117,61 @@ RSpec.describe Reports::IrsMonthlyCredMetricsReport do
     end
   end
 
+  context 'recipient is both but partner emails are empty' do
+    let(:report_receiver) { :both }
+    let(:report_date) { Date.new(2021, 3, 1).prev_day } # 2021-02-28
+    subject(:report) { described_class.new(report_date, report_receiver) }
+
+    before do
+      allow(IdentityConfig.store).to receive(:irs_credentials_emails)
+        .and_return([]) # no external partner emails
+      allow(IdentityConfig.store).to receive(:team_daily_reports_emails)
+        .and_return(mock_reports_internal_emails)
+    end
+
+    it 'logs a warning and sends the report only to internal emails' do
+      expect(Rails.logger).to receive(:warn).with(
+        'IRS Monthly Credential Report: recipient is :both but no external email specified',
+      )
+
+      expect(ReportMailer).to receive(:tables_report).once.with(
+        email: mock_reports_internal_emails,
+        bcc: [],
+        subject: "#{mock_partner.first} Monthly Credential Metrics - #{report_date.to_date}",
+        reports: anything,
+        message: report.preamble,
+        attachment_format: :csv,
+      ).and_call_original
+
+      report.perform(report_date, :both)
+    end
+  end
+
+
+  context 'recipient is internal but internal emails are empty' do
+    let(:report_receiver) { :internal }
+    let(:report_date) { Date.new(2021, 3, 15).prev_day } # 2021-03-14
+    subject(:report) { described_class.new(report_date, report_receiver) }
+
+    before do
+      allow(IdentityConfig.store).to receive(:team_daily_reports_emails)
+        .and_return([]) # no internal emails
+      allow(IdentityConfig.store).to receive(:irs_credentials_emails)
+        .and_return(mock_reports_partner_emails)
+    end
+
+    it 'logs a warning and does not send the report' do
+      expect(Rails.logger).to receive(:warn).with(
+        'No email addresses received - IRS Monthly Credential Report NOT SENT',
+      )
+
+      expect(ReportMailer).not_to receive(:tables_report)
+      expect(report).not_to receive(:reports)
+
+      report.perform(report_date, :internal)
+    end
+  end
+
   it 'does not send the report if no emails are configured' do
     allow(IdentityConfig.store).to receive(:irs_credentials_emails).and_return('')
     allow(IdentityConfig.store).to receive(:team_daily_reports_emails).and_return('')

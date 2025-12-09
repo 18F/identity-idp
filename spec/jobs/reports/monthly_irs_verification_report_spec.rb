@@ -10,7 +10,7 @@ RSpec.describe Reports::MonthlyIrsVerificationReport do
   let(:report_receiver) { :internal }
   let(:report) { described_class.new(report_date, report_receiver) }
   let(:dummy_report_data) { [['Header1', 'Header2'], ['Value1', 'Value2']] }
-  let(:mock_test_irs_demographic_emails) do
+  let(:mock_test_irs_verification_emails) do
     ['mock_feds@example.com', 'mock_contractors@example.com']
   end
   let(:mock_test_internal_emails) { ['mock_internal@example.com'] }
@@ -37,7 +37,7 @@ RSpec.describe Reports::MonthlyIrsVerificationReport do
     travel_to(report_date + 1.day + 10.hours)
 
     allow(IdentityConfig.store).to receive(:irs_verification_report_config)
-      .and_return(mock_test_irs_demographic_emails)
+      .and_return(mock_test_irs_verification_emails)
 
     allow(IdentityConfig.store).to receive(:team_daily_reports_emails)
       .and_return(mock_test_internal_emails)
@@ -82,6 +82,60 @@ RSpec.describe Reports::MonthlyIrsVerificationReport do
         message: report.preamble,
         attachment_format: :csv,
       ).and_call_original
+
+      report.perform(report_date, :internal)
+    end
+  end
+
+  context 'recipient is both but IRS emails are empty' do
+    let(:report_receiver) { :both }
+    let(:report_date) { Date.new(2025, 7, 1).prev_day } # 2025-06-30
+    subject(:report) { described_class.new(report_date, report_receiver) }
+
+    before do
+      allow(IdentityConfig.store).to receive(:irs_verification_report_config)
+        .and_return([]) # no external IRS emails
+      allow(IdentityConfig.store).to receive(:team_daily_reports_emails)
+        .and_return(mock_test_internal_emails)
+    end
+
+    it 'logs a warning and sends the report only to internal emails' do
+      expect(Rails.logger).to receive(:warn).with(
+        'IRS Verification Report: recipient is :both but no external email specified',
+      )
+
+      expect(ReportMailer).to receive(:tables_report).once.with(
+        email: ['mock_internal@example.com'],
+        bcc: [],
+        subject: 'Monthly IRS Verification Report - 2025-06-30',
+        reports: anything,
+        message: report.preamble,
+        attachment_format: :csv,
+      ).and_call_original
+
+      report.perform(report_date, :both)
+    end
+  end
+
+  context 'recipient is internal but internal emails are empty' do
+    let(:report_receiver) { :internal }
+    let(:report_date) { Date.new(2021, 3, 2).in_time_zone('UTC').end_of_day }
+    subject(:report) { described_class.new(report_date, report_receiver) }
+
+    before do
+      allow(IdentityConfig.store).to receive(:team_daily_reports_emails)
+        .and_return([]) # no internal emails
+      allow(IdentityConfig.store).to receive(:irs_verification_report_config)
+        .and_return(mock_test_irs_verification_emails)
+    end
+
+    it 'logs a warning and does not send the report' do
+      expect(Rails.logger).to receive(:warn).with(
+        'No email addresses received - IRS Verification Report NOT SENT',
+      )
+
+      expect(ReportMailer).not_to receive(:tables_report)
+      expect(report).not_to receive(:reports)
 
       report.perform(report_date, :internal)
     end

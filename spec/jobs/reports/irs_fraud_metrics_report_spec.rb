@@ -84,6 +84,61 @@ RSpec.describe Reports::IrsFraudMetricsReport do
     end
   end
 
+  context 'recipient is both but IRS emails are empty' do
+    let(:report_receiver) { :both }
+    let(:report_date) { Date.new(2025, 9, 30).in_time_zone('UTC').end_of_day }
+    subject(:report) { described_class.new(report_date, report_receiver) }
+
+    before do
+      allow(IdentityConfig.store).to receive(:irs_fraud_metrics_emails)
+        .and_return([])
+      allow(IdentityConfig.store).to receive(:team_daily_reports_emails)
+        .and_return(mock_test_internal_emails)
+    end
+
+    it 'logs a warning and sends the report to internal only' do
+      expect(Rails.logger).to receive(:warn).with(
+        'IRS Fraud Metrics Report: recipient is :both but no external email specified',
+      )
+
+      expect(ReportMailer).to receive(:tables_report).once.with(
+        email: ['mock_internal@example.com'],
+        bcc: [],
+        subject: 'IRS Fraud Metrics Report - 2025-09-30',
+        reports: anything,
+        message: report.preamble,
+        attachment_format: :csv,
+      ).and_call_original
+
+      report.perform(report_date, :both)
+    end
+  end
+
+  context 'recipient is internal but internal emails are empty' do
+    let(:report_receiver) { :internal }
+    let(:report_date) { Date.new(2025, 9, 30).in_time_zone('UTC').end_of_day }
+    subject(:report) { described_class.new(report_date, report_receiver) }
+
+    before do
+      allow(IdentityConfig.store).to receive(:team_daily_reports_emails)
+        .and_return([])
+      allow(IdentityConfig.store).to receive(:irs_fraud_metrics_emails)
+        .and_return(mock_test_irs_fraud_emails)
+    end
+
+    it 'does not send a report' do
+      # Optional: expect a warning about no email addresses
+      expect(Rails.logger).to receive(:warn).with(
+        'No email addresses received - Fraud Metrics Report NOT SENT',
+      )
+
+      expect(ReportMailer).not_to receive(:tables_report)
+
+      report.perform(report_date, :internal)
+    end
+  end
+
+
   context 'for any day of the month sends out the report to the internal' do
     let(:report_date) { Date.new(2025, 9, 27).prev_day }
     subject(:report) { described_class.new(report_date, :internal) }

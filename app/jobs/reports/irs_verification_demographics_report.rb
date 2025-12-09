@@ -24,7 +24,7 @@ module Reports
       bcc_emails = email_addresses[:bcc].select(&:present?)
 
       if to_emails.empty? && bcc_emails.empty?
-        Rails.logger.warn 'No emails received - Verification Demographics Report NOT SENT'
+        Rails.logger.warn 'No emails received - IRS Verification Demographics Report NOT SENT'
         return false
       end
 
