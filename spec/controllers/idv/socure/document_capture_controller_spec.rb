@@ -78,6 +78,31 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
     it 'returns a valid StepInfo object' do
       expect(described_class.step_info).to be_valid
     end
+
+    describe '#undo_step' do
+      let(:idv_session) do
+        Idv::Session.new(
+          user_session: {},
+          current_user: user,
+          service_provider: nil,
+        ).tap do |idv_session|
+          idv_session.pii_from_doc = { name: 'test' }
+          idv_session.socure_docv_wait_polling_started_at = Time.zone.now
+          idv_session.doc_auth_vendor = 'TrueID'
+          idv_session.source_check_vendor = 'aamva'
+        end
+      end
+
+      it 'resets relevant fields on idv_session to nil' do
+        described_class.step_info.undo_step.call(idv_session:, user:)
+        aggregate_failures do
+          expect(idv_session.pii_from_doc).to be(nil)
+          expect(idv_session.socure_docv_wait_polling_started_at).to be(nil)
+          expect(idv_session.doc_auth_vendor).to be(nil)
+          expect(idv_session.source_check_vendor).to be(nil)
+        end
+      end
+    end
   end
 
   describe 'before_actions' do

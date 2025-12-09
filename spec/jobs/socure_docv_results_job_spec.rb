@@ -8,7 +8,7 @@ RSpec.describe SocureDocvResultsJob do
   let(:fake_analytics) { FakeAnalytics.new }
   let(:attempts_api_tracker) { AttemptsApiTrackingHelper::FakeAttemptsTracker.new }
   let(:fraud_opt_tracker) { AttemptsApiTrackingHelper::FakeAttemptsTracker.new }
-  let(:sp) { create(:service_provider) }
+  let(:sp) { create(:service_provider, app_id: 'Test123') }
   let(:socure_docv_transaction_token) { 'abcd' }
   let(:document_capture_session) { DocumentCaptureSession.create(user:) }
   let(:document_capture_session_uuid) { document_capture_session.uuid }
@@ -893,7 +893,38 @@ RSpec.describe SocureDocvResultsJob do
         end
 
         before do
-          allow(aamva_proofer).to receive(:call).and_return(aamva_proofing_result)
+          allow(aamva_proofer).to receive(:call).with(
+            applicant_pii: {
+              address1: '123 Example Street',
+              address2: 'Apt 4',
+              city: 'New York City',
+              dob: '2000-01-01',
+              document_type_received: 'drivers_license',
+              eye_color: nil,
+              first_name: 'Dwayne',
+              height: nil,
+              issuing_country_code: 'USA',
+              last_name: 'Denver',
+              middle_name: nil,
+              name_suffix: nil,
+              sex: nil,
+              state: 'NY',
+              state_id_expiration: '2026-01-01',
+              state_id_issued: '2020-01-01',
+              state_id_jurisdiction: 'NY',
+              state_id_number: '000000000',
+              weight: nil,
+              zipcode: '10001',
+              uuid: document_capture_session.user.uuid,
+              uuid_prefix: sp.app_id,
+            },
+            current_sp: sp,
+            ipp_enrollment_in_progress: false,
+            state_id_address_resolution_result: nil,
+            timer: an_instance_of(JobHelpers::Timer),
+            doc_auth_flow: true,
+            analytics: fake_analytics,
+          ).and_return(aamva_proofing_result)
         end
 
         context 'when aamva check is successful' do

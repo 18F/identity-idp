@@ -155,6 +155,7 @@ RSpec.describe Idv::LinkSentController do
 
     context 'check results' do
       let(:idv_vendor) { Idp::Constants::Vendors::MOCK }
+      let(:state_id_vendor) { Idp::Constants::Vendors::STATE_ID_MOCK }
       let(:load_result) { double('load result') }
       let(:session_canceled_at) { nil }
       let(:load_result_success) { true }
@@ -166,6 +167,7 @@ RSpec.describe Idv::LinkSentController do
         allow(load_result).to receive(:success?).and_return(load_result_success)
         allow(load_result).to receive(:selfie_check_performed?).and_return(false)
         allow(load_result).to receive(:errors).and_return({ message: 'an error message' })
+        allow(load_result).to receive(:state_id_vendor).and_return(state_id_vendor)
 
         document_capture_session = create(
           :document_capture_session,

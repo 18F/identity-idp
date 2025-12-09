@@ -700,7 +700,7 @@ module Idv
 
     def validate_aamva(pii)
       aamva_proofer.call(
-        applicant_pii: pii,
+        applicant_pii: pii.merge(additional_aamva_attributes),
         current_sp: service_provider,
         state_id_address_resolution_result: nil,
         ipp_enrollment_in_progress: false,
@@ -708,6 +708,13 @@ module Idv
         doc_auth_flow: true,
         analytics:,
       ).to_doc_auth_response
+    end
+
+    def additional_aamva_attributes
+      {
+        uuid: user_uuid,
+        uuid_prefix: service_provider&.app_id,
+      }
     end
   end
 end

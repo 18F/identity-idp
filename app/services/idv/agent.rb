@@ -12,7 +12,8 @@ module Idv
       threatmetrix_session_id:,
       request_ip:,
       ipp_enrollment_in_progress:,
-      proofing_vendor:
+      proofing_vendor:,
+      state_id_already_proofed: false
     )
       document_capture_session.create_proofing_session
 
@@ -30,6 +31,7 @@ module Idv
         request_ip:,
         ipp_enrollment_in_progress:,
         proofing_vendor:,
+        state_id_already_proofed:,
       }
 
       if IdentityConfig.store.ruby_workers_idv_enabled

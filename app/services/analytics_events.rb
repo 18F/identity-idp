@@ -4259,90 +4259,6 @@ module AnalyticsEvents
     )
   end
 
-  # @param [String] exception_class Exception class name
-  # @param [String] exception_message Exception message
-  # @param [String] step Current step in the IPP flow
-  # @param [String, nil] trace_id AWS X-Ray trace ID for request tracing
-  # AAMVA verification exception for IPP user
-  def idv_ipp_aamva_exception(
-    exception_class:,
-    exception_message:,
-    step:,
-    trace_id: nil,
-    **extra
-  )
-    track_event(
-      :idv_ipp_aamva_exception,
-      exception_class: exception_class,
-      exception_message: exception_message,
-      step: step,
-      trace_id: trace_id,
-      **extra,
-    )
-  end
-
-  # IPP AAMVA proofing result is missing from Redis (expired or not found)
-  # @param [Hash] extra Additional event data
-  def idv_ipp_aamva_proofing_result_missing(**extra)
-    track_event(:idv_ipp_aamva_proofing_result_missing, **extra)
-  end
-
-  # @param [String] step Current step in the IPP flow
-  # AAMVA rate limit hit for IPP user
-  def idv_ipp_aamva_rate_limited(
-    step:,
-    **extra
-  )
-    track_event(
-      :idv_ipp_aamva_rate_limited,
-      step: step,
-      **extra,
-    )
-  end
-
-  # @param [String] exception_class Exception class name
-  # @param [String] step Current step in the IPP flow
-  # @param [String, nil] trace_id AWS X-Ray trace ID for request tracing
-  # AAMVA verification timed out for IPP user
-  def idv_ipp_aamva_timeout(
-    exception_class:,
-    step:,
-    trace_id: nil,
-    **extra
-  )
-    track_event(
-      :idv_ipp_aamva_timeout,
-      exception_class: exception_class,
-      step: step,
-      trace_id: trace_id,
-      **extra,
-    )
-  end
-
-  # @param [Boolean] success Whether the AAMVA verification succeeded
-  # @param [String] vendor_name Name of the AAMVA vendor
-  # @param [String] step Current step in the IPP flow
-  # AAMVA verification completed for IPP user
-  def idv_ipp_aamva_verification_completed(
-    success:,
-    vendor_name:,
-    step:,
-    **extra
-  )
-    track_event(
-      :idv_ipp_aamva_verification_completed,
-      success: success,
-      vendor_name: vendor_name,
-      step: step,
-      **extra,
-    )
-  end
-
-  # User visited polling wait page for IPP AAMVA verification
-  def idv_ipp_aamva_verification_polling_wait(**extra)
-    track_event(:idv_ipp_aamva_verification_polling_wait, **extra)
-  end
-
   # @param [String] enrollment_id
   # A fraud user has been deactivated due to not visting the post office before the deadline
   def idv_ipp_deactivated_for_never_visiting_post_office(
@@ -5882,6 +5798,8 @@ module AnalyticsEvents
   # @param [Hash<String,Numeric>] requested_attributes The values sent in the proofing request.
   #   "1" represents that the value was sent.
   # @param [Array[String], nil] verified_attributes The attributes verified during proofing.
+  # @param [Boolean] ipp_enrollment_in_progress Whether the user has entered the in-person proofing
+  #   flow.
   # @param [Boolean] jurisdiction_in_maintenance_window Whether the target state MVA is under
   #   maintenance.
   # @param [Boolean] supported_jurisdiction Whether the state ID jurisdiction is supported by AAMVA.
@@ -5899,6 +5817,7 @@ module AnalyticsEvents
     transaction_id:,
     requested_attributes:,
     verified_attributes:,
+    ipp_enrollment_in_progress:,
     jurisdiction_in_maintenance_window:,
     supported_jurisdiction:,
     timed_out:,
@@ -5918,6 +5837,7 @@ module AnalyticsEvents
       transaction_id:,
       requested_attributes:,
       verified_attributes:,
+      ipp_enrollment_in_progress:,
       jurisdiction_in_maintenance_window:,
       supported_jurisdiction:,
       timed_out:,
@@ -6868,8 +6788,6 @@ module AnalyticsEvents
   # @param [String] client_id
   # @param [String] scope
   # @param [Array] acr_values
-  # @param [Array] vtr
-  # @param [String, nil] vtr_param
   # @param [Boolean] unauthorized_scope
   # @param [Boolean] user_fully_authenticated
   # @param [String] unknown_authn_contexts space separated list of unknown contexts
@@ -6883,8 +6801,6 @@ module AnalyticsEvents
     client_id:,
     scope:,
     acr_values:,
-    vtr:,
-    vtr_param:,
     unauthorized_scope:,
     user_fully_authenticated:,
     error_details: nil,
@@ -6903,8 +6819,6 @@ module AnalyticsEvents
       client_id:,
       scope:,
       acr_values:,
-      vtr:,
-      vtr_param:,
       unauthorized_scope:,
       user_fully_authenticated:,
       unknown_authn_contexts:,
@@ -7961,9 +7875,9 @@ module AnalyticsEvents
     ial:,
     billed_ial:,
     sign_in_flow:,
-    vtr:,
     acr_values:,
     sign_in_duration_seconds:,
+    vtr: nil,
     **extra
   )
     track_event(

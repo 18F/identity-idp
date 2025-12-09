@@ -28,6 +28,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
   describe '#proof' do
     let(:applicant_pii) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE.dup }
     let(:ipp_enrollment_in_progress) { false }
+    let(:state_id_already_proofed) { false }
     let(:request_ip) { Faker::Internet.ip_v4_address }
     let(:threatmetrix_session_id) { SecureRandom.uuid }
     let(:current_sp) { build(:service_provider) }
@@ -90,6 +91,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
         timer: JobHelpers::Timer.new,
         current_sp:,
         workflow:,
+        state_id_already_proofed:,
       )
     end
 
@@ -582,12 +584,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
       let(:state_id_address_resolution_result) do
         residential_address_resolution_result
       end
-
-      before do
-        allow(IdentityConfig.store).to receive(
-          :idv_aamva_at_doc_auth_enabled,
-        ).and_return(true)
-      end
+      let(:state_id_already_proofed) { true }
 
       it 'passes already_proofed: true to AamvaPlugin' do
         expect(progressive_proofer.aamva_plugin).to receive(:call).with(

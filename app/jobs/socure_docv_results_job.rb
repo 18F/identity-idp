@@ -310,12 +310,13 @@ class SocureDocvResultsJob < ApplicationJob
   def validate_aamva(doc_pii_response)
     if aamva_enabled? && !passport_requested?
       aamva_proofer.call(
-        applicant_pii: doc_pii_response.pii_from_doc.to_h,
+        applicant_pii: to_aamva_applicant_pii(doc_pii_response.pii_from_doc.to_h),
         current_sp: sp,
         ipp_enrollment_in_progress: false,
         state_id_address_resolution_result: nil,
         timer: JobHelpers::Timer.new,
         doc_auth_flow: true,
+        analytics:,
       ).to_doc_auth_response
     end
   end
@@ -363,5 +364,15 @@ class SocureDocvResultsJob < ApplicationJob
 
   def remaining_submit_attempts
     rate_limiter&.remaining_count
+  end
+
+  def to_aamva_applicant_pii(pii)
+    pii.merge(
+      dob: pii[:dob].iso8601,
+      state_id_expiration: pii[:state_id_expiration].iso8601,
+      state_id_issued: pii[:state_id_issued].iso8601,
+      uuid: user_uuid,
+      uuid_prefix: sp&.app_id,
+    )
   end
 end
