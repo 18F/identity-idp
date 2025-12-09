@@ -23,8 +23,8 @@ module Reports
       to_emails = email_addresses[:to].select(&:present?)
       bcc_emails = email_addresses[:bcc].select(&:present?)
 
-      if to_emails.empty?
-        Rails.logger.warn 'No To email addresses received - IRS Verification Report NOT SENT'
+      if to_emails.empty? && bcc_emails.empty?
+        Rails.logger.warn 'No email addresses received - IRS Verification Report NOT SENT'
         return false
       end
 
@@ -79,6 +79,13 @@ module Reports
     def emails
       internal_emails = [*IdentityConfig.store.team_daily_reports_emails].select(&:present?)
       irs_emails      = [*IdentityConfig.store.irs_verification_report_config].select(&:present?)
+
+      if report_receiver == :both && irs_emails.empty?
+        Rails.logger.warn(
+          'IRS Verification Report: recipient is :both ' \
+          'but no external email specified',
+        )
+      end
 
       if report_receiver == :both && irs_emails.present?
         { to: irs_emails, bcc: internal_emails }
