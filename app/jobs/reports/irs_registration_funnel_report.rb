@@ -88,17 +88,14 @@ module Reports
       internal_emails = [*IdentityConfig.store.team_daily_reports_emails].select(&:present?)
       irs_emails      = [*IdentityConfig.store.irs_registration_funnel_emails].select(&:present?)
 
-      # Case 1: internal-only OR IRS list is empty - send internal only
       if report_receiver == :internal || irs_emails.empty?
         return { to: internal_emails, bcc: [] }
       end
 
-      # Case 2: receiver = both AND IRS emails exist
       if report_receiver == :both
         return { to: irs_emails, bcc: internal_emails }
       end
 
-      # fallback
       { to: [], bcc: [] }
     end
 
