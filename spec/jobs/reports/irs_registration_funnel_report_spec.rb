@@ -118,9 +118,6 @@ RSpec.describe Reports::IrsRegistrationFunnelReport do
     end
   end
 
-
-
-
   it 'sends out a report to just to team data' do
     expect(ReportMailer).to receive(:tables_report).once.with(
       email: ['mock_internal@example.com'],

@@ -138,7 +138,6 @@ RSpec.describe Reports::IrsFraudMetricsReport do
     end
   end
 
-
   context 'for any day of the month sends out the report to the internal' do
     let(:report_date) { Date.new(2025, 9, 27).prev_day }
     subject(:report) { described_class.new(report_date, :internal) }

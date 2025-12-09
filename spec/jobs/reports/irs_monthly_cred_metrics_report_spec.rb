@@ -147,7 +147,6 @@ RSpec.describe Reports::IrsMonthlyCredMetricsReport do
     end
   end
 
-
   context 'recipient is internal but internal emails are empty' do
     let(:report_receiver) { :internal }
     let(:report_date) { Date.new(2021, 3, 15).prev_day } # 2021-03-14
