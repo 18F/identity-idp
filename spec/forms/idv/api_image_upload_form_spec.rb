@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe Idv::ApiImageUploadForm do
   include DocPiiHelper
-  let(:service_provider) { create(:service_provider) }
+  let(:service_provider) { create(:service_provider, app_id: 'TestingApp') }
 
   subject(:form) do
     Idv::ApiImageUploadForm.new(
@@ -241,6 +241,15 @@ RSpec.describe Idv::ApiImageUploadForm do
       end
 
       context 'when state_id is submitted' do
+        let(:pii) { Idp::Constants::MOCK_IDV_APPLICANT }
+        let(:applicant_pii) do
+          pii.merge(
+            uuid: document_capture_session.user.uuid,
+            uuid_prefix: service_provider.app_id,
+          )
+        end
+        let(:document_capture_session_result) { document_capture_session.reload.load_result }
+
         subject(:form) do
           Idv::ApiImageUploadForm.new(
             ActionController::Parameters.new(
@@ -262,8 +271,6 @@ RSpec.describe Idv::ApiImageUploadForm do
         end
 
         context 'when all checks are successful' do
-          let(:pii) { Idp::Constants::MOCK_IDV_APPLICANT }
-          let(:document_capture_session_result) { document_capture_session.reload.load_result }
           let(:aamva_result) do
             Proofing::StateIdResult.new(
               success: true,
@@ -273,7 +280,7 @@ RSpec.describe Idv::ApiImageUploadForm do
 
           before do
             allow(aamva_proofer).to receive(:call).with(
-              applicant_pii: pii,
+              applicant_pii:,
               current_sp: service_provider,
               state_id_address_resolution_result: nil,
               ipp_enrollment_in_progress: false,
@@ -299,8 +306,6 @@ RSpec.describe Idv::ApiImageUploadForm do
         end
 
         context 'when the aamva check is unsuccessful' do
-          let(:pii) { Idp::Constants::MOCK_IDV_APPLICANT }
-          let(:document_capture_session_result) { document_capture_session.reload.load_result }
           let(:aamva_state_id_result) { instance_double(Proofing::StateIdResult) }
           let(:aamva_doc_auth_response) do
             DocAuth::Response.new(
@@ -311,7 +316,7 @@ RSpec.describe Idv::ApiImageUploadForm do
 
           before do
             allow(aamva_proofer).to receive(:call).with(
-              applicant_pii: pii,
+              applicant_pii:,
               current_sp: service_provider,
               state_id_address_resolution_result: nil,
               ipp_enrollment_in_progress: false,

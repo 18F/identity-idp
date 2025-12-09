@@ -536,7 +536,7 @@ development:
   aamva_public_key: 123abc
   account_creation_device_profiling: collect_only
   account_creation_tmx_processed_percent: 100
-  attribute_encryption_key: 2086dfbd15f5b0c584f3664422a1d3409a0d2aa6084f65b6ba57d64d4257431c124158670c7655e45cabe64194f7f7b6c7970153c285bdb8287ec0c4f7553e25
+  attribute_encryption_key: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
   attribute_encryption_key_queue: '[{ "key": "11111111111111111111111111111111" }, { "key": "22222222222222222222222222222222" }]'
   check_user_password_compromised_enabled: true
   component_previews_embed_frame_ancestors: '["http://localhost:4000"]'
@@ -549,7 +549,7 @@ development:
   doc_auth_selfie_desktop_test_mode: true
   domain_name: localhost:3000
   enable_rate_limiting: false
-  hmac_fingerprinter_key: a2c813d4dca919340866ba58063e4072adc459b767a74cf2666d5c1eef3861db26708e7437abde1755eb24f4034386b0fea1850a1cb7e56bff8fae3cc6ade96c
+  hmac_fingerprinter_key: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
   hmac_fingerprinter_key_queue: '["11111111111111111111111111111111", "22222222222222222222222222222222"]'
   identity_pki_local_dev: true
   identity_verification_outcomes_report_emails: '["g@example.com", "h@example.com"]'
@@ -562,9 +562,9 @@ development:
   in_person_send_proofing_notifications_enabled: true
   logins_per_ip_limit: 5
   logo_upload_enabled: true
-  password_pepper: f22d4b2cafac9066fe2f4416f5b7a32c
+  password_pepper: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
   phone_recaptcha_score_threshold: 0.5
-  piv_cac_verify_token_secret: ee7f20f44cdc2ba0c6830f70470d1d1d059e1279cdb58134db92b35947b1528ef5525ece5910cf4f2321ab989a618feea12ef95711dbc62b9601e8520a34ee12
+  piv_cac_verify_token_secret: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
   push_notifications_enabled: true
   rack_timeout_service_timeout_seconds: 9_999_999_999
   rails_mailer_previews_enabled: true
@@ -575,7 +575,7 @@ development:
   s3_report_public_bucket_prefix: ''
   saml_endpoint_configs: '[{"suffix":"2024","secret_key_passphrase":"trust-but-verify"},{"suffix":"2025","secret_key_passphrase":"trust-but-verify"}]'
   secret_key_base: development_secret_key_base
-  session_encryption_key: 27bad3c25711099429c1afdfd1890910f3b59f5a4faec1c85e945cb8b02b02f261ba501d99cfbb4fab394e0102de6fecf8ffe260f322f610db3e96b2a775c120
+  session_encryption_key: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
   sign_in_recaptcha_annotation_enabled: true
   sign_in_recaptcha_percent_tested: 100
   sign_in_recaptcha_score_threshold: 0.3
@@ -629,7 +629,7 @@ test:
   aamva_private_key: 123abc
   aamva_public_key: 123abc
   account_reset_fraud_user_wait_period_days: 30
-  attribute_encryption_key: 2086dfbd15f5b0c584f3664422a1d3409a0d2aa6084f65b6ba57d64d4257431c124158670c7655e45cabe64194f7f7b6c7970153c285bdb8287ec0c4f7553e25
+  attribute_encryption_key: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
   attribute_encryption_key_queue: '[{ "key": "11111111111111111111111111111111" }, { "key": "22222222222222222222222222222222" }]'
   dashboard_api_token: 123ABC
   doc_auth_max_attempts: 4
@@ -639,7 +639,7 @@ test:
   dos_passport_composite_healthcheck_endpoint: 'https://dos-passport-api.test/composite-healthcheck/'
   email_registrations_per_ip_limit: 3
   fraud_ops_public_key: 123abc
-  hmac_fingerprinter_key: a2c813d4dca919340866ba58063e4072adc459b767a74cf2666d5c1eef3861db26708e7437abde1755eb24f4034386b0fea1850a1cb7e56bff8fae3cc6ade96c
+  hmac_fingerprinter_key: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
   hmac_fingerprinter_key_queue: '["old-key-one", "old-key-two"]'
   identity_pki_disabled: true
   identity_verification_outcomes_report_emails: '["g@example.com", "h@example.com"]'
@@ -661,12 +661,12 @@ test:
   otps_per_ip_limit: 3
   otps_per_ip_period: 10
   otps_per_ip_track_only_mode: false
-  password_pepper: f22d4b2cafac9066fe2f4416f5b7a32c
+  password_pepper: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
   phone_confirmation_max_attempt_window_in_minutes: 10
   phone_confirmation_max_attempts: 5
   phone_setups_per_ip_limit: 3
   phone_setups_per_ip_period: 10
-  piv_cac_verify_token_secret: 3ac13bfa23e22adae321194c083e783faf89469f6f85dcc0802b27475c94b5c3891b5657bd87d0c1ad65de459166440512f2311018db90d57b15d8ab6660748f
+  piv_cac_verify_token_secret: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
   poll_rate_for_verify_in_seconds: 0
   raise_on_missing_title: true
   reg_confirmed_email_max_attempts: 3
@@ -683,7 +683,7 @@ test:
   saml_endpoint_configs: '[{"suffix":"2025","secret_key_passphrase":"trust-but-verify"},{"suffix":"2024","secret_key_passphrase":"trust-but-verify","comment":"this extra year is needed to demonstrate how handling multiple live years works in spec/requests/saml_requests_spec.rb"}]'
   scrypt_cost: 800$8$1$
   secret_key_base: test_secret_key_base
-  session_encryption_key: 27bad3c25711099429c1afdfd1890910f3b59f5a4faec1c85e945cb8b02b02f261ba501d99cfbb4fab394e0102de6fecf8ffe260f322f610db3e96b2a775c120
+  session_encryption_key: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
   short_term_phone_otp_max_attempts: 100
   sign_in_recaptcha_annotation_enabled: true
   skip_encryption_allowed_list: '[]'

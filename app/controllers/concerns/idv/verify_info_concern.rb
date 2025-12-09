@@ -42,7 +42,7 @@ module Idv
         request_ip: request.remote_ip,
         ipp_enrollment_in_progress: ipp_enrollment_in_progress?,
         proofing_vendor:,
-        state_id_already_proofed: idv_session.source_check_vendor.present?,
+        state_id_already_proofed: source_check_vendor_aamva?,
       )
 
       return true
@@ -499,6 +499,14 @@ module Idv
           { **value.slice(:vendor_name, :exception, :jurisdiction_in_maintenance_window) }
         end
       end.compact.presence
+    end
+
+    def source_check_vendor_aamva?
+      IdentityConfig.store.idv_aamva_at_doc_auth_enabled &&
+        !ipp_enrollment_in_progress? &&
+        (idv_session.source_check_vendor == 'aamva:state_id' ||
+          idv_session.source_check_vendor == 'aamva' ||
+          idv_session.source_check_vendor == 'StateIdMock')
     end
 
     VerificationFailures = Struct.new(

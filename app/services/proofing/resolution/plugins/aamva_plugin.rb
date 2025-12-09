@@ -170,6 +170,7 @@ module Proofing
         def log_state_id_validation(analytics, result, applicant_pii, ipp_enrollment_in_progress)
           analytics&.idv_state_id_validation(
             **result,
+            user_id: applicant_pii[:uuid],
             ipp_enrollment_in_progress:,
             supported_jurisdiction: aamva_supports_state_id_jurisdiction?(applicant_pii),
             **biographical_info(applicant_pii),
