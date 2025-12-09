@@ -87,9 +87,9 @@ RSpec.describe Reports::IrsMonthlyCredMetricsReport do
 
     it 'sends out a report to team_data and PARTNER' do
       expect(ReportMailer).to receive(:tables_report).once.with(
-        email: ['mock_partner@example.com'],
-        bcc: ['mock_internal@example.com'],
-        subject: 'IRS Monthly Credential Metrics - 2021-02-28',
+        email: mock_reports_partner_emails,
+        bcc: mock_reports_internal_emails,
+        subject: "#{mock_partner.first} Monthly Credential Metrics - #{report_date.to_date}",
         reports: anything,
         message: report.preamble,
         attachment_format: :csv,
@@ -105,9 +105,9 @@ RSpec.describe Reports::IrsMonthlyCredMetricsReport do
 
     it 'sends out a report to internal receivers' do
       expect(ReportMailer).to receive(:tables_report).once.with(
-        email: ['mock_internal@example.com'],
+        email: mock_reports_internal_emails,
         bcc: [],
-        subject: 'IRS Monthly Credential Metrics - 2021-03-14',
+        subject: "#{mock_partner.first} Monthly Credential Metrics - #{report_date}",
         reports: anything,
         message: report.preamble,
         attachment_format: :csv,
