@@ -123,6 +123,7 @@ COPY --chown=app:app pwned_passwords/pwned_passwords.txt.sample $RAILS_ROOT/pwne
 COPY --chown=app:app public/ban-robots.txt $RAILS_ROOT/public/robots.txt
 
 # Copy application.yml.default to application.yml
+# This is actually overridden in k8s-land, so we probably don't even need this.
 COPY --chown=app:app ./config/application.yml.default $RAILS_ROOT/config/application.yml
 
 # Setup config files
