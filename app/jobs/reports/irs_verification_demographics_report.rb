@@ -84,15 +84,11 @@ module Reports
       internal_emails = [*IdentityConfig.store.team_daily_reports_emails].select(&:present?)
       irs_emails      = [*IdentityConfig.store.irs_verification_report_config].select(&:present?)
 
-      if report_receiver == :internal || irs_emails.empty?
-        return { to: internal_emails, bcc: [] }
+      if report_receiver == :both && irs_emails.present?
+        { to: irs_emails, bcc: internal_emails }
+      else
+        { to: internal_emails, bcc: [] }
       end
-
-      if report_receiver == :both
-        return { to: irs_emails, bcc: internal_emails }
-      end
-
-      { to: [], bcc: [] }
     end
 
     def upload_to_s3(report_body, report_name: nil)
