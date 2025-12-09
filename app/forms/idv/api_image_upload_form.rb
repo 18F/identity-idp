@@ -98,8 +98,7 @@ module Idv
           zip: pii_from_doc[:zip],
           failure_reason: failure_reason(response),
         )
-
-        fraud_ops_tracker.idv_document_upload_submitted(
+        fraud_ops_tracker.fraud_ops_idv_document_upload_submitted(
           **doc_escrow_images,
           success: response.success?,
           document_state: pii_from_doc[:state],
@@ -115,6 +114,9 @@ module Idv
           state: pii_from_doc[:state],
           zip: pii_from_doc[:zip],
           failure_reason: failure_reason(response),
+          vendor: client_response&.extra&.dig(:vendor),
+          conversation_id: client_response&.extra&.dig(:conversation_id),
+          reference_id: client_response&.extra&.dig(:reference_id),
         )
       end
 
@@ -698,7 +700,7 @@ module Idv
 
     def validate_aamva(pii)
       aamva_proofer.call(
-        applicant_pii: pii,
+        applicant_pii: pii.merge(additional_aamva_attributes),
         current_sp: service_provider,
         state_id_address_resolution_result: nil,
         ipp_enrollment_in_progress: false,
@@ -706,6 +708,13 @@ module Idv
         doc_auth_flow: true,
         analytics:,
       ).to_doc_auth_response
+    end
+
+    def additional_aamva_attributes
+      {
+        uuid: user_uuid,
+        uuid_prefix: service_provider&.app_id,
+      }
     end
   end
 end

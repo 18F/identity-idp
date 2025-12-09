@@ -23,7 +23,6 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
     let(:selfie_status) { :not_processed }
     let(:success) { true }
     let(:passport_requested) { false }
-    let(:passports_enabled) { true }
     let(:doc_auth_success) { true }
     let(:attention_with_barcode) { false }
     let(:pii_data) do
@@ -68,8 +67,6 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
         .and_return(passport_requested)
       allow(document_capture_session).to receive(:doc_auth_vendor)
         .and_return(Idp::Constants::Vendors::MOCK)
-      allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled)
-        .and_return(passports_enabled)
 
       resolution_result = Vot::Parser.new(vector_of_trust: 'P1').parse
       allow(controller).to receive(:resolved_authn_context_result).and_return(resolution_result)
@@ -392,7 +389,6 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
     let(:mrz_status) { nil }
     let(:document_capture_session) { instance_double(DocumentCaptureSession) }
     let(:passport_requested) { false }
-    let(:passports_enabled) { true }
     let(:doc_auth_success) { true }
     let(:selfie_status) { :not_processed }
     let(:success) { true }
@@ -438,8 +434,6 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
         .and_return(passport_requested)
       allow(document_capture_session).to receive(:doc_auth_vendor)
         .and_return(Idp::Constants::Vendors::MOCK)
-      allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled)
-        .and_return(passports_enabled)
     end
 
     context 'when passport not requested' do
@@ -503,16 +497,6 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
 
       context 'when mrz_status is pass but additional checks fail' do
         let(:mrz_status) { :pass }
-
-        context 'when passports are disabled' do
-          let(:passports_enabled) { false }
-
-          let(:pii_data) { partial_passport_pii_data }
-
-          it 'returns false' do
-            expect(controller.mrz_requirement_met?).to eq(false)
-          end
-        end
 
         context 'when feature checks pass' do
           let(:pii_data) { partial_passport_pii_data }

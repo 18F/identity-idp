@@ -14,7 +14,7 @@ module Proofing
                   :user_email,
                   :aamva_plugin,
                   :threatmetrix_plugin,
-                  :phone_finder_plugin,
+                  :phone_plugin,
                   :proofing_vendor
 
       PROOFING_VENDOR_SP_COST_TOKENS = {
@@ -28,7 +28,7 @@ module Proofing
         @user_email = user_email
         @aamva_plugin = Plugins::AamvaPlugin.new
         @threatmetrix_plugin = Plugins::ThreatMetrixPlugin.new
-        @phone_finder_plugin = Plugins::PhoneFinderPlugin.new
+        @phone_plugin = Plugins::PhonePlugin.new
         @proofing_vendor = proofing_vendor
       end
 
@@ -40,6 +40,8 @@ module Proofing
       # @param [JobHelpers::Timer] timer indicates time elapsed to obtain results
       # @param [String] user_uuid user uuid for applicant
       # @param [String] workflow user is in idv or auth workflow
+      # @param [Boolean] state_id_already_proofed indicates the state_id check was previously done,
+      #   e.g. in doc_auth
       # @return [ResultAdjudicator] object which contains the logic to determine proofing's result
       def proof(
         applicant_pii:,
@@ -48,8 +50,10 @@ module Proofing
         timer:,
         ipp_enrollment_in_progress:,
         current_sp:,
-        workflow:
+        workflow:,
+        state_id_already_proofed: false
       )
+        best_effort_phone = applicant_pii[:best_effort_phone_number_for_socure]
         applicant_pii = applicant_pii.except(:best_effort_phone_number_for_socure)
 
         device_profiling_result = threatmetrix_plugin.call(
@@ -84,29 +88,31 @@ module Proofing
           state_id_address_resolution_result:,
           ipp_enrollment_in_progress:,
           timer:,
-          already_proofed: IdentityConfig.store.idv_aamva_at_doc_auth_enabled,
+          already_proofed: state_id_already_proofed,
         )
 
-        phone_finder_result = phone_finder_plugin.call(
+        phone_result = phone_plugin.call(
           applicant_pii:,
           current_sp:,
           residential_address_resolution_result:,
           state_id_address_resolution_result:,
           state_id_result:,
-          ipp_enrollment_in_progress:,
+          best_effort_phone:,
           timer:,
+          user_email:,
         )
 
         ResultAdjudicator.new(
-          device_profiling_result: device_profiling_result,
-          ipp_enrollment_in_progress: ipp_enrollment_in_progress,
+          device_profiling_result:,
+          ipp_enrollment_in_progress:,
           resolution_result: state_id_address_resolution_result,
           should_proof_state_id: aamva_plugin.aamva_supports_state_id_jurisdiction?(applicant_pii),
-          state_id_result: state_id_result,
+          state_id_result:,
           residential_resolution_result: residential_address_resolution_result,
-          phone_finder_result: phone_finder_result,
+          phone_result:,
           same_address_as_id: applicant_pii[:same_address_as_id],
-          applicant_pii: applicant_pii,
+          applicant_pii:,
+          precheck_phone_number: phone_plugin.phone_number,
         )
       end
 

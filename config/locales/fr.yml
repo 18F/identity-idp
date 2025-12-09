@@ -364,6 +364,7 @@ countries.mz: Mozambique
 countries.na: Namibie
 countries.nc: Nouvelle-Calédonie
 countries.ne: Niger
+countries.nf: Île Norfolk
 countries.ng: Nigeria
 countries.ni: Nicaragua
 countries.nl: Pays-Bas
@@ -1590,7 +1591,6 @@ openid_connect.authorization.errors.missing_ial: Manque un niveau IAL valide
 openid_connect.authorization.errors.no_auth: Les acr_values ne sont pas autorisées
 openid_connect.authorization.errors.no_valid_acr_values: Valeurs acr_values inacceptables trouvées
 openid_connect.authorization.errors.no_valid_scope: Aucune étendue de données valide trouvée
-openid_connect.authorization.errors.no_valid_vtr: vots encontrados no aceptables
 openid_connect.authorization.errors.prompt_invalid: prompt est non valide
 openid_connect.authorization.errors.redirect_uri_invalid: redirect_uri est non valide
 openid_connect.authorization.errors.redirect_uri_no_match: redirect_uri ne correspond pas au redirect_uri enregistré

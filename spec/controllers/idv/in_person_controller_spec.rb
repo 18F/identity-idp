@@ -75,7 +75,7 @@ RSpec.describe Idv::InPersonController do
 
             context 'when passports are not enabled' do
               before do
-                allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled)
+                allow(IdentityConfig.store).to receive(:in_person_passports_enabled)
                   .and_return(false)
               end
 
@@ -209,7 +209,7 @@ RSpec.describe Idv::InPersonController do
 
             context 'when passports are not allowed' do
               before do
-                allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled)
+                allow(IdentityConfig.store).to receive(:in_person_passports_enabled)
                   .and_return(false)
               end
 

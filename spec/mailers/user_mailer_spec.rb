@@ -1342,9 +1342,6 @@ RSpec.describe UserMailer, type: :mailer do
       end
 
       context 'when passports are enabled globally' do
-        before do
-          allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled).and_return(true)
-        end
         let(:mail) do
           UserMailer.with(user: user, email_address: email_address).in_person_failed(
             enrollment: enrollment,
@@ -1398,7 +1395,6 @@ RSpec.describe UserMailer, type: :mailer do
       context 'when passports are not enabled globally or for in-person proofing' do
         before do
           allow(IdentityConfig.store).to receive(:in_person_passports_enabled).and_return(false)
-          allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled).and_return(false)
         end
         let(:mail) do
           UserMailer.with(user: user, email_address: email_address).in_person_failed(

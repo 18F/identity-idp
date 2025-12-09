@@ -35,11 +35,11 @@ class ServiceProviderIdentity < ApplicationRecord
   end
 
   def display_name
-    sp_metadata[:friendly_name] || service_provider_record&.agency&.name || service_provider
+    service_provider_record.display_name
   end
 
   def agency_name
-    service_provider_record&.agency&.name || sp_metadata[:friendly_name] || service_provider
+    service_provider_record.agency_name
   end
 
   def piv_cac_enabled?

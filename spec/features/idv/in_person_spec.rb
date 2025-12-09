@@ -171,6 +171,126 @@ RSpec.describe 'In Person Proofing', js: true do
     expect(page).to have_current_path(account_path)
   end
 
+  context 'when phone precheck is enabled' do
+    before do
+      allow(IdentityConfig.store).to receive(:idv_phone_precheck_percent).and_return(100)
+    end
+
+    it 'user skips phone step', allow_browser_log: true do
+      expect_any_instance_of(Proofing::Socure::IdPlus::Proofers::PhoneRiskProofer)
+        .not_to receive(:proof)
+      user = sign_in_and_2fa_user
+      begin_in_person_proofing
+      complete_all_in_person_proofing_steps
+      complete_enter_password_step(user)
+    end
+
+    context 'when phone mfa is not enbled' do
+      let(:user) do
+        create(:user, :with_backup_code)
+      end
+
+      it 'user must complete phone step', allow_browser_log: true do
+        sign_in_and_2fa_user(user)
+        begin_in_person_proofing
+        complete_all_in_person_proofing_steps
+        fill_out_phone_form_ok('2342255432')
+        verify_phone_otp
+      end
+    end
+
+    context 'when phone precheck fails' do
+      let(:user) do
+        create(:user, :fully_registered, with: { phone: '703-555-5555' })
+      end
+
+      it 'user must complete phone step', allow_browser_log: true do
+        sign_in_and_2fa_user(user)
+        begin_in_person_proofing
+        complete_all_in_person_proofing_steps
+        fill_out_phone_form_ok('2342255432')
+        verify_phone_otp
+      end
+    end
+
+    context 'when secondary vendor is enabled' do
+      let(:user) do
+        create(:user, :fully_registered, with: { phone: '703-555-5555' })
+      end
+      let(:phonerisk_risk_score) { 0 }
+      let(:phonerisk_correlation_score) { 1.0 }
+      let(:phonerisk_response) do
+        {
+          status: 200,
+          body: {
+            referenceId: 'some-reference-id',
+            namePhoneCorrelation: {
+              reasonCodes: [],
+              score: phonerisk_correlation_score,
+            },
+            phoneRisk: {
+              reasonCodes: [],
+              score: phonerisk_risk_score,
+            },
+            customerProfile: {
+              customerUserId: user.uuid,
+            },
+          }.to_json,
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      end
+
+      before do
+        allow(IdentityConfig.store).to receive(:idv_address_secondary_vendor).and_return(:socure)
+        @phonerisk_stub = stub_request(:post, 'https://sandbox.socure.test/api/3.0/EmailAuthScore')
+          .to_return(phonerisk_response)
+      end
+
+      it 'user skips phone step', allow_browser_log: true do
+        sign_in_and_2fa_user(user)
+        begin_in_person_proofing
+        complete_all_in_person_proofing_steps
+        complete_enter_password_step(user)
+      end
+
+      context 'when both phone vendors fail' do
+        let(:phonerisk_risk_score) { 1.0 }
+        let(:phonerisk_correlation_score) { 0 }
+
+        it 'user must complete phone step', allow_browser_log: true do
+          sign_in_and_2fa_user(user)
+          begin_in_person_proofing
+          complete_all_in_person_proofing_steps
+          remove_request_stub(@phonerisk_stub)
+          stub_request(:post, 'https://sandbox.socure.test/api/3.0/EmailAuthScore')
+            .to_return({
+              status: 200,
+              body: {
+                referenceId: 'some-reference-id',
+                namePhoneCorrelation: {
+                  reasonCodes: [],
+                  score: 1,
+                },
+                phoneRisk: {
+                  reasonCodes: [],
+                  score: 0,
+                },
+                customerProfile: {
+                  customerUserId: user.uuid,
+                },
+              }.to_json,
+              headers: {
+                'Content-Type': 'application/json',
+              },
+            })
+          complete_phone_step(user)
+        end
+      end
+    end
+  end
+
   it 'allows the user to cancel and start over from the beginning', allow_browser_log: true do
     user = sign_in_and_2fa_user
     begin_in_person_proofing

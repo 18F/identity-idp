@@ -110,21 +110,6 @@ module AbTests
     end
   end.freeze
 
-  RECOMMEND_WEBAUTHN_PLATFORM_FOR_SMS_USER = AbTest.new(
-    experiment_name: 'Recommend Face or Touch Unlock for SMS users',
-    should_log: [
-      :webauthn_platform_recommended_visited,
-      :webauthn_platform_recommended_submitted,
-      'Multi-Factor Authentication Setup',
-    ].to_set,
-    buckets: {
-      recommend_for_account_creation:
-        IdentityConfig.store.recommend_webauthn_platform_for_sms_ab_test_account_creation_percent,
-      recommend_for_authentication:
-        IdentityConfig.store.recommend_webauthn_platform_for_sms_ab_test_authentication_percent,
-    },
-  ).freeze
-
   ACCOUNT_CREATION_TMX_PROCESSED = AbTest.new(
     experiment_name: 'Account Creation Threat Metrix Processed',
     should_log: [

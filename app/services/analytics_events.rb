@@ -2241,6 +2241,8 @@ module AnalyticsEvents
   # @option proofing_results [String] context.stages.resolution.transaction_id A unique id for the underlying vendor request
   # @option proofing_results [Boolean] context.stages.resolution.can_pass_with_additional_verification Whether the PII could be verified if another vendor verified certain attributes
   # @option proofing_results [Array<String>] context.stages.resolution.attributes_requiring_additional_verification Attributes that need to be verified by another vendor
+  # @option proofing_results [Array<String>,nil] context.stages.resolution.source_attribution List of sources that contributed to the resolution proofing result
+  # @option proofing_results [String,nil] context.stages.resolution.vendor_id Vendor's internal ID for resolution proofing requests, e.g. socureId
   # @option proofing_results [String] context.stages.resolution.vendor_name Vendor used (e.g. lexisnexis:instant_verify)
   # @option proofing_results [String] context.stages.resolution.vendor_workflow ID of workflow or configuration the vendor used for this transaction
   # @option proofing_results [Boolean] context.stages.residential_address.success Whether the residential address passed proofing
@@ -2250,6 +2252,8 @@ module AnalyticsEvents
   # @option proofing_results [String] context.stages.residential_address.transaction_id Vendor-specific transaction ID for the request made to the residential address proofing vendor
   # @option proofing_results [Boolean] context.stages.residential_address.can_pass_with_additional_verification Whether, if residential address proofing failed, it could pass with additional proofing from another vendor
   # @option proofing_results [Array<String>,nil] context.stages.residential_address.attributes_requiring_additional_verification List of PII attributes that require additional verification for residential address proofing to pass
+  # @option proofing_results [Array<String>,nil] context.stages.residential_address.source_attribution List of sources that contributed to the residential address proofing result
+  # @option proofing_results [String,nil] context.stages.residential_address.vendor_id Vendor's internal ID for residential address proofing requests, e.g. socureId
   # @option proofing_results [String] context.stages.residential_address.vendor_name Vendor used for residential address proofing
   # @option proofing_results [String] context.stages.residential_address.vendor_workflow Vendor-specific workflow or configuration ID associated with the request made.
   # @option proofing_results [Hash] context.stages.state_id Object holding details about the call made to the state ID proofing vendor
@@ -5635,6 +5639,7 @@ module AnalyticsEvents
   # @param [Boolean] async whether this worker is running asynchronously
   # @param [Boolean] billed
   # @param [String] birth_year Birth year from document
+  # @param [String] expiration_date Expiration date from document
   # @param [Hash] customer_profile socure customer profile
   # @param [String] customer_user_id user uuid sent to Socure
   # @param [Hash] decision accept or reject of given ID
@@ -5681,6 +5686,7 @@ module AnalyticsEvents
     decision: nil,
     document_metadata: nil,
     docv_transaction_token: nil,
+    expiration_date: nil,
     flow_path: nil,
     document_type_received: nil,
     issue_year: nil,
@@ -5710,6 +5716,7 @@ module AnalyticsEvents
       doc_type_supported:,
       document_metadata:,
       docv_transaction_token:,
+      expiration_date:,
       flow_path:,
       document_type_received:,
       issue_year:,
@@ -5791,6 +5798,8 @@ module AnalyticsEvents
   # @param [Hash<String,Numeric>] requested_attributes The values sent in the proofing request.
   #   "1" represents that the value was sent.
   # @param [Array[String], nil] verified_attributes The attributes verified during proofing.
+  # @param [Boolean] ipp_enrollment_in_progress Whether the user has entered the in-person proofing
+  #   flow.
   # @param [Boolean] jurisdiction_in_maintenance_window Whether the target state MVA is under
   #   maintenance.
   # @param [Boolean] supported_jurisdiction Whether the state ID jurisdiction is supported by AAMVA.
@@ -5808,6 +5817,7 @@ module AnalyticsEvents
     transaction_id:,
     requested_attributes:,
     verified_attributes:,
+    ipp_enrollment_in_progress:,
     jurisdiction_in_maintenance_window:,
     supported_jurisdiction:,
     timed_out:,
@@ -5827,6 +5837,7 @@ module AnalyticsEvents
       transaction_id:,
       requested_attributes:,
       verified_attributes:,
+      ipp_enrollment_in_progress:,
       jurisdiction_in_maintenance_window:,
       supported_jurisdiction:,
       timed_out:,
@@ -6777,8 +6788,6 @@ module AnalyticsEvents
   # @param [String] client_id
   # @param [String] scope
   # @param [Array] acr_values
-  # @param [Array] vtr
-  # @param [String, nil] vtr_param
   # @param [Boolean] unauthorized_scope
   # @param [Boolean] user_fully_authenticated
   # @param [String] unknown_authn_contexts space separated list of unknown contexts
@@ -6792,8 +6801,6 @@ module AnalyticsEvents
     client_id:,
     scope:,
     acr_values:,
-    vtr:,
-    vtr_param:,
     unauthorized_scope:,
     user_fully_authenticated:,
     error_details: nil,
@@ -6812,8 +6819,6 @@ module AnalyticsEvents
       client_id:,
       scope:,
       acr_values:,
-      vtr:,
-      vtr_param:,
       unauthorized_scope:,
       user_fully_authenticated:,
       unknown_authn_contexts:,
@@ -7870,9 +7875,9 @@ module AnalyticsEvents
     ial:,
     billed_ial:,
     sign_in_flow:,
-    vtr:,
     acr_values:,
     sign_in_duration_seconds:,
+    vtr: nil,
     **extra
   )
     track_event(

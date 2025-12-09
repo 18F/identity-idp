@@ -17,8 +17,7 @@ module Idv
       end
 
       def passports_enabled?
-        IdentityConfig.store.doc_auth_passports_enabled &&
-          IdentityConfig.store.in_person_passports_enabled
+        IdentityConfig.store.in_person_passports_enabled
       end
 
       def formatted_verified_date

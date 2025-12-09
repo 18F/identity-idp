@@ -114,6 +114,7 @@ module Idv
             idv_session.socure_docv_wait_polling_started_at = nil
             idv_session.invalidate_in_person_pii_from_user!
             idv_session.doc_auth_vendor = nil
+            idv_session.source_check_vendor = nil
           end,
         )
       end
@@ -126,6 +127,15 @@ module Idv
 
         # If the stored_result is nil, the job fetching the results has not completed.
         analytics.idv_doc_auth_document_capture_polling_wait_visited(**analytics_arguments)
+
+        if document_capture_session.socure_docv_transaction_token.blank?
+          redirect_to idv_socure_document_capture_errors_url(
+            error_code: :invalid_transaction_token,
+            transaction_token: :MISSING_TRANSACTION_TOKEN,
+          )
+          return true
+        end
+
         if wait_timed_out?
           analytics.idv_socure_verification_webhook_missing(
             docv_transaction_token: document_capture_session.socure_docv_transaction_token,

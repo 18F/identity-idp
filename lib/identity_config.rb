@@ -234,6 +234,7 @@ module IdentityConfig
     config.add(:idv_contact_phone_number, type: :string)
     config.add(:idv_max_attempts, type: :integer)
     config.add(:idv_min_age_years, type: :integer)
+    config.add(:idv_phone_precheck_percent, type: :integer)
     config.add(
       :idv_resolution_default_vendor,
       type: :symbol,
@@ -488,8 +489,6 @@ module IdentityConfig
     config.add(:sign_in_recaptcha_percent_tested, type: :integer)
     config.add(:sign_in_recaptcha_score_threshold, type: :float)
     config.add(:skip_encryption_allowed_list, type: :json)
-    config.add(:recommend_webauthn_platform_for_sms_ab_test_account_creation_percent, type: :integer)
-    config.add(:recommend_webauthn_platform_for_sms_ab_test_authentication_percent, type: :integer)
     config.add(:socure_doc_escrow_enabled, type: :boolean)
     config.add(:socure_docv_document_request_endpoint, type: :string)
     config.add(:socure_docv_enabled, type: :boolean)
