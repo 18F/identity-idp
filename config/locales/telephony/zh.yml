@@ -9,7 +9,7 @@ zh:
       不想删除你的账户？登入你的 %{app_name} 账户去取消。
     authentication_otp:
       sms: |-
-        %{app_name}: 你的一次性代码是 %{code}。此代码在 %{expiration} 分钟后作废。请勿与任何人分享此代码。
+        %{app_name} 绝不会联系您索要此代码。请勿与任何人分享。您的代码是 %{code}。该代码将在 %{expiration} 分钟后失效。
 
         @%{domain} #%{code}
       voice: 你好! 你的 6-%{format_type} %{app_name} 一次性代码是 %{code}。你的一次性代码是 ，%{code}。重复一下，你的一次性代码是 %{code}。此代码 %{expiration} 分钟后会作废。
