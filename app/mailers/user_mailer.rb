@@ -288,8 +288,7 @@ class UserMailer < ActionMailer::Base
     end
   end
 
-  def dupe_profile_account_review_complete_success(agency_name: nil)
-    @service_provider_or_app_name = agency_name || APP_NAME
+  def dupe_profile_account_review_complete_success
     with_user_locale(user) do
       @root_url = root_url(locale: locale_url_param)
       mail(

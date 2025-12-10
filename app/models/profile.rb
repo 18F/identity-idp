@@ -316,12 +316,9 @@ class Profile < ApplicationRecord
           fraud_investigation_conclusive: true,
         )
 
-        service_provider = ServiceProvider.find_sole_by(issuer: duplicate_profile.service_provider)
         user.confirmed_email_addresses.each do |email_address|
           mailer = UserMailer.with(user: user, email_address: email_address)
-          mailer.dupe_profile_account_review_complete_success(
-            agency_name: service_provider.friendly_name,
-          ).deliver_now_or_later
+          mailer.dupe_profile_account_review_complete_success.deliver_now_or_later
         end
       end
     end
