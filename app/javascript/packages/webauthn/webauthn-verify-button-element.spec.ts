@@ -13,7 +13,7 @@ describe('WebauthnVerifyButtonElement', () => {
 
   before(async () => {
     quibble('./verify-webauthn-device', verifyWebauthnDevice);
-    quibble('@18f/identity-analytics', { trackError });
+    quibble('@18f/identity-analytics', { trackError, trackEvent });
     await import('./webauthn-verify-button-element');
   });
 
