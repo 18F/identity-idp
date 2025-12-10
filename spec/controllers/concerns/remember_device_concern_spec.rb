@@ -69,7 +69,11 @@ RSpec.describe RememberDeviceConcern do
         context 'with vtr' do
           let(:raw_session) { { vtr: ['C1'] } }
 
-          it { expect(test_controller.mfa_expiration_interval).to eq(30.days) }
+          it 'throws an error' do
+            expect { test_controller.mfa_expiration_interval }.to raise_error(
+              Vot::Parser::ParseException, 'Component parser called without ACR values'
+            )
+          end
         end
 
         context 'with legacy acr' do
@@ -80,12 +84,6 @@ RSpec.describe RememberDeviceConcern do
       end
 
       context 'and AAL2 requested' do
-        context 'with vtr' do
-          let(:raw_session) { { vtr: ['C2'] } }
-
-          it { expect(test_controller.mfa_expiration_interval).to eq(expected_aal_2_expiration) }
-        end
-
         context 'with legacy acr' do
           let(:raw_session) { { acr_values: Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF } }
 
