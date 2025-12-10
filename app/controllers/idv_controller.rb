@@ -14,6 +14,7 @@ class IdvController < ApplicationController
 
   def index
     if current_sp&.needs_to_reproof?(current_user.active_profile&.initiating_service_provider)
+      add_deactivation_reason
       verify_identity
     elsif already_verified?
       redirect_to idv_activated_url
@@ -59,5 +60,17 @@ class IdvController < ApplicationController
 
   def active_profile?
     current_user.active_profile.present?
+  end
+
+  def needs_to_reproof?
+    current_sp.needs_to_reproof?(current_user.active_profile&.initiating_service_provider)
+  end
+
+  def add_deactivation_reason
+    profile = current_user.active_profile
+    if current_user.active_profile&.initiating_service_provider ==
+       IdentityConfig.store.reproof_forcing_service_provider
+      profile.deactivate_due_to_sp_forced_reproofing
+    end
   end
 end

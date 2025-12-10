@@ -1432,6 +1432,17 @@ RSpec.describe Profile do
     end
   end
 
+  describe '#deactivate_due_to_sp_forced_reproofing' do
+    let(:profile) { create(:profile) }
+    context 'when the profile does not have a deactivation reason' do
+      it 'updates the profile and sets the deactivation reason to "sp_forced_reproofing"' do
+        expect(profile.deactivation_reason).to be_nil
+        profile.deactivate_due_to_sp_forced_reproofing
+        expect(profile.active).to be false
+        expect(profile.deactivation_reason).to eq('sp_forced_reproofing')
+      end
+    end
+  end
   describe '#profile_age_in_seconds' do
     it 'logs the time since the created_at timestamp', :freeze_time do
       profile = create(:profile, created_at: 5.minutes.ago)
