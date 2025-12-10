@@ -204,7 +204,7 @@ module Idv
           passport_requested: document_capture_session.passport_requested?,
         )
       end
-
+      # byebug - breaks here ... not TrueIDResponse
       response.extra.merge!(extra_attributes)
       pii_hash = response.pii_from_doc.to_h
       response.extra[:state] = pii_hash[:state]
