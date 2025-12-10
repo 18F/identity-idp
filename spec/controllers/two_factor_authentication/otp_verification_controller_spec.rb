@@ -166,7 +166,7 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
         expect(@attempts_api_tracker).to receive(:mfa_login_auth_submitted).with(
           mfa_device_type: 'otp',
           success: false,
-          failure_reason: { code: [:wrong_length, :incorrect] },
+          failure_reason: { code: [:wrong_length] },
           reauthentication: false,
         )
 
@@ -175,7 +175,7 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
         expect(@analytics).to have_logged_event(
           'Multi-Factor Authentication',
           success: false,
-          error_details: { code: { wrong_length: true, incorrect: true } },
+          error_details: { code: { wrong_length: true } },
           confirmation_for_add_phone: false,
           context: 'authentication',
           multi_factor_auth_method: 'sms',
@@ -257,7 +257,7 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
           expect(@attempts_api_tracker).to receive(:mfa_login_auth_submitted).with(
             mfa_device_type: 'otp',
             success: false,
-            failure_reason: { code: [:wrong_length, :incorrect] },
+            failure_reason: { code: [:wrong_length] },
             reauthentication: false,
           )
 
@@ -273,7 +273,7 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
           expect(@analytics).to have_logged_event(
             'Multi-Factor Authentication',
             success: false,
-            error_details: { code: { wrong_length: true, incorrect: true } },
+            error_details: { code: { wrong_length: true } },
             confirmation_for_add_phone: false,
             context: 'authentication',
             multi_factor_auth_method: 'sms',
@@ -303,7 +303,7 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
           expect(@attempts_api_tracker).to receive(:mfa_login_auth_submitted).with(
             mfa_device_type: 'otp',
             success: false,
-            failure_reason: { code: [:wrong_length, :incorrect] },
+            failure_reason: { code: [:wrong_length] },
             reauthentication: false,
           )
           expect(@attempts_api_tracker).to receive(:mfa_enroll_code_rate_limited).with(
@@ -318,7 +318,7 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
           expect(@analytics).to have_logged_event(
             'Multi-Factor Authentication',
             success: false,
-            error_details: { code: { wrong_length: true, incorrect: true } },
+            error_details: { code: { wrong_length: true } },
             confirmation_for_add_phone: false,
             context: 'authentication',
             multi_factor_auth_method: 'sms',
@@ -765,7 +765,7 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
             expect(@analytics).to have_logged_event(
               'Multi-Factor Authentication Setup',
               success: false,
-              error_details: { code: { wrong_length: true, incorrect: true } },
+              error_details: { code: { wrong_length: true } },
               confirmation_for_add_phone: true,
               context: 'confirmation',
               multi_factor_auth_method: 'sms',
@@ -806,7 +806,7 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
               expect(@analytics).to have_logged_event(
                 'Multi-Factor Authentication Setup',
                 success: false,
-                error_details: { code: { wrong_length: true, incorrect: true } },
+                error_details: { code: { wrong_length: true } },
                 confirmation_for_add_phone: true,
                 context: 'confirmation',
                 multi_factor_auth_method: 'sms',

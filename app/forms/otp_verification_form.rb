@@ -6,9 +6,6 @@ class OtpVerificationForm
   CODE_REGEX = /\A[0-9]+\z/
   validates :code, presence: true, length: { is: TwoFactorAuthenticatable::DIRECT_OTP_LENGTH }
   validate :validate_code_matches_format
-  validate :validate_user_otp_presence
-  validate :validate_user_otp_expiration
-  validate :validate_code_equals_user_otp
 
   def initialize(user, code, phone_configuration)
     @user = user
@@ -19,7 +16,23 @@ class OtpVerificationForm
   def submit
     success = valid?
 
-    user.clear_direct_otp if success
+    if success
+      user.with_lock do
+        if user.direct_otp.blank?
+          errors.add(:code, 'user_otp_missing', type: :user_otp_missing)
+          success = false
+        elsif otp_expired?
+          errors.add(:code, 'user_otp_expired', type: :user_otp_expired)
+          success = false
+        elsif ActiveSupport::SecurityUtils.secure_compare(user.direct_otp, code)
+          user.clear_direct_otp
+          user.save
+        else
+          errors.add(:code, 'incorrect', type: :incorrect)
+          success = false
+        end
+      end
+    end
 
     FormResponse.new(
       success: success,
@@ -37,26 +50,9 @@ class OtpVerificationForm
     errors.add(:code, 'pattern_mismatch', type: :pattern_mismatch)
   end
 
-  def validate_user_otp_presence
-    return if user.direct_otp.present?
-    errors.add(:code, 'user_otp_missing', type: :user_otp_missing)
-  end
-
-  def validate_user_otp_expiration
-    return if !otp_expired?
-    errors.add(:code, 'user_otp_expired', type: :user_otp_expired)
-  end
-
-  def validate_code_equals_user_otp
-    return if code.blank? ||
-              user.direct_otp.blank? ||
-              ActiveSupport::SecurityUtils.secure_compare(user.direct_otp, code)
-    errors.add(:code, 'incorrect', type: :incorrect)
-  end
-
   def otp_expired?
-    return if user.direct_otp_sent_at.blank?
-    (user.direct_otp_sent_at + TwoFactorAuthenticatable::DIRECT_OTP_VALID_FOR_SECONDS).past?
+    user.direct_otp_sent_at.present? &&
+      (user.direct_otp_sent_at + TwoFactorAuthenticatable::DIRECT_OTP_VALID_FOR_SECONDS).past?
   end
 
   def extra_analytics_attributes
