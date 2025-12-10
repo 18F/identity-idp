@@ -320,7 +320,7 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
       end
 
       before do
-        allow(IdentityConfig.store).to receive(:idv_phone_precheck_enabled).and_return(true)
+        allow(IdentityConfig.store).to receive(:idv_phone_precheck_percent).and_return(100)
       end
 
       context 'when user does not have a phone number for pre-check' do

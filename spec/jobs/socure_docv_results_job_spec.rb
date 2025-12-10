@@ -8,7 +8,7 @@ RSpec.describe SocureDocvResultsJob do
   let(:fake_analytics) { FakeAnalytics.new }
   let(:attempts_api_tracker) { AttemptsApiTrackingHelper::FakeAttemptsTracker.new }
   let(:fraud_opt_tracker) { AttemptsApiTrackingHelper::FakeAttemptsTracker.new }
-  let(:sp) { create(:service_provider) }
+  let(:sp) { create(:service_provider, app_id: 'Test123') }
   let(:socure_docv_transaction_token) { 'abcd' }
   let(:document_capture_session) { DocumentCaptureSession.create(user:) }
   let(:document_capture_session_uuid) { document_capture_session.uuid }
@@ -30,7 +30,7 @@ RSpec.describe SocureDocvResultsJob do
 
   let(:pii_from_doc) { socure_response_body[:documentVerification][:documentData] }
   let(:address_data) { pii_from_doc[:parsedAddress] || {} }
-  let(:doc_auth_passports_enabled) { false }
+  let(:include_passport_fixture) { false }
 
   before do
     document_capture_session.update(
@@ -45,9 +45,6 @@ RSpec.describe SocureDocvResultsJob do
       .to_return_json({ status: 200, body: { response: mrz_response } })
     allow(Analytics).to receive(:new).and_return(fake_analytics)
     allow(AttemptsApi::Tracker).to receive(:new).and_return(attempts_api_tracker)
-    allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled).and_return(
-      doc_auth_passports_enabled,
-    )
     allow(IdentityConfig.store).to receive(:idv_aamva_at_doc_auth_enabled).and_return(
       aamva_at_doc_auth_enabled,
     )
@@ -134,6 +131,7 @@ RSpec.describe SocureDocvResultsJob do
         {
           success: true,
           issue_year: 2020,
+          expiration_date: expiration_date,
           vendor: 'Socure',
           submit_attempts: 1,
           remaining_submit_attempts: 3,
@@ -173,7 +171,7 @@ RSpec.describe SocureDocvResultsJob do
             body: DocAuthImageFixtures.zipped_files(
               reference_id: socure_response_body[:referenceId],
               selfie:,
-              passport: doc_auth_passports_enabled,
+              passport: include_passport_fixture,
             ).to_s,
           )
       end
@@ -511,12 +509,13 @@ RSpec.describe SocureDocvResultsJob do
               :customer_user_id,
               :decision,
               :reference_id,
+              :expiration_date,
             ),
           )
         end
 
         context 'when passports are enabled' do
-          let(:doc_auth_passports_enabled) { true }
+          let(:include_passport_fixture) { true }
           before do
             allow(IdentityConfig.store).to receive(:doc_auth_passport_vendor_default)
               .and_return(Idp::Constants::Vendors::SOCURE)
@@ -541,6 +540,7 @@ RSpec.describe SocureDocvResultsJob do
                 :customer_user_id,
                 :decision,
                 :reference_id,
+                :expiration_date,
               ),
             )
           end
@@ -618,6 +618,7 @@ RSpec.describe SocureDocvResultsJob do
                 :customer_user_id,
                 :decision,
                 :reference_id,
+                :expiration_date,
               ),
             )
           end
@@ -642,6 +643,7 @@ RSpec.describe SocureDocvResultsJob do
                   :customer_user_id,
                   :decision,
                   :reference_id,
+                  :expiration_date,
                 ),
               )
             end
@@ -649,7 +651,7 @@ RSpec.describe SocureDocvResultsJob do
         end
 
         context 'when passports are enabled' do
-          let(:doc_auth_passports_enabled) { true }
+          let(:include_passport_fixture) { true }
 
           it 'logs the Socure verification data requested event' do
             perform
@@ -660,6 +662,7 @@ RSpec.describe SocureDocvResultsJob do
                 :customer_user_id,
                 :decision,
                 :reference_id,
+                :expiration_date,
               ),
             )
           end
@@ -867,6 +870,7 @@ RSpec.describe SocureDocvResultsJob do
                         :customer_user_id,
                         :decision,
                         :reference_id,
+                        :expiration_date,
                       ),
                     )
                   end
@@ -889,7 +893,38 @@ RSpec.describe SocureDocvResultsJob do
         end
 
         before do
-          allow(aamva_proofer).to receive(:call).and_return(aamva_proofing_result)
+          allow(aamva_proofer).to receive(:call).with(
+            applicant_pii: {
+              address1: '123 Example Street',
+              address2: 'Apt 4',
+              city: 'New York City',
+              dob: '2000-01-01',
+              document_type_received: 'drivers_license',
+              eye_color: nil,
+              first_name: 'Dwayne',
+              height: nil,
+              issuing_country_code: 'USA',
+              last_name: 'Denver',
+              middle_name: nil,
+              name_suffix: nil,
+              sex: nil,
+              state: 'NY',
+              state_id_expiration: '2026-01-01',
+              state_id_issued: '2020-01-01',
+              state_id_jurisdiction: 'NY',
+              state_id_number: '000000000',
+              weight: nil,
+              zipcode: '10001',
+              uuid: document_capture_session.user.uuid,
+              uuid_prefix: sp.app_id,
+            },
+            current_sp: sp,
+            ipp_enrollment_in_progress: false,
+            state_id_address_resolution_result: nil,
+            timer: an_instance_of(JobHelpers::Timer),
+            doc_auth_flow: true,
+            analytics: fake_analytics,
+          ).and_return(aamva_proofing_result)
         end
 
         context 'when aamva check is successful' do
@@ -913,6 +948,7 @@ RSpec.describe SocureDocvResultsJob do
                 :customer_user_id,
                 :decision,
                 :reference_id,
+                :expiration_date,
               ),
             )
           end
@@ -942,6 +978,7 @@ RSpec.describe SocureDocvResultsJob do
                 :customer_user_id,
                 :decision,
                 :reference_id,
+                :expiration_date,
               ),
             )
           end

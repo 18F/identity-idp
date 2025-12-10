@@ -33,7 +33,11 @@ module Proofing
 
           if !should_proof
             result = out_of_aamva_jurisdiction_result
-            log_state_id_validation(analytics, result.to_h, applicant_pii) if doc_auth_flow
+            if doc_auth_flow
+              log_state_id_validation(
+                analytics, result.to_h, applicant_pii, ipp_enrollment_in_progress
+              )
+            end
             return result
           end
 
@@ -55,7 +59,11 @@ module Proofing
               )
             end
 
-            log_state_id_validation(analytics, result.to_h, applicant_pii) if doc_auth_flow
+            if doc_auth_flow
+              log_state_id_validation(
+                analytics, result.to_h, applicant_pii, ipp_enrollment_in_progress
+              )
+            end
           end
         end
 
@@ -159,9 +167,11 @@ module Proofing
             Idp::Constants::DocumentTypes::PASSPORT
         end
 
-        def log_state_id_validation(analytics, result, applicant_pii)
+        def log_state_id_validation(analytics, result, applicant_pii, ipp_enrollment_in_progress)
           analytics&.idv_state_id_validation(
             **result,
+            user_id: applicant_pii[:uuid],
+            ipp_enrollment_in_progress:,
             supported_jurisdiction: aamva_supports_state_id_jurisdiction?(applicant_pii),
             **biographical_info(applicant_pii),
             pii_like_keypaths: [

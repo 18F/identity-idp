@@ -234,7 +234,7 @@ module IdentityConfig
     config.add(:idv_contact_phone_number, type: :string)
     config.add(:idv_max_attempts, type: :integer)
     config.add(:idv_min_age_years, type: :integer)
-    config.add(:idv_phone_precheck_enabled, type: :boolean)
+    config.add(:idv_phone_precheck_percent, type: :integer)
     config.add(
       :idv_resolution_default_vendor,
       type: :symbol,
@@ -262,9 +262,7 @@ module IdentityConfig
     config.add(:in_person_email_reminder_early_benchmark_in_days, type: :integer)
     config.add(:in_person_email_reminder_final_benchmark_in_days, type: :integer)
     config.add(:in_person_email_reminder_late_benchmark_in_days, type: :integer)
-    config.add(:in_person_enrollment_validity_cutoff_date, type: :timestamp)
     config.add(:in_person_enrollment_validity_in_days, type: :integer)
-    config.add(:in_person_enrollment_validity_in_days_legacy, type: :integer)
     config.add(:in_person_enrollments_ready_job_cron, type: :string)
     config.add(:in_person_enrollments_ready_job_email_body_pattern, type: :string)
     config.add(:in_person_enrollments_ready_job_enabled, type: :boolean)

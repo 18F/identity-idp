@@ -119,7 +119,7 @@ account.login.piv_cac: 使用你的政府雇员身份证件登录
 account.login.tab_navigation: 账户创建标签页
 account.navigation.add_authentication_apps: 添加身份证实应用程序
 account.navigation.add_email: 添加电邮地址
-account.navigation.add_federal_id: 添加您的政府雇员ID
+account.navigation.add_federal_id: 添加您的政府雇员身份证件
 account.navigation.add_phone_number: 添加电话号码
 account.navigation.add_platform_authenticator: 添加人脸或触摸解锁
 account.navigation.add_security_key: 添加安全密钥
@@ -1024,20 +1024,20 @@ headings.passwords.change: 更改密码
 headings.passwords.confirm: 确认你目前密码以继续
 headings.passwords.confirm_for_personal_key: 输入密码并获得一个新个人密钥
 headings.passwords.forgot: 忘了你的密码?
-headings.piv_cac_login.account_not_found: 您的政府雇员ID未与帐户连接
+headings.piv_cac_login.account_not_found: 您的政府雇员身份证件未与帐户连接
 headings.piv_cac_login.add: 使用智能卡读卡器设置你的个人身份验证（PIV）或通用访问卡（CAC）。你可以使用其中任何一种作为双因素身份证实方法来登录。
-headings.piv_cac_login.new: 插入您的政府雇员ID
+headings.piv_cac_login.new: 插入您的政府雇员身份证件
 headings.piv_cac_login.success: 你已成功把 PIV/CAC 设为一个身份证实方法
 headings.piv_cac_setup.already_associated: 你提供的 PIV/CAC 与另外一个用户相关。
 headings.piv_cac_setup.new: 用你的 PIV/CAC 卡来保护你的账户安全
-headings.piv_cac.certificate.bad: 您选择的政府雇员ID的证书无效
-headings.piv_cac.certificate.expired: 您选择的政府雇员ID的证书已过期
-headings.piv_cac.certificate.invalid: 您选择的政府雇员ID的证书无效
-headings.piv_cac.certificate.none: 我们在您政府雇员ID上探查不到证书
-headings.piv_cac.certificate.not_auth_cert: 请为您的政府雇员ID选择一个不同的证书
-headings.piv_cac.certificate.revoked: 您选择的政府雇员ID的证书已从您的卡中撤销
-headings.piv_cac.certificate.unverified: 您选择的政府雇员ID的证书无效
-headings.piv_cac.did_not_work: 您的政府雇员ID没有起作用
+headings.piv_cac.certificate.bad: 您选择的政府雇员身份证件的证书无效
+headings.piv_cac.certificate.expired: 您选择的政府雇员身份证件的证书已过期
+headings.piv_cac.certificate.invalid: 您选择的政府雇员身份证件的证书无效
+headings.piv_cac.certificate.none: 我们在您政府雇员身份证件上探查不到证书
+headings.piv_cac.certificate.not_auth_cert: 请为您的政府雇员身份证件选择一个不同的证书
+headings.piv_cac.certificate.revoked: 您选择的政府雇员身份证件的证书已从您的卡中撤销
+headings.piv_cac.certificate.unverified: 您选择的政府雇员身份证件的证书无效
+headings.piv_cac.did_not_work: 您的政府雇员身份证件没有起作用
 headings.piv_cac.token.bad: 内部错误。
 headings.piv_cac.token.invalid: 你选择的 PIV/CAC 证书有误。
 headings.piv_cac.token.missing: 内部错误。
@@ -1570,7 +1570,7 @@ notices.forgot_password.no_email_sent_explanation_start: 没有收到电邮？
 notices.forgot_password.resend_email_success: 我们发了另外一个重设密码的电邮。
 notices.password_changed: 你更改了密码。
 notices.phone_confirmed: 你账户添加了一个电话。
-notices.piv_cac_configured: 添加您的政府雇员ID
+notices.piv_cac_configured: 添加您的政府雇员身份证件
 notices.privacy.privacy_act_statement: 隐私法声明
 notices.privacy.security_and_privacy_practices: 安全实践和隐私法声明
 notices.resend_confirmation_email.success: 我们发送了另外一个确认电邮。
@@ -1604,7 +1604,6 @@ openid_connect.authorization.errors.missing_ial: 缺失有效的 IAL 级别
 openid_connect.authorization.errors.no_auth: Acr_values 未经授权
 openid_connect.authorization.errors.no_valid_acr_values: 未找到可接受的 acr_values
 openid_connect.authorization.errors.no_valid_scope: 未找到有效的范围值
-openid_connect.authorization.errors.no_valid_vtr: 未找到可接受的vots
 openid_connect.authorization.errors.prompt_invalid: 未找到有效的提示值
 openid_connect.authorization.errors.redirect_uri_invalid: redirect_uri 有误
 openid_connect.authorization.errors.redirect_uri_no_match: redirect_uri 与注册的 redirect_uri 不匹配
@@ -1750,11 +1749,11 @@ titles.openid_connect.logout: OpenID Connect 登出
 titles.passwords.change: 更改你账户密码
 titles.passwords.forgot: 重设密码
 titles.personal_key: 万一
-titles.piv_cac_login.add: 添加你的政府雇员ID
+titles.piv_cac_login.add: 添加你的政府雇员身份证件
 titles.piv_cac_login.new: 用 PIV/CAC 登入你的账户
 titles.piv_cac_setup.new: 用 PIV/CAC 卡来保护你账户安全
 titles.piv_cac_setup.upsell: 添加你的政府雇员身份证件更快、更安全地登录
-titles.present_piv_cac: 插入您的政府雇员ID
+titles.present_piv_cac: 插入您的政府雇员身份证件
 titles.present_webauthn: 连接你的硬件安全密钥
 titles.reactivate_account: 重新激活你账户
 titles.registrations.new: 设立账户
@@ -1863,7 +1862,7 @@ two_factor_authentication.phone_verification.troubleshooting.change_number: 使�
 two_factor_authentication.phone_verification.troubleshooting.code_not_received: 我没有通过SMS/短信或电话收到一个一次性代码
 two_factor_authentication.phone.delete.failure: 无法去掉你的电话。
 two_factor_authentication.phone.delete.success: 你的电话已被去掉。
-two_factor_authentication.piv_cac_header_text: 插入您的政府雇员ID
+two_factor_authentication.piv_cac_header_text: 插入您的政府雇员身份证件
 two_factor_authentication.piv_cac_mismatch.2fa_before_add: 添加你的PIV/CAC之前，你需要使用另外一种方法进行身份证实。
 two_factor_authentication.piv_cac_mismatch.cta: 进行身份证实并添加PIV/CAC
 two_factor_authentication.piv_cac_mismatch.delete_account: 删除你的帐户

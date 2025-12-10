@@ -6,24 +6,19 @@ module Idv
       include Idv::AvailabilityConcern
       include IdvStepConcern
       include Idv::IdConcern
-      include Idv::InPersonAamvaConcern
 
       before_action :set_usps_form_presenter
       before_action :confirm_step_allowed
       before_action :initialize_pii_from_user, only: [:show]
 
       def show
-        if idv_session.ipp_aamva_document_capture_session_uuid.present?
-          process_aamva_async_state
-          return
-        end
-
         analytics.idv_in_person_proofing_state_id_visited(**analytics_arguments)
 
         render :show, locals: extra_view_variables
       end
 
       def update
+        # don't clear the ssn when updating address, clear after SsnController
         clear_future_steps_from!(controller: Idv::InPerson::SsnController)
 
         initial_state_of_same_address_as_id = pii_from_user[:same_address_as_id]
@@ -35,9 +30,11 @@ module Idv
             pii_from_user[attr] = flow_params[attr]
           end
 
+          # Accept Date of Birth from both memorable date and input date components
           formatted_dob = MemorableDateComponent.extract_date_param flow_params&.[](:dob)
           pii_from_user[:dob] = formatted_dob if formatted_dob
 
+          # Accept Expiration Date from both memorable date and input date components
           formatted_exp = MemorableDateComponent.extract_date_param(
             flow_params&.[](:id_expiration),
           )
@@ -71,16 +68,6 @@ module Idv
           analytics.idv_in_person_proofing_state_id_submitted(
             **analytics_arguments.merge(**form_result),
           )
-
-          if aamva_enabled?
-            idv_session.ipp_aamva_redirect_url = redirect_url
-
-            return if rate_limit_redirect!(:idv_doc_auth, step_name: 'ipp_state_id')
-
-            start_aamva_async_state
-            redirect_to idv_in_person_state_id_url
-            return
-          end
 
           redirect_to redirect_url
         else
@@ -163,8 +150,11 @@ module Idv
 
       def flow_params
         if params.dig(:identity_doc).present?
+          # Transform the top-level params key to accept the renamed form
+          # for autofill handling workaround
           params[:state_id] = params.delete(:identity_doc)
 
+          # Rename nested id_number to state_id_number
           if params[:state_id][:id_number].present?
             params[:state_id][:state_id_number] = params[:state_id].delete(:id_number)
           end

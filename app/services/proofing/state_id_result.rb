@@ -81,6 +81,7 @@ module Proofing
         success: success?,
         errors: doc_auth_errors,
         exception:,
+        extra: to_h,
       )
     end
 

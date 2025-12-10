@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Proofing::Resolution::Plugins::PhonePlugin do
-  let(:idv_phone_precheck_enabled) { true }
+  let(:idv_phone_precheck_percent) { 100 }
   let(:user) { create(:user) }
   let(:applicant_pii) do
     Idp::Constants::MOCK_IDV_APPLICANT.merge(uuid_prefix: '123', uuid: user.uuid)
@@ -22,8 +22,8 @@ RSpec.describe Proofing::Resolution::Plugins::PhonePlugin do
   end
 
   before do
-    allow(IdentityConfig.store).to receive(:idv_phone_precheck_enabled)
-      .and_return(idv_phone_precheck_enabled)
+    allow(IdentityConfig.store).to receive(:idv_phone_precheck_percent)
+      .and_return(idv_phone_precheck_percent)
   end
 
   subject(:plugin) { described_class.new }
@@ -173,7 +173,7 @@ RSpec.describe Proofing::Resolution::Plugins::PhonePlugin do
         end
 
         context 'when phone precheck is not enabled' do
-          let(:idv_phone_precheck_enabled) { false }
+          let(:idv_phone_precheck_percent) { 0 }
           it 'does not call proofer and returns empty results' do
             expect(Proofing::AddressProofer).not_to receive(:new)
             result = call
