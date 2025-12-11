@@ -89,7 +89,7 @@ RSpec.describe Reports::FraudMetricsReport do
 
   it 'sends out a report to just to team agnes' do
     expect(ReportMailer).to receive(:tables_report).once.with(
-      email: anything,
+      to: anything,
       subject: 'Fraud Metrics Report - 2021-03-02',
       reports: anything,
       message: report.preamble,
@@ -104,7 +104,7 @@ RSpec.describe Reports::FraudMetricsReport do
 
     it 'sends out a report to everybody' do
       expect(ReportMailer).to receive(:tables_report).once.with(
-        email: anything,
+        to: anything,
         subject: 'Fraud Metrics Report - 2021-02-28',
         reports: anything,
         message: report.preamble,

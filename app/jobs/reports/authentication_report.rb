@@ -20,7 +20,7 @@ module Reports
 
         report_hash['emails'].each do |email|
           ReportMailer.tables_report(
-            email:,
+            to: email,
             subject:,
             message:,
             reports:,

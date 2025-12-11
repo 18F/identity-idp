@@ -38,7 +38,7 @@ RSpec.describe Reports::MfaReport do
 
     it 'emails the csv' do
       expect(ReportMailer).to receive(:tables_report).with(
-        email:,
+        to: email, 
         subject: "Monthly MFA Report - #{report_date}",
         message: "Report: mfa-report #{report_date}",
         reports:,

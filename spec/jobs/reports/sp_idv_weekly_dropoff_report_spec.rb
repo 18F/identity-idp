@@ -61,7 +61,7 @@ RSpec.describe Reports::SpIdvWeeklyDropoffReport do
       )
 
       expect(ReportMailer).to receive(:tables_report).once.with(
-        email: 'test@example.com',
+        to: 'test@example.com',
         subject: 'ABC IdV Dropoff Report - 2024-12-16',
         reports: emailable_reports,
         message: anything,

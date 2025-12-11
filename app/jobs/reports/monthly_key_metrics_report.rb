@@ -29,7 +29,7 @@ module Reports
       end
 
       ReportMailer.tables_report(
-        email: email_addresses,
+        to: email_addresses,
         subject: "Monthly Key Metrics Report - #{date.to_date}",
         reports: reports,
         message: preamble,
