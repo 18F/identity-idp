@@ -584,7 +584,9 @@ RSpec.describe Idv::ImageUploadsController do
         let(:selfie_img) { DocAuthImageFixtures.selfie_image_multipart }
 
         before do
-          resolved_authn_context_result = Vot::Parser.new(vector_of_trust: 'Pb').parse
+          resolved_authn_context_result = Vot::Parser.new(
+            acr_values: Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_REQUIRED_ACR,
+          ).parse
 
           allow(controller).to receive(:resolved_authn_context_result)
             .and_return(resolved_authn_context_result)
@@ -1626,7 +1628,10 @@ RSpec.describe Idv::ImageUploadsController do
 
     context 'the frontend requests a selfie' do
       before do
-        authn_context_result = Vot::Parser.new(vector_of_trust: 'Pb').parse
+        authn_context_result = Vot::Parser.new(
+          acr_values: Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_REQUIRED_ACR,
+        ).parse
+
         allow(controller).to(
           receive(:resolved_authn_context_result).and_return(authn_context_result),
         )
