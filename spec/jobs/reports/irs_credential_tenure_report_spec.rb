@@ -50,7 +50,7 @@ RSpec.describe Reports::IrsCredentialTenureReport do
     it 'uploads each report to S3 and sends an email' do
       expect_any_instance_of(described_class).to receive(:upload_to_s3).exactly(3).times
       expect(ReportMailer).to receive(:tables_report).with(
-        email: emails,
+        to: emails,
         subject: "IRS Credential Tenure Report - #{report_date}",
         reports: reports,
         message: kind_of(String),

@@ -85,7 +85,8 @@ RSpec.describe ReportMailer, type: :mailer do
 
     let(:mail) do
       ReportMailer.tables_report(
-        email: 'foo@example.com',
+        to: 'foo@example.com',
+        bcc: 'test_bcc@example.com',
         subject: 'My Report',
         message: 'My Report - Today',
         env: env,
