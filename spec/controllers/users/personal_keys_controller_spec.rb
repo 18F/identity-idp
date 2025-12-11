@@ -61,7 +61,7 @@ RSpec.describe Users::PersonalKeysController do
 
         patch :update
 
-        expect(response).to redirect_to account_url
+        expect(response).to redirect_to new_user_session_url
         expect(flash[:success]).to eq(t('account.personal_key.reset_success'))
       end
     end
