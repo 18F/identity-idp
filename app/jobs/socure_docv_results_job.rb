@@ -369,8 +369,8 @@ class SocureDocvResultsJob < ApplicationJob
   def to_aamva_applicant_pii(pii)
     pii.merge(
       dob: pii[:dob].iso8601,
-      state_id_expiration: pii[:state_id_expiration].iso8601,
-      state_id_issued: pii[:state_id_issued].iso8601,
+      state_id_expiration: pii[:state_id_expiration]&.iso8601,
+      state_id_issued: pii[:state_id_issued]&.iso8601,
       uuid: user_uuid,
       uuid_prefix: sp&.app_id,
     )
