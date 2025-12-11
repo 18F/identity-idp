@@ -7676,7 +7676,6 @@ module AnalyticsEvents
     requested_ial:,
     authn_context:,
     requested_aal_authn_context:,
-    requested_vtr_authn_contexts:,
     force_authn:,
     final_auth_request:,
     service_provider:,
@@ -7684,6 +7683,7 @@ module AnalyticsEvents
     matching_cert_serial:,
     unknown_authn_contexts:,
     user_fully_authenticated:,
+    requested_vtr_authn_contexts: nil,
     **extra
   )
     track_event(
