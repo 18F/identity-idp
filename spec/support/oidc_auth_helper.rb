@@ -21,13 +21,6 @@ module OidcAuthHelper
     oidc_path
   end
 
-  def visit_idp_from_oidc_sp_with_vtr(vtr:, **args)
-    params = vtr_params(vtr: vtr, **args)
-    oidc_path = openid_connect_authorize_path params
-    visit oidc_path
-    oidc_path
-  end
-
   def visit_idp_from_ial_max_oidc_sp(**args)
     args[:acr_values] = Saml::Idp::Constants::IALMAX_AUTHN_CONTEXT_CLASSREF
     params = ial2_params(**args)
@@ -111,27 +104,6 @@ module OidcAuthHelper
     end
 
     ial2_params
-  end
-
-  def vtr_params(
-    vtr:,
-    prompt: nil,
-    state: SecureRandom.hex,
-    nonce: SecureRandom.hex,
-    client_id: OIDC_ISSUER,
-    scope: 'openid email profile:name social_security_number'
-  )
-    vtr_params = {
-      client_id: client_id,
-      response_type: 'code',
-      vtr: vtr.to_json,
-      scope: scope,
-      redirect_uri: 'http://localhost:7654/auth/result',
-      state: state,
-      nonce: nonce,
-    }
-    vtr_params[:prompt] = prompt if prompt
-    vtr_params
   end
 
   def include_phishing_resistant(params)
