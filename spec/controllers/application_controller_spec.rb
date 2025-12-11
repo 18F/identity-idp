@@ -494,7 +494,7 @@ RSpec.describe ApplicationController do
         it 'raises an exception' do
           expect { result }.to raise_exception(
             Vot::Parser::ParseException,
-            'VoT parser called without VoT or ACR values',
+            'Component parser called without ACR values',
           )
         end
 
@@ -527,9 +527,11 @@ RSpec.describe ApplicationController do
       let(:acr_values) { nil }
       let(:vtr) { ['P1'] }
 
-      it 'returns a resolved authn context result' do
-        expect(result.aal2?).to eq(true)
-        expect(result.identity_proofing?).to eq(true)
+      it 'raises an error' do
+        expect { result }.to raise_exception(
+          Vot::Parser::ParseException,
+          'Component parser called without ACR values',
+        )
       end
 
       context 'without an SP' do

@@ -7885,8 +7885,8 @@ module AnalyticsEvents
       ial:,
       billed_ial:,
       sign_in_flow:,
-      vtr: vtr,
-      acr_values: acr_values,
+      vtr:,
+      acr_values:,
       sign_in_duration_seconds:,
       **extra,
     )

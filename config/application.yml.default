@@ -526,7 +526,6 @@ verify_personal_key_max_attempts: 5
 version_headers_enabled: false
 voice_otp_pause_time: '0.5s'
 voice_otp_speech_rate: 'slow'
-vtm_url: 'https://developer.login.gov/vot-trust-framework'
 weekly_auth_funnel_report_config: '[]'
 
 development:

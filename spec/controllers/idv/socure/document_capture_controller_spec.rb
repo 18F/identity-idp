@@ -313,7 +313,9 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
 
       context 'selfie required' do
         before do
-          authn_context_result = Vot::Parser.new(vector_of_trust: 'Pb').parse
+          authn_context_result = Vot::Parser.new(
+            acr_values: Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_REQUIRED_ACR,
+          ).parse
           allow(subject).to receive(:resolved_authn_context_result).and_return(authn_context_result)
           get(:show)
         end
