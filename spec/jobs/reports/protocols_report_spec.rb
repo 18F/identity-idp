@@ -30,7 +30,7 @@ RSpec.describe Reports::ProtocolsReport do
         time_range: report_date.all_week,
       ) { protocols_report }
       expect(ReportMailer).to receive(:tables_report).with(
-        to: email, 
+        to: email,
         subject: "Weekly Protocols Report - #{report_date}",
         message: "Report: protocols-report #{report_date}",
         reports: emailable_reports,
