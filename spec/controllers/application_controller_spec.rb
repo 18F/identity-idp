@@ -157,7 +157,7 @@ RSpec.describe ApplicationController do
         user_signed_in: true,
         referer:,
       )
-      expect(flash[:error]).to eq t('errors.general')
+
       expect(response).to redirect_to(root_url)
       expect(subject.current_user).to be_present
     end

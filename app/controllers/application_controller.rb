@@ -341,7 +341,6 @@ class ApplicationController < ActionController::Base
       referer: request.referer,
     )
 
-    flash[:error] = t('errors.general')
     redirect_to new_user_session_url
   end
 
