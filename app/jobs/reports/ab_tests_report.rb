@@ -26,7 +26,7 @@ module Reports
       report = ab_tests_report(ab_test)
 
       ReportMailer.tables_report(
-        email: ab_test.report.email,
+        to: ab_test.report.email,
         subject:,
         message: [subject, report.participants_message].compact,
         reports: report.as_emailable_reports,

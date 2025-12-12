@@ -33,7 +33,7 @@ module Reports
       end
 
       ReportMailer.tables_report(
-        email: to_emails,
+        to: to_emails,
         bcc: bcc_emails,
         subject: "IRS Verification Demographics Metrics Report - #{report_date.to_date}",
         reports: reports,

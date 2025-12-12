@@ -72,7 +72,7 @@ RSpec.describe Reports::AbTestsReport do
 
     it 'emails the table report with csv' do
       expect(ReportMailer).to receive(:tables_report).with(
-        email:,
+        to: email,
         subject: "A/B Tests Report - reCAPTCHA at Sign-In - #{report_date}",
         message: [
           "A/B Tests Report - reCAPTCHA at Sign-In - #{report_date}",
