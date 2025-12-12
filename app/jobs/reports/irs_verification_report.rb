@@ -33,8 +33,11 @@ module Reports
       @report_name = "#{agency_abbreviation.downcase}_verification_report"
       @report_title = "#{agency_abbreviation} Verification Report"
 
-      email_addresses = emails(internal_emails, partner_emails).select(&:present?)
-      if email_addresses.empty?
+      email_addresses = emails(internal_emails, partner_emails)
+      to_emails = email_addresses[:to].select(&:present?)
+      bcc_emails = email_addresses[:bcc].select(&:present?)
+
+      if to_emails.empty? && bcc_emails.empty?
         Rails.logger.warn "No email addresses received - #{@report_title} NOT SENT"
         return false
       end
@@ -46,7 +49,8 @@ module Reports
       end
 
       ReportMailer.tables_report(
-        email: email_addresses,
+        email: to_emails,
+        bcc: bcc_emails,
         subject: "#{@report_title} - #{report_date.to_date}",
         reports: emailable_reports,
         message: preamble,
@@ -74,7 +78,7 @@ module Reports
     end
 
     def reports(issuers, agency_abbreviation)
-      @reports ||= sp_verification_report(issuers, agency_abbreviation).as_emailable_reports
+      sp_verification_report(issuers, agency_abbreviation).as_emailable_reports
     end
 
     def previous_week_range
@@ -82,7 +86,7 @@ module Reports
     end
 
     def sp_verification_report(issuers, agency_abbreviation)
-      @sp_verification_report ||= Reporting::SpVerificationReport.new(
+      Reporting::SpVerificationReport.new(
         time_range: previous_week_range,
         issuers: issuers || [],
         agency_abbreviation: agency_abbreviation,
@@ -90,12 +94,17 @@ module Reports
     end
 
     def emails(internal_emails, partner_emails)
-      # internal_emails = [*IdentityConfig.store.team_daily_reports_emails]
-      # partner_emails = [*IdentityConfig.store.irs_verification_report_config]
+      if report_receiver == :both && partner_emails.empty?
+        Rails.logger.warn(
+          "#{@report_title}: recipient is :both " \
+          "but no external email specified",
+        )
+      end
 
-      case report_receiver
-      when :internal then internal_emails
-      when :both then (internal_emails + partner_emails)
+      if report_receiver == :both && partner_emails.present?
+        { to: partner_emails, bcc: internal_emails }
+      else
+        { to: internal_emails, bcc: [] }
       end
     end
 
