@@ -51,8 +51,8 @@
       ) do %>
           <h2 class="margin-top-0"><%= @presenter.verify_online_text %></h2>
           <div>
-            <p><%= @presenter.verify_online_instruction %><br/>
-               <%= @presenter.verify_online_description %></p>
+            <p><%= @presenter.verify_online_instruction %></p>
+            <p><%= @presenter.verify_online_description %></p>
             <p class="margin-top-2">
               <%= new_tab_link_to(
                     t('doc_auth.info.verify_online_link_text'),
