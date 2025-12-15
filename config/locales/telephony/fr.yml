@@ -23,15 +23,9 @@ fr:
       voice: Bonjour ! Votre code à usage unique %{app_name} à %{format_length} %{format_type} est %{code}. Votre code à usage unique est %{code}. À nouveau, votre code à usage unique est %{code}. Ce code expire dans %{expiration} minutes.
     doc_auth_link: "%{app_name} : %{link} Vous êtes en train de confirmer votre identité pour accéder à %{sp_or_app_name}. Prenez une photo de votre pièce d'identité pour continuer."
     dupe_profile_created_notice: |-
-      Quelqu’un a utilisé vos renseignements personnels pour confirmer un autre compte %{app_name}. Pour votre sécurité, nous avons restreint votre accès sur tous les comptes comportant des informations identiques et ayant accès à %{sp_or_app_name}.
-
-      Si c’est vous qui avez confirmé un autre compte, veuillez supprimer le compte en double ici: %{steps_link}
-      Si vous n’êtes pas à l’origine de cette action, veuillez prendre contact avec le service d’assistance de %{app_name} ici: %{help_center_link}
+      Alerte %{app_name} : Vos informations personnelles ont été vérifiées sur un autre compte. L’accès à ces comptes a été restreint. Nous vous avons envoyé un courriel contenant les instructions à suivre.
     dupe_profile_sign_in_attempted_notice: |-
-      Quelqu’un vient de se connecter sur un compte %{app_name} qui avait été confirmé à l’aide de vos renseignements personnels. Pour votre sécurité, nous avons restreint votre accès sur tous les comptes comportant des informations identiques et ayant accès à %{sp_or_app_name}.
-
-      Si vous êtes à l’origine de cette action, vous devez supprimer le compte en double en suivant les étapes présentées et n’en utiliser qu’un seul pour votre sécurité: %{steps_link}
-      Si vous n’êtes pas à l’origine de cette action, veuillez prendre contact avec le service d’assistance de %{app_name} ici: %{help_center_link}
+      Alerte %{app_name} : Un autre compte utilisant vos informations personnelles s'est connecté. L'accès à ces comptes a été restreint. Nous vous avons envoyé un courriel contenant les instructions à suivre.
     error:
       friendly_message:
         daily_voice_limit_reached: L’envoi de votre code à usage unique a échoué car vous avez dépassé le nombre maximal d’appels vers ce numéro de téléphone en 24 heures. Vous pouvez demander un code par SMS ou utiliser un autre numéro pour recevoir un appel téléphonique.
