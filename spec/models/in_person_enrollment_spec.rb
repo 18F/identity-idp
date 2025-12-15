@@ -381,8 +381,6 @@ RSpec.describe InPersonEnrollment, type: :model do
           receive(:in_person_enrollment_validity_in_days)
           .and_return(validity_in_days),
         )
-      allow(IdentityConfig.store).to receive(:in_person_enrollment_validity_cutoff_date)
-        .and_return(validity_cutoff_date)
     end
 
     it 'due_date returns the enrollment expiration date based on when it was established' do
@@ -477,25 +475,8 @@ RSpec.describe InPersonEnrollment, type: :model do
 
       before do
         allow(IdentityConfig.store)
-          .to receive(:in_person_enrollment_validity_in_days_legacy)
-          .and_return(legacy_validity_in_days)
-        allow(IdentityConfig.store)
           .to receive(:in_person_enrollment_validity_in_days)
           .and_return(new_validity_in_days)
-        allow(IdentityConfig.store)
-          .to receive(:in_person_enrollment_validity_cutoff_date)
-          .and_return(validity_cutoff_date)
-      end
-
-      it 'uses legacy validity for enrollments established before cutoff date' do
-        travel_to(validity_cutoff_date - 1.day) do
-          enrollment = create(
-            :in_person_enrollment,
-            enrollment_established_at: Time.zone.now,
-          )
-          expect(enrollment.due_date).to eq(Time.zone.now + legacy_validity_in_days.days)
-          expect(enrollment.days_to_due_date).to eq(legacy_validity_in_days)
-        end
       end
 
       it 'uses new validity for enrollments established after cutoff date' do

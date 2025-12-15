@@ -30,7 +30,7 @@ module Reporting
     end
 
     def initialize(time_range:, issuers:, verbose: false, progress: false, slice: 6.hours,
-                   threads: 3)
+                   threads: 1)
       @issuers = issuers
       @time_range = time_range || previous_week_range
       @verbose = verbose

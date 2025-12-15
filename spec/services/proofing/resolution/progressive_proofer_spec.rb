@@ -5,7 +5,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
   let(:user_uuid) { user.uuid }
   let(:user_email) { user.email }
   let(:proofing_vendor) { :mock }
-  let(:idv_phone_precheck_enabled) { true }
+  let(:idv_phone_precheck_percent) { 100 }
 
   subject(:progressive_proofer) { described_class.new(user_uuid:, proofing_vendor:, user_email:) }
 
@@ -28,6 +28,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
   describe '#proof' do
     let(:applicant_pii) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE.dup }
     let(:ipp_enrollment_in_progress) { false }
+    let(:state_id_already_proofed) { false }
     let(:request_ip) { Faker::Internet.ip_v4_address }
     let(:threatmetrix_session_id) { SecureRandom.uuid }
     let(:current_sp) { build(:service_provider) }
@@ -90,6 +91,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
         timer: JobHelpers::Timer.new,
         current_sp:,
         workflow:,
+        state_id_already_proofed:,
       )
     end
 
@@ -103,8 +105,8 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
 
       allow(progressive_proofer.aamva_plugin).to receive(:proofer)
         .and_return(aamva_proofer)
-      allow(IdentityConfig.store).to receive(:idv_phone_precheck_enabled)
-        .and_return(idv_phone_precheck_enabled)
+      allow(IdentityConfig.store).to receive(:idv_phone_precheck_percent)
+        .and_return(idv_phone_precheck_percent)
     end
 
     context 'remote unsupervised proofing' do
@@ -252,7 +254,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
       end
 
       context 'when precheck is not enabled' do
-        let(:idv_phone_precheck_enabled) { false }
+        let(:idv_phone_precheck_percent) { 0 }
         it 'returns a ResultAdjudicator' do
           proof.tap do |result|
             expect(result).to be_an_instance_of(Proofing::Resolution::ResultAdjudicator)
@@ -369,7 +371,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
         end
 
         context 'when phone precheck is not enabled' do
-          let(:idv_phone_precheck_enabled) { false }
+          let(:idv_phone_precheck_percent) { 0 }
           it 'returns a ResultAdjudicator' do
             proof.tap do |result|
               expect(result).to be_an_instance_of(Proofing::Resolution::ResultAdjudicator)
@@ -556,7 +558,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
       end
 
       context 'when phone precheck is not enabled' do
-        let(:idv_phone_precheck_enabled) { false }
+        let(:idv_phone_precheck_percent) { 0 }
         it 'returns a ResultAdjudicator' do
           proof.tap do |result|
             expect(result).to be_an_instance_of(Proofing::Resolution::ResultAdjudicator)
@@ -582,12 +584,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
       let(:state_id_address_resolution_result) do
         residential_address_resolution_result
       end
-
-      before do
-        allow(IdentityConfig.store).to receive(
-          :idv_aamva_at_doc_auth_enabled,
-        ).and_return(true)
-      end
+      let(:state_id_already_proofed) { true }
 
       it 'passes already_proofed: true to AamvaPlugin' do
         expect(progressive_proofer.aamva_plugin).to receive(:call).with(

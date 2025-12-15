@@ -78,6 +78,35 @@ RSpec.describe Idv::DocumentCaptureController do
       expect(Idv::DocumentCaptureController.step_info).to be_valid
     end
 
+    describe '#undo_step' do
+      let(:idv_session) do
+        Idv::Session.new(
+          user_session: {},
+          current_user: user,
+          service_provider: nil,
+        ).tap do |idv_session|
+          idv_session.pii_from_doc = { name: 'Test' }
+          idv_session.had_barcode_attention_error = true
+          idv_session.had_barcode_read_failure = false
+          idv_session.selfie_check_performed = true
+          idv_session.doc_auth_vendor = 'TrueID'
+          idv_session.source_check_vendor = 'aamva'
+        end
+      end
+
+      it 'resets relevant fields on idv_session to nil' do
+        described_class.step_info.undo_step.call(idv_session:, user:)
+        aggregate_failures do
+          expect(idv_session.pii_from_doc).to be(nil)
+          expect(idv_session.had_barcode_attention_error).to be(nil)
+          expect(idv_session.had_barcode_read_failure).to be(nil)
+          expect(idv_session.selfie_check_performed).to be(nil)
+          expect(idv_session.doc_auth_vendor).to be(nil)
+          expect(idv_session.source_check_vendor).to be(nil)
+        end
+      end
+    end
+
     context 'when user tries to skip ahead without completing choose_id_type' do
       let(:document_capture_session) do
         create(

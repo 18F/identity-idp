@@ -431,6 +431,7 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
             request_ip: request.remote_ip,
             ipp_enrollment_in_progress: false,
             proofing_vendor: :mock,
+            state_id_already_proofed: false,
           )
 
         put :update
@@ -451,6 +452,7 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
           request_ip: anything,
           ipp_enrollment_in_progress: true,
           proofing_vendor: :mock,
+          state_id_already_proofed: false,
         )
 
         put :update
@@ -479,6 +481,7 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
           request_ip: request.remote_ip,
           ipp_enrollment_in_progress: true,
           proofing_vendor: :mock,
+          state_id_already_proofed: false,
         )
 
       put :update
@@ -557,6 +560,7 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
             request_ip: request.remote_ip,
             ipp_enrollment_in_progress: true,
             proofing_vendor: :default_vendor,
+            state_id_already_proofed: false,
           )
 
         put :update
@@ -574,6 +578,7 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
               request_ip: request.remote_ip,
               ipp_enrollment_in_progress: true,
               proofing_vendor: :instant_verify,
+              state_id_already_proofed: false,
             )
 
           put :update
@@ -592,6 +597,7 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
                 request_ip: request.remote_ip,
                 ipp_enrollment_in_progress: true,
                 proofing_vendor: :socure_kyc,
+                state_id_already_proofed: false,
               )
 
             put :update

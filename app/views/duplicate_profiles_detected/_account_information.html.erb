@@ -1,6 +1,9 @@
 <div class="padding-1 border-top border-left border-right border-primary-light grid-row">
   <% if dupe_profile[:current_account] %>
-    <div class="grid-col-8">
+    <div class="grid-col-12">
+      <div class="margin-bottom-2">
+        <%= render BadgeComponent.new(icon: :check_circle).with_content(t('duplicate_profiles_detected.signed_in')) %>
+      </div>
       <p> <%= dupe_profile[:email] %> </p>
       <p> 
         <%= t(
@@ -25,11 +28,11 @@
       </p>
 
     </div>
-    <div class="grid-col-4">
-      <%= render BadgeComponent.new(icon: :check_circle).with_content(t('duplicate_profiles_detected.signed_in')) %>
-    </div>
   <% else %>
-    <div class="grid-col-8">
+    <div class="grid-col-12">
+      <div class="margin-bottom-2">
+        <%= render BadgeComponent.new(icon: :warning).with_content(t('duplicate_profiles_detected.duplicate')) %>
+      </div>
       <p> <%= render(
                 'shared/masked_text',
                 text: dupe_profile[:email],
@@ -56,9 +59,6 @@
                   timestamp_html: t('duplicate_profiles_detected.never_logged_in') + ' ' + sp_name,
                 ) %>
       <% end %>
-    </div>
-    <div class="grid-col-4">
-      <%= render BadgeComponent.new(icon: :warning).with_content(t('duplicate_profiles_detected.duplicate')) %>
     </div>
   <% end %>
 </div>

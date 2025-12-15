@@ -1,7 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
-  let(:applicant_pii) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN }
+  let(:user_uuid) { 'abcd-1234' }
+  let(:applicant_pii) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN.merge(uuid: user_uuid) }
   let(:already_proofed) { false }
   let(:current_sp) { build(:service_provider) }
   let(:state_id_address_resolution_result) { nil }
@@ -349,7 +350,10 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
         context 'when an ipp enrollment is in progress' do
           let(:ipp_enrollment_in_progress) { true }
           let(:applicant_pii) do
-            Idp::Constants::MOCK_IPP_APPLICANT.merge(state:, state_id_jurisdiction:)
+            Idp::Constants::MOCK_IPP_APPLICANT.merge(
+              state:, state_id_jurisdiction:,
+              uuid: user_uuid
+            )
           end
           let(:proofing_pii) do
             {
@@ -440,10 +444,12 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
                   supported_jurisdiction: true,
                   jurisdiction_in_maintenance_window:
                     proofer_result_hash[:jurisdiction_in_maintenance_window],
+                  ipp_enrollment_in_progress: true,
                   birth_year: applicant_pii[:dob].to_date.year,
                   state: applicant_pii[:state],
                   state_id_jurisdiction: applicant_pii[:state_id_jurisdiction],
                   state_id_number: '#' * applicant_pii[:state_id_number].length,
+                  user_id: user_uuid,
                 }
               )
             end
@@ -522,10 +528,12 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
                   supported_jurisdiction: true,
                   jurisdiction_in_maintenance_window:
                     proofer_result_hash[:jurisdiction_in_maintenance_window],
+                  ipp_enrollment_in_progress: true,
                   birth_year: applicant_pii[:dob].to_date.year,
                   state: applicant_pii[:state],
                   state_id_jurisdiction: applicant_pii[:state_id_jurisdiction],
                   state_id_number: '#' * applicant_pii[:state_id_number].length,
+                  user_id: user_uuid,
                 }
               )
             end
@@ -570,10 +578,12 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
                   supported_jurisdiction: true,
                   jurisdiction_in_maintenance_window:
                     proofer_result_hash[:jurisdiction_in_maintenance_window],
+                  ipp_enrollment_in_progress: true,
                   birth_year: applicant_pii[:dob].to_date.year,
                   state: applicant_pii[:state],
                   state_id_jurisdiction: applicant_pii[:state_id_jurisdiction],
                   state_id_number: '#' * applicant_pii[:state_id_number].length,
+                  user_id: user_uuid,
                 }
               )
             end
@@ -583,7 +593,10 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
         context 'when an ipp enrollment is not in progress' do
           let(:ipp_enrollment_in_progress) { false }
           let(:applicant_pii) do
-            Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN.merge(state:, state_id_jurisdiction:)
+            Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN.merge(
+              state:, state_id_jurisdiction:,
+              uuid: user_uuid
+            )
           end
 
           before do
@@ -628,10 +641,12 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
                   supported_jurisdiction: true,
                   jurisdiction_in_maintenance_window:
                     proofer_result_hash[:jurisdiction_in_maintenance_window],
+                  ipp_enrollment_in_progress: false,
                   birth_year: applicant_pii[:dob].to_date.year,
                   state: applicant_pii[:state],
                   state_id_jurisdiction: applicant_pii[:state_id_jurisdiction],
                   state_id_number: '#' * applicant_pii[:state_id_number].length,
+                  user_id: user_uuid,
                 }
               )
             end
@@ -710,10 +725,12 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
                   supported_jurisdiction: true,
                   jurisdiction_in_maintenance_window:
                     proofer_result_hash[:jurisdiction_in_maintenance_window],
+                  ipp_enrollment_in_progress: false,
                   birth_year: applicant_pii[:dob].to_date.year,
                   state: applicant_pii[:state],
                   state_id_jurisdiction: applicant_pii[:state_id_jurisdiction],
                   state_id_number: '#' * applicant_pii[:state_id_number].length,
+                  user_id: user_uuid,
                 }
               )
             end
@@ -758,10 +775,12 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
                   supported_jurisdiction: true,
                   jurisdiction_in_maintenance_window:
                     proofer_result_hash[:jurisdiction_in_maintenance_window],
+                  ipp_enrollment_in_progress: false,
                   birth_year: applicant_pii[:dob].to_date.year,
                   state: applicant_pii[:state],
                   state_id_jurisdiction: applicant_pii[:state_id_jurisdiction],
                   state_id_number: '#' * applicant_pii[:state_id_number].length,
+                  user_id: user_uuid,
                 }
               )
             end
@@ -774,7 +793,10 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
         let(:state_id_jurisdiction) { 'NP' }
 
         let(:applicant_pii) do
-          Idp::Constants::MOCK_IPP_APPLICANT.merge(state:, state_id_jurisdiction:)
+          Idp::Constants::MOCK_IPP_APPLICANT.merge(
+            state:, state_id_jurisdiction:,
+            uuid: user_uuid
+          )
         end
         let(:proofer_result_hash) do
           Proofing::StateIdResult.new(
@@ -807,10 +829,12 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
               supported_jurisdiction: false,
               jurisdiction_in_maintenance_window:
                 proofer_result_hash[:jurisdiction_in_maintenance_window],
+              ipp_enrollment_in_progress: false,
               birth_year: applicant_pii[:dob].to_date.year,
               state: applicant_pii[:state],
               state_id_jurisdiction: applicant_pii[:state_id_jurisdiction],
               state_id_number: '#' * applicant_pii[:state_id_number].length,
+              user_id: user_uuid,
             }
           )
         end
@@ -823,6 +847,7 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
       Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN.merge(
         state: address_state,
         state_id_jurisdiction: jurisdiction_state,
+        user_id: user_uuid,
       )
     end
     let(:jurisdiction_state) { 'WA' }

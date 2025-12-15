@@ -9,10 +9,11 @@ import type { WebauthnVerifyButtonDataset } from './webauthn-verify-button-eleme
 describe('WebauthnVerifyButtonElement', () => {
   const verifyWebauthnDevice = sinon.stub();
   const trackError = sinon.stub();
+  const trackEvent = sinon.stub();
 
   before(async () => {
     quibble('./verify-webauthn-device', verifyWebauthnDevice);
-    quibble('@18f/identity-analytics', { trackError });
+    quibble('@18f/identity-analytics', { trackError, trackEvent });
     await import('./webauthn-verify-button-element');
   });
 
@@ -95,6 +96,7 @@ describe('WebauthnVerifyButtonElement', () => {
     await userEvent.click(button);
 
     expect(verifyWebauthnDevice).to.have.been.calledOnce();
+    expect(trackEvent).to.have.been.calledWith('passkey_authentication_initiated');
 
     // This test also implicitly verifies that the form would not submit on a second button click,
     // since JSDOM will throw an error about not implementing form submission if the form submission

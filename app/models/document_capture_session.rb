@@ -38,6 +38,7 @@ class DocumentCaptureSession < ApplicationRecord
     session_result.errors = doc_auth_response.errors
     session_result.mrz_status = determine_mrz_status(mrz_response)
     session_result.aamva_status = determine_aamva_status(aamva_response)
+    session_result.state_id_vendor = aamva_response.extra[:vendor_name] if aamva_response
     session_result.attempt = attempt
 
     EncryptedRedisStructStorage.store(

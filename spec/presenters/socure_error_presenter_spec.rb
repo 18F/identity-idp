@@ -66,6 +66,30 @@ RSpec.describe SocureErrorPresenter do
       end
     end
 
+    context 'when error_code is :timeout' do
+      let(:error_code) { :timeout }
+
+      it 'returns the network error heading' do
+        expect(presenter.heading).to eq(I18n.t('idv.errors.technical_difficulties'))
+      end
+    end
+
+    context 'when error_code is :url_not_found' do
+      let(:error_code) { :url_not_found }
+
+      it 'returns the network error heading' do
+        expect(presenter.heading).to eq(I18n.t('idv.errors.technical_difficulties'))
+      end
+    end
+
+    context 'when error_code is :invalid_transaction_token' do
+      let(:error_code) { :invalid_transaction_token }
+
+      it 'returns the network error heading' do
+        expect(presenter.heading).to eq(I18n.t('idv.errors.technical_difficulties'))
+      end
+    end
+
     context 'when error_code is a socure reason code' do
       let(:error_code) { 'R810' }
 
@@ -144,6 +168,30 @@ RSpec.describe SocureErrorPresenter do
       end
     end
 
+    context 'when error_code is :timeout' do
+      let(:error_code) { :timeout }
+
+      it 'returns the try again later error message' do
+        expect(presenter.body_text).to eq(I18n.t('idv.errors.try_again_later'))
+      end
+    end
+
+    context 'when error_code is :url_not_found' do
+      let(:error_code) { :url_not_found }
+
+      it 'returns the try again later error message' do
+        expect(presenter.body_text).to eq(I18n.t('idv.errors.try_again_later'))
+      end
+    end
+
+    context 'when error_code is :invalid_transaction_token' do
+      let(:error_code) { :invalid_transaction_token }
+
+      it 'returns the "internal error" error message' do
+        expect(presenter.body_text).to eq(I18n.t('idv.failure.exceptions.internal_error'))
+      end
+    end
+
     context 'when error_code is underage' do
       let(:error_code) { 'underage' }
 
@@ -184,6 +232,14 @@ RSpec.describe SocureErrorPresenter do
 
     context 'when error code is url_not_found' do
       let(:error_code) { :url_not_found }
+
+      it 'returns an empty array' do
+        is_expected.to be_empty
+      end
+    end
+
+    context 'when error code is invalid_transaction_token' do
+      let(:error_code) { :invalid_transaction_token }
 
       it 'returns an empty array' do
         is_expected.to be_empty

@@ -67,6 +67,7 @@ module Users
       PivCacService.piv_cac_service_link(
         nonce: piv_cac_nonce,
         redirect_uri: setup_piv_cac_url,
+        current_sp: current_sp,
       )
     end
 

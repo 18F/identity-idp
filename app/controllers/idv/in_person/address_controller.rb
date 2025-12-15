@@ -30,7 +30,6 @@ module Idv
           attrs.each do |attr|
             pii_from_user[attr] = flow_params[attr]
           end
-
           redirect_to_next_page
         else
           render :show, locals: extra_view_variables

@@ -62,25 +62,6 @@ RSpec.describe IdTokenBuilder do
       expect(decoded_payload[:nonce]).to eq(identity.nonce)
     end
 
-    context 'sp request includes VTR' do
-      before do
-        allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests)
-          .and_return(true)
-        allow(IdentityConfig.store).to receive(:vtm_url)
-          .and_return(vtm_url)
-      end
-
-      it 'sets the vot if the sp requests it' do
-        identity.vtr = ['Pb'].to_json
-        expect(decoded_payload[:vot]).to eq('C1.C2.P1.Pb')
-      end
-
-      it 'sets the vtm' do
-        identity.vtr = ['Pb'].to_json
-        expect(decoded_payload[:vtm]).to eq(vtm_url)
-      end
-    end
-
     context 'context sp requests ACR values' do
       context 'aal and ial request' do
         let(:user) { create(:user, :proofed) }
