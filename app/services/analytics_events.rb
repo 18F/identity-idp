@@ -6912,6 +6912,11 @@ module AnalyticsEvents
     )
   end
 
+  # Tracks when passkey authentication is initiated
+  def passkey_authentication_initiated
+    track_event(:passkey_authentication_initiated)
+  end
+
   # Tracks the health of the DoS Passports API
   # @param [Boolean] success Whether the passport api health check succeeded.
   # @param [Hash] body The health check body, if present.
