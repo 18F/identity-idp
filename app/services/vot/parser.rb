@@ -8,7 +8,6 @@ module Vot
 
     Result = Data.define(
       :component_values,
-      :component_separator,
       :aal2?,
       :phishing_resistant?,
       :hspd12?,
@@ -21,7 +20,6 @@ module Vot
       def self.no_sp_result
         self.new(
           component_values: [],
-          component_separator: ' ',
           aal2?: false,
           phishing_resistant?: false,
           hspd12?: false,
@@ -38,7 +36,7 @@ module Vot
       end
 
       def expanded_component_values
-        component_values.map(&:name).join(component_separator)
+        component_values.map(&:name).join(' ')
       end
 
       def component_names
@@ -55,15 +53,14 @@ module Vot
     end
 
     def parse
-      if initial_components.blank?
+      if component_values.blank?
         raise ParseException.new('Component parser called without ACR values')
       end
-      validate_component_uniqueness!(initial_components)
+      validate_component_uniqueness!(component_values)
 
-      requirement_list = initial_components.flat_map(&:requirements)
+      requirement_list = component_values.flat_map(&:requirements)
       Result.new(
-        component_values: initial_components,
-        component_separator:,
+        component_values: component_values,
         aal2?: requirement_list.include?(:aal2),
         phishing_resistant?: requirement_list.include?(:phishing_resistant),
         hspd12?: requirement_list.include?(:hspd12),
@@ -77,22 +74,14 @@ module Vot
 
     private
 
-    def initial_components
-      return @initial_components if defined?(@initial_components)
+    def component_values
+      return @component_values if defined?(@component_values)
 
       component_string = acr_values || ''
-      @initial_components ||= component_string.split(component_separator).map do |component_name|
-        component_map.fetch(component_name)
+      @component_values ||= component_string.split(' ').map do |component_name|
+        AcrComponentValues.by_name.fetch(component_name)
       rescue KeyError
       end.compact
-    end
-
-    def component_separator
-      ' '
-    end
-
-    def component_map
-      AcrComponentValues.by_name
     end
 
     def validate_component_uniqueness!(component_values)

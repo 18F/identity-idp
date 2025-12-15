@@ -245,7 +245,6 @@ RSpec.describe Analytics do
             component_names:,
             component_values:,
             identity_proofing: true,
-            component_separator: '.',
           },
         }
       end
@@ -272,7 +271,6 @@ RSpec.describe Analytics do
     let(:expected_attributes) do
       {
         sp_request: {
-          component_separator: ' ',
           component_names: acr_values,
           component_values: acr_values.map do |v|
             v.sub("#{Saml::Idp::Constants::LEGACY_ACR_PREFIX}/", '')
