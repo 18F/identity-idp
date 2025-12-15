@@ -529,8 +529,8 @@ doc_auth.errors.alerts.id_not_recognized: Nous n’avons pas pu reconnaître vot
 doc_auth.errors.alerts.id_not_verified: Nous n’avons pas pu vérifier votre pièce d’identité. Il se peut qu’elle ait bougé lorsque vous avez pris la photo. Essayez de prendre de nouvelles photos.
 doc_auth.errors.alerts.issue_date_checks: Nous n’avons pas pu lire la date d’émission sur votre pièce d’identité. Essayez de prendre de nouvelles photos.
 doc_auth.errors.alerts.ref_control_number_check: Nous n’avons pas pu lire le code-barres du numéro de contrôle. Essayez de prendre de nouvelles photos.
-doc_auth.errors.alerts.selfie_not_live_help_link_text: Consultez plus de conseils pour prendre une photo claire de vous-même
-doc_auth.errors.alerts.selfie_not_live_or_poor_quality: Essayez de prendre une nouvelle photo de vous-même. Assurez-vous que l’ensemble de votre visage soit clair et visible sur la photo.
+doc_auth.errors.alerts.selfie_not_live_help_link_text: Consultez d’autres conseils pour prendre un selfie
+doc_auth.errors.alerts.selfie_not_live_or_poor_quality: Essayez de prendre un autre selfie. Assurez-vous que l’ensemble de votre visage soit clair et visible sur la photo.
 doc_auth.errors.alerts.sex_check: Nous n’avons pas pu lire le sexe sur votre pièce d’identité. Essayez de prendre de nouvelles photos.
 doc_auth.errors.alerts.visible_color_check: Nous n’avons pas pu vérifier votre pièce d’identité. Il se peut qu’elle ait bougé lorsque vous avez pris la photo, ou que la photo soit trop sombre. Essayez de prendre de nouvelles photos avec un meilleur éclairage.
 doc_auth.errors.alerts.visible_photo_check: Nous n’avons pas pu vérifier la photo sur votre pièce d’identité. Essayez de prendre de nouvelles photos.
@@ -559,7 +559,7 @@ doc_auth.errors.general.network_error_passport_link_text: utiliser un autre type
 doc_auth.errors.general.new_network_error: Veuillez réessayer ultérieurement.
 doc_auth.errors.general.no_liveness: Essayez de prendre de nouvelles photos.
 doc_auth.errors.general.selfie_failure: Assurez-vous que l’ensemble de votre visage est visible et ne bougez pas lorsque la caméra se déclenche. Évitez la lumière vive ou quoi que ce soit qui puisse cacher votre visage, comme un chapeau.
-doc_auth.errors.general.selfie_failure_help_link_text: Consultez plus de conseils pour prendre des photos claires
+doc_auth.errors.general.selfie_failure_help_link_text: Consultez d’autres conseils pour prendre un selfie
 doc_auth.errors.glare.failed_short: L’image a des reflets, veuillez réessayer.
 doc_auth.errors.glare.top_msg: Nous n’avons pas pu lire votre pièce d’identité. Il se peut que votre photo présente des reflets. Assurez-vous que le flash de votre appareil photo soit désactivé, puis essayez de prendre une nouvelle photo.
 doc_auth.errors.glare.top_msg_plural: Nous n’avons pas pu lire votre pièce d’identité. Il se peut que votre photo présente des reflets. Assurez-vous que le flash de votre appareil photo soit désactivé, puis essayez de prendre une nouvelle photo.
@@ -578,8 +578,8 @@ doc_auth.errors.pii.birth_date_min_age: Votre anniversaire ne correspond pas à 
 doc_auth.errors.rate_limited_heading: Nous n’avons pas pu vérifier votre pièce d’identité.
 doc_auth.errors.rate_limited_subheading: Essayez de prendre de nouvelles photos.
 doc_auth.errors.rate_limited_text_html: Pour éviter la fraude, nous limitons le nombre de fois où vous pouvez tenter de confirmer votre identité en ligne. <strong>Réessayez d’ici %{timeout}.</strong>
-doc_auth.errors.selfie_fail_heading: Nous n’avons pas pu faire correspondre votre photo à celle figurant sur votre pièce d’identité.
-doc_auth.errors.selfie_not_live_or_poor_quality_heading: Nous n’avons pas pu vérifier votre photo
+doc_auth.errors.selfie_fail_heading: Nous n’avons pas pu faire correspondre votre selfie à votre pièce d’identité.
+doc_auth.errors.selfie_not_live_or_poor_quality_heading: Nous n’avons pas pu associer votre selfie à votre pièce d’identité
 doc_auth.errors.send_link_limited: Vous avez essayé trop de fois, veuillez réessayer dans %{timeout}. Vous pouvez également revenir en arrière et choisir d’utiliser votre ordinateur à la place.
 doc_auth.errors.sharpness.failed_short: L’image est floue, veuillez réessayer.
 doc_auth.errors.sharpness.top_msg: Nous n’avons pas pu lire votre pièce d’identité. Il se peut que votre photo soit trop floue ou trop sombre. Essayez de prendre une nouvelle photo dans un endroit bien éclairé.
@@ -638,7 +638,7 @@ doc_auth.headings.ssn: Saisir votre numéro de sécurité sociale
 doc_auth.headings.ssn_update: Mettre à jour votre numéro de sécurité sociale
 doc_auth.headings.text_message: Nous avons envoyé un message à votre téléphone
 doc_auth.headings.upload_from_computer: Continuer sur cet ordinateur
-doc_auth.headings.upload_from_phone: Utiliser votre téléphone pour prendre des photos
+doc_auth.headings.upload_from_phone: Utilisez votre téléphone
 doc_auth.headings.verify_at_post_office: Vous rendre à un bureau de poste participant
 doc_auth.headings.verify_identity: Confirmer votre identité
 doc_auth.headings.verify_online: Confirmer votre identité en ligne
@@ -659,8 +659,8 @@ doc_auth.info.exit.with_sp: Quitter %{app_name} et revenir à %{sp_name}
 doc_auth.info.exit.without_sp: Quitter la vérification d’identité et accéder à la page de votre compte
 doc_auth.info.getting_started_html: '%{sp_name} doit s’assurer qu’il s’agit bien de vous et non de quelqu’un qui se fait passer pour vous. %{link_html}'
 doc_auth.info.getting_started_learn_more: En savoir plus sur la vérification de votre identité
-doc_auth.info.hybrid_handoff_no_selfie: Vous prendrez des photos de votre pièce d’identité à l’aide d’un téléphone. Vous n’aurez pas à vous reconnecter. Vous reviendrez sur cet ordinateur après avoir pris des photos.
-doc_auth.info.hybrid_handoff_selfie: Vous prendrez des photos de votre pièce d’identité et une photo de vous-même avec un téléphone. Vous n’aurez pas à vous reconnecter. Vous reviendrez sur cet ordinateur après avoir pris des photos.
+doc_auth.info.hybrid_handoff_no_selfie: Prenez des photos de votre pièce d’identité, puis retournez sur votre ordinateur.
+doc_auth.info.hybrid_handoff_selfie: Prenez un selfie et des photos de votre pièce d’identité, puis retournez sur votre ordinateur.
 doc_auth.info.id_types_learn_more: En savoir plus sur les types de pièces d’identité que vous pouvez utiliser
 doc_auth.info.image_loaded: Image chargée
 doc_auth.info.image_loading: Image en cours de chargement
@@ -707,8 +707,8 @@ doc_auth.info.verify_at_post_office_instruction: Saisissez vos renseignements en
 doc_auth.info.verify_at_post_office_link_text: En savoir plus sur la vérification en personne
 doc_auth.info.verify_identity: Nous vous demanderons votre pièce d’identité, numéro de téléphone et d’autres renseignements personnels afin de confirmer votre identité par rapport aux registres publics.
 doc_auth.info.verify_online_description_passport: Vous pouvez utiliser un passeport, un permis de conduire une carte d’identité d’un État des États-Unis.
-doc_auth.info.verify_online_instruction: Vous prendrez des photos de votre pièce d’identité pour confirmer votre identité entièrement en ligne.
-doc_auth.info.verify_online_instruction_selfie: Vous prendrez des photos de votre pièce d’identité et de vous-même pour confirmer votre identité entièrement en ligne.
+doc_auth.info.verify_online_instruction: Prenez des photos de votre pièce d’identité.
+doc_auth.info.verify_online_instruction_selfie: Prenez un selfie et des photos de votre pièce d’identité.
 doc_auth.info.verify_online_link_text: En savoir plus sur la vérification en ligne
 doc_auth.info.welcome_sp_reproof_alert: Pour votre sécurité, %{sp_name} exige que vous vérifiiez à nouveau votre identité.
 doc_auth.info.you_entered: 'Vous avez saisi :'

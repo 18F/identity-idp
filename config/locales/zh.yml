@@ -540,8 +540,8 @@ doc_auth.errors.alerts.id_not_recognized: 我们无法辨认你的身份证件�
 doc_auth.errors.alerts.id_not_verified: 我们无法验证你的身份证件。可能因为你拍照时身份证件移动了。尝试重拍。
 doc_auth.errors.alerts.issue_date_checks: 我们读取不到你身份证件上的颁发日期。尝试重拍。
 doc_auth.errors.alerts.ref_control_number_check: 我们读取不到控制号码条码。尝试重拍。
-doc_auth.errors.alerts.selfie_not_live_help_link_text: 查看更多有关清晰拍摄你本人照片的提示
-doc_auth.errors.alerts.selfie_not_live_or_poor_quality: 尝试再拍一张你自己。确保照片中你整个面孔都清楚可见。
+doc_auth.errors.alerts.selfie_not_live_help_link_text: 查看更多自拍照拍摄技巧
+doc_auth.errors.alerts.selfie_not_live_or_poor_quality: 请尝试重新拍摄自拍照。确保照片中你整个面孔都清楚可见。
 doc_auth.errors.alerts.sex_check: 我们读取不到你身份证件上的性别。尝试重拍。
 doc_auth.errors.alerts.visible_color_check: 我们无法验证你的身份证件。可能你拍照时身份证件移动了，或者照片太暗。尝试在亮一点的灯光下重拍。
 doc_auth.errors.alerts.visible_photo_check: 我们无法验证你身份证件上的照片。尝试重拍。
@@ -570,7 +570,7 @@ doc_auth.errors.general.network_error_passport_link_text: 使用其他类型的�
 doc_auth.errors.general.new_network_error: 请稍后再试。
 doc_auth.errors.general.no_liveness: 尝试重拍。
 doc_auth.errors.general.selfie_failure: 确保你整个面部都不受任何遮掩，而且在相机拍你照片时保持不动。避免强光或任何可能遮掩你面部的东西（比如帽子）。
-doc_auth.errors.general.selfie_failure_help_link_text: 查看更多有关拍摄清晰照片的提示
+doc_auth.errors.general.selfie_failure_help_link_text: 查看更多自拍照拍摄技巧
 doc_auth.errors.glare.failed_short: 图像有炫光，请再试一次。
 doc_auth.errors.glare.top_msg: 我们无法读取你的身份证件。你的照片可能有炫光。确保你相机上的闪光是关掉的，然后再尝试重拍张。
 doc_auth.errors.glare.top_msg_plural: 我们无法读取你的身份证件。你的照片可能有炫光。确保你相机上的闪光是关掉的，然后再尝试重拍。
@@ -589,8 +589,8 @@ doc_auth.errors.pii.birth_date_min_age: 你的生日不满足最低年龄要求�
 doc_auth.errors.rate_limited_heading: 我们无法验证你的身份证件。
 doc_auth.errors.rate_limited_subheading: 尝试再拍照片
 doc_auth.errors.rate_limited_text_html: 为了防止欺诈，我们限制在网上尝试验证文件的次数。<strong> %{timeout}个小时以后再试。</strong>
-doc_auth.errors.selfie_fail_heading: 我们无法把你自己的照片与你的身份证件匹配
-doc_auth.errors.selfie_not_live_or_poor_quality_heading: 我们无法验证你自己的照片
+doc_auth.errors.selfie_fail_heading: 我们无法将您的自拍照与您的身份证件进行匹配
+doc_auth.errors.selfie_not_live_or_poor_quality_heading: 我们无法将你的自拍照与你的身份证件进行匹配
 doc_auth.errors.send_link_limited: 你尝试了太多次。请在 %{timeout}后再试。你也可以返回并选择使用电脑。
 doc_auth.errors.sharpness.failed_short: 图像模糊，请再试一次。
 doc_auth.errors.sharpness.top_msg: 我们无法读取你的身份证件。你的照片可能太模糊或太暗。尝试在明亮的地方重拍一张。
@@ -649,7 +649,7 @@ doc_auth.headings.ssn: 输入你的社会保障号码
 doc_auth.headings.ssn_update: 更新你的社会保障号码
 doc_auth.headings.text_message: 我们给你的手机发了短信
 doc_auth.headings.upload_from_computer: 在这台电脑上继续
-doc_auth.headings.upload_from_phone: 使用手机拍照
+doc_auth.headings.upload_from_phone: 使用你的手机
 doc_auth.headings.verify_at_post_office: 到一个参与本项目的邮局去
 doc_auth.headings.verify_identity: 验证你的身份
 doc_auth.headings.verify_online: 在网上验证身份
@@ -670,8 +670,8 @@ doc_auth.info.exit.with_sp: 退出 %{app_name} 并返回 %{sp_name}
 doc_auth.info.exit.without_sp: 退出身份验证并到你的账户页面
 doc_auth.info.getting_started_html: '%{sp_name} 需要确保你是你，而不是别人冒充你。 了解更多有关验证你身份的信息 %{link_html}'
 doc_auth.info.getting_started_learn_more: 了解有关验证你身份的更多信息
-doc_auth.info.hybrid_handoff_no_selfie: 你将用手机拍摄你的身份证件照片。你不必重新登录，而且拍完照后可以转回到该电脑。
-doc_auth.info.hybrid_handoff_selfie: 你将用手机拍摄自己身份证件和你本人的照片。你不必重新登录，而且拍完照后可以转回到该电脑。
+doc_auth.info.hybrid_handoff_no_selfie: 拍摄你 ID 的照片，然后切换回这台电脑。
+doc_auth.info.hybrid_handoff_selfie: 拍一张自拍照，并拍摄你 ID的照片, 然后切换回这台电脑。
 doc_auth.info.id_types_learn_more: 了解有关你能使用的身份证件类型的更多信息
 doc_auth.info.image_loaded: 图像已加载
 doc_auth.info.image_loading: 图像加载中
@@ -718,8 +718,8 @@ doc_auth.info.verify_at_post_office_instruction: 在网上输入你的信息，�
 doc_auth.info.verify_at_post_office_link_text: 对亲身验证获得更多了解
 doc_auth.info.verify_identity: 我们会要求获得你的身份识别、电话号码和其他个人信息并通过与公共记录核对来验证你的身份。
 doc_auth.info.verify_online_description_passport: 你可以使用美国护照本、美国驾照或州身份证件。
-doc_auth.info.verify_online_instruction: 要完全在网上验证身份，你需要拍你 ID 的照片。
-doc_auth.info.verify_online_instruction_selfie: 要完全在网上验证身份，你需要拍你 ID 的照片以及你本人的照片。
+doc_auth.info.verify_online_instruction: 拍你 ID的照片。
+doc_auth.info.verify_online_instruction_selfie: 拍一张自拍照，并拍摄你 ID的照片。
 doc_auth.info.verify_online_link_text: 对网上验证获得更多了解
 doc_auth.info.welcome_sp_reproof_alert: 为了您的安全，%{sp_name} 要求您再次验证您的身份。
 doc_auth.info.you_entered: 你输入了：
