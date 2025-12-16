@@ -36,6 +36,7 @@ module Users
         sign_up_completed_url
       else
         flash[:success] = t('account.personal_key.reset_success')
+        account_url
       end
     end
 
