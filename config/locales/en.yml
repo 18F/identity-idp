@@ -529,8 +529,8 @@ doc_auth.errors.alerts.id_not_recognized: We couldn’t recognize your ID. It ma
 doc_auth.errors.alerts.id_not_verified: We couldn’t verify your ID. It might have moved when you took the picture. Try taking new pictures.
 doc_auth.errors.alerts.issue_date_checks: We couldn’t read the issue date on your ID. Try taking new pictures.
 doc_auth.errors.alerts.ref_control_number_check: We couldn’t read the control number barcode. Try taking new pictures.
-doc_auth.errors.alerts.selfie_not_live_help_link_text: Review more tips for taking a clear photo of yourself
-doc_auth.errors.alerts.selfie_not_live_or_poor_quality: Try taking a photo of yourself again. Make sure your whole face is clear and visible in the photo.
+doc_auth.errors.alerts.selfie_not_live_help_link_text: Review more tips for taking a selfie
+doc_auth.errors.alerts.selfie_not_live_or_poor_quality: Try taking a selfie again. Make sure your whole face is clear and visible in the photo.
 doc_auth.errors.alerts.sex_check: We couldn’t read the sex on your ID. Try taking new pictures.
 doc_auth.errors.alerts.visible_color_check: We couldn’t verify your ID. It might have moved when you took the picture, or the picture is too dark. Try taking new pictures in brighter lighting.
 doc_auth.errors.alerts.visible_photo_check: We couldn’t verify the photo on your ID. Try taking new pictures.
@@ -559,7 +559,7 @@ doc_auth.errors.general.network_error_passport_link_text: use another type of ID
 doc_auth.errors.general.new_network_error: Try again later.
 doc_auth.errors.general.no_liveness: Try taking new pictures.
 doc_auth.errors.general.selfie_failure: Make sure your entire face is visible and keep still as the camera takes your photo. Avoid bright light or anything that might cover your face, like a hat.
-doc_auth.errors.general.selfie_failure_help_link_text: Review more tips for taking clear photos
+doc_auth.errors.general.selfie_failure_help_link_text: Review more tips for taking a selfie
 doc_auth.errors.glare.failed_short: Image has glare, please try again.
 doc_auth.errors.glare.top_msg: We couldn’t read your ID. Your photo may have glare. Make sure that the flash on your camera is off and try taking a new picture.
 doc_auth.errors.glare.top_msg_plural: We couldn’t read your ID. Your photos may have glare. Make sure that the flash on your camera is off and try taking new pictures.
@@ -578,8 +578,8 @@ doc_auth.errors.pii.birth_date_min_age: Your birthday does not meet the minimum 
 doc_auth.errors.rate_limited_heading: We couldn’t verify your ID
 doc_auth.errors.rate_limited_subheading: Try taking new pictures
 doc_auth.errors.rate_limited_text_html: To prevent fraud, we limit the number of times someone can attempt to verify a document online. <strong>Try again in %{timeout}.</strong>
-doc_auth.errors.selfie_fail_heading: We couldn’t match the photo of yourself to your ID
-doc_auth.errors.selfie_not_live_or_poor_quality_heading: We could not verify the photo of yourself
+doc_auth.errors.selfie_fail_heading: We couldn’t match your selfie to your ID.
+doc_auth.errors.selfie_not_live_or_poor_quality_heading: We couldn’t match your selfie to your ID
 doc_auth.errors.send_link_limited: You tried too many times, please try again in %{timeout}. You can also go back and choose to use your computer instead.
 doc_auth.errors.sharpness.failed_short: Image is blurry, please try again.
 doc_auth.errors.sharpness.top_msg: We couldn’t read your ID. Your photo may be too blurry or dark. Try taking a new picture in a bright area.
@@ -638,7 +638,7 @@ doc_auth.headings.ssn: Enter your Social Security number
 doc_auth.headings.ssn_update: Update your Social Security number
 doc_auth.headings.text_message: We sent a message to your phone
 doc_auth.headings.upload_from_computer: Continue on this computer
-doc_auth.headings.upload_from_phone: Use your phone to take photos
+doc_auth.headings.upload_from_phone: Use your phone
 doc_auth.headings.verify_at_post_office: Go to a participating Post Office
 doc_auth.headings.verify_identity: Verify your identity
 doc_auth.headings.verify_online: Verify your identity online
@@ -659,8 +659,8 @@ doc_auth.info.exit.with_sp: Exit %{app_name} and return to %{sp_name}
 doc_auth.info.exit.without_sp: Exit identity verification and go to your account page
 doc_auth.info.getting_started_html: '%{sp_name} needs to make sure you are you — not someone pretending to be you. %{link_html}'
 doc_auth.info.getting_started_learn_more: Learn more about verifying your identity
-doc_auth.info.hybrid_handoff_no_selfie: You’ll take photos of your ID using a phone. You won’t have to sign in again, and you’ll switch back to this computer after you take photos.
-doc_auth.info.hybrid_handoff_selfie: You’ll take photos of your ID and yourself using a phone. You won’t have to sign in again, and you’ll switch back to this computer after you take photos.
+doc_auth.info.hybrid_handoff_no_selfie: Take photos of your ID, then switch back to this computer.
+doc_auth.info.hybrid_handoff_selfie: Take a selfie and photos of your ID, then switch back to this computer.
 doc_auth.info.id_types_learn_more: Learn more about which ID types you can use
 doc_auth.info.image_loaded: Image loaded
 doc_auth.info.image_loading: Image loading
@@ -707,8 +707,8 @@ doc_auth.info.verify_at_post_office_instruction: Enter your information online, 
 doc_auth.info.verify_at_post_office_link_text: Learn more about verifying in person
 doc_auth.info.verify_identity: We’ll ask for your ID, phone number, and other personal information to verify your identity against public records.
 doc_auth.info.verify_online_description_passport: You can use a U.S. passport book, U.S. driver’s license or state ID.
-doc_auth.info.verify_online_instruction: You’ll take photos of your ID to verify your identity fully online.
-doc_auth.info.verify_online_instruction_selfie: You’ll take photos of your ID and yourself to verify your identity fully online.
+doc_auth.info.verify_online_instruction: Take photos of your ID.
+doc_auth.info.verify_online_instruction_selfie: Take a selfie and photos of your ID.
 doc_auth.info.verify_online_link_text: Learn more about verifying online
 doc_auth.info.welcome_sp_reproof_alert: For your security, %{sp_name} requires you to verify your identity again.
 doc_auth.info.you_entered: 'You entered:'

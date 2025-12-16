@@ -42,7 +42,7 @@ RSpec.describe StoreSpMetadataInSession do
             request_url: request_url,
             request_id: request_id,
             requested_attributes: requested_attributes,
-            vtr: request_vtr,
+            vtr: nil,
           },
         )
       end

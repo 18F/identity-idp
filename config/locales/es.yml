@@ -540,8 +540,8 @@ doc_auth.errors.alerts.id_not_recognized: No pudimos reconocer su identificació
 doc_auth.errors.alerts.id_not_verified: No pudimos verificar su identificación. Puede ser que se haya movido cuando tomó la foto. Intente tomar nuevas fotos.
 doc_auth.errors.alerts.issue_date_checks: No pudimos leer la fecha de emisión en su identificación. Intente tomar nuevas fotos.
 doc_auth.errors.alerts.ref_control_number_check: No pudimos leer el código de barras del número de control. Intente tomar nuevas fotos.
-doc_auth.errors.alerts.selfie_not_live_help_link_text: Consulte más consejos para tomar una foto clara de usted mismo
-doc_auth.errors.alerts.selfie_not_live_or_poor_quality: Intente tomar de nuevo una foto de usted. Asegúrese de que su rostro se vea claramente en la foto.
+doc_auth.errors.alerts.selfie_not_live_help_link_text: Lea más consejos sobre como tomar un selfi
+doc_auth.errors.alerts.selfie_not_live_or_poor_quality: Intente tomar otra selfie. Asegúrese de que su rostro se vea claramente en la foto.
 doc_auth.errors.alerts.sex_check: No pudimos leer el sexo en su identificación. Intente tomar nuevas fotos.
 doc_auth.errors.alerts.visible_color_check: No pudimos verificar su identificación. Puede ser que se haya movido cuando tomó la foto, o que la foto es demasiado oscura. Intente tomar nuevas fotografías con una luz más brillante.
 doc_auth.errors.alerts.visible_photo_check: No pudimos verificar la fotografía de su identificación. Intente tomar nuevas fotos.
@@ -570,7 +570,7 @@ doc_auth.errors.general.network_error_passport_link_text: use otro tipo de ident
 doc_auth.errors.general.new_network_error: Vuelva a intentarlo más tarde.
 doc_auth.errors.general.no_liveness: Intente tomar nuevas fotos.
 doc_auth.errors.general.selfie_failure: Revise que se vea su cara completa y no se mueva mientras la cámara toma la fotografía. Evite las luces brillantes o cualquier prenda que pueda cubrirle la cara, como un sombrero.
-doc_auth.errors.general.selfie_failure_help_link_text: Consulte más consejos para tomar fotos claras
+doc_auth.errors.general.selfie_failure_help_link_text: Lea más consejos sobre como tomar un selfi
 doc_auth.errors.glare.failed_short: La imagen tiene reflejos; inténtelo de nuevo.
 doc_auth.errors.glare.top_msg: No pudimos leer su identificación. Es posible que su foto tenga reflejos. Asegúrese de que el flash de su cámara esté apagado e intente tomar una nueva foto.
 doc_auth.errors.glare.top_msg_plural: No pudimos leer su identificación. Es posible que sus fotos tengan reflejos. Asegúrese de que el flash de su cámara esté apagado e intente tomar nuevas fotos.
@@ -589,8 +589,8 @@ doc_auth.errors.pii.birth_date_min_age: Su fecha de nacimiento no cumple con el 
 doc_auth.errors.rate_limited_heading: No pudimos verificar su identificación
 doc_auth.errors.rate_limited_subheading: Intente tomar nuevas fotos
 doc_auth.errors.rate_limited_text_html: Para evitar fraudes, limitamos el número de veces que puede intentar la verificación de un documento en línea. <strong>Vuelva a intentarlo en %{timeout}.</strong>
-doc_auth.errors.selfie_fail_heading: No hemos podido cotejar su foto con su identificación.
-doc_auth.errors.selfie_not_live_or_poor_quality_heading: No pudimos verificar su foto
+doc_auth.errors.selfie_fail_heading: No pudimos hacer coincidir su selfi con su identificación.
+doc_auth.errors.selfie_not_live_or_poor_quality_heading: No pudimos comprobar que su selfi coincide con la de su identificación
 doc_auth.errors.send_link_limited: Lo intentó demasiadas veces; vuelva a intentarlo en %{timeout}. También puede volver atrás y elegir utilizar su computadora.
 doc_auth.errors.sharpness.failed_short: La imagen está borrosa; inténtelo de nuevo.
 doc_auth.errors.sharpness.top_msg: No pudimos leer su identificación. Es posible que su foto esté demasiado borrosa u oscura. Intente tomar una nueva foto en un lugar iluminado.
@@ -649,7 +649,7 @@ doc_auth.headings.ssn: Ingrese su número de Seguro Social
 doc_auth.headings.ssn_update: Actualice su número de Seguro Social
 doc_auth.headings.text_message: Enviamos un mensaje a su teléfono
 doc_auth.headings.upload_from_computer: Continúe en esta computadora
-doc_auth.headings.upload_from_phone: Utilice su teléfono para tomar fotos
+doc_auth.headings.upload_from_phone: Use su teléfono
 doc_auth.headings.verify_at_post_office: Vaya a una oficina de correos participante
 doc_auth.headings.verify_identity: Verifique su identidad
 doc_auth.headings.verify_online: Verifique su identidad en línea
@@ -670,8 +670,8 @@ doc_auth.info.exit.with_sp: Salir de %{app_name} y volver a %{sp_name}
 doc_auth.info.exit.without_sp: Salga de la verificación de identidad y vaya a la página de su cuenta
 doc_auth.info.getting_started_html: '%{sp_name} necesita asegurarse de que se trata de usted y no de alguien que se hace pasar por usted. %{link_html}'
 doc_auth.info.getting_started_learn_more: Obtenga más información sobre la verificación de su identidad
-doc_auth.info.hybrid_handoff_no_selfie: Tomará fotografías de su identificación con un teléfono. No tendrá que volver a iniciar sesión y volverá a esta computadora después de tomar las fotos.
-doc_auth.info.hybrid_handoff_selfie: Tomará fotografías de su identificación y de usted con un teléfono. No tendrá que volver a iniciar sesión y volverá a esta computadora después de tomar las fotos.
+doc_auth.info.hybrid_handoff_no_selfie: Tome fotos de su identificación, luego regrese a esta computadora.
+doc_auth.info.hybrid_handoff_selfie: Tómese una selfi y fotos de su identificación, luego regrese a esta computadora.
 doc_auth.info.id_types_learn_more: Obtenga más información acerca de los tipos de identificación que puede usar
 doc_auth.info.image_loaded: Imagen cargada
 doc_auth.info.image_loading: Cargando la imagen
@@ -718,8 +718,8 @@ doc_auth.info.verify_at_post_office_instruction: Ingrese su información en lín
 doc_auth.info.verify_at_post_office_link_text: Obtenga más información sobre la verificación en persona
 doc_auth.info.verify_identity: Le pediremos su identificación, número de teléfono y otros datos personales para verificar su identidad comparándola con los registros públicos.
 doc_auth.info.verify_online_description_passport: Puede usar un pasaporte estadounidense, una licencia de conducir de los EE. UU. o una identificación estatal.
-doc_auth.info.verify_online_instruction: Tomará fotografías de su identificación para verificar su identidad por completo en línea.
-doc_auth.info.verify_online_instruction_selfie: Tomará fotografías de su identificación y de usted para verificar su identidad por completo en línea.
+doc_auth.info.verify_online_instruction: Tome fotos de su identificación.
+doc_auth.info.verify_online_instruction_selfie: Tómese una selfi y fotos de su identificación.
 doc_auth.info.verify_online_link_text: Obtenga más información sobre la verificación en línea
 doc_auth.info.welcome_sp_reproof_alert: Por su seguridad, %{sp_name} requiere que verifique su identidad nuevamente.
 doc_auth.info.you_entered: 'Usted ingresó:'
