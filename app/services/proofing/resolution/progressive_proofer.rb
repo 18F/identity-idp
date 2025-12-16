@@ -131,6 +131,8 @@ module Proofing
       end
 
       def create_proofer
+        return create_instant_verify_proofer
+
         case proofing_vendor
         when :instant_verify then create_instant_verify_proofer
         when :mock then create_mock_proofer
@@ -142,7 +144,7 @@ module Proofing
 
       def create_instant_verify_proofer
         if true # if ddp
-          return Proofing::LexisNexis::Ddp::Proofers::InstantVerifyRequest.new(
+          return Proofing::LexisNexis::Ddp::Proofers::InstantVerifyProofer.new(
             api_key: IdentityConfig.store.lexisnexis_threatmetrix_api_key,
             org_id: IdentityConfig.store.lexisnexis_threatmetrix_org_id,
             base_url: IdentityConfig.store.lexisnexis_threatmetrix_base_url,
