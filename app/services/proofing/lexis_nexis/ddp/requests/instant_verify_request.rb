@@ -15,9 +15,9 @@ module Proofing
             '/api/attribute-query'
           end
 
-          def timeout
-            IdentityConfig.store.lexisnexis_threatmetrix_timeout
-          end
+          # def timeout
+          #   IdentityConfig.store.lexisnexis_threatmetrix_timeout
+          # end
         end
       end
     end

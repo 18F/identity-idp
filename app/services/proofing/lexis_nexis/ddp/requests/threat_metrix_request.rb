@@ -4,7 +4,7 @@ module Proofing
   module LexisNexis
     module Ddp
       module Requests
-        class ThreatMetrixRequest < Request
+        class ThreatMetrixRequest < VerificationRequest
           private
 
           def metric_name
@@ -15,9 +15,9 @@ module Proofing
             '/api/session-query'
           end
 
-          def timeout
-            IdentityConfig.store.lexisnexis_threatmetrix_timeout
-          end
+          # def timeout
+          #   IdentityConfig.store.lexisnexis_threatmetrix_timeout
+          # end
         end
       end
     end

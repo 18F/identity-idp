@@ -141,6 +141,15 @@ module Proofing
       end
 
       def create_instant_verify_proofer
+        if true # if ddp
+          return Proofing::LexisNexis::Ddp::Proofers::InstantVerifyRequest.new(
+            api_key: IdentityConfig.store.lexisnexis_threatmetrix_api_key,
+            org_id: IdentityConfig.store.lexisnexis_threatmetrix_org_id,
+            base_url: IdentityConfig.store.lexisnexis_threatmetrix_base_url,
+            ddp_policy: IdentityConfig.store.lexisnexis_threatmetrix_policy,
+          )
+        end
+
         Proofing::LexisNexis::InstantVerify::Proofer.new(
           instant_verify_workflow: IdentityConfig.store.lexisnexis_instant_verify_workflow,
           account_id: IdentityConfig.store.lexisnexis_account_id,

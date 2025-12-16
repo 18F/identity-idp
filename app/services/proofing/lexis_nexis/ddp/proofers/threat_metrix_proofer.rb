@@ -34,6 +34,10 @@ module Proofing
 
             result
           end
+
+          def verification_request
+            Requests::ThreatMetrixRequest
+          end
         end
       end
     end
