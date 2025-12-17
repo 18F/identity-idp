@@ -197,6 +197,7 @@ else
       },
 
       # Send previous week's verification reports to partners
+      # (Note: This is currently only for testing)
       sp_weekly_verification_report: {
         class: 'Reports::SpVerificationReport',
         cron: cron_every_monday_5am,
