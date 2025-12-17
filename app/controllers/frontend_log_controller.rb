@@ -48,6 +48,9 @@ class FrontendLogController < ApplicationController
   ALLOWED_EVENTS = %i[
     idv_camera_info_error
     idv_camera_info_logged
+    idv_in_person_proofing_verify_info_update_address_button_clicked
+    idv_in_person_proofing_verify_info_update_ssn_button_clicked
+    idv_in_person_proofing_verify_info_update_state_id_button_clicked
     idv_sdk_error_before_init
     idv_sdk_selfie_image_capture_closed_without_photo
     idv_sdk_selfie_image_capture_failed
