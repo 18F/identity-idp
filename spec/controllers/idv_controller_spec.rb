@@ -70,18 +70,6 @@ RSpec.describe IdvController do
           get :index
           expect(response).to redirect_to idv_welcome_url
         end
-
-        context 'using vectors of trust' do
-          before do
-            session[:sp] =
-              { issuer: current_sp.issuer, vtr: ['C2.Pb'] }
-          end
-
-          it 'redirects to welcome' do
-            get :index
-            expect(response).to redirect_to idv_welcome_url
-          end
-        end
       end
     end
 

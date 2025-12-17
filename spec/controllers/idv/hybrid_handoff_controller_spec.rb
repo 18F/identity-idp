@@ -24,9 +24,11 @@ RSpec.describe Idv::HybridHandoffController do
     stub_analytics
     allow(subject.idv_session).to receive(:service_provider).and_return(service_provider)
 
-    resolved_authn_context_result = sp_selfie_enabled ?
-                                      Vot::Parser.new(vector_of_trust: 'Pb').parse :
-                                      Vot::Parser.new(vector_of_trust: 'P1').parse
+    acr_values = sp_selfie_enabled ?
+      Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_REQUIRED_ACR :
+      Saml::Idp::Constants::IAL_VERIFIED_ACR
+
+    resolved_authn_context_result = Vot::Parser.new(acr_values:).parse
 
     allow(subject).to receive(:resolved_authn_context_result)
       .and_return(resolved_authn_context_result)

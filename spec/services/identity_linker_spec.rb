@@ -53,7 +53,7 @@ RSpec.describe IdentityLinker do
       expect(last_identity.rails_session_id).to eq(rails_session_id)
       expect(last_identity.ial).to eq(ial)
       expect(last_identity.acr_values).to eq(acr_values)
-      expect(last_identity.vtr).to eq(vtr)
+      expect(last_identity.vtr).to eq(nil)
       expect(last_identity.scope).to eq(scope)
       expect(last_identity.code_challenge).to eq(code_challenge)
       expect(last_identity.verified_attributes).to eq(verified_attributes)
