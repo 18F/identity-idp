@@ -1971,7 +1971,6 @@ user_mailer.dupe_profile.created.help_center_link: 'service d’assistance de %{
 user_mailer.dupe_profile.created.steps_link: les étapes présentées ici
 user_mailer.dupe_profile.review_complete.locked_heading: Ce compte est désormais verrouillé
 user_mailer.dupe_profile.review_complete.locked_info: Nous avons passé vos comptes en revue et ce compte a été verrouillé. Pour toute assistance supplémentaire, veuillez contacter %{sp_or_app_name}.
-user_mailer.dupe_profile.review_complete.success_heading: Vous pouvez vous reconnecter avec votre compte
 user_mailer.dupe_profile.review_complete.success_info: L’erreur concernant votre compte (LG22) a été résolue. Vous pouvez désormais vous connecter au site web de l’agence avec votre compte %{app_name}.
 user_mailer.dupe_profile.review_complete.success_title: Vous pouvez vous reconnecter avec votre compte %{app_name}
 user_mailer.dupe_profile.review_complete.unable_heading: Nous ne pouvons pas vous connecter à votre compte
