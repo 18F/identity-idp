@@ -387,6 +387,7 @@ proof_address_max_attempts: 5
 proof_ssn_max_attempt_window_in_minutes: 60
 proof_ssn_max_attempts: 10
 proofer_mock_fallback: true
+proofing_device_hybrid_profiling: disabled
 proofing_device_profiling: enabled
 protocols_report_config: '[]'
 push_notifications_enabled: false
