@@ -27,7 +27,7 @@ module Proofing
             account_drivers_license_issuer: applicant[:state_id_jurisdiction].to_s.strip || '',
             customer_event_type: applicant[:workflow],
             event_type: 'ACCOUNT_CREATION',
-            policy: applicant[:threatmetrix_session_id] ? config.ddp_policy : 'Instant Verify',
+            policy: applicant[:threatmetrix_session_id] ? config.ddp_policy : 'PhoneFinder', # 'Instant Verify', # 
             service_type: 'all',
             session_id: applicant[:threatmetrix_session_id],
             national_id_number: applicant[:ssn]&.gsub(/\D/, '') || '',

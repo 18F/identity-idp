@@ -52,6 +52,12 @@ module Proofing
     end
 
     def proofer(address_vendor)
+      return Proofing::LexisNexis::Ddp::Proofers::PhoneFinderProofer.new(
+        api_key: IdentityConfig.store.lexisnexis_threatmetrix_api_key,
+        org_id: IdentityConfig.store.lexisnexis_threatmetrix_org_id,
+        base_url: IdentityConfig.store.lexisnexis_threatmetrix_base_url,
+        ddp_policy: IdentityConfig.store.lexisnexis_threatmetrix_policy,
+      )
       case address_vendor
       when :lexis_nexis
         Proofing::LexisNexis::PhoneFinder::Proofer.new(
