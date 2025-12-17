@@ -22,16 +22,17 @@ RSpec.describe Reporting::SpVerificationReport do
   end
 
   before do
-    # The code reads row['properties.user_id'], so mock that key shape.
     mock_results = [
-      { 'properties.user_id' => 'user1' },
-      { 'properties.user_id' => 'user2' },
-      { 'properties.user_id' => 'user1' }, # duplicate to exercise uniq
+      { 'name' => 'IdV: doc auth welcome submitted', 'properties.user_id' => 'user1' },
+      { 'name' => 'IdV: doc auth welcome submitted', 'properties.user_id' => 'user2' },
+      { 'name' => 'IdV: doc auth welcome submitted', 'properties.user_id' => 'user1' }, 
     ]
+
     allow_any_instance_of(Reporting::CloudwatchClient)
       .to receive(:fetch)
       .and_return(mock_results)
   end
+
 
   describe '#overview_table' do
     it 'includes timeframe, generated date, and issuers' do
