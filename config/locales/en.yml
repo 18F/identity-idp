@@ -2122,7 +2122,7 @@ users.password_compromised.warning: We found your password in a data breach on a
 users.personal_key.accessible_labels.code_example: A personal key example with 16 characters
 users.personal_key.accessible_labels.preview: Personal key preview
 users.personal_key.confirmation_error: You’ve entered an incorrect personal key.
-users.personal_key.generated_on_html: Your personal key was generated on %{date_html}
+users.personal_key.generated_on_html: Your personal key was generated on <strong>%{date_html}</strong>
 users.phones.error_message: You’ve added the maximum number of phone numbers.
 users.rules_of_use.check_box_to_accept: Check this box to accept the %{app_name}
 users.rules_of_use.details_html: |-

@@ -2135,7 +2135,7 @@ users.password_compromised.warning: 另一个网站或应用程序的数据泄�
 users.personal_key.accessible_labels.code_example: 有 16 个字符的个人密钥示例
 users.personal_key.accessible_labels.preview: 个人密钥预览
 users.personal_key.confirmation_error: 你输入的个人密钥不对
-users.personal_key.generated_on_html: 你的个人密钥在 %{date_html} 生成。
+users.personal_key.generated_on_html: 你的个人密钥在 <strong>%{date_html}</strong> 生成。
 users.phones.error_message: 你添加的电话号码已达数量上限。
 users.rules_of_use.check_box_to_accept: 在该方框里打勾来接受 %{app_name}
 users.rules_of_use.details_html: |-
