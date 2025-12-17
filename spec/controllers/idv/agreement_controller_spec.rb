@@ -164,7 +164,7 @@ RSpec.describe Idv::AgreementController do
         context 'when IAL2 is needed' do
           before do
             create(:profile, :active, user:)
-            resolved_authn_context_result = Vot::Parser.new(
+            resolved_authn_context_result = Component::Parser.new(
               acr_values: Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_REQUIRED_ACR,
             ).parse
             allow(subject).to receive(:resolved_authn_context_result).and_return(

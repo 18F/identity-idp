@@ -246,7 +246,7 @@ RSpec.describe AuthnContextResolver do
         let(:acr_values) { 'unknown-acr-value' }
 
         it 'errors out as if there were no values' do
-          expect { result }.to raise_error Vot::Parser::ParseException
+          expect { result }.to raise_error Component::Parser::ParseException
         end
       end
 

@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe 'accounts/show.html.erb' do
-  let(:authn_context) { Vot::Parser::Result.no_sp_result }
+  let(:authn_context) { Component::Parser::Result.no_sp_result }
   let(:user) { create(:user, :fully_registered, :with_personal_key) }
   let(:authn_context) do
     AuthnContextResolver.new(

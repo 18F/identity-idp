@@ -176,7 +176,7 @@ class Analytics
       service_provider:,
       acr_values: session[:sp][:acr_values],
     ).result
-  rescue Vot::Parser::ParseException
+  rescue Component::Parser::ParseException
     return
   end
 end
