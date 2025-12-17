@@ -940,15 +940,15 @@ forms.passwords.edit.buttons.submit: Modifier le mot de passe
 forms.passwords.edit.labels.password: Nouveau mot de passe
 forms.passwords.reset.how_to_reset: Comment réinitialiser votre mot de passe
 forms.passwords.reset.how_to_reset_with_personal_key: Comment réinitialiser votre mot de passe si vous disposez d’une clé personnelle
-forms.personal_key_partial.acknowledgement.header: En cas d’oubli de votre mot de passe, vous aurez besoin de votre clé personnelle. Gardez-la en sécurité et ne la partagez avec personne.
+forms.personal_key_partial.acknowledgement.header: Votre clé personnelle est le seul moyen d’accéder à votre compte vérifié si vous réinitialisez votre mot de passe.
 forms.personal_key_partial.acknowledgement.help_link_text: En savoir plus sur la clé personnelle
-forms.personal_key_partial.acknowledgement.text: Si vous réinitialisez votre mot de passe sans votre clé personnelle, vous devrez à nouveau confirmer votre identité.
+forms.personal_key_partial.acknowledgement.text: Considérez-la comme un deuxième mot de passe. Gardez-la précieusement et ne la partagez avec personne.
 forms.personal_key_partial.header: Sauvegarder votre clé personnelle
 forms.personal_key.alternative: Vous ne disposez pas de votre clé personnelle ?
 forms.personal_key.confirmation_label: Clé personnelle
 forms.personal_key.download: Télécharger (fichier texte)
 forms.personal_key.instructions: Veuillez confirmer que vous avez une copie de votre clé personnelle en la saisissant ci-dessous.
-forms.personal_key.required_checkbox: J’ai conservé ma clé personnelle en lieu sûr.
+forms.personal_key.required_checkbox: J’ai enregistré ma clé personnelle avec la date de sa génération.
 forms.personal_key.title: Saisir votre clé personnelle
 forms.phone.buttons.delete: Supprimer le numéro de téléphone
 forms.piv_cac_login.submit: Insérer la carte PIV/CAC

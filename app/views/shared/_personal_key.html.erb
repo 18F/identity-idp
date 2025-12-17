@@ -1,4 +1,22 @@
 <%= render PageHeadingComponent.new.with_content(t('forms.personal_key_partial.header')) %>
+
+<p>
+  <strong>
+    <%= t('forms.personal_key_partial.acknowledgement.header') %>
+  </strong>
+</p>
+
+<p>
+  <%= t('forms.personal_key_partial.acknowledgement.text') %>
+  <%= new_tab_link_to(
+        t('forms.personal_key_partial.acknowledgement.help_link_text'),
+        help_center_redirect_url(
+          category: 'manage-your-account',
+          article: 'personal-key',
+        ),
+      ) %>
+</p>
+
 <div class="full-width-box margin-y-5">
   <%= render 'partials/personal_key/key',
              code: code,
@@ -8,26 +26,6 @@
 </div>
 
 <%= simple_form_for('', url: update_path) do |f| %>
-  <p>
-    <strong>
-      <%= t('forms.personal_key_partial.acknowledgement.header') %>
-    </strong>
-  </p>
-
-  <p>
-    <%= t('forms.personal_key_partial.acknowledgement.text') %>
-  </p>
-
-  <p>
-    <%= new_tab_link_to(
-          t('forms.personal_key_partial.acknowledgement.help_link_text'),
-          help_center_redirect_url(
-            category: 'manage-your-account',
-            article: 'personal-key',
-          ),
-        ) %>
-  </p>
-
   <%= render ClickObserverComponent.new(event_name: 'IdV: personal key acknowledgment toggled') do %>
     <%= render ValidatedFieldComponent.new(
           form: f,
