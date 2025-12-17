@@ -293,7 +293,7 @@ class UserMailer < ActionMailer::Base
       @root_url = root_url(locale: locale_url_param)
       mail(
         to: email_address.email,
-        subject: t('user_mailer.dupe_profile.review_complete.success_heading'),
+        subject: t('user_mailer.dupe_profile.review_complete.success_title', app_name: APP_NAME),
       )
     end
   end
