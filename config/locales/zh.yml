@@ -628,8 +628,9 @@ doc_auth.headings.document_capture: 添加你身份证件的照片
 doc_auth.headings.document_capture_back: 你身份证件的背面
 doc_auth.headings.document_capture_front: 你身份证件的正面
 doc_auth.headings.document_capture_passport: 你的护照
-doc_auth.headings.document_capture_selfie: 你面部照片
-doc_auth.headings.document_capture_subheader_selfie: 添加您面部照片
+doc_auth.headings.document_capture_selfie: 自拍照
+doc_auth.headings.document_capture_subheader_selfie: 拍一张自拍照
+doc_auth.headings.document_capture_subheader_selfie_review: 自拍照
 doc_auth.headings.front: 驾照或州政府颁发身份证件的正面
 doc_auth.headings.how_to_verify: 选择如何验证你的身份证件
 doc_auth.headings.interstitial: 我们正在处理你的图像

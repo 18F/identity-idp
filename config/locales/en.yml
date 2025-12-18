@@ -617,8 +617,9 @@ doc_auth.headings.document_capture: Add photos of your driver’s license or sta
 doc_auth.headings.document_capture_back: Back of your ID
 doc_auth.headings.document_capture_front: Front of your ID
 doc_auth.headings.document_capture_passport: Your passport
-doc_auth.headings.document_capture_selfie: Photo of your face
-doc_auth.headings.document_capture_subheader_selfie: Add a photo of your face
+doc_auth.headings.document_capture_selfie: Selfie
+doc_auth.headings.document_capture_subheader_selfie: Take a selfie
+doc_auth.headings.document_capture_subheader_selfie_review: Selfie
 doc_auth.headings.front: Front of your driver’s license or state ID
 doc_auth.headings.how_to_verify: Choose how to verify your ID
 doc_auth.headings.interstitial: We are processing your images

@@ -617,8 +617,9 @@ doc_auth.headings.document_capture: Ajoutez des photos de votre permis de condui
 doc_auth.headings.document_capture_back: Verso de votre pièce d’identité
 doc_auth.headings.document_capture_front: Recto de votre carte d’identité
 doc_auth.headings.document_capture_passport: Votre passeport
-doc_auth.headings.document_capture_selfie: Photo de votre visage
-doc_auth.headings.document_capture_subheader_selfie: Ajouter une photo de votre visage
+doc_auth.headings.document_capture_selfie: Selfie
+doc_auth.headings.document_capture_subheader_selfie: Prenez un selfie
+doc_auth.headings.document_capture_subheader_selfie_review: Selfie
 doc_auth.headings.front: Recto de votre permis de conduire ou de votre carte d’identité d’un État
 doc_auth.headings.how_to_verify: Choisir la manière dont vous souhaitez confirmer votre identité
 doc_auth.headings.interstitial: Nous traitons vos images
