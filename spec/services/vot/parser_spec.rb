@@ -1,12 +1,12 @@
 require 'rails_helper'
 
-RSpec.describe Vot::Parser do
+RSpec.describe Component::Parser do
   describe '#parse' do
     context 'when neither a VtR nor ACR values are provided' do
       it 'raises an error' do
-        expect { Vot::Parser.new.parse }
+        expect { Component::Parser.new.parse }
           .to raise_error(
-            Vot::Parser::ParseException,
+            Component::Parser::ParseException,
             'Component parser called without ACR values',
           )
       end
@@ -15,9 +15,9 @@ RSpec.describe Vot::Parser do
     context 'with just a VtR value provided' do
       it 'raises an error' do
         vector_of_trust = 'Pb'
-        expect { Vot::Parser.new(vector_of_trust:).parse }
+        expect { Component::Parser.new(vector_of_trust:).parse }
           .to raise_error(
-            Vot::Parser::ParseException,
+            Component::Parser::ParseException,
             'Component parser called without ACR values',
           )
       end
@@ -32,7 +32,7 @@ RSpec.describe Vot::Parser do
       end
 
       it 'parses ACR values to component values' do
-        result = Vot::Parser.new(acr_values:).parse
+        result = Component::Parser.new(acr_values:).parse
 
         expect(result.component_values.map(&:name).join(' ')).to eq(acr_values)
         expect(result.aal2?).to eq(true)
@@ -49,7 +49,7 @@ RSpec.describe Vot::Parser do
       let(:acr_values) { Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_REQUIRED_ACR }
 
       it 'adds the two pieces of fair evidence requirement' do
-        result = Vot::Parser.new(acr_values:).parse
+        result = Component::Parser.new(acr_values:).parse
 
         expect(result.expanded_component_values).to eq(acr_values)
         expect(result.two_pieces_of_fair_evidence?).to eq(true)
@@ -61,8 +61,8 @@ RSpec.describe Vot::Parser do
 
       context 'only an unknown acr_value is passed in' do
         it 'raises an exception' do
-          expect { Vot::Parser.new(acr_values:).parse }.to raise_exception(
-            Vot::Parser::ParseException,
+          expect { Component::Parser.new(acr_values:).parse }.to raise_exception(
+            Component::Parser::ParseException,
             'Component parser called without ACR values',
           )
         end
@@ -76,7 +76,7 @@ RSpec.describe Vot::Parser do
           end
 
           it 'parses ACR values to component values' do
-            result = Vot::Parser.new(acr_values:).parse
+            result = Component::Parser.new(acr_values:).parse
 
             expect(result.component_values.map(&:name).join(' ')).to eq(
               Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
@@ -99,7 +99,7 @@ RSpec.describe Vot::Parser do
             end
 
             it 'parses ACR values to component values' do
-              result = Vot::Parser.new(acr_values:).parse
+              result = Component::Parser.new(acr_values:).parse
 
               expect(result.component_values.map(&:name).join(' ')).to eq(
                 Saml::Idp::Constants::IAL_AUTH_ONLY_ACR,
@@ -127,8 +127,8 @@ RSpec.describe Vot::Parser do
       end
 
       it 'raises an exception' do
-        expect { Vot::Parser.new(acr_values:).parse }.to raise_exception(
-          Vot::Parser::DuplicateComponentsException,
+        expect { Component::Parser.new(acr_values:).parse }.to raise_exception(
+          Component::Parser::DuplicateComponentsException,
         )
       end
     end

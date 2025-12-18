@@ -3,12 +3,10 @@
 class AuthnContextResolver
   attr_reader :user, :service_provider, :acr_values
 
-  def initialize(user:, service_provider:, acr_values:, vtr: nil)
+  def initialize(user:, service_provider:, acr_values:)
     @user = user
     @service_provider = service_provider
     @acr_values = acr_values
-    # TODO:VOT: remove vtr param
-    @vtr = vtr
   end
 
   def result
@@ -54,7 +52,7 @@ class AuthnContextResolver
   end
 
   def acr_result_without_sp_defaults
-    @acr_result_without_sp_defaults ||= Vot::Parser.new(acr_values: acr_values).parse
+    @acr_result_without_sp_defaults ||= Component::Parser.new(acr_values: acr_values).parse
   end
 
   def result_with_sp_aal_defaults(result)
@@ -115,6 +113,6 @@ class AuthnContextResolver
   end
 
   def use_semantic_authn_contexts?
-    @use_semantic_authn_contexts ||= Vot::AcrComponentValues.any_semantic_acrs?(acr_values)
+    @use_semantic_authn_contexts ||= Component::AcrComponentValues.any_semantic_acrs?(acr_values)
   end
 end

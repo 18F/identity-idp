@@ -71,7 +71,7 @@ RSpec.describe RememberDeviceConcern do
 
           it 'throws an error' do
             expect { test_controller.mfa_expiration_interval }.to raise_error(
-              Vot::Parser::ParseException, 'Component parser called without ACR values'
+              Component::Parser::ParseException, 'Component parser called without ACR values'
             )
           end
         end

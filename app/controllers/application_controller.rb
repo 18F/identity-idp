@@ -135,7 +135,7 @@ class ApplicationController < ActionController::Base
 
     service_provider = sp_from_sp_session
     if service_provider.nil?
-      @resolved_authn_context_result = Vot::Parser::Result.no_sp_result
+      @resolved_authn_context_result = Component::Parser::Result.no_sp_result
     else
       @resolved_authn_context_result = AuthnContextResolver.new(
         user: current_user,

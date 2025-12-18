@@ -170,7 +170,7 @@ RSpec.describe SignUp::EmailConfirmationsController do
         get :create, params: {
           confirmation_token:,
           _request_id: request_id_param,
-          acr_values: Vot::AcrComponentValues::IAL1,
+          acr_values: Component::AcrComponentValues::IAL1,
         }
       end
 

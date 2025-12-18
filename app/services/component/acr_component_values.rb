@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Vot
+module Component
   module AcrComponentValues
     ## Identity proofing ACR values
     LOA1 = ComponentValue.new(

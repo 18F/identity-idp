@@ -332,7 +332,7 @@ RSpec.describe Idv::EnterPasswordController do
     context 'when the acr_values are defined' do
       context 'when the acr_values require facial match' do
         before do
-          resolved_authn_context_result = Vot::Parser.new(
+          resolved_authn_context_result = Component::Parser.new(
             acr_values: Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_REQUIRED_ACR,
           ).parse
 
@@ -357,7 +357,7 @@ RSpec.describe Idv::EnterPasswordController do
             skip: 'VoT has been deprecated. EIPP should not be determined via acr_values' do
       context 'when the vector of trust is not Enhanced IPP' do
         before do
-          resolved_authn_context_result = Vot::Parser.new(vector_of_trust: 'Pb').parse
+          resolved_authn_context_result = Component::Parser.new(vector_of_trust: 'Pb').parse
 
           allow(controller).to receive(:resolved_authn_context_result)
             .and_return(resolved_authn_context_result)
@@ -377,7 +377,7 @@ RSpec.describe Idv::EnterPasswordController do
 
       context 'when the vector of trust is Enhanced IPP' do
         before do
-          resolved_authn_context_result = Vot::Parser.new(vector_of_trust: 'Pe').parse
+          resolved_authn_context_result = Component::Parser.new(vector_of_trust: 'Pe').parse
 
           allow(controller).to receive(:resolved_authn_context_result)
             .and_return(resolved_authn_context_result)
@@ -1077,7 +1077,7 @@ RSpec.describe Idv::EnterPasswordController do
         create(:in_person_enrollment, :establishing, user: user)
       end
       before do
-        authn_context_result = Vot::Parser.new(vector_of_trust: 'Pe').parse
+        authn_context_result = Component::Parser.new(vector_of_trust: 'Pe').parse
         allow(controller).to(
           receive(:resolved_authn_context_result).and_return(authn_context_result),
         )
@@ -1107,7 +1107,7 @@ RSpec.describe Idv::EnterPasswordController do
 
           context 'when requesting ial2' do
             before do
-              resolved_authn_context_result = Vot::Parser.new(
+              resolved_authn_context_result = Component::Parser.new(
                 acr_values: Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_REQUIRED_ACR,
               ).parse
 

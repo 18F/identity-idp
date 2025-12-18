@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Vot
+module Component
   class Parser
     class ParseException < StandardError; end
 

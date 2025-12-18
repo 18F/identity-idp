@@ -3,21 +3,6 @@ require 'rails_helper'
 RSpec.describe AuthnContextResolver do
   let(:user) { build(:user) }
 
-  context 'when a vtr param' do
-    it 'returns a parsing error' do
-      vtr = ['C2.Pb']
-
-      expect do
-        AuthnContextResolver.new(
-          user: user,
-          service_provider: nil,
-          vtr: vtr,
-          acr_values: nil,
-        ).result
-      end.to raise_error Vot::Parser::ParseException
-    end
-  end
-
   context 'when resolving acr_values' do
     let(:service_provider) { nil }
     subject do
@@ -261,7 +246,7 @@ RSpec.describe AuthnContextResolver do
         let(:acr_values) { 'unknown-acr-value' }
 
         it 'errors out as if there were no values' do
-          expect { result }.to raise_error Vot::Parser::ParseException
+          expect { result }.to raise_error Component::Parser::ParseException
         end
       end
 
