@@ -4,18 +4,18 @@ require 'csv'
 
 RSpec.describe Reports::SpVerificationReport do
   let(:report_date) { Time.zone.parse('2025-11-14 23:59:59 UTC') } # Friday
-  let(:internal_emails) { ['internal1@example.com', 'internal2@example.com'] }
-  let(:partner_emails)  { ['partner@example.com'] }
-  let(:issuers)         { ['issuer1', 'issuer2'] }
-  let(:agency)          { 'Test_partner' }
+  let(:mock_internal_emails) { ['internal1@example.com', 'internal2@example.com'] }
+  let(:mock_partner_emails)  { ['partner@example.com'] }
+  let(:mock_issuers)         { ['issuer1', 'issuer2'] }
+  let(:mock_agency)          { 'Test_partner' }
 
   let(:configs) do
     [
       {
-        'issuers' => issuers,
-        'agency_abbreviation' => agency,
-        'internal_emails' => internal_emails,
-        'partner_emails' => partner_emails,
+        'issuers' => mock_issuers,
+        'agency_abbreviation' => mock_agency,
+        'internal_emails' => mock_internal_emails,
+        'partner_emails' => mock_partner_emails,
       },
     ]
   end
@@ -66,8 +66,8 @@ RSpec.describe Reports::SpVerificationReport do
       # Expect the builder to be constructed with the correct args and return emailable_reports
       expect(Reporting::SpVerificationReport).to receive(:new).with(
         time_range: range,
-        issuers: issuers,
-        agency_abbreviation: agency,
+        issuers: mock_issuers,
+        agency_abbreviation: mock_agency,
       ).and_return(instance_double(
         Reporting::SpVerificationReport,
         as_emailable_reports: emailable_reports,
@@ -83,9 +83,9 @@ RSpec.describe Reports::SpVerificationReport do
 
       # Expect email goes to both internal and partner sets
       expect(ReportMailer).to receive(:tables_report).with(
-        email: partner_emails,
-        bcc: internal_emails,
-        subject: "#{agency} Verification Report - #{report_date.to_date}",
+        email: mock_partner_emails,
+        bcc: mock_internal_emails,
+        subject: "#{mock_agency} Verification Report - #{report_date.to_date}",
         reports: emailable_reports,
         message: kind_of(String),
         attachment_format: :csv,
@@ -99,17 +99,17 @@ RSpec.describe Reports::SpVerificationReport do
 
       allow(Reporting::SpVerificationReport).to receive(:new).with(
         time_range: range,
-        issuers: issuers,
-        agency_abbreviation: agency,
+        issuers: mock_issuers,
+        agency_abbreviation: mock_agency,
       ).and_return(instance_double(
         Reporting::SpVerificationReport,
         as_emailable_reports: emailable_reports,
       ))
 
       expect(ReportMailer).to receive(:tables_report).with(
-        email: internal_emails,
+        email: mock_internal_emails,
         bcc: [],
-        subject: "#{agency} Verification Report - #{report_date.to_date}",
+        subject: "#{mock_agency} Verification Report - #{report_date.to_date}",
         reports: emailable_reports,
         message: kind_of(String),
         attachment_format: :csv,
@@ -119,8 +119,8 @@ RSpec.describe Reports::SpVerificationReport do
     end
 
     context 'when no emails are configured for the chosen receiver' do
-      let(:internal_emails) { [] }
-      let(:partner_emails)  { [] }
+      let(:mock_internal_emails) { [] }
+      let(:mock_partner_emails)  { [] }
 
       it 'does not build or send the report and returns false' do
         # Ensure we do NOT instantiate the builder or call mailer

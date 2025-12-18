@@ -37,7 +37,7 @@ RSpec.describe Reporting::SpVerificationReport do
   describe '#overview_table' do
     it 'includes timeframe, generated date, and issuers' do
       freeze_time do
-        expected_generated_date = Time.zone.today.to_s
+        expected_generated_date = Time.zone.now.to_date.to_s
 
         table = report.overview_table
 
