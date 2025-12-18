@@ -34,13 +34,20 @@ export function SelfieCaptureStep({
 }) {
   const { t } = useI18n();
 
+  const pageHeading = isReviewStep
+    ? t('doc_auth.headings.document_capture_subheader_selfie_review')
+    : t('doc_auth.headings.document_capture_subheader_selfie');
   return (
     <>
+<<<<<<< HEAD
       {isReviewStep ? (
         <h2>{t('doc_auth.headings.document_capture_subheader_selfie')}</h2>
       ) : (
         <h1>{t('doc_auth.headings.document_capture_subheader_selfie')}</h1>
       )}
+=======
+      <h1>{pageHeading}</h1>
+>>>>>>> b45bb34ecf (changelog: User-Facing Improvements, Doc Auth, update LN screens to read selfie)
       <p>{t('doc_auth.info.selfie_capture_content')}</p>
       <TipList
         title={t('doc_auth.tips.document_capture_selfie_selfie_text')}
