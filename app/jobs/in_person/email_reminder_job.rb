@@ -41,17 +41,28 @@ module InPerson
       end
     end
 
-    def calculate_reminder_date(offset)
-      validity_days = IdentityConfig.store.in_person_enrollment_validity_in_days.days
-      (Time.zone.now - validity_days) + offset.days
-    end
-
     def reminder_start_date
-      calculate_reminder_date(IdentityConfig.store.in_person_email_reminder_late_benchmark_in_days)
+      calculate_reminder_date(final_reminder_offset)
     end
 
     def reminder_end_date
-      calculate_reminder_date(IdentityConfig.store.in_person_email_reminder_final_benchmark_in_days)
+      calculate_reminder_date(late_reminder_offset)
+    end
+
+    def final_reminder_offset
+      validity_days - IdentityConfig.store.in_person_email_reminder_final_benchmark_in_days.days
+    end
+
+    def late_reminder_offset
+      validity_days - IdentityConfig.store.in_person_email_reminder_late_benchmark_in_days.days
+    end
+
+    def validity_days
+      IdentityConfig.store.in_person_enrollment_validity_in_days.days
+    end
+
+    def calculate_reminder_date(offset)
+      Time.zone.now - offset
     end
 
     def send_reminder_email(user, enrollment)
