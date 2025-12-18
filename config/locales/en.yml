@@ -1971,6 +1971,7 @@ user_mailer.dupe_profile.created.help_center_link: '%{app_name} Help Center'
 user_mailer.dupe_profile.created.steps_link: steps outlined here
 user_mailer.dupe_profile.review_complete.locked_heading: This account is now locked
 user_mailer.dupe_profile.review_complete.locked_info: We completed a review of your accounts and this account has been locked. Please contact %{sp_or_app_name} for further assistance.
+user_mailer.dupe_profile.review_complete.success_heading: You can sign back in with your account
 user_mailer.dupe_profile.review_complete.success_info: The error on your account (LG22) has been resolved. You can now sign into the agency website with your %{app_name} account.
 user_mailer.dupe_profile.review_complete.success_title: You can sign back in with your %{app_name} account
 user_mailer.dupe_profile.review_complete.unable_heading: We are not able to sign you in

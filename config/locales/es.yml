@@ -1983,6 +1983,7 @@ user_mailer.dupe_profile.created.help_center_link: 'el centro de ayuda de %{app_
 user_mailer.dupe_profile.created.steps_link: los pasos que se describen aquí
 user_mailer.dupe_profile.review_complete.locked_heading: Esta cuenta ya está bloqueada
 user_mailer.dupe_profile.review_complete.locked_info: Hicimos una revisión de sus cuentas y esta cuenta ha sido bloqueada. Para obtener ayuda, contacte con %{sp_or_app_name}.
+user_mailer.dupe_profile.review_complete.success_heading: Puede volver a iniciar sesión con su cuenta.
 user_mailer.dupe_profile.review_complete.success_info: El error en su cuenta (LG22) se ha solucionado. Ahora puede iniciar sesión en el sitio web de la agencia con su cuenta de %{app_name}.
 user_mailer.dupe_profile.review_complete.success_title: Puede volver a iniciar sesión con su cuenta de %{app_name}
 user_mailer.dupe_profile.review_complete.unable_heading: No podemos verificar su inicio de sesión
