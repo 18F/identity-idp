@@ -429,11 +429,10 @@ module Reporting
     def aamva_remote_query
       <<~QUERY
         filter name IN [‘idv_state_id_validation’]
-        | fields  message,  @timestamp, @message, @log, id 
+        | fields  message,  @timestamp, @message, @log, id ,
         properties.event_properties.vendor_name as @vendor_name
         | filter @vendor_name = 'aamva:state_id'
         | stats count(*) as aamva_transactions_remote
-
         | limit 10000
       QUERY
     end
