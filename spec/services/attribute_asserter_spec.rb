@@ -246,27 +246,6 @@ RSpec.describe AttributeAsserter do
       end
     end
 
-    context 'verified user and proofing VTR request' do
-      let(:authn_context) { 'C1.C2.P1' }
-      let(:attribute_bundle) { %w[email first_name last_name] }
-      before do
-        user.identities << identity
-        subject.build
-      end
-
-      it 'includes the correct bundle attributes' do
-        expect(user.asserted_attributes.keys).to eq(
-          [:uuid, :email, :aal, :ial],
-        )
-        expect(get_asserted_attribute(user, :ial)).to eq(
-          Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
-        )
-        expect(get_asserted_attribute(user, :aal)).to eq(
-          Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
-        )
-      end
-    end
-
     context 'when an IAL1 request is made' do
       before do
         user.identities << identity
@@ -390,24 +369,6 @@ RSpec.describe AttributeAsserter do
               expected = %i[uuid email aal ial x509_subject x509_issuer x509_presented]
               expect(user.asserted_attributes.keys).to eq expected
             end
-          end
-        end
-
-        context 'request made with a VTR param' do
-          let(:options) { { authn_context: 'C1.C2' } }
-          let(:attribute_bundle) { %w[email] }
-
-          it 'includes the correct bundle attributes' do
-            expect(user.asserted_attributes.keys).to eq(
-              [:uuid, :email, :aal, :ial],
-            )
-
-            expect(get_asserted_attribute(user, :aal)).to eq(
-              Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
-            )
-            expect(get_asserted_attribute(user, :ial)).to eq(
-              Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
-            )
           end
         end
       end

@@ -18,13 +18,11 @@ class AlertUserDuplicateProfileDiscoveredJob < ApplicationJob
       Telephony.send_dupe_profile_sign_in_attempted_notice(
         to: phone,
         country_code: Phonelib.parse(phone).country,
-        agency_name: agency,
       )
     elsif type == :account_verified
       Telephony.send_dupe_profile_created_notice(
         to: phone,
         country_code: Phonelib.parse(phone).country,
-        agency_name: agency,
       )
     end
   end

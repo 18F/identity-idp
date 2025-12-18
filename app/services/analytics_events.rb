@@ -3460,6 +3460,30 @@ module AnalyticsEvents
     )
   end
 
+  # The user clicked the "Update" link for address on the verify info page
+  def idv_in_person_proofing_verify_info_update_address_button_clicked(**extra)
+    track_event(
+      :idv_in_person_proofing_verify_info_update_address_button_clicked,
+      **extra,
+    )
+  end
+
+  # The user clicked the "Update" link for SSN on the verify info page
+  def idv_in_person_proofing_verify_info_update_ssn_button_clicked(**extra)
+    track_event(
+      :idv_in_person_proofing_verify_info_update_ssn_button_clicked,
+      **extra,
+    )
+  end
+
+  # The user clicked the "Update" link for state ID on the verify info page
+  def idv_in_person_proofing_verify_info_update_state_id_button_clicked(**extra)
+    track_event(
+      :idv_in_person_proofing_verify_info_update_state_id_button_clicked,
+      **extra,
+    )
+  end
+
   # The user clicked the sp link on the "ready to verify" page
   def idv_in_person_ready_to_verify_sp_link_clicked(**extra)
     track_event(
@@ -7890,8 +7914,8 @@ module AnalyticsEvents
       ial:,
       billed_ial:,
       sign_in_flow:,
-      vtr: vtr,
-      acr_values: acr_values,
+      vtr:,
+      acr_values:,
       sign_in_duration_seconds:,
       **extra,
     )

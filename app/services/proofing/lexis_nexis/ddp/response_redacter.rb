@@ -6,6 +6,7 @@ module Proofing
       class ResponseRedacter
         ALLOWED_RESPONSE_FIELDS = %w[
           account_email_assert_history
+          account_email_domain
           account_email_first_seen
           account_email_last_event
           account_email_last_update
@@ -87,8 +88,8 @@ module Proofing
           emailage.emailriskscore.eariskbandid
           emailage.emailriskscore.eascore
           emailage.emailriskscore.eastatusid
-          emailage.emailriskscore.emailage
           emailage.emailriskscore.email_creation_days
+          emailage.emailriskscore.emailage
           emailage.emailriskscore.emailexists
           emailage.emailriskscore.emailtobilladdressconfidence
           emailage.emailriskscore.emailtofullnameconfidence
@@ -96,18 +97,21 @@ module Proofing
           emailage.emailriskscore.emailtolastnameconfidence
           emailage.emailriskscore.first_seen_days
           emailage.emailriskscore.firstverificationdate
+          emailage.emailriskscore.fraud_type
           emailage.emailriskscore.fraudrisk
           emailage.emailriskscore.ip_risklevel
           emailage.emailriskscore.ip_riskreason
           emailage.emailriskscore.iptobilladdressconfidence
           emailage.emailriskscore.iptofullnameconfidence
           emailage.emailriskscore.iptolastnameconfidence
+          emailage.emailriskscore.lastflaggedon
           emailage.emailriskscore.namematch
           emailage.emailriskscore.overalldigitalidentityscore
           emailage.emailriskscore.phone_status
           emailage.emailriskscore.responsestatus.errorcode
           emailage.emailriskscore.responsestatus.status
           emailage.emailriskscore.shipforward
+          emailage.emailriskscore.source_industry
           emailage.emailriskscore.status
           emailage.emailriskscore.totalhits
           emailage.emailriskscore.uniquehits
@@ -127,8 +131,12 @@ module Proofing
           input_ip_assert_history
           input_ip_connection_type
           input_ip_first_seen
+          input_ip_geo
+          input_ip_isp
           input_ip_last_event
           input_ip_last_update
+          input_ip_organization
+          input_ip_region
           input_ip_score
           input_ip_worst_score
           national_id_first_seen

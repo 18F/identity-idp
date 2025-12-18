@@ -22,13 +22,17 @@ module AttemptsApiTrackingHelper
 
   def stub_attempts_tracker
     attempts_api_tracker = FakeAttemptsTracker.new
+    fraud_ops_tracker = FakeAttemptsTracker.new
 
     if respond_to?(:controller)
       allow(controller).to receive(:attempts_api_tracker).and_return(attempts_api_tracker)
+      allow(controller).to receive(:fraud_ops_tracker).and_return(fraud_ops_tracker)
     else
       allow(self).to receive(:attempts_api_tracker).and_return(attempts_api_tracker)
+      allow(self).to receive(:fraud_ops_tracker).and_return(fraud_ops_tracker)
     end
 
+    @fraud_ops_tracker = fraud_ops_tracker
     @attempts_api_tracker = attempts_api_tracker
   end
 end
