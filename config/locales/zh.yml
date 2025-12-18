@@ -951,15 +951,15 @@ forms.passwords.edit.buttons.submit: 变更密码
 forms.passwords.edit.labels.password: 新密码
 forms.passwords.reset.how_to_reset: 如何重置你的密码
 forms.passwords.reset.how_to_reset_with_personal_key: 如果你有个人密钥，如何重置密码
-forms.personal_key_partial.acknowledgement.header: 如果你忘记了密码，就需要你的个人密钥。请将其保管好，不要与任何人分享。
+forms.personal_key_partial.acknowledgement.header: 如果您重置了密码，您的个人密钥是访问已验证帐户的唯一途径。
 forms.personal_key_partial.acknowledgement.help_link_text: 了解更多有关个人密钥的信息。
-forms.personal_key_partial.acknowledgement.text: 如果你在没有个人密钥情况下重设你的密码，将需要再次验证你的身份。
+forms.personal_key_partial.acknowledgement.text: 请将其视为第二密码。妥善保管，切勿与任何人分享。
 forms.personal_key_partial.header: 保存你的个人密钥
 forms.personal_key.alternative: 没有你的个人密钥？
 forms.personal_key.confirmation_label: 个人密钥
 forms.personal_key.download: 下载（文本文件）。
 forms.personal_key.instructions: 请在下面输入你的个人密钥，以确认你有个人密钥。
-forms.personal_key.required_checkbox: 我将个人密钥存放到了一个安全的地方。
+forms.personal_key.required_checkbox: 我保存了我的个人密钥及其生成日期。
 forms.personal_key.title: 输入你的个人密钥
 forms.phone.buttons.delete: 去掉电话
 forms.piv_cac_login.submit: 插入 PIV/CAC
@@ -2135,7 +2135,7 @@ users.password_compromised.warning: 另一个网站或应用程序的数据泄�
 users.personal_key.accessible_labels.code_example: 有 16 个字符的个人密钥示例
 users.personal_key.accessible_labels.preview: 个人密钥预览
 users.personal_key.confirmation_error: 你输入的个人密钥不对
-users.personal_key.generated_on_html: 你的个人密钥在 %{date_html} 生成。
+users.personal_key.generated_on_html: 你的个人密钥在 <strong>%{date_html}</strong> 生成。
 users.phones.error_message: 你添加的电话号码已达数量上限。
 users.rules_of_use.check_box_to_accept: 在该方框里打勾来接受 %{app_name}
 users.rules_of_use.details_html: |-

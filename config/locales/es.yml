@@ -951,15 +951,15 @@ forms.passwords.edit.buttons.submit: Cambiar contraseña
 forms.passwords.edit.labels.password: Nueva contraseña
 forms.passwords.reset.how_to_reset: Cómo restablecer su contraseña
 forms.passwords.reset.how_to_reset_with_personal_key: Cómo restablecer su contraseña si tiene una clave personal
-forms.personal_key_partial.acknowledgement.header: Necesitará su clave personal si olvida su contraseña. Consérvela en un lugar seguro y no la comparta con nadie.
+forms.personal_key_partial.acknowledgement.header: Si usted restablece su contraseña, su clave personal será la única forma por la cual podrá acceder a su cuenta verificada.
 forms.personal_key_partial.acknowledgement.help_link_text: Obtenga más información sobre la clave personal
-forms.personal_key_partial.acknowledgement.text: Si restablece su contraseña y no tiene su clave personal, tendrá que verificar nuevamente su identidad.
+forms.personal_key_partial.acknowledgement.text: Trátela como una segunda contraseña. Manténgala segura y no la comparta con nadie.
 forms.personal_key_partial.header: Guarde su clave personal
 forms.personal_key.alternative: '¿No tiene su clave personal?'
 forms.personal_key.confirmation_label: Clave personal
 forms.personal_key.download: Descargar (archivo de texto)
 forms.personal_key.instructions: Confirme que tiene una copia de su clave personal ingresándola a continuación.
-forms.personal_key.required_checkbox: Guardé mi clave personal en un lugar seguro.
+forms.personal_key.required_checkbox: He guardado mi clave personal conjunto a la fecha en la cual fue generada.
 forms.personal_key.title: Ingrese su clave personal
 forms.phone.buttons.delete: Eliminar teléfono
 forms.piv_cac_login.submit: Inserte su tarjeta PIV o CAC
@@ -2134,7 +2134,7 @@ users.password_compromised.warning: Hemos encontrado su contraseña en una filtr
 users.personal_key.accessible_labels.code_example: Un ejemplo de clave personal con 16 caracteres
 users.personal_key.accessible_labels.preview: Vista previa de la clave personal
 users.personal_key.confirmation_error: Ingresó una clave personal incorrecta.
-users.personal_key.generated_on_html: Su clave personal fue generada el %{date_html}
+users.personal_key.generated_on_html: Su clave personal fue generada el <strong>%{date_html}</strong>
 users.phones.error_message: Agregó el número máximo de números de teléfono.
 users.rules_of_use.check_box_to_accept: Marque esta casilla para aceptar %{app_name}
 users.rules_of_use.details_html: |-
