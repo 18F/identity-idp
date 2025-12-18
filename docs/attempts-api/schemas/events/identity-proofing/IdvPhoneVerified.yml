@@ -1,0 +1,25 @@
+description: |
+  The user's IdV phone number is assessed
+allOf:
+  - $ref: '../shared/EventProperties.yml'
+  - type: object
+    properties:
+      phone_number:
+        type: string
+      failure_reason:
+        type: object
+        description: |
+          An OPTIONAL object. An associative array of attributes and errors if success is false
+        properties:
+          phone:
+            type: array
+            description: An OPTIONAL key that describes errors with the phone number
+            items:
+              type: string
+              enum:
+                - Fail - Risk Indicators match determined
+                - Failed - Input phone number could not be verified to name
+      success:
+        type: boolean
+        description: |
+          Indicates whether the user’s phone was successfully verified.
