@@ -81,7 +81,8 @@ module Reporting
           'Threat Metrix (Auth Only)',
           'LN Emailage',
           'GPO',
-          'AAMVA',
+          'AAMVA IPP',
+          'AAMVA Remote IDV',
           'Socure PhoneRisk (Shadow)',
         ],
         [
@@ -98,7 +99,8 @@ module Reporting
           threat_metrix_auth_only_table.first,
           ln_emailage_table.first,
           gpo_table.first,
-          aamva_table.first,
+          aamva_ipp_table.first,
+          aamva_remote_table.first,
           socure_phonerisk_table.first,
         ],
       ]
@@ -186,8 +188,14 @@ module Reporting
       [gpo_table_count, result]
     end
 
-    def aamva_table
-      result = fetch_results(query: aamva_query)
+    def aamva_ipp_table
+      result = fetch_results(query: aamva_ipp_query)
+      aamva_table_count = result.count
+      [aamva_table_count, result]
+    end
+
+    def aamva_remote_table
+      result = fetch_results(query: aamva_remote_query)
       aamva_table_count = result.count
       [aamva_table_count, result]
     end
@@ -405,7 +413,7 @@ module Reporting
       QUERY
     end
 
-    def aamva_query
+    def aamva_ipp_query
       <<~QUERY
         fields @timestamp, @message, @log, id 
         | filter name = 'IdV: doc auth verify proofing results' 
@@ -413,7 +421,19 @@ module Reporting
         | unnest message.properties.event_properties.proofing_results.context.stages.state_id into state_id
         | fields state_id.vendor_name as @vendor_name 
         | filter @vendor_name = 'aamva:state_id'
-        | stats count(*) as aamva_transactions
+        | stats count(*) as aamva_transactions_ipp
+        | limit 10000
+      QUERY
+    end
+
+    def aamva_remote_query
+      <<~QUERY
+        filter name IN [‘idv_state_id_validation’]
+        | fields  message,  @timestamp, @message, @log, id 
+        properties.event_properties.vendor_name as @vendor_name
+        | filter @vendor_name = 'aamva:state_id'
+        | stats count(*) as aamva_transactions_remote
+
         | limit 10000
       QUERY
     end

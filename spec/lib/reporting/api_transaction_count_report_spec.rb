@@ -26,7 +26,8 @@ RSpec.describe Reporting::ApiTransactionCountReport do
     allow(report).to receive(:threat_metrix_auth_only_table).and_return([50, mock_results])
     allow(report).to receive(:ln_emailage_table).and_return([60, mock_results])
     allow(report).to receive(:gpo_table).and_return([70, mock_results])
-    allow(report).to receive(:aamva_table).and_return([80, mock_results])
+    allow(report).to receive(:aamva_ipp_table).and_return([80, mock_results])
+    allow(report).to receive(:aamva_remote_table).and_return([85, mock_results])
     allow(report).to receive(:socure_phonerisk_table).and_return([90, mock_results])
   end
 
@@ -55,19 +56,21 @@ RSpec.describe Reporting::ApiTransactionCountReport do
           'Threat Metrix (Auth Only)',
           'LN Emailage',
           'GPO',
-          'AAMVA',
+          'AAMVA IPP',
+          'AAMVA Remote IDV',
           'Socure PhoneRisk (Shadow)',
         ],
       )
 
       expect(data_row.first).to eq("#{time_range.begin.to_date} - #{time_range.end.to_date}")
-      expect(data_row[1..]).to eq([10, 11, 15, 20, 25, 26, 30, 40, 45, 50, 60, 70, 80, 90])
+      expect(data_row[1..]).to eq([10, 11, 15, 20, 25, 26, 30, 40, 45, 50, 60, 70, 80, 85, 90])
     end
   end
 
   describe '#to_csvs' do
     it 'generates valid CSV output' do
       csvs = report.to_csvs
+
       expect(csvs).to be_an(Array)
       expect(csvs.size).to eq(1)
 
@@ -78,7 +81,8 @@ RSpec.describe Reporting::ApiTransactionCountReport do
           Socure\ \(DocV\),Socure\ \(DocV\ -\ Selfie\),
           Socure\ \(KYC\),
           Fraud\ Score\ and\ Attribute,Threat\ Metrix\s\(IDV\),
-          Threat\ Metrix\s\(Auth\ Only\),LN\ Emailage,GPO,AAMVA,
+          Threat\ Metrix\s\(Auth\ Only\),LN\ Emailage,GPO,
+          AAMVA\ IPP,AAMVA\ Remote\ IDV,
           Socure\ PhoneRisk\ \(Shadow\)
         /x,
       )
@@ -89,6 +93,7 @@ RSpec.describe Reporting::ApiTransactionCountReport do
   describe '#as_emailable_reports' do
     it 'returns a valid emailable report object' do
       reports = report.as_emailable_reports
+
       expect(reports).to be_an(Array)
       expect(reports.first).to be_a(Reporting::EmailableReport)
       expect(reports.first.filename).to eq('api_transaction_count_report')
