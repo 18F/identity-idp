@@ -9,7 +9,7 @@ es:
       ¿No quieres eliminar tu cuenta? Inicie sesión en su cuenta %{app_name} para cancelar.
     authentication_otp:
       sms: |-
-        %{app_name}: La contraseña es %{code}. Esta contraseña puede usarse una vez y se vence en %{expiration} minutos. No la comparta con nadie.
+        %{app_name} NUNCA te contactara para pedirte este codigo. No lo compartas con nadie. Tu codigo es %{code}. Caduca en %{expiration} minutos.
 
         @%{domain} #%{code}
       voice: 'Hola: Su código de un solo uso de seis %{format_type} de %{app_name} es %{code}. Su código de un solo uso es %{code}. De nuevo, su código de un solo uso es %{code}. Este código vence en %{expiration} minutos.'
