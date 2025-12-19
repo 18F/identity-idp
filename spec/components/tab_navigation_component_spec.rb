@@ -42,7 +42,7 @@ RSpec.describe TabNavigationComponent, type: :component do
     end
 
     it 'renders current link as highlighted' do
-      expect(rendered).to have_css('li,[role=listitem]', count: 2)
+      expect(rendered).to have_css('li', count: 2)
       expect(rendered).to have_link('First') { |link| is_current_link?(link) }
       expect(rendered).to have_link('Second') { |link| !is_current_link?(link) }
     end

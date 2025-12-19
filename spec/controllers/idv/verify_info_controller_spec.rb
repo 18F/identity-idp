@@ -51,7 +51,6 @@ RSpec.describe Idv::VerifyInfoController do
           expect(idv_session.residential_resolution_vendor).to be(nil)
           expect(idv_session.resolution_successful).to be(nil)
           expect(idv_session.resolution_vendor).to be(nil)
-          expect(idv_session.source_check_vendor).to be(nil)
           expect(idv_session.threatmetrix_review_status).to be(nil)
           expect(idv_session.verify_info_step_document_capture_session_uuid).to be(nil)
         end
@@ -76,6 +75,10 @@ RSpec.describe Idv::VerifyInfoController do
   end
 
   describe '#show' do
+    before do
+      subject.idv_session.precheck_phone = { phone: '+1 703-555-5555' }
+    end
+
     it 'renders the show template' do
       get :show
 
@@ -215,14 +218,11 @@ RSpec.describe Idv::VerifyInfoController do
         }
       end
 
-      let(:document_capture_session) do
-        document_capture_session = DocumentCaptureSession.create!(user: user)
-        document_capture_session.create_proofing_session
-        document_capture_session.store_proofing_result(idv_result)
-        document_capture_session
-      end
+      let(:document_capture_session) { create(:document_capture_session, user:) }
 
       before do
+        document_capture_session.create_proofing_session
+        document_capture_session.store_proofing_result(idv_result)
         controller
           .idv_session
           .verify_info_step_document_capture_session_uuid = document_capture_session.uuid
@@ -323,7 +323,7 @@ RSpec.describe Idv::VerifyInfoController do
             date_of_birth: applicant_pii[:dob],
             address1: applicant_pii[:address1],
             address2: applicant_pii[:address2],
-            ssn: applicant_pii[:ssn],
+            ssn: SsnFormatter.format(applicant_pii[:ssn]),
             city: applicant_pii[:city],
             state: applicant_pii[:state],
             zip: applicant_pii[:zip],
@@ -361,7 +361,7 @@ RSpec.describe Idv::VerifyInfoController do
             date_of_birth: applicant_pii[:dob],
             address1: applicant_pii[:address1],
             address2: applicant_pii[:address2],
-            ssn: applicant_pii[:ssn],
+            ssn: SsnFormatter.format(applicant_pii[:ssn]),
             city: applicant_pii[:city],
             state: applicant_pii[:state],
             zip: applicant_pii[:zip],
@@ -378,7 +378,6 @@ RSpec.describe Idv::VerifyInfoController do
 
       context 'when there is a threatmetrix exception' do
         let(:review_status) { nil }
-
         let(:idv_result) do
           {
             context: {
@@ -468,7 +467,7 @@ RSpec.describe Idv::VerifyInfoController do
             date_of_birth: applicant_pii[:dob],
             address1: applicant_pii[:address1],
             address2: applicant_pii[:address2],
-            ssn: applicant_pii[:ssn],
+            ssn: SsnFormatter.format(applicant_pii[:ssn]),
             city: applicant_pii[:city],
             state: applicant_pii[:state],
             zip: applicant_pii[:zip],
@@ -525,7 +524,7 @@ RSpec.describe Idv::VerifyInfoController do
             date_of_birth: applicant_pii[:dob],
             address1: applicant_pii[:address1],
             address2: applicant_pii[:address2],
-            ssn: applicant_pii[:ssn],
+            ssn: SsnFormatter.format(applicant_pii[:ssn]),
             city: applicant_pii[:city],
             state: applicant_pii[:state],
             zip: applicant_pii[:zip],
@@ -589,20 +588,17 @@ RSpec.describe Idv::VerifyInfoController do
     end
 
     context 'when the user has updated their SSN' do
-      let(:document_capture_session) do
-        DocumentCaptureSession.create(user:)
-      end
+      let(:document_capture_session) { create(:document_capture_session, user:) }
 
-      let(:async_state) do
-        # Here we're trying to match the store to redis -> read from redis flow this data travels
-        adjudicated_result = Proofing::Resolution::ResultAdjudicator.new(
+      let(:adjudicated_result) do
+        Proofing::Resolution::ResultAdjudicator.new(
           state_id_result: Proofing::StateIdResult.new(success: true),
-          phone_finder_result: Proofing::AddressResult.new(
+          phone_result: Proofing::AddressResult.new(
             success: true,
             errors: {},
             exception: nil,
             vendor_name: 'test-phone-vendor',
-          ),
+          ).to_h,
           device_profiling_result: Proofing::DdpResult.new(success: true),
           ipp_enrollment_in_progress: true,
           residential_resolution_result: Proofing::Resolution::Result.new(success: true),
@@ -610,17 +606,19 @@ RSpec.describe Idv::VerifyInfoController do
           same_address_as_id: true,
           should_proof_state_id: true,
           applicant_pii: Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN,
-        ).adjudicated_result.to_h
+          precheck_phone_number: subject.idv_session.precheck_phone[:phone],
+        ).adjudicated_result
+      end
 
+      before do
+        # Here we're trying to match the store to redis -> read from redis flow this data travels
         document_capture_session.create_proofing_session
-
-        document_capture_session.store_proofing_result(adjudicated_result)
-
-        document_capture_session.load_proofing_result
+        document_capture_session.store_proofing_result(adjudicated_result.to_h)
+        allow(controller).to receive(:load_async_state)
+          .and_return(document_capture_session.load_proofing_result)
       end
 
       it 'logs the edit distance between SSNs' do
-        allow(controller).to receive(:load_async_state).and_return(async_state)
         controller.idv_session.ssn = Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn]
         controller.idv_session.previous_ssn = '900661256'
 
@@ -636,19 +634,23 @@ RSpec.describe Idv::VerifyInfoController do
     end
 
     context 'for an aamva request' do
-      let(:document_capture_session) do
-        DocumentCaptureSession.create(user:)
-      end
-
+      let(:document_capture_session) { create(:document_capture_session, user:) }
       let(:success) { true }
       let(:errors) { {} }
       let(:exception) { nil }
       let(:vendor_name) { 'aamva_placeholder' }
       let(:applicant_pii) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN }
+      let(:phone_result) do
+        Proofing::AddressResult.new(
+          success: true,
+          errors: {},
+          exception: nil,
+          vendor_name: 'test-phone-vendor',
+        ).to_h
+      end
 
-      let(:async_state) do
-        # Here we're trying to match the store to redis -> read from redis flow this data travels
-        adjudicated_result = Proofing::Resolution::ResultAdjudicator.new(
+      let(:adjudicated_result) do
+        Proofing::Resolution::ResultAdjudicator.new(
           state_id_result: Proofing::StateIdResult.new(
             success: success,
             errors: errors,
@@ -657,12 +659,7 @@ RSpec.describe Idv::VerifyInfoController do
             transaction_id: 'abc123',
             verified_attributes: [],
           ),
-          phone_finder_result: Proofing::AddressResult.new(
-            success: true,
-            errors: {},
-            exception: nil,
-            vendor_name: 'test-phone-vendor',
-          ),
+          phone_result:,
           device_profiling_result: Proofing::DdpResult.new(success: true),
           ipp_enrollment_in_progress: true,
           residential_resolution_result: Proofing::Resolution::Result.new(success: true),
@@ -670,23 +667,50 @@ RSpec.describe Idv::VerifyInfoController do
           same_address_as_id: true,
           should_proof_state_id: true,
           applicant_pii:,
-        ).adjudicated_result.to_h
-
-        document_capture_session.create_proofing_session
-
-        document_capture_session.store_proofing_result(adjudicated_result)
-
-        document_capture_session.load_proofing_result
+          precheck_phone_number: subject.idv_session.precheck_phone[:phone],
+        ).adjudicated_result
       end
 
       before do
-        allow(controller).to receive(:load_async_state).and_return(async_state)
+        document_capture_session.create_proofing_session
+        document_capture_session.store_proofing_result(adjudicated_result.to_h)
+        allow(controller).to receive(:load_async_state)
+          .and_return(document_capture_session.load_proofing_result)
       end
 
       context 'when aamva processes the request normally' do
         it 'redirect to phone confirmation url' do
           put :show
-          expect(response).to redirect_to idv_phone_url
+          expect(response).to redirect_to idv_enter_password_url
+        end
+
+        context 'when phone result fails' do
+          let(:phone_result) do
+            Proofing::AddressResult.new(
+              success: false,
+              errors: {},
+              exception: nil,
+              vendor_name: 'test-phone-vendor',
+            ).to_h
+          end
+
+          it 'redirect to phone confirmation url' do
+            put :show
+            expect(response).to redirect_to idv_phone_url
+            expect(controller.idv_session.phone_precheck_successful).to eq(false)
+            expect(controller.idv_session.phone_precheck_vendor).to be_nil
+          end
+        end
+
+        context 'when there are no phone results' do
+          let(:phone_result) { {} }
+
+          it 'redirect to phone confirmation url' do
+            put :show
+            expect(response).to redirect_to idv_phone_url
+            expect(controller.idv_session.phone_precheck_successful).to be_nil
+            expect(controller.idv_session.phone_precheck_vendor).to be_nil
+          end
         end
 
         it 'logs an event with analytics_id set' do
@@ -711,6 +735,91 @@ RSpec.describe Idv::VerifyInfoController do
               vendor_name: 'aamva_placeholder',
             ),
           )
+
+          event = @analytics.events['IdV: doc auth verify proofing results'].first
+          phone_precheck = event.dig(:proofing_results, :context, :stages, :phone_precheck)
+          expect(phone_precheck).to match(
+            hash_including(
+              success: true,
+              vendor_name: 'test-phone-vendor',
+            ),
+          )
+          expect(controller.idv_session.phone_precheck_successful).to eq(true)
+          expect(controller.idv_session.phone_precheck_vendor).to eq('test-phone-vendor')
+        end
+
+        context 'when there is a secondary phone vendor' do
+          let(:phone_result) do
+            alternate_result = Proofing::AddressResult.new(
+              success: false,
+              errors: {},
+              exception: nil,
+              vendor_name: 'failed-vendor',
+            ).to_h
+            Proofing::AddressResult.new(
+              success: true,
+              errors: {},
+              exception: nil,
+              vendor_name: 'successful-vendor',
+            ).to_h.merge(alternate_result:)
+          end
+          it 'logs an event with analytics_id set' do
+            put :show
+
+            event = @analytics.events['IdV: doc auth verify proofing results'].first
+            phone_precheck = event.dig(:proofing_results, :context, :stages, :phone_precheck)
+            expect(phone_precheck).to match(
+              hash_including(
+                success: true,
+                vendor_name: 'successful-vendor',
+              ),
+            )
+            expect(phone_precheck[:alternate_result]).to match(
+              hash_including(
+                success: false,
+                vendor_name: 'failed-vendor',
+              ),
+            )
+            expect(controller.idv_session.phone_precheck_successful).to eq(true)
+            expect(controller.idv_session.phone_precheck_vendor).to eq('successful-vendor')
+          end
+
+          context 'when both phone vendors fail' do
+            let(:phone_result) do
+              alternate_result = Proofing::AddressResult.new(
+                success: false,
+                errors: {},
+                exception: nil,
+                vendor_name: 'first-failed-vendor',
+              ).to_h
+              Proofing::AddressResult.new(
+                success: false,
+                errors: {},
+                exception: nil,
+                vendor_name: 'second-failed-vendor',
+              ).to_h.merge(alternate_result:)
+            end
+            it 'logs an event with analytics_id set' do
+              put :show
+
+              event = @analytics.events['IdV: doc auth verify proofing results'].first
+              phone_precheck = event.dig(:proofing_results, :context, :stages, :phone_precheck)
+              expect(phone_precheck).to match(
+                hash_including(
+                  success: false,
+                  vendor_name: 'second-failed-vendor',
+                ),
+              )
+              expect(phone_precheck[:alternate_result]).to match(
+                hash_including(
+                  success: false,
+                  vendor_name: 'first-failed-vendor',
+                ),
+              )
+              expect(controller.idv_session.phone_precheck_successful).to eq(false)
+              expect(controller.idv_session.phone_precheck_vendor).to be_nil
+            end
+          end
         end
 
         it 'tracks the event for the attempts api' do
@@ -725,7 +834,7 @@ RSpec.describe Idv::VerifyInfoController do
             date_of_birth: applicant_pii[:dob],
             address1: applicant_pii[:address1],
             address2: applicant_pii[:address2],
-            ssn: applicant_pii[:ssn],
+            ssn: SsnFormatter.format(applicant_pii[:ssn]),
             city: applicant_pii[:city],
             state: applicant_pii[:state],
             zip: applicant_pii[:zip],
@@ -750,7 +859,7 @@ RSpec.describe Idv::VerifyInfoController do
             date_of_birth: applicant_pii[:dob],
             address1: applicant_pii[:address1],
             address2: applicant_pii[:address2],
-            ssn: applicant_pii[:ssn],
+            ssn: SsnFormatter.format(applicant_pii[:ssn]),
             city: applicant_pii[:city],
             state: applicant_pii[:state],
             zip: applicant_pii[:zip],
@@ -785,7 +894,7 @@ RSpec.describe Idv::VerifyInfoController do
             date_of_birth: applicant_pii[:dob],
             address1: applicant_pii[:address1],
             address2: applicant_pii[:address2],
-            ssn: applicant_pii[:ssn],
+            ssn: SsnFormatter.format(applicant_pii[:ssn]),
             city: applicant_pii[:city],
             state: applicant_pii[:state],
             zip: applicant_pii[:zip],
@@ -838,7 +947,7 @@ RSpec.describe Idv::VerifyInfoController do
       end
 
       context 'when proofing results is missing values' do
-        let(:results) do
+        let(:adjudicated_result) do
           {
             context:,
             errors: {},
@@ -846,12 +955,6 @@ RSpec.describe Idv::VerifyInfoController do
             success: true,
             threatmetrix_review_status: :passed,
           }
-        end
-
-        let(:async_state) do
-          document_capture_session.create_proofing_session
-          document_capture_session.store_proofing_result(results)
-          document_capture_session.load_proofing_result
         end
 
         context 'when context is missing' do
@@ -881,25 +984,22 @@ RSpec.describe Idv::VerifyInfoController do
     end
 
     context 'when instant verify address proofing results in an exception' do
-      let(:document_capture_session) do
-        DocumentCaptureSession.create(user:)
-      end
+      let(:document_capture_session) { create(:document_capture_session, user:) }
       let(:success) { false }
       let(:errors) { {} }
       let(:exception) { nil }
       let(:error_attributes) { nil }
       let(:vendor_name) { 'instantverify_placeholder' }
       let(:applicant_pii) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN }
-      let(:async_state) do
-        # Here we're trying to match the store to redis -> read from redis flow this data travels
-        adjudicated_result = Proofing::Resolution::ResultAdjudicator.new(
+      let(:adjudicated_result) do
+        Proofing::Resolution::ResultAdjudicator.new(
           state_id_result: Proofing::StateIdResult.new(success: true),
-          phone_finder_result: Proofing::AddressResult.new(
+          phone_result: Proofing::AddressResult.new(
             success: success,
             errors: {},
             exception: exception,
             vendor_name: 'instant_verify_test',
-          ),
+          ).to_h,
           device_profiling_result: Proofing::DdpResult.new(success: true),
           ipp_enrollment_in_progress: false,
           residential_resolution_result: Proofing::Resolution::Result.new(success: true),
@@ -913,16 +1013,15 @@ RSpec.describe Idv::VerifyInfoController do
           same_address_as_id: nil,
           should_proof_state_id: true,
           applicant_pii:,
-        ).adjudicated_result.to_h
-
-        document_capture_session.create_proofing_session
-
-        document_capture_session.store_proofing_result(adjudicated_result)
-
-        document_capture_session.load_proofing_result
+          precheck_phone_number: subject.idv_session.precheck_phone[:phone],
+        ).adjudicated_result
       end
+
       before do
-        allow(controller).to receive(:load_async_state).and_return(async_state)
+        document_capture_session.create_proofing_session
+        document_capture_session.store_proofing_result(adjudicated_result.to_h)
+        allow(controller).to receive(:load_async_state)
+          .and_return(document_capture_session.load_proofing_result)
       end
 
       context 'address is the only exception' do
@@ -945,7 +1044,7 @@ RSpec.describe Idv::VerifyInfoController do
             date_of_birth: applicant_pii[:dob],
             address1: applicant_pii[:address1],
             address2: applicant_pii[:address2],
-            ssn: applicant_pii[:ssn],
+            ssn: SsnFormatter.format(applicant_pii[:ssn]),
             city: applicant_pii[:city],
             state: applicant_pii[:state],
             zip: applicant_pii[:zip],
@@ -1007,7 +1106,7 @@ RSpec.describe Idv::VerifyInfoController do
             date_of_birth: applicant_pii[:dob],
             address1: applicant_pii[:address1],
             address2: applicant_pii[:address2],
-            ssn: applicant_pii[:ssn],
+            ssn: SsnFormatter.format(applicant_pii[:ssn]),
             city: applicant_pii[:city],
             state: applicant_pii[:state],
             zip: applicant_pii[:zip],
@@ -1051,19 +1150,10 @@ RSpec.describe Idv::VerifyInfoController do
     end
 
     context 'when the resolution proofing job fails and there is no exception' do
-      before do
-        allow(controller).to receive(:load_async_state).and_return(async_state)
-      end
-
-      let(:document_capture_session) do
-        DocumentCaptureSession.create(user:)
-      end
-
+      let(:document_capture_session) { create(:document_capture_session, user:) }
       let(:applicant_pii) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN }
-
-      let(:async_state) do
-        # Here we're trying to match the store to redis -> read from redis flow this data travels
-        adjudicated_result = Proofing::Resolution::ResultAdjudicator.new(
+      let(:adjudicated_result) do
+        Proofing::Resolution::ResultAdjudicator.new(
           state_id_result: Proofing::StateIdResult.new(
             success: true,
             errors: {},
@@ -1072,12 +1162,12 @@ RSpec.describe Idv::VerifyInfoController do
             transaction_id: 'abc123',
             verified_attributes: [],
           ),
-          phone_finder_result: Proofing::AddressResult.new(
+          phone_result: Proofing::AddressResult.new(
             success: true,
             errors: {},
             exception: nil,
             vendor_name: 'test-phone-vendor',
-          ),
+          ).to_h,
           device_profiling_result: Proofing::DdpResult.new(success: true),
           ipp_enrollment_in_progress: true,
           residential_resolution_result: Proofing::Resolution::Result.new(success: true),
@@ -1092,13 +1182,15 @@ RSpec.describe Idv::VerifyInfoController do
           same_address_as_id: true,
           should_proof_state_id: true,
           applicant_pii:,
-        ).adjudicated_result.to_h
+          precheck_phone_number: subject.idv_session.precheck_phone[:phone],
+        ).adjudicated_result
+      end
 
+      before do
         document_capture_session.create_proofing_session
-
-        document_capture_session.store_proofing_result(adjudicated_result)
-
-        document_capture_session.load_proofing_result
+        document_capture_session.store_proofing_result(adjudicated_result.to_h)
+        allow(controller).to receive(:load_async_state)
+          .and_return(document_capture_session.load_proofing_result)
       end
 
       it 'tracks the attempts api event' do
@@ -1113,7 +1205,7 @@ RSpec.describe Idv::VerifyInfoController do
           date_of_birth: applicant_pii[:dob],
           address1: applicant_pii[:address1],
           address2: applicant_pii[:address2],
-          ssn: applicant_pii[:ssn],
+          ssn: SsnFormatter.format(applicant_pii[:ssn]),
           city: applicant_pii[:city],
           state: applicant_pii[:state],
           zip: applicant_pii[:zip],
@@ -1182,17 +1274,11 @@ RSpec.describe Idv::VerifyInfoController do
     end
 
     context 'when the resolution proofing job completed successfully' do
-      let(:document_capture_session) do
-        DocumentCaptureSession.create(user:)
-      end
-
+      let(:document_capture_session) { create(:document_capture_session, user:) }
       let(:resolution_vendor_name) { 'ResolutionVendor' }
-
       let(:residential_resolution_vendor_name) { 'ResidentialResolutionVendor' }
-
-      let(:async_state) do
-        # Here we're trying to match the store to redis -> read from redis flow this data travels
-        adjudicated_result = Proofing::Resolution::ResultAdjudicator.new(
+      let(:adjudicated_result) do
+        Proofing::Resolution::ResultAdjudicator.new(
           state_id_result: Proofing::StateIdResult.new(
             success: true,
             errors: {},
@@ -1201,12 +1287,12 @@ RSpec.describe Idv::VerifyInfoController do
             transaction_id: 'abc123',
             verified_attributes: [],
           ),
-          phone_finder_result: Proofing::AddressResult.new(
+          phone_result: Proofing::AddressResult.new(
             success: true,
             errors: {},
             exception: nil,
             vendor_name: 'test-phone-vendor',
-          ),
+          ).to_h,
           device_profiling_result: Proofing::DdpResult.new(success: true),
           ipp_enrollment_in_progress: true,
           residential_resolution_result: Proofing::Resolution::Result.new(
@@ -1220,17 +1306,16 @@ RSpec.describe Idv::VerifyInfoController do
           same_address_as_id: true,
           should_proof_state_id: true,
           applicant_pii: Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN,
-        ).adjudicated_result.to_h
-
-        document_capture_session.create_proofing_session
-
-        document_capture_session.store_proofing_result(adjudicated_result)
-
-        document_capture_session.load_proofing_result
+          precheck_phone_number: subject.idv_session.precheck_phone[:phone],
+        ).adjudicated_result
       end
 
       before do
-        allow(controller).to receive(:load_async_state).and_return(async_state)
+        # Here we're trying to match the store to redis -> read from redis flow this data travels
+        document_capture_session.create_proofing_session
+        document_capture_session.store_proofing_result(adjudicated_result.to_h)
+        allow(controller).to receive(:load_async_state)
+          .and_return(document_capture_session.load_proofing_result)
       end
 
       it 'sets resolution_vendor on idv_session' do
@@ -1269,6 +1354,17 @@ RSpec.describe Idv::VerifyInfoController do
       expect(response).to redirect_to idv_verify_info_url
     end
 
+    context 'has best effort phone' do
+      before do
+        subject.idv_session.phone_for_mobile_flow = '+1 703-555-5555'
+      end
+
+      it 'stores the precheck phone number in the idv session' do
+        put :update
+
+        expect(subject.idv_session.precheck_phone[:phone]).to eq('+1 703-555-5555')
+      end
+    end
     context 'with an sp' do
       let(:sp) { create(:service_provider) }
       let(:acr_values) { Saml::Idp::Constants::AAL1_AUTHN_CONTEXT_CLASSREF }
@@ -1355,20 +1451,6 @@ RSpec.describe Idv::VerifyInfoController do
       expect(subject.best_effort_phone).to eq(nil)
     end
 
-    context 'when there is a hybrid handoff number' do
-      before(:each) do
-        allow(subject.idv_session).to receive(:phone_for_mobile_flow).and_return('202-555-1234')
-      end
-
-      it 'returns the phone number from hybrid handoff' do
-        expect(subject.best_effort_phone[:phone]).to eq('202-555-1234')
-      end
-
-      it 'sets type to :hybrid_handoff' do
-        expect(subject.best_effort_phone[:source]).to eq(:hybrid_handoff)
-      end
-    end
-
     context 'when there was an MFA phone number provided' do
       let(:user) { create(:user, :with_phone) }
 
@@ -1378,6 +1460,20 @@ RSpec.describe Idv::VerifyInfoController do
 
       it 'sets the phone source to :mfa' do
         expect(subject.best_effort_phone[:source]).to eq(:mfa)
+      end
+
+      context 'when there is a hybrid handoff number' do
+        before(:each) do
+          subject.idv_session.phone_for_mobile_flow = '202-555-1234'
+        end
+
+        it 'returns the phone number from hybrid handoff' do
+          expect(subject.best_effort_phone[:phone]).to eq('202-555-1234')
+        end
+
+        it 'sets type to :hybrid_handoff' do
+          expect(subject.best_effort_phone[:source]).to eq(:hybrid_handoff)
+        end
       end
     end
   end

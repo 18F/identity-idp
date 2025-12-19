@@ -26,7 +26,7 @@ RSpec.describe AlertUserDuplicateProfileDiscoveredJob do
         it 'sends a dupe profile created SMS' do
           user_phone = user.phone_configurations.first.phone
           expect(Telephony).to receive(:send_dupe_profile_created_notice)
-            .with(to: user_phone, country_code: 'US', agency_name: agency)
+            .with(to: user_phone, country_code: 'US')
 
           subject.perform(user: user, agency: agency, type: :account_verified)
         end
@@ -47,11 +47,7 @@ RSpec.describe AlertUserDuplicateProfileDiscoveredJob do
 
         it 'only sends one text per user' do
           expect(Telephony).to receive(:send_dupe_profile_created_notice)
-            .with(
-              to: user.phone_configurations.first.phone,
-              country_code: 'US',
-              agency_name: agency,
-            )
+            .with(to: user.phone_configurations.first.phone, country_code: 'US')
             .once
 
           subject.perform(user: user, agency: agency, type: :account_verified)
@@ -74,7 +70,7 @@ RSpec.describe AlertUserDuplicateProfileDiscoveredJob do
         it 'sends a dupe profile sign in attempted SMS' do
           user_phone = user.phone_configurations.first.phone
           expect(Telephony).to receive(:send_dupe_profile_sign_in_attempted_notice)
-            .with(to: user_phone, country_code: 'US', agency_name: agency)
+            .with(to: user_phone, country_code: 'US')
 
           subject.perform(user: user, agency: agency, type: :sign_in)
         end
@@ -95,11 +91,7 @@ RSpec.describe AlertUserDuplicateProfileDiscoveredJob do
 
         it 'only sends one text per user' do
           expect(Telephony).to receive(:send_dupe_profile_sign_in_attempted_notice)
-            .with(
-              to: user.phone_configurations.first.phone,
-              country_code: 'US',
-              agency_name: agency,
-            )
+            .with(to: user.phone_configurations.first.phone, country_code: 'US')
             .once
 
           subject.perform(user: user, agency: agency, type: :sign_in)

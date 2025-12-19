@@ -88,14 +88,14 @@ RSpec.describe Encryption::UakPasswordVerifier do
 
       password = 'saltypickles'
       legacy_password_digest = {
-        encrypted_password: '6245274034d8d4dcc2d9930b431c4356aeaac9c7d0b7e2148ac19dcd12dfbc7a',
-        encryption_key: 'VUl6QFRZeQZ5XnZofXhTBGN3WABqdGZnamZTR30CeVl8c3paUWhyX2p
-        oegBqaFgAeVpfWWReZnhjd2pHZV1AX3wAQH1nW1hKY1t+BGd4agFnaF8AZFxASmd1SAV/ZXV
-        Kal1IUX50WAV7AFRpZ15hR1J4WANlZXZKZAB6BGYACQJSdURkYV1HA2JdanJRAFMEZQB+dGY
-        BVH5nWlhJZQNyflJnfgFqA2VJUV1IQ35dampVZVxbUwFmZWRZCWhSd0RyYwBEempnXFxmW3p
-        8UQJ+An10XGJ/eGphU1kJY1FdZgJmaHpaZF5pSWV3XH5hZUhbfEp5SWp4cgRlZGpZY2ZUemV
-        bBXhnaFRqfgBDBGZnREN/aFx4fnZbR1J0aQJmZ0ABVEoACXlZR1lUd3ZeeVpfWX54VF10Gg0
-        KZGA/XSt2L2YCbGMHYjNzXFBtDCUwMgdafV5RWA=='.gsub(/\s/, ''),
+        encrypted_password: '6bc24a92c215c316d977bbe7beda7067d725992340321d46b122b9701be423d0',
+        encryption_key: 'VUl6QFRZeQZ5XUBZalp+BHwBdUljeFhaVANmQmpmdVl8c3paUWhyX2p
+          oegBqaFgAeVpfWX5odgNRZFhAVXNEYGJ1SERTdUh2UwNAXmVeU0ZkWURJYVxbAGdnXGhRX
+          WpzZXhydmMCfllkaHpGUmZ2W2MDal1pAVhoYnV1BWdoXGVTZVNCVXhUelR3XGZUSmoEZAN
+          qSX5bRAZpaF8EUV0FX2R2U0JTd0QDfXhmQ2V4aUdSZmUAUV1mfmdkdnRTZQF0U3dIdVJ1B
+          UNVXUhzZGV9R1IBQARqAERGVWVUc1RbfgJjAWphaVsASGR1dkV9d2Z8ZXRTQmpnV0Z/ZVx
+          AewAFf2RnQHZ+ZVR/Ul5UZ1JndgNSXH0DZWhqQ2IAdlpjAWlJYWQACXlZR1lUd3ZeeVpfW
+          WNddkJrGWIQZV8zXjFfOEY8bnNnfj5wRWZuVRA0MgdafV5RWA=='.gsub(/\s/, ''),
         password_salt: 'u4KDouyiHwPgksKphAp1',
         password_cost: '4000$8$4$',
       }.to_json

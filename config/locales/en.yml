@@ -364,6 +364,7 @@ countries.mz: Mozambique
 countries.na: Namibia
 countries.nc: New Caledonia
 countries.ne: Niger
+countries.nf: Norfolk Island
 countries.ng: Nigeria
 countries.ni: Nicaragua
 countries.nl: Netherlands
@@ -528,8 +529,8 @@ doc_auth.errors.alerts.id_not_recognized: We couldn’t recognize your ID. It ma
 doc_auth.errors.alerts.id_not_verified: We couldn’t verify your ID. It might have moved when you took the picture. Try taking new pictures.
 doc_auth.errors.alerts.issue_date_checks: We couldn’t read the issue date on your ID. Try taking new pictures.
 doc_auth.errors.alerts.ref_control_number_check: We couldn’t read the control number barcode. Try taking new pictures.
-doc_auth.errors.alerts.selfie_not_live_help_link_text: Review more tips for taking a clear photo of yourself
-doc_auth.errors.alerts.selfie_not_live_or_poor_quality: Try taking a photo of yourself again. Make sure your whole face is clear and visible in the photo.
+doc_auth.errors.alerts.selfie_not_live_help_link_text: Review more tips for taking a selfie
+doc_auth.errors.alerts.selfie_not_live_or_poor_quality: Try taking a selfie again. Make sure your whole face is clear and visible in the photo.
 doc_auth.errors.alerts.sex_check: We couldn’t read the sex on your ID. Try taking new pictures.
 doc_auth.errors.alerts.visible_color_check: We couldn’t verify your ID. It might have moved when you took the picture, or the picture is too dark. Try taking new pictures in brighter lighting.
 doc_auth.errors.alerts.visible_photo_check: We couldn’t verify the photo on your ID. Try taking new pictures.
@@ -558,7 +559,7 @@ doc_auth.errors.general.network_error_passport_link_text: use another type of ID
 doc_auth.errors.general.new_network_error: Try again later.
 doc_auth.errors.general.no_liveness: Try taking new pictures.
 doc_auth.errors.general.selfie_failure: Make sure your entire face is visible and keep still as the camera takes your photo. Avoid bright light or anything that might cover your face, like a hat.
-doc_auth.errors.general.selfie_failure_help_link_text: Review more tips for taking clear photos
+doc_auth.errors.general.selfie_failure_help_link_text: Review more tips for taking a selfie
 doc_auth.errors.glare.failed_short: Image has glare, please try again.
 doc_auth.errors.glare.top_msg: We couldn’t read your ID. Your photo may have glare. Make sure that the flash on your camera is off and try taking a new picture.
 doc_auth.errors.glare.top_msg_plural: We couldn’t read your ID. Your photos may have glare. Make sure that the flash on your camera is off and try taking new pictures.
@@ -577,8 +578,8 @@ doc_auth.errors.pii.birth_date_min_age: Your birthday does not meet the minimum 
 doc_auth.errors.rate_limited_heading: We couldn’t verify your ID
 doc_auth.errors.rate_limited_subheading: Try taking new pictures
 doc_auth.errors.rate_limited_text_html: To prevent fraud, we limit the number of times someone can attempt to verify a document online. <strong>Try again in %{timeout}.</strong>
-doc_auth.errors.selfie_fail_heading: We couldn’t match the photo of yourself to your ID
-doc_auth.errors.selfie_not_live_or_poor_quality_heading: We could not verify the photo of yourself
+doc_auth.errors.selfie_fail_heading: We couldn’t match your selfie to your ID.
+doc_auth.errors.selfie_not_live_or_poor_quality_heading: We couldn’t match your selfie to your ID
 doc_auth.errors.send_link_limited: You tried too many times, please try again in %{timeout}. You can also go back and choose to use your computer instead.
 doc_auth.errors.sharpness.failed_short: Image is blurry, please try again.
 doc_auth.errors.sharpness.top_msg: We couldn’t read your ID. Your photo may be too blurry or dark. Try taking a new picture in a bright area.
@@ -637,7 +638,7 @@ doc_auth.headings.ssn: Enter your Social Security number
 doc_auth.headings.ssn_update: Update your Social Security number
 doc_auth.headings.text_message: We sent a message to your phone
 doc_auth.headings.upload_from_computer: Continue on this computer
-doc_auth.headings.upload_from_phone: Use your phone to take photos
+doc_auth.headings.upload_from_phone: Use your phone
 doc_auth.headings.verify_at_post_office: Go to a participating Post Office
 doc_auth.headings.verify_identity: Verify your identity
 doc_auth.headings.verify_online: Verify your identity online
@@ -658,8 +659,8 @@ doc_auth.info.exit.with_sp: Exit %{app_name} and return to %{sp_name}
 doc_auth.info.exit.without_sp: Exit identity verification and go to your account page
 doc_auth.info.getting_started_html: '%{sp_name} needs to make sure you are you — not someone pretending to be you. %{link_html}'
 doc_auth.info.getting_started_learn_more: Learn more about verifying your identity
-doc_auth.info.hybrid_handoff_no_selfie: You’ll take photos of your ID using a phone. You won’t have to sign in again, and you’ll switch back to this computer after you take photos.
-doc_auth.info.hybrid_handoff_selfie: You’ll take photos of your ID and yourself using a phone. You won’t have to sign in again, and you’ll switch back to this computer after you take photos.
+doc_auth.info.hybrid_handoff_no_selfie: Take photos of your ID, then switch back to this computer.
+doc_auth.info.hybrid_handoff_selfie: Take a selfie and photos of your ID, then switch back to this computer.
 doc_auth.info.id_types_learn_more: Learn more about which ID types you can use
 doc_auth.info.image_loaded: Image loaded
 doc_auth.info.image_loading: Image loading
@@ -673,6 +674,7 @@ doc_auth.info.link_sent: Please check your phone and follow instructions to take
 doc_auth.info.link_sent_complete_no_polling: When you are done, click Continue here to finish verifying your identity.
 doc_auth.info.link_sent_complete_polling: The next step will load automatically after you verify your ID on your phone.
 doc_auth.info.mailing_address: We’ll mail the letter with a verification code to this address.
+doc_auth.info.manual_capture_mode: Take the photo yourself.
 doc_auth.info.no_ssn: You must have a Social Security number to finish verifying your identity.
 doc_auth.info.passport_capture: Take a photo of the data page of your passport book. This page has your passport photo and personal information.
 doc_auth.info.passport_capture_help_1: Line up the data page of your passport book with the guide lines.
@@ -705,8 +707,8 @@ doc_auth.info.verify_at_post_office_instruction: Enter your information online, 
 doc_auth.info.verify_at_post_office_link_text: Learn more about verifying in person
 doc_auth.info.verify_identity: We’ll ask for your ID, phone number, and other personal information to verify your identity against public records.
 doc_auth.info.verify_online_description_passport: You can use a U.S. passport book, U.S. driver’s license or state ID.
-doc_auth.info.verify_online_instruction: You’ll take photos of your ID to verify your identity fully online.
-doc_auth.info.verify_online_instruction_selfie: You’ll take photos of your ID and yourself to verify your identity fully online.
+doc_auth.info.verify_online_instruction: Take photos of your ID.
+doc_auth.info.verify_online_instruction_selfie: Take a selfie and photos of your ID.
 doc_auth.info.verify_online_link_text: Learn more about verifying online
 doc_auth.info.welcome_sp_reproof_alert: For your security, %{sp_name} requires you to verify your identity again.
 doc_auth.info.you_entered: 'You entered:'
@@ -992,7 +994,7 @@ headings.account.authentication_apps: Authentication apps
 headings.account.connected_accounts: Your connected accounts
 headings.account.devices: Devices
 headings.account.events: Events
-headings.account.federal_employee_id: Federal employee ID
+headings.account.government_employee_id: Government employee ID
 headings.account.login_info: Your account
 headings.account.reactivate: Reactivate your account
 headings.account.two_factor: Your authentication methods
@@ -1478,7 +1480,12 @@ instructions.mfa.piv_cac.step_2: Insert your PIV/CAC into your card reader
 instructions.mfa.piv_cac.step_3: Add your PIV/CAC
 instructions.mfa.piv_cac.step_3_info_html: You’ll need to <strong>choose a certificate</strong> (the right one likely has your name in it) and <strong>enter your PIN</strong> (your PIN was created when you set up your PIV/CAC).
 instructions.mfa.piv_cac.try_again: try again
+instructions.mfa.sms.code_expired_html: '<strong>Your one-time code has expired.</strong> Click “Send another code” below to get a new code.'
+instructions.mfa.sms.code_sent_message_html: We sent a text (SMS) with a one-time code to %{number_html}.
+instructions.mfa.sms.minutes_remaining_html: '<strong>%{minutes} minutes</strong> left until you have to request a new code'
 instructions.mfa.sms.number_message_html: We sent a text (SMS) with a one-time code to %{number_html}. This code will expire in %{expiration} minutes.
+instructions.mfa.sms.seconds_remaining_html: '<strong>%{seconds} seconds</strong> left until you have to request a new code'
+instructions.mfa.voice.code_sent_message_html: We made a call with a one-time code to %{number_html}.
 instructions.mfa.voice.number_message_html: We made a call with a one-time code to %{number_html}. This code will expire in %{expiration} minutes.
 instructions.mfa.webauthn_platform.learn_more_help: Learn more about face or touch unlock
 instructions.mfa.webauthn.confirm_webauthn: Present the security key that you associated with your account.
@@ -1584,7 +1591,6 @@ openid_connect.authorization.errors.missing_ial: Missing a valid IAL level
 openid_connect.authorization.errors.no_auth: The acr_values are not authorized
 openid_connect.authorization.errors.no_valid_acr_values: No acceptable acr_values found
 openid_connect.authorization.errors.no_valid_scope: No valid scope values found
-openid_connect.authorization.errors.no_valid_vtr: No acceptable vots found
 openid_connect.authorization.errors.prompt_invalid: No valid prompt values found
 openid_connect.authorization.errors.redirect_uri_invalid: redirect_uri is invalid
 openid_connect.authorization.errors.redirect_uri_no_match: redirect_uri does not match registered redirect_uri
@@ -1962,8 +1968,9 @@ user_mailer.dupe_profile.created.help_center_link: '%{app_name} Help Center'
 user_mailer.dupe_profile.created.steps_link: steps outlined here
 user_mailer.dupe_profile.review_complete.locked_heading: This account is now locked
 user_mailer.dupe_profile.review_complete.locked_info: We completed a review of your accounts and this account has been locked. Please contact %{sp_or_app_name} for further assistance.
-user_mailer.dupe_profile.review_complete.success_heading: You can sign back in with this account
-user_mailer.dupe_profile.review_complete.success_info: We completed a review of your accounts and you can now sign back into %{sp_or_app_name} with this account.
+user_mailer.dupe_profile.review_complete.success_heading: You can sign back in with your account
+user_mailer.dupe_profile.review_complete.success_info: The error on your account (LG22) has been resolved. You can now sign into the agency website with your %{app_name} account.
+user_mailer.dupe_profile.review_complete.success_title: You can sign back in with your %{app_name} account
 user_mailer.dupe_profile.review_complete.unable_heading: We are not able to sign you in
 user_mailer.dupe_profile.review_complete.unable_info: We completed a review of your accounts and are not able to sign you in. Please contact %{sp_or_app_name} for further assistance.
 user_mailer.dupe_profile.sign_in.description: Someone just signed into a %{app_name} account that had previously been verified with your personal information. For your safety we have restricted access on all accounts with matching information and access to %{sp_or_app_name}.

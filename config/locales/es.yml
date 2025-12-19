@@ -115,11 +115,11 @@ account.items.personal_key: Clave personal
 account.links.delete_account: Eliminar
 account.links.regenerate_personal_key: Restablecer
 account.login.forced_reauthentication_notice_html: '<strong>%{sp_name}</strong> requiere que vuelva a ingresar su correo electrónico y contraseña.'
-account.login.piv_cac: Inicie sesión con su identificación de empleado del gobierno
+account.login.piv_cac: Inicie sesión con su identificación de empleado gubernamental
 account.login.tab_navigation: Pestañas para creación de cuentas
 account.navigation.add_authentication_apps: Agregar aplicaciones de autenticación
 account.navigation.add_email: Agregar dirección de correo electrónico
-account.navigation.add_federal_id: Agregue su identificación de empleado del gobierno.
+account.navigation.add_federal_id: Agregue su identificación de empleado gubernamental
 account.navigation.add_phone_number: Agregar número de teléfono
 account.navigation.add_platform_authenticator: Agregar desbloqueo facial o táctil
 account.navigation.add_security_key: Agregar clave de seguridad
@@ -364,6 +364,7 @@ countries.mz: Mozambique
 countries.na: Namibia
 countries.nc: Nueva Caledonia
 countries.ne: Níger
+countries.nf: Isla Norfolk
 countries.ng: Nigeria
 countries.ni: Nicaragua
 countries.nl: Países Bajos
@@ -539,8 +540,8 @@ doc_auth.errors.alerts.id_not_recognized: No pudimos reconocer su identificació
 doc_auth.errors.alerts.id_not_verified: No pudimos verificar su identificación. Puede ser que se haya movido cuando tomó la foto. Intente tomar nuevas fotos.
 doc_auth.errors.alerts.issue_date_checks: No pudimos leer la fecha de emisión en su identificación. Intente tomar nuevas fotos.
 doc_auth.errors.alerts.ref_control_number_check: No pudimos leer el código de barras del número de control. Intente tomar nuevas fotos.
-doc_auth.errors.alerts.selfie_not_live_help_link_text: Consulte más consejos para tomar una foto clara de usted mismo
-doc_auth.errors.alerts.selfie_not_live_or_poor_quality: Intente tomar de nuevo una foto de usted. Asegúrese de que su rostro se vea claramente en la foto.
+doc_auth.errors.alerts.selfie_not_live_help_link_text: Lea más consejos sobre como tomar un selfi
+doc_auth.errors.alerts.selfie_not_live_or_poor_quality: Intente tomar otra selfie. Asegúrese de que su rostro se vea claramente en la foto.
 doc_auth.errors.alerts.sex_check: No pudimos leer el sexo en su identificación. Intente tomar nuevas fotos.
 doc_auth.errors.alerts.visible_color_check: No pudimos verificar su identificación. Puede ser que se haya movido cuando tomó la foto, o que la foto es demasiado oscura. Intente tomar nuevas fotografías con una luz más brillante.
 doc_auth.errors.alerts.visible_photo_check: No pudimos verificar la fotografía de su identificación. Intente tomar nuevas fotos.
@@ -569,7 +570,7 @@ doc_auth.errors.general.network_error_passport_link_text: use otro tipo de ident
 doc_auth.errors.general.new_network_error: Vuelva a intentarlo más tarde.
 doc_auth.errors.general.no_liveness: Intente tomar nuevas fotos.
 doc_auth.errors.general.selfie_failure: Revise que se vea su cara completa y no se mueva mientras la cámara toma la fotografía. Evite las luces brillantes o cualquier prenda que pueda cubrirle la cara, como un sombrero.
-doc_auth.errors.general.selfie_failure_help_link_text: Consulte más consejos para tomar fotos claras
+doc_auth.errors.general.selfie_failure_help_link_text: Lea más consejos sobre como tomar un selfi
 doc_auth.errors.glare.failed_short: La imagen tiene reflejos; inténtelo de nuevo.
 doc_auth.errors.glare.top_msg: No pudimos leer su identificación. Es posible que su foto tenga reflejos. Asegúrese de que el flash de su cámara esté apagado e intente tomar una nueva foto.
 doc_auth.errors.glare.top_msg_plural: No pudimos leer su identificación. Es posible que sus fotos tengan reflejos. Asegúrese de que el flash de su cámara esté apagado e intente tomar nuevas fotos.
@@ -588,8 +589,8 @@ doc_auth.errors.pii.birth_date_min_age: Su fecha de nacimiento no cumple con el 
 doc_auth.errors.rate_limited_heading: No pudimos verificar su identificación
 doc_auth.errors.rate_limited_subheading: Intente tomar nuevas fotos
 doc_auth.errors.rate_limited_text_html: Para evitar fraudes, limitamos el número de veces que puede intentar la verificación de un documento en línea. <strong>Vuelva a intentarlo en %{timeout}.</strong>
-doc_auth.errors.selfie_fail_heading: No hemos podido cotejar su foto con su identificación.
-doc_auth.errors.selfie_not_live_or_poor_quality_heading: No pudimos verificar su foto
+doc_auth.errors.selfie_fail_heading: No pudimos hacer coincidir su selfi con su identificación.
+doc_auth.errors.selfie_not_live_or_poor_quality_heading: No pudimos comprobar que su selfi coincide con la de su identificación
 doc_auth.errors.send_link_limited: Lo intentó demasiadas veces; vuelva a intentarlo en %{timeout}. También puede volver atrás y elegir utilizar su computadora.
 doc_auth.errors.sharpness.failed_short: La imagen está borrosa; inténtelo de nuevo.
 doc_auth.errors.sharpness.top_msg: No pudimos leer su identificación. Es posible que su foto esté demasiado borrosa u oscura. Intente tomar una nueva foto en un lugar iluminado.
@@ -648,7 +649,7 @@ doc_auth.headings.ssn: Ingrese su número de Seguro Social
 doc_auth.headings.ssn_update: Actualice su número de Seguro Social
 doc_auth.headings.text_message: Enviamos un mensaje a su teléfono
 doc_auth.headings.upload_from_computer: Continúe en esta computadora
-doc_auth.headings.upload_from_phone: Utilice su teléfono para tomar fotos
+doc_auth.headings.upload_from_phone: Use su teléfono
 doc_auth.headings.verify_at_post_office: Vaya a una oficina de correos participante
 doc_auth.headings.verify_identity: Verifique su identidad
 doc_auth.headings.verify_online: Verifique su identidad en línea
@@ -669,8 +670,8 @@ doc_auth.info.exit.with_sp: Salir de %{app_name} y volver a %{sp_name}
 doc_auth.info.exit.without_sp: Salga de la verificación de identidad y vaya a la página de su cuenta
 doc_auth.info.getting_started_html: '%{sp_name} necesita asegurarse de que se trata de usted y no de alguien que se hace pasar por usted. %{link_html}'
 doc_auth.info.getting_started_learn_more: Obtenga más información sobre la verificación de su identidad
-doc_auth.info.hybrid_handoff_no_selfie: Tomará fotografías de su identificación con un teléfono. No tendrá que volver a iniciar sesión y volverá a esta computadora después de tomar las fotos.
-doc_auth.info.hybrid_handoff_selfie: Tomará fotografías de su identificación y de usted con un teléfono. No tendrá que volver a iniciar sesión y volverá a esta computadora después de tomar las fotos.
+doc_auth.info.hybrid_handoff_no_selfie: Tome fotos de su identificación, luego regrese a esta computadora.
+doc_auth.info.hybrid_handoff_selfie: Tómese una selfi y fotos de su identificación, luego regrese a esta computadora.
 doc_auth.info.id_types_learn_more: Obtenga más información acerca de los tipos de identificación que puede usar
 doc_auth.info.image_loaded: Imagen cargada
 doc_auth.info.image_loading: Cargando la imagen
@@ -684,6 +685,7 @@ doc_auth.info.link_sent: Revise su teléfono y siga las instrucciones para tomar
 doc_auth.info.link_sent_complete_no_polling: Cuando termine, haga clic en “Continuar” para terminar la verificación de su identidad.
 doc_auth.info.link_sent_complete_polling: El siguiente paso se cargará automáticamente después de que verifique su identidad en su teléfono.
 doc_auth.info.mailing_address: Enviaremos la carta con un código de verificación a esta dirección.
+doc_auth.info.manual_capture_mode: Tome la foto usted mismo.
 doc_auth.info.no_ssn: Debe tener un número de Seguro Social para finalizar la verificación de su identidad.
 doc_auth.info.passport_capture: Tome una fotografía de la página de datos de su pasaporte, es decir, de la página que muestra su foto y su información personal.
 doc_auth.info.passport_capture_help_1: Alinee la página de datos de su pasaporte con las líneas de guía.
@@ -716,8 +718,8 @@ doc_auth.info.verify_at_post_office_instruction: Ingrese su información en lín
 doc_auth.info.verify_at_post_office_link_text: Obtenga más información sobre la verificación en persona
 doc_auth.info.verify_identity: Le pediremos su identificación, número de teléfono y otros datos personales para verificar su identidad comparándola con los registros públicos.
 doc_auth.info.verify_online_description_passport: Puede usar un pasaporte estadounidense, una licencia de conducir de los EE. UU. o una identificación estatal.
-doc_auth.info.verify_online_instruction: Tomará fotografías de su identificación para verificar su identidad por completo en línea.
-doc_auth.info.verify_online_instruction_selfie: Tomará fotografías de su identificación y de usted para verificar su identidad por completo en línea.
+doc_auth.info.verify_online_instruction: Tome fotos de su identificación.
+doc_auth.info.verify_online_instruction_selfie: Tómese una selfi y fotos de su identificación.
 doc_auth.info.verify_online_link_text: Obtenga más información sobre la verificación en línea
 doc_auth.info.welcome_sp_reproof_alert: Por su seguridad, %{sp_name} requiere que verifique su identidad nuevamente.
 doc_auth.info.you_entered: 'Usted ingresó:'
@@ -1003,7 +1005,7 @@ headings.account.authentication_apps: Aplicaciones de autenticación
 headings.account.connected_accounts: Sus cuentas conectadas
 headings.account.devices: Dispositivos
 headings.account.events: Eventos
-headings.account.federal_employee_id: Identificación de empleado federal
+headings.account.government_employee_id: Identificación de empleado gubernamental
 headings.account.login_info: Su cuenta
 headings.account.reactivate: Reactive su cuenta
 headings.account.two_factor: Sus métodos de autenticación
@@ -1022,18 +1024,18 @@ headings.passwords.confirm_for_personal_key: Introduzca la contraseña y obtenga
 headings.passwords.forgot: '¿Olvidó su contraseña?'
 headings.piv_cac_login.account_not_found: Su tarjeta de empleado del gobierno no está conectada a una cuenta.
 headings.piv_cac_login.add: Use su lector de tarjetas inteligente para configurar su tarjeta de verificación de identidad personal (PIV) o su tarjeta de acceso común (CAC). Puede usar cualquiera de esas dos tarjetas como un método de autenticación de dos factores para iniciar sesión.
-headings.piv_cac_login.new: Inicie sesión con su identificación de empleado del gobierno.
+headings.piv_cac_login.new: Inicie sesión con su identificación de empleado gubernamental.
 headings.piv_cac_login.success: Logró configurar su tarjeta PIV o CAC como un método de autenticación.
 headings.piv_cac_setup.already_associated: La tarjeta PIV o CAC que presentó está asociada con otro usuario.
 headings.piv_cac_setup.new: Use su tarjeta PIV o CAC para proteger su cuenta
-headings.piv_cac.certificate.bad: El certificado de la identificación de empleado del gobierno que seleccionó no es válido.
-headings.piv_cac.certificate.expired: El certificado de la identificación de empleado del gobierno que seleccionó ya venció.
-headings.piv_cac.certificate.invalid: El certificado de la identificación de empleado del gobierno que seleccionó no es válido.
-headings.piv_cac.certificate.none: No podemos detectar un certificado en su tarjeta de identificación de empleado del gobierno.
-headings.piv_cac.certificate.not_auth_cert: Elija un certificado diferente para su tarjeta de identificación de empleado del gobierno.
-headings.piv_cac.certificate.revoked: El certificado de la identificación de empleado del gobierno que seleccionó ha sido revocado de su tarjeta.
-headings.piv_cac.certificate.unverified: El certificado de la identificación de empleado del gobierno que seleccionó no es válido.
-headings.piv_cac.did_not_work: Su identificación de empleado del gobierno no funcionó.
+headings.piv_cac.certificate.bad: El certificado de la identificación de empleado gubernamental que seleccionó no es válido.
+headings.piv_cac.certificate.expired: El certificado de la identificación de empleado gubernamental que seleccionó ya venció.
+headings.piv_cac.certificate.invalid: El certificado de la identificación de empleado gubernamental que seleccionó no es válido.
+headings.piv_cac.certificate.none: No podemos detectar un certificado en su tarjeta de identificación de empleado gubernamental.
+headings.piv_cac.certificate.not_auth_cert: Elija un certificado diferente para su tarjeta de identificación de empleado gubernamental.
+headings.piv_cac.certificate.revoked: El certificado de la identificación de empleado gubernamental que seleccionó ha sido revocado de su tarjeta.
+headings.piv_cac.certificate.unverified: El certificado de la identificación de empleado gubernamental que seleccionó no es válido.
+headings.piv_cac.did_not_work: Su identificación de empleado gubernamental no funcionó.
 headings.piv_cac.token.bad: Error interno.
 headings.piv_cac.token.invalid: El certificado de la tarjeta PIV/CAC que seleccionó no es válido
 headings.piv_cac.token.missing: Error interno.
@@ -1489,7 +1491,12 @@ instructions.mfa.piv_cac.step_2: Inserte su tarjeta PIV o CAC en su lector de ta
 instructions.mfa.piv_cac.step_3: Agregue su tarjeta PIV o CAC.
 instructions.mfa.piv_cac.step_3_info_html: Tendrá que <strong> elegir un certificado </strong> (es probable que el correcto tenga su nombre) e <strong> ingresar su PIN </strong> (su PIN se creó cuando configuró su tarjeta PIV o CAC)
 instructions.mfa.piv_cac.try_again: vuelva a intentarlo
+instructions.mfa.sms.code_expired_html: '<strong>Su código de un solo uso venció.</strong> Haga clic abajo en “Enviar otro código” para recibir un código nuevo.'
+instructions.mfa.sms.code_sent_message_html: Enviamos un mensaje de texto (SMS) con un código de un solo uso al %{number_html}.
+instructions.mfa.sms.minutes_remaining_html: 'Quedan <strong>%{minutes} minutos</strong> antes de tener que solicitar un nuevo código'
 instructions.mfa.sms.number_message_html: Enviamos un mensaje de texto (SMS) con un código de un solo uso al %{number_html}. Este código vence en %{expiration} minutos.
+instructions.mfa.sms.seconds_remaining_html: 'Quedan <strong>%{seconds} segundos</strong> antes de tener que solicitar un nuevo código'
+instructions.mfa.voice.code_sent_message_html: Hicimos una llamada con un código de un solo uso al %{number_html}.
 instructions.mfa.voice.number_message_html: Hicimos una llamada con un código de un solo uso al %{number_html}. Este código vence en %{expiration} minutos.
 instructions.mfa.webauthn_platform.learn_more_help: Obtenga más información sobre el desbloqueo facial o táctil
 instructions.mfa.webauthn.confirm_webauthn: Presente la clave de seguridad que asoció con su cuenta.
@@ -1561,7 +1568,7 @@ notices.forgot_password.no_email_sent_explanation_start: '¿No recibió un corre
 notices.forgot_password.resend_email_success: Enviamos otro correo electrónico para restablecer la contraseña.
 notices.password_changed: Cambió su contraseña.
 notices.phone_confirmed: Se agregó un teléfono a su cuenta.
-notices.piv_cac_configured: Agregue su identificación de empleado del gobierno.
+notices.piv_cac_configured: Agregue su identificación de empleado gubernamental.
 notices.privacy.privacy_act_statement: Declaración de privacidad
 notices.privacy.security_and_privacy_practices: Prácticas de seguridad y declaración de privacidad
 notices.resend_confirmation_email.success: Enviamos otro correo electrónico de confirmación.
@@ -1595,7 +1602,6 @@ openid_connect.authorization.errors.missing_ial: Falta un nivel válido de IAL
 openid_connect.authorization.errors.no_auth: Los acr_values no están autorizados
 openid_connect.authorization.errors.no_valid_acr_values: No se encontraron ial_values aceptables
 openid_connect.authorization.errors.no_valid_scope: No se encontraron valores de ámbito válidos
-openid_connect.authorization.errors.no_valid_vtr: vots encontrados no aceptables
 openid_connect.authorization.errors.prompt_invalid: No se encontraron valores de consulta válidos
 openid_connect.authorization.errors.redirect_uri_invalid: redirect_uri no es válido
 openid_connect.authorization.errors.redirect_uri_no_match: redirect_uri no coincide con el redirect_uri registrado
@@ -1646,7 +1652,7 @@ saml_idp.shared.saml_post_binding.no_js: JavaScript parece estar desactivado en 
 security_check_failed.contact: Contacte con el servicio de asistencia de %{app_name}
 security_check_failed.details: No reconocemos el dispositivo o el navegador desde el que está iniciando sesión.
 security_check_failed.info_p1: 'Utilice el mismo dispositivo y navegador con el que creó su cuenta en %{app_name}.'
-security_check_failed.info_p2_html: Intente <a href="%{piv_cac_url}">iniciar sesión con su identificación de empleado del gobierno</a> si es un empleado del gobierno.
+security_check_failed.info_p2_html: Intente <a href="%{piv_cac_url}">iniciar sesión con su identificación de empleado gubernamental</a> si es un empleado del gobierno.
 security_check_failed.info_p3: Desactive cualquier VPN, bloqueador de anuncios y borre su caché.
 security_check_failed.learn_more: Obtenga más información sobre las comprobaciones de seguridad de %{app_name}
 security_check_failed.title: Falló la comprobación de seguridad
@@ -1742,11 +1748,11 @@ titles.openid_connect.logout: Cierre de sesión de OpenID Connect
 titles.passwords.change: Cambie la contraseña de su cuenta
 titles.passwords.forgot: Restablecer la contraseña
 titles.personal_key: Por si acaso
-titles.piv_cac_login.add: Agregue su identificación de empleado del gobierno
+titles.piv_cac_login.add: Agregue su identificación de empleado gubernamental
 titles.piv_cac_login.new: Use su tarjeta PIV o CAC para iniciar sesión en su cuenta
 titles.piv_cac_setup.new: Use su tarjeta PIV o CAC para proteger su cuenta
-titles.piv_cac_setup.upsell: Agregue su identificación de empleado del gobierno para un inicio de sesión más rápido y más seguro.
-titles.present_piv_cac: Inserte su identificación de empleado del gobierno.
+titles.piv_cac_setup.upsell: Agregue su identificación de empleado gubernamental para un inicio de sesión más rápido y más seguro.
+titles.present_piv_cac: Inserte su identificación de empleado gubernamental.
 titles.present_webauthn: Conecte su clave de seguridad de hardware
 titles.reactivate_account: Reactive su cuenta
 titles.registrations.new: Cree su cuenta
@@ -1855,14 +1861,14 @@ two_factor_authentication.phone_verification.troubleshooting.change_number: Use 
 two_factor_authentication.phone_verification.troubleshooting.code_not_received: No estoy recibiendo el código de un solo uso por mensaje de texto (SMS) ni por llamada telefónica
 two_factor_authentication.phone.delete.failure: No se puede eliminar su teléfono.
 two_factor_authentication.phone.delete.success: Su teléfono fue eliminado.
-two_factor_authentication.piv_cac_header_text: Inserte su identificación de empleado del gobierno
+two_factor_authentication.piv_cac_header_text: Inserte su identificación de empleado gubernamental
 two_factor_authentication.piv_cac_mismatch.2fa_before_add: Debe realizar la autenticación con otro método antes de añadir su tarjeta PIV o CAC.
 two_factor_authentication.piv_cac_mismatch.cta: Autenticar y añadir tarjeta PIV o CAC
 two_factor_authentication.piv_cac_mismatch.delete_account: Eliminar su cuenta
 two_factor_authentication.piv_cac_mismatch.instructions: Haga clic en “Autenticar y añadir tarjeta PIV o CAC” más abajo para autenticar con otro método antes de añadir esta tarjeta PIV o CAC a su cuenta.
 two_factor_authentication.piv_cac_mismatch.instructions_no_other_method: Si se le emitió una nueva tarjeta PIV o CAC, para poder usarla, deberá eliminar su cuenta de %{app_name} y crear una cuenta nueva.
 two_factor_authentication.piv_cac_mismatch.skip: Omitir añadir tarjeta PIV o CAC
-two_factor_authentication.piv_cac_mismatch.title: Esta tarjeta de identificación de empleado del gobierno no está conectada a su cuenta
+two_factor_authentication.piv_cac_mismatch.title: Esta tarjeta de identificación de empleado gubernamental no está conectada a su cuenta
 two_factor_authentication.piv_cac_upsell.add_piv: Agregar tarjeta PIV/CAC
 two_factor_authentication.piv_cac_upsell.choose_other_method: Elegir otros métodos
 two_factor_authentication.piv_cac_upsell.explain: Esto hará que su cuenta sea más segura y no tendrá que ingresar su correo electrónico ni su contraseña cuando inicie sesión.
@@ -1974,8 +1980,9 @@ user_mailer.dupe_profile.created.help_center_link: 'el centro de ayuda de %{app_
 user_mailer.dupe_profile.created.steps_link: los pasos que se describen aquí
 user_mailer.dupe_profile.review_complete.locked_heading: Esta cuenta ya está bloqueada
 user_mailer.dupe_profile.review_complete.locked_info: Hicimos una revisión de sus cuentas y esta cuenta ha sido bloqueada. Para obtener ayuda, contacte con %{sp_or_app_name}.
-user_mailer.dupe_profile.review_complete.success_heading: Puede volver a iniciar sesión con esta cuenta
-user_mailer.dupe_profile.review_complete.success_info: Hicimos una revisión de sus cuentas y ya puede volver a iniciar sesión en %{sp_or_app_name} con esta cuenta.
+user_mailer.dupe_profile.review_complete.success_heading: Puede volver a iniciar sesión con su cuenta.
+user_mailer.dupe_profile.review_complete.success_info: El error en su cuenta (LG22) se ha solucionado. Ahora puede iniciar sesión en el sitio web de la agencia con su cuenta de %{app_name}.
+user_mailer.dupe_profile.review_complete.success_title: Puede volver a iniciar sesión con su cuenta de %{app_name}
 user_mailer.dupe_profile.review_complete.unable_heading: No podemos verificar su inicio de sesión
 user_mailer.dupe_profile.review_complete.unable_info: Hicimos una revisión de sus cuentas y no podemos verificar su información para que inicie sesión. Para obtener ayuda, contacte con %{sp_or_app_name}.
 user_mailer.dupe_profile.sign_in.description: Alguien acaba de iniciar sesión en una cuenta de %{app_name} que ya había sido verificada antes con la información personal de usted. Por su seguridad, hemos restringido su acceso a todas las cuentas con información que coincide y a %{sp_or_app_name}.

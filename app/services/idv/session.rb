@@ -2,6 +2,7 @@
 
 module Idv
   # @attr address_edited [Boolean, nil]
+  # @attr address_verification_vendor [String, nil]
   # @attr address_verification_mechanism [String, nil]
   # @attr applicant [Struct, nil]
   # @attr doc_auth_vendor [String, nil]
@@ -48,6 +49,7 @@ module Idv
   class Session
     VALID_SESSION_ATTRIBUTES = %i[
       address_edited
+      address_verification_vendor
       address_verification_mechanism
       applicant
       bucketed_doc_auth_vendor
@@ -67,6 +69,9 @@ module Idv
       personal_key
       personal_key_acknowledged
       phone_for_mobile_flow
+      phone_precheck_successful
+      phone_precheck_vendor
+      precheck_phone
       previous_phone_step_params
       previous_ssn
       profile_id
@@ -384,8 +389,7 @@ module Idv
     end
 
     def in_person_passports_allowed?
-      IdentityConfig.store.doc_auth_passports_enabled &&
-        IdentityConfig.store.in_person_passports_enabled
+      IdentityConfig.store.in_person_passports_enabled
     end
 
     def standard_flow_document_capture_eligible?

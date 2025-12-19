@@ -26,6 +26,7 @@ module DocAuth
           selfie_quality_good: selfie_quality_good?,
           selfie_status: selfie_status,
           extra: {
+            vendor: 'Mock',
             transaction_status:,
             doc_auth_result:,
             passport_check_result:,

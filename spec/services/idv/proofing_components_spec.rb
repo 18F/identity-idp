@@ -211,13 +211,22 @@ RSpec.describe Idv::ProofingComponents do
       end
     end
 
-    context 'using phone verification' do
+    context 'with lexis_nexis verification' do
       before do
-        idv_session.mark_phone_step_started!
+        idv_session.address_verification_vendor = 'lexis_nexis_address'
       end
 
       it 'returns lexis_nexis_address' do
         expect(subject.address_check).to eql('lexis_nexis_address')
+      end
+    end
+
+    context 'with socure verification' do
+      before do
+        idv_session.address_verification_vendor = 'socure_address'
+      end
+      it 'returns socure_address' do
+        expect(subject.address_check).to eql('socure_address')
       end
     end
   end

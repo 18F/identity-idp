@@ -28,15 +28,9 @@ en:
     doc_auth_link: |-
       %{app_name}: %{link} You're verifying your identity to access %{sp_or_app_name}. Take a photo of your ID to continue.
     dupe_profile_created_notice: |-
-      Someone has verified another %{app_name} account using your personal information. For your safety, we have restricted access on all accounts with matching information and access to %{sp_or_app_name}.
-
-      If this was you verifying another account, delete the duplicate account here: %{steps_link}
-      If this wasn’t you, contact the help center here: %{help_center_link}
+      %{app_name} Alert: Your personal information was verified on another account. We've restricted access on these accounts. We sent you an email with details on what to do next.
     dupe_profile_sign_in_attempted_notice: |-
-      Someone just signed into a %{app_name} account that had previously been verified with your personal information. For your safety we have restricted access on all accounts with matching information and access to %{sp_or_app_name}.
-
-      If this was you verifying another account, delete the duplicate account here: %{steps_link}
-      If this wasn’t you, contact the help center here: %{help_center_link}
+      %{app_name} Alert: Another account using your personal information has signed in. We've restricted access on these accounts. We sent you an email with details on what to do next.
     error:
       friendly_message:
         daily_voice_limit_reached: Your one-time code failed to send because you exceeded the maximum number of phone calls in 24 hours to this phone number. You can either request a code by text message or use a different number to receive a phone call.

@@ -4,7 +4,7 @@ allOf:
   - $ref: '../shared/EventProperties.yml'
   - type: object
     properties:
-      rate_limit_type:
+      limiter_type:
         type: string
         description: |
           Reason for the rate limiting

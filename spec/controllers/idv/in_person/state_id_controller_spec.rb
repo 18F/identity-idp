@@ -129,8 +129,8 @@ RSpec.describe Idv::InPerson::StateIdController do
   end
 
   describe '#update' do
-    let(:first_name) { 'Natalya' }
-    let(:last_name) { 'Rostova' }
+    let(:first_name) { 'Charity' }
+    let(:last_name) { 'Johnson' }
     let(:formatted_dob) { InPersonHelper::GOOD_DOB }
     let(:formatted_expiration) { InPersonHelper::GOOD_STATE_ID_EXPIRATION }
 

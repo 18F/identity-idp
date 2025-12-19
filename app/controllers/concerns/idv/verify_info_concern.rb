@@ -33,6 +33,7 @@ module Idv
 
       user_pii = pii
       user_pii[:best_effort_phone_number_for_socure] = best_effort_phone
+      idv_session.precheck_phone = user_pii[:best_effort_phone_number_for_socure]
 
       Idv::Agent.new(user_pii).proof_resolution(
         document_capture_session,
@@ -41,6 +42,7 @@ module Idv
         request_ip: request.remote_ip,
         ipp_enrollment_in_progress: ipp_enrollment_in_progress?,
         proofing_vendor:,
+        state_id_already_proofed: source_check_vendor_aamva?,
       )
 
       return true
@@ -67,6 +69,16 @@ module Idv
     end
 
     private
+
+    def save_in_person_notification_phone
+      return unless IdentityConfig.store.in_person_proofing_enabled
+      return unless IdentityConfig.store.in_person_send_proofing_notifications_enabled
+      return unless (establishing_enrollment = current_user.establishing_in_person_enrollment)
+
+      establishing_enrollment.notification_phone_configuration = NotificationPhoneConfiguration.new(
+        phone: idv_session.applicant[:phone],
+      )
+    end
 
     def ipp_enrollment_in_progress?
       current_user.has_in_person_enrollment?
@@ -194,6 +206,9 @@ module Idv
           pii_like_keypaths: [
             [:errors, :ssn],
             [:errors, :state_id_jurisdiction],
+            [:proofing_results, :context, :stages, :phone_precheck, :errors, :phone],
+            [:proofing_results, :context, :stages, :phone_precheck, :alternate_result, :errors,
+             :phone],
             [:proofing_results, :context, :stages, :resolution, :errors, :ssn],
             [:proofing_results, :context, :stages, :resolution, :reason_codes],
             [:proofing_results, :context, :stages, :residential_address, :errors, :ssn],
@@ -202,6 +217,7 @@ module Idv
             [:proofing_results, :context, :stages, :state_id, :errors, :state_id_jurisdiction],
             [:proofing_results, :biographical_info, :identity_doc_address_state],
             [:proofing_results, :biographical_info, :state_id_jurisdiction],
+            [:proofing_results, :biographical_info, :phone],
             [:proofing_results, :biographical_info],
           ],
         },
@@ -221,6 +237,7 @@ module Idv
         save_threatmetrix_status(form_response)
         save_source_check_vendor(form_response)
         save_resolution_vendors(form_response)
+        save_phone_precheck_vendor(form_response)
         move_applicant_to_idv_session
         idv_session.mark_verify_info_step_complete!
 
@@ -241,6 +258,9 @@ module Idv
     def next_step_url
       return idv_request_letter_url if FeatureManagement.idv_by_mail_only? ||
                                        idv_session.gpo_request_letter_visited
+
+      return idv_enter_password_url if idv_session.phone_confirmed?
+
       idv_phone_url
     end
 
@@ -262,12 +282,31 @@ module Idv
       )
     end
 
+    def save_phone_precheck_vendor(form_response)
+      phone_precheck = form_response.extra.dig(
+        :proofing_results,
+        :context,
+        :stages,
+        :phone_precheck,
+      )
+
+      if (idv_session.phone_precheck_successful = phone_precheck&.dig(:success))
+        idv_session.phone_precheck_vendor = phone_precheck[:vendor_name]
+      elsif idv_session.phone_precheck_successful == false &&
+            idv_session.precheck_phone&.dig(:phone) &&
+            phone_precheck&.dig(:exception).blank?
+        idv_session.add_failed_phone_step_number(idv_session.precheck_phone[:phone])
+      end
+    end
+
     def save_threatmetrix_status(form_response)
       review_status = form_response.extra.dig(:proofing_results, :threatmetrix_review_status)
       idv_session.threatmetrix_review_status = review_status
     end
 
     def save_source_check_vendor(form_response)
+      return if idv_session.source_check_vendor.present?
+
       vendor = form_response.extra.dig(
         :proofing_results,
         :context,
@@ -375,6 +414,13 @@ module Idv
       idv_session.applicant = pii
       idv_session.applicant[:ssn] = idv_session.ssn
       idv_session.applicant['uuid'] = current_user.uuid
+
+      if idv_session.phone_precheck_successful &&
+         (idv_session.applicant[:phone] = idv_session.precheck_phone&.dig(:phone))
+        idv_session.mark_phone_step_started!
+        idv_session.mark_phone_step_complete!
+        save_in_person_notification_phone
+      end
     end
 
     def delete_threatmetrix_response_body(form_response)
@@ -419,7 +465,7 @@ module Idv
         date_of_birth: pii_from_doc[:dob],
         address1: pii_from_doc[:address1],
         address2: pii_from_doc[:address2],
-        ssn: idv_session.ssn,
+        ssn: SsnFormatter.format(idv_session.ssn),
         city: pii_from_doc[:city],
         state: pii_from_doc[:state],
         zip: pii_from_doc[:zip],
@@ -437,7 +483,7 @@ module Idv
         date_of_birth: pii_from_doc[:dob],
         address1: pii_from_doc[:address1],
         address2: pii_from_doc[:address2],
-        ssn: idv_session.ssn,
+        ssn: SsnFormatter.format(idv_session.ssn),
         city: pii_from_doc[:city],
         state: pii_from_doc[:state],
         zip: pii_from_doc[:zip],
@@ -453,6 +499,14 @@ module Idv
           { **value.slice(:vendor_name, :exception, :jurisdiction_in_maintenance_window) }
         end
       end.compact.presence
+    end
+
+    def source_check_vendor_aamva?
+      IdentityConfig.store.idv_aamva_at_doc_auth_enabled &&
+        !ipp_enrollment_in_progress? &&
+        (idv_session.source_check_vendor == 'aamva:state_id' ||
+          idv_session.source_check_vendor == 'aamva' ||
+          idv_session.source_check_vendor == 'StateIdMock')
     end
 
     VerificationFailures = Struct.new(

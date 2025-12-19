@@ -22,9 +22,6 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
   let(:no_url_socure_route) do
     idv_hybrid_mobile_socure_document_capture_errors_url(error_code: :url_not_found)
   end
-  let(:timeout_socure_route) do
-    idv_hybrid_mobile_socure_document_capture_errors_url(error_code: :timeout)
-  end
   let(:idv_socure_docv_flow_id_only) { 'id only flow' }
   let(:idv_socure_docv_flow_id_w_selfie) { 'selfie flow' }
 
@@ -398,6 +395,7 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
   end
 
   describe '#update' do
+    let(:socure_docv_transaction_token) { SecureRandom.hex(6) }
     let(:stored_result) do
       DocumentCaptureSessionResult.new(
         success: true,
@@ -409,6 +407,7 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
     before do
       stub_sign_in(user)
       allow(subject.document_capture_session).to receive(:load_result).and_return(stored_result)
+      document_capture_session.update!(socure_docv_transaction_token:)
     end
 
     it 'redirects to the capture complete page' do
@@ -440,7 +439,11 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
       it 'redirects to the error page' do
         get(:update)
 
-        expect(response).to redirect_to(idv_hybrid_mobile_socure_document_capture_errors_url)
+        expect(response).to redirect_to(
+          idv_hybrid_mobile_socure_document_capture_errors_url(
+            transaction_token: socure_docv_transaction_token,
+          ),
+        )
         expect(@analytics).to have_logged_event('IdV: doc auth document_capture submitted')
       end
     end
@@ -456,8 +459,8 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
       end
 
       context 'when the wait times out' do
-        let(:socure_docv_transaction_token) { nil }
         let(:socure_response_body) { nil }
+
         before do
           ActiveJob::Base.queue_adapter = :test
           allow(subject).to receive(:wait_timed_out?).and_return(true)
@@ -503,9 +506,30 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
           end
           it 'redirects to a Try again page' do
             get(:update)
-            expect(response).to redirect_to(timeout_socure_route)
+            expect(response).to redirect_to(
+              idv_hybrid_mobile_socure_document_capture_errors_url(
+                error_code: :timeout,
+                transaction_token: socure_docv_transaction_token,
+              ),
+            )
           end
         end
+      end
+    end
+
+    context 'when the document capture session is missing the socure docv transaction token' do
+      let(:stored_result) { nil }
+      let(:socure_docv_transaction_token) { nil }
+      let(:response) { get :update }
+
+      before do
+        document_capture_session.update!(socure_docv_transaction_token:)
+      end
+
+      it 'redirects to the socure document capture error page' do
+        expect(response).to redirect_to idv_hybrid_mobile_socure_document_capture_errors_url(
+          error_code: :invalid_transaction_token, transaction_token: :MISSING_TRANSACTION_TOKEN,
+        )
       end
     end
   end

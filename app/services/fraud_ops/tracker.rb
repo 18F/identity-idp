@@ -2,6 +2,8 @@
 
 module FraudOps
   class Tracker < AttemptsApi::Tracker
+    include TrackerEvents
+
     def initialize(request:, user:, sp:, cookie_device_uuid:)
       super(
         session_id: nil,

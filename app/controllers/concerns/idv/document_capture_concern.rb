@@ -47,6 +47,7 @@ module Idv
           idv_session.pii_from_doc = stored_result.pii_from_doc
           idv_session.selfie_check_performed = stored_result.selfie_check_performed?
         end
+        idv_session.source_check_vendor ||= stored_result.state_id_vendor
       end
 
       track_document_issuing_state(user, stored_result.pii_from_doc[:state])
@@ -65,9 +66,15 @@ module Idv
     def mrz_requirement_met?
       return true if !document_capture_session.passport_requested?
       return false if document_type_received != 'passport'
-      return false if !IdentityConfig.store.doc_auth_passports_enabled
 
       stored_result.mrz_status == :pass
+    end
+
+    def aamva_requirement_met?
+      return true if document_type_received == 'passport'
+      return true unless IdentityConfig.store.idv_aamva_at_doc_auth_enabled
+
+      stored_result.aamva_status == :passed
     end
 
     def redirect_to_correct_vendor(vendor, in_hybrid_mobile:)
@@ -141,14 +148,10 @@ module Idv
     def validation_requirements_met?
       return false if document_type_mismatch?
 
-      selfie_requirement_met? && mrz_requirement_met?
+      selfie_requirement_met? && mrz_requirement_met? && aamva_requirement_met?
     end
 
     def document_type_mismatch?
-      # Reject passports when feature is disabled but user submitted a passport
-      return true if !IdentityConfig.store.doc_auth_passports_enabled &&
-                     document_type_received == Idp::Constants::DocumentTypes::PASSPORT
-
       # Reject when user requested passport flow but submitted a different document type
       return true if document_capture_session.passport_requested? &&
                      document_type_received != Idp::Constants::DocumentTypes::PASSPORT

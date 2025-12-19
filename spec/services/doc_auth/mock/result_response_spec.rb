@@ -421,6 +421,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
       )
       expect(response.attention_with_barcode?).to eq(false)
       expect(response.extra).to eq(
+        vendor: 'Mock',
         transaction_status: 'passed',
         doc_auth_result: DocAuth::LexisNexis::ResultCodes::PASSED.name,
         billed: true,
@@ -642,6 +643,7 @@ RSpec.describe DocAuth::Mock::ResultResponse do
       )
       expect(response.attention_with_barcode?).to eq(false)
       expect(response.extra).to eq(
+        vendor: 'Mock',
         transaction_status: 'passed',
         doc_auth_result: DocAuth::LexisNexis::ResultCodes::PASSED.name,
         billed: true,

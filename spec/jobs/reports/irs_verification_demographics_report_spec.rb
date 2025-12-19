@@ -84,15 +84,15 @@ RSpec.describe Reports::IrsVerificationDemographicsReport do
     subject(:report) { described_class.new(report_date, :both) }
     it 'sends out a report to just to team data and partner' do
       expect(ReportMailer).to receive(:tables_report).once.with(
-        email: ['mock_internal@example.com', 'mock_feds@example.com',
-                'mock_contractors@example.com'],
+        email: ['mock_feds@example.com', 'mock_contractors@example.com'],
+        bcc: ['mock_internal@example.com'],
         subject: 'IRS Verification Demographics Metrics Report - 2025-06-30',
         reports: anything,
         message: report.preamble,
         attachment_format: :csv,
       ).and_call_original
 
-      report.perform(report_date)
+      report.perform(report_date, :both)
     end
   end
 
@@ -102,7 +102,25 @@ RSpec.describe Reports::IrsVerificationDemographicsReport do
     it 'sends out a report to just to team data' do
       expect(ReportMailer).to receive(:tables_report).once.with(
         email: ['mock_internal@example.com'],
+        bcc: [],
         subject: 'IRS Verification Demographics Metrics Report - 2025-09-26',
+        reports: anything,
+        message: report.preamble,
+        attachment_format: :csv,
+      ).and_call_original
+
+      report.perform(report_date, :internal)
+    end
+  end
+
+  context 'when queued from the first of the month' do
+    let(:report_date) { Date.new(2021, 3, 1).prev_day }
+
+    it 'sends out a report to everybody' do
+      expect(ReportMailer).to receive(:tables_report).once.with(
+        email: ['mock_internal@example.com'],
+        bcc: [],
+        subject: 'IRS Verification Demographics Metrics Report - 2021-02-28',
         reports: anything,
         message: report.preamble,
         attachment_format: :csv,
@@ -112,19 +130,57 @@ RSpec.describe Reports::IrsVerificationDemographicsReport do
     end
   end
 
-  context 'when queued from the first of the month' do
-    let(:report_date) { Date.new(2021, 3, 1).prev_day }
+  context 'recipient is both but IRS emails are empty' do
+    let(:report_receiver) { :both }
+    let(:report_date) { Date.new(2025, 7, 1).prev_day } # 2025-06-30
+    subject(:report) { described_class.new(report_date, report_receiver) }
 
-    it 'sends out a report to everybody' do
+    before do
+      allow(IdentityConfig.store).to receive(:irs_verification_report_config)
+        .and_return([]) # no external IRS emails
+      allow(IdentityConfig.store).to receive(:team_daily_reports_emails)
+        .and_return(mock_test_internal_emails)
+    end
+
+    it 'logs a warning and sends the report only to internal emails' do
+      expect(Rails.logger).to receive(:warn).with(
+        'IRS Verification Demographics Report: recipient is :both but no external email specified',
+      )
+
       expect(ReportMailer).to receive(:tables_report).once.with(
-        email: anything,
-        subject: 'IRS Verification Demographics Metrics Report - 2021-02-28',
+        email: ['mock_internal@example.com'],
+        bcc: [],
+        subject: 'IRS Verification Demographics Metrics Report - 2025-06-30',
         reports: anything,
         message: report.preamble,
         attachment_format: :csv,
       ).and_call_original
 
-      report.perform(report_date)
+      report.perform(report_date, :both)
+    end
+  end
+
+  context 'recipient is internal but internal emails are empty' do
+    let(:report_receiver) { :internal }
+    let(:report_date) { Date.new(2021, 3, 2).in_time_zone('UTC').end_of_day }
+    subject(:report) { described_class.new(report_date, report_receiver) }
+
+    before do
+      allow(IdentityConfig.store).to receive(:team_daily_reports_emails)
+        .and_return([]) # no internal emails
+      allow(IdentityConfig.store).to receive(:irs_verification_report_config)
+        .and_return(mock_test_irs_demographic_emails)
+    end
+
+    it 'logs a warning and does not send the report' do
+      expect(Rails.logger).to receive(:warn).with(
+        'No emails received - IRS Verification Demographics Report NOT SENT',
+      )
+
+      expect(ReportMailer).not_to receive(:tables_report)
+      expect(report).not_to receive(:reports)
+
+      report.perform(report_date, :internal)
     end
   end
 

@@ -18,7 +18,6 @@ RSpec.describe DocAuth::LexisNexis::Requests::TrueIdRequest do
   let(:document_type) { 'DriversLicense' }
   let(:document_class_name) { 'Drivers License' }
   let(:back_image_required) { true }
-  let(:passports_enabled) { false }
   let(:passport_requested) { false }
 
   let(:config) do
@@ -51,11 +50,6 @@ RSpec.describe DocAuth::LexisNexis::Requests::TrueIdRequest do
       document_type_requested: document_type,
       passport_requested:,
     )
-  end
-
-  before do
-    allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled)
-      .and_return(passports_enabled)
   end
 
   shared_examples 'a successful request' do
@@ -187,7 +181,6 @@ RSpec.describe DocAuth::LexisNexis::Requests::TrueIdRequest do
     let(:document_class_name) { 'Passport' }
     let(:back_image_required) { false }
     let(:passport_image) { DocAuthImageFixtures.document_passport_image }
-    let(:passports_enabled) { true }
     let(:passport_requested) { true }
     let(:expected_cropping_mode) { cropping_mode_always }
 
@@ -200,7 +193,6 @@ RSpec.describe DocAuth::LexisNexis::Requests::TrueIdRequest do
       let(:document_class_name) { 'Passport' }
       let(:front_image) { DocAuthImageFixtures.document_passport_image }
       let(:back_image) { DocAuthImageFixtures.document_passport_image }
-      let(:passports_enabled) { true }
       let(:passport_requested) { false }
 
       it 'fails with an unexpected_id_type error' do
@@ -230,7 +222,6 @@ RSpec.describe DocAuth::LexisNexis::Requests::TrueIdRequest do
       let(:document_class_name) { 'Drivers License' }
       let(:back_image_required) { false }
       let(:passport_image) { DocAuthImageFixtures.document_front_image }
-      let(:passports_enabled) { true }
       let(:passport_requested) { true }
 
       it 'fails with an unexpected_id_type error' do

@@ -255,9 +255,7 @@ class UserMailerPreview < ActionMailer::Preview
     UserMailer.with(
       user: user,
       email_address: email_address_record,
-    ).dupe_profile_account_review_complete_success(
-      agency_name: 'Sample APP',
-    )
+    ).dupe_profile_account_review_complete_success
   end
 
   def dupe_profile_account_review_complete_unable
@@ -303,7 +301,6 @@ class UserMailerPreview < ActionMailer::Preview
 
   # To view this email, set the below in application.yml
   # in_person_passports_enabled: true
-  # doc_auth_passports_enabled: true
   def in_person_failed_passports_enabled
     UserMailer.with(user: user, email_address: email_address_record).in_person_failed(
       enrollment: in_person_enrollment_id_ipp,

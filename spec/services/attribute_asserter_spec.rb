@@ -256,10 +256,14 @@ RSpec.describe AttributeAsserter do
 
       it 'includes the correct bundle attributes' do
         expect(user.asserted_attributes.keys).to eq(
-          [:uuid, :email, :first_name, :last_name, :verified_at, :vot],
+          [:uuid, :email, :aal, :ial],
         )
-        expect(get_asserted_attribute(user, :first_name)).to eq 'Jåné'
-        expect(get_asserted_attribute(user, :vot)).to eq 'C1.C2.P1'
+        expect(get_asserted_attribute(user, :ial)).to eq(
+          Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+        )
+        expect(get_asserted_attribute(user, :aal)).to eq(
+          Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
+        )
       end
     end
 
@@ -395,9 +399,15 @@ RSpec.describe AttributeAsserter do
 
           it 'includes the correct bundle attributes' do
             expect(user.asserted_attributes.keys).to eq(
-              [:uuid, :email, :vot],
+              [:uuid, :email, :aal, :ial],
             )
-            expect(get_asserted_attribute(user, :vot)).to eq 'C1.C2'
+
+            expect(get_asserted_attribute(user, :aal)).to eq(
+              Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
+            )
+            expect(get_asserted_attribute(user, :ial)).to eq(
+              Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+            )
           end
         end
       end

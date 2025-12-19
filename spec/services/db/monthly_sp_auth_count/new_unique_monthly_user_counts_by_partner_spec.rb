@@ -270,6 +270,7 @@ RSpec.describe Db::MonthlySpAuthCount::NewUniqueMonthlyUserCountsByPartner do
         end
       end
 
+      # rubocop:disable Layout/LineLength
       it 'adds up new unique users from sp_return_log instances and splits based on profile age' do
         rows = [
           {
@@ -289,7 +290,7 @@ RSpec.describe Db::MonthlySpAuthCount::NewUniqueMonthlyUserCountsByPartner do
             new_unique_user_proofed_events: 9,
             partner_ial2_new_unique_user_events_year1_upfront: 1,
             partner_ial2_new_unique_user_events_year1_existing: 2,
-            partner_ial2_new_unique_user_events_year1: 3,
+            partner_ial2_new_unique_user_events_year1: 3, # Note that year_1 = year_1_upfront + year_1_existing
             partner_ial2_new_unique_user_events_year2: 2,
             partner_ial2_new_unique_user_events_year3: 1,
             partner_ial2_new_unique_user_events_year4: 1,
@@ -314,7 +315,7 @@ RSpec.describe Db::MonthlySpAuthCount::NewUniqueMonthlyUserCountsByPartner do
             new_unique_user_proofed_events: 8,
             partner_ial2_new_unique_user_events_year1_upfront: 0,
             partner_ial2_new_unique_user_events_year1_existing: 3,
-            partner_ial2_new_unique_user_events_year1: 3,
+            partner_ial2_new_unique_user_events_year1: 3, # Note that year_1 = year_1_upfront + year_1_existing
             partner_ial2_new_unique_user_events_year2: 2,
             partner_ial2_new_unique_user_events_year3: 0,
             partner_ial2_new_unique_user_events_year4: 0,
@@ -326,6 +327,7 @@ RSpec.describe Db::MonthlySpAuthCount::NewUniqueMonthlyUserCountsByPartner do
         expect(results).to match_array(rows)
       end
     end
+    # rubocop:enable Layout/LineLength
 
     context 'with only partial month data' do
       let(:partner_key) { 'DHS' }
@@ -335,6 +337,154 @@ RSpec.describe Db::MonthlySpAuthCount::NewUniqueMonthlyUserCountsByPartner do
 
       it 'adds up auth_counts and sp_return_log instances' do
         expect(results).to match_array(rows)
+      end
+    end
+
+    context 'with user having multiple profiles with different upfront/existing status' do
+      let(:partner_key) { 'HHS-PSC' }
+      let(:partner_range) { Date.new(2025, 7, 1)..Date.new(2025, 7, 31) }
+      let(:issuers) { [issuer_a, issuer_b] }
+      let(:issuer_a) { 'issuer_a' }
+      let(:issuer_b) { 'issuer_b' }
+
+      let(:user_multi_profile) { create(:user, profiles: [profile1, profile2]) }
+      let(:profile1) { build(:profile, verified_at: DateTime.new(2025, 7, 1).utc) }
+      let(:profile2) { build(:profile, verified_at: DateTime.new(2025, 7, 2).utc) }
+
+      let(:user_upfront) { create(:user, profiles: [profile_upfront]) }
+      let(:profile_upfront) { build(:profile, verified_at: DateTime.new(2025, 7, 3).utc) }
+
+      let(:user_existing) { create(:user, profiles: [profile_existing]) }
+      let(:profile_existing) { build(:profile, verified_at: DateTime.new(2025, 7, 4).utc) }
+
+      before do
+        create(
+          :sp_return_log,
+          user_id: user_multi_profile.id,
+          issuer: issuer_a,
+          profile_requested_issuer: issuer_a,
+          ial: 2,
+          returned_at: DateTime.new(2025, 7, 15).utc,
+          profile_verified_at: profile1.verified_at,
+          billable: true,
+        )
+
+        create(
+          :sp_return_log,
+          user_id: user_multi_profile.id,
+          issuer: issuer_b,
+          profile_requested_issuer: issuer_a,
+          ial: 2,
+          returned_at: DateTime.new(2025, 7, 16).utc,
+          profile_verified_at: profile2.verified_at,
+          billable: true,
+        )
+
+        create(
+          :sp_return_log,
+          user_id: user_upfront.id,
+          issuer: issuer_a,
+          profile_requested_issuer: issuer_a,
+          ial: 2,
+          returned_at: DateTime.new(2025, 7, 17).utc,
+          profile_verified_at: profile_upfront.verified_at,
+          billable: true,
+        )
+
+        create(
+          :sp_return_log,
+          user_id: user_existing.id,
+          issuer: issuer_b,
+          profile_requested_issuer: issuer_a,
+          ial: 2,
+          returned_at: DateTime.new(2025, 7, 18).utc,
+          profile_verified_at: profile_existing.verified_at,
+          billable: true,
+        )
+      end
+
+      it 'classifies each profile event independently' do
+        expect(results.length).to eq(1)
+        july_result = results.first
+
+        expect(july_result[:unique_user_proofed_events]).to eq(4)
+        expect(july_result[:partner_ial2_unique_user_events_year1]).to eq(4)
+        expect(july_result[:new_unique_user_proofed_events]).to eq(4)
+
+        expect(july_result[:partner_ial2_new_unique_user_events_year1_upfront]).to eq(2)
+        expect(july_result[:partner_ial2_new_unique_user_events_year1_existing]).to eq(2)
+
+        upfront = july_result[:partner_ial2_new_unique_user_events_year1_upfront]
+        existing = july_result[:partner_ial2_new_unique_user_events_year1_existing]
+        total = july_result[:partner_ial2_new_unique_user_events_year1]
+        expect(upfront + existing).to eq(total)
+      end
+    end
+
+    context 'with user having multiple upfront profiles in same month' do
+      let(:partner_key) { 'TEST' }
+      let(:partner_range) { Date.new(2025, 8, 1)..Date.new(2025, 8, 31) }
+      let(:issuers) { [issuer_a, issuer_b] }
+      let(:issuer_a) { 'issuer_a' }
+      let(:issuer_b) { 'issuer_b' }
+
+      let(:user_double_upfront) { create(:user, profiles: [profile1, profile2]) }
+      let(:profile1) { build(:profile, verified_at: DateTime.new(2025, 8, 1).utc) }
+      let(:profile2) { build(:profile, verified_at: DateTime.new(2025, 8, 2).utc) }
+
+      let(:user_single_upfront) { create(:user, profiles: [profile3]) }
+      let(:profile3) { build(:profile, verified_at: DateTime.new(2025, 8, 3).utc) }
+
+      before do
+        create(
+          :sp_return_log,
+          user_id: user_double_upfront.id,
+          issuer: issuer_a,
+          profile_requested_issuer: issuer_a,
+          ial: 2,
+          returned_at: DateTime.new(2025, 8, 15).utc,
+          profile_verified_at: profile1.verified_at,
+          billable: true,
+        )
+
+        create(
+          :sp_return_log,
+          user_id: user_double_upfront.id,
+          issuer: issuer_b,
+          profile_requested_issuer: issuer_b,
+          ial: 2,
+          returned_at: DateTime.new(2025, 8, 16).utc,
+          profile_verified_at: profile2.verified_at,
+          billable: true,
+        )
+
+        create(
+          :sp_return_log,
+          user_id: user_single_upfront.id,
+          issuer: issuer_a,
+          profile_requested_issuer: issuer_a,
+          ial: 2,
+          returned_at: DateTime.new(2025, 8, 17).utc,
+          profile_verified_at: profile3.verified_at,
+          billable: true,
+        )
+      end
+
+      it 'only charges upfront once per user across all months to avoid double-charging' do
+        expect(results.length).to eq(1)
+        august_result = results.first
+
+        expect(august_result[:unique_user_proofed_events]).to eq(3)
+        expect(august_result[:new_unique_user_proofed_events]).to eq(3)
+
+        expect(august_result[:partner_ial2_new_unique_user_events_year1_upfront]).to eq(2)
+        expect(august_result[:partner_ial2_new_unique_user_events_year1_existing]).to eq(1)
+        expect(august_result[:partner_ial2_new_unique_user_events_year1]).to eq(3)
+
+        upfront = august_result[:partner_ial2_new_unique_user_events_year1_upfront]
+        existing = august_result[:partner_ial2_new_unique_user_events_year1_existing]
+        total = august_result[:partner_ial2_new_unique_user_events_year1]
+        expect(upfront + existing).to eq(total)
       end
     end
   end

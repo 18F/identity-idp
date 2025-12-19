@@ -24,6 +24,12 @@ module AttemptsApi
     def track_event(event_type, metadata = {})
       return unless enabled?
 
+      user_id = metadata.delete(:user_id)
+
+      if user_blank? && user_id.present?
+        @user = User.find_by(uuid: user_id)
+      end
+
       event = AttemptEvent.new(
         event_type: event_type,
         session_id: session_id,
@@ -54,6 +60,10 @@ module AttemptsApi
     end
 
     private
+
+    def user_blank?
+      @user.blank? || @user.uuid == 'anonymous-uuid'
+    end
 
     def jwe(event)
       event.to_jwe(

@@ -47,18 +47,6 @@ class SamlRequestValidator
     }
   end
 
-  def parsed_vectors_of_trust
-    return @parsed_vectors_of_trust if defined?(@parsed_vectors_of_trust)
-
-    @parsed_vectors_of_trust = begin
-      if vtr.present?
-        vtr.map { |vot| Vot::Parser.new(vector_of_trust: vot).parse }
-      end
-    rescue Vot::Parser::ParseException
-      nil
-    end
-  end
-
   # This checks that the SP matches something in the database
   # SamlIdpAuthConcern#check_sp_active checks that it's currently active
   def authorized_service_provider
@@ -81,7 +69,7 @@ class SamlRequestValidator
   end
 
   def parsable_vtr
-    if !vtr.blank? && parsed_vectors_of_trust.blank?
+    if vtr.present?
       errors.add(:authn_context, :unauthorized_authn_context)
     end
   end
@@ -107,8 +95,6 @@ class SamlRequestValidator
 
     authn_contexts = authn_context.reject do |classref|
       next true if classref.include?(Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF)
-      next true if classref.match?(SamlIdp::Request::VTR_REGEXP) &&
-                   IdentityConfig.store.use_vot_in_sp_requests
     end
     # SAML requests are allowed to "default" to the integration's IAL default.
     return true if authn_contexts.empty?
@@ -123,8 +109,6 @@ class SamlRequestValidator
   end
 
   def identity_proofing_requested?
-    return true if parsed_vectors_of_trust&.any?(&:identity_proofing?)
-
     authn_context.each do |classref|
       return true if Saml::Idp::Constants::IAL2_AUTHN_CONTEXTS.include?(classref)
     end

@@ -8,4 +8,8 @@ FactoryBot.define do
     socure_docv_transaction_token { SecureRandom.uuid }
     socure_docv_capture_app_url { 'https://capture-app.test' }
   end
+
+  trait :passport_requested do
+    passport_status { 'requested' }
+  end
 end

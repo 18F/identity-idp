@@ -30,7 +30,10 @@ RSpec.describe Idv::ForgotPasswordController do
     end
 
     it 'tracks appropriate events' do
-      expect(@attempts_api_tracker).to receive(:forgot_password_email_sent).with(email: user.email)
+      expect(@attempts_api_tracker).to receive(:forgot_password_email_sent).with(
+        email: user.email,
+        user_id: user.uuid,
+      )
       post :update
 
       expect(@analytics).to have_logged_event('IdV: forgot password confirmed')

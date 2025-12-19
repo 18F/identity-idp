@@ -1793,11 +1793,13 @@ module AnalyticsEvents
   # User is shown the Socure timeout error page
   # @param [String] error_code The type of error that occurred
   # @param [Integer] remaining_submit_attempts The number of remaining attempts to submit
+  # @param [String] docv_transaction_token The docvTransactionToken received from Socure
   # @param [Boolean] skip_hybrid_handoff Whether the user skipped the hybrid handoff A/B test
   # @param [Boolean] opted_in_to_in_person_proofing Whether the user opted into in-person proofing
   def idv_doc_auth_socure_error_visited(
     error_code:,
     remaining_submit_attempts:,
+    docv_transaction_token: nil,
     skip_hybrid_handoff: nil,
     opted_in_to_in_person_proofing: nil,
     **extra
@@ -1806,6 +1808,7 @@ module AnalyticsEvents
       :idv_doc_auth_socure_error_visited,
       error_code:,
       remaining_submit_attempts:,
+      docv_transaction_token:,
       skip_hybrid_handoff:,
       opted_in_to_in_person_proofing:,
       **extra,
@@ -2238,6 +2241,8 @@ module AnalyticsEvents
   # @option proofing_results [String] context.stages.resolution.transaction_id A unique id for the underlying vendor request
   # @option proofing_results [Boolean] context.stages.resolution.can_pass_with_additional_verification Whether the PII could be verified if another vendor verified certain attributes
   # @option proofing_results [Array<String>] context.stages.resolution.attributes_requiring_additional_verification Attributes that need to be verified by another vendor
+  # @option proofing_results [Array<String>,nil] context.stages.resolution.source_attribution List of sources that contributed to the resolution proofing result
+  # @option proofing_results [String,nil] context.stages.resolution.vendor_id Vendor's internal ID for resolution proofing requests, e.g. socureId
   # @option proofing_results [String] context.stages.resolution.vendor_name Vendor used (e.g. lexisnexis:instant_verify)
   # @option proofing_results [String] context.stages.resolution.vendor_workflow ID of workflow or configuration the vendor used for this transaction
   # @option proofing_results [Boolean] context.stages.residential_address.success Whether the residential address passed proofing
@@ -2247,6 +2252,8 @@ module AnalyticsEvents
   # @option proofing_results [String] context.stages.residential_address.transaction_id Vendor-specific transaction ID for the request made to the residential address proofing vendor
   # @option proofing_results [Boolean] context.stages.residential_address.can_pass_with_additional_verification Whether, if residential address proofing failed, it could pass with additional proofing from another vendor
   # @option proofing_results [Array<String>,nil] context.stages.residential_address.attributes_requiring_additional_verification List of PII attributes that require additional verification for residential address proofing to pass
+  # @option proofing_results [Array<String>,nil] context.stages.residential_address.source_attribution List of sources that contributed to the residential address proofing result
+  # @option proofing_results [String,nil] context.stages.residential_address.vendor_id Vendor's internal ID for residential address proofing requests, e.g. socureId
   # @option proofing_results [String] context.stages.residential_address.vendor_name Vendor used for residential address proofing
   # @option proofing_results [String] context.stages.residential_address.vendor_workflow Vendor-specific workflow or configuration ID associated with the request made.
   # @option proofing_results [Hash] context.stages.state_id Object holding details about the call made to the state ID proofing vendor
@@ -4964,6 +4971,7 @@ module AnalyticsEvents
   # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
   # @param [String] customer_user_id user uuid sent to socure
   # @param [Hash] reason_codes socure internal reason codes for accept reject decision
+  # @param [Hash] alternate_result Details for proofing attempt with primary vendor
   # The vendor finished the process of confirming the users phone
   def idv_phone_confirmation_vendor_submitted(
     success:,
@@ -4981,6 +4989,7 @@ module AnalyticsEvents
     pending_profile_idv_level: nil,
     reason_codes: nil,
     customer_user_id: nil,
+    alternate_result: nil,
     **extra
   )
     track_event(
@@ -5000,6 +5009,7 @@ module AnalyticsEvents
       pending_profile_idv_level:,
       reason_codes:,
       customer_user_id:,
+      alternate_result:,
       **extra,
     )
   end
@@ -5629,6 +5639,7 @@ module AnalyticsEvents
   # @param [Boolean] async whether this worker is running asynchronously
   # @param [Boolean] billed
   # @param [String] birth_year Birth year from document
+  # @param [String] expiration_date Expiration date from document
   # @param [Hash] customer_profile socure customer profile
   # @param [String] customer_user_id user uuid sent to Socure
   # @param [Hash] decision accept or reject of given ID
@@ -5675,6 +5686,7 @@ module AnalyticsEvents
     decision: nil,
     document_metadata: nil,
     docv_transaction_token: nil,
+    expiration_date: nil,
     flow_path: nil,
     document_type_received: nil,
     issue_year: nil,
@@ -5704,6 +5716,7 @@ module AnalyticsEvents
       doc_type_supported:,
       document_metadata:,
       docv_transaction_token:,
+      expiration_date:,
       flow_path:,
       document_type_received:,
       issue_year:,
@@ -5772,6 +5785,69 @@ module AnalyticsEvents
       active_profile_idv_level: active_profile_idv_level,
       pending_profile_idv_level: pending_profile_idv_level,
       profile_history: profile_history,
+      **extra,
+    )
+  end
+
+  # @param [Boolean] success Whether the state ID validation was successful.
+  # @param [String] vendor_name The name of the vendor doing the validation. If the ID was not from
+  #   a supported jurisdiction, it will be "UnsupportedJurisdiction". It MAY also be
+  #   "UnsupportedJurisdiction" if state ID verification was not needed because other vendor calls
+  #   did not succeed.
+  # @param [String] transaction_id The vendor specific transaction ID for the proofing request.
+  # @param [Hash<String,Numeric>] requested_attributes The values sent in the proofing request.
+  #   "1" represents that the value was sent.
+  # @param [Array[String], nil] verified_attributes The attributes verified during proofing.
+  # @param [Boolean] ipp_enrollment_in_progress Whether the user has entered the in-person proofing
+  #   flow.
+  # @param [Boolean] jurisdiction_in_maintenance_window Whether the target state MVA is under
+  #   maintenance.
+  # @param [Boolean] supported_jurisdiction Whether the state ID jurisdiction is supported by AAMVA.
+  # @param [Boolean] timed_out Whether the proofing request timed out.
+  # @param [Integer, nil] birth_year The birth year listed on the ID.
+  # @param [String, nil] state The state on the ID.
+  # @param [String, nil] state_id_jurisdiction The state that issued the ID.
+  # @param [String, nil] state_id_number A string describing the format of the ID number.
+  # @param [Hash, nil] errors The errors encountered during proofing.
+  # @param [String, nil] exception The exception message.
+  # @param [Boolean, nil] mva_exception Whether an MVA exception occured.
+  def idv_state_id_validation(
+    success:,
+    vendor_name:,
+    transaction_id:,
+    requested_attributes:,
+    verified_attributes:,
+    ipp_enrollment_in_progress:,
+    jurisdiction_in_maintenance_window:,
+    supported_jurisdiction:,
+    timed_out:,
+    birth_year: nil,
+    state: nil,
+    state_id_jurisdiction: nil,
+    state_id_number: nil,
+    errors: nil,
+    exception: nil,
+    mva_exception: nil,
+    **extra
+  )
+    track_event(
+      :idv_state_id_validation,
+      success:,
+      vendor_name:,
+      transaction_id:,
+      requested_attributes:,
+      verified_attributes:,
+      ipp_enrollment_in_progress:,
+      jurisdiction_in_maintenance_window:,
+      supported_jurisdiction:,
+      timed_out:,
+      birth_year:,
+      state:,
+      state_id_jurisdiction:,
+      state_id_number:,
+      errors:,
+      exception:,
+      mva_exception:,
       **extra,
     )
   end
@@ -6712,8 +6788,6 @@ module AnalyticsEvents
   # @param [String] client_id
   # @param [String] scope
   # @param [Array] acr_values
-  # @param [Array] vtr
-  # @param [String, nil] vtr_param
   # @param [Boolean] unauthorized_scope
   # @param [Boolean] user_fully_authenticated
   # @param [String] unknown_authn_contexts space separated list of unknown contexts
@@ -6727,8 +6801,6 @@ module AnalyticsEvents
     client_id:,
     scope:,
     acr_values:,
-    vtr:,
-    vtr_param:,
     unauthorized_scope:,
     user_fully_authenticated:,
     error_details: nil,
@@ -6747,8 +6819,6 @@ module AnalyticsEvents
       client_id:,
       scope:,
       acr_values:,
-      vtr:,
-      vtr_param:,
       unauthorized_scope:,
       user_fully_authenticated:,
       unknown_authn_contexts:,
@@ -6840,6 +6910,11 @@ module AnalyticsEvents
       country: country,
       **extra,
     )
+  end
+
+  # Tracks when passkey authentication is initiated
+  def passkey_authentication_initiated
+    track_event(:passkey_authentication_initiated)
   end
 
   # Tracks the health of the DoS Passports API
@@ -7606,7 +7681,6 @@ module AnalyticsEvents
     requested_ial:,
     authn_context:,
     requested_aal_authn_context:,
-    requested_vtr_authn_contexts:,
     force_authn:,
     final_auth_request:,
     service_provider:,
@@ -7614,6 +7688,7 @@ module AnalyticsEvents
     matching_cert_serial:,
     unknown_authn_contexts:,
     user_fully_authenticated:,
+    requested_vtr_authn_contexts: nil,
     **extra
   )
     track_event(
@@ -7805,9 +7880,9 @@ module AnalyticsEvents
     ial:,
     billed_ial:,
     sign_in_flow:,
-    vtr:,
     acr_values:,
     sign_in_duration_seconds:,
+    vtr: nil,
     **extra
   )
     track_event(

@@ -52,17 +52,21 @@ module Idv
         @url = document_response.dig(:data, :url)
 
         track_document_request_event(document_request:, document_response:, timer:)
-
-        # placeholder until we get an error page for url not being present
-        if @url.nil?
-          redirect_to idv_socure_document_capture_errors_url(error_code: :url_not_found)
-          return
-        end
-
-        document_capture_session.socure_docv_transaction_token = document_response.dig(
+        socure_docv_transaction_token = document_response.dig(
           :data,
           :docvTransactionToken,
         )
+
+        # placeholder until we get an error page for url not being present
+        if @url.nil?
+          redirect_to idv_socure_document_capture_errors_url(
+            error_code: :url_not_found,
+            transaction_token: socure_docv_transaction_token,
+          )
+          return
+        end
+
+        document_capture_session.socure_docv_transaction_token = socure_docv_transaction_token
         document_capture_session.socure_docv_capture_app_url = document_response.dig(
           :data,
           :url,
@@ -88,7 +92,9 @@ module Idv
         if result.success?
           redirect_to idv_ssn_url
         else
-          redirect_to idv_socure_document_capture_errors_url
+          redirect_to idv_socure_document_capture_errors_url(
+            transaction_token: document_capture_session.socure_docv_transaction_token,
+          )
         end
       end
 
@@ -108,6 +114,7 @@ module Idv
             idv_session.socure_docv_wait_polling_started_at = nil
             idv_session.invalidate_in_person_pii_from_user!
             idv_session.doc_auth_vendor = nil
+            idv_session.source_check_vendor = nil
           end,
         )
       end
@@ -120,6 +127,15 @@ module Idv
 
         # If the stored_result is nil, the job fetching the results has not completed.
         analytics.idv_doc_auth_document_capture_polling_wait_visited(**analytics_arguments)
+
+        if document_capture_session.socure_docv_transaction_token.blank?
+          redirect_to idv_socure_document_capture_errors_url(
+            error_code: :invalid_transaction_token,
+            transaction_token: :MISSING_TRANSACTION_TOKEN,
+          )
+          return true
+        end
+
         if wait_timed_out?
           analytics.idv_socure_verification_webhook_missing(
             docv_transaction_token: document_capture_session.socure_docv_transaction_token,
@@ -130,7 +146,10 @@ module Idv
           document_capture_session.reload
           return false if document_capture_session.load_result.present?
 
-          redirect_to idv_socure_document_capture_errors_url(error_code: :timeout)
+          redirect_to idv_socure_document_capture_errors_url(
+            error_code: :timeout,
+            transaction_token: document_capture_session.socure_docv_transaction_token,
+          )
         else
           @refresh_interval =
             IdentityConfig.store.doc_auth_socure_wait_polling_refresh_max_seconds

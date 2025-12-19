@@ -756,11 +756,13 @@ RSpec.describe ApplicationController do
     let(:enabled) { true }
     let(:sp) { create(:service_provider) }
     let(:user) { create(:user) }
+    let(:browser_id) { SecureRandom.hex(64) }
 
     before do
       expect(IdentityConfig.store).to receive(:attempts_api_enabled).and_return enabled
       allow(controller).to receive(:current_user).and_return(user)
       allow(controller).to receive(:current_sp).and_return(sp)
+      request.cookies[:browser_id] = browser_id
     end
 
     context 'when the attempts api is not enabled' do
@@ -769,7 +771,7 @@ RSpec.describe ApplicationController do
       it 'calls the AttemptsApi::Tracker class with enabled_for_session set to false' do
         expect(AttemptsApi::Tracker).to receive(:new).with(
           user:, request:, sp:, session_id: nil,
-          cookie_device_uuid: nil, sp_redirect_uri: nil, enabled_for_session: false
+          cookie_device_uuid: browser_id, sp_redirect_uri: nil, enabled_for_session: false
         )
 
         controller.attempts_api_tracker
@@ -785,7 +787,7 @@ RSpec.describe ApplicationController do
         it 'calls the AttemptsApi::Tracker class with enabled_for_session set to false' do
           expect(AttemptsApi::Tracker).to receive(:new).with(
             user:, request:, sp:, session_id: nil,
-            cookie_device_uuid: nil, sp_redirect_uri: nil, enabled_for_session: false
+            cookie_device_uuid: browser_id, sp_redirect_uri: nil, enabled_for_session: false
           )
 
           controller.attempts_api_tracker
@@ -807,7 +809,7 @@ RSpec.describe ApplicationController do
           it 'calls the AttemptsApi::Tracker class with enabled_for_session set to false' do
             expect(AttemptsApi::Tracker).to receive(:new).with(
               user:, request:, sp:, session_id: nil,
-              cookie_device_uuid: nil, sp_redirect_uri: nil, enabled_for_session: false
+              cookie_device_uuid: browser_id, sp_redirect_uri: nil, enabled_for_session: false
             )
 
             controller.attempts_api_tracker
@@ -822,10 +824,30 @@ RSpec.describe ApplicationController do
           it 'calls the AttemptsApi::Tracker class with enabled_for_session set to true' do
             expect(AttemptsApi::Tracker).to receive(:new).with(
               user:, request:, sp:, session_id: 'abc123',
-              cookie_device_uuid: nil, sp_redirect_uri: nil, enabled_for_session: true
+              cookie_device_uuid: browser_id, sp_redirect_uri: nil, enabled_for_session: true
             )
 
             controller.attempts_api_tracker
+          end
+
+          context 'when browser_id cookie is missing' do
+            let(:browser_id) { nil }
+            let(:generated_browser_id) { 'random-id' }
+
+            before do
+              expect(SecureRandom).to receive(:hex).with(64).and_return(generated_browser_id)
+            end
+
+            it 'calls the AttemptsApi::Tracker class with nil cookie_device_uuid' do
+              expect(AttemptsApi::Tracker).to receive(:new).with(
+                user:, request:, sp:, session_id: 'abc123',
+                cookie_device_uuid: generated_browser_id, sp_redirect_uri: nil,
+                enabled_for_session: true
+              )
+
+              controller.attempts_api_tracker
+              expect(request.cookie_jar[:browser_id]).to eq(generated_browser_id)
+            end
           end
         end
       end

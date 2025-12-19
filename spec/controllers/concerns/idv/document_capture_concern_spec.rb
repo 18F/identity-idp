@@ -23,7 +23,6 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
     let(:selfie_status) { :not_processed }
     let(:success) { true }
     let(:passport_requested) { false }
-    let(:passports_enabled) { true }
     let(:doc_auth_success) { true }
     let(:attention_with_barcode) { false }
     let(:pii_data) do
@@ -68,8 +67,6 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
         .and_return(passport_requested)
       allow(document_capture_session).to receive(:doc_auth_vendor)
         .and_return(Idp::Constants::Vendors::MOCK)
-      allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled)
-        .and_return(passports_enabled)
 
       resolution_result = Vot::Parser.new(vector_of_trust: 'P1').parse
       allow(controller).to receive(:resolved_authn_context_result).and_return(resolution_result)
@@ -112,12 +109,71 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
     end
 
     context 'when document is a state ID' do
+      let(:aamva_enabled) { true }
+      let(:aamva_status) { :passed }
+
       before do
+        allow(IdentityConfig.store).to receive(:idv_aamva_at_doc_auth_enabled)
+          .and_return(aamva_enabled)
+
+        id = SecureRandom.hex
+        result = DocumentCaptureSessionResult.new(
+          id:,
+          success:,
+          doc_auth_success:,
+          selfie_status:,
+          mrz_status:,
+          aamva_status:,
+          pii: pii_data,
+          attention_with_barcode:,
+        )
+        EncryptedRedisStructStorage.store(result)
+        stored_result = EncryptedRedisStructStorage.load(id, type: DocumentCaptureSessionResult)
+        allow(controller).to receive(:stored_result).and_return(stored_result)
       end
 
       it 'returns success response regardless of MRZ status' do
         response = controller.handle_stored_result(user: user, store_in_session: false)
         expect(response.success?).to eq(true)
+      end
+
+      context 'with AAMVA enabled' do
+        context 'when AAMVA check passes' do
+          let(:aamva_status) { :passed }
+
+          it 'returns success response' do
+            response = controller.handle_stored_result(user: user, store_in_session: false)
+            expect(response.success?).to eq(true)
+          end
+        end
+
+        context 'when AAMVA check fails' do
+          let(:aamva_status) { :failed }
+
+          it 'returns failure response' do
+            response = controller.handle_stored_result(user: user, store_in_session: false)
+            expect(response.success?).to eq(false)
+          end
+        end
+
+        context 'when AAMVA check not processed' do
+          let(:aamva_status) { :not_processed }
+
+          it 'returns failure response' do
+            response = controller.handle_stored_result(user: user, store_in_session: false)
+            expect(response.success?).to eq(false)
+          end
+        end
+      end
+
+      context 'with AAMVA disabled' do
+        let(:aamva_enabled) { false }
+        let(:aamva_status) { :failed }
+
+        it 'returns success response even with failed AAMVA' do
+          response = controller.handle_stored_result(user: user, store_in_session: false)
+          expect(response.success?).to eq(true)
+        end
       end
     end
   end
@@ -202,6 +258,130 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
     end
   end
 
+  describe '#aamva_requirement_met?' do
+    controller(idv_document_capture_controller_class) do
+    end
+
+    let(:aamva_status) { nil }
+    let(:document_capture_session) { instance_double(DocumentCaptureSession) }
+    let(:aamva_enabled) { true }
+    let(:doc_auth_success) { true }
+    let(:selfie_status) { :not_processed }
+    let(:success) { true }
+    let(:attention_with_barcode) { false }
+    let(:pii_data) { {} }
+    let(:state_id_pii_data) do
+      {
+        first_name: 'Test',
+        last_name: 'User',
+        state: 'MD',
+        document_type_received: 'drivers_license',
+      }
+    end
+    let(:passport_pii_data) do
+      {
+        first_name: 'Test',
+        last_name: 'User',
+        mrz: "P<USADOE<<JOHN<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n" \
+             "123456789<USA7006100M2501017<<<<<<<<<<<<<<06\n",
+        document_number: '123456789',
+        passport_expiration: '2030-01-01',
+        issuing_country_code: 'USA',
+        nationality_code: 'USA',
+        dob: '1970-06-10',
+        document_type_received: 'passport',
+      }
+    end
+
+    before do
+      id = SecureRandom.hex
+      result = DocumentCaptureSessionResult.new(
+        id:,
+        success:,
+        doc_auth_success:,
+        selfie_status:,
+        aamva_status:,
+        pii: pii_data,
+        attention_with_barcode:,
+      )
+      EncryptedRedisStructStorage.store(result)
+      stored_result = EncryptedRedisStructStorage.load(id, type: DocumentCaptureSessionResult)
+      allow(controller).to receive(:stored_result).and_return(stored_result)
+      allow(controller).to receive(:document_capture_session).and_return(document_capture_session)
+      allow(IdentityConfig.store).to receive(:idv_aamva_at_doc_auth_enabled)
+        .and_return(aamva_enabled)
+    end
+
+    context 'when document is a passport' do
+      let(:pii_data) { passport_pii_data }
+
+      it 'returns true regardless of AAMVA status' do
+        expect(controller.aamva_requirement_met?).to eq(true)
+      end
+
+      context 'with failed AAMVA status' do
+        let(:aamva_status) { :failed }
+
+        it 'returns true' do
+          expect(controller.aamva_requirement_met?).to eq(true)
+        end
+      end
+    end
+
+    context 'when AAMVA at doc auth is disabled' do
+      let(:aamva_enabled) { false }
+      let(:pii_data) { state_id_pii_data }
+
+      it 'returns true regardless of AAMVA status' do
+        expect(controller.aamva_requirement_met?).to eq(true)
+      end
+
+      context 'with failed AAMVA status' do
+        let(:aamva_status) { :failed }
+
+        it 'returns true' do
+          expect(controller.aamva_requirement_met?).to eq(true)
+        end
+      end
+    end
+
+    context 'when document is a state ID and AAMVA is enabled' do
+      let(:pii_data) { state_id_pii_data }
+
+      context 'when aamva_status is :passed' do
+        let(:aamva_status) { :passed }
+
+        it 'returns true' do
+          expect(controller.aamva_requirement_met?).to eq(true)
+        end
+      end
+
+      context 'when aamva_status is :failed' do
+        let(:aamva_status) { :failed }
+
+        it 'returns false' do
+          expect(controller.aamva_requirement_met?).to eq(false)
+        end
+      end
+
+      context 'when aamva_status is :not_processed' do
+        let(:aamva_status) { :not_processed }
+
+        it 'returns false' do
+          expect(controller.aamva_requirement_met?).to eq(false)
+        end
+      end
+
+      context 'when aamva_status is nil' do
+        let(:aamva_status) { nil }
+
+        it 'returns false' do
+          expect(controller.aamva_requirement_met?).to eq(false)
+        end
+      end
+    end
+  end
+
   describe '#mrz_requirement_met?' do
     controller(idv_document_capture_controller_class) do
     end
@@ -209,7 +389,6 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
     let(:mrz_status) { nil }
     let(:document_capture_session) { instance_double(DocumentCaptureSession) }
     let(:passport_requested) { false }
-    let(:passports_enabled) { true }
     let(:doc_auth_success) { true }
     let(:selfie_status) { :not_processed }
     let(:success) { true }
@@ -255,8 +434,6 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
         .and_return(passport_requested)
       allow(document_capture_session).to receive(:doc_auth_vendor)
         .and_return(Idp::Constants::Vendors::MOCK)
-      allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled)
-        .and_return(passports_enabled)
     end
 
     context 'when passport not requested' do
@@ -320,16 +497,6 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
 
       context 'when mrz_status is pass but additional checks fail' do
         let(:mrz_status) { :pass }
-
-        context 'when passports are disabled' do
-          let(:passports_enabled) { false }
-
-          let(:pii_data) { partial_passport_pii_data }
-
-          it 'returns false' do
-            expect(controller.mrz_requirement_met?).to eq(false)
-          end
-        end
 
         context 'when feature checks pass' do
           let(:pii_data) { partial_passport_pii_data }

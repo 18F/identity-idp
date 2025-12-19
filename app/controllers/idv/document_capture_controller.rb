@@ -78,6 +78,7 @@ module Idv
           idv_session.had_barcode_read_failure = nil
           idv_session.selfie_check_performed = nil
           idv_session.doc_auth_vendor = nil
+          idv_session.source_check_vendor = nil
         end,
       )
     end

@@ -1,4 +1,4 @@
-import { trackError } from '@18f/identity-analytics';
+import { trackEvent, trackError } from '@18f/identity-analytics';
 import type SubmitButtonElement from '@18f/identity-submit-button/submit-button-element';
 import verifyWebauthnDevice from './verify-webauthn-device';
 import isExpectedWebauthnError from './is-expected-error';
@@ -74,6 +74,7 @@ class WebauthnVerifyButtonElement extends HTMLElement {
 
   #handleSubmit = (event: SubmitEvent) => {
     event.preventDefault();
+    trackEvent('passkey_authentication_initiated');
     this.verify();
   };
 }

@@ -29,10 +29,10 @@ RSpec.describe Idv::InPerson::ReadyToVerifyPresenter do
 
     context 'when the enrollment has an enrollment_established_at time' do
       [
-        ['English', :en, 'August 3, 2024'],
-        ['Spanish', :es, '3 de agosto de 2024'],
-        ['French', :fr, '3 août 2024'],
-        ['Chinese', :zh, '2024年8月3日'],
+        ['English', :en, 'July 11, 2024'],
+        ['Spanish', :es, '11 de julio de 2024'],
+        ['French', :fr, '11 juillet 2024'],
+        ['Chinese', :zh, '2024年7月11日'],
       ].each do |language, locale, expected|
         context "when locale is #{language}" do
           before do
@@ -172,11 +172,6 @@ RSpec.describe Idv::InPerson::ReadyToVerifyPresenter do
   describe '#days_remaining' do
     subject(:days_remaining) { presenter.days_remaining }
     let(:config) { IdentityConfig.store.in_person_enrollment_validity_in_days }
-
-    before do
-      allow(IdentityConfig.store).to receive(:in_person_enrollment_validity_cutoff_date)
-        .and_return('2023-07-04T00:00:00Z')
-    end
 
     context '4 days until due date' do
       it 'returns 3 days' do

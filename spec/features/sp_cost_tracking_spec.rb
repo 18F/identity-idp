@@ -18,6 +18,8 @@ RSpec.feature 'SP Costing', :email do
   end
 
   it 'logs the correct costs for an ial2 user creation from sp with oidc', js: true do
+    expect(NewRelic::Agent).to receive(:notice_error)
+      .with(Db::SpCost::AddSpCost::SpCostTypeError.new('mock_address'))
     create_ial2_user_from_sp(email)
 
     expect_sp_cost_type(0, 2, 'acuant_front_image')
@@ -32,10 +34,11 @@ RSpec.feature 'SP Costing', :email do
       5, 2, 'aamva',
       transaction_id: Proofing::Mock::IdMockClient::TRANSACTION_ID
     )
-    expect_sp_cost_type(6, 2, 'lexis_nexis_address')
   end
 
   it 'logs the cost to the SP for reproofing', js: true do
+    expect(NewRelic::Agent).to receive(:notice_error).twice
+      .with(Db::SpCost::AddSpCost::SpCostTypeError.new('mock_address'))
     create_ial2_user_from_sp(email)
 
     # track costs without dealing with 'remember device'
@@ -58,7 +61,6 @@ RSpec.feature 'SP Costing', :email do
       acuant_front_image
       acuant_back_image
       lexis_nexis_resolution
-      lexis_nexis_address
     ].each do |cost_type|
       sp_costs = SpCost.where(cost_type: cost_type)
       expect(sp_costs.count).to eq(2)

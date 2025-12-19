@@ -77,6 +77,7 @@ module Idv
         undo_step: ->(idv_session:, user:) do
           idv_session.flow_path = nil
           idv_session.phone_for_mobile_flow = nil
+          idv_session.source_check_vendor = nil
         end,
       )
     end

@@ -65,7 +65,6 @@ RSpec.describe DocAuth::Socure::Requests::DocvResultRequest do
 
       context 'passports enabled' do
         before do
-          allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled).and_return(true)
           allow(IdentityConfig.store).to receive(:doc_auth_passport_vendor_default)
             .and_return(Idp::Constants::Vendors::SOCURE)
         end

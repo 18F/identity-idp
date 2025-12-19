@@ -35,14 +35,13 @@ module FederatedProtocols
     end
 
     def vtr
-      request.requested_vtr_authn_contexts.presence
+      nil
     end
 
     def requested_attributes
       @requested_attributes ||= SamlRequestedAttributesPresenter.new(
         service_provider: current_service_provider,
         ial: ial,
-        vtr: vtr,
         authn_request_attribute_bundle: SamlRequestParser.new(request).requested_attributes,
       ).requested_attributes
     end

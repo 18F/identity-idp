@@ -30,6 +30,8 @@ module Proofing
               vendor_name: VENDOR_NAME,
               verified_attributes: response.verified_attributes,
               transaction_id: response.reference_id,
+              vendor_id: response.vendor_id,
+              source_attribution: response.source_attribution,
               customer_user_id: response.customer_user_id,
               reason_codes: SocureReasonCode.with_definitions(response.reason_codes),
             )

@@ -34,7 +34,7 @@ module Idv
     end
 
     def explanation_text(help_link)
-      if first_time_idv?
+      if first_time_idv? || show_sp_reproof_banner
         t(
           'doc_auth.info.getting_started_html',
           sp_name:,

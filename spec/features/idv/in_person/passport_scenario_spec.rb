@@ -262,44 +262,38 @@ RSpec.describe 'In Person Proofing Passports', js: true do
     end
   end
 
-  context 'when passports are not allowed' do
+  context 'when in person passports are not allowed' do
     before do
-      allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled).and_return(false)
+      allow(IdentityConfig.store).to receive(:in_person_passports_enabled).and_return(false)
     end
 
-    context 'when in person passports are enabled' do
-      before do
-        allow(IdentityConfig.store).to receive(:in_person_passports_enabled).and_return(true)
-      end
+    it 'does not allow the user to access in person passport content' do
+      reload_ab_tests
+      visit_idp_from_sp_with_ial2(service_provider)
+      sign_in_live_with_2fa(user)
 
-      it 'does not allow the user to access in person passport content' do
-        reload_ab_tests
-        visit_idp_from_sp_with_ial2(service_provider)
-        sign_in_live_with_2fa(user)
+      expect(page).to have_current_path(idv_welcome_path)
+      expect(page).to have_content t('doc_auth.headings.welcome', sp_name: service_provider_name)
+      expect(page).to have_content t('doc_auth.instructions.bullet1')
 
-        expect(page).to have_current_path(idv_welcome_path)
-        expect(page).to have_content t('doc_auth.headings.welcome', sp_name: service_provider_name)
-        expect(page).to have_content t('doc_auth.instructions.bullet1')
+      complete_welcome_step
 
-        complete_welcome_step
+      expect(page).to have_current_path(idv_agreement_path)
+      complete_agreement_step
 
-        expect(page).to have_current_path(idv_agreement_path)
-        complete_agreement_step
+      expect(page).not_to have_content t('doc_auth.info.verify_online_description_passport')
+      expect(page).to have_content strip_tags(
+        t('doc_auth.info.verify_at_post_office_description_passport_html'),
+      )
 
-        expect(page).to have_content t('doc_auth.info.verify_online_description_passport')
-        expect(page).not_to have_content strip_tags(
-          t('doc_auth.info.verify_at_post_office_description_passport_html'),
-        )
+      click_on t('forms.buttons.continue_ipp')
 
-        click_on t('forms.buttons.continue_ipp')
+      expect(page).to have_current_path(idv_document_capture_path(step: 'hybrid_handoff'))
 
-        expect(page).to have_current_path(idv_document_capture_path(step: 'hybrid_handoff'))
+      click_on t('forms.buttons.continue')
+      complete_location_step(user)
 
-        click_on t('forms.buttons.continue')
-        complete_location_step(user)
-
-        expect(page).to have_current_path(idv_in_person_state_id_path)
-      end
+      expect(page).to have_current_path(idv_in_person_state_id_path)
     end
   end
 

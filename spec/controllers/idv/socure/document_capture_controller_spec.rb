@@ -10,8 +10,14 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
   let(:doc_auth_success) { true }
   let(:socure_docv_enabled) { true }
   let(:socure_docv_verification_data_test_mode) { false }
+  let(:socure_docv_transaction_token) { SecureRandom.hex(6) }
   let(:no_url_socure_route) { idv_socure_document_capture_errors_url(error_code: :url_not_found) }
-  let(:timeout_socure_route) { idv_socure_document_capture_errors_url(error_code: :timeout) }
+  let(:timeout_socure_route) do
+    idv_socure_document_capture_errors_url(
+      error_code: :timeout,
+      transaction_token: socure_docv_transaction_token,
+    )
+  end
   let(:idv_socure_docv_flow_id_only) { 'id only flow' }
   let(:idv_socure_docv_flow_id_w_selfie) { 'selfie flow' }
   let(:passport_status) { 'not_requested' }
@@ -71,6 +77,31 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
   describe '#step_info' do
     it 'returns a valid StepInfo object' do
       expect(described_class.step_info).to be_valid
+    end
+
+    describe '#undo_step' do
+      let(:idv_session) do
+        Idv::Session.new(
+          user_session: {},
+          current_user: user,
+          service_provider: nil,
+        ).tap do |idv_session|
+          idv_session.pii_from_doc = { name: 'test' }
+          idv_session.socure_docv_wait_polling_started_at = Time.zone.now
+          idv_session.doc_auth_vendor = 'TrueID'
+          idv_session.source_check_vendor = 'aamva'
+        end
+      end
+
+      it 'resets relevant fields on idv_session to nil' do
+        described_class.step_info.undo_step.call(idv_session:, user:)
+        aggregate_failures do
+          expect(idv_session.pii_from_doc).to be(nil)
+          expect(idv_session.socure_docv_wait_polling_started_at).to be(nil)
+          expect(idv_session.doc_auth_vendor).to be(nil)
+          expect(idv_session.source_check_vendor).to be(nil)
+        end
+      end
     end
   end
 
@@ -140,7 +171,7 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
           referenceId: '123ab45d-2e34-46f3-8d17-6f540ae90303',
           data: {
             eventId: 'zoYgIxEZUbXBoocYAnbb5DrT',
-            docvTransactionToken: docv_transaction_token,
+            docvTransactionToken: socure_docv_transaction_token,
             qrCode: 'data:image/png;base64,iVBO......K5CYII=',
             url: socure_capture_app_url,
           },
@@ -240,7 +271,7 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
 
           it 'puts the docvTransactionToken into the document capture session' do
             expect(subject.document_capture_session.reload.socure_docv_transaction_token)
-              .to eq(docv_transaction_token)
+              .to eq(socure_docv_transaction_token)
           end
         end
 
@@ -497,6 +528,8 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
       stub_sign_in(user)
       subject.idv_session.flow_path = 'standard'
       allow(subject.document_capture_session).to receive(:load_result).and_return(stored_result)
+      allow(subject.document_capture_session).to receive(:socure_docv_transaction_token)
+        .and_return(socure_docv_transaction_token)
       get :update
     end
 
@@ -518,7 +551,9 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
       it 'renders the errors' do
         get(:update)
 
-        expect(response).to redirect_to idv_socure_document_capture_errors_url
+        expect(response).to redirect_to idv_socure_document_capture_errors_url(
+          transaction_token: socure_docv_transaction_token,
+        )
         expect(@analytics).to have_logged_event('IdV: doc auth document_capture submitted')
       end
     end
@@ -533,7 +568,6 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
       end
 
       context 'when the wait times out' do
-        let(:socure_docv_transaction_token) { nil }
         let(:socure_response_body) { nil }
         before do
           ActiveJob::Base.queue_adapter = :test
@@ -544,7 +578,7 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
           )
             .with(body: {
               modules: ['documentverification'],
-              docvTransactionToken: socure_docv_transaction_token,
+              docvTransactionToken: nil,
               customerUserId: user.uuid,
               email: user.email,
             }
@@ -581,6 +615,18 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
           it 'redirects to a Try again page' do
             get(:update)
             expect(response).to redirect_to(timeout_socure_route)
+          end
+        end
+
+        context 'when the document capture session is missing the socure docv transaction token' do
+          let(:stored_result) { nil }
+          let(:socure_docv_transaction_token) { nil }
+          let(:response) { get :update }
+
+          it 'redirects to the socure document capture error page' do
+            expect(response).to redirect_to idv_socure_document_capture_errors_url(
+              error_code: :invalid_transaction_token, transaction_token: :MISSING_TRANSACTION_TOKEN,
+            )
           end
         end
       end

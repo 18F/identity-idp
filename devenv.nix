@@ -7,7 +7,7 @@
 }:
 
 let
-  pkgs-unstable = import inputs.nixpkgs-unstable { system = pkgs.stdenv.system; };
+  pkgs-unstable = import inputs.nixpkgs-unstable { system = pkgs.stdenv.system; config.allowUnfree = true; };
 in
 {
   packages = with pkgs; [
@@ -20,6 +20,7 @@ in
     libyaml
     openssl
     pkgs-unstable.chromedriver
+    pkgs-unstable.google-chrome
     ssm-session-manager-plugin
     yubikey-manager
     zlib
@@ -67,5 +68,6 @@ in
   env = {
     AWS_VAULT_KEYCHAIN_NAME = "login";
     AWS_VAULT_PROMPT = "ykman";
+    NIX_GOOGLE_CHROME = "${pkgs-unstable.google-chrome}/bin/google-chrome-stable";
   };
 }

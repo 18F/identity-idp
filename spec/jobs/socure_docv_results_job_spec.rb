@@ -8,7 +8,7 @@ RSpec.describe SocureDocvResultsJob do
   let(:fake_analytics) { FakeAnalytics.new }
   let(:attempts_api_tracker) { AttemptsApiTrackingHelper::FakeAttemptsTracker.new }
   let(:fraud_opt_tracker) { AttemptsApiTrackingHelper::FakeAttemptsTracker.new }
-  let(:sp) { create(:service_provider) }
+  let(:sp) { create(:service_provider, app_id: 'Test123') }
   let(:socure_docv_transaction_token) { 'abcd' }
   let(:document_capture_session) { DocumentCaptureSession.create(user:) }
   let(:document_capture_session_uuid) { document_capture_session.uuid }
@@ -22,13 +22,14 @@ RSpec.describe SocureDocvResultsJob do
   let(:socure_doc_escrow_enabled) { false }
   let(:selfie) { false }
   let(:mrz_response) { 'YES' }
+  let(:aamva_at_doc_auth_enabled) { false }
+  let(:aamva_proofer) { instance_double(Proofing::Resolution::Plugins::AamvaPlugin) }
   let(:rate_limiter) do
     RateLimiter.new(user: document_capture_session.user, rate_limit_type: :idv_doc_auth)
   end
-
   let(:pii_from_doc) { socure_response_body[:documentVerification][:documentData] }
   let(:address_data) { pii_from_doc[:parsedAddress] || {} }
-  let(:doc_auth_passports_enabled) { false }
+  let(:include_passport_fixture) { false }
 
   before do
     document_capture_session.update(
@@ -43,8 +44,8 @@ RSpec.describe SocureDocvResultsJob do
       .to_return_json({ status: 200, body: { response: mrz_response } })
     allow(Analytics).to receive(:new).and_return(fake_analytics)
     allow(AttemptsApi::Tracker).to receive(:new).and_return(attempts_api_tracker)
-    allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled).and_return(
-      doc_auth_passports_enabled,
+    allow(IdentityConfig.store).to receive(:idv_aamva_at_doc_auth_enabled).and_return(
+      aamva_at_doc_auth_enabled,
     )
     allow(FraudOps::Tracker).to receive(:new).and_return(fraud_opt_tracker)
 
@@ -76,6 +77,10 @@ RSpec.describe SocureDocvResultsJob do
 
     subject(:perform_now) do
       job.perform(document_capture_session_uuid:, async: false)
+    end
+
+    before do
+      allow(Proofing::Resolution::Plugins::AamvaPlugin).to receive(:new).and_return(aamva_proofer)
     end
 
     context 'when we get a 200 OK back from Socure' do
@@ -125,6 +130,7 @@ RSpec.describe SocureDocvResultsJob do
         {
           success: true,
           issue_year: 2020,
+          expiration_date: expiration_date,
           vendor: 'Socure',
           submit_attempts: 1,
           remaining_submit_attempts: 3,
@@ -164,7 +170,7 @@ RSpec.describe SocureDocvResultsJob do
             body: DocAuthImageFixtures.zipped_files(
               reference_id: socure_response_body[:referenceId],
               selfie:,
-              passport: doc_auth_passports_enabled,
+              passport: include_passport_fixture,
             ).to_s,
           )
       end
@@ -196,6 +202,7 @@ RSpec.describe SocureDocvResultsJob do
           expect(document_capture_session_result.attention_with_barcode).to eq(false)
           expect(document_capture_session_result.doc_auth_success).to eq(true)
           expect(document_capture_session_result.selfie_status).to eq(:not_processed)
+          expect(document_capture_session_result.aamva_status).to eq(:not_processed)
           expect(document_capture_session_result.attempt).to eq(1)
         end
       end
@@ -501,12 +508,13 @@ RSpec.describe SocureDocvResultsJob do
               :customer_user_id,
               :decision,
               :reference_id,
+              :expiration_date,
             ),
           )
         end
 
         context 'when passports are enabled' do
-          let(:doc_auth_passports_enabled) { true }
+          let(:include_passport_fixture) { true }
           before do
             allow(IdentityConfig.store).to receive(:doc_auth_passport_vendor_default)
               .and_return(Idp::Constants::Vendors::SOCURE)
@@ -531,6 +539,7 @@ RSpec.describe SocureDocvResultsJob do
                 :customer_user_id,
                 :decision,
                 :reference_id,
+                :expiration_date,
               ),
             )
           end
@@ -601,12 +610,14 @@ RSpec.describe SocureDocvResultsJob do
             expect(document_capture_session_result.pii).to be_nil
             expect(document_capture_session_result.doc_auth_success).to eq(false)
             expect(document_capture_session_result.selfie_status).to eq(:not_processed)
+            expect(document_capture_session_result.aamva_status).to eq(:not_processed)
             expect(fake_analytics).to have_logged_event(
               :idv_socure_verification_data_requested,
               hash_including(
                 :customer_user_id,
                 :decision,
                 :reference_id,
+                :expiration_date,
               ),
             )
           end
@@ -623,6 +634,7 @@ RSpec.describe SocureDocvResultsJob do
               expect(document_capture_session_result.pii).to be_nil
               expect(document_capture_session_result.doc_auth_success).to eq(false)
               expect(document_capture_session_result.selfie_status).to eq(:not_processed)
+              expect(document_capture_session_result.aamva_status).to eq(:not_processed)
               expect(document_capture_session_result.errors).to eq({ unaccepted_id_type: true })
               expect(fake_analytics).to have_logged_event(
                 :idv_socure_verification_data_requested,
@@ -630,6 +642,7 @@ RSpec.describe SocureDocvResultsJob do
                   :customer_user_id,
                   :decision,
                   :reference_id,
+                  :expiration_date,
                 ),
               )
             end
@@ -637,7 +650,7 @@ RSpec.describe SocureDocvResultsJob do
         end
 
         context 'when passports are enabled' do
-          let(:doc_auth_passports_enabled) { true }
+          let(:include_passport_fixture) { true }
 
           it 'logs the Socure verification data requested event' do
             perform
@@ -648,6 +661,7 @@ RSpec.describe SocureDocvResultsJob do
                 :customer_user_id,
                 :decision,
                 :reference_id,
+                :expiration_date,
               ),
             )
           end
@@ -662,6 +676,7 @@ RSpec.describe SocureDocvResultsJob do
               expect(document_capture_session_result.doc_auth_success).to eq(false)
               expect(document_capture_session_result.selfie_status).to eq(:not_processed)
               expect(document_capture_session_result.mrz_status).to eq(:not_processed)
+              expect(document_capture_session_result.aamva_status).to eq(:not_processed)
             end
 
             context 'when docv passports are enabled' do
@@ -680,6 +695,8 @@ RSpec.describe SocureDocvResultsJob do
                   expect(document_capture_session_result.doc_auth_success).to eq(false)
                   expect(document_capture_session_result.selfie_status).to eq(:not_processed)
                   expect(document_capture_session_result.mrz_status).to eq(:not_processed)
+
+                  expect(document_capture_session_result.aamva_status).to eq(:not_processed)
                   expect(document_capture_session_result.errors).to eq({ unexpected_id_type: true })
                 end
               end
@@ -702,6 +719,7 @@ RSpec.describe SocureDocvResultsJob do
                   expect(document_capture_session_result.selfie_status).to eq(:not_processed)
                   expect(document_capture_session_result.attention_with_barcode).to eq(false)
                   expect(document_capture_session_result.mrz_status).to eq(:pass)
+                  expect(document_capture_session_result.aamva_status).to eq(:not_processed)
                 end
 
                 it 'tracks the attempt with mrz data' do
@@ -808,6 +826,7 @@ RSpec.describe SocureDocvResultsJob do
                     expect(document_capture_session_result.doc_auth_success).to eq(true)
                     expect(document_capture_session_result.selfie_status).to eq(:not_processed)
                     expect(document_capture_session_result.mrz_status).to eq(:not_processed)
+                    expect(document_capture_session_result.aamva_status).to eq(:not_processed)
                   end
                 end
 
@@ -823,6 +842,7 @@ RSpec.describe SocureDocvResultsJob do
                     expect(document_capture_session_result.doc_auth_success).to eq(false)
                     expect(document_capture_session_result.selfie_status).to eq(:not_processed)
                     expect(document_capture_session_result.mrz_status).to eq(:not_processed)
+                    expect(document_capture_session_result.aamva_status).to eq(:not_processed)
                     expect(document_capture_session_result.errors)
                       .to eq({ socure: { reason_codes: } })
                   end
@@ -840,6 +860,7 @@ RSpec.describe SocureDocvResultsJob do
                     expect(document_capture_session_result.pii).to be_nil
                     expect(document_capture_session_result.doc_auth_success).to eq(false)
                     expect(document_capture_session_result.selfie_status).to eq(:not_processed)
+                    expect(document_capture_session_result.aamva_status).to eq(:not_processed)
                     expect(document_capture_session_result.errors)
                       .to eq({ unaccepted_id_type: true })
                     expect(fake_analytics).to have_logged_event(
@@ -848,12 +869,318 @@ RSpec.describe SocureDocvResultsJob do
                         :customer_user_id,
                         :decision,
                         :reference_id,
+                        :expiration_date,
                       ),
                     )
                   end
                 end
               end
             end
+          end
+        end
+      end
+
+      context 'when aamva at doc auth is enabled' do
+        let(:aamva_at_doc_auth_enabled) { true }
+        let(:aamva_success) { true }
+        let(:aamva_errors) { {} }
+        let(:aamva_proofing_result) do
+          Proofing::StateIdResult.new(
+            success: aamva_success,
+            errors: aamva_errors,
+          )
+        end
+
+        before do
+          allow(aamva_proofer).to receive(:call).with(
+            applicant_pii: {
+              address1: '123 Example Street',
+              address2: 'Apt 4',
+              city: 'New York City',
+              dob: '2000-01-01',
+              document_type_received: 'drivers_license',
+              eye_color: nil,
+              first_name: 'Dwayne',
+              height: nil,
+              issuing_country_code: 'USA',
+              last_name: 'Denver',
+              middle_name: nil,
+              name_suffix: nil,
+              sex: nil,
+              state: 'NY',
+              state_id_expiration: '2026-01-01',
+              state_id_issued: '2020-01-01',
+              state_id_jurisdiction: 'NY',
+              state_id_number: '000000000',
+              weight: nil,
+              zipcode: '10001',
+              uuid: document_capture_session.user.uuid,
+              uuid_prefix: sp.app_id,
+            },
+            current_sp: sp,
+            ipp_enrollment_in_progress: false,
+            state_id_address_resolution_result: nil,
+            timer: an_instance_of(JobHelpers::Timer),
+            doc_auth_flow: true,
+            analytics: fake_analytics,
+          ).and_return(aamva_proofing_result)
+        end
+
+        context 'when aamva check is successful' do
+          it 'doc auth succeeds' do
+            perform
+
+            document_capture_session.reload
+            document_capture_session_result = document_capture_session.load_result
+            expect(document_capture_session_result).to have_attributes(
+              success: true,
+              pii: include(first_name: 'Dwayne'),
+              attention_with_barcode: false,
+              doc_auth_success: true,
+              selfie_status: :not_processed,
+              aamva_status: :passed,
+            )
+            expect(document_capture_session.last_doc_auth_result).to eq('accept')
+            expect(fake_analytics).to have_logged_event(
+              :idv_socure_verification_data_requested,
+              hash_including(
+                :customer_user_id,
+                :decision,
+                :reference_id,
+                :expiration_date,
+              ),
+            )
+          end
+        end
+
+        context 'when the socure response is missing the state_id_expiration field' do
+          let(:socure_response_body) do
+            {
+              referenceId: 'a1234b56-e789-0123-4fga-56b7c890d123',
+              previousReferenceId: 'e9c170f2-b3e4-423b-a373-5d6e1e9b23f8',
+              documentVerification: {
+                reasonCodes: reason_codes,
+                documentType: {
+                  type: document_metadata_type,
+                  country: 'USA',
+                  state: 'NY',
+                },
+                decision: {
+                  name: 'lenient',
+                  value: decision_value,
+                },
+                documentData: {
+                  firstName: 'Dwayne',
+                  surName: 'Denver',
+                  fullName: 'Dwayne Denver',
+                  address: '123 Example Street, New York City, NY 10001',
+                  parsedAddress: {
+                    physicalAddress: '123 Example Street',
+                    physicalAddress2: 'Apt 4',
+                    city: 'New York City',
+                    state: 'NY',
+                    country: 'US',
+                    zip: '10001',
+                  },
+                  documentNumber: '000000000',
+                  dob: '2000-01-01',
+                  issueDate: '2020-01-01',
+                },
+              },
+              customerProfile: {
+                customerUserId: user.uuid,
+                userId: 'u8JpWn4QsF3R7tA2',
+              },
+            }
+          end
+          let(:document_capture_session_result) { document_capture_session.load_result }
+
+          before do
+            allow(aamva_proofer).to receive(:call).with(
+              applicant_pii: {
+                address1: '123 Example Street',
+                address2: 'Apt 4',
+                city: 'New York City',
+                dob: '2000-01-01',
+                document_type_received: 'drivers_license',
+                eye_color: nil,
+                first_name: 'Dwayne',
+                height: nil,
+                issuing_country_code: 'USA',
+                last_name: 'Denver',
+                middle_name: nil,
+                name_suffix: nil,
+                sex: nil,
+                state: 'NY',
+                state_id_expiration: nil,
+                state_id_issued: '2020-01-01',
+                state_id_jurisdiction: 'NY',
+                state_id_number: '000000000',
+                weight: nil,
+                zipcode: '10001',
+                uuid: document_capture_session.user.uuid,
+                uuid_prefix: sp.app_id,
+              },
+              current_sp: sp,
+              ipp_enrollment_in_progress: false,
+              state_id_address_resolution_result: nil,
+              timer: an_instance_of(JobHelpers::Timer),
+              doc_auth_flow: true,
+              analytics: fake_analytics,
+            ).and_return(aamva_proofing_result)
+            perform
+            document_capture_session.reload
+          end
+
+          it 'doc auth succeeds' do
+            expect(document_capture_session_result).to have_attributes(
+              success: true,
+              pii: include(first_name: 'Dwayne'),
+              attention_with_barcode: false,
+              doc_auth_success: true,
+              selfie_status: :not_processed,
+              aamva_status: :passed,
+            )
+            expect(document_capture_session.last_doc_auth_result).to eq('accept')
+            expect(fake_analytics).to have_logged_event(
+              :idv_socure_verification_data_requested,
+              hash_including(
+                :customer_user_id,
+                :decision,
+                :reference_id,
+              ),
+            )
+          end
+        end
+
+        context 'when the socure response is missing the state_id_issued field' do
+          let(:socure_response_body) do
+            {
+              referenceId: 'a1234b56-e789-0123-4fga-56b7c890d123',
+              previousReferenceId: 'e9c170f2-b3e4-423b-a373-5d6e1e9b23f8',
+              documentVerification: {
+                reasonCodes: reason_codes,
+                documentType: {
+                  type: document_metadata_type,
+                  country: 'USA',
+                  state: 'NY',
+                },
+                decision: {
+                  name: 'lenient',
+                  value: decision_value,
+                },
+                documentData: {
+                  firstName: 'Dwayne',
+                  surName: 'Denver',
+                  fullName: 'Dwayne Denver',
+                  address: '123 Example Street, New York City, NY 10001',
+                  parsedAddress: {
+                    physicalAddress: '123 Example Street',
+                    physicalAddress2: 'Apt 4',
+                    city: 'New York City',
+                    state: 'NY',
+                    country: 'US',
+                    zip: '10001',
+                  },
+                  documentNumber: '000000000',
+                  dob: '2000-01-01',
+                  expirationDate: expiration_date,
+                },
+              },
+              customerProfile: {
+                customerUserId: user.uuid,
+                userId: 'u8JpWn4QsF3R7tA2',
+              },
+            }
+          end
+          let(:document_capture_session_result) { document_capture_session.load_result }
+
+          before do
+            allow(aamva_proofer).to receive(:call).with(
+              applicant_pii: {
+                address1: '123 Example Street',
+                address2: 'Apt 4',
+                city: 'New York City',
+                dob: '2000-01-01',
+                document_type_received: 'drivers_license',
+                eye_color: nil,
+                first_name: 'Dwayne',
+                height: nil,
+                issuing_country_code: 'USA',
+                last_name: 'Denver',
+                middle_name: nil,
+                name_suffix: nil,
+                sex: nil,
+                state: 'NY',
+                state_id_expiration: expiration_date,
+                state_id_issued: nil,
+                state_id_jurisdiction: 'NY',
+                state_id_number: '000000000',
+                weight: nil,
+                zipcode: '10001',
+                uuid: document_capture_session.user.uuid,
+                uuid_prefix: sp.app_id,
+              },
+              current_sp: sp,
+              ipp_enrollment_in_progress: false,
+              state_id_address_resolution_result: nil,
+              timer: an_instance_of(JobHelpers::Timer),
+              doc_auth_flow: true,
+              analytics: fake_analytics,
+            ).and_return(aamva_proofing_result)
+            perform
+            document_capture_session.reload
+          end
+
+          it 'doc auth succeeds' do
+            expect(document_capture_session_result).to have_attributes(
+              success: true,
+              pii: include(first_name: 'Dwayne'),
+              attention_with_barcode: false,
+              doc_auth_success: true,
+              selfie_status: :not_processed,
+              aamva_status: :passed,
+            )
+            expect(document_capture_session.last_doc_auth_result).to eq('accept')
+            expect(fake_analytics).to have_logged_event(
+              :idv_socure_verification_data_requested,
+              hash_including(
+                :customer_user_id,
+                :decision,
+                :reference_id,
+                :expiration_date,
+              ),
+            )
+          end
+        end
+
+        context 'when aamva check is unsuccessful' do
+          let(:aamva_success) { false }
+          let(:aamva_errors) do
+            { verification: 'Document could not be verified.' }
+          end
+
+          it 'doc auth fails' do
+            perform
+
+            document_capture_session.reload
+            document_capture_session_result = document_capture_session.load_result
+            expect(document_capture_session_result.success).to eq(false)
+            expect(document_capture_session_result.pii).to be_nil
+            expect(document_capture_session_result.doc_auth_success).to eq(true)
+            expect(document_capture_session_result.selfie_status).to eq(:not_processed)
+            expect(document_capture_session_result.aamva_status).to eq(:failed)
+            expect(document_capture_session_result.errors)
+              .to eq(aamva_errors)
+            expect(fake_analytics).to have_logged_event(
+              :idv_socure_verification_data_requested,
+              hash_including(
+                :customer_user_id,
+                :decision,
+                :reference_id,
+                :expiration_date,
+              ),
+            )
           end
         end
       end
@@ -871,6 +1198,7 @@ RSpec.describe SocureDocvResultsJob do
           expect(document_capture_session_result.doc_auth_success).to eq(false)
           expect(document_capture_session_result.selfie_status).to eq(:not_processed)
           expect(document_capture_session_result.mrz_status).to eq(:not_processed)
+          expect(document_capture_session_result.aamva_status).to eq(:not_processed)
         end
 
         context 'doc escrow is enabled' do

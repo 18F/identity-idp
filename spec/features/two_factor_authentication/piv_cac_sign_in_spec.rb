@@ -45,7 +45,7 @@ RSpec.feature 'sign in with piv/cac' do
       follow_piv_cac_redirect
 
       expect(page).to have_current_path(account_path)
-      within(page.find('.card', text: t('headings.account.federal_employee_id'))) do
+      within(page.find('.card', text: t('headings.account.government_employee_id'))) do
         expect(page).to have_css('lg-manageable-authenticator', count: 2)
       end
     end

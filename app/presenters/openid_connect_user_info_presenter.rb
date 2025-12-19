@@ -24,13 +24,8 @@ class OpenidConnectUserInfoPresenter
     info.merge!(ial2_attributes) if identity_proofing_requested_for_verified_user?
     info.merge!(x509_attributes) if scoper.x509_scopes_requested?
     info[:verified_at] = verified_at if scoper.verified_at_requested?
-    if identity.vtr.nil?
-      info[:ial] = authn_context_resolver.asserted_ial_acr
-      info[:aal] = requested_aal_value
-    else
-      info[:vot] = vot_values
-      info[:vtm] = IdentityConfig.store.vtm_url
-    end
+    info[:ial] = authn_context_resolver.asserted_ial_acr
+    info[:aal] = requested_aal_value
 
     scoper.filter(info)
   end
@@ -55,15 +50,6 @@ class OpenidConnectUserInfoPresenter
     end
 
     identity.requested_aal_value
-  end
-
-  def vot_values
-    AuthnContextResolver.new(
-      user: identity.user,
-      vtr: JSON.parse(identity.vtr),
-      service_provider: identity&.service_provider_record,
-      acr_values: nil,
-    ).result.expanded_component_values
   end
 
   def uuid_from_sp_identity(identity)
@@ -158,7 +144,6 @@ class OpenidConnectUserInfoPresenter
     @authn_context_resolver ||= AuthnContextResolver.new(
       user: identity.user,
       service_provider: identity&.service_provider_record,
-      vtr: identity.vtr.presence && JSON.parse(identity.vtr),
       acr_values: identity.acr_values,
     )
   end

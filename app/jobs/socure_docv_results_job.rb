@@ -88,9 +88,29 @@ class SocureDocvResultsJob < ApplicationJob
       return
     end
 
+    aamva_response = validate_aamva(doc_pii_response)
+    if aamva_response && !aamva_response.success?
+      document_capture_session.store_failed_auth_data(
+        doc_auth_success: true,
+        selfie_status: docv_result_response.selfie_status,
+        errors: aamva_response.errors,
+        front_image_fingerprint: nil,
+        back_image_fingerprint: nil,
+        passport_image_fingerprint: nil,
+        selfie_image_fingerprint: nil,
+        aamva_status: :failed,
+        attempt: submit_attempts,
+      )
+      record_attempt(
+        docv_result_response:,
+        failure_reason: attempts_api_tracker.parse_failure_reason(aamva_response),
+      )
+      return
+    end
+
     record_attempt(docv_result_response:, success: true, passport_book: mrz_response.present?)
     document_capture_session.store_result_from_response(
-      docv_result_response, mrz_response:, attempt: submit_attempts
+      docv_result_response, mrz_response:, aamva_response:, attempt: submit_attempts
     )
   end
 
@@ -144,7 +164,7 @@ class SocureDocvResultsJob < ApplicationJob
       failure_reason:,
     )
 
-    fraud_ops_tracker.idv_document_upload_submitted(
+    fraud_ops_tracker.fraud_ops_idv_document_upload_submitted(
       **image_data,
       success:,
       document_state: pii_from_doc[:state],
@@ -160,6 +180,9 @@ class SocureDocvResultsJob < ApplicationJob
       state: pii_from_doc[:state],
       zip: pii_from_doc[:zipcode],
       failure_reason:,
+      vendor: docv_result_response.extra[:vendor],
+      conversation_id: docv_result_response.extra[:conversation_id],
+      reference_id: docv_result_response.extra[:reference_id],
     )
   end
 
@@ -173,6 +196,14 @@ class SocureDocvResultsJob < ApplicationJob
         "document_#{key}_image_encryption_key": doc_escrow_key,
       }
     end
+  end
+
+  def aamva_proofer
+    Proofing::Resolution::Plugins::AamvaPlugin.new
+  end
+
+  def aamva_enabled?
+    IdentityConfig.store.idv_aamva_at_doc_auth_enabled
   end
 
   def analytics
@@ -272,6 +303,24 @@ class SocureDocvResultsJob < ApplicationJob
     Base64.strict_encode64(SecureRandom.bytes(32))
   end
 
+  def passport_requested?
+    document_capture_session.passport_requested?
+  end
+
+  def validate_aamva(doc_pii_response)
+    if aamva_enabled? && !passport_requested?
+      aamva_proofer.call(
+        applicant_pii: to_aamva_applicant_pii(doc_pii_response.pii_from_doc.to_h),
+        current_sp: sp,
+        ipp_enrollment_in_progress: false,
+        state_id_address_resolution_result: nil,
+        timer: JobHelpers::Timer.new,
+        doc_auth_flow: true,
+        analytics:,
+      ).to_doc_auth_response
+    end
+  end
+
   def validate_mrz(doc_pii_response)
     id_type = doc_pii_response.extra[:document_type_received] ||
               doc_pii_response.extra[:id_doc_type]
@@ -315,5 +364,15 @@ class SocureDocvResultsJob < ApplicationJob
 
   def remaining_submit_attempts
     rate_limiter&.remaining_count
+  end
+
+  def to_aamva_applicant_pii(pii)
+    pii.merge(
+      dob: pii[:dob].iso8601,
+      state_id_expiration: pii[:state_id_expiration]&.iso8601,
+      state_id_issued: pii[:state_id_issued]&.iso8601,
+      uuid: user_uuid,
+      uuid_prefix: sp&.app_id,
+    )
   end
 end

@@ -110,21 +110,6 @@ module AbTests
     end
   end.freeze
 
-  RECOMMEND_WEBAUTHN_PLATFORM_FOR_SMS_USER = AbTest.new(
-    experiment_name: 'Recommend Face or Touch Unlock for SMS users',
-    should_log: [
-      :webauthn_platform_recommended_visited,
-      :webauthn_platform_recommended_submitted,
-      'Multi-Factor Authentication Setup',
-    ].to_set,
-    buckets: {
-      recommend_for_account_creation:
-        IdentityConfig.store.recommend_webauthn_platform_for_sms_ab_test_account_creation_percent,
-      recommend_for_authentication:
-        IdentityConfig.store.recommend_webauthn_platform_for_sms_ab_test_authentication_percent,
-    },
-  ).freeze
-
   ACCOUNT_CREATION_TMX_PROCESSED = AbTest.new(
     experiment_name: 'Account Creation Threat Metrix Processed',
     should_log: [
@@ -174,18 +159,6 @@ module AbTests
       service_provider:, user:, user_session:,
     )
   end.freeze
-
-  ADDRESS_PROOFING_VENDOR = AbTest.new(
-    experiment_name: 'Address Proofing Vendor',
-    should_log: /^idv/i,
-    default_bucket: IdentityConfig.store.idv_address_default_vendor,
-    buckets: {
-      socure: IdentityConfig.store.idv_address_vendor_switching_enabled ?
-          IdentityConfig.store.idv_address_vendor_socure_percent : 0,
-      lexis_nexis: IdentityConfig.store.idv_address_vendor_switching_enabled ?
-          IdentityConfig.store.idv_address_vendor_lexis_nexis_percent : 0,
-    },
-  ).freeze
 
   # This "test" will permanently be in place to allow a multi-vendor configuration.
   DOC_AUTH_PASSPORT_VENDOR = AbTest.new(

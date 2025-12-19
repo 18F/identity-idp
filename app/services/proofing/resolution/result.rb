@@ -7,6 +7,7 @@ module Proofing
                   :exception,
                   :success,
                   :vendor_name,
+                  :vendor_id, # e.g., SocureID
                   :transaction_id,
                   :customer_user_id,
                   :verified_attributes,
@@ -14,16 +15,19 @@ module Proofing
                   :attributes_requiring_additional_verification,
                   :reference,
                   :reason_codes,
+                  :source_attribution,
                   :vendor_workflow
       def initialize(
         success: nil,
         errors: {},
         exception: nil,
         vendor_name: nil,
+        vendor_id: nil,
         transaction_id: '',
         customer_user_id: '',
         reference: '',
         reason_codes: {},
+        source_attribution: [],
         failed_result_can_pass_with_additional_verification: false,
         attributes_requiring_additional_verification: [],
         vendor_workflow: nil,
@@ -33,10 +37,12 @@ module Proofing
         @errors = errors
         @exception = exception
         @vendor_name = vendor_name
+        @vendor_id = vendor_id
         @transaction_id = transaction_id
         @customer_user_id = customer_user_id
         @reference = reference
         @reason_codes = reason_codes
+        @source_attribution = source_attribution
         @failed_result_can_pass_with_additional_verification =
           failed_result_can_pass_with_additional_verification
         @attributes_requiring_additional_verification =
@@ -68,9 +74,11 @@ module Proofing
             failed_result_can_pass_with_additional_verification,
           attributes_requiring_additional_verification:
             attributes_requiring_additional_verification,
-          vendor_name: vendor_name,
-          vendor_workflow: vendor_workflow,
-          verified_attributes: verified_attributes,
+          source_attribution:,
+          vendor_name:,
+          vendor_id:,
+          vendor_workflow:,
+          verified_attributes:,
         }.merge(customer_user_id_hash)
       end
 

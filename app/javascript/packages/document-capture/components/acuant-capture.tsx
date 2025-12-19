@@ -24,6 +24,7 @@ import AnalyticsContext from '../context/analytics';
 import DeviceContext from '../context/device';
 import SelfieCaptureContext from '../context/selfie-capture';
 import FailedCaptureAttemptsContext from '../context/failed-capture-attempts';
+import type { DocumentSide } from '../context/failed-capture-attempts';
 import FileInput from './file-input';
 import UploadContext from '../context/upload';
 import useCookie from '../hooks/use-cookie';
@@ -70,7 +71,7 @@ interface ImageAnalyticsPayload {
   fingerprint?: string | null;
 
   /**
-   *
+   * Whether this image has been submitted and failed before
    */
   failedImageResubmission: boolean;
 
@@ -92,6 +93,8 @@ interface AcuantImageAnalyticsPayload extends ImageAnalyticsPayload {
   isAssessedAsBlurry: boolean;
   assessment: AcuantImageAssessment;
   isAssessedAsUnsupported: boolean;
+  failed_quality_check_attempts_for_side?: number | null;
+  manual_capture_triggered?: boolean;
 }
 
 interface AcuantCaptureProps {
@@ -151,6 +154,11 @@ interface AcuantCaptureProps {
  * happily tolerate than an HTML entity.
  */
 const NBSP_UNICODE = '\u00A0';
+
+/**
+ * Offset to account for the pending failure when determining if manual capture should be triggered
+ */
+const PENDING_FAILURE_OFFSET = 1;
 
 /**
  * Returns true if the given Acuant capture failure was caused by the user declining access to the
@@ -305,6 +313,69 @@ export function getDecodedBase64ByteSize(data: string) {
   return bytes;
 }
 
+interface ImageAssessmentResult {
+  isAssessedAsGlare: boolean;
+  isAssessedAsBlurry: boolean;
+  isAssessedAsUnsupported: boolean;
+  assessment: AcuantImageAssessment;
+}
+
+function imageAssessment(
+  cardType: AcuantDocumentType,
+  glare: number,
+  glareThreshold: number | null,
+  sharpness: number,
+  sharpnessThreshold: number | null,
+  requestedAcuantDocumentType: AcuantDocumentType,
+): ImageAssessmentResult {
+  const isAssessedAsGlare = !!glareThreshold && glare < glareThreshold;
+  const isAssessedAsBlurry = !!sharpnessThreshold && sharpness < sharpnessThreshold;
+  const isValidAcuantDocumentType =
+    cardType === AcuantDocumentType.ID || cardType === AcuantDocumentType.PASSPORT;
+  const isRequestedAcuantDocumentType = cardType === requestedAcuantDocumentType;
+  const isAssessedAsUnsupported = !(isValidAcuantDocumentType && isRequestedAcuantDocumentType);
+
+  let assessment: AcuantImageAssessment;
+  if (isAssessedAsBlurry) {
+    assessment = 'blurry';
+  } else if (isAssessedAsGlare) {
+    assessment = 'glare';
+  } else if (isAssessedAsUnsupported) {
+    assessment = 'unsupported';
+  } else {
+    assessment = 'success';
+  }
+
+  return { isAssessedAsGlare, isAssessedAsBlurry, isAssessedAsUnsupported, assessment };
+}
+
+interface ImageErrorMessageParams {
+  assessment: AcuantImageAssessment;
+  manualCaptureTriggered: boolean;
+  t: (key: string) => string;
+}
+
+function imageErrorMessage({
+  assessment,
+  manualCaptureTriggered: triggered,
+  t,
+}: ImageErrorMessageParams): string {
+  let baseErrorMessage: string;
+  if (assessment === 'blurry') {
+    baseErrorMessage = t('doc_auth.errors.sharpness.failed_short');
+  } else if (assessment === 'glare') {
+    baseErrorMessage = t('doc_auth.errors.glare.failed_short');
+  } else if (assessment === 'unsupported') {
+    baseErrorMessage = t('doc_auth.errors.general.fallback_field_level');
+  } else {
+    baseErrorMessage = '';
+  }
+
+  return triggered && baseErrorMessage
+    ? `${baseErrorMessage} ${t('doc_auth.info.manual_capture_mode')}`
+    : baseErrorMessage;
+}
+
 /**
  * Returns an element serving as an enhanced FileInput, supporting direct capture using Acuant SDK
  * in supported devices.
@@ -342,9 +413,9 @@ function AcuantCapture(
   const inputRef = useRef<HTMLInputElement>(null);
   const isForceUploading = useRef(false);
   const isSuppressingClickLogging = useRef(false);
+  const isMountedRef = useRef(true);
   const [ownErrorMessage, setOwnErrorMessage] = useState<string | null>(null);
   const [hasStartedCropping, setHasStartedCropping] = useState(false);
-  useMemo(() => setOwnErrorMessage(null), [value]);
   const { isMobile } = useContext(DeviceContext);
   const { t, formatHTML } = useI18n();
   const [captureAttempts, incrementCaptureAttempts] = useCounter(1);
@@ -367,16 +438,35 @@ function AcuantCapture(
 
   const {
     failedCaptureAttempts,
-    onFailedCaptureAttempt,
     failedCameraPermissionAttempts,
     onFailedCameraPermissionAttempt,
     onResetFailedCaptureAttempts,
     failedSubmissionAttempts,
     forceNativeCamera,
     failedSubmissionImageFingerprints,
+    onFailedQualityCheckAttempt,
+    onResetFailedQualityCheckAttempts,
+    triggerManualCapture,
+    manualCaptureAfterFailuresEnabled,
+    failedQualityCheckAttempts,
+    maxAttemptsBeforeManualCapture,
   } = useContext(FailedCaptureAttemptsContext);
 
-  const hasCapture = !isError && (isReady ? isCameraSupported : isMobile);
+  const documentSide: DocumentSide | null = useMemo(
+    () => (name === 'front' || name === 'back' || name === 'passport' ? name : null),
+    [name],
+  );
+
+  const useNativeCamera = useMemo(() => {
+    const forceManualCaptureForThisSide =
+      documentSide !== null && triggerManualCapture(documentSide);
+    return forceManualCaptureForThisSide || forceNativeCamera;
+  }, [documentSide, triggerManualCapture, forceNativeCamera]);
+
+  const hasCapture = useMemo(
+    () => !isError && (isReady ? isCameraSupported : isMobile),
+    [isError, isReady, isCameraSupported, isMobile],
+  );
   useEffect(() => {
     // If capture had started before Acuant was ready, stop capture if readiness reveals that no
     // capture is supported. This takes advantage of the fact that state setter is noop if value of
@@ -385,8 +475,18 @@ function AcuantCapture(
       setIsCapturingEnvironment(false);
     }
   }, [hasCapture]);
+  useEffect(() => {
+    setOwnErrorMessage(null);
+  }, [value]);
   useDidUpdateEffect(() => setHasStartedCropping(false), [isCapturingEnvironment]);
   useImperativeHandle(ref, () => inputRef.current);
+
+  useEffect(
+    () => () => {
+      isMountedRef.current = false;
+    },
+    [],
+  );
 
   /**
    * Calls onChange with next value and resets any errors which may be present.
@@ -507,7 +607,7 @@ function AcuantCapture(
    * Responds to a drag and drop file upload by either preventing the default action
    * or allowing the file to be uploaded
    */
-  function startDragDropUpload(event) {
+  function startDragDropUpload(event: React.DragEvent) {
     if (!allowUpload) {
       event.preventDefault();
     }
@@ -522,9 +622,9 @@ function AcuantCapture(
     if (event.target === inputRef.current) {
       const isAcuantCaptureCapable = hasCapture && !acuantFailureCookie;
       const shouldStartAcuantCapture =
-        isAcuantCaptureCapable && !isForceUploading.current && !forceNativeCamera;
+        isAcuantCaptureCapable && !isForceUploading.current && !useNativeCamera;
 
-      if (isAcuantCaptureCapable && forceNativeCamera) {
+      if (isAcuantCaptureCapable && useNativeCamera) {
         trackEvent('IdV: Native camera forced after failed attempts', {
           field: name,
           failed_capture_attempts: failedCaptureAttempts,
@@ -584,7 +684,7 @@ function AcuantCapture(
     setIsCapturingEnvironment(false);
   }
 
-  function onSelfieCaptureFailure(error) {
+  function onSelfieCaptureFailure(error: { code: number; message: string }) {
     trackEvent('idv_sdk_selfie_image_capture_failed', {
       sdk_error_code: error.code,
       sdk_error_message: error.message,
@@ -620,37 +720,43 @@ function AcuantCapture(
     });
   }
 
-  function isValidAcuantDocumentType(cardType: number) {
-    return cardType === AcuantDocumentType.ID || cardType === AcuantDocumentType.PASSPORT;
-  }
-
-  function isRequestedAcuantDocumentType(cardType: number) {
-    return cardType === requestedAcuantDocumentType;
-  }
-
   function onAcuantImageCaptureSuccess(nextCapture: AcuantSuccessResponse, uncroppedData?: string) {
     const { image, dpi, moire, glare, sharpness, cardType } = nextCapture;
-
-    const isAssessedAsGlare = !!glareThreshold && glare < glareThreshold;
-    const isAssessedAsBlurry = !!sharpnessThreshold && sharpness < sharpnessThreshold;
-    const isAssessedAsUnsupported = !(
-      isValidAcuantDocumentType(cardType) && isRequestedAcuantDocumentType(cardType)
-    );
     const { width, height, data } = image;
     const imageDataToSubmit = uncroppedData || data;
 
-    let assessment: AcuantImageAssessment;
-    if (isAssessedAsBlurry) {
-      setOwnErrorMessage(t('doc_auth.errors.sharpness.failed_short'));
-      assessment = 'blurry';
-    } else if (isAssessedAsGlare) {
-      setOwnErrorMessage(t('doc_auth.errors.glare.failed_short'));
-      assessment = 'glare';
-    } else if (isAssessedAsUnsupported) {
-      setOwnErrorMessage(t('doc_auth.errors.general.fallback_field_level'));
-      assessment = 'unsupported';
-    } else {
-      assessment = 'success';
+    const { isAssessedAsGlare, isAssessedAsBlurry, isAssessedAsUnsupported, assessment } =
+      imageAssessment(
+        cardType,
+        glare,
+        glareThreshold,
+        sharpness,
+        sharpnessThreshold,
+        requestedAcuantDocumentType,
+      );
+
+    const isManualCaptureTriggered =
+      documentSide !== null &&
+      manualCaptureAfterFailuresEnabled &&
+      failedQualityCheckAttempts[documentSide] + PENDING_FAILURE_OFFSET >=
+        maxAttemptsBeforeManualCapture;
+
+    const finalErrorMessage = imageErrorMessage({
+      assessment,
+      manualCaptureTriggered: isManualCaptureTriggered,
+      t,
+    });
+
+    if (finalErrorMessage && isMountedRef.current) {
+      setOwnErrorMessage(finalErrorMessage);
+    }
+
+    if (isManualCaptureTriggered && documentSide !== null) {
+      trackEvent('IdV: Native camera forced after failed quality checks', {
+        document_side: documentSide,
+        failure_count: failedQualityCheckAttempts[documentSide] + PENDING_FAILURE_OFFSET,
+        failure_type: assessment,
+      });
     }
 
     const analyticsPayload: AcuantImageAnalyticsPayload = getAddAttemptAnalyticsPayload({
@@ -674,6 +780,10 @@ function AcuantCapture(
       failedImageResubmission: false,
       liveness_checking_required: false,
       selfie_attempts: selfieAttempts.current,
+      failed_quality_check_attempts_for_side: documentSide
+        ? failedQualityCheckAttempts[documentSide]
+        : null,
+      manual_capture_triggered: isManualCaptureTriggered,
     });
 
     trackEvent(
@@ -684,15 +794,20 @@ function AcuantCapture(
     if (assessment === 'success') {
       onChangeAndResetError(imageDataToSubmit, analyticsPayload);
       onResetFailedCaptureAttempts();
-    } else {
-      onFailedCaptureAttempt({
+      if (documentSide !== null) {
+        onResetFailedQualityCheckAttempts(documentSide);
+      }
+    } else if (documentSide !== null) {
+      onFailedQualityCheckAttempt(documentSide, {
         isAssessedAsGlare,
         isAssessedAsBlurry,
         isAssessedAsUnsupported,
       });
     }
 
-    setIsCapturingEnvironment(false);
+    if (isMountedRef.current) {
+      setIsCapturingEnvironment(false);
+    }
   }
 
   function onAcuantImageCaptureFailure(error: AcuantCaptureFailureError, code: string | undefined) {
@@ -820,6 +935,7 @@ function AcuantCapture(
         onDrop={withLoggedClick('placeholder', { isDrop: true })(startDragDropUpload)}
         onChange={onUpload}
         onError={() => setOwnErrorMessage(null)}
+        capture={useNativeCamera ? 'environment' : undefined}
       />
       <div className="margin-top-2">
         {isMobile && (

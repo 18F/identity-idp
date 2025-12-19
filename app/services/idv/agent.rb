@@ -12,7 +12,8 @@ module Idv
       threatmetrix_session_id:,
       request_ip:,
       ipp_enrollment_in_progress:,
-      proofing_vendor:
+      proofing_vendor:,
+      state_id_already_proofed: false
     )
       document_capture_session.create_proofing_session
 
@@ -30,6 +31,7 @@ module Idv
         request_ip:,
         ipp_enrollment_in_progress:,
         proofing_vendor:,
+        state_id_already_proofed:,
       }
 
       if IdentityConfig.store.ruby_workers_idv_enabled
@@ -51,7 +53,7 @@ module Idv
         encrypted_arguments: encrypted_arguments,
         result_id: document_capture_session.result_id,
         trace_id: trace_id,
-        address_vendor: address_vendor(user: document_capture_session.user),
+        address_vendor: IdentityConfig.store.idv_address_primary_vendor, # remove: 50/50
       }
 
       if IdentityConfig.store.ruby_workers_idv_enabled
@@ -59,16 +61,6 @@ module Idv
       else
         AddressProofingJob.perform_now(**job_arguments)
       end
-    end
-
-    def address_vendor(user:)
-      AbTests::ADDRESS_PROOFING_VENDOR.bucket(
-        request: nil,
-        service_provider: nil,
-        session: nil,
-        user:,
-        user_session: nil,
-      ) || IdentityConfig.store.idv_address_default_vendor
     end
   end
 end

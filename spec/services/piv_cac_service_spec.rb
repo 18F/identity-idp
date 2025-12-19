@@ -76,14 +76,18 @@ RSpec.describe PivCacService do
           let(:nonce) { 'once' }
           let(:base_url) { 'http://localhost:1234/' }
           let(:redirect_uri) { 'http://example.com/asdf' }
+          let(:current_sp) { double(issuer: 'test-issuer') }
+          # rubocop:disable Layout/LineLength
           let(:url_with_nonce) do
-            "#{base_url}?nonce=#{nonce}&redirect_uri=#{CGI.escape(redirect_uri)}"
+            "#{base_url}?current_sp=#{current_sp.issuer}&nonce=#{nonce}&redirect_uri=#{CGI.escape(redirect_uri)}"
           end
+          # rubocop:enable Layout/LineLength
 
           it do
             link = PivCacService.piv_cac_service_link(
               nonce: nonce,
               redirect_uri: redirect_uri,
+              current_sp: current_sp,
             )
             expect(link).to eq url_with_nonce
           end
@@ -95,12 +99,17 @@ RSpec.describe PivCacService do
           end
           let(:nonce) { 'once' }
           let(:redirect_uri) { 'http://example.com/asdf' }
+          let(:current_sp) { double(issuer: 'test-issuer') }
 
           it 'directs the user to a local page' do
-            test_url = test_piv_cac_entry_url(nonce: nonce, redirect_uri: redirect_uri)
+            test_url = test_piv_cac_entry_url(
+              nonce: nonce, redirect_uri: redirect_uri,
+              current_sp: current_sp.issuer
+            )
             link = PivCacService.piv_cac_service_link(
               nonce: nonce,
               redirect_uri: redirect_uri,
+              current_sp: current_sp,
             )
             expect(test_url).to eq link
           end

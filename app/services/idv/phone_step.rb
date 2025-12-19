@@ -44,19 +44,29 @@ module Idv
 
     def async_state_done(async_state)
       @idv_result = async_state.result
-
-      success = idv_result[:success]
-      if success
+      if (success = idv_result[:success])
         handle_successful_proofing_attempt
       else
         handle_failed_proofing_attempt
       end
 
       delete_async
-      FormResponse.new(
-        success: success, errors: idv_result[:errors],
-        extra: extra_analytics_attributes
+      final_result = FormResponse.new(
+        success:,
+        errors: idv_result[:errors],
+        extra: extra_analytics_attributes(idv_result.except(:alternate_result)),
       )
+
+      alternate_result = nil
+      if (alt_result = idv_result[:alternate_result])
+        alternate_result = FormResponse.new(
+          success: alt_result[:success],
+          errors: alt_result[:errors],
+          extra: extra_analytics_attributes(alt_result).slice(:vendor),
+        )
+      end
+
+      { final_result:, alternate_result: }
     end
 
     private
@@ -138,6 +148,20 @@ module Idv
     def update_idv_session
       idv_session.applicant = applicant
       idv_session.mark_phone_step_started!
+      idv_session.address_verification_vendor = address_verification_vendor
+    end
+
+    def address_verification_vendor
+      return if idv_result[:vendor_name].blank?
+
+      case idv_result[:vendor_name]
+      when 'socure_phonerisk'
+        'socure_address'
+      when 'lexis_nexis_address', 'AddressMock'
+        'lexis_nexis_address'
+      else
+        idv_result[:vendor_name]
+      end
     end
 
     def start_phone_confirmation_session
@@ -148,11 +172,11 @@ module Idv
       )
     end
 
-    def extra_analytics_attributes
+    def extra_analytics_attributes(result)
       parsed_phone = Phonelib.parse(applicant[:phone])
 
       {
-        vendor: idv_result.except(:errors, :success),
+        vendor: result.except(:errors, :success),
         area_code: parsed_phone.area_code,
         country_code: parsed_phone.country,
         phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),

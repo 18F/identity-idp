@@ -66,7 +66,7 @@ class SocureErrorPresenter
   end
 
   def options
-    return [] if error_code == :timeout || error_code == :url_not_found
+    return [] if %i[timeout url_not_found invalid_transaction_token].include?(error_code)
 
     default_options
   end
@@ -118,7 +118,7 @@ class SocureErrorPresenter
     case error_code.to_sym
     when :network
       t('doc_auth.headers.general.network_error')
-    when :timeout, :url_not_found
+    when :timeout, :url_not_found, :invalid_transaction_token
       t('idv.errors.technical_difficulties')
     when :unaccepted_id_type
       t('doc_auth.headers.unaccepted_id_type')
@@ -143,6 +143,8 @@ class SocureErrorPresenter
       t('doc_auth.errors.general.new_network_error')
     when :timeout, :url_not_found
       t('idv.errors.try_again_later')
+    when :invalid_transaction_token
+      t('idv.failure.exceptions.internal_error')
     when :unaccepted_id_type
       t('doc_auth.errors.unaccepted_id_type')
     when :unexpected_id_type
