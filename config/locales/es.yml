@@ -628,8 +628,9 @@ doc_auth.headings.document_capture: Añade fotos de tu licencia de conducir o cr
 doc_auth.headings.document_capture_back: Reverso de su identificación
 doc_auth.headings.document_capture_front: Frente de su identificación
 doc_auth.headings.document_capture_passport: Su pasaporte
-doc_auth.headings.document_capture_selfie: Fotografía de su cara
-doc_auth.headings.document_capture_subheader_selfie: Añada una foto de su cara
+doc_auth.headings.document_capture_selfie: Selfi
+doc_auth.headings.document_capture_subheader_selfie: Tómese una selfi
+doc_auth.headings.document_capture_subheader_selfie_review: Selfi
 doc_auth.headings.front: Frente de su licencia de conducir o identificación estatal
 doc_auth.headings.how_to_verify: Elija cómo desea verificar su identidad
 doc_auth.headings.interstitial: Estamos procesando sus imágenes
