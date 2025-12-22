@@ -39,11 +39,7 @@ export function SelfieCaptureStep({
     : t('doc_auth.headings.document_capture_subheader_selfie');
   return (
     <>
-      {isReviewStep ? (
-        <h2>{pageHeading}</h2>
-      ) : (
-        <h1>{pageHeading}</h1>
-      )}
+      {isReviewStep ? <h2>{pageHeading}</h2> : <h1>{pageHeading}</h1>}
       <p>{t('doc_auth.info.selfie_capture_content')}</p>
       <TipList
         title={t('doc_auth.tips.document_capture_selfie_selfie_text')}
