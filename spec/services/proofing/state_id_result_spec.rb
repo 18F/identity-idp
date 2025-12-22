@@ -59,7 +59,9 @@ RSpec.describe Proofing::StateIdResult do
 
     context 'when the exception is an unexpected error code' do
       let(:success) { false }
-      let(:exception) { Proofing::Aamva::VerificationError.new "Unexpected status code in response: 500" }
+      let(:exception) do
+        Proofing::Aamva::VerificationError.new 'Unexpected status code in response: 500'
+      end
 
       it 'returns a doc auth response instance' do
         expect(subject.to_doc_auth_response).to be_instance_of(DocAuth::Response)

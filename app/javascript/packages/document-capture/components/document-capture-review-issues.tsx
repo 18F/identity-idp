@@ -48,10 +48,6 @@ function DocumentCaptureReviewIssues({
   };
 
   function ReviewDocumentImagesSubheader() {
-    const { t } = useI18n();
-    const { idType } = useContext(UploadContext);
-    const idIsPassport = idType === 'passport';
-
     const heading = idIsPassport
       ? t('doc_auth.headings.passport_capture')
       : t('doc_auth.headings.document_capture');
@@ -62,7 +58,7 @@ function DocumentCaptureReviewIssues({
   return (
     <>
       <PageHeading>{pageHeading}</PageHeading>
-      {isSelfieCaptureEnabled && <ReviewDocumentImagesSubheader/>}
+      {isSelfieCaptureEnabled && <ReviewDocumentImagesSubheader />}
       <GeneralError
         unknownFieldErrors={unknownFieldErrors}
         isFailedDocType={isFailedDocType}
