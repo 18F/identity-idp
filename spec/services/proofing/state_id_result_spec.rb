@@ -57,6 +57,25 @@ RSpec.describe Proofing::StateIdResult do
       end
     end
 
+    context 'when the exception is an unexpected error code' do
+      let(:success) { false }
+      let(:exception) do
+        Proofing::Aamva::VerificationError.new 'Unexpected status code in response: 500'
+      end
+
+      it 'returns a doc auth response instance' do
+        expect(subject.to_doc_auth_response).to be_instance_of(DocAuth::Response)
+      end
+
+      it 'returns a unsucessful doc auth response with a verification error' do
+        expect(subject.to_doc_auth_response).to have_attributes(
+          success?: success,
+          errors: { verification: 'Document could not be verified.' },
+          exception:,
+        )
+      end
+    end
+
     context 'when the state ID result has errors' do
       let(:success) { false }
       let(:errors) { { state_id_number: 'I am error' } }
