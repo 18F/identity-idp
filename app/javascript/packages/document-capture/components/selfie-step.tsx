@@ -39,19 +39,7 @@ export function SelfieCaptureStep({
     : t('doc_auth.headings.document_capture_subheader_selfie');
   return (
     <>
-<<<<<<< HEAD
-<<<<<<< HEAD
-      {isReviewStep ? (
-        <h2>{t('doc_auth.headings.document_capture_subheader_selfie')}</h2>
-      ) : (
-        <h1>{t('doc_auth.headings.document_capture_subheader_selfie')}</h1>
-      )}
-=======
-      <h1>{pageHeading}</h1>
->>>>>>> b45bb34ecf (changelog: User-Facing Improvements, Doc Auth, update LN screens to read selfie)
-=======
       {isReviewStep ? <h2>{pageHeading}</h2> : <h1>{pageHeading}</h1>}
->>>>>>> 434d211f3c (Fixing lint)
       <p>{t('doc_auth.info.selfie_capture_content')}</p>
       <TipList
         title={t('doc_auth.tips.document_capture_selfie_selfie_text')}
