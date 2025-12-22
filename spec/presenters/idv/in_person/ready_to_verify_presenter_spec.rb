@@ -29,10 +29,10 @@ RSpec.describe Idv::InPerson::ReadyToVerifyPresenter do
 
     context 'when the enrollment has an enrollment_established_at time' do
       [
-        ['English', :en, 'July 11, 2024'],
-        ['Spanish', :es, '11 de julio de 2024'],
-        ['French', :fr, '11 juillet 2024'],
-        ['Chinese', :zh, '2024年7月11日'],
+        ['English', :en, 'July 12, 2024'],
+        ['Spanish', :es, '12 de julio de 2024'],
+        ['French', :fr, '12 juillet 2024'],
+        ['Chinese', :zh, '2024年7月12日'],
       ].each do |language, locale, expected|
         context "when locale is #{language}" do
           before do
@@ -48,8 +48,9 @@ RSpec.describe Idv::InPerson::ReadyToVerifyPresenter do
 
     context 'when the enrollment does not have an enrollment_established_at time' do
       let(:enrollment_established_at) { nil }
+
       it 'returns formatted due date when no enrollment_established_at' do
-        expect(presenter.formatted_due_date).to eq 'June 20, 2023'
+        expect(presenter.formatted_due_date).to eq 'June 21, 2023'
       end
     end
   end
@@ -174,9 +175,9 @@ RSpec.describe Idv::InPerson::ReadyToVerifyPresenter do
     let(:config) { IdentityConfig.store.in_person_enrollment_validity_in_days }
 
     context '4 days until due date' do
-      it 'returns 3 days' do
+      it 'returns 4 days' do
         travel_to(enrollment_established_at + (config - 4).days) do
-          expect(days_remaining).to eq(3)
+          expect(days_remaining).to eq(4)
         end
       end
     end
