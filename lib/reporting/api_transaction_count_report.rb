@@ -419,8 +419,10 @@ module Reporting
         | filter name = 'IdV: doc auth verify proofing results' 
         | fields jsonParse(@message) as message
         | unnest message.properties.event_properties.proofing_results.context.stages.state_id into state_id
-        | fields state_id.vendor_name as @vendor_name 
+        | fields state_id.vendor_name as @vendor_name,
+             state_id.mva_exception as @mva_exception_1
         | filter @vendor_name = 'aamva:state_id'
+        | filter !@mva_exception_1
         | stats count(*) as aamva_transactions_ipp
         | limit 10000
       QUERY
@@ -430,7 +432,10 @@ module Reporting
       <<~QUERY
         filter name IN [‘idv_state_id_validation’]
         | fields  message,  @timestamp, @message, @log, id ,
-        properties.event_properties.vendor_name as @vendor_name
+        properties.event_properties.vendor_name as @vendor_name, 
+        properties.event_properties.mva_exception as @exception,
+        properties.event_properties.success as success
+        | filter !@exception
         | filter @vendor_name = 'aamva:state_id'
         | stats count(*) as aamva_transactions_remote
         | limit 10000
