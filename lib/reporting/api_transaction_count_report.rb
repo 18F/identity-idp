@@ -80,6 +80,10 @@ module Reporting
           'Threat Metrix (IDV)',
           'Threat Metrix (Auth Only)',
           'LN Emailage',
+          'GPO',
+          'AAMVA IPP',
+          'AAMVA Remote IDV',
+          'Socure PhoneRisk (Shadow)',
         ],
         [
           "#{ time_range.begin.to_date} - #{time_range.end.to_date}",
@@ -94,6 +98,10 @@ module Reporting
           threat_metrix_idv_table.first,
           threat_metrix_auth_only_table.first,
           ln_emailage_table.first,
+          gpo_table.first,
+          aamva_ipp_table.first,
+          aamva_remote_table.first,
+          socure_phonerisk_table.first,
         ],
       ]
     end
@@ -119,13 +127,6 @@ module Reporting
       true_id_selfie_table_count = result.count
       [true_id_selfie_table_count, result]
     end
-
-    # def true_id_selfie_table
-    #   result = fetch_results(query: true_id_selfie_query)
-    #   # Sum all the individual counts
-    #   true_id_selfie_table_count = result.sum { |r| r['total_count'].to_i }
-    #   [true_id_selfie_table_count, result]
-    # end
 
     def phone_finder_table
       result = fetch_results(query: phone_finder_query)
@@ -157,12 +158,6 @@ module Reporting
       [ln_emailage_table_count, result]
     end
 
-    # def ln_emailage_table
-    #   result = fetch_results(query: ln_emailage_count_query)
-    #   ln_emailage_table_count = result.sum { |r| r['total_count'].to_i }
-    #   [ln_emailage_table_count, result]
-    # end
-
     def instant_verify_table
       result = fetch_results(query: instant_verify_query)
       instant_verify_table_count = result.count
@@ -185,6 +180,30 @@ module Reporting
       result = fetch_results(query: fraud_score_and_attribute_query)
       fraud_score_and_attribute_table_count = result.count
       [fraud_score_and_attribute_table_count, result]
+    end
+
+    def gpo_table
+      result = fetch_results(query: gpo_query)
+      gpo_table_count = result.count
+      [gpo_table_count, result]
+    end
+
+    def aamva_ipp_table
+      result = fetch_results(query: aamva_ipp_query)
+      aamva_table_count = result.count
+      [aamva_table_count, result]
+    end
+
+    def aamva_remote_table
+      result = fetch_results(query: aamva_remote_query)
+      aamva_table_count = result.count
+      [aamva_table_count, result]
+    end
+
+    def socure_phonerisk_table
+      result = fetch_results(query: socure_phonerisk_query)
+      socure_phonerisk_table_count = result.count
+      [socure_phonerisk_table_count, result]
     end
 
     def fetch_results(query:)
@@ -381,6 +400,53 @@ module Reporting
         | filter name = "account_creation_tmx_result"
         | filter properties.event_properties.response_body.emailage.emailriskscore.responsestatus.status = 'success'
         | display timestamp, id
+        | limit 10000
+      QUERY
+    end
+
+    def gpo_query
+      <<~QUERY
+         fields @timestamp, @message, @log, id
+        |filter name = 'gpo_confirmation_upload' #GPO confirmation records were uploaded for letter sends
+        | stats count(*) as gpo_transactions
+        | limit 10000
+      QUERY
+    end
+
+    def aamva_ipp_query
+      <<~QUERY
+        fields @timestamp, @message, @log, id 
+        | filter name = 'IdV: doc auth verify proofing results' 
+        | fields jsonParse(@message) as message
+        | unnest message.properties.event_properties.proofing_results.context.stages.state_id into state_id
+        | fields state_id.vendor_name as @vendor_name,
+             state_id.mva_exception as @mva_exception_1
+        | filter @vendor_name = 'aamva:state_id'
+        | filter !@mva_exception_1
+        | stats count(*) as aamva_transactions_ipp
+        | limit 10000
+      QUERY
+    end
+
+    def aamva_remote_query
+      <<~QUERY
+        filter name IN [‘idv_state_id_validation’]
+        | fields  message,  @timestamp, @message, @log, id ,
+        properties.event_properties.vendor_name as @vendor_name, 
+        properties.event_properties.mva_exception as @exception,
+        properties.event_properties.success as success
+        | filter !@exception
+        | filter @vendor_name = 'aamva:state_id'
+        | stats count(*) as aamva_transactions_remote
+        | limit 10000
+      QUERY
+    end
+
+    def socure_phonerisk_query
+      <<~QUERY
+        fields @timestamp, @message, @log, id
+        | filter name IN ["IdV: phone confirmation vendor", "idv_socure_shadow_mode_phonerisk_result"] 
+        | stats count(*) as socure_phonerisk_transactions
         | limit 10000
       QUERY
     end
