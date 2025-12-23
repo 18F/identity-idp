@@ -28,7 +28,7 @@ RSpec.describe Idv::HybridHandoffController do
       Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_REQUIRED_ACR :
       Saml::Idp::Constants::IAL_VERIFIED_ACR
 
-    resolved_authn_context_result = Vot::Parser.new(acr_values:).parse
+    resolved_authn_context_result = Component::Parser.new(acr_values:).parse
 
     allow(subject).to receive(:resolved_authn_context_result)
       .and_return(resolved_authn_context_result)

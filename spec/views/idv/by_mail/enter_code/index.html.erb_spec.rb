@@ -25,7 +25,7 @@ RSpec.describe 'idv/by_mail/enter_code/index.html.erb' do
       fraud_ops_tracker:,
       user:,
       pii:,
-      resolved_authn_context_result: Vot::Parser::Result.no_sp_result,
+      resolved_authn_context_result: Component::Parser::Result.no_sp_result,
       otp: '1234',
     )
 

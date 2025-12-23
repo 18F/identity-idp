@@ -493,7 +493,7 @@ RSpec.describe ApplicationController do
 
         it 'raises an exception' do
           expect { result }.to raise_exception(
-            Vot::Parser::ParseException,
+            Component::Parser::ParseException,
             'Component parser called without ACR values',
           )
         end
@@ -518,7 +518,7 @@ RSpec.describe ApplicationController do
         let(:sp_session) { nil }
 
         it 'returns a no-SP result' do
-          expect(result).to eq(Vot::Parser::Result.no_sp_result)
+          expect(result).to eq(Component::Parser::Result.no_sp_result)
         end
       end
     end
@@ -529,7 +529,7 @@ RSpec.describe ApplicationController do
 
       it 'raises an error' do
         expect { result }.to raise_exception(
-          Vot::Parser::ParseException,
+          Component::Parser::ParseException,
           'Component parser called without ACR values',
         )
       end
@@ -539,7 +539,7 @@ RSpec.describe ApplicationController do
         let(:sp_session) { nil }
 
         it 'returns a no-SP result' do
-          expect(result).to eq(Vot::Parser::Result.no_sp_result)
+          expect(result).to eq(Component::Parser::Result.no_sp_result)
         end
       end
     end

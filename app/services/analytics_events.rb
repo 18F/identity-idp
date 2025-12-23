@@ -7692,7 +7692,6 @@ module AnalyticsEvents
   # @param [String] requested_ial
   # @param [Array] authn_context
   # @param [String, nil] requested_aal_authn_context
-  # @param [String, nil] requested_vtr_authn_contexts
   # @param [Boolean] force_authn
   # @param [Boolean] final_auth_request
   # @param [String] service_provider
@@ -7712,7 +7711,6 @@ module AnalyticsEvents
     matching_cert_serial:,
     unknown_authn_contexts:,
     user_fully_authenticated:,
-    requested_vtr_authn_contexts: nil,
     **extra
   )
     track_event(
@@ -7720,7 +7718,6 @@ module AnalyticsEvents
       requested_ial:,
       authn_context:,
       requested_aal_authn_context:,
-      requested_vtr_authn_contexts:,
       force_authn:,
       final_auth_request:,
       service_provider:,

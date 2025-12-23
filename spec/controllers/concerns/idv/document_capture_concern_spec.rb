@@ -70,7 +70,7 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
       allow(document_capture_session).to receive(:doc_auth_vendor)
         .and_return(Idp::Constants::Vendors::MOCK)
 
-      resolution_result = Vot::Parser.new(acr_values:).parse
+      resolution_result = Component::Parser.new(acr_values:).parse
       allow(controller).to receive(:resolved_authn_context_result).and_return(resolution_result)
     end
 
@@ -200,7 +200,7 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
         stored_result = EncryptedRedisStructStorage.load(id, type: DocumentCaptureSessionResult)
         allow(controller).to receive(:stored_result).and_return(stored_result)
 
-        resolution_result = Vot::Parser.new(acr_values:).parse
+        resolution_result = Component::Parser.new(acr_values:).parse
         allow(controller).to receive(:resolved_authn_context_result).and_return(resolution_result)
       end
 

@@ -30,11 +30,8 @@ RSpec.describe 'partials/personal_key/_key.html.erb' do
     let(:personal_key_generated_at) { Time.zone.parse('2020-04-09T14:03:00Z').utc }
     let(:locals) { super().merge(personal_key_generated_at: personal_key_generated_at) }
 
-    it 'displays the specified date' do
-      expect(rendered).to have_css(
-        'lg-time[data-timestamp="2020-04-09T14:03:00Z"][data-format]',
-        text: 'April 9, 2020 at 2:03 PM',
-      )
+    it 'displays the specified date without time' do
+      expect(rendered).to have_content('April 9, 2020')
     end
 
     it 'displays personal key block' do

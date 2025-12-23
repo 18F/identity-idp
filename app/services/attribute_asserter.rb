@@ -78,7 +78,6 @@ class AttributeAsserter
       AuthnContextResolver.new(
         user: user,
         service_provider: service_provider,
-        vtr: nil,
         acr_values: saml.acr_values,
       )
     end

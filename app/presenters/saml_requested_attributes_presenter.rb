@@ -41,13 +41,13 @@ class SamlRequestedAttributesPresenter
   attr_reader :service_provider, :ial, :authn_request_attribute_bundle
 
   def identity_proofing_requested?
-    Vot::AcrComponentValues.by_name[ial]&.requirements&.include?(
+    Component::AcrComponentValues.by_name[ial]&.requirements&.include?(
       :identity_proofing,
     )
   end
 
   def ialmax_requested?
-    Vot::AcrComponentValues.by_name[ial]&.requirements&.include?(:ialmax)
+    Component::AcrComponentValues.by_name[ial]&.requirements&.include?(:ialmax)
   end
 
   def bundle

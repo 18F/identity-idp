@@ -1298,7 +1298,7 @@ RSpec.describe 'OpenID Connect' do
     access_token = token_response[:access_token]
     expect(access_token).to be_present
     expect(decoded_id_token[:acr]).to eq(Saml::Idp::Constants::IAL_VERIFIED_ACR)
-    expect(decoded_id_token[:vot]).to eq(nil)
+    expect(decoded_id_token).not_to have_key(:vot)
 
     page.driver.get api_openid_connect_userinfo_path,
                     {},

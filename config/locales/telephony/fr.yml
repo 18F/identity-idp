@@ -9,7 +9,7 @@ fr:
       Vous ne voulez pas supprimer votre compte? Connectez-vous à votre compte %{app_name} pour le annuler.
     authentication_otp:
       sms: |-
-        %{app_name} : Votre code à usage unique est %{code}. Il expire dans %{expiration} minutes. Ne partagez ce code avec personne.
+        %{app_name} ne vous contactera JAMAIS pour obtenir ce code. Ne le partagez à personne. Le code est : %{code}. Il expire dans %{expiration} minutes.
 
         @%{domain} #%{code}
       voice: Bonjour ! Votre code à usage unique de six %{format_type} pour %{app_name} est %{code}. Votre code à usage unique est %{code}. De nouveau, votre code à usage unique est %{code}. Ce code expire dans %{expiration} minutes.
