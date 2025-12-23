@@ -1,4 +1,3 @@
-# spec/jobs/reports/sp_fraud_metrics_report_spec.rb
 require 'rails_helper'
 
 RSpec.describe Reports::SpFraudMetricsReport do
@@ -8,7 +7,7 @@ RSpec.describe Reports::SpFraudMetricsReport do
 
   subject(:report) { described_class.new(report_date, report_receiver) }
 
-  let(:agency_abbreviation) { 'Test_IRS' }
+  let(:agency_abbreviation) { 'Test_Agency' }
   let(:report_name) { "#{agency_abbreviation.downcase}_fraud_metrics_report" }
 
   let(:s3_report_bucket_prefix) { 'reports-bucket' }
@@ -65,7 +64,6 @@ RSpec.describe Reports::SpFraudMetricsReport do
     allow(IdentityConfig.store).to receive(:s3_report_bucket_prefix)
       .and_return(s3_report_bucket_prefix)
 
-    # Fake S3
     Aws.config[:s3] = {
       stub_responses: {
         put_object: {},
@@ -89,7 +87,7 @@ RSpec.describe Reports::SpFraudMetricsReport do
       expect(ReportMailer).to receive(:tables_report).once.with(
         email: ['mock_feds@example.com', 'mock_contractors@example.com'],
         bcc: ['mock_internal@example.com'],
-        subject: 'Test_IRS Fraud Metrics Report - 2025-09-30',
+        subject: 'Test_Agency Fraud Metrics Report - 2025-09-30',
         reports: anything,
         message: report.preamble,
         attachment_format: :csv,
@@ -117,13 +115,13 @@ RSpec.describe Reports::SpFraudMetricsReport do
 
     it 'logs a warning and sends the report to internal only' do
       expect(Rails.logger).to receive(:warn).with(
-        'Test_IRS Fraud Metrics Report: recipient is :both but no external email specified',
+        'Test_Agency Fraud Metrics Report: recipient is :both but no external email specified',
       )
 
       expect(ReportMailer).to receive(:tables_report).once.with(
         email: ['mock_internal@example.com'],
         bcc: [],
-        subject: 'Test_IRS Fraud Metrics Report - 2025-09-30',
+        subject: 'Test_Agency Fraud Metrics Report - 2025-09-30',
         reports: anything,
         message: report.preamble,
         attachment_format: :csv,
@@ -151,7 +149,7 @@ RSpec.describe Reports::SpFraudMetricsReport do
 
     it 'does not send a report' do
       expect(Rails.logger).to receive(:warn).with(
-        'No email addresses received - Test_IRS Fraud Metrics Report NOT SENT',
+        'No email addresses received - Test_Agency Fraud Metrics Report NOT SENT',
       )
 
       expect(ReportMailer).not_to receive(:tables_report)
@@ -168,7 +166,7 @@ RSpec.describe Reports::SpFraudMetricsReport do
       expect(ReportMailer).to receive(:tables_report).once.with(
         email: ['mock_internal@example.com'],
         bcc: [],
-        subject: 'Test_IRS Fraud Metrics Report - 2025-09-26',
+        subject: 'Test_Agency Fraud Metrics Report - 2025-09-26',
         reports: anything,
         message: report.preamble,
         attachment_format: :csv,
@@ -195,15 +193,15 @@ RSpec.describe Reports::SpFraudMetricsReport do
     expect(ReportMailer).not_to receive(:tables_report)
 
     expect(Rails.logger).to receive(:warn).with(
-      'No email addresses received - Test_IRS Fraud Metrics Report NOT SENT',
+      'No email addresses received - Test_Agency Fraud Metrics Report NOT SENT',
     )
 
     report.perform(report_date)
   end
 
-  it 'uploads files to S3 based on the report date and agency abbreviation' do
+  it 'uploads a file to S3 based on the report date' do
     expected_s3_paths.each do |path|
-      expect(report).to receive(:upload_file_to_s3_bucket).with(
+      expect(subject).to receive(:upload_file_to_s3_bucket).with(
         path: path,
         **s3_metadata,
       ).exactly(1).time.and_call_original
@@ -216,7 +214,7 @@ RSpec.describe Reports::SpFraudMetricsReport do
     let(:env) { 'prod' }
     subject(:preamble) { report.preamble(env:) }
 
-    it 'has a blank preamble for prod' do
+    it 'has a blank preamble' do
       expect(preamble).to be_blank
     end
 
@@ -227,6 +225,7 @@ RSpec.describe Reports::SpFraudMetricsReport do
         expect(preamble).to be_html_safe
 
         doc = Nokogiri::XML(preamble)
+
         alert = doc.at_css('.usa-alert')
         expect(alert.text).to include(env)
       end

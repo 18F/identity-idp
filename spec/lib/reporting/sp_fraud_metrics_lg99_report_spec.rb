@@ -1,4 +1,3 @@
-# spec/lib/reporting/sp_fraud_metrics_lg99_report_spec.rb
 require 'rails_helper'
 require 'reporting/sp_fraud_metrics_lg99_report'
 
@@ -21,7 +20,6 @@ RSpec.describe Reporting::SpFraudMetricsLg99Report do
          that are reinstated within the reporting month.'],
     ]
   end
-
   let(:expected_overview_table) do
     [
       ['Report Timeframe', "#{time_range.begin} to #{time_range.end}"],
@@ -29,7 +27,6 @@ RSpec.describe Reporting::SpFraudMetricsLg99Report do
       ['Issuer', issuer],
     ]
   end
-
   let(:expected_lg99_metrics_table) do
     [
       ['Metric', 'Total', 'Range Start', 'Range End'],
@@ -50,7 +47,6 @@ RSpec.describe Reporting::SpFraudMetricsLg99Report do
 
   before do
     travel_to Time.zone.now.beginning_of_day
-
     stub_cloudwatch_logs(
       [
         { 'user_id' => 'user1', 'name' => 'IdV: final resolution' },
@@ -70,8 +66,6 @@ RSpec.describe Reporting::SpFraudMetricsLg99Report do
         { 'user_id' => 'user7', 'name' => 'User Suspension: Suspended' },
       ],
     )
-
-    # keep the same user setup as the IRS spec so the averages match
     user7.profiles.verified.last.update(created_at: 1.day.ago, activated_at: 1.day.ago) if user7
   end
 
@@ -85,7 +79,6 @@ RSpec.describe Reporting::SpFraudMetricsLg99Report do
       reinstated_at: 6.days.from_now,
     )
   end
-
   let!(:user7) { create(:user, :proofed, :suspended, uuid: 'user7') }
 
   describe '#definitions_table' do
@@ -152,7 +145,7 @@ RSpec.describe Reporting::SpFraudMetricsLg99Report do
     end
   end
 
-  describe '#user_days_proofed_to_suspension_avg' do
+  describe '#user_days_proofed_to_suspended_avg' do
     context 'when there are suspended users' do
       it 'returns average time proofed to suspension' do
         expect(report.user_days_proofed_to_suspension_avg).to eq(2.0)
@@ -189,8 +182,7 @@ RSpec.describe Reporting::SpFraudMetricsLg99Report do
         ),
       ]
     end
-
-    it 'returns expected tables for email' do
+    it 'return expected table for email' do
       expect(report.as_emailable_reports).to eq expected_reports
     end
   end
@@ -221,7 +213,7 @@ RSpec.describe Reporting::SpFraudMetricsLg99Report do
       it 'creates a client with the default options' do
         expect(Reporting::CloudwatchClient).to receive(:new).with(default_args)
 
-        report_with_opts.cloudwatch_client
+        subject.cloudwatch_client
       end
     end
 
@@ -237,43 +229,40 @@ RSpec.describe Reporting::SpFraudMetricsLg99Report do
       it 'creates a client with the expected logger' do
         expect(Reporting::CloudwatchClient).to receive(:new).with(default_args)
 
-        report_with_opts.cloudwatch_client
+        subject.cloudwatch_client
       end
     end
 
     describe 'when progress is passed in as true' do
       let(:opts) { { progress: true } }
-
       before { default_args[:progress] = true }
 
       it 'creates a client with progress as true' do
         expect(Reporting::CloudwatchClient).to receive(:new).with(default_args)
 
-        report_with_opts.cloudwatch_client
+        subject.cloudwatch_client
       end
     end
 
     describe 'when threads is passed in' do
       let(:opts) { { threads: 17 } }
-
       before { default_args[:num_threads] = 17 }
 
       it 'creates a client with the expected thread count' do
         expect(Reporting::CloudwatchClient).to receive(:new).with(default_args)
 
-        report_with_opts.cloudwatch_client
+        subject.cloudwatch_client
       end
     end
 
     describe 'when slice is passed in' do
       let(:opts) { { slice: 2.weeks } }
-
       before { default_args[:slice_interval] = 2.weeks }
 
       it 'creates a client with expected time slice' do
         expect(Reporting::CloudwatchClient).to receive(:new).with(default_args)
 
-        report_with_opts.cloudwatch_client
+        subject.cloudwatch_client
       end
     end
   end
