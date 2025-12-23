@@ -269,6 +269,17 @@ else
         },
       },
 
+      sp_fraud_metrics_report: {
+        class: 'Reports::SpFraudMetricsReport',
+        cron: cron_24h_and_a_bit,
+        args: -> {
+          JobHelpers::ReportJobConfigurationHelper.build_irs_report_args(
+            Time.zone.yesterday.end_of_day,
+            :monthly,
+          )
+        },
+      },
+
       # Previous week's drop off report
       weekly_drop_off_report: {
         class: 'Reports::DropOffReport',
