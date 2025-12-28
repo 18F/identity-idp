@@ -160,6 +160,20 @@ module AbTests
     )
   end.freeze
 
+  PHONE_FINDER_RDP_VERSION = AbTest.new(
+    experiment_name: 'phone_finder_rdp_version',
+    should_log: /^idv/i,
+    default_bucket: IdentityConfig.store.idv_rdp_version_default,
+    buckets: {
+      rdp_v2: IdentityConfig.store.idv_rdp_version_switching_enabled ?
+            IdentityConfig.store.idv_rdp_version_v2_percent : 0,
+      rdp_v3: IdentityConfig.store.idv_rdp_version_switching_enabled ?
+            IdentityConfig.store.idv_rdp_version_v3_percent : 0,
+    },
+  ) do |user:, user_session:, **|
+    user&.uuid
+  end.freeze
+
   # This "test" will permanently be in place to allow a multi-vendor configuration.
   DOC_AUTH_PASSPORT_VENDOR = AbTest.new(
     experiment_name: 'Doc Auth Passport Vendor',
