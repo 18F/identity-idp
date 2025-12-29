@@ -7,17 +7,19 @@ module Idv
       include HybridMobileConcern
       include DocumentCaptureConcern
       include Idv::ChooseIdTypeConcern
+      include ThreatMetrixHelper
+      include ThreatMetrixConcern
 
       before_action :check_valid_document_capture_session
+      before_action :override_csp_for_threat_metrix,
+                    if: -> {
+                      FeatureManagement.proofing_device_hybrid_profiling_collecting_enabled?
+                    }
 
       def show
         analytics.idv_doc_auth_choose_id_type_visited(**analytics_arguments)
 
-        render 'idv/shared/choose_id_type',
-               locals: locals_attrs(
-                 presenter: Idv::HybridMobile::ChooseIdTypePresenter.new,
-                 form_submit_url: idv_hybrid_mobile_choose_id_type_path,
-               )
+        render 'idv/shared/choose_id_type', locals: choose_id_type_attrs
       end
 
       def update
@@ -45,6 +47,13 @@ module Idv
 
       def next_step
         idv_hybrid_mobile_document_capture_url
+      end
+
+      def choose_id_type_attrs
+        locals_attrs(
+          presenter: Idv::HybridMobile::ChooseIdTypePresenter.new,
+          form_submit_url: idv_hybrid_mobile_choose_id_type_path,
+        ).merge!(threatmetrix_variables(hybrid_flow: true))
       end
 
       def analytics_arguments

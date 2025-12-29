@@ -17,6 +17,16 @@
             service_provider_name: decorated_sp_session.sp_name,
           ) %>
     <% end %>
+    <% if FeatureManagement.proofing_device_hybrid_profiling_collecting_enabled? %>
+      <div class="margin-bottom-2">
+        <%= render partial: 'shared/threat_metrix_profiling',
+                  locals: {
+                    threatmetrix_session_id:,
+                    threatmetrix_javascript_urls:,
+                    threatmetrix_iframe_url:,
+                  } %>
+      </div>
+    <% end %>
 <% end %>
 
 <% if disable_passports %>
