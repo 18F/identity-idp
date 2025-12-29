@@ -2,7 +2,8 @@
 
 class WebauthnConfiguration < ApplicationRecord
   belongs_to :user
-  validates :name, presence: true, length: { maximum: 20 }
+  # validates :name, presence: true
+  validates :name, presence: true, length: { maximum: 64 }
   validates :credential_id, presence: true
   validates :credential_public_key, presence: true
   validate :valid_transports

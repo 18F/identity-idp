@@ -7,7 +7,7 @@ class AuthAppConfiguration < ApplicationRecord
 
   belongs_to :user
 
-  validates :name, presence: true, length: { maximum: 20 }
+  validates :name, presence: true, length: { maximum: 64 }
 
   def mfa_enabled?
     otp_secret_key.present?

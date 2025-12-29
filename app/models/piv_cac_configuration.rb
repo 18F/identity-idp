@@ -2,7 +2,7 @@
 
 class PivCacConfiguration < ApplicationRecord
   belongs_to :user
-  validates :name, presence: true, length: { maximum: 20 }
+  validates :name, presence: true, length: { maximum: 64 }
 
   def mfa_enabled?
     x509_dn_uuid.present?
