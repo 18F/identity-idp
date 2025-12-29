@@ -27,7 +27,7 @@ RSpec.describe Idv::HybridMobile::ChooseIdTypeController do
 
     allow(IdentityConfig.store).to receive(:doc_auth_vendor).and_return(idv_vendor)
     allow(IdentityConfig.store).to receive(:doc_auth_vendor_default).and_return(idv_vendor)
-    allow(subject).to receive(:document_capture_session).and_return(document_capture_session)
+    allow(controller).to receive(:document_capture_session).and_return(document_capture_session)
   end
 
   describe 'before actions' do
@@ -35,11 +35,69 @@ RSpec.describe Idv::HybridMobile::ChooseIdTypeController do
       expect(subject).to have_actions(
         :before,
         :check_valid_document_capture_session,
+        :override_csp_for_threat_metrix,
       )
     end
   end
 
   describe '#show' do
+    subject(:response) { get :show }
+
+    it 'renders the show template' do
+      get :show
+
+      expect(response).to render_template('idv/shared/choose_id_type')
+    end
+
+    context 'with threatmetrix disabled' do
+      before do
+        allow(FeatureManagement).to receive(:proofing_device_hybrid_profiling_collecting_enabled?)
+          .and_return(false)
+      end
+
+      it 'does not override CSPs for ThreatMetrix' do
+        expect(controller).not_to receive(:override_csp_for_threat_metrix)
+
+        response
+      end
+    end
+
+    context 'with threatmetrix enabled' do
+      let(:tmx_session_id) { '1234' }
+      before do
+        allow(IdentityConfig.store).to receive(:proofing_device_hybrid_profiling)
+          .and_return(:enabled)
+        allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_org_id).and_return('org1')
+        allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_mock_enabled)
+          .and_return(false)
+        allow(FeatureManagement).to receive(:proofing_device_hybrid_profiling_collecting_enabled?)
+          .and_return(true)
+        controller.session[:hybrid_flow_threatmetrix_session_id] = tmx_session_id
+      end
+
+      it 'renders new valid request' do
+        tmx_url = 'https://h.online-metrix.net/fp'
+        expect(controller).to receive(:render).with(
+          'idv/shared/choose_id_type',
+          locals: hash_including(
+            threatmetrix_session_id: tmx_session_id,
+            threatmetrix_javascript_urls:
+              ["#{tmx_url}/tags.js?org_id=org1&session_id=#{tmx_session_id}"],
+            threatmetrix_iframe_url:
+              "#{tmx_url}/tags?org_id=org1&session_id=#{tmx_session_id}",
+          ),
+        ).and_call_original
+
+        expect(response).to render_template('idv/shared/choose_id_type')
+      end
+
+      it 'overrides CSPs for ThreatMetrix' do
+        expect(controller).to receive(:override_csp_for_threat_metrix)
+
+        response
+      end
+    end
+
     context 'passport is available' do
       let(:analytics_name) { :idv_doc_auth_choose_id_type_visited }
       let(:analytics_args) do
