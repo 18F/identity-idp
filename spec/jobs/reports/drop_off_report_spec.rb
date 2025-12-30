@@ -28,7 +28,7 @@ RSpec.describe Reports::DropOffReport do
 
     it 'sends a ReportMailer with data that matches an empty Reporting::DropOffReport' do
       expect(ReportMailer).to receive(:tables_report).once.with(
-        email: 'ursula@example.com',
+        to: 'ursula@example.com',
         subject: "Drop Off Report - #{report_date.to_date}",
         reports: satisfy do |value|
           expect(value.first).to eq(empty_emailable_report.first)
@@ -123,7 +123,7 @@ RSpec.describe Reports::DropOffReport do
       ).and_return(report_maker)
 
       expect(ReportMailer).to receive(:tables_report).once.with(
-        email: 'ursula@example.com',
+        to: 'ursula@example.com',
         subject: "Drop Off Report - #{report_date.to_date}",
         reports: anything,
         message: "<h2>\n  Drop Off Report\n</h2>\n",
