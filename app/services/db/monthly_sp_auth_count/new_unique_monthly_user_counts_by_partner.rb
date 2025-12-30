@@ -6,7 +6,7 @@ module Db
       extend Reports::QueryHelpers
 
       UserVerifiedKey = Data.define(
-        :user_id, :profile_verified_at, :profile_age, :is_upfront
+        :user_id, :profile_id, :profile_age, :issuer, :profile_requested_issuer
       ).freeze
 
       module_function
@@ -51,17 +51,16 @@ module Db
                 year_month = row['year_month']
                 profile_age = row['profile_age']
                 user_id = row['user_id']
-                profile_verified_at = row['profile_verified_at']
+                profile_id = row['profile_id']
                 profile_requested_issuer = row['profile_requested_issuer']
                 issuer = row['issuer']
 
-                is_upfront = profile_requested_issuer == issuer
-
                 user_unique_id = UserVerifiedKey.new(
                   user_id:,
-                  profile_verified_at:,
+                  profile_id:,
                   profile_age:,
-                  is_upfront:,
+                  issuer:,
+                  profile_requested_issuer:,
                 )
 
                 year_month_to_users_to_profile_age[year_month][user_unique_id] = profile_age
@@ -135,30 +134,24 @@ module Db
 
           format(<<~SQL, params)
             SELECT
-              subq.user_id AS user_id
+              user_id
             , %{year_month} AS year_month
-            , subq.profile_verified_at
-            , subq.profile_age
-            , MAX(subq.profile_requested_issuer) AS profile_requested_issuer
-            , MAX(subq.issuer) AS issuer
-            FROM (
-              SELECT
-                  sp_return_logs.user_id
-                , sp_return_logs.profile_verified_at
-                , DATE_PART('year', AGE(sp_return_logs.returned_at, sp_return_logs.profile_verified_at)) AS profile_age
-                , sp_return_logs.profile_requested_issuer
-                , sp_return_logs.issuer
-              FROM sp_return_logs
-              WHERE
-                    sp_return_logs.ial > 1
-                AND sp_return_logs.returned_at::date BETWEEN %{range_start} AND %{range_end}
-                AND sp_return_logs.issuer IN %{issuers}
-                AND sp_return_logs.billable = true
-            ) subq
+            , profile_id
+            , DATE_PART('year', AGE(returned_at, profile_verified_at)) AS profile_age
+            , profile_requested_issuer
+            , issuer
+            FROM sp_return_logs
+            WHERE
+                  ial > 1
+              AND returned_at::date BETWEEN %{range_start} AND %{range_end}
+              AND issuer IN %{issuers}
+              AND billable = true
             GROUP BY
-              subq.user_id
-              , subq.profile_verified_at
-              , subq.profile_age
+              user_id
+              , profile_id
+              , DATE_PART('year', AGE(returned_at, profile_verified_at))
+              , profile_requested_issuer
+              , issuer
           SQL
         end
       end
@@ -182,13 +175,16 @@ module Db
           !age.nil? && !age.negative? && age == 0
         end
 
-        initially_upfront, existing = year1_events.partition(&:is_upfront)
+        initially_upfront, existing = year1_events.partition do |event|
+          event.issuer == event.profile_requested_issuer
+        end
 
-        users_already_upfront = Set.new
+        profiles_already_upfront = Set.new
         upfront = []
 
         initially_upfront.each do |event|
-          if users_already_upfront.add?(event.user_id)
+          profile_key = [event.user_id, event.profile_id, event.issuer]
+          if profiles_already_upfront.add?(profile_key)
             upfront << event
           else
             existing << event
