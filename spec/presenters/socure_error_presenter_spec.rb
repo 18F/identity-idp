@@ -90,6 +90,14 @@ RSpec.describe SocureErrorPresenter do
       end
     end
 
+    context 'when error_code is :state_id_verification' do
+      let(:error_code) { :state_id_verification }
+
+      it 'returns the state ID verification heading' do
+        expect(presenter.heading).to eq(I18n.t('doc_auth.headers.state_id_verification'))
+      end
+    end
+
     context 'when error_code is a socure reason code' do
       let(:error_code) { 'R810' }
 
@@ -189,6 +197,14 @@ RSpec.describe SocureErrorPresenter do
 
       it 'returns the "internal error" error message' do
         expect(presenter.body_text).to eq(I18n.t('idv.failure.exceptions.internal_error'))
+      end
+    end
+
+    context 'when error_code is :state_id_verification' do
+      let(:error_code) { :state_id_verification }
+
+      it 'returns the state ID verification error message' do
+        expect(presenter.body_text).to eq(I18n.t('doc_auth.errors.state_id_verification'))
       end
     end
 
