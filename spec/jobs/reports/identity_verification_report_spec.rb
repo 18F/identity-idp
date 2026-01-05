@@ -53,7 +53,7 @@ RSpec.describe Reports::IdentityVerificationReport do
       )
 
       expect(ReportMailer).to receive(:tables_report).once.with(
-        email: IdentityConfig.store.team_ada_email,
+        to: IdentityConfig.store.team_ada_email,
         subject: 'Daily Identity Verification Report - 2023-12-12',
         reports: anything,
         message: anything,
