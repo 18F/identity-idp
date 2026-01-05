@@ -11,5 +11,11 @@ module UspsInPersonProofing
         super(message)
       end
     end
+
+    class InvalidResponseError < StandardError
+      def initialize(endpoint_name)
+        super("#{endpoint_name}: responded with an invalid response")
+      end
+    end
   end
 end
