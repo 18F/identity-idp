@@ -299,6 +299,18 @@ else
         },
       },
 
+      # Previous months's SP verification report - Added for testing as of now
+      monthly_sp_verification_report: {
+        class: 'Reports::MonthlySpVerificationReport',
+        cron: cron_24h_and_a_bit,
+        args: -> {
+          JobHelpers::ReportJobConfigurationHelper.build_irs_report_args(
+            Time.zone.yesterday.end_of_day,
+            :monthly,
+          )
+        },
+      },
+
       # Send irs quarterly metrics report to Team Data - Monthly (For internal review only)
       # And, quarterly on 1st date (For IRS and Internal)
       irs_verification_demographics_report: {
