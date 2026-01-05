@@ -473,6 +473,7 @@ socure_idplus_timeout_in_seconds: 5
 socure_reason_code_api_key: ''
 socure_reason_code_base_url: ''
 socure_reason_code_timeout_in_seconds: 5
+sp_fraud_metrics_report_configs: '[]'
 sp_handoff_bounce_max_seconds: 2
 sp_idv_weekly_dropoff_report_configs: '[]'
 sp_issuer_user_counts_report_configs: '[]'
