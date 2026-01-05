@@ -7,7 +7,6 @@ RSpec.describe AuthAppConfiguration do
 
   describe 'name validations' do
     it 'is invalid when name is longer than 20 characters' do
-      # binding.pry
       config = AuthAppConfiguration.new(
         name: 'a' * 21,
       )
