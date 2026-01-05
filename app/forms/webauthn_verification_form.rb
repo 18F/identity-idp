@@ -154,6 +154,37 @@ class WebauthnVerificationForm
     end
   end
 
+  def aaguid
+    aaguid ||= webauthn_configuration&.aaguid
+    binding.pry
+    return aaguid if aaguid.present?
+
+    # If not stored, extract it from the current authenticator data
+    extract_aaguid_from_authenticator_data
+  end
+
+  def extract_aaguid_from_authenticator_data
+    return nil if authenticator_data.blank?
+
+    begin
+      decoded_data = Base64.decode64(authenticator_data)
+      # AAGUID is at bytes 37-52 (16 bytes) in the authenticator data
+      # Structure: RP ID Hash (32) + Flags (1) + Sign Count (4) + AAGUID (16) + ...
+      return nil if decoded_data.bytesize < 53
+      
+      aaguid_bytes = decoded_data[37, 16]
+      format_aaguid(aaguid_bytes.unpack1('H*'))
+    rescue StandardError => e
+      nil
+    end
+  end
+
+  def format_aaguid(hex_string)
+    # Format as: 8-4-4-4-12 (e.g., fbfc3007-154e-4ecc-8c0b-6e020557d7bd)
+    return nil if hex_string.blank? || hex_string.length != 32
+    "#{hex_string[0, 8]}-#{hex_string[8, 4]}-#{hex_string[12, 4]}-#{hex_string[16, 4]}-#{hex_string[20, 12]}".downcase
+  end
+
   def user_has_other_authentication_method?
     MfaContext.new(user).two_factor_configurations.any? do |configuration|
       !configuration.is_a?(WebauthnConfiguration) ||
