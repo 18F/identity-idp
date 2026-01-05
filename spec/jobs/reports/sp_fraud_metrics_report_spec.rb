@@ -85,7 +85,7 @@ RSpec.describe Reports::SpFraudMetricsReport do
 
     it 'sends a report to partner as TO and internal as BCC' do
       expect(ReportMailer).to receive(:tables_report).once.with(
-        email: ['mock_feds@example.com', 'mock_contractors@example.com'],
+        to: ['mock_feds@example.com', 'mock_contractors@example.com'],
         bcc: ['mock_internal@example.com'],
         subject: 'Test_Agency Fraud Metrics Report - 2025-09-30',
         reports: anything,
@@ -119,7 +119,7 @@ RSpec.describe Reports::SpFraudMetricsReport do
       )
 
       expect(ReportMailer).to receive(:tables_report).once.with(
-        email: ['mock_internal@example.com'],
+        to: ['mock_internal@example.com'],
         bcc: [],
         subject: 'Test_Agency Fraud Metrics Report - 2025-09-30',
         reports: anything,
@@ -164,7 +164,7 @@ RSpec.describe Reports::SpFraudMetricsReport do
 
     it 'sends a report to internal only' do
       expect(ReportMailer).to receive(:tables_report).once.with(
-        email: ['mock_internal@example.com'],
+        to: ['mock_internal@example.com'],
         bcc: [],
         subject: 'Test_Agency Fraud Metrics Report - 2025-09-26',
         reports: anything,
