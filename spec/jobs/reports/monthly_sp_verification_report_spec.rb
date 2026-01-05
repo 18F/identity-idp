@@ -56,7 +56,7 @@ RSpec.describe Reports::MonthlySpVerificationReport do
 
     it 'sends out a report to TO partner, BCC internal' do
       expect(ReportMailer).to receive(:tables_report).once.with(
-        email: ['mock_partner@example.com'],
+        to: ['mock_partner@example.com'],
         bcc:   ['mock_internal@example.com'],
         subject: "Monthly #{agency_abbreviation} Verification Report - 2025-09-30",
         reports: anything,              # we don’t care about shape here
@@ -74,7 +74,7 @@ RSpec.describe Reports::MonthlySpVerificationReport do
 
     it 'emails internal only' do
       expect(ReportMailer).to receive(:tables_report).once.with(
-        email: ['mock_internal@example.com'],
+        to: ['mock_internal@example.com'],
         bcc:   [],
         subject: "Monthly #{agency_abbreviation} Verification Report - 2025-09-26",
         reports: anything,
@@ -101,7 +101,7 @@ RSpec.describe Reports::MonthlySpVerificationReport do
       )
 
       expect(ReportMailer).to receive(:tables_report).once.with(
-        email: ['mock_internal@example.com'],
+        to: ['mock_internal@example.com'],
         bcc:   [],
         subject: "Monthly #{agency_abbreviation} Verification Report - 2025-06-30",
         reports: anything,
