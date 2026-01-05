@@ -156,7 +156,6 @@ class WebauthnVerificationForm
 
   def aaguid
     aaguid ||= webauthn_configuration&.aaguid
-    binding.pry
     return aaguid if aaguid.present?
 
     # If not stored, extract it from the current authenticator data
