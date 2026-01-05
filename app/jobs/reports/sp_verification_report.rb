@@ -49,7 +49,7 @@ module Reports
       end
 
       ReportMailer.tables_report(
-        email: to_emails,
+        to: to_emails,
         bcc: bcc_emails,
         subject: "#{@report_title} - #{report_date.to_date}",
         reports: emailable_reports,

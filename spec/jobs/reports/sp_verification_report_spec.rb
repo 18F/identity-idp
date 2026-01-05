@@ -83,7 +83,7 @@ RSpec.describe Reports::SpVerificationReport do
 
       # Expect email goes to both internal and partner sets
       expect(ReportMailer).to receive(:tables_report).with(
-        email: mock_partner_emails,
+        to: mock_partner_emails,
         bcc: mock_internal_emails,
         subject: "#{mock_agency} Verification Report - #{report_date.to_date}",
         reports: emailable_reports,
@@ -107,7 +107,7 @@ RSpec.describe Reports::SpVerificationReport do
       ))
 
       expect(ReportMailer).to receive(:tables_report).with(
-        email: mock_internal_emails,
+        to: mock_internal_emails,
         bcc: [],
         subject: "#{mock_agency} Verification Report - #{report_date.to_date}",
         reports: emailable_reports,
