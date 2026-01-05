@@ -6,7 +6,7 @@ RSpec.describe Reporting::SpVerificationReport do
   let(:issuers) { ['issuer1', 'issuer2'] }
   let(:agency_abbreviation) { 'Test_Partner' }
 
-  # previous week range helper (Sunday..Saturday)
+  # previous week range helper (Sunday...Saturday)
   let(:time_range) do
     last_sunday   = Time.zone.now.to_date.beginning_of_week(:sunday) - 7.days
     last_saturday = last_sunday + 6.days
