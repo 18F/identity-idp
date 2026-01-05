@@ -592,10 +592,10 @@ doc_auth.errors.rate_limited_text_html: 为了防止欺诈，我们限制在网�
 doc_auth.errors.selfie_fail_heading: 我们无法将您的自拍照与您的身份证件进行匹配
 doc_auth.errors.selfie_not_live_or_poor_quality_heading: 我们无法将你的自拍照与你的身份证件进行匹配
 doc_auth.errors.send_link_limited: 你尝试了太多次。请在 %{timeout}后再试。你也可以返回并选择使用电脑。
-doc_auth.errors.state_id_verification: 您的身份证件上的信息无法通过您所在州的验证。您可能需要亲自验证身份证件，或者您可以尝试使用其他身份证件。
 doc_auth.errors.sharpness.failed_short: 图像模糊，请再试一次。
 doc_auth.errors.sharpness.top_msg: 我们无法读取你的身份证件。你的照片可能太模糊或太暗。尝试在明亮的地方重拍一张。
 doc_auth.errors.sharpness.top_msg_plural: 我们无法读取你的身份证件。你的照片可能太模糊或太暗。尝试在明亮的地方重拍一张。
+doc_auth.errors.state_id_verification: 您的身份证件上的信息无法通过您所在州的验证。您可能需要亲自验证身份证件，或者您可以尝试使用其他身份证件。
 doc_auth.errors.unaccepted_id_type: 我们不接受护照、军人身份证件、纸质身份证件或临时身份证件。你只能使用驾驶执照或美国州或领地颁发的身份证件。
 doc_auth.errors.underage: 你必须年满 13 岁才能使用 %{app_name}。如果你年满 13 岁，请重试并确保你的出生日期对焦。
 doc_auth.errors.unreadable_id: 请在光线充足而且没有阴影或眩光的地方拍照。确保你身份证件上的所有内容都清晰对焦，并且身份卡填满画面。

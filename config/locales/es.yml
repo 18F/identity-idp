@@ -592,10 +592,10 @@ doc_auth.errors.rate_limited_text_html: Para evitar fraudes, limitamos el númer
 doc_auth.errors.selfie_fail_heading: No pudimos hacer coincidir su selfi con su identificación.
 doc_auth.errors.selfie_not_live_or_poor_quality_heading: No pudimos comprobar que su selfi coincide con la de su identificación
 doc_auth.errors.send_link_limited: Lo intentó demasiadas veces; vuelva a intentarlo en %{timeout}. También puede volver atrás y elegir utilizar su computadora.
-doc_auth.errors.state_id_verification: La información de su identificación no pudo ser verificada con su estado. Es posible que necesite verificar su identificación en persona, o puede volver a intentarlo con una identificación diferente.
 doc_auth.errors.sharpness.failed_short: La imagen está borrosa; inténtelo de nuevo.
 doc_auth.errors.sharpness.top_msg: No pudimos leer su identificación. Es posible que su foto esté demasiado borrosa u oscura. Intente tomar una nueva foto en un lugar iluminado.
 doc_auth.errors.sharpness.top_msg_plural: No pudimos leer su identificación. Es posible que sus fotos estén demasiado borrosas u oscuras. Intente tomar nuevas fotos en un lugar iluminado.
+doc_auth.errors.state_id_verification: La información de su identificación no pudo ser verificada con su estado. Es posible que necesite verificar su identificación en persona, o puede volver a intentarlo con una identificación diferente.
 doc_auth.errors.unaccepted_id_type: No aceptamos pasaportes, identificaciones militares, ni identificaciones impresas o temporales. Solo puede usar una licencia de conducir o una identificación emitida por un estado o territorio de los EE. UU.
 doc_auth.errors.underage: Debe tener al menos 13 años para usar %{app_name}. Si tiene 13 años o más, vuelva a intentarlo y verifique que su fecha de nacimiento se vea nítida.
 doc_auth.errors.unreadable_id: Tome sus fotografías en un lugar bien iluminado sin sombras ni reflejos. Revise que la información en su identificación se vea nítida y que la tarjeta llene el marco.

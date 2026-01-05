@@ -580,11 +580,11 @@ doc_auth.errors.rate_limited_subheading: Essayez de prendre de nouvelles photos.
 doc_auth.errors.rate_limited_text_html: Pour éviter la fraude, nous limitons le nombre de fois où vous pouvez tenter de confirmer votre identité en ligne. <strong>Réessayez d’ici %{timeout}.</strong>
 doc_auth.errors.selfie_fail_heading: Nous n’avons pas pu faire correspondre votre selfie à votre pièce d’identité.
 doc_auth.errors.selfie_not_live_or_poor_quality_heading: Nous n’avons pas pu associer votre selfie à votre pièce d’identité
-doc_auth.errors.send_link_limited: Vous avez essayé trop de fois, veuillez réessayer dans %{timeout}. Vous pouvez également revenir en arrière et choisir d'utiliser votre ordinateur à la place.
-doc_auth.errors.state_id_verification: Les informations figurant sur votre pièce d'identité n'ont pas pu être vérifiées auprès de votre État. Vous devrez peut-être faire vérifier votre pièce d'identité en personne, ou vous pouvez réessayer avec une autre pièce d'identité.
-doc_auth.errors.sharpness.failed_short: L'image est floue, veuillez réessayer.
+doc_auth.errors.send_link_limited: Vous avez essayé trop de fois, veuillez réessayer dans %{timeout}. Vous pouvez également revenir en arrière et choisir d’utiliser votre ordinateur à la place.
+doc_auth.errors.sharpness.failed_short: L’image est floue, veuillez réessayer.
 doc_auth.errors.sharpness.top_msg: Nous n’avons pas pu lire votre pièce d’identité. Il se peut que votre photo soit trop floue ou trop sombre. Essayez de prendre une nouvelle photo dans un endroit bien éclairé.
 doc_auth.errors.sharpness.top_msg_plural: Nous n’avons pas pu lire votre pièce d’identité. Il se peut que vos photos soient trop floues ou trop sombres. Essayez de prendre de nouvelles photos dans un endroit bien éclairé.
+doc_auth.errors.state_id_verification: Les informations figurant sur votre pièce d’identité n’ont pas pu être vérifiées auprès de votre État. Vous devrez peut-être faire vérifier votre pièce d’identité en personne, ou vous pouvez réessayer avec une autre pièce d’identité.
 doc_auth.errors.unaccepted_id_type: Nous n’acceptons pas de passeports, de cartes d’identité militaires, de pièces d’identité papier ou provisoires. Vous pouvez uniquement utiliser un permis de conduire ou une pièce d’identité délivré par un État ou un territoire des États-Unis.
 doc_auth.errors.underage: Vous devez être âgé de 13 ans au moins pour utiliser %{app_name}. Si vous avez 13 ans ou plus, réessayez et assurez-vous que votre date de naissance est bien visible.
 doc_auth.errors.unreadable_id: Prenez vos photos dans un endroit bien éclairé sans ombre ou reflet. Veillez à ce que tous les renseignements figurant sur votre pièce d’identité soient nets et que l’ensemble de la pièce soit visible à l’intérieur du cadre.
@@ -604,8 +604,8 @@ doc_auth.headers.expired_id: Votre pièce d’identité est peut-être périmée
 doc_auth.headers.general.network_error: Nous rencontrons des difficultés techniques
 doc_auth.headers.id_not_found: Nous n’avons pas trouvé votre pièce d’identité
 doc_auth.headers.low_resolution: Il se peut que la caméra de votre appareil ne soit pas prise en charge
-doc_auth.headers.state_id_verification: Nous n'avons pas pu vérifier les informations de votre pièce d'identité
-doc_auth.headers.unaccepted_id_type: Utiliser un permis de conduire ou une carte d'identité d'un État
+doc_auth.headers.state_id_verification: Nous n’avons pas pu vérifier les informations de votre pièce d’identité
+doc_auth.headers.unaccepted_id_type: Utiliser un permis de conduire ou une carte d’identité d’un État
 doc_auth.headers.underage: Condition d’âge non remplie
 doc_auth.headers.unreadable_id: Nous n’avons pas pu lire votre pièce d’identité
 doc_auth.headings.address: Saisir votre adresse personnelle actuelle
