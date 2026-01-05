@@ -106,4 +106,25 @@ RSpec.describe WebauthnConfiguration do
       it { expect(subject).not_to be_valid }
     end
   end
+
+  describe 'name validations' do
+    it 'is invalid when name is longer than 80 characters' do
+      # binding.pry
+      config = WebauthnConfiguration.new(
+        name: 'a' * 81, credential_id: '111',
+        credential_public_key: '222'
+      )
+
+      expect(config).not_to be_valid
+    end
+
+    it('is valid when name has exactly 80 characters') do
+      config = WebauthnConfiguration.new(
+        name: 'a' * 80, credential_id: '111',
+        credential_public_key: '222'
+      )
+
+      expect(config).to be_valid
+    end
+  end
 end
