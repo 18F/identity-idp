@@ -4,10 +4,9 @@ require 'csv'
 require 'reporting/irs_verification_report'
 
 module Reports
-  class MonthlyIrsVerificationReport < BaseReport
-    REPORT_NAME = 'monthly-irs-verification-report'
+  class MonthlySpVerificationReport < BaseReport
 
-    attr_reader :report_date, :report_receiver
+    attr_reader :report_date, :report_receiver, :report_name, :report_title
 
     def initialize(init_date = nil, init_receiver = :internal, *args, **rest)
       @report_date = init_date
@@ -19,24 +18,40 @@ module Reports
       @report_date = perform_date
       @report_receiver = perform_receiver.to_sym
 
-      email_addresses = emails
+      IdentityConfig.store.sp_verification_report_configs.each do |report_config|
+        send_report(report_config)
+      end
+    end
+
+    def send_report(report_config)
+      issuers = report_config['issuers']
+      agency_abbreviation = report_config['agency_abbreviation']
+      partner_emails = report_config['partner_emails']
+      internal_emails = report_config['internal_emails']
+
+      @report_name = "monthly_#{agency_abbreviation.downcase}_verification_report"
+      @report_title = "Monthly #{agency_abbreviation} Verification Report"
+
+      email_addresses = emails(internal_emails, partner_emails) 
       to_emails = email_addresses[:to].select(&:present?)
       bcc_emails = email_addresses[:bcc].select(&:present?)
 
       if to_emails.empty? && bcc_emails.empty?
-        Rails.logger.warn 'No email addresses received - IRS Verification Report NOT SENT'
+        Rails.logger.warn "No email addresses received - #{@report_title} NOT SENT"
         return false
       end
 
-      reports.each do |report|
+      emailable_reports = reports(issuers, agency_abbreviation)
+      
+      emailable_reports.each do |report|
         upload_to_s3(report.table, report_name: report.filename)
       end
 
       ReportMailer.tables_report(
         to: to_emails,
         bcc: bcc_emails,
-        subject: "Monthly IRS Verification Report - #{report_date.to_date}",
-        reports: reports,
+        subject: "#{@report_title} - #{report_date.to_date}",
+        reports: emailable_reports,
         message: preamble,
         attachment_format: :csv,
       ).deliver_now
@@ -61,37 +76,35 @@ module Reports
       ERB
     end
 
-    def reports
-      @reports ||= irs_verification_report.as_emailable_reports
+    def reports(issuers, agency_abbreviation)
+      sp_verification_report(issuers, agency_abbreviation).as_emailable_reports
     end
 
-    def irs_verification_report
-      @irs_verification_report ||= Reporting::IrsVerificationReport.new(
+    def sp_verification_report(issuers, agency_abbreviation)
+      Reporting::SpVerificationReport.new(
         time_range: report_date.all_month,
-        issuers: IdentityConfig.store.irs_verification_report_issuers || [],
+        issuers: issuers || [],
+        agency_abbreviation: agency_abbreviation,
       )
     end
 
-    def emails
-      internal_emails = [*IdentityConfig.store.team_daily_reports_emails].select(&:present?)
-      irs_emails      = [*IdentityConfig.store.irs_verification_report_config].select(&:present?)
-
-      if report_receiver == :both && irs_emails.empty?
+    def emails(internal_emails, partner_emails)
+      if report_receiver == :both && partner_emails.empty?
         Rails.logger.warn(
-          'IRS Verification Report: recipient is :both ' \
-          'but no external email specified',
+          "#{@report_title}: recipient is :both " \
+          "but no external email specified",
         )
       end
 
-      if report_receiver == :both && irs_emails.present?
-        { to: irs_emails, bcc: internal_emails }
+      if report_receiver == :both && partner_emails.present?
+        { to: partner_emails, bcc: internal_emails }
       else
         { to: internal_emails, bcc: [] }
       end
     end
 
     def upload_to_s3(report_body, report_name: nil)
-      _latest, path = generate_s3_paths(REPORT_NAME, 'csv', subname: report_name, now: report_date)
+      _latest, path = generate_s3_paths(@report_name, 'csv', subname: report_name, now: report_date)
 
       if bucket_name.present?
         upload_file_to_s3_bucket(

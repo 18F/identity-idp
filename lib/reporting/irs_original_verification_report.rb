@@ -12,10 +12,10 @@ rescue LoadError => e
 end
 
 module Reporting
-  class SpVerificationReport
+  class IrsVerificationReport
     include Reporting::CloudwatchQueryQuoting
 
-    attr_reader :issuers, :time_range, :agency_abbreviation
+    attr_reader :issuers, :time_range
 
     module Events
       VERIFICATION_DEMAND = 'IdV: doc auth welcome submitted'
@@ -29,15 +29,14 @@ module Reporting
       end
     end
 
-    def initialize(time_range:, issuers:, agency_abbreviation:, verbose: false, progress: false,
-                   slice: 1.day, threads: 5)
+    def initialize(time_range:, issuers:, verbose: false, progress: false, slice: 6.hours,
+                   threads: 1)
       @issuers = issuers
       @time_range = time_range || previous_week_range
       @verbose = verbose
       @progress = progress
       @slice = slice
       @threads = threads
-      @agency_abbreviation = agency_abbreviation
     end
 
     def verbose?
@@ -222,7 +221,7 @@ end
 
 if __FILE__ == $PROGRAM_NAME
   options = Reporting::CommandLineOptions.new.parse!(ARGV)
-  Reporting::SPVerificationReport.new(**options).to_csvs.each do |csv|
+  Reporting::IrsVerificationReport.new(**options).to_csvs.each do |csv|
     puts csv
   end
 end
