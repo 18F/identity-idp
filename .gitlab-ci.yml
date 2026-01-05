@@ -404,13 +404,14 @@ alert_main_test:
   after_script:
     - |-
       if [ "$CI_JOB_STATUS" != "success" ]; then
+        echo "There are spec failures on main. Please check the full pipeline results."
         ./scripts/notify-slack \
           --icon ":gitlab:"  \
           --username "gitlab-notify" \
           --channel "#login-appdev" \
           --webhook "${SLACK_WEBHOOK}" \
           --raise \
-          --text "$(printf "Pipeline failed for branch:${CI_COMMIT_BRANCH} in GitLab.\nBuild Results: ${CI_JOB_URL}.")"
+          --text "$(printf "Pipeline failed for branch:${CI_COMMIT_BRANCH} in GitLab.\nBuild Results: ${CI_JOB_URL}. Please check the full pipeline results.")"
       else
         echo "Not notifying in slack"
       fi
