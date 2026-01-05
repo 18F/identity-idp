@@ -1,15 +1,9 @@
 class SmsTextMailerPreview < ActionMailer::Preview
-  def password_reset_missing_user
-    AnonymousMailer.with(email:).password_reset_missing_user(request_id:)
-  end
+  def sms_message
+    # Use existing data from the database or create mock data
+    user = User.first || User.create!(name: 'Test User', phone_number: '555-1234')
+    login_code = 'ABCD'
 
-  private
-
-  def email
-    'email@example.com'
-  end
-
-  def request_id
-    SecureRandom.uuid
+    SmsTextMailer.sms_message(user, login_code)
   end
 end
