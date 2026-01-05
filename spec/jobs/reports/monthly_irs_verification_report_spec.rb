@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'rails_helper'
 require 'active_support/testing/time_helpers'
 
@@ -12,17 +13,17 @@ RSpec.describe Reports::MonthlySpVerificationReport do
 
   let(:base_config) do
     {
-      'issuers'             => ['issuer1'],
+      'issuers' => ['issuer1'],
       'agency_abbreviation' => agency_abbreviation,
-      'partner_emails'      => ['mock_partner@example.com'],
-      'internal_emails'     => ['mock_internal@example.com'],
+      'partner_emails' => ['mock_partner@example.com'],
+      'internal_emails' => ['mock_internal@example.com'],
     }
   end
 
   let(:mock_funnel_table) do
     [
       ['Metric', 'Count', 'Rate'],
-      ['Verification Demand', 25,  '100%'],
+      ['Verification Demand', 25, '100%'],
       ['Verification Failures', 10, '40%'],
       ['Verification Successes', 15, '60%'],
     ]
@@ -48,8 +49,6 @@ RSpec.describe Reports::MonthlySpVerificationReport do
       .and_return(double(deliver_now: true))
   end
 
-  after { travel_back }
-
   context 'receiver :both with partner emails present' do
     let(:report_receiver) { :both }
     let(:report_date)     { Date.new(2025, 10, 1).prev_day.end_of_day } # 2025-09-30
@@ -57,9 +56,9 @@ RSpec.describe Reports::MonthlySpVerificationReport do
     it 'sends out a report to TO partner, BCC internal' do
       expect(ReportMailer).to receive(:tables_report).once.with(
         to: ['mock_partner@example.com'],
-        bcc:   ['mock_internal@example.com'],
+        bcc: ['mock_internal@example.com'],
         subject: "Monthly #{agency_abbreviation} Verification Report - 2025-09-30",
-        reports: anything,              # we don’t care about shape here
+        reports: anything, # we don’t care about shape here
         message: report.preamble,
         attachment_format: :csv,
       ).and_return(double(deliver_now: true))
@@ -75,7 +74,7 @@ RSpec.describe Reports::MonthlySpVerificationReport do
     it 'emails internal only' do
       expect(ReportMailer).to receive(:tables_report).once.with(
         to: ['mock_internal@example.com'],
-        bcc:   [],
+        bcc: [],
         subject: "Monthly #{agency_abbreviation} Verification Report - 2025-09-26",
         reports: anything,
         message: report.preamble,
@@ -91,18 +90,22 @@ RSpec.describe Reports::MonthlySpVerificationReport do
     let(:report_date)     { Date.new(2025, 7, 1).prev_day.end_of_day } # 2025-06-30
 
     before do
-      cfg = base_config.merge('partner_emails' => [], 'internal_emails' => ['mock_internal@example.com'])
+      cfg = base_config.merge(
+        'partner_emails' => [],
+        'internal_emails' => ['mock_internal@example.com'],
+      )
       allow(IdentityConfig.store).to receive(:sp_verification_report_configs).and_return([cfg])
     end
 
     it 'logs a warning and sends the report only to internal emails' do
       expect(Rails.logger).to receive(:warn).with(
-        "Monthly #{agency_abbreviation} Verification Report: recipient is :both but no external email specified",
+        "Monthly #{agency_abbreviation} Verification Report: recipient is :both " \
+        "but no external email specified",
       )
 
       expect(ReportMailer).to receive(:tables_report).once.with(
         to: ['mock_internal@example.com'],
-        bcc:   [],
+        bcc: [],
         subject: "Monthly #{agency_abbreviation} Verification Report - 2025-06-30",
         reports: anything,
         message: report.preamble,
@@ -141,10 +144,12 @@ RSpec.describe Reports::MonthlySpVerificationReport do
     end
 
     it 'iterates over all configured SP entries' do
-      allow(IdentityConfig.store).to receive(:sp_verification_report_configs).and_return([
-        base_config.merge('agency_abbreviation' => 'Test_agency1'),
-        base_config.merge('agency_abbreviation' => 'Test_agency2'),
-      ])
+      allow(IdentityConfig.store).to receive(:sp_verification_report_configs).and_return(
+        [
+          base_config.merge('agency_abbreviation' => 'Test_agency1'),
+          base_config.merge('agency_abbreviation' => 'Test_agency2'),
+        ],
+      )
 
       expect(report).to receive(:send_report).twice
       report.perform(report_date, :internal)
@@ -176,5 +181,3 @@ RSpec.describe Reports::MonthlySpVerificationReport do
     end
   end
 end
-
-
