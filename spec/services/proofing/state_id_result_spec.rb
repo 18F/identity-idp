@@ -70,7 +70,7 @@ RSpec.describe Proofing::StateIdResult do
       it 'returns a unsucessful doc auth response with a verification error' do
         expect(subject.to_doc_auth_response).to have_attributes(
           success?: success,
-          errors: { verification: 'Document could not be verified.' },
+          errors: { state_id_verification: 'Document could not be verified.' },
           exception:,
         )
       end
@@ -87,7 +87,7 @@ RSpec.describe Proofing::StateIdResult do
       it 'returns a unsucessful doc auth response with a verification error' do
         expect(subject.to_doc_auth_response).to have_attributes(
           success?: success,
-          errors: { verification: 'Document could not be verified.' },
+          errors: { state_id_verification: 'Document could not be verified.' },
           exception:,
         )
       end

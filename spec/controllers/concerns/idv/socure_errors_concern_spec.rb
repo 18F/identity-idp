@@ -75,7 +75,7 @@ RSpec.describe Idv::SocureErrorsConcern do
       let(:result) do
         FormResponse.new(
           success: false,
-          errors: { verification: 'Document could not be verified.' },
+          errors: { state_id_verification: 'Document could not be verified.' },
         )
       end
 
