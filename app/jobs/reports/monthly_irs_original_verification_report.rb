@@ -4,7 +4,7 @@ require 'csv'
 require 'reporting/irs_verification_report'
 
 module Reports
-  class MonthlyIrsVerificationReport < BaseReport
+  class MonthlyIrsOriginalVerificationReport < BaseReport
     REPORT_NAME = 'monthly-irs-verification-report'
 
     attr_reader :report_date, :report_receiver

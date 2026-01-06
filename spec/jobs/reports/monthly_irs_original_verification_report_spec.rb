@@ -3,7 +3,7 @@
 require 'rails_helper'
 require 'active_support/testing/time_helpers'
 
-RSpec.describe Reports::MonthlyIrsVerificationReport do
+RSpec.describe Reports::MonthlyIrsOriginalVerificationReport do
   include ActiveSupport::Testing::TimeHelpers
 
   let(:report_date) { (Time.zone.today.beginning_of_month - 1.day).end_of_day }

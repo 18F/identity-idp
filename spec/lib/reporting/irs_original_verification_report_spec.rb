@@ -1,7 +1,7 @@
 require 'rails_helper'
 require 'reporting/irs_verification_report'
 
-RSpec.describe Reporting::IrsVerificationReport do
+RSpec.describe Reporting::IrsOriginalVerificationReport do
   let(:time_range) { previous_week_range }
   let(:issuers) { ['issuer1', 'issuer2'] }
   let(:mock_results) { [{ 'name' => 'IdV: doc auth welcome visited', 'user_id' => 'user1' }] }
