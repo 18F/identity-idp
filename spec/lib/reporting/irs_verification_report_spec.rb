@@ -2,7 +2,7 @@
 require 'rails_helper'
 require 'reporting/irs_verification_report'
 
-RSpec.describe Reporting::SpVerificationReport do
+RSpec.describe Reporting::IrsVerificationReport do
   let(:issuers) { ['issuer1', 'issuer2'] }
   let(:agency_abbreviation) { 'Test_Partner' }
 

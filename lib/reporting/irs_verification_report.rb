@@ -12,7 +12,7 @@ rescue LoadError => e
 end
 
 module Reporting
-  class SpVerificationReport
+  class IrsVerificationReport
     include Reporting::CloudwatchQueryQuoting
 
     attr_reader :issuers, :time_range, :agency_abbreviation
@@ -222,7 +222,7 @@ end
 
 if __FILE__ == $PROGRAM_NAME
   options = Reporting::CommandLineOptions.new.parse!(ARGV)
-  Reporting::SPVerificationReport.new(**options).to_csvs.each do |csv|
+  Reporting::IrsVerificationReport.new(**options).to_csvs.each do |csv|
     puts csv
   end
 end
