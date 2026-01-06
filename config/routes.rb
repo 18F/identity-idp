@@ -13,8 +13,8 @@ Rails.application.routes.draw do
   get '/api/openid_connect/userinfo' => 'openid_connect/user_info#show'
   post '/api/risc/security_events' => 'risc/security_events#create'
 
-  post '/api/usps_locations' => 'idv/in_person/public/usps_locations#index'
-  match '/api/usps_locations' => 'idv/in_person/public/usps_locations#options', via: :options
+  post '/api/usps_locations' => 'idv/in_person/usps_locations#index'
+  match '/api/usps_locations' => 'idv/in_person/usps_locations#options', via: :options
 
   post '/api/webhooks/socure/event' => 'socure_webhook#create'
 

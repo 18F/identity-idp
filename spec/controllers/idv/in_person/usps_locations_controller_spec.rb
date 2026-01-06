@@ -4,6 +4,7 @@ RSpec.describe Idv::InPerson::UspsLocationsController do
   let(:user) { create(:user) }
   let(:sp) { nil }
   let(:in_person_proofing_enabled) { true }
+  let(:current_path) { '/verify/in_person/usps_locations' }
 
   let(:address) do
     UspsInPersonProofing::Applicant.new(
@@ -38,6 +39,7 @@ RSpec.describe Idv::InPerson::UspsLocationsController do
     allow(IdentityConfig.store).to receive(:in_person_proofing_enabled)
       .and_return(in_person_proofing_enabled)
     allow(controller).to receive(:current_sp).and_return(sp)
+    allow_any_instance_of(ActionController::TestRequest).to receive(:path).and_return(current_path)
   end
 
   describe '#index' do
@@ -358,6 +360,115 @@ RSpec.describe Idv::InPerson::UspsLocationsController do
 
         status = response.status
         expect(status).to eq 422
+      end
+    end
+
+    context 'public api access' do
+      let(:current_path) { '/api/locations' }
+
+      context 'with successful fetch' do
+        before do
+          allow(proofer).to receive(:request_facilities).with(address, false).and_return(locations)
+        end
+
+        it 'returns a successful response' do
+          json = response.body
+          facilities = JSON.parse(json)
+          expect(facilities.length).to eq 3
+          expect(@analytics).not_to have_logged_event(
+            'IdV: in person proofing location search submitted',
+            success: true,
+            result_total: 3,
+          )
+        end
+      end
+
+      context 'with in person proofing disabled' do
+        let(:in_person_proofing_enabled) { false }
+
+        it 'renders 404' do
+          expect(response.status).to eq(404)
+        end
+      end
+
+      context 'with a nil address in params' do
+        let(:param_error) { ActionController::ParameterMissing.new(param: address) }
+
+        before do
+          allow(proofer).to receive(:request_facilities).with(address).and_raise(param_error)
+        end
+
+        subject(:response) do
+          post :index, params: { address: nil }
+        end
+
+        it 'returns no locations' do
+          subject
+          json = response.body
+          facilities = JSON.parse(json)
+          expect(facilities.length).to eq 0
+        end
+      end
+
+      context 'address has unsupported characters' do
+        subject(:response) do
+          post :index, params: { locale: locale,
+                                 address: { street_address: '1600, Pennsylvania Ave',
+                                            city: 'Washington',
+                                            state: 'DC',
+                                            zip_code: '20500' } }
+        end
+
+        it 'returns unprocessable entity' do
+          subject
+          expect(response.status).to eq 422
+        end
+      end
+
+      context 'no addresses found by usps' do
+        before do
+          allow(proofer).to receive(:request_facilities).with(address, false)
+            .and_return([])
+        end
+
+        it 'logs analytics with error when successful response is empty' do
+          response
+          expect(@analytics).not_to have_logged_event(
+            'IdV: in person proofing location search submitted',
+            success: false,
+            errors: 'No USPS locations found',
+            result_total: 0,
+          )
+        end
+      end
+
+      context 'with 400 error from USPS for sponsor id not found' do
+        let(:response_message) { 'Sponsor for sponsorID 5 not found' }
+        let(:response_body) { { responseMessage: response_message } }
+        let(:error_response) { { body: response_body, status: 400 } }
+        let(:sponsor_id_error) { Faraday::BadRequestError.new(response_message, error_response) }
+        let(:filtered_message) { 'Sponsor for sponsorID [FILTERED] not found' }
+
+        before do
+          allow(proofer).to receive(:request_facilities).and_raise(sponsor_id_error)
+        end
+
+        it 'returns an unprocessible entity client error with scrubbed analytics event' do
+          subject
+
+          expect(@analytics).to have_logged_event(
+            'Request USPS IPP locations: request failed',
+            api_status_code: 422,
+            exception_class: sponsor_id_error.class,
+            exception_message: filtered_message,
+            response_body_present: true,
+            response_body: { responseMessage: filtered_message },
+            response_status_code: 400,
+          )
+
+          status = response.status
+          expect(status).to eq 422
+        end
       end
     end
   end

@@ -20,6 +20,7 @@ module Idv
       check_or_render_not_found -> { InPersonConfig.enabled? }
 
       before_action :confirm_authenticated_for_api, only: [:update]
+      skip_before_action :verify_authenticity_token, only: [:index, :options]
 
       rescue_from ActionController::InvalidAuthenticityToken,
                   Faraday::Error,
@@ -41,16 +42,7 @@ module Idv
         end
 
         locations = proofer.request_facilities(candidate, authn_context_enhanced_ipp?)
-        if locations.length > 0
-          analytics.idv_in_person_locations_searched(
-            success: true,
-            result_total: locations.length,
-          )
-        else
-          analytics.idv_in_person_locations_searched(
-            success: false, errors: 'No USPS locations found',
-          )
-        end
+        log_locations_searched(locations)
         render json: localized_locations(locations).to_json
       end
 
@@ -67,6 +59,10 @@ module Idv
         render json: { success: true }, status: :ok
       end
 
+      def options
+        head :ok
+      end
+
       def idv_session
         if user_session && current_user
           @idv_session ||= Idv::Session.new(
@@ -78,6 +74,21 @@ module Idv
       end
 
       private
+
+      def log_locations_searched(locations)
+        if request.path.start_with?('/verify/')
+          if locations.length > 0
+            analytics.idv_in_person_locations_searched(
+              success: true,
+              result_total: locations.length,
+            )
+          else
+            analytics.idv_in_person_locations_searched(
+              success: false, errors: 'No USPS locations found',
+            )
+          end
+        end
+      end
 
       def document_capture_session
         if idv_session&.document_capture_session_uuid # standard flow
@@ -107,7 +118,7 @@ module Idv
                          when ActionController::InvalidAuthenticityToken,
                               Faraday::Error,
                               UspsLocationsError
-                           :unprocessable_entity
+                           :unprocessable_content
                          else
                            :internal_server_error
                          end
