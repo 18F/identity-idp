@@ -19,6 +19,94 @@ RSpec.describe DocAuthRouter do
     end
   end
 
+  describe '.doc_auth_vendor_for_bucket' do
+    let(:bucket) { nil }
+    let(:options) { {} }
+
+    subject { described_class.doc_auth_vendor_for_bucket(bucket, **options) }
+
+    context 'when the bucket is :socure' do
+      let(:bucket) { :socure }
+
+      it 'returns the Idp::Constants::Vendors::SOCURE' do
+        is_expected.to eq(Idp::Constants::Vendors::SOCURE)
+      end
+    end
+
+    context 'when the bucket is :lexis_nexis' do
+      let(:bucket) { :lexis_nexis }
+
+      it 'returns the Idp::Constants::Vendors::LEXIS_NEXIS' do
+        is_expected.to eq(Idp::Constants::Vendors::LEXIS_NEXIS)
+      end
+    end
+
+    context 'when the bucket is :lexis_nexis_ddp' do
+      let(:bucket) { :lexis_nexis_ddp }
+
+      it 'returns the Idp::Constants::Vendors::LEXIS_NEXIS_DDP' do
+        is_expected.to eq(Idp::Constants::Vendors::LEXIS_NEXIS_DDP)
+      end
+    end
+
+    context 'when the bucket is :mock' do
+      let(:bucket) { :mock }
+
+      it 'returns the Idp::Constants::Vendors::MOCK' do
+        is_expected.to eq(Idp::Constants::Vendors::MOCK)
+      end
+    end
+
+    context 'when the bucket is :mock_socure' do
+      let(:bucket) { :mock_socure }
+
+      it 'returns the Idp::Constants::Vendors::SOCURE_MOCK' do
+        is_expected.to eq(Idp::Constants::Vendors::SOCURE_MOCK)
+      end
+    end
+
+    context 'when the bucket is nil' do
+      let(:vendor) { 'cheese_vendor' }
+      let(:bucket) { nil }
+
+      context 'when selfie param is true' do
+        let(:options) { { selfie: true } }
+
+        before do
+          allow(IdentityConfig.store).to receive(:doc_auth_selfie_vendor_default)
+            .and_return(vendor)
+        end
+
+        it 'returns the configured doc_auth_selfie_vendor_default vendor' do
+          is_expected.to eq(vendor)
+        end
+      end
+
+      context 'when passport_request param is true' do
+        let(:options) { { passport_requested: true } }
+
+        before do
+          allow(IdentityConfig.store).to receive(:doc_auth_passport_vendor_default)
+            .and_return(vendor)
+        end
+
+        it 'returns the configured doc_auth_passport_vendor_default vendor' do
+          is_expected.to eq(vendor)
+        end
+      end
+
+      context 'when no params are passed in' do
+        before do
+          allow(IdentityConfig.store).to receive(:doc_auth_vendor_default).and_return(vendor)
+        end
+
+        it 'returns the configured doc_auth_vendor_default vendor' do
+          is_expected.to eq(vendor)
+        end
+      end
+    end
+  end
+
   describe DocAuthRouter::DocAuthErrorTranslatorProxy do
     subject(:proxy) do
       DocAuthRouter::DocAuthErrorTranslatorProxy.new(DocAuth::Mock::DocAuthMockClient.new)

@@ -316,9 +316,11 @@ RSpec.describe AbTests do
         allow(IdentityConfig.store).to receive(:doc_auth_vendor_switching_enabled)
           .and_return(true)
         allow(IdentityConfig.store).to receive(:doc_auth_vendor_socure_percent)
-          .and_return(50)
+          .and_return(25)
         allow(IdentityConfig.store).to receive(:doc_auth_vendor_lexis_nexis_percent)
-          .and_return(30)
+          .and_return(25)
+        allow(IdentityConfig.store).to receive(:doc_auth_vendor_lexis_nexis_ddp_percent)
+          .and_return(25)
       }
     end
 
@@ -342,9 +344,11 @@ RSpec.describe AbTests do
         allow(IdentityConfig.store).to receive(:doc_auth_selfie_vendor_switching_enabled)
           .and_return(true)
         allow(IdentityConfig.store).to receive(:doc_auth_selfie_vendor_socure_percent)
-          .and_return(50)
+          .and_return(25)
         allow(IdentityConfig.store).to receive(:doc_auth_selfie_vendor_lexis_nexis_percent)
-          .and_return(30)
+          .and_return(25)
+        allow(IdentityConfig.store).to receive(:doc_auth_selfie_vendor_lexis_nexis_ddp_percent)
+          .and_return(25)
       }
     end
 
@@ -368,9 +372,11 @@ RSpec.describe AbTests do
         allow(IdentityConfig.store).to receive(:doc_auth_passport_vendor_switching_enabled)
           .and_return(true)
         allow(IdentityConfig.store).to receive(:doc_auth_passport_vendor_socure_percent)
-          .and_return(50)
+          .and_return(25)
         allow(IdentityConfig.store).to receive(:doc_auth_passport_vendor_lexis_nexis_percent)
-          .and_return(30)
+          .and_return(25)
+        allow(IdentityConfig.store).to receive(:doc_auth_passport_vendor_lexis_nexis_ddp_percent)
+          .and_return(25)
       }
     end
 
@@ -394,9 +400,12 @@ RSpec.describe AbTests do
         allow(IdentityConfig.store).to receive(:doc_auth_passport_selfie_vendor_switching_enabled)
           .and_return(true)
         allow(IdentityConfig.store).to receive(:doc_auth_passport_selfie_vendor_socure_percent)
-          .and_return(50)
+          .and_return(25)
         allow(IdentityConfig.store).to receive(:doc_auth_passport_selfie_vendor_lexis_nexis_percent)
-          .and_return(30)
+          .and_return(25)
+        allow(IdentityConfig.store).to receive(
+          :doc_auth_passport_selfie_vendor_lexis_nexis_ddp_percent,
+        ).and_return(25)
       }
     end
 
