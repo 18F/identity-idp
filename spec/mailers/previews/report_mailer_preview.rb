@@ -175,17 +175,31 @@ class ReportMailerPreview < ActionMailer::Preview
     )
   end
 
-  def irs_verification_report
-    irs_verification_report = Reports::IrsVerificationReport.new(Time.zone.yesterday)
+  def irs_original_verification_report
+    irs_original_verification_report = Reports::IrsOriginalVerificationReport.new(Time.zone.yesterday)
 
-    stub_cloudwatch_client(irs_verification_report.irs_verification_report)
+    stub_cloudwatch_client(irs_original_verification_report.irs_verification_report)
 
     ReportMailer.tables_report(
       to: 'test@example.com',
       subject: "Example IRS Verification Report - #{Time.zone.now.to_date}",
       message: "Report: IRS Verification Report -  #{Time.zone.now.to_date}",
       attachment_format: :csv,
-      reports: irs_verification_report.reports,
+      reports: irs_original_verification_report.reports,
+    )
+  end
+
+  def sp_verification_report
+    sp_verification_report = Reports::IrsVerificationReport.new(Time.zone.yesterday)
+
+    stub_cloudwatch_client(sp_verification_report.sp_verification_report)
+
+    ReportMailer.tables_report(
+      to: 'test@example.com',
+      subject: "Example IRS Verification Report - #{Time.zone.now.to_date}",
+      message: "Report: IRS Verification Report -  #{Time.zone.now.to_date}",
+      attachment_format: :csv,
+      reports: sp_verification_report.reports,
     )
   end
 
@@ -216,7 +230,7 @@ class ReportMailerPreview < ActionMailer::Preview
   end
 
   def monthly_irs_verification_report
-    monthly_irs_verification_report = Reports::MonthlyIrsVerificationReport.new(Time.zone.yesterday)
+    monthly_irs_verification_report = Reports::MonthlyIrsOriginalVerificationReport.new(Time.zone.yesterday)
 
     stub_cloudwatch_client(monthly_irs_verification_report.irs_verification_report)
 
@@ -226,6 +240,20 @@ class ReportMailerPreview < ActionMailer::Preview
       message: "Report: IRS Verification Report -  #{Time.zone.now.to_date}",
       attachment_format: :csv,
       reports: monthly_irs_verification_report.reports,
+    )
+  end
+
+  def monthly_sp_verification_report
+    monthly_sp_verification_report = Reports::MonthlyIrsVerificationReport.new(Time.zone.yesterday)
+
+    stub_cloudwatch_client(monthly_sp_verification_report.sp_verification_report)
+
+    ReportMailer.tables_report(
+      to: 'test@example.com',
+      subject: "Example Monthly SP Verification Report - #{Time.zone.now.to_date}",
+      message: "Report: SP Verification Report -  #{Time.zone.now.to_date}",
+      attachment_format: :csv,
+      reports: monthly_sp_verification_report.reports,
     )
   end
 
