@@ -176,7 +176,8 @@ class ReportMailerPreview < ActionMailer::Preview
   end
 
   def irs_original_verification_report
-    irs_original_verification_report = Reports::IrsOriginalVerificationReport.new(Time.zone.yesterday)
+    irs_original_verification_report =
+      Reports::IrsOriginalVerificationReport.new(Time.zone.yesterday)
 
     stub_cloudwatch_client(irs_original_verification_report.irs_verification_report)
 
@@ -230,7 +231,8 @@ class ReportMailerPreview < ActionMailer::Preview
   end
 
   def monthly_irs_verification_report
-    monthly_irs_verification_report = Reports::MonthlyIrsOriginalVerificationReport.new(Time.zone.yesterday)
+    monthly_irs_verification_report =
+      Reports::MonthlyIrsOriginalVerificationReport.new(Time.zone.yesterday)
 
     stub_cloudwatch_client(monthly_irs_verification_report.irs_verification_report)
 
