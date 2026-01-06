@@ -4,8 +4,8 @@ require 'csv'
 require 'reporting/irs_original_verification_report'
 
 module Reports
-  class MonthlyIrsOriginalVerificationReport < BaseReport
-    REPORT_NAME = 'monthly-irs-verification-report'
+  class IrsOriginalVerificationReport < BaseReport
+    REPORT_NAME = 'irs-verification-report'
 
     attr_reader :report_date, :report_receiver
 
@@ -35,7 +35,7 @@ module Reports
       ReportMailer.tables_report(
         to: to_emails,
         bcc: bcc_emails,
-        subject: "Monthly IRS Verification Report - #{report_date.to_date}",
+        subject: "IRS Verification Report - #{report_date.to_date}",
         reports: reports,
         message: preamble,
         attachment_format: :csv,
@@ -65,9 +65,13 @@ module Reports
       @reports ||= irs_verification_report.as_emailable_reports
     end
 
+    def previous_week_range
+      @report_date.beginning_of_week(:sunday).prev_occurring(:sunday).all_week(:sunday)
+    end
+
     def irs_verification_report
       @irs_verification_report ||= Reporting::IrsOriginalVerificationReport.new(
-        time_range: report_date.all_month,
+        time_range: previous_week_range,
         issuers: IdentityConfig.store.irs_verification_report_issuers || [],
       )
     end

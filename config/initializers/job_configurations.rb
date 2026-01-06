@@ -191,7 +191,7 @@ else
       },
       # Send previous week's verification reports to partners
       irs_weekly_verification_report: {
-        class: 'Reports::IrsVerificationReport',
+        class: 'Reports::IrsOriginalVerificationReport',
         cron: cron_every_monday_5am,
         args: -> { [Time.zone.yesterday.end_of_day, :both] },
       },
