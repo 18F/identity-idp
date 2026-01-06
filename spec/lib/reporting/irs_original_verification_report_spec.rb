@@ -1,5 +1,5 @@
 require 'rails_helper'
-require 'reporting/irs_verification_report'
+require 'reporting/irs_original_verification_report'
 
 RSpec.describe Reporting::IrsOriginalVerificationReport do
   let(:time_range) { previous_week_range }
