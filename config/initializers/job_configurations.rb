@@ -195,6 +195,11 @@ else
         cron: cron_every_monday_5am,
         args: -> { [Time.zone.yesterday.end_of_day, :both] },
       },
+      sp_weekly_verification_report: {
+        class: 'Reports::IrsVerificationReport',
+        cron: cron_every_monday_5am,
+        args: -> { [Time.zone.yesterday.end_of_day, :internal] },
+      },
       # Send Identity Verification report to S3
       identity_verification_report: {
         class: 'Reports::IdentityVerificationReport',
