@@ -289,7 +289,7 @@ else
       },
       # Previous months's irs verification report
       monthly_irs_verification_report: {
-        class: 'Reports::MonthlyIrsVerificationReport',
+        class: 'Reports::MonthlyIrsOriginalVerificationReport',
         cron: cron_24h_and_a_bit,
         args: -> {
           JobHelpers::ReportJobConfigurationHelper.build_irs_report_args(
@@ -301,7 +301,7 @@ else
 
       # Previous months's SP verification report - Added for testing as of now
       monthly_sp_verification_report: {
-        class: 'Reports::MonthlySpVerificationReport',
+        class: 'Reports::MonthlyIrsVerificationReport',
         cron: cron_24h_and_a_bit,
         args: -> {
           JobHelpers::ReportJobConfigurationHelper.build_irs_report_args(
