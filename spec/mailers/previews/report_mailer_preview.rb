@@ -175,7 +175,7 @@ class ReportMailerPreview < ActionMailer::Preview
     )
   end
 
-  def irs_original_verification_report
+  def irs_verification_report
     irs_original_verification_report =
       Reports::IrsOriginalVerificationReport.new(Time.zone.yesterday)
 
@@ -191,16 +191,26 @@ class ReportMailerPreview < ActionMailer::Preview
   end
 
   def sp_verification_report
-    sp_verification_report = Reports::IrsVerificationReport.new(Time.zone.yesterday)
+    require 'reporting/irs_verification_report'
 
-    stub_cloudwatch_client(sp_verification_report.sp_verification_report)
+    date    = Time.zone.yesterday.end_of_day
+    issuers = ['issuer1']
+    agency  = 'Test_Agency'
+
+    builder = Reporting::IrsVerificationReport.new(
+      time_range: date.beginning_of_week(:sunday).prev_occurring(:sunday).all_week(:sunday),
+      issuers: issuers,
+      agency_abbreviation: agency,
+    )
+    stub_cloudwatch_client(builder)
 
     ReportMailer.tables_report(
       to: 'test@example.com',
-      subject: "Example IRS Verification Report - #{Time.zone.now.to_date}",
-      message: "Report: IRS Verification Report -  #{Time.zone.now.to_date}",
+      bcc: 'bcc@example.com',
+      subject: "#{agency} Verification Report - #{date.to_date}",
+      message: "Report: #{agency} Verification Report - #{date.to_date}",
       attachment_format: :csv,
-      reports: sp_verification_report.reports,
+      reports: builder.as_emailable_reports,
     )
   end
 
@@ -246,16 +256,27 @@ class ReportMailerPreview < ActionMailer::Preview
   end
 
   def monthly_sp_verification_report
-    monthly_sp_verification_report = Reports::MonthlyIrsVerificationReport.new(Time.zone.yesterday)
+    require 'reporting/irs_verification_report'
 
-    stub_cloudwatch_client(monthly_sp_verification_report.sp_verification_report)
+    date    = Time.zone.yesterday.end_of_day
+    issuers = ['issuer1']
+    agency  = 'Test_Agency'
+
+    builder = Reporting::IrsVerificationReport.new(
+      time_range: date.all_month,
+      issuers: issuers,
+      agency_abbreviation: agency,
+    )
+
+    stub_cloudwatch_client(builder)
 
     ReportMailer.tables_report(
       to: 'test@example.com',
-      subject: "Example Monthly SP Verification Report - #{Time.zone.now.to_date}",
-      message: "Report: SP Verification Report -  #{Time.zone.now.to_date}",
+      bcc: 'bcc@example.com',
+      subject: "#{agency} Verification Report - #{date.to_date}",
+      message: "Report: #{agency} Verification Report - #{date.to_date}",
       attachment_format: :csv,
-      reports: monthly_sp_verification_report.reports,
+      reports: builder.as_emailable_reports,
     )
   end
 
