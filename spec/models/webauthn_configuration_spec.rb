@@ -108,28 +108,26 @@ RSpec.describe WebauthnConfiguration do
   end
 
   describe 'name validations' do
-    it 'is invalid when name is longer than max allowed characters' do
-      config = WebauthnConfiguration.new(
-        name: Faker::Lorem.characters(
+    context 'when a user supplies a name longer than max allowable characters' do
+      before do
+        subject.name = Faker::Lorem.characters(
           number: UserSuppliedNameAttributes::WEBAUTN_MAX_NAME_LENGTH_EXCEPTION + 1,
-        ),
-        credential_id: '111',
-        credential_public_key: '222',
-      )
-
-      expect(config).not_to be_valid
+        )
+        subject.credential_id = '111'
+        subject.credential_public_key = '222'
+      end
+      it { is_expected.not_to be_valid }
     end
 
-    it('is valid when name has exactly max allowed characters') do
-      config = WebauthnConfiguration.new(
-        name: Faker::Lorem.characters(
+    context 'when a user supples a name with the max allowable character length' do
+      before do
+        subject.name = Faker::Lorem.characters(
           number: UserSuppliedNameAttributes::WEBAUTN_MAX_NAME_LENGTH_EXCEPTION,
-        ),
-        credential_id: '111',
-        credential_public_key: '222',
-      )
-
-      expect(config).to be_valid
+        )
+        subject.credential_id = '111'
+        subject.credential_public_key = '222'
+      end
+      it { is_expected.to be_valid }
     end
   end
 end
