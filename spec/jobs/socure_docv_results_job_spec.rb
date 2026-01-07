@@ -908,7 +908,7 @@ RSpec.describe SocureDocvResultsJob do
               name_suffix: nil,
               sex: nil,
               state: 'NY',
-              state_id_expiration: '2026-01-01',
+              state_id_expiration: expiration_date,
               state_id_issued: '2020-01-01',
               state_id_jurisdiction: 'NY',
               state_id_number: '000000000',
