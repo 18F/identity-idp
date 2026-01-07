@@ -8,7 +8,7 @@ RSpec.describe AuthAppConfiguration do
   describe 'name validations' do
     it 'is invalid when name is longer than 20 characters' do
       config = AuthAppConfiguration.new(
-        name: 'a' * 21,
+        name: Faker::Lorem.characters(number: UserSuppliedNameAttributes::MAX_NAME_LENGTH + 1),
       )
 
       expect(config).not_to be_valid
@@ -16,7 +16,7 @@ RSpec.describe AuthAppConfiguration do
 
     it('is valid when name has exactly 20 characters') do
       config = AuthAppConfiguration.new(
-        name: 'a' * 20,
+        name: Faker::Lorem.characters(number: UserSuppliedNameAttributes::MAX_NAME_LENGTH),
       )
 
       expect(config).to be_valid

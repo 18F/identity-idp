@@ -1,8 +1,11 @@
 # frozen_string_literal: true
 
 class WebauthnConfiguration < ApplicationRecord
+  include UserSuppliedNameAttributes
+
   belongs_to :user
-  validates :name, presence: true, length: { maximum: 80 }
+  validates :name, presence: true,
+                   length: { maximum: UserSuppliedNameAttributes::WEBAUTN_MAX_NAME_LENGTH_EXCEPTION }
   validates :credential_id, presence: true
   validates :credential_public_key, presence: true
   validate :valid_transports
