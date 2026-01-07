@@ -1,8 +1,9 @@
 FactoryBot.define do
+  include UserSuppliedNameAttributes
   Faker::Config.locale = :en
 
   factory :auth_app_configuration do
-    name { Faker::Lorem.unique.words.join(' ')[0, 19] }
+    name { Faker::Lorem.unique.words.join(' ')[0, UserSuppliedNameAttributes::MAX_NAME_LENGTH] }
     otp_secret_key { SecureRandom.hex(16) }
     user
   end
