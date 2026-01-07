@@ -111,7 +111,7 @@ RSpec.describe WebauthnConfiguration do
     context 'when a user supplies a name longer than max allowable characters' do
       before do
         subject.name = Faker::Lorem.characters(
-          number: UserSuppliedNameAttributes::WEBAUTN_MAX_NAME_LENGTH_EXCEPTION + 1,
+          number: UserSuppliedNameAttributes::WEBAUTHN_MAX_NAME_LENGTH_OVERRIDE + 1,
         )
         subject.credential_id = '111'
         subject.credential_public_key = '222'
@@ -122,7 +122,7 @@ RSpec.describe WebauthnConfiguration do
     context 'when a user supples a name with the max allowable character length' do
       before do
         subject.name = Faker::Lorem.characters(
-          number: UserSuppliedNameAttributes::WEBAUTN_MAX_NAME_LENGTH_EXCEPTION,
+          number: UserSuppliedNameAttributes::WEBAUTHN_MAX_NAME_LENGTH_OVERRIDE,
         )
         subject.credential_id = '111'
         subject.credential_public_key = '222'
