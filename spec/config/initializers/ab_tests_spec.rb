@@ -306,6 +306,43 @@ RSpec.describe AbTests do
     end
   end
 
+  shared_examples 'an A/B test with specific bucket configured' do |ab_test, vendor|
+    subject(:bucket) do
+      AbTests.all[ab_test].bucket(
+        request: nil,
+        service_provider: nil,
+        session:,
+        user:,
+        user_session:,
+      )
+    end
+
+    let(:session) { {} }
+    let(:user_session) { {} }
+    let(:user) { build(:user) }
+    let(:namespace) { ab_test.to_s.downcase }
+
+    before do
+      allow(IdentityConfig.store).to receive(:"#{namespace}_socure_percent").and_return(0)
+      allow(IdentityConfig.store).to receive(:"#{namespace}_lexis_nexis_percent").and_return(0)
+      allow(IdentityConfig.store).to receive(:"#{namespace}_lexis_nexis_ddp_percent").and_return(0)
+    end
+
+    context "when the #{vendor} vendor is configured to 100 percent" do
+      before do
+        allow(IdentityConfig.store).to receive(:"#{namespace}_switching_enabled")
+          .and_return(true)
+        allow(IdentityConfig.store).to receive(:"#{namespace}_#{vendor}_percent")
+          .and_return(100)
+        reload_ab_tests
+      end
+
+      it "returns the #{vendor} bucket" do
+        expect(bucket).to eq(vendor.to_sym)
+      end
+    end
+  end
+
   describe 'DOC_AUTH_VENDOR' do
     let(:ab_test) { :DOC_AUTH_VENDOR }
 
@@ -332,6 +369,12 @@ RSpec.describe AbTests do
     end
 
     it_behaves_like 'an A/B test that uses user_uuid as a discriminator'
+    it_behaves_like 'an A/B test with specific bucket configured',
+                    :DOC_AUTH_VENDOR, 'socure'
+    it_behaves_like 'an A/B test with specific bucket configured',
+                    :DOC_AUTH_VENDOR, 'lexis_nexis'
+    it_behaves_like 'an A/B test with specific bucket configured',
+                    :DOC_AUTH_VENDOR, 'lexis_nexis_ddp'
   end
 
   describe 'DOC_AUTH_SELFIE_VENDOR' do
@@ -360,6 +403,12 @@ RSpec.describe AbTests do
     end
 
     it_behaves_like 'an A/B test that uses user_uuid as a discriminator'
+    it_behaves_like 'an A/B test with specific bucket configured',
+                    :DOC_AUTH_SELFIE_VENDOR, 'socure'
+    it_behaves_like 'an A/B test with specific bucket configured',
+                    :DOC_AUTH_SELFIE_VENDOR, 'lexis_nexis'
+    it_behaves_like 'an A/B test with specific bucket configured',
+                    :DOC_AUTH_SELFIE_VENDOR, 'lexis_nexis_ddp'
   end
 
   describe 'DOC_AUTH_PASSPORT_VENDOR' do
@@ -388,6 +437,12 @@ RSpec.describe AbTests do
     end
 
     it_behaves_like 'an A/B test that uses user_uuid as a discriminator'
+    it_behaves_like 'an A/B test with specific bucket configured',
+                    :DOC_AUTH_PASSPORT_VENDOR, 'socure'
+    it_behaves_like 'an A/B test with specific bucket configured',
+                    :DOC_AUTH_PASSPORT_VENDOR, 'lexis_nexis'
+    it_behaves_like 'an A/B test with specific bucket configured',
+                    :DOC_AUTH_PASSPORT_VENDOR, 'lexis_nexis_ddp'
   end
 
   describe 'DOC_AUTH_PASSPORT_SELFIE_VENDOR' do
@@ -417,6 +472,12 @@ RSpec.describe AbTests do
     end
 
     it_behaves_like 'an A/B test that uses user_uuid as a discriminator'
+    it_behaves_like 'an A/B test with specific bucket configured',
+                    :DOC_AUTH_PASSPORT_SELFIE_VENDOR, 'socure'
+    it_behaves_like 'an A/B test with specific bucket configured',
+                    :DOC_AUTH_PASSPORT_SELFIE_VENDOR, 'lexis_nexis'
+    it_behaves_like 'an A/B test with specific bucket configured',
+                    :DOC_AUTH_PASSPORT_SELFIE_VENDOR, 'lexis_nexis_ddp'
   end
 
   describe 'ACUANT_SDK' do
