@@ -3,7 +3,7 @@ FactoryBot.define do
 
   factory :service_provider do
     certs { ['saml_test_sp'] }
-    friendly_name { 'Test Service Provider' }
+    friendly_name { 'Test SP' }
     issuer { SecureRandom.uuid }
     return_to_sp_url { '/' }
     agency { association :agency }
@@ -17,7 +17,7 @@ FactoryBot.define do
     end
 
     trait :without_help_text do
-      friendly_name { 'Test Service Provider without help text' }
+      friendly_name { 'TestSP wo help' }
       help_text do
         { sign_in: {},
           sign_up: {},
@@ -26,7 +26,7 @@ FactoryBot.define do
     end
 
     trait :with_blank_help_text do
-      friendly_name { 'Test Service Provider with blank help text' }
+      friendly_name { 'TestSP w blank help' }
       help_text do
         { sign_in: { en: '' },
           sign_up: { en: '' },

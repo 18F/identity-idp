@@ -164,7 +164,7 @@ RSpec.describe Idv::InPerson::ReadyToVerifyPresenter do
     subject(:sp_name) { presenter.sp_name }
 
     it 'returns friendly service provider name' do
-      expect(sp_name).to eq('Test Service Provider')
+      expect(sp_name).to eq('Test SP')
     end
   end
 
