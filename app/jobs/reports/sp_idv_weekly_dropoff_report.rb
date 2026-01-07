@@ -45,7 +45,7 @@ module Reports
 
       emails.each do |email|
         ReportMailer.tables_report(
-          email: email,
+          to: email,
           subject: "#{agency_report_title} - #{report_date.to_date}",
           reports: report_maker.as_emailable_reports,
           message: message,

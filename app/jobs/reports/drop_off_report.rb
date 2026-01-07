@@ -18,7 +18,7 @@ module Reports
         reports = [report_maker(config['issuers']).as_emailable_reports].flatten
         config['emails'].each do |email|
           ReportMailer.tables_report(
-            email: email,
+            to: email,
             subject: subject,
             message: preamble,
             reports: reports,
