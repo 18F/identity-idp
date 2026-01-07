@@ -126,6 +126,11 @@ module LexisNexisFixtures
       JSON.parse(raw).to_json
     end
 
+    def phone_finder_rdp_v3_request_json
+      raw = read_fixture_file_at_path('phone_finder/rdp_v3_request.json')
+      JSON.parse(raw).to_json
+    end
+
     def phone_finder_rdp1_success_response_json
       raw = read_fixture_file_at_path('phone_finder/rdp1_response.json')
       JSON.parse(raw).to_json
