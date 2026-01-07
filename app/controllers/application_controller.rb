@@ -51,11 +51,7 @@ class ApplicationController < ActionController::Base
     payload[:user_id] = analytics_user.uuid unless @skip_session_load
 
     payload[:git_sha] = IdentityConfig::GIT_SHA
-    if IdentityConfig::GIT_TAG.present?
-      payload[:git_tag] = IdentityConfig::GIT_TAG
-    else
-      payload[:git_branch] = IdentityConfig::GIT_BRANCH
-    end
+    payload[:git_branch] = IdentityConfig::GIT_BRANCH
 
     payload
   end

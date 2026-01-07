@@ -26,6 +26,7 @@ module Idv
                   StandardError,
                   UspsLocationsError,
                   Faraday::BadRequestError,
+                  UspsInPersonProofing::Exception::InvalidResponseError,
                   with: :handle_error
 
       # retrieve the list of nearby IPP Post Office locations with a POST request
@@ -106,8 +107,9 @@ module Idv
         remapped_error = case err
                          when ActionController::InvalidAuthenticityToken,
                               Faraday::Error,
-                              UspsLocationsError
-                           :unprocessable_entity
+                              UspsLocationsError,
+                              UspsInPersonProofing::Exception::InvalidResponseError
+                           :unprocessable_content
                          else
                            :internal_server_error
                          end

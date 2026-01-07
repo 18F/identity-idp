@@ -2,7 +2,6 @@
 
 module IdentityConfig
   GIT_SHA = `git rev-parse --short=8 HEAD`.chomp.freeze
-  GIT_TAG = `git tag --points-at HEAD`.chomp.split("\n").first.freeze
   GIT_BRANCH = `git rev-parse --abbrev-ref HEAD`.chomp.freeze
 
   VENDOR_STATUS_OPTIONS = %i[operational partial_outage full_outage].freeze
