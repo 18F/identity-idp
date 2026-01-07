@@ -85,6 +85,16 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
       )
     end
 
+    let(:hybrid_mobile_threatmetrix_session_id) { nil }
+    let(:hybrid_mobile_request_ip) { nil }
+    let(:hybrid_mobile_threatmetrix_result) do
+      Proofing::DdpResult.new(
+        success: true,
+        transaction_id: 'hybrid-mobile-ddp-123',
+        review_status: 'pass',
+      )
+    end
+
     subject(:proof) do
       progressive_proofer.proof(
         applicant_pii:,
@@ -95,6 +105,8 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
         current_sp:,
         workflow:,
         state_id_already_proofed:,
+        hybrid_mobile_threatmetrix_session_id:,
+        hybrid_mobile_request_ip:,
       )
     end
 
@@ -110,6 +122,8 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
         .and_return(aamva_proofer)
       allow(IdentityConfig.store).to receive(:idv_phone_precheck_percent)
         .and_return(idv_phone_precheck_percent)
+      allow(FeatureManagement).to receive(:proofing_device_hybrid_profiling_collecting_enabled?)
+        .and_return(false)
     end
 
     context 'remote unsupervised proofing' do
@@ -161,6 +175,73 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
           workflow:,
         )
         proof
+      end
+
+      context 'with hybrid mobile device profiling enabled' do
+        let(:hybrid_mobile_threatmetrix_session_id) { SecureRandom.uuid }
+        let(:hybrid_mobile_request_ip) { Faker::Internet.ip_v4_address }
+
+        before do
+          allow(FeatureManagement).to receive(:proofing_device_hybrid_profiling_collecting_enabled?)
+            .and_return(true)
+          allow(progressive_proofer.threatmetrix_plugin).to receive(:call)
+            .and_return(threatmetrix_result, hybrid_mobile_threatmetrix_result)
+        end
+
+        it 'calls ThreatMetrixPlugin twice with desktop and hybrid session data' do
+          expect(progressive_proofer.threatmetrix_plugin).to receive(:call).with(
+            applicant_pii:,
+            current_sp:,
+            request_ip:,
+            threatmetrix_session_id:,
+            timer: an_instance_of(JobHelpers::Timer),
+            user_email:,
+            user_uuid:,
+            workflow:,
+          ).ordered
+
+          expect(progressive_proofer.threatmetrix_plugin).to receive(:call).with(
+            applicant_pii:,
+            current_sp:,
+            request_ip: hybrid_mobile_request_ip,
+            threatmetrix_session_id: hybrid_mobile_threatmetrix_session_id,
+            timer: an_instance_of(JobHelpers::Timer),
+            user_email:,
+            user_uuid:,
+            workflow:,
+          ).ordered
+
+          proof
+        end
+
+        it 'returns a ResultAdjudicator with hybrid_mobile_device_profiling_result' do
+          proof.tap do |result|
+            expect(result).to be_an_instance_of(Proofing::Resolution::ResultAdjudicator)
+            expect(result.device_profiling_result).to eql(threatmetrix_result)
+            expect(result.hybrid_mobile_device_profiling_result)
+              .to eql(hybrid_mobile_threatmetrix_result)
+          end
+        end
+      end
+
+      context 'with hybrid mobile device profiling disabled' do
+        before do
+          allow(FeatureManagement).to receive(:proofing_device_hybrid_profiling_collecting_enabled?)
+            .and_return(false)
+        end
+
+        it 'calls ThreatMetrixPlugin only once' do
+          expect(progressive_proofer.threatmetrix_plugin).to receive(:call).once
+          proof
+        end
+
+        it 'returns a ResultAdjudicator with nil hybrid_mobile_device_profiling_result' do
+          proof.tap do |result|
+            expect(result).to be_an_instance_of(Proofing::Resolution::ResultAdjudicator)
+            expect(result.device_profiling_result).to eql(threatmetrix_result)
+            expect(result.hybrid_mobile_device_profiling_result).to be_nil
+          end
+        end
       end
 
       it 'returns a ResultAdjudicator' do
@@ -259,6 +340,101 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
         end
       end
 
+      context 'when hybrid mobile threatmetrix fails' do
+        let(:hybrid_mobile_threatmetrix_session_id) { SecureRandom.uuid }
+        let(:hybrid_mobile_request_ip) { Faker::Internet.ip_v4_address }
+        let(:hybrid_mobile_threatmetrix_result) do
+          Proofing::DdpResult.new(
+            success: false,
+            transaction_id: 'hybrid-mobile-ddp-failed-123',
+            review_status: 'fail',
+          )
+        end
+
+        before do
+          allow(FeatureManagement).to receive(:proofing_device_hybrid_profiling_collecting_enabled?)
+            .and_return(true)
+          allow(progressive_proofer.threatmetrix_plugin).to receive(:call)
+            .and_return(threatmetrix_result, hybrid_mobile_threatmetrix_result)
+        end
+
+        it 'returns a ResultAdjudicator with the failed hybrid mobile result' do
+          proof.tap do |result|
+            expect(result).to be_an_instance_of(Proofing::Resolution::ResultAdjudicator)
+            expect(result.device_profiling_result.success?).to be_truthy
+            expect(result.hybrid_mobile_device_profiling_result.success?).to be_falsey
+            expect(result.hybrid_mobile_device_profiling_result.transaction_id).to eq('hybrid-mobile-ddp-failed-123')
+          end
+        end
+
+        it 'still allows phone precheck to run' do
+          expect(Proofing::Mock::AddressMockClient).to receive(:new).and_call_original
+          proof
+        end
+      end
+
+      context 'when hybrid mobile threatmetrix times out' do
+        let(:hybrid_mobile_threatmetrix_session_id) { SecureRandom.uuid }
+        let(:hybrid_mobile_request_ip) { Faker::Internet.ip_v4_address }
+        let(:hybrid_mobile_threatmetrix_result) do
+          result = Proofing::DdpResult.new(
+            success: false,
+            transaction_id: 'hybrid-mobile-ddp-timeout-123',
+            review_status: 'fail',
+          )
+          allow(result).to receive(:timed_out?).and_return(true)
+          result
+        end
+
+        before do
+          allow(FeatureManagement).to receive(:proofing_device_hybrid_profiling_collecting_enabled?)
+            .and_return(true)
+          allow(progressive_proofer.threatmetrix_plugin).to receive(:call)
+            .and_return(threatmetrix_result, hybrid_mobile_threatmetrix_result)
+        end
+
+        it 'returns a ResultAdjudicator with the timed out hybrid mobile result' do
+          proof.tap do |result|
+            expect(result).to be_an_instance_of(Proofing::Resolution::ResultAdjudicator)
+            expect(result.hybrid_mobile_device_profiling_result.timed_out?).to be_truthy
+          end
+        end
+      end
+
+      context 'when both regular and hybrid mobile threatmetrix fail' do
+        let(:hybrid_mobile_threatmetrix_session_id) { SecureRandom.uuid }
+        let(:hybrid_mobile_request_ip) { Faker::Internet.ip_v4_address }
+        let(:threatmetrix_result) do
+          Proofing::DdpResult.new(
+            success: false,
+            transaction_id: 'ddp-failed-123',
+            review_status: 'fail',
+          )
+        end
+        let(:hybrid_mobile_threatmetrix_result) do
+          Proofing::DdpResult.new(
+            success: false,
+            transaction_id: 'hybrid-mobile-ddp-failed-123',
+            review_status: 'fail',
+          )
+        end
+
+        before do
+          allow(FeatureManagement).to receive(:proofing_device_hybrid_profiling_collecting_enabled?)
+            .and_return(true)
+          allow(progressive_proofer.threatmetrix_plugin).to receive(:call)
+            .and_return(threatmetrix_result, hybrid_mobile_threatmetrix_result)
+        end
+
+        it 'returns a ResultAdjudicator with both failed results' do
+          proof.tap do |result|
+            expect(result).to be_an_instance_of(Proofing::Resolution::ResultAdjudicator)
+            expect(result.device_profiling_result.success?).to be_falsey
+            expect(result.hybrid_mobile_device_profiling_result.success?).to be_falsey
+          end
+        end
+      end
+
       context 'when precheck is not enabled' do
         let(:idv_phone_precheck_percent) { 0 }
         it 'returns a ResultAdjudicator' do
@@ -344,6 +520,25 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
           proof
         end
 
+        context 'with hybrid mobile device profiling enabled' do
+          let(:hybrid_mobile_threatmetrix_session_id) { SecureRandom.uuid }
+          let(:hybrid_mobile_request_ip) { Faker::Internet.ip_v4_address }
+
+          before do
+            allow(FeatureManagement).to receive(:proofing_device_hybrid_profiling_collecting_enabled?)
+              .and_return(true)
+            allow(progressive_proofer.threatmetrix_plugin).to receive(:call)
+              .and_return(threatmetrix_result, hybrid_mobile_threatmetrix_result)
+          end
+
+          it 'returns a ResultAdjudicator with both device profiling results' do
+            proof.tap do |result|
+              expect(result.device_profiling_result).to eql(threatmetrix_result)
+              expect(result.hybrid_mobile_device_profiling_result).to eql(hybrid_mobile_threatmetrix_result)
+            end
+          end
+        end
+
         it 'calls PhonePlugin' do
           expect(progressive_proofer.phone_plugin).to receive(:call).with(
             applicant_pii:,
@@ -411,6 +606,25 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
             workflow:,
           )
           proof
+        end
+
+        context 'with hybrid mobile device profiling enabled' do
+          let(:hybrid_mobile_threatmetrix_session_id) { SecureRandom.uuid }
+          let(:hybrid_mobile_request_ip) { Faker::Internet.ip_v4_address }
+
+          before do
+            allow(FeatureManagement).to receive(:proofing_device_hybrid_profiling_collecting_enabled?)
+              .and_return(true)
+            allow(progressive_proofer.threatmetrix_plugin).to receive(:call)
+              .and_return(threatmetrix_result, hybrid_mobile_threatmetrix_result)
+          end
+
+          it 'returns a ResultAdjudicator with both device profiling results' do
+            proof.tap do |result|
+              expect(result.device_profiling_result).to eql(threatmetrix_result)
+              expect(result.hybrid_mobile_device_profiling_result).to eql(hybrid_mobile_threatmetrix_result)
+            end
+          end
         end
 
         it 'calls ResidentialAddressPlugin' do
@@ -491,6 +705,25 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
           workflow:,
         )
         proof
+      end
+
+      context 'with hybrid mobile device profiling enabled' do
+        let(:hybrid_mobile_threatmetrix_session_id) { SecureRandom.uuid }
+        let(:hybrid_mobile_request_ip) { Faker::Internet.ip_v4_address }
+
+        before do
+          allow(FeatureManagement).to receive(:proofing_device_hybrid_profiling_collecting_enabled?)
+            .and_return(true)
+          allow(progressive_proofer.threatmetrix_plugin).to receive(:call)
+            .and_return(threatmetrix_result, hybrid_mobile_threatmetrix_result)
+        end
+
+        it 'returns a ResultAdjudicator with both device profiling results' do
+          proof.tap do |result|
+            expect(result.device_profiling_result).to eql(threatmetrix_result)
+            expect(result.hybrid_mobile_device_profiling_result).to eql(hybrid_mobile_threatmetrix_result)
+          end
+        end
       end
 
       it 'calls ResidentialAddressPlugin' do
