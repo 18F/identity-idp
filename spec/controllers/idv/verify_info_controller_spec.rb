@@ -600,6 +600,7 @@ RSpec.describe Idv::VerifyInfoController do
             vendor_name: 'test-phone-vendor',
           ).to_h,
           device_profiling_result: Proofing::DdpResult.new(success: true),
+          hybrid_mobile_device_profiling_result: Proofing::DdpResult.new(success: true),
           ipp_enrollment_in_progress: true,
           residential_resolution_result: Proofing::Resolution::Result.new(success: true),
           resolution_result: Proofing::Resolution::Result.new(success: true),
@@ -661,6 +662,7 @@ RSpec.describe Idv::VerifyInfoController do
           ),
           phone_result:,
           device_profiling_result: Proofing::DdpResult.new(success: true),
+          hybrid_mobile_device_profiling_result: Proofing::DdpResult.new(success: true),
           ipp_enrollment_in_progress: true,
           residential_resolution_result: Proofing::Resolution::Result.new(success: true),
           resolution_result: Proofing::Resolution::Result.new(success: true),
@@ -1001,6 +1003,7 @@ RSpec.describe Idv::VerifyInfoController do
             vendor_name: 'instant_verify_test',
           ).to_h,
           device_profiling_result: Proofing::DdpResult.new(success: true),
+          hybrid_mobile_device_profiling_result: Proofing::DdpResult.new(success: true),
           ipp_enrollment_in_progress: false,
           residential_resolution_result: Proofing::Resolution::Result.new(success: true),
           resolution_result: Proofing::Resolution::Result.new(
@@ -1169,6 +1172,7 @@ RSpec.describe Idv::VerifyInfoController do
             vendor_name: 'test-phone-vendor',
           ).to_h,
           device_profiling_result: Proofing::DdpResult.new(success: true),
+          hybrid_mobile_device_profiling_result: Proofing::DdpResult.new(success: true),
           ipp_enrollment_in_progress: true,
           residential_resolution_result: Proofing::Resolution::Result.new(success: true),
           resolution_result: Proofing::Resolution::Result.new(
@@ -1294,6 +1298,7 @@ RSpec.describe Idv::VerifyInfoController do
             vendor_name: 'test-phone-vendor',
           ).to_h,
           device_profiling_result: Proofing::DdpResult.new(success: true),
+          hybrid_mobile_device_profiling_result: Proofing::DdpResult.new(success: true),
           ipp_enrollment_in_progress: true,
           residential_resolution_result: Proofing::Resolution::Result.new(
             success: true,
