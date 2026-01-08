@@ -259,7 +259,7 @@ else
       # Send irs fraud metrics to Team Data - Daily (For internal review only)
       # And, monthly on 1st date (For IRS and Internal)
       irs_fraud_metrics_report: {
-        class: 'Reports::IrsFraudMetricsReport',
+        class: 'Reports::IrsOriginalFraudMetricsReport',
         cron: cron_24h_and_a_bit,
         args: -> {
           JobHelpers::ReportJobConfigurationHelper.build_irs_report_args(
@@ -270,7 +270,7 @@ else
       },
 
       sp_fraud_metrics_report: {
-        class: 'Reports::SpFraudMetricsReport',
+        class: 'Reports::IrsFraudMetricsReport',
         cron: cron_24h_and_a_bit,
         args: -> {
           JobHelpers::ReportJobConfigurationHelper.build_irs_report_args(

@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 require 'csv'
-require 'reporting/irs_fraud_metrics_lg99_report'
+require 'reporting/irs_original_fraud_metrics_lg99_report'
 
 module Reports
-  class IrsFraudMetricsReport < BaseReport
+  class IrsOriginalFraudMetricsReport < BaseReport
     REPORT_NAME = 'irs-fraud-metrics-report'
 
     attr_reader :report_date, :report_receiver

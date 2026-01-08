@@ -1,10 +1,10 @@
 require 'rails_helper'
 
-RSpec.describe Reports::IrsFraudMetricsReport do
+RSpec.describe Reports::IrsOriginalFraudMetricsReport do
   let(:report_date) { Date.new(2021, 3, 2).in_time_zone('UTC').end_of_day }
   let(:time_range) { report_date.all_month }
   let(:report_receiver) { :internal }
-  subject(:report) { Reports::IrsFraudMetricsReport.new(report_date, report_receiver) }
+  subject(:report) { Reports::IrsOriginalFraudMetricsReport.new(report_date, report_receiver) }
 
   let(:name) { 'irs-fraud-metrics-report' }
   let(:s3_report_bucket_prefix) { 'reports-bucket' }
