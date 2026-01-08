@@ -50,7 +50,8 @@ module Idv
       private
 
       def add_hybrid_threatmetrix_variables_to_document_capture_session
-        document_capture_session.hybrid_mobile_threatmetrix_session_id = session[:hybrid_flow_threatmetrix_session_id]
+        document_capture_session.hybrid_mobile_threatmetrix_session_id =
+          session[:hybrid_flow_threatmetrix_session_id]
         document_capture_session.hybrid_mobile_request_ip = request&.remote_ip
         document_capture_session.save
       end

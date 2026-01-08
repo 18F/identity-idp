@@ -43,7 +43,7 @@ module Proofing
       # @param [String] workflow user is in idv or auth workflow
       # @param [Boolean] state_id_already_proofed indicates the state_id check was previously done,
       #   e.g. in doc_auth
-      # @param [String, nil] hybrid_mobile_threatmetrix_session_id identifies the hybrid threatmetrix session
+      # @param [String] hybrid_mobile_threatmetrix_session_id identifies the hybrid tmx session
       # @param [String, nil] hybrid_mobile_request_ip IP address for hybrid mobile request
       # @return [ResultAdjudicator] object which contains the logic to determine proofing's result
       def proof(

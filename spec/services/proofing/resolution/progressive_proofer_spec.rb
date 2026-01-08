@@ -363,7 +363,8 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
             expect(result).to be_an_instance_of(Proofing::Resolution::ResultAdjudicator)
             expect(result.device_profiling_result.success?).to be_truthy
             expect(result.hybrid_mobile_device_profiling_result.success?).to be_falsey
-            expect(result.hybrid_mobile_device_profiling_result.transaction_id).to eq('hybrid-mobile-ddp-failed-123')
+            expect(result.hybrid_mobile_device_profiling_result.transaction_id)
+              .to eq('hybrid-mobile-ddp-failed-123')
           end
         end
 
@@ -525,8 +526,8 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
           let(:hybrid_mobile_request_ip) { Faker::Internet.ip_v4_address }
 
           before do
-            allow(FeatureManagement).to receive(:proofing_device_hybrid_profiling_collecting_enabled?)
-              .and_return(true)
+            allow(FeatureManagement)
+              .to receive(:proofing_device_hybrid_profiling_collecting_enabled?).and_return(true)
             allow(progressive_proofer.threatmetrix_plugin).to receive(:call)
               .and_return(threatmetrix_result, hybrid_mobile_threatmetrix_result)
           end
@@ -534,7 +535,8 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
           it 'returns a ResultAdjudicator with both device profiling results' do
             proof.tap do |result|
               expect(result.device_profiling_result).to eql(threatmetrix_result)
-              expect(result.hybrid_mobile_device_profiling_result).to eql(hybrid_mobile_threatmetrix_result)
+              expect(result.hybrid_mobile_device_profiling_result)
+                .to eql(hybrid_mobile_threatmetrix_result)
             end
           end
         end
@@ -613,8 +615,8 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
           let(:hybrid_mobile_request_ip) { Faker::Internet.ip_v4_address }
 
           before do
-            allow(FeatureManagement).to receive(:proofing_device_hybrid_profiling_collecting_enabled?)
-              .and_return(true)
+            allow(FeatureManagement)
+              .to receive(:proofing_device_hybrid_profiling_collecting_enabled?).and_return(true)
             allow(progressive_proofer.threatmetrix_plugin).to receive(:call)
               .and_return(threatmetrix_result, hybrid_mobile_threatmetrix_result)
           end
@@ -622,7 +624,8 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
           it 'returns a ResultAdjudicator with both device profiling results' do
             proof.tap do |result|
               expect(result.device_profiling_result).to eql(threatmetrix_result)
-              expect(result.hybrid_mobile_device_profiling_result).to eql(hybrid_mobile_threatmetrix_result)
+              expect(result.hybrid_mobile_device_profiling_result)
+                .to eql(hybrid_mobile_threatmetrix_result)
             end
           end
         end
@@ -721,7 +724,8 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
         it 'returns a ResultAdjudicator with both device profiling results' do
           proof.tap do |result|
             expect(result.device_profiling_result).to eql(threatmetrix_result)
-            expect(result.hybrid_mobile_device_profiling_result).to eql(hybrid_mobile_threatmetrix_result)
+            expect(result.hybrid_mobile_device_profiling_result)
+              .to eql(hybrid_mobile_threatmetrix_result)
           end
         end
       end
