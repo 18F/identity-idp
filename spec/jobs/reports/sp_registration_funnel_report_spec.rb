@@ -86,7 +86,7 @@ RSpec.describe Reports::SpRegistrationFunnelReport do
       )
 
       expect(ReportMailer).to receive(:tables_report).once.with(
-        email: internal_emails,
+        to: internal_emails,
         bcc:   [],
         subject: "#{agency_abbreviation} Registration Funnel Report - 2025-10-19",
         reports: kind_of(Array),
@@ -120,7 +120,7 @@ RSpec.describe Reports::SpRegistrationFunnelReport do
 
   it 'sends to internal only by default' do
     expect(ReportMailer).to receive(:tables_report).once.with(
-      email: ['mock_internal@example.com'],
+      to: ['mock_internal@example.com'],
       bcc:   [],
       subject: "#{agency_abbreviation} Registration Funnel Report - 2021-03-02",
       reports: kind_of(Array),
@@ -170,7 +170,7 @@ RSpec.describe Reports::SpRegistrationFunnelReport do
 
     it 'emails partner in TO and internal in BCC' do
       expect(ReportMailer).to receive(:tables_report).once.with(
-        email: ['mock_partner@example.com'],
+        to: ['mock_partner@example.com'],
         bcc:   ['mock_internal@example.com'],
         subject: "#{agency_abbreviation} Registration Funnel Report - 2025-10-19",
         reports: kind_of(Array),
