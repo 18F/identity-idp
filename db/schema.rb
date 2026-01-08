@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_01_06_161046) do
+ActiveRecord::Schema[8.0].define(version: 2026_01_08_072903) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_catalog.plpgsql"
@@ -215,6 +215,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_06_161046) do
     t.string "socure_docv_capture_app_url", comment: "sensitive=false"
     t.string "doc_auth_vendor", comment: "sensitive=false"
     t.string "passport_status", comment: "sensitive=false"
+    t.string "hybrid_mobile_threatmetrix_session_id", comment: "sensitive=false"
+    t.string "hybrid_mobile_request_ip", comment: "sensitive=false"
     t.index ["result_id"], name: "index_document_capture_sessions_on_result_id"
     t.index ["socure_docv_transaction_token"], name: "index_socure_docv_transaction_token", unique: true
     t.index ["user_id"], name: "index_document_capture_sessions_on_user_id"
