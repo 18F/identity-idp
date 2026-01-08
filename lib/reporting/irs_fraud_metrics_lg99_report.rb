@@ -11,7 +11,7 @@ rescue LoadError => e
 end
 
 module Reporting
-  class IrsFraudMetricsLg99Report
+  class SpFraudMetricsLg99Report
     include Reporting::CloudwatchQueryQuoting
 
     attr_reader :issuers, :time_range
@@ -31,6 +31,7 @@ module Reporting
     def initialize(
       issuers:,
       time_range:,
+      agency_abbreviation:,
       verbose: false,
       progress: false,
       slice: 6.hours,
@@ -38,6 +39,7 @@ module Reporting
     )
       @issuers = issuers
       @time_range = time_range
+      @agency_abbreviation = agency_abbreviation
       @verbose = verbose
       @progress = progress
       @slice = slice
