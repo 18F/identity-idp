@@ -144,6 +144,7 @@ RSpec.describe Idv::HybridMobile::ChooseIdTypeController do
 
       expect(@analytics).to have_logged_event(analytics_name, analytics_args)
     end
+
     context 'user chooses drivers_license' do
       it 'maintains passport_status as allowed and redirects to correct vendor' do
         put :update, params: params
@@ -162,6 +163,41 @@ RSpec.describe Idv::HybridMobile::ChooseIdTypeController do
         put :update, params: params
         expect(document_capture_session.passport_status).to eq('requested')
         expect(response).to redirect_to idv_hybrid_mobile_document_capture_url
+      end
+    end
+
+    context 'when hybrid flow threatmetrix is enabled' do
+      let(:tmx_session_id) { 'test-tmx-session-id-1234' }
+      let(:request_ip) { Faker::Internet.ip_v4_address }
+
+      before do
+        allow(FeatureManagement).to receive(:proofing_device_hybrid_profiling_collecting_enabled?)
+          .and_return(true)
+        controller.session[:hybrid_flow_threatmetrix_session_id] = tmx_session_id
+        request.env['REMOTE_ADDR'] = request_ip
+      end
+
+      it 'updates DocumentCaptureSession with threatmetrix variables' do
+        put :update, params: params
+
+        document_capture_session.reload
+        expect(document_capture_session.hybrid_mobile_threatmetrix_session_id).to eq(tmx_session_id)
+        expect(document_capture_session.hybrid_mobile_request_ip).to eq(request_ip)
+      end
+    end
+
+    context 'when hybrid flow threatmetrix is not enabled' do
+      before do
+        allow(FeatureManagement).to receive(:proofing_device_hybrid_profiling_collecting_enabled?)
+          .and_return(false)
+      end
+
+      it 'does not update DocumentCaptureSession with threatmetrix variables' do
+        put :update, params: params
+
+        document_capture_session.reload
+        expect(document_capture_session.hybrid_mobile_threatmetrix_session_id).to be_nil
+        expect(document_capture_session.hybrid_mobile_request_ip).to be_nil
       end
     end
   end
