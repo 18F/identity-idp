@@ -43,6 +43,8 @@ module Idv
         ipp_enrollment_in_progress: ipp_enrollment_in_progress?,
         proofing_vendor:,
         state_id_already_proofed: source_check_vendor_aamva?,
+        hybrid_mobile_threatmetrix_session_id:,
+        hybrid_mobile_request_ip:,
       )
 
       return true
@@ -69,6 +71,18 @@ module Idv
     end
 
     private
+
+    def hybrid_doc_capture_session
+      DocumentCaptureSession.find_by(uuid: idv_session.document_capture_session_uuid)
+    end
+
+    def hybrid_mobile_threatmetrix_session_id
+      hybrid_doc_capture_session&.threatmetrix_session_id
+    end
+
+    def hybrid_mobile_request_ip
+      hybrid_doc_capture_session&.request_ip
+    end
 
     def save_in_person_notification_phone
       return unless IdentityConfig.store.in_person_proofing_enabled
