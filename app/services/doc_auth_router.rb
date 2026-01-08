@@ -202,6 +202,8 @@ module DocAuthRouter
       Idp::Constants::Vendors::SOCURE
     when :lexis_nexis
       Idp::Constants::Vendors::LEXIS_NEXIS
+    when :lexis_nexis_ddp
+      Idp::Constants::Vendors::LEXIS_NEXIS_DDP
     when :mock
       Idp::Constants::Vendors::MOCK
     when :mock_socure

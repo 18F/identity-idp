@@ -22,7 +22,7 @@ RSpec.describe Idv::InPerson::ReadyToVerifyPresenter do
   end
   subject(:presenter) { described_class.new(enrollment: enrollment) }
 
-  describe '#formatted_due_date' do
+  describe '#formatted_due_date', timezone: 'UTC' do
     let(:enrollment_established_at) { Time.zone.parse('2024-07-05') }
 
     context 'when the enrollment has an enrollment_established_at time' do

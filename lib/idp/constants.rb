@@ -12,6 +12,7 @@ module Idp
     module Vendors
       ACUANT = 'acuant'
       LEXIS_NEXIS = 'lexis_nexis'
+      LEXIS_NEXIS_DDP = 'lexis_nexis_ddp'
       SOCURE = 'socure'
       MOCK = 'mock'
       SOCURE_MOCK = 'mock_socure'
