@@ -130,7 +130,8 @@ RSpec.feature 'Analytics Regression', :js do
       phone_precheck_passed: idv_phone_precheck_enabled,
       context: {
         device_profiling_adjudication_reason: 'device_profiling_result_pass',
-        hybrid_mobile_device_profiling_adjudication_reason: 'hybrid_mobile_device_profiling_not_enabled',
+        hybrid_mobile_device_profiling_adjudication_reason:
+          'hybrid_mobile_device_profiling_not_enabled',
         resolution_adjudication_reason: 'pass_resolution_and_state_id',
         should_proof_state_id: true,
         stages: {
@@ -185,7 +186,8 @@ RSpec.feature 'Analytics Regression', :js do
       phone_precheck_passed: false,
       context: {
         device_profiling_adjudication_reason: 'device_profiling_result_pass',
-        hybrid_mobile_device_profiling_adjudication_reason: 'hybrid_mobile_device_profiling_not_enabled',
+        hybrid_mobile_device_profiling_adjudication_reason:
+          'hybrid_mobile_device_profiling_not_enabled',
         resolution_adjudication_reason: 'pass_resolution_and_state_id',
         should_proof_state_id: true,
         stages: {
