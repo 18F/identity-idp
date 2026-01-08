@@ -248,6 +248,13 @@ else
         cron: cron_every_monday,
         args: -> { [Time.zone.yesterday.end_of_day, :both] },
       },
+
+      sp_weekly_registration_funnel_report: {
+        class: 'Reports::SpRegistrationFunnelReport',
+        cron: cron_every_monday,
+        args: -> { [Time.zone.yesterday.end_of_day, :both] },
+      },
+      
       # Send A/B test reports
       ab_tests_report: {
         class: 'Reports::AbTestsReport',
