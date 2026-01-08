@@ -1,9 +1,10 @@
 # frozen_string_literal: true
 
 class PivCacConfiguration < ApplicationRecord
-  belongs_to :user
+  include UserSuppliedNameAttributes
 
-  validates :name, presence: true
+  belongs_to :user
+  validates :name, presence: true, length: { maximum: UserSuppliedNameAttributes::MAX_NAME_LENGTH }
 
   def mfa_enabled?
     x509_dn_uuid.present?
