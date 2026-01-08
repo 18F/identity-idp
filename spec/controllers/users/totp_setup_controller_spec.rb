@@ -82,7 +82,7 @@ RSpec.describe Users::TotpSetupController, devise: true do
   end
 
   describe '#confirm' do
-    let(:name) { SecureRandom.hex }
+    let(:name) { SecureRandom.hex[0, 15] }
     let(:success) { false }
 
     before do
