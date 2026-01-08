@@ -77,11 +77,11 @@ module Idv
     end
 
     def hybrid_mobile_threatmetrix_session_id
-      hybrid_doc_capture_session&.threatmetrix_session_id
+      hybrid_doc_capture_session&.hybrid_mobile_threatmetrix_session_id
     end
 
     def hybrid_mobile_request_ip
-      hybrid_doc_capture_session&.request_ip
+      hybrid_doc_capture_session&.hybrid_mobile_request_ip
     end
 
     def save_in_person_notification_phone
