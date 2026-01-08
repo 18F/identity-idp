@@ -1,42 +1,28 @@
-# spec/lib/reporting/sp_verification_report_spec.rb
 require 'rails_helper'
-require 'reporting/irs_verification_report'
+require 'reporting/irs_original_verification_report'
 
-RSpec.describe Reporting::IrsVerificationReport do
+RSpec.describe Reporting::IrsOriginalVerificationReport do
+  let(:time_range) { previous_week_range }
   let(:issuers) { ['issuer1', 'issuer2'] }
-  let(:agency_abbreviation) { 'Test_Partner' }
+  let(:mock_results) { [{ 'name' => 'IdV: doc auth welcome visited', 'user_id' => 'user1' }] }
 
-  # previous week range helper (Sunday...Saturday)
-  let(:time_range) do
-    last_sunday   = Time.zone.now.to_date.beginning_of_week(:sunday) - 7.days
+  subject(:report) { described_class.new(time_range: time_range, issuers: issuers) }
+
+  before do
+    allow_any_instance_of(Reporting::CloudwatchClient).to receive(:fetch).and_return(mock_results)
+  end
+
+  def previous_week_range
+    one_week = 7.days
+    last_sunday = Time.zone.now.to_date.beginning_of_week(:sunday) - one_week
     last_saturday = last_sunday + 6.days
     last_sunday..last_saturday
   end
 
-  subject(:report) do
-    described_class.new(
-      time_range: time_range,
-      issuers: issuers,
-      agency_abbreviation: agency_abbreviation,
-    )
-  end
-
-  before do
-    mock_results = [
-      { 'name' => 'IdV: doc auth welcome submitted', 'properties.user_id' => 'user1' },
-      { 'name' => 'IdV: doc auth welcome submitted', 'properties.user_id' => 'user2' },
-      { 'name' => 'IdV: doc auth welcome submitted', 'properties.user_id' => 'user1' },
-    ]
-
-    allow_any_instance_of(Reporting::CloudwatchClient)
-      .to receive(:fetch)
-      .and_return(mock_results)
-  end
-
   describe '#overview_table' do
-    it 'includes timeframe, generated date, and issuers' do
+    it 'generates the overview table with the correct data' do
       freeze_time do
-        expected_generated_date = Time.zone.today.to_s
+        expected_generated_date = Time.zone.now.to_date.to_s
 
         table = report.overview_table
 
@@ -50,8 +36,7 @@ RSpec.describe Reporting::IrsVerificationReport do
   end
 
   describe '#funnel_table' do
-    it 'computes counts and rates from the metric methods' do
-      # Stub the metric calls to avoid real CloudWatch and ensure deterministic math
+    it 'generates the funnel table with the correct metrics' do
       allow(report).to receive(:verification_demand_results).and_return(100)
       allow(report).to receive(:document_authentication_success_results).and_return(80)
       allow(report).to receive(:information_validation_success_results).and_return(70)
@@ -73,21 +58,21 @@ RSpec.describe Reporting::IrsVerificationReport do
   end
 
   describe '#to_csvs' do
-    it 'returns three CSV strings (definitions, overview, funnel)' do
+    it 'generates CSVs for the reports' do
       csvs = report.to_csvs
 
       expect(csvs).to be_an(Array)
-      expect(csvs.size).to eq(3)
+      expect(csvs.size).to eq(3) # One for each table
 
-      # Definitions CSV
+      # First CSV: Definitions
       expect(csvs.first).to include('Metric,Definition')
 
-      # Overview CSV
+      # Second CSV: Overview table
       expect(csvs[1]).to include('Report Timeframe')
       expect(csvs[1]).to include('Report Generated')
       expect(csvs[1]).to include('Issuer')
 
-      # Funnel CSV
+      # Third CSV: Funnel table
       expect(csvs.last).to include('Metric,Count,Rate')
     end
   end
