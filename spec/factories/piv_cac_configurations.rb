@@ -1,5 +1,4 @@
 FactoryBot.define do
-  include UserSuppliedNameAttributes
   Faker::Config.locale = :en
 
   factory :piv_cac_configuration do
