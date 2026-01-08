@@ -22,10 +22,10 @@ module Proofing
         should_proof_state_id:,
         ipp_enrollment_in_progress:,
         device_profiling_result:, # ThreatMetrix
-        hybrid_mobile_device_profiling_result: nil, # ThreatMetrix (Hybrid Mobile)
         same_address_as_id:,
         applicant_pii:,
-        precheck_phone_number:
+        precheck_phone_number:,
+        hybrid_mobile_device_profiling_result: nil # ThreatMetrix (Hybrid Mobile)
       )
         @resolution_result = resolution_result
         @state_id_result = state_id_result
@@ -47,13 +47,15 @@ module Proofing
           hybrid_mobile_device_profiling_result_and_reason
 
         FormResponse.new(
-          success: resolution_success && device_profiling_success && hybrid_mobile_profiling_success,
+          success: resolution_success && device_profiling_success &&
+                   hybrid_mobile_profiling_success,
           errors: errors,
           extra: {
             exception: exception,
             timed_out: timed_out?,
             threatmetrix_review_status: device_profiling_result.review_status,
-            hybrid_mobile_threatmetrix_review_status: hybrid_mobile_device_profiling_result&.review_status,
+            hybrid_mobile_threatmetrix_review_status:
+              hybrid_mobile_device_profiling_result&.review_status,
             phone_precheck_passed: !!phone_result[:success],
             context: {
               device_profiling_adjudication_reason: device_profiling_reason,

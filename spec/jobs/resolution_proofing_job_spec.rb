@@ -453,7 +453,8 @@ RSpec.describe ResolutionProofingJob, type: :job do
         # Hybrid mobile should be rejected due to missing session ID
         expect(result[:hybrid_mobile_threatmetrix_review_status]).to eq('reject')
         expect(result_context_stages_hybrid_mobile_threatmetrix[:success]).to eq(false)
-        expect(result_context_stages_hybrid_mobile_threatmetrix[:client]).to eq('tmx_session_id_missing')
+        expect(result_context_stages_hybrid_mobile_threatmetrix[:client])
+          .to eq('tmx_session_id_missing')
 
         # Only desktop threatmetrix should have been called (once)
         expect(@threatmetrix_stub).to have_been_requested.once
@@ -749,7 +750,8 @@ RSpec.describe ResolutionProofingJob, type: :job do
       allow(IdentityConfig.store).to receive(:proofer_mock_fallback).and_return(false)
       @instant_verify_stub = stub_instant_verify_request(instant_verify_response)
 
-      if proofing_device_hybrid_profiling == :enabled && hybrid_mobile_threatmetrix_session_id.present?
+      if proofing_device_hybrid_profiling == :enabled &&
+         hybrid_mobile_threatmetrix_session_id.present?
         @threatmetrix_stub = stub_request(
           :post,
           'https://www.example.com/api/session-query',
