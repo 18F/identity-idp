@@ -118,10 +118,14 @@ class ResolutionProofingJob < ApplicationJob
       state_id_already_proofed:,
     )
 
-    log_threatmetrix_info(result.device_profiling_result, user, hybrid: false)
+    log_threatmetrix_info(result.device_profiling_result, user, 'ThreatMetrix')
 
     if FeatureManagement.proofing_device_hybrid_profiling_collecting_enabled?
-      log_threatmetrix_info(result.hybrid_mobile_device_profiling_result, user, hybrid: true)
+      log_threatmetrix_info(
+        result.hybrid_mobile_device_profiling_result,
+        user,
+        'ThreatMetrix HybridMobile',
+      )
     end
 
     hybrid_device_profiling_success =
@@ -146,10 +150,9 @@ class ResolutionProofingJob < ApplicationJob
     user.last_sign_in_email_address.email
   end
 
-  def log_threatmetrix_info(threatmetrix_result, user, hybrid: false)
-    tmx_name = hybrid ? 'ThreatMetrix HybridMobile' : 'ThreatMetrix'
+  def log_threatmetrix_info(threatmetrix_result, user, name)
     logger_info_hash(
-      name: tmx_name,
+      name:,
       user_id: user.uuid,
       threatmetrix_request_id: threatmetrix_result.transaction_id,
       threatmetrix_success: threatmetrix_result.success?,
