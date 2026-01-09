@@ -133,7 +133,7 @@ RSpec.describe Reporting::IrsRegistrationFunnelReport do
         issuers: issuers,
         time_range: time_range,
         agency_abbreviation: agency,
-        **opts
+        **opts,
       )
     end
 
