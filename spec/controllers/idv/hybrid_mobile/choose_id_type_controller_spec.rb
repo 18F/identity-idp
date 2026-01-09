@@ -17,6 +17,7 @@ RSpec.describe Idv::HybridMobile::ChooseIdTypeController do
 
   let(:document_capture_session_uuid) { document_capture_session&.uuid }
   let(:session_uuid) { document_capture_session.uuid }
+  let(:proofing_device_hybrid_profiling) { :disabled }
 
   before do
     stub_request(:get, IdentityConfig.store.dos_passport_composite_healthcheck_endpoint)
@@ -28,6 +29,8 @@ RSpec.describe Idv::HybridMobile::ChooseIdTypeController do
     allow(IdentityConfig.store).to receive(:doc_auth_vendor).and_return(idv_vendor)
     allow(IdentityConfig.store).to receive(:doc_auth_vendor_default).and_return(idv_vendor)
     allow(controller).to receive(:document_capture_session).and_return(document_capture_session)
+    allow(IdentityConfig.store).to receive(:proofing_device_hybrid_profiling)
+      .and_return(proofing_device_hybrid_profiling)
   end
 
   describe 'before actions' do
@@ -50,10 +53,7 @@ RSpec.describe Idv::HybridMobile::ChooseIdTypeController do
     end
 
     context 'with threatmetrix disabled' do
-      before do
-        allow(FeatureManagement).to receive(:proofing_device_hybrid_profiling_collecting_enabled?)
-          .and_return(false)
-      end
+      let(:proofing_device_hybrid_profiling) { :disabled }
 
       it 'does not override CSPs for ThreatMetrix' do
         expect(controller).not_to receive(:override_csp_for_threat_metrix)
@@ -64,14 +64,13 @@ RSpec.describe Idv::HybridMobile::ChooseIdTypeController do
 
     context 'with threatmetrix enabled' do
       let(:tmx_session_id) { '1234' }
+      let(:proofing_device_hybrid_profiling) { :enabled }
       before do
         allow(IdentityConfig.store).to receive(:proofing_device_hybrid_profiling)
           .and_return(:enabled)
         allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_org_id).and_return('org1')
         allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_mock_enabled)
           .and_return(false)
-        allow(FeatureManagement).to receive(:proofing_device_hybrid_profiling_collecting_enabled?)
-          .and_return(true)
         controller.session[:hybrid_flow_threatmetrix_session_id] = tmx_session_id
       end
 
@@ -169,10 +168,9 @@ RSpec.describe Idv::HybridMobile::ChooseIdTypeController do
     context 'when hybrid flow threatmetrix is enabled' do
       let(:tmx_session_id) { 'test-tmx-session-id-1234' }
       let(:request_ip) { Faker::Internet.ip_v4_address }
+      let(:proofing_device_hybrid_profiling) { :enabled }
 
       before do
-        allow(FeatureManagement).to receive(:proofing_device_hybrid_profiling_collecting_enabled?)
-          .and_return(true)
         controller.session[:hybrid_flow_threatmetrix_session_id] = tmx_session_id
         request.env['REMOTE_ADDR'] = request_ip
       end
@@ -187,11 +185,6 @@ RSpec.describe Idv::HybridMobile::ChooseIdTypeController do
     end
 
     context 'when hybrid flow threatmetrix is not enabled' do
-      before do
-        allow(FeatureManagement).to receive(:proofing_device_hybrid_profiling_collecting_enabled?)
-          .and_return(false)
-      end
-
       it 'does not update DocumentCaptureSession with threatmetrix variables' do
         put :update, params: params
 

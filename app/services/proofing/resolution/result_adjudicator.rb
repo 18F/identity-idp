@@ -117,7 +117,7 @@ module Proofing
           residential_resolution_result.timed_out? ||
           state_id_result.timed_out? ||
           device_profiling_result.timed_out? ||
-          (hybrid_mobile_device_profiling_result&.timed_out? || false)
+          !!hybrid_mobile_device_profiling_result&.timed_out?
       end
 
       def device_profiling_result_and_reason
