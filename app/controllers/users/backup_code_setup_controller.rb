@@ -8,7 +8,6 @@ module Users
     include SecureHeadersConcern
     include ReauthenticationRequiredConcern
 
-    before_action :authenticate_user!
     before_action :confirm_user_authenticated_for_2fa_setup
     before_action :ensure_backup_codes_in_session, only: %i[continue refreshed]
     before_action :set_backup_code_setup_presenter

@@ -5,7 +5,6 @@ module TwoFactorAuthentication
     include TwoFactorAuthenticatable
     include NewDeviceConcern
 
-    prepend_before_action :authenticate_user
     before_action :check_personal_key_enabled
 
     def show

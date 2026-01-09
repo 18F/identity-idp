@@ -7,7 +7,6 @@ module Users
     include SecureHeadersConcern
     include ReauthenticationRequiredConcern
 
-    before_action :authenticate_user!
     before_action :confirm_user_authenticated_for_2fa_setup
     before_action :set_totp_setup_presenter
     before_action :apply_secure_headers_override

@@ -8,7 +8,6 @@ module Users
     include RecaptchaConcern
     include ReauthenticationRequiredConcern
 
-    before_action :authenticate_user
     before_action :confirm_user_authenticated_for_2fa_setup
     before_action :set_setup_presenter
     before_action :allow_csp_recaptcha_src, if: :recaptcha_enabled?

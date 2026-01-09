@@ -9,7 +9,6 @@ module Users
     include SecureHeadersConcern
     include ReauthenticationRequiredConcern
 
-    before_action :authenticate_user!
     before_action :confirm_user_authenticated_for_2fa_setup
     before_action :set_piv_cac_setup_csp_form_action_uris, only: :new
     before_action :cap_piv_cac_count, only: %i[new submit_new_piv_cac]

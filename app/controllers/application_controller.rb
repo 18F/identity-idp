@@ -265,7 +265,7 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def after_sign_in_path_for(_user)
+  def after_sign_in_path_for(user)
     return rules_of_use_path if !current_user.accepted_rules_of_use_still_valid?
     return user_please_call_url if current_user.suspended?
     return duplicate_profiles_detected_url(source: :sign_in) if user_duplicate_profiles_detected?
@@ -280,6 +280,7 @@ class ApplicationController < ActionController::Base
     return second_mfa_reminder_url if user_needs_second_mfa_reminder?
     return backup_code_reminder_url if user_needs_backup_code_reminder?
     return sp_session_request_url_with_updated_params if sp_session.key?(:request_url)
+    return stored_location_for(user) if stored_location_for(user).present?
     signed_in_url
   end
 
