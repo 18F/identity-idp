@@ -34,7 +34,7 @@ module Proofing
             service_provider: nil,
             current_session: nil,
             current_user_session: nil,
-          ) || IdentityConfig.store.idv_rdp_version_default
+          )
 
           case rdp_version
           when :rdp_v3
