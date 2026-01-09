@@ -15,7 +15,9 @@ module Idv
     # GET /verify/mdl/callback
     def callback
       if params[:error].present?
-        Rails.logger.error("[MdlController] OpenCred error: #{params[:error]} - #{params[:error_description]}")
+        Rails.logger.error(
+          "[MdlController] OpenCred error: #{params[:error]} - #{params[:error_description]}",
+        )
         analytics.idv_mdl_verified(
           success: false,
           error: params[:error],
@@ -37,7 +39,10 @@ module Idv
 
       if token_response[:error]
         Rails.logger.error("[MdlController] Token exchange error: #{token_response[:error]}")
-        analytics.idv_mdl_verified(success: false, error: token_response[:error], provider: 'opencred')
+        analytics.idv_mdl_verified(
+          success: false, error: token_response[:error],
+          provider: 'opencred'
+        )
         flash[:error] = t('idv.mdl.errors.generic')
         return redirect_to idv_mdl_url
       end
@@ -148,7 +153,9 @@ module Idv
           @used_mock_data = false
           return parser.pii_from_mdl
         else
-          Rails.logger.warn("[MdlController] Failed to parse credential: #{parser.errors.join(', ')}")
+          Rails.logger.warn(
+            "[MdlController] Failed to parse credential: #{parser.errors.join(', ')}",
+          )
           # Don't fall back to mock for real API calls - raise error instead
           if IdentityConfig.store.mdl_strict_validation
             raise "mDL parsing failed: #{parser.errors.join(', ')}"
@@ -214,7 +221,9 @@ module Idv
       if response.success?
         JSON.parse(response.body, symbolize_names: true)
       else
-        Rails.logger.error("[MdlController] Token exchange failed: #{response.status} - #{response.body}")
+        Rails.logger.error(
+          "[MdlController] Token exchange failed: #{response.status} - #{response.body}",
+        )
         { error: 'token_exchange_failed' }
       end
     rescue Faraday::Error => e
