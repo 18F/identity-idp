@@ -9,7 +9,7 @@ module Users
     include ThreatMetrixHelper
     include ThreatMetrixConcern
 
-    before_action :authenticate_user!
+    before_action :authenticate_user
     before_action :confirm_user_authenticated_for_2fa_setup
     before_action :check_if_possible_piv_user
     before_action :override_csp_for_threat_metrix,

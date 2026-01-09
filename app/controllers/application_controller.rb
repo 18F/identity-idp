@@ -276,13 +276,13 @@ class ApplicationController < ActionController::Base
     return second_mfa_reminder_url if user_needs_second_mfa_reminder?
     return backup_code_reminder_url if user_needs_backup_code_reminder?
     return sp_session_request_url_with_updated_params if sp_session.key?(:request_url)
-    return stored_location_for(user) if stored_location_for(user).present?
     signed_in_url
   end
 
   def signed_in_url
     return idv_verify_by_mail_enter_code_url if current_user.gpo_verification_pending_profile?
-    account_path
+    stored_location_for(current_user) ||
+      account_path
   end
 
   def after_mfa_setup_path
