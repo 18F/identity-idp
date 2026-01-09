@@ -34,7 +34,9 @@ RSpec.describe Reporting::IrsOriginalFraudMetricsLg99Report do
     ]
   end
 
-  subject(:report) { Reporting::IrsOriginalFraudMetricsLg99Report.new(issuers: [issuer], time_range:) }
+  subject(:report) do
+    Reporting::IrsOriginalFraudMetricsLg99Report.new(issuers: [issuer], time_range:)
+  end
 
   before do
     travel_to Time.zone.now.beginning_of_day

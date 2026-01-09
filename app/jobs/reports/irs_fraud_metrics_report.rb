@@ -6,7 +6,7 @@ require 'reporting/irs_fraud_metrics_lg99_report'
 module Reports
   class IrsFraudMetricsReport < BaseReport
     # REPORT_NAME = 'sp-fraud-metrics-report'
-    
+
     attr_reader :report_date, :report_receiver, :report_name, :report_title
 
     def initialize(init_date = nil, init_receiver = :internal, *args, **rest)
