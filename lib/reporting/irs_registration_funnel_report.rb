@@ -11,7 +11,7 @@ rescue LoadError => e
 end
 
 module Reporting
-  class SpRegistrationFunnelReport
+  class IrsRegistrationFunnelReport
     include Reporting::CloudwatchQueryQuoting
 
     attr_reader :issuers, :time_range, :agency_abbreviation

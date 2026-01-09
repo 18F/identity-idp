@@ -244,17 +244,17 @@ else
       },
       # Send previous week's IrsRegistrationFunnelReport reports to irs
       irs_weekly_registration_funnel_report: {
-        class: 'Reports::IrsRegistrationFunnelReport',
+        class: 'Reports::IrsOriginalRegistrationFunnelReport',
         cron: cron_every_monday,
         args: -> { [Time.zone.yesterday.end_of_day, :both] },
       },
 
+      # Note: this is for testing as of now.
       sp_weekly_registration_funnel_report: {
-        class: 'Reports::SpRegistrationFunnelReport',
+        class: 'Reports::IrsRegistrationFunnelReport',
         cron: cron_every_monday,
         args: -> { [Time.zone.yesterday.end_of_day, :both] },
       },
-      
       # Send A/B test reports
       ab_tests_report: {
         class: 'Reports::AbTestsReport',

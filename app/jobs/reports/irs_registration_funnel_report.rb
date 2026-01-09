@@ -1,10 +1,11 @@
 # frozen_string_literal: true
 
 require 'csv'
-require 'reporting/sp_registration_funnel_report'
+require 'reporting/irs_registration_funnel_report'
 
 module Reports
-  class SpRegistrationFunnelReport < BaseReport
+  class IrsRegistrationFunnelReport < BaseReport
+    # REPORT_NAME = 'sp-registration-funnel-report'
     attr_reader :report_date, :report_receiver, :report_name, :report_title
 
     def initialize(init_date = nil, init_receiver = :internal, *args, **rest)
@@ -89,7 +90,7 @@ module Reports
     end
 
     def sp_registration_funnel_report(issuers, agency_abbreviation)
-      Reporting::SpRegistrationFunnelReport.new(
+      Reporting::IrsRegistrationFunnelReport.new(
         issuers: issuers,
         time_range: previous_week_range,
         agency_abbreviation: agency_abbreviation,

@@ -1,7 +1,7 @@
 require 'rails_helper'
-require 'reporting/sp_registration_funnel_report'
+require 'reporting/irs_registration_funnel_report'
 
-RSpec.describe Reporting::SpRegistrationFunnelReport do
+RSpec.describe Reporting::IrsRegistrationFunnelReport do
   let(:issuers)       { ['my:example:issuer'] }
   let(:agency)        { 'Test_agency' }
   let(:time_range)    { Date.new(2022, 1, 1).in_time_zone('UTC').all_week }
