@@ -341,6 +341,7 @@ module IdentityConfig
     config.add(:max_mail_events_window_in_days, type: :integer)
     config.add(:max_phone_numbers_per_account, type: :integer)
     config.add(:max_piv_cac_per_account, type: :integer)
+    config.add(:mdl_verification_enabled, type: :boolean)
     config.add(:mfa_report_config, type: :json)
     config.add(:min_password_score, type: :integer)
     config.add(:minimum_wait_before_another_usps_letter_in_hours, type: :integer)

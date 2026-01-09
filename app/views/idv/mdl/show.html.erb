@@ -1,0 +1,159 @@
+<% content_for(:pre_flash_content) do %>
+  <%= render StepIndicatorComponent.new(
+        steps: Idv::StepIndicatorConcern::STEP_INDICATOR_STEPS,
+        current_step: :getting_started,
+        locale_scope: 'idv',
+        class: 'margin-x-neg-2 margin-top-neg-4 tablet:margin-x-neg-6 tablet:margin-top-neg-4',
+      ) %>
+<% end %>
+
+<% self.title = t('idv.mdl.title') %>
+
+<%= render PageHeadingComponent.new.with_content(t('idv.mdl.title')) %>
+
+<p class="margin-bottom-4"><%= t('idv.mdl.instructions') %></p>
+
+<div id="mdl-error" class="usa-alert usa-alert--error display-none margin-bottom-4" role="alert">
+  <div class="usa-alert__body">
+    <p class="usa-alert__text"></p>
+  </div>
+</div>
+
+<div id="mdl-loading" class="display-none margin-bottom-4">
+  <div class="spinner" aria-label="Loading..."></div>
+  <p><%= t('idv.mdl.loading') %></p>
+</div>
+
+<%= button_tag(
+      t('idv.mdl.button'),
+      type: 'button',
+      id: 'mdl-verify-button',
+      class: 'usa-button usa-button--big usa-button--wide',
+      data: {
+        request_url: idv_mdl_request_path,
+        verify_url: idv_mdl_verify_path,
+      },
+    ) %>
+
+<div class="margin-top-4">
+  <%= link_to t('idv.mdl.use_different_method'), idv_how_to_verify_path %>
+</div>
+
+<%= render 'idv/doc_auth/cancel', step: 'mdl' %>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var button = document.getElementById('mdl-verify-button');
+    var errorDiv = document.getElementById('mdl-error');
+    var loadingDiv = document.getElementById('mdl-loading');
+
+    if (!button) return;
+
+    button.addEventListener('click', async function() {
+      var requestUrl = button.dataset.requestUrl;
+      var verifyUrl = button.dataset.verifyUrl;
+
+      try {
+        button.disabled = true;
+        loadingDiv.classList.remove('display-none');
+        hideError();
+
+        // Get signed request from server
+        var requestResponse = await fetch(requestUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
+          }
+        });
+
+        if (!requestResponse.ok) {
+          throw new Error('Failed to get verification request');
+        }
+
+        var requestData = await requestResponse.json();
+        var credentialResponse = null;
+        var usedMockData = false;
+
+        // Check if Digital Credentials API is available
+        if (typeof navigator.credentials.get === 'function' && 'digital' in CredentialRequestOptions.prototype) {
+          try {
+            // Try the real Digital Credentials API
+            console.log('Attempting Digital Credentials API call...');
+            credentialResponse = await navigator.credentials.get({
+              digital: {
+                providers: [{
+                  protocol: 'org.iso.mdoc',
+                  request: {
+                    docType: 'org.iso.18013.5.1.mDL',
+                    readerPublicKey: requestData.signedRequest,
+                    nonce: requestData.nonce,
+                    requestedElements: [
+                      { namespace: 'org.iso.18013.5.1', name: 'given_name' },
+                      { namespace: 'org.iso.18013.5.1', name: 'family_name' },
+                      { namespace: 'org.iso.18013.5.1', name: 'birth_date' },
+                      { namespace: 'org.iso.18013.5.1', name: 'resident_address' },
+                      { namespace: 'org.iso.18013.5.1', name: 'document_number' },
+                      { namespace: 'org.iso.18013.5.1', name: 'expiry_date' },
+                      { namespace: 'org.iso.18013.5.1', name: 'issue_date' },
+                      { namespace: 'org.iso.18013.5.1', name: 'issuing_authority' }
+                    ]
+                  }
+                }]
+              }
+            });
+            console.log('Digital Credentials API response:', credentialResponse);
+          } catch (apiError) {
+            console.log('Digital Credentials API not available or failed:', apiError.message);
+            console.log('Falling back to mock data for demo...');
+            usedMockData = true;
+          }
+        } else {
+          console.log('Digital Credentials API not supported in this browser');
+          console.log('Falling back to mock data for demo...');
+          usedMockData = true;
+        }
+
+        // Send response to server for verification
+        var verifyResponse = await fetch(verifyUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
+          },
+          body: JSON.stringify({
+            credential: credentialResponse ? credentialResponse.data : null,
+            mock: usedMockData
+          })
+        });
+
+        var result = await verifyResponse.json();
+
+        if (result.success) {
+          window.location.href = result.redirect;
+        } else {
+          showError(result.error || '<%= t("idv.mdl.errors.generic") %>');
+        }
+      } catch (error) {
+        console.error('MDL verification error:', error);
+        if (error.name === 'NotAllowedError') {
+          showError('<%= t("idv.mdl.errors.cancelled") %>');
+        } else {
+          showError('<%= t("idv.mdl.errors.generic") %>');
+        }
+      } finally {
+        button.disabled = false;
+        loadingDiv.classList.add('display-none');
+      }
+    });
+
+    function showError(message) {
+      errorDiv.querySelector('.usa-alert__text').textContent = message;
+      errorDiv.classList.remove('display-none');
+    }
+
+    function hideError() {
+      errorDiv.classList.add('display-none');
+    }
+  });
+</script>

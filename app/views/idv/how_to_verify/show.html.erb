@@ -124,4 +124,45 @@
   </div>
 </div>
 
+<% if IdentityConfig.store.mdl_verification_enabled %>
+<div role="group" aria-labelledby="how-to-verify-info" class="border-top border-primary-light grid-row grid-gap grid-gap-2">
+  <div class="grid-col-12 tablet:grid-col-auto">
+    <%= image_tag(
+          asset_url('verify-online.svg'),
+          width: 88,
+          height: 88,
+          class: 'margin-top-3',
+          alt: '',
+        ) %>
+  </div>
+  <div class="grid-col-12 tablet:grid-col-fill">
+    <%= simple_form_for(
+          @idv_how_to_verify_form,
+          html: {
+            id: nil,
+            class: 'margin-top-3',
+            aria: { label: t('idv.mdl.button') },
+          },
+          method: :put,
+          url: idv_how_to_verify_url,
+        ) do |f|
+    %>
+      <%= f.hidden_field(
+            :selection,
+            value: Idv::HowToVerifyForm::MDL,
+          ) %>
+      <%= f.label(
+            :selection_mdl,
+          ) do %>
+            <h2 class="margin-top-0"><%= t('idv.mdl.title') %></h2>
+            <div>
+              <p><%= t('idv.mdl.instructions') %></p>
+            </div>
+          <% end %>
+      <%= f.submit t('idv.mdl.button'), class: 'display-block margin-top-3 margin-bottom-5', outline: true %>
+    <% end %>
+  </div>
+</div>
+<% end %>
+
 <%= render 'idv/doc_auth/cancel', step: 'how_to_verify' %>

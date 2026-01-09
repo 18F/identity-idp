@@ -6,6 +6,7 @@ module Idv
 
     REMOTE = 'remote'
     IPP = 'ipp'
+    MDL = 'mdl'
 
     attr_reader :selection
 
@@ -13,7 +14,7 @@ module Idv
       message: proc { I18n.t('doc_auth.errors.how_to_verify_form') },
     }
     validates :selection, inclusion: {
-      in: [REMOTE, IPP],
+      in: [REMOTE, IPP, MDL],
       message: proc { I18n.t('doc_auth.errors.how_to_verify_form') },
     }
 

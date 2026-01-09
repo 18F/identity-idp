@@ -4358,6 +4358,23 @@ module AnalyticsEvents
     )
   end
 
+  # Tracks when the user verifies their identity via mDL (Apple Wallet)
+  # @param [Boolean] success Whether the verification was successful
+  # @param [String] error Error message if verification failed
+  def idv_mdl_verified(success:, error: nil, **extra)
+    track_event(
+      'IdV: mDL verified',
+      success:,
+      error:,
+      **extra,
+    )
+  end
+
+  # Tracks when the user visits the mDL verification page
+  def idv_mdl_visited(**extra)
+    track_event('IdV: mDL visited', **extra)
+  end
+
   # @param [Integer] failed_capture_attempts Number of failed Acuant SDK attempts
   # @param [Integer] failed_submission_attempts Number of failed Acuant doc submissions
   # @param [String] field Image form field
