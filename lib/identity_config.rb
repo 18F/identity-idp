@@ -2,7 +2,6 @@
 
 module IdentityConfig
   GIT_SHA = `git rev-parse --short=8 HEAD`.chomp.freeze
-  GIT_TAG = `git tag --points-at HEAD`.chomp.split("\n").first.freeze
   GIT_BRANCH = `git rev-parse --abbrev-ref HEAD`.chomp.freeze
 
   VENDOR_STATUS_OPTIONS = %i[operational partial_outage full_outage].freeze
@@ -138,15 +137,18 @@ module IdentityConfig
     config.add(:doc_auth_mock_dos_api, type: :boolean)
     config.add(:doc_auth_passports_enabled, type: :boolean)
     config.add(:doc_auth_passport_vendor_default, type: :string)
+    config.add(:doc_auth_passport_vendor_lexis_nexis_ddp_percent, type: :integer)
     config.add(:doc_auth_passport_vendor_lexis_nexis_percent, type: :integer)
     config.add(:doc_auth_passport_vendor_socure_percent, type: :integer)
     config.add(:doc_auth_passport_vendor_switching_enabled, type: :boolean)
     config.add(:doc_auth_selfie_desktop_test_mode, type: :boolean)
     config.add(:doc_auth_passport_selfie_vendor_default, type: :string)
+    config.add(:doc_auth_passport_selfie_vendor_lexis_nexis_ddp_percent, type: :integer)
     config.add(:doc_auth_passport_selfie_vendor_lexis_nexis_percent, type: :integer)
     config.add(:doc_auth_passport_selfie_vendor_socure_percent, type: :integer)
     config.add(:doc_auth_passport_selfie_vendor_switching_enabled, type: :boolean)
     config.add(:doc_auth_selfie_vendor_default, type: :string)
+    config.add(:doc_auth_selfie_vendor_lexis_nexis_ddp_percent, type: :integer)
     config.add(:doc_auth_selfie_vendor_lexis_nexis_percent, type: :integer)
     config.add(:doc_auth_selfie_vendor_socure_percent, type: :integer)
     config.add(:doc_auth_selfie_vendor_switching_enabled, type: :boolean)
@@ -155,6 +157,7 @@ module IdentityConfig
     config.add(:doc_auth_supported_country_codes, type: :json)
     config.add(:doc_auth_vendor, type: :string)
     config.add(:doc_auth_vendor_default, type: :string)
+    config.add(:doc_auth_vendor_lexis_nexis_ddp_percent, type: :integer)
     config.add(:doc_auth_vendor_lexis_nexis_percent, type: :integer)
     config.add(:doc_auth_vendor_socure_percent, type: :integer)
     config.add(:doc_auth_vendor_switching_enabled, type: :boolean)
@@ -506,6 +509,7 @@ module IdentityConfig
     config.add(:sp_idv_weekly_dropoff_report_configs, type: :json)
     config.add(:sp_issuer_user_counts_report_configs, type: :json)
     config.add(:sp_proofing_events_by_uuid_report_configs, type: :json)
+    config.add(:sp_verification_report_configs, type: :json)
     config.add(:state_tracking_enabled, type: :boolean)
     config.add(:team_ada_email, type: :string)
     config.add(:team_all_login_emails, type: :json)

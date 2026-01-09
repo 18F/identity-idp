@@ -68,11 +68,7 @@ class Analytics
     }
 
     attributes[:git_sha] = IdentityConfig::GIT_SHA
-    if IdentityConfig::GIT_TAG.present?
-      attributes[:git_tag] = IdentityConfig::GIT_TAG
-    else
-      attributes[:git_branch] = IdentityConfig::GIT_BRANCH
-    end
+    attributes[:git_branch] = IdentityConfig::GIT_BRANCH
 
     attributes.merge!(browser_attributes)
   end
