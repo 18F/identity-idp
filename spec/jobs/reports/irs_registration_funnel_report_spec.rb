@@ -1,15 +1,16 @@
 require 'rails_helper'
 
-RSpec.describe Reports::IrsRegistrationFunnelReport do
-  let(:report_date) { Date.new(2021, 3, 2).in_time_zone('UTC').end_of_day }
-  let(:time_range) { report_date.all_month }
+RSpec.describe Reports::SpRegistrationFunnelReport do
+  let(:report_date)     { Date.new(2021, 3, 2).in_time_zone('UTC').end_of_day }
   let(:report_receiver) { :internal }
-  subject(:report) { Reports::IrsRegistrationFunnelReport.new(report_date, report_receiver) }
+  subject(:report)  { described_class.new(report_date, report_receiver) }
+  let(:agency_abbreviation) { 'Test_agency' }
+  let(:report_name)         { "#{agency_abbreviation.downcase}_registration_funnel_report" }
 
-  let(:name) { 'irs-registration-funnel-report' }
   let(:s3_report_bucket_prefix) { 'reports-bucket' }
+
   let(:report_folder) do
-    'int/irs-registration-funnel-report/2021/2021-03-02.irs-registration-funnel-report'
+    "int/#{report_name}/2021/2021-03-02.#{report_name}"
   end
 
   let(:expected_s3_paths) do
@@ -28,18 +29,29 @@ RSpec.describe Reports::IrsRegistrationFunnelReport do
     }
   end
 
-  let(:mock_funnel_metrics_data) do
+  let(:internal_emails) { ['mock_internal@example.com'] }
+  let(:partner_emails)  { ['mock_partner@example.com'] }
+
+  let(:sp_configs) do
     [
-      ['Metric', 'Number of accounts', '% of total from start'],
-      ['System and Application Demand', '100', '100%'],
-      ['System and Application Errors', '85', '85%'],
-      ['Authentication attempts', '80', '80%'],
-      ['Authentication success rate', '75', '75%'],
+      {
+        'issuers'             => ['sp:example:issuer'],
+        'agency_abbreviation' => agency_abbreviation,
+        'partner_emails'      => partner_emails,
+        'internal_emails'     => internal_emails,
+      },
     ]
   end
 
-  let(:mock_reports_irs_emails) { ['mock_partner@example.com'] }
-  let(:mock_reports_internal_emails) { ['mock_internal@example.com'] }
+  # Stub only the heavy table (avoids CloudWatch); leave definitions/overview real
+  let(:mock_funnel_metrics_data) do
+    [
+      ['Metric', 'Number of accounts', '% of total from start'],
+      ['Registration Demand', 100, '100%'],
+      ['Registration Successes', 60,  '60%'],
+      ['Registration Failures', 40,  '40%'],
+    ]
+  end
 
   before do
     allow(Identity::Hostdata).to receive(:env).and_return('int')
@@ -48,44 +60,36 @@ RSpec.describe Reports::IrsRegistrationFunnelReport do
     allow(IdentityConfig.store).to receive(:s3_report_bucket_prefix)
       .and_return(s3_report_bucket_prefix)
 
-    Aws.config[:s3] = {
-      stub_responses: {
-        put_object: {},
-      },
-    }
+    Aws.config[:s3] = { stub_responses: { put_object: {} } }
 
-    allow(IdentityConfig.store).to receive(:irs_registration_funnel_emails)
-      .and_return(mock_reports_irs_emails)
+    allow(IdentityConfig.store).to receive(:sp_registration_funnel_report_configs)
+      .and_return(sp_configs)
 
-    allow(IdentityConfig.store).to receive(:team_daily_reports_emails)
-      .and_return(mock_reports_internal_emails)
+    allow(report).to receive(:upload_file_to_s3_bucket).and_return(true)
 
-    allow(report.irs_registration_funnel_report).to receive(:funnel_metrics_table)
+    allow_any_instance_of(Reporting::SpRegistrationFunnelReport)
+      .to receive(:funnel_metrics_table)
       .and_return(mock_funnel_metrics_data)
   end
 
-  context 'recipient is both but IRS emails are empty' do
+  context 'recipient is :both but partner emails are empty' do
     let(:report_receiver) { :both }
-    let(:report_date) { Date.new(2025, 10, 20).prev_day } # 2025-10-19
-    subject(:report) { described_class.new(report_date, report_receiver) }
+    let(:report_date)     { Date.new(2025, 10, 20).prev_day } # 2025-10-19
+    subject(:report)  { described_class.new(report_date, report_receiver) }
 
-    before do
-      allow(IdentityConfig.store).to receive(:irs_registration_funnel_emails)
-        .and_return([]) # no external emails
-      allow(IdentityConfig.store).to receive(:team_daily_reports_emails)
-        .and_return(mock_reports_internal_emails)
-    end
+    let(:partner_emails)  { [] }
+    let(:internal_emails) { ['mock_internal@example.com'] }
 
     it 'logs a warning and sends the report only to internal emails' do
       expect(Rails.logger).to receive(:warn).with(
-        'IRS Registration Funnel Report: recipient is :both but no external email specified',
+        "#{agency_abbreviation} Registration Funnel Report: recipient is :both but no external email specified",
       )
 
       expect(ReportMailer).to receive(:tables_report).once.with(
-        to: mock_reports_internal_emails,
-        bcc: [],
-        subject: 'IRS Registration Funnel Report - 2025-10-19',
-        reports: anything,
+        to: internal_emails,
+        bcc:   [],
+        subject: "#{agency_abbreviation} Registration Funnel Report - 2025-10-19",
+        reports: kind_of(Array),
         message: report.preamble,
         attachment_format: :csv,
       ).and_call_original
@@ -94,21 +98,17 @@ RSpec.describe Reports::IrsRegistrationFunnelReport do
     end
   end
 
-  context 'recipient is internal but internal emails are empty' do
+  context 'recipient is :internal but internal emails are empty' do
     let(:report_receiver) { :internal }
-    let(:report_date) { Date.new(2021, 3, 2).in_time_zone('UTC').end_of_day }
-    subject(:report) { described_class.new(report_date, report_receiver) }
+    let(:report_date)     { Date.new(2021, 3, 2).in_time_zone('UTC').end_of_day }
+    subject(:report)  { described_class.new(report_date, report_receiver) }
 
-    before do
-      allow(IdentityConfig.store).to receive(:team_daily_reports_emails)
-        .and_return([]) # no internal emails
-      allow(IdentityConfig.store).to receive(:irs_registration_funnel_emails)
-        .and_return(mock_reports_irs_emails)
-    end
+    let(:internal_emails) { [] }
+    let(:partner_emails)  { ['mock_partner@example.com'] }
 
     it 'logs a warning and does not send the report' do
       expect(Rails.logger).to receive(:warn).with(
-        'No email addresses received - IRS Registration Funnel Report NOT SENT',
+        "No email addresses received - #{agency_abbreviation} Registration Funnel Report NOT SENT",
       )
 
       expect(ReportMailer).not_to receive(:tables_report)
@@ -118,12 +118,12 @@ RSpec.describe Reports::IrsRegistrationFunnelReport do
     end
   end
 
-  it 'sends out a report to just to team data' do
+  it 'sends to internal only by default' do
     expect(ReportMailer).to receive(:tables_report).once.with(
       to: ['mock_internal@example.com'],
-      bcc: [],
-      subject: 'IRS Registration Funnel Report - 2021-03-02',
-      reports: anything,
+      bcc:   [],
+      subject: "#{agency_abbreviation} Registration Funnel Report - 2021-03-02",
+      reports: kind_of(Array),
       message: report.preamble,
       attachment_format: :csv,
     ).and_call_original
@@ -132,11 +132,19 @@ RSpec.describe Reports::IrsRegistrationFunnelReport do
   end
 
   it 'does not send out a report with no emails' do
-    allow(IdentityConfig.store).to receive(:irs_registration_funnel_emails).and_return('')
-    allow(IdentityConfig.store).to receive(:team_daily_reports_emails).and_return('')
+    # Override configs: no recipients
+    sp_configs_blank = [
+      {
+        'issuers'             => ['sp:example:issuer'],
+        'agency_abbreviation' => agency_abbreviation,
+        'partner_emails'      => [],
+        'internal_emails'     => [],
+      },
+    ]
+    allow(IdentityConfig.store).to receive(:sp_registration_funnel_report_configs)
+      .and_return(sp_configs_blank)
 
-    expect(report).to_not receive(:reports)
-
+    expect(report).not_to receive(:reports)
     expect(ReportMailer).not_to receive(:tables_report)
 
     report.perform(report_date)
@@ -154,14 +162,18 @@ RSpec.describe Reports::IrsRegistrationFunnelReport do
   end
 
   context 'begining of the week, it sends out the report to the internal and partner' do
-    let(:report_date) { Date.new(2025, 10, 20).prev_day }
+    let(:report_date) { Date.new(2025, 10, 20).prev_day } # 2025-10-19
     subject(:report) { described_class.new(report_date, :both) }
-    it 'sends out a report to just to team data and partner' do
+
+    let(:partner_emails)  { ['mock_partner@example.com'] }
+    let(:internal_emails) { ['mock_internal@example.com'] }
+
+    it 'emails partner in TO and internal in BCC' do
       expect(ReportMailer).to receive(:tables_report).once.with(
         to: ['mock_partner@example.com'],
-        bcc: ['mock_internal@example.com'],
-        subject: 'IRS Registration Funnel Report - 2025-10-19',
-        reports: anything,
+        bcc:   ['mock_internal@example.com'],
+        subject: "#{agency_abbreviation} Registration Funnel Report - 2025-10-19",
+        reports: kind_of(Array),
         message: report.preamble,
         attachment_format: :csv,
       ).and_call_original
