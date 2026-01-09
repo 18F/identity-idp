@@ -24,24 +24,26 @@
   <p><%= t('idv.mdl.loading') %></p>
 </div>
 
+<%# OpenCred OIDC Integration - redirect to OpenCred for mDL verification %>
 <%= button_tag(
       t('idv.mdl.button'),
       type: 'button',
       id: 'mdl-verify-button',
       class: 'usa-button usa-button--big usa-button--wide',
       data: {
-        request_url: idv_mdl_request_path,
-        verify_url: idv_mdl_verify_path,
+        opencred_url: IdentityConfig.store.opencred_base_url,
+        client_id: IdentityConfig.store.opencred_client_id,
+        redirect_uri: idv_mdl_callback_url,
       },
     ) %>
 
 <div class="margin-top-4">
-  <%= link_to t('idv.mdl.use_different_method'), idv_how_to_verify_path %>
+  <%= link_to t('idv.mdl.use_different_method'), idv_choose_id_type_path %>
 </div>
 
 <%= render 'idv/doc_auth/cancel', step: 'mdl' %>
 
-<script>
+<%= javascript_tag(nonce: true) do %>
   document.addEventListener('DOMContentLoaded', function() {
     var button = document.getElementById('mdl-verify-button');
     var errorDiv = document.getElementById('mdl-error');
@@ -49,111 +51,50 @@
 
     if (!button) return;
 
-    button.addEventListener('click', async function() {
-      var requestUrl = button.dataset.requestUrl;
-      var verifyUrl = button.dataset.verifyUrl;
+    var opencredUrl = button.dataset.opencredUrl;
+    var clientId = button.dataset.clientId;
+    var redirectUri = button.dataset.redirectUri;
 
-      try {
-        button.disabled = true;
-        loadingDiv.classList.remove('display-none');
-        hideError();
+    button.addEventListener('click', function() {
+      console.log('[mDL] Starting OpenCred verification flow...');
 
-        // Get signed request from server
-        var requestResponse = await fetch(requestUrl, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
-          }
-        });
+      // Generate state for CSRF protection
+      var state = generateRandomString(32);
+      sessionStorage.setItem('mdl_oidc_state', state);
 
-        if (!requestResponse.ok) {
-          throw new Error('Failed to get verification request');
-        }
+      // Build OpenCred OIDC authorization URL
+      var params = new URLSearchParams({
+        client_id: clientId,
+        redirect_uri: redirectUri,
+        response_type: 'code',
+        scope: 'openid',
+        state: state
+      });
 
-        var requestData = await requestResponse.json();
-        var credentialResponse = null;
-        var usedMockData = false;
+      var authUrl = opencredUrl + '/login?' + params.toString();
+      console.log('[mDL] Redirecting to OpenCred:', authUrl);
 
-        // Check if Digital Credentials API is available
-        if (typeof navigator.credentials.get === 'function' && 'digital' in CredentialRequestOptions.prototype) {
-          try {
-            // Try the real Digital Credentials API
-            console.log('Attempting Digital Credentials API call...');
-            credentialResponse = await navigator.credentials.get({
-              digital: {
-                providers: [{
-                  protocol: 'org.iso.mdoc',
-                  request: {
-                    docType: 'org.iso.18013.5.1.mDL',
-                    readerPublicKey: requestData.signedRequest,
-                    nonce: requestData.nonce,
-                    requestedElements: [
-                      { namespace: 'org.iso.18013.5.1', name: 'given_name' },
-                      { namespace: 'org.iso.18013.5.1', name: 'family_name' },
-                      { namespace: 'org.iso.18013.5.1', name: 'birth_date' },
-                      { namespace: 'org.iso.18013.5.1', name: 'resident_address' },
-                      { namespace: 'org.iso.18013.5.1', name: 'document_number' },
-                      { namespace: 'org.iso.18013.5.1', name: 'expiry_date' },
-                      { namespace: 'org.iso.18013.5.1', name: 'issue_date' },
-                      { namespace: 'org.iso.18013.5.1', name: 'issuing_authority' }
-                    ]
-                  }
-                }]
-              }
-            });
-            console.log('Digital Credentials API response:', credentialResponse);
-          } catch (apiError) {
-            console.log('Digital Credentials API not available or failed:', apiError.message);
-            console.log('Falling back to mock data for demo...');
-            usedMockData = true;
-          }
-        } else {
-          console.log('Digital Credentials API not supported in this browser');
-          console.log('Falling back to mock data for demo...');
-          usedMockData = true;
-        }
-
-        // Send response to server for verification
-        var verifyResponse = await fetch(verifyUrl, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
-          },
-          body: JSON.stringify({
-            credential: credentialResponse ? credentialResponse.data : null,
-            mock: usedMockData
-          })
-        });
-
-        var result = await verifyResponse.json();
-
-        if (result.success) {
-          window.location.href = result.redirect;
-        } else {
-          showError(result.error || '<%= t("idv.mdl.errors.generic") %>');
-        }
-      } catch (error) {
-        console.error('MDL verification error:', error);
-        if (error.name === 'NotAllowedError') {
-          showError('<%= t("idv.mdl.errors.cancelled") %>');
-        } else {
-          showError('<%= t("idv.mdl.errors.generic") %>');
-        }
-      } finally {
-        button.disabled = false;
-        loadingDiv.classList.add('display-none');
-      }
+      // Redirect to OpenCred
+      window.location.href = authUrl;
     });
+
+    function generateRandomString(length) {
+      var array = new Uint8Array(length);
+      window.crypto.getRandomValues(array);
+      return Array.from(array, function(byte) {
+        return ('0' + byte.toString(16)).slice(-2);
+      }).join('');
+    }
 
     function showError(message) {
       errorDiv.querySelector('.usa-alert__text').textContent = message;
       errorDiv.classList.remove('display-none');
     }
 
-    function hideError() {
-      errorDiv.classList.add('display-none');
+    // Check for error from callback
+    var urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('error')) {
+      showError(urlParams.get('error_description') || 'Verification failed. Please try again.');
     }
   });
-</script>
+<% end %>

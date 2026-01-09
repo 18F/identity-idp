@@ -342,6 +342,7 @@ module IdentityConfig
     config.add(:max_phone_numbers_per_account, type: :integer)
     config.add(:max_piv_cac_per_account, type: :integer)
     config.add(:mdl_verification_enabled, type: :boolean)
+    config.add(:mdl_strict_validation, type: :boolean)
     config.add(:mfa_report_config, type: :json)
     config.add(:min_password_score, type: :integer)
     config.add(:minimum_wait_before_another_usps_letter_in_hours, type: :integer)
@@ -350,6 +351,9 @@ module IdentityConfig
     config.add(:newrelic_license_key, type: :string)
     config.add(:one_account_user_verification_enabled_percentage, type: :integer)
     config.add(:one_account_profile_creation_check_enabled, type: :boolean)
+    config.add(:opencred_base_url, type: :string)
+    config.add(:opencred_client_id, type: :string)
+    config.add(:opencred_client_secret, type: :string)
     config.add(
       :openid_connect_redirect,
       type: :string,

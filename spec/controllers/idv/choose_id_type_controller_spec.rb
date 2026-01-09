@@ -128,6 +128,26 @@ RSpec.describe Idv::ChooseIdTypeController do
         expect(response).to redirect_to(idv_document_capture_url)
       end
     end
+
+    context 'user selects mdl' do
+      let(:chosen_id_type) { Idp::Constants::DocumentTypes::MDL }
+
+      before do
+        allow(IdentityConfig.store).to receive(:mdl_verification_enabled).and_return(true)
+      end
+
+      it 'redirects to mdl verification page' do
+        put :update, params: params
+
+        expect(response).to redirect_to(idv_mdl_url)
+      end
+
+      it 'sets skip_doc_auth_from_how_to_verify to true' do
+        put :update, params: params
+
+        expect(subject.idv_session.skip_doc_auth_from_how_to_verify).to eq(true)
+      end
+    end
   end
 
   describe '#step_info' do

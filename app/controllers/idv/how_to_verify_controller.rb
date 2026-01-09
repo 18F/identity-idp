@@ -41,14 +41,6 @@ module Idv
 
           redirect_to idv_choose_id_type_url
 
-        elsif how_to_verify_form_params['selection'] == Idv::HowToVerifyForm::MDL
-          idv_session.opted_in_to_in_person_proofing = false
-          idv_session.skip_doc_auth_from_how_to_verify = true
-          idv_session.flow_path = 'standard'
-          abandon_any_ipp_progress
-
-          redirect_to idv_mdl_url
-
         else
           idv_session.opted_in_to_in_person_proofing = true
           idv_session.flow_path = 'standard'
@@ -69,7 +61,7 @@ module Idv
       Idv::StepInfo.new(
         key: :how_to_verify,
         controller: self,
-        next_steps: [:choose_id_type, :document_capture, :mdl],
+        next_steps: [:choose_id_type, :document_capture],
         preconditions: ->(idv_session:, user:) do
           self.enabled? &&
           idv_session.idv_consent_given? &&

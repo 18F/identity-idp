@@ -596,7 +596,8 @@ doc_auth.errors.verify.use_another_type_of_id: or use another type of ID.
 doc_auth.forms.change_file: Change file
 doc_auth.forms.choose_file_html: Drag file here or <lg-underline>choose from folder</lg-underline>
 doc_auth.forms.doc_success: We verified your information
-doc_auth.forms.id_type_preference.drivers_license: U.S. driver’s license or state ID
+doc_auth.forms.id_type_preference.drivers_license: U.S. driver's license or state ID
+doc_auth.forms.id_type_preference.mdl: Mobile Driver's License (mDL)
 doc_auth.forms.id_type_preference.passport: U.S. passport book
 doc_auth.forms.selected_file: Selected file
 doc_auth.headers.expired_id: Your ID may have expired

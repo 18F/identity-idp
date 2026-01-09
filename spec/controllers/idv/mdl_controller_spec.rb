@@ -57,13 +57,31 @@ RSpec.describe Idv::MdlController do
   end
 
   describe '#request_credentials' do
-    it 'returns a signed request and nonce' do
+    it 'returns ISO 18013-7 request data' do
       post :request_credentials
 
       expect(response).to have_http_status(:ok)
       json = JSON.parse(response.body)
-      expect(json).to have_key('signedRequest')
+      expect(json).to have_key('deviceRequest')
+      expect(json).to have_key('encryptionInfo')
       expect(json).to have_key('nonce')
+      expect(json).to have_key('sessionId')
+    end
+
+    it 'sends analytics event with session_id' do
+      post :request_credentials
+
+      expect(@analytics).to have_logged_event(
+        'IdV: mDL request generated',
+        hash_including(session_id: kind_of(String)),
+      )
+    end
+
+    it 'stores session data for later verification' do
+      post :request_credentials
+
+      expect(session[:mdl_verification]).to be_present
+      expect(session[:mdl_verification][:session_id]).to be_present
     end
   end
 
@@ -77,18 +95,32 @@ RSpec.describe Idv::MdlController do
       expect(json['redirect']).to eq(idv_ssn_url)
     end
 
-    it 'populates pii_from_doc in idv_session' do
+    it 'populates pii_from_doc in idv_session with mock data' do
       post :verify, params: { mock: true }
 
       expect(controller.idv_session.pii_from_doc).to be_present
-      expect(controller.idv_session.pii_from_doc.first_name).to eq('APPLE')
-      expect(controller.idv_session.pii_from_doc.last_name).to eq('WALLET')
+      expect(controller.idv_session.pii_from_doc.first_name).to eq('JANE')
+      expect(controller.idv_session.pii_from_doc.last_name).to eq('SMITH')
     end
 
     it 'sends analytics_verified event' do
       post :verify, params: { mock: true }
 
-      expect(@analytics).to have_logged_event('IdV: mDL verified', success: true)
+      expect(@analytics).to have_logged_event(
+        'IdV: mDL verified',
+        success: true,
+        used_mock_data: true,
+      )
+    end
+
+    it 'clears mdl session data after successful verification' do
+      # First generate a request to create session data
+      post :request_credentials
+      expect(session[:mdl_verification]).to be_present
+
+      # Then verify
+      post :verify, params: { mock: true }
+      expect(session[:mdl_verification]).to be_nil
     end
   end
 end
