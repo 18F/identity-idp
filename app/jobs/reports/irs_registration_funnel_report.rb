@@ -24,7 +24,6 @@ module Reports
     end
 
     def send_report(report_config)
-
       issuers = report_config['issuers']
       agency_abbreviation = report_config['agency_abbreviation']
       partner_emails = report_config['partner_emails']
@@ -98,7 +97,6 @@ module Reports
     end
 
     def emails(internal_emails, partner_emails)
-
       if report_receiver == :both && partner_emails.empty?
         Rails.logger.warn(
           "#{@report_title}: recipient is :both " \

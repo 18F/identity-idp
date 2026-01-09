@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe Reports::IrsRegistrationFunnelReport do
   let(:report_date)     { Date.new(2021, 3, 2).in_time_zone('UTC').end_of_day }
   let(:report_receiver) { :internal }
-  subject(:report)  { described_class.new(report_date, report_receiver) }
+  subject(:report) { described_class.new(report_date, report_receiver) }
   let(:agency_abbreviation) { 'Test_agency' }
   let(:report_name)         { "#{agency_abbreviation.downcase}_registration_funnel_report" }
 
@@ -35,10 +35,10 @@ RSpec.describe Reports::IrsRegistrationFunnelReport do
   let(:sp_configs) do
     [
       {
-        'issuers'             => ['sp:example:issuer'],
+        'issuers' => ['sp:example:issuer'],
         'agency_abbreviation' => agency_abbreviation,
-        'partner_emails'      => partner_emails,
-        'internal_emails'     => internal_emails,
+        'partner_emails' => partner_emails,
+        'internal_emails' => internal_emails,
       },
     ]
   end
@@ -48,8 +48,8 @@ RSpec.describe Reports::IrsRegistrationFunnelReport do
     [
       ['Metric', 'Number of accounts', '% of total from start'],
       ['Registration Demand', 100, '100%'],
-      ['Registration Successes', 60,  '60%'],
-      ['Registration Failures', 40,  '40%'],
+      ['Registration Successes', 60, '60%'],
+      ['Registration Failures', 40, '40%'],
     ]
   end
 
@@ -75,19 +75,20 @@ RSpec.describe Reports::IrsRegistrationFunnelReport do
   context 'recipient is :both but partner emails are empty' do
     let(:report_receiver) { :both }
     let(:report_date)     { Date.new(2025, 10, 20).prev_day } # 2025-10-19
-    subject(:report)  { described_class.new(report_date, report_receiver) }
+    subject(:report) { described_class.new(report_date, report_receiver) }
 
     let(:partner_emails)  { [] }
     let(:internal_emails) { ['mock_internal@example.com'] }
 
     it 'logs a warning and sends the report only to internal emails' do
       expect(Rails.logger).to receive(:warn).with(
-        "#{agency_abbreviation} Registration Funnel Report: recipient is :both but no external email specified",
+        "#{agency_abbreviation} Registration Funnel Report: " \
+        "recipient is :both but no external email specified",
       )
 
       expect(ReportMailer).to receive(:tables_report).once.with(
         to: internal_emails,
-        bcc:   [],
+        bcc: [],
         subject: "#{agency_abbreviation} Registration Funnel Report - 2025-10-19",
         reports: kind_of(Array),
         message: report.preamble,
@@ -101,7 +102,7 @@ RSpec.describe Reports::IrsRegistrationFunnelReport do
   context 'recipient is :internal but internal emails are empty' do
     let(:report_receiver) { :internal }
     let(:report_date)     { Date.new(2021, 3, 2).in_time_zone('UTC').end_of_day }
-    subject(:report)  { described_class.new(report_date, report_receiver) }
+    subject(:report) { described_class.new(report_date, report_receiver) }
 
     let(:internal_emails) { [] }
     let(:partner_emails)  { ['mock_partner@example.com'] }
@@ -121,7 +122,7 @@ RSpec.describe Reports::IrsRegistrationFunnelReport do
   it 'sends to internal only by default' do
     expect(ReportMailer).to receive(:tables_report).once.with(
       to: ['mock_internal@example.com'],
-      bcc:   [],
+      bcc: [],
       subject: "#{agency_abbreviation} Registration Funnel Report - 2021-03-02",
       reports: kind_of(Array),
       message: report.preamble,
@@ -135,10 +136,10 @@ RSpec.describe Reports::IrsRegistrationFunnelReport do
     # Override configs: no recipients
     sp_configs_blank = [
       {
-        'issuers'             => ['sp:example:issuer'],
+        'issuers' => ['sp:example:issuer'],
         'agency_abbreviation' => agency_abbreviation,
-        'partner_emails'      => [],
-        'internal_emails'     => [],
+        'partner_emails' => [],
+        'internal_emails' => [],
       },
     ]
     allow(IdentityConfig.store).to receive(:sp_registration_funnel_report_configs)
@@ -171,7 +172,7 @@ RSpec.describe Reports::IrsRegistrationFunnelReport do
     it 'emails partner in TO and internal in BCC' do
       expect(ReportMailer).to receive(:tables_report).once.with(
         to: ['mock_partner@example.com'],
-        bcc:   ['mock_internal@example.com'],
+        bcc: ['mock_internal@example.com'],
         subject: "#{agency_abbreviation} Registration Funnel Report - 2025-10-19",
         reports: kind_of(Array),
         message: report.preamble,

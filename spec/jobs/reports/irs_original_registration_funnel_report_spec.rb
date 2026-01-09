@@ -4,7 +4,9 @@ RSpec.describe Reports::IrsOriginalRegistrationFunnelReport do
   let(:report_date) { Date.new(2021, 3, 2).in_time_zone('UTC').end_of_day }
   let(:time_range) { report_date.all_month }
   let(:report_receiver) { :internal }
-  subject(:report) { Reports::IrsOriginalRegistrationFunnelReport.new(report_date, report_receiver) }
+  subject(:report) do
+    Reports::IrsOriginalRegistrationFunnelReport.new(report_date, report_receiver)
+  end
 
   let(:name) { 'irs-registration-funnel-report' }
   let(:s3_report_bucket_prefix) { 'reports-bucket' }
