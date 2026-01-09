@@ -305,6 +305,8 @@ lexisnexis_threatmetrix_support_code: ABCD
 lexisnexis_threatmetrix_timeout: 1.0
 # TrueID DocAuth Integration
 lexisnexis_trueid_account_id: '12345'
+lexisnexis_trueid_ddp_liveness_policy: test_ddp_liveness_policy
+lexisnexis_trueid_ddp_noliveness_policy: test_ddp_noliveness_policy
 lexisnexis_trueid_hmac_key_id: trueid_hmac_key_id
 lexisnexis_trueid_hmac_secret_key: trueid_hmac_secret_key
 lexisnexis_trueid_liveness_cropping_workflow: customers.gsa2.trueid.workflow

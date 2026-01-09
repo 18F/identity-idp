@@ -316,6 +316,8 @@ module IdentityConfig
     config.add(:lexisnexis_threatmetrix_support_code, type: :string)
     config.add(:lexisnexis_threatmetrix_timeout, type: :float)
     config.add(:lexisnexis_trueid_account_id, type: :string)
+    config.add(:lexisnexis_trueid_ddp_liveness_policy, type: :string)
+    config.add(:lexisnexis_trueid_ddp_noliveness_policy, type: :string)
     config.add(:lexisnexis_trueid_hmac_key_id, type: :string)
     config.add(:lexisnexis_trueid_hmac_secret_key, type: :string)
     config.add(:lexisnexis_trueid_liveness_cropping_workflow, type: :string)
