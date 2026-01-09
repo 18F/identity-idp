@@ -7,6 +7,7 @@ module Users
     include SecureHeadersConcern
     include ReauthenticationRequiredConcern
 
+    before_action :authenticate_user!
     before_action :confirm_user_authenticated_for_2fa_setup
     before_action :apply_secure_headers_override
     before_action :set_webauthn_setup_presenter
