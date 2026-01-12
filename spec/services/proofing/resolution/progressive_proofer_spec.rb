@@ -6,12 +6,15 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
   let(:user_email) { user.email }
   let(:proofing_vendor) { :mock }
   let(:idv_phone_precheck_percent) { 100 }
+  let(:analytics) { FakeAnalytics.new }
 
-  subject(:progressive_proofer) { described_class.new(user_uuid:, proofing_vendor:, user_email:) }
+  subject(:progressive_proofer) do
+    described_class.new(user_uuid:, proofing_vendor:, analytics:, user_email:)
+  end
 
   it 'assigns aamva_plugin' do
     expect(
-      described_class.new(user_uuid:, proofing_vendor:, user_email:).aamva_plugin,
+      progressive_proofer.aamva_plugin,
     ).to be_a(
       Proofing::Resolution::Plugins::AamvaPlugin,
     )
@@ -19,7 +22,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
 
   it 'assigns threatmetrix_plugin' do
     expect(
-      described_class.new(user_uuid:, proofing_vendor:, user_email:).threatmetrix_plugin,
+      progressive_proofer.threatmetrix_plugin,
     ).to be_a(
       Proofing::Resolution::Plugins::ThreatMetrixPlugin,
     )
