@@ -5,6 +5,7 @@ module AccountReset
     include UserAuthenticator
     include AccountResetConcern
 
+    before_action :authenticate_user
     before_action :confirm_account_reset_request_exists
 
     def show

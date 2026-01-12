@@ -5,7 +5,6 @@ module Users
     include PivCacConcern
     include ReauthenticationRequiredConcern
 
-    before_action :authenticate_user!
     before_action :confirm_two_factor_authenticated
     before_action :confirm_recently_authenticated_2fa
     before_action :set_piv_cac_setup_csp_form_action_uris, only: :prompt
