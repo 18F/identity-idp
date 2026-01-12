@@ -4,10 +4,8 @@ RSpec.describe Idv::InPerson::ReadyToVerifyPresenter do
   let(:user) { build(:user) }
   let(:profile) { build(:profile, user: user) }
   let(:current_address_matches_id) { true }
-  let(:created_at) { described_class::USPS_SERVER_TIMEZONE.parse('2023-06-14T00:00:00Z') }
-  let(:enrollment_established_at) do
-    described_class::USPS_SERVER_TIMEZONE.parse('2023-07-14T00:00:00Z')
-  end
+  let(:created_at) { Time.zone.parse('2023-06-14') }
+  let(:enrollment_established_at) { Time.zone.parse('2023-07-14') }
   let(:enrollment_selected_location_details) do
     JSON.parse(UspsInPersonProofing::Mock::Fixtures.enrollment_selected_location_details)
   end
@@ -24,15 +22,15 @@ RSpec.describe Idv::InPerson::ReadyToVerifyPresenter do
   end
   subject(:presenter) { described_class.new(enrollment: enrollment) }
 
-  describe '#formatted_due_date' do
-    let(:enrollment_established_at) { DateTime.new(2024, 7, 5) }
+  describe '#formatted_due_date', timezone: 'UTC' do
+    let(:enrollment_established_at) { Time.zone.parse('2024-07-05') }
 
     context 'when the enrollment has an enrollment_established_at time' do
       [
-        ['English', :en, 'July 11, 2024'],
-        ['Spanish', :es, '11 de julio de 2024'],
-        ['French', :fr, '11 juillet 2024'],
-        ['Chinese', :zh, '2024年7月11日'],
+        ['English', :en, 'July 12, 2024'],
+        ['Spanish', :es, '12 de julio de 2024'],
+        ['French', :fr, '12 juillet 2024'],
+        ['Chinese', :zh, '2024年7月12日'],
       ].each do |language, locale, expected|
         context "when locale is #{language}" do
           before do
@@ -48,8 +46,9 @@ RSpec.describe Idv::InPerson::ReadyToVerifyPresenter do
 
     context 'when the enrollment does not have an enrollment_established_at time' do
       let(:enrollment_established_at) { nil }
+
       it 'returns formatted due date when no enrollment_established_at' do
-        expect(presenter.formatted_due_date).to eq 'June 20, 2023'
+        expect(presenter.formatted_due_date).to eq 'June 21, 2023'
       end
     end
   end
@@ -174,9 +173,9 @@ RSpec.describe Idv::InPerson::ReadyToVerifyPresenter do
     let(:config) { IdentityConfig.store.in_person_enrollment_validity_in_days }
 
     context '4 days until due date' do
-      it 'returns 3 days' do
+      it 'returns 4 days' do
         travel_to(enrollment_established_at + (config - 4).days) do
-          expect(days_remaining).to eq(3)
+          expect(days_remaining).to eq(4)
         end
       end
     end

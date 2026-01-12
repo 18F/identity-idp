@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
 require 'csv'
-require 'reporting/irs_verification_demographics_report'
+require 'reporting/irs_original_verification_report'
 
 module Reports
-  class IrsVerificationDemographicsReport < BaseReport
-    REPORT_NAME = 'irs-verification-demographics-report'
+  class MonthlyIrsOriginalVerificationReport < BaseReport
+    REPORT_NAME = 'monthly-irs-verification-report'
 
     attr_reader :report_date, :report_receiver
 
@@ -24,7 +24,7 @@ module Reports
       bcc_emails = email_addresses[:bcc].select(&:present?)
 
       if to_emails.empty? && bcc_emails.empty?
-        Rails.logger.warn 'No emails received - IRS Verification Demographics Report NOT SENT'
+        Rails.logger.warn 'No email addresses received - IRS Verification Report NOT SENT'
         return false
       end
 
@@ -35,7 +35,7 @@ module Reports
       ReportMailer.tables_report(
         to: to_emails,
         bcc: bcc_emails,
-        subject: "IRS Verification Demographics Metrics Report - #{report_date.to_date}",
+        subject: "Monthly IRS Verification Report - #{report_date.to_date}",
         reports: reports,
         message: preamble,
         attachment_format: :csv,
@@ -49,10 +49,6 @@ module Reports
         <% if env != 'prod' %>
           <div class="usa-alert usa-alert--info usa-alert--email">
             <div class="usa-alert__body">
-              <%#
-                NOTE: our AlertComponent doesn't support heading content like this uses,
-                so for a one-off outside the Rails pipeline it was easier to inline the HTML here.
-              %>
               <h2 class="usa-alert__heading">
                 Non-Production Report
               </h2>
@@ -66,18 +62,14 @@ module Reports
     end
 
     def reports
-      @reports ||= irs_verification_demographics_report.as_emailable_reports
+      @reports ||= irs_verification_report.as_emailable_reports
     end
 
-    def irs_verification_demographics_report
-      @irs_verification_demographics_report ||= Reporting::IrsVerificationDemographicsReport.new(
-        issuers: issuers,
-        time_range: report_date.all_quarter,
+    def irs_verification_report
+      @irs_verification_report ||= Reporting::IrsOriginalVerificationReport.new(
+        time_range: report_date.all_month,
+        issuers: IdentityConfig.store.irs_verification_report_issuers || [],
       )
-    end
-
-    def issuers
-      [*IdentityConfig.store.irs_verification_report_issuers]
     end
 
     def emails
@@ -86,7 +78,7 @@ module Reports
 
       if report_receiver == :both && irs_emails.empty?
         Rails.logger.warn(
-          'IRS Verification Demographics Report: recipient is :both ' \
+          'IRS Verification Report: recipient is :both ' \
           'but no external email specified',
         )
       end

@@ -60,7 +60,7 @@ RSpec.describe Reports::SpProofingEventsByUuid do
       )
 
       expect(ReportMailer).to receive(:tables_report).once.with(
-        email: 'test@example.com',
+        to: 'test@example.com',
         subject: 'ABC Proofing Events By UUID - 2024-12-09',
         reports: emailable_reports,
         message: anything,

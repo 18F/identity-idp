@@ -48,7 +48,7 @@ export function DocumentsCaptureStep({
   );
 }
 
-export function DocumentCaptureSubheaderOne() {
+export function DocumentCaptureHeader() {
   const { t } = useI18n();
   const { idType } = useContext(UploadContext);
   const idIsPassport = idType === 'passport';
@@ -80,7 +80,7 @@ export default function DocumentsStep({
   return (
     <>
       {flowPath === 'hybrid' && <HybridDocCaptureWarning className="margin-bottom-4" />}
-      <DocumentCaptureSubheaderOne />
+      <DocumentCaptureHeader />
       <TipList
         titleClassName="margin-bottom-0 text-bold"
         title={t('doc_auth.tips.document_capture_selfie_id_header_text')}

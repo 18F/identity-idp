@@ -441,7 +441,7 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
           stub_aamva_request(aamva_response)
         end
 
-        it 'displays try again errors' do
+        it 'displays state ID verification error' do
           body = JSON.parse(SocureDocvFixtures.aamva_fail_json)
 
           remove_request_stub(@docv_stub)
@@ -460,7 +460,7 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
               transaction_token: @docv_transaction_token,
             ),
           )
-          expect(page).to have_content(t('idv.errors.try_again_later'))
+          expect(page).to have_content(t('doc_auth.errors.state_id_verification'))
         end
       end
     end

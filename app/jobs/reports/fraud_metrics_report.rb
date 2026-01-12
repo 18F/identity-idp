@@ -28,7 +28,7 @@ module Reports
       end
 
       ReportMailer.tables_report(
-        email: email_addresses,
+        to: email_addresses,
         subject: "Fraud Metrics Report - #{report_date.to_date}",
         reports: reports,
         message: preamble,
