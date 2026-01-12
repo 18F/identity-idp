@@ -213,13 +213,16 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
             transaction_id: 'state-id-resolution-failed-tx',
           )
         end
+
         it 'phone precheck auto fails and aamva is not called' do
           expect(Proofing::AddressProofer).not_to receive(:new)
 
           proof.tap do |result|
             expect(result.resolution_result.success?).to be_falsey
             expect(result.state_id_result.success?).to be_truthy
-            expect(result.state_id_result.vendor_name).to eq('UnsupportedJurisdiction')
+            expect(result.state_id_result.vendor_name).to eq(
+              Idp::Constants::Vendors::AAMVA_CHECK_SKIPPED,
+            )
             expect(result).to be_an_instance_of(Proofing::Resolution::ResultAdjudicator)
             expect(result.phone_result[:alternate_result]).to be_nil
             expect(result.phone_result[:success]).to be_falsey

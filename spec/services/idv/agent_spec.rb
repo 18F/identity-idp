@@ -65,7 +65,7 @@ RSpec.describe Idv::Agent do
       end
 
       context 'proofing in an AAMVA state' do
-        context 'when resolution fails' do
+        context 'when state ID address resolution fails' do
           let(:applicant) do
             super().merge(ssn: '444-55-6666')
           end
@@ -73,10 +73,11 @@ RSpec.describe Idv::Agent do
           it 'does not proof state_id' do
             expect(result[:errors][:ssn]).to eq ['Unverified SSN.']
             expect(result[:context][:stages][:state_id][:vendor_name]).to(
-              eq('UnsupportedJurisdiction'),
+              eq(Idp::Constants::Vendors::AAMVA_CHECK_SKIPPED),
             )
           end
         end
+
         context 'when resolution succeeds' do
           it 'proofs state_id' do
             expect(result[:context][:stages][:state_id]).to include(
@@ -104,7 +105,7 @@ RSpec.describe Idv::Agent do
           it 'does not proof state_id' do
             expect(result[:errors][:ssn]).to eq ['Unverified SSN.']
             expect(result[:context][:stages][:state_id][:vendor_name]).to(
-              eq('UnsupportedJurisdiction'),
+              eq(Idp::Constants::Vendors::AAMVA_UNSUPPORTED_JURISDICTION),
             )
           end
         end
