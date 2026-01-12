@@ -335,8 +335,6 @@ Rails.application.routes.draw do
     delete '/backup_code_delete' => 'users/backup_code_setup#delete'
     get '/confirm_backup_codes' => 'users/backup_code_setup#confirm_backup_codes'
 
-    get '/sms_preview/daily_voice_limit_reached' => 'sms_preview/daily_voice_limit_reached#show'
-
     get '/user_please_call' => 'users/please_call#show'
     get '/duplicate_profiles_please_call/:source' => 'users/duplicate_profiles_please_call#show', as: :duplicate_profiles_please_call
 
@@ -499,6 +497,8 @@ Rails.application.routes.draw do
 
     root to: 'users/sessions#new'
   end
+
+  get '/sms_preview/daily_voice_limit_reached' => 'sms_preview/daily_voice_limit_reached#show'
 
   # Make sure any new routes are added above this line!
   # The line below will route all requests that aren't
