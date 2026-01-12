@@ -316,6 +316,7 @@ Rails.application.routes.draw do
     delete '/openid_connect/logout' => 'openid_connect/logout#delete'
 
     get '/otp/send' => 'users/two_factor_authentication#send_code'
+    get '/sms_preview/daily_voice_limit_reached' => 'sms_preview/daily_voice_limit_reached#show'
 
     get '/authentication_methods_setup' => 'users/two_factor_authentication_setup#index'
     patch '/authentication_methods_setup' => 'users/two_factor_authentication_setup#create'
