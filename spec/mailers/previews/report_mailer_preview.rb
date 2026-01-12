@@ -129,12 +129,13 @@ class ReportMailerPreview < ActionMailer::Preview
 
   def irs_registration_funnel_report
     datetime = Time.zone.yesterday.end_of_day
-    Reports::IrsRegistrationFunnelReport.new(datetime)
+    irs_registration_funnel_report = Reports::IrsOriginalRegistrationFunnelReport.new(datetime)
 
     stub_cloudwatch_client(irs_registration_funnel_report.irs_registration_funnel_report)
 
     ReportMailer.tables_report(
       to: 'test@example.com',
+      bcc: 'bcc@example.com',
       subject: "Example IRS Registration Funnel Report - #{Time.zone.now.to_date}",
       message: irs_registration_funnel_report.preamble,
       attachment_format: :csv,
@@ -158,6 +159,7 @@ class ReportMailerPreview < ActionMailer::Preview
 
     ReportMailer.tables_report(
       to: 'test@example.com',
+      bcc: 'bcc@example.com',
       subject: "Example #{mock_agency} Registration Funnel Report - #{Time.zone.now.to_date}",
       message: "Report: #{mock_agency} Registration Funnel Report - #{date.to_date}",
       attachment_format: :csv,
