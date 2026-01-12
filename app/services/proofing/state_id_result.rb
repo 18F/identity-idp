@@ -95,7 +95,7 @@ module Proofing
     def doc_auth_errors
       return {} if errors.empty? && !unexpected_error_code_exception?
 
-      { verification: 'Document could not be verified.' }
+      { state_id_verification: 'Document could not be verified.' }
     end
   end
 end

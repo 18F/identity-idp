@@ -1157,7 +1157,7 @@ RSpec.describe SocureDocvResultsJob do
         context 'when aamva check is unsuccessful' do
           let(:aamva_success) { false }
           let(:aamva_errors) do
-            { verification: 'Document could not be verified.' }
+            { state_id_verification: 'Document could not be verified.' }
           end
 
           it 'doc auth fails' do
