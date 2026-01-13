@@ -61,7 +61,7 @@ RSpec.describe Reporting::ApiTransactionCountReport do
       )
 
       expect(data_row.first).to eq("#{time_range.begin.to_date} - #{time_range.end.to_date}")
-      expect(data_row[1..]).to eq([10, 11, 15, 20, 25, 26, 30, 40, 45, 50, 60, 70, 80, 90])
+      expect(data_row[1..]).to eq([10, 11, 15, 20, 25, 26, 30, 40, 45, 50, 60, 70, 80, 85, 90])
     end
   end
 
