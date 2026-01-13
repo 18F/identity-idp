@@ -919,7 +919,7 @@ RSpec.describe SocureDocvResultsJob do
             current_sp: sp,
             ipp_enrollment_in_progress: false,
             state_id_address_resolution_result: nil,
-            timer: an_instance_of(JobHelpers::Timer),
+            timer: kind_of(JobHelpers::Timer),
             doc_auth_flow: true,
             analytics: fake_analytics,
           ).and_return(aamva_proofing_result)
