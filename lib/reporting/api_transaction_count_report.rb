@@ -414,7 +414,7 @@ module Reporting
         | unnest message.properties.event_properties.proofing_results.context.should_proof_state_id into @should_proof_state_id
         | fields state_id.vendor_name as @vendor_name, name, 
          coalesce(@vendor_name,properties.event_properties.vendor_name) as vendor_name ,
-         coalesce(@should_proof_state_id,0) = should_proof_state_id
+         coalesce(@should_proof_state_id,0) as should_proof_state_id
         | filter (name = 'IdV: doc auth verify proofing results' and should_proof_state_id = 1)  or (name = 'idv_state_id_validation')
         | filter vendor_name = 'aamva:state_id'
         | stats count(*) as aamva_transactions_ipp
