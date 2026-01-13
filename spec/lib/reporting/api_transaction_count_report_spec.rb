@@ -26,8 +26,7 @@ RSpec.describe Reporting::ApiTransactionCountReport do
     allow(report).to receive(:threat_metrix_auth_only_table).and_return([50, mock_results])
     allow(report).to receive(:ln_emailage_table).and_return([60, mock_results])
     allow(report).to receive(:gpo_table).and_return([70, mock_results])
-    allow(report).to receive(:aamva_ipp_table).and_return([80, mock_results])
-    allow(report).to receive(:aamva_remote_table).and_return([85, mock_results])
+    allow(report).to receive(:aamva_table).and_return([80, mock_results])
     allow(report).to receive(:socure_phonerisk_table).and_return([90, mock_results])
   end
 
@@ -56,8 +55,7 @@ RSpec.describe Reporting::ApiTransactionCountReport do
           'Threat Metrix (Auth Only)',
           'LN Emailage',
           'GPO',
-          'AAMVA IPP',
-          'AAMVA Remote IDV',
+          'AAMVA',
           'Socure PhoneRisk (Shadow)',
         ],
       )
@@ -82,7 +80,7 @@ RSpec.describe Reporting::ApiTransactionCountReport do
           Socure\ \(KYC\),
           Fraud\ Score\ and\ Attribute,Threat\ Metrix\s\(IDV\),
           Threat\ Metrix\s\(Auth\ Only\),LN\ Emailage,GPO,
-          AAMVA\ IPP,AAMVA\ Remote\ IDV,
+          AAMVA,
           Socure\ PhoneRisk\ \(Shadow\)
         /x,
       )

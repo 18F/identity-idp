@@ -81,8 +81,7 @@ module Reporting
           'Threat Metrix (Auth Only)',
           'LN Emailage',
           'GPO',
-          'AAMVA IPP',
-          'AAMVA Remote IDV',
+          'AAMVA',
           'Socure PhoneRisk (Shadow)',
         ],
         [
@@ -99,8 +98,7 @@ module Reporting
           threat_metrix_auth_only_table.first,
           ln_emailage_table.first,
           gpo_table.first,
-          aamva_ipp_table.first,
-          aamva_remote_table.first,
+          aamva_table.first,
           socure_phonerisk_table.first,
         ],
       ]
@@ -188,14 +186,8 @@ module Reporting
       [gpo_table_count, result]
     end
 
-    def aamva_ipp_table
-      result = fetch_results(query: aamva_ipp_query)
-      aamva_table_count = result.count
-      [aamva_table_count, result]
-    end
-
-    def aamva_remote_table
-      result = fetch_results(query: aamva_remote_query)
+    def aamva_table
+      result = fetch_results(query: aamva_query)
       aamva_table_count = result.count
       [aamva_table_count, result]
     end
@@ -413,31 +405,19 @@ module Reporting
       QUERY
     end
 
-    def aamva_ipp_query
+    def aamva_query
       <<~QUERY
         fields @timestamp, @message, @log, id 
-        | filter name = 'IdV: doc auth verify proofing results' 
+        | filter name IN ['IdV: doc auth verify proofing results', ‘idv_state_id_validation’]
         | fields jsonParse(@message) as message
         | unnest message.properties.event_properties.proofing_results.context.stages.state_id into state_id
-        | fields state_id.vendor_name as @vendor_name,
-             state_id.mva_exception as @mva_exception_1
-        | filter @vendor_name = 'aamva:state_id'
-        | filter !@mva_exception_1
+        | unnest message.properties.event_properties.proofing_results.context.should_proof_state_id into @should_proof_state_id
+        | fields state_id.vendor_name as @vendor_name, name, 
+         coalesce(@vendor_name,properties.event_properties.vendor_name) as vendor_name ,
+         coalesce(@should_proof_state_id,0) = should_proof_state_id
+        | filter (name = 'IdV: doc auth verify proofing results' and should_proof_state_id = 1)  or (name = 'idv_state_id_validation')
+        | filter vendor_name = 'aamva:state_id'
         | stats count(*) as aamva_transactions_ipp
-        | limit 10000
-      QUERY
-    end
-
-    def aamva_remote_query
-      <<~QUERY
-        filter name IN [‘idv_state_id_validation’]
-        | fields  message,  @timestamp, @message, @log, id ,
-        properties.event_properties.vendor_name as @vendor_name, 
-        properties.event_properties.mva_exception as @exception,
-        properties.event_properties.success as success
-        | filter !@exception
-        | filter @vendor_name = 'aamva:state_id'
-        | stats count(*) as aamva_transactions_remote
         | limit 10000
       QUERY
     end
@@ -445,7 +425,7 @@ module Reporting
     def socure_phonerisk_query
       <<~QUERY
         fields @timestamp, @message, @log, id
-        | filter name IN ["IdV: phone confirmation vendor", "idv_socure_shadow_mode_phonerisk_result"] 
+        | filter name IN ["idv_socure_shadow_mode_phonerisk_result"] 
         | stats count(*) as socure_phonerisk_transactions
         | limit 10000
       QUERY
