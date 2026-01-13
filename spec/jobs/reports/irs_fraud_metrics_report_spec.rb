@@ -163,7 +163,7 @@ RSpec.describe Reports::IrsFraudMetricsReport do
     let(:report_date) { Date.new(2021, 3, 1).prev_day.end_of_day }
     subject(:report) { described_class.new(report_date, report_receiver) }
 
-    it 'sends partner emails in TO and internal emails in BCC for the prior-day (month-end) report_date' do
+    it 'sends partner emails in TO and internal emails in BCC for month-end' do
       expect(ReportMailer).to receive(:tables_report).once.with(
         to: ['mock_feds@example.com', 'mock_contractors@example.com'],
         bcc: ['mock_internal@example.com'],
