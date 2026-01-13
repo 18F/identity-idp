@@ -57,8 +57,6 @@ module DocAuth
             return {}.to_json if front_image.blank?
 
             {
-              org_id: config.org_id,
-              api_key: config.api_key,
               account_first_name: applicant[:first_name] || '',
               account_middle_name: applicant[:middle_name] || '',
               account_last_name: applicant[:last_name] || '',
@@ -82,6 +80,8 @@ module DocAuth
           def build_request_headers
             {
               'Content-Type' => 'application/json',
+              'x-org-id' => config.org_id,
+              'x-api-key' => config.api_key,
             }
           end
 

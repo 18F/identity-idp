@@ -303,7 +303,7 @@ RSpec.describe DocAuth::LexisNexis::Requests::Ddp::TrueIdRequest do
         )
     end
 
-    it 'includes Content-Type header only (auth in body)' do
+    it 'includes Content-Type, x-org-id, and x-api-key headers' do
       subject.proof(
         front_image: front_image,
         back_image: back_image,
@@ -311,7 +311,11 @@ RSpec.describe DocAuth::LexisNexis::Requests::Ddp::TrueIdRequest do
       )
 
       expect(WebMock).to have_requested(:post, 'https://example.com/authentication/v1/trueid/')
-        .with(headers: { 'Content-Type' => 'application/json' })
+        .with(headers: {
+          'Content-Type' => 'application/json',
+          'x-org-id' => 'test_org_id',
+          'x-api-key' => 'test_api_key',
+        })
     end
   end
 
@@ -322,20 +326,6 @@ RSpec.describe DocAuth::LexisNexis::Requests::Ddp::TrueIdRequest do
           status: 200,
           body: { 'request_result' => 'success', 'review_status' => 'pass' }.to_json,
         )
-    end
-
-    it 'includes org_id and api_key in body' do
-      subject.proof(
-        front_image: front_image,
-        back_image: back_image,
-        document_type_requested: document_type_requested,
-      )
-
-      expect(WebMock).to have_requested(:post, 'https://example.com/authentication/v1/trueid/')
-        .with { |req|
-          body = JSON.parse(req.body)
-          body['org_id'] == 'test_org_id' && body['api_key'] == 'test_api_key'
-        }
     end
 
     it 'includes images with correct key format' do
