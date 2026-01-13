@@ -12,7 +12,7 @@ module DocAuth
           def initialize(config:)
             @config = config
             @applicant = {}
-            super(config: config, applicant: @applicant)
+            super(config:, applicant: @applicant)
           end
 
           def proof(

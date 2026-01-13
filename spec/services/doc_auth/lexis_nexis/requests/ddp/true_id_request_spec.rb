@@ -19,7 +19,7 @@ RSpec.describe DocAuth::LexisNexis::Requests::Ddp::TrueIdRequest do
       state: 'ZZ',
       zipcode: '00000',
       ssn: '900-00-0000',
-      email: 'person.name@email.com',
+      email: 'person.name@email.test',
     }
   end
 
@@ -31,7 +31,7 @@ RSpec.describe DocAuth::LexisNexis::Requests::Ddp::TrueIdRequest do
     )
   end
 
-  subject { described_class.new(config: config) }
+  subject { described_class.new(config:) }
 
   before do
     allow(IdentityConfig.store).to receive(:lexisnexis_trueid_ddp_liveness_policy)
@@ -366,7 +366,7 @@ RSpec.describe DocAuth::LexisNexis::Requests::Ddp::TrueIdRequest do
             body['account_address_country'] == 'us' &&
             body['national_id_number'] == '900000000' &&
             body['national_id_type'] == 'US_SSN' &&
-            body['account_email'] == 'person.name@email.com'
+            body['account_email'] == 'person.name@email.test'
         }
     end
 
