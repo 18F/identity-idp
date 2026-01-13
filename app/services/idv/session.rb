@@ -13,6 +13,7 @@ module Idv
   # @attr gpo_request_letter_visited [Boolean, nil]
   # @attr had_barcode_attention_error [Boolean, nil]
   # @attr had_barcode_read_failure [Boolean, nil]
+  # @attr hybrid_mobile_threatmetrix_review_status [String, nil]
   # @attr idv_consent_given [Boolean, nil]
   # @attr idv_consent_given_at [String, nil]
   # @attr idv_phone_step_document_capture_session_uuid [String, nil]
@@ -61,6 +62,7 @@ module Idv
       gpo_request_letter_visited
       had_barcode_attention_error
       had_barcode_read_failure
+      hybrid_mobile_threatmetrix_review_status
       idv_consent_given
       idv_consent_given_at
       idv_phone_step_document_capture_session_uuid
@@ -425,6 +427,15 @@ module Idv
 
     def threatmetrix_fraud_pending_reason
       return if !FeatureManagement.proofing_device_profiling_decisioning_enabled?
+
+      if FeatureManagement.proofing_device_hybrid_profiling_collecting_enabled?
+        case hybrid_mobile_threatmetrix_review_status
+        when 'reject'
+          return 'hybrid_mobile_threatmetrix_reject'
+        when 'review'
+          return 'hybrid_mobile_threatmetrix_review'
+        end
+      end
 
       case threatmetrix_review_status
       when 'reject'

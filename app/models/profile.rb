@@ -36,6 +36,8 @@ class Profile < ApplicationRecord
   enum :fraud_pending_reason, {
     threatmetrix_review: 1,
     threatmetrix_reject: 2,
+    hybrid_mobile_threatmetrix_review: 3,
+    hybrid_mobile_threatmetrix_reject: 4,
   }
 
   enum :idv_level, {
