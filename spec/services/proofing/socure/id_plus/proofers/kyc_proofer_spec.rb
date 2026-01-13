@@ -4,16 +4,10 @@ RSpec.describe Proofing::Socure::IdPlus::Proofers::KycProofer do
   let(:config) do
   end
 
-  let(:proofer) do
-    described_class.new(config)
-  end
-
-  let(:applicant) do
-    {}
-  end
-
+  let(:analytics) { FakeAnalytics.new }
+  let(:proofer) { described_class.new(config, analytics) }
+  let(:applicant) { {} }
   let(:api_key) { 'super-$ecret' }
-
   let(:base_url) { 'https://example.org/' }
 
   let(:config) do
@@ -23,9 +17,7 @@ RSpec.describe Proofing::Socure::IdPlus::Proofers::KycProofer do
     )
   end
 
-  let(:result) do
-    proofer.proof(applicant)
-  end
+  let(:result) { proofer.proof(applicant) }
 
   let(:response_status) { 200 }
 
@@ -68,6 +60,11 @@ RSpec.describe Proofing::Socure::IdPlus::Proofers::KycProofer do
         },
         body: using_json ? JSON.generate(response_body) : response_body,
       )
+  end
+
+  it 'calls proper analytics event' do
+    result
+    expect(analytics).to have_logged_event(:idv_socure_kyc_results)
   end
 
   it 'reports reason codes as errors' do

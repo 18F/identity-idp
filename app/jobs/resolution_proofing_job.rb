@@ -41,6 +41,8 @@ class ResolutionProofingJob < ApplicationJob
 
     current_sp = ServiceProvider.find_by(issuer: service_provider_issuer)
 
+    analytics = create_analytics(user, service_provider_issuer)
+
     applicant_pii = decrypted_args[:applicant_pii]
     applicant_pii[:uuid_prefix] = current_sp&.app_id
     applicant_pii[:uuid] = user.uuid
@@ -55,6 +57,7 @@ class ResolutionProofingJob < ApplicationJob
       current_sp:,
       proofing_vendor:,
       state_id_already_proofed:,
+      analytics:,
     )
 
     ssn_is_unique = Idv::DuplicateSsnFinder.new(
@@ -92,9 +95,10 @@ class ResolutionProofingJob < ApplicationJob
     ipp_enrollment_in_progress:,
     current_sp:,
     proofing_vendor:,
+    analytics:,
     state_id_already_proofed: false
   )
-    result = progressive_proofer(user:, proofing_vendor:).proof(
+    result = progressive_proofer(user:, proofing_vendor:, analytics:).proof(
       applicant_pii:,
       threatmetrix_session_id:,
       request_ip:,
@@ -116,6 +120,10 @@ class ResolutionProofingJob < ApplicationJob
     )
   end
 
+  def create_analytics(user, sp_issuer)
+    Analytics.new(user:, request: nil, session: {}, sp: sp_issuer)
+  end
+
   def user_email_for_proofing(user)
     user.last_sign_in_email_address.email
   end
@@ -133,9 +141,9 @@ class ResolutionProofingJob < ApplicationJob
     logger.info(hash.to_json)
   end
 
-  def progressive_proofer(user:, proofing_vendor:)
+  def progressive_proofer(user:, proofing_vendor:, analytics:)
     @progressive_proofer ||= Proofing::Resolution::ProgressiveProofer.new(
-      user_uuid: user.uuid, proofing_vendor:, user_email: user_email_for_proofing(user),
+      user_uuid: user.uuid, proofing_vendor:, analytics:, user_email: user_email_for_proofing(user),
     )
   end
 end

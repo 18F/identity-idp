@@ -7,8 +7,10 @@ module Proofing
         attr_reader :config
 
         # @param [Proofing::Socure::IdPlus::Config] config
-        def initialize(config)
+        # @param [Analytics,nil] analytics
+        def initialize(config, analytics = nil)
           @config = config
+          @analytics = analytics
         end
 
         # @param [Hash] applicant
@@ -16,10 +18,18 @@ module Proofing
         def proof(applicant)
           input = Input.new(applicant.slice(*Input.members))
           response = request(input).send_request
-          build_result_from_response(response)
+          result = build_result_from_response(response)
+
+          log_result(result.to_h)
+
+          result
         rescue Proofing::TimeoutError, Request::Error => err
           NewRelic::Agent.notice_error(err)
-          build_result_from_error(err)
+          result = build_result_from_error(err)
+
+          log_result(result.to_h)
+
+          result
         end
 
         private
@@ -34,6 +44,10 @@ module Proofing
 
         def build_result_from_error(err)
           raise NotImplementedError
+        end
+
+        def log_result(result_hash)
+          # No op
         end
       end
     end
