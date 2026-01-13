@@ -316,6 +316,10 @@ module Idv
     def save_threatmetrix_status(form_response)
       review_status = form_response.extra.dig(:proofing_results, :threatmetrix_review_status)
       idv_session.threatmetrix_review_status = review_status
+
+      hybrid_mobile_review_status = form_response
+        .extra.dig(:proofing_results, :hybrid_mobile_threatmetrix_review_status)
+      idv_session.hybrid_mobile_threatmetrix_review_status = hybrid_mobile_review_status
     end
 
     def save_source_check_vendor(form_response)

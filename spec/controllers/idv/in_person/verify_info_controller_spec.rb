@@ -43,6 +43,7 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
           idv_session.resolution_vendor = 'ResolutionVendor'
           idv_session.verify_info_step_document_capture_session_uuid = 'abcd-1234'
           idv_session.threatmetrix_review_status = 'pass'
+          idv_session.hybrid_mobile_threatmetrix_review_status = 'pass'
           idv_session.source_check_vendor = 'aamva'
           idv_session.applicant = { first_name: 'Joe ' }
         end
@@ -57,6 +58,7 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
           expect(idv_session.resolution_vendor).to be(nil)
           expect(idv_session.source_check_vendor).to be(nil)
           expect(idv_session.threatmetrix_review_status).to be(nil)
+          expect(idv_session.hybrid_mobile_threatmetrix_review_status).to be(nil)
           expect(idv_session.verify_info_step_document_capture_session_uuid).to be(nil)
         end
       end
