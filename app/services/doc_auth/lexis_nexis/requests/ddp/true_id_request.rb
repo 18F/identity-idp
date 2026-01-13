@@ -125,8 +125,7 @@ module DocAuth
           end
 
           def id_front_image
-            case document_type_requested
-            when DocumentTypes::PASSPORT
+            if document_type_requested == DocumentTypes::PASSPORT
               passport_image
             else
               front_image
@@ -163,14 +162,11 @@ module DocAuth
           end
 
           def validate_images!
-            if document_type_requested == DocumentTypes::PASSPORT
-              if passport_image.blank?
-                raise ArgumentError, 'passport_image is required for passport documents'
-              end
-            else
-              raise ArgumentError, 'front_image is required' if front_image.blank?
-              raise ArgumentError, 'back_image is required' if back_image.blank?
+            if document_type_requested == DocumentTypes::PASSPORT && passport_image.blank?
+              raise ArgumentError, 'passport_image is required for passport documents'
             end
+            raise ArgumentError, 'front_image is required' if front_image.blank?
+            raise ArgumentError, 'back_image is required' if back_image.blank?
 
             if liveness_checking_required && selfie_image.blank?
               raise ArgumentError, 'selfie_image is required when liveness checking is enabled'
