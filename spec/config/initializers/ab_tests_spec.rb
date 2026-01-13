@@ -411,6 +411,32 @@ RSpec.describe AbTests do
                     :DOC_AUTH_SELFIE_VENDOR, 'lexis_nexis_ddp'
   end
 
+  describe 'PHONE_FINDER_RDP_VERSION' do
+    let(:ab_test) { :PHONE_FINDER_RDP_VERSION }
+
+    let(:enable_ab_test) do
+      -> {
+        allow(IdentityConfig.store).to receive(:idv_rdp_version_default)
+          .and_return('vendor_a')
+        allow(IdentityConfig.store).to receive(:idv_rdp_version_switching_enabled)
+          .and_return(true)
+        allow(IdentityConfig.store).to receive(:idv_rdp_version_v2_percent)
+          .and_return(90)
+        allow(IdentityConfig.store).to receive(:idv_rdp_version_v3_percent)
+          .and_return(10)
+      }
+    end
+
+    let(:disable_ab_test) do
+      -> {
+        allow(IdentityConfig.store).to receive(:idv_rdp_version_switching_enabled)
+          .and_return(false)
+      }
+    end
+
+    it_behaves_like 'an A/B test that uses user_uuid as a discriminator'
+  end
+
   describe 'DOC_AUTH_PASSPORT_VENDOR' do
     let(:ab_test) { :DOC_AUTH_PASSPORT_VENDOR }
 

@@ -1,0 +1,33 @@
+{
+  "Type": "Initiate",
+  "Settings": {
+    "AccountNumber": "test_account",
+    "Mode": "testing",
+    "Reference": "0987:1234-abcd",
+    "Locale": "en_US",
+    "Venue": "online"
+  },
+  "Persons": [
+    {
+      "Context": "primary",
+      "Name": {
+        "FirstName": "Testy",
+        "LastName": "McTesterson"
+      },
+      "SSN": {
+        "Number": "123456789",
+        "Type": "ssn9"
+      },
+      "DateOfBirth": {
+        "Year": 1980,
+        "Month": 1,
+        "Day": 1
+      },
+      "Phones": [
+        {
+          "Number": "5551231234"
+        }
+      ]
+    }
+  ]
+}
