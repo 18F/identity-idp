@@ -131,7 +131,7 @@ RSpec.describe Reports::IrsFraudMetricsReport do
     end
   end
 
-  context 'recipient is :internal but internal emails are empty' do
+  context 'recipient is internal but internal emails are empty' do
     let(:report_receiver) { :internal }
     let(:report_date) { Date.new(2025, 9, 30).in_time_zone('UTC').end_of_day }
     subject(:report) { described_class.new(report_date, report_receiver) }
@@ -158,7 +158,26 @@ RSpec.describe Reports::IrsFraudMetricsReport do
     end
   end
 
-  context 'recipient is :internal and internal emails exist' do
+  context 'when queued from the first of the month' do
+    let(:report_receiver) { :both }
+    let(:report_date) { Date.new(2021, 3, 1).prev_day.end_of_day }
+    subject(:report) { described_class.new(report_date, report_receiver) }
+
+    it 'sends partner emails in TO and internal emails in BCC for the prior-day (month-end) report_date' do
+      expect(ReportMailer).to receive(:tables_report).once.with(
+        to: ['mock_feds@example.com', 'mock_contractors@example.com'],
+        bcc: ['mock_internal@example.com'],
+        subject: "#{agency_abbreviation} Fraud Metrics Report - 2021-02-28",
+        reports: anything,
+        message: report.preamble,
+        attachment_format: :csv,
+      ).and_call_original
+
+      report.perform(report_date, :both)
+    end
+  end
+
+  context 'recipient is internal and internal emails exist' do
     let(:report_date) { Date.new(2025, 9, 27).prev_day } # 2025-09-26
     subject(:report) { described_class.new(report_date, :internal) }
 
