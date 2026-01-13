@@ -317,9 +317,11 @@ module Idv
       review_status = form_response.extra.dig(:proofing_results, :threatmetrix_review_status)
       idv_session.threatmetrix_review_status = review_status
 
-      hybrid_mobile_review_status = form_response
-        .extra.dig(:proofing_results, :hybrid_mobile_threatmetrix_review_status)
-      idv_session.hybrid_mobile_threatmetrix_review_status = hybrid_mobile_review_status
+      if FeatureManagement.proofing_device_hybrid_profiling_collecting_enabled?
+        hybrid_mobile_review_status = form_response
+          .extra.dig(:proofing_results, :hybrid_mobile_threatmetrix_review_status)
+        idv_session.hybrid_mobile_threatmetrix_review_status = hybrid_mobile_review_status
+      end
     end
 
     def save_source_check_vendor(form_response)
@@ -403,29 +405,16 @@ module Idv
     def create_fraud_review_request_if_needed(result)
       return unless FeatureManagement.proofing_device_profiling_collecting_enabled?
 
-      threatmetrix_result = result.dig(:context, :stages, :threatmetrix)
-      return unless threatmetrix_result
+      threatmetrix_failed = threatmetrix_check_failed?(result)
 
-      success = (threatmetrix_result[:review_status] == 'pass')
+      hybrid_mobile_failed = hybrid_mobile_threatmetrix_check_failed?(result)
 
-      attempts_api_tracker.idv_device_risk_assessment(
-        device_fingerprint: threatmetrix_result.dig(:device_fingerprint),
-        success:,
-        failure_reason: device_risk_failure_reason(success, threatmetrix_result),
-      )
-
-      fraud_ops_tracker.idv_device_risk_assessment(
-        device_fingerprint: threatmetrix_result.dig(:device_fingerprint),
-        success:,
-        failure_reason: device_risk_failure_reason(success, threatmetrix_result),
-      )
-
-      return if success
-
-      FraudReviewRequest.create(
-        user: current_user,
-        login_session_id: Digest::SHA1.hexdigest(current_user.unique_session_id.to_s),
-      )
+      if threatmetrix_failed || hybrid_mobile_failed
+        FraudReviewRequest.create(
+          user: current_user,
+          login_session_id: Digest::SHA1.hexdigest(current_user.unique_session_id.to_s),
+        )
+      end
     end
 
     def move_applicant_to_idv_session
@@ -525,6 +514,50 @@ module Idv
         (idv_session.source_check_vendor == 'aamva:state_id' ||
           idv_session.source_check_vendor == 'aamva' ||
           idv_session.source_check_vendor == 'StateIdMock')
+    end
+
+    def threatmetrix_check_failed?(result)
+      threatmetrix_result = result.dig(:context, :stages, :threatmetrix)
+      return false unless threatmetrix_result
+
+      success = (threatmetrix_result[:review_status] == 'pass')
+
+      attempts_api_tracker.idv_device_risk_assessment(
+        device_fingerprint: threatmetrix_result.dig(:device_fingerprint),
+        success:,
+        failure_reason: device_risk_failure_reason(success, threatmetrix_result),
+      )
+
+      fraud_ops_tracker.idv_device_risk_assessment(
+        device_fingerprint: threatmetrix_result.dig(:device_fingerprint),
+        success:,
+        failure_reason: device_risk_failure_reason(success, threatmetrix_result),
+      )
+
+      !success
+    end
+
+    def hybrid_mobile_threatmetrix_check_failed?(result)
+      return false unless FeatureManagement.proofing_device_hybrid_profiling_collecting_enabled?
+
+      hybrid_mobile_threatmetrix_result = result.dig(:context, :stages, :hybrid_mobile_threatmetrix)
+      return false unless hybrid_mobile_threatmetrix_result
+
+      success = (hybrid_mobile_threatmetrix_result[:review_status] == 'pass')
+
+      attempts_api_tracker.idv_device_risk_assessment(
+        device_fingerprint: hybrid_mobile_threatmetrix_result.dig(:device_fingerprint),
+        success:,
+        failure_reason: device_risk_failure_reason(success, hybrid_mobile_threatmetrix_result),
+      )
+
+      fraud_ops_tracker.idv_device_risk_assessment(
+        device_fingerprint: hybrid_mobile_threatmetrix_result.dig(:device_fingerprint),
+        success:,
+        failure_reason: device_risk_failure_reason(success, hybrid_mobile_threatmetrix_result),
+      )
+
+      !success
     end
 
     VerificationFailures = Struct.new(

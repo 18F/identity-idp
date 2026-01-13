@@ -560,6 +560,197 @@ RSpec.describe Idv::VerifyInfoController do
           get :show
         end
       end
+
+      context 'hybrid mobile threatmetrix tests' do
+        let(:hybrid_mobile_review_status) { 'pass' }
+        let(:hybrid_mobile_success) { true }
+        let(:hybrid_mobile_device_fingerprint) { SecureRandom.hex(32) }
+        let(:hybrid_mobile_tmx_summary_reason_code) { [] }
+        let(:threatmetrix_review_status) { 'pass' }
+        let(:threatmetrix_success) { true }
+
+        let(:idv_result) do
+          {
+            context: {
+              device_profiling_adjudication_reason: 'device_profiling_result',
+              resolution_adjudication_reason: 'pass_resolution_and_state_id',
+              hybrid_mobile_device_profiling_adjudication_reason:
+                'hybrid_mobile_device_profiling_result',
+              stages: {
+                threatmetrix: {
+                  success: threatmetrix_success,
+                  device_fingerprint:,
+                  client: threatmetrix_client_id,
+                  transaction_id: 1,
+                  review_status: threatmetrix_review_status,
+                  response_body: {
+                    client: threatmetrix_client_id,
+                    tmx_summary_reason_code: ['Identity_Negative_History'],
+                  },
+                },
+                hybrid_mobile_threatmetrix: {
+                  success: hybrid_mobile_success,
+                  device_fingerprint: hybrid_mobile_device_fingerprint,
+                  client: threatmetrix_client_id,
+                  transaction_id: 2,
+                  review_status: hybrid_mobile_review_status,
+                  response_body: {
+                    client: threatmetrix_client_id,
+                    tmx_summary_reason_code: hybrid_mobile_tmx_summary_reason_code,
+                  },
+                },
+              },
+            },
+            errors: {},
+            exception: nil,
+            success: true,
+            threatmetrix_review_status: threatmetrix_review_status,
+            hybrid_mobile_threatmetrix_review_status: hybrid_mobile_review_status,
+          }
+        end
+
+        context 'when hybrid mobile threatmetrix response is Pass' do
+          before do
+            allow(FeatureManagement)
+              .to receive(:proofing_device_hybrid_profiling_collecting_enabled?)
+              .and_return(true)
+          end
+
+          it 'sets the hybrid mobile review status in the idv session' do
+            get :show
+            expect(controller.idv_session.hybrid_mobile_threatmetrix_review_status).to eq('pass')
+          end
+
+          it 'tracks a successful hybrid mobile tmx fraud check' do
+            expect(@attempts_api_tracker).to receive(:idv_device_risk_assessment).with(
+              success: true,
+              device_fingerprint:,
+              failure_reason: nil,
+            )
+
+            expect(@attempts_api_tracker).to receive(:idv_device_risk_assessment).with(
+              success: true,
+              device_fingerprint: hybrid_mobile_device_fingerprint,
+              failure_reason: nil,
+            )
+
+            get :show
+          end
+
+          it 'does not create a FraudReviewRequest' do
+            expect { get :show }.not_to change(FraudReviewRequest, :count)
+          end
+        end
+
+        context 'when hybrid mobile threatmetrix response is Reject' do
+          let(:hybrid_mobile_review_status) { 'reject' }
+          let(:hybrid_mobile_success) { false }
+          let(:hybrid_mobile_tmx_summary_reason_code) { ['Identity_Negative_History'] }
+
+          before do
+            allow(FeatureManagement)
+              .to receive(:proofing_device_hybrid_profiling_collecting_enabled?)
+              .and_return(true)
+          end
+
+          it 'sets the hybrid mobile review status in the idv session' do
+            get :show
+            expect(controller.idv_session.hybrid_mobile_threatmetrix_review_status).to eq('reject')
+          end
+
+          it 'tracks a failed hybrid mobile tmx fraud check' do
+            expect(@attempts_api_tracker).to receive(:idv_device_risk_assessment).with(
+              success: true,
+              device_fingerprint:,
+              failure_reason: nil,
+            )
+
+            expect(@attempts_api_tracker).to receive(:idv_device_risk_assessment).with(
+              success: false,
+              device_fingerprint: hybrid_mobile_device_fingerprint,
+              failure_reason: {
+                fraud_risk_summary_reason_code: ['Identity_Negative_History'],
+              },
+            )
+
+            get :show
+          end
+
+          it 'creates a FraudReviewRequest' do
+            expect { get :show }.to change(FraudReviewRequest, :count).by(1)
+            fraud_review_request = FraudReviewRequest.last
+            expect(fraud_review_request.user).to eq(user)
+          end
+        end
+
+        context 'when hybrid profiling feature flag is disabled' do
+          before do
+            allow(FeatureManagement)
+              .to receive(:proofing_device_hybrid_profiling_collecting_enabled?)
+              .and_return(false)
+          end
+
+          it 'does not set the hybrid mobile review status in the idv session' do
+            get :show
+            expect(controller.idv_session.hybrid_mobile_threatmetrix_review_status).to be_nil
+          end
+
+          it 'does not track hybrid mobile tmx fraud check' do
+            expect(@attempts_api_tracker).to receive(:idv_device_risk_assessment).once.with(
+              success: true,
+              device_fingerprint:,
+              failure_reason: nil,
+            )
+
+            get :show
+          end
+
+          it 'does not create a FraudReviewRequest' do
+            expect { get :show }.not_to change(FraudReviewRequest, :count)
+          end
+        end
+
+        context 'when threatmetrix rejects and hybrid mobile passes' do
+          let(:threatmetrix_review_status) { 'reject' }
+          let(:threatmetrix_success) { false }
+
+          before do
+            allow(FeatureManagement)
+              .to receive(:proofing_device_hybrid_profiling_collecting_enabled?)
+              .and_return(true)
+          end
+
+          it 'sets both review statuses correctly' do
+            get :show
+            expect(controller.idv_session.threatmetrix_review_status).to eq('reject')
+            expect(controller.idv_session.hybrid_mobile_threatmetrix_review_status).to eq('pass')
+          end
+
+          it 'tracks threatmetrix as failed and hybrid mobile as successful' do
+            expect(@attempts_api_tracker).to receive(:idv_device_risk_assessment).with(
+              success: false,
+              device_fingerprint:,
+              failure_reason: {
+                fraud_risk_summary_reason_code: ['Identity_Negative_History'],
+              },
+            )
+
+            expect(@attempts_api_tracker).to receive(:idv_device_risk_assessment).with(
+              success: true,
+              device_fingerprint: hybrid_mobile_device_fingerprint,
+              failure_reason: nil,
+            )
+
+            get :show
+          end
+
+          it 'creates a FraudReviewRequest because threatmetrix failed' do
+            expect { get :show }.to change(FraudReviewRequest, :count).by(1)
+            fraud_review_request = FraudReviewRequest.last
+            expect(fraud_review_request.user).to eq(user)
+          end
+        end
+      end
     end
 
     context 'when proofing_device_profiling is disabled' do
