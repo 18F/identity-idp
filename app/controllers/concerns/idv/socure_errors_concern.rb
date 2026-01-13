@@ -24,6 +24,8 @@ module Idv
         :network
       elsif result.errors[:pii_validation]
         :pii_validation
+      elsif result.errors[:state_id_verification]
+        :state_id_verification
       else
         # No error information available (shouldn't happen). Default
         # to :network if it does.

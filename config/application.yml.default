@@ -119,10 +119,12 @@ doc_auth_max_capture_attempts_before_native_camera: 3
 doc_auth_max_submission_attempts_before_native_camera: 3
 doc_auth_mock_dos_api: false
 doc_auth_passport_selfie_vendor_default: 'mock'
+doc_auth_passport_selfie_vendor_lexis_nexis_ddp_percent: 0
 doc_auth_passport_selfie_vendor_lexis_nexis_percent: 100
 doc_auth_passport_selfie_vendor_socure_percent: 0
 doc_auth_passport_selfie_vendor_switching_enabled: false
 doc_auth_passport_vendor_default: 'mock'
+doc_auth_passport_vendor_lexis_nexis_ddp_percent: 0
 doc_auth_passport_vendor_lexis_nexis_percent: 100 # note, LN is currently the default vendor
 doc_auth_passport_vendor_socure_percent: 0
 doc_auth_passport_vendor_switching_enabled: false
@@ -130,6 +132,7 @@ doc_auth_passports_enabled: true
 doc_auth_redirect_to_correct_vendor_disabled: false
 doc_auth_selfie_desktop_test_mode: false
 doc_auth_selfie_vendor_default: 'mock'
+doc_auth_selfie_vendor_lexis_nexis_ddp_percent: 0
 doc_auth_selfie_vendor_lexis_nexis_percent: 100 # note, LN is currently the default vendor
 doc_auth_selfie_vendor_socure_percent: 0
 doc_auth_selfie_vendor_switching_enabled: false
@@ -138,6 +141,7 @@ doc_auth_socure_wait_polling_timeout_minutes: 2
 doc_auth_supported_country_codes: '["US", "GU", "VI", "AS", "MP", "PR", "USA" ,"GUM", "VIR", "ASM", "MNP", "PRI"]'
 doc_auth_vendor: 'mock'
 doc_auth_vendor_default: 'mock'
+doc_auth_vendor_lexis_nexis_ddp_percent: 0
 doc_auth_vendor_lexis_nexis_percent: 100 # note, LN is currently the default vendor
 doc_auth_vendor_socure_percent: 0
 doc_auth_vendor_switching_enabled: false
@@ -211,6 +215,10 @@ idv_contact_phone_number: (844) 555-5555
 idv_max_attempts: 5
 idv_min_age_years: 13
 idv_phone_precheck_percent: 0
+idv_rdp_version_default: rdp_v2
+idv_rdp_version_switching_enabled: false
+idv_rdp_version_v2_percent: 100
+idv_rdp_version_v3_percent: 0
 idv_resolution_default_vendor: mock
 idv_resolution_vendor_instant_verify_percent: 0
 idv_resolution_vendor_socure_kyc_percent: 0
@@ -477,6 +485,7 @@ sp_handoff_bounce_max_seconds: 2
 sp_idv_weekly_dropoff_report_configs: '[]'
 sp_issuer_user_counts_report_configs: '[]'
 sp_proofing_events_by_uuid_report_configs: '[]'
+sp_verification_report_configs: '[]'
 state_tracking_enabled: true
 team_ada_email: ''
 team_all_login_emails: '[]'

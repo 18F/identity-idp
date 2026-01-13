@@ -262,7 +262,9 @@ RSpec.describe ResolutionProofingJob, type: :job do
           .to match(['address', 'dead', 'dob', 'ssn'])
 
         # result[:context][:stages][:state_id]
-        expect(result_context_stages_state_id[:vendor_name]).to eq('UnsupportedJurisdiction')
+        expect(result_context_stages_state_id[:vendor_name]).to eq(
+          Idp::Constants::Vendors::AAMVA_CHECK_SKIPPED,
+        )
         expect(result_context_stages_state_id[:success]).to eq(true)
 
         expect(@aamva_stub).to_not have_been_requested
@@ -321,7 +323,9 @@ RSpec.describe ResolutionProofingJob, type: :job do
         expect(result[:timed_out]).to be false
 
         # result[:context][:stages][:state_id]
-        expect(result_context_stages_state_id[:vendor_name]).to eq('UnsupportedJurisdiction')
+        expect(result_context_stages_state_id[:vendor_name]).to eq(
+          Idp::Constants::Vendors::AAMVA_UNSUPPORTED_JURISDICTION,
+        )
         expect(result_context_stages_state_id[:success]).to eq(true)
 
         expect(@aamva_stub).to_not have_been_requested

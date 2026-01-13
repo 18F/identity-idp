@@ -191,9 +191,14 @@ else
       },
       # Send previous week's verification reports to partners
       irs_weekly_verification_report: {
-        class: 'Reports::IrsVerificationReport',
+        class: 'Reports::IrsOriginalVerificationReport',
         cron: cron_every_monday_5am,
         args: -> { [Time.zone.yesterday.end_of_day, :both] },
+      },
+      sp_weekly_verification_report: {
+        class: 'Reports::IrsVerificationReport',
+        cron: cron_every_monday_5am,
+        args: -> { [Time.zone.yesterday.end_of_day, :internal] },
       },
       # Send Identity Verification report to S3
       identity_verification_report: {
@@ -289,6 +294,18 @@ else
       },
       # Previous months's irs verification report
       monthly_irs_verification_report: {
+        class: 'Reports::MonthlyIrsOriginalVerificationReport',
+        cron: cron_24h_and_a_bit,
+        args: -> {
+          JobHelpers::ReportJobConfigurationHelper.build_irs_report_args(
+            Time.zone.yesterday.end_of_day,
+            :monthly,
+          )
+        },
+      },
+
+      # Previous months's SP verification report - Added for testing as of now
+      monthly_sp_verification_report: {
         class: 'Reports::MonthlyIrsVerificationReport',
         cron: cron_24h_and_a_bit,
         args: -> {

@@ -571,8 +571,8 @@ RSpec.describe Idv::DocPiiForm do
       end
     end
 
-    context 'when the error hash contains a verification error' do
-      let(:errors) { { verification: 'I am error' } }
+    context 'when the error hash contains a state_id_verification error' do
+      let(:errors) { { state_id_verification: 'I am error' } }
 
       it 'updates the error hash with font and back errors' do
         expect(errors).to eq(

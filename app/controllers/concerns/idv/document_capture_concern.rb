@@ -35,6 +35,7 @@ module Idv
         unaccepted_id_type: stored_result&.errors&.dig(:unaccepted_id_type),
         selfie_fail: stored_result&.errors&.dig(:selfie_fail),
         unexpected_id_type: stored_result&.errors&.dig(:unexpected_id_type),
+        state_id_verification: stored_result&.errors&.dig(:state_id_verification),
       }
     end
 

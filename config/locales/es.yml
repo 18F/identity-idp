@@ -595,6 +595,7 @@ doc_auth.errors.send_link_limited: Lo intentó demasiadas veces; vuelva a intent
 doc_auth.errors.sharpness.failed_short: La imagen está borrosa; inténtelo de nuevo.
 doc_auth.errors.sharpness.top_msg: No pudimos leer su identificación. Es posible que su foto esté demasiado borrosa u oscura. Intente tomar una nueva foto en un lugar iluminado.
 doc_auth.errors.sharpness.top_msg_plural: No pudimos leer su identificación. Es posible que sus fotos estén demasiado borrosas u oscuras. Intente tomar nuevas fotos en un lugar iluminado.
+doc_auth.errors.state_id_verification: La información de su identificación no pudo ser verificada con su estado. Es posible que necesite verificar su identificación en persona, o puede volver a intentarlo con una identificación diferente.
 doc_auth.errors.unaccepted_id_type: No aceptamos pasaportes, identificaciones militares, ni identificaciones impresas o temporales. Solo puede usar una licencia de conducir o una identificación emitida por un estado o territorio de los EE. UU.
 doc_auth.errors.underage: Debe tener al menos 13 años para usar %{app_name}. Si tiene 13 años o más, vuelva a intentarlo y verifique que su fecha de nacimiento se vea nítida.
 doc_auth.errors.unreadable_id: Tome sus fotografías en un lugar bien iluminado sin sombras ni reflejos. Revise que la información en su identificación se vea nítida y que la tarjeta llene el marco.
@@ -614,6 +615,7 @@ doc_auth.headers.expired_id: Su identificación puede estar vencida
 doc_auth.headers.general.network_error: Estamos teniendo problemas técnicos
 doc_auth.headers.id_not_found: No pudimos encontrar su identificación
 doc_auth.headers.low_resolution: Es posible que la cámara de su dispositivo no sea compatible
+doc_auth.headers.state_id_verification: No pudimos verificar la información de su identificación
 doc_auth.headers.unaccepted_id_type: Use una licencia de conducir o una identificación estatal
 doc_auth.headers.underage: No se cumplió con el requisito de edad
 doc_auth.headers.unreadable_id: No pudimos leer su identificación
