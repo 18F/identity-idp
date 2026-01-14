@@ -18,6 +18,7 @@ RSpec.describe Idv::ProofingComponents do
   end
 
   let(:pii_from_doc) { nil }
+  let(:hybrid_device_profiling) { :disabled }
   let(:hybrid_mobile_tmx_review_status) { nil }
 
   subject do
@@ -26,7 +27,14 @@ RSpec.describe Idv::ProofingComponents do
     )
   end
 
+  before do
+    allow(IdentityConfig.store).to receive(:proofing_device_hybrid_profiling)
+      .and_return(hybrid_device_profiling)
+  end
+
   describe '#to_h' do
+    let(:hybrid_device_profiling) { :enabled }
+
     before do
       allow(IdentityConfig.store).to receive(:doc_auth_vendor_default).and_return('test_vendor')
       idv_session.mark_verify_info_step_complete!
@@ -97,11 +105,6 @@ RSpec.describe Idv::ProofingComponents do
     context 'with hybrid mobile threatmetrix' do
       let(:pii_from_doc) { Idp::Constants.mock_idv_applicant }
       let(:hybrid_mobile_tmx_review_status) { 'pass' }
-
-      before do
-        allow(FeatureManagement).to receive(:proofing_device_hybrid_profiling_collecting_enabled?)
-          .and_return(true)
-      end
 
       it 'returns expected result' do
         expect(subject.to_h).to eql(
@@ -265,7 +268,6 @@ RSpec.describe Idv::ProofingComponents do
         allow(FeatureManagement).to receive(:proofing_device_profiling_collecting_enabled?)
           .and_return(true)
       end
-
       context 'threatmetrix_review_status present' do
         before do
           idv_session.threatmetrix_review_status = 'pass'
@@ -327,10 +329,7 @@ RSpec.describe Idv::ProofingComponents do
 
   describe '#hybrid_mobile_threatmetrix' do
     context 'hybrid profiling collecting enabled' do
-      before do
-        allow(FeatureManagement).to receive(:proofing_device_hybrid_profiling_collecting_enabled?)
-          .and_return(true)
-      end
+      let(:hybrid_device_profiling) { :enabled }
 
       context 'hybrid_mobile_threatmetrix_review_status present' do
         before do
@@ -350,10 +349,7 @@ RSpec.describe Idv::ProofingComponents do
     end
 
     context 'hybrid profiling collecting disabled' do
-      before do
-        allow(FeatureManagement).to receive(:proofing_device_hybrid_profiling_collecting_enabled?)
-          .and_return(false)
-      end
+      let(:hybrid_device_profiling) { :disabled }
 
       context 'hybrid_mobile_threatmetrix_review_status present' do
         before do

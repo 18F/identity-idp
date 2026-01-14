@@ -85,6 +85,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
       )
     end
 
+    let(:hybrid_device_profiling) { :disabled }
     let(:hybrid_mobile_threatmetrix_session_id) { nil }
     let(:hybrid_mobile_request_ip) { nil }
     let(:hybrid_mobile_threatmetrix_result) do
@@ -122,8 +123,8 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
         .and_return(aamva_proofer)
       allow(IdentityConfig.store).to receive(:idv_phone_precheck_percent)
         .and_return(idv_phone_precheck_percent)
-      allow(FeatureManagement).to receive(:proofing_device_hybrid_profiling_collecting_enabled?)
-        .and_return(false)
+      allow(IdentityConfig.store).to receive(:proofing_device_hybrid_profiling)
+        .and_return(hybrid_device_profiling)
     end
 
     context 'remote unsupervised proofing' do
@@ -178,12 +179,11 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
       end
 
       context 'with hybrid mobile device profiling enabled' do
+        let(:hybrid_device_profiling) { :enabled }
         let(:hybrid_mobile_threatmetrix_session_id) { SecureRandom.uuid }
         let(:hybrid_mobile_request_ip) { Faker::Internet.ip_v4_address }
 
         before do
-          allow(FeatureManagement).to receive(:proofing_device_hybrid_profiling_collecting_enabled?)
-            .and_return(true)
           allow(progressive_proofer.threatmetrix_plugin).to receive(:call)
             .and_return(threatmetrix_result, hybrid_mobile_threatmetrix_result)
         end
@@ -225,10 +225,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
       end
 
       context 'with hybrid mobile device profiling disabled' do
-        before do
-          allow(FeatureManagement).to receive(:proofing_device_hybrid_profiling_collecting_enabled?)
-            .and_return(false)
-        end
+        let(:hybrid_device_profiling) { :disabled }
 
         it 'calls ThreatMetrixPlugin only once' do
           expect(progressive_proofer.threatmetrix_plugin).to receive(:call).once
@@ -341,6 +338,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
       end
 
       context 'when hybrid mobile threatmetrix fails' do
+        let(:hybrid_device_profiling) { :enabled }
         let(:hybrid_mobile_threatmetrix_session_id) { SecureRandom.uuid }
         let(:hybrid_mobile_request_ip) { Faker::Internet.ip_v4_address }
         let(:hybrid_mobile_threatmetrix_result) do
@@ -352,8 +350,6 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
         end
 
         before do
-          allow(FeatureManagement).to receive(:proofing_device_hybrid_profiling_collecting_enabled?)
-            .and_return(true)
           allow(progressive_proofer.threatmetrix_plugin).to receive(:call)
             .and_return(threatmetrix_result, hybrid_mobile_threatmetrix_result)
         end
@@ -375,6 +371,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
       end
 
       context 'when hybrid mobile threatmetrix times out' do
+        let(:hybrid_device_profiling) { :enabled }
         let(:hybrid_mobile_threatmetrix_session_id) { SecureRandom.uuid }
         let(:hybrid_mobile_request_ip) { Faker::Internet.ip_v4_address }
         let(:hybrid_mobile_threatmetrix_result) do
@@ -388,8 +385,6 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
         end
 
         before do
-          allow(FeatureManagement).to receive(:proofing_device_hybrid_profiling_collecting_enabled?)
-            .and_return(true)
           allow(progressive_proofer.threatmetrix_plugin).to receive(:call)
             .and_return(threatmetrix_result, hybrid_mobile_threatmetrix_result)
         end
@@ -403,6 +398,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
       end
 
       context 'when both regular and hybrid mobile threatmetrix fail' do
+        let(:hybrid_device_profiling) { :enabled }
         let(:hybrid_mobile_threatmetrix_session_id) { SecureRandom.uuid }
         let(:hybrid_mobile_request_ip) { Faker::Internet.ip_v4_address }
         let(:threatmetrix_result) do
@@ -421,8 +417,6 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
         end
 
         before do
-          allow(FeatureManagement).to receive(:proofing_device_hybrid_profiling_collecting_enabled?)
-            .and_return(true)
           allow(progressive_proofer.threatmetrix_plugin).to receive(:call)
             .and_return(threatmetrix_result, hybrid_mobile_threatmetrix_result)
         end
@@ -522,12 +516,11 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
         end
 
         context 'with hybrid mobile device profiling enabled' do
+          let(:hybrid_device_profiling) { :enabled }
           let(:hybrid_mobile_threatmetrix_session_id) { SecureRandom.uuid }
           let(:hybrid_mobile_request_ip) { Faker::Internet.ip_v4_address }
 
           before do
-            allow(FeatureManagement)
-              .to receive(:proofing_device_hybrid_profiling_collecting_enabled?).and_return(true)
             allow(progressive_proofer.threatmetrix_plugin).to receive(:call)
               .and_return(threatmetrix_result, hybrid_mobile_threatmetrix_result)
           end
@@ -611,12 +604,11 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
         end
 
         context 'with hybrid mobile device profiling enabled' do
+          let(:hybrid_device_profiling) { :enabled }
           let(:hybrid_mobile_threatmetrix_session_id) { SecureRandom.uuid }
           let(:hybrid_mobile_request_ip) { Faker::Internet.ip_v4_address }
 
           before do
-            allow(FeatureManagement)
-              .to receive(:proofing_device_hybrid_profiling_collecting_enabled?).and_return(true)
             allow(progressive_proofer.threatmetrix_plugin).to receive(:call)
               .and_return(threatmetrix_result, hybrid_mobile_threatmetrix_result)
           end
@@ -711,12 +703,11 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
       end
 
       context 'with hybrid mobile device profiling enabled' do
+        let(:hybrid_device_profiling) { :enabled }
         let(:hybrid_mobile_threatmetrix_session_id) { SecureRandom.uuid }
         let(:hybrid_mobile_request_ip) { Faker::Internet.ip_v4_address }
 
         before do
-          allow(FeatureManagement).to receive(:proofing_device_hybrid_profiling_collecting_enabled?)
-            .and_return(true)
           allow(progressive_proofer.threatmetrix_plugin).to receive(:call)
             .and_return(threatmetrix_result, hybrid_mobile_threatmetrix_result)
         end

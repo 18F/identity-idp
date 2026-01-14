@@ -13,7 +13,11 @@ RSpec.describe Idv::VerifyInfoController do
     }
   end
 
+  let(:hybrid_device_profiling) { :disabled }
+
   before do
+    allow(IdentityConfig.store).to receive(:proofing_device_hybrid_profiling)
+      .and_return(hybrid_device_profiling)
     stub_sign_in(user)
     stub_up_to(:ssn, idv_session: subject.idv_session)
     stub_analytics
@@ -610,11 +614,7 @@ RSpec.describe Idv::VerifyInfoController do
         end
 
         context 'when hybrid mobile threatmetrix response is Pass' do
-          before do
-            allow(FeatureManagement)
-              .to receive(:proofing_device_hybrid_profiling_collecting_enabled?)
-              .and_return(true)
-          end
+          let(:hybrid_device_profiling) { :enabled }
 
           it 'sets the hybrid mobile review status in the idv session' do
             get :show
@@ -643,15 +643,10 @@ RSpec.describe Idv::VerifyInfoController do
         end
 
         context 'when hybrid mobile threatmetrix response is Reject' do
+          let(:hybrid_device_profiling) { :enabled }
           let(:hybrid_mobile_review_status) { 'reject' }
           let(:hybrid_mobile_success) { false }
           let(:hybrid_mobile_tmx_summary_reason_code) { ['Identity_Negative_History'] }
-
-          before do
-            allow(FeatureManagement)
-              .to receive(:proofing_device_hybrid_profiling_collecting_enabled?)
-              .and_return(true)
-          end
 
           it 'sets the hybrid mobile review status in the idv session' do
             get :show
@@ -684,11 +679,7 @@ RSpec.describe Idv::VerifyInfoController do
         end
 
         context 'when hybrid profiling feature flag is disabled' do
-          before do
-            allow(FeatureManagement)
-              .to receive(:proofing_device_hybrid_profiling_collecting_enabled?)
-              .and_return(false)
-          end
+          let(:hybrid_device_profiling) { :disabled }
 
           it 'does not set the hybrid mobile review status in the idv session' do
             get :show
@@ -711,14 +702,9 @@ RSpec.describe Idv::VerifyInfoController do
         end
 
         context 'when threatmetrix rejects and hybrid mobile passes' do
+          let(:hybrid_device_profiling) { :enabled }
           let(:threatmetrix_review_status) { 'reject' }
           let(:threatmetrix_success) { false }
-
-          before do
-            allow(FeatureManagement)
-              .to receive(:proofing_device_hybrid_profiling_collecting_enabled?)
-              .and_return(true)
-          end
 
           it 'sets both review statuses correctly' do
             get :show
