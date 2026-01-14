@@ -54,7 +54,7 @@ RSpec.describe Proofing::Resolution::ResultAdjudicator do
   let(:hybrid_mobile_device_profiling_success) { true }
   let(:hybrid_mobile_device_profiling_exception) { nil }
   let(:hybrid_mobile_device_profiling_review_status) { 'pass' }
-  let(:hybrid_moobile_device_profiling_result) do
+  let(:hybrid_mobile_device_profiling_result) do
     Proofing::DdpResult.new(
       success: hybrid_mobile_device_profiling_success,
       review_status: hybrid_mobile_device_profiling_review_status,
@@ -73,7 +73,7 @@ RSpec.describe Proofing::Resolution::ResultAdjudicator do
       should_proof_state_id: should_proof_state_id,
       ipp_enrollment_in_progress: ipp_enrollment_in_progress,
       device_profiling_result: device_profiling_result,
-      hybrid_mobile_device_profiling_result: hybrid_moobile_device_profiling_result,
+      hybrid_mobile_device_profiling_result: hybrid_mobile_device_profiling_result,
       phone_result:,
       same_address_as_id: same_address_as_id,
       applicant_pii: applicant_pii,
