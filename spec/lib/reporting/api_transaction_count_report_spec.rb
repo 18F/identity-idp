@@ -25,6 +25,9 @@ RSpec.describe Reporting::ApiTransactionCountReport do
     allow(report).to receive(:threat_metrix_idv_table).and_return([45, mock_results])
     allow(report).to receive(:threat_metrix_auth_only_table).and_return([50, mock_results])
     allow(report).to receive(:ln_emailage_table).and_return([60, mock_results])
+    allow(report).to receive(:gpo_table).and_return([70, mock_results])
+    allow(report).to receive(:aamva_table).and_return([80, mock_results])
+    allow(report).to receive(:socure_phonerisk_table).and_return([90, mock_results])
   end
 
   describe '#api_transaction_count' do
@@ -51,10 +54,14 @@ RSpec.describe Reporting::ApiTransactionCountReport do
           'Threat Metrix (IDV)',
           'Threat Metrix (Auth Only)',
           'LN Emailage',
+          'GPO',
+          'AAMVA',
+          'Socure PhoneRisk (Shadow)',
         ],
       )
+
       expect(data_row.first).to eq("#{time_range.begin.to_date} - #{time_range.end.to_date}")
-      expect(data_row[1..]).to eq([10, 11, 15, 20, 25, 26, 30, 40, 45, 50, 60])
+      expect(data_row[1..]).to eq([10, 11, 15, 20, 25, 26, 30, 40, 45, 50, 60, 70, 80, 90])
     end
   end
 
@@ -66,16 +73,29 @@ RSpec.describe Reporting::ApiTransactionCountReport do
       expect(csvs.size).to eq(1)
 
       csv = csvs.first
-      expect(csv).to match(
-        /
-          Week,True\ ID,True\ ID\ \(Selfie\),Instant\ verify,Phone\ Finder,
-          Socure\ \(DocV\),Socure\ \(DocV\ -\ Selfie\),
-          Socure\ \(KYC\),
-          Fraud\ Score\ and\ Attribute,Threat\ Metrix\s\(IDV\),
-          Threat\ Metrix\s\(Auth\ Only\),LN\ Emailage
-        /x,
-      )
+
+      # Check for all column headers in the CSV
+      expected_headers = [
+        'Week',
+        'True ID',
+        'True ID (Selfie)',
+        'Instant verify',
+        'Phone Finder',
+        'Socure (DocV)',
+        'Socure (DocV - Selfie)',
+        'Socure (KYC)',
+        'Fraud Score and Attribute',
+        'Threat Metrix (IDV)',
+        'Threat Metrix (Auth Only)',
+        'LN Emailage',
+        'GPO',
+        'AAMVA',
+        'Socure PhoneRisk (Shadow)',
+      ].join(',')
+
+      expect(csv).to include(expected_headers)
       expect(csv).to include("#{time_range.begin.to_date} - #{time_range.end.to_date}")
+      expect(csv).to include('10,11,15,20,25,26,30,40,45,50,60,70,80,90')
     end
   end
 
