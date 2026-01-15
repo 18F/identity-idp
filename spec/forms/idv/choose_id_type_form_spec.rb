@@ -41,5 +41,37 @@ RSpec.describe Idv::ChooseIdTypeForm do
         expect(result.errors).not_to be_empty
       end
     end
+
+    context 'when the choose_id_type_preference is mdl' do
+      let(:params) { { choose_id_type_preference: Idp::Constants::DocumentTypes::MDL } }
+
+      context 'when mdl_verification_enabled is true' do
+        before do
+          allow(IdentityConfig.store).to receive(:mdl_verification_enabled).and_return(true)
+        end
+
+        it 'returns a successful form response' do
+          result = subject.submit(params)
+
+          expect(result).to be_kind_of(FormResponse)
+          expect(result.success?).to eq(true)
+          expect(result.errors).to be_empty
+        end
+      end
+
+      context 'when mdl_verification_enabled is false' do
+        before do
+          allow(IdentityConfig.store).to receive(:mdl_verification_enabled).and_return(false)
+        end
+
+        it 'returns a failed form response' do
+          result = subject.submit(params)
+
+          expect(result).to be_kind_of(FormResponse)
+          expect(result.success?).to eq(false)
+          expect(result.errors).not_to be_empty
+        end
+      end
+    end
   end
 end
