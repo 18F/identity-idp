@@ -274,6 +274,7 @@ class Profile < ApplicationRecord
     transaction do
       update!(
         active: false,
+        deactivation_reason: :duplicate_account,
         fraud_review_pending_at: nil,
         fraud_rejection_at: Time.zone.now,
       )
