@@ -1,12 +1,9 @@
 require 'rails_helper'
-require 'reporting/irs_fraud_metrics_lg99_report'
+require 'reporting/irs_original_fraud_metrics_lg99_report'
 
-RSpec.describe Reporting::IrsFraudMetricsLg99Report do
+RSpec.describe Reporting::IrsOriginalFraudMetricsLg99Report do
   let(:issuer) { 'my:example:issuer' }
   let(:time_range) { Date.new(2022, 1, 1).in_time_zone('UTC').all_month }
-
-  let(:agency_abbreviation) { 'Test_IRS' }
-
   let(:expected_definitions_table) do
     [
       ['Metric', 'Unit', 'Definition'],
@@ -38,11 +35,7 @@ RSpec.describe Reporting::IrsFraudMetricsLg99Report do
   end
 
   subject(:report) do
-    described_class.new(
-      issuers: [issuer],
-      time_range:,
-      agency_abbreviation: agency_abbreviation,
-    )
+    Reporting::IrsOriginalFraudMetricsLg99Report.new(issuers: [issuer], time_range:)
   end
 
   before do
@@ -189,16 +182,7 @@ RSpec.describe Reporting::IrsFraudMetricsLg99Report do
 
   describe '#cloudwatch_client' do
     let(:opts) { {} }
-
-    subject(:report_with_opts) do
-      described_class.new(
-        issuers: [issuer],
-        time_range:,
-        agency_abbreviation: agency_abbreviation,
-        **opts,
-      )
-    end
-
+    let(:subject) { described_class.new(issuers: [issuer], time_range:, **opts) }
     let(:default_args) do
       {
         num_threads: 1,

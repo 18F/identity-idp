@@ -513,6 +513,7 @@ module IdentityConfig
     config.add(:sp_idv_weekly_dropoff_report_configs, type: :json)
     config.add(:sp_issuer_user_counts_report_configs, type: :json)
     config.add(:sp_proofing_events_by_uuid_report_configs, type: :json)
+    config.add(:sp_fraud_metrics_report_configs, type: :json)
     config.add(:sp_verification_report_configs, type: :json)
     config.add(:state_tracking_enabled, type: :boolean)
     config.add(:team_ada_email, type: :string)

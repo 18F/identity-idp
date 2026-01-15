@@ -23,13 +23,14 @@ module Proofing
         socure_kyc: :socure_resolution,
       }.freeze
 
-      def initialize(user_uuid:, proofing_vendor:, user_email:)
+      def initialize(user_uuid:, proofing_vendor:, user_email:, analytics:)
         @user_uuid = user_uuid
         @user_email = user_email
         @aamva_plugin = Plugins::AamvaPlugin.new
         @threatmetrix_plugin = Plugins::ThreatMetrixPlugin.new
         @phone_plugin = Plugins::PhonePlugin.new
         @proofing_vendor = proofing_vendor
+        @analytics = analytics
       end
 
       # @param [Hash] applicant_pii keys are symbols and values are strings, confidential user info
@@ -166,6 +167,7 @@ module Proofing
             base_url: IdentityConfig.store.socure_idplus_base_url,
             timeout: IdentityConfig.store.socure_idplus_timeout_in_seconds,
           ),
+          @analytics,
         )
       end
 

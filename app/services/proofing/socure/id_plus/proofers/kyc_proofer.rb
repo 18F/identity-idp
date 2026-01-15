@@ -40,6 +40,10 @@ module Proofing
           def request(input)
             @request ||= Requests::KycRequest.new(config:, input:)
           end
+
+          def log_result(result_hash)
+            @analytics&.idv_socure_kyc_results(**result_hash)
+          end
         end
       end
     end
