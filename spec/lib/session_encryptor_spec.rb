@@ -95,7 +95,7 @@ RSpec.describe SessionEncryptor do
       } }
 
       nested_array_session = { 'warden.user.user.session' => {
-        'idv_new' => { 'nested' => { 'ssn' => '666-66-6666' } }],
+        'idv_new' => [{ 'nested' => { 'ssn' => '666-66-6666' } }],
       } }
 
       expect do
