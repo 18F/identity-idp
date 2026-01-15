@@ -498,8 +498,6 @@ Rails.application.routes.draw do
     root to: 'users/sessions#new'
   end
 
-  get '/sms_preview/daily_voice_limit_reached' => 'sms_preview/daily_voice_limit_reached#show'
-
   # Make sure any new routes are added above this line!
   # The line below will route all requests that aren't
   # defined route to the 404 page. Therefore, anything you put after this rule
