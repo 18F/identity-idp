@@ -584,7 +584,7 @@ RSpec.describe ActionAccount do
           )
           expect(profile.reload).to have_attributes(
             active: false,
-            deactivation_reason: 'duplicate_account'
+            deactivation_reason: 'duplicate_account',
           )
         end
       end
