@@ -116,8 +116,7 @@
           "trueid.authentication_result.last_name": "SAMPLE",
           "trueid.authentication_result.portrait": "/9j/4AA...",
           "trueid.authentication_result.signature": "/9j/4AAQ...",
-          "trueid.portrait_match.face_error_message": "Liveness: Error",
-          "trueid.portrait_match.face_match_result": "Fail",
+          "trueid.portrait_match.face_match_result": "Passed",
           "trueid.portrait_match.face_match_score": "0",
           "trueid.portrait_match.face_status_code": "0"
         }

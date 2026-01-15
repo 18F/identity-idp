@@ -9,6 +9,7 @@ module DocAuth
           include DocPiiReader
 
           attr_reader :config, :http_response, :passport_requested
+
           def initialize(http_response:, config:, passport_requested: false,
                          liveness_checking_enabled: false, request_context: {})
             @config = config

@@ -12,14 +12,16 @@ RSpec.describe DocAuth::LexisNexis::Responses::Ddp::TrueIdResponse do
   let(:config) do
     DocAuth::LexisNexis::Config.new
   end
+  let(:true_id_response) { nil }
+  let(:response) do
+    described_class.new(
+      http_response: true_id_response,
+      config:,
+    )
+  end
 
   context 'when the response is a success' do
-    let(:response) do
-      described_class.new(
-        http_response: success_response,
-        config:,
-      )
-    end
+    let(:true_id_response) { success_response }
 
     it 'is a successful result' do
       expect(response.successful_result?).to eq(true)
@@ -28,12 +30,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::Ddp::TrueIdResponse do
   end
 
   context 'when the response is a failure' do
-    let(:response) do
-      described_class.new(
-        http_response: failure_response,
-        config: nil,
-      )
-    end
+    let(:true_id_response) { failure_response }
 
     it 'is not a successful result' do
       expect(response.successful_result?).to eq(false)
