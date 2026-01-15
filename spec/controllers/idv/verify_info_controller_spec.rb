@@ -627,8 +627,18 @@ RSpec.describe Idv::VerifyInfoController do
               device_fingerprint:,
               failure_reason: nil,
             )
+            expect(@fraud_ops_tracker).to receive(:idv_device_risk_assessment).with(
+              success: true,
+              device_fingerprint:,
+              failure_reason: nil,
+            )
 
             expect(@attempts_api_tracker).to receive(:idv_device_risk_assessment).with(
+              success: true,
+              device_fingerprint: hybrid_mobile_device_fingerprint,
+              failure_reason: nil,
+            )
+            expect(@fraud_ops_tracker).to receive(:idv_device_risk_assessment).with(
               success: true,
               device_fingerprint: hybrid_mobile_device_fingerprint,
               failure_reason: nil,
@@ -659,8 +669,20 @@ RSpec.describe Idv::VerifyInfoController do
               device_fingerprint:,
               failure_reason: nil,
             )
+            expect(@fraud_ops_tracker).to receive(:idv_device_risk_assessment).with(
+              success: true,
+              device_fingerprint:,
+              failure_reason: nil,
+            )
 
             expect(@attempts_api_tracker).to receive(:idv_device_risk_assessment).with(
+              success: false,
+              device_fingerprint: hybrid_mobile_device_fingerprint,
+              failure_reason: {
+                fraud_risk_summary_reason_code: ['Identity_Negative_History'],
+              },
+            )
+            expect(@fraud_ops_tracker).to receive(:idv_device_risk_assessment).with(
               success: false,
               device_fingerprint: hybrid_mobile_device_fingerprint,
               failure_reason: {
@@ -688,6 +710,11 @@ RSpec.describe Idv::VerifyInfoController do
 
           it 'does not track hybrid mobile tmx fraud check' do
             expect(@attempts_api_tracker).to receive(:idv_device_risk_assessment).once.with(
+              success: true,
+              device_fingerprint:,
+              failure_reason: nil,
+            )
+            expect(@fraud_ops_tracker).to receive(:idv_device_risk_assessment).once.with(
               success: true,
               device_fingerprint:,
               failure_reason: nil,
@@ -720,8 +747,20 @@ RSpec.describe Idv::VerifyInfoController do
                 fraud_risk_summary_reason_code: ['Identity_Negative_History'],
               },
             )
+            expect(@fraud_ops_tracker).to receive(:idv_device_risk_assessment).with(
+              success: false,
+              device_fingerprint:,
+              failure_reason: {
+                fraud_risk_summary_reason_code: ['Identity_Negative_History'],
+              },
+            )
 
             expect(@attempts_api_tracker).to receive(:idv_device_risk_assessment).with(
+              success: true,
+              device_fingerprint: hybrid_mobile_device_fingerprint,
+              failure_reason: nil,
+            )
+            expect(@fraud_ops_tracker).to receive(:idv_device_risk_assessment).with(
               success: true,
               device_fingerprint: hybrid_mobile_device_fingerprint,
               failure_reason: nil,
@@ -758,6 +797,7 @@ RSpec.describe Idv::VerifyInfoController do
           stub_attempts_tracker
 
           expect(@attempts_api_tracker).not_to receive(:idv_device_risk_assessment)
+          expect(@fraud_ops_tracker).not_to receive(:idv_device_risk_assessment)
 
           get :show
         end
