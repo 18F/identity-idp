@@ -47,6 +47,16 @@ module Idv
       idv_session.threatmetrix_review_status
     end
 
+    def hybrid_mobile_threatmetrix
+      if idv_session.hybrid_mobile_threatmetrix_review_status.present?
+        FeatureManagement.proofing_device_hybrid_profiling_collecting_enabled?
+      end
+    end
+
+    def hybrid_mobile_threatmetrix_review_status
+      idv_session.hybrid_mobile_threatmetrix_review_status
+    end
+
     def to_h
       {
         document_check:,
@@ -57,6 +67,8 @@ module Idv
         address_check:,
         threatmetrix:,
         threatmetrix_review_status:,
+        hybrid_mobile_threatmetrix:,
+        hybrid_mobile_threatmetrix_review_status:,
       }.compact
     end
 
