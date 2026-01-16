@@ -6,7 +6,7 @@ require 'reporting/unknown_progress_bar'
 
 module Reporting
   class ProofingRateReport
-    DATE_INTERVALS = [30, 60, 90].freeze
+    DATE_INTERVALS = [30].freeze
 
     attr_reader :end_date, :wait_duration
 
@@ -58,6 +58,7 @@ module Reporting
       csv << ['IDV Started', *reports.map(&:idv_started)]
       csv << ['Welcome Submitted', *reports.map(&:idv_doc_auth_welcome_submitted)]
       csv << ['Image Submitted', *reports.map(&:idv_doc_auth_image_vendor_submitted)]
+      csv << ['Socure', *reports.map(&:idv_doc_auth_socure_verification_data_requested)]
       csv << ['Successfully Verified', *reports.map(&:successfully_verified_users)]
       csv << ['IDV Rejected (Non-Fraud)', *reports.map(&:idv_doc_auth_rejected)]
       csv << ['IDV Rejected (Fraud)', *reports.map(&:idv_fraud_rejected)]

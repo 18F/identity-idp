@@ -26,12 +26,37 @@ module Proofing
       self::StateIdData = RedactedStruct.new(
         :state_id_number,
         :state_id_jurisdiction,
-        :state_id_type,
+        :document_type_received,
         :state_id_issued,
         :state_id_expiration,
         keyword_init: true,
-      ).freeze
+      ) do
+        def id_doc_type
+          document_type_received
+        end
+      end.freeze
 
+      # @param applicant [Hash, Struct]
+      # @option applicant [String, nil] :uuid
+      # @option applicant [String, nil] :first_name
+      # @option applicant [String, nil] :middle_name
+      # @option applicant [String, nil] :last_name
+      # @option applicant [String, nil] :name_suffix
+      # @option applicant [String, nil] :dob
+      # @option applicant [String, nil] :sex
+      # @option applicant [Integer, nil] :height in inches
+      # @option applicant [String, nil] :weight
+      # @option applicant [String, nil] :eye_color
+      # @option applicant [String, nil] :address1
+      # @option applicant [String, nil] :address2
+      # @option applicant [String, nil] :city
+      # @option applicant [String, nil] :state
+      # @option applicant [String, nil] :zipcode
+      # @option applicant [String, nil] :state_id_number
+      # @option applicant [String, nil] :state_id_jurisdiction
+      # @option applicant [String, nil] :document_type_received
+      # @option applicant [String, nil] :state_id_issued
+      # @option applicant [String, nil] :state_id_expiration
       # @return [Applicant]
       def self.from_proofer_applicant(applicant)
         new(
@@ -77,7 +102,8 @@ module Proofing
         self::StateIdData.new(
           state_id_number: applicant.dig(:state_id_number)&.gsub(/[^\w\d]/, ''),
           state_id_jurisdiction: applicant[:state_id_jurisdiction],
-          state_id_type: applicant[:state_id_type],
+          # Check both new and old field names for backwards compatibility
+          document_type_received: applicant[:document_type_received] || applicant[:id_doc_type],
           state_id_issued: applicant[:state_id_issued],
           state_id_expiration: applicant[:state_id_expiration],
         )

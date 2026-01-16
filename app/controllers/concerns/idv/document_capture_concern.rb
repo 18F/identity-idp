@@ -4,10 +4,8 @@ module Idv
   module DocumentCaptureConcern
     extend ActiveSupport::Concern
 
-    include DocAuthVendorConcern
-
     def handle_stored_result(user: current_user, store_in_session: true)
-      if stored_result&.success? && selfie_requirement_met?
+      if stored_result&.success? && validation_requirements_met?
         extract_pii_from_doc(user, store_in_session: store_in_session)
         flash[:success] = t('doc_auth.headings.capture_complete')
         successful_response
@@ -33,16 +31,24 @@ module Idv
       {
         message: message || I18n.t('doc_auth.errors.general.network_error'),
         socure: stored_result&.errors&.dig(:socure),
+        pii_validation: stored_result&.errors&.dig(:pii_validation),
+        unaccepted_id_type: stored_result&.errors&.dig(:unaccepted_id_type),
+        selfie_fail: stored_result&.errors&.dig(:selfie_fail),
+        unexpected_id_type: stored_result&.errors&.dig(:unexpected_id_type),
+        state_id_verification: stored_result&.errors&.dig(:state_id_verification),
       }
     end
 
     def extract_pii_from_doc(user, store_in_session: false)
       if defined?(idv_session) # hybrid mobile does not have idv_session
         idv_session.had_barcode_read_failure = stored_result.attention_with_barcode?
+        # See also Idv::InPerson::StateIdController#update
+        idv_session.doc_auth_vendor = document_capture_session.doc_auth_vendor
         if store_in_session
           idv_session.pii_from_doc = stored_result.pii_from_doc
           idv_session.selfie_check_performed = stored_result.selfie_check_performed?
         end
+        idv_session.source_check_vendor ||= stored_result.state_id_vendor
       end
 
       track_document_issuing_state(user, stored_result.pii_from_doc[:state])
@@ -58,35 +64,53 @@ module Idv
         stored_result.selfie_check_performed?
     end
 
-    def redirect_to_correct_vendor(vendor, in_hybrid_mobile)
-      expected_doc_auth_vendor = doc_auth_vendor
+    def mrz_requirement_met?
+      return true if !document_capture_session.passport_requested?
+      return false if document_type_received != 'passport'
+
+      stored_result.mrz_status == :pass
+    end
+
+    def aamva_requirement_met?
+      return true if document_type_received == 'passport'
+      return true unless IdentityConfig.store.idv_aamva_at_doc_auth_enabled
+
+      stored_result.aamva_status == :passed
+    end
+
+    def redirect_to_correct_vendor(vendor, in_hybrid_mobile:)
+      return if IdentityConfig.store.doc_auth_redirect_to_correct_vendor_disabled
+
+      expected_doc_auth_vendor = document_capture_session.doc_auth_vendor
       return if vendor == expected_doc_auth_vendor
       return if vendor == Idp::Constants::Vendors::LEXIS_NEXIS &&
                 expected_doc_auth_vendor == Idp::Constants::Vendors::MOCK
+      return if vendor == Idp::Constants::Vendors::SOCURE &&
+                expected_doc_auth_vendor == Idp::Constants::Vendors::SOCURE_MOCK
 
-      correct_path = case expected_doc_auth_vendor
-        when Idp::Constants::Vendors::SOCURE
-          in_hybrid_mobile ? idv_hybrid_mobile_socure_document_capture_path
-                           : idv_socure_document_capture_path
-        when Idp::Constants::Vendors::LEXIS_NEXIS, Idp::Constants::Vendors::MOCK
-          in_hybrid_mobile ? idv_hybrid_mobile_document_capture_path
-                           : idv_document_capture_path
-        end
+      correct_path = correct_vendor_path(
+        expected_doc_auth_vendor,
+        in_hybrid_mobile: in_hybrid_mobile,
+      )
 
       redirect_to correct_path
     end
 
-    def fetch_test_verification_data
-      return unless IdentityConfig.store.socure_docv_verification_data_test_mode
+    def correct_vendor_path(expected_doc_auth_vendor, in_hybrid_mobile:)
+      case expected_doc_auth_vendor
+      when Idp::Constants::Vendors::SOCURE, Idp::Constants::Vendors::SOCURE_MOCK
+        in_hybrid_mobile ? idv_hybrid_mobile_socure_document_capture_path
+                         : idv_socure_document_capture_path
+      when Idp::Constants::Vendors::LEXIS_NEXIS, Idp::Constants::Vendors::MOCK
+        in_hybrid_mobile ? idv_hybrid_mobile_document_capture_path
+                         : idv_document_capture_path
+      end
+    end
 
-      docv_transaction_token_override = params.permit(:docv_token)[:docv_token]
-      return unless IdentityConfig.store.socure_docv_verification_data_test_mode_tokens
-        .include?(docv_transaction_token_override)
-
+    def fetch_synchronous_docv_result
       SocureDocvResultsJob.perform_now(
         document_capture_session_uuid:,
-        docv_transaction_token_override:,
-        async: true,
+        async: false,
       )
     end
 
@@ -98,19 +122,57 @@ module Idv
         vendor: 'Socure',
         vendor_request_time_in_ms: timer.results['vendor_request'],
         success: @url.present?,
-        document_type: document_request_body[:documentType],
+        customer_user_id: document_request_body[:customerUserId],
+        document_type_requested: document_request_body[:documentType],
+        use_case_key: document_request_body[:useCaseKey],
         docv_transaction_token: response_hash.dig(:data, :docvTransactionToken),
+        socure_status: response_hash[:status],
+        socure_msg: response_hash[:msg],
       }
       analytics_hash = log_extras
         .merge(analytics_arguments)
         .merge(document_request_body).except(
           :documentType, # requested document type
+          :useCaseKey,
         )
         .merge(response_body: document_response.to_h)
       analytics.idv_socure_document_request_submitted(**analytics_hash)
     end
 
+    def doc_auth_upload_enabled?
+      # false for now until we consolidate this method with desktop_selfie_test_mode_enabled
+      false
+    end
+
     private
+
+    def validation_requirements_met?
+      return false if document_type_mismatch?
+
+      selfie_requirement_met? && mrz_requirement_met? && aamva_requirement_met?
+    end
+
+    def document_type_mismatch?
+      # Reject when user requested passport flow but submitted a different document type
+      return true if document_capture_session.passport_requested? &&
+                     document_type_received != Idp::Constants::DocumentTypes::PASSPORT
+
+      # Reject when user didn't request passport flow but submitted a passport
+      return true if !document_capture_session.passport_requested? &&
+                     document_type_received == Idp::Constants::DocumentTypes::PASSPORT
+
+      false
+    end
+
+    def document_type_received
+      stored_result.pii_from_doc&.dig(:document_type_received) ||
+        stored_result.pii_from_doc&.dig(:id_doc_type)
+    end
+
+    def document_type_requested
+      document_capture_session.passport_requested? ? Idp::Constants::DocumentTypes::PASSPORT :
+        Idp::Constants::DocumentTypes::STATE_ID_CARD
+    end
 
     def track_document_issuing_state(user, state)
       return unless IdentityConfig.store.state_tracking_enabled && state

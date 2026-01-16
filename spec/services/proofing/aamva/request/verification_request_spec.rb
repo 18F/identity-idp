@@ -1,28 +1,44 @@
 require 'rails_helper'
 
 RSpec.describe Proofing::Aamva::Request::VerificationRequest do
-  let(:state_id_jurisdiction) { 'CA' }
-  let(:state_id_number) { '123456789' }
-  let(:applicant) do
-    Proofing::Aamva::Applicant.from_proofer_applicant(
-      uuid: '1234-abcd-efgh',
-      first_name: 'Testy',
-      last_name: 'McTesterson',
-      dob: '10/29/1942',
-      address1: '123 Sunnyside way',
-      city: 'Sterling',
-      state: 'VA',
-      zipcode: '20176-1234',
-      state_id_number: state_id_number,
-      state_id_jurisdiction: state_id_jurisdiction,
-      state_id_type: 'drivers_license',
-    )
-  end
   let(:auth_token) { 'KEYKEYKEY' }
   let(:transaction_id) { '1234-abcd-efgh' }
   let(:config) { AamvaFixtures.example_config }
+  let(:state_id_jurisdiction) { 'CA' }
+  let(:state_id_number) { '123456789' }
+  let(:state_id_expiration) { nil }
+  let(:last_name) { 'McTesterson' }
 
-  subject do
+  let(:applicant_data) do
+    {
+      uuid: '1234-abcd-efgh',
+      first_name: 'Testy',
+      middle_name: nil,
+      last_name:,
+      name_suffix: nil,
+      dob: '10/29/1942',
+      address1: '123 Sunnyside way',
+      address2: nil,
+      city: 'Sterling',
+      state: 'VA',
+      zipcode: '20176-1234',
+      eye_color: nil,
+      height: nil,
+      weight: nil,
+      sex: nil,
+      state_id_number: state_id_number,
+      state_id_jurisdiction: state_id_jurisdiction,
+      document_type_received: 'drivers_license',
+      state_id_expiration: state_id_expiration,
+      state_id_issued: nil,
+    }
+  end
+
+  let(:applicant) do
+    Proofing::Aamva::Applicant.from_proofer_applicant(**applicant_data.compact_blank)
+  end
+
+  subject(:request) do
     described_class.new(
       applicant: applicant,
       session_id: transaction_id,
@@ -73,6 +89,8 @@ RSpec.describe Proofing::Aamva::Request::VerificationRequest do
           applicant.zipcode,
         ],
       )
+
+      expect(subject.requested_attributes).to include(address2: :present)
     end
 
     it 'includes issue date if present' do
@@ -80,13 +98,22 @@ RSpec.describe Proofing::Aamva::Request::VerificationRequest do
       expect(subject.body).to include(
         '<aa:DriverLicenseIssueDate>2024-05-06</aa:DriverLicenseIssueDate>',
       )
+      expect(subject.requested_attributes).to include(state_id_issued: :present)
     end
 
-    it 'includes expiration date if present' do
-      applicant.state_id_data.state_id_expiration = '2030-01-02'
-      expect(subject.body).to include(
-        '<aa:DriverLicenseExpirationDate>2030-01-02</aa:DriverLicenseExpirationDate>',
-      )
+    context 'with state id expiration' do
+      let(:state_id_expiration) { '2030-01-02' }
+
+      it 'includes the state id expiration date if present' do
+        document = REXML::Document.new(subject.body)
+        exp_node = REXML::XPath.first(
+          document,
+          '//dldv:verifyDriverLicenseDataRequest/aa:DriverLicenseExpirationDate',
+        )
+
+        expect(exp_node.text).to eq('2030-01-02')
+        expect(subject.requested_attributes).to include(state_id_expiration: :present)
+      end
     end
 
     it 'includes height if it is present' do
@@ -94,6 +121,7 @@ RSpec.describe Proofing::Aamva::Request::VerificationRequest do
       expect(subject.body).to include(
         '<aa:PersonHeightMeasure>63</aa:PersonHeightMeasure>',
       )
+      expect(subject.requested_attributes).to include(height: :present)
     end
 
     it 'includes weight if it is present' do
@@ -101,6 +129,7 @@ RSpec.describe Proofing::Aamva::Request::VerificationRequest do
       expect(subject.body).to include(
         '<aa:PersonWeightMeasure>190</aa:PersonWeightMeasure>',
       )
+      expect(subject.requested_attributes).to include(weight: :present)
     end
 
     it 'includes eye_color if it is present' do
@@ -108,6 +137,7 @@ RSpec.describe Proofing::Aamva::Request::VerificationRequest do
       expect(subject.body).to include(
         '<aa:PersonEyeColorCode>blu</aa:PersonEyeColorCode>',
       )
+      expect(subject.requested_attributes).to include(eye_color: :present)
     end
 
     it 'includes name_suffix if it is present' do
@@ -115,6 +145,15 @@ RSpec.describe Proofing::Aamva::Request::VerificationRequest do
       expect(subject.body).to include(
         '<nc:PersonNameSuffixText>JR</nc:PersonNameSuffixText>',
       )
+      expect(subject.requested_attributes).to include(name_suffix: :present)
+    end
+
+    it 'includes middle_name if it is present' do
+      applicant.middle_name = 'test_name'
+      expect(subject.body).to include(
+        '<nc:PersonMiddleName>test_name</nc:PersonMiddleName>',
+      )
+      expect(subject.requested_attributes).to include(middle_name: :present)
     end
 
     context '#sex' do
@@ -124,6 +163,7 @@ RSpec.describe Proofing::Aamva::Request::VerificationRequest do
           expect(subject.body).to include(
             '<aa:PersonSexCode>1</aa:PersonSexCode>',
           )
+          expect(subject.requested_attributes).to include(:sex)
         end
       end
 
@@ -133,6 +173,7 @@ RSpec.describe Proofing::Aamva::Request::VerificationRequest do
           expect(subject.body).to include(
             '<aa:PersonSexCode>2</aa:PersonSexCode>',
           )
+          expect(subject.requested_attributes).to include(:sex)
         end
       end
 
@@ -140,90 +181,61 @@ RSpec.describe Proofing::Aamva::Request::VerificationRequest do
         it 'does not send a sex code value' do
           applicant.sex = nil
           expect(subject.body).to_not include('<aa:PersonSexCode>')
+          expect(subject.requested_attributes).to_not include(:sex)
+        end
+      end
+
+      context 'when the sex is unsupported' do
+        it 'does not send a sex code value' do
+          applicant.sex = 'X'
+          expect(subject.body).to_not include('<aa:PersonSexCode>')
+          expect(subject.requested_attributes).to_not include(:sex)
         end
       end
     end
 
-    context '#middle_name' do
-      context 'when the feature flag is off' do
-        before do
-          allow(IdentityConfig.store).to receive(:aamva_send_middle_name).and_return(false)
-        end
-
-        it 'does not add a PersonMiddleName node' do
-          applicant.middle_name = 'test_name'
-          expect(subject.body).to_not include('<nc:PersonMiddleName>')
-        end
-      end
-
-      context 'when the feature flag is on' do
-        before do
-          allow(IdentityConfig.store).to receive(:aamva_send_middle_name).and_return(true)
-        end
-
-        it 'does add a PersonMiddleName node' do
-          applicant.middle_name = 'test_name'
+    context '#document_type_received' do
+      context 'when the type is a Drivers License' do
+        it 'includes DocumentCategoryCode=1' do
+          applicant.state_id_data.document_type_received = 'drivers_license'
           expect(subject.body).to include(
-            '<nc:PersonMiddleName>test_name</nc:PersonMiddleName>',
+            '<aa:DocumentCategoryCode>1</aa:DocumentCategoryCode>',
           )
+          expect(subject.requested_attributes).to include(:document_type_received)
         end
       end
-    end
 
-    context '#state_id_type' do
-      context 'when the feature flag is off' do
-        before do
-          expect(IdentityConfig.store).to receive(:aamva_send_id_type).and_return(false)
+      context 'when the type is a learners permit' do
+        it 'includes DocumentCategoryCode=2' do
+          applicant.state_id_data.document_type_received = 'drivers_permit'
+          expect(subject.body).to include(
+            '<aa:DocumentCategoryCode>2</aa:DocumentCategoryCode>',
+          )
+          expect(subject.requested_attributes).to include(:document_type_received)
         end
+      end
 
-        it 'does not add a DocumentCategoryCode' do
-          applicant.state_id_data.state_id_type = 'drivers_license'
+      context 'when the type is an ID Card' do
+        it 'includes DocumentCategoryCode=3' do
+          applicant.state_id_data.document_type_received = 'state_id_card'
+          expect(subject.body).to include(
+            '<aa:DocumentCategoryCode>3</aa:DocumentCategoryCode>',
+          )
+          expect(subject.requested_attributes).to include(:document_type_received)
+        end
+      end
+
+      context 'when the type is something invalid' do
+        it 'does not add a DocumentCategoryCode for nil ID type' do
+          applicant.state_id_data.document_type_received = nil
           expect(subject.body).to_not include('<aa:DocumentCategoryCode>')
-        end
-      end
-
-      context 'when the feature flag is on' do
-        before do
-          expect(IdentityConfig.store).to receive(:aamva_send_id_type).and_return(true)
+          expect(subject.requested_attributes).to_not include(:document_type_received)
         end
 
-        context 'when the type is a Drivers License' do
-          it 'includes DocumentCategoryCode=1' do
-            applicant.state_id_data.state_id_type = 'drivers_license'
-            expect(subject.body).to include(
-              '<aa:DocumentCategoryCode>1</aa:DocumentCategoryCode>',
-            )
-          end
-        end
-
-        context 'when the type is a learners permit' do
-          it 'includes DocumentCategoryCode=2' do
-            applicant.state_id_data.state_id_type = 'drivers_permit'
-            expect(subject.body).to include(
-              '<aa:DocumentCategoryCode>2</aa:DocumentCategoryCode>',
-            )
-          end
-        end
-
-        context 'when the type is an ID Card' do
-          it 'includes DocumentCategoryCode=3' do
-            applicant.state_id_data.state_id_type = 'state_id_card'
-            expect(subject.body).to include(
-              '<aa:DocumentCategoryCode>3</aa:DocumentCategoryCode>',
-            )
-          end
-        end
-
-        context 'when the type is something invalid' do
-          it 'does not add a DocumentCategoryCode for nil ID type' do
-            applicant.state_id_data.state_id_type = nil
-            expect(subject.body).to_not include('<aa:DocumentCategoryCode>')
-          end
-
-          it 'does not add a DocumentCategoryCode for invalid ID types' do
-            applicant.state_id_data.state_id_type = 'License to Keep an Alpaca'
-            expect(subject.body).to_not include('<aa:DocumentCategoryCode>')
-          end
+        it 'does not add a DocumentCategoryCode for invalid ID types' do
+          applicant.state_id_data.document_type_received = 'License to Keep an Alpaca'
+          expect(subject.body).to_not include('<aa:DocumentCategoryCode>')
+          expect(subject.requested_attributes).to_not include(:document_type_received)
         end
       end
     end
@@ -294,8 +306,46 @@ RSpec.describe Proofing::Aamva::Request::VerificationRequest do
     end
   end
 
+  describe '#requested_attributes' do
+    let(:applicant_data) do
+      {
+        first_name: 'Testy',
+        last_name: 'McTesterson',
+        dob: '10/29/1942',
+        address1: '123 Sunnyside way',
+        city: 'Sterling',
+        state: 'VA',
+        zipcode: '20176-1234',
+        state_id_number: '98765421',
+        state_id_jurisdiction: 'VA',
+        document_type_received: 'drivers_license',
+      }
+    end
+
+    it 'should set present fields to :present' do
+      expect(subject.requested_attributes).to match(
+        first_name: :present,
+        last_name: :present,
+        dob: :present,
+        address1: :present,
+        city: :present,
+        state: :present,
+        zipcode: :present,
+        state_id_number: :present,
+        document_type_received: :present,
+        state_id_jurisdiction: :present,
+      )
+    end
+
+    it 'should set required blank fields to :missing' do
+      applicant.first_name = nil
+      expect(subject.requested_attributes).to include(first_name: :missing)
+    end
+  end
+
   describe 'South Carolina id number padding' do
     let(:state_id_jurisdiction) { 'SC' }
+
     let(:rendered_state_id_number) do
       body = REXML::Document.new(subject.body)
       REXML::XPath.first(body, '//nc:IdentificationID')&.text
@@ -312,6 +362,31 @@ RSpec.describe Proofing::Aamva::Request::VerificationRequest do
 
       it 'zero-pads the id to 8 digits' do
         expect(rendered_state_id_number).to eq("0#{state_id_number}")
+      end
+    end
+  end
+
+  describe 'compound last names' do
+    let(:last_name) { 'McFirst McSecond' }
+
+    subject(:rendered_last_name) do
+      body = REXML::Document.new(request.body)
+      REXML::XPath.first(body, '//nc:PersonSurName')&.text
+    end
+
+    before do
+      allow(IdentityConfig.store).to receive(:idv_aamva_split_last_name_states)
+        .and_return(['DC'])
+    end
+    it 'sends the full last name' do
+      expect(rendered_last_name).to eq('McFirst McSecond')
+    end
+
+    context 'in state configured for last name split' do
+      let(:state_id_jurisdiction) { 'DC' }
+
+      it 'only sends the first part of the last name' do
+        expect(rendered_last_name).to eq('McFirst')
       end
     end
   end

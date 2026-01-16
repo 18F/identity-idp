@@ -53,6 +53,7 @@ RSpec.describe OpenidConnectTokenForm do
   let!(:identity) do
     IdentityLinker.new(user, service_provider)
       .link_identity(
+        acr_values: Saml::Idp::Constants::IAL_AUTH_ONLY_ACR,
         nonce: nonce,
         rails_session_id: SecureRandom.hex,
         ial: 1,
@@ -375,7 +376,6 @@ RSpec.describe OpenidConnectTokenForm do
 
         expect(submission.to_h).to eq(
           success: true,
-          errors: {},
           client_id: client_id,
           user_id: user.uuid,
           code_digest: Digest::SHA256.hexdigest(code),
@@ -395,7 +395,6 @@ RSpec.describe OpenidConnectTokenForm do
 
         expect(submission.to_h).to include(
           success: false,
-          errors: form.errors.messages,
           error_details: hash_including(*form.errors.attribute_names),
           client_id: nil,
           user_id: nil,
@@ -412,7 +411,6 @@ RSpec.describe OpenidConnectTokenForm do
 
         expect(submission.to_h).to include(
           success: false,
-          errors: form.errors.messages,
           error_details: hash_including(:grant_type),
           client_id: client_id,
           user_id: user.uuid,

@@ -91,7 +91,7 @@ RSpec.describe Idv::AnalyticsEventsEnhancer do
           current_user: user,
           service_provider: sp,
         )
-        idv_session.pii_from_doc = Idp::Constants::MOCK_IDV_APPLICANT
+        idv_session.pii_from_doc = Idp::Constants.mock_idv_applicant
       end
 
       it 'calls analytics method with original attributes and proofing_components' do
@@ -100,8 +100,7 @@ RSpec.describe Idv::AnalyticsEventsEnhancer do
         expect(analytics.called_kwargs).to eql(
           extra: true,
           proofing_components: {
-            document_check: 'mock',
-            document_type: 'state_id',
+            document_type_received: 'drivers_license',
           },
         )
       end

@@ -24,6 +24,7 @@ PUNCTUATION_PAIRS = {
   '<' => '>',
   '（' => '）',
   '“' => '”',
+  '«' => '»',
 }.freeze
 
 # A set of patterns which are expected to only occur within specific locales. This is an imperfect
@@ -33,6 +34,14 @@ PUNCTUATION_PAIRS = {
 LOCALE_SPECIFIC_CONTENT = {
   fr: / [nd]’|à/i,
   es: /¿|ó/,
+}.freeze
+
+# Set of patterns which violate content conventions for a specific locale, including suggested
+# alternatives.
+LOCALE_BANNED_CONTENT = {
+  zh: [
+    { pattern: /[()]/, suggestion: 'Use full-width parentheses （ or ） instead of ( or )' },
+  ],
 }.freeze
 
 # Regex patterns for commonly misspelled words by locale. Match on word boundaries ignoring case.
@@ -59,12 +68,34 @@ module I18n
         { key: 'account.email_language.name.zh', locales: %i[es fr zh] },
         { key: 'account.navigation.menu', locales: %i[fr] }, # "Menu" is "Menu" in French
         { key: /^countries/ }, # Some countries have the same name across languages
+        { key: 'errors.messages.both_auth_and_logout_request', locales: %i[es fr zh] }, # This error will only be seen by partners during integration testing
+        { key: 'errors.messages.invalid_signature', locales: %i[es fr zh] }, # This error will only be seen by partners during integration testing
+        { key: 'errors.messages.issuer_missing_or_invalid', locales: %i[es fr zh] }, # This error will only be seen by partners during integration testing
+        { key: 'errors.messages.no_auth_or_logout_request', locales: %i[es fr zh] }, # This error will only be seen by partners during integration testing
+        { key: 'errors.messages.no_response_url', locales: %i[es fr zh] }, # This error will only be seen by partners during integration testing
         { key: 'date.formats.long', locales: %i[es zh] },
         { key: 'date.formats.short', locales: %i[es zh] },
         { key: 'datetime.dotiw.minutes.one' }, # "minute is minute" in French and English
         { key: 'datetime.dotiw.minutes.other' }, # "minute is minute" in French and English
         { key: 'datetime.dotiw.words_connector' }, # " , " is only punctuation and not translated
+        { key: 'doc_auth.headings.document_capture_selfie', locales: %i[fr] }, # Translations for Selfie french are the same as English
+        { key: 'doc_auth.headings.document_capture_subheader_selfie_review', locales: %i[fr] }, # Translations for Selfie french are the same as English
+        { key: 'in_person_proofing.body.passport.info' }, # Translations will be updated for In-Person Proofing Passport Epic, see LG-15972
+        { key: 'in_person_proofing.form.passport.dob' }, # Translations will be updated for In-Person Proofing Passport Epic, see LG-15972
+        { key: 'in_person_proofing.form.passport.errors.passport_number.pattern_mismatch' }, # Translations will be updated for In-Person Proofing Passport Epic, see LG-15972
+        { key: 'in_person_proofing.form.passport.first_name' }, # Translations will be updated for In-Person Proofing Passport Epic, see LG-15972
+        { key: 'in_person_proofing.form.passport.first_name_hint' }, # Translations will be updated for In-Person Proofing Passport Epic, see LG-15972
+        { key: 'in_person_proofing.form.passport.passport_number' }, # Translations will be updated for In-Person Proofing Passport Epic, see LG-15972
+        { key: 'in_person_proofing.form.passport.passport_number_hint' }, # Translations will be updated for In-Person Proofing Passport Epic, see LG-15972
+        { key: 'in_person_proofing.form.passport.surname' }, # Translations will be updated for In-Person Proofing Passport Epic, see LG-15972
+        { key: 'in_person_proofing.form.verify_info.passport' }, # Translations will be updated for In-Person Proofing Passport Epic, see LG-15972
+        { key: 'in_person_proofing.form.verify_info.passport_intro_text' }, # Translations will be updated for In-Person Proofing Passport Epic, see LG-15972
+        { key: 'in_person_proofing.headings.barcode_passport' }, # Translations will be updated for In-Person Proofing Passport Epic, see LG-15972
+        { key: 'in_person_proofing.headings.passport' }, # Translations will be updated for In-Person Proofing Passport Epic, see LG-15972
         { key: 'in_person_proofing.process.eipp_bring_id.image_alt_text', locales: %i[fr es zh] }, # Real ID is considered a proper noun in this context, ID translated to ID Card in Chinese
+        { key: 'in_person_proofing.process.passport.heading' }, # Translations will be updated for In-Person Proofing Passport Epic, see LG-15972
+        { key: 'in_person_proofing.process.passport.info' }, # Translations will be updated for In-Person Proofing Passport Epic, see LG-15972
+        { key: 'in_person_proofing.info.choose_id_type', locales: %i[fr es zh] }, # Waiting on translations
         { key: 'links.contact', locales: %i[fr] }, # "Contact" is "Contact" in French
         { key: 'saml_idp.auth.error.title', locales: %i[es] }, # "Error" is "Error" in Spanish
         { key: 'simple_form.no', locales: %i[es] }, # "No" is "No" in Spanish
@@ -74,12 +105,10 @@ module I18n
         { key: 'time.formats.event_timestamp', locales: %i[zh] },
         { key: 'time.formats.full_date', locales: %i[es] }, # format is the same in Spanish and English
         { key: 'time.formats.sms_date' }, # for us date format
-        { key: 'webauthn_platform_recommended.cta' }, # English-only A/B test
-        { key: 'webauthn_platform_recommended.description_private_html' }, # English-only A/B test
-        { key: 'webauthn_platform_recommended.description_secure_account' }, # English-only A/B test
-        { key: 'webauthn_platform_recommended.heading' }, # English-only A/B test
-        { key: 'webauthn_platform_recommended.phishing_resistant' }, # English-only A/B test
-        { key: 'webauthn_platform_recommended.skip' }, # English-only A/B test
+        { key: 'user_mailer.in_person_failed.verifying_identity_passports_enabled' }, # for failed proofing emails
+        { key: 'user_mailer.in_person_failed.verifying_step_passports_enabledb1' }, # for failed proofing emails
+        { key: 'user_mailer.in_person_failed.verifying_step_passports_enabledb2' }, # for failed proofing emails
+        { key: 'user_mailer.in_person_failed.verifying_step_passports_enabledb3_html' }, # for failed proofing emails
       ].freeze
       # rubocop:enable Layout/LineLength
 
@@ -173,6 +202,35 @@ RSpec.describe 'I18n' do
     expect(mismatched_punctuation_pairs).to(
       be_empty,
       "keys with mismatched punctuation pairs: #{mismatched_punctuation_pairs.pretty_inspect}",
+    )
+  end
+
+  it 'does not leave orphaned punctuation characters' do
+    patterns = PUNCTUATION_PAIRS.flat_map do |opening_punctuation, closing_punctuation|
+      [
+        /#{Regexp.escape(opening_punctuation)}\s+/,
+        /\s+#{Regexp.escape(closing_punctuation)}/,
+      ]
+    end
+    pattern = Regexp.union(patterns)
+
+    orphaned_whitespace = []
+    i18n.locales.each do |locale|
+      i18n.data[locale].key_values.each do |key, value|
+        Array(value).each do |value|
+          next if !pattern.match?(value)
+          orphaned_whitespace.push("#{[locale, key].join('.')}: #{value}")
+        end
+      end
+    end
+
+    expect(orphaned_whitespace).to(
+      be_empty,
+      <<~STR,
+        Unexpected orphaned punctuation. Ensure that you use non-breaking whitespace within punctuation characters (` ` unicode character or `&nbsp;` HTML entity).
+
+        #{orphaned_whitespace.join("\n")}"
+      STR
     )
   end
 
@@ -386,6 +444,16 @@ RSpec.describe 'I18n' do
           expect(value).not_to match(COMMONLY_MISSPELLED_WORDS[locale])
         end
       end
+
+      it 'does not contain banned content', if: LOCALE_BANNED_CONTENT.key?(locale) do
+        bans = LOCALE_BANNED_CONTENT[locale]
+        flattened_yaml_data.each do |key, value|
+          bans.each do |ban|
+            expect(value).not_to match(ban[:pattern]),
+                                 "Key `#{key}` contains unexpected content. #{ban[:suggestion]}."
+          end
+        end
+      end
     end
   end
 
@@ -404,13 +472,13 @@ RSpec.describe 'I18n' do
   end
 
   def likely_html_interpolation?(str)
-    str.scan(I18n::INTERPOLATION_PATTERN).flatten.compact.any? do |key|
+    str.scan(i18n_interpolation_pattern).flatten.compact.any? do |key|
       key.include?('html')
     end
   end
 
   def extract_interpolation_arguments(translation)
-    translation.scan(I18n::INTERPOLATION_PATTERN)
+    translation.scan(i18n_interpolation_pattern)
       .map(&:compact).map(&:first).to_set
   end
 
@@ -430,5 +498,11 @@ RSpec.describe 'I18n' do
     end
 
     out_hash
+  end
+
+  def i18n_interpolation_pattern
+    Regexp.union(
+      I18n.config.interpolation_patterns,
+    )
   end
 end

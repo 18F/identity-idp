@@ -1,3 +1,7 @@
+# `Unreleased`
+
+- Removed unsupported single input address search
+
 # `Change Log`
 
 ## v3.4.0 (2024-11-07)

@@ -71,7 +71,7 @@ RSpec.describe Profile do
   describe '#encrypt_pii' do
     subject(:encrypt_pii) { profile.encrypt_pii(pii, user.password) }
 
-    it 'encrypts pii and stores the multi region ciphertext' do
+    it 'encrypts pii and stores only the multi region ciphertext' do
       expect(profile.encrypted_pii).to be_nil
       expect(profile.encrypted_pii_recovery).to be_nil
       expect(profile.encrypted_pii_multi_region).to be_nil
@@ -79,13 +79,9 @@ RSpec.describe Profile do
 
       profile.encrypt_pii(pii, user.password)
 
-      expect(profile.encrypted_pii).to be_present
-      expect(profile.encrypted_pii).to_not match 'Jane'
-      expect(profile.encrypted_pii).to_not match(ssn)
+      expect(profile.encrypted_pii).to be_nil
 
-      expect(profile.encrypted_pii_recovery).to be_present
-      expect(profile.encrypted_pii_recovery).to_not match 'Jane'
-      expect(profile.encrypted_pii_recovery).to_not match(ssn)
+      expect(profile.encrypted_pii_recovery).to be_nil
 
       expect(profile.encrypted_pii_multi_region).to be_present
       expect(profile.encrypted_pii_multi_region).to_not match 'Jane'
@@ -98,13 +94,18 @@ RSpec.describe Profile do
 
     it 'generates new personal key' do
       expect(profile.encrypted_pii_recovery).to be_nil
+      expect(profile.encrypted_pii_recovery_multi_region).to be_nil
 
-      initial_personal_key = user.encrypted_recovery_code_digest
+      initial_personal_key = user.encrypted_recovery_code_digest_multi_region
 
       encrypt_pii
 
-      expect(profile.encrypted_pii_recovery).to be_present
-      expect(user.reload.encrypted_recovery_code_digest).to_not eq initial_personal_key
+      expect(profile.encrypted_pii_recovery).to be_nil
+      expect(profile.encrypted_pii_recovery_multi_region).to be_present
+
+      user.reload
+      expect(user.encrypted_recovery_code_digest).to be_nil
+      expect(user.encrypted_recovery_code_digest_multi_region).to_not eq initial_personal_key
     end
 
     it 'updates the personal key digest generation time' do
@@ -163,25 +164,32 @@ RSpec.describe Profile do
   describe '#encrypt_recovery_pii' do
     it 'generates new personal key' do
       expect(profile.encrypted_pii_recovery).to be_nil
+      expect(profile.encrypted_pii_recovery_multi_region).to be_nil
 
-      initial_personal_key = user.encrypted_recovery_code_digest
+      initial_personal_key = user.encrypted_recovery_code_digest_multi_region
 
       profile.encrypt_recovery_pii(pii)
 
-      expect(profile.encrypted_pii_recovery).to be_present
-      expect(user.reload.encrypted_recovery_code_digest).to_not eq initial_personal_key
-      expect(profile.personal_key).to_not eq user.encrypted_recovery_code_digest
+      expect(profile.encrypted_pii_recovery).to be_nil
+      expect(profile.encrypted_pii_recovery_multi_region).to be_present
+
+      user.reload
+      expect(user.encrypted_recovery_code_digest).to be_nil
+      expect(user.encrypted_recovery_code_digest_multi_region).to_not eq initial_personal_key
+      expect(profile.personal_key).to_not eq user.encrypted_recovery_code_digest_multi_region
     end
 
     it 'can be passed a personal key' do
       expect(profile.encrypted_pii_recovery).to be_nil
+      expect(profile.encrypted_pii_recovery_multi_region).to be_nil
 
       personal_key = 'ABCD-1234'
       returned_personal_key = profile.encrypt_recovery_pii(pii, personal_key: personal_key)
 
       expect(returned_personal_key).to eql(personal_key)
 
-      expect(profile.encrypted_pii_recovery).to be_present
+      expect(profile.encrypted_pii_recovery).to be_nil
+      expect(profile.encrypted_pii_recovery_multi_region).to be_present
       expect(profile.personal_key).to eq personal_key
     end
   end
@@ -191,15 +199,6 @@ RSpec.describe Profile do
       profile.encrypt_pii(pii, user.password)
 
       expect(profile.encrypted_pii_multi_region).to_not be_nil
-
-      decrypted_pii = profile.decrypt_pii(user.password)
-
-      expect(decrypted_pii).to eq pii
-    end
-
-    it 'decrypts the PII for users with only a single region ciphertext' do
-      profile.encrypt_pii(pii, user.password)
-      profile.update!(encrypted_pii_multi_region: nil)
 
       decrypted_pii = profile.decrypt_pii(user.password)
 
@@ -223,18 +222,6 @@ RSpec.describe Profile do
       normalized_personal_key = PersonalKeyGenerator.new(user).normalize(personal_key)
 
       expect(profile.encrypted_pii_recovery_multi_region).to_not be_nil
-
-      decrypted_pii = profile.recover_pii(normalized_personal_key)
-
-      expect(decrypted_pii).to eq pii
-    end
-
-    it 'decrypts recovery PII with personal key for users with only a single region ciphertext' do
-      profile.encrypt_pii(pii, user.password)
-      profile.update!(encrypted_pii_recovery_multi_region: nil)
-      personal_key = profile.personal_key
-
-      normalized_personal_key = PersonalKeyGenerator.new(user).normalize(personal_key)
 
       decrypted_pii = profile.recover_pii(normalized_personal_key)
 
@@ -350,6 +337,7 @@ RSpec.describe Profile do
     context 'when a user creates a facial match comparision profile' do
       context 'when the user has an active profile' do
         it 'creates a facial match upgrade record' do
+          expect(user.analytics).to receive(:idv_profile_activated).twice
           profile.activate
           facial_match_profile = create(
             :profile,
@@ -381,7 +369,7 @@ RSpec.describe Profile do
       context 'when the user does not have an active profile' do
         it 'does not create a facial match conversion record' do
           profile = create(:profile, :facial_match_proof, user: user)
-
+          expect(user.analytics).to receive(:idv_profile_activated)
           expect { profile.activate }.to_not(change { SpUpgradedFacialMatchProfile.count })
         end
       end
@@ -393,6 +381,7 @@ RSpec.describe Profile do
 
     it 'sends a reproof completed push event' do
       profile = create(:profile, :active, user: user)
+      expect(profile.user.analytics).to receive(:idv_profile_activated).once
       expect(PushNotification::HttpPush).to receive(:deliver)
         .with(PushNotification::ReproofCompletedEvent.new(user: user))
 
@@ -406,6 +395,7 @@ RSpec.describe Profile do
       expect(profile.verified_at).to be_present
 
       profile.activate
+      profile.reload
 
       expect(profile.activated_at).to be_present # changed
       expect(profile.active).to eq(true)
@@ -434,6 +424,7 @@ RSpec.describe Profile do
       expect(profile.initiating_service_provider).to be_nil
       expect(profile.verified_at).to be_nil # to change
 
+      expect(profile.user.analytics).to receive(:idv_profile_activated).once
       profile.activate
 
       expect(profile.activated_at).to be_present
@@ -489,6 +480,7 @@ RSpec.describe Profile do
         expect(profile.initiating_service_provider).to be_nil
         expect(profile.verified_at).to be_nil
 
+        expect(profile.user.analytics).not_to receive(:idv_profile_activated)
         expect { profile.activate }.to raise_error(
           RuntimeError,
           'Attempting to activate profile with pending reasons: gpo_verification_pending',
@@ -518,6 +510,7 @@ RSpec.describe Profile do
         expect(profile.initiating_service_provider).to be_nil
         expect(profile.verified_at).to be_nil
 
+        expect(profile.user.analytics).not_to receive(:idv_profile_activated)
         expect { profile.activate }.to raise_error(
           RuntimeError,
           'Attempting to activate profile with pending reasons: fraud_check_pending',
@@ -547,6 +540,7 @@ RSpec.describe Profile do
         expect(profile.initiating_service_provider).to be_nil
         expect(profile.verified_at).to be_nil
 
+        expect(profile.user.analytics).not_to receive(:idv_profile_activated)
         expect { profile.activate }.to raise_error(
           RuntimeError,
           'Attempting to activate profile with pending reasons: fraud_check_pending',
@@ -567,11 +561,12 @@ RSpec.describe Profile do
 
     context 'When a profile already has a verified_at timestamp' do
       it 'does not update the timestamp when #activate is called' do
-        profile = create(:profile, :verified, user: user)
+        profile = create(:profile, :verified, user: user, verified_at: 1.day.ago)
         original_timestamp = profile.verified_at
+        expect(profile.user.analytics).to receive(:idv_profile_activated).once
         expect(profile.reason_not_to_activate).to be_nil
         profile.activate
-        expect(profile.verified_at).to eq(original_timestamp)
+        expect(profile.verified_at).to be_within(1.second).of(original_timestamp)
       end
     end
   end
@@ -696,166 +691,57 @@ RSpec.describe Profile do
     end
   end
 
-  describe '#activate_after_password_reset' do
-    it 'activates a non-verified, non-active, non-activated profile after password reset' do
-      # TODO: this profile scenario shouldn't be possible
-      profile = create(
-        :profile,
-        :password_reset,
-        user: user,
-      )
+  describe '#clear_password_reset_deactivation_reason' do
+    context 'when the profile has the password_reset deactivation reason' do
+      context 'when the profile was previously active' do
+        subject { create(:profile, :active, user: user) }
 
-      # profile.initiating_service_provider is nil before and after because
-      # the user is coming from a password reset email
+        before do
+          subject.deactivate(:password_reset)
+          subject.clear_password_reset_deactivation_reason
+        end
 
-      expect(profile.activated_at).to be_nil # will change but shouldn't
-      expect(profile.active).to eq(false) # will change but shouldn't
-      expect(profile.deactivation_reason).to eq 'password_reset' # will change but shouldn't
-      expect(profile.fraud_review_pending?).to eq(false)
-      expect(profile.gpo_verification_pending_at).to be_nil
-      expect(profile.in_person_verification_pending_at).to be_nil
-      expect(profile.initiating_service_provider).to be_nil
-      expect(profile.verified_at).to be_nil
+        it 'removes "password_reset" deactivation reason from the profile' do
+          expect(subject.deactivation_reason).to be_nil
+        end
 
-      # TODO: this should raise an error
-      profile.activate_after_password_reset
-
-      expect(profile.activated_at).to be_present # !!! changed
-      expect(profile.active).to eq(true) # !!! changed
-      expect(profile.deactivation_reason).to be_nil # !!! changed
-      expect(profile.fraud_review_pending?).to eq(false)
-      expect(profile.gpo_verification_pending_at).to be_nil
-      expect(profile.in_person_verification_pending_at).to be_nil
-      expect(profile.initiating_service_provider).to be_nil
-      expect(profile.verified_at).to be_nil
-    end
-
-    it 'activates a previously verified profile after password reset' do
-      profile = create(
-        :profile,
-        :active,
-        :password_reset,
-        user: user,
-      )
-      verified_at = profile.verified_at
-
-      expect(profile.activated_at).to be_present
-      expect(profile.active).to eq(false) # to change
-      expect(profile.deactivation_reason).to eq 'password_reset' # to change
-      expect(profile.fraud_review_pending?).to eq(false)
-      expect(profile.gpo_verification_pending_at).to be_nil
-      expect(profile.in_person_verification_pending_at).to be_nil
-      expect(profile.initiating_service_provider).to be_nil
-      expect(profile.verified_at).to eq verified_at
-
-      profile.activate_after_password_reset
-
-      expect(profile.activated_at).to be_present
-      expect(profile.active).to eq(true) # changed
-      expect(profile.deactivation_reason).to be_nil # changed
-      expect(profile.fraud_review_pending?).to eq(false)
-      expect(profile.gpo_verification_pending_at).to be_nil
-      expect(profile.in_person_verification_pending_at).to be_nil
-      expect(profile.initiating_service_provider).to be_nil
-      expect(profile.verified_at).to eq verified_at
-    end
-
-    # ??? This method still nils out deactivation_reason even though it raises
-    it 'does not activate a profile if it has a pending reason' do
-      profile = create(
-        :profile,
-        :password_reset,
-        :fraud_review_pending,
-        user: user,
-      )
-
-      expect(profile.activated_at).to be_nil
-      expect(profile.active).to eq(false)
-      expect(profile.deactivation_reason).to eq('password_reset') # to change
-      expect(profile.fraud_review_pending?).to eq(true)
-      expect(profile.gpo_verification_pending_at).to be_nil
-      expect(profile.in_person_verification_pending_at).to be_nil
-      expect(profile.initiating_service_provider).to be_nil
-      expect(profile.verified_at).to be_nil
-
-      expect { profile.activate_after_password_reset }.to raise_error(
-        RuntimeError,
-        'Attempting to activate profile with pending reasons: fraud_check_pending',
-      )
-
-      expect(profile.activated_at).to be_nil
-      expect(profile.active).to eq(false)
-      expect(profile.deactivation_reason).to be_nil # changed
-      expect(profile.fraud_review_pending?).to eq(true)
-      expect(profile.gpo_verification_pending_at).to be_nil
-      expect(profile.in_person_verification_pending_at).to be_nil
-      expect(profile.initiating_service_provider).to be_nil
-      expect(profile.verified_at).to be_nil
-
-      expect(profile).to_not be_active
-    end
-
-    it 'does not activate a profile with non password_reset deactivation_reason' do
-      profile = create(
-        :profile,
-        :encryption_error,
-        user: user,
-      )
-
-      expect(profile.activated_at).to be_nil
-      expect(profile.active).to eq(false)
-      expect(profile.deactivation_reason).to eq 'encryption_error'
-      expect(profile.fraud_review_pending?).to eq(false)
-      expect(profile.gpo_verification_pending_at).to be_nil
-      expect(profile.in_person_verification_pending_at).to be_nil
-      expect(profile.initiating_service_provider).to be_nil
-      expect(profile.verified_at).to be_nil
-
-      profile.activate_after_password_reset
-
-      expect(profile.activated_at).to be_nil
-      expect(profile.active).to eq(false)
-      expect(profile.deactivation_reason).to eq 'encryption_error'
-      expect(profile.fraud_review_pending?).to eq(false)
-      expect(profile.gpo_verification_pending_at).to be_nil
-      expect(profile.in_person_verification_pending_at).to be_nil
-      expect(profile.initiating_service_provider).to be_nil
-      expect(profile.verified_at).to be_nil
-    end
-
-    it 'does not activate a non-verified profile if it encounters a transaction error' do
-      profile = create(
-        :profile,
-        :password_reset,
-        user: user,
-      )
-
-      allow(profile).to receive(:update!).and_raise(RuntimeError)
-
-      expect(profile.activated_at).to be_nil
-      expect(profile.active).to eq(false)
-      expect(profile.deactivation_reason).to eq('password_reset')
-      expect(profile.fraud_review_pending?).to eq(false)
-      expect(profile.gpo_verification_pending_at).to be_nil
-      expect(profile.in_person_verification_pending_at).to be_nil
-      expect(profile.initiating_service_provider).to be_nil
-      expect(profile.verified_at).to be_nil
-
-      suppress(RuntimeError) do
-        profile.activate_after_password_reset
+        it 'activates the profile' do
+          expect(subject.active?).to be(true)
+        end
       end
 
-      expect(profile.activated_at).to be_nil
-      expect(profile.active).to eq(false)
-      expect(profile.deactivation_reason).to eq('password_reset')
-      expect(profile.fraud_review_pending?).to eq(false)
-      expect(profile.gpo_verification_pending_at).to be_nil
-      expect(profile.in_person_verification_pending_at).to be_nil
-      expect(profile.initiating_service_provider).to be_nil
-      expect(profile.verified_at).to be_nil
+      context 'when the profile was not previously active' do
+        subject { create(:profile, :in_person_verification_pending, user: user) }
 
-      expect(profile.deactivation_reason).to eq('password_reset')
-      expect(profile).to_not be_active
+        before do
+          subject.deactivate(:password_reset)
+          subject.clear_password_reset_deactivation_reason
+        end
+
+        it 'removes "password_reset" deactivation reason from the profile' do
+          expect(subject.deactivation_reason).to be_nil
+        end
+
+        it 'does not activate the profile' do
+          expect(subject.active?).to be(false)
+        end
+      end
+    end
+
+    context 'when the profile does not have the password_reset deactivation reason' do
+      subject { create(:profile, :encryption_error, user: user) }
+
+      before do
+        subject.clear_password_reset_deactivation_reason
+      end
+
+      it 'does not remove the deactivation reason from the profile' do
+        expect(subject.deactivation_reason).to eq('encryption_error')
+      end
+
+      it 'does not activate the profile' do
+        expect(subject.active?).to be(false)
+      end
     end
   end
 
@@ -1295,6 +1181,253 @@ RSpec.describe Profile do
         expect(profile).to_not be_active
 
         expect { profile }.to change(ActionMailer::Base.deliveries, :count).by(0)
+      end
+    end
+  end
+
+  describe '#deactivate_duplicate' do
+    context 'when the profile is not active' do
+      let(:profile) { create(:profile, :deactivated) }
+      it 'raises an exception' do
+        expect { profile.deactivate_duplicate }.to raise_error('Profile not active')
+      end
+    end
+
+    context 'when the profile is active' do
+      let(:profile) { create(:profile, :active) }
+      context 'when the profile is not identified as a duplicate' do
+        it 'raises an exception' do
+          expect { profile.deactivate_duplicate }.to raise_error('Profile not a duplicate')
+        end
+      end
+
+      context 'when the profile is identified as a duplicate' do
+        let!(:duplicate_profile_set) do
+          create(
+            :duplicate_profile_set,
+            profile_ids: profile_ids,
+            closed_at: closed_at,
+          )
+        end
+
+        context 'when the duplicate profile has already been closed' do
+          let(:closed_at) { Time.zone.now }
+          let(:profile_ids) { [profile.id] }
+
+          it 'raises an exception' do
+            expect { profile.deactivate_duplicate }.to raise_error('Profile not a duplicate')
+          end
+        end
+
+        context 'when the duplicate profile is still open' do
+          let(:closed_at) { nil }
+
+          context 'when the profile is the only one in its duplicate set' do
+            let(:profile_ids) { [profile.id] }
+
+            it 'deactivates the profile', :freeze_time do
+              profile.deactivate_duplicate
+              expect(profile).to_not be_active
+              expect(profile.fraud_rejection_at).to eq(Time.zone.now)
+            end
+
+            it 'closes the case as resolved by fraud', :freeze_time do
+              profile.deactivate_duplicate
+              duplicate_profile_set.reload
+              expect(duplicate_profile_set.profile_ids).to include(profile.id)
+              expect(duplicate_profile_set.closed_at).to eq(Time.zone.now)
+              expect(duplicate_profile_set.self_serviced).to be(false)
+              expect(duplicate_profile_set.fraud_investigation_conclusive).to be(true)
+            end
+
+            it 'notifies the user' do
+              expect { profile.deactivate_duplicate }
+                .to(change { ActionMailer::Base.deliveries.count }.by(1))
+            end
+          end
+
+          context 'when there are other profiles in the duplicate set' do
+            let(:second_profile) { create(:profile, :active) }
+            let(:profile_ids) { [profile.id, second_profile.id] }
+
+            it 'deactivates the profile', :freeze_time do
+              profile.deactivate_duplicate
+              expect(profile).to_not be_active
+              expect(profile.fraud_rejection_at).to eq(Time.zone.now)
+            end
+
+            it 'does not close the case', :freeze_time do
+              profile.deactivate_duplicate
+              duplicate_profile_set.reload
+              expect(duplicate_profile_set.profile_ids).not_to include(profile.id)
+              expect(duplicate_profile_set.closed_at).to be(nil)
+              expect(duplicate_profile_set.self_serviced).to be(nil)
+              expect(duplicate_profile_set.fraud_investigation_conclusive).to be(nil)
+            end
+
+            it 'notifies the user' do
+              expect { profile.deactivate_duplicate }
+                .to(change { ActionMailer::Base.deliveries.count }.by(1))
+            end
+          end
+        end
+      end
+    end
+  end
+
+  describe '#clear_duplicate' do
+    context 'when the profile is not active' do
+      let(:profile) { create(:profile, :deactivated) }
+      it 'raises an exception' do
+        expect { profile.clear_duplicate }.to raise_error('Profile not active')
+      end
+    end
+
+    context 'when the profile is active' do
+      let(:profile) { create(:profile, :active) }
+      context 'when the profile is not identified as a duplicate' do
+        it 'raises an exception' do
+          expect { profile.clear_duplicate }.to raise_error('Profile not a duplicate')
+        end
+      end
+
+      context 'when the profile is identified as a duplicate' do
+        let!(:duplicate_profile_set) do
+          create(
+            :duplicate_profile_set,
+            profile_ids: profile_ids,
+            closed_at: closed_at,
+          )
+        end
+
+        context 'when the duplicate profile has already been closed' do
+          let(:closed_at) { Time.zone.now }
+          let(:profile_ids) { [profile.id] }
+
+          it 'raises an exception' do
+            expect { profile.clear_duplicate }.to raise_error('Profile not a duplicate')
+          end
+        end
+
+        context 'when the duplicate profile is still open' do
+          let(:closed_at) { nil }
+
+          context 'when the profile is the only one in its duplicate set' do
+            let(:profile_ids) { [profile.id] }
+
+            it 'leaves the profile as active', :freeze_time do
+              profile.clear_duplicate
+              expect(profile).to be_active
+            end
+
+            it 'closes the case as resolved by fraud', :freeze_time do
+              profile.clear_duplicate
+              duplicate_profile_set.reload
+              expect(duplicate_profile_set.profile_ids).to include(profile.id)
+              expect(duplicate_profile_set.closed_at).to eq(Time.zone.now)
+              expect(duplicate_profile_set.self_serviced).to be(false)
+              expect(duplicate_profile_set.fraud_investigation_conclusive).to be(true)
+            end
+
+            it 'notifies the user' do
+              expect { profile.clear_duplicate }
+                .to(change { ActionMailer::Base.deliveries.count }.by(1))
+            end
+          end
+
+          context 'when there are other profiles in the duplicate set' do
+            let(:second_profile) { create(:profile, :active) }
+            let(:profile_ids) { [profile.id, second_profile.id] }
+
+            it 'raises an exception' do
+              expect { profile.clear_duplicate }.to raise_error('Profile has other duplicates')
+            end
+          end
+        end
+      end
+    end
+  end
+
+  describe '#close_inconclusive_duplicate' do
+    context 'when the profile is not active' do
+      let(:profile) { create(:profile, :deactivated) }
+      it 'raises an exception' do
+        expect { profile.close_inconclusive_duplicate }.to raise_error('Profile not active')
+      end
+    end
+
+    context 'when the profile is active' do
+      let(:profile) { create(:profile, :active) }
+      context 'when the profile is not identified as a duplicate' do
+        it 'raises an exception' do
+          expect { profile.close_inconclusive_duplicate }
+            .to raise_error('Profile not a duplicate')
+        end
+      end
+
+      context 'when the profile is identified as a duplicate' do
+        let!(:duplicate_profile_set) do
+          create(
+            :duplicate_profile_set,
+            profile_ids: profile_ids,
+            closed_at: closed_at,
+          )
+        end
+
+        context 'when the duplicate profile has already been closed' do
+          let(:closed_at) { Time.zone.now }
+          let(:profile_ids) { [profile.id] }
+
+          it 'raises an exception' do
+            expect { profile.close_inconclusive_duplicate }
+              .to raise_error('Profile not a duplicate')
+          end
+        end
+
+        context 'when the duplicate profile is still open' do
+          let(:closed_at) { nil }
+
+          context 'when the profile is the only one in its duplicate set' do
+            let(:profile_ids) { [profile.id] }
+
+            it 'leaves the profile as active', :freeze_time do
+              profile.close_inconclusive_duplicate
+              expect(profile).to be_active
+            end
+
+            it 'closes the case as inconclusive', :freeze_time do
+              profile.close_inconclusive_duplicate
+              duplicate_profile_set.reload
+              expect(duplicate_profile_set.closed_at).to eq(Time.zone.now)
+              expect(duplicate_profile_set.self_serviced).to be(false)
+              expect(duplicate_profile_set.fraud_investigation_conclusive).to be(false)
+            end
+          end
+
+          context 'when there are other profiles in the duplicate set' do
+            let(:second_profile) { create(:profile, :active) }
+            let(:profile_ids) { [profile.id, second_profile.id] }
+
+            it 'leaves the profile as active', :freeze_time do
+              profile.close_inconclusive_duplicate
+              expect(profile).to be_active
+            end
+
+            it 'does not close the case', :freeze_time do
+              profile.close_inconclusive_duplicate
+              duplicate_profile_set.reload
+              expect(duplicate_profile_set.profile_ids).not_to include(profile.id)
+              expect(duplicate_profile_set.closed_at).to be(nil)
+              expect(duplicate_profile_set.self_serviced).to be(nil)
+              expect(duplicate_profile_set.fraud_investigation_conclusive).to be(nil)
+            end
+
+            it 'notifies the user' do
+              expect { profile.close_inconclusive_duplicate }
+                .to(change { ActionMailer::Base.deliveries.count }.by(1))
+            end
+          end
+        end
       end
     end
   end

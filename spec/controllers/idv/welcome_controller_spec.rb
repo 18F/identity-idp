@@ -28,6 +28,41 @@ RSpec.describe Idv::WelcomeController do
         :check_for_mail_only_outage,
       )
     end
+
+    it 'includes cancelling previous in person enrollments' do
+      expect(subject).to have_actions(
+        :before,
+        :cancel_previous_in_person_enrollments,
+      )
+    end
+
+    context 'with previous establishing and pending in-person enrollments' do
+      before do
+        allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
+      end
+
+      let!(:establishing_enrollment) { create(:in_person_enrollment, :establishing, user: user) }
+      let(:password_reset_profile) { create(:profile, :password_reset, user: user) }
+      let!(:pending_enrollment) do
+        create(:in_person_enrollment, :pending, user: user, profile: password_reset_profile)
+      end
+      let(:fraud_password_reset_profile) { create(:profile, :password_reset, user: user) }
+      let!(:fraud_review_enrollment) do
+        create(
+          :in_person_enrollment, :in_fraud_review, user: user, profile: fraud_password_reset_profile
+        )
+      end
+
+      it 'cancels all previous establishing, pending, and in_fraud_review enrollments' do
+        put :show
+
+        expect(establishing_enrollment.reload.status).to eq(InPersonEnrollment::STATUS_CANCELLED)
+        expect(pending_enrollment.reload.status).to eq(InPersonEnrollment::STATUS_CANCELLED)
+        expect(fraud_review_enrollment.reload.status).to eq(InPersonEnrollment::STATUS_CANCELLED)
+        expect(user.establishing_in_person_enrollment).to be_blank
+        expect(user.pending_in_person_enrollment).to be_blank
+      end
+    end
   end
 
   describe '#show' do
@@ -57,12 +92,6 @@ RSpec.describe Idv::WelcomeController do
       expect { get :show }.to(
         change { doc_auth_log.reload.welcome_view_count }.from(0).to(1),
       )
-    end
-
-    it 'sets the proofing started timestamp', :freeze_time do
-      get :show
-
-      expect(subject.idv_session.proofing_started_at).to eq(Time.zone.now.iso8601)
     end
 
     context 'welcome already visited' do
@@ -105,6 +134,97 @@ RSpec.describe Idv::WelcomeController do
 
       expect(response).to redirect_to(idv_please_call_url)
     end
+
+    context 'has pending in-person enrollment' do
+      before do
+        allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
+      end
+
+      it 'redirects to ready to verify' do
+        profile = create(:profile, :in_person_verification_pending, user:)
+
+        stub_sign_in(profile.user)
+
+        get :show
+
+        expect(response).to redirect_to(idv_in_person_ready_to_verify_url)
+      end
+    end
+
+    context 'SP reproofing banner' do
+      context 'when feature flag is enabled and user has proofed before with SP session' do
+        let(:sp) { create(:service_provider, friendly_name: 'Test Service Provider') }
+
+        before do
+          allow(IdentityConfig.store).to receive(:feature_show_sp_reproof_banner_enabled)
+            .and_return(true)
+          allow(user).to receive(:has_proofed_before?).and_return(true)
+          session[:sp] = {
+            issuer: sp.issuer,
+            acr_values: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+          }
+        end
+
+        it 'passes show_sp_reproof_banner as true to the presenter' do
+          get :show
+
+          expect(assigns(:presenter).show_sp_reproof_banner).to eq(true)
+        end
+      end
+
+      context 'when feature flag is disabled' do
+        let(:sp) { create(:service_provider, friendly_name: 'Test Service Provider') }
+
+        before do
+          allow(IdentityConfig.store).to receive(:feature_show_sp_reproof_banner_enabled)
+            .and_return(false)
+          allow(user).to receive(:has_proofed_before?).and_return(true)
+          session[:sp] = {
+            issuer: sp.issuer,
+            acr_values: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+          }
+        end
+
+        it 'passes show_sp_reproof_banner as false to the presenter' do
+          get :show
+
+          expect(assigns(:presenter).show_sp_reproof_banner).to eq(false)
+        end
+      end
+
+      context 'when user has not proofed before' do
+        let(:sp) { create(:service_provider, friendly_name: 'Test Service Provider') }
+
+        before do
+          allow(IdentityConfig.store).to receive(:feature_show_sp_reproof_banner_enabled)
+            .and_return(true)
+          session[:sp] = {
+            issuer: sp.issuer,
+            acr_values: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+          }
+        end
+
+        it 'passes show_sp_reproof_banner as false to the presenter' do
+          get :show
+
+          expect(assigns(:presenter).show_sp_reproof_banner).to eq(false)
+        end
+      end
+
+      context 'when there is no service provider in session' do
+        before do
+          allow(IdentityConfig.store).to receive(:feature_show_sp_reproof_banner_enabled)
+            .and_return(true)
+          allow(user).to receive(:has_proofed_before?).and_return(true)
+        end
+
+        it 'passes show_sp_reproof_banner as false to the presenter' do
+          get :show
+
+          expect(assigns(:presenter).show_sp_reproof_banner).to eq(false)
+        end
+      end
+    end
   end
 
   describe '#update' do
@@ -129,24 +249,43 @@ RSpec.describe Idv::WelcomeController do
       put :update
     end
 
+    it 'clears the previous idv session if applicable' do
+      subject.idv_session.applicant = Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE
+
+      put :update
+
+      expect(subject.idv_session.applicant).to be_nil
+    end
+
+    it 'clears the idv/in_person session' do
+      subject.user_session['idv/in_person'] = { some: 'data' }
+
+      put :update
+
+      expect(subject.user_session['idv/in_person']).to be_blank
+    end
+
+    it 'sets mail_only_warning_shown to previous mail_only_warning_shown value' do
+      subject.idv_session.mail_only_warning_shown = true
+      put :update
+      expect(subject.idv_session.mail_only_warning_shown).to eq(true)
+    end
+
     it 'creates a document capture session' do
       expect { put :update }
         .to change { subject.idv_session.document_capture_session_uuid }.from(nil)
     end
 
-    context 'with previous establishing in-person enrollments' do
-      let!(:enrollment) { create(:in_person_enrollment, :establishing, user: user, profile: nil) }
+    it 'create document capture session with passport allowed' do
+      put :update
 
-      before do
-        allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
-      end
+      expect(subject.document_capture_session.passport_status).to be_nil
+    end
 
-      it 'cancels all previous establishing enrollments' do
-        put :update
+    it 'sets the proofing started timestamp', :freeze_time do
+      put :update
 
-        expect(enrollment.reload.status).to eq(InPersonEnrollment::STATUS_CANCELLED)
-        expect(user.establishing_in_person_enrollment).to be_blank
-      end
+      expect(subject.idv_session.proofing_started_at).to eq(Time.zone.now.iso8601)
     end
   end
 end

@@ -10,7 +10,13 @@ module TwoFactorAuthentication
 
     def show
       save_challenge_in_session
-      analytics.multi_factor_auth_enter_webauthn_visit(**analytics_properties)
+      recaptcha_annotation = annotate_recaptcha(
+        RecaptchaAnnotator::AnnotationReasons::INITIATED_TWO_FACTOR,
+      )
+      analytics.multi_factor_auth_enter_webauthn_visit(
+        **analytics_properties,
+        recaptcha_annotation:,
+      )
       @presenter = presenter_for_two_factor_authentication_method
     end
 

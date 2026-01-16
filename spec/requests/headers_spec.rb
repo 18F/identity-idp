@@ -26,7 +26,7 @@ RSpec.describe 'Headers' do
   end
 
   it 'does not raise an error when HTTP_HOST Header is encoded with ASCII-8BIT' do
-    get root_path, headers: { 'Host' => '¿’¿”'.force_encoding(Encoding::ASCII_8BIT) }
+    get root_path, headers: { 'Host' => (+'¿’¿”').force_encoding(Encoding::ASCII_8BIT) }
 
     expect(response.status).to eq 200
   end

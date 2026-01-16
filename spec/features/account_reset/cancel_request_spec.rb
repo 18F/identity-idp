@@ -11,7 +11,7 @@ RSpec.describe 'Account Reset Request: Cancellation' do
         .to have_content strip_tags(
           t('account_reset.recovery_options.try_method_again'),
         )
-      click_link t('account_reset.request.yes_continue')
+      click_link t('account_reset.recover_options.yes_delete')
       expect(page)
         .to have_content strip_tags(
           t('account_reset.request.delete_account'),
@@ -20,7 +20,7 @@ RSpec.describe 'Account Reset Request: Cancellation' do
       click_button t('account_reset.request.yes_continue')
 
       travel_to(Time.zone.now + 2.days + 1) do
-        AccountReset::GrantRequestsAndSendEmails.new.perform(Time.zone.today)
+        GrantAccountResetRequestsAndSendEmailsJob.new.perform(Time.zone.today)
         open_last_email
         click_email_link_matching(/cancel\?token/)
         click_button t('account_reset.cancel_request.cancel_button')

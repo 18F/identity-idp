@@ -41,28 +41,6 @@ interface Location {
   address: string;
 }
 
-interface AddressInputProps {
-  registerField?: RegisterFieldCallback;
-  onFoundAddress?: (address: LocationQuery | null) => void;
-  onFoundLocations?: (locations: FormattedLocation[] | null | undefined) => void;
-  onLoadingLocations?: (isLoading: boolean) => void;
-  onError?: (error: Error | null) => void;
-  disabled?: boolean;
-  addressSearchURL: string;
-  locationsURL: string;
-}
-
-interface AddressSearchProps {
-  addressSearchURL: string;
-  disabled: boolean;
-  handleLocationSelect: ((e: any, id: number) => Promise<void>) | null | undefined;
-  locationsURL: string;
-  noInPersonLocationsDisplay?: ComponentType<{ address: string }>;
-  onFoundLocations: Dispatch<SetStateAction<FormattedLocation[] | null | undefined>>;
-  registerField: RegisterFieldCallback;
-  resultsHeaderComponent?: ComponentType;
-}
-
 interface InPersonLocationsProps {
   address: string;
   locations: FormattedLocation[] | null | undefined;
@@ -75,7 +53,7 @@ interface InPersonLocationsProps {
 interface LocationCollectionItemProps {
   distance?: string;
   formattedCityStateZip: string;
-  handleSelect?: (event: React.MouseEvent, selection: number) => void;
+  handleSelect?: (event: React.MouseEvent, selection: number | null) => void;
   name?: string;
   saturdayHours: string;
   selectId: number;
@@ -92,7 +70,7 @@ interface LocationCollectionProps {
 
 interface FullAddressSearchProps {
   disabled: boolean;
-  handleLocationSelect: ((e: any, id: number) => Promise<void>) | null | undefined;
+  handleLocationSelect: ((e: any, id: number | null) => Promise<void>) | null | undefined;
   locationsURL: string;
   noInPersonLocationsDisplay?: ComponentType<{ address: string }>;
   onFoundLocations: Dispatch<SetStateAction<FormattedLocation[] | null | undefined>>;
@@ -100,4 +78,21 @@ interface FullAddressSearchProps {
   resultsHeaderComponent?: ComponentType;
   usStatesTerritories: string[][];
   resultsSectionHeading?: ComponentType;
+  usesErrorComponent?: boolean;
+}
+
+interface FullAddressSearchInputProps {
+  disabled?: boolean;
+  locationsURL: string;
+  onContinue: ((e: any, id: number | null) => Promise<void>) | null | undefined;
+  onError?: (error: Error | null) => void;
+  onFoundLocations?: (
+    address: LocationQuery | null,
+    locations: FormattedLocation[] | null | undefined,
+  ) => void;
+  onLoadingLocations?: (isLoading: boolean) => void;
+  registerField?: RegisterFieldCallback;
+  usStatesTerritories: string[][];
+  uspsApiError: Error | null;
+  usesErrorComponent?: boolean;
 }

@@ -2,10 +2,12 @@ require 'rails_helper'
 
 RSpec.describe ServiceProviderIdentity do
   let(:user) { create(:user, :fully_registered) }
+  let(:verified_attributes) { [] }
   let(:identity) do
     ServiceProviderIdentity.create(
       user_id: user.id,
       service_provider: 'externalapp',
+      verified_attributes:,
     )
   end
   subject { identity }
@@ -105,19 +107,6 @@ RSpec.describe ServiceProviderIdentity do
     it 'returns service provider agency first' do
       expect(identity_with_sp.agency_name).to eq(service_provider.agency.name)
     end
-
-    it 'returns service_provider friendly_name if agency is missing' do
-      service_provider.agency = nil
-      service_provider.save
-      expect(identity_with_sp.agency_name).to eq(service_provider.friendly_name)
-    end
-
-    it 'returns service_provider friendly_name if agency is missing' do
-      service_provider.friendly_name = 'Only Friendly Name'
-      service_provider.agency = nil
-      service_provider.save
-      expect(identity_with_sp.agency_name).to eq(service_provider.friendly_name)
-    end
   end
 
   describe 'uniqueness validation for service provider per user' do
@@ -182,6 +171,46 @@ RSpec.describe ServiceProviderIdentity do
     end
   end
 
+  describe '#verified_single_email_attribute?' do
+    subject(:verified_single_email_attribute?) { identity.verified_single_email_attribute? }
+
+    context 'with attributes nil' do
+      let(:verified_attributes) { nil }
+
+      it { is_expected.to be false }
+    end
+
+    context 'with no attributes verified' do
+      let(:verified_attributes) { [] }
+
+      it { is_expected.to be false }
+    end
+
+    context 'with a non-email attribute verified' do
+      let(:verified_attributes) { ['openid'] }
+
+      it { is_expected.to be false }
+    end
+
+    context 'with all_emails attribute verified' do
+      let(:verified_attributes) { ['all_emails'] }
+
+      it { is_expected.to be false }
+    end
+
+    context 'with email attribute verified' do
+      let(:verified_attributes) { ['email'] }
+
+      it { is_expected.to be true }
+
+      context 'with all_emails attribute verified' do
+        let(:verified_attributes) { ['email', 'all_emails'] }
+
+        it { is_expected.to be false }
+      end
+    end
+  end
+
   describe '#email_address_for_sharing' do
     let!(:last_login_email_address) do
       create(
@@ -201,44 +230,88 @@ RSpec.describe ServiceProviderIdentity do
       )
     end
 
+    let(:service_provider) { create(:service_provider) }
+
     let(:identity) do
-      create(:service_provider_identity, user: user, session_uuid: SecureRandom.uuid)
+      create(
+        :service_provider_identity,
+        user: user,
+        session_uuid: SecureRandom.uuid,
+        service_provider: service_provider.issuer,
+      )
     end
 
-    context 'when email sharing feature is enabled' do
+    context 'when an email address is set' do
       before do
-        allow(IdentityConfig.store).to receive(:feature_select_email_to_share_enabled)
-          .and_return(true)
+        identity.email_address = shared_email_address
       end
 
-      context 'when an email address for sharing has been set' do
-        before do
-          identity.email_address = shared_email_address
-        end
-
-        it 'returns the shared email' do
-          expect(identity.email_address_for_sharing).to eq(shared_email_address)
-        end
-      end
-
-      context 'when an email address for sharing has not been set' do
-        before do
-          identity.email_address = nil
-        end
-        it 'returns the last login email' do
-          expect(identity.email_address_for_sharing).to eq(last_login_email_address)
-        end
+      it 'returns the shared email' do
+        expect(identity.email_address_for_sharing).to eq(shared_email_address)
       end
     end
 
-    context 'when email sharing feature is disabled' do
+    context 'when an email address for sharing has not been set' do
       before do
-        allow(IdentityConfig.store).to receive(:feature_select_email_to_share_enabled)
-          .and_return(true)
+        identity.email_address = nil
       end
-
       it 'returns the last login email' do
         expect(identity.email_address_for_sharing).to eq(last_login_email_address)
+      end
+    end
+  end
+
+  describe '#clear_email_address_id_if_not_supported' do
+    let(:verified_attributes) { %w[email] }
+    let!(:shared_email_address) do
+      create(
+        :email_address,
+        email: 'shared@email.com',
+        user: user,
+        last_sign_in_at: 1.hour.ago,
+      )
+    end
+    let(:identity) do
+      create(
+        :service_provider_identity,
+        user: user,
+        session_uuid: SecureRandom.uuid,
+        service_provider: service_provider.issuer,
+        verified_attributes: verified_attributes,
+        email_address_id: shared_email_address.id,
+      )
+    end
+
+    context 'when user has only email as the verified attribute attribute' do
+      let(:new_shared_email_address) do
+        create(
+          :email_address,
+          email: 'shared2@email.com',
+          user: user,
+          last_sign_in_at: 1.hour.ago,
+        )
+      end
+
+      it 'should save the new email properly on update' do
+        identity.update!(email_address_id: new_shared_email_address.id)
+        expect(identity.email_address).to eq(new_shared_email_address)
+      end
+    end
+
+    context 'when user has all_emails as the verified attribute' do
+      let(:verified_attributes) { %w[all_emails] }
+      let(:new_shared_email_address) do
+        create(
+          :email_address,
+          email: 'shared2@email.com',
+          user: user,
+          last_sign_in_at: 1.hour.ago,
+        )
+      end
+
+      it 'should make the email address to nil' do
+        identity.update!(email_address_id: new_shared_email_address.id)
+        expect(identity.email_address).to eq(nil)
       end
     end
   end

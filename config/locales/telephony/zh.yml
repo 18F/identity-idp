@@ -3,10 +3,13 @@ zh:
   telephony:
     account_deleted_notice: 这条信息确认你已删除了你的 %{app_name} 账户。
     account_reset_cancellation_notice: 删除你 %{app_name} 账户的请求已被取消。
-    account_reset_notice: 按照你的请求，你的 %{app_name} 账户会在%{interval}后删除。不想删除你的账户？登入你的 %{app_name} 账户去取消。
+    account_reset_notice: |-
+      按照你的请求，你的 %{app_name} 账户会在%{interval}后删除。
+
+      不想删除你的账户？登入你的 %{app_name} 账户去取消。
     authentication_otp:
       sms: |-
-        %{app_name}: 你的一次性代码是 %{code}。此代码在 %{expiration} 分钟后作废。请勿与任何人分享此代码。
+        %{app_name} 绝不会联系您索要此代码。请勿与任何人分享。您的代码是 %{code}。该代码将在 %{expiration} 分钟后失效。
 
         @%{domain} #%{code}
       voice: 你好! 你的 6-%{format_type} %{app_name} 一次性代码是 %{code}。你的一次性代码是 ，%{code}。重复一下，你的一次性代码是 %{code}。此代码 %{expiration} 分钟后会作废。
@@ -15,12 +18,16 @@ zh:
         %{app_name}: 你在 %{proof_date}去了邮局。查查你的电邮看一下结果。不是你？马上报告此事：%{contact_number}。关于： %{reference_string}
     confirmation_otp:
       sms: |-
-        %{app_name}: 你的一次性代码是 %{code}。此代码在 %{expiration} 分钟后作废。请勿与任何人分享此代码。
+        %{app_name} 绝不会联系您索要此代码。请勿与任何人分享。您的代码是 %{code}。该代码将在 %{expiration} 分钟后失效。
 
         @%{domain} #%{code}
       voice: 你好！你的%{format_length}%{format_type} %{app_name} 一次性代码是，%{code}。你的一次性代码是 ，%{code}。重复一下，你的一次性代码是 %{code}。此代码 %{expiration} 分钟后会作废。
     doc_auth_link: |-
       %{app_name}: %{link} 你在验证身份以访问 %{sp_or_app_name}。拍张你身份证件的照片以继续。
+    dupe_profile_created_notice: |-
+      %{app_name} 提醒：您的个人信息已在其他帐户上得到验证。我们已限制对这些帐户的访问权限。我们已向您发送一封电子邮件，其中包含后续操作的详细信息。
+    dupe_profile_sign_in_attempted_notice: |-
+      %{app_name} 提醒：另一个使用您个人信息的帐户已登录。我们已限制这些帐户的访问权限。我们已向您发送一封电子邮件，其中包含后续操作的详细信息。
     error:
       friendly_message:
         daily_voice_limit_reached: 你的一次性代码未能发出，因为已超出 24 小时内拨打这个电话号码的最多次数。你可以请求通过短信发送代码，或使用另外一个号码来接听电话。

@@ -63,7 +63,7 @@ RSpec.describe Users::EmailLanguageController do
 
         expect(@analytics).to have_logged_event(
           'Email Language: Updated',
-          hash_including(success: true),
+          success: true,
         )
       end
     end

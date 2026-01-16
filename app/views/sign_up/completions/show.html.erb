@@ -42,13 +42,15 @@
                 last_number: attribute_value[-1],
               ),
             ) %>
-      <% elsif attribute_key == :email && IdentityConfig.store.feature_select_email_to_share_enabled %>
-        <div class="display-flex flex-justify">
-          <%= attribute_value.to_s %>
-          <p class='font-body-2xs text-right'>
+      <% elsif attribute_key == :email %>
+        <div class="grid-row display-flex flex-justify flex-wrap flex-row">
+            <%= attribute_value.to_s %>
+          <p class='font-body-2xs text-right margin-bottom-0 margin-top-05'>
             <%= link_to t('help_text.requested_attributes.change_email_link'), sign_up_select_email_path %>
           </p>
         </div>
+      <% elsif attribute_key == :verified_at %>
+        <%= render TimeComponent.new(time: attribute_value) %>
       <% else %>
         <%= attribute_value.to_s %>
       <% end %>

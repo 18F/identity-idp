@@ -5,6 +5,7 @@ class FraudRejectionDailyJob < ApplicationJob
 
   def perform(_date)
     profiles_eligible_for_fraud_rejection.find_each do |profile|
+      profile.in_person_enrollment&.failed!
       profile.reject_for_fraud(notify_user: false)
       analytics(user: profile.user).automatic_fraud_rejection(
         fraud_rejection_at: profile.fraud_rejection_at,

@@ -9,9 +9,7 @@ RSpec.shared_examples 'sp requesting attributes' do |sp|
   context 'visiting an SP for the first time' do
     it 'requires the user to verify the attributes submitted to the SP', js: true do
       visit_idp_from_sp_with_ial2(sp)
-      sign_in_user(user)
-      fill_in_code_with_last_phone_otp
-      click_submit_default
+      sign_in_live_with_2fa(user)
 
       expect(page).to have_current_path idv_welcome_path
 
@@ -33,7 +31,7 @@ RSpec.shared_examples 'sp requesting attributes' do |sp|
       expect(page).to have_content t('help_text.requested_attributes.social_security_number')
       expect(page).to have_css(
         '.masked-text__text',
-        text: DocAuthHelper::GOOD_SSN,
+        text: DocAuthHelper::GOOD_SSN_FORMATTED,
         visible: :hidden,
       )
     end
@@ -64,12 +62,16 @@ RSpec.shared_examples 'sp requesting attributes' do |sp|
       click_submit_default
 
       if sp == :oidc
-        expect(current_url).to include('http://localhost:7654/auth/result')
+        expect(page).to have_current_path(
+          'http://localhost:7654/auth/result',
+          url: true,
+          ignore_query: true,
+        )
       elsif sp == :saml
         if javascript_enabled?
           expect(page).to have_current_path(test_saml_decode_assertion_path)
         else
-          expect(current_url).to include(api_saml_auth_url(path_year: PATH_YEAR))
+          expect(page).to have_current_path(api_saml_auth_url(path_year: PATH_YEAR))
         end
       end
     end
@@ -95,7 +97,7 @@ RSpec.shared_examples 'sp requesting attributes' do |sp|
       expect(page).to have_content t('help_text.requested_attributes.phone')
       expect(page).to have_content '+1 202-555-1212'
       expect(page).to have_content t('help_text.requested_attributes.social_security_number')
-      expect(page).to have_content DocAuthHelper::GOOD_SSN
+      expect(page).to have_content DocAuthHelper::GOOD_SSN_FORMATTED
     end
   end
 end

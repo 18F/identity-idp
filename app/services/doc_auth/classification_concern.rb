@@ -20,14 +20,14 @@ module DocAuth
 
     alias_method :doc_type_supported?, :id_type_supported?
 
-  private
+    private
 
     # @param [Object] classification_info assureid classification info
     # @param [String] doc_side value of ['Front', 'Back']
     def doc_side_class_ok?(classification_info, doc_side)
       side_type = classification_info&.with_indifferent_access&.dig(doc_side, :ClassName)
       !side_type.present? ||
-        DocAuth::Response::ID_TYPE_SLUGS.key?(side_type) ||
+        DocAuth::DocumentClassifications::ALL_CLASSIFICATIONS.include?(side_type) ||
         side_type == 'Unknown'
     end
 
@@ -42,6 +42,7 @@ module DocAuth
     def doc_issuer_type_ok?(classification_info, doc_side)
       side_issuer_type = classification_info&.with_indifferent_access&.dig(doc_side, :IssuerType)
       side_issuer_type == DocAuth::LexisNexis::IssuerTypes::STATE_OR_PROVINCE.name ||
+        side_issuer_type == DocAuth::LexisNexis::IssuerTypes::COUNTRY.name ||
         side_issuer_type == DocAuth::LexisNexis::IssuerTypes::UNKNOWN.name ||
         !side_issuer_type.present?
     end
@@ -49,5 +50,5 @@ module DocAuth
     def supported_country_codes
       IdentityConfig.store.doc_auth_supported_country_codes
     end
-end
+  end
 end

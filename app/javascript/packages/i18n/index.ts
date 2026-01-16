@@ -29,8 +29,21 @@ const getPluralizationKey = (count: number): keyof PluralizedEntry =>
  *
  * @return Entry string or object.
  */
-const getEntry = (strings: Entries, key: string): Entry =>
-  Object.hasOwn(strings, key) ? strings[key] : key;
+function getEntry(strings: Entries, key: string): Entry {
+  if (Object.hasOwn(strings, key)) {
+    return strings[key];
+  }
+
+  if (process.env.NODE_ENV !== 'test') {
+    // String data is not populated in JavaScript tests, so falling back to the key is the expected
+    // behavior. In all other environments this is an unexpected behavior, so log accordingly.
+
+    // eslint-disable-next-line no-console
+    console.error(`Missing translation for key \`${key}\`.`);
+  }
+
+  return key;
+}
 
 /**
  * Returns true if the given entry is a pluralization entry, or false otherwise.

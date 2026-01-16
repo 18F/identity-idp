@@ -7,6 +7,7 @@ module SamlIdpAuthConcern
 
   included do
     # rubocop:disable Rails/LexicallyScopedActionFilter
+    before_action :validate_year
     before_action :validate_and_create_saml_request_object, only: :auth
     before_action :validate_service_provider_and_authn_context, only: :auth
     before_action :check_sp_active, only: :auth
@@ -20,6 +21,12 @@ module SamlIdpAuthConcern
   end
 
   private
+
+  def validate_year
+    if !SamlEndpoint.valid_year?(params[:path_year])
+      render plain: 'Invalid Year', status: :bad_request
+    end
+  end
 
   def sign_out_if_forceauthn_is_true_and_user_is_signed_in
     if !saml_request.force_authn?
@@ -70,7 +77,8 @@ module SamlIdpAuthConcern
   def validate_and_create_saml_request_object
     # this saml_idp method creates the saml_request object used for validations
     validate_saml_request
-    @saml_request_validator = SamlRequestValidator.new
+    saml_errors = saml_request.errors
+    @saml_request_validator = SamlRequestValidator.new(saml_errors:)
   rescue SamlIdp::XMLSecurity::SignedDocument::ValidationError
     @saml_request_validator = SamlRequestValidator.new(blank_cert: true)
   end
@@ -127,12 +135,7 @@ module SamlIdpAuthConcern
   end
 
   def response_authn_context
-    if saml_request.requested_vtr_authn_contexts.present?
-      resolved_authn_context_result.expanded_component_values
-    else
-      FederatedProtocols::Saml.new(saml_request).aal ||
-        default_aal_context
-    end
+    FederatedProtocols::Saml.new(saml_request).aal || default_aal_context
   end
 
   def link_identity_from_session_data
@@ -146,11 +149,11 @@ module SamlIdpAuthConcern
   end
 
   def email_address_id
-    return nil unless IdentityConfig.store.feature_select_email_to_share_enabled
+    identity = current_user.identities.find_by(service_provider: sp_session[:issuer])
+    return nil if !identity&.verified_single_email_attribute?
     if user_session[:selected_email_id_for_linked_identity].present?
       return user_session[:selected_email_id_for_linked_identity]
     end
-    identity = current_user.identities.find_by(service_provider: sp_session['issuer'])
     email_id = identity&.email_address_id
     return email_id if email_id.is_a? Integer
   end
@@ -230,7 +233,12 @@ module SamlIdpAuthConcern
 
   def saml_request_service_provider
     return @saml_request_service_provider if defined?(@saml_request_service_provider)
-    @saml_request_service_provider = ServiceProvider.find_by(issuer: current_issuer)
+    @saml_request_service_provider =
+      if current_issuer.blank?
+        nil
+      else
+        ServiceProvider.find_by(issuer: current_issuer)
+      end
   end
 
   def current_issuer

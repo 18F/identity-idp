@@ -221,4 +221,110 @@ RSpec.describe ServiceProviderSeeder do
       end
     end
   end
+
+  describe '#run_review_app' do
+    let(:dashboard_review_slug) { "review-branch-#{rand 1..1000}" }
+    let(:dashboard_url) { "https://#{dashboard_review_slug}-dashboard.reviewapps.identitysandbox.gov" }
+    let(:mock_yaml_file) do
+      mock = object_double(Rails.root.join('config', 'service_providers.yml'))
+      allow(mock).to receive(:exist?).and_return true
+      allow(mock).to receive(:read).and_return sp_yaml
+      mock
+    end
+
+    before do
+      allow(Rails.root).to receive(:join).and_call_original
+      allow(Rails.root).to receive(:join).with(
+        'config',
+        'service_providers.yml',
+      ).and_return(mock_yaml_file)
+    end
+
+    context 'with an instance-specific service_providers.yml file' do
+      let(:sp_yaml) do
+        <<~"SP_YAML"
+          production:
+            'urn:gov:gsa:openidconnect.profiles:sp:sso:gsa:dashboard':
+              friendly_name: 'Review App Dashboard Instance'
+              agency: 'GSA'
+              agency_id: 2
+              logo: '18f.svg'
+              certs:
+                - 'saml_test_sp'
+              return_to_sp_url: 'https://#{dashboard_review_slug}-dashboard.reviewapps.identitysandbox.gov/'
+              redirect_uris:
+                - 'https://#{dashboard_review_slug}-dashboard.reviewapps.identitysandbox.gov/auth/logindotgov/callback'
+                - 'https://#{dashboard_review_slug}-dashboard.reviewapps.identitysandbox.gov'
+              push_notification_url: 'https://#{dashboard_review_slug}-dashboard.reviewapps.identitysandbox.gov/api/security_events'
+        SP_YAML
+      end
+
+      it 'saves the YAML data to the database' do
+        subject = described_class.new rails_env: 'production' # env has to match sample yaml key
+        expect { subject.run_review_app(dashboard_url:) }.to change { ServiceProvider.count }.by 1
+        new_sp = ServiceProvider.last
+        expect(new_sp.friendly_name).to eq('Review App Dashboard Instance')
+        expect(new_sp.return_to_sp_url).to eq("https://#{dashboard_review_slug}-dashboard.reviewapps.identitysandbox.gov/")
+        expect(new_sp.certs).to eq(
+          [
+            Rails.root.join('certs', 'sp', 'saml_test_sp.crt').read,
+          ],
+        )
+      end
+    end
+
+    context 'without an instance-specific service_providers.yml file' do
+      let(:sp_yaml) do
+        <<~SP_YAML
+          production:
+            'urn:gov:gsa:openidconnect.profiles:sp:sso:gsa:dashboard':
+            friendly_name: 'Invalid Dashboard Review App'
+            agency: 'GSA'
+            agency_id: 2
+            logo: '18f.svg'
+            certs:
+            - 'saml_test_sp'
+            return_to_sp_url: 'https://INVALID-dashboard.reviewapps.identitysandbox.gov/'
+            redirect_uris:
+            - 'https://INVALID-dashboard.reviewapps.identitysandbox.gov/auth/logindotgov/callback'
+            - 'https://INVALID-dashboard.reviewapps.identitysandbox.gov'
+            push_notification_url: 'https://INVALID-dashboard.reviewapps.identitysandbox.gov/api/security_events'
+        SP_YAML
+      end
+
+      it 'ignores the YAML data and uses defaults' do
+        subject = described_class.new rails_env: 'production' # env has to match sample yaml key
+        expect { subject.run_review_app(dashboard_url:) }.to change { ServiceProvider.count }.by 1
+        new_sp = ServiceProvider.last
+        expect(new_sp.friendly_name).to eq('Dashboard')
+        expect(new_sp.return_to_sp_url).to eq("https://#{dashboard_review_slug}-dashboard.reviewapps.identitysandbox.gov")
+        expect(new_sp.certs).to eq(
+          [
+            Rails.root.join('certs', 'sp', 'identity_dashboard_cert.crt').read,
+          ],
+        )
+      end
+    end
+
+    context 'with a missing services_providers.yml file' do
+      let(:sp_yaml) { nil }
+
+      before do
+        allow(mock_yaml_file).to receive(:exist?).and_return false
+      end
+
+      it 'uses defaults' do
+        subject = described_class.new rails_env: 'production' # env has to match sample yaml key
+        expect { subject.run_review_app(dashboard_url:) }.to change { ServiceProvider.count }.by 1
+        new_sp = ServiceProvider.last
+        expect(new_sp.friendly_name).to eq('Dashboard')
+        expect(new_sp.return_to_sp_url).to eq("https://#{dashboard_review_slug}-dashboard.reviewapps.identitysandbox.gov")
+        expect(new_sp.certs).to eq(
+          [
+            Rails.root.join('certs', 'sp', 'identity_dashboard_cert.crt').read,
+          ],
+        )
+      end
+    end
+  end
 end

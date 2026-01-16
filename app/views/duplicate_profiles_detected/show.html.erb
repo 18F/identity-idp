@@ -1,0 +1,84 @@
+<% self.title = @dupe_profiles_detected_presenter.heading %>
+
+<%= render StatusPageComponent.new(status: :warning) do |c| %>
+  <% c.with_header { @dupe_profiles_detected_presenter.heading } %>
+
+  <p>
+    <%= t(
+          'duplicate_profiles_detected.intro_html',
+          link_html: new_tab_link_to(
+            t('duplicate_profiles_detected.intro.link'),
+            MarketingSite.help_center_article_url(category: 'manage-your-account', article: 'resolve-duplicate-accounts'),
+          ),
+          app_name: APP_NAME,
+          sp_name: decorated_sp_session.sp_name,
+        ) %>
+  </p>
+
+  <p><%= t('duplicate_profiles_detected.intro2', app_name: APP_NAME) %></p>
+
+  <%= render ProcessListComponent.new(class: 'margin-y-3') do |c| %>
+    <%= c.with_item(heading: t('duplicate_profiles_detected.select_an_account.heading')) do %>
+      <p> <%= t('duplicate_profiles_detected.select_an_account.details') %> </p>
+    <% end %>
+    <%= c.with_item(heading: t('duplicate_profiles_detected.delete_duplicates.heading')) do %>
+      <p><%= t(
+               'duplicate_profiles_detected.delete_duplicates.details_html',
+               link_html: new_tab_link_to(
+                 t('duplicate_profiles_detected.delete_duplicates.link'),
+                 MarketingSite.help_center_article_url(category: 'manage-your-account', article: 'delete-your-account'),
+               ),
+             ) %></p>
+    <% end %>
+    <%= c.with_item(heading: t('duplicate_profiles_detected.sign_back_in.heading', app_name: APP_NAME)) do %>
+      <p><%= t(
+               'duplicate_profiles_detected.sign_back_in.details',
+               app_name: APP_NAME,
+             ) %></p>
+    <% end %>
+  <% end %>
+
+  <h3><%= t('duplicate_profiles_detected.accounts_list.heading') %> </h3>
+
+  <div class="cardborder-primary-light">
+    <ul class="add-list-reset border-bottom border-primary-light">
+      <li>
+        <% @dupe_profiles_detected_presenter.associated_profiles.each do |dupe_profile| %>
+            <%= render('duplicate_profiles_detected/account_information', dupe_profile: dupe_profile, sp_name: decorated_sp_session.sp_name) %>
+        <% end %>
+      </li>
+    </ul>
+  </div>
+  <div class="margin-top-2">
+    <%= render ButtonComponent.new(
+          url: duplicate_profiles_please_call_path('dont_recognize'),
+          method: :get,
+          unstyled: true,
+        ).with_content(t('duplicate_profiles_detected.dont_recognize_account')) %>
+  </div>
+
+  <div class="margin-top-4 grid-row">
+    <%= new_tab_link_to(
+          t('duplicate_profiles_detected.get_help'),
+          MarketingSite.help_center_article_url(category: 'manage-your-account', article: 'resolve-duplicate-accounts'),
+          class: 'usa-button usa-button usa-button--wide usa-button--big',
+        ) %>
+  </div>
+
+  <div class="margin-top-3 grid-col-4">
+    <%= render ButtonComponent.new(
+          url: logout_path,
+          outline: true,
+          method: :delete,
+          class: 'usa-button usa-button usa-button--outline usa-button--wide usa-button--big',
+        ).with_content(t('duplicate_profiles_detected.sign_out')) %>
+  </div>
+
+  <div class="margin-top-2">
+    <%= render ButtonComponent.new(
+          url: duplicate_profiles_please_call_path('cant_access'),
+          method: :get,
+          unstyled: true,
+        ).with_content(t('duplicate_profiles_detected.cant_access')) %>
+  </div>
+<% end %>

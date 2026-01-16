@@ -22,28 +22,16 @@ RSpec.describe UpdateUserPasswordForm, type: :model do
       let(:password) { 'invalid' }
 
       it 'returns FormResponse with success: false and does not do anything else' do
-        errors = {
-          password: [t(
-            'errors.attributes.password.too_short.other',
-            count: Devise.password_length.first,
-          )],
-          password_confirmation: [I18n.t(
-            'errors.messages.too_short',
-            count: Devise.password_length.first,
-          )],
-        }
-
         expect(UserProfilesEncryptor).not_to receive(:new)
         user.save!
 
-        result = nil
-        expect do
-          result = subject.submit(params).to_h
-        end.to_not(change { user.reload.encrypted_password_digest })
+        old_digest = user.encrypted_password_digest_multi_region
+
+        result = subject.submit(params).to_h
+        expect(old_digest).to eq(user.reload.encrypted_password_digest_multi_region)
 
         expect(result).to include(
           success: false,
-          errors: errors,
           error_details: hash_including(:password, :password_confirmation),
         )
       end
@@ -53,7 +41,6 @@ RSpec.describe UpdateUserPasswordForm, type: :model do
       it 'returns FormResponse with success: true' do
         expect(subject.submit(params).to_h).to eq(
           success: true,
-          errors: {},
           active_profile_present: false,
           pending_profile_present: false,
           user_id: user.uuid,
@@ -66,7 +53,7 @@ RSpec.describe UpdateUserPasswordForm, type: :model do
 
         expect do
           subject.submit(params)
-        end.to(change { user.reload.encrypted_password_digest })
+        end.to(change { user.reload.encrypted_password_digest_multi_region })
       end
     end
 

@@ -33,9 +33,7 @@ RSpec.describe Idv::PhoneController do
         :check_for_mail_only_outage,
       )
     end
-  end
 
-  describe 'before_actions' do
     it 'includes before_actions from IdvSessionConcern' do
       expect(subject).to have_actions(:before, :redirect_unless_sp_requested_verification)
     end
@@ -52,6 +50,7 @@ RSpec.describe Idv::PhoneController do
     stub_sign_in(user)
     stub_up_to(:verify_info, idv_session: subject.idv_session)
     stub_analytics
+    stub_attempts_tracker
   end
 
   describe '#new' do
@@ -119,10 +118,6 @@ RSpec.describe Idv::PhoneController do
       let(:step) { 'path_where_user_asked_to_use_different_number' }
       let(:params) { { step: step } }
 
-      before do
-        stub_analytics
-      end
-
       it 'logs an event showing that the user wants to choose a different number' do
         get :new, params: params
 
@@ -134,8 +129,6 @@ RSpec.describe Idv::PhoneController do
     end
 
     it 'shows phone form if async process times out and allows successful resubmission' do
-      stub_analytics
-
       # setting the document capture session to a nonexistent uuid will trigger async
       # missing behavior
       subject.idv_session.idv_phone_step_document_capture_session_uuid = 'abc123'
@@ -193,6 +186,17 @@ RSpec.describe Idv::PhoneController do
           expect(Telephony::Test::Message.messages.length).to eq(1)
         end
 
+        it 'tracks the Attempts API event' do
+          expect(@attempts_api_tracker).to receive(:idv_phone_otp_sent).with(
+            phone_number: Phonelib.parse(phone).e164,
+            success: true,
+            otp_delivery_method: :sms,
+            failure_reason: nil,
+          )
+
+          get :new
+        end
+
         context 'the user submited their last attempt' do
           it 'redirects to the OTP confirmation and the rate limiter is maxed' do
             RateLimiter.new(user: user, rate_limit_type: :proof_address).increment_to_limited!
@@ -203,6 +207,32 @@ RSpec.describe Idv::PhoneController do
             expect(Telephony::Test::Message.messages.length).to eq(1)
             expect(RateLimiter.new(user: user, rate_limit_type: :proof_address).maxed?).to eq(true)
           end
+
+          it 'tracks the event' do
+            expect(@attempts_api_tracker).to receive(:idv_phone_otp_sent).with(
+              phone_number: Phonelib.parse(phone).e164,
+              success: true,
+              otp_delivery_method: :sms,
+              failure_reason: nil,
+            )
+
+            get :new
+          end
+        end
+      end
+
+      context 'when Pinpoint throws an opt-out error' do
+        let(:phone) { Telephony::Test::ErrorSimulator::OPT_OUT_PHONE_NUMBER }
+
+        it 'tracks the Attempts API event' do
+          expect(@attempts_api_tracker).to receive(:idv_phone_otp_sent).with(
+            phone_number: Phonelib.parse(phone).e164,
+            success: false,
+            otp_delivery_method: :sms,
+            failure_reason: { telephony_error: ['opt_out'] },
+          )
+
+          get :new
         end
       end
 
@@ -217,6 +247,12 @@ RSpec.describe Idv::PhoneController do
           expect(subject.idv_session.vendor_phone_confirmation).to eq(nil)
           expect(subject.idv_session.user_phone_confirmation).to eq(nil)
           expect(Telephony::Test::Message.messages.length).to eq(0)
+        end
+
+        it 'does not track the event' do
+          expect(@attempts_api_tracker).not_to receive(:idv_phone_otp_sent)
+
+          get :new
         end
 
         context 'the user submited their last attempt' do
@@ -255,10 +291,13 @@ RSpec.describe Idv::PhoneController do
             },
         }
       end
-      before do
-      end
 
       it 'renders #new' do
+        expect(@attempts_api_tracker).to receive(:idv_phone_submitted).with(
+          phone_number: Phonelib.parse(improbable_phone_number).e164,
+          success: false,
+          failure_reason: { phone: [:improbable_phone], otp_delivery_preference: [:inclusion] },
+        )
         put :create, params: improbable_phone_form
 
         expect(flash[:error]).to eq improbable_phone_message
@@ -276,6 +315,12 @@ RSpec.describe Idv::PhoneController do
       end
 
       it 'disallows non-US numbers' do
+        expect(@attempts_api_tracker).to receive(:idv_phone_submitted).with(
+          phone_number: Phonelib.parse(international_phone).e164,
+          success: false,
+          failure_reason: { phone: [:improbable_phone] },
+        )
+
         put :create, params: { idv_phone_form: { phone: international_phone } }
 
         expect(flash[:error]).to eq improbable_phone_message
@@ -285,25 +330,28 @@ RSpec.describe Idv::PhoneController do
       it 'tracks form error events and does not make a vendor API call' do
         expect_any_instance_of(Idv::Agent).to_not receive(:proof_address)
 
+        expect(@attempts_api_tracker).to receive(:idv_phone_submitted).with(
+          phone_number: Phonelib.parse(improbable_phone_number).e164,
+          success: false,
+          failure_reason: {
+            phone: [:improbable_phone],
+            otp_delivery_preference: [:inclusion],
+          },
+        )
+
         put :create, params: improbable_phone_form
 
         expect(@analytics).to have_logged_event(
           'IdV: phone confirmation form',
-          hash_including(
-            success: false,
-            errors: {
-              phone: [improbable_phone_message],
-              otp_delivery_preference: [improbable_otp_message],
-            },
-            error_details: {
-              phone: { improbable_phone: true },
-              otp_delivery_preference: { inclusion: true },
-            },
-            carrier: 'Test Mobile Carrier',
-            phone_type: :mobile,
-            otp_delivery_preference: '🎷',
-            types: [],
-          ),
+          success: false,
+          error_details: {
+            phone: { improbable_phone: true },
+            otp_delivery_preference: { inclusion: true },
+          },
+          carrier: 'Test Mobile Carrier',
+          phone_type: :mobile,
+          otp_delivery_preference: '🎷',
+          types: [],
         )
 
         expect(subject.idv_session.vendor_phone_confirmation).to be_falsy
@@ -331,20 +379,23 @@ RSpec.describe Idv::PhoneController do
       end
 
       it 'tracks events with valid phone' do
+        expect(@attempts_api_tracker).to receive(:idv_phone_submitted).with(
+          phone_number: Phonelib.parse(good_phone).e164,
+          success: true,
+          failure_reason: nil,
+        )
+
         put :create, params: phone_params
 
         expect(@analytics).to have_logged_event(
           'IdV: phone confirmation form',
-          hash_including(
-            success: true,
-            errors: {},
-            area_code: '703',
-            country_code: 'US',
-            carrier: 'Test Mobile Carrier',
-            phone_type: :mobile,
-            otp_delivery_preference: 'sms',
-            types: [:fixed_or_mobile],
-          ),
+          success: true,
+          area_code: '703',
+          country_code: 'US',
+          carrier: 'Test Mobile Carrier',
+          phone_type: :mobile,
+          otp_delivery_preference: 'sms',
+          types: [:fixed_or_mobile],
         )
       end
 
@@ -359,6 +410,12 @@ RSpec.describe Idv::PhoneController do
       context 'when same as user phone' do
         it 'redirects to otp delivery page' do
           original_applicant = subject.idv_session.applicant.dup
+          expect(@attempts_api_tracker).to receive(:idv_phone_otp_sent).with(
+            phone_number: Phonelib.parse(good_phone).e164,
+            success: true,
+            otp_delivery_method: :sms,
+            failure_reason: nil,
+          )
 
           put :create, params: phone_params
 
@@ -395,6 +452,13 @@ RSpec.describe Idv::PhoneController do
 
       context 'when different phone from user phone' do
         it 'redirects to otp page and does not set phone_confirmed_at' do
+          expect(@attempts_api_tracker).to receive(:idv_phone_otp_sent).with(
+            phone_number: Phonelib.parse(good_phone).e164,
+            success: true,
+            otp_delivery_method: :sms,
+            failure_reason: nil,
+          )
+
           put :create, params: phone_params
 
           expect(response).to redirect_to idv_phone_path
@@ -423,6 +487,16 @@ RSpec.describe Idv::PhoneController do
 
       it 'tracks event with valid phone' do
         proofing_phone = Phonelib.parse(good_phone)
+        expect(@attempts_api_tracker).to receive(:idv_phone_verified).with(
+          success: true,
+          phone_number: proofing_phone.e164,
+          failure_reason: nil,
+        )
+        expect(@fraud_ops_tracker).to receive(:idv_phone_verified).with(
+          success: true,
+          phone_number: proofing_phone,
+          failure_reason: nil,
+        )
 
         put :create, params: { idv_phone_form: { phone: good_phone } }
 
@@ -437,28 +511,219 @@ RSpec.describe Idv::PhoneController do
 
         expect(@analytics).to have_logged_event(
           'IdV: phone confirmation vendor',
-          hash_including(
-            success: true,
-            new_phone_added: true,
-            hybrid_handoff_phone_used: false,
-            errors: {},
-            phone_fingerprint: Pii::Fingerprinter.fingerprint(proofing_phone.e164),
-            country_code: proofing_phone.country,
-            area_code: proofing_phone.area_code,
-            vendor: {
-              vendor_name: 'AddressMock',
-              exception: nil,
-              timed_out: false,
-              transaction_id: 'address-mock-transaction-id-123',
-              reference: '',
-            },
-          ),
+          success: true,
+          new_phone_added: true,
+          hybrid_handoff_phone_used: false,
+          phone_fingerprint: Pii::Fingerprinter.fingerprint(proofing_phone.e164),
+          country_code: proofing_phone.country,
+          area_code: proofing_phone.area_code,
+          vendor: {
+            vendor_name: 'AddressMock',
+            exception: nil,
+            timed_out: false,
+            transaction_id: 'address-mock-transaction-id-123',
+            reference: '',
+            result: nil,
+          },
         )
+      end
+
+      context 'when phonerisk is the phone proofing vendor' do
+        let(:phonerisk_low) { true }
+        let(:name_phone_correlation_high) { true }
+        let(:name_phone_reason_codes) { [] }
+        let(:phonerisk_reason_codes) { [] }
+
+        before do
+          allow(IdentityConfig.store).to receive(:idv_address_primary_vendor).and_return(:socure)
+          stub_request(:post, 'https://sandbox.socure.test/api/3.0/EmailAuthScore')
+            .to_return(
+              status: 200,
+              body: {
+                referenceId: 'some-reference-id',
+                namePhoneCorrelation: {
+                  reasonCodes: name_phone_reason_codes,
+                  score: name_phone_correlation_high ? 0.99 : 0.01,
+                },
+                phoneRisk: {
+                  reasonCodes: phonerisk_reason_codes,
+                  score: phonerisk_low ? 0.01 : 0.99,
+                },
+                customerProfile: {
+                  customerUserId: user.uuid,
+                },
+              }.to_json,
+              headers: {
+                'Content-Type': 'application/json',
+              },
+            )
+        end
+
+        context 'when phone risk passes' do
+          it 'tracks event with valid phone' do
+            proofing_phone = Phonelib.parse(good_phone)
+
+            expect(@attempts_api_tracker).to receive(:idv_phone_verified).with(
+              success: true,
+              phone_number: proofing_phone.e164,
+              failure_reason: nil,
+            )
+
+            put :create, params: { idv_phone_form: { phone: good_phone } }
+
+            expect(@analytics).to have_logged_event(
+              'IdV: phone confirmation form',
+              hash_including(:success),
+            )
+
+            expect(response).to redirect_to idv_phone_path
+
+            get :new
+
+            expect(@analytics).to have_logged_event(
+              'IdV: phone confirmation vendor',
+              success: true,
+              new_phone_added: true,
+              hybrid_handoff_phone_used: false,
+              phone_fingerprint: Pii::Fingerprinter.fingerprint(proofing_phone.e164),
+              country_code: proofing_phone.country,
+              area_code: proofing_phone.area_code,
+              vendor: {
+                exception: nil,
+                reference: 'some-reference-id',
+                result: {
+                  customer_user_id: user.uuid,
+                  name_phone_correlation: { reason_codes: {}, score: 0.99 },
+                  phonerisk: { reason_codes: {}, score: 0.01 },
+                },
+                timed_out: false,
+                transaction_id: 'some-reference-id',
+                vendor_name: 'socure_phonerisk',
+              },
+            )
+          end
+        end
+
+        context 'when phone risk fails' do
+          let(:phonerisk_low) { false }
+          let(:name_phone_correlation_high) { false }
+          let(:name_phone_reason_codes) { ['I123', 'R567', 'R890'] }
+          let(:phonerisk_reason_codes) { ['I919', 'I914'] }
+
+          it 'tracks event with failing phonerisk' do
+            proofing_phone = Phonelib.parse(good_phone)
+
+            put :create, params: { idv_phone_form: { phone: good_phone } }
+
+            expect(@analytics).to have_logged_event(
+              'IdV: phone confirmation form',
+              hash_including(:success),
+            )
+
+            expect(response).to redirect_to idv_phone_path
+
+            get :new
+
+            expect(@analytics).to have_logged_event(
+              'IdV: phone confirmation vendor',
+              success: false,
+              errors: {
+                socure: {
+                  reason_codes: {
+                    I123: '[unknown]',
+                    I914: '[unknown]',
+                    I919: '[unknown]',
+                    R567: '[unknown]',
+                    R890: '[unknown]',
+                  },
+                },
+              },
+              new_phone_added: true,
+              hybrid_handoff_phone_used: false,
+              phone_fingerprint: Pii::Fingerprinter.fingerprint(proofing_phone.e164),
+              country_code: proofing_phone.country,
+              area_code: proofing_phone.area_code,
+              vendor: {
+                exception: nil,
+                reference: 'some-reference-id',
+                result: {
+                  customer_user_id: user.uuid,
+                  name_phone_correlation: {
+                    reason_codes: {
+                      I123: '[unknown]',
+                      R567: '[unknown]',
+                      R890: '[unknown]',
+                    },
+                    score: 0.01,
+                  },
+                  phonerisk: {
+                    reason_codes: {
+                      I914: '[unknown]',
+                      I919: '[unknown]',
+                    },
+                    score: 0.99,
+                  },
+                },
+                timed_out: false,
+                transaction_id: 'some-reference-id',
+                vendor_name: 'socure_phonerisk',
+              },
+            )
+          end
+        end
+      end
+
+      context 'when the vendor is lexisnexis' do
+        context 'with an error' do
+          let(:endpoint) do
+            [
+              'https://www.example.com',
+              'restws/identity/v2/test_account/customers.gsa2.phonefinder.workflow/conversation',
+            ].join('/')
+          end
+
+          before do
+            allow(IdentityConfig.store).to receive(:idv_address_primary_vendor)
+              .and_return(:lexis_nexis)
+            stub_request(:post, endpoint).to_return(
+              status: 200,
+              body: LexisNexisFixtures.phone_finder_rdp1_fail_response_json,
+              headers: {
+                'Content-Type': 'application/json',
+              },
+            )
+          end
+
+          it 'does not send an otp and redirects to the error page' do
+            expect(@attempts_api_tracker).to receive(:idv_phone_verified).with(
+              success: false,
+              phone_number: Phonelib.parse(good_phone).e164,
+              failure_reason: {
+                phone: ['Failed - Input phone number could not be verified to name'],
+              },
+            )
+
+            put :create, params: { idv_phone_form: { phone: good_phone } }
+
+            expect(response).to redirect_to idv_phone_path
+
+            get :new
+
+            expect(response).to redirect_to idv_phone_errors_warning_path
+          end
+        end
       end
     end
 
     it 'tracks that the hybrid handoff phone was used' do
       subject.idv_session.phone_for_mobile_flow = good_phone
+
+      expect(@attempts_api_tracker).to receive(:idv_phone_otp_sent).with(
+        phone_number: Phonelib.parse(good_phone).e164,
+        success: true,
+        otp_delivery_method: :sms,
+        failure_reason: nil,
+      )
 
       put :create, params: { idv_phone_form: { phone: good_phone } }
       expect(response).to redirect_to idv_phone_path
@@ -504,6 +769,18 @@ RSpec.describe Idv::PhoneController do
       it 'tracks event with invalid phone' do
         proofing_phone = Phonelib.parse(bad_phone)
 
+        expect(@attempts_api_tracker).to receive(:idv_phone_verified).with(
+          success: false,
+          phone_number: Phonelib.parse(bad_phone).e164,
+          failure_reason: { phone: ['The phone number could not be verified.'] },
+        )
+
+        expect(@fraud_ops_tracker).to receive(:idv_phone_verified).with(
+          success: false,
+          phone_number: Phonelib.parse(bad_phone).e164,
+          failure_reason: { phone: ['The phone number could not be verified.'] },
+        )
+
         put :create, params: { idv_phone_form: { phone: bad_phone } }
 
         expect(@analytics).to have_logged_event(
@@ -517,33 +794,110 @@ RSpec.describe Idv::PhoneController do
 
         expect(@analytics).to have_logged_event(
           'IdV: phone confirmation vendor',
-          hash_including(
-            success: false,
+          success: false,
+          new_phone_added: true,
+          hybrid_handoff_phone_used: false,
+          phone_fingerprint: Pii::Fingerprinter.fingerprint(proofing_phone.e164),
+          country_code: proofing_phone.country,
+          area_code: proofing_phone.area_code,
+          errors: {
+            phone: ['The phone number could not be verified.'],
+          },
+          vendor: {
+            vendor_name: 'AddressMock',
+            exception: nil,
+            timed_out: false,
+            transaction_id: 'address-mock-transaction-id-123',
+            reference: '',
+            result: nil,
+          },
+        )
+      end
+
+      context 'secondary vendor is successful' do
+        before do
+          allow(IdentityConfig.store).to receive(:idv_address_secondary_vendor).and_return(:socure)
+          stub_request(:post, 'https://sandbox.socure.test/api/3.0/EmailAuthScore')
+            .to_return(
+              status: 200,
+              body: {
+                referenceId: 'some-reference-id',
+                namePhoneCorrelation: {
+                  reasonCodes: [],
+                  score: 0.99,
+                },
+                phoneRisk: {
+                  reasonCodes: [],
+                  score: 0.01,
+                },
+                customerProfile: {
+                  customerUserId: user.uuid,
+                },
+              }.to_json,
+              headers: {
+                'Content-Type': 'application/json',
+              },
+            )
+        end
+
+        it 'tracks event with alternate result' do
+          proofing_phone = Phonelib.parse(bad_phone)
+
+          put :create, params: { idv_phone_form: { phone: bad_phone } }
+
+          expect(@analytics).to have_logged_event(
+            'IdV: phone confirmation form',
+            hash_including(:success),
+          )
+
+          expect(response).to redirect_to idv_phone_path
+
+          get :new
+
+          expect(@analytics).to have_logged_event(
+            'IdV: phone confirmation vendor',
+            success: true,
             new_phone_added: true,
             hybrid_handoff_phone_used: false,
             phone_fingerprint: Pii::Fingerprinter.fingerprint(proofing_phone.e164),
             country_code: proofing_phone.country,
             area_code: proofing_phone.area_code,
-            errors: {
-              phone: ['The phone number could not be verified.'],
-            },
             vendor: {
-              vendor_name: 'AddressMock',
               exception: nil,
+              reference: 'some-reference-id',
+              result: {
+                customer_user_id: user.uuid,
+                name_phone_correlation: { reason_codes: {}, score: 0.99 },
+                phonerisk: { reason_codes: {}, score: 0.01 },
+              },
               timed_out: false,
-              transaction_id: 'address-mock-transaction-id-123',
-              reference: '',
+              transaction_id: 'some-reference-id',
+              vendor_name: 'socure_phonerisk',
             },
-          ),
-        )
+            alternate_result: {
+              errors: { phone: ['The phone number could not be verified.'] },
+              success: false,
+              vendor: {
+                exception: nil,
+                reference: '',
+                result: nil,
+                timed_out: false,
+                transaction_id: 'address-mock-transaction-id-123',
+                vendor_name: 'AddressMock',
+              },
+            },
+          )
+        end
       end
 
       context 'when the user is rate limited by submission' do
         before do
-          stub_analytics
-
           rate_limiter = RateLimiter.new(rate_limit_type: :proof_address, user: user)
           rate_limiter.increment_to_limited!
+
+          expect(@attempts_api_tracker).to receive(:idv_rate_limited).with(
+            limiter_type: :proof_address,
+          )
 
           put :create, params: { idv_phone_form: { phone: bad_phone } }
         end

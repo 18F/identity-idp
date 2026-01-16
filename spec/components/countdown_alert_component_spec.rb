@@ -71,5 +71,14 @@ RSpec.describe CountdownAlertComponent, type: :component do
 
       expect(rendered).to have_css('.usa-alert[data-foo="bar"]')
     end
+
+    it 'renders with a defined aria role' do
+      rendered = render_inline CountdownAlertComponent.new(
+        countdown_options: { expiration: },
+        alert_options: { role: 'region' },
+      )
+
+      expect(rendered).to have_selector('.usa-alert[role="region"]')
+    end
   end
 end

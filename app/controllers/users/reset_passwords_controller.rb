@@ -31,6 +31,13 @@ module Users
         result = PasswordResetTokenValidator.new(token_user).submit
 
         analytics.password_reset_token(**result)
+        attempts_api_tracker.forgot_password_email_confirmed(
+          email: token_user&.email,
+          success: result.success?,
+          user_id: result.extra[:user_id],
+          failure_reason: attempts_api_tracker.parse_failure_reason(result),
+        )
+
         if result.success?
           @reset_password_form = ResetPasswordForm.new(user: build_user)
           @forbidden_passwords = forbidden_passwords(token_user.email_addresses)
@@ -47,6 +54,11 @@ module Users
       result = @reset_password_form.submit(user_params)
 
       analytics.password_reset_password(**result)
+      attempts_api_tracker.forgot_password_new_password_submitted(
+        success: result.success?,
+        user_id: result.extra[:user_id],
+        failure_reason: attempts_api_tracker.parse_failure_reason(result),
+      )
 
       if result.success?
         session.delete(:reset_password_token)
@@ -84,9 +96,10 @@ module Users
 
     def handle_valid_email
       RequestPasswordReset.new(
-        email: email,
-        request_id: request_id,
-        analytics: analytics,
+        email:,
+        request_id:,
+        analytics:,
+        attempts_api_tracker:,
       ).perform
 
       session[:email] = email

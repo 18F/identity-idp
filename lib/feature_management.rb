@@ -34,7 +34,10 @@ class FeatureManagement
   end
 
   def self.prefill_otp_codes_allowed_in_sandbox?
-    Identity::Hostdata.domain == 'identitysandbox.gov' && telephony_test_adapter?
+    !Identity::Hostdata.domain.nil? &&
+      (Identity::Hostdata.domain == 'identitysandbox.gov' ||
+      Identity::Hostdata.domain.end_with?('.identitysandbox.gov')) &&
+      telephony_test_adapter?
   end
 
   def self.enable_load_testing_mode?
@@ -63,7 +66,9 @@ class FeatureManagement
   end
 
   def self.current_env_allowed_to_see_gpo_code?
-    Identity::Hostdata.domain == 'identitysandbox.gov'
+    !Identity::Hostdata.domain.nil? &&
+      (Identity::Hostdata.domain == 'identitysandbox.gov' ||
+      Identity::Hostdata.domain.end_with?('.identitysandbox.gov'))
   end
 
   def self.show_demo_banner?
@@ -168,5 +173,9 @@ class FeatureManagement
     IdentityConfig.store.feature_idv_force_gpo_verification_enabled ||
       outage_status.any_phone_vendor_outage? ||
       outage_status.phone_finder_outage?
+  end
+
+  def self.doc_escrow_enabled?(service_provider)
+    IdentityConfig.store.doc_escrow_enabled && service_provider&.attempts_api_enabled?
   end
 end

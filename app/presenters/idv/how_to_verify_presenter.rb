@@ -4,81 +4,81 @@ class Idv::HowToVerifyPresenter
   include ActionView::Helpers::TagHelper
   include ActionView::Helpers::TranslationHelper
 
-  attr_reader :mobile_required, :selfie_required
+  attr_reader :selfie_required
 
-  def initialize(mobile_required:, selfie_check_required:)
-    @mobile_required = mobile_required
+  def initialize(selfie_check_required:)
     @selfie_required = selfie_check_required
   end
 
   def how_to_verify_info
-    if mobile_required
-      t('doc_auth.info.how_to_verify_mobile')
+    t('doc_auth.headings.how_to_verify')
+  end
+
+  def header_text
+    t('doc_auth.headings.how_to_verify')
+  end
+
+  def hybrid_handoff_text
+    if selfie_required
+      t('doc_auth.info.hybrid_handoff_selfie')
     else
-      t('doc_auth.info.how_to_verify')
+      t('doc_auth.info.hybrid_handoff_no_selfie')
     end
   end
 
-  def asset_url
-    if mobile_required
-      'idv/mobile-phone-icon.svg'
-    else
-      'idv/remote.svg'
-    end
+  def online_asset_url
+    'idv/mobile-phone-icon.svg'
   end
 
-  def alt_text
-    if mobile_required
-      t('image_description.phone_icon')
-    else
-      t('image_description.laptop_and_phone')
-    end
+  def online_asset_alt_text
+    t('image_description.phone_icon')
   end
 
   def verify_online_text
-    if mobile_required
-      t('doc_auth.headings.verify_online_mobile')
-    else
-      t('doc_auth.headings.verify_online')
-    end
+    t('doc_auth.headings.verify_online')
   end
 
   def verify_online_instruction
     return t('doc_auth.info.verify_online_instruction_selfie') if selfie_required
-    return t('doc_auth.info.verify_online_instruction_mobile_no_selfie') if mobile_required
 
     t('doc_auth.info.verify_online_instruction')
   end
 
   def verify_online_description
-    if mobile_required
-      t('doc_auth.info.verify_online_description_mobile')
-    else
-      t('doc_auth.info.verify_online_description')
-    end
+    t('doc_auth.info.verify_online_description_passport')
   end
 
-  def submit
-    if mobile_required
-      t('forms.buttons.continue_remote_mobile')
-    else
-      t('forms.buttons.continue_remote')
-    end
+  def online_submit
+    t('forms.buttons.continue_online')
+  end
+
+  def post_office_asset_url
+    'idv/post-office.svg'
+  end
+
+  def post_office_asset_alt_text
+    t('image_description.post_office')
+  end
+
+  def verify_at_post_office_text
+    t('doc_auth.headings.verify_at_post_office')
   end
 
   def post_office_instruction
-    if selfie_required
-      t('doc_auth.info.verify_at_post_office_instruction_selfie')
-    else
-      t('doc_auth.info.verify_at_post_office_instruction')
-    end
+    t('doc_auth.info.verify_at_post_office_instruction')
+  end
+
+  def post_office_accepted_id_instruction
+    t('doc_auth.info.verify_at_post_office_instruction')
   end
 
   def post_office_description
-    if mobile_required
-      t('doc_auth.info.verify_at_post_office_description_mobile')
-    else
-      t('doc_auth.info.verify_at_post_office_description')
-    end
+    IdentityConfig.store.in_person_passports_enabled ?
+      t('doc_auth.info.verify_online_description_passport') :
+      t('doc_auth.info.verify_at_post_office_description_passport_html')
+  end
+
+  def post_office_submit
+    t('forms.buttons.continue_ipp')
   end
 end

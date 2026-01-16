@@ -7,10 +7,16 @@
 <% end %>
 
 <% if @presenter.otp_expiration.present? %>
-  <%= render CountdownAlertComponent.new(
-        show_at_remaining: IdentityConfig.store.otp_expiration_warning_seconds.seconds,
-        alert_options: { class: 'margin-bottom-4' },
-        countdown_options: { expiration: @presenter.otp_expiration },
+  <div id="otp-live-phase" class="usa-sr-only" aria-live="polite" aria-atomic="true"></div>
+  <div id="otp-live-expiry" class="usa-sr-only" role="alert" aria-atomic="true"></div>
+
+  <%= render CountdownPhaseAlertComponent.new(
+        expiration: @presenter.otp_expiration,
+        phases: @presenter.alert_countdown_phases,
+        sr_phase_region_id: 'otp-live-phase',
+        sr_expiry_region_id: 'otp-live-expiry',
+        alert_options: { class: 'margin-bottom-4', role: 'presentation' },
+        countdown_options: { update_interval: 1.second },
       ) %>
 <% end %>
 
@@ -18,6 +24,10 @@
 
 <p>
   <%= @presenter.phone_number_message %>
+</p>
+
+<p>
+  <%= @presenter.do_not_share_code_message %>
 </p>
 
 <%= simple_form_for('') do |f| %>
@@ -39,11 +49,13 @@
         :remember_device,
         as: :boolean,
         label: t('forms.messages.remember_device'),
+        aria: { describedby: 'remember-browser-description' },
         input_html: {
           class: 'usa-checkbox__input--bordered',
           checked: @presenter.remember_device_box_checked?,
         },
       ) %>
+  <p class='margin-top-1 font-body-2xs' id='remember-browser-description'><%= t('forms.messages.public_shared_device_html') %></p>
   <%= f.submit t('forms.buttons.submit.default'), class: 'display-block margin-top-5 margin-bottom-2' %>
   <%= hidden_field_tag 'otp_make_default_number',
                        @presenter.otp_make_default_number %>

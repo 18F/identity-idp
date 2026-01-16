@@ -7,9 +7,12 @@ RSpec.describe AgencyIdentityLinker do
 
     it 'links identities from 2 sps' do
       sp1 = create_service_provider_identity(user, 'http://localhost:3000', 'UUID1')
-      create_service_provider_identity(user, 'urn:gov:gsa:openidconnect:test', 'UUID2')
+      sp2 = create_service_provider_identity(user, 'urn:gov:gsa:openidconnect:test', 'UUID2')
       ai = AgencyIdentityLinker.new(sp1).link_identity
+      ai2 = AgencyIdentityLinker.new(sp2).link_identity
       expect(ai.uuid).to eq('UUID1')
+      expect(ai2.uuid).to eq('UUID1')
+
       ai = AgencyIdentity.where(user_id: user.id).first
       expect(ai.uuid).to eq('UUID1')
     end
@@ -97,8 +100,9 @@ RSpec.describe AgencyIdentityLinker do
     let(:sp) { create(:service_provider) }
     let(:agency) { sp.agency }
     let(:uuid) { SecureRandom.uuid }
+    let(:skip_create) { false }
 
-    subject { described_class.for(user: user, service_provider: sp) }
+    subject { described_class.for(user: user, service_provider: sp, skip_create: skip_create) }
 
     context 'when there is already an agency identity' do
       before { create_agency_identity(user, agency, uuid) }
@@ -129,8 +133,32 @@ RSpec.describe AgencyIdentityLinker do
       end
 
       context 'and there is no service provider identity' do
-        it 'returns nil' do
-          expect(subject).to be_nil
+        context 'skip_create is false' do
+          let(:skip_create) { false }
+
+          it 'creates a new AgencyIdentity and returns it' do
+            expect(subject).not_to be_nil
+            expect(subject.user_id).to eq user.id
+            expect(subject.agency_id).to eq agency.id
+            expect(subject.uuid).not_to be_nil
+          end
+
+          context 'service provider does not have an agency' do
+            let(:sp) { create(:service_provider, agency: nil) }
+            it 'raises an exception' do
+              expect do
+                subject
+              end.to raise_error(RuntimeError)
+            end
+          end
+        end
+
+        context 'skip_create is true' do
+          let(:skip_create) { true }
+
+          it 'returns nil' do
+            expect(subject).to be_nil
+          end
         end
       end
     end

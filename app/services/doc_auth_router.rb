@@ -13,7 +13,7 @@ module DocAuthRouter
     DocAuth::Errors::BIRTH_DATE_CHECKS =>
       'doc_auth.errors.alerts.birth_date_checks',
     DocAuth::Errors::CARD_TYPE =>
-      'doc_auth.errors.card_type',
+      'doc_auth.errors.general.fallback_field_level',
     # i18n-tasks-use t('doc_auth.errors.alerts.control_number_check')
     DocAuth::Errors::CONTROL_NUMBER_CHECK =>
       'doc_auth.errors.alerts.control_number_check',
@@ -134,6 +134,7 @@ module DocAuthRouter
     def translate_doc_auth_errors!(response)
       error_keys = DocAuth::ErrorGenerator::ERROR_KEYS.dup
 
+      response.vendor_errors = response.errors.dup
       error_keys.each do |category|
         cat_errors = response.errors[category]
         next unless cat_errors
@@ -195,34 +196,26 @@ module DocAuthRouter
   end
   # rubocop:enable Layout/LineLength
 
-  def self.doc_auth_vendor_for_bucket(bucket)
+  def self.doc_auth_vendor_for_bucket(bucket, selfie: false, passport_requested: false)
     case bucket
     when :socure
       Idp::Constants::Vendors::SOCURE
     when :lexis_nexis
       Idp::Constants::Vendors::LEXIS_NEXIS
+    when :lexis_nexis_ddp
+      Idp::Constants::Vendors::LEXIS_NEXIS_DDP
     when :mock
       Idp::Constants::Vendors::MOCK
+    when :mock_socure
+      Idp::Constants::Vendors::SOCURE_MOCK
     else # e.g., nil
-      IdentityConfig.store.doc_auth_vendor_default
+      if selfie
+        IdentityConfig.store.doc_auth_selfie_vendor_default
+      elsif passport_requested
+        IdentityConfig.store.doc_auth_passport_vendor_default
+      else
+        IdentityConfig.store.doc_auth_vendor_default
+      end
     end
-  end
-
-  def self.doc_auth_vendor(
-    request:,
-    service_provider:,
-    session:,
-    user:,
-    user_session:
-  )
-    bucket = AbTests::DOC_AUTH_VENDOR.bucket(
-      request:,
-      service_provider:,
-      session:,
-      user:,
-      user_session:,
-    )
-
-    doc_auth_vendor_for_bucket(bucket)
   end
 end

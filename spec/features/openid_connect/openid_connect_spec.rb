@@ -27,7 +27,7 @@ RSpec.describe 'OpenID Connect' do
 
   context 'with client_secret_jwt' do
     it 'succeeds with prompt login and no prior session' do
-      oidc_end_client_secret_jwt(vot: 'C1.C2.P1', prompt: 'login')
+      oidc_end_client_secret_jwt(prompt: 'login')
     end
 
     it 'succeeds in forcing login with prompt login and prior session' do
@@ -55,10 +55,6 @@ RSpec.describe 'OpenID Connect' do
 
       expect(page).to have_current_path(openid_connect_authorize_path, ignore_query: true)
       expect(page).to have_content(t('openid_connect.authorization.errors.prompt_invalid'))
-    end
-
-    it 'succeeds with a vtr param' do
-      oidc_end_client_secret_jwt(vot: 'C1.C2.P1')
     end
   end
 
@@ -312,8 +308,9 @@ RSpec.describe 'OpenID Connect' do
     end
 
     context 'when sending id_token_hint' do
-      it 'logout destroys the session' do
-        id_token = sign_in_get_id_token
+      it 'logout destroys the session when confirming logout' do
+        service_provider = ServiceProvider.find_by(issuer: 'urn:gov:gsa:openidconnect:test')
+        id_token = sign_in_get_id_token(client_id: service_provider.issuer)
 
         state = SecureRandom.hex
 
@@ -323,18 +320,37 @@ RSpec.describe 'OpenID Connect' do
           id_token_hint: id_token,
         )
 
+        expect(page).to have_content(
+          t(
+            'openid_connect.logout.heading_with_sp',
+            app_name: APP_NAME,
+            service_provider_name: service_provider.friendly_name,
+          ),
+        )
+        click_button t('openid_connect.logout.confirm', app_name: APP_NAME)
+
         visit account_path
         expect(page).to_not have_content(t('headings.account.login_info'))
         expect(page).to have_content(t('headings.sign_in_without_sp'))
       end
 
       it 'logout does not require state' do
-        id_token = sign_in_get_id_token
+        service_provider = ServiceProvider.find_by(issuer: 'urn:gov:gsa:openidconnect:test')
+        id_token = sign_in_get_id_token(client_id: service_provider.issuer)
 
         visit openid_connect_logout_path(
           post_logout_redirect_uri: 'gov.gsa.openidconnect.test://result/signout',
           id_token_hint: id_token,
         )
+
+        expect(page).to have_content(
+          t(
+            'openid_connect.logout.heading_with_sp',
+            app_name: APP_NAME,
+            service_provider_name: service_provider.friendly_name,
+          ),
+        )
+        click_button t('openid_connect.logout.confirm', app_name: APP_NAME)
 
         visit account_path
         expect(page).to_not have_content(t('headings.account.login_info'))
@@ -509,9 +525,9 @@ RSpec.describe 'OpenID Connect' do
         state: state,
       )
 
-      current_url_no_port = URI(current_url).tap { |uri| uri.port = nil }.to_s
-      expect(current_url_no_port).to include(
-        "http://www.example.com/openid_connect/logout?id_token_hint=#{id_token}",
+      expect(page).to have_current_path(
+        "http://www.example.com/openid_connect/logout?id_token_hint=#{id_token}&post_logout_redirect_uri=gov.gsa.openidconnect.test://result/signout&state=#{state}",
+        url: true,
       )
       expect(page).to have_content(t('openid_connect.logout.errors.id_token_hint_present'))
     end
@@ -529,6 +545,7 @@ RSpec.describe 'OpenID Connect' do
       user: user,
       scope: 'openid email profile:verified_at',
       handoff_page_steps: proc do
+        click_button t('webauthn_platform_recommended.skip')
         expect(page).to have_content(t('help_text.requested_attributes.verified_at'))
 
         click_agree_and_continue
@@ -551,6 +568,7 @@ RSpec.describe 'OpenID Connect' do
     token_response = sign_in_get_token_response(
       scope: 'openid email profile:verified_at',
       handoff_page_steps: proc do
+        click_button t('webauthn_platform_recommended.skip')
         expect(page).not_to have_content(t('help_text.requested_attributes.verified_at'))
 
         click_agree_and_continue
@@ -567,6 +585,39 @@ RSpec.describe 'OpenID Connect' do
     userinfo_response = JSON.parse(page.body).with_indifferent_access
     expect(userinfo_response[:email]).to be_present
     expect(userinfo_response[:verified_at]).to be_nil
+  end
+
+  it 'returns the locale if requested', driver: :mobile_rack_test do
+    user = user_with_2fa
+
+    token_response = sign_in_get_token_response(
+      user: user,
+      scope: 'openid email locale',
+      sign_in_steps: proc do
+        visit root_path(locale: 'es')
+
+        fill_in_credentials_and_submit(
+          user.confirmed_email_addresses.first.email,
+          user.password,
+        )
+        fill_in_code_with_last_phone_otp
+        click_submit_default
+      end,
+      handoff_page_steps: proc do
+        click_agree_and_continue
+      end,
+    )
+
+    access_token = token_response[:access_token]
+    expect(access_token).to be_present
+
+    page.driver.get api_openid_connect_userinfo_path,
+                    {},
+                    'HTTP_AUTHORIZATION' => "Bearer #{access_token}"
+
+    userinfo_response = JSON.parse(page.body).with_indifferent_access
+    expect(userinfo_response[:email]).to eq(user.email)
+    expect(userinfo_response[:locale]).to eq('es')
   end
 
   it 'errors if verified_within param is too recent', driver: :mobile_rack_test do
@@ -663,6 +714,7 @@ RSpec.describe 'OpenID Connect' do
       user: user,
       client_id: client_id,
       handoff_page_steps: proc do
+        click_button t('webauthn_platform_recommended.skip')
         expect(page).to have_content(t('titles.sign_up.completion_consent_expired_ial1'))
         expect(page).to_not have_content(t('titles.sign_up.completion_new_sp'))
 
@@ -686,6 +738,7 @@ RSpec.describe 'OpenID Connect' do
       user: user,
       client_id: client_id,
       handoff_page_steps: proc do
+        click_button t('webauthn_platform_recommended.skip')
         expect(page).to have_content(t('titles.sign_up.completion_new_sp'))
         expect(page).to_not have_content(t('titles.sign_up.completion_consent_expired_ial1'))
 
@@ -722,6 +775,8 @@ RSpec.describe 'OpenID Connect' do
       _user = sign_in_live_with_2fa(user)
       expect(page.html).to_not include(code_challenge)
 
+      click_button t('webauthn_platform_recommended.skip')
+
       redirect_uri = URI(oidc_redirect_url)
       redirect_params = Rack::Utils.parse_query(redirect_uri.query).with_indifferent_access
 
@@ -746,6 +801,7 @@ RSpec.describe 'OpenID Connect' do
     it 'returns the most recent nonce when there are multiple authorize calls' do
       client_id = 'urn:gov:gsa:openidconnect:test'
       user = user_with_2fa
+
       link_identity(user, build(:service_provider, issuer: client_id))
       user.identities.last.update!(verified_attributes: ['email'])
 
@@ -787,6 +843,8 @@ RSpec.describe 'OpenID Connect' do
 
       sign_in_live_with_2fa(user)
       continue_as(user.email)
+
+      click_button t('webauthn_platform_recommended.skip')
 
       redirect_uri2 = URI(oidc_redirect_url)
       expect(redirect_uri2.to_s).to start_with('gov.gsa.openidconnect.test://result')
@@ -871,12 +929,12 @@ RSpec.describe 'OpenID Connect' do
     it 'displays the branded page' do
       visit_idp_from_ial1_oidc_sp
 
-      expect(current_url).to eq(root_url)
+      expect(page).to have_current_path(root_path)
       expect_branded_experience
 
       visit_idp_from_ial1_oidc_sp
 
-      expect(current_url).to eq(root_url)
+      expect(page).to have_current_path(root_path)
       expect_branded_experience
     end
   end
@@ -889,7 +947,7 @@ RSpec.describe 'OpenID Connect' do
       sign_in_live_with_2fa(user)
       sp = ServiceProvider.find_by(issuer: 'urn:gov:gsa:openidconnect:sp:server')
 
-      expect(current_url).to eq(sign_up_completed_url)
+      expect(page).to have_current_path(sign_up_completed_path)
       expect(page).to have_content(
         t(
           'titles.sign_up.completion_first_sign_in',
@@ -923,7 +981,8 @@ RSpec.describe 'OpenID Connect' do
 
   context 'signing out' do
     it 'redirects back to the client app and destroys the session' do
-      id_token = sign_in_get_id_token
+      service_provider = ServiceProvider.find_by(issuer: 'urn:gov:gsa:openidconnect:test')
+      id_token = sign_in_get_id_token(client_id: service_provider.issuer)
 
       state = SecureRandom.hex
 
@@ -932,6 +991,15 @@ RSpec.describe 'OpenID Connect' do
         state: state,
         id_token_hint: id_token,
       )
+
+      expect(page).to have_content(
+        t(
+          'openid_connect.logout.heading_with_sp',
+          app_name: APP_NAME,
+          service_provider_name: service_provider.friendly_name,
+        ),
+      )
+      click_button t('openid_connect.logout.confirm', app_name: APP_NAME)
 
       expect(oidc_redirect_url).to eq(
         UriService.add_params('gov.gsa.openidconnect.test://result/signout', state:),
@@ -1028,7 +1096,7 @@ RSpec.describe 'OpenID Connect' do
       sp = ServiceProvider.find_by(issuer: 'urn:gov:gsa:openidconnect:sp:server')
       click_link t('links.cancel')
 
-      expect(current_url).to eq new_user_session_url(request_id: sp_request_id)
+      expect(page).to have_current_path(new_user_session_path(request_id: sp_request_id))
       expect(page).to have_content t('links.back_to_sp', sp: sp.friendly_name)
     end
   end
@@ -1046,7 +1114,7 @@ RSpec.describe 'OpenID Connect' do
         confirm_email_in_a_different_browser(email)
         click_agree_and_continue
 
-        expect(current_url).to eq new_user_session_url
+        expect(page).to have_current_path(new_user_session_path)
         expect(page)
           .to have_content t('instructions.go_back_to_mobile_app', friendly_name: 'Example iOS App')
       end
@@ -1087,6 +1155,7 @@ RSpec.describe 'OpenID Connect' do
     acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
     scope: 'openid email',
     redirect_uri: 'gov.gsa.openidconnect.test://result',
+    sign_in_steps: nil,
     handoff_page_steps: nil,
     proofing_steps: nil,
     verified_within: nil,
@@ -1099,7 +1168,6 @@ RSpec.describe 'OpenID Connect' do
 
     link_identity(user, build(:service_provider, issuer: client_id))
     user.identities.last.update!(verified_attributes: ['email'])
-
     visit openid_connect_authorize_path(
       client_id: client_id,
       response_type: 'code',
@@ -1114,7 +1182,11 @@ RSpec.describe 'OpenID Connect' do
       verified_within: verified_within,
     )
 
-    _user = sign_in_live_with_2fa(user)
+    if sign_in_steps.present?
+      sign_in_steps.call
+    else
+      sign_in_live_with_2fa(user)
+    end
 
     proofing_steps&.call
     handoff_page_steps&.call
@@ -1158,22 +1230,12 @@ RSpec.describe 'OpenID Connect' do
     end
   end
 
-  def oidc_end_client_secret_jwt(vot: nil, prompt: nil, user: nil, redirs_to: nil)
+  def oidc_end_client_secret_jwt(prompt: nil, user: nil, redirs_to: nil)
     client_id = 'urn:gov:gsa:openidconnect:sp:server'
     state = SecureRandom.hex
     nonce = SecureRandom.hex
 
-    if vot.present?
-      visit_idp_from_oidc_sp_with_vtr(
-        vtr: [vot],
-        prompt: prompt,
-        state: state,
-        nonce: nonce,
-        client_id: client_id,
-      )
-    else
-      visit_idp_from_ial2_oidc_sp(prompt: prompt, state: state, nonce: nonce, client_id: client_id)
-    end
+    visit_idp_from_ial2_oidc_sp(prompt: prompt, state: state, nonce: nonce, client_id: client_id)
     continue_as(user.email) if user
     if redirs_to
       expect(URI(oidc_redirect_url).path).to eq(redirs_to)
@@ -1233,16 +1295,10 @@ RSpec.describe 'OpenID Connect' do
     expect(decoded_id_token[:given_name]).to eq('John')
     expect(decoded_id_token[:social_security_number]).to eq('111223333')
 
-    if vot.present?
-      expect(decoded_id_token[:acr]).to eq(nil)
-      expect(decoded_id_token[:vot]).to eq(vot)
-    else
-      expect(decoded_id_token[:acr]).to eq(Saml::Idp::Constants::IAL_VERIFIED_ACR)
-      expect(decoded_id_token[:vot]).to eq(nil)
-    end
-
     access_token = token_response[:access_token]
     expect(access_token).to be_present
+    expect(decoded_id_token[:acr]).to eq(Saml::Idp::Constants::IAL_VERIFIED_ACR)
+    expect(decoded_id_token).not_to have_key(:vot)
 
     page.driver.get api_openid_connect_userinfo_path,
                     {},
@@ -1254,17 +1310,11 @@ RSpec.describe 'OpenID Connect' do
     expect(userinfo_response[:given_name]).to eq('John')
     expect(userinfo_response[:social_security_number]).to eq('111223333')
 
-    if vot.present?
-      expect(userinfo_response).not_to have_key(:ial)
-      expect(userinfo_response).not_to have_key(:aal)
-      expect(userinfo_response[:vot]).to eq(vot)
-    else
-      expect(userinfo_response[:ial]).to eq(Saml::Idp::Constants::IAL_VERIFIED_ACR)
-      expect(userinfo_response[:aal]).to eq(
-        Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
-      )
-      expect(userinfo_response).not_to have_key(:vot)
-    end
+    expect(userinfo_response[:ial]).to eq(Saml::Idp::Constants::IAL_VERIFIED_ACR)
+    expect(userinfo_response[:aal]).to eq(
+      Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
+    )
+    expect(userinfo_response).not_to have_key(:vot)
 
     user
   end

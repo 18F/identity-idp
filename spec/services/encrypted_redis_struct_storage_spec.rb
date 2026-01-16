@@ -143,7 +143,7 @@ RSpec.describe EncryptedRedisStructStorage do
 
       context 'with funky ASCII data inside the struct' do
         let(:data) do
-          "HTTP Status 401 \xE2\x80\x93 Unauthorized".force_encoding('ASCII-8BIT').freeze
+          (+"HTTP Status 401 \xE2\x80\x93 Unauthorized").force_encoding('ASCII-8BIT').freeze
         end
 
         it 'converts the data and stores it' do

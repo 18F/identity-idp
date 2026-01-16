@@ -17,6 +17,7 @@ module Idv
 
         Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer)
           .call(:usps_address, :view, true)
+        idv_session.gpo_request_letter_visited = true
         analytics.idv_request_letter_visited
       end
 
@@ -36,7 +37,9 @@ module Idv
           preconditions: ->(idv_session:, user:) do
             idv_session.verify_info_step_complete?
           end,
-          undo_step: ->(idv_session:, user:) { idv_session.address_verification_mechanism = nil },
+          undo_step: ->(idv_session:, user:) do
+            idv_session.address_verification_mechanism = nil
+          end,
         )
       end
 

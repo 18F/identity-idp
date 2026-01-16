@@ -4,7 +4,7 @@ require 'saml_idp_constants'
 
 ## GET /api/saml/auth helper methods
 module SamlAuthHelper
-  PATH_YEAR = '2024'
+  PATH_YEAR = '2025'
   SP_ISSUER = 'http://localhost:3000'
 
   def saml_settings(overrides: {})
@@ -138,7 +138,7 @@ module SamlAuthHelper
   end
 
   def saml_test_idp_cert
-    AppArtifacts.store.saml_2024_cert
+    AppArtifacts.store.saml_2025_cert
   end
 
   public
@@ -199,7 +199,7 @@ module SamlAuthHelper
       user,
       build(:service_provider, issuer: settings.issuer),
     ).link_identity(
-      ial: ial2_requested?(settings) ? true : nil,
+      ial: ial2_requested?(settings) || nil,
       verified_attributes: ['email'],
     )
   end
@@ -231,7 +231,7 @@ module SamlAuthHelper
     fill_in_code_with_last_phone_otp
     protocol == :saml ? click_submit_default_twice : click_submit_default
 
-    expect(current_url).to match new_user_session_path
+    expect(page).to have_current_path(sign_up_completed_path)
     expect(page).to have_content(t('titles.sign_up.completion_first_sign_in', sp: 'Test SP'))
 
     click_agree_and_continue

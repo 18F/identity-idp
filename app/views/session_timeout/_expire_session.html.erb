@@ -1,7 +1,8 @@
-<%= tag.div id: 'js-expire-session',
+<%= tag.div id: 'session-timeout-cntnr',
             data: {
               session_timeout_in: session_timeout_in,
-              timeout_refresh_path: timeout_refresh_path,
+              warning: warning,
+              sessions_url: api_internal_sessions_path,
             } %>
-
+<%= render(partial: 'session_timeout/warning', locals: { modal_presenter: modal }) %>
 <%= javascript_packs_tag_once 'session-expire-session', preload_links_header: false %>

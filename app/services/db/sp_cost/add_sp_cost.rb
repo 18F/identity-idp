@@ -13,6 +13,7 @@ module Db
         acuant_result
         lexis_nexis_resolution
         lexis_nexis_address
+        socure_address
         gpo_letter
         threatmetrix
       ].freeze

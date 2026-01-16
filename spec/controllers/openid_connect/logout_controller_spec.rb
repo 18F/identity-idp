@@ -59,96 +59,13 @@ RSpec.describe OpenidConnect::LogoutController do
         before { stub_sign_in(user) }
 
         context 'with valid params' do
-          it 'destroys the session' do
-            expect(controller).to receive(:sign_out).and_call_original
+          render_views
 
-            action
-          end
-
-          it 'redirects back to the client if server-side redirect is enabled' do
-            allow(IdentityConfig.store).to receive(:openid_connect_redirect)
-              .and_return('server_side')
-            action
-
-            expect(response).to redirect_to(/^#{post_logout_redirect_uri}/)
-          end
-
-          it 'renders client-side redirect if client-side redirect is enabled' do
-            allow(IdentityConfig.store).to receive(:openid_connect_redirect)
-              .and_return('client_side')
-            action
-
-            expect(controller).to render_template('openid_connect/shared/redirect')
-            expect(assigns(:oidc_redirect_uri)).to start_with(post_logout_redirect_uri)
-          end
-
-          it 'renders JS client-side redirect if client-side JS redirect is enabled' do
-            allow(IdentityConfig.store).to receive(:openid_connect_redirect)
-              .and_return('client_side_js')
-            action
-
-            expect(controller).to render_template('openid_connect/shared/redirect_js')
-            expect(assigns(:oidc_redirect_uri)).to start_with(post_logout_redirect_uri)
-          end
-
-          it 'redirects back to the client if UUID set to server-side redirect' do
-            allow(IdentityConfig.store).to receive(:openid_connect_redirect)
-              .and_return('client_side')
-            allow(IdentityConfig.store).to receive(:openid_connect_redirect_uuid_override_map)
-              .and_return({ user.uuid => 'server_side' })
-            action
-
-            expect(response).to redirect_to(/^#{post_logout_redirect_uri}/)
-          end
-
-          it 'renders client-side redirect if UUID set to to client-side redirect' do
-            allow(IdentityConfig.store).to receive(:openid_connect_redirect)
-              .and_return('server_side')
-            allow(IdentityConfig.store).to receive(:openid_connect_redirect_uuid_override_map)
-              .and_return({ user.uuid => 'client_side' })
-            action
-
-            expect(controller).to render_template('openid_connect/shared/redirect')
-            expect(assigns(:oidc_redirect_uri)).to start_with(post_logout_redirect_uri)
-          end
-
-          it 'renders JS client-side redirect if UUID set to JS client-side redirect' do
-            allow(IdentityConfig.store).to receive(:openid_connect_redirect)
-              .and_return('server_side')
-            allow(IdentityConfig.store).to receive(:openid_connect_redirect_uuid_override_map)
-              .and_return({ user.uuid => 'client_side_js' })
-            action
-
-            expect(controller).to render_template('openid_connect/shared/redirect_js')
-            expect(assigns(:oidc_redirect_uri)).to start_with(post_logout_redirect_uri)
-          end
-
-          it 'respects UUID redirect config when issuer config is also set' do
-            allow(IdentityConfig.store).to receive(:openid_connect_redirect)
-              .and_return('server_side')
-            allow(IdentityConfig.store).to receive(:openid_connect_redirect_issuer_override_map)
-              .and_return({ service_provider.issuer => 'client_side' })
-            allow(IdentityConfig.store).to receive(:openid_connect_redirect_uuid_override_map)
-              .and_return({ user.uuid => 'client_side_js' })
-            action
-
-            expect(controller).to render_template('openid_connect/shared/redirect_js')
-            expect(assigns(:oidc_redirect_uri)).to start_with(post_logout_redirect_uri)
-          end
-
-          it 'respects issuer redirect config if UUID config is not set' do
-            allow(IdentityConfig.store).to receive(:openid_connect_redirect)
-              .and_return('server_side')
-            allow(IdentityConfig.store).to receive(:openid_connect_redirect_issuer_override_map)
-              .and_return({ service_provider.issuer => 'client_side_js' })
-            action
-
-            expect(controller).to render_template('openid_connect/shared/redirect_js')
-            expect(assigns(:oidc_redirect_uri)).to start_with(post_logout_redirect_uri)
-          end
-
-          it 'tracks events' do
+          it 'renders logout confirmation page' do
             stub_analytics
+            stub_attempts_tracker
+
+            expect(@attempts_api_tracker).to receive(:logout_initiated).with(success: true)
 
             action
 
@@ -159,27 +76,24 @@ RSpec.describe OpenidConnect::LogoutController do
                 client_id: service_provider.issuer,
                 client_id_parameter_present: false,
                 id_token_hint_parameter_present: true,
-                errors: {},
                 sp_initiated: true,
                 oidc: true,
               ),
             )
             expect(@analytics).to have_logged_event(
-              'Logout Initiated',
-              hash_including(
-                success: true,
-                client_id: service_provider.issuer,
-                client_id_parameter_present: false,
-                id_token_hint_parameter_present: true,
-                errors: {},
-                sp_initiated: true,
-                oidc: true,
-              ),
+              'OIDC Logout Page Visited',
+              success: true,
+              client_id: service_provider.issuer,
+              client_id_parameter_present: false,
+              id_token_hint_parameter_present: true,
+              sp_initiated: true,
+              oidc: true,
             )
-
             expect(@analytics).to_not have_logged_event(
               :sp_integration_errors_present,
             )
+            expect(response).to render_template(:confirm_logout)
+            expect(response.body).to include service_provider.friendly_name
           end
         end
 
@@ -203,9 +117,6 @@ RSpec.describe OpenidConnect::LogoutController do
 
             action
 
-            errors = {
-              redirect_uri: [t('openid_connect.authorization.errors.redirect_uri_no_match')],
-            }
             expect(@analytics).to have_logged_event(
               'OIDC Logout Requested',
               hash_including(
@@ -213,8 +124,9 @@ RSpec.describe OpenidConnect::LogoutController do
                 client_id: service_provider.issuer,
                 client_id_parameter_present: false,
                 id_token_hint_parameter_present: true,
-                errors: errors,
-                error_details: hash_including(*errors.keys),
+                error_details: {
+                  redirect_uri: { redirect_uri_no_match: true },
+                },
                 sp_initiated: true,
                 oidc: true,
               ),
@@ -247,7 +159,6 @@ RSpec.describe OpenidConnect::LogoutController do
                 success: false,
                 client_id_parameter_present: false,
                 id_token_hint_parameter_present: true,
-                errors: hash_including(*errors_keys),
                 error_details: hash_including(*errors_keys),
                 sp_initiated: true,
                 oidc: true,
@@ -274,15 +185,6 @@ RSpec.describe OpenidConnect::LogoutController do
           action
 
           expect(response).to redirect_to(/^#{post_logout_redirect_uri}/)
-        end
-
-        it 'redirects back to the client if client-side redirect is enabled' do
-          allow(IdentityConfig.store).to receive(:openid_connect_redirect)
-            .and_return('client_side')
-          action
-
-          expect(controller).to render_template('openid_connect/shared/redirect')
-          expect(assigns(:oidc_redirect_uri)).to start_with(post_logout_redirect_uri)
         end
 
         it 'redirects back to the client if JS client-side redirect is enabledj' do
@@ -325,22 +227,18 @@ RSpec.describe OpenidConnect::LogoutController do
                 client_id: service_provider.issuer,
                 client_id_parameter_present: true,
                 id_token_hint_parameter_present: false,
-                errors: {},
                 sp_initiated: true,
                 oidc: true,
               ),
             )
             expect(@analytics).to have_logged_event(
               'OIDC Logout Page Visited',
-              hash_including(
-                success: true,
-                client_id: service_provider.issuer,
-                client_id_parameter_present: true,
-                id_token_hint_parameter_present: false,
-                errors: {},
-                sp_initiated: true,
-                oidc: true,
-              ),
+              success: true,
+              client_id: service_provider.issuer,
+              client_id_parameter_present: true,
+              id_token_hint_parameter_present: false,
+              sp_initiated: true,
+              oidc: true,
             )
             expect(@analytics).to_not have_logged_event(
               :sp_integration_errors_present,
@@ -370,9 +268,6 @@ RSpec.describe OpenidConnect::LogoutController do
 
             action
 
-            errors = {
-              redirect_uri: [t('openid_connect.authorization.errors.redirect_uri_no_match')],
-            }
             expect(@analytics).to have_logged_event(
               'OIDC Logout Requested',
               hash_including(
@@ -380,8 +275,9 @@ RSpec.describe OpenidConnect::LogoutController do
                 client_id: service_provider.issuer,
                 client_id_parameter_present: true,
                 id_token_hint_parameter_present: false,
-                errors: errors,
-                error_details: hash_including(*errors.keys),
+                error_details: {
+                  redirect_uri: { redirect_uri_no_match: true },
+                },
                 sp_initiated: true,
                 oidc: true,
               ),
@@ -408,15 +304,6 @@ RSpec.describe OpenidConnect::LogoutController do
           action
 
           expect(response).to redirect_to(/^#{post_logout_redirect_uri}/)
-        end
-
-        it 'renders client-side redirect if client-side redirect is enabled' do
-          allow(IdentityConfig.store).to receive(:openid_connect_redirect)
-            .and_return('client_side')
-          action
-
-          expect(controller).to render_template('openid_connect/shared/redirect')
-          expect(assigns(:oidc_redirect_uri)).to start_with(post_logout_redirect_uri)
         end
 
         it 'renders JS client-side redirect if JS client-side redirect is enabled' do
@@ -466,22 +353,18 @@ RSpec.describe OpenidConnect::LogoutController do
               client_id: service_provider.issuer,
               client_id_parameter_present: true,
               id_token_hint_parameter_present: false,
-              errors: {},
               sp_initiated: true,
               oidc: true,
             ),
           )
           expect(@analytics).to have_logged_event(
             'OIDC Logout Page Visited',
-            hash_including(
-              success: true,
-              client_id: service_provider.issuer,
-              client_id_parameter_present: true,
-              id_token_hint_parameter_present: false,
-              errors: {},
-              sp_initiated: true,
-              oidc: true,
-            ),
+            success: true,
+            client_id: service_provider.issuer,
+            client_id_parameter_present: true,
+            id_token_hint_parameter_present: false,
+            sp_initiated: true,
+            oidc: true,
           )
 
           expect(@analytics).to_not have_logged_event(
@@ -510,9 +393,6 @@ RSpec.describe OpenidConnect::LogoutController do
 
           action
 
-          errors = {
-            id_token_hint: [t('openid_connect.logout.errors.id_token_hint_present')],
-          }
           expect(@analytics).to have_logged_event(
             'OIDC Logout Requested',
             hash_including(
@@ -520,8 +400,9 @@ RSpec.describe OpenidConnect::LogoutController do
               client_id: service_provider.issuer,
               client_id_parameter_present: true,
               id_token_hint_parameter_present: true,
-              errors: errors,
-              error_details: hash_including(*errors.keys),
+              error_details: {
+                id_token_hint: { present: true },
+              },
               sp_initiated: true,
               oidc: true,
             ),
@@ -561,9 +442,6 @@ RSpec.describe OpenidConnect::LogoutController do
 
           action
 
-          errors = {
-            redirect_uri: [t('openid_connect.authorization.errors.redirect_uri_no_match')],
-          }
           expect(@analytics).to have_logged_event(
             'OIDC Logout Requested',
             hash_including(
@@ -571,8 +449,9 @@ RSpec.describe OpenidConnect::LogoutController do
               client_id: service_provider.issuer,
               client_id_parameter_present: true,
               id_token_hint_parameter_present: false,
-              errors: errors,
-              error_details: hash_including(*errors.keys),
+              error_details: {
+                redirect_uri: { redirect_uri_no_match: true },
+              },
               sp_initiated: true,
               oidc: true,
             ),
@@ -600,16 +479,6 @@ RSpec.describe OpenidConnect::LogoutController do
         action
 
         expect(response).to redirect_to(/^#{post_logout_redirect_uri}/)
-      end
-
-      it 'renders client-side redirect if client-side redirect is enabled' do
-        expect(controller).to receive(:sign_out)
-        allow(IdentityConfig.store).to receive(:openid_connect_redirect)
-          .and_return('client_side')
-        action
-
-        expect(controller).to render_template('openid_connect/shared/redirect')
-        expect(assigns(:oidc_redirect_uri)).to start_with(post_logout_redirect_uri)
       end
 
       it 'renders JS client-side redirect if JS client-side redirect is enabled' do
@@ -663,55 +532,10 @@ RSpec.describe OpenidConnect::LogoutController do
             expect(response).to redirect_to(/^#{post_logout_redirect_uri}/)
           end
 
-          it 'destroys session and renders client-side redirect if enabled' do
-            expect(controller).to receive(:sign_out)
-            allow(IdentityConfig.store).to receive(:openid_connect_redirect)
-              .and_return('client_side')
-            action
-
-            expect(controller).to render_template('openid_connect/shared/redirect')
-            expect(assigns(:oidc_redirect_uri)).to start_with(post_logout_redirect_uri)
-          end
-
           it 'destroys session and renders JS client-side redirect if enabled' do
             expect(controller).to receive(:sign_out)
             allow(IdentityConfig.store).to receive(:openid_connect_redirect)
               .and_return('client_side_js')
-            action
-
-            expect(controller).to render_template('openid_connect/shared/redirect_js')
-            expect(assigns(:oidc_redirect_uri)).to start_with(post_logout_redirect_uri)
-          end
-
-          it 'destroys the session and redirects to client if UUID set to server-side redirect' do
-            expect(controller).to receive(:sign_out)
-            allow(IdentityConfig.store).to receive(:openid_connect_redirect)
-              .and_return('client_side')
-            allow(IdentityConfig.store).to receive(:openid_connect_redirect_uuid_override_map)
-              .and_return({ user.uuid => 'server_side' })
-            action
-
-            expect(response).to redirect_to(/^#{post_logout_redirect_uri}/)
-          end
-
-          it 'destroys session and renders client-side redirect if UUID is set to client-side' do
-            expect(controller).to receive(:sign_out)
-            allow(IdentityConfig.store).to receive(:openid_connect_redirect)
-              .and_return('server_side')
-            allow(IdentityConfig.store).to receive(:openid_connect_redirect_uuid_override_map)
-              .and_return({ user.uuid => 'client_side' })
-            action
-
-            expect(controller).to render_template('openid_connect/shared/redirect')
-            expect(assigns(:oidc_redirect_uri)).to start_with(post_logout_redirect_uri)
-          end
-
-          it 'destroy session and render JS client-side redirect if UUID set to JS client-side' do
-            expect(controller).to receive(:sign_out)
-            allow(IdentityConfig.store).to receive(:openid_connect_redirect)
-              .and_return('server_side')
-            allow(IdentityConfig.store).to receive(:openid_connect_redirect_uuid_override_map)
-              .and_return({ user.uuid => 'client_side_js' })
             action
 
             expect(controller).to render_template('openid_connect/shared/redirect_js')
@@ -749,16 +573,6 @@ RSpec.describe OpenidConnect::LogoutController do
             action
 
             expect(response).to redirect_to(/^#{post_logout_redirect_uri}/)
-          end
-
-          it 'destroys the session and renders client-side redirect if enabled' do
-            expect(controller).to receive(:sign_out)
-            allow(IdentityConfig.store).to receive(:openid_connect_redirect)
-              .and_return('client_side')
-            action
-
-            expect(controller).to render_template('openid_connect/shared/redirect')
-            expect(assigns(:oidc_redirect_uri)).to start_with(post_logout_redirect_uri)
           end
 
           it 'destroys the session and renders JS client-side redirect if enabled' do
@@ -818,16 +632,6 @@ RSpec.describe OpenidConnect::LogoutController do
             expect(response).to redirect_to(/^#{post_logout_redirect_uri}/)
           end
 
-          it 'destroys the session and renders client-side redirect if enabled' do
-            expect(controller).to receive(:sign_out)
-            allow(IdentityConfig.store).to receive(:openid_connect_redirect)
-              .and_return('client_side')
-            action
-
-            expect(controller).to render_template('openid_connect/shared/redirect')
-            expect(assigns(:oidc_redirect_uri)).to start_with(post_logout_redirect_uri)
-          end
-
           it 'destroys the session and renders JS client-side redirect if enabled' do
             expect(controller).to receive(:sign_out)
             allow(IdentityConfig.store).to receive(:openid_connect_redirect)
@@ -840,6 +644,9 @@ RSpec.describe OpenidConnect::LogoutController do
 
           it 'tracks events' do
             stub_analytics
+            stub_attempts_tracker
+
+            expect(@attempts_api_tracker).to receive(:logout_initiated).with(success: true)
 
             action
 
@@ -849,7 +656,6 @@ RSpec.describe OpenidConnect::LogoutController do
               client_id: service_provider.issuer,
               client_id_parameter_present: true,
               id_token_hint_parameter_present: false,
-              errors: {},
               sp_initiated: true,
               oidc: true,
             )
@@ -859,7 +665,6 @@ RSpec.describe OpenidConnect::LogoutController do
               client_id: service_provider.issuer,
               client_id_parameter_present: true,
               id_token_hint_parameter_present: false,
-              errors: {},
               sp_initiated: true,
               oidc: true,
             )

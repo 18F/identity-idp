@@ -7,7 +7,7 @@ RSpec.describe Idv::GpoVerifyByMailPolicy do
   let(:user) { create(:user) }
   let(:two_pieces_of_fair_evidence) { false }
   let(:resolved_authn_context_result) do
-    Vot::Parser::Result.no_sp_result.with(
+    Component::Parser::Result.no_sp_result.with(
       two_pieces_of_fair_evidence?: two_pieces_of_fair_evidence,
     )
   end

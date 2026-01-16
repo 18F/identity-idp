@@ -8,7 +8,7 @@ RSpec.describe Users::BackupCodeSetupController do
         :authenticate_user!,
         :confirm_user_authenticated_for_2fa_setup,
         :apply_secure_headers_override,
-        [:confirm_recently_authenticated_2fa, except: ['reminder', 'continue']],
+        [:confirm_recently_authenticated_2fa, except: ['continue']],
         :validate_multi_mfa_selection,
       )
     end
@@ -21,12 +21,19 @@ RSpec.describe Users::BackupCodeSetupController do
         request_ip: Faker::Internet.ip_v4_address,
         threatmetrix_session_id: 'test-session',
         email: user.email,
+        in_ab_test_bucket: true,
+        in_account_creation_flow: true,
       }
     end
 
     it 'creates backup codes and logs expected events' do
       stub_analytics
+      stub_attempts_tracker
       allow(controller).to receive(:in_multi_mfa_selection_flow?).and_return(true)
+      expect(@attempts_api_tracker).to receive(:mfa_enrolled).with(
+        success: true,
+        mfa_device_type: 'backup_code',
+      )
 
       Funnel::Registration::AddMfa.call(user.id, 'phone', @analytics, threatmetrix_attrs)
       expect(PushNotification::HttpPush).to receive(:deliver)
@@ -41,7 +48,6 @@ RSpec.describe Users::BackupCodeSetupController do
       expect(@analytics).to have_logged_event(
         'Backup Code Setup Visited',
         success: true,
-        errors: {},
         mfa_method_counts: { phone: 1 },
         enabled_mfa_methods_count: 1,
         in_account_creation_flow: false,
@@ -215,7 +221,7 @@ RSpec.describe Users::BackupCodeSetupController do
       get :edit
       expect(@analytics).to have_logged_event(
         'Backup Code Regenerate Visited',
-        hash_including(in_account_creation_flow: false),
+        in_account_creation_flow: false,
       )
     end
   end

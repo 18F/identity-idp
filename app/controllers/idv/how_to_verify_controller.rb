@@ -36,12 +36,16 @@ module Idv
         if how_to_verify_form_params['selection'] == Idv::HowToVerifyForm::REMOTE
           idv_session.opted_in_to_in_person_proofing = false
           idv_session.skip_doc_auth_from_how_to_verify = false
-          redirect_to idv_hybrid_handoff_url
+          idv_session.flow_path = 'standard'
+          abandon_any_ipp_progress
+
+          redirect_to idv_choose_id_type_url
+
         else
           idv_session.opted_in_to_in_person_proofing = true
           idv_session.flow_path = 'standard'
           idv_session.skip_doc_auth_from_how_to_verify = true
-          redirect_to idv_document_capture_url
+          redirect_to idv_document_capture_url(step: :how_to_verify)
         end
       else
         render :show, locals: { error: result.first_error_message }
@@ -57,20 +61,26 @@ module Idv
       Idv::StepInfo.new(
         key: :how_to_verify,
         controller: self,
-        next_steps: [:hybrid_handoff, :document_capture],
+        next_steps: [:choose_id_type, :document_capture],
         preconditions: ->(idv_session:, user:) do
           self.enabled? &&
           idv_session.idv_consent_given? &&
-          idv_session.service_provider&.in_person_proofing_enabled
+          Idv::InPersonConfig.enabled_for_issuer?(
+            idv_session.service_provider&.issuer,
+          )
         end,
         undo_step: ->(idv_session:, user:) {
-                     idv_session.skip_doc_auth_from_how_to_verify = nil
-                     idv_session.opted_in_to_in_person_proofing = nil
-                   },
+          idv_session.skip_doc_auth_from_how_to_verify = nil
+          idv_session.opted_in_to_in_person_proofing = nil
+        },
       )
     end
 
     private
+
+    def abandon_any_ipp_progress
+      idv_session_user.establishing_in_person_enrollment&.cancel
+    end
 
     def analytics_arguments
       {
@@ -87,16 +97,10 @@ module Idv
     end
 
     def set_how_to_verify_presenter
-      @mobile_required = mobile_required?
       @selfie_required = idv_session.selfie_check_required
       @presenter = Idv::HowToVerifyPresenter.new(
-        mobile_required: @mobile_required,
         selfie_check_required: @selfie_required,
       )
-    end
-
-    def mobile_required?
-      idv_session.selfie_check_required || doc_auth_vendor == Idp::Constants::Vendors::SOCURE
     end
   end
 end

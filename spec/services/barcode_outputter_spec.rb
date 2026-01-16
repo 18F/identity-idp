@@ -9,7 +9,7 @@ RSpec.describe BarcodeOutputter do
 
     it 'returns image data' do
       # See: https://en.wikipedia.org/wiki/List_of_file_signatures
-      png_signature = "\x89\x50\x4e\x47\x0d\x0a\x1a\x0a".force_encoding(Encoding::ASCII_8BIT)
+      png_signature = (+"\x89\x50\x4e\x47\x0d\x0a\x1a\x0a").force_encoding(Encoding::ASCII_8BIT)
       expect(image_data).to start_with(png_signature)
     end
   end

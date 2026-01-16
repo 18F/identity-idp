@@ -23,7 +23,7 @@ RSpec.feature 'saml api' do
       click_agree_and_continue
       click_submit_default_twice
 
-      expect(current_url).to eq sp.acs_url
+      expect(page).to have_current_path(sp.acs_url, url: true)
     end
   end
 
@@ -34,11 +34,11 @@ RSpec.feature 'saml api' do
       sp.save
     end
 
-    it 'returns a 403' do
+    it 'returns a 400' do
       sign_in_via_branded_page(user)
       click_submit_default
 
-      expect(page.status_code).to eq 403
+      expect(page.status_code).to eq 400
     end
   end
 
@@ -159,8 +159,8 @@ RSpec.feature 'saml api' do
       end
 
       it 'redirects to /test/saml/decode_assertion after submitting the form' do
-        expect(page.current_url)
-          .to eq(saml_settings.assertion_consumer_service_url)
+        expect(page)
+          .to have_current_path(saml_settings.assertion_consumer_service_url, url: true)
       end
 
       it 'stores SP identifier in Identity model' do
@@ -284,7 +284,7 @@ RSpec.feature 'saml api' do
           expect(page).to have_content(
             t('headings.create_account_with_sp.sp_text', app_name: APP_NAME),
           )
-          expect(page).to have_button('Sign in')
+          expect(page).to have_button(t('forms.buttons.submit.default'))
           # visit from SP with force_authn: true
           expect(page).to have_content(
             strip_tags(
@@ -334,7 +334,7 @@ RSpec.feature 'saml api' do
               ),
             ),
           )
-          expect(page).to have_button('Sign in')
+          expect(page).to have_button(t('forms.buttons.submit.default'))
           # Log in with Test SP as the SP session
           fill_in_credentials_and_submit(user.email, user.password)
           fill_in_code_with_last_phone_otp
@@ -363,7 +363,7 @@ RSpec.feature 'saml api' do
               ),
             ),
           )
-          expect(page).to have_button('Sign in')
+          expect(page).to have_button(t('forms.buttons.submit.default'))
 
           # log in for second time
           fill_in_credentials_and_submit(user.email, user.password)
@@ -404,7 +404,7 @@ RSpec.feature 'saml api' do
         expect(page).to have_content(
           t('headings.create_account_with_sp.sp_text', app_name: APP_NAME),
         )
-        expect(page).to have_button('Sign in')
+        expect(page).to have_button(t('forms.buttons.submit.default'))
         expect(page).to have_content(
           strip_tags(
             t(
@@ -439,7 +439,7 @@ RSpec.feature 'saml api' do
         expect(page).to have_content(
           t('headings.create_account_with_sp.sp_text', app_name: APP_NAME),
         )
-        expect(page).to have_button('Sign in')
+        expect(page).to have_button(t('forms.buttons.submit.default'))
         expect(page).to have_content(
           strip_tags(
             t(
@@ -454,7 +454,7 @@ RSpec.feature 'saml api' do
         expect(page).to have_content(
           t('headings.create_account_with_sp.sp_text', app_name: APP_NAME),
         )
-        expect(page).to have_button('Sign in')
+        expect(page).to have_button(t('forms.buttons.submit.default'))
         expect(page).to_not have_content(
           strip_tags(
             t(
@@ -518,7 +518,7 @@ RSpec.feature 'saml api' do
       )
       expect(fake_analytics.events['SAML Auth'].count).to eq 2
 
-      expect(current_url).to eq sp.acs_url
+      expect(page).to have_current_path(sp.acs_url, url: true)
     end
 
     it 'logs one SAML Auth Requested event and two SAML Auth events for IAL2 request' do
@@ -565,7 +565,7 @@ RSpec.feature 'saml api' do
       )
       expect(fake_analytics.events['SAML Auth'].count).to eq 2
 
-      expect(current_url).to eq sp.acs_url
+      expect(page).to have_current_path(sp.acs_url, url: true)
     end
   end
 
@@ -595,7 +595,7 @@ RSpec.feature 'saml api' do
       )
       expect(fake_analytics.events['SAML Auth'].count).to eq 2
 
-      expect(current_url).to eq sp.acs_url
+      expect(page).to have_current_path(sp.acs_url, url: true)
     end
   end
 end

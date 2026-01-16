@@ -6,8 +6,6 @@
 require:
   - rubocop-rails
   - rubocop-rspec
-  - rubocop-performance
-  - rubocop-capybara
   - ./lib/linters/i18n_helper_html_linter.rb
   - ./lib/linters/analytics_event_name_linter.rb
   - ./lib/linters/localized_validation_message_linter.rb
@@ -16,6 +14,12 @@ require:
   - ./lib/linters/redirect_back_linter.rb
   - ./lib/linters/url_options_linter.rb
   - ./lib/linters/errors_add_linter.rb
+  - ./lib/linters/capybara_current_url_expect_linter.rb
+  - ./lib/linters/capybara_current_path_equality_linter.rb
+
+plugins:
+  - rubocop-performance
+  - rubocop-capybara
 
 AllCops:
   Exclude:
@@ -29,8 +33,9 @@ AllCops:
     - 'tmp/**/*'
     - 'vendor/**/*'
     - 'public/**/*'
-  TargetRubyVersion: 3.3.0
-  TargetRailsVersion: 7.2
+  TargetRubyVersion: 3.4
+  TargetRailsVersion: 8.0
+  ParserEngine: parser_prism
   UseCache: true
   DisabledByDefault: true
   SuggestExtensions: false
@@ -44,10 +49,43 @@ Bundler/DuplicatedGem:
 Bundler/InsecureProtocolSource:
   Enabled: true
 
+Capybara/AmbiguousClick:
+  Enabled: false
+
 Capybara/CurrentPathExpectation:
   Enabled: true
 
+Capybara/FindAllFirst:
+  Enabled: true
+
+Capybara/MatchStyle:
+  Enabled: true
+
+Capybara/RedundantWithinFind:
+  Enabled: true
+
+Capybara/RSpec/PredicateMatcher:
+  Enabled: true
+
+Capybara/SpecificActions:
+  Enabled: true
+
+Capybara/SpecificFinders:
+  Enabled: false
+
+Capybara/SpecificMatcher:
+  Enabled: false
+
+Capybara/VisibilityMatcher:
+  Enabled: false
+
 Gemspec/DuplicatedAssignment:
+  Enabled: true
+
+IdentityIdp/CapybaraCurrentUrlExpectLinter:
+  Enabled: true
+
+IdentityIdp/CapybaraCurrentPathEqualityLinter:
   Enabled: true
 
 IdentityIdp/I18nHelperHtmlLinter:
@@ -893,6 +931,10 @@ Rails/EnumSyntax:
   Enabled: true
 
 Rails/EnvLocal:
+  Enabled: true
+
+# Disabling this can cause confusing errors and disabling it should be avoided
+Rails/Exit:
   Enabled: true
 
 Rails/ExpandedDateRange:

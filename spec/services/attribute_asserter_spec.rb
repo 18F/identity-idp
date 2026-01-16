@@ -7,7 +7,7 @@ RSpec.describe AttributeAsserter do
   let(:facial_match_verified_user) do
     create(:profile, :active, :verified, idv_level: :in_person).user
   end
-  let(:user_session) { {} }
+  let(:user_session) { { web_locale: 'en' } }
   let(:identity) do
     build(
       :service_provider_identity,
@@ -27,6 +27,7 @@ RSpec.describe AttributeAsserter do
       attribute_bundle:,
     )
   end
+  let(:fake_analytics) { FakeAnalytics.new(user: user) }
 
   let(:authn_context) do
     [
@@ -38,7 +39,7 @@ RSpec.describe AttributeAsserter do
   let(:raw_authn_request) do
     raw = saml_authn_request_url(
       overrides: {
-        issuer: sp1_issuer,
+        issuer: service_provider.issuer,
       }.merge(options),
     )
 
@@ -67,6 +68,11 @@ RSpec.describe AttributeAsserter do
       decrypted_pii:,
       user_session:,
     )
+  end
+
+  before do
+    allow(Analytics).to receive(:new).and_return(fake_analytics)
+    stub_analytics
   end
 
   describe '#build' do
@@ -232,28 +238,11 @@ RSpec.describe AttributeAsserter do
         context 'when the user has been proofed with facial match' do
           let(:user) { create(:profile, :active, :verified, idv_level: :in_person).user }
 
-          it 'asserts IAL2' do
+          it 'sets aal attribute to IAL2' do
             expected_ial = Saml::Idp::Constants::IAL_VERIFIED_ACR
             expect(get_asserted_attribute(user, :ial)).to eq expected_ial
           end
         end
-      end
-    end
-
-    context 'verified user and proofing VTR request' do
-      let(:authn_context) { 'C1.C2.P1' }
-      let(:attribute_bundle) { %w[email first_name last_name] }
-      before do
-        user.identities << identity
-        subject.build
-      end
-
-      it 'includes the correct bundle attributes' do
-        expect(user.asserted_attributes.keys).to eq(
-          [:uuid, :email, :first_name, :last_name, :verified_at, :vot],
-        )
-        expect(get_asserted_attribute(user, :first_name)).to eq 'Jåné'
-        expect(get_asserted_attribute(user, :vot)).to eq 'C1.C2.P1'
       end
     end
 
@@ -382,24 +371,12 @@ RSpec.describe AttributeAsserter do
             end
           end
         end
-
-        context 'request made with a VTR param' do
-          let(:options) { { authn_context: 'C1.C2' } }
-          let(:attribute_bundle) { %w[email] }
-
-          it 'includes the correct bundle attributes' do
-            expect(user.asserted_attributes.keys).to eq(
-              [:uuid, :email, :vot],
-            )
-            expect(get_asserted_attribute(user, :vot)).to eq 'C1.C2'
-          end
-        end
       end
 
       context 'when the user has been proofed with facial match comparison' do
         let(:user) { create(:profile, :active, :verified, idv_level: :in_person).user }
 
-        it 'asserts IAL1' do
+        it 'sets aal attribute to IAL1' do
           expected_ial = Saml::Idp::Constants::IAL_AUTH_ONLY_ACR
           expect(get_asserted_attribute(user, :ial)).to eq expected_ial
         end
@@ -423,13 +400,27 @@ RSpec.describe AttributeAsserter do
           ]
         end
 
-        it 'asserts AAL3' do
-          expected_aal = Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF
-          expect(get_asserted_attribute(user, :aal)).to eq expected_aal
+        it 'sets aal attribute to AAL2 with phishing resistance' do
+          expect(
+            get_asserted_attribute(
+              user,
+              :aal,
+            ),
+          ).to eq Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF
+        end
+
+        it 'tracks the mismatch' do
+          expect(fake_analytics).to have_logged_event(
+            :asserted_aal_different_from_response_aal,
+            asserted_aal_value:
+              Saml::Idp::Constants::AAL2_PHISHING_RESISTANT_AUTHN_CONTEXT_CLASSREF,
+            client_id: service_provider.issuer,
+            response_aal_value: Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF,
+          )
         end
       end
 
-      context 'service provider requests AAL3' do
+      context 'when service provider requests AAL3' do
         let(:authn_context) do
           [
             Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
@@ -437,9 +428,20 @@ RSpec.describe AttributeAsserter do
           ]
         end
 
-        it 'asserts AAL3' do
-          expected_aal = Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF
-          expect(get_asserted_attribute(user, :aal)).to eq expected_aal
+        it 'sets aal attribute to AAL3' do
+          expect(get_asserted_attribute(user, :aal)).to eq(
+            Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF,
+          )
+        end
+
+        it 'tracks the mismatch' do
+          expect(@analytics).to have_logged_event(
+            :asserted_aal_different_from_response_aal,
+            asserted_aal_value:
+              Saml::Idp::Constants::AAL2_PHISHING_RESISTANT_AUTHN_CONTEXT_CLASSREF,
+            client_id: service_provider.issuer,
+            response_aal_value: Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF,
+          )
         end
       end
     end
@@ -461,7 +463,7 @@ RSpec.describe AttributeAsserter do
           subject.build
         end
 
-        it 'asserts IAL1' do
+        it 'sets aal attribute to IAL1' do
           expected_ial = Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF
           expect(get_asserted_attribute(user, :ial)).to eq expected_ial
         end
@@ -490,7 +492,7 @@ RSpec.describe AttributeAsserter do
           subject.build
         end
 
-        it 'asserts IAL2' do
+        it 'sets aal attribute to IAL2' do
           expected_ial = Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF
           expect(get_asserted_attribute(user, :ial)).to eq expected_ial
         end
@@ -520,7 +522,7 @@ RSpec.describe AttributeAsserter do
         subject.build
       end
 
-      it 'asserts IAL1' do
+      it 'sets aal attribute to IAL1' do
         expected_ial = Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF
         expect(get_asserted_attribute(user, :ial)).to eq expected_ial
       end
@@ -548,14 +550,14 @@ RSpec.describe AttributeAsserter do
       context 'when the user has been proofed with facial match' do
         let(:user) { facial_match_verified_user }
 
-        it 'asserts IAL2 with facial match comparison' do
+        it 'sets aal attribute to IAL2 with facial match comparison' do
           expected_ial = Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF
           expect(get_asserted_attribute(user, :ial)).to eq expected_ial
         end
       end
 
       context 'when the user has been proofed without facial match' do
-        it 'asserts IAL2 (without facial match comparison)' do
+        it 'sets aal attribute to IAL2 (without facial match comparison)' do
           expected_ial = Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF
           expect(get_asserted_attribute(user, :ial)).to eq expected_ial
         end
@@ -579,7 +581,7 @@ RSpec.describe AttributeAsserter do
           subject.build
         end
 
-        it 'asserts IAL2 with facial match comparison' do
+        it 'sets aal attribute to IAL2 with facial match comparison' do
           expected_ial = Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF
           expect(get_asserted_attribute(user, :ial)).to eq expected_ial
         end
@@ -612,6 +614,19 @@ RSpec.describe AttributeAsserter do
           emails = all_emails_getter.call(user)
           expect(emails.length).to eq(2)
           expect(emails).to match_array(user.confirmed_email_addresses.map(&:email))
+        end
+      end
+
+      context 'custom bundle includes locale' do
+        let(:attribute_bundle) { %w[locale] }
+        before do
+          subject.build
+        end
+
+        it 'includes the user locale' do
+          locale_getter = user.asserted_attributes[:locale][:getter]
+          locale = locale_getter.call(user)
+          expect(locale).to eq('en')
         end
       end
 
@@ -713,11 +728,6 @@ RSpec.describe AttributeAsserter do
 
     context 'select email to send to partner feature is disabled' do
       let(:attribute_bundle) { %w[first_name last_name email phone] }
-      before do
-        allow(IdentityConfig.store).to receive(
-          :feature_select_email_to_share_enabled,
-        ).and_return(false)
-      end
 
       context 'with a deleted email' do
         let(:subject) do
@@ -792,7 +802,7 @@ RSpec.describe AttributeAsserter do
       context 'default_aal is nil' do
         let(:authn_context) { [] }
 
-        it 'asserts default aal' do
+        it 'sets aal attribute to default aal' do
           expect(get_asserted_attribute(user, :aal)).to eq(
             Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
           )
@@ -803,10 +813,19 @@ RSpec.describe AttributeAsserter do
         let(:service_provider_aal) { 1 }
         let(:authn_context) { [] }
 
-        it 'asserts aal1' do
+        it 'sets aal attribute to aal1' do
           # we do not enforce aal1, we enforce default aal, so this should be updated
           expect(get_asserted_attribute(user, :aal)).to eq(
             Saml::Idp::Constants::AAL1_AUTHN_CONTEXT_CLASSREF,
+          )
+        end
+
+        it 'tracks the mismatch' do
+          expect(@analytics).to have_logged_event(
+            :asserted_aal_different_from_response_aal,
+            asserted_aal_value: Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
+            client_id: service_provider.issuer,
+            response_aal_value: Saml::Idp::Constants::AAL1_AUTHN_CONTEXT_CLASSREF,
           )
         end
       end
@@ -815,7 +834,7 @@ RSpec.describe AttributeAsserter do
         let(:service_provider_aal) { 2 }
         let(:authn_context) { [] }
 
-        it 'asserts aal2' do
+        it 'sets aal attribute to aal2' do
           expect(get_asserted_attribute(user, :aal)).to eq(
             Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
           )
@@ -826,11 +845,21 @@ RSpec.describe AttributeAsserter do
         let(:service_provider_aal) { 3 }
         let(:authn_context) { [] }
 
-        it 'asserts aa33' do
+        it 'sets aal attribute to aal3' do
           # we do not enforce aal3, we enforce aal2 with phishing-resistant mfa
           # so should be updated
           expect(get_asserted_attribute(user, :aal)).to eq(
             Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF,
+          )
+        end
+
+        it 'tracks the mismatch' do
+          expect(@analytics).to have_logged_event(
+            :asserted_aal_different_from_response_aal,
+            asserted_aal_value:
+              Saml::Idp::Constants::AAL2_PHISHING_RESISTANT_AUTHN_CONTEXT_CLASSREF,
+            client_id: service_provider.issuer,
+            response_aal_value: Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF,
           )
         end
       end
@@ -842,9 +871,18 @@ RSpec.describe AttributeAsserter do
 
         # We do not support AAL1. when passed in, we enforce our default AAL value.
         # However, we are returning the AAL1 value, which is misleading.
-        it 'asserts default aal' do
+        it 'sets aal attribute to aal1' do
           expect(get_asserted_attribute(user, :aal)).to eq(
             Saml::Idp::Constants::AAL1_AUTHN_CONTEXT_CLASSREF,
+          )
+        end
+
+        it 'tracks the mismatch' do
+          expect(@analytics).to have_logged_event(
+            :asserted_aal_different_from_response_aal,
+            asserted_aal_value: Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
+            client_id: service_provider.issuer,
+            response_aal_value: Saml::Idp::Constants::AAL1_AUTHN_CONTEXT_CLASSREF,
           )
         end
       end
@@ -852,9 +890,15 @@ RSpec.describe AttributeAsserter do
       context 'aal2 is requested' do
         let(:authn_context) { Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF }
 
-        it 'asserts plain aal2' do
+        it 'sets aal attribute to plain aal2' do
           expect(get_asserted_attribute(user, :aal)).to eq(
             Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
+          )
+        end
+
+        it 'does not track a mismatch' do
+          expect(@analytics).to_not have_logged_event(
+            :asserted_aal_different_from_response_aal,
           )
         end
       end
@@ -863,9 +907,19 @@ RSpec.describe AttributeAsserter do
         let(:authn_context) { Saml::Idp::Constants::AAL2_PHISHING_RESISTANT_AUTHN_CONTEXT_CLASSREF }
 
         # we should assert the more specific aal2 value
-        it 'asserts plain aal2' do
+        it 'sets aal attribute to plain aal2' do
           expect(get_asserted_attribute(user, :aal)).to eq(
             Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
+          )
+        end
+
+        it 'tracks the mismatch' do
+          expect(@analytics).to have_logged_event(
+            :asserted_aal_different_from_response_aal,
+            asserted_aal_value:
+              Saml::Idp::Constants::AAL2_PHISHING_RESISTANT_AUTHN_CONTEXT_CLASSREF,
+            client_id: service_provider.issuer,
+            response_aal_value: Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
           )
         end
       end
@@ -874,9 +928,18 @@ RSpec.describe AttributeAsserter do
         let(:authn_context) { Saml::Idp::Constants::AAL2_HSPD12_AUTHN_CONTEXT_CLASSREF }
 
         # we should assert the more specific aal2 value
-        it 'asserts plain aal2' do
+        it 'sets aal attribute to plain aal2' do
           expect(get_asserted_attribute(user, :aal)).to eq(
             Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
+          )
+        end
+
+        it 'tracks the mismatch' do
+          expect(@analytics).to have_logged_event(
+            :asserted_aal_different_from_response_aal,
+            asserted_aal_value: Saml::Idp::Constants::AAL2_HSPD12_AUTHN_CONTEXT_CLASSREF,
+            client_id: service_provider.issuer,
+            response_aal_value: Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
           )
         end
       end
@@ -887,9 +950,19 @@ RSpec.describe AttributeAsserter do
 
         # when aal3 is requested, we are enforcing aal2 with phishing-resistant mfa.
         # we should update to assert that
-        it 'asserts plain aal3' do
+        it 'sets aal attribute to plain aal3' do
           expect(get_asserted_attribute(user, :aal)).to eq(
             Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF,
+          )
+        end
+
+        it 'tracks the mismatch' do
+          expect(@analytics).to have_logged_event(
+            :asserted_aal_different_from_response_aal,
+            asserted_aal_value:
+              Saml::Idp::Constants::AAL2_PHISHING_RESISTANT_AUTHN_CONTEXT_CLASSREF,
+            client_id: service_provider.issuer,
+            response_aal_value: Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF,
           )
         end
       end
@@ -899,9 +972,18 @@ RSpec.describe AttributeAsserter do
 
         # when aal3 is requested, we are enforcing aal2 with HSPD12 mfa.
         # we should update to assert that
-        it 'asserts plain aal2' do
+        it 'sets aal attribute to plain aal3' do
           expect(get_asserted_attribute(user, :aal)).to eq(
             Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF,
+          )
+        end
+
+        it 'tracks the mismatch' do
+          expect(@analytics).to have_logged_event(
+            :asserted_aal_different_from_response_aal,
+            asserted_aal_value: Saml::Idp::Constants::AAL2_HSPD12_AUTHN_CONTEXT_CLASSREF,
+            client_id: service_provider.issuer,
+            response_aal_value: Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF,
           )
         end
       end
@@ -917,9 +999,15 @@ RSpec.describe AttributeAsserter do
             ]
           end
 
-          it 'asserts the default value' do
+          it 'sets aal attribute to the default value' do
             expect(get_asserted_attribute(user, :aal)).to eq(
               Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
+            )
+          end
+
+          it 'does not track a mismatch' do
+            expect(@analytics).to_not have_logged_event(
+              :asserted_aal_different_from_response_aal,
             )
           end
         end
@@ -932,9 +1020,40 @@ RSpec.describe AttributeAsserter do
             ]
           end
 
-          it 'asserts the aal1 value' do
+          it 'sets aal attribute to the default aal value' do
+            # we don't assert aal1, so this should be the default aal value
             expect(get_asserted_attribute(user, :aal)).to eq(
               Saml::Idp::Constants::AAL1_AUTHN_CONTEXT_CLASSREF,
+            )
+          end
+
+          it 'tracks the mismatch' do
+            expect(@analytics).to have_logged_event(
+              :asserted_aal_different_from_response_aal,
+              asserted_aal_value: Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
+              client_id: service_provider.issuer,
+              response_aal_value: Saml::Idp::Constants::AAL1_AUTHN_CONTEXT_CLASSREF,
+            )
+          end
+        end
+
+        context 'aal2 is first' do
+          let(:authn_context) do
+            [
+              Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
+              Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
+            ]
+          end
+
+          it 'sets aal attribute to the aal2 value' do
+            expect(get_asserted_attribute(user, :aal)).to eq(
+              Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
+            )
+          end
+
+          it 'does not track a mismatch' do
+            expect(@analytics).to_not have_logged_event(
+              :asserted_aal_different_from_response_aal,
             )
           end
         end
@@ -947,9 +1066,15 @@ RSpec.describe AttributeAsserter do
 
         describe 'no aal is requested via authn_context' do
           context 'default_aal is nil' do
-            it 'asserts default aal' do
+            it 'sets aal attribute to default aal' do
               expect(get_asserted_attribute(user, :aal)).to eq(
                 Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
+              )
+            end
+
+            it 'does not track a mismatch' do
+              expect(@analytics).to_not have_logged_event(
+                :asserted_aal_different_from_response_aal,
               )
             end
           end
@@ -957,10 +1082,19 @@ RSpec.describe AttributeAsserter do
           context 'default_aal is 1' do
             let(:service_provider_aal) { 1 }
 
-            it 'asserts aal1' do
+            it 'sets aal attribute to aal1' do
               # we don't really have an aal1 level to enforce, so this should be updated
               expect(get_asserted_attribute(user, :aal)).to eq(
                 Saml::Idp::Constants::AAL1_AUTHN_CONTEXT_CLASSREF,
+              )
+            end
+
+            it 'tracks the mismatch' do
+              expect(@analytics).to have_logged_event(
+                :asserted_aal_different_from_response_aal,
+                asserted_aal_value: Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
+                client_id: service_provider.issuer,
+                response_aal_value: Saml::Idp::Constants::AAL1_AUTHN_CONTEXT_CLASSREF,
               )
             end
           end
@@ -968,9 +1102,15 @@ RSpec.describe AttributeAsserter do
           context 'default_aal is 2' do
             let(:service_provider_aal) { 2 }
 
-            it 'asserts aal2' do
+            it 'sets aal attribute to aal2' do
               expect(get_asserted_attribute(user, :aal)).to eq(
                 Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
+              )
+            end
+
+            it 'does not track a mismatch' do
+              expect(@analytics).to_not have_logged_event(
+                :asserted_aal_different_from_response_aal,
               )
             end
           end
@@ -978,10 +1118,20 @@ RSpec.describe AttributeAsserter do
           context 'default_aal is 3' do
             let(:service_provider_aal) { 3 }
 
-            it 'asserts aal3' do
+            it 'sets aal attribute to aal3' do
               # we do not enforce aal3, we enforce aal2 with phishing-resistant mfa
               expect(get_asserted_attribute(user, :aal)).to eq(
                 Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF,
+              )
+            end
+
+            it 'tracks the mismatch' do
+              expect(@analytics).to have_logged_event(
+                :asserted_aal_different_from_response_aal,
+                asserted_aal_value:
+                  Saml::Idp::Constants::AAL2_PHISHING_RESISTANT_AUTHN_CONTEXT_CLASSREF,
+                client_id: service_provider.issuer,
+                response_aal_value: Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF,
               )
             end
           end
@@ -993,10 +1143,19 @@ RSpec.describe AttributeAsserter do
 
         describe 'no aal is requested via authn_context' do
           context 'default_aal is nil' do
-            it 'asserts default aal' do
+            it 'sets aal attribute to default aal' do
               # this should be upgraded to AAL2, as we enforce that on an identity-proofing request
               expect(get_asserted_attribute(user, :aal)).to eq(
                 Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
+              )
+            end
+
+            it 'tracks the mismatch' do
+              expect(@analytics).to have_logged_event(
+                :asserted_aal_different_from_response_aal,
+                asserted_aal_value: Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
+                client_id: service_provider.issuer,
+                response_aal_value: Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
               )
             end
           end
@@ -1004,10 +1163,19 @@ RSpec.describe AttributeAsserter do
           context 'default_aal is 1' do
             let(:service_provider_aal) { 1 }
 
-            it 'asserts aal1' do
+            it 'sets aal attribute to aal1' do
               # this should be upgraded to AAL2, as we enforce that on an identity-proofing request
               expect(get_asserted_attribute(user, :aal)).to eq(
                 Saml::Idp::Constants::AAL1_AUTHN_CONTEXT_CLASSREF,
+              )
+            end
+
+            it 'tracks the mismatch' do
+              expect(@analytics).to have_logged_event(
+                :asserted_aal_different_from_response_aal,
+                asserted_aal_value: Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
+                client_id: service_provider.issuer,
+                response_aal_value: Saml::Idp::Constants::AAL1_AUTHN_CONTEXT_CLASSREF,
               )
             end
           end
@@ -1015,9 +1183,15 @@ RSpec.describe AttributeAsserter do
           context 'default_aal is 2' do
             let(:service_provider_aal) { 2 }
 
-            it 'asserts base aal2' do
+            it 'sets aal attribute to base aal2' do
               expect(get_asserted_attribute(user, :aal)).to eq(
                 Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
+              )
+            end
+
+            it 'does not tracks a mismatch' do
+              expect(@analytics).to_not have_logged_event(
+                :asserted_aal_different_from_response_aal,
               )
             end
           end
@@ -1025,10 +1199,20 @@ RSpec.describe AttributeAsserter do
           context 'default_aal is 3' do
             let(:service_provider_aal) { 3 }
 
-            it 'asserts aal3' do
+            it 'sets aal attribute to aal3' do
               # we do not enforce aal3, we enforce aal2 with phishing-resistant mfa
               expect(get_asserted_attribute(user, :aal)).to eq(
                 Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF,
+              )
+            end
+
+            it 'tracks the mismatch' do
+              expect(@analytics).to have_logged_event(
+                :asserted_aal_different_from_response_aal,
+                asserted_aal_value:
+                  Saml::Idp::Constants::AAL2_PHISHING_RESISTANT_AUTHN_CONTEXT_CLASSREF,
+                client_id: service_provider.issuer,
+                response_aal_value: Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF,
               )
             end
           end
@@ -1038,22 +1222,32 @@ RSpec.describe AttributeAsserter do
           context 'default is first' do
             let(:authn_context) do
               [
+                Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
                 Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
                 Saml::Idp::Constants::AAL1_AUTHN_CONTEXT_CLASSREF,
               ]
             end
 
-            it 'asserts the default value' do
+            it 'sets aal attribute to the default value' do
               # identity proofing enforces aal2, so that is what should be asserted
               expect(get_asserted_attribute(user, :aal)).to eq(
                 Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
+              )
+            end
+
+            it 'tracks the mismatch' do
+              expect(@analytics).to have_logged_event(
+                :asserted_aal_different_from_response_aal,
+                asserted_aal_value: Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
+                client_id: service_provider.issuer,
+                response_aal_value: Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
               )
             end
           end
         end
       end
 
-      context 'ialmax is requested' do
+      context 'when ialmax is requested' do
         let(:options) do
           {
             authn_context: [
@@ -1063,7 +1257,7 @@ RSpec.describe AttributeAsserter do
           }
         end
 
-        context 'a non-verified user' do
+        context 'with a non-verified user' do
           # remove any profiles
           before do
             user.profiles.delete_all
@@ -1071,43 +1265,77 @@ RSpec.describe AttributeAsserter do
           end
 
           describe 'no aal is requested via authn_context' do
-            context 'default_aal is nil' do
-              it 'asserts default aal' do
-                # this is fine, as we have enforced auth-only
+            context 'when default_aal is nil' do
+              it 'sets aal attribute to default AAL' do
+                # ialmax should assert aal2
                 expect(get_asserted_attribute(user, :aal)).to eq(
                   Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
                 )
               end
+
+              it 'tracks the mismatch' do
+                expect(@analytics).to have_logged_event(
+                  :asserted_aal_different_from_response_aal,
+                  asserted_aal_value: Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
+                  client_id: service_provider.issuer,
+                  response_aal_value: Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
+                )
+              end
             end
 
-            context 'default_aal is 1' do
+            context 'when default_aal is 1' do
               let(:service_provider_aal) { 1 }
 
-              it 'asserts aal1' do
-                # this is fine, as we have enforced auth-only
+              it 'sets aal attribute to aal2 value' do
+                # ialmax should assert aal2
                 expect(get_asserted_attribute(user, :aal)).to eq(
                   Saml::Idp::Constants::AAL1_AUTHN_CONTEXT_CLASSREF,
                 )
               end
-            end
 
-            context 'default_aal is 2' do
-              let(:service_provider_aal) { 2 }
-
-              it 'asserts base aal2' do
-                expect(get_asserted_attribute(user, :aal)).to eq(
-                  Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
+              it 'tracks the mismatch' do
+                expect(@analytics).to have_logged_event(
+                  :asserted_aal_different_from_response_aal,
+                  asserted_aal_value: Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
+                  client_id: service_provider.issuer,
+                  response_aal_value: Saml::Idp::Constants::AAL1_AUTHN_CONTEXT_CLASSREF,
                 )
               end
             end
 
-            context 'default_aal is 3' do
+            context 'when default_aal is 2' do
+              let(:service_provider_aal) { 2 }
+
+              it 'sets aal attribute to base aal2' do
+                expect(get_asserted_attribute(user, :aal)).to eq(
+                  Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
+                )
+              end
+
+              it 'does not track a mismatch' do
+                expect(@analytics).to_not have_logged_event(
+                  :asserted_aal_different_from_response_aal,
+                )
+              end
+            end
+
+            context 'when default_aal is 3' do
               let(:service_provider_aal) { 3 }
 
-              it 'asserts aal3' do
+              it 'sets aal attribute to aal3' do
                 # we do not enforce aal3, we enforce aal2 with phishing-resistant mfa
                 expect(get_asserted_attribute(user, :aal)).to eq(
                   Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF,
+                )
+              end
+
+              it 'tracks the mismatch' do
+                expect(@analytics).to have_logged_event(
+                  :asserted_aal_different_from_response_aal,
+                  asserted_aal_value:
+                    Saml::Idp::Constants::AAL2_PHISHING_RESISTANT_AUTHN_CONTEXT_CLASSREF,
+                  client_id: service_provider.issuer,
+                  response_aal_value: Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF,
                 )
               end
             end
@@ -1115,13 +1343,22 @@ RSpec.describe AttributeAsserter do
         end
 
         context 'a verified user' do
-          describe 'no aal is requested via authn_context' do
-            context 'default_aal is nil' do
-              it 'asserts default aal' do
+          describe 'no AAL is requested via authn_context' do
+            context 'when default_aal is nil' do
+              it 'sets aal attribute to default AAL' do
                 # this should be upgraded to AAL2, as we enforce that
                 # on an identity-proofing request
                 expect(get_asserted_attribute(user, :aal)).to eq(
                   Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
+                )
+              end
+
+              it 'tracks the mismatch' do
+                expect(@analytics).to have_logged_event(
+                  :asserted_aal_different_from_response_aal,
+                  asserted_aal_value: Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
+                  client_id: service_provider.issuer,
+                  response_aal_value: Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
                 )
               end
             end
@@ -1129,11 +1366,20 @@ RSpec.describe AttributeAsserter do
             context 'default_aal is 1' do
               let(:service_provider_aal) { 1 }
 
-              it 'asserts aal1' do
+              it 'sets aal attribute to aal1' do
                 # this should be upgraded to AAL2, as we enforce that
                 # on an identity-proofing request
                 expect(get_asserted_attribute(user, :aal)).to eq(
                   Saml::Idp::Constants::AAL1_AUTHN_CONTEXT_CLASSREF,
+                )
+              end
+
+              it 'tracks the mismatch' do
+                expect(@analytics).to have_logged_event(
+                  :asserted_aal_different_from_response_aal,
+                  asserted_aal_value: Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
+                  client_id: service_provider.issuer,
+                  response_aal_value: Saml::Idp::Constants::AAL1_AUTHN_CONTEXT_CLASSREF,
                 )
               end
             end
@@ -1141,7 +1387,7 @@ RSpec.describe AttributeAsserter do
             context 'default_aal is 2' do
               let(:service_provider_aal) { 2 }
 
-              it 'asserts base aal2' do
+              it 'sets aal attribute to base aal2' do
                 expect(get_asserted_attribute(user, :aal)).to eq(
                   Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF,
                 )
@@ -1151,10 +1397,20 @@ RSpec.describe AttributeAsserter do
             context 'default_aal is 3' do
               let(:service_provider_aal) { 3 }
 
-              it 'asserts aal3' do
+              it 'sets aal attribute to aal3' do
                 # we do not enforce aal3, we enforce aal2 with phishing-resistant mfa
                 expect(get_asserted_attribute(user, :aal)).to eq(
                   Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF,
+                )
+              end
+
+              it 'tracks the mismatch' do
+                expect(@analytics).to have_logged_event(
+                  :asserted_aal_different_from_response_aal,
+                  asserted_aal_value:
+                    Saml::Idp::Constants::AAL2_PHISHING_RESISTANT_AUTHN_CONTEXT_CLASSREF,
+                  client_id: service_provider.issuer,
+                  response_aal_value: Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF,
                 )
               end
             end

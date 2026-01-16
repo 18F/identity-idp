@@ -8,6 +8,7 @@ class ApplicationController < ActionController::Base
   include SecondMfaReminderConcern
   include TwoFactorAuthenticatableMethods
   include AbTestingConcern
+  include OneAccountConcern
 
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
@@ -26,13 +27,14 @@ class ApplicationController < ActionController::Base
     rescue_from error, with: :render_timeout
   end
 
-  helper_method :decorated_sp_session, :user_fully_authenticated?
+  helper_method :decorated_sp_session, :current_sp, :user_fully_authenticated?
 
   prepend_before_action :add_new_relic_trace_attributes
   prepend_before_action :session_expires_at
   prepend_before_action :set_locale
   before_action :disable_caching
   before_action :cache_issuer_in_cookie
+  after_action :store_web_locale_in_session
 
   def session_expires_at
     return if @skip_session_expiration || @skip_session_load
@@ -49,11 +51,7 @@ class ApplicationController < ActionController::Base
     payload[:user_id] = analytics_user.uuid unless @skip_session_load
 
     payload[:git_sha] = IdentityConfig::GIT_SHA
-    if IdentityConfig::GIT_TAG.present?
-      payload[:git_tag] = IdentityConfig::GIT_TAG
-    else
-      payload[:git_branch] = IdentityConfig::GIT_BRANCH
-    end
+    payload[:git_branch] = IdentityConfig::GIT_BRANCH
 
     payload
   end
@@ -74,6 +72,34 @@ class ApplicationController < ActionController::Base
 
   def analytics_user
     current_user || AnonymousUser.new
+  end
+
+  def attempts_api_tracker
+    @attempts_api_tracker ||= AttemptsApi::Tracker.new(
+      session_id: attempts_api_session_id,
+      request:,
+      user: analytics_user,
+      sp: current_sp,
+      cookie_device_uuid: browser_id,
+      # this only works for oidc
+      sp_redirect_uri: attempts_api_redirect_uri,
+      enabled_for_session: attempts_api_enabled_for_session?,
+    )
+  end
+
+  def browser_id
+    @browser_id ||= cookies[:browser_id].presence ||
+                    cookies.permanent[:browser_id] =
+                      SecureRandom.hex(HighEntropy::COOKIE_LENGTH_IN_BYTES)
+  end
+
+  def fraud_ops_tracker
+    @fraud_ops_tracker ||= FraudOps::Tracker.new(
+      request:,
+      user: analytics_user,
+      sp: current_sp,
+      cookie_device_uuid: cookies[:device],
+    )
   end
 
   def user_event_creator
@@ -105,12 +131,11 @@ class ApplicationController < ActionController::Base
 
     service_provider = sp_from_sp_session
     if service_provider.nil?
-      @resolved_authn_context_result = Vot::Parser::Result.no_sp_result
+      @resolved_authn_context_result = Component::Parser::Result.no_sp_result
     else
       @resolved_authn_context_result = AuthnContextResolver.new(
         user: current_user,
         service_provider: service_provider,
-        vtr: sp_session[:vtr],
         acr_values: sp_session[:acr_values],
       ).result
     end
@@ -125,6 +150,18 @@ class ApplicationController < ActionController::Base
   end
 
   private
+
+  def attempts_api_enabled_for_session?
+    current_sp&.attempts_api_enabled? && attempts_api_session_id.present?
+  end
+
+  def attempts_api_session_id
+    @attempts_api_session_id ||= decorated_sp_session.attempts_api_session_id
+  end
+
+  def attempts_api_redirect_uri
+    @attempts_api_redirect_uri ||= decorated_sp_session.attempts_api_redirect_uri
+  end
 
   # These attributes show up in New Relic traces for all requests.
   # https://docs.newrelic.com/docs/agents/manage-apm-agents/agent-data/collect-custom-attributes
@@ -148,7 +185,7 @@ class ApplicationController < ActionController::Base
                           else
                             {
                               value: current_sp.issuer,
-                              expires: IdentityConfig.store.session_timeout_in_minutes.minutes,
+                              expires: IdentityConfig.store.session_timeout_in_seconds.seconds,
                             }
                           end
   end
@@ -158,15 +195,16 @@ class ApplicationController < ActionController::Base
 
     if params[:timeout] == 'session'
       analytics.session_timed_out
+      attempts_api_tracker.session_timeout
       flash[:info] = t(
         'notices.session_timedout',
         app_name: APP_NAME,
-        minutes: IdentityConfig.store.session_timeout_in_minutes,
+        minutes: IdentityConfig.store.session_timeout_in_seconds.seconds.in_minutes.to_i,
       )
     elsif current_user.blank?
       flash[:info] = t(
         'notices.session_cleared',
-        minutes: IdentityConfig.store.session_timeout_in_minutes,
+        minutes: IdentityConfig.store.session_timeout_in_seconds.seconds.in_minutes.to_i,
       )
     end
 
@@ -226,6 +264,7 @@ class ApplicationController < ActionController::Base
   def after_sign_in_path_for(_user)
     return rules_of_use_path if !current_user.accepted_rules_of_use_still_valid?
     return user_please_call_url if current_user.suspended?
+    return duplicate_profiles_detected_url(source: :sign_in) if user_duplicate_profiles_detected?
     return manage_password_url if session[:redirect_to_change_password].present?
     return authentication_methods_setup_url if user_needs_sp_auth_method_setup?
     return fix_broken_personal_key_url if current_user.broken_personal_key?
@@ -234,22 +273,21 @@ class ApplicationController < ActionController::Base
     return login_add_piv_cac_prompt_url if session[:needs_to_setup_piv_cac_after_sign_in].present?
     return reactivate_account_url if user_needs_to_reactivate_account?
     return login_piv_cac_recommended_path if user_recommended_for_piv_cac?
-    return webauthn_platform_recommended_path if recommend_webauthn_platform_for_sms_user?(
-      :recommend_for_authentication,
-    )
     return second_mfa_reminder_url if user_needs_second_mfa_reminder?
+    return backup_code_reminder_url if user_needs_backup_code_reminder?
     return sp_session_request_url_with_updated_params if sp_session.key?(:request_url)
     signed_in_url
   end
 
   def signed_in_url
     return idv_verify_by_mail_enter_code_url if current_user.gpo_verification_pending_profile?
-    return backup_code_reminder_url if user_needs_backup_code_reminder?
     account_path
   end
 
   def after_mfa_setup_path
-    if needs_completion_screen_reason
+    if user_account_creation_device_profile_failed?
+      return device_profiling_failed_url
+    elsif needs_completion_screen_reason
       sign_up_completed_url
     elsif user_needs_to_reactivate_account?
       reactivate_account_url
@@ -400,6 +438,12 @@ class ApplicationController < ActionController::Base
     I18n.locale = LocaleChooser.new(params[:locale], request).locale
   end
 
+  def store_web_locale_in_session
+    return unless user_signed_in?
+
+    user_session[:web_locale] = I18n.locale.to_s
+  end
+
   def pii_requested_but_locked?
     if resolved_authn_context_result.identity_proofing? || resolved_authn_context_result.ialmax?
       current_user.identity_verified? &&
@@ -494,10 +538,33 @@ class ApplicationController < ActionController::Base
     BannedUserResolver.new(current_user).banned_for_sp?(issuer: current_sp&.issuer)
   end
 
+  def user_account_creation_device_profile_failed?
+    return false unless IdentityConfig.store.account_creation_device_profiling == :enabled
+    profiling_result = find_device_profiling_result(
+      DeviceProfilingResult::PROFILING_TYPES[:account_creation],
+    )
+    profiling_result&.rejected?
+  end
+
+  def find_device_profiling_result(type)
+    DeviceProfilingResult.for_user(
+      user_id: current_user.id,
+      type: type,
+    ).last
+  end
+
   def handle_banned_user
     return unless user_is_banned?
     analytics.banned_user_redirect
     sign_out
     redirect_to banned_user_url
+  end
+
+  def handle_suspended_user
+    return unless user_signed_in?
+    return unless current_user&.suspended?
+    return if request.path == user_please_call_path
+
+    redirect_to user_please_call_url
   end
 end

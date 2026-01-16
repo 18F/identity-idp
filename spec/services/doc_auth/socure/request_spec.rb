@@ -37,13 +37,41 @@ RSpec.describe DocAuth::Socure::Request do
     end
 
     context 'with no body in the response' do
-      let(:response) { nil }
+      let(:status) { 'timeout' }
+      let(:msg) { 'error message' }
+      let(:reference_id) { 'fake_reference_id' }
+      let(:response) do
+        {
+          status:,
+          msg:,
+          referenceId: reference_id,
+        }.to_json
+      end
       let(:response_status) { 403 }
 
-      # Because we have not implemented handle_connection_error at this level
-      # (defined in docv_result and document_request)
-      it 'raises a NotImplementedError' do
-        expect { request.fetch }.to raise_error NotImplementedError
+      let(:exception_msg) do
+        [
+          described_class.name,
+          'Unexpected HTTP response',
+          response_status,
+        ].join(' ')
+      end
+      let(:expected_error) do
+        {
+          success: false,
+          errors: { network: true },
+          exception: DocAuth::RequestError.new(exception_msg, status),
+          extra: {
+            vendor: 'Socure',
+            vendor_status: status,
+            vendor_status_message: msg,
+            reference_id:,
+          }.compact,
+        }
+      end
+
+      it 'returns the expected error' do
+        expect(request.fetch).to eq expected_error
       end
     end
   end

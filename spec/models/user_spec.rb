@@ -207,80 +207,48 @@ RSpec.describe User do
   context 'when user has IPP enrollments' do
     let(:user) { create(:user, :fully_registered) }
 
-    let(:failed_enrollment_profile) do
-      create(:profile, :verification_cancelled, user: user, pii: { first_name: 'Jane' })
-    end
-    let(:pending_enrollment_profile) do
-      create(
-        :profile,
-        gpo_verification_pending_at: 1.day.ago,
-        user: user,
-        pii: { first_name: 'Susan' },
-      )
-    end
-
-    let(:establishing_enrollment_profile) do
-      create(
-        :profile,
-        gpo_verification_pending_at: 1.day.ago,
-        user: user,
-        pii: { first_name: 'Susan' },
-      )
-    end
-
     let!(:failed_enrollment) do
       create(:in_person_enrollment, :failed, user: user, profile: failed_enrollment_profile)
     end
-    let!(:pending_enrollment) do
-      create(:in_person_enrollment, :pending, user: user, profile: pending_enrollment_profile)
+    let(:failed_enrollment_profile) do
+      create(:profile, :verification_cancelled, user: user, pii: { first_name: 'Jane' })
     end
-    let!(:establishing_enrollment) do
+
+    let!(:pending_enrollment) do
       create(
         :in_person_enrollment,
-        :establishing,
+        :pending,
         user: user,
-        profile: establishing_enrollment_profile,
       )
     end
+    let(:pending_enrollment_profile) { pending_enrollment.profile }
 
     describe '#in_person_enrollments' do
       it 'returns multiple IPP enrollments' do
-        expect(user.in_person_enrollments).to eq [
-          failed_enrollment,
-          pending_enrollment,
-          establishing_enrollment,
-        ]
+        expect(user.in_person_enrollments.count).to eq(2)
+        expect(user.in_person_enrollments).to include(failed_enrollment)
+        expect(user.in_person_enrollments).to include(pending_enrollment)
       end
 
       it 'deletes everything and does not result in an error when'\
       ' the user is deleted before the profile' do
         failed_enrollment_id = failed_enrollment.id
         pending_enrollment_id = pending_enrollment.id
-        establishing_enrollment_id = establishing_enrollment.id
         failed_enrollment_profile_id = failed_enrollment_profile.id
         pending_enrollment_profile_id = pending_enrollment_profile.id
-        establishing_enrollment_profile_id = establishing_enrollment_profile.id
         user_id = user.id
 
         expect(User.find_by(id: user_id)).to eq user
         expect(Profile.find_by(id: failed_enrollment_profile_id)).to eq failed_enrollment_profile
         expect(Profile.find_by(id: pending_enrollment_profile_id)).to eq pending_enrollment_profile
-        expect(Profile.find_by(id: establishing_enrollment_profile_id)).to eq(
-          establishing_enrollment_profile,
-        )
         expect(InPersonEnrollment.find_by(id: failed_enrollment_id)).to eq failed_enrollment
         expect(InPersonEnrollment.find_by(id: pending_enrollment_id)).to eq pending_enrollment
-        expect(InPersonEnrollment.find_by(id: establishing_enrollment_id)).to eq(
-          establishing_enrollment,
-        )
         user.destroy
         expect(User.find_by(id: user_id)).to eq nil
         expect(Profile.find_by(id: failed_enrollment_profile_id)).to eq nil
         expect(Profile.find_by(id: pending_enrollment_profile_id)).to eq nil
-        expect(Profile.find_by(id: establishing_enrollment_profile_id)).to eq nil
         expect(InPersonEnrollment.find_by(id: failed_enrollment_id)).to eq nil
         expect(InPersonEnrollment.find_by(id: pending_enrollment_id)).to eq nil
-        expect(InPersonEnrollment.find_by(id: establishing_enrollment_id)).to eq nil
         failed_enrollment_profile.destroy # Profile is already deleted, but check for no errors
       end
 
@@ -288,10 +256,8 @@ RSpec.describe User do
       ' error when the profile is deleted before the user' do
         failed_enrollment_id = failed_enrollment.id
         pending_enrollment_id = pending_enrollment.id
-        establishing_enrollment_id = establishing_enrollment.id
         failed_enrollment_profile_id = failed_enrollment_profile.id
         pending_enrollment_profile_id = pending_enrollment_profile.id
-        establishing_enrollment_profile_id = establishing_enrollment_profile.id
         user_id = user.id
 
         expect(User.find_by(id: user_id)).to eq user
@@ -299,21 +265,12 @@ RSpec.describe User do
         expect(Profile.find_by(id: pending_enrollment_profile_id)).to eq pending_enrollment_profile
         expect(InPersonEnrollment.find_by(id: failed_enrollment_id)).to eq failed_enrollment
         expect(InPersonEnrollment.find_by(id: pending_enrollment_id)).to eq pending_enrollment
-        expect(InPersonEnrollment.find_by(id: establishing_enrollment_id)).to eq(
-          establishing_enrollment,
-        )
         failed_enrollment_profile.destroy
         expect(User.find_by(id: user_id)).to eq user
         expect(Profile.find_by(id: failed_enrollment_profile_id)).to eq nil
         expect(Profile.find_by(id: pending_enrollment_profile_id)).to eq pending_enrollment_profile
-        expect(Profile.find_by(id: establishing_enrollment_profile_id)).to eq(
-          establishing_enrollment_profile,
-        )
         expect(InPersonEnrollment.find_by(id: failed_enrollment_id)).to eq nil
         expect(InPersonEnrollment.find_by(id: pending_enrollment_id)).to eq pending_enrollment
-        expect(InPersonEnrollment.find_by(id: establishing_enrollment_id)).to eq(
-          establishing_enrollment,
-        )
         user.destroy # Should work even though first profile was deleted after user was loaded
       end
     end
@@ -325,6 +282,23 @@ RSpec.describe User do
     end
 
     describe '#establishing_in_person_enrollment' do
+      let(:establishing_enrollment_profile) do
+        create(
+          :profile,
+          user: user,
+          pii: { first_name: 'Susan' },
+        )
+      end
+
+      let!(:establishing_enrollment) do
+        create(
+          :in_person_enrollment,
+          :establishing,
+          user: user,
+          profile: establishing_enrollment_profile,
+        )
+      end
+
       it 'returns the establishing IPP enrollment' do
         expect(user.establishing_in_person_enrollment).to eq establishing_enrollment
       end
@@ -336,56 +310,110 @@ RSpec.describe User do
       end
     end
 
-    # We don't know yet if #establishing_in_person_enrollment is, in fact, `establishing`
-    # so we trust the pending profile in the meantime
-    describe '#has_establishing_in_person_enrollment_safe?' do
-      let(:new_user) { create(:user, :fully_registered) }
+    describe '#latest_in_person_enrollment_status' do
       let(:proofing_components) { nil }
-      let(:new_pending_profile) do
-        create(
-          :profile,
-          :verify_by_mail_pending,
-          user: new_user,
-          proofing_components: proofing_components,
-        )
-      end
-      let!(:establishing_enrollment) do
-        create(
-          :in_person_enrollment,
-          :establishing,
-          profile: new_pending_profile,
-          user: new_user,
-        )
+
+      context 'when the enrollment is pending' do
+        let(:pending_user) { create(:user, :fully_registered) }
+        let!(:profile) do
+          create(
+            :profile,
+            :in_person_verification_pending,
+            user: pending_user,
+            proofing_components: proofing_components,
+          )
+        end
+
+        it 'returns pending' do
+          expect(pending_user.latest_in_person_enrollment_status).to eq('pending')
+        end
       end
 
-      it 'returns the establishing IPP enrollment through the pending profile' do
-        # trust pending_profile
-        expect(new_user.has_establishing_in_person_enrollment_safe?).to eq(true)
+      context 'when the enrollment is establishing' do
+        let!(:establishing_user) do
+          create(:user, :fully_registered, :with_establishing_in_person_enrollment)
+        end
+
+        it 'returns establishing' do
+          expect(establishing_user.latest_in_person_enrollment_status).to eq('establishing')
+        end
+      end
+
+      context 'when the enrollment is cancelled' do
+        let(:cancelled_user) { create(:user, :fully_registered) }
+        let(:cancelled_profile) do
+          create(
+            :profile,
+            :verification_cancelled,
+            user: cancelled_user,
+            proofing_components: proofing_components,
+          )
+        end
+        let!(:cancelled_enrollment) do
+          create(
+            :in_person_enrollment,
+            :cancelled,
+            profile: cancelled_profile,
+            user: cancelled_user,
+          )
+        end
+
+        it 'returns cancelled' do
+          expect(cancelled_user.latest_in_person_enrollment_status).to eq('cancelled')
+        end
+      end
+
+      context 'when there is no enrollment' do
+        let(:remote_user) { create(:user, :fully_registered) }
+
+        it 'returns nil' do
+          expect(remote_user.latest_in_person_enrollment_status).to eq(nil)
+        end
+      end
+
+      context 'when there are multiple enrollments' do
+        it "returns the latest enrollment's status" do
+          expect(user.latest_in_person_enrollment_status).to eq('pending')
+        end
+      end
+    end
+  end
+
+  describe '#ipp_enrollment_status_not_passed_or_in_fraud_review?' do
+    let(:user) { create(:user, :fully_registered) }
+
+    context 'when the user has an in-person enrollment' do
+      context 'when the in-person enrollment has a status of passed' do
+        let!(:profile) { create(:profile, :fraud_review_pending, user:) }
+        let!(:enrollment) { create(:in_person_enrollment, :passed, user:, profile:) }
+
+        it 'returns false' do
+          expect(user.ipp_enrollment_status_not_passed_or_in_fraud_review?).to be(false)
+        end
+      end
+
+      context 'when the in-person enrollment has a status of in_fraud_review' do
+        let!(:profile) { create(:profile, :fraud_review_pending, user:) }
+        let!(:enrollment) { create(:in_person_enrollment, :in_fraud_review, user:, profile:) }
+
+        it 'returns false' do
+          expect(user.ipp_enrollment_status_not_passed_or_in_fraud_review?).to be(false)
+        end
+      end
+
+      context 'when the in-person enrollment does not have a status of passed or in_fraud_review' do
+        let!(:profile) { create(:profile, :fraud_review_pending, user:) }
+        let!(:enrollment) { create(:in_person_enrollment, :pending, user:, profile:) }
+
+        it 'returns true' do
+          expect(user.ipp_enrollment_status_not_passed_or_in_fraud_review?).to be(true)
+        end
       end
     end
 
-    describe '#in_person_enrollment_status' do
-      let(:new_user) { create(:user, :fully_registered) }
-      let(:proofing_components) { nil }
-      let(:new_pending_profile) do
-        create(
-          :profile,
-          :verify_by_mail_pending,
-          user: new_user,
-          proofing_components: proofing_components,
-        )
-      end
-      let!(:establishing_enrollment) do
-        create(
-          :in_person_enrollment,
-          :passed,
-          profile: new_pending_profile,
-          user: new_user,
-        )
-      end
-
-      it 'returns the status of the enrollment' do
-        expect(new_user.in_person_enrollment_status).to eq('passed')
+    context 'when the user does not have an in-person enrollment' do
+      it 'returns false' do
+        expect(user.ipp_enrollment_status_not_passed_or_in_fraud_review?).to be(false)
       end
     end
   end
@@ -467,22 +495,16 @@ RSpec.describe User do
   end
 
   describe '#password=' do
-    it 'digests and saves a single region and multi region password digests' do
+    it 'digests and saves a multi region password digest' do
       user = build(:user, password: nil)
 
       user.password = 'test password'
 
-      expect(user.encrypted_password_digest).to_not be_blank
+      expect(user.encrypted_password_digest).to be_blank
       expect(user.encrypted_password_digest).to_not match(/test password/)
 
       expect(user.encrypted_password_digest_multi_region).to_not be_blank
       expect(user.encrypted_password_digest_multi_region).to_not match(/test password/)
-
-      expect(
-        user.encrypted_password_digest,
-      ).to_not eq(
-        user.encrypted_password_digest_multi_region,
-      )
     end
   end
 
@@ -497,8 +519,12 @@ RSpec.describe User do
     end
 
     it 'validates the password for a user with a only a single-region digest' do
-      user = build(:user, password: 'test password')
+      user = build(:user)
       user.encrypted_password_digest_multi_region = nil
+      user.encrypted_password_digest = Encryption::PasswordVerifier.new.create_single_region_digest(
+        password: 'test password',
+        user_uuid: user.uuid,
+      )
 
       expect(user.valid_password?('test password')).to eq(true)
       expect(user.valid_password?('wrong password')).to eq(false)
@@ -515,22 +541,15 @@ RSpec.describe User do
   end
 
   describe '#personal_key=' do
-    it 'digests and saves a single region and multi region personal key digests' do
+    it 'digests and saves only the multi region personal key digest' do
       user = build(:user, personal_key: nil)
 
       user.personal_key = 'test personal key'
 
-      expect(user.encrypted_recovery_code_digest).to_not be_blank
-      expect(user.encrypted_recovery_code_digest).to_not match(/test personal key/)
+      expect(user.encrypted_recovery_code_digest).to be_blank
 
       expect(user.encrypted_recovery_code_digest_multi_region).to_not be_blank
       expect(user.encrypted_recovery_code_digest_multi_region).to_not match(/test personal key/)
-
-      expect(
-        user.encrypted_recovery_code_digest,
-      ).to_not eq(
-        user.encrypted_recovery_code_digest_multi_region,
-      )
     end
   end
 
@@ -545,8 +564,13 @@ RSpec.describe User do
     end
 
     it 'validates the personal key for a user with a only a single-region digest' do
-      user = build(:user, personal_key: 'test personal key')
+      user = build(:user)
       user.encrypted_recovery_code_digest_multi_region = nil
+      user.encrypted_recovery_code_digest =
+        Encryption::PasswordVerifier.new.create_single_region_digest(
+          password: 'test personal key',
+          user_uuid: user.uuid,
+        )
 
       expect(user.valid_personal_key?('test personal key')).to eq(true)
       expect(user.valid_personal_key?('wrong personal key')).to eq(false)
@@ -564,8 +588,31 @@ RSpec.describe User do
   end
 
   describe '#authenticatable_salt' do
-    it 'returns the password salt' do
+    it 'returns the multi-region password salt if it exists' do
       user = create(:user)
+      salt = JSON.parse(user.encrypted_password_digest_multi_region)['password_salt']
+
+      expect(user.authenticatable_salt).to eq(salt)
+    end
+
+    it 'returns the single-region password salt if the multi-region is blank' do
+      user = build(:user)
+      user.encrypted_password_digest_multi_region = nil
+      user.encrypted_password_digest = Encryption::PasswordVerifier.new.create_single_region_digest(
+        password: 'test password',
+        user_uuid: user.uuid,
+      )
+
+      salt = JSON.parse(user.encrypted_password_digest)['password_salt']
+
+      expect(user.authenticatable_salt).to eq(salt)
+    end
+
+    it 'returns the UAK password salt if user has UAK password' do
+      user = build(:user)
+      user.encrypted_password_digest = Encryption::UakPasswordVerifier.digest('test password')
+      user.encrypted_password_digest_multi_region = nil
+
       salt = JSON.parse(user.encrypted_password_digest)['password_salt']
 
       expect(user.authenticatable_salt).to eq(salt)
@@ -1289,23 +1336,31 @@ RSpec.describe User do
       let(:user) { create(:user) }
       let(:personal_key) { RandomPhrase.new(num_words: 4).to_s }
 
-      before do
-        encrypted_pii_recovery, encrypted_pii_recovery_multi_region =
-          Encryption::Encryptors::PiiEncryptor.new(
-            personal_key,
-          ).encrypt('null', user_uuid: user.uuid).single_region_ciphertext
-
+      it 'returns true if multi-region recovery PII is too short' do
         create(
           :profile,
           user: user,
           active: true,
           verified_at: Time.zone.now,
-          encrypted_pii_recovery: encrypted_pii_recovery,
-          encrypted_pii_recovery_multi_region: encrypted_pii_recovery_multi_region,
+          encrypted_pii_recovery: nil,
+          encrypted_pii_recovery_multi_region: 'abcdefgh',
         )
+
+        expect(user.broken_personal_key?).to eq(true)
       end
 
-      it { expect(user.broken_personal_key?).to eq(true) }
+      it 'returns true if single-region recovery PII is too short' do
+        create(
+          :profile,
+          user: user,
+          active: true,
+          verified_at: Time.zone.now,
+          encrypted_pii_recovery: 'abcdefgh',
+          encrypted_pii_recovery_multi_region: nil,
+        )
+
+        expect(user.broken_personal_key?).to eq(true)
+      end
     end
   end
 
@@ -1633,6 +1688,72 @@ RSpec.describe User do
         end
       end
     end
+
+    context 'with a pending in person profile' do
+      let(:pending_in_person_enrollment) { create(:in_person_enrollment, :pending, user: user) }
+      let(:pending_profile) { pending_in_person_enrollment.profile }
+
+      context 'when the pending in person profile has a "password_reset deactivation reason"' do
+        before do
+          pending_profile.update!(deactivation_reason: 'password_reset')
+        end
+
+        it 'returns the pending profile' do
+          expect(user.password_reset_profile).to eq(pending_profile)
+        end
+      end
+
+      context 'when the pending in person profile does not have a deactivation reason' do
+        it 'returns nil' do
+          expect(user.password_reset_profile).to be_nil
+        end
+      end
+    end
+
+    context 'with a fraud review in person profile' do
+      let(:enrollment) { create(:in_person_enrollment, :in_fraud_review, user: user) }
+      let(:profile) { enrollment.profile }
+
+      context 'when the profile has a "password_reset deactivation reason"' do
+        before do
+          profile.update!(deactivation_reason: 'password_reset')
+        end
+
+        it 'returns the profile' do
+          expect(user.password_reset_profile).to eq(profile)
+        end
+      end
+
+      context 'when the profile does not have a deactivation reason' do
+        it 'returns nil' do
+          expect(user.password_reset_profile).to be_nil
+        end
+      end
+    end
+
+    context 'with a pending in person and an active profile' do
+      let(:pending_in_person_enrollment) { create(:in_person_enrollment, :pending, user: user) }
+      let(:pending_profile) { pending_in_person_enrollment.profile }
+      let(:active_profile) do
+        create(:profile, :active, :verified, activated_at: 1.day.ago, pii: { first_name: 'Jane' })
+      end
+
+      context 'when the pending in person profile has a "password_reset deactivation reason"' do
+        before do
+          pending_profile.update!(deactivation_reason: 'password_reset')
+        end
+
+        it 'returns the pending profile' do
+          expect(user.password_reset_profile).to eq(pending_profile)
+        end
+      end
+
+      context 'when the pending in person profile does not have a deactivation reason' do
+        it 'returns nil' do
+          expect(user.password_reset_profile).to be_nil
+        end
+      end
+    end
   end
 
   describe '#delete_account_bullet_key' do
@@ -1680,13 +1801,32 @@ RSpec.describe User do
   end
 
   describe '#second_last_signed_in_at' do
-    it 'returns second most recent full authentication event' do
-      user = create(:user)
-      _event1 = create(:event, user: user, event_type: 'sign_in_after_2fa')
-      event2 = create(:event, user: user, event_type: 'sign_in_after_2fa')
-      _event3 = create(:event, user: user, event_type: 'sign_in_after_2fa')
+    subject(:second_last_signed_in_at) { user.second_last_signed_in_at(since: 3.months.ago) }
+    let(:user) { create(:user) }
 
-      expect(user.second_last_signed_in_at).to eq(event2.reload.created_at)
+    around do |example|
+      freeze_time { example.run }
+    end
+
+    context 'in timeframe with multiple matched sign-in events' do
+      before do
+        create(:event, user:, event_type: :sign_in_after_2fa, created_at: 1.month.ago)
+        create(:event, user:, event_type: :sign_in_after_2fa, created_at: 2.months.ago)
+        create(:event, user:, event_type: :sign_in_after_2fa, created_at: 4.months.ago)
+      end
+
+      it 'returns date of second most recent full authentication event' do
+        expect(second_last_signed_in_at).to eq(2.months.ago)
+      end
+    end
+
+    context 'in timeframe with one or fewer matched sign-in events' do
+      before do
+        create(:event, user:, event_type: :sign_in_after_2fa, created_at: 1.month.ago)
+        create(:event, user:, event_type: :sign_in_after_2fa, created_at: 4.months.ago)
+      end
+
+      it { is_expected.to be_nil }
     end
   end
 
@@ -1754,6 +1894,84 @@ RSpec.describe User do
 
     it 'returns the last signed in email address' do
       expect(user.last_sign_in_email_address).to eq(last_sign_in_email_address)
+    end
+  end
+
+  describe '#current_in_progress_in_person_enrollment_profile' do
+    let(:user) { create(:user) }
+
+    context 'when the user has a pending in-person enrollment' do
+      let!(:enrollment) { create(:in_person_enrollment, :pending, user: user) }
+
+      it 'returns the enrollments associated profile' do
+        expect(user.current_in_progress_in_person_enrollment_profile).to eq(enrollment.profile)
+      end
+    end
+
+    context 'when the user has an in_fraud_review in-person enrollment' do
+      let!(:enrollment) { create(:in_person_enrollment, :in_fraud_review, user: user) }
+
+      it 'returns the enrollments associated profile' do
+        expect(user.current_in_progress_in_person_enrollment_profile).to eq(enrollment.profile)
+      end
+    end
+
+    context 'when the user has an in_fraud_review and in_fraud_review in-person enrollment' do
+      let!(:pending_enrollment) { create(:in_person_enrollment, :pending, user: user) }
+      let!(:fraud_enrollment) { create(:in_person_enrollment, :in_fraud_review, user: user) }
+
+      context 'when the pending enrollment was created more recently' do
+        before do
+          pending_enrollment.update(created_at: Time.zone.now)
+        end
+
+        it "returns the pending enrollment's associated profile" do
+          expect(user.current_in_progress_in_person_enrollment_profile).to eq(
+            pending_enrollment.profile,
+          )
+        end
+      end
+
+      context 'when the in_fraud_review enrollment was created more recently' do
+        before do
+          fraud_enrollment.update(created_at: Time.zone.now)
+        end
+
+        it "returns the in_fraud_review enrollment's associated profile" do
+          expect(user.current_in_progress_in_person_enrollment_profile).to eq(
+            fraud_enrollment.profile,
+          )
+        end
+      end
+    end
+  end
+
+  describe '#has_proofed_before' do
+    context 'when a user has not proofed before' do
+      let(:user) { create(:user) }
+
+      it 'returns false' do
+        expect(user.has_proofed_before?).to be false
+      end
+    end
+
+    context 'when a user has proofed before' do
+      let(:user) { create(:user, :proofed) }
+      context 'when an active profile' do
+        it 'returns false' do
+          expect(user.has_proofed_before?).to be true
+        end
+      end
+
+      context 'when a user has a deactivated profile' do
+        before do
+          user.profiles.first.update(active: false)
+        end
+
+        it 'returns false' do
+          expect(user.has_proofed_before?).to be true
+        end
+      end
     end
   end
 end

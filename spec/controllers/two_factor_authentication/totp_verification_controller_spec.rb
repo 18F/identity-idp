@@ -3,6 +3,7 @@ require 'rails_helper'
 RSpec.describe TwoFactorAuthentication::TotpVerificationController do
   before do
     stub_analytics
+    stub_attempts_tracker
   end
 
   describe '#create' do
@@ -43,6 +44,12 @@ RSpec.describe TwoFactorAuthentication::TotpVerificationController do
 
       it 'tracks the valid authentication event' do
         cfg = controller.current_user.auth_app_configurations.first
+        expect(@attempts_api_tracker).to receive(:mfa_login_auth_submitted).with(
+          mfa_device_type: 'totp',
+          success: true,
+          failure_reason: nil,
+          reauthentication: false,
+        )
 
         expect(controller).to receive(:handle_valid_verification_for_authentication_context)
           .with(auth_method: TwoFactorAuthenticatable::AuthMethod::TOTP)
@@ -53,7 +60,6 @@ RSpec.describe TwoFactorAuthentication::TotpVerificationController do
         expect(@analytics).to have_logged_event(
           'Multi-Factor Authentication',
           success: true,
-          errors: {},
           enabled_mfa_methods_count: 2,
           multi_factor_auth_method: 'totp',
           multi_factor_auth_method_created_at: cfg.created_at.strftime('%s%L'),
@@ -74,6 +80,13 @@ RSpec.describe TwoFactorAuthentication::TotpVerificationController do
 
         it 'tracks new device value' do
           stub_analytics
+          stub_attempts_tracker
+          expect(@attempts_api_tracker).to receive(:mfa_login_auth_submitted).with(
+            mfa_device_type: 'totp',
+            success: true,
+            failure_reason: nil,
+            reauthentication: false,
+          )
 
           post :create, params: { code: generate_totp_code(@secret) }
 
@@ -155,32 +168,86 @@ RSpec.describe TwoFactorAuthentication::TotpVerificationController do
     end
 
     context 'when the user has reached the max number of TOTP attempts' do
-      it 'tracks the event' do
-        user = create(
+      let(:user) do
+        create(
           :user,
           :fully_registered,
           second_factor_attempts_count:
             IdentityConfig.store.login_otp_confirmation_max_attempts - 1,
         )
+      end
+      before do
         sign_in_before_2fa(user)
         @secret = user.generate_totp_secret
         Db::AuthAppConfiguration.create(user, @secret, nil, 'foo')
+        stub_attempts_tracker
+      end
 
-        expect(PushNotification::HttpPush).to receive(:deliver)
-          .with(PushNotification::MfaLimitAccountLockedEvent.new(user: subject.current_user))
+      context 'with authentication context' do
+        it 'tracks the event' do
+          expect(@attempts_api_tracker).to receive(:mfa_login_auth_submitted).with(
+            mfa_device_type: 'totp',
+            success: false,
+            failure_reason: nil,
+            reauthentication: false,
+          )
 
-        post :create, params: { code: '12345' }
+          expect(@attempts_api_tracker).to receive(:mfa_submission_code_rate_limited).with(
+            mfa_device_type: 'totp',
+          )
 
-        expect(@analytics).to have_logged_event(
-          'Multi-Factor Authentication',
-          success: false,
-          errors: {},
-          enabled_mfa_methods_count: 2,
-          multi_factor_auth_method: 'totp',
-          new_device: true,
-          attempts: 1,
-        )
-        expect(@analytics).to have_logged_event('Multi-Factor Authentication: max attempts reached')
+          expect(PushNotification::HttpPush).to receive(:deliver)
+            .with(PushNotification::MfaLimitAccountLockedEvent.new(user: subject.current_user))
+
+          post :create, params: { code: '12345' }
+
+          expect(@analytics).to have_logged_event(
+            'Multi-Factor Authentication',
+            success: false,
+            enabled_mfa_methods_count: 2,
+            multi_factor_auth_method: 'totp',
+            new_device: true,
+            attempts: 1,
+          )
+          expect(@analytics).to have_logged_event(
+            'Multi-Factor Authentication: max attempts reached',
+          )
+        end
+      end
+
+      context 'with confirmation context' do
+        before do
+          allow(UserSessionContext).to receive(:confirmation_context?).and_return true
+        end
+
+        it 'tracks the max attempts event' do
+          expect(@attempts_api_tracker).to receive(:mfa_login_auth_submitted).with(
+            mfa_device_type: 'totp',
+            success: false,
+            failure_reason: nil,
+            reauthentication: false,
+          )
+
+          expect(@attempts_api_tracker).to receive(:mfa_enroll_code_rate_limited).with(
+            mfa_device_type: 'totp',
+          )
+          expect(PushNotification::HttpPush).to receive(:deliver)
+            .with(PushNotification::MfaLimitAccountLockedEvent.new(user: subject.current_user))
+
+          post :create, params: { code: '12345' }
+
+          expect(@analytics).to have_logged_event(
+            'Multi-Factor Authentication',
+            success: false,
+            enabled_mfa_methods_count: 2,
+            multi_factor_auth_method: 'totp',
+            new_device: true,
+            attempts: 1,
+          )
+          expect(@analytics).to have_logged_event(
+            'Multi-Factor Authentication: max attempts reached',
+          )
+        end
       end
     end
 
@@ -279,6 +346,30 @@ RSpec.describe TwoFactorAuthentication::TotpVerificationController do
 
         expect(assigns(:presenter)).to be_present
         expect(assigns(:code)).not_to be_present
+      end
+
+      context 'when there is a sign_in_recaptcha_assessment_id in the session' do
+        let(:assessment_id) { 'projects/project-id/assessments/assessment-id' }
+
+        it 'annotates the assessment with INITIATED_TWO_FACTOR and logs the annotation' do
+          recaptcha_annotation = {
+            assessment_id:,
+            reason: RecaptchaAnnotator::AnnotationReasons::INITIATED_TWO_FACTOR,
+          }
+
+          controller.session[:sign_in_recaptcha_assessment_id] = assessment_id
+
+          expect(RecaptchaAnnotator).to receive(:annotate)
+            .with(**recaptcha_annotation)
+            .and_return(recaptcha_annotation)
+
+          get :show
+
+          expect(@analytics).to have_logged_event(
+            'Multi-Factor Authentication: enter TOTP visited',
+            hash_including(recaptcha_annotation:),
+          )
+        end
       end
 
       context 'when FeatureManagement.prefill_otp_codes? is true' do

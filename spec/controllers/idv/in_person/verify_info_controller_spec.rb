@@ -1,6 +1,9 @@
 require 'rails_helper'
 
 RSpec.describe Idv::InPerson::VerifyInfoController do
+  include FlowPolicyHelper
+  include AbTestsHelper
+
   let(:pii_from_user) { Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID.dup }
   let(:flow_session) do
     { pii_from_user: pii_from_user }
@@ -8,13 +11,19 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
 
   let(:user) { create(:user, :with_phone, with: { phone: '+1 (415) 555-0130' }) }
   let(:service_provider) { create(:service_provider) }
+  let(:enrollment) { InPersonEnrollment.new }
 
   before do
+    stub_analytics
+    stub_attempts_tracker
     stub_sign_in(user)
     subject.idv_session.flow_path = 'standard'
     subject.idv_session.ssn = Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID[:ssn]
     subject.idv_session.idv_consent_given_at = Time.zone.now.to_s
     subject.user_session['idv/in_person'] = flow_session
+    stub_up_to(:ipp_ssn, idv_session: subject.idv_session)
+    reload_ab_tests
+    allow(user).to receive(:has_establishing_in_person_enrollment?).and_return(true)
   end
 
   describe '#step_info' do
@@ -69,23 +78,12 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
       )
     end
 
-    it 'confirms ssn step complete' do
+    it 'confirms the verify info step is allowed' do
       expect(subject).to have_actions(
         :before,
-        :confirm_ssn_step_complete,
+        :confirm_step_allowed,
       )
     end
-
-    it 'confirms idv/in_person data is present' do
-      expect(subject).to have_actions(
-        :before,
-        :confirm_pii_data_present,
-      )
-    end
-  end
-
-  before do
-    stub_analytics
   end
 
   describe '#show' do
@@ -117,6 +115,9 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
       end
 
       it 'redirects to rate limited url' do
+        expect(@attempts_api_tracker).to receive(:idv_rate_limited).with(
+          limiter_type: :idv_resolution,
+        )
         get :show
 
         expect(response).to redirect_to idv_session_errors_failure_url
@@ -180,7 +181,7 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
 
       it 'logs the edit distance between SSNs' do
         controller.idv_session.ssn = Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn]
-        controller.idv_session.previous_ssn = '900-66-1256'
+        controller.idv_session.previous_ssn = '900661256'
 
         get :show
 
@@ -242,12 +243,14 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
 
     context 'when idv/in_person data is missing' do
       before do
+        stub_up_to(:ipp_verify_info, idv_session: subject.idv_session)
         subject.user_session['idv/in_person'] = {}
+        subject.idv_session.opted_in_to_in_person_proofing = true
       end
 
-      it 'redirects to idv_path' do
+      it 'redirects to the in person state id page' do
         get :show
-        expect(response).to redirect_to(idv_path)
+        expect(response).to redirect_to(idv_in_person_state_id_path)
       end
     end
 
@@ -260,6 +263,8 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
 
       let(:residential_resolution_vendor_name) { 'ResidentialResolutionVendor' }
 
+      let(:phone_result) { {} }
+
       let(:async_state) do
         # Here we're trying to match the store to redis -> read from redis flow this data travels
         adjudicated_result = Proofing::Resolution::ResultAdjudicator.new(
@@ -271,6 +276,7 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
             transaction_id: 'abc123',
             verified_attributes: [],
           ),
+          phone_result:,
           device_profiling_result: Proofing::DdpResult.new(success: true),
           ipp_enrollment_in_progress: true,
           residential_resolution_result: Proofing::Resolution::Result.new(
@@ -284,6 +290,7 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
           same_address_as_id: true,
           should_proof_state_id: true,
           applicant_pii: Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN,
+          precheck_phone_number: subject.idv_session.precheck_phone&.dig(:phone),
         ).adjudicated_result.to_h
 
         document_capture_session.create_proofing_session
@@ -300,6 +307,7 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
       it 'sets resolution_vendor on idv_session' do
         get :show
         expect(controller.idv_session.resolution_vendor).to eql(resolution_vendor_name)
+        expect(response).to redirect_to(idv_phone_url)
       end
 
       it 'sets residential_resolution_vendor on idv_session' do
@@ -307,6 +315,81 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
         expect(controller.idv_session.residential_resolution_vendor).to(
           eql(residential_resolution_vendor_name),
         )
+        expect(response).to redirect_to(idv_phone_url)
+      end
+
+      context 'when phone precheck' do
+        let(:phone_result) do
+          Proofing::AddressResult.new(
+            success: true,
+            errors: {},
+            exception: nil,
+            vendor_name: 'test-phone-vendor',
+          ).to_h
+        end
+
+        before do
+          allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
+          allow(IdentityConfig.store).to receive(:in_person_send_proofing_notifications_enabled)
+            .and_return(true)
+          allow(user).to receive(:establishing_in_person_enrollment).and_return(enrollment)
+          subject.idv_session.opted_in_to_in_person_proofing = true
+          subject.idv_session.precheck_phone = { phone: '+1 202-555-1212' }
+        end
+
+        it 'sets resolution_vendor on idv_session' do
+          expect(enrollment.notification_phone_configuration).to be_nil
+          get :show
+
+          expect(response).to redirect_to(idv_enter_password_url)
+          expect(enrollment.notification_phone_configuration).not_to be_nil
+        end
+
+        context 'when both phone vendors proof' do
+          let(:phone_result) do
+            alternate_result = Proofing::AddressResult.new(
+              success: false,
+              errors: {},
+              exception: nil,
+              vendor_name: 'failed-phone-vendor',
+            ).to_h
+            Proofing::AddressResult.new(
+              success: true,
+              errors: {},
+              exception: nil,
+              vendor_name: 'succesful-phone-vendor',
+            ).to_h.merge(alternate_result:)
+          end
+
+          it 'sets resolution_vendor on idv_session' do
+            get :show
+
+            expect(response).to redirect_to(idv_enter_password_url)
+          end
+
+          context 'when both vendors unsuccesful' do
+            let(:phone_result) do
+              alternate_result = Proofing::AddressResult.new(
+                success: false,
+                errors: {},
+                exception: nil,
+                vendor_name: 'failed-phone-vendor',
+              ).to_h
+              Proofing::AddressResult.new(
+                success: false,
+                errors: {},
+                exception: nil,
+                vendor_name: 'also-failed-phone-vendor',
+              ).to_h.merge(alternate_result:)
+            end
+
+            it 'sets resolution_vendor on idv_session' do
+              get :show
+
+              expect(response).to redirect_to(idv_phone_url)
+            end
+          end
+        end
       end
     end
   end
@@ -319,7 +402,6 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
     end
 
     let(:pii_from_user) { Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS.dup }
-    let(:enrollment) { InPersonEnrollment.new }
     before do
       allow(user).to receive(:establishing_in_person_enrollment).and_return(enrollment)
     end
@@ -345,11 +427,11 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
           .with(
             kind_of(DocumentCaptureSession),
             trace_id: subject.send(:amzn_trace_id),
-            threatmetrix_session_id: nil,
-            user_id: anything,
+            threatmetrix_session_id: 'a-random-session-id',
             request_ip: request.remote_ip,
             ipp_enrollment_in_progress: false,
-            proofing_components: Idv::ProofingComponents,
+            proofing_vendor: :mock,
+            state_id_already_proofed: false,
           )
 
         put :update
@@ -357,15 +439,20 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
     end
 
     context 'a user does have an establishing in person enrollment associated with them' do
+      before do
+        subject.idv_session.send(:user_session)['idv/in_person'] = {
+          pii_from_user: Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS,
+        }
+      end
       it 'indicates to the IDV agent that ipp_enrollment_in_progress is enabled' do
         expect_any_instance_of(Idv::Agent).to receive(:proof_resolution).with(
           kind_of(DocumentCaptureSession),
           trace_id: anything,
           threatmetrix_session_id: anything,
-          user_id: anything,
           request_ip: anything,
           ipp_enrollment_in_progress: true,
-          proofing_components: Idv::ProofingComponents,
+          proofing_vendor: :mock,
+          state_id_already_proofed: false,
         )
 
         put :update
@@ -390,11 +477,11 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
         .with(
           kind_of(DocumentCaptureSession),
           trace_id: subject.send(:amzn_trace_id),
-          threatmetrix_session_id: nil,
-          user_id: anything,
+          threatmetrix_session_id: 'a-random-session-id',
           request_ip: request.remote_ip,
           ipp_enrollment_in_progress: true,
-          proofing_components: Idv::ProofingComponents,
+          proofing_vendor: :mock,
+          state_id_already_proofed: false,
         )
 
       put :update
@@ -446,6 +533,96 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
       expect(subject).to receive(:clear_future_steps!)
 
       put :update
+    end
+
+    context '#proofing_vendor' do
+      let(:idv_resolution_vendor_instant_verify_percent) { 100 }
+      let(:idv_resolution_vendor_socure_kyc_percent) { 0 }
+      let(:idv_resolution_vendor_switching_enabled) { false }
+      before do
+        allow(IdentityConfig.store).to receive(:idv_resolution_default_vendor)
+          .and_return(:default_vendor)
+        allow(IdentityConfig.store).to receive(:idv_resolution_vendor_instant_verify_percent)
+          .and_return(idv_resolution_vendor_instant_verify_percent)
+        allow(IdentityConfig.store).to receive(:idv_resolution_vendor_socure_kyc_percent)
+          .and_return(idv_resolution_vendor_socure_kyc_percent)
+        allow(IdentityConfig.store).to receive(:idv_resolution_vendor_switching_enabled)
+          .and_return(idv_resolution_vendor_switching_enabled)
+        reload_ab_tests
+      end
+
+      it 'returns default vendor' do
+        expect_any_instance_of(Idv::Agent).to receive(:proof_resolution)
+          .with(
+            kind_of(DocumentCaptureSession),
+            trace_id: subject.send(:amzn_trace_id),
+            threatmetrix_session_id: 'a-random-session-id',
+            request_ip: request.remote_ip,
+            ipp_enrollment_in_progress: true,
+            proofing_vendor: :default_vendor,
+            state_id_already_proofed: false,
+          )
+
+        put :update
+      end
+
+      context 'idv_resolution_vendor_switching_enabled is enabled' do
+        let(:idv_resolution_vendor_switching_enabled) { true }
+
+        it 'returns instant verify' do
+          expect_any_instance_of(Idv::Agent).to receive(:proof_resolution)
+            .with(
+              kind_of(DocumentCaptureSession),
+              trace_id: subject.send(:amzn_trace_id),
+              threatmetrix_session_id: 'a-random-session-id',
+              request_ip: request.remote_ip,
+              ipp_enrollment_in_progress: true,
+              proofing_vendor: :instant_verify,
+              state_id_already_proofed: false,
+            )
+
+          put :update
+        end
+
+        context 'socure is 100%' do
+          let(:idv_resolution_vendor_instant_verify_percent) { 0 }
+          let(:idv_resolution_vendor_socure_kyc_percent) { 100 }
+
+          it 'returns socure_kyc' do
+            expect_any_instance_of(Idv::Agent).to receive(:proof_resolution)
+              .with(
+                kind_of(DocumentCaptureSession),
+                trace_id: subject.send(:amzn_trace_id),
+                threatmetrix_session_id: 'a-random-session-id',
+                request_ip: request.remote_ip,
+                ipp_enrollment_in_progress: true,
+                proofing_vendor: :socure_kyc,
+                state_id_already_proofed: false,
+              )
+
+            put :update
+          end
+        end
+      end
+    end
+  end
+
+  context 'when proofing_device_profiling is enabled' do
+    before do
+      allow(user).to receive(:establishing_in_person_enrollment).and_return(enrollment)
+      allow(IdentityConfig.store).to receive(:proofing_device_profiling).and_return(:enabled)
+      subject.idv_session.opted_in_to_in_person_proofing = true
+    end
+
+    context 'when idv_session is missing threatmetrix_session_id' do
+      before do
+        subject.idv_session.threatmetrix_session_id = nil
+      end
+
+      it 'redirects back to the SSN step' do
+        get :show
+        expect(response).to redirect_to(idv_in_person_ssn_url)
+      end
     end
   end
 end

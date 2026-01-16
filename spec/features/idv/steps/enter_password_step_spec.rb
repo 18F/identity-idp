@@ -96,6 +96,7 @@ RSpec.feature 'idv enter password step', :js do
       visit(idv_hybrid_handoff_url(redo: true))
       expect(page).to have_current_path(idv_hybrid_handoff_path(redo: true))
       complete_hybrid_handoff_step
+      complete_choose_id_type_step
       complete_document_capture_step
       complete_ssn_step
       complete_verify_step

@@ -11,7 +11,7 @@ RSpec.describe 'two_factor_authentication/options/index.html.erb' do
 
   before do
     allow(view).to receive(:user_session).and_return({})
-    allow(view).to receive(:current_user).and_return(User.new)
+    allow(view).to receive(:current_user).and_return(user)
 
     @presenter = TwoFactorLoginOptionsPresenter.new(
       user:,
@@ -54,6 +54,7 @@ RSpec.describe 'two_factor_authentication/options/index.html.erb' do
   end
 
   context 'phone vendor outage' do
+    let(:user) { User.new }
     before do
       create(:phone_configuration, user: user, phone: '(202) 555-1111')
       allow_any_instance_of(OutageStatus).to receive(:vendor_outage?).and_return(false)
@@ -90,6 +91,19 @@ RSpec.describe 'two_factor_authentication/options/index.html.erb' do
   end
 
   context 'with phishing resistant required' do
+    let(:user) do
+      create(
+        :user,
+        :fully_registered,
+        :with_webauthn,
+        :with_webauthn_platform,
+        :with_phone,
+        :with_piv_or_cac,
+        :with_personal_key,
+        :with_backup_code,
+        :with_authentication_app,
+      )
+    end
     let(:phishing_resistant_required) { true }
 
     it 'displays warning text' do
@@ -103,6 +117,19 @@ RSpec.describe 'two_factor_authentication/options/index.html.erb' do
   end
 
   context 'with piv cac required' do
+    let(:user) do
+      create(
+        :user,
+        :fully_registered,
+        :with_webauthn,
+        :with_webauthn_platform,
+        :with_phone,
+        :with_piv_or_cac,
+        :with_personal_key,
+        :with_backup_code,
+        :with_authentication_app,
+      )
+    end
     let(:piv_cac_required) { true }
 
     it 'displays warning text' do

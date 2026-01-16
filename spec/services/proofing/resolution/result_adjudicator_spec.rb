@@ -27,6 +27,14 @@ RSpec.describe Proofing::Resolution::ResultAdjudicator do
       verified_attributes: state_id_verified_attributes,
     )
   end
+  let(:phone_result) do
+    Proofing::AddressResult.new(
+      success: true,
+      errors: {},
+      exception: nil,
+      vendor_name: 'test-phone-vendor',
+    ).to_h
+  end
 
   let(:should_proof_state_id) { true }
   let(:ipp_enrollment_in_progress) { true }
@@ -54,8 +62,10 @@ RSpec.describe Proofing::Resolution::ResultAdjudicator do
       should_proof_state_id: should_proof_state_id,
       ipp_enrollment_in_progress: ipp_enrollment_in_progress,
       device_profiling_result: device_profiling_result,
+      phone_result:,
       same_address_as_id: same_address_as_id,
       applicant_pii: applicant_pii,
+      precheck_phone_number: phone_result.empty? ? nil : '202-555-5555',
     )
   end
 
@@ -108,6 +118,11 @@ RSpec.describe Proofing::Resolution::ResultAdjudicator do
             state_id_jurisdiction: 'ND',
             state_id_number: '#############',
             same_address_as_id: nil,
+            phone: {
+              area_code: '202',
+              country_code: 'US',
+              phone_fingerprint: Pii::Fingerprinter.fingerprint(Phonelib.parse('2025555555').e164),
+            },
           )
         end
       end
@@ -125,6 +140,11 @@ RSpec.describe Proofing::Resolution::ResultAdjudicator do
             state_id_jurisdiction: 'ND',
             state_id_number: '#############',
             same_address_as_id: 'true',
+            phone: {
+              area_code: '202',
+              country_code: 'US',
+              phone_fingerprint: Pii::Fingerprinter.fingerprint(Phonelib.parse('2025555555').e164),
+            },
           )
         end
       end

@@ -16,22 +16,13 @@ RSpec.describe InPerson::EmailReminderJob do
       let!(:failing_enrollment) { create(:in_person_enrollment, :failed) }
       let!(:expired_enrollment) { create(:in_person_enrollment, :expired) }
       let!(:pending_enrollment_needing_late_reminder) do
-        create(:in_person_enrollment, :pending, enrollment_established_at: Time.zone.now - 26.days)
-      end
-      let!(:pending_enrollment_needing_early_reminder) do
-        create(:in_person_enrollment, :pending, enrollment_established_at: Time.zone.now - 19.days)
+        create(:in_person_enrollment, :pending, enrollment_established_at: Time.zone.now - 3.days)
       end
 
       let!(:pending_enrollment_received_late_reminder) do
         create(
-          :in_person_enrollment, :pending, enrollment_established_at: Time.zone.now - 26.days,
+          :in_person_enrollment, :pending, enrollment_established_at: Time.zone.now - 3.days,
                                            late_reminder_sent: true
-        )
-      end
-      let!(:pending_enrollment_received_early_reminder) do
-        create(
-          :in_person_enrollment, :pending, enrollment_established_at: Time.zone.now - 19.days,
-                                           early_reminder_sent: true
         )
       end
 
@@ -71,41 +62,11 @@ RSpec.describe InPerson::EmailReminderJob do
           expect(pending_enrollment_received_late_reminder.late_reminder_sent).to be_truthy
         end
       end
-
-      context 'early email reminder' do
-        it 'queues emails for enrollments that need the early email reminder sent' do
-          user = pending_enrollment_needing_early_reminder.user
-          expect do
-            job.perform(Time.zone.now)
-          end.to have_enqueued_mail(UserMailer, :in_person_ready_to_verify_reminder).with(
-            params: { user: user, email_address: user.email_addresses.first },
-            args: [{ enrollment: pending_enrollment_needing_early_reminder }],
-          )
-          pending_enrollment_needing_early_reminder.reload
-          expect(pending_enrollment_needing_early_reminder.early_reminder_sent).to be_truthy
-          expect(job_analytics).to have_logged_event(
-            'InPerson::EmailReminderJob: Reminder email initiated',
-            email_type: 'early',
-            enrollment_id: pending_enrollment_needing_early_reminder.id,
-          )
-        end
-
-        it 'does not queue emails for enrollments that had early email reminder sent' do
-          user = pending_enrollment_received_early_reminder.user
-          expect do
-            job.perform(Time.zone.now)
-          end.not_to have_enqueued_mail(UserMailer, :in_person_ready_to_verify_reminder).with(
-            params: { user: user, email_address: user.email_addresses.first },
-            args: [{ enrollment: pending_enrollment_received_early_reminder }],
-          )
-          expect(pending_enrollment_received_early_reminder.early_reminder_sent).to be_truthy
-        end
-      end
     end
 
     context 'with one eligible enrollment' do
       let!(:pending_enrollment_needing_late_reminder) do
-        create(:in_person_enrollment, :pending, enrollment_established_at: Time.zone.now - 26.days)
+        create(:in_person_enrollment, :pending, enrollment_established_at: Time.zone.now - 3.days)
       end
 
       context 'an error is raised when sending an email' do

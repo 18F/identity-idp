@@ -39,6 +39,10 @@ class DataPull
 
         * #{basename} ig-request uuid1 uuid2 --requesting-issuer=ABC:DEF:GHI
 
+        * #{basename} mfa-report uuid1 uuid2
+
+        * #{basename} ssn-signature-report ssn1
+
         * #{basename} profile-summary uuid1 uuid2
 
         * #{basename} uuid-convert partner-uuid1 partner-uuid2
@@ -46,6 +50,8 @@ class DataPull
         * #{basename} uuid-export uuid1 uuid2 --requesting-issuer=ABC:DEF:GHI
 
         * #{basename} uuid-lookup email1@example.com email2@example.com
+
+        * #{basename} duplicate-profile-lookup email1@example.com email2@example.com
       Options:
     EOS
   end
@@ -59,10 +65,13 @@ class DataPull
       'email-lookup' => EmailLookup,
       'events-summary' => EventsSummary,
       'ig-request' => InspectorGeneralRequest,
+      'mfa-report' => MfaReport,
+      'ssn-signature-report' => SsnSignatureReport,
       'profile-summary' => ProfileSummary,
       'uuid-convert' => UuidConvert,
       'uuid-export' => UuidExport,
       'uuid-lookup' => UuidLookup,
+      'duplicate-profile-lookup' => DuplicateProfileLookup,
     }[name]
   end
 
@@ -156,11 +165,107 @@ class DataPull
     end
   end
 
+  class MfaReport
+    def run(args:, config:)
+      require 'data_requests/deployed'
+      uuids = args
+
+      users, missing_uuids = uuids.map do |uuid|
+        DataRequests::Deployed::LookupUserByUuid.new(uuid).call || uuid
+      end.partition { |u| u.is_a?(User) }
+
+      output = users.map do |user|
+        output = DataRequests::Deployed::CreateMfaConfigurationsReport.new(user).call
+        output[:uuid] = user.uuid
+
+        output
+      end
+
+      if config.include_missing?
+        output += missing_uuids.map do |uuid|
+          {
+            uuid: uuid,
+            phone_configurations: [],
+            auth_app_configurations: [],
+            webauthn_configurations: [],
+            piv_cac_configurations: [],
+            backup_code_configurations: [],
+            not_found: true,
+          }
+        end
+      end
+
+      ScriptBase::Result.new(
+        subtask: 'mfa-report',
+        uuids: uuids,
+        json: output,
+      )
+    end
+  end
+
+  class SsnSignatureReport
+    def run(args:, config:)
+      require 'data_requests/deployed'
+      ssns = args
+
+      ssn_finders = ssns.map { |ssn| Idv::DuplicateSsnFinder.new(user: nil, ssn: ssn) }
+      ssn_signatures = ssn_finders.flat_map do |ssn_finder|
+        ssn_finder.ssn_signatures
+      end
+
+      profiles = Profile.where(ssn_signature: ssn_signatures).includes(:user)
+
+      table = []
+      table << %w[
+        uuid
+        profile_id
+        status
+        ssn_signature
+        idv_level
+        activated_timestamp
+        disabled_reason
+        gpo_verification_pending_timestamp
+        fraud_review_pending_timestamp
+        fraud_rejection_timestamp
+      ]
+
+      if profiles.any?
+        profiles.each do |profile|
+          table << [
+            profile.user.uuid,
+            profile.id,
+            profile.active ? 'active' : 'inactive',
+            profile.ssn_signature,
+            profile.idv_level,
+            profile.activated_at,
+            profile.deactivation_reason,
+            profile.gpo_verification_pending_at,
+            profile.fraud_review_pending_at,
+            profile.fraud_rejection_at,
+          ]
+        end
+      else
+        config.include_missing?
+        table << ['[NO PROFILES]', nil, nil, nil, nil, nil, nil, nil, nil, nil]
+      end
+
+      ScriptBase::Result.new(
+        subtask: 'ssn-signature-report',
+        uuids: profiles.map(&:user).map(&:uuid).uniq,
+        table:,
+      )
+    end
+  end
+
   class InspectorGeneralRequest
     def run(args:, config:)
       require 'data_requests/deployed'
       ActiveRecord::Base.connection.execute('SET statement_timeout = 0')
       uuids = args
+
+      if config.depth.nil?
+        raise 'Required argument --depth is missing'
+      end
 
       requesting_issuers =
         config.requesting_issuers.presence || compute_requesting_issuers(uuids)
@@ -170,7 +275,7 @@ class DataPull
       end.partition { |u| u.is_a?(User) }
 
       shared_device_users =
-        if config.depth && config.depth > 0
+        if config.depth > 0
           DataRequests::Deployed::LookupSharedDeviceUsers.new(users, config.depth).call
         else
           users
@@ -235,6 +340,7 @@ class DataPull
         uuid
         profile_id
         status
+        idv_level
         activated_timestamp
         disabled_reason
         gpo_verification_pending_timestamp
@@ -249,6 +355,7 @@ class DataPull
               user.uuid,
               profile.id,
               profile.active ? 'active' : 'inactive',
+              profile.idv_level,
               profile.activated_at,
               profile.deactivation_reason,
               profile.gpo_verification_pending_at,
@@ -257,13 +364,13 @@ class DataPull
             ]
           end
         elsif config.include_missing?
-          table << [user.uuid, '[HAS NO PROFILE]', nil, nil, nil, nil, nil, nil]
+          table << [user.uuid, '[HAS NO PROFILE]', nil, nil, nil, nil, nil, nil, nil]
         end
       end
 
       if config.include_missing?
         (uuids - users.map(&:uuid)).each do |missing_uuid|
-          table << [missing_uuid, '[UUID NOT FOUND]', nil, nil, nil, nil, nil, nil]
+          table << [missing_uuid, '[UUID NOT FOUND]', nil, nil, nil, nil, nil, nil, nil]
         end
       end
 
@@ -364,6 +471,62 @@ class DataPull
         uuids: found_uuids,
         table:,
       )
+    end
+  end
+
+  class DuplicateProfileLookup
+    def run(args:, config:)
+      emails = args
+
+      table = []
+      table << %w[email uuid service_provider duplicate_uuids]
+
+      uuids = []
+
+      emails.each do |email|
+        user = User.find_with_email(email)
+        if user
+          duplicate_profile_sets = find_duplicates(user)
+          if duplicate_profile_sets.present?
+            uuids << user.uuid
+            duplicate_profile_sets.each do |duplicate_profile_set|
+              duplicate_profile_ids = duplicate_profile_set.profile_ids - [user.active_profile.id]
+              duplicate_uuids = user_uuids(duplicate_profile_ids)
+              if duplicate_uuids.present?
+                table << [email, user.uuid, duplicate_profile_set.service_provider, duplicate_uuids]
+              else
+                table << [email, '[DUPLICATES NOT FOUND]', nil, nil]
+              end
+            end
+          else
+            table << [email, '[DUPLICATES NOT FOUND]', nil, nil]
+          end
+        elsif config.include_missing?
+          table << [email, '[EMAIL NOT FOUND]', nil, nil]
+        end
+      end
+
+      ScriptBase::Result.new(
+        subtask: 'duplicate-profile-lookup',
+        table:,
+        uuids:,
+      )
+    end
+
+    private
+
+    def find_duplicates(user)
+      if user.active_profile?
+        DuplicateProfileSet
+          .open
+          .where('? = ANY(profile_ids)', user.active_profile.id)
+      end
+    end
+
+    def user_uuids(profile_ids)
+      profile_ids.map do |profile_id|
+        Profile.exists?(profile_id) ? Profile.find(profile_id).user.uuid : nil
+      end.compact
     end
   end
 end

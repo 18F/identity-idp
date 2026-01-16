@@ -52,6 +52,16 @@ Rails.application.configure do
     ].each do |association|
       Bullet.add_safelist(type: :n_plus_one_query, class_name: 'User', association: association)
     end
+
+    # Eager loading of email addresses is used on the Connected Accounts page, since most accounts
+    # will share an email address that can be changed by the user. An unoptimized query error is
+    # raised by bullet if the email address is not used, but it can't be known at the time of the
+    # query whether the email addresses will be used for all connected accounts.
+    Bullet.add_safelist(
+      type: :unused_eager_loading,
+      class_name: 'ServiceProviderIdentity',
+      association: :email_address,
+    )
   end
 
   config.active_support.test_order = :random

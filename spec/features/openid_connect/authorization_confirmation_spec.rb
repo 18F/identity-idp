@@ -37,7 +37,7 @@ RSpec.feature 'OIDC Authorization Confirmation' do
         second_email = create(:email_address, user: user1)
         sign_in_user(user1, second_email.email)
         visit_idp_from_ial1_oidc_sp
-        expect(current_url).to match(user_authorization_confirmation_path)
+        expect(page).to have_current_path(user_authorization_confirmation_path)
         expect(page).to have_content shared_email
 
         continue_as(second_email.email)
@@ -50,7 +50,7 @@ RSpec.feature 'OIDC Authorization Confirmation' do
         second_email = create(:email_address, user: user1)
         sign_in_user(user1, second_email.email)
         visit_idp_from_ial1_oidc_sp
-        expect(current_url).to match(user_authorization_confirmation_path)
+        expect(page).to have_current_path(user_authorization_confirmation_path)
         expect(page).to have_content second_email.email
 
         continue_as(second_email.email)
@@ -58,22 +58,9 @@ RSpec.feature 'OIDC Authorization Confirmation' do
       end
     end
 
-    context 'when email sharing feature is enabled' do
-      before do
-        allow(IdentityConfig.store)
-          .to receive(:feature_select_email_to_share_enabled).and_return(true)
-      end
-
+    context 'sharing email with service provider' do
       it_behaves_like 'signing in with a different email prompts with the shared email'
 
-      context 'with client-side redirect' do
-        before do
-          allow(IdentityConfig.store).to receive(:openid_connect_redirect).and_return('client_side')
-        end
-
-        it_behaves_like 'signing in with a different email prompts with the shared email'
-      end
-
       context 'with client-side javascript redirect' do
         before do
           allow(IdentityConfig.store).to receive(:openid_connect_redirect)
@@ -82,38 +69,46 @@ RSpec.feature 'OIDC Authorization Confirmation' do
 
         it_behaves_like 'signing in with a different email prompts with the shared email'
       end
-    end
 
-    context 'when email sharing feature is disabled' do
-      before do
-        allow(IdentityConfig.store)
-          .to receive(:feature_select_email_to_share_enabled).and_return(false)
+      context 'with requested attributes contains only email' do
+        it ' creates an identity with proper email_address_id' do
+          user = user_with_2fa
+
+          sign_in_oidc_user(user)
+          check t('forms.messages.remember_device')
+          fill_in_code_with_last_phone_otp
+          click_submit_default
+          click_agree_and_continue
+          identity = user.identities.find_by(service_provider: OidcAuthHelper::OIDC_IAL1_ISSUER)
+          email_id = user.email_addresses.first.id
+          expect(identity.email_address_id).to eq(email_id)
+        end
       end
 
-      it_behaves_like 'signing in with a different email prompts with the signed in email'
+      context 'with requested attributes contains is emails and all_emails' do
+        it 'creates an identity with no email_address_id saved' do
+          user = user_with_2fa
 
-      context 'with client-side redirect' do
-        before do
-          allow(IdentityConfig.store).to receive(:openid_connect_redirect).and_return('client_side')
+          params = ial1_params
+          params[:scope] = 'openid email all_emails'
+          oidc_path = openid_connect_authorize_path params
+          visit oidc_path
+          fill_in_credentials_and_submit(user.email, user.password)
+          click_submit_default
+          check t('forms.messages.remember_device')
+          fill_in_code_with_last_phone_otp
+          click_submit_default
+          click_agree_and_continue
+          identity = user.identities.find_by(service_provider: OidcAuthHelper::OIDC_IAL1_ISSUER)
+          expect(identity.email_address_id).to eq(nil)
         end
-
-        it_behaves_like 'signing in with a different email prompts with the signed in email'
-      end
-
-      context 'with client-side javascript redirect' do
-        before do
-          allow(IdentityConfig.store).to receive(:openid_connect_redirect)
-            .and_return('client_side_js')
-        end
-
-        it_behaves_like 'signing in with a different email prompts with the signed in email'
       end
     end
 
     it 'it allows the user to switch accounts prior to continuing to the SP' do
       sign_in_user(user1)
       visit_idp_from_ial1_oidc_sp
-      expect(current_url).to match(user_authorization_confirmation_path)
+      expect(page).to have_current_path(user_authorization_confirmation_path)
 
       continue_as(user2.email, user2.password)
 
@@ -122,6 +117,44 @@ RSpec.feature 'OIDC Authorization Confirmation' do
       click_submit_default
 
       expect(oidc_redirect_url).to match('http://localhost:7654/auth/result')
+    end
+
+    it 'does not show "continue to SP" on account page if user has already been redirected to SP' do
+      sign_in_user(user1)
+      visit_idp_from_ial1_oidc_sp
+
+      expect(page).to have_current_path(user_authorization_confirmation_path)
+
+      click_button t('user_authorization_confirmation.sign_in')
+      visit account_path
+
+      identity = user1.identities.find_by(service_provider: OidcAuthHelper::OIDC_IAL1_ISSUER)
+
+      expect(page).to_not have_content(
+        t(
+          'account.index.continue_to_service_provider',
+          service_provider: identity.display_name,
+        ),
+      )
+    end
+
+    context 'when a user has not yet been redirected to SP' do
+      it 'shows "continue to SP" on account page' do
+        sign_in_user(user1)
+        visit_idp_from_ial1_oidc_sp
+
+        expect(page).to have_current_path(user_authorization_confirmation_path)
+        visit account_path
+
+        identity = user1.identities.find_by(service_provider: OidcAuthHelper::OIDC_IAL1_ISSUER)
+
+        expect(page).to have_content(
+          t(
+            'account.index.continue_to_service_provider',
+            service_provider: identity.display_name,
+          ),
+        )
+      end
     end
 
     it 'does not render the confirmation screen on a return visit to the SP by default' do

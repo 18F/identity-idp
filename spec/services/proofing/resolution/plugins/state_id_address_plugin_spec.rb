@@ -64,9 +64,7 @@ RSpec.describe Proofing::Resolution::Plugins::StateIdAddressPlugin do
       end
 
       it 'passes state id address to proofer' do
-        expect(plugin.proofer)
-          .to receive(:proof)
-          .with(hash_including(state_id_address))
+        expect(plugin.proofer).to receive(:proof).with(applicant_pii)
 
         call
       end
@@ -159,30 +157,26 @@ RSpec.describe Proofing::Resolution::Plugins::StateIdAddressPlugin do
 
       context 'residential address and id address are diferent' do
         let(:applicant_pii) { Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS }
-        let(:residential_address) do
+        let(:expected_applicant) do
           {
-            address1: applicant_pii[:address1],
-            address2: applicant_pii[:address2],
-            city: applicant_pii[:city],
-            state: applicant_pii[:state],
-            state_id_jurisdiction: applicant_pii[:state_id_jurisdiction],
-            zipcode: applicant_pii[:zipcode],
-          }
-        end
-        let(:state_id_address) do
-          {
+            **applicant_pii.except(
+              :identity_doc_address1,
+              :identity_doc_address2,
+              :identity_doc_city,
+              :identity_doc_address_state,
+              :identity_doc_zipcode,
+            ),
             address1: applicant_pii[:identity_doc_address1],
             address2: applicant_pii[:identity_doc_address2],
             city: applicant_pii[:identity_doc_city],
             state: applicant_pii[:identity_doc_address_state],
-            state_id_jurisdiction: applicant_pii[:state_id_jurisdiction],
             zipcode: applicant_pii[:identity_doc_zipcode],
           }
         end
 
         context 'LexisNexis vendor passes for residential address' do
           it 'calls the vendor Proofer with state id address' do
-            expect(plugin.proofer).to receive(:proof).with(hash_including(state_id_address))
+            expect(plugin.proofer).to receive(:proof).with(expected_applicant)
 
             call
           end

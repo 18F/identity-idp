@@ -14,17 +14,39 @@ RSpec.describe DocumentCaptureSessionResult do
         selfie_status: :success,
         pii: pii,
         attention_with_barcode: false,
+        attempt: 3,
       )
       EncryptedRedisStructStorage.store(result)
       loaded_result = EncryptedRedisStructStorage.load(id, type: DocumentCaptureSessionResult)
 
-      expect(loaded_result.id).to eq(id)
-      expect(loaded_result.success?).to eq(success)
-      expect(loaded_result.pii).to eq(pii.deep_symbolize_keys)
-      expect(loaded_result.attention_with_barcode?).to eq(false)
-      expect(loaded_result.selfie_status).to eq(:success)
-      expect(loaded_result.doc_auth_success).to eq(true)
+      expect(loaded_result).to have_attributes(
+        id:,
+        success:,
+        pii: pii.deep_symbolize_keys,
+        attention_with_barcode: false,
+        selfie_status: :success,
+        doc_auth_success: true,
+        attempt: 3,
+        aamva_status: :not_processed,
+      )
     end
+
+    it 'persists mrz_status with EncryptedRedisStructStorage' do
+      result = DocumentCaptureSessionResult.new(
+        id: id,
+        success: success,
+        doc_auth_success: success,
+        selfie_status: :success,
+        mrz_status: :pass,
+        pii: pii,
+        attention_with_barcode: false,
+      )
+      EncryptedRedisStructStorage.store(result)
+      loaded_result = EncryptedRedisStructStorage.load(id, type: DocumentCaptureSessionResult)
+
+      expect(loaded_result.mrz_status).to eq(:pass)
+    end
+
     it 'add fingerprint with EncryptedRedisStructStorage' do
       result = DocumentCaptureSessionResult.new(
         id: id,
@@ -39,6 +61,7 @@ RSpec.describe DocumentCaptureSessionResult do
       expect(result.failed_front_image?(nil)).to eq(false)
       expect(result.failed_back_image?(nil)).to eq(false)
     end
+
     describe '#selfie_status' do
       it 'returns a symbol' do
         result = DocumentCaptureSessionResult.new(
@@ -49,6 +72,50 @@ RSpec.describe DocumentCaptureSessionResult do
           selfie_status: 'success',
         )
         expect(result.selfie_status).to be_an_instance_of(Symbol)
+      end
+    end
+
+    describe '#mrz_status' do
+      it 'returns a symbol when present' do
+        result = DocumentCaptureSessionResult.new(
+          id: id,
+          success: success,
+          pii: pii,
+          attention_with_barcode: false,
+          mrz_status: 'pass',
+        )
+        expect(result.mrz_status).to eq(:pass)
+      end
+
+      it 'returns nil when not present' do
+        result = DocumentCaptureSessionResult.new(
+          id: id,
+          success: success,
+          pii: pii,
+          attention_with_barcode: false,
+        )
+        expect(result.mrz_status).to be_nil
+      end
+    end
+
+    describe '#aamva_status' do
+      let(:documentCaptureResult) { DocumentCaptureSessionResult.new(aamva_status: status) }
+      subject { documentCaptureResult.aamva_status }
+
+      context 'when aamva status is present' do
+        let(:status) { :passed }
+
+        it 'returns a symbol' do
+          is_expected.to be(status)
+        end
+      end
+
+      context 'when aamva status is nil' do
+        let(:status) { nil }
+
+        it 'returns nil' do
+          is_expected.to be_nil
+        end
       end
     end
 

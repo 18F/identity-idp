@@ -8,18 +8,41 @@
       ) %>
 <% end %>
 
+<div class="text-center margin-bottom-4">
+  <%= image_tag asset_url('idv/interstitial_icons.svg'), width: 207, height: 88, alt: '', class: 'display-block margin-x-auto' %>
+</div>
+
 <%= render PageHeadingComponent.new do %>
-  <%= t('doc_auth.headings.verify_with_phone') %>
+  <% if @passport_requested %>
+    <%= t('doc_auth.headings.passport_capture') %>
+  <% else %>
+    <%= t('doc_auth.headings.document_capture') %>
+  <% end %>
 <% end %>
 
-<% if decorated_sp_session.sp_name.present? %>
+<% if @passport_requested %>
+  <% if @selfie_check_required %>
+    <p>
+      <%= t('doc_auth.info.socure_passport_ial2', app_name: APP_NAME) %>
+    </p>
+  <% else %>
+    <p>
+      <%= t('doc_auth.info.socure_passport', app_name: APP_NAME) %>
+    </p>
+  <% end %>
+<% else %>
   <p>
-    <%= t('doc_auth.info.login_access_sp', app_name: APP_NAME, sp_name: decorated_sp_session.sp_name) %>
+    <%= t('doc_auth.info.socure_basic_idv', app_name: APP_NAME) %>
   </p>
 <% end %>
+
 <p>
-  <%= t('doc_auth.info.add_id_consent_with_phone', app_name: APP_NAME) %>
+<% if @passport_requested %>
+  <%= t('doc_auth.info.socure_ial2_idv_finish_passport', app_name: APP_NAME) %>
+<% else %>
+  <%= t('doc_auth.info.socure_ial2_idv_finish', app_name: APP_NAME) %>
+<% end %>
 </p>
 
-<%= link_to t('forms.buttons.continue'), @url, class: 'usa-button usa-button--big usa-button--wide' %>
+<%= link_to t('forms.buttons.continue'), @url, class: 'usa-button usa-button--big usa-button--wide margin-top-4 margin-bottom-4' %>
 <%= render 'idv/doc_auth/cancel', step: 'verify_id' %>

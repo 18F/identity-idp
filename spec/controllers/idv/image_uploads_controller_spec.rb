@@ -10,7 +10,30 @@ RSpec.describe Idv::ImageUploadsController do
   let(:state_id_number) { 'S59397998' }
   let(:user) { create(:user) }
 
+  let(:writer) { EncryptedDocStorage::DocWriter.new }
+  let(:result) do
+    EncryptedDocStorage::DocWriter::Result.new(name: 'name', encryption_key: '12345')
+  end
+  let(:doc_escrow_enabled) { false }
+
+  let(:sp) { create(:service_provider) }
+  let(:sp_session) do
+    {
+      issuer: sp.issuer,
+      acr_values: Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
+    }
+  end
+  let(:attempts_api_enabled_for_sp) { false }
+
   before do
+    stub_attempts_tracker
+    allow(EncryptedDocStorage::DocWriter).to receive(:new).and_return(writer)
+    # allow(IdentityConfig.store).to receive(:doc_escrow_enabled).and_return(doc_escrow_enabled)
+    allow(writer).to receive(:write).and_return result
+    allow(controller).to receive(:sp_session).and_return(sp_session)
+    allow(FeatureManagement).to receive(:doc_escrow_enabled?).and_return(
+      doc_escrow_enabled && attempts_api_enabled_for_sp,
+    )
     stub_sign_in(user) if user
   end
 
@@ -19,7 +42,9 @@ RSpec.describe Idv::ImageUploadsController do
       post :create, params: params
     end
 
-    let!(:document_capture_session) { user.document_capture_sessions.create!(user: user) }
+    let!(:document_capture_session) do
+      create(:document_capture_session, user:, doc_auth_vendor: 'mock')
+    end
     let(:flow_path) { 'standard' }
     let(:params) do
       {
@@ -27,6 +52,7 @@ RSpec.describe Idv::ImageUploadsController do
         front_image_metadata: '{"glare":99.99}',
         back: back_image,
         selfie: selfie_img,
+        passport: nil,
         back_image_metadata: '{"glare":99.99}',
         document_capture_session_uuid: document_capture_session.uuid,
         flow_path: flow_path,
@@ -56,6 +82,8 @@ RSpec.describe Idv::ImageUploadsController do
       it 'tracks events' do
         stub_analytics
 
+        expect(@attempts_api_tracker).not_to receive(:idv_document_upload_submitted)
+
         action
 
         expect(@analytics).not_to have_logged_event(
@@ -67,6 +95,33 @@ RSpec.describe Idv::ImageUploadsController do
         )
 
         expect_funnel_update_counts(user, 0)
+      end
+
+      context 'when document escrow is enabled' do
+        let(:doc_escrow_enabled) { true }
+        context 'when the service provider is on the attempts api allowlist' do
+          let(:attempts_api_enabled_for_sp) { true }
+          before do
+            expect(EncryptedDocStorage::DocWriter).to receive(:new).and_return(writer)
+            expect(writer).to receive(:write).and_return result
+          end
+        end
+
+        context 'when the service provider is not on the attempts api allowlist' do
+          before do
+            expect(EncryptedDocStorage::DocWriter).not_to receive(:new)
+            expect(writer).not_to receive(:write)
+          end
+
+          it 'does not upload the images' do
+            expect(@attempts_api_tracker).to receive(:idv_document_uploaded).with(
+              success: false,
+              failure_reason: { front: [:blank] },
+            )
+
+            action
+          end
+        end
       end
     end
 
@@ -95,55 +150,163 @@ RSpec.describe Idv::ImageUploadsController do
         end
       end
 
-      it 'tracks events' do
-        stub_analytics
+      context 'when the attempts_api_tracker is enabled' do
+        let(:doc_escrow_enabled) { true }
 
-        action
+        context 'when the service provider is on the attempts api allowlist' do
+          let(:attempts_api_enabled_for_sp) { true }
+          before do
+            expect(EncryptedDocStorage::DocWriter).to receive(:new).and_return(writer)
+            expect(writer).to receive(:write).with(issuer: sp.issuer, image: nil).and_call_original
+            allow(writer).to receive(:write).and_return result
+          end
 
-        expect(@analytics).to have_logged_event(
-          'IdV: doc auth image upload form submitted',
-          success: false,
-          errors: {
-            front: [I18n.t('doc_auth.errors.not_a_file')],
-          },
-          error_details: {
-            front: { not_a_file: true },
-          },
-          user_id: user.uuid,
-          submit_attempts: 1,
-          remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
-          flow_path: 'standard',
-          back_image_fingerprint: an_instance_of(String),
-          liveness_checking_required: boolean,
-        )
+          it 'tracks the event' do
+            expect(@attempts_api_tracker).to receive(:idv_document_uploaded).with(
+              success: false,
+              document_back_image_encryption_key: '12345',
+              document_back_image_file_id: 'name',
+              document_front_image_encryption_key: nil,
+              document_front_image_file_id: nil,
+              failure_reason: { front: [:not_a_file] },
+            )
 
-        expect(@analytics).not_to have_logged_event('IdV: doc auth image upload vendor submitted')
+            action
+          end
+        end
 
-        expect_funnel_update_counts(user, 0)
+        context 'when the service provider is not on the attempts api allowlist' do
+          before do
+            expect(EncryptedDocStorage::DocWriter).not_to receive(:new)
+            expect(writer).not_to receive(:write)
+          end
+
+          it 'does not upload the images' do
+            expect(@attempts_api_tracker).to receive(:idv_document_uploaded).with(
+              success: false,
+              failure_reason: { front: [:not_a_file] },
+            )
+
+            action
+          end
+        end
       end
     end
 
     context 'when document capture session is invalid' do
-      it 'returns error status when document_capture_session is not provided' do
-        params.delete(:document_capture_session_uuid)
-        action
+      context 'when document_capture_session is not provided' do
+        before { params.delete(:document_capture_session_uuid) }
 
-        expect(response.status).to eq(400)
-        expect(json[:success]).to eq(false)
-        expect(json[:errors]).to eq [
-          { field: 'document_capture_session', message: 'Please fill in this field.' },
-        ]
+        it 'returns error status when document_capture_session is not provided' do
+          action
+
+          expect(response.status).to eq(400)
+          expect(json[:success]).to eq(false)
+          expect(json[:errors]).to eq [
+            { field: 'document_capture_session', message: 'Please fill in this field.' },
+          ]
+        end
+
+        context 'when the attempts_api_tracker is enabled' do
+          let(:doc_escrow_enabled) { true }
+          before do
+            allow(writer).to receive(:write).and_return result
+          end
+
+          context 'when the service provider is on the attempts api allowlist' do
+            let(:attempts_api_enabled_for_sp) { true }
+            before do
+              expect(EncryptedDocStorage::DocWriter).to receive(:new).and_return(writer)
+              expect(writer).to receive(:write).exactly(2).times
+            end
+
+            it 'records the event' do
+              expect(@attempts_api_tracker).to receive(:idv_document_uploaded).with(
+                success: false,
+                document_back_image_encryption_key: '12345',
+                document_back_image_file_id: 'name',
+                document_front_image_encryption_key: '12345',
+                document_front_image_file_id: 'name',
+                failure_reason: { document_capture_session: [:blank] },
+              )
+
+              action
+            end
+          end
+
+          context 'when the service provider is not on the attempts api allowlist' do
+            before do
+              expect(EncryptedDocStorage::DocWriter).not_to receive(:new)
+              expect(writer).not_to receive(:write)
+            end
+            it 'does not upload the images' do
+              expect(@attempts_api_tracker).to receive(:idv_document_uploaded).with(
+                success: false,
+                failure_reason: { document_capture_session: [:blank] },
+              )
+
+              action
+            end
+          end
+        end
       end
 
-      it 'returns error status when document_capture_session is invalid' do
-        params[:document_capture_session_uuid] = 'bad uuid'
-        action
+      context 'when document_capture_session is invalid' do
+        before do
+          params[:document_capture_session_uuid] = 'bad uuid'
+        end
 
-        expect(response.status).to eq(400)
-        expect(json[:success]).to eq(false)
-        expect(json[:errors]).to eq [
-          { field: 'document_capture_session', message: 'Please fill in this field.' },
-        ]
+        it 'returns error status when document_capture_session is invalid' do
+          action
+
+          expect(response.status).to eq(400)
+          expect(json[:success]).to eq(false)
+          expect(json[:errors]).to eq [
+            { field: 'document_capture_session', message: 'Please fill in this field.' },
+          ]
+        end
+
+        context 'when the attempts_api_tracker is enabled' do
+          let(:doc_escrow_enabled) { true }
+          before do
+            allow(writer).to receive(:write).and_return result
+          end
+
+          context 'when the service provider is on the attempts api allowlist' do
+            let(:attempts_api_enabled_for_sp) { true }
+            before do
+              expect(EncryptedDocStorage::DocWriter).to receive(:new).and_return(writer)
+              expect(writer).to receive(:write).exactly(2).times
+            end
+            it 'records the event' do
+              expect(@attempts_api_tracker).to receive(:idv_document_uploaded).with(
+                success: false,
+                document_back_image_encryption_key: '12345',
+                document_back_image_file_id: 'name',
+                document_front_image_encryption_key: '12345',
+                document_front_image_file_id: 'name',
+                failure_reason: { document_capture_session: [:blank] },
+              )
+
+              action
+            end
+          end
+
+          context 'when the service provider is not on the attempts api allowlist' do
+            before do
+              expect(EncryptedDocStorage::DocWriter).not_to receive(:new)
+              expect(writer).not_to receive(:write)
+            end
+            it 'does not upload the images' do
+              expect(@attempts_api_tracker).to receive(:idv_document_uploaded).with(
+                success: false,
+                failure_reason: { document_capture_session: [:blank] },
+              )
+
+              action
+            end
+          end
+        end
       end
     end
 
@@ -164,7 +327,7 @@ RSpec.describe Idv::ImageUploadsController do
             result_failed: false,
             ocr_pii: nil,
             doc_type_supported: true,
-            failed_image_fingerprints: { front: [], back: [], selfie: [] },
+            failed_image_fingerprints: { front: [], back: [], passport: [], selfie: [] },
             submit_attempts: 2,
           },
         )
@@ -182,15 +345,13 @@ RSpec.describe Idv::ImageUploadsController do
             result_failed: false,
             ocr_pii: nil,
             doc_type_supported: true,
-            failed_image_fingerprints: { front: [], back: [], selfie: [] },
+            failed_image_fingerprints: { front: [], back: [], passport: [], selfie: [] },
             submit_attempts: IdentityConfig.store.doc_auth_max_attempts,
           }
         end
 
         before do
           RateLimiter.new(rate_limit_type: :idv_doc_auth, user: user).increment_to_limited!
-
-          action
         end
 
         context 'hybrid flow' do
@@ -198,14 +359,62 @@ RSpec.describe Idv::ImageUploadsController do
           let(:redirect_url) { idv_hybrid_mobile_capture_complete_url }
 
           it 'returns an error and redirects to capture_complete on hybrid flow' do
+            action
+
             expect(response.status).to eq(429)
             expect(json).to eq(error_json)
           end
         end
 
         it 'redirects to session_errors_throttled on (mobile) standard flow' do
+          action
+
           expect(response.status).to eq(429)
           expect(json).to eq(error_json)
+        end
+
+        context 'when the attempts_api_tracker is enabled' do
+          let(:doc_escrow_enabled) { true }
+
+          context 'when the service provider is on the attempts api allowlist' do
+            let(:attempts_api_enabled_for_sp) { true }
+            before do
+              allow(writer).to receive(:write).and_return result
+              expect(EncryptedDocStorage::DocWriter).to receive(:new).and_return(writer)
+              expect(writer).to receive(:write).exactly(2).times
+            end
+            it 'tracks the event' do
+              expect(@attempts_api_tracker).to receive(:idv_document_uploaded).with(
+                success: false,
+                document_back_image_encryption_key: '12345',
+                document_back_image_file_id: 'name',
+                document_front_image_encryption_key: '12345',
+                document_front_image_file_id: 'name',
+                failure_reason: { limit: [:rate_limited] },
+              )
+
+              expect(@attempts_api_tracker).not_to receive(:idv_document_upload_submitted)
+
+              action
+            end
+          end
+
+          context 'when the service provider is not on the attempts api allowlist' do
+            before do
+              expect(EncryptedDocStorage::DocWriter).not_to receive(:new)
+              expect(writer).not_to receive(:write)
+            end
+            it 'does not upload the images' do
+              expect(@attempts_api_tracker).to receive(:idv_document_uploaded).with(
+                success: false,
+                failure_reason: { limit: [:rate_limited] },
+              )
+
+              expect(@attempts_api_tracker).not_to receive(:idv_document_upload_submitted)
+
+              action
+            end
+          end
         end
       end
 
@@ -219,9 +428,6 @@ RSpec.describe Idv::ImageUploadsController do
         expect(@analytics).to have_logged_event(
           'IdV: doc auth image upload form submitted',
           success: false,
-          errors: {
-            limit: [I18n.t('doc_auth.errors.rate_limited_heading')],
-          },
           error_details: {
             limit: { rate_limited: true },
           },
@@ -232,6 +438,7 @@ RSpec.describe Idv::ImageUploadsController do
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
           liveness_checking_required: boolean,
+          document_type_requested: an_instance_of(String),
         )
 
         expect(@analytics).not_to have_logged_event('IdV: doc auth image upload vendor submitted')
@@ -279,6 +486,93 @@ RSpec.describe Idv::ImageUploadsController do
           },
         ]
       end
+
+      context 'when the attempts_api_tracker is enabled' do
+        let(:doc_escrow_enabled) { true }
+
+        context 'when the service provider is on the attempts api allowlist' do
+          let(:attempts_api_enabled_for_sp) { true }
+          before do
+            allow(writer).to receive(:write).and_return result
+            expect(EncryptedDocStorage::DocWriter).to receive(:new).and_return(writer)
+            expect(writer).to receive(:write).exactly(2).times
+          end
+
+          it 'tracks the event' do
+            # the local upload succeeds
+            expect(@attempts_api_tracker).to receive(:idv_document_uploaded).with(
+              success: true,
+              document_back_image_encryption_key: '12345',
+              document_back_image_file_id: 'name',
+              document_front_image_encryption_key: '12345',
+              document_front_image_file_id: 'name',
+              failure_reason: nil,
+            )
+
+            expect(@attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
+              success: false,
+              document_expiration: nil,
+              document_issued: nil,
+              document_number: nil,
+              document_state: nil,
+              document_back_image_encryption_key: '12345',
+              document_back_image_file_id: 'name',
+              document_front_image_encryption_key: '12345',
+              document_front_image_file_id: 'name',
+              first_name: nil,
+              last_name: nil,
+              date_of_birth: nil,
+              address1: nil,
+              address2: nil,
+              city: nil,
+              state: nil,
+              zip: nil,
+              failure_reason: {
+                front: ['image_size_failure_field'],
+                general: ['image_size_failure'],
+              },
+            )
+
+            action
+          end
+        end
+
+        context 'when the service provider is not on the attempts api allowlist' do
+          before do
+            expect(EncryptedDocStorage::DocWriter).not_to receive(:new)
+            expect(writer).not_to receive(:write)
+          end
+          it 'does not upload the images' do
+            # the local upload succeeds
+            expect(@attempts_api_tracker).to receive(:idv_document_uploaded).with(
+              success: true,
+              failure_reason: nil,
+            )
+
+            expect(@attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
+              success: false,
+              document_expiration: nil,
+              document_issued: nil,
+              document_number: nil,
+              document_state: nil,
+              first_name: nil,
+              last_name: nil,
+              date_of_birth: nil,
+              address1: nil,
+              address2: nil,
+              city: nil,
+              state: nil,
+              zip: nil,
+              failure_reason: {
+                front: ['image_size_failure_field'],
+                general: ['image_size_failure'],
+              },
+            )
+
+            action
+          end
+        end
+      end
     end
 
     context 'when image upload succeeds' do
@@ -290,7 +584,9 @@ RSpec.describe Idv::ImageUploadsController do
         let(:selfie_img) { DocAuthImageFixtures.selfie_image_multipart }
 
         before do
-          resolved_authn_context_result = Vot::Parser.new(vector_of_trust: 'Pb').parse
+          resolved_authn_context_result = Component::Parser.new(
+            acr_values: Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_REQUIRED_ACR,
+          ).parse
 
           allow(controller).to receive(:resolved_authn_context_result)
             .and_return(resolved_authn_context_result)
@@ -302,11 +598,13 @@ RSpec.describe Idv::ImageUploadsController do
               front_image: an_instance_of(String),
               back_image: an_instance_of(String),
               selfie_image: an_instance_of(String),
+              document_type_requested: an_instance_of(String),
               image_source: :unknown,
               user_uuid: an_instance_of(String),
               uuid_prefix: nil,
               liveness_checking_required: true,
               images_cropped: false,
+              passport_requested: false,
             ).and_call_original
 
           action
@@ -323,12 +621,13 @@ RSpec.describe Idv::ImageUploadsController do
           .to receive(:post_images).with(
             front_image: an_instance_of(String),
             back_image: an_instance_of(String),
-            selfie_image: nil,
+            document_type_requested: an_instance_of(String),
             image_source: :unknown,
             user_uuid: an_instance_of(String),
             uuid_prefix: nil,
             liveness_checking_required: false,
             images_cropped: false,
+            passport_requested: false,
           ).and_call_original
 
         action
@@ -336,6 +635,67 @@ RSpec.describe Idv::ImageUploadsController do
         expect(response.status).to eq(200)
         expect(json[:success]).to eq(true)
         expect(document_capture_session.reload.load_result.success?).to eq(true)
+      end
+
+      context 'when doc escrow is enabled' do
+        let(:doc_escrow_enabled) { true }
+
+        context 'when the service provider is  on the attempts api allowlist' do
+          let(:attempts_api_enabled_for_sp) { true }
+          it 'does not upload the images' do
+            pii = Idp::Constants::MOCK_IDV_APPLICANT
+            expect(@attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
+              success: true,
+              document_expiration: pii[:state_id_expiration],
+              document_issued: pii[:state_id_issued],
+              document_number: pii[:state_id_number],
+              document_state: pii[:state],
+              document_back_image_encryption_key: '12345',
+              document_back_image_file_id: 'name',
+              document_front_image_encryption_key: '12345',
+              document_front_image_file_id: 'name',
+              first_name: pii[:first_name],
+              last_name: pii[:last_name],
+              date_of_birth: pii[:dob],
+              address1: pii[:address1],
+              address2: pii[:address2],
+              city: pii[:city],
+              state: pii[:state],
+              zip: pii[:zip_code],
+              failure_reason: nil,
+            )
+
+            action
+          end
+        end
+
+        context 'when the service provider is not on the attempts api allowlist' do
+          before do
+            expect(EncryptedDocStorage::DocWriter).not_to receive(:new)
+            expect(writer).not_to receive(:write)
+          end
+          it 'does not upload the images' do
+            pii = Idp::Constants::MOCK_IDV_APPLICANT
+            expect(@attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
+              success: true,
+              document_expiration: pii[:state_id_expiration],
+              document_issued: pii[:state_id_issued],
+              document_number: pii[:state_id_number],
+              document_state: pii[:state],
+              first_name: pii[:first_name],
+              last_name: pii[:last_name],
+              date_of_birth: pii[:dob],
+              address1: pii[:address1],
+              address2: pii[:address2],
+              city: pii[:city],
+              state: pii[:state],
+              zip: pii[:zip_code],
+              failure_reason: nil,
+            )
+
+            action
+          end
+        end
       end
 
       it 'tracks events' do
@@ -346,7 +706,6 @@ RSpec.describe Idv::ImageUploadsController do
         expect(@analytics).to have_logged_event(
           'IdV: doc auth image upload form submitted',
           success: true,
-          errors: {},
           user_id: user.uuid,
           submit_attempts: 1,
           remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
@@ -354,6 +713,7 @@ RSpec.describe Idv::ImageUploadsController do
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
           liveness_checking_required: boolean,
+          document_type_requested: an_instance_of(String),
         )
 
         expect(@analytics).to have_logged_event(
@@ -365,7 +725,8 @@ RSpec.describe Idv::ImageUploadsController do
           billed: true,
           doc_auth_result: 'Passed',
           state: 'MT',
-          state_id_type: 'drivers_license',
+          country: 'US',
+          document_type_received: 'drivers_license',
           user_id: user.uuid,
           submit_attempts: 1,
           remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
@@ -377,22 +738,25 @@ RSpec.describe Idv::ImageUploadsController do
           vendor_request_time_in_ms: a_kind_of(Float),
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
+          passport_check_result: {},
           doc_type_supported: boolean,
           doc_auth_success: boolean,
           selfie_status: :not_processed,
           liveness_checking_required: boolean,
           selfie_live: boolean,
           selfie_quality_good: boolean,
+          transaction_status: 'passed',
           workflow: an_instance_of(String),
           birth_year: 1938,
           zip_code: '59010',
           issue_year: 2019,
+          document_type_requested: an_instance_of(String),
+          vendor: 'Mock',
         )
 
         expect(@analytics).to have_logged_event(
           'IdV: doc auth image upload vendor pii validation',
           success: true,
-          errors: {},
           attention_with_barcode: false,
           user_id: user.uuid,
           submit_attempts: 1,
@@ -402,11 +766,98 @@ RSpec.describe Idv::ImageUploadsController do
           back_image_fingerprint: an_instance_of(String),
           liveness_checking_required: boolean,
           classification_info: a_kind_of(Hash),
+          document_type_received: 'drivers_license',
+          document_type_requested: an_instance_of(String),
           id_issued_status: 'present',
           id_expiration_status: 'present',
+          passport_issued_status: 'missing',
+          passport_expiration_status: 'missing',
         )
 
         expect_funnel_update_counts(user, 1)
+      end
+
+      context 'when an identification card is submitted' do
+        let(:back_image) { DocAuthImageFixtures.state_id_card_success_yaml }
+
+        it 'tracks events' do
+          stub_analytics
+
+          action
+
+          expect(@analytics).to have_logged_event(
+            'IdV: doc auth image upload form submitted',
+            success: true,
+            user_id: user.uuid,
+            submit_attempts: 1,
+            remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
+            flow_path: 'standard',
+            front_image_fingerprint: an_instance_of(String),
+            back_image_fingerprint: an_instance_of(String),
+            liveness_checking_required: boolean,
+            document_type_requested: an_instance_of(String),
+          )
+
+          expect(@analytics).to have_logged_event(
+            'IdV: doc auth image upload vendor submitted',
+            success: true,
+            errors: {},
+            attention_with_barcode: false,
+            async: false,
+            billed: true,
+            doc_auth_result: 'Passed',
+            state: 'MT',
+            country: 'US',
+            document_type_received: 'identification_card',
+            user_id: user.uuid,
+            submit_attempts: 1,
+            remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
+            client_image_metrics: {
+              front: { glare: 99.99 },
+              back: { glare: 99.99 },
+            },
+            flow_path: 'standard',
+            vendor_request_time_in_ms: a_kind_of(Float),
+            front_image_fingerprint: an_instance_of(String),
+            back_image_fingerprint: an_instance_of(String),
+            passport_check_result: {},
+            doc_type_supported: boolean,
+            doc_auth_success: boolean,
+            selfie_status: :not_processed,
+            liveness_checking_required: boolean,
+            selfie_live: boolean,
+            selfie_quality_good: boolean,
+            transaction_status: 'passed',
+            workflow: an_instance_of(String),
+            birth_year: 1938,
+            zip_code: '59010',
+            issue_year: 2019,
+            document_type_requested: an_instance_of(String),
+            vendor: 'Mock',
+          )
+
+          expect(@analytics).to have_logged_event(
+            'IdV: doc auth image upload vendor pii validation',
+            success: true,
+            attention_with_barcode: false,
+            user_id: user.uuid,
+            submit_attempts: 1,
+            remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
+            flow_path: 'standard',
+            front_image_fingerprint: an_instance_of(String),
+            back_image_fingerprint: an_instance_of(String),
+            liveness_checking_required: boolean,
+            classification_info: a_kind_of(Hash),
+            document_type_received: 'identification_card',
+            document_type_requested: an_instance_of(String),
+            id_issued_status: 'present',
+            id_expiration_status: 'present',
+            passport_issued_status: 'missing',
+            passport_expiration_status: 'missing',
+          )
+
+          expect_funnel_update_counts(user, 1)
+        end
       end
 
       context 'but doc_pii validation fails' do
@@ -414,7 +865,7 @@ RSpec.describe Idv::ImageUploadsController do
         let(:last_name) { 'MCFAKERSON' }
         let(:address1) { '123 Houston Ave' }
         let(:state) { 'ND' }
-        let(:state_id_type) { 'drivers_license' }
+        let(:document_type_received) { 'drivers_license' }
         let(:dob) { '10/06/1938' }
         let(:state_id_expiration) { Time.zone.today.to_s }
         let(:jurisdiction) { 'ND' }
@@ -449,7 +900,7 @@ RSpec.describe Idv::ImageUploadsController do
                 name_suffix: nil,
                 address1: address1,
                 state: state,
-                state_id_type: state_id_type,
+                document_type_received: document_type_received,
                 dob: dob,
                 sex: nil,
                 height: nil,
@@ -479,7 +930,6 @@ RSpec.describe Idv::ImageUploadsController do
             expect(@analytics).to have_logged_event(
               'IdV: doc auth image upload form submitted',
               success: true,
-              errors: {},
               user_id: user.uuid,
               submit_attempts: 1,
               remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
@@ -487,6 +937,7 @@ RSpec.describe Idv::ImageUploadsController do
               front_image_fingerprint: an_instance_of(String),
               back_image_fingerprint: an_instance_of(String),
               liveness_checking_required: boolean,
+              document_type_requested: an_instance_of(String),
             )
 
             expect(@analytics).to have_logged_event(
@@ -498,7 +949,7 @@ RSpec.describe Idv::ImageUploadsController do
               billed: true,
               doc_auth_result: 'Passed',
               state: 'ND',
-              state_id_type: 'drivers_license',
+              document_type_received: 'drivers_license',
               user_id: user.uuid,
               submit_attempts: 1,
               remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
@@ -518,14 +969,12 @@ RSpec.describe Idv::ImageUploadsController do
               selfie_quality_good: true,
               birth_year: 1938,
               zip_code: '12345',
+              document_type_requested: an_instance_of(String),
             )
 
             expect(@analytics).to have_logged_event(
               'IdV: doc auth image upload vendor pii validation',
               success: false,
-              errors: {
-                name: [I18n.t('doc_auth.errors.alerts.full_name_check')],
-              },
               error_details: {
                 name: { name: true },
               },
@@ -541,9 +990,68 @@ RSpec.describe Idv::ImageUploadsController do
                 Front: hash_including(ClassName: 'Identification Card', CountryCode: 'USA'),
                 Back: hash_including(ClassName: 'Identification Card', CountryCode: 'USA'),
               ),
+              document_type_received: 'drivers_license',
+              document_type_requested: an_instance_of(String),
               id_issued_status: 'missing',
               id_expiration_status: 'present',
+              passport_issued_status: 'missing',
+              passport_expiration_status: 'missing',
             )
+          end
+
+          context 'when doc escrow is enabled' do
+            let(:doc_escrow_enabled) { true }
+
+            context 'when the service provider is on the attempts api allowlist' do
+              let(:attempts_api_enabled_for_sp) { true }
+              it 'records attempts api events' do
+                expect(@attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
+                  success: false,
+                  document_expiration: state_id_expiration,
+                  document_issued: nil,
+                  document_number: state_id_number,
+                  document_state: state,
+                  document_back_image_encryption_key: '12345',
+                  document_back_image_file_id: 'name',
+                  document_front_image_encryption_key: '12345',
+                  document_front_image_file_id: 'name',
+                  first_name: nil,
+                  last_name: last_name,
+                  date_of_birth: dob,
+                  address1: address1,
+                  address2: nil,
+                  city: nil,
+                  state: state,
+                  zip: nil,
+                  failure_reason: { name: [:name] },
+                )
+
+                action
+              end
+            end
+
+            context 'when the service provider is not on the attempts api allowlist' do
+              it 'does not upload the images' do
+                expect(@attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
+                  success: false,
+                  document_expiration: state_id_expiration,
+                  document_issued: nil,
+                  document_number: state_id_number,
+                  document_state: state,
+                  first_name: nil,
+                  last_name: last_name,
+                  date_of_birth: dob,
+                  address1: address1,
+                  address2: nil,
+                  city: nil,
+                  state: state,
+                  zip: nil,
+                  failure_reason: { name: [:name] },
+                )
+
+                action
+              end
+            end
           end
         end
 
@@ -558,7 +1066,6 @@ RSpec.describe Idv::ImageUploadsController do
             expect(@analytics).to have_logged_event(
               'IdV: doc auth image upload form submitted',
               success: true,
-              errors: {},
               user_id: user.uuid,
               submit_attempts: 1,
               remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
@@ -566,6 +1073,7 @@ RSpec.describe Idv::ImageUploadsController do
               front_image_fingerprint: an_instance_of(String),
               back_image_fingerprint: an_instance_of(String),
               liveness_checking_required: boolean,
+              document_type_requested: an_instance_of(String),
             )
 
             expect(@analytics).to have_logged_event(
@@ -577,7 +1085,7 @@ RSpec.describe Idv::ImageUploadsController do
               billed: true,
               doc_auth_result: 'Passed',
               state: 'Maryland',
-              state_id_type: 'drivers_license',
+              document_type_received: 'drivers_license',
               user_id: user.uuid,
               submit_attempts: 1,
               remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
@@ -597,14 +1105,12 @@ RSpec.describe Idv::ImageUploadsController do
               selfie_quality_good: true,
               birth_year: 1938,
               zip_code: '12345',
+              document_type_requested: an_instance_of(String),
             )
 
             expect(@analytics).to have_logged_event(
               'IdV: doc auth image upload vendor pii validation',
               success: false,
-              errors: {
-                state: [I18n.t('doc_auth.errors.general.no_liveness')],
-              },
               error_details: {
                 state: { inclusion: true },
               },
@@ -620,9 +1126,72 @@ RSpec.describe Idv::ImageUploadsController do
                 Front: hash_including(ClassName: 'Identification Card', CountryCode: 'USA'),
                 Back: hash_including(ClassName: 'Identification Card', CountryCode: 'USA'),
               ),
+              document_type_received: 'drivers_license',
+              document_type_requested: an_instance_of(String),
               id_issued_status: 'missing',
               id_expiration_status: 'present',
+              passport_issued_status: 'missing',
+              passport_expiration_status: 'missing',
             )
+          end
+
+          context 'when doc escrow is enabled' do
+            let(:doc_escrow_enabled) { true }
+
+            context 'when the service provider is on the attempts api allowlist' do
+              let(:attempts_api_enabled_for_sp) { true }
+              it 'records attempts api events' do
+                expect(@attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
+                  success: false,
+                  document_expiration: state_id_expiration,
+                  document_issued: nil,
+                  document_number: state_id_number,
+                  document_state: state,
+                  document_back_image_encryption_key: '12345',
+                  document_back_image_file_id: 'name',
+                  document_front_image_encryption_key: '12345',
+                  document_front_image_file_id: 'name',
+                  first_name:,
+                  last_name:,
+                  date_of_birth: dob,
+                  address1:,
+                  address2: nil,
+                  city: nil,
+                  state:,
+                  zip: nil,
+                  failure_reason: { state: [:inclusion] },
+                )
+
+                action
+              end
+            end
+
+            context 'when the service provider is not on the attempts api allowlist' do
+              before do
+                expect(EncryptedDocStorage::DocWriter).not_to receive(:new)
+                expect(writer).not_to receive(:write)
+              end
+              it 'does not upload the images' do
+                expect(@attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
+                  success: false,
+                  document_expiration: state_id_expiration,
+                  document_issued: nil,
+                  document_number: state_id_number,
+                  document_state: state,
+                  first_name:,
+                  last_name:,
+                  date_of_birth: dob,
+                  address1:,
+                  address2: nil,
+                  city: nil,
+                  state:,
+                  zip: nil,
+                  failure_reason: { state: [:inclusion] },
+                )
+
+                action
+              end
+            end
           end
         end
 
@@ -637,7 +1206,6 @@ RSpec.describe Idv::ImageUploadsController do
             expect(@analytics).to have_logged_event(
               'IdV: doc auth image upload form submitted',
               success: true,
-              errors: {},
               user_id: user.uuid,
               submit_attempts: 1,
               remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
@@ -645,6 +1213,7 @@ RSpec.describe Idv::ImageUploadsController do
               front_image_fingerprint: an_instance_of(String),
               back_image_fingerprint: an_instance_of(String),
               liveness_checking_required: boolean,
+              document_type_requested: an_instance_of(String),
             )
 
             expect(@analytics).to have_logged_event(
@@ -656,7 +1225,7 @@ RSpec.describe Idv::ImageUploadsController do
               billed: true,
               doc_auth_result: 'Passed',
               state: 'ND',
-              state_id_type: 'drivers_license',
+              document_type_received: 'drivers_license',
               user_id: user.uuid,
               submit_attempts: 1,
               remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
@@ -676,14 +1245,12 @@ RSpec.describe Idv::ImageUploadsController do
               selfie_quality_good: true,
               birth_year: 1938,
               zip_code: '12345',
+              document_type_requested: an_instance_of(String),
             )
 
             expect(@analytics).to have_logged_event(
               'IdV: doc auth image upload vendor pii validation',
               success: false,
-              errors: {
-                state_id_number: [I18n.t('doc_auth.errors.general.no_liveness')],
-              },
               error_details: {
                 state_id_number: { blank: true },
               },
@@ -696,8 +1263,12 @@ RSpec.describe Idv::ImageUploadsController do
               back_image_fingerprint: an_instance_of(String),
               liveness_checking_required: boolean,
               classification_info: hash_including(:Front, :Back),
+              document_type_received: 'drivers_license',
+              document_type_requested: an_instance_of(String),
               id_issued_status: 'missing',
               id_expiration_status: 'present',
+              passport_issued_status: 'missing',
+              passport_expiration_status: 'missing',
             )
           end
         end
@@ -713,7 +1284,6 @@ RSpec.describe Idv::ImageUploadsController do
             expect(@analytics).to have_logged_event(
               'IdV: doc auth image upload form submitted',
               success: true,
-              errors: {},
               user_id: user.uuid,
               submit_attempts: 1,
               remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
@@ -721,6 +1291,7 @@ RSpec.describe Idv::ImageUploadsController do
               front_image_fingerprint: an_instance_of(String),
               back_image_fingerprint: an_instance_of(String),
               liveness_checking_required: boolean,
+              document_type_requested: an_instance_of(String),
             )
 
             expect(@analytics).to have_logged_event(
@@ -732,7 +1303,7 @@ RSpec.describe Idv::ImageUploadsController do
               billed: true,
               doc_auth_result: 'Passed',
               state: 'ND',
-              state_id_type: 'drivers_license',
+              document_type_received: 'drivers_license',
               user_id: user.uuid,
               submit_attempts: 1,
               remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
@@ -751,14 +1322,12 @@ RSpec.describe Idv::ImageUploadsController do
               selfie_live: true,
               selfie_quality_good: true,
               zip_code: '12345',
+              document_type_requested: an_instance_of(String),
             )
 
             expect(@analytics).to have_logged_event(
               'IdV: doc auth image upload vendor pii validation',
               success: false,
-              errors: {
-                dob: [I18n.t('doc_auth.errors.alerts.birth_date_checks')],
-              },
               error_details: {
                 dob: { dob: true },
               },
@@ -771,8 +1340,12 @@ RSpec.describe Idv::ImageUploadsController do
               back_image_fingerprint: an_instance_of(String),
               liveness_checking_required: boolean,
               classification_info: hash_including(:Front, :Back),
+              document_type_received: 'drivers_license',
+              document_type_requested: an_instance_of(String),
               id_issued_status: 'missing',
               id_expiration_status: 'present',
+              passport_issued_status: 'missing',
+              passport_expiration_status: 'missing',
             )
           end
         end
@@ -788,7 +1361,6 @@ RSpec.describe Idv::ImageUploadsController do
             expect(@analytics).to have_logged_event(
               'IdV: doc auth image upload form submitted',
               success: true,
-              errors: {},
               user_id: user.uuid,
               submit_attempts: 1,
               remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
@@ -796,6 +1368,7 @@ RSpec.describe Idv::ImageUploadsController do
               front_image_fingerprint: an_instance_of(String),
               back_image_fingerprint: an_instance_of(String),
               liveness_checking_required: boolean,
+              document_type_requested: an_instance_of(String),
             )
 
             expect(@analytics).to have_logged_event(
@@ -807,7 +1380,7 @@ RSpec.describe Idv::ImageUploadsController do
               billed: true,
               doc_auth_result: 'Passed',
               state: 'ND',
-              state_id_type: 'drivers_license',
+              document_type_received: 'drivers_license',
               user_id: user.uuid,
               submit_attempts: 1,
               remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
@@ -827,16 +1400,12 @@ RSpec.describe Idv::ImageUploadsController do
               selfie_quality_good: true,
               birth_year: 1938,
               zip_code: '12345',
+              document_type_requested: an_instance_of(String),
             )
 
             expect(@analytics).to have_logged_event(
               'IdV: doc auth image upload vendor pii validation',
               success: false,
-              errors: {
-                state_id_expiration: [
-                  'Try taking new pictures.',
-                ],
-              },
               error_details: {
                 state_id_expiration: { state_id_expiration: true },
               },
@@ -849,8 +1418,12 @@ RSpec.describe Idv::ImageUploadsController do
               back_image_fingerprint: an_instance_of(String),
               liveness_checking_required: boolean,
               classification_info: hash_including(:Front, :Back),
+              document_type_received: 'drivers_license',
+              document_type_requested: an_instance_of(String),
               id_issued_status: 'missing',
               id_expiration_status: 'present',
+              passport_issued_status: 'missing',
+              passport_expiration_status: 'missing',
             )
           end
         end
@@ -890,7 +1463,6 @@ RSpec.describe Idv::ImageUploadsController do
         expect(@analytics).to have_logged_event(
           'IdV: doc auth image upload form submitted',
           success: true,
-          errors: {},
           user_id: user.uuid,
           submit_attempts: 1,
           remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
@@ -898,6 +1470,7 @@ RSpec.describe Idv::ImageUploadsController do
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
           liveness_checking_required: boolean,
+          document_type_requested: an_instance_of(String),
         )
 
         expect(@analytics).to have_logged_event(
@@ -925,6 +1498,7 @@ RSpec.describe Idv::ImageUploadsController do
           liveness_checking_required: boolean,
           selfie_live: true,
           selfie_quality_good: true,
+          document_type_requested: an_instance_of(String),
         )
 
         expect_funnel_update_counts(user, 1)
@@ -957,7 +1531,6 @@ RSpec.describe Idv::ImageUploadsController do
         expect(@analytics).to have_logged_event(
           'IdV: doc auth image upload form submitted',
           success: true,
-          errors: {},
           user_id: user.uuid,
           submit_attempts: 1,
           remaining_submit_attempts: IdentityConfig.store.doc_auth_max_attempts - 1,
@@ -965,6 +1538,7 @@ RSpec.describe Idv::ImageUploadsController do
           front_image_fingerprint: an_instance_of(String),
           back_image_fingerprint: an_instance_of(String),
           liveness_checking_required: boolean,
+          document_type_requested: an_instance_of(String),
         )
 
         expect(@analytics).to have_logged_event(
@@ -996,6 +1570,7 @@ RSpec.describe Idv::ImageUploadsController do
           liveness_checking_required: boolean,
           selfie_live: boolean,
           selfie_quality_good: boolean,
+          transaction_status: 'failed',
           workflow: an_instance_of(String),
           alert_failure_count: 1,
           liveness_enabled: false,
@@ -1018,6 +1593,7 @@ RSpec.describe Idv::ImageUploadsController do
               'VerticalResolution' => 600,
             },
           },
+          document_type_requested: an_instance_of(String),
         )
 
         expect_funnel_update_counts(user, 1)
@@ -1052,7 +1628,10 @@ RSpec.describe Idv::ImageUploadsController do
 
     context 'the frontend requests a selfie' do
       before do
-        authn_context_result = Vot::Parser.new(vector_of_trust: 'Pb').parse
+        authn_context_result = Component::Parser.new(
+          acr_values: Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_REQUIRED_ACR,
+        ).parse
+
         allow(controller).to(
           receive(:resolved_authn_context_result).and_return(authn_context_result),
         )
@@ -1075,17 +1654,44 @@ RSpec.describe Idv::ImageUploadsController do
             front_image: an_instance_of(String),
             back_image: an_instance_of(String),
             selfie_image: an_instance_of(String),
+            document_type_requested: an_instance_of(String),
             image_source: :unknown,
             user_uuid: an_instance_of(String),
             uuid_prefix: nil,
             liveness_checking_required: true,
             images_cropped: false,
+            passport_requested: false,
           ).and_call_original
 
         action
         expect(response.status).to eq(200)
         expect(json[:success]).to eq(true)
         expect(document_capture_session.reload.load_result.success?).to eq(true)
+      end
+    end
+
+    context 'the user has an establishing in-person enrollment' do
+      let(:user) { create(:user, :with_establishing_in_person_enrollment) }
+
+      it 'cancels the in-person enrollment' do
+        expect(user.in_person_enrollments.first.status).to eq('establishing')
+
+        expect_any_instance_of(DocAuth::Mock::DocAuthMockClient)
+          .to receive(:post_images).with(
+            front_image: an_instance_of(String),
+            back_image: an_instance_of(String),
+            document_type_requested: an_instance_of(String),
+            image_source: :unknown,
+            user_uuid: an_instance_of(String),
+            uuid_prefix: nil,
+            liveness_checking_required: false,
+            images_cropped: false,
+            passport_requested: false,
+          ).and_call_original
+
+        action
+
+        expect(user.in_person_enrollments.first.status).to eq('cancelled')
       end
     end
   end

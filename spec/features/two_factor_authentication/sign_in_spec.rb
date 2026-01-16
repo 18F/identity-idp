@@ -98,13 +98,13 @@ RSpec.feature 'Two Factor Authentication' do
 
         click_link t('two_factor_authentication.login_options_link_text')
         click_link t('two_factor_authentication.account_reset.link')
-        click_link t('account_reset.request.yes_continue')
+        click_link t('account_reset.recover_options.yes_delete')
         click_button t('account_reset.request.yes_continue')
 
         reset_email
 
         travel_to (IdentityConfig.store.account_reset_wait_period_days + 1).days.from_now do
-          AccountReset::GrantRequestsAndSendEmails.new.perform(Time.zone.today)
+          GrantAccountResetRequestsAndSendEmailsJob.new.perform(Time.zone.today)
           open_last_email
           click_email_link_matching(/delete_account\?token/)
           click_button t('account_reset.request.yes_continue')
@@ -529,17 +529,26 @@ RSpec.feature 'Two Factor Authentication' do
       sign_in_before_2fa(user)
       click_link t('links.help'), match: :first
 
-      expect(current_url).to eq MarketingSite.help_url
+      expect(page).to have_current_path(
+        MarketingSite.help_url,
+        url: true,
+      )
 
       visit login_two_factor_path(otp_delivery_preference: 'sms')
       click_link t('links.contact'), match: :first
 
-      expect(current_url).to eq MarketingSite.contact_url
+      expect(page).to have_current_path(
+        MarketingSite.contact_url,
+        url: true,
+      )
 
       visit login_two_factor_path(otp_delivery_preference: 'sms')
       click_link t('links.privacy_policy'), match: :first
 
-      expect(current_url).to eq MarketingSite.security_and_privacy_practices_url
+      expect(page).to have_current_path(
+        MarketingSite.security_and_privacy_practices_url,
+        url: true,
+      )
     end
   end
 

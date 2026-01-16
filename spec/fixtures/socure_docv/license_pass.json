@@ -1,0 +1,38 @@
+{
+  "referenceId": "a1234b56-e789-0123-4fga-56b7c890d123",
+  "previousReferenceId": "e9c170f2-b3e4-423b-a373-5d6e1e9b23f8",
+  "documentVerification": {
+    "reasonCodes": ["I831", "R810"],
+    "documentType": {
+      "type": "Drivers License",
+      "country": "USA",
+      "state": "MD"
+    },
+    "decision": {
+      "name": "lenient",
+      "value": "accept"
+    },
+    "documentData": {
+      "firstName": "Dwayne",
+      "surName": "Denver",
+      "fullName": "Dwayne Denver",
+      "address": "123 Example Street, Baltimore, MD 21201",
+      "parsedAddress": {
+        "physicalAddress": "123 Example Street",
+        "physicalAddress2": "Baltimore MD 21201",
+        "city": "Baltimore",
+        "state": "MD",
+        "country": "US",
+        "zip": "21201"
+      },
+      "documentNumber": "1234567890",
+      "dob": "2002-01-01",
+      "issueDate": "2024-01-01",
+      "expirationDate": "2070-01-01"
+    }
+  },
+  "customerProfile": {
+    "customerUserId": "129",
+    "userId": "u8JpWn4QsF3R7tA2"
+  }
+}

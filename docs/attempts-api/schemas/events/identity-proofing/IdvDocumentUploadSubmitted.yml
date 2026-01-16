@@ -1,0 +1,283 @@
+description: |
+  The document was uploaded during identity proofing and authenticated by the vendor.
+allOf:
+  - $ref: '../shared/EventProperties.yml'
+  - type: object
+    properties:
+      document_state:
+        type: string
+        description: Driver's licenses document_state
+      document_number:
+        type: string
+        description: Driver's license number
+      document_issued:
+        type: string
+        description: Issuance date
+      document_expiration:
+        type: string
+        description: Driver's license expiration
+      first_name:
+        type: string
+      last_name:
+        type: string
+      date_of_birth:
+        type: string
+      address1:
+        type: string
+      address2:
+        type: string
+      city:
+        type: string
+      state:
+        type: string
+      country:
+        type: string
+      zip:
+        type: string
+      document_front_image_file_id:
+        type: string
+        description: The ID used to retrieve this image if needed
+      document_back_image_file_id:
+        type: string
+        description: The ID used to retrieve this image if needed
+      document_passport_image_file_id:
+        type: string
+        description: The ID used to retrieve this image if needed
+      document_selfie_image_file_id:
+        type: string
+        description: The ID used to retrieve this image if needed
+      document_front_image_encryption_key:
+        type: string
+        description: Randomly generated Base64-encoded key used to encrypt the front image file.
+      document_back_image_encryption_key:
+        type: string
+        description: Randomly generated Base64-encoded key used to encrypt the back image file.
+      document_passport_image_encryption_key:
+        type: string
+        description: Randomly generated Base64-encoded key used to encrypt the passport image file if it exists.
+      document_selfie_image_encryption_key:
+        type: string
+        description: Randomly generated Base64-encoded key used to encrypt the selfie image file if it exists.
+      liveness_checking_required:
+        type: boolean
+        description: |
+          Indicates whether liveness checking is required
+      failure_reason:
+        type: object
+        description: |
+          An OPTIONAL object. An associative array of attributes and errors if success is false
+        properties:
+          id:
+            type: array
+            description: ID issues
+            items:
+              type: string
+              enum:
+                # alerts
+                - birth_date_checks
+                - id_not_recognized
+                - doc_crosscheck
+                - doc_expired_check
+                - doc_number_checks
+                - expiration_checks
+                - full_name_check
+                - issue_date_checks
+                - id_not_verified
+                - sex_check
+                - visible_color_check
+                # general
+                - general error
+          front:
+            type: array
+            description: Issues with the front of the ID
+            items:
+              type: string
+              enum:
+                - visible_photo_check
+                # image quality
+                - dpi_low
+                - dpi_low_field
+                - sharp_low
+                - sharp_low_field
+                - glare_low
+                - glare_low_field
+                # general
+                - multiple_front_id_failures
+                # doc_type
+                - doc_type_check
+                - card_type
+                # network faiures
+                - image_load_failure_field
+                - pixel_depth_failure_field
+                - image_size_failure_field
+          back:
+            type: array
+            description: Issues with the back of the ID, if present
+            items:
+              type: string
+              enum:
+                # alerts
+                - ref_control_number_check
+                - barcode_content_check
+                - barcode_read_check
+                - control_number_check
+                # image quality
+                - dpi_low
+                - sharp_low_field
+                - glare_low_field
+                # general
+                - multiple_back_id_failures
+                # doc_type
+                - doc_type_check
+                - card_type
+                # network failures
+                - image_load_failure_field
+                - pixel_depth_failure_field
+                - image_size_failure_field
+          selfie:
+            type: array
+            description: Issues with the selfie image, if present
+            items:
+              type: string
+              enum:
+                - selfie_failure
+                - selfie_not_live_or_poor_quality
+                # image quality
+                - dpi_low
+                - sharp_low_field
+                - glare_low_field # network failures
+                - image_load_failure_field
+                - pixel_depth_failure_field
+                - image_size_failure_field
+          general:
+            type: array
+            description: Details about the whole requests' issues
+            items:
+              type: string
+              enum:
+                - fallback_field_level
+                - selfie_failure
+                # image quality errors
+                - dpi_low_one_side
+                - dpi_low_both_sides
+                - glare_low_both_sides
+                - glare_low_one_side
+                - sharp_low_both_sides
+                - sharp_low_one_side
+                # http status code errors
+                - image_load_failure
+                - pixel_depth_failure
+                - image_size_failure
+          # pii validation errors
+          name:
+            type: array
+            description: Invalid or missing name
+            items:
+              type: string
+              enum:
+                - name
+          dob:
+            type: array
+            description: Invalid or missing dob
+            items:
+              type: string
+              enum:
+                - dob
+          dob_min_age:
+            type: string
+            description: User is too young to be verified
+            enum:
+              - dob
+          no_document:
+            type: array
+            description: Unknown or invalid document
+            items:
+              type: string
+              enum:
+                - no_document
+
+          # if state ID
+          address1:
+            type: array
+            description: Address not found
+            items:
+              type: string
+              enum:
+                - blank
+          zipcode:
+            type: array
+            description: Invalid or missing zipcode
+            items:
+              type: string
+              enum:
+                - zipcode
+          state_id_expiration:
+            type: array
+            description: Expired ID
+            items:
+              type: string
+              enum:
+                - state_id_expiration
+          state:
+            type: array
+            description: State not within US jurisdiction
+            items:
+              type: string
+              enum:
+                - inclusion
+          state_id_number:
+            type: array
+            description: ID number not found
+            items:
+              type: string
+              enum:
+                - blank
+
+          # if passport
+          birth_place:
+            type: array
+            description: Birthplace not found
+            items:
+              type: string
+              enum:
+                - blank
+          passport_issued:
+            type: array
+            description: Passport issue date not found
+            items:
+              type: string
+              enum:
+                - blank
+          mrz:
+            type: array
+            description: Machine readable zone not found
+            items:
+              type: string
+              enum:
+                - blank
+          issuing_country_code:
+            type: array
+            description: Country code not USA
+            items:
+              type: string
+              enum:
+                - inclusion
+          nationality_code:
+            type: array
+            description: Errors that describe problems with the nationality code
+            items:
+              type: string
+              enum:
+                - inclusion
+                - blank
+          passport_expiration:
+            type: array
+            description: Passport has expired
+            items:
+              type: string
+              enum:
+                - passport_expiration
+      success:
+        type: boolean
+        description: |
+          Indicates whether the backup codes were successfully generated

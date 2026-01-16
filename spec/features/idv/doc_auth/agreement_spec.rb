@@ -15,7 +15,7 @@ RSpec.feature 'agreement step error checking' do
     end
 
     it 'progresses to document capture' do
-      expect(page).to have_current_path(idv_document_capture_url)
+      expect(page).to have_current_path(idv_choose_id_type_url)
     end
   end
 end

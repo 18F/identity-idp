@@ -1,11 +1,22 @@
 # frozen_string_literal: true
 
 class WebauthnConfiguration < ApplicationRecord
+  include UserSuppliedNameAttributes
+
   belongs_to :user
-  validates :name, presence: true
+  validates :name, presence: true,
+                   length: {
+                     maximum: UserSuppliedNameAttributes::WEBAUTHN_MAX_NAME_LENGTH,
+                   }
   validates :credential_id, presence: true
   validates :credential_public_key, presence: true
   validate :valid_transports
+
+  # https://w3c.github.io/webauthn/#enum-transport
+  PLATFORM_AUTHENTICATOR_TRANSPORTS = %w[
+    hybrid
+    internal
+  ].to_set.freeze
 
   # https://w3c.github.io/webauthn/#enum-transport
   VALID_TRANSPORTS = %w[

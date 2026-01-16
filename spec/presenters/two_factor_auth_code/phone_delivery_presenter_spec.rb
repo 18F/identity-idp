@@ -3,6 +3,7 @@ require 'rails_helper'
 RSpec.describe TwoFactorAuthCode::PhoneDeliveryPresenter do
   include Rails.application.routes.url_helpers
   include ActionView::Helpers::UrlHelper
+  include LinkHelper
 
   let(:view) { ActionController::Base.new.view_context }
   let(:unconfirmed_phone) { false }
@@ -49,11 +50,28 @@ RSpec.describe TwoFactorAuthCode::PhoneDeliveryPresenter do
   describe '#phone_number_message' do
     it 'specifies when the code will expire' do
       text = t(
-        'instructions.mfa.sms.number_message_html',
+        'instructions.mfa.sms.code_sent_message_html',
         number_html: ActionController::Base.helpers.content_tag(:strong, data[:phone_number]),
-        expiration: TwoFactorAuthenticatable::DIRECT_OTP_VALID_FOR_MINUTES,
       )
       expect(presenter.phone_number_message).to eq text
+    end
+  end
+
+  describe '#do_not_share_code_message' do
+    it 'specifies when the code will expire' do
+      text = t(
+        'instructions.mfa.do_not_share_code_message_html',
+        app_name: APP_NAME,
+        link_html: new_tab_link_to(
+          t('instructions.mfa.do_not_share_code_link_text'),
+          MarketingSite.help_center_article_url(
+            category: 'fraud-concerns',
+            article: 'overview',
+          ),
+        ),
+      )
+
+      expect(presenter.do_not_share_code_message).to eq text
     end
   end
 

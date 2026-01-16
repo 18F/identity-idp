@@ -27,6 +27,8 @@ RSpec.describe RateLimitConcern do
     end
 
     before(:each) do
+      stub_attempts_tracker
+
       sign_in(user)
       allow(subject).to receive(:current_user).and_return(user)
       routes.draw do
@@ -50,6 +52,9 @@ RSpec.describe RateLimitConcern do
       it 'redirects to idv_doc_auth rate limited error page' do
         rate_limiter = RateLimiter.new(user: user, rate_limit_type: :idv_doc_auth)
         rate_limiter.increment_to_limited!
+        expect(@attempts_api_tracker).to receive(:idv_rate_limited).with(
+          limiter_type: :idv_doc_auth,
+        )
 
         get :show
 
@@ -59,8 +64,13 @@ RSpec.describe RateLimitConcern do
 
     context 'with idv_resolution rate_limiter (VerifyInfo)' do
       it 'redirects to idv_resolution rate limited error page' do
+        stub_attempts_tracker
+
         rate_limiter = RateLimiter.new(user: user, rate_limit_type: :idv_resolution)
         rate_limiter.increment_to_limited!
+        expect(@attempts_api_tracker).to receive(:idv_rate_limited).with(
+          limiter_type: :idv_resolution,
+        )
 
         get :show
 
@@ -76,6 +86,9 @@ RSpec.describe RateLimitConcern do
         end
 
         it 'does not redirect' do
+          expect(@attempts_api_tracker).to receive(:idv_rate_limited).with(
+            limiter_type: :proof_address,
+          )
           get :show
 
           expect(response.body).to eq 'Hello'
@@ -94,6 +107,9 @@ RSpec.describe RateLimitConcern do
         end
 
         it 'does not redirect' do
+          expect(@attempts_api_tracker).to receive(:idv_rate_limited).with(
+            limiter_type: :proof_address,
+          )
           get :show
 
           expect(response.body).to eq 'Hello'
@@ -114,6 +130,9 @@ RSpec.describe RateLimitConcern do
         end
 
         it 'redirects to proof_address rate limited error page' do
+          expect(@attempts_api_tracker).to receive(:idv_rate_limited).with(
+            limiter_type: :proof_address,
+          )
           get :show
 
           expect(response).to redirect_to idv_phone_errors_failure_url
@@ -134,6 +153,9 @@ RSpec.describe RateLimitConcern do
       context 'ssn is in idv_session' do
         it 'redirects to proof_ssn rate limited error page' do
           subject.idv_session.ssn = ssn
+          expect(@attempts_api_tracker).to receive(:idv_rate_limited).with(
+            limiter_type: :proof_ssn,
+          )
           get :show
 
           expect(response).to redirect_to idv_session_errors_ssn_failure_url

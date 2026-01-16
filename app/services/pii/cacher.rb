@@ -2,17 +2,18 @@
 
 module Pii
   class Cacher
-    attr_reader :user, :user_session
+    attr_reader :user, :user_session, :analytics
 
-    def initialize(user, user_session)
+    def initialize(user, user_session, analytics: nil)
       @user = user
       @user_session = user_session
+      @analytics = analytics
     end
 
     def save(user_password, profile = user.active_profile)
       decrypted_pii = profile.decrypt_pii(user_password) if profile
       save_decrypted_pii(decrypted_pii, profile.id) if decrypted_pii
-      rotate_fingerprints(profile, decrypted_pii) if stale_fingerprints?(profile, decrypted_pii)
+      rotate_fingerprints_if_stale(profile, decrypted_pii)
       decrypted_pii
     end
 
@@ -43,12 +44,18 @@ module Pii
 
     private
 
-    def rotate_fingerprints(profile, pii)
-      KeyRotator::HmacFingerprinter.new.rotate(
-        user: user,
-        profile: profile,
-        pii_attributes: pii,
-      )
+    def rotate_fingerprints_if_stale(profile, pii)
+      return unless profile.present? && pii.present?
+      pii_copy = pii_with_normalized_ssn(pii)
+
+      if stale_fingerprints?(profile, pii_copy)
+        analytics&.fingerprints_rotated
+        KeyRotator::HmacFingerprinter.new.rotate(
+          user: user,
+          profile: profile,
+          pii_attributes: pii_copy,
+        )
+      end
     end
 
     def stale_fingerprints?(profile, pii)
@@ -66,6 +73,12 @@ module Pii
       compound_pii = Profile.build_compound_pii(pii)
       return false unless compound_pii
       Pii::Fingerprinter.stale?(compound_pii, profile.name_zip_birth_year_signature)
+    end
+
+    def pii_with_normalized_ssn(pii)
+      pii_copy = pii.dup
+      pii_copy.ssn = SsnFormatter.normalize(pii_copy.ssn)
+      pii_copy
     end
   end
 end

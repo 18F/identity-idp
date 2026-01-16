@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dldv:VerifyDriverLicenseDataResponse xmlns:dldv="http://aamva.org/dldv/dldverification/2.1">
+  <ControlData>
+    <MessageAddress>
+      <TransactionLocatorID>1234-abcd-efgh
+      </TransactionLocatorID>
+      <MessageOriginatorID>GSA</MessageOriginatorID>
+      <MessageDestinationID>CA</MessageDestinationID>
+    </MessageAddress>
+  </ControlData>
+  <DriverLicenseNumberMatchIndicator>true</DriverLicenseNumberMatchIndicator>
+  <DriverLicenseIssueDateMatchIndicator>true</DriverLicenseIssueDateMatchIndicator>
+  <DriverLicenseExpirationDateMatchIndicator>true</DriverLicenseExpirationDateMatchIndicator>
+  <PersonBirthDateMatchIndicator>true</PersonBirthDateMatchIndicator>
+  <PersonSexCodeMatchIndicator>true</PersonSexCodeMatchIndicator>
+  <PersonHeightMatchIndicator>true</PersonHeightMatchIndicator>
+  <PersonWeightMatchIndicator>true</PersonWeightMatchIndicator>
+  <PersonEyeColorMatchIndicator>true</PersonEyeColorMatchIndicator>
+  <PersonLastNameExactMatchIndicator>true</PersonLastNameExactMatchIndicator>
+  <PersonLastNameFuzzyPrimaryMatchIndicator>true</PersonLastNameFuzzyPrimaryMatchIndicator>
+  <PersonLastNameFuzzyAlternateMatchIndicator>true</PersonLastNameFuzzyAlternateMatchIndicator>
+  <PersonFirstNameExactMatchIndicator>true</PersonFirstNameExactMatchIndicator>
+  <PersonFirstNameFuzzyPrimaryMatchIndicator>true</PersonFirstNameFuzzyPrimaryMatchIndicator>
+  <PersonFirstNameFuzzyAlternateMatchIndicator>true</PersonFirstNameFuzzyAlternateMatchIndicator>
+  <PersonMiddleNameExactMatchIndicator>true</PersonMiddleNameExactMatchIndicator>
+  <PersonMiddleNameFuzzyPrimaryMatchIndicator>true</PersonMiddleNameFuzzyPrimaryMatchIndicator>
+  <PersonMiddleNameFuzzyAlternateMatchIndicator>true</PersonMiddleNameFuzzyAlternateMatchIndicator>
+  <PersonNameSuffixMatchIndicator>true</PersonNameSuffixMatchIndicator>
+  <DocumentCategoryMatchIndicator>true</DocumentCategoryMatchIndicator>
+  <AddressLine1MatchIndicator>true</AddressLine1MatchIndicator>
+  <AddressLine2MatchIndicator>true</AddressLine2MatchIndicator>
+  <AddressCityMatchIndicator>true</AddressCityMatchIndicator>
+  <AddressStateCodeMatchIndicator>true</AddressStateCodeMatchIndicator>
+  <AddressZIP5MatchIndicator>true</AddressZIP5MatchIndicator>
+</dldv:VerifyDriverLicenseDataResponse>

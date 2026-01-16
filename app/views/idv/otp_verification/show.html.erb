@@ -15,6 +15,10 @@
   <%= @presenter.phone_number_message %>
 </p>
 
+<p>
+  <%= @presenter.do_not_share_code_message %>
+</p>
+
 <%= simple_form_for('', method: :put) do |f| %>
   <%= render OneTimeCodeInputComponent.new(
         form: f,
@@ -42,7 +46,6 @@
     ).with_content(t('links.two_factor_authentication.send_another_code')) %>
 
 <p>
-  <%= t('instructions.mfa.wrong_number') %><br>
   <%= link_to(t('forms.two_factor.try_again'), idv_phone_path(step: 'phone_otp_verification')) %>
 </p>
 

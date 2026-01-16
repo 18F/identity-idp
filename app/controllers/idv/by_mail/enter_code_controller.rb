@@ -29,6 +29,8 @@ module Idv
 
         prefilled_code = session[:last_gpo_confirmation_code] if FeatureManagement.reveal_gpo_code?
         @gpo_verify_form = GpoVerifyForm.new(
+          attempts_api_tracker:,
+          fraud_ops_tracker:,
           user: current_user,
           pii: pii,
           resolved_authn_context_result: resolved_authn_context_result,
@@ -52,8 +54,18 @@ module Idv
 
         @gpo_verify_form = build_gpo_verify_form
 
-        result = @gpo_verify_form.submit(resolved_authn_context_result.enhanced_ipp?)
+        result = @gpo_verify_form.submit
         analytics.idv_verify_by_mail_enter_code_submitted(**result)
+
+        attempts_api_tracker.idv_verify_by_mail_enter_code_submitted(
+          success: result.success?,
+          failure_reason: attempts_api_tracker.parse_failure_reason(result),
+        )
+
+        fraud_ops_tracker.idv_verify_by_mail_enter_code_submitted(
+          success: result.success?,
+          failure_reason: fraud_ops_tracker.parse_failure_reason(result),
+        )
 
         send_please_call_email_if_necessary(result:)
 
@@ -137,6 +149,8 @@ module Idv
 
       def build_gpo_verify_form
         GpoVerifyForm.new(
+          attempts_api_tracker:,
+          fraud_ops_tracker:,
           user: current_user,
           pii: pii,
           resolved_authn_context_result: resolved_authn_context_result,

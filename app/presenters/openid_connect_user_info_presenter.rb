@@ -20,16 +20,12 @@ class OpenidConnectUserInfoPresenter
     }
 
     info[:all_emails] = all_emails_from_sp_identity(identity) if scoper.all_emails_requested?
+    info[:locale] = web_locale if scoper.locale_requested?
     info.merge!(ial2_attributes) if identity_proofing_requested_for_verified_user?
     info.merge!(x509_attributes) if scoper.x509_scopes_requested?
     info[:verified_at] = verified_at if scoper.verified_at_requested?
-    if identity.vtr.nil?
-      info[:ial] = authn_context_resolver.asserted_ial_acr
-      info[:aal] = identity.requested_aal_value
-    else
-      info[:vot] = vot_values
-      info[:vtm] = IdentityConfig.store.vtm_url
-    end
+    info[:ial] = authn_context_resolver.asserted_ial_acr
+    info[:aal] = requested_aal_value
 
     scoper.filter(info)
   end
@@ -40,13 +36,20 @@ class OpenidConnectUserInfoPresenter
 
   private
 
-  def vot_values
-    AuthnContextResolver.new(
-      user: identity.user,
-      vtr: JSON.parse(identity.vtr),
-      service_provider: identity&.service_provider_record,
-      acr_values: nil,
-    ).result.expanded_component_values
+  def analytics
+    Analytics.new(user: identity.user, request: nil, session: {}, sp: nil)
+  end
+
+  def requested_aal_value
+    if identity.requested_aal_value != authn_context_resolver.asserted_aal_acr
+      analytics.asserted_aal_different_from_response_aal(
+        asserted_aal_value: authn_context_resolver.asserted_aal_acr,
+        client_id: identity&.service_provider_record&.issuer,
+        response_aal_value: identity.requested_aal_value,
+      )
+    end
+
+    identity.requested_aal_value
   end
 
   def uuid_from_sp_identity(identity)
@@ -57,6 +60,10 @@ class OpenidConnectUserInfoPresenter
     identity.user.confirmed_email_addresses.map(&:email)
   end
 
+  def web_locale
+    out_of_band_session_accessor.load_web_locale
+  end
+
   def ial2_attributes
     {
       given_name: stringify_attr(ial2_data.first_name),
@@ -65,7 +72,7 @@ class OpenidConnectUserInfoPresenter
       social_security_number: stringify_attr(ial2_data.ssn),
       address: address,
       phone: phone,
-      phone_verified: phone.present? ? true : nil,
+      phone_verified: phone.present? || nil,
     }
   end
 
@@ -137,7 +144,6 @@ class OpenidConnectUserInfoPresenter
     @authn_context_resolver ||= AuthnContextResolver.new(
       user: identity.user,
       service_provider: identity&.service_provider_record,
-      vtr: identity.vtr.presence && JSON.parse(identity.vtr),
       acr_values: identity.acr_values,
     )
   end

@@ -23,7 +23,7 @@ module Reports
       end
 
       ReportMailer.tables_report(
-        email: email,
+        to: email,
         subject: "Daily Identity Verification Report - #{report_date.to_date}",
         reports: reports,
         message: message,

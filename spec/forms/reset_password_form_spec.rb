@@ -14,6 +14,7 @@ RSpec.describe ResetPasswordForm, type: :model do
   end
 
   it_behaves_like 'password validation'
+  it_behaves_like 'strong password', 'ResetPasswordForm'
 
   describe '#submit' do
     subject(:result) { form.submit(params) }
@@ -26,7 +27,6 @@ RSpec.describe ResetPasswordForm, type: :model do
       it 'returns a hash with errors' do
         expect(result.to_h).to eq(
           success: false,
-          errors: { reset_password_token: ['token_expired'] },
           error_details: { reset_password_token: { token_expired: true } },
           user_id: '123',
           profile_deactivated: false,
@@ -46,14 +46,6 @@ RSpec.describe ResetPasswordForm, type: :model do
       it 'returns a hash with errors' do
         expect(result.to_h).to eq(
           success: false,
-          errors: {
-            password:
-              ["Password must be at least #{Devise.password_length.first} characters long"],
-            password_confirmation: [I18n.t(
-              'errors.messages.too_short',
-              count: Devise.password_length.first,
-            )],
-          },
           error_details: {
             password: { too_short: true },
             password_confirmation: { too_short: true },
@@ -72,11 +64,10 @@ RSpec.describe ResetPasswordForm, type: :model do
       end
 
       it 'sets the user password to the submitted password' do
-        expect { result }.to change { user.reload.encrypted_password_digest }
+        expect { result }.to change { user.reload.encrypted_password_digest_multi_region }
 
         expect(result.to_h).to eq(
           success: true,
-          errors: {},
           user_id: '123',
           profile_deactivated: false,
           pending_profile_invalidated: false,
@@ -95,15 +86,6 @@ RSpec.describe ResetPasswordForm, type: :model do
       it 'returns a hash with errors' do
         expect(result.to_h).to eq(
           success: false,
-          errors: {
-            password: [
-              t('errors.attributes.password.too_short.other', count: Devise.password_length.first),
-            ],
-            password_confirmation: [
-              t('errors.messages.too_short', count: Devise.password_length.first),
-            ],
-            reset_password_token: ['token_expired'],
-          },
           error_details: {
             password: { too_short: true },
             password_confirmation: { too_short: true },
@@ -123,7 +105,6 @@ RSpec.describe ResetPasswordForm, type: :model do
       it 'returns a hash with errors' do
         expect(result.to_h).to eq(
           success: false,
-          errors: { reset_password_token: ['invalid_token'] },
           error_details: { reset_password_token: { invalid_token: true } },
           user_id: nil,
           profile_deactivated: false,
@@ -153,15 +134,112 @@ RSpec.describe ResetPasswordForm, type: :model do
     end
 
     context 'when the user has a pending profile' do
-      let(:profile) { create(:profile, :verify_by_mail_pending, :in_person_verification_pending) }
-      let(:user) { create(:user, reset_password_sent_at: Time.zone.now, profiles: [profile]) }
+      context 'when the profile is pending gpo verification' do
+        let!(:user) { create(:user, reset_password_sent_at: Time.zone.now) }
+        let!(:profile) do
+          create(:profile, :verify_by_mail_pending, user: user)
+        end
 
-      it 'includes that the profile was not deactivated in the form response' do
-        expect(result.success?).to eq(true)
-        expect(result.extra[:pending_profile_invalidated]).to eq(true)
-        expect(result.extra[:pending_profile_pending_reasons]).to eq(
-          'gpo_verification_pending,in_person_verification_pending',
-        )
+        before do
+          @result = form.submit(params)
+          profile.reload
+        end
+
+        it 'includes that the profile was not deactivated in the form response' do
+          expect(result.success?).to eq(true)
+          expect(result.extra[:pending_profile_invalidated]).to eq(true)
+          expect(result.extra[:pending_profile_pending_reasons]).to eq(
+            'gpo_verification_pending',
+          )
+        end
+      end
+
+      context 'when the profile is pending in person verification' do
+        let!(:user) { create(:user, reset_password_sent_at: Time.zone.now) }
+        let!(:profile) { create(:profile, :in_person_verification_pending, user: user) }
+
+        before do
+          @result = form.submit(params)
+          profile.reload
+        end
+
+        it 'returns a successful response' do
+          expect(@result.success?).to eq(true)
+        end
+
+        it 'includes that the profile was not deactivated in the form response' do
+          expect(@result.extra).to include(
+            user_id: user.uuid,
+            profile_deactivated: false,
+            pending_profile_invalidated: false,
+            pending_profile_pending_reasons: 'in_person_verification_pending',
+          )
+        end
+
+        it 'updates the profile to have a "password reset" deactivation reason' do
+          expect(profile.deactivation_reason).to eq('password_reset')
+        end
+      end
+
+      context 'when the profile is in fraud review for in person verification' do
+        let!(:user) { create(:user, reset_password_sent_at: Time.zone.now) }
+        let!(:enrollment) { create(:in_person_enrollment, :in_fraud_review, user: user) }
+        let(:profile) { enrollment.profile }
+
+        before do
+          @result = form.submit(params)
+          profile.reload
+        end
+
+        it 'returns a successful response' do
+          expect(@result.success?).to eq(true)
+        end
+
+        it 'includes that the profile was not deactivated in the form response' do
+          expect(@result.extra).to include(
+            user_id: user.uuid,
+            profile_deactivated: false,
+            pending_profile_invalidated: false,
+            pending_profile_pending_reasons: 'fraud_check_pending',
+          )
+        end
+
+        it 'updates the profile to have a "password reset" deactivation reason' do
+          expect(profile.deactivation_reason).to eq('password_reset')
+        end
+      end
+
+      context 'when the user has an active and a pending in-person verification profile' do
+        let!(:user) { create(:user, reset_password_sent_at: Time.zone.now) }
+        let!(:pending_profile) { create(:profile, :in_person_verification_pending, user: user) }
+        let!(:active_profile) { create(:profile, :active, user: user) }
+
+        before do
+          @result = form.submit(params)
+          pending_profile.reload
+          active_profile.reload
+        end
+
+        it 'returns a successful response' do
+          expect(@result.success?).to eq(true)
+        end
+
+        it 'includes that the profile was not deactivated in the form response' do
+          expect(@result.extra).to include(
+            user_id: user.uuid,
+            profile_deactivated: true,
+            pending_profile_invalidated: false,
+            pending_profile_pending_reasons: '',
+          )
+        end
+
+        it 'updates the pending profile to have a "password reset" deactivation reason' do
+          expect(pending_profile.deactivation_reason).to eq('password_reset')
+        end
+
+        it 'does not update the active profile to have a "password reset" deactivation reason' do
+          expect(active_profile.deactivation_reason).to be_nil
+        end
       end
     end
 
@@ -190,7 +268,5 @@ RSpec.describe ResetPasswordForm, type: :model do
         expect(result.errors).to eq({ reset_password_token: ['token_expired'] })
       end
     end
-
-    it_behaves_like 'strong password', 'ResetPasswordForm'
   end
 end

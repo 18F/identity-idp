@@ -51,10 +51,8 @@ describe('InPersonLocationFullAddressEntryPostOfficeSearchStep', () => {
       value={{
         inPersonURL,
         locationsURL,
-        addressSearchURL: 'https://localhost:3000',
         inPersonOutageMessageEnabled: false,
         inPersonOutageExpectedUpdateDate: 'January 1, 2024',
-        inPersonFullAddressEntryEnabled: true,
         optedInToInPersonProofing: false,
         usStatesTerritories,
       }}
@@ -97,7 +95,7 @@ describe('InPersonLocationFullAddressEntryPostOfficeSearchStep', () => {
       server.use(http.post(locationsURL, () => new HttpResponse(null, { status: 500 })));
     });
 
-    it('displays a try again error message', async () => {
+    it('displays continue error message', async () => {
       const { findByText, findByLabelText } = render(
         <InPersonLocationFullAddressEntryPostOfficeSearchStep {...DEFAULT_PROPS} />,
         { wrapper },
@@ -124,7 +122,9 @@ describe('InPersonLocationFullAddressEntryPostOfficeSearchStep', () => {
         await findByText('in_person_proofing.body.location.po_search.search_button'),
       );
 
-      const error = await findByText('idv.failure.exceptions.post_office_search_error');
+      const error = await findByText(
+        'in_person_proofing.body.location.po_search.usps_facilities_api_error_header',
+      );
       expect(error).to.exist();
     });
   });

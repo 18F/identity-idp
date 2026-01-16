@@ -19,8 +19,3 @@ Mail::Message.class_eval do
   add_method_tracer :deliver, "Custom/#{name}/deliver"
   add_method_tracer :deliver!, "Custom/#{name}/deliver!"
 end
-
-SamlIdp::SignedInfoBuilder.class_eval do
-  include ::NewRelic::Agent::MethodTracer
-  add_method_tracer :encoded, "Custom/#{name}/encoded"
-end

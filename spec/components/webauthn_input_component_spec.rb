@@ -17,28 +17,6 @@ RSpec.describe WebauthnInputComponent, type: :component do
     expect(component.passkey_supported_only?).to eq(false)
   end
 
-  it 'does not render desktop-ft-unlock-option attribute' do
-    expect(rendered).to have_css('lg-webauthn-input:not([desktop-ft-unlock-option="false"])')
-  end
-
-  context 'with desktop_ft_unlock_option' do
-    let(:options) { super().merge(desktop_ft_unlock_option: true) }
-
-    it 'does render desktop-ft-unlock-option attribute' do
-      expect(rendered).to have_css('lg-webauthn-input[desktop-ft-unlock-option="true"]')
-    end
-
-    context 'in a locale other than english' do
-      before do
-        I18n.locale = I18n.available_locales.sample
-      end
-
-      it 'does not render desktop-ft-unlock-option attribute' do
-        expect(rendered).to have_css('lg-webauthn-input:not([desktop-ft-unlock-option="false"])')
-      end
-    end
-  end
-
   context 'with platform option' do
     context 'with platform option false' do
       let(:options) { super().merge(platform: false) }
@@ -72,30 +50,6 @@ RSpec.describe WebauthnInputComponent, type: :component do
               'lg-webauthn-input[hidden]:not([show-unsupported-passkey])',
               visible: false,
             )
-          end
-
-          context 'with show_unsupported_passkey option' do
-            context 'with show_unsupported_passkey option false' do
-              let(:options) { super().merge(show_unsupported_passkey: false) }
-
-              it 'renders as hidden' do
-                expect(rendered).to have_css(
-                  'lg-webauthn-input[hidden]:not([show-unsupported-passkey])',
-                  visible: false,
-                )
-              end
-            end
-
-            context 'with show_unsupported_passkey option true' do
-              let(:options) { super().merge(show_unsupported_passkey: true) }
-
-              it 'renders with show-unsupported-passkey attribute' do
-                expect(rendered).to have_css(
-                  'lg-webauthn-input[hidden][show-unsupported-passkey]',
-                  visible: false,
-                )
-              end
-            end
           end
         end
       end

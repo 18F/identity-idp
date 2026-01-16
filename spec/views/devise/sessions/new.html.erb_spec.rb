@@ -27,7 +27,7 @@ RSpec.describe 'devise/sessions/new.html.erb' do
   end
 
   it 'has a localized title' do
-    expect(view).to receive(:title=).with(t('titles.visitors.index'))
+    expect(view).to receive(:title=).with(t('titles.sign_in'))
 
     render
   end
@@ -41,13 +41,7 @@ RSpec.describe 'devise/sessions/new.html.erb' do
   it 'includes a link to create a new account' do
     render
 
-    expect(rendered).to have_link(t('links.create_account'), href: sign_up_email_url)
-  end
-
-  it 'includes a link to create a new account' do
-    render
-
-    expect(rendered).to have_link(t('links.create_account'), href: sign_up_email_url)
+    expect(rendered).to have_link(t('links.create_account'), href: sign_up_email_path)
   end
 
   it 'includes a link to security / privacy page and privacy statement act' do
@@ -224,7 +218,7 @@ RSpec.describe 'devise/sessions/new.html.erb' do
       let(:sign_in_recaptcha_enabled) { false }
 
       it 'renders default sign-in submit button' do
-        expect(rendered).to have_button(t('links.sign_in'))
+        expect(rendered).to have_button(t('forms.buttons.submit.default'))
         expect(rendered).not_to have_css('lg-captcha-submit-button')
       end
 
@@ -249,7 +243,7 @@ RSpec.describe 'devise/sessions/new.html.erb' do
         let(:recaptcha_mock_validator) { true }
 
         it 'renders captcha sign-in submit button' do
-          expect(rendered).to have_button(t('links.sign_in'))
+          expect(rendered).to have_button(t('forms.buttons.submit.default'))
           expect(rendered).to have_css('lg-captcha-submit-button')
         end
       end
@@ -259,7 +253,7 @@ RSpec.describe 'devise/sessions/new.html.erb' do
       let(:sign_in_recaptcha_enabled) { true }
 
       it 'renders captcha sign-in submit button' do
-        expect(rendered).to have_button(t('links.sign_in'))
+        expect(rendered).to have_button(t('forms.buttons.submit.default'))
         expect(rendered).to have_css('lg-captcha-submit-button')
       end
 

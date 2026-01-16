@@ -16,7 +16,7 @@ function InPersonLocationFullAddressEntryPostOfficeSearchStep({
   const { inPersonURL, locationsURL, usStatesTerritories } = useContext(InPersonContext);
   const [inProgress, setInProgress] = useState<boolean>(false);
   const [autoSubmit, setAutoSubmit] = useState<boolean>(false);
-  const { trackEvent } = useContext(AnalyticsContext);
+  const { trackEvent, setSubmitEventMetadata } = useContext(AnalyticsContext);
   const [locationResults, setLocationResults] = useState<FormattedLocation[] | null | undefined>(
     null,
   );
@@ -35,14 +35,22 @@ function InPersonLocationFullAddressEntryPostOfficeSearchStep({
 
   // useCallBack here prevents unnecessary rerenders due to changing function identity
   const handleLocationSelect = useCallback(
-    async (e: any, id: number) => {
+    async (e: any, id: number | null) => {
+      const isNullLocation = id === null;
+      const selectedLocation = isNullLocation ? null : locationResults![id];
+
+      const selectedLocationAddress = isNullLocation
+        ? 'Location Selection Skipped'
+        : `${selectedLocation?.streetAddress}, ${selectedLocation?.formattedCityStateZip}`;
+
       if (flowPath !== 'hybrid') {
         e.preventDefault();
+      } else {
+        setSubmitEventMetadata({ selected_location: selectedLocationAddress });
       }
-      const selectedLocation = locationResults![id]!;
-      const { streetAddress, formattedCityStateZip } = selectedLocation;
-      const selectedLocationAddress = `${streetAddress}, ${formattedCityStateZip}`;
+
       onChange({ selectedLocationAddress });
+
       if (autoSubmit) {
         setDisabledAddressSearch(true);
         setTimeout(() => {
@@ -55,24 +63,33 @@ function InPersonLocationFullAddressEntryPostOfficeSearchStep({
       if (inProgress) {
         return;
       }
-      const selected = transformKeys(selectedLocation, snakeCase);
+
+      const selectedLocationDto = {
+        selected_location: isNullLocation ? null : transformKeys(selectedLocation!, snakeCase),
+      };
+
       setInProgress(true);
+
       try {
         await request(locationsURL, {
-          json: selected,
+          json: selectedLocationDto,
           method: 'PUT',
         });
+
         // In try block set success of request. If the request is successful, fire remaining code?
         if (mountedRef.current) {
           setAutoSubmit(true);
           setImmediate(() => {
             e.target.disabled = false;
+
+            // Skip analytics track event since hybrid has its own logging
             if (flowPath !== 'hybrid') {
               trackEvent('IdV: location submitted', {
                 selected_location: selectedLocationAddress,
               });
               forceRedirect(inPersonURL!);
             }
+
             // allow process to be re-triggered in case submission did not work as expected
             setAutoSubmit(false);
           });
@@ -97,6 +114,7 @@ function InPersonLocationFullAddressEntryPostOfficeSearchStep({
         locationsURL={locationsURL}
         handleLocationSelect={handleLocationSelect}
         usStatesTerritories={usStatesTerritories}
+        usesErrorComponent
       />
       <BackButton role="link" includeBorder onClick={toPreviousStep} />
     </>

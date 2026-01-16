@@ -18,7 +18,7 @@ module Idv
       def address_lines
         [
           pii.address1,
-          pii.address2,
+          pii.address2.presence,
           "#{pii.city}, #{pii.state} #{pii.zipcode}",
         ].compact
       end

@@ -1,14 +1,12 @@
 require 'rails_helper'
 
 RSpec.describe Idv::WelcomePresenter do
-  subject(:presenter) { Idv::WelcomePresenter.new(decorated_sp_session) }
+  subject(:presenter) { Idv::WelcomePresenter.new(decorated_sp_session:) }
 
   let(:sp) { build(:service_provider) }
-
   let(:sp_session) { {} }
-
   let(:view_context) { ActionController::Base.new.view_context }
-
+  let(:user) { build(:user) }
   let(:decorated_sp_session) do
     ServiceProviderSession.new(
       sp: sp,
@@ -17,8 +15,6 @@ RSpec.describe Idv::WelcomePresenter do
       service_provider_request: nil,
     )
   end
-
-  let(:user) { build(:user) }
 
   before do
     allow(view_context).to receive(:current_user).and_return(user)
@@ -30,6 +26,38 @@ RSpec.describe Idv::WelcomePresenter do
 
   it 'gives us the correct title' do
     expect(presenter.title).to eq(t('doc_auth.headings.welcome', sp_name: sp.friendly_name))
+  end
+
+  describe '#title with reproof banner' do
+    context 'when show_sp_reproof_banner is true' do
+      subject(:presenter) do
+        Idv::WelcomePresenter.new(
+          decorated_sp_session:,
+          show_sp_reproof_banner: true,
+        )
+      end
+
+      it 'returns the reproof title' do
+        expect(presenter.title).to eq(
+          t('doc_auth.headings.welcome_sp_reproof', sp_name: sp.friendly_name),
+        )
+      end
+    end
+
+    context 'when show_sp_reproof_banner is false' do
+      subject(:presenter) do
+        Idv::WelcomePresenter.new(
+          decorated_sp_session:,
+          show_sp_reproof_banner: false,
+        )
+      end
+
+      it 'returns the standard title' do
+        expect(presenter.title).to eq(
+          t('doc_auth.headings.welcome', sp_name: sp.friendly_name),
+        )
+      end
+    end
   end
 
   describe 'the explanation' do
@@ -54,6 +82,27 @@ RSpec.describe Idv::WelcomePresenter do
         expect(presenter.explanation_text(help_link)).to eq(
           t(
             'doc_auth.info.stepping_up_html',
+            sp_name: sp.friendly_name,
+            link_html: help_link,
+          ),
+        )
+      end
+    end
+
+    context 'when show_sp_reproof_banner is true' do
+      subject(:presenter) do
+        Idv::WelcomePresenter.new(
+          decorated_sp_session:,
+          show_sp_reproof_banner: true,
+        )
+      end
+
+      let(:user) { build(:user, :proofed) }
+
+      it 'uses the getting started message to avoid repetition' do
+        expect(presenter.explanation_text(help_link)).to eq(
+          t(
+            'doc_auth.info.getting_started_html',
             sp_name: sp.friendly_name,
             link_html: help_link,
           ),

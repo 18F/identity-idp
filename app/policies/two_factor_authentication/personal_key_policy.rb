@@ -9,7 +9,7 @@ module TwoFactorAuthentication
     end
 
     def configured?
-      user&.encrypted_recovery_code_digest.present?
+      user&.has_recovery_code?
     end
 
     def enabled?

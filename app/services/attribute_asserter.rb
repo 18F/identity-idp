@@ -36,14 +36,11 @@ class AttributeAsserter
     attrs = default_attrs
     add_email(attrs) if bundle.include? :email
     add_all_emails(attrs) if bundle.include? :all_emails
+    add_locale(attrs) if bundle.include? :locale
     add_bundle(attrs) if should_add_proofed_attributes?
     add_verified_at(attrs) if bundle.include?(:verified_at) && ial2_service_provider?
-    if authn_request.requested_vtr_authn_contexts.present?
-      add_vot(attrs)
-    else
-      add_aal(attrs)
-      add_ial(attrs)
-    end
+    add_aal(attrs)
+    add_ial(attrs)
 
     add_x509(attrs) if bundle.include?(:x509_presented) && x509_data
     user.asserted_attributes = attrs
@@ -57,6 +54,10 @@ class AttributeAsserter
                 :authn_request,
                 :decrypted_pii,
                 :user_session
+
+  def analytics
+    Analytics.new(user:, request: nil, session: {}, sp: nil)
+  end
 
   def should_add_proofed_attributes?
     return false if !user.active_profile.present?
@@ -77,7 +78,6 @@ class AttributeAsserter
       AuthnContextResolver.new(
         user: user,
         service_provider: service_provider,
-        vtr: saml.vtr,
         acr_values: saml.acr_values,
       )
     end
@@ -139,17 +139,25 @@ class AttributeAsserter
     attrs[:verified_at] = { getter: verified_at_getter_function }
   end
 
-  def add_vot(attrs)
-    context = resolved_authn_context_result.component_values.map(&:name).join('.')
-    attrs[:vot] = { getter: vot_getter_function(context) }
-  end
-
   def add_aal(attrs)
     requested_context = requested_aal_authn_context
     requested_aal_level = Saml::Idp::Constants::AUTHN_CONTEXT_CLASSREF_TO_AAL[requested_context]
     aal_level = requested_aal_level || service_provider.default_aal || ::Idp::Constants::DEFAULT_AAL
     context = Saml::Idp::Constants::AUTHN_CONTEXT_AAL_TO_CLASSREF[aal_level]
+
+    if context != asserted_aal_value
+      analytics.asserted_aal_different_from_response_aal(
+        asserted_aal_value:,
+        client_id: service_provider.issuer,
+        response_aal_value: context,
+      )
+    end
+
     attrs[:aal] = { getter: aal_getter_function(context) } if context
+  end
+
+  def asserted_aal_value
+    authn_context_resolver.asserted_aal_acr
   end
 
   def add_ial(attrs)
@@ -206,6 +214,10 @@ class AttributeAsserter
       name_format: 'urn:oasis:names:tc:SAML:2.0:attrname-format:basic',
       name_id_format: Saml::XML::Namespaces::Formats::NameId::EMAIL_ADDRESS,
     }
+  end
+
+  def add_locale(attrs)
+    attrs[:locale] = { getter: ->(_principal) { user_session[:web_locale] } }
   end
 
   def add_all_emails(attrs)

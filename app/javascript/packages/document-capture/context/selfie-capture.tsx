@@ -6,6 +6,10 @@ interface SelfieCaptureProps {
    */
   isSelfieCaptureEnabled: boolean;
   /**
+   * Specify whether to allow manual uploads for document capture.
+   */
+  isUploadEnabled: boolean;
+  /**
    * Specify whether to allow uploads for selfie when in test mode.
    */
   isSelfieDesktopTestMode: boolean;
@@ -14,17 +18,13 @@ interface SelfieCaptureProps {
    * the capture component.
    */
   showHelpInitially: boolean;
-  /**
-   * Specify whether we should try to capture using Acuant immediately
-   */
-  immediatelyBeginCapture: boolean;
 }
 
 const SelfieCaptureContext = createContext<SelfieCaptureProps>({
   isSelfieCaptureEnabled: false,
+  isUploadEnabled: true,
   isSelfieDesktopTestMode: false,
   showHelpInitially: true,
-  immediatelyBeginCapture: false,
 });
 
 SelfieCaptureContext.displayName = 'SelfieCaptureContext';

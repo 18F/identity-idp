@@ -21,8 +21,7 @@ RSpec.describe Idv::PersonalKeyController do
       state_id_expiration
       state_id_issued
       state_id_number
-      state_id_type
-      issuing_country_code
+      document_type_received
     ]
 
     profile_pii_pairs.each do |profile, pii|
@@ -423,13 +422,11 @@ RSpec.describe Idv::PersonalKeyController do
     context 'user selected phone verification' do
       context 'with an sp' do
         let(:acr_values) { Saml::Idp::Constants::AAL1_AUTHN_CONTEXT_CLASSREF }
-        let(:vtr) { nil }
 
         before do
           subject.session[:sp] = {
             issuer: create(:service_provider).issuer,
             acr_values:,
-            vtr:,
           }
         end
 
@@ -437,17 +434,6 @@ RSpec.describe Idv::PersonalKeyController do
           patch :update
 
           expect(response).to redirect_to sign_up_completed_url
-        end
-
-        context 'with vtr values' do
-          let(:acr_values) { nil }
-          let(:vtr) { ['C1'] }
-
-          it 'redirects to sign up completed for the sp' do
-            patch :update
-
-            expect(response).to redirect_to sign_up_completed_url
-          end
         end
       end
 
@@ -468,12 +454,10 @@ RSpec.describe Idv::PersonalKeyController do
 
         expect(@analytics).to have_logged_event(
           'IdV: personal key submitted',
-          hash_including(
-            address_verification_method: 'phone',
-            fraud_review_pending: false,
-            fraud_rejection: false,
-            in_person_verification_pending: false,
-          ),
+          address_verification_method: 'phone',
+          fraud_review_pending: false,
+          fraud_rejection: false,
+          in_person_verification_pending: false,
         )
       end
     end
@@ -510,12 +494,10 @@ RSpec.describe Idv::PersonalKeyController do
 
           expect(@analytics).to have_logged_event(
             'IdV: personal key submitted',
-            hash_including(
-              address_verification_method: 'gpo',
-              fraud_review_pending: false,
-              fraud_rejection: false,
-              in_person_verification_pending: false,
-            ),
+            address_verification_method: 'gpo',
+            fraud_review_pending: false,
+            fraud_rejection: false,
+            in_person_verification_pending: false,
           )
         end
       end
@@ -540,12 +522,10 @@ RSpec.describe Idv::PersonalKeyController do
 
         expect(@analytics).to have_logged_event(
           'IdV: personal key submitted',
-          hash_including(
-            address_verification_method: 'phone',
-            fraud_review_pending: false,
-            fraud_rejection: false,
-            in_person_verification_pending: false,
-          ),
+          address_verification_method: 'phone',
+          fraud_review_pending: false,
+          fraud_rejection: false,
+          in_person_verification_pending: false,
         )
       end
     end
@@ -568,20 +548,19 @@ RSpec.describe Idv::PersonalKeyController do
 
           expect(@analytics).to have_logged_event(
             'IdV: personal key submitted',
-            hash_including(
-              address_verification_method: 'phone',
-              fraud_review_pending: false,
-              fraud_rejection: false,
-              in_person_verification_pending: false,
-            ),
+            address_verification_method: 'phone',
+            fraud_review_pending: false,
+            fraud_rejection: false,
+            in_person_verification_pending: false,
           )
         end
       end
 
       context 'profile is in fraud_review' do
+        let(:mint_profile_from_idv_session) { false }
+        let!(:profile) { create(:profile, :fraud_review_pending, user: user) }
         before do
-          idv_session.profile.fraud_pending_reason = 'threatmetrix_review'
-          idv_session.profile.deactivate_for_fraud_review
+          idv_session.profile_id = profile.id
         end
 
         it 'redirects to idv please call path' do
@@ -595,13 +574,37 @@ RSpec.describe Idv::PersonalKeyController do
 
           expect(@analytics).to have_logged_event(
             'IdV: personal key submitted',
-            hash_including(
-              fraud_review_pending: true,
-              fraud_rejection: false,
-              address_verification_method: 'phone',
-              in_person_verification_pending: false,
-            ),
+            fraud_review_pending: true,
+            fraud_rejection: false,
+            address_verification_method: 'phone',
+            in_person_verification_pending: false,
           )
+        end
+      end
+    end
+
+    context 'with one account enabled for service provider' do
+      context 'with duplicate profile set found for user' do
+        before do
+          allow(controller)
+            .to receive(:profile_creation_duplicate_profile_detected?)
+            .and_return(true)
+        end
+        it 'redirects to duplicate profile detected page' do
+          patch :update
+          expect(response)
+            .to redirect_to(duplicate_profiles_detected_url(source: :account_verified))
+        end
+      end
+
+      context 'with duplicate profile set not found for user' do
+        before do
+          allow(controller)
+            .to receive(:profile_creation_duplicate_profile_detected?).and_return(false)
+        end
+        it 'redirects to account path' do
+          patch :update
+          expect(response).to redirect_to(account_path)
         end
       end
     end

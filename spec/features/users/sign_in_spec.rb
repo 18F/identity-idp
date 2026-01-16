@@ -33,7 +33,7 @@ RSpec.feature 'Sign in' do
       .to have_link t('devise.failure.not_found_in_database_link_text', href: link_url)
   end
 
-  scenario 'user is suspended, gets show please call page after 2fa' do
+  scenario 'user is suspended before 2fa' do
     user = create(:user, :fully_registered, :suspended)
     service_provider = ServiceProvider.find_by(issuer: OidcAuthHelper::OIDC_IAL1_ISSUER)
     IdentityLinker.new(user, service_provider).link_identity(
@@ -42,8 +42,6 @@ RSpec.feature 'Sign in' do
 
     visit_idp_from_sp_with_ial1(:oidc)
     fill_in_credentials_and_submit(user.email, user.password)
-    fill_in_code_with_last_phone_otp
-    click_submit_default
 
     expect(page).to have_current_path(user_please_call_path)
   end
@@ -64,8 +62,8 @@ RSpec.feature 'Sign in' do
     click_on t('account.login.piv_cac')
     fill_in_piv_cac_credentials_and_submit(user, user.piv_cac_configurations.first.x509_dn_uuid)
 
-    expect(current_url).to eq rules_of_use_url
-    accept_rules_of_use_and_continue_if_displayed
+    expect(page).to have_current_path rules_of_use_path
+    accept_rules_of_use_and_continue
     expect(oidc_redirect_url).to start_with service_provider.redirect_uris.first
   end
 
@@ -93,13 +91,13 @@ RSpec.feature 'Sign in' do
     click_on t('account.login.piv_cac')
     fill_in_piv_cac_credentials_and_submit(user, user.piv_cac_configurations.first.x509_dn_uuid)
 
-    expect(current_url).to eq capture_password_url
+    expect(page).to have_current_path(capture_password_path)
 
     fill_in 'Password', with: user.password
     click_submit_default
 
-    expect(current_url).to eq rules_of_use_url
-    accept_rules_of_use_and_continue_if_displayed
+    expect(page).to have_current_path rules_of_use_path
+    accept_rules_of_use_and_continue
     expect(oidc_redirect_url).to start_with service_provider.redirect_uris.first
   end
 
@@ -199,7 +197,10 @@ RSpec.feature 'Sign in' do
 
     scenario 'user sees warning before session times out' do
       minutes_and = [
-        t('datetime.dotiw.minutes', count: IdentityConfig.store.session_timeout_in_minutes - 1),
+        t(
+          'datetime.dotiw.minutes',
+          count: IdentityConfig.store.session_timeout_in_seconds.seconds.in_minutes.to_i - 1,
+        ),
         t('datetime.dotiw.two_words_connector'),
       ].join('')
 
@@ -218,7 +219,7 @@ RSpec.feature 'Sign in' do
 
     scenario 'user can continue browsing with refreshed CSRF token' do
       token = first('[name=authenticity_token]', visible: false).value
-      click_button t('notices.timeout_warning.signed_in.continue')
+      click_on t('notices.timeout_warning.signed_in.continue')
       expect(page).not_to have_css('.usa-js-modal--active')
       expect(page).to have_css(
         "[name=authenticity_token]:not([value='#{token}'])",
@@ -241,6 +242,8 @@ RSpec.feature 'Sign in' do
       allow(IdentityConfig.store).to receive(:session_check_delay).and_return(0)
       allow(IdentityConfig.store).to receive(:session_timeout_warning_seconds)
         .and_return(Devise.timeout_in)
+      allow(Devise).to receive(:timeout_in)
+        .and_return(IdentityConfig.store.session_timeout_warning_seconds + 1)
 
       user = create(:user, :fully_registered)
       sign_in_user(user)
@@ -249,22 +252,6 @@ RSpec.feature 'Sign in' do
       expect(page).to have_css('.usa-js-modal--active', wait: 5)
       expect(page).to have_content(t('notices.timeout_warning.partially_signed_in.continue'))
       expect(page).to have_content(t('notices.timeout_warning.partially_signed_in.sign_out'))
-    end
-  end
-
-  context 'signed out' do
-    it 'refreshes the current page after session expires', js: true do
-      allow(Devise).to receive(:timeout_in).and_return(1)
-
-      visit sign_up_email_path(request_id: '123abc')
-      fill_in t('forms.registration.labels.email'), with: 'test@example.com'
-
-      expect(page).to have_content(
-        t('notices.session_cleared', minutes: IdentityConfig.store.session_timeout_in_minutes),
-        wait: 5,
-      )
-      expect(page).to have_field(t('forms.registration.labels.email'), with: '')
-      expect(current_url).to match Regexp.escape(sign_up_email_path(request_id: '123abc'))
     end
   end
 
@@ -296,19 +283,68 @@ RSpec.feature 'Sign in' do
       end
     end
 
-    it 'refreshes the page (which clears the form) and notifies the user', js: true do
-      allow(Devise).to receive(:timeout_in).and_return(1)
-      user = create(:user)
-      visit root_path
-      fill_in t('account.index.email'), with: user.email
-      fill_in 'Password', with: user.password
+    context 'create account' do
+      it 'shows the timeout modal when the session expiration approaches', js: true do
+        allow(Devise).to receive(:timeout_in)
+          .and_return(IdentityConfig.store.session_timeout_warning_seconds + 1)
 
-      expect(page).to have_content(
-        t('notices.session_cleared', minutes: IdentityConfig.store.session_timeout_in_minutes),
-        wait: 5,
-      )
-      expect(find_field('Email').value).to be_blank
-      expect(find_field('Password').value).to be_blank
+        visit sign_up_email_path
+        fill_in t('forms.registration.labels.email'), with: 'test@example.com'
+
+        expect(page).to have_css('.usa-js-modal--active', wait: 10)
+
+        click_on t('notices.timeout_warning.partially_signed_in.continue')
+
+        expect(page).not_to have_css('.usa-js-modal--active')
+        expect(find_field(t('forms.registration.labels.email')).value).not_to be_blank
+      end
+    end
+
+    context 'sign in' do
+      it 'shows the timeout modal when the session expiration approaches', js: true do
+        allow(Devise).to receive(:timeout_in)
+          .and_return(IdentityConfig.store.session_timeout_warning_seconds + 1)
+
+        visit root_path
+        fill_in t('account.index.email'), with: 'test@example.com'
+
+        expect(page).to have_css('.usa-js-modal--active', wait: 10)
+
+        click_on t('notices.timeout_warning.partially_signed_in.continue')
+        expect(find_field(t('account.index.email')).value).not_to be_blank
+      end
+
+      it 'maintains partner request if the user continues after the session expires', js: true do
+        allow(IdentityConfig.store).to receive(:session_timeout_in_seconds).and_return(1)
+        allow(IdentityConfig.store).to receive(:session_check_delay).and_return(0)
+        allow(Devise).to receive(:timeout_in).and_return(1)
+
+        visit_idp_from_sp_with_ial1(:oidc)
+
+        expect(page).to have_content(
+          t(
+            'notices.timeout_warning.partially_signed_in.message_html',
+            time_left_in_session_html: t('datetime.dotiw.seconds', count: 0),
+          ),
+          wait: 10,
+        )
+
+        click_on t('notices.timeout_warning.partially_signed_in.continue')
+        expect_branded_experience
+      end
+
+      it 'reloads the sign in page when cancel is clicked', js: true do
+        allow(Devise).to receive(:timeout_in)
+          .and_return(IdentityConfig.store.session_timeout_warning_seconds + 1)
+
+        visit root_path
+        fill_in t('account.index.email'), with: 'test@example.com'
+
+        expect(page).to have_css('.usa-js-modal--active', wait: 10)
+
+        click_button t('notices.timeout_warning.partially_signed_in.sign_out')
+        expect(find_field(t('account.index.email')).value).to be_blank
+      end
     end
   end
 
@@ -500,7 +536,7 @@ RSpec.feature 'Sign in' do
 
       fill_in_credentials_and_submit(user.email, user.password)
 
-      expect(current_url).to eq new_user_session_url(request_id: '123')
+      expect(page).to have_current_path(new_user_session_path(request_id: '123'))
       expect(page).to have_content t('errors.general')
     end
   end
@@ -637,7 +673,6 @@ RSpec.feature 'Sign in' do
     it 'signs out the user if they choose to cancel' do
       user = create(:user, :fully_registered)
       signin(user.email, user.password)
-      accept_rules_of_use_and_continue_if_displayed
       click_link t('two_factor_authentication.login_options_link_text')
       click_on t('links.cancel')
 
@@ -716,7 +751,7 @@ RSpec.feature 'Sign in' do
       click_on t('account.login.piv_cac')
       fill_in_piv_cac_credentials_and_submit(user, 'foo')
 
-      expect(current_url).to eq account_url
+      expect(page).to have_current_path(account_path)
 
       Capybara.reset_session!
 
@@ -724,7 +759,7 @@ RSpec.feature 'Sign in' do
       click_on t('account.login.piv_cac')
       fill_in_piv_cac_credentials_and_submit(user, 'bar')
 
-      expect(current_url).to eq account_url
+      expect(page).to have_current_path(account_path)
     end
   end
 
@@ -808,7 +843,7 @@ RSpec.feature 'Sign in' do
 
         click_agree_and_continue
 
-        expect(current_url).to eq complete_saml_url
+        expect(page).to have_current_path complete_saml_path
       end
 
       it 'returns ial2 info for a verified user' do
@@ -837,7 +872,7 @@ RSpec.feature 'Sign in' do
 
         click_agree_and_continue
 
-        expect(current_url).to eq complete_saml_url
+        expect(page).to have_current_path complete_saml_path
       end
     end
 
@@ -885,8 +920,6 @@ RSpec.feature 'Sign in' do
     before do
       allow(FeatureManagement).to receive(:sign_in_recaptcha_enabled?).and_return(true)
       allow(IdentityConfig.store).to receive(:recaptcha_mock_validator).and_return(true)
-      allow(IdentityConfig.store).to receive(:sign_in_recaptcha_log_failures_only)
-        .and_return(sign_in_recaptcha_log_failures_only)
       allow(IdentityConfig.store).to receive(:sign_in_recaptcha_score_threshold).and_return(0.2)
       allow(IdentityConfig.store).to receive(:sign_in_recaptcha_percent_tested).and_return(100)
       reload_ab_tests
@@ -896,14 +929,7 @@ RSpec.feature 'Sign in' do
       reload_ab_tests
     end
 
-    context 'when configured to log failures only' do
-      let(:sign_in_recaptcha_log_failures_only) { true }
-      it_behaves_like 'logs reCAPTCHA event and redirects appropriately',
-                      successful_sign_in: true
-    end
-
     context 'when not configured to log failures only' do
-      let(:sign_in_recaptcha_log_failures_only) { false }
       it_behaves_like 'logs reCAPTCHA event and redirects appropriately',
                       successful_sign_in: false
     end

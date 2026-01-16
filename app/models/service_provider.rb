@@ -46,6 +46,8 @@ class ServiceProvider < ApplicationRecord
   scope(:internal, -> { where(iaa: IAA_INTERNAL) })
   scope(:external, -> { where.not(iaa: IAA_INTERNAL).or(where(iaa: nil)) })
 
+  DEFAULT_LOGO = 'generic.svg'
+
   def metadata
     attributes.symbolize_keys.merge(certs: ssl_certs)
   end
@@ -82,7 +84,70 @@ class ServiceProvider < ApplicationRecord
     IdentityConfig.store.facial_match_general_availability_enabled
   end
 
+  def attempts_api_enabled?
+    IdentityConfig.store.attempts_api_enabled && attempts_config.present?
+  end
+
+  def attempts_public_key
+    if attempts_config.present? && attempts_config['keys'].present?
+      OpenSSL::PKey::RSA.new(attempts_config['keys'].first)
+    else
+      ssl_certs.first.public_key
+    end
+  end
+
+  def logo_url
+    if FeatureManagement.logo_upload_enabled? && remote_logo_key.present?
+      s3_logo_url
+    else
+      legacy_logo_url
+    end
+  end
+
+  def logo_is_email_compatible?
+    logo_url.end_with?('.png')
+  end
+
+  def needs_to_reproof?(initiating_service_provider)
+    # TODO Check verification date against blackout period end
+    issuer == IdentityConfig.store.reproof_forcing_service_provider &&
+      initiating_service_provider&.issuer != IdentityConfig.store.reproof_forcing_service_provider
+  end
+
+  def receives_client_id_in_risc?
+    IdentityConfig
+      .store
+      .allowed_client_id_in_risc_service_providers.include?(issuer)
+  end
+
+  def display_name
+    friendly_name || agency.name || issuer
+  end
+
+  def agency_name
+    agency.name
+  end
+
   private
+
+  def s3_logo_url
+    region = IdentityConfig.store.aws_region
+    bucket = IdentityConfig.store.aws_logo_bucket
+
+    "https://s3.#{region}.amazonaws.com/#{bucket}/#{remote_logo_key}"
+  end
+
+  def legacy_logo_url
+    ActionController::Base.helpers.image_path("sp-logos/#{logo || DEFAULT_LOGO}")
+  rescue Propshaft::MissingAssetError
+    ''
+  end
+
+  def attempts_config
+    IdentityConfig.store.allowed_attempts_providers.find do |config|
+      config['issuer'] == issuer
+    end
+  end
 
   # @return [String,nil]
   def load_cert(cert)

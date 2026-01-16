@@ -26,7 +26,7 @@ RSpec.describe 'Account Reset Request: Delete Account', email: true do
         .to have_content strip_tags(
           t('account_reset.recovery_options.try_method_again'),
         )
-      click_link t('account_reset.request.yes_continue')
+      click_link t('account_reset.recover_options.yes_delete')
       expect(page)
         .to have_content strip_tags(
           t('account_reset.request.delete_account'),
@@ -35,22 +35,14 @@ RSpec.describe 'Account Reset Request: Delete Account', email: true do
       click_button t('account_reset.request.yes_continue')
 
       expect(page)
-        .to have_content strip_tags(
-          t('account_reset.confirm_request.instructions_start'),
-        )
-      expect(page)
         .to have_content user_email
-      expect(page)
-        .to have_content strip_tags(
-          t('account_reset.confirm_request.instructions_end'),
-        )
       expect(page).to have_content t('account_reset.confirm_request.security_note')
       expect(page).to have_content t('account_reset.confirm_request.close_window')
 
       reset_email
 
       travel_to(Time.zone.now + 2.days + 2) do
-        AccountReset::GrantRequestsAndSendEmails.new.perform(Time.zone.today)
+        GrantAccountResetRequestsAndSendEmailsJob.new.perform(Time.zone.today)
         open_last_email
         click_email_link_matching(/delete_account\?token/)
 
@@ -82,7 +74,11 @@ RSpec.describe 'Account Reset Request: Delete Account', email: true do
     end
 
     it 'sends push notifications if push_notifications_enabled is true' do
-      service_provider = build(:service_provider, issuer: 'urn:gov:gsa:openidconnect:test')
+      service_provider = create(
+        :service_provider,
+        active: true,
+        push_notification_url: push_notification_url,
+      )
       identity = IdentityLinker.new(user, service_provider).link_identity
       agency_identity = AgencyIdentityLinker.new(identity).link_identity
 
@@ -95,7 +91,7 @@ RSpec.describe 'Account Reset Request: Delete Account', email: true do
           t('account_reset.recovery_options.try_method_again'),
         )
 
-      click_link t('account_reset.request.yes_continue')
+      click_link t('account_reset.recover_options.yes_delete')
 
       expect(page)
         .to have_content strip_tags(
@@ -105,24 +101,18 @@ RSpec.describe 'Account Reset Request: Delete Account', email: true do
       click_button t('account_reset.request.yes_continue')
 
       expect(page)
-        .to have_content strip_tags(
-          t('account_reset.confirm_request.instructions_start'),
-        )
-      expect(page)
         .to have_content user_email
-      expect(page)
-        .to have_content strip_tags(
-          t('account_reset.confirm_request.instructions_end'),
-        )
       expect(page).to have_content t('account_reset.confirm_request.security_note')
       expect(page).to have_content t('account_reset.confirm_request.close_window')
 
       reset_email
 
       allow(IdentityConfig.store).to receive(:push_notifications_enabled).and_return(true)
+      allow(IdentityConfig.store).to receive(:allowed_client_id_in_risc_service_providers)
+        .and_return([service_provider.issuer])
       travel_to(2.days.from_now + 1) do
         request = stub_push_notification_request(
-          sp_push_notification_endpoint: push_notification_url,
+          service_provider: service_provider,
           event_type: PushNotification::AccountPurgedEvent::EVENT_TYPE,
           payload: {
             'subject' => {
@@ -133,7 +123,7 @@ RSpec.describe 'Account Reset Request: Delete Account', email: true do
           },
         )
 
-        AccountReset::GrantRequestsAndSendEmails.new.perform(Time.zone.today)
+        GrantAccountResetRequestsAndSendEmailsJob.new.perform(Time.zone.today)
         open_last_email
         click_email_link_matching(/delete_account\?token/)
 
@@ -158,7 +148,7 @@ RSpec.describe 'Account Reset Request: Delete Account', email: true do
         .to have_content strip_tags(
           t('account_reset.recovery_options.try_method_again'),
         )
-      click_link t('account_reset.request.yes_continue')
+      click_link t('account_reset.recover_options.yes_delete')
       expect(page)
         .to have_content strip_tags(
           t('account_reset.request.delete_account'),
@@ -166,15 +156,7 @@ RSpec.describe 'Account Reset Request: Delete Account', email: true do
       click_button t('account_reset.request.yes_continue')
 
       expect(page)
-        .to have_content strip_tags(
-          t('account_reset.confirm_request.instructions_start'),
-        )
-      expect(page)
         .to have_content user_email
-      expect(page)
-        .to have_content strip_tags(
-          t('account_reset.confirm_request.instructions_end'),
-        )
       expect(page).to_not have_content t('account_reset.confirm_request.security_note')
       expect(page).to have_content t('account_reset.confirm_request.close_window')
 

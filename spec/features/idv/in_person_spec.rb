@@ -7,13 +7,19 @@ RSpec.describe 'In Person Proofing', js: true do
   include InPersonHelper
   include UspsIppHelper
 
+  let(:ipp_service_provider) { create(:service_provider, :active, :in_person_proofing_enabled) }
+  let(:user) { user_with_2fa }
+
   before do
     allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
+    allow(IdentityConfig.store).to receive(:in_person_completion_survey_delivery_enabled)
+      .and_return(true)
   end
 
   it 'works for a happy path', allow_browser_log: true do
     user = user_with_2fa
 
+    visit_idp_from_sp_with_ial2(:oidc, **{ client_id: ipp_service_provider.issuer })
     sign_in_and_2fa_user(user)
     begin_in_person_proofing(user)
 
@@ -133,7 +139,13 @@ RSpec.describe 'In Person Proofing', js: true do
     expect(page).to have_css("img[alt='#{APP_NAME}']")
     expect(page).to have_content(strip_nbsp(t('in_person_proofing.headings.barcode')))
     expect(page).to have_content(Idv::InPerson::EnrollmentCodeFormatter.format(enrollment_code))
-    expect(page).to have_content(t('in_person_proofing.body.barcode.deadline', deadline: deadline))
+    expect(page).to have_content(
+      t(
+        'in_person_proofing.body.barcode.deadline',
+        deadline: deadline,
+        sp_name: ipp_service_provider.friendly_name,
+      ),
+    )
     expect(page).to have_content('MILWAUKEE')
     expect(page).to have_content('Sunday: Closed')
 
@@ -155,6 +167,126 @@ RSpec.describe 'In Person Proofing', js: true do
     Capybara.reset_session!
     sign_in_and_2fa_user(user)
     expect(page).to have_current_path(account_path)
+  end
+
+  context 'when phone precheck is enabled' do
+    before do
+      allow(IdentityConfig.store).to receive(:idv_phone_precheck_percent).and_return(100)
+    end
+
+    it 'user skips phone step', allow_browser_log: true do
+      expect_any_instance_of(Proofing::Socure::IdPlus::Proofers::PhoneRiskProofer)
+        .not_to receive(:proof)
+      user = sign_in_and_2fa_user
+      begin_in_person_proofing
+      complete_all_in_person_proofing_steps
+      complete_enter_password_step(user)
+    end
+
+    context 'when phone mfa is not enbled' do
+      let(:user) do
+        create(:user, :with_backup_code)
+      end
+
+      it 'user must complete phone step', allow_browser_log: true do
+        sign_in_and_2fa_user(user)
+        begin_in_person_proofing
+        complete_all_in_person_proofing_steps
+        fill_out_phone_form_ok('2342255432')
+        verify_phone_otp
+      end
+    end
+
+    context 'when phone precheck fails' do
+      let(:user) do
+        create(:user, :fully_registered, with: { phone: '703-555-5555' })
+      end
+
+      it 'user must complete phone step', allow_browser_log: true do
+        sign_in_and_2fa_user(user)
+        begin_in_person_proofing
+        complete_all_in_person_proofing_steps
+        fill_out_phone_form_ok('2342255432')
+        verify_phone_otp
+      end
+    end
+
+    context 'when secondary vendor is enabled' do
+      let(:user) do
+        create(:user, :fully_registered, with: { phone: '703-555-5555' })
+      end
+      let(:phonerisk_risk_score) { 0 }
+      let(:phonerisk_correlation_score) { 1.0 }
+      let(:phonerisk_response) do
+        {
+          status: 200,
+          body: {
+            referenceId: 'some-reference-id',
+            namePhoneCorrelation: {
+              reasonCodes: [],
+              score: phonerisk_correlation_score,
+            },
+            phoneRisk: {
+              reasonCodes: [],
+              score: phonerisk_risk_score,
+            },
+            customerProfile: {
+              customerUserId: user.uuid,
+            },
+          }.to_json,
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      end
+
+      before do
+        allow(IdentityConfig.store).to receive(:idv_address_secondary_vendor).and_return(:socure)
+        @phonerisk_stub = stub_request(:post, 'https://sandbox.socure.test/api/3.0/EmailAuthScore')
+          .to_return(phonerisk_response)
+      end
+
+      it 'user skips phone step', allow_browser_log: true do
+        sign_in_and_2fa_user(user)
+        begin_in_person_proofing
+        complete_all_in_person_proofing_steps
+        complete_enter_password_step(user)
+      end
+
+      context 'when both phone vendors fail' do
+        let(:phonerisk_risk_score) { 1.0 }
+        let(:phonerisk_correlation_score) { 0 }
+
+        it 'user must complete phone step', allow_browser_log: true do
+          sign_in_and_2fa_user(user)
+          begin_in_person_proofing
+          complete_all_in_person_proofing_steps
+          remove_request_stub(@phonerisk_stub)
+          stub_request(:post, 'https://sandbox.socure.test/api/3.0/EmailAuthScore')
+            .to_return({
+              status: 200,
+              body: {
+                referenceId: 'some-reference-id',
+                namePhoneCorrelation: {
+                  reasonCodes: [],
+                  score: 1,
+                },
+                phoneRisk: {
+                  reasonCodes: [],
+                  score: 0,
+                },
+                customerProfile: {
+                  customerUserId: user.uuid,
+                },
+              }.to_json,
+              headers: {
+                'Content-Type': 'application/json',
+              },
+            })
+          complete_phone_step(user)
+        end
+      end
+    end
   end
 
   it 'allows the user to cancel and start over from the beginning', allow_browser_log: true do
@@ -220,6 +352,80 @@ RSpec.describe 'In Person Proofing', js: true do
     end
   end
 
+  context 'the user fails remote doc auth and starts IPP', allow_browser_log: true do
+    before do
+      allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled).and_return(true)
+
+      visit_idp_from_sp_with_ial2(:oidc, **{ client_id: ipp_service_provider.issuer })
+      sign_in_via_branded_page(user)
+      complete_welcome_step
+      complete_agreement_step
+      complete_hybrid_handoff_step
+      complete_choose_id_type_step
+      # Fail docauth
+      complete_document_capture_step_with_yml(
+        'spec/fixtures/ial2_test_credential_multiple_doc_auth_failures_both_sides.yml',
+        expected_path: idv_document_capture_url,
+      )
+
+      # begin in-person proofing
+      find(:button, t('in_person_proofing.body.cta.button'), wait: 10).click
+      complete_prepare_step
+      complete_location_step
+    end
+
+    context 'then navigates back to the submit images page and resumes remote
+    with successful images' do
+      it 'allows the user to successfully complete remote identity verification' do
+        # Click back and resume remote identity verification
+        visit idv_document_capture_url
+        complete_document_capture_step(with_selfie: false)
+
+        complete_remote_idv_from_ssn(user)
+      end
+    end
+
+    context 'then navigates to how to verify and resumes remote with successful images' do
+      it 'allows the user to successfully complete remote identity verification' do
+        complete_state_id_controller(user)
+        # Change mind and resume remote identity verification
+        visit idv_hybrid_handoff_path
+        complete_hybrid_handoff_step
+        complete_choose_id_type_step
+        complete_document_capture_step(with_selfie: false)
+
+        complete_remote_idv_from_ssn(user)
+      end
+    end
+  end
+
+  context 'the user starts in-person proofing then navigates back to how to verify' do
+    before do
+      allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled).and_return(true)
+
+      # Begin identity verification via in-person proofing
+      visit_idp_from_sp_with_ial2(:oidc, **{ client_id: ipp_service_provider.issuer })
+      sign_in_via_branded_page(user)
+      begin_in_person_proofing_with_opt_in_ipp_enabled_and_opting_in
+      complete_prepare_step
+      complete_location_step
+      complete_state_id_controller(user)
+      complete_ssn_step(user)
+      expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.verify_info'))
+
+      # Change mind and start remote identity verification
+      visit idv_hybrid_handoff_url
+    end
+
+    it 'allows the user to successfully complete remote identity verification' do
+      complete_hybrid_handoff_step
+      complete_choose_id_type_step
+      complete_document_capture_step(with_selfie: false)
+
+      complete_remote_idv_from_ssn(user)
+    end
+  end
+
   context 'with hybrid document capture' do
     before do
       allow(FeatureManagement).to receive(:doc_capture_polling_enabled?).and_return(true)
@@ -265,6 +471,105 @@ RSpec.describe 'In Person Proofing', js: true do
 
       perform_mobile_hybrid_steps
       perform_desktop_hybrid_steps(user, same_address_as_id: false)
+    end
+
+    context 'when the user fails docauth remote in the hybrid flow and begins IPP' do
+      before do
+        allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled).and_return(true)
+
+        perform_in_browser(:desktop) do
+          visit_idp_from_sp_with_ial2(:oidc, **{ client_id: ipp_service_provider.issuer })
+          sign_in_via_branded_page(user)
+          complete_doc_auth_steps_before_hybrid_handoff_step
+
+          click_send_link
+
+          expect(page).to have_content(t('doc_auth.headings.text_message'))
+        end
+
+        perform_mobile_hybrid_steps
+      end
+
+      context 'then the user navigates to the how to verify page and changes from IPP to remote
+      verification after returning to desktop' do
+        it 'allows the user to successfully complete remote identity verification' do
+          perform_in_browser(:desktop) do
+            # Change mind and resume remote identity verification
+            visit idv_hybrid_handoff_url
+
+            complete_hybrid_handoff_step
+            successful_response = instance_double(
+              Faraday::Response,
+              status: 200,
+              body: LexisNexisFixtures.true_id_response_success,
+            )
+            DocAuth::Mock::DocAuthMockClient.mock_response!(
+              method: :get_results,
+              response: DocAuth::LexisNexis::Responses::TrueIdResponse.new(
+                http_response: successful_response,
+                config: DocAuth::LexisNexis::Config.new,
+              ),
+            )
+            complete_choose_id_type_step
+            complete_document_capture_step(with_selfie: false)
+
+            complete_remote_idv_from_ssn(user)
+          end
+        end
+      end
+
+      context 'then navigates back to the hybrid handoff page and selects remote verification
+      via the hybrid flow' do
+        it 'allows the user to successfully complete remote identity verification',
+           allow_browser_log: true do
+          # click back link while on the state id page
+          perform_in_browser(:desktop) do
+            visit idv_hybrid_handoff_url
+            click_send_link
+
+            # Test that user stays on the link sent page
+            sleep(5)
+            expect(page).to(have_content(t('doc_auth.headings.text_message')))
+
+            # Test that user doesn't automatically get moved forward to the state id page on desktop
+            expect(page).not_to(have_content(t('in_person_proofing.headings.state_id_milestone_2')))
+          end
+        end
+      end
+    end
+
+    context 'when polling times out and the user has to click the "Continue" button' do
+      before do
+        # When polling times out on the client, the "Continue" button is displayed to the user
+        # We can simulate that by just completely disabling polling.
+        allow(FeatureManagement).to receive(:doc_capture_polling_enabled?).and_return(false)
+      end
+
+      it 'redirects the user to the in-person proofing path',
+         allow_browser_log: true do
+        user = nil
+        perform_in_browser(:desktop) do
+          user = sign_in_and_2fa_user
+          complete_doc_auth_steps_before_hybrid_handoff_step
+          clear_and_fill_in(:doc_auth_phone, '415-555-0199')
+          click_send_link
+
+          expect(page).to have_content(t('doc_auth.headings.text_message'))
+        end
+
+        expect(@sms_link).to be_present
+
+        perform_mobile_hybrid_steps
+
+        perform_in_browser(:desktop) do
+          expect(page).to have_current_path(idv_link_sent_path)
+
+          # Click the "Continue" button on the link sent page since we're not polling
+          click_idv_continue
+        end
+
+        perform_desktop_hybrid_steps(user)
+      end
     end
   end
 
@@ -393,14 +698,11 @@ RSpec.describe 'In Person Proofing', js: true do
     end
   end
 
-  context 'when full form address entry is enabled for post office search' do
+  context 'when full form address post office search' do
     let(:user) { user_with_2fa }
 
-    before do
-      allow(IdentityConfig.store).to receive(:in_person_full_address_entry_enabled).and_return(true)
-    end
-
     it 'allows the user to search by full address', allow_browser_log: true do
+      visit_idp_from_sp_with_ial2(:oidc, **{ client_id: ipp_service_provider.issuer })
       sign_in_and_2fa_user(user)
       begin_in_person_proofing(user)
       # prepare page
@@ -486,7 +788,11 @@ RSpec.describe 'In Person Proofing', js: true do
       expect(page).to have_content(strip_nbsp(t('in_person_proofing.headings.barcode')))
       expect(page).to have_content(Idv::InPerson::EnrollmentCodeFormatter.format(enrollment_code))
       expect(page).to have_content(
-        t('in_person_proofing.body.barcode.deadline', deadline: deadline),
+        t(
+          'in_person_proofing.body.barcode.deadline',
+          deadline: deadline,
+          sp_name: ipp_service_provider.friendly_name,
+        ),
       )
       expect(page).to have_content('MILWAUKEE')
       expect(page).to have_content('Sunday: Closed')

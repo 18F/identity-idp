@@ -274,14 +274,19 @@ RSpec.describe Idv::EnterPasswordController do
 
         expect(@analytics).to have_logged_event(
           :idv_enter_password_submitted,
-          hash_including(
-            success: false,
-            fraud_review_pending: false,
-            fraud_rejection: false,
-            gpo_verification_pending: false,
-            in_person_verification_pending: false,
-          ),
+          success: false,
+          fraud_review_pending: false,
+          fraud_rejection: false,
+          gpo_verification_pending: false,
+          in_person_verification_pending: false,
         )
+      end
+
+      it 'does not track the idv_enrollment_complete event' do
+        stub_attempts_tracker
+        expect(@attempts_api_tracker).not_to receive(:idv_enrollment_complete).with(reproof: false)
+
+        put :create, params: { user: { password: 'wrong' } }
       end
     end
 
@@ -290,14 +295,12 @@ RSpec.describe Idv::EnterPasswordController do
 
       expect(@analytics).to have_logged_event(
         :idv_enter_password_submitted,
-        hash_including(
-          success: true,
-          fraud_review_pending: false,
-          fraud_rejection: false,
-          gpo_verification_pending: false,
-          in_person_verification_pending: false,
-          proofing_workflow_time_in_seconds: 5.minutes.to_i,
-        ),
+        success: true,
+        fraud_review_pending: false,
+        fraud_rejection: false,
+        gpo_verification_pending: false,
+        in_person_verification_pending: false,
+        proofing_workflow_time_in_seconds: 5.minutes.to_i,
       )
       expect(@analytics).to have_logged_event(
         'IdV: final resolution',
@@ -313,7 +316,7 @@ RSpec.describe Idv::EnterPasswordController do
       expect(response).to redirect_to idv_personal_key_path
     end
 
-    context 'when the vector of trust is undefined' do
+    context 'when the acr_values are undefined' do
       it 'creates Profile with applicant attributes' do
         put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
 
@@ -326,10 +329,35 @@ RSpec.describe Idv::EnterPasswordController do
       end
     end
 
-    context 'when the vector of trust is defined' do
+    context 'when the acr_values are defined' do
+      context 'when the acr_values require facial match' do
+        before do
+          resolved_authn_context_result = Component::Parser.new(
+            acr_values: Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_REQUIRED_ACR,
+          ).parse
+
+          allow(controller).to receive(:resolved_authn_context_result)
+            .and_return(resolved_authn_context_result)
+        end
+
+        it 'creates Profile with applicant attributes' do
+          put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+
+          profile = subject.idv_session.profile
+          pii = profile.decrypt_pii(ControllerHelper::VALID_PASSWORD)
+
+          expect(pii.zipcode).to eq subject.idv_session.applicant[:zipcode]
+
+          expect(pii.first_name).to eq subject.idv_session.applicant[:first_name]
+        end
+      end
+    end
+
+    context 'when the vector of trust is defined',
+            skip: 'VoT has been deprecated. EIPP should not be determined via acr_values' do
       context 'when the vector of trust is not Enhanced IPP' do
         before do
-          resolved_authn_context_result = Vot::Parser.new(vector_of_trust: 'Pb').parse
+          resolved_authn_context_result = Component::Parser.new(vector_of_trust: 'Pb').parse
 
           allow(controller).to receive(:resolved_authn_context_result)
             .and_return(resolved_authn_context_result)
@@ -349,7 +377,7 @@ RSpec.describe Idv::EnterPasswordController do
 
       context 'when the vector of trust is Enhanced IPP' do
         before do
-          resolved_authn_context_result = Vot::Parser.new(vector_of_trust: 'Pe').parse
+          resolved_authn_context_result = Component::Parser.new(vector_of_trust: 'Pe').parse
 
           allow(controller).to receive(:resolved_authn_context_result)
             .and_return(resolved_authn_context_result)
@@ -403,6 +431,13 @@ RSpec.describe Idv::EnterPasswordController do
         )
       end
 
+      it 'tracks the idv_enrollment_complete event' do
+        stub_attempts_tracker
+        expect(@attempts_api_tracker).to receive(:idv_enrollment_complete).with(reproof: false)
+
+        put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+      end
+
       it 'creates an `account_verified` event once per confirmation' do
         put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
         events_count = user.events.where(event_type: :account_verified, ip: '0.0.0.0')
@@ -447,7 +482,7 @@ RSpec.describe Idv::EnterPasswordController do
 
       context 'with in person profile' do
         let!(:enrollment) do
-          create(:in_person_enrollment, :establishing, user: user, profile: nil)
+          create(:in_person_enrollment, :establishing, user: user)
         end
 
         before do
@@ -891,16 +926,15 @@ RSpec.describe Idv::EnterPasswordController do
                   put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
                   expect(@analytics).to have_logged_event(
                     :idv_enter_password_submitted,
-                    hash_including(
-                      {
-                        success: true,
-                        fraud_review_pending: fraud_review_pending?,
-                        fraud_pending_reason: fraud_pending_reason,
-                        fraud_rejection: false,
-                        gpo_verification_pending: false,
-                        in_person_verification_pending: false,
-                      }.compact,
-                    ),
+                    {
+                      success: true,
+                      fraud_review_pending: fraud_review_pending?,
+                      fraud_pending_reason: fraud_pending_reason,
+                      fraud_rejection: false,
+                      gpo_verification_pending: false,
+                      in_person_verification_pending: false,
+                      proofing_workflow_time_in_seconds: kind_of(Numeric),
+                    }.compact,
                   )
                   expect(@analytics).to have_logged_event(
                     'IdV: final resolution',
@@ -963,13 +997,11 @@ RSpec.describe Idv::EnterPasswordController do
 
         expect(@analytics).to have_logged_event(
           'IdV: USPS address letter enqueued',
-          hash_including(
-            resend: false,
-            enqueued_at: Time.zone.now,
-            phone_step_attempts: 1,
-            first_letter_requested_at: subject.idv_session.profile.gpo_verification_pending_at,
-            hours_since_first_letter: 0,
-          ),
+          resend: false,
+          enqueued_at: Time.zone.now,
+          phone_step_attempts: 1,
+          first_letter_requested_at: subject.idv_session.profile.gpo_verification_pending_at,
+          hours_since_first_letter: 0,
         )
       end
 
@@ -982,13 +1014,11 @@ RSpec.describe Idv::EnterPasswordController do
 
           expect(@analytics).to have_logged_event(
             'IdV: USPS address letter enqueued',
-            hash_including(
-              resend: false,
-              enqueued_at: Time.zone.now,
-              phone_step_attempts: RateLimiter.max_attempts(rate_limit_type),
-              first_letter_requested_at: subject.idv_session.profile.gpo_verification_pending_at,
-              hours_since_first_letter: 0,
-            ),
+            resend: false,
+            enqueued_at: Time.zone.now,
+            phone_step_attempts: RateLimiter.max_attempts(rate_limit_type),
+            first_letter_requested_at: subject.idv_session.profile.gpo_verification_pending_at,
+            hours_since_first_letter: 0,
           )
         end
       end
@@ -1040,27 +1070,57 @@ RSpec.describe Idv::EnterPasswordController do
       end
     end
 
-    context 'user is going through enhanced ipp' do
+    context 'user is going through enhanced ipp',
+            skip: 'VoT has been deprecated. EIPP should not be determined via acr_values' do
       let(:is_enhanced_ipp) { true }
       let!(:enrollment) do
-        create(:in_person_enrollment, :establishing, user: user, profile: nil)
+        create(:in_person_enrollment, :establishing, user: user)
       end
       before do
-        authn_context_result = Vot::Parser.new(vector_of_trust: 'Pe').parse
+        authn_context_result = Component::Parser.new(vector_of_trust: 'Pe').parse
         allow(controller).to(
           receive(:resolved_authn_context_result).and_return(authn_context_result),
         )
       end
+
       it 'passes the correct param to the enrollment helper method' do
         expect(UspsInPersonProofing::EnrollmentHelper).to receive(:schedule_in_person_enrollment)
           .with(
             user: user,
-            pii: Pii::Attributes.new_from_hash(applicant),
+            applicant_pii: Pii::UspsApplicant.from_idv_applicant(idv_session.applicant),
             is_enhanced_ipp: is_enhanced_ipp,
             opt_in: nil,
           )
 
         put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+      end
+    end
+
+    describe 'attempts api tracking' do
+      before do
+        stub_attempts_tracker
+      end
+
+      context 'with a previously proofed user' do
+        context 'with an activated legacy idv  profile' do
+          before { create(:profile, :active, user:) }
+
+          context 'when requesting ial2' do
+            before do
+              resolved_authn_context_result = Component::Parser.new(
+                acr_values: Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_REQUIRED_ACR,
+              ).parse
+
+              allow(controller).to receive(:resolved_authn_context_result)
+                .and_return(resolved_authn_context_result)
+            end
+
+            it 'tracks a reproofing event upon reproofing' do
+              expect(@attempts_api_tracker).to receive(:idv_enrollment_complete).with(reproof: true)
+              put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+            end
+          end
+        end
       end
     end
   end

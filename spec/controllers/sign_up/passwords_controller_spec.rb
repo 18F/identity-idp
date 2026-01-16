@@ -59,12 +59,13 @@ RSpec.describe SignUp::PasswordsController do
     let(:password_confirmation) { password }
     let(:success_properties) { { success: true } }
 
+    before do
+      stub_analytics
+      stub_attempts_tracker
+    end
+
     context 'with valid password' do
       let!(:user) { create(:user, :unconfirmed, confirmation_token: token) }
-
-      before do
-        stub_analytics
-      end
 
       it 'tracks analytics' do
         subject
@@ -72,10 +73,17 @@ RSpec.describe SignUp::PasswordsController do
         expect(@analytics).to have_logged_event(
           'Password Creation',
           success: true,
-          errors: {},
           user_id: user.uuid,
           request_id_present: false,
         )
+      end
+
+      it 'creates attempts event' do
+        expect(@attempts_api_tracker).to receive(:user_registration_password_submitted).with(
+          success: true,
+          failure_reason: nil,
+        )
+        subject
       end
 
       it 'confirms the user' do
@@ -94,6 +102,7 @@ RSpec.describe SignUp::PasswordsController do
           'last_request_at' => kind_of(Numeric),
           new_device: false,
           in_account_creation_flow: true,
+          web_locale: 'en',
         )
       end
     end
@@ -101,13 +110,21 @@ RSpec.describe SignUp::PasswordsController do
     context 'with an invalid password' do
       let!(:user) { create(:user, :unconfirmed, confirmation_token: token) }
 
-      before do
-        stub_analytics
-      end
-
       context 'with a password that is too short' do
         let(:password) { 'NewVal' }
         let(:password_confirmation) { 'NewVal' }
+        let(:error_details) do
+          {
+            password: { too_short: true },
+            password_confirmation: { too_short: true },
+          }
+        end
+        let(:attempts_failure_reason) do
+          {
+            password: [:too_short],
+            password_confirmation: [:too_short],
+          }
+        end
 
         it 'tracks an invalid password event' do
           subject
@@ -115,27 +132,31 @@ RSpec.describe SignUp::PasswordsController do
           expect(@analytics).to have_logged_event(
             'Password Creation',
             success: false,
-            errors: {
-              password: [
-                t('errors.attributes.password.too_short', count: Devise.password_length.first),
-              ],
-              password_confirmation: [
-                t('errors.messages.too_short', count: Devise.password_length.first),
-              ],
-            },
-            error_details: {
-              password: { too_short: true },
-              password_confirmation: { too_short: true },
-            },
+            error_details:,
             user_id: user.uuid,
             request_id_present: false,
           )
+        end
+
+        it 'creates attempts event' do
+          expect(@attempts_api_tracker).to receive(:user_registration_password_submitted).with(
+            success: false,
+            failure_reason: attempts_failure_reason,
+          )
+          subject
         end
       end
 
       context 'when password confirmation does not match' do
         let(:password) { 'NewVal!dPassw0rd' }
         let(:password_confirmation) { 'bad match password' }
+        let(:error_details) do
+          {
+            password_confirmation: { mismatch: true },
+          }
+        end
+
+        let(:failure_reason) { { password_confirmation: [:mismatch] } }
 
         it 'tracks invalid password_confirmation error' do
           subject
@@ -143,15 +164,18 @@ RSpec.describe SignUp::PasswordsController do
           expect(@analytics).to have_logged_event(
             'Password Creation',
             success: false,
-            errors: {
-              password_confirmation: [t('errors.messages.password_mismatch')],
-            },
-            error_details: {
-              password_confirmation: { mismatch: true },
-            },
+            error_details:,
             user_id: user.uuid,
             request_id_present: false,
           )
+        end
+
+        it 'creates attempts event' do
+          expect(@attempts_api_tracker).to receive(:user_registration_password_submitted).with(
+            success: false,
+            failure_reason:,
+          )
+          subject
         end
       end
     end
@@ -181,6 +205,11 @@ RSpec.describe SignUp::PasswordsController do
         expect(user.valid_password?(password)).to eq false
         expect(user.confirmed?).to eq false
         expect(response).to redirect_to(sign_up_register_url)
+      end
+
+      it 'does not create attempts event' do
+        expect(@attempts_api_tracker).not_to receive(:user_registration_password_submitted)
+        subject
       end
     end
   end

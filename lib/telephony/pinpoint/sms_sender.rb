@@ -26,6 +26,8 @@ module Telephony
             region: sms_config.region,
             retry_limit: 0,
             credentials: credentials,
+            instance_profile_credentials_timeout: 1, # defaults to 1 second
+            instance_profile_credentials_retries: 5, # defaults to 0 retries
           )
         end
       end

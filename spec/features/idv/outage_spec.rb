@@ -81,6 +81,7 @@ RSpec.feature 'IdV Outage Spec' do
       expect(page).to have_current_path idv_hybrid_handoff_path
 
       complete_hybrid_handoff_step
+      complete_choose_id_type_step
       complete_document_capture_step
       complete_ssn_step
       complete_verify_step
@@ -152,7 +153,7 @@ RSpec.feature 'IdV Outage Spec' do
 
           click_on t('links.exit_login', app_name: APP_NAME)
 
-          expect(current_url).to eq 'https://example.com/'
+          expect(page).to have_current_path('https://example.com/', url: true)
         end
 
         it 'skips the hybrid handoff screen and proceeds to doc capture' do
@@ -161,7 +162,7 @@ RSpec.feature 'IdV Outage Spec' do
           click_idv_continue
           complete_agreement_step
 
-          expect(page).to have_current_path idv_document_capture_path
+          expect(page).to have_current_path idv_choose_id_type_path
         end
       end
     end
@@ -207,7 +208,7 @@ RSpec.feature 'IdV Outage Spec' do
       click_idv_continue
       complete_agreement_step
 
-      expect(page).to have_current_path idv_document_capture_path
+      expect(page).to have_current_path idv_choose_id_type_path
     end
   end
 

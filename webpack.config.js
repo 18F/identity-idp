@@ -11,9 +11,9 @@ const env = process.env.NODE_ENV || process.env.RAILS_ENV || 'development';
 const host = process.env.HOST || 'localhost';
 const isLocalhost = host === 'localhost';
 const isProductionEnv = env === 'production';
-const isTestEnv = env === 'test';
 const mode = isProductionEnv ? 'production' : 'development';
 const hashSuffix = isProductionEnv ? '-[chunkhash:8].digested' : '';
+const originPort = process.env.ORIGIN_PORT || 3000;
 const devServerPort = process.env.WEBPACK_PORT;
 const devtool = process.env.WEBPACK_DEVTOOL || (isProductionEnv ? 'source-map' : 'eval-source-map');
 
@@ -88,9 +88,7 @@ module.exports = /** @type {import('webpack').Configuration} */ ({
     }),
     new RailsI18nWebpackPlugin({
       onMissingString(key, locale) {
-        if (isTestEnv) {
-          throw new Error(`Unexpected missing string for locale '${locale}': '${key}'`);
-        }
+        throw new Error(`Unexpected missing string for locale '${locale}': '${key}'`);
       },
     }),
     new RailsAssetsWebpackPlugin(),
@@ -100,7 +98,7 @@ module.exports = /** @type {import('webpack').Configuration} */ ({
         publicPath: './public',
         port: Number(devServerPort),
         headers: {
-          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Origin': `http://${host}:${originPort}`,
           'Cache-Control': 'no-store',
           Vary: '*',
         },

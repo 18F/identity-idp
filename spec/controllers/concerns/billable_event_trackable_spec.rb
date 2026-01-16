@@ -60,7 +60,6 @@ RSpec.describe BillableEventTrackable do
         billable: true,
         ial: ial_context.ial,
         issuer: current_sp.issuer,
-        requested_at: session_started_at,
         returned_at: Time.zone.now,
       )
 

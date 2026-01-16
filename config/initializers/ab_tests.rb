@@ -15,19 +15,31 @@ module AbTests
       return session[:document_capture_session_uuid]
     end
 
-    # Otherwise, try to get the user's current Idv::Session and read
-    # the generated document_capture_session UUID from there
-    return if !(user && user_session)
-
-    # Avoid creating a pointless :idv entry in user_session if the
-    # user has not already started IdV
-    return unless user_session.key?(:idv)
+    return unless user_has_idv_session?(user:, user_session:)
 
     Idv::Session.new(
       current_user: user,
       service_provider:,
       user_session:,
     ).document_capture_session_uuid
+  end
+
+  def self.verify_info_step_document_capture_session_uuid_discriminator(
+    service_provider:,
+    user:,
+    user_session:
+  )
+    return unless user_has_idv_session?(user:, user_session:)
+
+    Idv::Session.new(
+      current_user: user,
+      service_provider:,
+      user_session:,
+    ).verify_info_step_document_capture_session_uuid
+  end
+
+  def self.user_has_idv_session?(user:, user_session:)
+    user && user_session&.key?(:idv)
   end
 
   # @returns [Hash]
@@ -40,15 +52,35 @@ module AbTests
   DOC_AUTH_VENDOR = AbTest.new(
     experiment_name: 'Doc Auth Vendor',
     should_log: /^idv/i,
-    default_bucket: :lexis_nexis,
+    default_bucket: IdentityConfig.store.doc_auth_vendor_default.to_sym,
     buckets: {
       socure: IdentityConfig.store.doc_auth_vendor_switching_enabled ?
         IdentityConfig.store.doc_auth_vendor_socure_percent : 0,
       lexis_nexis: IdentityConfig.store.doc_auth_vendor_switching_enabled ?
         IdentityConfig.store.doc_auth_vendor_lexis_nexis_percent : 0,
+      lexis_nexis_ddp: IdentityConfig.store.doc_auth_vendor_switching_enabled ?
+        IdentityConfig.store.doc_auth_vendor_lexis_nexis_ddp_percent : 0,
     }.compact,
   ) do |service_provider:, session:, user:, user_session:, **|
-    document_capture_session_uuid_discriminator(service_provider:, session:, user:, user_session:)
+    user&.uuid
+  end.freeze
+
+  # This "test" will permanently be in place to allow a graceful transition from TrueID being the
+  # sole vendor to a multi-vendor configuration.
+  DOC_AUTH_SELFIE_VENDOR = AbTest.new(
+    experiment_name: 'Doc Auth with Selfie Vendor',
+    should_log: /^idv/i,
+    default_bucket: IdentityConfig.store.doc_auth_selfie_vendor_default.to_sym,
+    buckets: {
+      socure: IdentityConfig.store.doc_auth_selfie_vendor_switching_enabled ?
+        IdentityConfig.store.doc_auth_selfie_vendor_socure_percent : 0,
+      lexis_nexis: IdentityConfig.store.doc_auth_selfie_vendor_switching_enabled ?
+        IdentityConfig.store.doc_auth_selfie_vendor_lexis_nexis_percent : 0,
+      lexis_nexis_ddp: IdentityConfig.store.doc_auth_selfie_vendor_switching_enabled ?
+        IdentityConfig.store.doc_auth_selfie_vendor_lexis_nexis_ddp_percent : 0,
+    }.compact,
+  ) do |service_provider:, session:, user:, user_session:, **|
+    user&.uuid
   end.freeze
 
   ACUANT_SDK = AbTest.new(
@@ -82,38 +114,101 @@ module AbTests
     end
   end.freeze
 
-  RECOMMEND_WEBAUTHN_PLATFORM_FOR_SMS_USER = AbTest.new(
-    experiment_name: 'Recommend Face or Touch Unlock for SMS users',
+  ACCOUNT_CREATION_TMX_PROCESSED = AbTest.new(
+    experiment_name: 'Account Creation Threat Metrix Processed',
     should_log: [
-      :webauthn_platform_recommended_visited,
-      :webauthn_platform_recommended_submitted,
-      'Multi-Factor Authentication Setup',
+      :account_creation_tmx_result,
     ].to_set,
     buckets: {
-      recommend_for_account_creation:
-        IdentityConfig.store.recommend_webauthn_platform_for_sms_ab_test_account_creation_percent,
-      recommend_for_authentication:
-        IdentityConfig.store.recommend_webauthn_platform_for_sms_ab_test_authentication_percent,
+      account_creation_tmx_processed: IdentityConfig.store.account_creation_tmx_processed_percent,
     },
-  ).freeze
+  ) do |user:, user_session:, **|
+    user&.uuid
+  end.freeze
 
-  SOCURE_IDV_SHADOW_MODE_FOR_NON_DOCV_USERS = AbTest.new(
-    experiment_name: 'Socure shadow mode',
-    should_log: ['IdV: doc auth verify proofing results'].to_set,
-    buckets: {
-      socure_shadow_mode_for_non_docv_users: IdentityConfig.store.socure_idplus_shadow_mode_percent,
-    },
-  ).freeze
-
-  DESKTOP_FT_UNLOCK_SETUP = AbTest.new(
-    experiment_name: 'Desktop F/T unlock setup',
+  ONE_ACCOUNT_USER_VERIFICATION_ENABLED = AbTest.new(
+    experiment_name: 'One Account User Verification Enabled',
     should_log: [
-      'User Registration: 2FA Setup visited',
-      'WebAuthn Setup Visited',
-      :webauthn_setup_submitted,
-      'Multi-Factor Authentication Setup',
+      'Email and Password Authentication',
+      'SP redirect initiated',
+      :one_account_duplicate_profiles_please_call_visited,
+      :one_account_duplicate_profiles_warning_page_visited,
+      :one_account_duplicate_profile_updated,
+      :one_account_duplicate_profile_created,
+      :one_account_duplicate_profile_closed,
+      :one_account_clear_duplicate_profile,
+      :one_account_close_inconclusive_duplicate,
+      :one_account_deactivate_duplicate_profile,
     ].to_set,
-    buckets: { desktop_ft_unlock_option_shown:
-        IdentityConfig.store.desktop_ft_unlock_setup_option_percent_tested },
-  ).freeze
+    buckets: {
+      one_account_user_verification_enabled:
+        IdentityConfig.store.one_account_user_verification_enabled_percentage,
+    },
+  ) do |user:, user_session:, **|
+    user&.uuid
+  end.freeze
+
+  PROOFING_VENDOR = AbTest.new(
+    experiment_name: 'Proofing Vendor',
+    should_log: /^idv/i,
+    default_bucket: IdentityConfig.store.idv_resolution_default_vendor,
+    buckets: {
+      socure_kyc: IdentityConfig.store.idv_resolution_vendor_switching_enabled ?
+        IdentityConfig.store.idv_resolution_vendor_socure_kyc_percent : 0,
+      instant_verify: IdentityConfig.store.idv_resolution_vendor_switching_enabled ?
+        IdentityConfig.store.idv_resolution_vendor_instant_verify_percent : 0,
+    },
+  ) do |service_provider:, session:, user:, user_session:, **|
+    verify_info_step_document_capture_session_uuid_discriminator(
+      service_provider:, user:, user_session:,
+    )
+  end.freeze
+
+  PHONE_FINDER_RDP_VERSION = AbTest.new(
+    experiment_name: 'phone_finder_rdp_version',
+    should_log: /^idv/i,
+    default_bucket: IdentityConfig.store.idv_rdp_version_default,
+    buckets: {
+      rdp_v2: IdentityConfig.store.idv_rdp_version_switching_enabled ?
+            IdentityConfig.store.idv_rdp_version_v2_percent : 0,
+      rdp_v3: IdentityConfig.store.idv_rdp_version_switching_enabled ?
+            IdentityConfig.store.idv_rdp_version_v3_percent : 0,
+    },
+  ) do |user:, user_session:, **|
+    user&.uuid
+  end.freeze
+
+  # This "test" will permanently be in place to allow a multi-vendor configuration.
+  DOC_AUTH_PASSPORT_VENDOR = AbTest.new(
+    experiment_name: 'Doc Auth Passport Vendor',
+    should_log: /^idv/i,
+    default_bucket: IdentityConfig.store.doc_auth_passport_vendor_default.to_sym,
+    buckets: {
+      socure: IdentityConfig.store.doc_auth_passport_vendor_switching_enabled ?
+        IdentityConfig.store.doc_auth_passport_vendor_socure_percent : 0,
+      lexis_nexis: IdentityConfig.store.doc_auth_passport_vendor_switching_enabled ?
+        IdentityConfig.store.doc_auth_passport_vendor_lexis_nexis_percent : 0,
+      lexis_nexis_ddp: IdentityConfig.store.doc_auth_passport_vendor_switching_enabled ?
+        IdentityConfig.store.doc_auth_passport_vendor_lexis_nexis_ddp_percent : 0,
+    }.compact,
+  ) do |service_provider:, session:, user:, user_session:, **|
+    user&.uuid
+  end.freeze
+
+  # This "test" will permanently be in place to allow a multi-vendor configuration.
+  DOC_AUTH_PASSPORT_SELFIE_VENDOR = AbTest.new(
+    experiment_name: 'Doc Auth Passport with Selfie Vendor',
+    should_log: /^idv/i,
+    default_bucket: IdentityConfig.store.doc_auth_passport_selfie_vendor_default.to_sym,
+    buckets: {
+      socure: IdentityConfig.store.doc_auth_passport_selfie_vendor_switching_enabled ?
+        IdentityConfig.store.doc_auth_passport_selfie_vendor_socure_percent : 0,
+      lexis_nexis: IdentityConfig.store.doc_auth_passport_selfie_vendor_switching_enabled ?
+        IdentityConfig.store.doc_auth_passport_selfie_vendor_lexis_nexis_percent : 0,
+      lexis_nexis_ddp: IdentityConfig.store.doc_auth_passport_selfie_vendor_switching_enabled ?
+        IdentityConfig.store.doc_auth_passport_selfie_vendor_lexis_nexis_ddp_percent : 0,
+    }.compact,
+  ) do |service_provider:, session:, user:, user_session:, **|
+    user&.uuid
+  end.freeze
 end

@@ -1,4 +1,4 @@
-<% self.title = t('titles.visitors.index') %>
+<% self.title = t('titles.sign_in') %>
 
 <% if decorated_sp_session.sp_name %>
   <%= render 'sign_up/registrations/sp_registration_heading' %>
@@ -7,8 +7,8 @@
 <%= render TabNavigationComponent.new(
       label: t('account.login.tab_navigation'),
       routes: [
-        { text: t('links.sign_in'), path: new_user_session_url },
-        { text: t('links.create_account'), path: sign_up_email_url },
+        { text: t('links.sign_in'), path: new_user_session_path },
+        { text: t('links.create_account'), path: sign_up_email_path },
       ],
       class: 'margin-bottom-4',
     ) %>
@@ -48,17 +48,16 @@
           form: f,
           action: SignInRecaptchaForm::RECAPTCHA_ACTION,
           button_options: { full_width: true },
-        ).with_content(t('links.sign_in')) %>
+        ).with_content(t('forms.buttons.submit.default')) %>
   <% else %>
-    <%= f.submit t('links.sign_in'), full_width: true, wide: false %>
+    <%= f.submit t('forms.buttons.submit.default'), full_width: true, wide: false %>
   <% end %>
 <% end %>
 <% if desktop_device? %>
-  <div class='margin-x-neg-1 margin-top-205'>
+  <div class='margin-top-205'>
     <%= link_to(
           t('account.login.piv_cac'),
           login_piv_cac_url,
-          class: 'padding-x-1',
         ) %>
   </div>
 <% end %>

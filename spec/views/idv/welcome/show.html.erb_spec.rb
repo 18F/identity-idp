@@ -17,7 +17,7 @@ RSpec.describe 'idv/welcome/show.html.erb' do
       sp_session: sp_session,
       service_provider_request: nil,
     )
-    presenter = Idv::WelcomePresenter.new(decorated_sp_session)
+    presenter = Idv::WelcomePresenter.new(decorated_sp_session:)
     assign(:presenter, presenter)
     assign(:current_user, user)
     render
@@ -51,6 +51,12 @@ RSpec.describe 'idv/welcome/show.html.erb' do
           location: 'intro_paragraph',
         ),
       )
+    end
+  end
+
+  context 'when a user has the passport option' do
+    it 'renders the modified bullet point' do
+      expect(rendered).to have_content(t('doc_auth.instructions.bullet1'))
     end
   end
 

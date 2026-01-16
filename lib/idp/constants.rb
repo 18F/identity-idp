@@ -12,13 +12,30 @@ module Idp
     module Vendors
       ACUANT = 'acuant'
       LEXIS_NEXIS = 'lexis_nexis'
+      LEXIS_NEXIS_DDP = 'lexis_nexis_ddp'
       SOCURE = 'socure'
       MOCK = 'mock'
+      SOCURE_MOCK = 'mock_socure'
       USPS = 'usps'
       AAMVA = 'aamva'
       AAMVA_UNSUPPORTED_JURISDICTION = 'UnsupportedJurisdiction'
       STATE_ID_MOCK = 'StateIdMock'
+      AAMVA_CHECK_SKIPPED = 'AamvaCheckSkipped'
       SOURCE_CHECK = [AAMVA, AAMVA_UNSUPPORTED_JURISDICTION, STATE_ID_MOCK].freeze
+    end
+
+    module DocumentTypes
+      PASSPORT = 'passport'
+      PASSPORT_CARD = 'passport_card'
+      DRIVERS_LICENSE = 'drivers_license'
+      STATE_ID_CARD = 'state_id_card'
+      IDENTIFICATION_CARD = 'identification_card'
+
+      SUPPORTED_PASSPORT_TYPES = [PASSPORT].freeze
+      SUPPORTED_STATE_ID_TYPES = [DRIVERS_LICENSE, STATE_ID_CARD, IDENTIFICATION_CARD].freeze
+      SUPPORTED_ID_TYPES = [*SUPPORTED_PASSPORT_TYPES, *SUPPORTED_STATE_ID_TYPES].freeze
+      PASSPORT_TYPES = [*SUPPORTED_PASSPORT_TYPES, PASSPORT_CARD].freeze
+      STATE_ID_TYPES = [*SUPPORTED_STATE_ID_TYPES].freeze
     end
 
     # US State and Territory codes are
@@ -100,7 +117,7 @@ module Idp
     MOCK_IDV_APPLICANT_STATE = 'MT'
     MOCK_IDV_APPLICANT = {
       address1: '1 FAKE RD',
-      address2: nil,
+      address2: '',
       city: 'GREAT FALLS',
       dob: '1938-10-06',
       eye_color: nil,
@@ -115,11 +132,41 @@ module Idp
       state_id_issued: '2019-12-31',
       state_id_jurisdiction: MOCK_IDV_APPLICANT_STATE_ID_JURISDICTION,
       state_id_number: '1111111111111',
-      state_id_type: 'drivers_license',
+      document_type_received: 'drivers_license',
       sex: 'male',
       weight: nil,
       zipcode: '59010-1234',
     }.freeze
+
+    def self.mock_idv_applicant
+      MOCK_IDV_APPLICANT.dup
+    end
+
+    MOCK_IDV_APPLICANT_STATE_ID = {
+      address1: '1 FAKE RD',
+      address2: '',
+      city: 'GREAT FALLS',
+      dob: '1938-10-06',
+      eye_color: nil,
+      first_name: 'FAKEY',
+      height: 72,
+      issuing_country_code: 'US',
+      last_name: 'MCFAKERSON',
+      middle_name: nil,
+      name_suffix: 'JR',
+      state: MOCK_IDV_APPLICANT_STATE,
+      state_id_expiration: '2099-12-31',
+      state_id_issued: '2019-12-31',
+      state_id_jurisdiction: MOCK_IDV_APPLICANT_STATE_ID_JURISDICTION,
+      state_id_number: '1111111111111',
+      document_type_received: 'state_id',
+      sex: 'male',
+      weight: nil,
+      zipcode: '59010-1234',
+    }.freeze
+    def self.mock_idv_applicant_state_id
+      MOCK_IDV_APPLICANT_STATE_ID.dup
+    end
 
     MOCK_IPP_APPLICANT = {
       first_name: 'FAKEY',
@@ -132,14 +179,68 @@ module Idp
       state_id_jurisdiction: 'Virginia',
       identity_doc_address_state: 'VA',
       state_id_number: '1111111111111',
+      state_id_expiration: '2099-12-31',
       same_address_as_id: 'true',
     }.freeze
+
+    MOCK_IPP_PASSPORT_APPLICANT = {
+      passport_number: '123456789',
+      passport_expiration_date: (DateTime.now.utc + 1.year).to_s,
+    }.freeze
+
+    MOCK_IDV_PROOFING_PASSPORT_APPLICANT = {
+      first_name: 'FAKEY',
+      last_name: 'MCFAKERSON',
+      dob: '1938-10-06',
+      sex: 'Male',
+      birth_place: 'birthplace',
+      passport_expiration: '2030-03-15',
+      issuing_country_code: 'USA',
+      mrz:
+      'P<UTOSAMPLE<<COMPANY<<<<<<<<<<<<<<<<<<<<<<<<ACU1234P<5UTO0003067F4003065<<<<<<<<<<<<<<02',
+      passport_issued: '2015-03-15',
+      nationality_code: 'USA',
+      document_number: '000000',
+      document_type_received: 'passport',
+      ssn: '666111111',
+      consent_given_at: '2025-06-12 20:16:23 UTC',
+      state: 'VA',
+      zipcode: '12345-4321',
+      city: 'Best City',
+      address1: '123 Way St',
+      address2: '2nd Address Line',
+    }.freeze
+    def self.mock_idv_proofing_passport_applicant
+      MOCK_IDV_PROOFING_PASSPORT_APPLICANT.dup
+    end
+
+    MOCK_IDV_APPLICANT_WITH_PASSPORT = MOCK_IDV_APPLICANT.select do |field, _value|
+      %i[first_name middle_name last_name dob sex].include?(field)
+    end.merge(
+      document_type_received: 'passport',
+      mrz:
+      'P<UTOSAMPLE<<COMPANY<<<<<<<<<<<<<<<<<<<<<<<<ACU1234P<5UTO0003067F4003065<<<<<<<<<<<<<<02',
+      birth_place: 'Birthplace',
+      passport_expiration: (DateTime.now.utc + 10.years).to_s,
+      issuing_country_code: 'USA',
+      passport_issued: (DateTime.new.utc - 1.year).to_s,
+      nationality_code: 'USA',
+      document_number: nil,
+    ).freeze
+    def self.mock_idv_applicant_with_passport
+      MOCK_IDV_APPLICANT_WITH_PASSPORT.dup
+    end
 
     MOCK_IPP_APPLICANT_SAME_ADDRESS_AS_ID_FALSE = MOCK_IPP_APPLICANT.merge(
       same_address_as_id: 'false',
     ).freeze
 
-    MOCK_IDV_APPLICANT_WITH_SSN = MOCK_IDV_APPLICANT.merge(ssn: '900-66-1234').freeze
+    MOCK_IDV_APPLICANT_WITH_SSN = MOCK_IDV_APPLICANT.merge(
+      ssn: '900661234',
+    ).freeze
+    def self.mock_idv_applicant_with_ssn
+      MOCK_IDV_APPLICANT_WITH_SSN.dup
+    end
 
     MOCK_IDV_APPLICANT_FULL_IDENTITY_DOC_ADDRESS_STATE = 'Virginia'
     MOCK_IDV_APPLICANT_STATE_ID_ADDRESS = MOCK_IDV_APPLICANT_WITH_SSN.merge(
@@ -150,6 +251,9 @@ module Idp
       identity_doc_address_state: 'VA',
       same_address_as_id: 'false',
     ).freeze
+    def self.mock_idv_applicant_state_id_address
+      MOCK_IDV_APPLICANT_STATE_ID_ADDRESS.dup
+    end
 
     # Use this as the default applicant for in person proofing
     MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID = MOCK_IDV_APPLICANT_WITH_SSN.merge(

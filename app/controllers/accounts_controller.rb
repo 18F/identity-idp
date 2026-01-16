@@ -16,6 +16,7 @@ class AccountsController < ApplicationController
       sp_session_request_url: sp_session_request_url_with_updated_params,
       authn_context: resolved_authn_context_result,
       sp_name: decorated_sp_session.sp_name,
+      sp_handoff_already_occurred: decorated_sp_session.successful_handoff?,
       user: current_user,
       locked_for_session: pii_locked_for_session?(current_user),
     )

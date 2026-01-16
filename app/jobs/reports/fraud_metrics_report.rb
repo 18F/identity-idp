@@ -11,7 +11,7 @@ module Reports
 
     def initialize(report_date = nil, *args, **rest)
       @report_date = report_date
-      super(*args, **rest)
+      super(report_date, *args, **rest)
     end
 
     def perform(date = Time.zone.yesterday.end_of_day)
@@ -28,7 +28,7 @@ module Reports
       end
 
       ReportMailer.tables_report(
-        email: email_addresses,
+        to: email_addresses,
         subject: "Fraud Metrics Report - #{report_date.to_date}",
         reports: reports,
         message: preamble,

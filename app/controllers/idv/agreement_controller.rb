@@ -35,15 +35,17 @@ module Idv
         **analytics_arguments.merge(result.to_h),
       )
 
+      if current_user.has_proofed_before?
+        attempts_api_tracker.idv_reproof
+        fraud_ops_tracker.idv_reproof
+      end
+
       if result.success?
         idv_session.idv_consent_given_at = Time.zone.now
+        idv_session.opted_in_to_in_person_proofing = false
+        idv_session.skip_doc_auth_from_how_to_verify = false
 
-        if IdentityConfig.store.in_person_proofing_opt_in_enabled &&
-           IdentityConfig.store.in_person_proofing_enabled
-          redirect_to idv_how_to_verify_url
-        else
-          redirect_to idv_hybrid_handoff_url
-        end
+        redirect_to idv_hybrid_handoff_url
       else
         render :show
       end
@@ -53,7 +55,7 @@ module Idv
       Idv::StepInfo.new(
         key: :agreement,
         controller: self,
-        next_steps: [:hybrid_handoff, :document_capture, :how_to_verify],
+        next_steps: [:hybrid_handoff, :choose_id_type, :document_capture, :how_to_verify],
         preconditions: ->(idv_session:, user:) { idv_session.welcome_visited },
         undo_step: ->(idv_session:, user:) do
           idv_session.idv_consent_given_at = nil

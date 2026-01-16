@@ -1,11 +1,14 @@
 # frozen_string_literal: true
 
 require 'active_support'
+require 'active_support/hash_with_indifferent_access'
 require 'active_support/time'
 
 require 'event_summarizer/vendor_result_evaluators/aamva'
 require 'event_summarizer/vendor_result_evaluators/instant_verify'
+require 'event_summarizer/vendor_result_evaluators/phone_finder'
 require 'event_summarizer/vendor_result_evaluators/true_id'
+require 'event_summarizer/vendor_result_evaluators/socure_doc_v'
 
 module EventSummarizer
   class IdvMatcher
@@ -13,6 +16,8 @@ module EventSummarizer
     IDV_GPO_CODE_SUBMITTED_EVENT = 'IdV: enter verify by mail code submitted'
     IDV_FINAL_RESOLUTION_EVENT = 'IdV: final resolution'
     IDV_IMAGE_UPLOAD_VENDOR_SUBMITTED_EVENT = 'IdV: doc auth image upload vendor submitted'
+    IDV_SOCURE_VERIFICATION_DATA_REQUESTED = 'idv_socure_verification_data_requested'
+    IDV_PHONE_CONFIRMATION_VENDOR_EVENT = 'IdV: phone confirmation vendor'
     IDV_VERIFY_PROOFING_RESULTS_EVENT = 'IdV: doc auth verify proofing results'
     IPP_ENROLLMENT_STATUS_UPDATED_EVENT = 'GetUspsProofingResultsJob: Enrollment status updated'
     PROFILE_ENCRYPTION_INVALID_EVENT = 'Profile Encryption: Invalid'
@@ -26,10 +31,20 @@ module EventSummarizer
         name: 'True ID',
         evaluator_module: EventSummarizer::VendorResultEvaluators::TrueId,
       },
+      'Socure' => {
+        id: :socure_docv,
+        name: 'Socure DocV',
+        evaluator_module: EventSummarizer::VendorResultEvaluators::SocureDocV,
+      },
       'lexisnexis:instant_verify' => {
         id: :instant_verify,
         name: 'Instant Verify',
         evaluator_module: EventSummarizer::VendorResultEvaluators::InstantVerify,
+      },
+      'lexisnexis:phone_finder' => {
+        id: :phone_finder,
+        name: 'Phone Finder',
+        evaluator_module: EventSummarizer::VendorResultEvaluators::PhoneFinder,
       },
       'aamva:state_id' => {
         id: :aamva,
@@ -122,6 +137,16 @@ module EventSummarizer
         when IDV_IMAGE_UPLOAD_VENDOR_SUBMITTED_EVENT
           for_current_idv_attempt(event:) do
             handle_image_upload_vendor_submitted(event:)
+          end
+
+        when IDV_SOCURE_VERIFICATION_DATA_REQUESTED
+          for_current_idv_attempt(event:) do
+            handle_socure_verification_data_requested(event:)
+          end
+
+        when IDV_PHONE_CONFIRMATION_VENDOR_EVENT
+          for_current_idv_attempt(event:) do
+            handle_phone_confirmation_vendor_event(event:)
           end
 
         when IDV_VERIFY_PROOFING_RESULTS_EVENT
@@ -245,7 +270,7 @@ module EventSummarizer
         add_significant_event(
           type: :start_ipp,
           timestamp:,
-          descirption: 'User entered the in-person proofing flow',
+          description: 'User entered the in-person proofing flow',
         )
       end
 
@@ -286,7 +311,7 @@ module EventSummarizer
         add_significant_event(
           type: :gpo_code_failure,
           timestamp:,
-          description: 'The user entered an invalid GPO code',
+          description: 'User entered an invalid GPO code',
         )
         return
       end
@@ -303,7 +328,7 @@ module EventSummarizer
       add_significant_event(
         type: :gpo_code_success,
         timestamp:,
-        description:,
+        description: 'User entered a valid GPO code',
       )
 
       if fully_verified
@@ -333,7 +358,7 @@ module EventSummarizer
       verified = tmx_status != 'review' && tmx_status != 'reject'
 
       if verified
-        current_idv_attempt.event << SignificantIdvEvent.new(
+        current_idv_attempt.significant_events << SignificantIdvEvent.new(
           type: :verified,
           timestamp:,
           description: 'User is fully verified',
@@ -344,17 +369,17 @@ module EventSummarizer
     def handle_profile_encryption_error(event:)
       caveats = [
         # TODO these need to check if GPO/IPP were still pending at time of the event
-        current_idv_attempt.gpo? ? 'The user will not be able to enter a GPO code' : nil,
-        current_idv_attempt.ipp? ? 'the user will not be able to verify in-person' : nil,
+        current_idv_attempt.gpo? ? 'User will not be able to enter a GPO code' : nil,
+        current_idv_attempt.ipp? ? 'User will not be able to verify in-person' : nil,
       ].compact
 
       add_significant_event(
         type: :password_reset,
         timestamp: event['@timestamp'],
         description: [
-          'The user reset their password and did not provide their personal key.',
+          'User reset their password and did not provide their personal key.',
           caveats.length > 0 ?
-            "The user will not be able to #{caveats.join(' or ')}" :
+            "User will not be able to #{caveats.join(' or ')}" :
             nil,
         ].compact.join(' '),
       )
@@ -396,7 +421,8 @@ module EventSummarizer
         add_significant_event(
           timestamp:,
           type: :passed_document_capture,
-          description: "User successfully verified their #{doc_type.downcase} #{attempts}",
+          description:
+            "User successfully verified their #{doc_type.downcase} via TrueID #{attempts}",
         )
         return
       end
@@ -406,6 +432,7 @@ module EventSummarizer
       alerts = event.dig(*EVENT_PROPERTIES, 'processed_alerts')
       alerts['success'] = false
       alerts['vendor_name'] = event.dig(*EVENT_PROPERTIES, 'vendor')
+      alerts['document_type'] = doc_type.downcase
 
       add_events_for_failed_vendor_result(
         alerts,
@@ -418,9 +445,75 @@ module EventSummarizer
         add_significant_event(
           timestamp:,
           type: :failed_document_capture,
-          description: "User failed to verify their #{doc_type.downcase} (check logs for reason)",
+          description:
+            "User failed to verify their #{doc_type.downcase} via TrueID (check logs for reason)",
         )
       end
+    end
+
+    def handle_socure_verification_data_requested(event:)
+      timestamp = event['@timestamp']
+      success = event.dig(*EVENT_PROPERTIES, 'success')
+      doc_type = event.dig(*EVENT_PROPERTIES, 'document_metadata', 'type')
+
+      if success
+        prior_failures = current_idv_attempt.significant_events.count do |e|
+          e.type == :failed_document_capture
+        end
+        attempts = prior_failures > 0 ? "after #{prior_failures} tries" : 'on the first attempt'
+
+        add_significant_event(
+          timestamp:,
+          type: :passed_document_capture,
+          description:
+            "User successfully verified their #{doc_type.downcase} via Socure DocV #{attempts}",
+        )
+        return
+      end
+
+      prev_count = current_idv_attempt.significant_events.count
+
+      alerts = ActiveSupport::HashWithIndifferentAccess.new
+      alerts[:reason_codes] = socure_reason_codes(event)
+      alerts[:success] = false
+      alerts[:vendor_name] = event.dig(*EVENT_PROPERTIES, 'vendor')
+      alerts[:document_type] = doc_type.downcase
+
+      add_events_for_failed_vendor_result(
+        alerts,
+        timestamp:,
+      )
+
+      any_events_added = current_idv_attempt.significant_events.count > prev_count
+
+      if !any_events_added
+        add_significant_event(
+          timestamp:,
+          type: :failed_document_capture,
+          description: "User failed to verify their #{doc_type.downcase} via Socure DocV (check logs for reason)", # rubocop:disable Layout/LineLength
+        )
+      end
+    end
+
+    def socure_reason_codes(event)
+      event.dig(*EVENT_PROPERTIES, 'reason_codes') || []
+    end
+
+    def handle_phone_confirmation_vendor_event(event:)
+      timestamp = event['@timestamp']
+      success = event.dig(*EVENT_PROPERTIES, 'success')
+
+      if success
+        add_significant_event(
+          timestamp:,
+          type: :passed_phone_finder,
+          description: 'Phone Finder check succeeded',
+        )
+
+        return
+      end
+
+      add_events_for_failed_vendor_result(event.dig(*EVENT_PROPERTIES), timestamp:)
     end
 
     def handle_verify_proofing_results_event(event:)
@@ -487,7 +580,8 @@ module EventSummarizer
     def add_events_for_failed_vendor_result(result, timestamp:)
       return if result['success']
 
-      vendor = VENDORS[result['vendor_name']] || UNKNOWN_VENDOR
+      vendor_name = result['vendor_name'] || result.dig('vendor', 'vendor_name')
+      vendor = VENDORS[vendor_name] || UNKNOWN_VENDOR
       evaluator = vendor[:evaluator_module]
 
       if !evaluator.present?

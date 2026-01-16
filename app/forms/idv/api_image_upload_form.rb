@@ -5,30 +5,30 @@ module Idv
     include ActiveModel::Model
     include ActionView::Helpers::TranslationHelper
 
-    validates_presence_of :front
-    validates_presence_of :back
-    validates_presence_of :selfie, if: :liveness_checking_required
     validates_presence_of :document_capture_session
 
+    validate :needed_images_present
     validate :validate_images
     validate :validate_duplicate_images, if: :image_resubmission_check?
     validate :limit_if_rate_limited
 
     def initialize(
       params,
-      service_provider:,
-      doc_auth_vendor:,
       acuant_sdk_upgrade_ab_test_bucket:,
+      attempts_api_tracker:,
+      fraud_ops_tracker:,
+      service_provider:,
       analytics: nil,
-      uuid_prefix: nil,
-      liveness_checking_required: false
+      liveness_checking_required: false,
+      uuid_prefix: nil
     )
       @params = params
-      @service_provider = service_provider
-      @doc_auth_vendor = doc_auth_vendor
       @acuant_sdk_upgrade_ab_test_bucket = acuant_sdk_upgrade_ab_test_bucket
       @analytics = analytics
+      @attempts_api_tracker = attempts_api_tracker
+      @fraud_ops_tracker = fraud_ops_tracker
       @readable = {}
+      @service_provider = service_provider
       @uuid_prefix = uuid_prefix
       @liveness_checking_required = liveness_checking_required
     end
@@ -38,34 +38,116 @@ module Idv
 
       client_response = nil
       doc_pii_response = nil
+      mrz_response = nil
+      aamva_response = nil
 
       if form_response.success?
         client_response = post_images_to_client
-
         document_capture_session.update!(
           last_doc_auth_result: client_response.extra[:doc_auth_result],
         )
 
         if client_response.success?
           doc_pii_response = validate_pii_from_doc(client_response)
+
+          if doc_pii_response.success? && passport_requested? && passport_submittal
+            mrz_response = validate_mrz(client_response)
+          end
+
+          if aamva_enabled? && !passport_requested? && doc_pii_response.success?
+            aamva_response = validate_aamva(doc_pii_response.pii_from_doc)
+          end
         end
       end
 
       response = determine_response(
-        form_response: form_response,
-        client_response: client_response,
-        doc_pii_response: doc_pii_response,
+        form_response:,
+        client_response:,
+        doc_pii_response:,
+        mrz_response:,
+        aamva_response:,
       )
 
-      failed_fingerprints = store_failed_images(client_response, doc_pii_response)
+      if response.success?
+        store_pii(client_response:, mrz_response:, aamva_response:)
+      end
+
+      failed_fingerprints = store_failed_images(
+        client_response:, doc_pii_response:, mrz_response:, aamva_response:,
+      )
       response.extra[:failed_image_fingerprints] = failed_fingerprints
+
+      # if there is no client_response, there was no submission attempt
+      if client_response
+        pii_from_doc = client_response.pii_from_doc.to_h || {}
+
+        attempts_api_tracker.idv_document_upload_submitted(
+          **doc_escrow_images,
+          success: response.success?,
+          document_state: pii_from_doc[:state],
+          document_number: pii_from_doc[:state_id_number],
+          document_issued: pii_from_doc[:state_id_issued],
+          document_expiration: pii_from_doc[:state_id_expiration],
+          first_name: pii_from_doc[:first_name],
+          last_name: pii_from_doc[:last_name],
+          date_of_birth: pii_from_doc[:dob],
+          address1: pii_from_doc[:address1],
+          address2: pii_from_doc[:address2],
+          city: pii_from_doc[:city],
+          state: pii_from_doc[:state],
+          zip: pii_from_doc[:zip],
+          failure_reason: failure_reason(response),
+        )
+        fraud_ops_tracker.fraud_ops_idv_document_upload_submitted(
+          **doc_escrow_images,
+          success: response.success?,
+          document_state: pii_from_doc[:state],
+          document_number: pii_from_doc[:state_id_number],
+          document_issued: pii_from_doc[:state_id_issued],
+          document_expiration: pii_from_doc[:state_id_expiration],
+          first_name: pii_from_doc[:first_name],
+          last_name: pii_from_doc[:last_name],
+          date_of_birth: pii_from_doc[:dob],
+          address1: pii_from_doc[:address1],
+          address2: pii_from_doc[:address2],
+          city: pii_from_doc[:city],
+          state: pii_from_doc[:state],
+          zip: pii_from_doc[:zip],
+          failure_reason: failure_reason(response),
+          vendor: client_response&.extra&.dig(:vendor),
+          conversation_id: client_response&.extra&.dig(:conversation_id),
+          reference_id: client_response&.extra&.dig(:reference_id),
+        )
+      end
+
+      abandon_any_ipp_progress
       response
     end
 
     private
 
-    attr_reader :params, :analytics, :service_provider, :form_response, :uuid_prefix,
-                :liveness_checking_required, :acuant_sdk_upgrade_ab_test_bucket
+    attr_reader :acuant_sdk_upgrade_ab_test_bucket,
+                :analytics,
+                :attempts_api_tracker,
+                :fraud_ops_tracker,
+                :form_response,
+                :liveness_checking_required,
+                :params,
+                :service_provider,
+                :uuid_prefix
+
+    def abandon_any_ipp_progress
+      user_id && User.find(user_id).establishing_in_person_enrollment&.cancel
+    end
+
+    def failure_reason(response)
+      if response.respond_to?(:vendor_errors)
+        response.vendor_errors.presence ||
+          attempts_api_tracker.parse_failure_reason(response)
+      else
+        attempts_api_tracker.parse_failure_reason(response)
+      end
+    end
 
     def increment_rate_limiter!
       return unless document_capture_session
@@ -75,7 +157,6 @@ module Idv
     def validate_form
       success = valid?
       increment_rate_limiter!
-      track_rate_limited if rate_limited?
 
       response = Idv::DocAuthFormResponse.new(
         success: success,
@@ -84,7 +165,27 @@ module Idv
       )
 
       analytics.idv_doc_auth_submitted_image_upload_form(**response)
+      track_rate_limited if rate_limited?
+      track_upload_attempt(response)
+
       response
+    end
+
+    def track_upload_attempt(response)
+      attempts_api_tracker.idv_document_uploaded(
+        **doc_escrow_images,
+        success: response.success?,
+        failure_reason: attempts_api_tracker.parse_failure_reason(response),
+      )
+      fraud_ops_tracker.idv_document_uploaded(
+        **doc_escrow_images,
+        success: response.success?,
+        failure_reason: fraud_ops_tracker.parse_failure_reason(response),
+      )
+    end
+
+    def doc_escrow_enabled?
+      FeatureManagement.doc_escrow_enabled?(service_provider)
     end
 
     def post_images_to_client
@@ -92,20 +193,24 @@ module Idv
 
       response = timer.time('vendor_request') do
         doc_auth_client.post_images(
-          front_image: front_image_bytes,
-          back_image: back_image_bytes,
-          selfie_image: liveness_checking_required ? selfie_image_bytes : nil,
+          **images_metadata.submittable_images,
           image_source: image_source,
-          images_cropped: acuant_sdk_autocaptured_id?,
+          # autocapture no longer crops the images
+          images_cropped: false, # acuant_sdk_autocaptured_id?,
           user_uuid: user_uuid,
           uuid_prefix: uuid_prefix,
           liveness_checking_required: liveness_checking_required,
+          document_type_requested: document_type_requested,
+          passport_requested: document_capture_session.passport_requested?,
         )
       end
 
       response.extra.merge!(extra_attributes)
-      response.extra[:state] = response.pii_from_doc.to_h[:state]
-      response.extra[:state_id_type] = response.pii_from_doc.to_h[:state_id_type]
+      pii_hash = response.pii_from_doc.to_h
+      response.extra[:state] = pii_hash[:state]
+      response.extra[:document_type_received] = pii_hash[:document_type_received] ||
+                                                pii_hash[:id_doc_type]
+      response.extra[:country] = pii_hash[:issuing_country_code]
 
       update_analytics(
         client_response: response,
@@ -114,16 +219,12 @@ module Idv
       response
     end
 
-    def front_image_bytes
-      @front_image_bytes ||= front.read
-    end
+    def document_type_requested
+      return nil if document_capture_session.nil?
 
-    def back_image_bytes
-      @back_image_bytes ||= back.read
-    end
-
-    def selfie_image_bytes
-      @selfie_image_bytes ||= selfie.read
+      @document_type_requested ||= passport_requested? \
+        ? DocAuth::LexisNexis::DocumentTypes::PASSPORT :
+          DocAuth::LexisNexis::DocumentTypes::DRIVERS_LICENSE
     end
 
     def validate_pii_from_doc(client_response)
@@ -135,13 +236,42 @@ module Idv
       side_classification = doc_side_classification(client_response)
       response_with_classification =
         response.to_h.merge(side_classification)
+          .merge(document_type_received: client_response.pii_from_doc.document_type_received ||
+                 client_response.pii_from_doc.id_doc_type)
 
       analytics.idv_doc_auth_submitted_pii_validation(**response_with_classification)
 
-      if client_response.success? && response.success?
-        store_pii(client_response)
-      end
+      response
+    end
 
+    def validate_mrz(client_response)
+      id_type = client_response.pii_from_doc.document_type_received ||
+                client_response.pii_from_doc.id_doc_type
+      unless id_type == 'passport'
+        return DocAuth::Response.new(
+          success: false,
+          errors: { passport: "Cannot validate MRZ for id type: #{id_type}" },
+        )
+      end
+      mrz_client = IdentityConfig.store.doc_auth_mock_dos_api ?
+                     DocAuth::Mock::DosPassportApiClient.new(client_response) :
+                     DocAuth::Dos::Requests::MrzRequest.new(mrz: client_response.pii_from_doc.mrz)
+      response = mrz_client.fetch
+
+      analytics.idv_dos_passport_verification(
+        document_type_requested:,
+        remaining_submit_attempts:,
+        submit_attempts:,
+        user_id: user_uuid,
+        success: response.success?,
+        errors: response.errors.to_h,
+        **response.extra.slice(
+          :response, :correlation_id_sent, :correlation_id_received,
+          :error_code, :error_message, :error_reason, :exception
+        ),
+      )
+
+      response.extra.merge!(extra_attributes)
       response
     end
 
@@ -160,41 +290,23 @@ module Idv
         submit_attempts: submit_attempts,
         remaining_submit_attempts: remaining_submit_attempts,
         user_id: user_uuid,
-        pii_like_keypaths: DocPiiForm.pii_like_keypaths,
+        pii_like_keypaths: DocPiiForm.pii_like_keypaths(document_type: document_type_requested),
         flow_path: params[:flow_path],
       }
 
-      @extra_attributes[:front_image_fingerprint] = front_image_fingerprint
-      @extra_attributes[:back_image_fingerprint] = back_image_fingerprint
-      @extra_attributes[:selfie_image_fingerprint] = selfie_image_fingerprint
+      images.each do |image|
+        @extra_attributes[image.extra_attribute_key] = image.fingerprint
+      end
+
       @extra_attributes[:liveness_checking_required] = liveness_checking_required
+      @extra_attributes[:document_type_requested] = document_type_requested
       @extra_attributes
-    end
-
-    def front_image_fingerprint
-      return @front_image_fingerprint if @front_image_fingerprint
-      if readable?(:front)
-        @front_image_fingerprint =
-          Digest::SHA256.urlsafe_base64digest(front_image_bytes)
-      end
-    end
-
-    def back_image_fingerprint
-      return @back_image_fingerprint if @back_image_fingerprint
-      if readable?(:back)
-        @back_image_fingerprint =
-          Digest::SHA256.urlsafe_base64digest(back_image_bytes)
-      end
     end
 
     def selfie_image_fingerprint
       return unless liveness_checking_required
-      return @selfie_image_fingerprint if @selfie_image_fingerprint
 
-      if readable?(:selfie)
-        @selfie_image_fingerprint =
-          Digest::SHA256.urlsafe_base64digest(selfie_image_bytes)
-      end
+      images_metadata.selfie&.fingerprint
     end
 
     def remaining_submit_attempts
@@ -214,12 +326,18 @@ module Idv
       { selfie_attempts: past_selfie_count + processed_selfie_count }
     end
 
-    def determine_response(form_response:, client_response:, doc_pii_response:)
+    def determine_response(form_response:, client_response:, doc_pii_response:, mrz_response:,
+                           aamva_response:)
       # image validation failed
       return form_response unless form_response.success?
 
       # doc_pii validation failed
       return doc_pii_response if doc_pii_response.present? && !doc_pii_response.success?
+
+      # mrz validation failed
+      return mrz_response if mrz_response.present? && !mrz_response.success?
+
+      return aamva_response if aamva_response.present? && !aamva_response.success?
 
       client_response
     end
@@ -232,16 +350,32 @@ module Idv
       end
     end
 
-    def front
-      as_readable(:front)
+    def needed_images_present
+      errs = images_metadata.needed_images_present?(liveness_checking_required)
+
+      errs.each do |k, v|
+        errors.add(k, t('errors.messages.blank'), type: v[:type])
+      end
     end
 
-    def back
-      as_readable(:back)
+    def images
+      images_metadata.images
     end
 
-    def selfie
-      as_readable(:selfie)
+    def images_metadata
+      @images_metadata ||= IdvImages.new(params)
+    end
+
+    def doc_escrow_images
+      return {} unless doc_escrow_enabled?
+
+      return @doc_escrow_images if defined?(@doc_escrow_images)
+      @doc_escrow_images = images_metadata.attempts_file_data(issuer: service_provider.issuer)
+      @doc_escrow_images
+    end
+
+    def passport_submittal
+      images_metadata.passport_submittal
     end
 
     def document_capture_session
@@ -251,23 +385,13 @@ module Idv
     end
 
     def validate_images
-      if front.is_a? DataUrlImage::InvalidUrlFormatError
-        errors.add(
-          :front, t('doc_auth.errors.not_a_file'),
-          type: :not_a_file
-        )
-      end
-      if back.is_a? DataUrlImage::InvalidUrlFormatError
-        errors.add(
-          :back, t('doc_auth.errors.not_a_file'),
-          type: :not_a_file
-        )
-      end
-      if selfie.is_a? DataUrlImage::InvalidUrlFormatError
-        errors.add(
-          :selfie, t('doc_auth.errors.not_a_file'),
-          type: :not_a_file
-        )
+      images.each do |image|
+        if image.value.is_a? DataUrlImage::InvalidUrlFormatError
+          errors.add(
+            image.type, t('doc_auth.errors.not_a_file'),
+            type: :not_a_file
+          )
+        end
       end
 
       if !IdentityConfig.store.doc_auth_selfie_desktop_test_mode &&
@@ -283,31 +407,26 @@ module Idv
       capture_result = document_capture_session&.load_result
       return unless capture_result
       error_sides = []
-      if capture_result&.failed_front_image?(front_image_fingerprint)
-        errors.add(
-          :front, t('doc_auth.errors.doc.resubmit_failed_image'), type: :duplicate_image
-        )
-        error_sides << 'front'
+      images.each do |image|
+        if capture_result&.send(:"failed_#{image.type}_image?", image.fingerprint)
+          errors.add(
+            image.type,
+            t('doc_auth.errors.doc.resubmit_failed_image'),
+            type: :duplicate_image,
+          )
+          if image.type == :selfie
+            analytics.idv_doc_auth_failed_image_resubmitted(
+              side: 'selfie', **extra_attributes,
+            )
+            next
+          end
+          error_sides << image.type.to_s
+        end
       end
 
-      if capture_result&.failed_back_image?(back_image_fingerprint)
-        errors.add(
-          :back, t('doc_auth.errors.doc.resubmit_failed_image'), type: :duplicate_image
-        )
-        error_sides << 'back'
-      end
       unless error_sides.empty?
         analytics.idv_doc_auth_failed_image_resubmitted(
           side: error_sides.length == 2 ? 'both' : error_sides[0], **extra_attributes,
-        )
-      end
-
-      if capture_result&.failed_selfie_image?(selfie_image_fingerprint)
-        errors.add(
-          :selfie, t('doc_auth.errors.doc.resubmit_failed_image'), type: :duplicate_image
-        )
-        analytics.idv_doc_auth_failed_image_resubmitted(
-          side: 'selfie', **extra_attributes,
         )
       end
     end
@@ -319,7 +438,12 @@ module Idv
     end
 
     def track_rate_limited
-      analytics.rate_limit_reached(limiter_type: :idv_doc_auth)
+      analytics.rate_limit_reached(
+        limiter_type: :idv_doc_auth,
+        user_id: user_uuid,
+      )
+      attempts_api_tracker.idv_rate_limited(limiter_type: :idv_doc_auth)
+      fraud_ops_tracker.idv_rate_limited(limiter_type: :idv_doc_auth)
     end
 
     def document_capture_session_uuid
@@ -328,7 +452,7 @@ module Idv
 
     def doc_auth_client
       @doc_auth_client ||= DocAuthRouter.client(
-        vendor: @doc_auth_vendor,
+        vendor: document_capture_session.doc_auth_vendor,
         warn_notifier: proc do |attrs|
           analytics&.doc_auth_warning(
             **attrs,
@@ -337,31 +461,18 @@ module Idv
       )
     end
 
-    def readable?(image_key)
-      value = @readable[image_key]
-      value && !value.is_a?(DataUrlImage::InvalidUrlFormatError)
-    end
-
-    def as_readable(image_key)
-      return @readable[image_key] if readable?(image_key)
-      value = params[image_key]
-      @readable[image_key] = begin
-        if value.respond_to?(:read)
-          value
-        elsif value.is_a? String
-          DataUrlImage.new(value)
-        end
-      rescue DataUrlImage::InvalidUrlFormatError => error
-        error
-      end
-    end
-
     def update_analytics(client_response:, vendor_request_time_in_ms:)
       add_costs(client_response)
       update_funnel(client_response)
+      is_state_id = client_response.pii_from_doc.is_a?(Pii::StateId)
       birth_year = client_response.pii_from_doc&.dob&.to_date&.year
-      zip_code = client_response.pii_from_doc&.zipcode&.to_s&.strip&.slice(0, 5)
-      issue_year = client_response.pii_from_doc&.state_id_issued&.to_date&.year
+      zip_code = is_state_id ? client_response.pii_from_doc&.zipcode&.to_s&.strip&.slice(0, 5) : nil
+      issue_year = nil
+      if is_state_id
+        issue_year = client_response.pii_from_doc&.state_id_issued&.to_date&.year
+      else
+        issue_year = client_response.pii_from_doc&.passport_issued&.to_date&.year
+      end
       analytics.idv_doc_auth_submitted_image_upload_vendor(
         **client_response.to_h.merge(
           birth_year: birth_year,
@@ -389,8 +500,12 @@ module Idv
     end
 
     def acuant_sdk_captured_id?
-      image_metadata.dig(:front, :source) == Idp::Constants::Vendors::ACUANT &&
-        image_metadata.dig(:back, :source) == Idp::Constants::Vendors::ACUANT
+      if passport_submittal
+        image_metadata.dig(:passport, :source) == Idp::Constants::Vendors::ACUANT
+      else
+        image_metadata.dig(:front, :source) == Idp::Constants::Vendors::ACUANT &&
+          image_metadata.dig(:back, :source) == Idp::Constants::Vendors::ACUANT
+      end
     end
 
     def acuant_sdk_captured_selfie?
@@ -398,13 +513,18 @@ module Idv
     end
 
     def acuant_sdk_autocaptured_id?
-      image_metadata.dig(:front, :acuantCaptureMode) == 'AUTO' &&
-        image_metadata.dig(:back, :acuantCaptureMode) == 'AUTO'
+      if passport_submittal
+        image_metadata.dig(:passport, :acuantCaptureMode) == 'AUTO'
+      else
+        image_metadata.dig(:front, :acuantCaptureMode) == 'AUTO' &&
+          image_metadata.dig(:back, :acuantCaptureMode) == 'AUTO'
+      end
     end
 
     def image_metadata
       @image_metadata ||= params
-        .permit(:front_image_metadata, :back_image_metadata, :selfie_image_metadata).to_h
+        .permit(:front_image_metadata, :back_image_metadata,
+                :passport_image_metadata, :selfie_image_metadata).to_h
         .transform_values do |str|
           JSON.parse(str)
         rescue JSON::ParserError
@@ -425,14 +545,17 @@ module Idv
 
     def update_funnel(client_response)
       steps = %i[front_image back_image]
+      steps = %i[passport_image] if passport_submittal
       steps.each do |step|
         Funnel::DocAuth::RegisterStep.new(user_id, service_provider&.issuer)
           .call(step.to_s, :update, client_response.success?)
       end
     end
 
-    def store_pii(client_response)
-      document_capture_session.store_result_from_response(client_response)
+    def store_pii(client_response:, mrz_response:, aamva_response:)
+      document_capture_session.store_result_from_response(
+        client_response, mrz_response:, aamva_response:, attempt: submit_attempts
+      )
     end
 
     def user_id
@@ -441,6 +564,10 @@ module Idv
 
     def user_uuid
       document_capture_session&.user&.uuid
+    end
+
+    def passport_requested?
+      !!document_capture_session&.passport_requested?
     end
 
     def rate_limiter
@@ -454,51 +581,99 @@ module Idv
       rate_limiter.limited? if document_capture_session
     end
 
-    ##
     # Store failed image fingerprints in document_capture_session_result
     # when client_response is not successful and not a network error
     # ( http status except handled status 438, 439, 440 ) or doc_pii_response is not successful.
-    # @param [Object] client_response
-    # @param [Object] doc_pii_response
-    # @return [Object] latest failed fingerprints
-    def store_failed_images(client_response, doc_pii_response)
+    # @param client_response [DocAuth::Response] The response from the Image upload request.
+    # @param doc_pii_response [DocAuth::Response] The response from PII validation.
+    # @param mrz_response [DocAuth::Response] The response from the MRZ api request.
+    # @param aamva_response [DocAuth::Response] The response from the AAMVA state ID check.
+    # @return [Hash<Symbol => Array<String>>] latest failed fingerprints
+    def store_failed_images(client_response:, doc_pii_response:, mrz_response:, aamva_response:)
       unless image_resubmission_check?
         return {
           front: [],
           back: [],
+          passport: [],
           selfie: [],
         }
       end
       # doc auth failed due to non network error or doc_pii is not valid
+      failed_front_fingerprint = nil
+      failed_back_fingerprint = nil
+      failed_passport_fingerprint = nil
+
       if client_response && !client_response.success? && !client_response.network_error?
         errors_hash = client_response.errors&.to_h || {}
-        failed_front_fingerprint = nil
-        failed_back_fingerprint = nil
-        if errors_hash[:front] || errors_hash[:back]
+
+        if errors_hash[:front] || errors_hash[:back] || errors_hash[:passport]
           if errors_hash[:front]
             failed_front_fingerprint = extra_attributes[:front_image_fingerprint]
           end
           if errors_hash[:back]
             failed_back_fingerprint = extra_attributes[:back_image_fingerprint]
           end
+          if errors_hash[:passport]
+            failed_passport_fingerprint = extra_attributes[:passport_image_fingerprint]
+          end
         elsif !client_response.doc_auth_success?
           failed_front_fingerprint = extra_attributes[:front_image_fingerprint]
           failed_back_fingerprint = extra_attributes[:back_image_fingerprint]
+          failed_passport_fingerprint = extra_attributes[:passport_image_fingerprint]
         end
         document_capture_session.store_failed_auth_data(
           front_image_fingerprint: failed_front_fingerprint,
           back_image_fingerprint: failed_back_fingerprint,
+          passport_image_fingerprint: failed_passport_fingerprint,
           selfie_image_fingerprint: extra_attributes[:selfie_image_fingerprint],
           doc_auth_success: client_response.doc_auth_success?,
           selfie_status: client_response.selfie_status,
+          attempt: submit_attempts,
+        )
+      elsif client_response&.network_error?
+        document_capture_session.store_failed_auth_data(
+          front_image_fingerprint: nil,
+          back_image_fingerprint: nil,
+          passport_image_fingerprint: nil,
+          selfie_image_fingerprint: nil,
+          doc_auth_success: client_response.doc_auth_success?,
+          selfie_status: client_response.selfie_status,
+          attempt: submit_attempts,
+          errors: client_response.errors,
         )
       elsif doc_pii_response && !doc_pii_response.success?
         document_capture_session.store_failed_auth_data(
           front_image_fingerprint: extra_attributes[:front_image_fingerprint],
           back_image_fingerprint: extra_attributes[:back_image_fingerprint],
+          passport_image_fingerprint: failed_passport_fingerprint,
           selfie_image_fingerprint: extra_attributes[:selfie_image_fingerprint],
           doc_auth_success: client_response.doc_auth_success?,
           selfie_status: client_response.selfie_status,
+          attempt: submit_attempts,
+        )
+      elsif mrz_response && !mrz_response.success?
+        document_capture_session.store_failed_auth_data(
+          front_image_fingerprint: extra_attributes[:front_image_fingerprint],
+          back_image_fingerprint: extra_attributes[:back_image_fingerprint],
+          passport_image_fingerprint: extra_attributes[:passport_image_fingerprint],
+          selfie_image_fingerprint: extra_attributes[:selfie_image_fingerprint],
+          doc_auth_success: client_response.doc_auth_success?,
+          selfie_status: client_response.selfie_status,
+          errors: mrz_response.errors,
+          mrz_status: :failed,
+          attempt: submit_attempts,
+        )
+      elsif aamva_response && !aamva_response.success?
+        document_capture_session.store_failed_auth_data(
+          front_image_fingerprint: extra_attributes[:front_image_fingerprint],
+          back_image_fingerprint: extra_attributes[:back_image_fingerprint],
+          passport_image_fingerprint: extra_attributes[:passport_image_fingerprint],
+          selfie_image_fingerprint: extra_attributes[:selfie_image_fingerprint],
+          doc_auth_success: client_response.doc_auth_success?,
+          selfie_status: client_response.selfie_status,
+          errors: aamva_response.errors,
+          aamva_status: :failed,
+          attempt: submit_attempts,
         )
       end
       # retrieve updated data from session
@@ -506,12 +681,40 @@ module Idv
       {
         front: captured_result&.failed_front_image_fingerprints || [],
         back: captured_result&.failed_back_image_fingerprints || [],
+        passport: captured_result&.failed_passport_image_fingerprints || [],
         selfie: captured_result&.failed_selfie_image_fingerprints || [],
       }
     end
 
     def image_resubmission_check?
       IdentityConfig.store.doc_auth_check_failed_image_resubmission_enabled
+    end
+
+    def aamva_proofer
+      Proofing::Resolution::Plugins::AamvaPlugin.new
+    end
+
+    def aamva_enabled?
+      IdentityConfig.store.idv_aamva_at_doc_auth_enabled
+    end
+
+    def validate_aamva(pii)
+      aamva_proofer.call(
+        applicant_pii: pii.merge(additional_aamva_attributes),
+        current_sp: service_provider,
+        state_id_address_resolution_result: nil,
+        ipp_enrollment_in_progress: false,
+        timer: JobHelpers::Timer.new,
+        doc_auth_flow: true,
+        analytics:,
+      ).to_doc_auth_response
+    end
+
+    def additional_aamva_attributes
+      {
+        uuid: user_uuid,
+        uuid_prefix: service_provider&.app_id,
+      }
     end
   end
 end

@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 class UserEventCreator
-  COOKIE_LENGTH = 128
-
   attr_reader :request, :current_user
 
   def initialize(current_user:, request: nil)
@@ -99,7 +97,7 @@ class UserEventCreator
   end
 
   def create_device_for_user(user)
-    cookie_uuid = cookies[:device].presence || SecureRandom.hex(COOKIE_LENGTH / 2)
+    cookie_uuid = cookies[:device].presence || SecureRandom.hex(HighEntropy::COOKIE_LENGTH_IN_BYTES)
 
     Device.create!(
       user: user,

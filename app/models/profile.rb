@@ -117,9 +117,17 @@ class Profile < ApplicationRecord
     attrs[:verified_at] = now unless reason_deactivated == :password_reset || verified_at
 
     transaction do
-      Profile.where(user_id: user_id).update_all(active: false)
+      Profile.where(user_id: user_id).where.not(id:).update_all(active: false)
       update!(attrs)
     end
+
+    user.analytics.idv_profile_activated(
+      idv_level:,
+      issuer: initiating_service_provider&.issuer,
+      verified_at:,
+      activated_at:,
+    )
+
     track_facial_match_reproof if is_facial_match_upgrade
     send_push_notifications if is_reproof
   end
@@ -176,13 +184,14 @@ class Profile < ApplicationRecord
     end
   end
 
-  def activate_after_password_reset
+  # Removes the deactivation reason from the profile if it had a password_reset
+  # deactivation reason. If the profile was activated previously it will be
+  # reactivated.
+  def clear_password_reset_deactivation_reason
     if password_reset?
       transaction do
-        update!(
-          deactivation_reason: nil,
-        )
-        activate(reason_deactivated: :password_reset)
+        update!(deactivation_reason: nil)
+        activate(reason_deactivated: :password_reset) if activated_at.present?
       end
     end
   end
@@ -255,6 +264,99 @@ class Profile < ApplicationRecord
     )
   end
 
+  def deactivate_duplicate
+    raise 'Profile not active' unless active
+    raise 'Profile not a duplicate' unless DuplicateProfileSet.open.exists?(
+      ['? = ANY(profile_ids)', id],
+    )
+
+    transaction do
+      update!(
+        active: false,
+        fraud_review_pending_at: nil,
+        fraud_rejection_at: Time.zone.now,
+      )
+      DuplicateProfileSet.open.where(['? = ANY(profile_ids)', id]).find_each do |duplicate_profile|
+        if duplicate_profile.profile_ids.length > 1
+          duplicate_profile.profile_ids.delete(id)
+          duplicate_profile.save
+        else
+          duplicate_profile.update!(
+            closed_at: Time.zone.now,
+            self_serviced: false,
+            fraud_investigation_conclusive: true,
+          )
+        end
+
+        service_provider = ServiceProvider.find_sole_by(issuer: duplicate_profile.service_provider)
+        user.confirmed_email_addresses.each do |email_address|
+          mailer = UserMailer.with(user: user, email_address: email_address)
+          mailer.dupe_profile_account_review_complete_locked(
+            agency_name: service_provider.friendly_name,
+          ).deliver_now_or_later
+        end
+      end
+    end
+  end
+
+  def clear_duplicate
+    raise 'Profile not active' unless active
+    raise 'Profile not a duplicate' unless DuplicateProfileSet.open.exists?(
+      ['? = ANY(profile_ids)', id],
+    )
+    raise 'Profile has other duplicates' if DuplicateProfileSet.open.exists?(
+      ['? = ANY(profile_ids) AND cardinality(profile_ids) > 1', id],
+    )
+
+    transaction do
+      DuplicateProfileSet.open.where(['? = ANY(profile_ids)', id]).find_each do |duplicate_profile|
+        duplicate_profile.update!(
+          closed_at: Time.zone.now,
+          self_serviced: false,
+          fraud_investigation_conclusive: true,
+        )
+
+        service_provider = ServiceProvider.find_sole_by(issuer: duplicate_profile.service_provider)
+        user.confirmed_email_addresses.each do |email_address|
+          mailer = UserMailer.with(user: user, email_address: email_address)
+          mailer.dupe_profile_account_review_complete_success(
+            agency_name: service_provider.friendly_name,
+          ).deliver_now_or_later
+        end
+      end
+    end
+  end
+
+  def close_inconclusive_duplicate
+    raise 'Profile not active' unless active
+    raise 'Profile not a duplicate' unless DuplicateProfileSet.open.exists?(
+      ['? = ANY(profile_ids)', id],
+    )
+
+    transaction do
+      DuplicateProfileSet.open.where(['? = ANY(profile_ids)', id]).find_each do |duplicate_profile|
+        if duplicate_profile.profile_ids.length > 1
+          duplicate_profile.profile_ids.delete(id)
+          duplicate_profile.save
+        else
+          duplicate_profile.update!(
+            closed_at: Time.zone.now,
+            self_serviced: false,
+            fraud_investigation_conclusive: false,
+          )
+        end
+
+        service_provider = ServiceProvider.find_sole_by(issuer: duplicate_profile.service_provider)
+        user.confirmed_email_addresses.each do |email_address|
+          mailer = UserMailer.with(user: user, email_address: email_address)
+          mailer.dupe_profile_account_review_complete_unable(
+            agency_name: service_provider.friendly_name,
+          ).deliver_now_or_later
+        end
+      end
+    end
+  end
+
   def reject_for_fraud(notify_user:)
     update!(
       active: false,
@@ -267,12 +369,7 @@ class Profile < ApplicationRecord
   def decrypt_pii(password)
     encryptor = Encryption::Encryptors::PiiEncryptor.new(password)
 
-    encrypted_pii_ciphertext_pair = Encryption::RegionalCiphertextPair.new(
-      single_region_ciphertext: encrypted_pii,
-      multi_region_ciphertext: encrypted_pii_multi_region,
-    )
-
-    decrypted_json = encryptor.decrypt(encrypted_pii_ciphertext_pair, user_uuid: user.uuid)
+    decrypted_json = encryptor.decrypt(encrypted_pii_multi_region, user_uuid: user.uuid)
     Pii::Attributes.new_from_json(decrypted_json)
   end
 
@@ -280,13 +377,8 @@ class Profile < ApplicationRecord
   def recover_pii(personal_key)
     encryptor = Encryption::Encryptors::PiiEncryptor.new(personal_key)
 
-    encrypted_pii_recovery_ciphertext_pair = Encryption::RegionalCiphertextPair.new(
-      single_region_ciphertext: encrypted_pii_recovery,
-      multi_region_ciphertext: encrypted_pii_recovery_multi_region,
-    )
-
     decrypted_recovery_json = encryptor.decrypt(
-      encrypted_pii_recovery_ciphertext_pair, user_uuid: user.uuid
+      encrypted_pii_recovery_multi_region, user_uuid: user.uuid
     )
     return nil if JSON.parse(decrypted_recovery_json).nil?
     Pii::Attributes.new_from_json(decrypted_recovery_json)
@@ -297,7 +389,8 @@ class Profile < ApplicationRecord
     encrypt_ssn_fingerprint(pii)
     encrypt_compound_pii_fingerprint(pii)
     encryptor = Encryption::Encryptors::PiiEncryptor.new(password)
-    self.encrypted_pii, self.encrypted_pii_multi_region = encryptor.encrypt(
+    self.encrypted_pii = nil
+    self.encrypted_pii_multi_region = encryptor.encrypt(
       pii.to_json, user_uuid: user.uuid
     )
     encrypt_recovery_pii(pii)
@@ -309,7 +402,8 @@ class Profile < ApplicationRecord
     encryptor = Encryption::Encryptors::PiiEncryptor.new(
       personal_key_generator.normalize(personal_key),
     )
-    self.encrypted_pii_recovery, self.encrypted_pii_recovery_multi_region = encryptor.encrypt(
+    self.encrypted_pii_recovery = nil
+    self.encrypted_pii_recovery_multi_region = encryptor.encrypt(
       pii.to_json, user_uuid: user.uuid
     )
     @personal_key = personal_key

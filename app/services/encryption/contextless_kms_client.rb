@@ -19,13 +19,23 @@ module Encryption
     }.freeze
 
     def encrypt(plaintext, log_context: nil)
-      KmsLogger.log(:encrypt, key_id: IdentityConfig.store.aws_kms_key_id, log_context: log_context)
+      KmsLogger.log(
+        action: :encrypt,
+        timestamp: Time.zone.now,
+        key_id: IdentityConfig.store.aws_kms_key_id,
+        log_context: log_context,
+      )
       return encrypt_kms(plaintext) if FeatureManagement.use_kms?
       encrypt_local(plaintext)
     end
 
     def decrypt(ciphertext, log_context: nil)
-      KmsLogger.log(:decrypt, key_id: IdentityConfig.store.aws_kms_key_id, log_context: log_context)
+      KmsLogger.log(
+        action: :decrypt,
+        timestamp: Time.zone.now,
+        key_id: IdentityConfig.store.aws_kms_key_id,
+        log_context: log_context,
+      )
       return decrypt_kms(ciphertext) if use_kms?(ciphertext)
       decrypt_local(ciphertext)
     end

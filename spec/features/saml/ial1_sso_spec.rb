@@ -25,7 +25,7 @@ RSpec.feature 'IAL1 Single Sign On' do
 
         click_agree_and_continue
 
-        expect(current_url).to eq complete_saml_url
+        expect(page).to have_current_path complete_saml_path
         expect(page.get_rack_session.keys).to include('sp')
       end
     end
@@ -40,7 +40,7 @@ RSpec.feature 'IAL1 Single Sign On' do
       click_submit_default_twice
       click_agree_and_continue
 
-      expect(current_url).to eq complete_saml_url
+      expect(page).to have_current_path complete_saml_path
 
       visit root_path
       expect(page).to have_current_path account_path
@@ -54,7 +54,7 @@ RSpec.feature 'IAL1 Single Sign On' do
 
       visit saml_authn_request_url
 
-      expect(current_url).to match new_user_session_path
+      expect(page).to have_current_path new_user_session_path
       expect(page).to have_content(sp_content)
       expect(page).to_not have_css('.usa-accordion__heading')
     end
@@ -84,7 +84,7 @@ RSpec.feature 'IAL1 Single Sign On' do
         session['warden.user.user.session']['last_request_at'] = 30.minutes.ago.to_i
       end
 
-      expect(page).to have_current_path(new_user_session_path(request_id: sp_request_id), wait: 5)
+      expect(page).to have_current_path(new_user_session_path(request_id: sp_request_id))
       allow(IdentityConfig.store).to receive(:session_check_delay).and_call_original
       allow(IdentityConfig.store).to receive(:session_check_frequency).and_call_original
 
@@ -93,7 +93,7 @@ RSpec.feature 'IAL1 Single Sign On' do
       click_submit_default
 
       # SAML does internal redirect using JavaScript prior to showing consent screen
-      expect(page).to have_current_path(sign_up_completed_path, wait: 5)
+      expect(page).to have_current_path(sign_up_completed_path)
       click_agree_and_continue
 
       expect(page).to have_current_path(test_saml_decode_assertion_path)
@@ -113,7 +113,7 @@ RSpec.feature 'IAL1 Single Sign On' do
 
     it 'redirects user to verify attributes page' do
       sp = ServiceProvider.find_by(issuer: 'http://localhost:3000')
-      expect(current_url).to eq(sign_up_completed_url)
+      expect(page).to have_current_path(sign_up_completed_path)
       expect(page).to have_content(
         t(
           'titles.sign_up.completion_first_sign_in',
@@ -124,7 +124,7 @@ RSpec.feature 'IAL1 Single Sign On' do
 
     it 'returns to sp after clicking continue' do
       click_agree_and_continue
-      expect(current_url).to eq(complete_saml_url)
+      expect(page).to have_current_path complete_saml_path
     end
 
     it 'it confirms the user wants to continue to the SP after signing in again' do
@@ -138,10 +138,10 @@ RSpec.feature 'IAL1 Single Sign On' do
 
       visit saml_authn_request
 
-      expect(current_url).to match(user_authorization_confirmation_path)
+      expect(page).to have_current_path(user_authorization_confirmation_path)
       continue_as(user.email)
 
-      expect(current_url).to eq(complete_saml_url)
+      expect(page).to have_current_path complete_saml_path
     end
   end
 
@@ -174,7 +174,7 @@ RSpec.feature 'IAL1 Single Sign On' do
         find_link(t('i18n.locale.es'), visible: false).click
       end
 
-      expect(current_url).to eq root_url(locale: :es, trailing_slash: true)
+      expect(page).to have_current_path(root_path(locale: :es, trailing_slash: true))
       expect_branded_experience
     end
   end
@@ -184,12 +184,12 @@ RSpec.feature 'IAL1 Single Sign On' do
       request_url = saml_authn_request_url
       visit request_url
 
-      expect(current_url).to eq root_url
+      expect(page).to have_current_path(root_path)
       expect_branded_experience
 
       visit request_url
 
-      expect(current_url).to eq root_url
+      expect(page).to have_current_path(root_path)
       expect_branded_experience
     end
   end
@@ -204,7 +204,7 @@ RSpec.feature 'IAL1 Single Sign On' do
       sp = ServiceProvider.find_by(issuer: 'http://localhost:3000')
       click_link t('links.cancel')
 
-      expect(current_url).to eq new_user_session_url(request_id: sp_request_id)
+      expect(page).to have_current_path(new_user_session_path(request_id: sp_request_id))
       expect(page).to have_content t('links.back_to_sp', sp: sp.friendly_name)
     end
   end
@@ -227,7 +227,7 @@ RSpec.feature 'IAL1 Single Sign On' do
       fill_in_code_with_last_phone_otp
       click_submit_default
 
-      expect(current_url).to match new_user_session_path
+      expect(page).to have_current_path complete_saml_path
       click_submit_default
       click_agree_and_continue
       click_submit_default
@@ -236,6 +236,37 @@ RSpec.feature 'IAL1 Single Sign On' do
 
       expect(xmldoc.attribute_node_for('verified_at')).to be_present
       expect(xmldoc.attribute_value_for('verified_at')).to be_blank
+    end
+  end
+
+  context 'requesting locale' do
+    it 'includes locale in the response' do
+      user = create(:user, :fully_registered)
+      saml_authn_request = saml_authn_request_url(
+        overrides: {
+          issuer: sp1_issuer,
+          authn_context: [
+            Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+            "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}email,locale",
+          ],
+        },
+      )
+
+      visit saml_authn_request
+      visit root_url(locale: 'es')
+      fill_in_credentials_and_submit(user.email, user.password)
+      fill_in_code_with_last_phone_otp
+      click_submit_default
+
+      expect(page).to have_current_path complete_saml_path(locale: 'es')
+      click_submit_default
+      click_agree_and_continue
+      click_submit_default
+
+      xmldoc = SamlResponseDoc.new('feature', 'response_assertion')
+
+      expect(xmldoc.attribute_node_for('locale')).to be_present
+      expect(xmldoc.attribute_value_for('locale')).to eq('es')
     end
   end
 end

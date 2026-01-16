@@ -56,6 +56,19 @@ module Idv
         .call(:verify_phone, :update, result.success?)
 
       analytics.idv_phone_confirmation_form_submitted(**result, **ab_test_analytics_buckets)
+
+      attempts_api_tracker.idv_phone_submitted(
+        phone_number: Phonelib.parse(step_params[:phone]).e164,
+        success: result.success?,
+        failure_reason: attempts_api_tracker.parse_failure_reason(result),
+      )
+
+      fraud_ops_tracker.idv_phone_submitted(
+        phone_number: Phonelib.parse(step_params[:phone]).e164,
+        success: result.success?,
+        failure_reason: fraud_ops_tracker.parse_failure_reason(result),
+      )
+
       if result.success?
         submit_proofing_attempt
         redirect_to idv_phone_path
@@ -88,10 +101,6 @@ module Idv
 
     private
 
-    def rate_limiter
-      @rate_limiter ||= RateLimiter.new(user: current_user, rate_limit_type: :proof_address)
-    end
-
     def redirect_to_next_step
       if phone_confirmation_required?
         if OutageStatus.new.all_phone_vendor_outage?
@@ -118,6 +127,21 @@ module Idv
       analytics.idv_phone_confirmation_otp_sent(
         **result.to_h.merge(adapter: Telephony.config.adapter),
       )
+
+      attempts_api_tracker.idv_phone_otp_sent(
+        phone_number: Phonelib.parse(idv_session.user_phone_confirmation_session.phone).e164,
+        success: result.success?,
+        otp_delivery_method: result.extra[:otp_delivery_preference],
+        failure_reason: result.success? ? nil : otp_sent_tracker_error(result),
+      )
+
+      fraud_ops_tracker.idv_phone_otp_sent(
+        phone_number: Phonelib.parse(idv_session.user_phone_confirmation_session.phone).e164,
+        success: result.success?,
+        otp_delivery_method: result.extra[:otp_delivery_preference],
+        failure_reason: result.success? ? nil : otp_sent_tracker_error(result),
+      )
+
       if result.success?
         redirect_to idv_otp_verification_url
       else
@@ -137,15 +161,13 @@ module Idv
       redirect_to failure_url(step.failure_reason)
     end
 
-    def step_name
-      :phone
-    end
-
     def step
       @step ||= Idv::PhoneStep.new(
-        idv_session: idv_session,
+        idv_session:,
         trace_id: amzn_trace_id,
-        analytics: analytics,
+        analytics:,
+        attempts_api_tracker:,
+        fraud_ops_tracker:,
       )
     end
 
@@ -178,24 +200,52 @@ module Idv
     end
 
     def async_state_done(async_state)
-      form_result = step.async_state_done(async_state)
+      results = step.async_state_done(async_state)
+      form_result = results[:final_result]
+      alternate_result = results[:alternate_result]
 
       analytics.idv_phone_confirmation_vendor_submitted(
         **form_result.to_h.merge(
           pii_like_keypaths: [
             [:errors, :phone],
             [:context, :stages, :address],
+            [:alternate_result, :errors, :phone],
           ],
           new_phone_added: new_phone_added?,
           hybrid_handoff_phone_used: hybrid_handoff_phone_used?,
         ),
         **opt_in_analytics_properties,
+        alternate_result: alternate_result&.to_h,
+      )
+
+      attempts_api_tracker.idv_phone_verified(
+        phone_number: Phonelib.parse(phone_step_params_phone).e164,
+        success: form_result.success?,
+        failure_reason: attempts_failure_reason(form_result),
+      )
+
+      fraud_ops_tracker.idv_phone_verified(
+        phone_number: Phonelib.parse(phone_step_params_phone).e164,
+        success: form_result.success?,
+        failure_reason: attempts_api_tracker.parse_failure_reason(form_result),
       )
 
       if form_result.success?
         redirect_to_next_step
       else
         handle_proofing_failure
+      end
+    end
+
+    def attempts_failure_reason(result)
+      if result.errors.key?(:"PhoneFinder Checks")
+        errors = result.errors[:"PhoneFinder Checks"].map do |check|
+          check[:ProductReason][:Description]
+        end
+
+        { phone: errors }
+      else
+        attempts_api_tracker.parse_failure_reason(result)
       end
     end
 
@@ -212,19 +262,14 @@ module Idv
     end
 
     def new_phone_added?
-      context = MfaContext.new(current_user)
-      configured_phones = context.phone_configurations.map(&:phone).map do |number|
-        PhoneFormatter.format(number)
-      end
-      !configured_phones.include?(formatted_previous_phone_step_params_phone)
+      !mfa_configured_phone?(phone_step_params_phone)
     end
 
     def hybrid_handoff_phone_used?
-      formatted_previous_phone_step_params_phone ==
-        PhoneFormatter.format(idv_session.phone_for_mobile_flow)
+      hybrid_handoff_phone?(phone_step_params_phone)
     end
 
-    def formatted_previous_phone_step_params_phone
+    def phone_step_params_phone
       PhoneFormatter.format(
         idv_session.previous_phone_step_params&.fetch('phone'),
       )
@@ -233,9 +278,10 @@ module Idv
     # Migrated from otp_delivery_method_controller
     def otp_sent_tracker_error(result)
       if send_phone_confirmation_otp_rate_limited?
-        { rate_limited: true }
+        { telephony_error: ['rate_limited'] }
       else
-        { telephony_error: result.extra[:telephony_response]&.error&.friendly_message }
+        error = result.to_h[:telephony_response].error.friendly_error_message_key.split('.').last
+        { telephony_error: [error] }
       end
     end
 

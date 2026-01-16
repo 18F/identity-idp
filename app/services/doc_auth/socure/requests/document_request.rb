@@ -4,16 +4,24 @@ module DocAuth
   module Socure
     module Requests
       class DocumentRequest < DocAuth::Socure::Request
-        attr_reader :document_type, :redirect_url, :language
+        attr_reader :customer_user_id, :redirect_url, :language,
+                    :liveness_checking_required, :passport_requested
+
+        PASSPORT_DOCUMENT_TYPE = 'passport'
+        DRIVERS_LICENSE_DOCUMENT_TYPE = 'license'
 
         def initialize(
+          customer_user_id:,
           redirect_url:,
           language:,
-          document_type: 'license'
+          liveness_checking_required: false,
+          passport_requested: false
         )
+          @customer_user_id = customer_user_id
           @redirect_url = redirect_url
-          @document_type = document_type
           @language = language
+          @liveness_checking_required = liveness_checking_required
+          @passport_requested = passport_requested
         end
 
         def body
@@ -26,10 +34,12 @@ module DocAuth
 
           {
             config: {
-              documentType: document_type,
+              documentType: document_type_requested,
               redirect: redirect,
               language: lang(language),
+              useCaseKey: use_case_key,
             },
+            customerUserId: customer_user_id,
           }.to_json
         end
 
@@ -44,30 +54,32 @@ module DocAuth
           JSON.parse(http_response.body, symbolize_names: true)
         end
 
-        def handle_connection_error(exception:, status: nil, status_message: nil)
-          NewRelic::Agent.notice_error(exception)
-          {
-            success: false,
-            errors: { network: true },
-            exception: exception,
-            extra: {
-              vendor: 'Socure',
-              vendor_status: status,
-              vendor_status_message: status_message,
-            }.compact,
-          }
-        end
-
         def method
           :post
         end
 
         def endpoint
+          if DocAuth::Mock::Socure.instance.enabled?
+            return DocAuth::Mock::Socure.instance.document_request_endpoint
+          end
+
           IdentityConfig.store.socure_docv_document_request_endpoint
         end
 
         def metric_name
           'socure_doc_auth_docv'
+        end
+
+        def use_case_key
+          if liveness_checking_required
+            IdentityConfig.store.idv_socure_docv_flow_id_w_selfie
+          else
+            IdentityConfig.store.idv_socure_docv_flow_id_only
+          end
+        end
+
+        def document_type_requested
+          passport_requested ? PASSPORT_DOCUMENT_TYPE : DRIVERS_LICENSE_DOCUMENT_TYPE
         end
       end
     end

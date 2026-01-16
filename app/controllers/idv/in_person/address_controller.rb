@@ -6,8 +6,7 @@ module Idv
       include Idv::AvailabilityConcern
       include IdvStepConcern
 
-      before_action :confirm_in_person_state_id_step_complete
-      before_action :confirm_in_person_address_step_needed, only: :show
+      before_action :confirm_step_allowed
       before_action :set_usps_form_presenter
 
       def show
@@ -45,36 +44,31 @@ module Idv
         }
       end
 
-      # update Idv::DocumentCaptureController.step_info.next_steps to include
-      # :ipp_address instead of :ipp_ssn in delete PR
       def self.step_info
         Idv::StepInfo.new(
           key: :ipp_address,
           controller: self,
           next_steps: [:ipp_ssn],
-          preconditions: ->(idv_session:, user:) { idv_session.ipp_state_id_complete? },
+          preconditions: ->(idv_session:, user:) do
+            # Handling passport navigation with checking in_person_passports_allowed? since passport
+            # form is not setup yet. This should be updated during LG-15985 implmentation.
+            (idv_session.ipp_state_id_complete? || idv_session.in_person_passports_allowed?) &&
+              user.has_establishing_in_person_enrollment?
+          end,
           undo_step: ->(idv_session:, user:) do
-            flow_session[:pii_from_user][:address1] = nil
-            flow_session[:pii_from_user][:address2] = nil
-            flow_session[:pii_from_user][:city] = nil
-            flow_session[:pii_from_user][:zipcode] = nil
-            flow_session[:pii_from_user][:state] = nil
+            idv_session.invalidate_in_person_address_step!
           end,
         )
       end
 
       private
 
-      def flow_session
-        user_session.fetch('idv/in_person', {})
-      end
-
       def updating_address?
-        flow_session[:pii_from_user].has_key?(:address1) && user_session[:idv].has_key?(:ssn)
+        pii_from_user.has_key?(:address1) && user_session[:idv].has_key?(:ssn)
       end
 
       def pii
-        data = flow_session[:pii_from_user]
+        data = pii_from_user
         data = data.merge(flow_params) if params.has_key?(:in_person_address)
         data.deep_symbolize_keys
       end
@@ -104,18 +98,6 @@ module Idv
         else
           redirect_to idv_in_person_ssn_url
         end
-      end
-
-      def confirm_in_person_state_id_step_complete
-        return if pii_from_user&.has_key?(:identity_doc_address1)
-        redirect_to idv_in_person_state_id_url
-      end
-
-      def confirm_in_person_address_step_needed
-        return if pii_from_user&.dig(:same_address_as_id) == 'false' &&
-                  !pii_from_user.has_key?(:address1)
-        return if request.referer == idv_in_person_verify_info_url
-        redirect_to idv_in_person_ssn_url
       end
 
       def set_usps_form_presenter

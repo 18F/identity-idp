@@ -154,6 +154,11 @@ module Reporting
           id_token_hint_data.length,
           id_token_hint_data.join(', '),
         ],
+        [
+          'No openid in scope',
+          no_openid_scope_data.length,
+          no_openid_scope_data.join(', '),
+        ],
       ]
     end
 
@@ -191,6 +196,12 @@ module Reporting
     def loa_issuers_data
       @loa_issuers_data ||= fetch_uniq_issuers(
         query: loa_issuers_query,
+      )
+    end
+
+    def no_openid_scope_data
+      @no_openid_scope_data ||= fetch_uniq_issuers(
+        query: no_openid_scope_query,
       )
     end
 
@@ -308,6 +319,23 @@ module Reporting
           coalesce(properties.event_properties.id_token_hint_parameter_present, 0) as id_token_hint,
           coalesce(properties.event_properties.client_id, properties.service_provider) as issuer
         | filter ispresent(id_token_hint) and id_token_hint > 0 and name = 'OIDC Logout Requested'
+        | display issuer
+        | sort issuer
+        | dedup issuer
+      QUERY
+    end
+
+    def no_openid_scope_query
+      params = {
+        event: quote(OIDC_AUTH_EVENT),
+      }
+
+      format(<<~QUERY, params)
+        fields @timestamp,
+          coalesce(properties.event_properties.client_id, properties.service_provider) as issuer
+        | filter name = %{event}
+          AND properties.event_properties.success = 1
+          AND properties.event_properties.scope NOT LIKE 'openid'
         | display issuer
         | sort issuer
         | dedup issuer

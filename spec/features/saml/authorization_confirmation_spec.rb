@@ -34,42 +34,56 @@ RSpec.feature 'SAML Authorization Confirmation' do
     end
 
     context 'when the user is already signed in with an email different from the one shared' do
-      context 'when email sharing feature is enabled' do
-        before do
-          allow(IdentityConfig.store)
-            .to receive(:feature_select_email_to_share_enabled).and_return(true)
-        end
+      it 'confirms the user wants to continue to SP with the shared email' do
+        shared_email = user1.identities.first.email_address.email
+        second_email = create(:email_address, user: user1)
+        sign_in_user(user1, second_email.email)
 
-        it 'confirms the user wants to continue to SP with the shared email' do
-          shared_email = user1.identities.first.email_address.email
-          second_email = create(:email_address, user: user1)
-          sign_in_user(user1, second_email.email)
+        visit request_url
+        expect(page).to have_current_path(user_authorization_confirmation_path)
+        expect(page).to have_content shared_email
 
+        continue_as(shared_email)
+        expect(page).to have_current_path complete_saml_path
+      end
+
+      context 'with requested attributes contains only email' do
+        it ' creates an identity with proper email_address_id' do
+          user = user_with_2fa
+
+          sign_in_user(user)
+          check t('forms.messages.remember_device')
+          fill_in_code_with_last_phone_otp
+          click_submit_default
           visit request_url
-          expect(current_url).to match(user_authorization_confirmation_path)
-          expect(page).to have_content shared_email
-
-          continue_as(shared_email)
-          expect(current_url).to eq(complete_saml_url)
+          click_agree_and_continue
+          click_submit_default
+          visit sign_out_url
+          identity = user.identities.find_by(service_provider: SamlAuthHelper::SP_ISSUER)
+          email_id = user.email_addresses.first.id
+          expect(identity.email_address_id).to eq(email_id)
         end
       end
 
-      context 'when email sharing feature is disabled' do
+      context 'with requested attributes contains is emails and all_emails' do
         before do
-          allow(IdentityConfig.store)
-            .to receive(:feature_select_email_to_share_enabled).and_return(false)
+          allow_any_instance_of(ServiceProviderIdentity).to receive(:verified_attributes)
+            .and_return(%w[email all_emails])
         end
+        it 'creates an identity with no email_address_id saved' do
+          user = user_with_2fa
 
-        it 'confirms the user wants to continue to SP with the signed in email' do
-          second_email = create(:email_address, user: user1)
-          sign_in_user(user1, second_email.email)
-
+          sign_in_user(user)
+          check t('forms.messages.remember_device')
+          fill_in_code_with_last_phone_otp
+          click_submit_default
           visit request_url
-          expect(current_url).to match(user_authorization_confirmation_path)
-          expect(page).to have_content second_email.email
+          click_agree_and_continue
+          click_submit_default
+          visit sign_out_url
 
-          continue_as(second_email.email)
-          expect(current_url).to eq(complete_saml_url)
+          identity = user.identities.find_by(service_provider: SamlAuthHelper::SP_ISSUER)
+          expect(identity.email_address_id).to eq(nil)
         end
       end
     end
@@ -78,14 +92,14 @@ RSpec.feature 'SAML Authorization Confirmation' do
       sign_in_user(user1)
 
       visit request_url
-      expect(current_url).to match(user_authorization_confirmation_path)
+      expect(page).to have_current_path(user_authorization_confirmation_path)
       continue_as(user2.email, user2.password)
 
       # Can't remember both users' devices?
       fill_in_code_with_last_phone_otp
       click_submit_default
 
-      expect(current_url).to eq(complete_saml_url)
+      expect(page).to have_current_path complete_saml_path
     end
 
     it 'does not render an error if a user goes back after opting to switch accounts' do
@@ -101,6 +115,44 @@ RSpec.feature 'SAML Authorization Confirmation' do
       expect(page).to have_current_path(new_user_session_path)
     end
 
+    it 'does not show continue to SP on account page if user has already been redirected to SP' do
+      sign_in_user(user1)
+
+      visit request_url
+      expect(page).to have_current_path(user_authorization_confirmation_path)
+
+      click_button t('user_authorization_confirmation.sign_in')
+      visit account_path
+
+      identity = user1.identities.find_by(service_provider: SamlAuthHelper::SP_ISSUER)
+
+      expect(page).to_not have_content(
+        t(
+          'account.index.continue_to_service_provider',
+          service_provider: identity.display_name,
+        ),
+      )
+    end
+
+    context 'when a user has not yet been redirected to SP' do
+      it 'shows "continue to SP" on account page' do
+        sign_in_user(user1)
+
+        visit request_url
+        expect(page).to have_current_path(user_authorization_confirmation_path)
+        visit account_path
+
+        identity = user1.identities.find_by(service_provider: SamlAuthHelper::SP_ISSUER)
+
+        expect(page).to have_content(
+          t(
+            'account.index.continue_to_service_provider',
+            service_provider: identity.display_name,
+          ),
+        )
+      end
+    end
+
     it 'does not render the confirmation screen on a return visit to the SP by default' do
       second_email = create(:email_address, user: user1)
       sign_in_user(user1, second_email.email)
@@ -111,7 +163,7 @@ RSpec.feature 'SAML Authorization Confirmation' do
 
       # second visit
       visit request_url
-      expect(current_url).to eq(request_url)
+      expect(page).to have_current_path(request_url, url: true)
     end
 
     it 'redirects to the account page with no sp in session' do
@@ -141,7 +193,7 @@ RSpec.feature 'SAML Authorization Confirmation' do
 
         click_agree_and_continue
 
-        expect(current_url).to eq complete_saml_url
+        expect(page).to have_current_path complete_saml_path
         expect(page.get_rack_session.keys).to include('sp')
       end
     end

@@ -5,7 +5,6 @@ module Idv
     include Idv::AvailabilityConcern
     include ActionView::Helpers::DateHelper
     include IdvStepConcern
-    include DocAuthVendorConcern
     include StepIndicatorConcern
 
     before_action :confirm_not_rate_limited
@@ -13,14 +12,15 @@ module Idv
     before_action :confirm_hybrid_handoff_needed, only: :show
 
     def show
-      @upload_disabled = upload_disabled?
-
-      @direct_ipp_with_selfie_enabled = IdentityConfig.store.in_person_doc_auth_button_enabled &&
-                                        Idv::InPersonConfig.enabled_for_issuer?(
-                                          decorated_sp_session.sp_issuer,
-                                        )
-
+      abandon_any_ipp_progress
+      @upload_enabled = idv_session.desktop_selfie_test_mode_enabled?
+      @post_office_enabled = IdentityConfig.store.in_person_proofing_opt_in_enabled &&
+                             Idv::InPersonConfig.enabled_for_issuer?(
+                               decorated_sp_session.sp_issuer,
+                             )
       @selfie_required = idv_session.selfie_check_required
+      @idv_how_to_verify_form = Idv::HowToVerifyForm.new
+      set_how_to_verify_presenter
 
       Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).call(
         'upload', :view,
@@ -35,10 +35,17 @@ module Idv
 
     def update
       clear_future_steps!
+      abandon_any_ipp_progress
 
-      if params[:type] == 'mobile'
+      if how_to_verify_form_params['selection'] == Idv::HowToVerifyForm::IPP
+        idv_session.opted_in_to_in_person_proofing = true
+        idv_session.flow_path = 'standard'
+        idv_session.skip_doc_auth_from_how_to_verify = true
+        redirect_to idv_document_capture_url(step: :hybrid_handoff)
+      elsif params[:type] == 'mobile'
         handle_phone_submission
       else
+        update_vendor_if_test_mode_enabled
         bypass_send_link_steps
       end
     end
@@ -46,7 +53,9 @@ module Idv
     def self.selected_remote(idv_session:)
       if IdentityConfig.store.in_person_proofing_opt_in_enabled &&
          IdentityConfig.store.in_person_proofing_enabled &&
-         idv_session.service_provider&.in_person_proofing_enabled
+         Idv::InPersonConfig.enabled_for_issuer?(
+           idv_session.service_provider&.issuer,
+         )
         idv_session.skip_doc_auth_from_how_to_verify == false
       else
         idv_session.skip_doc_auth_from_how_to_verify.nil? ||
@@ -58,21 +67,32 @@ module Idv
       Idv::StepInfo.new(
         key: :hybrid_handoff,
         controller: self,
-        next_steps: [:link_sent, :document_capture, :socure_document_capture],
-        preconditions: ->(idv_session:, user:) {
-                         idv_session.idv_consent_given? &&
-                           (self.selected_remote(idv_session: idv_session) || # from opt-in screen
-                             # back from ipp doc capture screen
-                             idv_session.skip_doc_auth_from_handoff)
-                       },
+        next_steps: [:choose_id_type, :link_sent, :document_capture, :socure_document_capture],
+        preconditions: ->(idv_session:, user:) do
+          idv_session.idv_consent_given? &&
+          (self.selected_remote(idv_session: idv_session) || # from opt-in screen
+            # back from ipp doc capture screen
+            idv_session.skip_doc_auth_from_handoff)
+        end,
         undo_step: ->(idv_session:, user:) do
           idv_session.flow_path = nil
           idv_session.phone_for_mobile_flow = nil
+          idv_session.source_check_vendor = nil
         end,
       )
     end
 
     private
+
+    def set_how_to_verify_presenter
+      @presenter = Idv::HowToVerifyPresenter.new(
+        selfie_check_required: @selfie_required,
+      )
+    end
+
+    def abandon_any_ipp_progress
+      current_user&.establishing_in_person_enrollment&.cancel
+    end
 
     def handle_phone_submission
       return rate_limited_failure if rate_limiter.limited?
@@ -120,11 +140,6 @@ module Idv
       current_sp&.friendly_name.presence || APP_NAME
     end
 
-    def upload_disabled?
-      (doc_auth_vendor == Idp::Constants::Vendors::SOCURE || idv_session.selfie_check_required) &&
-        !idv_session.desktop_selfie_test_mode_enabled?
-    end
-
     def build_telephony_form_response(telephony_result)
       FormResponse.new(
         success: telephony_result.success?,
@@ -149,7 +164,7 @@ module Idv
 
     def bypass_send_link_steps
       idv_session.flow_path = 'standard'
-      redirect_to idv_document_capture_url
+      redirect_to idv_choose_id_type_url
 
       analytics.idv_doc_auth_hybrid_handoff_submitted(
         **analytics_arguments.merge(
@@ -202,6 +217,13 @@ module Idv
       analytics.rate_limit_reached(
         limiter_type: :idv_send_link,
       )
+      # TODO: Attempts API PII Add phone_number: formatted_destination_phone,
+      attempts_api_tracker.idv_rate_limited(
+        limiter_type: :idv_send_link,
+      )
+      fraud_ops_tracker.idv_rate_limited(
+        limiter_type: :idv_send_link,
+      )
       message = I18n.t(
         'doc_auth.errors.send_link_limited',
         timeout: distance_of_time_in_words(
@@ -226,6 +248,19 @@ module Idv
     def formatted_destination_phone
       raw_phone = params.require(:doc_auth).permit(:phone)
       PhoneFormatter.format(raw_phone, country_code: 'US')
+    end
+
+    def how_to_verify_form_params
+      params.require(:idv_how_to_verify_form).permit(:selection, selection: [])
+    rescue ActionController::ParameterMissing
+      ActionController::Parameters.new(selection: [])
+    end
+
+    def update_vendor_if_test_mode_enabled
+      if idv_session.desktop_selfie_test_mode_enabled? &&
+         document_capture_session.doc_auth_vendor != Idp::Constants::Vendors::MOCK
+        document_capture_session.update(doc_auth_vendor: Idp::Constants::Vendors::MOCK)
+      end
     end
   end
 end

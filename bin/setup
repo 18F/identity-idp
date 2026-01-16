@@ -50,12 +50,17 @@ Dir.chdir APP_ROOT do
   run "cp pwned_passwords/pwned_passwords.txt.sample pwned_passwords/pwned_passwords.txt"
 
   puts "\n== Installing dependencies =="
-  brew_installed = system "brew -v 2>&1"
-  run "brew bundle" if brew_installed
-  run "gem install bundler --conservative"
+  if ENV['DEVENV_ROOT'] && !ENV['DEVENV_ROOT'].empty?
+    puts '= Using Devenv system ='
+  else
+    puts '= Using Homebrew system ='
+    brew_installed = system "brew -v 2>&1"
+    run "brew bundle" if brew_installed
+    run 'gem install bundler --conservative'
+  end
   run 'gem install foreman --conservative && gem update foreman'
   run "bundle check || bundle install --without deploy production"
-  run "yarn install"
+  run "npm install"
 
   puts "\n== Stopping running services to ensure clean start =="
   run "brew services stop --all" if brew_installed

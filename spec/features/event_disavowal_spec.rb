@@ -16,7 +16,7 @@ RSpec.feature 'disavowing an action' do
     end
 
     Capybara.reset_session!
-    CreateNewDeviceAlert.new.perform(Time.zone.now)
+    CreateNewDeviceAlertJob.new.perform(Time.zone.now)
 
     disavow_last_action_and_reset_password
   end
@@ -26,7 +26,7 @@ RSpec.feature 'disavowing an action' do
       sign_in_user(user)
     end
 
-    CreateNewDeviceAlert.new.perform(Time.zone.now)
+    CreateNewDeviceAlertJob.new.perform(Time.zone.now)
 
     expect_delivered_email_count(1)
     expect_delivered_email(

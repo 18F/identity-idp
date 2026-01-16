@@ -5,7 +5,7 @@ RSpec.describe Aws::SES::Base do
     Mail.new(
       to: 'asdf@example.com',
       cc: 'ghjk@example.com',
-      body: 'asdf1234',
+      body: 'asd f1234',
     )
   end
   let(:ses_response) do
@@ -17,7 +17,11 @@ RSpec.describe Aws::SES::Base do
 
   before do
     allow(ses_client).to receive(:send_raw_email).and_return(ses_response)
-    allow(Aws::SES::Client).to receive(:new).and_return(ses_client)
+
+    stub_const(
+      'Aws::SES::Base::SES_CLIENT_POOL',
+      FakeConnectionPool.new { ses_client },
+    )
   end
 
   describe '#deliver!' do
@@ -31,6 +35,7 @@ RSpec.describe Aws::SES::Base do
           data: raw_mail_data,
         },
         configuration_set_name: '',
+        destinations: ['asdf@example.com', 'ghjk@example.com'],
       )
     end
 
@@ -45,6 +50,7 @@ RSpec.describe Aws::SES::Base do
           data: raw_mail_data,
         },
         configuration_set_name: 'abc',
+        destinations: ['asdf@example.com', 'ghjk@example.com'],
       )
     end
 
@@ -53,13 +59,22 @@ RSpec.describe Aws::SES::Base do
       expect(mail.header['ses-message-id'].value).to eq('123abc')
     end
 
-    it 'retries timed out requests' do
-      Aws::SES::Base.new.deliver!(mail)
+    it 'includes BCC recipients in destinations' do
+      allow(IdentityConfig.store).to receive(:ses_configuration_set_name).and_return('')
 
-      expect(Aws::SES::Client).to have_received(:new) do |options|
-        expect(options[:retry_limit]).to eq 3
-        expect(options.key?(:retry_backoff)).to eq true
-      end
+      mail = Mail.new(
+        to: 'to@example.com',
+        cc: 'cc@example.com',
+        bcc: 'bcc@example.com',
+        body: 'body123',
+      )
+      raw_mail_data = mail.to_s
+      subject.deliver!(mail)
+      expect(ses_client).to have_received(:send_raw_email).with(
+        raw_message: { data: raw_mail_data },
+        configuration_set_name: '',
+        destinations: ['to@example.com', 'cc@example.com', 'bcc@example.com'],
+      )
     end
   end
 end

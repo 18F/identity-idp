@@ -13,9 +13,11 @@ module Idv
     include ActionView::Helpers::UrlHelper
 
     attr_accessor :url_options
+    attr_reader :show_sp_reproof_banner
 
-    def initialize(decorated_sp_session)
+    def initialize(decorated_sp_session:, show_sp_reproof_banner: false)
       @decorated_sp_session = decorated_sp_session
+      @show_sp_reproof_banner = show_sp_reproof_banner
       @url_options = {}
     end
 
@@ -24,11 +26,15 @@ module Idv
     end
 
     def title
-      t('doc_auth.headings.welcome', sp_name: sp_name)
+      if show_sp_reproof_banner
+        t('doc_auth.headings.welcome_sp_reproof', sp_name: sp_name)
+      else
+        t('doc_auth.headings.welcome', sp_name: sp_name)
+      end
     end
 
     def explanation_text(help_link)
-      if first_time_idv?
+      if first_time_idv? || show_sp_reproof_banner
         t(
           'doc_auth.info.getting_started_html',
           sp_name:,
@@ -45,7 +51,7 @@ module Idv
     def bullet_points
       [
         bullet_point(
-          t('doc_auth.instructions.bullet1'),
+          id_type_copy,
           t('doc_auth.instructions.text1'),
         ),
 
@@ -68,10 +74,14 @@ module Idv
 
     private
 
-    attr_accessor :decorated_sp_session
+    attr_reader :decorated_sp_session
 
     def current_user
       decorated_sp_session&.current_user
+    end
+
+    def id_type_copy
+      t('doc_auth.instructions.bullet1')
     end
 
     def bullet_point(bullet, text)

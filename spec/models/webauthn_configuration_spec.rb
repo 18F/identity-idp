@@ -10,6 +10,24 @@ RSpec.describe WebauthnConfiguration do
 
   let(:subject) { create(:webauthn_configuration) }
 
+  describe '.PLATFORM_AUTHENTICATOR_TRANSPORTS' do
+    subject(:transports) { WebauthnConfiguration::PLATFORM_AUTHENTICATOR_TRANSPORTS }
+
+    it 'is a frozen array of strings' do
+      expect(transports).to all be_a(String)
+      expect(transports.frozen?).to eq(true)
+    end
+  end
+
+  describe '.VALID_TRANSPORTS' do
+    subject(:transports) { WebauthnConfiguration::VALID_TRANSPORTS }
+
+    it 'is a frozen array of strings' do
+      expect(transports).to all be_a(String)
+      expect(transports.frozen?).to eq(true)
+    end
+  end
+
   describe '#selection_presenters' do
     context 'for a roaming authenticator' do
       it 'returns a WebauthnSelectionPresenter in an array' do
@@ -86,6 +104,30 @@ RSpec.describe WebauthnConfiguration do
       before { subject.transports = ['ble', 'wrong'] }
 
       it { expect(subject).not_to be_valid }
+    end
+  end
+
+  describe 'name validations' do
+    context 'when a user supplies a name longer than max allowable characters' do
+      before do
+        subject.name = Faker::Lorem.characters(
+          number: UserSuppliedNameAttributes::WEBAUTHN_MAX_NAME_LENGTH + 1,
+        )
+        subject.credential_id = '111'
+        subject.credential_public_key = '222'
+      end
+      it { is_expected.not_to be_valid }
+    end
+
+    context 'when a user supples a name with the max allowable character length' do
+      before do
+        subject.name = Faker::Lorem.characters(
+          number: UserSuppliedNameAttributes::WEBAUTHN_MAX_NAME_LENGTH,
+        )
+        subject.credential_id = '111'
+        subject.credential_public_key = '222'
+      end
+      it { is_expected.to be_valid }
     end
   end
 end

@@ -1,12 +1,16 @@
 require 'rails_helper'
 
 RSpec.describe Idv::HybridMobile::DocumentCaptureController do
+  let(:idv_vendor) { Idp::Constants::Vendors::MOCK }
   let(:user) { create(:user) }
 
   let!(:document_capture_session) do
-    DocumentCaptureSession.create!(
-      user: user,
+    create(
+      :document_capture_session,
+      user:,
       requested_at: document_capture_session_requested_at,
+      doc_auth_vendor: idv_vendor,
+      passport_status: 'not_requested',
     )
   end
 
@@ -15,7 +19,6 @@ RSpec.describe Idv::HybridMobile::DocumentCaptureController do
   let(:document_capture_session_requested_at) { Time.zone.now }
   let(:document_capture_session_result_captured_at) { Time.zone.now + 1.second }
   let(:document_capture_session_result_success) { true }
-  let(:idv_vendor) { Idp::Constants::Vendors::MOCK }
 
   before do
     stub_analytics
@@ -67,6 +70,19 @@ RSpec.describe Idv::HybridMobile::DocumentCaptureController do
 
           expect(response).to redirect_to idv_hybrid_mobile_socure_document_capture_url
         end
+
+        context 'when redirect to correct vendor is disabled' do
+          before do
+            allow(IdentityConfig.store)
+              .to receive(:doc_auth_redirect_to_correct_vendor_disabled).and_return(true)
+          end
+
+          it 'allows the user to use this controller' do
+            get :show
+
+            expect(response).to render_template :show
+          end
+        end
       end
 
       it 'renders the show template' do
@@ -74,6 +90,7 @@ RSpec.describe Idv::HybridMobile::DocumentCaptureController do
           :show,
           locals: hash_including(
             document_capture_session_uuid: document_capture_session_uuid,
+            doc_auth_upload_enabled: false,
           ),
         ).and_call_original
 
@@ -84,7 +101,9 @@ RSpec.describe Idv::HybridMobile::DocumentCaptureController do
 
       context 'when selfie is required' do
         before do
-          authn_context_result = Vot::Parser.new(vector_of_trust: 'Pb').parse
+          authn_context_result = Component::Parser.new(
+            acr_values: Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_REQUIRED_ACR,
+          ).parse
           allow(subject).to receive(:resolved_authn_context_result).and_return(authn_context_result)
         end
 
@@ -183,7 +202,6 @@ RSpec.describe Idv::HybridMobile::DocumentCaptureController do
       let(:analytics_args) do
         {
           success: true,
-          errors: {},
           analytics_id: 'Doc Auth',
           flow_path: 'hybrid',
           step: 'document_capture',

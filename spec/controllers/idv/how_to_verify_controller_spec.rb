@@ -6,6 +6,7 @@ RSpec.describe Idv::HowToVerifyController do
   let(:service_provider) do
     create(:service_provider, :active, :in_person_proofing_enabled)
   end
+  let(:document_capture_session) { create(:document_capture_session, user:) }
 
   before do
     allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled) { true }
@@ -15,6 +16,7 @@ RSpec.describe Idv::HowToVerifyController do
     allow(subject.idv_session).to receive(:service_provider).and_return(service_provider)
     subject.idv_session.welcome_visited = true
     subject.idv_session.idv_consent_given_at = Time.zone.now
+    subject.idv_session.document_capture_session_uuid = document_capture_session.uuid
   end
 
   describe 'before_actions' do
@@ -171,7 +173,6 @@ RSpec.describe Idv::HowToVerifyController do
           step: 'how_to_verify',
           analytics_id: 'Doc Auth',
           error_details: { selection: { blank: true } },
-          errors: { selection: ['Select a way to verify your identity.'] },
           success: false,
         }
       end
@@ -191,7 +192,6 @@ RSpec.describe Idv::HowToVerifyController do
           analytics_id: 'Doc Auth',
           selection:,
           error_details: { selection: { inclusion: true } },
-          errors: { selection: ['Select a way to verify your identity.'] },
           success: false,
         }
       end
@@ -205,22 +205,34 @@ RSpec.describe Idv::HowToVerifyController do
         {
           analytics_id: 'Doc Auth',
           step: 'how_to_verify',
-          errors: {},
           success: true,
           selection:,
         }
       end
-      it 'sets skip doc auth on idv session to false and redirects to hybrid handoff' do
+
+      it 'redirects to choose id type' do
         put :update, params: params
 
         expect(subject.idv_session.skip_doc_auth_from_how_to_verify).to be false
-        expect(response).to redirect_to(idv_hybrid_handoff_url)
+        expect(response).to redirect_to(idv_choose_id_type_url)
       end
 
       it 'sends analytics_submitted event when remote proofing is selected' do
         put :update, params: params
 
         expect(@analytics).to have_logged_event(analytics_name, analytics_args)
+      end
+
+      context 'the user has an establishing in-person enrollment' do
+        let(:user) { create(:user, :with_establishing_in_person_enrollment) }
+
+        it 'cancels the in-person enrollment' do
+          expect { put :update, params: params }.to change {
+            user.in_person_enrollments.first.status
+          }
+            .from('establishing')
+            .to('cancelled')
+        end
       end
     end
 
@@ -230,7 +242,6 @@ RSpec.describe Idv::HowToVerifyController do
         {
           analytics_id: 'Doc Auth',
           step: 'how_to_verify',
-          errors: {},
           success: true,
           selection:,
         }
@@ -239,7 +250,7 @@ RSpec.describe Idv::HowToVerifyController do
         put :update, params: params
 
         expect(subject.idv_session.skip_doc_auth_from_how_to_verify).to be true
-        expect(response).to redirect_to(idv_document_capture_url)
+        expect(response).to redirect_to(idv_document_capture_url(step: :how_to_verify))
       end
 
       it 'sends analytics_submitted event when remote proofing is selected' do

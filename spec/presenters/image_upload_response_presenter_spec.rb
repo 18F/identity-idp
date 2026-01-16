@@ -203,7 +203,9 @@ RSpec.describe ImageUploadResponsePresenter do
               front: t('doc_auth.errors.not_a_file'),
               hints: true,
             },
-            extra: { doc_auth_result: 'Failed', remaining_submit_attempts: 3, submit_attempts: 2 },
+            extra: { transaction_status: 'failed',
+                     remaining_submit_attempts: 3,
+                     submit_attempts: 2 },
           )
         end
 

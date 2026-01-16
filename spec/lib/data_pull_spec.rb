@@ -110,7 +110,8 @@ RSpec.describe DataPull do
       let(:identity) { IdentityLinker.new(user, service_provider).link_identity }
 
       let(:argv) do
-        ['ig-request', identity.uuid, '--requesting-issuer', service_provider.issuer]
+        ['ig-request', identity.uuid, '--requesting-issuer', service_provider.issuer,
+         '--depth', '1']
       end
 
       it 'runs the data requests report and prints it as JSON' do
@@ -130,7 +131,7 @@ RSpec.describe DataPull do
       context 'with a UUID that is not found' do
         let(:uuid) { 'abcdef' }
         let(:argv) do
-          ['ig-request', uuid, '--requesting-issuer', service_provider.issuer]
+          ['ig-request', uuid, '--requesting-issuer', service_provider.issuer, '--depth', '1']
         end
 
         it 'returns an empty hash for that user' do
@@ -170,14 +171,14 @@ RSpec.describe DataPull do
       subject(:result) { subtask.run(args:, config:) }
 
       it 'looks up the UUIDs for the given email addresses', aggregate_failures: true do
-        expect(result.table).to eq(
-          [
-            ['email', 'uuid'],
-            *users.map { |u| [u.email_addresses.first.email, u.uuid] },
-            ['missing@example.com', '[NOT FOUND]'],
-          ],
-        )
+        expected_table = [
+          ['email', 'uuid'],
+          *users.map { |u| [u.email_addresses.first.email, u.uuid] },
+          ['missing@example.com', '[NOT FOUND]'],
+        ]
 
+        expect(result.table).to eq(expected_table)
+        expect_consistent_row_length(result.table)
         expect(result.subtask).to eq('uuid-lookup')
         expect(result.uuids).to match_array(users.map(&:uuid))
       end
@@ -231,34 +232,34 @@ RSpec.describe DataPull do
         end
 
         it 'still includes them and marks them as deleted' do
-          expect(result.table).to eq(
-            [
-              ['partner_uuid', 'source', 'internal_uuid', 'deleted'],
-              external_uuids.first.then do |external_uuid|
-                identity = AgencyIdentity.find_by(uuid: external_uuid)
+          expected_table = [
+            ['partner_uuid', 'source', 'internal_uuid', 'deleted'],
+            external_uuids.first.then do |external_uuid|
+              identity = AgencyIdentity.find_by(uuid: external_uuid)
 
-                [
-                  identity.uuid,
-                  identity.agency.name,
-                  identity.user.uuid,
-                  nil,
-                ]
-              end,
-              external_uuids.last.then do |external_uuid|
-                identity = ServiceProviderIdentity.find_by(uuid: external_uuid)
+              [
+                identity.uuid,
+                identity.agency.name,
+                identity.user.uuid,
+                nil,
+              ]
+            end,
+            external_uuids.last.then do |external_uuid|
+              identity = ServiceProviderIdentity.find_by(uuid: external_uuid)
 
-                [
-                  identity.uuid,
-                  identity.agency.name,
-                  DeletedUser.find_by(user_id: identity.user_id).uuid,
-                  true,
-                ]
-              end,
-              ['does-not-exist', '[NOT FOUND]', '[NOT FOUND]', nil],
-            ],
-          )
+              [
+                identity.uuid,
+                identity.agency.name,
+                DeletedUser.find_by(user_id: identity.user_id).uuid,
+                true,
+              ]
+            end,
+            ['does-not-exist', '[NOT FOUND]', '[NOT FOUND]', nil],
+          ]
+          expect(result.table).to eq(expected_table)
 
           expect(result.subtask).to eq('uuid-convert')
+          expect_consistent_row_length(result.table)
           expect(result.uuids).to match_array(users.map(&:uuid))
         end
       end
@@ -277,18 +278,82 @@ RSpec.describe DataPull do
       subject(:result) { subtask.run(args:, config:) }
 
       it 'loads email addresses for the user', aggregate_failures: true do
-        expect(result.table).to match(
-          [
-            ['uuid', 'email', 'confirmed_at'],
-            *user.email_addresses.sort_by(&:id).map do |e|
-              [e.user.uuid, e.email, kind_of(Time)]
-            end,
-            ['does-not-exist', '[NOT FOUND]', nil],
-          ],
+        expected_table = [
+          ['uuid', 'email', 'confirmed_at'],
+          *user.email_addresses.sort_by(&:id).map do |e|
+            [e.user.uuid, e.email, kind_of(Time)]
+          end,
+          ['does-not-exist', '[NOT FOUND]', nil],
+        ]
+        expect(result.table).to match(expected_table)
+        expect(result.subtask).to eq('email-lookup')
+        expect_consistent_row_length(result.table)
+        expect(result.uuids).to eq([user.uuid])
+      end
+    end
+  end
+
+  describe DataPull::MfaReport do
+    subject(:subtask) { DataPull::MfaReport.new }
+
+    describe '#run' do
+      let(:user) { create(:user) }
+      let(:args) { [user.uuid] }
+      let(:config) { ScriptBase::Config.new }
+
+      subject(:result) { subtask.run(args:, config:) }
+
+      it 'runs the MFA report, has a JSON-only response', aggregate_failures: true do
+        expect(result.table).to be_nil
+        expect(result.json.first.keys).to contain_exactly(
+          :uuid,
+          :phone_configurations,
+          :auth_app_configurations,
+          :webauthn_configurations,
+          :piv_cac_configurations,
+          :backup_code_configurations,
         )
 
-        expect(result.subtask).to eq('email-lookup')
+        expect(result.subtask).to eq('mfa-report')
         expect(result.uuids).to eq([user.uuid])
+      end
+    end
+  end
+
+  describe DataPull::SsnSignatureReport do
+    subject(:subtask) { DataPull::SsnSignatureReport.new }
+
+    describe '#run' do
+      let(:ssn) { '900111111' }
+      let(:profile) { create(:profile, :active, pii: { ssn: ssn }) }
+      let(:args) { [ssn] }
+      let(:config) { ScriptBase::Config.new }
+
+      subject(:result) { subtask.run(args:, config:) }
+
+      it 'runs the SSN signature report', aggregate_failures: true do
+        expected_result = [
+          ['uuid', 'profile_id', 'status', 'ssn_signature', 'idv_level', 'activated_timestamp',
+           'disabled_reason', 'gpo_verification_pending_timestamp',
+           'fraud_review_pending_timestamp', 'fraud_rejection_timestamp'],
+          [
+            profile.user.uuid,
+            profile.id,
+            'active',
+            profile.ssn_signature,
+            profile.idv_level,
+            kind_of(Time),
+            profile.deactivation_reason,
+            nil,
+            nil,
+            nil,
+          ],
+        ]
+        expect(result.table).to match_array(expected_result)
+        expect_consistent_row_length(result.table)
+
+        expect(result.subtask).to eq('ssn-signature-report')
+        expect(result.uuids).to match_array([profile.user.uuid])
       end
     end
   end
@@ -301,7 +366,9 @@ RSpec.describe DataPull do
       let(:service_provider) { create(:service_provider) }
       let(:identity) { IdentityLinker.new(user, service_provider).link_identity }
       let(:args) { [user.uuid] }
-      let(:config) { ScriptBase::Config.new(requesting_issuers: [service_provider.issuer]) }
+      let(:config) do
+        ScriptBase::Config.new(requesting_issuers: [service_provider.issuer], depth: 0)
+      end
 
       subject(:result) { subtask.run(args:, config:) }
 
@@ -322,7 +389,7 @@ RSpec.describe DataPull do
 
       context 'with SP UUID argument and no requesting issuer' do
         let(:args) { [identity.uuid] }
-        let(:config) { ScriptBase::Config.new }
+        let(:config) { ScriptBase::Config.new(depth: 0) }
 
         it 'runs the report with computed requesting issuer', aggregate_failures: true do
           expect(result.table).to be_nil
@@ -337,6 +404,14 @@ RSpec.describe DataPull do
 
           expect(result.subtask).to eq('ig-request')
           expect(result.uuids).to eq([user.uuid])
+        end
+      end
+
+      context 'without a depth argument' do
+        let(:config) { ScriptBase::Config.new }
+
+        it 'raises an error about the argument being required' do
+          expect { result }.to raise_error('Required argument --depth is missing')
         end
       end
     end
@@ -355,19 +430,29 @@ RSpec.describe DataPull do
       subject(:result) { subtask.run(args:, config:) }
 
       it 'loads profile summary for the user', aggregate_failures: true do
-        expect(result.table).to match_array(
-          [
-            ['uuid', 'profile_id', 'status', 'activated_timestamp', 'disabled_reason',
-             'gpo_verification_pending_timestamp', 'fraud_review_pending_timestamp',
-             'fraud_rejection_timestamp'],
-            *user.profiles.sort_by(&:id).map do |p|
-              profile_status = p.active ? 'active' : 'inactive'
-              [user.uuid, p.id, profile_status, kind_of(Time), p.deactivation_reason, nil, nil, nil]
-            end,
-            [user_without_profile.uuid, '[HAS NO PROFILE]', nil, nil, nil, nil, nil, nil],
-            ['uuid-does-not-exist', '[UUID NOT FOUND]', nil, nil, nil, nil, nil, nil],
-          ],
-        )
+        expected_result = [
+          ['uuid', 'profile_id', 'status', 'idv_level', 'activated_timestamp', 'disabled_reason',
+           'gpo_verification_pending_timestamp', 'fraud_review_pending_timestamp',
+           'fraud_rejection_timestamp'],
+          *user.profiles.sort_by(&:id).map do |p|
+            profile_status = p.active ? 'active' : 'inactive'
+            [
+              user.uuid,
+              p.id,
+              profile_status,
+              p.idv_level,
+              kind_of(Time),
+              p.deactivation_reason,
+              nil,
+              nil,
+              nil,
+            ]
+          end,
+          [user_without_profile.uuid, '[HAS NO PROFILE]', nil, nil, nil, nil, nil, nil, nil],
+          ['uuid-does-not-exist', '[UUID NOT FOUND]', nil, nil, nil, nil, nil, nil, nil],
+        ]
+        expect(result.table).to match_array(expected_result)
+        expect_consistent_row_length(result.table)
 
         expect(result.subtask).to eq('profile-summary')
         expect(result.uuids).to match_array([user.uuid, user_without_profile.uuid])
@@ -416,6 +501,7 @@ RSpec.describe DataPull do
           ]
 
           expect(result.table).to match_array(expected_table)
+          expect_consistent_row_length(result.table)
           expect(result.subtask).to eq('uuid-export')
           expect(result.uuids).to match_array([user1.uuid, user2.uuid])
         end
@@ -475,18 +561,108 @@ RSpec.describe DataPull do
 
     describe '#run' do
       it 'loads events for the users' do
-        expect(result.table).to match_array(
-          [
-            %w[uuid date events_count],
-            [user.uuid, Date.new(2023, 1, 2), 5],
-            [user.uuid, Date.new(2023, 1, 1), 1],
-            ['uuid-does-not-exist', '[UUID NOT FOUND]', nil],
-          ],
-        )
-
+        expected_table = [
+          %w[uuid date events_count],
+          [user.uuid, Date.new(2023, 1, 2), 5],
+          [user.uuid, Date.new(2023, 1, 1), 1],
+          ['uuid-does-not-exist', '[UUID NOT FOUND]', nil],
+        ]
+        expect(result.table).to match_array(expected_table)
         expect(result.subtask).to eq('events-summary')
+        expect_consistent_row_length(result.table)
         expect(result.uuids).to match_array([user.uuid])
       end
     end
+  end
+
+  describe DataPull::UuidExport do
+    subject(:subtask) { DataPull::DuplicateProfileLookup.new }
+
+    let(:include_missing) { true }
+
+    subject(:result) { subtask.run(args: args, config: config) }
+
+    describe '#run' do
+      let(:config) { ScriptBase::Config.new(include_missing: include_missing) }
+      let(:service_provider) { create(:service_provider) }
+
+      context 'when a normal duplicate exists', aggregate_failures: true do
+        let(:user1) { create(:user, :fully_registered) }
+        let(:user2) { create(:user, :fully_registered) }
+
+        let!(:profile1) { create(:profile, :active, user: user1) }
+        let!(:profile2) { create(:profile, :active, user: user2) }
+        let!(:profile3) { create(:profile, :active) }
+        let!(:profile4) { create(:profile, :active) }
+
+        let(:args) do
+          [user1.email_addresses.sole.email,
+           user2.email_addresses.sole.email,
+           'does-not-exist']
+        end
+
+        let!(:duplicate_profile_set) do
+          create(
+            :duplicate_profile_set,
+            service_provider: service_provider.issuer,
+            profile_ids: [profile1.id, profile3.id, profile4.id],
+          )
+        end
+
+        it 'returns duplicates if they exist', aggregate_failures: true do
+          expected_table = [
+            ['email', 'uuid', 'service_provider', 'duplicate_uuids'],
+            [user1.email_addresses.sole.email, user1.uuid, service_provider.issuer,
+             [profile3.user.uuid, profile4.user.uuid]],
+            [user2.email_addresses.sole.email, '[DUPLICATES NOT FOUND]', nil, nil],
+            ['does-not-exist', '[EMAIL NOT FOUND]', nil, nil],
+          ]
+          expect(result.table).to match_array(expected_table)
+          expect(result.subtask).to eq('duplicate-profile-lookup')
+          expect(result.uuids).to match_array([user1.uuid])
+        end
+      end
+
+      context 'when the 2nd profile is no longer around' do
+        let(:user1) { create(:user, :fully_registered) }
+        let(:user2) { create(:user, :fully_registered) }
+
+        let(:service_provider) { create(:service_provider) }
+
+        let!(:profile1) { create(:profile, :active, user: user1) }
+        let!(:profile2) { create(:profile, :active, user: user2) }
+
+        let!(:duplicate_profile_set) do
+          create(
+            :duplicate_profile_set,
+            service_provider: service_provider.issuer,
+            profile_ids: [profile1.id, profile2.id],
+          )
+        end
+
+        let(:args) { [user1.email_addresses.sole.email] }
+
+        before do
+          user2.destroy
+        end
+
+        it 'returns DUPLICATES_NOT_FOUND', aggregate_failures: true do
+          expected_table = [
+            ['email', 'uuid', 'service_provider', 'duplicate_uuids'],
+            [user1.email_addresses.sole.email, '[DUPLICATES NOT FOUND]', nil, nil],
+          ]
+          expect(result.table).to match_array(expected_table)
+          expect(result.subtask).to eq('duplicate-profile-lookup')
+          expect(result.uuids).to match_array([user1.uuid])
+        end
+      end
+    end
+  end
+
+  # Assert that each row has the same length
+  def expect_consistent_row_length(table)
+    first_row_length = table.first.length
+
+    expect(table.all? { |row| row.length == first_row_length }).to eq(true)
   end
 end

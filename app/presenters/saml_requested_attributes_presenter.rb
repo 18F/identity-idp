@@ -4,6 +4,7 @@ class SamlRequestedAttributesPresenter
   ATTRIBUTE_TO_FRIENDLY_NAME_MAP = {
     email: :email,
     all_emails: :all_emails,
+    locale: :locale,
     first_name: :given_name,
     last_name: :family_name,
     dob: :birthdate,
@@ -17,10 +18,9 @@ class SamlRequestedAttributesPresenter
     zipcode: :address,
   }.freeze
 
-  def initialize(service_provider:, ial:, vtr:, authn_request_attribute_bundle:)
+  def initialize(service_provider:, ial:, authn_request_attribute_bundle:)
     @service_provider = service_provider
     @ial = ial
-    @vtr = vtr
     @authn_request_attribute_bundle = authn_request_attribute_bundle
   end
 
@@ -30,6 +30,7 @@ class SamlRequestedAttributesPresenter
     else
       attrs = [:email]
       attrs << :all_emails if bundle.include?(:all_emails)
+      attrs << :locale if bundle.include?(:locale)
       attrs << :verified_at if bundle.include?(:verified_at)
       attrs
     end
@@ -37,24 +38,16 @@ class SamlRequestedAttributesPresenter
 
   private
 
-  attr_reader :service_provider, :ial, :vtr, :authn_request_attribute_bundle
+  attr_reader :service_provider, :ial, :authn_request_attribute_bundle
 
   def identity_proofing_requested?
-    if vtr.present?
-      parsed_vectors_of_trust.any? { |vot_result| vot_result.identity_proofing? }
-    else
-      Vot::AcrComponentValues.by_name[ial]&.requirements&.include?(
-        :identity_proofing,
-      )
-    end
+    Component::AcrComponentValues.by_name[ial]&.requirements&.include?(
+      :identity_proofing,
+    )
   end
 
   def ialmax_requested?
-    Vot::AcrComponentValues.by_name[ial]&.requirements&.include?(:ialmax)
-  end
-
-  def parsed_vectors_of_trust
-    vtr.map { |vot| Vot::Parser.new(vector_of_trust: vot).parse }
+    Component::AcrComponentValues.by_name[ial]&.requirements&.include?(:ialmax)
   end
 
   def bundle

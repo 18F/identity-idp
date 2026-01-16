@@ -33,6 +33,23 @@ RSpec.feature 'idv request letter step' do
     end
   end
 
+  context 'User needs to re enter mailing address at request letter page', :js do
+    it 'sends user to address page and back to verify page if requested' do
+      start_idv_from_sp
+      complete_idv_steps_before_gpo_step
+      expect(page).to have_content(t('idv.messages.gpo.address_on_file'))
+      click_on t('idv.messages.gpo.verify_address_again_link_text')
+      expect(page).to have_content(t('doc_auth.headings.mailing_address'))
+      expect(page).to have_current_path(idv_address_path)
+      expect(page).not_to have_content(t('step_indicator.flows.idv.verify_phone'))
+      click_continue
+      expect(page).to have_current_path(idv_verify_info_path)
+      expect(page).to have_content(t('headings.verify'))
+      click_submit_default
+      expect(page).to have_content(t('idv.messages.gpo.address_on_file'))
+    end
+  end
+
   context 'Verified resets password, requests GPO, then signs in using SP', :js do
     let(:user) { user_verified }
     let(:new_password) { 'a really long password' }

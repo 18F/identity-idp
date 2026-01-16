@@ -4,6 +4,7 @@ module Idv
   class AddressController < ApplicationController
     include Idv::AvailabilityConcern
     include IdvStepConcern
+    include Idv::StepIndicatorConcern
 
     before_action :confirm_not_rate_limited_after_doc_auth
     before_action :confirm_step_allowed
@@ -12,7 +13,10 @@ module Idv
       analytics.idv_address_visit
 
       @address_form = build_address_form
-      @presenter = AddressPresenter.new
+      @presenter = AddressPresenter.new(
+        gpo_request_letter_visited: idv_session.gpo_request_letter_visited,
+        address_update_request: address_update_request?,
+      )
     end
 
     def update
@@ -47,13 +51,7 @@ module Idv
     end
 
     def address_from_document
-      Pii::Address.new(
-        address1: idv_session.pii_from_doc.address1,
-        address2: idv_session.pii_from_doc.address2,
-        city: idv_session.pii_from_doc.city,
-        state: idv_session.pii_from_doc.state,
-        zipcode: idv_session.pii_from_doc.zipcode,
-      )
+      idv_session.pii_from_doc.to_pii_address
     end
 
     def success
@@ -63,7 +61,10 @@ module Idv
     end
 
     def failure
-      @presenter = AddressPresenter.new
+      @presenter = AddressPresenter.new(
+        gpo_request_letter_visited: idv_session.gpo_request_letter_visited,
+        address_update_request: address_update_request?,
+      )
       render :new
     end
 
@@ -73,6 +74,30 @@ module Idv
           address_edited: address_edited?,
         ),
       )
+      attempts_api_tracker.idv_address_submitted(
+        success: form_result.success?,
+        address1: @address_form.address1,
+        address2: @address_form.address2,
+        address_edited: address_edited?,
+        city: @address_form.city,
+        state: @address_form.state,
+        zip: @address_form.zipcode,
+        failure_reason: attempts_api_tracker.parse_failure_reason(form_result),
+      )
+      fraud_ops_tracker.idv_address_submitted(
+        success: form_result.success?,
+        address1: @address_form.address1,
+        address2: @address_form.address2,
+        address_edited: address_edited?,
+        city: @address_form.city,
+        state: @address_form.state,
+        zip: @address_form.zipcode,
+        failure_reason: fraud_ops_tracker.parse_failure_reason(form_result),
+      )
+    end
+
+    def address_update_request?
+      idv_verify_info_url == request.referer
     end
 
     def address_edited?
@@ -81,6 +106,14 @@ module Idv
 
     def profile_params
       params.require(:idv_form).permit(Idv::AddressForm::ATTRIBUTES)
+    end
+
+    def step_indicator_steps
+      if idv_session.gpo_request_letter_visited
+        return StepIndicatorConcern::STEP_INDICATOR_STEPS_GPO
+      end
+
+      StepIndicatorConcern::STEP_INDICATOR_STEPS
     end
   end
 end

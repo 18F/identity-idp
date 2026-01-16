@@ -11,12 +11,12 @@ RSpec.feature 'signing into an SP with multiple emails enabled' do
 
       expect(emails.count).to eq(2)
 
-      emails.each do |email|
+      emails.each.with_index do |email, index|
         visit_idp_from_oidc_sp(scope: 'openid email')
         signin(email, user.password)
         fill_in_code_with_last_phone_otp
         click_submit_default
-        click_agree_and_continue if current_path == sign_up_completed_path
+        click_agree_and_continue if index == 0
         expect(oidc_decoded_id_token[:email]).to eq(emails.first)
         expect(oidc_decoded_id_token[:all_emails]).to be_nil
 
@@ -76,12 +76,12 @@ RSpec.feature 'signing into an SP with multiple emails enabled' do
 
       expect(emails.count).to eq(2)
 
-      emails.each do |email|
+      emails.each.with_index do |email, index|
         visit authn_request
         signin(email, user.password)
         fill_in_code_with_last_phone_otp
         click_submit_default_twice
-        click_agree_and_continue if current_path == sign_up_completed_path
+        click_agree_and_continue if index == 0
         click_submit_default
 
         xmldoc = SamlResponseDoc.new('feature', 'response_assertion')

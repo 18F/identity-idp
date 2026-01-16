@@ -21,7 +21,6 @@ RSpec.describe Users::EditPhoneController do
         expect(@analytics).to have_logged_event(
           'Phone Number Change: Form submitted',
           success: true,
-          errors: {},
           delivery_preference: 'voice',
           make_default_number: true,
           phone_configuration_id: phone_configuration.id,
@@ -43,7 +42,6 @@ RSpec.describe Users::EditPhoneController do
         expect(@analytics).to have_logged_event(
           'Phone Number Change: Form submitted',
           success: false,
-          errors: hash_including(:delivery_preference),
           error_details: { delivery_preference: { inclusion: true } },
           delivery_preference: 'noise',
           make_default_number: true,

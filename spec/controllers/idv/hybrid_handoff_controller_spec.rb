@@ -4,13 +4,17 @@ RSpec.describe Idv::HybridHandoffController do
   include FlowPolicyHelper
 
   let(:user) { create(:user) }
+  let(:service_provider_ipp_enabled) { true }
 
   let(:service_provider) do
-    create(:service_provider, :active, :in_person_proofing_enabled)
+    create(:service_provider, :active, in_person_proofing_enabled: service_provider_ipp_enabled)
   end
   let(:in_person_proofing) { false }
   let(:ipp_opt_in_enabled) { false }
   let(:sp_selfie_enabled) { false }
+  let(:desktop_test_mode_enabled) { false }
+  let(:document_capture_session) { create(:document_capture_session) }
+  let(:document_capture_session_uuid) { document_capture_session.uuid }
 
   before do
     allow(controller).to receive(:current_sp)
@@ -20,17 +24,23 @@ RSpec.describe Idv::HybridHandoffController do
     stub_analytics
     allow(subject.idv_session).to receive(:service_provider).and_return(service_provider)
 
-    resolved_authn_context_result = sp_selfie_enabled ?
-                                      Vot::Parser.new(vector_of_trust: 'Pb').parse :
-                                      Vot::Parser.new(vector_of_trust: 'P1').parse
+    acr_values = sp_selfie_enabled ?
+      Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_REQUIRED_ACR :
+      Saml::Idp::Constants::IAL_VERIFIED_ACR
+
+    resolved_authn_context_result = Component::Parser.new(acr_values:).parse
 
     allow(subject).to receive(:resolved_authn_context_result)
       .and_return(resolved_authn_context_result)
 
+    allow(IdentityConfig.store).to receive(:doc_auth_selfie_desktop_test_mode)
+      .and_return(desktop_test_mode_enabled)
     allow(IdentityConfig.store).to receive(:in_person_proofing_enabled) { in_person_proofing }
     allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled) {
                                      ipp_opt_in_enabled
                                    }
+
+    subject.idv_session.document_capture_session_uuid = document_capture_session_uuid
   end
 
   describe '#step_info' do
@@ -71,6 +81,12 @@ RSpec.describe Idv::HybridHandoffController do
       expect(response).to render_template :show
     end
 
+    it 'defaults to upload enabled being false' do
+      get :show
+
+      expect(assigns(:upload_enabled)).to be false
+    end
+
     it 'sends analytics_visited event' do
       get :show
 
@@ -94,6 +110,26 @@ RSpec.describe Idv::HybridHandoffController do
         get :show
 
         expect(response).to redirect_to(idv_agreement_url)
+      end
+    end
+
+    context 'when selfie_desktop_test_mode is disabled' do
+      let(:desktop_test_mode_enabled) { false }
+
+      it '@upload_enabled is false' do
+        get :show
+
+        expect(assigns(:upload_enabled)).to be false
+      end
+    end
+
+    context 'when selfie_desktop_test_mode is enabled' do
+      let(:desktop_test_mode_enabled) { true }
+
+      it '@upload_enabled is true' do
+        get :show
+
+        expect(assigns(:upload_enabled)).to be true
       end
     end
 
@@ -140,7 +176,7 @@ RSpec.describe Idv::HybridHandoffController do
           subject.idv_session.flow_path = 'standard'
           get :show, params: { redo: true }
 
-          expect(response).to redirect_to(idv_document_capture_url)
+          expect(response).to redirect_to(idv_choose_id_type_url)
         end
       end
 
@@ -183,8 +219,9 @@ RSpec.describe Idv::HybridHandoffController do
 
       it 'redirects the user straight to document capture' do
         get :show
-        expect(response).to redirect_to(idv_document_capture_url)
+        expect(response).to redirect_to(idv_choose_id_type_url)
       end
+
       it 'does not set idv_session.skip_hybrid_handoff' do
         expect do
           get :show
@@ -204,15 +241,12 @@ RSpec.describe Idv::HybridHandoffController do
 
       context 'opt in selection is nil' do
         before do
-          allow(IdentityConfig.store).to receive(:doc_auth_selfie_desktop_test_mode)
-            .and_return(false)
           subject.idv_session.skip_doc_auth_from_how_to_verify = nil
         end
 
         it 'redirects to how to verify' do
           get :show
 
-          expect(response).not_to render_template :show
           expect(response).to redirect_to(idv_how_to_verify_url)
         end
       end
@@ -227,8 +261,6 @@ RSpec.describe Idv::HybridHandoffController do
 
       context 'opted in to ipp flow' do
         before do
-          allow(IdentityConfig.store).to receive(:doc_auth_selfie_desktop_test_mode)
-            .and_return(false)
           subject.idv_session.skip_doc_auth_from_how_to_verify = true
           subject.idv_session.skip_hybrid_handoff = true
         end
@@ -241,8 +273,8 @@ RSpec.describe Idv::HybridHandoffController do
       end
 
       context 'opt in ipp is not available on service provider' do
+        let(:service_provider_ipp_enabled) { false }
         before do
-          subject.idv_session.service_provider.in_person_proofing_enabled = false
           subject.idv_session.skip_doc_auth_from_how_to_verify = nil
         end
 
@@ -308,12 +340,6 @@ RSpec.describe Idv::HybridHandoffController do
         }
       end
 
-      let(:document_capture_session_uuid) { '09228b6d-dd39-4925-bf82-b69104095517' }
-
-      before do
-        subject.idv_session.document_capture_session_uuid = document_capture_session_uuid
-      end
-
       it 'invalidates future steps' do
         expect(subject).to receive(:clear_future_steps!)
 
@@ -342,7 +368,6 @@ RSpec.describe Idv::HybridHandoffController do
       let(:analytics_args) do
         {
           success: true,
-          errors: {},
           destination: :document_capture,
           flow_path: 'standard',
           step: 'hybrid_handoff',
@@ -357,10 +382,46 @@ RSpec.describe Idv::HybridHandoffController do
         }
       end
 
-      it 'sends analytics_submitted event for desktop' do
-        put :update, params: params
+      context 'vendor is socure' do
+        before do
+          subject.document_capture_session.update(doc_auth_vendor: Idp::Constants::Vendors::SOCURE)
+        end
 
-        expect(@analytics).to have_logged_event(analytics_name, analytics_args)
+        it 'redirects to choose id type url' do
+          put :update, params: params
+
+          expect(response).to redirect_to(idv_choose_id_type_url)
+        end
+
+        it 'sends analytics_submitted event for desktop' do
+          put :update, params: params
+
+          expect(@analytics).to have_logged_event(analytics_name, analytics_args)
+          expect(subject.document_capture_session.doc_auth_vendor)
+            .to eq(Idp::Constants::Vendors::SOCURE)
+        end
+
+        context 'when selfie_desktop_test_mode is enabled' do
+          let(:desktop_test_mode_enabled) { true }
+
+          it 'sends analytics_submitted event for desktop' do
+            expect(subject.document_capture_session.doc_auth_vendor)
+              .to eq(Idp::Constants::Vendors::SOCURE)
+            put :update, params: params
+
+            expect(@analytics).to have_logged_event(analytics_name, analytics_args)
+            expect(subject.document_capture_session.doc_auth_vendor)
+              .to eq(Idp::Constants::Vendors::MOCK)
+          end
+        end
+      end
+
+      context 'passports are not enabled' do
+        it 'redirects to choose id type url' do
+          put :update, params: params
+
+          expect(response).to redirect_to(idv_choose_id_type_url)
+        end
       end
     end
   end

@@ -41,10 +41,9 @@ class WebauthnVisitForm
     return unless error
 
     if @platform_authenticator
-      errors.add error, translate_platform_authenticator_error(error),
-                 type: :"#{translate_platform_authenticator_error(error).split('.').last}"
+      errors.add error, translate_platform_authenticator_error(error), type: :invalid
     else
-      errors.add error, translate_error(error), type: :"#{translate_error(error).split('.').last}"
+      errors.add error, translate_error(error), type: :invalid
     end
   end
 

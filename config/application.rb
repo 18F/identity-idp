@@ -59,7 +59,7 @@ module Identity
       end
     end
 
-    config.load_defaults '7.2'
+    config.load_defaults '8.0'
     config.active_record.belongs_to_required_by_default = false
     config.active_job.queue_adapter = :good_job
 

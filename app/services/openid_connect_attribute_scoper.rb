@@ -20,6 +20,7 @@ class OpenidConnectAttributeScoper
   VALID_SCOPES = (%w[
     email
     all_emails
+    locale
     openid
     profile:verified_at
   ] + X509_SCOPES + IAL2_SCOPES).freeze
@@ -27,6 +28,7 @@ class OpenidConnectAttributeScoper
   VALID_IAL1_SCOPES = (%w[
     email
     all_emails
+    locale
     openid
     profile:verified_at
   ] + X509_SCOPES).freeze
@@ -35,6 +37,7 @@ class OpenidConnectAttributeScoper
     email: %w[email],
     email_verified: %w[email],
     all_emails: %w[all_emails],
+    locale: %w[locale],
     address: %w[address],
     phone: %w[phone],
     phone_verified: %w[phone],
@@ -80,6 +83,10 @@ class OpenidConnectAttributeScoper
 
   def all_emails_requested?
     scopes.include?('all_emails')
+  end
+
+  def locale_requested?
+    scopes.include?('locale')
   end
 
   def filter(user_info)

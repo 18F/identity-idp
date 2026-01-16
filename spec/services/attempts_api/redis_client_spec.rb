@@ -22,7 +22,7 @@ RSpec.describe AttemptsApi::RedisClient do
 
         subject.write_event(event_key: event_key, jwe: jwe, timestamp: now, issuer: issuer)
 
-        result = subject.read_events(timestamp: now, issuer: issuer)
+        result = subject.read_events(issuer: issuer)
         expect(result[event_key]).to eq(jwe)
       end
     end
@@ -50,13 +50,48 @@ RSpec.describe AttemptsApi::RedisClient do
           subject.write_event(event_key: event_key, jwe: jwe, timestamp: now, issuer: issuer)
         end
 
-        result = subject.read_events(timestamp: now, issuer: issuer)
+        result = subject.read_events(issuer:)
 
         expect(result).to eq(events)
       end
     end
 
-    it 'stores events in hourly buckets' do
+    context 'when events are in different buckets' do
+      let(:events) { {} }
+
+      before do
+        now = Time.zone.now
+        3.times do |n|
+          event = AttemptsApi::AttemptEvent.new(
+            event_type: 'test_event',
+            session_id: 'test-session-id',
+            occurred_at: now - n.hours,
+            event_metadata: {
+              first_name: Idp::Constants::MOCK_IDV_APPLICANT[:first_name],
+            },
+          )
+          jwe = event.to_jwe(issuer:, public_key: attempts_api_public_key)
+          subject.write_event(
+            event_key: event.jti, jwe:, timestamp: event.occurred_at, issuer:,
+          )
+          events[event.jti] = jwe
+        end
+      end
+
+      it 'returns all the events' do
+        expect(subject.read_events(issuer:)).to eq(events)
+      end
+
+      context 'when there is a batch_size limit' do
+        it 'returns the older events first' do
+          expect(subject.read_events(issuer:, batch_size: 2).keys).not_to include(events.keys.first)
+        end
+      end
+    end
+  end
+
+  describe '#delete_events' do
+    it 'deletes the events from redis' do
       time1 = Time.new(2022, 1, 1, 1, 0, 0, 'Z')
       time2 = Time.new(2022, 1, 1, 2, 0, 0, 'Z')
       event1 = AttemptsApi::AttemptEvent.new(
@@ -85,8 +120,9 @@ RSpec.describe AttemptsApi::RedisClient do
         event_key: event2.jti, jwe: jwe2, timestamp: event2.occurred_at, issuer: issuer,
       )
 
-      expect(subject.read_events(timestamp: time1, issuer: issuer)).to eq({ event1.jti => jwe1 })
-      expect(subject.read_events(timestamp: time2, issuer: issuer)).to eq({ event2.jti => jwe2 })
+      deleted_events_count = subject.delete_events(issuer:, keys: [event1.jti])
+      expect(subject.read_events(issuer:)).to eq({ event2.jti => jwe2 })
+      expect(deleted_events_count).to eq(1)
     end
   end
 end

@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 class ConfirmationEmailPresenter
-  include ::NewRelic::Agent::MethodTracer
-
   def initialize(user, view)
     @user = user
     @view = view
@@ -40,8 +38,4 @@ class ConfirmationEmailPresenter
   private
 
   attr_reader :user, :view
-
-  add_method_tracer :initialize, "Custom/#{name}/initialize"
-  add_method_tracer :first_sentence, "Custom/#{name}/first_sentence"
-  add_method_tracer :confirmation_period, "Custom/#{name}/confirmation_period"
 end

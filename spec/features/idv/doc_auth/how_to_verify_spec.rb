@@ -25,6 +25,7 @@ RSpec.feature 'how to verify step', js: true do
                  facial_match_required: facial_match_required }
     )
     sign_in_via_branded_page(user)
+    expect(page).to have_current_path(idv_welcome_path)
     complete_doc_auth_steps_before_agreement_step
     complete_agreement_step
   end
@@ -87,37 +88,70 @@ RSpec.feature 'how to verify step', js: true do
 
   context 'when both ipp and opt-in ipp are enabled' do
     context 'and when sp has opted into ipp' do
+      include InPersonHelper
+
       let(:in_person_proofing_opt_in_enabled) { true }
 
       it 'displays expected content and navigates to choice' do
-        expect(page).to have_current_path(idv_how_to_verify_path)
-
-        # Choose remote option
-        click_on t('forms.buttons.continue_remote')
         expect(page).to have_current_path(idv_hybrid_handoff_url)
-
-        # go back and choose in person option
-        page.go_back
         click_on t('forms.buttons.continue_ipp')
-        expect(page).to have_current_path(idv_document_capture_path)
+        expect(page).to have_current_path(idv_document_capture_path(step: :hybrid_handoff))
       end
 
       context 'when selfie is enabled' do
-        include InPersonHelper
-
-        let(:facial_match_required) { false }
+        let(:facial_match_required) { true }
 
         it 'goes to direct IPP if selected and can come back' do
-          expect(page).to have_current_path(idv_how_to_verify_path)
+          expect(page).to have_current_path(idv_hybrid_handoff_url)
           expect(page).to have_content(t('doc_auth.headings.how_to_verify'))
           click_on t('forms.buttons.continue_ipp')
-          expect(page).to have_current_path(idv_document_capture_path)
+          expect(page).to have_current_path(idv_document_capture_path(step: :hybrid_handoff))
           expect_in_person_step_indicator_current_step(
             t('step_indicator.flows.idv.find_a_post_office'),
           )
           expect(page).to have_content(t('headings.verify'))
           click_on t('forms.buttons.back')
-          expect(page).to have_current_path(idv_how_to_verify_path)
+          expect(page).to have_current_path(idv_hybrid_handoff_url)
+        end
+
+        context 'when the user is bucketed for Socure doc_auth' do
+          before do
+            allow(IdentityConfig.store).to receive(:doc_auth_vendor).and_return('socure')
+            allow(IdentityConfig.store).to receive(:doc_auth_vendor_default).and_return('socure')
+          end
+
+          it 'goes to direct IPP if selected and can come back' do
+            expect(page).to have_current_path(idv_hybrid_handoff_url)
+            expect(page).to have_content(t('doc_auth.headings.how_to_verify'))
+            click_on t('forms.buttons.continue_ipp')
+            expect(page).to have_current_path(idv_document_capture_path(step: :hybrid_handoff))
+            expect_in_person_step_indicator_current_step(
+              t('step_indicator.flows.idv.find_a_post_office'),
+            )
+            expect(page).to have_content(t('headings.verify'))
+            click_on t('forms.buttons.back')
+            expect(page).to have_current_path(idv_hybrid_handoff_url)
+          end
+        end
+      end
+
+      context 'when the user is bucketed for Socure doc_auth' do
+        before do
+          allow(IdentityConfig.store).to receive(:doc_auth_vendor).and_return('socure')
+          allow(IdentityConfig.store).to receive(:doc_auth_vendor_default).and_return('socure')
+        end
+
+        it 'goes to direct IPP if selected and can come back' do
+          expect(page).to have_current_path(idv_hybrid_handoff_url)
+          expect(page).to have_content(t('doc_auth.headings.how_to_verify'))
+          click_on t('forms.buttons.continue_ipp')
+          expect(page).to have_current_path(idv_document_capture_path(step: :hybrid_handoff))
+          expect_in_person_step_indicator_current_step(
+            t('step_indicator.flows.idv.find_a_post_office'),
+          )
+          expect(page).to have_content(t('headings.verify'))
+          click_on t('forms.buttons.back')
+          expect(page).to have_current_path(idv_hybrid_handoff_url)
         end
       end
     end
@@ -139,7 +173,7 @@ RSpec.feature 'how to verify step', js: true do
         expect(page).to have_current_path(idv_hybrid_handoff_url)
         allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled) { true }
         page.refresh
-        expect(page).to have_current_path(idv_how_to_verify_url)
+        expect(page).to have_current_path(idv_hybrid_handoff_url)
       end
     end
 
@@ -147,7 +181,7 @@ RSpec.feature 'how to verify step', js: true do
       let(:in_person_proofing_opt_in_enabled) { true }
 
       it 'should be redirected to Hybrid Handoff page when opt in is false' do
-        expect(page).to have_current_path(idv_how_to_verify_url)
+        expect(page).to have_current_path(idv_hybrid_handoff_url)
         allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled) { false }
         page.refresh
         expect(page).to have_current_path(idv_hybrid_handoff_url)
@@ -156,21 +190,17 @@ RSpec.feature 'how to verify step', js: true do
 
     context 'Going back from Hybrid Handoff with opt in disabled midstream' do
       let(:in_person_proofing_opt_in_enabled) { true }
-      before do
-        click_on t('forms.buttons.continue_remote')
-      end
 
       it 'should not be bounced back to How to Verify with opt in disabled midstream' do
         expect(page).to have_current_path(idv_hybrid_handoff_url)
         allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled) { false }
-        page.go_back
-        expect(page).to have_current_path(idv_hybrid_handoff_url)
         page.go_back
         expect(page).to have_current_path(idv_agreement_url)
       end
     end
 
     context 'Going back from Hybrid Handoff with opt in enabled midstream' do
+      let(:in_person_proofing_opt_in_enabled) { false }
       it 'should go back to the Agreement step from Hybrid Handoff with opt in toggled midstream' do
         expect(page).to have_current_path(idv_hybrid_handoff_url)
         allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled) { true }
@@ -181,14 +211,10 @@ RSpec.feature 'how to verify step', js: true do
 
     context 'Going back from Hybrid Handoff with opt in enabled the whole time' do
       let(:in_person_proofing_opt_in_enabled) { true }
-      before do
-        click_on t('forms.buttons.continue_remote')
-      end
-
-      it 'should be bounced back to How to Verify' do
+      it 'should be bounced back to Aggreement' do
         expect(page).to have_current_path(idv_hybrid_handoff_url)
         page.go_back
-        expect(page).to have_current_path(idv_how_to_verify_url)
+        expect(page).to have_current_path(idv_agreement_url)
       end
     end
 
@@ -207,25 +233,27 @@ RSpec.feature 'how to verify step', js: true do
       end
 
       it 'should not be bounced back to How to Verify with opt in disabled midstream' do
-        expect(page).to have_current_path(idv_document_capture_path)
+        expect(page).to have_current_path(idv_document_capture_path(step: :hybrid_handoff))
         allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled) { false }
         page.go_back
-        expect(page).to have_current_path(idv_document_capture_path)
+        expect(page).to have_current_path(idv_hybrid_handoff_path)
         page.go_back
         expect(page).to have_current_path(idv_agreement_url)
       end
     end
 
     context 'Going back from Document Capture with opt in enabled midstream' do
+      let(:in_person_proofing_opt_in_enabled) { false }
       before do
-        complete_hybrid_handoff_step
+        complete_doc_auth_steps_before_document_capture_step
       end
-
       it 'should continue to Document Capture with opt in toggled midstream' do
         expect(page).to have_current_path(idv_document_capture_path)
         allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled) { true }
         page.go_back
-        expect(page).to have_current_path(idv_document_capture_url)
+        expect(page).to have_current_path(idv_choose_id_type_url)
+        page.go_back
+        expect(page).to have_current_path(idv_hybrid_handoff_path)
       end
     end
 
@@ -236,19 +264,22 @@ RSpec.feature 'how to verify step', js: true do
       end
 
       it 'should be bounced back to How to Verify' do
-        expect(page).to have_current_path(idv_document_capture_path)
+        expect(page).to have_current_path(idv_document_capture_path(step: :hybrid_handoff))
         page.go_back
-        expect(page).to have_current_path(idv_how_to_verify_url)
+        expect(page).to have_current_path(idv_hybrid_handoff_url)
       end
     end
 
     context 'Going back from Document Capture with opt in disabled the whole time' do
+      let(:in_person_proofing_opt_in_enabled) { false }
       before do
-        complete_hybrid_handoff_step
+        complete_doc_auth_steps_before_document_capture_step
       end
 
       it 'should be not be bounced back to how to verify' do
         expect(page).to have_current_path(idv_document_capture_path)
+        page.go_back
+        expect(page).to have_current_path(idv_choose_id_type_url)
         page.go_back
         expect(page).to have_current_path(idv_hybrid_handoff_url)
       end

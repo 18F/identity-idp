@@ -14,50 +14,31 @@ class ServiceProviderSeeder
     check_for_missing_sps
 
     service_providers.each do |issuer, config|
-      next unless write_service_provider?(config)
-
-      cert_pems = Array(config['certs']).map do |cert|
-        cert_path = Rails.root.join('certs', 'sp', "#{cert}.crt")
-        cert_path.read if cert_path.exist?
-      end.compact
-
-      ServiceProvider.find_or_create_by!(issuer: issuer) do |sp|
-        sp.update(
-          approved: true,
-          active: true,
-          native: true,
-          friendly_name: config['friendly_name'],
-        )
-      end.update!(config.except(
-        'agency',
-        'certs',
-        'restrict_to_deploy_env',
-        'protocol',
-        'native',
-      ).merge(certs: cert_pems))
+      write_service_provider(issuer: issuer, config: config)
     end
   end
 
-  def write_review_app_yaml(dashboard_url:)
-    hash = {
-      @rails_env.to_s => {
-        'urn:gov:gsa:openidconnect.profiles:sp:sso:gsa:dashboard' => {
-          'friendly_name' => 'Dashboard',
-          'agency' => 'GSA',
-          'agency_id' => 2,
-          'logo' => '18f.svg',
-          'certs' => ['identity_dashboard_cert'],
-          'return_to_sp_url' => dashboard_url,
-          'redirect_uris' => [
-            "#{dashboard_url}/auth/logindotgov/callback",
-            dashboard_url,
-          ],
-          'push_notification_url' => "#{dashboard_url}/api/security_events",
-        },
-      },
+  # Seed data appropriate only to per-branch review applications.
+  # This method must not run in production.
+  def run_review_app(dashboard_url:)
+    return run if service_provider_data&.include?(dashboard_url)
+
+    issuer = 'urn:gov:gsa:openidconnect.profiles:sp:sso:gsa:dashboard'
+    config = {
+      'friendly_name' => 'Dashboard',
+      'agency' => 'GSA',
+      'agency_id' => 2,
+      'logo' => '18f.svg',
+      'certs' => ['identity_dashboard_cert'],
+      'return_to_sp_url' => dashboard_url,
+      'redirect_uris' => [
+        "#{dashboard_url}/auth/logindotgov/callback",
+        dashboard_url,
+      ],
+      'push_notification_url' => "#{dashboard_url}/api/security_events",
     }
 
-    File.write(Rails.root.join(@yaml_path, 'service_providers.yml'), hash.to_yaml)
+    write_service_provider(issuer: issuer, config: config)
   end
 
   private
@@ -65,7 +46,9 @@ class ServiceProviderSeeder
   attr_reader :rails_env, :deploy_env
 
   def service_providers
-    file = Rails.root.join(@yaml_path, 'service_providers.yml').read
+    file = service_provider_data
+    return [] unless file
+
     file.gsub!('%{env}', deploy_env) if deploy_env
     YAML.safe_load(file, permitted_classes: [Date]).fetch(rails_env)
   rescue Psych::SyntaxError => syntax_error
@@ -74,6 +57,11 @@ class ServiceProviderSeeder
   rescue KeyError => key_error
     Rails.logger.error { "Missing env in service_providers.yml?: #{key_error.message}" }
     raise key_error
+  end
+
+  def service_provider_data
+    file = Rails.root.join(@yaml_path, 'service_providers.yml')
+    file.read if file.exist?
   end
 
   def write_service_provider?(config)
@@ -111,5 +99,29 @@ class ServiceProviderSeeder
         error: extra_sp_error,
       ).deliver_now
     end
+  end
+
+  def write_service_provider(issuer:, config:)
+    return unless write_service_provider?(config)
+
+    cert_pems = Array(config['certs']).map do |cert|
+      cert_path = Rails.root.join('certs', 'sp', "#{cert}.crt")
+      cert_path.read if cert_path.exist?
+    end.compact
+
+    ServiceProvider.find_or_create_by!(issuer: issuer) do |sp|
+      sp.update(
+        approved: true,
+        active: true,
+        native: true,
+        friendly_name: config['friendly_name'],
+      )
+    end.update!(config.except(
+      'agency',
+      'certs',
+      'restrict_to_deploy_env',
+      'protocol',
+      'native',
+    ).merge(certs: cert_pems))
   end
 end

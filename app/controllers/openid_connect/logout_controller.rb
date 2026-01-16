@@ -26,6 +26,7 @@ module OpenidConnect
       if result.success? && redirect_uri
         handle_successful_logout_request(result, redirect_uri)
       else
+        track_attempts_api_logout(success: false)
         track_integration_errors(result:, event: :oidc_logout_requested)
 
         render :error
@@ -50,6 +51,7 @@ module OpenidConnect
       if result.success? && redirect_uri
         handle_logout(result, redirect_uri)
       else
+        track_attempts_api_logout(success: false)
         track_integration_errors(result:, event: :oidc_logout_submitted)
 
         render :error
@@ -62,14 +64,8 @@ module OpenidConnect
       request.env['devise_session_limited_failure_redirect_url'] = request.url
     end
 
-    def redirect_user(redirect_uri, issuer, user_uuid)
-      case oidc_redirect_method(issuer: issuer, user_uuid: user_uuid)
-      when 'client_side'
-        @oidc_redirect_uri = redirect_uri
-        render(
-          'openid_connect/shared/redirect',
-          layout: false,
-        )
+    def redirect_user(redirect_uri)
+      case IdentityConfig.store.openid_connect_redirect
       when 'client_side_js'
         @oidc_redirect_uri = redirect_uri
         render(
@@ -86,10 +82,7 @@ module OpenidConnect
 
     def apply_logout_secure_headers_override(redirect_uri, service_provider)
       return if service_provider.nil? || redirect_uri.nil?
-      return if form_action_csp_disabled_and_not_server_side_redirect?(
-        issuer: service_provider.issuer,
-        user_uuid: current_user&.id,
-      )
+      return if form_action_csp_disabled_and_not_server_side_redirect?
 
       uris = SecureHeadersAllowList.csp_with_sp_redirect_uris(
         redirect_uri,
@@ -97,12 +90,6 @@ module OpenidConnect
       )
 
       override_form_action_csp(uris)
-    end
-
-    def require_logout_confirmation?
-      (logout_params[:id_token_hint].nil? || IdentityConfig.store.reject_id_token_hint_in_logout) &&
-        logout_params[:client_id] &&
-        current_user
     end
 
     # @return [OpenidConnectLogoutForm]
@@ -117,12 +104,15 @@ module OpenidConnect
     # @param redirect_uri [String] The URL to redirect the user to after logout
     def handle_successful_logout_request(result, redirect_uri)
       apply_logout_secure_headers_override(redirect_uri, @logout_form.service_provider)
-      if require_logout_confirmation?
+
+      if current_user.present?
         analytics.oidc_logout_visited(**to_event(result))
 
+        track_attempts_api_logout(success: result.success?)
         @params = {
           client_id: logout_params[:client_id],
           post_logout_redirect_uri: logout_params[:post_logout_redirect_uri],
+          id_token_hint: logout_params[:id_token_hint],
         }
         @params[:state] = logout_params[:state] if !logout_params[:state].nil?
         @service_provider_name = @logout_form.service_provider&.friendly_name
@@ -137,7 +127,9 @@ module OpenidConnect
     def handle_logout(result, redirect_uri)
       analytics.logout_initiated(**to_event(result))
 
-      redirect_user(redirect_uri, @logout_form.service_provider&.issuer, current_user&.uuid)
+      track_attempts_api_logout(success: result.success?)
+
+      redirect_user(redirect_uri)
 
       sign_out
     end
@@ -160,6 +152,10 @@ module OpenidConnect
             .merge(event:),
         )
       end
+    end
+
+    def track_attempts_api_logout(success:)
+      attempts_api_tracker.logout_initiated(success:)
     end
   end
 end

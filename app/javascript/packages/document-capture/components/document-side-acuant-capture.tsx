@@ -8,21 +8,22 @@ import type {
   OnErrorCallback,
   RegisterFieldCallback,
 } from '@18f/identity-form-steps';
-import AcuantCapture from './acuant-capture';
+import AcuantCapture, { AcuantDocumentType } from './acuant-capture';
 import SelfieCaptureContext from '../context/selfie-capture';
 
 interface DocumentSideAcuantCaptureProps {
-  side: 'front' | 'back' | 'selfie';
+  side: 'front' | 'back' | 'passport' | 'selfie';
   registerField: RegisterFieldCallback;
   value: Blob | string | null | undefined;
   /**
    * Update values, merging with existing values.
    */
   onChange: (nextValues: { [key: string]: Blob | string | null | undefined }) => void;
-  errors: FormStepError<{ front: string; back: string; selfie: string }>[];
+  errors: FormStepError<{ front: string; back: string; passport: string; selfie: string }>[];
   onError: OnErrorCallback;
   className?: string;
   isReviewStep: boolean;
+  showSelfieHelp: () => void;
 }
 
 /**
@@ -54,21 +55,28 @@ function DocumentSideAcuantCapture({
   onError,
   className,
   isReviewStep,
+  showSelfieHelp,
 }: DocumentSideAcuantCaptureProps) {
-  const error = errors.find(({ field }) => field === side)?.error;
+  const isPassport = side === 'passport';
+  /* Passport errors default to 'front' see app/services/doc_auth/error_generator.rb line 28 */
+  const errorSide = isPassport ? 'front' : side;
+  const error = errors.find(({ field }) => field === errorSide)?.error;
   const { changeStepCanComplete } = useContext(FormStepsContext);
-  const { isSelfieCaptureEnabled, isSelfieDesktopTestMode } = useContext(SelfieCaptureContext);
-  const isUploadAllowed = isSelfieDesktopTestMode || !isSelfieCaptureEnabled;
+  const { isSelfieDesktopTestMode, isUploadEnabled } = useContext(SelfieCaptureContext);
+  const isUploadAllowed = isSelfieDesktopTestMode || isUploadEnabled;
   const stepCanComplete = !isReviewStep ? undefined : true;
+
   return (
     <AcuantCapture
       ref={registerField(side, { isRequired: true })}
       /* i18n-tasks-use t('doc_auth.headings.document_capture_back') */
       /* i18n-tasks-use t('doc_auth.headings.document_capture_front') */
+      /* i18n-tasks-use t('doc_auth.headings.document_capture_passport') */
       /* i18n-tasks-use t('doc_auth.headings.document_capture_selfie') */
       label={t(`doc_auth.headings.document_capture_${side}`)}
       /* i18n-tasks-use t('doc_auth.headings.back') */
       /* i18n-tasks-use t('doc_auth.headings.front') */
+      /* i18n-tasks-use t('doc_auth.headings.passport') */
       /* i18n-tasks-use t('doc_auth.headings.selfie') */
       bannerText={t(`doc_auth.headings.${side}`)}
       value={value}
@@ -97,6 +105,9 @@ function DocumentSideAcuantCapture({
       name={side}
       className={className}
       allowUpload={isUploadAllowed}
+      showSelfieHelp={showSelfieHelp}
+      isReviewStep={isReviewStep}
+      requestedAcuantDocumentType={isPassport ? AcuantDocumentType.PASSPORT : AcuantDocumentType.ID}
     />
   );
 }

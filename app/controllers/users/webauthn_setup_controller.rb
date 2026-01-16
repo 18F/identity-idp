@@ -50,6 +50,16 @@ module Users
           errors: result.errors,
           success: false,
         )
+
+        mfa_device_type = @platform_authenticator.present? ?
+          TwoFactorAuthenticatable::AuthMethod::WEBAUTHN_PLATFORM :
+          TwoFactorAuthenticatable::AuthMethod::WEBAUTHN
+
+        attempts_api_tracker.mfa_enrolled(
+          success: false,
+          mfa_device_type:,
+        )
+
       end
 
       flash_error(result.errors) unless result.success?
@@ -74,6 +84,16 @@ module Users
       )
       properties = result.to_h.merge(analytics_properties)
       analytics.multi_factor_auth_setup(**properties)
+
+      mfa_device_type = @platform_authenticator.present? ?
+        TwoFactorAuthenticatable::AuthMethod::WEBAUTHN_PLATFORM :
+        TwoFactorAuthenticatable::AuthMethod::WEBAUTHN
+
+      attempts_api_tracker.mfa_enrolled(
+        success: result.success?,
+        mfa_device_type:,
+      )
+
       if result.success?
         process_valid_webauthn(form)
         user_session.delete(:mfa_attempts)
@@ -127,14 +147,14 @@ module Users
     end
 
     def process_valid_webauthn(form)
-      create_user_event(:webauthn_key_added)
+      create_user_event(form.event_type)
       analytics.webauthn_setup_submitted(
         platform_authenticator: form.platform_authenticator?,
         in_account_creation_flow: user_session[:in_account_creation_flow] || false,
         success: true,
       )
       handle_remember_device_preference(params[:remember_device])
-      if form.platform_authenticator?
+      if form.setup_as_platform_authenticator?
         handle_valid_verification_for_confirmation_context(
           auth_method: TwoFactorAuthenticatable::AuthMethod::WEBAUTHN_PLATFORM,
         )
@@ -144,7 +164,7 @@ module Users
           analytics,
           threatmetrix_attrs,
         )
-        flash[:success] = t('notices.webauthn_platform_configured')
+        flash[:success] = t('notices.webauthn_platform_configured') if !form.transports_mismatch?
       else
         handle_valid_verification_for_confirmation_context(
           auth_method: TwoFactorAuthenticatable::AuthMethod::WEBAUTHN,
@@ -155,9 +175,15 @@ module Users
           analytics,
           threatmetrix_attrs,
         )
-        flash[:success] = t('notices.webauthn_configured')
+        flash[:success] = t('notices.webauthn_configured') if !form.transports_mismatch?
       end
-      redirect_to next_setup_path || after_mfa_setup_path
+
+      if form.transports_mismatch?
+        user_session[:webauthn_mismatch_id] = form.webauthn_configuration.id
+        redirect_to webauthn_setup_mismatch_path
+      else
+        redirect_to next_setup_path || after_mfa_setup_path
+      end
     end
 
     def analytics_properties

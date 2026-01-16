@@ -10,10 +10,37 @@ class TabNavigationComponent < BaseComponent
   end
 
   def current_path?(path)
-    recognized_path = Rails.application.routes.recognize_path(path, method: request.method)
-    request.params[:controller] == recognized_path[:controller] &&
-      request.params[:action] == recognized_path[:action]
-  rescue ActionController::RoutingError
-    false
+    @current_path ||= {}
+    if !@current_path.key?(path)
+      @current_path[path] = begin
+        recognized_path = Rails.application.routes.recognize_path(path, method: request.method)
+        request.params[:controller] == recognized_path[:controller] &&
+          request.params[:action] == recognized_path[:action]
+      rescue ActionController::RoutingError
+        false
+      end
+    end
+
+    @current_path[path]
+  end
+
+  private
+
+  def nav_list_item(route, &block)
+    if current_path?(route[:path])
+      content_tag(
+        :li,
+        render(
+          ClickObserverComponent.new(
+            event_name: 'tab_navigation_current_page_clicked',
+            payload: { path: route[:path] },
+          ),
+          &block
+        ),
+        class: 'usa-button-group__item display-list-item',
+      )
+    else
+      tag.li(class: 'usa-button-group__item', &block)
+    end
   end
 end

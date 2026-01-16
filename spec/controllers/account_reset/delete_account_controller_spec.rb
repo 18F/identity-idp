@@ -6,9 +6,12 @@ RSpec.describe AccountReset::DeleteAccountController do
   let(:invalid_token_message) do
     t('errors.account_reset.granted_token_invalid', app_name: APP_NAME)
   end
-  let(:invalid_token_error) { { token: [invalid_token_message] } }
 
-  before { stub_analytics }
+  before do
+    stub_analytics
+    stub_attempts_tracker
+  end
+
   describe '#delete' do
     it 'logs a good token to the analytics' do
       user = create(:user, :fully_registered, :with_backup_code, confirmed_at: Time.zone.now.round)
@@ -18,13 +21,17 @@ RSpec.describe AccountReset::DeleteAccountController do
       grant_request(user)
       session[:granted_token] = AccountResetRequest.first.granted_token
 
+      expect(@attempts_api_tracker).to receive(:account_reset_account_deleted).with(
+        success: true,
+        failure_reason: nil,
+      )
+
       delete :delete
 
       expect(@analytics).to have_logged_event(
         'Account Reset: delete',
         user_id: user.uuid,
         success: true,
-        errors: {},
         mfa_method_counts: {
           backup_codes: BackupCodeGenerator::NUMBER_OF_CODES,
           webauthn: 2,
@@ -39,6 +46,10 @@ RSpec.describe AccountReset::DeleteAccountController do
 
     it 'redirects to root if the token does not match one in the DB' do
       session[:granted_token] = 'foo'
+      expect(@attempts_api_tracker).to receive(:account_reset_account_deleted).with(
+        success: false,
+        failure_reason: { token: [:granted_token_invalid] },
+      )
 
       delete :delete
 
@@ -46,7 +57,6 @@ RSpec.describe AccountReset::DeleteAccountController do
         'Account Reset: delete',
         user_id: 'anonymous-uuid',
         success: false,
-        errors: invalid_token_error,
         error_details: { token: { granted_token_invalid: true } },
         mfa_method_counts: {},
         identity_verified: false,
@@ -58,13 +68,17 @@ RSpec.describe AccountReset::DeleteAccountController do
     end
 
     it 'displays a flash and redirects to root if the token is missing' do
+      expect(@attempts_api_tracker).to receive(:account_reset_account_deleted).with(
+        success: false,
+        failure_reason: { token: [:blank] },
+      )
+
       delete :delete
 
       expect(@analytics).to have_logged_event(
         'Account Reset: delete',
         user_id: 'anonymous-uuid',
         success: false,
-        errors: { token: [t('errors.account_reset.granted_token_missing', app_name: APP_NAME)] },
         error_details: { token: { blank: true } },
         mfa_method_counts: {},
         identity_verified: false,
@@ -83,6 +97,11 @@ RSpec.describe AccountReset::DeleteAccountController do
       create_account_reset_request_for(user)
       grant_request(user)
 
+      expect(@attempts_api_tracker).to receive(:account_reset_account_deleted).with(
+        success: false,
+        failure_reason: { token: [:granted_token_expired] },
+      )
+
       travel_to(Time.zone.now + 2.days) do
         session[:granted_token] = AccountResetRequest.first.granted_token
         delete :delete
@@ -92,7 +111,6 @@ RSpec.describe AccountReset::DeleteAccountController do
         'Account Reset: delete',
         user_id: user.uuid,
         success: false,
-        errors: { token: [t('errors.account_reset.granted_token_expired', app_name: APP_NAME)] },
         error_details: { token: { granted_token_expired: true } },
         mfa_method_counts: {},
         identity_verified: false,
@@ -117,7 +135,6 @@ RSpec.describe AccountReset::DeleteAccountController do
         'Account Reset: delete',
         user_id: user.uuid,
         success: true,
-        errors: {},
         mfa_method_counts: { phone: 1 },
         profile_idv_level: 'legacy_unsupervised',
         identity_verified: true,
@@ -140,7 +157,6 @@ RSpec.describe AccountReset::DeleteAccountController do
         'Account Reset: delete',
         user_id: user.uuid,
         success: true,
-        errors: {},
         mfa_method_counts: { phone: 1 },
         profile_idv_level: 'unsupervised_with_selfie',
         identity_verified: true,
@@ -165,13 +181,45 @@ RSpec.describe AccountReset::DeleteAccountController do
         'Account Reset: delete',
         user_id: user.uuid,
         success: true,
-        errors: {},
         mfa_method_counts: { phone: 1 },
         profile_idv_level: 'in_person',
         identity_verified: true,
         account_age_in_days: 0,
         account_confirmed_at: user.confirmed_at,
       )
+    end
+  end
+
+  describe '#cancel' do
+    let(:user) { create(:user) }
+    before do
+      create_account_reset_request_for(user)
+      grant_request(user)
+      session[:granted_token] = AccountResetRequest.first.granted_token
+    end
+    it 'redirects to root' do
+      post :cancel
+
+      expect(response).to redirect_to(root_url)
+      expect(flash[:success]).to eq(
+        t(
+          'two_factor_authentication.account_reset.successful_cancel',
+          app_name: APP_NAME,
+        ),
+      )
+    end
+
+    it 'deletes existing account reset request' do
+      post :cancel
+
+      expect(@analytics).to have_logged_event(
+        'Account Reset: cancel',
+        success: true,
+        user_id: user.uuid,
+      )
+      acr = AccountResetRequest.find_by(granted_token: session[:granted_token])
+      expect(response).to redirect_to(root_url)
+      expect(acr).to eq(nil)
     end
   end
 
@@ -183,7 +231,6 @@ RSpec.describe AccountReset::DeleteAccountController do
         'Account Reset: granted token validation',
         user_id: 'anonymous-uuid',
         success: false,
-        errors: invalid_token_error,
         error_details: { token: { granted_token_invalid: true } },
       )
       expect(response).to redirect_to(root_url)
@@ -203,7 +250,6 @@ RSpec.describe AccountReset::DeleteAccountController do
         'Account Reset: granted token validation',
         user_id: user.uuid,
         success: false,
-        errors: { token: [t('errors.account_reset.granted_token_expired', app_name: APP_NAME)] },
         error_details: { token: { granted_token_expired: true } },
       )
       expect(response).to redirect_to(root_url)

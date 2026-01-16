@@ -5,12 +5,13 @@ module Idv
     class StateIdController < ApplicationController
       include Idv::AvailabilityConcern
       include IdvStepConcern
+      include Idv::IdConcern
 
-      before_action :redirect_unless_enrollment # confirm previous step is complete
       before_action :set_usps_form_presenter
+      before_action :confirm_step_allowed
+      before_action :initialize_pii_from_user, only: [:show]
 
       def show
-        flow_session[:pii_from_user] ||= {}
         analytics.idv_in_person_proofing_state_id_visited(**analytics_arguments)
 
         render :show, locals: extra_view_variables
@@ -20,7 +21,6 @@ module Idv
         # don't clear the ssn when updating address, clear after SsnController
         clear_future_steps_from!(controller: Idv::InPerson::SsnController)
 
-        pii_from_user = flow_session[:pii_from_user]
         initial_state_of_same_address_as_id = pii_from_user[:same_address_as_id]
 
         form_result = form.submit(flow_params)
@@ -30,12 +30,18 @@ module Idv
             pii_from_user[attr] = flow_params[attr]
           end
 
-          analytics.idv_in_person_proofing_state_id_submitted(
-            **analytics_arguments.merge(**form_result),
-          )
           # Accept Date of Birth from both memorable date and input date components
           formatted_dob = MemorableDateComponent.extract_date_param flow_params&.[](:dob)
           pii_from_user[:dob] = formatted_dob if formatted_dob
+
+          # Accept Expiration Date from both memorable date and input date components
+          formatted_exp = MemorableDateComponent.extract_date_param(
+            flow_params&.[](:id_expiration),
+          )
+          if formatted_exp
+            pii_from_user[:state_id_expiration] = formatted_exp
+            pii_from_user.delete(:id_expiration)
+          end
 
           if pii_from_user[:same_address_as_id] == 'true'
             copy_state_id_address_to_residential_address(pii_from_user)
@@ -56,6 +62,13 @@ module Idv
             redirect_url = idv_in_person_ssn_url
           end
 
+          enrollment.update!(document_type: :state_id)
+          idv_session.doc_auth_vendor = Idp::Constants::Vendors::USPS
+
+          analytics.idv_in_person_proofing_state_id_submitted(
+            **analytics_arguments.merge(**form_result),
+          )
+
           redirect_to redirect_url
         else
           render :show, locals: extra_view_variables
@@ -67,37 +80,27 @@ module Idv
           form:,
           pii:,
           parsed_dob:,
+          parsed_expiration:,
           updating_state_id: updating_state_id?,
         }
       end
 
-      # update Idv::DocumentCaptureController.step_info.next_steps to include
-      # :ipp_state_id instead of :ipp_ssn (or :ipp_address) in delete PR
       def self.step_info
         Idv::StepInfo.new(
           key: :ipp_state_id,
           controller: self,
           next_steps: [:ipp_address, :ipp_ssn],
-          preconditions: ->(idv_session:, user:) { user.establishing_in_person_enrollment },
+          preconditions: ->(idv_session:, user:) do
+            user.has_establishing_in_person_enrollment? &&
+              !idv_session.opted_in_to_in_person_proofing.nil?
+          end,
           undo_step: ->(idv_session:, user:) do
-            pii_from_user[:identity_doc_address1] = nil
-            pii_from_user[:identity_doc_address2] = nil
-            pii_from_user[:identity_doc_city] = nil
-            pii_from_user[:identity_doc_zipcode] = nil
-            pii_from_user[:identity_doc_state] = nil
+            idv_session.invalidate_in_person_pii_from_user!
           end,
         )
       end
 
       private
-
-      def redirect_unless_enrollment
-        redirect_to idv_document_capture_url unless current_user.establishing_in_person_enrollment
-      end
-
-      def flow_session
-        user_session.fetch('idv/in_person', {})
-      end
 
       def analytics_arguments
         {
@@ -129,15 +132,11 @@ module Idv
       end
 
       def parsed_dob
-        form_dob = pii[:dob]
-        if form_dob.instance_of?(String)
-          dob_str = form_dob
-        elsif form_dob.instance_of?(Hash)
-          dob_str = MemorableDateComponent.extract_date_param(form_dob)
-        end
-        Date.parse(dob_str) unless dob_str.nil?
-      rescue StandardError
-        # Catch date parsing errors
+        parse_date(pii[:dob])
+      end
+
+      def parsed_expiration
+        parse_date(pii[:id_expiration])
       end
 
       def pii
@@ -145,6 +144,7 @@ module Idv
         if params.has_key?(:identity_doc) || params.has_key?(:state_id)
           data = data.merge(flow_params)
         end
+        data[:id_expiration] = data.delete(:state_id_expiration) if data.key?(:state_id_expiration)
         data.deep_symbolize_keys
       end
 
@@ -162,12 +162,13 @@ module Idv
 
         params.require(:state_id).permit(
           *Idv::StateIdForm::ATTRIBUTES,
-          dob: [
-            :month,
-            :day,
-            :year,
-          ],
+          dob: [:month, :day, :year],
+          id_expiration: [:month, :day, :year],
         )
+      end
+
+      def enrollment
+        current_user.establishing_in_person_enrollment
       end
 
       def form
@@ -177,6 +178,11 @@ module Idv
       def set_usps_form_presenter
         @presenter = Idv::InPerson::UspsFormPresenter.new
       end
+
+      def initialize_pii_from_user
+        user_session['idv/in_person'] ||= {}
+        user_session['idv/in_person']['pii_from_user'] ||= { uuid: current_user.uuid }
+      end
     end
   end
-  end
+end

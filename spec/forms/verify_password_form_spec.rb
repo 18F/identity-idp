@@ -19,7 +19,7 @@ RSpec.describe VerifyPasswordForm, type: :model do
         result = form.submit
 
         expect(profile.reload.active?).to eq true
-        expect(result.success?).to eq true
+        expect(result.to_h).to eq(success: true)
       end
     end
 
@@ -40,8 +40,10 @@ RSpec.describe VerifyPasswordForm, type: :model do
         result = form.submit
 
         expect(profile.reload.active?).to eq false
-        expect(result.success?).to eq false
-        expect(result.errors[:password]).to eq [t('errors.messages.password_incorrect')]
+        expect(result.to_h).to eq(
+          success: false,
+          error_details: { password: { password_incorrect: true } },
+        )
       end
     end
   end

@@ -139,7 +139,10 @@ RSpec.describe UserMailer, type: :mailer do
       end
 
       it 'renders the subject' do
-        expect(mail.subject).to eq t('user_mailer.reset_password_instructions.subject')
+        expect(mail.subject).to eq t(
+          'user_mailer.reset_password_instructions.subject',
+          app_name: APP_NAME,
+        )
       end
 
       it 'renders the gpo warning alert' do
@@ -148,17 +151,11 @@ RSpec.describe UserMailer, type: :mailer do
         )
       end
 
-      it 'does not render the in person warning banner' do
-        expect(mail.html_part.body).not_to have_content(
-          strip_tags(
-            t('user_mailer.reset_password_instructions.in_person_warning_description_html'),
-          ),
-        )
-      end
-
       it 'renders the reset password instructions' do
         expect(mail.html_part.body).to have_content(
-          t('user_mailer.reset_password_instructions.header'),
+          strip_tags(
+            t('user_mailer.reset_password_instructions.header_html', app_name: APP_NAME),
+          ),
         )
       end
 
@@ -182,14 +179,9 @@ RSpec.describe UserMailer, type: :mailer do
       end
 
       it 'renders the subject' do
-        expect(mail.subject).to eq t('user_mailer.reset_password_instructions.subject')
-      end
-
-      it 'renders the in person warning banner' do
-        expect(mail.html_part.body).to have_content(
-          strip_tags(
-            t('user_mailer.reset_password_instructions.in_person_warning_description_html'),
-          ),
+        expect(mail.subject).to eq t(
+          'user_mailer.reset_password_instructions.subject',
+          app_name: APP_NAME,
         )
       end
 
@@ -201,7 +193,9 @@ RSpec.describe UserMailer, type: :mailer do
 
       it 'renders the reset password instructions' do
         expect(mail.html_part.body).to have_content(
-          t('user_mailer.reset_password_instructions.header'),
+          strip_tags(
+            t('user_mailer.reset_password_instructions.header_html', app_name: APP_NAME),
+          ),
         )
       end
 
@@ -223,7 +217,10 @@ RSpec.describe UserMailer, type: :mailer do
       end
 
       it 'renders the subject' do
-        expect(mail.subject).to eq t('user_mailer.reset_password_instructions.subject')
+        expect(mail.subject).to eq t(
+          'user_mailer.reset_password_instructions.subject',
+          app_name: APP_NAME,
+        )
       end
 
       it 'does not render the gpo warning alert' do
@@ -232,17 +229,11 @@ RSpec.describe UserMailer, type: :mailer do
         )
       end
 
-      it 'does not render the in person warning banner' do
-        expect(mail.html_part.body).not_to have_content(
-          strip_tags(
-            t('user_mailer.reset_password_instructions.in_person_warning_description_html'),
-          ),
-        )
-      end
-
       it 'renders the reset password instructions' do
         expect(mail.html_part.body).to have_content(
-          t('user_mailer.reset_password_instructions.header'),
+          strip_tags(
+            t('user_mailer.reset_password_instructions.header_html', app_name: APP_NAME),
+          ),
         )
       end
 
@@ -479,29 +470,9 @@ RSpec.describe UserMailer, type: :mailer do
         strip_tags(
           t(
             'user_mailer.account_reset_request.intro_html', app_name: APP_NAME,
-                                                            interval: interval,
                                                             waiting_period:
                                                               account_reset_deletion_period_hours
           ),
-        ),
-      )
-    end
-
-    it 'renders the footer' do
-    end
-
-    it 'does not render the subject in the body' do
-      expect(mail.html_part.body).not_to have_content(
-        strip_tags(
-          t('user_mailer.account_reset_request.subject', app_name: APP_NAME),
-        ),
-      )
-    end
-
-    it 'renders the header within the body' do
-      expect(mail.html_part.body).to have_content(
-        strip_tags(
-          t('user_mailer.account_reset_request.header', interval: interval),
         ),
       )
     end
@@ -579,10 +550,10 @@ RSpec.describe UserMailer, type: :mailer do
     end
   end
 
-  describe '#account_delete_submitted' do
+  describe '#account_delete_completed' do
     let(:mail) do
       UserMailer.with(user: user, email_address: email_address)
-        .account_delete_submitted
+        .account_delete_completed
     end
 
     it_behaves_like 'a system email'
@@ -618,7 +589,7 @@ RSpec.describe UserMailer, type: :mailer do
     end
 
     it 'renders the subject' do
-      expect(mail.subject).to eq t('user_mailer.account_reset_cancel.subject')
+      expect(mail.subject).to eq t('user_mailer.account_reset_cancel.subject', app_name: APP_NAME)
     end
 
     it 'renders the body' do
@@ -829,7 +800,18 @@ RSpec.describe UserMailer, type: :mailer do
       create(
         :in_person_enrollment,
         :pending,
+        :with_service_provider,
         selected_location_details: { name: 'FRIENDSHIP' },
+        status_updated_at: Time.zone.now - 2.hours,
+        current_address_matches_id: current_address_matches_id,
+      )
+    end
+    let!(:skipped_location_enrollment) do
+      create(
+        :in_person_enrollment,
+        :pending,
+        :with_service_provider,
+        selected_location_details: nil,
         status_updated_at: Time.zone.now - 2.hours,
         current_address_matches_id: current_address_matches_id,
       )
@@ -839,6 +821,7 @@ RSpec.describe UserMailer, type: :mailer do
         :in_person_enrollment,
         :pending,
         :enhanced_ipp,
+        :with_service_provider,
       )
     end
     let(:visited_location_name) { 'ACQUAINTANCESHIP' }
@@ -848,6 +831,7 @@ RSpec.describe UserMailer, type: :mailer do
         create(
           :in_person_enrollment,
           :expired,
+          :with_service_provider,
           selected_location_details: { name: 'FRIENDSHIP' },
         )
       end
@@ -878,7 +862,6 @@ RSpec.describe UserMailer, type: :mailer do
       let(:mail) do
         UserMailer.with(user: user, email_address: email_address).in_person_ready_to_verify(
           enrollment: enrollment,
-          is_enhanced_ipp:,
         )
       end
 
@@ -934,57 +917,41 @@ RSpec.describe UserMailer, type: :mailer do
         end
       end
 
-      context 'post office closed alert' do
-        context 'when the post office closed alert flag is disabled' do
-          before do
-            allow(IdentityConfig.store)
-              .to receive(:in_person_proofing_post_office_closed_alert_enabled)
-              .and_return(false)
-          end
-
-          it 'does not render the post office closed alert' do
-            aggregate_failures do
-              [
-                t('in_person_proofing.post_office_closed.heading'),
-                t('in_person_proofing.post_office_closed.body'),
-              ].each do |copy|
-                Array(copy).each do |part|
-                  expect(mail.html_part.body).to_not have_content(part)
-                end
-              end
-            end
-          end
+      context 'when selected_location_details is not present' do
+        let(:mail) do
+          UserMailer.with(user: user, email_address: email_address).in_person_ready_to_verify(
+            enrollment: skipped_location_enrollment,
+          )
         end
 
-        context 'when the post office closed alert flag is enabled' do
-          before do
-            allow(IdentityConfig.store)
-              .to receive(:in_person_proofing_post_office_closed_alert_enabled)
-              .and_return(true)
-          end
+        it 'renders skipped location notice' do
+          expect(mail.html_part.body).to have_content(
+            t('in_person_proofing.headings.po_search.location'),
+          )
+          expect(mail.html_part.body).to have_content(
+            t('in_person_proofing.body.location.location_skipped_notice'),
+          )
+          expect(mail.html_part.body).to have_content(
+            t('in_person_proofing.body.location.location_skipped_notice_button_text'),
+          )
 
-          it 'renders the post office closed alert' do
-            aggregate_failures do
-              [
-                t('in_person_proofing.post_office_closed.heading'),
-                t('in_person_proofing.post_office_closed.body'),
-              ].each do |copy|
-                Array(copy).each do |part|
-                  expect(mail.html_part.body).to have_content(part)
-                end
-              end
-            end
-          end
+          expect(mail.html_part.body).not_to have_content(
+            t('in_person_proofing.body.location.change_location_heading'),
+          )
+        end
+
+        it 'does not render a location' do
+          expect(mail.html_part.body).not_to have_content(
+            t('in_person_proofing.body.barcode.retail_hours'),
+          )
         end
       end
 
       context 'Need to change location section' do
-        context 'when Enhanced IPP is not enabled' do
-          let(:is_enhanced_ipp) { false }
+        context 'when enrollment is not enhanced ipp' do
           let(:mail) do
             UserMailer.with(user: user, email_address: email_address).in_person_ready_to_verify(
-              enrollment: enhanced_ipp_enrollment,
-              is_enhanced_ipp: is_enhanced_ipp,
+              enrollment: enrollment,
             )
           end
           it 'renders the change location heading' do
@@ -1003,12 +970,11 @@ RSpec.describe UserMailer, type: :mailer do
             )
           end
         end
-        context 'when Enhanced IPP is enabled' do
-          let(:is_enhanced_ipp) { true }
+
+        context 'when enrollment is enhanced ipp' do
           let(:mail) do
             UserMailer.with(user: user, email_address: email_address).in_person_ready_to_verify(
               enrollment: enhanced_ipp_enrollment,
-              is_enhanced_ipp: is_enhanced_ipp,
             )
           end
 
@@ -1031,6 +997,15 @@ RSpec.describe UserMailer, type: :mailer do
       end
 
       context 'For Informed Delivery In-Person Proofing (ID-IPP)' do
+        let(:usps_time_zone) { ActiveSupport::TimeZone['America/New_York'].dup.freeze }
+        let(:formatted_date) do
+          I18n.l(
+            enrollment.due_date.in_time_zone(usps_time_zone),
+            format: :event_date,
+          )
+        end
+        let(:sp_name) { enrollment.service_provider.friendly_name }
+
         context 'template displays modified content' do
           it 'conditionally renders content in the what to expect section applicable to IPP' do
             aggregate_failures do
@@ -1045,6 +1020,19 @@ RSpec.describe UserMailer, type: :mailer do
               end
             end
           end
+        end
+
+        it 'renders the barcode deadline banner' do
+          expect(mail.html_part.body).to have_content(
+            t(
+              'in_person_proofing.body.barcode.deadline',
+              deadline: formatted_date,
+              sp_name: sp_name,
+            ),
+          )
+          expect(mail.html_part.body).to have_content(
+            t('in_person_proofing.body.barcode.deadline_restart'),
+          )
         end
 
         it 'renders Questions? and Learn more link only once' do
@@ -1096,11 +1084,18 @@ RSpec.describe UserMailer, type: :mailer do
       end
 
       context 'For Enhanced In-Person Proofing (Enhanced IPP)' do
+        let(:usps_time_zone) { ActiveSupport::TimeZone['America/New_York'].dup.freeze }
+        let(:formatted_date) do
+          I18n.l(
+            enhanced_ipp_enrollment.due_date.in_time_zone(usps_time_zone),
+            format: :event_date,
+          )
+        end
+        let(:sp_name) { enhanced_ipp_enrollment.service_provider.friendly_name }
         let(:is_enhanced_ipp) { true }
         let(:mail) do
           UserMailer.with(user: user, email_address: email_address).in_person_ready_to_verify(
             enrollment: enhanced_ipp_enrollment,
-            is_enhanced_ipp:,
           )
         end
 
@@ -1119,6 +1114,19 @@ RSpec.describe UserMailer, type: :mailer do
               end
             end
           end
+        end
+
+        it 'renders the barcode deadline banner' do
+          expect(mail.html_part.body).to have_content(
+            t(
+              'in_person_proofing.body.barcode.deadline',
+              deadline: formatted_date,
+              sp_name: sp_name,
+            ),
+          )
+          expect(mail.html_part.body).to have_content(
+            t('in_person_proofing.body.barcode.deadline_restart'),
+          )
         end
 
         it 'renders Questions? and Learn more link only once' do
@@ -1273,6 +1281,7 @@ RSpec.describe UserMailer, type: :mailer do
       let(:enrollment) do
         create(
           :in_person_enrollment,
+          :with_service_provider,
           selected_location_details: { name: 'FRIENDSHIP' },
           status_updated_at: Time.zone.now - 2.hours,
         )
@@ -1304,6 +1313,7 @@ RSpec.describe UserMailer, type: :mailer do
       let!(:enrollment) do
         create(
           :in_person_enrollment,
+          :with_service_provider,
           selected_location_details: { name: 'FRIENDSHIP' },
           status_updated_at: Time.zone.now - 2.hours,
           current_address_matches_id: current_address_matches_id,
@@ -1330,12 +1340,90 @@ RSpec.describe UserMailer, type: :mailer do
           mail.deliver_later
         end
       end
+
+      context 'when passports are enabled globally' do
+        let(:mail) do
+          UserMailer.with(user: user, email_address: email_address).in_person_failed(
+            enrollment: enrollment,
+            visited_location_name: visited_location_name,
+          )
+        end
+
+        context 'when passports are enabled for in-person proofing' do
+          before do
+            allow(IdentityConfig.store).to receive(:in_person_passports_enabled).and_return(true)
+          end
+
+          it 'renders passport related content' do
+            expect(mail.html_part.body)
+              .to have_content(
+                t(
+                  'user_mailer.in_person_failed.verifying_step_passports_enabledb1',
+                ),
+              )
+            expect(mail.html_part.body)
+              .to_not have_content(
+                t(
+                  'user_mailer.in_person_failed.verifying_step_not_expired',
+                ),
+              )
+          end
+        end
+
+        context 'when passports are not enabled for in-person proofing' do
+          before do
+            allow(IdentityConfig.store).to receive(:in_person_passports_enabled).and_return(false)
+          end
+
+          it 'renders only state id related content' do
+            expect(mail.html_part.body)
+              .to_not have_content(
+                t(
+                  'user_mailer.in_person_failed.verifying_step_passports_enabledb1',
+                ),
+              )
+            expect(mail.html_part.body)
+              .to have_content(
+                t(
+                  'user_mailer.in_person_failed.verifying_step_not_expired',
+                ),
+              )
+          end
+        end
+      end
+
+      context 'when passports are not enabled globally or for in-person proofing' do
+        before do
+          allow(IdentityConfig.store).to receive(:in_person_passports_enabled).and_return(false)
+        end
+        let(:mail) do
+          UserMailer.with(user: user, email_address: email_address).in_person_failed(
+            enrollment: enrollment,
+            visited_location_name: visited_location_name,
+          )
+        end
+        it 'renders only state id related content' do
+          expect(mail.html_part.body)
+            .to_not have_content(
+              t(
+                'user_mailer.in_person_failed.verifying_step_passports_enabledb1',
+              ),
+            )
+          expect(mail.html_part.body)
+            .to have_content(
+              t(
+                'user_mailer.in_person_failed.verifying_step_not_expired',
+              ),
+            )
+        end
+      end
     end
 
     describe '#in_person_failed_fraud' do
       let(:enrollment) do
         create(
           :in_person_enrollment,
+          :with_service_provider,
           selected_location_details: { name: 'FRIENDSHIP' },
           status_updated_at: Time.zone.now - 2.hours,
         )
@@ -1622,24 +1710,5 @@ RSpec.describe UserMailer, type: :mailer do
 
     it_behaves_like 'a system email'
     it_behaves_like 'an email that respects user email locale preference'
-  end
-
-  describe '#in_person_post_office_closed' do
-    let(:mail) do
-      UserMailer.with(user: user, email_address: email_address).in_person_post_office_closed
-    end
-
-    it_behaves_like 'a system email'
-    it_behaves_like 'an email that respects user email locale preference'
-
-    it 'includes a translated header' do
-      expect(mail.html_part.body)
-        .to include(t('in_person_proofing.post_office_closed.email.heading', locale: :en))
-    end
-
-    it 'includes a translated body' do
-      expect(mail.html_part.body)
-        .to include(t('in_person_proofing.post_office_closed.email.body_html', locale: :en))
-    end
   end
 end

@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe AddressProofingJob, type: :job do
-  let(:document_capture_session) { DocumentCaptureSession.new(result_id: SecureRandom.hex) }
+  let(:document_capture_session) { create(:document_capture_session, result_id: SecureRandom.hex) }
   let(:encrypted_arguments) do
     Encryption::Encryptors::BackgroundProofingArgEncryptor.new.encrypt(
       { applicant_pii: applicant_pii }.to_json,
@@ -19,7 +19,12 @@ RSpec.describe AddressProofingJob, type: :job do
     }
   end
   let(:trace_id) { SecureRandom.hex }
+  let(:user_id) { document_capture_session.user_id }
+  let(:address_vendor) { :mock }
 
+  before do
+    allow(IdentityConfig.store).to receive(:idv_address_primary_vendor).and_return(address_vendor)
+  end
   describe '.perform_later' do
     it 'stores results' do
       AddressProofingJob.perform_later(
@@ -27,16 +32,16 @@ RSpec.describe AddressProofingJob, type: :job do
         encrypted_arguments: encrypted_arguments,
         trace_id: trace_id,
         issuer: service_provider.issuer,
+        user_id:,
+        address_vendor: 'best-vendor', # remove: attr test for 50/50
       )
 
-      result = document_capture_session.load_proofing_result[:result]
-      expect(result).to be_present
+      expect(document_capture_session.load_proofing_result[:result]).not_to be_empty
     end
   end
 
   describe '#perform' do
     let(:conversation_id) { SecureRandom.hex }
-
     let(:instance) { AddressProofingJob.new }
     subject(:perform) do
       instance.perform(
@@ -44,10 +49,12 @@ RSpec.describe AddressProofingJob, type: :job do
         encrypted_arguments: encrypted_arguments,
         trace_id: trace_id,
         issuer: service_provider.issuer,
+        user_id:,
       )
     end
 
-    context 'webmock vendor' do
+    context 'webmock lexisnexis vendor' do
+      let(:address_vendor) { :lexis_nexis }
       before do
         stub_request(
           :post,
@@ -80,6 +87,7 @@ RSpec.describe AddressProofingJob, type: :job do
         expect(result[:success]).to be true
         expect(result[:timed_out]).to be false
         expect(result[:vendor_name]).to eq('lexisnexis:phone_finder')
+        expect(result[:alternate_result]).to be_nil
       end
 
       it 'adds cost data' do
@@ -88,10 +96,198 @@ RSpec.describe AddressProofingJob, type: :job do
         sp_cost = SpCost.last
         expect(sp_cost.issuer).to eq(service_provider.issuer)
         expect(sp_cost.transaction_id).to eq(conversation_id)
+        expect(sp_cost.cost_type).to eq('lexis_nexis_address')
+      end
+    end
+
+    context 'webmock vendor socure' do
+      let(:address_vendor) { :socure }
+      let(:phonerisk_score) { 0.01 }
+      let(:namephone_correlation_score) { 0.99 }
+      let(:name_phone_reason_codes) { [] }
+      let(:phonerisk_reason_codes) { [] }
+
+      before do
+        stub_request(
+          :post,
+          'https://sandbox.socure.test/api/3.0/EmailAuthScore',
+        ).to_return(
+          body: {
+            referenceId: conversation_id,
+            phoneRisk: {
+              score: phonerisk_score,
+              reasonCodes: phonerisk_reason_codes,
+            },
+            namePhoneCorrelation: {
+              score: namephone_correlation_score,
+              reasonCodes: name_phone_reason_codes,
+            },
+          }.to_json,
+          headers: { 'Content-Type' => 'application/json' },
+        )
+      end
+
+      it 'passes proofing' do
+        perform
+
+        result = document_capture_session.load_proofing_result[:result]
+
+        expect(result[:exception]).to be_nil
+        expect(result[:errors]).to eq({})
+        expect(result[:success]).to be true
+        expect(result[:timed_out]).to be false
+        expect(result[:vendor_name]).to eq('socure_phonerisk')
+        expect(result[:alternate_result]).to be_nil
+      end
+
+      it 'adds cost data' do
+        expect { perform }.to(change { SpCost.count }.by(1))
+
+        sp_cost = SpCost.last
+        expect(sp_cost.issuer).to eq(service_provider.issuer)
+        expect(sp_cost.transaction_id).to eq(conversation_id)
+        expect(sp_cost.cost_type).to eq('socure_address')
+      end
+
+      context 'high phonerisk score' do
+        let(:phonerisk_score) { 0.99 }
+        let(:phonerisk_reason_codes) { ['I919', 'I914'] }
+
+        it 'fails proofing' do
+          perform
+
+          result = document_capture_session.load_proofing_result[:result]
+
+          expect(result[:errors]).to eq(
+            { socure: { reason_codes: { I914: '[unknown]',
+                                        I919: '[unknown]' } } },
+          )
+          expect(result[:exception]).to be_nil
+          expect(result[:success]).to be false
+          expect(result[:timed_out]).to be false
+          expect(result[:vendor_name]).to eq('socure_phonerisk')
+          expect(result[:alternate_result]).to be_nil
+        end
+
+        context 'and passes secondary phone vendor' do
+          before do
+            allow(IdentityConfig.store).to receive(:idv_address_secondary_vendor).and_return(:mock)
+          end
+
+          it 'passes proofing' do
+            perform
+
+            result = document_capture_session.load_proofing_result[:result]
+
+            expect(result[:exception]).to be_nil
+            expect(result[:errors]).to eq({})
+            expect(result[:success]).to be_truthy
+            expect(result[:timed_out]).to be_falsey
+            expect(result[:vendor_name]).to eq('AddressMock')
+
+            secondary_result = result[:alternate_result]
+            expect(secondary_result[:exception]).to be_nil
+            expect(secondary_result[:errors]).to eq(
+              { socure: { reason_codes: { I914: '[unknown]',
+                                          I919: '[unknown]' } } },
+            )
+            expect(secondary_result[:success]).to be_falsey
+            expect(secondary_result[:timed_out]).to be_falsey
+            # expect(secondary_result[:vendor_name]).to eq('AddressMock')
+          end
+        end
+      end
+      context 'low name phone correlation score' do
+        let(:namephone_correlation_score) { 0.01 }
+        let(:name_phone_reason_codes) { ['I123', 'R567', 'R890'] }
+
+        it 'fails proofing' do
+          perform
+
+          result = document_capture_session.load_proofing_result[:result]
+
+          expect(result[:errors]).to eq(
+            { socure: { reason_codes: { I123: '[unknown]',
+                                        R567: '[unknown]',
+                                        R890: '[unknown]' } } },
+          )
+          expect(result[:exception]).to be_nil
+          expect(result[:success]).to be false
+          expect(result[:timed_out]).to be false
+          expect(result[:vendor_name]).to eq('socure_phonerisk')
+          expect(result[:alternate_result]).to be_nil
+        end
+
+        context 'and fails secondary phone vendor' do
+          let(:applicant_pii) do
+            super().merge(
+              phone: Proofing::Mock::AddressMockClient::UNVERIFIABLE_PHONE_NUMBER,
+            )
+          end
+
+          before do
+            allow(IdentityConfig.store).to receive(:idv_address_secondary_vendor).and_return(:mock)
+          end
+
+          it 'passes proofing' do
+            perform
+
+            result = document_capture_session.load_proofing_result[:result]
+
+            expect(result[:exception]).to be_nil
+            expect(result[:success]).to be_falsey
+            expect(result[:timed_out]).to be_falsey
+            expect(result[:errors])
+              .to eq({ phone: ['The phone number could not be verified.'] })
+            expect(result[:vendor_name]).to eq('AddressMock')
+
+            secondary_result = result[:alternate_result]
+            expect(secondary_result[:exception]).to be_nil
+            expect(secondary_result[:success]).to be_falsey
+            expect(secondary_result[:timed_out]).to be_falsey
+            expect(secondary_result[:errors]).to eq(
+              { socure: { reason_codes: { I123: '[unknown]',
+                                          R567: '[unknown]',
+                                          R890: '[unknown]' } } },
+            )
+          end
+        end
       end
     end
 
     context 'mock proofer' do
+      let(:address_vendor) { :mock }
+      context 'same primary and secondary vendor' do
+        before do
+          allow(IdentityConfig.store).to receive(:idv_address_secondary_vendor).and_return(:mock)
+        end
+
+        it 'proofs the vendor once' do
+          expect(Proofing::Mock::AddressMockClient).to receive(:new).once.and_call_original
+          expect_any_instance_of(Proofing::Mock::AddressMockClient)
+            .to receive(:proof).once.and_call_original
+
+          perform
+
+          result = document_capture_session.load_proofing_result[:result]
+
+          expect(result[:success]).to eq(true)
+          expect(result[:alternate_result]).to be_nil
+        end
+
+        it 'logs the job' do
+          expect(instance.logger).to receive(:info) do |message|
+            expect(JSON.parse(message, symbolize_names: true)).to include(
+              name: 'ProofAddress',
+              success: true,
+              timing: a_kind_of(Hash),
+              trace_id: an_instance_of(String),
+            )
+          end
+
+          perform
+        end
+      end
       context 'with an unsuccessful response from the proofer' do
         let(:applicant_pii) do
           super().merge(
@@ -105,7 +301,35 @@ RSpec.describe AddressProofingJob, type: :job do
           result = document_capture_session.load_proofing_result[:result]
 
           expect(result[:success]).to eq(false)
+          expect(result[:alternate_result]).to be_nil
         end
+
+        it 'does not add cost data' do
+          expect { perform }.not_to(change { SpCost.count })
+        end
+
+        it 'logs the job' do
+          expect(instance.logger).to receive(:info) do |message|
+            expect(JSON.parse(message, symbolize_names: true)).to include(
+              name: 'ProofAddress',
+              success: false,
+              timing: a_kind_of(Hash),
+              trace_id: an_instance_of(String),
+            )
+          end
+
+          perform
+        end
+      end
+    end
+
+    context 'invalid proofing vendor' do
+      before do
+        allow(IdentityConfig.store).to receive(:idv_address_primary_vendor).and_return(:doh)
+      end
+
+      it 'does not add cost data' do
+        expect { perform }.to raise_error(Proofing::AddressProofer::InvalidAddressVendorError)
       end
     end
 
@@ -116,6 +340,45 @@ RSpec.describe AddressProofingJob, type: :job do
         expect(DocAuthRouter).to_not receive(:address_proofer)
 
         expect { perform }.to raise_error(JobHelpers::StaleJobHelper::StaleJobError)
+      end
+    end
+
+    context 'when the address vendor responds with a HTTP 500 response' do
+      before do
+        allow(IdentityConfig.store).to receive(:idv_address_primary_vendor).and_return(:socure)
+        stub_request(:post, 'https://sandbox.socure.test/api/3.0/EmailAuthScore')
+          .to_return(
+            status: 500,
+            body: 'It works!',
+          )
+      end
+
+      it 'returns an unsuccessful result' do
+        perform
+
+        result = document_capture_session.load_proofing_result[:result]
+
+        expect(result[:success]).to eq(false)
+        expect(result[:exception]).not_to be_nil
+        expect(result[:alternate_result]).to be_nil
+      end
+    end
+
+    context 'when Faraday error' do
+      before do
+        allow(IdentityConfig.store).to receive(:idv_address_primary_vendor).and_return(:socure)
+        allow_any_instance_of(Faraday::Connection).to receive(:post)
+          .and_raise(Faraday::ConnectionFailed)
+      end
+
+      it 'returns an unsuccessful result' do
+        perform
+
+        result = document_capture_session.load_proofing_result[:result]
+
+        expect(result[:success]).to eq(false)
+        expect(result[:exception]).not_to be_nil
+        expect(result[:alternate_result]).to be_nil
       end
     end
   end

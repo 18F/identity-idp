@@ -4,13 +4,15 @@ module DocAuth
   module Socure
     module Responses
       class DocvResultResponse < DocAuth::Response
-        attr_reader :http_response, :biometric_comparison_required
+        attr_reader :http_response, :passport_requested
 
         DATA_PATHS = {
           reference_id: %w[referenceId],
+          status: %w[status],
+          msg: %w[msg],
           document_verification: %w[documentVerification],
           reason_codes: %w[documentVerification reasonCodes],
-          document_type: %w[documentVerification documentType],
+          document_metadata: %w[documentVerification documentType],
           id_type: %w[documentVerification documentType type],
           issuing_state: %w[documentVerification documentType state],
           issuing_country: %w[documentVerification documentType country],
@@ -33,19 +35,19 @@ module DocAuth
           customer_profile: %w[customerProfile],
           socure_customer_user_id: %w[customerProfile customerUserId],
           socure_user_id: %w[customerProfile userId],
+          mrz: %w[documentVerification rawData mrz],
         }.freeze
 
-        def initialize(http_response:,
-                       biometric_comparison_required: false)
+        def initialize(http_response:, passport_requested: false)
           @http_response = http_response
-          @biometric_comparison_required = biometric_comparison_required
           @pii_from_doc = read_pii
+          @passport_requested = passport_requested
 
           super(
-            success: successful_result?,
+            success: doc_auth_success?,
             errors: error_messages,
+            pii_from_doc:,
             extra: extra_attributes,
-            pii_from_doc: @pii_from_doc,
           )
         rescue StandardError => e
           NewRelic::Agent.notice_error(e)
@@ -55,37 +57,53 @@ module DocAuth
             exception: e,
             extra: {
               backtrace: e.backtrace,
-            },
+            }
           )
         end
 
         def doc_auth_success?
-          success?
+          id_type_supported? &&
+            successful_result? &&
+            !portrait_matching_failed? &&
+            id_type_expected?
         end
 
         def selfie_status
+          return :not_processed if reason_codes&.intersect? reason_codes_selfie_not_processed
+          return :fail if reason_codes&.intersect? reason_codes_selfie_fail
+
+          if reason_codes&.intersect? reason_codes_selfie_pass
+            return :success
+          end
+
           :not_processed
+        end
+
+        def liveness_enabled
+          selfie_status != :not_processed
         end
 
         def extra_attributes
           {
-            reference_id: get_data(DATA_PATHS[:reference_id]),
-            decision: get_data(DATA_PATHS[:decision]),
-            biometric_comparison_required: biometric_comparison_required,
-            customer_profile: get_data(DATA_PATHS[:customer_profile]),
-            reason_codes: get_data(DATA_PATHS[:reason_codes]),
-            document_type: get_data(DATA_PATHS[:document_type]),
-            state: state,
-            state_id_type: state_id_type,
-            flow_path: nil,
-            liveness_checking_required: @biometric_comparison_required,
-            issue_year: state_id_issued&.year,
-            doc_auth_success: successful_result?,
-            vendor: 'Socure',
             address_line2_present: address2.present?,
-            zip_code: zipcode,
             birth_year: dob&.year,
-            liveness_enabled: @biometric_comparison_required,
+            customer_profile: get_data(DATA_PATHS[:customer_profile]),
+            customer_user_id: get_data(DATA_PATHS[:socure_customer_user_id]),
+            decision: get_data(DATA_PATHS[:decision]),
+            doc_auth_success: doc_auth_success?,
+            document_metadata: get_data(DATA_PATHS[:document_metadata]),
+            flow_path: nil,
+            document_type_received:,
+            issue_year: state_id_issued&.year,
+            expiration_date: get_data(DATA_PATHS[:expiration_date]),
+            liveness_enabled:,
+            reason_codes:,
+            reference_id: get_data(DATA_PATHS[:reference_id]),
+            state:,
+            vendor: 'Socure',
+            vendor_status: get_data(DATA_PATHS[:status]),
+            vendor_status_message: get_data(DATA_PATHS[:msg]),
+            zip_code: zipcode,
           }
         end
 
@@ -96,14 +114,38 @@ module DocAuth
         end
 
         def error_messages
-          return {} if successful_result?
-
-          {
-            socure: { reason_codes: get_data(DATA_PATHS[:reason_codes]) },
-          }
+          if !id_type_supported?
+            { unaccepted_id_type: true }
+          elsif !successful_result?
+            { socure: { reason_codes: } }
+          elsif portrait_matching_failed?
+            { selfie_fail: true }
+          elsif !id_type_expected?
+            { unexpected_id_type: true }
+          else
+            {}
+          end
         end
 
         def read_pii
+          if document_type_received == Idp::Constants::DocumentTypes::PASSPORT
+            return Pii::Passport.new(
+              first_name: get_data(DATA_PATHS[:first_name]),
+              middle_name: get_data(DATA_PATHS[:middle_name]),
+              last_name: get_data(DATA_PATHS[:last_name]),
+              dob:,
+              mrz: get_data(DATA_PATHS[:mrz]),
+              issuing_country_code:,
+              nationality_code: issuing_country_code,
+              document_number: get_data(DATA_PATHS[:document_number]),
+              document_type_received: document_type_received,
+              passport_expiration: expiration_date,
+              sex: nil,
+              birth_place: nil,
+              passport_issued: nil,
+            )
+          end
+
           Pii::StateId.new(
             first_name: get_data(DATA_PATHS[:first_name]),
             middle_name: get_data(DATA_PATHS[:middle_name]),
@@ -114,17 +156,17 @@ module DocAuth
             city: get_data(DATA_PATHS[:city]),
             state: get_data(DATA_PATHS[:state]),
             zipcode: get_data(DATA_PATHS[:zipcode]),
-            dob: parse_date(get_data(DATA_PATHS[:dob])),
+            dob:,
             sex: nil,
             height: nil,
             weight: nil,
             eye_color: nil,
             state_id_number: get_data(DATA_PATHS[:document_number]),
             state_id_issued:,
-            state_id_expiration: parse_date(get_data(DATA_PATHS[:expiration_date])),
-            state_id_type: state_id_type,
+            state_id_expiration: expiration_date,
+            document_type_received:,
             state_id_jurisdiction: get_data(DATA_PATHS[:issuing_state]),
-            issuing_country_code: get_data(DATA_PATHS[:issuing_country]),
+            issuing_country_code:,
           )
         end
 
@@ -142,6 +184,10 @@ module DocAuth
           end
         end
 
+        def expiration_date
+          parse_date(get_data(DATA_PATHS[:expiration_date]))
+        end
+
         def state
           get_data(DATA_PATHS[:state])
         end
@@ -154,9 +200,12 @@ module DocAuth
           parse_date(get_data(DATA_PATHS[:issue_date]))
         end
 
-        def state_id_type
-          type = get_data(DATA_PATHS[:id_type])
-          type&.gsub(/\W/, '')&.underscore
+        def document_type_received
+          document_id_type&.gsub(/\W/, '')&.underscore
+        end
+
+        def document_id_type
+          get_data(DATA_PATHS[:id_type])
         end
 
         def dob
@@ -167,6 +216,14 @@ module DocAuth
           get_data(DATA_PATHS[:address2])
         end
 
+        def issuing_country_code
+          get_data(DATA_PATHS[:issuing_country])
+        end
+
+        def reason_codes
+          get_data(DATA_PATHS[:reason_codes])
+        end
+
         def parse_date(date_string)
           Date.parse(date_string)
         rescue ArgumentError, TypeError
@@ -175,6 +232,46 @@ module DocAuth
           }.to_json
           Rails.logger.info(message)
           nil
+        end
+
+        def id_type_supported?
+          if passports_enabled?
+            DocAuth::DocumentClassifications::ALL_CLASSIFICATIONS.include?(document_id_type)
+          else
+            DocAuth::DocumentClassifications::STATE_ID_CLASSIFICATIONS.include?(document_id_type)
+          end
+        end
+
+        def id_type_expected?
+          if document_type_received == Idp::Constants::DocumentTypes::PASSPORT
+            passport_requested
+          else
+            !passport_requested
+          end
+        end
+
+        def reason_codes_selfie_pass
+          IdentityConfig.store.idv_socure_reason_codes_docv_selfie_pass
+        end
+
+        def reason_codes_selfie_fail
+          IdentityConfig.store.idv_socure_reason_codes_docv_selfie_fail
+        end
+
+        def reason_codes_selfie_not_processed
+          IdentityConfig.store.idv_socure_reason_codes_docv_selfie_not_processed
+        end
+
+        def portrait_matching_failed?
+          selfie_status == :fail
+        end
+
+        def passports_enabled?
+          (
+            IdentityConfig.store.doc_auth_passport_vendor_switching_enabled &&
+            IdentityConfig.store.doc_auth_passport_vendor_socure_percent > 0
+          ) ||
+            IdentityConfig.store.doc_auth_passport_vendor_default == Idp::Constants::Vendors::SOCURE
         end
       end
     end

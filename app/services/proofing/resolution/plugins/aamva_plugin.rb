@@ -17,16 +17,30 @@ module Proofing
           current_sp:,
           state_id_address_resolution_result:,
           ipp_enrollment_in_progress:,
-          timer:
+          timer:,
+          analytics: nil,
+          doc_auth_flow: false,
+          already_proofed: false
         )
+          return skipped_result if passport_applicant?(applicant_pii) || already_proofed
+
+          if !aamva_supports_state_id_jurisdiction?(applicant_pii)
+            return process_unsupported_jurisdiction_result(
+              analytics:, applicant_pii:, ipp_enrollment_in_progress:, log_result: doc_auth_flow,
+            )
+          end
+
           should_proof = should_proof_state_id?(
             applicant_pii:,
             state_id_address_resolution_result:,
             ipp_enrollment_in_progress:,
+            doc_auth_flow:,
           )
 
           if !should_proof
-            return out_of_aamva_jurisdiction_result
+            return process_skipped_result(
+              analytics:, applicant_pii:, ipp_enrollment_in_progress:, log_result: doc_auth_flow,
+            )
           end
 
           applicant_pii_with_state_id_address =
@@ -46,6 +60,12 @@ module Proofing
                 transaction_id: result.transaction_id,
               )
             end
+
+            if doc_auth_flow
+              log_state_id_validation(
+                analytics, result.to_h, applicant_pii, ipp_enrollment_in_progress
+              )
+            end
           end
         end
 
@@ -54,7 +74,7 @@ module Proofing
           IdentityConfig.store.aamva_supported_jurisdictions.include?(state_id_jurisdiction)
         end
 
-        def out_of_aamva_jurisdiction_result
+        def unsupported_jurisdiction_result
           Proofing::StateIdResult.new(
             errors: {},
             exception: nil,
@@ -63,10 +83,20 @@ module Proofing
           )
         end
 
+        # @return [Proofing::StateIdResult] A result signifying that the AAMVA plugin was skipped.
+        def skipped_result
+          Proofing::StateIdResult.new(
+            errors: {},
+            exception: nil,
+            success: true,
+            vendor_name: Idp::Constants::Vendors::AAMVA_CHECK_SKIPPED,
+          )
+        end
+
         def proofer
           @proofer ||=
             if IdentityConfig.store.proofer_mock_fallback
-              Proofing::Mock::StateIdMockClient.new
+              Proofing::Mock::IdMockClient.new
             else
               Proofing::Aamva::Proofer.new(
                 auth_request_timeout: IdentityConfig.store.aamva_auth_request_timeout,
@@ -88,11 +118,14 @@ module Proofing
         def should_proof_state_id?(
           applicant_pii:,
           state_id_address_resolution_result:,
-          ipp_enrollment_in_progress:
+          ipp_enrollment_in_progress:,
+          doc_auth_flow:
         )
-          return false unless aamva_supports_state_id_jurisdiction?(applicant_pii)
+          # Skip remaining checks if doc auth flow is true
+          return true if doc_auth_flow
+
           # If the user is in in-person-proofing and they have changed their address then
-          # they are not eligible for get-to-yes
+          # they are not eligible to pass with additional verification
           if !ipp_enrollment_in_progress || same_address_as_id?(applicant_pii)
             user_can_pass_after_state_id_check?(state_id_address_resolution_result:)
           else
@@ -127,6 +160,74 @@ module Proofing
         def with_state_id_address(pii)
           pii.except(*SECONDARY_ID_ADDRESS_MAP.values)
             .transform_keys(SECONDARY_ID_ADDRESS_MAP)
+        end
+
+        def passport_applicant?(applicant_pii)
+          # Check both new field name and old field name for backwards compatibility during deploy
+          (applicant_pii[:document_type_received] || applicant_pii[:id_doc_type]) ==
+            Idp::Constants::DocumentTypes::PASSPORT
+        end
+
+        def log_state_id_validation(analytics, result, applicant_pii, ipp_enrollment_in_progress)
+          analytics&.idv_state_id_validation(
+            **result,
+            user_id: applicant_pii[:uuid],
+            ipp_enrollment_in_progress:,
+            supported_jurisdiction: aamva_supports_state_id_jurisdiction?(applicant_pii),
+            **biographical_info(applicant_pii),
+            pii_like_keypaths: [
+              [:requested_attributes, :first_name],
+              [:requested_attributes, :last_name],
+              [:requested_attributes, :dob],
+              [:requested_attributes, :state_id_jurisdiction],
+              [:errors, :dob],
+              [:errors, :last_name],
+              [:errors, :first_name],
+              [:errors, :middle_name],
+              [:errors, :address1],
+              [:errors, :address2],
+              [:errors, :city],
+              [:errors, :zipcode],
+              [:state_id_jurisdiction],
+            ],
+          )
+        end
+
+        def biographical_info(applicant_pii)
+          state_id_number = applicant_pii[:state_id_number]
+          redacted_state_id_number = if state_id_number.present?
+                                       StringRedacter.redact_alphanumeric(state_id_number)
+                                     end
+          {
+            birth_year: applicant_pii[:dob]&.to_date&.year,
+            state: applicant_pii[:state],
+            state_id_jurisdiction: applicant_pii[:state_id_jurisdiction],
+            state_id_number: redacted_state_id_number,
+          }
+        end
+
+        private
+
+        def process_skipped_result(analytics:, applicant_pii:, ipp_enrollment_in_progress:,
+                                   log_result:)
+          result = skipped_result
+          if log_result
+            log_state_id_validation(
+              analytics, result.to_h, applicant_pii, ipp_enrollment_in_progress
+            )
+          end
+          return result
+        end
+
+        def process_unsupported_jurisdiction_result(analytics:, applicant_pii:,
+                                                    ipp_enrollment_in_progress:, log_result:)
+          result = unsupported_jurisdiction_result
+          if log_result
+            log_state_id_validation(
+              analytics, result.to_h, applicant_pii, ipp_enrollment_in_progress
+            )
+          end
+          return result
         end
       end
     end

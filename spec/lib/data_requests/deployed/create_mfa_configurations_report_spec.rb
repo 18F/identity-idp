@@ -10,7 +10,6 @@ RSpec.describe DataRequests::Deployed::CreateMfaConfigurationsReport do
       result = described_class.new(user).call
       phone_data = result[:phone_configurations]
 
-      expect(phone_data.first[:id]).to eq(phone_configuration.id)
       expect(phone_data.first[:phone]).to eq(phone_configuration.phone)
       expect(phone_data.first[:created_at]).to be_within(1.second).of(
         phone_configuration.created_at,
@@ -41,6 +40,9 @@ RSpec.describe DataRequests::Deployed::CreateMfaConfigurationsReport do
       webauthn_data = result[:webauthn_configurations]
 
       expect(webauthn_data.first[:name]).to eq(webauthn_configuration.name)
+      expect(webauthn_data.first[:platform_authenticator]).to eq(
+        webauthn_configuration.platform_authenticator,
+      )
       expect(webauthn_data.first[:created_at]).to be_within(1.second).of(
         webauthn_configuration.created_at,
       )

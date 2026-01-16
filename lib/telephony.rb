@@ -86,6 +86,8 @@ module Telephony
                  :send_account_deleted_notice,
                  :send_account_reset_notice,
                  :send_account_reset_cancellation_notice,
+                 :send_dupe_profile_sign_in_attempted_notice,
+                 :send_dupe_profile_created_notice,
                  :send_notification
 
   # @param [String] phone_number phone number in E.164 format

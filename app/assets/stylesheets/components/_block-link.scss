@@ -24,7 +24,7 @@
     &::before {
       @include u-border('1px', 'primary');
       border-radius: 6px;
-      inset: 0 units(-1) 0 units(-1);
+      inset: 0 units(-1);
       content: '';
       pointer-events: none;
       position: absolute;

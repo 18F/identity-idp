@@ -37,6 +37,8 @@ RSpec.describe 'IdvStepConcern' do
       routes.draw do
         get 'show' => 'anonymous#show'
       end
+      allow(controller).to receive(:document_capture_session)
+        .and_return(create(:document_capture_session, user:))
     end
 
     context 'redo specified' do
@@ -73,15 +75,33 @@ RSpec.describe 'IdvStepConcern' do
     context 'previously skipped hybrid handoff' do
       before do
         idv_session.skip_hybrid_handoff = true
-        get :show
       end
 
       it 'sets flow_path to standard' do
+        get :show
+
         expect(idv_session.flow_path).to eql('standard')
       end
 
       it 'redirects to document capture' do
-        expect(response).to redirect_to(idv_document_capture_url)
+        get :show
+
+        expect(response).to redirect_to(idv_choose_id_type_url)
+      end
+
+      context 'when IPP proofing route is enabled' do
+        before do
+          allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
+          allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled)
+            .and_return(true)
+          allow(Idv::InPersonConfig).to receive(:enabled_for_issuer?).and_return(true)
+        end
+
+        it 'redirects to how to verify' do
+          get :show
+
+          expect(response).to redirect_to(idv_how_to_verify_url)
+        end
       end
     end
 
@@ -96,7 +116,7 @@ RSpec.describe 'IdvStepConcern' do
       end
 
       it 'redirects to document capture' do
-        expect(response).to redirect_to(idv_document_capture_url)
+        expect(response).to redirect_to(idv_choose_id_type_url)
       end
     end
   end
@@ -257,6 +277,29 @@ RSpec.describe 'IdvStepConcern' do
         get :show
 
         expect(response).to redirect_to idv_verify_by_mail_enter_code_url
+      end
+    end
+
+    context 'with a passed in-person enrollment and a fraudulent profile' do
+      let(:user) do
+        profile = create(:profile, :in_person_fraud_review_pending, in_person_enrollment: nil)
+        create(:in_person_enrollment, :passed, profile:, user: profile.user).user
+      end
+
+      it 'redirects to please call page' do
+        get :show
+
+        expect(response).to redirect_to idv_please_call_url
+      end
+    end
+
+    context 'with a in_fraud_review in-person enrollment and a fraudulent profile' do
+      let(:user) { create(:profile, :in_person_fraud_review_pending).user }
+
+      it 'redirects to please call page' do
+        get :show
+
+        expect(response).to redirect_to idv_please_call_url
       end
     end
   end

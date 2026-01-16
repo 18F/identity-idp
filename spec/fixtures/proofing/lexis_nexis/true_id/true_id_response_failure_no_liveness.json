@@ -15,7 +15,7 @@
       "ProductType": "TrueID",
       "ExecutedStepName": "True_ID_Step",
       "ProductConfigurationName": "AndreV3_TrueID_Flow",
-      "ProductStatus": "pass",
+      "ProductStatus": "fail",
       "ParameterDetails": [
         {
           "Group": "AUTHENTICATION_RESULT",
@@ -673,11 +673,6 @@
           "Group": "IDAUTH_FIELD_DATA",
           "Name": "Fields_PostalCode",
           "Values": [{"Value": "02809-2366"}]
-        },
-        {
-          "Group": "IDAUTH_FIELD_DATA",
-          "Name": "Fields_Sex",
-          "Values": [{"Value": "M"}]
         },
         {
           "Group": "IDAUTH_FIELD_DATA",

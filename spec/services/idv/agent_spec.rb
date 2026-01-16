@@ -12,9 +12,11 @@ RSpec.describe Idv::Agent do
     let(:app_id) { 'fake-app-id' }
     let(:ipp_enrollment_in_progress) { false }
     let(:applicant) do
-      Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN
+      Idp::Constants.mock_idv_applicant_with_ssn
     end
-    let(:document_capture_session) { DocumentCaptureSession.new(result_id: SecureRandom.hex) }
+    let(:document_capture_session) do
+      create(:document_capture_session, user:, result_id: SecureRandom.hex)
+    end
     let(:session) { {} }
     let(:user_session) { {} }
     let(:idv_session) do
@@ -26,13 +28,8 @@ RSpec.describe Idv::Agent do
         idv_session.pii_from_doc = applicant
       end
     end
-    let(:proofing_components) do
-      Idv::ProofingComponents.new(
-        idv_session:,
-        session:,
-        user:,
-        user_session:,
-      )
+    let(:proofing_vendor) do
+      IdentityConfig.store.idv_resolution_default_vendor
     end
 
     subject(:agent) { Idv::Agent.new(applicant) }
@@ -43,6 +40,11 @@ RSpec.describe Idv::Agent do
         friendly_name: friendly_name,
         app_id: app_id,
       )
+      reload_ab_tests
+    end
+
+    after do
+      reload_ab_tests
     end
 
     describe '#proof_resolution' do
@@ -50,11 +52,10 @@ RSpec.describe Idv::Agent do
         agent.proof_resolution(
           document_capture_session,
           trace_id: trace_id,
-          user_id: user.id,
           threatmetrix_session_id: nil,
           request_ip: request_ip,
           ipp_enrollment_in_progress: ipp_enrollment_in_progress,
-          proofing_components:,
+          proofing_vendor:,
         )
       end
 
@@ -64,7 +65,7 @@ RSpec.describe Idv::Agent do
       end
 
       context 'proofing in an AAMVA state' do
-        context 'when resolution fails' do
+        context 'when state ID address resolution fails' do
           let(:applicant) do
             super().merge(ssn: '444-55-6666')
           end
@@ -72,14 +73,15 @@ RSpec.describe Idv::Agent do
           it 'does not proof state_id' do
             expect(result[:errors][:ssn]).to eq ['Unverified SSN.']
             expect(result[:context][:stages][:state_id][:vendor_name]).to(
-              eq('UnsupportedJurisdiction'),
+              eq(Idp::Constants::Vendors::AAMVA_CHECK_SKIPPED),
             )
           end
         end
+
         context 'when resolution succeeds' do
           it 'proofs state_id' do
             expect(result[:context][:stages][:state_id]).to include(
-              transaction_id: Proofing::Mock::StateIdMockClient::TRANSACTION_ID,
+              transaction_id: Proofing::Mock::IdMockClient::TRANSACTION_ID,
               errors: {},
               exception: nil,
               success: true,
@@ -103,7 +105,7 @@ RSpec.describe Idv::Agent do
           it 'does not proof state_id' do
             expect(result[:errors][:ssn]).to eq ['Unverified SSN.']
             expect(result[:context][:stages][:state_id][:vendor_name]).to(
-              eq('UnsupportedJurisdiction'),
+              eq(Idp::Constants::Vendors::AAMVA_UNSUPPORTED_JURISDICTION),
             )
           end
         end
@@ -112,7 +114,7 @@ RSpec.describe Idv::Agent do
           it 'does not proof state_id' do
             expect(result[:context][:stages]).to_not include(
               state_id: 'StateIdMock',
-              transaction_id: Proofing::Mock::StateIdMockClient::TRANSACTION_ID,
+              transaction_id: Proofing::Mock::IdMockClient::TRANSACTION_ID,
             )
           end
         end
@@ -143,18 +145,6 @@ RSpec.describe Idv::Agent do
         proof_resolution
       end
 
-      it 'passes proofing components to ResolutionProofingJob' do
-        expect(ResolutionProofingJob).to receive(:perform_later).with(
-          hash_including(
-            proofing_components: {
-              document_check: 'mock',
-              document_type: 'state_id',
-            },
-          ),
-        )
-        proof_resolution
-      end
-
       context 'when a proofing timeout occurs' do
         let(:applicant) do
           super().merge(first_name: 'Time Exception')
@@ -171,12 +161,12 @@ RSpec.describe Idv::Agent do
       context 'in-person proofing is enabled' do
         let(:ipp_enrollment_in_progress) { true }
         let(:applicant) do
-          Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS
+          Idp::Constants.mock_idv_applicant_state_id_address
         end
 
         it 'returns a successful result if resolution passes' do
           expect(result[:context][:stages][:state_id]).to include(
-            transaction_id: Proofing::Mock::StateIdMockClient::TRANSACTION_ID,
+            transaction_id: Proofing::Mock::IdMockClient::TRANSACTION_ID,
             errors: {},
             exception: nil,
             success: true,
@@ -197,7 +187,6 @@ RSpec.describe Idv::Agent do
         agent.proof_address(
           document_capture_session,
           trace_id: trace_id,
-          user_id: user.id,
           issuer: issuer,
         )
       end

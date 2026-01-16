@@ -38,19 +38,14 @@ class IdTokenBuilder
   end
 
   def id_token_claims
-    claims = {
+    {
+      acr:,
       nonce: identity.nonce,
       aud: identity.service_provider,
       jti: SecureRandom.urlsafe_base64,
       at_hash: hash_token(identity.access_token),
       c_hash: hash_token(code),
     }
-
-    if !sp_requests_vot?
-      claims[:acr] = acr
-    end
-
-    claims
   end
 
   def timestamp_claims
@@ -66,21 +61,11 @@ class IdTokenBuilder
     resolved_authn_context.asserted_ial_acr
   end
 
-  def sp_requests_vot?
-    return false unless identity.vtr.present?
-    IdentityConfig.store.use_vot_in_sp_requests
-  end
-
-  def vot
-    return nil unless sp_requests_vot?
-    resolved_authn_context.result.component_values.map(&:name).join('.')
-  end
-
   def determine_ial_max_acr
     if identity.user.identity_verified?
-      Vot::AcrComponentValues::IAL2
+      Component::AcrComponentValues::IAL2
     else
-      Vot::AcrComponentValues::IAL1
+      Component::AcrComponentValues::IAL1
     end
   end
 
@@ -88,14 +73,8 @@ class IdTokenBuilder
     @resolved_authn_context ||= AuthnContextResolver.new(
       user: identity.user,
       service_provider: identity.service_provider_record,
-      vtr: parsed_vtr_value,
       acr_values: identity.acr_values,
     )
-  end
-
-  def parsed_vtr_value
-    return nil unless sp_requests_vot?
-    JSON.parse(identity.vtr)
   end
 
   def expires

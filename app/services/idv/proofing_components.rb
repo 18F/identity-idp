@@ -2,29 +2,16 @@
 
 module Idv
   class ProofingComponents
-    def initialize(idv_session:, session:, user:, user_session:)
+    def initialize(idv_session:)
       @idv_session = idv_session
-      @session = session
-      @user = user
-      @user_session = user_session
     end
 
     def document_check
-      if user.establishing_in_person_enrollment || user.pending_in_person_enrollment
-        Idp::Constants::Vendors::USPS
-      elsif idv_session.remote_document_capture_complete?
-        DocAuthRouter.doc_auth_vendor(
-          request: nil,
-          service_provider: idv_session.service_provider,
-          session:,
-          user_session:,
-          user:,
-        )
-      end
+      idv_session.doc_auth_vendor
     end
 
-    def document_type
-      return 'state_id' if idv_session.remote_document_capture_complete?
+    def document_type_received
+      idv_session.pii_from_doc&.document_type_received || idv_session.pii_from_doc&.id_doc_type
     end
 
     def source_check
@@ -43,8 +30,10 @@ module Idv
     def address_check
       if idv_session.verify_by_mail?
         'gpo_letter'
-      elsif idv_session.address_verification_mechanism == 'phone'
-        'lexis_nexis_address'
+      elsif idv_session.phone_precheck_successful
+        idv_session.phone_precheck_vendor
+      else
+        idv_session.address_verification_vendor
       end
     end
 
@@ -61,7 +50,7 @@ module Idv
     def to_h
       {
         document_check:,
-        document_type:,
+        document_type_received:,
         source_check:,
         residential_resolution_check:,
         resolution_check:,
@@ -73,6 +62,6 @@ module Idv
 
     private
 
-    attr_reader :idv_session, :session, :user, :user_session
+    attr_reader :idv_session
   end
 end

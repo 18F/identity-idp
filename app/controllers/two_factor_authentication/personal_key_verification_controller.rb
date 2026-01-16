@@ -9,7 +9,10 @@ module TwoFactorAuthentication
     before_action :check_personal_key_enabled
 
     def show
-      analytics.multi_factor_auth_enter_personal_key_visit(context: context)
+      recaptcha_annotation = annotate_recaptcha(
+        RecaptchaAnnotator::AnnotationReasons::INITIATED_TWO_FACTOR,
+      )
+      analytics.multi_factor_auth_enter_personal_key_visit(context: context, recaptcha_annotation:)
       @presenter = TwoFactorAuthCode::PersonalKeyPresenter.new
       @personal_key_form = PersonalKeyForm.new(current_user)
     end
@@ -55,7 +58,7 @@ module TwoFactorAuthentication
 
         handle_valid_otp
       else
-        handle_invalid_otp(type: 'personal_key')
+        handle_invalid_mfa(type: 'personal_key', context:)
       end
     end
 

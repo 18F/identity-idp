@@ -21,63 +21,34 @@ RSpec.describe Reporting::ProofingRateReport do
             industry_proofing_rate: 0.5,
             idv_started: 4,
             idv_doc_auth_welcome_submitted: 3,
+            idv_doc_auth_socure_verification_data_requested: 0,
             idv_doc_auth_image_vendor_submitted: 2,
             successfully_verified_users: 1,
             idv_doc_auth_rejected: 1,
             idv_fraud_rejected: 0,
             time_range: (end_date - 30.days).beginning_of_day..end_date,
           ),
-          instance_double(
-            'Reporting::IdentityVerificationReport',
-            blanket_proofing_rate: 0.4,
-            intent_proofing_rate: 0.5,
-            actual_proofing_rate: 0.6666666666666666,
-            industry_proofing_rate: 0.6666666666666666,
-            idv_started: 5,
-            idv_doc_auth_welcome_submitted: 4,
-            idv_doc_auth_image_vendor_submitted: 3,
-            successfully_verified_users: 2,
-            idv_doc_auth_rejected: 1,
-            idv_fraud_rejected: 1,
-            time_range: (end_date - 60.days).beginning_of_day..end_date,
-          ),
-          instance_double(
-            'Reporting::IdentityVerificationReport',
-            blanket_proofing_rate: 0.5,
-            intent_proofing_rate: 0.6,
-            actual_proofing_rate: 0.75,
-            industry_proofing_rate: 0.75,
-            idv_started: 6,
-            idv_doc_auth_welcome_submitted: 5,
-            idv_doc_auth_image_vendor_submitted: 4,
-            successfully_verified_users: 3,
-            idv_doc_auth_rejected: 1,
-            idv_fraud_rejected: 2,
-            time_range: (end_date - 90.days).beginning_of_day..end_date,
-          ),
         ],
       )
     end
 
-    it 'renders a report with 30, 60, 90 day numbers' do
-      # rubocop:disable Layout/LineLength
+    it 'renders a report with only 30 day numbers' do
       expected_csv = [
-        ['Metric', 'Trailing 30d', 'Trailing 60d', 'Trailing 90d'],
-        ['Start Date', Date.new(2021, 12, 2), Date.new(2021, 11, 2), Date.new(2021, 10, 3)],
-        ['End Date', Date.new(2022, 1, 1), Date.new(2022, 1, 1), Date.new(2022, 1, 1)],
-        ['IDV Started', 4, 5, 6],
-        ['Welcome Submitted', 3, 4, 5],
-        ['Image Submitted', 2, 3, 4],
-        ['Successfully Verified', 1, 2, 3],
-        ['IDV Rejected (Non-Fraud)', 1, 1, 1],
-        ['IDV Rejected (Fraud)', 0, 1, 2],
-        ['Blanket Proofing Rate (IDV Started to Successfully Verified)', 1.0 / 4, 2.0 / 5, 3.0 / 6],
-        ['Intent Proofing Rate (Welcome Submitted to Successfully Verified)', 1.0 / 3, 2.0 / 4, 3.0 / 5],
-        ['Actual Proofing Rate (Image Submitted to Successfully Verified)', 1.0 / 2, 2.0 / 3, 3.0 / 4],
-        ['Industry Proofing Rate (Verified minus IDV Rejected)', 1.0 / 2, 2.0 / 3, 3.0 / 4],
+        ['Metric', 'Trailing 30d'],
+        ['Start Date', Date.new(2021, 12, 2)],
+        ['End Date', Date.new(2022, 1, 1)],
+        ['IDV Started', 4],
+        ['Welcome Submitted', 3],
+        ['Image Submitted', 2],
+        ['Socure', 0],
+        ['Successfully Verified', 1],
+        ['IDV Rejected (Non-Fraud)', 1],
+        ['IDV Rejected (Fraud)', 0],
+        ['Blanket Proofing Rate (IDV Started to Successfully Verified)', 1.0 / 4],
+        ['Intent Proofing Rate (Welcome Submitted to Successfully Verified)', 1.0 / 3],
+        ['Actual Proofing Rate (Image Submitted to Successfully Verified)', 1.0 / 2],
+        ['Industry Proofing Rate (Verified minus IDV Rejected)', 1.0 / 2],
       ]
-      # rubocop:enable Layout/LineLength
-
       aggregate_failures do
         report.as_csv.zip(expected_csv).each do |actual, expected|
           expect(actual).to eq(expected)
@@ -137,8 +108,6 @@ RSpec.describe Reporting::ProofingRateReport do
           expect(report.reports.map(&:time_range)).to eq(
             [
               (end_date - 30.days).beginning_of_day..end_date,
-              (end_date - 60.days).beginning_of_day..end_date,
-              (end_date - 90.days).beginning_of_day..end_date,
             ],
           )
 
@@ -148,17 +117,17 @@ RSpec.describe Reporting::ProofingRateReport do
             cloudwatch_client: report.cloudwatch_client,
           ).once
 
-          expect(Reporting::IdentityVerificationReport).to have_received(:new).with(
+          expect(Reporting::IdentityVerificationReport).not_to have_received(:new).with(
             time_range: (end_date - 60.days).beginning_of_day..(end_date - 30.days).end_of_day,
             issuers: nil,
             cloudwatch_client: report.cloudwatch_client,
-          ).once
+          )
 
-          expect(Reporting::IdentityVerificationReport).to have_received(:new).with(
+          expect(Reporting::IdentityVerificationReport).not_to have_received(:new).with(
             time_range: (end_date - 90.days).beginning_of_day..(end_date - 60.days).end_of_day,
             issuers: nil,
             cloudwatch_client: report.cloudwatch_client,
-          ).once
+          )
         end
       end
     end

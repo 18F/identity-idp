@@ -18,7 +18,7 @@ module Ial2ProfileConcern
   private
 
   def cache_profile_and_handle_errors(raw_password, profile)
-    cacher = Pii::Cacher.new(current_user, user_session)
+    cacher = Pii::Cacher.new(current_user, user_session, analytics:)
     begin
       cacher.save(raw_password, profile)
     rescue Encryption::EncryptionError => err

@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe Accounts::ConnectedAccounts::SelectedEmailController do
-  let(:identity) { create(:service_provider_identity, :active) }
+  let(:identity) { create(:service_provider_identity, :active, verified_attributes: ['email']) }
   let(:user) { create(:user, :with_multiple_emails, identities: [identity]) }
 
   before do
@@ -63,17 +63,6 @@ RSpec.describe Accounts::ConnectedAccounts::SelectedEmailController do
       end
     end
 
-    context 'with selected email to share feature disabled' do
-      before do
-        allow(IdentityConfig.store).to receive(:feature_select_email_to_share_enabled)
-          .and_return(false)
-      end
-
-      it 'renders 404' do
-        expect(response).to be_not_found
-      end
-    end
-
     context 'when the user already has max number of emails' do
       before do
         allow(IdentityConfig.store).to receive(:max_emails_per_account)
@@ -89,8 +78,18 @@ RSpec.describe Accounts::ConnectedAccounts::SelectedEmailController do
 
   describe '#update' do
     let(:identity_id) { user.identities.take.id }
-    let(:selected_email) { user.confirmed_email_addresses.sample }
-    let(:params) { { identity_id:, select_email_form: { selected_email_id: selected_email.id } } }
+    let(:verified_attributes) { %w[email] }
+    let(:selected_email_id) { user.confirmed_email_addresses.sample.id }
+    let(:params) { { identity_id:, select_email_form: { selected_email_id: selected_email_id } } }
+    let(:sp) { create(:service_provider) }
+    before do
+      identity = ServiceProviderIdentity.find(identity_id)
+      identity.user_id = user&.id
+      identity.service_provider = sp.issuer
+      identity.verified_attributes = verified_attributes
+      identity.save!
+    end
+
     subject(:response) { patch :update, params: }
 
     it 'redirects to connected accounts path with the appropriate flash message' do
@@ -106,7 +105,7 @@ RSpec.describe Accounts::ConnectedAccounts::SelectedEmailController do
       expect(@analytics).to have_logged_event(
         :sp_select_email_submitted,
         success: true,
-        selected_email_id: selected_email.id,
+        selected_email_id: selected_email_id,
       )
     end
 
@@ -133,23 +132,12 @@ RSpec.describe Accounts::ConnectedAccounts::SelectedEmailController do
 
     context 'signed out' do
       let(:other_user) { create(:user, identities: [create(:service_provider_identity, :active)]) }
-      let(:selected_email) { other_user.confirmed_email_addresses.sample }
+      let(:selected_email_id) { other_user.confirmed_email_addresses.sample.id }
       let(:identity_id) { other_user.identities.take.id }
       let(:user) { nil }
 
       it 'redirects to sign in' do
         expect(response).to redirect_to new_user_session_path
-      end
-    end
-
-    context 'with selected email to share feature disabled' do
-      before do
-        allow(IdentityConfig.store).to receive(:feature_select_email_to_share_enabled)
-          .and_return(false)
-      end
-
-      it 'renders 404' do
-        expect(response).to be_not_found
       end
     end
   end

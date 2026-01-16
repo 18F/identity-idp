@@ -22,6 +22,7 @@ RSpec.describe ScriptBase do
 
   describe '#run' do
     let(:argv) { [] }
+    let(:env) { 'production' }
 
     subject(:base) do
       ScriptBase.new(
@@ -31,7 +32,32 @@ RSpec.describe ScriptBase do
         subtask_class:,
         banner: '',
         reason_arg: false,
+        rails_env: ActiveSupport::EnvironmentInquirer.new(env),
       )
+    end
+
+    context 'running in production vs locally' do
+      subject(:run) { base.run }
+
+      context 'in production' do
+        let(:env) { 'production' }
+
+        it 'does not warn' do
+          run
+
+          expect(stderr.string).to_not include('WARNING')
+        end
+      end
+
+      context 'in development' do
+        let(:env) { 'development' }
+
+        it 'warns that it is in development' do
+          run
+
+          expect(stderr.string).to include('WARNING: returning local data')
+        end
+      end
     end
 
     context 'with --deflate' do
@@ -59,12 +85,9 @@ RSpec.describe ScriptBase do
         base.config.format = :csv
       end
 
-      it 'logs the error message to stderr but not the backtrace' do
-        expect(base).to receive(:exit).with(1)
-
+      it 'logs the error message in the output but not the backtrace' do
         expect { base.run }.to_not raise_error
 
-        expect(stderr.string.chomp).to eq('RuntimeError: some dangerous error')
         expect(CSV.parse(stdout.string)).to eq(
           [
             %w[Error Message],

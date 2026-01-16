@@ -1,0 +1,87 @@
+# frozen_string_literal: true
+
+module Idv
+  module HybridMobile
+    module Socure
+      class ErrorsController < ApplicationController
+        include DocumentCaptureConcern
+        include HybridMobileConcern
+        include AvailabilityConcern
+        include StepIndicatorConcern
+        include SocureErrorsConcern
+
+        before_action :check_valid_document_capture_session
+
+        def show
+          error_code = error_params[:error_code]
+          if error_code.nil?
+            result = handle_stored_result(
+              user: document_capture_session.user,
+              store_in_session: false,
+            )
+            error_code = error_code_for(result)
+          end
+          track_event(error_code: error_code)
+          @presenter = socure_errors_presenter(error_code)
+        end
+
+        def self.step_info
+          Idv::StepInfo.new(
+            key: :hybrid_socure_errors,
+            controller: self,
+            action: :show,
+            next_steps: [FlowPolicy::FINAL],
+            preconditions: ->(idv_session:, user:) do
+              true
+            end,
+            undo_step: ->(idv_session:, user:) {},
+          )
+        end
+
+        private
+
+        def error_params
+          params.permit(:error_code, :transaction_token)
+        end
+
+        def docv_transaction_token
+          error_params[:transaction_token]
+        end
+
+        def rate_limiter
+          RateLimiter.new(user: document_capture_session.user, rate_limit_type: :idv_doc_auth)
+        end
+
+        def remaining_submit_attempts
+          @remaining_submit_attempts ||= rate_limiter.remaining_count
+        end
+
+        def track_event(error_code:)
+          attributes = {
+            error_code:,
+            remaining_submit_attempts:,
+            pii_like_keypaths: [[:pii]],
+            docv_transaction_token: docv_transaction_token,
+          }
+
+          analytics.idv_doc_auth_socure_error_visited(**attributes)
+        end
+
+        def socure_errors_presenter(error_code)
+          SocureErrorPresenter.new(
+            error_code:,
+            remaining_attempts: remaining_submit_attempts,
+            sp_name: service_provider&.friendly_name || APP_NAME,
+            issuer: service_provider&.issuer,
+            passport_requested: document_capture_session&.passport_requested?,
+            flow_path: :hybrid,
+          )
+        end
+
+        def service_provider
+          @service_provider ||= ServiceProvider.find_by(issuer: document_capture_session.issuer)
+        end
+      end
+    end
+  end
+end

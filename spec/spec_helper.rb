@@ -6,6 +6,8 @@ if ENV['CI'] || ENV['KNAPSACK_GENERATE_REPORT']
   Knapsack::Adapters::RSpecAdapter.bind
 end
 
+Warning[:deprecated] = true
+
 require 'active_support/core_ext/object/blank'
 require 'active_support'
 
@@ -39,7 +41,6 @@ WebMock.disable_net_connect!(
   allow: [
     /localhost/,
     /127\.0\.0\.1/,
-    /codeclimate.com/, # For uploading coverage reports
     /chromedriver\.storage\.googleapis\.com/, # For fetching a chromedriver binary
   ],
 )

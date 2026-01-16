@@ -5,23 +5,95 @@ RSpec.describe Idv::InPerson::AddressController do
   include InPersonHelper
 
   let(:user) { build(:user) }
+  let(:enrollment) do
+    create(:in_person_enrollment, :establishing, user: user)
+  end
   let(:pii_from_user) { Idp::Constants::MOCK_IPP_APPLICANT_SAME_ADDRESS_AS_ID_FALSE }
 
   before do
-    allow(IdentityConfig.store).to receive(:usps_ipp_transliteration_enabled)
-      .and_return(true)
     stub_sign_in(user)
-    stub_up_to(:hybrid_handoff, idv_session: subject.idv_session)
+    stub_up_to(:ipp_state_id, idv_session: subject.idv_session)
+    allow(user).to receive(:establishing_in_person_enrollment).and_return(enrollment)
+    subject.idv_session.opted_in_to_in_person_proofing = true
     subject.user_session['idv/in_person'] = {
       pii_from_user: pii_from_user,
     }
-    subject.idv_session.ssn = nil
     stub_analytics
   end
 
   describe '#step_info' do
+    let(:address1) { Idp::Constants::MOCK_IDV_APPLICANT[:address1] }
+    let(:address2) { 'APT 1B' }
+    let(:city) { Idp::Constants::MOCK_IDV_APPLICANT[:city] }
+    let(:zipcode) { Idp::Constants::MOCK_IDV_APPLICANT[:zipcode] }
+    let(:state) { 'Montana' }
+    let(:params) do
+      { in_person_address: {
+        address1: address1,
+        address2: address2,
+        city: city,
+        zipcode: zipcode,
+        state: state,
+      } }
+    end
+
     it 'returns a valid StepInfo object' do
       expect(Idv::InPerson::AddressController.step_info).to be_valid
+    end
+
+    context 'preconditions' do
+      context 'when ipp_state_id steps have been completed' do
+        before do
+          allow(subject.idv_session).to receive(:ipp_state_id_complete?).and_return(true)
+        end
+
+        it 'returns true' do
+          expect(
+            described_class.step_info.preconditions.call(idv_session: subject.idv_session, user:),
+          ).to be(true)
+        end
+      end
+
+      context 'when ipp_state_id steps have not been completed' do
+        before do
+          allow(subject.idv_session).to receive(:ipp_state_id_complete?).and_return(false)
+        end
+
+        context 'when in_person passports are allowed' do
+          before do
+            allow(subject.idv_session).to receive(:in_person_passports_allowed?).and_return(true)
+          end
+
+          it 'returns true' do
+            expect(
+              described_class.step_info.preconditions.call(idv_session: subject.idv_session, user:),
+            ).to be(true)
+          end
+        end
+
+        context 'when in_person passports are not allowed' do
+          before do
+            allow(subject.idv_session).to receive(:in_person_passports_allowed?).and_return(false)
+          end
+
+          it 'returns false' do
+            expect(
+              described_class.step_info.preconditions.call(idv_session: subject.idv_session, user:),
+            ).to be(false)
+          end
+        end
+      end
+    end
+
+    context 'undo_step' do
+      before do
+        allow(subject.idv_session).to receive(:invalidate_in_person_address_step!)
+        described_class.step_info.undo_step.call(idv_session: subject.idv_session, user:)
+      end
+
+      it 'invalidates the ipp_address step' do
+        expect(subject.idv_session).to have_received(:invalidate_in_person_address_step!)
+      end
     end
   end
 
@@ -30,20 +102,17 @@ RSpec.describe Idv::InPerson::AddressController do
       expect(subject).to have_actions(
         :before,
         :set_usps_form_presenter,
-      )
-      expect(subject).to have_actions(
-        :before,
-        :confirm_in_person_state_id_step_complete,
-      )
-      expect(subject).to have_actions(
-        :before,
-        :confirm_in_person_address_step_needed,
+        :confirm_step_allowed,
       )
     end
 
-    context '#confirm_in_person_state_id_step_complete' do
+    context '#step_info preconditions check if state id is complete' do
       before do
         subject.user_session['idv/in_person'][:pii_from_user].delete(:identity_doc_address1)
+        subject.user_session['idv/in_person'][:pii_from_user].delete(:identity_doc_address2)
+        subject.user_session['idv/in_person'][:pii_from_user].delete(:identity_doc_city)
+        subject.user_session['idv/in_person'][:pii_from_user].delete(:identity_doc_zipcode)
+        subject.user_session['idv/in_person'][:pii_from_user].delete(:identity_doc_state)
       end
 
       it 'redirects to state id page if not complete' do
@@ -73,6 +142,7 @@ RSpec.describe Idv::InPerson::AddressController do
         analytics_id: 'In Person Proofing',
         flow_path: 'standard',
         step: 'address',
+        opted_in_to_in_person_proofing: true,
       }
     end
 
@@ -80,17 +150,6 @@ RSpec.describe Idv::InPerson::AddressController do
       get :show
 
       expect(response).to render_template :show
-    end
-
-    context 'when address1 present' do
-      before do
-        subject.user_session['idv/in_person'][:pii_from_user][:address1] = '123 Main St'
-      end
-      it 'redirects to ssn page' do
-        get :show
-
-        expect(response).to redirect_to idv_in_person_ssn_url
-      end
     end
 
     it 'logs idv_in_person_proofing_address_visited' do
@@ -136,11 +195,11 @@ RSpec.describe Idv::InPerson::AddressController do
       let(:analytics_args) do
         {
           success: true,
-          errors: {},
           analytics_id: 'In Person Proofing',
           flow_path: 'standard',
           step: 'address',
           current_address_zip_code: '59010',
+          opted_in_to_in_person_proofing: true,
         }
       end
 
@@ -156,6 +215,12 @@ RSpec.describe Idv::InPerson::AddressController do
         )
       end
 
+      it 'enables the user to navigate to the ssn page after entering their residential address' do
+        put :update, params: params
+
+        expect(response).to redirect_to(idv_in_person_ssn_url)
+      end
+
       it 'logs idv_in_person_proofing_address_submitted with 5-digit zipcode' do
         put :update, params: params
 
@@ -164,6 +229,7 @@ RSpec.describe Idv::InPerson::AddressController do
 
       context 'when updating the residential address' do
         before do
+          stub_up_to(:ipp_verify_info, idv_session: subject.idv_session)
           subject.user_session['idv/in_person'][:pii_from_user][:address1] =
             '123 New Residential Ave'
         end
@@ -217,11 +283,11 @@ RSpec.describe Idv::InPerson::AddressController do
       let(:analytics_args) do
         {
           success: false,
-          errors: {},
           analytics_id: 'In Person Proofing',
           flow_path: 'standard',
           step: 'address',
           current_address_zip_code: '59010',
+          opted_in_to_in_person_proofing: true,
         }
       end
 

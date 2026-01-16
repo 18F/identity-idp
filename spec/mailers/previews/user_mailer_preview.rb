@@ -26,14 +26,6 @@ class UserMailerPreview < ActionMailer::Preview
     )
   end
 
-  def reset_password_instructions_with_pending_in_person_warning
-    UserMailer.with(
-      user: user_with_pending_in_person_profile, email_address: email_address_record,
-    ).reset_password_instructions(
-      token: SecureRandom.hex, request_id: SecureRandom.hex,
-    )
-  end
-
   def password_changed
     UserMailer.with(user: user, email_address: email_address_record)
       .password_changed(disavowal_token: SecureRandom.hex)
@@ -119,8 +111,8 @@ class UserMailerPreview < ActionMailer::Preview
     UserMailer.with(user: user, email_address: email_address_record).account_reset_complete
   end
 
-  def account_delete_submitted
-    UserMailer.with(user: user, email_address: email_address_record).account_delete_submitted
+  def account_delete_completed
+    UserMailer.with(user: user, email_address: email_address_record).account_delete_completed
   end
 
   def account_reset_cancel
@@ -193,14 +185,24 @@ class UserMailerPreview < ActionMailer::Preview
   def in_person_ready_to_verify
     UserMailer.with(user: user, email_address: email_address_record).in_person_ready_to_verify(
       enrollment: in_person_enrollment_id_ipp,
-      is_enhanced_ipp: false,
+    )
+  end
+
+  def in_person_ready_to_verify_skipped_location
+    UserMailer.with(user: user, email_address: email_address_record).in_person_ready_to_verify(
+      enrollment: in_person_enrollment_id_ipp_skipped_location,
+    )
+  end
+
+  def in_person_ready_to_verify_passport
+    UserMailer.with(user: user, email_address: email_address_record).in_person_ready_to_verify(
+      enrollment: in_person_enrollment_passport,
     )
   end
 
   def in_person_ready_to_verify_enhanced_ipp_enabled
     UserMailer.with(user: user, email_address: email_address_record).in_person_ready_to_verify(
       enrollment: in_person_enrollment_enhanced_ipp,
-      is_enhanced_ipp: true,
     )
   end
 
@@ -210,6 +212,69 @@ class UserMailerPreview < ActionMailer::Preview
       email_address: email_address_record,
     ).in_person_ready_to_verify_reminder(
       enrollment: in_person_enrollment_id_ipp,
+    )
+  end
+
+  def in_person_ready_to_verify_reminder_skipped_location
+    UserMailer.with(
+      user: user,
+      email_address: email_address_record,
+    ).in_person_ready_to_verify_reminder(
+      enrollment: in_person_enrollment_id_ipp_skipped_location,
+    )
+  end
+
+  def in_person_ready_to_verify_reminder_passport
+    UserMailer.with(
+      user: user,
+      email_address: email_address_record,
+    ).in_person_ready_to_verify_reminder(
+      enrollment: in_person_enrollment_passport,
+    )
+  end
+
+  def dupe_profile_created
+    UserMailer.with(
+      user: user,
+      email_address: email_address_record,
+    ).dupe_profile_created(
+      agency_name: 'Sample APP',
+    )
+  end
+
+  def dupe_profile_sign_in_attempted
+    UserMailer.with(
+      user: user,
+      email_address: email_address_record,
+    ).dupe_profile_sign_in_attempted(
+      agency_name: 'Sample APP',
+    )
+  end
+
+  def dupe_profile_account_review_complete_success
+    UserMailer.with(
+      user: user,
+      email_address: email_address_record,
+    ).dupe_profile_account_review_complete_success(
+      agency_name: 'Sample APP',
+    )
+  end
+
+  def dupe_profile_account_review_complete_unable
+    UserMailer.with(
+      user: user,
+      email_address: email_address_record,
+    ).dupe_profile_account_review_complete_unable(
+      agency_name: 'Sample APP',
+    )
+  end
+
+  def dupe_profile_account_review_complete_locked
+    UserMailer.with(
+      user: user,
+      email_address: email_address_record,
+    ).dupe_profile_account_review_complete_locked(
+      agency_name: 'Sample APP',
     )
   end
 
@@ -230,6 +295,15 @@ class UserMailerPreview < ActionMailer::Preview
   end
 
   def in_person_failed
+    UserMailer.with(user: user, email_address: email_address_record).in_person_failed(
+      enrollment: in_person_enrollment_id_ipp,
+      visited_location_name: in_person_visited_location_name,
+    )
+  end
+
+  # To view this email, set the below in application.yml
+  # in_person_passports_enabled: true
+  def in_person_failed_passports_enabled
     UserMailer.with(user: user, email_address: email_address_record).in_person_failed(
       enrollment: in_person_enrollment_id_ipp,
       visited_location_name: in_person_visited_location_name,
@@ -286,10 +360,6 @@ class UserMailerPreview < ActionMailer::Preview
     ).account_reinstated
   end
 
-  def in_person_post_office_closed
-    UserMailer.with(user: user, email_address: email_address_record).in_person_post_office_closed
-  end
-
   private
 
   def user
@@ -299,8 +369,8 @@ class UserMailerPreview < ActionMailer::Preview
         devices: [
           unsaveable(
             Device.new(
-              user_agent: Faker::Internet.user_agent,
-              last_ip: Faker::Internet.ip_v4_address,
+              user_agent: 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36', # rubocop:disable Layout/LineLength
+              last_ip: '8.8.8.8',
             ),
           ),
         ],
@@ -322,19 +392,6 @@ class UserMailerPreview < ActionMailer::Preview
     raw_user
   end
 
-  def user_with_pending_in_person_profile
-    raw_user = user
-    in_person_pending_profile = unsaveable(
-      Profile.new(
-        user: raw_user,
-        active: false,
-        in_person_verification_pending_at: Time.zone.now,
-      ),
-    )
-    raw_user.send(:instance_variable_set, :@pending_profile, in_person_pending_profile)
-    raw_user
-  end
-
   def email_address
     'email@example.com'
   end
@@ -347,6 +404,27 @@ class UserMailerPreview < ActionMailer::Preview
     'ACQUAINTANCESHIP'
   end
 
+  def in_person_enrollment_id_ipp_skipped_location
+    unsaveable(
+      InPersonEnrollment.new(
+        user: user,
+        profile: unsaveable(Profile.new(user: user)),
+        enrollment_code: '2048702198804358',
+        created_at: Time.zone.now - 2.hours,
+        service_provider: ServiceProvider.new(
+          friendly_name: 'Test Service Provider',
+          issuer: SecureRandom.uuid,
+          logo: 'gsa.png',
+        ),
+        status_updated_at: Time.zone.now - 1.hour,
+        current_address_matches_id: params['current_address_matches_id'] == 'true',
+        selected_location_details: nil,
+        sponsor_id: IdentityConfig.store.usps_ipp_sponsor_id,
+        document_type: InPersonEnrollment::DOCUMENT_TYPE_STATE_ID,
+      ),
+    )
+  end
+
   def in_person_enrollment_id_ipp
     unsaveable(
       InPersonEnrollment.new(
@@ -357,6 +435,7 @@ class UserMailerPreview < ActionMailer::Preview
         service_provider: ServiceProvider.new(
           friendly_name: 'Test Service Provider',
           issuer: SecureRandom.uuid,
+          logo: 'gsa.png',
         ),
         status_updated_at: Time.zone.now - 1.hour,
         current_address_matches_id: params['current_address_matches_id'] == 'true',
@@ -370,6 +449,36 @@ class UserMailerPreview < ActionMailer::Preview
           'sunday_hours' => 'Closed',
         },
         sponsor_id: IdentityConfig.store.usps_ipp_sponsor_id,
+        document_type: InPersonEnrollment::DOCUMENT_TYPE_STATE_ID,
+      ),
+    )
+  end
+
+  def in_person_enrollment_passport
+    unsaveable(
+      InPersonEnrollment.new(
+        user: user,
+        profile: unsaveable(Profile.new(user: user)),
+        enrollment_code: '2048702198804358',
+        created_at: Time.zone.now - 2.hours,
+        service_provider: ServiceProvider.new(
+          friendly_name: 'Test Service Provider',
+          issuer: SecureRandom.uuid,
+          logo: '18f.svg',
+        ),
+        status_updated_at: Time.zone.now - 1.hour,
+        current_address_matches_id: params['current_address_matches_id'] == 'true',
+        selected_location_details: {
+          'name' => 'BALTIMORE',
+          'street_address' => '900 E FAYETTE ST RM 118',
+          'formatted_city_state_zip' => 'BALTIMORE, MD 21233-9715',
+          'phone' => '555-123-6409',
+          'weekday_hours' => '8:30 AM - 4:30 PM',
+          'saturday_hours' => '9:00 AM - 12:00 PM',
+          'sunday_hours' => 'Closed',
+        },
+        sponsor_id: IdentityConfig.store.usps_ipp_sponsor_id,
+        document_type: InPersonEnrollment::DOCUMENT_TYPE_PASSPORT_BOOK,
       ),
     )
   end
@@ -384,6 +493,7 @@ class UserMailerPreview < ActionMailer::Preview
         service_provider: ServiceProvider.new(
           friendly_name: 'Test Service Provider',
           issuer: SecureRandom.uuid,
+          logo: '18f.svg',
         ),
         status_updated_at: Time.zone.now - 1.hour,
         current_address_matches_id: params['current_address_matches_id'] == 'true',
@@ -397,6 +507,7 @@ class UserMailerPreview < ActionMailer::Preview
           'sunday_hours' => 'Closed',
         },
         sponsor_id: IdentityConfig.store.usps_eipp_sponsor_id,
+        document_type: 'state_id',
       ),
     )
   end

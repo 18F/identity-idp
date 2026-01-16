@@ -6,16 +6,29 @@ class DocumentCaptureSession < ApplicationRecord
 
   belongs_to :user
 
+  PASSPORT_STATUSES = [
+    'not_requested',
+    'requested',
+  ].freeze
+
+  validates :passport_status, inclusion: { in: PASSPORT_STATUSES }, allow_nil: true
+
   def load_result
     return nil unless result_id.present?
+
     EncryptedRedisStructStorage.load(result_id, type: DocumentCaptureSessionResult)
   end
 
   # @param doc_auth_response [DocAuth::Response]
-  def store_result_from_response(doc_auth_response)
+  # @param attempt [Integer] The current doc auth attempt number.
+  # @param mrz_response [DocAuth::Response, nil] The doc auth MRZ validation response.
+  # @param aamva_response [DocAuth::Response, nil] The doc auth aamva state ID response.
+  def store_result_from_response(doc_auth_response, attempt:, mrz_response: nil,
+                                 aamva_response: nil)
     session_result = load_result || DocumentCaptureSessionResult.new(
       id: generate_result_id,
     )
+
     session_result.success = doc_auth_response.success?
     session_result.pii = doc_auth_response.pii_from_doc.to_h
     session_result.captured_at = Time.zone.now
@@ -23,6 +36,10 @@ class DocumentCaptureSession < ApplicationRecord
     session_result.doc_auth_success = doc_auth_response.doc_auth_success?
     session_result.selfie_status = doc_auth_response.selfie_status
     session_result.errors = doc_auth_response.errors
+    session_result.mrz_status = determine_mrz_status(mrz_response)
+    session_result.aamva_status = determine_aamva_status(aamva_response)
+    session_result.state_id_vendor = aamva_response.extra[:vendor_name] if aamva_response
+    session_result.attempt = attempt
 
     EncryptedRedisStructStorage.store(
       session_result,
@@ -33,7 +50,9 @@ class DocumentCaptureSession < ApplicationRecord
   end
 
   def store_failed_auth_data(front_image_fingerprint:, back_image_fingerprint:,
-                             selfie_image_fingerprint:, doc_auth_success:, selfie_status:)
+                             passport_image_fingerprint:, selfie_image_fingerprint:,
+                             doc_auth_success:, selfie_status:, attempt:, errors: nil,
+                             mrz_status: :not_processed, aamva_status: :not_processed)
     session_result = load_result || DocumentCaptureSessionResult.new(
       id: generate_result_id,
     )
@@ -44,7 +63,13 @@ class DocumentCaptureSession < ApplicationRecord
 
     session_result.add_failed_front_image!(front_image_fingerprint)
     session_result.add_failed_back_image!(back_image_fingerprint)
+    session_result.add_failed_passport_image!(passport_image_fingerprint)
     session_result.add_failed_selfie_image!(selfie_image_fingerprint) if selfie_status == :fail
+
+    session_result.errors = errors
+    session_result.mrz_status = mrz_status
+    session_result.aamva_status = aamva_status
+    session_result.attempt = attempt
 
     EncryptedRedisStructStorage.store(
       session_result,
@@ -92,9 +117,55 @@ class DocumentCaptureSession < ApplicationRecord
     update!(ocr_confirmation_pending: false)
   end
 
+  def passport_requested?
+    passport_status == 'requested'
+  end
+
+  def request_passport!
+    update!(
+      passport_status: 'requested',
+      doc_auth_vendor: nil,
+      socure_docv_capture_app_url: nil,
+      socure_docv_transaction_token: nil,
+    )
+  end
+
+  def request_state_id!
+    attrs = passport_not_requested_attributes
+    attrs.merge!(clear_socure_attributes) if passport_requested?
+
+    update!(attrs)
+  end
+
   private
 
   def generate_result_id
     self.result_id = SecureRandom.uuid
+  end
+
+  def determine_mrz_status(mrz_response)
+    return :not_processed unless mrz_response
+
+    mrz_response.success? ? :pass : :failed
+  end
+
+  def determine_aamva_status(aamva_response)
+    return :not_processed unless aamva_response
+
+    aamva_response.success? ? :passed : :failed
+  end
+
+  def passport_not_requested_attributes
+    {
+      passport_status: 'not_requested',
+      doc_auth_vendor: nil,
+    }
+  end
+
+  def clear_socure_attributes
+    {
+      socure_docv_capture_app_url: nil,
+      socure_docv_transaction_token: nil,
+    }
   end
 end

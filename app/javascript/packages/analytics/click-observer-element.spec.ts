@@ -51,6 +51,42 @@ describe('ClickObserverElement', () => {
         });
       });
     });
+
+    context('for an object with a payload', () => {
+      context('with valid payload', () => {
+        it('logs a single event with a payload', async () => {
+          document.body.innerHTML = `
+          <lg-click-observer event-name="track-data-clicked" payload=${JSON.stringify({
+            path: '/first',
+          })} >
+            <button>Click me!</button>
+          </lg-click-observer>`;
+          const observer = document.body.querySelector('lg-click-observer')!;
+          const trackEvent = sinon.stub(observer, 'trackEvent');
+
+          const button = getByRole(document.body, 'button', { name: 'Click me!' });
+          await userEvent.click(button);
+
+          expect(trackEvent).to.have.been.calledWith('track-data-clicked', { path: '/first' });
+        });
+      });
+
+      context('with invalid payload', () => {
+        it('logs a single event with no payload', async () => {
+          document.body.innerHTML = `
+          <lg-click-observer event-name="track-data-clicked" payload="invalid_data"}">
+            <button>Click me!</button>
+          </lg-click-observer>`;
+          const observer = document.body.querySelector('lg-click-observer')!;
+          const trackEvent = sinon.stub(observer, 'trackEvent');
+
+          const button = getByRole(document.body, 'button', { name: 'Click me!' });
+          await userEvent.click(button);
+
+          expect(trackEvent).to.have.been.calledWith('track-data-clicked');
+        });
+      });
+    });
   });
 
   context('without an event name', () => {

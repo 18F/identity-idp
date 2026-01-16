@@ -31,7 +31,7 @@ RSpec.describe 'Resetting password with a pending profile' do
     expect(user.reload.active_or_pending_profile).to be_nil
   end
 
-  scenario 'while in-person pending requires the user to reproof' do
+  scenario 'while in-person pending prompts user for personal key' do
     user = create(:user, :with_phone, :with_pending_in_person_enrollment)
 
     visit_idp_from_ial2_oidc_sp
@@ -49,8 +49,7 @@ RSpec.describe 'Resetting password with a pending profile' do
     user.password = new_password
     sign_in_live_with_2fa(user)
 
-    expect(page).to have_content(t('doc_auth.headings.welcome', sp_name: sp_name))
-    expect(page).to have_current_path(idv_welcome_path)
+    expect(page).to have_current_path(reactivate_account_path)
 
     expect(user.reload.active_or_pending_profile).to be_nil
   end

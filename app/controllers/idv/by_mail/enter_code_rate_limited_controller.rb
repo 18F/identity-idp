@@ -14,6 +14,12 @@ module Idv
         analytics.rate_limit_reached(
           limiter_type: :verify_gpo_key,
         )
+        attempts_api_tracker.idv_rate_limited(
+          limiter_type: :verify_gpo_key,
+        )
+        fraud_ops_tracker.idv_rate_limited(
+          limiter_type: :verify_gpo_key,
+        )
 
         @expires_at = rate_limiter.expires_at
       end

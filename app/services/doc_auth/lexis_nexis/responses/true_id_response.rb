@@ -9,15 +9,16 @@ module DocAuth
         include ClassificationConcern
         include SelfieConcern
 
-        attr_reader :config, :http_response
+        attr_reader :config, :http_response, :passport_requested
 
-        def initialize(http_response, config, liveness_checking_enabled = false,
-                       request_context = {})
+        def initialize(http_response:, config:, passport_requested: false,
+                       liveness_checking_enabled: false, request_context: {})
           @config = config
           @http_response = http_response
+          @passport_requested = passport_requested
           @request_context = request_context
           @liveness_checking_enabled = liveness_checking_enabled
-          @pii_from_doc = read_pii(true_id_product)
+          @pii_from_doc = read_pii
           super(
             success: successful_result?,
             errors: error_messages,
@@ -39,32 +40,29 @@ module DocAuth
 
         ## returns full check success status, considering all checks:
         #    vendor (document and selfie if requested)
-        #    document type
-        #    bar code attention
         def successful_result?
+          return false if passport_card_detected?
+
           doc_auth_success? &&
             (@liveness_checking_enabled ? selfie_passed? : true)
         end
 
         # all checks from document perspectives, without considering selfie:
         #  vendor (document only)
-        #  document_type
-        #  bar code attention
+        #  document_type_requested
         def doc_auth_success?
           # really it's everything else excluding selfie
-          ((transaction_status_passed? &&
-            true_id_product.present? &&
-            product_status_passed? &&
-            doc_auth_result_passed?
-           ) ||
-            attention_with_barcode?
-          ) && id_type_supported?
+          transaction_status_passed? && id_type_supported? && expected_document_type_received?
         end
 
         def error_messages
           return {} if successful_result?
 
-          if with_authentication_result?
+          if passport_card_detected?
+            { passport_card: I18n.t('doc_auth.errors.doc.doc_type_check') }
+          elsif id_type.present? && !expected_document_type_received?
+            { unexpected_id_type: true, expected_id_type: expected_id_type }
+          elsif with_authentication_result?
             ErrorGenerator.new(config).generate_doc_auth_errors(response_info)
           elsif true_id_product.present?
             ErrorGenerator.wrapped_general_error
@@ -93,9 +91,8 @@ module DocAuth
         def attention_with_barcode?
           return false unless doc_auth_result_attention?
 
-          parsed_alerts[:failed]&.count.to_i == 1 &&
-            parsed_alerts.dig(:failed, 0, :name) == '2D Barcode Read' &&
-            parsed_alerts.dig(:failed, 0, :result) == 'Attention'
+          !!parsed_alerts[:failed]
+            &.any? { |alert| alert[:name] == '2D Barcode Read' && alert[:result] == 'Attention' }
         end
 
         def billed?
@@ -129,6 +126,29 @@ module DocAuth
 
         def parsed_response_body
           @parsed_response_body ||= JSON.parse(http_response.body).with_indifferent_access
+        end
+
+        def expected_document_type_received?
+          expected_id_types = passport_requested ?
+            Idp::Constants::DocumentTypes::SUPPORTED_PASSPORT_TYPES :
+            Idp::Constants::DocumentTypes::SUPPORTED_STATE_ID_TYPES
+
+          expected_id_types.include?(id_type)
+        end
+
+        def id_type
+          pii_from_doc&.document_type_received || pii_from_doc&.id_doc_type
+        end
+
+        def expected_id_type
+          passport_requested ?
+            Idp::Constants::DocumentTypes::PASSPORT :
+            Idp::Constants::DocumentTypes::DRIVERS_LICENSE
+        end
+
+        def passport_pii?
+          @passport_pii ||=
+            Idp::Constants::DocumentTypes::PASSPORT_TYPES.include?(id_type)
         end
 
         def transaction_status
@@ -177,6 +197,10 @@ module DocAuth
 
         def create_response_info
           alerts = parsed_alerts
+          address_line2_present = false
+          if !passport_pii?
+            address_line2_present = !pii_from_doc&.address2.blank?
+          end
           log_alert_formatter = DocAuth::ProcessedAlertToLogAlertFormatter.new
           {
             transaction_status: transaction_status,
@@ -189,7 +213,7 @@ module DocAuth
             log_alert_results: log_alert_formatter.log_alerts(alerts),
             portrait_match_results: portrait_match_results,
             image_metrics: read_image_metrics(true_id_product),
-            address_line2_present: !pii_from_doc&.address2.blank?,
+            address_line2_present: address_line2_present,
             classification_info: classification_info,
             liveness_enabled: @liveness_checking_enabled,
           }
@@ -230,22 +254,33 @@ module DocAuth
           true_id_product&.dig(:AUTHENTICATION_RESULT, :DocIssuerType)
         end
 
+        def doc_issue_type
+          true_id_product&.dig(:AUTHENTICATION_RESULT, :DocIssueType)
+        end
+
+        def passport_card_detected?
+          doc_issue_type == 'Passport Card'
+        end
+
         def classification_info
           # Acuant response has both sides info, here simulate that
           doc_class = doc_class_name
           issuing_country = pii_from_doc&.issuing_country_code
-          {
+          classification_hash = {
             Front: {
               ClassName: doc_class,
               IssuerType: doc_issuer_type,
               CountryCode: issuing_country,
             },
-            Back: {
+          }
+          if !passport_pii?
+            classification_hash[:Back] = {
               ClassName: doc_class,
               IssuerType: doc_issuer_type,
               CountryCode: issuing_country,
-            },
-          }
+            }
+          end
+          classification_hash
         end
 
         def portrait_match_results
@@ -265,11 +300,11 @@ module DocAuth
         end
 
         def true_id_product
-          products[:TrueID] if products.present?
+          products&.dig(:TrueID)
         end
 
         def true_id_product_decision
-          products[:TrueID_Decision] if products.present?
+          products&.dig(:TrueID_Decision)
         end
 
         def parsed_alerts

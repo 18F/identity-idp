@@ -1,34 +1,23 @@
 import { TextInput, SelectInput } from '@18f/identity-components';
-import type { FormattedLocation, LocationQuery } from '@18f/identity-address-search/types';
-import type { RegisterFieldCallback } from '@18f/identity-form-steps';
 import { useDidUpdateEffect } from '@18f/identity-react-hooks';
 import { SpinnerButtonRefHandle, SpinnerButton } from '@18f/identity-spinner-button';
 import { ValidatedField } from '@18f/identity-validated-field';
 import { useI18n } from '@18f/identity-react-i18n';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import useValidatedUspsLocations from '../hooks/use-validated-usps-locations';
-
-interface FullAddressSearchInputProps {
-  disabled?: boolean;
-  locationsURL: string;
-  onError?: (error: Error | null) => void;
-  onFoundLocations?: (
-    address: LocationQuery | null,
-    locations: FormattedLocation[] | null | undefined,
-  ) => void;
-  onLoadingLocations?: (isLoading: boolean) => void;
-  registerField?: RegisterFieldCallback;
-  usStatesTerritories: string[][];
-}
+import type { FullAddressSearchInputProps } from '../types';
 
 export default function FullAddressSearchInput({
   disabled = false,
   locationsURL,
+  onContinue,
   onError = () => undefined,
   onFoundLocations = () => undefined,
   onLoadingLocations = () => undefined,
   registerField = () => undefined,
   usStatesTerritories,
+  uspsApiError,
+  usesErrorComponent,
 }: FullAddressSearchInputProps) {
   const { t } = useI18n();
   const spinnerButtonRef = useRef<SpinnerButtonRefHandle>(null);
@@ -81,6 +70,14 @@ export default function FullAddressSearchInput({
       onSearch(event, addressValue, cityValue, stateValue, zipCodeValue);
     },
     [addressValue, cityValue, stateValue, zipCodeValue],
+  );
+
+  const handleContinue = useCallback(
+    (event) => {
+      // Run LocationSelect with null as the location
+      onContinue!(event, null);
+    },
+    [uspsApiError],
   );
 
   const getErroneousAddressChars = () => {
@@ -179,12 +176,14 @@ export default function FullAddressSearchInput({
           isBig
           ref={spinnerButtonRef}
           type="submit"
-          onClick={handleSearch}
+          onClick={usesErrorComponent && uspsApiError ? handleContinue : handleSearch}
           spinOnClick={false}
           actionMessage={t('in_person_proofing.body.location.po_search.is_searching_message')}
           longWaitDurationMs={1}
         >
-          {t('in_person_proofing.body.location.po_search.search_button')}
+          {usesErrorComponent && uspsApiError
+            ? t('in_person_proofing.body.location.po_search.continue_button')
+            : t('in_person_proofing.body.location.po_search.search_button')}
         </SpinnerButton>
       </div>
     </>

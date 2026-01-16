@@ -24,5 +24,22 @@ RSpec.describe Agreements::IaaOrderSeeder do
       expect { seeder.run }.to \
         raise_error(ActiveRecord::RecordNotFound, /iaa_orders.yml.+#{issuer}/)
     end
+
+    it 'removes IntegrationUsage records that are no longer in the YAML file' do
+      gtc = Agreements::IaaGtc.find_by!(gtc_number: 'LGCBPFY190002')
+      order = create(:iaa_order, iaa_gtc: gtc, order_number: 4)
+
+      integration = Agreements::Integration.find_by!(issuer: 'https://rp1.serviceprovider.com/auth/saml/metadata')
+      usage = create(:integration_usage, iaa_order: order, integration: integration)
+
+      old_integration = create(:integration, issuer: 'https://other.example.com/metadata')
+      old_usage = create(:integration_usage, iaa_order: order, integration: old_integration)
+
+      expect(Rails.logger).to receive(:info).with(/Removing 1 orphaned IntegrationUsage records/)
+      expect { seeder.run }.to change { Agreements::IntegrationUsage.count }.by(-1)
+
+      expect(Agreements::IntegrationUsage.exists?(usage.id)).to be true
+      expect(Agreements::IntegrationUsage.exists?(old_usage.id)).to be false
+    end
   end
 end

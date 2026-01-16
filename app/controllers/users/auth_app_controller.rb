@@ -3,6 +3,7 @@
 module Users
   class AuthAppController < ApplicationController
     include ReauthenticationRequiredConcern
+    include MfaDeletionConcern
 
     before_action :confirm_two_factor_authenticated
     before_action :confirm_recently_authenticated_2fa
@@ -32,10 +33,7 @@ module Users
 
       if result.success?
         flash[:success] = t('two_factor_authentication.auth_app.deleted')
-        create_user_event(:authenticator_disabled)
-        revoke_remember_device(current_user)
-        event = PushNotification::RecoveryInformationChangedEvent.new(user: current_user)
-        PushNotification::HttpPush.deliver(event)
+        handle_successful_mfa_deletion(event_type: :authenticator_disabled)
         redirect_to account_path
       else
         flash[:error] = result.first_error_message

@@ -17,6 +17,7 @@ RSpec.describe Idv::VerifyInfoController do
     stub_sign_in(user)
     stub_up_to(:ssn, idv_session: subject.idv_session)
     stub_analytics
+    stub_attempts_tracker
   end
 
   describe '#step_info' do
@@ -50,7 +51,6 @@ RSpec.describe Idv::VerifyInfoController do
           expect(idv_session.residential_resolution_vendor).to be(nil)
           expect(idv_session.resolution_successful).to be(nil)
           expect(idv_session.resolution_vendor).to be(nil)
-          expect(idv_session.source_check_vendor).to be(nil)
           expect(idv_session.threatmetrix_review_status).to be(nil)
           expect(idv_session.verify_info_step_document_capture_session_uuid).to be(nil)
         end
@@ -75,6 +75,10 @@ RSpec.describe Idv::VerifyInfoController do
   end
 
   describe '#show' do
+    before do
+      subject.idv_session.precheck_phone = { phone: '+1 703-555-5555' }
+    end
+
     it 'renders the show template' do
       get :show
 
@@ -150,6 +154,9 @@ RSpec.describe Idv::VerifyInfoController do
       end
 
       it 'redirects to ssn failure url' do
+        expect(@attempts_api_tracker).to receive(:idv_rate_limited).with(
+          limiter_type: :proof_ssn,
+        )
         get :show
 
         expect(response).to redirect_to idv_session_errors_ssn_failure_url
@@ -167,6 +174,9 @@ RSpec.describe Idv::VerifyInfoController do
       end
 
       it 'redirects to rate limited url' do
+        expect(@attempts_api_tracker).to receive(:idv_rate_limited).with(
+          limiter_type: :idv_resolution,
+        )
         get :show
 
         expect(response).to redirect_to idv_session_errors_failure_url
@@ -178,12 +188,19 @@ RSpec.describe Idv::VerifyInfoController do
     context 'when proofing_device_profiling is enabled' do
       let(:threatmetrix_client_id) { 'threatmetrix_client' }
       let(:review_status) { 'pass' }
+      let(:applicant_pii) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN }
+      let(:success) { true }
+      let(:device_fingerprint) { SecureRandom.hex(32) }
 
       let(:idv_result) do
         {
           context: {
+            device_profiling_adjudication_reason: 'device_profiling_result',
+            resolution_adjudication_reason: 'pass_resolution_and_state_id',
             stages: {
               threatmetrix: {
+                success:,
+                device_fingerprint:,
                 client: threatmetrix_client_id,
                 transaction_id: 1,
                 review_status: review_status,
@@ -201,14 +218,11 @@ RSpec.describe Idv::VerifyInfoController do
         }
       end
 
-      let(:document_capture_session) do
-        document_capture_session = DocumentCaptureSession.create!(user: user)
-        document_capture_session.create_proofing_session
-        document_capture_session.store_proofing_result(idv_result)
-        document_capture_session
-      end
+      let(:document_capture_session) { create(:document_capture_session, user:) }
 
       before do
+        document_capture_session.create_proofing_session
+        document_capture_session.store_proofing_result(idv_result)
         controller
           .idv_session
           .verify_info_step_document_capture_session_uuid = document_capture_session.uuid
@@ -272,34 +286,108 @@ RSpec.describe Idv::VerifyInfoController do
             ),
           )
           expect(@analytics).to have_logged_event(
+            'IdV: doc auth verify proofing results',
+            hash_including(
+              proofing_results: hash_including(
+                context: hash_including(
+                  stages: hash_including(
+                    threatmetrix: hash_excluding(device_fingerprint:),
+                  ),
+                ),
+              ),
+            ),
+          )
+
+          expect(@analytics).to have_logged_event(
             :idv_threatmetrix_response_body,
             response_body: hash_including(
               client: threatmetrix_client_id,
             ),
           )
         end
+
+        it 'tracks the attempts events' do
+          expect(@attempts_api_tracker).to receive(:idv_device_risk_assessment).with(
+            success: true,
+            device_fingerprint:,
+            failure_reason: nil,
+          )
+          expect(@attempts_api_tracker).to receive(:idv_verification_submitted).with(
+            success: true,
+            document_state: applicant_pii[:state],
+            document_number: applicant_pii[:state_id_number],
+            document_issued: applicant_pii[:state_id_issued],
+            document_expiration: applicant_pii[:state_id_expiration],
+            first_name: applicant_pii[:first_name],
+            last_name: applicant_pii[:last_name],
+            date_of_birth: applicant_pii[:dob],
+            address1: applicant_pii[:address1],
+            address2: applicant_pii[:address2],
+            ssn: SsnFormatter.format(applicant_pii[:ssn]),
+            city: applicant_pii[:city],
+            state: applicant_pii[:state],
+            zip: applicant_pii[:zip],
+            failure_reason: nil,
+          )
+
+          get :show
+        end
       end
 
       context 'when threatmetrix response is No Result' do
         let(:review_status) { nil }
+        let(:success) { false }
 
         it 'sets the review status in the idv session' do
           get :show
           expect(controller.idv_session.threatmetrix_review_status).to be_nil
         end
+
+        it 'tracks a failed tmx fraud check' do
+          expect(@attempts_api_tracker).to receive(:idv_device_risk_assessment).with(
+            success: false,
+            device_fingerprint:,
+            failure_reason: { fraud_risk_summary_reason_code: ['Identity_Negative_History'] },
+          )
+
+          expect(@attempts_api_tracker).to receive(:idv_verification_submitted).with(
+            success: true,
+            document_state: applicant_pii[:state],
+            document_number: applicant_pii[:state_id_number],
+            document_issued: applicant_pii[:state_id_issued],
+            document_expiration: applicant_pii[:state_id_expiration],
+            first_name: applicant_pii[:first_name],
+            last_name: applicant_pii[:last_name],
+            date_of_birth: applicant_pii[:dob],
+            address1: applicant_pii[:address1],
+            address2: applicant_pii[:address2],
+            ssn: SsnFormatter.format(applicant_pii[:ssn]),
+            city: applicant_pii[:city],
+            state: applicant_pii[:state],
+            zip: applicant_pii[:zip],
+            failure_reason: {
+              failed_stages: [:device_risk_assesment],
+              device_profiling_adjudication_reason: ['device_profiling_result'],
+              resolution_adjudication_reason: ['pass_resolution_and_state_id'],
+            },
+          )
+
+          get :show
+        end
       end
 
       context 'when there is a threatmetrix exception' do
         let(:review_status) { nil }
-
         let(:idv_result) do
           {
             context: {
               device_profiling_adjudication_reason: 'device_profiling_exception',
+              resolution_adjudication_reason: 'pass_resolution_and_state_id',
               errors: {},
               stages: {
                 threatmetrix: {
                   client: nil,
+                  device_fingerprint:,
                   errors: {},
                   exception: "Unexpected ThreatMetrix review_status value: #{review_status}",
                   response_body: nil,
@@ -347,17 +435,107 @@ RSpec.describe Idv::VerifyInfoController do
                   ),
                 ),
               ),
+              exceptions: {
+                threatmetrix: hash_including(:exception),
+              },
             ),
           )
+
+          expect(@analytics).to have_logged_event(
+            'IdV: doc auth verify proofing results',
+            hash_including(
+              proofing_results: hash_including(
+                context: hash_including(
+                  stages: hash_including(
+                    threatmetrix: hash_excluding(device_fingerprint:),
+                  ),
+                ),
+              ),
+            ),
+          )
+        end
+
+        it 'tracks the event for the attempts api' do
+          expect(@attempts_api_tracker).to receive(:idv_verification_submitted).with(
+            success: false,
+            document_state: applicant_pii[:state],
+            document_number: applicant_pii[:state_id_number],
+            document_issued: applicant_pii[:state_id_issued],
+            document_expiration: applicant_pii[:state_id_expiration],
+            first_name: applicant_pii[:first_name],
+            last_name: applicant_pii[:last_name],
+            date_of_birth: applicant_pii[:dob],
+            address1: applicant_pii[:address1],
+            address2: applicant_pii[:address2],
+            ssn: SsnFormatter.format(applicant_pii[:ssn]),
+            city: applicant_pii[:city],
+            state: applicant_pii[:state],
+            zip: applicant_pii[:zip],
+            failure_reason: {
+              failed_stages: [:device_risk_assesment],
+              resolution_adjudication_reason: ['pass_resolution_and_state_id'],
+              device_profiling_adjudication_reason: ['device_profiling_exception'],
+            },
+          )
+          get :show
+        end
+
+        it 'tracks a failed tmx fraud check' do
+          stub_attempts_tracker
+          expect(@attempts_api_tracker).to receive(:idv_device_risk_assessment).with(
+            success: false,
+            device_fingerprint:,
+            failure_reason: {
+              fraud_risk_summary_reason_code:
+                ['Fraud risk assessment has failed for unknown reasons'],
+            },
+          )
+
+          get :show
         end
       end
 
       context 'when threatmetrix response is Reject' do
         let(:review_status) { 'reject' }
+        let(:success) { false }
 
         it 'sets the review status in the idv session' do
           get :show
           expect(controller.idv_session.threatmetrix_review_status).to eq('reject')
+        end
+
+        it 'tracks a failed tmx fraud check' do
+          expect(@attempts_api_tracker).to receive(:idv_device_risk_assessment).with(
+            success:,
+            device_fingerprint:,
+            failure_reason: {
+              fraud_risk_summary_reason_code: ['Identity_Negative_History'],
+            },
+          )
+
+          expect(@attempts_api_tracker).to receive(:idv_verification_submitted).with(
+            success: true,
+            document_state: applicant_pii[:state],
+            document_number: applicant_pii[:state_id_number],
+            document_issued: applicant_pii[:state_id_issued],
+            document_expiration: applicant_pii[:state_id_expiration],
+            first_name: applicant_pii[:first_name],
+            last_name: applicant_pii[:last_name],
+            date_of_birth: applicant_pii[:dob],
+            address1: applicant_pii[:address1],
+            address2: applicant_pii[:address2],
+            ssn: SsnFormatter.format(applicant_pii[:ssn]),
+            city: applicant_pii[:city],
+            state: applicant_pii[:state],
+            zip: applicant_pii[:zip],
+            failure_reason: {
+              failed_stages: [:device_risk_assesment],
+              device_profiling_adjudication_reason: ['device_profiling_result'],
+              resolution_adjudication_reason: ['pass_resolution_and_state_id'],
+            },
+          )
+
+          get :show
         end
       end
 
@@ -367,6 +545,19 @@ RSpec.describe Idv::VerifyInfoController do
         it 'sets the review status in the idv session' do
           get :show
           expect(controller.idv_session.threatmetrix_review_status).to eq('review')
+        end
+
+        it 'tracks a failed tmx fraud check' do
+          stub_attempts_tracker
+          expect(@attempts_api_tracker).to receive(:idv_device_risk_assessment).with(
+            success: false,
+            device_fingerprint:,
+            failure_reason: {
+              fraud_risk_summary_reason_code: ['Identity_Negative_History'],
+            },
+          )
+
+          get :show
         end
       end
     end
@@ -385,18 +576,29 @@ RSpec.describe Idv::VerifyInfoController do
         it 'does not redirect back to the SSN step' do
           expect(response).not_to redirect_to(idv_ssn_url)
         end
+
+        it 'does not track a threatmetrix check' do
+          stub_attempts_tracker
+
+          expect(@attempts_api_tracker).not_to receive(:idv_device_risk_assessment)
+
+          get :show
+        end
       end
     end
 
     context 'when the user has updated their SSN' do
-      let(:document_capture_session) do
-        DocumentCaptureSession.create(user:)
-      end
+      let(:document_capture_session) { create(:document_capture_session, user:) }
 
-      let(:async_state) do
-        # Here we're trying to match the store to redis -> read from redis flow this data travels
-        adjudicated_result = Proofing::Resolution::ResultAdjudicator.new(
+      let(:adjudicated_result) do
+        Proofing::Resolution::ResultAdjudicator.new(
           state_id_result: Proofing::StateIdResult.new(success: true),
+          phone_result: Proofing::AddressResult.new(
+            success: true,
+            errors: {},
+            exception: nil,
+            vendor_name: 'test-phone-vendor',
+          ).to_h,
           device_profiling_result: Proofing::DdpResult.new(success: true),
           ipp_enrollment_in_progress: true,
           residential_resolution_result: Proofing::Resolution::Result.new(success: true),
@@ -404,19 +606,21 @@ RSpec.describe Idv::VerifyInfoController do
           same_address_as_id: true,
           should_proof_state_id: true,
           applicant_pii: Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN,
-        ).adjudicated_result.to_h
+          precheck_phone_number: subject.idv_session.precheck_phone[:phone],
+        ).adjudicated_result
+      end
 
+      before do
+        # Here we're trying to match the store to redis -> read from redis flow this data travels
         document_capture_session.create_proofing_session
-
-        document_capture_session.store_proofing_result(adjudicated_result)
-
-        document_capture_session.load_proofing_result
+        document_capture_session.store_proofing_result(adjudicated_result.to_h)
+        allow(controller).to receive(:load_async_state)
+          .and_return(document_capture_session.load_proofing_result)
       end
 
       it 'logs the edit distance between SSNs' do
-        allow(controller).to receive(:load_async_state).and_return(async_state)
         controller.idv_session.ssn = Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn]
-        controller.idv_session.previous_ssn = '900-66-1256'
+        controller.idv_session.previous_ssn = '900661256'
 
         get :show
 
@@ -430,18 +634,23 @@ RSpec.describe Idv::VerifyInfoController do
     end
 
     context 'for an aamva request' do
-      let(:document_capture_session) do
-        DocumentCaptureSession.create(user:)
-      end
-
+      let(:document_capture_session) { create(:document_capture_session, user:) }
       let(:success) { true }
       let(:errors) { {} }
       let(:exception) { nil }
       let(:vendor_name) { 'aamva_placeholder' }
+      let(:applicant_pii) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN }
+      let(:phone_result) do
+        Proofing::AddressResult.new(
+          success: true,
+          errors: {},
+          exception: nil,
+          vendor_name: 'test-phone-vendor',
+        ).to_h
+      end
 
-      let(:async_state) do
-        # Here we're trying to match the store to redis -> read from redis flow this data travels
-        adjudicated_result = Proofing::Resolution::ResultAdjudicator.new(
+      let(:adjudicated_result) do
+        Proofing::Resolution::ResultAdjudicator.new(
           state_id_result: Proofing::StateIdResult.new(
             success: success,
             errors: errors,
@@ -450,30 +659,58 @@ RSpec.describe Idv::VerifyInfoController do
             transaction_id: 'abc123',
             verified_attributes: [],
           ),
+          phone_result:,
           device_profiling_result: Proofing::DdpResult.new(success: true),
           ipp_enrollment_in_progress: true,
           residential_resolution_result: Proofing::Resolution::Result.new(success: true),
           resolution_result: Proofing::Resolution::Result.new(success: true),
           same_address_as_id: true,
           should_proof_state_id: true,
-          applicant_pii: Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN,
-        ).adjudicated_result.to_h
-
-        document_capture_session.create_proofing_session
-
-        document_capture_session.store_proofing_result(adjudicated_result)
-
-        document_capture_session.load_proofing_result
+          applicant_pii:,
+          precheck_phone_number: subject.idv_session.precheck_phone[:phone],
+        ).adjudicated_result
       end
 
       before do
-        allow(controller).to receive(:load_async_state).and_return(async_state)
+        document_capture_session.create_proofing_session
+        document_capture_session.store_proofing_result(adjudicated_result.to_h)
+        allow(controller).to receive(:load_async_state)
+          .and_return(document_capture_session.load_proofing_result)
       end
 
       context 'when aamva processes the request normally' do
         it 'redirect to phone confirmation url' do
           put :show
-          expect(response).to redirect_to idv_phone_url
+          expect(response).to redirect_to idv_enter_password_url
+        end
+
+        context 'when phone result fails' do
+          let(:phone_result) do
+            Proofing::AddressResult.new(
+              success: false,
+              errors: {},
+              exception: nil,
+              vendor_name: 'test-phone-vendor',
+            ).to_h
+          end
+
+          it 'redirect to phone confirmation url' do
+            put :show
+            expect(response).to redirect_to idv_phone_url
+            expect(controller.idv_session.phone_precheck_successful).to eq(false)
+            expect(controller.idv_session.phone_precheck_vendor).to be_nil
+          end
+        end
+
+        context 'when there are no phone results' do
+          let(:phone_result) { {} }
+
+          it 'redirect to phone confirmation url' do
+            put :show
+            expect(response).to redirect_to idv_phone_url
+            expect(controller.idv_session.phone_precheck_successful).to be_nil
+            expect(controller.idv_session.phone_precheck_vendor).to be_nil
+          end
         end
 
         it 'logs an event with analytics_id set' do
@@ -494,15 +731,146 @@ RSpec.describe Idv::VerifyInfoController do
           state_id = event.dig(:proofing_results, :context, :stages, :state_id)
           expect(state_id).to match(
             hash_including(
-              state_id_type: 'drivers_license',
+              document_type_received: 'drivers_license',
               vendor_name: 'aamva_placeholder',
             ),
           )
+
+          event = @analytics.events['IdV: doc auth verify proofing results'].first
+          phone_precheck = event.dig(:proofing_results, :context, :stages, :phone_precheck)
+          expect(phone_precheck).to match(
+            hash_including(
+              success: true,
+              vendor_name: 'test-phone-vendor',
+            ),
+          )
+          expect(controller.idv_session.phone_precheck_successful).to eq(true)
+          expect(controller.idv_session.phone_precheck_vendor).to eq('test-phone-vendor')
+        end
+
+        context 'when there is a secondary phone vendor' do
+          let(:phone_result) do
+            alternate_result = Proofing::AddressResult.new(
+              success: false,
+              errors: {},
+              exception: nil,
+              vendor_name: 'failed-vendor',
+            ).to_h
+            Proofing::AddressResult.new(
+              success: true,
+              errors: {},
+              exception: nil,
+              vendor_name: 'successful-vendor',
+            ).to_h.merge(alternate_result:)
+          end
+          it 'logs an event with analytics_id set' do
+            put :show
+
+            event = @analytics.events['IdV: doc auth verify proofing results'].first
+            phone_precheck = event.dig(:proofing_results, :context, :stages, :phone_precheck)
+            expect(phone_precheck).to match(
+              hash_including(
+                success: true,
+                vendor_name: 'successful-vendor',
+              ),
+            )
+            expect(phone_precheck[:alternate_result]).to match(
+              hash_including(
+                success: false,
+                vendor_name: 'failed-vendor',
+              ),
+            )
+            expect(controller.idv_session.phone_precheck_successful).to eq(true)
+            expect(controller.idv_session.phone_precheck_vendor).to eq('successful-vendor')
+          end
+
+          context 'when both phone vendors fail' do
+            let(:phone_result) do
+              alternate_result = Proofing::AddressResult.new(
+                success: false,
+                errors: {},
+                exception: nil,
+                vendor_name: 'first-failed-vendor',
+              ).to_h
+              Proofing::AddressResult.new(
+                success: false,
+                errors: {},
+                exception: nil,
+                vendor_name: 'second-failed-vendor',
+              ).to_h.merge(alternate_result:)
+            end
+            it 'logs an event with analytics_id set' do
+              put :show
+
+              event = @analytics.events['IdV: doc auth verify proofing results'].first
+              phone_precheck = event.dig(:proofing_results, :context, :stages, :phone_precheck)
+              expect(phone_precheck).to match(
+                hash_including(
+                  success: false,
+                  vendor_name: 'second-failed-vendor',
+                ),
+              )
+              expect(phone_precheck[:alternate_result]).to match(
+                hash_including(
+                  success: false,
+                  vendor_name: 'first-failed-vendor',
+                ),
+              )
+              expect(controller.idv_session.phone_precheck_successful).to eq(false)
+              expect(controller.idv_session.phone_precheck_vendor).to be_nil
+            end
+          end
+        end
+
+        it 'tracks the event for the attempts api' do
+          expect(@attempts_api_tracker).to receive(:idv_verification_submitted).with(
+            success: true,
+            document_state: applicant_pii[:state],
+            document_number: applicant_pii[:state_id_number],
+            document_issued: applicant_pii[:state_id_issued],
+            document_expiration: applicant_pii[:state_id_expiration],
+            first_name: applicant_pii[:first_name],
+            last_name: applicant_pii[:last_name],
+            date_of_birth: applicant_pii[:dob],
+            address1: applicant_pii[:address1],
+            address2: applicant_pii[:address2],
+            ssn: SsnFormatter.format(applicant_pii[:ssn]),
+            city: applicant_pii[:city],
+            state: applicant_pii[:state],
+            zip: applicant_pii[:zip],
+            failure_reason: nil,
+          )
+          get :show
         end
       end
 
       context 'when aamva returns success: false but no exception' do
         let(:success) { false }
+
+        it 'tracks the event for the attempts api' do
+          expect(@attempts_api_tracker).to receive(:idv_verification_submitted).with(
+            success: false,
+            document_state: applicant_pii[:state],
+            document_number: applicant_pii[:state_id_number],
+            document_issued: applicant_pii[:state_id_issued],
+            document_expiration: applicant_pii[:state_id_expiration],
+            first_name: applicant_pii[:first_name],
+            last_name: applicant_pii[:last_name],
+            date_of_birth: applicant_pii[:dob],
+            address1: applicant_pii[:address1],
+            address2: applicant_pii[:address2],
+            ssn: SsnFormatter.format(applicant_pii[:ssn]),
+            city: applicant_pii[:city],
+            state: applicant_pii[:state],
+            zip: applicant_pii[:zip],
+            failure_reason: {
+              failed_stages: [:state_id],
+              resolution_adjudication_reason: ['fail_state_id'],
+              device_profiling_adjudication_reason: ['device_profiling_result_pass'],
+            },
+          )
+          get :show
+        end
 
         it 'redirects to the warning URL' do
           put :show
@@ -513,6 +881,54 @@ RSpec.describe Idv::VerifyInfoController do
       context 'when aamva returns an exception' do
         let(:success) { false }
         let(:exception) { Proofing::Aamva::VerificationError.new('ExceptionId: 0001') }
+
+        it 'tracks the event for the attempts api' do
+          expect(@attempts_api_tracker).to receive(:idv_verification_submitted).with(
+            success: false,
+            document_state: applicant_pii[:state],
+            document_number: applicant_pii[:state_id_number],
+            document_issued: applicant_pii[:state_id_issued],
+            document_expiration: applicant_pii[:state_id_expiration],
+            first_name: applicant_pii[:first_name],
+            last_name: applicant_pii[:last_name],
+            date_of_birth: applicant_pii[:dob],
+            address1: applicant_pii[:address1],
+            address2: applicant_pii[:address2],
+            ssn: SsnFormatter.format(applicant_pii[:ssn]),
+            city: applicant_pii[:city],
+            state: applicant_pii[:state],
+            zip: applicant_pii[:zip],
+            failure_reason: {
+              failed_stages: [:state_id],
+              resolution_adjudication_reason: ['fail_state_id'],
+              device_profiling_adjudication_reason: ['device_profiling_result_pass'],
+            },
+          )
+          get :show
+        end
+
+        it 'logs the doc auth verify proofing results event' do
+          put :show
+          expect(@analytics).to have_logged_event(
+            'IdV: doc auth verify proofing results',
+            hash_including(
+              proofing_results: hash_including(
+                context: hash_including(
+                  stages: hash_including(
+                    state_id: hash_including(vendor_name:),
+                  ),
+                ),
+              ),
+              exceptions: {
+                state_id: {
+                  vendor_name:,
+                  exception: exception.message,
+                  jurisdiction_in_maintenance_window: false,
+                },
+              },
+            ),
+          )
+        end
 
         it 'redirects user to warning' do
           put :show
@@ -529,20 +945,215 @@ RSpec.describe Idv::VerifyInfoController do
           )
         end
       end
+
+      context 'when proofing results is missing values' do
+        let(:adjudicated_result) do
+          {
+            context:,
+            errors: {},
+            exception: nil,
+            success: true,
+            threatmetrix_review_status: :passed,
+          }
+        end
+
+        context 'when context is missing' do
+          let(:context) { nil }
+
+          it 'logs the doc auth verify proofing results event' do
+            put :show
+            expect(@analytics).to have_logged_event(
+              'IdV: doc auth verify proofing results',
+              hash_including(proofing_results: hash_including(context: nil)),
+            )
+          end
+        end
+
+        context 'when context stages are missing' do
+          let(:context) { { stages: nil } }
+
+          it 'logs the doc auth verify proofing results event' do
+            put :show
+            expect(@analytics).to have_logged_event(
+              'IdV: doc auth verify proofing results',
+              hash_including(proofing_results: hash_including(context: { stages: nil })),
+            )
+          end
+        end
+      end
+    end
+
+    context 'when instant verify address proofing results in an exception' do
+      let(:document_capture_session) { create(:document_capture_session, user:) }
+      let(:success) { false }
+      let(:errors) { {} }
+      let(:exception) { nil }
+      let(:error_attributes) { nil }
+      let(:vendor_name) { 'instantverify_placeholder' }
+      let(:applicant_pii) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN }
+      let(:adjudicated_result) do
+        Proofing::Resolution::ResultAdjudicator.new(
+          state_id_result: Proofing::StateIdResult.new(success: true),
+          phone_result: Proofing::AddressResult.new(
+            success: success,
+            errors: {},
+            exception: exception,
+            vendor_name: 'instant_verify_test',
+          ).to_h,
+          device_profiling_result: Proofing::DdpResult.new(success: true),
+          ipp_enrollment_in_progress: false,
+          residential_resolution_result: Proofing::Resolution::Result.new(success: true),
+          resolution_result: Proofing::Resolution::Result.new(
+            success: success,
+            errors: {},
+            exception: 'fake exception',
+            vendor_name: vendor_name,
+            attributes_requiring_additional_verification: error_attributes,
+          ),
+          same_address_as_id: nil,
+          should_proof_state_id: true,
+          applicant_pii:,
+          precheck_phone_number: subject.idv_session.precheck_phone[:phone],
+        ).adjudicated_result
+      end
+
+      before do
+        document_capture_session.create_proofing_session
+        document_capture_session.store_proofing_result(adjudicated_result.to_h)
+        allow(controller).to receive(:load_async_state)
+          .and_return(document_capture_session.load_proofing_result)
+      end
+
+      context 'address is the only exception' do
+        let(:error_attributes) { ['address'] }
+
+        it 'redirects user to address warning' do
+          put :show
+          expect(response).to redirect_to idv_session_errors_address_warning_url
+        end
+
+        it 'tracks the event for the attempts api' do
+          expect(@attempts_api_tracker).to receive(:idv_verification_submitted).with(
+            success: false,
+            document_state: applicant_pii[:state],
+            document_number: applicant_pii[:state_id_number],
+            document_issued: applicant_pii[:state_id_issued],
+            document_expiration: applicant_pii[:state_id_expiration],
+            first_name: applicant_pii[:first_name],
+            last_name: applicant_pii[:last_name],
+            date_of_birth: applicant_pii[:dob],
+            address1: applicant_pii[:address1],
+            address2: applicant_pii[:address2],
+            ssn: SsnFormatter.format(applicant_pii[:ssn]),
+            city: applicant_pii[:city],
+            state: applicant_pii[:state],
+            zip: applicant_pii[:zip],
+            failure_reason: {
+              attributes_requiring_additional_verification: ['address'],
+              failed_stages: [:resolution, :phone_precheck],
+              resolution_adjudication_reason: ['fail_resolution_without_state_id_coverage'],
+              device_profiling_adjudication_reason: ['device_profiling_result_pass'],
+            },
+          )
+          get :show
+        end
+
+        it 'logs the doc auth verify proofing results event' do
+          put :show
+          expect(@analytics).to have_logged_event(
+            'IdV: doc auth verify proofing results',
+            hash_including(
+              proofing_results: hash_including(
+                context: hash_including(
+                  stages: hash_including(
+                    resolution: hash_including(vendor_name:),
+                  ),
+                ),
+              ),
+              exceptions: {
+                resolution: {
+                  vendor_name:,
+                  exception: 'fake exception',
+                },
+              },
+            ),
+          )
+        end
+
+        it 'logs an event' do
+          get :show
+
+          expect(@analytics).to have_logged_event(
+            :idv_doc_auth_address_warning_visited,
+            step_name: 'verify_info',
+            remaining_submit_attempts: kind_of(Numeric),
+          )
+        end
+      end
+
+      context 'there are more instant verify exceptions' do
+        let(:error_attributes) { ['address', 'dob', 'ssn'] }
+
+        it 'tracks the event for the attempts api' do
+          expect(@attempts_api_tracker).to receive(:idv_verification_submitted).with(
+            success: false,
+            document_state: applicant_pii[:state],
+            document_number: applicant_pii[:state_id_number],
+            document_issued: applicant_pii[:state_id_issued],
+            document_expiration: applicant_pii[:state_id_expiration],
+            first_name: applicant_pii[:first_name],
+            last_name: applicant_pii[:last_name],
+            date_of_birth: applicant_pii[:dob],
+            address1: applicant_pii[:address1],
+            address2: applicant_pii[:address2],
+            ssn: SsnFormatter.format(applicant_pii[:ssn]),
+            city: applicant_pii[:city],
+            state: applicant_pii[:state],
+            zip: applicant_pii[:zip],
+            failure_reason: {
+              attributes_requiring_additional_verification: ['address', 'dob', 'ssn'],
+              failed_stages: [:resolution, :phone_precheck],
+              resolution_adjudication_reason: ['fail_resolution_without_state_id_coverage'],
+              device_profiling_adjudication_reason: ['device_profiling_result_pass'],
+            },
+          )
+          get :show
+        end
+
+        it 'logs the doc auth verify proofing results event' do
+          put :show
+          expect(@analytics).to have_logged_event(
+            'IdV: doc auth verify proofing results',
+            hash_including(
+              proofing_results: hash_including(
+                context: hash_including(
+                  stages: hash_including(
+                    resolution: hash_including(vendor_name:),
+                  ),
+                ),
+              ),
+              exceptions: {
+                resolution: {
+                  vendor_name:,
+                  exception: 'fake exception',
+                },
+              },
+            ),
+          )
+        end
+
+        it 'redirects user to address warning' do
+          put :show
+          expect(response).to redirect_to idv_session_errors_exception_url
+        end
+      end
     end
 
     context 'when the resolution proofing job fails and there is no exception' do
-      before do
-        allow(controller).to receive(:load_async_state).and_return(async_state)
-      end
-
-      let(:document_capture_session) do
-        DocumentCaptureSession.create(user:)
-      end
-
-      let(:async_state) do
-        # Here we're trying to match the store to redis -> read from redis flow this data travels
-        adjudicated_result = Proofing::Resolution::ResultAdjudicator.new(
+      let(:document_capture_session) { create(:document_capture_session, user:) }
+      let(:applicant_pii) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN }
+      let(:adjudicated_result) do
+        Proofing::Resolution::ResultAdjudicator.new(
           state_id_result: Proofing::StateIdResult.new(
             success: true,
             errors: {},
@@ -551,6 +1162,12 @@ RSpec.describe Idv::VerifyInfoController do
             transaction_id: 'abc123',
             verified_attributes: [],
           ),
+          phone_result: Proofing::AddressResult.new(
+            success: true,
+            errors: {},
+            exception: nil,
+            vendor_name: 'test-phone-vendor',
+          ).to_h,
           device_profiling_result: Proofing::DdpResult.new(success: true),
           ipp_enrollment_in_progress: true,
           residential_resolution_result: Proofing::Resolution::Result.new(success: true),
@@ -564,18 +1181,46 @@ RSpec.describe Idv::VerifyInfoController do
           ),
           same_address_as_id: true,
           should_proof_state_id: true,
-          applicant_pii: Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN,
-        ).adjudicated_result.to_h
+          applicant_pii:,
+          precheck_phone_number: subject.idv_session.precheck_phone[:phone],
+        ).adjudicated_result
+      end
 
+      before do
         document_capture_session.create_proofing_session
+        document_capture_session.store_proofing_result(adjudicated_result.to_h)
+        allow(controller).to receive(:load_async_state)
+          .and_return(document_capture_session.load_proofing_result)
+      end
 
-        document_capture_session.store_proofing_result(adjudicated_result)
-
-        document_capture_session.load_proofing_result
+      it 'tracks the attempts api event' do
+        expect(@attempts_api_tracker).to receive(:idv_verification_submitted).with(
+          success: false,
+          document_state: applicant_pii[:state],
+          document_number: applicant_pii[:state_id_number],
+          document_issued: applicant_pii[:state_id_issued],
+          document_expiration: applicant_pii[:state_id_expiration],
+          first_name: applicant_pii[:first_name],
+          last_name: applicant_pii[:last_name],
+          date_of_birth: applicant_pii[:dob],
+          address1: applicant_pii[:address1],
+          address2: applicant_pii[:address2],
+          ssn: SsnFormatter.format(applicant_pii[:ssn]),
+          city: applicant_pii[:city],
+          state: applicant_pii[:state],
+          zip: applicant_pii[:zip],
+          failure_reason: {
+            failed_stages: [:resolution],
+            resolution_adjudication_reason: ['fail_resolution_without_state_id_coverage'],
+            device_profiling_adjudication_reason: ['device_profiling_result_pass'],
+          },
+        )
+        get :show
       end
 
       it 'renders the warning page' do
         get :show
+
         expect(response).to redirect_to(idv_session_errors_warning_url)
       end
 
@@ -588,6 +1233,9 @@ RSpec.describe Idv::VerifyInfoController do
           remaining_submit_attempts: kind_of(Numeric),
         )
       end
+    end
+
+    context 'when the resolution proofing results is missing values' do
     end
 
     context 'when the resolution proofing job has not completed' do
@@ -626,17 +1274,11 @@ RSpec.describe Idv::VerifyInfoController do
     end
 
     context 'when the resolution proofing job completed successfully' do
-      let(:document_capture_session) do
-        DocumentCaptureSession.create(user:)
-      end
-
+      let(:document_capture_session) { create(:document_capture_session, user:) }
       let(:resolution_vendor_name) { 'ResolutionVendor' }
-
       let(:residential_resolution_vendor_name) { 'ResidentialResolutionVendor' }
-
-      let(:async_state) do
-        # Here we're trying to match the store to redis -> read from redis flow this data travels
-        adjudicated_result = Proofing::Resolution::ResultAdjudicator.new(
+      let(:adjudicated_result) do
+        Proofing::Resolution::ResultAdjudicator.new(
           state_id_result: Proofing::StateIdResult.new(
             success: true,
             errors: {},
@@ -645,6 +1287,12 @@ RSpec.describe Idv::VerifyInfoController do
             transaction_id: 'abc123',
             verified_attributes: [],
           ),
+          phone_result: Proofing::AddressResult.new(
+            success: true,
+            errors: {},
+            exception: nil,
+            vendor_name: 'test-phone-vendor',
+          ).to_h,
           device_profiling_result: Proofing::DdpResult.new(success: true),
           ipp_enrollment_in_progress: true,
           residential_resolution_result: Proofing::Resolution::Result.new(
@@ -658,17 +1306,16 @@ RSpec.describe Idv::VerifyInfoController do
           same_address_as_id: true,
           should_proof_state_id: true,
           applicant_pii: Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN,
-        ).adjudicated_result.to_h
-
-        document_capture_session.create_proofing_session
-
-        document_capture_session.store_proofing_result(adjudicated_result)
-
-        document_capture_session.load_proofing_result
+          precheck_phone_number: subject.idv_session.precheck_phone[:phone],
+        ).adjudicated_result
       end
 
       before do
-        allow(controller).to receive(:load_async_state).and_return(async_state)
+        # Here we're trying to match the store to redis -> read from redis flow this data travels
+        document_capture_session.create_proofing_session
+        document_capture_session.store_proofing_result(adjudicated_result.to_h)
+        allow(controller).to receive(:load_async_state)
+          .and_return(document_capture_session.load_proofing_result)
       end
 
       it 'sets resolution_vendor on idv_session' do
@@ -707,11 +1354,21 @@ RSpec.describe Idv::VerifyInfoController do
       expect(response).to redirect_to idv_verify_info_url
     end
 
+    context 'has best effort phone' do
+      before do
+        subject.idv_session.phone_for_mobile_flow = '+1 703-555-5555'
+      end
+
+      it 'stores the precheck phone number in the idv session' do
+        put :update
+
+        expect(subject.idv_session.precheck_phone[:phone]).to eq('+1 703-555-5555')
+      end
+    end
     context 'with an sp' do
       let(:sp) { create(:service_provider) }
       let(:acr_values) { Saml::Idp::Constants::AAL1_AUTHN_CONTEXT_CLASSREF }
-      let(:vtr) { nil }
-      let(:sp_session) { { issuer: sp.issuer, vtr:, acr_values: } }
+      let(:sp_session) { { issuer: sp.issuer, acr_values: } }
 
       before do
         allow(controller).to receive(:sp_session).and_return(sp_session)
@@ -727,23 +1384,6 @@ RSpec.describe Idv::VerifyInfoController do
         ).and_call_original
 
         put :update
-      end
-
-      context 'with vtr values' do
-        let(:acr_values) { nil }
-        let(:vtr) { ['C1'] }
-
-        it 'modifies PII as expected' do
-          expect(Idv::Agent).to receive(:new).with(
-            hash_including(
-              ssn: Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn],
-              consent_given_at: controller.idv_session.idv_consent_given_at,
-              **Idp::Constants::MOCK_IDV_APPLICANT,
-            ),
-          ).and_call_original
-
-          put :update
-        end
       end
     end
 
@@ -793,20 +1433,6 @@ RSpec.describe Idv::VerifyInfoController do
       expect(subject.best_effort_phone).to eq(nil)
     end
 
-    context 'when there is a hybrid handoff number' do
-      before(:each) do
-        allow(subject.idv_session).to receive(:phone_for_mobile_flow).and_return('202-555-1234')
-      end
-
-      it 'returns the phone number from hybrid handoff' do
-        expect(subject.best_effort_phone[:phone]).to eq('202-555-1234')
-      end
-
-      it 'sets type to :hybrid_handoff' do
-        expect(subject.best_effort_phone[:source]).to eq(:hybrid_handoff)
-      end
-    end
-
     context 'when there was an MFA phone number provided' do
       let(:user) { create(:user, :with_phone) }
 
@@ -816,6 +1442,20 @@ RSpec.describe Idv::VerifyInfoController do
 
       it 'sets the phone source to :mfa' do
         expect(subject.best_effort_phone[:source]).to eq(:mfa)
+      end
+
+      context 'when there is a hybrid handoff number' do
+        before(:each) do
+          subject.idv_session.phone_for_mobile_flow = '202-555-1234'
+        end
+
+        it 'returns the phone number from hybrid handoff' do
+          expect(subject.best_effort_phone[:phone]).to eq('202-555-1234')
+        end
+
+        it 'sets type to :hybrid_handoff' do
+          expect(subject.best_effort_phone[:source]).to eq(:hybrid_handoff)
+        end
       end
     end
   end

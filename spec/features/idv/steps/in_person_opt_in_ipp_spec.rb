@@ -118,7 +118,11 @@ RSpec.describe 'In Person Proofing - Opt-in IPP ', js: true do
         expect(page).to have_content(strip_nbsp(t('in_person_proofing.headings.barcode')))
         expect(page).to have_content(Idv::InPerson::EnrollmentCodeFormatter.format(enrollment_code))
         expect(page).to have_content(
-          t('in_person_proofing.body.barcode.deadline', deadline: deadline),
+          t(
+            'in_person_proofing.body.barcode.deadline',
+            deadline: deadline,
+            sp_name: ipp_service_provider.friendly_name,
+          ),
         )
         expect(page).to have_content('MILWAUKEE')
         expect(page).to have_content('Sunday: Closed')
@@ -264,6 +268,7 @@ RSpec.describe 'In Person Proofing - Opt-in IPP ', js: true do
         t(
           'in_person_proofing.body.barcode.deadline',
           deadline: deadline,
+          sp_name: ipp_service_provider.friendly_name,
         ),
       )
       expect(page).to have_content('MILWAUKEE')
@@ -317,6 +322,7 @@ RSpec.describe 'In Person Proofing - Opt-in IPP ', js: true do
 
       # hybrid handoff
       click_on t('forms.buttons.upload_photos')
+      complete_choose_id_type_step
       mock_doc_auth_attention_with_barcode
 
       # doc auth- attach and submit images to fail doc auth
@@ -430,6 +436,7 @@ RSpec.describe 'In Person Proofing - Opt-in IPP ', js: true do
         t(
           'in_person_proofing.body.barcode.deadline',
           deadline: deadline,
+          sp_name: ipp_service_provider.friendly_name,
         ),
       )
       expect(page).to have_content('MILWAUKEE')
@@ -473,6 +480,7 @@ RSpec.describe 'In Person Proofing - Opt-in IPP ', js: true do
       complete_agreement_step
       expect(page).to have_current_path(idv_hybrid_handoff_url)
       complete_hybrid_handoff_step
+      complete_choose_id_type_step
       complete_document_capture_step
       complete_ssn_step
       complete_verify_step
@@ -487,9 +495,9 @@ RSpec.describe 'In Person Proofing - Opt-in IPP ', js: true do
       sign_in_via_branded_page(user)
       complete_welcome_step
       complete_agreement_step
-      click_on t('forms.buttons.continue_remote')
       expect(page).to have_current_path(idv_hybrid_handoff_url)
       complete_hybrid_handoff_step
+      complete_choose_id_type_step
       complete_document_capture_step
       complete_ssn_step
       complete_verify_step

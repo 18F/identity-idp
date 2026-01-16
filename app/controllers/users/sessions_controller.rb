@@ -43,7 +43,7 @@ module Users
 
       rate_limit_password_failure = true
 
-      return process_failed_captcha unless recaptcha_response.success? || log_captcha_failures_only?
+      return process_failed_captcha unless recaptcha_response.success?
 
       self.resource = warden.authenticate!(auth_options)
       handle_valid_authentication
@@ -53,12 +53,9 @@ module Users
     end
 
     def destroy
-      if request.method == 'GET' && IdentityConfig.store.disable_logout_get_request
-        redirect_to root_path
-      else
-        analytics.logout_initiated(sp_initiated: false, oidc: false)
-        super
-      end
+      analytics.logout_initiated(sp_initiated: false, oidc: false)
+      attempts_api_tracker.logout_initiated(success: true)
+      super
     end
 
     def analytics_user
@@ -85,6 +82,7 @@ module Users
     end
 
     def process_rate_limited
+      attempts_api_tracker.login_rate_limited(email: auth_params[:email])
       sign_out(:user)
       warden.lock!
 
@@ -113,10 +111,18 @@ module Users
       )
     end
 
+    def recaptcha_assessment_id
+      recaptcha_form.assessment_id
+    end
+
     def recaptcha_form
+      return @recaptcha_form if defined?(@recaptcha_form)
+      existing_device = User.find_with_confirmed_email(auth_params[:email])&.devices&.exists?(
+        cookie_uuid: cookies[:device],
+      )
+
       @recaptcha_form ||= SignInRecaptchaForm.new(
-        email: auth_params[:email],
-        device_cookie: cookies[:device],
+        existing_device: existing_device,
         ab_test_bucket: ab_test_bucket(:RECAPTCHA_SIGN_IN, user: user_from_params),
         **recaptcha_form_args,
       )
@@ -217,6 +223,7 @@ module Users
       success = current_user.present? &&
                 !user_locked_out?(user) &&
                 (recaptcha_response.success? || log_captcha_failures_only?)
+      session[:sign_in_recaptcha_assessment_id] = recaptcha_assessment_id if recaptcha_assessment_id
 
       analytics.email_and_password_auth(
         **recaptcha_response,
@@ -229,6 +236,10 @@ module Users
         sp_request_url_present: sp_session[:request_url].present?,
         remember_device: remember_device_cookie.present?,
         new_device: success ? new_device? : nil,
+      )
+      attempts_api_tracker.login_email_and_password_auth(
+        email: sign_in_params[:email]&.downcase,
+        success:,
       )
     end
 
@@ -264,6 +275,8 @@ module Users
         analytics.banned_user_redirect
         sign_out
         banned_user_url
+      elsif user_account_creation_device_profile_failed?
+        device_profiling_failed_url
       elsif pending_account_reset_request.present?
         account_reset_pending_url
       elsif current_user.accepted_rules_of_use_still_valid?
@@ -322,8 +335,12 @@ module Users
         IdentityConfig.store.compromised_password_randomizer_threshold
     end
 
-    def log_captcha_failures_only?
-      IdentityConfig.store.sign_in_recaptcha_log_failures_only
+    def user_account_creation_device_profile_failed?
+      return false unless IdentityConfig.store.account_creation_device_profiling == :enabled
+      profiling_result = find_device_profiling_result(
+        DeviceProfilingResult::PROFILING_TYPES[:account_creation],
+      )
+      profiling_result&.rejected?
     end
   end
 

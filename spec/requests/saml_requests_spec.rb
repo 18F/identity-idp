@@ -28,7 +28,7 @@ RSpec.describe 'SAML requests', type: :request do
     let(:cookie_regex) { /\A(?<cookie>\w+)=/ }
 
     it 'renders a form for the SAML year that was requested' do
-      path_year = '2023'
+      path_year = '2024'
 
       overridden_saml_settings = saml_settings(
         overrides: {
@@ -90,6 +90,26 @@ RSpec.describe 'SAML requests', type: :request do
 
       it '404s' do
         post api_saml_remotelogout_url(path_year: path_year)
+
+        expect(response).to be_not_found
+      end
+    end
+  end
+
+  describe 'GET /api/saml/metadata' do
+    let(:path_year) { SamlAuthHelper::PATH_YEAR }
+
+    it 'is successful' do
+      get api_saml_metadata_url(path_year: path_year)
+
+      expect(response).to be_ok
+    end
+
+    context 'for an unsupported year' do
+      let(:path_year) { (SamlEndpoint.suffixes.max.to_i + 1).to_s }
+
+      it '404s' do
+        get api_saml_metadata_url(path_year: path_year)
 
         expect(response).to be_not_found
       end

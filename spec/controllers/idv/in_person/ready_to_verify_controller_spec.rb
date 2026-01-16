@@ -32,7 +32,6 @@ RSpec.describe Idv::InPerson::ReadyToVerifyController do
 
     context 'with in person proofing enabled' do
       let(:in_person_proofing_enabled) { true }
-      let(:ipp_post_office_closed_alert_enabled) { false }
 
       context 'authenticated' do
         before do
@@ -51,6 +50,9 @@ RSpec.describe Idv::InPerson::ReadyToVerifyController do
           end
 
           it 'logs analytics' do
+            stub_attempts_tracker
+            expect(@attempts_api_tracker).to receive(:idv_ipp_ready_to_verify_visit)
+
             response
 
             expect(@analytics).to have_logged_event('IdV: in person ready to verify visited')
@@ -84,11 +86,16 @@ RSpec.describe Idv::InPerson::ReadyToVerifyController do
           end
 
           context 'in_person_proofing_enforce_tmx enabled, pending fraud review,
-          enrollment not passed' do
+          enrollment not processed by USPS' do
+            let(:user) { create(:user) }
             let(:in_person_proofing_enforce_tmx) { true }
-            let!(:profile) { create(:profile, fraud_review_pending_at: 1.day.ago, user: user) }
-            let!(:enrollment) do
-              create(:in_person_enrollment, :establishing, user: user, profile: profile)
+            let!(:profile) do
+              create(
+                :profile,
+                :in_person_verification_pending,
+                fraud_review_pending_at: 1.day.ago,
+                user: user,
+              )
             end
 
             it 'does not redirect to please call' do
@@ -96,49 +103,6 @@ RSpec.describe Idv::InPerson::ReadyToVerifyController do
 
               expect(response).to render_template :show
               expect(response).not_to redirect_to idv_please_call_url
-            end
-          end
-
-          context 'when vtr (vector of trust) does not include Enhanced Proofing (Pe)' do
-            before do
-              resolved_authn_context_result = Vot::Parser.new(vector_of_trust: 'Pb').parse
-
-              allow(controller).to receive(:resolved_authn_context_result)
-                .and_return(resolved_authn_context_result)
-            end
-
-            it 'evaluates to In Person Proofing' do
-              response
-
-              expect(assigns(:is_enhanced_ipp)).to be false
-            end
-          end
-
-          context 'when vtr (vector of trust) includes Enhanced Proofing (Pe)' do
-            before do
-              resolved_authn_context_result = Vot::Parser.new(vector_of_trust: 'Pe').parse
-
-              allow(controller).to receive(:resolved_authn_context_result)
-                .and_return(resolved_authn_context_result)
-            end
-
-            it 'evaluates to Enhanced IPP' do
-              response
-
-              expect(assigns(:is_enhanced_ipp)).to be true
-            end
-          end
-
-          context 'with in_person_proofing_post_office_closed_alert_enabled' do
-            let(:ipp_post_office_closed_alert_enabled) { true }
-            before do
-              allow(IdentityConfig.store)
-                .to receive(:in_person_proofing_post_office_closed_alert_enabled)
-                .and_return(ipp_post_office_closed_alert_enabled)
-            end
-
-            it 'renders the show template' do
-              expect(response).to render_template :show
             end
           end
         end

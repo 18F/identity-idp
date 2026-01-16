@@ -17,6 +17,7 @@ class GetUspsProofingResultsJob < ApplicationJob
   SUPPORTED_SECONDARY_ID_TYPES = [
     'Visual Inspection of Name and Address on Primary ID Match',
   ].freeze
+  MINUTES_PER_DAY = 1440
 
   queue_as :long_running
 
@@ -34,6 +35,8 @@ class GetUspsProofingResultsJob < ApplicationJob
       enrollments_cancelled: 0,
       enrollments_in_progress: 0,
       enrollments_passed: 0,
+      enrollments_in_fraud_review: 0,
+      enrollments_skipped: 0,
     }
 
     started_at = Time.zone.now
@@ -106,7 +109,7 @@ class GetUspsProofingResultsJob < ApplicationJob
 
     profile_deactivation_reason = enrollment.profile_deactivation_reason
 
-    if profile_deactivation_reason.present?
+    if profile_deactivation_reason.present? && profile_deactivation_reason != 'password_reset'
       log_enrollment_updated_analytics(
         enrollment: enrollment,
         enrollment_passed: false,
@@ -118,9 +121,7 @@ class GetUspsProofingResultsJob < ApplicationJob
       return
     end
 
-    response = proofer.request_proofing_results(
-      enrollment,
-    )
+    response = proofer.request_proofing_results(enrollment)
   rescue Faraday::BadRequestError => err
     # 400 status code. This is used for some status updates and some common client errors
     handle_bad_request_error(err, enrollment)
@@ -131,7 +132,14 @@ class GetUspsProofingResultsJob < ApplicationJob
   rescue StandardError => err
     handle_standard_error(err, enrollment)
   else
-    process_enrollment_response(enrollment, response)
+    if profile_deactivation_reason == 'password_reset'
+      skip_enrollment(enrollment, profile_deactivation_reason, response)
+      if password_reset_time_exceeded?(enrollment)
+        cancel_abandoned_password_reset_enrollment(enrollment)
+      end
+    else
+      process_enrollment_response(enrollment, response)
+    end
   ensure
     # Record the attempt to update the enrollment
     enrollment.update(status_check_attempted_at: status_check_attempted_at)
@@ -139,8 +147,33 @@ class GetUspsProofingResultsJob < ApplicationJob
 
   def cancel_enrollment(enrollment)
     enrollment_outcomes[:enrollments_cancelled] += 1
-    enrollment.cancelled!
-    enrollment.profile.deactivate_due_to_in_person_verification_cancelled
+    enrollment.cancel
+  end
+
+  def skip_enrollment(enrollment, profile_deactivation_reason, response)
+    analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_enrollment_skipped(
+      **enrollment_analytics_attributes(enrollment, complete: false),
+      **response_analytics_attributes(response),
+      reason: "Profile has a deactivation reason of #{profile_deactivation_reason}",
+      job_name: self.class.name,
+    )
+    enrollment.update(status_check_completed_at: Time.zone.now)
+    enrollment_outcomes[:enrollments_skipped] += 1
+  end
+
+  def cancel_abandoned_password_reset_enrollment(enrollment)
+    enrollment.cancel
+    analytics(user: enrollment.user)
+      .idv_in_person_usps_proofing_results_job_password_reset_enrollment_cancelled(
+        **enrollment_analytics_attributes(enrollment, complete: false),
+        reason: "Enrollment cancelled after over #{IdentityConfig.store.in_person_password_reset_expiration_days} days in password reset", # rubocop:disable Layout/LineLength
+        job_name: self.class.name,
+      )
+  end
+
+  def password_reset_time_exceeded?(enrollment)
+    password_reset_max = IdentityConfig.store.in_person_password_reset_expiration_days * MINUTES_PER_DAY # rubocop:disable Layout/LineLength
+    enrollment.minutes_since_last_status_update > password_reset_max
   end
 
   def passed_with_unsupported_secondary_id_type?(enrollment, response)
@@ -457,7 +490,13 @@ class GetUspsProofingResultsJob < ApplicationJob
     )
 
     unless fraud_result_pending?(enrollment)
+      reproof = enrollment.user&.has_proofed_before?
       enrollment.profile&.activate_after_passing_in_person
+
+      if enrollment.profile&.active?
+        attempts_api_tracker(enrollment:).idv_enrollment_complete(reproof:)
+        fraud_ops_tracker(enrollment:).idv_enrollment_complete(reproof:)
+      end
 
       # send SMS and email
       send_enrollment_status_sms_notification(enrollment: enrollment)
@@ -470,9 +509,30 @@ class GetUspsProofingResultsJob < ApplicationJob
     end
   end
 
+  def attempts_api_tracker(enrollment:)
+    AttemptsApi::Tracker.new(
+      enabled_for_session: enrollment.service_provider&.attempts_api_enabled?,
+      session_id: nil,
+      request: nil,
+      user: enrollment.user,
+      sp: enrollment.service_provider,
+      cookie_device_uuid: nil,
+      sp_redirect_uri: nil,
+    )
+  end
+
+  def fraud_ops_tracker(enrollment:)
+    FraudOps::Tracker.new(
+      request: nil,
+      user: enrollment.user,
+      sp: enrollment.service_provider,
+      cookie_device_uuid: nil,
+    )
+  end
+
   def handle_passed_with_fraud_review_pending(enrollment, response)
     proofed_at = parse_usps_timestamp(response['transactionEndDateTime'])
-    enrollment_outcomes[:enrollments_passed] += 1
+    enrollment_outcomes[:enrollments_in_fraud_review] += 1
     log_enrollment_updated_analytics(
       enrollment: enrollment,
       enrollment_passed: true,
@@ -481,7 +541,7 @@ class GetUspsProofingResultsJob < ApplicationJob
       reason: 'Passed with fraud pending',
     )
     enrollment.update(
-      status: :passed,
+      status: :in_fraud_review,
       proofed_at: proofed_at,
       status_check_completed_at: Time.zone.now,
     )
@@ -629,7 +689,7 @@ class GetUspsProofingResultsJob < ApplicationJob
   end
 
   def notification_delivery_params(enrollment)
-    return {} unless enrollment.passed? || enrollment.failed?
+    return {} unless enrollment.passed? || enrollment.failed? || enrollment.in_fraud_review?
 
     wait_until = enrollment.status_check_completed_at + (
       IdentityConfig.store.in_person_results_delay_in_hours || DEFAULT_EMAIL_DELAY_IN_HOURS
@@ -667,6 +727,7 @@ class GetUspsProofingResultsJob < ApplicationJob
 
   def response_analytics_attributes(response)
     return { response_present: false } unless response.present?
+    return {} unless response.is_a?(Hash)
 
     {
       fraud_suspected: response['fraudSuspected'],

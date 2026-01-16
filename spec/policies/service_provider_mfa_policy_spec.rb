@@ -7,9 +7,8 @@ RSpec.describe ServiceProviderMfaPolicy do
   let(:hspd12) { false }
   let(:phishing_resistant) { false }
   let(:resolved_authn_context_result) do
-    Vot::Parser::Result.new(
+    Component::Parser::Result.new(
       component_values: [],
-      component_separator: ' ',
       aal2?: aal2,
       hspd12?: hspd12,
       phishing_resistant?: phishing_resistant,

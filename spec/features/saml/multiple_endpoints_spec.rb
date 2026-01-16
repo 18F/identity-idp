@@ -4,7 +4,7 @@ RSpec.describe 'multiple saml endpoints' do
   include SamlAuthHelper
   include IdvHelper
 
-  let(:endpoint_suffix) { '2024' }
+  let(:endpoint_suffix) { '2025' }
   let(:user) { create(:user, :fully_registered) }
 
   let(:endpoint_saml_settings) do

@@ -4,6 +4,8 @@ RSpec.describe 'idv/by_mail/enter_code/index.html.erb' do
   let(:user) do
     create(:user)
   end
+  let(:attempts_api_tracker) { AttemptsApiTrackingHelper::FakeAttemptsTracker.new }
+  let(:fraud_ops_tracker) { AttemptsApiTrackingHelper::FakeAttemptsTracker.new }
 
   let(:pii) do
     {}
@@ -19,9 +21,11 @@ RSpec.describe 'idv/by_mail/enter_code/index.html.erb' do
     allow(view).to receive(:step_indicator_steps).and_return({})
 
     @gpo_verify_form = GpoVerifyForm.new(
-      user: user,
-      pii: pii,
-      resolved_authn_context_result: Vot::Parser::Result.no_sp_result,
+      attempts_api_tracker:,
+      fraud_ops_tracker:,
+      user:,
+      pii:,
+      resolved_authn_context_result: Component::Parser::Result.no_sp_result,
       otp: '1234',
     )
 

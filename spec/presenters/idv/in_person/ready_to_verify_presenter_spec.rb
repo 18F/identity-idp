@@ -4,16 +4,14 @@ RSpec.describe Idv::InPerson::ReadyToVerifyPresenter do
   let(:user) { build(:user) }
   let(:profile) { build(:profile, user: user) }
   let(:current_address_matches_id) { true }
-  let(:created_at) { described_class::USPS_SERVER_TIMEZONE.parse('2023-06-14T00:00:00Z') }
-  let(:enrollment_established_at) do
-    described_class::USPS_SERVER_TIMEZONE.parse('2023-07-14T00:00:00Z')
-  end
+  let(:created_at) { Time.zone.parse('2023-06-14') }
+  let(:enrollment_established_at) { Time.zone.parse('2023-07-14') }
   let(:enrollment_selected_location_details) do
     JSON.parse(UspsInPersonProofing::Mock::Fixtures.enrollment_selected_location_details)
   end
   let(:enrollment) do
     create(
-      :in_person_enrollment, :with_service_provider, :pending,
+      :in_person_enrollment, :with_service_provider, :pending, :state_id,
       user: user,
       profile: profile,
       created_at: created_at,
@@ -24,15 +22,15 @@ RSpec.describe Idv::InPerson::ReadyToVerifyPresenter do
   end
   subject(:presenter) { described_class.new(enrollment: enrollment) }
 
-  describe '#formatted_due_date' do
-    let(:enrollment_established_at) { DateTime.new(2024, 7, 5) }
+  describe '#formatted_due_date', timezone: 'UTC' do
+    let(:enrollment_established_at) { Time.zone.parse('2024-07-05') }
 
     context 'when the enrollment has an enrollment_established_at time' do
       [
-        ['English', :en, 'August 3, 2024'],
-        ['Spanish', :es, '3 de agosto de 2024'],
-        ['French', :fr, '3 août 2024'],
-        ['Chinese', :zh, '2024年8月3日'],
+        ['English', :en, 'July 12, 2024'],
+        ['Spanish', :es, '12 de julio de 2024'],
+        ['French', :fr, '12 juillet 2024'],
+        ['Chinese', :zh, '2024年7月12日'],
       ].each do |language, locale, expected|
         context "when locale is #{language}" do
           before do
@@ -48,8 +46,23 @@ RSpec.describe Idv::InPerson::ReadyToVerifyPresenter do
 
     context 'when the enrollment does not have an enrollment_established_at time' do
       let(:enrollment_established_at) { nil }
+
       it 'returns formatted due date when no enrollment_established_at' do
-        expect(presenter.formatted_due_date).to eq 'July 13, 2023'
+        expect(presenter.formatted_due_date).to eq 'June 21, 2023'
+      end
+    end
+  end
+
+  describe '#location_search_skipped?' do
+    context 'when location is not skipped' do
+      it 'returns false' do
+        expect(presenter.location_search_skipped?).to be false
+      end
+    end
+    context 'when location is skipped' do
+      let(:enrollment_selected_location_details) { nil }
+      it 'returns true' do
+        expect(presenter.location_search_skipped?).to be true
       end
     end
   end
@@ -160,9 +173,9 @@ RSpec.describe Idv::InPerson::ReadyToVerifyPresenter do
     let(:config) { IdentityConfig.store.in_person_enrollment_validity_in_days }
 
     context '4 days until due date' do
-      it 'returns 3 days' do
+      it 'returns 4 days' do
         travel_to(enrollment_established_at + (config - 4).days) do
-          expect(days_remaining).to eq(3)
+          expect(days_remaining).to eq(4)
         end
       end
     end
@@ -227,6 +240,120 @@ RSpec.describe Idv::InPerson::ReadyToVerifyPresenter do
 
       it 'returns barcode url' do
         expect(barcode_image_url).to eq(barcode_url)
+      end
+    end
+  end
+
+  describe 'enrollments created with a state ID' do
+    it 'returns false for enrolled_with_passport_book?' do
+      expect(presenter.enrolled_with_passport_book?).to be(false)
+    end
+
+    it 'displays state ID specific content' do
+      expect(presenter.barcode_heading_text).to eq(t('in_person_proofing.headings.barcode'))
+      expect(presenter.state_id_heading_text).to eq(
+        t('in_person_proofing.process.state_id.heading'),
+      )
+      expect(presenter.state_id_info).to eq(t('in_person_proofing.process.state_id.info'))
+      # not passport specific content
+      expect(presenter.barcode_heading_text).to_not eq(
+        t('in_person_proofing.headings.barcode_passport'),
+      )
+      expect(presenter.state_id_heading_text).to_not eq(
+        t('in_person_proofing.process.passport.heading'),
+      )
+      expect(presenter.state_id_info).to_not eq(t('in_person_proofing.process.passport.info'))
+      # not eipp specific content
+      expect(presenter.barcode_heading_text).to_not eq(
+        t('in_person_proofing.headings.barcode_eipp'),
+      )
+      expect(presenter.state_id_heading_text).to_not eq(
+        t('in_person_proofing.process.state_id.heading_eipp'),
+      )
+      expect(presenter.state_id_info).to_not eq(t('in_person_proofing.process.state_id.info_eipp'))
+    end
+  end
+
+  describe 'enrollments created with a passport' do
+    let(:enrollment) do
+      create(
+        :in_person_enrollment, :with_service_provider, :pending, :passport_book,
+        user: user,
+        profile: profile,
+        created_at: created_at,
+        enrollment_established_at: enrollment_established_at,
+        current_address_matches_id: current_address_matches_id,
+        selected_location_details: enrollment_selected_location_details
+      )
+    end
+    subject(:presenter) { described_class.new(enrollment: enrollment) }
+
+    it 'returns true for enrolled_with_passport_book?' do
+      expect(presenter.enrolled_with_passport_book?).to be(true)
+    end
+
+    it 'displays passport specific content' do
+      expect(presenter.barcode_heading_text).to eq(
+        t('in_person_proofing.headings.barcode_passport'),
+      )
+      expect(presenter.state_id_heading_text).to eq(
+        t('in_person_proofing.process.passport.heading'),
+      )
+      expect(presenter.state_id_info).to eq(t('in_person_proofing.process.passport.info'))
+      # not state id specific content
+      expect(presenter.barcode_heading_text).to_not eq(t('in_person_proofing.headings.barcode'))
+      expect(presenter.state_id_heading_text).to_not eq(
+        t('in_person_proofing.process.state_id.heading'),
+      )
+      expect(presenter.state_id_info).to_not eq(t('in_person_proofing.process.state_id.info'))
+      # not eipp specific content
+      expect(presenter.barcode_heading_text).to_not eq(
+        t('in_person_proofing.headings.barcode_eipp'),
+      )
+      expect(presenter.state_id_heading_text).to_not eq(
+        t('in_person_proofing.process.state_id.heading_eipp'),
+      )
+      expect(presenter.state_id_info).to_not eq(t('in_person_proofing.process.state_id.info_eipp'))
+    end
+
+    describe 'eipp enrollments' do
+      let(:enrollment) do
+        create(
+          :in_person_enrollment, :with_service_provider, :pending, :state_id, :enhanced_ipp,
+          user: user,
+          profile: profile,
+          created_at: created_at,
+          enrollment_established_at: enrollment_established_at,
+          current_address_matches_id: current_address_matches_id,
+          selected_location_details: enrollment_selected_location_details
+        )
+      end
+      subject(:presenter) { described_class.new(enrollment: enrollment) }
+
+      it 'returns false for enrolled_with_passport_book?' do
+        expect(presenter.enrolled_with_passport_book?).to be(false)
+      end
+
+      it 'displays eipp specific content' do
+        expect(presenter.barcode_heading_text).to eq(t('in_person_proofing.headings.barcode_eipp'))
+        expect(presenter.state_id_heading_text).to eq(
+          t('in_person_proofing.process.state_id.heading_eipp'),
+        )
+        expect(presenter.state_id_info).to eq(t('in_person_proofing.process.state_id.info_eipp'))
+        # not state id specific content
+        expect(presenter.barcode_heading_text).to_not eq(t('in_person_proofing.headings.barcode'))
+        expect(presenter.state_id_heading_text).to_not eq(
+          t('in_person_proofing.process.state_id.heading'),
+        )
+        expect(presenter.state_id_info).to_not eq(t('in_person_proofing.process.state_id.info'))
+        # not passport specific content
+        expect(presenter.barcode_heading_text).to_not eq(
+          t('in_person_proofing.headings.barcode_passport'),
+        )
+        expect(presenter.state_id_heading_text).to_not eq(
+          t('in_person_proofing.process.passport.heading'),
+        )
+        expect(presenter.state_id_info).to_not eq(t('in_person_proofing.process.passport.info'))
       end
     end
   end

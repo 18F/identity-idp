@@ -80,7 +80,7 @@ RSpec.feature 'webauthn sign in' do
       mock_webauthn_verification_challenge
 
       sign_in_user(user)
-      expect(current_url).to eq(login_two_factor_webauthn_url(platform: true))
+      expect(page).to have_current_path(login_two_factor_webauthn_path(platform: true))
       mock_cancelled_webauthn_authentication { click_webauthn_authenticate_button }
 
       expect(page).to have_content(t('two_factor_authentication.webauthn_platform_header_text'))
@@ -104,7 +104,7 @@ RSpec.feature 'webauthn sign in' do
         expect(page).to have_current_path(login_two_factor_options_path)
         select_2fa_option('webauthn_platform', visible: :all)
         click_continue
-        expect(current_url).to eq(login_two_factor_webauthn_url(platform: true))
+        expect(page).to have_current_path(login_two_factor_webauthn_path(platform: true))
       end
     end
   end

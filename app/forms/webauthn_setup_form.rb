@@ -12,7 +12,7 @@ class WebauthnSetupForm
   validate :name_is_unique
   validate :validate_attestation_response
 
-  attr_reader :attestation_response
+  attr_reader :attestation_response, :webauthn_configuration
 
   def initialize(user:, user_session:, device_name:)
     @user = user
@@ -48,6 +48,18 @@ class WebauthnSetupForm
     !!@platform_authenticator
   end
 
+  def setup_as_platform_authenticator?
+    if transports.present?
+      platform_authenticator_transports?
+    else
+      platform_authenticator?
+    end
+  end
+
+  def transports_mismatch?
+    transports.present? && platform_authenticator_transports? != platform_authenticator?
+  end
+
   def generic_error_message
     if platform_authenticator?
       I18n.t('errors.webauthn_platform_setup.general_error')
@@ -56,6 +68,14 @@ class WebauthnSetupForm
         'errors.webauthn_setup.general_error_html',
         link_html: I18n.t('errors.webauthn_setup.additional_methods_link'),
       )
+    end
+  end
+
+  def event_type
+    if setup_as_platform_authenticator?
+      :webauthn_platform_added
+    else
+      :webauthn_key_added
     end
   end
 
@@ -110,7 +130,7 @@ class WebauthnSetupForm
     )
 
     begin
-      attestation_response.valid?(@challenge.pack('c*'), original_origin)
+      attestation_response.valid?(@challenge.pack('c*'), [original_origin])
     rescue StandardError
       false
     end
@@ -134,11 +154,11 @@ class WebauthnSetupForm
     credential = attestation_response.credential
     public_key = Base64.strict_encode64(credential.public_key)
     id = Base64.strict_encode64(credential.id)
-    user.webauthn_configurations.create(
+    @webauthn_configuration = user.webauthn_configurations.create(
       credential_public_key: public_key,
       credential_id: id,
       name: name,
-      platform_authenticator: platform_authenticator,
+      platform_authenticator: setup_as_platform_authenticator?,
       transports: transports.presence,
       authenticator_data_flags: authenticator_data_flags,
       aaguid: aaguid,
@@ -166,20 +186,29 @@ class WebauthnSetupForm
     nil
   end
 
+  def platform_authenticator_transports?
+    (transports & WebauthnConfiguration::PLATFORM_AUTHENTICATOR_TRANSPORTS.to_a).present?
+  end
+
+  def multi_factor_auth_method
+    if setup_as_platform_authenticator?
+      'webauthn_platform'
+    else
+      'webauthn'
+    end
+  end
+
   def extra_analytics_attributes
-    auth_method = if platform_authenticator?
-                    'webauthn_platform'
-                  else
-                    'webauthn'
-                  end
     {
       mfa_method_counts: mfa_user.enabled_two_factor_configuration_counts_hash,
       enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count,
-      multi_factor_auth_method: auth_method,
+      multi_factor_auth_method:,
       pii_like_keypaths: [[:mfa_method_counts, :phone]],
       authenticator_data_flags: authenticator_data_flags,
       unknown_transports: invalid_transports.presence,
       aaguid: aaguid,
+      transports: transports,
+      transports_mismatch: transports_mismatch?,
     }
   end
 end

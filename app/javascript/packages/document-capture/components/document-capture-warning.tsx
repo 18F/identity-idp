@@ -22,11 +22,27 @@ interface DocumentCaptureWarningProps {
   hasDismissed: boolean;
 }
 
+function getExpectedIdType(unknownFieldErrors) {
+  const idType = unknownFieldErrors.find((error) => error.field === 'expected_id_type');
+  return idType ? idType.error.message : null;
+}
+
+function getUnexpectedIdTypeHeading(expectedIdType, t) {
+  const idTypeToHeading = {
+    passport: t('doc_auth.errors.verify_passport_heading'),
+    drivers_license: t('doc_auth.errors.verify_drivers_license_heading'),
+  };
+
+  return idTypeToHeading[expectedIdType];
+}
+
 type GetHeadingArguments = {
   isResultCodeInvalid: boolean;
   isFailedDocType: boolean;
   isFailedSelfie: boolean;
   isFailedSelfieLivenessOrQuality: boolean;
+  unexpectedIdTypeError: boolean;
+  unknownFieldErrors: FormStepError<{ front: string; back: string }>[];
   t: typeof I18n.prototype.t;
 };
 function getHeading({
@@ -34,10 +50,15 @@ function getHeading({
   isFailedDocType,
   isFailedSelfie,
   isFailedSelfieLivenessOrQuality,
+  unexpectedIdTypeError,
+  unknownFieldErrors,
   t,
 }: GetHeadingArguments) {
+  if (unexpectedIdTypeError) {
+    return getUnexpectedIdTypeHeading(getExpectedIdType(unknownFieldErrors), t);
+  }
   if (isFailedDocType) {
-    return t('doc_auth.errors.doc_type_not_supported_heading');
+    return t('doc_auth.errors.rate_limited_heading');
   }
   if (isResultCodeInvalid) {
     return t('doc_auth.errors.rate_limited_heading');
@@ -51,13 +72,21 @@ function getHeading({
   return t('doc_auth.errors.rate_limited_heading');
 }
 
-function getSubheading({ nonIppOrFailedResult, t }) {
+function getSubheading({ nonIppOrFailedResult, passportError, t }) {
   const showSubheading = !nonIppOrFailedResult;
 
-  if (showSubheading) {
+  if (showSubheading && !passportError) {
     return <h2>{t('doc_auth.errors.rate_limited_subheading')}</h2>;
   }
   return undefined;
+}
+
+function isPassportError(unknownFieldErrors) {
+  return unknownFieldErrors.some((error) => error.field === 'passport');
+}
+
+function isUnexpectedIdTypeError(unknownFieldErrors) {
+  return unknownFieldErrors.some((error) => error.field === 'unexpected_id_type');
 }
 
 function DocumentCaptureWarning({
@@ -77,20 +106,26 @@ function DocumentCaptureWarning({
   const { trackEvent } = useContext(AnalyticsContext);
 
   const nonIppOrFailedResult = !inPersonURL || isFailedResult;
+  const unexpectedIdTypeError = isUnexpectedIdTypeError(unknownFieldErrors);
   const heading = getHeading({
     isResultCodeInvalid,
     isFailedDocType,
     isFailedSelfie,
     isFailedSelfieLivenessOrQuality,
+    unexpectedIdTypeError,
+    unknownFieldErrors,
     t,
   });
   const actionText = nonIppOrFailedResult
     ? t('idv.failure.button.warning')
     : t('idv.failure.button.try_online');
+  const passportError = isPassportError(unknownFieldErrors);
   const subheading = getSubheading({
     nonIppOrFailedResult,
+    passportError,
     t,
   });
+
   const subheadingRef = useRef<HTMLDivElement>(null);
   const errorMessageDisplayedRef = useRef<HTMLDivElement>(null);
 
@@ -130,6 +165,8 @@ function DocumentCaptureWarning({
             isFailedSelfie={isFailedSelfie}
             isFailedSelfieLivenessOrQuality={isFailedSelfieLivenessOrQuality}
             hasDismissed={hasDismissed}
+            isPassportError={passportError}
+            isUnexpectedIdTypeError={unexpectedIdTypeError}
           />
         </div>
         <p>

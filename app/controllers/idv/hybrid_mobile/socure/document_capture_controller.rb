@@ -9,26 +9,44 @@ module Idv
         include Idv::HybridMobile::HybridMobileConcern
         include RenderConditionConcern
         include SocureErrorsConcern
+        include DocAuthVendorConcern
 
         check_or_render_not_found -> { IdentityConfig.store.socure_docv_enabled }
-        before_action :check_valid_document_capture_session, except: [:update]
-        before_action -> { redirect_to_correct_vendor(Idp::Constants::Vendors::SOCURE, true) },
-                      only: :show
-        before_action :fetch_test_verification_data, only: [:update]
+        before_action :check_valid_document_capture_session
+        before_action :ensure_choose_id_type_completed, only: :show
+        before_action :validate_step_not_completed, only: [:show]
+        before_action -> do
+          update_doc_auth_vendor(user: document_capture_user)
+        end, only: :show
+        before_action -> do
+          redirect_to_correct_vendor(Idp::Constants::Vendors::SOCURE, in_hybrid_mobile: true)
+        end, only: :show
 
         def show
+          if rate_limiter.limited?
+            redirect_to idv_hybrid_mobile_capture_complete_url
+          end
+
+          analytics.idv_doc_auth_document_capture_visited(**analytics_arguments)
+          session[:socure_docv_wait_polling_started_at] = nil
+
           Funnel::DocAuth::RegisterStep.new(document_capture_user.id, sp_session[:issuer])
             .call('hybrid_mobile_socure_document_capture', :view, true)
 
-          if document_capture_session.socure_docv_capture_app_url.present?
-            @url = document_capture_session.socure_docv_capture_app_url
-            return
-          end
+          @selfie_check_required = resolved_authn_context_result.facial_match?
+          @hybrid_flow = true
+          @passport_requested = document_capture_session.passport_requested?
+          @url = document_capture_session.socure_docv_capture_app_url
+
+          return if @url.present?
 
           # document request
           document_request = DocAuth::Socure::Requests::DocumentRequest.new(
+            customer_user_id: document_capture_user&.uuid,
             redirect_url: idv_hybrid_mobile_socure_document_capture_update_url,
             language: I18n.locale,
+            liveness_checking_required: resolved_authn_context_result.facial_match?,
+            passport_requested: document_capture_session.passport_requested?,
           )
           timer = JobHelpers::Timer.new
           document_response = timer.time('vendor_request') do
@@ -39,16 +57,21 @@ module Idv
 
           track_document_request_event(document_request:, document_response:, timer:)
 
-          # placeholder until we get an error page for url not being present
-          if @url.nil?
-            redirect_to idv_hybrid_mobile_socure_document_capture_errors_url
-            return
-          end
-
-          document_capture_session.socure_docv_transaction_token = document_response.dig(
+          socure_docv_transaction_token = document_response.dig(
             :data,
             :docvTransactionToken,
           )
+
+          # placeholder until we get an error page for url not being present
+          if @url.nil?
+            redirect_to idv_hybrid_mobile_socure_document_capture_errors_url(
+              error_code: :url_not_found,
+              transaction_token: socure_docv_transaction_token,
+            )
+            return
+          end
+
+          document_capture_session.socure_docv_transaction_token = socure_docv_transaction_token
           document_capture_session.socure_docv_capture_app_url = document_response.dig(
             :data,
             :url,
@@ -68,18 +91,30 @@ module Idv
             **result.to_h.merge(analytics_arguments),
           )
 
-          if result.success?
+          if result.success? || rate_limiter.limited?
             redirect_to idv_hybrid_mobile_capture_complete_url
           else
-            redirect_to idv_hybrid_mobile_socure_document_capture_errors_url
+            redirect_to idv_hybrid_mobile_socure_document_capture_errors_url(
+              transaction_token: document_capture_session.socure_docv_transaction_token,
+            )
           end
         end
 
         def errors
-          @presenter = socure_errors_presenter(handle_stored_result)
+          result = handle_stored_result(
+            user: document_capture_user,
+            store_in_session: false,
+          )
+          @presenter = socure_errors_presenter(result)
         end
 
         private
+
+        def validate_step_not_completed
+          return if stored_result.blank? || !stored_result.success? || !selfie_requirement_met?
+
+          redirect_to idv_hybrid_mobile_capture_complete_url
+        end
 
         def socure_errors_presenter(result)
           SocureErrorPresenter.new(
@@ -92,14 +127,34 @@ module Idv
         end
 
         def wait_for_result?
-          return false if stored_result.present?
+          document_capture_session.reload unless document_capture_session.result_id
+          return false if document_capture_session.load_result.present?
 
           # If the stored_result is nil, the job fetching the results has not completed.
           analytics.idv_doc_auth_document_capture_polling_wait_visited(**analytics_arguments)
+
+          if document_capture_session.socure_docv_transaction_token.blank?
+            redirect_to idv_hybrid_mobile_socure_document_capture_errors_url(
+              error_code: :invalid_transaction_token,
+              transaction_token: :MISSING_TRANSACTION_TOKEN,
+            )
+            return true
+          end
+
           if wait_timed_out?
-            # flash[:error] = I18n.t('errors.doc_auth.polling_timeout')
-            # TODO: redirect to try again page LG-14873/14952/15059
-            render plain: 'Technical difficulties!!!', status: :ok
+            analytics.idv_socure_verification_webhook_missing(
+              docv_transaction_token: document_capture_session.socure_docv_transaction_token,
+            )
+
+            fetch_synchronous_docv_result
+
+            document_capture_session.reload
+            return false if document_capture_session.load_result.present?
+
+            redirect_to idv_hybrid_mobile_socure_document_capture_errors_url(
+              error_code: :timeout,
+              transaction_token: document_capture_session.socure_docv_transaction_token,
+            )
           else
             @refresh_interval =
               IdentityConfig.store.doc_auth_socure_wait_polling_refresh_max_seconds
@@ -125,9 +180,17 @@ module Idv
             flow_path: 'hybrid',
             step: 'socure_document_capture',
             analytics_id: 'Doc Auth',
-            liveness_checking_required: false,
-            selfie_check_required: false,
+            liveness_checking_required: resolved_authn_context_result.facial_match?,
+            selfie_check_required: resolved_authn_context_result.facial_match?,
+            pii_like_keypaths: [[:pii]],
           }
+        end
+
+        def rate_limiter
+          @rate_limiter ||= RateLimiter.new(
+            user: document_capture_user,
+            rate_limit_type: :idv_doc_auth,
+          )
         end
       end
     end

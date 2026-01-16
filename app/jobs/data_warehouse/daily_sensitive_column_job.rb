@@ -6,12 +6,15 @@ module DataWarehouse
 
     def perform(timestamp)
       data = fetch_columns
-      upload_to_s3(data, timestamp)
+
+      if IdentityConfig.store.s3_idp_dw_tasks.present?
+        upload_to_s3(data, timestamp)
+      end
     end
 
     def fetch_columns
       tables = ActiveRecord::Base.connection.tables - %w[schema_migrations ar_internal_metadata
-                                                         awsdms_ddl_audit]
+                                                         awsdms_ddl_audit good_jobs]
 
       sensitive_hash = []
       insensitive_hash = []
@@ -53,14 +56,12 @@ module DataWarehouse
     def upload_to_s3(body, timestamp)
       _latest, path = generate_s3_paths(REPORT_NAME, 'json', now: timestamp)
 
-      if bucket_name.present?
-        upload_file_to_s3_bucket(
-          path: path,
-          body: body,
-          content_type: 'application/json',
-          bucket: bucket_name,
-        )
-      end
+      upload_file_to_s3_bucket(
+        path: path,
+        body: body,
+        content_type: 'application/json',
+        bucket: bucket_name,
+      )
     end
   end
 end

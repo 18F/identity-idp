@@ -28,6 +28,34 @@ RSpec.describe TwoFactorAuthentication::PersonalKeyVerificationController do
       )
     end
 
+    context 'when there is a sign_in_recaptcha_assessment_id in the session' do
+      let(:assessment_id) { 'projects/project-id/assessments/assessment-id' }
+
+      it 'annotates the assessment with INITIATED_TWO_FACTOR and logs the annotation' do
+        user = build(:user, :with_personal_key, password: ControllerHelper::VALID_PASSWORD)
+        recaptcha_annotation = {
+          assessment_id:,
+          reason: RecaptchaAnnotator::AnnotationReasons::INITIATED_TWO_FACTOR,
+        }
+
+        controller.session[:sign_in_recaptcha_assessment_id] = assessment_id
+
+        expect(RecaptchaAnnotator).to receive(:annotate)
+          .with(**recaptcha_annotation)
+          .and_return(recaptcha_annotation)
+
+        stub_sign_in_before_2fa(user)
+        stub_analytics
+
+        get :show
+
+        expect(@analytics).to have_logged_event(
+          'Multi-Factor Authentication: enter personal key visited',
+          hash_including(recaptcha_annotation:),
+        )
+      end
+    end
+
     it 'redirects to the two_factor_options page if user is IAL2' do
       profile = create(:profile, :active, :verified, pii: { ssn: '1234' })
       user = profile.user
@@ -51,6 +79,14 @@ RSpec.describe TwoFactorAuthentication::PersonalKeyVerificationController do
           .encrypted_recovery_code_digest_generated_at.strftime('%s%L')
         sign_in_before_2fa(user)
         stub_analytics
+        stub_attempts_tracker
+
+        expect(@attempts_api_tracker).to receive(:mfa_login_auth_submitted).with(
+          mfa_device_type: 'personal_key',
+          success: true,
+          failure_reason: nil,
+          reauthentication: false,
+        )
 
         expect(controller).to receive(:handle_valid_verification_for_authentication_context)
           .with(auth_method: TwoFactorAuthenticatable::AuthMethod::PERSONAL_KEY)
@@ -71,7 +107,6 @@ RSpec.describe TwoFactorAuthentication::PersonalKeyVerificationController do
         expect(@analytics).to have_logged_event(
           'Multi-Factor Authentication',
           success: true,
-          errors: {},
           enabled_mfa_methods_count: 1,
           multi_factor_auth_method: 'personal-key',
           multi_factor_auth_method_created_at:,
@@ -122,6 +157,13 @@ RSpec.describe TwoFactorAuthentication::PersonalKeyVerificationController do
         it 'tracks new device value' do
           stub_analytics
           stub_sign_in_before_2fa(user)
+          stub_attempts_tracker
+          expect(@attempts_api_tracker).to receive(:mfa_login_auth_submitted).with(
+            mfa_device_type: 'personal_key',
+            success: true,
+            failure_reason: nil,
+            reauthentication: false,
+          )
 
           post :create, params: payload
 
@@ -136,13 +178,14 @@ RSpec.describe TwoFactorAuthentication::PersonalKeyVerificationController do
     it 'does generate a new personal key after the user signs in with their old one' do
       user = create(:user)
       raw_key = PersonalKeyGenerator.new(user).generate!
-      old_key = user.reload.encrypted_recovery_code_digest
+      old_key = user.reload.encrypted_recovery_code_digest_multi_region
       stub_sign_in_before_2fa(user)
       post :create, params: { personal_key_form: { personal_key: raw_key } }
       user.reload
 
-      expect(user.encrypted_recovery_code_digest).to be_present
-      expect(user.encrypted_recovery_code_digest).to_not eq old_key
+      expect(user.encrypted_recovery_code_digest).to_not be_present
+      expect(user.encrypted_recovery_code_digest_multi_region).to be_present
+      expect(user.encrypted_recovery_code_digest_multi_region).to_not eq old_key
     end
 
     it 'redirects to the two_factor_options page if user is IAL2' do
@@ -181,8 +224,8 @@ RSpec.describe TwoFactorAuthentication::PersonalKeyVerificationController do
         stub_sign_in_before_2fa(user)
       end
 
-      it 'calls handle_invalid_otp' do
-        expect(subject).to receive(:handle_invalid_otp).and_call_original
+      it 'calls handle_invalid_mfa' do
+        expect(subject).to receive(:handle_invalid_mfa).and_call_original
 
         post :create, params: payload
 
@@ -197,31 +240,90 @@ RSpec.describe TwoFactorAuthentication::PersonalKeyVerificationController do
         expect(flash[:error]).to eq t('two_factor_authentication.invalid_personal_key')
       end
 
-      it 'tracks the max attempts event' do
-        user.second_factor_attempts_count =
-          IdentityConfig.store.login_otp_confirmation_max_attempts - 1
-        user.save
-        personal_key_generated_at = controller.current_user
-          .encrypted_recovery_code_digest_generated_at
-        stub_analytics
+      context 'when the attempts are rate limited' do
+        let(:personal_key_generated_at) do
+          controller.current_user
+            .encrypted_recovery_code_digest_generated_at
+        end
+        before do
+          user.second_factor_attempts_count =
+            IdentityConfig.store.login_otp_confirmation_max_attempts - 1
+          user.save
 
-        expect(PushNotification::HttpPush).to receive(:deliver)
-          .with(PushNotification::MfaLimitAccountLockedEvent.new(user: subject.current_user))
+          stub_analytics
+          stub_attempts_tracker
+        end
 
-        post :create, params: payload
+        context 'with authentication context' do
+          it 'tracks the max attempts event' do
+            expect(@attempts_api_tracker).to receive(:mfa_login_auth_submitted).with(
+              mfa_device_type: 'personal_key',
+              success: false,
+              failure_reason: { personal_key: [:personal_key_incorrect] },
+              reauthentication: false,
+            )
+            expect(@attempts_api_tracker).to receive(:mfa_submission_code_rate_limited).with(
+              mfa_device_type: 'personal_key',
+            )
 
-        expect(@analytics).to have_logged_event(
-          'Multi-Factor Authentication',
-          success: false,
-          errors: { personal_key: [t('errors.messages.personal_key_incorrect')] },
-          error_details: { personal_key: { personal_key_incorrect: true } },
-          enabled_mfa_methods_count: 1,
-          multi_factor_auth_method: 'personal-key',
-          multi_factor_auth_method_created_at: personal_key_generated_at.strftime('%s%L'),
-          new_device: true,
-          attempts: 1,
-        )
-        expect(@analytics).to have_logged_event('Multi-Factor Authentication: max attempts reached')
+            expect(PushNotification::HttpPush).to receive(:deliver)
+              .with(PushNotification::MfaLimitAccountLockedEvent.new(user: subject.current_user))
+
+            post :create, params: payload
+
+            expect(@analytics).to have_logged_event(
+              'Multi-Factor Authentication',
+              success: false,
+              error_details: { personal_key: { personal_key_incorrect: true } },
+              enabled_mfa_methods_count: 1,
+              multi_factor_auth_method: 'personal-key',
+              multi_factor_auth_method_created_at: personal_key_generated_at.strftime('%s%L'),
+              new_device: true,
+              attempts: 1,
+            )
+            expect(@analytics).to have_logged_event(
+              'Multi-Factor Authentication: max attempts reached',
+            )
+          end
+        end
+
+        context 'with confirmation context' do
+          before do
+            allow(UserSessionContext).to receive(:confirmation_context?).and_return true
+          end
+
+          it 'tracks the max attempts event' do
+            expect(@attempts_api_tracker).to receive(:mfa_login_auth_submitted).with(
+              mfa_device_type: 'personal_key',
+              success: false,
+              failure_reason: { personal_key: [:personal_key_incorrect] },
+              reauthentication: false,
+            )
+
+            expect(@attempts_api_tracker).to receive(:mfa_enroll_code_rate_limited).with(
+              mfa_device_type: 'personal_key',
+            )
+
+            expect(PushNotification::HttpPush).to receive(:deliver)
+              .with(PushNotification::MfaLimitAccountLockedEvent.new(user: subject.current_user))
+
+            post :create, params: payload
+
+            expect(@analytics).to have_logged_event(
+              'Multi-Factor Authentication',
+              success: false,
+              error_details: { personal_key: { personal_key_incorrect: true } },
+              enabled_mfa_methods_count: 1,
+              multi_factor_auth_method: 'personal-key',
+              multi_factor_auth_method_created_at: personal_key_generated_at.strftime('%s%L'),
+              new_device: true,
+              attempts: 1,
+            )
+            expect(@analytics).to have_logged_event(
+              'Multi-Factor Authentication: max attempts reached',
+            )
+          end
+        end
       end
 
       it 'records unsuccessful 2fa event' do

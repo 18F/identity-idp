@@ -15,6 +15,10 @@
 <p id="password-description">
   <%= t('instructions.password.info.lead_html', min_length: Devise.password_length.first) %>
 </p>
+<p id="phishing-warning">
+  <%= t('users.edit_info.warning') %>
+  <%= new_tab_link_to t('users.edit_info.link'), help_center_redirect_path(category: 'fraud-concerns', article: 'overview') %>
+</p>
 
 <%= simple_form_for(@update_user_password_form, url: manage_password_path, method: :patch) do |f| %>
   <%= f.error_notification %>
@@ -22,7 +26,9 @@
         form: f,
         password_label: t('forms.passwords.edit.labels.password'),
         forbidden_passwords: @update_password_presenter.forbidden_passwords,
-        field_options: @update_password_presenter.aria_described_by_if_eligible,
+        field_options: {
+          input_html: { aria: { describedby: 'password-description' } },
+        },
       ) %>
   <%= f.submit @update_password_presenter.submit_text, class: 'display-block margin-top-5 margin-bottom-4' %>
 <% end %>

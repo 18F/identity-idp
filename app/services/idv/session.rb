@@ -2,12 +2,15 @@
 
 module Idv
   # @attr address_edited [Boolean, nil]
+  # @attr address_verification_vendor [String, nil]
   # @attr address_verification_mechanism [String, nil]
   # @attr applicant [Struct, nil]
+  # @attr doc_auth_vendor [String, nil]
   # @attr document_capture_session_uuid [String, nil]
   # @attr flow_path [String, nil]
   # @attr go_back_path [String, nil]
   # @attr gpo_code_verified [Boolean, nil]
+  # @attr gpo_request_letter_visited [Boolean, nil]
   # @attr had_barcode_attention_error [Boolean, nil]
   # @attr had_barcode_read_failure [Boolean, nil]
   # @attr idv_consent_given [Boolean, nil]
@@ -15,12 +18,13 @@ module Idv
   # @attr idv_phone_step_document_capture_session_uuid [String, nil]
   # @attr mail_only_warning_shown [Boolean, nil]
   # @attr opted_in_to_in_person_proofing [Boolean, nil]
+  # @attr passport_requested [Boolean, nil]
   # @attr personal_key [String, nil]
   # @attr personal_key_acknowledged [Boolean, nil]
   # @attr phone_for_mobile_flow [String, nil]
   # @attr previous_phone_step_params [Array]
   # @attr previous_ssn [String, nil]
-  # @attr profile_id [String, nil]
+  # @attr profile_id [Integer, nil]
   # @attr proofing_started_at [String, nil]
   # @attr redo_document_capture [Boolean, nil]
   # @attr residential_resolution_vendor [String, nil]
@@ -45,12 +49,16 @@ module Idv
   class Session
     VALID_SESSION_ATTRIBUTES = %i[
       address_edited
+      address_verification_vendor
       address_verification_mechanism
       applicant
+      bucketed_doc_auth_vendor
+      doc_auth_vendor
       document_capture_session_uuid
       flow_path
       go_back_path
       gpo_code_verified
+      gpo_request_letter_visited
       had_barcode_attention_error
       had_barcode_read_failure
       idv_consent_given
@@ -61,12 +69,14 @@ module Idv
       personal_key
       personal_key_acknowledged
       phone_for_mobile_flow
+      phone_precheck_successful
+      phone_precheck_vendor
+      precheck_phone
       previous_phone_step_params
       previous_ssn
       profile_id
       proofing_started_at
       redo_document_capture
-      source_check_vendor
       residential_resolution_vendor
       resolution_successful
       resolution_vendor
@@ -74,8 +84,10 @@ module Idv
       selfie_check_required
       skip_doc_auth_from_handoff
       skip_doc_auth_from_how_to_verify
+      skip_doc_auth_from_socure
       skip_hybrid_handoff
       socure_docv_wait_polling_started_at
+      source_check_vendor
       ssn
       threatmetrix_review_status
       threatmetrix_session_id
@@ -87,6 +99,16 @@ module Idv
 
     attr_reader :current_user, :gpo_otp, :service_provider
 
+    VALID_SESSION_ATTRIBUTES.each do |attr|
+      define_method(attr) do
+        session[attr]
+      end
+
+      define_method(:"#{attr}=") do |val|
+        session[attr] = val
+      end
+    end
+
     def initialize(user_session:, current_user:, service_provider:)
       @user_session = user_session
       @current_user = current_user
@@ -94,39 +116,26 @@ module Idv
       set_idv_session
     end
 
-    def method_missing(method_sym, *arguments, &block)
-      attr_name_sym = method_sym.to_s.delete_suffix('=').to_sym
-      if VALID_SESSION_ATTRIBUTES.include?(attr_name_sym)
-        return session[attr_name_sym] if arguments.empty?
-        session[attr_name_sym] = arguments.first
-      else
-        super
-      end
-    end
-
-    def respond_to_missing?(method_sym, include_private)
-      attr_name_sym = method_sym.to_s.delete_suffix('=').to_sym
-      VALID_SESSION_ATTRIBUTES.include?(attr_name_sym) || super
-    end
-
     # @return [Profile]
     def create_profile_from_applicant_with_password(
       user_password, is_enhanced_ipp:, proofing_components:
     )
-      if user_has_unscheduled_in_person_enrollment?
+      if current_user.has_establishing_in_person_enrollment?
         UspsInPersonProofing::EnrollmentHelper.schedule_in_person_enrollment(
           user: current_user,
-          pii: Pii::Attributes.new_from_hash(applicant),
+          applicant_pii: Pii::UspsApplicant.from_idv_applicant(applicant),
           is_enhanced_ipp: is_enhanced_ipp,
           opt_in: opt_in_param,
         )
       end
 
+      active_enrollment = current_user.active_enrollment
+
       profile_maker = build_profile_maker(user_password)
       profile = profile_maker.save_profile(
         fraud_pending_reason: threatmetrix_fraud_pending_reason,
         gpo_verification_needed: !phone_confirmed? || verify_by_mail?,
-        in_person_verification_needed: current_user.has_in_person_enrollment?,
+        in_person_verification_needed: active_enrollment.present?,
         selfie_check_performed: session[:selfie_check_performed],
         proofing_components:,
       )
@@ -141,7 +150,8 @@ module Idv
         profile.id,
       )
 
-      associate_in_person_enrollment_with_profile if profile.in_person_verification_pending?
+      # assign profile to the enrollment
+      active_enrollment.update(profile:) if profile.in_person_verification_pending?
 
       if profile.gpo_verification_pending?
         create_gpo_entry(profile_maker.pii_attributes, profile)
@@ -182,13 +192,10 @@ module Idv
     end
 
     def clear
-      user_session.delete(:idv)
+      user_session[:idv] = {}
+      user_session['idv/in_person'] = {}
       @profile = nil
       @gpo_otp = nil
-    end
-
-    def associate_in_person_enrollment_with_profile
-      current_user.establishing_in_person_enrollment.update(profile: profile)
     end
 
     def create_gpo_entry(pii, profile)
@@ -229,14 +236,25 @@ module Idv
       if new_pii_from_doc.blank?
         session[:pii_from_doc] = nil
       else
-        session[:pii_from_doc] = new_pii_from_doc.to_h
+        pii_hash = new_pii_from_doc.to_h
+        # Normalize document type keys until past the 50/50 state
+        pii_hash[:document_type_received] ||= pii_hash[:id_doc_type]
+        pii_hash[:id_doc_type] ||= pii_hash[:document_type_received]
+        session[:pii_from_doc] = pii_hash # new_pii_from_doc.to_h
       end
     end
 
     def pii_from_doc
       return nil if session[:pii_from_doc].blank?
-      state_id_data = Pii::StateId.members.index_with { |key| session[:pii_from_doc][key] }
-      Pii::StateId.new(**state_id_data)
+
+      if session[:pii_from_doc][:document_type_received] == 'passport' ||
+         session[:pii_from_doc][:id_doc_type] == 'passport'
+        passport_data = Pii::Passport.members.index_with { |key| session[:pii_from_doc][key] }
+        Pii::Passport.new(**passport_data)
+      else
+        state_id_data = Pii::StateId.members.index_with { |key| session[:pii_from_doc][key] }
+        Pii::StateId.new(**state_id_data)
+      end
     end
 
     def updated_user_address=(updated_user_address)
@@ -262,17 +280,27 @@ module Idv
       Time.zone.now - Time.zone.parse(proofing_started_at) if proofing_started_at.present?
     end
 
-    def pii_from_user_in_flow_session
+    def pii_from_user_in_session
       user_session.dig('idv/in_person', :pii_from_user)
     end
 
-    def has_pii_from_user_in_flow_session?
-      !!pii_from_user_in_flow_session
+    def has_pii_from_user_in_session?
+      !!pii_from_user_in_session
     end
 
     def invalidate_in_person_pii_from_user!
-      if has_pii_from_user_in_flow_session?
+      if has_pii_from_user_in_session?
         user_session['idv/in_person'][:pii_from_user] = nil
+      end
+    end
+
+    def invalidate_in_person_address_step!
+      if has_pii_from_user_in_session?
+        user_session['idv/in_person'][:pii_from_user][:address1] = nil
+        user_session['idv/in_person'][:pii_from_user][:address2] = nil
+        user_session['idv/in_person'][:pii_from_user][:city] = nil
+        user_session['idv/in_person'][:pii_from_user][:zipcode] = nil
+        user_session['idv/in_person'][:pii_from_user][:state] = nil
       end
     end
 
@@ -281,17 +309,23 @@ module Idv
     end
 
     def ipp_document_capture_complete?
-      has_pii_from_user_in_flow_session? &&
+      has_pii_from_user_in_session? &&
         user_session['idv/in_person'][:pii_from_user].has_key?(:address1)
     end
 
     def ipp_state_id_complete?
-      has_pii_from_user_in_flow_session? &&
+      has_pii_from_user_in_session? &&
         user_session['idv/in_person'][:pii_from_user].has_key?(:identity_doc_address1)
     end
 
     def ssn_step_complete?
       ssn.present?
+    end
+
+    def invalidate_ssn_step!
+      if user_session[:idv].has_key?(:ssn)
+        user_session[:idv].delete(:ssn)
+      end
     end
 
     def verify_info_step_complete?
@@ -354,6 +388,15 @@ module Idv
       !!session[:idv_consent_given_at]
     end
 
+    def in_person_passports_allowed?
+      IdentityConfig.store.in_person_passports_enabled
+    end
+
+    def standard_flow_document_capture_eligible?
+      flow_path == 'standard' &&
+        (skip_hybrid_handoff || desktop_selfie_test_mode_enabled?)
+    end
+
     private
 
     attr_reader :user_session
@@ -367,7 +410,7 @@ module Idv
     end
 
     def session
-      user_session.fetch(:idv, {})
+      user_session[:idv] || {}
     end
 
     def build_profile_maker(user_password)
@@ -388,10 +431,6 @@ module Idv
       when 'review'
         'threatmetrix_review'
       end
-    end
-
-    def user_has_unscheduled_in_person_enrollment?
-      current_user.has_establishing_in_person_enrollment?
     end
   end
 end

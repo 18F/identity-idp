@@ -4,18 +4,21 @@ RSpec.describe Idv::InPerson::UspsLocationsController do
   let(:user) { create(:user) }
   let(:sp) { nil }
   let(:in_person_proofing_enabled) { true }
+
   let(:address) do
     UspsInPersonProofing::Applicant.new(
       address: '1600 Pennsylvania Ave',
       city: 'Washington', state: 'DC', zip_code: '20500'
     )
   end
+
   let(:fake_address) do
     UspsInPersonProofing::Applicant.new(
       address: '742 Evergreen Terrace',
       city: 'Springfield', state: 'MO', zip_code: '89011'
     )
   end
+
   let(:selected_location) do
     {
       usps_location: {
@@ -40,6 +43,7 @@ RSpec.describe Idv::InPerson::UspsLocationsController do
   describe '#index' do
     let(:locale) { nil }
     let(:proofer) { double('Proofer') }
+
     let(:locations) do
       [
         UspsInPersonProofing::PostOffice.new(
@@ -80,6 +84,7 @@ RSpec.describe Idv::InPerson::UspsLocationsController do
         ),
       ]
     end
+
     subject(:response) do
       post :index, params: { locale: locale,
                              address: { street_address: '1600 Pennsylvania Ave',
@@ -92,7 +97,8 @@ RSpec.describe Idv::InPerson::UspsLocationsController do
       allow(UspsInPersonProofing::Proofer).to receive(:new).and_return(proofer)
     end
 
-    context 'with a user going through enhanced ipp' do
+    xcontext 'with a user going through enhanced ipp',
+             skip: 'VoT has been deprecated. EIPP should not be determined via acr_values' do
       let(:vtr) { ['C1.C2.P1.Pe'] }
       let(:enhanced_ipp_sp_session) { { vtr: vtr, acr_values: nil } }
       let(:user) { build(:user) }
@@ -205,6 +211,32 @@ RSpec.describe Idv::InPerson::UspsLocationsController do
       end
     end
 
+    context 'with a usps invalid response error' do
+      let(:server_error) do
+        UspsInPersonProofing::Exception::InvalidResponseError.new('LocationApi')
+      end
+
+      before do
+        allow(proofer).to receive(:request_facilities).with(address, false).and_raise(server_error)
+      end
+
+      it 'returns an unprocessible entity client error' do
+        subject
+        expect(@analytics).to have_logged_event(
+          'Request USPS IPP locations: request failed',
+          api_status_code: 422,
+          exception_class: server_error.class,
+          exception_message: server_error.message,
+          response_body: false,
+          response_body_present: false,
+          response_status_code: false,
+        )
+
+        status = response.status
+        expect(status).to eq 422
+      end
+    end
+
     context 'with a 500 error from USPS' do
       let(:server_error) { Faraday::ServerError.new }
 
@@ -230,6 +262,7 @@ RSpec.describe Idv::InPerson::UspsLocationsController do
 
     context 'with failed connection to Faraday' do
       let(:exception) { Faraday::ConnectionFailed.new }
+
       subject(:response) do
         post :index,
              params: { address: { street_address: '742 Evergreen Terrace',
@@ -358,7 +391,56 @@ RSpec.describe Idv::InPerson::UspsLocationsController do
   describe '#update' do
     let(:enrollment) { InPersonEnrollment.last }
     let(:sp) { create(:service_provider, ial: 2) }
+
     subject(:response) { put :update, params: selected_location }
+
+    context 'when legacy request body is sent with location data' do
+      it 'updates enrollment with location data' do
+        response
+        expect(enrollment.selected_location_details).to eq(
+          selected_location[:usps_location].as_json,
+        )
+      end
+    end
+
+    context 'when updated request body' do
+      context 'with selected location set' do
+        let(:selected_location) do
+          {
+            usps_location: {
+              selected_location: {
+                formatted_city_state_zip: 'BALTIMORE, MD, 21233-9715',
+                name: 'BALTIMORE',
+                saturday_hours: '8:30 AM - 5:00 PM',
+                street_address: '123 Fake St.',
+                sunday_hours: 'Closed',
+                weekday_hours: '8:30 AM - 7:00 PM',
+              },
+            },
+          }
+        end
+        it 'updates enrollment with location data' do
+          response
+          expect(enrollment.selected_location_details).to eq(
+            selected_location[:usps_location].as_json['selected_location'],
+          )
+        end
+      end
+
+      context 'with selected location not set' do
+        let(:selected_location) do
+          {
+            usps_location: {
+              selected_location: nil,
+            },
+          }
+        end
+        it 'updates enrollment with location data' do
+          response
+          expect(enrollment.selected_location_details).to be_nil
+        end
+      end
+    end
 
     context 'when the user is going through ID-IPP' do
       it 'creates an in person enrollment' do
@@ -367,31 +449,37 @@ RSpec.describe Idv::InPerson::UspsLocationsController do
         expect(enrollment.status).to eq('establishing')
         expect(enrollment.profile).to be_nil
         expect(enrollment.sponsor_id).to eq(IdentityConfig.store.usps_ipp_sponsor_id)
+        expect(enrollment.document_type).to eq(nil)
         expect(enrollment.selected_location_details).to eq(
           selected_location[:usps_location].as_json,
         )
         expect(enrollment.service_provider).to eq(sp)
       end
 
-      it 'updates proofing component vendor' do
-        proofing_components = Idv::ProofingComponents.new(
-          idv_session: controller.idv_session,
-          session: controller.session,
-          user_session: controller.user_session,
-          user:,
-        )
+      context 'selected location is nil' do
+        let(:selected_location) do
+          {
+            usps_location: {
+              selected_location: nil,
+            },
+          }
+        end
 
-        expect(proofing_components.document_check).to be_nil
-
-        response
-
-        user.reload
-
-        expect(proofing_components.document_check).to eq Idp::Constants::Vendors::USPS
+        it 'saves selected location as nil' do
+          expect { response }.to change { InPersonEnrollment.count }.from(0).to(1)
+          expect(enrollment.user).to eq(user)
+          expect(enrollment.status).to eq('establishing')
+          expect(enrollment.profile).to be_nil
+          expect(enrollment.sponsor_id).to eq(IdentityConfig.store.usps_ipp_sponsor_id)
+          expect(enrollment.selected_location_details).to be nil
+        end
       end
     end
 
-    context 'when the user is going through EIPP' do
+    # TODO: VoT has been deprecated.
+    # EIPP should not be determined via acr_values
+    context 'when the user is going through EIPP',
+            skip: 'VoT has been deprecated. EIPP should not be determined via acr_values' do
       let(:vtr) { ['C1.C2.P1.Pe'] }
       let(:enhanced_ipp_sp_session) { { vtr: vtr, acr_values: nil } }
 
@@ -412,21 +500,23 @@ RSpec.describe Idv::InPerson::UspsLocationsController do
         expect(enrollment.service_provider).to eq(sp)
       end
 
-      it 'updates proofing component vendor' do
-        proofing_components = Idv::ProofingComponents.new(
-          idv_session: controller.idv_session,
-          session: controller.session,
-          user_session: controller.user_session,
-          user:,
-        )
+      context 'selected location is nil' do
+        let(:selected_location) do
+          {
+            usps_location: {
+              selected_location: nil,
+            },
+          }
+        end
 
-        expect(proofing_components.document_check).to be_nil
-
-        response
-
-        user.reload
-
-        expect(proofing_components.document_check).to eq Idp::Constants::Vendors::USPS
+        it 'saves selected location as nil' do
+          expect { response }.to change { InPersonEnrollment.count }.from(0).to(1)
+          expect(enrollment.user).to eq(user)
+          expect(enrollment.status).to eq('establishing')
+          expect(enrollment.profile).to be_nil
+          expect(enrollment.sponsor_id).to eq(IdentityConfig.store.usps_eipp_sponsor_id)
+          expect(enrollment.selected_location_details).to be nil
+        end
       end
     end
 
@@ -467,6 +557,23 @@ RSpec.describe Idv::InPerson::UspsLocationsController do
           selected_location[:usps_location].as_json,
         )
         expect(enrollment.service_provider).to eq(sp)
+      end
+
+      context 'selected location is nil' do
+        let(:selected_location) do
+          {
+            usps_location: {
+              selected_location: nil,
+            },
+          }
+        end
+
+        it 'saves selected location as nil' do
+          response
+          enrollment = hybrid_user.reload.establishing_in_person_enrollment
+
+          expect(enrollment.selected_location_details).to be nil
+        end
       end
     end
 

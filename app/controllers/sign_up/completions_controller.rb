@@ -8,6 +8,8 @@ module SignUp
     before_action :confirm_identity_verified, if: :identity_proofing_required?
     before_action :apply_secure_headers_override, only: [:show, :update]
     before_action :verify_needs_completions_screen
+    before_action :verify_profiling_passed
+    before_action :redirect_if_user_duplicate_profile, only: :show
 
     def show
       analytics.user_registration_agency_handoff_page_visit(
@@ -37,12 +39,17 @@ module SignUp
 
     private
 
+    def verify_profiling_passed
+      return unless user_account_creation_device_profile_failed?
+      redirect_to device_profiling_failed_url
+    end
+
     def confirm_identity_verified
       redirect_to idv_url if current_user.identity_not_verified?
     end
 
     def verify_needs_completions_screen
-      return_to_account unless needs_completion_screen_reason
+      return_to_next_path unless needs_completion_screen_reason
     end
 
     def completions_presenter
@@ -65,9 +72,14 @@ module SignUp
       resolved_authn_context_result.identity_proofing_or_ialmax? && current_user.identity_verified?
     end
 
-    def return_to_account
+    def return_to_next_path
+      @return_path = if user_session[:in_account_creation_flow]
+                       after_mfa_setup_path
+      else
+        after_sign_in_path_for(current_user)
+      end
       track_completion_event('account-page')
-      redirect_to account_url
+      redirect_to @return_path
     end
 
     def decider
@@ -123,12 +135,19 @@ module SignUp
     end
 
     def send_in_person_completion_survey
+      return unless IdentityConfig.store.in_person_completion_survey_delivery_enabled
       return unless resolved_authn_context_result.identity_proofing?
 
       Idv::InPerson::CompletionSurveySender.send_completion_survey(
         current_user,
         current_sp.issuer,
       )
+    end
+
+    def redirect_if_user_duplicate_profile
+      return unless IdentityConfig.store.one_account_profile_creation_check_enabled
+      return unless user_duplicate_profiles_detected?
+      redirect_to duplicate_profiles_detected_url(source: :account_verified)
     end
   end
 end

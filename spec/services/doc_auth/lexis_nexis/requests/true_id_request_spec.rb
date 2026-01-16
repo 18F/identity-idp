@@ -12,7 +12,13 @@ RSpec.describe DocAuth::LexisNexis::Requests::TrueIdRequest do
   let(:cropping_non_liveness_flow) { 'test_workflow_cropping' }
   let(:non_cropping_liveness_flow) { 'test_workflow_liveness' }
   let(:cropping_liveness_flow) { 'test_workflow_liveness_cropping' }
+  let(:cropping_mode_none) { DocAuth::LexisNexis::ImageCroppingModes::NONE }
+  let(:cropping_mode_always) { DocAuth::LexisNexis::ImageCroppingModes::ALWAYS }
   let(:images_cropped) { false }
+  let(:document_type) { 'DriversLicense' }
+  let(:document_class_name) { 'Drivers License' }
+  let(:back_image_required) { true }
+  let(:passport_requested) { false }
 
   let(:config) do
     DocAuth::LexisNexis::Config.new(
@@ -24,33 +30,46 @@ RSpec.describe DocAuth::LexisNexis::Requests::TrueIdRequest do
       trueid_liveness_nocropping_workflow: non_cropping_liveness_flow,
     )
   end
+  let(:front_image) { DocAuthImageFixtures.document_front_image }
+  let(:back_image) { DocAuthImageFixtures.document_back_image }
   let(:selfie_image) { DocAuthImageFixtures.selfie_image }
+  let(:passport_image) { nil }
   let(:liveness_checking_required) { false }
   let(:subject) do
     described_class.new(
       config: config,
-      front_image: DocAuthImageFixtures.document_front_image,
-      back_image: DocAuthImageFixtures.document_back_image,
+      front_image: front_image,
+      back_image: back_image,
+      passport_image: passport_image,
       image_source: image_source,
       images_cropped: images_cropped,
       user_uuid: applicant[:uuid],
       uuid_prefix: applicant[:uuid_prefix],
       selfie_image: selfie_image,
       liveness_checking_required: liveness_checking_required,
+      document_type_requested: document_type,
+      passport_requested:,
     )
   end
 
   shared_examples 'a successful request' do
     it 'uploads the image and returns a successful result' do
       request_stub_liveness = stub_request(:post, full_url).with do |request|
-        JSON.parse(request.body, symbolize_names: true)[:Document][:Selfie].present?
+        request_json = JSON.parse(request.body, symbolize_names: true)
+        expect(request_json[:Document][:Back].present?).to eq(back_image_required)
+        expect(request_json[:Document][:DocumentType]).to eq(document_type)
+        expect(request_json[:Document][:ImageCroppingMode]).to eq(expected_cropping_mode)
+        request_json[:Document][:Selfie].present?
       end.to_return(body: response_body(liveness_checking_required), status: 201)
       request_stub = stub_request(:post, full_url).with do |request|
-        !JSON.parse(request.body, symbolize_names: true)[:Document][:Selfie].present?
+        request_json = JSON.parse(request.body, symbolize_names: true)
+        expect(request_json[:Document][:Back].present?).to eq(back_image_required)
+        expect(request_json[:Document][:DocumentType]).to eq(document_type)
+        expect(request_json[:Document][:ImageCroppingMode]).to eq(expected_cropping_mode)
+        !request_json[:Document][:Selfie].present?
       end.to_return(body: response_body(liveness_checking_required), status: 201)
 
       response = subject.fetch
-
       expect(response.success?).to eq(true)
       expect(response.errors).to eq({})
       expect(response.exception).to be_nil
@@ -66,13 +85,21 @@ RSpec.describe DocAuth::LexisNexis::Requests::TrueIdRequest do
     context 'fails document authentication' do
       it 'fails response with errors' do
         request_stub_liveness = stub_request(:post, full_url).with do |request|
-          JSON.parse(request.body, symbolize_names: true)[:Document][:Selfie].present?
+          request_json = JSON.parse(request.body, symbolize_names: true)
+          expect(request_json[:Document][:Back].present?).to eq(back_image_required)
+          expect(request_json[:Document][:DocumentType]).to eq(document_type)
+          expect(request_json[:Document][:ImageCroppingMode]).to eq(expected_cropping_mode)
+          request_json[:Document][:Selfie].present?
         end.to_return(
           body: response_body_with_doc_auth_errors(liveness_checking_required),
           status: 201,
         )
         request_stub = stub_request(:post, full_url).with do |request|
-          !JSON.parse(request.body, symbolize_names: true)[:Document][:Selfie].present?
+          request_json = JSON.parse(request.body, symbolize_names: true)
+          expect(request_json[:Document][:Back].present?).to eq(back_image_required)
+          expect(request_json[:Document][:DocumentType]).to eq(document_type)
+          expect(request_json[:Document][:ImageCroppingMode]).to eq(expected_cropping_mode)
+          !request_json[:Document][:Selfie].present?
         end.to_return(
           body: response_body_with_doc_auth_errors(liveness_checking_required),
           status: 201,
@@ -106,6 +133,8 @@ RSpec.describe DocAuth::LexisNexis::Requests::TrueIdRequest do
     let(:liveness_checking_required) { false }
 
     context 'with non-cropped images' do
+      let(:expected_cropping_mode) { cropping_mode_always }
+
       it 'use cropping non-liveness workflow' do
         expect(subject.send(:workflow)).to eq(cropping_non_liveness_flow)
       end
@@ -114,6 +143,8 @@ RSpec.describe DocAuth::LexisNexis::Requests::TrueIdRequest do
 
     context 'with cropped images' do
       let(:images_cropped) { true }
+      let(:expected_cropping_mode) { cropping_mode_none }
+
       it 'use non-cropping non-liveness workflow' do
         expect(subject.send(:workflow)).to eq(non_cropping_non_liveness_flow)
       end
@@ -125,6 +156,8 @@ RSpec.describe DocAuth::LexisNexis::Requests::TrueIdRequest do
     let(:liveness_checking_required) { true }
 
     context 'with non-cropped images' do
+      let(:expected_cropping_mode) { cropping_mode_always }
+
       it 'use cropping liveness workflow' do
         expect(subject.send(:workflow)).to eq(cropping_liveness_flow)
       end
@@ -134,10 +167,83 @@ RSpec.describe DocAuth::LexisNexis::Requests::TrueIdRequest do
 
     context 'with cropped images' do
       let(:images_cropped) { true }
+      let(:expected_cropping_mode) { cropping_mode_none }
+
       it 'use non-cropping liveness workflow' do
         expect(subject.send(:workflow)).to eq(non_cropping_liveness_flow)
       end
       it_behaves_like 'a successful request'
+    end
+  end
+
+  context 'with a Passport document_type' do
+    let(:document_type) { 'Passport' }
+    let(:document_class_name) { 'Passport' }
+    let(:back_image_required) { false }
+    let(:passport_image) { DocAuthImageFixtures.document_passport_image }
+    let(:passport_requested) { true }
+    let(:expected_cropping_mode) { cropping_mode_always }
+
+    it_behaves_like 'a successful request'
+  end
+
+  context 'with the wrong id type submitted' do
+    context 'user requests DriversLicense but submits Passport' do
+      let(:document_type) { 'DriversLicense' }
+      let(:document_class_name) { 'Passport' }
+      let(:front_image) { DocAuthImageFixtures.document_passport_image }
+      let(:back_image) { DocAuthImageFixtures.document_passport_image }
+      let(:passport_requested) { false }
+
+      it 'fails with an unexpected_id_type error' do
+        stub_request(:post, full_url).with do |request|
+          request_json = JSON.parse(request.body, symbolize_names: true)
+          expect(request_json[:Document][:Back].present?).to eq(back_image_required)
+          expect(request_json[:Document][:DocumentType]).to eq(document_type)
+          expect(request_json[:Document][:ImageCroppingMode]).to eq(cropping_mode_always)
+          !request_json[:Document][:Selfie].present?
+        end.to_return(
+          body: response_body_with_doc_auth_errors(liveness_checking_required),
+          status: 201,
+        )
+
+        response = subject.fetch
+
+        expect(response.success?).to eq(false)
+        expect(response.error_messages[:unexpected_id_type])
+          .to eq(true)
+        expect(response.error_messages[:expected_id_type])
+          .to eq('drivers_license')
+      end
+    end
+
+    context 'user requests Passport but submits DriversLicense' do
+      let(:document_type) { 'Passport' }
+      let(:document_class_name) { 'Drivers License' }
+      let(:back_image_required) { false }
+      let(:passport_image) { DocAuthImageFixtures.document_front_image }
+      let(:passport_requested) { true }
+
+      it 'fails with an unexpected_id_type error' do
+        stub_request(:post, full_url).with do |request|
+          request_json = JSON.parse(request.body, symbolize_names: true)
+          expect(request_json[:Document][:Back].present?).to eq(back_image_required)
+          expect(request_json[:Document][:DocumentType]).to eq(document_type)
+          expect(request_json[:Document][:ImageCroppingMode]).to eq(cropping_mode_always)
+          !request_json[:Document][:Selfie].present?
+        end.to_return(
+          body: response_body_with_doc_auth_errors(liveness_checking_required),
+          status: 201,
+        )
+
+        response = subject.fetch
+
+        expect(response.success?).to eq(false)
+        expect(response.error_messages[:unexpected_id_type])
+          .to eq(true)
+        expect(response.error_messages[:expected_id_type])
+          .to eq('passport')
+      end
     end
   end
 
@@ -181,6 +287,15 @@ def response_body(include_liveness)
               },
             ],
           },
+          {
+            Group: 'IDAUTH_FIELD_DATA',
+            Name: 'Fields_DocumentClassName',
+            Values: [
+              {
+                Value: document_class_name,
+              },
+            ],
+          },
           *(
             if include_liveness
               [
@@ -199,12 +314,12 @@ end
 def response_body_with_doc_auth_errors(include_liveness)
   {
     Status: {
-      TransactionStatus: 'passed',
+      TransactionStatus: 'failed',
     },
     Products: [
       {
         ProductType: 'TrueID',
-        ProductStatus: 'pass',
+        ProductStatus: 'fail',
         ParameterDetails: [
           {
             Group: 'AUTHENTICATION_RESULT',
@@ -212,6 +327,15 @@ def response_body_with_doc_auth_errors(include_liveness)
             Values: [
               {
                 Value: 'Failed',
+              },
+            ],
+          },
+          {
+            Group: 'IDAUTH_FIELD_DATA',
+            Name: 'Fields_DocumentClassName',
+            Values: [
+              {
+                Value: document_class_name,
               },
             ],
           },

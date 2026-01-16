@@ -3,19 +3,27 @@
 module Proofing
   module Resolution
     class ResultAdjudicator
-      attr_reader :resolution_result, :state_id_result, :device_profiling_result,
-                  :ipp_enrollment_in_progress, :residential_resolution_result, :same_address_as_id,
-                  :applicant_pii
+      attr_reader :resolution_result,
+                  :state_id_result,
+                  :device_profiling_result,
+                  :ipp_enrollment_in_progress,
+                  :residential_resolution_result,
+                  :phone_result,
+                  :same_address_as_id,
+                  :applicant_pii,
+                  :precheck_phone_number
 
       def initialize(
         resolution_result:, # InstantVerify
         state_id_result:, # AAMVA
         residential_resolution_result:, # InstantVerify Residential
+        phone_result:, # PhoneFinder PhoneRisk
         should_proof_state_id:,
         ipp_enrollment_in_progress:,
-        device_profiling_result:,
+        device_profiling_result:, # ThreatMetrix
         same_address_as_id:,
-        applicant_pii:
+        applicant_pii:,
+        precheck_phone_number:
       )
         @resolution_result = resolution_result
         @state_id_result = state_id_result
@@ -23,8 +31,10 @@ module Proofing
         @ipp_enrollment_in_progress = ipp_enrollment_in_progress
         @device_profiling_result = device_profiling_result
         @residential_resolution_result = residential_resolution_result
+        @phone_result = phone_result
         @same_address_as_id = same_address_as_id # this is a string, "true" or "false"
         @applicant_pii = applicant_pii
+        @precheck_phone_number = precheck_phone_number
       end
 
       def adjudicated_result
@@ -38,6 +48,7 @@ module Proofing
             exception: exception,
             timed_out: timed_out?,
             threatmetrix_review_status: device_profiling_result.review_status,
+            phone_precheck_passed: !!phone_result[:success],
             context: {
               device_profiling_adjudication_reason: device_profiling_reason,
               resolution_adjudication_reason: resolution_reason,
@@ -46,7 +57,8 @@ module Proofing
                 resolution: resolution_result.to_h,
                 residential_address: residential_resolution_result.to_h,
                 state_id: state_id_result.to_h,
-                threatmetrix: device_profiling_result.to_h,
+                threatmetrix:,
+                phone_precheck: phone_result,
               },
             },
             biographical_info: biographical_info,
@@ -74,6 +86,12 @@ module Proofing
           device_profiling_result.exception
       end
 
+      def threatmetrix
+        device_profiling_result.to_h.merge(
+          device_fingerprint: device_profiling_result.device_fingerprint,
+        )
+      end
+
       def timed_out?
         resolution_result.timed_out? ||
           residential_resolution_result.timed_out? ||
@@ -87,6 +105,7 @@ module Proofing
         elsif device_profiling_result.success?
           [true, :device_profiling_result_pass]
         else
+          # a non-passing review status is handled downstream, so is considered a succcess
           [true, :device_profiling_result_review_required]
         end
       end
@@ -129,6 +148,20 @@ module Proofing
           state_id_jurisdiction: applicant_pii[:state_id_jurisdiction],
           state_id_number: redacted_state_id_number,
           same_address_as_id: applicant_pii[:same_address_as_id],
+        }.merge(phone_precheck_info)
+      end
+
+      def phone_precheck_info
+        return {} unless precheck_phone_number
+
+        parsed_phone = Phonelib.parse(precheck_phone_number)
+
+        {
+          phone: {
+            area_code: parsed_phone.area_code,
+            country_code: parsed_phone.country,
+            phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
+          },
         }
       end
     end

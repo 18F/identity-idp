@@ -7,8 +7,7 @@ module TwoFactorAuthentication
     attr_reader :user,
                 :piv_cac_required,
                 :phishing_resistant_required,
-                :user_agent,
-                :desktop_ft_ab_test
+                :user_agent
     alias_method :piv_cac_required?, :piv_cac_required
     alias_method :phishing_resistant_required?, :phishing_resistant_required
 
@@ -16,14 +15,12 @@ module TwoFactorAuthentication
       user:,
       piv_cac_required: false,
       phishing_resistant_required: false,
-      user_agent: nil,
-      desktop_ft_ab_test: nil
+      user_agent: nil
     )
       @user = user
       @piv_cac_required = piv_cac_required
       @phishing_resistant_required = phishing_resistant_required
       @user_agent = user_agent
-      @desktop_ft_ab_test = desktop_ft_ab_test
     end
 
     def render_in(view_context, &block)

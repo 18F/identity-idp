@@ -9,7 +9,7 @@ module FederatedProtocols
     end
 
     def issuer
-      request.service_provider.identifier
+      request.service_provider&.identifier
     end
 
     def ial
@@ -35,14 +35,13 @@ module FederatedProtocols
     end
 
     def vtr
-      request.requested_vtr_authn_contexts.presence
+      nil
     end
 
     def requested_attributes
       @requested_attributes ||= SamlRequestedAttributesPresenter.new(
         service_provider: current_service_provider,
         ial: ial,
-        vtr: vtr,
         authn_request_attribute_bundle: SamlRequestParser.new(request).requested_attributes,
       ).requested_attributes
     end
@@ -85,7 +84,7 @@ module FederatedProtocols
     def ialmax_requested_with_authn_context_comparison?
       return unless (current_service_provider&.ial || 1) > 1
 
-      acr_component_value = Vot::AcrComponentValues.by_name[requested_ial_authn_context]
+      acr_component_value = Component::AcrComponentValues.by_name[requested_ial_authn_context]
       return unless acr_component_value.present?
 
       !acr_component_value.requirements.include?(:identity_proofing) &&

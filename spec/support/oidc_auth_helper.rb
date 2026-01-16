@@ -6,6 +6,7 @@ module OidcAuthHelper
   OIDC_ISSUER = 'urn:gov:gsa:openidconnect:sp:server'.freeze
   OIDC_IAL1_ISSUER = 'urn:gov:gsa:openidconnect:sp:server_ial1'.freeze
   OIDC_AAL3_ISSUER = 'urn:gov:gsa:openidconnect:sp:server_requiring_aal3'.freeze
+  OIDC_FACIAL_MATCH_ISSUER = 'urn:gov:gsa:openidconnect:test'.freeze
 
   def sign_in_oidc_user(user)
     visit_idp_from_ial1_oidc_sp
@@ -15,13 +16,6 @@ module OidcAuthHelper
 
   def visit_idp_from_ial1_oidc_sp(**args)
     params = ial1_params(**args)
-    oidc_path = openid_connect_authorize_path params
-    visit oidc_path
-    oidc_path
-  end
-
-  def visit_idp_from_oidc_sp_with_vtr(vtr:, **args)
-    params = vtr_params(vtr: vtr, **args)
     oidc_path = openid_connect_authorize_path params
     visit oidc_path
     oidc_path
@@ -112,27 +106,6 @@ module OidcAuthHelper
     ial2_params
   end
 
-  def vtr_params(
-    vtr:,
-    prompt: nil,
-    state: SecureRandom.hex,
-    nonce: SecureRandom.hex,
-    client_id: OIDC_ISSUER,
-    scope: 'openid email profile:name social_security_number'
-  )
-    vtr_params = {
-      client_id: client_id,
-      response_type: 'code',
-      vtr: vtr.to_json,
-      scope: scope,
-      redirect_uri: 'http://localhost:7654/auth/result',
-      state: state,
-      nonce: nonce,
-    }
-    vtr_params[:prompt] = prompt if prompt
-    vtr_params
-  end
-
   def include_phishing_resistant(params)
     params[:acr_values] = "#{params[:acr_values]} " +
                           Saml::Idp::Constants::AAL2_PHISHING_RESISTANT_AUTHN_CONTEXT_CLASSREF
@@ -141,17 +114,6 @@ module OidcAuthHelper
   def include_aal3(params)
     params[:acr_values] = "#{params[:acr_values]} " +
                           Saml::Idp::Constants::AAL3_AUTHN_CONTEXT_CLASSREF
-  end
-
-  # We rely on client-side redirects in some cases using:
-  # <meta content="0;url=REDIRECT_URL" http-equiv="refresh" />
-  # This method checks that the url contains the right url
-  def extract_meta_refresh_url
-    content = page.find("meta[http-equiv='refresh']", visible: false)['content']
-    timeout, url_value = content.split(';')
-    expect(timeout).to eq '0'
-    _, url = url_value.split('url=')
-    url
   end
 
   def extract_redirect_url
@@ -163,8 +125,6 @@ module OidcAuthHelper
     return current_url if javascript_enabled?
 
     case IdentityConfig.store.openid_connect_redirect
-    when 'client_side'
-      extract_meta_refresh_url
     when 'client_side_js'
       extract_redirect_url
     else # should only be :server_side

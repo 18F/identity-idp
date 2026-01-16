@@ -6,11 +6,7 @@ module DocAuth
 
     attr_reader :errors, :exception, :extra, :pii_from_doc, :doc_type_supported,
                 :selfie_live, :selfie_quality_good
-
-    ID_TYPE_SLUGS = {
-      'Identification Card' => 'state_id_card',
-      'Drivers License' => 'drivers_license',
-    }.freeze
+    attr_accessor :vendor_errors
 
     def initialize(
       success:,
@@ -95,6 +91,10 @@ module DocAuth
     def selfie_status
       # to be implemented by concrete subclass
       :not_processed
+    end
+
+    def extra_attributes
+      {}
     end
   end
 end

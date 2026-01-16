@@ -13,6 +13,7 @@ RSpec.describe 'sign_up/registrations/new.html.erb' do
     allow(view).to receive(:current_user).and_return(nil)
     @register_user_email_form = RegisterUserEmailForm.new(
       analytics: FakeAnalytics.new,
+      attempts_api_tracker: AttemptsApiTrackingHelper::FakeAttemptsTracker.new,
     )
     view_context = ActionController::Base.new.view_context
     allow(view_context).to receive(:new_user_session_url)
@@ -32,7 +33,7 @@ RSpec.describe 'sign_up/registrations/new.html.erb' do
   end
 
   it 'has a localized title' do
-    expect(view).to receive(:title=).with(t('titles.registrations.new'))
+    expect(view).to receive(:title=).with(t('titles.create_account'))
 
     render
   end
@@ -48,7 +49,7 @@ RSpec.describe 'sign_up/registrations/new.html.erb' do
 
     expect(rendered).to have_link(
       t('links.sign_in'),
-      href: new_user_session_url(request_id: nil),
+      href: new_user_session_path(request_id: nil),
     )
   end
 

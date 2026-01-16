@@ -8,7 +8,10 @@ module TwoFactorAuthentication
     prepend_before_action :authenticate_user
 
     def show
-      analytics.multi_factor_auth_enter_backup_code_visit(context: context)
+      recaptcha_annotation = annotate_recaptcha(
+        RecaptchaAnnotator::AnnotationReasons::INITIATED_TWO_FACTOR,
+      )
+      analytics.multi_factor_auth_enter_backup_code_visit(context: context, recaptcha_annotation:)
       @presenter = TwoFactorAuthCode::BackupCodePresenter.new(
         view: view_context,
         data: { current_user: current_user },
@@ -51,7 +54,7 @@ module TwoFactorAuthentication
       flash.now[:error] = result.first_error_message
 
       if current_user.locked_out?
-        handle_second_factor_locked_user(type: 'backup_code')
+        handle_second_factor_locked_user(type: 'backup_code', context:)
       else
         render_show_after_invalid
       end

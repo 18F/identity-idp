@@ -7,12 +7,14 @@ module Proofing
         :api_key,
         :base_url,
         :timeout,
+        :user_uuid,
+        :user_email,
         keyword_init: true,
         allowed_members: [
           :base_url,
           :timeout,
         ],
       ).freeze
+    end
   end
-end
 end

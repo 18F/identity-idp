@@ -5,26 +5,30 @@ module Idv
     include Idv::AvailabilityConcern
     include IdvStepConcern
     include StepIndicatorConcern
+    include Idv::ChooseIdTypeConcern
 
+    before_action :confirm_step_allowed
     before_action :confirm_not_rate_limited
+    before_action :cancel_previous_in_person_enrollments, only: :show
 
     def show
-      idv_session.proofing_started_at ||= Time.zone.now.iso8601
       analytics.idv_doc_auth_welcome_visited(**analytics_arguments)
 
       Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer])
         .call('welcome', :view, true)
 
-      @presenter = Idv::WelcomePresenter.new(decorated_sp_session)
+      @presenter = Idv::WelcomePresenter.new(
+        decorated_sp_session:,
+        show_sp_reproof_banner: show_sp_reproof_banner?,
+      )
     end
 
     def update
       clear_future_steps!
-      analytics.idv_doc_auth_welcome_submitted(**analytics_arguments)
-
+      clear_idv_session
+      idv_session.proofing_started_at ||= Time.zone.now.iso8601
       create_document_capture_session
-      cancel_previous_in_person_enrollments
-
+      analytics.idv_doc_auth_welcome_submitted(**analytics_arguments)
       idv_session.welcome_visited = true
 
       redirect_to idv_agreement_url
@@ -35,7 +39,7 @@ module Idv
         key: :welcome,
         controller: self,
         next_steps: [:agreement],
-        preconditions: ->(idv_session:, user:) { !user.gpo_verification_pending_profile? },
+        preconditions: ->(idv_session:, user:) { true },
         undo_step: ->(idv_session:, user:) do
           idv_session.welcome_visited = nil
           idv_session.document_capture_session_uuid = nil
@@ -45,6 +49,18 @@ module Idv
 
     private
 
+    def show_sp_reproof_banner?
+      IdentityConfig.store.feature_show_sp_reproof_banner_enabled &&
+        sp_session[:issuer].present? &&
+        current_user.has_proofed_before?
+    end
+
+    def clear_idv_session
+      mail_only_warning_shown = idv_session.mail_only_warning_shown
+      idv_session.clear
+      idv_session.mail_only_warning_shown = mail_only_warning_shown
+    end
+
     def analytics_arguments
       {
         step: 'welcome',
@@ -53,7 +69,7 @@ module Idv
     end
 
     def create_document_capture_session
-      document_capture_session = DocumentCaptureSession.create(
+      document_capture_session = DocumentCaptureSession.create!(
         user_id: current_user.id,
         issuer: sp_session[:issuer],
       )
@@ -61,9 +77,9 @@ module Idv
     end
 
     def cancel_previous_in_person_enrollments
-      return unless IdentityConfig.store.in_person_proofing_enabled
-      UspsInPersonProofing::EnrollmentHelper
-        .cancel_stale_establishing_enrollments_for_user(current_user)
+      UspsInPersonProofing::EnrollmentHelper.cancel_establishing_and_in_progress_enrollments(
+        current_user,
+      )
     end
   end
 end

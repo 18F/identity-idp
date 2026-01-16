@@ -36,24 +36,33 @@ RSpec.describe Idv::PhoneStep do
   end
   let(:trace_id) { SecureRandom.uuid }
   let(:analytics) { FakeAnalytics.new }
+  let(:attempts_api_tracker) { AttemptsApiTrackingHelper::FakeAttemptsTracker.new }
+  let(:fraud_ops_tracker) { AttemptsApiTrackingHelper::FakeAttemptsTracker.new }
 
   subject do
     described_class.new(
-      idv_session: idv_session,
-      trace_id: trace_id,
-      analytics: analytics,
+      idv_session:,
+      trace_id:,
+      analytics:,
+      attempts_api_tracker:,
+      fraud_ops_tracker:,
     )
   end
 
   describe '#submit' do
     let(:rate_limiter) { RateLimiter.new(rate_limit_type: :proof_address, user: user) }
+
+    let(:vendor_name) { 'AddressMock' }
+    let(:vendor_transaction_id) { 'address-mock-transaction-id-123' }
+
     let(:mock_vendor) do
       {
-        vendor_name: 'AddressMock',
+        vendor_name: vendor_name,
         exception: nil,
         timed_out: false,
-        transaction_id: 'address-mock-transaction-id-123',
+        transaction_id: vendor_transaction_id,
         reference: '',
+        result: nil,
       }
     end
 
@@ -72,17 +81,63 @@ RSpec.describe Idv::PhoneStep do
 
       expect(subject.async_state).to be_done
       result = subject.async_state_done(subject.async_state)
+      expect(result).to be_kind_of(Hash)
+      result = result[:final_result]
       expect(result).to be_kind_of(FormResponse)
       expect(result.success?).to eq(true)
       expect(result.errors).to be_empty
       expect(result.extra).to eq(extra)
       expect(idv_session.vendor_phone_confirmation).to eq true
+      expect(idv_session.address_verification_vendor).to eq 'lexis_nexis_address'
       expect(idv_session.applicant).to eq(
         original_applicant.merge(
           phone: good_phone,
           uuid_prefix: service_provider.app_id,
         ),
       )
+    end
+
+    context 'when vendor is socure_phonerisk' do
+      let(:vendor_name) { 'socure_phonerisk' }
+      let(:vendor_transaction_id) { 'socure-transaction-id-456' }
+
+      let(:address_result) do
+        Proofing::AddressResult.new(
+          success: true,
+          errors: {},
+          exception: nil,
+          vendor_name: vendor_name,
+          transaction_id: vendor_transaction_id,
+          reference: '',
+          result: nil,
+        ).to_h
+      end
+
+      before do
+        allow_any_instance_of(Proofing::AddressProofer).to receive(:proof).and_return(
+          address_result,
+        )
+      end
+
+      it 'sets address_verification_vendor to socure_address' do
+        proofing_phone = Phonelib.parse(good_phone)
+        extra = {
+          phone_fingerprint: Pii::Fingerprinter.fingerprint(proofing_phone.e164),
+          country_code: proofing_phone.country,
+          area_code: proofing_phone.area_code,
+          vendor: mock_vendor,
+        }
+
+        subject.submit(phone: good_phone)
+        expect(subject.async_state).to be_done
+        result = subject.async_state_done(subject.async_state)
+        result = result[:final_result]
+
+        expect(result).to be_kind_of(FormResponse)
+        expect(result.success?).to eq(true)
+        expect(result.extra).to eq(extra)
+        expect(idv_session.address_verification_vendor).to eq('socure_address')
+      end
     end
 
     it 'fails with bad params' do
@@ -99,7 +154,8 @@ RSpec.describe Idv::PhoneStep do
       subject.submit(phone: bad_phone)
       expect(subject.async_state.done?).to eq true
       result = subject.async_state_done(subject.async_state)
-
+      expect(result).to be_kind_of(Hash)
+      result = result[:final_result]
       expect(result).to be_kind_of(FormResponse)
       expect(result.success?).to eq(false)
       expect(result.errors).to eq(phone: ['The phone number could not be verified.'])
@@ -133,7 +189,8 @@ RSpec.describe Idv::PhoneStep do
       subject.submit(phone: good_phone)
       expect(subject.async_state.done?).to eq true
       result = subject.async_state_done(subject.async_state)
-
+      expect(result).to be_kind_of(Hash)
+      result = result[:final_result]
       expect(result.success?).to eq(true)
       expect(idv_session.vendor_phone_confirmation).to eq(true)
       expect(idv_session.user_phone_confirmation).to eq(false)
@@ -143,38 +200,42 @@ RSpec.describe Idv::PhoneStep do
       subject.submit(phone: good_phone)
       expect(subject.async_state.done?).to eq true
       result = subject.async_state_done(subject.async_state)
-
+      expect(result).to be_kind_of(Hash)
+      result = result[:final_result]
       expect(result.success?).to eq(true)
       expect(idv_session.vendor_phone_confirmation).to eq(true)
       expect(idv_session.user_phone_confirmation).to be_falsy
     end
 
     it 'records the transaction_id in the cost' do
-      expect do
-        subject.submit(phone: good_phone)
-        subject.async_state_done(subject.async_state)
-      end.to(change { SpCost.count }.by(1))
+      expect(Db::SpCost::AddSpCost).to receive(:call).with(
+        service_provider,
+        :mock_address,
+        transaction_id: 'address-mock-transaction-id-123',
+      ).and_call_original
+      expect(NewRelic::Agent).to receive(:notice_error)
 
-      sp_cost = SpCost.last
-      expect(sp_cost.issuer).to eq(service_provider.issuer)
-      expect(sp_cost.transaction_id).to eq('address-mock-transaction-id-123')
+      subject.submit(phone: good_phone)
+      subject.async_state_done(subject.async_state)
     end
 
     it 'records the transaction_id in the cost for failures too' do
-      expect do
-        subject.submit(phone: bad_phone)
-        subject.async_state_done(subject.async_state)
-      end.to(change { SpCost.count }.by(1))
+      expect(Db::SpCost::AddSpCost).to receive(:call).with(
+        service_provider,
+        :mock_address,
+        transaction_id: 'address-mock-transaction-id-123',
+      ).and_call_original
+      expect(NewRelic::Agent).to receive(:notice_error)
 
-      sp_cost = SpCost.last
-      expect(sp_cost.issuer).to eq(service_provider.issuer)
-      expect(sp_cost.transaction_id).to eq('address-mock-transaction-id-123')
+      subject.submit(phone: bad_phone)
+      subject.async_state_done(subject.async_state)
     end
   end
 
   describe '#failure_reason' do
     context 'when there are idv attempts remaining' do
       it 'returns :warning' do
+        expect(attempts_api_tracker).not_to receive(:idv_rate_limited)
         subject.submit(phone: bad_phone)
         expect(subject.async_state.done?).to eq true
         subject.async_state_done(subject.async_state)
@@ -187,6 +248,9 @@ RSpec.describe Idv::PhoneStep do
       it 'returns :fail' do
         RateLimiter.new(rate_limit_type: :proof_address, user: user).increment_to_limited!
 
+        expect(attempts_api_tracker).to receive(:idv_rate_limited).with(
+          limiter_type: :proof_address,
+        )
         subject.submit(phone: bad_phone)
         expect(subject.failure_reason).to eq(:fail)
       end

@@ -2,12 +2,11 @@
 
 module MfaSetupConcern
   extend ActiveSupport::Concern
-  include RecommendWebauthnPlatformConcern
 
   def next_setup_path
     if next_setup_choice
       confirmation_path
-    elsif recommend_webauthn_platform_for_sms_user?(:recommend_for_account_creation)
+    elsif recommend_webauthn_platform_for_sms_user?
       webauthn_platform_recommended_path
     elsif suggest_second_mfa?
       auth_method_confirmation_path
@@ -98,6 +97,9 @@ module MfaSetupConcern
       threatmetrix_session_id: user_session[:sign_up_threatmetrix_session_id],
       email: current_user.last_sign_in_email_address.email,
       uuid_prefix: current_sp&.app_id,
+      user_uuid: current_user.uuid,
+      in_ab_test_bucket: in_tmx_ab_test_bucket?,
+      in_account_creation_flow: in_account_creation_flow?,
     }
   end
 
@@ -114,6 +116,10 @@ module MfaSetupConcern
     )
   end
 
+  def in_tmx_ab_test_bucket?
+    ab_test_bucket(:ACCOUNT_CREATION_TMX_PROCESSED) == :account_creation_tmx_processed
+  end
+
   def determine_next_mfa
     return unless user_session[:mfa_selections]
     current_setup_step = user_session[:next_mfa_selection_choice]
@@ -127,5 +133,22 @@ module MfaSetupConcern
       :mfa_selections,
       determine_next_mfa,
     )
+  end
+
+  def recommend_webauthn_platform_for_sms_user?
+    user_session[:platform_authenticator_available] == true && user_has_phone_setup?
+  end
+
+  def user_set_up_with_sms?
+    current_user.phone_configurations.any? do |phone_configuration|
+      phone_configuration.mfa_enabled? && phone_configuration.delivery_preference == 'sms'
+    end
+  end
+
+  def user_has_phone_setup?
+    user_session[:in_account_creation_flow] == true &&
+      mfa_context.enabled_mfa_methods_count == 1 &&
+      mfa_context.phone_configurations.present? &&
+      user_set_up_with_sms?
   end
 end

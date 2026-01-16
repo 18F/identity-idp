@@ -19,6 +19,14 @@ module DocAuthImageFixtures
     Rack::Test::UploadedFile.new(fixture_path('id-back.jpg'), 'image/jpeg')
   end
 
+  def self.document_passport_image
+    load_image_data('passport.jpg')
+  end
+
+  def self.document_passport_image_multipart
+    Rack::Test::UploadedFile.new(fixture_path('passport.jpg'), 'image/jpeg')
+  end
+
   def self.selfie_image
     load_image_data('selfie.jpg')
   end
@@ -47,6 +55,14 @@ module DocAuthImageFixtures
     Rack::Test::UploadedFile.new(path, Mime[:yaml])
   end
 
+  def self.state_id_card_success_yaml
+    path = File.join(
+      File.dirname(__FILE__),
+      '../fixtures/ial2_test_state_id_card_success.yml',
+    )
+    Rack::Test::UploadedFile.new(path, Mime[:yaml])
+  end
+
   def self.portrait_match_success_yaml
     path = File.join(
       File.dirname(__FILE__),
@@ -63,6 +79,22 @@ module DocAuthImageFixtures
     Rack::Test::UploadedFile.new(path, Mime[:yaml])
   end
 
+  def self.passport_passed_yaml
+    path = File.join(
+      File.dirname(__FILE__),
+      '../fixtures/passport_credential.yml',
+    )
+    Rack::Test::UploadedFile.new(path, Mime[:yaml])
+  end
+
+  def self.passport_failed_yaml
+    path = File.join(
+      File.dirname(__FILE__),
+      '../fixtures/passport_bad_mrz_credential.yml',
+    )
+    Rack::Test::UploadedFile.new(path, Mime[:yaml])
+  end
+
   def self.fixture_path(filename)
     File.join(
       File.dirname(__FILE__),
@@ -73,5 +105,34 @@ module DocAuthImageFixtures
 
   def self.load_image_data(filename)
     File.read(fixture_path(filename))
+  end
+
+  def self.zipped_files(reference_id:, selfie: false, passport: false)
+    temp_dir = Dir.mktmpdir(reference_id)
+
+    if passport
+      # i don't think this is possible with socure?
+      FileUtils.cp(fixture_path('passport.jpg'), "#{temp_dir}/documentfrontDoc_Front_1_blob.jpg")
+    else
+      FileUtils.cp(fixture_path('id-back.jpg'), "#{temp_dir}/documentbackDoc_Back_1_blob.jpg")
+      FileUtils.cp(fixture_path('id-front.jpg'), "#{temp_dir}/documentfrontDoc_Front_1_blob.jpg")
+    end
+
+    if selfie
+      FileUtils.cp(fixture_path('selfie.jpg'), "#{temp_dir}/Doc_Selfie_1_blob.jpg")
+    end
+
+    zip_filename = "#{temp_dir}/document.zip"
+
+    Zip::File.open(zip_filename, create: true) do |zipfile|
+      Dir.glob(File.join(temp_dir, '*')).each do |file|
+        next if File.directory?(file)
+        zipfile.add(File.basename(file), file)
+      end
+    end
+    zip_contents = File.read(zip_filename)
+    zip_contents
+  ensure
+    FileUtils.remove_entry_secure(temp_dir)
   end
 end

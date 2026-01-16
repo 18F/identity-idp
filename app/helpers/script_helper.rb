@@ -19,7 +19,7 @@ module ScriptHelper
         asset_sources.get_sources(name).each do |source|
           integrity = asset_sources.get_integrity(source)
 
-          if attributes[:preload_links_header] != false
+          if attributes.delete(:preload_links_header) != false
             AssetPreloadLinker.append(
               headers: response.headers,
               as: :script,

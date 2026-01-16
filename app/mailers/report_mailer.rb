@@ -26,17 +26,15 @@ class ReportMailer < ActionMailer::Base
   # @param [String] email
   # @param [String] subject
   # @param [String] env name of current deploy environment
+  # @param [String, String[]] message Message(s) to use as email prelude
   # @param [:csv,:xlsx] attachment_format
   # @param [Array<EmailableReport>] reports
   #   an array of tables (which are arrays of rows (arrays of strings))
   #   each table can have a first "row" that is a hash with options
-  # @option opts [Boolean] :float_as_percent whether or not to render floats as percents
-  # @option opts [Boolean] :title title of the table
   def tables_report(
-    email:,
-    subject:,
-    reports:,
-    attachment_format:,
+    to:,
+    subject:, reports:, attachment_format:, bcc: nil,
+    cc: nil,
     message: nil,
     env: Identity::Hostdata.env || 'local'
   )
@@ -75,6 +73,6 @@ class ReportMailer < ActionMailer::Base
       raise ArgumentError, "unknown attachment_format=#{attachment_format}"
     end
 
-    mail(to: email, subject: "[#{env}] #{subject}")
+    mail(to: to, bcc: bcc, cc: cc, subject: "[#{env}] #{subject}")
   end
 end

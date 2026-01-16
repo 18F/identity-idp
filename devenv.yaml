@@ -1,0 +1,10 @@
+inputs:
+  nixpkgs:
+    url: github:cachix/devenv-nixpkgs/rolling
+  nixpkgs-unstable:
+    url: github:nixos/nixpkgs/nixpkgs-unstable
+  nixpkgs-ruby:
+    url: github:bobvanderlinden/nixpkgs-ruby
+    inputs:
+      nixpkgs:
+        follows: nixpkgs

@@ -75,7 +75,6 @@ RSpec.describe Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByIaa do
           user_id: user1.id,
           issuer: issuer1,
           ial: 1,
-          requested_at: inside_partial_month,
           returned_at: inside_partial_month,
           billable: true,
         )
@@ -86,7 +85,6 @@ RSpec.describe Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByIaa do
           user_id: user1.id,
           issuer: issuer1,
           ial: 1,
-          requested_at: inside_partial_month,
           returned_at: inside_partial_month,
           billable: false,
         )
@@ -98,7 +96,6 @@ RSpec.describe Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByIaa do
             user_id: user.id,
             issuer: issuer2,
             ial: 2,
-            requested_at: inside_partial_month,
             returned_at: inside_partial_month,
             billable: true,
           )
@@ -112,7 +109,6 @@ RSpec.describe Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByIaa do
               user_id: user.id,
               ial: 1,
               issuer: issuer1,
-              requested_at: inside_whole_month,
               returned_at: inside_whole_month,
               billable: true,
             )
@@ -127,7 +123,6 @@ RSpec.describe Db::MonthlySpAuthCount::UniqueMonthlyAuthCountsByIaa do
               user_id: user.id,
               ial: 2,
               issuer: issuer2,
-              requested_at: inside_whole_month,
               returned_at: inside_whole_month,
               billable: true,
             )

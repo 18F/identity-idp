@@ -3,9 +3,10 @@
 module EncryptedDocStorage
   class LocalStorage
     def write_image(encrypted_image:, name:)
-      FileUtils.mkdir_p(tmp_document_storage_dir)
+      full_path = tmp_document_storage_dir.join(name)
+      FileUtils.mkdir_p(full_path.dirname)
 
-      File.open(tmp_document_storage_dir.join(name), 'wb') do |f|
+      File.open(full_path, 'wb') do |f|
         f.write(encrypted_image)
       end
     end

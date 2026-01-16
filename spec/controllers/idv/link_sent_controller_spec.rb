@@ -42,6 +42,7 @@ RSpec.describe Idv::LinkSentController do
 
   describe '#show' do
     let(:analytics_name) { 'IdV: doc auth link_sent visited' }
+
     let(:analytics_args) do
       {
         analytics_id: 'Doc Auth',
@@ -85,6 +86,15 @@ RSpec.describe Idv::LinkSentController do
           subject.idv_session.idv_consent_given_at = Time.zone.now
           subject.idv_session.flow_path = 'standard'
 
+          # Set up DocumentCaptureSession to satisfy choose_id_type completion
+          subject.idv_session.document_capture_session_uuid = SecureRandom.uuid
+          DocumentCaptureSession.create!(
+            uuid: subject.idv_session.document_capture_session_uuid,
+            user: user,
+            requested_at: Time.zone.now,
+            passport_status: 'requested',
+          )
+
           get :show
 
           expect(response).to redirect_to(idv_document_capture_url)
@@ -93,7 +103,7 @@ RSpec.describe Idv::LinkSentController do
 
       context 'with pii in idv_session' do
         it 'allows the back button and does not redirect' do
-          subject.idv_session.pii_from_doc = Pii::StateId.new(**Idp::Constants::MOCK_IDV_APPLICANT)
+          subject.idv_session.pii_from_doc = Pii::StateId.new(**Idp::Constants.mock_idv_applicant)
           get :show
 
           expect(response).to render_template :show
@@ -104,6 +114,7 @@ RSpec.describe Idv::LinkSentController do
 
   describe '#update' do
     let(:analytics_name) { 'IdV: doc auth link_sent submitted' }
+
     let(:analytics_args) do
       {
         analytics_id: 'Doc Auth',
@@ -113,7 +124,7 @@ RSpec.describe Idv::LinkSentController do
     end
 
     it 'invalidates future steps' do
-      subject.idv_session.applicant = Idp::Constants::MOCK_IDV_APPLICANT
+      subject.idv_session.applicant = Idp::Constants.mock_idv_applicant
       expect(subject).to receive(:clear_future_steps!).and_call_original
 
       put :update
@@ -143,21 +154,26 @@ RSpec.describe Idv::LinkSentController do
     end
 
     context 'check results' do
+      let(:idv_vendor) { Idp::Constants::Vendors::MOCK }
+      let(:state_id_vendor) { Idp::Constants::Vendors::STATE_ID_MOCK }
       let(:load_result) { double('load result') }
       let(:session_canceled_at) { nil }
       let(:load_result_success) { true }
 
       before do
-        allow(load_result).to receive(:pii_from_doc).and_return(Idp::Constants::MOCK_IDV_APPLICANT)
+        allow(load_result).to receive(:pii_from_doc).and_return(Idp::Constants.mock_idv_applicant)
         allow(load_result).to receive(:attention_with_barcode?).and_return(false)
 
         allow(load_result).to receive(:success?).and_return(load_result_success)
         allow(load_result).to receive(:selfie_check_performed?).and_return(false)
         allow(load_result).to receive(:errors).and_return({ message: 'an error message' })
+        allow(load_result).to receive(:state_id_vendor).and_return(state_id_vendor)
 
-        document_capture_session = DocumentCaptureSession.create!(
-          user: user,
+        document_capture_session = create(
+          :document_capture_session,
+          user:,
           cancelled_at: session_canceled_at,
+          doc_auth_vendor: Idp::Constants::Vendors::MOCK,
         )
         allow(document_capture_session).to receive(:load_result).and_return(load_result)
         allow(subject).to receive(:document_capture_session).and_return(document_capture_session)
@@ -167,25 +183,26 @@ RSpec.describe Idv::LinkSentController do
         it 'redirects to ssn page' do
           put :update
 
+          expect(subject.idv_session.doc_auth_vendor).to_not be_nil
+          expect(subject.idv_session.doc_auth_vendor).to eq(idv_vendor)
           expect(response).to redirect_to(idv_ssn_url)
 
           proofing_components = Idv::ProofingComponents.new(
             idv_session: subject.idv_session,
-            session: subject.session,
-            user_session: subject.user_session,
-            user:,
           )
           expect(proofing_components.document_check).to eq('mock')
-          expect(proofing_components.document_type).to eq('state_id')
+          expect(proofing_components.document_type_received).to eq('drivers_license')
         end
 
         context 'redo document capture' do
           before do
             subject.idv_session.redo_document_capture = true
           end
+
           it 'resets redo_document capture to nil in idv_session' do
             put :update
             expect(subject.idv_session.redo_document_capture).to be_nil
+            expect(subject.idv_session.doc_auth_vendor).to eq(idv_vendor)
           end
         end
 
@@ -202,6 +219,7 @@ RSpec.describe Idv::LinkSentController do
               put :update
 
               expect(response.status).to eq(204)
+              expect(subject.idv_session.doc_auth_vendor).to be_nil
             end
           end
 
@@ -211,6 +229,7 @@ RSpec.describe Idv::LinkSentController do
             it 'redirects to ssn' do
               put :update
               expect(flash[:error]).to eq nil
+              expect(subject.idv_session.doc_auth_vendor).to eq(idv_vendor)
               expect(response).to redirect_to idv_ssn_url
             end
           end
@@ -233,6 +252,7 @@ RSpec.describe Idv::LinkSentController do
         it 'redirects to hybrid_handoff page' do
           put :update
 
+          expect(subject.idv_session.doc_auth_vendor).to be_nil
           expect(response).to redirect_to(idv_hybrid_handoff_url)
         end
       end
@@ -244,6 +264,7 @@ RSpec.describe Idv::LinkSentController do
           put :update
 
           expect(response).to have_http_status(204)
+          expect(subject.idv_session.doc_auth_vendor).to be_nil
         end
       end
     end

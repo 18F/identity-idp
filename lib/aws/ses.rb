@@ -6,33 +6,34 @@
 module Aws
   module SES
     class Base
+      SES_CLIENT_POOL = ConnectionPool.new(size: IdentityConfig.store.aws_ses_client_pool_size) do
+        # https://docs.aws.amazon.com/sdk-for-ruby/v3/developer-guide/timeout-duration.html
+        Aws::SES::Client.new(
+          retry_limit: 3,
+          retry_backoff: ->(_context) { sleep(1) },
+          instance_profile_credentials_timeout: 1, # defaults to 1 second
+          instance_profile_credentials_retries: 5, # defaults to 0 retries
+        )
+      end.freeze
+
       def initialize(*); end
 
       def deliver(mail)
-        response = ses_client.send_raw_email(
-          raw_message: { data: mail.to_s },
-          configuration_set_name: IdentityConfig.store.ses_configuration_set_name,
-        )
+        destinations = Array(mail.to) + Array(mail.cc) + Array(mail.bcc)
+
+        response = SES_CLIENT_POOL.with do |client|
+          client.send_raw_email(
+            raw_message: { data: mail.to_s },
+            configuration_set_name: IdentityConfig.store.ses_configuration_set_name,
+            destinations: destinations, # include BCC recipients
+          )
+        end
 
         mail.header[:ses_message_id] = response.message_id
         response
       end
 
       alias_method :deliver!, :deliver
-
-      private
-
-      def ses_client
-        @ses_client ||= Aws::SES::Client.new(ses_client_options)
-      end
-
-      def ses_client_options
-        {
-          # https://docs.aws.amazon.com/sdk-for-ruby/v3/developer-guide/timeout-duration.html
-          retry_limit: 3,
-          retry_backoff: ->(_context) { sleep(2) },
-        }
-      end
     end
   end
 end

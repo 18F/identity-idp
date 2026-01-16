@@ -124,13 +124,18 @@ RSpec.describe Users::PivCacAuthenticationSetupController do
             let(:mfa_selections) { ['piv_cac'] }
             it 'redirects to suggest 2nd MFA page' do
               stub_analytics
+              stub_attempts_tracker
+
+              expect(@attempts_api_tracker).to receive(:mfa_enrolled).with(
+                success: true,
+                mfa_device_type: 'piv_cac',
+              )
 
               expect(response).to redirect_to(auth_method_confirmation_url)
 
               expect(@analytics).to have_logged_event(
                 'Multi-Factor Authentication Setup',
                 enabled_mfa_methods_count: 1,
-                errors: {},
                 multi_factor_auth_method: 'piv_cac',
                 in_account_creation_flow: false,
                 success: true,
@@ -140,6 +145,16 @@ RSpec.describe Users::PivCacAuthenticationSetupController do
 
             it 'logs mfa attempts commensurate to number of attempts' do
               stub_analytics
+              stub_attempts_tracker
+
+              expect(@attempts_api_tracker).to receive(:mfa_enrolled).with(
+                success: false,
+                mfa_device_type: 'piv_cac',
+              )
+              expect(@attempts_api_tracker).to receive(:mfa_enrolled).with(
+                success: true,
+                mfa_device_type: 'piv_cac',
+              )
 
               get :new, params: { token: bad_token }
               response
@@ -147,7 +162,6 @@ RSpec.describe Users::PivCacAuthenticationSetupController do
               expect(@analytics).to have_logged_event(
                 'Multi-Factor Authentication Setup',
                 enabled_mfa_methods_count: 1,
-                errors: {},
                 multi_factor_auth_method: 'piv_cac',
                 in_account_creation_flow: false,
                 success: true,

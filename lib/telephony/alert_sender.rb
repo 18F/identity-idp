@@ -28,6 +28,26 @@ module Telephony
       response
     end
 
+    def send_dupe_profile_created_notice(to:, country_code:)
+      message = I18n.t(
+        'telephony.dupe_profile_created_notice',
+        app_name: APP_NAME,
+      )
+      response = adapter.deliver(message: message, to: to, country_code: country_code)
+      log_response(response, context: __method__.to_s.gsub(/^send_/, ''))
+      response
+    end
+
+    def send_dupe_profile_sign_in_attempted_notice(to:, country_code:)
+      message = I18n.t(
+        'telephony.dupe_profile_sign_in_attempted_notice',
+        app_name: APP_NAME,
+      )
+      response = adapter.deliver(message: message, to: to, country_code: country_code)
+      log_response(response, context: __method__.to_s.gsub(/^send_/, ''))
+      response
+    end
+
     def send_doc_auth_link(to:, link:, country_code:, sp_or_app_name:)
       message = I18n.t(
         'telephony.doc_auth_link',

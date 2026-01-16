@@ -2,18 +2,32 @@ require 'rails_helper'
 
 module SocureDocvFixtures
   class << self
-    def pass_json
-      raw = read_fixture_file_at_path('pass.json')
-      JSON.parse(raw).to_json
+    def pass_json(reason_codes: nil, document_type: :license)
+      raw = read_fixture_file_at_path(
+        document_type == :passport ? 'passport_pass.json' : 'license_pass.json',
+      )
+      body = JSON.parse(raw)
+      if reason_codes
+        body['documentVerification']['reasonCodes'] = reason_codes
+      end
+      body.to_json
     end
 
-    def fail_json(errors)
-      raw = read_fixture_file_at_path('pass.json')
+    def fail_json(reason_codes:, document_type: :license)
+      raw = read_fixture_file_at_path(
+        document_type == :passport ? 'passport_pass.json' : 'license_pass.json',
+      )
       body = JSON.parse(raw)
 
       body['documentVerification']['decision']['value'] = 'reject'
-      body['documentVerification']['reasonCodes'] = errors
+      body['documentVerification']['reasonCodes'] = reason_codes
 
+      body.to_json
+    end
+
+    def aamva_fail_json
+      raw = read_fixture_file_at_path('aamva_fail.json')
+      body = JSON.parse(raw)
       body.to_json
     end
 

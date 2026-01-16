@@ -10,12 +10,10 @@ RSpec.describe Idv::Session do
 
   describe '#initialize' do
     context 'without idv user session' do
-      it 'initializes user session' do
-        expect_any_instance_of(Idv::Session).to receive(:new_idv_session).twice.and_call_original
-
+      it 'initializes user session with empty hash' do
         subject
 
-        expect(user_session[:idv]).to eq(subject.new_idv_session)
+        expect(user_session[:idv]).to eq({})
       end
     end
 
@@ -25,7 +23,7 @@ RSpec.describe Idv::Session do
       let(:user_session) { { idv: idv_session } }
 
       it 'does not initialize user session' do
-        expect_any_instance_of(Idv::Session).not_to receive(:new_idv_session)
+        expect(subject).not_to receive(:new_idv_session)
 
         subject
 
@@ -38,7 +36,7 @@ RSpec.describe Idv::Session do
       let(:user_session) { { idv: idv_session } }
 
       it 'does not initialize user session' do
-        expect_any_instance_of(Idv::Session).not_to receive(:new_idv_session)
+        expect(subject).not_to receive(:new_idv_session)
 
         subject
 
@@ -47,27 +45,24 @@ RSpec.describe Idv::Session do
     end
   end
 
-  describe '#method_missing' do
-    it 'disallows un-supported attributes' do
+  describe 'attribute methods' do
+    it 'disallows un-supported setters' do
       expect { subject.foo = 'bar' }.to raise_error NoMethodError
     end
 
-    it 'allows supported attributes' do
+    it 'allows using supported setters and getters' do
       Idv::Session::VALID_SESSION_ATTRIBUTES.each do |attr|
-        subject.send attr, 'foo'
-        expect(subject.send(attr)).to eq 'foo'
+        expect(subject.send(attr)).to eq nil
         subject.send :"#{attr}=", 'foo'
         expect(subject.send(attr)).to eq 'foo'
       end
     end
-  end
 
-  describe '#respond_to_missing?' do
-    it 'disallows un-supported attributes' do
+    it 'allows checking for un-supported attributes' do
       expect(subject.respond_to?(:foo=, false)).to eq false
     end
 
-    it 'allows supported attributes' do
+    it 'allows checking for supported attributes' do
       Idv::Session::VALID_SESSION_ATTRIBUTES.each do |attr|
         expect(subject.respond_to?(attr, false)).to eq true
         expect(subject.respond_to?(:"#{attr}=", false)).to eq true
@@ -188,7 +183,7 @@ RSpec.describe Idv::Session do
 
       context 'when the user has an establishing in person enrollment' do
         let!(:enrollment) do
-          create(:in_person_enrollment, :establishing, user: user, profile: nil)
+          create(:in_person_enrollment, :establishing, user: user)
         end
         let(:profile) { subject.profile }
 
@@ -211,7 +206,7 @@ RSpec.describe Idv::Session do
               :schedule_in_person_enrollment,
             ).with(
               user: user,
-              pii: Pii::Attributes.new_from_hash(subject.applicant),
+              applicant_pii: Pii::UspsApplicant.from_idv_applicant(subject.applicant),
               is_enhanced_ipp: is_enhanced_ipp,
               opt_in: opt_in_param,
             )
@@ -246,6 +241,19 @@ RSpec.describe Idv::Session do
               user.password, is_enhanced_ipp:, proofing_components:
             )
             expect(enrollment.reload.profile_id).to eq(profile.id)
+          end
+
+          context 'when the in person enrollment is pending' do
+            before do
+              user.establishing_in_person_enrollment.update(status: 'pending')
+            end
+
+            it 'associates the in person enrollment with the created profile' do
+              subject.create_profile_from_applicant_with_password(
+                user.password, is_enhanced_ipp:, proofing_components:
+              )
+              expect(enrollment.reload.profile_id).to eq(profile.id)
+            end
           end
         end
 
@@ -444,6 +452,28 @@ RSpec.describe Idv::Session do
       subject.address_verification_mechanism = nil
 
       expect(subject.address_mechanism_chosen?).to eq(false)
+    end
+  end
+
+  describe '#in_person_passports_allowed?' do
+    context 'when in person passports are enabled' do
+      before do
+        allow(IdentityConfig.store).to receive(:in_person_passports_enabled).and_return(true)
+      end
+
+      it 'returns true' do
+        expect(subject.in_person_passports_allowed?).to be(true)
+      end
+    end
+
+    context 'when in person passports are disabled' do
+      before do
+        allow(IdentityConfig.store).to receive(:in_person_passports_enabled).and_return(false)
+      end
+
+      it 'returns false' do
+        expect(subject.in_person_passports_allowed?).to be(false)
+      end
     end
   end
 end

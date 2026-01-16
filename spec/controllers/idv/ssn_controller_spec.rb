@@ -11,6 +11,7 @@ RSpec.describe Idv::SsnController do
     stub_sign_in(user)
     stub_up_to(:document_capture, idv_session: controller.idv_session)
     stub_analytics
+    stub_attempts_tracker
   end
 
   describe '#step_info' do
@@ -159,14 +160,27 @@ RSpec.describe Idv::SsnController do
           flow_path: 'standard',
           step: 'ssn',
           success: true,
-          errors: {},
         }
       end
 
-      it 'updates idv_session.ssn' do
+      it 'updates idv_session.ssn to the ssn' do
+        expect(@attempts_api_tracker).to receive(:idv_ssn_submitted).with(
+          success: true,
+          ssn: SsnFormatter.format(ssn),
+          failure_reason: nil,
+        )
         expect { put :update, params: params }.to change { subject.idv_session.ssn }
           .from(nil).to(ssn)
         expect(@analytics).to have_logged_event(analytics_name, analytics_args)
+      end
+
+      context 'when the submitted ssn includes dashes' do
+        let(:ssn) { '123-45-6789' }
+        it 'updates idv_session.ssn to the normalized ssn' do
+          expect { put :update, params: params }.to change { subject.idv_session.ssn }
+            .from(nil).to('123456789')
+          expect(@analytics).to have_logged_event(analytics_name, analytics_args)
+        end
       end
 
       context 'when the user has previously submitted an ssn' do
@@ -177,15 +191,14 @@ RSpec.describe Idv::SsnController do
             step: 'ssn',
             success: true,
             previous_ssn_edit_distance: 6,
-            errors: {},
           }
         end
 
         it 'updates idv_session.ssn' do
-          subject.idv_session.ssn = '900-95-7890'
+          subject.idv_session.ssn = '900957890'
 
           expect { put :update, params: params }.to change { subject.idv_session.ssn }
-            .from('900-95-7890').to(ssn)
+            .from('900957890').to(ssn)
           expect(@analytics).to have_logged_event(analytics_name, analytics_args)
         end
       end
@@ -202,6 +215,29 @@ RSpec.describe Idv::SsnController do
         it 'redirects to the verify info controller if a user is updating their SSN' do
           subject.idv_session.ssn = ssn
           subject.idv_session.pii_from_doc = subject.idv_session.pii_from_doc.with(state: 'PR')
+
+          put :update, params: params
+
+          expect(response).to redirect_to(idv_verify_info_url)
+        end
+      end
+
+      context 'with a Passport document type and pii_from_doc in idv_session' do
+        it 'redirects to address controller after user enters their SSN' do
+          subject.idv_session.pii_from_doc = subject.idv_session.pii_from_doc.with(
+            document_type_received: 'passport',
+          )
+
+          put :update, params: params
+
+          expect(response).to redirect_to(idv_address_url)
+        end
+
+        it 'redirects to the verify info controller if a user is updating their SSN' do
+          subject.idv_session.ssn = ssn
+          subject.idv_session.pii_from_doc = subject.idv_session.pii_from_doc.with(
+            document_type_received: 'passport',
+          )
 
           put :update, params: params
 
@@ -227,7 +263,7 @@ RSpec.describe Idv::SsnController do
     end
 
     context 'with invalid ssn' do
-      let(:ssn) { 'i am not an ssn' }
+      let(:ssn) { '9999999999' }
       let(:params) { { doc_auth: { ssn: ssn } } }
       let(:analytics_name) { 'IdV: doc auth ssn submitted' }
       let(:analytics_args) do
@@ -236,9 +272,6 @@ RSpec.describe Idv::SsnController do
           flow_path: 'standard',
           step: 'ssn',
           success: false,
-          errors: {
-            ssn: [t('idv.errors.pattern_mismatch.ssn')],
-          },
           error_details: { ssn: { invalid: true } },
         }
       end
@@ -246,6 +279,11 @@ RSpec.describe Idv::SsnController do
       render_views
 
       it 'renders the show template with an error message' do
+        expect(@attempts_api_tracker).to receive(:idv_ssn_submitted).with(
+          success: false,
+          ssn: SsnFormatter.format(ssn),
+          failure_reason: { ssn: [:invalid] },
+        )
         put :update, params: params
 
         expect(response).to have_rendered('idv/shared/ssn')

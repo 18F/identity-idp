@@ -9,9 +9,8 @@ module Idv
       include Steps::ThreatMetrixStepHelper
       include ThreatMetrixConcern
 
+      before_action :confirm_step_allowed
       before_action :confirm_not_rate_limited_after_doc_auth
-      before_action :confirm_in_person_address_step_complete
-      before_action :confirm_repeat_ssn, only: :show
       before_action :override_csp_for_threat_metrix,
                     if: -> { FeatureManagement.proofing_device_profiling_collecting_enabled? }
 
@@ -40,16 +39,28 @@ module Idv
       def update
         clear_future_steps!
         ssn_form = Idv::SsnFormatForm.new(idv_session.ssn)
-        form_response = ssn_form.submit(params.require(:doc_auth).permit(:ssn))
+        form_response = ssn_form.submit(ssn: ssn_params[:ssn])
         @ssn_presenter = Idv::SsnPresenter.new(
           sp_name: decorated_sp_session.sp_name,
           ssn_form: ssn_form,
           step_indicator_steps: step_indicator_steps,
         )
 
+        attempts_api_tracker.idv_ssn_submitted(
+          success: form_response.success?,
+          ssn: SsnFormatter.format(ssn_params[:ssn]),
+          failure_reason: attempts_api_tracker.parse_failure_reason(form_response),
+        )
+
+        fraud_ops_tracker.idv_ssn_submitted(
+          success: form_response.success?,
+          ssn: SsnFormatter.format(ssn_params[:ssn]),
+          failure_reason: fraud_ops_tracker.parse_failure_reason(form_response),
+        )
+
         if form_response.success?
           idv_session.previous_ssn = idv_session.ssn
-          idv_session.ssn = params[:doc_auth][:ssn]
+          idv_session.ssn = SsnFormatter.normalize(ssn_params[:ssn])
           redirect_to next_url
         else
           flash[:error] = form_response.first_error_message
@@ -66,22 +77,17 @@ module Idv
           key: :ipp_ssn,
           controller: self,
           next_steps: [:ipp_verify_info],
-          preconditions: ->(idv_session:, user:) { idv_session.ipp_document_capture_complete? },
-          undo_step: ->(idv_session:, user:) { idv_session.ssn = nil },
+          preconditions: ->(idv_session:, user:) do
+            idv_session.ipp_document_capture_complete? &&
+              user.has_establishing_in_person_enrollment?
+          end,
+          undo_step: ->(idv_session:, user:) {
+            idv_session.invalidate_ssn_step!
+          },
         )
       end
 
       private
-
-      def flow_session
-        user_session.fetch('idv/in_person', {})
-      end
-
-      def confirm_repeat_ssn
-        return if !idv_session.ssn
-        return if request.referer == idv_in_person_verify_info_url
-        redirect_to idv_in_person_verify_info_url
-      end
 
       def next_url
         idv_in_person_verify_info_url
@@ -97,9 +103,8 @@ module Idv
           .merge(**extra_analytics_properties)
       end
 
-      def confirm_in_person_address_step_complete
-        return if flow_session[:pii_from_user] && flow_session[:pii_from_user][:address1].present?
-        redirect_to idv_in_person_address_url
+      def ssn_params
+        params.require(:doc_auth).permit(:ssn)
       end
     end
   end

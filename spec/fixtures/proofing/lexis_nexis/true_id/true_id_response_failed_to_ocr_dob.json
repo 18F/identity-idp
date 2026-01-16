@@ -409,12 +409,7 @@
            "Name": "Fields_PostalCode",
            "Values": [{"Value": "12345"}]
         },
-                 {
-           "Group": "IDAUTH_FIELD_DATA",
-           "Name": "Fields_Sex",
-           "Values": [{"Value": "M"}]
-        },
-                 {
+        {
            "Group": "IDAUTH_FIELD_DATA",
            "Name": "Fields_ControlNumber",
            "Values": [{"Value": "6820051160"}]

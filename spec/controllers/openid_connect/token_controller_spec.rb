@@ -35,8 +35,9 @@ RSpec.describe OpenidConnect::TokenController do
 
     let!(:identity) do
       IdentityLinker.new(user, service_provider).link_identity(
-        rails_session_id: SecureRandom.hex,
+        acr_values: Saml::Idp::Constants::IAL_AUTH_ONLY_ACR,
         ial: 1,
+        rails_session_id: SecureRandom.hex,
       )
     end
 
@@ -60,7 +61,6 @@ RSpec.describe OpenidConnect::TokenController do
             success: true,
             client_id: client_id,
             user_id: user.uuid,
-            errors: {},
             code_digest: kind_of(String),
             code_verifier_present: false,
             expires_in: 0,
@@ -94,7 +94,6 @@ RSpec.describe OpenidConnect::TokenController do
             success: false,
             client_id: client_id,
             user_id: user.uuid,
-            errors: hash_including(:grant_type),
             code_digest: kind_of(String),
             code_verifier_present: false,
             error_details: hash_including(:grant_type),

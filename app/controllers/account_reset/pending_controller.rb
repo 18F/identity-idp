@@ -13,10 +13,6 @@ module AccountReset
       @pending_presenter = AccountReset::PendingPresenter.new(pending_account_reset_request)
     end
 
-    def confirm
-      @account_reset_deletion_period_interval = account_reset_deletion_period_interval(current_user)
-    end
-
     def cancel
       analytics.pending_account_reset_cancelled
       AccountReset::PendingRequestForUser.new(current_user).cancel_account_reset_request!(

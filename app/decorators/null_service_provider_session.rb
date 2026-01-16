@@ -21,15 +21,15 @@ class NullServiceProviderSession
 
   def sp_issuer; end
 
-  def sp_logo; end
-
-  def sp_logo_url; end
-
   def sp_redirect_uris; end
 
   def requested_attributes; end
 
   def sp_alert(_section); end
+
+  def successful_handoff?
+    false
+  end
 
   def requested_more_recent_verification?
     false
@@ -42,6 +42,10 @@ class NullServiceProviderSession
   def current_user
     view_context&.current_user
   end
+
+  def attempts_api_session_id; end
+
+  def attempts_api_redirect_uri; end
 
   private
 

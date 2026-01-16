@@ -66,7 +66,7 @@ module LexisNexisFixtures
     def ddp_unexpected_review_status_response_json
       raw = read_fixture_file_at_path('ddp/successful_response.json')
       JSON.parse(raw).merge(
-        review_status: ddp_unexpected_review_status,
+        'review_status' => ddp_unexpected_review_status,
       ).to_json
     end
 
@@ -126,6 +126,11 @@ module LexisNexisFixtures
       JSON.parse(raw).to_json
     end
 
+    def phone_finder_rdp_v3_request_json
+      raw = read_fixture_file_at_path('phone_finder/rdp_v3_request.json')
+      JSON.parse(raw).to_json
+    end
+
     def phone_finder_rdp1_success_response_json
       raw = read_fixture_file_at_path('phone_finder/rdp1_response.json')
       JSON.parse(raw).to_json
@@ -176,6 +181,26 @@ module LexisNexisFixtures
       read_fixture_file_at_path('true_id/true_id_response_success_3.json')
     end
 
+    def true_id_response_success_with_invalid_zip_extension
+      read_fixture_file_at_path('true_id/true_id_response_success_with_invalid_zip_extension.json')
+    end
+
+    def true_id_response_passport
+      read_fixture_file_at_path('true_id/true_id_response_success_passport.json')
+    end
+
+    def true_id_response_passport_card
+      read_fixture_file_at_path('true_id/true_id_response_success_passport_card.json')
+    end
+
+    def true_id_response_passport_without_tamper
+      read_fixture_file_at_path('true_id/true_id_response_success_passport_without_tamper.json')
+    end
+
+    def true_id_response_state_id_card
+      read_fixture_file_at_path('true_id/true_id_response_success_state_id_card.json')
+    end
+
     def true_id_response_success_with_liveness
       read_fixture_file_at_path('true_id/true_id_response_success_with_liveness.json')
     end
@@ -222,8 +247,16 @@ module LexisNexisFixtures
       read_fixture_file_at_path('true_id/true_id_response_tampering_failure.json')
     end
 
+    def true_id_response_passport_failure_tampering
+      read_fixture_file_at_path('true_id/true_id_response_passport_tampering_failure.json')
+    end
+
     def true_id_response_failed_to_ocr_dob
       read_fixture_file_at_path('true_id/true_id_response_failed_to_ocr_dob.json')
+    end
+
+    def true_id_response_passport_failed_to_ocr_dob
+      read_fixture_file_at_path('true_id/true_id_response_passport_failed_to_ocr_dob.json')
     end
 
     private

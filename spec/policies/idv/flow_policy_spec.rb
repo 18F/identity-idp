@@ -42,6 +42,7 @@ RSpec.describe 'Idv::FlowPolicy' do
         idv_session.phone_for_mobile_flow = '201-555-1212'
 
         idv_session.pii_from_doc = Pii::StateId.new(**Idp::Constants::MOCK_IDV_APPLICANT)
+        idv_session.doc_auth_vendor = 'test_vendor'
         idv_session.had_barcode_read_failure = true
         idv_session.had_barcode_attention_error = true
 
@@ -63,6 +64,7 @@ RSpec.describe 'Idv::FlowPolicy' do
         expect(idv_session.phone_for_mobile_flow).to be_nil
 
         expect(idv_session.pii_from_doc).to be_nil
+        expect(idv_session.doc_auth_vendor).to be_nil
         expect(idv_session.had_barcode_read_failure).to be_nil
         expect(idv_session.had_barcode_attention_error).to be_nil
 
@@ -86,6 +88,7 @@ RSpec.describe 'Idv::FlowPolicy' do
         idv_session.pii_from_doc = nil
         idv_session.had_barcode_read_failure = true
         idv_session.had_barcode_attention_error = true
+        idv_session.doc_auth_vendor = 'test_vendor'
 
         idv_session.ssn = nil
 
@@ -130,6 +133,7 @@ RSpec.describe 'Idv::FlowPolicy' do
         end.not_to change {
           idv_session.welcome_visited
           idv_session.document_capture_session_uuid
+          idv_session.doc_auth_vendor
           idv_session.idv_consent_given_at
           idv_session.idv_consent_given?
           idv_session.skip_hybrid_handoff
@@ -150,6 +154,7 @@ RSpec.describe 'Idv::FlowPolicy' do
         .with(user_phone_confirmation_session).and_return(user_phone_confirmation_session)
       allow(user).to receive(:gpo_pending_profile?).and_return(has_gpo_pending_profile)
     end
+
     context 'empty session' do
       it 'returns welcome' do
         expect(subject.info_for_latest_step.key).to eq(:welcome)
@@ -176,9 +181,19 @@ RSpec.describe 'Idv::FlowPolicy' do
       end
     end
 
+    context 'preconditions for choose_id_type are present' do
+      it 'returns choose_id_type' do
+        stub_up_to(:hybrid_handoff, idv_session: idv_session)
+
+        expect(subject.info_for_latest_step.key).to eq(:choose_id_type)
+        expect(subject.controller_allowed?(controller: Idv::ChooseIdTypeController)).to be
+        expect(subject.controller_allowed?(controller: Idv::DocumentCaptureController)).not_to be
+      end
+    end
+
     context 'preconditions for document_capture are present' do
       it 'returns document_capture' do
-        stub_up_to(:hybrid_handoff, idv_session: idv_session)
+        stub_up_to(:choose_id_type, idv_session: idv_session)
 
         expect(subject.info_for_latest_step.key).to eq(:document_capture)
         expect(subject.controller_allowed?(controller: Idv::DocumentCaptureController)).to be
@@ -218,7 +233,9 @@ RSpec.describe 'Idv::FlowPolicy' do
 
     context 'preconditions for in_person ssn are present' do
       before do
-        stub_up_to(:hybrid_handoff, idv_session: idv_session)
+        stub_up_to(:ipp_address, idv_session: idv_session)
+        allow(user).to receive(:has_establishing_in_person_enrollment?).and_return(true)
+        idv_session.opted_in_to_in_person_proofing = true
         idv_session.send(:user_session)['idv/in_person'] = {
           pii_from_user: Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID.dup,
         }
@@ -241,10 +258,29 @@ RSpec.describe 'Idv::FlowPolicy' do
       end
     end
 
+    context 'preconditions for ipp_choose_id_type are present' do
+      before do
+        allow(idv_session).to receive(:in_person_passports_allowed?).and_return(true)
+        allow(user).to receive(:has_establishing_in_person_enrollment?).and_return(true)
+      end
+
+      it 'returns ipp_choose_id_type' do
+        expect(
+          subject.controller_allowed?(
+            controller: Idv::InPerson::ChooseIdTypeController,
+          ),
+        ).to be
+      end
+    end
+
     context 'preconditions for in_person verify_info are present' do
+      before do
+        idv_session.opted_in_to_in_person_proofing = true
+      end
+
       it 'returns ipp_verify_info' do
         stub_up_to(:ipp_ssn, idv_session: idv_session)
-
+        allow(user).to receive(:has_establishing_in_person_enrollment?).and_return(true)
         expect(subject.info_for_latest_step.key).to eq(:ipp_verify_info)
         expect(subject.controller_allowed?(controller: Idv::InPerson::VerifyInfoController)).to be
         expect(subject.controller_allowed?(controller: Idv::PhoneController)).not_to be
@@ -311,6 +347,7 @@ RSpec.describe 'Idv::FlowPolicy' do
     context 'preconditions for personal_key are present' do
       let(:is_enhanced_ipp) { false }
       let(:password) { 'sekrit phrase' }
+
       context 'user has a verify by mail pending profile' do
         it 'returns personal_key' do
           stub_up_to(:request_letter, idv_session: idv_session)
@@ -326,6 +363,7 @@ RSpec.describe 'Idv::FlowPolicy' do
 
       context 'user has a newly activated profile' do
         let(:is_enhanced_ipp) { false }
+
         it 'returns personal_key' do
           stub_up_to(:otp_verification, idv_session: idv_session)
           idv_session.create_profile_from_applicant_with_password(

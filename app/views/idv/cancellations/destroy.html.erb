@@ -1,8 +1,13 @@
 <% self.title = t('titles.idv.canceled') %>
 
-<%= render StatusPageComponent.new(status: :error) do |c| %>
-  <% c.with_header { t('idv.cancel.headings.confirmation.hybrid') } %>
-
-  <p><%= t('doc_auth.instructions.switch_back') %></p>
-  <%= image_tag(asset_url('idv/switch.png'), width: 193, height: 109, alt: t('doc_auth.instructions.switch_back_image')) %>
+<%= render StatusPageComponent.new(status: :error, icon: :none) do |c| %>
+  <center>
+    <%= image_tag(asset_url('idv/switch.svg'), width: 193, height: 109, alt: t('doc_auth.instructions.switch_back_image')) %>
+  </center>
+  <h1>
+    <%= t('idv.cancel.headings.confirmation.hybrid') %>
+  </h1>
+  <p>
+    <%= t('doc_auth.instructions.switch_back') %>
+  </p>
 <% end %>

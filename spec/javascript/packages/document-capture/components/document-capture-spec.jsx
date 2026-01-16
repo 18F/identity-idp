@@ -380,4 +380,22 @@ describe('document-capture/components/document-capture', () => {
     const selfie = queryByText('doc_auth.headings.document_capture_selfie');
     expect(selfie).not.to.exist();
   });
+
+  it('only show passport when idType is passport', () => {
+    const endpoint = '/upload';
+    const { queryByText } = render(
+      <UploadContextProvider upload={httpUpload} endpoint={endpoint} idType="passport">
+        <DocumentCapture />
+      </UploadContextProvider>,
+    );
+
+    const front = queryByText('doc_auth.headings.document_capture_front');
+    expect(front).not.to.exist();
+    const back = queryByText('doc_auth.headings.document_capture_back');
+    expect(back).not.to.exist();
+    const selfie = queryByText('doc_auth.headings.document_capture_selfie');
+    expect(selfie).not.to.exist();
+    const passport = queryByText('doc_auth.headings.document_capture_passport');
+    expect(passport).to.exist();
+  });
 });

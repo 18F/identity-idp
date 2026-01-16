@@ -56,7 +56,6 @@
     },
     {
       "files": [
-        "app/javascript/packages/address-search/components/address-input.tsx",
         "app/javascript/packages/address-search/components/full-address-search-input.tsx",
         "app/javascript/packages/components/hooks/use-focus-trap.ts",
         "app/javascript/packages/components/hooks/use-toggle-body-class-by-presence.ts",

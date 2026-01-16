@@ -21,7 +21,7 @@ class PendingProfilePolicy
   attr_reader :user, :resolved_authn_context_result
 
   def pending_facial_match_profile?
-    user.pending_profile&.idv_level == 'unsupervised_with_selfie'
+    Profile::FACIAL_MATCH_IDV_LEVELS.include?(user.pending_profile&.idv_level)
   end
 
   def facial_match_requested?
@@ -29,7 +29,8 @@ class PendingProfilePolicy
   end
 
   def pending_legacy_profile?
-    user.pending_profile.present? && user.pending_profile&.idv_level != 'unsupervised_with_selfie'
+    user.pending_profile&.present? &&
+      user.pending_profile.idv_level != 'unsupervised_with_selfie'
   end
 
   def fraud_review_pending?

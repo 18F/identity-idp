@@ -57,10 +57,10 @@ RSpec.describe AppArtifacts::Store do
     context 'when running locally' do
       it 'reads the artifact from the example folder' do
         store = instance.build do |store|
-          store.add_artifact(:test_artifact, '/%<env>s/saml2024.crt')
+          store.add_artifact(:test_artifact, '/%<env>s/saml2025.crt')
         end
 
-        file_path = Rails.root.join('config', 'artifacts.example', 'local', 'saml2024.crt')
+        file_path = Rails.root.join('config', 'artifacts.example', 'local', 'saml2025.crt')
         contents = File.read(file_path)
         expect(store.test_artifact).to eq(contents)
         expect(store['test_artifact']).to eq(contents)
@@ -79,12 +79,12 @@ RSpec.describe AppArtifacts::Store do
 
     it 'allows a block to be used to transform values' do
       store = instance.build do |store|
-        store.add_artifact(:test_artifact, '/%<env>s/saml2024.crt') do |cert|
+        store.add_artifact(:test_artifact, '/%<env>s/saml2025.crt') do |cert|
           OpenSSL::X509::Certificate.new(cert)
         end
       end
 
-      file_path = Rails.root.join('config', 'artifacts.example', 'local', 'saml2024.crt')
+      file_path = Rails.root.join('config', 'artifacts.example', 'local', 'saml2025.crt')
       contents = File.read(file_path)
       expect(store.test_artifact).to be_a(OpenSSL::X509::Certificate)
       expect(store.test_artifact.to_pem).to eq(contents)
@@ -94,7 +94,7 @@ RSpec.describe AppArtifacts::Store do
   describe '#method_missing' do
     it 'runs methods based on the configd artifact keys' do
       store = instance.build do |store|
-        store.add_artifact(:test_artifact, '/%<env>s/saml2024.crt')
+        store.add_artifact(:test_artifact, '/%<env>s/saml2025.crt')
       end
 
       expect { store.test_artifact }.to_not raise_error

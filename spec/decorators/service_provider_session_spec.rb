@@ -90,87 +90,6 @@ RSpec.describe ServiceProviderSession do
     end
   end
 
-  describe '#sp_logo' do
-    context 'service provider has a logo' do
-      it 'returns the logo' do
-        sp_logo = 'real_logo.svg'
-        sp = build_stubbed(:service_provider, logo: sp_logo)
-
-        subject = ServiceProviderSession.new(
-          sp: sp,
-          view_context: view_context,
-          sp_session: {},
-          service_provider_request: ServiceProviderRequestProxy.new,
-        )
-
-        expect(subject.sp_logo).to eq sp_logo
-      end
-    end
-
-    context 'service provider does not have a logo' do
-      it 'returns the default logo' do
-        sp = build_stubbed(:service_provider, logo: nil)
-
-        subject = ServiceProviderSession.new(
-          sp: sp,
-          view_context: view_context,
-          sp_session: {},
-          service_provider_request: ServiceProviderRequestProxy.new,
-        )
-
-        expect(subject.sp_logo).to eq 'generic.svg'
-      end
-    end
-  end
-
-  describe '#sp_logo_url' do
-    context 'service provider has a logo' do
-      it 'returns the logo' do
-        sp_logo = '18f.svg'
-        sp = build_stubbed(:service_provider, logo: sp_logo)
-
-        subject = ServiceProviderSession.new(
-          sp: sp,
-          view_context: view_context,
-          sp_session: {},
-          service_provider_request: ServiceProviderRequestProxy.new,
-        )
-
-        expect(subject.sp_logo_url).to match(%r{sp-logos/18f-[0-9a-f]+\.svg$})
-      end
-    end
-
-    context 'service provider does not have a logo' do
-      it 'returns the default logo' do
-        sp = build_stubbed(:service_provider, logo: nil)
-
-        subject = ServiceProviderSession.new(
-          sp: sp,
-          view_context: view_context,
-          sp_session: {},
-          service_provider_request: ServiceProviderRequestProxy.new,
-        )
-
-        expect(subject.sp_logo_url).to match(%r{/sp-logos/generic-.+\.svg})
-      end
-    end
-
-    context 'service provider has a poorly configured logo' do
-      it 'does not raise an exception' do
-        sp = build_stubbed(:service_provider, logo: 'abc')
-
-        subject = ServiceProviderSession.new(
-          sp: sp,
-          view_context: view_context,
-          sp_session: {},
-          service_provider_request: ServiceProviderRequestProxy.new,
-        )
-
-        expect(subject.sp_logo_url).to be_kind_of(String)
-      end
-    end
-  end
-
   describe '#cancel_link_url' do
     subject(:decorator) do
       ServiceProviderSession.new(
@@ -287,6 +206,67 @@ RSpec.describe ServiceProviderSession do
 
       it 'returns the url parameters' do
         expect(subject.request_url_params).to eq(expected_hash)
+      end
+    end
+  end
+
+  describe '#attempt_api_session_id' do
+    let(:service_provider_request) { ServiceProviderRequest.new(url:) }
+
+    context 'without an an attempts_api_session_id in the request_url_params' do
+      let(:url) { 'https://example.com/auth?param0=p0&param1=p1&param2=p2' }
+
+      it 'returns nil' do
+        expect(subject.attempts_api_session_id).to be nil
+      end
+
+      context 'with a tid in the request_url_params' do
+        let(:url) { 'https://example.com/auth?param0=p0&param1=p1&tid=abc123' }
+
+        it 'returns the value in the tid param' do
+          expect(subject.attempts_api_session_id).to eq 'abc123'
+        end
+      end
+    end
+
+    context 'with an attempts_api_session_id in the request_url_params' do
+      let(:url) { 'https://example.com/auth?attempts_api_session_id=abc123&param1=p1&param2=p2' }
+
+      it 'returns the value in the attempts_api_session_id param' do
+        expect(subject.attempts_api_session_id).to eq 'abc123'
+      end
+
+      context 'with a tid in the request_url_params' do
+        let(:url) { 'https://example.com/auth?param0=p0&tid=abc123&attempts_api_session_id=not-tid' }
+
+        it 'returns the value in attempts_api_session_id param' do
+          expect(subject.attempts_api_session_id).to eq 'not-tid'
+        end
+      end
+    end
+  end
+
+  describe '#attempt_api_request_uri' do
+    let(:service_provider_request) { ServiceProviderRequest.new(url:) }
+    let(:redirect_uri) { 'http://example.com/redirect' }
+
+    context 'with a redirect_uri in the request_url_params' do
+      let(:url) { "https://example.com/auth?param0=p0&redirect_uri=#{redirect_uri}&param2=p2" }
+
+      it 'returns the redirect_uri' do
+        expect(subject.attempts_api_redirect_uri).to eq redirect_uri
+      end
+    end
+
+    context 'with no redirect uri in the request_url_params' do
+      context 'with a SAML integration' do
+        let(:sp) { build_stubbed(:service_provider, acs_url: redirect_uri) }
+
+        let(:url) { 'https://example.com/auth?param0=p0' }
+
+        it 'returns the redirect_uri' do
+          expect(subject.attempts_api_redirect_uri).to eq redirect_uri
+        end
       end
     end
   end

@@ -25,11 +25,13 @@ class SamlIdpController < ApplicationController
   skip_before_action :verify_authenticity_token
   before_action :require_path_year
   before_action :handle_banned_user
+  before_action :handle_duplicate_profile_user, only: :auth
   before_action :bump_auth_count, only: :auth
   before_action :redirect_to_sign_in, only: :auth, unless: :user_signed_in?
   before_action :confirm_two_factor_authenticated, only: :auth
   before_action :redirect_to_reauthenticate, only: :auth, if: :remember_device_expired_for_sp?
   before_action :prompt_for_password_if_ial2_request_and_pii_locked, only: :auth
+  before_action :confirm_user_is_not_suspended, only: :auth
 
   def auth
     capture_analytics
@@ -156,6 +158,8 @@ class SamlIdpController < ApplicationController
   end
 
   def matching_cert_serial
+    return if saml_request_service_provider.blank?
+
     saml_request.matching_cert&.serial&.to_s
   rescue SamlIdp::XMLSecurity::SignedDocument::ValidationError
     nil
@@ -168,7 +172,6 @@ class SamlIdpController < ApplicationController
       requested_ial: requested_ial,
       authn_context: requested_authn_contexts,
       requested_aal_authn_context: FederatedProtocols::Saml.new(saml_request).aal,
-      requested_vtr_authn_contexts: saml_request&.requested_vtr_authn_contexts.presence,
       force_authn: saml_request&.force_authn?,
       final_auth_request: sp_session[:final_auth_request],
       service_provider: saml_request&.issuer,
@@ -191,6 +194,7 @@ class SamlIdpController < ApplicationController
 
   def handle_successful_handoff
     track_events
+    sp_session[:successful_handoff] = true
     delete_branded_experience
     return redirect_to(account_url) if saml_request.response_url.blank?
     render_template_for(saml_response, saml_request.response_url, 'SAMLResponse')
@@ -217,10 +221,11 @@ class SamlIdpController < ApplicationController
       ial: resolved_authn_context_int_ial,
       billed_ial: ial_context.bill_for_ial_1_or_2,
       sign_in_flow: session[:sign_in_flow],
-      vtr: sp_session[:vtr],
       acr_values: sp_session[:acr_values],
       sign_in_duration_seconds:,
     )
+
+    attempts_api_tracker.login_completed
     track_billing_events
   end
 
@@ -247,7 +252,6 @@ class SamlIdpController < ApplicationController
   end
 
   def unknown_authn_contexts
-    return nil if saml_request.requested_vtr_authn_contexts.present?
     return nil if requested_authn_contexts.blank?
 
     unmatched_authn_contexts.reject do |authn_context|
@@ -265,5 +269,9 @@ class SamlIdpController < ApplicationController
 
   def req_attrs_regexp
     Regexp.escape(Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF)
+  end
+
+  def confirm_user_is_not_suspended
+    redirect_to user_please_call_url if current_user.suspended?
   end
 end

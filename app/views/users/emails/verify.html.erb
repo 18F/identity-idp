@@ -1,17 +1,9 @@
 <% self.title = t('titles.verify_email') %>
 
-<% if @resend_confirmation %>
-  <%= render AlertComponent.new(
-        type: :success,
-        class: 'margin-bottom-4',
-        message: t('notices.resend_confirmation_email.success'),
-      ) %>
-<% end %>
-
 <%= render PageHeadingComponent.new.with_content(t('headings.verify_email')) %>
 
 <p><%= t('notices.signed_up_and_confirmed.first_paragraph_start') %>
-   <strong><%= email %></strong>
+   <strong><%= @email %></strong>
    <%= t('notices.signed_up_and_confirmed.first_paragraph_end') %>
 </p>
 
@@ -20,17 +12,40 @@
 </div>
 
 <%= t('notices.signed_up_and_confirmed.no_email_sent_explanation_start') %>
-<%= button_to(add_email_resend_path, method: :post, class: 'usa-button usa-button--unstyled', form_class: 'display-inline-block padding-left-1') { t('links.resend') } %>
 
-<p><%= t('notices.use_diff_email.text_html', link_html: link_to(t('notices.use_diff_email.link'), add_email_path(in_select_email_flow: in_select_email_flow))) %></p>
+<%= render ButtonComponent.new(
+      url: add_email_resend_path(in_select_email_flow: @in_select_email_flow),
+      method: :post,
+      unstyled: true,
+      form_class: 'display-inline-block padding-left-1',
+    ).with_content(t('links.resend')) %>
+
+<p>
+  <%= t(
+        'notices.use_diff_email.text_html',
+        link_html: link_to(
+          t('notices.use_diff_email.link'),
+          add_email_path(in_select_email_flow: @in_select_email_flow),
+        ),
+      ) %>
+</p>
+
 <p><%= t('devise.registrations.close_window') %></p>
 
-<% if FeatureManagement.enable_load_testing_mode? && EmailAddress.find_with_email(email) %>
+<% if FeatureManagement.enable_load_testing_mode? && EmailAddress.find_with_email(@email) %>
   <%= link_to(
         'CONFIRM NOW',
-        sign_up_create_email_confirmation_url(confirmation_token: EmailAddress.find_with_email(email).confirmation_token),
-        id: 'confirm-now',
+        sign_up_create_email_confirmation_url(confirmation_token: EmailAddress.find_with_email(@email).confirmation_token),
       ) %>
+  <br />
 <% end %>
 
-<%= link_to t('idv.messages.return_to_profile', app_name: APP_NAME), account_path %>
+<% if @in_select_email_flow %>
+  <% if @pending_completions_consent %>
+    <%= link_to t('forms.buttons.back'), sign_up_select_email_path %>
+  <% else %>
+    <%= link_to t('forms.buttons.back'), account_connected_accounts_path %>
+  <% end %>
+<% else %>
+  <%= link_to t('idv.messages.return_to_profile', app_name: APP_NAME), account_path %>
+<% end %>

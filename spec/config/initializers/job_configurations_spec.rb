@@ -12,6 +12,14 @@ RSpec.describe 'GoodJob.cron' do
     end
   end
 
+  it 'has a consistent class name' do
+    aggregate_failures do
+      Rails.application.config.good_job.cron.each do |_key, config|
+        expect(config[:class]).to match(/Job\z|Report/)
+      end
+    end
+  end
+
   describe 'weekly reporting' do
     %w[drop_off_report authentication_report protocols_report].each do |job_name|
       it "schedules the #{job_name} to run after the end of the week with yesterday's date" do
@@ -27,7 +35,7 @@ RSpec.describe 'GoodJob.cron' do
           now = Time.zone.now
           next_time = Fugit.parse(report[:cron]).next_time
           expect(next_time.utc)
-            .to be_within(2.hours + 1.minute).of(now.utc.end_of_week)
+            .to be_within(5.hours + 1.minute).of(now.utc.end_of_week)
           expect(next_time.utc).to be > now.utc.end_of_week
         end
       end
@@ -43,7 +51,7 @@ RSpec.describe 'GoodJob.cron' do
         end
       end
       expect(next_times.count).to be(3)
-      expect(next_times.uniq.count).to be(3)
+      expect(next_times.uniq.count).to be(2)
     end
   end
 end

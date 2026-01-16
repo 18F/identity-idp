@@ -28,7 +28,7 @@ module Idv
           :unauthorized
         elsif document_capture_session.cancelled_at
           :gone
-        elsif rate_limiter.limited?
+        elsif rate_limited?
           :too_many_requests
         elsif confirmed_barcode_attention_result? || user_has_establishing_in_person_enrollment?
           :ok
@@ -46,7 +46,7 @@ module Idv
     def redirect_url
       return unless document_capture_session
 
-      if rate_limiter.limited?
+      if rate_limited?
         idv_session_errors_rate_limited_url
       elsif user_has_establishing_in_person_enrollment?
         idv_in_person_url
@@ -58,6 +58,10 @@ module Idv
       @session_result = document_capture_session.load_result
     end
 
+    def session_result_passed?
+      !!session_result&.success?
+    end
+
     def document_capture_session
       return @document_capture_session if defined?(@document_capture_session)
       @document_capture_session = DocumentCaptureSession.find_by uuid: document_capture_session_uuid
@@ -65,6 +69,16 @@ module Idv
 
     def document_capture_session_uuid
       idv_session.document_capture_session_uuid
+    end
+
+    def rate_limited?
+      max_attempts_reached? && session_result && !session_result_passed?
+    end
+
+    def max_attempts_reached?
+      !!session_result&.attempt ?
+        session_result&.attempt == IdentityConfig.store.doc_auth_max_attempts :
+        rate_limiter.limited?
     end
 
     def rate_limiter

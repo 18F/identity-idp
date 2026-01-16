@@ -5,16 +5,15 @@ RSpec.describe Idv::InPerson::StateIdController do
   include InPersonHelper
 
   let(:user) { build(:user) }
-  let(:enrollment) { InPersonEnrollment.new }
+  let(:enrollment) { create(:in_person_enrollment, :establishing, user: user) }
 
   before do
-    allow(IdentityConfig.store).to receive(:usps_ipp_transliteration_enabled)
-      .and_return(true)
     stub_sign_in(user)
     stub_up_to(:hybrid_handoff, idv_session: subject.idv_session)
     allow(user).to receive(:establishing_in_person_enrollment).and_return(enrollment)
     subject.user_session['idv/in_person'] = { pii_from_user: {} }
     subject.idv_session.ssn = nil # This made specs pass. Might need more investigation.
+    subject.idv_session.opted_in_to_in_person_proofing = true
     stub_analytics
   end
 
@@ -23,26 +22,60 @@ RSpec.describe Idv::InPerson::StateIdController do
       expect(subject).to have_actions(
         :before,
         :set_usps_form_presenter,
+        :initialize_pii_from_user,
+        :confirm_step_allowed,
       )
     end
 
-    context '#confirm_establishing_enrollment' do
+    context '#step_info preconditions check if enrollment exists' do
       let(:enrollment) { nil }
+
       it 'redirects to document capture if not complete' do
+        # Set up DocumentCaptureSession to satisfy choose_id_type completion
+        subject.idv_session.document_capture_session_uuid = SecureRandom.uuid
+        DocumentCaptureSession.create!(
+          uuid: subject.idv_session.document_capture_session_uuid,
+          user: user,
+          requested_at: Time.zone.now,
+          passport_status: 'requested',
+        )
+
         get :show
 
         expect(response).to redirect_to idv_document_capture_url
+      end
+    end
+
+    context 'initializes idv/in_person if it is not present' do
+      it 'initializes idv/in_person' do
+        subject.user_session.delete('idv/in_person')
+        get :show
+
+        expect(subject.user_session['idv/in_person']).to eq(
+          { 'pii_from_user' => { 'uuid' => user.uuid } },
+        )
+      end
+    end
+
+    context 'initializes pii_from_user if it is not present' do
+      it 'initializes pii_from_user' do
+        subject.user_session['idv/in_person'].delete(:pii_from_user)
+        get :show
+
+        expect(subject.user_session['idv/in_person'][:pii_from_user]).to eq({ 'uuid' => user.uuid })
       end
     end
   end
 
   describe '#show' do
     let(:analytics_name) { 'IdV: in person proofing state_id visited' }
+
     let(:analytics_args) do
       {
         analytics_id: 'In Person Proofing',
         flow_path: 'standard',
         step: 'state_id',
+        opted_in_to_in_person_proofing: true,
       }
     end
 
@@ -66,6 +99,17 @@ RSpec.describe Idv::InPerson::StateIdController do
       end
     end
 
+    context 'user_session does not have idv/in_person' do
+      before do
+        subject.user_session.delete('idv/in_person')
+      end
+
+      it 'renders the show template' do
+        get :show
+        expect(response).to render_template :show
+      end
+    end
+
     it 'logs idv_in_person_proofing_state_id_visited' do
       get :show
 
@@ -85,15 +129,25 @@ RSpec.describe Idv::InPerson::StateIdController do
   end
 
   describe '#update' do
-    let(:first_name) { 'Natalya' }
-    let(:last_name) { 'Rostova' }
+    let(:first_name) { 'Charity' }
+    let(:last_name) { 'Johnson' }
     let(:formatted_dob) { InPersonHelper::GOOD_DOB }
+    let(:formatted_expiration) { InPersonHelper::GOOD_STATE_ID_EXPIRATION }
+
     let(:dob) do
       parsed_dob = Date.parse(formatted_dob)
       { month: parsed_dob.month.to_s,
         day: parsed_dob.day.to_s,
         year: parsed_dob.year.to_s }
     end
+
+    let(:id_expiration) do
+      parsed_exp = Date.parse(formatted_expiration)
+      { month: parsed_exp.month.to_s,
+        day: parsed_exp.day.to_s,
+        year: parsed_exp.year.to_s }
+    end
+
     # residential
     let(:address1) { InPersonHelper::GOOD_ADDRESS1 }
     let(:address2) { InPersonHelper::GOOD_ADDRESS2 }
@@ -102,32 +156,19 @@ RSpec.describe Idv::InPerson::StateIdController do
     let(:zipcode) { InPersonHelper::GOOD_ZIPCODE }
     let(:id_number) { 'ABC123234' }
     let(:state_id_jurisdiction) { 'AL' }
+    let(:same_address_as_id) { 'true' }
     let(:identity_doc_address1) { InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS1 }
     let(:identity_doc_address2) { InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS2 }
     let(:identity_doc_city) { InPersonHelper::GOOD_IDENTITY_DOC_CITY }
     let(:identity_doc_address_state) { InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS_STATE }
     let(:identity_doc_zipcode) { InPersonHelper::GOOD_IDENTITY_DOC_ZIPCODE }
-    context 'with values submitted' do
-      let(:invalid_params) do
-        { identity_doc: {
-          first_name: 'S@ndy!',
-          last_name:,
-          same_address_as_id: 'true', # value on submission
-          identity_doc_address1:,
-          identity_doc_address2:,
-          identity_doc_city:,
-          state_id_jurisdiction:,
-          id_number:,
-          identity_doc_address_state:,
-          identity_doc_zipcode:,
-          dob:,
-        } }
-      end
-      let(:params) do
-        { identity_doc: {
+
+    let(:params) do
+      {
+        identity_doc: {
           first_name:,
           last_name:,
-          same_address_as_id: 'true', # value on submission
+          same_address_as_id:,
           identity_doc_address1:,
           identity_doc_address2:,
           identity_doc_city:,
@@ -136,18 +177,31 @@ RSpec.describe Idv::InPerson::StateIdController do
           identity_doc_address_state:,
           identity_doc_zipcode:,
           dob:,
-        } }
+          id_expiration:,
+        },
+      }
+    end
+
+    context 'with values submitted' do
+      let(:invalid_params) do
+        params.merge(
+          identity_doc: {
+            first_name: 'S@ndy!',
+          },
+        )
       end
+
       let(:analytics_name) { 'IdV: in person proofing state_id submitted' }
+
       let(:analytics_args) do
         {
           success: true,
-          errors: {},
           analytics_id: 'In Person Proofing',
           flow_path: 'standard',
           step: 'state_id',
           birth_year: dob[:year],
           document_zip_code: identity_doc_zipcode&.slice(0, 5),
+          opted_in_to_in_person_proofing: true,
         }
       end
 
@@ -161,6 +215,8 @@ RSpec.describe Idv::InPerson::StateIdController do
         put :update, params: invalid_params
 
         expect(subject.idv_session.ssn).to eq(nil)
+        expect(subject.idv_session.doc_auth_vendor).to eq(nil)
+        expect(enrollment.document_type).to eq(nil)
         expect(subject.extra_view_variables[:updating_state_id]).to eq(false)
         expect(response).to render_template :show
       end
@@ -169,6 +225,7 @@ RSpec.describe Idv::InPerson::StateIdController do
         subject.idv_session.ssn = '123-45-6789'
         put :update, params: invalid_params
 
+        expect(enrollment.document_type).to eq(nil)
         expect(subject.extra_view_variables[:updating_state_id]).to eq(true)
         expect(response).to render_template :show
       end
@@ -191,10 +248,23 @@ RSpec.describe Idv::InPerson::StateIdController do
         expect(pii_from_user[:first_name]).to eq first_name
         expect(pii_from_user[:last_name]).to eq last_name
         expect(pii_from_user[:dob]).to eq formatted_dob
+        expect(pii_from_user[:state_id_expiration]).to eq formatted_expiration
         expect(pii_from_user[:identity_doc_zipcode]).to eq identity_doc_zipcode
         expect(pii_from_user[:identity_doc_address_state]).to eq identity_doc_address_state
         # param from form as id_number but is renamed to state_id_number on update
         expect(pii_from_user[:state_id_number]).to eq id_number
+      end
+
+      it 'sets values in Idv::Session' do
+        put :update, params: params
+
+        expect(subject.idv_session.doc_auth_vendor).to eq(Idp::Constants::Vendors::USPS)
+      end
+
+      it 'sets the enrollment document type' do
+        put :update, params: params
+
+        expect(enrollment.document_type).to eq(InPersonEnrollment::DOCUMENT_TYPE_STATE_ID)
       end
     end
 
@@ -202,23 +272,7 @@ RSpec.describe Idv::InPerson::StateIdController do
       let(:pii_from_user) { subject.user_session['idv/in_person'][:pii_from_user] }
 
       context 'changed from "true" to "false"' do
-        let(:params) do
-          {
-            identity_doc: {
-              first_name:,
-              last_name:,
-              same_address_as_id: 'false', # value on submission
-              identity_doc_address1:,
-              identity_doc_address2:,
-              identity_doc_city:,
-              state_id_jurisdiction:,
-              id_number:,
-              identity_doc_address_state:,
-              identity_doc_zipcode:,
-              dob:,
-            },
-          }
-        end
+        let(:same_address_as_id) { 'false' }
 
         it 'retains identity_doc_ attrs/value but removes addr attr in flow session' do
           Idv::StateIdForm::ATTRIBUTES.each do |attr|
@@ -267,22 +321,6 @@ RSpec.describe Idv::InPerson::StateIdController do
       end
 
       context 'changed from "false" to "true"' do
-        let(:params) do
-          { identity_doc: {
-            first_name:,
-            last_name:,
-            same_address_as_id: 'true', # value on submission
-            identity_doc_address1:,
-            identity_doc_address2:,
-            identity_doc_city:,
-            state_id_jurisdiction:,
-            id_number:,
-            identity_doc_address_state:,
-            identity_doc_zipcode:,
-            dob:,
-          } }
-        end
-
         it <<~EOS.squish do
           retains identity_doc_ attrs/value ands addr attr
           with same value as identity_doc in flow session
@@ -306,22 +344,8 @@ RSpec.describe Idv::InPerson::StateIdController do
       end
 
       context 'not changed from "false"' do
-        let(:params) do
-          { identity_doc: {
-            dob:,
-            same_address_as_id: 'false',
-            address1:,
-            address2:,
-            city:,
-            state:,
-            zipcode:,
-            identity_doc_address1:,
-            identity_doc_address2:,
-            identity_doc_city:,
-            identity_doc_address_state:,
-            identity_doc_zipcode:,
-          } }
-        end
+        let(:same_address_as_id) { 'false' }
+
         it 'retains identity_doc_ and addr attrs/value in flow session' do
           Idv::StateIdForm::ATTRIBUTES.each do |attr|
             expect(subject.user_session['idv/in_person'][:pii_from_user]).to_not have_key attr
@@ -356,6 +380,12 @@ RSpec.describe Idv::InPerson::StateIdController do
           expect(pii_from_user[:zipcode]).to_not eq identity_doc_zipcode
         end
       end
+    end
+  end
+
+  describe '#step_info' do
+    it 'returns a valid StepInfo object' do
+      expect(Idv::InPerson::StateIdController.step_info).to be_valid
     end
   end
 end

@@ -4,6 +4,7 @@ module Users
   class BackupCodeSetupController < ApplicationController
     include TwoFactorAuthenticatableMethods
     include MfaSetupConcern
+    include MfaDeletionConcern
     include SecureHeadersConcern
     include ReauthenticationRequiredConcern
 
@@ -13,7 +14,7 @@ module Users
     before_action :set_backup_code_setup_presenter
     before_action :apply_secure_headers_override
     before_action :authorize_backup_code_disable, only: [:delete]
-    before_action :confirm_recently_authenticated_2fa, except: [:reminder, :continue]
+    before_action :confirm_recently_authenticated_2fa, except: [:continue]
     before_action :validate_multi_mfa_selection, only: [:index]
 
     helper_method :in_multi_mfa_selection_flow?
@@ -22,6 +23,10 @@ module Users
       result = BackupCodeSetupForm.new(current_user).submit
       visit_result = result.to_h.merge(analytics_properties_for_visit)
       analytics.backup_code_setup_visit(**visit_result)
+      attempts_api_tracker.mfa_enrolled(
+        success: result.success?,
+        mfa_device_type: TwoFactorAuthenticatable::AuthMethod::BACKUP_CODE,
+      )
 
       generate_codes
       track_backup_codes_created
@@ -34,6 +39,10 @@ module Users
       result = BackupCodeSetupForm.new(current_user).submit
       visit_result = result.to_h.merge(analytics_properties_for_visit)
       analytics.backup_code_setup_visit(**visit_result)
+      attempts_api_tracker.mfa_enrolled(
+        success: result.success?,
+        mfa_device_type: TwoFactorAuthenticatable::AuthMethod::BACKUP_CODE,
+      )
 
       generate_codes
       track_backup_codes_created
@@ -58,19 +67,13 @@ module Users
 
     def delete
       current_user.backup_code_configurations.destroy_all
-      event = PushNotification::RecoveryInformationChangedEvent.new(user: current_user)
-      PushNotification::HttpPush.deliver(event)
+      handle_successful_mfa_deletion(event_type: :backup_codes_removed)
       flash[:success] = t('notices.backup_codes_deleted')
-      revoke_remember_device(current_user)
       if in_multi_mfa_selection_flow?
         redirect_to authentication_methods_setup_path
       else
         redirect_to account_two_factor_authentication_path
       end
-    end
-
-    def reminder
-      flash.now[:success] = t('notices.authenticated_successfully')
     end
 
     def confirm_backup_codes; end

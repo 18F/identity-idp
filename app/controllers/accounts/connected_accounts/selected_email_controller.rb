@@ -5,7 +5,6 @@ module Accounts
     class SelectedEmailController < ApplicationController
       include RenderConditionConcern
 
-      check_or_render_not_found -> { IdentityConfig.store.feature_select_email_to_share_enabled }
       before_action :confirm_two_factor_authenticated
       before_action :validate_identity
 
@@ -14,7 +13,7 @@ module Accounts
         @select_email_form = build_select_email_form
         @can_add_email = EmailPolicy.new(current_user).can_add_email?
         analytics.sp_select_email_visited
-        @email_id = @identity.email_address_id || last_email
+        @email_id = @identity.email_address_id || last_email_id
       end
 
       def update
@@ -52,7 +51,7 @@ module Accounts
         @identity = current_user.identities.find_by(id: params[:identity_id])
       end
 
-      def last_email
+      def last_email_id
         current_user.last_sign_in_email_address.id
       end
     end

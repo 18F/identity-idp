@@ -27,11 +27,10 @@ RSpec.describe UserPivCacLoginForm do
       end
 
       it 'returns FormResponse with success: true' do
-        result = form.submit
-
-        expect(result.success?).to eq true
-        expect(result.errors).to eq({})
-        expect(result.extra).to eq({ key_id: 'foo' })
+        expect(form.submit.to_h).to eq(
+          success: true,
+          key_id: 'foo',
+        )
       end
     end
 
@@ -42,11 +41,12 @@ RSpec.describe UserPivCacLoginForm do
       end
 
       it 'returns FormResponse with success: false' do
-        result = form.submit
-
-        expect(result.success?).to eq false
-        expect(result.errors).to eq({ type: 'token.bad' })
-        expect(result.extra).to eq({ key_id: 'foo' })
+        expect(form.submit.to_h).to eq(
+          success: false,
+          error_details: { token: { bad: true } },
+          key_id: 'foo',
+        )
+        expect(form.error_type).to eq 'token.bad'
       end
     end
 
@@ -58,11 +58,12 @@ RSpec.describe UserPivCacLoginForm do
       let(:bad_nonce) { nonce + 'X' }
 
       it 'returns FormResponse with success: false' do
-        result = form.submit
-
-        expect(result.success?).to eq false
-        expect(result.errors).to eq({ type: 'token.invalid' })
-        expect(result.extra).to eq({ key_id: 'foo' })
+        expect(form.submit.to_h).to eq(
+          success: false,
+          error_details: { token: { invalid: true } },
+          key_id: 'foo',
+        )
+        expect(form.error_type).to eq 'token.invalid'
       end
     end
 
@@ -70,9 +71,11 @@ RSpec.describe UserPivCacLoginForm do
       let(:token) {}
 
       it 'returns FormResponse with success: false' do
-        result = form.submit
-
-        expect(result.success?).to eq false
+        expect(form.submit.to_h).to eq(
+          success: false,
+          error_details: { token: { blank: true } },
+          key_id: nil,
+        )
       end
     end
   end

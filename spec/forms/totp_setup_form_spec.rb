@@ -4,7 +4,7 @@ RSpec.describe TotpSetupForm do
   let(:user) { create(:user) }
   let(:secret) { user.generate_totp_secret }
   let(:code) { generate_totp_code(secret) }
-  let(:name) { SecureRandom.hex }
+  let(:name) { SecureRandom.hex[0, 19] }
 
   describe '#submit' do
     context 'when TOTP code is valid' do
@@ -19,7 +19,6 @@ RSpec.describe TotpSetupForm do
 
         expect(form.submit.to_h).to eq(
           success: true,
-          errors: {},
           **extra,
         )
         expect(user.auth_app_configurations.any?).to eq true
@@ -45,7 +44,6 @@ RSpec.describe TotpSetupForm do
 
         expect(form.submit.to_h).to include(
           success: false,
-          errors: {},
           **extra,
         )
         expect(user.auth_app_configurations.any?).to eq false
@@ -65,7 +63,6 @@ RSpec.describe TotpSetupForm do
 
         expect(form.submit.to_h).to include(
           success: false,
-          errors: {},
           **extra,
         )
         expect(user.auth_app_configurations.any?).to eq false
@@ -81,7 +78,6 @@ RSpec.describe TotpSetupForm do
         expect(form.submit.to_h).to include(
           success: false,
           error_details: { name: { blank: true } },
-          errors: { name: [t('errors.messages.blank')] },
         )
         expect(user.auth_app_configurations.any?).to eq false
       end
@@ -96,7 +92,6 @@ RSpec.describe TotpSetupForm do
         expect(form2.submit.to_h).to include(
           success: false,
           error_details: { name: { unique_name: true } },
-          errors: { name: [t('errors.piv_cac_setup.unique_name')] },
         )
       end
     end

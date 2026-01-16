@@ -9,25 +9,27 @@ class GpoVerifyForm
   validate :validate_pending_profile
 
   attr_accessor :otp, :pii, :pii_attributes
-  attr_reader :user, :resolved_authn_context_result
+  attr_reader :attempts_api_tracker, :user, :resolved_authn_context_result, :fraud_ops_tracker
 
-  def initialize(user:, pii:, resolved_authn_context_result:, otp: nil)
+  def initialize(attempts_api_tracker:, user:, pii:, resolved_authn_context_result:,
+                 fraud_ops_tracker:, otp: nil)
+    @attempts_api_tracker = attempts_api_tracker
     @user = user
     @pii = pii
     @resolved_authn_context_result = resolved_authn_context_result
     @otp = otp
+    @fraud_ops_tracker = fraud_ops_tracker
   end
 
-  def submit(is_enhanced_ipp)
+  def submit
     result = valid?
     fraud_check_failed = pending_profile&.fraud_pending_reason.present?
+    reproof = user.has_proofed_before?
 
     if result
       pending_profile&.remove_gpo_deactivation_reason
 
-      if user.has_establishing_in_person_enrollment_safe?
-        schedule_in_person_enrollment_and_deactivate_profile(is_enhanced_ipp)
-      elsif fraud_check_failed && threatmetrix_enabled?
+      if fraud_check_failed && threatmetrix_enabled?
         pending_profile&.deactivate_for_fraud_review
       elsif fraud_check_failed
         pending_profile&.activate_after_fraud_review_unnecessary
@@ -37,6 +39,12 @@ class GpoVerifyForm
     else
       reset_sensitive_fields
     end
+
+    if pending_profile&.active?
+      attempts_api_tracker.idv_enrollment_complete(reproof:)
+      fraud_ops_tracker.idv_enrollment_complete(reproof:)
+    end
+
     FormResponse.new(
       success: result,
       errors: errors,

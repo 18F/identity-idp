@@ -56,7 +56,6 @@ class WebauthnVerificationForm
       success: success,
       errors: errors,
       extra: extra_analytics_attributes,
-      serialize_error_details_only: true,
     )
   end
 
@@ -99,7 +98,7 @@ class WebauthnVerificationForm
       signature: Base64.decode64(signature),
     ).valid?(
       challenge.pack('c*'),
-      original_origin,
+      [original_origin],
       public_key: Base64.decode64(public_key),
       sign_count: 0,
     )

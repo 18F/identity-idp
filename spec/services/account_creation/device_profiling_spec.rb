@@ -12,7 +12,8 @@ RSpec.describe AccountCreation::DeviceProfiling do
       proof: threatmetrix_proofer_result,
     )
   end
-
+  let(:user) { create(:user) }
+  let(:workflow) { :auth }
   subject(:device_profiling) { described_class.new }
 
   describe '#proof' do
@@ -24,8 +25,10 @@ RSpec.describe AccountCreation::DeviceProfiling do
       device_profiling.proof(
         request_ip: Faker::Internet.ip_v4_address,
         threatmetrix_session_id: threatmetrix_session_id,
-        user_email: Faker::Internet.email,
+        user_email: user.email_addresses.take.email,
         uuid_prefix: service_provider.app_id,
+        uuid: user.uuid,
+        workflow: workflow,
       )
     end
 

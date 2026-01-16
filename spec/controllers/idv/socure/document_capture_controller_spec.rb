@@ -8,6 +8,20 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
   let(:fake_socure_endpoint) { 'https://fake-socure.test' }
   let(:user) { create(:user) }
   let(:doc_auth_success) { true }
+  let(:socure_docv_enabled) { true }
+  let(:socure_docv_verification_data_test_mode) { false }
+  let(:socure_docv_transaction_token) { SecureRandom.hex(6) }
+  let(:no_url_socure_route) { idv_socure_document_capture_errors_url(error_code: :url_not_found) }
+  let(:timeout_socure_route) do
+    idv_socure_document_capture_errors_url(
+      error_code: :timeout,
+      transaction_token: socure_docv_transaction_token,
+    )
+  end
+  let(:idv_socure_docv_flow_id_only) { 'id only flow' }
+  let(:idv_socure_docv_flow_id_w_selfie) { 'selfie flow' }
+  let(:passport_status) { 'not_requested' }
+
   let(:stored_result) do
     DocumentCaptureSessionResult.new(
       id: SecureRandom.uuid,
@@ -18,18 +32,15 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
       attention_with_barcode: false,
     )
   end
-  let(:socure_docv_enabled) { true }
-
-  let(:document_capture_session) do
-    DocumentCaptureSession.create(
-      user: user,
-      requested_at: Time.zone.now,
-    )
-  end
-
-  let(:socure_docv_verification_data_test_mode) { false }
 
   before do
+    document_capture_session = create(
+      :document_capture_session,
+      user:,
+      requested_at: Time.zone.now,
+      doc_auth_vendor: idv_vendor,
+      passport_status:,
+    )
     allow(IdentityConfig.store).to receive(:socure_docv_enabled)
       .and_return(socure_docv_enabled)
     allow(IdentityConfig.store).to receive(:socure_docv_document_request_endpoint)
@@ -38,8 +49,14 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
     allow(IdentityConfig.store).to receive(:doc_auth_vendor_default).and_return(idv_vendor)
     allow(IdentityConfig.store).to receive(:doc_auth_vendor_switching_enabled)
       .and_return(vendor_switching_enabled)
+    allow(IdentityConfig.store).to receive(:doc_auth_selfie_vendor_default).and_return(idv_vendor)
+    allow(IdentityConfig.store).to receive(:doc_auth_selfie_vendor_switching_enabled)
+      .and_return(vendor_switching_enabled)
+    allow(IdentityConfig.store).to receive(:idv_socure_docv_flow_id_w_selfie)
+      .and_return(idv_socure_docv_flow_id_w_selfie)
+    allow(IdentityConfig.store).to receive(:idv_socure_docv_flow_id_only)
+      .and_return(idv_socure_docv_flow_id_only)
     allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(user)
-
     allow(subject).to receive(:stored_result).and_return(stored_result)
 
     user_session = {}
@@ -61,6 +78,31 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
     it 'returns a valid StepInfo object' do
       expect(described_class.step_info).to be_valid
     end
+
+    describe '#undo_step' do
+      let(:idv_session) do
+        Idv::Session.new(
+          user_session: {},
+          current_user: user,
+          service_provider: nil,
+        ).tap do |idv_session|
+          idv_session.pii_from_doc = { name: 'test' }
+          idv_session.socure_docv_wait_polling_started_at = Time.zone.now
+          idv_session.doc_auth_vendor = 'TrueID'
+          idv_session.source_check_vendor = 'aamva'
+        end
+      end
+
+      it 'resets relevant fields on idv_session to nil' do
+        described_class.step_info.undo_step.call(idv_session:, user:)
+        aggregate_failures do
+          expect(idv_session.pii_from_doc).to be(nil)
+          expect(idv_session.socure_docv_wait_polling_started_at).to be(nil)
+          expect(idv_session.doc_auth_vendor).to be(nil)
+          expect(idv_session.source_check_vendor).to be(nil)
+        end
+      end
+    end
   end
 
   describe 'before_actions' do
@@ -74,7 +116,6 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
 
   describe '#show' do
     let(:request_class) { DocAuth::Socure::Requests::DocumentRequest }
-    let(:expected_uuid) { document_capture_session.uuid }
     let(:expected_language) { :en }
     let(:response_body) { {} }
 
@@ -86,8 +127,6 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
 
       stub_sign_in(user)
       stub_up_to(:hybrid_handoff, idv_session: subject.idv_session)
-
-      subject.idv_session.document_capture_session_uuid = expected_uuid
     end
 
     context 'when we try to use this controller but we should be using the LN/mock version' do
@@ -98,29 +137,27 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
           get :show
           expect(response).to redirect_to idv_document_capture_url
         end
-      end
 
-      context 'when facial match is required' do
-        let(:acr_values) do
-          [
-            Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF,
-            Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
-          ].join(' ')
-        end
-        before do
-          resolved_authn_context = AuthnContextResolver.new(
-            user: user,
-            service_provider: nil,
-            vtr: nil,
-            acr_values: acr_values,
-          ).result
-          allow(controller).to receive(:resolved_authn_context_result)
-            .and_return(resolved_authn_context)
-        end
+        context 'when redirect to correct vendor is disabled' do
+          let(:socure_capture_app_url) { 'https://verify.socure.test/' }
+          let(:response_body) do
+            {
+              data: {
+                docvTransactionToken: SecureRandom.hex(6),
+                url: socure_capture_app_url,
+              },
+            }
+          end
+          before do
+            allow(IdentityConfig.store)
+              .to receive(:doc_auth_redirect_to_correct_vendor_disabled).and_return(true)
+          end
 
-        it 'redirects to the LN/mock controller' do
-          get :show
-          expect(response).to redirect_to idv_document_capture_url
+          it 'redirects to the Socure controller' do
+            get :show
+
+            expect(response).to have_http_status 200
+          end
         end
       end
     end
@@ -128,12 +165,13 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
     context 'happy path' do
       let(:socure_capture_app_url) { 'https://verify.socure.test/' }
       let(:docv_transaction_token) { '176dnc45d-2e34-46f3-82217-6f540ae90673' }
+
       let(:response_body) do
         {
           referenceId: '123ab45d-2e34-46f3-8d17-6f540ae90303',
           data: {
             eventId: 'zoYgIxEZUbXBoocYAnbb5DrT',
-            docvTransactionToken: docv_transaction_token,
+            docvTransactionToken: socure_docv_transaction_token,
             qrCode: 'data:image/png;base64,iVBO......K5CYII=',
             url: socure_capture_app_url,
           },
@@ -143,33 +181,157 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
       before do
         allow(request_class).to receive(:new).and_call_original
         allow(I18n).to receive(:locale).and_return(expected_language)
-        allow(DocumentCaptureSession).to receive(:find_by).and_return(document_capture_session)
-        get(:show)
       end
 
-      it 'creates a DocumentRequest' do
-        expect(request_class).to have_received(:new)
-          .with(
-            redirect_url: idv_socure_document_capture_update_url,
-            language: expected_language,
+      context 'selfie not required' do
+        before do
+          get(:show)
+        end
+        it 'creates a DocumentRequest' do
+          expect(request_class).to have_received(:new)
+            .with(
+              customer_user_id: user.uuid,
+              passport_requested: false,
+              redirect_url: idv_socure_document_capture_update_url,
+              language: expected_language,
+              liveness_checking_required: false,
+            )
+        end
+
+        it 'sets any docv timeouts to nil' do
+          expect(subject.idv_session.socure_docv_wait_polling_started_at).to eq nil
+        end
+
+        it 'logs correct info' do
+          expect(@analytics).to have_logged_event(
+            :idv_socure_document_request_submitted,
           )
+        end
+
+        it 'sets DocumentCaptureSession socure_docv_capture_app_url value' do
+          expect(subject.document_capture_session.reload.socure_docv_capture_app_url)
+            .to eq(socure_capture_app_url)
+        end
+
+        context 'language is english' do
+          let(:expected_language) { :en }
+
+          it 'does the correct POST to Socure' do
+            expect(WebMock).to have_requested(:post, fake_socure_endpoint)
+              .with(
+                body: JSON.generate(
+                  {
+                    config: {
+                      documentType: 'license',
+                      redirect: {
+                        method: 'GET',
+                        url: idv_socure_document_capture_update_url,
+                      },
+                      language: :en,
+                      useCaseKey: idv_socure_docv_flow_id_only,
+                    },
+                    customerUserId: user.uuid,
+                  },
+                ),
+              )
+          end
+        end
+
+        context 'language is chinese and language should be zn-ch' do
+          let(:expected_language) { :zh }
+
+          it 'does the correct POST to Socure' do
+            expect(WebMock).to have_requested(:post, fake_socure_endpoint)
+              .with(
+                body: JSON.generate(
+                  {
+                    config: {
+                      documentType: 'license',
+                      redirect: {
+                        method: 'GET',
+                        url: idv_socure_document_capture_update_url,
+                      },
+                      language: 'zh-cn',
+                      useCaseKey: idv_socure_docv_flow_id_only,
+                    },
+                    customerUserId: user.uuid,
+                  },
+                ),
+              )
+          end
+        end
+
+        context 'renders the interstital page' do
+          render_views
+
+          it 'response includes the socure capture app url' do
+            expect(response).to have_http_status 200
+            expect(response.body).to have_link(href: socure_capture_app_url)
+          end
+
+          it 'puts the docvTransactionToken into the document capture session' do
+            expect(subject.document_capture_session.reload.socure_docv_transaction_token)
+              .to eq(socure_docv_transaction_token)
+          end
+        end
+
+        context 'passport requested' do
+          let(:passport_status) { 'requested' }
+
+          it 'creates a DocumentRequest' do
+            expect(request_class).to have_received(:new)
+              .with(
+                customer_user_id: user.uuid,
+                passport_requested: true,
+                redirect_url: idv_socure_document_capture_update_url,
+                language: expected_language,
+                liveness_checking_required: false,
+              )
+          end
+
+          it 'creates a DocumentRequest with passport requested' do
+            expect(WebMock).to have_requested(:post, fake_socure_endpoint)
+              .with(
+                body: JSON.generate(
+                  {
+                    config: {
+                      documentType: 'passport',
+                      redirect: {
+                        method: 'GET',
+                        url: idv_socure_document_capture_update_url,
+                      },
+                      language: :en,
+                      useCaseKey: idv_socure_docv_flow_id_only,
+                    },
+                    customerUserId: user.uuid,
+                  },
+                ),
+              )
+          end
+        end
       end
 
-      it 'logs correct info' do
-        expect(@analytics).to have_logged_event(
-          :idv_socure_document_request_submitted,
-        )
-      end
+      context 'selfie required' do
+        before do
+          authn_context_result = Component::Parser.new(
+            acr_values: Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_REQUIRED_ACR,
+          ).parse
+          allow(subject).to receive(:resolved_authn_context_result).and_return(authn_context_result)
+          get(:show)
+        end
 
-      it 'sets DocumentCaptureSession socure_docv_capture_app_url value' do
-        document_capture_session.reload
-        expect(document_capture_session.socure_docv_capture_app_url).to eq(socure_capture_app_url)
-      end
+        it 'creates a DocumentRequest' do
+          expect(request_class).to have_received(:new)
+            .with(
+              customer_user_id: user.uuid,
+              passport_requested: false,
+              redirect_url: idv_socure_document_capture_update_url,
+              language: expected_language,
+              liveness_checking_required: true,
+            )
+        end
 
-      context 'language is english' do
-        let(:expected_language) { :en }
-
-        it 'does the correct POST to Socure' do
+        it 'request the flow for selfie' do
           expect(WebMock).to have_requested(:post, fake_socure_endpoint)
             .with(
               body: JSON.generate(
@@ -181,47 +343,47 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
                       url: idv_socure_document_capture_update_url,
                     },
                     language: :en,
+                    useCaseKey: idv_socure_docv_flow_id_w_selfie,
                   },
+                  customerUserId: user.uuid,
                 },
               ),
             )
         end
-      end
 
-      context 'language is chinese and language should be zn-ch' do
-        let(:expected_language) { :zh }
+        context 'passport requested' do
+          let(:passport_status) { 'requested' }
 
-        it 'does the correct POST to Socure' do
-          expect(WebMock).to have_requested(:post, fake_socure_endpoint)
-            .with(
-              body: JSON.generate(
-                {
-                  config: {
-                    documentType: 'license',
-                    redirect: {
-                      method: 'GET',
-                      url: idv_socure_document_capture_update_url,
+          it 'creates a DocumentRequest' do
+            expect(request_class).to have_received(:new)
+              .with(
+                customer_user_id: user.uuid,
+                passport_requested: true,
+                redirect_url: idv_socure_document_capture_update_url,
+                language: expected_language,
+                liveness_checking_required: true,
+              )
+          end
+
+          it 'creates a DocumentRequest with passport requested' do
+            expect(WebMock).to have_requested(:post, fake_socure_endpoint)
+              .with(
+                body: JSON.generate(
+                  {
+                    config: {
+                      documentType: 'passport',
+                      redirect: {
+                        method: 'GET',
+                        url: idv_socure_document_capture_update_url,
+                      },
+                      language: :en,
+                      useCaseKey: idv_socure_docv_flow_id_w_selfie,
                     },
-                    language: 'zh-cn',
+                    customerUserId: user.uuid,
                   },
-                },
-              ),
-            )
-        end
-      end
-
-      context 'renders the interstital page' do
-        render_views
-
-        it 'response includes the socure capture app url' do
-          expect(response).to have_http_status 200
-          expect(response.body).to have_link(href: socure_capture_app_url)
-        end
-
-        it 'puts the docvTransactionToken into the document capture session' do
-          document_capture_session.reload
-          expect(document_capture_session.socure_docv_transaction_token)
-            .to eq(docv_transaction_token)
+                ),
+              )
+          end
         end
       end
     end
@@ -232,13 +394,14 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
       it 'redirects to the errors page' do
         get(:show)
 
-        expect(response).to redirect_to(idv_socure_document_capture_errors_url)
+        expect(response).to redirect_to(no_url_socure_route)
         expect(controller.send(:instance_variable_get, :@url)).not_to be
       end
     end
 
     context 'when socure is disabled' do
       let(:socure_docv_enabled) { false }
+
       it 'the webhook route does not exist' do
         get(:show)
 
@@ -248,12 +411,14 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
 
     context 'when socure error encountered' do
       let(:fake_socure_endpoint) { 'https://fake-socure.test/' }
+
       let(:failed_response_body) do
         { 'status' => 'Error',
           'referenceId' => '1cff6d33-1cc0-4205-b740-c9a9e6b8bd66',
           'data' => {},
           'msg' => 'No active account is associated with this request' }
       end
+
       let(:response_body_401) do
         {
           status: 'Error',
@@ -261,6 +426,7 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
           msg: 'string',
         }
       end
+
       let(:no_doc_found_response_body) do
         {
           referenceId: '0dc21b0d-04df-4dd5-8533-ec9ecdafe0f4',
@@ -270,14 +436,16 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
           },
         }
       end
+
       before do
         allow(IdentityConfig.store).to receive(:socure_docv_document_request_endpoint)
           .and_return(fake_socure_endpoint)
       end
+
       it 'connection timeout still responds to user' do
         stub_request(:post, fake_socure_endpoint).to_raise(Faraday::ConnectionFailed)
         get(:show)
-        expect(response).to redirect_to(idv_socure_document_capture_errors_url)
+        expect(response).to redirect_to(no_url_socure_route)
       end
 
       it 'socure error response still gives a result to user' do
@@ -286,31 +454,34 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
           body: JSON.generate(failed_response_body),
         )
         get(:show)
-        expect(response).to redirect_to(idv_socure_document_capture_errors_url)
+        expect(response).to redirect_to(no_url_socure_route)
       end
+
       it 'socure nil response still gives a result to user' do
         stub_request(:post, fake_socure_endpoint).to_return(
           status: 500,
           body: nil,
         )
         get(:show)
-        expect(response).to redirect_to(idv_socure_document_capture_errors_url)
+        expect(response).to redirect_to(no_url_socure_route)
       end
+
       it 'socure nil response still gives a result to user' do
         stub_request(:post, fake_socure_endpoint).to_return(
           status: 401,
           body: JSON.generate(response_body_401),
         )
         get(:show)
-        expect(response).to redirect_to(idv_socure_document_capture_errors_url)
+        expect(response).to redirect_to(no_url_socure_route)
       end
+
       it 'socure nil response still gives a result to user' do
         stub_request(:post, fake_socure_endpoint).to_return(
           status: 401,
           body: JSON.generate(no_doc_found_response_body),
         )
         get(:show)
-        expect(response).to redirect_to(idv_socure_document_capture_errors_url)
+        expect(response).to redirect_to(no_url_socure_route)
       end
     end
 
@@ -318,6 +489,15 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
       let(:fake_capture_app_url) { 'https://verify.socure.test/fake_capture_app' }
       let(:socure_capture_app_url) { 'https://verify.socure.test/' }
       let(:docv_transaction_token) { '176dnc45d-2e34-46f3-82217-6f540ae90673' }
+      let(:dcs) do
+        create(
+          :document_capture_session,
+          :socure,
+          user:,
+          doc_auth_vendor: Idp::Constants::Vendors::SOCURE,
+          socure_docv_capture_app_url: fake_capture_app_url,
+        )
+      end
       let(:response_body) do
         {
           referenceId: '123ab45d-2e34-46f3-8d17-6f540ae90303',
@@ -332,17 +512,13 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
 
       before do
         allow(request_class).to receive(:new).and_call_original
+        allow(DocumentCaptureSession).to receive(:find_by).and_return(dcs)
         allow(I18n).to receive(:locale).and_return(expected_language)
       end
 
       it 'does not create a DocumentRequest when valid capture app exists' do
-        dcs = create(
-          :document_capture_session,
-          uuid: user.id,
-          socure_docv_capture_app_url: fake_capture_app_url,
-        )
-        allow(DocumentCaptureSession).to receive(:find_by).and_return(dcs)
         get(:show)
+
         expect(request_class).not_to have_received(:new)
         expect(dcs.socure_docv_capture_app_url).to eq(fake_capture_app_url)
       end
@@ -351,12 +527,24 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
 
   describe '#update' do
     before do
+      stub_sign_in(user)
+      subject.idv_session.flow_path = 'standard'
+      allow(subject.document_capture_session).to receive(:load_result).and_return(stored_result)
+      allow(subject.document_capture_session).to receive(:socure_docv_transaction_token)
+        .and_return(socure_docv_transaction_token)
       get :update
     end
 
-    it 'returns FOUND (302) and redirects to SSN' do
-      expect(response).to redirect_to(idv_ssn_path)
-      expect(@analytics).to have_logged_event('IdV: doc auth document_capture submitted')
+    context 'when doc auth succeeds' do
+      it 'correctly stores doc_auth_vendor in Idv::Session' do
+        expect(subject.idv_session.doc_auth_vendor).to_not be_nil
+        expect(subject.idv_session.doc_auth_vendor).to match(idv_vendor)
+      end
+
+      it 'returns FOUND (302) and redirects to SSN' do
+        expect(response).to redirect_to(idv_ssn_path)
+        expect(@analytics).to have_logged_event('IdV: doc auth document_capture submitted')
+      end
     end
 
     context 'when doc auth fails' do
@@ -365,7 +553,9 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
       it 'renders the errors' do
         get(:update)
 
-        expect(response).to redirect_to idv_socure_document_capture_errors_url
+        expect(response).to redirect_to idv_socure_document_capture_errors_url(
+          transaction_token: socure_docv_transaction_token,
+        )
         expect(@analytics).to have_logged_event('IdV: doc auth document_capture submitted')
       end
     end
@@ -380,55 +570,65 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
       end
 
       context 'when the wait times out' do
-        before do
-          allow(subject).to receive(:wait_timed_out?).and_return(true)
-        end
-
-        it 'redirect to a Try again page' do
-          get(:update)
-          expect(response).to redirect_to(idv_socure_errors_timeout_path)
-        end
-      end
-
-      context 'when socure_docv_verification_data_test_mode is enabled' do
-        let(:test_token) { '12345' }
-        let(:socure_docv_verification_data_test_mode) { true }
-
+        let(:socure_response_body) { nil }
         before do
           ActiveJob::Base.queue_adapter = :test
-          allow(IdentityConfig.store)
-            .to receive(:socure_docv_verification_data_test_mode_tokens)
-            .and_return([test_token])
-
+          allow(subject).to receive(:wait_timed_out?).and_return(true)
           stub_request(
             :post,
             "#{IdentityConfig.store.socure_idplus_base_url}/api/3.0/EmailAuthScore",
           )
-            .with(body: { modules: ['documentverification'], docvTransactionToken: test_token }
+            .with(body: {
+              modules: ['documentverification'],
+              docvTransactionToken: nil,
+              customerUserId: user.uuid,
+              email: user.email,
+            }
               .to_json)
             .to_return(
               headers: {
                 'Content-Type' => 'application/json',
               },
-              body: SocureDocvFixtures.pass_json,
+              body: socure_response_body,
             )
+          allow_any_instance_of(DocumentCaptureSession).to receive(:load_result).and_call_original
         end
 
-        context 'when a token is provided from the allow list' do
-          it 'performs SocureDocvResultsJob' do
-            expect { get(:update, params: { docv_token: test_token }) }
-              .not_to have_enqueued_job(SocureDocvResultsJob) # is synchronous
+        it 'logs a socure webhook missing analytics event' do
+          get(:update)
+          expect(@analytics).to have_logged_event(
+            :idv_socure_verification_webhook_missing,
+          )
+        end
 
-            expect(document_capture_session.reload.load_result).not_to be_nil
+        context 'the synchronous socure call fetches docv results' do
+          let(:socure_response_body) { SocureDocvFixtures.pass_json }
+          it 'has a successful result' do
+            expect { get(:update) }.not_to have_enqueued_job(SocureDocvResultsJob) # is synchronous
+
+            expect(subject.document_capture_session.reload.load_result).not_to be_nil
           end
         end
 
-        context 'when a token is provided not on the allow list' do
-          it 'performs SocureDocvResultsJob' do
-            expect { get(:update, params: { docv_token: 'rando-token' }) }
-              .not_to have_enqueued_job(SocureDocvResultsJob)
+        context 'the synchronous socure call does not return anything' do
+          before do
+            allow(subject.document_capture_session).to receive(:load_result).and_return(nil)
+          end
+          it 'redirects to a Try again page' do
+            get(:update)
+            expect(response).to redirect_to(timeout_socure_route)
+          end
+        end
 
-            expect(document_capture_session.reload.load_result).to be_nil
+        context 'when the document capture session is missing the socure docv transaction token' do
+          let(:stored_result) { nil }
+          let(:socure_docv_transaction_token) { nil }
+          let(:response) { get :update }
+
+          it 'redirects to the socure document capture error page' do
+            expect(response).to redirect_to idv_socure_document_capture_errors_url(
+              error_code: :invalid_transaction_token, transaction_token: :MISSING_TRANSACTION_TOKEN,
+            )
           end
         end
       end

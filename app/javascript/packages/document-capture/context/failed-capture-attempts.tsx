@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useState, useMemo, useCallback } from 'react';
 import type { ReactNode } from 'react';
 import useCounter from '../hooks/use-counter';
 import SelfieCaptureContext from './selfie-capture';
@@ -15,6 +15,16 @@ interface UploadedImageFingerprints {
    */
   front: string[] | null;
   back: string[] | null;
+  passport: string[] | null;
+}
+
+// Selfie excluded - PassiveLiveness SDK doesn't support manual capture
+type DocumentSide = 'front' | 'back' | 'passport';
+
+interface PerSideFailedAttempts {
+  front: number;
+  back: number;
+  passport: number;
 }
 
 interface FailedCaptureAttemptsContextInterface {
@@ -81,12 +91,25 @@ interface FailedCaptureAttemptsContextInterface {
   forceNativeCamera: boolean;
 
   failedSubmissionImageFingerprints: UploadedImageFingerprints;
+
+  failedQualityCheckAttempts: PerSideFailedAttempts;
+  onFailedQualityCheckAttempt: (side: DocumentSide, metadata: CaptureAttemptMetadata) => void;
+  onResetFailedQualityCheckAttempts: (side: DocumentSide) => void;
+  triggerManualCapture: (side: DocumentSide) => boolean;
+  maxAttemptsBeforeManualCapture: number;
+  manualCaptureAfterFailuresEnabled: boolean;
 }
 
 const DEFAULT_LAST_ATTEMPT_METADATA: CaptureAttemptMetadata = {
   isAssessedAsGlare: false,
   isAssessedAsBlurry: false,
   isAssessedAsUnsupported: false,
+};
+
+const DEFAULT_PER_SIDE_FAILED_ATTEMPTS: PerSideFailedAttempts = {
+  front: 0,
+  back: 0,
+  passport: 0,
 };
 
 const FailedCaptureAttemptsContext = createContext<FailedCaptureAttemptsContextInterface>({
@@ -101,7 +124,13 @@ const FailedCaptureAttemptsContext = createContext<FailedCaptureAttemptsContextI
   maxSubmissionAttemptsBeforeNativeCamera: Infinity,
   lastAttemptMetadata: DEFAULT_LAST_ATTEMPT_METADATA,
   forceNativeCamera: false,
-  failedSubmissionImageFingerprints: { front: [], back: [] },
+  failedSubmissionImageFingerprints: { front: [], back: [], passport: [] },
+  failedQualityCheckAttempts: DEFAULT_PER_SIDE_FAILED_ATTEMPTS,
+  onFailedQualityCheckAttempt: () => {},
+  onResetFailedQualityCheckAttempts: () => {},
+  triggerManualCapture: () => false,
+  maxAttemptsBeforeManualCapture: 3,
+  manualCaptureAfterFailuresEnabled: false,
 });
 
 FailedCaptureAttemptsContext.displayName = 'FailedCaptureAttemptsContext';
@@ -110,14 +139,18 @@ interface FailedCaptureAttemptsContextProviderProps {
   children: ReactNode;
   maxCaptureAttemptsBeforeNativeCamera: number;
   maxSubmissionAttemptsBeforeNativeCamera: number;
-  failedFingerprints: { front: []; back: [] };
+  failedFingerprints: { front: []; back: []; passport: [] };
+  maxAttemptsBeforeManualCapture?: number;
+  manualCaptureAfterFailuresEnabled?: boolean;
 }
 
 function FailedCaptureAttemptsContextProvider({
   children,
   maxCaptureAttemptsBeforeNativeCamera,
   maxSubmissionAttemptsBeforeNativeCamera,
-  failedFingerprints = { front: [], back: [] },
+  failedFingerprints = { front: [], back: [], passport: [] },
+  maxAttemptsBeforeManualCapture = 3,
+  manualCaptureAfterFailuresEnabled = false,
 }: FailedCaptureAttemptsContextProviderProps) {
   const [lastAttemptMetadata, setLastAttemptMetadata] = useState<CaptureAttemptMetadata>(
     DEFAULT_LAST_ATTEMPT_METADATA,
@@ -131,43 +164,110 @@ function FailedCaptureAttemptsContextProvider({
   const [failedSubmissionImageFingerprints, setFailedSubmissionImageFingerprints] =
     useState<UploadedImageFingerprints>(failedFingerprints);
 
-  function onFailedCaptureAttempt(metadata: CaptureAttemptMetadata) {
-    incrementFailedCaptureAttempts();
-    setLastAttemptMetadata(metadata);
-  }
+  const [failedQualityCheckAttempts, setFailedQualityCheckAttempts] =
+    useState<PerSideFailedAttempts>(DEFAULT_PER_SIDE_FAILED_ATTEMPTS);
 
-  function onFailedSubmissionAttempt(failedOnes: UploadedImageFingerprints) {
-    incrementFailedSubmissionAttempts();
-    setFailedSubmissionImageFingerprints(failedOnes);
-  }
+  const onFailedCaptureAttempt = useCallback(
+    (metadata: CaptureAttemptMetadata) => {
+      incrementFailedCaptureAttempts();
+      setLastAttemptMetadata(metadata);
+    },
+    [incrementFailedCaptureAttempts],
+  );
 
-  function onFailedCameraPermissionAttempt() {
+  const onFailedSubmissionAttempt = useCallback(
+    (failedOnes: UploadedImageFingerprints) => {
+      incrementFailedSubmissionAttempts();
+      setFailedSubmissionImageFingerprints(failedOnes);
+    },
+    [incrementFailedSubmissionAttempts],
+  );
+
+  const onFailedCameraPermissionAttempt = useCallback(() => {
     incrementFailedCameraPermissionAttempts();
-  }
+  }, [incrementFailedCameraPermissionAttempts]);
+
+  const onFailedQualityCheckAttempt = useCallback(
+    (side: DocumentSide, metadata: CaptureAttemptMetadata) => {
+      setFailedQualityCheckAttempts((prev) => ({
+        ...prev,
+        [side]: prev[side] + 1,
+      }));
+      setLastAttemptMetadata(metadata);
+    },
+    [],
+  );
+
+  const onResetFailedQualityCheckAttempts = useCallback((side: DocumentSide) => {
+    setFailedQualityCheckAttempts((prev) => ({
+      ...prev,
+      [side]: 0,
+    }));
+  }, []);
+
+  const triggerManualCapture = useCallback(
+    (side: DocumentSide): boolean => {
+      if (!manualCaptureAfterFailuresEnabled) {
+        return false;
+      }
+      return failedQualityCheckAttempts[side] >= maxAttemptsBeforeManualCapture;
+    },
+    [manualCaptureAfterFailuresEnabled, failedQualityCheckAttempts, maxAttemptsBeforeManualCapture],
+  );
 
   const hasExhaustedAttempts =
     failedCaptureAttempts >= maxCaptureAttemptsBeforeNativeCamera ||
     failedSubmissionAttempts >= maxSubmissionAttemptsBeforeNativeCamera;
 
+  // Native camera fallback for SDK failures and submission failures only
+  // Quality check failures are handled per-side via triggerManualCapture()
   const forceNativeCamera = isSelfieCaptureEnabled ? false : hasExhaustedAttempts;
 
+  const contextValue = useMemo(
+    () => ({
+      failedCaptureAttempts,
+      onFailedCaptureAttempt,
+      onResetFailedCaptureAttempts,
+      failedSubmissionAttempts,
+      onFailedSubmissionAttempt,
+      failedCameraPermissionAttempts,
+      onFailedCameraPermissionAttempt,
+      maxCaptureAttemptsBeforeNativeCamera,
+      maxSubmissionAttemptsBeforeNativeCamera,
+      lastAttemptMetadata,
+      forceNativeCamera,
+      failedSubmissionImageFingerprints,
+      failedQualityCheckAttempts,
+      onFailedQualityCheckAttempt,
+      onResetFailedQualityCheckAttempts,
+      triggerManualCapture,
+      maxAttemptsBeforeManualCapture,
+      manualCaptureAfterFailuresEnabled,
+    }),
+    [
+      failedCaptureAttempts,
+      onFailedCaptureAttempt,
+      onResetFailedCaptureAttempts,
+      failedSubmissionAttempts,
+      onFailedSubmissionAttempt,
+      failedCameraPermissionAttempts,
+      onFailedCameraPermissionAttempt,
+      maxCaptureAttemptsBeforeNativeCamera,
+      maxSubmissionAttemptsBeforeNativeCamera,
+      lastAttemptMetadata,
+      forceNativeCamera,
+      failedSubmissionImageFingerprints,
+      failedQualityCheckAttempts,
+      onFailedQualityCheckAttempt,
+      onResetFailedQualityCheckAttempts,
+      triggerManualCapture,
+      maxAttemptsBeforeManualCapture,
+      manualCaptureAfterFailuresEnabled,
+    ],
+  );
+
   return (
-    <FailedCaptureAttemptsContext.Provider
-      value={{
-        failedCaptureAttempts,
-        onFailedCaptureAttempt,
-        onResetFailedCaptureAttempts,
-        failedSubmissionAttempts,
-        onFailedSubmissionAttempt,
-        failedCameraPermissionAttempts,
-        onFailedCameraPermissionAttempt,
-        maxCaptureAttemptsBeforeNativeCamera,
-        maxSubmissionAttemptsBeforeNativeCamera,
-        lastAttemptMetadata,
-        forceNativeCamera,
-        failedSubmissionImageFingerprints,
-      }}
-    >
+    <FailedCaptureAttemptsContext.Provider value={contextValue}>
       {children}
     </FailedCaptureAttemptsContext.Provider>
   );
@@ -175,4 +275,4 @@ function FailedCaptureAttemptsContextProvider({
 
 export default FailedCaptureAttemptsContext;
 export { FailedCaptureAttemptsContextProvider as Provider };
-export { UploadedImageFingerprints };
+export type { UploadedImageFingerprints, DocumentSide };

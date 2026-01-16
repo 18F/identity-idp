@@ -5,12 +5,15 @@ import { FormStepError } from '@18f/identity-form-steps';
 import { Link } from '@18f/identity-components';
 import formatHTML from '@18f/identity-react-i18n/format-html';
 import MarketingSiteContext from '../context/marketing-site';
+import { InPersonContext } from '../context';
 
 interface GeneralErrorProps extends ComponentProps<'p'> {
   unknownFieldErrors: FormStepError<{ front: string; back: string }>[];
   isFailedDocType: boolean;
   isFailedSelfie: boolean;
   isFailedSelfieLivenessOrQuality: boolean;
+  isPassportError?: boolean;
+  isUnexpectedIdTypeError?: boolean;
   altFailedDocTypeMsg?: string | null;
   altIsFailedSelfieDontIncludeAttempts?: boolean;
   hasDismissed: boolean;
@@ -40,17 +43,38 @@ function getError({ unknownFieldErrors }: GetErrorArguments) {
   return err;
 }
 
+function isNetworkError(unknownFieldErrors) {
+  return unknownFieldErrors.some((error) => error.field === 'network');
+}
+
+function getExpectedIdType(unknownFieldErrors) {
+  const idType = unknownFieldErrors.find((error) => error.field === 'expected_id_type');
+  return idType ? idType.error.message : null;
+}
+
+function getUnexpectedTypeText(expectedIdType, t) {
+  const idTypeToMessage = {
+    passport: t('doc_auth.errors.verify_passport_text'),
+    drivers_license: t('doc_auth.errors.verify_drivers_license_text'),
+  };
+
+  return idTypeToMessage[expectedIdType];
+}
+
 function GeneralError({
   unknownFieldErrors = [],
   isFailedDocType = false,
   isFailedSelfie = false,
   isFailedSelfieLivenessOrQuality = false,
+  isPassportError = false,
+  isUnexpectedIdTypeError = false,
   altFailedDocTypeMsg = null,
   altIsFailedSelfieDontIncludeAttempts = false,
   hasDismissed,
 }: GeneralErrorProps) {
   const { t } = useI18n();
   const { getHelpCenterURL } = useContext(MarketingSiteContext);
+  const { chooseIdTypePath } = useContext(InPersonContext);
   const helpCenterLink = getHelpCenterURL({
     category: 'verify-your-identity',
     article: 'how-to-add-images-of-your-state-issued-id',
@@ -64,6 +88,7 @@ function GeneralError({
   });
 
   const err = getError({ unknownFieldErrors });
+  const isNetwork = isNetworkError(unknownFieldErrors);
 
   if (isFailedDocType && !!altFailedDocTypeMsg) {
     return (
@@ -88,6 +113,31 @@ function GeneralError({
             {selfieHelpCenterLinkText}
           </Link>
         )}
+      </p>
+    );
+  }
+  if (isUnexpectedIdTypeError) {
+    const expectedIdType = getExpectedIdType(unknownFieldErrors);
+    return (
+      <p>
+        {getUnexpectedTypeText(expectedIdType, t)}{' '}
+        <Link href={chooseIdTypePath || ''} isExternal={false}>
+          {t('doc_auth.errors.verify.use_another_type_of_id')}
+        </Link>
+      </p>
+    );
+  }
+  if (isPassportError) {
+    if (!isNetwork) {
+      return <p>{t('doc_auth.info.review_passport')}</p>;
+    }
+    return (
+      <p key={err?.message}>
+        {t('doc_auth.errors.general.network_error_passport')}{' '}
+        <Link href={chooseIdTypePath || ''} isExternal={false}>
+          {t('doc_auth.errors.general.network_error_passport_link_text')}
+        </Link>{' '}
+        {t('doc_auth.errors.general.network_error_passport_ending')}
       </p>
     );
   }

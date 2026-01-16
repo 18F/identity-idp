@@ -42,7 +42,6 @@ module DataRequests
       def phone_configurations_report
         user.phone_configurations.map do |phone_configuration|
           {
-            id: phone_configuration.id,
             phone: phone_configuration.phone,
             created_at: phone_configuration.created_at,
             confirmed_at: phone_configuration.confirmed_at,
@@ -63,6 +62,7 @@ module DataRequests
         user.webauthn_configurations.map do |webauthn_configuration|
           {
             name: webauthn_configuration.name,
+            platform_authenticator: webauthn_configuration.platform_authenticator,
             created_at: webauthn_configuration.created_at,
           }
         end

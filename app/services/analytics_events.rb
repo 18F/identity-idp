@@ -78,8 +78,8 @@ module AnalyticsEvents
   # An account reset was cancelled
   def account_reset_cancel(
     success:,
-    errors:,
     user_id:,
+    errors: nil,
     error_details: nil,
     message_id: nil,
     request_id: nil,
@@ -100,13 +100,11 @@ module AnalyticsEvents
   # @identity.idp.previous_event_name Account Reset
   # @param [String] user_id
   # @param [Boolean] success Whether form validation was successful
-  # @param [Hash] errors Errors resulting from form validation
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # Validates the token used for cancelling an account reset
   def account_reset_cancel_token_validation(
     user_id:,
     success:,
-    errors:,
     error_details: nil,
     **extra
   )
@@ -114,7 +112,6 @@ module AnalyticsEvents
       'Account Reset: cancel token validation',
       user_id:,
       success:,
-      errors:,
       error_details:,
       **extra,
     )
@@ -128,7 +125,6 @@ module AnalyticsEvents
   #   (rounded) or nil if the account was not confirmed
   # @param [Hash] mfa_method_counts Hash of MFA method with the number of that method on the account
   # @param [Boolean] identity_verified if the deletion occurs on a verified account
-  # @param [Hash] errors Errors resulting from form validation
   # @param [String, nil] profile_idv_level shows how verified the user is
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # An account has been deleted through the account reset flow
@@ -139,7 +135,6 @@ module AnalyticsEvents
     account_confirmed_at:,
     mfa_method_counts:,
     identity_verified:,
-    errors:,
     profile_idv_level: nil,
     error_details: nil,
     **extra
@@ -153,7 +148,6 @@ module AnalyticsEvents
       mfa_method_counts:,
       profile_idv_level:,
       identity_verified:,
-      errors:,
       error_details:,
       **extra,
     )
@@ -162,12 +156,10 @@ module AnalyticsEvents
   # @identity.idp.previous_event_name Account Reset
   # @param [String] user_id
   # @param [Boolean] success Whether form validation was successful
-  # @param [Hash] errors Errors resulting from form validation
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # Validates the granted token for account reset
   def account_reset_granted_token_validation(
     success:,
-    errors:,
     error_details: nil,
     user_id: nil,
     **extra
@@ -175,7 +167,6 @@ module AnalyticsEvents
     track_event(
       'Account Reset: granted token validation',
       success:,
-      errors:,
       error_details:,
       user_id:,
       **extra,
@@ -196,7 +187,6 @@ module AnalyticsEvents
 
   # @identity.idp.previous_event_name Account Reset
   # @param [Boolean] success
-  # @param [Hash] errors Errors resulting from form validation
   # @param [Boolean] sms_phone does the user have a phone factor configured?
   # @param [Boolean] totp does the user have an authentication app as a 2FA option?
   # @param [Boolean] piv_cac does the user have PIV/CAC as a 2FA option?
@@ -206,7 +196,6 @@ module AnalyticsEvents
   # An account reset has been requested
   def account_reset_request(
     success:,
-    errors:,
     sms_phone:,
     totp:,
     piv_cac:,
@@ -218,7 +207,6 @@ module AnalyticsEvents
     track_event(
       'Account Reset: request',
       success:,
-      errors:,
       sms_phone:,
       totp:,
       piv_cac:,
@@ -240,7 +228,6 @@ module AnalyticsEvents
   end
 
   # @param [Boolean] success Whether form validation was successful
-  # @param [Hash] errors Errors resulting from form validation
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [String] user_id User the email is linked to
   # @param [Boolean] from_select_email_flow Whether email was added as part of partner email
@@ -249,7 +236,6 @@ module AnalyticsEvents
   def add_email_confirmation(
     user_id:,
     success:,
-    errors:,
     from_select_email_flow:,
     error_details: nil,
     **extra
@@ -258,7 +244,6 @@ module AnalyticsEvents
       'Add Email: Email Confirmation',
       user_id:,
       success:,
-      errors:,
       error_details:,
       from_select_email_flow:,
       **extra,
@@ -266,7 +251,6 @@ module AnalyticsEvents
   end
 
   # @param [Boolean] success Whether form validation was successful
-  # @param [Hash] errors Errors resulting from form validation
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [String] domain_name Domain name of email address submitted
   # @param [Boolean] in_select_email_flow Whether email is being added as part of partner email
@@ -274,7 +258,6 @@ module AnalyticsEvents
   # Tracks request for adding new emails to an account
   def add_email_request(
     success:,
-    errors:,
     domain_name:,
     in_select_email_flow:,
     error_details: nil,
@@ -283,7 +266,6 @@ module AnalyticsEvents
     track_event(
       'Add Email Requested',
       success:,
-      errors:,
       error_details:,
       domain_name:,
       in_select_email_flow:,
@@ -302,6 +284,54 @@ module AnalyticsEvents
   def add_phone_setup_visit
     track_event(
       'Phone Setup Visited',
+    )
+  end
+
+  # Temporary event:
+  # Tracks when the AAL value that we are returning to the integration
+  # is different from the actual asserted value
+  # @param [String] asserted_aal_value The actual AAL value the IdP asserts
+  # @param [String] client_id
+  # @param [String] response_aal_value The AAL value the IdP returns via attributes
+  def asserted_aal_different_from_response_aal(
+    asserted_aal_value:,
+    client_id:,
+    response_aal_value:,
+    **extra
+  )
+    track_event(
+      :asserted_aal_different_from_response_aal,
+      asserted_aal_value:,
+      client_id:,
+      response_aal_value:,
+      **extra,
+    )
+  end
+
+  # @param [String, nil] issuer
+  # @param [Integer, nil] requested_events_count
+  # @param [Integer, nil] requested_acknowledged_events_count
+  # @param [Integer, nil] returned_events_count
+  # @param [Integer, nil] acknowledged_events_count
+  # @param [Boolean] success
+  def attempts_api_poll_events_request(
+    issuer:,
+    requested_events_count:,
+    requested_acknowledged_events_count:,
+    returned_events_count:,
+    acknowledged_events_count:,
+    success:,
+    **extra
+  )
+    track_event(
+      :attempts_api_poll_events_request,
+      issuer:,
+      requested_events_count:,
+      requested_acknowledged_events_count:,
+      returned_events_count:,
+      acknowledged_events_count:,
+      success:,
+      **extra,
     )
   end
 
@@ -390,26 +420,36 @@ module AnalyticsEvents
     track_event('Backup Code Regenerate Visited', in_account_creation_flow:, **extra)
   end
 
+  # @param [Boolean] has_codes Whether the user still has access to their backup codes.
+  # Tracks when the user submits to confirm whether they still have access to their backup codes
+  # when signing in for the first time in at least 5 months.
+  def backup_code_reminder_submitted(has_codes:, **extra)
+    track_event(:backup_code_reminder_submitted, has_codes:, **extra)
+  end
+
+  # Tracks when the user is prompted to confirm that they still have access to their backup codes
+  # when signing in for the first time in at least 5 months.
+  def backup_code_reminder_visited
+    track_event(:backup_code_reminder_visited)
+  end
+
   # Track user creating new BackupCodeSetupForm, record form submission Hash
   # @param [Boolean] success Whether form validation was successful
   # @param [Hash] mfa_method_counts Hash of MFA method with the number of that method on the account
   # @param [Integer] enabled_mfa_methods_count Number of enabled MFA methods on the account
   # @param [Boolean] in_account_creation_flow Whether page is visited as part of account creation
-  # @param [Hash] errors Errors resulting from form validation
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   def backup_code_setup_visit(
     success:,
     mfa_method_counts:,
     enabled_mfa_methods_count:,
     in_account_creation_flow:,
-    errors:,
     error_details: nil,
     **extra
   )
     track_event(
       'Backup Code Setup Visited',
       success:,
-      errors:,
       error_details:,
       mfa_method_counts:,
       enabled_mfa_methods_count:,
@@ -476,6 +516,12 @@ module AnalyticsEvents
   # @param [Integer] count Number of emails sent
   def create_new_device_alert_job_emails_sent(count:, **extra)
     track_event(:create_new_device_alert_job_emails_sent, count:, **extra)
+  end
+
+  # User directed to this page after TMX returns a failure
+
+  def device_profiling_failed_visited
+    track_event(:device_profiling_failed_visited)
   end
 
   # @param [String] message the warning
@@ -545,28 +591,24 @@ module AnalyticsEvents
   end
 
   # @param [Boolean] success Whether form validation was successful
-  # @param [Hash] errors Errors resulting from form validation
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # Tracks request for deletion of email address
-  def email_deletion_request(success:, errors:, error_details: nil, **extra)
+  def email_deletion_request(success:, error_details: nil, **extra)
     track_event(
       'Email Deletion Requested',
       success:,
-      errors:,
       error_details:,
       **extra,
     )
   end
 
   # @param [Boolean] success Whether form validation was successful
-  # @param [Hash] errors Errors resulting from form validation
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # Tracks if Email Language is updated
-  def email_language_updated(success:, errors:, error_details: nil, **extra)
+  def email_language_updated(success:, error_details: nil, **extra)
     track_event(
       'Email Language: Updated',
       success:,
-      errors:,
       error_details:,
       **extra,
     )
@@ -592,7 +634,6 @@ module AnalyticsEvents
   end
 
   # @param [Boolean] success Whether form validation was successful
-  # @param [Hash] errors Errors resulting from form validation
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [Time, nil] event_created_at timestamp for the event
   # @param [Time, nil] disavowed_device_last_used_at
@@ -605,7 +646,6 @@ module AnalyticsEvents
   # Tracks disavowed event
   def event_disavowal(
     success:,
-    errors:,
     user_id:,
     error_details: nil,
     event_created_at: nil,
@@ -620,7 +660,6 @@ module AnalyticsEvents
     track_event(
       'Event disavowal visited',
       success:,
-      errors:,
       error_details:,
       event_created_at:,
       disavowed_device_last_used_at:,
@@ -635,7 +674,6 @@ module AnalyticsEvents
   end
 
   # @param [Boolean] success Whether form validation was successful
-  # @param [Hash] errors Errors resulting from form validation
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [Time, nil] event_created_at timestamp for the event
   # @param [Time, nil] disavowed_device_last_used_at
@@ -648,7 +686,6 @@ module AnalyticsEvents
   # Event disavowal password reset was performed
   def event_disavowal_password_reset(
     success:,
-    errors:,
     user_id:,
     error_details: nil,
     event_created_at: nil,
@@ -663,7 +700,6 @@ module AnalyticsEvents
     track_event(
       'Event disavowal password reset',
       success:,
-      errors:,
       error_details:,
       event_created_at:,
       disavowed_device_last_used_at:,
@@ -678,7 +714,6 @@ module AnalyticsEvents
   end
 
   # @param [Boolean] success Whether form validation was successful
-  # @param [Hash] errors Errors resulting from form validation
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [Time, nil] event_created_at timestamp for the event
   # @param [Time, nil] disavowed_device_last_used_at
@@ -690,7 +725,6 @@ module AnalyticsEvents
   # An invalid disavowal token was clicked
   def event_disavowal_token_invalid(
     success:,
-    errors:,
     error_details: nil,
     event_created_at: nil,
     disavowed_device_last_used_at: nil,
@@ -704,7 +738,6 @@ module AnalyticsEvents
     track_event(
       'Event disavowal token invalid',
       success:,
-      errors:,
       error_details:,
       event_created_at:,
       disavowed_device_last_used_at:,
@@ -736,6 +769,10 @@ module AnalyticsEvents
       flow: flow,
       **extra,
     )
+  end
+
+  def fingerprints_rotated
+    track_event(:fingerprints_rotated)
   end
 
   # The user chose to "forget all browsers"
@@ -822,7 +859,7 @@ module AnalyticsEvents
   # @param campaign_id [String] the email campaign ID
   # @param [Hash,nil] proofing_components User's current proofing components
   # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
-  # @option proofing_components [String,nil] 'document_type' Type of ID used to verify
+  # @option proofing_components [String,nil] 'document_type_received' Type of ID detected by vendor
   # @option proofing_components [String,nil] 'source_check' Source used to verify user's PII
   # @option proofing_components [String,nil] 'resolution_check' Vendor for identity resolution check
   # @option proofing_components [String,nil] 'address_check' Method used to verify user's address
@@ -885,12 +922,10 @@ module AnalyticsEvents
 
   # @param [Boolean] success Whether form validation was successful
   # @param [Boolean] address_edited
-  # @param [Hash] errors Errors resulting from form validation
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # User submitted an idv address
   def idv_address_submitted(
     success:,
-    errors:,
     address_edited: nil,
     error_details: nil,
     **extra
@@ -898,7 +933,6 @@ module AnalyticsEvents
     track_event(
       'IdV: address submitted',
       success: success,
-      errors: errors,
       address_edited: address_edited,
       error_details: error_details,
       **extra,
@@ -1080,23 +1114,21 @@ module AnalyticsEvents
   end
 
   # @param [Hash] error
-  def idv_camera_info_error(error:, **_extra)
-    track_event(:idv_camera_info_error, error: error)
+  def idv_camera_info_error(error:, **extra)
+    track_event(:idv_camera_info_error, error:, **extra)
   end
 
   # @param ["hybrid","standard"] flow_path Document capture user flow
   # @param [Array] camera_info Information on the users cameras max resolution
   #   as captured by the browser
-  def idv_camera_info_logged(flow_path:, camera_info:, **_extra)
-    track_event(
-      :idv_camera_info_logged, flow_path: flow_path, camera_info: camera_info
-    )
+  def idv_camera_info_logged(flow_path:, camera_info:, **extra)
+    track_event(:idv_camera_info_logged, flow_path:, camera_info:, **extra)
   end
 
   # @param [String] step the step that the user was on when they clicked cancel
   # @param [Hash,nil] proofing_components User's current proofing components
   # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
-  # @option proofing_components [String,nil] 'document_type' Type of ID used to verify
+  # @option proofing_components [String,nil] 'document_type_received' Type of ID detected by vendor
   # @option proofing_components [String,nil] 'source_check' Source used to verify user's PII
   # @option proofing_components [String,nil] 'resolution_check' Vendor for identity resolution check
   # @option proofing_components [String,nil] 'address_check' Method used to verify user's address
@@ -1125,7 +1157,7 @@ module AnalyticsEvents
   # @param [String] step the step that the user was on when they clicked cancel
   # @param [Hash,nil] proofing_components User's current proofing components
   # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
-  # @option proofing_components [String,nil] 'document_type' Type of ID used to verify
+  # @option proofing_components [String,nil] 'document_type_received' Type of ID detected by vendor
   # @option proofing_components [String,nil] 'source_check' Source used to verify user's PII
   # @option proofing_components [String,nil] 'resolution_check' Vendor for identity resolution check
   # @option proofing_components [String,nil] 'address_check' Method used to verify user's address
@@ -1165,7 +1197,7 @@ module AnalyticsEvents
   #   source such as "users/sessions#new"
   # @param [Hash,nil] proofing_components User's current proofing components
   # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
-  # @option proofing_components [String,nil] 'document_type' Type of ID used to verify
+  # @option proofing_components [String,nil] 'document_type_received' Type of ID detected by vendor
   # @option proofing_components [String,nil] 'source_check' Source used to verify user's PII
   # @option proofing_components [String,nil] 'resolution_check' Vendor for identity resolution check
   # @option proofing_components [String,nil] 'address_check' Method used to verify user's address
@@ -1231,10 +1263,21 @@ module AnalyticsEvents
     )
   end
 
+  # @param [String] step_name
+  # @param [Integer] remaining_submit_attempts (previously called "remaining_attempts")
+  # The user was sent to a warning page during the IDV flow
+  def idv_doc_auth_address_warning_visited(step_name:, remaining_submit_attempts:, **extra)
+    track_event(
+      :idv_doc_auth_address_warning_visited,
+      step_name: step_name,
+      remaining_submit_attempts: remaining_submit_attempts,
+      **extra,
+    )
+  end
+
   # User has consented to share information with document upload and may
   # view the "hybrid handoff" step next unless "skip_hybrid_handoff" param is true
   # @param [Boolean] success Whether form validation was successful
-  # @param [Hash] errors Errors resulting from form validation
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [String] step Current IdV step
   # @param [String] analytics_id Current IdV flow identifier
@@ -1244,7 +1287,6 @@ module AnalyticsEvents
   # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
   def idv_doc_auth_agreement_submitted(
     success:,
-    errors:,
     step:,
     analytics_id:,
     opted_in_to_in_person_proofing: nil,
@@ -1256,7 +1298,6 @@ module AnalyticsEvents
     track_event(
       'IdV: doc auth agreement submitted',
       success:,
-      errors:,
       error_details:,
       step:,
       analytics_id:,
@@ -1310,6 +1351,51 @@ module AnalyticsEvents
       analytics_id:,
       flow_path:,
       liveness_checking_required:,
+      **extra,
+    )
+  end
+
+  # @param [Boolean] success
+  # @param [String] step Current IdV step
+  # @param [String] analytics_id Current IdV flow identifier
+  # @param ["hybrid","standard"] flow_path Document capture user flow
+  # @param ['drivers_license', 'passport'] chosen_id_type Chosen id type of the user
+  # @param [Hash] error_details
+  def idv_doc_auth_choose_id_type_submitted(
+    success:,
+    step:,
+    analytics_id:,
+    flow_path:,
+    chosen_id_type:,
+    error_details: nil,
+    **extra
+  )
+    track_event(
+      :idv_doc_auth_choose_id_type_submitted,
+      success:,
+      step:,
+      analytics_id:,
+      flow_path:,
+      chosen_id_type:,
+      error_details:,
+      **extra,
+    )
+  end
+
+  # @param [String] step Current IdV step
+  # @param [String] analytics_id Current IdV flow identifier
+  # @param ["hybrid","standard"] flow_path Document capture user flow
+  def idv_doc_auth_choose_id_type_visited(
+    step:,
+    analytics_id:,
+    flow_path:,
+    **extra
+  )
+    track_event(
+      :idv_doc_auth_choose_id_type_visited,
+      step:,
+      analytics_id:,
+      flow_path:,
       **extra,
     )
   end
@@ -1369,12 +1455,12 @@ module AnalyticsEvents
   # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
   def idv_doc_auth_document_capture_submitted(
     success:,
-    errors:,
     step:,
     analytics_id:,
     liveness_checking_required:,
     selfie_check_required:,
     flow_path:,
+    errors: nil,
     opted_in_to_in_person_proofing: nil,
     acuant_sdk_upgrade_ab_test_bucket: nil,
     redo_document_capture: nil,
@@ -1460,16 +1546,20 @@ module AnalyticsEvents
   # @param [String] liveness_checking_required Whether or not the selfie is required
   # @param [String] front_image_fingerprint Fingerprint of front image data
   # @param [String] back_image_fingerprint Fingerprint of back image data
+  # @param [String] passport_image_fingerprint Fingerprint of back image data
   # @param [String] selfie_image_fingerprint Fingerprint of selfie image data
+  # @param ["Passport","DriversLicense"] document_type_requested Document user requested
   def idv_doc_auth_failed_image_resubmitted(
     side:,
     remaining_submit_attempts:,
     flow_path:,
     liveness_checking_required:,
     submit_attempts:,
-    front_image_fingerprint:,
-    back_image_fingerprint:,
-    selfie_image_fingerprint:,
+    selfie_image_fingerprint: nil,
+    front_image_fingerprint: nil,
+    back_image_fingerprint: nil,
+    passport_image_fingerprint: nil,
+    document_type_requested: nil,
     **extra
   )
     track_event(
@@ -1481,13 +1571,14 @@ module AnalyticsEvents
       submit_attempts:,
       front_image_fingerprint:,
       back_image_fingerprint:,
+      passport_image_fingerprint:,
       selfie_image_fingerprint:,
+      document_type_requested:,
       **extra,
     )
   end
 
   # @param [Boolean] success Whether form validation was successful
-  # @param [Hash] errors Errors resulting from form validation
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [String] step Current IdV step
   # @param [String] analytics_id Current IdV flow identifier
@@ -1496,7 +1587,6 @@ module AnalyticsEvents
   # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
   def idv_doc_auth_how_to_verify_submitted(
     success:,
-    errors:,
     step:,
     analytics_id:,
     skip_hybrid_handoff:,
@@ -1508,7 +1598,6 @@ module AnalyticsEvents
     track_event(
       :idv_doc_auth_how_to_verify_submitted,
       success:,
-      errors:,
       error_details:,
       step:,
       analytics_id:,
@@ -1704,11 +1793,13 @@ module AnalyticsEvents
   # User is shown the Socure timeout error page
   # @param [String] error_code The type of error that occurred
   # @param [Integer] remaining_submit_attempts The number of remaining attempts to submit
+  # @param [String] docv_transaction_token The docvTransactionToken received from Socure
   # @param [Boolean] skip_hybrid_handoff Whether the user skipped the hybrid handoff A/B test
   # @param [Boolean] opted_in_to_in_person_proofing Whether the user opted into in-person proofing
   def idv_doc_auth_socure_error_visited(
     error_code:,
     remaining_submit_attempts:,
+    docv_transaction_token: nil,
     skip_hybrid_handoff: nil,
     opted_in_to_in_person_proofing: nil,
     **extra
@@ -1717,6 +1808,7 @@ module AnalyticsEvents
       :idv_doc_auth_socure_error_visited,
       error_code:,
       remaining_submit_attempts:,
+      docv_transaction_token:,
       skip_hybrid_handoff:,
       opted_in_to_in_person_proofing:,
       **extra,
@@ -1753,7 +1845,6 @@ module AnalyticsEvents
   # User submits IdV Social Security number step
   # @identity.idp.previous_event_name IdV: in person proofing ssn submitted
   # @param [Boolean] success Whether form validation was successful
-  # @param [Hash] errors Errors resulting from form validation
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [String] step Current IdV step
   # @param [String] analytics_id Current IdV flow identifier
@@ -1764,7 +1855,6 @@ module AnalyticsEvents
   # @param [Number] previous_ssn_edit_distance The edit distance to the previous submitted SSN
   def idv_doc_auth_ssn_submitted(
     success:,
-    errors:,
     step:,
     analytics_id:,
     flow_path:,
@@ -1778,7 +1868,6 @@ module AnalyticsEvents
     track_event(
       'IdV: doc auth ssn submitted',
       success:,
-      errors:,
       error_details:,
       step:,
       analytics_id:,
@@ -1824,7 +1913,6 @@ module AnalyticsEvents
   end
 
   # @param [Boolean] success Whether form validation was successful
-  # @param [Hash] errors Errors resulting from form validation
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [Integer] submit_attempts Times that user has tried submitting (previously called
   #   "attempts")
@@ -1834,13 +1922,14 @@ module AnalyticsEvents
   # @param [String] liveness_checking_required Whether or not the selfie is required
   # @param [String] front_image_fingerprint Fingerprint of front image data
   # @param [String] back_image_fingerprint Fingerprint of back image data
+  # @param [String] passport_image_fingerprint Fingerprint of passport image data
   # @param [String] selfie_image_fingerprint Fingerprint of selfie image data
   # @param [String] acuant_sdk_upgrade_ab_test_bucket A/B test bucket for Acuant document capture
+  # @param ["Passport","DriversLicense"] document_type_requested Document capture user flow
   #   SDK upgrades
   # The document capture image uploaded was locally validated during the IDV process
   def idv_doc_auth_submitted_image_upload_form(
     success:,
-    errors:,
     remaining_submit_attempts:,
     flow_path:,
     liveness_checking_required:,
@@ -1849,14 +1938,15 @@ module AnalyticsEvents
     user_id: nil,
     front_image_fingerprint: nil,
     back_image_fingerprint: nil,
+    passport_image_fingerprint: nil,
     selfie_image_fingerprint: nil,
     acuant_sdk_upgrade_ab_test_bucket: nil,
+    document_type_requested: nil,
     **extra
   )
     track_event(
       'IdV: doc auth image upload form submitted',
       success:,
-      errors:,
       error_details:,
       submit_attempts:,
       remaining_submit_attempts:,
@@ -1864,9 +1954,11 @@ module AnalyticsEvents
       flow_path:,
       front_image_fingerprint:,
       back_image_fingerprint:,
+      passport_image_fingerprint:,
       liveness_checking_required:,
       selfie_image_fingerprint:,
       acuant_sdk_upgrade_ab_test_bucket:,
+      document_type_requested:,
       **extra,
     )
   end
@@ -1877,7 +1969,8 @@ module AnalyticsEvents
   # @param [Boolean] billed
   # @param [String] doc_auth_result
   # @param [String] state
-  # @param [String] state_id_type
+  # @param [String] country for passport doc types
+  # @param [String] document_type_received
   # @param [Boolean] async
   # @param [Integer] submit_attempts Times that user has tried submitting (previously called
   #   "attempts")
@@ -1887,12 +1980,13 @@ module AnalyticsEvents
   # @param [Float] vendor_request_time_in_ms Time it took to upload images & get a response.
   # @param [String] front_image_fingerprint Fingerprint of front image data
   # @param [String] back_image_fingerprint Fingerprint of back image data
+  # @param [String] passport_image_fingerprint Fingerprint of back image data
   # @param [String] selfie_image_fingerprint Fingerprint of selfie image data
   # @param [Boolean] attention_with_barcode Whether result was attention with barcode
   # @param [Boolean] doc_type_supported
   # @param [Boolean] doc_auth_success
-  # @param [Boolean] liveness_checking_required Whether or not the selfie is required
-  # @param [Boolean] liveness_enabled Whether or not the selfie result is included in response
+  # @param [Boolean] liveness_checking_required Whether the selfie is required
+  # @param [Boolean] liveness_enabled Whether the selfie result is included in response
   # @param [String] selfie_status
   # @param [String] vendor
   # @param [String] conversation_id
@@ -1933,13 +2027,14 @@ module AnalyticsEvents
   # @option extra [String] 'ClassificationMode'
   # @option extra [Boolean] 'OrientationChanged'
   # @option extra [Boolean] 'PresentationChanged'
+  # @param ["Passport","DriversLicense"] document_type_requested Document capture user flow
+  # @param [Hash] passport_check_result The results of the Dos API call
   # The document capture image was uploaded to vendor during the IDV process
   def idv_doc_auth_submitted_image_upload_vendor(
     success:,
     errors:,
     exception:,
-    state:,
-    state_id_type:,
+    document_type_received:,
     async:,
     submit_attempts:,
     remaining_submit_attempts:,
@@ -1947,12 +2042,15 @@ module AnalyticsEvents
     flow_path:,
     liveness_checking_required:,
     issue_year:,
+    state: nil,
+    country: nil,
     failed_image_fingerprints: nil,
     billed: nil,
     doc_auth_result: nil,
     vendor_request_time_in_ms: nil,
     front_image_fingerprint: nil,
     back_image_fingerprint: nil,
+    passport_image_fingerprint: nil,
     selfie_image_fingerprint: nil,
     attention_with_barcode: nil,
     doc_type_supported: nil,
@@ -1980,6 +2078,8 @@ module AnalyticsEvents
     selfie_attempts: nil,
     acuant_sdk_upgrade_ab_test_bucket: nil,
     liveness_enabled: nil,
+    document_type_requested: nil,
+    passport_check_result: nil,
     **extra
   )
     track_event(
@@ -1990,7 +2090,8 @@ module AnalyticsEvents
       billed:,
       doc_auth_result:,
       state:,
-      state_id_type:,
+      country:,
+      document_type_received:,
       async:,
       submit_attempts: submit_attempts,
       remaining_submit_attempts: remaining_submit_attempts,
@@ -1999,6 +2100,7 @@ module AnalyticsEvents
       vendor_request_time_in_ms:,
       front_image_fingerprint:,
       back_image_fingerprint:,
+      passport_image_fingerprint:,
       selfie_image_fingerprint:,
       attention_with_barcode:,
       doc_type_supported:,
@@ -2029,6 +2131,8 @@ module AnalyticsEvents
       selfie_attempts:,
       acuant_sdk_upgrade_ab_test_bucket:,
       liveness_enabled:,
+      document_type_requested:,
+      passport_check_result:,
       **extra,
     )
   end
@@ -2040,31 +2144,41 @@ module AnalyticsEvents
   # @param [Integer] remaining_submit_attempts (previously called "remaining_attempts")
   # @param ["hybrid","standard"] flow_path Document capture user flow
   # @param [Boolean] liveness_checking_required Whether or not the selfie is required
+  # @param [String] document_type_received Document type detected by the vendor
   # @param ["present","missing"] id_issued_status Status of state_id_issued field presence
   # @param ["present","missing"] id_expiration_status Status of state_id_expiration field presence
+  # @param ["present","missing"] passport_issued_status Status of passport_issued field presence
+  # @param ["present","missing"] passport_expiration_status Status of passport_expiration field
   # @param [Boolean] attention_with_barcode Whether result was attention with barcode
   # @param [Integer] submit_attempts Times that user has tried submitting
   # @param [String] front_image_fingerprint Fingerprint of front image data
   # @param [String] back_image_fingerprint Fingerprint of back image data
+  # @param [String] passport_image_fingerprint Fingerprint of back image data
   # @param [String] selfie_image_fingerprint Fingerprint of selfie image data
+  # @param ["Passport","DriversLicense"] document_type_requested Document capture user flow
   # @param [Hash] classification_info document image side information, issuing country and type etc
   # The PII that came back from the document capture vendor was validated
   def idv_doc_auth_submitted_pii_validation(
     success:,
-    errors:,
     remaining_submit_attempts:,
     flow_path:,
     liveness_checking_required:,
     attention_with_barcode:,
+    document_type_received:,
     id_issued_status:,
     id_expiration_status:,
+    passport_issued_status:,
+    passport_expiration_status:,
     submit_attempts:,
+    errors: nil,
     error_details: nil,
     user_id: nil,
     front_image_fingerprint: nil,
     back_image_fingerprint: nil,
+    passport_image_fingerprint: nil,
     selfie_image_fingerprint: nil,
-    classification_info: {},
+    classification_info: nil,
+    document_type_requested: nil,
     **extra
   )
     track_event(
@@ -2074,16 +2188,21 @@ module AnalyticsEvents
       error_details:,
       user_id:,
       attention_with_barcode:,
+      document_type_received:,
       id_issued_status:,
       id_expiration_status:,
+      passport_issued_status:,
+      passport_expiration_status:,
       submit_attempts:,
       remaining_submit_attempts:,
       flow_path:,
       front_image_fingerprint:,
       back_image_fingerprint:,
+      passport_image_fingerprint:,
       selfie_image_fingerprint:,
       classification_info:,
       liveness_checking_required:,
+      document_type_requested:,
       **extra,
     )
   end
@@ -2102,6 +2221,7 @@ module AnalyticsEvents
   # @param analytics_id [String] "Doc Auth" for remote unsupervised, "In Person Proofing" for IPP
   # @param errors [Hash] Details about vendor-specific errors encountered during the stages of the identity resolution process
   # @param flow_path [String] "hybrid" for hybrid handoff, "standard" otherwise
+  # @param last_name_spaced [Boolean] Whether the user's last name includes an empty space
   # @param lexisnexis_instant_verify_workflow_ab_test_bucket [String] A/B test bucket for Lexis Nexis InstantVerify workflow testing
   # @param opted_in_to_in_person_proofing [Boolean] Whether this user explicitly opted into in-person proofing
   # @param proofing_results [Hash]
@@ -2121,6 +2241,8 @@ module AnalyticsEvents
   # @option proofing_results [String] context.stages.resolution.transaction_id A unique id for the underlying vendor request
   # @option proofing_results [Boolean] context.stages.resolution.can_pass_with_additional_verification Whether the PII could be verified if another vendor verified certain attributes
   # @option proofing_results [Array<String>] context.stages.resolution.attributes_requiring_additional_verification Attributes that need to be verified by another vendor
+  # @option proofing_results [Array<String>,nil] context.stages.resolution.source_attribution List of sources that contributed to the resolution proofing result
+  # @option proofing_results [String,nil] context.stages.resolution.vendor_id Vendor's internal ID for resolution proofing requests, e.g. socureId
   # @option proofing_results [String] context.stages.resolution.vendor_name Vendor used (e.g. lexisnexis:instant_verify)
   # @option proofing_results [String] context.stages.resolution.vendor_workflow ID of workflow or configuration the vendor used for this transaction
   # @option proofing_results [Boolean] context.stages.residential_address.success Whether the residential address passed proofing
@@ -2130,6 +2252,8 @@ module AnalyticsEvents
   # @option proofing_results [String] context.stages.residential_address.transaction_id Vendor-specific transaction ID for the request made to the residential address proofing vendor
   # @option proofing_results [Boolean] context.stages.residential_address.can_pass_with_additional_verification Whether, if residential address proofing failed, it could pass with additional proofing from another vendor
   # @option proofing_results [Array<String>,nil] context.stages.residential_address.attributes_requiring_additional_verification List of PII attributes that require additional verification for residential address proofing to pass
+  # @option proofing_results [Array<String>,nil] context.stages.residential_address.source_attribution List of sources that contributed to the residential address proofing result
+  # @option proofing_results [String,nil] context.stages.residential_address.vendor_id Vendor's internal ID for residential address proofing requests, e.g. socureId
   # @option proofing_results [String] context.stages.residential_address.vendor_name Vendor used for residential address proofing
   # @option proofing_results [String] context.stages.residential_address.vendor_workflow Vendor-specific workflow or configuration ID associated with the request made.
   # @option proofing_results [Hash] context.stages.state_id Object holding details about the call made to the state ID proofing vendor
@@ -2160,6 +2284,7 @@ module AnalyticsEvents
   # @param step [String] Always "verify" (leftover from flow state machine days)
   # @param success [Boolean] Whether identity resolution succeeded overall
   # @param previous_ssn_edit_distance [Number] The edit distance to the previous submitted SSN
+  # @param exceptions [Hash, nil] The exceptions found in the proofing results.
   def idv_doc_auth_verify_proofing_results(
     ab_tests: nil,
     acuant_sdk_upgrade_ab_test_bucket: nil,
@@ -2168,6 +2293,7 @@ module AnalyticsEvents
     analytics_id: nil,
     errors: nil,
     flow_path: nil,
+    last_name_spaced: nil,
     lexisnexis_instant_verify_workflow_ab_test_bucket: nil,
     opted_in_to_in_person_proofing: nil,
     proofing_results: nil,
@@ -2176,6 +2302,7 @@ module AnalyticsEvents
     step: nil,
     success: nil,
     previous_ssn_edit_distance: nil,
+    exceptions: nil,
     **extra
   )
     track_event(
@@ -2188,6 +2315,7 @@ module AnalyticsEvents
       errors:,
       flow_path:,
       lexisnexis_instant_verify_workflow_ab_test_bucket:,
+      last_name_spaced:,
       opted_in_to_in_person_proofing:,
       proofing_results:,
       skip_hybrid_handoff:,
@@ -2195,6 +2323,7 @@ module AnalyticsEvents
       step:,
       success:,
       previous_ssn_edit_distance:,
+      exceptions:,
       **extra,
     )
   end
@@ -2314,6 +2443,53 @@ module AnalyticsEvents
     )
   end
 
+  # User's passport information submitted to DoS for validation
+  # @param [Boolean] success Whether the validation succeeded
+  # @param [String] response The raw verdict from DoS
+  # @param [Integer] submit_attempts Times that user has tried submitting document capture
+  # @param [Integer] remaining_submit_attempts  how many attempts the user has left before
+  #                  we rate limit them.
+  # @param [String] document_type_requested The document type requested by user
+  # @param [String] correlation_id_received The correlation ID received in the response
+  # @param [String] correlation_id_sent The correlation ID sent in the request
+  # @param [String] exception The exception message if an exception occurred
+  # @param [String] error_code The error code if provided in a failed response
+  # @param [String] error_message The error message if provided in a failed response
+  # @param [String] error_reason The error reason if provided in a failed response
+  # @param [String] errors The DocAuth response error for failure
+  def idv_dos_passport_verification(
+    success:,
+    submit_attempts:,
+    remaining_submit_attempts:,
+    document_type_requested:,
+    response: nil,
+    correlation_id_received: nil,
+    correlation_id_sent: nil,
+    exception: nil,
+    error_code: nil,
+    error_message: nil,
+    error_reason: nil,
+    errors: nil,
+    **extra
+  )
+    track_event(
+      :idv_dos_passport_verification,
+      success:,
+      response:,
+      submit_attempts:,
+      remaining_submit_attempts:,
+      document_type_requested:,
+      correlation_id_sent:,
+      correlation_id_received:,
+      error_code:,
+      error_message:,
+      error_reason:,
+      errors:,
+      exception:,
+      **extra,
+    )
+  end
+
   # User submitted IDV password confirm page
   # @param [Boolean] success
   # @param [Boolean] fraud_review_pending
@@ -2325,7 +2501,7 @@ module AnalyticsEvents
   # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
   # @param [Hash,nil] proofing_components User's current proofing components
   # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
-  # @option proofing_components [String,nil] 'document_type' Type of ID used to verify
+  # @option proofing_components [String,nil] 'document_type_received' Type of ID detected by vendor
   # @option proofing_components [String,nil] 'source_check' Source used to verify user's PII
   # @option proofing_components [String,nil] 'resolution_check' Vendor for identity resolution check
   # @option proofing_components [String,nil] 'address_check' Method used to verify user's address
@@ -2378,7 +2554,7 @@ module AnalyticsEvents
   # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
   # @param [Hash,nil] proofing_components User's current proofing components
   # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
-  # @option proofing_components [String,nil] 'document_type' Type of ID used to verify
+  # @option proofing_components [String,nil] 'document_type_received' Type of ID detected by vendor
   # @option proofing_components [String,nil] 'source_check' Source used to verify user's PII
   # @option proofing_components [String,nil] 'resolution_check' Vendor for identity resolution check
   # @option proofing_components [String,nil] 'address_check' Method used to verify user's address
@@ -2425,7 +2601,7 @@ module AnalyticsEvents
   # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
   # @param [Hash,nil] proofing_components User's current proofing components
   # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
-  # @option proofing_components [String,nil] 'document_type' Type of ID used to verify
+  # @option proofing_components [String,nil] 'document_type_received' Type of ID detected by vendor
   # @option proofing_components [String,nil] 'source_check' Source used to verify user's PII
   # @option proofing_components [String,nil] 'resolution_check' Vendor for identity resolution check
   # @option proofing_components [String,nil] 'address_check' Method used to verify user's address
@@ -2480,7 +2656,7 @@ module AnalyticsEvents
 
   # @param [Hash,nil] proofing_components User's current proofing components
   # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
-  # @option proofing_components [String,nil] 'document_type' Type of ID used to verify
+  # @option proofing_components [String,nil] 'document_type_received' Type of ID detected by vendor
   # @option proofing_components [String,nil] 'source_check' Source used to verify user's PII
   # @option proofing_components [String,nil] 'resolution_check' Vendor for identity resolution check
   # @option proofing_components [String,nil] 'address_check' Method used to verify user's address
@@ -2506,7 +2682,7 @@ module AnalyticsEvents
 
   # @param [Hash,nil] proofing_components User's current proofing components
   # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
-  # @option proofing_components [String,nil] 'document_type' Type of ID used to verify
+  # @option proofing_components [String,nil] 'document_type_received' Type of ID detected by vendor
   # @option proofing_components [String,nil] 'source_check' Source used to verify user's PII
   # @option proofing_components [String,nil] 'resolution_check' Vendor for identity resolution check
   # @option proofing_components [String,nil] 'address_check' Method used to verify user's address
@@ -2659,7 +2835,7 @@ module AnalyticsEvents
   # @param [Integer] phone_step_attempts Number of attempts at phone step before requesting letter
   # @param [Hash,nil] proofing_components User's current proofing components
   # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
-  # @option proofing_components [String,nil] 'document_type' Type of ID used to verify
+  # @option proofing_components [String,nil] 'document_type_received' Type of ID detected by vendor
   # @option proofing_components [String,nil] 'source_check' Source used to verify user's PII
   # @option proofing_components [String,nil] 'resolution_check' Vendor for identity resolution check
   # @option proofing_components [String,nil] 'address_check' Method used to verify user's address
@@ -2706,7 +2882,7 @@ module AnalyticsEvents
   # @param [Integer] phone_step_attempts Number of attempts at phone step before requesting letter
   # @param [Hash,nil] proofing_components User's current proofing components
   # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
-  # @option proofing_components [String,nil] 'document_type' Type of ID used to verify
+  # @option proofing_components [String,nil] 'document_type_received' Type of ID detected by vendor
   # @option proofing_components [String,nil] 'source_check' Source used to verify user's PII
   # @option proofing_components [String,nil] 'resolution_check' Vendor for identity resolution check
   # @option proofing_components [String,nil] 'address_check' Method used to verify user's address
@@ -2816,10 +2992,12 @@ module AnalyticsEvents
 
   # User chooses to try In Person, e.g. from a doc_auth timeout error page
   # @param [Integer] remaining_submit_attempts The number of remaining attempts to submit
+  # @param ["hybrid","standard"] flow_path Document capture user flow
   # @param [Boolean] skip_hybrid_handoff Whether the user skipped the hybrid handoff A/B test
   # @param [Boolean] opted_in_to_in_person_proofing Whether the user opted into in-person proofing
   def idv_in_person_direct_start(
     remaining_submit_attempts:,
+    flow_path:,
     skip_hybrid_handoff: nil,
     opted_in_to_in_person_proofing: nil,
     **extra
@@ -2827,6 +3005,7 @@ module AnalyticsEvents
     track_event(
       :idv_in_person_direct_start,
       remaining_submit_attempts:,
+      flow_path:,
       skip_hybrid_handoff:,
       opted_in_to_in_person_proofing:,
       **extra,
@@ -3004,6 +3183,63 @@ module AnalyticsEvents
     )
   end
 
+  # @param [Boolean] success
+  # @param ["hybrid","standard"] flow_path Document capture user flow
+  # @param [String] step Current IdV step
+  # @param [String] analytics_id Current IdV flow identifier
+  # @param ['drivers_license', 'passport'] chosen_id_type Chosen id type of the user
+  # @param [Boolean] opted_in_to_in_person_proofing Whether user opted into in person proofing
+  # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
+  # @param [Hash] error_details
+  def idv_in_person_proofing_choose_id_type_submitted(
+    success:,
+    flow_path:,
+    step:,
+    analytics_id:,
+    chosen_id_type:,
+    opted_in_to_in_person_proofing: nil,
+    skip_hybrid_handoff: nil,
+    error_details: nil,
+    **extra
+  )
+    track_event(
+      :idv_in_person_proofing_choose_id_type_submitted,
+      success:,
+      flow_path:,
+      step:,
+      analytics_id:,
+      chosen_id_type:,
+      opted_in_to_in_person_proofing:,
+      skip_hybrid_handoff:,
+      error_details:,
+      **extra,
+    )
+  end
+
+  # @param ["hybrid","standard"] flow_path Document capture user flow
+  # @param [String] step Current IdV step
+  # @param [String] analytics_id
+  # @param [Boolean] opted_in_to_in_person_proofing Whether user opted into in person proofing
+  # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
+  def idv_in_person_proofing_choose_id_type_visited(
+    flow_path:,
+    step:,
+    analytics_id:,
+    opted_in_to_in_person_proofing: nil,
+    skip_hybrid_handoff: nil,
+    **extra
+  )
+    track_event(
+      :idv_in_person_proofing_choose_id_type_visited,
+      flow_path:,
+      step:,
+      analytics_id:,
+      opted_in_to_in_person_proofing:,
+      skip_hybrid_handoff:,
+      **extra,
+    )
+  end
+
   # A job to check USPS notifications about in-person enrollment status updates has completed
   # @param [Integer] fetched_items items fetched
   # @param [Integer] processed_items items fetched and processed
@@ -3074,7 +3310,62 @@ module AnalyticsEvents
   end
 
   # @param [Boolean] success Whether form validation was successful
-  # @param [Hash] errors Errors resulting from form validation
+  # @param ["hybrid","standard"] flow_path Document capture user flow
+  # @param [String] step Current IdV step
+  # @param [String] analytics_id Current IdV flow identifier
+  # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
+  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
+  # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
+  # The user visited the ID-IPP passport data collection form
+  def idv_in_person_proofing_passport_submitted(
+    success:,
+    flow_path:,
+    step:,
+    analytics_id:,
+    opted_in_to_in_person_proofing: nil,
+    error_details: nil,
+    skip_hybrid_handoff: nil,
+    **extra
+  )
+    track_event(
+      :idv_in_person_proofing_passport_submitted,
+      success:,
+      flow_path:,
+      step:,
+      analytics_id:,
+      opted_in_to_in_person_proofing:,
+      error_details:,
+      skip_hybrid_handoff:,
+      **extra,
+    )
+  end
+
+  # @param ["hybrid","standard"] flow_path Document capture user flow
+  # @param [String] step Current IdV step
+  # @param [String] analytics_id Current IdV flow identifier
+  # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
+  # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
+  # The user visited the ID-IPP passport data collection form
+  def idv_in_person_proofing_passport_visited(
+    flow_path: nil,
+    step: nil,
+    analytics_id: nil,
+    opted_in_to_in_person_proofing: nil,
+    skip_hybrid_handoff: nil,
+    **extra
+  )
+    track_event(
+      :idv_in_person_proofing_passport_visited,
+      flow_path:,
+      step:,
+      analytics_id:,
+      opted_in_to_in_person_proofing:,
+      skip_hybrid_handoff:,
+      **extra,
+    )
+  end
+
+  # @param [Boolean] success Whether form validation was successful
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param ["hybrid","standard"] flow_path Document capture user flow
   # @param [String] step Current IdV step
@@ -3084,7 +3375,6 @@ module AnalyticsEvents
   # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
   def idv_in_person_proofing_residential_address_submitted(
     success:,
-    errors:,
     flow_path:,
     step:,
     analytics_id:,
@@ -3097,7 +3387,6 @@ module AnalyticsEvents
     track_event(
       'IdV: in person proofing residential address submitted',
       success:,
-      errors:,
       flow_path:,
       step:,
       analytics_id:,
@@ -3113,7 +3402,6 @@ module AnalyticsEvents
   # @param [String] step
   # @param [String] analytics_id
   # @param [Boolean] success Whether form validation was successful
-  # @param [Hash] errors Errors resulting from form validation
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
   # @param [String] birth_year Birth year from document
@@ -3122,7 +3410,6 @@ module AnalyticsEvents
   # User submitted state id
   def idv_in_person_proofing_state_id_submitted(
     success:,
-    errors:,
     flow_path:,
     step:,
     analytics_id:,
@@ -3139,7 +3426,6 @@ module AnalyticsEvents
       step:,
       analytics_id:,
       success:,
-      errors:,
       error_details:,
       birth_year:,
       document_zip_code:,
@@ -3174,6 +3460,30 @@ module AnalyticsEvents
     )
   end
 
+  # The user clicked the "Update" link for address on the verify info page
+  def idv_in_person_proofing_verify_info_update_address_button_clicked(**extra)
+    track_event(
+      :idv_in_person_proofing_verify_info_update_address_button_clicked,
+      **extra,
+    )
+  end
+
+  # The user clicked the "Update" link for SSN on the verify info page
+  def idv_in_person_proofing_verify_info_update_ssn_button_clicked(**extra)
+    track_event(
+      :idv_in_person_proofing_verify_info_update_ssn_button_clicked,
+      **extra,
+    )
+  end
+
+  # The user clicked the "Update" link for state ID on the verify info page
+  def idv_in_person_proofing_verify_info_update_state_id_button_clicked(**extra)
+    track_event(
+      :idv_in_person_proofing_verify_info_update_state_id_button_clicked,
+      **extra,
+    )
+  end
+
   # The user clicked the sp link on the "ready to verify" page
   def idv_in_person_ready_to_verify_sp_link_clicked(**extra)
     track_event(
@@ -3184,7 +3494,7 @@ module AnalyticsEvents
 
   # @param [Hash,nil] proofing_components User's current proofing components
   # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
-  # @option proofing_components [String,nil] 'document_type' Type of ID used to verify
+  # @option proofing_components [String,nil] 'document_type_received' Type of ID detected by vendor
   # @option proofing_components [String,nil] 'source_check' Source used to verify user's PII
   # @option proofing_components [String,nil] 'resolution_check' Vendor for identity resolution check
   # @option proofing_components [String,nil] 'address_check' Method used to verify user's address
@@ -3354,6 +3664,8 @@ module AnalyticsEvents
   # @param [Integer] enrollments_failed number of enrollments which failed identity proofing
   # @param [Integer] enrollments_in_progress number of enrollments which did not have any change
   # @param [Integer] enrollments_passed number of enrollments which passed identity proofing
+  # @param [Integer] enrollments_in_fraud_review number of enrollments in fraud review
+  # @param [Integer] enrollments_skipped number of enrollments skipped
   # @param [Integer] enrollments_network_error
   # @param [Integer] enrollments_cancelled
   # @param [Float] percent_enrollments_errored
@@ -3367,6 +3679,8 @@ module AnalyticsEvents
     enrollments_failed:,
     enrollments_in_progress:,
     enrollments_passed:,
+    enrollments_in_fraud_review:,
+    enrollments_skipped:,
     enrollments_network_error:,
     enrollments_cancelled:,
     percent_enrollments_errored:,
@@ -3383,6 +3697,8 @@ module AnalyticsEvents
       enrollments_failed:,
       enrollments_in_progress:,
       enrollments_passed:,
+      enrollments_in_fraud_review:,
+      enrollments_skipped:,
       enrollments_network_error:,
       enrollments_cancelled:,
       percent_enrollments_errored:,
@@ -3489,6 +3805,88 @@ module AnalyticsEvents
     )
   end
 
+  # Tracks skipped enrollments during the execution of the GetUspsProofingResultsJob
+  # @param [String] enrollment_code The in-person enrollment code.
+  # @param [String] enrollment_id The in-person enrollment ID.
+  # @param [String] reason The reason for skipping the enrollment.
+  # @param [String] job_name The class name of the job.
+  # @param [Float] minutes_since_established
+  # @param [Float] minutes_since_last_status_check
+  # @param [Float] minutes_since_last_status_check_completed
+  # @param [Float] minutes_since_last_status_update
+  # @param [Float] minutes_to_completion
+  # @param [String] issuer
+  # @param [Boolean] response_present
+  # @param [Boolean] fraud_suspected
+  # @param [String] primary_id_type
+  # @param [String] secondary_id_type
+  # @param [String] failure_reason
+  # @param [String] transaction_end_date_time
+  # @param [String] transaction_start_date_time
+  # @param [String] status
+  # @param [String] assurance_level
+  # @param [String] proofing_post_office
+  # @param [String] proofing_city
+  # @param [String] proofing_state
+  # @param [String] scan_count
+  # @param [String] response_message
+  def idv_in_person_usps_proofing_results_job_enrollment_skipped(
+    enrollment_code:,
+    enrollment_id:,
+    reason:,
+    job_name:,
+    minutes_since_established:,
+    minutes_since_last_status_check:,
+    minutes_since_last_status_check_completed:,
+    minutes_since_last_status_update:,
+    minutes_to_completion:,
+    issuer:,
+    response_present:,
+    fraud_suspected: nil,
+    primary_id_type: nil,
+    secondary_id_type: nil,
+    failure_reason: nil,
+    transaction_end_date_time: nil,
+    transaction_start_date_time: nil,
+    status: nil,
+    assurance_level: nil,
+    proofing_post_office: nil,
+    proofing_city: nil,
+    proofing_state: nil,
+    scan_count: nil,
+    response_message: nil,
+    **extra
+  )
+    track_event(
+      :idv_in_person_usps_proofing_results_job_enrollment_skipped,
+      enrollment_code:,
+      enrollment_id:,
+      reason:,
+      job_name:,
+      minutes_since_established:,
+      minutes_since_last_status_check:,
+      minutes_since_last_status_check_completed:,
+      minutes_since_last_status_update:,
+      minutes_to_completion:,
+      issuer:,
+      response_present:,
+      fraud_suspected:,
+      primary_id_type:,
+      secondary_id_type:,
+      failure_reason:,
+      transaction_end_date_time:,
+      transaction_start_date_time:,
+      status:,
+      assurance_level:,
+      proofing_post_office:,
+      proofing_city:,
+      proofing_state:,
+      scan_count:,
+      response_message:,
+      **extra,
+    )
+  end
+
   # Tracks individual enrollments that are updated during GetUspsProofingResultsJob
   # @param [String] enrollment_code
   # @param [String] enrollment_id
@@ -3512,7 +3910,7 @@ module AnalyticsEvents
   # @param [String] response_message
   # @param [Boolean] passed did this enrollment pass or fail?
   # @param [String] reason why did this enrollment pass or fail?
-  # @param [String] tmx_status the tmx_status of the enrollment profile profile
+  # @param [String] tmx_status the tmx_status of the enrollment profile
   # @param [Integer] profile_age_in_seconds How many seconds have passed since profile created
   # @param [Boolean] response_present
   # @param [String] job_name
@@ -3669,6 +4067,46 @@ module AnalyticsEvents
       response_message:,
       response_status_code:,
       job_name:,
+      issuer:,
+      **extra,
+    )
+  end
+
+  # Tracks enrollments that were cancelled after spending over 90 days in password reset.
+  # @param [String] enrollment_code The in-person enrollment code.
+  # @param [String] enrollment_id The in-person enrollment ID.
+  # @param [String] reason The reason for cancelling the enrollment.
+  # @param [String] job_name The class name of the job.
+  # @param [Float] minutes_since_established
+  # @param [Float] minutes_since_last_status_check
+  # @param [Float] minutes_since_last_status_check_completed
+  # @param [Float] minutes_since_last_status_update
+  # @param [Float] minutes_to_completion
+  # @param [String] issuer
+  def idv_in_person_usps_proofing_results_job_password_reset_enrollment_cancelled(
+    enrollment_code:,
+    enrollment_id:,
+    reason:,
+    job_name:,
+    minutes_since_established:,
+    minutes_since_last_status_check:,
+    minutes_since_last_status_check_completed:,
+    minutes_since_last_status_update:,
+    minutes_to_completion:,
+    issuer:,
+    **extra
+  )
+    track_event(
+      :idv_in_person_usps_proofing_results_job_password_reset_enrollment_cancelled,
+      enrollment_code:,
+      enrollment_id:,
+      reason:,
+      job_name:,
+      minutes_since_established:,
+      minutes_since_last_status_check:,
+      minutes_since_last_status_check_completed:,
+      minutes_since_last_status_update:,
+      minutes_to_completion:,
       issuer:,
       **extra,
     )
@@ -3861,7 +4299,7 @@ module AnalyticsEvents
   # The user visited the "letter enqueued" page shown during the verify by mail flow
   # @param [Hash,nil] proofing_components User's current proofing components
   # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
-  # @option proofing_components [String,nil] 'document_type' Type of ID used to verify
+  # @option proofing_components [String,nil] 'document_type_received' Type of ID detected by vendor
   # @option proofing_components [String,nil] 'source_check' Source used to verify user's PII
   # @option proofing_components [String,nil] 'resolution_check' Vendor for identity resolution check
   # @option proofing_components [String,nil] 'address_check' Method used to verify user's address
@@ -3949,11 +4387,134 @@ module AnalyticsEvents
     track_event('IdV: Not verified visited', **extra)
   end
 
+  # @param [String] acuantCaptureMode
+  # @param [Boolean] acuant_sdk_upgrade_a_b_testing_enabled
+  # @param [String] acuant_version
+  # @param [Boolean] assessment
+  # @param [Integer] captureAttempts number of attempts to capture / upload an image
+  #                  (previously called "attempt")
+  # @param [String] documentType
+  # @param [Integer] dpi  dots per inch of image
+  # @param [Integer] failedImageResubmission
+  # @param [String] fingerprint fingerprint of the image added
+  # @param [String] flow_path whether the user is in the hybrid or standard flow
+  # @param [Integer] glare
+  # @param [Integer] glareScoreThreshold
+  # @param [Integer] height height of image added in pixels
+  # @param [Boolean] isAssessedAsBlurry
+  # @param [Boolean] isAssessedAsGlare
+  # @param [Boolean] isAssessedAsUnsupported
+  # @param [String] liveness_checking_required Whether or not the selfie is required
+  # @param [String] mimeType MIME type of image added
+  # @param [Integer] moire
+  # @param [Integer] sharpness
+  # @param [Integer] sharpnessScoreThreshold
+  # @param [Integer] size size of image added in bytes
+  # @param [String] source
+  # @param [Boolean] use_alternate_sdk
+  # @param [Integer] width width of image added in pixels
+  # Back image was added in document capture
+  # rubocop:disable Naming/VariableName,Naming/MethodParameterName,IdentityIdp/AnalyticsEventNameLinter
+  def idv_passport_image_added(
+    acuantCaptureMode:,
+    acuant_sdk_upgrade_a_b_testing_enabled:,
+    acuant_version:,
+    assessment:,
+    captureAttempts:,
+    documentType:,
+    dpi:,
+    failedImageResubmission:,
+    fingerprint:,
+    flow_path:,
+    glare:,
+    glareScoreThreshold:,
+    height:,
+    isAssessedAsBlurry:,
+    isAssessedAsGlare:,
+    isAssessedAsUnsupported:,
+    liveness_checking_required:,
+    mimeType:,
+    moire:,
+    sharpness:,
+    sharpnessScoreThreshold:,
+    size:,
+    source:,
+    use_alternate_sdk:,
+    width:,
+    **extra
+  )
+    track_event(
+      'Frontend: IdV: passport image added',
+      acuantCaptureMode:,
+      acuant_sdk_upgrade_a_b_testing_enabled:,
+      acuant_version:,
+      assessment:,
+      captureAttempts:,
+      documentType:,
+      dpi:,
+      failedImageResubmission:,
+      fingerprint:,
+      flow_path:,
+      glare:,
+      glareScoreThreshold:,
+      height:,
+      isAssessedAsBlurry:,
+      isAssessedAsGlare:,
+      isAssessedAsUnsupported:,
+      liveness_checking_required:,
+      mimeType:,
+      moire:,
+      sharpness:,
+      sharpnessScoreThreshold:,
+      size:,
+      source:,
+      use_alternate_sdk:,
+      width:,
+      **extra,
+    )
+  end
+  # rubocop:enable Naming/VariableName,Naming/MethodParameterName,IdentityIdp/AnalyticsEventNameLinter
+
+  # @param [Boolean] acuant_sdk_upgrade_a_b_testing_enabled
+  # @param [String] acuant_version
+  # @param [Number] captureAttempts count of image capturing attempts
+  # @param [Boolean] click_source
+  # @param ["hybrid","standard"] flow_path Document capture user flow
+  # @param [Boolean] isDrop
+  # @param [String] liveness_checking_required Whether or not the selfie is required
+  # @param [Boolean] use_alternate_sdk
+  # rubocop:disable Naming/VariableName,Naming/MethodParameterName,IdentityIdp/AnalyticsEventNameLinter
+  def idv_passport_image_clicked(
+    acuant_sdk_upgrade_a_b_testing_enabled:,
+    acuant_version:,
+    captureAttempts:,
+    click_source:,
+    flow_path:,
+    isDrop:,
+    liveness_checking_required:,
+    use_alternate_sdk:,
+    **extra
+  )
+    track_event(
+      'Frontend: IdV: passport image clicked',
+      acuant_sdk_upgrade_a_b_testing_enabled:,
+      acuant_version:,
+      captureAttempts:,
+      click_source:,
+      flow_path:,
+      isDrop:,
+      liveness_checking_required:,
+      use_alternate_sdk:,
+      **extra,
+    )
+  end
+  # rubocop:enable Naming/VariableName,Naming/MethodParameterName,IdentityIdp/AnalyticsEventNameLinter
+
   # Tracks if a user clicks the 'acknowledge' checkbox during personal
   # key creation
   # @param [Hash,nil] proofing_components User's current proofing components
   # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
-  # @option proofing_components [String,nil] 'document_type' Type of ID used to verify
+  # @option proofing_components [String,nil] 'document_type_received' Type of ID detected by vendor
   # @option proofing_components [String,nil] 'source_check' Source used to verify user's PII
   # @option proofing_components [String,nil] 'resolution_check' Vendor for identity resolution check
   # @option proofing_components [String,nil] 'address_check' Method used to verify user's address
@@ -3984,7 +4545,7 @@ module AnalyticsEvents
   # @identity.idp.previous_event_name IdV: download personal key
   # @param [Hash,nil] proofing_components User's current proofing components
   # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
-  # @option proofing_components [String,nil] 'document_type' Type of ID used to verify
+  # @option proofing_components [String,nil] 'document_type_received' Type of ID detected by vendor
   # @option proofing_components [String,nil] 'source_check' Source used to verify user's PII
   # @option proofing_components [String,nil] 'resolution_check' Vendor for identity resolution check
   # @option proofing_components [String,nil] 'address_check' Method used to verify user's address
@@ -4009,7 +4570,7 @@ module AnalyticsEvents
 
   # @param [Hash,nil] proofing_components User's current proofing components
   # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
-  # @option proofing_components [String,nil] 'document_type' Type of ID used to verify
+  # @option proofing_components [String,nil] 'document_type_received' Type of ID detected by vendor
   # @option proofing_components [String,nil] 'source_check' Source used to verify user's PII
   # @option proofing_components [String,nil] 'resolution_check' Vendor for identity resolution check
   # @option proofing_components [String,nil] 'address_check' Method used to verify user's address
@@ -4050,7 +4611,7 @@ module AnalyticsEvents
 
   # @param [Hash,nil] proofing_components User's current proofing components
   # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
-  # @option proofing_components [String,nil] 'document_type' Type of ID used to verify
+  # @option proofing_components [String,nil] 'document_type_received' Type of ID detected by vendor
   # @option proofing_components [String,nil] 'source_check' Source used to verify user's PII
   # @option proofing_components [String,nil] 'resolution_check' Vendor for identity resolution check
   # @option proofing_components [String,nil] 'address_check' Method used to verify user's address
@@ -4087,7 +4648,6 @@ module AnalyticsEvents
   end
 
   # @param [Boolean] success Whether form validation was successful
-  # @param [Hash] errors Errors resulting from form validation
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param ["sms", "voice"] otp_delivery_preference Channel used to send the message
   # @param [String] phone_type Pinpoint phone classification type
@@ -4099,7 +4659,7 @@ module AnalyticsEvents
   # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
   # @param [Hash,nil] proofing_components User's current proofing components
   # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
-  # @option proofing_components [String,nil] 'document_type' Type of ID used to verify
+  # @option proofing_components [String,nil] 'document_type_received' Type of ID detected by vendor
   # @option proofing_components [String,nil] 'source_check' Source used to verify user's PII
   # @option proofing_components [String,nil] 'resolution_check' Vendor for identity resolution check
   # @option proofing_components [String,nil] 'address_check' Method used to verify user's address
@@ -4112,7 +4672,6 @@ module AnalyticsEvents
   def idv_phone_confirmation_form_submitted(
     success:,
     otp_delivery_preference:,
-    errors:,
     phone_type:,
     types:,
     carrier:,
@@ -4130,7 +4689,6 @@ module AnalyticsEvents
     track_event(
       'IdV: phone confirmation form',
       success:,
-      errors:,
       error_details:,
       phone_type:,
       types:,
@@ -4150,7 +4708,7 @@ module AnalyticsEvents
 
   # @param [Hash,nil] proofing_components User's current proofing components
   # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
-  # @option proofing_components [String,nil] 'document_type' Type of ID used to verify
+  # @option proofing_components [String,nil] 'document_type_received' Type of ID detected by vendor
   # @option proofing_components [String,nil] 'source_check' Source used to verify user's PII
   # @option proofing_components [String,nil] 'resolution_check' Vendor for identity resolution check
   # @option proofing_components [String,nil] 'address_check' Method used to verify user's address
@@ -4176,7 +4734,7 @@ module AnalyticsEvents
 
   # @param [Hash,nil] proofing_components User's current proofing components
   # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
-  # @option proofing_components [String,nil] 'document_type' Type of ID used to verify
+  # @option proofing_components [String,nil] 'document_type_received' Type of ID detected by vendor
   # @option proofing_components [String,nil] 'source_check' Source used to verify user's PII
   # @option proofing_components [String,nil] 'resolution_check' Vendor for identity resolution check
   # @option proofing_components [String,nil] 'address_check' Method used to verify user's address
@@ -4202,7 +4760,7 @@ module AnalyticsEvents
 
   # @param [Hash,nil] proofing_components User's current proofing components
   # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
-  # @option proofing_components [String,nil] 'document_type' Type of ID used to verify
+  # @option proofing_components [String,nil] 'document_type_received' Type of ID detected by vendor
   # @option proofing_components [String,nil] 'source_check' Source used to verify user's PII
   # @option proofing_components [String,nil] 'resolution_check' Vendor for identity resolution check
   # @option proofing_components [String,nil] 'address_check' Method used to verify user's address
@@ -4227,7 +4785,6 @@ module AnalyticsEvents
   end
 
   # @param [Boolean] success Whether form validation was successful
-  # @param [Hash] errors Errors resulting from form validation
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param ["sms", "voice"] otp_delivery_preference Channel used to send the message
   # @param [String] country_code Abbreviated 2-letter country code associated with phone number
@@ -4237,7 +4794,7 @@ module AnalyticsEvents
   # @param [String] phone_fingerprint HMAC fingerprint of the phone number formatted as E.164
   # @param [Hash,nil] proofing_components User's current proofing components
   # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
-  # @option proofing_components [String,nil] 'document_type' Type of ID used to verify
+  # @option proofing_components [String,nil] 'document_type_received' Type of ID detected by vendor
   # @option proofing_components [String,nil] 'source_check' Source used to verify user's PII
   # @option proofing_components [String,nil] 'resolution_check' Vendor for identity resolution check
   # @option proofing_components [String,nil] 'address_check' Method used to verify user's address
@@ -4249,7 +4806,6 @@ module AnalyticsEvents
   # The user resent an OTP during the IDV phone step
   def idv_phone_confirmation_otp_resent(
     success:,
-    errors:,
     otp_delivery_preference:,
     country_code:,
     area_code:,
@@ -4266,7 +4822,6 @@ module AnalyticsEvents
     track_event(
       'IdV: phone confirmation otp resent',
       success:,
-      errors:,
       error_details:,
       otp_delivery_preference:,
       country_code:,
@@ -4283,7 +4838,6 @@ module AnalyticsEvents
   end
 
   # @param [Boolean] success Whether form validation was successful
-  # @param [Hash] errors Errors resulting from form validation
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param ["sms", "voice"] otp_delivery_preference Channel used to send the message
   # @param [String] country_code Abbreviated 2-letter country code associated with phone number
@@ -4293,7 +4847,7 @@ module AnalyticsEvents
   # @param [Hash] telephony_response Response from Telephony gem
   # @param [Hash,nil] proofing_components User's current proofing components
   # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
-  # @option proofing_components [String,nil] 'document_type' Type of ID used to verify
+  # @option proofing_components [String,nil] 'document_type_received' Type of ID detected by vendor
   # @option proofing_components [String,nil] 'source_check' Source used to verify user's PII
   # @option proofing_components [String,nil] 'resolution_check' Vendor for identity resolution check
   # @option proofing_components [String,nil] 'address_check' Method used to verify user's address
@@ -4305,7 +4859,6 @@ module AnalyticsEvents
   # The user requested an OTP to confirm their phone during the IDV phone step
   def idv_phone_confirmation_otp_sent(
     success:,
-    errors:,
     otp_delivery_preference:,
     country_code:,
     area_code:,
@@ -4322,7 +4875,6 @@ module AnalyticsEvents
     track_event(
       'IdV: phone confirmation otp sent',
       success:,
-      errors:,
       error_details:,
       otp_delivery_preference:,
       country_code:,
@@ -4339,7 +4891,6 @@ module AnalyticsEvents
   end
 
   # @param [Boolean] success Whether form validation was successful
-  # @param [Hash] errors Errors resulting from form validation
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [Boolean] code_expired if the one-time code expired
   # @param [Boolean] code_matches
@@ -4350,7 +4901,7 @@ module AnalyticsEvents
   # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
   # @param [Hash,nil] proofing_components User's current proofing components
   # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
-  # @option proofing_components [String,nil] 'document_type' Type of ID used to verify
+  # @option proofing_components [String,nil] 'document_type_received' Type of ID detected by vendor
   # @option proofing_components [String,nil] 'source_check' Source used to verify user's PII
   # @option proofing_components [String,nil] 'resolution_check' Vendor for identity resolution check
   # @option proofing_components [String,nil] 'address_check' Method used to verify user's address
@@ -4362,7 +4913,6 @@ module AnalyticsEvents
   # When a user attempts to confirm possession of a new phone number during the IDV process
   def idv_phone_confirmation_otp_submitted(
     success:,
-    errors:,
     code_expired:,
     code_matches:,
     otp_delivery_preference:,
@@ -4380,7 +4930,6 @@ module AnalyticsEvents
     track_event(
       'IdV: phone confirmation otp submitted',
       success:,
-      errors:,
       error_details:,
       code_expired:,
       code_matches:,
@@ -4399,7 +4948,7 @@ module AnalyticsEvents
 
   # @param [Hash,nil] proofing_components User's current proofing components
   # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
-  # @option proofing_components [String,nil] 'document_type' Type of ID used to verify
+  # @option proofing_components [String,nil] 'document_type_received' Type of ID detected by vendor
   # @option proofing_components [String,nil] 'source_check' Source used to verify user's PII
   # @option proofing_components [String,nil] 'resolution_check' Vendor for identity resolution check
   # @option proofing_components [String,nil] 'address_check' Method used to verify user's address
@@ -4435,7 +4984,7 @@ module AnalyticsEvents
   # @param [String] country_code Abbreviated 2-letter country code associated with phone number
   # @param [String] phone_fingerprint HMAC fingerprint of the phone number formatted as E.164
   # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
-  # @option proofing_components [String,nil] 'document_type' Type of ID used to verify
+  # @option proofing_components [String,nil] 'document_type_received' Type of ID detected by vendor
   # @option proofing_components [String,nil] 'source_check' Source used to verify user's PII
   # @option proofing_components [String,nil] 'resolution_check' Vendor for identity resolution check
   # @option proofing_components [String,nil] 'address_check' Method used to verify user's address
@@ -4444,21 +4993,27 @@ module AnalyticsEvents
   # @param [String,nil] active_profile_idv_level ID verification level of user's active profile.
   # @param [String,nil] pending_profile_idv_level ID verification level of user's pending profile.
   # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
+  # @param [String] customer_user_id user uuid sent to socure
+  # @param [Hash] reason_codes socure internal reason codes for accept reject decision
+  # @param [Hash] alternate_result Details for proofing attempt with primary vendor
   # The vendor finished the process of confirming the users phone
   def idv_phone_confirmation_vendor_submitted(
     success:,
-    errors:,
     vendor:,
     area_code:,
     country_code:,
     phone_fingerprint:,
     new_phone_added:,
     hybrid_handoff_phone_used:,
+    errors: nil,
     opted_in_to_in_person_proofing: nil,
     error_details: nil,
     proofing_components: nil,
     active_profile_idv_level: nil,
     pending_profile_idv_level: nil,
+    reason_codes: nil,
+    customer_user_id: nil,
+    alternate_result: nil,
     **extra
   )
     track_event(
@@ -4476,6 +5031,9 @@ module AnalyticsEvents
       proofing_components:,
       active_profile_idv_level:,
       pending_profile_idv_level:,
+      reason_codes:,
+      customer_user_id:,
+      alternate_result:,
       **extra,
     )
   end
@@ -4486,7 +5044,7 @@ module AnalyticsEvents
   #                  (previously called "remaining_attempts")
   # @param [Hash,nil] proofing_components User's current proofing components
   # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
-  # @option proofing_components [String,nil] 'document_type' Type of ID used to verify
+  # @option proofing_components [String,nil] 'document_type_received' Type of ID detected by vendor
   # @option proofing_components [String,nil] 'source_check' Source used to verify user's PII
   # @option proofing_components [String,nil] 'resolution_check' Vendor for identity resolution check
   # @option proofing_components [String,nil] 'address_check' Method used to verify user's address
@@ -4526,7 +5084,7 @@ module AnalyticsEvents
   # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
   # @param [Hash,nil] proofing_components User's current proofing components
   # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
-  # @option proofing_components [String,nil] 'document_type' Type of ID used to verify
+  # @option proofing_components [String,nil] 'document_type_received' Type of ID detected by vendor
   # @option proofing_components [String,nil] 'source_check' Source used to verify user's PII
   # @option proofing_components [String,nil] 'resolution_check' Vendor for identity resolution check
   # @option proofing_components [String,nil] 'address_check' Method used to verify user's address
@@ -4559,7 +5117,7 @@ module AnalyticsEvents
 
   # @param [Hash,nil] proofing_components User's current proofing components
   # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
-  # @option proofing_components [String,nil] 'document_type' Type of ID used to verify
+  # @option proofing_components [String,nil] 'document_type_received' Type of ID detected by vendor
   # @option proofing_components [String,nil] 'source_check' Source used to verify user's PII
   # @option proofing_components [String,nil] 'resolution_check' Vendor for identity resolution check
   # @option proofing_components [String,nil] 'address_check' Method used to verify user's address
@@ -4579,7 +5137,7 @@ module AnalyticsEvents
   # @identity.idp.previous_event_name IdV: Verify setup errors visited
   # @param [Hash,nil] proofing_components User's current proofing components
   # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
-  # @option proofing_components [String,nil] 'document_type' Type of ID used to verify
+  # @option proofing_components [String,nil] 'document_type_received' Type of ID detected by vendor
   # @option proofing_components [String,nil] 'source_check' Source used to verify user's PII
   # @option proofing_components [String,nil] 'resolution_check' Vendor for identity resolution check
   # @option proofing_components [String,nil] 'address_check' Method used to verify user's address
@@ -4606,9 +5164,30 @@ module AnalyticsEvents
     )
   end
 
+  # @param [String] issuer the ServiceProvider.issuer
+  # @param [String,nil] idv_level ID verification level of verified profile.
+  # @param [String] verified_at The timestamp whenthe profile was verified
+  # @param [String] activated_at The timestamp whenthe profile was activated
+  def idv_profile_activated(
+    idv_level:,
+    verified_at:,
+    activated_at:,
+    issuer: nil,
+    **extra
+  )
+    track_event(
+      :idv_profile_activated,
+      issuer:,
+      idv_level:,
+      verified_at:,
+      activated_at:,
+      **extra,
+    )
+  end
+
   # @param [Hash,nil] proofing_components User's current proofing components
   # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
-  # @option proofing_components [String,nil] 'document_type' Type of ID used to verify
+  # @option proofing_components [String,nil] 'document_type_received' Type of ID detected by vendor
   # @option proofing_components [String,nil] 'source_check' Source used to verify user's PII
   # @option proofing_components [String,nil] 'resolution_check' Vendor for identity resolution check
   # @option proofing_components [String,nil] 'address_check' Method used to verify user's address
@@ -4908,21 +5487,22 @@ module AnalyticsEvents
     proofing_components: nil,
     active_profile_idv_level: nil,
     pending_profile_idv_level: nil,
-    **_extra
+    **extra
   )
     track_event(
       :idv_selfie_image_clicked,
-      acuant_sdk_upgrade_a_b_testing_enabled: acuant_sdk_upgrade_a_b_testing_enabled,
-      acuant_version: acuant_version,
-      flow_path: flow_path,
-      isDrop: isDrop,
-      click_source: click_source,
-      use_alternate_sdk: use_alternate_sdk,
-      captureAttempts: captureAttempts,
-      liveness_checking_required: liveness_checking_required,
-      proofing_components: proofing_components,
-      active_profile_idv_level: active_profile_idv_level,
-      pending_profile_idv_level: pending_profile_idv_level,
+      acuant_sdk_upgrade_a_b_testing_enabled:,
+      acuant_version:,
+      flow_path:,
+      isDrop:,
+      click_source:,
+      use_alternate_sdk:,
+      captureAttempts:,
+      liveness_checking_required:,
+      proofing_components:,
+      active_profile_idv_level:,
+      pending_profile_idv_level:,
+      **extra,
     )
   end
   # rubocop:enable Naming/VariableName,Naming/MethodParameterName
@@ -4949,6 +5529,7 @@ module AnalyticsEvents
   # @param [String] exception any exceptions thrown during request
   # @param [String] docv_transaction_token socure transaction token
   # @param [String] reference_id socure interal id for transaction
+  # @param [String] customer_user_id user uuid sent to socure
   # @param [String] language lagnuage presented to user
   # @param [String] step current step of idv to user
   # @param [String] analytics_id id of analytics
@@ -4963,7 +5544,10 @@ module AnalyticsEvents
   # @param [Boolean] liveness_checking_required Whether or not the selfie is required
   # @param [Boolean] liveness_enabled Whether or not the selfie result is included in response
   # @param [String] vendor which 2rd party we are using for doc auth
-  # @param [Hash] document_type type of socument submitted (Drivers Licenese, etc.)
+  # @param [Hash] document_type_requested type of socument submitted (Drivers Licenese, etc.)
+  # @param [String] socure_status Socure's status value for internal errors on their side.
+  # @param [String] socure_msg Socure's status message for interal errors on their side.
+  # @param [String] use_case_key name of requested DocV flow
   # The request for socure verification was sent
   def idv_socure_document_request_submitted(
     success:,
@@ -4982,10 +5566,14 @@ module AnalyticsEvents
     errors: nil,
     exception: nil,
     reference_id: nil,
+    customer_user_id: nil,
     liveness_enabled: nil,
-    document_type: nil,
+    document_type_requested: nil,
     docv_transaction_token: nil,
     flow_path: nil,
+    socure_status: nil,
+    socure_msg: nil,
+    use_case_key: nil,
     **extra
   )
     track_event(
@@ -5005,11 +5593,71 @@ module AnalyticsEvents
       errors:,
       exception:,
       reference_id:,
+      customer_user_id:,
       response_body:,
       liveness_enabled:,
-      document_type:,
+      document_type_requested:,
       docv_transaction_token:,
       flow_path:,
+      socure_status:,
+      socure_msg:,
+      use_case_key:,
+      **extra,
+    )
+  end
+
+  # Socure KYC API was called with the following results
+  # @param [Boolean] success Result from Socure KYC API call
+  # @param [Hash] errors Result from resolution proofing
+  # @param [String] exception Exception that occured during download or synchronizaiton
+  # @param [Boolean] timed_out Whether the proofing request timed out
+  # @param [String] transaction_id The vendor specific transaction ID for the proofing request
+  # @param [String] reference
+  # @param [Hash] reason_codes Socure internal reason codes for accept reject decision
+  # @param [Boolean] can_pass_with_additional_verification Whether the PII could be verified if
+  # another vendor verified certain attributes
+  # @param [Array<String>] attributes_requiring_additional_verification Attributes that need to
+  # be verified by another vendor
+  # @param [Array<String>, nil] source_attribution List of sources that contributed to the
+  # resolution proofing result
+  # @param [String, nil] vendor_name Vendor used
+  # @param [String] vendor_id ID of vendor
+  # @param [String] vendor_workflow ID of workflow or configuration the vendor used for this
+  # transaction
+  # @param [Array[String], nil] verified_attributes The attributes verified during proofing
+  def idv_socure_kyc_results(
+    success:,
+    errors:,
+    exception:,
+    timed_out:,
+    transaction_id:,
+    reference:,
+    reason_codes:,
+    can_pass_with_additional_verification:,
+    attributes_requiring_additional_verification:,
+    source_attribution:,
+    vendor_name:,
+    vendor_id:,
+    vendor_workflow:,
+    verified_attributes:,
+    **extra
+  )
+    track_event(
+      :idv_socure_kyc_results,
+      success:,
+      errors:,
+      exception:,
+      timed_out:,
+      transaction_id:,
+      reference:,
+      reason_codes:,
+      can_pass_with_additional_verification:,
+      attributes_requiring_additional_verification:,
+      source_attribution:,
+      vendor_name:,
+      vendor_id:,
+      vendor_workflow:,
+      verified_attributes:,
       **extra,
     )
   end
@@ -5039,90 +5687,97 @@ module AnalyticsEvents
     )
   end
 
-  # Logs a Socure KYC result alongside a resolution result for later comparison.
-  # @param [Hash] socure_result Result from Socure KYC API call
-  # @param [Hash] resolution_result Result from resolution proofing
+  # Logs a Socure Phone Risk result alongside a address proofing result for later comparison.
+  # @param [Hash] socure_result Result from Socure PhoneRisk API call
+  # @param [Hash] phone_result Result from address proofing
   # @param [String,nil] phone_source Whether the phone number is from MFA or hybrid handoff
-  def idv_socure_shadow_mode_proofing_result(
+  def idv_socure_shadow_mode_phonerisk_result(
     socure_result:,
-    resolution_result:,
+    phone_result:,
     phone_source:,
     **extra
   )
     track_event(
-      :idv_socure_shadow_mode_proofing_result,
-      resolution_result: resolution_result.to_h,
+      :idv_socure_shadow_mode_phonerisk_result,
+      phone_result: phone_result.to_h,
       phone_source:,
       socure_result: socure_result.to_h,
       **extra,
     )
   end
 
-  # Indicates that no proofing result was found when SocureShadowModeProofingJob
+  # Indicates that no result was found when SocureShadowModePhoneRiskJob
   # attempted to look for one.
-  def idv_socure_shadow_mode_proofing_result_missing(**extra)
-    track_event(:idv_socure_shadow_mode_proofing_result_missing, **extra)
+  def idv_socure_shadow_mode_phonerisk_result_missing(**extra)
+    track_event(:idv_socure_shadow_mode_phonerisk_result_missing, **extra)
   end
 
   # @param [Boolean] success Whether form validation was successful
   # @param [Hash] errors Errors resulting from form validation
   # @param [String] exception
-  # @param [Boolean] billed
-  # @param [String] docv_transaction_token socure transaction token
-  # @param [Hash] customer_profile socure customer profile
-  # @param [String] reference_id socure interal id for transaction
-  # @param [Hash] reason_codes socure internal reason codes for accept reject decision
-  # @param [Hash] document_type type of socument submitted (Drivers Licenese, etc.)
-  # @param [Hash] decision accept or reject of given ID
-  # @param [String] user_id internal id of socure user
-  # @param [String] state state of ID
-  # @param [String] state_id_type type of state issued ID
-  # @param [Boolean] async whether or not this worker is running asynchronously
-  # @param [Integer] submit_attempts Times that user has tried submitting (previously called
-  #   "attempts")
-  # @param [Integer] remaining_submit_attempts (previously called "remaining_attempts")
-  # @param ["hybrid","standard"] flow_path Document capture user flow
-  # @param [Float] vendor_request_time_in_ms Time it took to upload images & get a response.
-  # @param [Boolean] doc_type_supported
-  # @param [Boolean] doc_auth_success
-  # @param [Boolean] liveness_checking_required Whether or not the selfie is required
-  # @param [Boolean] liveness_enabled Whether or not the selfie result is included in response
-  # @param [String] vendor which 2rd party we are using for doc auth
   # @param [Boolean] address_line2_present wether or not we have an address that uses the 2nd line
-  # @param [String] zip_code zip code from state issued ID
+  # @param [Boolean] async whether this worker is running asynchronously
+  # @param [Boolean] billed
   # @param [String] birth_year Birth year from document
+  # @param [String] expiration_date Expiration date from document
+  # @param [Hash] customer_profile socure customer profile
+  # @param [String] customer_user_id user uuid sent to Socure
+  # @param [Hash] decision accept or reject of given ID
+  # @param [Boolean] doc_auth_success
+  # @param [Boolean] doc_type_supported
+  # @param [Hash] document_metadata Data about the document that was submitted
+  # @option document_metadata [String] 'country' Country that issued the document
+  # @option document_metadata [String] 'state' State that issued the document
+  # @option document_metadata [String] 'type' Type of document submitted (Drivers License, etc.)
+  # @param [String] docv_transaction_token socure transaction token
+  # @param ["hybrid","standard"] flow_path Document capture user flow
+  # @param [String] document_type_received type of state issued ID or passport
   # @param [Integer] issue_year Year document was issued
-  # @param [Boolean] biometric_comparison_required does doc auth require biometirc
+  # @param [Boolean] liveness_enabled Whether the selfie result is included in response
+  # @param [Hash] reason_codes socure internal reason codes for accept reject decision
+  # @param [String] reference_id socure internal id for transaction
+  # @param [Integer] remaining_submit_attempts (previously called "remaining_attempts")
+  # @param [String] state state of ID
+  # @param [Integer] submit_attempts Times that user has tried submitting (previously called
+  # @param [String] user_id internal id of socure user
+  #   "attempts")
+  # @param [String] vendor which 2rd party we are using for doc auth
+  # @param [Float] vendor_request_time_in_ms Time it took to upload images & get a response.
+  # @param [String] vendor_status Socure's request status (used for errors)
+  # @param [String] vendor_status_message socure's error message (used for errors)
+  # @param [String] zip_code zip code from state issued ID
   # The request for socure verification was sent
   def idv_socure_verification_data_requested(
     success:,
     errors:,
     async:,
-    reference_id:,
-    reason_codes:,
-    document_type:,
-    decision:,
-    state:,
-    state_id_type:,
-    submit_attempts:,
-    remaining_submit_attempts:,
-    liveness_checking_required:,
-    issue_year:,
-    vendor_request_time_in_ms:,
     doc_type_supported:,
     doc_auth_success:,
+    remaining_submit_attempts:,
+    submit_attempts:,
     vendor:,
-    address_line2_present:,
-    zip_code:,
-    birth_year:,
-    liveness_enabled:,
-    biometric_comparison_required:,
-    customer_profile: nil,
-    docv_transaction_token: nil,
-    user_id: nil,
+    vendor_request_time_in_ms:,
     exception: nil,
-    flow_path: nil,
+    address_line2_present: nil,
     billed: nil,
+    birth_year: nil,
+    customer_profile: nil,
+    customer_user_id: nil,
+    decision: nil,
+    document_metadata: nil,
+    docv_transaction_token: nil,
+    expiration_date: nil,
+    flow_path: nil,
+    document_type_received: nil,
+    issue_year: nil,
+    liveness_enabled: nil,
+    reference_id: nil,
+    reason_codes: nil,
+    state: nil,
+    user_id: nil,
+    vendor_status: nil,
+    vendor_status_message: nil,
+    zip_code: nil,
     **extra
   )
     track_event(
@@ -5130,31 +5785,42 @@ module AnalyticsEvents
       success:,
       errors:,
       exception:,
-      billed:,
-      docv_transaction_token:,
-      customer_profile:,
-      reference_id:,
-      reason_codes:,
-      document_type:,
-      decision:,
-      user_id:,
-      state:,
-      state_id_type:,
-      async:,
-      submit_attempts:,
-      remaining_submit_attempts:,
-      flow_path:,
-      liveness_checking_required:,
-      vendor_request_time_in_ms:,
-      doc_type_supported:,
-      doc_auth_success:,
-      vendor:,
       address_line2_present:,
-      zip_code:,
+      async:,
+      billed:,
       birth_year:,
+      customer_profile:,
+      customer_user_id:,
+      decision:,
+      doc_auth_success:,
+      doc_type_supported:,
+      document_metadata:,
+      docv_transaction_token:,
+      expiration_date:,
+      flow_path:,
+      document_type_received:,
       issue_year:,
       liveness_enabled:,
-      biometric_comparison_required:,
+      reason_codes:,
+      reference_id:,
+      remaining_submit_attempts:,
+      state:,
+      submit_attempts:,
+      user_id:,
+      vendor:,
+      vendor_request_time_in_ms:,
+      vendor_status:,
+      vendor_status_message:,
+      zip_code:,
+      **extra,
+    )
+  end
+
+  # @param [String] docv_transaction_token The docvTransactionToken received from Socure
+  def idv_socure_verification_webhook_missing(docv_transaction_token: nil, **extra)
+    track_event(
+      :idv_socure_verification_webhook_missing,
+      docv_transaction_token:,
       **extra,
     )
   end
@@ -5163,7 +5829,7 @@ module AnalyticsEvents
   # @param [String] location
   # @param [Hash,nil] proofing_components User's current proofing components
   # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
-  # @option proofing_components [String,nil] 'document_type' Type of ID used to verify
+  # @option proofing_components [String,nil] 'document_type_received' Type of ID detected by vendor
   # @option proofing_components [String,nil] 'source_check' Source used to verify user's PII
   # @option proofing_components [String,nil] 'resolution_check' Vendor for identity resolution check
   # @option proofing_components [String,nil] 'address_check' Method used to verify user's address
@@ -5199,6 +5865,69 @@ module AnalyticsEvents
       active_profile_idv_level: active_profile_idv_level,
       pending_profile_idv_level: pending_profile_idv_level,
       profile_history: profile_history,
+      **extra,
+    )
+  end
+
+  # @param [Boolean] success Whether the state ID validation was successful.
+  # @param [String] vendor_name The name of the vendor doing the validation. If the ID was not from
+  #   a supported jurisdiction, it will be "UnsupportedJurisdiction". It MAY also be
+  #   "UnsupportedJurisdiction" if state ID verification was not needed because other vendor calls
+  #   did not succeed.
+  # @param [String] transaction_id The vendor specific transaction ID for the proofing request.
+  # @param [Hash<String,Numeric>] requested_attributes The values sent in the proofing request.
+  #   "1" represents that the value was sent.
+  # @param [Array[String], nil] verified_attributes The attributes verified during proofing.
+  # @param [Boolean] ipp_enrollment_in_progress Whether the user has entered the in-person proofing
+  #   flow.
+  # @param [Boolean] jurisdiction_in_maintenance_window Whether the target state MVA is under
+  #   maintenance.
+  # @param [Boolean] supported_jurisdiction Whether the state ID jurisdiction is supported by AAMVA.
+  # @param [Boolean] timed_out Whether the proofing request timed out.
+  # @param [Integer, nil] birth_year The birth year listed on the ID.
+  # @param [String, nil] state The state on the ID.
+  # @param [String, nil] state_id_jurisdiction The state that issued the ID.
+  # @param [String, nil] state_id_number A string describing the format of the ID number.
+  # @param [Hash, nil] errors The errors encountered during proofing.
+  # @param [String, nil] exception The exception message.
+  # @param [Boolean, nil] mva_exception Whether an MVA exception occured.
+  def idv_state_id_validation(
+    success:,
+    vendor_name:,
+    transaction_id:,
+    requested_attributes:,
+    verified_attributes:,
+    ipp_enrollment_in_progress:,
+    jurisdiction_in_maintenance_window:,
+    supported_jurisdiction:,
+    timed_out:,
+    birth_year: nil,
+    state: nil,
+    state_id_jurisdiction: nil,
+    state_id_number: nil,
+    errors: nil,
+    exception: nil,
+    mva_exception: nil,
+    **extra
+  )
+    track_event(
+      :idv_state_id_validation,
+      success:,
+      vendor_name:,
+      transaction_id:,
+      requested_attributes:,
+      verified_attributes:,
+      ipp_enrollment_in_progress:,
+      jurisdiction_in_maintenance_window:,
+      supported_jurisdiction:,
+      timed_out:,
+      birth_year:,
+      state:,
+      state_id_jurisdiction:,
+      state_id_number:,
+      errors:,
+      exception:,
+      mva_exception:,
       **extra,
     )
   end
@@ -5247,7 +5976,6 @@ module AnalyticsEvents
   # @identity.idp.previous_event_name Account verification submitted
   # @identity.idp.previous_event_name IdV: GPO verification submitted
   # @param [Boolean] success Whether form validation was successful
-  # @param [Hash] errors Errors resulting from form validation
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [DateTime] enqueued_at When was this letter enqueued
   # @param [Integer] which_letter Sorted by enqueue time, which letter had this code
@@ -5263,7 +5991,6 @@ module AnalyticsEvents
   # GPO verification submitted
   def idv_verify_by_mail_enter_code_submitted(
     success:,
-    errors:,
     enqueued_at:,
     which_letter:,
     letter_count:,
@@ -5278,7 +6005,6 @@ module AnalyticsEvents
     track_event(
       'IdV: enter verify by mail code submitted',
       success:,
-      errors:,
       error_details:,
       enqueued_at:,
       which_letter:,
@@ -5423,7 +6149,6 @@ module AnalyticsEvents
   # @param [Boolean] sp_initiated
   # @param [Boolean] oidc
   # @param [Boolean] saml_request_valid
-  # @param [Hash] errors Errors resulting from form validation
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [String] method
   # Logout Initiated
@@ -5435,7 +6160,6 @@ module AnalyticsEvents
     client_id_parameter_present: nil,
     id_token_hint_parameter_present: nil,
     saml_request_valid: nil,
-    errors: nil,
     error_details: nil,
     method: nil,
     **extra
@@ -5446,7 +6170,6 @@ module AnalyticsEvents
       client_id: client_id,
       client_id_parameter_present: client_id_parameter_present,
       id_token_hint_parameter_present: id_token_hint_parameter_present,
-      errors: errors,
       error_details: error_details,
       sp_initiated: sp_initiated,
       oidc: oidc,
@@ -5478,6 +6201,7 @@ module AnalyticsEvents
   # @param [String] frontend_error Name of error that occurred in frontend during submission
   # @param [Boolean] in_account_creation_flow Whether user is going through account creation flow
   # @param [Integer] enabled_mfa_methods_count Number of enabled MFA methods on the account
+  # @param [Hash] recaptcha_annotation Details of reCAPTCHA annotation, if submitted
   # Multi-Factor Authentication
   def multi_factor_auth(
     success:,
@@ -5502,6 +6226,7 @@ module AnalyticsEvents
     phone_fingerprint: nil,
     frontend_error: nil,
     in_account_creation_flow: nil,
+    recaptcha_annotation: nil,
     **extra
   )
     track_event(
@@ -5528,6 +6253,7 @@ module AnalyticsEvents
       frontend_error:,
       in_account_creation_flow:,
       enabled_mfa_methods_count:,
+      recaptcha_annotation:,
       **extra,
     )
   end
@@ -5554,59 +6280,19 @@ module AnalyticsEvents
     )
   end
 
-  # @identity.idp.previous_event_name Multi-Factor Authentication: Added PIV_CAC
-  # Tracks when the user has added the MFA method piv_cac to their account
-  # @param [Integer] enabled_mfa_methods_count Number of enabled MFA methods on the account
-  # @param [Boolean] in_account_creation_flow whether user is going through creation flow
-  # @param ['piv_cac'] method_name Authentication method added
-  # @param [Integer] attempts number of MFA setup attempts
-  def multi_factor_auth_added_piv_cac(
-    enabled_mfa_methods_count:,
-    in_account_creation_flow:,
-    method_name: :piv_cac,
-    attempts: nil,
-    **extra
-  )
-    track_event(
-      :multi_factor_auth_added_piv_cac,
-      method_name:,
-      enabled_mfa_methods_count:,
-      in_account_creation_flow:,
-      attempts:,
-      **extra,
-    )
-  end
-
-  # Tracks when the user has added the MFA method TOTP to their account
-  # @param [Integer] enabled_mfa_methods_count Number of enabled MFA methods on the account
-  # @param [Boolean] in_account_creation_flow whether user is going through creation flow
-  # @param ['totp'] method_name Authentication method added
-  def multi_factor_auth_added_totp(
-    enabled_mfa_methods_count:,
-    in_account_creation_flow:,
-    method_name: :totp,
-    **extra
-  )
-    track_event(
-      'Multi-Factor Authentication: Added TOTP',
-      method_name:,
-      in_account_creation_flow:,
-      enabled_mfa_methods_count:,
-      **extra,
-    )
-  end
-
   # A user has downloaded their backup codes
   def multi_factor_auth_backup_code_download
     track_event('Multi-Factor Authentication: download backup code')
   end
 
   # @param ["authentication", "reauthentication", "confirmation"] context User session context
+  # @param [Hash] recaptcha_annotation Details of reCAPTCHA annotation, if submitted
   # User visited the page to enter a backup code as their MFA
-  def multi_factor_auth_enter_backup_code_visit(context:, **extra)
+  def multi_factor_auth_enter_backup_code_visit(context:, recaptcha_annotation: nil, **extra)
     track_event(
       'Multi-Factor Authentication: enter backup code visited',
       context: context,
+      recaptcha_annotation:,
       **extra,
     )
   end
@@ -5621,6 +6307,7 @@ module AnalyticsEvents
   # @param [String] phone_fingerprint HMAC fingerprint of the phone number formatted as E.164
   # @param [Boolean] in_account_creation_flow Whether user is going through account creation flow
   # @param [Integer] enabled_mfa_methods_count Number of enabled MFA methods on the account
+  # @param [Hash] recaptcha_annotation Details of reCAPTCHA annotation, if submitted
   # Multi-Factor Authentication enter OTP visited
   def multi_factor_auth_enter_otp_visit(
     context:,
@@ -5633,6 +6320,7 @@ module AnalyticsEvents
     in_account_creation_flow:,
     enabled_mfa_methods_count:,
     attempts: nil,
+    recaptcha_annotation: nil,
     **extra
   )
     track_event(
@@ -5647,16 +6335,19 @@ module AnalyticsEvents
       phone_fingerprint:,
       in_account_creation_flow:,
       enabled_mfa_methods_count:,
+      recaptcha_annotation:,
       **extra,
     )
   end
 
   # @param ["authentication", "reauthentication", "confirmation"] context User session context
+  # @param [Hash] recaptcha_annotation Details of reCAPTCHA annotation, if submitted
   # User visited the page to enter a personal key as their mfa (legacy flow)
-  def multi_factor_auth_enter_personal_key_visit(context:, **extra)
+  def multi_factor_auth_enter_personal_key_visit(context:, recaptcha_annotation:, **extra)
     track_event(
       'Multi-Factor Authentication: enter personal key visited',
       context: context,
+      recaptcha_annotation:,
       **extra,
     )
   end
@@ -5666,12 +6357,14 @@ module AnalyticsEvents
   # @param ["piv_cac"] multi_factor_auth_method
   # @param [Integer, nil] piv_cac_configuration_id PIV/CAC configuration database ID
   # @param [Boolean] new_device Whether the user is authenticating from a new device
+  # @param [Hash] recaptcha_annotation Details of reCAPTCHA annotation, if submitted
   # User used a PIV/CAC as their mfa
   def multi_factor_auth_enter_piv_cac(
     context:,
     multi_factor_auth_method:,
     piv_cac_configuration_id:,
     new_device:,
+    recaptcha_annotation: nil,
     **extra
   )
     track_event(
@@ -5680,14 +6373,21 @@ module AnalyticsEvents
       multi_factor_auth_method: multi_factor_auth_method,
       piv_cac_configuration_id: piv_cac_configuration_id,
       new_device:,
+      recaptcha_annotation:,
       **extra,
     )
   end
 
   # @param ["authentication", "reauthentication", "confirmation"] context User session context
+  # @param [Hash] recaptcha_annotation Details of reCAPTCHA annotation, if submitted
   # User visited the page to enter a TOTP as their mfa
-  def multi_factor_auth_enter_totp_visit(context:, **extra)
-    track_event('Multi-Factor Authentication: enter TOTP visited', context: context, **extra)
+  def multi_factor_auth_enter_totp_visit(context:, recaptcha_annotation: nil, **extra)
+    track_event(
+      'Multi-Factor Authentication: enter TOTP visited',
+      context: context,
+      recaptcha_annotation:,
+      **extra,
+    )
   end
 
   # @param ["authentication", "reauthentication", "confirmation"] context User session context
@@ -5696,12 +6396,14 @@ module AnalyticsEvents
   #   authenticator like face or touch ID
   # @param [Integer, nil] webauthn_configuration_id webauthn database ID
   # @param [String] multi_factor_auth_method_created_at When the authentication method was created
+  # @param [Hash] recaptcha_annotation Details of reCAPTCHA annotation, if submitted
   # User visited the page to authenticate with webauthn (yubikey, face ID or touch ID)
   def multi_factor_auth_enter_webauthn_visit(
     context:,
     multi_factor_auth_method:,
     webauthn_configuration_id:,
     multi_factor_auth_method_created_at:,
+    recaptcha_annotation: nil,
     **extra
   )
     track_event(
@@ -5710,6 +6412,7 @@ module AnalyticsEvents
       multi_factor_auth_method:,
       webauthn_configuration_id:,
       multi_factor_auth_method_created_at:,
+      recaptcha_annotation:,
       **extra,
     )
   end
@@ -5726,14 +6429,12 @@ module AnalyticsEvents
 
   # Multi factor selected from auth options list
   # @param [Boolean] success Whether form validation was successful
-  # @param [Hash] errors Errors resulting from form validation
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [String] selection
   # @param [integer] enabled_mfa_methods_count Number of enabled MFA methods on the account
   # @param [Hash] mfa_method_counts Hash of MFA method with the number of that method on the account
   def multi_factor_auth_option_list(
     success:,
-    errors:,
     selection:,
     enabled_mfa_methods_count:,
     mfa_method_counts:,
@@ -5743,7 +6444,6 @@ module AnalyticsEvents
     track_event(
       'Multi-Factor Authentication: option list',
       success:,
-      errors:,
       error_details:,
       selection:,
       enabled_mfa_methods_count:,
@@ -5759,7 +6459,6 @@ module AnalyticsEvents
 
   # Multi factor auth phone setup
   # @param [Boolean] success Whether form validation was successful
-  # @param [Hash] errors Errors resulting from form validation
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param ["sms", "voice"] otp_delivery_preference Channel used to send the message
   # @param [String] area_code
@@ -5769,7 +6468,6 @@ module AnalyticsEvents
   # @param [Array<String>] types Phonelib parsed phone types
   def multi_factor_auth_phone_setup(
       success:,
-      errors:,
       otp_delivery_preference:,
       area_code:,
       carrier:,
@@ -5782,7 +6480,6 @@ module AnalyticsEvents
     track_event(
       'Multi-Factor Authentication: phone setup',
       success:,
-      errors:,
       error_details:,
       otp_delivery_preference:,
       area_code:,
@@ -5818,6 +6515,10 @@ module AnalyticsEvents
   # @param [String, nil] aaguid AAGUID value of WebAuthn device
   # @param [String[], nil] unknown_transports Array of unrecognized WebAuthn transports, intended to
   #   be used in case of future specification changes.
+  # @param [String[], nil] transports WebAuthn transports associated with registration.
+  # @param [Boolean, nil] transports_mismatch Whether the WebAuthn transports associated with
+  #   registration contradict the authenticator attachment for user setup. For example, a user can
+  #   set up a platform authenticator through the Security Key setup flow.
   # @param [:authentication, :account_creation, nil] webauthn_platform_recommended A/B test for
   # recommended Face or Touch Unlock setup, if applicable.
   def multi_factor_auth_setup(
@@ -5843,6 +6544,8 @@ module AnalyticsEvents
     attempts: nil,
     aaguid: nil,
     unknown_transports: nil,
+    transports: nil,
+    transports_mismatch: nil,
     webauthn_platform_recommended: nil,
     **extra
   )
@@ -5870,6 +6573,8 @@ module AnalyticsEvents
       attempts:,
       aaguid:,
       unknown_transports:,
+      transports:,
+      transports_mismatch:,
       webauthn_platform_recommended:,
       **extra,
     )
@@ -5888,14 +6593,12 @@ module AnalyticsEvents
   # @param [Boolean] sp_initiated
   # @param [Boolean] oidc
   # @param [Boolean] saml_request_valid
-  # @param [Hash] errors Errors resulting from form validation
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [String] method
   # @param [String] original_method Method of referring request
   # OIDC Logout Requested
   def oidc_logout_requested(
     success:,
-    errors:,
     error_details: nil,
     client_id: nil,
     sp_initiated: nil,
@@ -5913,7 +6616,6 @@ module AnalyticsEvents
       client_id: client_id,
       client_id_parameter_present: client_id_parameter_present,
       id_token_hint_parameter_present: id_token_hint_parameter_present,
-      errors: errors,
       error_details: error_details,
       sp_initiated: sp_initiated,
       oidc: oidc,
@@ -5931,7 +6633,6 @@ module AnalyticsEvents
   # @param [Boolean] sp_initiated
   # @param [Boolean] oidc
   # @param [Boolean] saml_request_valid
-  # @param [Hash] errors Errors resulting from form validation
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [String] method
   # OIDC Logout Submitted
@@ -5943,7 +6644,6 @@ module AnalyticsEvents
     client_id_parameter_present: nil,
     id_token_hint_parameter_present: nil,
     saml_request_valid: nil,
-    errors: nil,
     error_details: nil,
     method: nil,
     **extra
@@ -5954,7 +6654,6 @@ module AnalyticsEvents
       client_id: client_id,
       client_id_parameter_present: client_id_parameter_present,
       id_token_hint_parameter_present: id_token_hint_parameter_present,
-      errors: errors,
       error_details: error_details,
       sp_initiated: sp_initiated,
       oidc: oidc,
@@ -5971,13 +6670,11 @@ module AnalyticsEvents
   # @param [Boolean] sp_initiated
   # @param [Boolean] oidc
   # @param [Boolean] saml_request_valid
-  # @param [Hash] errors Errors resulting from form validation
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [String] method
   # OIDC Logout Visited
   def oidc_logout_visited(
     success:,
-    errors:,
     client_id: nil,
     sp_initiated: nil,
     oidc: nil,
@@ -5994,12 +6691,130 @@ module AnalyticsEvents
       client_id: client_id,
       client_id_parameter_present: client_id_parameter_present,
       id_token_hint_parameter_present: id_token_hint_parameter_present,
-      errors: errors,
       error_details: error_details,
       sp_initiated: sp_initiated,
       oidc: oidc,
       saml_request_valid: saml_request_valid,
       method: method,
+      **extra,
+    )
+  end
+
+  # Tracks when fraud clears duplicate profile
+  # @param [Boolean] success Whether the profile was successfully cleared
+  # @param [Hash] errors Errors resulting from clearing
+  def one_account_clear_duplicate_profile(success:, errors:, **extra)
+    track_event(
+      :one_account_clear_duplicate_profile,
+      success: success,
+      errors: errors,
+      **extra,
+    )
+  end
+
+  # Tracks when the fraud investigation is inconclusive
+  # @param [Boolean] success Whether the duplicate was successfully closed
+  # @param [Hash] errors Errors resulting from clearing
+  def one_account_close_inconclusive_duplicate(success:, errors:, **extra)
+    track_event(
+      :one_account_close_inconclusive_duplicate,
+      success: success,
+      errors: errors,
+      **extra,
+    )
+  end
+
+  # Tracks when fraud deactivates duplicate profile
+  # @param [Boolean] success Whether the profile was successfully deactivated
+  # @param [Hash] errors Errors resulting from deactivation
+  def one_account_deactivate_duplicate_profile(success:, errors:, **extra)
+    track_event(
+      :one_account_deactivate_duplicate_profile,
+      success: success,
+      errors: errors,
+      **extra,
+    )
+  end
+
+  # Tracks when a user that had duplicate profiles is closed
+  # @param [Integer] time_taken_in_minutes time taken to resolve the duplicate profiles in minutes
+  def one_account_duplicate_profile_closed(time_taken_in_minutes:, **extra)
+    track_event(
+      :one_account_duplicate_profile_closed,
+      time_taken_in_minutes: time_taken_in_minutes,
+      **extra,
+    )
+  end
+
+  # Tracks when a duplicate profile is created for a user
+  def one_account_duplicate_profile_created
+    track_event(:one_account_duplicate_profile_created)
+  end
+
+  # When there's an error creating duplicate profile set
+  # @param [String] service_provider The service provider that initiated the creation
+  # @param [Array<Integer>] profile_ids The profile IDs that were attempted to be added
+  # @param [String] error_message The error message returned from the operation
+  def one_account_duplicate_profile_creation_failed(
+    service_provider:,
+    profile_ids:,
+    error_message:,
+    **extra
+  )
+    track_event(
+      :one_account_duplicate_profile_creation_failed,
+      service_provider: service_provider,
+      profile_ids: profile_ids,
+      error_message: error_message,
+      **extra,
+    )
+  end
+
+  # Tracks when a duplicate profile set is reopened for profiles
+  # @param [Integer] duplicate_profile_set_id The ID of the duplicate profile set reopened
+  def one_account_duplicate_profile_reopened(duplicate_profile_set_id:, **extra)
+    track_event(
+      :one_account_duplicate_profile_reopened,
+      duplicate_profile_set_id: duplicate_profile_set_id,
+      **extra,
+    )
+  end
+
+  # Tracks when a duplicate profile object is updated
+  def one_account_duplicate_profile_updated
+    track_event(:one_account_duplicate_profile_updated)
+  end
+
+  # Tracks when user with duplicate profiles lands on page asking them to call the contact center
+  # @param [String] source The link that the user followed to visit the page
+  def one_account_duplicate_profiles_please_call_visited(source:, **extra)
+    track_event(:one_account_duplicate_profiles_please_call_visited, source: source, **extra)
+  end
+
+  # Tracks when user lands on page notifying them multiple profiles contain same information
+  # @param [String] source how the user came through to the page
+  def one_account_duplicate_profiles_warning_page_visited(source:, **extra)
+    track_event(:one_account_duplicate_profiles_warning_page_visited, source: source, **extra)
+  end
+
+  # Tracks when a user self services their duplicate account issue
+  # @param [Symbol] source where the self service occurs (account_management, account_reset, etc...)
+  # @param [String] service_provider The service provider  of the duplicate profile set serviced
+  # @param [Integer] associated_profiles_count The number of associated profiles for the set
+  # @param [Integer] dupe_profile_set_id The ID of the duplicate profile set
+  def one_account_self_service(
+        source:,
+        service_provider:,
+        associated_profiles_count:,
+        dupe_profile_set_id:,
+        **extra
+      )
+    track_event(
+      :one_account_self_service,
+      source: source,
+      service_provider: service_provider,
+      associated_profiles_count: associated_profiles_count,
+      dupe_profile_set_id: dupe_profile_set_id,
       **extra,
     )
   end
@@ -6030,15 +6845,13 @@ module AnalyticsEvents
   # @param [Boolean] success Whether form validation was successful
   # @param [Integer] ial
   # @param [String] client_id Service Provider issuer
-  # @param [Hash] errors Errors resulting from form validation
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
-  def openid_connect_bearer_token(success:, ial:, client_id:, errors:, error_details: nil, **extra)
+  def openid_connect_bearer_token(success:, ial:, client_id:, error_details: nil, **extra)
     track_event(
       'OpenID Connect: bearer token authentication',
       success:,
       ial:,
       client_id:,
-      errors:,
       error_details:,
       **extra,
     )
@@ -6046,7 +6859,6 @@ module AnalyticsEvents
 
   # Tracks when openid authorization request is made
   # @param [Boolean] success Whether form validations were succcessful
-  # @param [Hash] errors Errors resulting from form validation
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [String] prompt OIDC prompt parameter
   # @param [Boolean] allow_prompt_login Whether service provider is configured to allow prompt=login
@@ -6056,14 +6868,11 @@ module AnalyticsEvents
   # @param [String] client_id
   # @param [String] scope
   # @param [Array] acr_values
-  # @param [Array] vtr
-  # @param [String, nil] vtr_param
   # @param [Boolean] unauthorized_scope
   # @param [Boolean] user_fully_authenticated
   # @param [String] unknown_authn_contexts space separated list of unknown contexts
   def openid_connect_request_authorization(
     success:,
-    errors:,
     prompt:,
     allow_prompt_login:,
     code_challenge_present:,
@@ -6072,8 +6881,6 @@ module AnalyticsEvents
     client_id:,
     scope:,
     acr_values:,
-    vtr:,
-    vtr_param:,
     unauthorized_scope:,
     user_fully_authenticated:,
     error_details: nil,
@@ -6083,7 +6890,6 @@ module AnalyticsEvents
     track_event(
       'OpenID Connect: authorization request',
       success:,
-      errors:,
       error_details:,
       prompt:,
       allow_prompt_login:,
@@ -6093,8 +6899,6 @@ module AnalyticsEvents
       client_id:,
       scope:,
       acr_values:,
-      vtr:,
-      vtr_param:,
       unauthorized_scope:,
       user_fully_authenticated:,
       unknown_authn_contexts:,
@@ -6104,7 +6908,6 @@ module AnalyticsEvents
 
   # Tracks when an openid connect token request is made
   # @param [Boolean] success Whether the form was submitted successfully.
-  # @param [Hash] errors Errors resulting from form validation
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [String] client_id Service provider issuer
   # @param [String] user_id User ID associated with code
@@ -6117,7 +6920,6 @@ module AnalyticsEvents
   def openid_connect_token(
     client_id:,
     success:,
-    errors:,
     user_id:,
     code_digest:,
     expires_in:,
@@ -6130,7 +6932,6 @@ module AnalyticsEvents
     track_event(
       'OpenID Connect: token',
       success:,
-      errors:,
       error_details:,
       client_id:,
       user_id:,
@@ -6145,7 +6946,6 @@ module AnalyticsEvents
 
   # Tracks when user makes an otp delivery selection
   # @param [Boolean] success Whether the form was submitted successfully.
-  # @param [Hash] errors Errors resulting from form validation
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param ["authentication","reauthentication","confirmation"] context User session context
   # @param ["sms", "voice"] otp_delivery_preference Channel used to send the message
@@ -6154,7 +6954,6 @@ module AnalyticsEvents
   # @param [String] area_code Area code of phone number
   def otp_delivery_selection(
     success:,
-    errors:,
     context:,
     otp_delivery_preference:,
     resend:,
@@ -6166,7 +6965,6 @@ module AnalyticsEvents
     track_event(
       'OTP: Delivery Selection',
       success:,
-      errors:,
       error_details:,
       context:,
       otp_delivery_preference:,
@@ -6194,8 +6992,37 @@ module AnalyticsEvents
     )
   end
 
+  # Tracks when passkey authentication is initiated
+  def passkey_authentication_initiated
+    track_event(:passkey_authentication_initiated)
+  end
+
+  # Tracks the health of the DoS Passports API
+  # @param [Boolean] success Whether the passport api health check succeeded.
+  # @param [Hash] body The health check body, if present.
+  # @param [Hash] errors Any additional error information we have
+  # @param [String] step The step in the IdV flow that called the API health check
+  # @param [String] exception The Faraday or other exception, if one happened
+  def passport_api_health_check(
+    success:,
+    body: nil,
+    errors: nil,
+    exception: nil,
+    step: nil,
+    **extra
+  )
+    track_event(
+      :passport_api_health_check,
+      success:,
+      body:,
+      errors:,
+      exception:,
+      step:,
+      **extra,
+    )
+  end
+
   # @param [Boolean] success Whether form validation was successful
-  # @param [Hash] errors Errors resulting from form validation
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [Boolean] active_profile_present Whether active profile existed at time of change
   # @param [Boolean] pending_profile_present Whether pending profile existed at time of change
@@ -6204,7 +7031,6 @@ module AnalyticsEvents
   # The user updated their password
   def password_changed(
     success:,
-    errors:,
     active_profile_present:,
     pending_profile_present:,
     required_password_change:,
@@ -6214,7 +7040,6 @@ module AnalyticsEvents
     track_event(
       'Password Changed',
       success:,
-      errors:,
       error_details:,
       active_profile_present:,
       pending_profile_present:,
@@ -6224,14 +7049,12 @@ module AnalyticsEvents
   end
 
   # @param [Boolean] success Whether form validation was successful
-  # @param [Hash] errors Errors resulting from form validation
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [String] user_id UUID of the user
   # @param [Boolean] request_id_present Whether request_id URL parameter is present
   # The user added a password after verifying their email for account creation
   def password_creation(
     success:,
-    errors:,
     user_id:,
     request_id_present:,
     error_details: nil,
@@ -6240,7 +7063,6 @@ module AnalyticsEvents
     track_event(
       'Password Creation',
       success:,
-      errors:,
       error_details:,
       user_id:,
       request_id_present:,
@@ -6254,7 +7076,6 @@ module AnalyticsEvents
   end
 
   # @param [Boolean] success Whether form validation was successful
-  # @param [Hash] errors Errors resulting from form validation
   # @param [Boolean, nil] confirmed if the account the reset is being requested for has a
   #   confirmed email
   # @param [Boolean, nil] active_profile if the account the reset is being requested for has an
@@ -6263,16 +7084,14 @@ module AnalyticsEvents
   # The user entered an email address to request a password reset
   def password_reset_email(
     success:,
-    errors:,
     confirmed:,
     active_profile:,
-    error_details: {},
+    error_details: nil,
     **extra
   )
     track_event(
       'Password Reset: Email Submitted',
       success:,
-      errors:,
       error_details:,
       confirmed:,
       active_profile:,
@@ -6281,7 +7100,6 @@ module AnalyticsEvents
   end
 
   # @param [Boolean] success Whether form validation was successful
-  # @param [Hash] errors Errors resulting from form validation
   # @param [Boolean] profile_deactivated if the active profile for the account was deactivated
   #   (the user will need to use their personal key to reactivate their profile)
   # @param [Boolean] pending_profile_invalidated Whether a pending profile was invalidated as a
@@ -6292,17 +7110,15 @@ module AnalyticsEvents
   # The user changed the password for their account via the password reset flow
   def password_reset_password(
     success:,
-    errors:,
     profile_deactivated:,
     pending_profile_invalidated:,
     pending_profile_pending_reasons:,
-    error_details: {},
+    error_details: nil,
     **extra
   )
     track_event(
       'Password Reset: Password Submitted',
       success:,
-      errors:,
       error_details:,
       profile_deactivated:,
       pending_profile_invalidated:,
@@ -6312,15 +7128,13 @@ module AnalyticsEvents
   end
 
   # @param [Boolean] success Whether form validation was successful
-  # @param [Hash] errors Errors resulting from form validation
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [String] user_id UUID of the user to receive password token
   # A password token has been sent for user
-  def password_reset_token(success:, errors:, user_id:, error_details: nil, **extra)
+  def password_reset_token(success:, user_id:, error_details: nil, **extra)
     track_event(
       'Password Reset: Token Submitted',
       success:,
-      errors:,
       error_details:,
       user_id:,
       **extra,
@@ -6343,7 +7157,6 @@ module AnalyticsEvents
   end
 
   # @param [Boolean] success Whether form validation was successful
-  # @param [Hash] errors Errors resulting from form validation
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [Integer] emails Number of email addresses the notification was sent to
   # @param [Array<String>] sms_message_ids AWS Pinpoint SMS message IDs for each phone number that
@@ -6351,7 +7164,6 @@ module AnalyticsEvents
   # Alert user if a personal key was used to sign in
   def personal_key_alert_about_sign_in(
     success:,
-    errors:,
     emails:,
     sms_message_ids:,
     error_details: nil,
@@ -6360,7 +7172,6 @@ module AnalyticsEvents
     track_event(
       'Personal key: Alert user about sign in',
       success:,
-      errors:,
       error_details:,
       emails:,
       sms_message_ids:,
@@ -6374,19 +7185,16 @@ module AnalyticsEvents
   end
 
   # @param [Boolean] success Whether form validation was successful
-  # @param [Hash] errors Errors resulting from form validation
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # Personal key form submitted
   def personal_key_reactivation_submitted(
     success:,
-    errors:,
     error_details: nil,
     **extra
   )
     track_event(
       'Personal key reactivation: Personal key form submitted',
       success:,
-      errors:,
       error_details:,
       **extra,
     )
@@ -6408,7 +7216,6 @@ module AnalyticsEvents
   end
 
   # @param [Boolean] success Whether form validation was successful
-  # @param [Hash] errors Errors resulting from form validation
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [String] delivery_preference
   # @param [Integer] phone_configuration_id
@@ -6416,7 +7223,6 @@ module AnalyticsEvents
   # User has submitted a change in phone number
   def phone_change_submitted(
     success:,
-    errors:,
     delivery_preference:,
     phone_configuration_id:,
     make_default_number:,
@@ -6426,7 +7232,6 @@ module AnalyticsEvents
     track_event(
       'Phone Number Change: Form submitted',
       success:,
-      errors:,
       error_details:,
       delivery_preference:,
       phone_configuration_id:,
@@ -6482,17 +7287,17 @@ module AnalyticsEvents
 
   # @identity.idp.previous_event_name PIV/CAC login
   # @param [Boolean] success Whether form validation was successful
-  # @param [Hash] errors Errors resulting from form validation
+  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [String, nil] key_id PIV/CAC key_id from PKI service
   # @param [Boolean] new_device Whether the user is authenticating from a new device
   # Tracks piv cac login event
-  def piv_cac_login(success:, errors:, key_id:, new_device:, **extra)
+  def piv_cac_login(success:, key_id:, new_device:, error_details: nil, **extra)
     track_event(
       :piv_cac_login,
       success:,
-      errors:,
       key_id:,
       new_device:,
+      error_details:,
       **extra,
     )
   end
@@ -6603,7 +7408,6 @@ module AnalyticsEvents
   end
 
   # @param [Boolean] success Whether form validation was successful
-  # @param [Hash] errors Errors resulting from form validation
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [Integer] emails Number of email addresses the notification was sent to
   # @param [Array<String>] sms_message_ids AWS Pinpoint SMS message IDs for each phone number that
@@ -6612,7 +7416,6 @@ module AnalyticsEvents
   # were sent to phone numbers and email addresses for the user
   def profile_personal_key_create_notifications(
     success:,
-    errors:,
     emails:,
     sms_message_ids:,
     error_details: nil,
@@ -6621,7 +7424,6 @@ module AnalyticsEvents
     track_event(
       'Profile: Created new personal key notifications',
       success:,
-      errors:,
       error_details:,
       emails:,
       sms_message_ids:,
@@ -6683,8 +7485,9 @@ module AnalyticsEvents
 
   # Submission event for the "verify password" page the user sees after entering their personal key.
   # @param [Boolean] success Whether the form was submitted successfully.
-  def reactivate_account_verify_password_submitted(success:, **extra)
-    track_event(:reactivate_account_verify_password_submitted, success: success, **extra)
+  # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
+  def reactivate_account_verify_password_submitted(success:, error_details: nil, **extra)
+    track_event(:reactivate_account_verify_password_submitted, success:, error_details:, **extra)
   end
 
   # Visit event for the "verify password" page the user sees after entering their personal key.
@@ -6870,13 +7673,11 @@ module AnalyticsEvents
 
   # Tracks when rules of use is submitted with a success or failure
   # @param [Boolean] success Whether form validation was successful
-  # @param [Hash] errors Errors resulting from form validation
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
-  def rules_of_use_submitted(success:, errors:, error_details: nil, **extra)
+  def rules_of_use_submitted(success:, error_details: nil, **extra)
     track_event(
       'Rules of Use Submitted',
       success:,
-      errors:,
       error_details:,
       **extra,
     )
@@ -6889,7 +7690,6 @@ module AnalyticsEvents
 
   # Record SAML authentication payload Hash
   # @param [Boolean] success Whether form validation was successful
-  # @param [Hash] errors Errors resulting from form validation
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [String] nameid_format The NameID format sent in the response
   # @param [String] requested_nameid_format The NameID format requested
@@ -6908,7 +7708,6 @@ module AnalyticsEvents
   # @param [String] unknown_authn_contexts space separated list of unknown contexts
   def saml_auth(
     success:,
-    errors:,
     nameid_format:,
     requested_nameid_format:,
     authn_context:,
@@ -6928,7 +7727,6 @@ module AnalyticsEvents
     track_event(
       'SAML Auth',
       success:,
-      errors:,
       error_details:,
       nameid_format:,
       requested_nameid_format:,
@@ -6950,7 +7748,6 @@ module AnalyticsEvents
   # @param [String] requested_ial
   # @param [Array] authn_context
   # @param [String, nil] requested_aal_authn_context
-  # @param [String, nil] requested_vtr_authn_contexts
   # @param [Boolean] force_authn
   # @param [Boolean] final_auth_request
   # @param [String] service_provider
@@ -6963,7 +7760,6 @@ module AnalyticsEvents
     requested_ial:,
     authn_context:,
     requested_aal_authn_context:,
-    requested_vtr_authn_contexts:,
     force_authn:,
     final_auth_request:,
     service_provider:,
@@ -6978,7 +7774,6 @@ module AnalyticsEvents
       requested_ial:,
       authn_context:,
       requested_aal_authn_context:,
-      requested_vtr_authn_contexts:,
       force_authn:,
       final_auth_request:,
       service_provider:,
@@ -7004,7 +7799,6 @@ module AnalyticsEvents
   # Tracks when security event is received
   # @param [Boolean] success Whether form validation was successful
   # @param [String] error_code
-  # @param [Hash] errors Errors resulting from form validation
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [String] jti
   # @param [String] user_id
@@ -7012,7 +7806,6 @@ module AnalyticsEvents
   # @param [String] event_type
   def security_event_received(
     success:,
-    errors:,
     event_type:,
     error_code: nil,
     error_details: nil,
@@ -7024,7 +7817,6 @@ module AnalyticsEvents
     track_event(
       'RISC: Security event received',
       success:,
-      errors:,
       error_details:,
       event_type:,
       error_code:,
@@ -7075,10 +7867,10 @@ module AnalyticsEvents
   # Tracks when a user opts into SMS
   def sms_opt_in_submitted(
     success:,
-    errors:,
     new_user:,
     has_other_auth_methods:,
     phone_configuration_id:,
+    errors: nil,
     error_details: nil,
     **extra
   )
@@ -7165,9 +7957,9 @@ module AnalyticsEvents
     ial:,
     billed_ial:,
     sign_in_flow:,
-    vtr:,
     acr_values:,
     sign_in_duration_seconds:,
+    vtr: nil,
     **extra
   )
     track_event(
@@ -7175,8 +7967,8 @@ module AnalyticsEvents
       ial:,
       billed_ial:,
       sign_in_flow:,
-      vtr: vtr,
-      acr_values: acr_values,
+      vtr:,
+      acr_values:,
       sign_in_duration_seconds:,
       **extra,
     )
@@ -7230,6 +8022,12 @@ module AnalyticsEvents
   #   if user is changing email in consent flow
   def sp_select_email_visited(needs_completion_screen_reason: nil, **extra)
     track_event(:sp_select_email_visited, needs_completion_screen_reason:, **extra)
+  end
+
+  # Tracks when user clicks on same tab that user landed on.
+  # @param [String, nil] path that user was on when navigation tab was clicked
+  def tab_navigation_current_page_clicked(path: nil, **extra)
+    track_event(:tab_navigation_current_page_clicked, path:, **extra)
   end
 
   # @param [String] area_code Area code of phone number
@@ -7338,7 +8136,6 @@ module AnalyticsEvents
   end
 
   # @param [Boolean] success Whether form validation was successful
-  # @param [Hash] errors Errors resulting from form validation
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [Integer] enabled_mfa_methods_count
   # @param [Integer] selected_mfa_count
@@ -7346,7 +8143,6 @@ module AnalyticsEvents
   # Tracks when the the user has selected and submitted MFA auth methods on user registration
   def user_registration_2fa_setup(
     success:,
-    errors:,
     error_details: nil,
     selected_mfa_count: nil,
     enabled_mfa_methods_count: nil,
@@ -7356,7 +8152,6 @@ module AnalyticsEvents
     track_event(
       'User Registration: 2FA Setup',
       success:,
-      errors:,
       error_details:,
       selected_mfa_count:,
       enabled_mfa_methods_count:,
@@ -7473,7 +8268,6 @@ module AnalyticsEvents
   # Tracks when user submits registration email
   # @param [Boolean] success Whether form validation was successful
   # @param [Boolean] rate_limited Whether form submission was prevented by rate-limiting
-  # @param [Hash] errors Errors resulting from form validation
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [String] user_id ID of user associated with existing user, or current user
   # @param [Boolean] email_already_exists Whether an account with the email address already exists
@@ -7482,7 +8276,6 @@ module AnalyticsEvents
   def user_registration_email(
     success:,
     rate_limited:,
-    errors:,
     user_id:,
     email_already_exists:,
     domain_name:,
@@ -7494,7 +8287,6 @@ module AnalyticsEvents
       'User Registration: Email Submitted',
       success:,
       rate_limited:,
-      errors:,
       error_details:,
       user_id:,
       email_already_exists:,
@@ -7511,7 +8303,7 @@ module AnalyticsEvents
   # @param [String] user_id
   def user_registration_email_confirmation(
     success:,
-    errors:,
+    errors: nil,
     error_details: nil,
     user_id: nil,
     **extra
@@ -7690,9 +8482,59 @@ module AnalyticsEvents
     track_event(:webauthn_platform_recommended_visited)
   end
 
-  # @param [Hash] platform_authenticator
-  # @param [Boolean] success
-  # @param [Hash, nil] errors
+  # @param [Boolean] platform_authenticator Whether authentication method was registered as platform
+  #   authenticator
+  # @param [Number] configuration_id Database ID of WebAuthn configuration
+  # @param [Boolean] confirmed_mismatch Whether user chose to confirm and continue with interpreted
+  #   platform attachment
+  # @param [Boolean] success Whether the deletion was successful, if user chose to undo interpreted
+  #   platform attachment
+  # @param [Hash] error_details Details for errors that occurred in unsuccessful deletion
+  # User submitted confirmation screen after setting up WebAuthn with transports mismatched with the
+  # expected platform attachment
+  def webauthn_setup_mismatch_submitted(
+    configuration_id:,
+    platform_authenticator:,
+    confirmed_mismatch:,
+    success: nil,
+    error_details: nil,
+    **extra
+  )
+    track_event(
+      :webauthn_setup_mismatch_submitted,
+      configuration_id:,
+      platform_authenticator:,
+      confirmed_mismatch:,
+      success:,
+      error_details:,
+      **extra,
+    )
+  end
+
+  # @param [Boolean] platform_authenticator Whether authentication method was registered as platform
+  #   authenticator
+  # @param [Number] configuration_id Database ID of WebAuthn configuration
+  # User visited confirmation screen after setting up WebAuthn with transports mismatched with the
+  # expected platform attachment
+  def webauthn_setup_mismatch_visited(
+    configuration_id:,
+    platform_authenticator:,
+    **extra
+  )
+    track_event(
+      :webauthn_setup_mismatch_visited,
+      configuration_id:,
+      platform_authenticator:,
+      **extra,
+    )
+  end
+
+  # @param [Boolean] platform_authenticator Whether submission is for setting up a platform
+  #   authenticator. This aligns to what the user experienced in setting up the authenticator.
+  #   However, if `transports_mismatch` is true, the authentication method is created as the
+  #   opposite of this value.
+  # @param [Boolean] success Whether the submission was successful
+  # @param [Hash, nil] errors Errors resulting from form validation, or nil if successful.
   # @param [Boolean] in_account_creation_flow Whether user is going through account creation flow
   # Tracks whether or not Webauthn setup was successful
   def webauthn_setup_submitted(
@@ -7704,10 +8546,10 @@ module AnalyticsEvents
   )
     track_event(
       :webauthn_setup_submitted,
-      platform_authenticator: platform_authenticator,
-      success: success,
+      platform_authenticator:,
+      success:,
+      errors:,
       in_account_creation_flow:,
-      errors: errors,
       **extra,
     )
   end

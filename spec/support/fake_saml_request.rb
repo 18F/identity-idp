@@ -38,10 +38,6 @@ class FakeSamlRequest
     Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF
   end
 
-  def requested_vtr_authn_contexts
-    nil
-  end
-
   def valid?
     true
   end
@@ -84,5 +80,9 @@ class FakeSamlRequest
         SAMLRequest: 'FakeSamlRequest',
       },
     }
+  end
+
+  def errors
+    []
   end
 end

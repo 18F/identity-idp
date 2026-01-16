@@ -143,7 +143,7 @@ describe('document-capture/components/acuant-capture', () => {
       const { getByText } = render(
         <DeviceContext.Provider value={{ isMobile: true }}>
           <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
-            <AcuantCapture label="Image" />
+            <AcuantCapture label="Image" requestedAcuantDocumentType={AcuantDocumentType.ID} />
           </AcuantContextProvider>
         </DeviceContext.Provider>,
       );
@@ -155,7 +155,7 @@ describe('document-capture/components/acuant-capture', () => {
       const { container, getByText } = render(
         <DeviceContext.Provider value={{ isMobile: true }}>
           <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
-            <AcuantCapture label="Image" />
+            <AcuantCapture label="Image" requestedAcuantDocumentType={AcuantDocumentType.ID} />
           </AcuantContextProvider>
         </DeviceContext.Provider>,
       );
@@ -171,7 +171,7 @@ describe('document-capture/components/acuant-capture', () => {
       const { findByText } = render(
         <DeviceContext.Provider value={{ isMobile: true }}>
           <AcuantContextProvider sdkSrc="/gone.js" cameraSrc="about:blank">
-            <AcuantCapture label="Image" />
+            <AcuantCapture label="Image" requestedAcuantDocumentType={AcuantDocumentType.ID} />
           </AcuantContextProvider>
         </DeviceContext.Provider>,
       );
@@ -185,7 +185,7 @@ describe('document-capture/components/acuant-capture', () => {
       const { findByText } = render(
         <DeviceContext.Provider value={{ isMobile: true }}>
           <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
-            <AcuantCapture label="Image" />
+            <AcuantCapture label="Image" requestedAcuantDocumentType={AcuantDocumentType.ID} />
           </AcuantContextProvider>
         </DeviceContext.Provider>,
       );
@@ -200,7 +200,7 @@ describe('document-capture/components/acuant-capture', () => {
       const { getByText } = render(
         <DeviceContext.Provider value={{ isMobile: true }}>
           <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
-            <AcuantCapture label="Image" />
+            <AcuantCapture label="Image" requestedAcuantDocumentType={AcuantDocumentType.ID} />
           </AcuantContextProvider>
         </DeviceContext.Provider>,
       );
@@ -216,7 +216,7 @@ describe('document-capture/components/acuant-capture', () => {
       const { getByText } = render(
         <DeviceContext.Provider value={{ isMobile: true }}>
           <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
-            <AcuantCapture label="Image" />
+            <AcuantCapture label="Image" requestedAcuantDocumentType={AcuantDocumentType.ID} />
           </AcuantContextProvider>
         </DeviceContext.Provider>,
       );
@@ -234,8 +234,14 @@ describe('document-capture/components/acuant-capture', () => {
       const { getByLabelText } = render(
         <DeviceContext.Provider value={{ isMobile: true }}>
           <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
-            <AcuantCapture label="First Image" />
-            <AcuantCapture label="Second Image" />
+            <AcuantCapture
+              label="First Image"
+              requestedAcuantDocumentType={AcuantDocumentType.ID}
+            />
+            <AcuantCapture
+              label="Second Image"
+              requestedAcuantDocumentType={AcuantDocumentType.ID}
+            />
           </AcuantContextProvider>
         </DeviceContext.Provider>,
       );
@@ -273,7 +279,7 @@ describe('document-capture/components/acuant-capture', () => {
       const { getByLabelText } = render(
         <DeviceContext.Provider value={{ isMobile: true }}>
           <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
-            <AcuantCapture label="Image" />
+            <AcuantCapture label="Image" requestedAcuantDocumentType={AcuantDocumentType.ID} />
           </AcuantContextProvider>
         </DeviceContext.Provider>,
       );
@@ -293,7 +299,11 @@ describe('document-capture/components/acuant-capture', () => {
         <AnalyticsContext.Provider value={{ trackEvent }}>
           <DeviceContext.Provider value={{ isMobile: true }}>
             <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
-              <AcuantCapture label="Image" name="test" />
+              <AcuantCapture
+                label="Image"
+                name="test"
+                requestedAcuantDocumentType={AcuantDocumentType.ID}
+              />
             </AcuantContextProvider>
           </DeviceContext.Provider>
         </AnalyticsContext.Provider>,
@@ -326,7 +336,11 @@ describe('document-capture/components/acuant-capture', () => {
         <AnalyticsContext.Provider value={{ trackEvent }}>
           <DeviceContext.Provider value={{ isMobile: true }}>
             <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
-              <AcuantCapture label="Image" name="test" />
+              <AcuantCapture
+                label="Image"
+                name="test"
+                requestedAcuantDocumentType={AcuantDocumentType.ID}
+              />
             </AcuantContextProvider>
           </DeviceContext.Provider>
         </AnalyticsContext.Provider>,
@@ -361,7 +375,11 @@ describe('document-capture/components/acuant-capture', () => {
         <AnalyticsContext.Provider value={{ trackEvent }}>
           <DeviceContext.Provider value={{ isMobile: true }}>
             <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
-              <AcuantCapture label="Image" name="test" />
+              <AcuantCapture
+                label="Image"
+                name="test"
+                requestedAcuantDocumentType={AcuantDocumentType.ID}
+              />
             </AcuantContextProvider>
           </DeviceContext.Provider>
         </AnalyticsContext.Provider>,
@@ -410,6 +428,7 @@ describe('document-capture/components/acuant-capture', () => {
                 label="Image"
                 name="test"
                 onCameraAccessDeclined={onCameraAccessDeclined}
+                requestedAcuantDocumentType={AcuantDocumentType.ID}
               />
             </AcuantContextProvider>
           </DeviceContext.Provider>
@@ -454,6 +473,7 @@ describe('document-capture/components/acuant-capture', () => {
               label="Image"
               name="test"
               onCameraAccessDeclined={onCameraAccessDeclined}
+              requestedAcuantDocumentType={AcuantDocumentType.ID}
             />
           </AcuantContextProvider>
         </DeviceContext.Provider>,
@@ -479,7 +499,7 @@ describe('document-capture/components/acuant-capture', () => {
       const { getByLabelText, getByText, container } = render(
         <DeviceContext.Provider value={{ isMobile: true }}>
           <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
-            <AcuantCapture label="Image" />
+            <AcuantCapture label="Image" requestedAcuantDocumentType={AcuantDocumentType.ID} />
           </AcuantContextProvider>
         </DeviceContext.Provider>,
         { isMockClient: false },
@@ -520,7 +540,11 @@ describe('document-capture/components/acuant-capture', () => {
             sharpnessThreshold={50}
             glareThreshold={50}
           >
-            <AcuantCapture label="Image" onChange={onChange} />
+            <AcuantCapture
+              label="Image"
+              onChange={onChange}
+              requestedAcuantDocumentType={AcuantDocumentType.ID}
+            />
           </AcuantContextProvider>
         </DeviceContext.Provider>,
       );
@@ -565,7 +589,7 @@ describe('document-capture/components/acuant-capture', () => {
       const { getByText, unmount } = render(
         <DeviceContext.Provider value={{ isMobile: true }}>
           <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
-            <AcuantCapture label="Image" />
+            <AcuantCapture label="Image" requestedAcuantDocumentType={AcuantDocumentType.ID} />
           </AcuantContextProvider>
         </DeviceContext.Provider>,
       );
@@ -585,7 +609,11 @@ describe('document-capture/components/acuant-capture', () => {
       const { getByText } = render(
         <DeviceContext.Provider value={{ isMobile: true }}>
           <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
-            <AcuantCapture label="Image" value={image} />
+            <AcuantCapture
+              label="Image"
+              value={image}
+              requestedAcuantDocumentType={AcuantDocumentType.ID}
+            />
           </AcuantContextProvider>
         </DeviceContext.Provider>,
       );
@@ -605,7 +633,11 @@ describe('document-capture/components/acuant-capture', () => {
       const { getByText, getByLabelText } = render(
         <DeviceContext.Provider value={{ isMobile: true }}>
           <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
-            <AcuantCapture label="Image" onChange={onChange} />
+            <AcuantCapture
+              label="Image"
+              onChange={onChange}
+              requestedAcuantDocumentType={AcuantDocumentType.ID}
+            />
           </AcuantContextProvider>
         </DeviceContext.Provider>,
       );
@@ -638,7 +670,12 @@ describe('document-capture/components/acuant-capture', () => {
       const { getByLabelText } = render(
         <DeviceContext.Provider value={{ isMobile: true }}>
           <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
-            <AcuantCapture label="Image" onChange={onChange} allowUpload={false} />
+            <AcuantCapture
+              label="Image"
+              onChange={onChange}
+              allowUpload={false}
+              requestedAcuantDocumentType={AcuantDocumentType.ID}
+            />
           </AcuantContextProvider>
         </DeviceContext.Provider>,
       );
@@ -656,7 +693,11 @@ describe('document-capture/components/acuant-capture', () => {
         <AnalyticsContext.Provider value={{ trackEvent }}>
           <DeviceContext.Provider value={{ isMobile: true }}>
             <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
-              <AcuantCapture label="Image" name="test" />
+              <AcuantCapture
+                label="Image"
+                name="test"
+                requestedAcuantDocumentType={AcuantDocumentType.ID}
+              />
             </AcuantContextProvider>
           </DeviceContext.Provider>
         </AnalyticsContext.Provider>,
@@ -669,7 +710,7 @@ describe('document-capture/components/acuant-capture', () => {
           await Promise.resolve();
           callbacks.onCropped({
             ...ACUANT_CAPTURE_SUCCESS_RESULT,
-            cardType: AcuantDocumentType.PASSPORT,
+            cardType: AcuantDocumentType.NONE,
           });
         }),
       });
@@ -677,12 +718,12 @@ describe('document-capture/components/acuant-capture', () => {
       const button = getByText('doc_auth.buttons.take_picture');
       fireEvent.click(button);
 
-      const error = await findByText('doc_auth.errors.card_type');
+      const error = await findByText('doc_auth.errors.general.fallback_field_level');
 
       expect(trackEvent).to.have.been.calledWith(
         'IdV: test image added',
         sinon.match({
-          documentType: 'passport',
+          documentType: 'none',
           isAssessedAsUnsupported: true,
           assessment: 'unsupported',
         }),
@@ -702,7 +743,11 @@ describe('document-capture/components/acuant-capture', () => {
               glareThreshold={50}
               sharpnessThreshold={50}
             >
-              <AcuantCapture label="Image" name="test" />
+              <AcuantCapture
+                label="Image"
+                name="test"
+                requestedAcuantDocumentType={AcuantDocumentType.ID}
+              />
             </AcuantContextProvider>
           </DeviceContext.Provider>
         </AnalyticsContext.Provider>,
@@ -747,6 +792,8 @@ describe('document-capture/components/acuant-capture', () => {
         fingerprint: null,
         failedImageResubmission: false,
         liveness_checking_required: false,
+        failed_quality_check_attempts_for_side: null,
+        manual_capture_triggered: false,
       });
 
       expect(error).to.be.ok();
@@ -763,7 +810,11 @@ describe('document-capture/components/acuant-capture', () => {
               sharpnessThreshold={50}
               glareThreshold={50}
             >
-              <AcuantCapture label="Image" name="test" />
+              <AcuantCapture
+                label="Image"
+                name="test"
+                requestedAcuantDocumentType={AcuantDocumentType.ID}
+              />
             </AcuantContextProvider>
           </DeviceContext.Provider>
         </AnalyticsContext.Provider>,
@@ -808,9 +859,58 @@ describe('document-capture/components/acuant-capture', () => {
         fingerprint: null,
         failedImageResubmission: false,
         liveness_checking_required: false,
+        failed_quality_check_attempts_for_side: null,
+        manual_capture_triggered: false,
       });
 
       expect(error).to.be.ok();
+    });
+
+    describe('when the captured doc type does not match the requested doc type', () => {
+      it('renders error message', async () => {
+        const trackEvent = sinon.spy();
+        const { getByText, findByText } = render(
+          <AnalyticsContext.Provider value={{ trackEvent }}>
+            <DeviceContext.Provider value={{ isMobile: true }}>
+              <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
+                <AcuantCapture
+                  label="Image"
+                  name="test"
+                  requestedAcuantDocumentType={AcuantDocumentType.PASSPORT}
+                />
+              </AcuantContextProvider>
+            </DeviceContext.Provider>
+          </AnalyticsContext.Provider>,
+        );
+
+        initialize({
+          start: sinon.stub().callsFake(async (callbacks) => {
+            await Promise.resolve();
+            callbacks.onCaptured();
+            await Promise.resolve();
+            callbacks.onCropped({
+              ...ACUANT_CAPTURE_SUCCESS_RESULT,
+              cardType: AcuantDocumentType.ID,
+            });
+          }),
+        });
+
+        const button = getByText('doc_auth.buttons.take_picture');
+        fireEvent.click(button);
+
+        const error = await findByText('doc_auth.errors.general.fallback_field_level');
+
+        expect(trackEvent).to.have.been.calledWith(
+          'IdV: test image added',
+          sinon.match({
+            documentType: 'id',
+            isAssessedAsUnsupported: true,
+            assessment: 'unsupported',
+          }),
+        );
+
+        expect(error).to.be.ok();
+      });
     });
 
     it('shows at most one error message between AcuantCapture and FileInput', async () => {
@@ -821,7 +921,7 @@ describe('document-capture/components/acuant-capture', () => {
             cameraSrc="about:blank"
             sharpnessThreshold={50}
           >
-            <AcuantCapture label="Image" />
+            <AcuantCapture label="Image" requestedAcuantDocumentType={AcuantDocumentType.ID} />
           </AcuantContextProvider>
         </DeviceContext.Provider>,
         { isMockClient: false },
@@ -864,7 +964,11 @@ describe('document-capture/components/acuant-capture', () => {
               sharpnessThreshold={50}
               glareThreshold={50}
             >
-              <AcuantCapture label="Image" name="test" />
+              <AcuantCapture
+                label="Image"
+                name="test"
+                requestedAcuantDocumentType={AcuantDocumentType.ID}
+              />
             </AcuantContextProvider>
           </DeviceContext.Provider>
         </AnalyticsContext.Provider>,
@@ -922,6 +1026,8 @@ describe('document-capture/components/acuant-capture', () => {
         fingerprint: null,
         failedImageResubmission: false,
         liveness_checking_required: false,
+        failed_quality_check_attempts_for_side: null,
+        manual_capture_triggered: false,
       });
     });
 
@@ -932,7 +1038,11 @@ describe('document-capture/components/acuant-capture', () => {
         <AnalyticsContext.Provider value={{ trackEvent }}>
           <DeviceContext.Provider value={{ isMobile: true }}>
             <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
-              <AcuantCapture label="Image" name="test" />
+              <AcuantCapture
+                label="Image"
+                name="test"
+                requestedAcuantDocumentType={AcuantDocumentType.ID}
+              />
             </AcuantContextProvider>
           </DeviceContext.Provider>
         </AnalyticsContext.Provider>,
@@ -1001,7 +1111,11 @@ describe('document-capture/components/acuant-capture', () => {
         >
           <DeviceContext.Provider value={{ isMobile: true }}>
             <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
-              <AcuantCapture label="Image" allowUpload={false} />
+              <AcuantCapture
+                label="Image"
+                allowUpload={false}
+                requestedAcuantDocumentType={AcuantDocumentType.ID}
+              />
             </AcuantContextProvider>
           </DeviceContext.Provider>
         </I18nContext.Provider>,
@@ -1022,7 +1136,7 @@ describe('document-capture/components/acuant-capture', () => {
       const { getByText } = render(
         <DeviceContext.Provider value={{ isMobile: true }}>
           <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
-            <AcuantCapture label="Image" />
+            <AcuantCapture label="Image" requestedAcuantDocumentType={AcuantDocumentType.ID} />
           </AcuantContextProvider>
         </DeviceContext.Provider>,
       );
@@ -1036,7 +1150,7 @@ describe('document-capture/components/acuant-capture', () => {
       const { getByText } = render(
         <DeviceContext.Provider value={{ isMobile: true }}>
           <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
-            <AcuantCapture label="Image" />
+            <AcuantCapture label="Image" requestedAcuantDocumentType={AcuantDocumentType.ID} />
           </AcuantContextProvider>
         </DeviceContext.Provider>,
       );
@@ -1047,6 +1161,171 @@ describe('document-capture/components/acuant-capture', () => {
 
       expect(hint).to.be.ok();
     });
+
+    it('appends manual capture message when quality check failures meet threshold', async () => {
+      const trackEvent = sinon.spy();
+      const { getByText, findByText } = render(
+        <AnalyticsContext.Provider value={{ trackEvent }}>
+          <DeviceContext.Provider value={{ isMobile: true }}>
+            <FailedCaptureAttemptsContextProvider
+              maxCaptureAttemptsBeforeNativeCamera={10}
+              maxSubmissionAttemptsBeforeNativeCamera={5}
+              failedFingerprints={{ front: [], back: [], passport: [] }}
+              maxAttemptsBeforeManualCapture={3}
+              manualCaptureAfterFailuresEnabled
+            >
+              <AcuantContextProvider
+                sdkSrc="about:blank"
+                cameraSrc="about:blank"
+                glareThreshold={50}
+                sharpnessThreshold={50}
+              >
+                <AcuantCapture label="Image" name="front" side="front" />
+              </AcuantContextProvider>
+            </FailedCaptureAttemptsContextProvider>
+          </DeviceContext.Provider>
+        </AnalyticsContext.Provider>,
+      );
+
+      initialize({
+        start: sinon.stub().callsFake(async (callbacks) => {
+          await Promise.resolve();
+          callbacks.onCaptured();
+          await Promise.resolve();
+          callbacks.onCropped({
+            ...ACUANT_CAPTURE_SUCCESS_RESULT,
+            glare: 49,
+          });
+        }),
+      });
+
+      const button = getByText('doc_auth.buttons.take_picture');
+
+      // First failure
+      fireEvent.click(button);
+      await findByText('doc_auth.errors.glare.failed_short');
+
+      // Second failure
+      fireEvent.click(button);
+      await findByText('doc_auth.errors.glare.failed_short');
+
+      // Third failure - should append manual capture message
+      fireEvent.click(button);
+      const errorWithManualMessage = await findByText(
+        'doc_auth.errors.glare.failed_short doc_auth.info.manual_capture_mode',
+      );
+
+      expect(errorWithManualMessage).to.be.ok();
+    });
+
+    it('does not append manual capture message when feature is disabled', async () => {
+      const trackEvent = sinon.spy();
+      const { getByText, findByText, queryByText } = render(
+        <AnalyticsContext.Provider value={{ trackEvent }}>
+          <DeviceContext.Provider value={{ isMobile: true }}>
+            <FailedCaptureAttemptsContextProvider
+              maxCaptureAttemptsBeforeNativeCamera={10}
+              maxSubmissionAttemptsBeforeNativeCamera={5}
+              failedFingerprints={{ front: [], back: [], passport: [] }}
+              maxAttemptsBeforeManualCapture={3}
+              manualCaptureAfterFailuresEnabled={false}
+            >
+              <AcuantContextProvider
+                sdkSrc="about:blank"
+                cameraSrc="about:blank"
+                glareThreshold={50}
+                sharpnessThreshold={50}
+              >
+                <AcuantCapture label="Image" name="front" side="front" />
+              </AcuantContextProvider>
+            </FailedCaptureAttemptsContextProvider>
+          </DeviceContext.Provider>
+        </AnalyticsContext.Provider>,
+      );
+
+      initialize({
+        start: sinon.stub().callsFake(async (callbacks) => {
+          await Promise.resolve();
+          callbacks.onCaptured();
+          await Promise.resolve();
+          callbacks.onCropped({
+            ...ACUANT_CAPTURE_SUCCESS_RESULT,
+            glare: 49,
+          });
+        }),
+      });
+
+      const button = getByText('doc_auth.buttons.take_picture');
+
+      // Third failure - should NOT append manual capture message because feature is disabled
+      fireEvent.click(button);
+      fireEvent.click(button);
+      fireEvent.click(button);
+
+      await findByText('doc_auth.errors.glare.failed_short');
+      expect(
+        queryByText('doc_auth.errors.glare.failed_short doc_auth.info.manual_capture_mode'),
+      ).to.not.be.ok();
+    });
+
+    it('tracks per-side failures independently for manual capture trigger', async () => {
+      const trackEvent = sinon.spy();
+      const { getAllByText, findAllByText } = render(
+        <AnalyticsContext.Provider value={{ trackEvent }}>
+          <DeviceContext.Provider value={{ isMobile: true }}>
+            <FailedCaptureAttemptsContextProvider
+              maxCaptureAttemptsBeforeNativeCamera={10}
+              maxSubmissionAttemptsBeforeNativeCamera={5}
+              failedFingerprints={{ front: [], back: [], passport: [] }}
+              maxAttemptsBeforeManualCapture={2}
+              manualCaptureAfterFailuresEnabled
+            >
+              <AcuantContextProvider
+                sdkSrc="about:blank"
+                cameraSrc="about:blank"
+                glareThreshold={50}
+                sharpnessThreshold={50}
+              >
+                <AcuantCapture label="Front" name="front" side="front" />
+                <AcuantCapture label="Back" name="back" side="back" />
+              </AcuantContextProvider>
+            </FailedCaptureAttemptsContextProvider>
+          </DeviceContext.Provider>
+        </AnalyticsContext.Provider>,
+      );
+
+      initialize({
+        start: sinon.stub().callsFake(async (callbacks) => {
+          await Promise.resolve();
+          callbacks.onCaptured();
+          await Promise.resolve();
+          callbacks.onCropped({
+            ...ACUANT_CAPTURE_SUCCESS_RESULT,
+            sharpness: 49,
+          });
+        }),
+      });
+
+      const buttons = getAllByText('doc_auth.buttons.take_picture');
+      const frontButton = buttons[0];
+      const backButton = buttons[1];
+
+      // Fail front twice - should trigger manual message on second
+      fireEvent.click(frontButton);
+      await findAllByText('doc_auth.errors.sharpness.failed_short');
+
+      fireEvent.click(frontButton);
+      await findAllByText(
+        'doc_auth.errors.sharpness.failed_short doc_auth.info.manual_capture_mode',
+      );
+
+      // Fail back once - should NOT trigger manual message yet
+      fireEvent.click(backButton);
+      const errors = await findAllByText('doc_auth.errors.sharpness.failed_short');
+
+      // Front should have manual message, back should not
+      expect(errors.length).to.be.at.least(1);
+    });
   });
 
   context('desktop', () => {
@@ -1054,7 +1333,7 @@ describe('document-capture/components/acuant-capture', () => {
       const { getByLabelText } = render(
         <DeviceContext.Provider value={{ isMobile: false }}>
           <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
-            <AcuantCapture label="Image" />
+            <AcuantCapture label="Image" requestedAcuantDocumentType={AcuantDocumentType.ID} />
           </AcuantContextProvider>
         </DeviceContext.Provider>,
       );
@@ -1068,6 +1347,7 @@ describe('document-capture/components/acuant-capture', () => {
 
   context('mobile selfie', () => {
     const trackEvent = sinon.stub();
+    const showSelfieHelp = sinon.stub();
 
     beforeEach(async () => {
       // Set up the components so that everything is as it would actually be -except- the AcuantSDK
@@ -1076,7 +1356,13 @@ describe('document-capture/components/acuant-capture', () => {
         <DeviceContext.Provider value={{ isMobile: true }}>
           <AnalyticsContext.Provider value={{ trackEvent }}>
             <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
-              <AcuantCapture label="Image" name="selfie" isReady />
+              <AcuantCapture
+                label="Image"
+                name="selfie"
+                showSelfieHelp={showSelfieHelp}
+                isReady
+                requestedAcuantDocumentType={AcuantDocumentType.ID}
+              />
             </AcuantContextProvider>
           </AnalyticsContext.Provider>
         </DeviceContext.Provider>,
@@ -1130,6 +1416,16 @@ describe('document-capture/components/acuant-capture', () => {
       expect(trackEvent).to.have.been.calledWith(
         'idv_sdk_selfie_image_capture_closed_without_photo',
       );
+    });
+
+    it('calls showSelfieHelp from onSelfieCaptureClosed', () => {
+      initialize({
+        selfieStart: sinon.stub().callsFake((callbacks) => {
+          callbacks.onClosed();
+        }),
+      });
+
+      expect(showSelfieHelp).to.have.been.called();
     });
 
     it('calls trackEvent from onSelfieCaptureSuccess', () => {
@@ -1251,7 +1547,11 @@ describe('document-capture/components/acuant-capture', () => {
   it('optionally disallows upload', () => {
     const { getByText } = render(
       <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
-        <AcuantCapture label="Image" allowUpload={false} />
+        <AcuantCapture
+          label="Image"
+          allowUpload={false}
+          requestedAcuantDocumentType={AcuantDocumentType.ID}
+        />
       </AcuantContextProvider>,
     );
 
@@ -1269,7 +1569,12 @@ describe('document-capture/components/acuant-capture', () => {
     const onChange = sinon.spy();
     const { getByLabelText } = render(
       <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
-        <AcuantCapture label="Image" value={image} onChange={onChange} />
+        <AcuantCapture
+          label="Image"
+          value={image}
+          onChange={onChange}
+          requestedAcuantDocumentType={AcuantDocumentType.ID}
+        />
       </AcuantContextProvider>,
     );
 
@@ -1282,7 +1587,7 @@ describe('document-capture/components/acuant-capture', () => {
   it('restricts accepted file types', () => {
     const { getByLabelText } = render(
       <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
-        <AcuantCapture label="Image" />
+        <AcuantCapture label="Image" requestedAcuantDocumentType={AcuantDocumentType.ID} />
       </AcuantContextProvider>,
       { isMockClient: false },
     );
@@ -1303,7 +1608,12 @@ describe('document-capture/components/acuant-capture', () => {
           maxSubmissionAttemptsBeforeNativeCamera={3}
         >
           <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
-            <AcuantCapture label="Image" name="front" onChange={onChange} />
+            <AcuantCapture
+              label="Image"
+              name="front"
+              onChange={onChange}
+              requestedAcuantDocumentType={AcuantDocumentType.ID}
+            />
           </AcuantContextProvider>
         </FailedCaptureAttemptsContextProvider>
       </AnalyticsContext.Provider>,
@@ -1340,7 +1650,12 @@ describe('document-capture/components/acuant-capture', () => {
           maxSubmissionAttemptsBeforeNativeCamera={3}
         >
           <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
-            <AcuantCapture label="Image" name="front" onChange={onChange} />
+            <AcuantCapture
+              label="Image"
+              name="front"
+              onChange={onChange}
+              requestedAcuantDocumentType={AcuantDocumentType.ID}
+            />
           </AcuantContextProvider>
         </FailedCaptureAttemptsContextProvider>
       </AnalyticsContext.Provider>,
@@ -1380,7 +1695,11 @@ describe('document-capture/components/acuant-capture', () => {
         <DeviceContext.Provider value={{ isMobile: true }}>
           <AnalyticsContext.Provider value={{ trackEvent }}>
             <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
-              <AcuantCapture label="Image" name="test" />
+              <AcuantCapture
+                label="Image"
+                name="test"
+                requestedAcuantDocumentType={AcuantDocumentType.ID}
+              />
             </AcuantContextProvider>
           </AnalyticsContext.Provider>
         </DeviceContext.Provider>
@@ -1422,7 +1741,11 @@ describe('document-capture/components/acuant-capture', () => {
     const { getByLabelText } = render(
       <AnalyticsContext.Provider value={{ trackEvent }}>
         <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
-          <AcuantCapture label="Image" name="test" />
+          <AcuantCapture
+            label="Image"
+            name="test"
+            requestedAcuantDocumentType={AcuantDocumentType.ID}
+          />
         </AcuantContextProvider>
       </AnalyticsContext.Provider>,
     );
@@ -1443,7 +1766,11 @@ describe('document-capture/components/acuant-capture', () => {
     const { getByLabelText } = render(
       <AnalyticsContext.Provider value={{ trackEvent }}>
         <AcuantContextProvider sdkSrc="about:blank" cameraSrc="about:blank">
-          <AcuantCapture label="Image" name="test" />
+          <AcuantCapture
+            label="Image"
+            name="test"
+            requestedAcuantDocumentType={AcuantDocumentType.ID}
+          />
         </AcuantContextProvider>
       </AnalyticsContext.Provider>,
     );

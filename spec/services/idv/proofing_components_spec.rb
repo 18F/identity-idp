@@ -21,16 +21,11 @@ RSpec.describe Idv::ProofingComponents do
 
   subject do
     described_class.new(
-      session:,
-      user:,
-      user_session:,
       idv_session:,
     )
   end
 
   describe '#to_h' do
-    let(:pii_from_doc) { Idp::Constants::MOCK_IDV_APPLICANT }
-
     before do
       allow(IdentityConfig.store).to receive(:doc_auth_vendor_default).and_return('test_vendor')
       idv_session.mark_verify_info_step_complete!
@@ -40,74 +35,79 @@ RSpec.describe Idv::ProofingComponents do
       idv_session.threatmetrix_review_status = 'pass'
       idv_session.source_check_vendor = 'aamva'
       idv_session.resolution_vendor = 'lexis_nexis'
+      idv_session.doc_auth_vendor = 'feedabee'
     end
 
-    it 'returns expected result' do
-      expect(subject.to_h).to eql(
-        {
-          document_check: 'test_vendor',
-          document_type: 'state_id',
-          source_check: 'aamva',
-          resolution_check: 'lexis_nexis',
-          address_check: 'gpo_letter',
-          threatmetrix: true,
-          threatmetrix_review_status: 'pass',
-        },
-      )
+    context 'with drivers_license' do
+      let(:pii_from_doc) { Idp::Constants.mock_idv_applicant }
+
+      it 'returns expected result' do
+        expect(subject.to_h).to eql(
+          {
+            document_check: 'feedabee',
+            document_type_received: 'drivers_license',
+            source_check: 'aamva',
+            resolution_check: 'lexis_nexis',
+            address_check: 'gpo_letter',
+            threatmetrix: true,
+            threatmetrix_review_status: 'pass',
+          },
+        )
+      end
+    end
+
+    context 'with state_id' do
+      let(:pii_from_doc) { Idp::Constants.mock_idv_applicant_state_id }
+
+      it 'returns expected result' do
+        expect(subject.to_h).to eql(
+          {
+            document_check: 'feedabee',
+            document_type_received: 'state_id',
+            source_check: 'aamva',
+            resolution_check: 'lexis_nexis',
+            address_check: 'gpo_letter',
+            threatmetrix: true,
+            threatmetrix_review_status: 'pass',
+          },
+        )
+      end
+    end
+
+    context 'with passport' do
+      let(:pii_from_doc) { Idp::Constants.mock_idv_proofing_passport_applicant }
+
+      it 'returns expected result' do
+        expect(subject.to_h).to eql(
+          {
+            document_check: 'feedabee',
+            document_type_received: 'passport',
+            source_check: 'aamva',
+            resolution_check: 'lexis_nexis',
+            address_check: 'gpo_letter',
+            threatmetrix: true,
+            threatmetrix_review_status: 'pass',
+          },
+        )
+      end
     end
   end
 
   describe '#document_check' do
-    it 'returns nil by default' do
-      expect(subject.document_check).to be_nil
-    end
+    before { idv_session.doc_auth_vendor = 'feedabee' }
 
-    context 'in-person proofing' do
-      context 'establishing' do
-        let!(:enrollment) { create(:in_person_enrollment, :establishing, user:) }
-
-        it 'returns USPS' do
-          expect(subject.document_check).to eql(Idp::Constants::Vendors::USPS)
-        end
-      end
-
-      context 'pending' do
-        let!(:enrollment) { create(:in_person_enrollment, :pending, user:) }
-
-        it 'returns USPS' do
-          expect(subject.document_check).to eql(Idp::Constants::Vendors::USPS)
-        end
-      end
-    end
-
-    context 'doc auth' do
-      before do
-        allow(IdentityConfig.store).to receive(:doc_auth_vendor_default).and_return('test_vendor')
-      end
-
-      context 'before doc auth complete' do
-        it 'returns nil' do
-          expect(subject.document_check).to be_nil
-        end
-      end
-
-      context 'after doc auth completed successfully' do
-        let(:pii_from_doc) { Idp::Constants::MOCK_IDV_APPLICANT }
-
-        it 'returns doc auth vendor' do
-          expect(subject.document_check).to eql('test_vendor')
-        end
-      end
+    it 'returns doc_auth_vendor' do
+      expect(subject.document_check).to eql('feedabee')
     end
   end
 
-  describe '#document_type' do
+  describe '#document_type_received' do
     context 'in-person proofing' do
       context 'establishing' do
         let!(:enrollment) { create(:in_person_enrollment, :establishing, user:) }
 
         it 'returns nil' do
-          expect(subject.document_type).to be_nil
+          expect(subject.document_type_received).to be_nil
         end
       end
 
@@ -115,7 +115,7 @@ RSpec.describe Idv::ProofingComponents do
         let!(:enrollment) { create(:in_person_enrollment, :pending, user:) }
 
         it 'returns nil' do
-          expect(subject.document_type).to be_nil
+          expect(subject.document_type_received).to be_nil
         end
       end
     end
@@ -123,15 +123,23 @@ RSpec.describe Idv::ProofingComponents do
     context 'doc auth' do
       context 'before doc auth complete' do
         it 'returns nil' do
-          expect(subject.document_type).to be_nil
+          expect(subject.document_type_received).to be_nil
         end
       end
 
       context 'after doc auth completed successfully' do
-        let(:pii_from_doc) { Idp::Constants::MOCK_IDV_APPLICANT }
+        let(:pii_from_doc) { Idp::Constants.mock_idv_applicant }
 
         it 'returns doc auth vendor' do
-          expect(subject.document_type).to eql('state_id')
+          expect(subject.document_type_received).to eql('drivers_license')
+        end
+      end
+
+      context 'after doc auth completed successfully with passport' do
+        let(:pii_from_doc) { Idp::Constants.mock_idv_proofing_passport_applicant }
+
+        it 'returns doc auth vendor' do
+          expect(subject.document_type_received).to eql('passport')
         end
       end
     end
@@ -203,13 +211,22 @@ RSpec.describe Idv::ProofingComponents do
       end
     end
 
-    context 'using phone verification' do
+    context 'with lexis_nexis verification' do
       before do
-        idv_session.mark_phone_step_started!
+        idv_session.address_verification_vendor = 'lexis_nexis_address'
       end
 
       it 'returns lexis_nexis_address' do
         expect(subject.address_check).to eql('lexis_nexis_address')
+      end
+    end
+
+    context 'with socure verification' do
+      before do
+        idv_session.address_verification_vendor = 'socure_address'
+      end
+      it 'returns socure_address' do
+        expect(subject.address_check).to eql('socure_address')
       end
     end
   end

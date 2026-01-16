@@ -13,12 +13,15 @@ class InPersonEnrollment < ApplicationRecord
 
   has_one :notification_phone_configuration, dependent: :destroy, inverse_of: :in_person_enrollment
 
+  IN_PROGRESS_ENROLLMENT_STATUSES = %w[pending in_fraud_review].to_set.freeze
+
   STATUS_ESTABLISHING = 'establishing'
   STATUS_PENDING = 'pending'
   STATUS_PASSED = 'passed'
   STATUS_FAILED = 'failed'
   STATUS_EXPIRED = 'expired'
   STATUS_CANCELLED = 'cancelled'
+  STATUS_IN_FRAUD_REVIEW = 'in_fraud_review'
 
   enum :status, {
     STATUS_ESTABLISHING.to_sym => 0,
@@ -27,6 +30,16 @@ class InPersonEnrollment < ApplicationRecord
     STATUS_FAILED.to_sym => 3,
     STATUS_EXPIRED.to_sym => 4,
     STATUS_CANCELLED.to_sym => 5,
+    STATUS_IN_FRAUD_REVIEW.to_sym => 6,
+  }
+
+  DOCUMENT_TYPE_STATE_ID = 'state_id'
+  DOCUMENT_TYPE_PASSPORT_BOOK = 'passport_book'
+
+  # This will always be nil in the Verify-by-Mail (GPO) flow.
+  enum :document_type, {
+    DOCUMENT_TYPE_STATE_ID.to_sym => 0,
+    DOCUMENT_TYPE_PASSPORT_BOOK.to_sym => 1,
   }
 
   validate :profile_belongs_to_user
@@ -36,17 +49,10 @@ class InPersonEnrollment < ApplicationRecord
   before_create(:set_unique_id, unless: :unique_id)
 
   class << self
-    def needs_early_email_reminder(early_benchmark, late_benchmark)
+    def needs_late_email_reminder(start_date, end_date)
       pending_and_established_between(
-        early_benchmark,
-        late_benchmark,
-      ).where(early_reminder_sent: false)
-    end
-
-    def needs_late_email_reminder(early_benchmark, late_benchmark)
-      pending_and_established_between(
-        early_benchmark,
-        late_benchmark,
+        start_date,
+        end_date,
       ).where(late_reminder_sent: false)
     end
 
@@ -84,10 +90,10 @@ class InPersonEnrollment < ApplicationRecord
 
     private
 
-    def pending_and_established_between(early_benchmark, late_benchmark)
+    def pending_and_established_between(start_date, end_date)
       where(status: :pending)
         .and(
-          where(enrollment_established_at: late_benchmark...(early_benchmark.end_of_day)),
+          where(enrollment_established_at: start_date.beginning_of_day...(end_date.end_of_day)),
         )
         .order(enrollment_established_at: :asc)
     end
@@ -134,7 +140,7 @@ class InPersonEnrollment < ApplicationRecord
 
   def due_date
     start_date = enrollment_established_at.presence || created_at
-    start_date + days_to_expire
+    (start_date + days_to_expire).end_of_day
   end
 
   def days_to_due_date
@@ -153,6 +159,18 @@ class InPersonEnrollment < ApplicationRecord
   # @return [String, nil] The enrollment's profile deactivation reason or nil.
   def profile_deactivation_reason
     profile&.deactivation_reason
+  end
+
+  # Updates the in-person enrollment to status cancelled and deactivates the
+  # associated profile with reason "in_person_verification_cancelled".
+  def cancel
+    cancelled!
+    profile&.deactivate_due_to_in_person_verification_cancelled
+  end
+
+  # @return [Boolean] Whether the enrollment is type passport book.
+  def passport_book?
+    document_type == DOCUMENT_TYPE_PASSPORT_BOOK
   end
 
   private

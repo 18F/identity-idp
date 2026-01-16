@@ -29,30 +29,9 @@ RSpec.describe Users::EmailConfirmationsController do
         expect(@analytics).to have_logged_event(
           'Add Email: Email Confirmation',
           success: true,
-          errors: {},
           from_select_email_flow: false,
           user_id: user.uuid,
         )
-      end
-
-      context 'when select email feature is disabled' do
-        before do
-          allow(IdentityConfig.store).to receive(:feature_select_email_to_share_enabled)
-            .and_return(false)
-        end
-        it 'should render proper flash member' do
-          flash_message = t('devise.confirmations.confirmed')
-          user = create(:user)
-          sign_in user
-          new_email = Faker::Internet.email
-
-          add_email_form = AddUserEmailForm.new
-          add_email_form.submit(user, email: new_email)
-          email_record = add_email_form.email_address_record(new_email)
-
-          get :create, params: { confirmation_token: email_record.reload.confirmation_token }
-          expect(flash[:success]).to eq(flash_message)
-        end
       end
 
       it 'rejects an otherwise valid token for unconfirmed users' do
@@ -151,7 +130,6 @@ RSpec.describe Users::EmailConfirmationsController do
           expect(@analytics).to have_logged_event(
             'Add Email: Email Confirmation',
             success: true,
-            errors: {},
             from_select_email_flow: true,
             user_id: user.uuid,
           )

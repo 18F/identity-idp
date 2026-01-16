@@ -6,13 +6,15 @@ class SocureErrorPresenter
   include ActionView::Helpers::TranslationHelper
   include LinkHelper
 
-  attr_reader :url_options
+  attr_reader :url_options, :passport_requested
 
-  def initialize(error_code:, remaining_attempts:, sp_name:, issuer:, flow_path:)
+  def initialize(error_code:, remaining_attempts:, sp_name:, issuer:, passport_requested:,
+                 flow_path:)
     @error_code = error_code
     @remaining_attempts = remaining_attempts
     @sp_name = sp_name
     @issuer = issuer
+    @passport_requested = passport_requested
     @flow_path = flow_path
     @url_options = {}
   end
@@ -26,16 +28,14 @@ class SocureErrorPresenter
   end
 
   def rate_limit_text
-    if remaining_attempts == 1
-      t('doc_auth.rate_limit_warning.singular_html')
-    else
-      t('doc_auth.rate_limit_warning.plural_html', remaining_attempts: remaining_attempts)
-    end
+    return if error_code == :url_not_found
+
+    t('doc_auth.rate_limit_warning_html', count: remaining_attempts)
   end
 
   def action
-    url = flow_path == :hybrid ? idv_hybrid_mobile_socure_document_capture_path
-                               : idv_socure_document_capture_path
+    url = hybrid_flow? ? idv_hybrid_mobile_socure_document_capture_path :
+                         idv_socure_document_capture_path
     {
       text: I18n.t('idv.failure.button.warning'),
       url:,
@@ -51,10 +51,12 @@ class SocureErrorPresenter
   end
 
   def secondary_action
+    url = hybrid_flow? ? idv_hybrid_mobile_in_person_direct_url : idv_in_person_direct_url
+
     if in_person_enabled?
       {
         text: I18n.t('in_person_proofing.body.cta.button'),
-        url: idv_in_person_direct_url,
+        url:,
       }
     end
   end
@@ -64,34 +66,9 @@ class SocureErrorPresenter
   end
 
   def options
-    return [] if error_code == :timeout
+    return [] if %i[timeout url_not_found invalid_transaction_token].include?(error_code)
 
-    [
-      {
-        url: help_center_redirect_path(
-          category: 'verify-your-identity',
-          article: 'how-to-add-images-of-your-state-issued-id',
-        ),
-        text: I18n.t('idv.troubleshooting.options.doc_capture_tips'),
-        isExternal: true,
-      },
-      {
-        url: help_center_redirect_path(
-          category: 'verify-your-identity',
-          article: 'accepted-identification-documents',
-        ),
-        text: I18n.t('idv.troubleshooting.options.supported_documents'),
-        isExternal: true,
-      },
-      {
-        url: return_to_sp_failure_to_proof_url(step: 'document_capture'),
-        text: t(
-          'idv.failure.verify.fail_link_html',
-          sp_name: sp_name,
-        ),
-        isExternal: true,
-      },
-    ]
+    default_options
   end
 
   def step_indicator_steps
@@ -138,11 +115,19 @@ class SocureErrorPresenter
   end
 
   def heading_string_for(error_code)
-    case error_code
+    case error_code.to_sym
     when :network
       t('doc_auth.headers.general.network_error')
-    when :timeout
+    when :timeout, :url_not_found, :invalid_transaction_token
       t('idv.errors.technical_difficulties')
+    when :unaccepted_id_type
+      t('doc_auth.headers.unaccepted_id_type')
+    when :unexpected_id_type
+      unexpected_id_type_heading
+    when :selfie_fail
+      t('doc_auth.errors.selfie_fail_heading')
+    when :state_id_verification
+      t('doc_auth.headers.state_id_verification')
     else
       # i18n-tasks-use t('doc_auth.headers.unreadable_id')
       # i18n-tasks-use t('doc_auth.headers.unaccepted_id_type')
@@ -155,11 +140,21 @@ class SocureErrorPresenter
   end
 
   def error_string_for(error_code)
-    case error_code
+    case error_code.to_sym
     when :network
       t('doc_auth.errors.general.new_network_error')
-    when :timeout
+    when :timeout, :url_not_found
       t('idv.errors.try_again_later')
+    when :invalid_transaction_token
+      t('idv.failure.exceptions.internal_error')
+    when :unaccepted_id_type
+      t('doc_auth.errors.unaccepted_id_type')
+    when :unexpected_id_type
+      unexpected_id_type_text
+    when :selfie_fail
+      t('doc_auth.errors.general.selfie_failure')
+    when :state_id_verification
+      t('doc_auth.errors.state_id_verification')
     else
       if remapped_error(error_code) == 'underage' # special handling because it says 'Login.gov'
         I18n.t('doc_auth.errors.underage', app_name: APP_NAME)
@@ -174,9 +169,71 @@ class SocureErrorPresenter
     end
   end
 
+  def unexpected_id_type_heading
+    if passport_requested
+      t('doc_auth.errors.verify_passport_heading')
+    else
+      t('doc_auth.errors.verify_drivers_license_heading')
+    end
+  end
+
+  def unexpected_id_type_text
+    verify_id_text = passport_requested ?
+      t('doc_auth.errors.verify_passport_text') :
+      t('doc_auth.errors.verify_drivers_license_text')
+
+    safe_join(
+      [
+        verify_id_text,
+        link_to(
+          t('doc_auth.errors.verify.use_another_type_of_id'),
+          idv_choose_id_type_path,
+        ),
+      ],
+      ' ',
+    )
+  end
+
   def in_person_enabled?
-    IdentityConfig.store.in_person_doc_auth_button_enabled &&
-      Idv::InPersonConfig.enabled_for_issuer?(issuer) &&
-      flow_path.to_s == 'standard'
+    IdentityConfig.store.in_person_proofing_opt_in_enabled &&
+      Idv::InPersonConfig.enabled_for_issuer?(issuer)
+  end
+
+  def hybrid_flow?
+    flow_path == :hybrid
+  end
+
+  def default_options
+    [
+      {
+        url: hybrid_flow? ? idv_hybrid_mobile_choose_id_type_path : idv_choose_id_type_path,
+        text: I18n.t('idv.troubleshooting.options.use_another_id_type'),
+        isExternal: false,
+      },
+      {
+        url: help_center_redirect_path(
+          category: 'verify-your-identity',
+          article: 'how-to-add-images-of-your-state-issued-id',
+        ),
+        text: I18n.t('idv.troubleshooting.options.doc_capture_tips'),
+        isExternal: true,
+      },
+      {
+        url: help_center_redirect_path(
+          category: 'verify-your-identity',
+          article: 'accepted-identification-documents',
+        ),
+        text: I18n.t('idv.troubleshooting.options.supported_documents'),
+        isExternal: true,
+      },
+      {
+        url: return_to_sp_failure_to_proof_url(step: 'document_capture'),
+        text: t(
+          'idv.failure.verify.fail_link_html',
+          sp_name: sp_name,
+        ),
+        isExternal: true,
+      },
+    ]
   end
 end

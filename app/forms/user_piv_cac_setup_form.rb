@@ -17,10 +17,9 @@ class UserPivCacSetupForm
   def submit
     success = valid? && valid_submission?
 
-    errors = error_type ? { type: error_type } : {}
     FormResponse.new(
       success: success && process_valid_submission,
-      errors: errors,
+      errors:,
       extra: extra_analytics_attributes,
     )
   end
@@ -52,6 +51,10 @@ class UserPivCacSetupForm
     self.x509_issuer = @data['issuer']
     if PivCacConfiguration.exists?(x509_dn_uuid: x509_dn_uuid)
       self.error_type = 'piv_cac.already_associated'
+      errors.add(
+        :piv_cac, I18n.t('headings.piv_cac_setup.already_associated'),
+        type: :already_associated
+      )
       false
     else
       true

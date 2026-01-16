@@ -12,11 +12,6 @@ export interface InPersonContextProps {
   locationsURL: string;
 
   /**
-   * Address search endpoint URL
-   */
-  addressSearchURL: string;
-
-  /**
    * Whether the message indicating an outage should be displayed
    */
   inPersonOutageMessageEnabled: boolean;
@@ -25,11 +20,6 @@ export interface InPersonContextProps {
    * Date communicated to users regarding expected update about their enrollment after an outage
    */
   inPersonOutageExpectedUpdateDate?: string;
-
-  /**
-   * When true users must enter a full address when searching for a Post Office location
-   */
-  inPersonFullAddressEntryEnabled: boolean;
 
   /**
    * When true a user has entered ipp by opting in
@@ -56,9 +46,25 @@ export interface InPersonContextProps {
   skipDocAuthFromHandoff?: boolean;
 
   /**
+   * Flag set when user select IPP from the Socure Hybrid page when IPP is available
+   */
+  skipDocAuthFromSocure?: boolean;
+
+  /**
+   * path to choose ID type page, used when passports is enabled
+   */
+
+  chooseIdTypePath?: string;
+
+  /**
    * URL for Opt-in IPP, used when in_person_proofing_opt_in_enabled is enabled
    */
   howToVerifyURL?: string;
+
+  /**
+   * URL to return back to the Socure timeout page from Opt-in IPP
+   */
+  socureErrorsTimeoutURL?: string;
 
   /**
    * URL for going back to previous steps in Doc Auth, like handoff and howToVerify
@@ -68,9 +74,7 @@ export interface InPersonContextProps {
 
 const InPersonContext = createContext<InPersonContextProps>({
   locationsURL: '',
-  addressSearchURL: '',
   inPersonOutageMessageEnabled: false,
-  inPersonFullAddressEntryEnabled: false,
   optedInToInPersonProofing: false,
   usStatesTerritories: [],
 });

@@ -69,7 +69,13 @@ class UserMailer < ActionMailer::Base
       @gpo_verification_pending_profile = user.gpo_verification_pending_profile?
       @in_person_verification_pending_profile = user.in_person_pending_profile?
       @hide_title = @gpo_verification_pending_profile || @in_person_verification_pending_profile
-      mail(to: email_address.email, subject: t('user_mailer.reset_password_instructions.subject'))
+      mail(
+        to: email_address.email,
+        subject: t(
+          'user_mailer.reset_password_instructions.subject',
+          app_name: APP_NAME,
+        ),
+      )
     end
   end
 
@@ -135,10 +141,7 @@ class UserMailer < ActionMailer::Base
     with_user_locale(user) do
       @token = account_reset&.request_token
       @account_reset_deletion_period_interval = account_reset_deletion_period_interval(user)
-      @header = t(
-        'user_mailer.account_reset_request.header',
-        interval: @account_reset_deletion_period_interval,
-      )
+      @header = t('user_mailer.account_reset_request.subject', app_name: APP_NAME)
       mail(
         to: email_address.email,
         subject: t('user_mailer.account_reset_request.subject', app_name: APP_NAME),
@@ -165,7 +168,7 @@ class UserMailer < ActionMailer::Base
     end
   end
 
-  def account_delete_submitted
+  def account_delete_completed
     with_user_locale(user) do
       mail(to: email_address.email, subject: t('user_mailer.account_reset_complete.subject'))
     end
@@ -173,7 +176,10 @@ class UserMailer < ActionMailer::Base
 
   def account_reset_cancel
     with_user_locale(user) do
-      mail(to: email_address.email, subject: t('user_mailer.account_reset_cancel.subject'))
+      mail(
+        to: email_address.email,
+        subject: t('user_mailer.account_reset_cancel.subject', app_name: APP_NAME),
+      )
     end
   end
 
@@ -263,6 +269,58 @@ class UserMailer < ActionMailer::Base
     end
   end
 
+  def dupe_profile_created(agency_name: nil)
+    @service_provider_or_app_name = agency_name || APP_NAME
+    with_user_locale(user) do
+      @root_url = root_url(locale: locale_url_param)
+      mail(
+        to: email_address.email,
+        subject: t('user_mailer.dupe_profile.created.heading', app_name: APP_NAME),
+      )
+    end
+  end
+
+  def dupe_profile_sign_in_attempted(agency_name: nil)
+    @service_provider_or_app_name = agency_name || APP_NAME
+    with_user_locale(user) do
+      @root_url = root_url(locale: locale_url_param)
+      mail(to: email_address.email, subject: t('user_mailer.dupe_profile.sign_in.heading'))
+    end
+  end
+
+  def dupe_profile_account_review_complete_success(agency_name: nil)
+    @service_provider_or_app_name = agency_name || APP_NAME
+    with_user_locale(user) do
+      @root_url = root_url(locale: locale_url_param)
+      mail(
+        to: email_address.email,
+        subject: t('user_mailer.dupe_profile.review_complete.success_heading'),
+      )
+    end
+  end
+
+  def dupe_profile_account_review_complete_unable(agency_name: nil)
+    @service_provider_or_app_name = agency_name || APP_NAME
+    with_user_locale(user) do
+      @root_url = root_url(locale: locale_url_param)
+      mail(
+        to: email_address.email,
+        subject: t('user_mailer.dupe_profile.review_complete.unable_heading'),
+      )
+    end
+  end
+
+  def dupe_profile_account_review_complete_locked(agency_name: nil)
+    @service_provider_or_app_name = agency_name || APP_NAME
+    with_user_locale(user) do
+      @root_url = root_url(locale: locale_url_param)
+      mail(
+        to: email_address.email,
+        subject: t('user_mailer.dupe_profile.review_complete.locked_heading'),
+      )
+    end
+  end
+
   def in_person_completion_survey
     with_user_locale(user) do
       @header = t('user_mailer.in_person_completion_survey.header')
@@ -295,7 +353,7 @@ class UserMailer < ActionMailer::Base
     end
   end
 
-  def in_person_ready_to_verify(enrollment:, is_enhanced_ipp:)
+  def in_person_ready_to_verify(enrollment:)
     attachments.inline['barcode.png'] = BarcodeOutputter.new(
       code: enrollment.enrollment_code,
     ).image_data
@@ -304,16 +362,25 @@ class UserMailer < ActionMailer::Base
       @hide_title = IdentityConfig.store.in_person_outage_message_enabled &&
                     IdentityConfig.store.in_person_outage_emailed_by_date.present? &&
                     IdentityConfig.store.in_person_outage_expected_update_date.present?
-      @header = is_enhanced_ipp ?
-        t('in_person_proofing.headings.barcode_eipp') : t('in_person_proofing.headings.barcode')
       @presenter = Idv::InPerson::ReadyToVerifyPresenter.new(
         enrollment: enrollment,
         barcode_image_url: attachments['barcode.png'].url,
-        is_enhanced_ipp: is_enhanced_ipp,
       )
-      @is_enhanced_ipp = is_enhanced_ipp
-      @show_closed_post_office_banner =
-        IdentityConfig.store.in_person_proofing_post_office_closed_alert_enabled
+
+      if @presenter.enhanced_ipp?
+        @header = t('in_person_proofing.headings.barcode_eipp')
+      elsif @presenter.enrolled_with_passport_book?
+        @header = t('in_person_proofing.headings.barcode_passport')
+      else
+        @header = t('in_person_proofing.headings.barcode')
+      end
+
+      if enrollment&.service_provider&.logo_is_email_compatible?
+        @logo_url = enrollment.service_provider.logo_url
+      else
+        @logo_url = nil
+      end
+      @sp_name = @presenter.sp_name
 
       mail(
         to: email_address.email,
@@ -327,20 +394,22 @@ class UserMailer < ActionMailer::Base
       code: enrollment.enrollment_code,
     ).image_data
 
-    @is_enhanced_ipp = enrollment.enhanced_ipp?
-    @show_closed_post_office_banner =
-      IdentityConfig.store.in_person_proofing_post_office_closed_alert_enabled
-
     with_user_locale(user) do
       @presenter = Idv::InPerson::ReadyToVerifyPresenter.new(
         enrollment: enrollment,
         barcode_image_url: attachments['barcode.png'].url,
-        is_enhanced_ipp: @is_enhanced_ipp,
       )
+      if enrollment&.service_provider&.logo_is_email_compatible?
+        @logo_url = enrollment.service_provider.logo_url
+      else
+        @logo_url = nil
+      end
+      @sp_name = @presenter.sp_name
       @header = t(
         'user_mailer.in_person_ready_to_verify_reminder.heading',
         count: @presenter.days_remaining,
       )
+
       mail(
         to: email_address.email,
         subject: t(
@@ -436,16 +505,6 @@ class UserMailer < ActionMailer::Base
   def account_reinstated
     with_user_locale(user) do
       mail(to: email_address.email, subject: t('user_mailer.account_reinstated.subject'))
-    end
-  end
-
-  def in_person_post_office_closed
-    with_user_locale(user) do
-      @hide_title = true
-      mail(
-        to: email_address.email,
-        subject: t('in_person_proofing.post_office_closed.email.subject'),
-      )
     end
   end
 

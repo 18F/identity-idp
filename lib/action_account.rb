@@ -4,12 +4,13 @@ require_relative './script_base'
 
 # rubocop:disable Metrics/BlockLength
 class ActionAccount
-  attr_reader :argv, :stdout, :stderr
+  attr_reader :argv, :stdout, :stderr, :rails_env
 
-  def initialize(argv:, stdout:, stderr:)
+  def initialize(argv:, stdout:, stderr:, rails_env: Rails.env)
     @argv = argv
     @stdout = stdout
     @stderr = stderr
+    @rails_env = rails_env
   end
 
   def script_base
@@ -20,6 +21,7 @@ class ActionAccount
       subtask_class: subtask(argv.shift),
       banner: banner,
       reason_arg: true,
+      rails_env:,
     )
   end
 
@@ -42,6 +44,12 @@ class ActionAccount
           * #{basename} reinstate-user uuid1 uuid2
 
           * #{basename} confirm-suspend-user uuid1 uuid2
+
+          * #{basename} clear-device-profiling-failure uuid1 uuid2
+
+          * #{basename} deactivate-duplicate uuid1 uuid2
+
+          * #{basename} close-inconclusive-duplicate uuid1 uuid2
         Options:
     EOS
   end
@@ -57,6 +65,10 @@ class ActionAccount
       'suspend-user' => SuspendUser,
       'reinstate-user' => ReinstateUser,
       'confirm-suspend-user' => ConfirmSuspendUser,
+      'clear-device-profiling-failure' => ClearDeviceProfilingFailure,
+      'deactivate-duplicate' => DeactivateDuplicate,
+      'clear-duplicate' => ClearDuplicate,
+      'close-inconclusive-duplicate' => CloseInconclusiveDuplicate,
     }[name]
   end
 
@@ -69,18 +81,26 @@ class ActionAccount
 
     def log_text
       {
-        no_pending: 'Error: User does not have a pending fraud review',
-        rejected_for_fraud: "User's profile has been deactivated due to fraud rejection.",
-        profile_activated: "User's profile has been activated and the user has been emailed.",
+        cleared_duplicate: "User's profile has been cleared and the user has been notified",
+        closed_inconclusive_duplicate:
+          'User has been notified that the fraud investigation is inconclusive',
+        deactivated_duplicate: "User's profile has been deactivated and the user has been notified",
+        device_profiling_approved: 'Device profiling result has been updated to pass',
+        device_profiling_already_passed: 'Device profiling result already passed',
+        device_profiling_no_results_found: 'No device profiling results found for this user',
         error_activating: "There was an error activating the user's profile. Please try again.",
-        past_eligibility: 'User is past the 30 day review eligibility.',
         missing_uuid: 'Error: Could not find user with that UUID',
-        user_emailed: 'User has been emailed',
-        user_suspended: 'User has been suspended',
-        user_reinstated: 'User has been reinstated and the user has been emailed',
-        user_already_suspended: 'User has already been suspended',
-        user_is_not_suspended: 'User is not suspended',
+        no_pending: 'Error: User does not have a pending fraud review',
+        past_eligibility: 'User is past the 30 day review eligibility.',
+        profile_activated: "User's profile has been activated and the user has been emailed.",
+        profile_not_active: "Error: User's profile is not active",
+        rejected_for_fraud: "User's profile has been deactivated due to fraud rejection.",
         user_already_reinstated: 'User has already been reinstated',
+        user_already_suspended: 'User has already been suspended',
+        user_emailed: 'User has been emailed',
+        user_is_not_suspended: 'User is not suspended',
+        user_reinstated: 'User has been reinstated and the user has been emailed',
+        user_suspended: 'User has been suspended',
       }
     end
   end
@@ -121,6 +141,19 @@ class ActionAccount
             log_texts << log_text[:user_emailed]
           else
             log_texts << log_text[:user_is_not_suspended]
+          end
+        when :clear_device_profiling_failure
+          result = DeviceProfilingResult.where(
+            user_id: user.id,
+            profiling_type: DeviceProfilingResult::PROFILING_TYPES[:account_creation],
+          ).first
+          if result.nil?
+            log_texts << log_text[:device_profiling_no_results_found]
+          elsif result.review_status == 'pass'
+            log_texts << log_text[:device_profiling_already_passed]
+          else
+            result.update!(review_status: 'pass', notes: 'Manually overridden')
+            log_texts << log_text[:device_profiling_approved]
           end
         else
           raise "unknown subtask=#{action}"
@@ -188,6 +221,7 @@ class ActionAccount
         elsif FraudReviewChecker.new(user).fraud_review_eligible?
           profile = user.fraud_review_pending_profile
           profile_fraud_review_pending_at = profile.fraud_review_pending_at
+          profile.in_person_enrollment&.failed!
           profile.reject_for_fraud(notify_user: true)
           success = true
 
@@ -272,6 +306,7 @@ class ActionAccount
         profile = nil
         profile_fraud_review_pending_at = nil
         success = false
+        reproof = user.has_proofed_before?
 
         log_texts = []
         if !user.fraud_review_pending?
@@ -279,10 +314,13 @@ class ActionAccount
         elsif FraudReviewChecker.new(user).fraud_review_eligible?
           profile = user.fraud_review_pending_profile
           profile_fraud_review_pending_at = profile.fraud_review_pending_at
+          profile.in_person_enrollment&.passed!
           profile.activate_after_passing_review
           success = true
 
           if profile.active?
+            attempts_api_tracker(profile:).idv_enrollment_complete(reproof:)
+            fraud_ops_tracker(profile:).idv_enrollment_complete(reproof:)
             UserEventCreator.new(current_user: user)
               .create_out_of_band_user_event(:account_verified)
             UserAlerts::AlertUserAboutAccountVerified.call(profile: profile)
@@ -352,6 +390,279 @@ class ActionAccount
         table:,
       )
     end
+
+    def attempts_api_tracker(profile:)
+      AttemptsApi::Tracker.new(
+        enabled_for_session: profile.initiating_service_provider&.attempts_api_enabled?,
+        session_id: nil,
+        request: nil,
+        user: profile.user,
+        sp: profile.initiating_service_provider,
+        cookie_device_uuid: nil,
+        sp_redirect_uri: nil,
+      )
+    end
+
+    def fraud_ops_tracker(profile:)
+      FraudOps::Tracker.new(
+        request: nil,
+        user: profile.user,
+        sp: profile.initiating_service_provider,
+        cookie_device_uuid: nil,
+      )
+    end
+  end
+
+  class DeactivateDuplicate
+    include LogBase
+    def run(args:, config:)
+      uuids = args
+
+      users = User.where(uuid: uuids).order(:uuid)
+
+      table = []
+      table << %w[uuid status reason]
+
+      messages = []
+
+      users.each do |user|
+        profile = user.active_profile
+        success = false
+
+        log_texts = []
+
+        if !profile
+          log_texts << log_text[:profile_not_active]
+        else
+          begin
+            profile.deactivate_duplicate
+            success = true
+            log_texts << log_text[:deactivated_duplicate]
+          rescue RuntimeError => error
+            log_texts << "Error: #{error.message}"
+          end
+        end
+
+        log_texts.each do |text|
+          table, messages = log_message(
+            uuid: user.uuid,
+            log: text,
+            reason: config.reason,
+            table:,
+            messages:,
+          )
+        end
+      ensure
+        if !success
+          analytics_error_hash = { message: log_texts.last }
+        end
+
+        Analytics.new(
+          user: user,
+          request: nil,
+          session: {},
+          sp: nil,
+        ).one_account_deactivate_duplicate_profile(
+          success:,
+          errors: analytics_error_hash,
+        )
+      end
+
+      missing_uuids = (uuids - users.map(&:uuid))
+
+      if config.include_missing? && !missing_uuids.empty?
+        missing_uuids.each do |missing_uuid|
+          table, messages = log_message(
+            uuid: missing_uuid,
+            log: log_text[:missing_uuid],
+            reason: config.reason,
+            table:,
+            messages:,
+          )
+        end
+        Analytics.new(
+          user: AnonymousUser.new, request: nil, session: {}, sp: nil,
+        ).one_account_deactivate_duplicate_profile(
+          success: false,
+          errors: { message: log_text[:missing_uuid] },
+        )
+      end
+
+      ScriptBase::Result.new(
+        subtask: 'deactivate-duplicate',
+        uuids: users.map(&:uuid),
+        messages:,
+        table:,
+      )
+    end
+  end
+
+  class ClearDuplicate
+    include LogBase
+    def run(args:, config:)
+      uuids = args
+
+      users = User.where(uuid: uuids).order(:uuid)
+
+      table = []
+      table << %w[uuid status reason]
+
+      messages = []
+
+      users.each do |user|
+        profile = user.active_profile
+        success = false
+
+        log_texts = []
+
+        if !profile
+          log_texts << log_text[:profile_not_active]
+        else
+          begin
+            profile.clear_duplicate
+            success = true
+            log_texts << log_text[:cleared_duplicate]
+          rescue RuntimeError => error
+            log_texts << "Error: #{error.message}"
+          end
+        end
+
+        log_texts.each do |text|
+          table, messages = log_message(
+            uuid: user.uuid,
+            log: text,
+            reason: config.reason,
+            table:,
+            messages:,
+          )
+        end
+      ensure
+        if !success
+          analytics_error_hash = { message: log_texts.last }
+        end
+
+        Analytics.new(
+          user: user,
+          request: nil,
+          session: {},
+          sp: nil,
+        ).one_account_clear_duplicate_profile(
+          success:,
+          errors: analytics_error_hash,
+        )
+      end
+
+      missing_uuids = (uuids - users.map(&:uuid))
+
+      if config.include_missing? && !missing_uuids.empty?
+        missing_uuids.each do |missing_uuid|
+          table, messages = log_message(
+            uuid: missing_uuid,
+            log: log_text[:missing_uuid],
+            reason: config.reason,
+            table:,
+            messages:,
+          )
+        end
+        Analytics.new(
+          user: AnonymousUser.new, request: nil, session: {}, sp: nil,
+        ).one_account_clear_duplicate_profile(
+          success: false,
+          errors: { message: log_text[:missing_uuid] },
+        )
+      end
+
+      ScriptBase::Result.new(
+        subtask: 'clear-duplicate',
+        uuids: users.map(&:uuid),
+        messages:,
+        table:,
+      )
+    end
+  end
+
+  class CloseInconclusiveDuplicate
+    include LogBase
+    def run(args:, config:)
+      uuids = args
+
+      users = User.where(uuid: uuids).order(:uuid)
+
+      table = []
+      table << %w[uuid status reason]
+
+      messages = []
+
+      users.each do |user|
+        profile = user.active_profile
+        success = false
+
+        log_texts = []
+
+        if !profile
+          log_texts << log_text[:profile_not_active]
+        else
+          begin
+            profile.close_inconclusive_duplicate
+            success = true
+            log_texts << log_text[:closed_inconclusive_duplicate]
+          rescue RuntimeError => error
+            log_texts << "Error: #{error.message}"
+          end
+        end
+
+        log_texts.each do |text|
+          table, messages = log_message(
+            uuid: user.uuid,
+            log: text,
+            reason: config.reason,
+            table:,
+            messages:,
+          )
+        end
+      ensure
+        if !success
+          analytics_error_hash = { message: log_texts.last }
+        end
+
+        Analytics.new(
+          user: user,
+          request: nil,
+          session: {},
+          sp: nil,
+        ).one_account_close_inconclusive_duplicate(
+          success:,
+          errors: analytics_error_hash,
+        )
+      end
+
+      missing_uuids = (uuids - users.map(&:uuid))
+
+      if config.include_missing? && !missing_uuids.empty?
+        missing_uuids.each do |missing_uuid|
+          table, messages = log_message(
+            uuid: missing_uuid,
+            log: log_text[:missing_uuid],
+            reason: config.reason,
+            table:,
+            messages:,
+          )
+        end
+        Analytics.new(
+          user: AnonymousUser.new, request: nil, session: {}, sp: nil,
+        ).one_account_close_inconclusive_duplicate(
+          success: false,
+          errors: { message: log_text[:missing_uuid] },
+        )
+      end
+
+      ScriptBase::Result.new(
+        subtask: 'close-inconclusive-duplicate',
+        uuids: users.map(&:uuid),
+        messages:,
+        table:,
+      )
+    end
   end
 
   class SuspendUser
@@ -386,6 +697,17 @@ class ActionAccount
         args:,
         config:,
         action: :confirm_suspend,
+      )
+    end
+  end
+
+  class ClearDeviceProfilingFailure
+    include UserActions
+    def run(args:, config:)
+      perform_user_action(
+        args:,
+        config:,
+        action: :clear_device_profiling_failure,
       )
     end
   end

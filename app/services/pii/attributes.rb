@@ -18,6 +18,8 @@ module Pii
     # the state in the state id address, which may not be the state that issued the ID
     :identity_doc_address_state,
     :ssn, :dob, :phone,
+    # The country the passport was issued in.
+    :issuing_country_code,
     *DEPRECATED_PII_ATTRIBUTES,
     keyword_init: true
   ) do

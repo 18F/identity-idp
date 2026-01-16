@@ -34,7 +34,7 @@ class OpenidConnectTokenForm
     ATTRS.each do |key|
       instance_variable_set(:"@#{key}", params[key])
     end
-    @session_expiration = IdentityConfig.store.session_timeout_in_minutes.minutes.ago
+    @session_expiration = IdentityConfig.store.session_timeout_in_seconds.seconds.ago
     @identity = find_identity_with_code
   end
 

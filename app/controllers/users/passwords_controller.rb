@@ -25,6 +25,10 @@ module Users
       )
 
       result = @update_user_password_form.submit(user_password_params)
+      attempts_api_tracker.logged_in_password_change(
+        success: result.success?,
+        failure_reason: attempts_api_tracker.parse_failure_reason(result),
+      )
 
       analytics.password_changed(**result)
 

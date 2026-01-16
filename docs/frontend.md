@@ -1,5 +1,45 @@
 # Front-end Architecture
 
+While the Login.gov application is architected as a Ruby on Rails project and most of its pages are
+fully rendered by the backend server, the front end is set up to use modern best-practices to suit
+the needs of interactivity and consistency in the user experience, and to ensure a maintainable and
+convenient developer experience.
+
+As a high-level overview, the front end consists of:
+
+- [Propshaft](https://github.com/rails/propshaft) is used as an asset pipeline library for Ruby on
+  Rails, in combination with [cssbundling-rails](https://github.com/rails/cssbundling-rails) and
+  [jsbundling-rails](https://github.com/rails/jsbundling-rails) for compiling stylesheets and
+  scripts.
+- JavaScript is written as [TypeScript](https://www.typescriptlang.org/), bundled using [Webpack](https://webpack.js.org/)
+  with syntax transformation applied by [Babel](https://babeljs.io/).
+   - For highly-interactive pages, we use [React](https://react.dev/)
+   - For all other JavaScript interaction, we use native [web components](https://developer.mozilla.org/en-US/docs/Web/API/Web_components)
+     (custom elements)
+- Stylesheets are written as [Sass](https://sass-lang.com/), and builds upon the [Login.gov Design System](https://github.com/18F/identity-design-system),
+  which in turn builds upon the [U.S. Web Design System (USWDS)](https://designsystem.digital.gov/).
+- HTML reuse is facilitated by the [ViewComponent](https://viewcomponent.org/) gem.
+
+The general folder structure for front-end assets includes:
+
+- `app/`
+  - `assets/`
+    - `builds/`: Source location for compiled stylesheets used by Propshaft in asset compilation
+    - `fonts/`: Source font assets
+    - `images/`: Source image assets
+    - `stylesheets/`: Source Sass files
+  - [`components/`][components-readme]: ViewComponent implementations
+  - `javascript/`
+    - [`packages/`][packages-readme]: JavaScript workspace npm packages
+    - [`packs/`][packs-readme]: JavaScript entrypoints referenced by pages
+- `public/`
+  - `assets/`: Compiled images, fonts, and stylesheets
+  - `packs/`: Compiled JavaScript
+
+[components-readme]: ../app/components/README.md
+[packages-readme]: ../app/javascript/packages/README.md
+[packs-readme]: ../app/javascript/packs/README.md
+
 ## CSS + HTML
 
 ### At a Glance
@@ -22,15 +62,45 @@ margins or borders.
 
 - [U.S. Web Design System utilities](https://designsystem.digital.gov/utilities/)
 
+### CSS Build Tooling
+
+Stylesheets are compiled from Sass source files using our [`@18f/identity-build-sass` npm package](../app/javascript/packages/build-sass/README.md)
+`build-sass` command-line utility.
+
+`@18f/identity-build-sass` is a wrapper of the official Sass [`sass-embedded` npm package](https://www.npmjs.com/package/sass-embedded),
+with a few additional features:
+
+- Minifies stylesheets in production environments.
+- Downgrades stylesheets to use browser vendor prefixes where necessary.
+- Adds load paths for the [Login.gov Design System](https://github.com/18f/identity-design-system)
+  and [U.S. Web Design System](https://designsystem.digital.gov/).
+
+Sass source files are automatically compiled from:
+
+- `app/assets/stylesheets/`: Application-wide stylesheets to be included in every page.
+- `app/components/`: Stylesheets which are loaded automatically whenever the corresponding
+  ViewComponent component implementation is used in a page.
+
+Compiled files are output to the `app/assets/builds/` directory, which is where [Propshaft](https://github.com/rails/propshaft)
+looks for assets referenced by asset URL helpers like `stylesheet_path` and others.
+
+In deployed environments, we rely on Propshaft to append a [fingerprint](https://en.wikipedia.org/wiki/Fingerprint_(computing))
+suffix to invalidate caches for previous versions of the stylesheet.
+
+The [`cssbundling-rails` gem](https://github.com/rails/cssbundling-rails) is a dependency of the
+project, which enhances `rake assets:precompile` to invoke `npm run build:css` as part of
+[assets precompilation](https://guides.rubyonrails.org/asset_pipeline.html#precompiling-assets)
+during application deployment.
+
 ## JavaScript
 
 ### At a Glance
 
 - All new code is expected to be written using [TypeScript](https://www.typescriptlang.org/) (`.ts` or `.tsx` file extension)
 - The site should be functional even when JavaScript is disabled, with a few specific exceptions (identity proofing)
-- The code follows [TTS JavaScript standards](https://engineering.18f.gov/javascript/), using a [custom ESLint configuration](https://github.com/18F/identity-idp/tree/main/app/javascript/packages/eslint-plugin)
+- The code follows [TTS JavaScript standards](https://guides.18f.org/engineering/languages-runtimes/javascript/), using a [custom ESLint configuration](https://github.com/18F/identity-idp/tree/main/app/javascript/packages/eslint-plugin)
 - Code styling is formatted automatically using [Prettier](https://prettier.io/)
-- Packages are managed with [Yarn](https://classic.yarnpkg.com/), organized using [Yarn workspaces](https://classic.yarnpkg.com/en/docs/workspaces/)
+- Packages are managed with [npm](https://docs.npmjs.com/), organized using [npm workspaces](https://docs.npmjs.com/cli/using-npm/workspaces)
 - JavaScript is transpiled, bundled, and minified via [Webpack](https://webpack.js.org/) and [Babel](https://babeljs.io/)
 
 ### Naming Conventions
@@ -54,16 +124,16 @@ debates over code style, since there is a consistent style being enforced throug
 tooling.
 
 Prettier is integrated with [the project's linting setup](#eslint). Most issues can be resolved
-automatically by running `yarn run lint --fix`. You may also consider one of the
+automatically by running `npm run lint -- --fix`. You may also consider one of the
 [available editor integrations](https://prettier.io/docs/en/editors.html), which can simplify your
 workflow to apply formatting automatically on save.
 
-### Yarn Workspaces
+### npm Workspaces
 
-[Workspaces](https://classic.yarnpkg.com/en/docs/workspaces/) allow a developer to create and
-organize code which is used just like any other NPM package, but which doesn't require the overhead
+[Workspaces](https://docs.npmjs.com/cli/using-npm/workspaces) allow a developer to create and
+organize code which is used just like any other npm package, but which doesn't require the overhead
 involved in publishing those modules and keeping versions in sync across multiple repositories. We
-use Yarn workspaces to keep JavaScript code organized, reusable, and to encourage good coding
+use npm workspaces to keep JavaScript code organized, reusable, and to encourage good coding
 practices in abstractions.
 
 In practice:
@@ -72,19 +142,19 @@ In practice:
 - Each package should have its own `package.json` that includes...
   - ...a `name` starting with `@18f/identity-` and ending with the name of the package folder.
   - ...a [`private`](https://docs.npmjs.com/files/package.json#private) value indicating whether the
-    package is intended to be published to NPM.
+    package is intended to be published to npm.
   - ...a value for the `version` field, since it is required. The value value can be anything, and
     `"1.0.0"` is a good default.
   - ...a `sideEffects` value listing files containing any side effects, used for [Webpack's Tree Shaking optimization](https://webpack.js.org/guides/tree-shaking/).
 - The package should be importable by its bare name, either with an `index.ts` or equivalent
   [package entrypoints](https://nodejs.org/api/packages.html#package-entry-points)
 
-As with any public NPM package, a workspace package should ideally be reusable and avoid direct
+As with any public npm package, a workspace package should ideally be reusable and avoid direct
 references to page elements. In order to integrate a package within a particular page, you should
 either reference it within [a ViewComponent component's accompanying script](https://github.com/18F/identity-idp/blob/main/app/components/README.md),
 or by creating a new `app/javascript/packs` file to be loaded on a page.
 
-Because Yarn will alias workspace packages using symlinks, you can reference a package using the
+Because npm will alias workspace packages using symlinks, you can reference a package using the
 name you assigned using the guidelines above for `package.json` `name` field (for example,
 `import { Button } from '@18f/identity-components';`).
 
@@ -92,7 +162,7 @@ name you assigned using the guidelines above for `package.json` `name` field (fo
 
 While the project is not a Node.js application or library, the distinction between `dependencies`
 and `devDependencies` is important due to how assets are precompiled in deployed environments.
-During a deployment, dependencies are installed using [the `--production` flag](https://classic.yarnpkg.com/lang/en/docs/cli/install/#toc-yarn-install-production-true-false),
+During a deployment, dependencies are installed using [the `--omit=dev` flag](https://docs.npmjs.com/cli/commands/npm-install#omit),
 meaning that all dependencies which are required to build the project must be defined as
 `dependencies`, not as `devDependencies`.
 
@@ -102,30 +172,22 @@ TypeScript declaration packages. When possible, it is still useful to define `de
 improve the performance of application asset compilation.
 
 When installing new dependencies, consider whether the dependency is relevant for an individual
-workspace package, or for the entire project. By default, Yarn will warn when trying to install a
-dependency in the root package, since dependencies should typically be installed for a specific
-workspace.
+workspace package, or for the entire project. Dependencies should typically be installed for a specific
+workspace rather than the root unless absolutely necessary.
 
 To install a dependency to a workspace:
 
 ```bash
-yarn workspace @18f/identity-build-sass add sass-embedded
-```
-
-To install a dependency to the project:
-
-```bash
-# Note the `-W` flag
-yarn add -W webpack
+npm install sass-embedded -w @18f/identity-build-sass
 ```
 
 As much as possible, try to use the same version of a dependency when it is used across multiple
 workspace packages. Otherwise, it can inflate the size of the compiled bundles and have a negative
 performance impact on users.
 
-We use [`yarn-deduplicate`](https://github.com/scinos/yarn-deduplicate)
-to deduplicate resolved package versions within the Yarn lockfile, and enforce it with
-the `make lint_yarn_lock` check.
+We use [`npm dedupe`](https://docs.npmjs.com/cli/commands/npm-dedupe)
+to deduplicate resolved package versions within the npm lockfile, and enforce it with
+the `make lint_package_lock` check.
 
 ### Localization
 
@@ -155,6 +217,54 @@ how [`Idv::AnalyticsEventEnhancer`][analytics_events_enhancer.rb] is implemented
 [data_attributes]: https://developer.mozilla.org/en-US/docs/Learn/HTML/Howto/Use_data_attributes
 [analytics_events_enhancer.rb]: https://github.com/18F/identity-idp/blob/main/app/services/idv/analytics_events_enhancer.rb
 
+### JavaScript Build Tooling
+
+JavaScript is bundled using [Webpack](https://webpack.js.org/) with syntax transformation applied by
+[Babel](https://babeljs.io/).
+
+Webpack is configured to look for entrypoints in:
+
+- `app/javascript/packs/`: JavaScript bundles that are loaded in Ruby on Rails view files using the
+  `javascript_packs_tag_once` script helper.
+- `app/components/`: JavaScript bundles which are loaded automatically whenever the corresponding
+  ViewComponent component implementation is used in a page.
+
+Compiled files are output to the `public/packs/` directory, along with a manifest file. The manifest
+file is used by the Ruby on Rails backend to determine all of the assets associated with a given
+pack to be included when the script is referenced:
+
+- The exact file name of the compiled script, which may include a [fingerprint](https://en.wikipedia.org/wiki/Fingerprint_(computing))
+  suffix to invalidate caches for previous versions of the script in deployed environments.
+- A list of images and other assets referenced in a script using [`@18f/identity-assets` package](../app/javascript/packages/assets/README.md)
+  utilities.
+- A reference to additional JavaScript file for each locale containing translations, if the script
+  uses [`@18f/identity-i18n` package](../app/javascript/packages/i18n/README.md)
+  translation functions.
+- SHA256 checksums of compiled scripts, used for [subresource integrity attributes](https://developer.mozilla.org/en-US/docs/Web/Security/Subresource_Integrity).
+
+As an example, see [the manifest file for current production JavaScript assets](https://secure.login.gov/packs/manifest.json).
+
+The manifest is generated using [WebpackManifestPlugin](https://github.com/shellscape/webpack-manifest-plugin),
+enhanced with custom Webpack plugins:
+
+- [`RailsAssetsWebpackPlugin`][rails-assets-webpack-plugin-readme]: Detects calls to `getAssetPath`
+  to enhance the manifest to include the set of assets referenced by a script bundle.
+- [`RailsI18nWebpackPlugin`][rails-i18n-webpack-plugin-readme]: Detects calls to `t` translation
+  function to generate new script files for every supported locale containing translations data for
+  keys referenced by a script bundle, enhancing the manifest to add those new script files as
+  additional assets of the script.
+
+The JavaScript manifest is parsed by the [`AssetSources` class](../lib/asset_sources.rb) when the
+[`render_javascript_pack_once_tags` script helper method](../app/helpers/script_helper.rb) is called
+in the application's view layout.
+
+The [`jsbundling-rails` gem](https://github.com/rails/jsbundling-rails) is a dependency of the
+project, which enhances `rake assets:precompile` to invoke `npm run build` as part of [assets precompilation](https://guides.rubyonrails.org/asset_pipeline.html#precompiling-assets)
+during application deployment.
+
+[rails-assets-webpack-plugin-readme]: ../app/javascript/packages/assets/README.md
+[rails-i18n-webpack-plugin-readme]: ../app/javascript/packages/rails-i18n-webpack-plugin/README.md
+
 ## Image Assets
 
 When possible, use SVG format for images, as these render at higher quality and with a smaller file
@@ -168,7 +278,7 @@ may also be rendered in formats other than SVG, since these are provided to us b
 Image assets saved in source control should be optimized using a lossless image optimizer before
 being committed, to ensure they're served to users at the lowest possible file size. This is
 [enforced automatically for SVG images][lint-optimized-assets], but must be done manually for other
-image types. Consider using a tool like [Squoosh][squoosh] (web) or [ImageOptim][image-optim]
+image types. Consider using a tool like [Squoosh][squoosh] (web) or [ImageOptim][imageoptim]
 (macOS) for these other image types.
 
 Since images, GIFs, and videos are artifacts authored in other tools, there is no need to keep
@@ -267,14 +377,14 @@ For example, consider a **Password Input** component:
 
 Login.gov publishes and uses
 [our own custom Stylelint configuration](https://www.npmjs.com/package/@18f/identity-stylelint-config),
-which is based on [TTS engineering best-practices](https://engineering.18f.gov/css/) and includes recommended Sass rules, applies [Prettier](https://prettier.io/) formatting, and
+which is based on [TTS engineering best-practices](https://guides.18f.org/engineering/languages-runtimes/css/) and includes recommended Sass rules, applies [Prettier](https://prettier.io/) formatting, and
 enforces
 [BEM-style class naming conventions](https://en.bem.info/methodology/naming-convention/#two-dashes-style).
 
 It may be useful to consider installing a
 [Prettier editor integration](https://prettier.io/docs/en/editors.html) to automatically format
 files on save. Similarly, a
-[Stylelint editor integration](https://stylelint.io/user-guide/integrations/editor) can help
+[Stylelint editor integration](https://stylelint.io/user-guide/customize/#using-stylelint) can help
 identify issues in your code as you write.
 
 ### Mocha
@@ -294,13 +404,13 @@ and support [querying by accessible semantics](https://testing-library.com/docs/
 To run all test specs:
 
 ```
-yarn test
+npm test
 ```
 
 To run a single test file:
 
 ```
-yarn mocha app/javascript/packages/analytics/index.spec.ts
+npm exec mocha app/javascript/packages/analytics/index.spec.ts
 ```
 
 You can also pass any [Mocha command-line arguments](https://mochajs.org/#command-line-usage).
@@ -308,7 +418,7 @@ You can also pass any [Mocha command-line arguments](https://mochajs.org/#comman
 For example, to watch a file and rerun tests after any change:
 
 ```
-yarn mocha app/javascript/packages/analytics/index.spec.ts --watch
+npm exec mocha app/javascript/packages/analytics/index.spec.ts -- --watch
 ```
 
 ### ESLint
@@ -318,13 +428,13 @@ yarn mocha app/javascript/packages/analytics/index.spec.ts --watch
 To analyze all JavaScript files:
 
 ```
-yarn run lint
+npm run lint
 ```
 
 Many issues can be fixed automatically by appending a `--fix` flag to the command:
 
 ```
-yarn run lint --fix
+npm run lint -- --fix
 ```
 
 ## Forms
@@ -362,8 +472,8 @@ If there is no record available, you can initialize `simple_form_for` with an em
 
 ### Form Validation
 
-Use [standards-based client-side form validation](https://developer.mozilla.org/en-US/docs/Learn/Forms/Form_validation)
-wherever possible. This is typically achieved using [input attributes](https://developer.mozilla.org/en-US/docs/Learn/Forms/Form_validation#using_built-in_form_validation)
+Use [standards-based client-side form validation](https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Forms/Form_validation)
+wherever possible. This is typically achieved using [input attributes](https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Forms/Form_validation#using_built-in_form_validation)
 to define validation constraints. For advanced validation, consider using the [`setCustomValidity`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLInputElement/setCustomValidity)
 function to assign or remove validation messages when an input's value changes.
 

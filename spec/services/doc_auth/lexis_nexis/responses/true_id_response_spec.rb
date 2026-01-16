@@ -6,14 +6,29 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
     instance_double(Faraday::Response, status: 200, body: success_response_body)
   end
   # rubocop:disable Layout/LineLength
+  let(:success_with_invalid_zip_extension) do
+    instance_double(Faraday::Response, status: 200, body: LexisNexisFixtures.true_id_response_success_with_invalid_zip_extension)
+  end
   let(:success_with_liveness_response) do
     instance_double(Faraday::Response, status: 200, body: LexisNexisFixtures.true_id_response_success_with_liveness)
+  end
+  let(:success_with_passport_response) do
+    instance_double(Faraday::Response, status: 200, body: LexisNexisFixtures.true_id_response_passport)
+  end
+  let(:success_with_passport_card_response) do
+    instance_double(Faraday::Response, status: 200, body: LexisNexisFixtures.true_id_response_passport_card)
+  end
+  let(:success_with_state_id_card_response) do
+    instance_double(Faraday::Response, status: 200, body: LexisNexisFixtures.true_id_response_state_id_card)
   end
   let(:doc_auth_success_with_face_match_fail) do
     instance_double(Faraday::Response, status: 200, body: LexisNexisFixtures.true_id_response_with_face_match_fail)
   end
   let(:success_with_failed_to_ocr_dob) do
     instance_double(Faraday::Response, status: 200, body: LexisNexisFixtures.true_id_response_failed_to_ocr_dob)
+  end
+  let(:success_with_passport_failed_to_ocr_dob) do
+    instance_double(Faraday::Response, status: 200, body: LexisNexisFixtures.true_id_response_passport_failed_to_ocr_dob)
   end
   let(:failure_response_face_match_fail) do
     instance_double(Faraday::Response, status: 200, body: LexisNexisFixtures.true_id_response_with_face_match_fail)
@@ -26,6 +41,9 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
   end
   let(:failure_response_tampering) do
     instance_double(Faraday::Response, status: 200, body: LexisNexisFixtures.true_id_response_failure_tampering)
+  end
+  let(:failure_response_passport_tampering) do
+    instance_double(Faraday::Response, status: 200, body: LexisNexisFixtures.true_id_response_passport_failure_tampering)
   end
   let(:failure_response_with_all_failures) do
     instance_double(Faraday::Response, status: 200, body: LexisNexisFixtures.true_id_response_failure_with_all_failures)
@@ -53,11 +71,15 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
   end
   # rubocop:enable Layout/LineLength
 
+  let(:passport_requested) { false }
   let(:config) do
     DocAuth::LexisNexis::Config.new
   end
   let(:liveness_checking_enabled) { false }
   let(:workflow) { 'default_workflow' }
+  let(:mrz) do
+    'P<UTOSAMPLE<<COMPANY<<<<<<<<<<<<<<<<<<<<<<<<ACU1234P<5UTO0003067F4003065<<<<<<<<<<<<<<02'
+  end
   let(:request_context) do
     {
       workflow: workflow,
@@ -65,12 +87,40 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
   end
   context 'when the response is a success' do
     let(:response) do
-      described_class.new(success_response, config, liveness_checking_enabled, request_context)
+      described_class.new(
+        http_response: success_response,
+        passport_requested:,
+        config:,
+        liveness_checking_enabled:,
+        request_context:,
+      )
     end
 
     it 'is a successful result' do
       expect(response.successful_result?).to eq(true)
+      expect(response.selfie_status).to eq(:not_processed)
+      expect(response.success?).to eq(true)
       expect(response.to_h[:vendor]).to eq('TrueID')
+    end
+
+    context 'when postal code extension is invalid' do
+      let(:response) do
+        described_class.new(
+          http_response: success_with_invalid_zip_extension,
+          passport_requested:,
+          config:,
+          liveness_checking_enabled:,
+          request_context:,
+        )
+      end
+
+      it 'shortens postal code' do
+        expect(response.successful_result?).to eq(true)
+        expect(response.selfie_status).to eq(:not_processed)
+        expect(response.success?).to eq(true)
+        expect(response.to_h[:vendor]).to eq('TrueID')
+        expect(response.pii_from_doc.zipcode).to eq('12345')
+      end
     end
 
     context 'when a portrait match is returned' do
@@ -78,8 +128,11 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
       context 'when selfie status is failed' do
         let(:response) do
           described_class.new(
-            doc_auth_success_with_face_match_fail, config,
-            liveness_checking_enabled, request_context
+            http_response: doc_auth_success_with_face_match_fail,
+            passport_requested:,
+            config:,
+            liveness_checking_enabled:,
+            request_context:,
           )
         end
         it 'is a failed result' do
@@ -87,21 +140,16 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
           expect(response.success?).to eq(false)
           expect(response.to_h[:vendor]).to eq('TrueID')
         end
-
-        context 'when a liveness check was not requested' do
-          let(:liveness_checking_enabled) { false }
-          it 'is a successful result' do
-            expect(response.selfie_status).to eq(:not_processed)
-            expect(response.success?).to eq(true)
-            expect(response.to_h[:vendor]).to eq('TrueID')
-          end
-        end
       end
+
       context 'when selfie status passes' do
         let(:response) do
           described_class.new(
-            success_with_liveness_response, config, liveness_checking_enabled,
-            request_context
+            http_response: success_with_liveness_response,
+            passport_requested:,
+            config:,
+            liveness_checking_enabled:,
+            request_context:,
           )
         end
         it 'is a successful result' do
@@ -133,20 +181,20 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
         city: 'ANYTOWN',
         state: 'MD',
         dob: '1986-07-01',
-        sex: nil,
-        height: nil,
+        sex: 'male',
+        height: 69,
         weight: nil,
         eye_color: nil,
         state_id_expiration: '2099-10-15',
         state_id_issued: '2016-10-15',
         state_id_jurisdiction: 'MD',
         state_id_number: 'M555555555555',
-        state_id_type: 'drivers_license',
+        document_type_received: 'drivers_license',
         zipcode: '12345',
         issuing_country_code: 'USA',
       )
 
-      expect(response.pii_from_doc).to eq(expected_state_id_pii)
+      expect(response.pii_from_doc.to_h).to eq(expected_state_id_pii.to_h)
     end
 
     it 'excludes pii fields from logging' do
@@ -232,7 +280,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
       expect(response.doc_type_supported?).to eq(true)
     end
 
-    context 'when identification card issued by a country' do
+    context 'when identification card issued by a library' do
       let(:success_response) do
         body = JSON.parse(LexisNexisFixtures.true_id_response_success_3).tap do |json|
           doc_class_node = json['Products'].first['ParameterDetails']
@@ -240,7 +288,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
           doc_class_node.first['Values'].first['Value'] = 'Identification Card'
           doc_issuer_type = json['Products'].first['ParameterDetails']
             .select { |f| f['Name'] == 'DocIssuerType' && f['Group'] == 'AUTHENTICATION_RESULT' }
-          doc_issuer_type.first['Values'].first['Value'] = 'Country'
+          doc_issuer_type.first['Values'].first['Value'] = 'Library'
         end.to_json
         instance_double(Faraday::Response, status: 200, body: body)
       end
@@ -250,20 +298,11 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
       end
     end
 
-    context 'when doc_auth_read_additional_pii_attributes_enabled is enabled' do
-      before do
-        allow(IdentityConfig.store).to receive(:doc_auth_read_additional_pii_attributes_enabled)
-          .and_return(true)
-      end
-
+    context 'when height is present' do
       let(:success_response_body) { LexisNexisFixtures.true_id_response_success }
 
-      it 'reads the additional PII attributes' do
+      it 'properly converts the height to inches' do
         pii_from_doc = response.pii_from_doc
-
-        expect(pii_from_doc.first_name).to eq('LICENSE')
-        expect(pii_from_doc.name_suffix).to eq('JR')
-        expect(pii_from_doc.sex).to eq('male')
         expect(pii_from_doc.height).to eq(68)
       end
 
@@ -278,6 +317,259 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
         end
       end
     end
+
+    context 'when identification card' do
+      let(:response) do
+        described_class.new(
+          http_response: success_with_state_id_card_response,
+          passport_requested:,
+          config:,
+          liveness_checking_enabled:,
+          request_context:,
+        )
+      end
+
+      it 'is a successful result' do
+        expect(response.successful_result?).to eq(true)
+        expect(response.selfie_status).to eq(:not_processed)
+        expect(response.success?).to eq(true)
+        expect(response.to_h[:vendor]).to eq('TrueID')
+      end
+
+      it 'records the document_type_received as passport_card' do
+        expect(response.pii_from_doc.document_type_received).to eq('identification_card')
+      end
+    end
+  end
+
+  context 'when the id type requested does not match the id type submitted' do
+    context 'when passport is requested but drivers_license is submitted' do
+      let(:passport_requested) { true }
+      let(:response) do
+        described_class.new(
+          http_response: success_response,
+          passport_requested:,
+          config:,
+          liveness_checking_enabled:,
+          request_context:,
+        )
+      end
+
+      it 'is not a successful result' do
+        expect(response.successful_result?).to eq(false)
+      end
+
+      it 'has error messages' do
+        expect(response.error_messages[:unexpected_id_type])
+          .to eq(true)
+        expect(response.error_messages[:expected_id_type])
+          .to eq('passport')
+      end
+    end
+
+    context 'when passport is not requested but passport is submitted' do
+      let(:passport_requested) { false }
+      let(:response) do
+        described_class.new(
+          http_response: success_with_passport_response,
+          passport_requested:,
+          config:,
+          liveness_checking_enabled:,
+          request_context:,
+        )
+      end
+
+      it 'is not a successful result' do
+        expect(response.successful_result?).to eq(false)
+      end
+
+      it 'has error messages' do
+        expect(response.error_messages[:unexpected_id_type])
+          .to eq(true)
+        expect(response.error_messages[:expected_id_type])
+          .to eq('drivers_license')
+      end
+    end
+  end
+
+  context 'when the response is a success with passport card' do
+    let(:response) do
+      described_class.new(
+        http_response: success_with_passport_card_response,
+        passport_requested:,
+        config:,
+        liveness_checking_enabled:,
+        request_context:,
+      )
+    end
+
+    context 'when passports are enabled' do
+      let(:passport_requested) { true }
+
+      it 'is not a successful result' do
+        expect(response.successful_result?).to eq(false)
+      end
+
+      it 'records the document_type_received as passport_card' do
+        expect(response.pii_from_doc.document_type_received).to eq('passport_card')
+      end
+
+      it 'has error messages' do
+        expect(response.error_messages[:passport_card]).to eq(
+          I18n.t('doc_auth.errors.doc.doc_type_check'),
+        )
+      end
+    end
+  end
+
+  context 'when the response is a success for passport' do
+    let(:passport_requested) { true }
+    let(:response) do
+      described_class.new(
+        http_response: success_with_passport_response,
+        passport_requested:,
+        config:,
+        liveness_checking_enabled:,
+        request_context:,
+      )
+    end
+
+    it 'is a successful result' do
+      expect(response.successful_result?).to eq(true)
+      expect(response.to_h[:vendor]).to eq('TrueID')
+    end
+
+    it 'has no error messages' do
+      expect(response.error_messages).to be_empty
+    end
+
+    it 'has extra attributes' do
+      extra_attributes = response.extra_attributes
+      expect(extra_attributes).not_to be_empty
+      expect(extra_attributes[:classification_info]).to include(:Front)
+      expect(extra_attributes).to have_key(:workflow)
+      expect(extra_attributes).to have_key(:reference)
+    end
+    it 'has PII data' do
+      expected_passport_pii = Pii::Passport.new(
+        first_name: 'DAVID',
+        last_name: 'SAMPLE',
+        middle_name: 'PASSPORT',
+        dob: '1986-07-01',
+        sex: 'male',
+        birth_place: 'MY CITY. U.S.A.',
+        passport_expiration: '2099-10-15',
+        passport_issued: '2016-10-15',
+        nationality_code: 'USA',
+        issuing_country_code: 'USA',
+        mrz: mrz,
+        document_type_received: 'passport',
+        document_number: 'Z12345678',
+      )
+
+      expect(response.pii_from_doc.to_h).to eq(expected_passport_pii.to_h)
+    end
+
+    it 'excludes pii fields from logging' do
+      expect(response.extra_attributes.keys).to_not include(*described_class::PII_EXCLUDES)
+    end
+
+    it 'excludes unnecessary raw Alert data from logging' do
+      expect(response.extra_attributes.keys.any? { |key| key.start_with?('Alert_') }).to eq(false)
+    end
+
+    it 'produces expected hash output' do
+      response_hash = response.to_h
+      expect(response_hash).to match(
+        success: true,
+        exception: nil,
+        errors: {},
+        attention_with_barcode: false,
+        conversation_id: a_kind_of(String),
+        request_id: a_kind_of(String),
+        doc_type_supported: true,
+        reference: a_kind_of(String),
+        vendor: 'TrueID',
+        billed: true,
+        log_alert_results: a_hash_including('2d_barcode_content': { no_side: 'Passed' }),
+        transaction_status: 'passed',
+        transaction_reason_code: 'trueid_pass',
+        product_status: 'pass',
+        decision_product_status: 'pass',
+        processed_alerts: a_hash_including(:failed),
+        address_line2_present: false,
+        alert_failure_count: a_kind_of(Numeric),
+        portrait_match_results: nil,
+        image_metrics: a_hash_including(:front),
+        doc_auth_result: 'Passed',
+        'ClassificationMode' => 'Automatic',
+        'DocAuthResult' => 'Passed',
+        'DocClass' => 'Passport',
+        'DocClassCode' => 'Passport',
+        'DocClassName' => 'Passport',
+        'DocumentName' => 'United States (USA) Passport - STAR',
+        'DocIssuerCode' => 'USA',
+        'DocIssuerName' => 'United States',
+        'DocIssue' => '2016',
+        'DocIsGeneric' => 'false',
+        'DocIssuerType' => 'Country',
+        'DocIssueType' => 'Passport - STAR',
+        'OrientationChanged' => 'true',
+        'PresentationChanged' => 'false',
+        'DocAuthTamperResult' => 'Passed',
+        'DocAuthTamperSensitivity' => 'Normal',
+        classification_info: {
+          Front: a_hash_including(:ClassName, :CountryCode, :IssuerType),
+        },
+        doc_auth_success: true,
+        selfie_status: :not_processed,
+        selfie_live: true,
+        selfie_quality_good: true,
+        liveness_enabled: false,
+        workflow: anything,
+      )
+      passed_alerts = response_hash.dig(:processed_alerts, :passed)
+      passed_alerts.each do |alert|
+        expect(alert).to have_key(:disposition)
+      end
+      alerts_with_mode_etc = passed_alerts.select do |alert|
+        alert[:model].present? && alert[:region].present? && alert[:region_ref].present?
+      end
+      expect(alerts_with_mode_etc).not_to be_empty
+      alerts_with_mode_etc.each do |alert|
+        alert[:region_ref].each do |region_ref|
+          expect(region_ref).to include(:side, :key)
+        end
+      end
+    end
+
+    it 'mark doc type as supported' do
+      expect(response.doc_type_supported?).to eq(true)
+    end
+  end
+
+  context 'when the response is a failure for passport' do
+    let(:passport_requested) { true }
+
+    it 'produces appropriate errors with passport tampering' do
+      response = described_class.new(
+        http_response: failure_response_passport_tampering,
+        passport_requested:,
+        config:,
+      )
+      output = response.to_h
+      errors = output[:errors]
+      expect(output.to_h[:log_alert_results]).to include(
+        document_tampering_detection: { no_side: 'Failed' },
+      )
+      expect(output[:success]).to eq(false)
+      expect(errors.keys).to contain_exactly(:general, :front, :back, :hints)
+      # we dont have specific error for tampering yet
+      expect(errors[:general]).to contain_exactly(DocAuth::Errors::GENERAL_ERROR)
+      expect(errors[:front]).to contain_exactly(DocAuth::Errors::FALLBACK_FIELD_LEVEL)
+      expect(errors[:hints]).to eq(true)
+      expect(response.doc_auth_success?).to eq(false)
+    end
   end
 
   context 'when there is no address line 2' do
@@ -289,7 +581,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
       instance_double(Faraday::Response, status: 200, body: body_no_line2)
     end
 
-    let(:response) { described_class.new(success_response_no_line2, config) }
+    let(:response) { described_class.new(http_response: success_response_no_line2, config: config) }
 
     it 'notes that address line 2 was not present' do
       expect(response.pii_from_doc.address2).to be_nil
@@ -311,7 +603,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
           Faraday::Response, status: 200,
                              body: body_no_decision
         )
-        response = described_class.new(success_response_no_decision, config)
+        response = described_class.new(http_response: success_response_no_decision, config: config)
 
         expect(response.to_h[:decision_product_status]).to be_nil
       end
@@ -329,7 +621,10 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
           Faraday::Response, status: 200,
                              body: body_no_decision_status
         )
-        response = described_class.new(success_response_no_decision_status, config)
+        response = described_class.new(
+          http_response: success_response_no_decision_status,
+          config:,
+        )
 
         expect(response.to_h[:decision_product_status]).to be_nil
       end
@@ -342,7 +637,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
 
   context 'when the barcode can not be read' do
     let(:response) do
-      described_class.new(attention_barcode_read, config)
+      described_class.new(http_response: attention_barcode_read, config:)
     end
 
     it 'is a successful result' do
@@ -366,26 +661,26 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
         city: 'ANYTOWN',
         state: 'MD',
         dob: '1986-10-13',
-        sex: nil,
-        height: nil,
+        sex: 'male',
+        height: 70,
         weight: nil,
         eye_color: nil,
         state_id_expiration: '2099-10-15',
         state_id_issued: '2016-10-15',
         state_id_jurisdiction: 'MD',
         state_id_number: 'M555555555555',
-        state_id_type: 'drivers_license',
+        document_type_received: 'drivers_license',
         zipcode: '12345',
         issuing_country_code: nil,
       )
 
-      expect(response.pii_from_doc).to eq(expected_state_id_pii)
+      expect(response.pii_from_doc.to_h).to eq(expected_state_id_pii.to_h)
     end
   end
 
   context 'when response is not a success' do
     it 'produces appropriate errors without liveness' do
-      output = described_class.new(failure_response_no_liveness, config).to_h
+      output = described_class.new(http_response: failure_response_no_liveness, config:).to_h
       errors = output[:errors]
       expect(output.to_h[:log_alert_results]).to eq(
         '2d_barcode_read': { no_side: 'Passed' },
@@ -420,8 +715,9 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
       let(:liveness_checking_enabled) { true }
       it 'returns Failed for visible_pattern when it gets passed and failed value ' do
         output = described_class.new(
-          failure_response_no_liveness, config,
-          liveness_checking_enabled
+          http_response: failure_response_no_liveness,
+          config:,
+          liveness_checking_enabled:,
         ).to_h
         expect(output.to_h[:log_alert_results])
           .to match(a_hash_including(visible_pattern: { no_side: 'Failed' }))
@@ -429,8 +725,9 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
 
       it 'returns Failed for liveness failure' do
         response = described_class.new(
-          failure_response_with_liveness, config,
-          liveness_checking_enabled
+          http_response: failure_response_with_liveness,
+          config:,
+          liveness_checking_enabled:,
         )
         output = response.to_h
         expect(output[:success]).to eq(false)
@@ -440,8 +737,10 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
 
       it 'produces expected hash output' do
         output = described_class.new(
-          failure_response_with_all_failures, config, liveness_checking_enabled,
-          request_context
+          http_response: failure_response_with_all_failures,
+          config:,
+          liveness_checking_enabled:,
+          request_context:,
         ).to_h
 
         expect(output).to match(
@@ -463,7 +762,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
           log_alert_results: a_hash_including('2d_barcode_content': { no_side: 'Failed' }),
           transaction_status: 'failed',
           transaction_reason_code: 'failed_true_id',
-          product_status: 'pass',
+          product_status: 'fail',
           decision_product_status: 'fail',
           doc_auth_result: 'Failed',
           processed_alerts: a_hash_including(:passed, :failed),
@@ -504,7 +803,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
       end
     end
     it 'produces appropriate errors with document tampering' do
-      output = described_class.new(failure_response_tampering, config).to_h
+      output = described_class.new(http_response: failure_response_tampering, config:).to_h
       errors = output[:errors]
       expect(output.to_h[:log_alert_results]).to include(
         document_tampering_detection: { no_side: 'Failed' },
@@ -521,7 +820,10 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
 
   context 'when response is unexpected' do
     it 'produces reasonable output for communications error' do
-      output = described_class.new(communications_error_response, config).to_h
+      output = described_class.new(
+        http_response: communications_error_response,
+        config:,
+      ).to_h
 
       expect(output[:success]).to eq(false)
       expect(output[:errors]).to eq(network: true)
@@ -530,7 +832,10 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
     end
 
     it 'produces reasonable output for internal application error' do
-      output = described_class.new(internal_application_error_response, config).to_h
+      output = described_class.new(
+        http_response: internal_application_error_response,
+        config:,
+      ).to_h
 
       expect(output[:success]).to eq(false)
       expect(output[:errors]).to eq(network: true)
@@ -539,8 +844,10 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
 
     it 'produces reasonable output for a TrueID failure without details' do
       output = described_class.new(
-        failure_response_empty, config, liveness_checking_enabled,
-        request_context
+        http_response: failure_response_empty,
+        config:,
+        liveness_checking_enabled:,
+        request_context:,
       ).to_h
 
       expect(output[:success]).to eq(false)
@@ -556,8 +863,10 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
     it 'produces reasonable output for a malformed TrueID response' do
       allow(NewRelic::Agent).to receive(:notice_error)
       output = described_class.new(
-        failure_response_malformed, config, liveness_checking_enabled,
-        request_context
+        http_response: failure_response_malformed,
+        config:,
+        liveness_checking_enabled:,
+        request_context:,
       ).to_h
 
       expect(output[:success]).to eq(false)
@@ -567,7 +876,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
     end
 
     it 'is not billed' do
-      output = described_class.new(failure_response_empty, config).to_h
+      output = described_class.new(http_response: failure_response_empty, config:).to_h
 
       expect(output[:billed]).to eq(false)
     end
@@ -575,7 +884,10 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
 
   context 'when front image HDPI is too low' do
     it 'returns an unsuccessful response with front DPI error' do
-      output = described_class.new(failure_response_no_liveness_low_dpi, config).to_h
+      output = described_class.new(
+        http_response: failure_response_no_liveness_low_dpi,
+        config:,
+      ).to_h
 
       expect(output[:success]).to eq(false)
       expect(output[:errors]).to eq(
@@ -589,7 +901,19 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
   end
 
   context 'when the dob is incorrectly parsed' do
-    let(:response) { described_class.new(success_with_failed_to_ocr_dob, config) }
+    let(:response) do
+      described_class.new(http_response: success_with_failed_to_ocr_dob, config:)
+    end
+
+    it 'does not throw an exception when getting pii from doc' do
+      expect(response.pii_from_doc.dob).to be_nil
+    end
+  end
+
+  context 'when the dob is incorrectly parsed in passport' do
+    let(:response) do
+      described_class.new(http_response: success_with_passport_failed_to_ocr_dob, config:)
+    end
 
     it 'does not throw an exception when getting pii from doc' do
       expect(response.pii_from_doc.dob).to be_nil
@@ -597,7 +921,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
   end
 
   describe '#parse_date' do
-    let(:response) { described_class.new(success_response, config) }
+    let(:response) { described_class.new(http_response: success_response, config:) }
 
     it 'handles an invalid month' do
       allow(Rails.logger).to receive(:info)
@@ -625,19 +949,21 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
   end
 
   describe '#attention_with_barcode?' do
-    let(:response) { described_class.new(success_response, config) }
+    let(:response) { described_class.new(http_response: success_response, config:) }
     subject(:attention_with_barcode) { response.attention_with_barcode? }
 
     it { expect(attention_with_barcode).to eq(false) }
 
     context 'with multiple errors including barcode attention' do
-      let(:response) { described_class.new(failure_response_with_all_failures, config) }
+      let(:response) do
+        described_class.new(http_response: failure_response_with_all_failures, config:)
+      end
 
       it { expect(attention_with_barcode).to eq(false) }
     end
 
-    context 'with single barcode attention error' do
-      let(:response) { described_class.new(attention_barcode_read, config) }
+    context 'with barcode attention error' do
+      let(:response) { described_class.new(http_response: attention_barcode_read, config:) }
 
       it { expect(attention_with_barcode).to eq(true) }
     end
@@ -645,7 +971,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
 
   describe '#billed?' do
     subject(:billed?) do
-      described_class.new(success_response, config).billed?
+      described_class.new(http_response: success_response, config:).billed?
     end
 
     let(:success_response_body) do
@@ -693,7 +1019,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
     end
 
     subject(:doc_type_supported?) do
-      described_class.new(success_response, config).doc_type_supported?
+      described_class.new(http_response: success_response, config:).doc_type_supported?
     end
     it { is_expected.to eq(true) }
 
@@ -705,7 +1031,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
     end
 
     context 'when doc class is identified but not supported' do
-      let(:doc_class_name) { 'Passport' }
+      let(:doc_class_name) { 'Non-Document-Type' }
       it 'identified as un supported doc type ' do
         is_expected.to eq(false)
       end
@@ -733,7 +1059,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
           doc_class_node.first['Values'].first['Value'] = 'Identification Card'
           doc_issuer_type = json['Products'].first['ParameterDetails']
             .select { |f| f['Name'] == 'DocIssuerType' && f['Group'] == 'AUTHENTICATION_RESULT' }
-          doc_issuer_type.first['Values'].first['Value'] = 'Country'
+          doc_issuer_type.first['Values'].first['Value'] = 'National'
         end.to_json
         instance_double(Faraday::Response, status: 200, body: body)
       end
@@ -750,7 +1076,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
           doc_class_node.first['Values'].first['Value'] = 'Identification Card'
           doc_issuer_type = json['Products'].first['ParameterDetails']
             .select { |f| f['Name'] == 'DocIssuerType' && f['Group'] == 'AUTHENTICATION_RESULT' }
-          doc_issuer_type.first['Values'].first['Value'] = 'Country'
+          doc_issuer_type.first['Values'].first['Value'] = 'National'
 
           image_metric_resolution = json['Products'].first['ParameterDetails']
             .select do |f|
@@ -762,27 +1088,35 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
         instance_double(Faraday::Response, status: 200, body: body)
       end
       it 'mark doc type as not supported' do
-        response = described_class.new(error_response, config)
+        response = described_class.new(http_response: error_response, config:)
         expect(response.doc_type_supported?).to eq(false)
       end
     end
   end
   describe '#doc_auth_success?' do
     context 'when document validation is successful' do
-      let(:response) { described_class.new(success_response, config) }
+      let(:response) do
+        described_class.new(
+          http_response: success_response,
+          passport_requested:,
+          config:,
+        )
+      end
       it 'returns true' do
         expect(response.doc_auth_success?).to eq(true)
       end
     end
     context 'when document validation failed' do
-      let(:response) { described_class.new(failure_response_tampering, config) }
+      let(:response) do
+        described_class.new(http_response: failure_response_tampering, config:)
+      end
       it 'returns false' do
         expect(response.doc_auth_success?).to eq(false)
       end
     end
 
     context 'when attention barcode read' do
-      let(:response) { described_class.new(attention_barcode_read, config) }
+      let(:response) { described_class.new(http_response: attention_barcode_read, config:) }
       it 'returns true' do
         expect(response.doc_auth_success?).to eq(true)
       end
@@ -791,20 +1125,35 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
 
   describe '#selfie_status' do
     context 'when selfie check is disabled' do
-      let(:response) { described_class.new(success_response, config, false) }
+      let(:liveness_checking_enabled) { false }
+      let(:response) do
+        described_class.new(
+          http_response: success_response,
+          config:,
+          liveness_checking_enabled:,
+        )
+      end
       it 'returns :not_processed' do
         expect(response.selfie_status).to eq(:not_processed)
       end
     end
 
     context 'when selfie check is enabled' do
-      context 'whe missing selfie result in response' do
+      context 'when missing selfie result in response' do
         let(:request_context) do
           {
             workflow: 'selfie_workflow',
           }
         end
-        let(:response) { described_class.new(success_response, config, true, request_context) }
+        let(:liveness_checking_enabled) { true }
+        let(:response) do
+          described_class.new(
+            http_response: success_response,
+            config:,
+            liveness_checking_enabled:,
+            request_context:,
+          )
+        end
         it 'returns :not_processed when missing selfie in response' do
           expect(response.selfie_status).to eq(:not_processed)
         end
@@ -815,13 +1164,27 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
         end
       end
       context 'when selfie passed' do
-        let(:response) { described_class.new(success_with_liveness_response, config, true) }
+        let(:liveness_checking_enabled) { true }
+        let(:response) do
+          described_class.new(
+            http_response: success_with_liveness_response,
+            config:,
+            liveness_checking_enabled:,
+          )
+        end
         it 'returns :success' do
           expect(response.selfie_status).to eq(:success)
         end
       end
       context 'when selfie failed' do
-        let(:response) { described_class.new(failure_response_with_liveness, config, true) }
+        let(:liveness_checking_enabled) { true }
+        let(:response) do
+          described_class.new(
+            http_response: failure_response_with_liveness,
+            config:,
+            liveness_checking_enabled:,
+          )
+        end
         it 'returns :fail' do
           expect(response.selfie_status).to eq(:fail)
         end
@@ -830,12 +1193,35 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
   end
 
   describe '#successful_result?' do
-    context 'and selfie check is enabled' do
+    context 'selfie check is disabled' do
+      let(:liveness_checking_enabled) { false }
+
+      context 'when document validation is successful' do
+        let(:response) { described_class.new(http_response: success_response, config:) }
+        it 'returns true' do
+          expect(response.successful_result?).to eq(true)
+        end
+      end
+
+      it 'returns true no matter what the value of selfie is' do
+        response = described_class.new(
+          http_response: doc_auth_success_with_face_match_fail,
+          config:,
+          liveness_checking_enabled:,
+        )
+
+        expect(response.successful_result?).to eq(true)
+      end
+    end
+
+    context 'selfie check is enabled' do
       let(:liveness_checking_enabled) { true }
 
       it 'returns true with a passing selfie' do
         response = described_class.new(
-          success_with_liveness_response, config, liveness_checking_enabled
+          http_response: success_with_liveness_response,
+          config:,
+          liveness_checking_enabled:,
         )
 
         expect(response.successful_result?).to eq(true)
@@ -843,7 +1229,9 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
       context 'when portrait match fails' do
         it 'returns false with a failing selfie' do
           response = described_class.new(
-            failure_response_face_match_fail, config, liveness_checking_enabled
+            http_response: doc_auth_success_with_face_match_fail,
+            config:,
+            liveness_checking_enabled:,
           )
 
           expect(response.successful_result?).to eq(false)
@@ -851,28 +1239,17 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
         context 'when attention with barcode' do
           let(:response) do
             described_class.new(
-              attention_barcode_read_with_face_match_fail,
-              config,
-              liveness_checking_enabled,
+              http_response: attention_barcode_read_with_face_match_fail,
+              config:,
+              liveness_checking_enabled:,
             )
           end
 
           it 'returns false' do
             expect(response.doc_auth_success?).to eq(true)
+            expect(response.selfie_passed?).to eq(false)
             expect(response.successful_result?).to eq(false)
           end
-        end
-      end
-
-      context 'and selfie check is disabled' do
-        liveness_checking_enabled = false
-
-        it 'returns true no matter what the value of selfie is' do
-          response = described_class.new(
-            failure_response_face_match_fail, config, liveness_checking_enabled
-          )
-
-          expect(response.successful_result?).to eq(true)
         end
       end
     end

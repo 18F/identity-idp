@@ -3,7 +3,6 @@
 class User < ApplicationRecord
   include NonNullUuid
 
-  include ::NewRelic::Agent::MethodTracer
   include ActionView::Helpers::DateHelper
 
   devise(
@@ -51,6 +50,7 @@ class User < ApplicationRecord
   has_many :in_person_enrollments, dependent: :destroy
   has_many :fraud_review_requests, dependent: :destroy
   has_many :gpo_confirmation_codes, through: :profiles
+  has_many :device_profiling_results, dependent: :destroy
 
   has_one :pending_in_person_enrollment,
           -> { where(status: :pending).order(created_at: :desc) },
@@ -208,6 +208,10 @@ class User < ApplicationRecord
     pending_profile if pending_profile&.fraud_rejection?
   end
 
+  def has_proofed_before?
+    profiles.where('activated_at is NOT NULL').any?
+  end
+
   def in_person_pending_profile?
     in_person_pending_profile.present?
   end
@@ -217,29 +221,33 @@ class User < ApplicationRecord
   end
 
   ##
-  # Return the status of the current In Person Proofing Enrollment
+  # Return the status of the latest in person enrollment
   # @return [String] enrollment status
-  def in_person_enrollment_status
-    pending_profile&.in_person_enrollment&.status
+  def latest_in_person_enrollment_status
+    in_person_enrollments.order(created_at: :desc).first&.status
   end
 
-  def ipp_enrollment_status_not_passed?
-    !in_person_enrollment_status.blank? &&
-      in_person_enrollment_status != 'passed'
+  # Whether the user's in person enrollment status is not passed or in_fraud_review. Enrollments
+  # used to go to passed status when profiles were marked as in fraud review. Since LG-15216, this
+  # will no longer be the case.
+  def ipp_enrollment_status_not_passed_or_in_fraud_review?
+    !latest_in_person_enrollment_status.blank? &&
+      [InPersonEnrollment::STATUS_PASSED, InPersonEnrollment::STATUS_IN_FRAUD_REVIEW].exclude?(
+        latest_in_person_enrollment_status,
+      )
   end
 
   def has_in_person_enrollment?
-    pending_in_person_enrollment.present? || establishing_in_person_enrollment.present?
+    active_enrollment.present?
+  end
+
+  def active_enrollment
+    pending_in_person_enrollment || establishing_in_person_enrollment
   end
 
   # @return [Boolean] Whether the user has an establishing in person enrollment.
   def has_establishing_in_person_enrollment?
     establishing_in_person_enrollment.present?
-  end
-
-  # Trust `pending_profile` rather than enrollment associations
-  def has_establishing_in_person_enrollment_safe?
-    !!pending_profile&.in_person_enrollment&.establishing?
   end
 
   def personal_key_generated_at
@@ -314,9 +322,14 @@ class User < ApplicationRecord
     last_personal_key_at = self.encrypted_recovery_code_digest_generated_at
 
     if active_profile.present?
+      # This should only apply to encrypted_pii_recovery since encrypted_pii_recovery_multi_region
+      # was created after this time window.
       encrypted_pii_too_short =
-        active_profile.encrypted_pii_recovery.present? &&
-        active_profile.encrypted_pii_recovery.length < MINIMUM_LIKELY_ENCRYPTED_DATA_LENGTH
+        (active_profile.encrypted_pii_recovery_multi_region.present? &&
+        active_profile.encrypted_pii_recovery_multi_region.length <
+          MINIMUM_LIKELY_ENCRYPTED_DATA_LENGTH) ||
+        (active_profile.encrypted_pii_recovery.present? &&
+        active_profile.encrypted_pii_recovery.length < MINIMUM_LIKELY_ENCRYPTED_DATA_LENGTH)
 
       inside_broken_key_window =
         (!last_personal_key_at || last_personal_key_at < window_finish) &&
@@ -377,10 +390,11 @@ class User < ApplicationRecord
     active_profile.present? && active_profile.facial_match?
   end
 
-  # This user's most recently activated profile that has also been deactivated
-  # due to a password reset, or nil if there is no such profile
+  # The users most recently activated or pending in person enrollment profile
+  # that has also been deactivated due to a password reset, or nil if there is
+  # no such profile
   def password_reset_profile
-    profile = profiles.where.not(activated_at: nil).order(activated_at: :desc).first
+    profile = find_password_reset_profile
     profile if profile&.password_reset?
   end
 
@@ -446,10 +460,17 @@ class User < ApplicationRecord
       .count
   end
 
-  def second_last_signed_in_at
+  # Returns the date of the last fully-authenticated sign-in before the most recent.
+  #
+  # A `since` time argument is required, to optimize performance based on database indices for
+  # querying a user's events.
+  def second_last_signed_in_at(since:)
     events
-      .where(event_type: 'sign_in_after_2fa')
-      .order(created_at: :desc).limit(2).pluck(:created_at).second
+      .where(event_type: :sign_in_after_2fa, created_at: since..)
+      .order(created_at: :desc)
+      .limit(2)
+      .pluck(:created_at)
+      .second
   end
 
   def connected_apps
@@ -500,8 +521,6 @@ class User < ApplicationRecord
     # no-op
   end
 
-  add_method_tracer :send_devise_notification, "Custom/#{name}/send_devise_notification"
-
   def analytics
     @analytics ||= Analytics.new(user: self, request: nil, session: {}, sp: nil)
   end
@@ -525,7 +544,31 @@ class User < ApplicationRecord
     email_addresses.confirmed.last_sign_in
   end
 
+  # Find the user's most recent in-progress enrollment profile.
+  def current_in_progress_in_person_enrollment_profile
+    in_person_enrollments
+      .where(status: InPersonEnrollment::IN_PROGRESS_ENROLLMENT_STATUSES)
+      .order(created_at: :desc)
+      .first&.profile
+  end
+
+  def has_recovery_code?
+    encrypted_recovery_code_digest_multi_region.present? || encrypted_recovery_code_digest.present?
+  end
+
   private
+
+  def find_password_reset_profile
+    find_in_person_in_progress_or_active_profile
+  end
+
+  def find_in_person_in_progress_or_active_profile
+    current_in_progress_in_person_enrollment_profile || find_active_profile
+  end
+
+  def find_active_profile
+    profiles.where.not(activated_at: nil).order(activated_at: :desc).first
+  end
 
   def lockout_period
     IdentityConfig.store.lockout_period_in_minutes.minutes

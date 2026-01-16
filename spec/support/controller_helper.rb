@@ -37,6 +37,12 @@ module ControllerHelper
     controller.user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION] = true
   end
 
+  def expire_reauthn_window
+    controller.user_session[:auth_events].each do |auth_event|
+      auth_event['at'] -= IdentityConfig.store.reauthn_window.seconds
+    end
+  end
+
   def stub_verify_steps_one_and_two(
     user,
     applicant: Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE

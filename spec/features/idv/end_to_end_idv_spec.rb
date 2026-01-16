@@ -24,6 +24,10 @@ RSpec.describe 'Identity verification', :js do
     try_to_skip_ahead_from_hybrid_handoff
     complete_hybrid_handoff_step # upload photos
 
+    validate_choose_id_type_page
+    try_to_skip_ahead_from_choose_id_type
+    complete_choose_id_type_step
+
     validate_document_capture_page
     complete_document_capture_step
     validate_document_capture_submit(user)
@@ -66,6 +70,10 @@ RSpec.describe 'Identity verification', :js do
 
     test_go_back_from_hybrid_handoff
     complete_hybrid_handoff_step # upload photos
+
+    expect(page).to have_current_path(idv_choose_id_type_path)
+    test_go_back_from_choose_id_type
+    complete_choose_id_type_step
 
     expect(page).to have_current_path(idv_document_capture_path)
     test_go_back_from_document_capture
@@ -135,7 +143,7 @@ RSpec.describe 'Identity verification', :js do
         .update(in_person_proofing_enabled: true)
     end
 
-    scenario 'In person proofing', allow_browser_log: true do
+    scenario 'In person proofing with state ID', allow_browser_log: true do
       visit_idp_from_sp_with_ial2(sp)
       user = sign_up_and_2fa_ial1_user
 
@@ -213,6 +221,14 @@ RSpec.describe 'Identity verification', :js do
       .to be true
   end
 
+  def validate_choose_id_type_page
+    expect(page).to have_current_path(idv_choose_id_type_path)
+
+    # Check for expected content
+    expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
+    expect(page).to have_content(t('doc_auth.headings.choose_id_type'))
+  end
+
   def validate_document_capture_page
     expect(page).to have_current_path(idv_document_capture_path)
 
@@ -271,7 +287,7 @@ RSpec.describe 'Identity verification', :js do
     expect(page).not_to have_text(DocAuthHelper::GOOD_SSN)
     check t('forms.ssn.show')
     expect(page).not_to have_text(DocAuthHelper::GOOD_SSN_MASKED)
-    expect(page).to have_text(DocAuthHelper::GOOD_SSN)
+    expect(page).to have_text(DocAuthHelper::GOOD_SSN_FORMATTED)
   end
 
   def validate_verify_info_submit
@@ -342,7 +358,7 @@ RSpec.describe 'Identity verification', :js do
       'source_check' => 'StateIdMock',
       'threatmetrix' => true,
       'address_check' => 'lexis_nexis_address',
-      'document_type' => 'state_id',
+      'document_type_received' => 'drivers_license',
       'document_check' => 'mock',
       'residential_resolution_check' => 'ResidentialAddressNotRequired',
       'resolution_check' => 'ResolutionMock',
@@ -414,6 +430,11 @@ RSpec.describe 'Identity verification', :js do
     expect(page).to have_current_path(idv_hybrid_handoff_path)
   end
 
+  def try_to_skip_ahead_from_choose_id_type
+    visit(idv_document_capture_url)
+    expect(page).to have_current_path(idv_choose_id_type_path)
+  end
+
   def try_to_skip_ahead_from_phone
     visit idv_enter_password_path
     expect(page).to have_current_path(idv_phone_path)
@@ -454,7 +475,7 @@ RSpec.describe 'Identity verification', :js do
     complete_agreement_step
   end
 
-  def test_go_back_from_document_capture
+  def test_go_back_from_choose_id_type
     go_back
     expect(page).to have_current_path(idv_hybrid_handoff_path)
     go_back
@@ -466,6 +487,18 @@ RSpec.describe 'Identity verification', :js do
 
     go_forward
     expect(page).to have_current_path(idv_hybrid_handoff_path)
+    go_forward
+    expect(page).to have_current_path(idv_choose_id_type_path)
+  end
+
+  def test_go_back_from_document_capture
+    go_back
+    expect(page).to have_current_path(idv_choose_id_type_path)
+    go_back
+    expect(page).to have_current_path(idv_hybrid_handoff_path)
+
+    go_forward
+    expect(page).to have_current_path(idv_choose_id_type_path)
     go_forward
     expect(page).to have_content(t('doc_auth.headings.front'))
     expect(page).to have_content(t('doc_auth.headings.back'))
@@ -484,8 +517,9 @@ RSpec.describe 'Identity verification', :js do
     go_back
     go_back
     go_back
+    go_back
     expect(page).to have_current_path(idv_welcome_path)
-    5.times { go_forward }
+    6.times { go_forward }
     expect(page).to have_current_path(idv_verify_info_path)
   end
 
@@ -497,8 +531,9 @@ RSpec.describe 'Identity verification', :js do
     go_back
     go_back
     go_back
+    go_back
     expect(page).to have_current_path(idv_welcome_path)
-    6.times { go_forward }
+    7.times { go_forward }
     expect(page).to have_current_path(idv_phone_path)
   end
 

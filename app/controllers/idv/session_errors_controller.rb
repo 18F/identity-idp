@@ -16,28 +16,26 @@ module Idv
     end
 
     def warning
-      rate_limiter = RateLimiter.new(
-        user: idv_session_user,
-        rate_limit_type: :idv_resolution,
-      )
-
       @step_indicator_steps = step_indicator_steps
-      @remaining_submit_attempts = rate_limiter.remaining_count
-      log_event(based_on_limiter: rate_limiter)
+      @remaining_submit_attempts = resolution_rate_limiter.remaining_count
+      log_event(based_on_limiter: resolution_rate_limiter)
     end
 
     def state_id_warning
       log_event
     end
 
+    def address_warning
+      @step_indicator_steps = step_indicator_steps
+      @address_path = idv_address_url
+      @remaining_submit_attempts = resolution_rate_limiter.remaining_count
+      log_event(based_on_limiter: resolution_rate_limiter)
+    end
+
     def failure
-      rate_limiter = RateLimiter.new(
-        user: idv_session_user,
-        rate_limit_type: :idv_resolution,
-      )
-      @expires_at = rate_limiter.expires_at
+      @expires_at = resolution_rate_limiter.expires_at
       @sp_name = decorated_sp_session.sp_name
-      log_event(based_on_limiter: rate_limiter)
+      log_event(based_on_limiter: resolution_rate_limiter)
     end
 
     def ssn_failure
@@ -62,6 +60,13 @@ module Idv
     end
 
     private
+
+    def resolution_rate_limiter
+      @resolution_rate_limiter ||= RateLimiter.new(
+        user: idv_session_user,
+        rate_limit_type: :idv_resolution,
+      )
+    end
 
     def confirm_two_factor_authenticated_or_user_id_in_session
       return if session[:doc_capture_user_id].present?

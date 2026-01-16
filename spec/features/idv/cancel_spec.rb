@@ -10,23 +10,23 @@ RSpec.describe 'cancel IdV' do
   let(:fake_analytics) { FakeAnalytics.new(user: user) }
 
   before do
-    start_idv_from_sp(sp)
-    sign_in_and_2fa_user(user)
-    complete_doc_auth_steps_before_agreement_step
-
     allow_any_instance_of(ApplicationController).to receive(:analytics) do |controller|
       fake_analytics.session = controller.session
       fake_analytics
     end
+    start_idv_from_sp(sp)
+    sign_in_and_2fa_user(user)
+    complete_doc_auth_steps_before_agreement_step
   end
 
   it 'shows the user a cancellation message with the option to go back to the step' do
-    original_path = current_path
+    expect(page).to have_current_path(idv_agreement_path)
+    expect(page).to have_content(t('doc_auth.headings.verify_identity'))
 
     click_link t('links.cancel')
 
+    expect(page).to have_current_path(idv_cancel_path(step: 'agreement'))
     expect(page).to have_content(t('idv.cancel.headings.prompt.standard'))
-    expect(page).to have_current_path(idv_cancel_path, ignore_query: true)
     expect(fake_analytics).to have_logged_event(
       'IdV: cancellation visited',
       hash_including(step: 'agreement'),
@@ -39,19 +39,20 @@ RSpec.describe 'cancel IdV' do
     expect(page).to have_button(t('idv.cancel.actions.keep_going'))
 
     click_on(t('idv.cancel.actions.keep_going'))
-
-    expect(page).to have_current_path(original_path)
+    expect(page).to have_current_path(idv_agreement_path)
+    expect(page).to have_content(t('doc_auth.headings.lets_go'))
     expect(fake_analytics).to have_logged_event(
       'IdV: cancellation go back',
-      hash_including(step: 'agreement'),
+      step: 'agreement',
     )
   end
 
   it 'shows the user a cancellation message with the option to restart from the beginning' do
+    expect(page).to have_content(t('doc_auth.headings.verify_identity'))
     click_link t('links.cancel')
 
+    expect(page).to have_current_path(idv_cancel_path(step: 'agreement'))
     expect(page).to have_content(t('idv.cancel.headings.prompt.standard'))
-    expect(page).to have_current_path(idv_cancel_path, ignore_query: true)
     expect(fake_analytics).to have_logged_event(
       'IdV: cancellation visited',
       hash_including(step: 'agreement'),
@@ -66,17 +67,19 @@ RSpec.describe 'cancel IdV' do
     click_on t('idv.cancel.actions.start_over')
 
     expect(page).to have_current_path(idv_welcome_path)
+    expect(page).to have_content(t('doc_auth.instructions.getting_started'))
     expect(fake_analytics).to have_logged_event(
       'IdV: start over',
-      hash_including(step: 'agreement'),
+      step: 'agreement',
     )
   end
 
   it 'shows a cancellation message with option to cancel and reset idv', :js do
+    expect(page).to have_content(t('doc_auth.headings.verify_identity'))
     click_link t('links.cancel')
 
+    expect(page).to have_current_path(idv_cancel_path(step: 'agreement'))
     expect(page).to have_content(t('idv.cancel.headings.prompt.standard'))
-    expect(page).to have_current_path(idv_cancel_path, ignore_query: true)
     expect(fake_analytics).to have_logged_event(
       'IdV: cancellation visited',
       hash_including(step: 'agreement'),
@@ -93,31 +96,37 @@ RSpec.describe 'cancel IdV' do
     expect(page).to have_current_path(account_path)
     expect(fake_analytics).to have_logged_event(
       'IdV: cancellation confirmed',
-      hash_including(step: 'agreement'),
+      step: 'agreement',
     )
 
     # After visiting /verify, expect to redirect to the first step in the IdV flow.
     visit idv_path
+    expect(page).to have_content(t('doc_auth.instructions.getting_started'))
     expect(page).to have_current_path(idv_welcome_path)
   end
 
   context 'when user has recorded proofing components' do
     before do
       complete_agreement_step
+      expect(page).to have_content(t('doc_auth.headings.how_to_verify'))
       complete_hybrid_handoff_step
+      complete_choose_id_type_step
+      expect(page).to have_content(t('doc_auth.headings.document_capture'))
       complete_document_capture_step
     end
 
     it 'includes proofing components in events', :js do
+      expect(page).to have_content(t('doc_auth.info.ssn'))
       click_link t('links.cancel')
 
+      expect(page).to have_current_path(idv_cancel_path(step: 'ssn'))
+      expect(page).to have_content(t('idv.cancel.headings.prompt.standard'))
       expect(fake_analytics).to have_logged_event(
         'IdV: cancellation visited',
-        hash_including(
-          proofing_components: { document_check: 'mock', document_type: 'state_id' },
-          request_came_from: 'idv/ssn#show',
-          step: 'ssn',
-        ),
+        proofing_components: { document_check: 'mock',
+                               document_type_received: 'drivers_license' },
+        request_came_from: 'idv/ssn#show',
+        step: 'ssn',
       )
 
       expect(page).to have_unique_form_landmark_labels
@@ -127,24 +136,24 @@ RSpec.describe 'cancel IdV' do
       expect(page).to have_button(t('idv.cancel.actions.keep_going'))
 
       click_on t('idv.cancel.actions.keep_going')
+      expect(page).to have_content(t('doc_auth.info.ssn'))
 
       expect(fake_analytics).to have_logged_event(
         'IdV: cancellation go back',
-        hash_including(
-          proofing_components: { document_check: 'mock', document_type: 'state_id' },
-          step: 'ssn',
-        ),
+        proofing_components: { document_check: 'mock',
+                               document_type_received: 'drivers_license' },
+        step: 'ssn',
       )
 
       click_link t('links.cancel')
       click_on t('idv.cancel.actions.start_over')
+      expect(page).to have_content(t('doc_auth.instructions.getting_started'))
 
       expect(fake_analytics).to have_logged_event(
         'IdV: start over',
-        hash_including(
-          proofing_components: { document_check: 'mock', document_type: 'state_id' },
-          step: 'ssn',
-        ),
+        proofing_components: { document_check: 'mock',
+                               document_type_received: 'drivers_license' },
+        step: 'ssn',
       )
 
       complete_doc_auth_steps_before_ssn_step
@@ -154,10 +163,9 @@ RSpec.describe 'cancel IdV' do
 
       expect(fake_analytics).to have_logged_event(
         'IdV: cancellation confirmed',
-        hash_including(
-          step: 'ssn',
-          proofing_components: { document_check: 'mock', document_type: 'state_id' },
-        ),
+        step: 'ssn',
+        proofing_components: { document_check: 'mock',
+                               document_type_received: 'drivers_license' },
       )
     end
   end
@@ -172,8 +180,8 @@ RSpec.describe 'cancel IdV' do
 
       click_link t('links.cancel')
 
+      expect(page).to have_current_path(idv_cancel_path(step: 'agreement'))
       expect(page).to have_content(t('idv.cancel.headings.prompt.standard'))
-      expect(page).to have_current_path(idv_cancel_path, ignore_query: true)
       expect(fake_analytics).to have_logged_event(
         'IdV: cancellation visited',
         hash_including(step: 'agreement'),
@@ -192,13 +200,17 @@ RSpec.describe 'cancel IdV' do
         url: true,
         ignore_query: true,
       )
-      expect(current_url).to start_with('http://localhost:7654/auth/result?error=access_denied')
+
+      params = UriService.params(current_url)
+      expect(params['error']).to eq('access_denied')
+
       expect(fake_analytics).to have_logged_event(
         'IdV: cancellation confirmed',
-        hash_including(step: 'agreement'),
+        step: 'agreement',
       )
 
       start_idv_from_sp(sp)
+      expect(page).to have_content(t('doc_auth.instructions.getting_started'))
       expect(page).to have_current_path(idv_welcome_path)
     end
   end

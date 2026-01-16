@@ -2,12 +2,10 @@ import quibble from 'quibble';
 
 describe('platform-authenticator-available', () => {
   let initialize: () => void;
-  let isWebauthnPasskeySupported;
   let isWebauthnPlatformAuthenticatorAvailable;
 
   before(async () => {
     quibble('@18f/identity-webauthn', {
-      isWebauthnPasskeySupported: () => isWebauthnPasskeySupported,
       isWebauthnPlatformAuthenticatorAvailable: () =>
         Promise.resolve(isWebauthnPlatformAuthenticatorAvailable),
     });
@@ -29,10 +27,6 @@ describe('platform-authenticator-available', () => {
     document.getElementById('platform_authenticator_available') as HTMLInputElement;
 
   context('passkey supported', () => {
-    beforeEach(() => {
-      isWebauthnPasskeySupported = true;
-    });
-
     context('platform authenticator available', () => {
       beforeEach(() => {
         isWebauthnPlatformAuthenticatorAvailable = true;
@@ -55,18 +49,6 @@ describe('platform-authenticator-available', () => {
 
         expect(getInput().value).to.be.empty();
       });
-    });
-  });
-
-  context('passkey not supported', () => {
-    beforeEach(() => {
-      isWebauthnPasskeySupported = false;
-    });
-
-    it('leaves the input value blank', async () => {
-      await initialize();
-
-      expect(getInput().value).to.be.empty();
     });
   });
 });

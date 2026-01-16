@@ -4,6 +4,11 @@ RSpec.describe OutOfBandSessionAccessor do
   let(:session_uuid) { SecureRandom.uuid }
   let(:profile_id) { 123 }
 
+  # This test uses a separate writer instance to write test data to the session store.
+  # The OutOfBandSessionAccessor memoizes the data that it reads from the session.
+  # Writes require reads to merge test data properly for subsequent writes.
+  subject(:writer_instance) { described_class.new(session_uuid) }
+
   subject(:store) { described_class.new(session_uuid) }
 
   around do |ex|
@@ -24,9 +29,18 @@ RSpec.describe OutOfBandSessionAccessor do
     end
   end
 
+  describe '#load_web_locale' do
+    it 'loads the web_locale from the session' do
+      writer_instance.put_locale('es')
+
+      web_locale = store.load_web_locale
+      expect(web_locale).to eq('es')
+    end
+  end
+
   describe '#load_pii' do
     it 'loads PII from the session' do
-      store.put_pii(
+      writer_instance.put_pii(
         profile_id: profile_id,
         pii: { dob: '1970-01-01' },
         expiration: 5.minutes.in_seconds,
@@ -40,7 +54,7 @@ RSpec.describe OutOfBandSessionAccessor do
 
   describe '#load_x509' do
     it 'loads X509 attributes from the session' do
-      store.put_x509({ subject: 'O=US, OU=DoD, CN=John.Doe.1234' }, 5.minutes.in_seconds)
+      writer_instance.put_x509({ subject: 'O=US, OU=DoD, CN=John.Doe.1234' }, 5.minutes.in_seconds)
 
       x509 = store.load_x509
       expect(x509).to be_kind_of(X509::Attributes)
@@ -50,7 +64,7 @@ RSpec.describe OutOfBandSessionAccessor do
 
   describe '#destroy' do
     it 'destroys the session' do
-      store.put_pii(
+      writer_instance.put_pii(
         profile_id: profile_id,
         pii: { first_name: 'Fakey' },
         expiration: 5.minutes.in_seconds,

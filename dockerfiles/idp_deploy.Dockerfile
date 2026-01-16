@@ -2,11 +2,11 @@
 # This is a "production-ready" image build for the IDP that is suitable
 # for deployment.
 # This is a multi-stage build.  This stage just builds and downloads
-# gems and yarn stuff and large files.  We have it so that we can
+# gems and NPM stuff and large files.  We have it so that we can
 # avoid having build-essential and the large-files token be in the
 # main image.
 #########################################################################
-FROM public.ecr.aws/docker/library/ruby:3.3.6-slim as builder
+FROM public.ecr.aws/docker/library/ruby:3.4.5-slim as builder
 
 # Set environment variables
 ENV RAILS_ROOT /app
@@ -15,9 +15,8 @@ ENV NODE_ENV production
 ENV RAILS_LOG_TO_STDOUT true
 ENV RAILS_LOG_LEVEL debug
 ENV BUNDLE_PATH /app/vendor/bundle
-ENV YARN_VERSION 1.22.5
-ENV NODE_VERSION 22.11.0
-ENV BUNDLER_VERSION 2.5.6
+ENV NODE_VERSION 22.18.0
+ENV BUNDLER_VERSION 2.6.9
 
 # Install dependencies
 RUN apt-get update -qq && \
@@ -27,6 +26,7 @@ RUN apt-get update -qq && \
     build-essential \
     git-lfs \
     curl \
+    gnupg \
     zlib1g-dev \
     libssl-dev \
     libreadline-dev \
@@ -36,7 +36,6 @@ RUN apt-get update -qq && \
     libxml2-dev \
     libxslt1-dev \
     libcurl4-openssl-dev \
-    software-properties-common \
     libffi-dev \
     libpq-dev \
     xz-utils \
@@ -58,11 +57,6 @@ RUN curl -fsSLO --compressed "https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE
   && rm "node-v$NODE_VERSION-linux-x64.tar.xz" \
   && ln -s /usr/local/bin/node /usr/local/bin/nodejsv
 
-# Install Yarn
-RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | gpg --dearmor | tee /usr/share/keyrings/yarn-archive-keyring.gpg >/dev/null
-RUN echo "deb [signed-by=/usr/share/keyrings/yarn-archive-keyring.gpg] https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
-RUN apt-get update -o Dir::Etc::sourcelist=/etc/apt/sources.list.d/yarn.list && apt-get install -y yarn=1.22.5-1
-
 # bundle install
 COPY .ruby-version $RAILS_ROOT/.ruby-version
 COPY Gemfile $RAILS_ROOT/Gemfile
@@ -74,12 +68,12 @@ RUN bundle config set --local without 'deploy development doc test'
 RUN bundle install --jobs $(nproc)
 RUN bundle binstubs --all
 
-# Yarn install
+# NPM install
 COPY ./package.json ./package.json
-COPY ./yarn.lock ./yarn.lock
-# Workspace packages are installed by Yarn via symlink to the original source, and need to be present
+COPY ./package-lock.json ./package-lock.json
+# Workspace packages are installed by NPM via symlink to the original source, and need to be present
 COPY ./app/javascript/packages ./app/javascript/packages
-RUN yarn install --production=true --frozen-lockfile --cache-folder .yarn-cache
+RUN npm ci --omit=dev --cache .npm-cache
 
 # Add the application code
 COPY ./lib ./lib
@@ -108,7 +102,7 @@ COPY public/ban-robots.txt $RAILS_ROOT/public/robots.txt
 COPY ./config/application.yml.default.k8s_deploy $RAILS_ROOT/config/application.yml
 
 # Precompile assets
-RUN SKIP_YARN_INSTALL=true bundle exec rake assets:precompile && rm -r node_modules/ && rm -r .yarn-cache/
+RUN bundle exec rake assets:precompile && rm -r node_modules/ && rm -r .npm-cache/
 
 # get service_providers.yml and related files
 ARG SERVICE_PROVIDERS_KEY
@@ -140,7 +134,7 @@ RUN openssl req -x509 -sha256 -nodes -newkey rsa:2048 -days 1825 \
 #########################################################################
 # This is the main image.
 #########################################################################
-FROM public.ecr.aws/docker/library/ruby:3.3.6-slim as main
+FROM public.ecr.aws/docker/library/ruby:3.4.5-slim as main
 
 # Set environment variables
 ENV RAILS_ROOT /app
@@ -150,7 +144,7 @@ ENV RAILS_SERVE_STATIC_FILES true
 ENV RAILS_LOG_TO_STDOUT true
 ENV RAILS_LOG_LEVEL debug
 ENV BUNDLE_PATH /app/vendor/bundle
-ENV BUNDLER_VERSION 2.5.6
+ENV BUNDLER_VERSION 2.6.3
 ENV POSTGRES_SSLMODE prefer
 ENV POSTGRES_NAME idp
 ENV POSTGRES_HOST postgres
@@ -228,7 +222,7 @@ COPY --from=builder $RAILS_ROOT/keys/localhost.crt $RAILS_ROOT/keys/
 # make everything the proper perms after everything is initialized
 RUN chown -R app:app $RAILS_ROOT/tmp && \
     chown -R app:app $RAILS_ROOT/log && \
-    find $RAILS_ROOT -type d | xargs chmod 755
+    find $RAILS_ROOT -type d | xargs -d '\n' chmod 755
 
 # get rid of suid/sgid binaries
 RUN find / -perm /4000 -type f | xargs chmod u-s

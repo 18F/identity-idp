@@ -65,6 +65,47 @@ RSpec.describe PushNotification::HttpPush do
       }
     end
 
+    context 'when the service provider is allowed to receive client_id as the aud' do
+      before do
+        allow(IdentityConfig.store).to receive(:allowed_client_id_in_risc_service_providers)
+          .and_return([sp_with_push_url.issuer])
+      end
+
+      it 'enqeues a background job with the aud set as the client id' do
+        expect { deliver }.to have_enqueued_job(RiscDeliveryJob).with { |args|
+          jwt_payload, _headers = JWT.decode(
+            args[:jwt],
+            Rails.application.config.oidc_public_key,
+            true,
+            algorithm: 'RS256',
+            kid: JWT::JWK.new(AppArtifacts.store.oidc_primary_private_key).kid,
+          )
+
+          expect(jwt_payload['aud']).to eq(sp_with_push_url.issuer)
+        }
+      end
+    end
+
+    context 'when risc_notifications_send_client_id_in_aud_enabled is false' do
+      before do
+        allow(IdentityConfig.store).to receive(:risc_notifications_send_client_id_in_aud_enabled)
+          .and_return(false)
+      end
+      it 'sends a payload with the push_notification_url in the aud field' do
+        expect { deliver }.to have_enqueued_job(RiscDeliveryJob).with { |args|
+          jwt_payload, _ = JWT.decode(
+            args[:jwt],
+            Rails.application.config.oidc_public_key,
+            true,
+            algorithm: 'RS256',
+            kid: JWT::JWK.new(AppArtifacts.store.oidc_primary_private_key).kid,
+          )
+
+          expect(jwt_payload['aud']).to eq(sp_with_push_url.push_notification_url)
+        }
+      end
+    end
+
     context 'when push_notifications_enabled is false' do
       let(:push_notifications_enabled) { false }
 

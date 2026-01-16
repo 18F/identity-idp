@@ -10,11 +10,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_01_06_232958) do
+ActiveRecord::Schema[8.0].define(version: 2026_01_06_161046) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
+  enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_stat_statements"
-  enable_extension "plpgsql"
+
+  create_table "ab_test_assignments", force: :cascade do |t|
+    t.string "experiment", null: false, comment: "sensitive=false"
+    t.string "discriminator", null: false, comment: "sensitive=false"
+    t.string "bucket", null: false, comment: "sensitive=false"
+    t.index ["experiment", "discriminator"], name: "index_ab_test_assignments_on_experiment_and_discriminator", unique: true
+  end
 
   create_table "account_reset_requests", force: :cascade do |t|
     t.integer "user_id", null: false, comment: "sensitive=false"
@@ -51,7 +58,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_01_06_232958) do
   create_table "auth_app_configurations", force: :cascade do |t|
     t.integer "user_id", null: false, comment: "sensitive=false"
     t.string "encrypted_otp_secret_key", null: false, comment: "sensitive=true"
-    t.string "name", null: false, comment: "sensitive=false"
+    t.string "name", limit: 20, null: false, comment: "sensitive=true"
     t.integer "totp_timestamp", comment: "sensitive=false"
     t.datetime "created_at", precision: nil, null: false, comment: "sensitive=false"
     t.datetime "updated_at", precision: nil, null: false, comment: "sensitive=false"
@@ -78,6 +85,19 @@ ActiveRecord::Schema[7.2].define(version: 2025_01_06_232958) do
     t.datetime "deleted_at", precision: nil, null: false, comment: "sensitive=false"
     t.index ["user_id"], name: "index_deleted_users_on_user_id", unique: true
     t.index ["uuid"], name: "index_deleted_users_on_uuid", unique: true
+  end
+
+  create_table "device_profiling_results", force: :cascade do |t|
+    t.bigint "user_id", null: false, comment: "sensitive=false"
+    t.string "client", comment: "sensitive=false"
+    t.string "review_status", comment: "sensitive=false"
+    t.string "transaction_id", comment: "sensitive=false"
+    t.datetime "processed_at", comment: "sensitive=false"
+    t.string "profiling_type", comment: "sensitive=false"
+    t.datetime "created_at", null: false, comment: "sensitive=false"
+    t.datetime "updated_at", null: false, comment: "sensitive=false"
+    t.string "notes", comment: "sensitive=false"
+    t.index ["user_id"], name: "index_device_profiling_results_on_user_id"
   end
 
   create_table "devices", force: :cascade do |t|
@@ -193,10 +213,24 @@ ActiveRecord::Schema[7.2].define(version: 2025_01_06_232958) do
     t.string "last_doc_auth_result", comment: "sensitive=false"
     t.string "socure_docv_transaction_token", comment: "sensitive=false"
     t.string "socure_docv_capture_app_url", comment: "sensitive=false"
+    t.string "doc_auth_vendor", comment: "sensitive=false"
+    t.string "passport_status", comment: "sensitive=false"
     t.index ["result_id"], name: "index_document_capture_sessions_on_result_id"
     t.index ["socure_docv_transaction_token"], name: "index_socure_docv_transaction_token", unique: true
     t.index ["user_id"], name: "index_document_capture_sessions_on_user_id"
     t.index ["uuid"], name: "index_document_capture_sessions_on_uuid"
+  end
+
+  create_table "duplicate_profile_sets", force: :cascade do |t|
+    t.string "service_provider", limit: 255, null: false, comment: "sensitive=false"
+    t.bigint "profile_ids", null: false, comment: "sensitive=false", array: true
+    t.datetime "closed_at", comment: "sensitive=false"
+    t.boolean "self_serviced", comment: "sensitive=false"
+    t.boolean "fraud_investigation_conclusive", comment: "sensitive=false"
+    t.datetime "created_at", null: false, comment: "sensitive=false"
+    t.datetime "updated_at", null: false, comment: "sensitive=false"
+    t.index ["profile_ids"], name: "index_duplicate_profile_sets_on_profile_ids", using: :gin
+    t.index ["service_provider", "profile_ids"], name: "idx_on_service_provider_profile_ids_7f75d24ae3", unique: true
   end
 
   create_table "email_addresses", force: :cascade do |t|
@@ -328,6 +362,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_01_06_232958) do
     t.datetime "last_batch_claimed_at", comment: "sensitive=false"
     t.string "sponsor_id", null: false, comment: "sensitive=false"
     t.string "doc_auth_result", comment: "sensitive=false"
+    t.integer "document_type", comment: "sensitive=false"
     t.index ["profile_id"], name: "index_in_person_enrollments_on_profile_id"
     t.index ["ready_for_status_check"], name: "index_in_person_enrollments_on_ready_for_status_check", where: "(ready_for_status_check = true)"
     t.index ["status_check_attempted_at"], name: "index_in_person_enrollments_on_status_check_attempted_at", where: "(status = 1)"
@@ -407,7 +442,6 @@ ActiveRecord::Schema[7.2].define(version: 2025_01_06_232958) do
     t.text "encrypted_phone", null: false, comment: "sensitive=true"
     t.integer "delivery_preference", default: 0, null: false, comment: "sensitive=false"
     t.boolean "mfa_enabled", default: true, null: false, comment: "sensitive=false"
-    t.datetime "confirmation_sent_at", precision: nil, comment: "sensitive=false"
     t.datetime "confirmed_at", precision: nil, comment: "sensitive=false"
     t.datetime "created_at", precision: nil, null: false, comment: "sensitive=false"
     t.datetime "updated_at", precision: nil, null: false, comment: "sensitive=false"
@@ -428,7 +462,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_01_06_232958) do
   create_table "piv_cac_configurations", force: :cascade do |t|
     t.integer "user_id", null: false, comment: "sensitive=false"
     t.string "x509_dn_uuid", null: false, comment: "sensitive=false"
-    t.string "name", null: false, comment: "sensitive=false"
+    t.string "name", limit: 20, null: false, comment: "sensitive=true"
     t.datetime "created_at", precision: nil, null: false, comment: "sensitive=false"
     t.datetime "updated_at", precision: nil, null: false, comment: "sensitive=false"
     t.string "x509_issuer", comment: "sensitive=false"
@@ -469,6 +503,11 @@ ActiveRecord::Schema[7.2].define(version: 2025_01_06_232958) do
     t.index ["ssn_signature"], name: "index_profiles_on_ssn_signature"
     t.index ["user_id", "active"], name: "index_profiles_on_user_id_and_active", unique: true, where: "(active = true)"
     t.index ["user_id"], name: "index_profiles_on_user_id"
+  end
+
+  create_table "recaptcha_assessments", id: :string, force: :cascade do |t|
+    t.string "annotation", comment: "sensitive=false"
+    t.string "annotation_reason", comment: "sensitive=false"
   end
 
   create_table "registration_logs", force: :cascade do |t|
@@ -516,7 +555,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_01_06_232958) do
     t.boolean "piv_cac_scoped_by_email", default: false, comment: "sensitive=false"
     t.boolean "pkce", comment: "sensitive=false"
     t.string "push_notification_url", comment: "sensitive=false"
-    t.jsonb "help_text", default: {"sign_in"=>{}, "sign_up"=>{}, "forgot_password"=>{}}, comment: "sensitive=false"
+    t.jsonb "help_text", default: {"sign_in" => {}, "sign_up" => {}, "forgot_password" => {}}, comment: "sensitive=false"
     t.boolean "allow_prompt_login", default: false, comment: "sensitive=false"
     t.boolean "signed_response_message_requested", default: false, comment: "sensitive=false"
     t.string "remote_logo_key", comment: "sensitive=false"
@@ -567,7 +606,6 @@ ActiveRecord::Schema[7.2].define(version: 2025_01_06_232958) do
   end
 
   create_table "sp_return_logs", force: :cascade do |t|
-    t.datetime "requested_at", precision: nil, null: false, comment: "sensitive=false"
     t.string "request_id", null: false, comment: "sensitive=false"
     t.integer "ial", null: false, comment: "sensitive=false"
     t.string "issuer", null: false, comment: "sensitive=false"
@@ -610,7 +648,6 @@ ActiveRecord::Schema[7.2].define(version: 2025_01_06_232958) do
     t.integer "second_factor_attempts_count", default: 0, comment: "sensitive=false"
     t.string "uuid", limit: 255, null: false, comment: "sensitive=false"
     t.datetime "second_factor_locked_at", precision: nil, comment: "sensitive=false"
-    t.datetime "phone_confirmed_at", precision: nil, comment: "sensitive=false"
     t.string "direct_otp", comment: "sensitive=true"
     t.datetime "direct_otp_sent_at", precision: nil, comment: "sensitive=false"
     t.string "unique_session_id", comment: "sensitive=false"
@@ -656,7 +693,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_01_06_232958) do
 
   create_table "webauthn_configurations", force: :cascade do |t|
     t.bigint "user_id", null: false, comment: "sensitive=false"
-    t.string "name", null: false, comment: "sensitive=false"
+    t.string "name", limit: 80, null: false, comment: "sensitive=true"
     t.text "credential_id", null: false, comment: "sensitive=false"
     t.text "credential_public_key", null: false, comment: "sensitive=false"
     t.datetime "created_at", precision: nil, null: false, comment: "sensitive=false"
@@ -668,6 +705,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_01_06_232958) do
     t.index ["user_id"], name: "index_webauthn_configurations_on_user_id"
   end
 
+  add_foreign_key "device_profiling_results", "users"
   add_foreign_key "document_capture_sessions", "users"
   add_foreign_key "iaa_gtcs", "partner_accounts"
   add_foreign_key "iaa_orders", "iaa_gtcs"

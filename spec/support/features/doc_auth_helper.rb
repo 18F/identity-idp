@@ -7,8 +7,9 @@ module DocAuthHelper
   include DocumentCaptureStepHelper
   include UserAgentHelper
 
-  GOOD_SSN = (Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn]).freeze
+  GOOD_SSN = Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn].freeze
   GOOD_SSN_MASKED = '9**-**-***4'.freeze
+  GOOD_SSN_FORMATTED = SsnFormatter.format(GOOD_SSN).freeze
   SSN_THAT_FAILS_RESOLUTION = '123-45-6666'.freeze
   SSN_THAT_RAISES_EXCEPTION = '000-00-0000'.freeze
 
@@ -42,8 +43,10 @@ module DocAuthHelper
   end
 
   def complete_doc_auth_steps_before_welcome_step(expect_accessible: false)
-    visit idv_welcome_url unless current_path == idv_welcome_url
-    click_idv_continue if current_path == idv_mail_only_warning_path
+    # rubocop:disable IdentityIdp/CapybaraCurrentPathEqualityLinter
+    # This should be refactored at some point to not require the path conditional
+    visit idv_welcome_path unless current_path == idv_welcome_path
+    # rubocop:enable IdentityIdp/CapybaraCurrentPathEqualityLinter
 
     expect_page_to_have_no_accessibility_violations(page) if expect_accessible
   end
@@ -59,11 +62,7 @@ module DocAuthHelper
   end
 
   def complete_agreement_step
-    find(
-      'label',
-      text: t('doc_auth.instructions.consent', app_name: APP_NAME),
-      wait: 5,
-    ).click
+    check t('doc_auth.instructions.consent', app_name: APP_NAME)
     click_on t('doc_auth.buttons.continue')
   end
 
@@ -77,31 +76,47 @@ module DocAuthHelper
     # If there is a phone outage, the hybrid_handoff step is
     # skipped and the user is taken straight to document capture.
     return if OutageStatus.new.any_phone_vendor_outage?
+    expect(page).to have_content(t('doc_auth.headings.upload_from_computer'))
     click_on t('forms.buttons.upload_photos')
   end
 
-  def complete_doc_auth_steps_before_document_capture_step(expect_accessible: false)
-    complete_doc_auth_steps_before_hybrid_handoff_step(expect_accessible: expect_accessible)
-    # JavaScript-enabled mobile devices will skip directly to document capture, so stop as complete.
-    return if page.current_path == idv_document_capture_path
-    if IdentityConfig.store.in_person_proofing_opt_in_enabled
-      click_on t('forms.buttons.continue_remote')
+  def complete_choose_id_type_step(
+    expect_accessible: false, choose_id_type: nil
+  )
+    expect(page).to have_content(t('doc_auth.headings.choose_id_type'))
+
+    if choose_id_type == Idp::Constants::DocumentTypes::PASSPORT
+      choose(t('doc_auth.forms.id_type_preference.passport'))
+    else
+      choose(t('doc_auth.forms.id_type_preference.drivers_license'))
     end
-    complete_hybrid_handoff_step
+
+    click_on t('forms.buttons.continue')
     expect_page_to_have_no_accessibility_violations(page) if expect_accessible
   end
 
-  def complete_up_to_how_to_verify_step_for_opt_in_ipp(remote: true,
-                                                       facial_match_required: false)
+  def complete_doc_auth_steps_before_document_capture_step(
+    expect_accessible: false,
+    choose_id_type: nil
+  )
+    complete_doc_auth_steps_before_hybrid_handoff_step(expect_accessible: expect_accessible)
+    # JavaScript-enabled mobile devices will skip directly to document capture, so stop as complete.
+    unless page.mode == :headless_chrome_mobile
+      expect_page_to_have_no_accessibility_violations(page) if expect_accessible
+      complete_hybrid_handoff_step
+    end
+
+    complete_choose_id_type_step(expect_accessible:, choose_id_type:)
+    expect_page_to_have_no_accessibility_violations(page) if expect_accessible
+  end
+
+  def complete_up_to_how_to_verify_step_for_opt_in_ipp(remote: true)
     complete_doc_auth_steps_before_welcome_step
     complete_welcome_step
     complete_agreement_step
+    return if page.mode != :headless_chrome_mobile && remote
     if remote
-      if facial_match_required
-        click_on t('forms.buttons.continue_remote_mobile')
-      else
-        click_on t('forms.buttons.continue_remote')
-      end
+      click_on t('forms.buttons.continue_online')
     else
       click_on t('forms.buttons.continue_ipp')
     end
@@ -132,6 +147,7 @@ module DocAuthHelper
 
   def complete_doc_auth_steps_before_ssn_step(expect_accessible: false, with_selfie: false)
     complete_doc_auth_steps_before_document_capture_step(expect_accessible: expect_accessible)
+    expect(page).to have_content(t('doc_auth.headings.document_capture'))
     complete_document_capture_step(with_selfie: with_selfie)
     expect_page_to_have_no_accessibility_violations(page) if expect_accessible
   end
@@ -216,10 +232,19 @@ module DocAuthHelper
     DocAuth::Mock::DocAuthMockClient.mock_response!(
       method: :get_results,
       response: DocAuth::LexisNexis::Responses::TrueIdResponse.new(
-        attention_with_barcode_response,
-        DocAuth::LexisNexis::Config.new,
+        http_response: attention_with_barcode_response,
+        config: DocAuth::LexisNexis::Config.new,
       ),
     )
+  end
+
+  def expect_to_try_again(is_hybrid: false)
+    click_try_again
+    if is_hybrid
+      expect(page).to have_current_path(idv_hybrid_mobile_document_capture_url)
+    else
+      expect(page).to have_current_path(idv_document_capture_path)
+    end
   end
 
   def verify_phone_otp
@@ -250,5 +275,15 @@ module DocAuthHelper
     complete_phone_step(user)
     complete_enter_password_step(user)
     acknowledge_and_confirm_personal_key
+  end
+
+  def expect_rate_limit_warning(expected_remaining_attempts)
+    review_issues_rate_limit_warning = strip_tags(
+      t(
+        'idv.failure.attempts_html',
+        count: expected_remaining_attempts,
+      ),
+    )
+    expect(page).to have_content(review_issues_rate_limit_warning)
   end
 end

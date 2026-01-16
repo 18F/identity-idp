@@ -52,6 +52,7 @@ RSpec.feature 'SAML IALMAX sign in' do
         visit_idp_from_saml_sp_with_ialmax
         signin_with_piv(user)
         click_submit_default
+        expect(page).to have_current_path(capture_password_path)
         fill_in 'user[password]', with: user.password
         click_submit_default_twice
         click_agree_and_continue

@@ -18,12 +18,11 @@ module Idv
 
       def show
         @is_enhanced_ipp = resolved_authn_context_result.enhanced_ipp?
-        @show_closed_post_office_banner =
-          IdentityConfig.store.in_person_proofing_post_office_closed_alert_enabled
         analytics.idv_in_person_ready_to_verify_visit(**opt_in_analytics_properties)
+        attempts_api_tracker.idv_ipp_ready_to_verify_visit
+        fraud_ops_tracker.idv_ipp_ready_to_verify_visit
         @presenter = ReadyToVerifyPresenter.new(
           enrollment: enrollment,
-          is_enhanced_ipp: @is_enhanced_ipp,
         )
       end
 

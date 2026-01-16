@@ -117,7 +117,7 @@ class AnalyticsEventsDocumenter
         errors << "#{error_prefix} #{attribute} (undocumented)"
       end
 
-      if require_extra_params? && param_names.size > 0 && !param_names.last.start_with?('**')
+      if require_extra_params? && param_names.size > 0 && param_names.last != '**extra'
         errors << "#{error_prefix} missing **extra"
       end
 

@@ -1,21 +1,18 @@
 # frozen_string_literal: true
 
 class AuthnContextResolver
-  attr_reader :user, :service_provider, :vtr, :acr_values
+  attr_reader :user, :service_provider, :acr_values
 
-  def initialize(user:, service_provider:, vtr:, acr_values:)
+  def initialize(user:, service_provider:, acr_values:)
     @user = user
     @service_provider = service_provider
-    @vtr = vtr
     @acr_values = acr_values
   end
 
   def result
-    @result ||= if vtr.present?
-                  selected_vtr_parser_result_from_vtr_list
-                else
-                  acr_result
-                end
+    @result ||= decorate_acr_result_with_user_context(
+      acr_result_with_sp_defaults,
+    )
   end
 
   def asserted_ial_acr
@@ -32,47 +29,19 @@ class AuthnContextResolver
     end
   end
 
-  private
-
-  def selected_vtr_parser_result_from_vtr_list
-    if facial_match_proofing_vot.present? && user&.identity_verified_with_facial_match?
-      facial_match_proofing_vot
-    elsif non_facial_match_identity_proofing_vot.present? && user&.identity_verified?
-      non_facial_match_identity_proofing_vot
-    elsif no_identity_proofing_vot.present?
-      no_identity_proofing_vot
+  def asserted_aal_acr
+    if result.hspd12?
+      Saml::Idp::Constants::AAL2_HSPD12_AUTHN_CONTEXT_CLASSREF
+    elsif result.phishing_resistant?
+      Saml::Idp::Constants::AAL2_PHISHING_RESISTANT_AUTHN_CONTEXT_CLASSREF
+    elsif result.aal2?
+      Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF
     else
-      parsed_vectors_of_trust.first
+      Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF
     end
   end
 
-  def parsed_vectors_of_trust
-    @parsed_vectors_of_trust ||= vtr.map do |vot|
-      Vot::Parser.new(vector_of_trust: vot).parse
-    end
-  end
-
-  def facial_match_proofing_vot
-    parsed_vectors_of_trust.find(&:facial_match?)
-  end
-
-  def non_facial_match_identity_proofing_vot
-    parsed_vectors_of_trust.find do |vot_parser_result|
-      vot_parser_result.identity_proofing? && !vot_parser_result.facial_match?
-    end
-  end
-
-  def no_identity_proofing_vot
-    parsed_vectors_of_trust.find do |vot_parser_result|
-      !vot_parser_result.identity_proofing?
-    end
-  end
-
-  def acr_result
-    @acr_result ||= decorate_acr_result_with_user_context(
-      acr_result_with_sp_defaults,
-    )
-  end
+  private
 
   def acr_result_with_sp_defaults
     result_with_sp_aal_defaults(
@@ -83,7 +52,7 @@ class AuthnContextResolver
   end
 
   def acr_result_without_sp_defaults
-    @acr_result_without_sp_defaults ||= Vot::Parser.new(acr_values: acr_values).parse
+    @acr_result_without_sp_defaults ||= Component::Parser.new(acr_values: acr_values).parse
   end
 
   def result_with_sp_aal_defaults(result)
@@ -144,6 +113,6 @@ class AuthnContextResolver
   end
 
   def use_semantic_authn_contexts?
-    @use_semantic_authn_contexts ||= Vot::AcrComponentValues.any_semantic_acrs?(acr_values)
+    @use_semantic_authn_contexts ||= Component::AcrComponentValues.any_semantic_acrs?(acr_values)
   end
 end

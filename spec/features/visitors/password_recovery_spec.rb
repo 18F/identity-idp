@@ -21,7 +21,10 @@ RSpec.feature 'Password Recovery' do
 
       expect(page).to have_current_path forgot_password_path
 
-      expect(last_email.subject).to eq t('user_mailer.reset_password_instructions.subject')
+      expect(last_email.subject).to eq t(
+        'user_mailer.reset_password_instructions.subject',
+        app_name: APP_NAME,
+      )
       expect(last_email.html_part.body).to include MarketingSite.help_url
       expect(last_email.html_part.body).to have_content(
         t(
@@ -192,7 +195,7 @@ RSpec.feature 'Password Recovery' do
 
         fill_in t('account.index.email'), with: @user.email
         fill_in t('components.password_toggle.label'), with: 'NewVal!dPassw0rd'
-        click_button t('links.sign_in')
+        click_button t('forms.buttons.submit.default')
         fill_in_code_with_last_phone_otp
         click_submit_default
         click_agree_and_continue

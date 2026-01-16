@@ -25,8 +25,13 @@ export function DocumentsCaptureStep({
   value: Record<string, ImageValue>;
   isReviewStep: boolean;
 }) {
-  type DocumentSide = 'front' | 'back';
-  const documentsSides: DocumentSide[] = ['front', 'back'];
+  const { idType } = useContext(UploadContext);
+  const idIsPassport = idType === 'passport';
+
+  type DocumentSide = 'front' | 'back' | 'passport';
+  const documentsSides: DocumentSide[] =
+    idIsPassport && isReviewStep ? ['passport'] : ['front', 'back'];
+
   return (
     <>
       {documentsSides.map((side) => (
@@ -36,15 +41,23 @@ export function DocumentsCaptureStep({
           side={side}
           value={value[side]}
           isReviewStep={isReviewStep}
+          showSelfieHelp={() => undefined}
         />
       ))}
     </>
   );
 }
 
-export function DocumentCaptureSubheaderOne() {
+export function DocumentCaptureHeader() {
   const { t } = useI18n();
-  return <h1>{t('doc_auth.headings.document_capture')}</h1>;
+  const { idType } = useContext(UploadContext);
+  const idIsPassport = idType === 'passport';
+
+  const heading = idIsPassport
+    ? t('doc_auth.headings.passport_capture')
+    : t('doc_auth.headings.document_capture');
+
+  return <h1>{heading}</h1>;
 }
 
 export default function DocumentsStep({
@@ -67,7 +80,7 @@ export default function DocumentsStep({
   return (
     <>
       {flowPath === 'hybrid' && <HybridDocCaptureWarning className="margin-bottom-4" />}
-      <DocumentCaptureSubheaderOne />
+      <DocumentCaptureHeader />
       <TipList
         titleClassName="margin-bottom-0 text-bold"
         title={t('doc_auth.tips.document_capture_selfie_id_header_text')}

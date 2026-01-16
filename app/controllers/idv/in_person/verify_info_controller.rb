@@ -10,13 +10,12 @@ module Idv
       include VerifyInfoConcern
 
       before_action :confirm_not_rate_limited_after_doc_auth, except: [:show]
-      before_action :confirm_pii_data_present
-      before_action :confirm_ssn_step_complete
+      before_action :confirm_step_allowed
 
       def show
-        @step_indicator_steps = step_indicator_steps
-        @ssn = idv_session.ssn
         @pii = pii
+        @ssn = pii[:ssn]
+        @presenter = Idv::InPerson::VerifyInfoPresenter.new(enrollment: enrollment)
 
         Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer])
           .call('verify', :view, true) # specify in_person?
@@ -40,7 +39,9 @@ module Idv
           controller: self,
           next_steps: [:phone],
           preconditions: ->(idv_session:, user:) do
-            idv_session.ssn && idv_session.ipp_document_capture_complete?
+            idv_session.ssn && idv_session.ipp_document_capture_complete? &&
+              threatmetrix_session_id_present_or_not_required?(idv_session:) &&
+              user.has_establishing_in_person_enrollment?
           end,
           undo_step: ->(idv_session:, user:) do
             idv_session.residential_resolution_vendor = nil
@@ -50,6 +51,10 @@ module Idv
             idv_session.threatmetrix_review_status = nil
             idv_session.source_check_vendor = nil
             idv_session.applicant = nil
+            idv_session.phone_precheck_successful = nil
+            idv_session.phone_precheck_vendor = nil
+            idv_session.precheck_phone = nil
+            idv_session.invalidate_phone_step!
           end,
         )
       end
@@ -76,6 +81,10 @@ module Idv
         )
       end
 
+      def enrollment
+        current_user.establishing_in_person_enrollment
+      end
+
       # override IdvSessionConcern
       def flow_session
         user_session.fetch('idv/in_person', {})
@@ -88,17 +97,6 @@ module Idv
           analytics_id: 'In Person Proofing',
         }.merge(ab_test_analytics_buckets)
           .merge(**extra_analytics_properties)
-      end
-
-      def confirm_ssn_step_complete
-        return if pii.present? && idv_session.ssn.present?
-        redirect_to prev_url
-      end
-
-      def confirm_pii_data_present
-        unless user_session.dig('idv/in_person').present?
-          redirect_to idv_path
-        end
       end
     end
   end

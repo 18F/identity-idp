@@ -12,7 +12,7 @@ RSpec.describe Redirect::HelpCenterController do
       expect(response).to redirect_to redirect_url
       expect(@analytics).to have_logged_event(
         'External Redirect',
-        hash_including(redirect_url: redirect_url_base),
+        redirect_url: redirect_url_base,
       )
     end
   end
@@ -45,10 +45,7 @@ RSpec.describe Redirect::HelpCenterController do
       it 'redirects to the help center article and logs' do
         redirect_url = MarketingSite.help_center_article_url(category:, article:)
         expect(response).to redirect_to redirect_url
-        expect(@analytics).to have_logged_event(
-          'External Redirect',
-          hash_including(redirect_url: redirect_url),
-        )
+        expect(@analytics).to have_logged_event('External Redirect', redirect_url:)
       end
 
       context 'with optional anchor' do

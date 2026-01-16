@@ -21,14 +21,13 @@ Requires @18f/identity-i18n.
 To use this component, provide callbacks to it for desired behaviors.
 
 ```typescript jsx
-import AddressSearch from '@18f/identity-address-search';
+import FullAddressSearch from '@18f/identity-address-search';
 
 // Render UI component
 
 return(
     <>
-    <AddressSearch
-            addressSearchURL={addressSearchURL}
+    <FullAddressSearch
             disabled={disabledAddressSearchCallback}
             handleLocationSelect={handleLocationSelect}
             locationsURL={LOCATIONS_URL}
@@ -36,6 +35,29 @@ return(
             onFoundLocations={setLocationResultsCallback}
             registerField={registerFieldCallback}
             resultsHeaderComponent={resultsHeaderComponent}
+          />
+    </>
+);
+```
+
+By adding the usesErrorComponent prop to the FullAddressSearch component you can opt in to showing a specialized error message for skipping location selection when a locations endpoint error happens instead of the alert.
+
+```typescript jsx
+import FullAddressSearch from '@18f/identity-address-search';
+
+// Render UI component
+
+return(
+    <>
+    <FullAddressSearch
+            disabled={disabledAddressSearchCallback}
+            handleLocationSelect={handleLocationSelect}
+            locationsURL={LOCATIONS_URL}
+            noInPersonLocationsDisplay={noInPersonLocationsDisplay}
+            onFoundLocations={setLocationResultsCallback}
+            registerField={registerFieldCallback}
+            resultsHeaderComponent={resultsHeaderComponent}
+            usesErrorComponent
           />
     </>
 );

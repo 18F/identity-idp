@@ -3,10 +3,13 @@ fr:
   telephony:
     account_deleted_notice: Cet SMS confirme que vous avez supprimé votre compte %{app_name}.
     account_reset_cancellation_notice: Votre demande de suppression de votre compte %{app_name} a été annulée.
-    account_reset_notice: Comme demandé, votre compte %{app_name} sera supprimé dans les %{interval}. Vous ne voulez pas supprimer votre compte? Connectez-vous à votre compte %{app_name} pour le annuler.
+    account_reset_notice: |-
+      Comme demandé, votre compte %{app_name} sera supprimé dans les %{interval}. Attendez l’arrivée du deuxième e-mail qui vous permettra de confirmer la suppression du compte. 
+
+      Vous ne voulez pas supprimer votre compte? Connectez-vous à votre compte %{app_name} pour le annuler.
     authentication_otp:
       sms: |-
-        %{app_name} : Votre code à usage unique est %{code}. Il expire dans %{expiration} minutes. Ne partagez ce code avec personne.
+        %{app_name} ne vous contactera JAMAIS pour obtenir ce code. Ne le partagez à personne. Le code est : %{code}. Il expire dans %{expiration} minutes.
 
         @%{domain} #%{code}
       voice: Bonjour ! Votre code à usage unique de six %{format_type} pour %{app_name} est %{code}. Votre code à usage unique est %{code}. De nouveau, votre code à usage unique est %{code}. Ce code expire dans %{expiration} minutes.
@@ -14,11 +17,15 @@ fr:
       sms: "%{app_name} : Vous avez visité le bureau de poste le %{proof_date}. Vérifiez votre e-mail pour obtenir votre résultat. Ce n'est pas vous ? Signalez-le immédiatement : %{contact_number}. Réf. : %{reference_string}"
     confirmation_otp:
       sms: |-
-        %{app_name} : Votre code à usage unique est %{code}. Il expire dans %{expiration} minutes. Ne partagez ce code avec personne.
+        %{app_name} ne vous contactera JAMAIS pour obtenir ce code. Ne le partagez à personne. Le code est : %{code}. Il expire dans %{expiration} minutes.
 
         @%{domain} #%{code}
       voice: Bonjour ! Votre code à usage unique %{app_name} à %{format_length} %{format_type} est %{code}. Votre code à usage unique est %{code}. À nouveau, votre code à usage unique est %{code}. Ce code expire dans %{expiration} minutes.
     doc_auth_link: "%{app_name} : %{link} Vous êtes en train de confirmer votre identité pour accéder à %{sp_or_app_name}. Prenez une photo de votre pièce d'identité pour continuer."
+    dupe_profile_created_notice: |-
+      Alerte %{app_name} : Vos informations personnelles ont été vérifiées sur un autre compte. L’accès à ces comptes a été restreint. Nous vous avons envoyé un courriel contenant les instructions à suivre.
+    dupe_profile_sign_in_attempted_notice: |-
+      Alerte %{app_name} : Un autre compte utilisant vos informations personnelles s'est connecté. L'accès à ces comptes a été restreint. Nous vous avons envoyé un courriel contenant les instructions à suivre.
     error:
       friendly_message:
         daily_voice_limit_reached: L’envoi de votre code à usage unique a échoué car vous avez dépassé le nombre maximal d’appels vers ce numéro de téléphone en 24 heures. Vous pouvez demander un code par SMS ou utiliser un autre numéro pour recevoir un appel téléphonique.

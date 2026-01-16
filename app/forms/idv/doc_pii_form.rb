@@ -6,22 +6,10 @@ module Idv
 
     validate :name_valid?
     validate :dob_valid?
-    validates_presence_of :address1, { message: proc {
-                                                  I18n.t('doc_auth.errors.alerts.address_check')
-                                                } }
-    validate :zipcode_valid?
-    validates :jurisdiction, :state, inclusion: { in: Idp::Constants::STATE_AND_TERRITORY_CODES,
-                                                  message: proc {
-                                                    I18n.t('doc_auth.errors.general.no_liveness')
-                                                  } }
+    validate :document_type_received_valid?
 
-    validates_presence_of :state_id_number, { message: proc {
-      I18n.t('doc_auth.errors.general.no_liveness')
-    } }
-    validate :state_id_expired?
-
-    attr_reader :first_name, :last_name, :dob, :address1, :state, :zipcode, :attention_with_barcode,
-                :jurisdiction, :state_id_number, :state_id_expiration
+    attr_reader :first_name, :last_name, :dob, :attention_with_barcode,
+                :jurisdiction, :state_id_number, :state_id_expiration, :document_type_received
     alias_method :attention_with_barcode?, :attention_with_barcode
 
     def initialize(pii:, attention_with_barcode: false)
@@ -29,12 +17,7 @@ module Idv
       @first_name = pii[:first_name]
       @last_name = pii[:last_name]
       @dob = pii[:dob]
-      @address1 = pii[:address1]
-      @state = pii[:state]
-      @zipcode = pii[:zipcode]
-      @jurisdiction = pii[:state_id_jurisdiction]
-      @state_id_number = pii[:state_id_number]
-      @state_id_expiration = pii[:state_id_expiration]
+      @document_type_received = pii[:document_type_received] || pii[:id_doc_type]
       @attention_with_barcode = attention_with_barcode
     end
 
@@ -43,19 +26,30 @@ module Idv
         success: valid?,
         errors: errors,
         extra: {
-          pii_like_keypaths: self.class.pii_like_keypaths,
+          pii_like_keypaths: self.class.pii_like_keypaths(document_type: document_type_received),
           attention_with_barcode: attention_with_barcode?,
+          document_type_received:,
           id_issued_status: pii_from_doc[:state_id_issued].present? ? 'present' : 'missing',
           id_expiration_status: pii_from_doc[:state_id_expiration].present? ? 'present' : 'missing',
+          passport_issued_status: pii_from_doc[:passport_issued].present? ? 'present' : 'missing',
+          passport_expiration_status: pii_from_doc[:passport_expiration].present? ?
+            'present' : 'missing',
         },
       )
       response.pii_from_doc = pii_from_doc
       response
     end
 
-    def self.pii_like_keypaths
+    def self.pii_like_keypaths(document_type:)
       keypaths = [[:pii]]
-      attrs = %i[name dob dob_min_age address1 state zipcode jurisdiction state_id_number]
+      is_passport = document_type&.downcase
+        &.include?(Idp::Constants::DocumentTypes::PASSPORT)
+      document_attrs = is_passport ?
+        DocPiiPassport.pii_like_keypaths :
+        DocPiiStateId.pii_like_keypaths
+
+      attrs = %i[name dob dob_min_age] + document_attrs
+
       attrs.each do |k|
         keypaths << [:errors, k]
         keypaths << [:error_details, k]
@@ -70,7 +64,7 @@ module Idv
     # errors: The DocPiiForm errors object
     def self.present_error(existing_errors)
       return if existing_errors.blank?
-      if existing_errors.any? { |k, _v| PII_ERROR_KEYS.include?(k) }
+      if existing_errors.any? { |k, _v| PII_ERROR_KEYS.include?(k) || ERROR_KEYS.include?(k) }
         existing_errors[:front] = [I18n.t('doc_auth.errors.general.multiple_front_id_failures')]
         existing_errors[:back] = [I18n.t('doc_auth.errors.general.multiple_back_id_failures')]
       end
@@ -84,6 +78,8 @@ module Idv
 
     PII_ERROR_KEYS = %i[name dob address1 state zipcode jurisdiction state_id_number
                         dob_min_age].freeze
+
+    ERROR_KEYS = %i[state_id_verification].freeze
 
     attr_reader :pii_from_doc
 
@@ -108,16 +104,17 @@ module Idv
       end
     end
 
-    def state_id_expired?
-      if state_id_expiration && DateParser.parse_legacy(state_id_expiration).past?
-        errors.add(:state_id_expiration, generic_error, type: :state_id_expiration)
+    def document_type_received_valid?
+      case document_type_received
+      when *Idp::Constants::DocumentTypes::STATE_ID_TYPES
+        state_id_validation = DocPiiStateId.new(pii: pii_from_doc)
+        state_id_validation.valid? || errors.merge!(state_id_validation.errors)
+      when *Idp::Constants::DocumentTypes::PASSPORT_TYPES
+        passport_validation = DocPiiPassport.new(pii: pii_from_doc)
+        passport_validation.valid? || errors.merge!(passport_validation.errors)
+      else
+        errors.add(:no_document, generic_error, type: :no_document)
       end
-    end
-
-    def zipcode_valid?
-      return if zipcode.is_a?(String) && zipcode.present?
-
-      errors.add(:zipcode, generic_error, type: :zipcode)
     end
 
     def generic_error

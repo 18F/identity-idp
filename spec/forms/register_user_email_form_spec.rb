@@ -2,7 +2,8 @@ require 'rails_helper'
 
 RSpec.describe RegisterUserEmailForm do
   let(:analytics) { FakeAnalytics.new }
-  subject { RegisterUserEmailForm.new(analytics:) }
+  let(:attempts_api_tracker) { AttemptsApiTrackingHelper::FakeAttemptsTracker.new }
+  subject { RegisterUserEmailForm.new(analytics:, attempts_api_tracker:) }
 
   it_behaves_like 'email validation'
 
@@ -115,7 +116,7 @@ RSpec.describe RegisterUserEmailForm do
       end
 
       it 'sets success to true to prevent revealing account existence' do
-        expect(subject.submit(params).to_h).to eq(success: true, errors: {}, **extra_params)
+        expect(subject.submit(params).to_h).to eq(success: true, **extra_params)
         expect(subject.email).to eq registered_email_address
         expect_delivered_email_count(1)
         expect_delivered_email(
@@ -125,6 +126,13 @@ RSpec.describe RegisterUserEmailForm do
       end
 
       it 'creates rate_limiter events after reaching rate_limiter limit' do
+        expect(attempts_api_tracker).to receive(
+          :user_registration_email_submission_rate_limited,
+        ).with(
+          email: registered_email_address,
+          email_already_registered: true,
+        )
+
         IdentityConfig.store.reg_confirmed_email_max_attempts.times do
           subject.submit(params)
         end
@@ -168,7 +176,6 @@ RSpec.describe RegisterUserEmailForm do
 
         expect(result).to eq(
           success: true,
-          errors: {},
           **extra_params,
         )
       end
@@ -180,6 +187,12 @@ RSpec.describe RegisterUserEmailForm do
       end
 
       it 'creates rate_limiter events after reaching rate_limiter limit' do
+        expect(attempts_api_tracker).to receive(
+          :user_registration_email_submission_rate_limited,
+        ).with(
+          email: registered_email_address,
+          email_already_registered: false,
+        )
         IdentityConfig.store.reg_unconfirmed_email_max_attempts.times do
           subject.submit(email: registered_email_address, terms_accepted: '1')
         end
@@ -194,10 +207,17 @@ RSpec.describe RegisterUserEmailForm do
         let(:rate_limit) { IdentityConfig.store.reg_unconfirmed_email_max_attempts }
 
         it 'creates rate_limiter events after reaching rate_limiter limit' do
+          expect(attempts_api_tracker).to receive(
+            :user_registration_email_submission_rate_limited,
+          ).with(
+            email: 'not_taken+4@gmail.com',
+            email_already_registered: false,
+          )
+
           1.upto(rate_limit) do |i|
-            RegisterUserEmailForm.new(analytics:)
+            RegisterUserEmailForm.new(analytics:, attempts_api_tracker:)
               .submit(
-                email: "taken+#{i}@gmail.com", terms_accepted: '1',
+                email: "not_taken+#{i}@gmail.com", terms_accepted: '1',
               )
           end
 
@@ -246,14 +266,12 @@ RSpec.describe RegisterUserEmailForm do
 
         expect(submit_form.to_h).to eq(
           success: true,
-          errors: {},
           **extra,
         )
       end
 
       it 'saves the user email_language for a valid form' do
-        form = RegisterUserEmailForm.new(analytics:)
-
+        form = RegisterUserEmailForm.new(analytics:, attempts_api_tracker:)
         response = form.submit(params.merge(email_language: 'fr'))
         expect(response).to be_success
 
@@ -264,8 +282,15 @@ RSpec.describe RegisterUserEmailForm do
         let(:rate_limit) { IdentityConfig.store.reg_unconfirmed_email_max_attempts }
 
         it 'creates rate_limiter events after reaching rate_limiter limit' do
+          expect(attempts_api_tracker).to receive(
+            :user_registration_email_submission_rate_limited,
+          ).with(
+            email: 'taken+4@gmail.com',
+            email_already_registered: false,
+          )
+
           1.upto(rate_limit) do |i|
-            RegisterUserEmailForm.new(analytics:)
+            RegisterUserEmailForm.new(analytics:, attempts_api_tracker:)
               .submit(params.merge(email: "taken+#{i}@gmail.com"))
           end
 
@@ -280,7 +305,6 @@ RSpec.describe RegisterUserEmailForm do
     context 'when email is invalid' do
       it 'returns false and adds errors to the form object' do
         invalid_email = 'invalid_email'
-        errors = { email: [t('valid_email.validations.email.invalid')] }
 
         extra = {
           email_already_exists: false,
@@ -291,16 +315,13 @@ RSpec.describe RegisterUserEmailForm do
 
         expect(subject.submit(email: invalid_email, terms_accepted: '1').to_h).to include(
           success: false,
-          errors: errors,
-          error_details: hash_including(*errors.keys),
+          error_details: { email: { invalid: true } },
           **extra,
         )
         expect_delivered_email_count(0)
       end
 
       it 'returns false and adds errors to the form object when domain is invalid' do
-        errors = { email: [t('valid_email.validations.email.invalid')] }
-
         extra = {
           email_already_exists: false,
           rate_limited: false,
@@ -310,8 +331,7 @@ RSpec.describe RegisterUserEmailForm do
 
         expect(subject.submit(email: 'test@çà.com', terms_accepted: '1').to_h).to include(
           success: false,
-          errors: errors,
-          error_details: hash_including(*errors.keys),
+          error_details: { email: { domain: true } },
           **extra,
         )
         expect_delivered_email_count(0)
@@ -321,7 +341,6 @@ RSpec.describe RegisterUserEmailForm do
         blocked_domain = 'blocked.com'
         blocked_email = 'test@' + blocked_domain
         email_address = create(:email_address, email: blocked_email)
-        errors = { email: [t('valid_email.validations.email.invalid')] }
         allow(BanDisposableEmailValidator).to receive(:config).and_return([blocked_domain])
 
         extra = {
@@ -333,8 +352,7 @@ RSpec.describe RegisterUserEmailForm do
 
         expect(subject.submit(email: blocked_email, terms_accepted: '1').to_h).to include(
           success: false,
-          errors: errors,
-          error_details: hash_including(*errors.keys),
+          error_details: { email: { t('valid_email.validations.email.invalid') => true } },
           **extra,
         )
         expect_delivered_email_count(0)
@@ -344,13 +362,11 @@ RSpec.describe RegisterUserEmailForm do
         blocked_domain = 'blocked.com'
         blocked_email = 'test@sub.' + blocked_domain
 
-        errors = { email: [t('valid_email.validations.email.invalid')] }
         expect(BanDisposableEmailValidator).to receive(:config).and_return([blocked_domain])
 
         expect(subject.submit(email: blocked_email, terms_accepted: '1').to_h).to include(
           success: false,
-          errors: errors,
-          error_details: hash_including(*errors.keys),
+          error_details: { email: { t('valid_email.validations.email.invalid') => true } },
           email_already_exists: false,
           rate_limited: false,
           user_id: 'anonymous-uuid',
@@ -370,7 +386,6 @@ RSpec.describe RegisterUserEmailForm do
 
         expect(result.to_h).to eq(
           success: true,
-          errors: {},
           email_already_exists: false,
           rate_limited: false,
           user_id: User.find_with_email(email).uuid,
@@ -389,7 +404,6 @@ RSpec.describe RegisterUserEmailForm do
 
         expect(result.to_h).to eq(
           success: false,
-          errors: { terms_accepted: [t('errors.registration.terms')] },
           error_details: { terms_accepted: { terms: true } },
           email_already_exists: false,
           rate_limited: false,
@@ -442,7 +456,6 @@ RSpec.describe RegisterUserEmailForm do
 
         expect(submit_form.to_h).to eq(
           success: true,
-          errors: {},
           **extra,
         )
 
@@ -470,7 +483,6 @@ RSpec.describe RegisterUserEmailForm do
 
         expect(submit_form.to_h).to eq(
           success: true,
-          errors: {},
           **extra,
         )
       end

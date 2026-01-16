@@ -6,13 +6,9 @@ RSpec.describe MfaSetupConcern do
   end
 
   let(:user) { create(:user, :fully_registered) }
-  let(:recommend_webauthn_platform_for_sms_user) { false }
 
   before do
     stub_sign_in(user)
-    allow(controller).to receive(:recommend_webauthn_platform_for_sms_user?)
-      .with(:recommend_for_account_creation)
-      .and_return(recommend_webauthn_platform_for_sms_user)
   end
 
   describe '#next_setup_path' do
@@ -31,14 +27,6 @@ RSpec.describe MfaSetupConcern do
     context 'when user has no remaining selections to setup' do
       before do
         controller.user_session[:mfa_selections] = ['phone']
-      end
-
-      context 'when user is recommended for webauthn platform for sms user' do
-        let(:recommend_webauthn_platform_for_sms_user) { true }
-
-        it 'returns webauthn platform recommended path' do
-          expect(next_setup_path).to eq(webauthn_platform_recommended_path)
-        end
       end
 
       context 'when user only set up a single mfa method' do
@@ -67,6 +55,21 @@ RSpec.describe MfaSetupConcern do
         it 'returns signup completed path' do
           expect(next_setup_path).to eq(sign_up_completed_path)
         end
+      end
+    end
+
+    context 'when user is recommended for webauthn platform setup' do
+      before do
+        controller.user_session[:mfa_selections] = ['phone']
+        controller.user_session[:platform_authenticator_available] = true
+        controller.user_session[:in_account_creation_flow] = true
+      end
+
+      let(:user) { create(:user, :fully_registered) }
+      let(:recommend_webauthn_platform_for_sms_user?) { true }
+
+      it 'redirects to webauthn recommendation screen' do
+        expect(next_setup_path).to eq(webauthn_platform_recommended_path)
       end
     end
 

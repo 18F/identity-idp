@@ -25,6 +25,7 @@ module Proofing
             account_drivers_license_number: applicant[:state_id_number]&.gsub(/\W/, '') || '',
             account_drivers_license_type: applicant[:state_id_number] ? 'us_dl' : '',
             account_drivers_license_issuer: applicant[:state_id_jurisdiction].to_s.strip || '',
+            customer_event_type: applicant[:workflow],
             event_type: 'ACCOUNT_CREATION',
             policy: config.ddp_policy,
             service_type: 'all',
@@ -33,6 +34,7 @@ module Proofing
             national_id_type: applicant[:ssn] ? 'US_SSN' : '',
             input_ip_address: applicant[:request_ip],
             local_attrib_1: applicant[:uuid_prefix] || '',
+            local_attrib_3: applicant[:uuid],
           }.to_json
         end
 

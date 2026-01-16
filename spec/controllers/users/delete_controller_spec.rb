@@ -45,6 +45,8 @@ RSpec.describe Users::DeleteController do
       it 'logs a failed submit' do
         user = stub_signed_in_user
         stub_analytics(user:)
+        stub_attempts_tracker
+        expect(@attempts_api_tracker).to receive(:logged_in_account_purged).with(success: false)
 
         delete
 
@@ -79,9 +81,11 @@ RSpec.describe Users::DeleteController do
       expect(Telephony).to have_received(:send_account_deleted_notice)
     end
 
-    it 'logs a succesful submit' do
+    it 'logs a successful submit' do
       user = stub_signed_in_user
       stub_analytics(user:)
+      stub_attempts_tracker
+      expect(@attempts_api_tracker).to receive(:logged_in_account_purged).with(success: true)
 
       delete
 
@@ -105,6 +109,48 @@ RSpec.describe Users::DeleteController do
       expect(Profile.count).to eq(1)
       delete
       expect(Profile.count).to eq(0)
+    end
+
+    context 'when user has an active profile in a DuplicateProfileSet' do
+      let(:user1) { create(:user, :fully_registered, password: ControllerHelper::VALID_PASSWORD) }
+      let(:user2) { create(:user, :fully_registered, password: ControllerHelper::VALID_PASSWORD) }
+      let(:profile1) do
+        create(
+          :profile,
+          :active,
+          :facial_match_proof,
+          user: user1,
+        )
+      end
+      let(:profile2) do
+        create(
+          :profile,
+          :active,
+          :facial_match_proof,
+          user: user2,
+        )
+      end
+      let!(:duplicate_profile_set) do
+        create(
+          :duplicate_profile_set, profile_ids: [profile1.id, profile2.id],
+                                  service_provider: 'random-sp'
+        )
+      end
+
+      it 'logs a successful analysis submit' do
+        stub_sign_in(user1)
+        stub_analytics(user: user1)
+
+        delete
+
+        expect(@analytics).to have_logged_event(
+          :one_account_self_service,
+          source: :account_management_delete,
+          service_provider: duplicate_profile_set.service_provider,
+          associated_profiles_count: duplicate_profile_set.profile_ids.count - 1,
+          dupe_profile_set_id: duplicate_profile_set.id,
+        )
+      end
     end
   end
 

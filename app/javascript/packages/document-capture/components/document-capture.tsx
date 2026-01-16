@@ -9,8 +9,8 @@ import { getConfigValue } from '@18f/identity-config';
 import { UploadFormEntriesError } from '../services/upload';
 import SelfieStep from './selfie-step';
 import DocumentsStep from './documents-step';
+import PassportStep from './passport-step';
 import InPersonPrepareStep from './in-person-prepare-step';
-import InPersonLocationPostOfficeSearchStep from './in-person-location-post-office-search-step';
 import InPersonLocationFullAddressEntryPostOfficeSearchStep from './in-person-location-full-address-entry-post-office-search-step';
 import InPersonSwitchBackStep from './in-person-switch-back-step';
 import ReviewIssuesStep from './review-issues-step';
@@ -36,15 +36,11 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
   const [submissionError, setSubmissionError] = useState<Error | undefined>(undefined);
   const [stepName, setStepName] = useState<string | undefined>(undefined);
   const { t } = useI18n();
-  const { flowPath } = useContext(UploadContext);
+  const { flowPath, idType } = useContext(UploadContext);
   const { trackSubmitEvent, trackVisitEvent } = useContext(AnalyticsContext);
   const { isSelfieCaptureEnabled } = useContext(SelfieCaptureContext);
-  const {
-    inPersonFullAddressEntryEnabled,
-    inPersonURL,
-    skipDocAuthFromHandoff,
-    skipDocAuthFromHowToVerify,
-  } = useContext(InPersonContext);
+  const { inPersonURL, skipDocAuthFromHandoff, skipDocAuthFromHowToVerify, skipDocAuthFromSocure } =
+    useContext(InPersonContext);
   useDidUpdateEffect(onStepChange, [stepName]);
   useEffect(() => {
     if (stepName) {
@@ -52,9 +48,7 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
     }
   }, [stepName]);
   const appName = getConfigValue('appName');
-  const inPersonLocationPostOfficeSearchForm = inPersonFullAddressEntryEnabled
-    ? InPersonLocationFullAddressEntryPostOfficeSearchStep
-    : InPersonLocationPostOfficeSearchStep;
+  const inPersonLocationPostOfficeSearchForm = InPersonLocationFullAddressEntryPostOfficeSearchStep;
 
   // Define different states to be used in human readable array declaration
   const documentFormStep: FormStep = {
@@ -62,6 +56,12 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
     form: DocumentsStep,
     title: t('doc_auth.headings.document_capture'),
   };
+  const passportFormStep: FormStep = {
+    name: 'passport',
+    form: PassportStep,
+    title: t('doc_auth.headings.document_capture_passport'),
+  };
+  const idFormStep: FormStep = idType === 'passport' ? passportFormStep : documentFormStep;
   const selfieFormStep: FormStep = {
     name: 'selfie',
     form: SelfieStep,
@@ -69,8 +69,8 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
   };
   const documentsFormSteps: FormStep[] =
     isSelfieCaptureEnabled && submissionError === undefined
-      ? [documentFormStep, selfieFormStep]
-      : [documentFormStep];
+      ? [idFormStep, selfieFormStep]
+      : [idFormStep];
   const reviewFormStep: FormStep = {
     name: 'review',
     form:
@@ -84,7 +84,6 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
             isFailedSelfie: submissionError.isFailedSelfie,
             isFailedSelfieLivenessOrQuality:
               submissionError.selfieNotLive || submissionError.selfieNotGoodQuality,
-            captureHints: submissionError.hints,
             pii: submissionError.pii,
             failedImageFingerprints: submissionError.failed_image_fingerprints,
           })(ReviewIssuesStep)
@@ -142,7 +141,8 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
   }
   // If the user got here by opting-in to in-person proofing, when skipDocAuthFromHowToVerify === true
   // then set steps to inPersonSteps
-  const isInPersonStepEnabled = skipDocAuthFromHowToVerify || skipDocAuthFromHandoff;
+  const isInPersonStepEnabled =
+    skipDocAuthFromHowToVerify || skipDocAuthFromHandoff || skipDocAuthFromSocure;
   const inPersonSteps: FormStep[] =
     inPersonURL === undefined
       ? []
@@ -157,13 +157,13 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
     steps = [reviewFormStep, ...inPersonSteps];
   }
   // If the user got here by opting-in to in-person proofing, when skipDocAuthFromHowToVerify === true
-  // or opting-in ipp from handoff page, and selfie is required, when skipDocAuthFromHandoff === true
+  // or opting-in ipp from handoff page, and selfie is required, when skipDocAuthFromHandoff === true,
+  // or opting-in ipp from socure hybrid, when skipDocAuthFromSocure === true,
   // then set stepIndicatorPath to VerifyFlowPath.IN_PERSON
   const stepIndicatorPath =
     (stepName && ['location', 'prepare', 'switch_back'].includes(stepName)) || isInPersonStepEnabled
       ? VerifyFlowPath.IN_PERSON
       : VerifyFlowPath.DEFAULT;
-
   return (
     <>
       <VerifyFlowStepIndicator currentStep="document_capture" path={stepIndicatorPath} />

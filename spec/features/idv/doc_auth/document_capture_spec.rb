@@ -4,14 +4,28 @@ RSpec.feature 'document capture step', :js do
   include IdvStepHelper
   include DocAuthHelper
   include DocCaptureHelper
+  include PassportApiHelpers
+  include AbTestsHelper
   include ActionView::Helpers::DateHelper
 
   let(:max_attempts) { IdentityConfig.store.doc_auth_max_attempts }
   let(:fake_analytics) { FakeAnalytics.new }
+  let(:attempts_api_tracker) { AttemptsApiTrackingHelper::FakeAttemptsTracker.new }
+  let(:fraud_ops_tracker) { AttemptsApiTrackingHelper::FakeAttemptsTracker.new }
+  let(:passports_enabled) { false }
 
   before(:each) do
     allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
+    allow_any_instance_of(ApplicationController).to receive(:attempts_api_tracker).and_return(
+      attempts_api_tracker,
+    )
+    allow_any_instance_of(ApplicationController).to receive(:fraud_ops_tracker).and_return(
+      fraud_ops_tracker,
+    )
     allow_any_instance_of(ServiceProviderSession).to receive(:sp_name).and_return(@sp_name)
+    allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled)
+      .and_return(passports_enabled)
+    allow(IdentityConfig.store).to receive(:doc_auth_mock_dos_api).and_return(true)
   end
 
   before(:all) do
@@ -58,10 +72,15 @@ RSpec.feature 'document capture step', :js do
       end
 
       it 'logs the rate limited analytics event for doc_auth' do
+        expect(attempts_api_tracker).to receive(:idv_rate_limited).with(
+          limiter_type: :idv_doc_auth,
+        )
+
         attach_and_submit_images
         expect(fake_analytics).to have_logged_event(
           'Rate Limit Reached',
           limiter_type: :idv_doc_auth,
+          user_id: @user.uuid,
         )
       end
 
@@ -96,11 +115,21 @@ RSpec.feature 'document capture step', :js do
       expect(page).to have_content(I18n.t('doc_auth.errors.general.network_error'))
     end
 
-    it 'does not track state if state tracking is disabled' do
-      allow(IdentityConfig.store).to receive(:state_tracking_enabled).and_return(false)
-      attach_and_submit_images
+    context 'state tracking is disabled' do
+      before do
+        allow(IdentityConfig.store).to receive(:state_tracking_enabled).and_return(false)
+        allow(IdentityConfig.store).to receive(:socure_docv_enabled).and_return(true)
+      end
+      it 'does not track state' do
+        # Confirm that we end up on the LN / Mock page even if we try to
+        # go to the Socure one.
+        visit idv_socure_document_capture_url
+        expect(page).to have_current_path(idv_document_capture_url)
 
-      expect(DocAuthLog.find_by(user_id: @user.id).state).to be_nil
+        attach_and_submit_images
+
+        expect(DocAuthLog.find_by(user_id: @user.id).state).to be_nil
+      end
     end
   end
 
@@ -139,14 +168,14 @@ RSpec.feature 'document capture step', :js do
       complete_doc_auth_steps_before_document_capture_step
     end
 
-    it 'user can go through verification uploading ID and selfie on seprerate pages' do
+    it 'user can go through verification uploading ID and selfie on separate pages' do
       expect(page).to have_current_path(idv_document_capture_url)
       expect(page).not_to have_content(t('doc_auth.tips.document_capture_selfie_text1'))
       attach_images
       click_continue
       expect(page).to have_title(t('doc_auth.headings.selfie_capture'))
       expect(page).to have_content(t('doc_auth.tips.document_capture_selfie_text1'))
-      click_button 'Take photo'
+      click_button t('doc_auth.buttons.take_picture')
       attach_selfie
       submit_images
       expect(page).to have_content(t('doc_auth.headings.capture_complete'))
@@ -160,7 +189,7 @@ RSpec.feature 'document capture step', :js do
         ),
       )
       click_continue
-      click_button 'Take photo'
+      click_button t('doc_auth.buttons.take_picture')
       attach_selfie(
         Rails.root.join(
           'spec', 'fixtures',
@@ -174,6 +203,216 @@ RSpec.feature 'document capture step', :js do
       attach_images
       submit_images
       expect(page).to have_content(t('doc_auth.headings.capture_complete'))
+    end
+  end
+
+  context 'Passports enabled', allow_browser_log: true do
+    let(:passports_enabled) { true }
+    let(:api_status) { 'UP' }
+    let(:ipp_service_provider) do
+      create(:service_provider, :active, :in_person_proofing_enabled)
+    end
+
+    before do
+      allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
+      allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled).and_return(true)
+      allow_any_instance_of(ServiceProvider).to receive(
+        :in_person_proofing_enabled,
+      ).and_return(true)
+      allow(IdentityConfig.store).to receive(:doc_auth_passports_percent).and_return(100)
+      # Use proper health check helpers
+      stub_health_check_settings
+      stub_health_check_endpoints_success
+      reload_ab_tests
+
+      visit_idp_from_sp_with_ial2(
+        :oidc,
+        **{ client_id: ipp_service_provider.issuer },
+      )
+      sign_in_and_2fa_user(@user)
+      complete_doc_auth_steps_before_hybrid_handoff_step
+      click_on t('forms.buttons.upload_photos')
+    end
+
+    after do
+      reload_ab_tests
+    end
+
+    context 'with a valid passport' do
+      let(:passport_image) do
+        Rails.root.join(
+          'spec', 'fixtures',
+          'passport_credential.yml'
+        )
+      end
+      let(:fake_dos_api_endpoint) { 'http://fake_dos_api_endpoint/' }
+
+      before do
+        allow(IdentityConfig.store).to receive(:dos_passport_mrz_endpoint)
+          .and_return(fake_dos_api_endpoint)
+        stub_request(:post, fake_dos_api_endpoint)
+          .to_return_json({ status: 200, body: { response: 'YES' } })
+      end
+
+      it 'happy path' do
+        # Navigate to choose ID type page and select passport
+        visit idv_choose_id_type_url
+
+        choose(t('doc_auth.forms.id_type_preference.passport'))
+        click_on t('forms.buttons.continue')
+
+        expect(page).to have_current_path(idv_document_capture_url, wait: 10)
+        expect(page).to have_content(t('doc_auth.headings.document_capture_passport'))
+
+        expect(page).not_to have_content(t('doc_auth.tips.document_capture_selfie_text1'))
+        attach_passport_image(passport_image)
+        submit_images
+
+        expect(page).to have_content(t('doc_auth.headings.capture_complete'))
+        fill_out_ssn_form_ok
+        click_idv_continue
+        expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_info'))
+        expect(page).to have_content(t('doc_auth.headings.address'))
+        fill_in 'idv_form_address1', with: '123 Main St'
+        fill_in 'idv_form_city', with: 'Nowhere'
+        select 'Virginia', from: 'idv_form_state'
+        fill_in 'idv_form_zipcode', with: '66044'
+        click_idv_continue
+        expect(page).to have_current_path(idv_verify_info_path)
+        expect(page).to have_content('VA')
+        expect(page).to have_content('123 Main St')
+        expect(page).to have_content('Nowhere')
+        complete_verify_step
+        expect(page).to have_current_path(idv_phone_url)
+      end
+    end
+
+    context 'with an invalid passport' do
+      let(:passport_image) do
+        Rails.root.join(
+          'spec', 'fixtures',
+          'passport_bad_mrz_credential.yml'
+        )
+      end
+
+      it 'fails due to mrz' do
+        choose(t('doc_auth.forms.id_type_preference.passport'))
+        click_on t('forms.buttons.continue')
+        expect(page).to have_current_path(idv_document_capture_url)
+        expect(page).not_to have_content(t('doc_auth.tips.document_capture_selfie_text1'))
+        attach_passport_image(passport_image)
+        submit_images
+        expect(page).not_to have_content(t('doc_auth.headings.capture_complete'))
+        expect(page).to have_content(t('doc_auth.info.review_passport'))
+        expect(page).to have_content(t('in_person_proofing.headings.cta'))
+        expect_to_try_again
+        expect(page).to have_content(t('doc_auth.info.review_passport'))
+        expect_rate_limit_warning(max_attempts - 1)
+      end
+    end
+
+    context 'with a network error' do
+      let(:passport_image) do
+        Rails.root.join(
+          'spec', 'fixtures',
+          'passport_credential.yml'
+        )
+      end
+      before do
+        DocAuth::Mock::DocAuthMockClient.mock_response!(
+          method: :post_passport_image,
+          response: DocAuth::Response.new(
+            success: false,
+            errors: { network: I18n.t('doc_auth.errors.general.network_error') },
+          ),
+        )
+      end
+
+      it 'shows the error message' do
+        choose(t('doc_auth.forms.id_type_preference.passport'))
+        click_on t('forms.buttons.continue')
+        expect(page).to have_current_path(idv_document_capture_url)
+        expect(page).not_to have_content(t('doc_auth.tips.document_capture_selfie_text1'))
+        attach_passport_image(passport_image)
+        submit_images
+        expect(page).to have_content(t('doc_auth.errors.general.network_error'))
+        expect(page).to have_content(t('in_person_proofing.headings.cta'))
+        expect_rate_limit_warning(max_attempts - 1)
+      end
+    end
+
+    context 'pii validation error' do
+      let(:passport_image) do
+        Rails.root.join(
+          'spec', 'fixtures',
+          'passport_bad_pii_credentials.yml'
+        )
+      end
+
+      it 'fails pii check' do
+        choose(t('doc_auth.forms.id_type_preference.passport'))
+        click_on t('forms.buttons.continue')
+        expect(page).to have_current_path(idv_document_capture_url)
+        expect(page).not_to have_content(t('doc_auth.tips.document_capture_selfie_text1'))
+        attach_passport_image(passport_image)
+        submit_images
+        expect(page).to have_content(t('in_person_proofing.headings.cta'))
+        expect_to_try_again
+        expect(page).to have_current_path(idv_document_capture_url)
+        expect_rate_limit_warning(max_attempts - 1)
+      end
+    end
+
+    context 'when the MRZ API response with a 400 error' do
+      let(:passport_image) do
+        Rails.root.join(
+          'spec', 'fixtures',
+          'passport_credential.yml'
+        )
+      end
+      let(:fake_dos_api_endpoint) { 'http://fake_dos_api_endpoint/' }
+
+      before do
+        allow(IdentityConfig.store).to receive(:doc_auth_mock_dos_api).and_return(false)
+        allow(IdentityConfig.store).to receive(:dos_passport_mrz_endpoint)
+          .and_return(fake_dos_api_endpoint)
+        stub_request(:post, fake_dos_api_endpoint)
+          .to_return(status: 400, body: '{}', headers: {})
+      end
+
+      it 'shows the error message' do
+        choose(t('doc_auth.forms.id_type_preference.passport'))
+        click_on t('forms.buttons.continue')
+        expect(page).to have_current_path(idv_document_capture_url)
+        expect(page).not_to have_content(t('doc_auth.tips.document_capture_selfie_text1'))
+        attach_passport_image(passport_image)
+        submit_images
+        expect(page).to have_content(t('doc_auth.errors.rate_limited_heading'))
+        expect(page).to have_current_path(idv_document_capture_url)
+      end
+    end
+
+    context 'when the MRZ API response with a 500 error' do
+      let(:fake_dos_api_endpoint) { 'http://fake_dos_api_endpoint/' }
+
+      before do
+        allow(IdentityConfig.store).to receive(:doc_auth_mock_dos_api).and_return(false)
+        allow(IdentityConfig.store).to receive(:dos_passport_mrz_endpoint)
+          .and_return(fake_dos_api_endpoint)
+        stub_request(:post, fake_dos_api_endpoint)
+          .to_return(status: 500, body: '{}', headers: {})
+      end
+
+      it 'shows the error message' do
+        choose(t('doc_auth.forms.id_type_preference.passport'))
+        click_on t('forms.buttons.continue')
+        expect(page).to have_current_path(idv_document_capture_url)
+        expect(page).not_to have_content(t('doc_auth.tips.document_capture_selfie_text1'))
+        attach_passport_image
+        submit_images
+        expect(page).to have_content(t('doc_auth.errors.rate_limited_heading'))
+        expect(page).to have_current_path(idv_document_capture_url)
+      end
     end
   end
 
@@ -214,10 +453,14 @@ RSpec.feature 'document capture step', :js do
       end
 
       it 'logs the rate limited analytics event for doc_auth' do
+        expect(attempts_api_tracker).to receive(:idv_rate_limited).with(
+          limiter_type: :idv_doc_auth,
+        )
         attach_and_submit_images
         expect(fake_analytics).to have_logged_event(
           'Rate Limit Reached',
           limiter_type: :idv_doc_auth,
+          user_id: @user.uuid,
         )
       end
 
@@ -286,6 +529,7 @@ RSpec.feature 'document capture step', :js do
       end
     end
   end
+
   context 'selfie check' do
     before do
       allow(IdentityConfig.store).to receive(:use_vot_in_sp_requests).and_return(true)
@@ -314,22 +558,13 @@ RSpec.feature 'document capture step', :js do
           fill_out_ssn_form_ok
           click_idv_continue
           complete_verify_step
-          # expect(page).to have_content(t('doc_auth.headings.document_capture_selfie'))
           expect(page).to have_current_path(idv_phone_url)
         end
       end
     end
 
     context 'when a selfie is required by the SP' do
-      context 'on mobile platform', allow_browser_log: true do
-        before do
-          # mock mobile device as cameraCapable, this allows us to process
-          allow_any_instance_of(ActionController::Parameters)
-            .to receive(:[]).and_wrap_original do |impl, param_name|
-            param_name.to_sym == :skip_hybrid_handoff ? '' : impl.call(param_name)
-          end
-        end
-
+      context 'on mobile platform', driver: :headless_chrome_mobile, allow_browser_log: true do
         context 'with a passing selfie' do
           it 'proceeds to the next page with valid info, including a selfie image' do
             perform_in_browser(:mobile) do
@@ -347,7 +582,7 @@ RSpec.feature 'document capture step', :js do
               attach_images
               click_continue
               expect_doc_capture_selfie_subheader
-              click_button 'Take photo'
+              click_button t('doc_auth.buttons.take_picture')
               attach_selfie
               submit_images
 
@@ -362,6 +597,115 @@ RSpec.feature 'document capture step', :js do
               expect(page).to have_current_path(idv_phone_url)
             end
           end
+
+          context 'with a valid passport', driver: :headless_chrome_mobile do
+            let(:passports_enabled) { true }
+            let(:passport_image) do
+              Rails.root.join(
+                'spec', 'fixtures',
+                'passport_credential.yml'
+              )
+            end
+            let(:fake_dos_api_endpoint) { 'http://fake_dos_api_endpoint/' }
+
+            before do
+              allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
+              allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled)
+                .and_return(true)
+              allow_any_instance_of(ServiceProvider).to receive(
+                :in_person_proofing_enabled,
+              ).and_return(true)
+              allow(IdentityConfig.store).to receive(:doc_auth_passports_percent).and_return(100)
+              allow(IdentityConfig.store).to receive(:dos_passport_mrz_endpoint)
+                .and_return(fake_dos_api_endpoint)
+              stub_request(:post, fake_dos_api_endpoint)
+                .to_return_json({ status: 200, body: { response: 'YES' } })
+              stub_health_check_settings
+              stub_health_check_endpoints_success
+              reload_ab_tests
+            end
+
+            it 'proceeds to the next page with valid info, including a selfie image' do
+              perform_in_browser(:mobile) do
+                visit_idp_from_oidc_sp_with_ial2(facial_match_required: true)
+                sign_in_and_2fa_user(@user)
+                complete_doc_auth_steps_before_hybrid_handoff_step
+
+                choose(t('doc_auth.forms.id_type_preference.passport'))
+                click_on t('forms.buttons.continue')
+
+                expect(page).to have_current_path(idv_document_capture_url, wait: 10)
+
+                click_button t('doc_auth.buttons.take_picture')
+                expect(page).to have_content(t('doc_auth.headings.document_capture_passport'))
+
+                expect(page).not_to have_content(t('doc_auth.tips.document_capture_selfie_text1'))
+                attach_passport_image(passport_image)
+                click_continue
+                expect_doc_capture_selfie_subheader
+                click_button t('doc_auth.buttons.take_picture')
+                attach_selfie
+                submit_images
+
+                expect(page).to have_content(t('doc_auth.headings.capture_complete'))
+                fill_out_ssn_form_ok
+                click_idv_continue
+                expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_info'))
+                expect(page).to have_content(t('doc_auth.headings.address'))
+                fill_in 'idv_form_address1', with: '123 Main St'
+                fill_in 'idv_form_city', with: 'Nowhere'
+                select 'Virginia', from: 'idv_form_state'
+                fill_in 'idv_form_zipcode', with: '66044'
+                click_idv_continue
+                expect(page).to have_current_path(idv_verify_info_path)
+                expect(page).to have_content('VA')
+                expect(page).to have_content('123 Main St')
+                expect(page).to have_content('Nowhere')
+                complete_verify_step
+                expect(page).to have_current_path(idv_phone_url)
+              end
+            end
+          end
+        end
+
+        context 'with ipp enabled' do
+          let(:ipp_service_provider) do
+            create(:service_provider, :active, :in_person_proofing_enabled)
+          end
+
+          before do
+            allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
+            allow(IdentityConfig.store).to receive(
+              :in_person_proofing_opt_in_enabled,
+            ).and_return(true)
+            allow_any_instance_of(ServiceProvider).to receive(
+              :in_person_proofing_enabled,
+            ).and_return(true)
+            perform_in_browser(:mobile) do
+              visit_idp_from_sp_with_ial2(
+                :oidc,
+                **{ client_id: ipp_service_provider.issuer,
+                    facial_match_required: true },
+              )
+              sign_in_and_2fa_user(@user)
+            end
+          end
+
+          it 'proceeds from how to verify step to document capture step after ipp canceled' do
+            perform_in_browser(:mobile) do
+              complete_doc_auth_steps_before_hybrid_handoff_step
+              expect(page).to have_current_path(idv_how_to_verify_url)
+              click_on t('forms.buttons.continue_ipp')
+              expect(page).to have_current_path(
+                idv_document_capture_path({ step: 'how_to_verify' }),
+              )
+              click_on t('forms.buttons.back')
+              expect(page).to have_current_path(idv_how_to_verify_url)
+              click_on t('forms.buttons.continue_online')
+              complete_choose_id_type_step
+              expect(page).to have_current_path(idv_document_capture_url)
+            end
+          end
         end
 
         context 'documents or selfie with error is uploaded' do
@@ -369,10 +713,9 @@ RSpec.feature 'document capture step', :js do
             # when there are multiple doc auth errors on front and back
             it 'shows the correct error message for the given error' do
               perform_in_browser(:mobile) do
-                click_continue
                 use_id_image('ial2_test_credential_multiple_doc_auth_failures_both_sides.yml')
                 click_continue
-                click_button 'Take photo'
+                click_button t('doc_auth.buttons.take_picture')
                 click_idv_submit_default
                 expect(page).not_to have_content(t('doc_auth.headings.capture_complete'))
                 expect(page).not_to have_content(t('doc_auth.errors.rate_limited_heading'))
@@ -400,11 +743,11 @@ RSpec.feature 'document capture step', :js do
                 use_selfie_image('ial2_test_portrait_match_success.yml')
                 submit_images
 
-                expect_rate_limited_header(false)
+                expect_rate_limited_header(true)
                 expect_try_taking_new_pictures(false)
                 # eslint-disable-next-line
                 expect_review_issues_body_message(
-                  'doc_auth.errors.doc_type_not_supported_heading',
+                  'doc_auth.errors.rate_limited_heading',
                 )
                 expect_review_issues_body_message('doc_auth.errors.doc.doc_type_check')
                 expect_rate_limit_warning(max_attempts - 2)
@@ -412,7 +755,7 @@ RSpec.feature 'document capture step', :js do
                 expect_to_try_again
                 expect_resubmit_page_h1_copy
 
-                expect_review_issues_body_message('doc_auth.errors.card_type')
+                expect_review_issues_body_message('doc_auth.errors.general.fallback_field_level')
                 expect_resubmit_page_inline_selfie_error_message(false)
 
                 # when there are multiple front doc auth errors
@@ -509,9 +852,8 @@ RSpec.feature 'document capture step', :js do
                       facial_match_required: true },
                 )
                 sign_in_and_2fa_user(@user)
-                complete_up_to_how_to_verify_step_for_opt_in_ipp(
-                  facial_match_required: true,
-                )
+                complete_up_to_how_to_verify_step_for_opt_in_ipp
+                complete_choose_id_type_step
               end
             end
 
@@ -581,8 +923,7 @@ RSpec.feature 'document capture step', :js do
               complete_doc_auth_steps_before_hybrid_handoff_step
               # we still have option to continue
               expect(page).to have_current_path(idv_hybrid_handoff_path)
-              expect(page).to have_content(t('doc_auth.headings.hybrid_handoff_selfie'))
-              expect(page).not_to have_content(t('doc_auth.headings.hybrid_handoff'))
+              expect(page).to have_content(t('doc_auth.headings.how_to_verify'))
               expect(page).not_to have_content(t('doc_auth.info.upload_from_computer'))
               click_on t('forms.buttons.send_link')
               expect(page).to have_current_path(idv_link_sent_path)
@@ -600,17 +941,17 @@ RSpec.feature 'document capture step', :js do
               complete_doc_auth_steps_before_hybrid_handoff_step
               # we still have option to continue on handoff, since it's desktop no skip_hand_off
               expect(page).to have_current_path(idv_hybrid_handoff_path)
-              expect(page).to have_content(t('doc_auth.headings.hybrid_handoff_selfie'))
-              expect(page).not_to have_content(t('doc_auth.headings.hybrid_handoff'))
+              expect(page).to have_content(t('doc_auth.headings.how_to_verify'))
               expect(page).to have_content(t('doc_auth.info.upload_from_computer'))
               click_on t('forms.buttons.upload_photos')
+              complete_choose_id_type_step
               expect(page).to have_current_path(idv_document_capture_url)
               expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
               expect(page).to have_text(t('doc_auth.headings.document_capture'))
               attach_images
               click_continue
               expect_doc_capture_selfie_subheader
-              click_button 'Take photo'
+              click_button t('doc_auth.buttons.take_picture')
               attach_selfie
               submit_images
 
@@ -627,12 +968,13 @@ RSpec.feature 'document capture step', :js do
           end
 
           context 'when ipp is enabled' do
-            let(:in_person_doc_auth_button_enabled) { true }
             let(:sp_ipp_enabled) { true }
 
             before do
-              allow(IdentityConfig.store).to receive(:in_person_doc_auth_button_enabled)
-                .and_return(in_person_doc_auth_button_enabled)
+              allow(IdentityConfig.store).to receive(:in_person_proofing_enabled)
+                .and_return(true)
+              allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled)
+                .and_return(true)
               allow(Idv::InPersonConfig).to receive(:enabled_for_issuer?).with(anything)
                 .and_return(sp_ipp_enabled)
             end
@@ -645,8 +987,8 @@ RSpec.feature 'document capture step', :js do
                   complete_doc_auth_steps_before_hybrid_handoff_step
                   # still have option to continue handoff, since it's desktop no skip_hand_off
                   expect(page).to have_current_path(idv_hybrid_handoff_path)
-                  expect(page).to have_content(t('doc_auth.headings.hybrid_handoff_selfie'))
-                  click_on t('in_person_proofing.headings.prepare')
+                  expect(page).to have_content(t('doc_auth.headings.how_to_verify'))
+                  click_on t('forms.buttons.continue_ipp')
                   expect(page).to have_current_path(
                     idv_document_capture_path({ step: 'hybrid_handoff' }),
                   )
@@ -658,6 +1000,57 @@ RSpec.feature 'document capture step', :js do
               end
             end
           end
+        end
+      end
+    end
+  end
+
+  describe 'Standard flow with aamva check enabled', :allow_browser_log do
+    before do
+      allow(IdentityConfig.store).to receive(:idv_aamva_at_doc_auth_enabled).and_return(true)
+      allow(IdentityConfig.store).to receive(:proofer_mock_fallback).and_return(false)
+      stub_health_check_settings
+      stub_health_check_endpoints_success
+      visit_idp_from_oidc_sp_with_ial2
+      sign_in_and_2fa_user(@user)
+      complete_doc_auth_steps_before_hybrid_handoff_step
+      click_on t('forms.buttons.upload_photos')
+    end
+
+    context 'when capturing for state ID flow' do
+      before do
+        visit idv_choose_id_type_url
+        choose(t('doc_auth.forms.id_type_preference.drivers_license'))
+        click_on t('forms.buttons.continue')
+      end
+
+      context 'when aamva check is successful' do
+        let(:aamva_response) { AamvaFixtures.verification_response }
+
+        before do
+          stub_aamva_request(aamva_response)
+        end
+
+        it 'navigates the user to the SSN page' do
+          expect(page).to have_current_path(idv_document_capture_url)
+          attach_and_submit_images
+          expect(page).to have_current_path(idv_ssn_url)
+        end
+      end
+
+      context 'when aamva check is unsuccessful' do
+        let(:aamva_response) { AamvaFixtures.verification_response_namespaced_failure }
+
+        before do
+          stub_aamva_request(aamva_response)
+        end
+
+        it 'displays try again errors' do
+          expect(page).to have_current_path(idv_document_capture_url)
+          attach_and_submit_images
+          expect(page).to have_current_path(idv_document_capture_url)
+          expect_review_issues_body_message('doc_auth.errors.general.multiple_back_id_failures')
+          expect_review_issues_body_message('doc_auth.errors.general.multiple_front_id_failures')
         end
       end
     end
@@ -688,16 +1081,6 @@ RSpec.feature 'document capture step', :js do
     expect(page).to have_content(review_issues_body_message)
   end
 
-  def expect_rate_limit_warning(expected_remaining_attempts)
-    review_issues_rate_limit_warning = strip_tags(
-      t(
-        'idv.failure.attempts_html',
-        count: expected_remaining_attempts,
-      ),
-    )
-    expect(page).to have_content(review_issues_rate_limit_warning)
-  end
-
   def expect_resubmit_page_h1_copy
     resubmit_page_h1_copy = strip_tags(t('doc_auth.headings.review_issues'))
     expect(page).to have_content(resubmit_page_h1_copy)
@@ -726,11 +1109,6 @@ RSpec.feature 'document capture step', :js do
     end
   end
 
-  def expect_to_try_again
-    click_try_again
-    expect(page).to have_current_path(idv_document_capture_path)
-  end
-
   def use_id_image(filename)
     expect(page).to have_content('Front of your ID')
     attach_images Rails.root.join('spec', 'fixtures', filename)
@@ -748,6 +1126,20 @@ RSpec.feature 'document capture step', :js do
 
   def costing_for(cost_type)
     SpCost.where(ial: 2, issuer: 'urn:gov:gsa:openidconnect:sp:server', cost_type: cost_type.to_s)
+  end
+
+  def stub_aamva_request(aamva_response)
+    allow(IdentityConfig.store).to receive(:aamva_private_key)
+      .and_return(AamvaFixtures.example_config.private_key)
+    allow(IdentityConfig.store).to receive(:aamva_public_key)
+      .and_return(AamvaFixtures.example_config.public_key)
+    stub_request(:post, IdentityConfig.store.aamva_auth_url)
+      .to_return(
+        { body: AamvaFixtures.security_token_response },
+        { body: AamvaFixtures.authentication_token_response },
+      )
+    stub_request(:post, IdentityConfig.store.aamva_verification_url)
+      .to_return(body: aamva_response)
   end
 end
 

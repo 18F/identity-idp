@@ -9,8 +9,8 @@ module DocAuth
   end
 
   class IdTypeErrorHandler < ErrorHandler
-    SUPPORTED_ID_CLASSNAME = ['Identification Card', 'Drivers License'].freeze
     ACCEPTED_ISSUER_TYPES = [DocAuth::LexisNexis::IssuerTypes::STATE_OR_PROVINCE.name,
+                             DocAuth::LexisNexis::IssuerTypes::COUNTRY.name,
                              DocAuth::LexisNexis::IssuerTypes::UNKNOWN.name].freeze
     def handle(response_info)
       get_id_type_errors(response_info[:classification_info])
@@ -22,13 +22,16 @@ module DocAuth
       return unless classification_info.present?
       error_result = ErrorResult.new
       both_side_ok = true
-      %w[Front Back].each do |side|
+      document_type = classification_info.with_indifferent_access.dig('Front', 'ClassName')
+      is_passport = document_type == DocAuth::DocumentClassifications::PASSPORT
+      sides = is_passport ? ['Front'] : ['Front', 'Back']
+      sides.each do |side|
         side_class = classification_info.with_indifferent_access.dig(side, 'ClassName')
         side_country = classification_info.with_indifferent_access.dig(side, 'CountryCode')
         side_issuer_type = classification_info.with_indifferent_access.dig(side, 'IssuerType')
 
         side_ok = !side_class.present? ||
-                  SUPPORTED_ID_CLASSNAME.include?(side_class) ||
+                  DocAuth::DocumentClassifications::ALL_CLASSIFICATIONS.include?(side_class) ||
                   side_class == 'Unknown'
         country_ok = !side_country.present? || supported_country_codes.include?(side_country)
         issuer_type_ok = !side_issuer_type.present? ||
@@ -127,7 +130,7 @@ module DocAuth
     def get_doc_auth_error_messages(response_info)
       errors = Hash.new { |hash, key| hash[key] = Set.new }
 
-      if response_info[:doc_auth_result] != LexisNexis::ResultCodes::PASSED.name
+      if response_info[:transaction_status] != LexisNexis::TransactionCodes::PASSED.name
         response_info[:processed_alerts][:failed]&.each do |alert|
           alert_msg_hash = ErrorGenerator::ALERT_MESSAGES[alert[:name].to_sym]
 
@@ -237,7 +240,6 @@ module DocAuth
         message: 'DocAuth failure escaped without useful errors',
         response_info: response_info,
       )
-
       error = Errors::GENERAL_ERROR
       side = ErrorGenerator::ID
       ErrorResult.new(error, side)
@@ -290,8 +292,6 @@ module DocAuth
       'Visible Pattern': { type: ID, msg_key: Errors::ID_NOT_VERIFIED },
       'Visible Photo Characteristics': { type: FRONT, msg_key: Errors::VISIBLE_PHOTO_CHECK },
     }.freeze
-
-    SUPPORTED_ID_CLASSNAME = ['Identification Card', 'Drivers License'].freeze
 
     def initialize(config)
       @config = config
@@ -370,28 +370,10 @@ module DocAuth
       unknown_fail_count
     end
 
-    # This method replicates TrueIdResponse::attention_with_barcode? and
-    # should be removed/updated when that is.
-    def attention_with_barcode_result(doc_auth_result, processed_alerts)
-      attention_result_name = LexisNexis::ResultCodes::ATTENTION.name
-      barcode_alerts = processed_alerts[:failed]&.count.to_i == 1 &&
-                       processed_alerts.dig(:failed, 0, :name) == '2D Barcode Read' &&
-                       processed_alerts.dig(:failed, 0, :result) == 'Attention'
-
-      doc_auth_result == attention_result_name && barcode_alerts
-    end
-
-    def doc_auth_passed_or_attn_with_barcode(response_info)
-      doc_auth_result = response_info[:doc_auth_result]
-      processed_alerts = response_info[:processed_alerts]
-
-      doc_auth_result_passed = doc_auth_result == LexisNexis::ResultCodes::PASSED.name
-      doc_auth_result_passed || attention_with_barcode_result(doc_auth_result, processed_alerts)
-    end
-
     def doc_auth_error_count(response_info)
-      doc_auth_passed_or_attn_with_barcode(response_info) ?
-        0 : response_info[:alert_failure_count]
+      return 0 if response_info[:transaction_status] == LexisNexis::TransactionCodes::PASSED.name
+
+      response_info[:alert_failure_count]
     end
   end
 end

@@ -42,20 +42,6 @@ describe('HybridDocCaptureWarning', () => {
         t('doc_auth.hybrid_flow_warning.explanation_non_sp_html'),
       );
     });
-
-    it('does not render a third list item pertaining to SP services', () => {
-      const { getByRole } = render(
-        <ServiceProviderContextProvider value={{ name: null, failureToProofURL: '' }}>
-          <HybridDocCaptureWarning />
-        </ServiceProviderContextProvider>,
-      );
-      const alertElement = getByRole('status');
-      const notExpectedString = t('doc_auth.hybrid_flow_warning.only_add_sp_services_html', {
-        service_provider_name: SP_NAME,
-      });
-
-      expect(alertElement.textContent).to.not.have.string(notExpectedString);
-    });
   });
 
   describe('with SP', () => {
@@ -68,19 +54,6 @@ describe('HybridDocCaptureWarning', () => {
       const alertElement = getByRole('status');
       const expectedString = t('doc_auth.hybrid_flow_warning.explanation_html', {
         app_name: APP_NAME,
-        service_provider_name: SP_NAME,
-      });
-
-      expect(alertElement.textContent).to.have.string(expectedString);
-    });
-    it('renders a third list item pertaining to SP services', () => {
-      const { getByRole } = render(
-        <ServiceProviderContextProvider value={{ name: SP_NAME, failureToProofURL: '' }}>
-          <HybridDocCaptureWarning />
-        </ServiceProviderContextProvider>,
-      );
-      const alertElement = getByRole('status');
-      const expectedString = t('doc_auth.hybrid_flow_warning.only_add_sp_services_html', {
         service_provider_name: SP_NAME,
       });
 

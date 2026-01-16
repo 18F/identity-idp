@@ -29,7 +29,7 @@ function DocumentCaptureTroubleshootingOptions({
   showDocumentTips = true,
 }: DocumentCaptureTroubleshootingOptionsProps) {
   const { t } = useI18n();
-  const { inPersonURL } = useContext(InPersonContext);
+  const { chooseIdTypePath, inPersonURL } = useContext(InPersonContext);
   const { getHelpCenterURL } = useContext(MarketingSiteContext);
 
   return (
@@ -39,6 +39,11 @@ function DocumentCaptureTroubleshootingOptions({
         heading={heading}
         options={
           [
+            {
+              url: chooseIdTypePath,
+              text: t('idv.troubleshooting.options.use_another_id_type'),
+              isExternal: false,
+            },
             showDocumentTips && {
               url: getHelpCenterURL({
                 category: 'verify-your-identity',

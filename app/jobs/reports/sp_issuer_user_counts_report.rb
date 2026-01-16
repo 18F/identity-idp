@@ -30,7 +30,7 @@ module Reports
 
         emails.each do |email|
           ReportMailer.tables_report(
-            email:,
+            to: email,
             subject:,
             message:,
             reports:,

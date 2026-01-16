@@ -22,12 +22,14 @@ RSpec.describe SignOutController do
     it 'tracks the event' do
       stub_sign_in_before_2fa
       stub_analytics
+      stub_attempts_tracker
+
+      allow(@attempts_api_tracker).to receive(:logout_initiated).with(success: true)
       allow(controller.decorated_sp_session).to receive(:cancel_link_url).and_return('foo')
 
       get :destroy
 
-      expect(@analytics)
-        .to have_logged_event('Logout Initiated', hash_including(method: 'cancel link'))
+      expect(@analytics).to have_logged_event('Logout Initiated', method: 'cancel link')
     end
   end
 end

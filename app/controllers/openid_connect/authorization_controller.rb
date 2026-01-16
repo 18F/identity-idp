@@ -20,18 +20,21 @@ module OpenidConnect
     before_action :check_sp_active, only: [:index]
     before_action :secure_headers_override, only: [:index]
     before_action :handle_banned_user
+    before_action :handle_duplicate_profile_user, only: :index
     before_action :bump_auth_count, only: :index
     before_action :redirect_to_sign_in, only: :index, unless: :user_signed_in?
     before_action :confirm_two_factor_authenticated, only: :index
     before_action :redirect_to_reauthenticate, only: :index, if: :remember_device_expired_for_sp?
     before_action :prompt_for_password_if_ial2_request_and_pii_locked, only: [:index]
+    before_action :confirm_user_is_not_suspended, only: :index
 
     def index
       if resolved_authn_context_result.identity_proofing?
         return redirect_to reactivate_account_url if user_needs_to_reactivate_account?
         return redirect_to url_for_pending_profile_reason if user_has_pending_profile?
-        return redirect_to idv_url if identity_needs_verification?
-        return redirect_to idv_url if facial_match_needed?
+        if identity_needs_verification? || facial_match_needed? || needs_to_reproof?
+          return redirect_to idv_url
+        end
       end
       return redirect_to sign_up_completed_url if needs_completion_screen_reason
       link_identity_to_service_provider
@@ -89,11 +92,12 @@ module OpenidConnect
     end
 
     def email_address_id
-      return nil unless IdentityConfig.store.feature_select_email_to_share_enabled
+      identity = current_user.identities.find_by(service_provider: sp_session[:issuer])
+      return nil if !identity&.verified_single_email_attribute?
       if user_session[:selected_email_id_for_linked_identity].present?
         return user_session[:selected_email_id_for_linked_identity]
       end
-      identity = current_user.identities.find_by(service_provider: sp_session[:issuer])
+
       identity&.email_address_id
     end
 
@@ -119,10 +123,9 @@ module OpenidConnect
       track_events
       sp_handoff_bouncer.add_handoff_time!
 
-      redirect_user(
-        @authorize_form.success_redirect_uri,
-        current_user.uuid,
-      )
+      redirect_user(@authorize_form.success_redirect_uri)
+
+      sp_session[:successful_handoff] = true
 
       delete_branded_experience
     end
@@ -151,10 +154,7 @@ module OpenidConnect
     end
 
     def secure_headers_override
-      return if form_action_csp_disabled_and_not_server_side_redirect?(
-        issuer: issuer,
-        user_uuid: current_user&.uuid,
-      )
+      return if form_action_csp_disabled_and_not_server_side_redirect?
 
       csp_uris = SecureHeadersAllowList.csp_with_sp_redirect_uris(
         @authorize_form.redirect_uri,
@@ -174,7 +174,6 @@ module OpenidConnect
         **result.to_h.except(:redirect_uri, :code_digest, :integration_errors).merge(
           user_fully_authenticated: user_fully_authenticated?,
           referer: request.referer,
-          vtr_param: params[:vtr],
           unknown_authn_contexts:,
         ),
       )
@@ -191,7 +190,7 @@ module OpenidConnect
       if redirect_uri.nil?
         render :error
       else
-        redirect_user(redirect_uri, current_user&.uuid)
+        redirect_user(redirect_uri)
       end
     end
 
@@ -235,21 +234,16 @@ module OpenidConnect
         ial: ial_context.ial,
         billed_ial: ial_context.bill_for_ial_1_or_2,
         sign_in_flow: session[:sign_in_flow],
-        vtr: sp_session[:vtr],
         acr_values: sp_session[:acr_values],
         sign_in_duration_seconds:,
       )
+
+      attempts_api_tracker.login_completed
       track_billing_events
     end
 
-    def redirect_user(redirect_uri, user_uuid)
-      case oidc_redirect_method(issuer:, user_uuid: user_uuid)
-      when 'client_side'
-        @oidc_redirect_uri = redirect_uri
-        render(
-          'openid_connect/shared/redirect',
-          layout: false,
-        )
+    def redirect_user(redirect_uri)
+      case IdentityConfig.store.openid_connect_redirect
       when 'client_side_js'
         @oidc_redirect_uri = redirect_uri
         render(
@@ -277,10 +271,18 @@ module OpenidConnect
     end
 
     def unknown_authn_contexts
-      return nil if params[:vtr].present? || params[:acr_values].blank?
+      return nil if params[:acr_values].blank?
 
       (params[:acr_values].split - Saml::Idp::Constants::VALID_AUTHN_CONTEXTS)
         .join(' ').presence
+    end
+
+    def confirm_user_is_not_suspended
+      redirect_to user_please_call_url if current_user.suspended?
+    end
+
+    def needs_to_reproof?
+      current_sp.needs_to_reproof?(current_user.active_profile&.initiating_service_provider)
     end
   end
 end

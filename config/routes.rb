@@ -19,6 +19,12 @@ Rails.application.routes.draw do
   post '/api/webhooks/socure/event' => 'socure_webhook#create'
 
   namespace :api do
+    namespace :attempts do
+      post '/poll' => 'events#poll', as: :poll
+      get '/status' => 'events#status', as: :status
+    end
+    get '/attempts-certs' => 'attempts_certs#index', as: :attempts_certs
+
     namespace :internal do
       get '/sessions' => 'sessions#show'
       put '/sessions' => 'sessions#update'
@@ -34,9 +40,12 @@ Rails.application.routes.draw do
     end
   end
 
+  # Attempts API
+  get '/.well-known/ssf-configuration' => 'api/attempts/configuration#index'
+
   # SAML secret rotation paths
   constraints(path_year: SamlEndpoint.suffixes) do
-    get '/api/saml/metadata(:path_year)' => 'saml_idp#metadata', format: false
+    get '/api/saml/metadata(:path_year)' => 'saml_idp#metadata', format: false, as: :api_saml_metadata
     match '/api/saml/logout(:path_year)' => 'saml_idp#logout', via: %i[get post delete],
           as: :api_saml_logout
     match '/api/saml/remotelogout(:path_year)' => 'saml_idp#remotelogout', via: %i[get post],
@@ -92,7 +101,6 @@ Rails.application.routes.draw do
       get '/' => 'users/sessions#new', as: :new_user_session
       get '/bounced' => 'users/sp_handoff_bounced#bounced'
       post '/' => 'users/sessions#create', as: :user_session
-      get '/logout' => 'users/sessions#destroy', as: :destroy_user_session
       delete '/logout' => 'users/sessions#destroy'
 
       get '/login/piv_cac' => 'users/piv_cac_login#new'
@@ -110,10 +118,10 @@ Rails.application.routes.draw do
       post '/account_reset/cancel' => 'account_reset/cancel#create'
       get '/account_reset/confirm_request' => 'account_reset/confirm_request#show'
       get '/account_reset/delete_account' => 'account_reset/delete_account#show'
+      post '/account_reset/delete_account/cancel' => 'account_reset/delete_account#cancel'
       delete '/account_reset/delete_account' => 'account_reset/delete_account#delete'
       get '/account_reset/confirm_delete_account' => 'account_reset/confirm_delete_account#show'
       get '/account_reset/pending' => 'account_reset/pending#show'
-      get '/account_reset/pending/confirm' => 'account_reset/pending#confirm'
       post '/account_reset/pending/cancel' => 'account_reset/pending#cancel'
 
       get '/login/two_factor/options' => 'two_factor_authentication/options#index'
@@ -128,6 +136,8 @@ Rails.application.routes.draw do
       post '/login/two_factor/personal_key' => 'two_factor_authentication/personal_key_verification#create'
       get '/login/two_factor/piv_cac' => 'two_factor_authentication/piv_cac_verification#show'
       get '/login/two_factor/piv_cac/present_piv_cac' => 'two_factor_authentication/piv_cac_verification#redirect_to_piv_cac_service'
+      get '/login/two_factor/piv_cac/error' => 'two_factor_authentication/piv_cac_verification#error'
+      delete '/login/two_factor/piv_cac/logout' => 'two_factor_authentication/piv_cac_verification#logout'
       get '/login/two_factor/webauthn' => 'two_factor_authentication/webauthn_verification#show'
       patch '/login/two_factor/webauthn' => 'two_factor_authentication/webauthn_verification#confirm'
       get 'login/two_factor/backup_code' => 'two_factor_authentication/backup_code_verification#show'
@@ -177,6 +187,14 @@ Rails.application.routes.draw do
         put '/s3/:key' => 'fake_s3#update'
 
         get '/session_data' => 'session_data#index'
+
+        get '/mock_socure/document_capture' => 'mock_socure#index'
+        post '/mock_socure/document_capture' => 'mock_socure#update'
+        post '/mock_socure/document_capture/continue' => 'mock_socure#continue'
+
+        post '/mock_socure/api/document_request' => 'mock_socure#document_request'
+        post '/mock_socure/api/3.0/EmailAuthScore' => 'mock_socure#docv_results', as: 'mock_socure_auth_score'
+        post '/mock_socure/api/5.0/documents/:referenceId' => 'mock_socure#images_request', as: 'mock_socure_images_request'
       end
     end
 
@@ -192,6 +210,9 @@ Rails.application.routes.draw do
     end
 
     get '/sign_in_security_check_failed' => 'sign_in_security_check_failed#show'
+    get '/duplicate_profiles_detected' => 'duplicate_profiles_detected#show'
+
+    get '/device_profiling_failed', to: 'device_profiling_failed#show'
 
     get '/auth_method_confirmation' => 'mfa_confirmation#show'
     post '/auth_method_confirmation/skip' => 'mfa_confirmation#skip'
@@ -250,6 +271,10 @@ Rails.application.routes.draw do
     get '/webauthn_setup' => 'users/webauthn_setup#new', as: :webauthn_setup
     patch '/webauthn_setup' => 'users/webauthn_setup#confirm'
 
+    get '/webauthn_setup_mismatch' => 'users/webauthn_setup_mismatch#show'
+    patch '/webauthn_setup_mismatch' => 'users/webauthn_setup_mismatch#update'
+    delete '/webauthn_setup_mismatch' => 'users/webauthn_setup_mismatch#destroy'
+
     get '/authenticator_setup' => 'users/totp_setup#new'
     patch '/authenticator_setup' => 'users/totp_setup#confirm'
 
@@ -299,7 +324,8 @@ Rails.application.routes.draw do
     get '/users/two_factor_authentication' => 'users/two_factor_authentication#show',
         as: :user_two_factor_authentication # route name is used by two_factor_authentication gem
     get '/backup_code_refreshed' => 'users/backup_code_setup#refreshed'
-    get '/backup_code_reminder' => 'users/backup_code_setup#reminder'
+    get '/backup_code_reminder' => 'users/backup_code_reminder#show'
+    post '/backup_code_reminder' => 'users/backup_code_reminder#update'
     get '/backup_code_confirm_setup' => 'users/backup_code_setup#new'
     post '/backup_code_setup' => 'users/backup_code_setup#create'
     get '/backup_code_setup' => 'users/backup_code_setup#index'
@@ -310,6 +336,7 @@ Rails.application.routes.draw do
     get '/confirm_backup_codes' => 'users/backup_code_setup#confirm_backup_codes'
 
     get '/user_please_call' => 'users/please_call#show'
+    get '/duplicate_profiles_please_call/:source' => 'users/duplicate_profiles_please_call#show', as: :duplicate_profiles_please_call
 
     post '/sign_up/create_password' => 'sign_up/passwords#create', as: :sign_up_create_password
     get '/sign_up/email/confirm' => 'sign_up/email_confirmations#create',
@@ -366,18 +393,22 @@ Rails.application.routes.draw do
       get '/socure/document_capture' => 'socure/document_capture#show'
       get '/socure/document_capture_update' => 'socure/document_capture#update', as: :socure_document_capture_update
       get '/socure/document_capture_errors' => 'socure/errors#show', as: :socure_document_capture_errors
-      get '/socure/errors/timeout' => 'socure/errors#timeout'
       # This route is included in SMS messages sent to users who start the IdV hybrid flow. It
       # should be kept short, and should not include underscores ("_").
       get '/documents' => 'hybrid_mobile/entry#show', as: :hybrid_mobile_entry
       get '/hybrid_mobile/document_capture' => 'hybrid_mobile/document_capture#show'
       put '/hybrid_mobile/document_capture' => 'hybrid_mobile/document_capture#update'
+      get '/hybrid_mobile/in_person/direct' => 'hybrid_mobile/document_capture#direct_in_person'
       get '/hybrid_mobile/capture_complete' => 'hybrid_mobile/capture_complete#show'
       get '/hybrid_mobile/socure/document_capture' => 'hybrid_mobile/socure/document_capture#show'
       get '/hybrid_mobile/socure/document_capture_update' => 'hybrid_mobile/socure/document_capture#update', as: :hybrid_mobile_socure_document_capture_update
-      get '/hybrid_mobile/socure/document_capture_errors' => 'hybrid_mobile/socure/document_capture#errors', as: :hybrid_mobile_socure_document_capture_errors
+      get '/hybrid_mobile/socure/document_capture_errors' => 'hybrid_mobile/socure/errors#show', as: :hybrid_mobile_socure_document_capture_errors
+      get '/hybrid_mobile/choose_id_type' => 'hybrid_mobile/choose_id_type#show'
+      put '/hybrid_mobile/choose_id_type' => 'hybrid_mobile/choose_id_type#update'
       get '/hybrid_handoff' => 'hybrid_handoff#show'
       put '/hybrid_handoff' => 'hybrid_handoff#update'
+      get '/choose_id_type' => 'choose_id_type#show'
+      put '/choose_id_type' => 'choose_id_type#update'
       get '/link_sent' => 'link_sent#show'
       put '/link_sent' => 'link_sent#update'
       get '/link_sent/poll' => 'link_sent_poll#show'
@@ -400,6 +431,7 @@ Rails.application.routes.draw do
       put '/enter_password' => 'enter_password#create'
       get '/session/errors/warning' => 'session_errors#warning'
       get '/session/errors/state_id_warning' => 'session_errors#state_id_warning'
+      get '/session/errors/address_warning' => 'session_errors#address_warning'
       get '/session/errors/failure' => 'session_errors#failure'
       get '/session/errors/ssn_failure' => 'session_errors#ssn_failure'
       get '/session/errors/exception' => 'session_errors#exception'
@@ -417,10 +449,15 @@ Rails.application.routes.draw do
           # sometimes underscores get messed up when linked to via SMS
           as: :capture_doc_dashes
       get '/in_person' => 'in_person#index'
+      put '/in_person' => 'in_person#update'
+      get '/in_person/choose_id_type' => 'in_person/choose_id_type#show'
+      put '/in_person/choose_id_type' => 'in_person/choose_id_type#update'
       get '/in_person/ready_to_verify' => 'in_person/ready_to_verify#show',
           as: :in_person_ready_to_verify
       post '/in_person/usps_locations' => 'in_person/usps_locations#index'
       put '/in_person/usps_locations' => 'in_person/usps_locations#update'
+      get '/in_person/passport' => 'in_person/passport#show'
+      put '/in_person/passport' => 'in_person/passport#update'
       get '/in_person/state_id' => 'in_person/state_id#show'
       put '/in_person/state_id' => 'in_person/state_id#update'
       get '/in_person/address' => 'in_person/address#show'
@@ -429,8 +466,6 @@ Rails.application.routes.draw do
       put '/in_person/ssn' => 'in_person/ssn#update'
       get '/in_person/verify_info' => 'in_person/verify_info#show'
       put '/in_person/verify_info' => 'in_person/verify_info#update'
-      get '/in_person/:step' => 'in_person#show', as: :in_person_step
-      put '/in_person/:step' => 'in_person#update'
 
       get '/by_mail/enter_code' => 'by_mail/enter_code#index', as: :verify_by_mail_enter_code
       post '/by_mail/enter_code' => 'by_mail/enter_code#create'

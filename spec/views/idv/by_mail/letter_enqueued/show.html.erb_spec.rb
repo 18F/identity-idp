@@ -12,7 +12,7 @@ RSpec.describe 'idv/by_mail/letter_enqueued/show.html.erb' do
       current_user: nil,
       service_provider: service_provider,
     )
-    idv_session.applicant(applicant_pii)
+    idv_session.applicant = applicant_pii
     idv_session
   end
 

@@ -29,7 +29,7 @@ RSpec.describe 'requesting acuant SDK assets' do
 
     it 'renders a JS asset' do
       expect(response.status).to eq(200)
-      expect(response.headers['Content-Type']).to eq('application/javascript')
+      expect(response.headers['Content-Type']).to eq('text/javascript')
     end
 
     it 'does not include a CSP header' do

@@ -716,11 +716,6 @@
       },
       {
         "Group": "IDAUTH_FIELD_DATA",
-        "Name": "Fields_Sex",
-        "Values": [{"Value": "M"}]
-      },
-      {
-        "Group": "IDAUTH_FIELD_DATA",
         "Name": "Fields_Height",
         "Values": [{"Value": "5' 10\""}]
       },

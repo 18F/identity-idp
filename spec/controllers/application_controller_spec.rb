@@ -37,7 +37,7 @@ RSpec.describe ApplicationController do
 
         expect(cookies[:sp_issuer]).to eq(sp.issuer)
         expect(cookie_expiration).to be_within(3.seconds).of(
-          IdentityConfig.store.session_timeout_in_minutes.minutes.from_now,
+          IdentityConfig.store.session_timeout_in_seconds.seconds.from_now,
         )
       end
     end
@@ -402,6 +402,8 @@ RSpec.describe ApplicationController do
     context 'with session timeout parameter' do
       it 'logs an event' do
         stub_analytics
+        stub_attempts_tracker
+        expect(@attempts_api_tracker).to receive(:session_timeout)
 
         get :index, params: { timeout: 'session', request_id: '123' }
 
@@ -414,7 +416,7 @@ RSpec.describe ApplicationController do
         expect(flash[:info]).to eq t(
           'notices.session_timedout',
           app_name: APP_NAME,
-          minutes: IdentityConfig.store.session_timeout_in_minutes,
+          minutes: IdentityConfig.store.session_timeout_in_seconds.seconds.in_minutes.to_i,
         )
       end
     end
@@ -447,7 +449,7 @@ RSpec.describe ApplicationController do
 
         expect(flash[:info]).to eq t(
           'notices.session_cleared',
-          minutes: IdentityConfig.store.session_timeout_in_minutes,
+          minutes: IdentityConfig.store.session_timeout_in_seconds.seconds.in_minutes.to_i,
         )
       end
     end
@@ -491,8 +493,8 @@ RSpec.describe ApplicationController do
 
         it 'raises an exception' do
           expect { result }.to raise_exception(
-            Vot::Parser::ParseException,
-            'VoT parser called without VoT or ACR values',
+            Component::Parser::ParseException,
+            'Component parser called without ACR values',
           )
         end
 
@@ -516,7 +518,7 @@ RSpec.describe ApplicationController do
         let(:sp_session) { nil }
 
         it 'returns a no-SP result' do
-          expect(result).to eq(Vot::Parser::Result.no_sp_result)
+          expect(result).to eq(Component::Parser::Result.no_sp_result)
         end
       end
     end
@@ -525,9 +527,11 @@ RSpec.describe ApplicationController do
       let(:acr_values) { nil }
       let(:vtr) { ['P1'] }
 
-      it 'returns a resolved authn context result' do
-        expect(result.aal2?).to eq(true)
-        expect(result.identity_proofing?).to eq(true)
+      it 'raises an error' do
+        expect { result }.to raise_exception(
+          Component::Parser::ParseException,
+          'Component parser called without ACR values',
+        )
       end
 
       context 'without an SP' do
@@ -535,7 +539,7 @@ RSpec.describe ApplicationController do
         let(:sp_session) { nil }
 
         it 'returns a no-SP result' do
-          expect(result).to eq(Vot::Parser::Result.no_sp_result)
+          expect(result).to eq(Component::Parser::Result.no_sp_result)
         end
       end
     end
@@ -564,7 +568,7 @@ RSpec.describe ApplicationController do
     end
 
     context 'with a SAML request' do
-      let(:sp_session_request_url) { '/api/saml/auth2024' }
+      let(:sp_session_request_url) { '/api/saml/auth2025' }
       it 'returns the saml completion url' do
         expect(url_with_updated_params).to eq complete_saml_url
       end
@@ -589,6 +593,265 @@ RSpec.describe ApplicationController do
       let(:sp_session_request_url) { '/authorize' }
       it 'adds the locale to the url' do
         expect(url_with_updated_params).to eq('/authorize?locale=es')
+      end
+    end
+  end
+
+  describe '#user_duplicate_profiles_detected?' do
+    controller do
+      def index
+        render plain: user_duplicate_profiles_detected?.to_s
+      end
+    end
+
+    let(:user) { create(:user) }
+    let(:issuer) { 'https://example.gov' }
+
+    let(:sp) { create(:service_provider, ial: 2, issuer: issuer) }
+
+    before do
+      sign_in user
+      allow(IdentityConfig.store).to receive(:eligible_one_account_providers)
+        .and_return([issuer])
+      allow(controller).to receive(:sp_from_sp_session)
+        .and_return(sp)
+
+      allow(controller).to receive(:user_in_one_account_verification_bucket?).and_return(true)
+    end
+
+    context 'when SP is not eligible for one account' do
+      let(:issuer2) { 'wrong.com' }
+      let(:sp) { create(:service_provider, ial: 2, issuer: issuer2) }
+      let(:profile) do
+        create(:profile, :active, user: user, initiating_service_provider_issuer: sp.issuer)
+      end
+
+      it 'returns false' do
+        get :index
+        expect(response.body).to eq('false')
+      end
+    end
+
+    context 'when SP is eligible for one account' do
+      context 'when user has no active profile' do
+        it 'returns false' do
+          get :index
+          expect(response.body).to eq('false')
+        end
+      end
+
+      context 'when user has active profile' do
+        let!(:active_profile) { create(:profile, :active, :facial_match_proof, user: user) }
+
+        context 'when no duplicate profile set found for user' do
+          before do
+            allow_any_instance_of(DuplicateProfileChecker)
+              .to receive(:dupe_profile_set_for_user).and_return(nil)
+          end
+          it 'returns false' do
+            get :index
+            expect(response.body).to eq('false')
+          end
+        end
+
+        context 'with duplicate profile but for different sp' do
+          let(:issuer2) { 'wrong.com' }
+          let(:sp) { create(:service_provider, ial: 2, issuer: issuer2) }
+
+          let(:duplicate_profile_set) do
+            create(
+              :duplicate_profile_set, profile_ids: [active_profile.id],
+                                      service_provider: 'wrong-sp'
+            )
+          end
+          before do
+            allow_any_instance_of(DuplicateProfileChecker)
+              .to receive(:dupe_profile_set_for_user).and_return(duplicate_profile_set)
+          end
+
+          it 'returns false even with duplicate profiles' do
+            get :index
+            expect(response.body).to eq('false')
+          end
+        end
+
+        context 'when duplicate profile set found for user' do
+          let(:duplicate_profile_set) do
+            create(
+              :duplicate_profile_set, profile_ids: [active_profile.id],
+                                      service_provider: sp.issuer
+            )
+          end
+          before do
+            allow_any_instance_of(DuplicateProfileChecker)
+              .to receive(:dupe_profile_set_for_user).and_return(duplicate_profile_set)
+          end
+
+          it 'returns true' do
+            get :index
+            expect(response.body).to eq('true')
+          end
+
+          context 'when duplicate profile set is already closed' do
+            it 'returns false' do
+              duplicate_profile_set.update!(closed_at: Time.zone.now)
+              get :index
+              expect(response.body).to eq('false')
+            end
+          end
+        end
+      end
+    end
+  end
+
+  describe '#sp_eligible_for_one_account?' do
+    controller do
+      def index
+        render plain: sp_eligible_for_one_account?.to_s
+      end
+    end
+
+    let(:result) { controller.sp_eligible_for_one_account? }
+    let(:user) { create(:user) }
+    let(:issuer) { 'https://example.gov' }
+
+    let(:sp) { create(:service_provider, ial: 2, issuer: issuer) }
+
+    before do
+      sign_in user
+      allow(IdentityConfig.store).to receive(:eligible_one_account_providers)
+        .and_return([issuer])
+      allow(controller).to receive(:sp_from_sp_session)
+        .and_return(sp)
+    end
+
+    context 'when SP issuer is in eligible providers list' do
+      it 'returns true' do
+        get :index
+        expect(response.body).to eq('true')
+      end
+    end
+
+    context 'when SP issuer is not in eligible providers list' do
+      let(:issuer2) { 'wrong.com' }
+      let(:sp) { create(:service_provider, ial: 2, issuer: issuer2) }
+
+      it 'returns false' do
+        get :index
+        expect(response.body).to eq('false')
+      end
+    end
+
+    context 'when sp_from_sp_session returns nil' do
+      before do
+        allow(controller).to receive(:sp_from_sp_session).and_return(nil)
+      end
+
+      it 'returns false' do
+        get :index
+        expect(response.body).to eq('false')
+      end
+    end
+  end
+
+  describe '#attempts_api_tracker' do
+    let(:enabled) { true }
+    let(:sp) { create(:service_provider) }
+    let(:user) { create(:user) }
+    let(:browser_id) { SecureRandom.hex(64) }
+
+    before do
+      expect(IdentityConfig.store).to receive(:attempts_api_enabled).and_return enabled
+      allow(controller).to receive(:current_user).and_return(user)
+      allow(controller).to receive(:current_sp).and_return(sp)
+      request.cookies[:browser_id] = browser_id
+    end
+
+    context 'when the attempts api is not enabled' do
+      let(:enabled) { false }
+
+      it 'calls the AttemptsApi::Tracker class with enabled_for_session set to false' do
+        expect(AttemptsApi::Tracker).to receive(:new).with(
+          user:, request:, sp:, session_id: nil,
+          cookie_device_uuid: browser_id, sp_redirect_uri: nil, enabled_for_session: false
+        )
+
+        controller.attempts_api_tracker
+      end
+    end
+
+    context 'when attempts api is enabled' do
+      context 'when the service provider is not authorized' do
+        before do
+          expect(IdentityConfig.store).to receive(:allowed_attempts_providers).and_return([])
+        end
+
+        it 'calls the AttemptsApi::Tracker class with enabled_for_session set to false' do
+          expect(AttemptsApi::Tracker).to receive(:new).with(
+            user:, request:, sp:, session_id: nil,
+            cookie_device_uuid: browser_id, sp_redirect_uri: nil, enabled_for_session: false
+          )
+
+          controller.attempts_api_tracker
+        end
+      end
+
+      context 'when the service provider is authorized' do
+        before do
+          expect(IdentityConfig.store).to receive(:allowed_attempts_providers).and_return(
+            [
+              {
+                'issuer' => sp.issuer,
+              },
+            ],
+          )
+        end
+
+        context 'when there is no attempts_api_session_id' do
+          it 'calls the AttemptsApi::Tracker class with enabled_for_session set to false' do
+            expect(AttemptsApi::Tracker).to receive(:new).with(
+              user:, request:, sp:, session_id: nil,
+              cookie_device_uuid: browser_id, sp_redirect_uri: nil, enabled_for_session: false
+            )
+
+            controller.attempts_api_tracker
+          end
+        end
+
+        context 'when there is an attempts_api_session_id' do
+          before do
+            expect(controller.decorated_sp_session).to receive(:attempts_api_session_id)
+              .and_return('abc123')
+          end
+          it 'calls the AttemptsApi::Tracker class with enabled_for_session set to true' do
+            expect(AttemptsApi::Tracker).to receive(:new).with(
+              user:, request:, sp:, session_id: 'abc123',
+              cookie_device_uuid: browser_id, sp_redirect_uri: nil, enabled_for_session: true
+            )
+
+            controller.attempts_api_tracker
+          end
+
+          context 'when browser_id cookie is missing' do
+            let(:browser_id) { nil }
+            let(:generated_browser_id) { 'random-id' }
+
+            before do
+              expect(SecureRandom).to receive(:hex).with(64).and_return(generated_browser_id)
+            end
+
+            it 'calls the AttemptsApi::Tracker class with nil cookie_device_uuid' do
+              expect(AttemptsApi::Tracker).to receive(:new).with(
+                user:, request:, sp:, session_id: 'abc123',
+                cookie_device_uuid: generated_browser_id, sp_redirect_uri: nil,
+                enabled_for_session: true
+              )
+
+              controller.attempts_api_tracker
+              expect(request.cookie_jar[:browser_id]).to eq(generated_browser_id)
+            end
+          end
+        end
       end
     end
   end

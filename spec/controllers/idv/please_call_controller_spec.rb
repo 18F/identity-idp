@@ -127,4 +127,66 @@ RSpec.describe Idv::PleaseCallController do
       end
     end
   end
+
+  describe '#ipp_enabled_and_enrollment_passed_or_in_fraud_review?' do
+    context 'when in person tmx is enabled' do
+      before do
+        allow(IdentityConfig.store).to receive(:in_person_proofing_enforce_tmx).and_return(true)
+      end
+
+      context 'when ipp is enabled' do
+        before do
+          allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
+        end
+
+        context 'when user has a passed enrollment' do
+          let!(:enrollment) { create(:in_person_enrollment, :passed, user: user, profile: profile) }
+
+          it 'returns true' do
+            expect(subject.ipp_enabled_and_enrollment_passed_or_in_fraud_review?).to be(true)
+          end
+        end
+
+        context 'when user has an in_fraud_review enrollment' do
+          let!(:enrollment) do
+            create(:in_person_enrollment, :in_fraud_review, user: user, profile: profile)
+          end
+
+          it 'returns true' do
+            expect(subject.ipp_enabled_and_enrollment_passed_or_in_fraud_review?).to be(true)
+          end
+        end
+
+        context 'when user has a non passed or in_fraud_review enrollment' do
+          let!(:enrollment) do
+            create(:in_person_enrollment, :pending, user: user, profile: profile)
+          end
+
+          it 'returns false' do
+            expect(subject.ipp_enabled_and_enrollment_passed_or_in_fraud_review?).to be(false)
+          end
+        end
+      end
+
+      context 'when ipp is disabled' do
+        before do
+          allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(false)
+        end
+
+        it 'returns false' do
+          expect(subject.ipp_enabled_and_enrollment_passed_or_in_fraud_review?).to be(false)
+        end
+      end
+    end
+
+    context 'when in person tmx is disabled' do
+      before do
+        allow(IdentityConfig.store).to receive(:in_person_proofing_enforce_tmx).and_return(false)
+      end
+
+      it 'returns nil' do
+        expect(subject.ipp_enabled_and_enrollment_passed_or_in_fraud_review?).to be_nil
+      end
+    end
+  end
 end

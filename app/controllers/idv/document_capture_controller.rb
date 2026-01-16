@@ -7,13 +7,16 @@ module Idv
     include DocumentCaptureConcern
     include IdvStepConcern
     include StepIndicatorConcern
+    include DocAuthVendorConcern
 
     before_action :confirm_not_rate_limited, except: [:update, :direct_in_person]
     before_action :confirm_step_allowed, unless: -> { allow_direct_ipp? }
+    before_action :update_doc_auth_vendor, only: :show
     before_action :override_csp_to_allow_acuant
     before_action :set_usps_form_presenter
-    before_action -> { redirect_to_correct_vendor(Idp::Constants::Vendors::LEXIS_NEXIS, false) },
-                  only: [:show], unless: -> { allow_direct_ipp? }
+    before_action -> do
+      redirect_to_correct_vendor(Idp::Constants::Vendors::LEXIS_NEXIS, in_hybrid_mobile: false)
+    end, only: [:show], unless: -> { allow_direct_ipp? }
 
     def show
       analytics.idv_doc_auth_document_capture_visited(**analytics_arguments)
@@ -39,7 +42,7 @@ module Idv
       if result.success?
         redirect_to idv_ssn_url
       else
-        redirect_to idv_document_capture_url
+        redirect_to vendor_document_capture_url
       end
     end
 
@@ -48,6 +51,7 @@ module Idv
     def direct_in_person
       attributes = {
         remaining_submit_attempts: rate_limiter.remaining_count,
+        flow_path: :standard,
       }.merge(ab_test_analytics_buckets)
       analytics.idv_in_person_direct_start(**attributes)
 
@@ -58,16 +62,14 @@ module Idv
       Idv::StepInfo.new(
         key: :document_capture,
         controller: self,
-        next_steps: [:ssn, :ipp_ssn], # :ipp_state_id
+        next_steps: [:ssn, :ipp_state_id, :ipp_choose_id_type],
         preconditions: ->(idv_session:, user:) {
-          idv_session.flow_path == 'standard' && (
-            # mobile
-            idv_session.skip_doc_auth_from_handoff ||
-              idv_session.skip_hybrid_handoff ||
+          idv_session.standard_flow_document_capture_eligible? &&
+            (
+              idv_session.skip_doc_auth_from_handoff ||
               idv_session.skip_doc_auth_from_how_to_verify ||
-              !idv_session.selfie_check_required || # desktop but selfie not required
-              idv_session.desktop_selfie_test_mode_enabled?
-          )
+              ensure_choose_id_type_completed(idv_session: idv_session, user: user)
+            )
         },
         undo_step: ->(idv_session:, user:) do
           idv_session.pii_from_doc = nil
@@ -75,23 +77,41 @@ module Idv
           idv_session.had_barcode_attention_error = nil
           idv_session.had_barcode_read_failure = nil
           idv_session.selfie_check_performed = nil
+          idv_session.doc_auth_vendor = nil
+          idv_session.source_check_vendor = nil
         end,
       )
+    end
+
+    def self.ensure_choose_id_type_completed(idv_session:, user:)
+      return true if user&.has_establishing_in_person_enrollment?
+
+      return true if idv_session.pii_from_doc.present?
+
+      document_capture_session = DocumentCaptureSession.find_by(
+        uuid: idv_session.document_capture_session_uuid,
+      )
+      !!document_capture_session&.passport_status&.present?
     end
 
     private
 
     def extra_view_variables
       {
+        id_type: document_type_requested,
         document_capture_session_uuid: document_capture_session_uuid,
-        mock_client: doc_auth_vendor == 'mock',
+        mock_client: document_capture_session.doc_auth_vendor == 'mock',
         flow_path: 'standard',
         sp_name: decorated_sp_session.sp_name,
         failure_to_proof_url: return_to_sp_failure_to_proof_url(step: 'document_capture'),
         skip_doc_auth_from_how_to_verify: idv_session.skip_doc_auth_from_how_to_verify,
         skip_doc_auth_from_handoff: idv_session.skip_doc_auth_from_handoff,
+        skip_doc_auth_from_socure: idv_session.skip_doc_auth_from_socure,
         opted_in_to_in_person_proofing: idv_session.opted_in_to_in_person_proofing,
+        choose_id_type_path: idv_choose_id_type_path,
         doc_auth_selfie_capture: resolved_authn_context_result.facial_match?,
+        doc_auth_upload_enabled: doc_auth_upload_enabled?,
+        socure_errors_timeout_url: idv_socure_document_capture_errors_url(error_code: :timeout),
       }.merge(
         acuant_sdk_upgrade_a_b_testing_variables,
       )
@@ -106,6 +126,7 @@ module Idv
         skip_hybrid_handoff: idv_session.skip_hybrid_handoff,
         liveness_checking_required: resolved_authn_context_result.facial_match?,
         selfie_check_required: resolved_authn_context_result.facial_match?,
+        pii_like_keypaths: [[:pii]],
       }.merge(ab_test_analytics_buckets)
     end
 
@@ -117,14 +138,18 @@ module Idv
       return false if params[:action].to_s != 'show' && params[:action] != 'direct_in_person'
       return false if idv_session.flow_path == 'hybrid'
       # Only allow direct access to document capture if IPP available
-      return false unless IdentityConfig.store.in_person_doc_auth_button_enabled &&
+      return false unless IdentityConfig.store.in_person_proofing_opt_in_enabled &&
                           Idv::InPersonConfig.enabled_for_issuer?(decorated_sp_session.sp_issuer)
-      @previous_step_url = params[:step] == 'hybrid_handoff' ? idv_hybrid_handoff_path : nil
-      # allow
+      @previous_step_url = step_is_handoff? ? idv_hybrid_handoff_path : nil
       idv_session.flow_path = 'standard'
-      idv_session.skip_doc_auth_from_handoff = true
+      idv_session.skip_doc_auth_from_handoff = step_is_handoff?
+      idv_session.skip_doc_auth_from_how_to_verify = params[:step] == 'how_to_verify'
       idv_session.skip_hybrid_handoff = nil
       true
+    end
+
+    def step_is_handoff?
+      params[:step] == 'hybrid_handoff'
     end
 
     def set_usps_form_presenter

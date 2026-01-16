@@ -2,6 +2,10 @@
 
 <%= render PageHeadingComponent.new.with_content(t('account_reset.pending.canceled')) %>
 
+<p>
+  <%= t('account_reset.pending.canceled_info', app_name: APP_NAME) %>
+</p>
+
 <%= link_to(
       t('links.continue_sign_in'),
       user_two_factor_authentication_path,

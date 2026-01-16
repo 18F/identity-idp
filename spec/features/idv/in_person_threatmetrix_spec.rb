@@ -22,12 +22,12 @@ RSpec.describe 'In Person Proofing Threatmetrix', js: true do
   let(:config) { ScriptBase::Config.new(include_missing:, reason: 'INV1234') }
   let(:enrollment) { InPersonEnrollment.last }
   let(:profile) { enrollment.profile }
+  let(:service_provider) { ServiceProvider.find_by(issuer: service_provider_issuer(sp)) }
 
   before do
     allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
     allow(IdentityConfig.store).to receive(:in_person_proofing_enforce_tmx).and_return(true)
-    ServiceProvider.find_by(issuer: service_provider_issuer(sp))
-      .update(in_person_proofing_enabled: true)
+    service_provider.update(in_person_proofing_enabled: true)
   end
 
   def deactivate_profile_update_enrollment(status:)
@@ -73,6 +73,7 @@ RSpec.describe 'In Person Proofing Threatmetrix', js: true do
     let(:tmx_status) { 'Review' }
 
     it 'allows the user to continue down the happy path', allow_browser_log: true do
+      visit_idp_from_sp_with_ial2(:oidc, **{ client_id: service_provider.issuer })
       sign_in_and_2fa_user(user)
       begin_in_person_proofing(user)
       # prepare page
@@ -157,7 +158,11 @@ RSpec.describe 'In Person Proofing Threatmetrix', js: true do
       expect(page).to have_content(strip_nbsp(t('in_person_proofing.headings.barcode')))
       expect(page).to have_content(Idv::InPerson::EnrollmentCodeFormatter.format(enrollment_code))
       expect(page).to have_content(
-        t('in_person_proofing.body.barcode.deadline', deadline: deadline),
+        t(
+          'in_person_proofing.body.barcode.deadline',
+          deadline: deadline,
+          sp_name: service_provider.friendly_name,
+        ),
       )
       expect(page).to have_content('MILWAUKEE')
       expect(page).to have_content('Sunday: Closed')
@@ -211,9 +216,9 @@ RSpec.describe 'In Person Proofing Threatmetrix', js: true do
 
           visit_idp_from_sp_with_ial2(sp)
           expect(page).to have_current_path(idv_please_call_path)
-          page.visit('/verify/welcome')
+          page.visit(idv_welcome_path)
           expect(page).to have_current_path(idv_please_call_path)
-          page.visit('/verify/in_person/document_capture')
+          page.visit(idv_in_person_state_id_path)
           expect(page).to have_current_path(idv_please_call_path)
         end
 
@@ -226,7 +231,7 @@ RSpec.describe 'In Person Proofing Threatmetrix', js: true do
           expect do
             review_pass.run(args: [user.uuid], config:)
           end.to(change { ActionMailer::Base.deliveries.count }.by(1))
-          page.visit('/verify/welcome')
+          page.visit(idv_welcome_path)
           expect(page).to have_current_path(idv_activated_path)
         end
       end
@@ -310,9 +315,9 @@ RSpec.describe 'In Person Proofing Threatmetrix', js: true do
 
         visit_idp_from_sp_with_ial2(sp)
         expect(page).to have_current_path(idv_not_verified_path)
-        page.visit('/verify/welcome')
+        page.visit(idv_welcome_path)
         expect(page).to have_current_path(idv_not_verified_path)
-        page.visit('/verify/in_person/document_capture')
+        page.visit(idv_in_person_state_id_path)
         expect(page).to have_current_path(idv_not_verified_path)
       end
     end

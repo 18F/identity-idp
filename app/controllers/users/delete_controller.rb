@@ -3,6 +3,7 @@
 module Users
   class DeleteController < ApplicationController
     include ReauthenticationRequiredConcern
+    include OneAccountConcern
 
     before_action :confirm_two_factor_authenticated
     before_action :confirm_current_password, only: [:delete]
@@ -17,6 +18,8 @@ module Users
       notify_user_via_email_of_deletion
       notify_user_via_sms_of_deletion
       analytics.account_delete_submitted(success: true)
+      process_one_account_self_service_if_applicable(source: :account_management_delete)
+      attempts_api_tracker.logged_in_account_purged(success: true)
       delete_user
       sign_out
       flash[:success] = t('devise.registrations.destroyed')
@@ -37,6 +40,7 @@ module Users
 
       flash.now[:error] = t('idv.errors.incorrect_password')
       analytics.account_delete_submitted(success: false)
+      attempts_api_tracker.logged_in_account_purged(success: false)
       render :show
     end
 
@@ -57,7 +61,7 @@ module Users
     def notify_user_via_email_of_deletion
       current_user.confirmed_email_addresses.each do |email_address|
         UserMailer.with(user: current_user, email_address: email_address)
-          .account_delete_submitted.deliver_now
+          .account_delete_completed.deliver_now
       end
     end
     # rubocop:enable IdentityIdp/MailLaterLinter

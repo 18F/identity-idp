@@ -1,4 +1,4 @@
-FROM ruby:3.3.6-slim
+FROM ruby:3.4.5-slim
 
 # Set environment variables
 ENV RAILS_ROOT /app
@@ -9,9 +9,8 @@ ENV RAILS_LOG_TO_STDOUT true
 ENV LOGIN_CONFIG_FILE $RAILS_ROOT/tmp/application.yml
 ENV RAILS_LOG_LEVEL debug
 ENV BUNDLE_PATH /usr/local/bundle
-ENV YARN_VERSION 1.22.5
 ENV NODE_VERSION 22.11.0
-ENV BUNDLER_VERSION 2.5.6
+ENV BUNDLER_VERSION 2.6.3
 ENV POSTGRES_SSLMODE prefer
 ENV POSTGRES_NAME idp
 ENV POSTGRES_HOST postgres
@@ -45,7 +44,6 @@ RUN apt-get update && \
     libxml2-dev \
     libxslt1-dev \
     libcurl4-openssl-dev \
-    software-properties-common \
     libffi-dev \
     libpq-dev \
     unzip && \
@@ -55,11 +53,6 @@ RUN curl -fsSLO --compressed "https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE
   && tar -xJf "node-v$NODE_VERSION-linux-x64.tar.xz" -C /usr/local --strip-components=1 --no-same-owner \
   && rm "node-v$NODE_VERSION-linux-x64.tar.xz" \
   && ln -s /usr/local/bin/node /usr/local/bin/nodejsv
-
-# Install Yarn
-RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | gpg --dearmor | tee /usr/share/keyrings/yarn-archive-keyring.gpg >/dev/null
-RUN echo "deb [signed-by=/usr/share/keyrings/yarn-archive-keyring.gpg] https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
-RUN apt-get update && apt-get install -y yarn=1.22.5-1
 
 # Download RDS Combined CA Bundle
 RUN mkdir -p /usr/local/share/aws \
@@ -96,12 +89,12 @@ RUN bundle config set --local without 'deploy development doc test'
 RUN bundle install --jobs $(nproc)
 RUN bundle binstubs --all
 
-# Yarn install
+# NPM install
 COPY --chown=app:app ./package.json ./package.json
-COPY --chown=app:app ./yarn.lock ./yarn.lock
-# Workspace packages are installed by Yarn via symlink to the original source, and need to be present
+COPY --chown=app:app ./package-lock.json ./package-lock.json
+# Workspace packages are installed by NPM via symlink to the original source, and need to be present
 COPY --chown=app:app ./app/javascript/packages ./app/javascript/packages
-RUN yarn install --production=true --frozen-lockfile --cache-folder .yarn-cache
+RUN npm ci --omit=dev --cache .npm-cache
 
 # Add the application code
 COPY --chown=app:app ./lib ./lib
@@ -130,7 +123,8 @@ COPY --chown=app:app pwned_passwords/pwned_passwords.txt.sample $RAILS_ROOT/pwne
 COPY --chown=app:app public/ban-robots.txt $RAILS_ROOT/public/robots.txt
 
 # Copy application.yml.default to application.yml
-COPY --chown=app:app ./config/application.yml.default.review_app $RAILS_ROOT/config/application.yml
+# This is actually overridden in k8s-land, so we probably don't even need this.
+COPY --chown=app:app ./config/application.yml.default $RAILS_ROOT/config/application.yml
 
 # Setup config files
 COPY --chown=app:app config/agencies.localdev.yml $RAILS_ROOT/config/agencies.yml
@@ -145,7 +139,7 @@ COPY --chown=app:app certs.example $RAILS_ROOT/certs
 COPY --chown=app:app config/service_providers.localdev.yml $RAILS_ROOT/config/service_providers.yml
 
 # Precompile assets
-RUN SKIP_YARN_INSTALL=true bundle exec rake assets:precompile
+RUN bundle exec rake assets:precompile
 
 ARG ARG_CI_COMMIT_BRANCH="branch_placeholder"
 ARG ARG_CI_COMMIT_SHA="sha_placeholder"

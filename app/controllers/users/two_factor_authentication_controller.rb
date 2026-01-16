@@ -7,6 +7,7 @@ module Users
     include ActionView::Helpers::DateHelper
 
     before_action :check_remember_device_preference
+    before_action :handle_suspended_user
     before_action :redirect_to_vendor_outage_if_phone_only, only: [:show]
     before_action :redirect_if_blank_phone, only: [:send_code]
 
@@ -176,11 +177,17 @@ module Users
       otp_rate_limiter.reset_count_and_otp_last_sent_at if current_user.no_longer_locked_out?
 
       if exceeded_otp_send_limit?
-        return handle_too_many_otp_sends
+        return handle_too_many_otp_sends(
+          phone_number: parsed_phone.e164,
+          context:,
+        )
       end
       otp_rate_limiter.increment
       if exceeded_otp_send_limit?
-        return handle_too_many_otp_sends
+        return handle_too_many_otp_sends(
+          phone_number: parsed_phone.e164,
+          context:,
+        )
       end
 
       if exceeded_short_term_otp_rate_limit?
@@ -230,6 +237,24 @@ module Users
           reason: RecaptchaAnnotator::AnnotationReasons::INITIATED_TWO_FACTOR,
         ),
       )
+
+      if UserSessionContext.confirmation_context?(context)
+        attempts_api_tracker.mfa_enroll_phone_otp_sent(
+          success: @telephony_result.success?,
+          phone_number: parsed_phone.e164,
+          otp_delivery_method: otp_delivery_preference,
+          failure_reason: attempts_api_tracker.parse_failure_reason(@telephony_result),
+        )
+      elsif UserSessionContext.authentication_or_reauthentication_context?(context)
+        attempts_api_tracker.mfa_login_phone_otp_sent(
+          success: @telephony_result.success?,
+          reauthentication: UserSessionContext.reauthentication_context?(context),
+          phone_number: parsed_phone.e164,
+          otp_delivery_method: otp_delivery_preference,
+          failure_reason: attempts_api_tracker.parse_failure_reason(@telephony_result),
+        )
+
+      end
     end
 
     def exceeded_otp_send_limit?

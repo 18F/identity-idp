@@ -11,7 +11,8 @@ RSpec.describe InPersonEnrollment, type: :model do
   describe 'Status' do
     it 'defines enum correctly' do
       should define_enum_for(:status)
-        .with_values([:establishing, :pending, :passed, :failed, :expired, :cancelled])
+        .with_values([:establishing, :pending, :passed, :failed, :expired, :cancelled,
+                      :in_fraud_review])
     end
   end
 
@@ -147,23 +148,14 @@ RSpec.describe InPersonEnrollment, type: :model do
   end
 
   describe 'enrollments that need email reminders' do
-    let(:early_benchmark) { Time.zone.now - 19.days }
-    let(:late_benchmark) { Time.zone.now - 26.days }
-    let(:final_benchmark) { Time.zone.now - 29.days }
-
-    # early reminder is sent on days 11-5
-    let!(:enrollments_needing_early_reminder) do
-      [
-        create(:in_person_enrollment, :pending, enrollment_established_at: Time.zone.now - 19.days),
-        create(:in_person_enrollment, :pending, enrollment_established_at: Time.zone.now - 25.days),
-      ]
-    end
+    let(:start_date) { Time.zone.now - 6.days }
+    let(:end_date) { Time.zone.now - 3.days }
 
     # late reminder is sent on days 4 - 2
     let!(:enrollments_needing_late_reminder) do
       [
-        create(:in_person_enrollment, :pending, enrollment_established_at: Time.zone.now - 26.days),
-        create(:in_person_enrollment, :pending, enrollment_established_at: Time.zone.now - 28.days),
+        create(:in_person_enrollment, :pending, enrollment_established_at: Time.zone.now - 3.days),
+        create(:in_person_enrollment, :pending, enrollment_established_at: Time.zone.now - 5.days),
       ]
     end
 
@@ -177,19 +169,9 @@ RSpec.describe InPersonEnrollment, type: :model do
       ]
     end
 
-    it 'returns pending enrollments that need early reminder' do
-      expect(InPersonEnrollment.count).to eq(9)
-      results = InPersonEnrollment.needs_early_email_reminder(early_benchmark, late_benchmark)
-      expect(results.pluck(:id)).to match_array enrollments_needing_early_reminder.pluck(:id)
-      results.each do |result|
-        expect(result.pending?).to be_truthy
-        expect(result.early_reminder_sent?).to be_falsey
-      end
-    end
-
     it 'returns pending enrollments that need late reminder' do
-      expect(InPersonEnrollment.count).to eq(9)
-      results = InPersonEnrollment.needs_late_email_reminder(late_benchmark, final_benchmark)
+      expect(InPersonEnrollment.count).to eq(7)
+      results = InPersonEnrollment.needs_late_email_reminder(start_date, end_date)
       expect(results.pluck(:id)).to match_array enrollments_needing_late_reminder.pluck(:id)
       results.each do |result|
         expect(result.pending?).to be_truthy
@@ -256,6 +238,9 @@ RSpec.describe InPersonEnrollment, type: :model do
         ready_for_status_check: true,
       )
     end
+    let!(:fraud_review_enrollment) do
+      create(:in_person_enrollment, :in_fraud_review, ready_for_status_check: true)
+    end
     let!(:ready_enrollments) do
       create_list(:in_person_enrollment, 4, :pending, ready_for_status_check: true)
     end
@@ -264,7 +249,7 @@ RSpec.describe InPersonEnrollment, type: :model do
     end
 
     it 'needs_status_check_on_ready_enrollments returns only ready pending enrollments' do
-      expect(InPersonEnrollment.count).to eq(12)
+      expect(InPersonEnrollment.count).to eq(13)
       ready_results = InPersonEnrollment.needs_status_check_on_ready_enrollments(check_interval)
       expect(ready_results.pluck(:id)).to match_array ready_enrollments.pluck(:id)
       expect(ready_results.pluck(:id)).not_to match_array needy_enrollments.pluck(:id)
@@ -277,6 +262,7 @@ RSpec.describe InPersonEnrollment, type: :model do
         failed_enrollment,
         expired_enrollment,
         checked_pending_enrollment,
+        fraud_review_enrollment,
       ]
 
       (other_enrollments + needy_enrollments).each do |enrollment|
@@ -289,7 +275,7 @@ RSpec.describe InPersonEnrollment, type: :model do
     end
 
     it 'needs_status_check_on_waiting_enrollments returns only not ready pending enrollments' do
-      expect(InPersonEnrollment.count).to eq(12)
+      expect(InPersonEnrollment.count).to eq(13)
       waiting_results = InPersonEnrollment.needs_status_check_on_waiting_enrollments(check_interval)
       expect(waiting_results.pluck(:id)).to match_array needy_enrollments.pluck(:id)
       expect(waiting_results.pluck(:id)).not_to match_array ready_enrollments.pluck(:id)
@@ -302,6 +288,7 @@ RSpec.describe InPersonEnrollment, type: :model do
         failed_enrollment,
         expired_enrollment,
         checked_pending_enrollment,
+        fraud_review_enrollment,
       ]
 
       (other_enrollments + ready_enrollments).each do |enrollment|
@@ -384,96 +371,122 @@ RSpec.describe InPersonEnrollment, type: :model do
     end
   end
 
-  describe 'due_date and days_to_due_date' do
-    let(:validity_in_days) { 10 }
+  describe '#days_to_due_date' do
+    let(:ipp_validity_days) { 7 }
+    let(:enrollment_established_at) { Time.zone.now }
+    let(:enrollment) { create(:in_person_enrollment, enrollment_established_at:) }
 
     before do
-      allow(IdentityConfig.store)
-        .to(
-          receive(:in_person_enrollment_validity_in_days)
-          .and_return(validity_in_days),
-        )
+      freeze_time
+      allow(IdentityConfig.store).to receive(:in_person_ipp_enrollment_validity_in_days).and_return(
+        ipp_validity_days,
+      )
     end
 
-    it 'due_date returns the enrollment expiration date based on when it was established' do
-      freeze_time do
-        enrollment = create(
-          :in_person_enrollment,
-          enrollment_established_at: (validity_in_days - 3).days.ago,
-        )
-        expect(enrollment.due_date).to(
-          eq(3.days.from_now),
-        )
-      end
-    end
+    context 'when the current date is 7 days away from the due date' do
+      let(:offset) { 7 }
 
-    it 'days_to_due_date returns the number of days left until the due date' do
-      freeze_time do
-        enrollment = create(
-          :in_person_enrollment,
-          enrollment_established_at: (validity_in_days - 3).days.ago,
-        )
-        expect(enrollment.days_to_due_date).to eq(3)
-      end
-    end
-
-    context 'check edges to confirm date calculation is correct' do
-      it 'returns the correct due date and days to due date with 1 day left' do
-        freeze_time do
-          enrollment = create(
-            :in_person_enrollment,
-            enrollment_established_at: (validity_in_days - 1).days.ago,
-          )
-          expect(enrollment.days_to_due_date).to eq(1)
-          expect(enrollment.due_date).to(
-            eq(Time.zone.now + 1.day),
-          )
-        end
-      end
-
-      it 'returns the correct due date and days to due date with 0.5 days left' do
-        freeze_time do
-          enrollment = create(
-            :in_person_enrollment,
-            enrollment_established_at: (validity_in_days - 0.5).days.ago,
-          )
-          expect(enrollment.days_to_due_date).to eq(0)
-          expect(enrollment.due_date).to(
-            eq(Time.zone.now + 0.5.days),
-          )
-        end
-      end
-
-      it 'returns the correct due date and days to due date with 0 days left' do
-        freeze_time do
-          enrollment = create(
-            :in_person_enrollment,
-            enrollment_established_at: validity_in_days.days.ago,
-          )
-          expect(enrollment.days_to_due_date).to eq(0)
-          expect(enrollment.due_date).to(
-            eq(Time.zone.now),
-          )
-        end
-      end
-    end
-
-    context 'eipp enrollment' do
-      let(:eipp_validity_in_days) { 7 }
       before do
-        allow(IdentityConfig.store)
-          .to(
-            receive(:in_person_eipp_enrollment_validity_in_days)
-            .and_return(eipp_validity_in_days),
-          )
+        travel_to(enrollment.due_date - offset.days)
       end
-      it 'days_to_due_date returns the number of days left until the due date' do
-        freeze_time do
-          enrollment = create(
-            :in_person_enrollment, :enhanced_ipp,
-            enrollment_established_at: (eipp_validity_in_days - 2).days.ago
+
+      it 'returns 7 days' do
+        expect(enrollment.days_to_due_date).to eq(7)
+      end
+    end
+
+    context 'when the current date is 4 days away from the due date' do
+      let(:offset) { 4 }
+
+      before do
+        travel_to(enrollment.due_date - offset.days)
+      end
+
+      it 'returns 4 days' do
+        expect(enrollment.days_to_due_date).to eq(4)
+      end
+    end
+
+    context 'when the current date is 1 day away from the due date' do
+      let(:offset) { 1 }
+
+      before do
+        travel_to(enrollment.due_date - offset.day)
+      end
+
+      it 'returns 1 day' do
+        expect(enrollment.days_to_due_date).to eq(1)
+      end
+    end
+
+    context 'when the current date is less than 1 day away from the due date' do
+      let(:offset) { 0.5 }
+      before do
+        travel_to(enrollment.due_date - offset.day)
+      end
+
+      it 'returns 0 days' do
+        expect(enrollment.days_to_due_date).to eq(0)
+      end
+    end
+  end
+
+  describe '#due_date' do
+    let(:created_at) { nil }
+    let(:enrollment_established_at) { nil }
+    let(:ipp_validity_days) { 7 }
+    let(:eipp_validity_days) { 10 }
+
+    before do
+      freeze_time
+      allow(IdentityConfig.store).to receive_messages(
+        in_person_ipp_enrollment_validity_in_days: ipp_validity_days,
+        in_person_eipp_enrollment_validity_in_days: eipp_validity_days,
+      )
+    end
+
+    context 'when the enrollment is an enhanced_ipp enrollment' do
+      let(:enrollment) do
+        create(:in_person_enrollment, :enhanced_ipp, created_at:, enrollment_established_at:)
+      end
+
+      context 'when enrollment_established_at is not present' do
+        let(:created_at) { Time.zone.now }
+
+        it 'returns end of day of created_at plus the configured eipp_validity_days' do
+          expect(enrollment.due_date).to eq((created_at + eipp_validity_days.days).end_of_day)
+        end
+      end
+
+      context 'when enrollment_established_at is present' do
+        let(:enrollment_established_at) { Time.zone.now + 1.day }
+
+        it 'returns end of day of established_at plus the configured eipp_validity_days' do
+          expect(enrollment.due_date).to eq(
+            (enrollment_established_at + eipp_validity_days.days).end_of_day,
           )
-          expect(enrollment.days_to_due_date).to eq(2)
+        end
+      end
+    end
+
+    context 'when the enrollment is an non enhanced_ipp enrollment' do
+      let(:enrollment) { create(:in_person_enrollment, created_at:, enrollment_established_at:) }
+
+      context 'when enrollment_established_at is not present' do
+        let(:created_at) { Time.zone.now }
+
+        it 'returns end of day of created_at plus the configured ipp_validity_days' do
+          expect(enrollment.due_date).to eq((created_at + ipp_validity_days.days).end_of_day)
+        end
+      end
+
+      context 'when enrollment_established_at is present' do
+        let(:enrollment_established_at) { Time.zone.now + 1.day }
+
+        it 'returns end of day of established_at plus the configured ipp_validity_days' do
+          expect(enrollment.due_date).to eq(
+            (enrollment_established_at + ipp_validity_days.days).end_of_day,
+          )
         end
       end
     end
@@ -498,6 +511,9 @@ RSpec.describe InPersonEnrollment, type: :model do
     let(:failed_enrollment_without_notification) do
       create(:in_person_enrollment, :failed)
     end
+    let(:in_fraud_review_enrollment) do
+      create(:in_person_enrollment, :in_fraud_review)
+    end
 
     it 'returns true when status of passed/failed/expired and with notification configuration' do
       expect(passed_enrollment.eligible_for_notification?).to eq(true)
@@ -509,6 +525,7 @@ RSpec.describe InPersonEnrollment, type: :model do
       expect(expired_enrollment.eligible_for_notification?).to eq(false)
       expect(passed_enrollment_without_notification.eligible_for_notification?).to eq(false)
       expect(failed_enrollment_without_notification.eligible_for_notification?).to eq(false)
+      expect(in_fraud_review_enrollment.eligible_for_notification?).to eq(false)
     end
   end
 
@@ -559,6 +576,60 @@ RSpec.describe InPersonEnrollment, type: :model do
 
       it 'returns nil' do
         expect(enrollment.profile_deactivation_reason).to be_nil
+      end
+    end
+  end
+
+  describe '#cancel' do
+    context 'when the enrollment has a profile' do
+      let(:profile) { create(:profile) }
+      let(:enrollment) do
+        create(:in_person_enrollment, :pending, user: profile.user, profile: profile)
+      end
+
+      before do
+        enrollment.cancel
+      end
+
+      it 'updates the enrollment status to "cancelled"' do
+        expect(enrollment.status).to eq('cancelled')
+      end
+
+      it 'deactivates the profile' do
+        expect(profile).to have_attributes(
+          deactivation_reason: 'verification_cancelled',
+          in_person_verification_pending_at: nil,
+        )
+      end
+    end
+
+    context 'when the enrollment does not have a profile' do
+      let(:enrollment) { create(:in_person_enrollment, :establishing) }
+
+      before do
+        enrollment.cancel
+      end
+
+      it 'updates the enrollment status to "cancelled"' do
+        expect(enrollment.status).to eq('cancelled')
+      end
+    end
+  end
+
+  describe '#passport_book?' do
+    context 'when the enrollment is a passport book enrollment' do
+      let(:enrollment) { create(:in_person_enrollment, :passport_book) }
+
+      it 'returns true' do
+        expect(enrollment.passport_book?).to be(true)
+      end
+    end
+
+    context 'when the enrollment is not a passport book enrollment' do
+      let(:enrollment) { create(:in_person_enrollment) }
+
+      it 'returns false' do
+        expect(enrollment.passport_book?).to be(false)
       end
     end
   end

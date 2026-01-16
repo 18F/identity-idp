@@ -64,15 +64,40 @@ module IdvStepConcern
     if params[:redo]
       idv_session.redo_document_capture = true
     end
-
     # If we previously skipped hybrid handoff, keep doing that.
     # If hybrid flow is unavailable, skip it.
     # But don't store that we skipped it in idv_session, in case it is back to
     # available when the user tries to redo document capture.
     if idv_session.skip_hybrid_handoff? || !FeatureManagement.idv_allow_hybrid_flow?
       idv_session.flow_path = 'standard'
-      redirect_to idv_document_capture_url
+
+      if in_person_proofing_route_enabled?
+        redirect_to idv_how_to_verify_url
+      else
+        redirect_to idv_choose_id_type_url
+      end
     end
+  end
+
+  def in_person_proofing_route_enabled?
+    IdentityConfig.store.in_person_proofing_opt_in_enabled &&
+      Idv::InPersonConfig.enabled_for_issuer?(
+        decorated_sp_session.sp_issuer,
+      )
+  end
+
+  def vendor_document_capture_url
+    case document_capture_session.doc_auth_vendor
+    when Idp::Constants::Vendors::SOCURE,
+         Idp::Constants::Vendors::SOCURE_MOCK
+      idv_socure_document_capture_url
+    else
+      idv_document_capture_url
+    end
+  end
+
+  def in_person_passports_allowed?
+    IdentityConfig.store.in_person_passports_enabled
   end
 
   private
@@ -118,5 +143,19 @@ module IdvStepConcern
 
   def clear_future_steps_from!(controller:)
     flow_policy.undo_future_steps_from_controller!(controller: controller)
+  end
+
+  def mfa_configured_phone?(phone)
+    context = MfaContext.new(current_user)
+    configured_phones = context.phone_configurations.map(&:phone).map do |number|
+      PhoneFormatter.format(number)
+    end
+    formatted_phone = PhoneFormatter.format(phone)
+    configured_phones.include?(formatted_phone)
+  end
+
+  def hybrid_handoff_phone?(phone)
+    PhoneFormatter.format(phone) ==
+      PhoneFormatter.format(idv_session.phone_for_mobile_flow)
   end
 end

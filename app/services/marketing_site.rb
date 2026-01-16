@@ -8,8 +8,12 @@ class MarketingSite
   HELP_CENTER_ARTICLES = %w[
     get-started/authentication-methods
     manage-your-account/add-or-change-your-authentication-method
+    manage-your-account/delete-your-account
     manage-your-account/personal-key
+    manage-your-account/resolve-duplicate-accounts
     trouble-signing-in/face-or-touch-unlock
+    trouble-signing-in/forgot-your-password
+    trouble-signing-in/forgot-your-personal-key
     trouble-signing-in/security-check-failed
     verify-your-identity/accepted-identification-documents
     verify-your-identity/how-to-add-images-of-your-state-issued-id
@@ -18,6 +22,7 @@ class MarketingSite
     verify-your-identity/verify-your-address-by-mail
     verify-your-identity/overview
     verify-your-identity/verify-your-identity-in-person/find-a-participating-post-office
+    fraud-concerns/overview
   ].to_set.freeze
 
   def self.locale_segment

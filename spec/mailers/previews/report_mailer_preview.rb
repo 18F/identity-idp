@@ -21,6 +21,50 @@ class ReportMailerPreview < ActionMailer::Preview
     )
   end
 
+  def ab_tests_report
+    report = Reports::AbTestsReport.new(Time.zone.now).ab_tests_report(
+      AbTest.new(
+        experiment_name: 'reCAPTCHA at Sign-In',
+        persist: true,
+        max_participants: 10_000,
+        report: {
+          email: 'email@example.com',
+          queries: [
+            {
+              title: 'Sign in success rate by CAPTCHA validation performed',
+              query: <<~QUERY,
+                fields properties.event_properties.captcha_validation_performed as `Captcha Validation Performed`
+                | filter name = 'Email and Password Authentication'
+                | stats avg(properties.event_properties.success)*100 as `Success Percent` by `Captcha Validation Performed`
+                | sort `Captcha Validation Performed` asc
+              QUERY
+              row_labels: ['Validation Not Performed', 'Validation Performed'],
+            },
+          ],
+        },
+      ),
+    )
+
+    stub_cloudwatch_client(
+      report,
+      data: [
+        { 'Captcha Validation Performed' => '0', 'Success Percent' => '90.18501' },
+        { 'Captcha Validation Performed' => '1', 'Success Percent' => '85.68103' },
+      ],
+    )
+
+    ReportMailer.tables_report(
+      to: 'email@example.com',
+      subject: "A/B Tests Report - reCAPTCHA at Sign-In - #{Time.zone.now.to_date}",
+      message: [
+        "A/B Tests Report - reCAPTCHA at Sign-In - #{Time.zone.now.to_date}",
+        report.participants_message,
+      ].compact,
+      reports: report.as_emailable_reports,
+      attachment_format: :csv,
+    )
+  end
+
   def monthly_key_metrics_report
     monthly_key_metrics_report = Reports::MonthlyKeyMetricsReport.new(Time.zone.yesterday)
 
@@ -28,7 +72,7 @@ class ReportMailerPreview < ActionMailer::Preview
     stub_cloudwatch_client(monthly_key_metrics_report.monthly_idv_report)
 
     ReportMailer.tables_report(
-      email: 'test@example.com',
+      to: 'test@example.com',
       subject: "Example Key Metrics Report - #{Time.zone.now.to_date}",
       message: monthly_key_metrics_report.preamble,
       attachment_format: :xlsx,
@@ -43,7 +87,7 @@ class ReportMailerPreview < ActionMailer::Preview
     stub_cloudwatch_client(report.send(:report))
 
     ReportMailer.tables_report(
-      email: 'test@example.com',
+      to: 'test@example.com',
       subject: "Weekly Protocols Report - #{date}",
       message: "Report: protocols-report #{date}",
       attachment_format: :csv,
@@ -57,7 +101,7 @@ class ReportMailerPreview < ActionMailer::Preview
     stub_cloudwatch_client(fraud_metrics_report.fraud_metrics_lg99_report)
 
     ReportMailer.tables_report(
-      email: 'test@example.com',
+      to: 'test@example.com',
       subject: "Example Fraud Key Metrics Report - #{Time.zone.now.to_date}",
       message: fraud_metrics_report.preamble,
       attachment_format: :xlsx,
@@ -65,9 +109,238 @@ class ReportMailerPreview < ActionMailer::Preview
     )
   end
 
+  def identity_verification_outcomes_report
+    identity_verification_outcomes_report = Reports::IdentityVerificationOutcomesReport.new(
+      Time.zone.yesterday,
+    )
+
+    stub_cloudwatch_client(
+      identity_verification_outcomes_report.identity_verification_outcomes_report,
+    )
+
+    ReportMailer.tables_report(
+      to: 'test@example.com',
+      subject: "Example Identity Verification Outcomes Report - #{Time.zone.now.to_date}",
+      message: identity_verification_outcomes_report.preamble,
+      attachment_format: :csv,
+      reports: identity_verification_outcomes_report.reports,
+    )
+  end
+
+  def irs_registration_funnel_report
+    irs_registration_funnel_report = Reports::IrsRegistrationFunnelReport.new(Time.zone.yesterday)
+
+    stub_cloudwatch_client(irs_registration_funnel_report.irs_registration_funnel_report)
+
+    ReportMailer.tables_report(
+      to: 'test@example.com',
+      subject: "Example IRS Registration Funnel Report - #{Time.zone.now.to_date}",
+      message: irs_registration_funnel_report.preamble,
+      attachment_format: :csv,
+      reports: irs_registration_funnel_report.reports,
+    )
+  end
+
+  def irs_fraud_metrics_report
+    irs_fraud_metrics_report = Reports::IrsOriginalFraudMetricsReport.new(Time.zone.yesterday)
+
+    stub_cloudwatch_client(irs_fraud_metrics_report.irs_fraud_metrics_lg99_report)
+
+    ReportMailer.tables_report(
+      to: 'test@example.com',
+      subject: "Example IRS Fraud Key Metrics Report - #{Time.zone.now.to_date}",
+      message: irs_fraud_metrics_report.preamble,
+      attachment_format: :csv,
+      reports: irs_fraud_metrics_report.reports,
+    )
+  end
+
+  def sp_fraud_metrics_report
+    require 'reporting/irs_fraud_metrics_lg99_report'
+
+    date    = Time.zone.yesterday.end_of_day
+    issuers = ['issuer1']
+    agency  = 'Test_Agency'
+
+    builder = Reporting::IrsFraudMetricsLg99Report.new(
+      time_range: date.all_month,
+      issuers: issuers,
+      agency_abbreviation: agency,
+    )
+
+    stub_cloudwatch_client(builder)
+
+    ReportMailer.tables_report(
+      to: 'test@example.com',
+      bcc: 'bcc@example.com',
+      subject: "#{agency} Fraud Metric Report - #{date.to_date}",
+      message: "Report: #{agency} Fraud Metric Report - #{date.to_date}",
+      attachment_format: :csv,
+      reports: builder.as_emailable_reports,
+    )
+  end
+
+  def api_transaction_count_report
+    api_transaction_count_report = Reports::ApiTransactionCountReport.new(Time.zone.yesterday)
+
+    data = [
+      ['UUID', 'trans', 'vendor'],
+      [1111, 'b', 'instantVeryfy'],
+      [2222, 'd', 'idv'],
+    ]
+
+    stub_cloudwatch_client(api_transaction_count_report.api_transaction_count_report, data: data)
+
+    ReportMailer.tables_report(
+      to: 'test@example.com',
+      subject: "API Transaction Count Report - #{Time.zone.now.to_date}",
+      message: api_transaction_count_report.preamble,
+      attachment_format: :csv,
+      reports: api_transaction_count_report.reports,
+    )
+  end
+
+  def irs_verification_report
+    irs_original_verification_report =
+      Reports::IrsOriginalVerificationReport.new(Time.zone.yesterday)
+
+    stub_cloudwatch_client(irs_original_verification_report.irs_verification_report)
+
+    ReportMailer.tables_report(
+      to: 'test@example.com',
+      subject: "Example IRS Verification Report - #{Time.zone.now.to_date}",
+      message: "Report: IRS Verification Report -  #{Time.zone.now.to_date}",
+      attachment_format: :csv,
+      reports: irs_original_verification_report.reports,
+    )
+  end
+
+  def sp_verification_report
+    require 'reporting/irs_verification_report'
+
+    date    = Time.zone.yesterday.end_of_day
+    issuers = ['issuer1']
+    agency  = 'Test_Agency'
+
+    builder = Reporting::IrsVerificationReport.new(
+      time_range: date.beginning_of_week(:sunday).prev_occurring(:sunday).all_week(:sunday),
+      issuers: issuers,
+      agency_abbreviation: agency,
+    )
+    stub_cloudwatch_client(builder)
+
+    ReportMailer.tables_report(
+      to: 'test@example.com',
+      bcc: 'bcc@example.com',
+      subject: "#{agency} Verification Report - #{date.to_date}",
+      message: "Report: #{agency} Verification Report - #{date.to_date}",
+      attachment_format: :csv,
+      reports: builder.as_emailable_reports,
+    )
+  end
+
+  def irs_verification_demographics_report
+    irs_quarterly_report = Reports::IrsVerificationDemographicsReport.new(Time.zone.yesterday)
+
+    stub_cloudwatch_client(irs_quarterly_report.irs_verification_demographics_report)
+
+    ReportMailer.tables_report(
+      to: 'test@example.com',
+      subject: "Example IRS Verification Demographics Report - #{Time.zone.now.to_date}",
+      message: irs_quarterly_report.preamble,
+      attachment_format: :csv,
+      reports: irs_quarterly_report.reports,
+    )
+  end
+
+  def irs_credential_tenure_report
+    irs_credential_tenure_report = Reports::IrsCredentialTenureReport.new(Time.zone.yesterday)
+
+    ReportMailer.tables_report(
+      to: 'test@example.com',
+      subject: "Example IRS Credential Tenure Report - #{Time.zone.now.to_date}",
+      message: "Report: IRS Credentual Tenure Report -  #{Time.zone.now.to_date}",
+      attachment_format: :csv,
+      reports: irs_credential_tenure_report.reports,
+    )
+  end
+
+  def monthly_irs_verification_report
+    monthly_irs_verification_report =
+      Reports::MonthlyIrsOriginalVerificationReport.new(Time.zone.yesterday)
+
+    stub_cloudwatch_client(monthly_irs_verification_report.irs_verification_report)
+
+    ReportMailer.tables_report(
+      to: 'test@example.com',
+      subject: "Example Monthly IRS Verification Report - #{Time.zone.now.to_date}",
+      message: "Report: IRS Verification Report -  #{Time.zone.now.to_date}",
+      attachment_format: :csv,
+      reports: monthly_irs_verification_report.reports,
+    )
+  end
+
+  def monthly_sp_verification_report
+    require 'reporting/irs_verification_report'
+
+    date    = Time.zone.yesterday.end_of_day
+    issuers = ['issuer1']
+    agency  = 'Test_Agency'
+
+    builder = Reporting::IrsVerificationReport.new(
+      time_range: date.all_month,
+      issuers: issuers,
+      agency_abbreviation: agency,
+    )
+
+    stub_cloudwatch_client(builder)
+
+    ReportMailer.tables_report(
+      to: 'test@example.com',
+      bcc: 'bcc@example.com',
+      subject: "#{agency} Verification Report - #{date.to_date}",
+      message: "Report: #{agency} Verification Report - #{date.to_date}",
+      attachment_format: :csv,
+      reports: builder.as_emailable_reports,
+    )
+  end
+
+  def irs_monthly_credentials_report
+    report_date = Time.zone.parse('2025-11-30').end_of_day
+    report = Reports::IrsMonthlyCredMetricsReport.new(report_date)
+
+    # Use the same fixture CSV data as the spec
+    fixture_csv_data = File.read(
+      Rails.root.join('spec', 'fixtures', 'partner_cred_metrics_input.csv'),
+    )
+
+    # Stub config values like the spec does
+    def report.issuers
+      ['Issuer_4']
+    end
+
+    def report.partner_strings
+      ['Partner_1']
+    end
+
+    # Stub the invoice data method with fixture data
+    report.instance_variable_set(:@invoice_report_data, fixture_csv_data)
+
+    # Build emailable report
+    emailable_report = report.as_emailable_partner_report(date: report_date)
+
+    ReportMailer.tables_report(
+      to: 'test@example.com',
+      subject: "Example Partner Monthly Credentials Report - #{Time.zone.now.to_date}",
+      message: report.preamble,
+      reports: emailable_report,
+      attachment_format: :csv,
+    )
+  end
+
   def tables_report
     ReportMailer.tables_report(
-      email: 'test@example.com',
+      to: 'test@example.com',
       subject: 'Example Report',
       message: 'Sample Message',
       attachment_format: :csv,
@@ -102,16 +375,24 @@ class ReportMailerPreview < ActionMailer::Preview
   private
 
   class FakeCloudwatchClient
+    def initialize(data:)
+      @data = data
+    end
+
     def fetch(**)
-      []
+      @data
     end
   end
 
-  def stub_cloudwatch_client(report)
+  def stub_cloudwatch_client(report, data: [])
     class << report
+      attr_accessor :_stubbed_cloudwatch_data
+
       def cloudwatch_client
-        FakeCloudwatchClient.new
+        FakeCloudwatchClient.new(data: @_stubbed_cloudwatch_data)
       end
     end
+    report._stubbed_cloudwatch_data = data
+    report
   end
 end

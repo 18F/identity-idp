@@ -24,25 +24,8 @@
       text_tag: 'div',
     ) do %>
   <strong><%= t('in_person_proofing.body.state_id.alert_message') %></strong>
-  <ul class="margin-bottom-0">
-    <% t('in_person_proofing.body.state_id.id_types').each do | id_type | %>
-      <li>
-        <%= id_type %>
-      </li>
-    <% end %>
-  </ul>
-  <p>
-  <%= t('in_person_proofing.body.state_id.questions') %>
-  <%= link_to(
-        help_center_redirect_url(
-          category: 'verify-your-identity',
-          article: 'accepted-identification-documents',
-        ),
-        class: 'display-inline',
-      ) do %>
-    <%= t('in_person_proofing.body.state_id.learn_more_link') %>
-  <% end %>
-</p>
+  <br/>
+  <%= t('in_person_proofing.body.state_id.alert_text') %>
 <% end %>
 <%= simple_form_for form,
                     as: 'identity_doc', # Renaming form as a workaround for aggressive browser autofill assumptions
@@ -156,6 +139,26 @@
           maxlength: 255,
           required: true,
         ) %>
+  </div>
+
+  <div class="margin-bottom-4">
+    <%= render MemorableDateComponent.new(
+          content_tag: 'memorable-date',
+          name: :id_expiration,
+          day: parsed_expiration&.day,
+          month: parsed_expiration&.month,
+          year: parsed_expiration&.year,
+          required: true,
+          min: Time.zone.today + 1.day,
+          hint: t('in_person_proofing.form.state_id.expiration_date_hint'),
+          label: t('in_person_proofing.form.state_id.expiration_date'),
+          form: f,
+          error_messages: {
+            missing_month_day_year: t('simple_form.required.text'),
+            range_underflow: t('in_person_proofing.form.state_id.memorable_date.errors.expiration_date.expired'),
+          },
+        )
+    %>
   </div>
 
   <h2> <%= t('in_person_proofing.headings.id_address') %> </h2>

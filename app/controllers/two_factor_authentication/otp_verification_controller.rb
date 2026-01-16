@@ -13,7 +13,10 @@ module TwoFactorAuthentication
     helper_method :in_multi_mfa_selection_flow?
 
     def show
-      analytics.multi_factor_auth_enter_otp_visit(**analytics_properties)
+      recaptcha_annotation = annotate_recaptcha(
+        RecaptchaAnnotator::AnnotationReasons::INITIATED_TWO_FACTOR,
+      )
+      analytics.multi_factor_auth_enter_otp_visit(recaptcha_annotation:, **analytics_properties)
 
       @landline_alert = landline_warning?
       @presenter = presenter_for_two_factor_authentication_method
@@ -42,6 +45,8 @@ module TwoFactorAuthentication
 
         if UserSessionContext.confirmation_context?(context)
           handle_valid_confirmation_otp
+        elsif confirm_eligible_for_platform_upsell?
+          redirect_to webauthn_platform_recommended_path
         else
           redirect_to after_sign_in_path_for(current_user)
         end
@@ -49,7 +54,7 @@ module TwoFactorAuthentication
         reset_otp_session_data
         user_session.delete(:mfa_attempts)
       else
-        handle_invalid_otp(type: 'otp')
+        handle_invalid_mfa(type: 'otp', context:)
       end
     end
 
@@ -94,6 +99,14 @@ module TwoFactorAuthentication
         ),
       )
       Funnel::Registration::AddMfa.call(current_user.id, 'phone', analytics, threatmetrix_attrs)
+    end
+
+    def confirm_eligible_for_platform_upsell?
+      user_session[:platform_authenticator_available] &&
+        !current_user.webauthn_platform_recommended_dismissed_at? &&
+        phone_configuration.delivery_preference == 'sms' &&
+        mobile? &&
+        current_user.webauthn_configurations.where(platform_authenticator: [false, nil])
     end
 
     def confirm_multiple_factors_enabled
@@ -155,6 +168,12 @@ module TwoFactorAuthentication
     def log_confirmation_analytics(result)
       properties = result.to_h.merge(analytics_properties)
       analytics.multi_factor_auth_setup(**properties)
+      attempts_api_tracker.mfa_enrolled(
+        success: result.success?,
+        mfa_device_type: 'phone',
+        otp_delivery_method: otp_auth_method,
+        phone_number: Phonelib.parse(phone).e164,
+      )
     end
 
     def analytics_properties

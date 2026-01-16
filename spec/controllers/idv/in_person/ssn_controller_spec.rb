@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe Idv::InPerson::SsnController do
+  include FlowPolicyHelper
+
   let(:pii_from_user) { Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID_WITH_NO_SSN.dup }
 
   let(:flow_session) do
@@ -15,7 +17,10 @@ RSpec.describe Idv::InPerson::SsnController do
     stub_sign_in(user)
     controller.user_session['idv/in_person'] = flow_session
     stub_analytics
+    stub_attempts_tracker
     controller.idv_session.flow_path = 'standard'
+    controller.idv_session.opted_in_to_in_person_proofing = true
+    allow(user).to receive(:has_establishing_in_person_enrollment?).and_return(true)
   end
 
   describe '#step_info' do
@@ -25,13 +30,21 @@ RSpec.describe Idv::InPerson::SsnController do
   end
 
   describe 'before_actions' do
-    context '#confirm_in_person_address_step_complete' do
-      it 'redirects if address page not completed' do
-        subject.user_session['idv/in_person'][:pii_from_user].delete(:address1)
-        get :show
+    before do
+      stub_up_to(:ipp_state_id, idv_session: subject.idv_session)
+      subject.user_session['idv/in_person'][:pii_from_user].delete(:address1)
+    end
+    it 'redirects if address page not completed' do
+      get :show
 
-        expect(response).to redirect_to idv_in_person_address_url
-      end
+      expect(response).to redirect_to idv_in_person_address_url
+    end
+
+    it 'checks that step is allowed' do
+      expect(subject).to have_actions(
+        :before,
+        :confirm_step_allowed,
+      )
     end
   end
 
@@ -44,6 +57,7 @@ RSpec.describe Idv::InPerson::SsnController do
         analytics_id: 'In Person Proofing',
         flow_path: 'standard',
         step: 'ssn',
+        opted_in_to_in_person_proofing: true,
       }
     end
 
@@ -67,37 +81,24 @@ RSpec.describe Idv::InPerson::SsnController do
       )
     end
 
-    it 'adds a threatmetrix session id to idv_session' do
-      expect { get :show }.to change { controller.idv_session.threatmetrix_session_id }.from(nil)
-    end
+    context 'threatmetrix_session_id is nil' do
+      it 'adds a threatmetrix session id to idv_session' do
+        expect { get :show }.to change { controller.idv_session.threatmetrix_session_id }.from(nil)
+      end
 
-    it 'does not change threatmetrix_session_id when updating ssn' do
-      controller.idv_session.ssn = ssn
-      expect { get :show }.not_to change { controller.idv_session.threatmetrix_session_id }
-    end
-
-    context 'with an ssn in idv_session' do
-      let(:referer) { idv_in_person_address_url }
-      before do
+      it 'sets a threatmetrix_session_id when updating ssn' do
         controller.idv_session.ssn = ssn
-        request.env['HTTP_REFERER'] = referer
+        expect { get :show }.to change { controller.idv_session.threatmetrix_session_id }.from(nil)
       end
+    end
 
-      context 'referer is not verify_info' do
-        it 'redirects to verify_info' do
-          get :show
-
-          expect(response).to redirect_to(idv_in_person_verify_info_url)
-        end
+    context 'threatmetrix_session_id is not nil' do
+      before do
+        stub_up_to(:ipp_ssn, idv_session: controller.idv_session)
       end
-
-      context 'referer is verify_info' do
-        let(:referer) { idv_in_person_verify_info_url }
-        it 'does not redirect' do
-          get :show
-
-          expect(response).to render_template 'idv/shared/ssn'
-        end
+      it 'does not change threatmetrix_session_id when updating ssn' do
+        controller.idv_session.ssn = ssn
+        expect { get :show }.not_to change { controller.idv_session.threatmetrix_session_id }
       end
     end
 
@@ -138,20 +139,34 @@ RSpec.describe Idv::InPerson::SsnController do
           flow_path: 'standard',
           step: 'ssn',
           success: true,
-          errors: {},
+          opted_in_to_in_person_proofing: true,
         }
       end
 
       it 'sends analytics_submitted event' do
+        expect(@attempts_api_tracker).to receive(:idv_ssn_submitted).with(
+          success: true,
+          ssn: SsnFormatter.format(ssn),
+          failure_reason: nil,
+        )
         put :update, params: params
 
         expect(@analytics).to have_logged_event(analytics_name, analytics_args)
       end
 
-      it 'adds ssn to idv_session' do
+      it 'adds the ssn to idv_session' do
         put :update, params: params
 
         expect(subject.idv_session.ssn).to eq(ssn)
+      end
+
+      context 'when the submitted ssn includes dashes' do
+        let(:ssn) { '123-45-6789' }
+        it 'adds the normalized ssn to idv_session' do
+          put :update, params: params
+
+          expect(subject.idv_session.ssn).to eq('123456789')
+        end
       end
 
       it 'invalidates steps after ssn' do
@@ -176,22 +191,23 @@ RSpec.describe Idv::InPerson::SsnController do
             step: 'ssn',
             success: true,
             previous_ssn_edit_distance: 6,
-            errors: {},
+            opted_in_to_in_person_proofing: true,
           }
         end
 
         it 'updates idv_session.ssn' do
-          subject.idv_session.ssn = '900-95-7890'
+          subject.idv_session.ssn = '900957890'
 
           expect { put :update, params: params }.to change { subject.idv_session.ssn }
-            .from('900-95-7890').to(ssn)
+            .from('900957890').to(ssn)
           expect(@analytics).to have_logged_event(analytics_name, analytics_args)
         end
       end
     end
 
     context 'invalid ssn' do
-      let(:params) { { doc_auth: { ssn: 'i am not an ssn' } } }
+      let(:ssn) { '9999999999' }
+      let(:params) { { doc_auth: { ssn: } } }
       let(:analytics_name) { 'IdV: doc auth ssn submitted' }
       let(:analytics_args) do
         {
@@ -199,16 +215,19 @@ RSpec.describe Idv::InPerson::SsnController do
           flow_path: 'standard',
           step: 'ssn',
           success: false,
-          errors: {
-            ssn: ['Enter a nine-digit Social Security number'],
-          },
           error_details: { ssn: { invalid: true } },
+          opted_in_to_in_person_proofing: true,
         }
       end
 
       render_views
 
       it 'renders the show template with an error message' do
+        expect(@attempts_api_tracker).to receive(:idv_ssn_submitted).with(
+          success: false,
+          ssn: SsnFormatter.format(ssn),
+          failure_reason: { ssn: [:invalid] },
+        )
         put :update, params: params
 
         expect(response).to have_rendered('idv/shared/ssn')

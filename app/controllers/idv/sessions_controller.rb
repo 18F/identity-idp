@@ -58,7 +58,6 @@ module Idv
     end
 
     def clear_session
-      user_session['idv/in_person'] = {}
       idv_session.clear
       Pii::Cacher.new(current_user, user_session).delete
     end

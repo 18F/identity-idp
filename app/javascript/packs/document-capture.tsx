@@ -10,6 +10,7 @@ import {
   MarketingSiteContextProvider,
   InPersonContext,
   SelfieCaptureContext,
+  PassportCaptureContext,
 } from '@18f/identity-document-capture';
 import { isCameraCapableMobile } from '@18f/identity-device';
 import { FlowContext } from '@18f/identity-verify-flow';
@@ -29,19 +30,25 @@ interface AppRootData {
   useAlternateSdk: string;
   acuantVersion: string;
   flowPath: FlowPath;
+  idType: string;
   cancelUrl: string;
   idvInPersonUrl?: string;
   optedInToInPersonProofing: string;
   securityAndPrivacyHowItWorksUrl: string;
   skipDocAuthFromHowToVerify: string;
   skipDocAuthFromHandoff: string;
+  skipDocAuthFromSocure: string;
   howToVerifyURL: string;
+  socureErrorsTimeoutURL: string;
   previousStepUrl: string;
+  chooseIdTypePath: string;
   docAuthSelfieDesktopTestMode: string;
+  docAuthUploadEnabled: string;
   accountUrl: string;
   locationsUrl: string;
-  addressSearchUrl: string;
   sessionsUrl: string;
+  maxAttemptsBeforeManualCapture?: string;
+  manualCaptureAfterFailuresEnabled?: string;
 }
 
 const appRoot = document.getElementById('document-capture-form')!;
@@ -60,6 +67,11 @@ function getSelfieCaptureEnabled() {
   return docAuthSelfieCapture === 'true';
 }
 
+function getUploadEnabled() {
+  const { docAuthUploadEnabled } = appRoot.dataset;
+  return docAuthUploadEnabled === 'true';
+}
+
 function getMetaContent(name): string | null {
   const meta = document.querySelector<HTMLMetaElement>(`meta[name="${name}"]`);
   return meta?.content ?? null;
@@ -69,6 +81,7 @@ const device: DeviceContextValue = { isMobile: isCameraCapableMobile() };
 
 const trackEvent: typeof baseTrackEvent = (event, payload) => {
   const {
+    idType,
     flowPath,
     acuantSdkUpgradeABTestingEnabled,
     useAlternateSdk,
@@ -77,6 +90,7 @@ const trackEvent: typeof baseTrackEvent = (event, payload) => {
   } = appRoot.dataset;
   return baseTrackEvent(event, {
     ...payload,
+    id_type: idType,
     flow_path: flowPath,
     acuant_sdk_upgrade_a_b_testing_enabled: acuantSdkUpgradeABTestingEnabled,
     use_alternate_sdk: useAlternateSdk,
@@ -94,31 +108,35 @@ const {
   helpCenterRedirectUrl: helpCenterRedirectURL,
   maxCaptureAttemptsBeforeNativeCamera,
   maxSubmissionAttemptsBeforeNativeCamera,
+  maxAttemptsBeforeManualCapture,
+  manualCaptureAfterFailuresEnabled,
   acuantVersion,
   flowPath,
+  idType,
   cancelUrl: cancelURL,
   accountUrl: accountURL,
   idvInPersonUrl: inPersonURL,
   securityAndPrivacyHowItWorksUrl: securityAndPrivacyHowItWorksURL,
-  inPersonFullAddressEntryEnabled,
   inPersonOutageMessageEnabled,
   inPersonOutageExpectedUpdateDate,
   optedInToInPersonProofing,
   usStatesTerritories = '',
   skipDocAuthFromHowToVerify,
   skipDocAuthFromHandoff,
+  skipDocAuthFromSocure,
   howToVerifyUrl,
+  socureErrorsTimeoutUrl,
   previousStepUrl,
+  chooseIdTypePath,
   docAuthSelfieDesktopTestMode,
   locationsUrl: locationsURL,
-  addressSearchUrl: addressSearchURL,
   sessionsUrl: sessionsURL,
 } = appRoot.dataset as DOMStringMap & AppRootData;
 
 let parsedUsStatesTerritories = [];
 try {
   parsedUsStatesTerritories = JSON.parse(usStatesTerritories);
-} catch (e) {}
+} catch {}
 
 render(
   <MarketingSiteContextProvider
@@ -130,15 +148,16 @@ render(
         value={{
           inPersonURL,
           locationsURL,
-          addressSearchURL,
           inPersonOutageExpectedUpdateDate,
           inPersonOutageMessageEnabled: inPersonOutageMessageEnabled === 'true',
-          inPersonFullAddressEntryEnabled: inPersonFullAddressEntryEnabled === 'true',
           optedInToInPersonProofing: optedInToInPersonProofing === 'true',
           usStatesTerritories: parsedUsStatesTerritories,
           skipDocAuthFromHowToVerify: skipDocAuthFromHowToVerify === 'true',
           skipDocAuthFromHandoff: skipDocAuthFromHandoff === 'true',
+          skipDocAuthFromSocure: skipDocAuthFromSocure === 'true',
           howToVerifyURL: howToVerifyUrl,
+          chooseIdTypePath,
+          socureErrorsTimeoutURL: socureErrorsTimeoutUrl,
           previousStepURL: previousStepUrl,
         }}
       >
@@ -164,6 +183,7 @@ render(
               isMockClient={isMockClient}
               formData={formData}
               flowPath={flowPath}
+              idType={idType}
             >
               <FlowContext.Provider
                 value={{
@@ -176,22 +196,32 @@ render(
                   <SelfieCaptureContext.Provider
                     value={{
                       isSelfieCaptureEnabled: getSelfieCaptureEnabled(),
+                      isUploadEnabled: getUploadEnabled(),
                       isSelfieDesktopTestMode: String(docAuthSelfieDesktopTestMode) === 'true',
                       showHelpInitially: true,
-                      immediatelyBeginCapture: false,
                     }}
                   >
-                    <FailedCaptureAttemptsContextProvider
-                      maxCaptureAttemptsBeforeNativeCamera={Number(
-                        maxCaptureAttemptsBeforeNativeCamera,
-                      )}
-                      maxSubmissionAttemptsBeforeNativeCamera={Number(
-                        maxSubmissionAttemptsBeforeNativeCamera,
-                      )}
-                      failedFingerprints={{ front: [], back: [] }}
-                    >
-                      <DocumentCapture onStepChange={() => extendSession(sessionsURL)} />
-                    </FailedCaptureAttemptsContextProvider>
+                    <PassportCaptureContext.Provider value={{ showHelpInitially: true }}>
+                      <FailedCaptureAttemptsContextProvider
+                        maxCaptureAttemptsBeforeNativeCamera={Number(
+                          maxCaptureAttemptsBeforeNativeCamera,
+                        )}
+                        maxSubmissionAttemptsBeforeNativeCamera={Number(
+                          maxSubmissionAttemptsBeforeNativeCamera,
+                        )}
+                        maxAttemptsBeforeManualCapture={
+                          maxAttemptsBeforeManualCapture
+                            ? Number(maxAttemptsBeforeManualCapture)
+                            : 3
+                        }
+                        manualCaptureAfterFailuresEnabled={
+                          manualCaptureAfterFailuresEnabled === 'true'
+                        }
+                        failedFingerprints={{ front: [], back: [], passport: [] }}
+                      >
+                        <DocumentCapture onStepChange={() => extendSession(sessionsURL)} />
+                      </FailedCaptureAttemptsContextProvider>
+                    </PassportCaptureContext.Provider>
                   </SelfieCaptureContext.Provider>
                 </ServiceProviderContextProvider>
               </FlowContext.Provider>

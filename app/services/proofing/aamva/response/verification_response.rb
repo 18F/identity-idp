@@ -11,7 +11,7 @@ module Proofing
           'DriverLicenseExpirationDateMatchIndicator' => :state_id_expiration,
           'DriverLicenseIssueDateMatchIndicator' => :state_id_issued,
           'DriverLicenseNumberMatchIndicator' => :state_id_number,
-          'DocumentCategoryMatchIndicator' => :state_id_type,
+          'DocumentCategoryMatchIndicator' => :document_type_received,
           'PersonBirthDateMatchIndicator' => :dob,
           'PersonHeightMatchIndicator' => :height,
           'PersonSexCodeMatchIndicator' => :sex,
@@ -89,7 +89,7 @@ module Proofing
           @transaction_locator_id = (
             node_for_match_indicator('TransactionLocatorId') ||
             node_for_match_indicator('TransactionLocatorID')
-          )&.text
+          )&.text&.strip
         end
 
         def rexml_document

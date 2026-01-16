@@ -68,11 +68,7 @@ class Analytics
     }
 
     attributes[:git_sha] = IdentityConfig::GIT_SHA
-    if IdentityConfig::GIT_TAG.present?
-      attributes[:git_tag] = IdentityConfig::GIT_TAG
-    else
-      attributes[:git_branch] = IdentityConfig::GIT_BRANCH
-    end
+    attributes[:git_branch] = IdentityConfig::GIT_BRANCH
 
     attributes.merge!(browser_attributes)
   end
@@ -88,6 +84,7 @@ class Analytics
         session:,
         user:,
         user_session:,
+        persisted_read_only: true,
       )
       if !bucket.blank?
         obj[test_id.downcase] = {
@@ -165,7 +162,7 @@ class Analytics
   def resolved_authn_context_result
     return nil if sp.blank? ||
                   session[:sp].blank? ||
-                  (session[:sp][:vtr].blank? && session[:sp][:acr_values].blank?)
+                  session[:sp][:acr_values].blank?
     return @resolved_authn_context_result if defined?(@resolved_authn_context_result)
 
     service_provider = ServiceProvider.find_by(issuer: sp)
@@ -173,10 +170,9 @@ class Analytics
     @resolved_authn_context_result = AuthnContextResolver.new(
       user: user,
       service_provider:,
-      vtr: session[:sp][:vtr],
       acr_values: session[:sp][:acr_values],
     ).result
-  rescue Vot::Parser::ParseException
+  rescue Component::Parser::ParseException
     return
   end
 end

@@ -13,6 +13,10 @@ module TwoFactorAuthenticatableMethods
 
   def handle_verification_for_authentication_context(result:, auth_method:, extra_analytics: nil)
     increment_mfa_selection_attempt_count(auth_method)
+    recaptcha_annotation = annotate_recaptcha(
+      result.success? ? RecaptchaAnnotator::AnnotationReasons::PASSED_TWO_FACTOR
+                      : RecaptchaAnnotator::AnnotationReasons::FAILED_TWO_FACTOR,
+    )
     analytics.multi_factor_auth(
       **result,
       multi_factor_auth_method: auth_method,
@@ -20,17 +24,36 @@ module TwoFactorAuthenticatableMethods
       new_device: new_device?,
       **extra_analytics.to_h,
       attempts: mfa_attempts_count,
+      recaptcha_annotation:,
+    )
+
+    attempts_api_tracker.mfa_login_auth_submitted(
+      mfa_device_type: mfa_device_type(auth_method:),
+      success: result.success?,
+      failure_reason: attempts_api_tracker.parse_failure_reason(result),
+      reauthentication: generic_data[:reauthn],
     )
 
     if result.success?
       handle_valid_verification_for_authentication_context(auth_method:)
       user_session.delete(:mfa_attempts)
+      session.delete(:sign_in_recaptcha_assessment_id) if sign_in_recaptcha_annotation_enabled?
     else
       handle_invalid_verification_for_authentication_context
     end
   end
 
+  def annotate_recaptcha(reason)
+    if sign_in_recaptcha_annotation_enabled?
+      RecaptchaAnnotator.annotate(assessment_id: session[:sign_in_recaptcha_assessment_id], reason:)
+    end
+  end
+
   private
+
+  def sign_in_recaptcha_annotation_enabled?
+    IdentityConfig.store.sign_in_recaptcha_annotation_enabled
+  end
 
   def handle_valid_verification_for_authentication_context(auth_method:)
     mark_user_session_authenticated(auth_method:, authentication_type: :valid_2fa)
@@ -63,23 +86,47 @@ module TwoFactorAuthenticatableMethods
     authenticate_user!(force: true)
   end
 
-  def handle_second_factor_locked_user(type:)
+  def handle_second_factor_locked_user(type:, context: nil)
     analytics.multi_factor_auth_max_attempts
+
+    if context
+      if UserSessionContext.confirmation_context?(context)
+        attempts_api_tracker.mfa_enroll_code_rate_limited(mfa_device_type: type)
+      elsif UserSessionContext.authentication_context?(context)
+        attempts_api_tracker.mfa_submission_code_rate_limited(mfa_device_type: type)
+      end
+    end
+
     event = PushNotification::MfaLimitAccountLockedEvent.new(user: current_user)
     PushNotification::HttpPush.deliver(event)
     handle_max_attempts(type + '_login_attempts')
   end
 
-  def handle_too_many_otp_sends
+  def handle_too_many_otp_sends(context: nil, phone_number: nil)
     analytics.multi_factor_auth_max_sends
+    if context && phone_number
+      if UserSessionContext.authentication_context?(context)
+        attempts_api_tracker.mfa_login_phone_otp_sent_rate_limited(phone_number:)
+      elsif UserSessionContext.confirmation_context?(context)
+        attempts_api_tracker.mfa_enroll_phone_otp_sent_rate_limited(phone_number:)
+      end
+    end
+
     handle_max_attempts('otp_requests')
   end
 
   def handle_max_attempts(type)
+    _event, disavowal_token = create_user_event_with_disavowal(:max_attempts_reached)
     presenter = TwoFactorAuthCode::MaxAttemptsReachedPresenter.new(
       type,
       current_user,
     )
+
+    UserAlerts::AlertUserAboutMaxAttempts.max_attempts_alert(
+      user: current_user,
+      disavowal_token:,
+    )
+
     sign_out
     render_full_width('two_factor_authentication/_locked', locals: { presenter: presenter })
   end
@@ -135,22 +182,21 @@ module TwoFactorAuthenticatableMethods
     user_session.dig(:mfa_attempts, :attempts)
   end
 
-  # Method will be renamed in the next refactor.
   # You can pass in any "type" with a corresponding I18n key in
   # two_factor_authentication.invalid_#{type}
-  def handle_invalid_otp(type:)
+  def handle_invalid_mfa(type:, context:)
     update_invalid_user
 
-    flash.now[:error] = invalid_otp_error(type)
+    flash.now[:error] = invalid_error(type)
 
     if current_user.locked_out?
-      handle_second_factor_locked_user(type:)
+      handle_second_factor_locked_user(type:, context:)
     else
       render_show_after_invalid
     end
   end
 
-  def invalid_otp_error(type)
+  def invalid_error(type)
     case type
     when 'otp'
       [t('two_factor_authentication.invalid_otp'),
@@ -209,6 +255,12 @@ module TwoFactorAuthenticatableMethods
     analytics.user_marked_authed(
       authentication_type: authentication_type,
     )
+  end
+
+  def mfa_device_type(auth_method:)
+    return 'otp' if auth_method == TwoFactorAuthenticatable::AuthMethod::SMS
+
+    auth_method
   end
 
   def otp_expiration

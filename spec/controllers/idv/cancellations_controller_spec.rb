@@ -22,9 +22,7 @@ RSpec.describe Idv::CancellationsController do
 
       expect(@analytics).to have_logged_event(
         'IdV: cancellation visited',
-        hash_including(
-          request_came_from: 'no referer',
-        ),
+        request_came_from: 'no referer',
       )
     end
 
@@ -37,9 +35,7 @@ RSpec.describe Idv::CancellationsController do
 
       expect(@analytics).to have_logged_event(
         'IdV: cancellation visited',
-        hash_including(
-          request_came_from: 'users/sessions#new',
-        ),
+        request_came_from: 'users/sessions#new',
       )
     end
 
@@ -51,10 +47,8 @@ RSpec.describe Idv::CancellationsController do
 
       expect(@analytics).to have_logged_event(
         'IdV: cancellation visited',
-        hash_including(
-          request_came_from: 'no referer',
-          step: 'first',
-        ),
+        request_came_from: 'no referer',
+        step: 'first',
       )
     end
 
@@ -116,9 +110,7 @@ RSpec.describe Idv::CancellationsController do
 
       expect(@analytics).to have_logged_event(
         'IdV: cancellation go back',
-        hash_including(
-          step: 'first',
-        ),
+        step: 'first',
       )
     end
 
@@ -136,12 +128,10 @@ RSpec.describe Idv::CancellationsController do
 
         expect(@analytics).to have_logged_event(
           'IdV: cancellation go back',
-          hash_including(
-            step: 'barcode',
-            cancelled_enrollment: false,
-            enrollment_code: enrollment.enrollment_code,
-            enrollment_id: enrollment.id,
-          ),
+          step: 'barcode',
+          cancelled_enrollment: false,
+          enrollment_code: enrollment.enrollment_code,
+          enrollment_id: enrollment.id,
         )
       end
     end
@@ -172,7 +162,7 @@ RSpec.describe Idv::CancellationsController do
 
       expect(@analytics).to have_logged_event(
         'IdV: cancellation confirmed',
-        hash_including(step: 'first'),
+        step: 'first',
       )
     end
 
@@ -222,7 +212,7 @@ RSpec.describe Idv::CancellationsController do
 
       context 'with in establishing in-person enrollment' do
         let(:user) { build(:user, :with_establishing_in_person_enrollment) }
-        let(:enrollment) { user.establishing_in_person_enrollment }
+        let!(:enrollment) { user.establishing_in_person_enrollment }
 
         before do
           allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)

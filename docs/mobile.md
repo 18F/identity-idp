@@ -9,28 +9,62 @@ Instructions to use an iPhone or Android mobile device for local app development
 
 These instructions will configure your local copy of the identity-idp app to serve web pages over your local computer network &mdash; the wifi in your home or office. You can broadcast the app to a mobile phone or tablet. Both your mobile device and your development computer (your laptop) must be connected to the same wifi network.
 
-By default, the application binds to `localhost`. These instructions bind to `0.0.0.0` instead. Some Android users report they can access `localhost:3000` directly on their phone, however.
+By default, the application binds to `localhost`. To access it from a mobile device on the same network, you will need to bind it to an accessible IP address.
 
-1. Find your Local Area Network IP address. On a MacBook, this is available at **System Preferences → Network**. The address may start with `192.168`.
+1. Find your Local Area Network IP address. On a MacBook, this is available at **System Preferences → Network**. The IP address you are looking for likely starts with `192.168.` or `10.`
 
 2. In your app's `application.yml` file, add the below. Be sure to indent these lines and include them in the `development:` section. Also, fill in your actual LAN IP address. The final line creates a **confirm now** link in place of email confirmation.
 
 ```yaml
 development:
-  domain_name: 192.168.x.x:3000
-  mailer_domain_name: 192.168.x.x:3000
+  domain_name: <YOUR IP ADDRESS>:3000
+  mailer_domain_name: <YOUR IP ADDRESS>:3000
   enable_load_testing_mode: true
 ```
 
 3. Start your app's local web server with:
 
 ```bash
-HOST=0.0.0.0 make run-https
+HOST=<YOUR IP ADDRESS> make run-https
 ```
 
 4. On your phone's browser, open a new tab. In the address bar, type in `https://` (don't forget the `s`) followed by your LAN IP and port number (like `https://192.168.x.x:3000`). When you visit this page, you may see a **Your connection is not private** message. Click **Advanced** and **Proceed** to continue. You should then see the sign in screen of the identity-idp app.
 
 After you complete these steps, pages from the app are served from your development machine to your mobile device, where you may now use the identity-idp app. For front-end development, you may now want to turn on browser development tools per the next section of these instructions.
+
+### Special instructions for iOS
+
+It is becoming more common for browsers to entirely block access to sites using self-signed certificates, not even providing an escape hatch like the one described above.
+
+If you are not able to access the locally running app from your iPhone, follow these steps:
+
+#### 1. Somehow get the `.crt` file into the iOS Files app
+
+When you run `make run-https`, the system generates a self-signed SSL certificate for you and stores it in the `tmp` directory. The file will be named something like `<YOUR IP ADDRESS>-3000.crt`. You need to get that file onto your phone and into the iOS Files app.
+
+One way to do this is via Google Drive:
+
+1. Upload the file to Google Drive.
+2. Open the Google Drive app on your phone and "Download" the `.crt` file.
+3. When prompted for a destination, select "Save to Files".
+
+#### 2. Import the certificate into iOS
+
+1. Open the Files app.
+2. Tap on the `.crt` file (fun fact: it may now show a `.cer` extension!).
+3. You should see some kind of message about a profile being downloaded.
+4. Open the Settings app. Notice you have a new "Profile Downloaded" item there. Tap that.
+5. Install the profile. You will be prompted for confirmation many times.
+
+#### 3. Trust the certificate
+
+1. Go to **Settings > General > About > Certificate Trust Settings**.
+2. Tick the little box next to the certificate you just installed.
+
+At this point, you _should_ be able to access the IdP running on your local development computer from your phone.
+
+> [!WARNING]
+> Do not forget to un-trust the certificate and remove the profile when you are done.
 
 ## Debugging with the desktop browser
 

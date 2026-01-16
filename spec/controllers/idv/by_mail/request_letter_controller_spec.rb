@@ -66,10 +66,20 @@ RSpec.describe Idv::ByMail::RequestLetterController do
 
       expect(response).to redirect_to idv_enter_password_path
     end
+
+    it 'records that the gpo request letter page has been visited' do
+      expect(subject.idv_session.gpo_request_letter_visited).to be_nil
+
+      get :index
+
+      expect(subject.idv_session.gpo_request_letter_visited).to be
+    end
   end
 
   describe '#create' do
     before do
+      stub_attempts_tracker
+
       stub_verify_steps_one_and_two(user)
     end
 
@@ -80,25 +90,29 @@ RSpec.describe Idv::ByMail::RequestLetterController do
     end
 
     it 'sets session to :gpo and redirects' do
+      expect(subject.idv_session.gpo_request_letter_visited).to be_nil
       expect(subject.idv_session.address_verification_mechanism).to be_nil
 
       put :create
 
       expect(response).to redirect_to idv_enter_password_path
+      # create action should not set the gpo_request_letter_visited flag
+      expect(subject.idv_session.gpo_request_letter_visited).to be_nil
       expect(subject.idv_session.address_verification_mechanism).to eq :gpo
     end
 
     it 'logs USPS address letter requested analytics event with phone step attempts' do
       RateLimiter.new(user: user, rate_limit_type: :proof_address).increment!
+      expect(@attempts_api_tracker).to receive(:idv_verify_by_mail_letter_requested)
+        .with(resend: false)
+
       put :create
 
       expect(@analytics).to have_logged_event(
         'IdV: USPS address letter requested',
-        hash_including(
-          resend: false,
-          phone_step_attempts: 1,
-          hours_since_first_letter: 0,
-        ),
+        resend: false,
+        phone_step_attempts: 1,
+        hours_since_first_letter: 0,
       )
     end
 

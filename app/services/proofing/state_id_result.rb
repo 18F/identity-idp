@@ -5,6 +5,7 @@ module Proofing
     MVA_UNAVAILABLE = 'ExceptionId: 0001'
     MVA_SYSTEM_ERROR = 'ExceptionId: 0002'
     MVA_TIMEOUT_EXCEPTION = 'ExceptionId: 0047'
+    UNEXPECTED_ERROR_CODE = 'Unexpected status code'
 
     attr_reader :errors,
                 :exception,
@@ -57,6 +58,10 @@ module Proofing
       mva_unavailable? || mva_system_error? || mva_timeout?
     end
 
+    def unexpected_error_code_exception?
+      exception&.message&.include? UNEXPECTED_ERROR_CODE
+    end
+
     def jurisdiction_in_maintenance_window?
       !!@jurisdiction_in_maintenance_window
     end
@@ -74,6 +79,23 @@ module Proofing
         verified_attributes: verified_attributes,
         jurisdiction_in_maintenance_window: jurisdiction_in_maintenance_window?,
       }
+    end
+
+    def to_doc_auth_response
+      DocAuth::Response.new(
+        success: success?,
+        errors: doc_auth_errors,
+        exception:,
+        extra: to_h,
+      )
+    end
+
+    private
+
+    def doc_auth_errors
+      return {} if errors.empty? && !unexpected_error_code_exception?
+
+      { state_id_verification: 'Document could not be verified.' }
     end
   end
 end
