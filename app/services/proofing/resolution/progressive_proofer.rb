@@ -72,7 +72,8 @@ module Proofing
           workflow:,
         )
 
-        if FeatureManagement.proofing_device_hybrid_profiling_collecting_enabled?
+        if FeatureManagement.proofing_device_hybrid_profiling_collecting_enabled? &&
+           hybrid_mobile_threatmetrix_session_id.present?
           hybrid_mobile_device_profiling_result = threatmetrix_plugin.call(
             applicant_pii:,
             current_sp:,
