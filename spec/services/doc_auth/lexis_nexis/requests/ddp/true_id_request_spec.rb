@@ -20,6 +20,12 @@ RSpec.describe DocAuth::LexisNexis::Requests::Ddp::TrueIdRequest do
       zipcode: '00000',
       ssn: '900-00-0000',
       email: 'person.name@email.test',
+      front_image: front_image,
+      back_image: back_image,
+      selfie_image: selfie_image,
+      passport_image: passport_image,
+      document_type_requested: document_type_requested,
+      liveness_checking_required: liveness_checking_required,
     }
   end
 
@@ -31,7 +37,7 @@ RSpec.describe DocAuth::LexisNexis::Requests::Ddp::TrueIdRequest do
     )
   end
 
-  subject { described_class.new(config:) }
+  subject { described_class.new(config: config, applicant: applicant) }
 
   before do
     allow(IdentityConfig.store).to receive(:lexisnexis_trueid_ddp_liveness_policy)
@@ -42,259 +48,7 @@ RSpec.describe DocAuth::LexisNexis::Requests::Ddp::TrueIdRequest do
       .and_return(30.0)
   end
 
-  describe '#proof' do
-    let(:response_body) do
-      {
-        'request_id' => 'test_request_id',
-        'request_result' => 'success',
-        'review_status' => 'pass',
-        'account_lex_id' => 'test_lex_id',
-        'session_id' => 'test_session_id',
-      }
-    end
-
-    before do
-      stub_request(:post, 'https://example.com/authentication/v1/trueid/')
-        .to_return(status: 200, body: response_body.to_json)
-    end
-
-    it 'sends a request and returns a DdpResult' do
-      result = subject.proof(
-        front_image: front_image,
-        back_image: back_image,
-        document_type_requested: document_type_requested,
-        applicant: applicant,
-      )
-
-      expect(result).to be_a(Proofing::DdpResult)
-      expect(result.success).to eq(true)
-      expect(result.transaction_id).to eq('test_request_id')
-      expect(result.review_status).to eq('pass')
-    end
-
-    context 'when liveness checking is required' do
-      it 'includes selfie image in the request body' do
-        subject.proof(
-          front_image: front_image,
-          back_image: back_image,
-          selfie_image: selfie_image,
-          document_type_requested: document_type_requested,
-          liveness_checking_required: true,
-        )
-
-        expect(WebMock).to have_requested(:post, 'https://example.com/authentication/v1/trueid/')
-          .with { |req|
-            body = JSON.parse(req.body)
-            body['trueid.selfie'] == Base64.strict_encode64(selfie_image) &&
-              body['policy'] == 'test_liveness_policy'
-          }
-      end
-    end
-
-    context 'when liveness checking is not required' do
-      it 'uses the noliveness policy' do
-        subject.proof(
-          front_image: front_image,
-          back_image: back_image,
-          document_type_requested: document_type_requested,
-          liveness_checking_required: false,
-        )
-
-        expect(WebMock).to have_requested(:post, 'https://example.com/authentication/v1/trueid/')
-          .with { |req|
-            body = JSON.parse(req.body)
-            body['policy'] == 'test_noliveness_policy'
-          }
-      end
-    end
-
-    context 'when document type is passport' do
-      let(:document_type_requested) { DocAuth::LexisNexis::DocumentTypes::PASSPORT }
-
-      it 'uses passport image as front and excludes back image' do
-        subject.proof(
-          front_image: front_image,
-          back_image: back_image,
-          passport_image: passport_image,
-          document_type_requested: document_type_requested,
-        )
-
-        expect(WebMock).to have_requested(:post, 'https://example.com/authentication/v1/trueid/')
-          .with { |req|
-            body = JSON.parse(req.body)
-            body['trueid.white_front'] == Base64.strict_encode64(passport_image) &&
-              body['trueid.white_back'] == ''
-          }
-      end
-    end
-
-    context 'when the request fails with an exception' do
-      before do
-        stub_request(:post, 'https://example.com/authentication/v1/trueid/')
-          .to_raise(Faraday::ConnectionFailed.new('connection failed'))
-      end
-
-      it 'returns a failed DdpResult with exception' do
-        result = subject.proof(
-          front_image: front_image,
-          back_image: back_image,
-          document_type_requested: document_type_requested,
-        )
-
-        expect(result.success).to eq(false)
-        expect(result.exception).to be_present
-      end
-    end
-
-    context 'when review status is unexpected' do
-      let(:response_body) do
-        {
-          'request_id' => 'test_request_id',
-          'request_result' => 'success',
-          'review_status' => 'unexpected_status',
-          'account_lex_id' => 'test_lex_id',
-          'session_id' => 'test_session_id',
-        }
-      end
-
-      it 'raises an error and returns failed result' do
-        result = subject.proof(
-          front_image: front_image,
-          back_image: back_image,
-          document_type_requested: document_type_requested,
-        )
-
-        expect(result.success).to eq(false)
-        expect(result.exception).to be_present
-      end
-    end
-
-    context 'when review status is review' do
-      let(:response_body) do
-        {
-          'request_id' => 'test_request_id',
-          'request_result' => 'success',
-          'review_status' => 'review',
-          'account_lex_id' => 'test_lex_id',
-          'session_id' => 'test_session_id',
-        }
-      end
-
-      it 'returns a failed result with review_status error' do
-        result = subject.proof(
-          front_image: front_image,
-          back_image: back_image,
-          document_type_requested: document_type_requested,
-        )
-
-        expect(result.success).to eq(false)
-        expect(result.review_status).to eq('review')
-        expect(result.errors).to include(:review_status)
-      end
-    end
-
-    context 'when review status is reject' do
-      let(:response_body) do
-        {
-          'request_id' => 'test_request_id',
-          'request_result' => 'success',
-          'review_status' => 'reject',
-          'account_lex_id' => 'test_lex_id',
-          'session_id' => 'test_session_id',
-        }
-      end
-
-      it 'returns a failed result with review_status error' do
-        result = subject.proof(
-          front_image: front_image,
-          back_image: back_image,
-          document_type_requested: document_type_requested,
-        )
-
-        expect(result.success).to eq(false)
-        expect(result.review_status).to eq('reject')
-        expect(result.errors).to include(:review_status)
-      end
-    end
-
-    context 'when request_result is not success' do
-      let(:response_body) do
-        {
-          'request_id' => 'test_request_id',
-          'request_result' => 'error',
-          'review_status' => 'pass',
-          'account_lex_id' => 'test_lex_id',
-          'session_id' => 'test_session_id',
-        }
-      end
-
-      it 'returns a failed result with request_result error' do
-        result = subject.proof(
-          front_image: front_image,
-          back_image: back_image,
-          document_type_requested: document_type_requested,
-        )
-
-        expect(result.success).to eq(false)
-        expect(result.errors).to include(:request_result)
-      end
-    end
-
-    context 'when required images are missing' do
-      it 'raises ArgumentError when front_image is nil for drivers license' do
-        result = subject.proof(
-          front_image: nil,
-          back_image: back_image,
-          document_type_requested: DocAuth::LexisNexis::DocumentTypes::DRIVERS_LICENSE,
-        )
-
-        expect(result.success).to eq(false)
-        expect(result.exception).to be_a(ArgumentError)
-        expect(result.exception.message).to include('front_image is required')
-      end
-
-      it 'raises ArgumentError when back_image is nil for drivers license' do
-        result = subject.proof(
-          front_image: front_image,
-          back_image: nil,
-          document_type_requested: DocAuth::LexisNexis::DocumentTypes::DRIVERS_LICENSE,
-        )
-
-        expect(result.success).to eq(false)
-        expect(result.exception).to be_a(ArgumentError)
-        expect(result.exception.message).to eq('back_image is required')
-      end
-
-      it 'raises ArgumentError when passport_image is nil for passport' do
-        result = subject.proof(
-          front_image: front_image,
-          back_image: back_image,
-          passport_image: nil,
-          document_type_requested: DocAuth::LexisNexis::DocumentTypes::PASSPORT,
-        )
-
-        expect(result.success).to eq(false)
-        expect(result.exception).to be_a(ArgumentError)
-        expect(result.exception.message).to include('passport_image is required')
-      end
-
-      it 'raises ArgumentError when selfie_image is nil with liveness checking' do
-        result = subject.proof(
-          front_image: front_image,
-          back_image: back_image,
-          selfie_image: nil,
-          document_type_requested: DocAuth::LexisNexis::DocumentTypes::DRIVERS_LICENSE,
-          liveness_checking_required: true,
-        )
-
-        expect(result.success).to eq(false)
-        expect(result.exception).to be_a(ArgumentError)
-        expect(result.exception.message).to include('selfie_image is required')
-      end
-    end
-  end
-
-  describe 'request headers' do
+  describe '#send_request' do
     before do
       stub_request(:post, 'https://example.com/authentication/v1/trueid/')
         .to_return(
@@ -303,12 +57,14 @@ RSpec.describe DocAuth::LexisNexis::Requests::Ddp::TrueIdRequest do
         )
     end
 
-    it 'includes Content-Type, x-org-id, and x-api-key headers' do
-      subject.proof(
-        front_image: front_image,
-        back_image: back_image,
-        document_type_requested: document_type_requested,
-      )
+    it 'sends a POST request to the trueid endpoint' do
+      subject.send_request
+
+      expect(WebMock).to have_requested(:post, 'https://example.com/authentication/v1/trueid/')
+    end
+
+    it 'includes correct headers' do
+      subject.send_request
 
       expect(WebMock).to have_requested(:post, 'https://example.com/authentication/v1/trueid/')
         .with(headers: {
@@ -317,23 +73,9 @@ RSpec.describe DocAuth::LexisNexis::Requests::Ddp::TrueIdRequest do
           'x-api-key' => 'test_api_key',
         })
     end
-  end
-
-  describe 'request body' do
-    before do
-      stub_request(:post, 'https://example.com/authentication/v1/trueid/')
-        .to_return(
-          status: 200,
-          body: { 'request_result' => 'success', 'review_status' => 'pass' }.to_json,
-        )
-    end
 
     it 'includes images with correct key format' do
-      subject.proof(
-        front_image: front_image,
-        back_image: back_image,
-        document_type_requested: document_type_requested,
-      )
+      subject.send_request
 
       expect(WebMock).to have_requested(:post, 'https://example.com/authentication/v1/trueid/')
         .with { |req|
@@ -344,12 +86,7 @@ RSpec.describe DocAuth::LexisNexis::Requests::Ddp::TrueIdRequest do
     end
 
     it 'includes applicant personal info' do
-      subject.proof(
-        front_image: front_image,
-        back_image: back_image,
-        document_type_requested: document_type_requested,
-        applicant: applicant,
-      )
+      subject.send_request
 
       expect(WebMock).to have_requested(:post, 'https://example.com/authentication/v1/trueid/')
         .with { |req|
@@ -370,14 +107,62 @@ RSpec.describe DocAuth::LexisNexis::Requests::Ddp::TrueIdRequest do
         }
     end
 
-    context 'with empty applicant' do
-      it 'uses empty string defaults for all fields' do
-        subject.proof(
+    context 'when liveness checking is required' do
+      let(:liveness_checking_required) { true }
+
+      it 'includes selfie image and uses liveness policy' do
+        subject.send_request
+
+        expect(WebMock).to have_requested(:post, 'https://example.com/authentication/v1/trueid/')
+          .with { |req|
+            body = JSON.parse(req.body)
+            body['trueid.selfie'] == Base64.strict_encode64(selfie_image) &&
+              body['policy'] == 'test_liveness_policy'
+          }
+      end
+    end
+
+    context 'when liveness checking is not required' do
+      let(:liveness_checking_required) { false }
+
+      it 'uses the noliveness policy' do
+        subject.send_request
+
+        expect(WebMock).to have_requested(:post, 'https://example.com/authentication/v1/trueid/')
+          .with { |req|
+            body = JSON.parse(req.body)
+            body['policy'] == 'test_noliveness_policy'
+          }
+      end
+    end
+
+    context 'when document type is passport' do
+      let(:document_type_requested) { DocAuth::LexisNexis::DocumentTypes::PASSPORT }
+
+      it 'uses passport image as front and excludes back image' do
+        subject.send_request
+
+        expect(WebMock).to have_requested(:post, 'https://example.com/authentication/v1/trueid/')
+          .with { |req|
+            body = JSON.parse(req.body)
+            body['trueid.white_front'] == Base64.strict_encode64(passport_image) &&
+              body['trueid.white_back'] == ''
+          }
+      end
+    end
+
+    context 'with empty applicant fields' do
+      let(:applicant) do
+        {
           front_image: front_image,
           back_image: back_image,
           document_type_requested: document_type_requested,
-          applicant: {},
-        )
+          liveness_checking_required: liveness_checking_required,
+        }
+      end
+
+      it 'uses empty string defaults for all fields' do
+        subject.send_request
 
         expect(WebMock).to have_requested(:post, 'https://example.com/authentication/v1/trueid/')
           .with { |req|
@@ -394,13 +179,18 @@ RSpec.describe DocAuth::LexisNexis::Requests::Ddp::TrueIdRequest do
     end
 
     context 'with dob as Date object' do
-      it 'formats the date correctly' do
-        subject.proof(
+      let(:applicant) do
+        {
+          dob: Date.new(1980, 1, 1),
           front_image: front_image,
           back_image: back_image,
           document_type_requested: document_type_requested,
-          applicant: { dob: Date.new(1980, 1, 1) },
-        )
+          liveness_checking_required: liveness_checking_required,
+        }
+      end
+
+      it 'formats the date correctly' do
+        subject.send_request
 
         expect(WebMock).to have_requested(:post, 'https://example.com/authentication/v1/trueid/')
           .with { |req|
@@ -411,13 +201,18 @@ RSpec.describe DocAuth::LexisNexis::Requests::Ddp::TrueIdRequest do
     end
 
     context 'with partial address (only city)' do
-      it 'sets country to us when any address field is present' do
-        subject.proof(
+      let(:applicant) do
+        {
+          city: 'Anytown',
           front_image: front_image,
           back_image: back_image,
           document_type_requested: document_type_requested,
-          applicant: { city: 'Anytown' },
-        )
+          liveness_checking_required: liveness_checking_required,
+        }
+      end
+
+      it 'sets country to us when any address field is present' do
+        subject.send_request
 
         expect(WebMock).to have_requested(:post, 'https://example.com/authentication/v1/trueid/')
           .with { |req|
@@ -429,44 +224,80 @@ RSpec.describe DocAuth::LexisNexis::Requests::Ddp::TrueIdRequest do
     end
   end
 
-  describe 'error handling' do
-    context 'when an exception occurs' do
-      before do
-        stub_request(:post, 'https://example.com/authentication/v1/trueid/')
-          .to_raise(Faraday::ConnectionFailed.new('connection failed'))
+  describe 'image validation' do
+    before do
+      stub_request(:post, 'https://example.com/authentication/v1/trueid/')
+        .to_return(
+          status: 200,
+          body: { 'request_result' => 'success', 'review_status' => 'pass' }.to_json,
+        )
+    end
+
+    context 'when front_image is nil' do
+      let(:applicant) do
+        {
+          front_image: nil,
+          back_image: back_image,
+          document_type_requested: DocAuth::LexisNexis::DocumentTypes::DRIVERS_LICENSE,
+          liveness_checking_required: false,
+        }
       end
 
-      it 'notifies NewRelic of the error' do
-        expect(NewRelic::Agent).to receive(:notice_error)
-          .with(instance_of(Proofing::LexisNexis::RequestError))
+      it 'raises ArgumentError' do
+        expect { subject.send_request }.to raise_error(ArgumentError, 'front_image is required')
+      end
+    end
 
-        subject.proof(
+    context 'when back_image is nil' do
+      let(:applicant) do
+        {
+          front_image: front_image,
+          back_image: nil,
+          document_type_requested: DocAuth::LexisNexis::DocumentTypes::DRIVERS_LICENSE,
+          liveness_checking_required: false,
+        }
+      end
+
+      it 'raises ArgumentError' do
+        expect { subject.send_request }.to raise_error(ArgumentError, 'back_image is required')
+      end
+    end
+
+    context 'when passport_image is nil for passport documents' do
+      let(:applicant) do
+        {
           front_image: front_image,
           back_image: back_image,
-          document_type_requested: document_type_requested,
+          passport_image: nil,
+          document_type_requested: DocAuth::LexisNexis::DocumentTypes::PASSPORT,
+          liveness_checking_required: false,
+        }
+      end
+
+      it 'raises ArgumentError' do
+        expect { subject.send_request }.to raise_error(
+          ArgumentError,
+          'passport_image is required for passport documents',
         )
       end
     end
 
-    context 'with invalid dob format' do
-      before do
-        stub_request(:post, 'https://example.com/authentication/v1/trueid/')
-          .to_return(
-            status: 200,
-            body: { 'request_result' => 'success', 'review_status' => 'pass' }.to_json,
-          )
-      end
-
-      it 'returns failed result when dob cannot be parsed' do
-        result = subject.proof(
+    context 'when selfie_image is nil with liveness checking' do
+      let(:applicant) do
+        {
           front_image: front_image,
           back_image: back_image,
-          document_type_requested: document_type_requested,
-          applicant: { dob: 'not-a-date' },
-        )
+          selfie_image: nil,
+          document_type_requested: DocAuth::LexisNexis::DocumentTypes::DRIVERS_LICENSE,
+          liveness_checking_required: true,
+        }
+      end
 
-        expect(result.success).to eq(false)
-        expect(result.exception).to be_a(Date::Error)
+      it 'raises ArgumentError' do
+        expect { subject.send_request }.to raise_error(
+          ArgumentError,
+          'selfie_image is required when liveness checking is enabled',
+        )
       end
     end
   end
