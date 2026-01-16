@@ -120,17 +120,18 @@ class ResolutionProofingJob < ApplicationJob
 
     log_threatmetrix_info(result.device_profiling_result, user, 'ThreatMetrix')
 
-    if FeatureManagement.proofing_device_hybrid_profiling_collecting_enabled?
+    hybrid_device_profiling_success = nil
+
+    if FeatureManagement.proofing_device_hybrid_profiling_collecting_enabled? &&
+       hybrid_mobile_threatmetrix_session_id.present?
       log_threatmetrix_info(
         result.hybrid_mobile_device_profiling_result,
         user,
         'ThreatMetrix HybridMobile',
       )
-    end
 
-    hybrid_device_profiling_success =
-      FeatureManagement.proofing_device_hybrid_profiling_collecting_enabled? ?
-      result.hybrid_mobile_device_profiling_result.success? : nil
+      hybrid_device_profiling_success = result.hybrid_mobile_device_profiling_result.success?
+    end
 
     CallbackLogData.new(
       device_profiling_success: result.device_profiling_result.success?,

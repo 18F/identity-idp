@@ -241,6 +241,25 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
         end
       end
 
+      context 'with hybrid mobile device profiling enabled but without session ID' do
+        let(:hybrid_device_profiling) { :enabled }
+        let(:hybrid_mobile_threatmetrix_session_id) { nil }
+        let(:hybrid_mobile_request_ip) { Faker::Internet.ip_v4_address }
+
+        it 'calls ThreatMetrixPlugin only once (desktop only)' do
+          expect(progressive_proofer.threatmetrix_plugin).to receive(:call).once
+          proof
+        end
+
+        it 'returns a ResultAdjudicator with nil hybrid_mobile_device_profiling_result' do
+          proof.tap do |result|
+            expect(result).to be_an_instance_of(Proofing::Resolution::ResultAdjudicator)
+            expect(result.device_profiling_result).to eql(threatmetrix_result)
+            expect(result.hybrid_mobile_device_profiling_result).to be_nil
+          end
+        end
+      end
+
       it 'returns a ResultAdjudicator' do
         proof.tap do |result|
           expect(result).to be_an_instance_of(Proofing::Resolution::ResultAdjudicator)

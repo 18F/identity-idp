@@ -133,8 +133,12 @@ module Proofing
 
       def hybrid_mobile_device_profiling_result_and_reason
         unless hybrid_mobile_device_profiling_result
-          return [true,
-                  :hybrid_mobile_device_profiling_not_enabled]
+          if FeatureManagement.proofing_device_hybrid_profiling_collecting_enabled?
+            return [true, :hybrid_mobile_device_check_skipped]
+          else
+            return [true,
+                    :hybrid_mobile_device_profiling_not_enabled]
+          end
         end
 
         if hybrid_mobile_device_profiling_result.exception?

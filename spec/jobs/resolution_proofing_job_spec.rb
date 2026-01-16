@@ -451,12 +451,12 @@ RSpec.describe ResolutionProofingJob, type: :job do
         expect(result[:threatmetrix_review_status]).to eq('pass')
 
         # Hybrid mobile should be rejected due to missing session ID
-        expect(result[:hybrid_mobile_threatmetrix_review_status]).to eq('reject')
+        expect(result[:hybrid_mobile_threatmetrix_review_status]).to eq(nil)
         expect(result_context[:hybrid_mobile_device_profiling_adjudication_reason])
-          .to eq('hybrid_mobile_device_profiling_result_review_required')
-        expect(result_context_stages_hybrid_mobile_threatmetrix[:success]).to eq(false)
+          .to eq('hybrid_mobile_device_check_skipped')
+        expect(result_context_stages_hybrid_mobile_threatmetrix[:success]).to eq(nil)
         expect(result_context_stages_hybrid_mobile_threatmetrix[:client])
-          .to eq('tmx_session_id_missing')
+          .to eq(nil)
 
         # Only desktop threatmetrix should have been called (once)
         expect(@threatmetrix_stub).to have_been_requested.once
