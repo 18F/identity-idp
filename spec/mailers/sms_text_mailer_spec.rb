@@ -1,15 +1,29 @@
 require 'rails_helper'
 
 RSpec.describe SmsTextMailer, type: :mailer do
-  describe 'text messages' do
+  context '#daily_voice_limit_reached' do
     let(:mail) { SmsTextMailer.daily_voice_limit_reached }
-    let(:user) { create(:user) }
-    let(:email_address) { user.email_addresses.first }
 
     it 'renders the text message' do
       expect(mail.subject).to eq('Daily voice limit reached')
-      expect(mail.to).to eq('NO EMAIL')
-      expect(mail.from).to eq(['no-reply@login.gov'])
+
+      expect(mail.body.raw_source).to include(
+        t('telephony.error.friendly_message.daily_voice_limit_reached'),
+      )
+    end
+  end
+
+  context '#account_deleted_notice' do
+    let(:mail) { SmsTextMailer.account_deleted_notice }
+
+    it 'renders the text message' do
+      expect(mail.subject).to eq('Account deleted notice')
+      expect(mail.body.raw_source).to include(
+        t(
+          'telephony.account_deleted_notice',
+          app_name: APP_NAME,
+        ),
+      )
     end
   end
 end
