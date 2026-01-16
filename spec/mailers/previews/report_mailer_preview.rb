@@ -128,16 +128,42 @@ class ReportMailerPreview < ActionMailer::Preview
   end
 
   def irs_registration_funnel_report
-    irs_registration_funnel_report = Reports::IrsRegistrationFunnelReport.new(Time.zone.yesterday)
+    datetime = Time.zone.yesterday.end_of_day
+    irs_registration_funnel_report = Reports::IrsOriginalRegistrationFunnelReport.new(datetime)
 
     stub_cloudwatch_client(irs_registration_funnel_report.irs_registration_funnel_report)
 
     ReportMailer.tables_report(
       to: 'test@example.com',
+      bcc: 'bcc@example.com',
       subject: "Example IRS Registration Funnel Report - #{Time.zone.now.to_date}",
       message: irs_registration_funnel_report.preamble,
       attachment_format: :csv,
       reports: irs_registration_funnel_report.reports,
+    )
+  end
+
+  def sp_registration_funnel_report
+    require 'reporting/irs_registration_funnel_report'
+
+    mock_issuers = ['test_issuer']
+    mock_agency = 'Test_agency'
+    date    = Time.zone.yesterday.end_of_day
+
+    builder = Reporting::IrsRegistrationFunnelReport.new(
+      issuers: mock_issuers,
+      time_range: date.beginning_of_week(:sunday).prev_occurring(:sunday).all_week(:sunday),
+      agency_abbreviation: mock_agency,
+    )
+    stub_cloudwatch_client(builder)
+
+    ReportMailer.tables_report(
+      to: 'test@example.com',
+      bcc: 'bcc@example.com',
+      subject: "Example #{mock_agency} Registration Funnel Report - #{Time.zone.now.to_date}",
+      message: "Report: #{mock_agency} Registration Funnel Report - #{date.to_date}",
+      attachment_format: :csv,
+      reports: builder.as_emailable_reports,
     )
   end
 
