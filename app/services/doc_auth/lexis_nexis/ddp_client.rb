@@ -2,7 +2,7 @@
 
 module DocAuth
   module LexisNexis
-    class LexisNexisDdpClient
+    class DdpClient
       VALID_REVIEW_STATUSES = %w[pass review reject].freeze
 
       attr_reader :config
@@ -34,6 +34,8 @@ module DocAuth
           selfie_image: selfie_image,
           document_type_requested: document_type_requested,
           liveness_checking_required: liveness_checking_required,
+          uuid_prefix: uuid_prefix,
+          uuid: user_uuid,
         )
 
         response = Requests::Ddp::TrueIdRequest.new(

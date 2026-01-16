@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe DocAuth::LexisNexis::LexisNexisDdpClient do
+RSpec.describe DocAuth::LexisNexis::DdpClient do
   let(:front_image) { 'front_image_data' }
   let(:back_image) { 'back_image_data' }
   let(:selfie_image) { 'selfie_image_data' }
@@ -10,16 +10,6 @@ RSpec.describe DocAuth::LexisNexis::LexisNexisDdpClient do
   let(:document_type_requested) { DocAuth::LexisNexis::DocumentTypes::DRIVERS_LICENSE }
   let(:applicant) do
     {
-      first_name: 'JANE',
-      middle_name: 'M',
-      last_name: 'DOE',
-      dob: '1980-01-01',
-      address1: '123 Fake St',
-      address2: 'Apt 2',
-      city: 'Anytown',
-      state: 'ZZ',
-      zipcode: '00000',
-      ssn: '900-00-0000',
       email: 'person.name@email.test',
     }
   end
@@ -89,7 +79,7 @@ RSpec.describe DocAuth::LexisNexis::LexisNexisDdpClient do
         expect(WebMock).to have_requested(:post, 'https://example.com/authentication/v1/trueid/')
           .with { |req|
             body = JSON.parse(req.body)
-            body['trueid.selfie'] == Base64.strict_encode64(selfie_image) &&
+            body['Trueid.image_data.selfie'] == Base64.strict_encode64(selfie_image) &&
               body['policy'] == 'test_liveness_policy'
           }
       end
@@ -129,8 +119,8 @@ RSpec.describe DocAuth::LexisNexis::LexisNexisDdpClient do
         expect(WebMock).to have_requested(:post, 'https://example.com/authentication/v1/trueid/')
           .with { |req|
             body = JSON.parse(req.body)
-            body['trueid.white_front'] == Base64.strict_encode64(passport_image) &&
-              body['trueid.white_back'] == ''
+            body['Trueid.image_data.white_front'] == Base64.strict_encode64(passport_image) &&
+              body['Trueid.image_data.white_back'] == ''
           }
       end
     end
@@ -366,42 +356,36 @@ RSpec.describe DocAuth::LexisNexis::LexisNexisDdpClient do
       expect(WebMock).to have_requested(:post, 'https://example.com/authentication/v1/trueid/')
         .with { |req|
           body = JSON.parse(req.body)
-          body['trueid.white_front'] == Base64.strict_encode64(front_image) &&
-            body['trueid.white_back'] == Base64.strict_encode64(back_image)
+          body['Trueid.image_data.white_front'] == Base64.strict_encode64(front_image) &&
+            body['Trueid.image_data.white_back'] == Base64.strict_encode64(back_image)
         }
     end
 
-    it 'includes applicant personal info' do
+    it 'includes required request fields' do
       subject.post_images(
         front_image: front_image,
         back_image: back_image,
         document_type_requested: document_type_requested,
         passport_requested: passport_requested,
         liveness_checking_required: liveness_checking_required,
+        uuid_prefix: 'test_prefix',
+        user_uuid: 'test_uuid_12345',
         applicant: applicant,
       )
 
       expect(WebMock).to have_requested(:post, 'https://example.com/authentication/v1/trueid/')
         .with { |req|
           body = JSON.parse(req.body)
-          body['account_first_name'] == 'JANE' &&
-            body['account_middle_name'] == 'M' &&
-            body['account_last_name'] == 'DOE' &&
-            body['account_date_of_birth'] == '19800101' &&
-            body['account_address_street1'] == '123 Fake St' &&
-            body['account_address_street2'] == 'Apt 2' &&
-            body['account_address_city'] == 'Anytown' &&
-            body['account_address_state'] == 'ZZ' &&
-            body['account_address_zip'] == '00000' &&
-            body['account_address_country'] == 'us' &&
-            body['national_id_number'] == '900000000' &&
-            body['national_id_type'] == 'US_SSN' &&
-            body['account_email'] == 'person.name@email.test'
+          body['account_email'] == 'person.name@email.test' &&
+            body['service_type'] == 'basic' &&
+            body['local_attrib_1'] == 'test_prefix' &&
+            body['local_attrib_3'] == 'test_uuid_12345' &&
+            body['auth_method'] == 'trueid'
         }
     end
 
     context 'with empty applicant' do
-      it 'uses empty string defaults for all fields' do
+      it 'uses empty string defaults' do
         subject.post_images(
           front_image: front_image,
           back_image: back_image,
@@ -414,52 +398,8 @@ RSpec.describe DocAuth::LexisNexis::LexisNexisDdpClient do
         expect(WebMock).to have_requested(:post, 'https://example.com/authentication/v1/trueid/')
           .with { |req|
             body = JSON.parse(req.body)
-            body['account_first_name'] == '' &&
-              body['account_last_name'] == '' &&
-              body['account_date_of_birth'] == '' &&
-              body['account_address_street1'] == '' &&
-              body['account_address_country'] == '' &&
-              body['national_id_number'] == '' &&
-              body['national_id_type'] == ''
-          }
-      end
-    end
-
-    context 'with dob as Date object' do
-      it 'formats the date correctly' do
-        subject.post_images(
-          front_image: front_image,
-          back_image: back_image,
-          document_type_requested: document_type_requested,
-          passport_requested: passport_requested,
-          liveness_checking_required: liveness_checking_required,
-          applicant: { dob: Date.new(1980, 1, 1) },
-        )
-
-        expect(WebMock).to have_requested(:post, 'https://example.com/authentication/v1/trueid/')
-          .with { |req|
-            body = JSON.parse(req.body)
-            body['account_date_of_birth'] == '19800101'
-          }
-      end
-    end
-
-    context 'with partial address (only city)' do
-      it 'sets country to us when any address field is present' do
-        subject.post_images(
-          front_image: front_image,
-          back_image: back_image,
-          document_type_requested: document_type_requested,
-          passport_requested: passport_requested,
-          liveness_checking_required: liveness_checking_required,
-          applicant: { city: 'Anytown' },
-        )
-
-        expect(WebMock).to have_requested(:post, 'https://example.com/authentication/v1/trueid/')
-          .with { |req|
-            body = JSON.parse(req.body)
-            body['account_address_city'] == 'Anytown' &&
-              body['account_address_country'] == 'us'
+            body['account_email'] == '' &&
+              body['local_attrib_1'] == ''
           }
       end
     end
@@ -483,30 +423,6 @@ RSpec.describe DocAuth::LexisNexis::LexisNexisDdpClient do
           passport_requested: passport_requested,
           liveness_checking_required: liveness_checking_required,
         )
-      end
-    end
-
-    context 'with invalid dob format' do
-      before do
-        stub_request(:post, 'https://example.com/authentication/v1/trueid/')
-          .to_return(
-            status: 200,
-            body: { 'request_result' => 'success', 'review_status' => 'pass' }.to_json,
-          )
-      end
-
-      it 'returns failed result when dob cannot be parsed' do
-        result = subject.post_images(
-          front_image: front_image,
-          back_image: back_image,
-          document_type_requested: document_type_requested,
-          passport_requested: passport_requested,
-          liveness_checking_required: liveness_checking_required,
-          applicant: { dob: 'not-a-date' },
-        )
-
-        expect(result.success).to eq(false)
-        expect(result.exception).to be_a(Date::Error)
       end
     end
   end

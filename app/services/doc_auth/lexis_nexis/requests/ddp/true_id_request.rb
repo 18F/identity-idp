@@ -20,23 +20,15 @@ module DocAuth
             return {}.to_json unless images_ready?
 
             {
-              account_first_name: applicant[:first_name] || '',
-              account_middle_name: applicant[:middle_name] || '',
-              account_last_name: applicant[:last_name] || '',
-              account_date_of_birth: format_dob(applicant[:dob]),
-              account_address_street1: applicant[:address1] || '',
-              account_address_street2: applicant[:address2] || '',
-              account_address_city: applicant[:city] || '',
-              account_address_state: applicant[:state] || '',
-              account_address_zip: applicant[:zipcode] || '',
-              account_address_country: address_present? ? 'us' : '',
-              national_id_number: applicant[:ssn]&.gsub(/\D/, '') || '',
-              national_id_type: applicant[:ssn].present? ? 'US_SSN' : '',
               account_email: applicant[:email] || '',
-              policy: policy,
-              'trueid.white_front': encode(id_front_image),
-              'trueid.white_back': back_image_required? ? encode(applicant[:back_image]) : '',
-              'trueid.selfie': liveness_checking_required? ? encode(applicant[:selfie_image]) : '',
+              policy:,
+              'Trueid.image_data.white_front': encode(id_front_image),
+              'Trueid.image_data.white_back': back_image_value,
+              'Trueid.image_data.selfie': selfie_image_value,
+              service_type: 'basic',
+              local_attrib_1: applicant[:uuid_prefix] || '',
+              local_attrib_3: applicant[:uuid],
+              auth_method: 'trueid',
             }.to_json
           end
 
@@ -64,10 +56,12 @@ module DocAuth
             Base64.strict_encode64(image)
           end
 
-          def format_dob(dob)
-            return '' if dob.blank?
-            date = dob.respond_to?(:strftime) ? dob : Date.parse(dob)
-            date.strftime('%Y%m%d')
+          def back_image_value
+            back_image_required? ? encode(applicant[:back_image]) : ''
+          end
+
+          def selfie_image_value
+            liveness_checking_required? ? encode(applicant[:selfie_image]) : ''
           end
 
           def back_image_required?
@@ -76,11 +70,6 @@ module DocAuth
 
           def liveness_checking_required?
             applicant[:liveness_checking_required] == true
-          end
-
-          def address_present?
-            applicant[:address1].present? || applicant[:city].present? ||
-              applicant[:state].present? || applicant[:zipcode].present?
           end
 
           def images_ready?
