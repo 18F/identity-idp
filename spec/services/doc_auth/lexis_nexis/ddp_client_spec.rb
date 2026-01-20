@@ -359,6 +359,28 @@ RSpec.describe DocAuth::LexisNexis::DdpClient do
         expect(result.exception.message).to include('selfie_image is required')
       end
     end
+
+    context 'when an exception occurs' do
+      before do
+        stub_request(:post, 'https://example.com/authentication/v1/trueid/')
+          .to_raise(Faraday::ConnectionFailed.new('connection failed'))
+      end
+
+      it 'notifies NewRelic of the error' do
+        expect(NewRelic::Agent).to receive(:notice_error)
+          .with(instance_of(Proofing::LexisNexis::RequestError))
+
+        subject.post_images(
+          front_image:,
+          back_image:,
+          document_type_requested:,
+          passport_requested:,
+          liveness_checking_required:,
+          user_uuid:,
+          user_email:,
+        )
+      end
+    end
   end
 
   describe 'request headers' do
@@ -387,101 +409,6 @@ RSpec.describe DocAuth::LexisNexis::DdpClient do
           'x-org-id' => 'test_org_id',
           'x-api-key' => 'test_api_key',
         })
-    end
-  end
-
-  describe 'request body' do
-    before do
-      stub_request(:post, 'https://example.com/authentication/v1/trueid/')
-        .to_return(
-          status: 200,
-          body: { 'request_result' => 'success', 'review_status' => 'pass' }.to_json,
-        )
-    end
-
-    it 'includes images with correct key format' do
-      subject.post_images(
-        front_image:,
-        back_image:,
-        document_type_requested:,
-        passport_requested:,
-        liveness_checking_required:,
-        user_uuid:,
-        user_email:,
-      )
-
-      expect(WebMock).to have_requested(:post, 'https://example.com/authentication/v1/trueid/')
-        .with { |req|
-          body = JSON.parse(req.body)
-          body['Trueid.image_data.white_front'] == Base64.strict_encode64(front_image) &&
-            body['Trueid.image_data.white_back'] == Base64.strict_encode64(back_image)
-        }
-    end
-
-    it 'includes required request fields' do
-      subject.post_images(
-        front_image:,
-        back_image:,
-        document_type_requested:,
-        passport_requested:,
-        liveness_checking_required:,
-        uuid_prefix: 'test_prefix',
-        user_uuid: 'test_uuid_12345',
-        user_email:,
-      )
-
-      expect(WebMock).to have_requested(:post, 'https://example.com/authentication/v1/trueid/')
-        .with { |req|
-          body = JSON.parse(req.body)
-          body['account_email'] == 'person.name@email.test' &&
-            body['service_type'] == 'basic' &&
-            body['local_attrib_1'] == 'test_prefix' &&
-            body['local_attrib_3'] == 'test_uuid_12345'
-        }
-    end
-
-    context 'with empty uuid_prefix' do
-      it 'uses empty string default for uuid_prefix' do
-        subject.post_images(
-          front_image:,
-          back_image:,
-          document_type_requested:,
-          passport_requested:,
-          liveness_checking_required:,
-          user_uuid:,
-          user_email:,
-        )
-
-        expect(WebMock).to have_requested(:post, 'https://example.com/authentication/v1/trueid/')
-          .with { |req|
-            body = JSON.parse(req.body)
-            body['local_attrib_1'] == ''
-          }
-      end
-    end
-  end
-
-  describe 'error handling' do
-    context 'when an exception occurs' do
-      before do
-        stub_request(:post, 'https://example.com/authentication/v1/trueid/')
-          .to_raise(Faraday::ConnectionFailed.new('connection failed'))
-      end
-
-      it 'notifies NewRelic of the error' do
-        expect(NewRelic::Agent).to receive(:notice_error)
-          .with(instance_of(Proofing::LexisNexis::RequestError))
-
-        subject.post_images(
-          front_image:,
-          back_image:,
-          document_type_requested:,
-          passport_requested:,
-          liveness_checking_required:,
-          user_uuid:,
-          user_email:,
-        )
-      end
     end
   end
 end

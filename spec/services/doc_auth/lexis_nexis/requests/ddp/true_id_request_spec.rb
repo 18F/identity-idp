@@ -157,16 +157,6 @@ RSpec.describe DocAuth::LexisNexis::Requests::Ddp::TrueIdRequest do
           }
       end
     end
-  end
-
-  describe 'request validation' do
-    before do
-      stub_request(:post, 'https://example.com/authentication/v1/trueid/')
-        .to_return(
-          status: 200,
-          body: { 'request_result' => 'success', 'review_status' => 'pass' }.to_json,
-        )
-    end
 
     context 'when uuid is nil' do
       let(:applicant) do

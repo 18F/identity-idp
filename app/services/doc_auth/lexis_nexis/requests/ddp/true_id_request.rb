@@ -7,17 +7,14 @@ module DocAuth
         class TrueIdRequest < Proofing::LexisNexis::Request
           def send_request
             validate_images!
-            @body = build_request_body
-            @headers = build_request_headers
             super
           end
 
           private
 
           def build_request_body
-            # The parent class calls build_request_body during initialize. Return empty JSON
-            # if required data isn't present yet - validation will happen in send_request.
-            return {}.to_json unless images_ready?
+            # Guard for parent class calling build_request_body during initialize
+            return {}.to_json unless required_data_present?
 
             {
               account_email: applicant[:email],
@@ -71,15 +68,19 @@ module DocAuth
             applicant[:liveness_checking_required] == true
           end
 
-          def images_ready?
-            return false if applicant[:front_image].blank? || applicant[:back_image].blank?
-            return false if passport_document? && applicant[:passport_image].blank?
-            return false if liveness_checking_required? && applicant[:selfie_image].blank?
-            true
-          end
-
           def passport_document?
             applicant[:document_type_requested] == DocumentTypes::PASSPORT
+          end
+
+          def required_data_present?
+            return false if applicant[:uuid].blank? || applicant[:email].blank?
+            if passport_document?
+              return false if applicant[:passport_image].blank?
+            elsif applicant[:front_image].blank? || applicant[:back_image].blank?
+              return false
+            end
+            return false if liveness_checking_required? && applicant[:selfie_image].blank?
+            true
           end
 
           def id_front_image
@@ -99,16 +100,17 @@ module DocAuth
           end
 
           def validate_images!
-            document_type = applicant[:document_type_requested]
-
             raise ArgumentError, 'uuid is required' if applicant[:uuid].blank?
             raise ArgumentError, 'email is required' if applicant[:email].blank?
 
-            if document_type == DocumentTypes::PASSPORT && applicant[:passport_image].blank?
-              raise ArgumentError, 'passport_image is required for passport documents'
+            if passport_document?
+              if applicant[:passport_image].blank?
+                raise ArgumentError, 'passport_image is required for passport documents'
+              end
+            else
+              raise ArgumentError, 'front_image is required' if applicant[:front_image].blank?
+              raise ArgumentError, 'back_image is required' if applicant[:back_image].blank?
             end
-            raise ArgumentError, 'front_image is required' if applicant[:front_image].blank?
-            raise ArgumentError, 'back_image is required' if applicant[:back_image].blank?
 
             if liveness_checking_required? && applicant[:selfie_image].blank?
               raise ArgumentError, 'selfie_image is required when liveness checking is enabled'
