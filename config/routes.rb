@@ -497,6 +497,9 @@ Rails.application.routes.draw do
 
     root to: 'users/sessions#new'
   end
+  if IdentityConfig.store.rails_mailer_previews_enabled
+    get '/sms_preview' => 'sms_preview#show'
+  end
 
   # Make sure any new routes are added above this line!
   # The line below will route all requests that aren't
