@@ -262,12 +262,14 @@ RSpec.feature 'idv phone step', :js do
       }
     end
     let(:idv_socure_phonerisk_auto_failure_reason_codes) { ['R999'] }
+    let(:idv_address_primary_vendor) { :socure }
 
     before do
       allow(IdentityConfig.store).to receive(
         :idv_socure_phonerisk_auto_failure_reason_codes,
       ).and_return(idv_socure_phonerisk_auto_failure_reason_codes)
-      allow(IdentityConfig.store).to receive(:idv_address_primary_vendor).and_return(:socure)
+      allow(IdentityConfig.store).to receive(:idv_address_primary_vendor)
+        .and_return(idv_address_primary_vendor)
 
       @phonerisk_stub = stub_request(:post, 'https://sandbox.socure.test/api/3.0/EmailAuthScore')
         .to_return(
@@ -569,8 +571,8 @@ RSpec.feature 'idv phone step', :js do
     end
 
     context 'when phonerisk is assigned due to % routing' do
+      let(:idv_address_primary_vendor) { :mock }
       before do
-        allow(IdentityConfig.store).to receive(:idv_address_primary_vendor).and_return(:mock)
         allow(IdentityConfig.store).to receive(:idv_address_vendor_socure_percent).and_return(100)
       end
 
@@ -596,7 +598,7 @@ RSpec.feature 'idv phone step', :js do
       end
 
       context 'when name_correlation_reason_codes contain autofail reason codes' do
-        let(:idv_socure_phonerisk_auto_failure_reason_codes) { ['R890', 'R999'] }
+        let(:idv_socure_phonerisk_auto_failure_reason_codes) { ['R890'] }
 
         it 'fails verification and allows try another nubmer' do
           start_idv_from_sp
