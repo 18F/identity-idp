@@ -61,7 +61,6 @@ RSpec.describe TwoFactorAuthCode::PhoneDeliveryPresenter do
     it 'specifies when the code will expire' do
       text = t(
         'instructions.mfa.do_not_share_code_message_html',
-        app_name: APP_NAME,
         link_html: new_tab_link_to(
           t('instructions.mfa.do_not_share_code_link_text'),
           MarketingSite.help_center_article_url(
