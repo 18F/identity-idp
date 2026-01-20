@@ -252,6 +252,7 @@ RSpec.feature 'idv phone step', :js do
           reasonCodes: [
             'I123',
             'R567',
+            'R321',
           ],
           score: name_phone_correlation_pass ? 0.01 : 0.99,
         },
@@ -260,7 +261,12 @@ RSpec.feature 'idv phone step', :js do
         },
       }
     end
+    let(:idv_socure_phonerisk_auto_failure_reason_codes) { ['R999'] }
+
     before do
+      allow(IdentityConfig.store).to receive(
+        :idv_socure_phonerisk_auto_failure_reason_codes,
+      ).and_return(idv_socure_phonerisk_auto_failure_reason_codes)
       allow(IdentityConfig.store).to receive(:idv_address_primary_vendor).and_return(:socure)
 
       @phonerisk_stub = stub_request(:post, 'https://sandbox.socure.test/api/3.0/EmailAuthScore')
@@ -558,6 +564,55 @@ RSpec.feature 'idv phone step', :js do
           fill_out_phone_form_ok
           click_idv_send_security_code
           expect(page).to have_current_path(idv_otp_verification_path)
+        end
+      end
+    end
+
+    context 'when phonerisk is assigned due to % routing' do
+      before do
+        allow(IdentityConfig.store).to receive(:idv_address_primary_vendor).and_return(:mock)
+        allow(IdentityConfig.store).to receive(:idv_address_vendor_socure_percent).and_return(100)
+      end
+
+      context 'when phonerisk_reason_codes contain autofail reason codes' do
+        let(:idv_socure_phonerisk_auto_failure_reason_codes) { ['R321', 'R999'] }
+
+        it 'fails verification and allows try another nubmer' do
+          start_idv_from_sp
+          complete_idv_steps_before_phone_step
+
+          click_idv_send_security_code
+
+          expect(page).to have_content(t('idv.failure.phone.warning.heading'))
+          expect(page).to have_content('+1 202-555-1212')
+          click_on t('idv.failure.phone.warning.try_again_button')
+
+          expect(page).to have_current_path(idv_phone_path)
+
+          # phone field is empty after invalid submission
+          phone_field = find_field(t('two_factor_authentication.phone_label'))
+          expect(phone_field.value).to be_empty
+        end
+      end
+
+      context 'when name_correlation_reason_codes contain autofail reason codes' do
+        let(:idv_socure_phonerisk_auto_failure_reason_codes) { ['R890', 'R999'] }
+
+        it 'fails verification and allows try another nubmer' do
+          start_idv_from_sp
+          complete_idv_steps_before_phone_step
+
+          click_idv_send_security_code
+
+          expect(page).to have_content(t('idv.failure.phone.warning.heading'))
+          expect(page).to have_content('+1 202-555-1212')
+          click_on t('idv.failure.phone.warning.try_again_button')
+
+          expect(page).to have_current_path(idv_phone_path)
+
+          # phone field is empty after invalid submission
+          phone_field = find_field(t('two_factor_authentication.phone_label'))
+          expect(phone_field.value).to be_empty
         end
       end
     end
