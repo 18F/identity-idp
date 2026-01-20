@@ -9,7 +9,7 @@ fr:
       Vous ne voulez pas supprimer votre compte? Connectez-vous à votre compte %{app_name} pour le annuler.
     authentication_otp:
       sms: |-
-        %{app_name} ne vous contactera JAMAIS pour obtenir ce code. Ne le partagez à personne. Le code est : %{code}. Il expire dans %{expiration} minutes.
+        %{app_name} : Ne partagez ce code avec personne. Votre code est %{code}. Il expire dans %{expiration} minutes.
 
         @%{domain} #%{code}
       voice: Bonjour ! Votre code à usage unique de six %{format_type} pour %{app_name} est %{code}. Votre code à usage unique est %{code}. De nouveau, votre code à usage unique est %{code}. Ce code expire dans %{expiration} minutes.
@@ -17,7 +17,7 @@ fr:
       sms: "%{app_name} : Vous avez visité le bureau de poste le %{proof_date}. Vérifiez votre e-mail pour obtenir votre résultat. Ce n'est pas vous ? Signalez-le immédiatement : %{contact_number}. Réf. : %{reference_string}"
     confirmation_otp:
       sms: |-
-        %{app_name} ne vous contactera JAMAIS pour obtenir ce code. Ne le partagez à personne. Le code est : %{code}. Il expire dans %{expiration} minutes.
+        %{app_name} : Ne partagez ce code avec personne. Votre code est %{code}. Il expire dans %{expiration} minutes.
 
         @%{domain} #%{code}
       voice: Bonjour ! Votre code à usage unique %{app_name} à %{format_length} %{format_type} est %{code}. Votre code à usage unique est %{code}. À nouveau, votre code à usage unique est %{code}. Ce code expire dans %{expiration} minutes.
