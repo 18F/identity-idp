@@ -6,7 +6,7 @@ module Db
       extend Reports::QueryHelpers
 
       UserVerifiedKey = Data.define(
-        :user_id, :profile_id, :profile_age, :is_upfront
+        :user_id, :profile_verified_at, :profile_age, :is_upfront
       ).freeze
 
       module_function
@@ -51,7 +51,7 @@ module Db
                 year_month = row['year_month']
                 profile_age = row['profile_age']
                 user_id = row['user_id']
-                profile_id = row['profile_id']
+                profile_verified_at = row['profile_verified_at']
                 profile_requested_issuer = row['profile_requested_issuer']
                 issuer = row['issuer']
 
@@ -59,7 +59,7 @@ module Db
 
                 user_unique_id = UserVerifiedKey.new(
                   user_id:,
-                  profile_id:,
+                  profile_verified_at:,
                   profile_age:,
                   is_upfront:,
                 )
@@ -137,14 +137,14 @@ module Db
             SELECT
               subq.user_id AS user_id
             , %{year_month} AS year_month
-            , subq.profile_id AS profile_id
-            , subq.profile_age AS profile_age
-            , subq.profile_requested_issuer AS profile_requested_issuer
-            , subq.issuer AS issuer
+            , subq.profile_verified_at
+            , subq.profile_age
+            , MAX(subq.profile_requested_issuer) AS profile_requested_issuer
+            , MAX(subq.issuer) AS issuer
             FROM (
               SELECT
                   sp_return_logs.user_id
-                , sp_return_logs.profile_id
+                , sp_return_logs.profile_verified_at
                 , DATE_PART('year', AGE(sp_return_logs.returned_at, sp_return_logs.profile_verified_at)) AS profile_age
                 , sp_return_logs.profile_requested_issuer
                 , sp_return_logs.issuer
@@ -157,10 +157,8 @@ module Db
             ) subq
             GROUP BY
               subq.user_id
-              , subq.profile_id
+              , subq.profile_verified_at
               , subq.profile_age
-              , subq.profile_requested_issuer
-              , subq.issuer
           SQL
         end
       end
@@ -190,7 +188,7 @@ module Db
         upfront = []
 
         initially_upfront.each do |event|
-          if users_already_upfront.add?(event.profile_id)
+          if users_already_upfront.add?(event.user_id)
             upfront << event
           else
             existing << event

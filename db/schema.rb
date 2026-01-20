@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_01_06_161046) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_29_182800) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_catalog.plpgsql"
@@ -58,7 +58,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_06_161046) do
   create_table "auth_app_configurations", force: :cascade do |t|
     t.integer "user_id", null: false, comment: "sensitive=false"
     t.string "encrypted_otp_secret_key", null: false, comment: "sensitive=true"
-    t.string "name", limit: 20, null: false, comment: "sensitive=true"
+    t.string "name", null: false, comment: "sensitive=true"
     t.integer "totp_timestamp", comment: "sensitive=false"
     t.datetime "created_at", precision: nil, null: false, comment: "sensitive=false"
     t.datetime "updated_at", precision: nil, null: false, comment: "sensitive=false"
@@ -462,7 +462,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_06_161046) do
   create_table "piv_cac_configurations", force: :cascade do |t|
     t.integer "user_id", null: false, comment: "sensitive=false"
     t.string "x509_dn_uuid", null: false, comment: "sensitive=false"
-    t.string "name", limit: 20, null: false, comment: "sensitive=true"
+    t.string "name", null: false, comment: "sensitive=true"
     t.datetime "created_at", precision: nil, null: false, comment: "sensitive=false"
     t.datetime "updated_at", precision: nil, null: false, comment: "sensitive=false"
     t.string "x509_issuer", comment: "sensitive=false"
@@ -693,7 +693,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_06_161046) do
 
   create_table "webauthn_configurations", force: :cascade do |t|
     t.bigint "user_id", null: false, comment: "sensitive=false"
-    t.string "name", limit: 80, null: false, comment: "sensitive=true"
+    t.string "name", null: false, comment: "sensitive=true"
     t.text "credential_id", null: false, comment: "sensitive=false"
     t.text "credential_public_key", null: false, comment: "sensitive=false"
     t.datetime "created_at", precision: nil, null: false, comment: "sensitive=false"

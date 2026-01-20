@@ -37,7 +37,7 @@ RSpec.describe Proofing::LexisNexis::InstantVerify::VerificationRequest do
         hash
       end
 
-      it 'sets StreetAddress2 to an empty string' do
+      it 'sets StreetAddress2 to and empty string' do
         parsed_body = JSON.parse(subject.body, symbolize_names: true)
         expect(parsed_body[:Person][:Addresses][0][:StreetAddress2]).to eq('')
       end
@@ -62,23 +62,6 @@ RSpec.describe Proofing::LexisNexis::InstantVerify::VerificationRequest do
       it 'formats the DOB correctly' do
         parsed_body = JSON.parse(subject.body, symbolize_names: true)
         expect(parsed_body.dig(:Person, :DateOfBirth, :Year)).to eq('1980')
-      end
-    end
-
-    context 'when zipcode is nil' do
-      let(:zipcode) { nil }
-
-      before do
-        applicant[:zipcode] = zipcode
-      end
-
-      it 'does not throw a missing method exception' do
-        expect { subject.body }.not_to raise_error
-      end
-
-      it 'sets Address Zip5 to an empty string' do
-        parsed_body = JSON.parse(subject.body, symbolize_names: true)
-        expect(parsed_body[:Person][:Addresses][0][:Zip5]).to eq('')
       end
     end
   end

@@ -1,14 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe Db::MonthlySpAuthCount::NewUniqueMonthlyUserCountsByPartner do
-  def newest_profile(user)
-    user.profiles.max_by(&:verified_at)
-  end
-
-  def oldest_profile(user)
-    user.profiles.min_by(&:verified_at)
-  end
-
   describe '.call' do
     subject(:results) do
       Db::MonthlySpAuthCount::NewUniqueMonthlyUserCountsByPartner.call(
@@ -103,8 +95,7 @@ RSpec.describe Db::MonthlySpAuthCount::NewUniqueMonthlyUserCountsByPartner do
           issuer: issuer1,
           ial: 2,
           returned_at: inside_partial_month,
-          profile_id: newest_profile(user1).id,
-          profile_verified_at: newest_profile(user1).verified_at,
+          profile_verified_at: user1.profiles.map(&:verified_at).max,
           billable: false,
         )
 
@@ -116,8 +107,7 @@ RSpec.describe Db::MonthlySpAuthCount::NewUniqueMonthlyUserCountsByPartner do
             issuer: issuer,
             ial: 2,
             returned_at: inside_partial_month,
-            profile_id: oldest_profile(user).id,
-            profile_verified_at: oldest_profile(user).verified_at,
+            profile_verified_at: user.profiles.map(&:verified_at).min,
             billable: true,
           )
         end
@@ -130,8 +120,7 @@ RSpec.describe Db::MonthlySpAuthCount::NewUniqueMonthlyUserCountsByPartner do
             ial: 2,
             issuer: issuer2,
             returned_at: inside_partial_month,
-            profile_id: newest_profile(user).id,
-            profile_verified_at: newest_profile(user).verified_at,
+            profile_verified_at: user.profiles.map(&:verified_at).max,
             billable: true,
           )
         end
@@ -147,8 +136,7 @@ RSpec.describe Db::MonthlySpAuthCount::NewUniqueMonthlyUserCountsByPartner do
               ial: 2,
               issuer: issuer2,
               returned_at: inside_whole_month,
-              profile_id: newest_profile(user).id,
-              profile_verified_at: newest_profile(user).verified_at,
+              profile_verified_at: user.profiles.map(&:verified_at).max,
               billable: true,
             )
           end
@@ -163,8 +151,7 @@ RSpec.describe Db::MonthlySpAuthCount::NewUniqueMonthlyUserCountsByPartner do
               ial: 2,
               issuer: issuer1,
               returned_at: inside_whole_month,
-              profile_id: newest_profile(user)&.id,
-              profile_verified_at: newest_profile(user)&.verified_at,
+              profile_verified_at: user.profiles.map(&:verified_at).max,
               billable: true,
             )
           end
@@ -179,8 +166,7 @@ RSpec.describe Db::MonthlySpAuthCount::NewUniqueMonthlyUserCountsByPartner do
               ial: 2,
               issuer: issuer2,
               returned_at: inside_whole_month,
-              profile_id: newest_profile(user).id,
-              profile_verified_at: newest_profile(user).verified_at,
+              profile_verified_at: user.profiles.map(&:verified_at).max,
               billable: true,
             )
           end
@@ -194,8 +180,7 @@ RSpec.describe Db::MonthlySpAuthCount::NewUniqueMonthlyUserCountsByPartner do
             ial: 2,
             issuer: issuer3,
             returned_at: inside_partial_month,
-            profile_id: newest_profile(user).id,
-            profile_verified_at: newest_profile(user).verified_at,
+            profile_verified_at: user.profiles.map(&:verified_at).max,
             billable: true,
             profile_requested_issuer: issuer3,
           )
@@ -209,8 +194,7 @@ RSpec.describe Db::MonthlySpAuthCount::NewUniqueMonthlyUserCountsByPartner do
             ial: 2,
             issuer: issuer2,
             returned_at: inside_partial_month,
-            profile_id: newest_profile(user).id,
-            profile_verified_at: newest_profile(user).verified_at,
+            profile_verified_at: user.profiles.map(&:verified_at).max,
             billable: true,
             profile_requested_issuer: issuer3,
           )
@@ -225,8 +209,7 @@ RSpec.describe Db::MonthlySpAuthCount::NewUniqueMonthlyUserCountsByPartner do
               ial: 2,
               issuer: issuer2,
               returned_at: inside_whole_month,
-              profile_id: oldest_profile(user1).id,
-              profile_verified_at: oldest_profile(user1).verified_at,
+              profile_verified_at: user1.profiles.map(&:verified_at).min,
               billable: true,
             )
           end
@@ -241,8 +224,7 @@ RSpec.describe Db::MonthlySpAuthCount::NewUniqueMonthlyUserCountsByPartner do
               ial: 2,
               issuer: issuer2,
               returned_at: inside_whole_month,
-              profile_id: newest_profile(user).id,
-              profile_verified_at: newest_profile(user).verified_at,
+              profile_verified_at: user.profiles.map(&:verified_at).max,
               billable: true,
             )
           end
@@ -257,8 +239,7 @@ RSpec.describe Db::MonthlySpAuthCount::NewUniqueMonthlyUserCountsByPartner do
             ial: 2,
             issuer: issuer2,
             returned_at: DateTime.new(2020, 10, 1).utc,
-            profile_id: newest_profile(user).id,
-            profile_verified_at: newest_profile(user).verified_at,
+            profile_verified_at: user.profiles.map(&:verified_at).max,
             billable: true,
           )
           create(
@@ -267,8 +248,7 @@ RSpec.describe Db::MonthlySpAuthCount::NewUniqueMonthlyUserCountsByPartner do
             ial: 2,
             issuer: issuer2,
             returned_at: DateTime.new(2020, 10, 30).utc,
-            profile_id: newest_profile(user).id,
-            profile_verified_at: newest_profile(user).verified_at,
+            profile_verified_at: user.profiles.map(&:verified_at).max,
             billable: true,
           )
         end
@@ -283,7 +263,6 @@ RSpec.describe Db::MonthlySpAuthCount::NewUniqueMonthlyUserCountsByPartner do
               ial: 2,
               issuer: issuer2,
               returned_at: DateTime.new(2022, 10, 5).utc,
-              profile_id: user.profiles[0].id,
               profile_verified_at: user.profiles[0].verified_at,
               billable: true,
             )
@@ -300,18 +279,18 @@ RSpec.describe Db::MonthlySpAuthCount::NewUniqueMonthlyUserCountsByPartner do
             year_month: '202009',
             iaa_start_date: partner_range.begin.to_s,
             iaa_end_date: partner_range.end.to_s,
-            unique_user_proofed_events: 10,
-            partner_ial2_unique_user_events_year1: 4,
+            unique_user_proofed_events: 9,
+            partner_ial2_unique_user_events_year1: 3,
             partner_ial2_unique_user_events_year2: 2,
             partner_ial2_unique_user_events_year3: 1,
             partner_ial2_unique_user_events_year4: 1,
             partner_ial2_unique_user_events_year5: 2,
             partner_ial2_unique_user_events_year_greater_than_5: 0,
             partner_ial2_unique_user_events_unknown: 0,
-            new_unique_user_proofed_events: 10,
+            new_unique_user_proofed_events: 9,
             partner_ial2_new_unique_user_events_year1_upfront: 1,
-            partner_ial2_new_unique_user_events_year1_existing: 3,
-            partner_ial2_new_unique_user_events_year1: 4, # Note that year_1 = year_1_upfront + year_1_existing
+            partner_ial2_new_unique_user_events_year1_existing: 2,
+            partner_ial2_new_unique_user_events_year1: 3, # Note that year_1 = year_1_upfront + year_1_existing
             partner_ial2_new_unique_user_events_year2: 2,
             partner_ial2_new_unique_user_events_year3: 1,
             partner_ial2_new_unique_user_events_year4: 1,
@@ -386,7 +365,6 @@ RSpec.describe Db::MonthlySpAuthCount::NewUniqueMonthlyUserCountsByPartner do
           profile_requested_issuer: issuer_a,
           ial: 2,
           returned_at: DateTime.new(2025, 7, 15).utc,
-          profile_id: profile1.id,
           profile_verified_at: profile1.verified_at,
           billable: true,
         )
@@ -398,7 +376,6 @@ RSpec.describe Db::MonthlySpAuthCount::NewUniqueMonthlyUserCountsByPartner do
           profile_requested_issuer: issuer_a,
           ial: 2,
           returned_at: DateTime.new(2025, 7, 16).utc,
-          profile_id: profile2.id,
           profile_verified_at: profile2.verified_at,
           billable: true,
         )
@@ -410,7 +387,6 @@ RSpec.describe Db::MonthlySpAuthCount::NewUniqueMonthlyUserCountsByPartner do
           profile_requested_issuer: issuer_a,
           ial: 2,
           returned_at: DateTime.new(2025, 7, 17).utc,
-          profile_id: profile_upfront.id,
           profile_verified_at: profile_upfront.verified_at,
           billable: true,
         )
@@ -422,7 +398,6 @@ RSpec.describe Db::MonthlySpAuthCount::NewUniqueMonthlyUserCountsByPartner do
           profile_requested_issuer: issuer_a,
           ial: 2,
           returned_at: DateTime.new(2025, 7, 18).utc,
-          profile_id: profile_existing.id,
           profile_verified_at: profile_existing.verified_at,
           billable: true,
         )
@@ -468,7 +443,6 @@ RSpec.describe Db::MonthlySpAuthCount::NewUniqueMonthlyUserCountsByPartner do
           profile_requested_issuer: issuer_a,
           ial: 2,
           returned_at: DateTime.new(2025, 8, 15).utc,
-          profile_id: profile1.id,
           profile_verified_at: profile1.verified_at,
           billable: true,
         )
@@ -480,7 +454,6 @@ RSpec.describe Db::MonthlySpAuthCount::NewUniqueMonthlyUserCountsByPartner do
           profile_requested_issuer: issuer_b,
           ial: 2,
           returned_at: DateTime.new(2025, 8, 16).utc,
-          profile_id: profile2.id,
           profile_verified_at: profile2.verified_at,
           billable: true,
         )
@@ -492,23 +465,20 @@ RSpec.describe Db::MonthlySpAuthCount::NewUniqueMonthlyUserCountsByPartner do
           profile_requested_issuer: issuer_a,
           ial: 2,
           returned_at: DateTime.new(2025, 8, 17).utc,
-          profile_id: profile3.id,
           profile_verified_at: profile3.verified_at,
           billable: true,
         )
       end
 
-      it 'counts each unique profile as upfront when issuer matches profile_requested_issuer' do
+      it 'only charges upfront once per user across all months to avoid double-charging' do
         expect(results.length).to eq(1)
         august_result = results.first
 
         expect(august_result[:unique_user_proofed_events]).to eq(3)
         expect(august_result[:new_unique_user_proofed_events]).to eq(3)
 
-        # Each profile is counted separately - user_double_upfront has 2 upfront profiles,
-        # user_single_upfront has 1, so total is 3
-        expect(august_result[:partner_ial2_new_unique_user_events_year1_upfront]).to eq(3)
-        expect(august_result[:partner_ial2_new_unique_user_events_year1_existing]).to eq(0)
+        expect(august_result[:partner_ial2_new_unique_user_events_year1_upfront]).to eq(2)
+        expect(august_result[:partner_ial2_new_unique_user_events_year1_existing]).to eq(1)
         expect(august_result[:partner_ial2_new_unique_user_events_year1]).to eq(3)
 
         upfront = august_result[:partner_ial2_new_unique_user_events_year1_upfront]
