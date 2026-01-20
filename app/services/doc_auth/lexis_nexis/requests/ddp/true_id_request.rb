@@ -20,7 +20,7 @@ module DocAuth
             return {}.to_json unless images_ready?
 
             {
-              account_email: applicant[:email] || '',
+              account_email: applicant[:email],
               policy:,
               'Trueid.image_data.white_front': encode(id_front_image),
               'Trueid.image_data.white_back': back_image_value,
@@ -28,7 +28,6 @@ module DocAuth
               service_type: 'basic',
               local_attrib_1: applicant[:uuid_prefix] || '',
               local_attrib_3: applicant[:uuid],
-              auth_method: 'trueid',
             }.to_json
           end
 
@@ -101,6 +100,9 @@ module DocAuth
 
           def validate_images!
             document_type = applicant[:document_type_requested]
+
+            raise ArgumentError, 'uuid is required' if applicant[:uuid].blank?
+            raise ArgumentError, 'email is required' if applicant[:email].blank?
 
             if document_type == DocumentTypes::PASSPORT && applicant[:passport_image].blank?
               raise ArgumentError, 'passport_image is required for passport documents'

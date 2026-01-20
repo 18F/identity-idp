@@ -8,11 +8,8 @@ RSpec.describe DocAuth::LexisNexis::DdpClient do
   let(:liveness_checking_required) { false }
   let(:passport_requested) { false }
   let(:document_type_requested) { DocAuth::LexisNexis::DocumentTypes::DRIVERS_LICENSE }
-  let(:applicant) do
-    {
-      email: 'person.name@email.test',
-    }
-  end
+  let(:user_uuid) { 'test_uuid' }
+  let(:user_email) { 'person.name@email.test' }
 
   let(:attrs) do
     {
@@ -51,12 +48,13 @@ RSpec.describe DocAuth::LexisNexis::DdpClient do
 
     it 'sends a request and returns a DdpResult' do
       result = subject.post_images(
-        front_image: front_image,
-        back_image: back_image,
-        document_type_requested: document_type_requested,
-        passport_requested: passport_requested,
-        liveness_checking_required: liveness_checking_required,
-        applicant: applicant,
+        front_image:,
+        back_image:,
+        document_type_requested:,
+        passport_requested:,
+        liveness_checking_required:,
+        user_uuid:,
+        user_email:,
       )
 
       expect(result).to be_a(Proofing::DdpResult)
@@ -68,12 +66,14 @@ RSpec.describe DocAuth::LexisNexis::DdpClient do
     context 'when liveness checking is required' do
       it 'includes selfie image in the request body' do
         subject.post_images(
-          front_image: front_image,
-          back_image: back_image,
-          selfie_image: selfie_image,
-          document_type_requested: document_type_requested,
-          passport_requested: passport_requested,
+          front_image:,
+          back_image:,
+          selfie_image:,
+          document_type_requested:,
+          passport_requested:,
           liveness_checking_required: true,
+          user_uuid:,
+          user_email:,
         )
 
         expect(WebMock).to have_requested(:post, 'https://example.com/authentication/v1/trueid/')
@@ -86,19 +86,22 @@ RSpec.describe DocAuth::LexisNexis::DdpClient do
     end
 
     context 'when liveness checking is not required' do
-      it 'uses the noliveness policy' do
+      it 'uses the noliveness policy and sends empty selfie' do
         subject.post_images(
-          front_image: front_image,
-          back_image: back_image,
-          document_type_requested: document_type_requested,
-          passport_requested: passport_requested,
+          front_image:,
+          back_image:,
+          document_type_requested:,
+          passport_requested:,
           liveness_checking_required: false,
+          user_uuid:,
+          user_email:,
         )
 
         expect(WebMock).to have_requested(:post, 'https://example.com/authentication/v1/trueid/')
           .with { |req|
             body = JSON.parse(req.body)
-            body['policy'] == 'test_noliveness_policy'
+            body['policy'] == 'test_noliveness_policy' &&
+              body['Trueid.image_data.selfie'] == ''
           }
       end
     end
@@ -108,12 +111,14 @@ RSpec.describe DocAuth::LexisNexis::DdpClient do
 
       it 'uses passport image as front and excludes back image' do
         subject.post_images(
-          front_image: front_image,
-          back_image: back_image,
-          passport_image: passport_image,
-          document_type_requested: document_type_requested,
-          passport_requested: passport_requested,
-          liveness_checking_required: liveness_checking_required,
+          front_image:,
+          back_image:,
+          passport_image:,
+          document_type_requested:,
+          passport_requested:,
+          liveness_checking_required:,
+          user_uuid:,
+          user_email:,
         )
 
         expect(WebMock).to have_requested(:post, 'https://example.com/authentication/v1/trueid/')
@@ -133,11 +138,13 @@ RSpec.describe DocAuth::LexisNexis::DdpClient do
 
       it 'returns a failed DdpResult with exception' do
         result = subject.post_images(
-          front_image: front_image,
-          back_image: back_image,
-          document_type_requested: document_type_requested,
-          passport_requested: passport_requested,
-          liveness_checking_required: liveness_checking_required,
+          front_image:,
+          back_image:,
+          document_type_requested:,
+          passport_requested:,
+          liveness_checking_required:,
+          user_uuid:,
+          user_email:,
         )
 
         expect(result.success).to eq(false)
@@ -158,11 +165,13 @@ RSpec.describe DocAuth::LexisNexis::DdpClient do
 
       it 'raises an error and returns failed result' do
         result = subject.post_images(
-          front_image: front_image,
-          back_image: back_image,
-          document_type_requested: document_type_requested,
-          passport_requested: passport_requested,
-          liveness_checking_required: liveness_checking_required,
+          front_image:,
+          back_image:,
+          document_type_requested:,
+          passport_requested:,
+          liveness_checking_required:,
+          user_uuid:,
+          user_email:,
         )
 
         expect(result.success).to eq(false)
@@ -183,11 +192,13 @@ RSpec.describe DocAuth::LexisNexis::DdpClient do
 
       it 'returns a failed result with review_status error' do
         result = subject.post_images(
-          front_image: front_image,
-          back_image: back_image,
-          document_type_requested: document_type_requested,
-          passport_requested: passport_requested,
-          liveness_checking_required: liveness_checking_required,
+          front_image:,
+          back_image:,
+          document_type_requested:,
+          passport_requested:,
+          liveness_checking_required:,
+          user_uuid:,
+          user_email:,
         )
 
         expect(result.success).to eq(false)
@@ -209,11 +220,13 @@ RSpec.describe DocAuth::LexisNexis::DdpClient do
 
       it 'returns a failed result with review_status error' do
         result = subject.post_images(
-          front_image: front_image,
-          back_image: back_image,
-          document_type_requested: document_type_requested,
-          passport_requested: passport_requested,
-          liveness_checking_required: liveness_checking_required,
+          front_image:,
+          back_image:,
+          document_type_requested:,
+          passport_requested:,
+          liveness_checking_required:,
+          user_uuid:,
+          user_email:,
         )
 
         expect(result.success).to eq(false)
@@ -235,11 +248,13 @@ RSpec.describe DocAuth::LexisNexis::DdpClient do
 
       it 'returns a failed result with request_result error' do
         result = subject.post_images(
-          front_image: front_image,
-          back_image: back_image,
-          document_type_requested: document_type_requested,
-          passport_requested: passport_requested,
-          liveness_checking_required: liveness_checking_required,
+          front_image:,
+          back_image:,
+          document_type_requested:,
+          passport_requested:,
+          liveness_checking_required:,
+          user_uuid:,
+          user_email:,
         )
 
         expect(result.success).to eq(false)
@@ -247,14 +262,46 @@ RSpec.describe DocAuth::LexisNexis::DdpClient do
       end
     end
 
-    context 'when required images are missing' do
-      it 'raises ArgumentError when front_image is nil for drivers license' do
+    context 'when required fields are missing' do
+      it 'returns ArgumentError when uuid is nil' do
+        result = subject.post_images(
+          front_image:,
+          back_image:,
+          document_type_requested: DocAuth::LexisNexis::DocumentTypes::DRIVERS_LICENSE,
+          passport_requested:,
+          liveness_checking_required:,
+          user_email:,
+        )
+
+        expect(result.success).to eq(false)
+        expect(result.exception).to be_a(ArgumentError)
+        expect(result.exception.message).to include('uuid is required')
+      end
+
+      it 'returns ArgumentError when email is nil' do
+        result = subject.post_images(
+          front_image:,
+          back_image:,
+          document_type_requested: DocAuth::LexisNexis::DocumentTypes::DRIVERS_LICENSE,
+          passport_requested:,
+          liveness_checking_required:,
+          user_uuid:,
+        )
+
+        expect(result.success).to eq(false)
+        expect(result.exception).to be_a(ArgumentError)
+        expect(result.exception.message).to include('email is required')
+      end
+
+      it 'returns ArgumentError when front_image is nil for drivers license' do
         result = subject.post_images(
           front_image: nil,
-          back_image: back_image,
+          back_image:,
           document_type_requested: DocAuth::LexisNexis::DocumentTypes::DRIVERS_LICENSE,
-          passport_requested: passport_requested,
-          liveness_checking_required: liveness_checking_required,
+          passport_requested:,
+          liveness_checking_required:,
+          user_uuid:,
+          user_email:,
         )
 
         expect(result.success).to eq(false)
@@ -262,13 +309,15 @@ RSpec.describe DocAuth::LexisNexis::DdpClient do
         expect(result.exception.message).to include('front_image is required')
       end
 
-      it 'raises ArgumentError when back_image is nil for drivers license' do
+      it 'returns ArgumentError when back_image is nil for drivers license' do
         result = subject.post_images(
-          front_image: front_image,
+          front_image:,
           back_image: nil,
           document_type_requested: DocAuth::LexisNexis::DocumentTypes::DRIVERS_LICENSE,
-          passport_requested: passport_requested,
-          liveness_checking_required: liveness_checking_required,
+          passport_requested:,
+          liveness_checking_required:,
+          user_uuid:,
+          user_email:,
         )
 
         expect(result.success).to eq(false)
@@ -276,14 +325,16 @@ RSpec.describe DocAuth::LexisNexis::DdpClient do
         expect(result.exception.message).to eq('back_image is required')
       end
 
-      it 'raises ArgumentError when passport_image is nil for passport' do
+      it 'returns ArgumentError when passport_image is nil for passport' do
         result = subject.post_images(
-          front_image: front_image,
-          back_image: back_image,
+          front_image:,
+          back_image:,
           passport_image: nil,
           document_type_requested: DocAuth::LexisNexis::DocumentTypes::PASSPORT,
-          passport_requested: passport_requested,
-          liveness_checking_required: liveness_checking_required,
+          passport_requested:,
+          liveness_checking_required:,
+          user_uuid:,
+          user_email:,
         )
 
         expect(result.success).to eq(false)
@@ -291,14 +342,16 @@ RSpec.describe DocAuth::LexisNexis::DdpClient do
         expect(result.exception.message).to include('passport_image is required')
       end
 
-      it 'raises ArgumentError when selfie_image is nil with liveness checking' do
+      it 'returns ArgumentError when selfie_image is nil with liveness checking' do
         result = subject.post_images(
-          front_image: front_image,
-          back_image: back_image,
+          front_image:,
+          back_image:,
           selfie_image: nil,
           document_type_requested: DocAuth::LexisNexis::DocumentTypes::DRIVERS_LICENSE,
-          passport_requested: passport_requested,
+          passport_requested:,
           liveness_checking_required: true,
+          user_uuid:,
+          user_email:,
         )
 
         expect(result.success).to eq(false)
@@ -319,11 +372,13 @@ RSpec.describe DocAuth::LexisNexis::DdpClient do
 
     it 'includes Content-Type, x-org-id, and x-api-key headers' do
       subject.post_images(
-        front_image: front_image,
-        back_image: back_image,
-        document_type_requested: document_type_requested,
-        passport_requested: passport_requested,
-        liveness_checking_required: liveness_checking_required,
+        front_image:,
+        back_image:,
+        document_type_requested:,
+        passport_requested:,
+        liveness_checking_required:,
+        user_uuid:,
+        user_email:,
       )
 
       expect(WebMock).to have_requested(:post, 'https://example.com/authentication/v1/trueid/')
@@ -346,11 +401,13 @@ RSpec.describe DocAuth::LexisNexis::DdpClient do
 
     it 'includes images with correct key format' do
       subject.post_images(
-        front_image: front_image,
-        back_image: back_image,
-        document_type_requested: document_type_requested,
-        passport_requested: passport_requested,
-        liveness_checking_required: liveness_checking_required,
+        front_image:,
+        back_image:,
+        document_type_requested:,
+        passport_requested:,
+        liveness_checking_required:,
+        user_uuid:,
+        user_email:,
       )
 
       expect(WebMock).to have_requested(:post, 'https://example.com/authentication/v1/trueid/')
@@ -363,14 +420,14 @@ RSpec.describe DocAuth::LexisNexis::DdpClient do
 
     it 'includes required request fields' do
       subject.post_images(
-        front_image: front_image,
-        back_image: back_image,
-        document_type_requested: document_type_requested,
-        passport_requested: passport_requested,
-        liveness_checking_required: liveness_checking_required,
+        front_image:,
+        back_image:,
+        document_type_requested:,
+        passport_requested:,
+        liveness_checking_required:,
         uuid_prefix: 'test_prefix',
         user_uuid: 'test_uuid_12345',
-        applicant: applicant,
+        user_email:,
       )
 
       expect(WebMock).to have_requested(:post, 'https://example.com/authentication/v1/trueid/')
@@ -379,27 +436,26 @@ RSpec.describe DocAuth::LexisNexis::DdpClient do
           body['account_email'] == 'person.name@email.test' &&
             body['service_type'] == 'basic' &&
             body['local_attrib_1'] == 'test_prefix' &&
-            body['local_attrib_3'] == 'test_uuid_12345' &&
-            body['auth_method'] == 'trueid'
+            body['local_attrib_3'] == 'test_uuid_12345'
         }
     end
 
-    context 'with empty applicant' do
-      it 'uses empty string defaults' do
+    context 'with empty uuid_prefix' do
+      it 'uses empty string default for uuid_prefix' do
         subject.post_images(
-          front_image: front_image,
-          back_image: back_image,
-          document_type_requested: document_type_requested,
-          passport_requested: passport_requested,
-          liveness_checking_required: liveness_checking_required,
-          applicant: {},
+          front_image:,
+          back_image:,
+          document_type_requested:,
+          passport_requested:,
+          liveness_checking_required:,
+          user_uuid:,
+          user_email:,
         )
 
         expect(WebMock).to have_requested(:post, 'https://example.com/authentication/v1/trueid/')
           .with { |req|
             body = JSON.parse(req.body)
-            body['account_email'] == '' &&
-              body['local_attrib_1'] == ''
+            body['local_attrib_1'] == ''
           }
       end
     end
@@ -417,11 +473,13 @@ RSpec.describe DocAuth::LexisNexis::DdpClient do
           .with(instance_of(Proofing::LexisNexis::RequestError))
 
         subject.post_images(
-          front_image: front_image,
-          back_image: back_image,
-          document_type_requested: document_type_requested,
-          passport_requested: passport_requested,
-          liveness_checking_required: liveness_checking_required,
+          front_image:,
+          back_image:,
+          document_type_requested:,
+          passport_requested:,
+          liveness_checking_required:,
+          user_uuid:,
+          user_email:,
         )
       end
     end

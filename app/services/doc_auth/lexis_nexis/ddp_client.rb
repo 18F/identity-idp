@@ -24,22 +24,23 @@ module DocAuth
         images_cropped: false,
         uuid_prefix: nil,
         user_uuid: nil,
-        applicant: {}
+        user_email: nil
       )
         # rubocop:enable Lint/UnusedMethodArgument
-        request_applicant = applicant.merge(
-          front_image: front_image,
-          back_image: back_image,
-          passport_image: passport_image,
-          selfie_image: selfie_image,
-          document_type_requested: document_type_requested,
-          liveness_checking_required: liveness_checking_required,
-          uuid_prefix: uuid_prefix,
+        request_applicant = {
+          front_image:,
+          back_image:,
+          passport_image:,
+          selfie_image:,
+          document_type_requested:,
+          liveness_checking_required:,
+          uuid_prefix:,
           uuid: user_uuid,
-        )
+          email: user_email,
+        }
 
         response = Requests::Ddp::TrueIdRequest.new(
-          config: config,
+          config:,
           applicant: request_applicant,
         ).send_request
 

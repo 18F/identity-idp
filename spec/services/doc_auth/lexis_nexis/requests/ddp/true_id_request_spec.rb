@@ -12,12 +12,12 @@ RSpec.describe DocAuth::LexisNexis::Requests::Ddp::TrueIdRequest do
       email: 'person.name@email.test',
       uuid_prefix: 'test_prefix',
       uuid: 'test_uuid_12345',
-      front_image: front_image,
-      back_image: back_image,
-      selfie_image: selfie_image,
-      passport_image: passport_image,
-      document_type_requested: document_type_requested,
-      liveness_checking_required: liveness_checking_required,
+      front_image:,
+      back_image:,
+      selfie_image:,
+      passport_image:,
+      document_type_requested:,
+      liveness_checking_required:,
     }
   end
 
@@ -29,7 +29,7 @@ RSpec.describe DocAuth::LexisNexis::Requests::Ddp::TrueIdRequest do
     )
   end
 
-  subject { described_class.new(config: config, applicant: applicant) }
+  subject { described_class.new(config:, applicant:) }
 
   before do
     allow(IdentityConfig.store).to receive(:lexisnexis_trueid_ddp_liveness_policy)
@@ -86,8 +86,7 @@ RSpec.describe DocAuth::LexisNexis::Requests::Ddp::TrueIdRequest do
           body['account_email'] == 'person.name@email.test' &&
             body['service_type'] == 'basic' &&
             body['local_attrib_1'] == 'test_prefix' &&
-            body['local_attrib_3'] == 'test_uuid_12345' &&
-            body['auth_method'] == 'trueid'
+            body['local_attrib_3'] == 'test_uuid_12345'
         }
     end
 
@@ -109,13 +108,14 @@ RSpec.describe DocAuth::LexisNexis::Requests::Ddp::TrueIdRequest do
     context 'when liveness checking is not required' do
       let(:liveness_checking_required) { false }
 
-      it 'uses the noliveness policy' do
+      it 'uses the noliveness policy and sends empty selfie' do
         subject.send_request
 
         expect(WebMock).to have_requested(:post, 'https://example.com/authentication/v1/trueid/')
           .with { |req|
             body = JSON.parse(req.body)
-            body['policy'] == 'test_noliveness_policy'
+            body['policy'] == 'test_noliveness_policy' &&
+              body['Trueid.image_data.selfie'] == ''
           }
       end
     end
@@ -138,6 +138,8 @@ RSpec.describe DocAuth::LexisNexis::Requests::Ddp::TrueIdRequest do
     context 'with empty optional fields' do
       let(:applicant) do
         {
+          email: 'test@email.test',
+          uuid: 'test_uuid',
           front_image: front_image,
           back_image: back_image,
           document_type_requested: document_type_requested,
@@ -145,20 +147,19 @@ RSpec.describe DocAuth::LexisNexis::Requests::Ddp::TrueIdRequest do
         }
       end
 
-      it 'uses empty string defaults' do
+      it 'uses empty string defaults for uuid_prefix' do
         subject.send_request
 
         expect(WebMock).to have_requested(:post, 'https://example.com/authentication/v1/trueid/')
           .with { |req|
             body = JSON.parse(req.body)
-            body['account_email'] == '' &&
-              body['local_attrib_1'] == ''
+            body['local_attrib_1'] == ''
           }
       end
     end
   end
 
-  describe 'image validation' do
+  describe 'request validation' do
     before do
       stub_request(:post, 'https://example.com/authentication/v1/trueid/')
         .to_return(
@@ -167,9 +168,45 @@ RSpec.describe DocAuth::LexisNexis::Requests::Ddp::TrueIdRequest do
         )
     end
 
+    context 'when uuid is nil' do
+      let(:applicant) do
+        {
+          email: 'test@email.test',
+          uuid: nil,
+          front_image: front_image,
+          back_image: back_image,
+          document_type_requested: DocAuth::LexisNexis::DocumentTypes::DRIVERS_LICENSE,
+          liveness_checking_required: false,
+        }
+      end
+
+      it 'raises ArgumentError' do
+        expect { subject.send_request }.to raise_error(ArgumentError, 'uuid is required')
+      end
+    end
+
+    context 'when email is nil' do
+      let(:applicant) do
+        {
+          email: nil,
+          uuid: 'test_uuid',
+          front_image: front_image,
+          back_image: back_image,
+          document_type_requested: DocAuth::LexisNexis::DocumentTypes::DRIVERS_LICENSE,
+          liveness_checking_required: false,
+        }
+      end
+
+      it 'raises ArgumentError' do
+        expect { subject.send_request }.to raise_error(ArgumentError, 'email is required')
+      end
+    end
+
     context 'when front_image is nil' do
       let(:applicant) do
         {
+          email: 'test@email.test',
+          uuid: 'test_uuid',
           front_image: nil,
           back_image: back_image,
           document_type_requested: DocAuth::LexisNexis::DocumentTypes::DRIVERS_LICENSE,
@@ -185,6 +222,8 @@ RSpec.describe DocAuth::LexisNexis::Requests::Ddp::TrueIdRequest do
     context 'when back_image is nil' do
       let(:applicant) do
         {
+          email: 'test@email.test',
+          uuid: 'test_uuid',
           front_image: front_image,
           back_image: nil,
           document_type_requested: DocAuth::LexisNexis::DocumentTypes::DRIVERS_LICENSE,
@@ -200,6 +239,8 @@ RSpec.describe DocAuth::LexisNexis::Requests::Ddp::TrueIdRequest do
     context 'when passport_image is nil for passport documents' do
       let(:applicant) do
         {
+          email: 'test@email.test',
+          uuid: 'test_uuid',
           front_image: front_image,
           back_image: back_image,
           passport_image: nil,
@@ -219,6 +260,8 @@ RSpec.describe DocAuth::LexisNexis::Requests::Ddp::TrueIdRequest do
     context 'when selfie_image is nil with liveness checking' do
       let(:applicant) do
         {
+          email: 'test@email.test',
+          uuid: 'test_uuid',
           front_image: front_image,
           back_image: back_image,
           selfie_image: nil,
