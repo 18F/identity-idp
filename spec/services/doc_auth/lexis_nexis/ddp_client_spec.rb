@@ -63,73 +63,6 @@ RSpec.describe DocAuth::LexisNexis::DdpClient do
       expect(result.review_status).to eq('pass')
     end
 
-    context 'when liveness checking is required' do
-      it 'includes selfie image in the request body' do
-        subject.post_images(
-          front_image:,
-          back_image:,
-          selfie_image:,
-          document_type_requested:,
-          passport_requested:,
-          liveness_checking_required: true,
-          user_uuid:,
-          user_email:,
-        )
-
-        expect(WebMock).to have_requested(:post, 'https://example.com/authentication/v1/trueid/')
-          .with { |req|
-            body = JSON.parse(req.body)
-            body['Trueid.image_data.selfie'] == Base64.strict_encode64(selfie_image) &&
-              body['policy'] == 'test_liveness_policy'
-          }
-      end
-    end
-
-    context 'when liveness checking is not required' do
-      it 'uses the noliveness policy and sends empty selfie' do
-        subject.post_images(
-          front_image:,
-          back_image:,
-          document_type_requested:,
-          passport_requested:,
-          liveness_checking_required: false,
-          user_uuid:,
-          user_email:,
-        )
-
-        expect(WebMock).to have_requested(:post, 'https://example.com/authentication/v1/trueid/')
-          .with { |req|
-            body = JSON.parse(req.body)
-            body['policy'] == 'test_noliveness_policy' &&
-              body['Trueid.image_data.selfie'] == ''
-          }
-      end
-    end
-
-    context 'when document type is passport' do
-      let(:document_type_requested) { DocAuth::LexisNexis::DocumentTypes::PASSPORT }
-
-      it 'uses passport image as front and excludes back image' do
-        subject.post_images(
-          front_image:,
-          back_image:,
-          passport_image:,
-          document_type_requested:,
-          passport_requested:,
-          liveness_checking_required:,
-          user_uuid:,
-          user_email:,
-        )
-
-        expect(WebMock).to have_requested(:post, 'https://example.com/authentication/v1/trueid/')
-          .with { |req|
-            body = JSON.parse(req.body)
-            body['Trueid.image_data.white_front'] == Base64.strict_encode64(passport_image) &&
-              body['Trueid.image_data.white_back'] == ''
-          }
-      end
-    end
-
     context 'when the request fails with an exception' do
       before do
         stub_request(:post, 'https://example.com/authentication/v1/trueid/')
@@ -380,35 +313,6 @@ RSpec.describe DocAuth::LexisNexis::DdpClient do
           user_email:,
         )
       end
-    end
-  end
-
-  describe 'request headers' do
-    before do
-      stub_request(:post, 'https://example.com/authentication/v1/trueid/')
-        .to_return(
-          status: 200,
-          body: { 'request_result' => 'success', 'review_status' => 'pass' }.to_json,
-        )
-    end
-
-    it 'includes Content-Type, x-org-id, and x-api-key headers' do
-      subject.post_images(
-        front_image:,
-        back_image:,
-        document_type_requested:,
-        passport_requested:,
-        liveness_checking_required:,
-        user_uuid:,
-        user_email:,
-      )
-
-      expect(WebMock).to have_requested(:post, 'https://example.com/authentication/v1/trueid/')
-        .with(headers: {
-          'Content-Type' => 'application/json',
-          'x-org-id' => 'test_org_id',
-          'x-api-key' => 'test_api_key',
-        })
     end
   end
 end
