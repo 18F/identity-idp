@@ -72,16 +72,17 @@ module Idv
 
     private
 
-    def hybrid_doc_capture_session
-      DocumentCaptureSession.find_by(uuid: idv_session.document_capture_session_uuid)
+    def doc_auth_document_capture_session
+      @doc_auth_document_capture_session ||=
+        DocumentCaptureSession.find_by(uuid: idv_session.document_capture_session_uuid)
     end
 
     def hybrid_mobile_threatmetrix_session_id
-      hybrid_doc_capture_session&.hybrid_mobile_threatmetrix_session_id
+      doc_auth_document_capture_session&.hybrid_mobile_threatmetrix_session_id
     end
 
     def hybrid_mobile_request_ip
-      hybrid_doc_capture_session&.hybrid_mobile_request_ip
+      doc_auth_document_capture_session&.hybrid_mobile_request_ip
     end
 
     def save_in_person_notification_phone
@@ -521,17 +522,19 @@ module Idv
       return false unless threatmetrix_result
 
       success = (threatmetrix_result[:review_status] == 'pass')
+      device_fingerprint = threatmetrix_result.dig(:device_fingerprint)
+      failure_reason = device_risk_failure_reason(success, threatmetrix_result)
 
       attempts_api_tracker.idv_device_risk_assessment(
-        device_fingerprint: threatmetrix_result.dig(:device_fingerprint),
+        device_fingerprint:,
         success:,
-        failure_reason: device_risk_failure_reason(success, threatmetrix_result),
+        failure_reason:,
       )
 
       fraud_ops_tracker.idv_device_risk_assessment(
-        device_fingerprint: threatmetrix_result.dig(:device_fingerprint),
+        device_fingerprint:,
         success:,
-        failure_reason: device_risk_failure_reason(success, threatmetrix_result),
+        failure_reason:,
       )
 
       !success
