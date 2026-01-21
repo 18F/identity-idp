@@ -112,7 +112,7 @@ RSpec.describe Proofing::Socure::IdPlus::Proofers::PhoneRiskProofer do
       end
     end
 
-    context 'when autofail reason codeds are defined' do
+    context 'when autofail reason codes are defined' do
       before do
         allow(IdentityConfig.store).to receive(
           :idv_socure_phonerisk_auto_failure_reason_codes,
