@@ -115,6 +115,7 @@ module Idv
             idv_session.invalidate_in_person_pii_from_user!
             idv_session.doc_auth_vendor = nil
             idv_session.source_check_vendor = nil
+            idv_session.aamva_verified_attributes = nil
           end,
         )
       end

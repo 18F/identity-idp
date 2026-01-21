@@ -131,7 +131,7 @@ module Proofing
         return false unless resolution_result.failed_result_can_pass_with_additional_verification?
         failed_resolution_attributes =
           resolution_result.attributes_requiring_additional_verification
-        passed_state_id_attributes = state_id_result.verified_attributes
+        passed_state_id_attributes = applicant_pii[:verified_attributes]
 
         (failed_resolution_attributes.to_a - passed_state_id_attributes.to_a).empty?
       end
