@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe SmsPreviewController do
+RSpec.describe Users::SmsPreviewController do
   describe '#show' do
     it 'redirects to SMS preview page in actionmailer' do
       allow(IdentityConfig.store).to receive(:rails_mailer_previews_enabled).and_return(true)
