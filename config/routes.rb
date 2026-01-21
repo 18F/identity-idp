@@ -261,7 +261,7 @@ Rails.application.routes.draw do
     post '/second_mfa_reminder' => 'users/second_mfa_reminder#create'
 
     if IdentityConfig.store.rails_mailer_previews_enabled
-      get '/sms_preview' => 'sms_preview#show', as: :sms_preview
+      get '/sms_preview' => 'users/sms_preview#show'
     end
 
     get '/webauthn_platform_recommended' => 'users/webauthn_platform_recommended#new'
