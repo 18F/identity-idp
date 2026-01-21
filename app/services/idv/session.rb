@@ -425,22 +425,22 @@ module Idv
       )
     end
 
+    def build_threatmetrix_review_statuses
+      [].tap do |statuses|
+        statuses << hybrid_mobile_threatmetrix_review_status if
+          FeatureManagement.proofing_device_hybrid_profiling_collecting_enabled?
+        statuses << threatmetrix_review_status
+      end.compact.uniq
+    end
+
     def threatmetrix_fraud_pending_reason
       return if !FeatureManagement.proofing_device_profiling_decisioning_enabled?
 
-      if FeatureManagement.proofing_device_hybrid_profiling_collecting_enabled?
-        case hybrid_mobile_threatmetrix_review_status
-        when 'reject'
-          return 'hybrid_mobile_threatmetrix_reject'
-        when 'review'
-          return 'hybrid_mobile_threatmetrix_review'
-        end
-      end
+      review_statuses = build_threatmetrix_review_statuses
 
-      case threatmetrix_review_status
-      when 'reject'
+      if review_statuses.include?('reject')
         'threatmetrix_reject'
-      when 'review'
+      elsif review_statuses.include?('review')
         'threatmetrix_review'
       end
     end

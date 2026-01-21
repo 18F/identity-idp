@@ -19,7 +19,7 @@ RSpec.feature 'Users pending ThreatMetrix review', :js do
     )
   end
 
-  scenario 'users pending ThreatMetrix see sad face screen and cannot perform idv' do
+  scenario 'users pending ThreatMetrix see please call page and cannot perform idv' do
     allow(IdentityConfig.store).to receive(:otp_delivery_blocklist_maxretry).and_return(300)
     user = create(:user, :fully_registered)
 
@@ -71,7 +71,7 @@ RSpec.feature 'Users pending ThreatMetrix review', :js do
       end.at_least(1).times
     end
 
-    scenario 'user sees sad face screen after failing hybrid handoff ThreadMetrix' do
+    scenario 'user sees please call page after failing hybrid handoff ThreadMetrix' do
       user = create(:user, :fully_registered)
 
       perform_in_browser(:desktop) do
