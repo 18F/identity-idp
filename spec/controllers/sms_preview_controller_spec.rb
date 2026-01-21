@@ -6,7 +6,7 @@ RSpec.describe SmsPreviewController do
       allow(IdentityConfig.store).to receive(:rails_mailer_previews_enabled).and_return(true)
       get :show
 
-      expect(response).to redirect_to '/rails/mailers/sms_text_mailer'
+      expect(response.location).to eq('http://www.example.com/rails/mailers/sms_text_mailer')
     end
   end
 end

@@ -203,10 +203,6 @@ Rails.application.routes.draw do
       mount Lookbook::Engine, at: '/components'
     end
 
-    if IdentityConfig.store.rails_mailer_previews_enabled
-      get '/sms_preview' => 'sms_preview#show', as: :sms_preview
-    end
-
     if IdentityConfig.store.lexisnexis_threatmetrix_mock_enabled
       get '/test/device_profiling' => 'test/device_profiling#index',
           as: :test_device_profiling_iframe
@@ -263,6 +259,10 @@ Rails.application.routes.draw do
 
     get '/second_mfa_reminder' => 'users/second_mfa_reminder#new'
     post '/second_mfa_reminder' => 'users/second_mfa_reminder#create'
+
+    if IdentityConfig.store.rails_mailer_previews_enabled
+      get '/sms_preview' => 'sms_preview#show', as: :sms_preview
+    end
 
     get '/webauthn_platform_recommended' => 'users/webauthn_platform_recommended#new'
     post '/webauthn_platform_recommended' => 'users/webauthn_platform_recommended#create'
