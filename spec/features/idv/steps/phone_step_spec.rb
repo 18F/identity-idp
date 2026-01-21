@@ -93,7 +93,7 @@ RSpec.feature 'idv phone step', :js do
         expect(page).to have_current_path(idv_otp_verification_path)
       end
 
-      context 'displays alert message if same nubmer is resubmitted' do
+      context 'displays alert message if same number is resubmitted' do
         context 'gpo verification is enabled' do
           it 'includes verify link' do
             click_idv_send_security_code
@@ -395,7 +395,7 @@ RSpec.feature 'idv phone step', :js do
           expect(page).to have_current_path(idv_otp_verification_path)
         end
 
-        context 'displays alert message if same nubmer is resubmitted' do
+        context 'displays alert message if same number is resubmitted' do
           let(:phonerisk_pass) { false }
           context 'gpo verification is enabled' do
             it 'includes verify link' do
@@ -579,7 +579,7 @@ RSpec.feature 'idv phone step', :js do
       context 'when phonerisk_reason_codes contain autofail reason codes' do
         let(:idv_socure_phonerisk_auto_failure_reason_codes) { ['R321', 'R999'] }
 
-        it 'fails verification and allows try another nubmer' do
+        it 'fails verification and allows try another number' do
           start_idv_from_sp
           complete_idv_steps_before_phone_step
 
@@ -600,7 +600,7 @@ RSpec.feature 'idv phone step', :js do
       context 'when name_correlation_reason_codes contain autofail reason codes' do
         let(:idv_socure_phonerisk_auto_failure_reason_codes) { ['R890'] }
 
-        it 'fails verification and allows try another nubmer' do
+        it 'fails verification and allows try another number' do
           start_idv_from_sp
           complete_idv_steps_before_phone_step
 
