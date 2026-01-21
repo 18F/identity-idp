@@ -1071,7 +1071,6 @@ idv.accessible_labels.masked_ssn: secure text, starting with %{first_number} and
 idv.buttons.change_address_label: Update address
 idv.buttons.change_label: Update
 idv.buttons.change_ssn_label: Update Social Security number
-idv.buttons.change_state_id_label: Update state ID
 idv.buttons.continue_plain: Continue
 idv.buttons.mail.send: Request a letter
 idv.by_mail.sp_follow_up.body: Sign back in to %{service_provider} to connect your verified %{app_name} account and access services.
