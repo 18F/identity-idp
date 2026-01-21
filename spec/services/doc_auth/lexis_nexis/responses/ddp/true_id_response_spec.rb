@@ -13,15 +13,51 @@ RSpec.describe DocAuth::LexisNexis::Responses::Ddp::TrueIdResponse do
     DocAuth::LexisNexis::Config.new
   end
   let(:true_id_response) { nil }
+  let(:front_image) { 'front_image_data' }
+  let(:back_image) { 'back_image_data' }
+  let(:selfie_image) { 'selfie_image_data' }
+  let(:passport_image) { 'passport_image_data' }
+  let(:liveness_checking_required) { false }
+  let(:document_type_requested) { DocAuth::LexisNexis::DocumentTypes::DRIVERS_LICENSE }
+  let(:applicant) do
+    {
+      email: 'person.name@email.test',
+      uuid_prefix: 'test_prefix',
+      uuid: 'test_uuid_12345',
+      front_image:,
+      back_image:,
+      selfie_image:,
+      passport_image:,
+      document_type_requested:,
+      liveness_checking_required:,
+    }
+  end
+
+  let(:config) do
+    Proofing::LexisNexis::Config.new(
+      api_key: 'test_api_key',
+      base_url: 'https://example.com',
+      org_id: 'test_org_id',
+    )
+  end
+  let(:request) do
+    DocAuth::LexisNexis::Requests::Ddp::TrueIdRequest.new(
+      config:,
+      applicant:,
+    )
+  end
   let(:response) do
     described_class.new(
       http_response: true_id_response,
       config:,
+      request:,
     )
   end
 
   before do
     allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_org_id).and_return('org_id_str')
+    allow(IdentityConfig.store).to receive(:lexisnexis_trueid_ddp_noliveness_policy)
+      .and_return('default_auth_policy_pm')
   end
 
   context 'when the response is a success' do

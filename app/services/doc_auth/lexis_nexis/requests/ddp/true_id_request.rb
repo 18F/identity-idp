@@ -10,6 +10,14 @@ module DocAuth
             super
           end
 
+          def policy
+            if liveness_checking_required?
+              IdentityConfig.store.lexisnexis_trueid_ddp_liveness_policy
+            else
+              IdentityConfig.store.lexisnexis_trueid_ddp_noliveness_policy
+            end
+          end
+
           private
 
           def build_request_body
@@ -88,14 +96,6 @@ module DocAuth
               applicant[:passport_image]
             else
               applicant[:front_image]
-            end
-          end
-
-          def policy
-            if liveness_checking_required?
-              IdentityConfig.store.lexisnexis_trueid_ddp_liveness_policy
-            else
-              IdentityConfig.store.lexisnexis_trueid_ddp_noliveness_policy
             end
           end
 
