@@ -388,4 +388,526 @@ RSpec.describe Idv::InPerson::StateIdController do
       expect(Idv::InPerson::StateIdController.step_info).to be_valid
     end
   end
+
+  describe 'AAMVA integration' do
+    before do
+      allow(IdentityConfig.store).to receive(:idv_aamva_at_doc_auth_enabled).and_return(true)
+    end
+
+    def valid_state_id_params(same_address_as_id: 'true')
+      {
+        identity_doc: {
+          first_name: 'Charity',
+          last_name: 'Johnson',
+          same_address_as_id: same_address_as_id,
+          identity_doc_address1: InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS1,
+          identity_doc_address2: InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS2,
+          identity_doc_city: InPersonHelper::GOOD_IDENTITY_DOC_CITY,
+          state_id_jurisdiction: 'AL',
+          id_number: 'ABC123234',
+          identity_doc_address_state: InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS_STATE,
+          identity_doc_zipcode: InPersonHelper::GOOD_IDENTITY_DOC_ZIPCODE,
+          dob: { month: '1', day: '1', year: '1980' },
+          id_expiration: { month: '12', day: '31', year: '2030' },
+        },
+      }
+    end
+
+    context 'when redirecting to SSN page (same_address_as_id is true)' do
+      let(:params) { valid_state_id_params(same_address_as_id: 'true') }
+
+      it 'enqueues async AAMVA job and redirects to state_id page for polling' do
+        expect(IppAamvaProofingJob).to receive(:perform_later)
+
+        put :update, params: params
+
+        expect(response).to redirect_to(idv_in_person_state_id_url)
+        expect(subject.idv_session.ipp_aamva_document_capture_session_uuid).to be_present
+      end
+
+      it 'does not create duplicate DocumentCaptureSession if one already exists' do
+        put :update, params: params
+        first_uuid = subject.idv_session.ipp_aamva_document_capture_session_uuid
+
+        expect do
+          put :update, params: params
+        end.not_to change { DocumentCaptureSession.count }
+
+        expect(subject.idv_session.ipp_aamva_document_capture_session_uuid).to eq(first_uuid)
+      end
+
+      context 'when async AAMVA check is in progress' do
+        let(:document_capture_session) do
+          DocumentCaptureSession.create!(
+            user_id: user.id,
+            issuer: nil,
+            requested_at: Time.zone.now,
+          )
+        end
+
+        before do
+          document_capture_session.create_proofing_session
+          subject.idv_session.ipp_aamva_document_capture_session_uuid =
+            document_capture_session.uuid
+        end
+
+        it 'renders the wait page' do
+          get :show
+
+          expect(response).to render_template('shared/wait')
+        end
+
+        it 'logs polling wait event' do
+          get :show
+
+          expect(@analytics).to have_logged_event(:idv_ipp_aamva_verification_polling_wait)
+        end
+      end
+
+      context 'when async AAMVA check completes successfully' do
+        let(:document_capture_session) do
+          DocumentCaptureSession.create!(
+            user_id: user.id,
+            issuer: nil,
+            requested_at: Time.zone.now,
+          )
+        end
+
+        let(:successful_result) do
+          {
+            success: true,
+            errors: {},
+            vendor_name: 'TestAAMVA',
+            checked_at: Time.zone.now.iso8601,
+          }
+        end
+
+        before do
+          document_capture_session.create_proofing_session
+          document_capture_session.store_proofing_result(successful_result)
+          subject.idv_session.ipp_aamva_document_capture_session_uuid =
+            document_capture_session.uuid
+        end
+
+        it 'redirects to SSN page' do
+          get :show
+
+          expect(response).to redirect_to(idv_in_person_ssn_url)
+        end
+
+        it 'stores AAMVA result in idv_session' do
+          get :show
+
+          expect(subject.idv_session.ipp_aamva_result).to be_present
+          expect(subject.idv_session.ipp_aamva_result['success']).to eq(true)
+          expect(subject.idv_session.source_check_vendor).to be_present
+        end
+
+        it 'clears the async state' do
+          get :show
+
+          expect(subject.idv_session.ipp_aamva_document_capture_session_uuid).to be_nil
+        end
+
+        it 'logs completion event with success' do
+          get :show
+
+          expect(@analytics).to have_logged_event(
+            :idv_ipp_aamva_verification_completed,
+            success: true,
+            vendor_name: 'TestAAMVA',
+            step: 'state_id',
+          )
+        end
+      end
+
+      context 'when async AAMVA check completes successfully on final attempt (rate limited)' do
+        let(:document_capture_session) do
+          DocumentCaptureSession.create!(
+            user_id: user.id,
+            issuer: nil,
+            requested_at: Time.zone.now,
+          )
+        end
+
+        let(:successful_result) do
+          {
+            success: true,
+            errors: {},
+            vendor_name: 'TestAAMVA',
+            checked_at: Time.zone.now.iso8601,
+          }
+        end
+
+        before do
+          document_capture_session.create_proofing_session
+          document_capture_session.store_proofing_result(successful_result)
+          subject.idv_session.ipp_aamva_document_capture_session_uuid =
+            document_capture_session.uuid
+          # Simulate user at max attempts (rate limited)
+          RateLimiter.new(user: user, rate_limit_type: :idv_doc_auth).increment_to_limited!
+        end
+
+        it 'redirects to SSN page (allows success on final attempt)' do
+          get :show
+
+          expect(response).to redirect_to(idv_in_person_ssn_url)
+        end
+
+        it 'clears the async state' do
+          get :show
+
+          expect(subject.idv_session.ipp_aamva_document_capture_session_uuid).to be_nil
+        end
+
+        it 'logs completion event with success' do
+          get :show
+
+          expect(@analytics).to have_logged_event(
+            :idv_ipp_aamva_verification_completed,
+            success: true,
+            vendor_name: 'TestAAMVA',
+            step: 'state_id',
+          )
+        end
+
+        it 'does not log rate limit event' do
+          get :show
+
+          expect(@analytics).not_to have_logged_event('Rate Limit Reached')
+        end
+      end
+
+      context 'when async AAMVA check fails on final attempt (rate limited)' do
+        let(:document_capture_session) do
+          DocumentCaptureSession.create!(
+            user_id: user.id,
+            issuer: nil,
+            requested_at: Time.zone.now,
+          )
+        end
+
+        let(:failed_result) do
+          {
+            success: false,
+            errors: { state_id: 'Unable to verify state ID' },
+            vendor_name: 'TestAAMVA',
+            checked_at: Time.zone.now.iso8601,
+          }
+        end
+
+        before do
+          document_capture_session.create_proofing_session
+          document_capture_session.store_proofing_result(failed_result)
+          subject.idv_session.ipp_aamva_document_capture_session_uuid =
+            document_capture_session.uuid
+          # Simulate user at max attempts - 1, so after increment they're at max
+          rate_limiter = RateLimiter.new(user: user, rate_limit_type: :idv_doc_auth)
+          (RateLimiter.max_attempts(:idv_doc_auth) - 1).times { rate_limiter.increment! }
+        end
+
+        it 'redirects to rate limit error page' do
+          get :show
+
+          expect(response).to redirect_to(idv_session_errors_rate_limited_url)
+        end
+
+        it 'clears the async state' do
+          get :show
+
+          expect(subject.idv_session.ipp_aamva_document_capture_session_uuid).to be_nil
+        end
+
+        it 'logs rate limit event' do
+          get :show
+
+          expect(@analytics).to have_logged_event(
+            'Rate Limit Reached',
+            limiter_type: :idv_doc_auth,
+            step_name: 'ipp_state_id',
+          )
+        end
+
+        it 'logs completion event with failure before rate limit redirect' do
+          get :show
+
+          expect(@analytics).to have_logged_event(
+            :idv_ipp_aamva_verification_completed,
+            success: false,
+            vendor_name: 'TestAAMVA',
+            step: 'state_id',
+          )
+        end
+      end
+
+      context 'when async AAMVA check fails' do
+        let(:document_capture_session) do
+          DocumentCaptureSession.create!(
+            user_id: user.id,
+            issuer: nil,
+            requested_at: Time.zone.now,
+          )
+        end
+
+        let(:failed_result) do
+          {
+            success: false,
+            errors: { state_id: 'Unable to verify state ID' },
+            vendor_name: 'TestAAMVA',
+            checked_at: Time.zone.now.iso8601,
+          }
+        end
+
+        before do
+          document_capture_session.create_proofing_session
+          document_capture_session.store_proofing_result(failed_result)
+          subject.idv_session.ipp_aamva_document_capture_session_uuid =
+            document_capture_session.uuid
+        end
+
+        it 'does not redirect to SSN page' do
+          get :show
+
+          expect(response).to render_template(:show)
+        end
+
+        it 'displays an error message' do
+          get :show
+
+          expect(flash.now[:error]).to eq(I18n.t('idv.failure.verify.heading'))
+        end
+
+        it 'clears the async state' do
+          get :show
+
+          expect(subject.idv_session.ipp_aamva_document_capture_session_uuid).to be_nil
+        end
+
+        it 'logs completion event with failure' do
+          get :show
+
+          expect(@analytics).to have_logged_event(
+            :idv_ipp_aamva_verification_completed,
+            success: false,
+            vendor_name: 'TestAAMVA',
+            step: 'state_id',
+          )
+        end
+      end
+
+      context 'when async AAMVA state is none' do
+        before do
+          subject.idv_session.ipp_aamva_document_capture_session_uuid = nil
+        end
+
+        it 'renders the show page' do
+          get :show
+
+          expect(response).to render_template(:show)
+        end
+
+        it 'logs state_id visited event' do
+          get :show
+
+          expect(@analytics).to have_logged_event(
+            'IdV: in person proofing state_id visited',
+            analytics_id: 'In Person Proofing',
+            flow_path: 'standard',
+            step: 'state_id',
+            opted_in_to_in_person_proofing: true,
+          )
+        end
+      end
+
+      context 'when async AAMVA state is missing' do
+        let(:document_capture_session) do
+          DocumentCaptureSession.create!(
+            user_id: user.id,
+            issuer: nil,
+            requested_at: Time.zone.now,
+          )
+        end
+
+        before do
+          # Create DCS but don't store any proofing result (simulates expired Redis data)
+          subject.idv_session.ipp_aamva_document_capture_session_uuid =
+            document_capture_session.uuid
+        end
+
+        it 'renders the show page with error' do
+          get :show
+
+          expect(response).to render_template(:show)
+          expect(flash[:error]).to eq(I18n.t('idv.failure.timeout'))
+        end
+
+        it 'clears the async state' do
+          get :show
+
+          expect(subject.idv_session.ipp_aamva_document_capture_session_uuid).to be_nil
+        end
+
+        it 'logs missing result event' do
+          get :show
+
+          expect(@analytics).to have_logged_event(:idv_ipp_aamva_proofing_result_missing)
+        end
+      end
+
+      context 'when AAMVA is disabled' do
+        before do
+          allow(IdentityConfig.store).to receive(:idv_aamva_at_doc_auth_enabled).and_return(false)
+        end
+
+        it 'does not enqueue job' do
+          expect(IppAamvaProofingJob).not_to receive(:perform_later)
+
+          put :update, params: params
+        end
+
+        it 'redirects directly to SSN page' do
+          put :update, params: params
+
+          expect(response).to redirect_to(idv_in_person_ssn_url)
+        end
+      end
+    end
+
+    context 'when redirecting to Address page (same_address_as_id is false)' do
+      let(:params) { valid_state_id_params(same_address_as_id: 'false') }
+
+      it 'enqueues AAMVA job and redirects to state_id page for polling' do
+        expect(IppAamvaProofingJob).to receive(:perform_later)
+
+        put :update, params: params
+
+        expect(response).to redirect_to(idv_in_person_state_id_url)
+        expect(subject.idv_session.ipp_aamva_document_capture_session_uuid).to be_present
+        expect(subject.idv_session.ipp_aamva_redirect_url).to eq(idv_in_person_address_url)
+      end
+
+      context 'when async AAMVA check completes successfully' do
+        let(:document_capture_session) do
+          DocumentCaptureSession.create!(
+            user_id: user.id,
+            issuer: nil,
+            requested_at: Time.zone.now,
+          )
+        end
+
+        let(:successful_result) do
+          {
+            success: true,
+            errors: {},
+            vendor_name: 'TestAAMVA',
+            checked_at: Time.zone.now.iso8601,
+          }
+        end
+
+        before do
+          document_capture_session.create_proofing_session
+          document_capture_session.store_proofing_result(successful_result)
+          subject.idv_session.ipp_aamva_document_capture_session_uuid =
+            document_capture_session.uuid
+          subject.idv_session.ipp_aamva_redirect_url = idv_in_person_address_url
+        end
+
+        it 'redirects to Address page (not SSN)' do
+          get :show
+
+          expect(response).to redirect_to(idv_in_person_address_url)
+        end
+
+        it 'stores AAMVA result in idv_session' do
+          get :show
+
+          expect(subject.idv_session.ipp_aamva_result).to be_present
+          expect(subject.idv_session.ipp_aamva_result['success']).to eq(true)
+        end
+
+        it 'clears the async state and redirect URL' do
+          get :show
+
+          expect(subject.idv_session.ipp_aamva_document_capture_session_uuid).to be_nil
+          expect(subject.idv_session.ipp_aamva_redirect_url).to be_nil
+        end
+      end
+    end
+
+    context 'when rate limited' do
+      let(:params) { valid_state_id_params(same_address_as_id: 'true') }
+
+      before do
+        allow(subject).to receive(:idv_attempter_rate_limited?).with(:idv_doc_auth).and_return(true)
+      end
+
+      it 'redirects to rate limit error page' do
+        put :update, params: params
+
+        expect(response).to redirect_to(idv_session_errors_rate_limited_url)
+      end
+
+      it 'logs rate limit event' do
+        put :update, params: params
+
+        expect(@analytics).to have_logged_event(
+          'Rate Limit Reached',
+          limiter_type: :idv_doc_auth,
+          step_name: 'ipp_state_id',
+        )
+      end
+
+      it 'does not enqueue AAMVA job when rate limited' do
+        expect(IppAamvaProofingJob).not_to receive(:perform_later)
+
+        put :update, params: params
+      end
+    end
+
+    context 'rate limiter increment' do
+      let(:params) { valid_state_id_params(same_address_as_id: 'true') }
+      let(:document_capture_session) do
+        DocumentCaptureSession.create!(
+          user_id: user.id,
+          issuer: nil,
+          requested_at: Time.zone.now,
+        )
+      end
+
+      let(:successful_result) do
+        {
+          success: true,
+          errors: {},
+          vendor_name: 'TestAAMVA',
+          checked_at: Time.zone.now.iso8601,
+        }
+      end
+
+      it 'increments rate limiter when async AAMVA result is processed' do
+        document_capture_session.create_proofing_session
+        document_capture_session.store_proofing_result(successful_result)
+        subject.idv_session.ipp_aamva_document_capture_session_uuid =
+          document_capture_session.uuid
+
+        initial_count = RateLimiter.new(user: user, rate_limit_type: :idv_doc_auth).remaining_count
+
+        get :show
+
+        new_count = RateLimiter.new(user: user, rate_limit_type: :idv_doc_auth).remaining_count
+        expect(new_count).to eq(initial_count - 1)
+      end
+
+      it 'does not increment rate limiter when already rate limited' do
+        allow(subject).to receive(:idv_attempter_rate_limited?).with(:idv_doc_auth).and_return(true)
+        rate_limiter = RateLimiter.new(user: user, rate_limit_type: :idv_doc_auth)
+        rate_limiter.increment_to_limited!
+        initial_count = rate_limiter.remaining_count
+
+        put :update, params: params
+
+        new_count = RateLimiter.new(user: user, rate_limit_type: :idv_doc_auth).remaining_count
+        expect(new_count).to eq(initial_count)
+      end
+    end
+  end
 end
