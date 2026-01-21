@@ -406,6 +406,11 @@ module IdentityConfig
     config.add(:proof_ssn_max_attempts, type: :integer)
     config.add(:proofer_mock_fallback, type: :boolean)
     config.add(
+      :proofing_device_hybrid_profiling,
+      type: :symbol,
+      enum: [:disabled, :collect_only, :enabled],
+    )
+    config.add(
       :proofing_device_profiling,
       type: :symbol,
       enum: [:disabled, :collect_only, :enabled],
