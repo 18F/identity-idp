@@ -37,9 +37,9 @@ module DocAuth
             )
           end
 
-          ## returns full check success status, considering all checks:
-          #  vendor (document and selfie if requested)
-          #  Will be further implemented in future tickets
+          # returns full check success status, considering all checks:
+          # vendor (document and selfie if requested)
+          # Will be further implemented in future tickets
           def successful_result?
             doc_auth_success?
           end
@@ -67,7 +67,8 @@ module DocAuth
 
           def authentication_results
             parsed_response_body.dig(
-              :integration_hub_results, 'dvxavi11:default_auth_policy_pm',
+              :integration_hub_results,
+              "#{IdentityConfig.store.lexisnexis_threatmetrix_org_id}:default_auth_policy_pm",
               'Authentication - With PM', 'tps_vendor_raw_response'
             )
           end

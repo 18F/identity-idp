@@ -31,7 +31,7 @@
   "external.conversation_id": "31001230555159",
   "final_review_status": "pass",
   "integration_hub_results": {
-    "dvxavi11:default_auth_policy_pm": {
+    "org_id_str:default_auth_policy_pm": {
       "Authentication - With PM": {
         "rule_id": "5696815",
         "tps_datetime": "2022-10-31 22:17:45.944",

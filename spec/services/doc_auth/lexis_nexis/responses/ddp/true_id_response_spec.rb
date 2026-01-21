@@ -20,6 +20,10 @@ RSpec.describe DocAuth::LexisNexis::Responses::Ddp::TrueIdResponse do
     )
   end
 
+  before do
+    allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_org_id).and_return('org_id_str')
+  end
+
   context 'when the response is a success' do
     let(:true_id_response) { success_response }
 
