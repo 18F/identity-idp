@@ -33,6 +33,59 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
       expect(Idv::InPerson::VerifyInfoController.step_info).to be_valid
     end
 
+    context 'preconditions' do
+      before do
+        allow(subject.idv_session).to receive(:ssn).and_return('123456789')
+        allow(subject.idv_session).to receive(:ipp_document_capture_complete?).and_return(true)
+        allow(subject.idv_session).to receive(:threatmetrix_session_id).and_return('session_id')
+        allow(user).to receive(:has_establishing_in_person_enrollment?).and_return(true)
+      end
+
+      context 'when AAMVA at doc auth is enabled' do
+        before do
+          allow(IdentityConfig.store).to receive(:idv_aamva_at_doc_auth_enabled).and_return(true)
+        end
+
+        context 'when ipp_aamva_result is present' do
+          before do
+            subject.idv_session.ipp_aamva_result = { success: true }
+          end
+
+          it 'returns true' do
+            expect(
+              described_class.step_info.preconditions.call(idv_session: subject.idv_session, user:),
+            ).to be(true)
+          end
+        end
+
+        context 'when ipp_aamva_result is not present' do
+          before do
+            subject.idv_session.ipp_aamva_result = nil
+          end
+
+          it 'returns false' do
+            expect(
+              described_class.step_info.preconditions.call(idv_session: subject.idv_session, user:),
+            ).to be(false)
+          end
+        end
+      end
+
+      context 'when AAMVA at doc auth is not enabled' do
+        before do
+          allow(IdentityConfig.store).to receive(:idv_aamva_at_doc_auth_enabled).and_return(false)
+        end
+
+        it 'returns true regardless of ipp_aamva_result' do
+          subject.idv_session.ipp_aamva_result = nil
+
+          expect(
+            described_class.step_info.preconditions.call(idv_session: subject.idv_session, user:),
+          ).to be(true)
+        end
+      end
+    end
+
     describe '#undo_step' do
       let(:idv_session) do
         Idv::Session.new(

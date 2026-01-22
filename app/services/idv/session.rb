@@ -18,6 +18,7 @@ module Idv
   # @attr idv_consent_given_at [String, nil]
   # @attr idv_phone_step_document_capture_session_uuid [String, nil]
   # @attr ipp_aamva_document_capture_session_uuid [String, nil]
+  # @attr ipp_aamva_pending_state_id_pii [Hash, nil]
   # @attr ipp_aamva_redirect_url [String, nil]
   # @attr ipp_aamva_result [Hash, nil]
   # @attr mail_only_warning_shown [Boolean, nil]
@@ -70,6 +71,7 @@ module Idv
       idv_consent_given_at
       idv_phone_step_document_capture_session_uuid
       ipp_aamva_document_capture_session_uuid
+      ipp_aamva_pending_state_id_pii
       ipp_aamva_redirect_url
       ipp_aamva_result
       mail_only_warning_shown

@@ -110,7 +110,7 @@ RSpec.describe IppAamvaProofingJob, type: :job do
 
         result = proofing_result.result
         expect(result[:success]).to be false
-        expect(result[:errors]).to eq({ verification: 'Document could not be verified.' })
+        expect(result[:errors]).to eq({ state_id_verification: 'Document could not be verified.' })
         expect(result[:vendor_name]).to eq('state_id:aamva')
         expect(result[:aamva_status]).to eq('failed')
       end
