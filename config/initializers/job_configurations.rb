@@ -330,7 +330,7 @@ else
       # Send irs quarterly metrics report to Team Data - Monthly (For internal review only)
       # And, quarterly on 1st date (For IRS and Internal)
       irs_verification_demographics_report: {
-        class: 'Reports::IrsVerificationDemographicsReport',
+        class: 'Reports::IrsOriginalVerificationDemographicsReport',
         cron: cron_monthly,
         args: -> {
           JobHelpers::ReportJobConfigurationHelper.build_irs_report_args(
@@ -342,7 +342,7 @@ else
 
       # Note: This is just for testing as of now
       sp_verification_demographics_report: {
-        class: 'Reports::SpVerificationDemographicsReport',
+        class: 'Reports::IrsVerificationDemographicsReport',
         cron: cron_monthly,
         args: -> {
           JobHelpers::ReportJobConfigurationHelper.build_irs_report_args(

@@ -11,7 +11,7 @@ rescue LoadError => e
 end
 
 module Reporting
-  class IrsVerificationDemographicsReport
+  class IrsOriginalVerificationDemographicsReport
     include Reporting::CloudwatchQueryQuoting
 
     attr_reader :issuers, :time_range

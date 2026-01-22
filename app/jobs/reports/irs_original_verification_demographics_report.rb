@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 require 'csv'
-require 'reporting/irs_verification_demographics_report'
+require 'reporting/irs_original_verification_demographics_report'
 
 module Reports
-  class IrsVerificationDemographicsReport < BaseReport
+  class IrsOriginalVerificationDemographicsReport < BaseReport
     REPORT_NAME = 'irs-verification-demographics-report'
 
     attr_reader :report_date, :report_receiver
@@ -70,7 +70,7 @@ module Reports
     end
 
     def irs_verification_demographics_report
-      @irs_verification_demographics_report ||= Reporting::IrsVerificationDemographicsReport.new(
+      @irs_verification_demographics_report ||= Reporting::IrsOriginalVerificationDemographicsReport.new(
         issuers: issuers,
         time_range: report_date.all_quarter,
       )

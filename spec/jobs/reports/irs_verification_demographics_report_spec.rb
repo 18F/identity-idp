@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Reports::SpVerificationDemographicsReport do
+RSpec.describe Reports::IrsVerificationDemographicsReport do
   let(:report_date) { Date.new(2021, 3, 2).in_time_zone('UTC').end_of_day }
   let(:report_receiver) { :internal }
   let(:time_range) { report_date.all_quarter }
@@ -93,7 +93,7 @@ RSpec.describe Reports::SpVerificationDemographicsReport do
 
   let(:mock_builder) do
     instance_double(
-      Reporting::SpVerificationDemographicsReport,
+      Reporting::IrsVerificationDemographicsReport,
       age_metrics_table: mock_identity_verification_age_data,
       state_metrics_table: mock_identity_verification_state_data,
       as_emailable_reports: emailable_reports,

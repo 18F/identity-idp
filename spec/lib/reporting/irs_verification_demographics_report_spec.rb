@@ -1,7 +1,7 @@
 require 'rails_helper'
-require 'reporting/sp_verification_demographics_report'
+require 'reporting/irs_verification_demographics_report'
 
-RSpec.describe Reporting::SpVerificationDemographicsReport do
+RSpec.describe Reporting::IrsVerificationDemographicsReport do
   let(:issuer) { 'my:example:issuer' }
   let(:time_range) { Date.new(2022, 1, 1).in_time_zone('UTC').all_quarter }
   let(:agency_abbreviation) { 'Test_Agency' }
@@ -42,7 +42,7 @@ RSpec.describe Reporting::SpVerificationDemographicsReport do
   end
 
   subject(:report) do
-    Reporting::SpVerificationDemographicsReport.new(
+    Reporting::IrsVerificationDemographicsReport.new(
       issuers: [issuer],
       agency_abbreviation: agency_abbreviation, time_range:
     )
