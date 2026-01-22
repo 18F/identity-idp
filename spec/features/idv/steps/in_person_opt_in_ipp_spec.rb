@@ -26,7 +26,7 @@ RSpec.describe 'In Person Proofing - Opt-in IPP ', js: true do
       end
 
       it 'allows the user to continue down the happy path selecting to opt in',
-         allow_browser_log: true do
+         allow_browser_log: true, timezone: 'UTC' do
         visit_idp_from_sp_with_ial2(:oidc, **{ client_id: ipp_service_provider.issuer })
         sign_in_via_branded_page(user)
 
@@ -136,7 +136,7 @@ RSpec.describe 'In Person Proofing - Opt-in IPP ', js: true do
     end
 
     it 'works for a happy path when the user opts into opt-in ipp',
-       allow_browser_log: true do
+       allow_browser_log: true, timezone: 'UTC' do
       visit_idp_from_sp_with_ial2(:oidc, **{ client_id: ipp_service_provider.issuer })
       sign_in_via_branded_page(user)
 
@@ -305,7 +305,7 @@ RSpec.describe 'In Person Proofing - Opt-in IPP ', js: true do
     end
 
     it 'works for a happy path when the user opts out of opt-in ipp',
-       allow_browser_log: true do
+       allow_browser_log: true, timezone: 'UTC' do
       visit_idp_from_sp_with_ial2(:oidc, **{ client_id: ipp_service_provider.issuer })
       sign_in_via_branded_page(user)
 
