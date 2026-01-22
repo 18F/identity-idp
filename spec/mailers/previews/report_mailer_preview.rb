@@ -240,7 +240,7 @@ class ReportMailerPreview < ActionMailer::Preview
   end
 
   def irs_verification_demographics_report
-    irs_quarterly_report = Reports::IrsVerificationDemographicsReport.new(Time.zone.yesterday)
+    irs_quarterly_report = Reports::IrsOriginalVerificationDemographicsReport.new(Time.zone.yesterday)
 
     stub_cloudwatch_client(irs_quarterly_report.irs_verification_demographics_report)
 
@@ -250,6 +250,30 @@ class ReportMailerPreview < ActionMailer::Preview
       message: irs_quarterly_report.preamble,
       attachment_format: :csv,
       reports: irs_quarterly_report.reports,
+    )
+  end
+
+  def sp_verification_demographics_report
+    require 'reporting/irs_verification_demographics_report'
+
+    mock_issuers = ['test_issuer']
+    mock_agency = 'Test_agency'
+    date    = Time.zone.yesterday.end_of_day
+
+    builder = Reporting::IrsVerificationDemographicsReport.new(
+      issuers: mock_issuers,
+      time_range: date.beginning_of_week(:sunday).prev_occurring(:sunday).all_week(:sunday),
+      agency_abbreviation: mock_agency,
+    )
+    stub_cloudwatch_client(builder)
+
+    ReportMailer.tables_report(
+      to: 'test@example.com',
+      bcc: 'bcc@example.com',
+      subject: "Example #{mock_agency} Verification Demographics Report - #{Time.zone.now.to_date}",
+      message: "Report: #{mock_agency} Verification Demographics Report - #{date.to_date}",
+      attachment_format: :csv,
+      reports: builder.as_emailable_reports,
     )
   end
 
