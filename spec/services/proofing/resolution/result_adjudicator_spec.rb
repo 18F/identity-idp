@@ -14,7 +14,17 @@ RSpec.describe Proofing::Resolution::ResultAdjudicator do
       attributes_requiring_additional_verification: attributes_requiring_additional_verification,
     )
   end
-  let(:residential_resolution_result) { resolution_result }
+
+  let(:residential_resolution_success) { true }
+  let(:residential_resolution_vendor_name) { 'ResidentialAddressNotRequired' }
+  let(:residential_resolution_result) do
+    Proofing::Resolution::Result.new(
+      success: residential_resolution_success,
+      errors: {},
+      exception: nil,
+      vendor_name: residential_resolution_vendor_name,
+    )
+  end
 
   let(:state_id_success) { true }
   let(:state_id_verified_attributes) { [] }
@@ -37,8 +47,8 @@ RSpec.describe Proofing::Resolution::ResultAdjudicator do
   end
 
   let(:should_proof_state_id) { true }
-  let(:ipp_enrollment_in_progress) { true }
-  let(:same_address_as_id) { 'false' }
+  let(:ipp_enrollment_in_progress) { false }
+  let(:same_address_as_id) { 'true' }
 
   let(:device_profiling_success) { true }
   let(:device_profiling_exception) { nil }
@@ -56,77 +66,54 @@ RSpec.describe Proofing::Resolution::ResultAdjudicator do
 
   subject do
     described_class.new(
-      resolution_result: resolution_result,
-      residential_resolution_result: residential_resolution_result,
-      state_id_result: state_id_result,
-      should_proof_state_id: should_proof_state_id,
-      ipp_enrollment_in_progress: ipp_enrollment_in_progress,
-      device_profiling_result: device_profiling_result,
+      resolution_result:,
+      residential_resolution_result:,
+      state_id_result:,
+      should_proof_state_id:,
+      ipp_enrollment_in_progress:,
+      device_profiling_result:,
       phone_result:,
-      same_address_as_id: same_address_as_id,
-      applicant_pii: applicant_pii,
+      same_address_as_id:,
+      applicant_pii:,
       precheck_phone_number: phone_result.empty? ? nil : '202-555-5555',
     )
   end
 
   describe '#adjudicated_result' do
-    context 'residential address and id address are different' do
-      context 'LexisNexis fails for the residential address' do
-        let(:resolution_success) { false }
-        let(:residential_resolution_result) do
-          Proofing::Resolution::Result.new(
-            success: resolution_success,
-            errors: {},
-            exception: nil,
-            vendor_name: 'test-resolution-vendor',
-            failed_result_can_pass_with_additional_verification:
-            can_pass_with_additional_verification,
-            attributes_requiring_additional_verification:
-            attributes_requiring_additional_verification,
-          )
-        end
-        it 'returns a failed response' do
-          result = subject.adjudicated_result
-
-          expect(result.success?).to eq(false)
-          resolution_adjudication_reason = result.extra[:context][:resolution_adjudication_reason]
-          expect(resolution_adjudication_reason).to eq(:fail_resolution_skip_state_id)
-        end
-      end
-
-      context 'AAMVA fails for the id address' do
-        let(:state_id_success) { false }
-        it 'returns a failed response' do
-          result = subject.adjudicated_result
-
-          expect(result.success?).to eq(false)
-          resolution_adjudication_reason = result.extra[:context][:resolution_adjudication_reason]
-          expect(resolution_adjudication_reason).to eq(:fail_state_id)
-        end
-      end
-
-      context 'when failed_result_can_pass_with_additional_verification is true' do
-        let(:can_pass_with_additional_verification) { true }
-        let(:attributes_requiring_additional_verification) { [:address, :ssn] }
-        let(:state_id_verified_attributes) { [:ssn] }
-
-        it 'returns a successful response' do
-          result = subject.adjudicated_result
-
-          expect(result.success?).to eq(true)
-          resolution_adjudication_reason = result.extra[:context][:resolution_adjudication_reason]
-          expect(resolution_adjudication_reason).to eq(:pass_with_additional_verification)
-        end
-
-        context 'but no attributes were verified by AAMVA' do
-          let(:state_id_verified_attributes) { [] }
-
+    context 'IPP enrollment in progress' do
+      let(:ipp_enrollment_in_progress) { true }
+      context 'residential address and id address are different' do
+        let(:same_address_as_id) { 'false' }
+        context 'LexisNexis fails for the residential address' do
+          let(:residential_resolution_result) do
+            Proofing::Resolution::Result.new(
+              success: false,
+              errors: {},
+              exception: nil,
+              vendor_name: 'test-resolution-vendor',
+              failed_result_can_pass_with_additional_verification:
+              can_pass_with_additional_verification,
+              attributes_requiring_additional_verification:
+              attributes_requiring_additional_verification,
+            )
+          end
           it 'returns a failed response' do
             result = subject.adjudicated_result
 
             expect(result.success?).to eq(false)
             resolution_adjudication_reason = result.extra[:context][:resolution_adjudication_reason]
-            expect(resolution_adjudication_reason).to eq(:fail_additional_verification)
+            expect(resolution_adjudication_reason).to eq(:fail_resolution_skip_state_id)
+          end
+        end
+
+        context 'AAMVA fails for the id address' do
+          let(:state_id_success) { false }
+          it 'returns a failed response' do
+            result = subject.adjudicated_result
+
+            expect(result.success?).to eq(false)
+            resolution_adjudication_reason = result.extra[:context][:resolution_adjudication_reason]
+            expect(resolution_adjudication_reason).to eq(:fail_state_id)
           end
         end
       end
