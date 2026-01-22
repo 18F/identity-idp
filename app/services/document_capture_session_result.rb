@@ -52,6 +52,10 @@ DocumentCaptureSessionResult = RedactedStruct.new(
     self[:state_id_vendor]&.to_sym
   end
 
+  def aamva_verified_attributes
+    self[:aamva_verified_attributes] || []
+  end
+
   alias_method :success?, :success
   alias_method :attention_with_barcode?, :attention_with_barcode
   alias_method :pii_from_doc, :pii
