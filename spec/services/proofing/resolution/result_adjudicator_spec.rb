@@ -104,6 +104,32 @@ RSpec.describe Proofing::Resolution::ResultAdjudicator do
           expect(resolution_adjudication_reason).to eq(:fail_state_id)
         end
       end
+
+      context 'when failed_result_can_pass_with_additional_verification is true' do
+        let(:can_pass_with_additional_verification) { true }
+        let(:attributes_requiring_additional_verification) { [:address, :ssn] }
+        let(:state_id_verified_attributes) { [:ssn] }
+
+        it 'returns a successful response' do
+          result = subject.adjudicated_result
+
+          expect(result.success?).to eq(true)
+          resolution_adjudication_reason = result.extra[:context][:resolution_adjudication_reason]
+          expect(resolution_adjudication_reason).to eq(:pass_with_additional_verification)
+        end
+
+        context 'but no attributes were verified by AAMVA' do
+          let(:state_id_verified_attributes) { [] }
+
+          it 'returns a failed response' do
+            result = subject.adjudicated_result
+
+            expect(result.success?).to eq(false)
+            resolution_adjudication_reason = result.extra[:context][:resolution_adjudication_reason]
+            expect(resolution_adjudication_reason).to eq(:fail_additional_verification)
+          end
+        end
+      end
     end
 
     describe 'biographical_info' do

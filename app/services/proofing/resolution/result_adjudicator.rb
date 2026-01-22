@@ -131,9 +131,13 @@ module Proofing
         return false unless resolution_result.failed_result_can_pass_with_additional_verification?
         failed_resolution_attributes =
           resolution_result.attributes_requiring_additional_verification
-        passed_state_id_attributes = applicant_pii[:aamva_verified_attributes]
 
-        (failed_resolution_attributes.to_a - passed_state_id_attributes.to_a).empty?
+        # no longer needed after aamva at IPP enrollment
+        passed_state_id_attributes = state_id_result.verified_attributes
+        return true if (failed_resolution_attributes.to_a - passed_state_id_attributes.to_a).empty?
+
+        passed_state_id_attributes = applicant_pii[:aamva_verified_attributes].to_a.map(&:to_sym)
+        (failed_resolution_attributes.to_a - passed_state_id_attributes).empty?
       end
 
       def biographical_info

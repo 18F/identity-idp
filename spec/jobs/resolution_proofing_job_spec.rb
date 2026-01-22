@@ -18,6 +18,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
   let(:proofing_device_profiling) { :enabled }
   let(:lexisnexis_threatmetrix_mock_enabled) { false }
   let(:ipp_enrollment_in_progress) { false }
+  let(:state_id_already_proofed) { false }
 
   before do
     allow(IdentityConfig.store).to receive(:proofing_device_profiling)
@@ -44,6 +45,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
         request_ip: request_ip,
         ipp_enrollment_in_progress: ipp_enrollment_in_progress,
         proofing_vendor: IdentityConfig.store.idv_resolution_default_vendor,
+        state_id_already_proofed:,
       )
     end
 
@@ -229,6 +231,46 @@ RSpec.describe ResolutionProofingJob, type: :job do
             eye_color
           ],
         )
+      end
+
+      context 'when state ID has already been proofed at DocAuth' do
+        let(:state_id_already_proofed) { true }
+        let(:pii) do
+          { aamva_verified_attributes: [:address, :ssn] }
+            .merge(Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID)
+        end
+        it 'stores a successful result' do
+          stub_vendor_requests(
+            instant_verify_response: LexisNexisFixtures.instant_verify_address_fail_response_json,
+          )
+
+          perform
+
+          result = document_capture_session.load_proofing_result[:result]
+          result_context = result[:context]
+          result_context_stages = result_context[:stages]
+          result_context_stages_resolution = result_context_stages[:resolution]
+          result_context_stages_state_id = result_context_stages[:state_id]
+
+          expect(result[:success]).to be true
+          expect(result[:errors].keys).to eq([:base, :'Execute Instant Verify'])
+          expect(result[:exception]).to be_nil
+          expect(result[:timed_out]).to be false
+
+          # result[:context][:stages][:resolution]
+          expect(result_context_stages_resolution[:vendor_name])
+            .to eq('lexisnexis:instant_verify')
+          expect(result_context_stages_resolution[:success]).to eq(false)
+          expect(result_context_stages_resolution[:can_pass_with_additional_verification])
+            .to eq(true)
+          expect(result_context_stages_resolution[:attributes_requiring_additional_verification])
+            .to eq(['address'])
+
+          # result[:context][:stages][:state_id]
+          expect(result_context_stages_state_id[:vendor_name]).to eq('AamvaCheckSkipped')
+          expect(result_context_stages_state_id[:success]).to eq(true)
+          expect(result_context_stages_state_id[:verified_attributes]).to be_empty
+        end
       end
     end
 
