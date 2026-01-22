@@ -425,6 +425,20 @@ RSpec.describe Idv::InPerson::StateIdController do
         expect(subject.idv_session.ipp_aamva_document_capture_session_uuid).to be_present
       end
 
+      it 'stores PII in pending session key, not pii_from_user' do
+        allow(IppAamvaProofingJob).to receive(:perform_later)
+
+        put :update, params: params
+
+        # PII should be in pending, not yet committed to pii_from_user
+        expect(subject.idv_session.ipp_aamva_pending_state_id_pii).to be_present
+        expect(subject.idv_session.ipp_aamva_pending_state_id_pii[:first_name]).to eq('Charity')
+
+        # pii_from_user should NOT have the new data yet
+        pii = subject.user_session['idv/in_person'][:pii_from_user]
+        expect(pii[:first_name]).to be_nil
+      end
+
       it 'does not create duplicate DocumentCaptureSession if one already exists' do
         put :update, params: params
         first_uuid = subject.idv_session.ipp_aamva_document_capture_session_uuid
@@ -501,6 +515,35 @@ RSpec.describe Idv::InPerson::StateIdController do
           expect(subject.idv_session.ipp_aamva_result).to be_present
           expect(subject.idv_session.ipp_aamva_result['success']).to eq(true)
           expect(subject.idv_session.source_check_vendor).to be_present
+        end
+
+        it 'commits pending PII to pii_from_user on success' do
+          # Set up pending PII as if form was just submitted
+          subject.idv_session.ipp_aamva_pending_state_id_pii = {
+            first_name: 'Charity',
+            last_name: 'Johnson',
+            same_address_as_id: 'true',
+          }
+
+          get :show
+
+          pii = subject.user_session['idv/in_person'][:pii_from_user]
+          expect(pii[:first_name]).to eq('Charity')
+          expect(pii[:last_name]).to eq('Johnson')
+
+          # Pending should be cleared
+          expect(subject.idv_session.ipp_aamva_pending_state_id_pii).to be_nil
+        end
+
+        it 'handles nil pii_from_user gracefully' do
+          subject.idv_session.ipp_aamva_pending_state_id_pii = {
+            first_name: 'Charity',
+            last_name: 'Johnson',
+          }
+          subject.user_session['idv/in_person'][:pii_from_user] = nil
+
+          expect { get :show }.not_to raise_error
+          expect(response).to redirect_to(idv_in_person_ssn_url)
         end
 
         it 'clears the async state' do
@@ -692,6 +735,24 @@ RSpec.describe Idv::InPerson::StateIdController do
             vendor_name: 'TestAAMVA',
             step: 'state_id',
           )
+        end
+
+        it 'does not commit pending PII to pii_from_user on failure' do
+          # Set up pending PII as if form was just submitted
+          subject.idv_session.ipp_aamva_pending_state_id_pii = {
+            first_name: 'Charity',
+            last_name: 'Johnson',
+            same_address_as_id: 'true',
+          }
+
+          get :show
+
+          # PII should NOT be committed to pii_from_user
+          pii = subject.user_session['idv/in_person'][:pii_from_user]
+          expect(pii[:first_name]).to be_nil
+
+          # Pending should be cleared
+          expect(subject.idv_session.ipp_aamva_pending_state_id_pii).to be_nil
         end
       end
 

@@ -17,7 +17,9 @@ module Idv
 
       document_capture_session.create_proofing_session
 
-      encrypted_arguments = encrypt_pii_for_job(pii_from_user)
+      # Use pending PII if available (deferred storage), otherwise fall back to pii_from_user
+      pii_for_aamva = idv_session.ipp_aamva_pending_state_id_pii || pii_from_user
+      encrypted_arguments = encrypt_pii_for_job(pii_for_aamva)
 
       enqueue_job(
         document_capture_session: document_capture_session,
@@ -116,13 +118,15 @@ module Idv
       )
 
       redirect_url = idv_session.ipp_aamva_redirect_url || idv_in_person_ssn_url
-      delete_aamva_async_state
 
       if result[:success]
+        commit_pending_state_id_pii
+        delete_aamva_async_state
         idv_session.ipp_aamva_result = result
         idv_session.source_check_vendor = result[:vendor_name]
         redirect_to redirect_url
       else
+        delete_aamva_async_state
         # Only check rate limit on failure - successful attempts proceed regardless of count
         return if rate_limit_redirect!(:idv_doc_auth, step_name: 'ipp_state_id')
 
@@ -134,6 +138,27 @@ module Idv
     def delete_aamva_async_state
       idv_session.ipp_aamva_document_capture_session_uuid = nil
       idv_session.ipp_aamva_redirect_url = nil
+      idv_session.ipp_aamva_pending_state_id_pii = nil
+    end
+
+    def commit_pending_state_id_pii
+      pending_pii = idv_session.ipp_aamva_pending_state_id_pii
+      return unless pending_pii
+
+      commit_state_id_data(pending_pii)
+    end
+
+    # Shared method to commit state ID PII data to the session.
+    # Used by both AAMVA flow (after verification) and non-AAMVA flow (immediate commit).
+    def commit_state_id_data(pii_data)
+      return unless pii_from_user
+
+      pii_data.each do |key, value|
+        pii_from_user[key.to_sym] = value
+      end
+
+      current_user.establishing_in_person_enrollment&.update(document_type: :state_id)
+      idv_session.doc_auth_vendor = Idp::Constants::Vendors::USPS
     end
   end
 end
