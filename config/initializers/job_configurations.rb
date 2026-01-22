@@ -340,6 +340,18 @@ else
         },
       },
 
+      # Note: This is just for testing as of now
+      sp_verification_demographics_report: {
+        class: 'Reports::SpVerificationDemographicsReport',
+        cron: cron_monthly,
+        args: -> {
+          JobHelpers::ReportJobConfigurationHelper.build_irs_report_args(
+            Time.zone.yesterday.end_of_day,
+            :quarterly,
+          )
+        },
+      },
+
       # Download and store Socure reason codes
       socure_reason_code_download: {
         class: 'SocureReasonCodeDownloadJob',
