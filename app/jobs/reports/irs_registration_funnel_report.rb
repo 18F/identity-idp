@@ -5,7 +5,6 @@ require 'reporting/irs_registration_funnel_report'
 
 module Reports
   class IrsRegistrationFunnelReport < BaseReport
-    # REPORT_NAME = 'sp-registration-funnel-report'
     attr_reader :report_date, :report_receiver, :report_name, :report_title
 
     def initialize(init_date = nil, init_receiver = :internal, *args, **rest)
