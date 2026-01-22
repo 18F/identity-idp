@@ -170,6 +170,8 @@ RSpec.describe ResolutionProofingJob, type: :job do
         expect(result[:exception]).to be_nil
         expect(result[:timed_out]).to be false
 
+        expect(result_context[:resolution_adjudication_reason])
+          .to eq('fail_resolution_without_state_id_coverage')
         # result[:context][:stages][:resolution]
         expect(result_context_stages_resolution[:success]).to eq(false)
         expect(result_context_stages_resolution[:errors]).to include(
@@ -201,6 +203,8 @@ RSpec.describe ResolutionProofingJob, type: :job do
         expect(result[:exception]).to be_nil
         expect(result[:timed_out]).to be false
 
+        expect(result_context[:resolution_adjudication_reason])
+          .to eq('state_id_covers_failed_resolution')
         # result[:context][:stages][:resolution]
         expect(result_context_stages_resolution[:vendor_name])
           .to eq('lexisnexis:instant_verify')
@@ -254,6 +258,8 @@ RSpec.describe ResolutionProofingJob, type: :job do
             expect(result[:exception]).to be_nil
             expect(result[:timed_out]).to be false
 
+            expect(result_context[:resolution_adjudication_reason])
+              .to eq('fail_resolution_without_state_id_coverage')
             # result[:context][:stages][:resolution]
             expect(result_context_stages_resolution[:vendor_name])
               .to eq('lexisnexis:instant_verify')
@@ -295,6 +301,8 @@ RSpec.describe ResolutionProofingJob, type: :job do
             expect(result[:exception]).to be_nil
             expect(result[:timed_out]).to be false
 
+            expect(result_context[:resolution_adjudication_reason])
+              .to eq('state_id_covers_failed_resolution')
             # result[:context][:stages][:resolution]
             expect(result_context_stages_resolution[:vendor_name])
               .to eq('lexisnexis:instant_verify')
