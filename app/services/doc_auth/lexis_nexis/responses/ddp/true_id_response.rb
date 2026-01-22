@@ -95,10 +95,6 @@ module DocAuth
             authentication_results&.dig('trueid.authentication_result.doc_class')
           end
 
-          def doc_issuer_type
-            nil # TODO: check where to find value in response
-          end
-
           def passport_pii?
             @passport_pii ||=
               Idp::Constants::DocumentTypes::PASSPORT_TYPES.include?(doc_class_name)
@@ -113,14 +109,12 @@ module DocAuth
             classification_hash = {
               Front: {
                 ClassName: doc_class,
-                IssuerType: doc_issuer_type,
                 CountryCode: issuing_country,
               },
             }
             if !passport_pii?
               classification_hash[:Back] = {
                 ClassName: doc_class,
-                IssuerType: doc_issuer_type,
                 CountryCode: issuing_country,
               }
             end
