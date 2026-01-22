@@ -8,10 +8,10 @@ RSpec.describe ResolutionProofingJob, type: :job do
     )
   end
   let(:document_capture_session) do
-    DocumentCaptureSession.new(result_id: SecureRandom.hex, uuid: SecureRandom.uuid)
+    create(:document_capture_session, result_id: SecureRandom.hex)
   end
   let(:trace_id) { SecureRandom.uuid }
-  let(:user) { create(:user, :fully_registered) }
+  let(:user) { document_capture_session.user }
   let(:service_provider) { create(:service_provider, app_id: 'fake-app-id') }
   let(:request_ip) { Faker::Internet.ip_v4_address }
   let(:threatmetrix_session_id) { SecureRandom.uuid }
