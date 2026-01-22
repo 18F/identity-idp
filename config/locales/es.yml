@@ -1082,7 +1082,6 @@ idv.accessible_labels.masked_ssn: texto seguro, a partir de %{first_number} y ha
 idv.buttons.change_address_label: Actualizar dirección
 idv.buttons.change_label: Actualizar
 idv.buttons.change_ssn_label: Actualizar número de Seguro Social
-idv.buttons.change_state_id_label: Actualizar identificación estatal
 idv.buttons.continue_plain: Continuar
 idv.buttons.mail.send: Solicitar una carta
 idv.by_mail.sp_follow_up.body: Vuelva a iniciar sesión en %{service_provider} para conectar su cuenta verificada de %{app_name} y acceder a los servicios.
