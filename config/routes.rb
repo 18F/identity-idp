@@ -260,9 +260,7 @@ Rails.application.routes.draw do
     get '/second_mfa_reminder' => 'users/second_mfa_reminder#new'
     post '/second_mfa_reminder' => 'users/second_mfa_reminder#create'
 
-    if IdentityConfig.store.rails_mailer_previews_enabled
-      get '/sms_preview' => 'users/sms_preview#show'
-    end
+    get '/sms_preview' => 'users/sms_preview#show'
 
     get '/webauthn_platform_recommended' => 'users/webauthn_platform_recommended#new'
     post '/webauthn_platform_recommended' => 'users/webauthn_platform_recommended#create'
