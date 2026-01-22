@@ -9,6 +9,8 @@ AppArtifacts.setup do |store|
   store.add_artifact(:saml_2024_key, '/%<env>s/saml2024.key.enc')
   store.add_artifact(:saml_2025_cert, '/%<env>s/saml2025.crt')
   store.add_artifact(:saml_2025_key, '/%<env>s/saml2025.key.enc')
+  store.add_artifact(:saml_2026_cert, '/%<env>s/saml2026.crt')
+  store.add_artifact(:saml_2026_key, '/%<env>s/saml2026.key.enc')
 
   store.add_artifact(:oidc_primary_private_key, '/%<env>s/oidc.key') do |k|
     OpenSSL::PKey::RSA.new(k)
