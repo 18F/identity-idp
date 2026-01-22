@@ -177,6 +177,10 @@ module LexisNexisFixtures
       read_fixture_file_at_path('ddp/true_id/true_id_response_success_state_id_card.json')
     end
 
+    def ddp_true_id_response_fail_unsupported_doc_type
+      read_fixture_file_at_path('ddp/true_id/true_id_response_fail_unsupported_doc_type.json')
+    end
+
     def ddp_true_id_response_fail
       read_fixture_file_at_path('ddp/true_id/true_id_response_fail_state_id_card.json')
     end

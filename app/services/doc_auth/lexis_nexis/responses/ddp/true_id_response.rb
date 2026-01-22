@@ -7,6 +7,7 @@ module DocAuth
         class TrueIdResponse < DocAuth::Response
           include ImageMetricsReader
           include DocPiiReader
+          include DocAuth::ClassificationConcern
 
           attr_reader :config, :http_response, :passport_requested
 
@@ -46,8 +47,8 @@ module DocAuth
           end
 
           def doc_auth_success?
-            # To be further implemented in LG-17090 and LG-17091
-            transaction_status_passed? # && id_type_supported? && expected_document_type_received?
+            # To be further implemented in LG-17091
+            transaction_status_passed? && id_type_supported? # && expected_document_type_received?
           end
 
           # To be implemented in LG-17088
@@ -88,6 +89,42 @@ module DocAuth
 
           def reference
             @reference ||= parsed_response_body.dig(:Status, :Reference)
+          end
+
+          def doc_class_name
+            authentication_results&.dig('trueid.authentication_result.doc_class')
+          end
+
+          def doc_issuer_type
+            nil # TODO: check where to find value in response
+          end
+
+          def passport_pii?
+            @passport_pii ||=
+              Idp::Constants::DocumentTypes::PASSPORT_TYPES.include?(doc_class_name)
+          end
+
+          def classification_info
+            # Acuant response has both sides info, here simulate that
+            doc_class = doc_class_name
+            issuing_country = authentication_results&.dig(
+              'trueid.authentication_result.fields.id_auth_field_data.country_code',
+            )
+            classification_hash = {
+              Front: {
+                ClassName: doc_class,
+                IssuerType: doc_issuer_type,
+                CountryCode: issuing_country,
+              },
+            }
+            if !passport_pii?
+              classification_hash[:Back] = {
+                ClassName: doc_class,
+                IssuerType: doc_issuer_type,
+                CountryCode: issuing_country,
+              }
+            end
+            classification_hash
           end
         end
       end
