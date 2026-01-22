@@ -82,7 +82,13 @@ module Proofing
     end
 
     def primary_vendor
-      IdentityConfig.store.idv_address_primary_vendor
+      @primary_vendor ||= begin
+        if (rand * 100) <= IdentityConfig.store.idv_address_vendor_socure_percent
+          :socure
+        else
+          IdentityConfig.store.idv_address_primary_vendor
+        end
+      end
     end
 
     def secondary_vendor
