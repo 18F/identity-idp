@@ -7,7 +7,7 @@ class CreateUserProofingEvents < ActiveRecord::Migration[8.0]
       t.string :cost, null: false, comment: 'sensitive=true'
       t.string :salt, null: false, comment: 'sensitive=true'
 
-      t.timestamps
+      t.timestamps, comment: 'sensitive=false'
 
       t.index :profile_id, unique: false
     end
