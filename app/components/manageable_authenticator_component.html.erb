@@ -35,6 +35,7 @@
             class: 'manageable-authenticator__rename-input usa-input width-full',
             aria: { label: t('components.manageable_authenticator.nickname') },
             value: configuration.name,
+            maxlength: 20,
           ) %>
       <div class="display-flex margin-top-205">
         <%= render SpinnerButtonComponent.new(
