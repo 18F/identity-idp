@@ -494,130 +494,132 @@ RSpec.describe ResolutionProofingJob, type: :job do
       end
     end
 
-    context "when the user's state ID address does not match their residential address" do
-      let(:pii) { Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS }
+    context 'with IPP enrollment in progress' do
       let(:ipp_enrollment_in_progress) { true }
+      context "when the user's state ID address does not match their residential address" do
+        let(:pii) { Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS }
 
-      let(:residential_address) do
-        {
-          address1: pii[:address1],
-          address2: pii[:address2],
-          city: pii[:city],
-          state: pii[:state],
-          state_id_jurisdiction: pii[:state_id_jurisdiction],
-          zipcode: pii[:zipcode],
-        }
-      end
+        let(:residential_address) do
+          {
+            address1: pii[:address1],
+            address2: pii[:address2],
+            city: pii[:city],
+            state: pii[:state],
+            state_id_jurisdiction: pii[:state_id_jurisdiction],
+            zipcode: pii[:zipcode],
+          }
+        end
 
-      let(:identity_doc_address) do
-        {
-          address1: pii[:identity_doc_address1],
-          address2: pii[:identity_doc_address2],
-          city: pii[:identity_doc_city],
-          state: pii[:identity_doc_address_state],
-          state_id_jurisdiction: pii[:state_id_jurisdiction],
-          zipcode: pii[:identity_doc_zipcode],
-        }
-      end
+        let(:identity_doc_address) do
+          {
+            address1: pii[:identity_doc_address1],
+            address2: pii[:identity_doc_address2],
+            city: pii[:identity_doc_city],
+            state: pii[:identity_doc_address_state],
+            state_id_jurisdiction: pii[:state_id_jurisdiction],
+            zipcode: pii[:identity_doc_zipcode],
+          }
+        end
 
-      subject(:perform) do
-        instance.perform(
-          result_id: document_capture_session.result_id,
-          encrypted_arguments: encrypted_arguments,
-          trace_id: trace_id,
-          user_id: user.id,
-          threatmetrix_session_id: threatmetrix_session_id,
-          request_ip: request_ip,
-          ipp_enrollment_in_progress: ipp_enrollment_in_progress,
-          proofing_vendor: IdentityConfig.store.idv_resolution_default_vendor,
-        )
-      end
+        subject(:perform) do
+          instance.perform(
+            result_id: document_capture_session.result_id,
+            encrypted_arguments: encrypted_arguments,
+            trace_id: trace_id,
+            user_id: user.id,
+            threatmetrix_session_id: threatmetrix_session_id,
+            request_ip: request_ip,
+            ipp_enrollment_in_progress: ipp_enrollment_in_progress,
+            proofing_vendor: IdentityConfig.store.idv_resolution_default_vendor,
+          )
+        end
 
-      it 'stores a successful result' do
-        stub_vendor_requests
+        it 'stores a successful result' do
+          stub_vendor_requests
 
-        perform
+          perform
 
-        result = document_capture_session.load_proofing_result[:result]
-        result_context = result[:context]
-        result_context_stages = result_context[:stages]
-        result_context_stages_resolution = result_context_stages[:resolution]
-        result_context_residential_address = result_context_stages[:residential_address]
-        result_context_stages_state_id = result_context_stages[:state_id]
-        result_context_stages_threatmetrix = result_context_stages[:threatmetrix]
+          result = document_capture_session.load_proofing_result[:result]
+          result_context = result[:context]
+          result_context_stages = result_context[:stages]
+          result_context_stages_resolution = result_context_stages[:resolution]
+          result_context_residential_address = result_context_stages[:residential_address]
+          result_context_stages_state_id = result_context_stages[:state_id]
+          result_context_stages_threatmetrix = result_context_stages[:threatmetrix]
 
-        expect(result[:exception]).to be_nil
-        expect(result[:errors].keys).to eq([:"Execute Instant Verify"])
-        expect(result[:success]).to be true
-        expect(result[:timed_out]).to be false
+          expect(result[:exception]).to be_nil
+          expect(result[:errors].keys).to eq([:"Execute Instant Verify"])
+          expect(result[:success]).to be true
+          expect(result[:timed_out]).to be false
 
-        # result[:context]
-        expect(result_context[:should_proof_state_id])
+          # result[:context]
+          expect(result_context[:should_proof_state_id])
 
-        # result[:context][:stages][:resolution]
-        expect(result_context_stages_resolution[:vendor_name])
-          .to eq('lexisnexis:instant_verify')
-        expect(result_context_stages_resolution[:errors]).to include(:"Execute Instant Verify")
-        expect(result_context_stages_resolution[:exception]).to eq(nil)
-        expect(result_context_stages_resolution[:success]).to eq(true)
-        expect(result_context_stages_resolution[:timed_out]).to eq(false)
-        expect(result_context_stages_resolution[:transaction_id]).to eq('123456')
-        expect(result_context_stages_resolution[:reference]).to eq('Reference1')
-        expect(result_context_stages_resolution[:can_pass_with_additional_verification])
-          .to eq(false)
-        expect(result_context_stages_resolution[:attributes_requiring_additional_verification])
-          .to eq([])
+          # result[:context][:stages][:resolution]
+          expect(result_context_stages_resolution[:vendor_name])
+            .to eq('lexisnexis:instant_verify')
+          expect(result_context_stages_resolution[:errors]).to include(:"Execute Instant Verify")
+          expect(result_context_stages_resolution[:exception]).to eq(nil)
+          expect(result_context_stages_resolution[:success]).to eq(true)
+          expect(result_context_stages_resolution[:timed_out]).to eq(false)
+          expect(result_context_stages_resolution[:transaction_id]).to eq('123456')
+          expect(result_context_stages_resolution[:reference]).to eq('Reference1')
+          expect(result_context_stages_resolution[:can_pass_with_additional_verification])
+            .to eq(false)
+          expect(result_context_stages_resolution[:attributes_requiring_additional_verification])
+            .to eq([])
 
-        # result[:context][:stages][:residential_address]
-        expect(result_context_residential_address[:vendor_name]).to eq('lexisnexis:instant_verify')
-        expect(result_context_residential_address[:errors]).to include(:"Execute Instant Verify")
-        expect(result_context_residential_address[:exception]).to eq(nil)
-        expect(result_context_residential_address[:success]).to eq(true)
-        expect(result_context_residential_address[:timed_out]).to eq(false)
-        expect(result_context_residential_address[:transaction_id]).to eq('123456')
-        expect(result_context_residential_address[:reference]).to eq('Reference1')
-        expect(result_context_residential_address[:can_pass_with_additional_verification])
-          .to eq(false)
-        expect(result_context_residential_address[:attributes_requiring_additional_verification])
-          .to eq([])
+          # result[:context][:stages][:residential_address]
+          expect(result_context_residential_address[:vendor_name]).to eq('lexisnexis:instant_verify')
+          expect(result_context_residential_address[:errors]).to include(:"Execute Instant Verify")
+          expect(result_context_residential_address[:exception]).to eq(nil)
+          expect(result_context_residential_address[:success]).to eq(true)
+          expect(result_context_residential_address[:timed_out]).to eq(false)
+          expect(result_context_residential_address[:transaction_id]).to eq('123456')
+          expect(result_context_residential_address[:reference]).to eq('Reference1')
+          expect(result_context_residential_address[:can_pass_with_additional_verification])
+            .to eq(false)
+          expect(result_context_residential_address[:attributes_requiring_additional_verification])
+            .to eq([])
 
-        # result[:context][:stages][:state_id]
-        expect(result_context_stages_state_id[:vendor_name]).to eq('aamva:state_id')
-        expect(result_context_stages_state_id[:errors]).to eq({})
-        expect(result_context_stages_state_id[:exception]).to eq(nil)
-        expect(result_context_stages_state_id[:success]).to eq(true)
-        expect(result_context_stages_state_id[:timed_out]).to eq(false)
-        expect(result_context_stages_state_id[:transaction_id]).to eq('1234-abcd-efgh')
-        expect(result_context_stages_state_id[:verified_attributes]).to match_array(
-          %w[
-            address
-            state_id_expiration
-            state_id_issued
-            state_id_number
-            document_type_received
-            dob
-            last_name
-            first_name
-            middle_name
-            name_suffix
-            height
-            sex
-            weight
-            eye_color
-          ],
-        )
+          # result[:context][:stages][:state_id]
+          expect(result_context_stages_state_id[:vendor_name]).to eq('aamva:state_id')
+          expect(result_context_stages_state_id[:errors]).to eq({})
+          expect(result_context_stages_state_id[:exception]).to eq(nil)
+          expect(result_context_stages_state_id[:success]).to eq(true)
+          expect(result_context_stages_state_id[:timed_out]).to eq(false)
+          expect(result_context_stages_state_id[:transaction_id]).to eq('1234-abcd-efgh')
+          expect(result_context_stages_state_id[:verified_attributes]).to match_array(
+            %w[
+              address
+              state_id_expiration
+              state_id_issued
+              state_id_number
+              document_type_received
+              dob
+              last_name
+              first_name
+              middle_name
+              name_suffix
+              height
+              sex
+              weight
+              eye_color
+            ],
+          )
 
-        # result[:context][:stages][:threatmetrix]
-        expect(result_context_stages_threatmetrix[:client]).to eq('lexisnexis')
-        expect(result_context_stages_threatmetrix[:errors]).to eq({})
-        expect(result_context_stages_threatmetrix[:exception]).to eq(nil)
-        expect(result_context_stages_threatmetrix[:success]).to eq(true)
-        expect(result_context_stages_threatmetrix[:timed_out]).to eq(false)
-        expect(result_context_stages_threatmetrix[:transaction_id]).to eq('1234')
-        expect(result_context_stages_threatmetrix[:review_status]).to eq('pass')
-        expect(result_context_stages_threatmetrix[:response_body]).to eq(
-          JSON.parse(LexisNexisFixtures.ddp_success_redacted_response_json, symbolize_names: true),
-        )
+          # result[:context][:stages][:threatmetrix]
+          expect(result_context_stages_threatmetrix[:client]).to eq('lexisnexis')
+          expect(result_context_stages_threatmetrix[:errors]).to eq({})
+          expect(result_context_stages_threatmetrix[:exception]).to eq(nil)
+          expect(result_context_stages_threatmetrix[:success]).to eq(true)
+          expect(result_context_stages_threatmetrix[:timed_out]).to eq(false)
+          expect(result_context_stages_threatmetrix[:transaction_id]).to eq('1234')
+          expect(result_context_stages_threatmetrix[:review_status]).to eq('pass')
+          expect(result_context_stages_threatmetrix[:response_body]).to eq(
+            JSON.parse(LexisNexisFixtures.ddp_success_redacted_response_json, symbolize_names: true),
+          )
+        end
       end
     end
 
