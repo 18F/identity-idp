@@ -70,10 +70,11 @@ module Reports
     end
 
     def irs_verification_demographics_report
-      @irs_verification_demographics_report ||= Reporting::IrsOriginalVerificationDemographicsReport.new(
-        issuers: issuers,
-        time_range: report_date.all_quarter,
-      )
+      @irs_verification_demographics_report ||=
+        Reporting::IrsOriginalVerificationDemographicsReport.new(
+          issuers: issuers,
+          time_range: report_date.all_quarter,
+        )
     end
 
     def issuers

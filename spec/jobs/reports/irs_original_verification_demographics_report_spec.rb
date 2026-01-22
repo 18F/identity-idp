@@ -5,7 +5,9 @@ RSpec.describe Reports::IrsOriginalVerificationDemographicsReport do
   let(:report_receiver) { :internal }
   let(:time_range) { report_date.all_quarter }
 
-  subject(:report) { Reports::IrsOriginalVerificationDemographicsReport.new(report_date, report_receiver) }
+  subject(:report) do
+    Reports::IrsOriginalVerificationDemographicsReport.new(report_date, report_receiver)
+  end
 
   let(:name) { 'irs-verification-demographics-report' }
   let(:s3_report_bucket_prefix) { 'reports-bucket' }

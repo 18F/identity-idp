@@ -240,7 +240,8 @@ class ReportMailerPreview < ActionMailer::Preview
   end
 
   def irs_verification_demographics_report
-    irs_quarterly_report = Reports::IrsOriginalVerificationDemographicsReport.new(Time.zone.yesterday)
+    irs_quarterly_report =
+      Reports::IrsOriginalVerificationDemographicsReport.new(Time.zone.yesterday)
 
     stub_cloudwatch_client(irs_quarterly_report.irs_verification_demographics_report)
 

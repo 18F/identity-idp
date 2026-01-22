@@ -5,7 +5,6 @@ require 'reporting/irs_verification_demographics_report'
 
 module Reports
   class IrsVerificationDemographicsReport < BaseReport
-
     attr_reader :report_date, :report_receiver, :report_name, :report_title
 
     def initialize(init_date = nil, init_receiver = :internal, *args, **rest)
