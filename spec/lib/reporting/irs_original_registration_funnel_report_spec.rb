@@ -1,17 +1,15 @@
 require 'rails_helper'
-require 'reporting/irs_registration_funnel_report'
+require 'reporting/irs_original_registration_funnel_report'
 
-RSpec.describe Reporting::IrsRegistrationFunnelReport do
-  let(:issuers)       { ['my:example:issuer'] }
-  let(:agency)        { 'Test_agency' }
-  let(:time_range)    { Date.new(2022, 1, 1).in_time_zone('UTC').all_week }
-
+RSpec.describe Reporting::IrsOriginalRegistrationFunnelReport do
+  let(:issuer) { 'my:example:issuer' }
+  let(:time_range) { Date.new(2022, 1, 1).in_time_zone('UTC').all_week }
   let(:expected_definitions_table) do
     [
       ['Metric', 'Unit', 'Definition'],
-      ['Registration Demand',    'Count',
+      ['Registration Demand', 'Count',
        'The count of new users that started the registration process with Login.gov.'],
-      ['Registration Failures',  'Count',
+      ['Registration Failures', 'Count',
        'The count of new users who did not complete the registration process'],
       ['Registration Successes', 'Count',
        'The count of new users who completed the registration process sucessfully'],
@@ -23,52 +21,51 @@ RSpec.describe Reporting::IrsRegistrationFunnelReport do
     [
       ['Report Timeframe', "#{time_range.begin} to #{time_range.end}"],
       ['Report Generated', Time.zone.today.to_s],
-      ['Issuer', issuers.join(', ')],
+      ['Issuer', issuer],
     ]
   end
-
   let(:expected_funnel_metrics_table) do
     [
       ['Metric', 'Number of accounts', '% of total from start'],
-      ['Registration Demand',    4, '100.0%'],
-      ['Registration Failures',  2, '50.0%'],
+      ['Registration Demand', 4, '100.0%'],
+      ['Registration Failures', 2, '50.0%'],
       ['Registration Successes', 2, '50.0%'],
     ]
   end
 
-  subject(:report) do
-    described_class.new(
-      issuers: issuers,
-      time_range: time_range,
-      agency_abbreviation: agency,
-    )
-  end
+  subject(:report) { described_class.new(issuers: [issuer], time_range:) }
 
   before do
     travel_to Time.zone.now.beginning_of_day
+    stub_cloudwatch_logs(
+      [
+        # finishes funnel
+        { 'user_id' => 'user1', 'name' => 'OpenID Connect: authorization request' },
+        { 'user_id' => 'user1', 'name' => 'User Registration: Email Confirmation' },
+        { 'user_id' => 'user1', 'name' => 'User Registration: 2FA Setup visited' },
+        { 'user_id' => 'user1', 'name' => 'User Registration: User Fully Registered' },
+        { 'user_id' => 'user1', 'name' => 'SP redirect initiated' },
 
-    cw_rows = [
-      # finishes funnel
-      { 'user_id' => 'user1', 'name' => 'User Registration: Email Confirmation' },
-      { 'user_id' => 'user1', 'name' => 'User Registration: 2FA Setup visited' },
-      { 'user_id' => 'user1', 'name' => 'User Registration: User Fully Registered' },
+        # first 3 steps
+        { 'user_id' => 'user2', 'name' => 'OpenID Connect: authorization request' },
+        { 'user_id' => 'user2', 'name' => 'User Registration: Email Confirmation' },
+        { 'user_id' => 'user2', 'name' => 'User Registration: 2FA Setup visited' },
+        { 'user_id' => 'user2', 'name' => 'User Registration: User Fully Registered' },
 
-      # completes up to fully registered
-      { 'user_id' => 'user2', 'name' => 'User Registration: Email Confirmation' },
-      { 'user_id' => 'user2', 'name' => 'User Registration: 2FA Setup visited' },
-      { 'user_id' => 'user2', 'name' => 'User Registration: User Fully Registered' },
+        # first 2 steps
+        { 'user_id' => 'user3', 'name' => 'OpenID Connect: authorization request' },
+        { 'user_id' => 'user3', 'name' => 'User Registration: Email Confirmation' },
+        { 'user_id' => 'user3', 'name' => 'User Registration: 2FA Setup visited' },
 
-      # first two steps only
-      { 'user_id' => 'user3', 'name' => 'User Registration: Email Confirmation' },
-      { 'user_id' => 'user3', 'name' => 'User Registration: 2FA Setup visited' },
+        # first step only
+        { 'user_id' => 'user4', 'name' => 'OpenID Connect: authorization request' },
+        { 'user_id' => 'user4', 'name' => 'User Registration: Email Confirmation' },
 
-      # first step only
-      { 'user_id' => 'user4', 'name' => 'User Registration: Email Confirmation' },
-    ]
-
-    allow_any_instance_of(Reporting::CloudwatchClient)
-      .to receive(:fetch)
-      .and_return(cw_rows)
+        # already existing user, just signing in
+        { 'user_id' => 'user5', 'name' => 'OpenID Connect: authorization request' },
+        { 'user_id' => 'user5', 'name' => 'SP redirect initiated' },
+      ],
+    )
   end
 
   describe '#definitions_table' do
@@ -128,15 +125,7 @@ RSpec.describe Reporting::IrsRegistrationFunnelReport do
 
   describe '#cloudwatch_client' do
     let(:opts) { {} }
-    let(:subject) do
-      described_class.new(
-        issuers: issuers,
-        time_range: time_range,
-        agency_abbreviation: agency,
-        **opts,
-      )
-    end
-
+    let(:subject) { described_class.new(issuers: [issuer], time_range:, **opts) }
     let(:default_args) do
       {
         num_threads: 1,

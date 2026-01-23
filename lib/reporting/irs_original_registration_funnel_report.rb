@@ -11,10 +11,10 @@ rescue LoadError => e
 end
 
 module Reporting
-  class IrsRegistrationFunnelReport
+  class IrsOriginalRegistrationFunnelReport
     include Reporting::CloudwatchQueryQuoting
 
-    attr_reader :issuers, :time_range, :agency_abbreviation
+    attr_reader :issuers, :time_range
 
     module Events
       EMAIL_CONFIRMATION = 'User Registration: Email Confirmation'
@@ -31,7 +31,6 @@ module Reporting
     def initialize(
       issuers:,
       time_range:,
-      agency_abbreviation:,
       verbose: false,
       progress: false,
       slice: 6.hours,
@@ -43,7 +42,6 @@ module Reporting
       @progress = progress
       @slice = slice
       @threads = threads
-      @agency_abbreviation = agency_abbreviation
     end
 
     def verbose?
