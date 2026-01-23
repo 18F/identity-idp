@@ -1084,7 +1084,6 @@ idv.accessible_labels.masked_ssn: 保护文本安全，从 %{first_number} 开�
 idv.buttons.change_address_label: 更新地址
 idv.buttons.change_label: 更新
 idv.buttons.change_ssn_label: 更新社会保障号码
-idv.buttons.change_state_id_label: 更新州颁发的身份证件
 idv.buttons.continue_plain: 继续
 idv.buttons.mail.send: 要求发一封信
 idv.by_mail.sp_follow_up.body: 重新登录 %{service_provider}以连接你验证过的%{app_name}账户并获得服务。
@@ -1984,8 +1983,9 @@ user_mailer.dupe_profile.created.help_center_link: '%{app_name} 帮助中心。'
 user_mailer.dupe_profile.created.steps_link: 步骤删除那个重复账户
 user_mailer.dupe_profile.review_complete.locked_heading: 这个帐户现已被锁
 user_mailer.dupe_profile.review_complete.locked_info: 我们完成了对你帐户的审核，这个帐户已被锁住。请联系 %{sp_or_app_name} 获取进一步帮助。
-user_mailer.dupe_profile.review_complete.success_heading: 你可以使用这个帐户重新登录
-user_mailer.dupe_profile.review_complete.success_info: 我们完成了对你帐户的审核，你现在可以使用这个帐户重新登录 %{sp_or_app_name}。
+user_mailer.dupe_profile.review_complete.success_heading: 您可以使用您的帐户重新登录。
+user_mailer.dupe_profile.review_complete.success_info: 您的账户（LG22）错误已解决。您现在可以使用 %{app_name} 账户登录机构网站。
+user_mailer.dupe_profile.review_complete.success_title: 您可以使用 %{app_name} 帐户重新登录。
 user_mailer.dupe_profile.review_complete.unable_heading: 我们无法让你登录
 user_mailer.dupe_profile.review_complete.unable_info: 我们完成了对你帐户的审核，但无法让你登录。 请联系 %{sp_or_app_name} 获取进一步帮助。
 user_mailer.dupe_profile.sign_in.description: 有人刚刚登录进入了一个以前使用你的个人信息验证过的 %{app_name} 账户。为了你的安全，我们已限制了具有同样信息的所有账户的访问权以及对 %{sp_or_app_name} 的访问权。

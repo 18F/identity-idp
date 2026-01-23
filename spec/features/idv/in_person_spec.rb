@@ -16,7 +16,7 @@ RSpec.describe 'In Person Proofing', js: true do
       .and_return(true)
   end
 
-  it 'works for a happy path', allow_browser_log: true do
+  it 'works for a happy path', allow_browser_log: true, timezone: 'UTC' do
     user = user_with_2fa
 
     visit_idp_from_sp_with_ial2(:oidc, **{ client_id: ipp_service_provider.issuer })
@@ -66,16 +66,6 @@ RSpec.describe 'In Person Proofing', js: true do
     expect(page).to have_text(Idp::Constants::MOCK_IDV_APPLICANT_STATE, count: 2)
     expect(page).to have_text(InPersonHelper::GOOD_IDENTITY_DOC_ZIPCODE).twice
     expect(page).to have_text(DocAuthHelper::GOOD_SSN_MASKED)
-
-    # click update state ID button
-    click_link t('idv.buttons.change_state_id_label')
-
-    expect(page).to have_content(t('in_person_proofing.headings.update_state_id'))
-
-    choose t('in_person_proofing.form.state_id.same_address_as_id_yes')
-    click_button t('forms.buttons.submit.update')
-    expect(page).to have_content(t('headings.verify'))
-    expect(page).to have_current_path(idv_in_person_verify_info_path)
 
     # click update address link
     click_link t('idv.buttons.change_address_label')
@@ -656,8 +646,7 @@ RSpec.describe 'In Person Proofing', js: true do
       expect(page).to have_content(t('headings.verify'))
       expect(page).to have_text('new address different from state address1').once
 
-      # click update state id address
-      click_link t('idv.buttons.change_state_id_label')
+      visit idv_in_person_state_id_path
 
       # check that the "No, I live at a different address" is checked
       expect(page).to have_checked_field(
@@ -701,7 +690,7 @@ RSpec.describe 'In Person Proofing', js: true do
   context 'when full form address post office search' do
     let(:user) { user_with_2fa }
 
-    it 'allows the user to search by full address', allow_browser_log: true do
+    it 'allows the user to search by full address', allow_browser_log: true, timezone: 'UTC' do
       visit_idp_from_sp_with_ial2(:oidc, **{ client_id: ipp_service_provider.issuer })
       sign_in_and_2fa_user(user)
       begin_in_person_proofing(user)

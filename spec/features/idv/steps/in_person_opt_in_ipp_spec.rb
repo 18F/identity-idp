@@ -26,7 +26,7 @@ RSpec.describe 'In Person Proofing - Opt-in IPP ', js: true do
       end
 
       it 'allows the user to continue down the happy path selecting to opt in',
-         allow_browser_log: true do
+         allow_browser_log: true, timezone: 'UTC' do
         visit_idp_from_sp_with_ial2(:oidc, **{ client_id: ipp_service_provider.issuer })
         sign_in_via_branded_page(user)
 
@@ -136,7 +136,7 @@ RSpec.describe 'In Person Proofing - Opt-in IPP ', js: true do
     end
 
     it 'works for a happy path when the user opts into opt-in ipp',
-       allow_browser_log: true do
+       allow_browser_log: true, timezone: 'UTC' do
       visit_idp_from_sp_with_ial2(:oidc, **{ client_id: ipp_service_provider.issuer })
       sign_in_via_branded_page(user)
 
@@ -192,14 +192,6 @@ RSpec.describe 'In Person Proofing - Opt-in IPP ', js: true do
       )
       expect(page).to have_text(InPersonHelper::GOOD_IDENTITY_DOC_ZIPCODE).twice
       expect(page).to have_text(DocAuthHelper::GOOD_SSN_MASKED)
-
-      # click update state ID button
-      click_link t('idv.buttons.change_state_id_label')
-      expect(page).to have_content(t('in_person_proofing.headings.update_state_id'))
-      choose t('in_person_proofing.form.state_id.same_address_as_id_yes')
-      click_button t('forms.buttons.submit.update')
-      expect(page).to have_content(t('headings.verify'))
-      expect(page).to have_current_path(idv_in_person_verify_info_path)
 
       # click update address button
       click_link t('idv.buttons.change_address_label')
@@ -313,7 +305,7 @@ RSpec.describe 'In Person Proofing - Opt-in IPP ', js: true do
     end
 
     it 'works for a happy path when the user opts out of opt-in ipp',
-       allow_browser_log: true do
+       allow_browser_log: true, timezone: 'UTC' do
       visit_idp_from_sp_with_ial2(:oidc, **{ client_id: ipp_service_provider.issuer })
       sign_in_via_branded_page(user)
 

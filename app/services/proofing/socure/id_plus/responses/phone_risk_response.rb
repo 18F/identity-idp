@@ -21,7 +21,7 @@ module Proofing
           end
 
           def successful?
-            name_correlation_successful? && phonerisk_successful?
+            name_correlation_successful? && phonerisk_successful? && !has_autofail_reason_codes?
           end
 
           private
@@ -70,6 +70,15 @@ module Proofing
 
           def phonerisk_score_threshold
             IdentityConfig.store.idv_socure_phonerisk_score_threshold
+          end
+
+          def has_autofail_reason_codes?
+            (phonerisk_reason_codes & auto_failure_reason_codes).any? ||
+              (name_phone_correlation_reason_codes & auto_failure_reason_codes).any?
+          end
+
+          def auto_failure_reason_codes
+            IdentityConfig.store.idv_socure_phonerisk_auto_failure_reason_codes
           end
         end
       end

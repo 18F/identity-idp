@@ -6,20 +6,31 @@ module Proofing
       class Proofer
         attr_reader :config
 
-        def initialize(config)
-          @config = LexisNexis::Config.new(config)
+        # @param [LexisNexis::Config] config
+        # @param [Analytics,nil] analytics
+        def initialize(config, analytics = nil)
+          @config = config
+          @analytics = analytics
         end
 
         def proof(applicant)
           response = VerificationRequest.new(config: config, applicant: applicant).send_request
-          build_result_from_response(response)
+          result = build_result_from_response(response)
+
+          log_result(result.to_h)
+
+          result
         rescue => exception
           NewRelic::Agent.notice_error(exception)
-          Resolution::Result.new(
+          result = Resolution::Result.new(
             success: false, errors: {}, exception: exception,
             vendor_name: 'lexisnexis:instant_verify',
-            vendor_workflow: config.instant_verify_workflow
+            vendor_workflow: config[:instant_verify_workflow]
           )
+
+          log_result(result.to_h)
+
+          result
         end
 
         private
@@ -76,6 +87,10 @@ module Proofing
           return unless product['ProductType'] == 'InstantVerify'
 
           product
+        end
+
+        def log_result(result_hash)
+          @analytics&.idv_instant_verify_results(**result_hash)
         end
       end
     end

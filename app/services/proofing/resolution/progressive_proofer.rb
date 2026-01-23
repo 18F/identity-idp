@@ -43,6 +43,8 @@ module Proofing
       # @param [String] workflow user is in idv or auth workflow
       # @param [Boolean] state_id_already_proofed indicates the state_id check was previously done,
       #   e.g. in doc_auth
+      # @param [String] hybrid_mobile_threatmetrix_session_id identifies the hybrid tmx session
+      # @param [String, nil] hybrid_mobile_request_ip IP address for hybrid mobile request
       # @return [ResultAdjudicator] object which contains the logic to determine proofing's result
       def proof(
         applicant_pii:,
@@ -52,7 +54,9 @@ module Proofing
         ipp_enrollment_in_progress:,
         current_sp:,
         workflow:,
-        state_id_already_proofed: false
+        state_id_already_proofed: false,
+        hybrid_mobile_threatmetrix_session_id: nil,
+        hybrid_mobile_request_ip: nil
       )
         best_effort_phone = applicant_pii[:best_effort_phone_number_for_socure]
         applicant_pii = applicant_pii.except(:best_effort_phone_number_for_socure)
@@ -67,6 +71,20 @@ module Proofing
           user_uuid:,
           workflow:,
         )
+
+        if FeatureManagement.proofing_device_hybrid_profiling_collecting_enabled? &&
+           hybrid_mobile_threatmetrix_session_id.present?
+          hybrid_mobile_device_profiling_result = threatmetrix_plugin.call(
+            applicant_pii:,
+            current_sp:,
+            threatmetrix_session_id: hybrid_mobile_threatmetrix_session_id,
+            request_ip: hybrid_mobile_request_ip,
+            timer:,
+            user_email:,
+            user_uuid:,
+            workflow:,
+          )
+        end
 
         residential_address_resolution_result = residential_address_plugin.call(
           applicant_pii:,
@@ -105,6 +123,7 @@ module Proofing
 
         ResultAdjudicator.new(
           device_profiling_result:,
+          hybrid_mobile_device_profiling_result:,
           ipp_enrollment_in_progress:,
           resolution_result: state_id_address_resolution_result,
           should_proof_state_id: aamva_plugin.aamva_supports_state_id_jurisdiction?(applicant_pii),
@@ -143,14 +162,17 @@ module Proofing
 
       def create_instant_verify_proofer
         Proofing::LexisNexis::InstantVerify::Proofer.new(
-          instant_verify_workflow: IdentityConfig.store.lexisnexis_instant_verify_workflow,
-          account_id: IdentityConfig.store.lexisnexis_account_id,
-          base_url: IdentityConfig.store.lexisnexis_base_url,
-          username: IdentityConfig.store.lexisnexis_username,
-          password: IdentityConfig.store.lexisnexis_password,
-          hmac_key_id: IdentityConfig.store.lexisnexis_hmac_key_id,
-          hmac_secret_key: IdentityConfig.store.lexisnexis_hmac_secret_key,
-          request_mode: IdentityConfig.store.lexisnexis_request_mode,
+          LexisNexis::Config.new(
+            instant_verify_workflow: IdentityConfig.store.lexisnexis_instant_verify_workflow,
+            account_id: IdentityConfig.store.lexisnexis_account_id,
+            base_url: IdentityConfig.store.lexisnexis_base_url,
+            username: IdentityConfig.store.lexisnexis_username,
+            password: IdentityConfig.store.lexisnexis_password,
+            hmac_key_id: IdentityConfig.store.lexisnexis_hmac_key_id,
+            hmac_secret_key: IdentityConfig.store.lexisnexis_hmac_secret_key,
+            request_mode: IdentityConfig.store.lexisnexis_request_mode,
+          ),
+          @analytics,
         )
       end
 
