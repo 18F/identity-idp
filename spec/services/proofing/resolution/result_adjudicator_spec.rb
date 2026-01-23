@@ -131,7 +131,11 @@ RSpec.describe Proofing::Resolution::ResultAdjudicator do
       end
 
       context 'the applicant PII contains a residential address and document address' do
-        let(:applicant_pii) { Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID }
+        let(:applicant_pii) do
+          { aamva_verified_attributes: %i[ssn dob] }.merge(
+            Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID,
+          )
+        end
 
         it 'includes formatted PII' do
           result = subject.adjudicated_result
@@ -142,6 +146,7 @@ RSpec.describe Proofing::Resolution::ResultAdjudicator do
             identity_doc_address_state: 'MT',
             state_id_jurisdiction: 'ND',
             state_id_number: '#############',
+            state_id_verified_attributes: %i[ssn dob],
             same_address_as_id: 'true',
             phone: {
               area_code: '202',

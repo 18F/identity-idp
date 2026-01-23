@@ -152,8 +152,7 @@ module Proofing
           state_id_jurisdiction: applicant_pii[:state_id_jurisdiction],
           state_id_number: redacted_state_id_number,
           same_address_as_id: applicant_pii[:same_address_as_id],
-          state_id_verified_attributes: applicant_pii[:aamva_verified_attributes],
-        }.merge(phone_precheck_info)
+        }.merge(phone_precheck_info, state_id_verified_attributes)
       end
 
       def phone_precheck_info
@@ -168,6 +167,12 @@ module Proofing
             phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
           },
         }
+      end
+
+      def state_id_verified_attributes
+        return {} if applicant_pii[:aamva_verified_attributes].blank?
+
+        { state_id_verified_attributes: applicant_pii[:aamva_verified_attributes] }
       end
     end
   end
