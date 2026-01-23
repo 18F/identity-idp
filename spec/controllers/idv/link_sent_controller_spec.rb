@@ -161,6 +161,7 @@ RSpec.describe Idv::LinkSentController do
       let(:load_result_success) { true }
 
       before do
+        aamva_verified_attributes = load_result_success ? ['address', 'ssn'] : []
         allow(load_result).to receive(:pii_from_doc).and_return(Idp::Constants.mock_idv_applicant)
         allow(load_result).to receive(:attention_with_barcode?).and_return(false)
 
@@ -168,6 +169,8 @@ RSpec.describe Idv::LinkSentController do
         allow(load_result).to receive(:selfie_check_performed?).and_return(false)
         allow(load_result).to receive(:errors).and_return({ message: 'an error message' })
         allow(load_result).to receive(:state_id_vendor).and_return(state_id_vendor)
+        allow(load_result).to receive(:aamva_verified_attributes)
+          .and_return(aamva_verified_attributes)
 
         document_capture_session = create(
           :document_capture_session,
