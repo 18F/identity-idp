@@ -9,6 +9,12 @@ module DocAuth
           include DocPiiReader
           include DocAuth::ClassificationConcern
 
+          DDP_DOCUMENT_TYPE_TO_DOCUMENT_CLASSIFICATION = {
+            IdentificationCard: DocAuth::DocumentClassifications::IDENTIFICATION_CARD,
+            DriversLicense: DocAuth::DocumentClassifications::DRIVERS_LICENSE,
+            Passport: DocAuth::DocumentClassifications::PASSPORT,
+          }.freeze
+
           attr_reader :config, :http_response, :passport_requested
 
           def initialize(http_response:, config:, passport_requested: false,
@@ -102,7 +108,8 @@ module DocAuth
 
           def classification_info
             # Acuant response has both sides info, here simulate that
-            doc_class = doc_class_name
+            doc_class = DDP_DOCUMENT_TYPE_TO_DOCUMENT_CLASSIFICATION[doc_class_name.to_sym]
+            doc_class = 'UnsupportedDocClass' if doc_class.nil?
             issuing_country = authentication_results&.dig(
               'trueid.authentication_result.fields.id_auth_field_data.country_code',
             )
