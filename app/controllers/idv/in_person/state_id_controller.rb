@@ -34,6 +34,8 @@ module Idv
           pending_pii = build_pending_pii
           redirect_url = determine_redirect_url(pending_pii, initial_state_of_same_address_as_id)
 
+          idv_session.doc_auth_vendor = Idp::Constants::Vendors::USPS
+
           analytics.idv_in_person_proofing_state_id_submitted(
             **analytics_arguments.merge(**form_result),
           )
