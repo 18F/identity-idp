@@ -152,6 +152,7 @@ module Proofing
           state_id_jurisdiction: applicant_pii[:state_id_jurisdiction],
           state_id_number: redacted_state_id_number,
           same_address_as_id: applicant_pii[:same_address_as_id],
+          state_id_verified_attributes: applicant_pii[:aamva_verified_attributes],
         }.merge(phone_precheck_info)
       end
 
