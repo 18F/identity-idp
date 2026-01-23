@@ -1082,7 +1082,6 @@ idv.accessible_labels.masked_ssn: texto seguro, a partir de %{first_number} y ha
 idv.buttons.change_address_label: Actualizar dirección
 idv.buttons.change_label: Actualizar
 idv.buttons.change_ssn_label: Actualizar número de Seguro Social
-idv.buttons.change_state_id_label: Actualizar identificación estatal
 idv.buttons.continue_plain: Continuar
 idv.buttons.mail.send: Solicitar una carta
 idv.by_mail.sp_follow_up.body: Vuelva a iniciar sesión en %{service_provider} para conectar su cuenta verificada de %{app_name} y acceder a los servicios.
@@ -1983,8 +1982,9 @@ user_mailer.dupe_profile.created.help_center_link: 'el centro de ayuda de %{app_
 user_mailer.dupe_profile.created.steps_link: los pasos que se describen aquí
 user_mailer.dupe_profile.review_complete.locked_heading: Esta cuenta ya está bloqueada
 user_mailer.dupe_profile.review_complete.locked_info: Hicimos una revisión de sus cuentas y esta cuenta ha sido bloqueada. Para obtener ayuda, contacte con %{sp_or_app_name}.
-user_mailer.dupe_profile.review_complete.success_heading: Puede volver a iniciar sesión con esta cuenta
-user_mailer.dupe_profile.review_complete.success_info: Hicimos una revisión de sus cuentas y ya puede volver a iniciar sesión en %{sp_or_app_name} con esta cuenta.
+user_mailer.dupe_profile.review_complete.success_heading: Puede volver a iniciar sesión con su cuenta.
+user_mailer.dupe_profile.review_complete.success_info: El error en su cuenta (LG22) se ha solucionado. Ahora puede iniciar sesión en el sitio web de la agencia con su cuenta de %{app_name}.
+user_mailer.dupe_profile.review_complete.success_title: Puede volver a iniciar sesión con su cuenta de %{app_name}
 user_mailer.dupe_profile.review_complete.unable_heading: No podemos verificar su inicio de sesión
 user_mailer.dupe_profile.review_complete.unable_info: Hicimos una revisión de sus cuentas y no podemos verificar su información para que inicie sesión. Para obtener ayuda, contacte con %{sp_or_app_name}.
 user_mailer.dupe_profile.sign_in.description: Alguien acaba de iniciar sesión en una cuenta de %{app_name} que ya había sido verificada antes con la información personal de usted. Por su seguridad, hemos restringido su acceso a todas las cuentas con información que coincide y a %{sp_or_app_name}.

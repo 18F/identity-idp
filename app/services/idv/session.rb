@@ -13,6 +13,7 @@ module Idv
   # @attr gpo_request_letter_visited [Boolean, nil]
   # @attr had_barcode_attention_error [Boolean, nil]
   # @attr had_barcode_read_failure [Boolean, nil]
+  # @attr hybrid_mobile_threatmetrix_review_status [String, nil]
   # @attr idv_consent_given [Boolean, nil]
   # @attr idv_consent_given_at [String, nil]
   # @attr idv_phone_step_document_capture_session_uuid [String, nil]
@@ -61,6 +62,7 @@ module Idv
       gpo_request_letter_visited
       had_barcode_attention_error
       had_barcode_read_failure
+      hybrid_mobile_threatmetrix_review_status
       idv_consent_given
       idv_consent_given_at
       idv_phone_step_document_capture_session_uuid
@@ -423,13 +425,22 @@ module Idv
       )
     end
 
+    def build_threatmetrix_review_statuses
+      [].tap do |statuses|
+        statuses << hybrid_mobile_threatmetrix_review_status if
+          FeatureManagement.proofing_device_hybrid_profiling_collecting_enabled?
+        statuses << threatmetrix_review_status
+      end.compact.uniq
+    end
+
     def threatmetrix_fraud_pending_reason
       return if !FeatureManagement.proofing_device_profiling_decisioning_enabled?
 
-      case threatmetrix_review_status
-      when 'reject'
+      review_statuses = build_threatmetrix_review_statuses
+
+      if review_statuses.include?('reject')
         'threatmetrix_reject'
-      when 'review'
+      elsif review_statuses.include?('review')
         'threatmetrix_review'
       end
     end

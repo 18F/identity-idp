@@ -225,6 +225,7 @@ module IdentityConfig
     config.add(:idv_acuant_sdk_version_default, type: :string)
     config.add(:idv_address_primary_vendor, type: :symbol, enum: [:mock, :lexis_nexis, :socure])
     config.add(:idv_address_secondary_vendor, type: :symbol, enum: [:mock, :lexis_nexis, :socure], allow_nil: true)
+    config.add(:idv_address_vendor_socure_percent, type: :integer)
     config.add(:idv_attempt_window_in_hours, type: :integer)
     config.add(:idv_available, type: :boolean)
     config.add(:idv_contact_phone_number, type: :string)
@@ -247,6 +248,7 @@ module IdentityConfig
     config.add(:idv_send_link_max_attempts, type: :integer)
     config.add(:idv_socure_docv_flow_id_only, type: :string)
     config.add(:idv_socure_docv_flow_id_w_selfie, type: :string)
+    config.add(:idv_socure_phonerisk_auto_failure_reason_codes, type: :json)
     config.add(:idv_socure_phonerisk_name_correlation_score_threshold, type: :float)
     config.add(:idv_socure_phonerisk_score_threshold, type: :float)
     config.add(:idv_socure_phonerisk_shadow_mode, type: :boolean)
@@ -314,6 +316,8 @@ module IdentityConfig
     config.add(:lexisnexis_threatmetrix_support_code, type: :string)
     config.add(:lexisnexis_threatmetrix_timeout, type: :float)
     config.add(:lexisnexis_trueid_account_id, type: :string)
+    config.add(:lexisnexis_trueid_ddp_liveness_policy, type: :string)
+    config.add(:lexisnexis_trueid_ddp_noliveness_policy, type: :string)
     config.add(:lexisnexis_trueid_hmac_key_id, type: :string)
     config.add(:lexisnexis_trueid_hmac_secret_key, type: :string)
     config.add(:lexisnexis_trueid_liveness_cropping_workflow, type: :string)
@@ -401,6 +405,11 @@ module IdentityConfig
     config.add(:proof_ssn_max_attempt_window_in_minutes, type: :integer)
     config.add(:proof_ssn_max_attempts, type: :integer)
     config.add(:proofer_mock_fallback, type: :boolean)
+    config.add(
+      :proofing_device_hybrid_profiling,
+      type: :symbol,
+      enum: [:disabled, :collect_only, :enabled],
+    )
     config.add(
       :proofing_device_profiling,
       type: :symbol,
@@ -511,6 +520,7 @@ module IdentityConfig
     config.add(:sp_fraud_metrics_report_configs, type: :json)
     config.add(:sp_verification_report_configs, type: :json)
     config.add(:sp_verification_demographics_report_configs, type: :json)
+    config.add(:sp_registration_funnel_report_configs, type: :json)
     config.add(:state_tracking_enabled, type: :boolean)
     config.add(:team_ada_email, type: :string)
     config.add(:team_all_login_emails, type: :json)

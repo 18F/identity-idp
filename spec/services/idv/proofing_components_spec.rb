@@ -18,6 +18,8 @@ RSpec.describe Idv::ProofingComponents do
   end
 
   let(:pii_from_doc) { nil }
+  let(:hybrid_device_profiling) { :disabled }
+  let(:hybrid_mobile_tmx_review_status) { nil }
 
   subject do
     described_class.new(
@@ -25,7 +27,14 @@ RSpec.describe Idv::ProofingComponents do
     )
   end
 
+  before do
+    allow(IdentityConfig.store).to receive(:proofing_device_hybrid_profiling)
+      .and_return(hybrid_device_profiling)
+  end
+
   describe '#to_h' do
+    let(:hybrid_device_profiling) { :enabled }
+
     before do
       allow(IdentityConfig.store).to receive(:doc_auth_vendor_default).and_return('test_vendor')
       idv_session.mark_verify_info_step_complete!
@@ -36,6 +45,7 @@ RSpec.describe Idv::ProofingComponents do
       idv_session.source_check_vendor = 'aamva'
       idv_session.resolution_vendor = 'lexis_nexis'
       idv_session.doc_auth_vendor = 'feedabee'
+      idv_session.hybrid_mobile_threatmetrix_review_status = hybrid_mobile_tmx_review_status
     end
 
     context 'with drivers_license' do
@@ -87,6 +97,27 @@ RSpec.describe Idv::ProofingComponents do
             address_check: 'gpo_letter',
             threatmetrix: true,
             threatmetrix_review_status: 'pass',
+          },
+        )
+      end
+    end
+
+    context 'with hybrid mobile threatmetrix' do
+      let(:pii_from_doc) { Idp::Constants.mock_idv_applicant }
+      let(:hybrid_mobile_tmx_review_status) { 'pass' }
+
+      it 'returns expected result' do
+        expect(subject.to_h).to eql(
+          {
+            document_check: 'feedabee',
+            document_type_received: 'drivers_license',
+            source_check: 'aamva',
+            resolution_check: 'lexis_nexis',
+            address_check: 'gpo_letter',
+            threatmetrix: true,
+            threatmetrix_review_status: 'pass',
+            hybrid_mobile_threatmetrix: true,
+            hybrid_mobile_threatmetrix_review_status: 'pass',
           },
         )
       end
@@ -237,7 +268,6 @@ RSpec.describe Idv::ProofingComponents do
         allow(FeatureManagement).to receive(:proofing_device_profiling_collecting_enabled?)
           .and_return(true)
       end
-
       context 'threatmetrix_review_status present' do
         before do
           idv_session.threatmetrix_review_status = 'pass'
@@ -293,6 +323,66 @@ RSpec.describe Idv::ProofingComponents do
     context 'threatmetrix_review_status not present in idv_session' do
       it 'returns nil' do
         expect(subject.threatmetrix_review_status).to be_nil
+      end
+    end
+  end
+
+  describe '#hybrid_mobile_threatmetrix' do
+    context 'hybrid profiling collecting enabled' do
+      let(:hybrid_device_profiling) { :enabled }
+
+      context 'hybrid_mobile_threatmetrix_review_status present' do
+        before do
+          idv_session.hybrid_mobile_threatmetrix_review_status = 'pass'
+        end
+
+        it 'returns true' do
+          expect(subject.hybrid_mobile_threatmetrix).to be_truthy
+        end
+      end
+
+      context 'hybrid_mobile_threatmetrix_review_status not present' do
+        it 'returns nil' do
+          expect(subject.hybrid_mobile_threatmetrix).to be_nil
+        end
+      end
+    end
+
+    context 'hybrid profiling collecting disabled' do
+      let(:hybrid_device_profiling) { :disabled }
+
+      context 'hybrid_mobile_threatmetrix_review_status present' do
+        before do
+          idv_session.hybrid_mobile_threatmetrix_review_status = 'pass'
+        end
+
+        it 'returns false' do
+          expect(subject.hybrid_mobile_threatmetrix).to eql(false)
+        end
+      end
+
+      context 'hybrid_mobile_threatmetrix_review_status not present' do
+        it 'returns nil' do
+          expect(subject.hybrid_mobile_threatmetrix).to be_nil
+        end
+      end
+    end
+  end
+
+  describe '#hybrid_mobile_threatmetrix_review_status' do
+    context 'hybrid_mobile_threatmetrix_review_status present in idv_session' do
+      before do
+        idv_session.hybrid_mobile_threatmetrix_review_status = 'pass'
+      end
+
+      it 'returns value' do
+        expect(subject.hybrid_mobile_threatmetrix_review_status).to eql('pass')
+      end
+    end
+
+    context 'hybrid_mobile_threatmetrix_review_status not present in idv_session' do
+      it 'returns nil' do
+        expect(subject.hybrid_mobile_threatmetrix_review_status).to be_nil
       end
     end
   end

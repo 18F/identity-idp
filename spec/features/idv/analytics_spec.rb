@@ -126,9 +126,12 @@ RSpec.feature 'Analytics Regression', :js do
       ssn_is_unique: true,
       timed_out: false,
       threatmetrix_review_status: 'pass',
+      hybrid_mobile_threatmetrix_review_status: nil,
       phone_precheck_passed: idv_phone_precheck_enabled,
       context: {
         device_profiling_adjudication_reason: 'device_profiling_result_pass',
+        hybrid_mobile_device_profiling_adjudication_reason:
+          'hybrid_mobile_device_profiling_not_enabled',
         resolution_adjudication_reason: 'pass_resolution_and_state_id',
         should_proof_state_id: true,
         stages: {
@@ -149,6 +152,7 @@ RSpec.feature 'Analytics Regression', :js do
                                  verified_attributes: nil },
           state_id: state_id_resolution,
           threatmetrix: threatmetrix_response,
+          hybrid_mobile_threatmetrix: {},
           phone_precheck: idv_phone_precheck_enabled ?
                           {
                             errors: {},
@@ -178,9 +182,12 @@ RSpec.feature 'Analytics Regression', :js do
       ssn_is_unique: true,
       timed_out: false,
       threatmetrix_review_status: 'pass',
+      hybrid_mobile_threatmetrix_review_status: nil,
       phone_precheck_passed: false,
       context: {
         device_profiling_adjudication_reason: 'device_profiling_result_pass',
+        hybrid_mobile_device_profiling_adjudication_reason:
+          'hybrid_mobile_device_profiling_not_enabled',
         resolution_adjudication_reason: 'pass_resolution_and_state_id',
         should_proof_state_id: true,
         stages: {
@@ -201,6 +208,7 @@ RSpec.feature 'Analytics Regression', :js do
                                  verified_attributes: nil },
           state_id: state_id_resolution,
           threatmetrix: threatmetrix_response,
+          hybrid_mobile_threatmetrix: {},
           phone_precheck: {},
         },
       },

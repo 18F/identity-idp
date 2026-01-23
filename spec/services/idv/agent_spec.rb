@@ -54,6 +54,8 @@ RSpec.describe Idv::Agent do
           trace_id: trace_id,
           threatmetrix_session_id: nil,
           request_ip: request_ip,
+          hybrid_mobile_threatmetrix_session_id: nil,
+          hybrid_mobile_request_ip: nil,
           ipp_enrollment_in_progress: ipp_enrollment_in_progress,
           proofing_vendor:,
         )

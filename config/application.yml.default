@@ -210,6 +210,7 @@ idv_acuant_sdk_version_alternate: '11.9.3'
 idv_acuant_sdk_version_default: '11.9.3.508'
 idv_address_primary_vendor: mock
 idv_address_secondary_vendor:
+idv_address_vendor_socure_percent: 0
 idv_attempt_window_in_hours: 6
 idv_available: true
 idv_contact_phone_number: (844) 555-5555
@@ -228,6 +229,7 @@ idv_send_link_attempt_window_in_minutes: 10
 idv_send_link_max_attempts: 5
 idv_socure_docv_flow_id_only: ''
 idv_socure_docv_flow_id_w_selfie: ''
+idv_socure_phonerisk_auto_failure_reason_codes: '[]'
 idv_socure_phonerisk_name_correlation_score_threshold: 1.0
 idv_socure_phonerisk_score_threshold: 0
 idv_socure_phonerisk_shadow_mode: false
@@ -303,6 +305,8 @@ lexisnexis_threatmetrix_support_code: ABCD
 lexisnexis_threatmetrix_timeout: 1.0
 # TrueID DocAuth Integration
 lexisnexis_trueid_account_id: '12345'
+lexisnexis_trueid_ddp_liveness_policy: test_ddp_liveness_policy
+lexisnexis_trueid_ddp_noliveness_policy: test_ddp_noliveness_policy
 lexisnexis_trueid_hmac_key_id: trueid_hmac_key_id
 lexisnexis_trueid_hmac_secret_key: trueid_hmac_secret_key
 lexisnexis_trueid_liveness_cropping_workflow: customers.gsa2.trueid.workflow
@@ -383,6 +387,7 @@ proof_address_max_attempts: 5
 proof_ssn_max_attempt_window_in_minutes: 60
 proof_ssn_max_attempts: 10
 proofer_mock_fallback: true
+proofing_device_hybrid_profiling: disabled
 proofing_device_profiling: enabled
 protocols_report_config: '[]'
 push_notifications_enabled: false
@@ -488,6 +493,7 @@ sp_idv_weekly_dropoff_report_configs: '[]'
 sp_issuer_user_counts_report_configs: '[]'
 sp_proofing_events_by_uuid_report_configs: '[]'
 sp_verification_demographics_report_configs: '[]'
+sp_registration_funnel_report_configs: '[]'
 sp_verification_report_configs: '[]'
 state_tracking_enabled: true
 team_ada_email: ''
@@ -582,7 +588,7 @@ development:
   s3_data_warehouse_bucket_prefix: ''
   s3_report_bucket_prefix: ''
   s3_report_public_bucket_prefix: ''
-  saml_endpoint_configs: '[{"suffix":"2024","secret_key_passphrase":"trust-but-verify"},{"suffix":"2025","secret_key_passphrase":"trust-but-verify"}]'
+  saml_endpoint_configs: '[{"suffix":"2024","secret_key_passphrase":"trust-but-verify"},{"suffix":"2025","secret_key_passphrase":"trust-but-verify"},{"suffix":"2026","secret_key_passphrase":"trust-but-verify"}]'
   secret_key_base: development_secret_key_base
   session_encryption_key: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
   sign_in_recaptcha_annotation_enabled: true
@@ -689,7 +695,7 @@ test:
   s3_data_warehouse_bucket_prefix: ''
   s3_report_bucket_prefix: ''
   s3_report_public_bucket_prefix: ''
-  saml_endpoint_configs: '[{"suffix":"2025","secret_key_passphrase":"trust-but-verify"},{"suffix":"2024","secret_key_passphrase":"trust-but-verify","comment":"this extra year is needed to demonstrate how handling multiple live years works in spec/requests/saml_requests_spec.rb"}]'
+  saml_endpoint_configs: '[{"suffix":"2026","secret_key_passphrase":"trust-but-verify"},{"suffix":"2025","secret_key_passphrase":"trust-but-verify"},{"suffix":"2024","secret_key_passphrase":"trust-but-verify","comment":"this and 2025 are needed to demonstrate how handling multiple live years works in spec/requests/saml_requests_spec.rb"}]'
   scrypt_cost: 800$8$1$
   secret_key_base: test_secret_key_base
   session_encryption_key: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
