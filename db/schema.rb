@@ -647,8 +647,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_21_214521) do
     t.jsonb "service_providers_sent", default: {}, null: false, comment: "sensitive=false"
     t.string "cost", null: false, comment: "sensitive=true"
     t.string "salt", null: false, comment: "sensitive=true"
-    t.datetime "created_at", null: false, comment: "sensitive=false"
-    t.datetime "updated_at", null: false, comment: "sensitive=false"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["profile_id"], name: "index_user_proofing_events_on_profile_id"
   end
 
