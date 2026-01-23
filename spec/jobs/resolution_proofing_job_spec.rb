@@ -570,7 +570,8 @@ RSpec.describe ResolutionProofingJob, type: :job do
             .to eq([])
 
           # result[:context][:stages][:residential_address]
-          expect(result_context_residential_address[:vendor_name]).to eq('lexisnexis:instant_verify')
+          expect(result_context_residential_address[:vendor_name])
+            .to eq('lexisnexis:instant_verify')
           expect(result_context_residential_address[:errors]).to include(:"Execute Instant Verify")
           expect(result_context_residential_address[:exception]).to eq(nil)
           expect(result_context_residential_address[:success]).to eq(true)
@@ -617,7 +618,10 @@ RSpec.describe ResolutionProofingJob, type: :job do
           expect(result_context_stages_threatmetrix[:transaction_id]).to eq('1234')
           expect(result_context_stages_threatmetrix[:review_status]).to eq('pass')
           expect(result_context_stages_threatmetrix[:response_body]).to eq(
-            JSON.parse(LexisNexisFixtures.ddp_success_redacted_response_json, symbolize_names: true),
+            JSON.parse(
+              LexisNexisFixtures.ddp_success_redacted_response_json,
+              symbolize_names: true,
+            ),
           )
         end
       end
@@ -685,7 +689,8 @@ RSpec.describe ResolutionProofingJob, type: :job do
 
             it 'stores a successful result' do
               stub_vendor_requests(
-                instant_verify_response: LexisNexisFixtures.instant_verify_address_fail_response_json,
+                instant_verify_response: LexisNexisFixtures
+                  .instant_verify_address_fail_response_json,
               )
 
               perform
@@ -709,7 +714,9 @@ RSpec.describe ResolutionProofingJob, type: :job do
               expect(result_context_stages_resolution[:success]).to eq(false)
               expect(result_context_stages_resolution[:can_pass_with_additional_verification])
                 .to eq(true)
-              expect(result_context_stages_resolution[:attributes_requiring_additional_verification])
+              expect(
+                result_context_stages_resolution[:attributes_requiring_additional_verification],
+              )
                 .to eq(['address'])
 
               # result[:context][:stages][:state_id]
