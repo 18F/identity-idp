@@ -1084,7 +1084,6 @@ idv.accessible_labels.masked_ssn: 保护文本安全，从 %{first_number} 开�
 idv.buttons.change_address_label: 更新地址
 idv.buttons.change_label: 更新
 idv.buttons.change_ssn_label: 更新社会保障号码
-idv.buttons.change_state_id_label: 更新州颁发的身份证件
 idv.buttons.continue_plain: 继续
 idv.buttons.mail.send: 要求发一封信
 idv.by_mail.sp_follow_up.body: 重新登录 %{service_provider}以连接你验证过的%{app_name}账户并获得服务。

@@ -1,6 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Proofing::LexisNexis::InstantVerify::Proofer do
+  let(:analytics) { FakeAnalytics.new }
   let(:applicant) do
     {
       uuid_prefix: '0987',
@@ -27,7 +28,10 @@ RSpec.describe Proofing::LexisNexis::InstantVerify::Proofer do
   it_behaves_like 'a lexisnexis rdp proofer'
 
   subject do
-    described_class.new(**LexisNexisFixtures.example_config.to_h)
+    described_class.new(
+      Proofing::LexisNexis::Config.new(**LexisNexisFixtures.example_config.to_h),
+      analytics,
+    )
   end
 
   describe '#proof' do
@@ -42,7 +46,7 @@ RSpec.describe Proofing::LexisNexis::InstantVerify::Proofer do
         )
 
         result = subject.proof(applicant)
-
+        expect(analytics).to have_logged_event(:idv_instant_verify_results)
         expect(result.success?).to eq(true)
         expect(result.errors).to include('Execute Instant Verify': include(a_kind_of(Hash)))
         expect(result.vendor_workflow).to(
@@ -62,6 +66,7 @@ RSpec.describe Proofing::LexisNexis::InstantVerify::Proofer do
 
         result = subject.proof(applicant)
 
+        expect(analytics).to have_logged_event(:idv_instant_verify_results)
         expect(result.success?).to eq(false)
         expect(result.errors).to include(
           base: include(a_kind_of(String)),

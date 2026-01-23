@@ -1,0 +1,126 @@
+{
+  "account_first_name": "Test",
+  "account_last_name": "McTesterson",
+  "account_name": "test_mctesterson",
+  "account_name_activities": ["_CHALLENGE_PASSED"],
+  "account_name_attributes": ["_CHALLENGE_PASSED"],
+  "account_name_first_seen": "2020-08-11",
+  "account_name_last_event": "2022-10-31",
+  "account_name_last_update": "2022-10-31",
+  "account_name_result": "success",
+  "account_name_score": "93",
+  "account_name_worst_score": "0",
+  "action": "initiation",
+  "api_call_datetime": "2022-10-31 22:17:45.762",
+  "api_caller_ip": "76.226.85.97",
+  "api_key": "g2ixxxxxxxxxxnh9",
+  "api_site_id": "api102.qa1.sac.",
+  "api_type": "authentication",
+  "auth_challenge_method": "_A_DOCUM",
+  "auth_method": "trueid",
+  "auth_status": "authentication_success",
+  "authentication.conversation_id": "31001230555159",
+  "challenger_request_duration": "0",
+  "champion_request_duration": "16392",
+  "custom_policy_score": "0",
+  "enabled_services": ["TMX100"],
+  "event_datetime": "2022-10-31 22:17:45.762",
+  "event_tag": "challenge_pass",
+  "event_type": "init_auth",
+  "event_update_required": "yes",
+  "external.conversation_id": "31001230555159",
+  "final_review_status": "pass",
+  "integration_hub_results": {
+    "org_id_str:default_auth_policy_pm": {
+      "Authentication - With PM": {
+        "rule_id": "5696815",
+        "tps_datetime": "2022-10-31 22:17:45.944",
+        "tps_duration": "16276",
+        "tps_http_status_code": "200",
+        "tps_result": "ok",
+        "tps_type": "LN_RDP_Auth_Hub_Initiate",
+        "tps_vendor": "LN",
+        "tps_vendor_raw_response": {
+          "Status": { "ConversationId": "31001230555159", "TransactionStatus": "passed" },
+          "InputEcho": "[.....",
+          "org_id": "org123",
+          "output_format": "json",
+          "perf_policy_engine_total": "16402 msec",
+          "policy": "default_auth_policy_pm",
+          "policy_details": {
+            "policy_details": [
+              {
+                "customer": {
+                  "final_review_status": "pass",
+                  "pvid": "1117741",
+                  "review_status": "pass",
+                  "risk_rating": "neutral",
+                  "rules": [{ "rid": "5696815", "score": "0" }],
+                  "score": "0"
+                },
+                "id": "0",
+                "type": "champion"
+              }
+            ]
+          },
+          "policy_details_api": {
+            "policy_detail_api": [
+              {
+                "type": "champion",
+                "id": "0",
+                "customer": {
+                  "score": "0",
+                  "pvid": "1117741",
+                  "final_review_status": "pass",
+                  "review_status": "pass",
+                  "risk_rating": "neutral",
+                  "rules": [
+                    { "rid": "5696815", "reason_code": "Authentication - With PM", "score": "0" }
+                  ]
+                }
+              }
+            ]
+          },
+          "policy_engine_version": "13.6",
+          "policy_score": "0",
+          "policy_site_id": "P2/otin101.qa1.sac",
+          "policy_type": "standard",
+          "policy_version": "1117741",
+          "primary_industry": "banking",
+          "reason_code": ["Authentication - With PM"],
+          "request_duration": "16580",
+          "request_id": "d4ee697c-93e8-4062-ae7f-5a99e072492b",
+          "request_id_activities": ["_CHALLENGE_PASSED"],
+          "request_result": "success",
+          "review_status": "pass",
+          "risk_rating": "neutral",
+          "rule_id": "5696815",
+          "secondary_industry": "commercial",
+          "session_id": "example_testing",
+          "summary_risk_score": "0",
+          "tps_datetime": "2022-10-31 22:17:45.944",
+          "tps_duration": "16276",
+          "tps_http_status_code": "200",
+          "tps_result": "ok",
+          "tps_type": "LN_RDP_Auth_Hub_Initiate",
+          "tps_vendor": "LN",
+          "tps_vendor_raw_response": "Stat...",
+          "tag_context": "_A_TRUID",
+          "trueid.authentication_result.date_of_birth": "20000306",
+          "trueid.authentication_result.doc_auth_result": "Passed",
+          "trueid.authentication_result.doc_class": "IdentificationCard",
+          "trueid.authentication_result.doc_issuer_name": "Utopia",
+          "trueid.authentication_result.expiration_date": "20400306",
+          "trueid.authentication_result.fields.id_auth_field_data.country_code": "UTO",
+          "trueid.authentication_result.first_name": "COMPANY",
+          "trueid.authentication_result.last_name": "SAMPLE",
+          "trueid.authentication_result.portrait": "/9j/4AA...",
+          "trueid.authentication_result.signature": "/9j/4AAQ...",
+          "trueid.portrait_match.face_match_result": "Passed",
+          "trueid.portrait_match.face_match_score": "0",
+          "trueid.portrait_match.face_status_code": "0"
+        }
+      }
+    }
+  }
+}

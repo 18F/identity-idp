@@ -13,6 +13,7 @@ class ResolutionProofingJob < ApplicationJob
     :residential_resolution_success,
     :state_id_success,
     :device_profiling_success,
+    :hybrid_device_profiling_success,
     keyword_init: true,
   )
 
@@ -26,6 +27,8 @@ class ResolutionProofingJob < ApplicationJob
     service_provider_issuer: nil,
     threatmetrix_session_id: nil,
     request_ip: nil,
+    hybrid_mobile_threatmetrix_session_id: nil,
+    hybrid_mobile_request_ip: nil,
     state_id_already_proofed: false
   )
     timer = JobHelpers::Timer.new
@@ -53,6 +56,8 @@ class ResolutionProofingJob < ApplicationJob
       applicant_pii:,
       threatmetrix_session_id:,
       request_ip:,
+      hybrid_mobile_threatmetrix_session_id:,
+      hybrid_mobile_request_ip:,
       ipp_enrollment_in_progress:,
       current_sp:,
       proofing_vendor:,
@@ -92,6 +97,8 @@ class ResolutionProofingJob < ApplicationJob
     applicant_pii:,
     threatmetrix_session_id:,
     request_ip:,
+    hybrid_mobile_threatmetrix_session_id:,
+    hybrid_mobile_request_ip:,
     ipp_enrollment_in_progress:,
     current_sp:,
     proofing_vendor:,
@@ -102,6 +109,8 @@ class ResolutionProofingJob < ApplicationJob
       applicant_pii:,
       threatmetrix_session_id:,
       request_ip:,
+      hybrid_mobile_threatmetrix_session_id:,
+      hybrid_mobile_request_ip:,
       ipp_enrollment_in_progress:,
       timer:,
       current_sp:,
@@ -109,10 +118,24 @@ class ResolutionProofingJob < ApplicationJob
       state_id_already_proofed:,
     )
 
-    log_threatmetrix_info(result.device_profiling_result, user)
+    log_threatmetrix_info(result.device_profiling_result, user, 'ThreatMetrix')
+
+    hybrid_device_profiling_success = nil
+
+    if FeatureManagement.proofing_device_hybrid_profiling_collecting_enabled? &&
+       hybrid_mobile_threatmetrix_session_id.present?
+      log_threatmetrix_info(
+        result.hybrid_mobile_device_profiling_result,
+        user,
+        'ThreatMetrix HybridMobile',
+      )
+
+      hybrid_device_profiling_success = result.hybrid_mobile_device_profiling_result.success?
+    end
 
     CallbackLogData.new(
       device_profiling_success: result.device_profiling_result.success?,
+      hybrid_device_profiling_success: hybrid_device_profiling_success,
       resolution_success: result.resolution_result.success?,
       residential_resolution_success: result.residential_resolution_result.success?,
       result: result.adjudicated_result.to_h,
@@ -128,9 +151,9 @@ class ResolutionProofingJob < ApplicationJob
     user.last_sign_in_email_address.email
   end
 
-  def log_threatmetrix_info(threatmetrix_result, user)
+  def log_threatmetrix_info(threatmetrix_result, user, name)
     logger_info_hash(
-      name: 'ThreatMetrix',
+      name:,
       user_id: user.uuid,
       threatmetrix_request_id: threatmetrix_result.transaction_id,
       threatmetrix_success: threatmetrix_result.success?,

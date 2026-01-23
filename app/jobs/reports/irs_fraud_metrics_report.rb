@@ -5,9 +5,7 @@ require 'reporting/irs_fraud_metrics_lg99_report'
 
 module Reports
   class IrsFraudMetricsReport < BaseReport
-    REPORT_NAME = 'irs-fraud-metrics-report'
-
-    attr_reader :report_date, :report_receiver
+    attr_reader :report_date, :report_receiver, :report_name, :report_title
 
     def initialize(init_date = nil, init_receiver = :internal, *args, **rest)
       @report_date = init_date
@@ -19,24 +17,40 @@ module Reports
       @report_date = perform_date
       @report_receiver = perform_receiver.to_sym
 
-      email_addresses = emails
+      IdentityConfig.store.sp_fraud_metrics_report_configs.each do |report_config|
+        send_report(report_config)
+      end
+    end
+
+    def send_report(report_config)
+      issuers = report_config['issuers']
+      agency_abbreviation = report_config['agency_abbreviation']
+      partner_emails = report_config['partner_emails']
+      internal_emails = report_config['internal_emails']
+
+      @report_name = "#{agency_abbreviation.downcase}_fraud_metrics_report"
+      @report_title = "#{agency_abbreviation} Fraud Metrics Report"
+
+      email_addresses = emails(internal_emails, partner_emails)
       to_emails = email_addresses[:to].select(&:present?)
       bcc_emails = email_addresses[:bcc].select(&:present?)
 
       if to_emails.empty? && bcc_emails.empty?
-        Rails.logger.warn 'No email addresses received - Fraud Metrics Report NOT SENT'
+        Rails.logger.warn "No email addresses received - #{@report_title} NOT SENT"
         return false
       end
 
-      reports.each do |report|
+      emailable_reports = reports(issuers, agency_abbreviation)
+
+      emailable_reports.each do |report|
         upload_to_s3(report.table, report_name: report.filename)
       end
 
       ReportMailer.tables_report(
         to: to_emails,
         bcc: bcc_emails,
-        subject: "IRS Fraud Metrics Report - #{report_date.to_date}",
-        reports: reports,
+        subject: "#{@report_title} - #{report_date.to_date}",
+        reports: emailable_reports,
         message: preamble,
         attachment_format: :csv,
       ).deliver_now
@@ -65,41 +79,35 @@ module Reports
       ERB
     end
 
-    def reports
-      @reports ||= irs_fraud_metrics_lg99_report.as_emailable_reports
+    def reports(issuers, agency_abbreviation)
+      sp_fraud_metrics_lg99_report(issuers, agency_abbreviation).as_emailable_reports
     end
 
-    def irs_fraud_metrics_lg99_report
-      @irs_fraud_metrics_lg99_report ||= Reporting::IrsFraudMetricsLg99Report.new(
-        issuers: issuers,
+    def sp_fraud_metrics_lg99_report(issuers, agency_abbreviation)
+      Reporting::IrsFraudMetricsLg99Report.new(
+        issuers: issuers || [],
         time_range: report_date.all_month,
+        agency_abbreviation: agency_abbreviation,
       )
     end
 
-    def issuers
-      [*IdentityConfig.store.irs_fraud_metrics_issuers]
-    end
-
-    def emails
-      internal_emails = [*IdentityConfig.store.team_daily_reports_emails].select(&:present?)
-      irs_emails      = [*IdentityConfig.store.irs_fraud_metrics_emails].select(&:present?)
-
-      if report_receiver == :both && irs_emails.empty?
+    def emails(internal_emails, partner_emails)
+      if report_receiver == :both && partner_emails.empty?
         Rails.logger.warn(
-          'IRS Fraud Metrics Report: recipient is :both ' \
-          'but no external email specified',
+          "#{@report_title}: recipient is :both " \
+          "but no external email specified",
         )
       end
 
-      if report_receiver == :both && irs_emails.present?
-        { to: irs_emails, bcc: internal_emails }
+      if report_receiver == :both && partner_emails.present?
+        { to: partner_emails, bcc: internal_emails }
       else
         { to: internal_emails, bcc: [] }
       end
     end
 
     def upload_to_s3(report_body, report_name: nil)
-      _latest, path = generate_s3_paths(REPORT_NAME, 'csv', subname: report_name, now: report_date)
+      _latest, path = generate_s3_paths(@report_name, 'csv', subname: report_name, now: report_date)
 
       if bucket_name.present?
         upload_file_to_s3_bucket(

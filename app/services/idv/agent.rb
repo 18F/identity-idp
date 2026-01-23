@@ -13,7 +13,9 @@ module Idv
       request_ip:,
       ipp_enrollment_in_progress:,
       proofing_vendor:,
-      state_id_already_proofed: false
+      state_id_already_proofed: false,
+      hybrid_mobile_threatmetrix_session_id: nil,
+      hybrid_mobile_request_ip: nil
     )
       document_capture_session.create_proofing_session
 
@@ -29,6 +31,8 @@ module Idv
         service_provider_issuer: document_capture_session.issuer,
         threatmetrix_session_id:,
         request_ip:,
+        hybrid_mobile_threatmetrix_session_id:,
+        hybrid_mobile_request_ip:,
         ipp_enrollment_in_progress:,
         proofing_vendor:,
         state_id_already_proofed:,

@@ -40,7 +40,7 @@ module Proofing
             StreetAddress2: applicant[:address2] || '',
             City: applicant[:city],
             State: applicant[:state],
-            Zip5: applicant[:zipcode].match(/^\d{5}/).to_s,
+            Zip5: applicant[:zipcode]&.match(/^\d{5}/).to_s,
             Country: 'US',
             Context: 'primary',
           }

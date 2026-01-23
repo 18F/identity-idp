@@ -4261,6 +4261,62 @@ module AnalyticsEvents
     )
   end
 
+  # LexisNexis Instant Verify API was called with the following results
+  # @param [Boolean] success Result from LexisNexis Instant Verify API call
+  # @param [Hash] errors Result from resolution proofing
+  # @param [String] exception Exception that occured during download or synchronizaiton
+  # @param [Boolean] timed_out Whether the proofing request timed out
+  # @param [String] transaction_id The vendor specific transaction ID for the proofing request
+  # @param [String] reference
+  # @param [Hash] reason_codes Socure internal reason codes for accept reject decision
+  # @param [Boolean] can_pass_with_additional_verification Whether the PII could be verified if
+  # another vendor verified certain attributes
+  # @param [Array<String>] attributes_requiring_additional_verification Attributes that need to
+  # be verified by another vendor
+  # @param [Array<String>, nil] source_attribution List of sources that contributed to the
+  # resolution proofing result
+  # @param [String, nil] vendor_name Vendor used
+  # @param [String] vendor_id ID of vendor
+  # @param [String] vendor_workflow ID of workflow or configuration the vendor used for this
+  # transaction
+  # @param [Array[String], nil] verified_attributes The attributes verified during proofing
+  def idv_instant_verify_results(
+    success:,
+    errors:,
+    exception:,
+    timed_out:,
+    transaction_id:,
+    reference:,
+    reason_codes:,
+    can_pass_with_additional_verification:,
+    attributes_requiring_additional_verification:,
+    source_attribution:,
+    vendor_name:,
+    vendor_id:,
+    vendor_workflow:,
+    verified_attributes:,
+    **extra
+  )
+    track_event(
+      :idv_instant_verify_results,
+      success:,
+      errors:,
+      exception:,
+      timed_out:,
+      transaction_id:,
+      reference:,
+      reason_codes:,
+      can_pass_with_additional_verification:,
+      attributes_requiring_additional_verification:,
+      source_attribution:,
+      vendor_name:,
+      vendor_id:,
+      vendor_workflow:,
+      verified_attributes:,
+      **extra,
+    )
+  end
+
   # User visits IdV
   # @param [Hash,nil] proofing_components User's proofing components.
   # @param [String,nil] active_profile_idv_level ID verification level of user's active profile.

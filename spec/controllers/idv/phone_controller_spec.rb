@@ -533,9 +533,11 @@ RSpec.describe Idv::PhoneController do
         let(:name_phone_correlation_high) { true }
         let(:name_phone_reason_codes) { [] }
         let(:phonerisk_reason_codes) { [] }
+        let(:idv_address_primary_vendor) { :socure }
 
         before do
-          allow(IdentityConfig.store).to receive(:idv_address_primary_vendor).and_return(:socure)
+          allow(IdentityConfig.store).to receive(:idv_address_primary_vendor)
+            .and_return(idv_address_primary_vendor)
           stub_request(:post, 'https://sandbox.socure.test/api/3.0/EmailAuthScore')
             .to_return(
               status: 200,
@@ -601,6 +603,57 @@ RSpec.describe Idv::PhoneController do
                 vendor_name: 'socure_phonerisk',
               },
             )
+          end
+
+          context 'when phonerisk due to percentage routing' do
+            let(:idv_address_primary_vendor) { :mock }
+            let(:phonerisk_percentage) { 100 }
+            before do
+              allow(IdentityConfig.store).to receive(:idv_address_vendor_socure_percent)
+                .and_return(phonerisk_percentage)
+            end
+            it 'tracks event with valid phone' do
+              proofing_phone = Phonelib.parse(good_phone)
+
+              expect(@attempts_api_tracker).to receive(:idv_phone_verified).with(
+                success: true,
+                phone_number: proofing_phone.e164,
+                failure_reason: nil,
+              )
+
+              put :create, params: { idv_phone_form: { phone: good_phone } }
+
+              expect(@analytics).to have_logged_event(
+                'IdV: phone confirmation form',
+                hash_including(:success),
+              )
+
+              expect(response).to redirect_to idv_phone_path
+
+              get :new
+
+              expect(@analytics).to have_logged_event(
+                'IdV: phone confirmation vendor',
+                success: true,
+                new_phone_added: true,
+                hybrid_handoff_phone_used: false,
+                phone_fingerprint: Pii::Fingerprinter.fingerprint(proofing_phone.e164),
+                country_code: proofing_phone.country,
+                area_code: proofing_phone.area_code,
+                vendor: {
+                  exception: nil,
+                  reference: 'some-reference-id',
+                  result: {
+                    customer_user_id: user.uuid,
+                    name_phone_correlation: { reason_codes: {}, score: 0.99 },
+                    phonerisk: { reason_codes: {}, score: 0.01 },
+                  },
+                  timed_out: false,
+                  transaction_id: 'some-reference-id',
+                  vendor_name: 'socure_phonerisk',
+                },
+              )
+            end
           end
         end
 
