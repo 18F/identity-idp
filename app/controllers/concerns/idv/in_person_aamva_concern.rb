@@ -17,7 +17,6 @@ module Idv
 
       document_capture_session.create_proofing_session
 
-      # Use pending PII if available (deferred storage), otherwise fall back to pii_from_user
       pii_for_aamva = idv_session.ipp_aamva_pending_state_id_pii || pii_from_user
       encrypted_arguments = encrypt_pii_for_job(pii_for_aamva)
 
@@ -100,12 +99,7 @@ module Idv
       proofing_result
     end
 
-    # Handles the completion of an async AAMVA verification job.
-    #
-    # Rate limiting strategy: We increment the rate limiter AFTER the async result is available,
-    # not when the job is started. This ensures users get their final attempt - if they succeed
-    # on their last try, they proceed forward. Rate limit redirect only happens on failure.
-    # This matches the pattern used in verify_info_concern.rb for resolution proofing.
+    # Increment rate limiter after result so users can succeed on final attempt
     def handle_aamva_async_done(current_state)
       result = current_state.result
 
@@ -127,7 +121,6 @@ module Idv
         redirect_to redirect_url
       else
         delete_aamva_async_state
-        # Only check rate limit on failure - successful attempts proceed regardless of count
         return if rate_limit_redirect!(:idv_doc_auth, step_name: 'ipp_state_id')
 
         flash.now[:error] = I18n.t('idv.failure.verify.heading')
@@ -148,8 +141,6 @@ module Idv
       commit_state_id_data(pending_pii)
     end
 
-    # Shared method to commit state ID PII data to the session.
-    # Used by both AAMVA flow (after verification) and non-AAMVA flow (immediate commit).
     def commit_state_id_data(pii_data)
       return unless pii_from_user
 

@@ -387,6 +387,21 @@ RSpec.describe Idv::InPerson::StateIdController do
     it 'returns a valid StepInfo object' do
       expect(Idv::InPerson::StateIdController.step_info).to be_valid
     end
+
+    context 'undo_step' do
+      before do
+        subject.idv_session.source_check_vendor = 'aamva'
+        subject.idv_session.ipp_aamva_result = { success: true }
+        allow(subject.idv_session).to receive(:invalidate_in_person_pii_from_user!)
+        described_class.step_info.undo_step.call(idv_session: subject.idv_session, user:)
+      end
+
+      it 'clears source_check_vendor and ipp_aamva_result' do
+        expect(subject.idv_session).to have_received(:invalidate_in_person_pii_from_user!)
+        expect(subject.idv_session.source_check_vendor).to be_nil
+        expect(subject.idv_session.ipp_aamva_result).to be_nil
+      end
+    end
   end
 
   describe 'AAMVA integration' do
