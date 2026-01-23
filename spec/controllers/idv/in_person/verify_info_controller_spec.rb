@@ -475,7 +475,10 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
     end
 
     context 'the state id proofing occurred previously' do
-      let(:state_id_vendor) { 'done_previously' }
+      before do
+        allow(IdentityConfig.store).to receive(:idv_aamva_at_doc_auth_enabled).and_return(true)
+        subject.idv_session.ipp_aamva_result = { success: true }
+      end
 
       it 'lets the proofer know that the state id was already proofed' do
         expect_any_instance_of(Idv::Agent).to receive(:proof_resolution)
@@ -484,6 +487,8 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
             trace_id: subject.send(:amzn_trace_id),
             threatmetrix_session_id: 'a-random-session-id',
             request_ip: request.remote_ip,
+            hybrid_mobile_threatmetrix_session_id: nil,
+            hybrid_mobile_request_ip: nil,
             ipp_enrollment_in_progress: true,
             proofing_vendor: :mock,
             state_id_already_proofed: true,
