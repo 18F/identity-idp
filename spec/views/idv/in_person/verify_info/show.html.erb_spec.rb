@@ -89,6 +89,13 @@ RSpec.describe 'idv/in_person/verify_info/show.html.erb' do
         expect(rendered).to have_content(pii[:identity_doc_zipcode])
       end
 
+      it 'renders the state_id update link with click observer' do
+        expect(rendered).to have_css(
+          "lg-click-observer[event-name='" \
+          "idv_in_person_proofing_verify_info_update_state_id_button_clicked']",
+        )
+      end
+
       it 'renders the address section' do
         # Heading
         expect(rendered).to have_content(t('headings.residential_address'))
@@ -109,12 +116,26 @@ RSpec.describe 'idv/in_person/verify_info/show.html.erb' do
         expect(rendered).to have_content(pii[:zipcode])
       end
 
+      it 'renders the address update link with click observer' do
+        expect(rendered).to have_css(
+          "lg-click-observer[event-name='" \
+          "idv_in_person_proofing_verify_info_update_address_button_clicked']",
+        )
+      end
+
       it 'renders the ssn section' do
         # Heading
         expect(rendered).to have_content(t('headings.ssn'))
         # SSN
         expect(rendered).to have_content(t('idv.form.ssn'))
         expect(rendered).to have_content(SsnFormatter.format_masked(pii[:ssn]))
+      end
+
+      it 'renders the ssn update link with click observer' do
+        expect(rendered).to have_css(
+          "lg-click-observer[event-name='" \
+          "idv_in_person_proofing_verify_info_update_ssn_button_clicked']",
+        )
       end
 
       it 'does not render the passport section' do

@@ -245,42 +245,13 @@ RSpec.describe Analytics do
             component_names:,
             component_values:,
             identity_proofing: true,
-            component_separator: '.',
           },
         }
       end
 
-      it 'includes the sp_request' do
+      it 'does not include the sp_request' do
         expect(ahoy).to receive(:track)
-          .with('Trackable Event', hash_including(expected_attributes))
-
-        analytics.track_event('Trackable Event')
-      end
-    end
-
-    context 'phishing resistant and requiring facial match comparison' do
-      let(:session) { { sp: { vtr: ['Ca.Pb'] } } }
-      let(:component_names) { ['C1', 'C2', 'Ca', 'P1', 'Pb'] }
-      let(:component_values) { component_names.index_with(true) }
-
-      let(:expected_attributes) do
-        {
-          sp_request: {
-            aal2: true,
-            facial_match: true,
-            two_pieces_of_fair_evidence: true,
-            component_values:,
-            component_names:,
-            identity_proofing: true,
-            phishing_resistant: true,
-            component_separator: '.',
-          },
-        }
-      end
-
-      it 'includes the sp_request' do
-        expect(ahoy).to receive(:track)
-          .with('Trackable Event', hash_including(expected_attributes))
+          .with('Trackable Event', hash_not_including(expected_attributes))
 
         analytics.track_event('Trackable Event')
       end
@@ -300,7 +271,6 @@ RSpec.describe Analytics do
     let(:expected_attributes) do
       {
         sp_request: {
-          component_separator: ' ',
           component_names: acr_values,
           component_values: acr_values.map do |v|
             v.sub("#{Saml::Idp::Constants::LEGACY_ACR_PREFIX}/", '')

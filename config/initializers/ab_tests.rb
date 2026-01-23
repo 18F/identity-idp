@@ -58,6 +58,8 @@ module AbTests
         IdentityConfig.store.doc_auth_vendor_socure_percent : 0,
       lexis_nexis: IdentityConfig.store.doc_auth_vendor_switching_enabled ?
         IdentityConfig.store.doc_auth_vendor_lexis_nexis_percent : 0,
+      lexis_nexis_ddp: IdentityConfig.store.doc_auth_vendor_switching_enabled ?
+        IdentityConfig.store.doc_auth_vendor_lexis_nexis_ddp_percent : 0,
     }.compact,
   ) do |service_provider:, session:, user:, user_session:, **|
     user&.uuid
@@ -71,9 +73,11 @@ module AbTests
     default_bucket: IdentityConfig.store.doc_auth_selfie_vendor_default.to_sym,
     buckets: {
       socure: IdentityConfig.store.doc_auth_selfie_vendor_switching_enabled ?
-          IdentityConfig.store.doc_auth_selfie_vendor_socure_percent : 0,
+        IdentityConfig.store.doc_auth_selfie_vendor_socure_percent : 0,
       lexis_nexis: IdentityConfig.store.doc_auth_selfie_vendor_switching_enabled ?
-          IdentityConfig.store.doc_auth_selfie_vendor_lexis_nexis_percent : 0,
+        IdentityConfig.store.doc_auth_selfie_vendor_lexis_nexis_percent : 0,
+      lexis_nexis_ddp: IdentityConfig.store.doc_auth_selfie_vendor_switching_enabled ?
+        IdentityConfig.store.doc_auth_selfie_vendor_lexis_nexis_ddp_percent : 0,
     }.compact,
   ) do |service_provider:, session:, user:, user_session:, **|
     user&.uuid
@@ -150,14 +154,28 @@ module AbTests
     default_bucket: IdentityConfig.store.idv_resolution_default_vendor,
     buckets: {
       socure_kyc: IdentityConfig.store.idv_resolution_vendor_switching_enabled ?
-          IdentityConfig.store.idv_resolution_vendor_socure_kyc_percent : 0,
+        IdentityConfig.store.idv_resolution_vendor_socure_kyc_percent : 0,
       instant_verify: IdentityConfig.store.idv_resolution_vendor_switching_enabled ?
-          IdentityConfig.store.idv_resolution_vendor_instant_verify_percent : 0,
+        IdentityConfig.store.idv_resolution_vendor_instant_verify_percent : 0,
     },
   ) do |service_provider:, session:, user:, user_session:, **|
     verify_info_step_document_capture_session_uuid_discriminator(
       service_provider:, user:, user_session:,
     )
+  end.freeze
+
+  PHONE_FINDER_RDP_VERSION = AbTest.new(
+    experiment_name: 'phone_finder_rdp_version',
+    should_log: /^idv/i,
+    default_bucket: IdentityConfig.store.idv_rdp_version_default,
+    buckets: {
+      rdp_v2: IdentityConfig.store.idv_rdp_version_switching_enabled ?
+            IdentityConfig.store.idv_rdp_version_v2_percent : 0,
+      rdp_v3: IdentityConfig.store.idv_rdp_version_switching_enabled ?
+            IdentityConfig.store.idv_rdp_version_v3_percent : 0,
+    },
+  ) do |user:, user_session:, **|
+    user&.uuid
   end.freeze
 
   # This "test" will permanently be in place to allow a multi-vendor configuration.
@@ -167,9 +185,11 @@ module AbTests
     default_bucket: IdentityConfig.store.doc_auth_passport_vendor_default.to_sym,
     buckets: {
       socure: IdentityConfig.store.doc_auth_passport_vendor_switching_enabled ?
-          IdentityConfig.store.doc_auth_passport_vendor_socure_percent : 0,
+        IdentityConfig.store.doc_auth_passport_vendor_socure_percent : 0,
       lexis_nexis: IdentityConfig.store.doc_auth_passport_vendor_switching_enabled ?
-          IdentityConfig.store.doc_auth_passport_vendor_lexis_nexis_percent : 0,
+        IdentityConfig.store.doc_auth_passport_vendor_lexis_nexis_percent : 0,
+      lexis_nexis_ddp: IdentityConfig.store.doc_auth_passport_vendor_switching_enabled ?
+        IdentityConfig.store.doc_auth_passport_vendor_lexis_nexis_ddp_percent : 0,
     }.compact,
   ) do |service_provider:, session:, user:, user_session:, **|
     user&.uuid
@@ -182,9 +202,11 @@ module AbTests
     default_bucket: IdentityConfig.store.doc_auth_passport_selfie_vendor_default.to_sym,
     buckets: {
       socure: IdentityConfig.store.doc_auth_passport_selfie_vendor_switching_enabled ?
-          IdentityConfig.store.doc_auth_passport_selfie_vendor_socure_percent : 0,
+        IdentityConfig.store.doc_auth_passport_selfie_vendor_socure_percent : 0,
       lexis_nexis: IdentityConfig.store.doc_auth_passport_selfie_vendor_switching_enabled ?
-          IdentityConfig.store.doc_auth_passport_selfie_vendor_lexis_nexis_percent : 0,
+        IdentityConfig.store.doc_auth_passport_selfie_vendor_lexis_nexis_percent : 0,
+      lexis_nexis_ddp: IdentityConfig.store.doc_auth_passport_selfie_vendor_switching_enabled ?
+        IdentityConfig.store.doc_auth_passport_selfie_vendor_lexis_nexis_ddp_percent : 0,
     }.compact,
   ) do |service_provider:, session:, user:, user_session:, **|
     user&.uuid

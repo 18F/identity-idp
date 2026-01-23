@@ -25,10 +25,12 @@
     </div>
   </dl>
   <div class='grid-auto'>
-    <%= link_to(
-          t('idv.buttons.change_label'),
-          idv_in_person_address_url,
-          'aria-label': t('idv.buttons.change_address_label'),
-        ) %>
+    <%= render ClickObserverComponent.new(event_name: 'idv_in_person_proofing_verify_info_update_address_button_clicked') do %>
+      <%= link_to(
+            t('idv.buttons.change_label'),
+            idv_in_person_address_url,
+            'aria-label': t('idv.buttons.change_address_label'),
+          ) %>
+    <% end %>
   </div>
 </div>

@@ -47,10 +47,12 @@
     </div>
   </dl>
   <div class='grid-auto'>
-    <%= link_to(
-          idv_in_person_state_id_url,
-          class: 'usa-button usa-button--unstyled',
-          'aria-label': t('idv.buttons.change_state_id_label'),
-        ) { t('idv.buttons.change_label') } %>
+    <%= render ClickObserverComponent.new(event_name: 'idv_in_person_proofing_verify_info_update_state_id_button_clicked') do %>
+      <%= link_to(
+            idv_in_person_state_id_url,
+            class: 'usa-button usa-button--unstyled',
+            'aria-label': t('idv.buttons.change_state_id_label'),
+          ) { t('idv.buttons.change_label') } %>
+    <% end %>
   </div>
 </div>

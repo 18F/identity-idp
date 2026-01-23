@@ -310,7 +310,7 @@ RSpec.describe Idv::ApiImageUploadForm do
           let(:aamva_doc_auth_response) do
             DocAuth::Response.new(
               success: false,
-              errors: { verification: 'I am error!' },
+              errors: { state_id_verification: 'I am error!' },
             )
           end
 

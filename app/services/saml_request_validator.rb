@@ -8,7 +8,6 @@ class SamlRequestValidator
   validate :authorized_service_provider
   validate :registered_cert_exists
   validate :authorized_authn_context
-  validate :parsable_vtr
   validate :authorized_email_nameid_format
 
   def initialize(blank_cert: false, saml_errors: [])
@@ -68,12 +67,6 @@ class SamlRequestValidator
     end
   end
 
-  def parsable_vtr
-    if vtr.present?
-      errors.add(:authn_context, :unauthorized_authn_context)
-    end
-  end
-
   def registered_cert_exists
     # if there is no service provider, an error has already been added
     return if service_provider.blank?
@@ -113,12 +106,6 @@ class SamlRequestValidator
       return true if Saml::Idp::Constants::IAL2_AUTHN_CONTEXTS.include?(classref)
     end
     false
-  end
-
-  def vtr
-    @vtr ||= Array(authn_context).select do |classref|
-      classref.match?(SamlIdp::Request::VTR_REGEXP)
-    end
   end
 
   def ial_max_requested?

@@ -13,12 +13,9 @@ RSpec.describe 'reactivate_account/index.html.erb' do
     expect(rendered).to have_content(t('instructions.account.reactivate.modal.copy'))
   end
 
-  it 'displays the date the personal key was generated' do
+  it 'displays the date the personal key was generated without time' do
     assign(:personal_key_generated_at, personal_key_generated_at)
 
-    expect(rendered).to have_css(
-      'lg-time[data-timestamp="2020-04-09T14:03:00Z"][data-format]',
-      text: 'April 9, 2020 at 2:03 PM',
-    )
+    expect(rendered).to have_content('April 9, 2020')
   end
 end

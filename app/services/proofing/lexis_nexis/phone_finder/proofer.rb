@@ -4,6 +4,8 @@ module Proofing
   module LexisNexis
     module PhoneFinder
       class Proofer
+        include AbTestingConcern
+
         attr_reader :config
 
         def initialize(config)
@@ -11,7 +13,7 @@ module Proofing
         end
 
         def proof(applicant)
-          response = VerificationRequest.new(config: config, applicant: applicant).send_request
+          response = verification_request(config: config, applicant: applicant).send_request
           build_result_from_response(response)
         rescue => exception
           NewRelic::Agent.notice_error(exception)
@@ -24,6 +26,27 @@ module Proofing
         end
 
         private
+
+        def verification_request(config:, applicant:)
+          rdp_version = ab_test_bucket(
+            :PHONE_FINDER_RDP_VERSION,
+            user: user(applicant[:uuid]),
+            service_provider: nil,
+            current_session: nil,
+            current_user_session: nil,
+          )
+
+          case rdp_version
+          when :rdp_v3
+            VerificationRequestRdpV3.new(config: config, applicant: applicant)
+          else
+            VerificationRequest.new(config: config, applicant: applicant)
+          end
+        end
+
+        def user(uuid)
+          User.find_by(uuid:)
+        end
 
         def build_result_from_response(verification_response)
           AddressResult.new(

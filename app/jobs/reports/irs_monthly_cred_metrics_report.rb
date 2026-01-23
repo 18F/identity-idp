@@ -121,7 +121,7 @@ module Reports
       # rubocop:enable Layout/LineLength
 
       ReportMailer.tables_report(
-        email: to_emails,
+        to: to_emails,
         bcc: bcc_emails,
         subject: "#{partner_strings.first} Monthly Credential Metrics - #{@report_date.to_date}",
         message: preamble,

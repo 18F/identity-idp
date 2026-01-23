@@ -51,11 +51,7 @@ class ApplicationController < ActionController::Base
     payload[:user_id] = analytics_user.uuid unless @skip_session_load
 
     payload[:git_sha] = IdentityConfig::GIT_SHA
-    if IdentityConfig::GIT_TAG.present?
-      payload[:git_tag] = IdentityConfig::GIT_TAG
-    else
-      payload[:git_branch] = IdentityConfig::GIT_BRANCH
-    end
+    payload[:git_branch] = IdentityConfig::GIT_BRANCH
 
     payload
   end
@@ -135,12 +131,11 @@ class ApplicationController < ActionController::Base
 
     service_provider = sp_from_sp_session
     if service_provider.nil?
-      @resolved_authn_context_result = Vot::Parser::Result.no_sp_result
+      @resolved_authn_context_result = Component::Parser::Result.no_sp_result
     else
       @resolved_authn_context_result = AuthnContextResolver.new(
         user: current_user,
         service_provider: service_provider,
-        vtr: sp_session[:vtr],
         acr_values: sp_session[:acr_values],
       ).result
     end
@@ -286,7 +281,8 @@ class ApplicationController < ActionController::Base
 
   def signed_in_url
     return idv_verify_by_mail_enter_code_url if current_user.gpo_verification_pending_profile?
-    account_path
+    stored_location_for(current_user) ||
+      account_path
   end
 
   def after_mfa_setup_path

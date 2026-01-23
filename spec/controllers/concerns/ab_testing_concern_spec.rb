@@ -32,7 +32,7 @@ RSpec.describe AbTestingConcern do
 
   let(:service_provider) { build(:service_provider) }
 
-  let(:request) { spy }
+  let(:request) { nil }
 
   let(:session) { {} }
 

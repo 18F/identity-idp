@@ -97,7 +97,8 @@ RSpec.describe Idv::InPerson::UspsLocationsController do
       allow(UspsInPersonProofing::Proofer).to receive(:new).and_return(proofer)
     end
 
-    context 'with a user going through enhanced ipp' do
+    xcontext 'with a user going through enhanced ipp',
+             skip: 'VoT has been deprecated. EIPP should not be determined via acr_values' do
       let(:vtr) { ['C1.C2.P1.Pe'] }
       let(:enhanced_ipp_sp_session) { { vtr: vtr, acr_values: nil } }
       let(:user) { build(:user) }
@@ -203,6 +204,32 @@ RSpec.describe Idv::InPerson::UspsLocationsController do
           exception_message: timeout_error.message,
           response_body_present:
           timeout_error.response_body.present?,
+        )
+
+        status = response.status
+        expect(status).to eq 422
+      end
+    end
+
+    context 'with a usps invalid response error' do
+      let(:server_error) do
+        UspsInPersonProofing::Exception::InvalidResponseError.new('LocationApi')
+      end
+
+      before do
+        allow(proofer).to receive(:request_facilities).with(address, false).and_raise(server_error)
+      end
+
+      it 'returns an unprocessible entity client error' do
+        subject
+        expect(@analytics).to have_logged_event(
+          'Request USPS IPP locations: request failed',
+          api_status_code: 422,
+          exception_class: server_error.class,
+          exception_message: server_error.message,
+          response_body: false,
+          response_body_present: false,
+          response_status_code: false,
         )
 
         status = response.status
@@ -449,7 +476,10 @@ RSpec.describe Idv::InPerson::UspsLocationsController do
       end
     end
 
-    context 'when the user is going through EIPP' do
+    # TODO: VoT has been deprecated.
+    # EIPP should not be determined via acr_values
+    context 'when the user is going through EIPP',
+            skip: 'VoT has been deprecated. EIPP should not be determined via acr_values' do
       let(:vtr) { ['C1.C2.P1.Pe'] }
       let(:enhanced_ipp_sp_session) { { vtr: vtr, acr_values: nil } }
 

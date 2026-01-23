@@ -18,6 +18,7 @@ module Idv
                     StandardError,
                     UspsLocationsError,
                     Faraday::BadRequestError,
+                    UspsInPersonProofing::Exception::InvalidResponseError,
                     with: :handle_error
 
         def index
@@ -57,8 +58,9 @@ module Idv
           remapped_error = case err
                            when ActionController::InvalidAuthenticityToken,
                                 Faraday::Error,
-                                UspsLocationsError
-                             :unprocessable_entity
+                                UspsLocationsError,
+                                UspsInPersonProofing::Exception::InvalidResponseError
+                             :unprocessable_content
                            else
                              :internal_server_error
                            end

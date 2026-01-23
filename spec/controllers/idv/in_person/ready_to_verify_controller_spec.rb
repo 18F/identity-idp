@@ -105,36 +105,6 @@ RSpec.describe Idv::InPerson::ReadyToVerifyController do
               expect(response).not_to redirect_to idv_please_call_url
             end
           end
-
-          context 'when vtr (vector of trust) does not include Enhanced Proofing (Pe)' do
-            before do
-              resolved_authn_context_result = Vot::Parser.new(vector_of_trust: 'Pb').parse
-
-              allow(controller).to receive(:resolved_authn_context_result)
-                .and_return(resolved_authn_context_result)
-            end
-
-            it 'evaluates to In Person Proofing' do
-              response
-
-              expect(assigns(:is_enhanced_ipp)).to be false
-            end
-          end
-
-          context 'when vtr (vector of trust) includes Enhanced Proofing (Pe)' do
-            before do
-              resolved_authn_context_result = Vot::Parser.new(vector_of_trust: 'Pe').parse
-
-              allow(controller).to receive(:resolved_authn_context_result)
-                .and_return(resolved_authn_context_result)
-            end
-
-            it 'evaluates to Enhanced IPP' do
-              response
-
-              expect(assigns(:is_enhanced_ipp)).to be true
-            end
-          end
         end
       end
 

@@ -168,6 +168,11 @@ RSpec.configure do |config|
     )
   end
 
+  # config allowing timezone to be set per-example
+  config.around(:each, :timezone) do |example|
+    Time.use_zone(example.metadata[:timezone]) { example.run }
+  end
+
   config.after(:context) do
     reload_ab_tests
   end

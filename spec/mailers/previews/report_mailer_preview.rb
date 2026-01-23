@@ -54,7 +54,7 @@ class ReportMailerPreview < ActionMailer::Preview
     )
 
     ReportMailer.tables_report(
-      email: 'email@example.com',
+      to: 'email@example.com',
       subject: "A/B Tests Report - reCAPTCHA at Sign-In - #{Time.zone.now.to_date}",
       message: [
         "A/B Tests Report - reCAPTCHA at Sign-In - #{Time.zone.now.to_date}",
@@ -72,7 +72,7 @@ class ReportMailerPreview < ActionMailer::Preview
     stub_cloudwatch_client(monthly_key_metrics_report.monthly_idv_report)
 
     ReportMailer.tables_report(
-      email: 'test@example.com',
+      to: 'test@example.com',
       subject: "Example Key Metrics Report - #{Time.zone.now.to_date}",
       message: monthly_key_metrics_report.preamble,
       attachment_format: :xlsx,
@@ -87,7 +87,7 @@ class ReportMailerPreview < ActionMailer::Preview
     stub_cloudwatch_client(report.send(:report))
 
     ReportMailer.tables_report(
-      email: 'test@example.com',
+      to: 'test@example.com',
       subject: "Weekly Protocols Report - #{date}",
       message: "Report: protocols-report #{date}",
       attachment_format: :csv,
@@ -101,7 +101,7 @@ class ReportMailerPreview < ActionMailer::Preview
     stub_cloudwatch_client(fraud_metrics_report.fraud_metrics_lg99_report)
 
     ReportMailer.tables_report(
-      email: 'test@example.com',
+      to: 'test@example.com',
       subject: "Example Fraud Key Metrics Report - #{Time.zone.now.to_date}",
       message: fraud_metrics_report.preamble,
       attachment_format: :xlsx,
@@ -119,7 +119,7 @@ class ReportMailerPreview < ActionMailer::Preview
     )
 
     ReportMailer.tables_report(
-      email: 'test@example.com',
+      to: 'test@example.com',
       subject: "Example Identity Verification Outcomes Report - #{Time.zone.now.to_date}",
       message: identity_verification_outcomes_report.preamble,
       attachment_format: :csv,
@@ -133,7 +133,7 @@ class ReportMailerPreview < ActionMailer::Preview
     stub_cloudwatch_client(irs_registration_funnel_report.irs_registration_funnel_report)
 
     ReportMailer.tables_report(
-      email: 'test@example.com',
+      to: 'test@example.com',
       subject: "Example IRS Registration Funnel Report - #{Time.zone.now.to_date}",
       message: irs_registration_funnel_report.preamble,
       attachment_format: :csv,
@@ -147,7 +147,7 @@ class ReportMailerPreview < ActionMailer::Preview
     stub_cloudwatch_client(irs_fraud_metrics_report.irs_fraud_metrics_lg99_report)
 
     ReportMailer.tables_report(
-      email: 'test@example.com',
+      to: 'test@example.com',
       subject: "Example IRS Fraud Key Metrics Report - #{Time.zone.now.to_date}",
       message: irs_fraud_metrics_report.preamble,
       attachment_format: :csv,
@@ -167,7 +167,7 @@ class ReportMailerPreview < ActionMailer::Preview
     stub_cloudwatch_client(api_transaction_count_report.api_transaction_count_report, data: data)
 
     ReportMailer.tables_report(
-      email: 'test@example.com',
+      to: 'test@example.com',
       subject: "API Transaction Count Report - #{Time.zone.now.to_date}",
       message: api_transaction_count_report.preamble,
       attachment_format: :csv,
@@ -176,16 +176,41 @@ class ReportMailerPreview < ActionMailer::Preview
   end
 
   def irs_verification_report
-    irs_verification_report = Reports::IrsVerificationReport.new(Time.zone.yesterday)
+    irs_original_verification_report =
+      Reports::IrsOriginalVerificationReport.new(Time.zone.yesterday)
 
-    stub_cloudwatch_client(irs_verification_report.irs_verification_report)
+    stub_cloudwatch_client(irs_original_verification_report.irs_verification_report)
 
     ReportMailer.tables_report(
-      email: 'test@example.com',
+      to: 'test@example.com',
       subject: "Example IRS Verification Report - #{Time.zone.now.to_date}",
       message: "Report: IRS Verification Report -  #{Time.zone.now.to_date}",
       attachment_format: :csv,
-      reports: irs_verification_report.reports,
+      reports: irs_original_verification_report.reports,
+    )
+  end
+
+  def sp_verification_report
+    require 'reporting/irs_verification_report'
+
+    date    = Time.zone.yesterday.end_of_day
+    issuers = ['issuer1']
+    agency  = 'Test_Agency'
+
+    builder = Reporting::IrsVerificationReport.new(
+      time_range: date.beginning_of_week(:sunday).prev_occurring(:sunday).all_week(:sunday),
+      issuers: issuers,
+      agency_abbreviation: agency,
+    )
+    stub_cloudwatch_client(builder)
+
+    ReportMailer.tables_report(
+      to: 'test@example.com',
+      bcc: 'bcc@example.com',
+      subject: "#{agency} Verification Report - #{date.to_date}",
+      message: "Report: #{agency} Verification Report - #{date.to_date}",
+      attachment_format: :csv,
+      reports: builder.as_emailable_reports,
     )
   end
 
@@ -195,7 +220,7 @@ class ReportMailerPreview < ActionMailer::Preview
     stub_cloudwatch_client(irs_quarterly_report.irs_verification_demographics_report)
 
     ReportMailer.tables_report(
-      email: 'test@example.com',
+      to: 'test@example.com',
       subject: "Example IRS Verification Demographics Report - #{Time.zone.now.to_date}",
       message: irs_quarterly_report.preamble,
       attachment_format: :csv,
@@ -207,7 +232,7 @@ class ReportMailerPreview < ActionMailer::Preview
     irs_credential_tenure_report = Reports::IrsCredentialTenureReport.new(Time.zone.yesterday)
 
     ReportMailer.tables_report(
-      email: 'test@example.com',
+      to: 'test@example.com',
       subject: "Example IRS Credential Tenure Report - #{Time.zone.now.to_date}",
       message: "Report: IRS Credentual Tenure Report -  #{Time.zone.now.to_date}",
       attachment_format: :csv,
@@ -216,16 +241,42 @@ class ReportMailerPreview < ActionMailer::Preview
   end
 
   def monthly_irs_verification_report
-    monthly_irs_verification_report = Reports::MonthlyIrsVerificationReport.new(Time.zone.yesterday)
+    monthly_irs_verification_report =
+      Reports::MonthlyIrsOriginalVerificationReport.new(Time.zone.yesterday)
 
     stub_cloudwatch_client(monthly_irs_verification_report.irs_verification_report)
 
     ReportMailer.tables_report(
-      email: 'test@example.com',
+      to: 'test@example.com',
       subject: "Example Monthly IRS Verification Report - #{Time.zone.now.to_date}",
       message: "Report: IRS Verification Report -  #{Time.zone.now.to_date}",
       attachment_format: :csv,
       reports: monthly_irs_verification_report.reports,
+    )
+  end
+
+  def monthly_sp_verification_report
+    require 'reporting/irs_verification_report'
+
+    date    = Time.zone.yesterday.end_of_day
+    issuers = ['issuer1']
+    agency  = 'Test_Agency'
+
+    builder = Reporting::IrsVerificationReport.new(
+      time_range: date.all_month,
+      issuers: issuers,
+      agency_abbreviation: agency,
+    )
+
+    stub_cloudwatch_client(builder)
+
+    ReportMailer.tables_report(
+      to: 'test@example.com',
+      bcc: 'bcc@example.com',
+      subject: "#{agency} Verification Report - #{date.to_date}",
+      message: "Report: #{agency} Verification Report - #{date.to_date}",
+      attachment_format: :csv,
+      reports: builder.as_emailable_reports,
     )
   end
 
@@ -254,7 +305,7 @@ class ReportMailerPreview < ActionMailer::Preview
     emailable_report = report.as_emailable_partner_report(date: report_date)
 
     ReportMailer.tables_report(
-      email: 'test@example.com',
+      to: 'test@example.com',
       subject: "Example Partner Monthly Credentials Report - #{Time.zone.now.to_date}",
       message: report.preamble,
       reports: emailable_report,
@@ -264,7 +315,7 @@ class ReportMailerPreview < ActionMailer::Preview
 
   def tables_report
     ReportMailer.tables_report(
-      email: 'test@example.com',
+      to: 'test@example.com',
       subject: 'Example Report',
       message: 'Sample Message',
       attachment_format: :csv,

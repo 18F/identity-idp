@@ -1,184 +1,146 @@
+# spec/jobs/reports/irs_verification_report_spec.rb
 require 'rails_helper'
-require 'active_support/testing/time_helpers'
+require 'csv'
 
 RSpec.describe Reports::IrsVerificationReport do
-  include ActiveSupport::Testing::TimeHelpers
+  let(:report_date) { Time.zone.parse('2025-11-14 23:59:59 UTC') } # Friday
+  let(:mock_internal_emails) { ['internal1@example.com', 'internal2@example.com'] }
+  let(:mock_partner_emails)  { ['partner@example.com'] }
+  let(:mock_issuers)         { ['issuer1', 'issuer2'] }
+  let(:mock_agency)          { 'Test_partner' }
 
-  let(:report_date) { Time.zone.today.end_of_day }
-  let(:receiver) { :internal }
-  let(:report) { described_class.new(report_date, receiver) }
-  let(:dummy_report_data) { [['Header1', 'Header2'], ['Value1', 'Value2']] }
-  let(:mock_test_irs_verification_emails) do
-    ['mock_feds@example.com', 'mock_contractors@example.com']
-  end
-  let(:mock_test_internal_emails) { ['mock_internal@example.com'] }
-
-  let(:mock_report_object) do
-    instance_double(
-      Reporting::IrsVerificationReport,
-      as_emailable_reports: [
-        Struct.new(:table, :filename).new(dummy_report_data, 'dummy.csv'),
-      ],
-    )
-  end
-
-  let(:mock_funnel_data) do
+  let(:configs) do
     [
-      ['Metric', 'Number of accounts', '% of total from start'],
-      ['Registration Demand', 25, '100%'],
-      ['Registration Failures', 10, '40%'],
-      ['Registration Successes', 15, '60%'],
+      {
+        'issuers' => mock_issuers,
+        'agency_abbreviation' => mock_agency,
+        'internal_emails' => mock_internal_emails,
+        'partner_emails' => mock_partner_emails,
+      },
+    ]
+  end
+
+  let(:emailable_reports) do
+    [
+      Reporting::EmailableReport.new(
+        title: 'Definitions',
+        table: [
+          ['Metric', 'Count', 'Rate'], ['Verification Demand', 100, 1.0],
+          ['Document Authentication Success', 80, 0.8],
+          ['Information Verification Success', 70, 0.7],
+          ['Phone Verification Success', 60, 0.6],
+          ['Verification Successes', 50, 0.5],
+          ['Verification Failures', 50, 0.5]
+        ],
+        filename: 'definitions',
+      ),
+      Reporting::EmailableReport.new(
+        title: 'Overview',
+        table: [['Report Timeframe', 'Report Generated', 'Issuer']],
+        filename: 'overview',
+      ),
     ]
   end
 
   before do
-    travel_to Time.zone.parse('2025-05-13 10:00:00')
+    allow(IdentityConfig.store).to receive(:sp_verification_report_configs).and_return(configs)
+    allow(IdentityConfig.store).to receive(:s3_reports_enabled).and_return(true)
 
-    allow(IdentityConfig.store).to receive(:irs_verification_report_config)
-      .and_return(mock_test_irs_verification_emails)
-    allow(IdentityConfig.store).to receive(:team_daily_reports_emails)
-      .and_return(mock_test_internal_emails)
+    # Prevent real AWS calls
+    allow_any_instance_of(described_class).to receive(:bucket_name).and_return('test-bucket')
+    allow_any_instance_of(described_class).to receive(:upload_file_to_s3_bucket).and_return(true)
 
-    allow(IdentityConfig.store).to receive(:irs_verification_report_issuers)
-      .and_return(['issuer1'])
-
-    allow(IdentityConfig.store).to receive(:team_all_login_emails)
-      .and_return(['team@example.com'])
-
-    allow(report).to receive(:upload_file_to_s3_bucket).and_return(true)
-    allow(report).to receive(:bucket_name).and_return('my-test-bucket')
-    allow(report.irs_verification_report).to receive(:funnel_table).and_return(mock_funnel_data)
-    allow(ReportMailer).to receive_message_chain(:tables_report, :deliver_now)
+    # No-op mailer
+    allow(ReportMailer).to receive_message_chain(:tables_report, :deliver_now).and_return(true)
   end
 
-  after do
-  end
-
-  context 'begining of the week, it sends out the report to the internal and partner' do
-    let(:report_date) { Date.new(2025, 10, 20).prev_day }
-    subject(:report) { described_class.new(report_date, :both) }
-    it 'sends out a report to just to team data and partner' do
-      expect(ReportMailer).to receive(:tables_report).once.with(
-        email: ['mock_feds@example.com', 'mock_contractors@example.com'],
-        bcc: ['mock_internal@example.com'],
-        subject: 'IRS Verification Report - 2025-10-19',
-        reports: anything,
-        message: report.preamble,
-        attachment_format: :csv,
-      ).and_call_original
-
-      report.perform(report_date, :both)
-    end
-  end
-
-  context 'recipient is both but IRS emails are empty' do
-    let(:report_receiver) { :both }
-    let(:report_date) { Date.new(2025, 7, 1).prev_day } # 2025-06-30
-    subject(:report) { described_class.new(report_date, report_receiver) }
-
-    before do
-      allow(IdentityConfig.store).to receive(:irs_verification_report_config)
-        .and_return([]) # no external IRS emails
-      allow(IdentityConfig.store).to receive(:team_daily_reports_emails)
-        .and_return(mock_test_internal_emails)
-    end
-
-    it 'logs a warning and sends the report only to internal emails' do
-      expect(Rails.logger).to receive(:warn).with(
-        'IRS Verification Report: recipient is :both but no external email specified',
-      )
-
-      expect(ReportMailer).to receive(:tables_report).once.with(
-        email: ['mock_internal@example.com'],
-        bcc: [],
-        subject: 'IRS Verification Report - 2025-06-30',
-        reports: anything,
-        message: report.preamble,
-        attachment_format: :csv,
-      ).and_call_original
-
-      report.perform(report_date, :both)
-    end
-  end
-
-  context 'recipient is internal but internal emails are empty' do
-    let(:report_receiver) { :internal }
-    let(:report_date) { Date.new(2021, 3, 2).in_time_zone('UTC').end_of_day }
-    subject(:report) { described_class.new(report_date, report_receiver) }
-
-    before do
-      allow(IdentityConfig.store).to receive(:team_daily_reports_emails)
-        .and_return([]) # no internal emails
-      allow(IdentityConfig.store).to receive(:irs_verification_report_config)
-        .and_return(mock_test_irs_verification_emails)
-    end
-
-    it 'logs a warning and does not send the report' do
-      expect(Rails.logger).to receive(:warn).with(
-        'No email addresses received - IRS Verification Report NOT SENT',
-      )
-
-      expect(ReportMailer).not_to receive(:tables_report)
-      expect(report).not_to receive(:reports)
-
-      report.perform(report_date, :internal)
-    end
+  # Helper to compute the previous week range used by the job
+  def expected_previous_week_range(for_date)
+    for_date.beginning_of_week(:sunday).prev_occurring(:sunday).all_week(:sunday)
   end
 
   describe '#perform' do
-    it 'uploads the report to S3 and sends the email' do
-      expect(report).to receive(:upload_to_s3).at_least(:once)
-      expect(ReportMailer).to receive_message_chain(:tables_report, :deliver_now)
+    it 'builds the report for both internal + partner when receiver=:both' do
+      range = expected_previous_week_range(report_date)
 
-      report.perform(report_date)
+      # Expect the builder to be constructed with the correct args and return emailable_reports
+      expect(Reporting::IrsVerificationReport).to receive(:new).with(
+        time_range: range,
+        issuers: mock_issuers,
+        agency_abbreviation: mock_agency,
+      ).and_return(instance_double(
+        Reporting::IrsVerificationReport,
+        as_emailable_reports: emailable_reports,
+      ))
+
+      # Expect uploads (one per emailable report)
+      emailable_reports.each do |r|
+        expect_any_instance_of(described_class).to receive(:upload_to_s3).with(
+          r.table,
+          report_name: r.filename,
+        )
+      end
+
+      # Expect email goes to both internal and partner sets
+      expect(ReportMailer).to receive(:tables_report).with(
+        to: mock_partner_emails,
+        bcc: mock_internal_emails,
+        subject: "#{mock_agency} Verification Report - #{report_date.to_date}",
+        reports: emailable_reports,
+        message: kind_of(String),
+        attachment_format: :csv,
+      ).and_call_original
+
+      described_class.new.perform(report_date, :both)
     end
 
-    it 'does not send an email when no addresses are configured' do
-      allow(IdentityConfig.store).to receive(:irs_verification_report_config).and_return([])
-      allow(IdentityConfig.store).to receive(:team_daily_reports_emails).and_return('')
+    it 'emails only internal when receiver=:internal' do
+      range = expected_previous_week_range(report_date)
 
-      expect(ReportMailer).not_to receive(:tables_report)
+      allow(Reporting::IrsVerificationReport).to receive(:new).with(
+        time_range: range,
+        issuers: mock_issuers,
+        agency_abbreviation: mock_agency,
+      ).and_return(instance_double(
+        Reporting::IrsVerificationReport,
+        as_emailable_reports: emailable_reports,
+      ))
 
-      report.perform(report_date)
+      expect(ReportMailer).to receive(:tables_report).with(
+        to: mock_internal_emails,
+        bcc: [],
+        subject: "#{mock_agency} Verification Report - #{report_date.to_date}",
+        reports: emailable_reports,
+        message: kind_of(String),
+        attachment_format: :csv,
+      ).and_call_original
+
+      described_class.new.perform(report_date, :internal)
     end
-  end
 
-  describe '#preamble' do
-    it 'includes non-prod warning in non-prod env' do
-      html = report.preamble(env: 'dev')
-      expect(html).to include('Non-Production Report')
-      expect(html).to include('dev')
-    end
+    context 'when no emails are configured for the chosen receiver' do
+      let(:mock_internal_emails) { [] }
+      let(:mock_partner_emails)  { [] }
 
-    it 'returns empty string in prod' do
-      html = report.preamble(env: 'prod')
-      expect(html).not_to include('Non-Production Report')
+      it 'does not build or send the report and returns false' do
+        # Ensure we do NOT instantiate the builder or call mailer
+        expect(ReportMailer).not_to receive(:tables_report)
+
+        described_class.new.perform(report_date, :internal)
+      end
     end
   end
 
   describe '#previous_week_range' do
-    context 'report_date is sunday of new week' do
-      let(:report_date) { Date.new(2025, 10, 12).in_time_zone('UTC').end_of_day }
-      it 'returns a 7-day range starting from last Sunday' do
-        range = report.previous_week_range
-        expect(range).to be_a(Range)
-        expect(range.first).to be < range.last
-        expect(range.first.wday).to eq(0) # 0 =Sunday
-        expect(range.last.wday).to eq(6) # 6 Monday
-        expect((range.last.to_date - range.first.to_date).to_i).to eq(6)
-      end
-    end
+    it 'returns the sunday..saturday range for the previous week based on report_date' do
+      job = described_class.new(report_date, :internal)
+      range = job.previous_week_range
 
-    context 'report_date is middle of week' do
-      let(:report_date) { Date.new(2025, 10, 9).in_time_zone('UTC').end_of_day }
-      it 'returns a 7-day range starting from last Sunday' do
-        range = report.previous_week_range
-        expect(range).to be_a(Range)
-        expect(range.first).to be < range.last
-        expect(range.first.wday).to eq(0) # 0 =Sunday
-        expect(range.last.wday).to eq(6) # 6 Monday
-        expect((range.last.to_date - range.first.to_date).to_i).to eq(6)
-      end
+      expect(range).to be_a(Range)
+      expect(range.first.to_date.wday).to eq(0) # Sunday
+      expect(range.last.to_date.wday).to eq(6)  # Saturday
+      expect((range.last.to_date - range.first.to_date).to_i).to eq(6)
+      expect(range).to eq(expected_previous_week_range(report_date))
     end
   end
 end

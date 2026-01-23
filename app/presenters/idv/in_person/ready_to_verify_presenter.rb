@@ -21,9 +21,8 @@ module Idv
         enrollment.passport_book?
       end
 
-      # Reminder is exclusive of the day the email is sent (1 less than days_to_due_date)
       def days_remaining
-        enrollment.days_to_due_date - 1
+        enrollment.days_to_due_date
       end
 
       def formatted_due_date

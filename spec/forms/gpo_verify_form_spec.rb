@@ -7,7 +7,7 @@ RSpec.describe GpoVerifyForm do
       fraud_ops_tracker:,
       user:,
       pii: applicant,
-      resolved_authn_context_result: Vot::Parser::Result.no_sp_result,
+      resolved_authn_context_result: Component::Parser::Result.no_sp_result,
       otp: entered_otp,
     )
   end

@@ -49,10 +49,10 @@ GIT
 
 GIT
   remote: https://github.com/18F/saml_idp.git
-  revision: c67a251a0cf959fe700751bd24f084b4b038038b
-  tag: v0.23.10-18f
+  revision: de86eb14453a8d0f844f98e51db8be743fb346ce
+  tag: v0.24.0-18f
   specs:
-    saml_idp (0.23.10.pre.18f)
+    saml_idp (0.24.0.pre.18f)
       activesupport
       builder
       faraday
@@ -156,11 +156,12 @@ GEM
     aws-sdk-cloudwatchlogs (1.49.0)
       aws-sdk-core (~> 3, >= 3.122.0)
       aws-sigv4 (~> 1.1)
-    aws-sdk-core (3.226.3)
+    aws-sdk-core (3.240.0)
       aws-eventstream (~> 1, >= 1.3.0)
       aws-partitions (~> 1, >= 1.992.0)
       aws-sigv4 (~> 1.9)
       base64
+      bigdecimal
       jmespath (~> 1, >= 1.6.1)
       logger
     aws-sdk-kms (1.71.0)
@@ -172,8 +173,8 @@ GEM
     aws-sdk-pinpointsmsvoice (1.29.0)
       aws-sdk-core (~> 3, >= 3.122.0)
       aws-sigv4 (~> 1.1)
-    aws-sdk-s3 (1.193.0)
-      aws-sdk-core (~> 3, >= 3.225.0)
+    aws-sdk-s3 (1.208.0)
+      aws-sdk-core (~> 3, >= 3.234.0)
       aws-sdk-kms (~> 1)
       aws-sigv4 (~> 1.5)
     aws-sdk-secretsmanager (1.116.0)
@@ -524,7 +525,7 @@ GEM
     pg (1.5.9)
     pg_query (6.1.0)
       google-protobuf (>= 3.25.3)
-    phonelib (0.10.12)
+    phonelib (0.10.15)
     pkcs11 (0.3.4)
     pp (0.6.2)
       prettyprint

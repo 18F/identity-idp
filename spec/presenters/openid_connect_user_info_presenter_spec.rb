@@ -71,8 +71,8 @@ RSpec.describe OpenidConnectUserInfoPresenter do
 
       it 'raises an error' do
         expect { user_info }.to raise_error(
-          Vot::Parser::ParseException,
-          'VoT parser called without VoT or ACR values',
+          Component::Parser::ParseException,
+          'Component parser called without ACR values',
         )
       end
     end

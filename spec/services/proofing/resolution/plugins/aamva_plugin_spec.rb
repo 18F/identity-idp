@@ -160,10 +160,10 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
             expect { call }.not_to change { sp_cost_count_for_issuer }
           end
 
-          it 'returns an UnsupportedJurisdiction result' do
+          it 'returns a skipped result' do
             call.tap do |result|
-              expect(result.success?).to eql(true)
-              expect(result.vendor_name).to eql('UnsupportedJurisdiction')
+              expect(result.success?).to eq(true)
+              expect(result.vendor_name).to eq(Idp::Constants::Vendors::AAMVA_CHECK_SKIPPED)
             end
           end
         end
@@ -244,10 +244,10 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
               expect { call }.not_to change { sp_cost_count_for_issuer }
             end
 
-            it 'returns an UnsupportedJurisdiction result' do
+            it 'returns a skipped result' do
               call.tap do |result|
                 expect(result.success?).to eql(true)
-                expect(result.vendor_name).to eql('UnsupportedJurisdiction')
+                expect(result.vendor_name).to eql(Idp::Constants::Vendors::AAMVA_CHECK_SKIPPED)
               end
             end
           end
@@ -315,10 +315,10 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
                 expect { call }.not_to change { sp_cost_count_for_issuer }
               end
 
-              it 'returns an UnsupportedJurisdiction result' do
+              it 'returns a skipped result' do
                 call.tap do |result|
                   expect(result.success?).to eql(true)
-                  expect(result.vendor_name).to eql('UnsupportedJurisdiction')
+                  expect(result.vendor_name).to eql(Idp::Constants::Vendors::AAMVA_CHECK_SKIPPED)
                 end
               end
             end
@@ -842,19 +842,15 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
     end
   end
 
-  describe '#aamva_supports_state_id_jurisdiction?' do
+  describe '#aamva_supported_state_id_jurisdiction?' do
     let(:applicant_pii) do
       Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN.merge(
-        state: address_state,
         state_id_jurisdiction: jurisdiction_state,
         user_id: user_uuid,
       )
     end
     let(:jurisdiction_state) { 'WA' }
-    let(:address_state) { 'WA' }
-    let(:aamva_supported_jurisdictions) do
-      ['WA']
-    end
+    let(:aamva_supported_jurisdictions) { ['WA'] }
 
     subject(:supported) do
       described_class.new.aamva_supports_state_id_jurisdiction?(applicant_pii)
@@ -878,7 +874,6 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
     end
 
     context 'when jurisdiction is not supported' do
-      let(:address_state) { 'MT' }
       let(:jurisdiction_state) { 'MT' }
 
       it 'returns false' do

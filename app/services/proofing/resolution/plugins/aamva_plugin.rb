@@ -24,6 +24,12 @@ module Proofing
         )
           return skipped_result if passport_applicant?(applicant_pii) || already_proofed
 
+          if !aamva_supports_state_id_jurisdiction?(applicant_pii)
+            return process_unsupported_jurisdiction_result(
+              analytics:, applicant_pii:, ipp_enrollment_in_progress:, log_result: doc_auth_flow,
+            )
+          end
+
           should_proof = should_proof_state_id?(
             applicant_pii:,
             state_id_address_resolution_result:,
@@ -32,13 +38,9 @@ module Proofing
           )
 
           if !should_proof
-            result = out_of_aamva_jurisdiction_result
-            if doc_auth_flow
-              log_state_id_validation(
-                analytics, result.to_h, applicant_pii, ipp_enrollment_in_progress
-              )
-            end
-            return result
+            return process_skipped_result(
+              analytics:, applicant_pii:, ipp_enrollment_in_progress:, log_result: doc_auth_flow,
+            )
           end
 
           applicant_pii_with_state_id_address =
@@ -72,7 +74,7 @@ module Proofing
           IdentityConfig.store.aamva_supported_jurisdictions.include?(state_id_jurisdiction)
         end
 
-        def out_of_aamva_jurisdiction_result
+        def unsupported_jurisdiction_result
           Proofing::StateIdResult.new(
             errors: {},
             exception: nil,
@@ -119,12 +121,11 @@ module Proofing
           ipp_enrollment_in_progress:,
           doc_auth_flow:
         )
-          return false unless aamva_supports_state_id_jurisdiction?(applicant_pii)
           # Skip remaining checks if doc auth flow is true
           return true if doc_auth_flow
 
           # If the user is in in-person-proofing and they have changed their address then
-          # they are not eligible for get-to-yes
+          # they are not eligible to pass with additional verification
           if !ipp_enrollment_in_progress || same_address_as_id?(applicant_pii)
             user_can_pass_after_state_id_check?(state_id_address_resolution_result:)
           else
@@ -203,6 +204,30 @@ module Proofing
             state_id_jurisdiction: applicant_pii[:state_id_jurisdiction],
             state_id_number: redacted_state_id_number,
           }
+        end
+
+        private
+
+        def process_skipped_result(analytics:, applicant_pii:, ipp_enrollment_in_progress:,
+                                   log_result:)
+          result = skipped_result
+          if log_result
+            log_state_id_validation(
+              analytics, result.to_h, applicant_pii, ipp_enrollment_in_progress
+            )
+          end
+          return result
+        end
+
+        def process_unsupported_jurisdiction_result(analytics:, applicant_pii:,
+                                                    ipp_enrollment_in_progress:, log_result:)
+          result = unsupported_jurisdiction_result
+          if log_result
+            log_state_id_validation(
+              analytics, result.to_h, applicant_pii, ipp_enrollment_in_progress
+            )
+          end
+          return result
         end
       end
     end

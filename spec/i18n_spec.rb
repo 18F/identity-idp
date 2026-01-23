@@ -78,6 +78,8 @@ module I18n
         { key: 'datetime.dotiw.minutes.one' }, # "minute is minute" in French and English
         { key: 'datetime.dotiw.minutes.other' }, # "minute is minute" in French and English
         { key: 'datetime.dotiw.words_connector' }, # " , " is only punctuation and not translated
+        { key: 'doc_auth.headings.document_capture_selfie', locales: %i[fr] }, # Translations for Selfie french are the same as English
+        { key: 'doc_auth.headings.document_capture_subheader_selfie_review', locales: %i[fr] }, # Translations for Selfie french are the same as English
         { key: 'in_person_proofing.body.passport.info' }, # Translations will be updated for In-Person Proofing Passport Epic, see LG-15972
         { key: 'in_person_proofing.form.passport.dob' }, # Translations will be updated for In-Person Proofing Passport Epic, see LG-15972
         { key: 'in_person_proofing.form.passport.errors.passport_number.pattern_mismatch' }, # Translations will be updated for In-Person Proofing Passport Epic, see LG-15972

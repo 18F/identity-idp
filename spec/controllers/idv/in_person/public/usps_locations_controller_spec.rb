@@ -49,6 +49,32 @@ RSpec.describe Idv::InPerson::Public::UspsLocationsController do
         status = response.status
         expect(status).to eq 422
       end
+
+      context 'when USPS responses with an invalid response' do
+        let(:server_error) do
+          UspsInPersonProofing::Exception::InvalidResponseError.new('LocationApi')
+        end
+
+        before do
+          allow(proofer).to receive(:request_facilities).and_raise(server_error)
+        end
+
+        it 'returns an unprocessible entity client error' do
+          subject
+          expect(@analytics).to have_logged_event(
+            'Request USPS IPP locations: request failed',
+            api_status_code: 422,
+            exception_class: server_error.class,
+            exception_message: server_error.message,
+            response_body: false,
+            response_body_present: false,
+            response_status_code: false,
+          )
+
+          status = response.status
+          expect(status).to eq 422
+        end
+      end
     end
 
     context 'address has unsupported characters' do

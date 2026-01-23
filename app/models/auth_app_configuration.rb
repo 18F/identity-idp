@@ -2,12 +2,13 @@
 
 class AuthAppConfiguration < ApplicationRecord
   include EncryptableAttribute
+  include UserSuppliedNameAttributes
 
   encrypted_attribute(name: :otp_secret_key)
 
   belongs_to :user
 
-  validates :name, presence: true
+  validates :name, presence: true, length: { maximum: UserSuppliedNameAttributes::MAX_NAME_LENGTH }
 
   def mfa_enabled?
     otp_secret_key.present?

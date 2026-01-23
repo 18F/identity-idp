@@ -268,6 +268,59 @@ RSpec.describe UspsInPersonProofing::Proofer do
         end
       end
     end
+
+    context 'when the response body is invalid' do
+      let(:response_body) { nil }
+
+      before do
+        stub_request(:post, %r{/ivs-ippaas-api/IPPRest/resources/rest/getIppFacilityList})
+          .to_return(
+            status: 302,
+            body: response_body,
+            headers: { 'content-type' => 'application/json' },
+          )
+      end
+
+      context 'when the response body is an empty hash' do
+        let(:response_body) { {}.to_json }
+
+        it 'raises a UspsInPersonProofing::Exception::InvalidResponseError' do
+          expect { subject.request_facilities(location, is_enhanced_ipp) }.to raise_error(
+            UspsInPersonProofing::Exception::InvalidResponseError,
+          )
+        end
+      end
+
+      context 'when the response body is nil' do
+        let(:response_body) { nil }
+
+        it 'raises a UspsInPersonProofing::Exception::InvalidResponseError' do
+          expect { subject.request_facilities(location, is_enhanced_ipp) }.to raise_error(
+            UspsInPersonProofing::Exception::InvalidResponseError,
+          )
+        end
+      end
+
+      context 'when the response body is a hash without a postOffices key' do
+        let(:response_body) { { unknownKey: 'unknown' }.to_json }
+
+        it 'raises a UspsInPersonProofing::Exception::InvalidResponseError' do
+          expect { subject.request_facilities(location, is_enhanced_ipp) }.to raise_error(
+            UspsInPersonProofing::Exception::InvalidResponseError,
+          )
+        end
+      end
+
+      context 'when the response body is a hash with a postOffices key with an invalid value' do
+        let(:response_body) { { postOffices: nil }.to_json }
+
+        it 'raises a UspsInPersonProofing::Exception::InvalidResponseError' do
+          expect { subject.request_facilities(location, is_enhanced_ipp) }.to raise_error(
+            UspsInPersonProofing::Exception::InvalidResponseError,
+          )
+        end
+      end
+    end
   end
 
   describe '#request_enroll' do

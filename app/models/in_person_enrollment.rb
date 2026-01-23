@@ -93,7 +93,7 @@ class InPersonEnrollment < ApplicationRecord
     def pending_and_established_between(start_date, end_date)
       where(status: :pending)
         .and(
-          where(enrollment_established_at: end_date...(start_date.end_of_day)),
+          where(enrollment_established_at: start_date.beginning_of_day...(end_date.end_of_day)),
         )
         .order(enrollment_established_at: :asc)
     end
@@ -140,7 +140,7 @@ class InPersonEnrollment < ApplicationRecord
 
   def due_date
     start_date = enrollment_established_at.presence || created_at
-    start_date + days_to_expire
+    (start_date + days_to_expire).end_of_day
   end
 
   def days_to_due_date

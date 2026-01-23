@@ -148,8 +148,8 @@ RSpec.describe InPersonEnrollment, type: :model do
   end
 
   describe 'enrollments that need email reminders' do
-    let(:late_benchmark) { Time.zone.now - 3.days }
-    let(:final_benchmark) { Time.zone.now - 6.days }
+    let(:start_date) { Time.zone.now - 6.days }
+    let(:end_date) { Time.zone.now - 3.days }
 
     # late reminder is sent on days 4 - 2
     let!(:enrollments_needing_late_reminder) do
@@ -171,7 +171,7 @@ RSpec.describe InPersonEnrollment, type: :model do
 
     it 'returns pending enrollments that need late reminder' do
       expect(InPersonEnrollment.count).to eq(7)
-      results = InPersonEnrollment.needs_late_email_reminder(late_benchmark, final_benchmark)
+      results = InPersonEnrollment.needs_late_email_reminder(start_date, end_date)
       expect(results.pluck(:id)).to match_array enrollments_needing_late_reminder.pluck(:id)
       results.each do |result|
         expect(result.pending?).to be_truthy
@@ -371,133 +371,122 @@ RSpec.describe InPersonEnrollment, type: :model do
     end
   end
 
-  describe 'due_date and days_to_due_date' do
-    let(:validity_in_days) { 7 }
-    let(:validity_cutoff_date) { Time.zone.local(2025, 12, 1, 10, 0, 0) - 1.day }
+  describe '#days_to_due_date' do
+    let(:ipp_validity_days) { 7 }
+    let(:enrollment_established_at) { Time.zone.now }
+    let(:enrollment) { create(:in_person_enrollment, enrollment_established_at:) }
 
     before do
-      allow(IdentityConfig.store)
-        .to(
-          receive(:in_person_enrollment_validity_in_days)
-          .and_return(validity_in_days),
-        )
+      freeze_time
+      allow(IdentityConfig.store).to receive(:in_person_ipp_enrollment_validity_in_days).and_return(
+        ipp_validity_days,
+      )
     end
 
-    it 'due_date returns the enrollment expiration date based on when it was established' do
-      travel_to(validity_cutoff_date + 15.days) do
-        enrollment = create(
-          :in_person_enrollment,
-          enrollment_established_at: (validity_in_days - 3).days.ago,
-        )
-        expect(enrollment.due_date).to(
-          eq(3.days.from_now),
-        )
-      end
-    end
-
-    it 'days_to_due_date returns the number of days left until the due date' do
-      # This test can be flaky when the enrollment due date range runs across a DST time change.
-      # Because of that, a specific time that's less likely to have time changes is used.
-      travel_to(Time.zone.local(2025, 12, 5, 10, 0, 0)) do
-        enrollment = create(
-          :in_person_enrollment,
-          enrollment_established_at: (validity_in_days - 3).days.ago,
-        )
-        expect(enrollment.days_to_due_date).to eq(3)
-      end
-    end
-
-    context 'check edges to confirm date calculation is correct' do
-      it 'returns the correct due date and days to due date with 1 day left' do
-        travel_to(validity_cutoff_date + 15.days) do
-          enrollment = create(
-            :in_person_enrollment,
-            enrollment_established_at: (validity_in_days - 1).days.ago,
-          )
-          expect(enrollment.days_to_due_date).to eq(1)
-          expect(enrollment.due_date).to(
-            eq(Time.zone.now + 1.day),
-          )
-        end
-      end
-
-      it 'returns the correct due date and days to due date with 0.5 days left' do
-        travel_to(validity_cutoff_date + 15.days) do
-          enrollment = create(
-            :in_person_enrollment,
-            enrollment_established_at: (validity_in_days - 0.5).days.ago,
-          )
-          expect(enrollment.days_to_due_date).to eq(0)
-          expect(enrollment.due_date).to(
-            eq(Time.zone.now + 0.5.days),
-          )
-        end
-      end
-
-      it 'returns the correct due date and days to due date with 0 days left' do
-        travel_to(validity_cutoff_date + 15.days) do
-          enrollment = create(
-            :in_person_enrollment,
-            enrollment_established_at: validity_in_days.days.ago,
-          )
-          expect(enrollment.days_to_due_date).to eq(0)
-          expect(enrollment.due_date).to(
-            eq(Time.zone.now),
-          )
-        end
-      end
-    end
-
-    context 'eipp enrollment' do
-      let(:eipp_validity_in_days) { 7 }
-      before do
-        allow(IdentityConfig.store)
-          .to(
-            receive(:in_person_eipp_enrollment_validity_in_days)
-            .and_return(eipp_validity_in_days),
-          )
-      end
-      it 'days_to_due_date returns the number of days left until the due date' do
-        freeze_time do
-          enrollment = create(
-            :in_person_enrollment, :enhanced_ipp,
-            enrollment_established_at: (eipp_validity_in_days - 2).days.ago
-          )
-          expect(enrollment.days_to_due_date).to eq(2)
-        end
-      end
-    end
-
-    context 'legacy validity for enrollments established before cutoff date' do
-      let(:legacy_validity_in_days) { 30 }
-      let(:new_validity_in_days) { 7 }
-      let(:validity_cutoff_date) { Time.zone.now - 1.day }
+    context 'when the current date is 7 days away from the due date' do
+      let(:offset) { 7 }
 
       before do
-        allow(IdentityConfig.store)
-          .to receive(:in_person_enrollment_validity_in_days)
-          .and_return(new_validity_in_days)
+        travel_to(enrollment.due_date - offset.days)
       end
 
-      it 'uses new validity for enrollments established after cutoff date' do
-        travel_to(validity_cutoff_date + 1.day) do
-          enrollment = create(
-            :in_person_enrollment,
-            enrollment_established_at: Time.zone.now,
-          )
-          expect(enrollment.due_date).to eq(Time.zone.now + new_validity_in_days.days)
-          expect(enrollment.days_to_due_date).to eq(new_validity_in_days)
+      it 'returns 7 days' do
+        expect(enrollment.days_to_due_date).to eq(7)
+      end
+    end
+
+    context 'when the current date is 4 days away from the due date' do
+      let(:offset) { 4 }
+
+      before do
+        travel_to(enrollment.due_date - offset.days)
+      end
+
+      it 'returns 4 days' do
+        expect(enrollment.days_to_due_date).to eq(4)
+      end
+    end
+
+    context 'when the current date is 1 day away from the due date' do
+      let(:offset) { 1 }
+
+      before do
+        travel_to(enrollment.due_date - offset.day)
+      end
+
+      it 'returns 1 day' do
+        expect(enrollment.days_to_due_date).to eq(1)
+      end
+    end
+
+    context 'when the current date is less than 1 day away from the due date' do
+      let(:offset) { 0.5 }
+      before do
+        travel_to(enrollment.due_date - offset.day)
+      end
+
+      it 'returns 0 days' do
+        expect(enrollment.days_to_due_date).to eq(0)
+      end
+    end
+  end
+
+  describe '#due_date' do
+    let(:created_at) { nil }
+    let(:enrollment_established_at) { nil }
+    let(:ipp_validity_days) { 7 }
+    let(:eipp_validity_days) { 10 }
+
+    before do
+      freeze_time
+      allow(IdentityConfig.store).to receive_messages(
+        in_person_ipp_enrollment_validity_in_days: ipp_validity_days,
+        in_person_eipp_enrollment_validity_in_days: eipp_validity_days,
+      )
+    end
+
+    context 'when the enrollment is an enhanced_ipp enrollment' do
+      let(:enrollment) do
+        create(:in_person_enrollment, :enhanced_ipp, created_at:, enrollment_established_at:)
+      end
+
+      context 'when enrollment_established_at is not present' do
+        let(:created_at) { Time.zone.now }
+
+        it 'returns end of day of created_at plus the configured eipp_validity_days' do
+          expect(enrollment.due_date).to eq((created_at + eipp_validity_days.days).end_of_day)
         end
       end
 
-      it 'uses new validity for enrollments without enrollment_established_at' do
-        freeze_time do
-          enrollment = create(
-            :in_person_enrollment,
-            enrollment_established_at: nil,
+      context 'when enrollment_established_at is present' do
+        let(:enrollment_established_at) { Time.zone.now + 1.day }
+
+        it 'returns end of day of established_at plus the configured eipp_validity_days' do
+          expect(enrollment.due_date).to eq(
+            (enrollment_established_at + eipp_validity_days.days).end_of_day,
           )
-          expect(enrollment.due_date).to eq(Time.zone.now + new_validity_in_days.days)
-          expect(enrollment.days_to_due_date).to eq(new_validity_in_days)
+        end
+      end
+    end
+
+    context 'when the enrollment is an non enhanced_ipp enrollment' do
+      let(:enrollment) { create(:in_person_enrollment, created_at:, enrollment_established_at:) }
+
+      context 'when enrollment_established_at is not present' do
+        let(:created_at) { Time.zone.now }
+
+        it 'returns end of day of created_at plus the configured ipp_validity_days' do
+          expect(enrollment.due_date).to eq((created_at + ipp_validity_days.days).end_of_day)
+        end
+      end
+
+      context 'when enrollment_established_at is present' do
+        let(:enrollment_established_at) { Time.zone.now + 1.day }
+
+        it 'returns end of day of established_at plus the configured ipp_validity_days' do
+          expect(enrollment.due_date).to eq(
+            (enrollment_established_at + ipp_validity_days.days).end_of_day,
+          )
         end
       end
     end

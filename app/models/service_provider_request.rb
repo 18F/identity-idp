@@ -15,9 +15,9 @@ class ServiceProviderRequest
     url: nil,
     requested_attributes: [],
     acr_values: nil,
-    vtr: nil,
     # Deprecated attributes to remove
     # rubocop:disable Lint/UnusedMethodArgument
+    vtr: nil,
     ial: nil,
     aal: nil,
     biometric_comparison_required: false
@@ -28,7 +28,6 @@ class ServiceProviderRequest
     @url = url
     @requested_attributes = requested_attributes&.map(&:to_s)
     @acr_values = acr_values
-    @vtr = vtr
   end
 
   def ==(other)

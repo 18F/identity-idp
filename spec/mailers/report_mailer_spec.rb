@@ -85,7 +85,9 @@ RSpec.describe ReportMailer, type: :mailer do
 
     let(:mail) do
       ReportMailer.tables_report(
-        email: 'foo@example.com',
+        to: 'foo@example.com',
+        bcc: 'test_bcc@example.com',
+        cc: 'test_cc@example.com',
         subject: 'My Report',
         message: 'My Report - Today',
         env: env,
@@ -104,6 +106,14 @@ RSpec.describe ReportMailer, type: :mailer do
           ),
         ],
       )
+    end
+
+    it 'sets bcc recipients' do
+      expect(mail.bcc).to eq(['test_bcc@example.com'])
+    end
+
+    it 'sets cc recipients' do
+      expect(mail.cc).to eq(['test_cc@example.com'])
     end
 
     it 'does not attach the Login.gov logo' do

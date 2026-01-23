@@ -6,7 +6,7 @@ import { useI18n, HtmlTextWithStrongNoWrap } from '@18f/identity-react-i18n';
 import type { FormStepComponentProps } from '@18f/identity-form-steps';
 import GeneralError from './general-error';
 import { SelfieCaptureContext, UploadContext } from '../context';
-import { DocumentCaptureSubheaderOne, DocumentsCaptureStep } from './documents-step';
+import { DocumentsCaptureStep } from './documents-step';
 import { SelfieCaptureStep } from './selfie-step';
 import type { ReviewIssuesStepValue } from './review-issues-step';
 
@@ -47,10 +47,18 @@ function DocumentCaptureReviewIssues({
     onError,
   };
 
+  function ReviewDocumentImagesSubheader() {
+    const heading = idIsPassport
+      ? t('doc_auth.headings.passport_capture')
+      : t('doc_auth.headings.document_capture');
+
+    return <h2>{heading}</h2>;
+  }
+
   return (
     <>
       <PageHeading>{pageHeading}</PageHeading>
-      {isSelfieCaptureEnabled && <DocumentCaptureSubheaderOne />}
+      {isSelfieCaptureEnabled && <ReviewDocumentImagesSubheader />}
       <GeneralError
         unknownFieldErrors={unknownFieldErrors}
         isFailedDocType={isFailedDocType}

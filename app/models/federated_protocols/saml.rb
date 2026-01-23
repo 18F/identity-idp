@@ -84,7 +84,7 @@ module FederatedProtocols
     def ialmax_requested_with_authn_context_comparison?
       return unless (current_service_provider&.ial || 1) > 1
 
-      acr_component_value = Vot::AcrComponentValues.by_name[requested_ial_authn_context]
+      acr_component_value = Component::AcrComponentValues.by_name[requested_ial_authn_context]
       return unless acr_component_value.present?
 
       !acr_component_value.requirements.include?(:identity_proofing) &&

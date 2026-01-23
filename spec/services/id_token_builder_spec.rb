@@ -21,7 +21,6 @@ RSpec.describe IdTokenBuilder do
 
   let(:now) { Time.zone.now }
   let(:custom_expiration) { (now + 5.minutes).to_i }
-  let(:vtm_url) { 'https://example.com/vot-trust-framework' }
   subject(:builder) do
     IdTokenBuilder.new(
       identity: identity,

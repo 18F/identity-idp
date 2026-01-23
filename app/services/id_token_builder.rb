@@ -63,9 +63,9 @@ class IdTokenBuilder
 
   def determine_ial_max_acr
     if identity.user.identity_verified?
-      Vot::AcrComponentValues::IAL2
+      Component::AcrComponentValues::IAL2
     else
-      Vot::AcrComponentValues::IAL1
+      Component::AcrComponentValues::IAL1
     end
   end
 

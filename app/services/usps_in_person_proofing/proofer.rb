@@ -15,6 +15,8 @@ module UspsInPersonProofing
     # @param location [Object]
     # @param is_enhanced_ipp [Boolean]
     # @return [Array<PostOffice>] Facility locations
+    # @raise [UspsInPersonProofing::Exception::InvalidResponseError] If the API returns a
+    # unprocessable json.
     def request_facilities(location, is_enhanced_ipp)
       url = "#{root_url}/ivs-ippaas-api/IPPRest/resources/rest/getIppFacilityList"
       request_body = {
@@ -29,11 +31,15 @@ module UspsInPersonProofing
         request_body[:sponsorID] = IdentityConfig.store.usps_eipp_sponsor_id.to_i
       end
 
-      response = faraday.post(url, request_body.to_json, dynamic_headers) do |req|
+      response_body = faraday.post(url, request_body.to_json, dynamic_headers) do |req|
         req.options.context = { service_name: 'usps_facilities' }
       end.body
 
-      facilities = parse_facilities(response)
+      if invalid_facilities_response(response_body)
+        raise Exception::InvalidResponseError.new('getIppFacilityList')
+      end
+
+      facilities = parse_facilities(response_body)
       dedupe_facilities = dedupe_facilities(facilities)
       sort_by_ascending_distance(dedupe_facilities)
     end
@@ -221,6 +227,10 @@ module UspsInPersonProofing
 
     def sort_by_ascending_distance(facilities)
       facilities.sort_by { |f| f[:distance].to_f }
+    end
+
+    def invalid_facilities_response(response_body)
+      !(response_body.present? && response_body.try(:[], 'postOffices').respond_to?(:map))
     end
   end
 end

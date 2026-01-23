@@ -4,7 +4,7 @@ RSpec.describe TotpSetupForm do
   let(:user) { create(:user) }
   let(:secret) { user.generate_totp_secret }
   let(:code) { generate_totp_code(secret) }
-  let(:name) { SecureRandom.hex }
+  let(:name) { SecureRandom.hex[0, 19] }
 
   describe '#submit' do
     context 'when TOTP code is valid' do
