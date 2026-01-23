@@ -213,6 +213,7 @@ module IdentityConfig
     config.add(:historical_attempts_api_enabled, type: :boolean)
     config.add(:hmac_fingerprinter_key, type: :string)
     config.add(:hmac_fingerprinter_key_queue, type: :json)
+    config.add(:hybrid_mobile_tmx_processed_percent, type: :integer)
     config.add(:identity_pki_disabled, type: :boolean)
     config.add(:identity_pki_local_dev, type: :boolean)
     config.add(:identity_verification_outcomes_report_emails, type: :json)
