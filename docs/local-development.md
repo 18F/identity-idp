@@ -20,12 +20,12 @@ If not using macOS:
 
 1. To start, make sure you have the following dependencies installed and a working development environment:
 
-   - [rbenv](https://github.com/rbenv/rbenv) (lets you install and switch between different versions of Ruby)
-   - Ruby. Choose the version [in the `.ruby-version` file](../.ruby-version)
-   - [PostgreSQL](http://www.postgresql.org/download/)
-   - [Redis 7+](http://redis.io/)
-   - [Node.js v22](https://nodejs.org)
-   - [chromedriver](https://formulae.brew.sh/cask/chromedriver)
+    - [rbenv](https://github.com/rbenv/rbenv) (lets you install and switch between different versions of Ruby)
+    - Ruby. Choose the version [in the `.ruby-version` file](../.ruby-version)
+    - [PostgreSQL](http://www.postgresql.org/download/)
+    - [Redis 7+](http://redis.io/)
+    - [Node.js v22](https://nodejs.org)
+    - [chromedriver](https://formulae.brew.sh/cask/chromedriver)
 
 1. You will need to install openssl version 1.1:
 
@@ -162,7 +162,10 @@ To ensure that tests are run using the latest source code, JavaScript-enabled fe
 SKIP_BUILD=true bundle exec rspec spec/features
 ```
 
-Since the automatic build is meant to act as a safeguard to prevent stale assets from being used, disabling it will mean you're responsible for running the build any time JavaScript or Sass source files are changed. You can do this by running `npm run build:js` for JavaScript, or `npm run build:css` for stylesheets.
+Since the automatic build is meant to act as a safeguard to prevent stale assets from being used,
+disabling it will mean you're responsible for running the build any time JavaScript or Sass source
+files are changed. You can do this by running `npm run build:js` for JavaScript, or `npm run build:css`
+for stylesheets.
 
 ### Viewing email messages
 
