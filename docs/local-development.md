@@ -20,12 +20,12 @@ If not using macOS:
 
 1. To start, make sure you have the following dependencies installed and a working development environment:
 
-    - [rbenv](https://github.com/rbenv/rbenv) (lets you install and switch between different versions of Ruby)
-    - Ruby. Choose the version [in the `.ruby-version` file](../.ruby-version)
-    - [PostgreSQL](http://www.postgresql.org/download/)
-    - [Redis 7+](http://redis.io/)
-    - [Node.js v22](https://nodejs.org)
-    - [chromedriver](https://formulae.brew.sh/cask/chromedriver)
+   - [rbenv](https://github.com/rbenv/rbenv) (lets you install and switch between different versions of Ruby)
+   - Ruby. Choose the version [in the `.ruby-version` file](../.ruby-version)
+   - [PostgreSQL](http://www.postgresql.org/download/)
+   - [Redis 7+](http://redis.io/)
+   - [Node.js v22](https://nodejs.org)
+   - [chromedriver](https://formulae.brew.sh/cask/chromedriver)
 
 1. You will need to install openssl version 1.1:
 
@@ -162,10 +162,7 @@ To ensure that tests are run using the latest source code, JavaScript-enabled fe
 SKIP_BUILD=true bundle exec rspec spec/features
 ```
 
-Since the automatic build is meant to act as a safeguard to prevent stale assets from being used,
-disabling it will mean you're responsible for running the build any time JavaScript or Sass source
-files are changed. You can do this by running `npm run build:js` for JavaScript, or `npm run build:css`
-for stylesheets.
+Since the automatic build is meant to act as a safeguard to prevent stale assets from being used, disabling it will mean you're responsible for running the build any time JavaScript or Sass source files are changed. You can do this by running `npm run build:js` for JavaScript, or `npm run build:css` for stylesheets.
 
 ### Viewing email messages
 
@@ -185,6 +182,19 @@ After restarting the app emails will be written to the `tmp/mails` folder.
 #### Email template previews
 
 To view email templates with placeholder values, visit <http://localhost:3000/rails/mailers/> to see a list of template previews.
+
+#### SMS text previews
+
+SMS texts for QA are available in <http://localhost:3000/rails/mailers/>, just like the email template previews. Visit <http://localhost:3000/sms_preview/> which will redirect you to <http://localhost:3000/rails/mailers/sms_preview>. From here, you can see a list of text messages available for preview.
+
+##### Adding SMS texts for preview
+
+To add text messages for SMS preview:
+
+- In `app/mailers/sms_text_mailer.rb`, create a method that describes the purpose of the text. You will add the message of the text that you want to have previewed in ActionMailer
+- In `app/views/sms_text_mailer`, create a view file for the text message as a `\*.text.erb` file. When previewing, this will make it so that text is simulated in a plain-text email.
+- In `spec/mailers/previews/sms_test_mailer_preview.rb`, create a method that calls the method that you created in `app/mailers`. This will be used to test the previews
+- In `spec/mailers/sms_text_mailer_spec.rb`, add a test for the method that you have added. Test to make sure that the content is rendered as expected, especially for the text that has dynamic values.
 
 ### Translations
 
@@ -240,6 +250,7 @@ By default, the application binds to `localhost`. To test on a local network dev
    ```
 
    replacing `<your-local-ip>` with the address you found in Step 1
+
 3. Start the server using the command `HOST=0.0.0.0 make run`
 4. From on the same network, visit the application using the domain name configured in the second step (for example, `http://192.168.1.131:3000`).
 
