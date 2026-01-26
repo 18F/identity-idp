@@ -11,8 +11,7 @@ module Test
     private
 
     def render_not_found_in_production
-      return unless Rails.env.production?
-      render_not_found
+      IdentityConfig.store.rails_mailer_previews_enabled
     end
   end
 end
