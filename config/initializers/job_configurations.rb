@@ -244,6 +244,13 @@ else
       },
       # Send previous week's IrsRegistrationFunnelReport reports to irs
       irs_weekly_registration_funnel_report: {
+        class: 'Reports::IrsOriginalRegistrationFunnelReport',
+        cron: cron_every_monday,
+        args: -> { [Time.zone.yesterday.end_of_day, :both] },
+      },
+
+      # Note: this is for testing as of now.
+      sp_weekly_registration_funnel_report: {
         class: 'Reports::IrsRegistrationFunnelReport',
         cron: cron_every_monday,
         args: -> { [Time.zone.yesterday.end_of_day, :both] },
@@ -264,6 +271,17 @@ else
       # Send irs fraud metrics to Team Data - Daily (For internal review only)
       # And, monthly on 1st date (For IRS and Internal)
       irs_fraud_metrics_report: {
+        class: 'Reports::IrsOriginalFraudMetricsReport',
+        cron: cron_24h_and_a_bit,
+        args: -> {
+          JobHelpers::ReportJobConfigurationHelper.build_irs_report_args(
+            Time.zone.yesterday.end_of_day,
+            :monthly,
+          )
+        },
+      },
+
+      sp_fraud_metrics_report: {
         class: 'Reports::IrsFraudMetricsReport',
         cron: cron_24h_and_a_bit,
         args: -> {

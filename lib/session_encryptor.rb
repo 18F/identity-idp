@@ -23,6 +23,7 @@ class SessionEncryptor
   # personal keys are generated and stored in the session between requests, but are used
   # to decrypt PII bundles, so we treat them similarly to the PII itself.
   SENSITIVE_PATHS = [
+    ['warden.user.user.session', 'idv/attempts'],
     ['warden.user.user.session', 'idv/in_person'],
     ['warden.user.user.session', 'idv'],
     ['warden.user.user.session', 'personal_key'],

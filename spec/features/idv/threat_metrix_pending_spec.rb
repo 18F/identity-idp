@@ -19,7 +19,7 @@ RSpec.feature 'Users pending ThreatMetrix review', :js do
     )
   end
 
-  scenario 'users pending ThreatMetrix see sad face screen and cannot perform idv' do
+  scenario 'users pending ThreatMetrix see please call page and cannot perform idv' do
     allow(IdentityConfig.store).to receive(:otp_delivery_blocklist_maxretry).and_return(300)
     user = create(:user, :fully_registered)
 
@@ -59,6 +59,57 @@ RSpec.feature 'Users pending ThreatMetrix review', :js do
     click_agree_and_continue
 
     expect(page).to have_current_path('/auth/result', ignore_query: true)
+  end
+
+  context 'hybrid handoff ThreatMetrix is enabled' do
+    before do
+      allow(IdentityConfig.store).to receive(:proofing_device_hybrid_profiling)
+        .and_return(:enabled)
+      allow(Telephony).to receive(:send_doc_auth_link).and_wrap_original do |impl, config|
+        @sms_link = config[:link]
+        impl.call(**config)
+      end.at_least(1).times
+    end
+
+    scenario 'user sees please call page after failing hybrid handoff ThreadMetrix' do
+      user = create(:user, :fully_registered)
+
+      perform_in_browser(:desktop) do
+        start_idv_from_sp
+        sign_in_and_2fa_user(user)
+        complete_doc_auth_steps_before_hybrid_handoff_step
+        clear_and_fill_in(:doc_auth_phone, '703-555-5555')
+        click_send_link
+        expect(page).to have_current_path(idv_link_sent_path)
+      end
+
+      expect(@sms_link).to be_present
+
+      perform_in_browser(:mobile) do
+        visit @sms_link
+        expect(page).to have_current_path(idv_hybrid_mobile_choose_id_type_url)
+        select 'Reject', from: :mock_profiling_result
+        complete_choose_id_type_step
+        expect(page).to have_current_path(idv_hybrid_mobile_document_capture_url)
+        attach_and_submit_images
+        expect(page).to have_current_path(idv_hybrid_mobile_capture_complete_url)
+      end
+
+      perform_in_browser(:desktop) do
+        click_idv_continue
+        expect(page).to_not have_content(t('doc_auth.headings.text_message'), wait: 10)
+        expect(page).to have_current_path(idv_ssn_path)
+        select 'Pass', from: :mock_profiling_result
+        complete_ssn_step
+        complete_verify_step
+        complete_phone_step(user)
+        complete_enter_password_step(user)
+        acknowledge_and_confirm_personal_key
+
+        expect(page).to have_content(t('idv.failure.setup.heading'))
+        expect(page).to have_current_path(idv_please_call_path)
+      end
+    end
   end
 
   scenario 'users rejected from fraud review cannot perform idv' do

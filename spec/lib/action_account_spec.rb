@@ -582,7 +582,10 @@ RSpec.describe ActionAccount do
             :one_account_deactivate_duplicate_profile,
             success: true,
           )
-          expect(profile.reload).not_to be_active
+          expect(profile.reload).to have_attributes(
+            active: false,
+            deactivation_reason: 'duplicate_account',
+          )
         end
       end
     end

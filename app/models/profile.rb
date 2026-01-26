@@ -30,6 +30,7 @@ class Profile < ApplicationRecord
     gpo_verification_pending_NO_LONGER_USED: 3, # deprecated
     verification_cancelled: 4,
     in_person_verification_pending_NO_LONGER_USED: 5, # deprecated
+    duplicate_account: 6,
   }
 
   enum :fraud_pending_reason, {
@@ -273,6 +274,7 @@ class Profile < ApplicationRecord
     transaction do
       update!(
         active: false,
+        deactivation_reason: :duplicate_account,
         fraud_review_pending_at: nil,
         fraud_rejection_at: Time.zone.now,
       )
@@ -316,12 +318,9 @@ class Profile < ApplicationRecord
           fraud_investigation_conclusive: true,
         )
 
-        service_provider = ServiceProvider.find_sole_by(issuer: duplicate_profile.service_provider)
         user.confirmed_email_addresses.each do |email_address|
           mailer = UserMailer.with(user: user, email_address: email_address)
-          mailer.dupe_profile_account_review_complete_success(
-            agency_name: service_provider.friendly_name,
-          ).deliver_now_or_later
+          mailer.dupe_profile_account_review_complete_success.deliver_now_or_later
         end
       end
     end
