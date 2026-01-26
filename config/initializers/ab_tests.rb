@@ -217,6 +217,6 @@ module AbTests
     should_log: /^idv/i,
     default_bucket: IdentityConfig.store.hybrid_mobile_tmx_processed_percent,
   ) do |user:, user_session:, **|
-    user&.uuid
+    document_capture_session_uuid_discriminator(service_provider:, session:, user:, user_session:)
   end.freeze
 end
