@@ -1387,7 +1387,7 @@ RSpec.describe Idv::VerifyInfoController do
         put :update
       end
 
-      context 'when aamva check complted' do
+      context 'when aamva check completed' do
         before do
           controller.idv_session.aamva_verified_attributes = %i[ssn dob]
         end

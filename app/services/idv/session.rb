@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Idv
-  # @attr aamva_verified_attributes [Array, nil]
+  # @attr aamva_verified_attributes [Array<Symbol>, nil]
   # @attr address_edited [Boolean, nil]
   # @attr address_verification_vendor [String, nil]
   # @attr address_verification_mechanism [String, nil]
