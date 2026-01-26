@@ -64,7 +64,21 @@ module DocAuth
 
           # To be implemented in LG-17089
           def extra_attributes
-            return {}
+            result_data = authentication_results
+            if result_data.present?
+              result_data.reject! do |k, _v|
+                PII_EXCLUDES.include?(k)
+              end
+            else
+              {
+                error_detail: result_data[:error_detail],
+                request_id: result_data[:request_id],
+                request_result: result_data[:request_result],
+                review_status: result_data[:review_status],
+                tmx_summary_reason_code: result_data[:tmx_summary_reason_code],
+                exception: 'LexisNexis Response Unexpected: TrueID DDP response details not found.',
+              }
+            end
           end
 
           private
