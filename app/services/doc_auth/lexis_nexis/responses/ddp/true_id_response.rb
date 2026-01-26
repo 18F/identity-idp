@@ -70,9 +70,29 @@ module DocAuth
             end
           end
 
-          # To be implemented in LG-17089
           def extra_attributes
-            return {}
+            if with_authentication_result?
+              attrs = response_info.merge(true_id_product[:AUTHENTICATION_RESULT])
+              attrs.reject! do |k, _v|
+                PII_EXCLUDES.include?(k) || k.start_with?('Alert_')
+              end
+            else
+              # This branch is currently never reached by tests as all DDP response fixtures include
+              # AUTHENTICATION_RESULT somewhere in their structure.
+              #
+              # RDP does test the fixture true_id_response_failure_empty which does not include
+              # AUTHENTICATION_RESULT.
+              #
+              # DDP may need a new fixture that correlates to this RDP fixture in order to better
+              # test this branch.
+              attrs = {
+                lexis_nexis_status: parsed_response_body[:Status],
+                lexis_nexis_info: parsed_response_body.dig(:Information),
+                exception: 'LexisNexis Response Unexpected: TrueID DDP response details not found.',
+              }
+            end
+
+            basic_logging_info.merge(attrs)
           end
 
           private
@@ -141,6 +161,59 @@ module DocAuth
               }
             end
             classification_hash
+          end
+
+          def transaction_reason_code
+            @transaction_reason_code ||=
+              parsed_response_body.dig(:Status, :TransactionReasonCode, :Code)
+          end
+
+          def product_status
+            true_id_product&.dig(:ProductStatus)
+          end
+
+          def decision_product_status
+            true_id_product_decision&.dig(:ProductStatus)
+          end
+
+          def true_id_product_decision
+            products&.dig(:TrueID_Decision)
+          end
+
+          def portrait_match_results
+            true_id_product&.dig(:PORTRAIT_MATCH_RESULT)
+          end
+
+          def conversation_id
+            @conversation_id ||= parsed_response_body.dig(:Status, :ConversationId)
+          end
+
+          def request_id
+            @request_id ||= parsed_response_body.dig(:Status, :RequestId)
+          end
+
+          def doc_auth_result
+            true_id_product&.dig(:AUTHENTICATION_RESULT, :DocAuthResult)
+          end
+
+          def billed?
+            !!doc_auth_result
+          end
+
+          def review_status
+            parsed_response_body[:review_status]
+          end
+
+          def basic_logging_info
+            {
+              conversation_id: conversation_id,
+              request_id: request_id,
+              reference: reference,
+              review_status: review_status,
+              vendor: 'TrueID DDP',
+              billed: billed?,
+              workflow: @request_context&.dig(:workflow),
+            }
           end
         end
       end
