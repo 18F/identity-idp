@@ -168,6 +168,11 @@ module TwoFactorAuthenticatableMethods
     save_remember_device_preference(remember_device_preference)
   end
 
+  def send_recovery_information_risc_event
+    event = PushNotification::RecoveryInformationChangedEvent.new(user: current_user)
+    PushNotification::HttpPush.deliver(event)
+  end 
+
   def increment_mfa_selection_attempt_count(auth_method)
     user_session[:mfa_attempts] ||= {}
     user_session[:mfa_attempts][:attempts] ||= 0
@@ -238,6 +243,7 @@ module TwoFactorAuthenticatableMethods
   end
 
   def handle_valid_verification_for_confirmation_context(auth_method:)
+    send_recovery_information_risc_event
     mark_user_session_authenticated(auth_method:, authentication_type: :valid_2fa_confirmation)
     reset_second_factor_attempts_count
   end

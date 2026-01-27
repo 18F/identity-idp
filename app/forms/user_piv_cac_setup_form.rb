@@ -32,9 +32,6 @@ class UserPivCacSetupForm
       name: @name,
       x509_issuer: x509_issuer,
     )
-
-    event = PushNotification::RecoveryInformationChangedEvent.new(user: user)
-    PushNotification::HttpPush.deliver(event)
     true
   rescue PG::UniqueViolation
     self.error_type = 'piv_cac.already_associated'
