@@ -216,7 +216,7 @@ module AbTests
     experiment_name: 'Hybrid Mobile ThreatMetrix',
     should_log: /^idv/i,
     buckets: {
-      hybrid_mobile_tmx_processed: IdentityConfig.store.account_creation_tmx_processed_percent,
+      hybrid_mobile_tmx_processed: IdentityConfig.store.hybrid_mobile_tmx_processed_percent,
     },
   ) do |service_provider:, session:, user:, user_session:, **|
     document_capture_session_uuid_discriminator(service_provider:, session:, user:, user_session:)
