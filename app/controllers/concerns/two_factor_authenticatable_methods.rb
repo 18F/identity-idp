@@ -171,7 +171,7 @@ module TwoFactorAuthenticatableMethods
   def send_recovery_information_risc_event
     event = PushNotification::RecoveryInformationChangedEvent.new(user: current_user)
     PushNotification::HttpPush.deliver(event)
-  end 
+  end
 
   def increment_mfa_selection_attempt_count(auth_method)
     user_session[:mfa_attempts] ||= {}

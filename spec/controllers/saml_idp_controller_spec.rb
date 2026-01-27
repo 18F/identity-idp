@@ -188,7 +188,7 @@ RSpec.describe SamlIdpController do
       # the RubySAML library won't let us pass an empty string in as the certificate
       # element, so this test substitutes a SAMLRequest that has that element blank
       let(:blank_cert_element_req) do
-        <<-XML.gsub(/^[\s]+|[\s]+\n/, '')
+        <<-XML.gsub(/^\s+|\s+\n/, '')
           <?xml version="1.0"?>
           <samlp:LogoutRequest xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion" xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol" Destination="http://www.example.com/api/saml/logout2025" ID="_223d186c-35a0-4d1f-b81a-c473ad496415" IssueInstant="2024-01-11T18:22:03Z" Version="2.0">
             <saml:Issuer>http://localhost:3000</saml:Issuer>
@@ -1845,7 +1845,7 @@ RSpec.describe SamlIdpController do
       # the RubySAML library won't let us pass an empty string in as the certificate
       # element, so this test substitutes a SAMLRequest that has that element blank
       let(:blank_cert_element_req) do
-        <<-XML.gsub(/^[\s]+|[\s]+\n/, '')
+        <<-XML.gsub(/^\s+|\s+\n/, '')
           <?xml version="1.0"?>
           <samlp:AuthnRequest xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion" xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol" AssertionConsumerServiceURL="http://localhost:3000/test/saml/decode_assertion" Destination="http://www.example.com/api/saml/auth2025" ID="_6b15011e-abfe-4c55-925f-6a5b3872a64c" IssueInstant="2024-01-11T18:03:38Z" Version="2.0">
             <saml:Issuer>http://localhost:3000</saml:Issuer>
@@ -1928,7 +1928,7 @@ RSpec.describe SamlIdpController do
       # the RubySAML library won't let us pass an empty string in as the certificate
       # element, so this test substitutes a SAMLRequest that has that element blank
       let(:blank_issuer_req) do
-        <<-XML.gsub(/^[\s]+|[\s]+\n/, '')
+        <<-XML.gsub(/^\s+|\s+\n/, '')
           <?xml version="1.0"?>
           <samlp:AuthnRequest xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion" xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol" AssertionConsumerServiceURL="http://localhost:3000/test/saml/decode_assertion" Destination="http://www.example.com/api/saml/auth2025" ID="_6b15011e-abfe-4c55-925f-6a5b3872a64c" IssueInstant="2024-01-11T18:03:38Z" Version="2.0">
             <samlp:NameIDPolicy AllowCreate="true" Format="urn:oasis:names:tc:SAML:2.0:nameid-format:persistent"/>
@@ -1985,7 +1985,7 @@ RSpec.describe SamlIdpController do
       # the RubySAML library won't let us pass an empty string in as the certificate
       # element, so this test substitutes a SAMLRequest that has that element blank
       let(:blank_authn_req) do
-        <<-XML.gsub(/^[\s]+|[\s]+\n/, '')
+        <<-XML.gsub(/^\s+|\s+\n/, '')
           <?xml version="1.0"?>
         XML
       end

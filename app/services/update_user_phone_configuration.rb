@@ -41,8 +41,7 @@ class UpdateUserPhoneConfiguration
 
   def create_phone_configuration
     return if phone_attributes[:phone].blank? || duplicate_phone?
-    phone_configuration = MfaContext.new(user).phone_configurations.create(phone_attributes)
-    phone_configuration
+    MfaContext.new(user).phone_configurations.create(phone_attributes)
   end
 
   def duplicate_phone?
