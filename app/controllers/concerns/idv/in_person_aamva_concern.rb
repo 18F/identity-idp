@@ -70,7 +70,7 @@ module Idv
       if IdentityConfig.store.ruby_workers_idv_enabled
         IppAamvaProofingJob.perform_later(
           result_id: document_capture_session.result_id,
-          encrypted_arguments: encrypted_arguments,
+          encrypted_arguments:,
           trace_id: amzn_trace_id,
           user_id: current_user.id,
           service_provider_issuer: sp_session[:issuer],
@@ -78,7 +78,7 @@ module Idv
       else
         IppAamvaProofingJob.perform_now(
           result_id: document_capture_session.result_id,
-          encrypted_arguments: encrypted_arguments,
+          encrypted_arguments:,
           trace_id: amzn_trace_id,
           user_id: current_user.id,
           service_provider_issuer: sp_session[:issuer],
