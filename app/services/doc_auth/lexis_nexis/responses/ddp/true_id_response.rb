@@ -9,7 +9,7 @@ module DocAuth
           include DocPiiReader
           include DocAuth::ClassificationConcern
 
-          DDP_DOCUMENT_TYPE_TO_DOCUMENT_CLASSIFICATION = {
+          DDP_DOCUMENT_TYPE_TO_DOC_AUTH_DOCUMENT_CLASSIFICATION = {
             IdentificationCard: DocAuth::DocumentClassifications::IDENTIFICATION_CARD,
             DriversLicense: DocAuth::DocumentClassifications::DRIVERS_LICENSE,
             Passport: DocAuth::DocumentClassifications::PASSPORT,
@@ -53,8 +53,7 @@ module DocAuth
           end
 
           def doc_auth_success?
-            # To be further implemented in LG-17091
-            transaction_status_passed? && id_type_supported? # && expected_document_type_received?
+            transaction_status_passed? && id_type_supported? && expected_document_type_received?
           end
 
           # To be implemented in LG-17088
@@ -68,6 +67,18 @@ module DocAuth
           end
 
           private
+
+          def expected_document_type_received?
+            expected_id_types = passport_requested ?
+              Idp::Constants::DocumentTypes::SUPPORTED_PASSPORT_TYPES :
+              Idp::Constants::DocumentTypes::SUPPORTED_STATE_ID_TYPES
+
+            expected_id_types.include?(document_type_received)
+          end
+
+          def document_type_received
+            DocumentClassifications::CLASSIFICATION_TO_DOCUMENT_TYPE[doc_class]
+          end
 
           def parsed_response_body
             @parsed_response_body ||= JSON.parse(http_response.body).with_indifferent_access
@@ -108,8 +119,6 @@ module DocAuth
 
           def classification_info
             # Acuant response has both sides info, here simulate that
-            doc_class = DDP_DOCUMENT_TYPE_TO_DOCUMENT_CLASSIFICATION[doc_class_name.to_sym]
-            doc_class = 'UnsupportedDocClass' if doc_class.nil?
             issuing_country = authentication_results&.dig(
               'trueid.authentication_result.fields.id_auth_field_data.country_code',
             )
@@ -126,6 +135,11 @@ module DocAuth
               }
             end
             classification_hash
+          end
+
+          def doc_class
+            DDP_DOCUMENT_TYPE_TO_DOC_AUTH_DOCUMENT_CLASSIFICATION[doc_class_name.to_sym] ||
+              'UnsupportedDocClass'
           end
         end
       end

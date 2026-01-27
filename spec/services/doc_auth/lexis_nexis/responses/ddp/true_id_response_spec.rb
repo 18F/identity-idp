@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe DocAuth::LexisNexis::Responses::Ddp::TrueIdResponse do
-  let(:success_response_body) { LexisNexisFixtures.ddp_true_id_response_success }
+  let(:success_response_body) { LexisNexisFixtures.ddp_true_id_state_id_response_success }
   let(:failure_response_body) { LexisNexisFixtures.ddp_true_id_response_fail }
   let(:unsupported_doc_type_response_body) do
     LexisNexisFixtures.ddp_true_id_response_fail_unsupported_doc_type
@@ -22,7 +22,8 @@ RSpec.describe DocAuth::LexisNexis::Responses::Ddp::TrueIdResponse do
   let(:config) do
     DocAuth::LexisNexis::Config.new
   end
-  let(:true_id_response) { nil }
+  let(:passport_requested) { false }
+  let(:true_id_response) { success_response }
   let(:front_image) { 'front_image_data' }
   let(:back_image) { 'back_image_data' }
   let(:selfie_image) { 'selfie_image_data' }
@@ -61,6 +62,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::Ddp::TrueIdResponse do
       http_response: true_id_response,
       config:,
       request:,
+      passport_requested:,
     )
   end
 
@@ -92,6 +94,62 @@ RSpec.describe DocAuth::LexisNexis::Responses::Ddp::TrueIdResponse do
 
       it 'is not a successful result' do
         expect(response.successful_result?).to eq(false)
+        expect(response.success?).to eq(false)
+      end
+    end
+  end
+
+  context 'when passport is requested' do
+    let(:passport_requested) { true }
+
+    context 'when the received document type is a supported passport type' do
+      let(:success_response_body) { LexisNexisFixtures.ddp_true_id_passport_response_success }
+
+      it 'is a successful result' do
+        expect(response.success?).to eq(true)
+      end
+    end
+
+    context 'when the received document type is a supported state ID type' do
+      let(:success_response_body) { LexisNexisFixtures.ddp_true_id_state_id_response_success }
+
+      it 'is not a successful result' do
+        expect(response.success?).to eq(false)
+      end
+    end
+
+    context 'when the received document type is an unsupported type' do
+      let(:success_response_body) { LexisNexisFixtures.ddp_true_id_passport_card_response_success }
+
+      it 'is not a successful result' do
+        expect(response.success?).to eq(false)
+      end
+    end
+  end
+
+  context 'when passport is not requested' do
+    let(:passport_requested) { false }
+
+    context 'when the received document type is a supported passport type' do
+      let(:success_response_body) { LexisNexisFixtures.ddp_true_id_passport_response_success }
+
+      it 'is not a successful result' do
+        expect(response.success?).to eq(false)
+      end
+    end
+
+    context 'when the received document type is a supported state ID type' do
+      let(:success_response_body) { LexisNexisFixtures.ddp_true_id_state_id_response_success }
+
+      it 'is a successful result' do
+        expect(response.success?).to eq(true)
+      end
+    end
+
+    context 'when the received document type is an unsupported type' do
+      let(:success_response_body) { LexisNexisFixtures.ddp_true_id_passport_card_response_success }
+
+      it 'is not a successful result' do
         expect(response.success?).to eq(false)
       end
     end
