@@ -42,7 +42,7 @@ interface AppRootData {
   socureErrorsTimeoutURL: string;
   previousStepUrl: string;
   chooseIdTypePath: string;
-  docAuthSelfieDesktopTestMode: string;
+  docAuthDesktopTestMode: string;
   docAuthUploadEnabled: string;
   accountUrl: string;
   locationsUrl: string;
@@ -128,7 +128,7 @@ const {
   socureErrorsTimeoutUrl,
   previousStepUrl,
   chooseIdTypePath,
-  docAuthSelfieDesktopTestMode,
+  docAuthDesktopTestMode,
   locationsUrl: locationsURL,
   sessionsUrl: sessionsURL,
 } = appRoot.dataset as DOMStringMap & AppRootData;
@@ -197,7 +197,7 @@ render(
                     value={{
                       isSelfieCaptureEnabled: getSelfieCaptureEnabled(),
                       isUploadEnabled: getUploadEnabled(),
-                      isSelfieDesktopTestMode: String(docAuthSelfieDesktopTestMode) === 'true',
+                      isDesktopTestMode: String(docAuthDesktopTestMode) === 'true',
                       showHelpInitially: true,
                     }}
                   >

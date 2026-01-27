@@ -140,7 +140,7 @@ module Idv
     end
 
     def doc_auth_upload_enabled?
-      # false for now until we consolidate this method with desktop_selfie_test_mode_enabled
+      # false for now until we consolidate this method with desktop_test_mode_enabled
       false
     end
 

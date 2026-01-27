@@ -953,7 +953,7 @@ RSpec.feature 'direct access to IPP on desktop', :js do
       allow(IdentityConfig.store).to receive_messages(
         allowed_biometric_ial_providers: [service_provider.issuer],
         allowed_valid_authn_contexts_semantic_providers: [service_provider.issuer],
-        doc_auth_selfie_desktop_test_mode: false,
+        doc_auth_desktop_test_mode: false,
         doc_auth_vendor_lexis_nexis_percent: 0,
         doc_auth_vendor_socure_percent: 100,
         doc_auth_vendor_switching_enabled: true,
