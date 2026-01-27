@@ -17,7 +17,7 @@ module Idv
 
       document_capture_session.create_proofing_session
 
-      pii_for_aamva = idv_session.ipp_aamva_pending_state_id_pii || pii_from_user
+      pii_for_aamva = idv_session.ipp_aamva_pending_state_id_pii
       encrypted_arguments = encrypt_pii_for_job(pii_for_aamva)
 
       enqueue_job(
