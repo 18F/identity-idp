@@ -65,6 +65,10 @@ RSpec.feature 'Users pending ThreatMetrix review', :js do
     before do
       allow(IdentityConfig.store).to receive(:proofing_device_hybrid_profiling)
         .and_return(:enabled)
+      allow_any_instance_of(ApplicationController).to receive(:ab_test_bucket)
+      allow_any_instance_of(ApplicationController)
+        .to receive(:ab_test_bucket).with(:HYBRID_MOBILE_TMX_PROCESSED)
+        .and_return(:hybrid_mobile_tmx_processed)
       allow(Telephony).to receive(:send_doc_auth_link).and_wrap_original do |impl, config|
         @sms_link = config[:link]
         impl.call(**config)
