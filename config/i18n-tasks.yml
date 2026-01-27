@@ -121,8 +121,6 @@ ignore_unused:
   - 'datetime.dotiw.weeks.other'
   - 'datetime.dotiw.years.one'
   - 'datetime.dotiw.years.other'
-  - 'event_types.max_attempts_reached'
-  - 'user_mailer.new_device_sign_in_attempts.events.max_attempts_reached'
 ## Exclude these keys from the `i18n-tasks eq-base' report:
 # ignore_eq_base:
 #   all:
