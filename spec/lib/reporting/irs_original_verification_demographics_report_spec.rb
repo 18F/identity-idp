@@ -1,20 +1,17 @@
 require 'rails_helper'
-require 'reporting/irs_verification_demographics_report'
+require 'reporting/irs_original_verification_demographics_report'
 
-RSpec.describe Reporting::IrsVerificationDemographicsReport do
+RSpec.describe Reporting::IrsOriginalVerificationDemographicsReport do
   let(:issuer) { 'my:example:issuer' }
   let(:time_range) { Date.new(2022, 1, 1).in_time_zone('UTC').all_quarter }
-  let(:agency_abbreviation) { 'Test_Agency' }
   let(:expected_definitions_table) do
     [
       ['Metric', 'Unit', 'Definition'],
       ['Age range/Verification Demographics', 'Count',
-       "The number of #{agency_abbreviation} users who verified within " \
-         "the reporting period, grouped by age in " \
-         "10 year range."],
+       'The number of IRS users who verified within the reporting period, grouped by age in ' + '
+         10 year range.'],
       ['Geographic area/Verification Demographics', 'Count',
-       "The number of #{agency_abbreviation} users who verified within " \
-         "the reporting period, grouped by state."],
+       'The number of IRS users who verified within the reporting period, grouped by state.'],
     ]
   end
   let(:expected_overview_table) do
@@ -42,10 +39,7 @@ RSpec.describe Reporting::IrsVerificationDemographicsReport do
   end
 
   subject(:report) do
-    Reporting::IrsVerificationDemographicsReport.new(
-      issuers: [issuer],
-      agency_abbreviation: agency_abbreviation, time_range:
-    )
+    Reporting::IrsOriginalVerificationDemographicsReport.new(issuers: [issuer], time_range:)
   end
 
   before do
@@ -159,12 +153,12 @@ RSpec.describe Reporting::IrsVerificationDemographicsReport do
           table: expected_overview_table,
         ),
         Reporting::EmailableReport.new(
-          title: "#{agency_abbreviation} Age Metrics",
+          title: 'IRS Age Metrics',
           filename: 'age_metrics',
           table: expected_age_metrics_table,
         ),
         Reporting::EmailableReport.new(
-          title: "#{agency_abbreviation} State Metrics",
+          title: 'IRS State Metrics',
           filename: 'state_metrics',
           table: expected_state_metrics_table,
         ),
@@ -177,12 +171,7 @@ RSpec.describe Reporting::IrsVerificationDemographicsReport do
 
   describe '#cloudwatch_client' do
     let(:opts) { {} }
-    let(:subject) do
-      described_class.new(
-        issuers: [issuer], agency_abbreviation: agency_abbreviation, time_range:,
-        **opts
-      )
-    end
+    let(:subject) { described_class.new(issuers: [issuer], time_range:, **opts) }
     let(:default_args) do
       {
         num_threads: 5,
