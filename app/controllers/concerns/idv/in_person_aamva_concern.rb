@@ -21,8 +21,8 @@ module Idv
       encrypted_arguments = encrypt_pii_for_job(pii_for_aamva)
 
       enqueue_job(
-        document_capture_session: document_capture_session,
-        encrypted_arguments: encrypted_arguments,
+        document_capture_session:,
+        encrypted_arguments:,
       )
     end
 
