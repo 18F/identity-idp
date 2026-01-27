@@ -383,8 +383,8 @@ module Idv
       !!session[:skip_hybrid_handoff]
     end
 
-    def desktop_selfie_test_mode_enabled?
-      IdentityConfig.store.doc_auth_selfie_desktop_test_mode
+    def desktop_test_mode_enabled?
+      IdentityConfig.store.doc_auth_desktop_test_mode
     end
 
     def idv_consent_given?
@@ -397,7 +397,7 @@ module Idv
 
     def standard_flow_document_capture_eligible?
       flow_path == 'standard' &&
-        (skip_hybrid_handoff || desktop_selfie_test_mode_enabled?)
+        (skip_hybrid_handoff || desktop_test_mode_enabled?)
     end
 
     private

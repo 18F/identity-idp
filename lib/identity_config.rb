@@ -141,7 +141,7 @@ module IdentityConfig
     config.add(:doc_auth_passport_vendor_lexis_nexis_percent, type: :integer)
     config.add(:doc_auth_passport_vendor_socure_percent, type: :integer)
     config.add(:doc_auth_passport_vendor_switching_enabled, type: :boolean)
-    config.add(:doc_auth_selfie_desktop_test_mode, type: :boolean)
+    config.add(:doc_auth_desktop_test_mode, type: :boolean)
     config.add(:doc_auth_passport_selfie_vendor_default, type: :string)
     config.add(:doc_auth_passport_selfie_vendor_lexis_nexis_ddp_percent, type: :integer)
     config.add(:doc_auth_passport_selfie_vendor_lexis_nexis_percent, type: :integer)

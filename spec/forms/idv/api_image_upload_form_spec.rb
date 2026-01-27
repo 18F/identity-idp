@@ -175,7 +175,7 @@ RSpec.describe Idv::ApiImageUploadForm do
             { width: 40, height: 40, mimeType: 'image/png', source: 'acuant' }
           end
           before do
-            allow(IdentityConfig.store).to receive(:doc_auth_selfie_desktop_test_mode)
+            allow(IdentityConfig.store).to receive(:doc_auth_desktop_test_mode)
               .and_return(false)
           end
 
