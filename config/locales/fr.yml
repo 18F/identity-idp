@@ -1071,7 +1071,6 @@ idv.accessible_labels.masked_ssn: SMS sécurisé, commençant par %{first_number
 idv.buttons.change_address_label: Mettre à jour votre adresse
 idv.buttons.change_label: Mettre à jour
 idv.buttons.change_ssn_label: Mettre à jour votre numéro de sécurité sociale
-idv.buttons.change_state_id_label: Mettre à jour votre pièce d’identité
 idv.buttons.continue_plain: Suite
 idv.buttons.mail.send: Demander une lettre
 idv.by_mail.sp_follow_up.body: Connectez-vous à nouveau à %{service_provider} pour y associer votre compte %{app_name} vérifié et accéder aux services de cet organisme.

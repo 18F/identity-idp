@@ -45,22 +45,12 @@ RSpec.describe 'doc auth IPP VerifyInfo', js: true, allow_browser_log: true do
     end
   end
 
-  context 'when performing updates for the address, state ID, and SSN info' do
+  context 'when performing updates for the address and SSN info' do
     before do
       complete_steps_before_info_verify(user)
     end
 
     it 'provides a back button for discarding changes' do
-      # click update state ID button
-      click_link t('idv.buttons.change_state_id_label')
-      expect(page).to have_content(t('in_person_proofing.headings.update_state_id'))
-      fill_in t('in_person_proofing.form.state_id.first_name'), with: 'bad first name'
-      click_doc_auth_back_link
-      expect(page).to have_content(t('headings.verify'))
-      expect(page).to have_current_path(idv_in_person_verify_info_path)
-      expect(page).to have_text(InPersonHelper::GOOD_FIRST_NAME)
-      expect(page).not_to have_text('bad first name')
-
       # click update address link
       click_link t('idv.buttons.change_address_label')
       expect(page).to have_content(t('in_person_proofing.headings.update_address'))
@@ -82,16 +72,6 @@ RSpec.describe 'doc auth IPP VerifyInfo', js: true, allow_browser_log: true do
     end
 
     it 'updates the info on the verify info page' do
-      # click update state ID button
-      click_link t('idv.buttons.change_state_id_label')
-      expect(page).to have_content(t('in_person_proofing.headings.update_state_id'))
-      fill_in t('in_person_proofing.form.state_id.first_name'), with: 'Natalya'
-      click_button t('forms.buttons.submit.update')
-      expect(page).to have_content(t('headings.verify'))
-      expect(page).to have_current_path(idv_in_person_verify_info_path)
-      expect(page).to have_text('Natalya')
-      expect(page).not_to have_text('bad first name')
-
       # click update address link
       click_link t('idv.buttons.change_address_label')
       expect(page).to have_content(t('in_person_proofing.headings.update_address'))

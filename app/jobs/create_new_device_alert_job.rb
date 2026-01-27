@@ -5,11 +5,13 @@ class CreateNewDeviceAlertJob < ApplicationJob
 
   def perform(now)
     emails_sent = 0
-    User.where(
-      sql_query_for_users_with_new_device,
-      tvalue: now - IdentityConfig.store.new_device_alert_delay_in_minutes.minutes,
-    ).limit(1_000).find_each(batch_size: 100) do |user|
-      emails_sent += 1 if expire_sign_in_notification_timeframe_and_send_alert(user)
+    with_timeout do
+      User.where(
+        sql_query_for_users_with_new_device,
+        tvalue: now - IdentityConfig.store.new_device_alert_delay_in_minutes.minutes,
+      ).limit(1_000).find_each(batch_size: 100) do |user|
+        emails_sent += 1 if expire_sign_in_notification_timeframe_and_send_alert(user)
+      end
     end
 
     analytics.create_new_device_alert_job_emails_sent(count: emails_sent)
@@ -41,5 +43,12 @@ class CreateNewDeviceAlertJob < ApplicationJob
     end
   end
 
-  private
+  def with_timeout
+    timeout_in_seconds = 60.seconds
+    ActiveRecord::Base.transaction do
+      quoted_timeout = ActiveRecord::Base.connection.quote(timeout_in_seconds.in_milliseconds)
+      ActiveRecord::Base.connection.execute("SET LOCAL statement_timeout = #{quoted_timeout}")
+      yield
+    end
+  end
 end

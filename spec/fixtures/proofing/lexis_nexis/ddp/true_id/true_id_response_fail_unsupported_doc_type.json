@@ -41,7 +41,7 @@
         "tps_type": "LN_RDP_Auth_Hub_Initiate",
         "tps_vendor": "LN",
         "tps_vendor_raw_response": {
-          "Status": { "ConversationId": "31001230555159", "TransactionStatus": "failed" },
+          "Status": { "ConversationId": "31001230555159", "TransactionStatus": "passed" },
           "InputEcho": "[.....",
           "org_id": "org123",
           "output_format": "json",
@@ -71,8 +71,8 @@
                 "customer": {
                   "score": "0",
                   "pvid": "1117741",
-                  "final_review_status": "fail",
-                  "review_status": "fail",
+                  "final_review_status": "pass",
+                  "review_status": "pass",
                   "risk_rating": "neutral",
                   "rules": [
                     { "rid": "5696815", "reason_code": "Authentication - With PM", "score": "0" }
@@ -107,8 +107,8 @@
           "tps_vendor_raw_response": "Stat...",
           "tag_context": "_A_TRUID",
           "trueid.authentication_result.date_of_birth": "20000306",
-          "trueid.authentication_result.doc_auth_result": "Failed",
-          "trueid.authentication_result.doc_class": "IdentificationCard",
+          "trueid.authentication_result.doc_auth_result": "Passed",
+          "trueid.authentication_result.doc_class": "UnsupportedIdentificationCard",
           "trueid.authentication_result.doc_issuer_name": "Utopia",
           "trueid.authentication_result.expiration_date": "20400306",
           "trueid.authentication_result.fields.id_auth_field_data.country_code": "USA",
@@ -116,8 +116,7 @@
           "trueid.authentication_result.last_name": "SAMPLE",
           "trueid.authentication_result.portrait": "/9j/4AA...",
           "trueid.authentication_result.signature": "/9j/4AAQ...",
-          "trueid.portrait_match.face_error_message": "Liveness: Error",
-          "trueid.portrait_match.face_match_result": "Fail",
+          "trueid.portrait_match.face_match_result": "Passed",
           "trueid.portrait_match.face_match_score": "0",
           "trueid.portrait_match.face_status_code": "0"
         }

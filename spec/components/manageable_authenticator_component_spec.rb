@@ -77,6 +77,10 @@ RSpec.describe ManageableAuthenticatorComponent, type: :component do
     )
   end
 
+  it 'limits rename input to 80 characters' do
+    expect(rendered).to have_css('input.manageable-authenticator__rename-input[maxlength="80"]')
+  end
+
   it 'renders with buttons that have accessibly distinct manage label' do
     expect(rendered).to have_button(
       [
