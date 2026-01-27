@@ -113,14 +113,15 @@ module Idv
 
       redirect_url = idv_session.ipp_aamva_redirect_url || idv_in_person_ssn_url
 
+      pending_pii = idv_session.ipp_aamva_pending_state_id_pii
+      delete_aamva_async_state
+
       if result[:success]
-        commit_pending_state_id_pii
-        delete_aamva_async_state
+        commit_state_id_data(pending_pii) if pending_pii
         idv_session.ipp_aamva_result = result
         idv_session.source_check_vendor = result[:vendor_name]
         redirect_to redirect_url
       else
-        delete_aamva_async_state
         return if rate_limit_redirect!(:idv_doc_auth, step_name: 'ipp_state_id')
 
         flash.now[:error] = I18n.t('idv.failure.verify.heading')
@@ -132,13 +133,6 @@ module Idv
       idv_session.ipp_aamva_document_capture_session_uuid = nil
       idv_session.ipp_aamva_redirect_url = nil
       idv_session.ipp_aamva_pending_state_id_pii = nil
-    end
-
-    def commit_pending_state_id_pii
-      pending_pii = idv_session.ipp_aamva_pending_state_id_pii
-      return unless pending_pii
-
-      commit_state_id_data(pending_pii)
     end
 
     def commit_state_id_data(pii_data)
