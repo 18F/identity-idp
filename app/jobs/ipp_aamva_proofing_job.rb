@@ -14,12 +14,11 @@ class IppAamvaProofingJob < ApplicationJob
     user_id:,
     service_provider_issuer: nil
   )
-    @user_id = user_id
+    @user = User.find_by(id: user_id)
+    raise ArgumentError, 'User not found' if @user.nil?
+
     @service_provider_issuer = service_provider_issuer
     timer = JobHelpers::Timer.new
-
-    user = User.find_by(id: user_id)
-    raise ArgumentError, 'User not found' if user.nil?
 
     raise_stale_job! if stale_job?(enqueued_at)
 
@@ -32,12 +31,12 @@ class IppAamvaProofingJob < ApplicationJob
 
     applicant_pii = decrypted_args[:applicant_pii]
     applicant_pii[:uuid_prefix] = current_sp&.app_id
-    applicant_pii[:uuid] = user.uuid
+    applicant_pii[:uuid] = @user.uuid
 
     aamva_result = call_aamva(
       applicant_pii: applicant_pii,
       current_sp: current_sp,
-      timer: timer,
+      timer:,
     )
 
     log_aamva_analytics(aamva_result, trace_id)
@@ -51,22 +50,24 @@ class IppAamvaProofingJob < ApplicationJob
       name: 'IppAamvaProofing',
       trace_id: trace_id,
       aamva_success: aamva_result&.success?,
-      timing: timer.results,
-      user_id: user&.uuid,
+      timing: timer&.results,
+      user_id: @user&.uuid,
     )
   end
 
   private
 
-  def call_aamva(applicant_pii:, current_sp:, timer:)
-    aamva_plugin = Proofing::Resolution::Plugins::AamvaPlugin.new
+  def aamva_plugin
+    @aamva_plugin ||= Proofing::Resolution::Plugins::AamvaPlugin.new
+  end
 
+  def call_aamva(applicant_pii:, current_sp:, timer:)
     aamva_plugin.call(
       applicant_pii: applicant_pii.freeze,
       current_sp: current_sp,
       state_id_address_resolution_result: nil,
       ipp_enrollment_in_progress: true,
-      timer: timer,
+      timer:,
       doc_auth_flow: true,
       analytics:,
     )
@@ -78,7 +79,7 @@ class IppAamvaProofingJob < ApplicationJob
     {
       success: doc_auth_response.success?,
       errors: doc_auth_response.errors,
-      vendor_name: aamva_result.vendor_name,
+      vendor_name: doc_auth_response.extra[:vendor_name],
       aamva_status: doc_auth_response.success? ? :passed : :failed,
       checked_at: Time.zone.now.iso8601,
     }
@@ -111,7 +112,7 @@ class IppAamvaProofingJob < ApplicationJob
 
   def analytics
     @analytics ||= Analytics.new(
-      user: User.find_by(id: @user_id),
+      user: @user,
       request: nil,
       session: {},
       sp: @service_provider_issuer,

@@ -5,7 +5,7 @@ RSpec.describe Idv::InPerson::StateIdController do
   include InPersonHelper
 
   let(:user) { build(:user) }
-  let(:enrollment) { create(:in_person_enrollment, :establishing, user: user) }
+  let(:enrollment) { create(:in_person_enrollment, :establishing, user:) }
 
   before do
     stub_sign_in(user)
@@ -33,9 +33,10 @@ RSpec.describe Idv::InPerson::StateIdController do
       it 'redirects to document capture if not complete' do
         # Set up DocumentCaptureSession to satisfy choose_id_type completion
         subject.idv_session.document_capture_session_uuid = SecureRandom.uuid
-        DocumentCaptureSession.create!(
+        create(
+          :document_capture_session,
           uuid: subject.idv_session.document_capture_session_uuid,
-          user: user,
+          user:,
           requested_at: Time.zone.now,
           passport_status: 'requested',
         )
@@ -467,11 +468,7 @@ RSpec.describe Idv::InPerson::StateIdController do
 
       context 'when async AAMVA check is in progress' do
         let(:document_capture_session) do
-          DocumentCaptureSession.create!(
-            user_id: user.id,
-            issuer: nil,
-            requested_at: Time.zone.now,
-          )
+          create(:document_capture_session, user:, requested_at: Time.zone.now)
         end
 
         before do
@@ -495,11 +492,7 @@ RSpec.describe Idv::InPerson::StateIdController do
 
       context 'when async AAMVA check completes successfully' do
         let(:document_capture_session) do
-          DocumentCaptureSession.create!(
-            user_id: user.id,
-            issuer: nil,
-            requested_at: Time.zone.now,
-          )
+          create(:document_capture_session, user:, requested_at: Time.zone.now)
         end
 
         let(:successful_result) do
@@ -581,11 +574,7 @@ RSpec.describe Idv::InPerson::StateIdController do
 
       context 'when async AAMVA check completes successfully on final attempt (rate limited)' do
         let(:document_capture_session) do
-          DocumentCaptureSession.create!(
-            user_id: user.id,
-            issuer: nil,
-            requested_at: Time.zone.now,
-          )
+          create(:document_capture_session, user:, requested_at: Time.zone.now)
         end
 
         let(:successful_result) do
@@ -603,7 +592,7 @@ RSpec.describe Idv::InPerson::StateIdController do
           subject.idv_session.ipp_aamva_document_capture_session_uuid =
             document_capture_session.uuid
           # Simulate user at max attempts (rate limited)
-          RateLimiter.new(user: user, rate_limit_type: :idv_doc_auth).increment_to_limited!
+          RateLimiter.new(user:, rate_limit_type: :idv_doc_auth).increment_to_limited!
         end
 
         it 'redirects to SSN page (allows success on final attempt)' do
@@ -638,11 +627,7 @@ RSpec.describe Idv::InPerson::StateIdController do
 
       context 'when async AAMVA check fails on final attempt (rate limited)' do
         let(:document_capture_session) do
-          DocumentCaptureSession.create!(
-            user_id: user.id,
-            issuer: nil,
-            requested_at: Time.zone.now,
-          )
+          create(:document_capture_session, user:, requested_at: Time.zone.now)
         end
 
         let(:failed_result) do
@@ -660,7 +645,7 @@ RSpec.describe Idv::InPerson::StateIdController do
           subject.idv_session.ipp_aamva_document_capture_session_uuid =
             document_capture_session.uuid
           # Simulate user at max attempts - 1, so after increment they're at max
-          rate_limiter = RateLimiter.new(user: user, rate_limit_type: :idv_doc_auth)
+          rate_limiter = RateLimiter.new(user:, rate_limit_type: :idv_doc_auth)
           (RateLimiter.max_attempts(:idv_doc_auth) - 1).times { rate_limiter.increment! }
         end
 
@@ -700,11 +685,7 @@ RSpec.describe Idv::InPerson::StateIdController do
 
       context 'when async AAMVA check fails' do
         let(:document_capture_session) do
-          DocumentCaptureSession.create!(
-            user_id: user.id,
-            issuer: nil,
-            requested_at: Time.zone.now,
-          )
+          create(:document_capture_session, user:, requested_at: Time.zone.now)
         end
 
         let(:failed_result) do
@@ -797,11 +778,7 @@ RSpec.describe Idv::InPerson::StateIdController do
 
       context 'when async AAMVA state is missing' do
         let(:document_capture_session) do
-          DocumentCaptureSession.create!(
-            user_id: user.id,
-            issuer: nil,
-            requested_at: Time.zone.now,
-          )
+          create(:document_capture_session, user:, requested_at: Time.zone.now)
         end
 
         before do
@@ -865,11 +842,7 @@ RSpec.describe Idv::InPerson::StateIdController do
 
       context 'when async AAMVA check completes successfully' do
         let(:document_capture_session) do
-          DocumentCaptureSession.create!(
-            user_id: user.id,
-            issuer: nil,
-            requested_at: Time.zone.now,
-          )
+          create(:document_capture_session, user:, requested_at: Time.zone.now)
         end
 
         let(:successful_result) do
@@ -944,11 +917,7 @@ RSpec.describe Idv::InPerson::StateIdController do
     context 'rate limiter increment' do
       let(:params) { valid_state_id_params(same_address_as_id: 'true') }
       let(:document_capture_session) do
-        DocumentCaptureSession.create!(
-          user_id: user.id,
-          issuer: nil,
-          requested_at: Time.zone.now,
-        )
+        create(:document_capture_session, user:, requested_at: Time.zone.now)
       end
 
       let(:successful_result) do
@@ -966,24 +935,18 @@ RSpec.describe Idv::InPerson::StateIdController do
         subject.idv_session.ipp_aamva_document_capture_session_uuid =
           document_capture_session.uuid
 
-        initial_count = RateLimiter.new(user: user, rate_limit_type: :idv_doc_auth).remaining_count
-
-        get :show
-
-        new_count = RateLimiter.new(user: user, rate_limit_type: :idv_doc_auth).remaining_count
-        expect(new_count).to eq(initial_count - 1)
+        expect { get :show }.to(
+          change { RateLimiter.new(user:, rate_limit_type: :idv_doc_auth).remaining_count }.by(-1),
+        )
       end
 
       it 'does not increment rate limiter when already rate limited' do
         allow(subject).to receive(:idv_attempter_rate_limited?).with(:idv_doc_auth).and_return(true)
-        rate_limiter = RateLimiter.new(user: user, rate_limit_type: :idv_doc_auth)
-        rate_limiter.increment_to_limited!
-        initial_count = rate_limiter.remaining_count
+        RateLimiter.new(user:, rate_limit_type: :idv_doc_auth).increment_to_limited!
 
-        put :update, params: params
-
-        new_count = RateLimiter.new(user: user, rate_limit_type: :idv_doc_auth).remaining_count
-        expect(new_count).to eq(initial_count)
+        expect { put :update, params: params }.not_to(
+          change { RateLimiter.new(user:, rate_limit_type: :idv_doc_auth).remaining_count },
+        )
       end
     end
   end

@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe IppAamvaProofingJob, type: :job do
   let(:user) { create(:user) }
   let(:document_capture_session) do
-    create(:document_capture_session, result_id: SecureRandom.hex, user: user)
+    create(:document_capture_session, result_id: SecureRandom.hex, user:)
   end
   let(:service_provider) { create(:service_provider) }
   let(:applicant_pii) do
