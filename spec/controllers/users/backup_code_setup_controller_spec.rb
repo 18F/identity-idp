@@ -83,6 +83,36 @@ RSpec.describe Users::BackupCodeSetupController do
 
       it_behaves_like 'valid backup codes creation'
     end
+
+    context 'without existing backup codes' do
+      let(:user) { create(:user, :fully_registered) }
+
+      it 'does not revoke remembered device' do
+        stub_sign_in(user)
+        expect(user.remember_device_revoked_at).to eq nil
+
+        freeze_time do
+          get :index
+          expect(user.reload.remember_device_revoked_at).to eq nil
+        end
+      end
+    end
+
+    context 'with existing backup codes' do
+      let(:user) { create(:user, :fully_registered, :with_backup_code) }
+
+      it 'revokes remembered device' do
+        stub_sign_in(user)
+        allow(controller).to receive(:in_multi_mfa_selection_flow?).and_return(true)
+
+        expect(user.remember_device_revoked_at).to eq nil
+
+        freeze_time do
+          get :index
+          expect(user.reload.remember_device_revoked_at).to eq Time.zone.now
+        end
+      end
+    end
   end
 
   describe '#create' do
@@ -97,68 +127,51 @@ RSpec.describe Users::BackupCodeSetupController do
     it_behaves_like 'valid backup codes creation'
   end
 
-  context 'without existing backup codes' do
-    let(:user) { create(:user, :fully_registered) }
-
-    it 'does not revoke remembered device' do
+  context '#delete' do
+    it 'deletes backup codes' do
+      user = build(:user, :fully_registered, :with_authentication_app, :with_backup_code)
       stub_sign_in(user)
-      expect(user.remember_device_revoked_at).to eq nil
+      expect(user.backup_code_configurations.length).to eq BackupCodeGenerator::NUMBER_OF_CODES
 
-      freeze_time do
-        get :index
-        expect(user.reload.remember_device_revoked_at).to eq nil
-      end
+      post :delete
+
+      expect(response).to redirect_to(account_two_factor_authentication_path)
+      expect(user.backup_code_configurations.length).to eq 0
     end
-  end
 
-  context 'with existing backup codes' do
-    let(:user) { create(:user, :fully_registered, :with_backup_code) }
-
-    it 'revokes remembered device' do
+    it 'deleting backup codes revokes remember device cookies' do
+      user = build(:user, :fully_registered, :with_authentication_app, :with_backup_code)
       stub_sign_in(user)
-      allow(controller).to receive(:in_multi_mfa_selection_flow?).and_return(true)
-
       expect(user.remember_device_revoked_at).to eq nil
 
       freeze_time do
-        get :index
+        post :delete
         expect(user.reload.remember_device_revoked_at).to eq Time.zone.now
       end
     end
-  end
 
-  it 'deletes backup codes' do
-    user = build(:user, :fully_registered, :with_authentication_app, :with_backup_code)
-    stub_sign_in(user)
-    expect(user.backup_code_configurations.length).to eq BackupCodeGenerator::NUMBER_OF_CODES
+    it 'does not deletes backup codes if they are the only mfa' do
+      user = build(:user, :with_backup_code)
+      stub_sign_in(user)
 
-    post :delete
-
-    expect(response).to redirect_to(account_two_factor_authentication_path)
-    expect(user.backup_code_configurations.length).to eq 0
-  end
-
-  it 'deleting backup codes revokes remember device cookies' do
-    user = build(:user, :fully_registered, :with_authentication_app, :with_backup_code)
-    stub_sign_in(user)
-    expect(user.remember_device_revoked_at).to eq nil
-
-    freeze_time do
       post :delete
-      expect(user.reload.remember_device_revoked_at).to eq Time.zone.now
+
+      expect(response).to redirect_to(account_two_factor_authentication_path)
+      expect(user.backup_code_configurations.length).to eq BackupCodeGenerator::NUMBER_OF_CODES
+    end
+
+
+    it 'sends a recovery information changed event' do
+      user = build(:user, :with_backup_code)
+      stub_sign_in(user)
+
+
+      expect(PushNotification::HttpPush).to receive(:deliver)
+        .with(PushNotification::RecoveryInformationChangedEvent.new(user: user))
+      post :delete
     end
   end
-
-  it 'does not deletes backup codes if they are the only mfa' do
-    user = build(:user, :with_backup_code)
-    stub_sign_in(user)
-
-    post :delete
-
-    expect(response).to redirect_to(account_two_factor_authentication_path)
-    expect(user.backup_code_configurations.length).to eq BackupCodeGenerator::NUMBER_OF_CODES
-  end
-
+  
   describe 'multiple MFA handling' do
     let(:mfa_selections) { ['backup_code', 'voice'] }
     before do
