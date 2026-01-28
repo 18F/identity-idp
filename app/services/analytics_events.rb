@@ -4353,10 +4353,10 @@ module AnalyticsEvents
   )
     track_event(
       :idv_ipp_aamva_exception,
-      exception_class: exception_class,
-      exception_message: exception_message,
-      step: step,
-      trace_id: trace_id,
+      exception_class:,
+      exception_message:,
+      step:,
+      trace_id:,
       **extra,
     )
   end
@@ -4375,7 +4375,7 @@ module AnalyticsEvents
   )
     track_event(
       :idv_ipp_aamva_rate_limited,
-      step: step,
+      step:,
       **extra,
     )
   end
@@ -4392,9 +4392,9 @@ module AnalyticsEvents
   )
     track_event(
       :idv_ipp_aamva_timeout,
-      exception_class: exception_class,
-      step: step,
-      trace_id: trace_id,
+      exception_class:,
+      step:,
+      trace_id:,
       **extra,
     )
   end
@@ -4411,9 +4411,9 @@ module AnalyticsEvents
   )
     track_event(
       :idv_ipp_aamva_verification_completed,
-      success: success,
-      vendor_name: vendor_name,
-      step: step,
+      success:,
+      vendor_name:,
+      step:,
       **extra,
     )
   end
