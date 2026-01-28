@@ -80,7 +80,7 @@ module Idv
           preconditions: ->(idv_session:, user:) do
             idv_session.ipp_document_capture_complete? &&
               user.has_establishing_in_person_enrollment? &&
-              (!IdentityConfig.store.idv_aamva_at_doc_auth_enabled ||
+              (!IdentityConfig.store.idv_aamva_at_doc_auth_ipp_enabled ||
                 idv_session.ipp_aamva_result.present?)
           end,
           undo_step: ->(idv_session:, user:) {

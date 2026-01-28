@@ -43,7 +43,7 @@ RSpec.describe Idv::InPerson::AddressController do
 
     context 'preconditions' do
       before do
-        allow(IdentityConfig.store).to receive(:idv_aamva_at_doc_auth_enabled).and_return(false)
+        allow(IdentityConfig.store).to receive(:idv_aamva_at_doc_auth_ipp_enabled).and_return(false)
       end
 
       context 'when ipp_state_id steps have been completed' do
@@ -90,7 +90,8 @@ RSpec.describe Idv::InPerson::AddressController do
 
       context 'when AAMVA at doc auth is enabled' do
         before do
-          allow(IdentityConfig.store).to receive(:idv_aamva_at_doc_auth_enabled).and_return(true)
+          allow(IdentityConfig.store).to receive(:idv_aamva_at_doc_auth_ipp_enabled)
+            .and_return(true)
           allow(subject.idv_session).to receive(:ipp_state_id_complete?).and_return(true)
         end
 
@@ -121,7 +122,8 @@ RSpec.describe Idv::InPerson::AddressController do
 
       context 'when AAMVA at doc auth is not enabled' do
         before do
-          allow(IdentityConfig.store).to receive(:idv_aamva_at_doc_auth_enabled).and_return(false)
+          allow(IdentityConfig.store).to receive(:idv_aamva_at_doc_auth_ipp_enabled)
+            .and_return(false)
           allow(subject.idv_session).to receive(:ipp_state_id_complete?).and_return(true)
         end
 

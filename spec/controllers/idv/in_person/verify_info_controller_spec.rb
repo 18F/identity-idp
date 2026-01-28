@@ -43,7 +43,8 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
 
       context 'when AAMVA at doc auth is enabled' do
         before do
-          allow(IdentityConfig.store).to receive(:idv_aamva_at_doc_auth_enabled).and_return(true)
+          allow(IdentityConfig.store).to receive(:idv_aamva_at_doc_auth_ipp_enabled)
+            .and_return(true)
         end
 
         context 'when ipp_aamva_result is present' do
@@ -73,7 +74,8 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
 
       context 'when AAMVA at doc auth is not enabled' do
         before do
-          allow(IdentityConfig.store).to receive(:idv_aamva_at_doc_auth_enabled).and_return(false)
+          allow(IdentityConfig.store).to receive(:idv_aamva_at_doc_auth_ipp_enabled)
+            .and_return(false)
         end
 
         it 'returns true regardless of ipp_aamva_result' do
@@ -476,7 +478,7 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
 
     context 'the state id proofing occurred previously' do
       before do
-        allow(IdentityConfig.store).to receive(:idv_aamva_at_doc_auth_enabled).and_return(true)
+        allow(IdentityConfig.store).to receive(:idv_aamva_at_doc_auth_ipp_enabled).and_return(true)
         subject.idv_session.ipp_aamva_result = { success: true }
       end
 
