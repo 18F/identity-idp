@@ -35,13 +35,6 @@ RSpec.describe UserPivCacSetupForm do
         expect(user.piv_cac_configurations.first.x509_dn_uuid).to eq x509_dn_uuid
       end
 
-      it 'sends a recovery information changed event' do
-        expect(PushNotification::HttpPush).to receive(:deliver)
-          .with(PushNotification::RecoveryInformationChangedEvent.new(user: user))
-
-        form.submit
-      end
-
       context 'and a user already has a piv/cac associated' do
         let(:user) { create(:user, :with_piv_or_cac) }
 

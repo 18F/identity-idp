@@ -215,6 +215,13 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
         expect(controller.user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION]).to eq true
       end
 
+      it 'sends a recovery information changed event' do
+        expect(PushNotification::HttpPush).to receive(:deliver)
+          .with(PushNotification::RecoveryInformationChangedEvent.new(user: user))
+
+        response
+      end
+
       it 'records unsuccessful 2fa event' do
         expect(controller).to receive(:create_user_event).with(:sign_in_unsuccessful_2fa)
 
