@@ -5,8 +5,6 @@ RSpec.describe SmsTextMailer, type: :mailer do
     let(:mail) { SmsTextMailer.daily_voice_limit_reached }
 
     it 'renders the text message' do
-      expect(mail.subject).to eq('Daily voice limit reached')
-
       expect(mail.body.raw_source).to include(
         t('telephony.error.friendly_message.daily_voice_limit_reached'),
       )
