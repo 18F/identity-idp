@@ -147,6 +147,13 @@ RSpec.describe Users::TotpSetupController, devise: true do
             attempts: 1,
           )
         end
+
+        it 'sends a recovery information changed event' do
+          expect(PushNotification::HttpPush).to receive(:deliver)
+            .with(PushNotification::RecoveryInformationChangedEvent.new(user: user))
+
+          response
+        end
       end
 
       context 'when user presents correct code after submitting an incorrect code' do
