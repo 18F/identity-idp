@@ -57,7 +57,7 @@ module Idv
     private
 
     def aamva_enabled?
-      IdentityConfig.store.idv_aamva_at_doc_auth_enabled
+      IdentityConfig.store.idv_aamva_at_doc_auth_ipp_enabled
     end
 
     def encrypt_pii_for_job(pii)

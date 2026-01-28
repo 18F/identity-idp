@@ -406,7 +406,7 @@ RSpec.describe Idv::InPerson::StateIdController do
 
   describe 'AAMVA integration' do
     before do
-      allow(IdentityConfig.store).to receive(:idv_aamva_at_doc_auth_enabled).and_return(true)
+      allow(IdentityConfig.store).to receive(:idv_aamva_at_doc_auth_ipp_enabled).and_return(true)
     end
 
     def valid_state_id_params(same_address_as_id: 'true')
@@ -832,7 +832,8 @@ RSpec.describe Idv::InPerson::StateIdController do
 
       context 'when AAMVA is disabled' do
         before do
-          allow(IdentityConfig.store).to receive(:idv_aamva_at_doc_auth_enabled).and_return(false)
+          allow(IdentityConfig.store).to receive(:idv_aamva_at_doc_auth_ipp_enabled)
+            .and_return(false)
         end
 
         it 'does not enqueue job' do
