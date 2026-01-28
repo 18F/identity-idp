@@ -143,7 +143,6 @@ module Idv
       end
 
       current_user.establishing_in_person_enrollment&.update(document_type: :state_id)
-      idv_session.doc_auth_vendor = Idp::Constants::Vendors::USPS
     end
   end
 end
