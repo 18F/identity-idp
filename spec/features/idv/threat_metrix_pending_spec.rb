@@ -73,6 +73,10 @@ RSpec.feature 'Users pending ThreatMetrix review', :js do
       reload_ab_tests
     end
 
+    after do
+      reload_ab_tests
+    end
+
     scenario 'user sees please call page after failing hybrid handoff ThreadMetrix' do
       user = create(:user, :fully_registered)
 

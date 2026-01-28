@@ -34,6 +34,7 @@ RSpec.describe Idv::HybridMobile::ChooseIdTypeController do
       .and_return(proofing_device_hybrid_profiling)
     allow(IdentityConfig.store).to receive(:hybrid_mobile_tmx_processed_percent)
       .and_return(hybrid_mobile_tmx_processed_percent)
+    reload_ab_tests
   end
 
   describe 'before actions' do
