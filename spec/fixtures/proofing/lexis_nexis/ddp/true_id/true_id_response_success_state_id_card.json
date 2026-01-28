@@ -111,7 +111,7 @@
           "trueid.authentication_result.doc_class": "IdentificationCard",
           "trueid.authentication_result.doc_issuer_name": "Utopia",
           "trueid.authentication_result.expiration_date": "20400306",
-          "trueid.authentication_result.fields.id_auth_field_data.country_code": "UTO",
+          "trueid.authentication_result.fields.id_auth_field_data.country_code": "USA",
           "trueid.authentication_result.first_name": "COMPANY",
           "trueid.authentication_result.last_name": "SAMPLE",
           "trueid.authentication_result.portrait": "/9j/4AA...",

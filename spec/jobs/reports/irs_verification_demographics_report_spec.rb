@@ -5,13 +5,15 @@ RSpec.describe Reports::IrsVerificationDemographicsReport do
   let(:report_receiver) { :internal }
   let(:time_range) { report_date.all_quarter }
 
-  subject(:report) { Reports::IrsVerificationDemographicsReport.new(report_date, report_receiver) }
+  subject(:report) { described_class.new(report_date, report_receiver) }
 
-  let(:name) { 'irs-verification-demographics-report' }
+  let(:job_report_name) { "#{agency_abbreviation.downcase}_verification_demographics_report" }
   let(:s3_report_bucket_prefix) { 'reports-bucket' }
+
   let(:report_folder) do
-    'int/irs-verification-demographics-report/2021/2021-03-02.irs-verification-demographics-report'
+    "int/#{job_report_name}/2021/2021-03-02.#{job_report_name}"
   end
+  let(:agency_abbreviation) { 'Test_Agency' }
 
   let(:expected_s3_paths) do
     [
@@ -48,11 +50,55 @@ RSpec.describe Reports::IrsVerificationDemographicsReport do
     ]
   end
 
-  let(:mock_test_irs_demographic_emails) do
-    ['mock_feds@example.com', 'mock_contractors@example.com']
+  let(:internal_emails) { ['mock_internal@example.com'] }
+  let(:partner_emails) { ['mock_feds@example.com', 'mock_contractors@example.com'] }
+  let(:issuers) { ['issuer1'] }
+
+  let(:sp_configs) do
+    [
+      {
+        'issuers' => issuers,
+        'agency_abbreviation' => agency_abbreviation,
+        'partner_emails' => partner_emails,
+        'internal_emails' => internal_emails,
+      },
+    ]
   end
-  let(:mock_test_internal_emails) { ['mock_internal@example.com'] }
-  let(:mock_test_issuers) { ['issuer1'] }
+
+  # Return "real-ish" emailable reports so ReportMailer doesn't explode on missing #title, etc
+  let(:emailable_reports) do
+    [
+      Reporting::EmailableReport.new(
+        title: 'Definitions',
+        table: [['Metric', 'Unit', 'Definition']],
+        filename: 'definitions',
+      ),
+      Reporting::EmailableReport.new(
+        title: 'Overview',
+        table: [['Report Timeframe', 'Report Generated', 'Issuer']],
+        filename: 'overview',
+      ),
+      Reporting::EmailableReport.new(
+        title: "#{agency_abbreviation} Age Metrics",
+        table: mock_identity_verification_age_data,
+        filename: 'age_metrics',
+      ),
+      Reporting::EmailableReport.new(
+        title: "#{agency_abbreviation} State Metrics",
+        table: mock_identity_verification_state_data,
+        filename: 'state_metrics',
+      ),
+    ]
+  end
+
+  let(:mock_builder) do
+    instance_double(
+      Reporting::IrsVerificationDemographicsReport,
+      age_metrics_table: mock_identity_verification_age_data,
+      state_metrics_table: mock_identity_verification_state_data,
+      as_emailable_reports: emailable_reports,
+    )
+  end
 
   before do
     allow(Identity::Hostdata).to receive(:env).and_return('int')
@@ -61,32 +107,26 @@ RSpec.describe Reports::IrsVerificationDemographicsReport do
     allow(IdentityConfig.store).to receive(:s3_report_bucket_prefix)
       .and_return(s3_report_bucket_prefix)
 
-    Aws.config[:s3] = {
-      stub_responses: {
-        put_object: {},
-      },
-    }
+    Aws.config[:s3] = { stub_responses: { put_object: {} } }
 
-    allow(IdentityConfig.store).to receive(:irs_verification_report_config)
-      .and_return(mock_test_irs_demographic_emails)
-    allow(IdentityConfig.store).to receive(:team_daily_reports_emails)
-      .and_return(mock_test_internal_emails)
+    allow(IdentityConfig.store).to receive(:sp_verification_demographics_report_configs)
+      .and_return(sp_configs)
 
-    allow(report.irs_verification_demographics_report).to receive(:age_metrics_table)
-      .and_return(mock_identity_verification_age_data)
+    allow(report).to receive(:sp_verification_demographics_report).and_return(mock_builder)
 
-    allow(report.irs_verification_demographics_report).to receive(:state_metrics_table)
-      .and_return(mock_identity_verification_state_data)
+    allow(ReportMailer).to receive_message_chain(:tables_report, :deliver_now)
   end
 
-  context 'for begining of the quarter sends out the report to the internal and partner' do
-    let(:report_date) { Date.new(2025, 7, 1).prev_day }
-    subject(:report) { described_class.new(report_date, :both) }
-    it 'sends out a report to just to team data and partner' do
+  context 'beginning of the quarter sends to internal + partner when receiver is :both' do
+    let(:report_date) { Date.new(2025, 7, 1).prev_day } # 2025-06-30
+    let(:report_receiver) { :both }
+    subject(:report) { described_class.new(report_date, report_receiver) }
+
+    it 'sends partner in TO and internal in BCC' do
       expect(ReportMailer).to receive(:tables_report).once.with(
-        to: ['mock_feds@example.com', 'mock_contractors@example.com'],
-        bcc: ['mock_internal@example.com'],
-        subject: 'IRS Verification Demographics Metrics Report - 2025-06-30',
+        to: partner_emails,
+        bcc: internal_emails,
+        subject: "#{agency_abbreviation} Verification Demographics Report - 2025-06-30",
         reports: anything,
         message: report.preamble,
         attachment_format: :csv,
@@ -96,14 +136,16 @@ RSpec.describe Reports::IrsVerificationDemographicsReport do
     end
   end
 
-  context 'for any other day sends out the report to the internal' do
-    let(:report_date) { Date.new(2025, 9, 27).prev_day }
-    subject(:report) { described_class.new(report_date, :internal) }
-    it 'sends out a report to just to team data' do
+  context 'any other day sends to internal when receiver is :internal' do
+    let(:report_date) { Date.new(2025, 9, 27).prev_day } # 2025-09-26
+    let(:report_receiver) { :internal }
+    subject(:report) { described_class.new(report_date, report_receiver) }
+
+    it 'sends only to internal emails' do
       expect(ReportMailer).to receive(:tables_report).once.with(
-        to: ['mock_internal@example.com'],
+        to: internal_emails,
         bcc: [],
-        subject: 'IRS Verification Demographics Metrics Report - 2025-09-26',
+        subject: "#{agency_abbreviation} Verification Demographics Report - 2025-09-26",
         reports: anything,
         message: report.preamble,
         attachment_format: :csv,
@@ -113,44 +155,23 @@ RSpec.describe Reports::IrsVerificationDemographicsReport do
     end
   end
 
-  context 'when queued from the first of the month' do
-    let(:report_date) { Date.new(2021, 3, 1).prev_day }
-
-    it 'sends out a report to everybody' do
-      expect(ReportMailer).to receive(:tables_report).once.with(
-        to: ['mock_internal@example.com'],
-        bcc: [],
-        subject: 'IRS Verification Demographics Metrics Report - 2021-02-28',
-        reports: anything,
-        message: report.preamble,
-        attachment_format: :csv,
-      ).and_call_original
-
-      report.perform(report_date)
-    end
-  end
-
-  context 'recipient is both but IRS emails are empty' do
+  context 'recipient is :both but partner emails are empty' do
     let(:report_receiver) { :both }
     let(:report_date) { Date.new(2025, 7, 1).prev_day } # 2025-06-30
     subject(:report) { described_class.new(report_date, report_receiver) }
 
-    before do
-      allow(IdentityConfig.store).to receive(:irs_verification_report_config)
-        .and_return([]) # no external IRS emails
-      allow(IdentityConfig.store).to receive(:team_daily_reports_emails)
-        .and_return(mock_test_internal_emails)
-    end
+    let(:partner_emails) { [] }
 
-    it 'logs a warning and sends the report only to internal emails' do
+    it 'logs a warning and sends only to internal' do
       expect(Rails.logger).to receive(:warn).with(
-        'IRS Verification Demographics Report: recipient is :both but no external email specified',
+        "#{agency_abbreviation} Verification Demographics Report: " \
+        "recipient is :both but no external email specified",
       )
 
       expect(ReportMailer).to receive(:tables_report).once.with(
-        to: ['mock_internal@example.com'],
+        to: internal_emails,
         bcc: [],
-        subject: 'IRS Verification Demographics Metrics Report - 2025-06-30',
+        subject: "#{agency_abbreviation} Verification Demographics Report - 2025-06-30",
         reports: anything,
         message: report.preamble,
         attachment_format: :csv,
@@ -160,21 +181,13 @@ RSpec.describe Reports::IrsVerificationDemographicsReport do
     end
   end
 
-  context 'recipient is internal but internal emails are empty' do
+  context 'recipient is :internal but internal emails are empty' do
     let(:report_receiver) { :internal }
-    let(:report_date) { Date.new(2021, 3, 2).in_time_zone('UTC').end_of_day }
-    subject(:report) { described_class.new(report_date, report_receiver) }
-
-    before do
-      allow(IdentityConfig.store).to receive(:team_daily_reports_emails)
-        .and_return([]) # no internal emails
-      allow(IdentityConfig.store).to receive(:irs_verification_report_config)
-        .and_return(mock_test_irs_demographic_emails)
-    end
+    let(:internal_emails) { [] }
 
     it 'logs a warning and does not send the report' do
       expect(Rails.logger).to receive(:warn).with(
-        'No emails received - IRS Verification Demographics Report NOT SENT',
+        "No emails received - #{agency_abbreviation} Verification Demographics Report NOT SENT",
       )
 
       expect(ReportMailer).not_to receive(:tables_report)
@@ -184,12 +197,19 @@ RSpec.describe Reports::IrsVerificationDemographicsReport do
     end
   end
 
-  it 'does not send out a report with no emails' do
-    allow(IdentityConfig.store).to receive(:irs_verification_report_config).and_return('')
-    allow(IdentityConfig.store).to receive(:team_daily_reports_emails).and_return('')
+  it 'does not send when both internal and partner emails are empty' do
+    allow(IdentityConfig.store).to receive(:sp_verification_demographics_report_configs).and_return(
+      [
+        {
+          'issuers' => issuers,
+          'agency_abbreviation' => agency_abbreviation,
+          'partner_emails' => [],
+          'internal_emails' => [],
+        },
+      ],
+    )
 
-    expect(report).to_not receive(:reports)
-
+    expect(report).not_to receive(:reports)
     expect(ReportMailer).not_to receive(:tables_report)
 
     report.perform(report_date)

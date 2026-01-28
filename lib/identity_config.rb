@@ -519,6 +519,7 @@ module IdentityConfig
     config.add(:sp_proofing_events_by_uuid_report_configs, type: :json)
     config.add(:sp_fraud_metrics_report_configs, type: :json)
     config.add(:sp_verification_report_configs, type: :json)
+    config.add(:sp_verification_demographics_report_configs, type: :json)
     config.add(:sp_registration_funnel_report_configs, type: :json)
     config.add(:state_tracking_enabled, type: :boolean)
     config.add(:team_ada_email, type: :string)
