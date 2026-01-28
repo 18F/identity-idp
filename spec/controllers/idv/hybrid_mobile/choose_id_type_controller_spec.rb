@@ -18,6 +18,7 @@ RSpec.describe Idv::HybridMobile::ChooseIdTypeController do
   let(:document_capture_session_uuid) { document_capture_session&.uuid }
   let(:session_uuid) { document_capture_session.uuid }
   let(:proofing_device_hybrid_profiling) { :disabled }
+  let(:hybrid_mobile_tmx_processed_percent) { 100 }
 
   before do
     stub_request(:get, IdentityConfig.store.dos_passport_composite_healthcheck_endpoint)
@@ -31,6 +32,9 @@ RSpec.describe Idv::HybridMobile::ChooseIdTypeController do
     allow(controller).to receive(:document_capture_session).and_return(document_capture_session)
     allow(IdentityConfig.store).to receive(:proofing_device_hybrid_profiling)
       .and_return(proofing_device_hybrid_profiling)
+    allow(IdentityConfig.store).to receive(:hybrid_mobile_tmx_processed_percent)
+      .and_return(hybrid_mobile_tmx_processed_percent)
+    reload_ab_tests
   end
 
   describe 'before actions' do
@@ -181,6 +185,18 @@ RSpec.describe Idv::HybridMobile::ChooseIdTypeController do
         document_capture_session.reload
         expect(document_capture_session.hybrid_mobile_threatmetrix_session_id).to eq(tmx_session_id)
         expect(document_capture_session.hybrid_mobile_request_ip).to eq(request_ip)
+      end
+
+      context 'when user is not in the hybrid mobile tmx ab test bucket' do
+        let(:hybrid_mobile_tmx_processed_percent) { 0 }
+
+        it 'does not update DocumentCaptureSession with threatmetrix variables' do
+          put :update, params: params
+
+          document_capture_session.reload
+          expect(document_capture_session.hybrid_mobile_threatmetrix_session_id).to be_nil
+          expect(document_capture_session.hybrid_mobile_request_ip).to be_nil
+        end
       end
     end
 
