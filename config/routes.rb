@@ -260,8 +260,6 @@ Rails.application.routes.draw do
     get '/second_mfa_reminder' => 'users/second_mfa_reminder#new'
     post '/second_mfa_reminder' => 'users/second_mfa_reminder#create'
 
-    get '/sms_preview' => 'test/sms_preview#show'
-
     get '/webauthn_platform_recommended' => 'users/webauthn_platform_recommended#new'
     post '/webauthn_platform_recommended' => 'users/webauthn_platform_recommended#create'
 
