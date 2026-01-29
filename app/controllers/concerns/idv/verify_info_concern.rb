@@ -510,14 +510,13 @@ module Idv
     end
 
     def source_check_vendor_aamva?
-      # For IPP: check if AAMVA was done at state_id step
       if ipp_enrollment_in_progress?
-        return IdentityConfig.store.idv_aamva_at_doc_auth_ipp_enabled &&
-               idv_session.ipp_aamva_result.present?
+        return false if IdentityConfig.store.idv_aamva_at_doc_auth_ipp_enabled &&
+                        idv_session.ipp_aamva_result.blank?
+      else
+        # For remote: check if AAMVA was done at doc_auth
+        return false unless IdentityConfig.store.idv_aamva_at_doc_auth_enabled
       end
-
-      # For remote: check if AAMVA was done at doc_auth
-      return false unless IdentityConfig.store.idv_aamva_at_doc_auth_enabled
 
       idv_session.source_check_vendor == 'aamva:state_id' ||
         idv_session.source_check_vendor == 'aamva' ||

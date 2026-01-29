@@ -393,14 +393,16 @@ RSpec.describe Idv::InPerson::StateIdController do
       before do
         subject.idv_session.source_check_vendor = 'aamva'
         subject.idv_session.ipp_aamva_result = { success: true }
+        subject.idv_session.ipp_aamva_pending_state_id_pii = { first_name: 'Test' }
         allow(subject.idv_session).to receive(:invalidate_in_person_pii_from_user!)
         described_class.step_info.undo_step.call(idv_session: subject.idv_session, user:)
       end
 
-      it 'clears source_check_vendor and ipp_aamva_result' do
+      it 'clears source_check_vendor, ipp_aamva_result, and pending_pii' do
         expect(subject.idv_session).to have_received(:invalidate_in_person_pii_from_user!)
         expect(subject.idv_session.source_check_vendor).to be_nil
         expect(subject.idv_session.ipp_aamva_result).to be_nil
+        expect(subject.idv_session.ipp_aamva_pending_state_id_pii).to be_nil
       end
     end
   end
@@ -746,9 +748,20 @@ RSpec.describe Idv::InPerson::StateIdController do
           # PII should NOT be committed to pii_from_user
           pii = subject.user_session['idv/in_person'][:pii_from_user]
           expect(pii[:first_name]).to be_nil
+        end
 
-          # Pending should be cleared
-          expect(subject.idv_session.ipp_aamva_pending_state_id_pii).to be_nil
+        it 'preserves pending PII on failure so form is pre-filled' do
+          subject.idv_session.ipp_aamva_pending_state_id_pii = {
+            first_name: 'Charity',
+            last_name: 'Johnson',
+            same_address_as_id: 'true',
+          }
+
+          get :show
+
+          # Pending PII should be preserved so form shows user's data
+          expect(subject.idv_session.ipp_aamva_pending_state_id_pii).to be_present
+          expect(subject.idv_session.ipp_aamva_pending_state_id_pii[:first_name]).to eq('Charity')
         end
       end
 
@@ -798,6 +811,19 @@ RSpec.describe Idv::InPerson::StateIdController do
           get :show
 
           expect(subject.idv_session.ipp_aamva_document_capture_session_uuid).to be_nil
+        end
+
+        it 'preserves pending PII so form is pre-filled' do
+          subject.idv_session.ipp_aamva_pending_state_id_pii = {
+            first_name: 'Charity',
+            last_name: 'Johnson',
+            same_address_as_id: 'true',
+          }
+
+          get :show
+
+          expect(subject.idv_session.ipp_aamva_pending_state_id_pii).to be_present
+          expect(subject.idv_session.ipp_aamva_pending_state_id_pii[:first_name]).to eq('Charity')
         end
 
         it 'logs missing result event' do

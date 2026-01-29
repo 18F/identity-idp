@@ -480,6 +480,7 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
       before do
         allow(IdentityConfig.store).to receive(:idv_aamva_at_doc_auth_ipp_enabled).and_return(true)
         subject.idv_session.ipp_aamva_result = { success: true }
+        subject.idv_session.source_check_vendor = 'StateIdMock'
       end
 
       it 'lets the proofer know that the state id was already proofed' do

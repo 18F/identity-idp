@@ -49,7 +49,7 @@ module Idv
       if current_state.missing?
         analytics.idv_ipp_aamva_proofing_result_missing
         flash.now[:error] = I18n.t('idv.failure.timeout')
-        delete_aamva_async_state
+        clear_aamva_async_session
         render :show, locals: extra_view_variables
       end
     end
@@ -113,25 +113,32 @@ module Idv
 
       redirect_url = idv_session.ipp_aamva_redirect_url || idv_in_person_ssn_url
 
-      pending_pii = idv_session.ipp_aamva_pending_state_id_pii
-      delete_aamva_async_state
-
       if result[:success]
+        pending_pii = idv_session.ipp_aamva_pending_state_id_pii
+        clear_aamva_async_session
+        clear_aamva_pending_pii
         commit_state_id_data(pending_pii) if pending_pii
         idv_session.ipp_aamva_result = result
         idv_session.source_check_vendor = result[:vendor_name]
         redirect_to redirect_url
       else
-        return if rate_limit_redirect!(:idv_doc_auth, step_name: 'ipp_state_id')
+        clear_aamva_async_session
+        if rate_limit_redirect!(:idv_doc_auth, step_name: 'ipp_state_id')
+          clear_aamva_pending_pii
+          return
+        end
 
         flash.now[:error] = I18n.t('idv.failure.verify.heading')
         render :show, locals: extra_view_variables
       end
     end
 
-    def delete_aamva_async_state
+    def clear_aamva_async_session
       idv_session.ipp_aamva_document_capture_session_uuid = nil
       idv_session.ipp_aamva_redirect_url = nil
+    end
+
+    def clear_aamva_pending_pii
       idv_session.ipp_aamva_pending_state_id_pii = nil
     end
 

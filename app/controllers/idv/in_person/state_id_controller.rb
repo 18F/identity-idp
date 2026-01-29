@@ -44,7 +44,8 @@ module Idv
             idv_session.ipp_aamva_redirect_url = redirect_url
 
             if rate_limit_redirect!(:idv_doc_auth, step_name: 'ipp_state_id')
-              delete_aamva_async_state
+              clear_aamva_async_session
+              clear_aamva_pending_pii
               return
             end
 
@@ -83,6 +84,7 @@ module Idv
             idv_session.invalidate_in_person_pii_from_user!
             idv_session.source_check_vendor = nil
             idv_session.ipp_aamva_result = nil
+            idv_session.ipp_aamva_pending_state_id_pii = nil
           end,
         )
       end
