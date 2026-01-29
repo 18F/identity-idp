@@ -197,6 +197,7 @@ hide_phone_mfa_signup: false
 historical_attempts_api_enabled: false
 hmac_fingerprinter_key:
 hmac_fingerprinter_key_queue: '[]'
+hybrid_mobile_tmx_processed_percent: 0
 identity_pki_disabled: false
 identity_pki_local_dev: false
 identity_verification_outcomes_report_emails: '[]'
@@ -493,6 +494,7 @@ sp_idv_weekly_dropoff_report_configs: '[]'
 sp_issuer_user_counts_report_configs: '[]'
 sp_proofing_events_by_uuid_report_configs: '[]'
 sp_registration_funnel_report_configs: '[]'
+sp_verification_demographics_report_configs: '[]'
 sp_verification_report_configs: '[]'
 state_tracking_enabled: true
 team_ada_email: ''

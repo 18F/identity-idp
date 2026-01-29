@@ -211,4 +211,14 @@ module AbTests
   ) do |service_provider:, session:, user:, user_session:, **|
     user&.uuid
   end.freeze
+
+  HYBRID_MOBILE_TMX_PROCESSED = AbTest.new(
+    experiment_name: 'Hybrid Mobile ThreatMetrix',
+    should_log: /^idv/i,
+    buckets: {
+      hybrid_mobile_tmx_processed: IdentityConfig.store.hybrid_mobile_tmx_processed_percent,
+    },
+  ) do |service_provider:, session:, user:, user_session:, **|
+    document_capture_session_uuid_discriminator(service_provider:, session:, user:, user_session:)
+  end.freeze
 end
