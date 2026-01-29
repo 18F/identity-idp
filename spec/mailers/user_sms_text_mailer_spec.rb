@@ -1,8 +1,8 @@
 require 'rails_helper'
 
-RSpec.describe SmsTextMailer, type: :mailer do
+RSpec.describe UserSmsTextMailer, type: :mailer do
   context '#daily_voice_limit_reached' do
-    let(:mail) { SmsTextMailer.daily_voice_limit_reached }
+    let(:mail) { UserSmsTextMailer.daily_voice_limit_reached }
 
     it 'renders the text message' do
       expect(mail.body.raw_source).to include(
@@ -12,7 +12,7 @@ RSpec.describe SmsTextMailer, type: :mailer do
   end
 
   context '#account_deleted_notice' do
-    let(:mail) { SmsTextMailer.account_deleted_notice }
+    let(:mail) { UserSmsTextMailer.account_deleted_notice }
 
     it 'renders the text message' do
       expect(mail.subject).to eq('Account deleted notice')
