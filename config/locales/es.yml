@@ -1468,7 +1468,7 @@ instructions.go_back_to_mobile_app: Para continuar, vuelva a la aplicación %{fr
 instructions.mfa.authenticator.confirm_code_html: Ingrese el código de su aplicación de autenticación. Si tiene varias cuentas configuradas en su aplicación, ingrese el código correspondiente a %{app_name_html}.
 instructions.mfa.authenticator.manual_entry: O ingrese este código manualmente en su aplicación de autenticación
 instructions.mfa.do_not_share_code_link_text: Aprenda cómo identificar el fraude y reportarlo.
-instructions.mfa.do_not_share_code_message_html: '<strong>No comparta este código.</strong> %{app_name} nunca le llamará, enviará mensajes de texto o correos electrónicos pidiéndolo. %{link_html}'
+instructions.mfa.do_not_share_code_message_html: '<strong>No comparta este código.</strong> Si alguien lo llama, envía un mensaje de texto o un correo electrónico pidiendo este código, podría ser una estafa. %{link_html}'
 instructions.mfa.piv_cac.account_not_found_html: '<p>%{sign_in} con su dirección de correo electrónico y su contraseña. Luego, agregue su tarjeta PIV o CAC a su cuenta.</p><p>¿No tiene una cuenta de %{app_name}? %{create_account}</p>'
 instructions.mfa.piv_cac.add_from_sign_in_html: '<strong> Instrucciones:</strong> Inserte su tarjeta PIV o CAC en <strong> “AGREGAR TARJETA PIV O CAC” </strong>. Tendrá que <strong> elegir un certificado </strong> (es probable que el correcto tenga su nombre) e <strong> ingresar su PIN </strong> (su PIN se creó cuando configuró su tarjeta PIV o CAC).'
 instructions.mfa.piv_cac.already_associated_html: Elija un certificado de una tarjeta PIV o CAC diferente y contacte con el administrador para confirmar que su tarjeta PIV o CAC está al día. Si cree que se trata de un error, %{try_again_html}.
