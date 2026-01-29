@@ -1,7 +1,7 @@
 require 'rails_helper'
-require_relative './sms_text_mailer_preview'
+require_relative './user_sms_text_mailer_preview'
 
-RSpec.describe SmsTextMailerPreview do
+RSpec.describe UserSmsTextMailerPreview do
   let(:mailer_class) { described_class.class_name.gsub(/Preview$/, '').constantize }
 
   it 'has a preview method for each text' do

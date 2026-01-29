@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class SmsTextMailer < ActionMailer::Base
+class UserSmsTextMailer < ActionMailer::Base
   def account_deleted_notice
     mail_to
   end
