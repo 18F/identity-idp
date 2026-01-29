@@ -123,16 +123,15 @@ RSpec.describe Users::TotpSetupController, devise: true do
 
       context 'when user presents correct code' do
         let(:success) { true }
+        let(:user) { create(:user, :fully_registered) }
+        let(:secret) { ROTP::Base32.random_base32 }
         before do
-          user = create(:user, :fully_registered)
-          secret = ROTP::Base32.random_base32
           stub_sign_in(user)
           subject.user_session[:new_totp_secret] = secret
-
-          patch :confirm, params: { name: name, code: generate_totp_code(secret) }
         end
 
         it 'redirects to account_path with a success message' do
+          patch :confirm, params: { name: name, code: generate_totp_code(secret) }
           expect(response).to redirect_to(account_path)
           expect(subject.user_session[:new_totp_secret]).to be_nil
 
@@ -152,7 +151,7 @@ RSpec.describe Users::TotpSetupController, devise: true do
           expect(PushNotification::HttpPush).to receive(:deliver)
             .with(PushNotification::RecoveryInformationChangedEvent.new(user: user))
 
-          response
+          patch :confirm, params: { name: name, code: generate_totp_code(secret) }
         end
       end
 

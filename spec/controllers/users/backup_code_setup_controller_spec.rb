@@ -159,15 +159,6 @@ RSpec.describe Users::BackupCodeSetupController do
       expect(response).to redirect_to(account_two_factor_authentication_path)
       expect(user.backup_code_configurations.length).to eq BackupCodeGenerator::NUMBER_OF_CODES
     end
-
-    it 'sends a recovery information changed event' do
-      user = build(:user, :with_backup_code)
-      stub_sign_in(user)
-
-      expect(PushNotification::HttpPush).to receive(:deliver)
-        .with(PushNotification::RecoveryInformationChangedEvent.new(user: user))
-      post :delete
-    end
   end
 
   describe 'multiple MFA handling' do

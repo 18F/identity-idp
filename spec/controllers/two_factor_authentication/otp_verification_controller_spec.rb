@@ -215,13 +215,6 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
         expect(controller.user_session[TwoFactorAuthenticatable::NEED_AUTHENTICATION]).to eq true
       end
 
-      it 'sends a recovery information changed event' do
-        expect(PushNotification::HttpPush).to receive(:deliver)
-          .with(PushNotification::RecoveryInformationChangedEvent.new(user: user))
-
-        response
-      end
-
       it 'records unsuccessful 2fa event' do
         expect(controller).to receive(:create_user_event).with(:sign_in_unsuccessful_2fa)
 
@@ -456,6 +449,21 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
           'User marked authenticated',
           authentication_type: :valid_2fa,
         )
+      end
+
+      context 'with confirmation context' do
+        before do
+          controller.user_session[:context] = 'confirmation'
+        end
+        it 'sends a recovery information changed event' do
+          expect(PushNotification::HttpPush).to receive(:deliver)
+            .with(PushNotification::RecoveryInformationChangedEvent.new(user: user))
+
+          post :create, params: {
+            code: subject.current_user.reload.direct_otp,
+            otp_delivery_preference: 'sms',
+          }
+        end
       end
 
       context 'with reauthentication context' do
