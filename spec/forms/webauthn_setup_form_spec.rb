@@ -78,13 +78,6 @@ RSpec.describe WebauthnSetupForm do
             .to eq(['usb'])
         end
 
-        it 'sends a recovery information changed event' do
-          expect(PushNotification::HttpPush).to receive(:deliver)
-            .with(PushNotification::RecoveryInformationChangedEvent.new(user: user))
-
-          result
-        end
-
         it 'does not contains uuid' do
           expect(result.extra[:aaguid]).to eq nil
         end

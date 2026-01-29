@@ -451,6 +451,21 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
         )
       end
 
+      context 'with confirmation context' do
+        before do
+          controller.user_session[:context] = 'confirmation'
+        end
+        it 'sends a recovery information changed event' do
+          expect(PushNotification::HttpPush).to receive(:deliver)
+            .with(PushNotification::RecoveryInformationChangedEvent.new(user: user))
+
+          post :create, params: {
+            code: subject.current_user.reload.direct_otp,
+            otp_delivery_preference: 'sms',
+          }
+        end
+      end
+
       context 'with reauthentication context' do
         before do
           controller.user_session[:context] = 'reauthentication'

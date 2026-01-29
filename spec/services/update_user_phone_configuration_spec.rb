@@ -37,17 +37,6 @@ RSpec.describe UpdateUserPhoneConfiguration do
         expect(phone_configuration.delivery_preference).to eq 'voice'
         expect(phone_configuration.phone).to eq '+1 222 333-4444'
       end
-
-      it 'sends a recovery information changed event' do
-        expect(PushNotification::HttpPush).to receive(:deliver)
-          .with(PushNotification::RecoveryInformationChangedEvent.new(user: user))
-        attributes = {
-          otp_delivery_preference: 'voice',
-          phone: '+1 222 333-4444',
-        }
-        updater = UpdateUserPhoneConfiguration.new(user: user, attributes: attributes)
-        updater.call
-      end
     end
 
     context 'when creating a new phone' do
