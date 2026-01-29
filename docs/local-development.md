@@ -188,16 +188,16 @@ To view email templates with placeholder values, visit <http://localhost:3000/ra
 
 #### SMS text previews
 
-SMS texts for QA are live in actionmailer, just like the email template previews. To go directly to the list of texts, visit <http://localhost:3000/sms_preview/>. The link will redirect you to <http://localhost:3000/rails/mailers/sms_preview>. From here, you will see a list of text messages available for preview.
+SMS texts for QA are live in actionmailer, just like the email template previews. To go directly to the list of texts, visit <http://localhost:3000/rails/mailers/user_sms_text_mailer>. From here, you will see a list of text messages available for preview.
 
 ##### Adding SMS texts for preview
 
 To add text messages for SMS preview:
 
-- In `app/mailers/sms_text_mailer.rb`, create a method that describes the purpose of the text. Add the `mail_to` method for each sample text. This is important because this is where the text populates on the `SmsTextPreview` list. If you do not add `mail_to` in the method, the sample text will not be displayed.
-- In `app/views/sms_text_mailer`, create a view file for the text message as a `\*.text.erb` file. Add the text that you want to see in the SMS message.
-- In `spec/mailers/previews/sms_test_mailer_preview.rb`, create a method that calls the method that you created in `app/mailers`. You will need these methods to create tests in the `/spec` file.
-- In `spec/mailers/sms_text_mailer_spec.rb`, add a test for the method that you have added in the preview spec. Test to make sure that the content is rendered as expected, especially for the text that has dynamic values.
+- In `app/mailers/user_sms_text_mailer.rb`, create a method that describes the purpose of the text. Add the `mail_to` method for each sample text. This is important because this is where the text populates on the `SmsTextPreview` list. If you do not add `mail_to` in the method, the sample text will not be displayed.
+- In the `app/views/user_sms_text_mailer` folder, create a view file for the text message as a `\*.text.erb` file. Add the text that you want to see in the SMS message.
+- In `spec/mailers/previews/user_sms_test_mailer_preview.rb`, create a method that calls the method that you created in `app/mailers`. You will need these methods to create tests in the `/spec` file.
+- In `spec/mailers/user_sms_text_mailer_spec.rb`, add a test for the method that you have added in the preview spec. Test to make sure that the content is rendered as expected, especially for the text that has dynamic values.
 
 ### Translations
 
