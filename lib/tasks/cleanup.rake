@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 namespace :data do
   desc 'Remove deprecated redis set idv:socure:users'
   task remove_socure_users: :environment do
