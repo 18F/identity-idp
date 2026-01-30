@@ -1,4 +1,4 @@
-<% self.title = 'Verify your identity in person' %>
+<% self.title = t('in_person_proofing.headings.prepare') %>
 <% content_for(:pre_flash_content) do %>
   <%= render StepIndicatorComponent.new(
         steps: Idv::StepIndicatorConcern::STEP_INDICATOR_STEPS_IPP,
