@@ -188,7 +188,7 @@ To view email templates with placeholder values, visit <http://localhost:3000/ra
 
 #### SMS text previews
 
-SMS texts for QA are live in actionmailer, just like the email template previews. To go directly to the list of texts, visit <http://localhost:3000/rails/mailers/user_sms_text_mailer>. From here, you will see a list of text messages available for preview.
+SMS texts for QA are live in actionmailer, just like the email template previews. To go directly to the list of texts, visit <http://localhost:3000/rails/mailers/user_sms_text_mailer>. From here, you will see a list of text messages available for preview. All text messages are available in all languages that we support (French, Spanish, and Mandarin Chinese.)
 
 ##### Adding SMS texts for preview
 
