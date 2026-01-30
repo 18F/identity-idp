@@ -1,10 +1,11 @@
 namespace :data do
   desc 'Remove deprecated redis set idv:socure:users'
   task remove_socure_users: :environment do
-    total_socure_users = REDIS_POOL.with { |r| r.scard('idv:socure:users') }
-    puts "Removing idv:socure:users set with #{total_socure_users} users"
-    REDIS_POOL.with { |r| puts r.del('idv:socure:users') }
-    exists = REDIS_POOL.with { |r| r.exists?('idv:socure:users') }
-    puts "idv:socure:users exists after deletion? #{exists}"
+    set_name = 'idv:socure:users'
+    total_socure_users = REDIS_POOL.with { |r| r.scard(set_name) }
+    puts "Removing #{set_name} set with #{total_socure_users} users"
+    REDIS_POOL.with { |r| puts r.del(set_name) }
+    exists = REDIS_POOL.with { |r| r.exists?(set_name) }
+    puts "#{set_name} exists after deletion? #{exists}"
   end
 end
