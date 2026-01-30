@@ -343,6 +343,7 @@ min_password_score: 3
 minimum_wait_before_another_usps_letter_in_hours: 24
 mx_timeout: 3
 new_device_alert_delay_in_minutes: 5
+new_device_alert_window_start_in_minutes: 15
 newrelic_license_key: ''
 one_account_profile_creation_check_enabled: true
 one_account_user_verification_enabled_percentage: 0
@@ -623,6 +624,7 @@ production:
   lexisnexis_threatmetrix_mock_enabled: false
   logins_per_ip_period: 20
   logins_per_ip_track_only_mode: true
+  new_device_alert_window_start_in_minutes: null
   openid_connect_content_security_form_action_enabled: true
   openid_connect_redirect: server_side
   participate_in_dap: true
