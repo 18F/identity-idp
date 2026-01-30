@@ -5983,6 +5983,7 @@ module AnalyticsEvents
   #   maintenance.
   # @param [Boolean] supported_jurisdiction Whether the state ID jurisdiction is supported by AAMVA.
   # @param [Boolean] timed_out Whether the proofing request timed out.
+  # @param [Boolean] aamva_checked Whether the aamva API request evaluated a state ID.
   # @param [Integer, nil] birth_year The birth year listed on the ID.
   # @param [String, nil] state The state on the ID.
   # @param [String, nil] state_id_jurisdiction The state that issued the ID.
@@ -6000,6 +6001,7 @@ module AnalyticsEvents
     jurisdiction_in_maintenance_window:,
     supported_jurisdiction:,
     timed_out:,
+    aamva_checked:,
     birth_year: nil,
     state: nil,
     state_id_jurisdiction: nil,
@@ -6020,6 +6022,7 @@ module AnalyticsEvents
       jurisdiction_in_maintenance_window:,
       supported_jurisdiction:,
       timed_out:,
+      aamva_checked:,
       birth_year:,
       state:,
       state_id_jurisdiction:,
