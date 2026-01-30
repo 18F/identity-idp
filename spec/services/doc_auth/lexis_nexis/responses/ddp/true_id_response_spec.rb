@@ -78,9 +78,9 @@ RSpec.describe DocAuth::LexisNexis::Responses::Ddp::TrueIdResponse do
 
   let(:expected_pii) do
     Pii::StateId.new(
-      first_name: 'DUNGEON CRAWLER',
-      last_name: 'CARL',
-      middle_name: 'CRAWLER',
+      first_name: 'FIRST',
+      last_name: 'LAST',
+      middle_name: 'MIDDLE',
       name_suffix: nil,
       address1: '123 MAIN ST',
       address2: nil,

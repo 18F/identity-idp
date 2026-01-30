@@ -71,7 +71,7 @@ module DocAuth
           end
 
           def document_type_received
-            DocumentClassifications::CLASSIFICATION_TO_DOCUMENT_TYPE[doc_class]
+            DocumentClassifications::CLASSIFICATION_TO_DOCUMENT_TYPE[document_type_received_slug]
           end
 
           def parsed_response_body
@@ -102,30 +102,22 @@ module DocAuth
             @reference ||= parsed_response_body.dig(:Status, :Reference)
           end
 
-          def doc_class
-            id_auth_field_data&.dig('Fields_DocumentClassName')
-          end
-
           def passport_pii?
             @passport_pii ||=
-              Idp::Constants::DocumentTypes::PASSPORT_TYPES.include?(doc_class)
-          end
-
-          def issuing_country_code
-            id_auth_field_data&.dig('Fields_CountryCode')
+              Idp::Constants::DocumentTypes::PASSPORT_TYPES.include?(document_type_received_slug)
           end
 
           def classification_info
             # Acuant response has both sides info, here simulate that
             classification_hash = {
               Front: {
-                ClassName: doc_class,
+                ClassName: document_type_received_slug,
                 CountryCode: issuing_country_code,
               },
             }
             if !passport_pii?
               classification_hash[:Back] = {
-                ClassName: doc_class,
+                ClassName: document_type_received_slug,
                 CountryCode: issuing_country_code,
               }
             end
@@ -158,10 +150,6 @@ module DocAuth
 
           def true_id_product
             products&.dig(:TrueID)
-          end
-
-          def id_auth_field_data
-            true_id_product&.dig(:IDAUTH_FIELD_DATA)
           end
         end
       end
