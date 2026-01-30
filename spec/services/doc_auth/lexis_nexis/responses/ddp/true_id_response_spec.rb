@@ -3,6 +3,9 @@ require 'rails_helper'
 RSpec.describe DocAuth::LexisNexis::Responses::Ddp::TrueIdResponse do
   let(:success_response_body) { LexisNexisFixtures.ddp_true_id_state_id_response_success }
   let(:failure_response_body) { LexisNexisFixtures.ddp_true_id_response_fail }
+  let(:passport_failure_response_body) do
+    LexisNexisFixtures.ddp_true_id_response_fail_passport
+  end
   let(:unsupported_doc_type_response_body) do
     LexisNexisFixtures.ddp_true_id_response_fail_unsupported_doc_type
   end
@@ -11,6 +14,13 @@ RSpec.describe DocAuth::LexisNexis::Responses::Ddp::TrueIdResponse do
   end
   let(:failure_response) do
     instance_double(Faraday::Response, status: 200, body: failure_response_body)
+  end
+  let(:passport_failure_response) do
+    instance_double(
+      Faraday::Response,
+      status: 200,
+      body: passport_failure_response_body,
+    )
   end
   let(:unsupported_doc_type_response) do
     instance_double(
@@ -66,6 +76,56 @@ RSpec.describe DocAuth::LexisNexis::Responses::Ddp::TrueIdResponse do
     )
   end
 
+  let(:expected_pii) do
+    Pii::StateId.new(
+      first_name: 'DUNGEON CRAWLER',
+      last_name: 'CARL',
+      middle_name: 'CRAWLER',
+      name_suffix: nil,
+      address1: '123 MAIN ST',
+      address2: nil,
+      city: 'SEATTLE',
+      zipcode: '12345',
+      dob: '1999-01-01',
+      sex: 'male',
+      height: 105,
+      weight: nil,
+      eye_color: nil,
+      state: 'WA',
+      state_id_expiration: '2030-01-01',
+      state_id_issued: '2022-01-01',
+      state_id_jurisdiction: 'WA',
+      state_id_number: 'WA0123456789',
+      document_type_received: 'drivers_license',
+      issuing_country_code: 'USA',
+    )
+  end
+
+  let(:expected_pii_for_fail) do
+    Pii::StateId.new(
+      first_name: 'HAPPY',
+      last_name: 'TRAVELER',
+      middle_name: nil,
+      name_suffix: nil,
+      address1: '1300 W BENSON BLVD STE 900',
+      address2: nil,
+      city: 'ANCHORAGE',
+      state: 'AK',
+      zipcode: '99503',
+      dob: '1978-12-13',
+      sex: 'male',
+      height: nil,
+      weight: nil,
+      eye_color: nil,
+      state_id_expiration: '2021-04-28',
+      state_id_issued: nil,
+      state_id_jurisdiction: 'USA',
+      state_id_number: nil,
+      document_type_received: 'identification_card',
+      issuing_country_code: 'USA',
+    )
+  end
+
   before do
     allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_org_id).and_return('org_id_str')
     allow(IdentityConfig.store).to receive(:lexisnexis_trueid_ddp_noliveness_policy)
@@ -78,6 +138,8 @@ RSpec.describe DocAuth::LexisNexis::Responses::Ddp::TrueIdResponse do
     it 'is a successful result' do
       expect(response.successful_result?).to eq(true)
       expect(response.success?).to eq(true)
+      expect(response.pii_from_doc).to be_a(Pii::StateId)
+      expect(response.pii_from_doc.to_h).to eq(expected_pii.to_h)
     end
   end
 
@@ -87,6 +149,36 @@ RSpec.describe DocAuth::LexisNexis::Responses::Ddp::TrueIdResponse do
     it 'is not a successful result' do
       expect(response.successful_result?).to eq(false)
       expect(response.success?).to eq(false)
+      expect(response.pii_from_doc).to be_a(Pii::StateId)
+      expect(response.pii_from_doc.to_h).to eq(expected_pii_for_fail.to_h)
+    end
+
+    context 'passport failure is not a successful result' do
+      let(:true_id_response) { passport_failure_response }
+      let(:expected_passport_pii) do
+        Pii::Passport.new(
+          first_name: 'HAPPY',
+          last_name: 'TRAVELER',
+          middle_name: nil,
+          dob: '1967-07-04',
+          sex: 'female',
+          passport_expiration: '2026-03-27',
+          passport_issued: nil,
+          document_type_received: 'passport',
+          issuing_country_code: 'USA',
+          document_number: '340400859',
+          birth_place: nil,
+          nationality_code: 'USA',
+          mrz: 'FAKEMRZDATA1234567890',
+        )
+      end
+
+      it 'is not a successful result' do
+        expect(response.successful_result?).to eq(false)
+        expect(response.success?).to eq(false)
+        expect(response.pii_from_doc).to be_a(Pii::Passport)
+        expect(response.pii_from_doc.to_h).to eq(expected_passport_pii.to_h)
+      end
     end
 
     context 'when the document type is unsupported' do

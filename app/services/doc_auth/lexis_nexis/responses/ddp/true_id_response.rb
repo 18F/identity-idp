@@ -6,14 +6,8 @@ module DocAuth
       module Ddp
         class TrueIdResponse < DocAuth::Response
           include ImageMetricsReader
-          include DocPiiReader
+          include DocAuth::LexisNexis::Ddp::DocPiiReader
           include DocAuth::ClassificationConcern
-
-          DDP_DOCUMENT_TYPE_TO_DOC_AUTH_DOCUMENT_CLASSIFICATION = {
-            IdentificationCard: DocAuth::DocumentClassifications::IDENTIFICATION_CARD,
-            DriversLicense: DocAuth::DocumentClassifications::DRIVERS_LICENSE,
-            Passport: DocAuth::DocumentClassifications::PASSPORT,
-          }.freeze
 
           attr_reader :config, :http_response, :passport_requested
 
@@ -25,7 +19,7 @@ module DocAuth
             @request_context = request_context
             @request = request
             @liveness_checking_enabled = liveness_checking_enabled
-            @pii_from_doc = nil # To be done in LG-17904
+            @pii_from_doc = read_pii
             super(
               success: successful_result?,
               errors: error_messages,
@@ -88,7 +82,7 @@ module DocAuth
             parsed_response_body.dig(
               :integration_hub_results,
               "#{IdentityConfig.store.lexisnexis_threatmetrix_org_id}:#{policy}",
-              'Authentication - With PM', 'tps_vendor_raw_response'
+              'Authentication', 'tps_vendor_raw_response'
             )
           end
 
@@ -108,38 +102,66 @@ module DocAuth
             @reference ||= parsed_response_body.dig(:Status, :Reference)
           end
 
-          def doc_class_name
-            authentication_results&.dig('trueid.authentication_result.doc_class')
+          def doc_class
+            id_auth_field_data&.dig('Fields_DocumentClassName')
           end
 
           def passport_pii?
             @passport_pii ||=
-              Idp::Constants::DocumentTypes::PASSPORT_TYPES.include?(doc_class_name)
+              Idp::Constants::DocumentTypes::PASSPORT_TYPES.include?(doc_class)
+          end
+
+          def issuing_country_code
+            id_auth_field_data&.dig('Fields_CountryCode')
           end
 
           def classification_info
             # Acuant response has both sides info, here simulate that
-            issuing_country = authentication_results&.dig(
-              'trueid.authentication_result.fields.id_auth_field_data.country_code',
-            )
             classification_hash = {
               Front: {
                 ClassName: doc_class,
-                CountryCode: issuing_country,
+                CountryCode: issuing_country_code,
               },
             }
             if !passport_pii?
               classification_hash[:Back] = {
                 ClassName: doc_class,
-                CountryCode: issuing_country,
+                CountryCode: issuing_country_code,
               }
             end
             classification_hash
           end
 
-          def doc_class
-            DDP_DOCUMENT_TYPE_TO_DOC_AUTH_DOCUMENT_CLASSIFICATION[doc_class_name.to_sym] ||
-              'UnsupportedDocClass'
+          def products
+            @products ||=
+              authentication_results.dig(:Products)&.each_with_object({}) do |product, product_list|
+                # puts "Processing product: #{product.inspect}"
+                extract_details(product)
+                product_list[product[:ProductType]] = product
+              end&.with_indifferent_access
+          end
+
+          def extract_details(product)
+            return unless product[:ParameterDetails]
+
+            product[:ParameterDetails].each do |detail|
+              group = detail[:Group]
+              detail_name = detail[:Name]
+              is_region = detail_name.end_with?('Regions', 'Regions_Reference')
+              value = is_region ? detail[:Values].map { |v| v[:Value] } :
+                        detail.dig(:Values, 0, :Value)
+              product[group] ||= {}
+
+              product[group][detail_name] = value
+            end
+          end
+
+          def true_id_product
+            products&.dig(:TrueID)
+          end
+
+          def id_auth_field_data
+            true_id_product&.dig(:IDAUTH_FIELD_DATA)
           end
         end
       end
