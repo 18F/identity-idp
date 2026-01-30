@@ -125,32 +125,17 @@ RSpec.describe IppAamvaProofingJob, type: :job do
     end
 
     context 'when AAMVA verification times out' do
-      let(:timeout_exception) { Proofing::TimeoutError.new('AAMVA request timed out') }
       let(:aamva_result) do
         Proofing::StateIdResult.new(
           success: false,
           vendor_name: 'state_id:aamva',
           transaction_id: 'abc123',
           errors: { timeout: true },
-          exception: timeout_exception,
+          exception: Proofing::TimeoutError.new('AAMVA request timed out'),
         )
-      end
-
-      it 'logs timeout analytics event and notifies NewRelic' do
-        allow(Analytics).to receive(:new).and_return(analytics_spy)
-        expect(analytics_spy).to receive(:idv_ipp_aamva_timeout).with(
-          exception_class: 'Proofing::TimeoutError',
-          step: 'ipp_aamva_proofing_job',
-          trace_id: trace_id,
-        )
-        expect(NewRelic::Agent).to receive(:notice_error).with(timeout_exception)
-
-        perform
       end
 
       it 'stores the failed result' do
-        allow(NewRelic::Agent).to receive(:notice_error)
-
         perform
 
         proofing_result = document_capture_session.load_proofing_result
@@ -162,35 +147,17 @@ RSpec.describe IppAamvaProofingJob, type: :job do
     end
 
     context 'when AAMVA verification has MVA exception' do
-      let(:mva_exception) do
-        Proofing::Aamva::VerificationError.new('ExceptionId: 0001 - MVA service unavailable')
-      end
       let(:aamva_result) do
         Proofing::StateIdResult.new(
           success: false,
           vendor_name: 'state_id:aamva',
           transaction_id: 'abc123',
           errors: { exception: true },
-          exception: mva_exception,
+          exception: Proofing::Aamva::VerificationError.new('MVA service unavailable'),
         )
-      end
-
-      it 'logs exception analytics event and notifies NewRelic' do
-        allow(Analytics).to receive(:new).and_return(analytics_spy)
-        expect(analytics_spy).to receive(:idv_ipp_aamva_exception).with(
-          exception_class: 'Proofing::Aamva::VerificationError',
-          exception_message: 'ExceptionId: 0001 - MVA service unavailable',
-          step: 'ipp_aamva_proofing_job',
-          trace_id: trace_id,
-        )
-        expect(NewRelic::Agent).to receive(:notice_error).with(mva_exception)
-
-        perform
       end
 
       it 'stores the failed result' do
-        allow(NewRelic::Agent).to receive(:notice_error)
-
         perform
 
         proofing_result = document_capture_session.load_proofing_result

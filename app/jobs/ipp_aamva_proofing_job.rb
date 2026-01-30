@@ -39,8 +39,6 @@ class IppAamvaProofingJob < ApplicationJob
       timer:,
     )
 
-    log_aamva_analytics(aamva_result, trace_id)
-
     result_hash = build_result_hash(aamva_result)
 
     document_capture_session = DocumentCaptureSession.new(result_id: result_id)
@@ -83,31 +81,6 @@ class IppAamvaProofingJob < ApplicationJob
       aamva_status: doc_auth_response.success? ? :passed : :failed,
       checked_at: Time.zone.now.iso8601,
     }
-  end
-
-  def log_aamva_analytics(aamva_result, trace_id)
-    return unless aamva_result.exception.present?
-
-    analytics_hash = {
-      trace_id: trace_id,
-    }
-
-    if aamva_result.timed_out?
-      NewRelic::Agent.notice_error(aamva_result.exception)
-      analytics.idv_ipp_aamva_timeout(
-        exception_class: aamva_result.exception.class.to_s,
-        step: 'ipp_aamva_proofing_job',
-        **analytics_hash,
-      )
-    elsif aamva_result.mva_exception?
-      NewRelic::Agent.notice_error(aamva_result.exception)
-      analytics.idv_ipp_aamva_exception(
-        exception_class: aamva_result.exception.class.to_s,
-        exception_message: aamva_result.exception.message,
-        step: 'ipp_aamva_proofing_job',
-        **analytics_hash,
-      )
-    end
   end
 
   def analytics

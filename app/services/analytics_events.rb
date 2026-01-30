@@ -4339,28 +4339,6 @@ module AnalyticsEvents
     )
   end
 
-  # @param [String] exception_class Exception class name
-  # @param [String] exception_message Exception message
-  # @param [String] step Current step in the IPP flow
-  # @param [String, nil] trace_id AWS X-Ray trace ID for request tracing
-  # AAMVA verification exception for IPP user
-  def idv_ipp_aamva_exception(
-    exception_class:,
-    exception_message:,
-    step:,
-    trace_id: nil,
-    **extra
-  )
-    track_event(
-      :idv_ipp_aamva_exception,
-      exception_class:,
-      exception_message:,
-      step:,
-      trace_id:,
-      **extra,
-    )
-  end
-
   # IPP AAMVA proofing result is missing from Redis (expired or not found)
   # @param [Hash] extra Additional event data
   def idv_ipp_aamva_proofing_result_missing(**extra)
@@ -4376,25 +4354,6 @@ module AnalyticsEvents
     track_event(
       :idv_ipp_aamva_rate_limited,
       step:,
-      **extra,
-    )
-  end
-
-  # @param [String] exception_class Exception class name
-  # @param [String] step Current step in the IPP flow
-  # @param [String, nil] trace_id AWS X-Ray trace ID for request tracing
-  # AAMVA verification timed out for IPP user
-  def idv_ipp_aamva_timeout(
-    exception_class:,
-    step:,
-    trace_id: nil,
-    **extra
-  )
-    track_event(
-      :idv_ipp_aamva_timeout,
-      exception_class:,
-      step:,
-      trace_id:,
       **extra,
     )
   end
