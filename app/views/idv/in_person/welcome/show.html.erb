@@ -1,0 +1,65 @@
+<% self.title = 'Verify your identity in person' %>
+<% content_for(:pre_flash_content) do %>
+  <%= render StepIndicatorComponent.new(
+        steps: Idv::StepIndicatorConcern::STEP_INDICATOR_STEPS_IPP,
+        current_step: :find_a_post_office,
+        locale_scope: 'idv',
+        class: 'margin-x-neg-2 margin-top-neg-4 tablet:margin-x-neg-6 tablet:margin-top-neg-4',
+      ) %>
+<% end %>
+
+<%= render PageHeadingComponent.new.with_content(t('in_person_proofing.headings.prepare')) %>
+
+<p><%= t('in_person_proofing.body.prepare.verify_step_about') %></p>
+<%= render ProcessListComponent.new(heading_level: :h3, class: 'margin-y-3') do |c| %>
+  <% @presenter.bullet_points.each do |point| %>
+    <%= c.with_item(heading: point.bullet) do %>
+      <p><%= point.text %></p>
+    <% end %>
+  <% end %>
+<% end %>
+
+<%= simple_form_for(
+        :doc_auth,
+        url: url_for,
+        method: 'put',
+        html: { class: 'margin-top-2 margin-bottom-5 js-consent-continue-form' },
+      ) do |f| %>
+    <div class="margin-top-4">
+      <%= render(
+            SpinnerButtonComponent.new(
+              type: :submit,
+              big: true,
+              wide: true,
+              spin_on_click: false,
+            ).with_content(t('doc_auth.buttons.continue')),
+          ) %>
+    </div>
+  <% end %>
+
+  <p class="margin-top-2">
+    <%= t('in_person_proofing.body.prepare.privacy_disclaimer', app_name: @presenter.app_name) %>
+    <%= t('in_person_proofing.body.prepare.privacy_disclaimer_questions') %>
+    <%= new_tab_link_to(
+      t('in_person_proofing.body.prepare.privacy_disclaimer_link'),
+      policy_redirect_url(
+        policy: :security_and_privacy_practices,
+        flow: :idv,
+        step: :agreement,
+        location: :consent,
+      ),
+    ) %>
+  </p>
+  <%= render TroubleshootingOptionsComponent.new do |c| %>
+    <% c.with_header { t('components.troubleshooting_options.default_heading') } %>
+    <% c.with_option(
+          url: @presenter.verify_your_identity_in_person_url,
+          new_tab: true,
+        ).with_content(t('idv.troubleshooting.options.learn_more_verify_in_person')) %>
+    <% c.with_option(
+          url: @presenter.phone_number_url,
+          new_tab: true,
+        ).with_content(t('idv.troubleshooting.options.learn_more_verify_by_phone_in_person')) %>
+  <% end %>
+
+  <%= render 'idv/shared/back', fallback_path: idv_hybrid_handoff_path %>

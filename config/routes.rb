@@ -464,6 +464,10 @@ Rails.application.routes.draw do
       put '/in_person/address' => 'in_person/address#update'
       get '/in_person/ssn' => 'in_person/ssn#show'
       put '/in_person/ssn' => 'in_person/ssn#update'
+      if FeatureManagement.in_person_out_of_react?
+        get '/in_person/welcome' => 'in_person/welcome#show'
+        put '/in_person/welcome' => 'in_person/welcome#update'
+      end
       get '/in_person/verify_info' => 'in_person/verify_info#show'
       put '/in_person/verify_info' => 'in_person/verify_info#update'
 

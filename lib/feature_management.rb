@@ -61,6 +61,11 @@ class FeatureManagement
     IdentityConfig.store.enable_usps_verification
   end
 
+  def self.in_person_out_of_react?
+    # flag to enable/disable IPP outside of react
+    IdentityConfig.store.in_person_out_of_react
+  end
+
   def self.reveal_gpo_code?
     Rails.env.development? || current_env_allowed_to_see_gpo_code?
   end
