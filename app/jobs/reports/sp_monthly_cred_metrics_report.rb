@@ -86,7 +86,6 @@ module Reports
 
     # def perform(perform_date = Time.zone.yesterday.end_of_day, perform_receiver = :internal, report_config = {})
     def perform(perform_date = Time.zone.yesterday.end_of_day, perform_receiver = :internal)
-
       @report_receiver = perform_receiver.to_sym
       @report_date = perform_date
 
@@ -96,14 +95,12 @@ module Reports
     end
 
     def send_report(report_config)
-
       @issuers = report_config['issuers']
       @partner_strings = report_config['partner_strings']
       @partner_emails = report_config['partner_emails']
       @internal_emails = report_config['internal_emails']
-      
-      @report_name  = "#{@partner_strings.first.downcase}_monthly_cred_metrics"
 
+      @report_name = "#{@partner_strings.first.downcase}_monthly_cred_metrics"
 
       emails = email_addresses
       to_emails = emails[:to].select(&:present?)
@@ -229,7 +226,7 @@ module Reports
     private
 
     def build_issuer_data
-      invoice_data_csv = CSV.parse(invoice_report_data, headers: true) 
+      invoice_data_csv = CSV.parse(invoice_report_data, headers: true)
 
       issuer_invoice_data = invoice_data_csv.select do |r|
         issuers.include?(r['issuer'])
