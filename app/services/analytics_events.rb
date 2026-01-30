@@ -4339,6 +4339,49 @@ module AnalyticsEvents
     )
   end
 
+  # IPP AAMVA proofing result is missing from Redis (expired or not found)
+  # @param [Hash] extra Additional event data
+  def idv_ipp_aamva_proofing_result_missing(**extra)
+    track_event(:idv_ipp_aamva_proofing_result_missing, **extra)
+  end
+
+  # @param [String] step Current step in the IPP flow
+  # AAMVA rate limit hit for IPP user
+  def idv_ipp_aamva_rate_limited(
+    step:,
+    **extra
+  )
+    track_event(
+      :idv_ipp_aamva_rate_limited,
+      step:,
+      **extra,
+    )
+  end
+
+  # @param [Boolean] success Whether the AAMVA verification succeeded
+  # @param [String] vendor_name Name of the AAMVA vendor
+  # @param [String] step Current step in the IPP flow
+  # AAMVA verification completed for IPP user
+  def idv_ipp_aamva_verification_completed(
+    success:,
+    vendor_name:,
+    step:,
+    **extra
+  )
+    track_event(
+      :idv_ipp_aamva_verification_completed,
+      success:,
+      vendor_name:,
+      step:,
+      **extra,
+    )
+  end
+
+  # User visited polling wait page for IPP AAMVA verification
+  def idv_ipp_aamva_verification_polling_wait(**extra)
+    track_event(:idv_ipp_aamva_verification_polling_wait, **extra)
+  end
+
   # @param [String] enrollment_id
   # A fraud user has been deactivated due to not visting the post office before the deadline
   def idv_ipp_deactivated_for_never_visiting_post_office(
