@@ -510,17 +510,22 @@ module Idv
     end
 
     def source_check_vendor_aamva?
-      if ipp_enrollment_in_progress?
-        return false if IdentityConfig.store.idv_aamva_at_doc_auth_ipp_enabled &&
-                        idv_session.ipp_aamva_result.blank?
-      else
-        # For remote: check if AAMVA was done at doc_auth
-        return false unless IdentityConfig.store.idv_aamva_at_doc_auth_enabled
-      end
+      return false if ipp_aamva_check_not_completed? || remote_aamva_check_not_completed?
 
       idv_session.source_check_vendor == 'aamva:state_id' ||
         idv_session.source_check_vendor == 'aamva' ||
         idv_session.source_check_vendor == 'StateIdMock'
+    end
+
+    def ipp_aamva_check_not_completed?
+      IdentityConfig.store.idv_aamva_at_doc_auth_ipp_enabled &&
+        ipp_enrollment_in_progress? &&
+        idv_session.ipp_aamva_result.blank?
+    end
+
+    def remote_aamva_check_not_completed?
+      !ipp_enrollment_in_progress? &&
+        !IdentityConfig.store.idv_aamva_at_doc_auth_enabled
     end
 
     def threatmetrix_check_failed?(result)
