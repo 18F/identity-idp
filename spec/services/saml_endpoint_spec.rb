@@ -9,7 +9,7 @@ RSpec.describe SamlEndpoint do
     it 'should list the suffixes that are configured' do
       result = described_class.suffixes
 
-      expect(result).to eq(%w[2026 2025])
+      expect(result).to eq(%w[2025 2026])
     end
   end
 
