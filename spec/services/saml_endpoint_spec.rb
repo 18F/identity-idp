@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe SamlEndpoint do
-  let(:year) { '2025' }
+  let(:year) { '2026' }
 
   subject { described_class.new(year) }
 
@@ -9,7 +9,7 @@ RSpec.describe SamlEndpoint do
     it 'should list the suffixes that are configured' do
       result = described_class.suffixes
 
-      expect(result).to eq(%w[2024 2025 2026])
+      expect(result).to eq(%w[2026 2025])
     end
   end
 
@@ -77,7 +77,7 @@ RSpec.describe SamlEndpoint do
         subject.secret_key.to_pem,
       ).to eq(
         OpenSSL::PKey::RSA.new(
-          AppArtifacts.store.saml_2025_key,
+          AppArtifacts.store.saml_2026_key,
           'trust-but-verify',
         ).to_pem,
       )
@@ -99,7 +99,7 @@ RSpec.describe SamlEndpoint do
       expect(
         subject.x509_certificate,
       ).to eq(
-        AppArtifacts.store.saml_2025_cert,
+        AppArtifacts.store.saml_2026_cert,
       )
     end
   end
@@ -108,7 +108,7 @@ RSpec.describe SamlEndpoint do
     it 'returns the saml metadata with the suffix added to the urls' do
       result = subject.saml_metadata
 
-      expect(result.configurator.single_service_post_location).to match(%r{api/saml/auth2025\Z})
+      expect(result.configurator.single_service_post_location).to match(%r{api/saml/auth2026\Z})
     end
   end
 end
