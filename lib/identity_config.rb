@@ -354,6 +354,7 @@ module IdentityConfig
     config.add(:minimum_wait_before_another_usps_letter_in_hours, type: :integer)
     config.add(:mx_timeout, type: :integer)
     config.add(:new_device_alert_delay_in_minutes, type: :integer)
+    config.add(:new_device_alert_window_start_in_minutes, type: :integer, allow_nil: true)
     config.add(:newrelic_license_key, type: :string)
     config.add(:one_account_user_verification_enabled_percentage, type: :integer)
     config.add(:one_account_profile_creation_check_enabled, type: :boolean)
