@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Proofing::LexisNexis::Ddp::Proofer do
+RSpec.describe Proofing::LexisNexis::Ddp::Proofers::ThreatMetrixProofer do
   let(:proofing_applicant) do
     {
       first_name: 'Testy',
