@@ -21,7 +21,11 @@ class CreateNewDeviceAlertJob < ApplicationJob
   end
 
   def users_signing_in_with_new_device(now)
-    start_time = now - IdentityConfig.store.new_device_alert_window_start_in_minutes.minutes
+    start_time = if IdentityConfig.store.new_device_alert_window_start_in_minutes.nil?
+                   nil
+                 else
+                   now - IdentityConfig.store.new_device_alert_window_start_in_minutes.minutes
+                 end
     end_time = now - IdentityConfig.store.new_device_alert_delay_in_minutes.minutes
     User.where(sign_in_new_device_at: start_time..end_time)
   end
