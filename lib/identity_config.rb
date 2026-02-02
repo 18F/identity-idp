@@ -213,11 +213,13 @@ module IdentityConfig
     config.add(:historical_attempts_api_enabled, type: :boolean)
     config.add(:hmac_fingerprinter_key, type: :string)
     config.add(:hmac_fingerprinter_key_queue, type: :json)
+    config.add(:hybrid_mobile_tmx_processed_percent, type: :integer)
     config.add(:identity_pki_disabled, type: :boolean)
     config.add(:identity_pki_local_dev, type: :boolean)
     config.add(:identity_verification_outcomes_report_emails, type: :json)
     config.add(:identity_verification_outcomes_report_issuers, type: :json)
     config.add(:idv_aamva_at_doc_auth_enabled, type: :boolean)
+    config.add(:idv_aamva_at_doc_auth_ipp_enabled, type: :boolean)
     config.add(:idv_account_verified_email_campaign_id, type: :string)
     config.add(:idv_acuant_sdk_upgrade_a_b_testing_enabled, type: :boolean)
     config.add(:idv_acuant_sdk_upgrade_a_b_testing_percent, type: :integer)
@@ -406,6 +408,11 @@ module IdentityConfig
     config.add(:proof_ssn_max_attempts, type: :integer)
     config.add(:proofer_mock_fallback, type: :boolean)
     config.add(
+      :proofing_device_hybrid_profiling,
+      type: :symbol,
+      enum: [:disabled, :collect_only, :enabled],
+    )
+    config.add(
       :proofing_device_profiling,
       type: :symbol,
       enum: [:disabled, :collect_only, :enabled],
@@ -514,6 +521,8 @@ module IdentityConfig
     config.add(:sp_proofing_events_by_uuid_report_configs, type: :json)
     config.add(:sp_fraud_metrics_report_configs, type: :json)
     config.add(:sp_verification_report_configs, type: :json)
+    config.add(:sp_verification_demographics_report_configs, type: :json)
+    config.add(:sp_registration_funnel_report_configs, type: :json)
     config.add(:state_tracking_enabled, type: :boolean)
     config.add(:team_ada_email, type: :string)
     config.add(:team_all_login_emails, type: :json)

@@ -14,7 +14,7 @@ module Reporting
   class IrsRegistrationFunnelReport
     include Reporting::CloudwatchQueryQuoting
 
-    attr_reader :issuers, :time_range
+    attr_reader :issuers, :time_range, :agency_abbreviation
 
     module Events
       EMAIL_CONFIRMATION = 'User Registration: Email Confirmation'
@@ -31,6 +31,7 @@ module Reporting
     def initialize(
       issuers:,
       time_range:,
+      agency_abbreviation:,
       verbose: false,
       progress: false,
       slice: 6.hours,
@@ -42,6 +43,7 @@ module Reporting
       @progress = progress
       @slice = slice
       @threads = threads
+      @agency_abbreviation = agency_abbreviation
     end
 
     def verbose?

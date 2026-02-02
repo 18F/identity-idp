@@ -34,9 +34,14 @@ module ThreatMetrixHelper
     )
   end
 
-  def threatmetrix_variables
-    return {} unless FeatureManagement.account_creation_device_profiling_collecting_enabled?
-    session_id = generate_threatmetrix_session_id
+  def threatmetrix_variables(hybrid_flow: false)
+    if hybrid_flow
+      return {} unless FeatureManagement.proofing_device_hybrid_profiling_collecting_enabled?
+      session_id = generate_hybrid_flow_threatmetrix_session_id
+    else
+      return {} unless FeatureManagement.account_creation_device_profiling_collecting_enabled?
+      session_id = generate_threatmetrix_session_id
+    end
 
     {
       threatmetrix_session_id: session_id,
@@ -47,5 +52,9 @@ module ThreatMetrixHelper
 
   def generate_threatmetrix_session_id
     user_session[:sign_up_threatmetrix_session_id] ||= SecureRandom.uuid
+  end
+
+  def generate_hybrid_flow_threatmetrix_session_id
+    session[:hybrid_flow_threatmetrix_session_id] ||= SecureRandom.uuid
   end
 end

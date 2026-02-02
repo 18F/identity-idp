@@ -1,6 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
+  let(:analytics) { FakeAnalytics.new }
   let(:user_uuid) { 'abcd-1234' }
   let(:applicant_pii) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN.merge(uuid: user_uuid) }
   let(:already_proofed) { false }
@@ -82,6 +83,11 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
           )
         end
 
+        it 'does not log a idv_state_id_validation event' do
+          call
+          expect(analytics).to_not have_logged_event(:idv_state_id_validation)
+        end
+
         context 'AAMVA proofer raises an exception' do
           let(:proofer_result) do
             Proofing::StateIdResult.new(
@@ -93,6 +99,11 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
 
           it 'does not track an SP cost for AAMVA' do
             expect { call }.to_not change { sp_cost_count_for_issuer }
+          end
+
+          it 'does not log a idv_state_id_validation event' do
+            call
+            expect(analytics).to_not have_logged_event(:idv_state_id_validation)
           end
         end
 
@@ -113,6 +124,11 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
 
           it 'does not track an SP cost for AAMVA' do
             expect { call }.not_to change { sp_cost_count_for_issuer }
+          end
+
+          it 'does not log a idv_state_id_validation event' do
+            call
+            expect(analytics).to_not have_logged_event(:idv_state_id_validation)
           end
         end
       end
@@ -140,6 +156,11 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
                 .to(1),
               )
           end
+
+          it 'does not log a idv_state_id_validation event' do
+            call
+            expect(analytics).to_not have_logged_event(:idv_state_id_validation)
+          end
         end
 
         context 'but the failure cannot be covered by AAMVA' do
@@ -158,6 +179,11 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
 
           it 'does not record an SP cost for AAMVA' do
             expect { call }.not_to change { sp_cost_count_for_issuer }
+          end
+
+          it 'does not log a idv_state_id_validation event' do
+            call
+            expect(analytics).to_not have_logged_event(:idv_state_id_validation)
           end
 
           it 'returns a skipped result' do
@@ -203,6 +229,11 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
           it 'records an SP cost for AAMVA' do
             expect { call }.to change { sp_cost_count_with_transaction_id }.to(1)
           end
+
+          it 'does not log a idv_state_id_validation event' do
+            call
+            expect(analytics).to_not have_logged_event(:idv_state_id_validation)
+          end
         end
 
         context 'InstantVerify failed' do
@@ -224,6 +255,11 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
             it 'records an SP cost for AAMVA' do
               expect { call }.to change { sp_cost_count_with_transaction_id }.to(1)
             end
+
+            it 'does not log a idv_state_id_validation event' do
+              call
+              expect(analytics).to_not have_logged_event(:idv_state_id_validation)
+            end
           end
 
           context 'but the failure cannot be covered by AAMVA' do
@@ -242,6 +278,11 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
 
             it 'does not record an SP cost for AAMVA' do
               expect { call }.not_to change { sp_cost_count_for_issuer }
+            end
+
+            it 'does not log a idv_state_id_validation event' do
+              call
+              expect(analytics).to_not have_logged_event(:idv_state_id_validation)
             end
 
             it 'returns a skipped result' do
@@ -274,6 +315,11 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
             it 'records an SP cost for AAMVA' do
               expect { call }.to change { sp_cost_count_with_transaction_id }.to(1)
             end
+
+            it 'does not log a idv_state_id_validation event' do
+              call
+              expect(analytics).to_not have_logged_event(:idv_state_id_validation)
+            end
           end
 
           context 'and InstantVerify failed for state id address' do
@@ -295,6 +341,11 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
               it 'does not record an SP cost for AAMVA' do
                 expect { call }.not_to change { sp_cost_count_for_issuer }
               end
+
+              it 'does not log a idv_state_id_validation event' do
+                call
+                expect(analytics).to_not have_logged_event(:idv_state_id_validation)
+              end
             end
 
             context 'and the failure cannot be covered by AAMVA' do
@@ -315,6 +366,11 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
                 expect { call }.not_to change { sp_cost_count_for_issuer }
               end
 
+              it 'does not log a idv_state_id_validation event' do
+                call
+                expect(analytics).to_not have_logged_event(:idv_state_id_validation)
+              end
+
               it 'returns a skipped result' do
                 call.tap do |result|
                   expect(result.success?).to eql(true)
@@ -328,7 +384,6 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
     end
 
     context 'ad hoc proofing' do
-      let(:analytics) { FakeAnalytics.new }
       let(:doc_auth_flow) { true }
 
       subject(:call) do
@@ -450,6 +505,7 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
                   state_id_jurisdiction: applicant_pii[:state_id_jurisdiction],
                   state_id_number: '#' * applicant_pii[:state_id_number].length,
                   user_id: user_uuid,
+                  aamva_checked: true,
                 }
               )
             end
@@ -534,6 +590,7 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
                   state_id_jurisdiction: applicant_pii[:state_id_jurisdiction],
                   state_id_number: '#' * applicant_pii[:state_id_number].length,
                   user_id: user_uuid,
+                  aamva_checked: true,
                 }
               )
             end
@@ -584,6 +641,7 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
                   state_id_jurisdiction: applicant_pii[:state_id_jurisdiction],
                   state_id_number: '#' * applicant_pii[:state_id_number].length,
                   user_id: user_uuid,
+                  aamva_checked: false,
                 }
               )
             end
@@ -647,6 +705,7 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
                   state_id_jurisdiction: applicant_pii[:state_id_jurisdiction],
                   state_id_number: '#' * applicant_pii[:state_id_number].length,
                   user_id: user_uuid,
+                  aamva_checked: true,
                 }
               )
             end
@@ -731,6 +790,7 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
                   state_id_jurisdiction: applicant_pii[:state_id_jurisdiction],
                   state_id_number: '#' * applicant_pii[:state_id_number].length,
                   user_id: user_uuid,
+                  aamva_checked: true,
                 }
               )
             end
@@ -781,6 +841,7 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
                   state_id_jurisdiction: applicant_pii[:state_id_jurisdiction],
                   state_id_number: '#' * applicant_pii[:state_id_number].length,
                   user_id: user_uuid,
+                  aamva_checked: false,
                 }
               )
             end
@@ -835,6 +896,7 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
               state_id_jurisdiction: applicant_pii[:state_id_jurisdiction],
               state_id_number: '#' * applicant_pii[:state_id_number].length,
               user_id: user_uuid,
+              aamva_checked: false,
             }
           )
         end

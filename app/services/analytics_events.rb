@@ -4339,6 +4339,49 @@ module AnalyticsEvents
     )
   end
 
+  # IPP AAMVA proofing result is missing from Redis (expired or not found)
+  # @param [Hash] extra Additional event data
+  def idv_ipp_aamva_proofing_result_missing(**extra)
+    track_event(:idv_ipp_aamva_proofing_result_missing, **extra)
+  end
+
+  # @param [String] step Current step in the IPP flow
+  # AAMVA rate limit hit for IPP user
+  def idv_ipp_aamva_rate_limited(
+    step:,
+    **extra
+  )
+    track_event(
+      :idv_ipp_aamva_rate_limited,
+      step:,
+      **extra,
+    )
+  end
+
+  # @param [Boolean] success Whether the AAMVA verification succeeded
+  # @param [String] vendor_name Name of the AAMVA vendor
+  # @param [String] step Current step in the IPP flow
+  # AAMVA verification completed for IPP user
+  def idv_ipp_aamva_verification_completed(
+    success:,
+    vendor_name:,
+    step:,
+    **extra
+  )
+    track_event(
+      :idv_ipp_aamva_verification_completed,
+      success:,
+      vendor_name:,
+      step:,
+      **extra,
+    )
+  end
+
+  # User visited polling wait page for IPP AAMVA verification
+  def idv_ipp_aamva_verification_polling_wait(**extra)
+    track_event(:idv_ipp_aamva_verification_polling_wait, **extra)
+  end
+
   # @param [String] enrollment_id
   # A fraud user has been deactivated due to not visting the post office before the deadline
   def idv_ipp_deactivated_for_never_visiting_post_office(
@@ -5940,6 +5983,7 @@ module AnalyticsEvents
   #   maintenance.
   # @param [Boolean] supported_jurisdiction Whether the state ID jurisdiction is supported by AAMVA.
   # @param [Boolean] timed_out Whether the proofing request timed out.
+  # @param [Boolean] aamva_checked Whether the aamva API request evaluated a state ID.
   # @param [Integer, nil] birth_year The birth year listed on the ID.
   # @param [String, nil] state The state on the ID.
   # @param [String, nil] state_id_jurisdiction The state that issued the ID.
@@ -5957,6 +6001,7 @@ module AnalyticsEvents
     jurisdiction_in_maintenance_window:,
     supported_jurisdiction:,
     timed_out:,
+    aamva_checked:,
     birth_year: nil,
     state: nil,
     state_id_jurisdiction: nil,
@@ -5977,6 +6022,7 @@ module AnalyticsEvents
       jurisdiction_in_maintenance_window:,
       supported_jurisdiction:,
       timed_out:,
+      aamva_checked:,
       birth_year:,
       state:,
       state_id_jurisdiction:,

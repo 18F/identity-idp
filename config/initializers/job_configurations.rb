@@ -244,6 +244,13 @@ else
       },
       # Send previous week's IrsRegistrationFunnelReport reports to irs
       irs_weekly_registration_funnel_report: {
+        class: 'Reports::IrsOriginalRegistrationFunnelReport',
+        cron: cron_every_monday,
+        args: -> { [Time.zone.yesterday.end_of_day, :both] },
+      },
+
+      # Note: this is for testing as of now.
+      sp_weekly_registration_funnel_report: {
         class: 'Reports::IrsRegistrationFunnelReport',
         cron: cron_every_monday,
         args: -> { [Time.zone.yesterday.end_of_day, :both] },
@@ -330,6 +337,18 @@ else
       # Send irs quarterly metrics report to Team Data - Monthly (For internal review only)
       # And, quarterly on 1st date (For IRS and Internal)
       irs_verification_demographics_report: {
+        class: 'Reports::IrsOriginalVerificationDemographicsReport',
+        cron: cron_monthly,
+        args: -> {
+          JobHelpers::ReportJobConfigurationHelper.build_irs_report_args(
+            Time.zone.yesterday.end_of_day,
+            :quarterly,
+          )
+        },
+      },
+
+      # Note: This is just for testing as of now
+      sp_verification_demographics_report: {
         class: 'Reports::IrsVerificationDemographicsReport',
         cron: cron_monthly,
         args: -> {

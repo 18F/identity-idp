@@ -197,11 +197,13 @@ hide_phone_mfa_signup: false
 historical_attempts_api_enabled: false
 hmac_fingerprinter_key:
 hmac_fingerprinter_key_queue: '[]'
+hybrid_mobile_tmx_processed_percent: 0
 identity_pki_disabled: false
 identity_pki_local_dev: false
 identity_verification_outcomes_report_emails: '[]'
 identity_verification_outcomes_report_issuers: '[]'
 idv_aamva_at_doc_auth_enabled: false
+idv_aamva_at_doc_auth_ipp_enabled: false
 idv_aamva_split_last_name_states: '[]'
 idv_account_verified_email_campaign_id: '20241028'
 idv_acuant_sdk_upgrade_a_b_testing_enabled: false
@@ -387,6 +389,7 @@ proof_address_max_attempts: 5
 proof_ssn_max_attempt_window_in_minutes: 60
 proof_ssn_max_attempts: 10
 proofer_mock_fallback: true
+proofing_device_hybrid_profiling: disabled
 proofing_device_profiling: enabled
 protocols_report_config: '[]'
 push_notifications_enabled: false
@@ -491,6 +494,8 @@ sp_handoff_bounce_max_seconds: 2
 sp_idv_weekly_dropoff_report_configs: '[]'
 sp_issuer_user_counts_report_configs: '[]'
 sp_proofing_events_by_uuid_report_configs: '[]'
+sp_registration_funnel_report_configs: '[]'
+sp_verification_demographics_report_configs: '[]'
 sp_verification_report_configs: '[]'
 state_tracking_enabled: true
 team_ada_email: ''
@@ -585,7 +590,7 @@ development:
   s3_data_warehouse_bucket_prefix: ''
   s3_report_bucket_prefix: ''
   s3_report_public_bucket_prefix: ''
-  saml_endpoint_configs: '[{"suffix":"2024","secret_key_passphrase":"trust-but-verify"},{"suffix":"2025","secret_key_passphrase":"trust-but-verify"}]'
+  saml_endpoint_configs: '[{"suffix":"2024","secret_key_passphrase":"trust-but-verify"},{"suffix":"2025","secret_key_passphrase":"trust-but-verify"},{"suffix":"2026","secret_key_passphrase":"trust-but-verify"}]'
   secret_key_base: development_secret_key_base
   session_encryption_key: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
   sign_in_recaptcha_annotation_enabled: true
@@ -692,7 +697,7 @@ test:
   s3_data_warehouse_bucket_prefix: ''
   s3_report_bucket_prefix: ''
   s3_report_public_bucket_prefix: ''
-  saml_endpoint_configs: '[{"suffix":"2025","secret_key_passphrase":"trust-but-verify"},{"suffix":"2024","secret_key_passphrase":"trust-but-verify","comment":"this extra year is needed to demonstrate how handling multiple live years works in spec/requests/saml_requests_spec.rb"}]'
+  saml_endpoint_configs: '[{"suffix":"2026","secret_key_passphrase":"trust-but-verify"},{"suffix":"2025","secret_key_passphrase":"trust-but-verify"},{"suffix":"2024","secret_key_passphrase":"trust-but-verify","comment":"this and 2025 are needed to demonstrate how handling multiple live years works in spec/requests/saml_requests_spec.rb"}]'
   scrypt_cost: 800$8$1$
   secret_key_base: test_secret_key_base
   session_encryption_key: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa

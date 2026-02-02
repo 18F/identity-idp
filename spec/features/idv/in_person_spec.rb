@@ -16,7 +16,7 @@ RSpec.describe 'In Person Proofing', js: true do
       .and_return(true)
   end
 
-  it 'works for a happy path', allow_browser_log: true do
+  it 'works for a happy path', allow_browser_log: true, timezone: 'UTC' do
     user = user_with_2fa
 
     visit_idp_from_sp_with_ial2(:oidc, **{ client_id: ipp_service_provider.issuer })
@@ -66,16 +66,6 @@ RSpec.describe 'In Person Proofing', js: true do
     expect(page).to have_text(Idp::Constants::MOCK_IDV_APPLICANT_STATE, count: 2)
     expect(page).to have_text(InPersonHelper::GOOD_IDENTITY_DOC_ZIPCODE).twice
     expect(page).to have_text(DocAuthHelper::GOOD_SSN_MASKED)
-
-    # click update state ID button
-    click_link t('idv.buttons.change_state_id_label')
-
-    expect(page).to have_content(t('in_person_proofing.headings.update_state_id'))
-
-    choose t('in_person_proofing.form.state_id.same_address_as_id_yes')
-    click_button t('forms.buttons.submit.update')
-    expect(page).to have_content(t('headings.verify'))
-    expect(page).to have_current_path(idv_in_person_verify_info_path)
 
     # click update address link
     click_link t('idv.buttons.change_address_label')
@@ -656,8 +646,7 @@ RSpec.describe 'In Person Proofing', js: true do
       expect(page).to have_content(t('headings.verify'))
       expect(page).to have_text('new address different from state address1').once
 
-      # click update state id address
-      click_link t('idv.buttons.change_state_id_label')
+      visit idv_in_person_state_id_path
 
       # check that the "No, I live at a different address" is checked
       expect(page).to have_checked_field(
@@ -701,7 +690,7 @@ RSpec.describe 'In Person Proofing', js: true do
   context 'when full form address post office search' do
     let(:user) { user_with_2fa }
 
-    it 'allows the user to search by full address', allow_browser_log: true do
+    it 'allows the user to search by full address', allow_browser_log: true, timezone: 'UTC' do
       visit_idp_from_sp_with_ial2(:oidc, **{ client_id: ipp_service_provider.issuer })
       sign_in_and_2fa_user(user)
       begin_in_person_proofing(user)
@@ -828,6 +817,85 @@ RSpec.describe 'In Person Proofing', js: true do
       expect(page).to have_content(
         'There was an internal error processing your request. Please try again.',
       )
+    end
+  end
+
+  context 'AAMVA integration E2E tests' do
+    before do
+      allow(IdentityConfig.store).to receive(:idv_aamva_at_doc_auth_enabled).and_return(true)
+    end
+
+    context 'with successful AAMVA validation (default mock behavior)' do
+      it 'completes full IPP flow with AAMVA verification', allow_browser_log: true do
+        user = user_with_2fa
+
+        sign_in_and_2fa_user(user)
+        begin_in_person_proofing(user)
+        complete_prepare_step(user)
+        complete_location_step(user)
+
+        expect(page).to have_current_path(idv_in_person_state_id_path, wait: 10)
+
+        fill_out_state_id_form_ok(same_address_as_id: true)
+        click_idv_continue
+
+        expect(page).to have_current_path(idv_in_person_ssn_url, wait: 10)
+        expect(page).to have_content(t('doc_auth.headings.ssn'))
+
+        complete_ssn_step(user)
+        complete_verify_step(user)
+        complete_phone_step(user)
+        complete_enter_password_step(user)
+        acknowledge_and_confirm_personal_key
+
+        expect(page).to have_current_path(idv_in_person_ready_to_verify_path, wait: 10)
+        expect(page).to have_content(strip_nbsp(t('in_person_proofing.headings.barcode')))
+      end
+
+      it 'handles same_address_as_id=false flow with AAMVA', allow_browser_log: true do
+        user = user_with_2fa
+
+        sign_in_and_2fa_user(user)
+        begin_in_person_proofing(user)
+        complete_prepare_step(user)
+        complete_location_step(user)
+
+        fill_out_state_id_form_ok(same_address_as_id: false)
+        click_idv_continue
+
+        expect(page).to have_current_path(idv_in_person_address_path, wait: 10)
+        expect(page).to have_content(t('in_person_proofing.headings.address'))
+
+        complete_address_step(user, same_address_as_id: false)
+        complete_ssn_step(user)
+        complete_verify_step(user)
+        complete_phone_step(user)
+        complete_enter_password_step(user)
+        acknowledge_and_confirm_personal_key
+
+        expect(page).to have_current_path(idv_in_person_ready_to_verify_path, wait: 10)
+      end
+    end
+
+    context 'AAMVA disabled' do
+      before do
+        allow(IdentityConfig.store).to receive(:idv_aamva_at_doc_auth_enabled).and_return(false)
+      end
+
+      it 'skips AAMVA validation and proceeds normally', allow_browser_log: true do
+        user = user_with_2fa
+
+        sign_in_and_2fa_user(user)
+        begin_in_person_proofing(user)
+        complete_prepare_step(user)
+        complete_location_step(user)
+
+        fill_out_state_id_form_ok(same_address_as_id: true)
+        click_idv_continue
+
+        expect(page).to have_current_path(idv_in_person_ssn_url, wait: 10)
+        expect(page).to have_content(t('doc_auth.headings.ssn'))
+      end
     end
   end
 end

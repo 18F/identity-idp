@@ -14,7 +14,7 @@ module Reporting
   class IrsVerificationDemographicsReport
     include Reporting::CloudwatchQueryQuoting
 
-    attr_reader :issuers, :time_range
+    attr_reader :issuers, :time_range, :agency_abbreviation
 
     module Events
       IDV_DOC_AUTH_PROOFING_RESULTS = 'IdV: doc auth verify proofing results'
@@ -29,6 +29,7 @@ module Reporting
     # @param [Range<Time>] time_range
     def initialize(
       issuers:,
+      agency_abbreviation:,
       time_range:,
       verbose: false,
       progress: false,
@@ -36,6 +37,7 @@ module Reporting
       threads: 5
     )
       @issuers = issuers
+      @agency_abbreviation = agency_abbreviation
       @time_range = time_range
       @verbose = verbose
       @progress = progress
@@ -64,12 +66,12 @@ module Reporting
           filename: 'overview',
         ),
         Reporting::EmailableReport.new(
-          title: 'IRS Age Metrics',
+          title: "#{@agency_abbreviation} Age Metrics",
           table: age_metrics_table,
           filename: 'age_metrics',
         ),
         Reporting::EmailableReport.new(
-          title: 'IRS State Metrics',
+          title: "#{@agency_abbreviation} State Metrics",
           table: state_metrics_table,
           filename: 'state_metrics',
         ),
@@ -80,10 +82,12 @@ module Reporting
       [
         ['Metric', 'Unit', 'Definition'],
         ['Age range/Verification Demographics', 'Count',
-         'The number of IRS users who verified within the reporting period, grouped by age in ' + '
-         10 year range.'],
+         "The number of #{@agency_abbreviation} users who verified within " \
+           "the reporting period, grouped by age in " \
+           "10 year range."],
         ['Geographic area/Verification Demographics', 'Count',
-         'The number of IRS users who verified within the reporting period, grouped by state.'],
+         "The number of #{@agency_abbreviation} users who verified within " \
+           "the reporting period, grouped by state."],
       ]
     end
 

@@ -6,6 +6,7 @@ module Proofing
       attr_reader :resolution_result,
                   :state_id_result,
                   :device_profiling_result,
+                  :hybrid_mobile_device_profiling_result,
                   :ipp_enrollment_in_progress,
                   :residential_resolution_result,
                   :phone_result,
@@ -23,13 +24,15 @@ module Proofing
         device_profiling_result:, # ThreatMetrix
         same_address_as_id:,
         applicant_pii:,
-        precheck_phone_number:
+        precheck_phone_number:,
+        hybrid_mobile_device_profiling_result: nil # ThreatMetrix (Hybrid Mobile)
       )
         @resolution_result = resolution_result
         @state_id_result = state_id_result
         @should_proof_state_id = should_proof_state_id
         @ipp_enrollment_in_progress = ipp_enrollment_in_progress
         @device_profiling_result = device_profiling_result
+        @hybrid_mobile_device_profiling_result = hybrid_mobile_device_profiling_result
         @residential_resolution_result = residential_resolution_result
         @phone_result = phone_result
         @same_address_as_id = same_address_as_id # this is a string, "true" or "false"
@@ -40,17 +43,23 @@ module Proofing
       def adjudicated_result
         resolution_success, resolution_reason = resolution_result_and_reason
         device_profiling_success, device_profiling_reason = device_profiling_result_and_reason
+        hybrid_mobile_profiling_success, hybrid_mobile_profiling_reason =
+          hybrid_mobile_device_profiling_result_and_reason
 
         FormResponse.new(
-          success: resolution_success && device_profiling_success,
+          success: resolution_success && device_profiling_success &&
+                   hybrid_mobile_profiling_success,
           errors: errors,
           extra: {
             exception: exception,
             timed_out: timed_out?,
             threatmetrix_review_status: device_profiling_result.review_status,
+            hybrid_mobile_threatmetrix_review_status:
+              hybrid_mobile_device_profiling_result&.review_status,
             phone_precheck_passed: !!phone_result[:success],
             context: {
               device_profiling_adjudication_reason: device_profiling_reason,
+              hybrid_mobile_device_profiling_adjudication_reason: hybrid_mobile_profiling_reason,
               resolution_adjudication_reason: resolution_reason,
               should_proof_state_id: should_proof_state_id?,
               stages: {
@@ -58,6 +67,7 @@ module Proofing
                 residential_address: residential_resolution_result.to_h,
                 state_id: state_id_result.to_h,
                 threatmetrix:,
+                hybrid_mobile_threatmetrix:,
                 phone_precheck: phone_result,
               },
             },
@@ -77,13 +87,15 @@ module Proofing
           .merge(residential_resolution_result.errors)
           .merge(state_id_result.errors)
           .merge(device_profiling_result.errors || {})
+          .merge(hybrid_mobile_device_profiling_result&.errors || {})
       end
 
       def exception
         resolution_result.exception ||
           residential_resolution_result.exception ||
           state_id_result.exception ||
-          device_profiling_result.exception
+          device_profiling_result.exception ||
+          hybrid_mobile_device_profiling_result&.exception
       end
 
       def threatmetrix
@@ -92,11 +104,20 @@ module Proofing
         )
       end
 
+      def hybrid_mobile_threatmetrix
+        return {} unless hybrid_mobile_device_profiling_result
+
+        hybrid_mobile_device_profiling_result.to_h.merge(
+          device_fingerprint: hybrid_mobile_device_profiling_result.device_fingerprint,
+        )
+      end
+
       def timed_out?
         resolution_result.timed_out? ||
           residential_resolution_result.timed_out? ||
           state_id_result.timed_out? ||
-          device_profiling_result.timed_out?
+          device_profiling_result.timed_out? ||
+          !!hybrid_mobile_device_profiling_result&.timed_out?
       end
 
       def device_profiling_result_and_reason
@@ -107,6 +128,26 @@ module Proofing
         else
           # a non-passing review status is handled downstream, so is considered a succcess
           [true, :device_profiling_result_review_required]
+        end
+      end
+
+      def hybrid_mobile_device_profiling_result_and_reason
+        unless hybrid_mobile_device_profiling_result
+          if FeatureManagement.proofing_device_hybrid_profiling_collecting_enabled?
+            return [true, :hybrid_mobile_device_check_skipped]
+          else
+            return [true,
+                    :hybrid_mobile_device_profiling_not_enabled]
+          end
+        end
+
+        if hybrid_mobile_device_profiling_result.exception?
+          [false, :hybrid_mobile_device_profiling_exception]
+        elsif hybrid_mobile_device_profiling_result.success?
+          [true, :hybrid_mobile_device_profiling_result_pass]
+        else
+          # a non-passing review status is handled downstream, so is considered a success
+          [true, :hybrid_mobile_device_profiling_result_review_required]
         end
       end
 

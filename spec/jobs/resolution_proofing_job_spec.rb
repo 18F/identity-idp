@@ -19,10 +19,15 @@ RSpec.describe ResolutionProofingJob, type: :job do
   let(:lexisnexis_threatmetrix_mock_enabled) { false }
   let(:ipp_enrollment_in_progress) { false }
   let(:state_id_already_proofed) { false }
+  let(:hybrid_mobile_threatmetrix_session_id) { nil }
+  let(:hybrid_mobile_request_ip) { nil }
+  let(:proofing_device_hybrid_profiling) { :disabled }
 
   before do
     allow(IdentityConfig.store).to receive(:proofing_device_profiling)
       .and_return(proofing_device_profiling)
+    allow(IdentityConfig.store).to receive(:proofing_device_hybrid_profiling)
+      .and_return(proofing_device_hybrid_profiling)
     allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_mock_enabled)
       .and_return(lexisnexis_threatmetrix_mock_enabled)
     allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_base_url)
@@ -46,6 +51,8 @@ RSpec.describe ResolutionProofingJob, type: :job do
         ipp_enrollment_in_progress: ipp_enrollment_in_progress,
         proofing_vendor: IdentityConfig.store.idv_resolution_default_vendor,
         state_id_already_proofed:,
+        hybrid_mobile_threatmetrix_session_id: hybrid_mobile_threatmetrix_session_id,
+        hybrid_mobile_request_ip: hybrid_mobile_request_ip,
       )
     end
 
@@ -148,6 +155,42 @@ RSpec.describe ResolutionProofingJob, type: :job do
         expect(result_context_stages_threatmetrix[:response_body]).to eq(
           JSON.parse(LexisNexisFixtures.ddp_success_redacted_response_json, symbolize_names: true),
         )
+      end
+    end
+
+    context 'with hybrid mobile device profiling enabled and valid parameters' do
+      let(:proofing_device_hybrid_profiling) { :enabled }
+      let(:hybrid_mobile_threatmetrix_session_id) { SecureRandom.uuid }
+      let(:hybrid_mobile_request_ip) { Faker::Internet.ip_v4_address }
+
+      it 'stores a successful result with hybrid mobile threatmetrix data' do
+        stub_vendor_requests
+
+        perform
+
+        result = document_capture_session.load_proofing_result[:result]
+        result_context = result[:context]
+        result_context_stages = result_context[:stages]
+        result_context_stages_hybrid_mobile_threatmetrix =
+          result_context_stages[:hybrid_mobile_threatmetrix]
+
+        expect(result[:success]).to be true
+        expect(result[:hybrid_mobile_threatmetrix_review_status]).to eq('pass')
+
+        # result[:context][:stages][:hybrid_mobile_threatmetrix]
+        expect(result_context_stages_hybrid_mobile_threatmetrix[:client]).to eq('lexisnexis')
+        expect(result_context_stages_hybrid_mobile_threatmetrix[:errors]).to eq({})
+        expect(result_context_stages_hybrid_mobile_threatmetrix[:exception]).to eq(nil)
+        expect(result_context_stages_hybrid_mobile_threatmetrix[:success]).to eq(true)
+        expect(result_context_stages_hybrid_mobile_threatmetrix[:timed_out]).to eq(false)
+        expect(result_context_stages_hybrid_mobile_threatmetrix[:transaction_id]).to eq('1234')
+        expect(result_context_stages_hybrid_mobile_threatmetrix[:review_status]).to eq('pass')
+        expect(result_context_stages_hybrid_mobile_threatmetrix[:response_body]).to eq(
+          JSON.parse(LexisNexisFixtures.ddp_success_redacted_response_json, symbolize_names: true),
+        )
+
+        # Verify threatmetrix stub was called twice (desktop + hybrid mobile)
+        expect(@threatmetrix_stub).to have_been_requested.times(2)
       end
     end
 
@@ -494,6 +537,68 @@ RSpec.describe ResolutionProofingJob, type: :job do
       end
     end
 
+    context 'with hybrid mobile device profiling disabled' do
+      let(:proofing_device_hybrid_profiling) { :disabled }
+      let(:hybrid_mobile_threatmetrix_session_id) { SecureRandom.uuid }
+      let(:hybrid_mobile_request_ip) { Faker::Internet.ip_v4_address }
+
+      it 'does not make a request to hybrid mobile threatmetrix even with params present' do
+        stub_vendor_requests
+
+        perform
+
+        result = document_capture_session.load_proofing_result[:result]
+        result_context = result[:context]
+        result_context_stages = result_context[:stages]
+        result_context_stages_hybrid_mobile_threatmetrix =
+          result_context_stages[:hybrid_mobile_threatmetrix]
+
+        expect(result[:success]).to be true
+        expect(result[:exception]).to be_nil
+        expect(result[:timed_out]).to be false
+        expect(result[:hybrid_mobile_threatmetrix_review_status]).to be_nil
+
+        # result[:context][:stages][:hybrid_mobile_threatmetrix]
+        expect(result_context_stages_hybrid_mobile_threatmetrix).to eq({})
+
+        # Only desktop threatmetrix should have been called (once)
+        expect(@threatmetrix_stub).to have_been_requested.once
+      end
+    end
+
+    context 'with hybrid mobile profiling enabled but without session ID' do
+      let(:proofing_device_hybrid_profiling) { :enabled }
+      let(:hybrid_mobile_threatmetrix_session_id) { nil }
+      let(:hybrid_mobile_request_ip) { Faker::Internet.ip_v4_address }
+
+      it 'does not make a request to hybrid mobile threatmetrix' do
+        stub_vendor_requests
+
+        perform
+
+        result = document_capture_session.load_proofing_result[:result]
+        result_context = result[:context]
+        result_context_stages = result_context[:stages]
+        result_context_stages_hybrid_mobile_threatmetrix =
+          result_context_stages[:hybrid_mobile_threatmetrix]
+
+        # Desktop threatmetrix should still work
+        expect(result[:success]).to be true
+        expect(result[:threatmetrix_review_status]).to eq('pass')
+
+        # Hybrid mobile should be rejected due to missing session ID
+        expect(result[:hybrid_mobile_threatmetrix_review_status]).to eq(nil)
+        expect(result_context[:hybrid_mobile_device_profiling_adjudication_reason])
+          .to eq('hybrid_mobile_device_check_skipped')
+        expect(result_context_stages_hybrid_mobile_threatmetrix[:success]).to eq(nil)
+        expect(result_context_stages_hybrid_mobile_threatmetrix[:client])
+          .to eq(nil)
+
+        # Only desktop threatmetrix should have been called (once)
+        expect(@threatmetrix_stub).to have_been_requested.once
+      end
+    end
+
     context 'with IPP enrollment in progress' do
       let(:ipp_enrollment_in_progress) { true }
       context "when the user's state ID address does not match their residential address" do
@@ -519,19 +624,6 @@ RSpec.describe ResolutionProofingJob, type: :job do
             state_id_jurisdiction: pii[:state_id_jurisdiction],
             zipcode: pii[:identity_doc_zipcode],
           }
-        end
-
-        subject(:perform) do
-          instance.perform(
-            result_id: document_capture_session.result_id,
-            encrypted_arguments: encrypted_arguments,
-            trace_id: trace_id,
-            user_id: user.id,
-            threatmetrix_session_id: threatmetrix_session_id,
-            request_ip: request_ip,
-            ipp_enrollment_in_progress: ipp_enrollment_in_progress,
-            proofing_vendor: IdentityConfig.store.idv_resolution_default_vendor,
-          )
         end
 
         it 'stores a successful result' do
@@ -758,6 +850,43 @@ RSpec.describe ResolutionProofingJob, type: :job do
       end
     end
 
+    context 'with hybrid mobile parameters but without desktop threatmetrix session ID' do
+      let(:proofing_device_hybrid_profiling) { :enabled }
+      let(:threatmetrix_session_id) { nil }
+      let(:hybrid_mobile_threatmetrix_session_id) { SecureRandom.uuid }
+      let(:hybrid_mobile_request_ip) { Faker::Internet.ip_v4_address }
+
+      it 'processes hybrid mobile threatmetrix independently of desktop threatmetrix' do
+        stub_vendor_requests
+
+        perform
+
+        result = document_capture_session.load_proofing_result[:result]
+        result_context = result[:context]
+        result_context_stages = result_context[:stages]
+        result_context_stages_threatmetrix = result_context_stages[:threatmetrix]
+        result_context_stages_hybrid_mobile_threatmetrix =
+          result_context_stages[:hybrid_mobile_threatmetrix]
+
+        expect(result[:success]).to be true
+
+        # Desktop threatmetrix should be rejected due to missing session ID
+        expect(result[:threatmetrix_review_status]).to eq('reject')
+        expect(result_context_stages_threatmetrix[:success]).to eq(false)
+        expect(result_context[:device_profiling_adjudication_reason])
+          .to eq('device_profiling_result_review_required')
+        expect(result_context_stages_threatmetrix[:client]).to eq('tmx_session_id_missing')
+
+        # Hybrid mobile should succeed independently
+        expect(result[:hybrid_mobile_threatmetrix_review_status]).to eq('pass')
+        expect(result_context_stages_hybrid_mobile_threatmetrix[:success]).to eq(true)
+        expect(result_context_stages_hybrid_mobile_threatmetrix[:review_status]).to eq('pass')
+
+        # Only hybrid mobile should have called the stub (once)
+        expect(@threatmetrix_stub).to have_been_requested.once
+      end
+    end
+
     context 'with an invalid threatmetrix review_status value' do
       it 'stores an exception result' do
         stub_vendor_requests(
@@ -779,6 +908,39 @@ RSpec.describe ResolutionProofingJob, type: :job do
         expect(result_context_stages_threatmetrix[:exception]).to include(
           LexisNexisFixtures.ddp_unexpected_review_status,
         )
+      end
+    end
+
+    context 'with an invalid hybrid mobile threatmetrix review_status value' do
+      let(:proofing_device_hybrid_profiling) { :enabled }
+      let(:hybrid_mobile_threatmetrix_session_id) { SecureRandom.uuid }
+      let(:hybrid_mobile_request_ip) { Faker::Internet.ip_v4_address }
+
+      it 'stores an exception result for hybrid mobile threatmetrix' do
+        stub_vendor_requests(
+          hybrid_mobile_threatmetrix_response:
+            LexisNexisFixtures.ddp_unexpected_review_status_response_json,
+        )
+
+        perform
+
+        result = document_capture_session.load_proofing_result[:result]
+        result_context = result[:context]
+        result_context_stages = result_context[:stages]
+        result_context_stages_hybrid_mobile_threatmetrix =
+          result_context_stages[:hybrid_mobile_threatmetrix]
+
+        expect(result[:success]).to be false
+        expect(result[:exception]).to include(LexisNexisFixtures.ddp_unexpected_review_status)
+        expect(result[:timed_out]).to be false
+        expect(result[:hybrid_mobile_threatmetrix_review_status]).to be_nil
+
+        expect(result_context_stages_hybrid_mobile_threatmetrix[:exception]).to include(
+          LexisNexisFixtures.ddp_unexpected_review_status,
+        )
+
+        # Both desktop and hybrid mobile should have been called
+        expect(@threatmetrix_stub).to have_been_requested.times(2)
       end
     end
 
@@ -817,11 +979,25 @@ RSpec.describe ResolutionProofingJob, type: :job do
     def stub_vendor_requests(
       instant_verify_response: LexisNexisFixtures.instant_verify_success_response_json,
       threatmetrix_response: LexisNexisFixtures.ddp_success_response_json,
+      hybrid_mobile_threatmetrix_response: LexisNexisFixtures.ddp_success_response_json,
       aamva_response: AamvaFixtures.verification_response
     )
       allow(IdentityConfig.store).to receive(:proofer_mock_fallback).and_return(false)
       @instant_verify_stub = stub_instant_verify_request(instant_verify_response)
-      @threatmetrix_stub = stub_threatmetrix_request(threatmetrix_response)
+
+      if proofing_device_hybrid_profiling == :enabled &&
+         hybrid_mobile_threatmetrix_session_id.present?
+        @threatmetrix_stub = stub_request(
+          :post,
+          'https://www.example.com/api/session-query',
+        ).to_return(
+          { body: threatmetrix_response },
+          { body: hybrid_mobile_threatmetrix_response },
+        )
+      else
+        @threatmetrix_stub = stub_threatmetrix_request(threatmetrix_response)
+      end
+
       @aamva_stub = stub_aamva_request(aamva_response)
     end
 
