@@ -19,10 +19,11 @@ module AttemptsApi
       @sp_redirect_uri = sp_redirect_uri
       @enabled_for_session = enabled_for_session
     end
+
     include TrackerEvents
 
     def track_event(event_type, metadata = {})
-      return unless enabled?
+      return unless will_track?(event_type)
 
       user_id = metadata.delete(:user_id)
 
@@ -36,6 +37,10 @@ module AttemptsApi
         occurred_at: Time.zone.now,
         event_metadata: event_metadata(event_type:, metadata:),
       )
+
+      log_history(event) if will_log_history?(event_type)
+
+      return unless will_send_event?
 
       redis_client.write_event(
         event_key: event.jti,
@@ -60,6 +65,19 @@ module AttemptsApi
     end
 
     private
+
+    def log_history(event)
+      return unless session
+      session['warden.user.user.session']['idv/attempts'].push(
+        {
+          event.event_type => { user_uuid: user.uuid },
+        },
+      )
+    end
+
+    def session
+      @request&.session
+    end
 
     def user_blank?
       @user.blank? || @user.uuid == 'anonymous-uuid'
@@ -129,8 +147,18 @@ module AttemptsApi
       Digest::SHA1.hexdigest(user&.unique_session_id)
     end
 
-    def enabled?
-      IdentityConfig.store.attempts_api_enabled && @enabled_for_session
+    def will_track?(event_type)
+      return false unless IdentityConfig.store.attempts_api_enabled
+
+      will_send_event? || will_log_history?(event_type)
+    end
+
+    def will_log_history?(event_type)
+      IdentityConfig.store.historical_attempts_api_enabled && event_type.start_with?('idv-')
+    end
+
+    def will_send_event?
+      @enabled_for_session
     end
 
     def redis_client

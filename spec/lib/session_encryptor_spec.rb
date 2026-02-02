@@ -18,7 +18,7 @@ RSpec.describe SessionEncryptor do
     it 'transparently encrypts/decrypts sensitive elements of the session' do
       session = { 'warden.user.user.session' => {
         'idv' => { 'ssn' => '666-66-6666' },
-        'idv/attempts' => { 'ssn' => '666-66-6666' },
+        'idv/attempts' => [{ 'ssn' => '666-66-6666' }],
         'idv/in_person' => { 'ssn' => '666-66-6666' },
         'other_value' => 42,
       } }
@@ -29,7 +29,7 @@ RSpec.describe SessionEncryptor do
       expect(result).to eq(
         { 'warden.user.user.session' => {
           'idv' => { 'ssn' => '666-66-6666' },
-          'idv/attempts' => { 'ssn' => '666-66-6666' },
+          'idv/attempts' => [{ 'ssn' => '666-66-6666' }],
           'idv/in_person' => { 'ssn' => '666-66-6666' },
           'other_value' => 42,
         } },
@@ -39,7 +39,7 @@ RSpec.describe SessionEncryptor do
     it 'KMS encrypts/decrypts doc auth elements of the session' do
       session = { 'warden.user.user.session' => {
         'idv' => { 'ssn' => '666-66-6666' },
-        'idv/attempts' => { 'ssn' => '666-66-6666' },
+        'idv/attempts' => [{ 'ssn' => '666-66-6666' }],
         'idv/in_person' => { 'ssn' => '666-66-6666' },
         'other_value' => 42,
       } }
