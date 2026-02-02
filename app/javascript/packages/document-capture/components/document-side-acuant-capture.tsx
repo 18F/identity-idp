@@ -62,8 +62,8 @@ function DocumentSideAcuantCapture({
   const errorSide = isPassport ? 'front' : side;
   const error = errors.find(({ field }) => field === errorSide)?.error;
   const { changeStepCanComplete } = useContext(FormStepsContext);
-  const { isSelfieDesktopTestMode, isUploadEnabled } = useContext(SelfieCaptureContext);
-  const isUploadAllowed = isSelfieDesktopTestMode || isUploadEnabled;
+  const { isDesktopTestMode, isUploadEnabled } = useContext(SelfieCaptureContext);
+  const isUploadAllowed = isDesktopTestMode || isUploadEnabled;
   const stepCanComplete = !isReviewStep ? undefined : true;
 
   return (
