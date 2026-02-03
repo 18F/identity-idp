@@ -6682,6 +6682,11 @@ module AnalyticsEvents
     )
   end
 
+  # New device alert skipped as there were no events to send
+  def new_device_alert_skipped(**extra)
+    track_event(:new_device_alert_skipped, **extra)
+  end
+
   # @param [String] location Placement location
   # Logged when a browser with JavaScript disabled loads the detection stylesheet
   def no_js_detect_stylesheet_loaded(location:, **extra)
