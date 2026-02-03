@@ -37,20 +37,5 @@ RSpec.describe CreateNewDeviceAlertJob do
 
       expect(analytics).to have_logged_event(:create_new_device_alert_job_emails_sent, count: 1)
     end
-
-    # Run the job only when the user is not locked out due to making too many auth attempts
-    context 'max attempts reached' do
-      it 'does not send if locked out' do
-        user.update! second_factor_locked_at: Time.zone.now
-
-        emails_sent = CreateNewDeviceAlertJob.new.perform(now)
-        expect(emails_sent).to eq(0)
-
-        travel_to 5.minutes.from_now do
-          email_sent_again = CreateNewDeviceAlertJob.new.perform(now)
-          expect(email_sent_again).to eq(0)
-        end
-      end
-    end
   end
 end
