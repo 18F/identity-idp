@@ -7,8 +7,6 @@ module Proofing
         class ThreatMetrixProofer < Proofing::LexisNexis::Ddp::Proofer
           VALID_REVIEW_STATUSES = %w[pass review reject].freeze
 
-          attr_reader :config
-
           private
 
           def build_result_from_response(verification_response)
