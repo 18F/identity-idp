@@ -6,7 +6,7 @@ module DocAuth
       module Ddp
         class TrueIdResponse < DocAuth::Response
           include ImageMetricsReader
-          include DocAuth::LexisNexis::Ddp::DocPiiReader
+          include DocAuth::LexisNexis::DocPiiReader
           include DocAuth::ClassificationConcern
 
           attr_reader :config, :http_response, :passport_requested
