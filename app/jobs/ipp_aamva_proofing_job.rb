@@ -34,19 +34,17 @@ class IppAamvaProofingJob < ApplicationJob
     applicant_pii[:uuid] = @user.uuid
 
     aamva_result = call_aamva(
-      applicant_pii: applicant_pii,
-      current_sp: current_sp,
+      applicant_pii:,
+      current_sp:,
       timer:,
     )
 
-    result_hash = build_result_hash(aamva_result)
-
-    document_capture_session = DocumentCaptureSession.new(result_id: result_id)
-    document_capture_session.store_proofing_result(result_hash)
+    document_capture_session = DocumentCaptureSession.new(result_id:)
+    document_capture_session.store_proofing_result(aamva_result.to_h)
   ensure
     logger_info_hash(
       name: 'IppAamvaProofing',
-      trace_id: trace_id,
+      trace_id:,
       aamva_success: aamva_result&.success?,
       timing: timer&.results,
       user_id: @user&.uuid,
@@ -62,26 +60,13 @@ class IppAamvaProofingJob < ApplicationJob
   def call_aamva(applicant_pii:, current_sp:, timer:)
     aamva_plugin.call(
       applicant_pii: applicant_pii.freeze,
-      current_sp: current_sp,
+      current_sp:,
       state_id_address_resolution_result: nil,
       ipp_enrollment_in_progress: true,
       timer:,
       doc_auth_flow: true,
       analytics:,
     )
-  end
-
-  def build_result_hash(aamva_result)
-    doc_auth_response = aamva_result.to_doc_auth_response
-
-    {
-      success: doc_auth_response.success?,
-      errors: doc_auth_response.errors,
-      vendor_name: doc_auth_response.extra[:vendor_name],
-      aamva_status: doc_auth_response.success? ? :passed : :failed,
-      checked_at: Time.zone.now.iso8601,
-      aamva_verified_attributes: doc_auth_response.extra[:verified_attributes],
-    }
   end
 
   def analytics
