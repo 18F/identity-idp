@@ -46,6 +46,7 @@ RSpec.describe Proofing::Socure::IdPlus::Requests::PhoneRiskRequest do
           customerUserId: user.uuid,
           email: 'fakey@mckfakerson.test',
           mobileNumber: Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE[:phone],
+          returnSignals: true,
         },
       )
     end
@@ -126,6 +127,7 @@ RSpec.describe Proofing::Socure::IdPlus::Requests::PhoneRiskRequest do
 
         expect(res.dig(:phonerisk, :reason_codes).keys).to eq(['I123', 'R567'])
         expect(res.dig(:phonerisk, :score)).to eq(0.01)
+        expect(res.dig(:phonerisk, :signals, 'phone')).to eq({})
         expect(res.dig(:name_phone_correlation, :reason_codes).keys).to eq(['I123', 'R567', 'R890'])
         expect(res.dig(:name_phone_correlation, :score)).to eq(0.99)
       end

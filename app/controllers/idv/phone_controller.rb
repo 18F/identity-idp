@@ -210,6 +210,7 @@ module Idv
             [:errors, :phone],
             [:context, :stages, :address],
             [:alternate_result, :errors, :phone],
+            [:vendor, :result, :phonerisk, :signals, :phone],
           ],
           new_phone_added: new_phone_added?,
           hybrid_handoff_phone_used: hybrid_handoff_phone_used?,
