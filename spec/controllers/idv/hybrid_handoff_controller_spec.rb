@@ -33,7 +33,7 @@ RSpec.describe Idv::HybridHandoffController do
     allow(subject).to receive(:resolved_authn_context_result)
       .and_return(resolved_authn_context_result)
 
-    allow(IdentityConfig.store).to receive(:doc_auth_selfie_desktop_test_mode)
+    allow(IdentityConfig.store).to receive(:doc_auth_desktop_test_mode)
       .and_return(desktop_test_mode_enabled)
     allow(IdentityConfig.store).to receive(:in_person_proofing_enabled) { in_person_proofing }
     allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled) {
