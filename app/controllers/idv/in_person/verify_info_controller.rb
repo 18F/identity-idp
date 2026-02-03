@@ -103,7 +103,7 @@ module Idv
       end
 
       def aamva_verified_attributes
-        idv_session.ipp_aamva_result&.dig(:aamva_verified_attributes) || []
+        idv_session.ipp_aamva_result&.dig('verified_attributes') || []
       end
     end
   end
