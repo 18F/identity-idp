@@ -140,6 +140,7 @@ RSpec.describe SocureShadowModePhoneRiskJob do
                   'R567' => 'Person may be an armadillo.',
                 },
                 score: 0.01,
+                signals: { 'phone' => {} },
               },
               customer_user_id: user.uuid,
             },
