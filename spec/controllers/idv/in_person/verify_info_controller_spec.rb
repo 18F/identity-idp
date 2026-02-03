@@ -470,10 +470,27 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
         hash_including(
           ssn: Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID[:ssn],
           consent_given_at: subject.idv_session.idv_consent_given_at,
+          aamva_verified_attributes: [],
         ),
       ).and_call_original
 
       put :update
+    end
+
+    context 'when aamva check completed' do
+      before do
+        controller.idv_session.ipp_aamva_result = { aamva_verified_attributes: %i[ssn dob] }
+      end
+
+      it 'modifies PII to include aamva verified attributes' do
+        expect(Idv::Agent).to receive(:new).with(
+          hash_including(
+            aamva_verified_attributes: %i[ssn dob],
+          ),
+        ).and_call_original
+
+        put :update
+      end
     end
 
     context 'the state id proofing occurred previously' do
@@ -554,6 +571,7 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
               source: :mfa,
               phone: '+1 415-555-0130',
             },
+            aamva_verified_attributes: [],
           ),
         ).and_call_original
         put :update
