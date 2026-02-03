@@ -80,6 +80,7 @@ module Idv
         pii_from_user.merge(
           consent_given_at: idv_session.idv_consent_given_at,
           ssn: idv_session.ssn,
+          aamva_verified_attributes:,
         )
       end
 
@@ -99,6 +100,10 @@ module Idv
           analytics_id: 'In Person Proofing',
         }.merge(ab_test_analytics_buckets)
           .merge(**extra_analytics_properties)
+      end
+
+      def aamva_verified_attributes
+        idv_session.ipp_aamva_result&.dig(:aamva_verified_attributes) || []
       end
     end
   end

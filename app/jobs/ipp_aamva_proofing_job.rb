@@ -80,6 +80,7 @@ class IppAamvaProofingJob < ApplicationJob
       vendor_name: doc_auth_response.extra[:vendor_name],
       aamva_status: doc_auth_response.success? ? :passed : :failed,
       checked_at: Time.zone.now.iso8601,
+      aamva_verified_attributes: doc_auth_response.extra[:verified_attributes],
     }
   end
 
