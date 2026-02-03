@@ -31,14 +31,14 @@ RSpec.describe Proofing::LexisNexis::Ddp::Proofers::ThreatMetrixProofer do
   end
 
   let(:proofing_verification_request) do
-    Proofing::LexisNexis::Ddp::VerificationRequest.new(
+    Proofing::LexisNexis::Ddp::Requests::ThreatMetrixRequest.new(
       applicant: proofing_applicant,
       config: LexisNexisFixtures.example_ddp_proofing_config,
     )
   end
 
   let(:authentication_verification_request) do
-    Proofing::LexisNexis::Ddp::VerificationRequest.new(
+    Proofing::LexisNexis::Ddp::Requests::ThreatMetrixRequest.new(
       applicant: authentication_applicant,
       config: LexisNexisFixtures.example_ddp_authentication_config,
     )
