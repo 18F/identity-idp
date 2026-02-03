@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Reports::IrsMonthlyCredMetricsReport do
+RSpec.describe Reports::SpMonthlyCredMetricsReport do
   let(:report_date) { Date.new(2021, 3, 2).in_time_zone('UTC').end_of_day }
   let(:report_receiver) { :internal }
   subject(:report)      { Reports::SpMonthlyCredMetricsReport.new(report_date, report_receiver) }
@@ -102,7 +102,9 @@ RSpec.describe Reports::IrsMonthlyCredMetricsReport do
       expect(ReportMailer).to receive(:tables_report).once.with(
         to: mock_reports_partner_emails,
         bcc: mock_reports_internal_emails,
-        subject: "#{mock_partner_strings.first} Monthly Credential Metrics - #{report_date.to_date}",
+        subject:
+            "#{mock_partner_strings.first} Monthly Credential Metrics - " \
+            "#{report_date.to_date}",
         reports: anything,
         message: report.preamble,
         attachment_format: :csv,
@@ -121,7 +123,9 @@ RSpec.describe Reports::IrsMonthlyCredMetricsReport do
       expect(ReportMailer).to receive(:tables_report).once.with(
         to: mock_reports_internal_emails,
         bcc: [],
-        subject: "#{mock_partner_strings.first} Monthly Credential Metrics - #{report_date.to_date}",
+        subject:
+            "#{mock_partner_strings.first} Monthly Credential Metrics - " \
+            "#{report_date.to_date}",
         reports: anything,
         message: report.preamble,
         attachment_format: :csv,
@@ -147,13 +151,16 @@ RSpec.describe Reports::IrsMonthlyCredMetricsReport do
 
     it 'logs a warning and sends the report only to internal emails' do
       expect(Rails.logger).to receive(:warn).with(
-        "#{mock_partner_strings.first} Monthly Credential Report: recipient is :both but no external email specified",
+        "#{mock_partner_strings.first} Monthly Credential Report: " \
+        "recipient is :both but no external email specified",
       )
 
       expect(ReportMailer).to receive(:tables_report).once.with(
         to: mock_reports_internal_emails,
         bcc: [],
-        subject: "#{mock_partner_strings.first} Monthly Credential Metrics - #{report_date.to_date}",
+        subject:
+            "#{mock_partner_strings.first} Monthly Credential Metrics - " \
+            "#{report_date.to_date}",
         reports: anything,
         message: report.preamble,
         attachment_format: :csv,
@@ -179,7 +186,8 @@ RSpec.describe Reports::IrsMonthlyCredMetricsReport do
 
     it 'logs a warning and does not send the report' do
       expect(Rails.logger).to receive(:warn).with(
-        "No email addresses received - #{mock_partner_strings.first} Monthly Credential Report NOT SENT",
+        "No email addresses received - #{mock_partner_strings.first} " \
+        "Monthly Credential Report NOT SENT",
       )
 
       expect(ReportMailer).not_to receive(:tables_report)
@@ -317,7 +325,8 @@ RSpec.describe Reports::IrsMonthlyCredMetricsReport do
       expect(hashed['Monthly active users']).to eq(expected_mau)
       expect(hashed['Credentials authorized']).to eq(expected_new + expected_existing)
       expect(hashed['New identity verification credentials authorized']).to eq(expected_new)
-      expect(hashed['Existing identity verification credentials authorized']).to eq(expected_existing)
+      expect(hashed['Existing identity verification credentials authorized'])
+        .to eq(expected_existing)
       expect(hashed['Total authentications']).to eq(expected_total)
     end
   end
