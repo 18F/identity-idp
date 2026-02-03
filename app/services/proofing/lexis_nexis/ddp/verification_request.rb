@@ -29,7 +29,7 @@ module Proofing
             event_type: 'ACCOUNT_CREATION',
             policy: config.ddp_policy,
             service_type: 'all',
-            session_id: applicant[:threatmetrix_session_id],
+            session_id: session_id,
             national_id_number: applicant[:ssn]&.gsub(/\D/, '') || '',
             national_id_type: applicant[:ssn] ? 'US_SSN' : '',
             input_ip_address: applicant[:request_ip],
@@ -47,7 +47,11 @@ module Proofing
         end
 
         def timeout
-          IdentityConfig.store.lexisnexis_threatmetrix_timeout
+          raise NotImplementedError
+        end
+
+        def session_id
+          raise NotImplementedError
         end
       end
     end

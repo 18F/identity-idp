@@ -35,8 +35,7 @@ module Proofing
           end
 
           def verification_request(applicant)
-            # will be it's own verification request called threatmetrix_request
-            @verification_request ||= VerificationRequest.new(config:, applicant:)
+            @verification_request ||= ThreatMetrixRequest.new(config:, applicant:)
           end
 
           def validate_review_status!(review_status)
