@@ -1502,7 +1502,7 @@ instructions.mfa.sms.number_message_html: 我们把带有一次性代码的短�
 instructions.mfa.sms.seconds_remaining_html: '还剩 <strong>%{seconds} 秒时间，</strong>过后你得要求一个新代码。'
 instructions.mfa.voice.code_sent_message_html: 我们给 %{number_html}打了电话告知一次性代码。
 instructions.mfa.voice.number_message_html: 我们给 %{number_html}打了电话告知一次性代码。这一代码 %{expiration} 分钟后会作废。
-instructions.mfa.webauthn_platform.learn_more_help: 了解更多有关人脸或触摸解锁的信息
+instructions.mfa.webauthn_platform.issues_with_ft_unlock: 了解更多有关人脸或触摸解锁的信息
 instructions.mfa.webauthn.confirm_webauthn: 提供与你账户相关的安全密钥。
 instructions.mfa.webauthn.confirm_webauthn_platform_html: '<p>你可以像解锁你的设备一样来做身份证实，无论是用你的面孔还是指纹、密码或者其他方法。</p> <p>如果你用一个密码管理器设置了人脸或触摸解锁，则可以从使用那一密码管理器的任何设备进行身份证实。否则的话，使用你设置人脸或触摸解锁的同一设备。</p>'
 instructions.password.forgot: 不知道你的密码？确认你的电邮地址后重设密码。

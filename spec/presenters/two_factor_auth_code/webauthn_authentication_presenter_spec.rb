@@ -108,7 +108,7 @@ RSpec.describe TwoFactorAuthCode::WebauthnAuthenticationPresenter do
       it 'includes option to learn more about face or touch unlock' do
         expect(presenter.troubleshooting_options.size).to eq(3)
         expect(presenter.troubleshooting_options[1]).to satisfy do |c|
-          c.content == t('instructions.mfa.webauthn_platform.learn_more_help')
+          c.content == t('instructions.mfa.webauthn_platform.issues_with_ft_unlock')
         end
       end
     end

@@ -61,9 +61,17 @@ module TwoFactorAuthCode
             step: redirect_location_step,
           ),
           new_tab: true,
-        ).with_content(t('instructions.mfa.webauthn_platform.learn_more_help'))
+        ).with_content(t('instructions.mfa.webauthn_platform.issues_with_ft_unlock'))
+      else
+        options << BlockLinkComponent.new(
+          url: MarketingSite.help_center_article_url(
+            category: 'trouble-signing-in',
+            article: 'authentication/issues-with-security-key',
+          ),
+          new_tab: true,
+        ).with_content(t('instructions.mfa.webauthn_platform.issues_with_security_key'))
       end
-      options << learn_more_about_authentication_options_troubleshooting_option
+      options << how_add_or_change_authenticator_troubleshooting_option
       options
     end
 

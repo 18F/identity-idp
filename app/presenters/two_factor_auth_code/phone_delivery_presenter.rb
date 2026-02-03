@@ -100,7 +100,14 @@ module TwoFactorAuthCode
         ).with_content(
           t('two_factor_authentication.phone_verification.troubleshooting.code_not_received'),
         ),
-        learn_more_about_authentication_options_troubleshooting_option,
+        BlockLinkComponent.new(
+          url: MarketingSite.help_center_article_url(
+            category: 'trouble-signing-in',
+            article: 'authentication/issues-with-text-sms-phone-call',
+          ),
+          new_tab: true,
+        ).with_content(t('instructions.mfa.phone_verification.issues_with_text_sms_phone_call')),
+        how_add_or_change_authenticator_troubleshooting_option,
       ]
     end
 
