@@ -79,6 +79,9 @@ RSpec.describe Proofing::Socure::IdPlus::Requests::PhoneRiskRequest do
             'R567',
           ],
           score: 0.01,
+          signals: {
+            phone: {},
+          },
         },
         customerProfile: {
           customerUserId: user.uuid,

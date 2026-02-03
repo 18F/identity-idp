@@ -550,6 +550,9 @@ RSpec.describe Idv::PhoneController do
                 phoneRisk: {
                   reasonCodes: phonerisk_reason_codes,
                   score: phonerisk_low ? 0.01 : 0.99,
+                  signals: {
+                    phone: {},
+                  },
                 },
                 customerProfile: {
                   customerUserId: user.uuid,
@@ -882,6 +885,9 @@ RSpec.describe Idv::PhoneController do
                 phoneRisk: {
                   reasonCodes: [],
                   score: 0.01,
+                  signals: {
+                    phone: {},
+                  },
                 },
                 customerProfile: {
                   customerUserId: user.uuid,
