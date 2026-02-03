@@ -219,6 +219,9 @@ RSpec.describe 'In Person Proofing', js: true do
             phoneRisk: {
               reasonCodes: [],
               score: phonerisk_risk_score,
+              signals: {
+                phone: {},
+              },
             },
             customerProfile: {
               customerUserId: user.uuid,
@@ -264,6 +267,9 @@ RSpec.describe 'In Person Proofing', js: true do
                 phoneRisk: {
                   reasonCodes: [],
                   score: 0,
+                  signals: {
+                    phone: {},
+                  },
                 },
                 customerProfile: {
                   customerUserId: user.uuid,

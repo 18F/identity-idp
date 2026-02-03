@@ -308,6 +308,9 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
             phoneRisk: {
               reasonCodes: [],
               score: phonerisk_risk_score,
+              signals: {
+                phone: {},
+              },
             },
             customerProfile: {
               customerUserId: user.uuid,
