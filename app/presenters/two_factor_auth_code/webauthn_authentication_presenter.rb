@@ -69,7 +69,7 @@ module TwoFactorAuthCode
             article: 'authentication/issues-with-security-key',
           ),
           new_tab: true,
-        ).with_content(t('instructions.mfa.webauthn_platform.issues_with_security_key'))
+        ).with_content(t('instructions.mfa.webauthn.issues_with_security_key'))
       end
       options << how_add_or_change_authenticator_troubleshooting_option
       options

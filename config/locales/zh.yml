@@ -1468,9 +1468,12 @@ instructions.account.reactivate.with_key: 你有个人密钥吗？
 instructions.forgot_password.close_window: 重设你的密码后，你就可以关闭这个浏览器窗口。
 instructions.go_back_to_mobile_app: 要继续的话，请回到 %{friendly_name}应用程序并登录。
 instructions.mfa.authenticator.confirm_code_html: 输入来自你身份证实应用程序的代码。如果你在应用程序中设了几个账户，请输入与在 %{app_name_html}对应的代码。
+instructions.mfa.authenticator.issues_with_authenticator: 身份证实应用程序问题
 instructions.mfa.authenticator.manual_entry: 或者动手将这个密码输入你的身份证实应用程序。
+instructions.mfa.backup_code.issues_with_backup_codes: 备用代码问题
 instructions.mfa.do_not_share_code_link_text: 了解如何识别欺诈并举报。
 instructions.mfa.do_not_share_code_message_html: '<strong>请勿分享此代码。</strong> %{app_name} 绝不会通过电话、短信或电子邮件向您索要此代码。%{link_html}'
+instructions.mfa.phone_verification.issues_with_text_sms_phone_call: 短信/SMS或接听电话问题
 instructions.mfa.piv_cac.account_not_found_html: '<p>使用您的电子邮件地址和密码 %{sign_in}。然后将您的 PIV/CAC 插入智能卡读卡器以添加到您的帐户。</p><p>没有 %{app_name} 帐户？%{create_account}</p>'
 instructions.mfa.piv_cac.add_from_sign_in_html: '<strong>说明:</strong> 看到<strong>“添加 PIV/CAC”</strong>时插入你的 PIV or CAC 。你将需要<strong>选择一个证书</strong>（恰当的证书可能会有你的名字）而且<strong>输入你的 PIN </strong>（你的 PIN 是在设置 PIV/CAC 时设立的）。'
 instructions.mfa.piv_cac.already_associated_html: 请从另一个 PIV/CAC 选择证书，联系管理员以保证你的 PIV/CAC 是最新的。如果你认为这是一个错误， %{try_again_html}。
@@ -1484,6 +1487,7 @@ instructions.mfa.piv_cac.create_account_html: '<strong>没有 %{app_name} 帐户
 instructions.mfa.piv_cac.did_not_work_html: 请确保您的 PIV/CAC 已正确插入智能卡读卡器，%{please_try_again_html}。如果这个问题持续存在，请联系您机构的管理员。
 instructions.mfa.piv_cac.having_trouble: 如果您在使用 PIV/CAC 登录时遇到问题，请尝试：
 instructions.mfa.piv_cac.http_failure: 服务器反应时间过长。请再试一次。
+instructions.mfa.piv_cac.issues_with_piv_cac: 政府雇员 ID 问题
 instructions.mfa.piv_cac.no_certificate_html: 请确保您的 PIV/CAC 已正确插入智能卡读卡器，%{try_again_html}。如果这个问题持续存在，请联系您机构的管理员。
 instructions.mfa.piv_cac.not_auth_cert_html: 你选择的证书对这个账户无效。请用另外一个证书 %{please_try_again_html}。如果这一问题持续的话，请联系你机构的管理员。
 instructions.mfa.piv_cac.please_try_again: 再试一次
@@ -1502,7 +1506,8 @@ instructions.mfa.sms.number_message_html: 我们把带有一次性代码的短�
 instructions.mfa.sms.seconds_remaining_html: '还剩 <strong>%{seconds} 秒时间，</strong>过后你得要求一个新代码。'
 instructions.mfa.voice.code_sent_message_html: 我们给 %{number_html}打了电话告知一次性代码。
 instructions.mfa.voice.number_message_html: 我们给 %{number_html}打了电话告知一次性代码。这一代码 %{expiration} 分钟后会作废。
-instructions.mfa.webauthn_platform.issues_with_ft_unlock: 了解更多有关人脸或触摸解锁的信息
+instructions.mfa.webauthn_platform.issues_with_ft_unlock: 人脸或触摸解锁问题
+instructions.mfa.webauthn_platform.issues_with_security_key: 安全密钥问题
 instructions.mfa.webauthn.confirm_webauthn: 提供与你账户相关的安全密钥。
 instructions.mfa.webauthn.confirm_webauthn_platform_html: '<p>你可以像解锁你的设备一样来做身份证实，无论是用你的面孔还是指纹、密码或者其他方法。</p> <p>如果你用一个密码管理器设置了人脸或触摸解锁，则可以从使用那一密码管理器的任何设备进行身份证实。否则的话，使用你设置人脸或触摸解锁的同一设备。</p>'
 instructions.password.forgot: 不知道你的密码？确认你的电邮地址后重设密码。
@@ -1783,6 +1788,7 @@ two_factor_authentication.account_reset.link: 删除你的帐户
 two_factor_authentication.account_reset.pending: 你目前有个待处理的删除账户请求。从你提出请求到完成该流程需要 %{interval}。请随后回来查看。
 two_factor_authentication.account_reset.successful_cancel: 谢谢。你删除自己 %{app_name} 账户的请求已被取消。
 two_factor_authentication.account_reset.text_html: 如果你无法使用上述任何身份证实方法，可以%{link_html}创建一个新帐户。如果你删除帐户，不会丢失存储在政府机构中的任何信息的。
+two_factor_authentication.add_or_change_authenticator: 如何添加或更改我帐户上的身份证实方法？
 two_factor_authentication.attempt_remaining_warning_html.one: 你还可以再试 <strong>%{count} 次 </strong> 。
 two_factor_authentication.attempt_remaining_warning_html.other: 你还可以再试 <strong>%{count} 次 </strong> 。
 two_factor_authentication.auth_app.change_nickname: 更改昵称
@@ -1861,7 +1867,7 @@ two_factor_authentication.phone_fee_disclosure: 可能会收短信和数据费�
 two_factor_authentication.phone_info: 你每次登录我们会给你发个一次性代码。
 two_factor_authentication.phone_label: 电话号码
 two_factor_authentication.phone_verification.troubleshooting.change_number: 使用另一个电话号码
-two_factor_authentication.phone_verification.troubleshooting.code_not_received: 我没有通过SMS/短信或电话收到一个一次性代码
+two_factor_authentication.phone_verification.troubleshooting.code_not_received: I didn’t receive a one-time code
 two_factor_authentication.phone.delete.failure: 无法去掉你的电话。
 two_factor_authentication.phone.delete.success: 你的电话已被去掉。
 two_factor_authentication.piv_cac_header_text: 插入您的政府雇员身份证件
