@@ -127,7 +127,6 @@ module DocAuth
           def products
             @products ||=
               authentication_results.dig(:Products)&.each_with_object({}) do |product, product_list|
-                # puts "Processing product: #{product.inspect}"
                 extract_details(product)
                 product_list[product[:ProductType]] = product
               end&.with_indifferent_access
