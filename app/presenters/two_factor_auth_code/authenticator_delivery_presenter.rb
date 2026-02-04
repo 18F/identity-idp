@@ -18,7 +18,6 @@ module TwoFactorAuthCode
       :totp_verification
     end
 
-
     def troubleshooting_options
       [
         choose_another_method_troubleshooting_option,
