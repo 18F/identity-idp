@@ -178,7 +178,10 @@ RSpec.describe AttributeAsserter do
 
               it 'uses authn request bundle' do
                 expect(user.asserted_attributes.keys)
-                  .to eq(%i[uuid email email_for_entra_id first_name last_name ssn phone verified_at aal ial])
+                  .to eq(
+                    %i[uuid email email_for_entra_id first_name last_name ssn phone verified_at
+                       aal ial],
+                  )
               end
             end
           end
@@ -195,7 +198,10 @@ RSpec.describe AttributeAsserter do
             let(:attribute_bundle) { %w[email foo] }
 
             it 'silently skips invalid attribute name' do
-              expect(user.asserted_attributes.keys).to eq(%i[uuid email email_for_entra_id verified_at aal ial])
+              expect(user.asserted_attributes.keys).to eq(
+                %i[uuid email email_for_entra_id
+                   verified_at aal ial],
+              )
             end
           end
 
@@ -212,7 +218,8 @@ RSpec.describe AttributeAsserter do
               end
 
               it 'does not include x509_subject, x509_issuer, and x509_presented' do
-                expect(user.asserted_attributes.keys).to eq %i[uuid email email_for_entra_id verified_at aal ial]
+                expect(user.asserted_attributes.keys).to eq %i[uuid email email_for_entra_id
+                                                               verified_at aal ial]
               end
             end
 
@@ -294,7 +301,8 @@ RSpec.describe AttributeAsserter do
             let(:service_provider_ial) { 2 }
 
             it 'includes verified_at' do
-              expect(user.asserted_attributes.keys).to eq %i[uuid email email_for_entra_id verified_at aal ial]
+              expect(user.asserted_attributes.keys)
+                .to eq %i[uuid email email_for_entra_id verified_at aal ial]
             end
           end
         end
@@ -366,7 +374,8 @@ RSpec.describe AttributeAsserter do
             end
 
             it 'includes x509_subject x509_issuer and x509_presented' do
-              expected = %i[uuid email email_for_entra_id aal ial x509_subject x509_issuer x509_presented]
+              expected = %i[uuid email email_for_entra_id aal ial x509_subject x509_issuer
+                            x509_presented]
               expect(user.asserted_attributes.keys).to eq expected
             end
           end
