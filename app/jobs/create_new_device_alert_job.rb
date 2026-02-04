@@ -7,7 +7,6 @@ class CreateNewDeviceAlertJob < ApplicationJob
 
   good_job_control_concurrency_with(
     total_limit: 1,
-    perform_limit: 1,
     key: 'CreateNewDeviceAlertJob',
   )
 
