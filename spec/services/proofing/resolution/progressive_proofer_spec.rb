@@ -35,7 +35,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
     let(:request_ip) { Faker::Internet.ip_v4_address }
     let(:threatmetrix_session_id) { SecureRandom.uuid }
     let(:current_sp) { build(:service_provider) }
-    let(:workflow) { :auth }
+    let(:workflow) { :idv }
 
     let(:residential_address_resolution_result) do
       Proofing::Resolution::Result.new(
@@ -208,7 +208,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
             timer: an_instance_of(JobHelpers::Timer),
             user_email:,
             user_uuid:,
-            workflow:,
+            workflow: :"#{workflow}_hybrid_handoff",
           ).ordered
 
           proof
