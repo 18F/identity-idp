@@ -1770,12 +1770,12 @@ titles.visitors.index: Bienvenue
 titles.webauthn_setup: Ajouter votre clé de sécurité
 two_factor_authentication.aal2_request.phishing_resistant_html: '<strong>%{sp_name}</strong> nécessite une méthode d’authentification de haute sécurité, telle que le déverrouillage facial ou tactile, une clé de sécurité ou une carte d’employé fédéral.'
 two_factor_authentication.aal2_request.piv_cac_only_html: '<strong>%{sp_name}</strong> nécessite votre carte d’employé fédéral, qui est une méthode d’authentification de haute sécurité.'
-two_factor_authentication.add_or_change_authenticator: Comment puis-je ajouter une méthode d’authentification ou la modifier sur mon compte ?
 two_factor_authentication.account_reset.cancel_link: Annuler votre demande
 two_factor_authentication.account_reset.link: supprimer votre compte
 two_factor_authentication.account_reset.pending: Vous avez actuellement une demande en attente pour supprimer votre compte. Il faut compter %{interval} à partir du moment où vous avez fait la demande pour terminer le processus. Veuillez vérifier plus tard.
 two_factor_authentication.account_reset.successful_cancel: Je vous remercie. Votre demande de suppression de votre compte %{app_name} a été annulée.
 two_factor_authentication.account_reset.text_html: Si vous ne pouvez utiliser aucune des options d’authentification ci-dessus, vous pouvez %{link_html} puis en créer un nouveau. Vous ne perdrez aucune des informations que vous avez stockées auprès d’organismes publics en supprimant votre compte.
+two_factor_authentication.add_or_change_authenticator: Comment puis-je ajouter une méthode d’authentification ou la modifier sur mon compte ?
 two_factor_authentication.attempt_remaining_warning_html.one: Il vous reste <strong>%{count} tentative</strong>.
 two_factor_authentication.attempt_remaining_warning_html.other: Il vous reste <strong>%{count} tentatives</strong>.
 two_factor_authentication.auth_app.change_nickname: Changer de pseudo
