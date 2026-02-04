@@ -1,7 +1,15 @@
 # frozen_string_literal: true
 
 class CreateNewDeviceAlertJob < ApplicationJob
+  include GoodJob::ActiveJobExtensions::Concurrency
+
   queue_as :long_running
+
+  good_job_control_concurrency_with(
+    total_limit: 1,
+    perform_limit: 1,
+    key: 'CreateNewDeviceAlertJob',
+  )
 
   def perform(now)
     emails_sent = 0
