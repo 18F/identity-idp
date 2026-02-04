@@ -7128,12 +7128,15 @@ module AnalyticsEvents
 
   # @param [Boolean, nil] active_profile if the account the reset is being requested for has an
   #   active proofed profile
+  #   The user signed in with a password found on the pwned list
   def password_found_on_pwned_list(
-    active_profile:
+    active_profile:,
+    **extra
   )
     track_event(
       :password_found_on_pwned_list,
       active_profile:,
+      **extra,
     )
   end
 
