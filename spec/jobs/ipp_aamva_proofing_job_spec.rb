@@ -68,7 +68,7 @@ RSpec.describe IppAamvaProofingJob, type: :job do
         expect(result[:success]).to be true
         expect(result[:errors]).to eq({})
         expect(result[:vendor_name]).to eq('state_id:aamva')
-        expect(result[:verified_attributes]).to match_array(['ssn', 'dob'])
+        expect(result[:verified_attributes]).to match_array(%w[ssn dob])
       end
 
       it 'calls AAMVA proofer with correct parameters' do
