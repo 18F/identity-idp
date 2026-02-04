@@ -468,7 +468,7 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
         hash_including(
           ssn: Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID[:ssn],
           consent_given_at: subject.idv_session.idv_consent_given_at,
-          aamva_verified_attributes: [],
+          aamva_verified_attributes: nil,
         ),
       ).and_call_original
 
@@ -584,7 +584,7 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
               source: :mfa,
               phone: '+1 415-555-0130',
             },
-            aamva_verified_attributes: [],
+            aamva_verified_attributes: nil,
           ),
         ).and_call_original
         put :update
