@@ -234,8 +234,8 @@ RSpec.describe AttributeAsserter do
               end
 
               it 'includes x509_subject x509_issuer x509_presented' do
-                expected = %i[uuid email email_for_entra_id verified_at aal ial x509_subject x509_issuer
-                              x509_presented]
+                expected = %i[uuid email email_for_entra_id verified_at aal ial x509_subject
+                              x509_issuer x509_presented]
                 expect(user.asserted_attributes.keys).to eq expected
               end
             end
