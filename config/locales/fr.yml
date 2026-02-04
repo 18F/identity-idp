@@ -1493,7 +1493,7 @@ instructions.mfa.sms.number_message_html: Nous avons envoyé un SMS (texto) avec
 instructions.mfa.sms.seconds_remaining_html: 'Il vous reste <strong>%{seconds} secondes</strong> avant de devoir demander un nouveau code'
 instructions.mfa.voice.code_sent_message_html: Nous avons passé un appel avec un code à usage unique au %{number_html}.
 instructions.mfa.voice.number_message_html: Nous avons passé un appel avec un code à usage unique au %{number_html}. Ce code expirera dans %{expiration} minutes.
-instructions.mfa.webauthn_platform.issues_with_ft_unlock: En savoir plus sur le déverrouillage facial ou tactile
+instructions.mfa.webauthn_platform.issues_with_ft_unlock: Problèmes avec le déverrouillage facial et tactile
 instructions.mfa.webauthn.confirm_webauthn: Présentez la clé de sécurité associée à votre compte.
 instructions.mfa.webauthn.confirm_webauthn_platform_html: '<p>Vous pouvez vous authentifier de la même manière que vous déverrouillez votre appareil, que ce soit avec votre visage ou votre empreinte digitale, un mot de passe ou une autre méthode. </p> <p>Si vous avez utilisé un gestionnaire de mots de passe pour configurer le déverrouillage facial ou tactile, vous pouvez vous authentifier à partir de n’importe quel appareil utilisant ce gestionnaire. Sinon, utilisez le même appareil que celui sur lequel vous avez configuré le déverrouillage facial ou tactile.</p>'
 instructions.mfa.webauthn.issues_with_security_key: Problèmes avec une clé de sécurité
@@ -1770,6 +1770,7 @@ titles.visitors.index: Bienvenue
 titles.webauthn_setup: Ajouter votre clé de sécurité
 two_factor_authentication.aal2_request.phishing_resistant_html: '<strong>%{sp_name}</strong> nécessite une méthode d’authentification de haute sécurité, telle que le déverrouillage facial ou tactile, une clé de sécurité ou une carte d’employé fédéral.'
 two_factor_authentication.aal2_request.piv_cac_only_html: '<strong>%{sp_name}</strong> nécessite votre carte d’employé fédéral, qui est une méthode d’authentification de haute sécurité.'
+two_factor_authentication.add_or_change_authenticator: Comment puis-je ajouter une méthode d’authentification ou la modifier sur mon compte ?
 two_factor_authentication.account_reset.cancel_link: Annuler votre demande
 two_factor_authentication.account_reset.link: supprimer votre compte
 two_factor_authentication.account_reset.pending: Vous avez actuellement une demande en attente pour supprimer votre compte. Il faut compter %{interval} à partir du moment où vous avez fait la demande pour terminer le processus. Veuillez vérifier plus tard.
