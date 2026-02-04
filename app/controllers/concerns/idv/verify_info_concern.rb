@@ -232,6 +232,8 @@ module Idv
             [:proofing_results, :context, :stages, :resolution, :reason_codes],
             [:proofing_results, :context, :stages, :residential_address, :errors, :ssn],
             [:proofing_results, :context, :stages, :threatmetrix, :response_body, :first_name],
+            [:proofing_results, :context, :stages, :hybrid_mobile_threatmetrix, :response_body,
+             :first_name],
             [:proofing_results, :context, :stages, :state_id, :state_id_jurisdiction],
             [:proofing_results, :context, :stages, :state_id, :errors, :state_id_jurisdiction],
             [:proofing_results, :biographical_info, :identity_doc_address_state],
@@ -243,10 +245,18 @@ module Idv
       )
 
       threatmetrix_response_body = delete_threatmetrix_response_body(form_response)
+      hybrid_mobile_threatmetrix_response_body =
+        delete_hybrid_mobile_threatmetrix_response_body(form_response)
 
       if threatmetrix_response_body.present?
         analytics.idv_threatmetrix_response_body(
           response_body: threatmetrix_response_body,
+        )
+      end
+
+      if hybrid_mobile_threatmetrix_response_body.present?
+        analytics.idv_threatmetrix_hybrid_mobile_response_body(
+          response_body: hybrid_mobile_threatmetrix_response_body,
         )
       end
 
@@ -446,6 +456,19 @@ module Idv
 
       threatmetrix_result.delete(:device_fingerprint)
       threatmetrix_result.delete(:response_body)
+    end
+
+    def delete_hybrid_mobile_threatmetrix_response_body(form_response)
+      hybrid_threatmetrix_result = form_response.extra.dig(
+        :proofing_results,
+        :context,
+        :stages,
+        :hybrid_mobile_threatmetrix,
+      )
+      return if hybrid_threatmetrix_result.blank?
+
+      hybrid_threatmetrix_result.delete(:device_fingerprint)
+      hybrid_threatmetrix_result.delete(:response_body)
     end
 
     def device_risk_failure_reason(success, result)
