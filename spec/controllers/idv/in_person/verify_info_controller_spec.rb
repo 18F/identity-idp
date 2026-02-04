@@ -491,7 +491,8 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
 
       before do
         document_capture_session.store_proofing_result(aamva_result.to_h)
-        controller.idv_session.ipp_aamva_result = document_capture_session.load_proofing_result.result
+        controller.idv_session.ipp_aamva_result = document_capture_session
+          .load_proofing_result.result
       end
 
       it 'modifies PII to include aamva verified attributes' do
