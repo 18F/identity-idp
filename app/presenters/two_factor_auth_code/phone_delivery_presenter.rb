@@ -89,18 +89,6 @@ module TwoFactorAuthCode
       [
         troubleshoot_change_phone_or_method_option,
         BlockLinkComponent.new(
-          url: help_center_redirect_path(
-            category: 'get-started',
-            article: 'authentication-methods',
-            article_anchor: 'didn-t-receive-your-one-time-code',
-            flow: :two_factor_authentication,
-            step: :otp_confirmation,
-          ),
-          new_tab: true,
-        ).with_content(
-          t('two_factor_authentication.phone_verification.troubleshooting.code_not_received'),
-        ),
-        BlockLinkComponent.new(
           url: MarketingSite.help_center_article_url(
             category: 'trouble-signing-in',
             article: 'authentication/issues-with-text-sms-phone-call',
