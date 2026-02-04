@@ -316,9 +316,13 @@ module Users
       return if current_user.password_compromised_checked_at.present?
 
       is_pwned = PwnedPasswords::LookupPassword.call(auth_params[:password])
-      analytics.password_found_on_pwned_list(active_profile: current_user.active_profile) if is_pwned
+      track_pwned_password if is_pwned
       session[:redirect_to_change_password] = is_pwned
       update_user_password_compromised_checked_at
+    end
+
+    def track_pwned_password
+      analytics.password_found_on_pwned_list(active_profile: current_user.active_profile)
     end
 
     def update_user_password_compromised_checked_at
