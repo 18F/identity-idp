@@ -564,47 +564,40 @@ RSpec.describe Users::SessionsController, devise: true do
       end
     end
 
-    context 'Password Compromised toggle is set to true' do
-      context 'User has a compromised password' do
-        let(:user) { create(:user, :fully_registered) }
-        before do
-          allow(PwnedPasswords::LookupPassword).to receive(:call).and_return true
-        end
-
-        context 'user randomly chosen to be tested' do
-          it 'updates user attribute password_compromised_checked_at' do
-            expect(user.password_compromised_checked_at).to be_falsey
-            post :create, params: { user: { email: user.email, password: user.password } }
-            user.reload
-            expect(user.password_compromised_checked_at).to be_truthy
-          end
-
-          it 'stores in session redirect to check compromise' do
-            post :create, params: { user: { email: user.email, password: user.password } }
-            expect(controller.session[:redirect_to_change_password]).to be_truthy
-          end
-        end
+    context 'User has a compromised password' do
+      let(:user) { create(:user, :fully_registered) }
+      before do
+        allow(PwnedPasswords::LookupPassword).to receive(:call).and_return true
+      end
+      it 'updates user attribute password_compromised_checked_at' do
+        expect(user.password_compromised_checked_at).to be_falsey
+        post :create, params: { user: { email: user.email, password: user.password } }
+        user.reload
+        expect(user.password_compromised_checked_at).to be_truthy
       end
 
-      context 'user does not have a compromised password' do
-        let(:user) { create(:user, :fully_registered) }
-        before do
-          allow(PwnedPasswords::LookupPassword).to receive(:call).and_return false
-        end
+      it 'stores in session redirect to check compromise' do
+        post :create, params: { user: { email: user.email, password: user.password } }
+        expect(controller.session[:redirect_to_change_password]).to be_truthy
+      end
+    end
 
-        context 'user password is tested' do
-          it 'updates user attribute password_compromised_checked_at' do
-            expect(user.password_compromised_checked_at).to be_falsey
-            post :create, params: { user: { email: user.email, password: user.password } }
-            user.reload
-            expect(user.password_compromised_checked_at).to be_truthy
-          end
+    context 'user does not have a compromised password' do
+      let(:user) { create(:user, :fully_registered) }
+      before do
+        allow(PwnedPasswords::LookupPassword).to receive(:call).and_return false
+      end
 
-          it 'stores in session false to attempt to redirect password compromised' do
-            post :create, params: { user: { email: user.email, password: user.password } }
-            expect(controller.session[:redirect_to_change_password]).to be_falsey
-          end
-        end
+      it 'updates user attribute password_compromised_checked_at' do
+        expect(user.password_compromised_checked_at).to be_falsey
+        post :create, params: { user: { email: user.email, password: user.password } }
+        user.reload
+        expect(user.password_compromised_checked_at).to be_truthy
+      end
+
+      it 'stores in session false to attempt to redirect password compromised' do
+        post :create, params: { user: { email: user.email, password: user.password } }
+        expect(controller.session[:redirect_to_change_password]).to be_falsey
       end
     end
 
