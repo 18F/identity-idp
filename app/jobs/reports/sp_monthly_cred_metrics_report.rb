@@ -2,15 +2,15 @@
 
 module Reports
   class SpMonthlyCredMetricsReport < BaseReport
-    # REPORT_NAME = 'irs_monthly_cred_metrics'
 
     attr_reader :report_date, :report_receiver, :report_name
 
-    def initialize(init_date = Time.zone.yesterday.end_of_day, init_receiver = :internal, *args,
-                   **rest)
+    def initialize(init_date = Time.zone.yesterday.end_of_day, init_receiver = :internal,
+                   report_config = {}, *args, **rest)
       @report_date = init_date
       @report_receiver = init_receiver.to_sym
-      super(init_date, init_receiver, *args, **rest)
+      @report_config = report_config
+      super(init_date, init_receiver, report_config, *args, **rest)
     end
 
     def partner_strings
@@ -84,17 +84,18 @@ module Reports
       ]
     end
 
-    # def perform(perform_date = Time.zone.yesterday.end_of_day, perform_receiver = :internal, report_config = {})
-    def perform(perform_date = Time.zone.yesterday.end_of_day, perform_receiver = :internal)
+    # def perform(perform_date = Time.zone.yesterday.end_of_day, perform_receiver = :internal)
+    def perform(perform_date = Time.zone.yesterday.end_of_day, perform_receiver = :internal, report_config = {})
       @report_receiver = perform_receiver.to_sym
       @report_date = perform_date
+      @report_config = report_config
 
-      IdentityConfig.store.sp_monthly_cred_metric_report_configs.each do |report_config|
-        send_report(report_config)
-      end
-    end
+      #   IdentityConfig.store.sp_monthly_cred_metric_report_configs.each do |report_config|
+      #     send_report(report_config)
+      #   end
+      # end
 
-    def send_report(report_config)
+      # def send_report(report_config)
       @issuers = report_config['issuers']
       @partner_strings = report_config['partner_strings']
       @partner_emails = report_config['partner_emails']

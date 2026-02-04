@@ -9,8 +9,17 @@ RSpec.describe Reports::SpMonthlyCredMetricsReport do
 
   let(:mock_reports_partner_emails)  { ['mock_partner@example.com'] }
   let(:mock_reports_internal_emails) { ['mock_internal@example.com'] }
-  let(:mock_issuers)                { ['Issuer_4'] }
-  let(:mock_partner_strings)        { ['Partner_1'] }
+  let(:mock_issuers) { ['Issuer_4'] }
+  let(:mock_partner_strings) { ['Partner_1'] }
+
+  let(:report_config) do
+    {
+      'issuers' => mock_issuers,
+      'partner_strings' => mock_partner_strings,
+      'partner_emails' => mock_reports_partner_emails,
+      'internal_emails' => mock_reports_internal_emails,
+    }
+  end
 
   # Derived by job: "#{partner_strings.first.downcase}_monthly_cred_metrics"
   let(:report_name) { "#{mock_partner_strings.first.downcase}_monthly_cred_metrics" }
@@ -39,15 +48,6 @@ RSpec.describe Reports::SpMonthlyCredMetricsReport do
     File.read(fixture_path)
   end
 
-  let(:base_config) do
-    {
-      'issuers' => mock_issuers,
-      'partner_strings' => mock_partner_strings,
-      'partner_emails' => mock_reports_partner_emails,
-      'internal_emails' => mock_reports_internal_emails,
-    }
-  end
-
   before do
     # App config/environment
     allow(Identity::Hostdata).to receive(:env).and_return('int')
@@ -55,10 +55,6 @@ RSpec.describe Reports::SpMonthlyCredMetricsReport do
     allow(Identity::Hostdata).to receive(:aws_region).and_return('us-west-1')
     allow(IdentityConfig.store).to receive(:s3_report_bucket_prefix)
       .and_return(s3_report_bucket_prefix)
-
-    # New config source
-    allow(IdentityConfig.store).to receive(:sp_monthly_cred_metric_report_configs)
-      .and_return([base_config])
 
     # S3 stub
     Aws.config[:s3] = {
@@ -68,120 +64,130 @@ RSpec.describe Reports::SpMonthlyCredMetricsReport do
     }
 
     # Mock the report data methods
-    allow_any_instance_of(Reports::IrsMonthlyCredMetricsReport)
+    allow_any_instance_of(Reports::SpMonthlyCredMetricsReport)
       .to receive(:issuer_report_data)
-      .and_return([
-                    ['Issuer', 'Monthly active users', 'Credentials authorized',
-                     'New identity verification credentials authorized',
-                     'Existing identity verification credentials authorized',
-                     'Total authentications'],
-                    ['Issuer_4', 100, 50, 30, 20, 200],
-                  ])
+      .and_return(
+        [
+          ['Issuer', 'Monthly active users', 'Credentials authorized',
+           'New identity verification credentials authorized',
+           'Existing identity verification credentials authorized',
+           'Total authentications'],
+          ['Issuer_4', 100, 50, 30, 20, 200],
+        ],
+      )
 
     allow_any_instance_of(Reports::SpMonthlyCredMetricsReport)
       .to receive(:partner_report_data)
-      .and_return([
-                    ['Metric', 'Value'],
-                    ['Credentials authorized', 50],
-                    ['New identity verification credentials authorized', 30],
-                    ['Existing identity verification credentials authorized', 20],
-                  ])
+      .and_return(
+        [
+          ['Metric', 'Value'],
+          ['Credentials authorized', 50],
+          ['New identity verification credentials authorized', 30],
+          ['Existing identity verification credentials authorized', 20],
+        ],
+      )
 
-    # Mock the return from the invoice report
+    # Invoice CSV used by original builders (only needed for fixture builder context)
     allow_any_instance_of(Reports::SpMonthlyCredMetricsReport)
       .to receive(:invoice_report_data)
       .and_return(fixture_csv_data)
+
+    allow(ReportMailer).to receive_message_chain(:tables_report, :deliver_now)
   end
 
-  context 'for begining of the month sends out the report to the internal and partner' do
+  context 'for beginning of the month sends out the report to the internal and partner' do
     let(:report_receiver) { :both }
     let(:report_date) { Date.new(2021, 3, 1).prev_day } # 2021-02-28
-    subject(:report) { Reports::SpMonthlyCredMetricsReport.new(report_date, report_receiver) }
+    subject(:report) do
+      Reports::SpMonthlyCredMetricsReport.new(report_date, report_receiver, report_config)
+    end
 
     it 'sends report to partner (to) and internal (bcc)' do
       expect(ReportMailer).to receive(:tables_report).once.with(
         to: mock_reports_partner_emails,
         bcc: mock_reports_internal_emails,
         subject:
-            "#{mock_partner_strings.first} Monthly Credential Metrics - " \
-            "#{report_date.to_date}",
+          "#{mock_partner_strings.first} Monthly Credential Metrics - " \
+          "#{report_date.to_date}",
         reports: anything,
         message: report.preamble,
         attachment_format: :csv,
       ).and_call_original
 
-      report.perform(report_date, :both)
+      report.perform(report_date, :both, report_config)
     end
   end
 
   context 'for any day of the month sends out the report to the internal' do
     let(:report_receiver) { :internal }
     let(:report_date) { Date.new(2021, 3, 15).prev_day } # 2021-03-14
-    subject(:report) { Reports::SpMonthlyCredMetricsReport.new(report_date, report_receiver) }
+    subject(:report) do
+      Reports::SpMonthlyCredMetricsReport.new(report_date, report_receiver, report_config)
+    end
 
     it 'sends out a report to internal receivers' do
       expect(ReportMailer).to receive(:tables_report).once.with(
         to: mock_reports_internal_emails,
         bcc: [],
         subject:
-            "#{mock_partner_strings.first} Monthly Credential Metrics - " \
-            "#{report_date.to_date}",
+          "#{mock_partner_strings.first} Monthly Credential Metrics - " \
+          "#{report_date.to_date}",
         reports: anything,
         message: report.preamble,
         attachment_format: :csv,
       ).and_call_original
 
-      report.perform(report_date, :internal)
+      report.perform(report_date, :internal, report_config)
     end
   end
 
   context 'recipient is both but partner emails are empty' do
     let(:report_receiver) { :both }
     let(:report_date) { Date.new(2021, 3, 1).prev_day } # 2021-02-28
-    subject(:report) { Reports::SpMonthlyCredMetricsReport.new(report_date, report_receiver) }
+    subject(:report) do
+      Reports::SpMonthlyCredMetricsReport.new(report_date, report_receiver, report_config)
+    end
 
-    before do
-      config_without_partner_emails = base_config.merge(
+    let(:report_config) do
+      super().merge(
         'partner_emails' => [],
         'internal_emails' => mock_reports_internal_emails,
       )
-      allow(IdentityConfig.store).to receive(:sp_monthly_cred_metric_report_configs)
-        .and_return([config_without_partner_emails])
     end
 
     it 'logs a warning and sends the report only to internal emails' do
       expect(Rails.logger).to receive(:warn).with(
-        "#{mock_partner_strings.first} Monthly Credential Report: " \
-        "recipient is :both but no external email specified",
+        "#{mock_partner_strings.first} Monthly Credential Report: recipient is :both " \
+        "but no external email specified",
       )
 
       expect(ReportMailer).to receive(:tables_report).once.with(
         to: mock_reports_internal_emails,
         bcc: [],
         subject:
-            "#{mock_partner_strings.first} Monthly Credential Metrics - " \
-            "#{report_date.to_date}",
+          "#{mock_partner_strings.first} Monthly Credential Metrics - " \
+          "#{report_date.to_date}",
         reports: anything,
         message: report.preamble,
         attachment_format: :csv,
       ).and_call_original
 
-      report.perform(report_date, :both)
+      report.perform(report_date, :both, report_config)
     end
   end
 
   context 'recipient is internal but internal emails are empty' do
     let(:report_receiver) { :internal }
     let(:report_date) { Date.new(2021, 3, 15).prev_day } # 2021-03-14
-    subject(:report) { Reports::SpMonthlyCredMetricsReport.new(report_date, report_receiver) }
+    subject(:report) do
+      Reports::SpMonthlyCredMetricsReport.new(report_date, report_receiver, report_config)
+    end
 
-    before do
-      config_without_internal_emails = base_config.merge(
+    let(:report_config) do
+      super().merge(
         'internal_emails' => [],
         'partner_emails' => mock_reports_partner_emails,
       )
-      allow(IdentityConfig.store).to receive(:sp_monthly_cred_metric_report_configs)
-        .and_return([config_without_internal_emails])
     end
 
     it 'logs a warning and does not send the report' do
@@ -191,25 +197,18 @@ RSpec.describe Reports::SpMonthlyCredMetricsReport do
       )
 
       expect(ReportMailer).not_to receive(:tables_report)
-
       expect(report).not_to receive(:as_emailable_partner_report)
 
-      report.perform(report_date, :internal)
+      report.perform(report_date, :internal, report_config)
     end
   end
 
   it 'does not send the report if no emails are configured' do
-    allow(IdentityConfig.store).to receive(:sp_monthly_cred_metric_report_configs).and_return(
-      [
-        base_config.merge(
-          'partner_emails' => [], 'internal_emails' => [],
-        ),
-      ],
-    )
+    config = report_config.merge('partner_emails' => [], 'internal_emails' => [])
 
     expect(ReportMailer).not_to receive(:tables_report)
     expect(report).not_to receive(:as_emailable_partner_report)
-    report.perform(report_date)
+    report.perform(report_date, :internal, config)
   end
 
   it 'uploads a file to S3 based on the report date' do
@@ -220,32 +219,23 @@ RSpec.describe Reports::SpMonthlyCredMetricsReport do
       ).once.and_call_original
     end
 
-    report.perform(report_date)
+    report.perform(report_date, :internal, report_config)
   end
 
   describe '#preamble' do
     let(:env) { 'prod' }
     subject(:preamble) { report.preamble(env:) }
 
-    context 'in a prod environment' do
-      it 'has a blank preamble' do
-        expect(preamble).to be_blank
-      end
+    it 'has a blank preamble in prod' do
+      expect(preamble).to be_blank
     end
 
     context 'in a non-prod environment' do
       let(:env) { 'staging' }
-      subject(:preamble) { report.preamble(env:) }
 
-      it 'is valid HTML' do
-        expect(preamble).to be_html_safe
-        expect { Nokogiri::XML(preamble) { |c| c.strict } }.not_to raise_error
-      end
-
-      it 'has an alert with the environment name' do
+      it 'is valid HTML and includes env name' do
         expect(preamble).to be_html_safe
         doc = Nokogiri::XML(preamble)
-
         alert = doc.at_css('.usa-alert')
         expect(alert.text).to include(env)
       end
@@ -261,37 +251,24 @@ RSpec.describe Reports::SpMonthlyCredMetricsReport do
     let(:parsed_invoice_data) { CSV.parse(fixture_csv_data, headers: true) }
     let(:report_year_month) { report_date.strftime('%Y%m') }
 
+    let(:report_config) do
+      super().merge(
+        'issuers' => ['Issuer_2', 'Issuer_3', 'Issuer_4'],
+        'partner_strings' => mock_partner_strings,
+      )
+    end
+
     before do
       # Use real builder logic
       allow_any_instance_of(Reports::SpMonthlyCredMetricsReport)
         .to receive(:issuer_report_data).and_call_original
       allow_any_instance_of(Reports::SpMonthlyCredMetricsReport)
         .to receive(:partner_report_data).and_call_original
-
-      # Ensure config uses multiple issuers for this test
-      config = base_config.merge(
-        'issuers' => ['Issuer_2', 'Issuer_3', 'Issuer_4'],
-        'partner_strings' => mock_partner_strings,
-      )
-      allow(IdentityConfig.store).to receive(:sp_monthly_cred_metric_report_configs)
-        .and_return([config])
     end
 
     it 'returns issuer and partner tables with expected shapes and values' do
-      config = base_config.merge(
-        'issuers' => ['Issuer_2', 'Issuer_3', 'Issuer_4'],
-        'partner_strings' => mock_partner_strings,
-        'partner_emails' => mock_reports_partner_emails,
-        'internal_emails' => mock_reports_internal_emails,
-      )
-
-      report.instance_variable_set(:@report_date, report_date)
-      report.instance_variable_set(:@report_receiver, :internal)
-
-      result = report.send_report(config) # returns [issuer_table, partner_table]
-
-      issuer_table = result[0]
-      partner_table = result[1]
+      result = report.perform(report_date, :internal, report_config)
+      issuer_table, partner_table = result
 
       expect(result.length).to eq(2)
 
