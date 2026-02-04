@@ -7132,7 +7132,7 @@ module AnalyticsEvents
     active_profile:
   )
     track_event(
-      'Password found on pwned list',
+      :password_found_on_pwned_list,
       active_profile:,
     )
   end
