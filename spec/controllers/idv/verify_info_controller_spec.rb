@@ -1611,13 +1611,13 @@ RSpec.describe Idv::VerifyInfoController do
 
       context 'when aamva check completed' do
         before do
-          controller.idv_session.aamva_verified_attributes = %i[ssn dob]
+          controller.idv_session.aamva_verified_attributes = %w[ssn dob]
         end
 
         it 'modifies PII to include aamva verified attributes' do
           expect(Idv::Agent).to receive(:new).with(
             hash_including(
-              aamva_verified_attributes: %i[ssn dob],
+              aamva_verified_attributes: %w[ssn dob],
             ),
           ).and_call_original
 
