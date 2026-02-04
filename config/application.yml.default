@@ -71,7 +71,6 @@ backup_code_user_id_per_ip_attempt_window_max_minutes: 43_200
 backup_code_user_id_per_ip_max_attempts: 50
 broken_personal_key_window_finish: '2021-09-22T00:00:00Z'
 broken_personal_key_window_start: '2021-07-29T00:00:00Z'
-check_user_password_compromised_enabled: true
 component_previews_embed_frame_ancestors: '[]'
 component_previews_enabled: false
 country_phone_number_overrides: '{}'
@@ -551,7 +550,6 @@ development:
   account_creation_tmx_processed_percent: 100
   attribute_encryption_key: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
   attribute_encryption_key_queue: '[{ "key": "11111111111111111111111111111111" }, { "key": "22222222222222222222222222222222" }]'
-  check_user_password_compromised_enabled: true
   component_previews_embed_frame_ancestors: '["http://localhost:4000"]'
   component_previews_enabled: true
   dashboard_api_token: test_token
