@@ -615,4 +615,24 @@ RSpec.describe AbTests do
 
     it_behaves_like 'A/B test using verify_info_step_document_capture_session_uuid discriminator'
   end
+
+  describe 'HYBRID_MOBILE_TMX_PROCESSED' do
+    let(:ab_test) { :HYBRID_MOBILE_TMX_PROCESSED }
+
+    let(:disable_ab_test) do
+      -> {
+        allow(IdentityConfig.store).to receive(:hybrid_mobile_tmx_processed_percent)
+          .and_return(0)
+      }
+    end
+
+    let(:enable_ab_test) do
+      -> {
+        allow(IdentityConfig.store).to receive(:hybrid_mobile_tmx_processed_percent)
+          .and_return(50)
+      }
+    end
+
+    it_behaves_like 'an A/B test that uses document_capture_session_uuid as a discriminator'
+  end
 end

@@ -186,6 +186,19 @@ After restarting the app emails will be written to the `tmp/mails` folder.
 
 To view email templates with placeholder values, visit <http://localhost:3000/rails/mailers/> to see a list of template previews.
 
+#### SMS text previews
+
+SMS texts for QA are live in actionmailer, just like the email template previews. To go directly to the list of texts, visit <http://localhost:3000/rails/mailers/user_sms_text_mailer>. From here, you will see a list of text messages available for preview. All text messages are available in all languages that we support (French, Spanish, and Mandarin Chinese.)
+
+##### Adding SMS texts for preview
+
+To add text messages for SMS preview:
+
+- In `app/mailers/user_sms_text_mailer.rb`, create a method that describes the purpose of the text. Add the `mail_to` method for each sample text. This is important because this is where the text populates on the `SmsTextPreview` list. If you do not add `mail_to` in the method, the sample text will not be displayed.
+- In the `app/views/user_sms_text_mailer` folder, create a view file for the text message as a `\*.text.erb` file. Add the text that you want to see in the SMS message.
+- In `spec/mailers/previews/user_sms_test_mailer_preview.rb`, create a method that calls the method that you created in `app/mailers`. You will need these methods to create tests in the `/spec` file.
+- In `spec/mailers/user_sms_text_mailer_spec.rb`, add a test for the method that you have added in the preview spec. Test to make sure that the content is rendered as expected, especially for the text that has dynamic values.
+
 ### Translations
 
 Login.gov translates the IdP into English, French and Spanish. To help us handle extra newlines and make sure we wrap lines consistently, we have a script that helps format YAML consistently. After importing translations (or making changes to the `*.yml` files with strings), run this for the IdP app:
@@ -240,6 +253,7 @@ By default, the application binds to `localhost`. To test on a local network dev
    ```
 
    replacing `<your-local-ip>` with the address you found in Step 1
+
 3. Start the server using the command `HOST=0.0.0.0 make run`
 4. From on the same network, visit the application using the domain name configured in the second step (for example, `http://192.168.1.131:3000`).
 

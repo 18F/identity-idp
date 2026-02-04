@@ -550,6 +550,9 @@ RSpec.describe Idv::PhoneController do
                 phoneRisk: {
                   reasonCodes: phonerisk_reason_codes,
                   score: phonerisk_low ? 0.01 : 0.99,
+                  signals: {
+                    phone: {},
+                  },
                 },
                 customerProfile: {
                   customerUserId: user.uuid,
@@ -596,7 +599,7 @@ RSpec.describe Idv::PhoneController do
                 result: {
                   customer_user_id: user.uuid,
                   name_phone_correlation: { reason_codes: {}, score: 0.99 },
-                  phonerisk: { reason_codes: {}, score: 0.01 },
+                  phonerisk: { reason_codes: {}, score: 0.01, signals: { phone: {} } },
                 },
                 timed_out: false,
                 transaction_id: 'some-reference-id',
@@ -646,7 +649,7 @@ RSpec.describe Idv::PhoneController do
                   result: {
                     customer_user_id: user.uuid,
                     name_phone_correlation: { reason_codes: {}, score: 0.99 },
-                    phonerisk: { reason_codes: {}, score: 0.01 },
+                    phonerisk: { reason_codes: {}, score: 0.01, signals: { phone: {} } },
                   },
                   timed_out: false,
                   transaction_id: 'some-reference-id',
@@ -715,6 +718,7 @@ RSpec.describe Idv::PhoneController do
                       I919: '[unknown]',
                     },
                     score: 0.99,
+                    signals: { phone: {} },
                   },
                 },
                 timed_out: false,
@@ -882,6 +886,9 @@ RSpec.describe Idv::PhoneController do
                 phoneRisk: {
                   reasonCodes: [],
                   score: 0.01,
+                  signals: {
+                    phone: {},
+                  },
                 },
                 customerProfile: {
                   customerUserId: user.uuid,
@@ -921,7 +928,7 @@ RSpec.describe Idv::PhoneController do
               result: {
                 customer_user_id: user.uuid,
                 name_phone_correlation: { reason_codes: {}, score: 0.99 },
-                phonerisk: { reason_codes: {}, score: 0.01 },
+                phonerisk: { reason_codes: {}, score: 0.01, signals: { phone: {} } },
               },
               timed_out: false,
               transaction_id: 'some-reference-id',

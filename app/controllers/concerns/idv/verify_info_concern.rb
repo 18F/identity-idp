@@ -224,6 +224,10 @@ module Idv
             [:proofing_results, :context, :stages, :phone_precheck, :errors, :phone],
             [:proofing_results, :context, :stages, :phone_precheck, :alternate_result, :errors,
              :phone],
+            [:proofing_results, :context, :stages, :phone_precheck, :result, :phonerisk, :signals,
+             :phone],
+            [:proofing_results, :context, :stages, :phone_precheck, :alternate_result, :phonerisk,
+             :signals, :phone],
             [:proofing_results, :context, :stages, :resolution, :errors, :ssn],
             [:proofing_results, :context, :stages, :resolution, :reason_codes],
             [:proofing_results, :context, :stages, :residential_address, :errors, :ssn],
@@ -510,11 +514,22 @@ module Idv
     end
 
     def source_check_vendor_aamva?
-      IdentityConfig.store.idv_aamva_at_doc_auth_enabled &&
-        !ipp_enrollment_in_progress? &&
-        (idv_session.source_check_vendor == 'aamva:state_id' ||
-          idv_session.source_check_vendor == 'aamva' ||
-          idv_session.source_check_vendor == 'StateIdMock')
+      return false if ipp_aamva_check_not_completed? || remote_aamva_check_not_completed?
+
+      idv_session.source_check_vendor == 'aamva:state_id' ||
+        idv_session.source_check_vendor == 'aamva' ||
+        idv_session.source_check_vendor == 'StateIdMock'
+    end
+
+    def ipp_aamva_check_not_completed?
+      IdentityConfig.store.idv_aamva_at_doc_auth_ipp_enabled &&
+        ipp_enrollment_in_progress? &&
+        idv_session.ipp_aamva_result.blank?
+    end
+
+    def remote_aamva_check_not_completed?
+      !ipp_enrollment_in_progress? &&
+        !IdentityConfig.store.idv_aamva_at_doc_auth_enabled
     end
 
     def threatmetrix_check_failed?(result)
