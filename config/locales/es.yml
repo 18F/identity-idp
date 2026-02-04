@@ -1505,9 +1505,9 @@ instructions.mfa.sms.seconds_remaining_html: 'Quedan <strong>%{seconds} segundos
 instructions.mfa.voice.code_sent_message_html: Hicimos una llamada con un código de un solo uso al %{number_html}.
 instructions.mfa.voice.number_message_html: Hicimos una llamada con un código de un solo uso al %{number_html}. Este código vence en %{expiration} minutos.
 instructions.mfa.webauthn_platform.issues_with_ft_unlock: Problemas con el desbloqueo facial y táctil
-instructions.mfa.webauthn_platform.issues_with_security_key: Problemas con la clave de seguridad
 instructions.mfa.webauthn.confirm_webauthn: Presente la clave de seguridad que asoció con su cuenta.
 instructions.mfa.webauthn.confirm_webauthn_platform_html: '<p>Puede autenticarse de la misma forma que desbloquea el dispositivo, sea con su rostro o huella dactilar, contraseña u otro método. </p><p>Si usó un administrador de contraseñas para configurar el desbloqueo facial o táctil, puede autenticarse desde cualquier dispositivo que utilice ese administrador de contraseñas. De lo contrario, use el mismo dispositivo con el que configuró el desbloqueo facial o táctil.</p>'
+instructions.mfa.webauthn.issues_with_security_key: Problemas con la clave de seguridad
 instructions.password.forgot: '¿No sabe su contraseña? Restablézcala después de confirmar su dirección de correo electrónico.'
 instructions.password.help_text: Evite usar las mismas contraseñas de sus otras cuentas, como las de su banco, correo electrónico y redes sociales. No incluya palabras de su dirección de correo electrónico.
 instructions.password.help_text_header: Consejos para la seguridad de las contraseñas
