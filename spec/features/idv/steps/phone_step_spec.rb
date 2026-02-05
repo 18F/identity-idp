@@ -255,6 +255,9 @@ RSpec.feature 'idv phone step', :js do
             'R321',
           ],
           score: name_phone_correlation_pass ? 0.01 : 0.99,
+          signals: {
+            phone: {},
+          },
         },
         customerProfile: {
           customerUserId: user.uuid,

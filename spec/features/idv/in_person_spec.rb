@@ -219,6 +219,9 @@ RSpec.describe 'In Person Proofing', js: true do
             phoneRisk: {
               reasonCodes: [],
               score: phonerisk_risk_score,
+              signals: {
+                phone: {},
+              },
             },
             customerProfile: {
               customerUserId: user.uuid,
@@ -264,6 +267,9 @@ RSpec.describe 'In Person Proofing', js: true do
                 phoneRisk: {
                   reasonCodes: [],
                   score: 0,
+                  signals: {
+                    phone: {},
+                  },
                 },
                 customerProfile: {
                   customerUserId: user.uuid,
@@ -817,6 +823,85 @@ RSpec.describe 'In Person Proofing', js: true do
       expect(page).to have_content(
         'There was an internal error processing your request. Please try again.',
       )
+    end
+  end
+
+  context 'AAMVA integration E2E tests' do
+    before do
+      allow(IdentityConfig.store).to receive(:idv_aamva_at_doc_auth_enabled).and_return(true)
+    end
+
+    context 'with successful AAMVA validation (default mock behavior)' do
+      it 'completes full IPP flow with AAMVA verification', allow_browser_log: true do
+        user = user_with_2fa
+
+        sign_in_and_2fa_user(user)
+        begin_in_person_proofing(user)
+        complete_prepare_step(user)
+        complete_location_step(user)
+
+        expect(page).to have_current_path(idv_in_person_state_id_path, wait: 10)
+
+        fill_out_state_id_form_ok(same_address_as_id: true)
+        click_idv_continue
+
+        expect(page).to have_current_path(idv_in_person_ssn_url, wait: 10)
+        expect(page).to have_content(t('doc_auth.headings.ssn'))
+
+        complete_ssn_step(user)
+        complete_verify_step(user)
+        complete_phone_step(user)
+        complete_enter_password_step(user)
+        acknowledge_and_confirm_personal_key
+
+        expect(page).to have_current_path(idv_in_person_ready_to_verify_path, wait: 10)
+        expect(page).to have_content(strip_nbsp(t('in_person_proofing.headings.barcode')))
+      end
+
+      it 'handles same_address_as_id=false flow with AAMVA', allow_browser_log: true do
+        user = user_with_2fa
+
+        sign_in_and_2fa_user(user)
+        begin_in_person_proofing(user)
+        complete_prepare_step(user)
+        complete_location_step(user)
+
+        fill_out_state_id_form_ok(same_address_as_id: false)
+        click_idv_continue
+
+        expect(page).to have_current_path(idv_in_person_address_path, wait: 10)
+        expect(page).to have_content(t('in_person_proofing.headings.address'))
+
+        complete_address_step(user, same_address_as_id: false)
+        complete_ssn_step(user)
+        complete_verify_step(user)
+        complete_phone_step(user)
+        complete_enter_password_step(user)
+        acknowledge_and_confirm_personal_key
+
+        expect(page).to have_current_path(idv_in_person_ready_to_verify_path, wait: 10)
+      end
+    end
+
+    context 'AAMVA disabled' do
+      before do
+        allow(IdentityConfig.store).to receive(:idv_aamva_at_doc_auth_enabled).and_return(false)
+      end
+
+      it 'skips AAMVA validation and proceeds normally', allow_browser_log: true do
+        user = user_with_2fa
+
+        sign_in_and_2fa_user(user)
+        begin_in_person_proofing(user)
+        complete_prepare_step(user)
+        complete_location_step(user)
+
+        fill_out_state_id_form_ok(same_address_as_id: true)
+        click_idv_continue
+
+        expect(page).to have_current_path(idv_in_person_ssn_url, wait: 10)
+        expect(page).to have_content(t('doc_auth.headings.ssn'))
+      end
     end
   end
 end

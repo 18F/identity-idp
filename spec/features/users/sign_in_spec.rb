@@ -67,6 +67,20 @@ RSpec.feature 'Sign in' do
     expect(oidc_redirect_url).to start_with service_provider.redirect_uris.first
   end
 
+  scenario 'user is not logged in and tries to access a protected page' do
+    user = create(:user, :fully_registered)
+
+    visit account_two_factor_authentication_path
+
+    expect(page).to have_current_path new_user_session_path
+
+    fill_in_credentials_and_submit(user.email, user.password)
+    fill_in_code_with_last_phone_otp
+    click_submit_default
+
+    expect(page).to have_current_path account_two_factor_authentication_path
+  end
+
   scenario 'user with old terms of use can accept and continue to IAL2 SP' do
     user = create(
       :user,

@@ -84,6 +84,9 @@ RSpec.describe SocureShadowModePhoneRiskJob do
             'R567',
           ],
           score: 0.01,
+          signals: {
+            phone: {},
+          },
         },
         customerProfile: {
           customerUserId: user.uuid,
@@ -137,6 +140,7 @@ RSpec.describe SocureShadowModePhoneRiskJob do
                   'R567' => 'Person may be an armadillo.',
                 },
                 score: 0.01,
+                signals: { 'phone' => {} },
               },
               customer_user_id: user.uuid,
             },
@@ -256,6 +260,9 @@ RSpec.describe SocureShadowModePhoneRiskJob do
           phoneRisk: {
             reasonCodes: ['I000'],
             score: 0.05,
+            signals: {
+              phone: {},
+            },
           },
           namePhoneCorrelation: {
             reasonCodes: [],

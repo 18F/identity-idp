@@ -54,7 +54,7 @@ module DocAuth
       end
 
       def first_name
-        id_auth_field_data&.dig('Fields_FirstName')
+        id_auth_field_data&.dig('Fields_FirstName') || id_auth_field_data&.dig('Fields_GivenName')
       end
 
       def last_name

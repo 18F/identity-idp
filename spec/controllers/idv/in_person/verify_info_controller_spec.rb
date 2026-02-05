@@ -12,6 +12,7 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
   let(:user) { create(:user, :with_phone, with: { phone: '+1 (415) 555-0130' }) }
   let(:service_provider) { create(:service_provider) }
   let(:enrollment) { InPersonEnrollment.new }
+  let(:state_id_vendor) { nil }
 
   before do
     stub_analytics
@@ -20,6 +21,7 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
     subject.idv_session.flow_path = 'standard'
     subject.idv_session.ssn = Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID[:ssn]
     subject.idv_session.idv_consent_given_at = Time.zone.now.to_s
+    subject.idv_session.source_check_vendor = state_id_vendor
     subject.user_session['idv/in_person'] = flow_session
     stub_up_to(:ipp_ssn, idv_session: subject.idv_session)
     reload_ab_tests
@@ -29,6 +31,61 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
   describe '#step_info' do
     it 'returns a valid StepInfo object' do
       expect(Idv::InPerson::VerifyInfoController.step_info).to be_valid
+    end
+
+    context 'preconditions' do
+      before do
+        allow(subject.idv_session).to receive(:ssn).and_return('123456789')
+        allow(subject.idv_session).to receive(:ipp_document_capture_complete?).and_return(true)
+        allow(subject.idv_session).to receive(:threatmetrix_session_id).and_return('session_id')
+        allow(user).to receive(:has_establishing_in_person_enrollment?).and_return(true)
+      end
+
+      context 'when AAMVA at doc auth is enabled' do
+        before do
+          allow(IdentityConfig.store).to receive(:idv_aamva_at_doc_auth_ipp_enabled)
+            .and_return(true)
+        end
+
+        context 'when ipp_aamva_result is present' do
+          before do
+            subject.idv_session.ipp_aamva_result = { success: true }
+          end
+
+          it 'returns true' do
+            expect(
+              described_class.step_info.preconditions.call(idv_session: subject.idv_session, user:),
+            ).to be(true)
+          end
+        end
+
+        context 'when ipp_aamva_result is not present' do
+          before do
+            subject.idv_session.ipp_aamva_result = nil
+          end
+
+          it 'returns false' do
+            expect(
+              described_class.step_info.preconditions.call(idv_session: subject.idv_session, user:),
+            ).to be(false)
+          end
+        end
+      end
+
+      context 'when AAMVA at doc auth is not enabled' do
+        before do
+          allow(IdentityConfig.store).to receive(:idv_aamva_at_doc_auth_ipp_enabled)
+            .and_return(false)
+        end
+
+        it 'returns true regardless of ipp_aamva_result' do
+          subject.idv_session.ipp_aamva_result = nil
+
+          expect(
+            described_class.step_info.preconditions.call(idv_session: subject.idv_session, user:),
+          ).to be(true)
+        end
+      end
     end
 
     describe '#undo_step' do
@@ -56,7 +113,7 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
           expect(idv_session.residential_resolution_vendor).to be(nil)
           expect(idv_session.resolution_successful).to be(nil)
           expect(idv_session.resolution_vendor).to be(nil)
-          expect(idv_session.source_check_vendor).to be(nil)
+          expect(idv_session.source_check_vendor).not_to be(nil)
           expect(idv_session.threatmetrix_review_status).to be(nil)
           expect(idv_session.hybrid_mobile_threatmetrix_review_status).to be(nil)
           expect(idv_session.verify_info_step_document_capture_session_uuid).to be(nil)
@@ -417,6 +474,31 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
       ).and_call_original
 
       put :update
+    end
+
+    context 'the state id proofing occurred previously' do
+      before do
+        allow(IdentityConfig.store).to receive(:idv_aamva_at_doc_auth_ipp_enabled).and_return(true)
+        subject.idv_session.ipp_aamva_result = { success: true }
+        subject.idv_session.source_check_vendor = 'StateIdMock'
+      end
+
+      it 'lets the proofer know that the state id was already proofed' do
+        expect_any_instance_of(Idv::Agent).to receive(:proof_resolution)
+          .with(
+            kind_of(DocumentCaptureSession),
+            trace_id: subject.send(:amzn_trace_id),
+            threatmetrix_session_id: 'a-random-session-id',
+            request_ip: request.remote_ip,
+            hybrid_mobile_threatmetrix_session_id: nil,
+            hybrid_mobile_request_ip: nil,
+            ipp_enrollment_in_progress: true,
+            proofing_vendor: :mock,
+            state_id_already_proofed: true,
+          )
+
+        put :update
+      end
     end
 
     context 'a user does not have an establishing in person enrollment associated with them' do
