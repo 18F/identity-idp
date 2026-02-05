@@ -245,14 +245,15 @@ module Idv
       )
 
       threatmetrix_response_body = delete_threatmetrix_response_body(form_response)
-      hybrid_mobile_threatmetrix_response_body =
-        delete_hybrid_mobile_threatmetrix_response_body(form_response)
 
       if threatmetrix_response_body.present?
         analytics.idv_threatmetrix_response_body(
           response_body: threatmetrix_response_body,
         )
       end
+
+      hybrid_mobile_threatmetrix_response_body =
+        delete_hybrid_mobile_threatmetrix_response_body(form_response)
 
       if hybrid_mobile_threatmetrix_response_body.present?
         analytics.idv_threatmetrix_hybrid_mobile_response_body(
