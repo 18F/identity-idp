@@ -566,14 +566,21 @@ RSpec.describe Users::SessionsController, devise: true do
 
     context 'User has a compromised password' do
       let(:user) { create(:user, :fully_registered) }
+      let(:analytics) { FakeAnalytics.new }
       before do
         allow(PwnedPasswords::LookupPassword).to receive(:call).and_return true
+        allow(Analytics).to receive(:new).and_return(analytics)
       end
       it 'updates user attribute password_compromised_checked_at' do
         expect(user.password_compromised_checked_at).to be_falsey
         post :create, params: { user: { email: user.email, password: user.password } }
         user.reload
         expect(user.password_compromised_checked_at).to be_truthy
+      end
+
+      it 'posts an analytics event when password is compromised' do
+        post :create, params: { user: { email: user.email, password: user.password } }
+        expect(analytics).to have_logged_event(:password_found_on_pwned_list)
       end
 
       it 'stores in session redirect to check compromise' do
