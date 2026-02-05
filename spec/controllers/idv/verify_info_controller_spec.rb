@@ -1641,11 +1641,28 @@ RSpec.describe Idv::VerifyInfoController do
           hash_including(
             ssn: Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn],
             consent_given_at: controller.idv_session.idv_consent_given_at,
+            aamva_verified_attributes: nil,
             **Idp::Constants::MOCK_IDV_APPLICANT,
           ),
         ).and_call_original
 
         put :update
+      end
+
+      context 'when aamva check completed' do
+        before do
+          controller.idv_session.aamva_verified_attributes = %w[ssn dob]
+        end
+
+        it 'modifies PII to include aamva verified attributes' do
+          expect(Idv::Agent).to receive(:new).with(
+            hash_including(
+              aamva_verified_attributes: %w[ssn dob],
+            ),
+          ).and_call_original
+
+          put :update
+        end
       end
     end
 

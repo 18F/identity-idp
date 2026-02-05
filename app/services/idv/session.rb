@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 module Idv
+  # @attr aamva_verified_attributes [Array<Symbol>, nil]
   # @attr address_edited [Boolean, nil]
   # @attr address_verification_vendor [String, nil]
   # @attr address_verification_mechanism [String, nil]
@@ -53,6 +54,7 @@ module Idv
   # @attr_reader service_provider [ServiceProvider]
   class Session
     VALID_SESSION_ATTRIBUTES = %i[
+      aamva_verified_attributes
       address_edited
       address_verification_vendor
       address_verification_mechanism

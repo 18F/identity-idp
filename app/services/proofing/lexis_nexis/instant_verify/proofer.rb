@@ -70,8 +70,8 @@ module Proofing
           return false unless verification_response.transaction_reason_code.match?(/(total|priority)\.scoring\.model\.verification\.fail/)
           return false unless instant_verify_product.present?
           return false unless instant_verify_product['ProductStatus'] == 'fail'
-          return false unless attributes_requiring_additional_verification(instant_verify_product).any?
-          true
+
+          attributes_requiring_additional_verification(instant_verify_product).any?
         end
         # rubocop:enable Layout/LineLength
 
