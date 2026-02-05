@@ -1,9 +1,9 @@
 require 'rails_helper'
 
-RSpec.describe Reports::IrsMonthlyCredMetricsReport do
+RSpec.describe Reports::IrsOriginalMonthlyCredMetricsReport do
   let(:report_date) { Date.new(2021, 3, 2).in_time_zone('UTC').end_of_day }
   let(:report_receiver) { :internal }
-  subject(:report) { Reports::IrsMonthlyCredMetricsReport.new(report_date, report_receiver) }
+  subject(:report) { Reports::IrsOriginalMonthlyCredMetricsReport.new(report_date, report_receiver) }
 
   let(:name) { 'irs_monthly_cred_metrics' }
   let(:s3_report_bucket_prefix) { 'reports-bucket' }
@@ -59,7 +59,7 @@ RSpec.describe Reports::IrsMonthlyCredMetricsReport do
     }
 
     # Mock the report data methods
-    allow_any_instance_of(Reports::IrsMonthlyCredMetricsReport)
+    allow_any_instance_of(Reports::IrsOriginalMonthlyCredMetricsReport)
       .to receive(:issuer_report_data)
       .and_return([
                     ['Issuer', 'Monthly active users', 'Credentials authorized', 'New credentials',
@@ -67,7 +67,7 @@ RSpec.describe Reports::IrsMonthlyCredMetricsReport do
                     ['Issuer_4', 100, 50, 30, 20, 200],
                   ])
 
-    allow_any_instance_of(Reports::IrsMonthlyCredMetricsReport)
+    allow_any_instance_of(Reports::IrsOriginalMonthlyCredMetricsReport)
       .to receive(:partner_report_data)
       .and_return([
                     ['Partner', 'Credentials authorized', 'New credentials',
@@ -76,7 +76,7 @@ RSpec.describe Reports::IrsMonthlyCredMetricsReport do
                   ])
 
     # Mock the return from the invoice report
-    allow_any_instance_of(Reports::IrsMonthlyCredMetricsReport)
+    allow_any_instance_of(Reports::IrsOriginalMonthlyCredMetricsReport)
       .to receive(:invoice_report_data)
       .and_return(fixture_csv_data)
   end
@@ -240,11 +240,11 @@ RSpec.describe Reports::IrsMonthlyCredMetricsReport do
 
     before do
       # Override the mocks from the outer before block to use real data
-      allow_any_instance_of(Reports::IrsMonthlyCredMetricsReport)
+      allow_any_instance_of(Reports::IrsOriginalMonthlyCredMetricsReport)
         .to receive(:issuer_report_data)
         .and_call_original
 
-      allow_any_instance_of(Reports::IrsMonthlyCredMetricsReport)
+      allow_any_instance_of(Reports::IrsOriginalMonthlyCredMetricsReport)
         .to receive(:partner_report_data)
         .and_call_original
     end

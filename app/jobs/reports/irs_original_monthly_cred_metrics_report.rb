@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Reports
-  class IrsMonthlyCredMetricsReport < BaseReport
+  class IrsOriginalMonthlyCredMetricsReport < BaseReport
     REPORT_NAME = 'irs_monthly_cred_metrics'
 
     attr_reader :report_date, :report_receiver
