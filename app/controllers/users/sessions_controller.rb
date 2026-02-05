@@ -317,7 +317,6 @@ module Users
 
       is_pwned = PwnedPasswords::LookupPassword.call(auth_params[:password])
       track_pwned_password if is_pwned
-      session[:redirect_to_change_password] = is_pwned
       update_user_password_compromised_checked_at
     end
 

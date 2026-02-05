@@ -582,11 +582,6 @@ RSpec.describe Users::SessionsController, devise: true do
         post :create, params: { user: { email: user.email, password: user.password } }
         expect(analytics).to have_logged_event(:password_found_on_pwned_list)
       end
-
-      it 'stores in session redirect to check compromise' do
-        post :create, params: { user: { email: user.email, password: user.password } }
-        expect(controller.session[:redirect_to_change_password]).to be_truthy
-      end
     end
 
     context 'user does not have a compromised password' do
@@ -600,11 +595,6 @@ RSpec.describe Users::SessionsController, devise: true do
         post :create, params: { user: { email: user.email, password: user.password } }
         user.reload
         expect(user.password_compromised_checked_at).to be_truthy
-      end
-
-      it 'stores in session false to attempt to redirect password compromised' do
-        post :create, params: { user: { email: user.email, password: user.password } }
-        expect(controller.session[:redirect_to_change_password]).to be_falsey
       end
     end
 
