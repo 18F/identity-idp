@@ -564,7 +564,7 @@ RSpec.describe Users::SessionsController, devise: true do
       end
     end
 
-    context 'User has a compromised password' do
+    context 'when the user has a compromised password' do
       let(:user) { create(:user, :fully_registered) }
       let(:analytics) { FakeAnalytics.new }
       before do
@@ -574,8 +574,10 @@ RSpec.describe Users::SessionsController, devise: true do
       it 'updates user attribute password_compromised_checked_at' do
         expect(user.password_compromised_checked_at).to be_falsey
         post :create, params: { user: { email: user.email, password: user.password } }
-        user.reload
-        expect(user.password_compromised_checked_at).to be_truthy
+        freeze_time do
+          user.reload
+          expect(user.password_compromised_checked_at).to be_truthy
+        end
       end
 
       it 'posts an analytics event when password is compromised' do
