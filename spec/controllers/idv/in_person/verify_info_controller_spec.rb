@@ -314,9 +314,7 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
     end
 
     context 'when the resolution proofing job completed successfully' do
-      let(:document_capture_session) do
-        DocumentCaptureSession.create(user:)
-      end
+      let(:document_capture_session) { create(:document_capture_session, user:) }
 
       let(:resolution_vendor_name) { 'ResolutionVendor' }
 
@@ -470,10 +468,42 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
         hash_including(
           ssn: Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID[:ssn],
           consent_given_at: subject.idv_session.idv_consent_given_at,
+          aamva_verified_attributes: nil,
         ),
       ).and_call_original
 
       put :update
+    end
+
+    context 'when aamva check completed' do
+      let(:result_id) { SecureRandom.uuid }
+      let(:aamva_result) do
+        Proofing::StateIdResult.new(
+          success: true,
+          errors: {},
+          exception: nil,
+          vendor_name: 'state_id:aamva',
+          transaction_id: 'abc123',
+          verified_attributes: %i[ssn dob],
+        )
+      end
+      let(:document_capture_session) { create(:document_capture_session, user:, result_id:) }
+
+      before do
+        document_capture_session.store_proofing_result(aamva_result.to_h)
+        controller.idv_session.ipp_aamva_result = document_capture_session
+          .load_proofing_result.result
+      end
+
+      it 'modifies PII to include aamva verified attributes' do
+        expect(Idv::Agent).to receive(:new).with(
+          hash_including(
+            aamva_verified_attributes: %w[ssn dob],
+          ),
+        ).and_call_original
+
+        put :update
+      end
     end
 
     context 'the state id proofing occurred previously' do
@@ -554,6 +584,7 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
               source: :mfa,
               phone: '+1 415-555-0130',
             },
+            aamva_verified_attributes: nil,
           ),
         ).and_call_original
         put :update

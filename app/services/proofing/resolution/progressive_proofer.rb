@@ -82,7 +82,7 @@ module Proofing
             timer:,
             user_email:,
             user_uuid:,
-            workflow:,
+            workflow: :"#{workflow}_hybrid_handoff",
           )
         end
 

@@ -722,6 +722,22 @@ RSpec.describe SocureDocvResultsJob do
                   expect(document_capture_session_result.aamva_status).to eq(:not_processed)
                 end
 
+                it 'logs idv_dos_passport_verification event for successful MRZ check' do
+                  perform
+
+                  expect(fake_analytics).to have_logged_event(
+                    :idv_dos_passport_verification,
+                    success: true,
+                    submit_attempts: 1,
+                    remaining_submit_attempts: 3,
+                    user_id: document_capture_session.user.uuid,
+                    document_type_requested: 'Passport',
+                    response: 'YES',
+                    correlation_id_sent: an_instance_of(String),
+                    errors: {},
+                  )
+                end
+
                 it 'tracks the attempt with mrz data' do
                   expect(attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
                     success: true,
@@ -788,6 +804,22 @@ RSpec.describe SocureDocvResultsJob do
                       errors: { passport: 'Please add a new image' },
                       mrz_status: :failed,
                       attempt: 1,
+                    )
+                  end
+
+                  it 'logs idv_dos_passport_verification event for failed MRZ check' do
+                    perform
+
+                    expect(fake_analytics).to have_logged_event(
+                      :idv_dos_passport_verification,
+                      success: false,
+                      submit_attempts: 1,
+                      remaining_submit_attempts: 3,
+                      user_id: document_capture_session.user.uuid,
+                      document_type_requested: 'Passport',
+                      response: 'NO',
+                      correlation_id_sent: an_instance_of(String),
+                      errors: { passport: 'Please add a new image' },
                     )
                   end
 

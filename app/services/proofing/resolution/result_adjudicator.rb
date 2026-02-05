@@ -152,8 +152,8 @@ module Proofing
       end
 
       def resolution_result_and_reason
-        if !residential_resolution_result.success? && same_address_as_id == 'false' &&
-           ipp_enrollment_in_progress
+        if ipp_enrollment_in_progress && !residential_resolution_result.success? &&
+           same_address_as_id == 'false'
           [false, :fail_resolution_skip_state_id]
         elsif resolution_result.success? && state_id_result.success?
           [true, :pass_resolution_and_state_id]
@@ -172,9 +172,13 @@ module Proofing
         return false unless resolution_result.failed_result_can_pass_with_additional_verification?
         failed_resolution_attributes =
           resolution_result.attributes_requiring_additional_verification
-        passed_state_id_attributes = state_id_result.verified_attributes
 
-        (failed_resolution_attributes.to_a - passed_state_id_attributes.to_a).empty?
+        # no longer needed after aamva at IPP enrollment
+        passed_state_id_attributes = state_id_result.verified_attributes
+        return true if (failed_resolution_attributes.to_a - passed_state_id_attributes.to_a).empty?
+
+        passed_state_id_attributes = applicant_pii[:aamva_verified_attributes].to_a.map(&:to_sym)
+        (failed_resolution_attributes.to_a - passed_state_id_attributes).empty?
       end
 
       def biographical_info
@@ -189,7 +193,7 @@ module Proofing
           state_id_jurisdiction: applicant_pii[:state_id_jurisdiction],
           state_id_number: redacted_state_id_number,
           same_address_as_id: applicant_pii[:same_address_as_id],
-        }.merge(phone_precheck_info)
+        }.merge(phone_precheck_info, state_id_verified_attributes)
       end
 
       def phone_precheck_info
@@ -204,6 +208,12 @@ module Proofing
             phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
           },
         }
+      end
+
+      def state_id_verified_attributes
+        return {} if applicant_pii[:aamva_verified_attributes].blank?
+
+        { state_id_verified_attributes: applicant_pii[:aamva_verified_attributes] }
       end
     end
   end

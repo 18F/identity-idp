@@ -80,6 +80,7 @@ module Idv
         pii_from_user.merge(
           consent_given_at: idv_session.idv_consent_given_at,
           ssn: idv_session.ssn,
+          aamva_verified_attributes: idv_session.ipp_aamva_result&.dig('verified_attributes'),
         )
       end
 

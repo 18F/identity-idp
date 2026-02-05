@@ -34,8 +34,6 @@ class TotpSetupForm
     new_timestamp = Db::AuthAppConfiguration.confirm(secret, code)
     if new_timestamp
       create_auth_app(user, secret, new_timestamp, name) if new_timestamp
-      event = PushNotification::RecoveryInformationChangedEvent.new(user: user)
-      PushNotification::HttpPush.deliver(event)
     end
     new_timestamp.present?
   end
