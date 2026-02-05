@@ -3,7 +3,9 @@ require 'rails_helper'
 RSpec.describe Reports::IrsOriginalMonthlyCredMetricsReport do
   let(:report_date) { Date.new(2021, 3, 2).in_time_zone('UTC').end_of_day }
   let(:report_receiver) { :internal }
-  subject(:report) { Reports::IrsOriginalMonthlyCredMetricsReport.new(report_date, report_receiver) }
+  subject(:report) do
+    Reports::IrsOriginalMonthlyCredMetricsReport.new(report_date, report_receiver)
+  end
 
   let(:name) { 'irs_monthly_cred_metrics' }
   let(:s3_report_bucket_prefix) { 'reports-bucket' }

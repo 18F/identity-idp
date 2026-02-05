@@ -389,7 +389,6 @@ class ReportMailerPreview < ActionMailer::Preview
     )
   end
 
-
   def sp_monthly_credentials_report
     report_date = Time.zone.parse('2025-11-30').end_of_day
     config = {
@@ -399,9 +398,7 @@ class ReportMailerPreview < ActionMailer::Preview
       'internal_emails' => ['internal1@example.com'],
     }
 
-
     report = Reports::IrsMonthlyCredMetricsReport.new(report_date, :internal)
-
 
     # Apply config the same way send_report does
     report.instance_variable_set(:@report_date, report_date)
@@ -415,16 +412,13 @@ class ReportMailerPreview < ActionMailer::Preview
       "#{config['partner_strings'].first.downcase}_monthly_cred_metrics",
     )
 
-
     fixture_csv_data = File.read(
       Rails.root.join('spec', 'fixtures', 'partner_cred_metrics_input.csv'),
     )
 
     report.define_singleton_method(:invoice_report_data) { fixture_csv_data }
 
-
     emailable_reports = report.as_emailable_partner_report(date: report_date)
-
 
     ReportMailer.tables_report(
       to: 'test@example.com',
