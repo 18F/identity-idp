@@ -32,8 +32,6 @@ class WebauthnSetupForm
     success = valid?
     if success
       create_webauthn_configuration
-      event = PushNotification::RecoveryInformationChangedEvent.new(user: user)
-      PushNotification::HttpPush.deliver(event)
     end
 
     FormResponse.new(success: success, errors: errors, extra: extra_analytics_attributes)
