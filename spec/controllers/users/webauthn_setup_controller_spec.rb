@@ -167,6 +167,13 @@ RSpec.describe Users::WebauthnSetupController do
         response
       end
 
+      it 'sends a recovery information changed event' do
+        expect(PushNotification::HttpPush).to receive(:deliver)
+          .with(PushNotification::RecoveryInformationChangedEvent.new(user: user))
+
+        response
+      end
+
       context 'with transports mismatch' do
         let(:params) { super().merge(transports: 'internal') }
 

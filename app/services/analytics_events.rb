@@ -6034,6 +6034,19 @@ module AnalyticsEvents
     )
   end
 
+  # The JSON body of the response returned from Hybrid Threatmetrix. PII has been removed.
+  # @param [Hash] response_body The response body returned by Hybrid ThreatMetrix
+  def idv_threatmetrix_hybrid_mobile_response_body(
+    response_body: nil,
+    **extra
+  )
+    track_event(
+      :idv_threatmetrix_hybrid_mobile_response_body,
+      response_body: response_body,
+      **extra,
+    )
+  end
+
   # The JSON body of the response returned from Threatmetrix. PII has been removed.
   # @param [Hash] response_body The response body returned by ThreatMetrix
   def idv_threatmetrix_response_body(

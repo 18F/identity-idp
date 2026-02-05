@@ -15,6 +15,12 @@ class MarketingSite
     trouble-signing-in/forgot-your-password
     trouble-signing-in/forgot-your-personal-key
     trouble-signing-in/security-check-failed
+    trouble-signing-in/authentication/issues-with-government-employee-id-piv-cac
+    trouble-signing-in/authentication/issues-with-security-key
+    trouble-signing-in/authentication/face-and-touch-unlock
+    trouble-signing-in/authentication/issues-with-backup-codes
+    trouble-signing-in/authentication/issues-with-authentication-application
+    trouble-signing-in/authentication/issues-with-text-sms-phone-call
     verify-your-identity/accepted-identification-documents
     verify-your-identity/how-to-add-images-of-your-state-issued-id
     verify-your-identity/verify-your-identity-in-person

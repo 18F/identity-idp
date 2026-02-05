@@ -33,6 +33,7 @@ RSpec.describe IppAamvaProofingJob, type: :job do
         vendor_name: 'state_id:aamva',
         transaction_id: 'abc123',
         errors: {},
+        verified_attributes: %i[ssn dob],
       )
     end
 
@@ -67,8 +68,7 @@ RSpec.describe IppAamvaProofingJob, type: :job do
         expect(result[:success]).to be true
         expect(result[:errors]).to eq({})
         expect(result[:vendor_name]).to eq('state_id:aamva')
-        expect(result[:aamva_status]).to eq('passed')
-        expect(result[:checked_at]).to be_present
+        expect(result[:verified_attributes]).to match_array(%w[ssn dob])
       end
 
       it 'calls AAMVA proofer with correct parameters' do
@@ -110,9 +110,9 @@ RSpec.describe IppAamvaProofingJob, type: :job do
 
         result = proofing_result.result
         expect(result[:success]).to be false
-        expect(result[:errors]).to eq({ state_id_verification: 'Document could not be verified.' })
+        expect(result[:errors][:failed]).to eq(true)
         expect(result[:vendor_name]).to eq('state_id:aamva')
-        expect(result[:aamva_status]).to eq('failed')
+        expect(result[:verified_attributes]).to be_empty
       end
     end
 
