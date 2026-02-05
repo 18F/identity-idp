@@ -39,6 +39,29 @@ RSpec.describe ResolutionProofingJob, type: :job do
   describe '#perform' do
     let(:instance) { ResolutionProofingJob.new }
 
+    context 'with nil user_id' do
+      subject(:perform) do
+        instance.perform(
+          result_id: document_capture_session.result_id,
+          encrypted_arguments: encrypted_arguments,
+          trace_id: trace_id,
+          user_id: nil,
+          service_provider_issuer: service_provider.issuer,
+          threatmetrix_session_id: threatmetrix_session_id,
+          request_ip: request_ip,
+          ipp_enrollment_in_progress: ipp_enrollment_in_progress,
+          proofing_vendor: IdentityConfig.store.idv_resolution_default_vendor,
+          hybrid_mobile_threatmetrix_session_id: hybrid_mobile_threatmetrix_session_id,
+          hybrid_mobile_request_ip: hybrid_mobile_request_ip,
+        )
+      end
+
+      it 'throws UserNotFound exception' do
+        stub_vendor_requests
+        expect { perform }.to raise_error(ResolutionProofingJob::UserNotFound)
+      end
+    end
+
     subject(:perform) do
       instance.perform(
         result_id: document_capture_session.result_id,

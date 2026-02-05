@@ -7,6 +7,8 @@ class ResolutionProofingJob < ApplicationJob
 
   discard_on JobHelpers::StaleJobHelper::StaleJobError
 
+  class UserNotFound < StandardError; end
+
   CallbackLogData = Struct.new(
     :result,
     :resolution_success,
@@ -23,7 +25,7 @@ class ResolutionProofingJob < ApplicationJob
     trace_id:,
     ipp_enrollment_in_progress:,
     proofing_vendor:,
-    user_id: nil,
+    user_id:,
     service_provider_issuer: nil,
     threatmetrix_session_id: nil,
     request_ip: nil,
@@ -34,6 +36,7 @@ class ResolutionProofingJob < ApplicationJob
     timer = JobHelpers::Timer.new
 
     user = User.find_by(id: user_id)
+    raise UserNotFound unless user
 
     raise_stale_job! if stale_job?(enqueued_at)
 
@@ -84,7 +87,7 @@ class ResolutionProofingJob < ApplicationJob
       state_id_success: callback_log_data&.state_id_success,
       device_profiling_success: callback_log_data&.device_profiling_success,
       timing: timer.results,
-      user_id: user.uuid,
+      user_id: user&.uuid,
     )
   end
 
