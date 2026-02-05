@@ -321,7 +321,7 @@ module Users
     end
 
     def track_pwned_password
-      analytics.password_found_on_pwned_list(active_profile: current_user.active_profile)
+      analytics.password_found_on_pwned_list(active_profile: current_user.active_profile.present?)
     end
 
     def update_user_password_compromised_checked_at
