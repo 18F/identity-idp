@@ -281,7 +281,8 @@ class ApplicationController < ActionController::Base
 
   def signed_in_url
     return idv_verify_by_mail_enter_code_url if current_user.gpo_verification_pending_profile?
-    account_path
+    stored_location_for(current_user) ||
+      account_path
   end
 
   def after_mfa_setup_path

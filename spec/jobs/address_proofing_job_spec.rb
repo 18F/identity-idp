@@ -117,6 +117,9 @@ RSpec.describe AddressProofingJob, type: :job do
             phoneRisk: {
               score: phonerisk_score,
               reasonCodes: phonerisk_reason_codes,
+              signals: {
+                phone: {},
+              },
             },
             namePhoneCorrelation: {
               score: namephone_correlation_score,

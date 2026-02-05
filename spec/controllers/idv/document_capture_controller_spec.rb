@@ -11,7 +11,7 @@ RSpec.describe Idv::DocumentCaptureController do
   # selfie related test flags
   let(:facial_match_required) { false }
   let(:flow_path) { 'standard' }
-  let(:doc_auth_selfie_desktop_test_mode) { false }
+  let(:doc_auth_desktop_test_mode) { false }
 
   # document capture setup
   let(:doc_auth_success) { true }
@@ -63,8 +63,8 @@ RSpec.describe Idv::DocumentCaptureController do
     allow(IdentityConfig.store).to receive(:doc_auth_vendor_default).and_return(idv_vendor)
     allow(IdentityConfig.store).to receive(:doc_auth_vendor_switching_enabled)
       .and_return(vendor_switching_enabled)
-    allow(IdentityConfig.store).to receive(:doc_auth_selfie_desktop_test_mode)
-      .and_return(doc_auth_selfie_desktop_test_mode)
+    allow(IdentityConfig.store).to receive(:doc_auth_desktop_test_mode)
+      .and_return(doc_auth_desktop_test_mode)
     allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(user)
 
     allow(subject).to receive(:stored_result).and_return(stored_result)
@@ -424,7 +424,7 @@ RSpec.describe Idv::DocumentCaptureController do
       end
 
       describe 'when desktop selfie enabled' do
-        let(:doc_auth_selfie_desktop_test_mode) { true }
+        let(:doc_auth_desktop_test_mode) { true }
 
         it 'allows capture' do
           expect(subject).to receive(:render).with(
