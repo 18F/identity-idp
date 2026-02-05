@@ -594,7 +594,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
       let(:hybrid_mobile_threatmetrix_session_id) { nil }
       let(:hybrid_mobile_request_ip) { Faker::Internet.ip_v4_address }
 
-      it 'does not make a request to hybrid mobile threatmetrix' do
+      it 'returns threatmetrix_id_missing_result for hybrid mobile' do
         stub_vendor_requests
 
         perform
@@ -609,15 +609,16 @@ RSpec.describe ResolutionProofingJob, type: :job do
         expect(result[:success]).to be true
         expect(result[:threatmetrix_review_status]).to eq('pass')
 
-        # Hybrid mobile should be rejected due to missing session ID
-        expect(result[:hybrid_mobile_threatmetrix_review_status]).to eq(nil)
+        # Hybrid mobile should return id_missing result (user went through hybrid flow)
+        expect(result[:hybrid_mobile_threatmetrix_review_status]).to eq('reject')
         expect(result_context[:hybrid_mobile_device_profiling_adjudication_reason])
-          .to eq('hybrid_mobile_device_check_skipped')
-        expect(result_context_stages_hybrid_mobile_threatmetrix[:success]).to eq(nil)
+          .to eq('hybrid_mobile_device_profiling_result_review_required')
+        expect(result_context_stages_hybrid_mobile_threatmetrix[:success]).to eq(false)
         expect(result_context_stages_hybrid_mobile_threatmetrix[:client])
-          .to eq(nil)
+          .to eq('tmx_session_id_missing')
 
-        # Only desktop threatmetrix should have been called (once)
+        # Only desktop threatmetrix HTTP request should have been made
+        # (hybrid returns early with id_missing result without HTTP call)
         expect(@threatmetrix_stub).to have_been_requested.once
       end
     end
@@ -1009,6 +1010,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
       @instant_verify_stub = stub_instant_verify_request(instant_verify_response)
 
       if proofing_device_hybrid_profiling == :enabled &&
+         hybrid_mobile_request_ip.present? &&
          hybrid_mobile_threatmetrix_session_id.present?
         @threatmetrix_stub = stub_request(
           :post,
