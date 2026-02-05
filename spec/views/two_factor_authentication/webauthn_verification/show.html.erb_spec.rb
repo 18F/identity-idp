@@ -29,7 +29,7 @@ RSpec.describe 'two_factor_authentication/webauthn_verification/show.html.erb' d
   end
 
   it 'includes troubleshooting link to use another authentication method' do
-    expect(rendered).to have_css('.troubleshooting-options li', count: 2)
+    expect(rendered).to have_css('.troubleshooting-options li', count: 3)
     expect(rendered).to have_link(
       t('two_factor_authentication.login_options_link_text'),
       href: login_two_factor_options_path,
@@ -54,7 +54,7 @@ RSpec.describe 'two_factor_authentication/webauthn_verification/show.html.erb' d
     it 'includes troubleshooting link to learn more about face/touch unlock' do
       expect(rendered).to have_css('.troubleshooting-options li', count: 3)
       expect(rendered).to have_link(
-        t('instructions.mfa.webauthn_platform.learn_more_help'),
+        t('instructions.mfa.webauthn_platform.issues_with_ft_unlock'),
         href: help_center_redirect_path(
           category: 'trouble-signing-in',
           article: 'face-or-touch-unlock',

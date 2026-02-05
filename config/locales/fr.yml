@@ -1455,9 +1455,12 @@ instructions.account.reactivate.with_key: Vous disposez de votre clé personnell
 instructions.forgot_password.close_window: Vous pourrez fermer cette fenêtre de navigateur lorsque vous aurez réinitialisé votre mot de passe.
 instructions.go_back_to_mobile_app: Pour continuer, veuillez retourner à l’appli %{friendly_name} et vous connecter.
 instructions.mfa.authenticator.confirm_code_html: Saisissez le code à partir de votre appli d’authentification. Si vous avez plusieurs comptes configurés dans votre appli, saisissez le code correspondant à %{app_name_html}.
+instructions.mfa.authenticator.issues_with_authenticator: Problèmes avec une application d’authentification
 instructions.mfa.authenticator.manual_entry: Ou saisissez ce code manuellement dans votre appli d’authentification
+instructions.mfa.backup_code.issues_with_backup_codes: Problèmes avec les codes de sauvegarde
 instructions.mfa.do_not_share_code_link_text: Apprenez comment identifier la fraude et la signaler.
 instructions.mfa.do_not_share_code_message_html: '<strong>Ne partagez pas ce code.</strong> %{app_name} ne vous appellera, n’enverra de textos ou de courriels jamais pour vous le demander. %{link_html}'
+instructions.mfa.phone_verification.issues_with_text_sms_phone_call: Problème liés aux SMS ou aux appels téléphoniques
 instructions.mfa.piv_cac.account_not_found_html: '<p>%{sign_in} à l’aide de votre adresse e-mail et de votre mot de passe. Introduisez ensuite la carte PIV/CAC dans un lecteur de carte à puce pour l’ajouter à votre compte.</p><p>Vous n’avez pas de compte %{app_name}? %{create_account}</p>'
 instructions.mfa.piv_cac.add_from_sign_in_html: '<strong> Instructions : </strong> Insérez votre carte PIV ou CAC dans <strong>AJOUTER PIV/CAC</strong>. Vous devrez <strong>choisir un certificat</strong> (le bon a probablement le nom que vous lui avez donné) et <strong>saisir votre PIN</strong> (votre PIN a été créé lors de la configuration de votre carte PIV/CAC).'
 instructions.mfa.piv_cac.already_associated_html: Veuillez choisir un certificat associé à une autre carte PIV/CAC ; contactez votre administrateur afin de vérifier que votre carte PIV/CAC est bien à jour. Si vous pensez qu’il s’agit d’une erreur, veuillez %{try_again_html}.
@@ -1471,6 +1474,7 @@ instructions.mfa.piv_cac.create_account_html: '<strong>Vous n’avez pas de comp
 instructions.mfa.piv_cac.did_not_work_html: Veuillez vous assurer que votre carte PIV/CAC est correctement introduite dans votre lecteur de carte à puce et %{please_try_again_html}. Si ce problème persiste, contactez l’administrateur de votre organisme.
 instructions.mfa.piv_cac.having_trouble: 'Si vous rencontrez des difficultés pour vous connecter avec votre carte PIV/CAC, essayez de :'
 instructions.mfa.piv_cac.http_failure: Le serveur a mis trop de temps à répondre. Veuillez réessayer.
+instructions.mfa.piv_cac.issues_with_piv_cac: Problèmes liés à la carte d’employé fédéral
 instructions.mfa.piv_cac.no_certificate_html: Veuillez vous assurer que votre carte PIV/CAC est correctement introduite dans votre lecteur de carte à puce et %{try_again_html}. Si ce problème persiste, contactez l’administrateur de votre organisme.
 instructions.mfa.piv_cac.not_auth_cert_html: Le certificat que vous avez sélectionné n’est pas valide pour ce compte. Veuillez %{please_try_again_html} avec un autre certificat. Si ce problème persiste, contactez l’administrateur de votre organisme.
 instructions.mfa.piv_cac.please_try_again: réessayer
@@ -1489,9 +1493,10 @@ instructions.mfa.sms.number_message_html: Nous avons envoyé un SMS (texto) avec
 instructions.mfa.sms.seconds_remaining_html: 'Il vous reste <strong>%{seconds} secondes</strong> avant de devoir demander un nouveau code'
 instructions.mfa.voice.code_sent_message_html: Nous avons passé un appel avec un code à usage unique au %{number_html}.
 instructions.mfa.voice.number_message_html: Nous avons passé un appel avec un code à usage unique au %{number_html}. Ce code expirera dans %{expiration} minutes.
-instructions.mfa.webauthn_platform.learn_more_help: En savoir plus sur le déverrouillage facial ou tactile
+instructions.mfa.webauthn_platform.issues_with_ft_unlock: Problèmes avec le déverrouillage facial et tactile
 instructions.mfa.webauthn.confirm_webauthn: Présentez la clé de sécurité associée à votre compte.
 instructions.mfa.webauthn.confirm_webauthn_platform_html: '<p>Vous pouvez vous authentifier de la même manière que vous déverrouillez votre appareil, que ce soit avec votre visage ou votre empreinte digitale, un mot de passe ou une autre méthode. </p> <p>Si vous avez utilisé un gestionnaire de mots de passe pour configurer le déverrouillage facial ou tactile, vous pouvez vous authentifier à partir de n’importe quel appareil utilisant ce gestionnaire. Sinon, utilisez le même appareil que celui sur lequel vous avez configuré le déverrouillage facial ou tactile.</p>'
+instructions.mfa.webauthn.issues_with_security_key: Problèmes avec une clé de sécurité
 instructions.password.forgot: Vous ne connaissez pas votre mot de passe ? Réinitialisez-le après avoir confirmé votre adresse e-mail.
 instructions.password.help_text: Évitez de réutiliser les mots de passe de vos autres comptes, tels que ceux de vos banques, adresses e-mail et comptes de réseaux sociaux. N’incluez pas de mots figurant dans votre adresse e-mail.
 instructions.password.help_text_header: Conseils de sécurité pour votre mot de passe
@@ -1770,6 +1775,7 @@ two_factor_authentication.account_reset.link: supprimer votre compte
 two_factor_authentication.account_reset.pending: Vous avez actuellement une demande en attente pour supprimer votre compte. Il faut compter %{interval} à partir du moment où vous avez fait la demande pour terminer le processus. Veuillez vérifier plus tard.
 two_factor_authentication.account_reset.successful_cancel: Je vous remercie. Votre demande de suppression de votre compte %{app_name} a été annulée.
 two_factor_authentication.account_reset.text_html: Si vous ne pouvez utiliser aucune des options d’authentification ci-dessus, vous pouvez %{link_html} puis en créer un nouveau. Vous ne perdrez aucune des informations que vous avez stockées auprès d’organismes publics en supprimant votre compte.
+two_factor_authentication.add_or_change_authenticator: Comment puis-je ajouter une méthode d’authentification ou la modifier sur mon compte ?
 two_factor_authentication.attempt_remaining_warning_html.one: Il vous reste <strong>%{count} tentative</strong>.
 two_factor_authentication.attempt_remaining_warning_html.other: Il vous reste <strong>%{count} tentatives</strong>.
 two_factor_authentication.auth_app.change_nickname: Changer de pseudo
@@ -1848,7 +1854,6 @@ two_factor_authentication.phone_fee_disclosure: Des tarifs de messagerie et de d
 two_factor_authentication.phone_info: Nous vous enverrons un code à usage unique à chaque fois que vous vous connecterez.
 two_factor_authentication.phone_label: Numéro de téléphone
 two_factor_authentication.phone_verification.troubleshooting.change_number: Utiliser un autre numéro de téléphone
-two_factor_authentication.phone_verification.troubleshooting.code_not_received: Je ne reçois pas de code à usage unique par SMS/texto ou appel téléphonique
 two_factor_authentication.phone.delete.failure: Impossible de supprimer votre téléphone.
 two_factor_authentication.phone.delete.success: Votre téléphone a été supprimé.
 two_factor_authentication.piv_cac_header_text: Insérer votre carte d’employé fédéral

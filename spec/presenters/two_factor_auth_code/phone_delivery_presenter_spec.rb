@@ -82,7 +82,7 @@ RSpec.describe TwoFactorAuthCode::PhoneDeliveryPresenter do
       expect(presenter.troubleshooting_options).to include(
         an_object_satisfying do |c|
           c.content == t(
-            'two_factor_authentication.phone_verification.troubleshooting.code_not_received',
+            'instructions.mfa.phone_verification.issues_with_text_sms_phone_call',
           )
         end,
       )

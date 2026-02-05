@@ -1455,9 +1455,12 @@ instructions.account.reactivate.with_key: Do you have your personal key?
 instructions.forgot_password.close_window: You can close this browser window once you have reset your password.
 instructions.go_back_to_mobile_app: To continue, please go back to the %{friendly_name} app and sign in.
 instructions.mfa.authenticator.confirm_code_html: Enter the code from your authenticator app. If you have several accounts set up in your app, enter the code corresponding to %{app_name_html}.
+instructions.mfa.authenticator.issues_with_authenticator: Issues with authentication applications
 instructions.mfa.authenticator.manual_entry: Or enter this code manually into your authentication app
+instructions.mfa.backup_code.issues_with_backup_codes: Issues with backup codes
 instructions.mfa.do_not_share_code_link_text: Learn how to identify fraud and report it.
 instructions.mfa.do_not_share_code_message_html: '<strong>Do not share this code.</strong> %{app_name} will never call, text, or email you asking for it. %{link_html}'
+instructions.mfa.phone_verification.issues_with_text_sms_phone_call: Issues with text/SMS or phone call
 instructions.mfa.piv_cac.account_not_found_html: '<p>%{sign_in} with your email address and password. Then insert your PIV/CAC into a smart card reader to add to your account.</p><p>Don’t have a %{app_name} account? %{create_account}</p>'
 instructions.mfa.piv_cac.add_from_sign_in_html: '<strong>Instructions:</strong> Insert your PIV or CAC on <strong>“ADD PIV/CAC”</strong>. You’ll need to <strong>choose a certificate</strong> (the right one likely has your name of it) and <strong>enter your PIN</strong> (your PIN was created when you set up your PIV/CAC).'
 instructions.mfa.piv_cac.already_associated_html: Please choose a certificate from a different PIV/CAC, contact your administrator to ensure your PIV/CAC is up to date. If you think this is an error, %{try_again_html}.
@@ -1471,6 +1474,7 @@ instructions.mfa.piv_cac.create_account_html: '<strong>Don’t have a %{app_name
 instructions.mfa.piv_cac.did_not_work_html: Please make sure your PIV/CAC is properly inserted into your smart card reader and %{please_try_again_html}. If this problem continues, contact your agency administrator.
 instructions.mfa.piv_cac.having_trouble: 'If you have trouble signing in with your PIV/CAC card, try:'
 instructions.mfa.piv_cac.http_failure: The server took too long to respond. Please try again.
+instructions.mfa.piv_cac.issues_with_piv_cac: Issues with government employee ID
 instructions.mfa.piv_cac.no_certificate_html: Please make sure your PIV/CAC is properly inserted into your smart card reader and %{try_again_html}. If this problem continues, contact your agency administrator.
 instructions.mfa.piv_cac.not_auth_cert_html: The certificate you selected is invalid for this account. Please %{please_try_again_html} with a different certificate. If this problem continues, contact your agency administrator.
 instructions.mfa.piv_cac.please_try_again: try again
@@ -1489,9 +1493,10 @@ instructions.mfa.sms.number_message_html: We sent a text (SMS) with a one-time c
 instructions.mfa.sms.seconds_remaining_html: '<strong>%{seconds} seconds</strong> left until you have to request a new code'
 instructions.mfa.voice.code_sent_message_html: We made a call with a one-time code to %{number_html}.
 instructions.mfa.voice.number_message_html: We made a call with a one-time code to %{number_html}. This code will expire in %{expiration} minutes.
-instructions.mfa.webauthn_platform.learn_more_help: Learn more about face or touch unlock
+instructions.mfa.webauthn_platform.issues_with_ft_unlock: Issues with face or touch unlock
 instructions.mfa.webauthn.confirm_webauthn: Present the security key that you associated with your account.
 instructions.mfa.webauthn.confirm_webauthn_platform_html: '<p>You can authenticate the same way you unlock your device, whether it’s with your face or fingerprint, a password or another method. </p> <p>If you used a password manager to set up face or touch unlock, you can authenticate from any device that uses that password manager. Otherwise, use the same device where you set up face or touch unlock.</p>'
+instructions.mfa.webauthn.issues_with_security_key: Issues with security keys
 instructions.password.forgot: Don’t know your password? Reset it after confirming your email address.
 instructions.password.help_text: Avoid reusing passwords from your other accounts, such as your banks, email and social media. Don’t include words from your email address.
 instructions.password.help_text_header: Password safety tips
@@ -1770,6 +1775,7 @@ two_factor_authentication.account_reset.link: delete your account
 two_factor_authentication.account_reset.pending: You currently have a pending request to delete your account. It takes %{interval} from the time you made the request to complete the process. Please check back later.
 two_factor_authentication.account_reset.successful_cancel: Thank you. Your request to delete your %{app_name} account has been canceled.
 two_factor_authentication.account_reset.text_html: If you can’t use any of the authentication methods above, you can %{link_html} and make a new one. You will not lose any information you have stored with government agencies if you delete your account.
+two_factor_authentication.add_or_change_authenticator: How do I add or change the authentication method on my account?
 two_factor_authentication.attempt_remaining_warning_html.one: You have <strong>%{count} attempt</strong> remaining.
 two_factor_authentication.attempt_remaining_warning_html.other: You have <strong>%{count} attempts</strong> remaining.
 two_factor_authentication.auth_app.change_nickname: Change nickname
@@ -1848,7 +1854,6 @@ two_factor_authentication.phone_fee_disclosure: Message and data rates may apply
 two_factor_authentication.phone_info: We’ll send you a one-time code each time you sign in.
 two_factor_authentication.phone_label: Phone number
 two_factor_authentication.phone_verification.troubleshooting.change_number: Use another phone number
-two_factor_authentication.phone_verification.troubleshooting.code_not_received: I’m not receiving a one-time code through SMS/Text or phone call
 two_factor_authentication.phone.delete.failure: Unable to remove your phone.
 two_factor_authentication.phone.delete.success: Your phone has been removed.
 two_factor_authentication.piv_cac_header_text: Insert your government employee ID
