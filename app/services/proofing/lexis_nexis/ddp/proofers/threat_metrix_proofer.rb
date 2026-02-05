@@ -33,8 +33,7 @@ module Proofing
           end
 
           def verification_request(applicant)
-            @verification_request ||=
-              Proofing::LexisNexis::Ddp::Requests::ThreatMetrixRequest.new(config:, applicant:)
+            Proofing::LexisNexis::Ddp::Requests::ThreatMetrixRequest.new(config:, applicant:)
           end
 
           def validate_review_status!(review_status)
