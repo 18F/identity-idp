@@ -787,6 +787,71 @@ RSpec.describe Idv::InPerson::StateIdController do
             opted_in_to_in_person_proofing: true,
           )
         end
+
+        context 'with previous AAMVA result and stale pending PII' do
+          before do
+            subject.idv_session.ipp_aamva_result = {
+              success: true, vendor_name: 'TestAAMVA'
+            }
+            subject.idv_session.ipp_aamva_pending_state_id_pii = {
+              first_name: 'Stale',
+              last_name: 'Data',
+              same_address_as_id: 'true',
+            }
+          end
+
+          it 'clears stale pending PII' do
+            get :show
+
+            expect(subject.idv_session.ipp_aamva_pending_state_id_pii).to be_nil
+          end
+        end
+
+        context 'without previous AAMVA result' do
+          before do
+            subject.idv_session.ipp_aamva_result = nil
+            subject.idv_session.ipp_aamva_pending_state_id_pii = {
+              first_name: 'First',
+              last_name: 'Attempt',
+              same_address_as_id: 'true',
+            }
+          end
+
+          it 'preserves pending PII for form pre-fill' do
+            get :show
+
+            expect(subject.idv_session.ipp_aamva_pending_state_id_pii).to be_present
+            expect(
+              subject.idv_session.ipp_aamva_pending_state_id_pii[:first_name],
+            ).to eq('First')
+          end
+        end
+
+        context 'when returning after re-edit AAMVA failure' do
+          before do
+            subject.user_session['idv/in_person']['pii_from_user'].merge!(
+              first_name: 'Passed',
+              last_name: 'User',
+              same_address_as_id: 'true',
+            )
+            subject.idv_session.ipp_aamva_result = {
+              success: true, vendor_name: 'TestAAMVA'
+            }
+            subject.idv_session.ipp_aamva_pending_state_id_pii = {
+              first_name: 'Failed',
+              last_name: 'Edit',
+              same_address_as_id: 'true',
+            }
+          end
+
+          it 'uses committed pii_from_user instead of stale pending PII' do
+            get :show
+
+            expect(subject.idv_session.ipp_aamva_pending_state_id_pii).to be_nil
+            pii = subject.user_session['idv/in_person']['pii_from_user']
+            expect(pii[:first_name]).to eq('Passed')
+          end
+        end
       end
 
       context 'when async AAMVA state is missing' do
