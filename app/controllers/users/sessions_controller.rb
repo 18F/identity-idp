@@ -322,12 +322,11 @@ module Users
     end
 
     def compromised_password_check_current?(password_compromised_checked_at)
-      return false if !current_user.password_compromised_checked_at.present?
-      parsed_time = Time.zone.parse(password_compromised_checked_at.to_s)
-
       # The pwned_password list is regularly updated in monthly intervals
       # This is to ensure that we aren't checking the password against
       # the same list every time a user logs in
+      return false if !current_user.password_compromised_checked_at.present?
+      parsed_time = Time.zone.parse(password_compromised_checked_at.to_s)
       parsed_time < 30.days.ago
     end
 
