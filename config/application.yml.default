@@ -255,6 +255,7 @@ in_person_enrollments_ready_job_queue_url: ''
 in_person_enrollments_ready_job_visibility_timeout_seconds: 30
 in_person_enrollments_ready_job_wait_time_seconds: 20
 in_person_opt_in_available_completion_survey_url: 'https://handbook.login.gov'
+in_person_out_of_react: false
 in_person_outage_emailed_by_date: 'November 1, 2024'
 # in_person_outage_expected_update_date and in_person_outage_emailed_by_date below
 # are strings in the format 'Month day, year'
@@ -664,7 +665,6 @@ test:
   identity_verification_outcomes_report_issuers: '["urn:gov:gsa:openidconnect.profiles:sp:sso:agency_name:app_name"]'
   idv_socure_phonerisk_name_correlation_score_threshold: 0.5
   idv_socure_phonerisk_score_threshold: 0.5
-  in_person_out_of_react: false
   irs_fraud_metrics_emails: '["g@example.com", "h@example.com"]'
   irs_fraud_metrics_issuers: '["urn:gov:gsa:openidconnect.profiles:sp:sso:agency_name:app_name"]'
   irs_registration_funnel_emails: '["g@example.com", "h@example.com"]'
