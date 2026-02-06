@@ -467,6 +467,7 @@ Rails.application.routes.draw do
       if FeatureManagement.in_person_out_of_react?
         get '/in_person/welcome' => 'in_person/welcome#show'
         put '/in_person/welcome' => 'in_person/welcome#update'
+        get '/in_person/post_office' => 'in_person/post_office#show'
       end
       get '/in_person/verify_info' => 'in_person/verify_info#show'
       put '/in_person/verify_info' => 'in_person/verify_info#update'
