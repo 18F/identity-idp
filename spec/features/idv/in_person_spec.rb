@@ -696,6 +696,10 @@ RSpec.describe 'In Person Proofing', js: true do
   context 'when full form address post office search' do
     let(:user) { user_with_2fa }
 
+    before do
+      travel_to ActiveSupport::TimeZone['America/New_York'].parse('2026-02-06T20:00:00')
+    end
+
     it 'allows the user to search by full address', allow_browser_log: true, timezone: 'UTC' do
       visit_idp_from_sp_with_ial2(:oidc, **{ client_id: ipp_service_provider.issuer })
       sign_in_and_2fa_user(user)
