@@ -1,0 +1,24 @@
+<% self.title = t('in_person_proofing.headings.prepare') %>
+<%= render 'address_form' %>
+<ul class='usa-collection'>
+  <% @post_offices.each do |post_office| %>
+    <li class="location-collection-item">
+      <div class="usa-collection__body">
+        <div class="grid-row">
+          <div class="grid-col-fill">
+            <h3 class="usa-collection__heading margin-bottom-1">
+              <%= t('in_person_proofing.body.location.distance', count: post_office[:distance]) %>
+            </h3>
+            <h3 className="usa-collection__heading margin-bottom-1">
+              <%= post_office[:name] %>
+            </h3>
+            <div><%= post_office[:address] %></div>
+            <div>
+              <%= "#{post_office[:city]}, #{post_office[:state]}, #{post_office[:zip_code_5]}-#{post_office[:zip_code_4]}" %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </li>
+  <% end %>
+</ul>
