@@ -7,10 +7,10 @@ module DocAuth
         class TrueIdRequest < DocAuth::LexisNexis::Request
           attr_reader :applicant
 
-          def initialize(config:, user_uuid:, uuid_prefix:, applicant:)
+          def initialize(config:, applicant:, user_uuid: nil, uuid_prefix: nil)
             @applicant = applicant
             validate_images!
-            super(config: config, user_uuid: user_uuid, uuid_prefix: uuid_prefix)
+            super(config:, user_uuid:, uuid_prefix:)
           end
 
           def policy
@@ -35,9 +35,6 @@ module DocAuth
           end
 
           def body
-            # Guard for parent class calling build_request_body during initialize
-            return {}.to_json unless required_data_present?
-
             {
               account_email: applicant[:email],
               policy:,
@@ -114,18 +111,6 @@ module DocAuth
 
           def passport_document?
             applicant[:document_type_requested] == DocumentTypes::PASSPORT
-          end
-
-          def required_data_present?
-            # TODO: uncomment once email is provided as part of LG-17251
-            return false if applicant[:uuid].blank? # || applicant[:email].blank?
-            if passport_document?
-              return false if applicant[:passport_image].blank?
-            elsif applicant[:front_image].blank? || applicant[:back_image].blank?
-              return false
-            end
-            return false if liveness_checking_required? && applicant[:selfie_image].blank?
-            true
           end
 
           def id_front_image
