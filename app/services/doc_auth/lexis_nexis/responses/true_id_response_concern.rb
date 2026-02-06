@@ -94,7 +94,7 @@ module DocAuth
           return @new_alerts unless with_authentication_result?
           all_alerts = true_id_product&.dig(:AUTHENTICATION_RESULT)&.select do |key|
             key.start_with?('Alert_')
-          end
+          end || []
 
           region_details = parse_document_region
           alert_names = all_alerts.select { |key| key.end_with?('_AlertName') }

@@ -236,7 +236,7 @@ module DocAuth
     # Return ErrorResult as hash, there is error but known_error_count = 0
     ##
     def process_unknown_error(response_info)
-      @config.warn_notifier&.call(
+      @config&.warn_notifier&.call(
         message: 'DocAuth failure escaped without useful errors',
         response_info: response_info,
       )
@@ -361,7 +361,7 @@ module DocAuth
 
       return 0 if unknown_alerts.empty?
 
-      config.warn_notifier&.call(
+      config&.warn_notifier&.call(
         message: 'DocAuth vendor responded with alert name(s) we do not handle',
         unknown_alerts: unknown_alerts,
         response_info: response_info,
