@@ -72,8 +72,9 @@ module Proofing
           workflow:,
         )
 
+        user_went_through_hybrid_handoff = hybrid_mobile_request_ip.present?
         if FeatureManagement.proofing_device_hybrid_profiling_collecting_enabled? &&
-           hybrid_mobile_threatmetrix_session_id.present?
+           user_went_through_hybrid_handoff
           hybrid_mobile_device_profiling_result = threatmetrix_plugin.call(
             applicant_pii:,
             current_sp:,
