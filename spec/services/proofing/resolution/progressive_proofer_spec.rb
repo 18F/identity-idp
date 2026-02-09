@@ -80,7 +80,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
 
     let(:threatmetrix_proofer) do
       instance_double(
-        Proofing::LexisNexis::Ddp::Proofer,
+        Proofing::LexisNexis::Ddp::Proofers::ThreatMetrixProofer,
         proof: threatmetrix_result,
       )
     end
