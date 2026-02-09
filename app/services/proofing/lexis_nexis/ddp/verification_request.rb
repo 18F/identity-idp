@@ -46,10 +46,6 @@ module Proofing
           '/api/session-query'
         end
 
-        def timeout
-          raise NotImplementedError
-        end
-
         def session_id
           raise NotImplementedError
         end
