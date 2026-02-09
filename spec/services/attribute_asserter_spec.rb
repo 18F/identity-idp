@@ -99,7 +99,7 @@ RSpec.describe AttributeAsserter do
 
             it 'includes all requested attributes + uuid' do
               expect(user.asserted_attributes.keys)
-                .to eq(%i[uuid email phone first_name verified_at aal ial])
+                .to eq(%i[uuid email email_for_entra_id phone first_name verified_at aal ial])
             end
 
             it 'creates getter function' do
@@ -124,7 +124,7 @@ RSpec.describe AttributeAsserter do
 
               it 'includes all requested attributes + uuid' do
                 expect(user.asserted_attributes.keys)
-                  .to eq(%i[uuid email phone first_name verified_at aal ial])
+                  .to eq(%i[uuid email email_for_entra_id phone first_name verified_at aal ial])
               end
             end
           end
@@ -150,7 +150,7 @@ RSpec.describe AttributeAsserter do
 
             it 'skips ascii as an attribute' do
               expect(user.asserted_attributes.keys)
-                .to eq(%i[uuid email phone first_name verified_at aal ial])
+                .to eq(%i[uuid email email_for_entra_id phone first_name verified_at aal ial])
             end
 
             it 'transliterates attributes to ASCII' do
@@ -178,7 +178,10 @@ RSpec.describe AttributeAsserter do
 
               it 'uses authn request bundle' do
                 expect(user.asserted_attributes.keys)
-                  .to eq(%i[uuid email first_name last_name ssn phone verified_at aal ial])
+                  .to eq(
+                    %i[uuid email email_for_entra_id first_name last_name ssn phone verified_at
+                       aal ial],
+                  )
               end
             end
           end
@@ -195,7 +198,10 @@ RSpec.describe AttributeAsserter do
             let(:attribute_bundle) { %w[email foo] }
 
             it 'silently skips invalid attribute name' do
-              expect(user.asserted_attributes.keys).to eq(%i[uuid email verified_at aal ial])
+              expect(user.asserted_attributes.keys).to eq(
+                %i[uuid email email_for_entra_id
+                   verified_at aal ial],
+              )
             end
           end
 
@@ -212,7 +218,8 @@ RSpec.describe AttributeAsserter do
               end
 
               it 'does not include x509_subject, x509_issuer, and x509_presented' do
-                expect(user.asserted_attributes.keys).to eq %i[uuid email verified_at aal ial]
+                expect(user.asserted_attributes.keys).to eq %i[uuid email email_for_entra_id
+                                                               verified_at aal ial]
               end
             end
 
@@ -227,8 +234,8 @@ RSpec.describe AttributeAsserter do
               end
 
               it 'includes x509_subject x509_issuer x509_presented' do
-                expected = %i[uuid email verified_at aal ial x509_subject x509_issuer
-                              x509_presented]
+                expected = %i[uuid email email_for_entra_id verified_at aal ial x509_subject
+                              x509_issuer x509_presented]
                 expect(user.asserted_attributes.keys).to eq expected
               end
             end
@@ -257,7 +264,7 @@ RSpec.describe AttributeAsserter do
           let(:attribute_bundle) { %w[email phone first_name] }
 
           it 'only includes uuid, email, aal, and ial (no verified_at)' do
-            expect(user.asserted_attributes.keys).to eq %i[uuid email aal ial]
+            expect(user.asserted_attributes.keys).to eq %i[uuid email email_for_entra_id aal ial]
           end
 
           it 'does not create a getter function for IAL1 attributes' do
@@ -277,7 +284,7 @@ RSpec.describe AttributeAsserter do
             let(:service_provider_ial) { 1 }
 
             it 'only includes uuid, email, aal, and ial (no verified_at)' do
-              expect(user.asserted_attributes.keys).to eq %i[uuid email aal ial]
+              expect(user.asserted_attributes.keys).to eq %i[uuid email email_for_entra_id aal ial]
             end
 
             it 'does not create a getter function for IAL1 attributes' do
@@ -294,7 +301,8 @@ RSpec.describe AttributeAsserter do
             let(:service_provider_ial) { 2 }
 
             it 'includes verified_at' do
-              expect(user.asserted_attributes.keys).to eq %i[uuid email verified_at aal ial]
+              expect(user.asserted_attributes.keys)
+                .to eq %i[uuid email email_for_entra_id verified_at aal ial]
             end
           end
         end
@@ -319,7 +327,7 @@ RSpec.describe AttributeAsserter do
             end
 
             it 'only includes uuid, email, aal, and ial' do
-              expect(user.asserted_attributes.keys).to eq(%i[uuid email aal ial])
+              expect(user.asserted_attributes.keys).to eq(%i[uuid email email_for_entra_id aal ial])
             end
           end
         end
@@ -336,7 +344,7 @@ RSpec.describe AttributeAsserter do
           let(:attribute_bundle) { %w[email foo] }
 
           it 'silently skips invalid attribute name' do
-            expect(user.asserted_attributes.keys).to eq(%i[uuid email aal ial])
+            expect(user.asserted_attributes.keys).to eq(%i[uuid email email_for_entra_id aal ial])
           end
         end
 
@@ -351,7 +359,7 @@ RSpec.describe AttributeAsserter do
             end
 
             it 'does not include x509_subject x509_issuer and x509_presented' do
-              expect(user.asserted_attributes.keys).to eq %i[uuid email aal ial]
+              expect(user.asserted_attributes.keys).to eq %i[uuid email email_for_entra_id aal ial]
             end
           end
 
@@ -366,7 +374,8 @@ RSpec.describe AttributeAsserter do
             end
 
             it 'includes x509_subject x509_issuer and x509_presented' do
-              expected = %i[uuid email aal ial x509_subject x509_issuer x509_presented]
+              expected = %i[uuid email email_for_entra_id aal ial x509_subject x509_issuer
+                            x509_presented]
               expect(user.asserted_attributes.keys).to eq expected
             end
           end
@@ -637,7 +646,7 @@ RSpec.describe AttributeAsserter do
         end
 
         it 'only includes UUID, email, aal, and ial' do
-          expect(user.asserted_attributes.keys).to eq(%i[uuid email aal ial])
+          expect(user.asserted_attributes.keys).to eq(%i[uuid email email_for_entra_id aal ial])
         end
       end
     end
