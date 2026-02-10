@@ -314,19 +314,19 @@ module Users
     end
 
     def check_password_compromised
-      return if compromised_password_check_current?(current_user.password_compromised_checked_at)
+      return if compromised_password_check_current?
 
       is_pwned = PwnedPasswords::LookupPassword.call(auth_params[:password])
       track_pwned_password if is_pwned
       update_user_password_compromised_checked_at
     end
 
-    def compromised_password_check_current?(password_compromised_checked_at)
+    def compromised_password_check_current?
       # The pwned_password list is regularly updated in monthly intervals
       # This is to ensure that we aren't checking the password against
       # the same list every time a user logs in
       return false if !current_user.password_compromised_checked_at.present?
-      parsed_time = Time.zone.parse(password_compromised_checked_at.to_s)
+      parsed_time = Time.zone.parse(!current_user.password_compromised_checked_at)
       parsed_time < 30.days.ago
     end
 
