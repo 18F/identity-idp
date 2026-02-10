@@ -788,6 +788,39 @@ RSpec.describe Idv::InPerson::StateIdController do
           expect(subject.idv_session.ipp_aamva_pending_state_id_pii).to be_present
           expect(subject.idv_session.ipp_aamva_pending_state_id_pii[:first_name]).to eq('Charity')
         end
+
+        context 'when AAMVA previously passed and re-edit fails' do
+          before do
+            subject.user_session['idv/in_person']['pii_from_user'].merge!(
+              first_name: 'Committed',
+              last_name: 'Data',
+              same_address_as_id: 'true',
+            )
+            subject.idv_session.ipp_aamva_result = {
+              success: true, vendor_name: 'TestAAMVA'
+            }
+            subject.idv_session.ipp_aamva_pending_state_id_pii = {
+              first_name: 'Re-edit',
+              last_name: 'Attempt',
+              same_address_as_id: 'true',
+            }
+          end
+
+          it 'prefills the form with pending re-edit PII' do
+            get :show
+
+            pii = subject.extra_view_variables[:pii]
+            expect(pii[:first_name]).to eq('Re-edit')
+            expect(pii[:last_name]).to eq('Attempt')
+          end
+
+          it 'does not prefill with previously committed PII' do
+            get :show
+
+            pii = subject.extra_view_variables[:pii]
+            expect(pii[:first_name]).not_to eq('Committed')
+          end
+        end
       end
 
       context 'when async AAMVA state is none' do
