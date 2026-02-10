@@ -85,7 +85,7 @@ class PivCacErrorPresenter
     BlockLinkComponent.new(url: login_two_factor_options_path)
       .with_content(t('two_factor_authentication.login_options_link_text'))
   end
-  
+
   def issues_with_piv_cac_troubleshooting_option
     BlockLinkComponent.new(
       url: MarketingSite.help_center_article_url(
@@ -95,7 +95,7 @@ class PivCacErrorPresenter
       new_tab: true,
     ).with_content(t('instructions.mfa.piv_cac.issues_with_piv_cac'))
   end
-  
+
   def how_add_or_change_authenticator_troubleshooting_option
     BlockLinkComponent.new(
       url: help_center_redirect_path(
