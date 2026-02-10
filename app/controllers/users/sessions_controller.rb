@@ -326,8 +326,7 @@ module Users
       # This is to ensure that we aren't checking the password against
       # the same list every time a user logs in
       return false if !current_user.password_compromised_checked_at.present?
-      parsed_time = Time.zone.parse(!current_user.password_compromised_checked_at)
-      parsed_time < 30.days.ago
+      current_user.password_compromised_checked_at < 30.days.ago
     end
 
     def track_pwned_password
