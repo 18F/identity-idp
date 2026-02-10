@@ -73,6 +73,41 @@ class PivCacErrorPresenter
     @view.url_options
   end
 
+  def troubleshooting_options
+    [
+      choose_another_method_troubleshooting_option,
+      issues_with_piv_cac_troubleshooting_option,
+      how_add_or_change_authenticator_troubleshooting_option,
+    ]
+  end
+
+  def choose_another_method_troubleshooting_option
+    BlockLinkComponent.new(url: login_two_factor_options_path)
+      .with_content(t('two_factor_authentication.login_options_link_text'))
+  end
+  
+  def issues_with_piv_cac_troubleshooting_option
+    BlockLinkComponent.new(
+      url: MarketingSite.help_center_article_url(
+        category: 'trouble-signing-in',
+        article: 'authentication/issues-with-government-employee-id-piv-cac',
+      ),
+      new_tab: true,
+    ).with_content(t('instructions.mfa.piv_cac.issues_with_piv_cac'))
+  end
+  
+  def how_add_or_change_authenticator_troubleshooting_option
+    BlockLinkComponent.new(
+      url: help_center_redirect_path(
+        category: 'manage-your-account',
+        article: 'add-or-change-your-authentication-method',
+        flow: :two_factor_authentication,
+        step: redirect_location_step,
+      ),
+      new_tab: true,
+    ).with_content(t('two_factor_authentication.add_or_change_authenticator'))
+  end
+
   private
 
   def please_try_again_link
