@@ -231,6 +231,31 @@ RSpec.describe Idv::InPerson::StateIdController do
         expect(response).to render_template :show
       end
 
+      context 'when submitting invalid PII after a previous AAMVA result' do
+        let(:invalid_params) do
+          params.merge(identity_doc: { first_name: 'Ch@rity' })
+        end
+
+        before do
+          subject.user_session['idv/in_person']['pii_from_user'].merge!(
+            first_name: 'Committed',
+            last_name: 'Data',
+            same_address_as_id: 'true',
+          )
+          subject.idv_session.ipp_aamva_result = {
+            success: true, vendor_name: 'TestAAMVA'
+          }
+        end
+
+        it 'prefills the form with the invalid submitted params' do
+          put :update, params: invalid_params
+
+          pii = subject.extra_view_variables[:pii]
+          expect(pii[:first_name]).to eq('Ch@rity')
+          expect(response).to render_template :show
+        end
+      end
+
       it 'invalidates future steps, but does not clear ssn' do
         subject.idv_session.ssn = '123-45-6789'
         expect(subject).to receive(:clear_future_steps_from!).and_call_original
@@ -805,6 +830,13 @@ RSpec.describe Idv::InPerson::StateIdController do
 
             expect(subject.idv_session.ipp_aamva_pending_state_id_pii).to be_nil
           end
+
+          it 'does not prefill the form with stale pending data' do
+            get :show
+
+            pii = subject.extra_view_variables[:pii]
+            expect(pii[:first_name]).not_to eq('Stale')
+          end
         end
 
         context 'without previous AAMVA result' do
@@ -824,6 +856,14 @@ RSpec.describe Idv::InPerson::StateIdController do
             expect(
               subject.idv_session.ipp_aamva_pending_state_id_pii[:first_name],
             ).to eq('First')
+          end
+
+          it 'prefills the form with pending PII' do
+            get :show
+
+            pii = subject.extra_view_variables[:pii]
+            expect(pii[:first_name]).to eq('First')
+            expect(pii[:last_name]).to eq('Attempt')
           end
         end
 
@@ -850,6 +890,14 @@ RSpec.describe Idv::InPerson::StateIdController do
             expect(subject.idv_session.ipp_aamva_pending_state_id_pii).to be_nil
             pii = subject.user_session['idv/in_person']['pii_from_user']
             expect(pii[:first_name]).to eq('Passed')
+          end
+
+          it 'prefills the form with committed pii_from_user' do
+            get :show
+
+            pii = subject.extra_view_variables[:pii]
+            expect(pii[:first_name]).to eq('Passed')
+            expect(pii[:last_name]).to eq('User')
           end
         end
       end
