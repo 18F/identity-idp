@@ -7,6 +7,8 @@ class ResolutionProofingJob < ApplicationJob
 
   discard_on JobHelpers::StaleJobHelper::StaleJobError
 
+  class UserNotFound < StandardError; end
+
   CallbackLogData = Struct.new(
     :result,
     :resolution_success,
@@ -23,7 +25,7 @@ class ResolutionProofingJob < ApplicationJob
     trace_id:,
     ipp_enrollment_in_progress:,
     proofing_vendor:,
-    user_id: nil,
+    user_id:,
     service_provider_issuer: nil,
     threatmetrix_session_id: nil,
     request_ip: nil,
@@ -34,6 +36,7 @@ class ResolutionProofingJob < ApplicationJob
     timer = JobHelpers::Timer.new
 
     user = User.find_by(id: user_id)
+    raise UserNotFound unless user
 
     raise_stale_job! if stale_job?(enqueued_at)
 
@@ -84,7 +87,7 @@ class ResolutionProofingJob < ApplicationJob
       state_id_success: callback_log_data&.state_id_success,
       device_profiling_success: callback_log_data&.device_profiling_success,
       timing: timer.results,
-      user_id: user.uuid,
+      user_id: user&.uuid,
     )
   end
 
@@ -122,8 +125,9 @@ class ResolutionProofingJob < ApplicationJob
 
     hybrid_device_profiling_success = nil
 
+    user_went_through_hybrid_handoff = hybrid_mobile_request_ip.present?
     if FeatureManagement.proofing_device_hybrid_profiling_collecting_enabled? &&
-       hybrid_mobile_threatmetrix_session_id.present?
+       user_went_through_hybrid_handoff
       log_threatmetrix_info(
         result.hybrid_mobile_device_profiling_result,
         user,

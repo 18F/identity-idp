@@ -2702,6 +2702,15 @@ RSpec.describe SamlIdpController do
           expect(email['FriendlyName']).to eq('email')
         end
 
+        it 'includes an additional email Attribute with Name set to what Entra ID expects' do
+          email = xmldoc.attribute_node_for('http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress')
+
+          expect(email.name).to eq('Attribute')
+          expect(email['Name']).to eq('http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress')
+          expect(email['NameFormat']).to eq('urn:oasis:names:tc:SAML:2.0:attrname-format:basic')
+          expect(email['FriendlyName']).to eq('email_for_entra_id')
+        end
+
         it 'includes the uuid Attribute element' do
           uuid = xmldoc.attribute_node_for('uuid')
 

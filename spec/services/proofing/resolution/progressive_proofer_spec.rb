@@ -80,7 +80,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
 
     let(:threatmetrix_proofer) do
       instance_double(
-        Proofing::LexisNexis::Ddp::Proofer,
+        Proofing::LexisNexis::Ddp::Proofers::ThreatMetrixProofer,
         proof: threatmetrix_result,
       )
     end
@@ -246,16 +246,20 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
         let(:hybrid_mobile_threatmetrix_session_id) { nil }
         let(:hybrid_mobile_request_ip) { Faker::Internet.ip_v4_address }
 
-        it 'calls ThreatMetrixPlugin only once (desktop only)' do
-          expect(progressive_proofer.threatmetrix_plugin).to receive(:call).once
+        it 'calls ThreatMetrixPlugin twice (user went through hybrid flow)' do
+          expect(progressive_proofer.threatmetrix_plugin).to receive(:call).twice
           proof
         end
 
-        it 'returns a ResultAdjudicator with nil hybrid_mobile_device_profiling_result' do
+        it 'returns a ResultAdjudicator with threatmetrix_id_missing_result' do
           proof.tap do |result|
             expect(result).to be_an_instance_of(Proofing::Resolution::ResultAdjudicator)
             expect(result.device_profiling_result).to eql(threatmetrix_result)
-            expect(result.hybrid_mobile_device_profiling_result).to be_nil
+            expect(result.hybrid_mobile_device_profiling_result).to be_present
+            expect(result.hybrid_mobile_device_profiling_result.success).to be false
+            expect(result.hybrid_mobile_device_profiling_result.client)
+              .to eq('tmx_session_id_missing')
+            expect(result.hybrid_mobile_device_profiling_result.review_status).to eq('reject')
           end
         end
       end
