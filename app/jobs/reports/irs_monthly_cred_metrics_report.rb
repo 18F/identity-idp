@@ -2,7 +2,6 @@
 
 module Reports
   class IrsMonthlyCredMetricsReport < BaseReport
-    # REPORT_NAME = 'irs_monthly_cred_metrics'
 
     attr_reader :report_date, :report_receiver, :report_name
 
@@ -85,18 +84,11 @@ module Reports
       ]
     end
 
-    # def perform(perform_date = Time.zone.yesterday.end_of_day, perform_receiver = :internal)
     def perform(perform_date = Time.zone.yesterday.end_of_day, perform_receiver = :internal, report_config = {})
       @report_receiver = perform_receiver.to_sym
       @report_date = perform_date
       @report_config = report_config
-
-      #   IdentityConfig.store.sp_monthly_cred_metric_report_configs.each do |report_config|
-      #     send_report(report_config)
-      #   end
-      # end
-
-      # def send_report(report_config)
+      
       @issuers = report_config['issuers']
       @partner_strings = report_config['partner_strings']
       @partner_emails = report_config['partner_emails']
