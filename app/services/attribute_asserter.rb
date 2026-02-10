@@ -34,7 +34,10 @@ class AttributeAsserter
 
   def build
     attrs = default_attrs
-    add_email(attrs) if bundle.include? :email
+    if bundle.include? :email
+      add_email(attrs)
+      add_email_for_entra_id(attrs)
+    end
     add_all_emails(attrs) if bundle.include? :all_emails
     add_locale(attrs) if bundle.include? :locale
     add_bundle(attrs) if should_add_proofed_attributes?
@@ -213,6 +216,20 @@ class AttributeAsserter
       },
       name_format: 'urn:oasis:names:tc:SAML:2.0:attrname-format:basic',
       name_id_format: Saml::XML::Namespaces::Formats::NameId::EMAIL_ADDRESS,
+    }
+  end
+
+  # Microsoft Entra ID expects the email address to be provided in an Attribute whose
+  # Name element is 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'
+  # https://learn.microsoft.com/en-us/entra/external-id/direct-federation#to-configure-a-saml-20-identity-provider
+  # Without this, partners cannot integrate Login.gov with Entra ID
+  def add_email_for_entra_id(attrs)
+    attrs[:email_for_entra_id] = {
+      getter: ->(principal) {
+        principal.active_identity_for(service_provider).email_address_for_sharing.email
+      },
+      name: 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress',
+      name_format: 'urn:oasis:names:tc:SAML:2.0:attrname-format:basic',
     }
   end
 

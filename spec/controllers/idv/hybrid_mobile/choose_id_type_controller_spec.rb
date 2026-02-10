@@ -198,6 +198,20 @@ RSpec.describe Idv::HybridMobile::ChooseIdTypeController do
           expect(document_capture_session.hybrid_mobile_request_ip).to be_nil
         end
       end
+
+      context 'when threatmetrix session ID is missing' do
+        before do
+          controller.session[:hybrid_flow_threatmetrix_session_id] = nil
+        end
+
+        it 'still saves the request IP to indicate user went through hybrid flow' do
+          put :update, params: params
+
+          document_capture_session.reload
+          expect(document_capture_session.hybrid_mobile_threatmetrix_session_id).to be_nil
+          expect(document_capture_session.hybrid_mobile_request_ip).to eq(request_ip)
+        end
+      end
     end
 
     context 'when hybrid flow threatmetrix is not enabled' do

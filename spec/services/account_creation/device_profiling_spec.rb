@@ -8,7 +8,7 @@ RSpec.describe AccountCreation::DeviceProfiling do
   let(:service_provider) { create(:service_provider) }
   let(:threatmetrix_proofer) do
     instance_double(
-      Proofing::LexisNexis::Ddp::Proofer,
+      Proofing::LexisNexis::Ddp::Proofers::ThreatMetrixProofer,
       proof: threatmetrix_proofer_result,
     )
   end
