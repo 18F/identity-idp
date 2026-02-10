@@ -2051,6 +2051,21 @@ user_mailer.letter_reminder_14_days.did_not_get_a_letter_html: If you didn’t g
 user_mailer.letter_reminder_14_days.finish: Finish verifying your identity
 user_mailer.letter_reminder_14_days.sign_in_and_request_another_letter: sign in to request another letter
 user_mailer.letter_reminder_14_days.subject: Finish verifying your identity
+user_mailer.multi_factor_authentication.auth_app_added: Authentication application was added to your %{app_name} account
+user_mailer.multi_factor_authentication.auth_app_deleted: Authentication application was deleted from your %{app_name} account
+user_mailer.multi_factor_authentication.backup_code_added: Backup codes were added to your %{app_name} account
+user_mailer.multi_factor_authentication.backup_code_deleted: Backup codes were deleted from your %{app_name} account
+user_mailer.multi_factor_authentication.ft_unlock_added: Face or touch unlock was added to your %{app_name} account
+user_mailer.multi_factor_authentication.ft_unlock_deleted: Face or touch unlock was deleted from your %{app_name} account
+user_mailer.multi_factor_authentication.help_center_html: Please do not reply to this message. If you need help, visit %{help_center_link_html}
+user_mailer.multi_factor_authentication.instructions_html: If this wasn’t you, %{reset_password_link_html} and change your %{authentication_methods_link_html} immediately.
+user_mailer.multi_factor_authentication.new_auth_added: A new authentication method was added to your %{app_name} account.
+user_mailer.multi_factor_authentication.phone_added: Text or voice message was added to your %{app_name} account
+user_mailer.multi_factor_authentication.phone_deleted: Text or voice message was deleted from your %{app_name} account
+user_mailer.multi_factor_authentication.piv_card_added: Government employee ID was added to your %{app_name} account
+user_mailer.multi_factor_authentication.piv_card_deleted: Government employee ID was deleted from your %{app_name} account
+user_mailer.multi_factor_authentication.security_key_added: Security key was added to your %{app_name} account
+user_mailer.multi_factor_authentication.security_key_deleted: Security key was deleted from your %{app_name} account
 user_mailer.new_device_sign_in_after_2fa.authentication_methods: authentication methods
 user_mailer.new_device_sign_in_after_2fa.info_p1: Your %{app_name} email and password were used to sign-in and authenticate on a new device.
 user_mailer.new_device_sign_in_after_2fa.info_p2: If you recognize this activity, you don’t need to do anything.

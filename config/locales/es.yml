@@ -2063,6 +2063,21 @@ user_mailer.letter_reminder_14_days.did_not_get_a_letter_html: Si no recibió es
 user_mailer.letter_reminder_14_days.finish: Termine de verificar su identidad
 user_mailer.letter_reminder_14_days.sign_in_and_request_another_letter: inicie sesión para solicitar otra carta
 user_mailer.letter_reminder_14_days.subject: Termine de verificar su identidad
+user_mailer.multi_factor_authentication.auth_app_added: Su aplicación de autenticación se ha añadido a su cuenta de %{app_name}.
+user_mailer.multi_factor_authentication.auth_app_deleted: Su aplicación de autenticación se eliminó de su cuenta de %{app_name}.
+user_mailer.multi_factor_authentication.backup_code_added: La opción de códigos de recuperación se ha añadido a su cuenta de %{app_name}.
+user_mailer.multi_factor_authentication.backup_code_deleted: La opción de códigos de recuperación se eliminó de su cuenta de %{app_name}.
+user_mailer.multi_factor_authentication.ft_unlock_added: Su opción de desbloqueo facial o táctil se ha añadido a su cuenta de %{app_name}.
+user_mailer.multi_factor_authentication.ft_unlock_deleted: Su opción de desbloqueo facial o táctil se eliminó de su cuenta de %{app_name}.
+user_mailer.multi_factor_authentication.help_center_html: No responda a este mensaje. Si necesita ayuda, visite %{help_center_link_html}
+user_mailer.multi_factor_authentication.instructions_html: Si no fue usted, %{reset_password_link_html} y cambie sus %{authentication_methods_link_html} inmediatamente.
+user_mailer.multi_factor_authentication.new_auth_added: Se ha añadido un nuevo método de autenticación a su cuenta de %{app_name}.
+user_mailer.multi_factor_authentication.phone_added: La opción de mensaje de texto o de voz se ha añadido a su cuenta de %{app_name}.
+user_mailer.multi_factor_authentication.phone_deleted: La opción de mensaje de texto o de voz se eliminó de su cuenta de %{app_name}.
+user_mailer.multi_factor_authentication.piv_card_added: Su identificación de empleado gubernamental se ha añadido a su cuenta de %{app_name}.
+user_mailer.multi_factor_authentication.piv_card_deleted: Su identificación de empleado gubernamental se eliminó de su cuenta de %{app_name}.
+user_mailer.multi_factor_authentication.security_key_added: Su clave de seguridad se ha añadido a su cuenta de %{app_name}.
+user_mailer.multi_factor_authentication.security_key_deleted: Su clave de seguridad se eliminó de su cuenta de %{app_name}.
 user_mailer.new_device_sign_in_after_2fa.authentication_methods: métodos de autenticación
 user_mailer.new_device_sign_in_after_2fa.info_p1: Su correo electrónico y contraseña de %{app_name} se usaron para iniciar sesión y hacer la autenticación en un dispositivo nuevo.
 user_mailer.new_device_sign_in_after_2fa.info_p2: Si reconoce esta actividad, no tiene que hacer nada.

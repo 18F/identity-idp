@@ -2051,6 +2051,21 @@ user_mailer.letter_reminder_14_days.did_not_get_a_letter_html: Si vous n’avez 
 user_mailer.letter_reminder_14_days.finish: Terminer la vérification de votre identité
 user_mailer.letter_reminder_14_days.sign_in_and_request_another_letter: connectez-vous pour en demander une autre
 user_mailer.letter_reminder_14_days.subject: Terminer la vérification de votre identité
+user_mailer.multi_factor_authentication.auth_app_added: Une application d’authentification a été ajoutée à votre compte %{app_name}.
+user_mailer.multi_factor_authentication.auth_app_deleted: Une application d’authentification a été supprimée de votre compte %{app_name}.
+user_mailer.multi_factor_authentication.backup_code_added: Des codes de sauvegarde ont été ajoutés à votre compte %{app_name}.
+user_mailer.multi_factor_authentication.backup_code_deleted: Les codes de sauvegarde ont été supprimés de votre compte %{app_name}.
+user_mailer.multi_factor_authentication.ft_unlock_added: Le déverrouillage facial ou tactile a été ajouté à votre compte %{app_name}.
+user_mailer.multi_factor_authentication.ft_unlock_deleted: Le déverrouillage facial ou tactile a été supprimé de votre compte %{app_name}.
+user_mailer.multi_factor_authentication.help_center_html: Ne répondez pas à ce message. Si vous avez besoin d’aide, rendez-vous sur %{help_center_link_html}
+user_mailer.multi_factor_authentication.instructions_html: Si ce n’est pas vous, %{reset_password_link_html} et modifiez immédiatement vos %{authentication_methods_link_html}.
+user_mailer.multi_factor_authentication.new_auth_added: Une nouvelle méthode d’authentification a été ajoutée à votre compte %{app_name}.
+user_mailer.multi_factor_authentication.phone_added: L’envoi de message text ou vocal a été ajouté à votre compte %{app_name}.
+user_mailer.multi_factor_authentication.phone_deleted: L’envoi de message texte ou vocal a été supprimé de votre compte %{app_name}.
+user_mailer.multi_factor_authentication.piv_card_added: Une carte d’employé fédéral a été ajoutée à votre compte %{app_name}.
+user_mailer.multi_factor_authentication.piv_card_deleted: Une carte d’employé fédéral a été supprimée de votre compte %{app_name}.
+user_mailer.multi_factor_authentication.security_key_added: Une clé de sécurité a été ajoutée à votre compte %{app_name}.
+user_mailer.multi_factor_authentication.security_key_deleted: Une clé de sécurité a été supprimée de votre compte %{app_name}.
 user_mailer.new_device_sign_in_after_2fa.authentication_methods: méthodes d’authentification
 user_mailer.new_device_sign_in_after_2fa.info_p1: Votre e-mail et mot de passe %{app_name} ont été utilisés pour se connecter et s’authentifier sur un nouvel appareil.
 user_mailer.new_device_sign_in_after_2fa.info_p2: Si vous reconnaissez cette activité, vous n’avez rien à faire.
