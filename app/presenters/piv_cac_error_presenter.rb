@@ -102,7 +102,6 @@ class PivCacErrorPresenter
         category: 'manage-your-account',
         article: 'add-or-change-your-authentication-method',
         flow: :two_factor_authentication,
-        step: redirect_location_step,
       ),
       new_tab: true,
     ).with_content(t('two_factor_authentication.add_or_change_authenticator'))

@@ -6,6 +6,7 @@ module DocAuth
       module Ddp
         class TrueIdResponse < DocAuth::Response
           include ImageMetricsReader
+          include DocAuth::LexisNexis::Responses::TrueIdResponseConcern
           include DocAuth::LexisNexis::DocPiiReader
           include DocAuth::ClassificationConcern
 
@@ -43,6 +44,8 @@ module DocAuth
           # vendor (document and selfie if requested)
           # Will be further implemented in future tickets
           def successful_result?
+            return false if passport_card_detected?
+
             doc_auth_success?
           end
 
@@ -52,7 +55,19 @@ module DocAuth
 
           # To be implemented in LG-17088
           def error_messages
-            successful_result? ? {} : { network: true }
+            return {} if successful_result?
+
+            if passport_card_detected?
+              { passport_card: I18n.t('doc_auth.errors.doc.doc_type_check') }
+            elsif id_type.present? && !expected_document_type_received?
+              { unexpected_id_type: true, expected_id_type: expected_id_type }
+            elsif with_authentication_result?
+              ErrorGenerator.new(config).generate_doc_auth_errors(response_info)
+            elsif true_id_product.present?
+              ErrorGenerator.wrapped_general_error
+            else
+              { network: true } # return a generic technical difficulties error to user
+            end
           end
 
           # To be implemented in LG-17089
@@ -62,23 +77,15 @@ module DocAuth
 
           private
 
-          def expected_document_type_received?
-            expected_id_types = passport_requested ?
-              Idp::Constants::DocumentTypes::SUPPORTED_PASSPORT_TYPES :
-              Idp::Constants::DocumentTypes::SUPPORTED_STATE_ID_TYPES
-
-            expected_id_types.include?(document_type_received)
+          def products
+            @products ||=
+              raw_response.dig(:Products)&.each_with_object({}) do |product, product_list|
+                extract_details(product)
+                product_list[product[:ProductType]] = product
+              end&.with_indifferent_access
           end
 
-          def document_type_received
-            DocumentClassifications::CLASSIFICATION_TO_DOCUMENT_TYPE[document_type_received_slug]
-          end
-
-          def parsed_response_body
-            @parsed_response_body ||= JSON.parse(http_response.body).with_indifferent_access
-          end
-
-          def authentication_results
+          def raw_response
             parsed_response_body.dig(
               :integration_hub_results,
               "#{IdentityConfig.store.lexisnexis_threatmetrix_org_id}:#{policy}",
@@ -90,8 +97,25 @@ module DocAuth
             @policy ||= @request&.policy
           end
 
+          def expected_document_type_received?
+            expected_id_types = passport_requested ?
+              Idp::Constants::DocumentTypes::SUPPORTED_PASSPORT_TYPES :
+              Idp::Constants::DocumentTypes::SUPPORTED_STATE_ID_TYPES
+
+            expected_id_types.include?(id_type)
+          end
+
+          def id_type
+            pii_from_doc&.document_type_received
+          end
+
+          def passport_pii?
+            @passport_pii ||=
+              Idp::Constants::DocumentTypes::PASSPORT_TYPES.include?(id_type)
+          end
+
           def transaction_status
-            authentication_results&.dig(:Status, :TransactionStatus)
+            raw_response&.dig(:Status, :TransactionStatus)
           end
 
           def transaction_status_passed?
@@ -102,53 +126,21 @@ module DocAuth
             @reference ||= parsed_response_body.dig(:Status, :Reference)
           end
 
-          def passport_pii?
-            @passport_pii ||=
-              Idp::Constants::DocumentTypes::PASSPORT_TYPES.include?(document_type_received_slug)
-          end
-
           def classification_info
             # Acuant response has both sides info, here simulate that
             classification_hash = {
               Front: {
-                ClassName: document_type_received_slug,
+                ClassName: doc_class_name,
                 CountryCode: issuing_country_code,
               },
             }
             if !passport_pii?
               classification_hash[:Back] = {
-                ClassName: document_type_received_slug,
+                ClassName: doc_class_name, # document_type_received_slug,
                 CountryCode: issuing_country_code,
               }
             end
             classification_hash
-          end
-
-          def products
-            @products ||=
-              authentication_results.dig(:Products)&.each_with_object({}) do |product, product_list|
-                extract_details(product)
-                product_list[product[:ProductType]] = product
-              end&.with_indifferent_access
-          end
-
-          def extract_details(product)
-            return unless product[:ParameterDetails]
-
-            product[:ParameterDetails].each do |detail|
-              group = detail[:Group]
-              detail_name = detail[:Name]
-              is_region = detail_name.end_with?('Regions', 'Regions_Reference')
-              value = is_region ? detail[:Values].map { |v| v[:Value] } :
-                        detail.dig(:Values, 0, :Value)
-              product[group] ||= {}
-
-              product[group][detail_name] = value
-            end
-          end
-
-          def true_id_product
-            products&.dig(:TrueID)
           end
         end
       end
