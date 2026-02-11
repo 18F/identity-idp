@@ -140,12 +140,12 @@ class InPersonEnrollment < ApplicationRecord
 
   def due_date
     start_date = enrollment_established_at.presence || created_at
-    (start_date + days_to_expire).end_of_day
+    start_date + days_to_expire
   end
 
   def days_to_due_date
     today = Time.zone.now
-    (due_date - today).seconds.in_days.to_i
+    (due_date.end_of_day - today).seconds.in_days.to_i
   end
 
   def eligible_for_notification?
