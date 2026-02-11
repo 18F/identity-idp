@@ -270,45 +270,15 @@ RSpec.describe ServiceProvider do
   end
 
   describe '#logo_url' do
-    let(:logo) { '18f.svg' }
-    subject { ServiceProvider.new(logo: logo) }
-    context 'service provider has a logo' do
-      it 'returns the logo' do
-        expect(subject.logo_url).to match(%r{sp-logos/18f-[0-9a-f]+\.svg$})
-      end
-    end
+    subject { ServiceProvider.new }
+    let(:logo_url_mock) { LogoUrl.new(subject.logo, subject.remote_logo_key) }
+    let(:expected_value) { "/file-#{rand(1..10000)}.png" }
 
-    context 'service provider does not have a logo' do
-      let(:logo) { nil }
-      it 'returns the default logo' do
-        expect(subject.logo_url).to match(%r{/sp-logos/generic-.+\.svg})
-      end
-    end
-
-    context 'service provider has a poorly configured logo' do
-      let(:logo) { 'abc' }
-      it 'does not raise an exception' do
-        expect(subject.logo_url).to be_kind_of(String)
-      end
-    end
-
-    context 'when the logo upload feature is enabled' do
-      let(:aws_region) { 'us-west-2' }
-      let(:aws_logo_bucket) { 'logo-bucket' }
-      let(:remote_logo_key) { 'llave' }
-      before do
-        allow(FeatureManagement).to receive(:logo_upload_enabled?).and_return(true)
-        allow(IdentityConfig.store).to receive(:aws_logo_bucket)
-          .and_return(aws_logo_bucket)
-      end
-
-      context 'when the remote logo key is present' do
-        subject { ServiceProvider.new(logo: logo, remote_logo_key: remote_logo_key) }
-
-        it 'uses the s3_logo_url' do
-          expect(subject.logo_url).to match("https://s3.#{aws_region}.amazonaws.com/#{aws_logo_bucket}/#{remote_logo_key}")
-        end
-      end
+    it 'returns whatever the LogoUrl class provides' do
+      expect(LogoUrl).to receive(:new).and_return(logo_url_mock)
+      expect(logo_url_mock).to receive(:url).and_return(expected_value)
+      actual_value = subject.logo_url
+      expect(actual_value).to eq(expected_value)
     end
   end
 
