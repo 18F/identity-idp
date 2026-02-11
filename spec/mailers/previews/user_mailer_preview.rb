@@ -123,6 +123,10 @@ class UserMailerPreview < ActionMailer::Preview
     UserMailer.with(user: user, email_address: email_address_record).please_reset_password
   end
 
+  def account_connected_to_sp
+    UserMailer.with(user: user, email_address: email_address_record).account_connected_to_sp(sp_name: 'Sample App SP')
+  end
+
   def verify_by_mail_letter_requested
     service_provider = unsaveable(
       ServiceProvider.new(

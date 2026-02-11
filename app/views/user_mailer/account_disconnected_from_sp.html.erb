@@ -1,0 +1,28 @@
+<p class="lead">
+  <%= t('user_mailer.account_connected_to_sp.header', app_name: APP_NAME) %>
+</p>
+
+<table class="spacer">
+  <tbody>
+    <tr>
+      <td class="s10" height="10px">
+        &nbsp;
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<table class="hr">
+  <tr>
+    <th>
+      &nbsp;
+    </th>
+  </tr>
+</table>
+
+<p>
+  <%= t(
+        'user_mailer.account_connected_to_sp.help',
+        help_link: link_to(t('user_mailer.help_link_text'), MarketingSite.help_url),
+      ) %>
+</p>

@@ -1,0 +1,30 @@
+<p class="lead">
+  <%= t('user_mailer.email_added.header', app_name: APP_NAME) %>
+</p>
+
+<table class="spacer">
+  <tbody>
+    <tr>
+      <td class="s10" height="10px">
+        &nbsp;
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<table class="hr">
+  <tr>
+    <th>
+      &nbsp;
+    </th>
+  </tr>
+</table>
+
+<p>
+  <%= t(
+        'user_mailer.email_added.help',
+        app_name: link_to(APP_NAME, IdentityConfig.store.mailer_domain_name, class: 'gray'),
+        help_link: link_to(t('user_mailer.help_link_text'), MarketingSite.help_url),
+        contact_link: link_to(t('user_mailer.contact_link_text'), MarketingSite.contact_url),
+      ) %>
+</p>
