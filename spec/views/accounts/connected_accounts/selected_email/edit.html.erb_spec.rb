@@ -40,7 +40,7 @@ RSpec.describe 'accounts/connected_accounts/selected_email/edit.html.erb' do
   it 'renders a button to allow users to add email' do
     expect(rendered).to have_link(
       t('account.index.email_add'),
-      href: add_email_path(in_select_email_flow: true),
+      href: add_email_path(in_select_email_flow: true, identity_id: @identity.id),
     )
   end
 
