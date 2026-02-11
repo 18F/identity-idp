@@ -314,7 +314,7 @@ module Users
     end
 
     def check_password_compromised
-      return if compromised_password_check_current?
+      return if FeatureManagement.check_password_enabled? || compromised_password_check_current?
 
       is_pwned = PwnedPasswords::LookupPassword.call(auth_params[:password])
       track_pwned_password if is_pwned

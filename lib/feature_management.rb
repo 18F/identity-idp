@@ -88,6 +88,10 @@ class FeatureManagement
     IdentityConfig.store.usps_upload_enabled
   end
 
+  def self.check_password_enabled?
+    IdentityConfig.store.check_user_password_compromised_enabled
+  end
+
   def self.identity_pki_local_dev?
     # This option should only be used in the development environment
     # it controls if we hop over to identity-pki on a developers local machins

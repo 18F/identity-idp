@@ -88,6 +88,7 @@ module IdentityConfig
     config.add(:backup_code_user_id_per_ip_max_attempts, type: :integer)
     config.add(:broken_personal_key_window_finish, type: :timestamp)
     config.add(:broken_personal_key_window_start, type: :timestamp)
+    config.add(:check_user_password_compromised_enabled, type: :boolean)
     config.add(:component_previews_embed_frame_ancestors, type: :json)
     config.add(:component_previews_enabled, type: :boolean)
     config.add(:country_phone_number_overrides, type: :json)
