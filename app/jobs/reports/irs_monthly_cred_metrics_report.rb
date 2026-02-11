@@ -2,7 +2,6 @@
 
 module Reports
   class IrsMonthlyCredMetricsReport < BaseReport
-
     attr_reader :report_date, :report_receiver, :report_name
 
     def initialize(init_date = Time.zone.yesterday.end_of_day, init_receiver = :internal,
@@ -88,7 +87,7 @@ module Reports
       @report_receiver = perform_receiver.to_sym
       @report_date = perform_date
       @report_config = report_config
-      
+
       @issuers = report_config['issuers']
       @partner_strings = report_config['partner_strings']
       @partner_emails = report_config['partner_emails']
