@@ -314,7 +314,7 @@ module Users
     end
 
     def check_password_compromised
-      return if FeatureManagement.check_password_enabled? || compromised_password_check_current?
+      return if !FeatureManagement.check_password_enabled? || compromised_password_check_current?
 
       is_pwned = PwnedPasswords::LookupPassword.call(auth_params[:password])
       track_pwned_password if is_pwned
@@ -326,7 +326,7 @@ module Users
       # This is to ensure that we aren't checking the password against
       # the same list every time a user logs in
       return false if !current_user.password_compromised_checked_at.present?
-      current_user.password_compromised_checked_at < 30.days.ago
+      current_user.password_compromised_checked_at > 30.days.ago
     end
 
     def track_pwned_password
