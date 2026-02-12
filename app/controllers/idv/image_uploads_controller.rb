@@ -6,7 +6,6 @@ module Idv
 
     def create
       image_upload_form_response = image_upload_form.submit
-      puts "ImageUploadsController#create form response: #{image_upload_form_response.to_h}"
 
       presenter = ImageUploadResponsePresenter.new(
         form_response: image_upload_form_response,

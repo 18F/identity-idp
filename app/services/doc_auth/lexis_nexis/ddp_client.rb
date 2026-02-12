@@ -8,7 +8,6 @@ module DocAuth
       attr_reader :config
 
       def initialize(attrs)
-        puts "Initializing DdpClient with attrs: #{attrs}"
         @config = DocAuth::LexisNexis::DdpConfig.new(attrs)
         @config.validate!
       end
@@ -42,36 +41,18 @@ module DocAuth
           email: user_email,
         }
 
-        puts "DdpClient.post_images called with request_applicant: #{request_applicant.keys}"
-
         Requests::Ddp::TrueIdRequest.new(
           config:,
           user_uuid:,
           uuid_prefix:,
           applicant: request_applicant,
         ).fetch
-        #response = request.send_request
-        #build_result_from_response(response)
-        #puts "Response received from DdpClient: #{response}"
-        #Responses::Ddp::TrueIdResponse.new(
-        #  http_response: response,
-        #  config:,
-        #  passport_requested: passport_requested,
-        #  liveness_checking_enabled: liveness_checking_required,
-        #  request: request,
-        #)
-
-        #build_result_from_response(response)
-      #rescue StandardError => exception
-      #  NewRelic::Agent.notice_error(exception)
-      #  Proofing::DdpResult.new(success: false, exception: exception)
       end
 
       private
 
       # TODO: check to delete this method
       def build_result_from_response(verification_response)
-        puts 'Building result from DdpClient response'
         result = Proofing::DdpResult.new
         body = verification_response.response_body
 
