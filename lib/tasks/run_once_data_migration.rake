@@ -4,7 +4,7 @@ namespace :run_once_data_migration do
   desc 'Reset sign_in_new_device_at between start_date and end_date in batches of batch_size'
   task :reset_sign_in_new_device_at,
        [:start_date, :end_date, :batch_size] => [:environment] do |_task, args|
-    LAST_VALID_END_DATE = '2026-02-03'
+    LAST_VALID_END_DATE = '2026-02-04'
 
     if args.count != 3
       warn 'All arguments must be specified'
