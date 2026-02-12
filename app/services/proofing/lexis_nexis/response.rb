@@ -36,6 +36,7 @@ module Proofing
       def response_body
         @response_body ||= JSON.parse(response.body)
       rescue JSON::ParserError
+        puts 'LexsisNexis proofing response body JSON parse error'
         # IF a JSON parse error occurs the resulting error message will contain the portion of the
         # response body where the error occured. This portion of the response could potentially
         # include sensitive informaiton. This commit scrubs the error message by raising a JSON

@@ -83,6 +83,8 @@ module Idv
       return if IdentityConfig.store.doc_auth_redirect_to_correct_vendor_disabled
 
       expected_doc_auth_vendor = document_capture_session.doc_auth_vendor
+      puts "bucketed vendor: #{expected_doc_auth_vendor}, current vendor: #{vendor}"
+      puts "bucketed_doc_auth_vendor: #{bucketed_doc_auth_vendor(current_user)}"
       return if vendor == expected_doc_auth_vendor
       return if vendor == Idp::Constants::Vendors::LEXIS_NEXIS &&
                 expected_doc_auth_vendor == Idp::Constants::Vendors::MOCK
