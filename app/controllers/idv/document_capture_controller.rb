@@ -14,12 +14,13 @@ module Idv
     before_action :update_doc_auth_vendor, only: :show
     before_action :override_csp_to_allow_acuant
     before_action :set_usps_form_presenter
+    # TODO: check if we should use bucketed_doc_auth_vendor(current_user)
+    # instead of Idp::Constants::Vendors::LEXIS_NEXIS
     before_action -> do
-      redirect_to_correct_vendor(bucketed_doc_auth_vendor(current_user), in_hybrid_mobile: false)
+      redirect_to_correct_vendor(Idp::Constants::Vendors::LEXIS_NEXIS, in_hybrid_mobile: false)
     end, only: [:show], unless: -> { allow_direct_ipp? }
 
     def show
-      puts "DocumentCaptureController#show called"
       analytics.idv_doc_auth_document_capture_visited(**analytics_arguments)
 
       Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer])
@@ -29,14 +30,12 @@ module Idv
     end
 
     def update
-      puts "DocumentCaptureController#update called"
       clear_future_steps!
       idv_session.redo_document_capture = nil # done with this redo
       # Not used in standard flow, here for data consistency with hybrid flow.
       document_capture_session.confirm_ocr
 
       result = handle_stored_result
-      puts "DocumentCaptureController#update result: #{result.to_h}"
       analytics.idv_doc_auth_document_capture_submitted(**result.to_h.merge(analytics_arguments))
 
       Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer])

@@ -6,7 +6,6 @@ module DocAuth
       attr_reader :config, :user_uuid, :uuid_prefix
 
       def initialize(config:, user_uuid: nil, uuid_prefix: nil)
-        puts "Initializing #{self.class.name} with user_uuid=#{user_uuid}, uuid_prefix=#{uuid_prefix}"
         @config = config
         @user_uuid = user_uuid
         @uuid_prefix = uuid_prefix
@@ -14,13 +13,11 @@ module DocAuth
 
       def fetch
         # return DocAuth::Respose with DocAuth:Error if workflow invalid
-        puts "Sending HTTP request to #{url}"
         http_response = send_http_request
         return handle_invalid_response(http_response) unless http_response.success?
 
         handle_http_response(http_response)
       rescue Faraday::ConnectionFailed, Faraday::TimeoutError, Faraday::SSLError => e
-        puts "Connection error: #{e.message}"
         handle_connection_error(exception: e)
       end
 
