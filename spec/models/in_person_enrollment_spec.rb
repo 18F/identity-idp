@@ -378,7 +378,7 @@ RSpec.describe InPersonEnrollment, type: :model do
 
     before do
       freeze_time
-      allow(IdentityConfig.store).to receive(:in_person_ipp_enrollment_validity_in_days).and_return(
+      allow(IdentityConfig.store).to receive(:in_person_enrollment_validity_in_days).and_return(
         ipp_validity_days,
       )
     end
@@ -441,7 +441,7 @@ RSpec.describe InPersonEnrollment, type: :model do
     before do
       freeze_time
       allow(IdentityConfig.store).to receive_messages(
-        in_person_ipp_enrollment_validity_in_days: ipp_validity_days,
+        in_person_enrollment_validity_in_days: ipp_validity_days,
         in_person_eipp_enrollment_validity_in_days: eipp_validity_days,
       )
     end
