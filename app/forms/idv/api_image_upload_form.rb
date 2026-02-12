@@ -46,7 +46,7 @@ module Idv
       if form_response.success?
         client_response = post_images_to_client
         puts "ApiImageUploadForm#submit client_response: #{client_response.to_h}"
-        binding.pry
+        #binding.pry
         document_capture_session.update!(
           last_doc_auth_result: client_response.extra[:doc_auth_result],
         )
@@ -252,7 +252,7 @@ module Idv
 
     def validate_pii_from_doc(client_response)
       puts 'ApiImageUploadForm#validate_pii_from_doc called'
-      binding.pry
+      #binding.pry
       response = Idv::DocPiiForm.new(
         pii: client_response.pii_from_doc.to_h,
         attention_with_barcode: client_response.attention_with_barcode?,
