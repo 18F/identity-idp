@@ -419,15 +419,31 @@ RSpec.describe InPersonEnrollment, type: :model do
       end
     end
 
-    context 'when the current date is less than 1 day before the due_date' do
+    context 'when current date is less than one day before the due_date' do
       let(:offset) { 0.5 }
 
-      before do
-        travel_to(enrollment.due_date - offset.day)
+      context 'when current date is on the previous calendar day' do
+        let(:enrollment_established_at) { '2026-02-11T02:00:00' }
+
+        before do
+          travel_to(enrollment.due_date - offset.day)
+        end
+
+        it 'returns 1 day' do
+          expect(enrollment.days_to_due_date).to eq(1)
+        end
       end
 
-      it 'returns 0 day' do
-        expect(enrollment.days_to_due_date).to eq(0)
+      context 'when current date is on the same calendar day' do
+        let(:enrollment_established_at) { '2026-02-11T20:00:00' }
+
+        before do
+          travel_to(enrollment.due_date - offset.day)
+        end
+
+        it 'returns 0 day' do
+          expect(enrollment.days_to_due_date).to eq(0)
+        end
       end
     end
   end
