@@ -22,6 +22,7 @@ module Idv
       liveness_checking_required: false,
       uuid_prefix: nil
     )
+      puts 'Initializing ApiImageUploadForm'
       @params = params
       @acuant_sdk_upgrade_ab_test_bucket = acuant_sdk_upgrade_ab_test_bucket
       @analytics = analytics
@@ -34,6 +35,7 @@ module Idv
     end
 
     def submit
+      puts 'ApiImageUploadForm#submit called'
       form_response = validate_form
 
       client_response = nil
@@ -43,19 +45,27 @@ module Idv
 
       if form_response.success?
         client_response = post_images_to_client
+        puts "ApiImageUploadForm#submit client_response: #{client_response.to_h}"
+        binding.pry
         document_capture_session.update!(
           last_doc_auth_result: client_response.extra[:doc_auth_result],
         )
-
+        puts "client_response.success?: #{client_response.success?}"
         if client_response.success?
-          doc_pii_response = validate_pii_from_doc(client_response)
-
+          try do
+            doc_pii_response = validate_pii_from_doc(client_response)
+            puts "ApiImageUploadForm#submit doc_pii_response: #{doc_pii_response.to_h}"
+          end.catch do |e|
+            puts "ApiImageUploadForm#submit validate_pii_from_doc error: #{e.message}"
+          end
           if doc_pii_response.success? && passport_requested? && passport_submittal
             mrz_response = validate_mrz(client_response)
+            puts "ApiImageUploadForm#submit mrz_response: #{mrz_response.to_h}"
           end
 
           if aamva_enabled? && !passport_requested? && doc_pii_response.success?
             aamva_response = validate_aamva(doc_pii_response.pii_from_doc)
+            puts "ApiImageUploadForm#submit aamva_response: #{aamva_response.to_h}"
           end
         end
       end
@@ -67,7 +77,7 @@ module Idv
         mrz_response:,
         aamva_response:,
       )
-
+      puts "ApiImageUploadForm#submit final response: #{response.to_h}"
       if response.success?
         store_pii(client_response:, mrz_response:, aamva_response:)
       end
@@ -155,6 +165,7 @@ module Idv
     end
 
     def validate_form
+      puts 'ApiImageUploadForm#validate_form called'
       success = valid?
       increment_rate_limiter!
 
@@ -240,6 +251,8 @@ module Idv
     end
 
     def validate_pii_from_doc(client_response)
+      puts 'ApiImageUploadForm#validate_pii_from_doc called'
+      binding.pry
       response = Idv::DocPiiForm.new(
         pii: client_response.pii_from_doc.to_h,
         attention_with_barcode: client_response.attention_with_barcode?,
@@ -252,7 +265,7 @@ module Idv
                  client_response.pii_from_doc.id_doc_type)
 
       analytics.idv_doc_auth_submitted_pii_validation(**response_with_classification)
-
+      puts "ApiImageUploadForm#validate_pii_from_doc response: #{response.to_h}"
       response
     end
 

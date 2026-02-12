@@ -65,6 +65,8 @@ RSpec.describe DocAuth::LexisNexis::Responses::Ddp::TrueIdResponse do
     DocAuth::LexisNexis::Requests::Ddp::TrueIdRequest.new(
       config:,
       applicant:,
+      user_uuid: 'test_user_uuid',
+      uuid_prefix: 'test_uuid_prefix',
     )
   end
   let(:response) do
