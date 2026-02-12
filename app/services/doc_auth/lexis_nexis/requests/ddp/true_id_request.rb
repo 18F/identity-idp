@@ -8,9 +8,8 @@ module DocAuth
           attr_reader :applicant
 
           def initialize(config:, user_uuid:, uuid_prefix:, applicant:)
-            super(config: config, user_uuid: user_uuid, uuid_prefix: uuid_prefix)
             @applicant = applicant
-            puts "config: #{config.inspect}, user_uuid: #{user_uuid}, uuid_prefix: #{uuid_prefix}, applicant keys: #{applicant.keys}"
+            super(config: config, user_uuid: user_uuid, uuid_prefix: uuid_prefix)
           end
 
           def fetch
@@ -30,7 +29,6 @@ module DocAuth
           private
 
           def handle_http_response(http_response)
-            puts 'Handling HTTP response in TrueIdRequest'
             LexisNexis::Responses::Ddp::TrueIdResponse.new(
               http_response:,
               passport_requested: applicant[:passport_requested],
@@ -133,13 +131,13 @@ module DocAuth
           end
 
           def required_data_present?
-            # return false if applicant[:uuid].blank? || applicant[:email].blank?
-            # if passport_document?
-            #  return false if applicant[:passport_image].blank?
-            # elsif applicant[:front_image].blank? || applicant[:back_image].blank?
-            #  return false
-            # end
-            # return false if liveness_checking_required? && applicant[:selfie_image].blank?
+            return false if applicant[:uuid].blank? || applicant[:email].blank?
+            if passport_document?
+              return false if applicant[:passport_image].blank?
+            elsif applicant[:front_image].blank? || applicant[:back_image].blank?
+              return false
+            end
+            return false if liveness_checking_required? && applicant[:selfie_image].blank?
             true
           end
 

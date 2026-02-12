@@ -21,8 +21,6 @@ module DocAuth
             @request = request
             @liveness_checking_enabled = liveness_checking_enabled
             @pii_from_doc = read_pii
-            puts "TrueIdResponse initialized with passport_requested=#{passport_requested}, liveness_checking_enabled=#{liveness_checking_enabled}"
-            puts "successful_result?=#{successful_result?}"
             super(
               success: successful_result?,
               errors: error_messages,
@@ -30,7 +28,6 @@ module DocAuth
               pii_from_doc: @pii_from_doc,
             )
           rescue StandardError => e
-            puts "Exception in TrueIdResponse initialization: #{e.message} line: #{e.backtrace.first}"
             NewRelic::Agent.notice_error(e)
             super(
               success: false,

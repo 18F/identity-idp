@@ -66,8 +66,8 @@ RSpec.describe DocAuth::LexisNexis::DdpClient do
 
       expect(result).to be_a(DocAuth::LexisNexis::Responses::Ddp::TrueIdResponse)
       expect(result.success?).to eq(true)
-      #expect(result.transaction_id).to eq('test_request_id')
-      #expect(result.review_status).to eq('pass')
+      # expect(result.transaction_id).to eq('test_request_id')
+      # expect(result.review_status).to eq('pass')
     end
 
     context 'when the request fails with an exception' do
@@ -130,8 +130,8 @@ RSpec.describe DocAuth::LexisNexis::DdpClient do
         )
 
         expect(result.success?).to eq(false)
-        #expect(result.review_status).to eq('review')
-        #expect(result.errors).to include(:review_status)
+        # expect(result.review_status).to eq('review')
+        # expect(result.errors).to include(:review_status)
       end
     end
 
@@ -158,8 +158,8 @@ RSpec.describe DocAuth::LexisNexis::DdpClient do
         )
 
         expect(result.success?).to eq(false)
-        #expect(result.review_status).to eq('reject')
-        #expect(result.errors).to include(:review_status)
+        # expect(result.review_status).to eq('reject')
+        # expect(result.errors).to include(:review_status)
       end
     end
 
@@ -180,7 +180,7 @@ RSpec.describe DocAuth::LexisNexis::DdpClient do
         )
 
         expect(result.success?).to eq(false)
-        #expect(result.errors).to include(:request_result)
+        # expect(result.errors).to include(:request_result)
       end
     end
 
