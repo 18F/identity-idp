@@ -554,9 +554,9 @@ development:
   account_creation_tmx_processed_percent: 100
   attribute_encryption_key: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
   attribute_encryption_key_queue: '[{ "key": "11111111111111111111111111111111" }, { "key": "22222222222222222222222222222222" }]'
+  check_user_password_compromised_enabled: true
   component_previews_embed_frame_ancestors: '["http://localhost:4000"]'
   component_previews_enabled: true
-  check_user_password_compromised_enabled: true
   dashboard_api_token: test_token
   dashboard_url: http://localhost:3001/api/service_providers
   doc_auth_desktop_test_mode: true
