@@ -4,7 +4,7 @@ module Proofing
   module LexisNexis
     module Ddp
       module Requests
-        class ThreatMetrixRequest < Proofing::LexisNexis::Ddp::VerificationRequest
+        class InstantVerifyRequest < Proofing::LexisNexis::Ddp::VerificationRequest
           private
 
           def build_request_body
@@ -19,28 +19,28 @@ module Proofing
               account_address_zip: applicant[:zipcode] || '',
               account_date_of_birth: applicant[:dob] ?
                 Date.parse(applicant[:dob]).strftime('%Y%m%d') : '',
-              account_email: applicant[:email],
+              # account_email: applicant[:email],
               account_first_name: applicant[:first_name] || '',
               account_last_name: applicant[:last_name] || '',
               account_telephone: '', # applicant[:phone], decision was made not to send phone
               account_drivers_license_number: applicant[:state_id_number]&.gsub(/\W/, '') || '',
               account_drivers_license_type: applicant[:state_id_number] ? 'us_dl' : '',
               account_drivers_license_issuer: applicant[:state_id_jurisdiction].to_s.strip || '',
-              customer_event_type: applicant[:workflow],
+              # customer_event_type: applicant[:workflow],
               event_type: 'ACCOUNT_CREATION',
               policy: config.ddp_policy,
               service_type: 'all',
-              session_id: applicant[:threatmetrix_session_id],
+              # session_id: session_id,
               national_id_number: applicant[:ssn]&.gsub(/\D/, '') || '',
               national_id_type: applicant[:ssn] ? 'US_SSN' : '',
-              input_ip_address: applicant[:request_ip],
+              # input_ip_address: applicant[:request_ip],
               local_attrib_1: applicant[:uuid_prefix] || '',
               local_attrib_3: applicant[:uuid],
             }.to_json
           end
 
           def timeout
-            IdentityConfig.store.lexisnexis_threatmetrix_timeout
+            # Do we need a timeout?
           end
         end
       end
