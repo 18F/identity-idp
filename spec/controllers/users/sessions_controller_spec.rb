@@ -613,7 +613,7 @@ RSpec.describe Users::SessionsController, devise: true do
           allow(PwnedPasswords::LookupPassword).to receive(:call).and_return true
           allow(Analytics).to receive(:new).and_return(analytics)
         end
-        it ' does not update user attribute password_compromised_checked_at' do
+        it 'does not update user attribute password_compromised_checked_at' do
           freeze_time do
             post :create, params: { user: { email: user.email, password: user.password } }
             expect(user.reload.password_compromised_checked_at).to eq nil
