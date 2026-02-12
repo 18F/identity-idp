@@ -2,7 +2,9 @@ require 'rails_helper'
 
 RSpec.describe Agreements::IaaGtcSeeder do
   describe '.run' do
-    let(:seeder) { described_class.new(rails_env: 'production', yaml_path: 'spec/fixtures') }
+    let(:seeder) do
+      Agreements::IaaGtcSeeder.new(rails_env: 'production', yaml_path: 'spec/fixtures')
+    end
 
     it 'creates new records if none exist' do
       expect { seeder.run }.to change { Agreements::IaaGtc.count }.by(1)

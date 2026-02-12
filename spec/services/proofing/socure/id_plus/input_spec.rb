@@ -8,8 +8,8 @@ RSpec.describe Proofing::Socure::IdPlus::Input do
   end
 
   subject do
-    described_class.new(
-      **state_id.to_h.slice(*described_class.members),
+    Proofing::Socure::IdPlus::Input.new(
+      **state_id.to_h.slice(*Proofing::Socure::IdPlus::Input.members),
       email: user.email,
     )
   end

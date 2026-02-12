@@ -29,7 +29,7 @@ RSpec.describe Encryption::UakPasswordVerifier do
       allow(SecureRandom).to receive(:hex) { salt }
       allow(SecureRandom).to receive(:hex).once.with(32).and_return(salt)
 
-      digest = described_class.digest('saltypickles')
+      digest = Encryption::UakPasswordVerifier.digest('saltypickles')
 
       uak = Encryption::UserAccessKey.new(password: 'saltypickles', salt: salt)
       parsed_digest = JSON.parse(digest, symbolize_names: true)
@@ -46,8 +46,8 @@ RSpec.describe Encryption::UakPasswordVerifier do
     it 'returns true if the password matches' do
       password = 'saltypickles'
 
-      digest = described_class.digest(password)
-      result = described_class.verify(
+      digest = Encryption::UakPasswordVerifier.digest(password)
+      result = Encryption::UakPasswordVerifier.verify(
         password: password,
         digest: digest,
         user_uuid: nil,
@@ -58,8 +58,8 @@ RSpec.describe Encryption::UakPasswordVerifier do
     end
 
     it 'returns false if the password does not match' do
-      digest = described_class.digest('saltypickles')
-      result = described_class.verify(
+      digest = Encryption::UakPasswordVerifier.digest('saltypickles')
+      result = Encryption::UakPasswordVerifier.verify(
         password: 'pepperpickles',
         digest: digest,
         user_uuid: nil,
@@ -70,7 +70,7 @@ RSpec.describe Encryption::UakPasswordVerifier do
     end
 
     it 'returns false for nonsese' do
-      result = described_class.verify(
+      result = Encryption::UakPasswordVerifier.verify(
         password: 'saltypickles',
         digest: 'this is fake',
         user_uuid: nil,
@@ -100,7 +100,7 @@ RSpec.describe Encryption::UakPasswordVerifier do
         password_cost: '4000$8$4$',
       }.to_json
 
-      result = described_class.verify(
+      result = Encryption::UakPasswordVerifier.verify(
         password: password,
         digest: legacy_password_digest,
         user_uuid: nil,

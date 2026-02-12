@@ -10,7 +10,7 @@ RSpec.describe SummarizeUserEvents do
   let(:stderr) { StringIO.new }
 
   subject(:instance) do
-    described_class.new(
+    SummarizeUserEvents.new(
       file_name: nil,
       user_uuid:,
       start_time:,
@@ -70,7 +70,7 @@ RSpec.describe SummarizeUserEvents do
     end
 
     subject(:parsed) do
-      described_class.parse_command_line_options(argv)
+      SummarizeUserEvents.parse_command_line_options(argv)
     end
 
     it 'parses default options' do

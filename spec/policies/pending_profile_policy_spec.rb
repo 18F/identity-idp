@@ -4,7 +4,7 @@ RSpec.describe PendingProfilePolicy do
   let(:user) { create(:user) }
   let(:resolved_authn_context_result) { double(AuthnContextResolver) }
   subject(:policy) do
-    described_class.new(
+    PendingProfilePolicy.new(
       user: user,
       resolved_authn_context_result: resolved_authn_context_result,
     )
@@ -13,7 +13,7 @@ RSpec.describe PendingProfilePolicy do
   describe '#user_has_pending_profile?' do
     context 'when user is nil' do
       subject(:policy) do
-        described_class.new(
+        PendingProfilePolicy.new(
           user: nil,
           resolved_authn_context_result: resolved_authn_context_result,
         )

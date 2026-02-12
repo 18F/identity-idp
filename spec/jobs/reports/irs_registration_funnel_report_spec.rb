@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe Reports::IrsRegistrationFunnelReport do
   let(:report_date)     { Date.new(2021, 3, 2).in_time_zone('UTC').end_of_day }
   let(:report_receiver) { :internal }
-  subject(:report) { described_class.new(report_date, report_receiver) }
+  subject(:report) { Reports::IrsRegistrationFunnelReport.new(report_date, report_receiver) }
   let(:agency_abbreviation) { 'Test_agency' }
   let(:report_name)         { "#{agency_abbreviation.downcase}_registration_funnel_report" }
 
@@ -75,7 +75,7 @@ RSpec.describe Reports::IrsRegistrationFunnelReport do
   context 'recipient is :both but partner emails are empty' do
     let(:report_receiver) { :both }
     let(:report_date)     { Date.new(2025, 10, 20).prev_day } # 2025-10-19
-    subject(:report) { described_class.new(report_date, report_receiver) }
+    subject(:report) { Reports::IrsRegistrationFunnelReport.new(report_date, report_receiver) }
 
     let(:partner_emails)  { [] }
     let(:internal_emails) { ['mock_internal@example.com'] }
@@ -102,7 +102,7 @@ RSpec.describe Reports::IrsRegistrationFunnelReport do
   context 'recipient is :internal but internal emails are empty' do
     let(:report_receiver) { :internal }
     let(:report_date)     { Date.new(2021, 3, 2).in_time_zone('UTC').end_of_day }
-    subject(:report) { described_class.new(report_date, report_receiver) }
+    subject(:report) { Reports::IrsRegistrationFunnelReport.new(report_date, report_receiver) }
 
     let(:internal_emails) { [] }
     let(:partner_emails)  { ['mock_partner@example.com'] }
@@ -164,7 +164,7 @@ RSpec.describe Reports::IrsRegistrationFunnelReport do
 
   context 'begining of the week, it sends out the report to the internal and partner' do
     let(:report_date) { Date.new(2025, 10, 20).prev_day } # 2025-10-19
-    subject(:report) { described_class.new(report_date, :both) }
+    subject(:report) { Reports::IrsRegistrationFunnelReport.new(report_date, :both) }
 
     let(:partner_emails)  { ['mock_partner@example.com'] }
     let(:internal_emails) { ['mock_internal@example.com'] }

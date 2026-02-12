@@ -3,14 +3,15 @@ require 'rails_helper'
 RSpec.describe FrontendLogController do
   describe '.LEGACY_EVENT_MAP' do
     it 'has keys sorted alphabetically' do
-      expect(described_class::LEGACY_EVENT_MAP.keys)
-        .to eq(described_class::LEGACY_EVENT_MAP.keys.sort_by(&:downcase))
+      expect(FrontendLogController::LEGACY_EVENT_MAP.keys)
+        .to eq(FrontendLogController::LEGACY_EVENT_MAP.keys.sort_by(&:downcase))
     end
   end
 
   describe '.ALLOWED_EVENTS' do
     it 'is sorted alphabetically' do
-      expect(described_class::ALLOWED_EVENTS).to eq(described_class::ALLOWED_EVENTS.sort)
+      expect(FrontendLogController::ALLOWED_EVENTS)
+        .to eq(FrontendLogController::ALLOWED_EVENTS.sort)
     end
   end
 

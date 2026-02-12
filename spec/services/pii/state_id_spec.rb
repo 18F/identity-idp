@@ -27,7 +27,7 @@ RSpec.describe Pii::StateId do
     }
   end
 
-  subject { described_class.new(**state_id) }
+  subject { Pii::StateId.new(**state_id) }
 
   describe '#id_doc_type' do
     it 'returns the value of document_type_received' do
@@ -37,7 +37,7 @@ RSpec.describe Pii::StateId do
 
   describe '#residential_address_required?' do
     context 'when the state is Puerto Rico' do
-      subject { described_class.new(**state_id, state: 'PR') }
+      subject { Pii::StateId.new(**state_id, state: 'PR') }
 
       it 'returns true' do
         expect(subject.residential_address_required?).to be(true)
@@ -45,7 +45,7 @@ RSpec.describe Pii::StateId do
     end
 
     context 'when the state is not Puerto Rico' do
-      subject { described_class.new(**state_id, state: 'MD') }
+      subject { Pii::StateId.new(**state_id, state: 'MD') }
 
       it 'returns false' do
         expect(subject.residential_address_required?).to be(false)

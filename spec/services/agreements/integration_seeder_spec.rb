@@ -2,7 +2,9 @@ require 'rails_helper'
 
 RSpec.describe Agreements::IntegrationSeeder do
   describe '.run' do
-    let(:seeder) { described_class.new(rails_env: 'production', yaml_path: 'spec/fixtures') }
+    let(:seeder) do
+      Agreements::IntegrationSeeder.new(rails_env: 'production', yaml_path: 'spec/fixtures')
+    end
 
     before { create(:service_provider, issuer: 'new_issuer') }
 

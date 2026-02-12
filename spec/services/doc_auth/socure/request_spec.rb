@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe DocAuth::Socure::Request do
-  subject(:request) { described_class.new }
+  subject(:request) { DocAuth::Socure::Request.new }
 
   describe 'a new request' do
     it 'exists' do
@@ -51,7 +51,7 @@ RSpec.describe DocAuth::Socure::Request do
 
       let(:exception_msg) do
         [
-          described_class.name,
+          DocAuth::Socure::Request.name,
           'Unexpected HTTP response',
           response_status,
         ].join(' ')
