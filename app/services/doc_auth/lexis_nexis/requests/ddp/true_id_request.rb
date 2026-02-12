@@ -14,7 +14,7 @@ module DocAuth
 
           def fetch
             # TODO uncomment validate images after/during manual testing
-            # validate_images!
+            validate_images!
             super
           end
 

@@ -193,6 +193,12 @@ module LexisNexisFixtures
       read_fixture_file_at_path('ddp/true_id/true_id_response_fail_state_id_card.json')
     end
 
+    def ddp_true_id_response_fail_with_review_status
+      read_fixture_file_at_path(
+        'ddp/true_id/true_id_response_fail_state_id_card_w_review_status.json',
+      )
+    end
+
     def ddp_true_id_response_fail_passport
       read_fixture_file_at_path('ddp/true_id/true_id_response_fail_passport.json')
     end
