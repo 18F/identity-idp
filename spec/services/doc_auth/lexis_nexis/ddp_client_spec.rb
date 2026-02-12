@@ -24,6 +24,9 @@ RSpec.describe DocAuth::LexisNexis::DdpClient do
   end
   let(:success_response_body) { LexisNexisFixtures.ddp_true_id_state_id_response_success }
   let(:failure_response_body) { LexisNexisFixtures.ddp_true_id_response_fail }
+  let(:failure_response_with_review_status_body) do
+    LexisNexisFixtures.ddp_true_id_response_fail_with_review_status
+  end
 
   subject { described_class.new(attrs) }
 
@@ -66,8 +69,8 @@ RSpec.describe DocAuth::LexisNexis::DdpClient do
 
       expect(result).to be_a(DocAuth::LexisNexis::Responses::Ddp::TrueIdResponse)
       expect(result.success?).to eq(true)
-      # expect(result.transaction_id).to eq('test_request_id')
-      # expect(result.review_status).to eq('pass')
+      expect(result.extra_attributes[:request_id]).to eq('test_request_id')
+      expect(result.extra_attributes[:review_status]).to eq('pass')
     end
 
     context 'when the request fails with an exception' do
@@ -115,6 +118,28 @@ RSpec.describe DocAuth::LexisNexis::DdpClient do
 
     context 'when review status is review' do
       let(:response_body) do
+        failure_response_with_review_status_body
+      end
+
+      it 'returns a failed result with review_status error' do
+        result = subject.post_images(
+          front_image:,
+          back_image:,
+          document_type_requested:,
+          passport_requested:,
+          liveness_checking_required:,
+          user_uuid:,
+          user_email:,
+        )
+
+        expect(result.success?).to eq(false)
+        expect(result.extra_attributes[:review_status]).to eq('review')
+        # expect(result.errors).to include(:review_status)
+      end
+    end
+
+    context 'when review status is reject' do
+      let(:response_body) do
         failure_response_body
       end
 
@@ -130,35 +155,7 @@ RSpec.describe DocAuth::LexisNexis::DdpClient do
         )
 
         expect(result.success?).to eq(false)
-        # expect(result.review_status).to eq('review')
-        # expect(result.errors).to include(:review_status)
-      end
-    end
-
-    context 'when review status is reject' do
-      let(:response_body) do
-        {
-          'request_id' => 'test_request_id',
-          'request_result' => 'success',
-          'review_status' => 'reject',
-          'account_lex_id' => 'test_lex_id',
-          'session_id' => 'test_session_id',
-        }
-      end
-
-      it 'returns a failed result with review_status error' do
-        result = subject.post_images(
-          front_image:,
-          back_image:,
-          document_type_requested:,
-          passport_requested:,
-          liveness_checking_required:,
-          user_uuid:,
-          user_email:,
-        )
-
-        expect(result.success?).to eq(false)
-        # expect(result.review_status).to eq('reject')
+        expect(result.extra_attributes[:review_status]).to eq('reject')
         # expect(result.errors).to include(:review_status)
       end
     end
@@ -186,113 +183,101 @@ RSpec.describe DocAuth::LexisNexis::DdpClient do
 
     context 'when required fields are missing' do
       it 'returns ArgumentError when uuid is nil' do
-        result = subject.post_images(
-          front_image:,
-          back_image:,
-          document_type_requested: DocAuth::LexisNexis::DocumentTypes::DRIVERS_LICENSE,
-          passport_requested:,
-          liveness_checking_required:,
-          user_email:,
-        )
-
-        expect(result.success?).to eq(false)
-        expect(result.exception).to be_a(ArgumentError)
-        expect(result.exception.message).to include('uuid is required')
+        expect do
+          subject.post_images(
+            front_image:,
+            back_image:,
+            document_type_requested: DocAuth::LexisNexis::DocumentTypes::DRIVERS_LICENSE,
+            passport_requested:,
+            liveness_checking_required:,
+            user_email:,
+          )
+        end.to raise_error(ArgumentError, 'uuid is required')
       end
 
       it 'returns ArgumentError when email is nil' do
-        result = subject.post_images(
-          front_image:,
-          back_image:,
-          document_type_requested: DocAuth::LexisNexis::DocumentTypes::DRIVERS_LICENSE,
-          passport_requested:,
-          liveness_checking_required:,
-          user_uuid:,
-        )
-
-        expect(result.success?).to eq(false)
-        expect(result.exception).to be_a(ArgumentError)
-        expect(result.exception.message).to include('email is required')
+        expect do
+          subject.post_images(
+            front_image:,
+            back_image:,
+            document_type_requested: DocAuth::LexisNexis::DocumentTypes::DRIVERS_LICENSE,
+            passport_requested:,
+            liveness_checking_required:,
+            user_uuid:,
+          )
+        end.to raise_error(ArgumentError, 'email is required')
       end
 
       it 'returns ArgumentError when front_image is nil for drivers license' do
-        result = subject.post_images(
-          front_image: nil,
-          back_image:,
-          document_type_requested: DocAuth::LexisNexis::DocumentTypes::DRIVERS_LICENSE,
-          passport_requested:,
-          liveness_checking_required:,
-          user_uuid:,
-          user_email:,
-        )
-
-        expect(result.success?).to eq(false)
-        expect(result.exception).to be_a(ArgumentError)
-        expect(result.exception.message).to include('front_image is required')
+        expect do
+          subject.post_images(
+            front_image: nil,
+            back_image:,
+            document_type_requested: DocAuth::LexisNexis::DocumentTypes::DRIVERS_LICENSE,
+            passport_requested:,
+            liveness_checking_required:,
+            user_uuid:,
+            user_email:,
+          )
+        end.to raise_error(ArgumentError, 'front_image is required')
       end
 
       it 'returns ArgumentError when back_image is nil for drivers license' do
-        result = subject.post_images(
-          front_image:,
-          back_image: nil,
-          document_type_requested: DocAuth::LexisNexis::DocumentTypes::DRIVERS_LICENSE,
-          passport_requested:,
-          liveness_checking_required:,
-          user_uuid:,
-          user_email:,
-        )
-
-        expect(result.success?).to eq(false)
-        expect(result.exception).to be_a(ArgumentError)
-        expect(result.exception.message).to eq('back_image is required')
+        expect do
+          subject.post_images(
+            front_image:,
+            back_image: nil,
+            document_type_requested: DocAuth::LexisNexis::DocumentTypes::DRIVERS_LICENSE,
+            passport_requested:,
+            liveness_checking_required:,
+            user_uuid:,
+            user_email:,
+          )
+        end.to raise_error(ArgumentError, 'back_image is required')
       end
 
       it 'returns ArgumentError when passport_image is nil for passport' do
-        result = subject.post_images(
-          front_image:,
-          back_image:,
-          passport_image: nil,
-          document_type_requested: DocAuth::LexisNexis::DocumentTypes::PASSPORT,
-          passport_requested:,
-          liveness_checking_required:,
-          user_uuid:,
-          user_email:,
-        )
-
-        expect(result.success?).to eq(false)
-        expect(result.exception).to be_a(ArgumentError)
-        expect(result.exception.message).to include('passport_image is required')
+        expect do
+          subject.post_images(
+            front_image:,
+            back_image:,
+            passport_image: nil,
+            document_type_requested: DocAuth::LexisNexis::DocumentTypes::PASSPORT,
+            passport_requested:,
+            liveness_checking_required:,
+            user_uuid:,
+            user_email:,
+          )
+        end.to raise_error(ArgumentError, 'passport_image is required for passport documents')
       end
 
       it 'returns ArgumentError when selfie_image is nil with liveness checking' do
-        result = subject.post_images(
-          front_image:,
-          back_image:,
-          selfie_image: nil,
-          document_type_requested: DocAuth::LexisNexis::DocumentTypes::DRIVERS_LICENSE,
-          passport_requested:,
-          liveness_checking_required: true,
-          user_uuid:,
-          user_email:,
+        expect do
+          subject.post_images(
+            front_image:,
+            back_image:,
+            selfie_image: nil,
+            document_type_requested: DocAuth::LexisNexis::DocumentTypes::DRIVERS_LICENSE,
+            passport_requested:,
+            liveness_checking_required: true,
+            user_uuid:,
+            user_email:,
+          )
+        end.to raise_error(
+          ArgumentError,
+          'selfie_image is required when liveness checking is enabled',
         )
-
-        expect(result.success?).to eq(false)
-        expect(result.exception).to be_a(ArgumentError)
-        expect(result.exception.message).to include('selfie_image is required')
       end
     end
 
     context 'when an exception occurs' do
       before do
-        stub_request(:post, 'https://example.com/authentication/v1/trueid/')
+        stub_request(:post, post_url)
           .to_raise(Faraday::ConnectionFailed.new('connection failed'))
       end
 
-      it 'notifies NewRelic of the error' do
-        expect(NewRelic::Agent).to receive(:notice_error)
-          .with(instance_of(Proofing::LexisNexis::RequestError))
-
-        subject.post_images(
+      it 'routed to handle_connection_error and returns a failed response' do
+        response = subject.post_images(
           front_image:,
           back_image:,
           document_type_requested:,
@@ -301,6 +286,11 @@ RSpec.describe DocAuth::LexisNexis::DdpClient do
           user_uuid:,
           user_email:,
         )
+
+        expect(response.success?).to eq(false)
+        expect(response.exception).to be_a(Faraday::ConnectionFailed)
+        expect(response.exception.message).to eq('connection failed')
+        expect(response.errors).to include(:network)
       end
     end
   end
