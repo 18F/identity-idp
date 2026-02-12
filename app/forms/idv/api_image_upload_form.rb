@@ -46,8 +46,10 @@ module Idv
         document_capture_session.update!(
           last_doc_auth_result: client_response.extra[:doc_auth_result],
         )
+
         if client_response.success?
           doc_pii_response = validate_pii_from_doc(client_response)
+
           if doc_pii_response.success? && passport_requested? && passport_submittal
             mrz_response = validate_mrz(client_response)
           end
@@ -65,6 +67,7 @@ module Idv
         mrz_response:,
         aamva_response:,
       )
+
       if response.success?
         store_pii(client_response:, mrz_response:, aamva_response:)
       end
