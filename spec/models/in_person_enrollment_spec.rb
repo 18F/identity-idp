@@ -371,19 +371,19 @@ RSpec.describe InPersonEnrollment, type: :model do
     end
   end
 
-  describe '#days_to_due_date' do
+  describe '#days_to_due_date', timezone: 'UTC' do
     let(:ipp_validity_days) { 7 }
     let(:enrollment_established_at) { Time.zone.now }
     let(:enrollment) { create(:in_person_enrollment, enrollment_established_at:) }
 
     before do
       freeze_time
-      allow(IdentityConfig.store).to receive(:in_person_ipp_enrollment_validity_in_days).and_return(
+      allow(IdentityConfig.store).to receive(:in_person_enrollment_validity_in_days).and_return(
         ipp_validity_days,
       )
     end
 
-    context 'when the current date is 7 days away from the due date' do
+    context 'when the current date is 7 days before the due date' do
       let(:offset) { 7 }
 
       before do
@@ -395,7 +395,7 @@ RSpec.describe InPersonEnrollment, type: :model do
       end
     end
 
-    context 'when the current date is 4 days away from the due date' do
+    context 'when the current date is 4 days before the due date' do
       let(:offset) { 4 }
 
       before do
@@ -407,7 +407,7 @@ RSpec.describe InPersonEnrollment, type: :model do
       end
     end
 
-    context 'when the current date is 1 day away from the due date' do
+    context 'when the current date is 1 day before the due date' do
       let(:offset) { 1 }
 
       before do
@@ -419,13 +419,14 @@ RSpec.describe InPersonEnrollment, type: :model do
       end
     end
 
-    context 'when the current date is less than 1 day away from the due date' do
+    context 'when the current date is less than 1 day before the due_date' do
       let(:offset) { 0.5 }
+
       before do
         travel_to(enrollment.due_date - offset.day)
       end
 
-      it 'returns 0 days' do
+      it 'returns 0 day' do
         expect(enrollment.days_to_due_date).to eq(0)
       end
     end
@@ -440,7 +441,7 @@ RSpec.describe InPersonEnrollment, type: :model do
     before do
       freeze_time
       allow(IdentityConfig.store).to receive_messages(
-        in_person_ipp_enrollment_validity_in_days: ipp_validity_days,
+        in_person_enrollment_validity_in_days: ipp_validity_days,
         in_person_eipp_enrollment_validity_in_days: eipp_validity_days,
       )
     end
@@ -453,18 +454,16 @@ RSpec.describe InPersonEnrollment, type: :model do
       context 'when enrollment_established_at is not present' do
         let(:created_at) { Time.zone.now }
 
-        it 'returns end of day of created_at plus the configured eipp_validity_days' do
-          expect(enrollment.due_date).to eq((created_at + eipp_validity_days.days).end_of_day)
+        it 'returns the created_at plus the configured eipp_validity_days' do
+          expect(enrollment.due_date).to eq(created_at + eipp_validity_days.days)
         end
       end
 
       context 'when enrollment_established_at is present' do
         let(:enrollment_established_at) { Time.zone.now + 1.day }
 
-        it 'returns end of day of established_at plus the configured eipp_validity_days' do
-          expect(enrollment.due_date).to eq(
-            (enrollment_established_at + eipp_validity_days.days).end_of_day,
-          )
+        it 'returns the established_at plus the configured eipp_validity_days' do
+          expect(enrollment.due_date).to eq(enrollment_established_at + eipp_validity_days.days)
         end
       end
     end
@@ -475,18 +474,16 @@ RSpec.describe InPersonEnrollment, type: :model do
       context 'when enrollment_established_at is not present' do
         let(:created_at) { Time.zone.now }
 
-        it 'returns end of day of created_at plus the configured ipp_validity_days' do
-          expect(enrollment.due_date).to eq((created_at + ipp_validity_days.days).end_of_day)
+        it 'returns the created_at plus the configured ipp_validity_days' do
+          expect(enrollment.due_date).to eq(created_at + ipp_validity_days.days)
         end
       end
 
       context 'when enrollment_established_at is present' do
         let(:enrollment_established_at) { Time.zone.now + 1.day }
 
-        it 'returns end of day of established_at plus the configured ipp_validity_days' do
-          expect(enrollment.due_date).to eq(
-            (enrollment_established_at + ipp_validity_days.days).end_of_day,
-          )
+        it 'returns the established_at plus the configured ipp_validity_days' do
+          expect(enrollment.due_date).to eq(enrollment_established_at + ipp_validity_days.days)
         end
       end
     end

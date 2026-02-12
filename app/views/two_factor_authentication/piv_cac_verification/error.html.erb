@@ -52,6 +52,8 @@
       ).with_content(t('links.try_again')) %>
 <% end %>
 
+<%= render 'two_factor_authentication/troubleshooting_options', presenter: @presenter %>
+
 <%= render(PageFooterComponent.new) do %>
   <%= link_to t('links.cancel'), sign_out_url %>
 <% end %>

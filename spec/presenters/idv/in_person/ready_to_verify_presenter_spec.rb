@@ -4,8 +4,8 @@ RSpec.describe Idv::InPerson::ReadyToVerifyPresenter do
   let(:user) { build(:user) }
   let(:profile) { build(:profile, user: user) }
   let(:current_address_matches_id) { true }
-  let(:created_at) { Time.zone.parse('2023-06-14') }
-  let(:enrollment_established_at) { Time.zone.parse('2023-07-14') }
+  let(:created_at) { Time.zone.parse('2023-06-14T12:00:00') }
+  let(:enrollment_established_at) { Time.zone.parse('2023-07-14T12:00:00') }
   let(:enrollment_selected_location_details) do
     JSON.parse(UspsInPersonProofing::Mock::Fixtures.enrollment_selected_location_details)
   end
@@ -23,7 +23,7 @@ RSpec.describe Idv::InPerson::ReadyToVerifyPresenter do
   subject(:presenter) { described_class.new(enrollment: enrollment) }
 
   describe '#formatted_due_date', timezone: 'UTC' do
-    let(:enrollment_established_at) { Time.zone.parse('2024-07-05') }
+    let(:enrollment_established_at) { Time.zone.parse('2024-07-05T12:00:00') }
 
     context 'when the enrollment has an enrollment_established_at time' do
       [
