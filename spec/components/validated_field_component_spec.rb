@@ -21,7 +21,7 @@ RSpec.describe ValidatedFieldComponent, type: :component do
   end
 
   subject(:rendered) do
-    render_inline(described_class.new(**options))
+    render_inline(ValidatedFieldComponent.new(**options))
   end
 
   it 'does not render aria-describedby by default' do

@@ -47,8 +47,10 @@ RSpec.describe Reports::IrsVerificationReport do
     allow(IdentityConfig.store).to receive(:s3_reports_enabled).and_return(true)
 
     # Prevent real AWS calls
-    allow_any_instance_of(described_class).to receive(:bucket_name).and_return('test-bucket')
-    allow_any_instance_of(described_class).to receive(:upload_file_to_s3_bucket).and_return(true)
+    allow_any_instance_of(Reports::IrsVerificationReport)
+      .to receive(:bucket_name).and_return('test-bucket')
+    allow_any_instance_of(Reports::IrsVerificationReport)
+      .to receive(:upload_file_to_s3_bucket).and_return(true)
 
     # No-op mailer
     allow(ReportMailer).to receive_message_chain(:tables_report, :deliver_now).and_return(true)
@@ -75,7 +77,7 @@ RSpec.describe Reports::IrsVerificationReport do
 
       # Expect uploads (one per emailable report)
       emailable_reports.each do |r|
-        expect_any_instance_of(described_class).to receive(:upload_to_s3).with(
+        expect_any_instance_of(Reports::IrsVerificationReport).to receive(:upload_to_s3).with(
           r.table,
           report_name: r.filename,
         )
@@ -91,7 +93,7 @@ RSpec.describe Reports::IrsVerificationReport do
         attachment_format: :csv,
       ).and_call_original
 
-      described_class.new.perform(report_date, :both)
+      Reports::IrsVerificationReport.new.perform(report_date, :both)
     end
 
     it 'emails only internal when receiver=:internal' do
@@ -115,7 +117,7 @@ RSpec.describe Reports::IrsVerificationReport do
         attachment_format: :csv,
       ).and_call_original
 
-      described_class.new.perform(report_date, :internal)
+      Reports::IrsVerificationReport.new.perform(report_date, :internal)
     end
 
     context 'when no emails are configured for the chosen receiver' do
@@ -126,14 +128,14 @@ RSpec.describe Reports::IrsVerificationReport do
         # Ensure we do NOT instantiate the builder or call mailer
         expect(ReportMailer).not_to receive(:tables_report)
 
-        described_class.new.perform(report_date, :internal)
+        Reports::IrsVerificationReport.new.perform(report_date, :internal)
       end
     end
   end
 
   describe '#previous_week_range' do
     it 'returns the sunday..saturday range for the previous week based on report_date' do
-      job = described_class.new(report_date, :internal)
+      job = Reports::IrsVerificationReport.new(report_date, :internal)
       range = job.previous_week_range
 
       expect(range).to be_a(Range)

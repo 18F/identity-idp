@@ -22,7 +22,7 @@ RSpec.describe Idv::InPerson::AddressForm do
         city: invalid_char + Faker::Address.city,
       }
     end
-    let(:subject) { described_class.new }
+    let(:subject) { Idv::InPerson::AddressForm.new }
 
     it 'submit success with good params' do
       good_params[:same_address_as_id] = true

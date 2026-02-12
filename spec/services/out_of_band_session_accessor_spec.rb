@@ -7,9 +7,9 @@ RSpec.describe OutOfBandSessionAccessor do
   # This test uses a separate writer instance to write test data to the session store.
   # The OutOfBandSessionAccessor memoizes the data that it reads from the session.
   # Writes require reads to merge test data properly for subsequent writes.
-  subject(:writer_instance) { described_class.new(session_uuid) }
+  subject(:writer_instance) { OutOfBandSessionAccessor.new(session_uuid) }
 
-  subject(:store) { described_class.new(session_uuid) }
+  subject(:store) { OutOfBandSessionAccessor.new(session_uuid) }
 
   around do |ex|
     REDIS_POOL.with { |client| client.flushdb }

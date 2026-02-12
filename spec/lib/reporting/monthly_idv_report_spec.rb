@@ -6,7 +6,7 @@ RSpec.describe Reporting::MonthlyIdvReport do
   let(:parallel) { true }
 
   subject(:idv_report) do
-    described_class.new(end_date: end_date, parallel: parallel)
+    Reporting::MonthlyIdvReport.new(end_date: end_date, parallel: parallel)
   end
 
   describe '#as_csv' do

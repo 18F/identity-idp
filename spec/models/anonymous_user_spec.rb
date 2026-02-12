@@ -10,7 +10,7 @@ RSpec.describe AnonymousUser do
   end
 
   describe '#phone_configurations' do
-    subject { described_class.new.phone_configurations }
+    subject { AnonymousUser.new.phone_configurations }
 
     it { is_expected.to eq [] }
   end

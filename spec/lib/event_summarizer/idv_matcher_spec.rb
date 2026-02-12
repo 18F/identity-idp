@@ -12,7 +12,7 @@ RSpec.describe EventSummarizer::IdvMatcher do
     end
 
     subject(:matcher) do
-      described_class.new
+      EventSummarizer::IdvMatcher.new
     end
 
     around do |example|

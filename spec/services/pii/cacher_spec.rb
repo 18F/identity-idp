@@ -36,7 +36,7 @@ RSpec.describe Pii::Cacher do
     profile
   end
 
-  subject { described_class.new(user, user_session) }
+  subject { Pii::Cacher.new(user, user_session) }
 
   describe '#save' do
     it 'writes decrypted PII to user_session for multiple profiles' do
@@ -70,7 +70,7 @@ RSpec.describe Pii::Cacher do
         # Create a new user object to drop the memoized encrypted attributes
         reloaded_user = User.find(user.id)
 
-        described_class.new(reloaded_user, user_session, analytics: @analytics)
+        Pii::Cacher.new(reloaded_user, user_session, analytics: @analytics)
           .save(password, active_profile)
 
         active_profile.reload
@@ -92,7 +92,7 @@ RSpec.describe Pii::Cacher do
       # Create a new user object to drop the memoized encrypted attributes
       reloaded_user = User.find(user.id)
 
-      described_class.new(reloaded_user, user_session).save(password, active_profile)
+      Pii::Cacher.new(reloaded_user, user_session).save(password, active_profile)
 
       active_profile.reload
 
@@ -101,7 +101,7 @@ RSpec.describe Pii::Cacher do
     end
 
     it 'does not attempt to rotate nil attributes' do
-      cacher = described_class.new(user, user_session)
+      cacher = Pii::Cacher.new(user, user_session)
       rotate_all_keys
 
       expect { cacher.save(password, nil) }.to_not raise_error

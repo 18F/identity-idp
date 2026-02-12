@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe PasswordForm, type: :model do
-  subject(:form) { described_class.new(user: user) }
+  subject(:form) { PasswordForm.new(user: user) }
   let(:user) { build_stubbed(:user, uuid: '123') }
   let(:password) { 'Valid Password!' }
   let(:password_confirmation) { password }
@@ -33,7 +33,7 @@ RSpec.describe PasswordForm, type: :model do
       end
 
       context 'with password confirmation' do
-        subject(:form) { described_class.new(user: user) }
+        subject(:form) { PasswordForm.new(user: user) }
 
         let(:password_confirmation) { password }
 
@@ -63,7 +63,7 @@ RSpec.describe PasswordForm, type: :model do
       end
 
       context 'with password confirmation' do
-        subject(:form) { described_class.new(user: user) }
+        subject(:form) { PasswordForm.new(user: user) }
 
         context 'when the passwords are invalid' do
           let(:password_confirmation) { password }

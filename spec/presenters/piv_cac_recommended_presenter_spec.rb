@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe PivCacRecommendedPresenter do
   let(:user) { create(:user, email: 'example@example.gov') }
-  let(:presenter) { described_class.new(user) }
+  let(:presenter) { PivCacRecommendedPresenter.new(user) }
 
   describe '#skip_text' do
     context 'when existing user' do

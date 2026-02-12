@@ -7,7 +7,7 @@ RSpec.describe Idv::PhoneConfirmationSession do
 
   describe '.start' do
     it 'starts a session for voice' do
-      result = described_class.start(
+      result = Idv::PhoneConfirmationSession.start(
         delivery_method: 'voice',
         phone: '+1 (202) 123-4567',
         user: user,
@@ -22,7 +22,7 @@ RSpec.describe Idv::PhoneConfirmationSession do
     end
 
     it 'starts a session for sms' do
-      result = described_class.start(
+      result = Idv::PhoneConfirmationSession.start(
         delivery_method: 'sms',
         phone: '+1 (202) 123-4567',
         user: user,
@@ -39,13 +39,13 @@ RSpec.describe Idv::PhoneConfirmationSession do
 
   describe '.generate_code' do
     it 'generates a six-character alphanumeric code for sms' do
-      code = described_class.generate_code(delivery_method: :sms)
+      code = Idv::PhoneConfirmationSession.generate_code(delivery_method: :sms)
 
       expect(code).to match(six_char_alphanumeric)
     end
 
     it 'generates a ten-digit numeric code for voice' do
-      code = described_class.generate_code(delivery_method: :voice)
+      code = Idv::PhoneConfirmationSession.generate_code(delivery_method: :voice)
 
       expect(code).to match(ten_digit_numeric)
     end
@@ -53,7 +53,7 @@ RSpec.describe Idv::PhoneConfirmationSession do
 
   describe '#regenerate_otp' do
     it 'returns a copy with a new OTP and expiration' do
-      original_session = described_class.start(
+      original_session = Idv::PhoneConfirmationSession.start(
         delivery_method: 'sms',
         phone: '+1 (202) 123-4567',
         user: user,
@@ -73,7 +73,7 @@ RSpec.describe Idv::PhoneConfirmationSession do
       OtpCodeGenerator.generate_alphanumeric_digits(TwoFactorAuthenticatable::DIRECT_OTP_LENGTH)
     end
     subject do
-      described_class.new(
+      Idv::PhoneConfirmationSession.new(
         code: code,
         phone: '+1 (202) 123-4567',
         sent_at: Time.zone.now,
@@ -116,7 +116,7 @@ RSpec.describe Idv::PhoneConfirmationSession do
 
   describe '#expired?' do
     it 'returns false if the OTP is not expired' do
-      otp_object = described_class.start(
+      otp_object = Idv::PhoneConfirmationSession.start(
         phone: '+1 (225) 123-4567',
         delivery_method: :sms,
         user: user,
@@ -130,7 +130,7 @@ RSpec.describe Idv::PhoneConfirmationSession do
     end
 
     it 'returns true if the OTP is expired' do
-      otp_object = described_class.start(
+      otp_object = Idv::PhoneConfirmationSession.start(
         phone: '+1 (225) 123-4567',
         delivery_method: :sms,
         user: user,
@@ -144,7 +144,7 @@ RSpec.describe Idv::PhoneConfirmationSession do
 
   describe '#to_h and .from_h' do
     let(:test_session) do
-      described_class.new(
+      Idv::PhoneConfirmationSession.new(
         code: 'ABC',
         phone: '4105551212',
         sent_at: Time.zone.now,
@@ -154,7 +154,7 @@ RSpec.describe Idv::PhoneConfirmationSession do
     end
 
     it 'correctly restores the phone confirmation session from hash' do
-      deserialized_session = described_class.from_h(test_session.to_h)
+      deserialized_session = Idv::PhoneConfirmationSession.from_h(test_session.to_h)
       expect(deserialized_session.code).to eq(test_session.code)
       expect(deserialized_session.phone).to eq(test_session.phone)
       expect(deserialized_session.sent_at).to be_within(1).of(test_session.sent_at)

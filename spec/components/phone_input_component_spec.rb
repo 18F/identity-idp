@@ -24,7 +24,7 @@ RSpec.describe PhoneInputComponent, type: :component do
       **tag_options,
     }.compact
   end
-  let(:instance) { described_class.new(**options) }
+  let(:instance) { PhoneInputComponent.new(**options) }
 
   subject(:rendered) do
     render_inline(instance)

@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe TwoFactorAuthCode::MaxAttemptsReachedPresenter do
   let(:type) { 'otp_requests' }
   let(:user) { instance_double(User) }
-  let(:presenter) { described_class.new(type, user) }
+  let(:presenter) { TwoFactorAuthCode::MaxAttemptsReachedPresenter.new(type, user) }
 
   describe '#type' do
     subject { presenter.type }
