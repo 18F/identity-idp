@@ -6,6 +6,10 @@ module AttemptsApi
       'login-email-and-password-auth',
       'forgot-password-email-sent',
     ].freeze
+
+    # These are events that should be encrypted and then persisted as historical information
+    LOG_HISTORY_PREFIXES = ['forgot-password-', 'user-registration-', 'idv-'].freeze
+
     attr_reader :session_id, :enabled_for_session, :request, :user, :sp, :cookie_device_uuid,
                 :sp_redirect_uri
 
@@ -154,7 +158,11 @@ module AttemptsApi
     end
 
     def will_log_history?(event_type)
-      IdentityConfig.store.historical_attempts_api_enabled && event_type.start_with?('idv-')
+      return false unless IdentityConfig.store.historical_attempts_api_enabled
+
+      LOG_HISTORY_PREFIXES.each do |prefix|
+        return true if event_type.start_with? prefix
+      end
     end
 
     def will_send_event?
