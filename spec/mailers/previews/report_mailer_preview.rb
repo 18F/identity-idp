@@ -358,7 +358,7 @@ class ReportMailerPreview < ActionMailer::Preview
 
   def irs_monthly_credentials_report
     report_date = Time.zone.parse('2025-11-30').end_of_day
-    report = Reports::IrsMonthlyCredMetricsReport.new(report_date)
+    report = Reports::IrsOriginalMonthlyCredMetricsReport.new(report_date)
 
     # Use the same fixture CSV data as the spec
     fixture_csv_data = File.read(
@@ -385,6 +385,46 @@ class ReportMailerPreview < ActionMailer::Preview
       subject: "Example Partner Monthly Credentials Report - #{Time.zone.now.to_date}",
       message: report.preamble,
       reports: emailable_report,
+      attachment_format: :csv,
+    )
+  end
+
+  def sp_monthly_credentials_report
+    report_date = Time.zone.parse('2025-11-30').end_of_day
+    config = {
+      'issuers' => ['Issuer_2', 'Issuer_3', 'Issuer_4'],
+      'partner_strings' => ['Partner_1'],
+      'partner_emails' => ['partner1@example.com'],
+      'internal_emails' => ['internal1@example.com'],
+    }
+
+    report = Reports::IrsMonthlyCredMetricsReport.new(report_date, :internal)
+
+    # Apply config the same way send_report does
+    report.instance_variable_set(:@report_date, report_date)
+    report.instance_variable_set(:@report_receiver, :internal)
+    report.instance_variable_set(:@issuers, config['issuers'])
+    report.instance_variable_set(:@partner_strings, config['partner_strings'])
+    report.instance_variable_set(:@partner_emails, config['partner_emails'])
+    report.instance_variable_set(:@internal_emails, config['internal_emails'])
+    report.instance_variable_set(
+      :@report_name,
+      "#{config['partner_strings'].first.downcase}_monthly_cred_metrics",
+    )
+
+    fixture_csv_data = File.read(
+      Rails.root.join('spec', 'fixtures', 'partner_cred_metrics_input.csv'),
+    )
+
+    report.define_singleton_method(:invoice_report_data) { fixture_csv_data }
+
+    emailable_reports = report.as_emailable_partner_report(date: report_date)
+
+    ReportMailer.tables_report(
+      to: 'test@example.com',
+      subject: "Example Partner Monthly Credential Metrics - #{report_date.to_date}",
+      message: report.preamble,
+      reports: emailable_reports,
       attachment_format: :csv,
     )
   end
