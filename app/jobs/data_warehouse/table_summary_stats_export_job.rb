@@ -4,6 +4,8 @@ require 'reporting/cloudwatch_client'
 
 module DataWarehouse
   class TableSummaryStatsExportJob < BaseJob
+    include Shared::StaleDataUtils
+
     REPORT_NAME = 'table_summary_stats'
 
     TABLE_EXCLUSION_LIST = %w[
@@ -46,17 +48,6 @@ module DataWarehouse
       end
     end
 
-    def log_groups
-      [
-        "#{env}_/srv/idp/shared/log/events.log",
-        "#{env}_/srv/idp/shared/log/production.log",
-      ]
-    end
-
-    def env
-      Identity::Hostdata.env
-    end
-
     def cloudwatch_client(log_group_name: nil, slice_interval: 1.day)
       Reporting::CloudwatchClient.new(
         log_group_name: log_group_name,
@@ -64,14 +55,6 @@ module DataWarehouse
         num_threads: 6,
         slice_interval: slice_interval,
       )
-    end
-
-    def log_stream_filter_map
-      base_log_group = "#{env}_/srv/idp/shared/log"
-      {
-        "#{base_log_group}/events.log" => "@logStream like 'worker-i-' or @logStream like 'idp-i-'",
-        "#{base_log_group}/production.log" => "@logStream like 'idp-i-'",
-      }
     end
 
     def cloudwatch_query(log_group_name)
@@ -83,33 +66,15 @@ module DataWarehouse
       QUERY
     end
 
-    def production_offset_query
-      log_group_name = "#{env}_/srv/idp/shared/log/production.log"
-      <<~QUERY
-        fields jsonParse(@message) as @messageJson, concat(@timestamp, @message) as ts_plus_message
-        | filter #{log_stream_filter_map[log_group_name]}
-        | filter isPresent(@messageJson)
-        | stats count() as cnt by ts_plus_message
-        | stats sum(cnt - 1) as offset_count
-      QUERY
-    end
-
     def get_offset_count(log_group_name, timestamp)
-      if log_group_name == "#{env}_/srv/idp/shared/log/production.log"
-        # For production logs, exclude count of duplicates with same message & timestamp
-        cw_client = cloudwatch_client(
-          log_group_name: log_group_name,
-          slice_interval: 30.minutes,
-        )
-        result = cw_client.fetch(
-          query: production_offset_query,
-          from: timestamp.beginning_of_day,
-          to: timestamp.end_of_day,
-        )
-        result.sum { |h| h['offset_count'].to_i }
+      s3_path = duplicate_row_count_file_path(log_group_name, timestamp)
+      if s3_file_exists?(s3_path)
+        hourly_counts = read_duplicate_counts_from_s3(bucket_name, s3_path)
+        offset_count = hourly_counts.values.sum
       else
-        0
+        offset_count = 0
       end
+      offset_count
     end
 
     def fetch_table_max_ids_and_counts(timestamp)
@@ -176,6 +141,16 @@ module DataWarehouse
           bucket: bucket_name,
         )
       end
+    end
+
+    def s3_file_exists?(s3_path)
+      s3_client.head_object(bucket: bucket_name, key: s3_path)
+      true
+    rescue => e
+      logger.warn(
+        "#{class_name}: S3 head_object check failed for s3://#{bucket_name}/#{s3_path} with error: #{e.message}", # rubocop:disable Layout/LineLength
+      )
+      false
     end
   end
 end
