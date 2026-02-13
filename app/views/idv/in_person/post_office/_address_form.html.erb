@@ -12,14 +12,14 @@
 
 
 <%= simple_form_for(
-  '',
+  'address',
   url: url_for,
   method: 'put',
   html: { class: 'margin-y-5' })  do |f| %>
 
   <div class="margin-bottom-4">
     <%= render ValidatedFieldComponent.new(
-          name: :address,
+          name: :street_address,
           form: f,
           label: t('in_person_proofing.body.location.po_search.address_label'),
           label_html: { class: 'usa-label' },
@@ -43,7 +43,7 @@
 
   <div class="margin-bottom-4">
     <%= render ValidatedFieldComponent.new(
-          name: :identity_doc_address_state,
+          name: :state,
           collection: @presenter.states,
           form: f,
           input_html: { class: 'address-state-selector' },
@@ -56,7 +56,7 @@
 
   <div class="margin-bottom-4">
     <%= render ValidatedFieldComponent.new(
-          name: :zipcode,
+          name: :zip_code,
           form: f,
           label: t('in_person_proofing.body.location.po_search.zipcode_label'),
           label_html: { class: 'usa-label' },
