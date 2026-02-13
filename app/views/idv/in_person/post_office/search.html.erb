@@ -6,16 +6,42 @@
       <div class="usa-collection__body">
         <div class="grid-row">
           <div class="grid-col-fill">
-            <h3 class="usa-collection__heading margin-bottom-1">
+            <h3 class="usa-collection__heading">
               <%= t('in_person_proofing.body.location.distance', count: post_office[:distance]) %>
-            </h3>
-            <h3 className="usa-collection__heading margin-bottom-1">
-              <%= post_office[:name] %>
             </h3>
             <div><%= post_office[:address] %></div>
             <div>
               <%= "#{post_office[:city]}, #{post_office[:state]}, #{post_office[:zip_code_5]}-#{post_office[:zip_code_4]}" %>
             </div>
+            <h4><%= t('in_person_proofing.body.location.retail_hours_heading') %></h4>
+            <div>
+              <%= "#{t('in_person_proofing.body.location.retail_hours_weekday')} #{post_office[:weekday_hours]}"%>
+            </div>
+            <div>
+              <%= "#{t('in_person_proofing.body.location.retail_hours_sat')} #{post_office[:saturday_hours]}"%>
+            </div>
+            <div>
+              <%= "#{t('in_person_proofing.body.location.retail_hours_sun')} #{post_office[:sunday_hours]}"%>
+            </div>
+          </div>
+          <div className="grid-col-auto">
+            <%= render SpinnerButtonComponent.new(
+                  url: idv_verify_info_path,
+                  big: false,
+                  wide: false,
+                  action_message: t('idv.messages.verifying'),
+                  method: :put,
+                  form: {
+                    class: 'display-none tablet:display-inline-block',
+                    data: {
+                      form_steps_wait: '',
+                      error_message: t('idv.failure.exceptions.internal_error'),
+                      alert_target: '#form-steps-wait-alert',
+                      wait_step_path: idv_verify_info_path,
+                      poll_interval_ms: IdentityConfig.store.poll_rate_for_verify_in_seconds * 1000,
+                    },
+                  },
+                ).with_content(t('in_person_proofing.body.location.location_button')) %>
           </div>
         </div>
       </div>
