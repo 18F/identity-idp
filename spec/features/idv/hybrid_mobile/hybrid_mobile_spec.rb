@@ -695,6 +695,7 @@ RSpec.describe 'Hybrid Flow', :allow_net_connect_on_start do
         complete_doc_auth_steps_before_hybrid_handoff_step
         clear_and_fill_in(:doc_auth_phone, phone_number)
         click_send_link
+        expect(page).to have_current_path(idv_link_sent_path)
       end
 
       expect(@sms_link).to be_present

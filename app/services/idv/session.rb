@@ -205,7 +205,7 @@ module Idv
 
     def clear
       user_session[:idv] = {}
-      user_session['idv/attempts'] = {}
+      user_session['idv/attempts'] = []
       user_session['idv/in_person'] = {}
       @profile = nil
       @gpo_otp = nil
