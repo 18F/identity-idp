@@ -823,7 +823,7 @@ errors.messages.invalid_calling_area: No se admiten llamadas a ese número de te
 errors.messages.invalid_phone_number.international: Ingrese un número de teléfono con el número correcto de dígitos.
 errors.messages.invalid_phone_number.us: Ingrese un número de teléfono de 10 dígitos.
 errors.messages.invalid_recaptcha_token: Lo sentimos, pero es posible que tu computadora o red te estén enviando consultas automáticas. Para proteger a nuestros usuarios, no podemos procesar tu solicitud en este momento.
-errors.messages.invalid_signature: SAML request contains an invalid signature
+errors.messages.invalid_signature: SAML request signature is invalid or does not match any registered public certificates
 errors.messages.invalid_sms_number: El número de teléfono ingresado no admite mensajes de texto. Intente la opción de llamada telefónica.
 errors.messages.invalid_voice_number: Número de teléfono no válido. Verifique haber ingresado el código de país o de área correcto.
 errors.messages.issuer_missing_or_invalid: Issuer missing from SAML request

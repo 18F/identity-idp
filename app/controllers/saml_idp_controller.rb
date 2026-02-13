@@ -66,7 +66,13 @@ class SamlIdpController < ApplicationController
     unless valid_saml_request?
       track_integration_errors(event: :saml_logout_request)
 
-      return head(:bad_request)
+      saml_errors = saml_request.errors
+      @saml_request_validator = SamlRequestValidator.new(saml_errors:)
+      # result is defined in SamlIdpAuthConcern, and populates the instance of
+      # SamlRequestValidator above with the SAML errors, which are
+      # available to the saml_idp/logout/error view
+      result
+      return render 'saml_idp/logout/error', status: :bad_request
     end
 
     handle_valid_sp_logout_request

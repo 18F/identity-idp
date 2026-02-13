@@ -812,7 +812,7 @@ errors.messages.invalid_calling_area: Calls to that phone number are not support
 errors.messages.invalid_phone_number.international: Enter a phone number with the correct number of digits.
 errors.messages.invalid_phone_number.us: Enter a 10 digit phone number.
 errors.messages.invalid_recaptcha_token: We’re sorry, but your computer or network may be sending automated queries. To protect our users, we can’t process your request right now.
-errors.messages.invalid_signature: SAML request contains an invalid signature
+errors.messages.invalid_signature: SAML request signature is invalid or does not match any registered public certificates
 errors.messages.invalid_sms_number: The phone number entered doesn’t support text messaging. Try the Phone call option.
 errors.messages.invalid_voice_number: Invalid phone number. Check that you’ve entered the correct country code or area code.
 errors.messages.issuer_missing_or_invalid: Issuer missing from SAML request
