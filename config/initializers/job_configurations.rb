@@ -189,6 +189,12 @@ else
         cron: gpo_cron_24h,
         args: -> { [Time.zone.yesterday] },
       },
+      # Data warehouse duplicate log count check
+      cloudwatch_duplicate_log_counter_job: {
+        class: 'DataWarehouse::CloudWatchDuplicateLogCounterJob',
+        cron: cron_1h,
+        args: -> { [Time.zone.now] },
+      },
       # Send previous week's verification reports to partners
       irs_weekly_verification_report: {
         class: 'Reports::IrsOriginalVerificationReport',
