@@ -2057,8 +2057,7 @@ user_mailer.multi_factor_authentication.backup_code_added: Backup codes were add
 user_mailer.multi_factor_authentication.backup_code_deleted: Backup codes were deleted from your %{app_name} account
 user_mailer.multi_factor_authentication.ft_unlock_added: Face or touch unlock was added to your %{app_name} account
 user_mailer.multi_factor_authentication.ft_unlock_deleted: Face or touch unlock was deleted from your %{app_name} account
-user_mailer.multi_factor_authentication.help_center_html: Please do not reply to this message. If you need help, visit %{help_center_link_html}
-user_mailer.multi_factor_authentication.instructions_html: If this wasn’t you, %{reset_password_link_html} and change your %{authentication_methods_link_html} immediately.
+user_mailer.multi_factor_authentication.instructions_html: If this wasn’t you, %{change_password_link_html} and change your %{authentication_methods_link_html} immediately.
 user_mailer.multi_factor_authentication.new_auth_added: A new authentication method was added to your %{app_name} account.
 user_mailer.multi_factor_authentication.phone_added: Text or voice message was added to your %{app_name} account
 user_mailer.multi_factor_authentication.phone_deleted: Text or voice message was deleted from your %{app_name} account

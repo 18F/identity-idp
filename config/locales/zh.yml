@@ -2071,7 +2071,7 @@ user_mailer.multi_factor_authentication.backup_code_deleted: 备用备用码 已
 user_mailer.multi_factor_authentication.ft_unlock_added: 人脸或触摸解锁 已添加到您的 %{app_name} 帐户。
 user_mailer.multi_factor_authentication.ft_unlock_deleted: 人脸或触摸解锁 已从您的 %{app_name} 帐户中删除。
 user_mailer.multi_factor_authentication.help_center_html: 请勿对该信息作出回复。 如果需要帮助，请访问%{help_center_link_html}
-user_mailer.multi_factor_authentication.instructions_html: 如果不是您本人，%{reset_password_link_html} 并立即改变您的%{authentication_methods_link_html}。
+user_mailer.multi_factor_authentication.instructions_html: 如果不是您本人，%{change_password_link_html} 并立即改变您的%{authentication_methods_link_html}。
 user_mailer.multi_factor_authentication.new_auth_added: 您的 %{app_name} 帐户已添加新的身份验证方法。
 user_mailer.multi_factor_authentication.phone_added: 短信或语音留言 已添加到您的 %{app_name} 帐户
 user_mailer.multi_factor_authentication.phone_deleted: 短信或语音留言 已从您的 %{app_name} 帐户中删除。

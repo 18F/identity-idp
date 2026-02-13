@@ -358,6 +358,14 @@ class UserMailerPreview < ActionMailer::Preview
     ).account_reinstated
   end
 
+  def mfa_added
+    UserMailer.with(user: user, email_address: email_address_record).mfa_added
+  end
+
+  def mfa_deleted
+    UserMailer.with(user: user, email_address: email_address_record).mfa_deleted
+  end
+
   private
 
   def user

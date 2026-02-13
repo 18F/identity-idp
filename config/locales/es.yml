@@ -2070,7 +2070,7 @@ user_mailer.multi_factor_authentication.backup_code_deleted: La opción de códi
 user_mailer.multi_factor_authentication.ft_unlock_added: Su opción de desbloqueo facial o táctil se ha añadido a su cuenta de %{app_name}.
 user_mailer.multi_factor_authentication.ft_unlock_deleted: Su opción de desbloqueo facial o táctil se eliminó de su cuenta de %{app_name}.
 user_mailer.multi_factor_authentication.help_center_html: No responda a este mensaje. Si necesita ayuda, visite %{help_center_link_html}
-user_mailer.multi_factor_authentication.instructions_html: Si no fue usted, %{reset_password_link_html} y cambie sus %{authentication_methods_link_html} inmediatamente.
+user_mailer.multi_factor_authentication.instructions_html: Si no fue usted, %{change_password_link_html} y cambie sus %{authentication_methods_link_html} inmediatamente.
 user_mailer.multi_factor_authentication.new_auth_added: Se ha añadido un nuevo método de autenticación a su cuenta de %{app_name}.
 user_mailer.multi_factor_authentication.phone_added: La opción de mensaje de texto o de voz se ha añadido a su cuenta de %{app_name}.
 user_mailer.multi_factor_authentication.phone_deleted: La opción de mensaje de texto o de voz se eliminó de su cuenta de %{app_name}.

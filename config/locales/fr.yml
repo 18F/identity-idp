@@ -2058,7 +2058,7 @@ user_mailer.multi_factor_authentication.backup_code_deleted: Les codes de sauveg
 user_mailer.multi_factor_authentication.ft_unlock_added: Le déverrouillage facial ou tactile a été ajouté à votre compte %{app_name}.
 user_mailer.multi_factor_authentication.ft_unlock_deleted: Le déverrouillage facial ou tactile a été supprimé de votre compte %{app_name}.
 user_mailer.multi_factor_authentication.help_center_html: Ne répondez pas à ce message. Si vous avez besoin d’aide, rendez-vous sur %{help_center_link_html}
-user_mailer.multi_factor_authentication.instructions_html: Si ce n’est pas vous, %{reset_password_link_html} et modifiez immédiatement vos %{authentication_methods_link_html}.
+user_mailer.multi_factor_authentication.instructions_html: Si ce n’est pas vous, %{change_password_link_html} et modifiez immédiatement vos %{authentication_methods_link_html}.
 user_mailer.multi_factor_authentication.new_auth_added: Une nouvelle méthode d’authentification a été ajoutée à votre compte %{app_name}.
 user_mailer.multi_factor_authentication.phone_added: L’envoi de message text ou vocal a été ajouté à votre compte %{app_name}.
 user_mailer.multi_factor_authentication.phone_deleted: L’envoi de message texte ou vocal a été supprimé de votre compte %{app_name}.

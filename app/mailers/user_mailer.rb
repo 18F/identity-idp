@@ -509,6 +509,18 @@ class UserMailer < ActionMailer::Base
     end
   end
 
+  def mfa_added
+    with_user_locale(user) do
+      mail(to: email_address.email, subject: t('user_mailer.account_reset_complete.subject'))
+    end
+  end
+
+  def mfa_deleted
+    with_user_locale(user) do
+      mail(to: email_address.email, subject: t('user_mailer.account_reinstated.subject'))
+    end
+  end
+
   private
 
   attr_reader :user, :email_address
