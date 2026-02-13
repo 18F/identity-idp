@@ -7,7 +7,7 @@ RSpec.describe AccountCreationThreatMetrixJob, type: :job do
   let(:threatmetrix_session_id) { SecureRandom.uuid }
   let(:authentication_device_profiling) { :collect_only }
   let(:lexisnexis_threatmetrix_mock_enabled) { false }
-  let(:threatmetrix_response) { LexisNexisFixtures.ddp_success_response_json }
+  let(:threatmetrix_response) { LexisNexisFixtures.threatmetrix_success_response_json }
   let(:threatmetrix_stub) { stub_threatmetrix_request(threatmetrix_response) }
   let(:job_analytics) { FakeAnalytics.new }
 
@@ -35,7 +35,7 @@ RSpec.describe AccountCreationThreatMetrixJob, type: :job do
     end
 
     context 'Threat Metrix Account Creation analysis passes' do
-      let(:threatmetrix_response) { LexisNexisFixtures.ddp_success_response_json }
+      let(:threatmetrix_response) { LexisNexisFixtures.threatmetrix_success_response_json }
       let(:authentication_device_profiling) { :enabled }
 
       it 'logs a successful result' do
@@ -66,7 +66,7 @@ RSpec.describe AccountCreationThreatMetrixJob, type: :job do
     end
 
     context 'with an error response result' do
-      let(:threatmetrix_response) { LexisNexisFixtures.ddp_failure_response_json }
+      let(:threatmetrix_response) { LexisNexisFixtures.threatmetrix_failure_response_json }
 
       it 'stores an unsuccessful result' do
         threatmetrix_stub
@@ -106,7 +106,7 @@ RSpec.describe AccountCreationThreatMetrixJob, type: :job do
     context 'without a threatmetrix session ID' do
       let(:threatmetrix_session_id) { nil }
       let(:ipp_enrollment_in_progress) { false }
-      let(:threatmetrix_response) { LexisNexisFixtures.ddp_failure_response_json }
+      let(:threatmetrix_response) { LexisNexisFixtures.threatmetrix_failure_response_json }
 
       it 'does not make a request to threatmetrix' do
         threatmetrix_stub

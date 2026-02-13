@@ -34,39 +34,39 @@ module LexisNexisFixtures
       )
     end
 
-    def ddp_authentication_request_json
-      raw = read_fixture_file_at_path('ddp/account_creation_request.json')
+    def threatmetrix_authentication_request_json
+      raw = read_fixture_file_at_path('ddp/threatmetrix/account_creation_request.json')
       JSON.parse(raw).to_json
     end
 
-    def ddp_request_json
-      raw = read_fixture_file_at_path('ddp/request.json')
+    def threatmetrix_request_json
+      raw = read_fixture_file_at_path('ddp/threatmetrix/request.json')
       JSON.parse(raw).to_json
     end
 
-    def ddp_success_response_json
-      raw = read_fixture_file_at_path('ddp/successful_response.json')
+    def threatmetrix_success_response_json
+      raw = read_fixture_file_at_path('ddp/threatmetrix/successful_response.json')
       JSON.parse(raw).to_json
     end
 
-    def ddp_success_redacted_response_json
-      raw = read_fixture_file_at_path('ddp/successful_redacted_response.json')
+    def threatmetrix_success_redacted_response_json
+      raw = read_fixture_file_at_path('ddp/threatmetrix/successful_redacted_response.json')
       JSON.parse(raw).to_json
     end
 
-    def ddp_failure_response_json
-      raw = read_fixture_file_at_path('ddp/failed_response.json')
+    def threatmetrix_failure_response_json
+      raw = read_fixture_file_at_path('ddp/threatmetrix/failed_response.json')
       JSON.parse(raw).to_json
     end
 
-    def ddp_unexpected_review_status
+    def threatmetrix_unexpected_review_status
       'unexpected_review_status_that_causes_problems'
     end
 
-    def ddp_unexpected_review_status_response_json
-      raw = read_fixture_file_at_path('ddp/successful_response.json')
+    def threatmetrix_unexpected_review_status_response_json
+      raw = read_fixture_file_at_path('ddp/threatmetrix/successful_response.json')
       JSON.parse(raw).merge(
-        'review_status' => ddp_unexpected_review_status,
+        'review_status' => threatmetrix_unexpected_review_status,
       ).to_json
     end
 
