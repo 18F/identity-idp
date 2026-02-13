@@ -91,8 +91,6 @@ module IdentityConfig
     config.add(:check_user_password_compromised_enabled, type: :boolean)
     config.add(:component_previews_embed_frame_ancestors, type: :json)
     config.add(:component_previews_enabled, type: :boolean)
-    config.add(:compromised_password_randomizer_value, type: :integer)
-    config.add(:compromised_password_randomizer_threshold, type: :integer)
     config.add(:country_phone_number_overrides, type: :json)
     config.add(:dashboard_api_token, type: :string)
     config.add(:dashboard_url, type: :string)

@@ -7190,6 +7190,20 @@ module AnalyticsEvents
     )
   end
 
+  # @param [Boolean, nil] active_profile if the account the reset is being requested for has an
+  #   active proofed profile
+  #   The user signed in with a password found on the pwned list
+  def password_found_on_pwned_list(
+    active_profile:,
+    **extra
+  )
+    track_event(
+      :password_found_on_pwned_list,
+      active_profile:,
+      **extra,
+    )
+  end
+
   # The user got their password incorrect the max number of times, their session was terminated
   def password_max_attempts
     track_event('Password Max Attempts Reached')
