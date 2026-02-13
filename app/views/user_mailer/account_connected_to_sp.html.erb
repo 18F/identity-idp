@@ -1,30 +1,22 @@
 <p class="lead">
-  <%= t('user_mailer.email_added.header', app_name: APP_NAME) %>
+  <%= t(
+        'user_mailer.account_connected_to_sp.intro_html', 
+        sp_name: @sp_name, 
+        sign_in_link_html: link_to(t('user_mailer.account_connected_to_sp.sign_in_link'), new_user_session_url),
+      ) %>
 </p>
 
-<table class="spacer">
-  <tbody>
-    <tr>
-      <td class="s10" height="10px">
-        &nbsp;
-      </td>
-    </tr>
-  </tbody>
-</table>
-
-<table class="hr">
-  <tr>
-    <th>
-      &nbsp;
-    </th>
-  </tr>
-</table>
-
-<p>
+<p class="lead">
   <%= t(
-        'user_mailer.email_added.help',
-        app_name: link_to(APP_NAME, IdentityConfig.store.mailer_domain_name, class: 'gray'),
-        help_link: link_to(t('user_mailer.help_link_text'), MarketingSite.help_url),
-        contact_link: link_to(t('user_mailer.contact_link_text'), MarketingSite.contact_url),
+        'user_mailer.sp_connection.if_wasnt_you_html', 
+        sp_name: @sp_name, 
+        reset_password: link_to(
+          t('user_mailer.sp_connection.reset_password'),
+          event_disavowal_url(disavowal_token: @disavowal_token),
+        ),
+        auth_method: link_to(
+          t('user_mailer.sp_connection.auth_method'),
+          account_two_factor_authentication_url,
+        ),
       ) %>
 </p>

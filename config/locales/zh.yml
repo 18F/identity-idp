@@ -1947,6 +1947,14 @@ user_authorization_confirmation.continue: 继续
 user_authorization_confirmation.currently_logged_in: '你已用以下电邮登入:'
 user_authorization_confirmation.or: 或者
 user_authorization_confirmation.sign_in: 换电邮
+user_mailer.account_connected_to_sp.subject: 您已将您的帐户关联到 %{sp_name}。
+user_mailer.account_connected_to_sp.sign_in_link: 请登录您的帐户
+user_mailer.account_connected_to_sp.intro_html: 要断开您的帐户与%{sp_name}的连接, %{sign_in_link_html}, 前往侧边栏中的“您的已连接服务”，然后点击该机构下方的“断开连接”。
+user_mailer.sp_connection.reset_password: 立即重置密码
+user_mailer.sp_connection.auth_method: 身份验证
+user_mailer.sp_connection.if_wasnt_you_html: 如果这不是您本人操作，请%{reset_password}并更改您的%{auth_method}方式。
+user_mailer.account_disconnected_from_sp.subject: 您已将%{sp_name}从您的帐户中移除。
+user_mailer.account_disconnected_from_sp.intro_html: 如果您想重新关联您的账户，请访问%{sp_name}。
 user_mailer.account_reinstated.subject: 你的账户已解锁
 user_mailer.account_reinstated.we_have_finished_reviewing: 我们已完成对你%{app_name}账户的审查，你现在能使用账户信息登录了。
 user_mailer.account_rejected.intro: 我们无法在%{app_name}验证你的身份。请联系你试图访问其服务的那个机构。

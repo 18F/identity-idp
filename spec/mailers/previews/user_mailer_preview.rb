@@ -124,7 +124,13 @@ class UserMailerPreview < ActionMailer::Preview
   end
 
   def account_connected_to_sp
-    UserMailer.with(user: user, email_address: email_address_record).account_connected_to_sp(sp_name: 'Sample App SP')
+    UserMailer.with(user: user, email_address: email_address_record)
+      .account_connected_to_sp(sp_name: 'Sample App SP', disavowal_token: SecureRandom.hex)
+  end
+
+  def account_disconnected_from_sp
+    UserMailer.with(user: user, email_address: email_address_record)
+      .account_disconnected_from_sp(sp_name: 'Sample App SP', disavowal_token: SecureRandom.hex)
   end
 
   def verify_by_mail_letter_requested

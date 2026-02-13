@@ -1934,6 +1934,14 @@ user_authorization_confirmation.continue: Suite
 user_authorization_confirmation.currently_logged_in: 'Vous êtes déjà connecté avec l’adresse e-mail suivante :'
 user_authorization_confirmation.or: Ou
 user_authorization_confirmation.sign_in: Changer d’adresse e-mail
+user_mailer.account_connected_to_sp.subject: Vous avez connecté votre compte à %{sp_name}
+user_mailer.account_connected_to_sp.sign_in_link: connectez-vous à votre compte
+user_mailer.account_connected_to_sp.intro_html: Pour dissocier votre compte de %{sp_name}, %{sign_in_link_html}, accédez à la section « Vos services connectés » dans la barre latérale et cliquez sur « Dissocier » sous le service concerné.
+user_mailer.sp_connection.reset_password: réinitialisez votre mot de passe 
+user_mailer.sp_connection.auth_method: méthodes d'authentification
+user_mailer.sp_connection.if_wasnt_you_html: Si ce n'est pas vous, %{reset_password}  et modifiez immédiatement vos %{auth_method}.
+user_mailer.account_disconnected_from_sp.subject: Vous avez déconnecté %{sp_name} de votre compte.
+user_mailer.account_disconnected_from_sp.intro_html: Rendez-vous sur %{sp_name} si vous souhaitez réactiver votre compte. 
 user_mailer.account_reinstated.subject: Votre compte est déverrouillé
 user_mailer.account_reinstated.we_have_finished_reviewing: Nous avons terminé l’examen de votre compte %{app_name} et vous pouvez maintenant vous reconnecter avec les informations de votre compte.
 user_mailer.account_rejected.intro: Nous n’avons pas pu vérifier votre identité avec %{app_name}. Veuillez contacter l’organisme dont vous essayez d’accéder au service.

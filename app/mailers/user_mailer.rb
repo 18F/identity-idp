@@ -464,22 +464,24 @@ class UserMailer < ActionMailer::Base
     end
   end
 
-  def account_connected_to_sp(service_provider_name:)
+  def account_connected_to_sp(sp_name:, disavowal_token:)
     with_user_locale(user) do
-      @service_provider_name = service_provider_name
+      @sp_name = sp_name
+      @disavowal_token = disavowal_token
       mail(
         to: email_address.email,
-        subject: t('user_mailer.account_connected_to_sp.subject', service_provider_name:),
+        subject: t('user_mailer.account_connected_to_sp.subject', sp_name:),
       )
     end
   end
 
-  def account_disconnected_from_sp(service_provider_name:)
+  def account_disconnected_from_sp(sp_name:, disavowal_token:)
     with_user_locale(user) do
-      @service_provider_name = service_provider_name
+      @sp_name = sp_name
+      @disavowal_token = disavowal_token
       mail(
         to: email_address.email,
-        subject: t('user_mailer.account_disconnected_from_sp.subject', service_provider_name: ), 
+        subject: t('user_mailer.account_disconnected_from_sp.subject', sp_name:),
       )
     end
   end
