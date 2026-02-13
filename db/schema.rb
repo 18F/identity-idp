@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_01_21_214521) do
+ActiveRecord::Schema[8.0].define(version: 2026_02_13_183904) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_catalog.plpgsql"
@@ -573,6 +573,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_21_214521) do
     t.boolean "irs_attempts_api_enabled", comment: "sensitive=false"
     t.boolean "in_person_proofing_enabled", default: false, comment: "sensitive=false"
     t.string "post_idv_follow_up_url", comment: "sensitive=false"
+    t.boolean "emailaddress_attribute_enabled", default: false, comment: "sensitive=false"
     t.index ["issuer"], name: "index_service_providers_on_issuer", unique: true
   end
 
