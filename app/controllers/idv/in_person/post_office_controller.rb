@@ -6,6 +6,7 @@ module Idv
       include Idv::AvailabilityConcern
       include IdvStepConcern
       include StepIndicatorConcern
+      include UspsInPersonProofing
 
       def show
         @presenter = Idv::InPerson::PostOfficePresenter.new
@@ -13,29 +14,31 @@ module Idv
 
       def search
         @presenter = Idv::InPerson::PostOfficePresenter.new
-        @post_offices = [{
-          address: 'Happy Lane',
-          city: 'Qwertyton',
-          distance: 1.28,
-          name: 'Happy Post Office',
-          saturday_hours: '1:00 - 2:00',
-          state: 'PA',
-          sunday_hours: '1:00 - 2:00',
-          weekday_hours: '1:00 - 2:00',
-          zip_code_4: '4633',
-          zip_code_5: '12345',
-        }, {
-          address: 'Happy Lane',
-          city: 'Qwertyton',
-          distance: 1.28,
-          name: 'Happy Post Office',
-          saturday_hours: '1:00 - 2:00',
-          state: 'PA',
-          sunday_hours: '1:00 - 2:00',
-          weekday_hours: '1:00 - 2:00',
-          zip_code_4: '4633',
-          zip_code_5: '12345',
-        }]
+
+        candidate = UspsInPersonProofing::Applicant.new(
+          address: search_params['street_address'],
+          city: search_params['city'],
+          state: search_params['state'],
+          zip_code: search_params['zip_code'],
+        )
+        @search_values = search_params
+
+        @post_offices = proofer.request_facilities(candidate, false)
+      end
+
+      private
+
+      def search_params
+        params.require(:address).permit(
+          :street_address,
+          :city,
+          :state,
+          :zip_code,
+        )
+      end
+
+      def proofer
+        @proofer ||= EnrollmentHelper.usps_proofer
       end
     end
   end
