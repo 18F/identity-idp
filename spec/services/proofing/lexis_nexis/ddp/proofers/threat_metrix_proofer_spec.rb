@@ -75,7 +75,7 @@ RSpec.describe Proofing::LexisNexis::Ddp::Proofers::ThreatMetrixProofer do
             body: proofing_verification_request.body,
             headers: proofing_verification_request.headers,
           ).to_return(
-            body: LexisNexisFixtures.ddp_success_response_json,
+            body: LexisNexisFixtures.threatmetrix_success_response_json,
             status: 200,
           )
 
@@ -108,7 +108,7 @@ RSpec.describe Proofing::LexisNexis::Ddp::Proofers::ThreatMetrixProofer do
 
     context 'when user is going through Idv' do
       context 'when the response is a full match' do
-        let(:response_body) { LexisNexisFixtures.ddp_success_response_json }
+        let(:response_body) { LexisNexisFixtures.threatmetrix_success_response_json }
 
         it 'is a successful result' do
           result = proofer.proof(proofing_applicant)
@@ -143,7 +143,7 @@ RSpec.describe Proofing::LexisNexis::Ddp::Proofers::ThreatMetrixProofer do
       end
 
       context 'when the review status has an unexpected value' do
-        let(:response_body) { LexisNexisFixtures.ddp_unexpected_review_status_response_json }
+        let(:response_body) { LexisNexisFixtures.threatmetrix_unexpected_review_status_response_json }
 
         it 'returns an exception result' do
           result = proofer.proof(proofing_applicant)
@@ -165,7 +165,7 @@ RSpec.describe Proofing::LexisNexis::Ddp::Proofers::ThreatMetrixProofer do
           .and_return('test-authentication-policy')
       end
       context 'when the response is a full match' do
-        let(:response_body) { LexisNexisFixtures.ddp_success_response_json }
+        let(:response_body) { LexisNexisFixtures.threatmetrix_success_response_json }
 
         it 'is a successful result' do
           result = proofer.proof(authentication_applicant)
