@@ -632,7 +632,7 @@ RSpec.describe Idv::EnterPasswordController do
               context: 'authentication',
               enrollment_id: enrollment.id,
               exception_class: 'UspsInPersonProofing::Exception::RequestEnrollException',
-              exception_message: 'the server responded with status 500',
+              exception_message: /the server responded with status 500/,
               original_exception_class: 'Faraday::ServerError',
               reason: 'Request exception',
             )
@@ -731,7 +731,7 @@ RSpec.describe Idv::EnterPasswordController do
                 context: 'authentication',
                 enrollment_id: enrollment.id,
                 exception_class: 'UspsInPersonProofing::Exception::RequestEnrollException',
-                exception_message: 'the server responded with status 500',
+                exception_message: /the server responded with status 500/,
                 original_exception_class: 'Faraday::ServerError',
                 reason: 'Request exception',
               )
