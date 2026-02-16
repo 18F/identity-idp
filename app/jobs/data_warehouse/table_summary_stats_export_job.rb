@@ -48,15 +48,6 @@ module DataWarehouse
       end
     end
 
-    def cloudwatch_client(log_group_name: nil, slice_interval: 1.day)
-      Reporting::CloudwatchClient.new(
-        log_group_name: log_group_name,
-        ensure_complete_logs: false,
-        num_threads: 6,
-        slice_interval: slice_interval,
-      )
-    end
-
     def cloudwatch_query(log_group_name)
       <<~QUERY
         fields jsonParse(@message) as @messageJson
@@ -69,7 +60,7 @@ module DataWarehouse
     def get_offset_count(log_group_name, timestamp)
       s3_path = duplicate_row_count_file_path(log_group_name, timestamp)
       if s3_file_exists?(s3_path)
-        hourly_counts = read_duplicate_counts_from_s3(bucket_name, s3_path)
+        hourly_counts = read_duplicate_counts_from_s3(s3_path)
         offset_count = hourly_counts.values.sum
       else
         offset_count = 0
