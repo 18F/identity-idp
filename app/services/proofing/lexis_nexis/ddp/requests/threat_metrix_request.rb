@@ -39,6 +39,10 @@ module Proofing
             }.to_json
           end
 
+          def metric_name
+            'lexis_nexis_ddp_threat_metrix'
+          end
+
           def timeout
             IdentityConfig.store.lexisnexis_threatmetrix_timeout
           end
