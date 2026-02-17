@@ -218,7 +218,7 @@ RSpec.describe SignUp::CompletionsController do
         stub_sign_in(user)
         subject.session[:sp] = {
           acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
-          issuer:  current_sp.issuer,
+          issuer: current_sp.issuer,
           request_url: 'http://example.com',
         }
         subject.user_session[:in_account_creation_flow] = true
