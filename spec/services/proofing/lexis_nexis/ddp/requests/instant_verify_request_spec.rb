@@ -58,52 +58,6 @@ RSpec.describe Proofing::LexisNexis::Ddp::Requests::InstantVerifyRequest do
         end
       end
     end
-
-    context 'Authentication verification request' do
-      let(:applicant) do
-        {
-          threatmetrix_session_id: 'UNIQUE_SESSION_ID',
-          email: 'test@example.com',
-          request_ip: '127.0.0.1',
-          uuid: '00000000-0000-0000-0000-000000000000',
-          workflow: 'auth',
-        }
-      end
-
-      subject do
-        described_class.new(
-          applicant: applicant,
-          config: LexisNexisFixtures.example_ddp_authentication_config,
-        )
-      end
-
-      it 'returns a properly formed request body' do
-        response_json = JSON.parse(subject.body)
-        expected_json = JSON.parse(LexisNexisFixtures.ddp_authentication_request_json)
-        expect(response_json).to eq(expected_json)
-      end
-
-      context 'with service provider associated with user' do
-        let(:applicant) do
-          {
-            threatmetrix_session_id: 'UNIQUE_SESSION_ID',
-            email: 'test@example.com',
-            request_ip: '127.0.0.1',
-            uuid_prefix: 'SPNUM',
-            uuid: '00000000-0000-0000-0000-000000000000',
-            workflow: 'auth',
-          }
-        end
-
-        it 'returns a properly formed request body' do
-          response_json = JSON.parse(subject.body)
-
-          base_json = JSON.parse(LexisNexisFixtures.ddp_authentication_request_json)
-          expected_json = base_json.merge({ 'local_attrib_1' => 'SPNUM' })
-          expect(response_json).to eq(expected_json)
-        end
-      end
-    end
   end
 
   describe '#url' do

@@ -19,28 +19,28 @@ module Proofing
               account_address_zip: applicant[:zipcode] || '',
               account_date_of_birth: applicant[:dob] ?
                 Date.parse(applicant[:dob]).strftime('%Y%m%d') : '',
-              # account_email: applicant[:email],
               account_first_name: applicant[:first_name] || '',
               account_last_name: applicant[:last_name] || '',
               account_telephone: '', # applicant[:phone], decision was made not to send phone
               account_drivers_license_number: applicant[:state_id_number]&.gsub(/\W/, '') || '',
               account_drivers_license_type: applicant[:state_id_number] ? 'us_dl' : '',
               account_drivers_license_issuer: applicant[:state_id_jurisdiction].to_s.strip || '',
-              # customer_event_type: applicant[:workflow],
-              event_type: 'ACCOUNT_CREATION',
+              event_type: 'INSTANT_VERIFY',
               policy: config.ddp_policy,
               service_type: 'all',
-              # session_id: session_id,
               national_id_number: applicant[:ssn]&.gsub(/\D/, '') || '',
               national_id_type: applicant[:ssn] ? 'US_SSN' : '',
-              # input_ip_address: applicant[:request_ip],
               local_attrib_1: applicant[:uuid_prefix] || '',
               local_attrib_3: applicant[:uuid],
             }.to_json
           end
 
+          def metric_name
+            'lexis_nexis_ddp_instant_verify'
+          end
+
           def timeout
-            # Do we need a timeout?
+            IdentityConfig.store.lexisnexis_instant_verify_timeout
           end
         end
       end
