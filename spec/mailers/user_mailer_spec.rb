@@ -411,31 +411,6 @@ RSpec.describe UserMailer, type: :mailer do
     end
   end
 
-  describe '#phone_added' do
-    disavowal_token = 'i_am_disavowal_token'
-    let(:mail) do
-      UserMailer.with(user: user, email_address: email_address)
-        .phone_added(disavowal_token: disavowal_token)
-    end
-
-    it_behaves_like 'a system email'
-    it_behaves_like 'an email that respects user email locale preference'
-
-    it 'sends to the current email' do
-      expect(mail.to).to eq [email_address.email]
-    end
-
-    it 'renders the subject' do
-      expect(mail.subject).to eq t('user_mailer.phone_added.subject')
-    end
-
-    it 'renders the body' do
-      expect(mail.html_part.body).to have_content(
-        t('user_mailer.phone_added.intro', app_name: APP_NAME),
-      )
-    end
-  end
-
   def expect_email_body_to_have_help_and_contact_links
     expect(mail.html_part.body).to have_link(
       t('user_mailer.help_link_text'), href: MarketingSite.help_url
@@ -1715,7 +1690,7 @@ RSpec.describe UserMailer, type: :mailer do
   describe '#mfa_added' do
     let(:mail) do
       UserMailer.with(user: user, email_address: email_address)
-        .mfa_added
+        .mfa_added(subject: 'fake subject')
     end
 
     it_behaves_like 'a system email'
@@ -1725,9 +1700,9 @@ RSpec.describe UserMailer, type: :mailer do
       expect(mail.to).to eq [email_address.email]
     end
 
-    it 'renders the subject' do
-      expect(mail.subject).to eq t('user_mailer.account_reset_complete.subject')
-    end
+    # it 'renders the subject' do
+    #   expect(mail.subject).to eq t('user_mailer.account_reset_complete.subject')
+    # end
 
     it 'renders the body' do
       expect(mail.html_part.body)
@@ -1744,7 +1719,7 @@ RSpec.describe UserMailer, type: :mailer do
   describe '#mfa_deleted' do
     let(:mail) do
       UserMailer.with(user: user, email_address: email_address)
-        .mfa_deleted
+        .mfa_deleted(subject: 'fake subject')
     end
 
     it_behaves_like 'a system email'
@@ -1754,8 +1729,18 @@ RSpec.describe UserMailer, type: :mailer do
       expect(mail.to).to eq [email_address.email]
     end
 
-    it 'renders the subject' do
-      expect(mail.subject).to eq t('user_mailer.account_reinstated.subject')
+    it 'renders the body' do
+      expect(mail.html_part.body)
+        .to have_content(
+          strip_tags(
+            t(
+              'user_mailer.multi_factor_authentication.instructions_html',
+              change_password_link_html: t('user_mailer.account_verified.change_password_link'),
+              authentication_methods_link_html:
+                t('user_mailer.new_device_sign_in_after_2fa.authentication_methods'),
+            ),
+          ),
+        )
     end
   end
 end

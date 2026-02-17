@@ -270,10 +270,12 @@ module TwoFactorAuthentication
     end
 
     def send_phone_added_email
-      _event, disavowal_token = create_user_event_with_disavowal(:phone_added, current_user)
       current_user.confirmed_email_addresses.each do |email_address|
         UserMailer.with(user: current_user, email_address: email_address)
-          .phone_added(disavowal_token: disavowal_token).deliver_now_or_later
+          .mfa_added(subject: t(
+            'user_mailer.multi_factor_authentication.phone_added',
+            app_name: APP_NAME,
+          )).deliver_now_or_later
       end
     end
 

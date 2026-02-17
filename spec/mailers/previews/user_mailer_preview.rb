@@ -31,11 +31,6 @@ class UserMailerPreview < ActionMailer::Preview
       .password_changed(disavowal_token: SecureRandom.hex)
   end
 
-  def phone_added
-    UserMailer.with(user: user, email_address: email_address_record)
-      .phone_added(disavowal_token: SecureRandom.hex)
-  end
-
   def personal_key_sign_in
     UserMailer.with(user: user, email_address: email_address_record)
       .personal_key_sign_in(disavowal_token: SecureRandom.hex)
@@ -359,11 +354,16 @@ class UserMailerPreview < ActionMailer::Preview
   end
 
   def mfa_added
-    UserMailer.with(user: user, email_address: email_address_record).mfa_added
+    UserMailer.with(
+      user: user, email_address: email_address_record,
+    ).mfa_added(subject: subject_name)
   end
 
   def mfa_deleted
-    UserMailer.with(user: user, email_address: email_address_record).mfa_deleted
+    UserMailer.with(
+      user: user,
+      email_address: email_address_record,
+    ).mfa_deleted(subject: subject_name)
   end
 
   private
@@ -408,6 +408,10 @@ class UserMailerPreview < ActionMailer::Preview
 
   def in_person_visited_location_name
     'ACQUAINTANCESHIP'
+  end
+
+  def subject_name
+    'MFA_METHOD'
   end
 
   def in_person_enrollment_id_ipp_skipped_location
