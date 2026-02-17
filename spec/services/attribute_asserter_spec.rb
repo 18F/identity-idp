@@ -126,7 +126,8 @@ RSpec.describe AttributeAsserter do
 
             it 'returns the email NameID format' do
               email = user.asserted_attributes[:email]
-              expect(email[:name_id_format]).to eq 'urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress'
+              expect(email[:name_id_format])
+                .to eq 'urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress'
             end
 
             context 'when authn_context includes an unknown value' do
