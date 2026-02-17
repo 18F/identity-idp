@@ -1700,10 +1700,6 @@ RSpec.describe UserMailer, type: :mailer do
       expect(mail.to).to eq [email_address.email]
     end
 
-    # it 'renders the subject' do
-    #   expect(mail.subject).to eq t('user_mailer.account_reset_complete.subject')
-    # end
-
     it 'renders the body' do
       expect(mail.html_part.body)
         .to have_content(
@@ -1735,9 +1731,10 @@ RSpec.describe UserMailer, type: :mailer do
           strip_tags(
             t(
               'user_mailer.multi_factor_authentication.instructions_html',
-              change_password_link_html: t('user_mailer.account_verified.change_password_link'),
+              change_password_link_html:
+                t('user_mailer.multi_factor_authentication.change_password_link'),
               authentication_methods_link_html:
-                t('user_mailer.new_device_sign_in_after_2fa.authentication_methods'),
+                t('user_mailer.multi_factor_authentication.authentication_methods_link'),
             ),
           ),
         )

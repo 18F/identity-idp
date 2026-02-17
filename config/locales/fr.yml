@@ -2053,8 +2053,10 @@ user_mailer.letter_reminder_14_days.sign_in_and_request_another_letter: connecte
 user_mailer.letter_reminder_14_days.subject: Terminer la vérification de votre identité
 user_mailer.multi_factor_authentication.auth_app_added: Une application d’authentification a été ajoutée à votre compte %{app_name}.
 user_mailer.multi_factor_authentication.auth_app_deleted: Une application d’authentification a été supprimée de votre compte %{app_name}.
+user_mailer.multi_factor_authentication.authentication_methods_link: méthodes d’authentification
 user_mailer.multi_factor_authentication.backup_code_added: Des codes de sauvegarde ont été ajoutés à votre compte %{app_name}.
 user_mailer.multi_factor_authentication.backup_code_deleted: Les codes de sauvegarde ont été supprimés de votre compte %{app_name}.
+user_mailer.multi_factor_authentication.change_password_link: réinitialiser votre mot de passe
 user_mailer.multi_factor_authentication.ft_unlock_added: Le déverrouillage facial ou tactile a été ajouté à votre compte %{app_name}.
 user_mailer.multi_factor_authentication.ft_unlock_deleted: Le déverrouillage facial ou tactile a été supprimé de votre compte %{app_name}.
 user_mailer.multi_factor_authentication.help_center_html: Ne répondez pas à ce message. Si vous avez besoin d’aide, rendez-vous sur %{help_center_link_html}
