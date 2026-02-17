@@ -74,8 +74,6 @@ broken_personal_key_window_start: '2021-07-29T00:00:00Z'
 check_user_password_compromised_enabled: false
 component_previews_embed_frame_ancestors: '[]'
 component_previews_enabled: false
-compromised_password_randomizer_threshold: 900
-compromised_password_randomizer_value: 1000
 country_phone_number_overrides: '{}'
 dashboard_api_token: ''
 dashboard_url: https://dashboard.demo.login.gov
@@ -559,8 +557,6 @@ development:
   check_user_password_compromised_enabled: true
   component_previews_embed_frame_ancestors: '["http://localhost:4000"]'
   component_previews_enabled: true
-  compromised_password_randomizer_threshold: 0
-  compromised_password_randomizer_value: 1
   dashboard_api_token: test_token
   dashboard_url: http://localhost:3001/api/service_providers
   doc_auth_desktop_test_mode: true

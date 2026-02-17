@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'time'
 module Users
   class SessionsController < Devise::SessionsController
     include ::ActionView::Helpers::DateHelper
@@ -313,26 +314,27 @@ module Users
     end
 
     def check_password_compromised
-      return if current_user.password_compromised_checked_at.present? ||
-                !eligible_for_password_lookup?
+      return if !FeatureManagement.check_password_enabled? || compromised_password_check_current?
 
-      session[:redirect_to_change_password] =
-        PwnedPasswords::LookupPassword.call(auth_params[:password])
+      is_pwned = PwnedPasswords::LookupPassword.call(auth_params[:password])
+      track_pwned_password if is_pwned
       update_user_password_compromised_checked_at
     end
 
-    def eligible_for_password_lookup?
-      FeatureManagement.check_password_enabled? &&
-        randomize_check_password?
+    def compromised_password_check_current?
+      # The pwned_password list is regularly updated in monthly intervals
+      # This is to ensure that we aren't checking the password against
+      # the same list every time a user logs in
+      return false if !current_user.password_compromised_checked_at.present?
+      current_user.password_compromised_checked_at > 30.days.ago
+    end
+
+    def track_pwned_password
+      analytics.password_found_on_pwned_list(active_profile: current_user.active_profile.present?)
     end
 
     def update_user_password_compromised_checked_at
       current_user.update!(password_compromised_checked_at: Time.zone.now)
-    end
-
-    def randomize_check_password?
-      SecureRandom.random_number(IdentityConfig.store.compromised_password_randomizer_value) >=
-        IdentityConfig.store.compromised_password_randomizer_threshold
     end
 
     def user_account_creation_device_profile_failed?
