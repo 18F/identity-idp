@@ -133,15 +133,5 @@ module DataWarehouse
         )
       end
     end
-
-    def s3_file_exists?(s3_path)
-      s3_client.head_object(bucket: bucket_name, key: s3_path)
-      true
-    rescue => e
-      logger.warn(
-        "#{class_name}: S3 head_object check failed for s3://#{bucket_name}/#{s3_path} with error: #{e.message}", # rubocop:disable Layout/LineLength
-      )
-      false
-    end
   end
 end

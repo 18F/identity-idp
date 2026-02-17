@@ -65,7 +65,20 @@ module DataWarehouse
         QUERY
       end
 
+      def s3_file_exists?(s3_path)
+        s3_client.head_object(bucket: bucket_name, key: s3_path)
+        true
+      rescue => e
+        logger.warn(
+          "#{class_name}: S3 head_object check failed for s3://#{bucket_name}/#{s3_path} with error: #{e.message}", # rubocop:disable Layout/LineLength
+        )
+        false
+      end
+
       def read_duplicate_counts_from_s3(s3_path)
+        unless s3_file_exists?(s3_path)
+          return {}
+        end
         logger.info("Reading existing duplicate counts from s3://#{bucket_name}/#{s3_path}")
         body_text = s3_client.get_object(bucket: bucket_name, key: s3_path).body.read
         body_text.split("\n").each_with_object({}) do |line, result|
