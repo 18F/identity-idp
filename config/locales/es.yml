@@ -1946,14 +1946,11 @@ user_authorization_confirmation.continue: Continuar
 user_authorization_confirmation.currently_logged_in: 'Ya inició sesión con el siguiente correo electrónico:'
 user_authorization_confirmation.or: O
 user_authorization_confirmation.sign_in: Cambiar de correo electrónico
-user_mailer.account_connected_to_sp.subject: Usted conectó su cuenta a %{sp_name}
+user_mailer.account_connected_to_sp.intro_html: Para desconectar su cuenta de %{sp_name}, %{sign_in_link_html}, vaya a la sección “Sus servicios conectadas” en la barra lateral y haga clic en “Desconectar” debajo del servicio.
 user_mailer.account_connected_to_sp.sign_in_link: inicie sesión en su cuenta
-user_mailer.account_connected_to_sp.intro_html: Para desconectar su cuenta de %{sp_name}, %{sign_in_link_html}, vaya a la sección "Sus servicios conectadas" en la barra lateral y haga clic en "Desconectar" debajo del servicio.
-user_mailer.sp_connection.reset_password: restablezca su contraseña
-user_mailer.sp_connection.auth_method: métodos de autenticación
-user_mailer.sp_connection.if_wasnt_you_html: Si no fue usted, %{reset_password} y cambie sus %{auth_method} inmediatamente.
+user_mailer.account_connected_to_sp.subject: Usted conectó su cuenta a %{sp_name}
+user_mailer.account_disconnected_from_sp.intro_html: Visite %{sp_name} si desea volver a conectar su cuenta.
 user_mailer.account_disconnected_from_sp.subject: Usted ha desconectado a %{sp_name} de su cuenta
-user_mailer.account_disconnected_from_sp.intro_html: Visite %{sp_name} si desea volver a conectar su cuenta. 
 user_mailer.account_reinstated.subject: Su cuenta está desbloqueada
 user_mailer.account_reinstated.we_have_finished_reviewing: Terminamos de revisar su cuenta de %{app_name} y ya puede volver a iniciar sesión con los datos de su cuenta.
 user_mailer.account_rejected.intro: No pudimos verificar su identidad con %{app_name}. Contacte con la agencia a cuyo servicio está intentando acceder.
@@ -2120,6 +2117,9 @@ user_mailer.signup_with_your_email.help_html: Si usted no solicitó una cuenta n
 user_mailer.signup_with_your_email.intro_html: Este email ya está asociado a una cuenta %{app_name_html}, por lo tanto no podemos usarlo para crear una cuenta nueva. Para iniciar una sesión con su cuenta existente, siga el siguiente enlace. Si no intenta iniciar una sesión con este email, puede ignorar este mensaje.
 user_mailer.signup_with_your_email.link_text: Ir a %{app_name}
 user_mailer.signup_with_your_email.reset_password_html: Si no recuerda su contraseña, vaya a %{app_name_html} para restablecerla.
+user_mailer.sp_connection.auth_method: métodos de autenticación
+user_mailer.sp_connection.if_wasnt_you_html: Si no fue usted, %{reset_password} y cambie sus %{auth_method} inmediatamente.
+user_mailer.sp_connection.reset_password: restablezca su contraseña
 user_mailer.suspended_create_account.message: Hubo un problema al crear su cuenta de %{app_name} con esta dirección de correo electrónico. Llame a nuestro centro de atención al %{contact_number} y proporcione este código - %{support_code}.
 user_mailer.suspended_create_account.subject: No podemos crear su cuenta
 user_mailer.suspended_reset_password.message: Hubo un problema al restablecer su contraseña. Llame a nuestro centro de atención al %{contact_number} y proporcione este código - %{support_code}.
