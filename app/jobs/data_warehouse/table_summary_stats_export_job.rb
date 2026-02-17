@@ -59,13 +59,8 @@ module DataWarehouse
 
     def get_offset_count(log_group_name, timestamp)
       s3_path = duplicate_row_count_file_path(log_group_name, timestamp)
-      if s3_file_exists?(s3_path)
-        hourly_counts = read_duplicate_counts_from_s3(s3_path)
-        offset_count = hourly_counts.values.sum
-      else
-        offset_count = 0
-      end
-      offset_count
+      hourly_counts = read_duplicate_counts_from_s3(s3_path)
+      hourly_counts.values.sum
     end
 
     def fetch_table_max_ids_and_counts(timestamp)
