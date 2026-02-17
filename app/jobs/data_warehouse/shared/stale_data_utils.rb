@@ -24,7 +24,9 @@ module DataWarehouse
 
       def duplicate_row_count_file_path(log_group_name, timestamp)
         lg_name = get_short_log_group_name(log_group_name)
-        "table_summary_stats/#{REPORT_NAME}/#{lg_name}/#{timestamp.strftime('%Y-%m-%d')}.csv"
+        year = timestamp.year
+        file_name = timestamp.strftime('%Y-%m-%d')
+        "table_summary_stats/#{REPORT_NAME}/#{lg_name}/#{year}/#{file_name}.csv"
       end
 
       def get_short_log_group_name(log_group_name)
