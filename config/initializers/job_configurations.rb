@@ -191,7 +191,7 @@ else
       },
       # Data warehouse duplicate log count check
       cloudwatch_duplicate_log_counter_job: {
-        class: 'DataWarehouse::CloudWatchDuplicateLogCounterJob',
+        class: 'DataWarehouse::CloudwatchDuplicateLogCounterJob',
         cron: cron_1h,
         args: -> { [Time.zone.now] },
       },
