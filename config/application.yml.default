@@ -337,6 +337,12 @@ max_phone_numbers_per_account: 5
 max_piv_cac_per_account: 2
 max_sign_in_failures: 5
 max_sign_in_failures_window_in_seconds: 60
+mdl_verification_enabled: false
+mdl_strict_validation: false
+# OpenCred configuration for mDL verification via OIDC
+opencred_base_url: 'http://localhost:22080'
+opencred_client_id: 'login-gov-mdl'
+opencred_client_secret: 'login-gov-secret-key'
 mfa_report_config: '[]'
 min_password_score: 3
 minimum_wait_before_another_usps_letter_in_hours: 24
