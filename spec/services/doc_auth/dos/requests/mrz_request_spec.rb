@@ -38,7 +38,6 @@ RSpec.describe DocAuth::Dos::Requests::MrzRequest do
           'Client-Secret' => client_secret,
           'Content-Type' => 'application/json',
           'X-Correlation-ID' => correlation_id,
-          'User-Agent' => 'Faraday v2.12.2',
         },
       )
       .to_return(status: http_status, body: response_body, headers: response_headers)
