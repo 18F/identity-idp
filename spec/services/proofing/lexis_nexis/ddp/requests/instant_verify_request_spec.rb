@@ -41,7 +41,7 @@ RSpec.describe Proofing::LexisNexis::Ddp::Requests::InstantVerifyRequest do
     context 'Idv verification request' do
       it 'returns a properly formed request body' do
         response_json = JSON.parse(subject.body)
-        expected_json = JSON.parse(LexisNexisFixtures.ddp_request_json)
+        expected_json = JSON.parse(LexisNexisFixtures.ddp_instant_verify_request_json)
         expect(response_json).to eq(expected_json)
       end
 

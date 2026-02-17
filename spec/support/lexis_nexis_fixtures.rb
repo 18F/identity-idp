@@ -34,6 +34,16 @@ module LexisNexisFixtures
       )
     end
 
+    def ddp_instant_verify_request_json
+      raw = read_fixture_file_at_path('ddp/instant_verify/request.json')
+      JSON.parse(raw).to_json
+    end
+
+    def ddp_instant_verify_success_response_json
+      raw = read_fixture_file_at_path('ddp/instant_verify/successful_response.json')
+      JSON.parse(raw).to_json
+    end
+
     def threatmetrix_authentication_request_json
       raw = read_fixture_file_at_path('ddp/threatmetrix/account_creation_request.json')
       JSON.parse(raw).to_json
