@@ -812,7 +812,7 @@ errors.messages.invalid_calling_area: Les appels vers ce numéro de téléphone 
 errors.messages.invalid_phone_number.international: Saisissez un numéro de téléphone avec le nombre correct de chiffres.
 errors.messages.invalid_phone_number.us: Saisissez un numéro de téléphone à 10 chiffres.
 errors.messages.invalid_recaptcha_token: Désolé, il est possible que votre ordinateur ou votre réseau envoie des requêtes automatiques. Pour protéger nos utilisateurs, nous ne pouvons pas traiter votre demande pour le moment.
-errors.messages.invalid_signature: SAML request contains an invalid signature
+errors.messages.invalid_signature: SAML request signature is invalid or does not match any registered public certificates
 errors.messages.invalid_sms_number: Le numéro de téléphone saisi ne prend pas en charge les messages texte. Veuillez essayer l’option d’appel téléphonique.
 errors.messages.invalid_voice_number: Numéro de téléphone non valide. Vérifiez que vous avez entré le bon indicatif international ou régional.
 errors.messages.issuer_missing_or_invalid: Issuer missing from SAML request

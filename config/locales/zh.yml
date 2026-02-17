@@ -823,7 +823,7 @@ errors.messages.invalid_calling_area: 不支持给那个号码打的电话。如
 errors.messages.invalid_phone_number.international: 输入一个位数正确的电话号码。
 errors.messages.invalid_phone_number.us: 输入 10 位的电话号码。
 errors.messages.invalid_recaptcha_token: 你必须完成预防滥发邮件测验。
-errors.messages.invalid_signature: SAML request contains an invalid signature
+errors.messages.invalid_signature: SAML request signature is invalid or does not match any registered public certificates
 errors.messages.invalid_sms_number: 输入的电话号码不支持短信。尝试接听电话选项。
 errors.messages.invalid_voice_number: 电话号码有误。检查一下你是否输入了正确的国家代码或区域代码。
 errors.messages.issuer_missing_or_invalid: Issuer missing from SAML request
