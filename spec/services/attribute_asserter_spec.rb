@@ -114,6 +114,21 @@ RSpec.describe AttributeAsserter do
               expect(get_asserted_attribute(user, :uuid)).to eq user.last_identity.uuid
             end
 
+            it 'returns nil as the name of the attribute' do
+              email = user.asserted_attributes[:email]
+              expect(email[:name]).to be_nil
+            end
+
+            it 'returns the basic name format' do
+              email = user.asserted_attributes[:email]
+              expect(email[:name_format]).to eq 'urn:oasis:names:tc:SAML:2.0:attrname-format:basic'
+            end
+
+            it 'returns the email NameID format' do
+              email = user.asserted_attributes[:email]
+              expect(email[:name_id_format]).to eq 'urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress'
+            end
+
             context 'when authn_context includes an unknown value' do
               let(:authn_context) do
                 [
