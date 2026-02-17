@@ -203,6 +203,7 @@ RSpec.describe SignUp::CompletionsController do
 
   describe '#update' do
     let(:now) { Time.zone.now.change(usec: 0) }
+    let(:current_sp) { create(:service_provider) }
 
     before do
       stub_analytics
@@ -217,7 +218,7 @@ RSpec.describe SignUp::CompletionsController do
         stub_sign_in(user)
         subject.session[:sp] = {
           acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
-          issuer: 'foo',
+          issuer:  current_sp.issuer,
           request_url: 'http://example.com',
         }
         subject.user_session[:in_account_creation_flow] = true
@@ -229,6 +230,7 @@ RSpec.describe SignUp::CompletionsController do
           ial2: false,
           ialmax: false,
           page_occurence: 'agency-page',
+          service_provider_name: current_sp.friendly_name,
           needs_completion_screen_reason: :new_sp,
           in_account_creation_flow: true,
         )
@@ -237,7 +239,7 @@ RSpec.describe SignUp::CompletionsController do
       it 'updates verified attributes' do
         stub_sign_in(user)
         subject.session[:sp] = {
-          issuer: 'foo',
+          issuer: current_sp.issuer,
           acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
           request_url: 'http://example.com',
           requested_attributes: ['email'],
@@ -258,7 +260,7 @@ RSpec.describe SignUp::CompletionsController do
         stub_sign_in(user)
         subject.session[:sp] = {
           acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
-          issuer: 'foo',
+          issuer: current_sp.issuer,
           requested_attributes: ['email'],
         }
 
@@ -274,7 +276,7 @@ RSpec.describe SignUp::CompletionsController do
           stub_sign_in(user)
           subject.session[:sp] = {
             acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
-            issuer: 'foo',
+            issuer: current_sp.issuer,
             request_url: 'http://example.com',
           }
           subject.user_session[:in_account_creation_flow] = true
@@ -287,6 +289,7 @@ RSpec.describe SignUp::CompletionsController do
             ialmax: false,
             page_occurence: 'agency-page',
             needs_completion_screen_reason: :new_sp,
+            service_provider_name: current_sp.friendly_name,
             in_account_creation_flow: true,
             disposable_email_domain: 'temporary.com',
           )
