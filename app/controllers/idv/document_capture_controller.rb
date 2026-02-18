@@ -14,10 +14,8 @@ module Idv
     before_action :update_doc_auth_vendor, only: :show
     before_action :override_csp_to_allow_acuant
     before_action :set_usps_form_presenter
-    # TODO: check if we should use bucketed_doc_auth_vendor(current_user)
-    # instead of Idp::Constants::Vendors::LEXIS_NEXIS
     before_action -> do
-      redirect_to_correct_vendor(bucketed_doc_auth_vendor(current_user), in_hybrid_mobile: false)
+      redirect_to_correct_vendor(Idp::Constants::Vendors::LEXIS_NEXIS, in_hybrid_mobile: false)
     end, only: [:show], unless: -> { allow_direct_ipp? }
 
     def show
