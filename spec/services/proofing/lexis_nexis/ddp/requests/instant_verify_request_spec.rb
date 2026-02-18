@@ -57,6 +57,91 @@ RSpec.describe Proofing::LexisNexis::Ddp::Requests::InstantVerifyRequest do
           expect(parsed_body[:account_address_street2]).to eq('')
         end
       end
+
+      context 'without a state' do
+        let(:applicant) do
+          hash = super()
+          hash.delete(:state)
+          hash
+        end
+
+        it 'sets account_address_country to an empty string' do
+          parsed_body = JSON.parse(subject.body, symbolize_names: true)
+          expect(parsed_body[:account_address_country]).to eq('')
+        end
+      end
+
+      context 'without a dob' do
+        let(:applicant) do
+          hash = super()
+          hash.delete(:dob)
+          hash
+        end
+
+        it 'sets account_date_of_birth to an empty string' do
+          parsed_body = JSON.parse(subject.body, symbolize_names: true)
+          expect(parsed_body[:account_date_of_birth]).to eq('')
+        end
+      end
+
+      context 'without an ssn' do
+        let(:applicant) do
+          hash = super()
+          hash.delete(:ssn)
+          hash
+        end
+
+        it 'sets national_id_number and national_id_type to empty strings' do
+          parsed_body = JSON.parse(subject.body, symbolize_names: true)
+          expect(parsed_body[:national_id_number]).to eq('')
+          expect(parsed_body[:national_id_type]).to eq('')
+        end
+      end
+
+      context 'without a state_id_number' do
+        let(:applicant) do
+          hash = super()
+          hash.delete(:state_id_number)
+          hash
+        end
+
+        it 'sets account_drivers_license_number & account_drivers_license_type to empty strings' do
+          parsed_body = JSON.parse(subject.body, symbolize_names: true)
+          expect(parsed_body[:account_drivers_license_number]).to eq('')
+          expect(parsed_body[:account_drivers_license_type]).to eq('')
+        end
+      end
+
+      context 'without a state_id_jurisdiction' do
+        let(:applicant) do
+          hash = super()
+          hash.delete(:state_id_jurisdiction)
+          hash
+        end
+
+        it 'sets account_drivers_license_issuer to an empty string' do
+          parsed_body = JSON.parse(subject.body, symbolize_names: true)
+          expect(parsed_body[:account_drivers_license_issuer]).to eq('')
+        end
+      end
+
+      context 'without a uuid_prefix' do
+        let(:applicant) do
+          hash = super()
+          hash.delete(:uuid_prefix)
+          hash
+        end
+
+        it 'sets local_attrib_1 to an empty string' do
+          parsed_body = JSON.parse(subject.body, symbolize_names: true)
+          expect(parsed_body[:local_attrib_1]).to eq('')
+        end
+      end
+
+      it 'sets event_type to INSTANT_VERIFY' do
+        parsed_body = JSON.parse(subject.body, symbolize_names: true)
+        expect(parsed_body[:event_type]).to eq('INSTANT_VERIFY')
+      end
     end
   end
 

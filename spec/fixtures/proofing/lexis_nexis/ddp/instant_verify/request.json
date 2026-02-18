@@ -13,13 +13,12 @@
   "account_telephone": "",
   "account_drivers_license_number": "12345678",
   "account_drivers_license_type": "us_dl",
-  "account_drivers_license_issuer" : "LA",
-  "event_type": "ACCOUNT_CREATION",
+  "account_drivers_license_issuer": "LA",
+  "event_type": "INSTANT_VERIFY",
   "policy": "test-policy",
   "service_type": "all",
   "national_id_number": "123456789",
   "national_id_type": "US_SSN",
   "local_attrib_1": "ABCD",
   "local_attrib_3": "00000000-0000-0000-0000-000000000000"
-
 }
