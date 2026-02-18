@@ -8,6 +8,7 @@ if ENV['KUBERNETES_REVIEW_APP'] == 'true' && ENV['DASHBOARD_URL'].present?
   # If we change how production is deployed, we should revisit the above conditionals to ensure
   # production never runs this.
   ServiceProviderSeeder.new.run_review_app(dashboard_url: dashboard_url)
+  ReviewAppUserSeeder.new.run
 else
   ServiceProviderSeeder.new.run
 end
