@@ -66,7 +66,7 @@ module TwoFactorAuthCode
         options << BlockLinkComponent.new(
           url: MarketingSite.help_center_article_url(
             category: 'trouble-signing-in',
-            article: 'authentication/issues-with-security-key',
+            article: 'authentication/issues-with-security-keys',
           ),
           new_tab: true,
         ).with_content(t('instructions.mfa.webauthn.issues_with_security_key'))
