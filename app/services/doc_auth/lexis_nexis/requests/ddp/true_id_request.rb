@@ -8,13 +8,15 @@ module DocAuth
           attr_reader :applicant
 
           def initialize(config:, user_uuid:, uuid_prefix:, applicant:)
+            puts 'initializing TrueIdRequest with applicant data' # Debug log
             @applicant = applicant
             super(config: config, user_uuid: user_uuid, uuid_prefix: uuid_prefix)
           end
 
           def fetch
+            puts 'Fetching TrueIdRequest' # Debug log
             # TODO uncomment validate images after/during manual testing
-            validate_images!
+            # validate_images!
             super
           end
 
@@ -41,10 +43,10 @@ module DocAuth
 
           def body
             # Guard for parent class calling build_request_body during initialize
-            return {}.to_json unless required_data_present?
+            # return {}.to_json unless required_data_present?
 
             {
-              account_email: applicant[:email],
+              account_email: 'abir.shukla+102192@gsa.gov', #applicant[:email],
               policy:,
               'Trueid.image_data.white_front': encode(id_front_image),
               'Trueid.image_data.white_back': back_image_value,
@@ -150,6 +152,10 @@ module DocAuth
           end
 
           def validate_images!
+            puts 'Validating images for TrueIdRequest' # Debug log
+            puts "uuid: #{applicant[:uuid]}, email: #{applicant[:email]}, document_type_requested: #{applicant[:document_type_requested]}" # Debug log
+            puts "passport_document?: #{passport_document?}, liveness_checking_required?: #{liveness_checking_required?}" # Debug log
+            puts "front_image present?: #{applicant[:front_image].present?}, back_image present?: #{applicant[:back_image].present?}, passport_image present?: #{applicant[:passport_image].present?}, selfie_image present?: #{applicant[:selfie_image].present?}" # Debug log
             raise ArgumentError, 'uuid is required' if applicant[:uuid].blank?
             raise ArgumentError, 'email is required' if applicant[:email].blank?
 

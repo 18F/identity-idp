@@ -8,17 +8,18 @@ module DocAuth
       attr_reader :config
 
       def initialize(attrs)
+        puts "Initializing DdpClient with attrs: #{attrs.inspect}" # Debug log
         @config = DocAuth::LexisNexis::DdpConfig.new(attrs)
         @config.validate!
       end
 
       # rubocop:disable Lint/UnusedMethodArgument
       def post_images(
-        document_type_requested:,
-        passport_requested:,
-        liveness_checking_required:,
-        front_image:,
-        back_image:,
+        document_type_requested: nil,
+        passport_requested: false,
+        liveness_checking_required: false,
+        front_image: nil,
+        back_image: nil,
         passport_image: nil,
         selfie_image: nil,
         image_source: nil,
@@ -27,6 +28,7 @@ module DocAuth
         user_uuid: nil,
         user_email: nil
       )
+        puts 'ddp client post_images called' # Debug log
         # rubocop:enable Lint/UnusedMethodArgument
         request_applicant = {
           front_image:,
@@ -40,7 +42,6 @@ module DocAuth
           uuid: user_uuid,
           email: user_email,
         }
-
         Requests::Ddp::TrueIdRequest.new(
           config:,
           user_uuid:,

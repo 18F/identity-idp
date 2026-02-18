@@ -14,6 +14,7 @@ module DocAuth
 
           def initialize(http_response:, config:, passport_requested: false,
                          liveness_checking_enabled: false, request_context: {}, request: nil)
+            puts 'initializing TrueIdResponse' # Debug log
             @config = config
             @http_response = http_response
             @passport_requested = passport_requested
