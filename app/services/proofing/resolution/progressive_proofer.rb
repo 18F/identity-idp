@@ -20,6 +20,7 @@ module Proofing
       PROOFING_VENDOR_SP_COST_TOKENS = {
         mock: :mock_resolution,
         instant_verify: :lexis_nexis_resolution,
+        instant_verify_ddp: :lexis_nexis_resolution,
         socure_kyc: :socure_resolution,
       }.freeze
 
@@ -154,6 +155,7 @@ module Proofing
       def create_proofer
         case proofing_vendor
         when :instant_verify then create_instant_verify_proofer
+        when :instant_verify_ddp then create_instant_verify_ddp_proofer
         when :mock then create_mock_proofer
         when :socure_kyc then create_socure_proofer
         else
@@ -174,6 +176,15 @@ module Proofing
             request_mode: IdentityConfig.store.lexisnexis_request_mode,
           ),
           @analytics,
+        )
+      end
+
+      def create_instant_verify_ddp_proofer
+        Proofing::LexisNexis::Ddp::Proofers::InstantVerifyProofer.new(
+          api_key: IdentityConfig.store.lexisnexis_threatmetrix_api_key,
+          org_id: IdentityConfig.store.lexisnexis_threatmetrix_org_id,
+          base_url: IdentityConfig.store.lexisnexis_threatmetrix_base_url,
+          ddp_policy: IdentityConfig.store.lexisnexis_threatmetrix_policy,
         )
       end
 
