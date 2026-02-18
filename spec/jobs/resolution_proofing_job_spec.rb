@@ -176,7 +176,10 @@ RSpec.describe ResolutionProofingJob, type: :job do
         expect(result_context_stages_threatmetrix[:transaction_id]).to eq('1234')
         expect(result_context_stages_threatmetrix[:review_status]).to eq('pass')
         expect(result_context_stages_threatmetrix[:response_body]).to eq(
-          JSON.parse(LexisNexisFixtures.threatmetrix_success_redacted_response_json, symbolize_names: true),
+          JSON.parse(
+            LexisNexisFixtures.threatmetrix_success_redacted_response_json,
+            symbolize_names: true,
+          ),
         )
       end
     end
@@ -209,7 +212,10 @@ RSpec.describe ResolutionProofingJob, type: :job do
         expect(result_context_stages_hybrid_mobile_threatmetrix[:transaction_id]).to eq('1234')
         expect(result_context_stages_hybrid_mobile_threatmetrix[:review_status]).to eq('pass')
         expect(result_context_stages_hybrid_mobile_threatmetrix[:response_body]).to eq(
-          JSON.parse(LexisNexisFixtures.threatmetrix_success_redacted_response_json, symbolize_names: true),
+          JSON.parse(
+            LexisNexisFixtures.threatmetrix_success_redacted_response_json,
+            symbolize_names: true,
+          ),
         )
 
         # Verify threatmetrix stub was called twice (desktop + hybrid mobile)
@@ -914,7 +920,8 @@ RSpec.describe ResolutionProofingJob, type: :job do
     context 'with an invalid threatmetrix review_status value' do
       it 'stores an exception result' do
         stub_vendor_requests(
-          threatmetrix_response: LexisNexisFixtures.threatmetrix_unexpected_review_status_response_json,
+          threatmetrix_response:
+            LexisNexisFixtures.threatmetrix_unexpected_review_status_response_json,
         )
 
         perform
@@ -925,7 +932,8 @@ RSpec.describe ResolutionProofingJob, type: :job do
         result_context_stages_threatmetrix = result_context_stages[:threatmetrix]
 
         expect(result[:success]).to be false
-        expect(result[:exception]).to include(LexisNexisFixtures.threatmetrix_unexpected_review_status)
+        expect(result[:exception])
+          .to include(LexisNexisFixtures.threatmetrix_unexpected_review_status)
         expect(result[:timed_out]).to be false
         expect(result[:threatmetrix_review_status]).to be_nil
 
@@ -955,7 +963,8 @@ RSpec.describe ResolutionProofingJob, type: :job do
           result_context_stages[:hybrid_mobile_threatmetrix]
 
         expect(result[:success]).to be false
-        expect(result[:exception]).to include(LexisNexisFixtures.threatmetrix_unexpected_review_status)
+        expect(result[:exception])
+          .to include(LexisNexisFixtures.threatmetrix_unexpected_review_status)
         expect(result[:timed_out]).to be false
         expect(result[:hybrid_mobile_threatmetrix_review_status]).to be_nil
 

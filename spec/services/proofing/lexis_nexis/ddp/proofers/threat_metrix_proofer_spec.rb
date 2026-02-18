@@ -143,7 +143,9 @@ RSpec.describe Proofing::LexisNexis::Ddp::Proofers::ThreatMetrixProofer do
       end
 
       context 'when the review status has an unexpected value' do
-        let(:response_body) { LexisNexisFixtures.threatmetrix_unexpected_review_status_response_json }
+        let(:response_body) do
+          LexisNexisFixtures.threatmetrix_unexpected_review_status_response_json
+        end
 
         it 'returns an exception result' do
           result = proofer.proof(proofing_applicant)
