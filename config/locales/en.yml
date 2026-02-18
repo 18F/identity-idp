@@ -896,6 +896,8 @@ event_types.sign_in_after_2fa: Signed in with second factor
 event_types.sign_in_before_2fa: Signed in with password
 event_types.sign_in_notification_timeframe_expired: Expired notification timeframe for sign-in from new device
 event_types.sign_in_unsuccessful_2fa: Failed to authenticate
+event_types.sp_user_consent_granted: User consent granted
+event_types.sp_user_consent_revoked: User consent revoked
 event_types.webauthn_key_added: Hardware security key added
 event_types.webauthn_key_removed: Hardware security key removed
 event_types.webauthn_platform_added: Face or touch unlock added

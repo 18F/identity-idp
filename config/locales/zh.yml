@@ -907,6 +907,8 @@ event_types.sign_in_after_2fa: 已使用第二个因素登录
 event_types.sign_in_before_2fa: 已使用密码登录
 event_types.sign_in_notification_timeframe_expired: 从新设备登录的通知时间窗口已过
 event_types.sign_in_unsuccessful_2fa: 身份证实失败
+event_types.sp_user_consent_granted: 用户同意已授予
+event_types.sp_user_consent_revoked: 用户同意已撤销
 event_types.webauthn_key_added: 硬件安全密钥已添加
 event_types.webauthn_key_removed: 硬件安全密钥已去掉
 event_types.webauthn_platform_added: 添加了人脸或触摸解锁

@@ -907,6 +907,8 @@ event_types.sign_in_after_2fa: Inicio de sesión con un segundo factor
 event_types.sign_in_before_2fa: Inicio de sesión con contraseña
 event_types.sign_in_notification_timeframe_expired: Venció el tiempo del mensaje para iniciar sesión en un dispositivo nuevo
 event_types.sign_in_unsuccessful_2fa: No se pudo autenticar
+event_types.sp_user_consent_granted: Consentimiento del usuario otorgado
+event_types.sp_user_consent_revoked: Consentimiento del usuario revocado
 event_types.webauthn_key_added: Clave de seguridad de hardware añadida
 event_types.webauthn_key_removed: Clave de seguridad de hardware eliminada
 event_types.webauthn_platform_added: Se agregó el desbloqueo facial o táctil
