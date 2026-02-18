@@ -53,6 +53,13 @@ module Users
     end
 
     def continue
+      current_user.confirmed_email_addresses.each do |email_address|
+        UserMailer.with(user: current_user, email_address: email_address)
+          .mfa_added(subject: t(
+            'user_mailer.multi_factor_authentication.backup_codes_added',
+            app_name: APP_NAME,
+          )).deliver_now_or_later
+      end
       flash[:success] = t('notices.backup_codes_configured')
       analytics.multi_factor_auth_setup(**analytics_properties)
       redirect_to next_setup_path || after_mfa_setup_path

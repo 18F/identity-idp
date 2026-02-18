@@ -2066,7 +2066,7 @@ user_mailer.letter_reminder_14_days.subject: Termine de verificar su identidad
 user_mailer.multi_factor_authentication.auth_app_added: Su aplicación de autenticación se ha añadido a su cuenta de %{app_name}.
 user_mailer.multi_factor_authentication.auth_app_deleted: Su aplicación de autenticación se eliminó de su cuenta de %{app_name}.
 user_mailer.multi_factor_authentication.authentication_methods_link: métodos de autenticación
-user_mailer.multi_factor_authentication.backup_code_added: La opción de códigos de recuperación se ha añadido a su cuenta de %{app_name}.
+user_mailer.multi_factor_authentication.backup_codes_added: La opción de códigos de recuperación se ha añadido a su cuenta de %{app_name}.
 user_mailer.multi_factor_authentication.backup_code_deleted: La opción de códigos de recuperación se eliminó de su cuenta de %{app_name}.
 user_mailer.multi_factor_authentication.change_password_link: restablecer su contraseña
 user_mailer.multi_factor_authentication.ft_unlock_added: Su opción de desbloqueo facial o táctil se ha añadido a su cuenta de %{app_name}.

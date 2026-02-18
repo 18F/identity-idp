@@ -2054,7 +2054,7 @@ user_mailer.letter_reminder_14_days.subject: Finish verifying your identity
 user_mailer.multi_factor_authentication.auth_app_added: Authentication application was added to your %{app_name} account
 user_mailer.multi_factor_authentication.auth_app_deleted: Authentication application was deleted from your %{app_name} account
 user_mailer.multi_factor_authentication.authentication_methods_link: authentication methods
-user_mailer.multi_factor_authentication.backup_code_added: Backup codes were added to your %{app_name} account
+user_mailer.multi_factor_authentication.backup_codes_added: Backup codes were added to your %{app_name} account
 user_mailer.multi_factor_authentication.backup_code_deleted: Backup codes were deleted from your %{app_name} account
 user_mailer.multi_factor_authentication.change_password_link: change your password
 user_mailer.multi_factor_authentication.ft_unlock_added: Face or touch unlock was added to your %{app_name} account

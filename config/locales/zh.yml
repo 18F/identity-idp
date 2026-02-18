@@ -2067,7 +2067,7 @@ user_mailer.letter_reminder_14_days.subject: 完成验证你的身份
 user_mailer.multi_factor_authentication.auth_app_added: 鉴别应用已添加到您的 %{app_name} 帐户
 user_mailer.multi_factor_authentication.auth_app_deleted: 鉴别应用 已从您的 %{app_name} 帐户中删除。
 user_mailer.multi_factor_authentication.authentication_methods_link: 身份证实方法
-user_mailer.multi_factor_authentication.backup_code_added: 备用码 已添加到您的 %{app_name} 帐户
+user_mailer.multi_factor_authentication.backup_codes_added: 备用码 已添加到您的 %{app_name} 帐户
 user_mailer.multi_factor_authentication.backup_code_deleted: 备用备用码 已从您的 %{app_name} 帐户中删除。
 user_mailer.multi_factor_authentication.change_password: 更改密码
 user_mailer.multi_factor_authentication.ft_unlock_added: 人脸或触摸解锁 已添加到您的 %{app_name} 帐户。
