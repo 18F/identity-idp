@@ -2096,8 +2096,6 @@ user_mailer.personal_key_sign_in.intro: Personal key used to sign in
 user_mailer.personal_key_sign_in.subject: Account Security Alert
 user_mailer.phone_added.disavowal_link: reset your password
 user_mailer.phone_added.help_html: If you did not make this change, sign in to your profile and manage your phone numbers. We also recommend that you %{disavowal_link_html}.
-user_mailer.phone_added.intro: A new phone number was added to your %{app_name} profile.
-user_mailer.phone_added.subject: New phone number added
 user_mailer.please_reset_password.call_to_action: 'As a precaution, we’ve disabled your password to keep your information safe. Please follow the steps below to reset your password and secure your account:'
 user_mailer.please_reset_password.intro: We’ve detected unusual activity on your %{app_name} account. We are concerned someone other than you may be trying to access your information.
 user_mailer.please_reset_password.learn_more_link_text: Learn more about your options

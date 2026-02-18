@@ -2097,8 +2097,6 @@ user_mailer.personal_key_sign_in.intro: Clé personnelle utilisée pour la conne
 user_mailer.personal_key_sign_in.subject: Alerte de sécurité du compte
 user_mailer.phone_added.disavowal_link: réinitialiser votre mot de passe
 user_mailer.phone_added.help_html: Si vous n’avez pas apporté cette modification, connectez-vous à votre profil et gérez vos numéros de téléphone. Nous vous recommandons également de %{disavowal_link_html}.
-user_mailer.phone_added.intro: Un nouveau numéro de téléphone a été ajouté à votre profil %{app_name}.
-user_mailer.phone_added.subject: Nouveau numéro de téléphone ajouté
 user_mailer.please_reset_password.call_to_action: 'Par précaution, nous avons désactivé votre mot de passe pour conserver vos informations en sécurité. Veuillez suivre les étapes ci-dessous pour réinitialiser votre mot de passe et sécuriser votre compte :'
 user_mailer.please_reset_password.intro: Nous avons détecté une activité inhabituelle sur votre compte %{app_name}. Nous nous inquiétons que quelqu’un d’autre que vous pourrait être en train d’essayer d’accéder à vos informations.
 user_mailer.please_reset_password.learn_more_link_text: En savoir plus sur les options qui s’offrent à vous

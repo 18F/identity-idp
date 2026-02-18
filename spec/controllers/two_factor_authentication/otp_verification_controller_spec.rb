@@ -730,7 +730,7 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
             expect_delivered_email_count(1)
             expect_delivered_email(
               to: [subject.current_user.email_addresses.first.email],
-              subject: t('user_mailer.phone_added.subject'),
+              subject: t('user_mailer.multi_factor_authentication.phone_added', app_name: APP_NAME),
             )
           end
         end

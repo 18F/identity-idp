@@ -2110,8 +2110,6 @@ user_mailer.personal_key_sign_in.intro: 个人密钥被用来登录
 user_mailer.personal_key_sign_in.subject: 账户安全警告
 user_mailer.phone_added.disavowal_link: 重设你的密码
 user_mailer.phone_added.help_html: 如果你没做此更改，请登录进入你的用户资料并管理电邮地址。我们还建议你 %{disavowal_link_html}。
-user_mailer.phone_added.intro: 你的 %{app_name} 用户资料添加了一个新电话号码。
-user_mailer.phone_added.subject: 新电话号码已添加。
 user_mailer.please_reset_password.call_to_action: 为了谨慎起见，我们已禁用你的密码以保护你信息的安全。请按照以下步骤重设你的密码和保护你账户安全：
 user_mailer.please_reset_password.intro: 我们在你的 %{app_name} 账户上探查到了异常活动。我们担心别人（不是你）在试图访问你的信息。
 user_mailer.please_reset_password.learn_more_link_text: 了解更多有关你选项的信息。

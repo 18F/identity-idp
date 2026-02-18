@@ -2109,8 +2109,6 @@ user_mailer.personal_key_sign_in.intro: Clave personal utilizada para iniciar se
 user_mailer.personal_key_sign_in.subject: Alerta de seguridad de la cuenta
 user_mailer.phone_added.disavowal_link: restablezca su contraseña
 user_mailer.phone_added.help_html: Si usted no hizo este cambio, inicie sesión en su perfil y administre sus números de teléfono. También le recomendamos que %{disavowal_link_html}.
-user_mailer.phone_added.intro: Se agregó un nuevo número de teléfono a su perfil de %{app_name}.
-user_mailer.phone_added.subject: Nuevo número de teléfono añadido
 user_mailer.please_reset_password.call_to_action: 'Como medida de precaución, desactivamos su contraseña para mantener su información segura. Siga los pasos a continuación para restablecer su contraseña y proteger su cuenta:'
 user_mailer.please_reset_password.intro: Detectamos actividad inusual en su cuenta de %{app_name}. Nos preocupa que alguien que no sea usted pueda estar intentando acceder a su información.
 user_mailer.please_reset_password.learn_more_link_text: Obtenga más información sobre sus opciones
