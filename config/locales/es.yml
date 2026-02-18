@@ -1946,7 +1946,7 @@ user_authorization_confirmation.continue: Continuar
 user_authorization_confirmation.currently_logged_in: 'Ya inició sesión con el siguiente correo electrónico:'
 user_authorization_confirmation.or: O
 user_authorization_confirmation.sign_in: Cambiar de correo electrónico
-user_mailer.account_connected_to_sp.intro: Para desconectar su cuenta de %{sp_name}, %{sign_in_link_html}, vaya a la sección “Sus servicios conectadas” en la barra lateral y haga clic en “Desconectar” debajo del servicio.
+user_mailer.account_connected_to_sp.intro: Para desconectar su cuenta de %{sp_name}, %{sign_in_link}, vaya a la sección “Sus servicios conectadas” en la barra lateral y haga clic en “Desconectar” debajo del servicio.
 user_mailer.account_connected_to_sp.sign_in_link: inicie sesión en su cuenta
 user_mailer.account_connected_to_sp.subject: Usted conectó su cuenta a %{sp_name}
 user_mailer.account_disconnected_from_sp.intro: Visite %{sp_name} si desea volver a conectar su cuenta.

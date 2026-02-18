@@ -1934,7 +1934,7 @@ user_authorization_confirmation.continue: Continue
 user_authorization_confirmation.currently_logged_in: 'You are already signed in with the following email:'
 user_authorization_confirmation.or: Or
 user_authorization_confirmation.sign_in: Switch emails
-user_mailer.account_connected_to_sp.intro: To disconnect your account from %{sp_name}, %{sign_in_link_html}, go to “Your connected accounts” in the sidebar and click “Disconnect” underneath the service.
+user_mailer.account_connected_to_sp.intro: To disconnect your account from %{sp_name}, %{sign_in_link}, go to “Your connected accounts” in the sidebar and click “Disconnect” underneath the service.
 user_mailer.account_connected_to_sp.sign_in_link: sign in to your account
 user_mailer.account_connected_to_sp.subject: You connected your account to %{sp_name}
 user_mailer.account_disconnected_from_sp.intro: Visit %{sp_name} if you want to reconnect your account.

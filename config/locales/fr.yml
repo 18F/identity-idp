@@ -1934,7 +1934,7 @@ user_authorization_confirmation.continue: Suite
 user_authorization_confirmation.currently_logged_in: 'Vous êtes déjà connecté avec l’adresse e-mail suivante :'
 user_authorization_confirmation.or: Ou
 user_authorization_confirmation.sign_in: Changer d’adresse e-mail
-user_mailer.account_connected_to_sp.intro: Pour dissocier votre compte de %{sp_name}, %{sign_in_link_html}, accédez à la section «Vos services connectés» dans la barre latérale et cliquez sur «Dissocier» sous le service concerné.
+user_mailer.account_connected_to_sp.intro: Pour dissocier votre compte de %{sp_name}, %{sign_in_link}, accédez à la section «Vos services connectés» dans la barre latérale et cliquez sur «Dissocier» sous le service concerné.
 user_mailer.account_connected_to_sp.sign_in_link: connectez-vous à votre compte
 user_mailer.account_connected_to_sp.subject: Vous avez connecté votre compte à %{sp_name}
 user_mailer.account_disconnected_from_sp.intro: Rendez-vous sur %{sp_name} si vous souhaitez réactiver votre compte.

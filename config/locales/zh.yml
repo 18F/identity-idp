@@ -1947,7 +1947,7 @@ user_authorization_confirmation.continue: 继续
 user_authorization_confirmation.currently_logged_in: '你已用以下电邮登入:'
 user_authorization_confirmation.or: 或者
 user_authorization_confirmation.sign_in: 换电邮
-user_mailer.account_connected_to_sp.intro: 要断开您的帐户与%{sp_name}的连接, %{sign_in_link_html}, 前往侧边栏中的“您的已连接服务”，然后点击该机构下方的“断开连接”。
+user_mailer.account_connected_to_sp.intro: 要断开您的帐户与%{sp_name}的连接, %{sign_in_link}, 前往侧边栏中的“您的已连接服务”，然后点击该机构下方的“断开连接”。
 user_mailer.account_connected_to_sp.sign_in_link: 请登录您的帐户
 user_mailer.account_connected_to_sp.subject: 您已将您的帐户关联到 %{sp_name}。
 user_mailer.account_disconnected_from_sp.intro: 如果您想重新关联您的账户，请访问%{sp_name}。
