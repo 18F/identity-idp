@@ -9,10 +9,6 @@ module DataWarehouse
       REPORT_NAME = 'cw_log_duplicate_counts'
       NUM_THREADS = 6
 
-      def env
-        Identity::Hostdata.env
-      end
-
       def cloudwatch_client(log_group_name: nil, slice_interval: 1.day)
         Reporting::CloudwatchClient.new(
           log_group_name: log_group_name,

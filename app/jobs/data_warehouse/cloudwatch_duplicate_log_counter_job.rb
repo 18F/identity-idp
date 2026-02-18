@@ -10,7 +10,7 @@ module DataWarehouse
     )
 
     def perform(timestamp)
-      unless !data_warehouse_disabled?
+      if data_warehouse_disabled?
         raise 'Data warehouse is disabled, cannot run the job.'
       end
 
