@@ -2106,7 +2106,7 @@ user_mailer.signup_with_your_email.intro_html: This email address is already ass
 user_mailer.signup_with_your_email.link_text: Go to %{app_name}
 user_mailer.signup_with_your_email.reset_password_html: If you can’t remember your password, go to %{app_name_html} to reset it.
 user_mailer.sp_connection.auth_method: authentication methods
-user_mailer.sp_connection.if_wasnt_you_html: If this wasn’t you, %{reset_password}  and change your %{auth_method} immediately.
+user_mailer.sp_connection.if_wasnt_you: If this wasn’t you, %{reset_password} and change your %{auth_method} immediately.
 user_mailer.sp_connection.reset_password: reset your password
 user_mailer.suspended_create_account.message: There was an issue creating your %{app_name} account with this email address. Please give our contact center a call at %{contact_number} and provide this code - %{support_code}.
 user_mailer.suspended_create_account.subject: We can’t create your account
