@@ -192,7 +192,7 @@ else
       # Data warehouse duplicate log count check
       cloudwatch_duplicate_log_counter_job: {
         class: 'DataWarehouse::CloudwatchDuplicateLogCounterJob',
-        cron: cron_1h,
+        cron: '5,25,45 * * * *', # run 3x per hour, at 5, 25, and 45 minutes past the hour
         args: -> { [Time.zone.now] },
       },
       # Send previous week's verification reports to partners

@@ -3,6 +3,11 @@
 module DataWarehouse
   class CloudwatchDuplicateLogCounterJob < BaseJob
     include Shared::StaleDataUtils
+    include GoodJob::ActiveJobExtensions::Concurrency
+    good_job_control_concurrency_with(
+      total_limit: 1,
+      key: -> { class_name },
+    )
 
     def perform(timestamp)
       unless !data_warehouse_disabled?
