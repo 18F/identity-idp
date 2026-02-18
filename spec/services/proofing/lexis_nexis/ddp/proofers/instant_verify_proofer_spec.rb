@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Proofing::LexisNexis::Ddp::Proofers::ThreatMetrixProofer do
+RSpec.describe Proofing::LexisNexis::Ddp::Proofers::InstantVerifyProofer do
   let(:proofing_applicant) do
     {
       first_name: 'Testy',
@@ -14,41 +14,21 @@ RSpec.describe Proofing::LexisNexis::Ddp::Proofers::ThreatMetrixProofer do
       zipcode: '70802-12345',
       state_id_number: '12345678',
       state_id_jurisdiction: 'LA',
-      threatmetrix_session_id: '123456',
       phone: '5551231234',
-      email: 'test@example.com',
-      request_ip: '127.0.0.1',
       uuid_prefix: 'ABCD',
     }
   end
 
-  let(:authentication_applicant) do
-    {
-      threatmetrix_session_id: '123456',
-      email: 'test@example.com',
-      request_ip: '127.0.0.1',
-    }
-  end
-
   let(:proofing_verification_request) do
-    Proofing::LexisNexis::Ddp::Requests::ThreatMetrixRequest.new(
+    Proofing::LexisNexis::Ddp::Requests::InstantVerifyRequest.new(
       applicant: proofing_applicant,
       config: LexisNexisFixtures.example_ddp_proofing_config,
-    )
-  end
-
-  let(:authentication_verification_request) do
-    Proofing::LexisNexis::Ddp::Requests::ThreatMetrixRequest.new(
-      applicant: authentication_applicant,
-      config: LexisNexisFixtures.example_ddp_authentication_config,
     )
   end
 
   let(:issuer) { 'fake-issuer' }
   let(:friendly_name) { 'fake-name' }
   let(:app_id) { 'fake-app-id' }
-
-  # it_behaves_like 'a lexisnexis proofer'
 
   describe '#send' do
     context 'when the request times out' do
@@ -75,7 +55,7 @@ RSpec.describe Proofing::LexisNexis::Ddp::Proofers::ThreatMetrixProofer do
             body: proofing_verification_request.body,
             headers: proofing_verification_request.headers,
           ).to_return(
-            body: LexisNexisFixtures.threatmetrix_success_response_json,
+            body: LexisNexisFixtures.ddp_instant_verify_success_response_json,
             status: 200,
           )
 
@@ -108,7 +88,7 @@ RSpec.describe Proofing::LexisNexis::Ddp::Proofers::ThreatMetrixProofer do
 
     context 'when user is going through Idv' do
       context 'when the response is a full match' do
-        let(:response_body) { LexisNexisFixtures.threatmetrix_success_response_json }
+        let(:response_body) { LexisNexisFixtures.ddp_instant_verify_success_response_json }
 
         it 'is a successful result' do
           result = proofer.proof(proofing_applicant)
@@ -135,63 +115,6 @@ RSpec.describe Proofing::LexisNexis::Ddp::Proofers::ThreatMetrixProofer do
           ).to_raise(error)
 
           result = proofer.proof(proofing_applicant)
-
-          expect(result.success?).to eq(false)
-          expect(result.errors).to be_empty
-          expect(result.exception).to eq(error)
-        end
-      end
-
-      context 'when the review status has an unexpected value' do
-        let(:response_body) do
-          LexisNexisFixtures.threatmetrix_unexpected_review_status_response_json
-        end
-
-        it 'returns an exception result' do
-          result = proofer.proof(proofing_applicant)
-
-          expect(result.success?).to eq(false)
-          expect(result.exception.inspect)
-            .to include(LexisNexisFixtures.threatmetrix_unexpected_review_status)
-        end
-      end
-    end
-
-    context 'when user is going through account creation' do
-      subject(:proofer) do
-        described_class.new(LexisNexisFixtures.example_ddp_authentication_config.to_h)
-      end
-
-      before do
-        allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_authentication_policy)
-          .and_return('test-authentication-policy')
-      end
-      context 'when the response is a full match' do
-        let(:response_body) { LexisNexisFixtures.threatmetrix_success_response_json }
-
-        it 'is a successful result' do
-          result = proofer.proof(authentication_applicant)
-
-          expect(result.success?).to eq(true)
-          expect(result.errors).to be_empty
-          expect(result.review_status).to eq('pass')
-        end
-      end
-
-      context 'when the response raises an exception' do
-        let(:response_body) { '' }
-
-        it 'returns an exception result' do
-          error = RuntimeError.new('hi')
-
-          expect(NewRelic::Agent).to receive(:notice_error).with(error)
-
-          stub_request(
-            :post,
-            authentication_verification_request.url,
-          ).to_raise(error)
-
-          result = proofer.proof(authentication_applicant)
 
           expect(result.success?).to eq(false)
           expect(result.errors).to be_empty
