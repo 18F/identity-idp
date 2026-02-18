@@ -84,6 +84,9 @@ module Idv
 
       expected_doc_auth_vendor = document_capture_session.doc_auth_vendor
       return if vendor == expected_doc_auth_vendor
+      # if ln accept both ln and ln_ddp
+      return if vendor == Idp::Constants::Vendors::LEXIS_NEXIS &&
+                expected_doc_auth_vendor == Idp::Constants::Vendors::LEXIS_NEXIS_DDP
       return if vendor == Idp::Constants::Vendors::LEXIS_NEXIS &&
                 expected_doc_auth_vendor == Idp::Constants::Vendors::MOCK
       return if vendor == Idp::Constants::Vendors::SOCURE &&
