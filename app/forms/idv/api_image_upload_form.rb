@@ -189,6 +189,9 @@ module Idv
     end
 
     def post_images_to_client
+      puts "post_images_to_client called, doc_auth_client: #{doc_auth_client.inspect}"
+      puts "document_capture_session: #{document_capture_session.inspect}"
+      # TODO: find out how to get email address
       timer = JobHelpers::Timer.new
 
       response = timer.time('vendor_request') do
@@ -204,6 +207,7 @@ module Idv
           passport_requested: document_capture_session.passport_requested?,
         )
       end
+      puts "Received response from doc_auth_client: #{response}"
 
       response.extra.merge!(extra_attributes)
       pii_hash = response.pii_from_doc.to_h
