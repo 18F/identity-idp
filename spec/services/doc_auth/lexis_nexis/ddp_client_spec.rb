@@ -195,6 +195,7 @@ RSpec.describe DocAuth::LexisNexis::DdpClient do
         end.to raise_error(ArgumentError, 'uuid is required')
       end
 
+      # TODO: remove skip once email is provided as part of LG-17251
       xit 'returns ArgumentError when email is nil' do
         expect do
           subject.post_images(
