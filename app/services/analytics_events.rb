@@ -1763,6 +1763,34 @@ module AnalyticsEvents
     )
   end
 
+  # Network error during doc auth image upload to vendor
+  # @param [Integer] submit_attempts times the user has tried submitting
+  # @param [Integer] remaining_submit_attempts attempts left before rate limit
+  # @param ["hybrid","standard"] flow_path Document capture user flow
+  # @param [String] vendor doc auth vendor that returned the error
+  # @param [Hash] errors error hash from the vendor response
+  # @param [String] exception exception message if one was raised
+  def idv_doc_auth_network_error(
+    submit_attempts:,
+    remaining_submit_attempts:,
+    flow_path:,
+    vendor: nil,
+    errors: nil,
+    exception: nil,
+    **extra
+  )
+    track_event(
+      :idv_doc_auth_network_error,
+      submit_attempts:,
+      remaining_submit_attempts:,
+      flow_path:,
+      vendor:,
+      errors:,
+      exception:,
+      **extra,
+    )
+  end
+
   # @param [String] step Current IdV step
   # @param [String] analytics_id Current IdV flow identifier
   # @param ["hybrid","standard"] flow_path Document capture user flow

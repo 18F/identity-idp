@@ -216,6 +216,18 @@ module Idv
         client_response: response,
         vendor_request_time_in_ms: timer.results['vendor_request'],
       )
+
+      if response.network_error?
+        analytics.idv_doc_auth_network_error(
+          submit_attempts:,
+          remaining_submit_attempts:,
+          flow_path: params[:flow_path],
+          vendor: response.extra[:vendor],
+          errors: response.errors,
+          exception: response.exception,
+        )
+      end
+
       response
     end
 
