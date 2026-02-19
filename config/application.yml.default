@@ -222,8 +222,8 @@ idv_rdp_version_switching_enabled: false
 idv_rdp_version_v2_percent: 100
 idv_rdp_version_v3_percent: 0
 idv_resolution_default_vendor: mock
-idv_resolution_vendor_instant_verify_percent: 0
 idv_resolution_vendor_instant_verify_ddp_percent: 0
+idv_resolution_vendor_instant_verify_percent: 0
 idv_resolution_vendor_socure_kyc_percent: 0
 idv_resolution_vendor_switching_enabled: false
 idv_send_link_attempt_window_in_minutes: 10
