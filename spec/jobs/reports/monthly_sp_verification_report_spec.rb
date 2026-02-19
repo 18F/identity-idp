@@ -3,7 +3,7 @@
 require 'rails_helper'
 require 'active_support/testing/time_helpers'
 
-RSpec.describe Reports::MonthlyIrsVerificationReport do
+RSpec.describe Reports::MonthlySpVerificationReport do
   include ActiveSupport::Testing::TimeHelpers
 
   let(:report_date)     { (Time.zone.today.beginning_of_month - 1.day).end_of_day }
@@ -41,7 +41,7 @@ RSpec.describe Reports::MonthlyIrsVerificationReport do
     allow(report).to receive(:generate_s3_paths).and_return([nil, 'reports/path.csv'])
     allow(report).to receive(:upload_file_to_s3_bucket).and_return(true)
 
-    allow_any_instance_of(Reporting::IrsVerificationReport)
+    allow_any_instance_of(Reporting::SpVerificationReport)
       .to receive(:funnel_table)
       .and_return(mock_funnel_table)
 
@@ -169,7 +169,7 @@ RSpec.describe Reports::MonthlyIrsVerificationReport do
       allow(report).to receive(:sp_verification_report).and_call_original
 
       # We still stub the funnel_table so no CW call happens when as_emailable_reports is later used
-      expect(Reporting::IrsVerificationReport).to receive(:new).with(
+      expect(Reporting::SpVerificationReport).to receive(:new).with(
         time_range: report_date.all_month,
         issuers: ['issuer1'],
         agency_abbreviation: 'Test_agency',
@@ -177,7 +177,7 @@ RSpec.describe Reports::MonthlyIrsVerificationReport do
 
       # Build the instance so the expectation above is exercised
       inst = report.sp_verification_report(['issuer1'], 'Test_agency')
-      expect(inst).to be_a(Reporting::IrsVerificationReport)
+      expect(inst).to be_a(Reporting::SpVerificationReport)
     end
   end
 end

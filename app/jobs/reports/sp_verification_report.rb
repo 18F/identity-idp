@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 require 'csv'
-require 'reporting/irs_verification_report'
+require 'reporting/sp_verification_report'
 
 module Reports
-  class IrsVerificationReport < BaseReport
+  class SpVerificationReport < BaseReport
     # REPORT_NAME = 'sp-verification-report'
 
     attr_reader :report_date, :report_receiver, :report_name, :report_title
@@ -86,7 +86,7 @@ module Reports
     end
 
     def sp_verification_report(issuers, agency_abbreviation)
-      Reporting::IrsVerificationReport.new(
+      Reporting::SpVerificationReport.new(
         time_range: previous_week_range,
         issuers: issuers || [],
         agency_abbreviation: agency_abbreviation,

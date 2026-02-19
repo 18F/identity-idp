@@ -1,8 +1,7 @@
-# spec/jobs/reports/irs_verification_report_spec.rb
 require 'rails_helper'
 require 'csv'
 
-RSpec.describe Reports::IrsVerificationReport do
+RSpec.describe Reports::SpVerificationReport do
   let(:report_date) { Time.zone.parse('2025-11-14 23:59:59 UTC') } # Friday
   let(:mock_internal_emails) { ['internal1@example.com', 'internal2@example.com'] }
   let(:mock_partner_emails)  { ['partner@example.com'] }
@@ -64,12 +63,12 @@ RSpec.describe Reports::IrsVerificationReport do
       range = expected_previous_week_range(report_date)
 
       # Expect the builder to be constructed with the correct args and return emailable_reports
-      expect(Reporting::IrsVerificationReport).to receive(:new).with(
+      expect(Reporting::SpVerificationReport).to receive(:new).with(
         time_range: range,
         issuers: mock_issuers,
         agency_abbreviation: mock_agency,
       ).and_return(instance_double(
-        Reporting::IrsVerificationReport,
+        Reporting::SpVerificationReport,
         as_emailable_reports: emailable_reports,
       ))
 
@@ -97,12 +96,12 @@ RSpec.describe Reports::IrsVerificationReport do
     it 'emails only internal when receiver=:internal' do
       range = expected_previous_week_range(report_date)
 
-      allow(Reporting::IrsVerificationReport).to receive(:new).with(
+      allow(Reporting::SpVerificationReport).to receive(:new).with(
         time_range: range,
         issuers: mock_issuers,
         agency_abbreviation: mock_agency,
       ).and_return(instance_double(
-        Reporting::IrsVerificationReport,
+        Reporting::SpVerificationReport,
         as_emailable_reports: emailable_reports,
       ))
 

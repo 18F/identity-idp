@@ -1,107 +1,74 @@
 require 'rails_helper'
-require 'reporting/irs_verification_demographics_report'
+require 'reporting/sp_registration_funnel_report'
 
-RSpec.describe Reporting::IrsVerificationDemographicsReport do
-  let(:issuer) { 'my:example:issuer' }
-  let(:time_range) { Date.new(2022, 1, 1).in_time_zone('UTC').all_quarter }
-  let(:agency_abbreviation) { 'Test_Agency' }
+RSpec.describe Reporting::SpRegistrationFunnelReport do
+  let(:issuers)       { ['my:example:issuer'] }
+  let(:agency)        { 'Test_agency' }
+  let(:time_range)    { Date.new(2022, 1, 1).in_time_zone('UTC').all_week }
+
   let(:expected_definitions_table) do
     [
       ['Metric', 'Unit', 'Definition'],
-      ['Age range/Verification Demographics', 'Count',
-       "The number of #{agency_abbreviation} users who verified within " \
-         "the reporting period, grouped by age in " \
-         "10 year range."],
-      ['Geographic area/Verification Demographics', 'Count',
-       "The number of #{agency_abbreviation} users who verified within " \
-         "the reporting period, grouped by state."],
+      ['Registration Demand',    'Count',
+       'The count of new users that started the registration process with Login.gov.'],
+      ['Registration Failures',  'Count',
+       'The count of new users who did not complete the registration process'],
+      ['Registration Successes', 'Count',
+       'The count of new users who completed the registration process sucessfully'],
+      ['Registration Success Rate', 'Percentage',
+       'The percentage of new users who completed registration process successfully'],
     ]
   end
   let(:expected_overview_table) do
     [
       ['Report Timeframe', "#{time_range.begin} to #{time_range.end}"],
       ['Report Generated', Time.zone.today.to_s],
-      ['Issuer', issuer],
+      ['Issuer', issuers.join(', ')],
     ]
   end
-  let(:expected_age_metrics_table) do
+
+  let(:expected_funnel_metrics_table) do
     [
-      ['Age Range', 'User Count'],
-      ['10-19', '2'],
-      ['20-29', '2'],
-      ['30-39', '2'],
-    ]
-  end
-  let(:expected_state_metrics_table) do
-    [
-      ['State', 'User Count'],
-      ['DE', '2'],
-      ['MD', '2'],
-      ['VA', '2'],
+      ['Metric', 'Number of accounts', '% of total from start'],
+      ['Registration Demand',    4, '100.0%'],
+      ['Registration Failures',  2, '50.0%'],
+      ['Registration Successes', 2, '50.0%'],
     ]
   end
 
   subject(:report) do
-    Reporting::IrsVerificationDemographicsReport.new(
-      issuers: [issuer],
-      agency_abbreviation: agency_abbreviation, time_range:
+    described_class.new(
+      issuers: issuers,
+      time_range: time_range,
+      agency_abbreviation: agency,
     )
   end
 
   before do
     travel_to Time.zone.now.beginning_of_day
-    stub_cloudwatch_logs(
-      [
-        { 'user_id' => 'user1',
-          'name' => 'IdV: doc auth verify proofing results',
-          'birth_year' => '2014',
-          'state' => 'MD' },
 
-        { 'user_id' => 'user1',
-          'name' => 'SP redirect initiated' },
+    cw_rows = [
+      # finishes funnel
+      { 'user_id' => 'user1', 'name' => 'User Registration: Email Confirmation' },
+      { 'user_id' => 'user1', 'name' => 'User Registration: 2FA Setup visited' },
+      { 'user_id' => 'user1', 'name' => 'User Registration: User Fully Registered' },
 
-        { 'user_id' => 'user2',
-          'name' => 'IdV: doc auth verify proofing results',
-          'birth_year' => '2014',
-          'state' => 'MD' },
+      # completes up to fully registered
+      { 'user_id' => 'user2', 'name' => 'User Registration: Email Confirmation' },
+      { 'user_id' => 'user2', 'name' => 'User Registration: 2FA Setup visited' },
+      { 'user_id' => 'user2', 'name' => 'User Registration: User Fully Registered' },
 
-        { 'user_id' => 'user2',
-          'name' => 'SP redirect initiated' },
+      # first two steps only
+      { 'user_id' => 'user3', 'name' => 'User Registration: Email Confirmation' },
+      { 'user_id' => 'user3', 'name' => 'User Registration: 2FA Setup visited' },
 
-        { 'user_id' => 'user3',
-          'name' => 'IdV: doc auth verify proofing results',
-          'birth_year' => '2005',
-          'state' => 'DE' },
+      # first step only
+      { 'user_id' => 'user4', 'name' => 'User Registration: Email Confirmation' },
+    ]
 
-        { 'user_id' => 'user3',
-          'name' => 'SP redirect initiated' },
-
-        { 'user_id' => 'user4',
-          'name' => 'IdV: doc auth verify proofing results',
-          'birth_year' => '2005',
-          'state' => 'DE' },
-
-        { 'user_id' => 'user4',
-          'name' => 'SP redirect initiated' },
-
-        { 'user_id' => 'user5',
-          'name' => 'IdV: doc auth verify proofing results',
-          'birth_year' => '1995',
-          'state' => 'VA' },
-
-        { 'user_id' => 'user5',
-          'name' => 'SP redirect initiated' },
-
-        { 'user_id' => 'user6',
-          'name' => 'IdV: doc auth verify proofing results',
-          'birth_year' => '1995',
-          'state' => 'VA' },
-
-        { 'user_id' => 'user6',
-          'name' => 'SP redirect initiated' },
-
-      ],
-    )
+    allow_any_instance_of(Reporting::CloudwatchClient)
+      .to receive(:fetch)
+      .and_return(cw_rows)
   end
 
   describe '#definitions_table' do
@@ -124,23 +91,12 @@ RSpec.describe Reporting::IrsVerificationDemographicsReport do
     end
   end
 
-  describe '#age_metrics_table' do
-    it 'renders an age metrics table' do
+  describe '#funnel_metrics_table' do
+    it 'renders a funnel metrics table' do
       aggregate_failures do
-        report.age_metrics_table.zip(expected_age_metrics_table).each do |actual, expected|
+        report.funnel_metrics_table.zip(expected_funnel_metrics_table).each do |actual, expected|
           expect(actual).to eq(expected)
         end
-      end
-    end
-  end
-
-  describe '#state_metrics_table' do
-    it 'renders a state metrics table' do
-      aggregate_failures do
-        report.state_metrics_table.zip(expected_state_metrics_table)
-          .each do |actual, expected|
-            expect(actual).to eq(expected)
-          end
       end
     end
   end
@@ -159,14 +115,9 @@ RSpec.describe Reporting::IrsVerificationDemographicsReport do
           table: expected_overview_table,
         ),
         Reporting::EmailableReport.new(
-          title: "#{agency_abbreviation} Age Metrics",
-          filename: 'age_metrics',
-          table: expected_age_metrics_table,
-        ),
-        Reporting::EmailableReport.new(
-          title: "#{agency_abbreviation} State Metrics",
-          filename: 'state_metrics',
-          table: expected_state_metrics_table,
+          title: 'Registration Funnel Metrics',
+          filename: 'funnel_metrics',
+          table: expected_funnel_metrics_table,
         ),
       ]
     end
@@ -179,13 +130,16 @@ RSpec.describe Reporting::IrsVerificationDemographicsReport do
     let(:opts) { {} }
     let(:subject) do
       described_class.new(
-        issuers: [issuer], agency_abbreviation: agency_abbreviation, time_range:,
-        **opts
+        issuers: issuers,
+        time_range: time_range,
+        agency_abbreviation: agency,
+        **opts,
       )
     end
+
     let(:default_args) do
       {
-        num_threads: 5,
+        num_threads: 1,
         ensure_complete_logs: true,
         slice_interval: 6.hours,
         progress: false,

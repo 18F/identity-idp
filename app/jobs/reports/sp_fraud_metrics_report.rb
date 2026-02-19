@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 require 'csv'
-require 'reporting/irs_registration_funnel_report'
+require 'reporting/sp_fraud_metrics_lg99_report'
 
 module Reports
-  class IrsRegistrationFunnelReport < BaseReport
+  class SpFraudMetricsReport < BaseReport
     attr_reader :report_date, :report_receiver, :report_name, :report_title
 
     def initialize(init_date = nil, init_receiver = :internal, *args, **rest)
@@ -17,7 +17,7 @@ module Reports
       @report_date = perform_date
       @report_receiver = perform_receiver.to_sym
 
-      IdentityConfig.store.sp_registration_funnel_report_configs.each do |report_config|
+      IdentityConfig.store.sp_fraud_metrics_report_configs.each do |report_config|
         send_report(report_config)
       end
     end
@@ -28,8 +28,8 @@ module Reports
       partner_emails = report_config['partner_emails']
       internal_emails = report_config['internal_emails']
 
-      @report_name = "#{agency_abbreviation.downcase}_registration_funnel_report"
-      @report_title = "#{agency_abbreviation} Registration Funnel Report"
+      @report_name = "#{agency_abbreviation.downcase}_fraud_metrics_report"
+      @report_title = "#{agency_abbreviation} Fraud Metrics Report"
 
       email_addresses = emails(internal_emails, partner_emails)
       to_emails = email_addresses[:to].select(&:present?)
@@ -80,17 +80,13 @@ module Reports
     end
 
     def reports(issuers, agency_abbreviation)
-      sp_registration_funnel_report(issuers, agency_abbreviation).as_emailable_reports
+      sp_fraud_metrics_lg99_report(issuers, agency_abbreviation).as_emailable_reports
     end
 
-    def previous_week_range
-      @report_date.beginning_of_week(:sunday).prev_occurring(:sunday).all_week(:sunday)
-    end
-
-    def sp_registration_funnel_report(issuers, agency_abbreviation)
-      Reporting::IrsRegistrationFunnelReport.new(
-        issuers: issuers,
-        time_range: previous_week_range,
+    def sp_fraud_metrics_lg99_report(issuers, agency_abbreviation)
+      Reporting::SpFraudMetricsLg99Report.new(
+        issuers: issuers || [],
+        time_range: report_date.all_month,
         agency_abbreviation: agency_abbreviation,
       )
     end
