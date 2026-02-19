@@ -896,6 +896,8 @@ event_types.sign_in_after_2fa: Connecté avec deuxième facteur
 event_types.sign_in_before_2fa: Connecté avec mot de passe
 event_types.sign_in_notification_timeframe_expired: Expiration du délai de notification autorisé pour se connecter à partir d’un nouvel appareil
 event_types.sign_in_unsuccessful_2fa: Échec de l’authentification
+event_types.sp_user_consent_granted: Consentement de l’utilisateur accordé
+event_types.sp_user_consent_revoked: Consentement de l’utilisateur révoqué
 event_types.webauthn_key_added: Clé de sécurité physique ajoutée
 event_types.webauthn_key_removed: Clé de sécurité physique supprimée
 event_types.webauthn_platform_added: Déverrouillage facial ou tactile ajouté
@@ -1934,6 +1936,11 @@ user_authorization_confirmation.continue: Suite
 user_authorization_confirmation.currently_logged_in: 'Vous êtes déjà connecté avec l’adresse e-mail suivante :'
 user_authorization_confirmation.or: Ou
 user_authorization_confirmation.sign_in: Changer d’adresse e-mail
+user_mailer.account_connected_to_sp.intro: Pour dissocier votre compte de %{sp_name}, %{sign_in_link}, accédez à la section «Vos services connectés» dans la barre latérale et cliquez sur «Dissocier» sous le service concerné.
+user_mailer.account_connected_to_sp.sign_in_link: connectez-vous à votre compte
+user_mailer.account_connected_to_sp.subject: Vous avez connecté votre compte à %{sp_name}
+user_mailer.account_disconnected_from_sp.intro: Rendez-vous sur %{sp_name} si vous souhaitez réactiver votre compte.
+user_mailer.account_disconnected_from_sp.subject: Vous avez déconnecté %{sp_name} de votre compte.
 user_mailer.account_reinstated.subject: Votre compte est déverrouillé
 user_mailer.account_reinstated.we_have_finished_reviewing: Nous avons terminé l’examen de votre compte %{app_name} et vous pouvez maintenant vous reconnecter avec les informations de votre compte.
 user_mailer.account_rejected.intro: Nous n’avons pas pu vérifier votre identité avec %{app_name}. Veuillez contacter l’organisme dont vous essayez d’accéder au service.
@@ -2100,6 +2107,9 @@ user_mailer.signup_with_your_email.help_html: Si vous n’avez pas demandé un n
 user_mailer.signup_with_your_email.intro_html: Cette adresse courriel est déjà associée à un compte %{app_name_html}, nous ne pouvons donc pas l’utiliser pour créer un nouveau compte. Pour vous connecter à votre compte existant, suivez le lien ci-dessous. Si vous ne tentez pas de vous connecter avec cette adresse courriel, vous pouvez ignorer ce message.
 user_mailer.signup_with_your_email.link_text: Aller sur %{app_name}
 user_mailer.signup_with_your_email.reset_password_html: Si vous ne vous souvenez plus de votre mot de passe, allez sur %{app_name_html} pour le réinitialiser.
+user_mailer.sp_connection.auth_method: méthodes d’authentification
+user_mailer.sp_connection.if_wasnt_you: Si ce n’est pas vous, %{reset_password} et modifiez immédiatement vos %{auth_method}.
+user_mailer.sp_connection.reset_password: réinitialisez votre mot de passe
 user_mailer.suspended_create_account.message: 'Il y a eu un problème lors de la création de votre compte %{app_name} avec cette adresse e-mail. Veuillez appeler notre centre de contact au %{contact_number} et indiquer le code suivant : %{support_code}.'
 user_mailer.suspended_create_account.subject: Nous ne parvenons pas à créer votre compte
 user_mailer.suspended_reset_password.message: 'Une erreur s’est produite lors de la réinitialisation de votre mot de passe. Veuillez appeler notre centre de contact au %{contact_number} et indiquer le code suivant : %{support_code}.'

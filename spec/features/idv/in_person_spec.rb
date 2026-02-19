@@ -339,6 +339,7 @@ RSpec.describe 'In Person Proofing', js: true do
         let(:sp) { service_provider }
         it 'sends a survey when they share information with that partner',
            allow_browser_log: true do
+          last_email = ActionMailer::Base.deliveries.last(2).first
           expect(last_email.html_part.body)
             .to have_selector(
               "a[href='#{IdentityConfig.store.in_person_opt_in_available_completion_survey_url}']",

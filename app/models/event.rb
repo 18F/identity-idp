@@ -33,6 +33,8 @@ class Event < ApplicationRecord
     webauthn_platform_removed: 26,
     backup_codes_removed: 27,
     max_attempts_reached: 28,
+    sp_user_consent_revoked: 29,
+    sp_user_consent_granted: 30,
   }
 
   validates :event_type, presence: true
