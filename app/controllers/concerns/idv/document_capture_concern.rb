@@ -105,7 +105,9 @@ module Idv
       when Idp::Constants::Vendors::SOCURE, Idp::Constants::Vendors::SOCURE_MOCK
         in_hybrid_mobile ? idv_hybrid_mobile_socure_document_capture_path
                          : idv_socure_document_capture_path
-      when Idp::Constants::Vendors::LEXIS_NEXIS, Idp::Constants::Vendors::MOCK
+      when Idp::Constants::Vendors::LEXIS_NEXIS,
+           Idp::Constants::Vendors::LEXIS_NEXIS_DDP,
+           Idp::Constants::Vendors::MOCK
         in_hybrid_mobile ? idv_hybrid_mobile_document_capture_path
                          : idv_document_capture_path
       end

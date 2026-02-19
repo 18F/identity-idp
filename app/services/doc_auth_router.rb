@@ -161,7 +161,6 @@ module DocAuthRouter
   # rubocop:disable Layout/LineLength
   # @param [Proc,nil] warn_notifier proc takes a hash, and should log that hash to events.log
   def self.client(vendor:, warn_notifier: nil)
-    puts "DocAuthRouter.client called with vendor: #{vendor}, warn_notifier: #{warn_notifier}" # Debug log
     case vendor
     when Idp::Constants::Vendors::LEXIS_NEXIS, 'lexisnexis' # Use constant once configured in prod
       DocAuthErrorTranslatorProxy.new(
@@ -186,7 +185,6 @@ module DocAuthRouter
         ),
       )
     when Idp::Constants::Vendors::LEXIS_NEXIS_DDP
-      puts "Initializing DocAuth::LexisNexis::DdpClient with base_url: #{IdentityConfig.store.lexisnexis_threatmetrix_base_url}, account_id: #{IdentityConfig.store.lexisnexis_account_id}, request_mode: #{IdentityConfig.store.lexisnexis_request_mode}" # Debug log
       DocAuthErrorTranslatorProxy.new(
         DocAuth::LexisNexis::DdpClient.new(
           api_key: IdentityConfig.store.lexisnexis_threatmetrix_api_key,
