@@ -130,7 +130,7 @@ module DocAuth
           end
 
           def required_data_present?
-            # TODO: uncomment once email is provided
+            # TODO: uncomment once email is provided as part of LG-17251
             return false if applicant[:uuid].blank? # || applicant[:email].blank?
             if passport_document?
               return false if applicant[:passport_image].blank?
@@ -151,7 +151,7 @@ module DocAuth
 
           def validate_images!
             raise ArgumentError, 'uuid is required' if applicant[:uuid].blank?
-            # TODO: uncomment once email is provided
+            # TODO: uncomment once email is provided as part of LG-17251
             # raise ArgumentError, 'email is required' if applicant[:email].blank?
 
             if passport_document?
