@@ -512,7 +512,7 @@ class UserMailer < ActionMailer::Base
     end
   end
 
-  def mfa_deleted(subject:)
+  def mfa_deleted(subject)
     @subject = subject
     with_user_locale(user) do
       mail(
