@@ -12,9 +12,6 @@ module DocAuth
       end
 
       def fetch
-        puts "Starting fetch in #{self.class.name} with user_uuid: #{user_uuid}, uuid_prefix: #{uuid_prefix}" # Debug log
-        puts "Request URL: #{url}" # Debug log
-        puts "Request method: #{method}" # Debug log
         # return DocAuth::Respose with DocAuth:Error if workflow invalid
         http_response = send_http_request
         return handle_invalid_response(http_response) unless http_response.success?
@@ -44,8 +41,6 @@ module DocAuth
       end
 
       def handle_invalid_response(http_response)
-        puts "Handling invalid HTTP response in #{self.class.name}, status: #{http_response.status}" # Debug log
-        puts "\n\n\n\nResponse body: #{http_response.body}" # Debug log
         message = [
           self.class.name,
           'Unexpected HTTP response',
@@ -67,7 +62,6 @@ module DocAuth
       end
 
       def handle_connection_error(exception:, status_code: nil, status_message: nil)
-        puts "Connection error in #{self.class.name}: #{exception.message}, status_code: #{status_code}, status_message: #{status_message}" # Debug log
         DocAuth::Response.new(
           success: false,
           errors: { network: true },
@@ -90,7 +84,6 @@ module DocAuth
       end
 
       def send_http_post_request
-        debugger
         faraday_connection.post do |req|
           req.options.context = { service_name: metric_name }
           req.body = body

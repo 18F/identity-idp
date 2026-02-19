@@ -38,8 +38,6 @@ module DocAuth
       ],
     ) do
       def validate!
-        puts 'Validating DdpConfig' # Debug log
-        puts "Base URL: #{base_url}, Locale: #{locale}" # Debug log
         raise 'config missing base_url' if !base_url
         raise 'config missing locale' if !locale
       end
