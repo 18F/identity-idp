@@ -152,15 +152,58 @@ RSpec.describe 'Completing all IDV steps', :js, :allow_browser_log do
     let(:fake_socure_docv_document_request_endpoint) { 'https://fake-socure.test/document-request' }
 
     before do
-      allow(IdentityConfig.store).to receive(:socure_docv_enabled).and_return(true)
-      allow(IdentityConfig.store).to receive(:socure_docv_webhook_secret_key)
-        .and_return(socure_docv_webhook_secret_key)
-      allow(IdentityConfig.store).to receive(:socure_docv_document_request_endpoint)
-        .and_return(fake_socure_docv_document_request_endpoint)
-      allow(IdentityConfig.store).to receive(:ruby_workers_idv_enabled).and_return(false)
+      allow(IdentityConfig.store).to receive_messages(
+        attempts_api_enabled: true,
+        allowed_attempts_providers: [{ 'issuer' => 'urn:gov:gsa:openidconnect:sp:server' }],
+        historical_attempts_api_enabled: true,
+
+        ruby_workers_idv_enabled: false,
+        socure_docv_enabled: true,
+        socure_docv_document_request_endpoint: fake_socure_docv_document_request_endpoint,
+        socure_docv_webhook_secret_key: socure_docv_webhook_secret_key,
+      )
+
       @docv_transaction_token = stub_docv_document_request(user:)
       stub_request(:post, /.*\/api\/3.0\/EmailAuthScore/)
         .and_return(status: 200, body: doc_auth_response)
+    end
+
+    # This test is slow and only exists to make sure I had
+    # * an integrated, in-browser test that triggers an attempts API event
+    # * while a user is logged in so we can be sure the historical flag works as desired
+    # * and the historical flag breaks nothing else
+    #
+    # This test was incredibly helpful in writing the code.
+    #
+    # Ideally, we can find a more efficient test that also accomplishes those goals.
+    # For now, this text is skipped even though it does pass.
+    xcontext 'when Attempts API session is in use' do
+      before do
+        allow(IdentityConfig.store).to receive_messages(
+          attempts_api_enabled: true,
+          allowed_attempts_providers: [{ 'issuer' => 'urn:gov:gsa:openidconnect:sp:server' }],
+          historical_attempts_api_enabled: true,
+        )
+      end
+
+      let(:doc_auth_response) { SocureDocvFixtures.pass_json }
+
+      it 'still steps through events that will log' do
+        visit_idp_from_oidc_sp_with_ial2
+        sign_in_and_2fa_user(user)
+        visit idv_welcome_path
+        complete_welcome_step
+        complete_agreement_step
+        complete_hybrid_handoff_step
+        complete_choose_id_type_step
+        visit idv_socure_document_capture_path
+        expect(page).to have_current_path(idv_socure_document_capture_path)
+        expect(find('.step-indicator__step--current')).to have_text('Verify your ID')
+        socure_docv_upload_documents(docv_transaction_token: @docv_transaction_token)
+        visit idv_socure_document_capture_update_path
+        complete_ssn_step
+        expect(find('.step-indicator__step--current')).to have_text('Verify your information')
+      end
     end
 
     describe 'IDV State ID flow' do

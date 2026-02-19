@@ -111,6 +111,17 @@ RSpec.describe SamlIdpController do
       )
     end
 
+    it 'displays the errors to the partner when the saml request is invalid' do
+      delete :logout, params: { SAMLRequest: 'foo', path_year: path_year }
+
+      expect(response).to be_bad_request
+      expect(controller).to render_template('saml_idp/logout/error')
+      expect(response.status).to eq(400)
+      expect(response.body).to include(t('errors.messages.no_auth_or_logout_request'))
+      expect(response.body).to include(t('errors.messages.issuer_missing_or_invalid'))
+      expect(response.body).to include(t('errors.messages.unauthorized_service_provider'))
+    end
+
     it 'accepts requests from a correct cert' do
       saml_request = UriService.params(
         OneLogin::RubySaml::Logoutrequest.new.create(right_cert_settings),
@@ -146,12 +157,15 @@ RSpec.describe SamlIdpController do
     end
 
     context 'when the cert is not registered' do
-      it 'rejects requests from a wrong cert' do
+      it 'rejects requests from a wrong cert and displays the error to the user' do
         delete :logout, params: UriService.params(
           OneLogin::RubySaml::Logoutrequest.new.create(wrong_cert_settings),
         ).merge(path_year: path_year)
 
         expect(response).to be_bad_request
+        expect(controller).to render_template('saml_idp/logout/error')
+        expect(response.status).to eq(400)
+        expect(response.body).to include(t('errors.messages.invalid_signature'))
       end
 
       it 'tracks the request' do
@@ -223,7 +237,7 @@ RSpec.describe SamlIdpController do
         Base64.encode64(Zlib::Deflate.deflate(blank_cert_element_req, 9)[2..-5])
       end
 
-      it 'a ValidationError is raised' do
+      it 'raises a ValidationError' do
         expect do
           delete :logout, params: {
             'SAMLRequest' => deflated_encoded_req,
