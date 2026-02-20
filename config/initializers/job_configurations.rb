@@ -381,7 +381,7 @@ else
       # Previous months's irs credentials report to Team Data - Daily (For internal review only)
       # And, monthly on 1st date (For IRS and Internal)
       irs_cred_metrics_report: {
-        class: 'Reports::IrsMonthlyCredMetricsReport',
+        class: 'Reports::IrsOriginalMonthlyCredMetricsReport',
         cron: cron_24h_and_a_bit,
         args: -> {
           JobHelpers::ReportJobConfigurationHelper.build_irs_report_args(
@@ -390,6 +390,18 @@ else
           )
         },
       },
+
+      sp_cred_metrics_report: {
+        class: 'Reports::SpCredMetricsReportOrchestrator',
+        cron: cron_24h_and_a_bit,
+        args: -> {
+          JobHelpers::ReportJobConfigurationHelper.build_irs_report_args(
+            Time.zone.yesterday.end_of_day,
+            :monthly,
+          )
+        },
+      },
+
       # Identity Verification Outcomes Rate Report
       identity_verification_outcomes_report: {
         class: 'Reports::IdentityVerificationOutcomesReport',

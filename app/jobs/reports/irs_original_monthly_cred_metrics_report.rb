@@ -1,19 +1,20 @@
 # frozen_string_literal: true
 
 module Reports
-  class IrsMonthlyCredMetricsReport < BaseReport
-    attr_reader :report_date, :report_receiver, :report_name
+  class IrsOriginalMonthlyCredMetricsReport < BaseReport
+    REPORT_NAME = 'irs_monthly_cred_metrics'
 
-    def initialize(init_date = Time.zone.yesterday.end_of_day, init_receiver = :internal,
-                   report_config = {}, *args, **rest)
+    attr_reader :report_date, :report_receiver
+
+    def initialize(init_date = Time.zone.yesterday.end_of_day, init_receiver = :internal, *args,
+                   **rest)
       @report_date = init_date
       @report_receiver = init_receiver.to_sym
-      @report_config = report_config
-      super(init_date, init_receiver, report_config, *args, **rest)
+      super(init_date, init_receiver, *args, **rest)
     end
 
     def partner_strings
-      @partner_strings || []
+      [*IdentityConfig.store.irs_partner_strings].reject(&:blank?)
     end
 
     def partner_accounts
@@ -29,22 +30,22 @@ module Reports
     end
 
     def issuers
-      @issuers || []
+      [*IdentityConfig.store.irs_issuers].reject(&:blank?)
     end
 
     def email_addresses
-      internal_emails = @internal_emails || []
-      partner_emails      = @partner_emails || []
+      internal_emails = [*IdentityConfig.store.team_daily_reports_emails].select(&:present?)
+      irs_emails      = [*IdentityConfig.store.irs_credentials_emails].select(&:present?)
 
-      if report_receiver == :both && partner_emails.empty?
+      if report_receiver == :both && irs_emails.empty?
         Rails.logger.warn(
-          "#{partner_strings.first} Monthly Credential Report: recipient is :both " \
-          "but no external email specified",
+          'IRS Monthly Credential Report: recipient is :both ' \
+          'but no external email specified',
         )
       end
 
-      if report_receiver == :both && partner_emails.present?
-        { to: partner_emails, bcc: internal_emails }
+      if report_receiver == :both && irs_emails.present?
+        { to: irs_emails, bcc: internal_emails }
       else
         { to: internal_emails, bcc: [] }
       end
@@ -83,24 +84,16 @@ module Reports
       ]
     end
 
-    def perform(perform_date = Time.zone.yesterday.end_of_day, perform_receiver = :internal, report_config = {})
+    def perform(perform_date = Time.zone.yesterday.end_of_day, perform_receiver = :internal)
       @report_receiver = perform_receiver.to_sym
       @report_date = perform_date
-      @report_config = report_config
-
-      @issuers = report_config['issuers']
-      @partner_strings = report_config['partner_strings']
-      @partner_emails = report_config['partner_emails']
-      @internal_emails = report_config['internal_emails']
-
-      @report_name = "#{@partner_strings.first.downcase}_monthly_cred_metrics"
 
       emails = email_addresses
       to_emails = emails[:to].select(&:present?)
       bcc_emails = emails[:bcc].select(&:present?)
 
       if to_emails.empty? && bcc_emails.empty?
-        Rails.logger.warn "No email addresses received - #{@partner_strings.first} Monthly Credential Report NOT SENT"
+        Rails.logger.warn 'No email addresses received - IRS Monthly Credential Report NOT SENT'
         return false
       end
 
@@ -110,7 +103,7 @@ module Reports
       if reports.present?
         reports.each do |report|
           _latest_path, path = generate_s3_paths(
-            @report_name, 'csv',
+            REPORT_NAME, 'csv',
             subname: report.filename,
             now: @report_date
           )
@@ -122,7 +115,7 @@ module Reports
           )
         end
       else
-        Rails.logger.warn "No report available - #{@partner_strings.first} Monthly Credential Report NOT SENT"
+        Rails.logger.warn "No report available - #{partner_strings.first} Monthly Credential Report NOT SENT"
         return false
       end
       # rubocop:enable Layout/LineLength
@@ -130,7 +123,7 @@ module Reports
       ReportMailer.tables_report(
         to: to_emails,
         bcc: bcc_emails,
-        subject: "#{@partner_strings.first} Monthly Credential Metrics - #{@report_date.to_date}",
+        subject: "#{partner_strings.first} Monthly Credential Metrics - #{@report_date.to_date}",
         message: preamble,
         reports: reports,
         attachment_format: :csv,
@@ -332,7 +325,7 @@ module Reports
         # Delegate only the CSV building to the existing class
         invoice_reporter = CombinedInvoiceSupplementReportV2.new
         data = invoice_reporter.build_csv(iaas, partner_accounts)
-        save_report(@report_name + '_raw', data, extension: 'csv')
+        save_report(REPORT_NAME + '_raw', data, extension: 'csv')
         data
       end
     end
