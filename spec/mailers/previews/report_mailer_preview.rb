@@ -144,7 +144,7 @@ class ReportMailerPreview < ActionMailer::Preview
   end
 
   def sp_registration_funnel_report
-    require 'reporting/irs_registration_funnel_report'
+    require 'reporting/sp_registration_funnel_report'
 
     mock_issuers = ['test_issuer']
     mock_agency = 'Test_agency'
@@ -182,7 +182,7 @@ class ReportMailerPreview < ActionMailer::Preview
   end
 
   def sp_fraud_metrics_report
-    require 'reporting/irs_fraud_metrics_lg99_report'
+    require 'reporting/sp_fraud_metrics_lg99_report'
 
     date    = Time.zone.yesterday.end_of_day
     issuers = ['issuer1']
@@ -242,7 +242,7 @@ class ReportMailerPreview < ActionMailer::Preview
   end
 
   def sp_verification_report
-    require 'reporting/irs_verification_report'
+    require 'reporting/sp_verification_report'
 
     date    = Time.zone.yesterday.end_of_day
     issuers = ['issuer1']
@@ -281,7 +281,7 @@ class ReportMailerPreview < ActionMailer::Preview
   end
 
   def sp_verification_demographics_report
-    require 'reporting/irs_verification_demographics_report'
+    require 'reporting/sp_verification_demographics_report'
 
     mock_issuers = ['test_issuer']
     mock_agency = 'Test_agency'
@@ -332,7 +332,7 @@ class ReportMailerPreview < ActionMailer::Preview
   end
 
   def monthly_sp_verification_report
-    require 'reporting/irs_verification_report'
+    require 'reporting/sp_verification_report'
 
     date    = Time.zone.yesterday.end_of_day
     issuers = ['issuer1']
