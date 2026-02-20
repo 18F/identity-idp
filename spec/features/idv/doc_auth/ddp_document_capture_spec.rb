@@ -25,43 +25,23 @@ RSpec.feature 'ddp document capture step', :js do
   before(:each) do
     allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
     allow_any_instance_of(ServiceProviderSession).to receive(:sp_name).and_return(@sp_name)
-    allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled)
-      .and_return(passports_enabled)
-    allow(IdentityConfig.store).to receive(:doc_auth_vendor_default).and_return(
-      Idp::Constants::Vendors::LEXIS_NEXIS_DDP,
+    allow(IdentityConfig.store).to receive_messages(
+      doc_auth_passports_enabled: passports_enabled,
+      doc_auth_vendor_default: Idp::Constants::Vendors::LEXIS_NEXIS_DDP,
+      doc_auth_passport_vendor_default: Idp::Constants::Vendors::LEXIS_NEXIS_DDP,
+      lexisnexis_threatmetrix_api_key: 'test_api_key',
+      lexisnexis_threatmetrix_org_id: 'org_id_str',
+      lexisnexis_threatmetrix_api_secret: 'test_api_secret',
+      lexisnexis_threatmetrix_base_url: lexisnexis_threatmetrix_base_url,
+      lexisnexis_threatmetrix_timeout: 10,
+      lexisnexis_trueid_account_id: 'test_account_id',
+      lexisnexis_trueid_username: 'test_username',
+      lexisnexis_trueid_password: 'test_password',
+      lexisnexis_trueid_ddp_noliveness_policy: 'default_auth_policy_pm',
+      dos_passport_mrz_endpoint: fake_dos_api_endpoint,
     )
-    allow(IdentityConfig.store).to receive(:doc_auth_passport_vendor_default).and_return(
-      Idp::Constants::Vendors::LEXIS_NEXIS_DDP,
-    )
-    allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_api_key).and_return(
-      'test_api_key',
-    )
-    allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_org_id).and_return(
-      'test_org_id',
-    )
-    allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_api_secret).and_return(
-      'test_api_secret',
-    )
-    allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_base_url).and_return(
-      lexisnexis_threatmetrix_base_url,
-    )
-    allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_timeout).and_return(10)
-    allow(IdentityConfig.store).to receive(:lexisnexis_trueid_account_id).and_return(
-      'test_account_id',
-    )
-    allow(IdentityConfig.store).to receive(:lexisnexis_trueid_username).and_return(
-      'test_username',
-    )
-    allow(IdentityConfig.store).to receive(:lexisnexis_trueid_password).and_return(
-      'test_password',
-    )
-    allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_org_id).and_return('org_id_str')
-    allow(IdentityConfig.store).to receive(:lexisnexis_trueid_ddp_noliveness_policy)
-      .and_return('default_auth_policy_pm')
     stub_health_check_settings
     stub_health_check_endpoints_success
-    allow(IdentityConfig.store).to receive(:dos_passport_mrz_endpoint)
-      .and_return(fake_dos_api_endpoint)
     stub_request(:post, fake_dos_api_endpoint)
       .to_return_json({ status: 200, body: { response: 'YES' } })
     stub_request(:post, test_request_url)
