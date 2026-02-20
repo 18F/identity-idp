@@ -25,7 +25,7 @@ RSpec.describe Proofing::LexisNexis::Ddp::Requests::ThreatMetrixRequest do
     }
   end
 
-  let(:response_body) { LexisNexisFixtures.ddp_success_response_json }
+  let(:response_body) { LexisNexisFixtures.threatmetrix_success_response_json }
   subject do
     described_class.new(
       applicant: applicant,
@@ -44,7 +44,7 @@ RSpec.describe Proofing::LexisNexis::Ddp::Requests::ThreatMetrixRequest do
     context 'Idv verification request' do
       it 'returns a properly formed request body' do
         response_json = JSON.parse(subject.body)
-        expected_json = JSON.parse(LexisNexisFixtures.ddp_request_json)
+        expected_json = JSON.parse(LexisNexisFixtures.threatmetrix_request_json)
         expect(response_json).to eq(expected_json)
       end
 
@@ -82,7 +82,7 @@ RSpec.describe Proofing::LexisNexis::Ddp::Requests::ThreatMetrixRequest do
 
       it 'returns a properly formed request body' do
         response_json = JSON.parse(subject.body)
-        expected_json = JSON.parse(LexisNexisFixtures.ddp_authentication_request_json)
+        expected_json = JSON.parse(LexisNexisFixtures.threatmetrix_authentication_request_json)
         expect(response_json).to eq(expected_json)
       end
 
@@ -101,7 +101,7 @@ RSpec.describe Proofing::LexisNexis::Ddp::Requests::ThreatMetrixRequest do
         it 'returns a properly formed request body' do
           response_json = JSON.parse(subject.body)
 
-          base_json = JSON.parse(LexisNexisFixtures.ddp_authentication_request_json)
+          base_json = JSON.parse(LexisNexisFixtures.threatmetrix_authentication_request_json)
           expected_json = base_json.merge({ 'local_attrib_1' => 'SPNUM' })
           expect(response_json).to eq(expected_json)
         end
