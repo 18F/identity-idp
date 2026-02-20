@@ -4,8 +4,15 @@ module DocAuth
   module LexisNexis
     module Requests
       module Ddp
-        class TrueIdRequest < Proofing::LexisNexis::Request
-          def send_request
+        class TrueIdRequest < DocAuth::LexisNexis::Request
+          attr_reader :applicant
+
+          def initialize(config:, user_uuid:, uuid_prefix:, applicant:)
+            @applicant = applicant
+            super(config: config, user_uuid: user_uuid, uuid_prefix: uuid_prefix)
+          end
+
+          def fetch
             validate_images!
             super
           end
@@ -20,7 +27,18 @@ module DocAuth
 
           private
 
-          def build_request_body
+          def handle_http_response(http_response)
+            LexisNexis::Responses::Ddp::TrueIdResponse.new(
+              http_response:,
+              passport_requested: applicant[:passport_requested],
+              config:,
+              liveness_checking_enabled: liveness_checking_required?,
+              request_context: request_context,
+              request: self,
+            )
+          end
+
+          def body
             # Guard for parent class calling build_request_body during initialize
             return {}.to_json unless required_data_present?
 
@@ -36,7 +54,7 @@ module DocAuth
             }.to_json
           end
 
-          def build_request_headers
+          def request_headers
             {
               'Content-Type' => 'application/json',
               'x-org-id' => config.org_id,
@@ -44,7 +62,38 @@ module DocAuth
             }
           end
 
-          def url_request_path
+          def method
+            :post
+          end
+
+          def request_context
+            {
+              workflow: workflow,
+              document_type_requested: applicant[:document_type_requested],
+            }
+          end
+
+          def account_id
+            config.trueid_account_id
+          end
+
+          def username
+            config.trueid_username
+          end
+
+          def password
+            config.trueid_password
+          end
+
+          def workflow
+            if liveness_checking_required?
+              config.trueid_liveness_nocropping_workflow
+            else
+              config.trueid_noliveness_cropping_workflow
+            end
+          end
+
+          def path
             '/authentication/v1/trueid/'
           end
 
@@ -81,7 +130,8 @@ module DocAuth
           end
 
           def required_data_present?
-            return false if applicant[:uuid].blank? || applicant[:email].blank?
+            # TODO: uncomment once email is provided as part of LG-17251
+            return false if applicant[:uuid].blank? # || applicant[:email].blank?
             if passport_document?
               return false if applicant[:passport_image].blank?
             elsif applicant[:front_image].blank? || applicant[:back_image].blank?
@@ -101,7 +151,8 @@ module DocAuth
 
           def validate_images!
             raise ArgumentError, 'uuid is required' if applicant[:uuid].blank?
-            raise ArgumentError, 'email is required' if applicant[:email].blank?
+            # TODO: uncomment once email is provided as part of LG-17251
+            # raise ArgumentError, 'email is required' if applicant[:email].blank?
 
             if passport_document?
               if applicant[:passport_image].blank?
