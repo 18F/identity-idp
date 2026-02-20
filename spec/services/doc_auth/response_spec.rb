@@ -8,7 +8,7 @@ RSpec.describe DocAuth::Response do
   let(:attention_with_barcode) { false }
 
   subject(:response) do
-    described_class.new(
+    DocAuth::Response.new(
       success: success,
       errors: errors,
       exception: exception,

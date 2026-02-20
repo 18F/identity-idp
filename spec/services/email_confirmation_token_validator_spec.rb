@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe EmailConfirmationTokenValidator do
   describe '#submit' do
-    subject { described_class.new(email_address:, current_user:) }
+    subject { EmailConfirmationTokenValidator.new(email_address:, current_user:) }
 
     context 'the email of the user does not match the user confirming' do
       let(:current_user) { create(:user, :fully_registered) }
@@ -88,7 +88,7 @@ RSpec.describe EmailConfirmationTokenValidator do
   end
 
   describe '#email_address_already_confirmed_by_user?' do
-    subject { described_class.new(email_address:) }
+    subject { EmailConfirmationTokenValidator.new(email_address:) }
 
     context 'the email address was confirmed by the user' do
       let(:email_address) do

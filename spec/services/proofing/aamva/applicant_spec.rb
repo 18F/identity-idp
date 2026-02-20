@@ -15,7 +15,7 @@ RSpec.describe Proofing::Aamva::Applicant do
 
   describe '.from_proofer_applicant(applicant)' do
     it 'should create an AAMVA applicant with necessary proofer applicant data' do
-      aamva_applicant = described_class.from_proofer_applicant(proofer_applicant)
+      aamva_applicant = Proofing::Aamva::Applicant.from_proofer_applicant(proofer_applicant)
 
       expect(aamva_applicant.uuid).to eq(proofer_applicant[:uuid])
       expect(aamva_applicant.first_name).to eq(proofer_applicant[:first_name])

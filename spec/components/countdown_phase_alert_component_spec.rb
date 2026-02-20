@@ -26,12 +26,12 @@ RSpec.describe CountdownPhaseAlertComponent, type: :component do
   end
 
   it 'renders the custom element' do
-    rendered = render_inline described_class.new(**base_opts)
+    rendered = render_inline CountdownPhaseAlertComponent.new(**base_opts)
     expect(rendered).to have_css('lg-countdown-phase-alert')
   end
 
   it 'renders the initial phase label' do
-    rendered = render_inline described_class.new(
+    rendered = render_inline CountdownPhaseAlertComponent.new(
       **base_opts,
     )
 
@@ -40,7 +40,7 @@ RSpec.describe CountdownPhaseAlertComponent, type: :component do
   end
 
   it 'renders the initial alert classes' do
-    rendered = render_inline described_class.new(
+    rendered = render_inline CountdownPhaseAlertComponent.new(
       **base_opts,
       alert_options: { class: 'margin-bottom-4' },
       countdown_options: {},
@@ -50,12 +50,12 @@ RSpec.describe CountdownPhaseAlertComponent, type: :component do
   end
 
   it 'renders a hidden countdown element with an expiration' do
-    rendered = render_inline described_class.new(**base_opts)
+    rendered = render_inline CountdownPhaseAlertComponent.new(**base_opts)
     expect(rendered).to have_css('lg-countdown[data-expiration].display-none[aria-hidden="true"]')
   end
 
   it 'includes base classes on data attributes' do
-    rendered = render_inline described_class.new(
+    rendered = render_inline CountdownPhaseAlertComponent.new(
       **base_opts,
       alert_options: { class: 'margin-bottom-4' },
     )
@@ -67,7 +67,7 @@ RSpec.describe CountdownPhaseAlertComponent, type: :component do
   end
 
   it 'includes phases on data attributes' do
-    rendered = render_inline described_class.new(
+    rendered = render_inline CountdownPhaseAlertComponent.new(
       **base_opts,
     )
 
@@ -80,7 +80,7 @@ RSpec.describe CountdownPhaseAlertComponent, type: :component do
   end
 
   it 'includes optional screen-reader region ids when provided' do
-    rendered = render_inline described_class.new(
+    rendered = render_inline CountdownPhaseAlertComponent.new(
       **base_opts,
       sr_phase_region_id: 'otp-live-phase',
       sr_expiry_region_id: 'otp-live-expiry',
@@ -93,7 +93,7 @@ RSpec.describe CountdownPhaseAlertComponent, type: :component do
 
   context 'alert_options passthrough' do
     it 'passes arbitrary attributes to the nested alert element' do
-      rendered = render_inline described_class.new(
+      rendered = render_inline CountdownPhaseAlertComponent.new(
         **base_opts,
         alert_options: { data: { foo: 'bar' }, role: 'region', class: 'margin-bottom-4' },
       )

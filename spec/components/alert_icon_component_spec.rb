@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe AlertIconComponent, type: :component do
   it 'renders a warning 88x88 by default' do
-    rendered = render_inline(described_class.new)
+    rendered = render_inline(AlertIconComponent.new)
     expect(rendered).to have_css('img')
     expect(rendered).to have_css('.alert-icon')
     expect(rendered).to have_css("[alt='#{t('image_description.warning')}']")
@@ -11,7 +11,7 @@ RSpec.describe AlertIconComponent, type: :component do
 
   it 'renders the alert-icon class after any custom provided classes' do
     rendered = render_inline(
-      described_class.new(
+      AlertIconComponent.new(
         icon_name: :warning,
         class: 'first-class second-class',
       ),
@@ -20,18 +20,18 @@ RSpec.describe AlertIconComponent, type: :component do
   end
 
   it 'renders a custom alt, if provided' do
-    rendered = render_inline(described_class.new(icon_name: :warning, alt: 'custom alt text'))
+    rendered = render_inline(AlertIconComponent.new(icon_name: :warning, alt: 'custom alt text'))
     expect(rendered).to have_css('[alt="custom alt text"]')
   end
 
   it 'validates icon name' do
     expect do
-      render_inline(described_class.new(icon_name: :invalid_icon_name))
+      render_inline(AlertIconComponent.new(icon_name: :invalid_icon_name))
     end.to raise_error(ActiveModel::ValidationError)
   end
 
   it 'renders with the explicitly passed in width and height values' do
-    rendered = render_inline(described_class.new(width: 10, height: 20))
+    rendered = render_inline(AlertIconComponent.new(width: 10, height: 20))
     expect(rendered).to have_css('[width="10"][height="20"]')
   end
 end

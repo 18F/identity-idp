@@ -13,7 +13,10 @@ RSpec.describe TwoFactorOptionsPresenter do
   let(:show_skip_additional_mfa_link) { true }
 
   let(:presenter) do
-    described_class.new(user:, user_agent:, after_mfa_setup_path:, show_skip_additional_mfa_link:)
+    TwoFactorOptionsPresenter.new(
+      user:, user_agent:, after_mfa_setup_path:,
+      show_skip_additional_mfa_link:
+    )
   end
 
   describe '#two_factor_enabled?' do
@@ -36,7 +39,7 @@ RSpec.describe TwoFactorOptionsPresenter do
 
     context 'when a phishing-resistant only SP is being used' do
       let(:presenter) do
-        described_class.new(
+        TwoFactorOptionsPresenter.new(
           user_agent: user_agent, user: user_with_2fa,
           phishing_resistant_required: true
         )
@@ -58,7 +61,7 @@ RSpec.describe TwoFactorOptionsPresenter do
         )
       end
       let(:presenter) do
-        described_class.new(
+        TwoFactorOptionsPresenter.new(
           user_agent: user_agent, user: user,
           phishing_resistant_required: true
         )
@@ -83,7 +86,7 @@ RSpec.describe TwoFactorOptionsPresenter do
         )
       end
       let(:presenter) do
-        described_class.new(
+        TwoFactorOptionsPresenter.new(
           user_agent: user_agent, user: user,
           piv_cac_required: true
         )
@@ -190,7 +193,7 @@ RSpec.describe TwoFactorOptionsPresenter do
     context 'when show_skip_additional_mfa_link is false' do
       let(:show_skip_additional_mfa_link) { false }
       let(:presenter) do
-        described_class.new(
+        TwoFactorOptionsPresenter.new(
           user_agent: user_agent,
           show_skip_additional_mfa_link: show_skip_additional_mfa_link,
         )
@@ -205,7 +208,7 @@ RSpec.describe TwoFactorOptionsPresenter do
   describe '#show_cancel_return_to_sp?' do
     context 'phishing resistant required to add additonal mfa' do
       let(:presenter) do
-        described_class.new(
+        TwoFactorOptionsPresenter.new(
           user_agent: user_agent,
           user: user_with_2fa,
           phishing_resistant_required: true,

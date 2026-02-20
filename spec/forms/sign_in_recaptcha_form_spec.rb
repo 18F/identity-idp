@@ -10,7 +10,7 @@ RSpec.describe SignInRecaptchaForm do
   let(:recaptcha_token) { 'token' }
   let(:score) { 1.0 }
   subject(:form) do
-    described_class.new(
+    SignInRecaptchaForm.new(
       existing_device:,
       ab_test_bucket:,
       form_class: RecaptchaMockForm,
@@ -33,7 +33,7 @@ RSpec.describe SignInRecaptchaForm do
         score_threshold: score_threshold_config,
         score:,
         analytics:,
-        recaptcha_action: described_class::RECAPTCHA_ACTION,
+        recaptcha_action: SignInRecaptchaForm::RECAPTCHA_ACTION,
       )
       .and_return(recaptcha_form)
 
@@ -42,7 +42,7 @@ RSpec.describe SignInRecaptchaForm do
 
   context 'with custom recaptcha form class' do
     subject(:form) do
-      described_class.new(
+      SignInRecaptchaForm.new(
         existing_device:,
         ab_test_bucket:,
         analytics:,

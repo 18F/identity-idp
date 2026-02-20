@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe AttemptsApiCertsPresenter do
   let(:signing_key) { OpenSSL::PKey::EC.generate('prime256v1') }
-  subject(:presenter) { described_class.new }
+  subject(:presenter) { AttemptsApiCertsPresenter.new }
 
   describe '#certs' do
     describe 'when attempts signing is enabled' do

@@ -5,7 +5,7 @@ RSpec.describe PhoneRecaptchaForm do
   let(:score_threshold_config) { 0.2 }
   let(:parsed_phone) { Phonelib.parse('+15135551234') }
   let(:analytics) { FakeAnalytics.new }
-  subject(:form) { described_class.new(parsed_phone:, analytics:) }
+  subject(:form) { PhoneRecaptchaForm.new(parsed_phone:, analytics:) }
   before do
     allow(IdentityConfig.store).to receive(:phone_recaptcha_country_score_overrides)
       .and_return(country_score_overrides_config)
@@ -22,7 +22,7 @@ RSpec.describe PhoneRecaptchaForm do
       .with(
         score_threshold: score_threshold_config,
         analytics:,
-        recaptcha_action: described_class::RECAPTCHA_ACTION,
+        recaptcha_action: PhoneRecaptchaForm::RECAPTCHA_ACTION,
         extra_analytics_properties: {
           phone_country_code: parsed_phone.country,
         },
@@ -34,7 +34,7 @@ RSpec.describe PhoneRecaptchaForm do
 
   context 'with custom recaptcha form class' do
     subject(:form) do
-      described_class.new(
+      PhoneRecaptchaForm.new(
         parsed_phone:,
         analytics:,
         form_class: RecaptchaMockForm,
@@ -77,7 +77,7 @@ RSpec.describe PhoneRecaptchaForm do
   end
 
   describe '.country_score_overrides' do
-    subject(:country_score_overrides) { described_class.country_score_overrides }
+    subject(:country_score_overrides) { PhoneRecaptchaForm.country_score_overrides }
 
     it 'returns configured country score overrides' do
       expect(country_score_overrides).to eq(country_score_overrides_config)

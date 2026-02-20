@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe SecurityKeyImageComponent, type: :component do
   subject(:rendered) do
-    render_inline(described_class.new(mobile: mobile, **tag_options))
+    render_inline(SecurityKeyImageComponent.new(mobile: mobile, **tag_options))
   end
 
   let(:mobile) { false }

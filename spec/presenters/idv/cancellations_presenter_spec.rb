@@ -8,7 +8,7 @@ RSpec.describe Idv::CancellationsPresenter do
 
   let(:sp_name) { nil }
 
-  subject(:presenter) { described_class.new(sp_name: sp_name, url_options: {}) }
+  subject(:presenter) { Idv::CancellationsPresenter.new(sp_name: sp_name, url_options: {}) }
 
   describe '#exit_heading' do
     subject(:exit_heading) { presenter.exit_heading }

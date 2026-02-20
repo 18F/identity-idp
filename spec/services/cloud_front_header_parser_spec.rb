@@ -4,7 +4,7 @@ RSpec.describe CloudFrontHeaderParser do
   let(:req) { ActionDispatch::TestRequest.new({}) }
   let(:port) { '1234' }
 
-  subject { described_class.new(req) }
+  subject { CloudFrontHeaderParser.new(req) }
 
   context 'with an IPv4 address' do
     let(:ip) { '192.0.2.1' }

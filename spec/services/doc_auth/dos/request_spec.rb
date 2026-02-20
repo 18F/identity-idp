@@ -6,7 +6,7 @@ RSpec.describe DocAuth::Dos::Request do
   let(:full_url) { 'https://dos.example.test/mrz' }
   let(:http_method) { :get }
   let(:status) { 200 }
-  let(:subject) { described_class.new }
+  let(:subject) { DocAuth::Dos::Request.new }
 
   before do
     stub_request(http_method, full_url).to_return(status: status, body: '')

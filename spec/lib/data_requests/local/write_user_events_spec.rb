@@ -15,7 +15,7 @@ RSpec.describe DataRequests::Local::WriteUserEvents do
     let(:csv) { CSV.new(io) }
 
     subject(:writer) do
-      described_class.new(
+      DataRequests::Local::WriteUserEvents.new(
         user_report:,
         requesting_issuer_uuid:,
         csv:,

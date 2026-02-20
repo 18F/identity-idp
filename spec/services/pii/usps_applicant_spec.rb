@@ -18,7 +18,7 @@ RSpec.describe Pii::UspsApplicant do
     end
 
     it 'returns an instance Pii::UspsApplicant' do
-      expect(described_class.from_idv_applicant(idv_applicant)).to have_attributes(
+      expect(Pii::UspsApplicant.from_idv_applicant(idv_applicant)).to have_attributes(
         first_name: idv_applicant['first_name'],
         last_name: idv_applicant['last_name'],
         address1: idv_applicant['identity_doc_address1'],
@@ -35,7 +35,7 @@ RSpec.describe Pii::UspsApplicant do
 
   describe '#address_line2_present?' do
     context 'when address2 is not an empty string' do
-      subject { described_class.new(address2: Faker::Address.secondary_address) }
+      subject { Pii::UspsApplicant.new(address2: Faker::Address.secondary_address) }
 
       it 'returns true' do
         expect(subject.address_line2_present?).to be(true)
@@ -43,7 +43,7 @@ RSpec.describe Pii::UspsApplicant do
     end
 
     context 'when address2 is an empty string' do
-      subject { described_class.new(address2: '') }
+      subject { Pii::UspsApplicant.new(address2: '') }
 
       it 'returns false' do
         expect(subject.address_line2_present?).to be(false)
@@ -51,7 +51,7 @@ RSpec.describe Pii::UspsApplicant do
     end
 
     context 'when address2 is nil' do
-      subject { described_class.new(address2: nil) }
+      subject { Pii::UspsApplicant.new(address2: nil) }
 
       it 'returns false' do
         expect(subject.address_line2_present?).to be(false)

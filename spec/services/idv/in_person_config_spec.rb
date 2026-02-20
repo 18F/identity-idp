@@ -12,7 +12,7 @@ RSpec.describe Idv::InPersonConfig do
 
   describe '.enabled_for_issuer?' do
     let(:issuer) { nil }
-    subject(:enabled_for_issuer) { described_class.enabled_for_issuer?(issuer) }
+    subject(:enabled_for_issuer) { Idv::InPersonConfig.enabled_for_issuer?(issuer) }
 
     it { expect(enabled_for_issuer).to eq false }
 
@@ -52,7 +52,7 @@ RSpec.describe Idv::InPersonConfig do
   end
 
   describe '.enabled?' do
-    subject(:enabled) { described_class.enabled? }
+    subject(:enabled) { Idv::InPersonConfig.enabled? }
 
     it { expect(enabled).to eq false }
 
@@ -64,7 +64,7 @@ RSpec.describe Idv::InPersonConfig do
   end
 
   describe '.enabled_without_issuer?' do
-    subject(:enabled_without_issuer) { described_class.enabled_without_issuer? }
+    subject(:enabled_without_issuer) { Idv::InPersonConfig.enabled_without_issuer? }
 
     it { expect(enabled_without_issuer).to eq true }
 

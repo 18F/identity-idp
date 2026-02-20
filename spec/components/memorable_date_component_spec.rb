@@ -39,7 +39,7 @@ RSpec.describe MemorableDateComponent, type: :component do
   end
 
   subject(:rendered) do
-    sut = render_inline(described_class.new(**options))
+    sut = render_inline(MemorableDateComponent.new(**options))
     render_inline(ButtonComponent.new type: :submit)
     sut
   end

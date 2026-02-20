@@ -65,7 +65,7 @@ RSpec.describe RiscDeliveryJob do
     context 'when the job fails due to a Faraday::SSLError' do
       before do
         stub_request(:post, push_notification_url).to_raise(Faraday::SSLError)
-        allow_any_instance_of(described_class).to receive(:analytics).and_return(job_analytics)
+        allow_any_instance_of(RiscDeliveryJob).to receive(:analytics).and_return(job_analytics)
       end
 
       context 'when the job fails for the 1st time' do
@@ -106,7 +106,7 @@ RSpec.describe RiscDeliveryJob do
     context 'when the job fails due to a Faraday::ConnectionFailed' do
       before do
         stub_request(:post, push_notification_url).to_raise(Faraday::ConnectionFailed)
-        allow_any_instance_of(described_class).to receive(:analytics).and_return(job_analytics)
+        allow_any_instance_of(RiscDeliveryJob).to receive(:analytics).and_return(job_analytics)
       end
 
       context 'when the job fails for the 1st time' do
@@ -146,7 +146,7 @@ RSpec.describe RiscDeliveryJob do
 
     context 'when the job fails due to an Errno::ECONNREFUSED error' do
       before do
-        allow_any_instance_of(described_class).to receive(:analytics).and_return(job_analytics)
+        allow_any_instance_of(RiscDeliveryJob).to receive(:analytics).and_return(job_analytics)
         # stub_request().to_raise wraps this in Faraday::ConnectionFailed, but
         # in actual usage, the original error is unwrapped
         @connection = instance_double(Faraday::Connection)
@@ -226,7 +226,7 @@ RSpec.describe RiscDeliveryJob do
 
     context 'when the job encounters rate limiting' do
       before do
-        allow_any_instance_of(described_class).to receive(:analytics).and_return(job_analytics)
+        allow_any_instance_of(RiscDeliveryJob).to receive(:analytics).and_return(job_analytics)
         @redis_rate_limiter = instance_double(RedisRateLimiter)
         allow(@redis_rate_limiter).to receive(:attempt!).and_raise(RedisRateLimiter::LimitError)
         allow(RedisRateLimiter).to receive(:new).and_return(@redis_rate_limiter)
@@ -299,7 +299,7 @@ RSpec.describe RiscDeliveryJob do
 
   describe '.warning_error_classes' do
     it 'is all the network errors and rate limiting errors' do
-      expect(described_class.warning_error_classes).to match_array(
+      expect(RiscDeliveryJob.warning_error_classes).to match_array(
         [RiscDeliveryJob::DeliveryError, RedisRateLimiter::LimitError],
       )
     end

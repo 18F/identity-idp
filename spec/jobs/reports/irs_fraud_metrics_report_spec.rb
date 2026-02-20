@@ -5,7 +5,7 @@ RSpec.describe Reports::IrsFraudMetricsReport do
   let(:time_range)  { report_date.all_month }
   let(:report_receiver) { :internal }
 
-  subject(:report) { described_class.new(report_date, report_receiver) }
+  subject(:report) { Reports::IrsFraudMetricsReport.new(report_date, report_receiver) }
 
   let(:agency_abbreviation) { 'Test_Agency' }
   let(:report_name) { "#{agency_abbreviation.downcase}_fraud_metrics_report" }
@@ -81,7 +81,7 @@ RSpec.describe Reports::IrsFraudMetricsReport do
 
   context 'when recipient is :both and partner emails exist' do
     let(:report_date) { Date.new(2025, 10, 1).prev_day } # 2025-09-30
-    subject(:report) { described_class.new(report_date, :both) }
+    subject(:report) { Reports::IrsFraudMetricsReport.new(report_date, :both) }
 
     it 'sends a report to partner as TO and internal as BCC' do
       expect(ReportMailer).to receive(:tables_report).once.with(
@@ -100,7 +100,7 @@ RSpec.describe Reports::IrsFraudMetricsReport do
   context 'recipient is :both but partner emails are empty' do
     let(:report_receiver) { :both }
     let(:report_date) { Date.new(2025, 9, 30).in_time_zone('UTC').end_of_day }
-    subject(:report) { described_class.new(report_date, report_receiver) }
+    subject(:report) { Reports::IrsFraudMetricsReport.new(report_date, report_receiver) }
 
     let(:sp_fraud_metrics_config) do
       [
@@ -134,7 +134,7 @@ RSpec.describe Reports::IrsFraudMetricsReport do
   context 'recipient is internal but internal emails are empty' do
     let(:report_receiver) { :internal }
     let(:report_date) { Date.new(2025, 9, 30).in_time_zone('UTC').end_of_day }
-    subject(:report) { described_class.new(report_date, report_receiver) }
+    subject(:report) { Reports::IrsFraudMetricsReport.new(report_date, report_receiver) }
 
     let(:sp_fraud_metrics_config) do
       [
@@ -161,7 +161,7 @@ RSpec.describe Reports::IrsFraudMetricsReport do
   context 'when queued from the first of the month' do
     let(:report_receiver) { :both }
     let(:report_date) { Date.new(2021, 3, 1).prev_day.end_of_day }
-    subject(:report) { described_class.new(report_date, report_receiver) }
+    subject(:report) { Reports::IrsFraudMetricsReport.new(report_date, report_receiver) }
 
     it 'sends partner emails in TO and internal emails in BCC for month-end' do
       expect(ReportMailer).to receive(:tables_report).once.with(
@@ -179,7 +179,7 @@ RSpec.describe Reports::IrsFraudMetricsReport do
 
   context 'recipient is internal and internal emails exist' do
     let(:report_date) { Date.new(2025, 9, 27).prev_day } # 2025-09-26
-    subject(:report) { described_class.new(report_date, :internal) }
+    subject(:report) { Reports::IrsFraudMetricsReport.new(report_date, :internal) }
 
     it 'sends a report to internal only' do
       expect(ReportMailer).to receive(:tables_report).once.with(
