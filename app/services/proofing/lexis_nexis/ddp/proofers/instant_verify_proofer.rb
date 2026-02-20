@@ -25,6 +25,10 @@ module Proofing
             result.client = 'lexisnexis'
 
             result
+
+            Proofing::Resolution::Result.new(
+              success:
+            )
           end
 
           def verification_request(applicant)

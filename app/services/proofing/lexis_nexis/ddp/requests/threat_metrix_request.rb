@@ -43,6 +43,10 @@ module Proofing
             'lexis_nexis_ddp_threat_metrix'
           end
 
+          def url_request_path
+            '/api/session-query'
+          end
+
           def timeout
             IdentityConfig.store.lexisnexis_threatmetrix_timeout
           end
