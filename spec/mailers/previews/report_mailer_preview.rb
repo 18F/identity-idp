@@ -150,7 +150,7 @@ class ReportMailerPreview < ActionMailer::Preview
     mock_agency = 'Test_agency'
     date    = Time.zone.yesterday.end_of_day
 
-    builder = Reporting::IrsRegistrationFunnelReport.new(
+    builder = Reporting::SpRegistrationFunnelReport.new(
       issuers: mock_issuers,
       time_range: date.beginning_of_week(:sunday).prev_occurring(:sunday).all_week(:sunday),
       agency_abbreviation: mock_agency,
@@ -188,7 +188,7 @@ class ReportMailerPreview < ActionMailer::Preview
     issuers = ['issuer1']
     agency  = 'Test_Agency'
 
-    builder = Reporting::IrsFraudMetricsLg99Report.new(
+    builder = Reporting::SpFraudMetricsLg99Report.new(
       time_range: date.all_month,
       issuers: issuers,
       agency_abbreviation: agency,
@@ -248,7 +248,7 @@ class ReportMailerPreview < ActionMailer::Preview
     issuers = ['issuer1']
     agency  = 'Test_Agency'
 
-    builder = Reporting::IrsVerificationReport.new(
+    builder = Reporting::SpVerificationReport.new(
       time_range: date.beginning_of_week(:sunday).prev_occurring(:sunday).all_week(:sunday),
       issuers: issuers,
       agency_abbreviation: agency,
@@ -287,7 +287,7 @@ class ReportMailerPreview < ActionMailer::Preview
     mock_agency = 'Test_agency'
     date    = Time.zone.yesterday.end_of_day
 
-    builder = Reporting::IrsVerificationDemographicsReport.new(
+    builder = Reporting::SpVerificationDemographicsReport.new(
       issuers: mock_issuers,
       time_range: date.beginning_of_week(:sunday).prev_occurring(:sunday).all_week(:sunday),
       agency_abbreviation: mock_agency,
@@ -338,7 +338,7 @@ class ReportMailerPreview < ActionMailer::Preview
     issuers = ['issuer1']
     agency  = 'Test_Agency'
 
-    builder = Reporting::IrsVerificationReport.new(
+    builder = Reporting::SpVerificationReport.new(
       time_range: date.all_month,
       issuers: issuers,
       agency_abbreviation: agency,
