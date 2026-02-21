@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Reports::IrsRegistrationFunnelReport do
+RSpec.describe Reports::SpRegistrationFunnelReport do
   let(:report_date)     { Date.new(2021, 3, 2).in_time_zone('UTC').end_of_day }
   let(:report_receiver) { :internal }
   subject(:report) { described_class.new(report_date, report_receiver) }
@@ -67,7 +67,7 @@ RSpec.describe Reports::IrsRegistrationFunnelReport do
 
     allow(report).to receive(:upload_file_to_s3_bucket).and_return(true)
 
-    allow_any_instance_of(Reporting::IrsRegistrationFunnelReport)
+    allow_any_instance_of(Reporting::SpRegistrationFunnelReport)
       .to receive(:funnel_metrics_table)
       .and_return(mock_funnel_metrics_data)
   end
