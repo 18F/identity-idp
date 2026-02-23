@@ -72,6 +72,8 @@ RSpec.describe Proofing::LexisNexis::Ddp::Proofers::InstantVerifyProofer do
 
   describe '#proof' do
     before do
+      allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_org_id)
+        .and_return('test_org_id')
       ServiceProvider.create(
         issuer: issuer,
         friendly_name: friendly_name,
@@ -95,9 +97,8 @@ RSpec.describe Proofing::LexisNexis::Ddp::Proofers::InstantVerifyProofer do
 
           expect(result.success?).to eq(true)
           expect(result.errors).to be_empty
-          expect(result.review_status).to eq('pass')
-          expect(result.session_id).to eq('super-cool-test-session-id')
-          expect(result.account_lex_id).to eq('super-cool-test-lex-id')
+          expect(result.transaction_id).to eq('super-cool-test-session-id')
+          expect(result.vendor_name).to eq('lexisnexis:instant_verify_ddp')
         end
       end
 
@@ -119,6 +120,48 @@ RSpec.describe Proofing::LexisNexis::Ddp::Proofers::InstantVerifyProofer do
           expect(result.success?).to eq(false)
           expect(result.errors).to be_empty
           expect(result.exception).to eq(error)
+        end
+      end
+
+      context 'proofing failures that allow additional verification' do
+        context 'and attribute requires additional verification' do
+          let(:response_body) do
+            LexisNexisFixtures.ddp_instant_verify_date_of_birth_fail_response_json
+          end
+
+          it 'returns a result that identifies attribute as needing verification' do
+            stub_request(
+              :post,
+              proofing_verification_request.url,
+            ).to_return(
+              body: LexisNexisFixtures.ddp_instant_verify_date_of_birth_fail_response_json,
+              status: 200,
+            )
+
+            result = subject.proof(proofing_applicant)
+
+            expect(result.failed_result_can_pass_with_additional_verification?).to eq(true)
+            expect(result.attributes_requiring_additional_verification).to eq([:dob])
+          end
+        end
+
+        context 'the result fails for a reason other than a failure to match attributes' do
+          let(:response_body) { LexisNexisFixtures.ddp_instant_verify_error_response_json }
+
+          it 'returns a result that cannot pass with additional verification' do
+            stub_request(
+              :post,
+              proofing_verification_request.url,
+            ).to_return(
+              body: LexisNexisFixtures.ddp_instant_verify_error_response_json,
+              status: 200,
+            )
+
+            result = subject.proof(proofing_applicant)
+
+            expect(result.failed_result_can_pass_with_additional_verification?).to eq(false)
+            expect(result.attributes_requiring_additional_verification).to be_empty
+          end
         end
       end
     end
