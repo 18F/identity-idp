@@ -26,7 +26,7 @@ module Proofing
               account_drivers_license_type: applicant[:state_id_number] ? 'us_dl' : '',
               account_drivers_license_issuer: applicant[:state_id_jurisdiction].to_s.strip || '',
               event_type: 'ACCOUNT_CREATION', # Should it be this??
-              policy: 'Instant Verify',
+              policy: config.ddp_policy,
               service_type: 'all',
               national_id_number: applicant[:ssn]&.gsub(/\D/, '') || '',
               national_id_type: applicant[:ssn] ? 'US_SSN' : '',
