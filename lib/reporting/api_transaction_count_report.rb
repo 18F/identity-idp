@@ -371,7 +371,6 @@ module Reporting
       <<~QUERY
          fields @timestamp, @message, @log, id
         |filter name = 'gpo_confirmation_upload' #GPO confirmation records were uploaded for letter sends
-        | stats count(*) as gpo_transactions
         | limit 10000
       QUERY
     end
@@ -388,7 +387,6 @@ module Reporting
          coalesce(@should_proof_state_id,0) as should_proof_state_id
         | filter (name = 'IdV: doc auth verify proofing results' and should_proof_state_id = 1)  or (name = 'idv_state_id_validation')
         | filter vendor_name = 'aamva:state_id'
-        | stats count(*) as aamva_transactions_ipp
         | limit 10000
       QUERY
     end
@@ -397,7 +395,6 @@ module Reporting
       <<~QUERY
         fields @timestamp, @message, @log, id
         | filter name IN ["idv_socure_shadow_mode_phonerisk_result"] 
-        | stats count(*) as socure_phonerisk_transactions
         | limit 10000
       QUERY
     end
