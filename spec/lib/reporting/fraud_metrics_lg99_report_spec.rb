@@ -174,7 +174,7 @@ RSpec.describe Reporting::FraudMetricsLg99Report do
 
   describe '#cloudwatch_client' do
     let(:opts) { {} }
-    let(:subject) { described_class.new(time_range:, **opts) }
+    let(:subject) { Reporting::FraudMetricsLg99Report.new(time_range:, **opts) }
     let(:default_args) do
       {
         num_threads: 1,

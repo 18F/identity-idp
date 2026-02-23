@@ -548,7 +548,7 @@ RSpec.describe Reporting::IdentityVerificationReport do
 
   describe '#cloudwatch_client' do
     let(:opts) { {} }
-    let(:subject) { described_class.new(issuers: Array(issuer), time_range:, **opts) }
+    let(:subject) { Reporting::IdentityVerificationReport.new(issuers: Array(issuer), time_range:, **opts) }
     let(:default_args) do
       {
         num_threads: 5,

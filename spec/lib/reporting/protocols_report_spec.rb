@@ -186,7 +186,7 @@ RSpec.describe Reporting::ProtocolsReport do
 
   describe '#cloudwatch_client' do
     let(:opts) { {} }
-    let(:subject) { described_class.new(issuers: nil, time_range:, **opts) }
+    let(:subject) { Reporting::ProtocolsReport.new(issuers: nil, time_range:, **opts) }
     let(:default_args) do
       {
         num_threads: 10,

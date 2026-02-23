@@ -37,7 +37,7 @@ RSpec.describe Reporting::IrsRegistrationFunnelReport do
   end
 
   subject(:report) do
-    described_class.new(
+    Reporting::IrsRegistrationFunnelReport.new(
       issuers: issuers,
       time_range: time_range,
       agency_abbreviation: agency,
@@ -129,7 +129,7 @@ RSpec.describe Reporting::IrsRegistrationFunnelReport do
   describe '#cloudwatch_client' do
     let(:opts) { {} }
     let(:subject) do
-      described_class.new(
+      Reporting::IrsRegistrationFunnelReport.new(
         issuers: issuers,
         time_range: time_range,
         agency_abbreviation: agency,

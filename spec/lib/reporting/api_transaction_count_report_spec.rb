@@ -11,7 +11,7 @@ RSpec.describe Reporting::ApiTransactionCountReport do
     ]
   end
 
-  subject(:report) { described_class.new(time_range:) }
+  subject(:report) { Reporting::ApiTransactionCountReport.new(time_range:) }
 
   before do
     allow(report).to receive(:true_id_table).and_return([10, mock_results])

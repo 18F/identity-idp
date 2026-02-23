@@ -42,13 +42,14 @@ RSpec.describe Reports::IrsCredentialTenureReport do
     allow(IdentityConfig.store).to receive(:irs_credential_tenure_report_issuers)
       .and_return(issuers)
     allow(ReportMailer).to receive(:tables_report).and_call_original
-    allow_any_instance_of(described_class).to receive(:upload_to_s3)
+    allow_any_instance_of(Reports::IrsCredentialTenureReport).to receive(:upload_to_s3)
     allow(Reporting::IrsCredentialTenureReport).to receive(:new).and_return(tenure_report)
   end
 
   describe '#perform' do
     it 'uploads each report to S3 and sends an email' do
-      expect_any_instance_of(described_class).to receive(:upload_to_s3).exactly(3).times
+      expect_any_instance_of(Reports::IrsCredentialTenureReport)
+        .to receive(:upload_to_s3).exactly(3).times
       expect(ReportMailer).to receive(:tables_report).with(
         to: emails,
         subject: "IRS Credential Tenure Report - #{report_date}",
