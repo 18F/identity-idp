@@ -907,6 +907,8 @@ event_types.sign_in_after_2fa: 已使用第二个因素登录
 event_types.sign_in_before_2fa: 已使用密码登录
 event_types.sign_in_notification_timeframe_expired: 从新设备登录的通知时间窗口已过
 event_types.sign_in_unsuccessful_2fa: 身份证实失败
+event_types.sp_user_consent_granted: 用户同意已授予
+event_types.sp_user_consent_revoked: 用户同意已撤销
 event_types.webauthn_key_added: 硬件安全密钥已添加
 event_types.webauthn_key_removed: 硬件安全密钥已去掉
 event_types.webauthn_platform_added: 添加了人脸或触摸解锁
@@ -1947,6 +1949,11 @@ user_authorization_confirmation.continue: 继续
 user_authorization_confirmation.currently_logged_in: '你已用以下电邮登入:'
 user_authorization_confirmation.or: 或者
 user_authorization_confirmation.sign_in: 换电邮
+user_mailer.account_connected_to_sp.intro: 要断开您的帐户与%{sp_name}的连接, %{sign_in_link}, 前往侧边栏中的“您的已连接服务”，然后点击该机构下方的“断开连接”。
+user_mailer.account_connected_to_sp.sign_in_link: 请登录您的帐户
+user_mailer.account_connected_to_sp.subject: 您已将您的帐户关联到 %{sp_name}。
+user_mailer.account_disconnected_from_sp.intro: 如果您想重新关联您的账户，请访问%{sp_name}。
+user_mailer.account_disconnected_from_sp.subject: 您已将%{sp_name}从您的帐户中移除。
 user_mailer.account_reinstated.subject: 你的账户已解锁
 user_mailer.account_reinstated.we_have_finished_reviewing: 我们已完成对你%{app_name}账户的审查，你现在能使用账户信息登录了。
 user_mailer.account_rejected.intro: 我们无法在%{app_name}验证你的身份。请联系你试图访问其服务的那个机构。
@@ -2113,6 +2120,9 @@ user_mailer.signup_with_your_email.help_html: 如果你没有要求一封新电�
 user_mailer.signup_with_your_email.intro_html: 该电邮地址已与一个 %{app_name_html}账户相关联，所以我们不能用它设立新账户。要使用你现有账户登录，请点击以下链接。 如果你未试图用此电邮地址登录，可以忽略这一信息。
 user_mailer.signup_with_your_email.link_text: 请到 %{app_name}
 user_mailer.signup_with_your_email.reset_password_html: 如果你不记得密码，请到 %{app_name_html} 去重设密码。
+user_mailer.sp_connection.auth_method: 身份验证
+user_mailer.sp_connection.if_wasnt_you: 如果这不是您本人操作，请%{reset_password}并更改您的%{auth_method}方式。
+user_mailer.sp_connection.reset_password: 立即重置密码
 user_mailer.suspended_create_account.message: 用该电邮地址创建你的%{app_name} 账户出现了问题。请拨打 %{contact_number}到我们联系中心并提供这一代码%{support_code}。
 user_mailer.suspended_create_account.subject: 我们无法创建你的账户。
 user_mailer.suspended_reset_password.message: 重设你的密码出了问题。请拨打 %{contact_number}到我们联系中心并提供这一代码%{support_code}。
