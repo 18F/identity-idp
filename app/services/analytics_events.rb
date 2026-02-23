@@ -8208,13 +8208,7 @@ module AnalyticsEvents
     area_code:,
     country_code:,
     phone_fingerprint:,
-    ip_country: nil,
-    context:,
-    otp_delivery_preference:,
-    resend:,
-    telephony_response:,
-    adapter:,
-    success:,
+    context:, otp_delivery_preference:, resend:, telephony_response:, adapter:, success:, ip_country: nil,
     recaptcha_annotation: nil,
     **extra
   )
