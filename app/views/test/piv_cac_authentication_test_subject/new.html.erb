@@ -24,7 +24,8 @@
           ['Missing token', 'token.missing'],
           ['Invalid token', 'token.invalid'],
           # This error is only applicable when a user is attempting to sign in with their PIV card
-          ['Not auth cert', 'certificate.not_auth_cert']
+          # At the HSPD12 authentication assurance level
+          ['Incorrect certificate type', 'certificate.not_auth_cert'],
         ],
       ) %>
   <%= f.submit('Proceed', class: 'display-block margin-y-5 usa-button usa-button--big usa-button--wide') %>
