@@ -147,7 +147,7 @@ RSpec.describe Proofing::LexisNexis::Ddp::Requests::InstantVerifyRequest do
 
   describe '#url' do
     it 'returns a url for the DDP session query endpoint' do
-      expect(subject.url).to eq('https://example.com/api/session-query')
+      expect(subject.url).to eq('https://example.com/api/attribute-query')
     end
   end
 
