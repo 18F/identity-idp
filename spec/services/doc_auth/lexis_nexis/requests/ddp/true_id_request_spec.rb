@@ -8,10 +8,6 @@ RSpec.describe DocAuth::LexisNexis::Requests::Ddp::TrueIdRequest do
   let(:liveness_checking_required) { false }
   let(:document_type_requested) { DocAuth::LexisNexis::DocumentTypes::DRIVERS_LICENSE }
   let(:account_id) { 'test_account' }
-  let(:non_cropping_non_liveness_flow) { 'test_workflow' }
-  let(:cropping_non_liveness_flow) { 'test_workflow_cropping' }
-  let(:non_cropping_liveness_flow) { 'test_workflow_liveness' }
-  let(:cropping_liveness_flow) { 'test_workflow_liveness_cropping' }
   let(:post_url) { 'https://example.com/authentication/v1/trueid/' }
   let(:post_url_liveness) { 'https://example.com/authentication/v1/trueid/' }
   let(:applicant) do
@@ -34,10 +30,6 @@ RSpec.describe DocAuth::LexisNexis::Requests::Ddp::TrueIdRequest do
       base_url: 'https://example.com',
       org_id: 'test_org_id',
       trueid_account_id: account_id,
-      trueid_noliveness_cropping_workflow: cropping_non_liveness_flow,
-      trueid_noliveness_nocropping_workflow: non_cropping_non_liveness_flow,
-      trueid_liveness_cropping_workflow: cropping_liveness_flow,
-      trueid_liveness_nocropping_workflow: non_cropping_liveness_flow,
     )
   end
 

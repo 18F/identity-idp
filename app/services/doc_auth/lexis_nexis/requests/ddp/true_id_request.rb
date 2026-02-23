@@ -9,12 +9,8 @@ module DocAuth
 
           def initialize(config:, user_uuid:, uuid_prefix:, applicant:)
             @applicant = applicant
-            super(config: config, user_uuid: user_uuid, uuid_prefix: uuid_prefix)
-          end
-
-          def fetch
             validate_images!
-            super
+            super(config: config, user_uuid: user_uuid, uuid_prefix: uuid_prefix)
           end
 
           def policy
@@ -68,7 +64,6 @@ module DocAuth
 
           def request_context
             {
-              workflow: workflow,
               document_type_requested: applicant[:document_type_requested],
             }
           end
@@ -83,14 +78,6 @@ module DocAuth
 
           def password
             config.trueid_password
-          end
-
-          def workflow
-            if liveness_checking_required?
-              config.trueid_liveness_nocropping_workflow
-            else
-              config.trueid_noliveness_cropping_workflow
-            end
           end
 
           def path

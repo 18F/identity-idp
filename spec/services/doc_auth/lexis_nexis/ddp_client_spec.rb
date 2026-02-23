@@ -16,10 +16,6 @@ RSpec.describe DocAuth::LexisNexis::DdpClient do
       base_url: 'https://lexis.nexis.example.com',
       locale: 'en',
       trueid_account_id: 'test_account',
-      trueid_noliveness_cropping_workflow: 'NOLIVENESS.CROPPING.WORKFLOW',
-      trueid_noliveness_nocropping_workflow: 'NOLIVENESS.NOCROPPING.WORKFLOW',
-      trueid_liveness_cropping_workflow: 'LIVENESS.CROPPING.WORKFLOW',
-      trueid_liveness_nocropping_workflow: 'LIVENESS.NOCROPPING.WORKFLOW',
     }
   end
   let(:success_response_body) { LexisNexisFixtures.ddp_true_id_state_id_response_success }

@@ -212,7 +212,6 @@ module DocAuth
               review_status: review_status,
               vendor: 'TrueID DDP',
               billed: billed?,
-              workflow: @request_context&.dig(:workflow),
             }
           end
         end

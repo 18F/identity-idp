@@ -147,7 +147,6 @@ RSpec.describe DocAuth::LexisNexis::Responses::Ddp::TrueIdResponse do
     it 'has extra attributes' do
       extra_attributes = response.extra_attributes
       expect(extra_attributes).not_to be_empty
-      expect(extra_attributes).to have_key(:workflow)
       expect(extra_attributes).to have_key(:reference)
     end
 
@@ -222,7 +221,6 @@ RSpec.describe DocAuth::LexisNexis::Responses::Ddp::TrueIdResponse do
       it 'has extra attributes' do
         extra_attributes = response.extra_attributes
         expect(extra_attributes).not_to be_empty
-        expect(extra_attributes).to have_key(:workflow)
         expect(extra_attributes).to have_key(:reference)
       end
 
