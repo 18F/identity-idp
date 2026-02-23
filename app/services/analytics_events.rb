@@ -7609,6 +7609,7 @@ module AnalyticsEvents
   # @param [String] limiter_type Name of the rate limiter configuration exceeded
   # @param [String] country_code Abbreviated 2-letter country code associated with phone number
   # @param [String] phone_fingerprint HMAC fingerprint of the phone number formatted as E.164
+  # @param [String, nil] ip_country 2-letter country code associated with request IP address
   # @param ["authentication", "reauthentication", "confirmation"] context User session context
   # @param ["sms", "voice"] otp_delivery_preference Channel used to send the message
   # @param [String,nil] step_name Name of step in user flow where rate limit occurred
@@ -8207,6 +8208,7 @@ module AnalyticsEvents
     area_code:,
     country_code:,
     phone_fingerprint:,
+    ip_country: nil,
     context:,
     otp_delivery_preference:,
     resend:,
@@ -8222,6 +8224,7 @@ module AnalyticsEvents
         area_code: area_code,
         country_code: country_code,
         phone_fingerprint: phone_fingerprint,
+        ip_country: ip_country,
         context: context,
         otp_delivery_preference: otp_delivery_preference,
         resend: resend,
