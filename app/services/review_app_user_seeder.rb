@@ -12,7 +12,7 @@ class ReviewAppUserSeeder
   DEFAULT_PASSWORD = 'salty pickles'
 
   def run
-    return unless ENV['KUBERNETES_REVIEW_APP'] == 'true'
+    return unless ENV['POSTGRES_HOST']&.include?('.review-app')
 
     REVIEW_APP_USERS.each_with_index do |email, index|
       next if user_exists?(email)

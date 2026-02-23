@@ -6,10 +6,10 @@ RSpec.describe ReviewAppUserSeeder do
   describe '#run' do
     subject(:run) { described_class.new.run }
 
-    context 'when KUBERNETES_REVIEW_APP is not set' do
+    context 'when POSTGRES_HOST does not include .review-app' do
       before do
         allow(ENV).to receive(:[]).and_call_original
-        allow(ENV).to receive(:[]).with('KUBERNETES_REVIEW_APP').and_return(nil)
+        allow(ENV).to receive(:[]).with('POSTGRES_HOST').and_return('localhost')
       end
 
       it 'does not create any users' do
@@ -17,10 +17,10 @@ RSpec.describe ReviewAppUserSeeder do
       end
     end
 
-    context 'when KUBERNETES_REVIEW_APP is set to true' do
+    context 'when POSTGRES_HOST includes .review-app' do
       before do
         allow(ENV).to receive(:[]).and_call_original
-        allow(ENV).to receive(:[]).with('KUBERNETES_REVIEW_APP').and_return('true')
+        allow(ENV).to receive(:[]).with('POSTGRES_HOST').and_return('db.review-app.example.com')
       end
 
       it 'creates users for each role' do
