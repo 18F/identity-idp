@@ -16,7 +16,7 @@ RSpec.describe Proofing::Mock::DdpMockClient do
     )
   end
 
-  subject(:instance) { described_class.new }
+  subject(:instance) { Proofing::Mock::DdpMockClient.new }
 
   describe '#proof' do
     subject(:result) { instance.proof(applicant) }
@@ -79,7 +79,9 @@ RSpec.describe Proofing::Mock::DdpMockClient do
     context 'with failed request' do
       let(:redis_result) { 'pass' }
 
-      subject(:instance) { described_class.new response_fixture_file: 'error_response.json' }
+      subject(:instance) do
+        Proofing::Mock::DdpMockClient.new response_fixture_file: 'error_response.json'
+      end
 
       it 'records request error' do
         expect(result.errors).to eql({ request_result: ['fail_invalid_parameter'] })

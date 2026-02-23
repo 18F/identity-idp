@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe SessionTimeoutModalPresenter do
   let(:user_fully_authenticated) { nil }
 
-  subject(:presenter) { described_class.new(user_fully_authenticated:) }
+  subject(:presenter) { SessionTimeoutModalPresenter.new(user_fully_authenticated:) }
 
   describe '#translation_scope' do
     subject(:translation_scope) { presenter.translation_scope }

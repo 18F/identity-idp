@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe SetupPresenter do
   let(:user) { create(:user) }
   let(:presenter) do
-    described_class.new(
+    SetupPresenter.new(
       current_user: user,
       user_fully_authenticated: false,
       user_opted_remember_device_cookie: true,
@@ -30,7 +30,7 @@ RSpec.describe SetupPresenter do
   end
 
   def expect_remember_me_value_to_be(cookie:, default:, value:)
-    presenter = described_class.new(
+    presenter = SetupPresenter.new(
       current_user: user,
       user_fully_authenticated: true,
       user_opted_remember_device_cookie: cookie,

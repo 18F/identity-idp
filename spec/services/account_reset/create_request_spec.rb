@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe AccountReset::CreateRequest do
   subject(:requesting_issuer) { 'example-issuer' }
-  subject(:create_request) { described_class.new(user, requesting_issuer) }
+  subject(:create_request) { AccountReset::CreateRequest.new(user, requesting_issuer) }
 
   describe '#call' do
     context 'when the user does not have a phone' do

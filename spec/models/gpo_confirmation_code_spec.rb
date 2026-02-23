@@ -12,7 +12,7 @@ RSpec.describe GpoConfirmationCode do
         otp_fingerprint: Pii::Fingerprinter.fingerprint(otp),
       )
 
-      expect(described_class.first_with_otp(otp)).to eq(good_confirmation_code)
+      expect(GpoConfirmationCode.first_with_otp(otp)).to eq(good_confirmation_code)
     end
 
     it 'normalizes the entered otp before searching' do
@@ -21,13 +21,13 @@ RSpec.describe GpoConfirmationCode do
         otp_fingerprint: Pii::Fingerprinter.fingerprint('ABC000'),
       )
 
-      expect(described_class.first_with_otp('abcooo')).to eq(confirmation_code)
+      expect(GpoConfirmationCode.first_with_otp('abcooo')).to eq(confirmation_code)
     end
 
     it 'returns nil if no record matches the OTP' do
       create(:gpo_confirmation_code)
 
-      expect(described_class.first_with_otp(otp)).to be_nil
+      expect(GpoConfirmationCode.first_with_otp(otp)).to be_nil
     end
   end
 

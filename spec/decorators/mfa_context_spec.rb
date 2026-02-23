@@ -225,7 +225,7 @@ RSpec.describe MfaContext do
       it 'returns 2' do
         user = create(:user, :with_phone)
         create(:phone_configuration, user: user, phone: '+1 703-555-1213')
-        subject = described_class.new(user.reload)
+        subject = MfaContext.new(user.reload)
 
         expect(subject.enabled_mfa_methods_count).to eq(2)
       end
@@ -235,7 +235,7 @@ RSpec.describe MfaContext do
       it 'returns 2' do
         user = create(:user)
         create_list(:webauthn_configuration, 2, user: user)
-        subject = described_class.new(user.reload)
+        subject = MfaContext.new(user.reload)
 
         expect(subject.enabled_mfa_methods_count).to eq(2)
       end
@@ -246,7 +246,7 @@ RSpec.describe MfaContext do
         user = create(:user)
         create(:webauthn_configuration, user: user)
         create(:webauthn_configuration, :platform_authenticator, user: user)
-        subject = described_class.new(user.reload)
+        subject = MfaContext.new(user.reload)
 
         expect(subject.enabled_mfa_methods_count).to eq(2)
       end
@@ -256,7 +256,7 @@ RSpec.describe MfaContext do
       it 'returns 2' do
         user = create(:user, :with_phone)
         create(:webauthn_configuration, user: user)
-        subject = described_class.new(user.reload)
+        subject = MfaContext.new(user.reload)
 
         expect(subject.enabled_mfa_methods_count).to eq(2)
       end
@@ -266,7 +266,7 @@ RSpec.describe MfaContext do
       it 'returns 2' do
         user = create(:user, :with_phone)
         create_list(:backup_code_configuration, 10, user: user)
-        subject = described_class.new(user.reload)
+        subject = MfaContext.new(user.reload)
 
         expect(subject.enabled_mfa_methods_count).to eq(2)
       end
@@ -276,7 +276,7 @@ RSpec.describe MfaContext do
       it 'returns 1' do
         user = create(:user, :with_phone)
         create_list(:backup_code_configuration, 10, user: user, used_at: 1.day.ago)
-        subject = described_class.new(user.reload)
+        subject = MfaContext.new(user.reload)
 
         expect(subject.enabled_mfa_methods_count).to eq(1)
       end
@@ -285,7 +285,7 @@ RSpec.describe MfaContext do
     context 'with a phone and a PIV/CAC' do
       it 'returns 2' do
         user = create(:user, :with_phone, :with_piv_or_cac)
-        subject = described_class.new(user.reload)
+        subject = MfaContext.new(user.reload)
 
         expect(subject.enabled_mfa_methods_count).to eq(2)
       end
@@ -294,7 +294,7 @@ RSpec.describe MfaContext do
     context 'with a phone and an auth app' do
       it 'returns 2' do
         user = create(:user, :with_phone, :with_authentication_app)
-        subject = described_class.new(user.reload)
+        subject = MfaContext.new(user.reload)
 
         expect(subject.enabled_mfa_methods_count).to eq(2)
       end
@@ -303,7 +303,7 @@ RSpec.describe MfaContext do
     context 'with a phone and a personal key' do
       it 'returns 2' do
         user = create(:user, :with_phone, :with_personal_key)
-        subject = described_class.new(user.reload)
+        subject = MfaContext.new(user.reload)
 
         expect(subject.enabled_mfa_methods_count).to eq(1)
       end
@@ -314,7 +314,7 @@ RSpec.describe MfaContext do
     context 'without any phishable configs' do
       it 'returns 0' do
         user = create(:user, :with_piv_or_cac, :with_webauthn)
-        subject = described_class.new(user.reload)
+        subject = MfaContext.new(user.reload)
         expect(subject.phishable_configuration_count).to eq(0)
       end
     end
@@ -322,7 +322,7 @@ RSpec.describe MfaContext do
     context 'with some phishable configs' do
       it 'returns 2' do
         user = create(:user, :with_phone, :with_authentication_app)
-        subject = described_class.new(user.reload)
+        subject = MfaContext.new(user.reload)
         expect(subject.phishable_configuration_count).to eq(2)
       end
     end
@@ -332,7 +332,7 @@ RSpec.describe MfaContext do
     context 'with PIV/CAC and webauthn configurations' do
       it 'returns 2' do
         user = create(:user, :with_piv_or_cac, :with_webauthn)
-        subject = described_class.new(user.reload)
+        subject = MfaContext.new(user.reload)
         expect(subject.unphishable_configuration_count).to eq(2)
       end
     end
@@ -340,7 +340,7 @@ RSpec.describe MfaContext do
     context 'with no phishable configs' do
       it 'returns 0' do
         user = create(:user, :with_phone, :with_authentication_app)
-        subject = described_class.new(user.reload)
+        subject = MfaContext.new(user.reload)
         expect(subject.unphishable_configuration_count).to eq(0)
       end
     end

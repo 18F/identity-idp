@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe TwoFactorAuthentication::BackupCodePolicy do
   let(:user) { User.new }
-  let(:policy) { described_class.new(user) }
+  let(:policy) { TwoFactorAuthentication::BackupCodePolicy.new(user) }
 
   describe '#configured?' do
     it 'returns false if there are no codes' do

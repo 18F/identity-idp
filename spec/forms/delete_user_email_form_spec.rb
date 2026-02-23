@@ -7,7 +7,7 @@ RSpec.describe DeleteUserEmailForm do
     context 'with only a single email address' do
       let(:user) { create(:user, email: 'test@example.com ') }
       let(:email_address) { user.email_addresses.first }
-      let(:form) { described_class.new(user, email_address) }
+      let(:form) { DeleteUserEmailForm.new(user, email_address) }
 
       it 'returns failure' do
         result = submit
@@ -29,7 +29,7 @@ RSpec.describe DeleteUserEmailForm do
     context 'with multiple email addresses' do
       let(:user) { create(:user, :fully_registered, :with_multiple_emails) }
       let(:email_address) { user.email_addresses.first }
-      let(:form) { described_class.new(user, email_address) }
+      let(:form) { DeleteUserEmailForm.new(user, email_address) }
 
       it 'returns success' do
         result = submit
@@ -66,7 +66,7 @@ RSpec.describe DeleteUserEmailForm do
       let(:user) { create(:user, :fully_registered, :with_multiple_emails) }
       let(:other_user) { create(:user, :fully_registered, :with_multiple_emails) }
       let(:email_address) { other_user.email_addresses.first }
-      let(:form) { described_class.new(user, email_address) }
+      let(:form) { DeleteUserEmailForm.new(user, email_address) }
 
       it 'returns failure' do
         result = submit

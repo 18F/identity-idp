@@ -21,7 +21,7 @@ RSpec.describe Idv::DocPiiPassport do
       document_type_received:,
     }
   end
-  subject(:doc_pii_passport) { described_class.new(pii:) }
+  subject(:doc_pii_passport) { Idv::DocPiiPassport.new(pii:) }
 
   context 'when pii is valid' do
     it 'is valid' do

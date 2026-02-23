@@ -17,9 +17,9 @@ RSpec.describe Encryption::KmsLogger do
           log_filename: Idp::Constants::KMS_LOG_FILENAME,
         }.to_json
 
-        expect(described_class.logger).to receive(:info).with(log)
+        expect(Encryption::KmsLogger.logger).to receive(:info).with(log)
 
-        described_class.log(
+        Encryption::KmsLogger.log(
           action: :encrypt,
           context: { context: 'pii-encryption', user_uuid: '1234-abc' },
           log_context: 'log_context',
@@ -42,9 +42,9 @@ RSpec.describe Encryption::KmsLogger do
           log_filename: Idp::Constants::KMS_LOG_FILENAME,
         }.to_json
 
-        expect(described_class.logger).to receive(:info).with(log)
+        expect(Encryption::KmsLogger.logger).to receive(:info).with(log)
 
-        described_class.log(
+        Encryption::KmsLogger.log(
           action: :decrypt,
           timestamp: log_timestamp,
           key_id: 'super-duper-aws-kms-key-id',
@@ -55,7 +55,7 @@ RSpec.describe Encryption::KmsLogger do
 
   describe '.logger' do
     it 'is a logger' do
-      expect(described_class.logger).to be_a(Logger)
+      expect(Encryption::KmsLogger.logger).to be_a(Logger)
     end
   end
 end

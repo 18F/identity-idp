@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe Idv::DataUrlImage do
   let(:data) { 'abc def' }
   let(:data_url) { "data:image/jpeg,#{Addressable::URI.encode(data)}" }
-  subject(:data_url_image) { described_class.new(data_url) }
+  subject(:data_url_image) { Idv::DataUrlImage.new(data_url) }
 
   describe '#initialize' do
     context 'with bad data' do

@@ -26,7 +26,7 @@ RSpec.describe FrontendLogger do
       end,
     }
   end
-  let(:logger) { described_class.new(analytics: analytics, event_map: event_map) }
+  let(:logger) { FrontendLogger.new(analytics: analytics, event_map: event_map) }
 
   describe '#track_event' do
     let(:name) { nil }

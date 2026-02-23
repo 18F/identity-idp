@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe Reporting::IrsCredentialTenureReport do
   let(:report_date) { Date.new(2025, 5, 31) }
   let(:issuers) { ['urn:gov:gsa:openidconnect.profiles:sp:sso:irs:sample'] }
-  subject(:report) { described_class.new(report_date, issuers: issuers) }
+  subject(:report) { Reporting::IrsCredentialTenureReport.new(report_date, issuers: issuers) }
 
   before do
     travel_to report_date

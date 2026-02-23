@@ -24,7 +24,7 @@ RSpec.describe DuplicateProfileSet, type: :model do
   end
 
   it 'returns record matching both service_provider and profile_id' do
-    result = described_class.involving_profile(
+    result = DuplicateProfileSet.involving_profile(
       profile_id: profile_id,
       service_provider: service_provider.issuer,
     )
@@ -35,7 +35,7 @@ RSpec.describe DuplicateProfileSet, type: :model do
   end
 
   it 'returns nil result when profile_id is not duplicate profile' do
-    result = described_class.involving_profile(
+    result = DuplicateProfileSet.involving_profile(
       profile_id: 777,
       service_provider: service_provider.issuer,
     )

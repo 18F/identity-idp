@@ -36,7 +36,7 @@ RSpec.describe UspsInPersonProofing::Applicant do
 
       it 'returns a UspsInPersonProofing::Applicant' do
         expect(
-          described_class.from_usps_applicant_and_enrollment(
+          UspsInPersonProofing::Applicant.from_usps_applicant_and_enrollment(
             applicant,
             enrollment,
           ),
@@ -68,7 +68,7 @@ RSpec.describe UspsInPersonProofing::Applicant do
 
       it 'returns a UspsInPersonProofing::Applicant' do
         expect(
-          described_class.from_usps_applicant_and_enrollment(
+          UspsInPersonProofing::Applicant.from_usps_applicant_and_enrollment(
             applicant,
             enrollment,
           ),
@@ -90,7 +90,7 @@ RSpec.describe UspsInPersonProofing::Applicant do
   end
 
   describe '#has_valid_address?' do
-    let(:applicant) { described_class.new(address:) }
+    let(:applicant) { UspsInPersonProofing::Applicant.new(address:) }
 
     context 'when the address is valid' do
       let(:address) { Faker::Address.street_address }

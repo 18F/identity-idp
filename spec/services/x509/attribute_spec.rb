@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe X509::Attribute do
   let(:x509_subject) { 'O=US, OU=DoD, CN=John.Doe.1234' }
 
-  subject { described_class.new(raw: x509_subject) }
+  subject { X509::Attribute.new(raw: x509_subject) }
   describe 'delegation' do
     it 'delegates to raw' do
       expect(subject.blank?).to eq false

@@ -6,7 +6,7 @@ RSpec.describe AccordionComponent, type: :component do
   let(:options) { { bordered:, **tag_options }.compact }
 
   subject(:rendered) do
-    render_inline(described_class.new(**options)) do |c|
+    render_inline(AccordionComponent.new(**options)) do |c|
       c.with_header { 'heading' }
       'content'
     end
@@ -19,7 +19,7 @@ RSpec.describe AccordionComponent, type: :component do
   end
 
   it 'assigns a unique id' do
-    second_rendered = render_inline(described_class.new)
+    second_rendered = render_inline(AccordionComponent.new)
 
     rendered_id = rendered.css('.usa-accordion__content').first['id']
     second_rendered_id = second_rendered.css('.usa-accordion__content').first['id']
