@@ -23,6 +23,7 @@ module SignUp
       track_completion_event('agency-page')
       update_verified_attributes
       send_in_person_completion_survey
+      notify_user_of_connected_sp
       if user_session[:selected_email_id_for_linked_identity].nil?
         user_session[:selected_email_id_for_linked_identity] = current_user
           .last_sign_in_email_address.id
@@ -127,6 +128,15 @@ module SignUp
     def track_completion_event(last_page)
       analytics.user_registration_complete(**analytics_attributes(last_page))
       user_session.delete(:in_account_creation_flow)
+    end
+
+    def notify_user_of_connected_sp
+      _event, disavowal_token = create_user_event_with_disavowal(:sp_user_consent_granted)
+      current_user.email_addresses.each do |email_address_record|
+        UserMailer.with(user: current_user, email_address: email_address_record)
+          .account_connected_to_sp(sp_name: current_sp.friendly_name, disavowal_token:)
+          .deliver_now_or_later
+      end
     end
 
     def pii
