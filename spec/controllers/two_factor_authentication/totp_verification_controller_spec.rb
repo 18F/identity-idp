@@ -65,6 +65,7 @@ RSpec.describe TwoFactorAuthentication::TotpVerificationController do
           multi_factor_auth_method_created_at: cfg.created_at.strftime('%s%L'),
           new_device: true,
           auth_app_configuration_id: controller.current_user.auth_app_configurations.first.id,
+          has_webauthn_platform_configurations: false,
           attempts: 1,
         )
         expect(@analytics).to have_logged_event(
@@ -207,6 +208,7 @@ RSpec.describe TwoFactorAuthentication::TotpVerificationController do
             enabled_mfa_methods_count: 2,
             multi_factor_auth_method: 'totp',
             new_device: true,
+            has_webauthn_platform_configurations: false,
             attempts: 1,
           )
           expect(@analytics).to have_logged_event(
@@ -242,6 +244,7 @@ RSpec.describe TwoFactorAuthentication::TotpVerificationController do
             enabled_mfa_methods_count: 2,
             multi_factor_auth_method: 'totp',
             new_device: true,
+            has_webauthn_platform_configurations: false,
             attempts: 1,
           )
           expect(@analytics).to have_logged_event(

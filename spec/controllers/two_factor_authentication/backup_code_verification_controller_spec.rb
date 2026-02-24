@@ -76,6 +76,7 @@ RSpec.describe TwoFactorAuthentication::BackupCodeVerificationController do
             multi_factor_auth_method_created_at: Time.zone.now.strftime('%s%L'),
             enabled_mfa_methods_count: 1,
             new_device: true,
+            has_webauthn_platform_configurations: false,
             attempts: 1,
           )
 
@@ -140,6 +141,7 @@ RSpec.describe TwoFactorAuthentication::BackupCodeVerificationController do
             multi_factor_auth_method: 'backup_code',
             multi_factor_auth_method_created_at: Time.zone.now.strftime('%s%L'),
             enabled_mfa_methods_count: 1,
+            has_webauthn_platform_configurations: false,
             new_device: true,
             attempts: 1,
           )
@@ -242,6 +244,7 @@ RSpec.describe TwoFactorAuthentication::BackupCodeVerificationController do
               error_details: { backup_code: { invalid: true } },
               multi_factor_auth_method: 'backup_code',
               enabled_mfa_methods_count: 1,
+              has_webauthn_platform_configurations: false,
               new_device: true,
               attempts: 1,
             )
@@ -279,6 +282,7 @@ RSpec.describe TwoFactorAuthentication::BackupCodeVerificationController do
               error_details: { backup_code: { invalid: true } },
               multi_factor_auth_method: 'backup_code',
               enabled_mfa_methods_count: 1,
+              has_webauthn_platform_configurations: false,
               new_device: true,
               attempts: 1,
             )
