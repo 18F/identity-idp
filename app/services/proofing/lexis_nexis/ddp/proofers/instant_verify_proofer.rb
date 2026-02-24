@@ -32,28 +32,28 @@ module Proofing
             Proofing::LexisNexis::Ddp::Requests::InstantVerifyRequest.new(config:, applicant:)
           end
 
-          def find_instant_verify_ddp_product(verification_response)
-            return if verification_response.product_list.length > 1
-            return if verification_response.product_list.blank?
+          def find_instant_verify_ddp_product(parsed_response)
+            return if parsed_response.product_list.length > 1
+            return if parsed_response.product_list.blank?
 
-            product = verification_response.product_list.first
+            product = parsed_response.product_list.first
             return unless product['ProductType'] == 'Verify'
 
             product
           end
 
-          def parse_verification_errors(verification_response)
+          def parse_verification_errors(parsed_response)
             errors = Hash.new { |h, k| h[k] = [] }
-            verification_response.verification_errors.each do |key, value|
+            parsed_response.verification_errors.each do |key, value|
               errors[key] << value
             end
             errors
           end
 
           # rubocop:disable Layout/LineLength
-          def failed_result_can_pass_with_additional_verification?(verification_response, instant_verify_ddp_product)
-            return false unless verification_response.verification_status == 'failed'
-            return false unless verification_response.transaction_reason_code.match?(/(total|priority)\.scoring\.model\.verification\.fail/)
+          def failed_result_can_pass_with_additional_verification?(parsed_response, instant_verify_ddp_product)
+            return false unless parsed_response.verification_status == 'failed'
+            return false unless parsed_response.transaction_reason_code.match?(/(total|priority)\.scoring\.model\.verification\.fail/)
             return false unless instant_verify_ddp_product.present?
             return false unless instant_verify_ddp_product['ProductStatus'] == 'fail'
 
