@@ -2121,7 +2121,7 @@ user_mailer.signup_with_your_email.intro_html: 该电邮地址已与一个 %{app
 user_mailer.signup_with_your_email.link_text: 请到 %{app_name}
 user_mailer.signup_with_your_email.reset_password_html: 如果你不记得密码，请到 %{app_name_html} 去重设密码。
 user_mailer.sp_connection.auth_method: 身份验证
-user_mailer.sp_connection.if_wasnt_you_html: 如果这不是您本人操作，请%{reset_password_html}并更改您的%{auth_method_html}方式。
+user_mailer.sp_connection.instructions_html: 如果这不是您本人操作，请%{reset_password_html}并更改您的%{auth_method_html}方式。
 user_mailer.sp_connection.reset_password: 立即重置密码
 user_mailer.suspended_create_account.message: 用该电邮地址创建你的%{app_name} 账户出现了问题。请拨打 %{contact_number}到我们联系中心并提供这一代码%{support_code}。
 user_mailer.suspended_create_account.subject: 我们无法创建你的账户。

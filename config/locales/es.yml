@@ -2120,7 +2120,7 @@ user_mailer.signup_with_your_email.intro_html: Este email ya está asociado a un
 user_mailer.signup_with_your_email.link_text: Ir a %{app_name}
 user_mailer.signup_with_your_email.reset_password_html: Si no recuerda su contraseña, vaya a %{app_name_html} para restablecerla.
 user_mailer.sp_connection.auth_method: métodos de autenticación
-user_mailer.sp_connection.if_wasnt_you_html: Si no fue usted, %{reset_password_html} y cambie sus %{auth_method_html} inmediatamente.
+user_mailer.sp_connection.instructions_html: Si no fue usted, %{reset_password_html} y cambie sus %{auth_method_html} inmediatamente.
 user_mailer.sp_connection.reset_password: restablezca su contraseña
 user_mailer.suspended_create_account.message: Hubo un problema al crear su cuenta de %{app_name} con esta dirección de correo electrónico. Llame a nuestro centro de atención al %{contact_number} y proporcione este código - %{support_code}.
 user_mailer.suspended_create_account.subject: No podemos crear su cuenta
