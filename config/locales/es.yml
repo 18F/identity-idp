@@ -1948,7 +1948,7 @@ user_authorization_confirmation.continue: Continuar
 user_authorization_confirmation.currently_logged_in: 'Ya inició sesión con el siguiente correo electrónico:'
 user_authorization_confirmation.or: O
 user_authorization_confirmation.sign_in: Cambiar de correo electrónico
-user_mailer.account_connected_to_sp.intro: Para desconectar su cuenta de %{sp_name}, %{sign_in_link}, vaya a la sección “Sus servicios conectadas” en la barra lateral y haga clic en “Desconectar” debajo del servicio.
+user_mailer.account_connected_to_sp.intro_html: Para desconectar su cuenta de %{sp_name}, %{sign_in_link_html}, vaya a la sección “Sus servicios conectadas” en la barra lateral y haga clic en “Desconectar” debajo del servicio.
 user_mailer.account_connected_to_sp.sign_in_link: inicie sesión en su cuenta
 user_mailer.account_connected_to_sp.subject: Usted conectó su cuenta a %{sp_name}
 user_mailer.account_disconnected_from_sp.intro: Visite %{sp_name} si desea volver a conectar su cuenta.
@@ -2120,7 +2120,7 @@ user_mailer.signup_with_your_email.intro_html: Este email ya está asociado a un
 user_mailer.signup_with_your_email.link_text: Ir a %{app_name}
 user_mailer.signup_with_your_email.reset_password_html: Si no recuerda su contraseña, vaya a %{app_name_html} para restablecerla.
 user_mailer.sp_connection.auth_method: métodos de autenticación
-user_mailer.sp_connection.if_wasnt_you: Si no fue usted, %{reset_password} y cambie sus %{auth_method} inmediatamente.
+user_mailer.sp_connection.instructions_html: Si no fue usted, %{reset_password_html} y cambie sus %{auth_method_html} inmediatamente.
 user_mailer.sp_connection.reset_password: restablezca su contraseña
 user_mailer.suspended_create_account.message: Hubo un problema al crear su cuenta de %{app_name} con esta dirección de correo electrónico. Llame a nuestro centro de atención al %{contact_number} y proporcione este código - %{support_code}.
 user_mailer.suspended_create_account.subject: No podemos crear su cuenta
