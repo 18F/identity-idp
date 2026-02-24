@@ -1189,6 +1189,17 @@ RSpec.describe Idv::ApiImageUploadForm do
           )
         end
 
+        it 'logs a network error analytics event' do
+          expect(fake_analytics).to have_logged_event(
+            :idv_doc_auth_network_error,
+            hash_including(
+              submit_attempts: kind_of(Numeric),
+              remaining_submit_attempts: kind_of(Numeric),
+              errors: {},
+            ),
+          )
+        end
+
         context 'when failed images exist in document_capture_session' do
           let(:front_image_fingerprint) { 'front-1' }
           let(:back_image_fingerprint) { 'back-1' }

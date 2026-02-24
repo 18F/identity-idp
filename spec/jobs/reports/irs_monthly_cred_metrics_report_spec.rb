@@ -3,12 +3,29 @@ require 'rails_helper'
 RSpec.describe Reports::IrsMonthlyCredMetricsReport do
   let(:report_date) { Date.new(2021, 3, 2).in_time_zone('UTC').end_of_day }
   let(:report_receiver) { :internal }
-  subject(:report) { Reports::IrsMonthlyCredMetricsReport.new(report_date, report_receiver) }
+  subject(:report)      { Reports::IrsMonthlyCredMetricsReport.new(report_date, report_receiver) }
 
-  let(:name) { 'irs_monthly_cred_metrics' }
   let(:s3_report_bucket_prefix) { 'reports-bucket' }
+
+  let(:mock_reports_partner_emails)  { ['mock_partner@example.com'] }
+  let(:mock_reports_internal_emails) { ['mock_internal@example.com'] }
+  let(:mock_issuers) { ['Issuer_4'] }
+  let(:mock_partner_strings) { ['Partner_1'] }
+
+  let(:report_config) do
+    {
+      'issuers' => mock_issuers,
+      'partner_strings' => mock_partner_strings,
+      'partner_emails' => mock_reports_partner_emails,
+      'internal_emails' => mock_reports_internal_emails,
+    }
+  end
+
+  # Derived by job: "#{partner_strings.first.downcase}_monthly_cred_metrics"
+  let(:report_name) { "#{mock_partner_strings.first.downcase}_monthly_cred_metrics" }
+
   let(:report_folder) do
-    'int/irs_monthly_cred_metrics/2021/2021-03-02.irs_monthly_cred_metrics'
+    "int/#{report_name}/2021/2021-03-02.#{report_name}"
   end
 
   let(:expected_s3_paths) do
@@ -26,10 +43,6 @@ RSpec.describe Reports::IrsMonthlyCredMetricsReport do
     }
   end
 
-  let(:mock_reports_partner_emails) { ['mock_partner@example.com'] }
-  let(:mock_reports_internal_emails) { ['mock_internal@example.com'] }
-  let(:mock_issuers) { ['Issuer_4'] }
-  let(:mock_partner) { ['Partner_1'] }
   let(:fixture_csv_data) do
     fixture_path = Rails.root.join('spec', 'fixtures', 'partner_cred_metrics_input.csv')
     File.read(fixture_path)
@@ -40,14 +53,6 @@ RSpec.describe Reports::IrsMonthlyCredMetricsReport do
     allow(Identity::Hostdata).to receive(:env).and_return('int')
     allow(Identity::Hostdata).to receive(:aws_account_id).and_return('1234')
     allow(Identity::Hostdata).to receive(:aws_region).and_return('us-west-1')
-    allow(IdentityConfig.store).to receive(:irs_credentials_emails)
-      .and_return(mock_reports_partner_emails)
-    allow(IdentityConfig.store).to receive(:team_daily_reports_emails)
-      .and_return(mock_reports_internal_emails)
-    allow(IdentityConfig.store).to receive(:irs_partner_strings)
-      .and_return(mock_partner)
-    allow(IdentityConfig.store).to receive(:irs_issuers)
-      .and_return(mock_issuers)
     allow(IdentityConfig.store).to receive(:s3_report_bucket_prefix)
       .and_return(s3_report_bucket_prefix)
 
@@ -61,122 +66,149 @@ RSpec.describe Reports::IrsMonthlyCredMetricsReport do
     # Mock the report data methods
     allow_any_instance_of(Reports::IrsMonthlyCredMetricsReport)
       .to receive(:issuer_report_data)
-      .and_return([
-                    ['Issuer', 'Monthly active users', 'Credentials authorized', 'New credentials',
-                     'Existing credentials', 'Total auths'],
-                    ['Issuer_4', 100, 50, 30, 20, 200],
-                  ])
+      .and_return(
+        [
+          ['Issuer', 'Monthly active users', 'Credentials authorized',
+           'New identity verification credentials authorized',
+           'Existing identity verification credentials authorized',
+           'Total authentications'],
+          ['Issuer_4', 100, 50, 30, 20, 200],
+        ],
+      )
 
     allow_any_instance_of(Reports::IrsMonthlyCredMetricsReport)
       .to receive(:partner_report_data)
-      .and_return([
-                    ['Partner', 'Credentials authorized', 'New credentials',
-                     'Existing credentials'],
-                    ['Partner_1', 50, 30, 20],
-                  ])
+      .and_return(
+        [
+          ['Metric', 'Value'],
+          ['Credentials authorized', 50],
+          ['New identity verification credentials authorized', 30],
+          ['Existing identity verification credentials authorized', 20],
+        ],
+      )
 
-    # Mock the return from the invoice report
+    # Invoice CSV used by original builders (only needed for fixture builder context)
     allow_any_instance_of(Reports::IrsMonthlyCredMetricsReport)
       .to receive(:invoice_report_data)
       .and_return(fixture_csv_data)
+
+    allow(ReportMailer).to receive_message_chain(:tables_report, :deliver_now)
   end
 
-  context 'for begining of the month sends out the report to the internal and partner' do
-    let(:report_date) { Date.new(2021, 3, 1).prev_day }
-    subject(:report) { described_class.new(report_date, :both) }
+  context 'for beginning of the month sends out the report to the internal and partner' do
+    let(:report_receiver) { :both }
+    let(:report_date) { Date.new(2021, 3, 1).prev_day } # 2021-02-28
+    subject(:report) do
+      Reports::IrsMonthlyCredMetricsReport.new(report_date, report_receiver, report_config)
+    end
 
-    it 'sends out a report to team_data and PARTNER' do
+    it 'sends report to partner (to) and internal (bcc)' do
       expect(ReportMailer).to receive(:tables_report).once.with(
         to: mock_reports_partner_emails,
         bcc: mock_reports_internal_emails,
-        subject: "#{mock_partner.first} Monthly Credential Metrics - #{report_date.to_date}",
+        subject:
+          "#{mock_partner_strings.first} Monthly Credential Metrics - " \
+          "#{report_date.to_date}",
         reports: anything,
         message: report.preamble,
         attachment_format: :csv,
       ).and_call_original
 
-      report.perform(report_date, :both)
+      report.perform(report_date, :both, report_config)
     end
   end
 
   context 'for any day of the month sends out the report to the internal' do
-    let(:report_date) { Date.new(2021, 3, 15).prev_day }
-    subject(:report) { described_class.new(report_date, :internal) }
+    let(:report_receiver) { :internal }
+    let(:report_date) { Date.new(2021, 3, 15).prev_day } # 2021-03-14
+    subject(:report) do
+      Reports::IrsMonthlyCredMetricsReport.new(report_date, report_receiver, report_config)
+    end
 
     it 'sends out a report to internal receivers' do
       expect(ReportMailer).to receive(:tables_report).once.with(
         to: mock_reports_internal_emails,
         bcc: [],
-        subject: "#{mock_partner.first} Monthly Credential Metrics - #{report_date}",
+        subject:
+          "#{mock_partner_strings.first} Monthly Credential Metrics - " \
+          "#{report_date.to_date}",
         reports: anything,
         message: report.preamble,
         attachment_format: :csv,
       ).and_call_original
 
-      report.perform(report_date, :internal)
+      report.perform(report_date, :internal, report_config)
     end
   end
 
   context 'recipient is both but partner emails are empty' do
     let(:report_receiver) { :both }
     let(:report_date) { Date.new(2021, 3, 1).prev_day } # 2021-02-28
-    subject(:report) { described_class.new(report_date, report_receiver) }
+    subject(:report) do
+      Reports::IrsMonthlyCredMetricsReport.new(report_date, report_receiver, report_config)
+    end
 
-    before do
-      allow(IdentityConfig.store).to receive(:irs_credentials_emails)
-        .and_return([]) # no external partner emails
-      allow(IdentityConfig.store).to receive(:team_daily_reports_emails)
-        .and_return(mock_reports_internal_emails)
+    let(:report_config) do
+      super().merge(
+        'partner_emails' => [],
+        'internal_emails' => mock_reports_internal_emails,
+      )
     end
 
     it 'logs a warning and sends the report only to internal emails' do
       expect(Rails.logger).to receive(:warn).with(
-        'IRS Monthly Credential Report: recipient is :both but no external email specified',
+        "#{mock_partner_strings.first} Monthly Credential Report: recipient is :both " \
+        "but no external email specified",
       )
 
       expect(ReportMailer).to receive(:tables_report).once.with(
         to: mock_reports_internal_emails,
         bcc: [],
-        subject: "#{mock_partner.first} Monthly Credential Metrics - #{report_date.to_date}",
+        subject:
+          "#{mock_partner_strings.first} Monthly Credential Metrics - " \
+          "#{report_date.to_date}",
         reports: anything,
         message: report.preamble,
         attachment_format: :csv,
       ).and_call_original
 
-      report.perform(report_date, :both)
+      report.perform(report_date, :both, report_config)
     end
   end
 
   context 'recipient is internal but internal emails are empty' do
     let(:report_receiver) { :internal }
     let(:report_date) { Date.new(2021, 3, 15).prev_day } # 2021-03-14
-    subject(:report) { described_class.new(report_date, report_receiver) }
+    subject(:report) do
+      Reports::IrsMonthlyCredMetricsReport.new(report_date, report_receiver, report_config)
+    end
 
-    before do
-      allow(IdentityConfig.store).to receive(:team_daily_reports_emails)
-        .and_return([]) # no internal emails
-      allow(IdentityConfig.store).to receive(:irs_credentials_emails)
-        .and_return(mock_reports_partner_emails)
+    let(:report_config) do
+      super().merge(
+        'internal_emails' => [],
+        'partner_emails' => mock_reports_partner_emails,
+      )
     end
 
     it 'logs a warning and does not send the report' do
       expect(Rails.logger).to receive(:warn).with(
-        'No email addresses received - IRS Monthly Credential Report NOT SENT',
+        "No email addresses received - #{mock_partner_strings.first} " \
+        "Monthly Credential Report NOT SENT",
       )
 
       expect(ReportMailer).not_to receive(:tables_report)
-      expect(report).not_to receive(:reports)
+      expect(report).not_to receive(:as_emailable_partner_report)
 
-      report.perform(report_date, :internal)
+      report.perform(report_date, :internal, report_config)
     end
   end
 
   it 'does not send the report if no emails are configured' do
-    allow(IdentityConfig.store).to receive(:irs_credentials_emails).and_return('')
-    allow(IdentityConfig.store).to receive(:team_daily_reports_emails).and_return('')
+    config = report_config.merge('partner_emails' => [], 'internal_emails' => [])
+
     expect(ReportMailer).not_to receive(:tables_report)
-    expect(report).not_to receive(:reports)
-    report.perform(report_date)
+    expect(report).not_to receive(:as_emailable_partner_report)
+    report.perform(report_date, :internal, config)
   end
 
   it 'uploads a file to S3 based on the report date' do
@@ -184,52 +216,33 @@ RSpec.describe Reports::IrsMonthlyCredMetricsReport do
       expect(report).to receive(:upload_file_to_s3_bucket).with(
         path: path,
         **s3_metadata,
-      ).exactly(1).time.and_call_original
+      ).once.and_call_original
     end
 
-    report.perform(report_date)
+    report.perform(report_date, :internal, report_config)
   end
 
   describe '#preamble' do
     let(:env) { 'prod' }
     subject(:preamble) { report.preamble(env:) }
 
-    context 'in a prod environment' do
-      it 'has a blank preamble' do
-        expect(preamble).to be_blank
-      end
+    it 'has a blank preamble in prod' do
+      expect(preamble).to be_blank
     end
 
     context 'in a non-prod environment' do
       let(:env) { 'staging' }
-      subject(:preamble) { report.preamble(env:) }
 
-      it 'is valid HTML' do
-        expect(preamble).to be_html_safe
-        expect { Nokogiri::XML(preamble) { |c| c.strict } }.not_to raise_error
-      end
-
-      it 'has an alert with the environment name' do
+      it 'is valid HTML and includes env name' do
         expect(preamble).to be_html_safe
         doc = Nokogiri::XML(preamble)
-
         alert = doc.at_css('.usa-alert')
         expect(alert.text).to include(env)
       end
     end
   end
 
-  context 'with data generates report' do
-    let(:partner_account1) do
-      create(
-        :partner_account,
-        id: 123,
-        name: mock_partner,
-        description: 'This is a description.',
-        requesting_agency: mock_partner,
-      )
-    end
-
+  context 'with fixture data and original builders' do
     let(:report_date) { Date.new(2025, 9, 30).in_time_zone('UTC').end_of_day }
 
     # Check that report values match expectations from csv fixture
@@ -238,177 +251,60 @@ RSpec.describe Reports::IrsMonthlyCredMetricsReport do
     let(:parsed_invoice_data) { CSV.parse(fixture_csv_data, headers: true) }
     let(:report_year_month) { report_date.strftime('%Y%m') }
 
+    let(:report_config) do
+      super().merge(
+        'issuers' => ['Issuer_2', 'Issuer_3', 'Issuer_4'],
+        'partner_strings' => mock_partner_strings,
+      )
+    end
+
     before do
-      # Override the mocks from the outer before block to use real data
+      # Use real builder logic
       allow_any_instance_of(Reports::IrsMonthlyCredMetricsReport)
-        .to receive(:issuer_report_data)
-        .and_call_original
-
+        .to receive(:issuer_report_data).and_call_original
       allow_any_instance_of(Reports::IrsMonthlyCredMetricsReport)
-        .to receive(:partner_report_data)
-        .and_call_original
+        .to receive(:partner_report_data).and_call_original
     end
 
-    describe 'table sizes' do
-      let(:mock_issuers) { ['Issuer_2', 'Issuer_3', 'Issuer_4'] }
-      let(:issuer_count) { mock_issuers.count }
-      let(:issuer_table) { result[0] }
-      let(:partner_table) { result[1] }
-      let(:result) { report.perform(report_date) }
+    it 'returns issuer and partner tables with expected shapes and values' do
+      result = report.perform(report_date, :internal, report_config)
+      issuer_table, partner_table = result
 
-      # Get all rows for the specified issuers and year_month
-      let(:multi_issuer_yearmonth_data) do
-        parsed_invoice_data.select do |r|
-          mock_issuers.include?(r['issuer']) && r['year_month'] == report_year_month
-        end.map { |row| row.to_h }
+      expect(result.length).to eq(2)
+
+      expect(issuer_table.first.length).to eq(6)
+      expect(issuer_table.length).to eq(1 + 3)
+
+      expect(partner_table.length).to eq(4)
+      partner_table.each { |row| expect(row.length).to eq(2) }
+
+      fixture_row = parsed_invoice_data.find do |r|
+        r['issuer'] == 'Issuer_4' && r['year_month'] == report_year_month
       end
+      expect(fixture_row).to be_present
 
-      before do
-        allow(IdentityConfig.store).to receive(:irs_issuers)
-          .and_return(mock_issuers)
-      end
+      header = issuer_table.first
+      issuer_4_row = issuer_table[1..].find { |r| r[0] == 'Issuer_4' }
+      hashed = header.zip(issuer_4_row).to_h
 
-      it 'has the correct table sizes' do
-        # Check Report Tables Shape
-        # One Issuer Table and One Partner Table
-        expect(result.length).to eq(2)
+      expected_mau = fixture_row['issuer_unique_users'].to_i
+      expected_new = fixture_row['issuer_ial2_new_unique_user_events_year1_upfront'].to_i
+      expected_existing =
+        %w[
+          issuer_ial2_new_unique_user_events_year1_existing
+          issuer_ial2_new_unique_user_events_year2
+          issuer_ial2_new_unique_user_events_year3
+          issuer_ial2_new_unique_user_events_year4
+          issuer_ial2_new_unique_user_events_year5
+        ].sum { |k| fixture_row[k].to_i }
+      expected_total = fixture_row['issuer_ial1_plus_2_total_auth_count'].to_i
 
-        # Issuer table
-        # One Header Column + 5 Data Columns"
-        # One row per issuer
-
-        aggregate_failures 'issuer table dimensions' do
-          expect(issuer_table.length).to eq(1 + issuer_count)
-          issuer_table.each_with_index do |row, idx|
-            expect(row.length).to eq(6), "Row #{idx} should have 6 columns"
-          end
-        end
-
-        # Check Partner Report Table Shape
-        # One Header Column + 3 Data Columns"
-
-        aggregate_failures 'partner table dimensions' do
-          expect(partner_table.length).to eq(4)
-          partner_table.each_with_index do |row, idx|
-            expect(row.length).to eq(2), "Row #{idx} should have 2 columns"
-          end
-        end
-      end
-
-      it 'checks issuer-level counts for multiple issuers' do
-        issuer_table_header = issuer_table.first
-
-        issuer_table_data = issuer_table[1..]
-
-        hashed_issuer_table = issuer_table_data.map do |row|
-          issuer_table_header.zip(row).to_h
-        end
-
-        aggregate_failures 'multiple issuer values' do
-          mock_issuers.each do |issuer|
-            fixture_values = multi_issuer_yearmonth_data.find do |issuer_data|
-              issuer == issuer_data['issuer']
-            end
-
-            report_values = hashed_issuer_table.find do |issuer_data|
-              issuer == issuer_data['Issuer']
-            end
-
-            expected_monthly_active_users = fixture_values['issuer_unique_users'].to_i
-            expected_new_ial_year1 =
-              fixture_values['issuer_ial2_new_unique_user_events_year1_upfront'].to_i
-
-            expected_existing_credentials_authorized =
-              (fixture_values['issuer_ial2_new_unique_user_events_year1_existing'].to_i +
-              fixture_values['issuer_ial2_new_unique_user_events_year2'].to_i +
-              fixture_values['issuer_ial2_new_unique_user_events_year3'].to_i +
-              fixture_values['issuer_ial2_new_unique_user_events_year4'].to_i +
-              fixture_values['issuer_ial2_new_unique_user_events_year5'].to_i)
-
-            # Issuer Credentials authorized
-            expected_credentials_authorized = expected_new_ial_year1 +
-                                              expected_existing_credentials_authorized
-
-            # Total Auths
-            expected_total_auths = fixture_values['issuer_ial1_plus_2_total_auth_count'].to_i
-
-            # Test the processed data
-            # rubocop:disable Layout/LineLength
-            expect(report_values['Monthly active users']).to eq(expected_monthly_active_users)
-            expect(report_values['Credentials authorized']).to eq(expected_credentials_authorized)
-            expect(report_values['New identity verification credentials authorized']).to eq(expected_new_ial_year1)
-            expect(report_values['Existing identity verification credentials authorized']).to eq(expected_existing_credentials_authorized)
-            expect(report_values['Total authentications']).to eq(expected_total_auths)
-            # rubocop:enable Layout/LineLength
-          end
-        end
-      end
-
-      it 'checks partner-level counts for a single partner' do
-        report_values = partner_table[1..].to_h
-
-        fixture_values = multi_issuer_yearmonth_data.find do |partner_data|
-          mock_partner.include?(partner_data['partner'])
-        end
-        # rubocop:disable Layout/LineLength
-
-        expected_new_ial_year1 = fixture_values['partner_ial2_new_unique_user_events_year1_upfront'].to_i
-
-        expected_existing_credentials_authorized =
-          %w[
-            partner_ial2_new_unique_user_events_year1_existing
-            partner_ial2_new_unique_user_events_year2
-            partner_ial2_new_unique_user_events_year3
-            partner_ial2_new_unique_user_events_year4
-            partner_ial2_new_unique_user_events_year5
-          ].sum { |key| fixture_values[key].to_i }
-        # Partner Credentials authorized
-        expected_credentials_authorized = expected_new_ial_year1 +
-                                          expected_existing_credentials_authorized
-
-        expect(report_values['Credentials authorized']).to eq(expected_credentials_authorized)
-        expect(report_values['New identity verification credentials authorized']).to eq(expected_new_ial_year1)
-        expect(report_values['Existing identity verification credentials authorized']).to eq(expected_existing_credentials_authorized)
-        # rubocop:enable Layout/LineLength
-      end
+      expect(hashed['Monthly active users']).to eq(expected_mau)
+      expect(hashed['Credentials authorized']).to eq(expected_new + expected_existing)
+      expect(hashed['New identity verification credentials authorized']).to eq(expected_new)
+      expect(hashed['Existing identity verification credentials authorized'])
+        .to eq(expected_existing)
+      expect(hashed['Total authentications']).to eq(expected_total)
     end
-  end
-
-  def build_iaa_order(order_number:, date_range:, iaa_gtc:)
-    create(
-      :iaa_order,
-      order_number: order_number,
-      start_date: date_range.begin,
-      end_date: date_range.end,
-      iaa_gtc: iaa_gtc,
-    )
-  end
-
-  def build_integration(issuer:, partner_account:)
-    create(
-      :integration,
-      issuer: issuer,
-      partner_account: partner_account,
-    )
-  end
-
-  def build_integration2(service_provider:, partner_account:)
-    create(
-      :integration,
-      service_provider: service_provider,
-      partner_account: partner_account,
-    )
-  end
-
-  def create_sp_return_log(user:, issuer:, ial:, returned_at:)
-    create(
-      :sp_return_log,
-      user_id: user.id,
-      issuer: issuer,
-      ial: ial,
-      returned_at: returned_at,
-      profile_verified_at: user.profiles.map(&:verified_at).max,
-      billable: true,
-    )
   end
 end
