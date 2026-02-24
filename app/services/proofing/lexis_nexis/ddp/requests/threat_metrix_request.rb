@@ -4,7 +4,7 @@ module Proofing
   module LexisNexis
     module Ddp
       module Requests
-        class ThreatMetrixRequest < Proofing::LexisNexis::Ddp::VerificationRequest
+        class ThreatMetrixRequest < Request
           private
 
           def build_request_body

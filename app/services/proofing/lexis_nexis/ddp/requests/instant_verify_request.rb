@@ -4,7 +4,7 @@ module Proofing
   module LexisNexis
     module Ddp
       module Requests
-        class InstantVerifyRequest < Proofing::LexisNexis::Ddp::VerificationRequest
+        class InstantVerifyRequest < Request
           private
 
           def build_request_body
