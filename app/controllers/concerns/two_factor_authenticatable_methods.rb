@@ -24,6 +24,7 @@ module TwoFactorAuthenticatableMethods
       new_device: new_device?,
       **extra_analytics.to_h,
       attempts: mfa_attempts_count,
+      has_pwebauthn_platform_configurations: mfa_context.webauthn_platform_configurations.any?,
       recaptcha_annotation:,
     )
 
