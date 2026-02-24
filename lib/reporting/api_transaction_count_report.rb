@@ -204,7 +204,6 @@ module Reporting
       result = fetch_results(query: ln_phonefinder_query)
       ln_phonefinder_table_count = result.count
       [ln_phonefinder_table_count, result]
-
     end
 
     def fetch_results(query:)
