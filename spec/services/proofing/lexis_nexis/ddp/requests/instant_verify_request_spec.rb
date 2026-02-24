@@ -22,7 +22,7 @@ RSpec.describe Proofing::LexisNexis::Ddp::Requests::InstantVerifyRequest do
     }
   end
 
-  let(:response_body) { LexisNexisFixtures.ddp_success_response_json }
+  let(:response_body) { LexisNexisFixtures.ddp_instant_verify_success_response_json }
   subject do
     described_class.new(
       applicant: applicant,

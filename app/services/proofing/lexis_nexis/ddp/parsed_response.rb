@@ -30,7 +30,6 @@ module Proofing
           response_body.dig('Status', 'TransactionReasonCode', 'Code')
         end
 
-        # @api private
         def response_body
           @response_body ||= parse_response
         rescue JSON::ParserError
