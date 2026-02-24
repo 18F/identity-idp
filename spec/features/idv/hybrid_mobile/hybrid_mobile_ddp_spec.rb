@@ -21,10 +21,10 @@ RSpec.describe 'Hybrid Flow DDP', js: true do
   let(:fail_passport_response_body) { LexisNexisFixtures.ddp_true_id_response_fail_passport }
   let(:lexisnexis_threatmetrix_base_url) { 'https://test-base-url.com' }
   let(:fake_dos_api_endpoint) { 'http://fake_dos_api_endpoint/' }
-  let(:test_request_url) do
+  let(:ddp_true_id_endpoint) do
     'https://test-base-url.com/authentication/v1/trueid/'
   end
-  let(:response_body) { nil }
+  let(:ddp_true_id_response_body) { nil }
   let(:document_type_received) { nil }
 
   before do
@@ -50,8 +50,8 @@ RSpec.describe 'Hybrid Flow DDP', js: true do
     stub_health_check_endpoints_success
     stub_request(:post, fake_dos_api_endpoint)
       .to_return_json({ status: 200, body: { response: 'YES' } })
-    stub_request(:post, test_request_url)
-      .to_return(status: 200, body: response_body.to_s, headers: {})
+    stub_request(:post, ddp_true_id_endpoint)
+      .to_return(status: 200, body: ddp_true_id_response_body.to_s, headers: {})
     allow(FeatureManagement).to receive(:doc_capture_polling_enabled?).and_return(true)
     allow(Telephony).to receive(:send_doc_auth_link).and_wrap_original do |impl, config|
       @sms_link = config[:link]
@@ -112,14 +112,14 @@ RSpec.describe 'Hybrid Flow DDP', js: true do
   end
 
   context 'success drivers license ddp' do
-    let(:response_body) { success_response_body }
+    let(:ddp_true_id_response_body) { success_response_body }
     let(:document_type_received) { Idp::Constants::DocumentTypes::DRIVERS_LICENSE }
 
     it_behaves_like 'success ddp flow'
   end
 
   context 'success passport ddp' do
-    let(:response_body) { success_passport_response_body }
+    let(:ddp_true_id_response_body) { success_passport_response_body }
     let(:choose_id_type) { Idp::Constants::DocumentTypes::PASSPORT }
     let(:document_type_received) { Idp::Constants::DocumentTypes::PASSPORT }
 
@@ -186,14 +186,14 @@ RSpec.describe 'Hybrid Flow DDP', js: true do
   end
 
   context 'failed drivers license ddp' do
-    let(:response_body) { fail_response_body }
+    let(:ddp_true_id_response_body) { fail_response_body }
     let(:document_type_received) { Idp::Constants::DocumentTypes::DRIVERS_LICENSE }
 
     it_behaves_like 'failed ddp flow'
   end
 
   context 'failed passport ddp' do
-    let(:response_body) { fail_passport_response_body }
+    let(:ddp_true_id_response_body) { fail_passport_response_body }
     let(:choose_id_type) { Idp::Constants::DocumentTypes::PASSPORT }
     let(:document_type_received) { Idp::Constants::DocumentTypes::PASSPORT }
 
