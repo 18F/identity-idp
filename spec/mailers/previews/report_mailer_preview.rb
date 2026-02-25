@@ -398,7 +398,7 @@ class ReportMailerPreview < ActionMailer::Preview
       'internal_emails' => ['internal1@example.com'],
     }
 
-    report = Reports::IrsMonthlyCredMetricsReport.new(report_date, :internal)
+    report = Reports::SpCredMetricsReport.new(report_date, :internal)
 
     # Apply config the same way send_report does
     report.instance_variable_set(:@report_date, report_date)
