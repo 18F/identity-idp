@@ -55,7 +55,7 @@ gem 'phonelib'
 gem 'premailer-rails', '>= 1.12.0'
 gem 'profanity_filter'
 gem 'propshaft'
-gem 'rack', '~> 3.0'
+gem 'rack', '>= 3.2.5'
 gem 'rack-attack', github: 'rack/rack-attack', ref: 'd9fedfae4f7f6409f33857763391f4e18a6d7467'
 gem 'rack-cors', '> 2.0.1', require: 'rack/cors'
 gem 'rack-headers_filter'
@@ -105,7 +105,7 @@ group :development, :test do
   gem 'knapsack'
   gem 'listen'
   gem 'net-http-persistent', '~> 4.0.2', require: false
-  gem 'nokogiri', '~> 1.18.0'
+  gem 'nokogiri', '~> 1.19.1'
   gem 'pg_query', require: false
   gem 'pry-byebug'
   gem 'pry-rails'

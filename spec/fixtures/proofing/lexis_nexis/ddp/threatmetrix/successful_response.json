@@ -1,0 +1,15 @@
+{
+  "request_id": "1234",
+  "request_result": "success",
+  "review_status": "pass",
+  "risk_rating": "trusted",
+  "summary_risk_score": "-6",
+  "tmx_risk_rating": "neutral",
+  "first_name": "WARNING! YOU SHOULD NEVER SEE THIS PII FIELD IN THE LOGS",
+  "tmx_summary_reason_code": [
+    "Identity_Negative_History"
+  ],
+  "session_id": "super-cool-test-session-id",
+  "account_lex_id": "super-cool-test-lex-id",
+  "fuzzy_device_id": "WARNING! YOU SHOULD NEVER SEE THIS PII FIELD IN THE LOGS"
+}

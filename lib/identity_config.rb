@@ -242,6 +242,7 @@ module IdentityConfig
       enum: [:instant_verify, :socure_kyc, :mock],
     )
     config.add(:idv_resolution_vendor_instant_verify_percent, type: :integer)
+    config.add(:idv_resolution_vendor_instant_verify_ddp_percent, type: :integer)
     config.add(:idv_resolution_vendor_socure_kyc_percent, type: :integer)
     config.add(:idv_resolution_vendor_switching_enabled, type: :boolean)
     config.add(:idv_send_link_attempt_window_in_minutes, type: :integer)

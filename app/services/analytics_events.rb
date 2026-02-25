@@ -2043,6 +2043,8 @@ module AnalyticsEvents
   #   SDK upgrades
   # @option extra [String] 'DocumentName'
   # @option extra [String] 'DocAuthResult'
+  # @option extra [String] 'DocAuthTamperResult'
+  # @option extra [String] 'DocAuthTamperSensitivity'
   # @option extra [String] 'DocIssuerCode'
   # @option extra [String] 'DocIssuerName'
   # @option extra [String] 'DocIssuerType'
@@ -2057,6 +2059,7 @@ module AnalyticsEvents
   # @option extra [Boolean] 'PresentationChanged'
   # @param ["Passport","DriversLicense"] document_type_requested Document capture user flow
   # @param [Hash] passport_check_result The results of the Dos API call
+  # @param [String] review_status The review status if the result was sent for review
   # The document capture image was uploaded to vendor during the IDV process
   def idv_doc_auth_submitted_image_upload_vendor(
     success:,
@@ -2108,6 +2111,7 @@ module AnalyticsEvents
     liveness_enabled: nil,
     document_type_requested: nil,
     passport_check_result: nil,
+    review_status: nil,
     **extra
   )
     track_event(
@@ -2161,6 +2165,7 @@ module AnalyticsEvents
       liveness_enabled:,
       document_type_requested:,
       passport_check_result:,
+      review_status:,
       **extra,
     )
   end

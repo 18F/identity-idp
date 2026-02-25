@@ -48,7 +48,7 @@ RSpec.feature 'ThreatMetrix in account creation', :js do
         account_lex_id: 'super-cool-test-lex-id',
         errors: { review_status: ['reject'] },
         response_body: {
-          **JSON.parse(LexisNexisFixtures.ddp_success_redacted_response_json),
+          **JSON.parse(LexisNexisFixtures.threatmetrix_success_redacted_response_json),
           'review_status' => 'reject',
         },
         review_status: 'reject',
@@ -98,7 +98,7 @@ RSpec.feature 'ThreatMetrix in account creation', :js do
           account_lex_id: 'super-cool-test-lex-id',
           errors: { review_status: ['reject'] },
           response_body: {
-            **JSON.parse(LexisNexisFixtures.ddp_success_redacted_response_json),
+            **JSON.parse(LexisNexisFixtures.threatmetrix_success_redacted_response_json),
             'review_status' => 'reject',
           },
           review_status: 'reject',

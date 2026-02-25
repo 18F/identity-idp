@@ -1,0 +1,40 @@
+{
+  "integration_hub_results": {
+    "test_org_id:test-policy": {
+      "Execute Instant Verify": {
+        "rule_id": "509748600",
+        "tps_datetime": "2026-01-26 19:34:27.964",
+        "tps_duration": "10108",
+        "tps_error": "instant_verify_error",
+        "tps_http_status_code": "200",
+        "tps_result": "ok",
+        "tps_type": "LN_Instant_Verify",
+        "tps_vendor": "LexisNexis",
+        "tps_vendor_raw_response": {
+          "Status": {
+            "ConversationId": "123456",
+            "RequestId": "7890",
+            "TransactionStatus": "error",
+            "TransactionReasonCode": {
+              "Code": "invalid_transaction_initiate"
+            },
+            "Reference": "1234-abcd",
+            "ServerInfo": "ALANARABA01-W7D"
+          },
+          "Information": [
+            {
+              "InformationType": "error-details",
+              "Code": "invalid_transaction_initiate",
+              "Description": "Error: Invalid Transaction Initiate",
+              "DetailDescription": [
+                {
+                  "Text": "Invalid account."
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }
+  }
+}

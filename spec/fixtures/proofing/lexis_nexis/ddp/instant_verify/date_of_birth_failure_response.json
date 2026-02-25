@@ -1,0 +1,92 @@
+{
+  "integration_hub_results": {
+    "test_org_id:test-policy": {
+      "Execute Instant Verify": {
+        "rule_id": "509748600",
+        "tps_datetime": "2026-01-26 19:34:27.964",
+        "tps_duration": "10108",
+        "tps_error": "instant_verify_fail",
+        "tps_http_status_code": "200",
+        "tps_result": "ok",
+        "tps_type": "LN_Instant_Verify",
+        "tps_vendor": "LexisNexis",
+        "tps_vendor_raw_response": {
+          "Status": {
+            "ConversationId": "123456",
+            "RequestId": "7890",
+            "TransactionStatus": "failed",
+            "TransactionReasonCode": {
+              "Code": "priority.scoring.model.verification.fail"
+            },
+            "Reference": "0987:1234-abcd"
+          },
+          "Products": [
+            {
+              "ProductType": "Verify",
+              "ExecutedStepName": "Execute Instant Verify",
+              "ProductConfigurationName": "REDACTED_CONFIGURATION",
+              "ProductStatus": "fail",
+              "ProductReason": {
+                "Code": "priority.scoring.model.verification.fail"
+              },
+              "Items": [
+                {
+                  "ItemName": "Addr1Zip_StateMatch",
+                  "ItemStatus": "pass"
+                },
+                {
+                  "ItemName": "SsnFullNameMatch",
+                  "ItemStatus": "pass"
+                },
+                {
+                  "ItemName": "SsnDeathMatchVerification",
+                  "ItemStatus": "pass"
+                },
+                {
+                  "ItemName": "SSNSSAValid",
+                  "ItemStatus": "pass"
+                },
+                {
+                  "ItemName": "IdentityOccupancyVerified",
+                  "ItemStatus": "pass"
+                },
+                {
+                  "ItemName": "AddrDeliverable",
+                  "ItemStatus": "pass"
+                },
+                {
+                  "ItemName": "AddrNotHighRisk",
+                  "ItemStatus": "pass"
+                },
+                {
+                  "ItemName": "DOBFullVerified",
+                  "ItemStatus": "fail",
+                  "ItemReason": {
+                    "Code": "dob_full_verified_fail"
+                  },
+                  "ItemInformationDetails": [
+                    {
+                      "Name": "DX",
+                      "Value": "dob_unable_to_verify_dx"
+                    }
+                  ]
+                },
+                {
+                  "ItemName": "DOBYearVerified",
+                  "ItemStatus": "fail",
+                  "ItemReason": {
+                    "Code": "dob_year_not_verfied_fail"
+                  }
+                },
+                {
+                  "ItemName": "LexIDDeathMatch",
+                  "ItemStatus": "pass"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }
+  }
+}

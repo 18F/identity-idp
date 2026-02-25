@@ -34,39 +34,59 @@ module LexisNexisFixtures
       )
     end
 
-    def ddp_authentication_request_json
-      raw = read_fixture_file_at_path('ddp/account_creation_request.json')
+    def ddp_instant_verify_request_json
+      raw = read_fixture_file_at_path('ddp/instant_verify/request.json')
       JSON.parse(raw).to_json
     end
 
-    def ddp_request_json
-      raw = read_fixture_file_at_path('ddp/request.json')
+    def ddp_instant_verify_success_response_json
+      raw = read_fixture_file_at_path('ddp/instant_verify/successful_response.json')
       JSON.parse(raw).to_json
     end
 
-    def ddp_success_response_json
-      raw = read_fixture_file_at_path('ddp/successful_response.json')
+    def ddp_instant_verify_date_of_birth_fail_response_json
+      raw = read_fixture_file_at_path('ddp/instant_verify/date_of_birth_failure_response.json')
       JSON.parse(raw).to_json
     end
 
-    def ddp_success_redacted_response_json
-      raw = read_fixture_file_at_path('ddp/successful_redacted_response.json')
+    def ddp_instant_verify_error_response_json
+      raw = read_fixture_file_at_path('ddp/instant_verify/error_response.json')
       JSON.parse(raw).to_json
     end
 
-    def ddp_failure_response_json
-      raw = read_fixture_file_at_path('ddp/failed_response.json')
+    def threatmetrix_authentication_request_json
+      raw = read_fixture_file_at_path('ddp/threatmetrix/account_creation_request.json')
       JSON.parse(raw).to_json
     end
 
-    def ddp_unexpected_review_status
+    def threatmetrix_request_json
+      raw = read_fixture_file_at_path('ddp/threatmetrix/request.json')
+      JSON.parse(raw).to_json
+    end
+
+    def threatmetrix_success_response_json
+      raw = read_fixture_file_at_path('ddp/threatmetrix/successful_response.json')
+      JSON.parse(raw).to_json
+    end
+
+    def threatmetrix_success_redacted_response_json
+      raw = read_fixture_file_at_path('ddp/threatmetrix/successful_redacted_response.json')
+      JSON.parse(raw).to_json
+    end
+
+    def threatmetrix_failure_response_json
+      raw = read_fixture_file_at_path('ddp/threatmetrix/failed_response.json')
+      JSON.parse(raw).to_json
+    end
+
+    def threatmetrix_unexpected_review_status
       'unexpected_review_status_that_causes_problems'
     end
 
-    def ddp_unexpected_review_status_response_json
-      raw = read_fixture_file_at_path('ddp/successful_response.json')
+    def threatmetrix_unexpected_review_status_response_json
+      raw = read_fixture_file_at_path('ddp/threatmetrix/successful_response.json')
       JSON.parse(raw).merge(
-        'review_status' => ddp_unexpected_review_status,
+        'review_status' => threatmetrix_unexpected_review_status,
       ).to_json
     end
 
@@ -193,8 +213,26 @@ module LexisNexisFixtures
       read_fixture_file_at_path('ddp/true_id/true_id_response_fail_state_id_card.json')
     end
 
+    def ddp_true_id_response_fail_with_review_status
+      read_fixture_file_at_path(
+        'ddp/true_id/true_id_response_fail_state_id_card_w_review_status.json',
+      )
+    end
+
     def ddp_true_id_response_fail_passport
       read_fixture_file_at_path('ddp/true_id/true_id_response_fail_passport.json')
+    end
+
+    def ddp_true_id_liveness_response_success_state_id_card
+      read_fixture_file_at_path('ddp/true_id/true_id_response_liveness_success_state_id_card.json')
+    end
+
+    def ddp_true_id_liveness_response_fail_state_id_card
+      read_fixture_file_at_path('ddp/true_id/true_id_response_liveness_fail_state_id_card.json')
+    end
+
+    def ddp_true_id_liveness_response_fail_passport
+      read_fixture_file_at_path('ddp/true_id/true_id_response_liveness_fail_passport.json')
     end
 
     def true_id_response_success
