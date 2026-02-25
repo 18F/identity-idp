@@ -65,6 +65,7 @@ class ResetPasswordForm
     return if profile.blank?
 
     profile.deactivate(:password_reset)
+    user.reload
     Funnel::DocAuth::ResetSteps.call(user.id)
   end
 

@@ -24,6 +24,7 @@ module Ial2ProfileConcern
     rescue Encryption::EncryptionError => err
       if profile
         profile.deactivate_due_to_encryption_error
+        current_user.reload
         analytics.profile_encryption_invalid(error: err.message)
       end
     end
