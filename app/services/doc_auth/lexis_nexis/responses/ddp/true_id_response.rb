@@ -185,11 +185,11 @@ module DocAuth
           end
 
           def conversation_id
-            @conversation_id ||= parsed_response_body.dig(:Status, :ConversationId)
+            @conversation_id ||= raw_response.dig(:Status, :ConversationId)
           end
 
           def request_id
-            @request_id ||= parsed_response_body.dig(:Status, :RequestId)
+            @request_id ||= raw_response.dig(:Status, :RequestId)
           end
 
           def doc_auth_result
@@ -212,7 +212,6 @@ module DocAuth
               review_status: review_status,
               vendor: 'TrueID DDP',
               billed: billed?,
-              workflow: @request_context&.dig(:workflow),
             }
           end
         end

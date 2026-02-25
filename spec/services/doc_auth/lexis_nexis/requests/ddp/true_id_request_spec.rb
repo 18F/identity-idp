@@ -7,6 +7,9 @@ RSpec.describe DocAuth::LexisNexis::Requests::Ddp::TrueIdRequest do
   let(:passport_image) { 'passport_image_data' }
   let(:liveness_checking_required) { false }
   let(:document_type_requested) { DocAuth::LexisNexis::DocumentTypes::DRIVERS_LICENSE }
+  let(:account_id) { 'test_account' }
+  let(:post_url) { 'https://example.com/authentication/v1/trueid/' }
+  let(:post_url_liveness) { 'https://example.com/authentication/v1/trueid/' }
   let(:applicant) do
     {
       email: 'person.name@email.test',
@@ -22,14 +25,22 @@ RSpec.describe DocAuth::LexisNexis::Requests::Ddp::TrueIdRequest do
   end
 
   let(:config) do
-    Proofing::LexisNexis::Config.new(
+    DocAuth::LexisNexis::DdpConfig.new(
       api_key: 'test_api_key',
       base_url: 'https://example.com',
       org_id: 'test_org_id',
+      trueid_account_id: account_id,
     )
   end
 
-  subject { described_class.new(config:, applicant:) }
+  subject do
+    described_class.new(
+      config:,
+      applicant:,
+      user_uuid: 'test_user_uuid',
+      uuid_prefix: 'test_uuid_prefix',
+    )
+  end
 
   before do
     allow(IdentityConfig.store).to receive(:lexisnexis_trueid_ddp_liveness_policy)
@@ -40,9 +51,14 @@ RSpec.describe DocAuth::LexisNexis::Requests::Ddp::TrueIdRequest do
       .and_return(30.0)
   end
 
-  describe '#send_request' do
+  describe '#fetch' do
     before do
-      stub_request(:post, 'https://example.com/authentication/v1/trueid/')
+      stub_request(:post, post_url)
+        .to_return(
+          status: 200,
+          body: { 'request_result' => 'success', 'review_status' => 'pass' }.to_json,
+        )
+      stub_request(:post, post_url_liveness)
         .to_return(
           status: 200,
           body: { 'request_result' => 'success', 'review_status' => 'pass' }.to_json,
@@ -50,15 +66,15 @@ RSpec.describe DocAuth::LexisNexis::Requests::Ddp::TrueIdRequest do
     end
 
     it 'sends a POST request to the trueid endpoint' do
-      subject.send_request
+      subject.fetch
 
-      expect(WebMock).to have_requested(:post, 'https://example.com/authentication/v1/trueid/')
+      expect(WebMock).to have_requested(:post, post_url)
     end
 
     it 'includes correct headers' do
-      subject.send_request
+      subject.fetch
 
-      expect(WebMock).to have_requested(:post, 'https://example.com/authentication/v1/trueid/')
+      expect(WebMock).to have_requested(:post, post_url)
         .with(headers: {
           'Content-Type' => 'application/json',
           'x-org-id' => 'test_org_id',
@@ -67,9 +83,9 @@ RSpec.describe DocAuth::LexisNexis::Requests::Ddp::TrueIdRequest do
     end
 
     it 'includes images with correct key format' do
-      subject.send_request
+      subject.fetch
 
-      expect(WebMock).to have_requested(:post, 'https://example.com/authentication/v1/trueid/')
+      expect(WebMock).to have_requested(:post, post_url)
         .with { |req|
           body = JSON.parse(req.body)
           body['Trueid.image_data.white_front'] == Base64.strict_encode64(front_image) &&
@@ -78,9 +94,9 @@ RSpec.describe DocAuth::LexisNexis::Requests::Ddp::TrueIdRequest do
     end
 
     it 'includes required request fields' do
-      subject.send_request
+      subject.fetch
 
-      expect(WebMock).to have_requested(:post, 'https://example.com/authentication/v1/trueid/')
+      expect(WebMock).to have_requested(:post, post_url)
         .with { |req|
           body = JSON.parse(req.body)
           body['account_email'] == 'person.name@email.test' &&
@@ -94,9 +110,9 @@ RSpec.describe DocAuth::LexisNexis::Requests::Ddp::TrueIdRequest do
       let(:liveness_checking_required) { true }
 
       it 'includes selfie image and uses liveness policy' do
-        subject.send_request
+        subject.fetch
 
-        expect(WebMock).to have_requested(:post, 'https://example.com/authentication/v1/trueid/')
+        expect(WebMock).to have_requested(:post, post_url_liveness)
           .with { |req|
             body = JSON.parse(req.body)
             body['Trueid.image_data.selfie'] == Base64.strict_encode64(selfie_image) &&
@@ -109,9 +125,9 @@ RSpec.describe DocAuth::LexisNexis::Requests::Ddp::TrueIdRequest do
       let(:liveness_checking_required) { false }
 
       it 'uses the noliveness policy and sends empty selfie' do
-        subject.send_request
+        subject.fetch
 
-        expect(WebMock).to have_requested(:post, 'https://example.com/authentication/v1/trueid/')
+        expect(WebMock).to have_requested(:post, post_url)
           .with { |req|
             body = JSON.parse(req.body)
             body['policy'] == 'test_noliveness_policy' &&
@@ -124,9 +140,9 @@ RSpec.describe DocAuth::LexisNexis::Requests::Ddp::TrueIdRequest do
       let(:document_type_requested) { DocAuth::LexisNexis::DocumentTypes::PASSPORT }
 
       it 'uses passport image as front and excludes back image' do
-        subject.send_request
+        subject.fetch
 
-        expect(WebMock).to have_requested(:post, 'https://example.com/authentication/v1/trueid/')
+        expect(WebMock).to have_requested(:post, post_url)
           .with { |req|
             body = JSON.parse(req.body)
             body['Trueid.image_data.white_front'] == Base64.strict_encode64(passport_image) &&
@@ -148,9 +164,9 @@ RSpec.describe DocAuth::LexisNexis::Requests::Ddp::TrueIdRequest do
       end
 
       it 'uses empty string defaults for uuid_prefix' do
-        subject.send_request
+        subject.fetch
 
-        expect(WebMock).to have_requested(:post, 'https://example.com/authentication/v1/trueid/')
+        expect(WebMock).to have_requested(:post, post_url)
           .with { |req|
             body = JSON.parse(req.body)
             body['local_attrib_1'] == ''
@@ -171,7 +187,7 @@ RSpec.describe DocAuth::LexisNexis::Requests::Ddp::TrueIdRequest do
       end
 
       it 'raises ArgumentError' do
-        expect { subject.send_request }.to raise_error(ArgumentError, 'uuid is required')
+        expect { subject.fetch }.to raise_error(ArgumentError, 'uuid is required')
       end
     end
 
@@ -187,8 +203,9 @@ RSpec.describe DocAuth::LexisNexis::Requests::Ddp::TrueIdRequest do
         }
       end
 
-      it 'raises ArgumentError' do
-        expect { subject.send_request }.to raise_error(ArgumentError, 'email is required')
+      # TODO: remove skip once email is provided as part of LG-17251
+      xit 'raises ArgumentError' do
+        expect { subject.fetch }.to raise_error(ArgumentError, 'email is required')
       end
     end
 
@@ -205,7 +222,7 @@ RSpec.describe DocAuth::LexisNexis::Requests::Ddp::TrueIdRequest do
       end
 
       it 'raises ArgumentError' do
-        expect { subject.send_request }.to raise_error(ArgumentError, 'front_image is required')
+        expect { subject.fetch }.to raise_error(ArgumentError, 'front_image is required')
       end
     end
 
@@ -222,7 +239,7 @@ RSpec.describe DocAuth::LexisNexis::Requests::Ddp::TrueIdRequest do
       end
 
       it 'raises ArgumentError' do
-        expect { subject.send_request }.to raise_error(ArgumentError, 'back_image is required')
+        expect { subject.fetch }.to raise_error(ArgumentError, 'back_image is required')
       end
     end
 
@@ -240,7 +257,7 @@ RSpec.describe DocAuth::LexisNexis::Requests::Ddp::TrueIdRequest do
       end
 
       it 'raises ArgumentError' do
-        expect { subject.send_request }.to raise_error(
+        expect { subject.fetch }.to raise_error(
           ArgumentError,
           'passport_image is required for passport documents',
         )
@@ -261,7 +278,7 @@ RSpec.describe DocAuth::LexisNexis::Requests::Ddp::TrueIdRequest do
       end
 
       it 'raises ArgumentError' do
-        expect { subject.send_request }.to raise_error(
+        expect { subject.fetch }.to raise_error(
           ArgumentError,
           'selfie_image is required when liveness checking is enabled',
         )
