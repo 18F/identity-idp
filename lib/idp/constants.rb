@@ -29,6 +29,8 @@ module Idp
       PASSPORT_CARD = 'passport_card'
       DRIVERS_LICENSE = 'drivers_license'
       STATE_ID_CARD = 'state_id_card'
+      STATE_ID = 'state_id'
+      PASSPORT_BOOK = 'passport_book'
       IDENTIFICATION_CARD = 'identification_card'
 
       SUPPORTED_PASSPORT_TYPES = [PASSPORT].freeze
