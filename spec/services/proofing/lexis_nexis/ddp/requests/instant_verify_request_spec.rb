@@ -138,9 +138,9 @@ RSpec.describe Proofing::LexisNexis::Ddp::Requests::InstantVerifyRequest do
         end
       end
 
-      it 'sets event_type to INSTANT_VERIFY' do
+      it 'sets event_type to ACCOUNT_CREATION' do
         parsed_body = JSON.parse(subject.body, symbolize_names: true)
-        expect(parsed_body[:event_type]).to eq('INSTANT_VERIFY')
+        expect(parsed_body[:event_type]).to eq('ACCOUNT_CREATION')
       end
     end
   end
