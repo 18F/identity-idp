@@ -1,0 +1,100 @@
+<% content_for(:pre_flash_content) do %>
+  <%= render StepIndicatorComponent.new(
+        steps: Idv::StepIndicatorConcern::STEP_INDICATOR_STEPS,
+        current_step: :getting_started,
+        locale_scope: 'idv',
+        class: 'margin-x-neg-2 margin-top-neg-4 tablet:margin-x-neg-6 tablet:margin-top-neg-4',
+      ) %>
+<% end %>
+
+<% self.title = t('idv.mdl.title') %>
+
+<%= render PageHeadingComponent.new.with_content(t('idv.mdl.title')) %>
+
+<p class="margin-bottom-4"><%= t('idv.mdl.instructions') %></p>
+
+<div id="mdl-error" class="usa-alert usa-alert--error display-none margin-bottom-4" role="alert">
+  <div class="usa-alert__body">
+    <p class="usa-alert__text"></p>
+  </div>
+</div>
+
+<div id="mdl-loading" class="display-none margin-bottom-4">
+  <div class="spinner" aria-label="Loading..."></div>
+  <p><%= t('idv.mdl.loading') %></p>
+</div>
+
+<%# OpenCred OIDC Integration - redirect to OpenCred for mDL verification %>
+<%= button_tag(
+      t('idv.mdl.button'),
+      type: 'button',
+      id: 'mdl-verify-button',
+      class: 'usa-button usa-button--big usa-button--wide',
+      data: {
+        opencred_url: IdentityConfig.store.opencred_base_url,
+        client_id: IdentityConfig.store.opencred_client_id,
+        redirect_uri: idv_mdl_callback_url,
+      },
+    ) %>
+
+<div class="margin-top-4">
+  <%= link_to t('idv.mdl.use_different_method'), idv_choose_id_type_path %>
+</div>
+
+<%= render 'idv/doc_auth/cancel', step: 'mdl' %>
+
+<%= javascript_tag(nonce: true) do %>
+  document.addEventListener('DOMContentLoaded', function() {
+    var button = document.getElementById('mdl-verify-button');
+    var errorDiv = document.getElementById('mdl-error');
+    var loadingDiv = document.getElementById('mdl-loading');
+
+    if (!button) return;
+
+    var opencredUrl = button.dataset.opencredUrl;
+    var clientId = button.dataset.clientId;
+    var redirectUri = button.dataset.redirectUri;
+
+    button.addEventListener('click', function() {
+      console.log('[mDL] Starting OpenCred verification flow...');
+
+      // Generate state for CSRF protection
+      var state = generateRandomString(32);
+      sessionStorage.setItem('mdl_oidc_state', state);
+
+      // Build OpenCred OIDC authorization URL
+      var params = new URLSearchParams({
+        client_id: clientId,
+        redirect_uri: redirectUri,
+        response_type: 'code',
+        scope: 'openid',
+        state: state
+      });
+
+      var authUrl = opencredUrl + '/login?' + params.toString();
+      console.log('[mDL] Redirecting to OpenCred:', authUrl);
+
+      // Redirect to OpenCred
+      window.location.href = authUrl;
+    });
+
+    function generateRandomString(length) {
+      var array = new Uint8Array(length);
+      window.crypto.getRandomValues(array);
+      return Array.from(array, function(byte) {
+        return ('0' + byte.toString(16)).slice(-2);
+      }).join('');
+    }
+
+    function showError(message) {
+      errorDiv.querySelector('.usa-alert__text').textContent = message;
+      errorDiv.classList.remove('display-none');
+    }
+
+    // Check for error from callback
+    var urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('error')) {
+      showError(urlParams.get('error_description') || 'Verification failed. Please try again.');
+    }
+  });
+<% end %>

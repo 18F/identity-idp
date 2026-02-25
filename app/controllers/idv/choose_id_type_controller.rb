@@ -35,8 +35,13 @@ module Idv
          !dos_passport_api_healthy?(analytics:, step: 'choose_id_type')
         redirect_to idv_choose_id_type_url(passports: false)
       elsif result.success?
-        set_passport_requested
-        redirect_to next_step
+        if mdl_chosen?
+          idv_session.skip_doc_auth_from_how_to_verify = true
+          redirect_to idv_mdl_url
+        else
+          set_passport_requested
+          redirect_to next_step
+        end
       else
         redirect_to idv_choose_id_type_url
       end
@@ -46,7 +51,7 @@ module Idv
       Idv::StepInfo.new(
         key: :choose_id_type,
         controller: self,
-        next_steps: [:document_capture],
+        next_steps: [:document_capture, :mdl],
         preconditions: ->(idv_session:, user:) do
           idv_session.flow_path == 'standard' &&
           !idv_session.skip_doc_auth_from_handoff && # is not ipp from desktop
@@ -66,6 +71,10 @@ module Idv
 
     def next_step
       idv_document_capture_url
+    end
+
+    def mdl_chosen?
+      chosen_id_type == Idp::Constants::DocumentTypes::MDL
     end
 
     def analytics_arguments

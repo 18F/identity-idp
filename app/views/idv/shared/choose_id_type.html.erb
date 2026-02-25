@@ -62,7 +62,8 @@
             collection: [
               [t('doc_auth.forms.id_type_preference.drivers_license'), :drivers_license],
               [t('doc_auth.forms.id_type_preference.passport'), :passport, disabled: disable_passports],
-            ],
+              (IdentityConfig.store.mdl_verification_enabled ? [t('doc_auth.forms.id_type_preference.mdl'), :mdl] : nil),
+            ].compact,
             form: f,
             input_html: { class: 'usa-radio__input--tile' },
             item_label_class: 'usa-radio__label text-bold width-full margin-y-2',

@@ -4485,6 +4485,37 @@ module AnalyticsEvents
     )
   end
 
+  # Tracks when the server generates an mDL verification request
+  # @param [String] session_id The session ID for the mDL verification request
+  def idv_mdl_request_generated(session_id:, **extra)
+    track_event(
+      'IdV: mDL request generated',
+      session_id:,
+      **extra,
+    )
+  end
+
+  # Tracks when the user verifies their identity via mDL (Apple Wallet)
+  # @param [Boolean] success Whether the verification was successful
+  # @param [String] error Error message if verification failed
+  # @param [Boolean] used_mock_data Whether mock data was used instead of real credential
+  # @param [String] session_id The session ID for the mDL verification request
+  def idv_mdl_verified(success:, error: nil, used_mock_data: nil, session_id: nil, **extra)
+    track_event(
+      'IdV: mDL verified',
+      success:,
+      error:,
+      used_mock_data:,
+      session_id:,
+      **extra,
+    )
+  end
+
+  # Tracks when the user visits the mDL verification page
+  def idv_mdl_visited(**extra)
+    track_event('IdV: mDL visited', **extra)
+  end
+
   # @param [Integer] failed_capture_attempts Number of failed Acuant SDK attempts
   # @param [Integer] failed_submission_attempts Number of failed Acuant doc submissions
   # @param [String] field Image form field

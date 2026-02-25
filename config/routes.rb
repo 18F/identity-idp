@@ -387,6 +387,10 @@ Rails.application.routes.draw do
       put '/agreement' => 'agreement#update'
       get '/how_to_verify' => 'how_to_verify#show'
       put '/how_to_verify' => 'how_to_verify#update'
+      get '/mdl' => 'mdl#show'
+      get '/mdl/callback' => 'mdl#callback', as: :mdl_callback
+      post '/mdl/request' => 'mdl#request_credentials', as: :mdl_request
+      post '/mdl/verify' => 'mdl#verify', as: :mdl_verify
       get '/document_capture' => 'document_capture#show'
       put '/document_capture' => 'document_capture#update'
       get '/in_person/direct' => 'document_capture#direct_in_person'
