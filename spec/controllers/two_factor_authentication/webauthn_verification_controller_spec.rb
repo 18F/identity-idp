@@ -186,7 +186,7 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
             webauthn_configuration_id: webauthn_configuration.id,
             multi_factor_auth_method_created_at: webauthn_configuration.created_at.strftime('%s%L'),
             new_device: true,
-            has_webauthn_platform_configurations: false,
+            available_webauthn_platform_config: false,
             attempts: 1,
           )
           expect(@analytics).to have_logged_event(
@@ -260,7 +260,7 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
               multi_factor_auth_method_created_at: webauthn_configuration.created_at
                 .strftime('%s%L'),
               new_device: true,
-              has_webauthn_platform_configurations: true,
+              available_webauthn_platform_config: true,
               attempts: 1,
             )
             expect(@analytics).to have_logged_event(
@@ -300,7 +300,7 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
           webauthn_configuration_id: webauthn_configuration.id,
           multi_factor_auth_method_created_at: webauthn_configuration.created_at.strftime('%s%L'),
           new_device: true,
-          has_webauthn_platform_configurations: false,
+          available_webauthn_platform_config: false,
           attempts: 1,
         )
       end
@@ -380,7 +380,7 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
             multi_factor_auth_method_created_at:
               second_webauthn_platform_configuration.created_at.strftime('%s%L'),
             new_device: true,
-            has_webauthn_platform_configurations: true,
+            available_webauthn_platform_config: true,
             frontend_error: webauthn_error,
             attempts: 1,
           )

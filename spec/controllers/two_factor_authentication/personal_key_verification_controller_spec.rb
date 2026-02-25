@@ -111,7 +111,7 @@ RSpec.describe TwoFactorAuthentication::PersonalKeyVerificationController do
           multi_factor_auth_method: 'personal-key',
           multi_factor_auth_method_created_at:,
           new_device: true,
-          has_webauthn_platform_configurations: false,
+          available_webauthn_platform_config: false,
           attempts: 1,
         )
         expect(@analytics).to have_logged_event(
@@ -280,7 +280,7 @@ RSpec.describe TwoFactorAuthentication::PersonalKeyVerificationController do
               multi_factor_auth_method: 'personal-key',
               multi_factor_auth_method_created_at: personal_key_generated_at.strftime('%s%L'),
               new_device: true,
-              has_webauthn_platform_configurations: false,
+              available_webauthn_platform_config: false,
               attempts: 1,
             )
             expect(@analytics).to have_logged_event(
@@ -319,7 +319,7 @@ RSpec.describe TwoFactorAuthentication::PersonalKeyVerificationController do
               multi_factor_auth_method: 'personal-key',
               multi_factor_auth_method_created_at: personal_key_generated_at.strftime('%s%L'),
               new_device: true,
-              has_webauthn_platform_configurations: false,
+              available_webauthn_platform_config: false,
               attempts: 1,
             )
             expect(@analytics).to have_logged_event(
