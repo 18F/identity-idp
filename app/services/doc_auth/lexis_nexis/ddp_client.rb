@@ -47,14 +47,6 @@ module DocAuth
           applicant: request_applicant,
         ).fetch
       end
-
-      private
-
-      def validate_review_status!(review_status)
-        return if VALID_REVIEW_STATUSES.include?(review_status)
-
-        raise "Unexpected review_status value: #{review_status}"
-      end
     end
   end
 end
