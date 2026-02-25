@@ -6370,6 +6370,7 @@ module AnalyticsEvents
     frontend_error: nil,
     in_account_creation_flow: nil,
     recaptcha_annotation: nil,
+    has_webauthn_platform_configurations: nil,
     **extra
   )
     track_event(
