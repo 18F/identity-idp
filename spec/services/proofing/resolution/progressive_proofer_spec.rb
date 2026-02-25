@@ -934,6 +934,20 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
       end
     end
 
+    context 'when proofing_vendor is :instant_verify_ddp' do
+      let(:proofing_vendor) { :instant_verify_ddp }
+
+      it 'returns ResidentialAddressPlugin with an InstantVerify proofer' do
+        expect(progressive_proofer.residential_address_plugin).to be_an_instance_of(
+          Proofing::Resolution::Plugins::ResidentialAddressPlugin,
+        )
+
+        expect(progressive_proofer.residential_address_plugin.proofer).to be_an_instance_of(
+          Proofing::LexisNexis::Ddp::Proofers::InstantVerifyProofer,
+        )
+      end
+    end
+
     context 'when proofing_vendor is :mock' do
       let(:proofing_vendor) { :mock }
 
@@ -988,6 +1002,20 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
 
         expect(progressive_proofer.state_id_address_plugin.proofer).to be_an_instance_of(
           Proofing::LexisNexis::InstantVerify::Proofer,
+        )
+      end
+    end
+
+    context 'when proofing_vendor is :instant_verify_ddp' do
+      let(:proofing_vendor) { :instant_verify_ddp }
+
+      it 'returns StateIdAddressPlugin with an InstantVerify proofer' do
+        expect(progressive_proofer.state_id_address_plugin).to be_an_instance_of(
+          Proofing::Resolution::Plugins::StateIdAddressPlugin,
+        )
+
+        expect(progressive_proofer.state_id_address_plugin.proofer).to be_an_instance_of(
+          Proofing::LexisNexis::Ddp::Proofers::InstantVerifyProofer,
         )
       end
     end
