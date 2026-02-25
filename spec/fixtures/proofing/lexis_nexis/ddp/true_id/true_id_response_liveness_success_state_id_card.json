@@ -1,0 +1,2895 @@
+{
+  "account_email": "null",
+  "account_lex_id_region": "US",
+  "api_call_datetime": "2026-01-26 19:49:46.797",
+  "api_caller_ip": "136.226.18.204",
+  "api_type": "authentication",
+  "auth_status": "authentication_success",
+  "authentication.conversation_id": "50001044473245",
+  "champion_request_duration": "11860",
+  "event_datetime": "2026-01-26 19:49:46.797",
+  "event_type": "init_auth",
+  "integration_hub_results": {
+    "org_id_str:default_auth_policy_pm": {
+      "Authentication": {
+        "rule_id": "509748600",
+        "tps_datetime": "2026-01-26 19:49:46.906",
+        "tps_duration": "10494",
+        "tps_error": "trueid_pass",
+        "tps_http_status_code": "200",
+        "tps_result": "ok",
+        "tps_type": "LN_RDP_Auth_Hub_Initiate",
+        "tps_vendor": "LexisNexis - Connectors",
+        "tps_vendor_org_id": "7ryg7owp",
+        "tps_vendor_raw_response": {
+          "Products": [
+            {
+              "ExecutedStepName": "True_ID_Step",
+              "ParameterDetails": [
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "DocumentName",
+                  "Values": [
+                    {
+                      "Value": "Washington (WA) Driver's License - STAR"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "DocAuthResult",
+                  "Values": [
+                    {
+                      "Value": "Passed"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "DocAuthTamperResult",
+                  "Values": [
+                    {
+                      "Value": "Passed"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "DocAuthTamperSensitivity",
+                  "Values": [
+                    {
+                      "Value": "High"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "DocIssuerCode",
+                  "Values": [
+                    {
+                      "Value": "WA"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "DocIssuerName",
+                  "Values": [
+                    {
+                      "Value": "Washington"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "DocIssuerType",
+                  "Values": [
+                    {
+                      "Value": "StateProvince"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "DocClassCode",
+                  "Values": [
+                    {
+                      "Value": "DriversLicense"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "DocClass",
+                  "Values": [
+                    {
+                      "Value": "DriversLicense"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "DocClassName",
+                  "Values": [
+                    {
+                      "Value": "Drivers License"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "DocIsGeneric",
+                  "Values": [
+                    {
+                      "Value": "false"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "DocIssue",
+                  "Values": [
+                    {
+                      "Value": "2022"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "DocIssueType",
+                  "Values": [
+                    {
+                      "Value": "Driver's License - STAR"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "DocSize",
+                  "Values": [
+                    {
+                      "Value": "ID1"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "ClassificationMode",
+                  "Values": [
+                    {
+                      "Value": "Automatic"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "OrientationChanged",
+                  "Values": [
+                    {
+                      "Value": "false"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "PresentationChanged",
+                  "Values": [
+                    {
+                      "Value": "false"
+                    }
+                  ]
+                },
+                {
+                  "Group": "IMAGE_METRICS_RESULT",
+                  "Name": "Side",
+                  "Values": [
+                    {
+                      "Value": "Front"
+                    },
+                    {
+                      "Value": "Back"
+                    }
+                  ]
+                },
+                {
+                  "Group": "IMAGE_METRICS_RESULT",
+                  "Name": "GlareMetric",
+                  "Values": [
+                    {
+                      "Value": "99"
+                    },
+                    {
+                      "Value": "99"
+                    }
+                  ]
+                },
+                {
+                  "Group": "IMAGE_METRICS_RESULT",
+                  "Name": "SharpnessMetric",
+                  "Values": [
+                    {
+                      "Value": "71"
+                    },
+                    {
+                      "Value": "83"
+                    }
+                  ]
+                },
+                {
+                  "Group": "IMAGE_METRICS_RESULT",
+                  "Name": "IsTampered",
+                  "Values": [
+                    {
+                      "Value": "0"
+                    },
+                    {
+                      "Value": "0"
+                    }
+                  ]
+                },
+                {
+                  "Group": "IMAGE_METRICS_RESULT",
+                  "Name": "IsCropped",
+                  "Values": [
+                    {
+                      "Value": "1"
+                    },
+                    {
+                      "Value": "1"
+                    }
+                  ]
+                },
+                {
+                  "Group": "IMAGE_METRICS_RESULT",
+                  "Name": "HorizontalResolution",
+                  "Values": [
+                    {
+                      "Value": "600"
+                    },
+                    {
+                      "Value": "600"
+                    }
+                  ]
+                },
+                {
+                  "Group": "IMAGE_METRICS_RESULT",
+                  "Name": "VerticalResolution",
+                  "Values": [
+                    {
+                      "Value": "600"
+                    },
+                    {
+                      "Value": "600"
+                    }
+                  ]
+                },
+                {
+                  "Group": "IMAGE_METRICS_RESULT",
+                  "Name": "Light",
+                  "Values": [
+                    {
+                      "Value": "White"
+                    },
+                    {
+                      "Value": "White"
+                    }
+                  ]
+                },
+                {
+                  "Group": "IMAGE_METRICS_RESULT",
+                  "Name": "MimeType",
+                  "Values": [
+                    {
+                      "Value": "image/jpeg"
+                    },
+                    {
+                      "Value": "image/jpeg"
+                    }
+                  ]
+                },
+                {
+                  "Group": "IMAGE_METRICS_RESULT",
+                  "Name": "ImageMetrics_Id",
+                  "Values": [
+                    {
+                      "Value": "e132cef3-8ba7-4199-9b3c-3b78989ebf19"
+                    },
+                    {
+                      "Value": "9e148248-b649-4573-91a6-c4191d13e9e4"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "FullName",
+                  "Values": [
+                    {
+                      "Value": "FIRST MIDDLE LAST"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Sex",
+                  "Values": [
+                    {
+                      "Value": "Male"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Age",
+                  "Values": [
+                    {
+                      "Value": "56"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "DOB_Year",
+                  "Values": [
+                    {
+                      "Value": "1999"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "DOB_Month",
+                  "Values": [
+                    {
+                      "Value": "1"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "DOB_Day",
+                  "Values": [
+                    {
+                      "Value": "1"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "ExpirationDate_Year",
+                  "Values": [
+                    {
+                      "Value": "2030"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "ExpirationDate_Month",
+                  "Values": [
+                    {
+                      "Value": "1"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "ExpirationDate_Day",
+                  "Values": [
+                    {
+                      "Value": "1"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_1_AlertName",
+                  "Values": [
+                    {
+                      "Value": "Visible Pattern"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_2_AlertName",
+                  "Values": [
+                    {
+                      "Value": "Visible Pattern"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_3_AlertName",
+                  "Values": [
+                    {
+                      "Value": "2D Barcode Content"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_4_AlertName",
+                  "Values": [
+                    {
+                      "Value": "2D Barcode Read"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_5_AlertName",
+                  "Values": [
+                    {
+                      "Value": "Barcode Encoding"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_6_AlertName",
+                  "Values": [
+                    {
+                      "Value": "Birth Date Crosscheck"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_7_AlertName",
+                  "Values": [
+                    {
+                      "Value": "Birth Date Valid"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_8_AlertName",
+                  "Values": [
+                    {
+                      "Value": "Control Number Crosscheck"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_9_AlertName",
+                  "Values": [
+                    {
+                      "Value": "DD Number Crosscheck"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_10_AlertName",
+                  "Values": [
+                    {
+                      "Value": "Document Classification"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_11_AlertName",
+                  "Values": [
+                    {
+                      "Value": "Document Crosscheck Aggregation"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_12_AlertName",
+                  "Values": [
+                    {
+                      "Value": "Document Expired"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_13_AlertName",
+                  "Values": [
+                    {
+                      "Value": "Document Number Crosscheck"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_14_AlertName",
+                  "Values": [
+                    {
+                      "Value": "Document Tampering Detection"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_15_AlertName",
+                  "Values": [
+                    {
+                      "Value": "Document Tampering Detection"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_16_AlertName",
+                  "Values": [
+                    {
+                      "Value": "Document Tampering Detection"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_17_AlertName",
+                  "Values": [
+                    {
+                      "Value": "Document Tampering Detection"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_18_AlertName",
+                  "Values": [
+                    {
+                      "Value": "Document Tampering Detection"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_19_AlertName",
+                  "Values": [
+                    {
+                      "Value": "Document Tampering Detection"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_20_AlertName",
+                  "Values": [
+                    {
+                      "Value": "Document Tampering Detection"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_21_AlertName",
+                  "Values": [
+                    {
+                      "Value": "Document Tampering Detection"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_22_AlertName",
+                  "Values": [
+                    {
+                      "Value": "Document Tampering Detection"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_23_AlertName",
+                  "Values": [
+                    {
+                      "Value": "Document Tampering Detection"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_24_AlertName",
+                  "Values": [
+                    {
+                      "Value": "Document Tampering Detection"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_25_AlertName",
+                  "Values": [
+                    {
+                      "Value": "Document Tampering Detection"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_26_AlertName",
+                  "Values": [
+                    {
+                      "Value": "Expiration Date Crosscheck"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_27_AlertName",
+                  "Values": [
+                    {
+                      "Value": "Expiration Date Valid"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_28_AlertName",
+                  "Values": [
+                    {
+                      "Value": "Full Name Crosscheck"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_29_AlertName",
+                  "Values": [
+                    {
+                      "Value": "Issue Date Crosscheck"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_30_AlertName",
+                  "Values": [
+                    {
+                      "Value": "Issue Date Valid"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_31_AlertName",
+                  "Values": [
+                    {
+                      "Value": "Issuing State Crosscheck"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_32_AlertName",
+                  "Values": [
+                    {
+                      "Value": "Series Expired"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_33_AlertName",
+                  "Values": [
+                    {
+                      "Value": "Sex Crosscheck"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_34_AlertName",
+                  "Values": [
+                    {
+                      "Value": "Visible Pattern"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_35_AlertName",
+                  "Values": [
+                    {
+                      "Value": "Visible Pattern"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_36_AlertName",
+                  "Values": [
+                    {
+                      "Value": "Visible Pattern"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_37_AlertName",
+                  "Values": [
+                    {
+                      "Value": "Visible Pattern"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_38_AlertName",
+                  "Values": [
+                    {
+                      "Value": "Visible Pattern"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_39_AlertName",
+                  "Values": [
+                    {
+                      "Value": "Visible Pattern"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_40_AlertName",
+                  "Values": [
+                    {
+                      "Value": "Visible Pattern"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_41_AlertName",
+                  "Values": [
+                    {
+                      "Value": "Visible Pattern"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_42_AlertName",
+                  "Values": [
+                    {
+                      "Value": "Visible Pattern"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_43_AlertName",
+                  "Values": [
+                    {
+                      "Value": "Visible Pattern"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_44_AlertName",
+                  "Values": [
+                    {
+                      "Value": "Visible Pattern"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_45_AlertName",
+                  "Values": [
+                    {
+                      "Value": "Visible Pattern"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_14_Model",
+                  "Values": [
+                    {
+                      "Value": "Text Tampering Detection V2.1"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_15_Model",
+                  "Values": [
+                    {
+                      "Value": "Physical Document Presence V5.1"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_16_Model",
+                  "Values": [
+                    {
+                      "Value": "Physical Document Presence V6.1"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_17_Model",
+                  "Values": [
+                    {
+                      "Value": "Enhanced Screen Replay Detection"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_18_Model",
+                  "Values": [
+                    {
+                      "Value": "Enhanced Printed Copy Detection"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_19_Model",
+                  "Values": [
+                    {
+                      "Value": "Physical Document Presence V2.5"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_20_Model",
+                  "Values": [
+                    {
+                      "Value": "Enhanced Portrait Substitution Detection"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_21_Model",
+                  "Values": [
+                    {
+                      "Value": "Photo Tampering Detection V6.2"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_22_Model",
+                  "Values": [
+                    {
+                      "Value": "Photo Tampering Detection V6.1"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_23_Model",
+                  "Values": [
+                    {
+                      "Value": "Photo Tampering Detection V4.2"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_24_Model",
+                  "Values": [
+                    {
+                      "Value": "Photo Tampering Detection V2.7"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_25_Model",
+                  "Values": [
+                    {
+                      "Value": "Text Tampering Detection V1.2.1"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_1_AuthenticationResult",
+                  "Values": [
+                    {
+                      "Detail": "Verified the presence of a pattern on the visible image.",
+                      "Value": "Failed"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_2_AuthenticationResult",
+                  "Values": [
+                    {
+                      "Detail": "Verified the presence of a pattern on the visible image.",
+                      "Value": "Failed"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_3_AuthenticationResult",
+                  "Values": [
+                    {
+                      "Detail": "Checked the contents of the two-dimensional barcode on the document.",
+                      "Value": "Passed"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_4_AuthenticationResult",
+                  "Values": [
+                    {
+                      "Detail": "Verified that the two-dimensional barcode on the document was read successfully.",
+                      "Value": "Passed"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_5_AuthenticationResult",
+                  "Values": [
+                    {
+                      "Detail": "Verified the format of the barcode.",
+                      "Value": "Passed"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_6_AuthenticationResult",
+                  "Values": [
+                    {
+                      "Detail": "Compare the machine-readable birth date field to the human-readable birth date field.",
+                      "Value": "Passed"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_7_AuthenticationResult",
+                  "Values": [
+                    {
+                      "Detail": "Verified that the birth date is valid.",
+                      "Value": "Passed"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_8_AuthenticationResult",
+                  "Values": [
+                    {
+                      "Detail": "Compare the machine-readable control number field to the human-readable control number field.",
+                      "Value": "Passed"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_9_AuthenticationResult",
+                  "Values": [
+                    {
+                      "Detail": "Compare the machine-readable DD number field to the human-readable DD number field.",
+                      "Value": "Passed"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_10_AuthenticationResult",
+                  "Values": [
+                    {
+                      "Detail": "Verified that the type of document is supported and is able to be fully authenticated.",
+                      "Value": "Passed"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_11_AuthenticationResult",
+                  "Values": [
+                    {
+                      "Detail": "Compared the machine-readable fields to the human-readable fields.",
+                      "Value": "Passed"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_12_AuthenticationResult",
+                  "Values": [
+                    {
+                      "Detail": "Checked if the document is expired.",
+                      "Value": "Passed"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_13_AuthenticationResult",
+                  "Values": [
+                    {
+                      "Detail": "Compare the machine-readable document number field to the human-readable document number field.",
+                      "Value": "Passed"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_14_AuthenticationResult",
+                  "Values": [
+                    {
+                      "Detail": "Examines a document for evidence of tampering",
+                      "Value": "Passed"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_15_AuthenticationResult",
+                  "Values": [
+                    {
+                      "Detail": "Examines a document for evidence of tampering",
+                      "Value": "Passed"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_16_AuthenticationResult",
+                  "Values": [
+                    {
+                      "Detail": "Examines a document for evidence of tampering",
+                      "Value": "Passed"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_17_AuthenticationResult",
+                  "Values": [
+                    {
+                      "Detail": "Examines a document for evidence of tampering",
+                      "Value": "Passed"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_18_AuthenticationResult",
+                  "Values": [
+                    {
+                      "Detail": "Examines a document for evidence of tampering",
+                      "Value": "Passed"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_19_AuthenticationResult",
+                  "Values": [
+                    {
+                      "Detail": "Examines a document for evidence of tampering",
+                      "Value": "Passed"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_20_AuthenticationResult",
+                  "Values": [
+                    {
+                      "Detail": "Examines a document for evidence of tampering",
+                      "Value": "Passed"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_21_AuthenticationResult",
+                  "Values": [
+                    {
+                      "Detail": "Examines a document for evidence of tampering",
+                      "Value": "Passed"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_22_AuthenticationResult",
+                  "Values": [
+                    {
+                      "Detail": "Examines a document for evidence of tampering",
+                      "Value": "Passed"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_23_AuthenticationResult",
+                  "Values": [
+                    {
+                      "Detail": "Examines a document for evidence of tampering",
+                      "Value": "Passed"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_24_AuthenticationResult",
+                  "Values": [
+                    {
+                      "Detail": "Examines a document for evidence of tampering",
+                      "Value": "Passed"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_25_AuthenticationResult",
+                  "Values": [
+                    {
+                      "Detail": "Examines a document for evidence of tampering",
+                      "Value": "Passed"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_26_AuthenticationResult",
+                  "Values": [
+                    {
+                      "Detail": "Compare the machine-readable expiration date field to the human-readable expiration date field.",
+                      "Value": "Passed"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_27_AuthenticationResult",
+                  "Values": [
+                    {
+                      "Detail": "Verified that the expiration date is valid.",
+                      "Value": "Passed"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_28_AuthenticationResult",
+                  "Values": [
+                    {
+                      "Detail": "Compare the machine-readable full name field to the human-readable full name field.",
+                      "Value": "Passed"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_29_AuthenticationResult",
+                  "Values": [
+                    {
+                      "Detail": "Compare the machine-readable issue date field to the human-readable issue date field.",
+                      "Value": "Passed"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_30_AuthenticationResult",
+                  "Values": [
+                    {
+                      "Detail": "Verified that the issue date is valid.",
+                      "Value": "Passed"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_31_AuthenticationResult",
+                  "Values": [
+                    {
+                      "Detail": "Compares the issuing state information from various data sources (visual, 2D barcode, magnetic stripe, contactless smart card) on the document.",
+                      "Value": "Passed"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_32_AuthenticationResult",
+                  "Values": [
+                    {
+                      "Detail": "Verified whether the document type is still in circulation.",
+                      "Value": "Passed"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_33_AuthenticationResult",
+                  "Values": [
+                    {
+                      "Detail": "Compare the machine-readable sex field to the human-readable sex field.",
+                      "Value": "Passed"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_34_AuthenticationResult",
+                  "Values": [
+                    {
+                      "Detail": "Verified the presence of a pattern on the visible image.",
+                      "Value": "Passed"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_35_AuthenticationResult",
+                  "Values": [
+                    {
+                      "Detail": "Verified the presence of a pattern on the visible image.",
+                      "Value": "Passed"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_36_AuthenticationResult",
+                  "Values": [
+                    {
+                      "Detail": "Verified the presence of a pattern on the visible image.",
+                      "Value": "Passed"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_37_AuthenticationResult",
+                  "Values": [
+                    {
+                      "Detail": "Verified the presence of a pattern on the visible image.",
+                      "Value": "Passed"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_38_AuthenticationResult",
+                  "Values": [
+                    {
+                      "Detail": "Verified the presence of a pattern on the visible image.",
+                      "Value": "Passed"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_39_AuthenticationResult",
+                  "Values": [
+                    {
+                      "Detail": "Verified the presence of a pattern on the visible image.",
+                      "Value": "Passed"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_40_AuthenticationResult",
+                  "Values": [
+                    {
+                      "Detail": "Verified the presence of a pattern on the visible image.",
+                      "Value": "Passed"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_41_AuthenticationResult",
+                  "Values": [
+                    {
+                      "Detail": "Verified the presence of a pattern on the visible image.",
+                      "Value": "Passed"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_42_AuthenticationResult",
+                  "Values": [
+                    {
+                      "Detail": "Verified the presence of a pattern on the visible image.",
+                      "Value": "Passed"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_43_AuthenticationResult",
+                  "Values": [
+                    {
+                      "Detail": "Verified the presence of a pattern on the visible image.",
+                      "Value": "Passed"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_44_AuthenticationResult",
+                  "Values": [
+                    {
+                      "Detail": "Verified the presence of a pattern on the visible image.",
+                      "Value": "Passed"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_45_AuthenticationResult",
+                  "Values": [
+                    {
+                      "Detail": "Verified the presence of a pattern on the visible image.",
+                      "Value": "Passed"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_1_Disposition",
+                  "Values": [
+                    {
+                      "Value": "A visible pattern was not found"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_2_Disposition",
+                  "Values": [
+                    {
+                      "Value": "A visible pattern was not found"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_3_Disposition",
+                  "Values": [
+                    {
+                      "Value": "The 2D barcode is formatted correctly"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_4_Disposition",
+                  "Values": [
+                    {
+                      "Value": "The 2D barcode was read successfully"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_5_Disposition",
+                  "Values": [
+                    {
+                      "Value": "The barcode encoding is consistent with the expected encoding for the type"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_6_Disposition",
+                  "Values": [
+                    {
+                      "Value": "The birth dates match"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_7_Disposition",
+                  "Values": [
+                    {
+                      "Value": "The birth date is valid"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_8_Disposition",
+                  "Values": [
+                    {
+                      "Value": "The control numbers match"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_9_Disposition",
+                  "Values": [
+                    {
+                      "Value": "The DD numbers match"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_10_Disposition",
+                  "Values": [
+                    {
+                      "Value": "The document type is supported"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_11_Disposition",
+                  "Values": [
+                    {
+                      "Value": "There are not a large number of differences between electronic and human-readable data sources"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_12_Disposition",
+                  "Values": [
+                    {
+                      "Value": "The document has not expired"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_13_Disposition",
+                  "Values": [
+                    {
+                      "Value": "The document numbers match"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_14_Disposition",
+                  "Values": [
+                    {
+                      "Value": "No evidence of document tampering was detected."
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_15_Disposition",
+                  "Values": [
+                    {
+                      "Value": "No evidence of document tampering was detected."
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_16_Disposition",
+                  "Values": [
+                    {
+                      "Value": "No evidence of document tampering was detected."
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_17_Disposition",
+                  "Values": [
+                    {
+                      "Value": "No evidence of document tampering was detected."
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_18_Disposition",
+                  "Values": [
+                    {
+                      "Value": "No evidence of document tampering was detected."
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_19_Disposition",
+                  "Values": [
+                    {
+                      "Value": "No evidence of document tampering was detected."
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_20_Disposition",
+                  "Values": [
+                    {
+                      "Value": "No evidence of document tampering was detected."
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_21_Disposition",
+                  "Values": [
+                    {
+                      "Value": "No evidence of document tampering was detected."
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_22_Disposition",
+                  "Values": [
+                    {
+                      "Value": "No evidence of document tampering was detected."
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_23_Disposition",
+                  "Values": [
+                    {
+                      "Value": "No evidence of document tampering was detected."
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_24_Disposition",
+                  "Values": [
+                    {
+                      "Value": "No evidence of document tampering was detected."
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_25_Disposition",
+                  "Values": [
+                    {
+                      "Value": "No evidence of document tampering was detected."
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_26_Disposition",
+                  "Values": [
+                    {
+                      "Value": "The expiration dates match"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_27_Disposition",
+                  "Values": [
+                    {
+                      "Value": "The expiration date is valid"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_28_Disposition",
+                  "Values": [
+                    {
+                      "Value": "The full names match"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_29_Disposition",
+                  "Values": [
+                    {
+                      "Value": "The issue dates match"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_30_Disposition",
+                  "Values": [
+                    {
+                      "Value": "The issue date is valid"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_31_Disposition",
+                  "Values": [
+                    {
+                      "Value": "The issuing state information matches across all data sources."
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_32_Disposition",
+                  "Values": [
+                    {
+                      "Value": "The series has not expired"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_33_Disposition",
+                  "Values": [
+                    {
+                      "Value": "The sexes match"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_34_Disposition",
+                  "Values": [
+                    {
+                      "Value": "A visible pattern was found"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_35_Disposition",
+                  "Values": [
+                    {
+                      "Value": "A visible pattern was found"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_36_Disposition",
+                  "Values": [
+                    {
+                      "Value": "A visible pattern was found"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_37_Disposition",
+                  "Values": [
+                    {
+                      "Value": "A visible pattern was found"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_38_Disposition",
+                  "Values": [
+                    {
+                      "Value": "A visible pattern was found"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_39_Disposition",
+                  "Values": [
+                    {
+                      "Value": "A visible pattern was found"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_40_Disposition",
+                  "Values": [
+                    {
+                      "Value": "A visible pattern was found"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_41_Disposition",
+                  "Values": [
+                    {
+                      "Value": "A visible pattern was found"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_42_Disposition",
+                  "Values": [
+                    {
+                      "Value": "A visible pattern was found"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_43_Disposition",
+                  "Values": [
+                    {
+                      "Value": "A visible pattern was found"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_44_Disposition",
+                  "Values": [
+                    {
+                      "Value": "A visible pattern was found"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_45_Disposition",
+                  "Values": [
+                    {
+                      "Value": "A visible pattern was found"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_1_Regions",
+                  "Values": [
+                    {
+                      "Value": "Background Shape V2"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_2_Regions",
+                  "Values": [
+                    {
+                      "Value": "Background Shape V1"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_21_Regions",
+                  "Values": [
+                    {
+                      "Value": "Photo"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_22_Regions",
+                  "Values": [
+                    {
+                      "Value": "Photo"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_23_Regions",
+                  "Values": [
+                    {
+                      "Value": "Photo"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_24_Regions",
+                  "Values": [
+                    {
+                      "Value": "Photo"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_25_Regions",
+                  "Values": [
+                    {
+                      "Value": "Address"
+                    },
+                    {
+                      "Value": "Birth Date"
+                    },
+                    {
+                      "Value": "Document Number"
+                    },
+                    {
+                      "Value": "Expiration Date"
+                    },
+                    {
+                      "Value": "Given Name"
+                    },
+                    {
+                      "Value": "Issue Date"
+                    },
+                    {
+                      "Value": "Surname"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_34_Regions",
+                  "Values": [
+                    {
+                      "Value": "Issue Date Font"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_35_Regions",
+                  "Values": [
+                    {
+                      "Value": "Oval Edge"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_36_Regions",
+                  "Values": [
+                    {
+                      "Value": "Washington Header Font A"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_37_Regions",
+                  "Values": [
+                    {
+                      "Value": "Height Font V2"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_38_Regions",
+                  "Values": [
+                    {
+                      "Value": "Expiration Date Font"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_39_Regions",
+                  "Values": [
+                    {
+                      "Value": "Flag"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_40_Regions",
+                  "Values": [
+                    {
+                      "Value": "Curved Lines V2"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_41_Regions",
+                  "Values": [
+                    {
+                      "Value": "Washington Header Font"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_42_Regions",
+                  "Values": [
+                    {
+                      "Value": "Background Shape V1 Back"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_43_Regions",
+                  "Values": [
+                    {
+                      "Value": "Bottom Left Background V2"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_44_Regions",
+                  "Values": [
+                    {
+                      "Value": "Center Background V2"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_45_Regions",
+                  "Values": [
+                    {
+                      "Value": "Right Background V2"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_1_Regions_Reference",
+                  "Values": [
+                    {
+                      "Value": "75341513-b785-4951-b81d-a2faa0ad06c9"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_2_Regions_Reference",
+                  "Values": [
+                    {
+                      "Value": "67807f80-d3e3-4092-86f3-17561ac5a2df"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_21_Regions_Reference",
+                  "Values": [
+                    {
+                      "Value": "580390b5-52ac-4f56-b339-d58ea2372344"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_22_Regions_Reference",
+                  "Values": [
+                    {
+                      "Value": "580390b5-52ac-4f56-b339-d58ea2372344"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_23_Regions_Reference",
+                  "Values": [
+                    {
+                      "Value": "580390b5-52ac-4f56-b339-d58ea2372344"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_24_Regions_Reference",
+                  "Values": [
+                    {
+                      "Value": "580390b5-52ac-4f56-b339-d58ea2372344"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_25_Regions_Reference",
+                  "Values": [
+                    {
+                      "Value": "3ddb9ba9-fddc-44db-a36c-11dc921faece"
+                    },
+                    {
+                      "Value": "d8190291-46d9-4e8b-9029-8b7b96f2eb47"
+                    },
+                    {
+                      "Value": "0675efe4-a7d0-4a0e-bf4f-7c0eda8850b9"
+                    },
+                    {
+                      "Value": "e4d5d7bc-2cb4-41ab-85d4-3922e26a9108"
+                    },
+                    {
+                      "Value": "f031b78b-c0d2-472f-9adc-459b2c898065"
+                    },
+                    {
+                      "Value": "631e1122-5c70-4c18-b470-c4487c1c594c"
+                    },
+                    {
+                      "Value": "554126f6-90b5-4151-b113-d406b397c160"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_34_Regions_Reference",
+                  "Values": [
+                    {
+                      "Value": "35a122f5-e43b-4702-af33-f748c28b2a1e"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_35_Regions_Reference",
+                  "Values": [
+                    {
+                      "Value": "b9d9ed3c-76cd-4c79-831e-c53555d4142c"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_36_Regions_Reference",
+                  "Values": [
+                    {
+                      "Value": "0a53f335-b7ed-4a70-9647-6534b733c1fe"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_37_Regions_Reference",
+                  "Values": [
+                    {
+                      "Value": "6da301c4-9566-4f1c-9e64-1ead8066f448"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_38_Regions_Reference",
+                  "Values": [
+                    {
+                      "Value": "1a8e370f-1a8d-473b-867e-d0d5b6209b34"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_39_Regions_Reference",
+                  "Values": [
+                    {
+                      "Value": "0334d108-a7d5-4206-895a-b02ebd61a09b"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_40_Regions_Reference",
+                  "Values": [
+                    {
+                      "Value": "fff65135-f70e-46a0-9f6d-07c107b0be7d"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_41_Regions_Reference",
+                  "Values": [
+                    {
+                      "Value": "743a1216-86dc-48b7-8ac1-f2cba950859a"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_42_Regions_Reference",
+                  "Values": [
+                    {
+                      "Value": "19ff1a6f-55f7-4f5b-bafd-5d34c24b6f70"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_43_Regions_Reference",
+                  "Values": [
+                    {
+                      "Value": "a67a8261-493e-4a17-b4f8-19317a5909c0"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_44_Regions_Reference",
+                  "Values": [
+                    {
+                      "Value": "8147a9f0-3d7b-4b8e-8983-4e9201f90ba2"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_45_Regions_Reference",
+                  "Values": [
+                    {
+                      "Value": "fd137799-1736-45f9-921a-a668bcc91578"
+                    }
+                  ]
+                },
+                {
+                  "Group": "PORTRAIT_MATCH_RESULT",
+                  "Name": "FaceMatchResult",
+                  "Values": [{ "Value": "Pass" }]
+                },
+                {
+                  "Group": "PORTRAIT_MATCH_RESULT",
+                  "Name": "FaceMatchScore",
+                  "Values": [{ "Value": "96" }]
+                },
+                {
+                  "Group": "PORTRAIT_MATCH_RESULT",
+                  "Name": "FaceStatusCode",
+                  "Values": [{ "Value": "1" }]
+                },
+                {
+                  "Group": "PORTRAIT_MATCH_RESULT",
+                  "Name": "FaceErrorMessage",
+                  "Values": [{ "Value": "Successful. Liveness: Live" }]
+                },
+                {
+                  "Group": "IDAUTH_FIELD_DATA",
+                  "Name": "Fields_FullName",
+                  "Values": [
+                    {
+                      "Value": "FIRST MIDDLE LAST"
+                    }
+                  ]
+                },
+                {
+                  "Group": "IDAUTH_FIELD_DATA",
+                  "Name": "Fields_Surname",
+                  "Values": [
+                    {
+                      "Value": "LAST"
+                    }
+                  ]
+                },
+                {
+                  "Group": "IDAUTH_FIELD_DATA",
+                  "Name": "Fields_GivenName",
+                  "Values": [
+                    {
+                      "Value": "FIRST MIDDLE"
+                    }
+                  ]
+                },
+                {
+                  "Group": "IDAUTH_FIELD_DATA",
+                  "Name": "Fields_FirstName",
+                  "Values": [
+                    {
+                      "Value": "FIRST"
+                    }
+                  ]
+                },
+                {
+                  "Group": "IDAUTH_FIELD_DATA",
+                  "Name": "Fields_MiddleName",
+                  "Values": [
+                    {
+                      "Value": "MIDDLE"
+                    }
+                  ]
+                },
+                {
+                  "Group": "IDAUTH_FIELD_DATA",
+                  "Name": "Fields_DOB_Year",
+                  "Values": [
+                    {
+                      "Value": "1999"
+                    }
+                  ]
+                },
+                {
+                  "Group": "IDAUTH_FIELD_DATA",
+                  "Name": "Fields_DOB_Month",
+                  "Values": [
+                    {
+                      "Value": "1"
+                    }
+                  ]
+                },
+                {
+                  "Group": "IDAUTH_FIELD_DATA",
+                  "Name": "Fields_DOB_Day",
+                  "Values": [
+                    {
+                      "Value": "1"
+                    }
+                  ]
+                },
+                {
+                  "Group": "IDAUTH_FIELD_DATA",
+                  "Name": "Fields_DocumentClassName",
+                  "Values": [
+                    {
+                      "Value": "Drivers License"
+                    }
+                  ]
+                },
+                {
+                  "Group": "IDAUTH_FIELD_DATA",
+                  "Name": "Fields_DocumentNumber",
+                  "Values": [
+                    {
+                      "Value": "WA0123456789"
+                    }
+                  ]
+                },
+                {
+                  "Group": "IDAUTH_FIELD_DATA",
+                  "Name": "Fields_ExpirationDate_Year",
+                  "Values": [
+                    {
+                      "Value": "2030"
+                    }
+                  ]
+                },
+                {
+                  "Group": "IDAUTH_FIELD_DATA",
+                  "Name": "Fields_ExpirationDate_Month",
+                  "Values": [
+                    {
+                      "Value": "1"
+                    }
+                  ]
+                },
+                {
+                  "Group": "IDAUTH_FIELD_DATA",
+                  "Name": "Fields_xpirationDate_Day",
+                  "Values": [
+                    {
+                      "Value": "1"
+                    }
+                  ]
+                },
+                {
+                  "Group": "IDAUTH_FIELD_DATA",
+                  "Name": "Fields_IssuingStateCode",
+                  "Values": [
+                    {
+                      "Value": "WA"
+                    }
+                  ]
+                },
+                {
+                  "Group": "IDAUTH_FIELD_DATA",
+                  "Name": "Fields_IssuingStateName",
+                  "Values": [
+                    {
+                      "Value": "Washington"
+                    }
+                  ]
+                },
+                {
+                  "Group": "IDAUTH_FIELD_DATA",
+                  "Name": "Fields_CountryCode",
+                  "Values": [
+                    {
+                      "Value": "USA"
+                    }
+                  ]
+                },
+                {
+                  "Group": "IDAUTH_FIELD_DATA",
+                  "Name": "Fields_Address",
+                  "Values": [
+                    {
+                      "Value": "123 MAIN ST, SEATTLE, WA 12345"
+                    }
+                  ]
+                },
+                {
+                  "Group": "IDAUTH_FIELD_DATA",
+                  "Name": "Fields_AddressLine1",
+                  "Values": [
+                    {
+                      "Value": "123 MAIN ST"
+                    }
+                  ]
+                },
+                {
+                  "Group": "IDAUTH_FIELD_DATA",
+                  "Name": "Fields_City",
+                  "Values": [
+                    {
+                      "Value": "SEATTLE"
+                    }
+                  ]
+                },
+                {
+                  "Group": "IDAUTH_FIELD_DATA",
+                  "Name": "Fields_State",
+                  "Values": [
+                    {
+                      "Value": "WA"
+                    }
+                  ]
+                },
+                {
+                  "Group": "IDAUTH_FIELD_DATA",
+                  "Name": "Fields_PostalCode",
+                  "Values": [
+                    {
+                      "Value": "12345"
+                    }
+                  ]
+                },
+                {
+                  "Group": "IDAUTH_FIELD_DATA",
+                  "Name": "Fields_ControlNumber",
+                  "Values": [
+                    {
+                      "Value": "1007355971"
+                    }
+                  ]
+                },
+                {
+                  "Group": "IDAUTH_FIELD_DATA",
+                  "Name": "Fields_Height",
+                  "Values": [
+                    {
+                      "Value": "8' 9\""
+                    }
+                  ]
+                },
+                {
+                  "Group": "IDAUTH_FIELD_DATA",
+                  "Name": "Fields_IssueDate_Year",
+                  "Values": [
+                    {
+                      "Value": "2022"
+                    }
+                  ]
+                },
+                {
+                  "Group": "IDAUTH_FIELD_DATA",
+                  "Name": "Fields_IssueDate_Month",
+                  "Values": [
+                    {
+                      "Value": "1"
+                    }
+                  ]
+                },
+                {
+                  "Group": "IDAUTH_FIELD_DATA",
+                  "Name": "Fields_IssueDate_Day",
+                  "Values": [
+                    {
+                      "Value": "1"
+                    }
+                  ]
+                },
+                {
+                  "Group": "IDAUTH_FIELD_DATA",
+                  "Name": "Fields_LicenseClass",
+                  "Values": [
+                    {
+                      "Value": "C"
+                    }
+                  ]
+                },
+                {
+                  "Group": "IDAUTH_FIELD_DATA",
+                  "Name": "Fields_LicenseRestrictions",
+                  "Values": [
+                    {
+                      "Value": "B"
+                    }
+                  ]
+                },
+                {
+                  "Group": "DOCUMENT_REGION",
+                  "Name": "DocumentRegion_Id",
+                  "Values": [
+                    {
+                      "Value": "457365ef-1c04-4a98-9117-fc906c9b92a0"
+                    },
+                    {
+                      "Value": "8ab66709-60bd-46ed-8711-a68f0fbd84aa"
+                    },
+                    {
+                      "Value": "b6d8cf77-6978-4003-baf0-d1baa27736a8"
+                    },
+                    {
+                      "Value": "0759ae5c-e762-4f43-9952-1938e422ee06"
+                    },
+                    {
+                      "Value": "3ddb9ba9-fddc-44db-a36c-11dc921faece"
+                    },
+                    {
+                      "Value": "67807f80-d3e3-4092-86f3-17561ac5a2df"
+                    },
+                    {
+                      "Value": "19ff1a6f-55f7-4f5b-bafd-5d34c24b6f70"
+                    },
+                    {
+                      "Value": "75341513-b785-4951-b81d-a2faa0ad06c9"
+                    },
+                    {
+                      "Value": "d8190291-46d9-4e8b-9029-8b7b96f2eb47"
+                    },
+                    {
+                      "Value": "a67a8261-493e-4a17-b4f8-19317a5909c0"
+                    },
+                    {
+                      "Value": "8147a9f0-3d7b-4b8e-8983-4e9201f90ba2"
+                    },
+                    {
+                      "Value": "ed995914-8b6e-474d-8338-2837fc224fc6"
+                    },
+                    {
+                      "Value": "1a31faef-5cdd-4fd6-b175-86b18a383bfe"
+                    },
+                    {
+                      "Value": "fff65135-f70e-46a0-9f6d-07c107b0be7d"
+                    },
+                    {
+                      "Value": "6854677f-521a-42cd-b15a-b75d2887248c"
+                    },
+                    {
+                      "Value": "0675efe4-a7d0-4a0e-bf4f-7c0eda8850b9"
+                    },
+                    {
+                      "Value": "c76a7e78-fc48-45dd-ac6f-4a0b666246d1"
+                    },
+                    {
+                      "Value": "6136b670-c849-4b1c-95a8-557fb211a93f"
+                    },
+                    {
+                      "Value": "e4d5d7bc-2cb4-41ab-85d4-3922e26a9108"
+                    },
+                    {
+                      "Value": "1a8e370f-1a8d-473b-867e-d0d5b6209b34"
+                    },
+                    {
+                      "Value": "d83e82ed-d596-4fba-9cd7-31188c24e6fa"
+                    },
+                    {
+                      "Value": "0334d108-a7d5-4206-895a-b02ebd61a09b"
+                    },
+                    {
+                      "Value": "f031b78b-c0d2-472f-9adc-459b2c898065"
+                    },
+                    {
+                      "Value": "95cad133-a31c-4478-9c7e-9ba215bdfce4"
+                    },
+                    {
+                      "Value": "6da301c4-9566-4f1c-9e64-1ead8066f448"
+                    },
+                    {
+                      "Value": "156376d2-07fb-418d-b108-c9eddda68954"
+                    },
+                    {
+                      "Value": "631e1122-5c70-4c18-b470-c4487c1c594c"
+                    },
+                    {
+                      "Value": "35a122f5-e43b-4702-af33-f748c28b2a1e"
+                    },
+                    {
+                      "Value": "522a48b6-86a5-4e45-bf99-8a1dcdb93572"
+                    },
+                    {
+                      "Value": "7c810eb5-aad1-4aba-ad89-7777e6828975"
+                    },
+                    {
+                      "Value": "743a1216-86dc-48b7-8ac1-f2cba950859a"
+                    },
+                    {
+                      "Value": "0a53f335-b7ed-4a70-9647-6534b733c1fe"
+                    },
+                    {
+                      "Value": "b9d9ed3c-76cd-4c79-831e-c53555d4142c"
+                    },
+                    {
+                      "Value": "8b26bdcb-b103-4bd2-8aed-2561aeb4c35f"
+                    },
+                    {
+                      "Value": "580390b5-52ac-4f56-b339-d58ea2372344"
+                    },
+                    {
+                      "Value": "fd137799-1736-45f9-921a-a668bcc91578"
+                    },
+                    {
+                      "Value": "5bdcf2f1-d910-438e-abe0-b691cc993db5"
+                    },
+                    {
+                      "Value": "80117c8e-5323-4a41-9cfc-cbbb2c6b3673"
+                    },
+                    {
+                      "Value": "ee01b700-c3df-4082-afa6-22a11923872d"
+                    },
+                    {
+                      "Value": "845df14b-14f9-4800-b5b0-49ab56f8683f"
+                    },
+                    {
+                      "Value": "b1a2274f-8ad7-42b5-9955-26d3f11137fb"
+                    },
+                    {
+                      "Value": "7800a8f3-0f2a-4dd3-9fc7-f6e7d3fa9268"
+                    },
+                    {
+                      "Value": "554126f6-90b5-4151-b113-d406b397c160"
+                    },
+                    {
+                      "Value": "70f471c6-1d62-4240-8039-c0e2534d4c8d"
+                    }
+                  ]
+                },
+                {
+                  "Group": "DOCUMENT_REGION",
+                  "Name": "DocumentRegion_Key",
+                  "Values": [
+                    {
+                      "Value": "1D Barcode"
+                    },
+                    {
+                      "Value": "1D Barcode Start"
+                    },
+                    {
+                      "Value": "2D Barcode"
+                    },
+                    {
+                      "Value": "Abbreviated Document Type"
+                    },
+                    {
+                      "Value": "Address"
+                    },
+                    {
+                      "Value": "Background Shape V1"
+                    },
+                    {
+                      "Value": "Background Shape V1 Back"
+                    },
+                    {
+                      "Value": "Background Shape V2"
+                    },
+                    {
+                      "Value": "Birth Date"
+                    },
+                    {
+                      "Value": "Bottom Left Background V2"
+                    },
+                    {
+                      "Value": "Center Background V2"
+                    },
+                    {
+                      "Value": "Class Validator"
+                    },
+                    {
+                      "Value": "Control Number"
+                    },
+                    {
+                      "Value": "Curved Lines V2"
+                    },
+                    {
+                      "Value": "DD Number"
+                    },
+                    {
+                      "Value": "Document Number"
+                    },
+                    {
+                      "Value": "Document Number Label"
+                    },
+                    {
+                      "Value": "Document Type"
+                    },
+                    {
+                      "Value": "Expiration Date"
+                    },
+                    {
+                      "Value": "Expiration Date Font"
+                    },
+                    {
+                      "Value": "Expiration Date Label"
+                    },
+                    {
+                      "Value": "Flag"
+                    },
+                    {
+                      "Value": "Given Name"
+                    },
+                    {
+                      "Value": "Height"
+                    },
+                    {
+                      "Value": "Height Font V2"
+                    },
+                    {
+                      "Value": "Height Label"
+                    },
+                    {
+                      "Value": "Issue Date"
+                    },
+                    {
+                      "Value": "Issue Date Font"
+                    },
+                    {
+                      "Value": "Washington DOT Text"
+                    },
+                    {
+                      "Value": "Washington Header"
+                    },
+                    {
+                      "Value": "Washington Header Font"
+                    },
+                    {
+                      "Value": "Washington Header Font A"
+                    },
+                    {
+                      "Value": "Oval Edge"
+                    },
+                    {
+                      "Value": "OVI"
+                    },
+                    {
+                      "Value": "Photo"
+                    },
+                    {
+                      "Value": "Right Background V2"
+                    },
+                    {
+                      "Value": "Secondary Photo"
+                    },
+                    {
+                      "Value": "Secondary Photo 2"
+                    },
+                    {
+                      "Value": "Sex"
+                    },
+                    {
+                      "Value": "Sex Label"
+                    },
+                    {
+                      "Value": "Signature"
+                    },
+                    {
+                      "Value": "STAR Status"
+                    },
+                    {
+                      "Value": "Surname"
+                    },
+                    {
+                      "Value": "Weight"
+                    }
+                  ]
+                },
+                {
+                  "Group": "DOCUMENT_REGION",
+                  "Name": "DocumentRegion_ImageReference",
+                  "Values": [
+                    {
+                      "Value": "9e148248-b649-4573-91a6-c4191d13e9e4"
+                    },
+                    {
+                      "Value": "9e148248-b649-4573-91a6-c4191d13e9e4"
+                    },
+                    {
+                      "Value": "9e148248-b649-4573-91a6-c4191d13e9e4"
+                    },
+                    {
+                      "Value": "e132cef3-8ba7-4199-9b3c-3b78989ebf19"
+                    },
+                    {
+                      "Value": "e132cef3-8ba7-4199-9b3c-3b78989ebf19"
+                    },
+                    {
+                      "Value": "e132cef3-8ba7-4199-9b3c-3b78989ebf19"
+                    },
+                    {
+                      "Value": "9e148248-b649-4573-91a6-c4191d13e9e4"
+                    },
+                    {
+                      "Value": "e132cef3-8ba7-4199-9b3c-3b78989ebf19"
+                    },
+                    {
+                      "Value": "e132cef3-8ba7-4199-9b3c-3b78989ebf19"
+                    },
+                    {
+                      "Value": "9e148248-b649-4573-91a6-c4191d13e9e4"
+                    },
+                    {
+                      "Value": "9e148248-b649-4573-91a6-c4191d13e9e4"
+                    },
+                    {
+                      "Value": "9e148248-b649-4573-91a6-c4191d13e9e4"
+                    },
+                    {
+                      "Value": "9e148248-b649-4573-91a6-c4191d13e9e4"
+                    },
+                    {
+                      "Value": "e132cef3-8ba7-4199-9b3c-3b78989ebf19"
+                    },
+                    {
+                      "Value": "e132cef3-8ba7-4199-9b3c-3b78989ebf19"
+                    },
+                    {
+                      "Value": "e132cef3-8ba7-4199-9b3c-3b78989ebf19"
+                    },
+                    {
+                      "Value": "e132cef3-8ba7-4199-9b3c-3b78989ebf19"
+                    },
+                    {
+                      "Value": "e132cef3-8ba7-4199-9b3c-3b78989ebf19"
+                    },
+                    {
+                      "Value": "e132cef3-8ba7-4199-9b3c-3b78989ebf19"
+                    },
+                    {
+                      "Value": "e132cef3-8ba7-4199-9b3c-3b78989ebf19"
+                    },
+                    {
+                      "Value": "e132cef3-8ba7-4199-9b3c-3b78989ebf19"
+                    },
+                    {
+                      "Value": "e132cef3-8ba7-4199-9b3c-3b78989ebf19"
+                    },
+                    {
+                      "Value": "e132cef3-8ba7-4199-9b3c-3b78989ebf19"
+                    },
+                    {
+                      "Value": "e132cef3-8ba7-4199-9b3c-3b78989ebf19"
+                    },
+                    {
+                      "Value": "e132cef3-8ba7-4199-9b3c-3b78989ebf19"
+                    },
+                    {
+                      "Value": "e132cef3-8ba7-4199-9b3c-3b78989ebf19"
+                    },
+                    {
+                      "Value": "e132cef3-8ba7-4199-9b3c-3b78989ebf19"
+                    },
+                    {
+                      "Value": "e132cef3-8ba7-4199-9b3c-3b78989ebf19"
+                    },
+                    {
+                      "Value": "9e148248-b649-4573-91a6-c4191d13e9e4"
+                    },
+                    {
+                      "Value": "e132cef3-8ba7-4199-9b3c-3b78989ebf19"
+                    },
+                    {
+                      "Value": "e132cef3-8ba7-4199-9b3c-3b78989ebf19"
+                    },
+                    {
+                      "Value": "e132cef3-8ba7-4199-9b3c-3b78989ebf19"
+                    },
+                    {
+                      "Value": "e132cef3-8ba7-4199-9b3c-3b78989ebf19"
+                    },
+                    {
+                      "Value": "9e148248-b649-4573-91a6-c4191d13e9e4"
+                    },
+                    {
+                      "Value": "e132cef3-8ba7-4199-9b3c-3b78989ebf19"
+                    },
+                    {
+                      "Value": "9e148248-b649-4573-91a6-c4191d13e9e4"
+                    },
+                    {
+                      "Value": "e132cef3-8ba7-4199-9b3c-3b78989ebf19"
+                    },
+                    {
+                      "Value": "9e148248-b649-4573-91a6-c4191d13e9e4"
+                    },
+                    {
+                      "Value": "e132cef3-8ba7-4199-9b3c-3b78989ebf19"
+                    },
+                    {
+                      "Value": "e132cef3-8ba7-4199-9b3c-3b78989ebf19"
+                    },
+                    {
+                      "Value": "e132cef3-8ba7-4199-9b3c-3b78989ebf19"
+                    },
+                    {
+                      "Value": "e132cef3-8ba7-4199-9b3c-3b78989ebf19"
+                    },
+                    {
+                      "Value": "e132cef3-8ba7-4199-9b3c-3b78989ebf19"
+                    },
+                    {
+                      "Value": "e132cef3-8ba7-4199-9b3c-3b78989ebf19"
+                    }
+                  ]
+                }
+              ],
+              "ProductConfigurationName": "GSA.V3.TrueID.Flow.PT.DDP",
+              "ProductStatus": "pass",
+              "ProductType": "TrueID"
+            },
+            {
+              "ExecutedStepName": "Decision",
+              "ProductConfigurationName": "TRUEID_PASS",
+              "ProductReason": {
+                "Code": "trueid_pass",
+                "Description": "TRUEID PASS"
+              },
+              "ProductStatus": "pass",
+              "ProductType": "TrueID_Decision"
+            }
+          ],
+          "Status": {
+            "ConversationId": "50001044473245",
+            "RequestId": "3364070365",
+            "TransactionReasonCode": {
+              "Code": "trueid_pass",
+              "Description": "TRUEID PASS"
+            },
+            "TransactionStatus": "passed"
+          }
+        },
+        "tps_was_timeout": "no"
+      }
+    }
+  },
+  "local_attrib_3": "2532be3a-5e7f-4692-a208-a7cb6b4f4ed4",
+  "org_id": "dxr8d8zm",
+  "policy": "trueid_ncpnpm",
+  "policy_details_api": {
+    "policy_detail_api": [
+      {
+        "customer": {
+          "pvid": "2025313",
+          "review_status": "pass",
+          "risk_rating": "neutral",
+          "rules": [
+            {
+              "reason_code": "Authentication",
+              "rid": "509748600",
+              "score": "0"
+            }
+          ],
+          "score": "0"
+        },
+        "id": "0",
+        "type": "champion"
+      }
+    ]
+  },
+  "policy_engine_version": "17.0",
+  "policy_score": "0",
+  "primary_industry": "government",
+  "reason_code": ["Authentication"],
+  "request_duration": "12002",
+  "request_id": "11daa04c-6be2-48a6-aecd-0780f7bbe189",
+  "request_result": "success",
+  "review_status": "pass",
+  "risk_rating": "neutral",
+  "secondary_industry": "civilian",
+  "service_type": "basic",
+  "tag_context": "_A_DOCUM",
+  "tps_error": "trueid_pass",
+  "tps_was_timeout": "no",
+  "trueid.authentication_result.date_of_birth": "1999-01-01",
+  "trueid.authentication_result.doc_auth_result": "Passed",
+  "trueid.authentication_result.doc_auth_tamper_result": "Passed",
+  "trueid.authentication_result.doc_class": "DriversLicense",
+  "trueid.authentication_result.doc_issuer_name": "Washington",
+  "trueid.authentication_result.document_number": "WA0123456789",
+  "trueid.authentication_result.expiration_date": "2030-01-01",
+  "trueid.authentication_result.fields.id_auth_field_data.country_code": "USA",
+  "trueid.authentication_result.first_name": "FIRST",
+  "trueid.authentication_result.last_name": "LAST",
+  "trueid.id_auth_field_data.issue_date": "2022-01-01",
+  "trueid.id_auth_field_data.state_name": "Washington"
+}
