@@ -6345,6 +6345,7 @@ module AnalyticsEvents
   # @param [Boolean] in_account_creation_flow Whether user is going through account creation flow
   # @param [Integer] enabled_mfa_methods_count Number of enabled MFA methods on the account
   # @param [Hash] recaptcha_annotation Details of reCAPTCHA annotation, if submitted
+  # @param [Boolean] has_webauthn_platform_configurations Whether user has any WebAuthn platform configurations
   # Multi-Factor Authentication
   def multi_factor_auth(
     success:,
