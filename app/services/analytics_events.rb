@@ -6345,7 +6345,7 @@ module AnalyticsEvents
   # @param [Boolean] in_account_creation_flow Whether user is going through account creation flow
   # @param [Integer] enabled_mfa_methods_count Number of enabled MFA methods on the account
   # @param [Hash] recaptcha_annotation Details of reCAPTCHA annotation, if submitted
-  # @param [Boolean] has_webauthn_platform_configurations shows user has a webauth_platform config
+  # @param [Boolean] available_webauthn_platform_config shows user has a webauth_platform config
   # Multi-Factor Authentication
   def multi_factor_auth(
     success:,
@@ -6371,7 +6371,7 @@ module AnalyticsEvents
     frontend_error: nil,
     in_account_creation_flow: nil,
     recaptcha_annotation: nil,
-    has_webauthn_platform_configurations: nil,
+    available_webauthn_platform_config: nil,
     **extra
   )
     track_event(
@@ -6398,8 +6398,8 @@ module AnalyticsEvents
       frontend_error:,
       in_account_creation_flow:,
       enabled_mfa_methods_count:,
-      has_webauthn_platform_configurations:,
       recaptcha_annotation:,
+      available_webauthn_platform_config:,
       **extra,
     )
   end
