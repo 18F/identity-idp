@@ -15,6 +15,9 @@ RSpec.feature 'ddp document capture step', :js do
   let(:success_passport_response_body) { LexisNexisFixtures.ddp_true_id_passport_response_success }
   let(:fail_response_body) { LexisNexisFixtures.ddp_true_id_response_fail }
   let(:fail_passport_response_body) { LexisNexisFixtures.ddp_true_id_response_fail_passport }
+  let(:success_barcode_attention_response_body) do
+    LexisNexisFixtures.ddp_true_id_attention_with_barcode_response_state_id_card
+  end
   let(:lexisnexis_threatmetrix_base_url) { 'https://test-base-url.com' }
   let(:fake_dos_api_endpoint) { 'http://fake_dos_api_endpoint/' }
   let(:test_request_url) do
@@ -65,6 +68,26 @@ RSpec.feature 'ddp document capture step', :js do
       it 'lands on the ssn page and logs event' do
         expect(page).to have_current_path(idv_document_capture_path)
         attach_and_submit_images
+        expect(page).to have_current_path(idv_ssn_url)
+        expect(fake_analytics).to have_logged_event(
+          'IdV: doc auth image upload vendor submitted',
+          hash_including(
+            vendor: 'TrueID DDP',
+            success: true,
+            document_type_received: Idp::Constants::DocumentTypes::DRIVERS_LICENSE,
+          ),
+        )
+      end
+    end
+
+    context 'successful drivers license response w barcode attention', allow_browser_log: true do
+      let(:response_body) { success_barcode_attention_response_body }
+
+      it 'lands on barcode page before the ssn page and logs event' do
+        expect(page).to have_current_path(idv_document_capture_path)
+        attach_and_submit_images
+        expect(page).to have_content(t('doc_auth.errors.barcode_attention.heading'))
+        click_continue
         expect(page).to have_current_path(idv_ssn_url)
         expect(fake_analytics).to have_logged_event(
           'IdV: doc auth image upload vendor submitted',

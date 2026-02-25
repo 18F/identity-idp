@@ -18,6 +18,9 @@ RSpec.describe DocAuth::LexisNexis::Responses::Ddp::TrueIdResponse do
   let(:liveness_fail_passport_response_body) do
     LexisNexisFixtures.ddp_true_id_liveness_response_fail_passport
   end
+  let(:attention_with_barcode_response_body) do
+    LexisNexisFixtures.ddp_true_id_attention_with_barcode_response_state_id_card
+  end
 
   let(:ddp_response_body) { nil }
   let(:ddp_http_response) do
@@ -163,6 +166,17 @@ RSpec.describe DocAuth::LexisNexis::Responses::Ddp::TrueIdResponse do
         expect(response.success?).to eq(true)
         expect(response.pii_from_doc).to be_a(Pii::StateId)
         expect(response.pii_from_doc.to_h).to eq(expected_pii.to_h)
+      end
+    end
+
+    context 'when the response has doc auth result of Attention with barcode' do
+      let(:ddp_response_body) { attention_with_barcode_response_body }
+
+      it 'is not a successful result' do
+        expect(response.successful_result?).to eq(true)
+        expect(response.success?).to eq(true)
+        expect(response.attention_with_barcode?).to eq(true)
+        expect(response.pii_from_doc).to be_a(Pii::StateId)
       end
     end
   end
