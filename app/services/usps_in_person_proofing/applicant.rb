@@ -4,10 +4,10 @@ module UspsInPersonProofing
   USPS_DOCUMENT_TYPE_MAPPINGS = {
     Idp::Constants::DocumentTypes::DRIVERS_LICENSE => 1,
     Idp::Constants::DocumentTypes::STATE_ID_CARD => 2,
-    Idp::Constants::DocumentTypes::STATE_ID => 2,
+    InPersonEnrollment::DOCUMENT_TYPE_STATE_ID => 2,
     Idp::Constants::DocumentTypes::IDENTIFICATION_CARD => 7,
     Idp::Constants::DocumentTypes::PASSPORT => 4,
-    Idp::Constants::DocumentTypes::PASSPORT_BOOK => 4,
+    InPersonEnrollment::DOCUMENT_TYPE_PASSPORT_BOOK => 4,
     Idp::Constants::DocumentTypes::PASSPORT_CARD => 8,
   }.freeze
   Applicant = RedactedStruct.new(
