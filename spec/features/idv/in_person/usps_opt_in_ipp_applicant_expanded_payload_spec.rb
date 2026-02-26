@@ -1,7 +1,8 @@
 require 'rails_helper'
 require 'axe-rspec'
 
-RSpec.describe 'In Person Proofing: opt in ipp applicant expanded payload', js: true do
+RSpec.describe 'In Person Proofing: opt in ipp applicant expanded payload', js: true,
+                                                                            timezone: 'UTC' do
   include IdvStepHelper
   include SpAuthHelper
   include InPersonHelper
@@ -9,6 +10,12 @@ RSpec.describe 'In Person Proofing: opt in ipp applicant expanded payload', js: 
 
   let(:ipp_service_provider) { create(:service_provider, :active, :in_person_proofing_enabled) }
   let(:user) { user_with_2fa }
+  let(:usps_expected_document_type) do
+    UspsInPersonProofing::USPS_DOCUMENT_TYPE_MAPPINGS[InPersonEnrollment::DOCUMENT_TYPE_STATE_ID]
+  end
+  let(:usps_expected_expiration_date) do
+    Time.zone.parse(InPersonHelper::GOOD_STATE_ID_EXPIRATION).to_i
+  end
 
   before do
     allow(IdentityConfig.store).to receive(:usps_mock_fallback).and_return(false)
@@ -46,7 +53,10 @@ RSpec.describe 'In Person Proofing: opt in ipp applicant expanded payload', js: 
       acknowledge_and_confirm_personal_key
       expect(page).to have_current_path(idv_in_person_ready_to_verify_path)
       expect(
-        a_request(:post, %r{/ivs-ippaas-api/IPPRest/resources/rest/optInIPPApplicant}).with do |req|
+        a_request(
+          :post,
+          %r{/ivs-ippaas-api/IPPRest/resources/rest/optInIPPApplicant},
+        ).with do |req|
           expect(JSON.parse(req.body)).to eq(
             {
               'sponsorID' => IdentityConfig.store.usps_ipp_sponsor_id.to_i,
@@ -59,9 +69,9 @@ RSpec.describe 'In Person Proofing: opt in ipp applicant expanded payload', js: 
               'zipCode' => InPersonHelper::GOOD_IDENTITY_DOC_ZIPCODE,
               'emailAddress' =>
                 IdentityConfig.store.usps_ipp_enrollment_status_update_email_address,
-              'documentType' => InPersonEnrollment::DOCUMENT_TYPE_STATE_ID,
+              'documentType' => usps_expected_document_type,
               'documentNumber' => InPersonHelper::GOOD_STATE_ID_NUMBER,
-              'documentExpirationDate' => InPersonHelper::GOOD_STATE_ID_EXPIRATION,
+              'documentExpirationDate' => usps_expected_expiration_date,
               'IPPAssuranceLevel' => '1.5',
             },
           )

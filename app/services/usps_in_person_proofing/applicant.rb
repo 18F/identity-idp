@@ -1,6 +1,15 @@
 # frozen_string_literal: true
 
 module UspsInPersonProofing
+  USPS_DOCUMENT_TYPE_MAPPINGS = {
+    Idp::Constants::DocumentTypes::DRIVERS_LICENSE => 1,
+    Idp::Constants::DocumentTypes::STATE_ID_CARD => 2,
+    InPersonEnrollment::DOCUMENT_TYPE_STATE_ID => 2,
+    Idp::Constants::DocumentTypes::IDENTIFICATION_CARD => 7,
+    Idp::Constants::DocumentTypes::PASSPORT => 4,
+    InPersonEnrollment::DOCUMENT_TYPE_PASSPORT_BOOK => 4,
+    Idp::Constants::DocumentTypes::PASSPORT_CARD => 8,
+  }.freeze
   Applicant = RedactedStruct.new(
     :unique_id, :first_name, :last_name, :address, :city, :state, :zip_code,
     :email, :document_type, :document_number, :document_expiration_date, keyword_init: true
@@ -16,8 +25,9 @@ module UspsInPersonProofing
         zip_code: applicant.zipcode,
         email: IdentityConfig.store.usps_ipp_enrollment_status_update_email_address.presence,
         document_number: applicant.id_number,
-        document_expiration_date: applicant.id_expiration,
-        document_type: enrollment.document_type,
+        document_expiration_date:
+          Time.zone.parse(applicant&.id_expiration || '').to_i,
+        document_type: USPS_DOCUMENT_TYPE_MAPPINGS[enrollment.document_type],
       )
     end
 
