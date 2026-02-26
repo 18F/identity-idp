@@ -40,7 +40,8 @@ RSpec.describe Idv::AnalyticsEventsEnhancer do
   let(:analytics) { analytics_class.new(user: user, sp: sp, session: session) }
 
   it 'enhances idv_ methods by default, but ignores those in IGNORED_METHODS' do
-    enhancer_source_file = described_class.const_source_location(:IGNORED_METHODS).first
+    enhancer_source_file = Idv::AnalyticsEventsEnhancer
+      .const_source_location(:IGNORED_METHODS).first
 
     idv_methods = analytics_class.instance_methods.filter { |method| /^idv_/.match?(method) }
 
@@ -48,7 +49,8 @@ RSpec.describe Idv::AnalyticsEventsEnhancer do
       method = analytics_class.instance_method(method_name)
       method_source_file = method.source_location.first
 
-      should_be_ignored = described_class.const_get(:IGNORED_METHODS).include?(method_name)
+      should_be_ignored = Idv::AnalyticsEventsEnhancer
+        .const_get(:IGNORED_METHODS).include?(method_name)
       if should_be_ignored
         expect(method_source_file).not_to eql(enhancer_source_file),
                                           "#{method_name} should not be enhanced"
@@ -213,11 +215,11 @@ RSpec.describe Idv::AnalyticsEventsEnhancer do
 
   describe 'valid configuration' do
     let(:explicitly_ignored_methods) do
-      described_class.const_get(:IGNORED_METHODS).sort
+      Idv::AnalyticsEventsEnhancer.const_get(:IGNORED_METHODS).sort
     end
 
     let(:explicitly_enhanced_methods) do
-      described_class.const_get(:METHODS_WITH_PROFILE_HISTORY).sort
+      Idv::AnalyticsEventsEnhancer.const_get(:METHODS_WITH_PROFILE_HISTORY).sort
     end
 
     let(:explicitly_referenced_methods) do

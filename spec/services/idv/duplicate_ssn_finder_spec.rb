@@ -5,7 +5,7 @@ RSpec.describe Idv::DuplicateSsnFinder do
     let(:ssn) { '123-45-6789' }
     let(:user) { create(:user) }
 
-    subject { described_class.new(ssn: ssn, user: user) }
+    subject { Idv::DuplicateSsnFinder.new(ssn: ssn, user: user) }
 
     context 'when the ssn is unique' do
       it { expect(subject.ssn_is_unique?).to eq(true) }
@@ -105,7 +105,7 @@ RSpec.describe Idv::DuplicateSsnFinder do
       )
     end
 
-    subject { described_class.new(ssn: ssn, user: user) }
+    subject { Idv::DuplicateSsnFinder.new(ssn: ssn, user: user) }
 
     context 'when the other profile is active, has matching SSN and is at facial match IDV level' do
       it 'returns list with matching profile' do

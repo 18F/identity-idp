@@ -4,7 +4,7 @@ RSpec.describe UpdatePasswordPresenter do
   let(:view) { double(:view, link_to: '') }
   let(:user) { create(:user) }
   let(:required_password_change) { false }
-  let(:presenter) { described_class.new(user: user, required_password_change:) }
+  let(:presenter) { UpdatePasswordPresenter.new(user: user, required_password_change:) }
 
   describe '#submit_text' do
     context 'required_password_change set to true' do

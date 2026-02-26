@@ -182,7 +182,9 @@ RSpec.describe Reporting::SpIdvWeeklyDropoffReport do
     stub_multiple_cloudwatch_logs(*cloudwatch_results)
   end
 
-  subject(:report) { described_class.new(issuers:, agency_abbreviation:, time_range:) }
+  subject(:report) do
+    Reporting::SpIdvWeeklyDropoffReport.new(issuers:, agency_abbreviation:, time_range:)
+  end
 
   describe '#as_csv' do
     it 'queries cloudwatch and formats a report' do

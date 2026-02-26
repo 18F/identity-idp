@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe MfaConfirmationPresenter do
   let(:user) { create(:user, :with_phone) }
   let(:presenter) do
-    described_class.new
+    MfaConfirmationPresenter.new
   end
 
   describe '#heading?' do
@@ -15,7 +15,7 @@ RSpec.describe MfaConfirmationPresenter do
     context 'after successful face or touch unlock setup' do
       let(:webauthn_platform_set_up_successful) { true }
       let(:presenter) do
-        described_class.new(
+        MfaConfirmationPresenter.new(
           webauthn_platform_set_up_successful: webauthn_platform_set_up_successful,
         )
       end
@@ -38,7 +38,7 @@ RSpec.describe MfaConfirmationPresenter do
     context 'after successful face or touch unlock setup' do
       let(:webauthn_platform_set_up_successful) { true }
       let(:presenter) do
-        described_class.new(
+        MfaConfirmationPresenter.new(
           webauthn_platform_set_up_successful: webauthn_platform_set_up_successful,
         )
       end
@@ -65,7 +65,7 @@ RSpec.describe MfaConfirmationPresenter do
     context 'when show_skip_additional_mfa_link is false' do
       let(:show_skip_additional_mfa_link) { false }
       let(:presenter) do
-        described_class.new(
+        MfaConfirmationPresenter.new(
           show_skip_additional_mfa_link: show_skip_additional_mfa_link,
         )
       end

@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Reports::BaseReport do
-  subject(:report) { described_class.new }
+  subject(:report) { Reports::BaseReport.new }
 
   describe '#transaction_with_timeout' do
     let(:rails_env) { ActiveSupport::StringInquirer.new('production') }

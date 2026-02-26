@@ -5,7 +5,7 @@ RSpec.describe SubmitButtonComponent, type: :component do
   let(:content) { 'Button' }
 
   subject(:rendered) do
-    render_inline described_class.new(**options).with_content(content)
+    render_inline SubmitButtonComponent.new(**options).with_content(content)
   end
 
   it 'renders the submit button custom element' do

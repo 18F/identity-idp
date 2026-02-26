@@ -3,7 +3,7 @@ require 'rack/utils'
 load File.expand_path('../../scripts/notify-slack', __dir__)
 
 RSpec.describe NotifySlack do
-  subject(:notifier) { described_class.new }
+  subject(:notifier) { NotifySlack.new }
 
   let(:webhook) { 'https://slack.example.com/abcdef/ghijkl' }
   let(:channel) { '#fun-channel' }

@@ -5,7 +5,7 @@ RSpec.describe Reports::IrsVerificationDemographicsReport do
   let(:report_receiver) { :internal }
   let(:time_range) { report_date.all_quarter }
 
-  subject(:report) { described_class.new(report_date, report_receiver) }
+  subject(:report) { Reports::IrsVerificationDemographicsReport.new(report_date, report_receiver) }
 
   let(:job_report_name) { "#{agency_abbreviation.downcase}_verification_demographics_report" }
   let(:s3_report_bucket_prefix) { 'reports-bucket' }
@@ -120,7 +120,9 @@ RSpec.describe Reports::IrsVerificationDemographicsReport do
   context 'beginning of the quarter sends to internal + partner when receiver is :both' do
     let(:report_date) { Date.new(2025, 7, 1).prev_day } # 2025-06-30
     let(:report_receiver) { :both }
-    subject(:report) { described_class.new(report_date, report_receiver) }
+    subject(:report) do
+      Reports::IrsVerificationDemographicsReport.new(report_date, report_receiver)
+    end
 
     it 'sends partner in TO and internal in BCC' do
       expect(ReportMailer).to receive(:tables_report).once.with(
@@ -139,7 +141,9 @@ RSpec.describe Reports::IrsVerificationDemographicsReport do
   context 'any other day sends to internal when receiver is :internal' do
     let(:report_date) { Date.new(2025, 9, 27).prev_day } # 2025-09-26
     let(:report_receiver) { :internal }
-    subject(:report) { described_class.new(report_date, report_receiver) }
+    subject(:report) do
+      Reports::IrsVerificationDemographicsReport.new(report_date, report_receiver)
+    end
 
     it 'sends only to internal emails' do
       expect(ReportMailer).to receive(:tables_report).once.with(
@@ -158,7 +162,9 @@ RSpec.describe Reports::IrsVerificationDemographicsReport do
   context 'recipient is :both but partner emails are empty' do
     let(:report_receiver) { :both }
     let(:report_date) { Date.new(2025, 7, 1).prev_day } # 2025-06-30
-    subject(:report) { described_class.new(report_date, report_receiver) }
+    subject(:report) do
+      Reports::IrsVerificationDemographicsReport.new(report_date, report_receiver)
+    end
 
     let(:partner_emails) { [] }
 

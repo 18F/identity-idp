@@ -11,7 +11,7 @@ RSpec.describe Idv::AamvaStateMaintenanceWindow do
   describe '#in_maintenance_window?' do
     let(:state) { 'DC' }
 
-    subject { described_class.in_maintenance_window?(state) }
+    subject { Idv::AamvaStateMaintenanceWindow.in_maintenance_window?(state) }
 
     context 'for a state with a defined outage window' do
       it 'is true during the maintenance window' do
@@ -37,7 +37,7 @@ RSpec.describe Idv::AamvaStateMaintenanceWindow do
   end
 
   describe '.windows_for_state' do
-    subject { described_class.windows_for_state(state) }
+    subject { Idv::AamvaStateMaintenanceWindow.windows_for_state(state) }
 
     context 'for a state with no entries' do
       let(:state) { 'LG' }
@@ -67,7 +67,7 @@ RSpec.describe Idv::AamvaStateMaintenanceWindow do
   end
 
   describe 'MAINTENANCE_WINDOWS' do
-    described_class::MAINTENANCE_WINDOWS.each do |state, windows|
+    Idv::AamvaStateMaintenanceWindow::MAINTENANCE_WINDOWS.each do |state, windows|
       windows.each do |window|
         it "consists of a valid cron expression and duration (#{state})" do
           expect(window).to be_an(Idv::AamvaStateMaintenanceWindow::Window)

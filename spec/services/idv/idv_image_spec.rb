@@ -4,7 +4,7 @@ RSpec.describe Idv::IdvImage do
   let(:back_image) { DocAuthImageFixtures.document_back_image_multipart }
   let(:type) { :back }
   let(:value) { back_image }
-  subject(:image) { described_class.new(type:, value:) }
+  subject(:image) { Idv::IdvImage.new(type:, value:) }
 
   describe '#initialize' do
     it 'sets the type' do
@@ -32,7 +32,7 @@ RSpec.describe Idv::IdvImage do
         end
 
         context 'when binary_image is set to true' do
-          subject(:image) { described_class.new(type:, value:, binary_image: true) }
+          subject(:image) { Idv::IdvImage.new(type:, value:, binary_image: true) }
 
           it 'sets the image value as an Idv::BinaryImage::InvalidFormatError' do
             expect(subject.value).to be_a_kind_of(Idv::BinaryImage::InvalidFormatError)
@@ -49,7 +49,7 @@ RSpec.describe Idv::IdvImage do
       end
 
       context 'when binary_image is set to true' do
-        subject(:image) { described_class.new(type:, value:, binary_image: true) }
+        subject(:image) { Idv::IdvImage.new(type:, value:, binary_image: true) }
 
         let(:back_image) { DocAuthImageFixtures.document_back_image }
         it 'sets the image value as a readable Idv::BinaryImage' do

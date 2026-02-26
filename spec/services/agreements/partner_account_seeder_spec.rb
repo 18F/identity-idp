@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe Agreements::PartnerAccountSeeder do
   describe '.run' do
     let(:path) { 'spec/fixtures' }
-    let(:seeder) { described_class.new(rails_env: 'production', yaml_path: path) }
+    let(:seeder) { Agreements::PartnerAccountSeeder.new(rails_env: 'production', yaml_path: path) }
 
     it 'creates new records if none exist' do
       expect { seeder.run }.to change { Agreements::PartnerAccount.count }.by(1)

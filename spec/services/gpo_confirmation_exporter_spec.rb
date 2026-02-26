@@ -36,7 +36,7 @@ RSpec.describe GpoConfirmationExporter do
     ]
   end
 
-  subject { described_class.new(confirmations) }
+  subject { GpoConfirmationExporter.new(confirmations) }
 
   describe '#run' do
     before do

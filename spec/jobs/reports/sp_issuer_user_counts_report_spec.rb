@@ -12,7 +12,7 @@ RSpec.describe Reports::SpIssuerUserCountsReport do
     }
   end
 
-  subject { described_class.new }
+  subject { Reports::SpIssuerUserCountsReport.new }
 
   let(:reports) do
     [

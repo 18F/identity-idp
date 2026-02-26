@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Reports::SpUserCountsReport do
-  subject { described_class.new }
+  subject { Reports::SpUserCountsReport.new }
 
   let(:issuer) { 'foo' }
   let(:app_id) { 'app_id' }

@@ -17,7 +17,7 @@ RSpec.describe AttemptsApi::AttemptEvent do
   let(:service_provider) { build(:service_provider) }
 
   subject do
-    described_class.new(
+    AttemptsApi::AttemptEvent.new(
       jti: jti,
       iat: iat,
       event_type: event_type,
@@ -130,7 +130,7 @@ RSpec.describe AttemptsApi::AttemptEvent do
       it 'returns an event decrypted from the JWE' do
         jwe = subject.to_jwe(issuer: service_provider.issuer, public_key: attempts_api_public_key)
 
-        decoded_event = described_class.from_jwe(jwe, attempts_api_private_key)
+        decoded_event = AttemptsApi::AttemptEvent.from_jwe(jwe, attempts_api_private_key)
 
         expect(decoded_event.jti).to eq(subject.jti)
         expect(decoded_event.iat).to eq(subject.iat)
@@ -155,7 +155,7 @@ RSpec.describe AttemptsApi::AttemptEvent do
         it 'returns an event decrypted from the JWE' do
           jwe = subject.to_jwe(issuer: service_provider.issuer, public_key: attempts_api_public_key)
 
-          decoded_event = described_class.from_jwe(jwe, attempts_api_private_key)
+          decoded_event = AttemptsApi::AttemptEvent.from_jwe(jwe, attempts_api_private_key)
 
           expect(decoded_event.jti).to eq(subject.jti)
           expect(decoded_event.iat).to eq(subject.iat)

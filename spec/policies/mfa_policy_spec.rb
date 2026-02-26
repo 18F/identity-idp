@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe MfaPolicy do
-  let(:subject) { described_class.new(user) }
+  let(:subject) { MfaPolicy.new(user) }
 
   context 'no mfa configurations' do
     let(:user) { create(:user) }

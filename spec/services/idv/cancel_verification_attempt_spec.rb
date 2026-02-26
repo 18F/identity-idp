@@ -4,7 +4,7 @@ RSpec.describe Idv::CancelVerificationAttempt do
   let(:user) { create(:user, profiles: profiles) }
   let(:profiles) { [create(:profile, gpo_verification_pending_at: 1.day.ago)] }
 
-  subject { described_class.new(user: user) }
+  subject { Idv::CancelVerificationAttempt.new(user: user) }
 
   context 'the user has a pending profile' do
     it 'deactivates the profile' do

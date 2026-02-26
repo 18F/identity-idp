@@ -20,7 +20,7 @@ RSpec.describe Pii::Passport do
     }
   end
 
-  subject { described_class.new(**passport) }
+  subject { Pii::Passport.new(**passport) }
 
   describe '#id_doc_type' do
     it 'returns the value of document_type_received' do

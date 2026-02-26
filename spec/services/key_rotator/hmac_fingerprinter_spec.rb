@@ -12,7 +12,7 @@ RSpec.describe KeyRotator::HmacFingerprinter do
     end
 
     it 'changes email and ssn fingerprints' do
-      rotator = described_class.new
+      rotator = KeyRotator::HmacFingerprinter.new
       profile = create(:profile, :active, :verified, pii: pii_hash)
       user = profile.user
       pii_attributes = profile.decrypt_pii(user.password)
@@ -38,14 +38,14 @@ RSpec.describe KeyRotator::HmacFingerprinter do
       old_updated_timestamp = user.updated_at
 
       rotate_hmac_key
-      rotator = described_class.new
+      rotator = KeyRotator::HmacFingerprinter.new
       rotator.rotate(user: user, pii_attributes: pii_attributes)
 
       expect(user.updated_at).to eq old_updated_timestamp
     end
 
     it 'changes email fingerprint if no active profile' do
-      rotator = described_class.new
+      rotator = KeyRotator::HmacFingerprinter.new
       user = create(:email_address).user
       old_email_fingerprint = user.email_addresses.first.email_fingerprint
 

@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Reports::TotalIal2CostsReport do
-  subject(:report) { described_class.new }
+  subject(:report) { Reports::TotalIal2CostsReport.new }
 
   describe '#perform' do
     let(:issuer1) { 'issuer1' }
@@ -46,7 +46,7 @@ RSpec.describe Reports::TotalIal2CostsReport do
 
     it 'writes a CSV report to S3' do
       expect(report).to receive(:save_report) do |report_name, body, extension:|
-        expect(report_name).to eq(described_class::REPORT_NAME)
+        expect(report_name).to eq(Reports::TotalIal2CostsReport::REPORT_NAME)
         expect(extension).to eq('csv')
 
         csv = CSV.parse(body, headers: true)
