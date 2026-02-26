@@ -831,7 +831,8 @@ errors.messages.phone_confirmation_limited: You tried too many times, please try
 errors.messages.phone_duplicate: This account is already using the phone number you entered as an authenticator. Please use a different phone number.
 errors.messages.phone_otp_format: Enter the one-time code sent to your phone. Do not use spaces or special characters.
 errors.messages.phone_required: Phone number is required
-errors.messages.phone_unsupported: Sorry, we are unable to send SMS at this time. Please try the phone call option below, or use your personal key.
+errors.messages.phone_unsupported: We can’t send you a one-time code right now. Please try again by clicking "Send another code" below or %{link_html}.
+errors.messages.choose_authentication_method_link_html: choose another authentication method
 errors.messages.premium_rate_phone: This appears to be a premium rate phone number. Please select a different number and try again.
 errors.messages.pwned_password: The password you entered is not safe. It’s in a list of known passwords exposed in data breaches.
 errors.messages.stronger_password: Enter a stronger password

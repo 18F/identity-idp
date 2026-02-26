@@ -134,7 +134,11 @@ module Users
     end
 
     def redirect_to_otp_verification_with_error
-      flash[:error] = t('errors.messages.phone_unsupported')
+      link_html = helpers.link_to(
+        t('errors.messages.choose_authentication_method_link_html'),
+        login_two_factor_options_path,
+      )
+      flash[:error] = t('errors.messages.phone_unsupported', link_html:)
       redirect_to login_two_factor_url(
         otp_delivery_preference: phone_configuration.delivery_preference,
       )
