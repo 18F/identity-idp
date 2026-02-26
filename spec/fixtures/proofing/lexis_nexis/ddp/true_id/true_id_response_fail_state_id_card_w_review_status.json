@@ -1,0 +1,920 @@
+{
+  "account_email": "null",
+  "account_lex_id_region": "US",
+  "api_call_datetime": "2026-01-28 14:49:49.121",
+  "api_caller_ip": "35.146.98.127",
+  "api_type": "authentication",
+  "auth_status": "authentication_failure",
+  "authentication.conversation_id": "50001045687135",
+  "champion_request_duration": "13049",
+  "event_datetime": "2026-01-28 14:49:49.121",
+  "event_type": "init_auth",
+  "integration_hub_results": {
+    "org_id_str:default_auth_policy_pm": {
+      "Authentication": {
+        "rule_id": "509748600",
+        "tps_datetime": "2026-01-28 14:49:49.165",
+        "tps_duration": "12509",
+        "tps_error": "failed_true_id",
+        "tps_http_status_code": "200",
+        "tps_result": "failed",
+        "tps_type": "LN_RDP_Auth_Hub_Initiate",
+        "tps_vendor": "LexisNexis - Connectors",
+        "tps_vendor_org_id": "7ryg7owp",
+        "tps_vendor_raw_response": {
+          "Products": [
+            {
+              "ExecutedStepName": "True_ID_Step",
+              "ParameterDetails": [
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "DocumentName",
+                  "Values": [{ "Value": "Unknown" }]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "DocAuthResult",
+                  "Values": [{ "Value": "Unknown" }]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "DocAuthTamperResult",
+                  "Values": [{ "Value": "Unknown" }]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "DocAuthTamperSensitivity",
+                  "Values": [{ "Value": "High" }]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "DocIssuerType",
+                  "Values": [{ "Value": "Country" }]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "DocClassCode",
+                  "Values": [{ "Value": "Unknown" }]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "DocClass",
+                  "Values": [{ "Value": "Unknown" }]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "DocClassName",
+                  "Values": [{ "Value": "Unknown" }]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "DocIsGeneric",
+                  "Values": [{ "Value": "true" }]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "DocSize",
+                  "Values": [{ "Value": "Unknown" }]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "ClassificationMode",
+                  "Values": [{ "Value": "Automatic" }]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "OrientationChanged",
+                  "Values": [{ "Value": "false" }]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "PresentationChanged",
+                  "Values": [{ "Value": "false" }]
+                },
+                {
+                  "Group": "IMAGE_METRICS_RESULT",
+                  "Name": "Side",
+                  "Values": [{ "Value": "Front" }, { "Value": "Back" }]
+                },
+                {
+                  "Group": "IMAGE_METRICS_RESULT",
+                  "Name": "GlareMetric",
+                  "Values": [{ "Value": "99" }, { "Value": "100" }]
+                },
+                {
+                  "Group": "IMAGE_METRICS_RESULT",
+                  "Name": "SharpnessMetric",
+                  "Values": [{ "Value": "81" }, { "Value": "62" }]
+                },
+                {
+                  "Group": "IMAGE_METRICS_RESULT",
+                  "Name": "IsTampered",
+                  "Values": [{ "Value": "1" }, { "Value": "1" }]
+                },
+                {
+                  "Group": "IMAGE_METRICS_RESULT",
+                  "Name": "IsCropped",
+                  "Values": [{ "Value": "0" }, { "Value": "0" }]
+                },
+                {
+                  "Group": "IMAGE_METRICS_RESULT",
+                  "Name": "HorizontalResolution",
+                  "Values": [{ "Value": "96" }, { "Value": "318" }]
+                },
+                {
+                  "Group": "IMAGE_METRICS_RESULT",
+                  "Name": "VerticalResolution",
+                  "Values": [{ "Value": "96" }, { "Value": "318" }]
+                },
+                {
+                  "Group": "IMAGE_METRICS_RESULT",
+                  "Name": "Light",
+                  "Values": [{ "Value": "White" }, { "Value": "White" }]
+                },
+                {
+                  "Group": "IMAGE_METRICS_RESULT",
+                  "Name": "MimeType",
+                  "Values": [
+                    { "Value": "image/jpeg" },
+                    { "Value": "image/jpeg" }
+                  ]
+                },
+                {
+                  "Group": "IMAGE_METRICS_RESULT",
+                  "Name": "ImageMetrics_Id",
+                  "Values": [
+                    { "Value": "1af3e9aa-a09a-497b-8d9d-78f7350d484c" },
+                    { "Value": "cf7f349e-fa65-4afd-96a9-338b0b3383e8" }
+                  ]
+                },
+                                {
+                  "Group": "IDAUTH_FIELD_DATA",
+                  "Name": "Fields_FullName",
+                  "Values": [{ "Value": "HAPPY TRAVELER" }]
+                },
+                {
+                  "Group": "IDAUTH_FIELD_DATA",
+                  "Name": "Fields_Surname",
+                  "Values": [{ "Value": "TRAVELER" }]
+                },
+                {
+                  "Group": "IDAUTH_FIELD_DATA",
+                  "Name": "Fields_GivenName",
+                  "Values": [{ "Value": "HAPPY" }]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Sex",
+                  "Values": [{ "Value": "Male" }]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Age",
+                  "Values": [{ "Value": "47" }]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "DOB_Year",
+                  "Values": [{ "Value": "1978" }]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "DOB_Month",
+                  "Values": [{ "Value": "12" }]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "DOB_Day",
+                  "Values": [{ "Value": "13" }]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "ExpirationDate_Year",
+                  "Values": [{ "Value": "2021" }]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "ExpirationDate_Month",
+                  "Values": [{ "Value": "4" }]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "ExpirationDate_Day",
+                  "Values": [{ "Value": "28" }]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_1_AlertName",
+                  "Values": [{ "Value": "Document Classification" }]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_2_AlertName",
+                  "Values": [{ "Value": "Image Tampering Check" }]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_3_AlertName",
+                  "Values": [{ "Value": "Document Expired" }]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_4_AlertName",
+                  "Values": [{ "Value": "2D Barcode Read" }]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_5_AlertName",
+                  "Values": [{ "Value": "Birth Date Check Digit" }]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_6_AlertName",
+                  "Values": [{ "Value": "Birth Date Valid" }]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_7_AlertName",
+                  "Values": [{ "Value": "Composite Check Digit" }]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_8_AlertName",
+                  "Values": [{ "Value": "Document Number Check Digit" }]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_9_AlertName",
+                  "Values": [{ "Value": "Document Tampering Detection" }]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_10_AlertName",
+                  "Values": [{ "Value": "Document Tampering Detection" }]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_11_AlertName",
+                  "Values": [{ "Value": "Document Tampering Detection" }]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_12_AlertName",
+                  "Values": [{ "Value": "Document Tampering Detection" }]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_13_AlertName",
+                  "Values": [{ "Value": "Document Tampering Detection" }]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_14_AlertName",
+                  "Values": [{ "Value": "Document Tampering Detection" }]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_15_AlertName",
+                  "Values": [{ "Value": "Document Tampering Detection" }]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_16_AlertName",
+                  "Values": [{ "Value": "Document Tampering Detection" }]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_17_AlertName",
+                  "Values": [{ "Value": "Expiration Date Check Digit" }]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_18_AlertName",
+                  "Values": [{ "Value": "Expiration Date Valid" }]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_19_AlertName",
+                  "Values": [{ "Value": "Issuing State Crosscheck" }]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_20_AlertName",
+                  "Values": [{ "Value": "Issuing State Valid" }]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_21_AlertName",
+                  "Values": [{ "Value": "Nationality Valid" }]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_9_Model",
+                  "Values": [{ "Value": "Text Tampering Detection V2.1" }]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_10_Model",
+                  "Values": [{ "Value": "Physical Document Presence V5.1" }]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_11_Model",
+                  "Values": [{ "Value": "Physical Document Presence V6.1" }]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_12_Model",
+                  "Values": [{ "Value": "Enhanced Screen Replay Detection" }]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_13_Model",
+                  "Values": [{ "Value": "Enhanced Printed Copy Detection" }]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_14_Model",
+                  "Values": [
+                    { "Value": "Invalidated Document Detection V1.0 (Beta)" }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_15_Model",
+                  "Values": [{ "Value": "Physical Document Presence V2.5" }]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_16_Model",
+                  "Values": [{ "Value": "Text Tampering Detection V1.2.1" }]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_1_AuthenticationResult",
+                  "Values": [
+                    {
+                      "Detail": "Verified that the type of document is supported and is able to be fully authenticated.",
+                      "Value": "Failed"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_2_AuthenticationResult",
+                  "Values": [
+                    {
+                      "Detail": "Examines a document image for evidence of tampering or digital manipulation.",
+                      "Value": "Failed"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_3_AuthenticationResult",
+                  "Values": [
+                    {
+                      "Detail": "Checked if the document is expired.",
+                      "Value": "Attention"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_4_AuthenticationResult",
+                  "Values": [
+                    {
+                      "Detail": "Verified that the two-dimensional barcode on the document was read successfully.",
+                      "Value": "Attention"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_5_AuthenticationResult",
+                  "Values": [
+                    {
+                      "Detail": "Verified that the birth date check digit is correct.",
+                      "Value": "Passed"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_6_AuthenticationResult",
+                  "Values": [
+                    {
+                      "Detail": "Verified that the birth date is valid.",
+                      "Value": "Passed"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_7_AuthenticationResult",
+                  "Values": [
+                    {
+                      "Detail": "Verified that the composite check digit is correct.",
+                      "Value": "Passed"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_8_AuthenticationResult",
+                  "Values": [
+                    {
+                      "Detail": "Verified that the document number check digit is correct.",
+                      "Value": "Passed"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_9_AuthenticationResult",
+                  "Values": [
+                    {
+                      "Detail": "Examines a document for evidence of tampering",
+                      "Value": "Passed"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_10_AuthenticationResult",
+                  "Values": [
+                    {
+                      "Detail": "Examines a document for evidence of tampering",
+                      "Value": "Passed"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_11_AuthenticationResult",
+                  "Values": [
+                    {
+                      "Detail": "Examines a document for evidence of tampering",
+                      "Value": "Passed"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_12_AuthenticationResult",
+                  "Values": [
+                    {
+                      "Detail": "Examines a document for evidence of tampering",
+                      "Value": "Passed"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_13_AuthenticationResult",
+                  "Values": [
+                    {
+                      "Detail": "Examines a document for evidence of tampering",
+                      "Value": "Passed"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_14_AuthenticationResult",
+                  "Values": [
+                    {
+                      "Detail": "Examines a document for evidence of tampering",
+                      "Value": "Passed"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_15_AuthenticationResult",
+                  "Values": [
+                    {
+                      "Detail": "Examines a document for evidence of tampering",
+                      "Value": "Passed"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_16_AuthenticationResult",
+                  "Values": [
+                    {
+                      "Detail": "Examines a document for evidence of tampering",
+                      "Value": "Passed"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_17_AuthenticationResult",
+                  "Values": [
+                    {
+                      "Detail": "Verified that the expiration date check digit is correct.",
+                      "Value": "Passed"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_18_AuthenticationResult",
+                  "Values": [
+                    {
+                      "Detail": "Verified that the expiration date is valid.",
+                      "Value": "Passed"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_19_AuthenticationResult",
+                  "Values": [
+                    {
+                      "Detail": "Compares the issuing state information from various data sources (visual, 2D barcode, magnetic stripe, contactless smart card) on the document.",
+                      "Value": "Passed"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_20_AuthenticationResult",
+                  "Values": [
+                    {
+                      "Detail": "Verified that the issuing state is valid.",
+                      "Value": "Passed"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_21_AuthenticationResult",
+                  "Values": [
+                    {
+                      "Detail": "Verified that the nationality is valid.",
+                      "Value": "Passed"
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_1_Disposition",
+                  "Values": [
+                    { "Value": "The document type could not be determined" }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_2_Disposition",
+                  "Values": [
+                    {
+                      "Value": "Evidence suggests the image has been tampered with or digitally manipulated."
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_3_Disposition",
+                  "Values": [{ "Value": "The document has expired" }]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_4_Disposition",
+                  "Values": [{ "Value": "The 2D barcode could not be read" }]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_5_Disposition",
+                  "Values": [
+                    { "Value": "The birth date check digit is correct" }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_6_Disposition",
+                  "Values": [{ "Value": "The birth date is valid" }]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_7_Disposition",
+                  "Values": [
+                    { "Value": "The composite check digit is correct" }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_8_Disposition",
+                  "Values": [
+                    { "Value": "The document number check digit is correct" }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_9_Disposition",
+                  "Values": [
+                    {
+                      "Value": "No evidence of document tampering was detected."
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_10_Disposition",
+                  "Values": [
+                    {
+                      "Value": "No evidence of document tampering was detected."
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_11_Disposition",
+                  "Values": [
+                    {
+                      "Value": "No evidence of document tampering was detected."
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_12_Disposition",
+                  "Values": [
+                    {
+                      "Value": "No evidence of document tampering was detected."
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_13_Disposition",
+                  "Values": [
+                    {
+                      "Value": "No evidence of document tampering was detected."
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_14_Disposition",
+                  "Values": [
+                    {
+                      "Value": "No evidence of document tampering was detected."
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_15_Disposition",
+                  "Values": [
+                    {
+                      "Value": "No evidence of document tampering was detected."
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_16_Disposition",
+                  "Values": [
+                    {
+                      "Value": "No evidence of document tampering was detected."
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_17_Disposition",
+                  "Values": [
+                    { "Value": "The expiration date check digit is correct" }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_18_Disposition",
+                  "Values": [{ "Value": "The expiration date is valid" }]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_19_Disposition",
+                  "Values": [
+                    {
+                      "Value": "The issuing state information matches across all data sources."
+                    }
+                  ]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_20_Disposition",
+                  "Values": [{ "Value": "The issuing state is valid" }]
+                },
+                {
+                  "Group": "AUTHENTICATION_RESULT",
+                  "Name": "Alert_21_Disposition",
+                  "Values": [{ "Value": "The nationality is valid" }]
+                },
+                {
+                  "Group": "IDAUTH_FIELD_DATA",
+                  "Name": "Fields_DOB_Year",
+                  "Values": [{ "Value": "1978" }]
+                },
+                {
+                  "Group": "IDAUTH_FIELD_DATA",
+                  "Name": "Fields_DOB_Month",
+                  "Values": [{ "Value": "12" }]
+                },
+                {
+                  "Group": "IDAUTH_FIELD_DATA",
+                  "Name": "Fields_DOB_Day",
+                  "Values": [{ "Value": "13" }]
+                },
+                {
+                  "Group": "IDAUTH_FIELD_DATA",
+                  "Name": "Fields_DocumentClassCode",
+                  "Values": [{ "Value": "I" }]
+                },
+                {
+                  "Group": "IDAUTH_FIELD_DATA",
+                  "Name": "Fields_DocumentClassName",
+                  "Values": [{ "Value": "Identification Card" }]
+                },
+                {
+                  "Group": "IDAUTH_FIELD_DATA",
+                  "Name": "Fields_ExpirationDate_Year",
+                  "Values": [{ "Value": "2021" }]
+                },
+                {
+                  "Group": "IDAUTH_FIELD_DATA",
+                  "Name": "Fields_ExpirationDate_Month",
+                  "Values": [{ "Value": "4" }]
+                },
+                {
+                  "Group": "IDAUTH_FIELD_DATA",
+                  "Name": "Fields_xpirationDate_Day",
+                  "Values": [{ "Value": "28" }]
+                },
+                {
+                  "Group": "IDAUTH_FIELD_DATA",
+                  "Name": "Fields_IssuingStateCode",
+                  "Values": [{ "Value": "USA" }]
+                },
+                {
+                  "Group": "IDAUTH_FIELD_DATA",
+                  "Name": "Fields_IssuingStateName",
+                  "Values": [{ "Value": "United States" }]
+                },
+                {
+                  "Group": "IDAUTH_FIELD_DATA",
+                  "Name": "Fields_CountryCode",
+                  "Values": [{ "Value": "USA" }]
+                },
+                {
+                  "Group": "IDAUTH_FIELD_DATA",
+                  "Name": "Fields_AddressLine1",
+                  "Values": [{ "Value": "1300 W BENSON BLVD STE 900" }]
+                },
+                {
+                  "Group": "IDAUTH_FIELD_DATA",
+                  "Name": "Fields_City",
+                  "Values": [{ "Value": "ANCHORAGE" }]
+                },
+                {
+                  "Group": "IDAUTH_FIELD_DATA",
+                  "Name": "Fields_State",
+                  "Values": [{ "Value": "AK" }]
+                },
+                {
+                  "Group": "IDAUTH_FIELD_DATA",
+                  "Name": "Fields_PostalCode",
+                  "Values": [{ "Value": "99503" }]
+                },
+                {
+                  "Group": "IDAUTH_FIELD_DATA",
+                  "Name": "Fields_MRZ",
+                  "Values": [
+                    {
+                      "Value": "IDUSA2C4HXAM914<<<<<<<<<<<<<<<7812134M2104289USA<<<<<<<<II<TRAVELER<<<<<<<<<<<<<<<<<<<<<<<<"
+                    }
+                  ]
+                },
+                {
+                  "Group": "IDAUTH_FIELD_DATA",
+                  "Name": "Fields_NationalityCode",
+                  "Values": [{ "Value": "USA" }]
+                },
+                {
+                  "Group": "IDAUTH_FIELD_DATA",
+                  "Name": "Fields_NationalityName",
+                  "Values": [{ "Value": "United States" }]
+                },
+                {
+                  "Group": "DOCUMENT_REGION",
+                  "Name": "DocumentRegion_Id",
+                  "Values": [
+                    { "Value": "cd6057ea-67db-42e1-99d0-2f92636a16f3" },
+                    { "Value": "5dc71295-9617-4e88-b692-69c3d82a70cd" },
+                    { "Value": "f0b076c3-7014-4b7e-b0df-842b3166ca2e" },
+                    { "Value": "e20cdaa3-bc49-42d2-808c-15d647f1d514" },
+                    { "Value": "9236541b-4161-4199-ba06-8d864317aa19" },
+                    { "Value": "73a1bea5-b0a6-44e2-ad11-aeedd700960b" },
+                    { "Value": "321bb65c-8c2c-4017-85ac-5e972d61af37" }
+                  ]
+                },
+                {
+                  "Group": "DOCUMENT_REGION",
+                  "Name": "DocumentRegion_Key",
+                  "Values": [
+                    { "Value": "2D Barcode" },
+                    { "Value": "MRZ Locate" },
+                    { "Value": "MRZ1 (Visible)" },
+                    { "Value": "MRZ2 (Visible)" },
+                    { "Value": "MRZ3 (Visible)" },
+                    { "Value": "MRZ3 Check" },
+                    { "Value": "Verify <<" }
+                  ]
+                },
+                {
+                  "Group": "DOCUMENT_REGION",
+                  "Name": "DocumentRegion_ImageReference",
+                  "Values": [
+                    { "Value": "cf7f349e-fa65-4afd-96a9-338b0b3383e8" },
+                    { "Value": "cf7f349e-fa65-4afd-96a9-338b0b3383e8" },
+                    { "Value": "cf7f349e-fa65-4afd-96a9-338b0b3383e8" },
+                    { "Value": "cf7f349e-fa65-4afd-96a9-338b0b3383e8" },
+                    { "Value": "cf7f349e-fa65-4afd-96a9-338b0b3383e8" },
+                    { "Value": "cf7f349e-fa65-4afd-96a9-338b0b3383e8" },
+                    { "Value": "cf7f349e-fa65-4afd-96a9-338b0b3383e8" }
+                  ]
+                }
+              ],
+              "ProductConfigurationName": "GSA.V3.TrueID.Flow.PT.DDP",
+              "ProductReason": {
+                "Code": "failed_true_id",
+                "Description": "Failed: TrueID document authentication"
+              },
+              "ProductStatus": "fail",
+              "ProductType": "TrueID"
+            }
+          ],
+          "Status": {
+            "ConversationId": "50001045687135",
+            "RequestId": "3365396565",
+            "TransactionReasonCode": {
+              "Code": "failed_true_id",
+              "Description": "Failed: TrueID document authentication"
+            },
+            "TransactionStatus": "failed"
+          }
+        },
+        "tps_was_timeout": "no"
+      }
+    }
+  },
+  "local_attrib_3": "320eb722-8729-424e-a6c9-adfcf39fe9f1",
+  "org_id": "dxr8d8zm",
+  "policy": "trueid_ncpnpm",
+  "policy_details_api": {
+    "policy_detail_api": [
+      {
+        "customer": {
+          "pvid": "2025313",
+          "review_status": "review",
+          "risk_rating": "neutral",
+          "rules": [
+            {
+              "reason_code": "Authentication",
+              "rid": "509748600",
+              "score": "0"
+            }
+          ],
+          "score": "0"
+        },
+        "id": "0",
+        "type": "champion"
+      }
+    ]
+  },
+  "policy_engine_version": "17.0",
+  "policy_score": "0",
+  "primary_industry": "government",
+  "reason_code": ["Authentication"],
+  "request_duration": "13103",
+  "request_id": "9c564607-6215-459e-a5a9-661f74b87c1d",
+  "request_result": "success",
+  "review_status": "review",
+  "risk_rating": "neutral",
+  "secondary_industry": "civilian",
+  "service_type": "basic",
+  "tag_context": "_A_DOCUM",
+  "tps_error": "failed_true_id",
+  "tps_was_timeout": "no",
+  "trueid.authentication_result.date_of_birth": "1978-12-13",
+  "trueid.authentication_result.doc_auth_result": "Unknown",
+  "trueid.authentication_result.doc_auth_tamper_result": "Unknown",
+  "trueid.authentication_result.doc_class": "Unknown",
+  "trueid.authentication_result.expiration_date": "2021-04-28",
+  "trueid.authentication_result.fields.id_auth_field_data.country_code": "USA",
+  "trueid.authentication_result.last_name": "TRAVELER",
+  "trueid.id_auth_field_data.state_name": "United States"
+}

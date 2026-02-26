@@ -1,0 +1,22 @@
+<p class="lead">
+  <%= t(
+        'user_mailer.account_connected_to_sp.intro_html',
+        sp_name: @sp_name,
+        sign_in_link_html: link_to(t('user_mailer.account_connected_to_sp.sign_in_link'), new_user_session_url),
+      ) %>
+</p>
+
+<p class="lead">
+  <%= t(
+        'user_mailer.sp_connection.instructions_html',
+        sp_name: @sp_name,
+        reset_password_html: link_to(
+          t('user_mailer.sp_connection.reset_password'),
+          event_disavowal_url(disavowal_token: @disavowal_token),
+        ),
+        auth_method_html: link_to(
+          t('user_mailer.sp_connection.auth_method'),
+          account_two_factor_authentication_url,
+        ),
+      ) %>
+</p>

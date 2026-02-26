@@ -2127,6 +2127,26 @@
                   ]
                 },
                 {
+                  "Group": "PORTRAIT_MATCH_RESULT",
+                  "Name": "FaceMatchResult",
+                  "Values": [{ "Value": "Pass" }]
+                },
+                {
+                  "Group": "PORTRAIT_MATCH_RESULT",
+                  "Name": "FaceMatchScore",
+                  "Values": [{ "Value": "96" }]
+                },
+                {
+                  "Group": "PORTRAIT_MATCH_RESULT",
+                  "Name": "FaceStatusCode",
+                  "Values": [{ "Value": "1" }]
+                },
+                {
+                  "Group": "PORTRAIT_MATCH_RESULT",
+                  "Name": "FaceErrorMessage",
+                  "Values": [{ "Value": "Successful. Liveness: Live" }]
+                },
+                {
                   "Group": "IDAUTH_FIELD_DATA",
                   "Name": "Fields_FullName",
                   "Values": [
@@ -2810,7 +2830,7 @@
           ],
           "Status": {
             "ConversationId": "50001044473245",
-            "RequestId": "test_request_id",
+            "RequestId": "3364070365",
             "TransactionReasonCode": {
               "Code": "trueid_pass",
               "Description": "TRUEID PASS"
@@ -2849,9 +2869,7 @@
   "policy_engine_version": "17.0",
   "policy_score": "0",
   "primary_industry": "government",
-  "reason_code": [
-    "Authentication"
-  ],
+  "reason_code": ["Authentication"],
   "request_duration": "12002",
   "request_id": "11daa04c-6be2-48a6-aecd-0780f7bbe189",
   "request_result": "success",
