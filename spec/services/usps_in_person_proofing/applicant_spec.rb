@@ -2,7 +2,9 @@ require 'rails_helper'
 
 RSpec.describe UspsInPersonProofing::Applicant do
   let(:document_expiration_date) { Faker::Date.in_date_period(year: 2030).strftime('%Y-%m-%d') }
-  let(:document_expiration_date_in_epoch) { Time.zone.parse(document_expiration_date).to_i }
+  let(:document_expiration_date_in_epoch) do
+    ActiveSupport::TimeZone['UTC'].parse(document_expiration_date).to_i
+  end
   let(:document_type) { Idp::Constants::DocumentTypes::STATE_ID }
   let(:usps_expected_document_type) do
     UspsInPersonProofing::USPS_DOCUMENT_TYPE_MAPPINGS[document_type]
