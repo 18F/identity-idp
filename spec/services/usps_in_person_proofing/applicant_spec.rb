@@ -3,9 +3,9 @@ require 'rails_helper'
 RSpec.describe UspsInPersonProofing::Applicant do
   let(:document_expiration_date) { Faker::Date.in_date_period(year: 2030).strftime('%Y-%m-%d') }
   let(:document_expiration_date_in_epoch) do
-    ActiveSupport::TimeZone['UTC'].parse(document_expiration_date).to_i
+    Time.zone.parse(document_expiration_date).to_i
   end
-  let(:document_type) { Idp::Constants::DocumentTypes::STATE_ID }
+  let(:document_type) { InPersonEnrollment::DOCUMENT_TYPE_STATE_ID }
   let(:usps_expected_document_type) do
     UspsInPersonProofing::USPS_DOCUMENT_TYPE_MAPPINGS[document_type]
   end
@@ -65,13 +65,13 @@ RSpec.describe UspsInPersonProofing::Applicant do
     end
 
     context 'from_usps_applicant_and_enrollment w state_id' do
-      let(:document_type) { Idp::Constants::DocumentTypes::STATE_ID }
+      let(:document_type) { InPersonEnrollment::DOCUMENT_TYPE_STATE_ID }
 
       it_behaves_like 'when values contains transliterable characters'
     end
 
     context 'from_usps_applicant_and_enrollment w passport book' do
-      let(:document_type) { Idp::Constants::DocumentTypes::PASSPORT_BOOK }
+      let(:document_type) { InPersonEnrollment::DOCUMENT_TYPE_PASSPORT_BOOK }
 
       it_behaves_like 'when values contains transliterable characters'
     end
