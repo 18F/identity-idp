@@ -235,6 +235,10 @@ module LexisNexisFixtures
       read_fixture_file_at_path('ddp/true_id/true_id_response_liveness_fail_passport.json')
     end
 
+    def ddp_true_id_attention_with_barcode_response_state_id_card
+      read_fixture_file_at_path('ddp/true_id/true_id_response_attention_barcode_state_id_card.json')
+    end
+
     def true_id_response_success
       read_fixture_file_at_path('true_id/true_id_response_success.json')
     end
