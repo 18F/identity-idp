@@ -10,7 +10,7 @@ module Idv
     end
 
     def ssn_is_unique?
-      duplicate_profiles.empty?
+      duplicate_ssn_profiles.empty?
     end
 
     def duplicate_ssn_profiles
