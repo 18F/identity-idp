@@ -334,6 +334,7 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
             enabled_mfa_methods_count: 1,
             in_account_creation_flow: false,
             available_webauthn_platform_config: false,
+            attempts: 2,
           )
           expect(@analytics).to have_logged_event(
             'Multi-Factor Authentication: max attempts reached',
