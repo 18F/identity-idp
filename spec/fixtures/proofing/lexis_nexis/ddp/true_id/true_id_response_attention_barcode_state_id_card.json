@@ -400,12 +400,12 @@
                 },
                 {
                   "Group": "AUTHENTICATION_RESULT",
-                  "Name": "Alert_2_AlertName",
+                  "Name": "Alert_3_AlertName",
                   "Values": [{ "Value": "2D Barcode Content" }]
                 },
                 {
                   "Group": "AUTHENTICATION_RESULT",
-                  "Name": "Alert_3_AlertName",
+                  "Name": "Alert_4_AlertName",
                   "Values": [{ "Value": "2D Barcode Read" }]
                 },
                 {

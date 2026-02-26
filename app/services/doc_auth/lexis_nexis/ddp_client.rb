@@ -3,8 +3,6 @@
 module DocAuth
   module LexisNexis
     class DdpClient
-      VALID_REVIEW_STATUSES = %w[pass review reject].freeze
-
       attr_reader :config
 
       def initialize(attrs)

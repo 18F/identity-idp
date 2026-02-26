@@ -172,7 +172,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::Ddp::TrueIdResponse do
     context 'when the response has doc auth result of Attention with barcode' do
       let(:ddp_response_body) { attention_with_barcode_response_body }
 
-      it 'is not a successful result' do
+      it 'is a successful result with attention and barcode set to true' do
         expect(response.successful_result?).to eq(true)
         expect(response.success?).to eq(true)
         expect(response.attention_with_barcode?).to eq(true)
