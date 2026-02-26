@@ -12,6 +12,9 @@ RSpec.describe 'In Person Proofing: opt in ipp applicant expanded payload', js: 
   let(:usps_expected_document_type) do
     UspsInPersonProofing::USPS_DOCUMENT_TYPE_MAPPINGS[InPersonEnrollment::DOCUMENT_TYPE_STATE_ID]
   end
+  let(:usps_expected_expiration_date) do
+    ActiveSupport::TimeZone['UTC'].parse(InPersonHelper::GOOD_STATE_ID_EXPIRATION).to_i
+  end
 
   before do
     allow(IdentityConfig.store).to receive(:usps_mock_fallback).and_return(false)
@@ -68,8 +71,7 @@ RSpec.describe 'In Person Proofing: opt in ipp applicant expanded payload', js: 
                   IdentityConfig.store.usps_ipp_enrollment_status_update_email_address,
                 'documentType' => usps_expected_document_type,
                 'documentNumber' => InPersonHelper::GOOD_STATE_ID_NUMBER,
-                'documentExpirationDate' =>
-                  ActiveSupport::TimeZone['UTC'].parse(InPersonHelper::GOOD_STATE_ID_EXPIRATION).to_i,
+                'documentExpirationDate' => usps_expected_expiration_date,
                 'IPPAssuranceLevel' => '1.5',
               },
             )
