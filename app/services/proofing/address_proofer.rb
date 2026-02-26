@@ -64,6 +64,13 @@ module Proofing
           hmac_secret_key: IdentityConfig.store.lexisnexis_hmac_secret_key,
           request_mode: IdentityConfig.store.lexisnexis_request_mode,
         )
+      when :lexis_nexis_ddp
+        Proofing::LexisNexis::Ddp::Proofers::PhoneFinderProofer.new(
+          api_key: IdentityConfig.store.lexisnexis_threatmetrix_api_key,
+          org_id: IdentityConfig.store.lexisnexis_threatmetrix_org_id,
+          base_url: IdentityConfig.store.lexisnexis_threatmetrix_base_url,
+          ddp_policy: 'PhoneFinder',
+        )
       when :socure
         Proofing::Socure::IdPlus::Proofers::PhoneRiskProofer.new(
           Proofing::Socure::IdPlus::Config.new(
