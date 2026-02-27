@@ -6,20 +6,30 @@ RSpec.describe Proofing::Resolution::Plugins::ThreatMetrixPlugin do
   let(:proofer_result) do
     instance_double(Proofing::DdpResult, success?: true, transaction_id: 'ddp-123')
   end
+  let(:threatmetrix_proofer) do
+    instance_double(Proofing::LexisNexis::Ddp::Proofers::ThreatMetrixProofer, proof: proofer_result)
+  end
   let(:request_ip) { Faker::Internet.ip_v4_address }
   let(:threatmetrix_session_id) { 'cool-session-id' }
   let(:user_email) { Faker::Internet.email }
   let(:user_uuid) { '00000000-0000-0000-0000-000000000000' }
   let(:workflow) { :idv }
+  let(:api_key) { 'KEY' }
+  let(:org_id) { 'ORG' }
+  let(:base_url) { 'BASE_URL' }
+  let(:ddp_policy) { 'TEST_POLICY' }
 
   subject(:plugin) do
     described_class.new
   end
 
   before do
-    allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_mock_enabled)
-      .and_return(false)
-    allow(plugin.proofer).to receive(:proof).and_return(proofer_result)
+    allow(IdentityConfig.store).to receive_messages(
+      lexisnexis_threatmetrix_mock_enabled: false,
+      lexisnexis_threatmetrix_api_key: api_key,
+      lexisnexis_threatmetrix_org_id: org_id,
+      lexisnexis_threatmetrix_base_url: base_url,
+    )
   end
 
   describe '#call' do
@@ -37,6 +47,7 @@ RSpec.describe Proofing::Resolution::Plugins::ThreatMetrixPlugin do
         user_email:,
         user_uuid:,
         workflow:,
+        ddp_policy:,
       )
     end
 
@@ -44,11 +55,14 @@ RSpec.describe Proofing::Resolution::Plugins::ThreatMetrixPlugin do
       before do
         allow(FeatureManagement).to receive(:proofing_device_profiling_collecting_enabled?)
           .and_return(true)
+        allow(Proofing::LexisNexis::Ddp::Proofers::ThreatMetrixProofer).to receive(:new)
+          .with(api_key:, org_id:, base_url:, ddp_policy:)
+          .and_return(threatmetrix_proofer)
       end
 
       it 'calls the ThreatMetrix proofer' do
         call
-        expect(plugin.proofer).to have_received(:proof).with(
+        expect(threatmetrix_proofer).to have_received(:proof).with(
           **applicant_pii,
           threatmetrix_session_id: threatmetrix_session_id,
           email: user_email,
@@ -66,7 +80,7 @@ RSpec.describe Proofing::Resolution::Plugins::ThreatMetrixPlugin do
         let(:threatmetrix_session_id) { nil }
 
         it 'does not call the ThreatMetrix proofer' do
-          expect(plugin.proofer).not_to receive(:proof)
+          expect(threatmetrix_proofer).not_to receive(:proof)
           call
         end
 
@@ -83,7 +97,7 @@ RSpec.describe Proofing::Resolution::Plugins::ThreatMetrixPlugin do
         let(:applicant_pii) { {} }
 
         it 'does not call the ThreatMetrix proofer' do
-          expect(plugin.proofer).not_to receive(:proof)
+          expect(threatmetrix_proofer).not_to receive(:proof)
           call
         end
 

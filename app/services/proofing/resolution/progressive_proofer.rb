@@ -71,6 +71,7 @@ module Proofing
           user_email:,
           user_uuid:,
           workflow:,
+          ddp_policy: IdentityConfig.store.lexisnexis_threatmetrix_policy,
         )
 
         user_went_through_hybrid_handoff = hybrid_mobile_request_ip.present?
@@ -85,6 +86,7 @@ module Proofing
             user_email:,
             user_uuid:,
             workflow: :"#{workflow}_hybrid_handoff",
+            ddp_policy: IdentityConfig.store.lexisnexis_threatmetrix_hybrid_handoff_policy,
           )
         end
 
