@@ -188,4 +188,8 @@ class FeatureManagement
   def self.doc_escrow_enabled?(service_provider)
     IdentityConfig.store.doc_escrow_enabled && service_provider&.attempts_api_enabled?
   end
+
+  def self.idv_proofing_agent_enabled?
+    IdentityConfig.store.idv_proofing_agent_enabled
+  end
 end
