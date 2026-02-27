@@ -573,7 +573,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_13_183904) do
     t.boolean "irs_attempts_api_enabled", comment: "sensitive=false"
     t.boolean "in_person_proofing_enabled", default: false, comment: "sensitive=false"
     t.string "post_idv_follow_up_url", comment: "sensitive=false"
-    t.boolean "emailaddress_attribute_enabled", default: false, comment: "sensitive=false"
+    t.boolean "saml_emailaddress_attribute_enabled", default: false, comment: "sensitive=false"
     t.index ["issuer"], name: "index_service_providers_on_issuer", unique: true
   end
 

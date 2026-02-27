@@ -806,7 +806,7 @@ RSpec.describe AttributeAsserter do
       end
     end
 
-    context 'Service Provider has emailaddress_attribute_enabled turned on' do
+    context 'Service Provider has saml_emailaddress_attribute_enabled turned on' do
       context 'bundle includes :email' do
         it 'includes email with SOAP schema, uuid, aal, and ial' do
           attribute_bundle = %w[email]
@@ -815,7 +815,7 @@ RSpec.describe AttributeAsserter do
             ial: service_provider_ial,
             default_aal: service_provider_aal,
             attribute_bundle:,
-            emailaddress_attribute_enabled: true,
+            saml_emailaddress_attribute_enabled: true,
           )
           subject = described_class.new(
             user:,
@@ -845,7 +845,7 @@ RSpec.describe AttributeAsserter do
             ial: service_provider_ial,
             default_aal: service_provider_aal,
             attribute_bundle:,
-            emailaddress_attribute_enabled: true,
+            saml_emailaddress_attribute_enabled: true,
           )
 
           subject = described_class.new(
