@@ -1,5 +1,14 @@
 <% self.title = t('in_person_proofing.headings.prepare') %>
 <%= render 'address_form', address: @search_values %>
+<h3>
+  <%= t('in_person_proofing.body.location.po_search.results_description',
+    address: "#{@search_values['street_address']}, #{@search_values['city']}, #{@search_values['state']} #{@search_values['zip_code']}",
+    count: @post_offices.size
+  ) %>
+</h3>
+<p>
+  <%= t('in_person_proofing.body.location.po_search.results_instructions') %>
+</p>
 <ul class='usa-collection'>
   <% @post_offices.each do |post_office| %>
     <li class="location-collection-item">
