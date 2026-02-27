@@ -31,7 +31,8 @@ RSpec.describe OpenidConnect::UserInfoController do
         expect(@analytics).to have_logged_event(
           :sp_integration_errors_present,
           error_details: array_including(
-            'Access token No Authorization header provided',
+            'Access token No Authorization header provided. Please see our documentation at ' \
+            'https://developers.login.gov/support/#no-auth-header',
           ),
           error_types: { access_token: true },
           event: :oidc_bearer_token_auth,
@@ -64,7 +65,8 @@ RSpec.describe OpenidConnect::UserInfoController do
         expect(@analytics).to have_logged_event(
           :sp_integration_errors_present,
           error_details: array_including(
-            'Access token Malformed Authorization header',
+            'Access token Malformed Authorization header. Please see our documentation at ' \
+            'https://developers.login.gov/support/#malformed-auth-header',
           ),
           error_types: { access_token: true },
           event: :oidc_bearer_token_auth,
@@ -97,7 +99,8 @@ RSpec.describe OpenidConnect::UserInfoController do
           :sp_integration_errors_present,
           error_details: array_including(
             'Access token Could not find authorization for the contents of the provided ' \
-              'access_token or it may have expired',
+              'access_token or it may have expired. Please see our documentation at ' \
+              'https://developers.login.gov/support/#auth-header-contents-not-found',
           ),
           error_types: { access_token: true },
           event: :oidc_bearer_token_auth,
