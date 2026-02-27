@@ -234,8 +234,6 @@ module Idv
             [:proofing_results, :context, :stages, :threatmetrix, :response_body, :first_name],
             [:proofing_results, :context, :stages, :hybrid_mobile_threatmetrix, :response_body,
              :first_name],
-            [:proofing_results, :context, :stages, :state_id, :state_id_jurisdiction],
-            [:proofing_results, :context, :stages, :state_id, :errors, :state_id_jurisdiction],
             [:proofing_results, :biographical_info, :identity_doc_address_state],
             [:proofing_results, :biographical_info, :state_id_jurisdiction],
             [:proofing_results, :biographical_info, :phone],
@@ -277,9 +275,11 @@ module Idv
       exceptions = build_proofing_exception_list(
         form_response.extra.dig(:proofing_results, :context, :stages),
       )
+      sanitized_form_response = form_response.deep_dup
+      sanitized_form_response.extra[:proofing_results]&.delete(:state_id)
       analytics.idv_doc_auth_verify_proofing_results(
         **analytics_arguments,
-        **form_response,
+        **sanitized_form_response,
         exceptions:,
       )
       delete_async
