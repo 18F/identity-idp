@@ -43,6 +43,7 @@ RSpec.describe TwoFactorAuthenticatableMethods, type: :controller do
           multi_factor_auth_method: auth_method,
           enabled_mfa_methods_count: 0,
           new_device: true,
+          available_webauthn_platform_config: false,
           attempts: 1,
         )
       end
@@ -265,6 +266,7 @@ RSpec.describe TwoFactorAuthenticatableMethods, type: :controller do
           multi_factor_auth_method: TwoFactorAuthenticatable::AuthMethod::SMS,
           enabled_mfa_methods_count: 1,
           new_device: true,
+          available_webauthn_platform_config: false,
           attempts: 1,
         )
       end
@@ -364,6 +366,7 @@ RSpec.describe TwoFactorAuthenticatableMethods, type: :controller do
           success: true,
           multi_factor_auth_method: TwoFactorAuthenticatable::AuthMethod::SMS,
           enabled_mfa_methods_count: 1,
+          available_webauthn_platform_config: false,
           new_device: true,
           attempts: 1,
         )
