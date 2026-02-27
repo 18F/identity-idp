@@ -25,7 +25,7 @@ else
   Geocoder.configure(ip_lookup: :test)
   Geocoder::Lookup::Test.set_default_stub(
     [
-      { 'city' => '', 'country' => 'United States', 'state_code' => '' },
+      { 'city' => '', 'country' => 'United States', 'country_code' => 'US', 'state_code' => '' },
     ],
   )
 end

@@ -364,7 +364,8 @@ RSpec.describe Users::TwoFactorAuthenticationController do
           'Telephony: OTP sent',
           hash_including(
             resend: true, success: true, **otp_preference_sms,
-            adapter: :test
+            adapter: :test,
+            ip_country: 'US'
           ),
         )
       end

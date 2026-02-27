@@ -5,6 +5,10 @@ class IpGeocoder
     @ip = ip
   end
 
+  def country_code
+    geocoded_location&.country_code
+  end
+
   def location
     geocoded_location&.language = I18n.locale
 
