@@ -1,5 +1,5 @@
 <% self.title = t('in_person_proofing.headings.prepare') %>
-<%= render 'address_form' %>
+<%= render 'address_form', address: @search_values %>
 <ul class='usa-collection'>
   <% @post_offices.each do |post_office| %>
     <li class="location-collection-item">
