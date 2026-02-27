@@ -5,7 +5,7 @@ module Reports
     def perform(perform_date = Time.zone.yesterday.end_of_day, perform_receiver = :internal)
       GoodJob::Batch.enqueue do
         IdentityConfig.store.sp_monthly_cred_metric_report_configs.each do |report_config|
-          Reports::IrsMonthlyCredMetricsReport.perform_later(
+          Reports::SpCredMetricsReport.perform_later(
             perform_date,
             perform_receiver,
             report_config,

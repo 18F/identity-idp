@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 require 'csv'
-require 'reporting/irs_verification_demographics_report'
+require 'reporting/sp_registration_funnel_report'
 
 module Reports
-  class IrsVerificationDemographicsReport < BaseReport
+  class SpRegistrationFunnelReport < BaseReport
     attr_reader :report_date, :report_receiver, :report_name, :report_title
 
     def initialize(init_date = nil, init_receiver = :internal, *args, **rest)
@@ -17,7 +17,7 @@ module Reports
       @report_date = perform_date
       @report_receiver = perform_receiver.to_sym
 
-      IdentityConfig.store.sp_verification_demographics_report_configs.each do |report_config|
+      IdentityConfig.store.sp_registration_funnel_report_configs.each do |report_config|
         send_report(report_config)
       end
     end
@@ -28,15 +28,15 @@ module Reports
       partner_emails = report_config['partner_emails']
       internal_emails = report_config['internal_emails']
 
-      @report_name = "#{agency_abbreviation.downcase}_verification_demographics_report"
-      @report_title = "#{agency_abbreviation} Verification Demographics Report"
+      @report_name = "#{agency_abbreviation.downcase}_registration_funnel_report"
+      @report_title = "#{agency_abbreviation} Registration Funnel Report"
 
       email_addresses = emails(internal_emails, partner_emails)
       to_emails = email_addresses[:to].select(&:present?)
       bcc_emails = email_addresses[:bcc].select(&:present?)
 
       if to_emails.empty? && bcc_emails.empty?
-        Rails.logger.warn "No emails received - #{@report_title} NOT SENT"
+        Rails.logger.warn "No email addresses received - #{@report_title} NOT SENT"
         return false
       end
 
@@ -80,19 +80,19 @@ module Reports
     end
 
     def reports(issuers, agency_abbreviation)
-      sp_verification_demographics_report(issuers, agency_abbreviation).as_emailable_reports
+      sp_registration_funnel_report(issuers, agency_abbreviation).as_emailable_reports
     end
 
-    def sp_verification_demographics_report(issuers, agency_abbreviation)
-      Reporting::IrsVerificationDemographicsReport.new(
+    def previous_week_range
+      @report_date.beginning_of_week(:sunday).prev_occurring(:sunday).all_week(:sunday)
+    end
+
+    def sp_registration_funnel_report(issuers, agency_abbreviation)
+      Reporting::SpRegistrationFunnelReport.new(
         issuers: issuers,
+        time_range: previous_week_range,
         agency_abbreviation: agency_abbreviation,
-        time_range: report_date.all_quarter,
       )
-    end
-
-    def issuers
-      [*IdentityConfig.store.sp_verification_demographics_report_configs]
     end
 
     def emails(internal_emails, partner_emails)

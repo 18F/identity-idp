@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Reports
-  class IrsMonthlyCredMetricsReport < BaseReport
+  class SpCredMetricsReport < BaseReport
     attr_reader :report_date, :report_receiver, :report_name
 
     def initialize(init_date = Time.zone.yesterday.end_of_day, init_receiver = :internal,

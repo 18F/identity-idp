@@ -1,9 +1,9 @@
 require 'rails_helper'
 
-RSpec.describe Reports::IrsMonthlyCredMetricsReport do
+RSpec.describe Reports::SpCredMetricsReport do
   let(:report_date) { Date.new(2021, 3, 2).in_time_zone('UTC').end_of_day }
   let(:report_receiver) { :internal }
-  subject(:report)      { Reports::IrsMonthlyCredMetricsReport.new(report_date, report_receiver) }
+  subject(:report)      { Reports::SpCredMetricsReport.new(report_date, report_receiver) }
 
   let(:s3_report_bucket_prefix) { 'reports-bucket' }
 
@@ -64,7 +64,7 @@ RSpec.describe Reports::IrsMonthlyCredMetricsReport do
     }
 
     # Mock the report data methods
-    allow_any_instance_of(Reports::IrsMonthlyCredMetricsReport)
+    allow_any_instance_of(Reports::SpCredMetricsReport)
       .to receive(:issuer_report_data)
       .and_return(
         [
@@ -76,7 +76,7 @@ RSpec.describe Reports::IrsMonthlyCredMetricsReport do
         ],
       )
 
-    allow_any_instance_of(Reports::IrsMonthlyCredMetricsReport)
+    allow_any_instance_of(Reports::SpCredMetricsReport)
       .to receive(:partner_report_data)
       .and_return(
         [
@@ -88,7 +88,7 @@ RSpec.describe Reports::IrsMonthlyCredMetricsReport do
       )
 
     # Invoice CSV used by original builders (only needed for fixture builder context)
-    allow_any_instance_of(Reports::IrsMonthlyCredMetricsReport)
+    allow_any_instance_of(Reports::SpCredMetricsReport)
       .to receive(:invoice_report_data)
       .and_return(fixture_csv_data)
 
@@ -99,7 +99,7 @@ RSpec.describe Reports::IrsMonthlyCredMetricsReport do
     let(:report_receiver) { :both }
     let(:report_date) { Date.new(2021, 3, 1).prev_day } # 2021-02-28
     subject(:report) do
-      Reports::IrsMonthlyCredMetricsReport.new(report_date, report_receiver, report_config)
+      Reports::SpCredMetricsReport.new(report_date, report_receiver, report_config)
     end
 
     it 'sends report to partner (to) and internal (bcc)' do
@@ -122,7 +122,7 @@ RSpec.describe Reports::IrsMonthlyCredMetricsReport do
     let(:report_receiver) { :internal }
     let(:report_date) { Date.new(2021, 3, 15).prev_day } # 2021-03-14
     subject(:report) do
-      Reports::IrsMonthlyCredMetricsReport.new(report_date, report_receiver, report_config)
+      Reports::SpCredMetricsReport.new(report_date, report_receiver, report_config)
     end
 
     it 'sends out a report to internal receivers' do
@@ -145,7 +145,7 @@ RSpec.describe Reports::IrsMonthlyCredMetricsReport do
     let(:report_receiver) { :both }
     let(:report_date) { Date.new(2021, 3, 1).prev_day } # 2021-02-28
     subject(:report) do
-      Reports::IrsMonthlyCredMetricsReport.new(report_date, report_receiver, report_config)
+      Reports::SpCredMetricsReport.new(report_date, report_receiver, report_config)
     end
 
     let(:report_config) do
@@ -180,7 +180,7 @@ RSpec.describe Reports::IrsMonthlyCredMetricsReport do
     let(:report_receiver) { :internal }
     let(:report_date) { Date.new(2021, 3, 15).prev_day } # 2021-03-14
     subject(:report) do
-      Reports::IrsMonthlyCredMetricsReport.new(report_date, report_receiver, report_config)
+      Reports::SpCredMetricsReport.new(report_date, report_receiver, report_config)
     end
 
     let(:report_config) do
@@ -260,9 +260,9 @@ RSpec.describe Reports::IrsMonthlyCredMetricsReport do
 
     before do
       # Use real builder logic
-      allow_any_instance_of(Reports::IrsMonthlyCredMetricsReport)
+      allow_any_instance_of(Reports::SpCredMetricsReport)
         .to receive(:issuer_report_data).and_call_original
-      allow_any_instance_of(Reports::IrsMonthlyCredMetricsReport)
+      allow_any_instance_of(Reports::SpCredMetricsReport)
         .to receive(:partner_report_data).and_call_original
     end
 

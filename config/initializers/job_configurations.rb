@@ -196,7 +196,7 @@ else
         args: -> { [Time.zone.yesterday.end_of_day, :both] },
       },
       sp_weekly_verification_report: {
-        class: 'Reports::IrsVerificationReport',
+        class: 'Reports::SpVerificationReport',
         cron: cron_every_monday_5am,
         args: -> { [Time.zone.yesterday.end_of_day, :internal] },
       },
@@ -251,7 +251,7 @@ else
 
       # Note: this is for testing as of now.
       sp_weekly_registration_funnel_report: {
-        class: 'Reports::IrsRegistrationFunnelReport',
+        class: 'Reports::SpRegistrationFunnelReport',
         cron: cron_every_monday,
         args: -> { [Time.zone.yesterday.end_of_day, :both] },
       },
@@ -282,7 +282,7 @@ else
       },
 
       sp_fraud_metrics_report: {
-        class: 'Reports::IrsFraudMetricsReport',
+        class: 'Reports::SpFraudMetricsReport',
         cron: cron_24h_and_a_bit,
         args: -> {
           JobHelpers::ReportJobConfigurationHelper.build_irs_report_args(
@@ -324,7 +324,7 @@ else
 
       # Previous months's SP verification report - Added for testing as of now
       monthly_sp_verification_report: {
-        class: 'Reports::MonthlyIrsVerificationReport',
+        class: 'Reports::MonthlySpVerificationReport',
         cron: cron_24h_and_a_bit,
         args: -> {
           JobHelpers::ReportJobConfigurationHelper.build_irs_report_args(
@@ -349,7 +349,7 @@ else
 
       # Note: This is just for testing as of now
       sp_verification_demographics_report: {
-        class: 'Reports::IrsVerificationDemographicsReport',
+        class: 'Reports::SpVerificationDemographicsReport',
         cron: cron_monthly,
         args: -> {
           JobHelpers::ReportJobConfigurationHelper.build_irs_report_args(
