@@ -468,7 +468,8 @@ Rails.application.routes.draw do
         get '/in_person/welcome' => 'in_person/welcome#show'
         put '/in_person/welcome' => 'in_person/welcome#update'
         get '/in_person/post_office' => 'in_person/post_office#show'
-        put '/in_person/post_office' => 'in_person/post_office#search'
+        post '/in_person/post_office' => 'in_person/post_office#search'
+        put '/in_person/post_office' => 'in_person/post_office#update'
       end
       get '/in_person/verify_info' => 'in_person/verify_info#show'
       put '/in_person/verify_info' => 'in_person/verify_info#update'

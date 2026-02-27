@@ -26,6 +26,11 @@ module Idv
         @post_offices = proofer.request_facilities(candidate, false)
       end
 
+      def update
+        # TODO: create needed enrollment and session data
+        redirect_to idv_in_person_url
+      end
+
       private
 
       def search_params
@@ -37,8 +42,34 @@ module Idv
         )
       end
 
+      def post_office_params
+        params.require(:post_office).permit(
+          :name,
+          :street_address,
+          :weekday_hours,
+          :saturday_hours,
+          :sunday_hours,
+          :city,
+          :state,
+          :zip_code_5,
+          :zip_code_4,
+        )
+      end
+
+      def formatted_city_state_zip
+        "#{post_office_params[:city]}, #{post_office_params[:state]}, #{post_office_params[:zip_code_5]}-#{post_office_params[:zip_code_4]}"
+      end
+
       def proofer
         @proofer ||= EnrollmentHelper.usps_proofer
+      end
+
+      def enrollment
+        InPersonEnrollment.find_or_initialize_by(
+          user: current_or_hybrid_user,
+          status: :establishing,
+          profile: nil,
+        )
       end
     end
   end

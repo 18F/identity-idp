@@ -13,7 +13,7 @@
 <%= simple_form_for(
   'address',
   url: url_for,
-  method: 'put',
+  method: 'post',
   html: { class: 'margin-y-5' })  do |f| %>
 
   <div class="margin-bottom-4">
@@ -69,7 +69,7 @@
           required: true,
         ) %>
   </div>
-  <%= f.submit method: :put do %>
+  <%= f.submit method: :post do %>
     <%= t('in_person_proofing.body.location.po_search.search_button') %>
   <% end %>
 <% end %>
