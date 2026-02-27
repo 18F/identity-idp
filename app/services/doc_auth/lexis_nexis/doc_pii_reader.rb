@@ -21,7 +21,7 @@ module DocAuth
 
       # @return [Pii::StateId, Pii::Passport, nil]
       def read_pii
-        return nil unless id_auth_field_data.present?
+        return nil unless true_id_product&.dig(:IDAUTH_FIELD_DATA).present?
 
         if Idp::Constants::DocumentTypes::SUPPORTED_STATE_ID_TYPES.include?(document_type_received)
           generate_state_id_pii
@@ -30,72 +30,137 @@ module DocAuth
         end
       end
 
-      def id_auth_field_data
-        true_id_product&.dig(:IDAUTH_FIELD_DATA)
-      end
-
       def document_type_received
         @document_type_received ||= determine_document_type_received(
-          doc_class_name: document_type_received_slug,
-          doc_issue_type: id_doc_issue_type,
+          doc_class_name: doc_class_name,
+          doc_issue_type: doc_issue_type,
         )
       end
 
-      def document_type_received_slug
-        id_auth_field_data&.dig('Fields_DocumentClassName')
+      def generate_state_id_pii
+        Pii::StateId.new(
+          first_name:,
+          last_name:,
+          middle_name:,
+          name_suffix: true_id_product&.dig(:IDAUTH_FIELD_DATA, :Fields_NameSuffix),
+          address1: true_id_product&.dig(:IDAUTH_FIELD_DATA, :Fields_AddressLine1),
+          address2: true_id_product&.dig(:IDAUTH_FIELD_DATA, :Fields_AddressLine2),
+          city: true_id_product&.dig(:IDAUTH_FIELD_DATA, :Fields_City),
+          state: true_id_product&.dig(:IDAUTH_FIELD_DATA, :Fields_State),
+          zipcode:,
+          dob:,
+          sex:,
+          height: parse_height_value(true_id_product&.dig(:IDAUTH_FIELD_DATA, :Fields_Height)),
+          weight: nil,
+          eye_color: nil,
+          state_id_expiration: expiration_date,
+          state_id_issued: issue_date,
+          state_id_jurisdiction: true_id_product&.dig(:IDAUTH_FIELD_DATA, :Fields_IssuingStateCode),
+          state_id_number: document_number,
+          document_type_received:,
+          issuing_country_code:,
+        )
       end
 
-      def id_doc_issue_type
-        authentication_result_field_data&.dig('DocIssueType')
+      def generate_passport_pii
+        Pii::Passport.new(
+          first_name:,
+          last_name:,
+          middle_name:,
+          dob:,
+          sex:,
+          passport_expiration: expiration_date,
+          passport_issued: issue_date,
+          document_type_received:,
+          issuing_country_code:,
+          document_number:,
+          birth_place: true_id_product&.dig(:IDAUTH_FIELD_DATA, :Fields_BirthPlace),
+          nationality_code: true_id_product&.dig(:IDAUTH_FIELD_DATA, :Fields_NationalityCode),
+          mrz: true_id_product&.dig(:IDAUTH_FIELD_DATA, :Fields_MRZ),
+        )
       end
 
-      def authentication_result_field_data
-        true_id_product&.dig(:AUTHENTICATION_RESULT)
-      end
+      # PII fields #########################################################################
 
       def first_name
-        id_auth_field_data&.dig('Fields_FirstName') || id_auth_field_data&.dig('Fields_GivenName')
-      end
-
-      def last_name
-        id_auth_field_data&.dig('Fields_Surname')
+        true_id_product&.dig(:IDAUTH_FIELD_DATA, :Fields_FirstName) ||
+          true_id_product&.dig(:IDAUTH_FIELD_DATA, :Fields_GivenName)
       end
 
       def middle_name
-        id_auth_field_data&.dig('Fields_MiddleName')
+        true_id_product&.dig(:IDAUTH_FIELD_DATA, :Fields_MiddleName)
+      end
+
+      def last_name
+        true_id_product&.dig(:IDAUTH_FIELD_DATA, :Fields_Surname)
+      end
+
+      def name_suffix
+        true_id_product&.dig(:IDAUTH_FIELD_DATA, :Fields_NameSuffix)
       end
 
       def dob
         parse_date(
-          year: id_auth_field_data&.dig('Fields_DOB_Year'),
-          month: id_auth_field_data&.dig('Fields_DOB_Month'),
-          day: id_auth_field_data&.dig('Fields_DOB_Day'),
+          year: true_id_product&.dig(:IDAUTH_FIELD_DATA, :Fields_DOB_Year),
+          month: true_id_product&.dig(:IDAUTH_FIELD_DATA, :Fields_DOB_Month),
+          day: true_id_product&.dig(:IDAUTH_FIELD_DATA, :Fields_DOB_Day),
         )
+      end
+
+      def document_number
+        true_id_product&.dig(:IDAUTH_FIELD_DATA, :Fields_DocumentNumber)
       end
 
       def expiration_date
         parse_date(
-          year: id_auth_field_data&.dig('Fields_ExpirationDate_Year'),
-          month: id_auth_field_data&.dig('Fields_ExpirationDate_Month'),
-          day: id_auth_field_data&.dig('Fields_xpirationDate_Day'), # this is NOT a typo
+          year: true_id_product&.dig(:IDAUTH_FIELD_DATA, :Fields_ExpirationDate_Year),
+          month: true_id_product&.dig(:IDAUTH_FIELD_DATA, :Fields_ExpirationDate_Month),
+          day: true_id_product&.dig(:IDAUTH_FIELD_DATA, :Fields_xpirationDate_Day),
+          #                                                     ^^^ this is NOT a typo
         )
       end
 
       def issue_date
         parse_date(
-          year: id_auth_field_data&.dig('Fields_IssueDate_Year'),
-          month: id_auth_field_data&.dig('Fields_IssueDate_Month'),
-          day: id_auth_field_data&.dig('Fields_IssueDate_Day'),
+          year: true_id_product&.dig(:IDAUTH_FIELD_DATA, :Fields_IssueDate_Year),
+          month: true_id_product&.dig(:IDAUTH_FIELD_DATA, :Fields_IssueDate_Month),
+          day: true_id_product&.dig(:IDAUTH_FIELD_DATA, :Fields_IssueDate_Day),
         )
       end
 
       def issuing_country_code
-        id_auth_field_data&.dig('Fields_CountryCode')
+        true_id_product&.dig(:IDAUTH_FIELD_DATA, :Fields_CountryCode)
       end
 
-      def document_number
-        id_auth_field_data&.dig('Fields_DocumentNumber')
+      def address1
+        true_id_product&.dig(:IDAUTH_FIELD_DATA, :Fields_AddressLine1)
       end
+
+      def address2
+        true_id_product&.dig(:IDAUTH_FIELD_DATA, :Fields_AddressLine2)
+      end
+
+      def city
+        true_id_product&.dig(:IDAUTH_FIELD_DATA, :Fields_City)
+      end
+
+      def state
+        true_id_product&.dig(:IDAUTH_FIELD_DATA, :Fields_State)
+      end
+
+      def zipcode
+        zip = true_id_product&.dig(:IDAUTH_FIELD_DATA, :Fields_PostalCode)
+        unless /^\d{5}(-\d{4})?$/.match? zip
+          zip = zip&.slice(0, 5)
+        end
+        zip
+      end
+
+      def sex
+        parse_sex_value(true_id_product&.dig(:AUTHENTICATION_RESULT, :Sex))
+      end
+
+      # Utility methods ####################################################################
 
       def parse_date(year:, month:, day:)
         Date.new(year.to_i, month.to_i, day.to_i).to_s if year.to_i.positive?
@@ -105,18 +170,6 @@ module DocAuth
         }.to_json
         Rails.logger.info(message)
         nil
-      end
-
-      def zipcode
-        zip = id_auth_field_data&.dig('Fields_PostalCode')
-        unless /^\d{5}(-\d{4})?$/.match? zip
-          zip = zip&.slice(0, 5)
-        end
-        zip
-      end
-
-      def sex
-        parse_sex_value(authentication_result_field_data&.[]('Sex'))
       end
 
       def parse_sex_value(sex_attribute)
@@ -147,49 +200,6 @@ module DocAuth
         return unless height_match_data
 
         height_match_data[:feet].to_i * 12 + height_match_data[:inches].to_i
-      end
-
-      def generate_state_id_pii
-        Pii::StateId.new(
-          first_name:,
-          last_name:,
-          middle_name:,
-          name_suffix: id_auth_field_data&.dig('Fields_NameSuffix'),
-          address1: id_auth_field_data&.dig('Fields_AddressLine1'),
-          address2: id_auth_field_data&.dig('Fields_AddressLine2'),
-          city: id_auth_field_data&.dig('Fields_City'),
-          state: id_auth_field_data&.dig('Fields_State'),
-          zipcode:,
-          dob:,
-          sex:,
-          height: parse_height_value(id_auth_field_data&.dig('Fields_Height')),
-          weight: nil,
-          eye_color: nil,
-          state_id_expiration: expiration_date,
-          state_id_issued: issue_date,
-          state_id_jurisdiction: id_auth_field_data&.dig('Fields_IssuingStateCode'),
-          state_id_number: document_number,
-          document_type_received:,
-          issuing_country_code:,
-        )
-      end
-
-      def generate_passport_pii
-        Pii::Passport.new(
-          first_name:,
-          last_name:,
-          middle_name:,
-          dob:,
-          sex:,
-          passport_expiration: expiration_date,
-          passport_issued: issue_date,
-          document_type_received:,
-          issuing_country_code:,
-          document_number:,
-          birth_place: id_auth_field_data&.dig('Fields_BirthPlace'),
-          nationality_code: id_auth_field_data&.dig('Fields_NationalityCode'),
-          mrz: id_auth_field_data&.dig('Fields_MRZ'),
-        )
       end
 
       def determine_document_type_received(doc_class_name:, doc_issue_type:)

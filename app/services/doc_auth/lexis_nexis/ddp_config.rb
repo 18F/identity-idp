@@ -30,8 +30,9 @@ module DocAuth
       ],
     ) do
       def validate!
+        raise 'config missing api_key' if !api_key
+        raise 'config missing org_id' if !org_id
         raise 'config missing base_url' if !base_url
-        raise 'config missing locale' if !locale
       end
     end.freeze
   end

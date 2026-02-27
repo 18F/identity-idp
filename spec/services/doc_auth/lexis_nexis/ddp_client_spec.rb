@@ -16,6 +16,8 @@ RSpec.describe DocAuth::LexisNexis::DdpClient do
       base_url: 'https://lexis.nexis.example.com',
       locale: 'en',
       trueid_account_id: 'test_account',
+      api_key: 'test_key',
+      org_id: 'test_org_id',
     }
   end
   let(:success_response_body) { LexisNexisFixtures.ddp_true_id_state_id_response_success }
