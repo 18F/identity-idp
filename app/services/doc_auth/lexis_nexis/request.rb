@@ -84,13 +84,10 @@ module DocAuth
       end
 
       def send_http_post_request
-        # response =
         faraday_connection.post do |req|
           req.options.context = { service_name: metric_name }
           req.body = body
         end
-        # puts "#{'-' * 80}\nURL: #{url}{'-'*80}\n#{response.body.inspect}\n#{'-' * 80}\n"
-        # response
       end
 
       def faraday_connection
