@@ -7,6 +7,8 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
   let(:proofing_vendor) { :mock }
   let(:idv_phone_precheck_percent) { 100 }
   let(:analytics) { FakeAnalytics.new }
+  let(:threatmetrix_ddp_policy) { 'TEST_POLICY' }
+  let(:threatmetrix_hybrid_ddp_policy) { 'HYBRID_TEST_POLICY' }
 
   subject(:progressive_proofer) do
     described_class.new(user_uuid:, proofing_vendor:, analytics:, user_email:)
@@ -121,10 +123,12 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
 
       allow(progressive_proofer.aamva_plugin).to receive(:proofer)
         .and_return(aamva_proofer)
-      allow(IdentityConfig.store).to receive(:idv_phone_precheck_percent)
-        .and_return(idv_phone_precheck_percent)
-      allow(IdentityConfig.store).to receive(:proofing_device_hybrid_profiling)
-        .and_return(hybrid_device_profiling)
+      allow(IdentityConfig.store).to receive_messages(
+        idv_phone_precheck_percent: idv_phone_precheck_percent,
+        proofing_device_hybrid_profiling: hybrid_device_profiling,
+        lexisnexis_threatmetrix_policy: threatmetrix_ddp_policy,
+        lexisnexis_threatmetrix_hybrid_handoff_policy: threatmetrix_hybrid_ddp_policy,
+      )
     end
 
     context 'remote unsupervised proofing' do
@@ -174,6 +178,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
           user_email:,
           user_uuid:,
           workflow:,
+          ddp_policy: threatmetrix_ddp_policy,
         )
         proof
       end
@@ -198,6 +203,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
             user_email:,
             user_uuid:,
             workflow:,
+            ddp_policy: threatmetrix_ddp_policy,
           ).ordered
 
           expect(progressive_proofer.threatmetrix_plugin).to receive(:call).with(
@@ -209,6 +215,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
             user_email:,
             user_uuid:,
             workflow: :"#{workflow}_hybrid_handoff",
+            ddp_policy: threatmetrix_hybrid_ddp_policy,
           ).ordered
 
           proof
@@ -534,6 +541,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
             user_email:,
             user_uuid:,
             workflow:,
+            ddp_policy: threatmetrix_ddp_policy,
           )
           proof
         end
@@ -622,6 +630,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
             user_email:,
             user_uuid:,
             workflow:,
+            ddp_policy: threatmetrix_ddp_policy,
           )
           proof
         end
@@ -721,6 +730,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
           user_email:,
           user_uuid:,
           workflow:,
+          ddp_policy: threatmetrix_ddp_policy,
         )
         proof
       end
