@@ -203,8 +203,7 @@ RSpec.describe DocAuth::LexisNexis::Requests::Ddp::TrueIdRequest do
         }
       end
 
-      # TODO: remove skip once email is provided as part of LG-17251
-      xit 'raises ArgumentError' do
+      it 'raises ArgumentError' do
         expect { subject.fetch }.to raise_error(ArgumentError, 'email is required')
       end
     end

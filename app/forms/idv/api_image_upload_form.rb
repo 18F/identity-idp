@@ -192,7 +192,7 @@ module Idv
       timer = JobHelpers::Timer.new
 
       response = timer.time('vendor_request') do
-        doc_auth_client.post_images(
+        post_images_args = {
           **images_metadata.submittable_images,
           image_source: image_source,
           # autocapture no longer crops the images
@@ -202,7 +202,9 @@ module Idv
           liveness_checking_required: liveness_checking_required,
           document_type_requested: document_type_requested,
           passport_requested: document_capture_session.passport_requested?,
-        )
+        }
+        post_images_args[:user_email] = user_email if ddp_client?
+        doc_auth_client.post_images(**post_images_args)
       end
 
       response.extra.merge!(extra_attributes)
@@ -576,6 +578,14 @@ module Idv
 
     def user_uuid
       document_capture_session&.user&.uuid
+    end
+
+    def user_email
+      document_capture_session&.user&.last_sign_in_email_address&.email
+    end
+
+    def ddp_client?
+      document_capture_session&.doc_auth_vendor == Idp::Constants::Vendors::LEXIS_NEXIS_DDP
     end
 
     def passport_requested?
