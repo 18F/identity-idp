@@ -812,7 +812,7 @@ errors.messages.invalid_calling_area: Calls to that phone number are not support
 errors.messages.invalid_phone_number.international: Enter a phone number with the correct number of digits.
 errors.messages.invalid_phone_number.us: Enter a 10 digit phone number.
 errors.messages.invalid_recaptcha_token: We’re sorry, but your computer or network may be sending automated queries. To protect our users, we can’t process your request right now.
-errors.messages.invalid_signature: SAML request signature is invalid or does not match any registered public certificates
+errors.messages.invalid_signature: SAML request signature is invalid or does not match any registered public certificates. Please see our documentation at https://developers.login.gov/support/#saml-signature
 errors.messages.invalid_sms_number: The phone number entered doesn’t support text messaging. Try the Phone call option.
 errors.messages.invalid_voice_number: Invalid phone number. Check that you’ve entered the correct country code or area code.
 errors.messages.issuer_missing_or_invalid: Issuer missing from SAML request
@@ -840,9 +840,9 @@ errors.messages.too_long.other: is too long (maximum is %{count} characters)
 errors.messages.too_short.one: is too short (minimum is 1 character)
 errors.messages.too_short.other: is too short (minimum is %{count} characters)
 errors.messages.try_again: Please try again.
-errors.messages.unauthorized_authn_context: Unauthorized authentication context
-errors.messages.unauthorized_nameid_format: Unauthorized nameID format
-errors.messages.unauthorized_service_provider: Unauthorized Service Provider
+errors.messages.unauthorized_authn_context: Unauthorized authentication context. Please see our documentation at https://developers.login.gov/support/#unauthorized_auth_context
+errors.messages.unauthorized_nameid_format: Unauthorized nameID format. Please see our documentation at https://developers.login.gov/support/#nameidformat_unrecognized
+errors.messages.unauthorized_service_provider: Unauthorized Service Provider. Please see our documentation at https://developers.login.gov/support/#unauthorized
 errors.messages.voip_check_error: There was an error checking your phone, please try again
 errors.messages.voip_phone: This number is a web-based (VOIP) phone service. Please select a different number and try again
 errors.messages.weak_password: Your password is not strong enough. %{feedback}
@@ -1592,37 +1592,37 @@ notices.use_diff_email.link: use a different email address
 notices.use_diff_email.text_html: Or, %{link_html}
 notices.webauthn_configured: A security key was added to your account.
 notices.webauthn_platform_configured: You used your device’s screen lock to add face or touch unlock to your account.
-openid_connect.authorization.errors.bad_client_id: Bad client_id
+openid_connect.authorization.errors.bad_client_id: Bad client_id. Please see our documentation at https://developers.login.gov/support/#bad-client-id
 openid_connect.authorization.errors.invalid_verified_within_duration.one: value must be at least %{count} day or older
 openid_connect.authorization.errors.invalid_verified_within_duration.other: value must be at least %{count} days or older
 openid_connect.authorization.errors.invalid_verified_within_format: Unrecognized format for verified_within
-openid_connect.authorization.errors.missing_ial: Missing a valid IAL level
-openid_connect.authorization.errors.no_auth: The acr_values are not authorized
-openid_connect.authorization.errors.no_valid_acr_values: No acceptable acr_values found
-openid_connect.authorization.errors.no_valid_scope: No valid scope values found
-openid_connect.authorization.errors.prompt_invalid: No valid prompt values found
-openid_connect.authorization.errors.redirect_uri_invalid: redirect_uri is invalid
-openid_connect.authorization.errors.redirect_uri_no_match: redirect_uri does not match registered redirect_uri
-openid_connect.authorization.errors.unauthorized_scope: Unauthorized scope
+openid_connect.authorization.errors.missing_ial: Missing a valid IAL level. Please see our documentation at https://developers.login.gov/support/#oidc-missing-ial
+openid_connect.authorization.errors.no_auth: The acr_values are not authorized. Please see our documentation at https://developers.login.gov/support/#oidc-missing-acr-values
+openid_connect.authorization.errors.no_valid_acr_values: No acceptable acr_values found. Please see our documentation at https://developers.login.gov/support/#oidc-no-acr-values
+openid_connect.authorization.errors.no_valid_scope: No valid scope values found. Please see our documentation at https://developers.login.gov/support/#oidc-no-scope
+openid_connect.authorization.errors.prompt_invalid: No valid prompt values found. Please see our documentation at https://developers.login.gov/support/#oidc-no-prompt
+openid_connect.authorization.errors.redirect_uri_invalid: redirect_uri is invalid. Please see our documentation at https://developers.login.gov/support/#oidc-invalid-redirect
+openid_connect.authorization.errors.redirect_uri_no_match: redirect_uri does not match registered redirect_uri. Please see our documentation at https://developers.login.gov/support/#oidc-redirect-match
+openid_connect.authorization.errors.unauthorized_scope: Unauthorized scope. Please see our documentation at https://developers.login.gov/support/#oidc-unauthotized-scope
 openid_connect.logout.confirm: Yes, sign out of %{app_name}
 openid_connect.logout.deny: No, go to my account page
-openid_connect.logout.errors.client_id_invalid: client_id was not recognized
-openid_connect.logout.errors.client_id_missing: client_id is missing
+openid_connect.logout.errors.client_id_invalid: client_id was not recognized. Please see our documentation at https://developers.login.gov/support/#client-id-not-recognized
+openid_connect.logout.errors.client_id_missing: client_id is missing. Please see our documentation at https://developers.login.gov/support/#client-id-missing
 openid_connect.logout.errors.id_token_hint: id_token_hint was not recognized
-openid_connect.logout.errors.id_token_hint_present: This application is misconfigured and should not be sending id_token_hint. Please send client_id instead.
-openid_connect.logout.errors.no_client_id_or_id_token_hint: This application is misconfigured and must send either client_id or id_token_hint.
+openid_connect.logout.errors.id_token_hint_present: This application is misconfigured and should not be sending id_token_hint. Please send client_id instead. Please see our documentation at https://developers.login.gov/support/#id-token-hint
+openid_connect.logout.errors.no_client_id_or_id_token_hint: This application is misconfigured and must send either client_id or id_token_hint. Please see our documentation at https://developers.login.gov/oidc/logout/
 openid_connect.logout.heading: Do you want to sign out of %{app_name}?
 openid_connect.logout.heading_with_sp: Do you want to sign out of %{app_name} and return to %{service_provider_name}?
-openid_connect.token.errors.expired_code: is expired
-openid_connect.token.errors.invalid_aud: Invalid audience claim, expected %{url}
-openid_connect.token.errors.invalid_authentication: Client must authenticate via PKCE or private_key_jwt, missing either code_challenge or client_assertion
-openid_connect.token.errors.invalid_code: is invalid because doesn’t match any user. Please see our documentation at https://developers.login.gov/oidc/#token
-openid_connect.token.errors.invalid_code_verifier: code_verifier did not match code_challenge
-openid_connect.token.errors.invalid_iat: iat must be an integer or floating point Unix timestamp representing a time in the past
-openid_connect.token.errors.invalid_signature: Could not validate assertion against any registered public keys
-openid_connect.user_info.errors.malformed_authorization: Malformed Authorization header
-openid_connect.user_info.errors.no_authorization: No Authorization header provided
-openid_connect.user_info.errors.not_found: Could not find authorization for the contents of the provided access_token or it may have expired
+openid_connect.token.errors.expired_code: is expired. Please see our documentation at https://developers.login.gov/support/#token-expired
+openid_connect.token.errors.invalid_aud: Invalid audience claim, expected %{url}. Please see our documentation at https://developers.login.gov/support/#invalid-aud-claim
+openid_connect.token.errors.invalid_authentication: Client must authenticate via PKCE or private_key_jwt, missing either code_challenge or client_assertion. Please see our documentation at https://developers.login.gov/support/#pkce-or-private-key
+openid_connect.token.errors.invalid_code: is invalid because doesn’t match any user. Please see our documentation at https://developers.login.gov/support/#invalid-code
+openid_connect.token.errors.invalid_code_verifier: code_verifier did not match code_challenge. Please see our documentation at https://developers.login.gov/support/#invalid-code-verifier
+openid_connect.token.errors.invalid_iat: iat must be an integer or floating point Unix timestamp representing a time in the past. Please see our documentation at https://developers.login.gov/support/#invalid-iat
+openid_connect.token.errors.invalid_signature: Could not validate assertion against any registered public keys. Please see our documentation at https://developers.login.gov/support/#invalid-token-signature
+openid_connect.user_info.errors.malformed_authorization: Malformed Authorization header. Please see our documentation at https://developers.login.gov/support/#malformed-auth-header
+openid_connect.user_info.errors.no_authorization: No Authorization header provided. Please see our documentation at https://developers.login.gov/support/#no-auth-header
+openid_connect.user_info.errors.not_found: Could not find authorization for the contents of the provided access_token or it may have expired. Please see our documentation at https://developers.login.gov/support/#auth-header-contents-not-found
 pages.page_took_too_long.body: You might want to wait a few minutes and try again. (503)
 pages.page_took_too_long.header: The server took too long to process your request.
 profiling_failed.details_html: 'Call our contact center at <strong>(844) 875-6446</strong> and provide them with the error code <strong>LG22</strong>.'
