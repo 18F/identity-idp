@@ -190,11 +190,6 @@ else
         args: -> { [Time.zone.yesterday] },
       },
       # Send previous week's verification reports to partners
-      irs_weekly_verification_report: {
-        class: 'Reports::IrsOriginalVerificationReport',
-        cron: cron_every_monday_5am,
-        args: -> { [Time.zone.yesterday.end_of_day, :both] },
-      },
       sp_weekly_verification_report: {
         class: 'Reports::IrsVerificationReport',
         cron: cron_every_monday_5am,
@@ -243,13 +238,6 @@ else
         args: -> { [Time.zone.yesterday.end_of_day] },
       },
       # Send previous week's IrsRegistrationFunnelReport reports to irs
-      irs_weekly_registration_funnel_report: {
-        class: 'Reports::IrsOriginalRegistrationFunnelReport',
-        cron: cron_every_monday,
-        args: -> { [Time.zone.yesterday.end_of_day, :both] },
-      },
-
-      # Note: this is for testing as of now.
       sp_weekly_registration_funnel_report: {
         class: 'Reports::IrsRegistrationFunnelReport',
         cron: cron_every_monday,
@@ -270,17 +258,6 @@ else
 
       # Send irs fraud metrics to Team Data - Daily (For internal review only)
       # And, monthly on 1st date (For IRS and Internal)
-      irs_fraud_metrics_report: {
-        class: 'Reports::IrsOriginalFraudMetricsReport',
-        cron: cron_24h_and_a_bit,
-        args: -> {
-          JobHelpers::ReportJobConfigurationHelper.build_irs_report_args(
-            Time.zone.yesterday.end_of_day,
-            :monthly,
-          )
-        },
-      },
-
       sp_fraud_metrics_report: {
         class: 'Reports::IrsFraudMetricsReport',
         cron: cron_24h_and_a_bit,
@@ -311,18 +288,6 @@ else
         args: -> { [Time.zone.yesterday.end_of_day] },
       },
       # Previous months's irs verification report
-      monthly_irs_verification_report: {
-        class: 'Reports::MonthlyIrsOriginalVerificationReport',
-        cron: cron_24h_and_a_bit,
-        args: -> {
-          JobHelpers::ReportJobConfigurationHelper.build_irs_report_args(
-            Time.zone.yesterday.end_of_day,
-            :monthly,
-          )
-        },
-      },
-
-      # Previous months's SP verification report - Added for testing as of now
       monthly_sp_verification_report: {
         class: 'Reports::MonthlyIrsVerificationReport',
         cron: cron_24h_and_a_bit,
@@ -336,18 +301,6 @@ else
 
       # Send irs quarterly metrics report to Team Data - Monthly (For internal review only)
       # And, quarterly on 1st date (For IRS and Internal)
-      irs_verification_demographics_report: {
-        class: 'Reports::IrsOriginalVerificationDemographicsReport',
-        cron: cron_monthly,
-        args: -> {
-          JobHelpers::ReportJobConfigurationHelper.build_irs_report_args(
-            Time.zone.yesterday.end_of_day,
-            :quarterly,
-          )
-        },
-      },
-
-      # Note: This is just for testing as of now
       sp_verification_demographics_report: {
         class: 'Reports::IrsVerificationDemographicsReport',
         cron: cron_monthly,
@@ -380,17 +333,6 @@ else
 
       # Previous months's irs credentials report to Team Data - Daily (For internal review only)
       # And, monthly on 1st date (For IRS and Internal)
-      irs_cred_metrics_report: {
-        class: 'Reports::IrsOriginalMonthlyCredMetricsReport',
-        cron: cron_24h_and_a_bit,
-        args: -> {
-          JobHelpers::ReportJobConfigurationHelper.build_irs_report_args(
-            Time.zone.yesterday.end_of_day,
-            :monthly,
-          )
-        },
-      },
-
       sp_cred_metrics_report: {
         class: 'Reports::SpCredMetricsReportOrchestrator',
         cron: cron_24h_and_a_bit,
