@@ -6,7 +6,7 @@ module MfaDeletionConcern
   def handle_successful_mfa_deletion(event_type:)
     create_user_event(event_type)
     revoke_remember_device(current_user)
-    send_mfa_deletion_email(event_type)
+    create_mfa_deletion_email(event_type)
     event = PushNotification::RecoveryInformationChangedEvent.new(user: current_user)
     PushNotification::HttpPush.deliver(event)
     nil
@@ -14,16 +14,8 @@ module MfaDeletionConcern
 
   private
 
-  def send_mfa_deletion_email(event_type)
-    subject = subject_line(event_type)
-    current_user.confirmed_email_addresses.each do |email_address|
-      UserMailer.with(user: current_user, email_address: email_address)
-        .mfa_deleted(subject: subject).deliver_now_or_later
-    end
-  end
-
-  def subject_line(event_name)
-    case event_name
+  def create_mfa_deletion_email(event_name)
+    subject = case event_name
     when :authenticator_disabled
       t('user_mailer.multi_factor_authentication.auth_app_deleted', app_name: APP_NAME)
     when :backup_codes_removed
@@ -51,6 +43,15 @@ module MfaDeletionConcern
         'user_mailer.multi_factor_authentication.ft_unlock_deleted',
         app_name: APP_NAME,
       )
+    end
+
+    send_mfa_deletion_email(subject)
+  end
+
+  def send_mfa_deletion_email(subject_line)
+    current_user.confirmed_email_addresses.each do |email_address|
+      UserMailer.with(user: current_user, email_address: email_address)
+        .mfa_deleted(subject: subject_line).deliver_now_or_later
     end
   end
 end

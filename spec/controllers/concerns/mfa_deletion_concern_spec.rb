@@ -40,7 +40,7 @@ RSpec.describe MfaDeletionConcern do
     end
 
     it 'sends an email that the method has been deleted' do
-      expect(controller).to receive(:send_mfa_deletion_email).with(event_type)
+      expect(controller).to receive(:create_mfa_deletion_email).with(event_type)
 
       @mailer = instance_double(ActionMailer::MessageDelivery, deliver_now_or_later: true)
 
