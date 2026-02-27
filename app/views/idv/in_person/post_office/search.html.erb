@@ -34,8 +34,22 @@
             </div>
           </div>
           <div className="grid-col-auto">
-            <%= render SpinnerButtonComponent.new(
-                  url: idv_verify_info_path,
+          <%= simple_form_for(
+            'post_office',
+            url: url_for,
+            method: 'put',
+            html: { class: 'margin-y-5' })  do |f| %>
+             <%= f.hidden_field :street_address, value: post_office['address'] %>
+             <%= f.hidden_field :city, value: post_office['city'] %>
+             <%= f.hidden_field :state, value: post_office['state'] %>
+             <%= f.hidden_field :zip_code_5, value: post_office['zip_code_5'] %>
+             <%= f.hidden_field :zip_code_4, value: post_office['zip_code_4'] %>
+             <%= f.hidden_field :saturday_hours, value: post_office['saturday_hours'] %>
+             <%= f.hidden_field :sunday_hours, value: post_office['sunday_hours'] %>
+             <%= f.hidden_field :weekday_hours, value: post_office['weekday_hours'] %>
+             <%= f.hidden_field :name, value: post_office['name'] %>
+                <%= render SpinnerButtonComponent.new(
+                  url: url_for,
                   big: false,
                   wide: false,
                   action_message: t('idv.messages.verifying'),
@@ -46,11 +60,12 @@
                       form_steps_wait: '',
                       error_message: t('idv.failure.exceptions.internal_error'),
                       alert_target: '#form-steps-wait-alert',
-                      wait_step_path: idv_verify_info_path,
+                      wait_step_path: url_for,
                       poll_interval_ms: IdentityConfig.store.poll_rate_for_verify_in_seconds * 1000,
                     },
                   },
                 ).with_content(t('in_person_proofing.body.location.location_button')) %>
+          <% end %>
           </div>
         </div>
       </div>
