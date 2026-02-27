@@ -2733,6 +2733,33 @@ RSpec.describe SamlIdpController do
       end
     end
 
+    context 'SP requests email and has saml_emailaddress_attribute_enabled turned on' do
+      it 'includes the user email attribute using the SOAP schema' do
+        user = create(:user, :fully_registered)
+        service_provider = ServiceProvider.find_by(issuer: 'http://localhost:3000')
+        service_provider.update(saml_emailaddress_attribute_enabled: true)
+
+        custom_settings = saml_settings(
+          overrides: {
+            authn_context: [
+              Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+              "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}email",
+            ],
+          },
+        )
+        generate_saml_response(user, custom_settings)
+
+        email = xmldoc.attribute_node_for('http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress')
+        value = xmldoc.attribute_value_for('http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress')
+
+        expect(email.name).to eq('Attribute')
+        expect(email['Name']).to eq('http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress')
+        expect(email['NameFormat']).to eq('urn:oasis:names:tc:SAML:2.0:attrname-format:uri')
+        expect(email['FriendlyName']).to eq('email')
+        expect(value).to eq(user.email)
+      end
+    end
+
     context 'user requires ID verification' do
       it 'tracks the authentication and IdV redirection event' do
         stub_analytics
