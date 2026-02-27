@@ -823,7 +823,7 @@ errors.messages.invalid_calling_area: 不支持给那个号码打的电话。如
 errors.messages.invalid_phone_number.international: 输入一个位数正确的电话号码。
 errors.messages.invalid_phone_number.us: 输入 10 位的电话号码。
 errors.messages.invalid_recaptcha_token: 你必须完成预防滥发邮件测验。
-errors.messages.invalid_signature: SAML request signature is invalid or does not match any registered public certificates
+errors.messages.invalid_signature: SAML request signature is invalid or does not match any registered public certificates。请参阅我们的文档：https://developers.login.gov/support/#saml-signature
 errors.messages.invalid_sms_number: 输入的电话号码不支持短信。尝试接听电话选项。
 errors.messages.invalid_voice_number: 电话号码有误。检查一下你是否输入了正确的国家代码或区域代码。
 errors.messages.issuer_missing_or_invalid: Issuer missing from SAML request
@@ -851,9 +851,9 @@ errors.messages.too_long.other: 太长（最多 %{count}个字符）
 errors.messages.too_short.one: 太短（最少一个字符）。
 errors.messages.too_short.other: 太短（最少 %{count}个字符）。
 errors.messages.try_again: 请再试一次。
-errors.messages.unauthorized_authn_context: 未经授权的身份证实背景
-errors.messages.unauthorized_nameid_format: 未经授权的 nameID 格式
-errors.messages.unauthorized_service_provider: 未经授权的服务提供商
+errors.messages.unauthorized_authn_context: 未经授权的身份证实背景。请参阅我们的文档： https://developers.login.gov/support/#unauthorized_auth_context
+errors.messages.unauthorized_nameid_format: 未经授权的 nameID 格式。请参阅我们的文档： https://developers.login.gov/support/#nameidformat_unrecognized
+errors.messages.unauthorized_service_provider: 未经授权的服务提供商。请参阅我们的文档： https://developers.login.gov/support/#unauthorized
 errors.messages.voip_check_error: 检查你的电话时出错，请再试一次。
 errors.messages.voip_phone: 该号码是一个基于网络的（VOIP）电话服务。请选择一个不同的号码再试一次。
 errors.messages.weak_password: 你的密码不够强。%{feedback}
@@ -1605,37 +1605,37 @@ notices.use_diff_email.link: 使用一个不同的电邮地址
 notices.use_diff_email.text_html: 或者，%{link_html}
 notices.webauthn_configured: 你账户添加了一个安全密钥。
 notices.webauthn_platform_configured: 你用了自己设备的屏幕锁定给账户添加了人脸或触摸解锁。
-openid_connect.authorization.errors.bad_client_id: 坏的client_id
+openid_connect.authorization.errors.bad_client_id: 坏的client_id。请参阅我们的文档：https://developers.login.gov/support/#bad-client-id
 openid_connect.authorization.errors.invalid_verified_within_duration.one: 值必须至少为 %{count} 天或以上
 openid_connect.authorization.errors.invalid_verified_within_duration.other: 值必须至少为 %{count} 天或以上
 openid_connect.authorization.errors.invalid_verified_within_format: verified_within 格式无法识别
-openid_connect.authorization.errors.missing_ial: 缺失有效的 IAL 级别
-openid_connect.authorization.errors.no_auth: Acr_values 未经授权
-openid_connect.authorization.errors.no_valid_acr_values: 未找到可接受的 acr_values
-openid_connect.authorization.errors.no_valid_scope: 未找到有效的范围值
-openid_connect.authorization.errors.prompt_invalid: 未找到有效的提示值
-openid_connect.authorization.errors.redirect_uri_invalid: redirect_uri 有误
-openid_connect.authorization.errors.redirect_uri_no_match: redirect_uri 与注册的 redirect_uri 不匹配
-openid_connect.authorization.errors.unauthorized_scope: 未经授权的范围
+openid_connect.authorization.errors.missing_ial: 缺失有效的 IAL 级别。请参阅我们的文档：https://developers.login.gov/support/#oidc-missing-ial
+openid_connect.authorization.errors.no_auth: Acr_values 未经授权。请参阅我们的文档：https://developers.login.gov/support/#oidc-missing-acr-values
+openid_connect.authorization.errors.no_valid_acr_values: 未找到可接受的 acr_values。请参阅我们的文档：https://developers.login.gov/support/#oidc-no-acr-values
+openid_connect.authorization.errors.no_valid_scope: 未找到有效的范围值。请参阅我们的文档：https://developers.login.gov/support/#oidc-no-scope
+openid_connect.authorization.errors.prompt_invalid: 未找到有效的提示值。请参阅我们的文档：https://developers.login.gov/support/#oidc-no-prompt
+openid_connect.authorization.errors.redirect_uri_invalid: redirect_uri 有误。请参阅我们的文档：https://developers.login.gov/support/#oidc-invalid-redirect
+openid_connect.authorization.errors.redirect_uri_no_match: redirect_uri 与注册的 redirect_uri 不匹配。请参阅我们的文档：https://developers.login.gov/support/#oidc-redirect-match
+openid_connect.authorization.errors.unauthorized_scope: 未经授权的范围。请参阅我们的文档：https://developers.login.gov/support/#oidc-unauthotized-scope
 openid_connect.logout.confirm: 是的，登出 %{app_name}
 openid_connect.logout.deny: 不，到我的账户页面
-openid_connect.logout.errors.client_id_invalid: client_id 不认识
-openid_connect.logout.errors.client_id_missing: client_id 缺失
+openid_connect.logout.errors.client_id_invalid: client_id 不认识。请参阅我们的文档：https://developers.login.gov/support/#client-id-not-recognized
+openid_connect.logout.errors.client_id_missing: client_id 缺失。请参阅我们的文档：https://developers.login.gov/support/#client-id-missing
 openid_connect.logout.errors.id_token_hint: id_token_hint 不认识
-openid_connect.logout.errors.id_token_hint_present: 本应用程序配置错误，不应发送 id_token_hint。请发送 client_id。
-openid_connect.logout.errors.no_client_id_or_id_token_hint: 本应用程序配置错误，必须发送 client_id 或者 id_token_hint。
+openid_connect.logout.errors.id_token_hint_present: 本应用程序配置错误，不应发送 id_token_hint。请发送 client_id。请参阅我们的文档：https://developers.login.gov/support/#id-token-hint
+openid_connect.logout.errors.no_client_id_or_id_token_hint: 本应用程序配置错误，必须发送 client_id 或者 id_token_hint。请参阅我们的文档：https://developers.login.gov/oidc/logout/
 openid_connect.logout.heading: 你想登出 %{app_name} 吗？
 openid_connect.logout.heading_with_sp: 你想登出 %{app_name} 并回到 %{service_provider_name} 吗？
-openid_connect.token.errors.expired_code: 过期了
-openid_connect.token.errors.invalid_aud: 受众声明有误，预期 %{url}
-openid_connect.token.errors.invalid_authentication: 客户必须通过 PKCE 或 private_key_jwt 来验证，缺失 code_challenge 或者 client_assertion
-openid_connect.token.errors.invalid_code: 无效，因为与任何用户都匹配不上。请参阅我们的文档： https://developers.login.gov/oidc/#token
-openid_connect.token.errors.invalid_code_verifier: code_verifier 与 code_challenge 不匹配
-openid_connect.token.errors.invalid_iat: iat 必须是整数或者浮动点 Unix 时间印章来代表过去的一个时间
-openid_connect.token.errors.invalid_signature: 无法根据任何已注册的公钥验证这个说法
-openid_connect.user_info.errors.malformed_authorization: 授权标头畸形
-openid_connect.user_info.errors.no_authorization: 未提供授权标头
-openid_connect.user_info.errors.not_found: 就提供的 access_token 内容找不到授权或者授权已过期。
+openid_connect.token.errors.expired_code: 过期了。请参阅我们的文档：https://developers.login.gov/support/#token-expired
+openid_connect.token.errors.invalid_aud: 受众声明有误，预期 %{url}。请参阅我们的文档：https://developers.login.gov/support/#invalid-aud-claim
+openid_connect.token.errors.invalid_authentication: 客户必须通过 PKCE 或 private_key_jwt 来验证，缺失 code_challenge 或者 client_assertion。请参阅我们的文档：https://developers.login.gov/support/#pkce-or-private-key
+openid_connect.token.errors.invalid_code: 无效，因为与任何用户都匹配不上。请参阅我们的文档： https://developers.login.gov/support/#invalid-code
+openid_connect.token.errors.invalid_code_verifier: code_verifier 与 code_challenge 不匹配。请参阅我们的文档：https://developers.login.gov/support/#invalid-code-verifier
+openid_connect.token.errors.invalid_iat: iat 必须是整数或者浮动点 Unix 时间印章来代表过去的一个时间。请参阅我们的文档：https://developers.login.gov/support/#invalid-iat
+openid_connect.token.errors.invalid_signature: 无法根据任何已注册的公钥验证这个说法。请参阅我们的文档：https://developers.login.gov/support/#invalid-token-signature
+openid_connect.user_info.errors.malformed_authorization: 授权标头畸形。请参阅我们的文档：https://developers.login.gov/support/#malformed-auth-header
+openid_connect.user_info.errors.no_authorization: 未提供授权标头。请参阅我们的文档：https://developers.login.gov/support/#no-auth-header
+openid_connect.user_info.errors.not_found: 就提供的 access_token 内容找不到授权或者授权已过期。请参阅我们的文档：https://developers.login.gov/support/#auth-header-contents-not-found
 pages.page_took_too_long.body: 你也许想等几分钟后再试。（503）
 pages.page_took_too_long.header: 服务器处理你请求的时间过长。
 profiling_failed.details_html: '请拨打<strong>（844）875-6446</strong> 致电我们的联系中心并提供出错代码 <strong>LG22</strong>。'
