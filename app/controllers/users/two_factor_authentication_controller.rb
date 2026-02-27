@@ -123,7 +123,7 @@ module Users
     end
 
     def invalid_phone_number(telephony_error, action:)
-      capture_analytics_for_exception(telephony_error)
+      #capture_analytics_for_exception(telephony_error)
 
       if action == 'show'
         redirect_to_otp_verification_with_error
@@ -199,7 +199,7 @@ module Users
       end
       return handle_too_many_confirmation_sends if exceeded_phone_confirmation_limit?
 
-      @telephony_result = send_user_otp(method)
+      #@telephony_result = send_user_otp(method)
       handle_telephony_result(
         method: method,
         default: default,
@@ -208,21 +208,22 @@ module Users
     end
 
     def handle_telephony_result(method:, default:, otp_delivery_selection_result:)
-      track_events(
-        otp_delivery_preference: method,
-        otp_delivery_selection_result: otp_delivery_selection_result,
-      )
-      if @telephony_result.success?
-        redirect_to login_two_factor_url(
-          otp_delivery_preference: method,
-          otp_make_default_number: default,
-        )
-      elsif @telephony_result.error.is_a?(Telephony::OptOutError)
-        opt_out = PhoneNumberOptOut.mark_opted_out(phone_to_deliver_to)
-        redirect_to login_two_factor_sms_opt_in_path(opt_out_uuid: opt_out)
-      else
-        invalid_phone_number(@telephony_result.error, action: action_name)
-      end
+#      track_events(
+#        otp_delivery_preference: method,
+#        otp_delivery_selection_result: otp_delivery_selection_result,
+#      )
+      invalid_phone_number('NIL', action: action_name)
+#      if @telephony_result.success?
+#        redirect_to login_two_factor_url(
+#          otp_delivery_preference: method,
+#          otp_make_default_number: default,
+#        )
+#      elsif @telephony_result.error.is_a?(Telephony::OptOutError)
+#        opt_out = PhoneNumberOptOut.mark_opted_out(phone_to_deliver_to)
+#        redirect_to login_two_factor_sms_opt_in_path(opt_out_uuid: opt_out)
+#      else
+#        invalid_phone_number(@telephony_result.error, action: action_name)
+#      end
     end
 
     def track_events(otp_delivery_preference:, otp_delivery_selection_result:)
