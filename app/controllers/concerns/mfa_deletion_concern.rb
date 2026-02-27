@@ -18,7 +18,7 @@ module MfaDeletionConcern
     subject = subject_line(event_type)
     current_user.confirmed_email_addresses.each do |email_address|
       UserMailer.with(user: current_user, email_address: email_address)
-        .mfa_deleted(subject).deliver_now_or_later
+        .mfa_deleted(subject: subject).deliver_now_or_later
     end
   end
 
@@ -51,8 +51,6 @@ module MfaDeletionConcern
         'user_mailer.multi_factor_authentication.ft_unlock_deleted',
         app_name: APP_NAME,
       )
-    else
-      "im a little teapot#{event_name}"
     end
   end
 end

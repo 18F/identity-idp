@@ -38,5 +38,19 @@ RSpec.describe MfaDeletionConcern do
 
       result
     end
+
+    it 'sends an email that the method has been deleted' do
+      expect(controller).to receive(:send_mfa_deletion_email).with(event_type)
+
+      @mailer = instance_double(ActionMailer::MessageDelivery, deliver_now_or_later: true)
+
+      controller.current_user.email_addresses.each do |email_address|
+        allow(UserMailer).to receive(:mfa_deleted)
+          .with(controller.current_user, email_address, :event_type)
+          .and_return(@mailer)
+      end
+
+      result
+    end
   end
 end
