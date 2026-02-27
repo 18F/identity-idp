@@ -2289,18 +2289,6 @@ module AnalyticsEvents
   # @option proofing_results [String,nil] context.stages.residential_address.vendor_id Vendor's internal ID for residential address proofing requests, e.g. socureId
   # @option proofing_results [String] context.stages.residential_address.vendor_name Vendor used for residential address proofing
   # @option proofing_results [String] context.stages.residential_address.vendor_workflow Vendor-specific workflow or configuration ID associated with the request made.
-  # @option proofing_results [Hash] context.stages.state_id Object holding details about the call made to the state ID proofing vendor
-  # @option proofing_results [Boolean] context.stages.state_id.success Whether the PII associated with the user's state ID document passed proofing
-  # @option proofing_results [Hash] context.stages.state_id.errors Object describing errors encountered while proofing the user's state ID PII
-  # @option proofing_results [String,nil] context.stages.state_id.exception If an exception occured during state ID PII verification its message is provided here
-  # @option proofing_results [Boolean] context.stages.state_id.mva_exception For AAMVA, whether the exception that occurred was due to an error on the state MVA side
-  # @option proofing_results [Hash<String,Numeric>] context.stages.state_id.requested_attributes An object whose keys are field names and values are "1" representing PII attributes sent to the state ID proofing vendor for verification.
-  # @option proofing_results [Boolean] context.stages.state_id.timed_out Whether the request to the state ID verification vendor timed out
-  # @option proofing_results [String] context.stages.state_id.transaction_id Vendor-specific transaction ID for the request made to the state id proofing vendor
-  # @option proofing_results [String] context.stages.state_id.vendor_name Name of the vendor used for state ID PII verification. If the ID was not from a supported jurisdiction, it will be "UnsupportedJurisdiction". It MAY also be "UnsupportedJurisdiction" if state ID verification was not needed because other vendor calls did not succeed.
-  # @option proofing_results [String] context.stages.state_id.state The state that was listed as the user's address on their state ID. Note that this may differ from state_id_jurisdiction.
-  # @option proofing_results [String] context.stages.state_id.state_id_jurisdiction The state that issued the drivers license or ID card being used for proofing.
-  # @option proofing_results [String] context.stages.state_id.state_id_number A string describing the _format_ of the state ID number provided.
   # @option proofing_results [Hash] context.stages.threatmetrix Object holding details about the call made to the device profiling vendor
   # @option proofing_results [String] context.stages.threatmetrix.client Identifier string indicating which client was used.
   # @option proofing_results [Boolean] context.stages.threatmetrix.success Whether the request to the vendor succeeded.
