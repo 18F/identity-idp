@@ -10,7 +10,6 @@
 <h1><%= t('in_person_proofing.headings.po_search.location') %></h1>
 <p><%= t('in_person_proofing.body.location.po_search.po_search_about') %></p>
 
-
 <%= simple_form_for(
   'address',
   url: url_for,
@@ -23,6 +22,7 @@
           form: f,
           label: t('in_person_proofing.body.location.po_search.address_label'),
           label_html: { class: 'usa-label' },
+          input_html: { value: address['street_address'] },
           maxlength: 255,
           required: true,
           pattern: "[A-Za-z0-9\-' .\/#]*"
@@ -35,6 +35,7 @@
           form: f,
           label: t('in_person_proofing.body.location.po_search.city_label'),
           label_html: { class: 'usa-label' },
+          input_html: { value: address['city'] },
           maxlength: 50,
           required: true,
           pattern: '.*\S.*$'
@@ -46,11 +47,12 @@
           name: :state,
           collection: @presenter.states,
           form: f,
-          input_html: { class: 'address-state-selector' },
           label: t('in_person_proofing.body.location.po_search.state_label'),
           label_html: { class: 'usa-label' },
+          input_html: { class: 'address-state-selector' },
           prompt: t('in_person_proofing.form.address.state_prompt'),
           required: true,
+          selected: address['state'],
         ) %>
   </div>
 
@@ -60,6 +62,7 @@
           form: f,
           label: t('in_person_proofing.body.location.po_search.zipcode_label'),
           label_html: { class: 'usa-label' },
+          input_html: { value: address['zip_code'] },
           maxlength: 5,
           minlength: 5,
           pattern: '^\d{5}$',
