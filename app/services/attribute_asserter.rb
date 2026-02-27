@@ -213,7 +213,7 @@ class AttributeAsserter
       },
     }
 
-    if service_provider.emailaddress_attribute_enabled == true
+    if service_provider.saml_emailaddress_attribute_enabled == true
       # This is to support platforms such as Microsoft Entra External ID (EEID) that expect the
       # email address to be provided in an Attribute whose Name element is:
       # 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'

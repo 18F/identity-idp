@@ -2733,11 +2733,11 @@ RSpec.describe SamlIdpController do
       end
     end
 
-    context 'Service Provider requests email and has emailaddress_attribute_enabled turned on' do
+    context 'SP requests email and has saml_emailaddress_attribute_enabled turned on' do
       it 'includes the user email attribute using the SOAP schema' do
         user = create(:user, :fully_registered)
         service_provider = ServiceProvider.find_by(issuer: 'http://localhost:3000')
-        service_provider.update(emailaddress_attribute_enabled: true)
+        service_provider.update(saml_emailaddress_attribute_enabled: true)
 
         custom_settings = saml_settings(
           overrides: {
