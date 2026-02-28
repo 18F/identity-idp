@@ -36,7 +36,7 @@ module Proofing
             verification_response.response_body.dig(
               'integration_hub_results',
               "#{IdentityConfig.store.lexisnexis_threatmetrix_org_id}:#{config.ddp_policy}",
-              'Execute Phone Finder', 'tps_vendor_raw_response'
+              'Phone Finder', 'tps_vendor_raw_response'
             )
           end
         end

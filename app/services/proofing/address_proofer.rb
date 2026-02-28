@@ -9,6 +9,7 @@ module Proofing
     ADDRESS_VENDOR_SP_COST_TOKENS = {
       mock: :mock_address,
       lexis_nexis: :lexis_nexis_address,
+      lexis_nexis_ddp: lexis_nexis_address,
       socure: :socure_address,
     }.freeze
 
