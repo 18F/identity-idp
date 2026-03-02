@@ -72,7 +72,6 @@ module Reporting
           'True ID',
           'True ID (Selfie)',
           'Instant verify',
-          'Phone Finder',
           'Socure (DocV)',
           'Socure (DocV - Selfie)',
           'Socure (KYC)',
@@ -90,7 +89,6 @@ module Reporting
           true_id_table.first,
           true_id_selfie_table.first,
           instant_verify_table.first,
-          phone_finder_table.first,
           socure_table.first,
           socure_docv_selfie_table.first,
           socure_kyc_table.first,
@@ -126,12 +124,6 @@ module Reporting
       result = fetch_results(query: true_id_selfie_query)
       true_id_selfie_table_count = result.count
       [true_id_selfie_table_count, result]
-    end
-
-    def phone_finder_table
-      result = fetch_results(query: phone_finder_query)
-      phone_finder_table_count = result.count
-      [phone_finder_table_count, result]
     end
 
     def socure_table
@@ -267,28 +259,6 @@ module Reporting
         | filter properties.event_properties.liveness_enabled=1
         | limit 10000
 
-      QUERY
-    end
-
-    def phone_finder_query
-      <<~QUERY
-        #PhoneFinder
-        filter name = "IdV: phone confirmation vendor"
-        | fields properties.user_id as uuid, id, @timestamp as timestamp,
-        properties.sp_request.app_differentiator as dol_state,
-        properties.service_provider as sp,
-        properties.event_properties.vendor.transaction_id as phoneFinder_transactionID,
-        properties.event_properties.vendor.reference as phoneFinder_referenceID,
-        strcontains(properties.event_properties.errors.base.0,"pass") as phoneFinder_pass,
-        properties.event_properties.success as success,
-        properties.event_properties.area_code as area_code,
-        properties.event_properties.country_code as country_code,
-        properties.event_properties.phone_fingerprint as phone_fingerprint
-        | parse @message /"Items":\[(?<temp_checks>.*?)\]/
-        | display uuid, id, timestamp, sp, dol_state, success,
-          phoneFinder_referenceID, phoneFinder_transactionID, phoneFinder_pass,
-          coalesce(temp_checks,"passed_all","") as phoneFinder_checks
-        | limit 10000
       QUERY
     end
 
