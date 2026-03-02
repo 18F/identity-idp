@@ -15,4 +15,30 @@ RSpec.feature 'SP return logs' do
     expect(SpReturnLog.count).to eq(1)
     expect(SpReturnLog.first.user_id).to eq(user.id)
   end
+
+  context 'when user visits several SAML and OIDC SPs multiple times in the same session' do
+    it 'always logs the correct SP in SP Return logs' do
+      user = create(:user, :with_phone)
+
+      visit_saml_authn_request_url
+      sign_in_via_branded_page(user)
+      click_submit_default
+      click_agree_and_continue
+      click_submit_default_twice
+
+      expect(SpReturnLog.count).to eq(1)
+      expect(SpReturnLog.last.issuer).to eq 'http://localhost:3000'
+
+      visit_idp_from_sp_with_ial1(:oidc)
+      click_agree_and_continue
+
+      expect(SpReturnLog.count).to eq(2)
+      expect(SpReturnLog.last.issuer).to eq 'urn:gov:gsa:openidconnect:sp:server_ial1'
+
+      visit_saml_authn_request_url
+
+      expect(SpReturnLog.count).to eq(3)
+      expect(SpReturnLog.last.issuer).to eq 'http://localhost:3000'
+    end
+  end
 end
