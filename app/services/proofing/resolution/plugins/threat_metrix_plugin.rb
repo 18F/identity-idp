@@ -43,17 +43,16 @@ module Proofing
         end
 
         def proofer(ddp_policy)
-          @proofer ||=
-            if IdentityConfig.store.lexisnexis_threatmetrix_mock_enabled
-              Proofing::Mock::DdpMockClient.new
-            else
-              Proofing::LexisNexis::Ddp::Proofers::ThreatMetrixProofer.new(
-                api_key: IdentityConfig.store.lexisnexis_threatmetrix_api_key,
-                org_id: IdentityConfig.store.lexisnexis_threatmetrix_org_id,
-                base_url: IdentityConfig.store.lexisnexis_threatmetrix_base_url,
-                ddp_policy:,
-              )
-            end
+          if IdentityConfig.store.lexisnexis_threatmetrix_mock_enabled
+            Proofing::Mock::DdpMockClient.new
+          else
+            Proofing::LexisNexis::Ddp::Proofers::ThreatMetrixProofer.new(
+              api_key: IdentityConfig.store.lexisnexis_threatmetrix_api_key,
+              org_id: IdentityConfig.store.lexisnexis_threatmetrix_org_id,
+              base_url: IdentityConfig.store.lexisnexis_threatmetrix_base_url,
+              ddp_policy:,
+            )
+          end
         end
 
         def threatmetrix_disabled_result
