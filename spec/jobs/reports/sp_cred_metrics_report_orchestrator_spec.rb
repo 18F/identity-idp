@@ -33,11 +33,11 @@ RSpec.describe Reports::SpCredMetricsReportOrchestrator do
       .and_return(configs)
   end
 
-  it 'enqueues one IrsMonthlyCredMetricsReport job per config inside a GoodJob batch' do
+  it 'enqueues one SpCredMetricsReport job per config inside a GoodJob batch' do
     expect(GoodJob::Batch).to receive(:enqueue).and_call_original
 
     configs.each do |cfg|
-      expect(Reports::IrsMonthlyCredMetricsReport).to receive(:perform_later).with(
+      expect(Reports::SpCredMetricsReport).to receive(:perform_later).with(
         perform_date,
         perform_receiver,
         cfg,
@@ -52,7 +52,7 @@ RSpec.describe Reports::SpCredMetricsReportOrchestrator do
 
     it 'still creates a batch and enqueues no child jobs' do
       expect(GoodJob::Batch).to receive(:enqueue).and_call_original
-      expect(Reports::IrsMonthlyCredMetricsReport).not_to receive(:perform_later)
+      expect(Reports::SpCredMetricsReport).not_to receive(:perform_later)
 
       orchestrator.perform(perform_date, perform_receiver)
     end

@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 require 'csv'
-require 'reporting/irs_verification_report'
+require 'reporting/sp_verification_report'
 
 module Reports
-  class MonthlyIrsVerificationReport < BaseReport
+  class MonthlySpVerificationReport < BaseReport
     attr_reader :report_date, :report_receiver, :report_name, :report_title
 
     def initialize(init_date = nil, init_receiver = :internal, *args, **rest)
@@ -80,7 +80,7 @@ module Reports
     end
 
     def sp_verification_report(issuers, agency_abbreviation)
-      Reporting::IrsVerificationReport.new(
+      Reporting::SpVerificationReport.new(
         time_range: report_date.all_month,
         issuers: issuers || [],
         agency_abbreviation: agency_abbreviation,

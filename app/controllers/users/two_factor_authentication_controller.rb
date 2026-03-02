@@ -226,6 +226,7 @@ module Users
         area_code: parsed_phone.area_code,
         country_code: parsed_phone.country,
         phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
+        ip_country: IpGeocoder.new(request.remote_ip).country_code,
         context: context,
         otp_delivery_preference: otp_delivery_preference,
         resend: otp_delivery_selection_result.extra[:resend],

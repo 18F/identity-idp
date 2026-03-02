@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Reports::IrsFraudMetricsReport do
+RSpec.describe Reports::SpFraudMetricsReport do
   let(:report_date) { Date.new(2021, 3, 2).in_time_zone('UTC').end_of_day }
   let(:time_range)  { report_date.all_month }
   let(:report_receiver) { :internal }
@@ -75,7 +75,7 @@ RSpec.describe Reports::IrsFraudMetricsReport do
       .and_return(sp_fraud_metrics_config)
 
     # Avoid CloudWatch: just stub the metrics table for the underlying report
-    allow_any_instance_of(Reporting::IrsFraudMetricsLg99Report)
+    allow_any_instance_of(Reporting::SpFraudMetricsLg99Report)
       .to receive(:lg99_metrics_table).and_return(mock_lg99_metrics_data)
   end
 

@@ -232,6 +232,7 @@ module IdentityConfig
     config.add(:idv_max_attempts, type: :integer)
     config.add(:idv_min_age_years, type: :integer)
     config.add(:idv_phone_precheck_percent, type: :integer)
+    config.add(:idv_proofing_agent_enabled, type: :boolean)
     config.add(:idv_rdp_version_default, type: :string)
     config.add(:idv_rdp_version_switching_enabled, type: :boolean)
     config.add(:idv_rdp_version_v2_percent, type: :integer)
