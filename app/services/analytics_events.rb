@@ -6728,6 +6728,7 @@ module AnalyticsEvents
       transports:,
       transports_mismatch:,
       webauthn_platform_recommended:,
+      webauthn_setup_duration:,
       **extra,
     )
   end
