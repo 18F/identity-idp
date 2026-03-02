@@ -64,7 +64,7 @@ class ApplicationController < ActionController::Base
       Analytics.new(
         user: analytics_user,
         request: request,
-        sp: current_sp&.issuer,
+        sp: decorated_sp_session&.sp_issuer,
         session: session,
         ahoy: ahoy,
       )
