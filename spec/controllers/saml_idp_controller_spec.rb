@@ -1052,7 +1052,8 @@ RSpec.describe SamlIdpController do
         )
         expect(@analytics).to have_logged_event(
           :sp_integration_errors_present,
-          error_details: ['Unauthorized authentication context'],
+          error_details: ['Unauthorized authentication context. Please see our documentation at ' \
+                          'https://developers.login.gov/support/#unauthorized_auth_context'],
           error_types: { saml_request_errors: true },
           event: :saml_auth_request,
           integration_exists: true,
@@ -1326,7 +1327,8 @@ RSpec.describe SamlIdpController do
         )
         expect(@analytics).to have_logged_event(
           :sp_integration_errors_present,
-          error_details: ['Unauthorized Service Provider'],
+          error_details: ['Unauthorized Service Provider. Please see our documentation at ' \
+                          'https://developers.login.gov/support/#unauthorized'],
           error_types: { saml_request_errors: true },
           event: :saml_auth_request,
           integration_exists: false,
@@ -1373,7 +1375,8 @@ RSpec.describe SamlIdpController do
         )
         expect(@analytics).to have_logged_event(
           :sp_integration_errors_present,
-          error_details: ['Unauthorized Service Provider'],
+          error_details: ['Unauthorized Service Provider. Please see our documentation at ' \
+                          'https://developers.login.gov/support/#unauthorized'],
           error_types: { saml_request_errors: true },
           event: :saml_auth_request,
           integration_exists: false,
