@@ -504,7 +504,7 @@ GEM
       net-protocol
     net-ssh (6.1.0)
     newrelic_rpm (9.7.0)
-    nio4r (2.7.4)
+    nio4r (2.7.5)
     nokogiri (1.19.1)
       mini_portile2 (~> 2.8.2)
       racc (~> 1.4)
@@ -535,14 +535,20 @@ GEM
     parser (3.3.10.2)
       ast (~> 2.4.1)
       racc
-    pg (1.5.9)
-    pg_query (6.1.0)
+    pg (1.6.3)
+    pg (1.6.3-aarch64-linux)
+    pg (1.6.3-aarch64-linux-musl)
+    pg (1.6.3-arm64-darwin)
+    pg (1.6.3-x86_64-darwin)
+    pg (1.6.3-x86_64-linux)
+    pg (1.6.3-x86_64-linux-musl)
+    pg_query (6.2.2)
       google-protobuf (>= 3.25.3)
     phonelib (0.10.15)
     pkcs11 (0.3.4)
     pp (0.6.3)
       prettyprint
-    premailer (1.27.0)
+    premailer (1.28.0)
       addressable
       css_parser (>= 1.19.0)
       htmlentities (>= 4.0.0)
@@ -553,7 +559,7 @@ GEM
     prettyprint (0.2.0)
     prism (1.9.0)
     profanity_filter (0.1.1)
-    prometheus_exporter (2.1.0)
+    prometheus_exporter (2.3.1)
       webrick
     propshaft (0.9.1)
       actionpack (>= 7.0.0)
