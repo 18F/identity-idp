@@ -32,8 +32,8 @@ module DocAuth
 
       def document_type_received
         @document_type_received ||= determine_document_type_received(
-          doc_class_name: doc_class_name,
-          doc_issue_type: doc_issue_type,
+          doc_class_name:,
+          doc_issue_type:,
         )
       end
 
