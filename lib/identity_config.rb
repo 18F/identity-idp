@@ -305,6 +305,7 @@ module IdentityConfig
     config.add(:lexisnexis_instant_verify_timeout, type: :float)
     config.add(:lexisnexis_instant_verify_workflow, type: :string)
     config.add(:lexisnexis_password, type: :string)
+    config.add(:lexisnexis_phone_finder_ddp_policy, type: :string)
     config.add(:lexisnexis_phone_finder_timeout, type: :float)
     config.add(:lexisnexis_phone_finder_workflow, type: :string)
     config.add(:lexisnexis_request_mode, type: :string)
