@@ -222,6 +222,6 @@ end
 if __FILE__ == $PROGRAM_NAME
   options = Reporting::CommandLineOptions.new.parse!(ARGV)
   Reporting::IrsVerificationReport.new(**options).to_csvs.each do |csv|
-    puts csv
+    Rails.logger.debug csv
   end
 end
