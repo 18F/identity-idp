@@ -597,7 +597,8 @@ doc_auth.errors.verify.use_another_type_of_id: or use another type of ID.
 doc_auth.forms.change_file: Change file
 doc_auth.forms.choose_file_html: Drag file here or <lg-underline>choose from folder</lg-underline>
 doc_auth.forms.doc_success: We verified your information
-doc_auth.forms.id_type_preference.drivers_license: U.S. driver’s license or state ID
+doc_auth.forms.id_type_preference.drivers_license: U.S. driver's license or state ID
+doc_auth.forms.id_type_preference.mdl: Mobile Driver's License (mDL)
 doc_auth.forms.id_type_preference.passport: U.S. passport book
 doc_auth.forms.selected_file: Selected file
 doc_auth.headers.expired_id: Your ID may have expired
@@ -1202,6 +1203,14 @@ idv.gpo.return_to_profile: Return to your profile
 idv.gpo.title: Enter your verification code
 idv.gpo.will_send_to: 'You’ll get a letter in the mail from %{app_name} in 5 to 10 days at the address we verified and associated with you:'
 idv.images.come_back_later: Letter with a check mark
+idv.mdl.button: Verify with Apple Wallet
+idv.mdl.errors.cancelled: Verification was cancelled
+idv.mdl.errors.generic: An error occurred during verification. Please try again.
+idv.mdl.errors.not_supported: Your browser does not support this feature. Please try a different method.
+idv.mdl.instructions: Use your Mobile Driver's License stored in Apple Wallet to verify your identity.
+idv.mdl.loading: Connecting to Apple Wallet...
+idv.mdl.title: Verify with Apple Wallet
+idv.mdl.use_different_method: Use a different verification method
 idv.messages.activated_html: Your identity has been verified. If you need to change your verified information, please %{link_html}.
 idv.messages.activated_link: contact us
 idv.messages.come_back_later: Sign back in and enter the verification code when your letter arrives.

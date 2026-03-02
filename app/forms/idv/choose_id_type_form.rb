@@ -19,6 +19,7 @@ module Idv
 
     def chosen_id_type_valid?
       return true if Idp::Constants::DocumentTypes::SUPPORTED_ID_TYPES.include?(@chosen_id_type)
+      return true if mdl_selected_and_enabled?
       errors.add(
         :chosen_id_type,
         :invalid,
@@ -28,6 +29,11 @@ module Idv
         ",
       )
       false
+    end
+
+    def mdl_selected_and_enabled?
+      @chosen_id_type == Idp::Constants::DocumentTypes::MDL &&
+        IdentityConfig.store.mdl_verification_enabled
     end
   end
 end
