@@ -584,7 +584,7 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
               customerUserId: user.uuid,
               email: user.email,
             }
-              .to_json)
+                      .to_json)
             .to_return(
               headers: {
                 'Content-Type' => 'application/json',
