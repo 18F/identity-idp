@@ -170,12 +170,6 @@ RSpec.feature 'Analytics Regression', :js do
     }
   end
 
-  let(:doc_auth_verify_proofing_results) do
-    base_proofing_results.deep_merge(
-      context: { stages: { state_id: state_id_resolution_with_id_type } },
-    )
-  end
-
   let(:in_person_path_proofing_results) do
     {
       exception: nil,
@@ -297,7 +291,7 @@ RSpec.feature 'Analytics Regression', :js do
       ),
       'IdV: doc auth verify proofing results' => {
         success: true, flow_path: 'standard', address_edited: false, address_line2_present: false, last_name_spaced: false, analytics_id: 'Doc Auth', step: 'verify',
-        proofing_results: doc_auth_verify_proofing_results,
+        proofing_results: base_proofing_results,
         proofing_components: idv_phone_precheck_enabled ? address_proofing_components : base_proofing_components
       },
       'IdV: phone of record visited' => {
@@ -428,7 +422,7 @@ RSpec.feature 'Analytics Regression', :js do
       ),
       'IdV: doc auth verify proofing results' => {
         success: true, flow_path: 'hybrid', address_edited: false, address_line2_present: false, last_name_spaced: false, analytics_id: 'Doc Auth', step: 'verify',
-        proofing_results: doc_auth_verify_proofing_results,
+        proofing_results: base_proofing_results,
         proofing_components: base_proofing_components
       },
       'IdV: phone of record visited' => {
@@ -557,7 +551,7 @@ RSpec.feature 'Analytics Regression', :js do
       ),
       'IdV: doc auth verify proofing results' => {
         success: true, flow_path: 'standard', address_edited: false, address_line2_present: false, last_name_spaced: false, analytics_id: 'Doc Auth', step: 'verify',
-        proofing_results: doc_auth_verify_proofing_results,
+        proofing_results: base_proofing_results,
         proofing_components: base_proofing_components
       },
       'IdV: phone of record visited' => {
@@ -820,7 +814,7 @@ RSpec.feature 'Analytics Regression', :js do
       ),
       'IdV: doc auth verify proofing results' => {
         success: true, flow_path: 'standard', address_edited: false, address_line2_present: false, last_name_spaced: false, analytics_id: 'Doc Auth', step: 'verify',
-        proofing_results: doc_auth_verify_proofing_results,
+        proofing_results: base_proofing_results,
         proofing_components: base_proofing_components
       },
       'IdV: phone of record visited' => {
