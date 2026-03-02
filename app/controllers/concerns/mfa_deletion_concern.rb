@@ -35,12 +35,12 @@ module MfaDeletionConcern
       )
     when :webauthn_key_removed
       t(
-        'user_mailer.multi_factor_authentication.security_key_deleted',
+        'user_mailer.multi_factor_authentication.webauthn_deleted',
         app_name: APP_NAME,
       )
     when :webauthn_platform_removed
       t(
-        'user_mailer.multi_factor_authentication.ft_unlock_deleted',
+        'user_mailer.multi_factor_authentication.webauthn_platform_deleted',
         app_name: APP_NAME,
       )
     end
