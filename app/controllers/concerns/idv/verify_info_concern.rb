@@ -278,7 +278,7 @@ module Idv
         form_response.extra.dig(:proofing_results, :context, :stages),
       )
       sanitized_form_response = form_response.deep_dup
-      sanitized_form_response.extra[:proofing_results]&.delete(:state_id)
+      sanitized_form_response.extra.dig(:proofing_results, :context, :stages)&.delete(:state_id)
       analytics.idv_doc_auth_verify_proofing_results(
         **analytics_arguments,
         **sanitized_form_response,
