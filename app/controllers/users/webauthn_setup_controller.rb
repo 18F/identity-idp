@@ -84,7 +84,7 @@ module Users
         url_options:,
       )
       properties = result.to_h.merge(analytics_properties)
-      properties.merge! if user_session[:webauthn_setup_started_at].present?
+      properties.merge!(webauthn_setup_duration) if user_session[:webauthn_setup_started_at].present?
       analytics.multi_factor_auth_setup(**properties)
 
       mfa_device_type = @platform_authenticator.present? ?
