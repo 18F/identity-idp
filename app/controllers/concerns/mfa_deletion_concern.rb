@@ -30,12 +30,12 @@ module MfaDeletionConcern
       )
     when :piv_cac_disabled
       t(
-        'user_mailer.multi_factor_authentication.piv_cac_deleted',
+        'user_mailer.multi_factor_authentication.piv_card_deleted',
         app_name: APP_NAME,
       )
     when :webauthn_key_removed
       t(
-        'user_mailer.multi_factor_authentication.webauthn_deleted',
+        'user_mailer.multi_factor_authentication.security_key_deleted',
         app_name: APP_NAME,
       )
     when :webauthn_platform_removed
