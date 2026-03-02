@@ -6671,7 +6671,7 @@ module AnalyticsEvents
   #   registration contradict the authenticator attachment for user setup. For example, a user can
   #   set up a platform authenticator through the Security Key setup flow.
   # @param [:authentication, :account_creation, nil] webauthn_platform_recommended A/B test for
-  # recommended Face or Touch Unlock setup, if applicable.
+  # @param [Integer, nil] webauthn_setup_duration Duration of webauthn setup in seconds
   def multi_factor_auth_setup(
     success:,
     multi_factor_auth_method:,
@@ -6698,6 +6698,7 @@ module AnalyticsEvents
     transports: nil,
     transports_mismatch: nil,
     webauthn_platform_recommended: nil,
+    webauthn_setup_duration: nil,
     **extra
   )
     track_event(
