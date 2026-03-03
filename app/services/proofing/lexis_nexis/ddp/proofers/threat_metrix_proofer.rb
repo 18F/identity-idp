@@ -32,7 +32,7 @@ module Proofing
             result
           end
 
-          def build_result_from_exeption(exception)
+          def build_result_from_exception(exception)
             Proofing::DdpResult.new(success: false, exception: exception)
           end
 
