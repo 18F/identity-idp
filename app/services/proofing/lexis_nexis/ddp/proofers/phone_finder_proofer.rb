@@ -20,6 +20,15 @@ module Proofing
             )
           end
 
+          def build_result_from_exception(exception)
+            AddressResult.new(
+              success: false,
+              errors: {},
+              exception: exception,
+              vendor_name: 'lexisnexis:phone_finder_ddp',
+            )
+          end
+
           def verification_request(applicant)
             Proofing::LexisNexis::Ddp::Requests::PhoneFinderRequest.new(config:, applicant:)
           end

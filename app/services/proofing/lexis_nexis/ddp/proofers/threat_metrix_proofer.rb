@@ -32,6 +32,10 @@ module Proofing
             result
           end
 
+          def build_result_from_exeption(exception)
+            Proofing::DdpResult.new(success: false, exception: exception)
+          end
+
           def verification_request(applicant)
             Proofing::LexisNexis::Ddp::Requests::ThreatMetrixRequest.new(config:, applicant:)
           end
