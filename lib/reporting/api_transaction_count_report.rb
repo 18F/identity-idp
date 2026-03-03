@@ -80,8 +80,7 @@ module Reporting
           'LN Emailage',
           'GPO',
           'AAMVA',
-          'Socure PhoneRisk (Shadow)',
-          'Socure PhoneRisk (Prod)',
+          'Socure PhoneRisk',
           'LN Phone Finder',
         ],
         [
@@ -98,7 +97,6 @@ module Reporting
           gpo_table.first,
           aamva_table.first,
           socure_phonerisk_table.first,
-          socure_phonerisk_prod_table.first,
           ln_phonefinder_table.first,
         ],
       ]
@@ -184,12 +182,6 @@ module Reporting
       result = fetch_results(query: socure_phonerisk_query)
       socure_phonerisk_table_count = result.count
       [socure_phonerisk_table_count, result]
-    end
-
-    def socure_phonerisk_prod_table
-      result = fetch_results(query: socure_phonerisk_prod_query)
-      socure_phonerisk_prod_table_count = result.count
-      [socure_phonerisk_prod_table_count, result]
     end
 
     def ln_phonefinder_table
@@ -362,21 +354,12 @@ module Reporting
 
     def socure_phonerisk_query
       <<~QUERY
-        fields @timestamp, @message, @log, id
-        | filter name IN ["idv_socure_shadow_mode_phonerisk_result"] 
+        | filter (name IN ["idv_socure_shadow_mode_phonerisk_result"])
+        OR (name = 'IdV: phone confirmation vendor' AND properties.event_properties.vendor.vendor_name = "socure_phonerisk")
         | limit 10000
-      QUERY
-    end
+        QUERY
 
-    def socure_phonerisk_prod_query
-      <<~QUERY
-        fields @timestamp, @message
-        | filter name = 'IdV: phone confirmation vendor'
-        | filter properties.event_properties.vendor.vendor_name = "socure_phonerisk"
-        | limit 10000
-
-      QUERY
-    end
+    end  
 
     def ln_phonefinder_query
       <<~QUERY

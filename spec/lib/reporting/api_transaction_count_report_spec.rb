@@ -26,7 +26,6 @@ RSpec.describe Reporting::ApiTransactionCountReport do
     allow(report).to receive(:gpo_table).and_return([70, mock_results])
     allow(report).to receive(:aamva_table).and_return([80, mock_results])
     allow(report).to receive(:socure_phonerisk_table).and_return([90, mock_results])
-    allow(report).to receive(:socure_phonerisk_prod_table).and_return([10, mock_results])
     allow(report).to receive(:ln_phonefinder_table).and_return([90, mock_results])
   end
 
@@ -54,14 +53,13 @@ RSpec.describe Reporting::ApiTransactionCountReport do
           'LN Emailage',
           'GPO',
           'AAMVA',
-          'Socure PhoneRisk (Shadow)',
-          'Socure PhoneRisk (Prod)',
+          'Socure PhoneRisk',
           'LN Phone Finder',
         ],
       )
 
       expect(data_row.first).to eq("#{time_range.begin.to_date} - #{time_range.end.to_date}")
-      expect(data_row[1..]).to eq([10, 11, 15, 25, 26, 30, 45, 50, 60, 70, 80, 90, 10, 90])
+      expect(data_row[1..]).to eq([10, 11, 15, 25, 26, 30, 45, 50, 60, 70, 80, 90, 90])
     end
   end
 
@@ -88,14 +86,13 @@ RSpec.describe Reporting::ApiTransactionCountReport do
         'LN Emailage',
         'GPO',
         'AAMVA',
-        'Socure PhoneRisk (Shadow)',
-        'Socure PhoneRisk (Prod)',
+        'Socure PhoneRisk',
         'LN Phone Finder',
       ].join(',')
 
       expect(csv).to include(expected_headers)
       expect(csv).to include("#{time_range.begin.to_date} - #{time_range.end.to_date}")
-      expect(csv).to include('10,11,15,25,26,30,45,50,60,70,80,90,10,90')
+      expect(csv).to include('10,11,15,25,26,30,45,50,60,70,80,90,90')
     end
   end
 
