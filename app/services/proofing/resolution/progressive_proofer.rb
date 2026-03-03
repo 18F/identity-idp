@@ -184,7 +184,7 @@ module Proofing
           api_key: IdentityConfig.store.lexisnexis_threatmetrix_api_key,
           org_id: IdentityConfig.store.lexisnexis_threatmetrix_org_id,
           base_url: IdentityConfig.store.lexisnexis_threatmetrix_base_url,
-          ddp_policy: 'Instant Verify',
+          ddp_policy: IdentityConfig.store.lexisnexis_instant_verify_ddp_policy,
         )
       end
 
