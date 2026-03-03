@@ -41,4 +41,96 @@ RSpec.feature 'SP return logs' do
       expect(SpReturnLog.last.issuer).to eq 'http://localhost:3000'
     end
   end
+
+  context 'when user goes back and forth between two OIDC SPs in the same session' do
+    it 'always logs the correct SP in SP Return logs' do
+      user = create(:user, :with_phone)
+
+      visit_idp_from_sp_with_ial1(:oidc)
+      fill_in_credentials_and_submit(user.email, user.password)
+      click_button t('forms.buttons.submit.default')
+      fill_in 'code', with: user.reload.direct_otp
+      click_button t('forms.buttons.submit.default')
+      click_agree_and_continue
+
+      expect(SpReturnLog.count).to eq(1)
+      expect(SpReturnLog.last.issuer).to eq 'urn:gov:gsa:openidconnect:sp:server_ial1'
+
+      visit_idp_from_sp_with_ial1_aal2(:oidc)
+      click_agree_and_continue
+
+      expect(SpReturnLog.count).to eq(2)
+      expect(SpReturnLog.last.issuer).to eq 'urn:gov:gsa:openidconnect:sp:server'
+
+      visit_idp_from_sp_with_ial1(:oidc)
+
+      expect(SpReturnLog.count).to eq(3)
+      expect(SpReturnLog.last.issuer).to eq 'urn:gov:gsa:openidconnect:sp:server_ial1'
+
+      visit_idp_from_sp_with_ial1_aal2(:oidc)
+
+      expect(SpReturnLog.count).to eq(4)
+      expect(SpReturnLog.last.issuer).to eq 'urn:gov:gsa:openidconnect:sp:server'
+    end
+  end
+
+  context 'when user goes back and forth between two SAML SPs in the same session' do
+    it 'always logs the correct SP in SP Return logs' do
+      user = create(:user, :with_phone)
+
+      visit_saml_authn_request_url
+      sign_in_via_branded_page(user)
+      click_submit_default
+      click_agree_and_continue
+      click_submit_default_twice
+
+      expect(SpReturnLog.count).to eq(1)
+      expect(SpReturnLog.last.issuer).to eq 'http://localhost:3000'
+
+      visit_saml_authn_request_url(overrides: { issuer: sp1_issuer })
+      click_agree_and_continue
+      click_submit_default_twice
+
+      expect(SpReturnLog.count).to eq(2)
+      expect(SpReturnLog.last.issuer).to eq 'https://rp1.serviceprovider.com/auth/saml/metadata'
+
+      visit_saml_authn_request_url
+
+      expect(SpReturnLog.count).to eq(3)
+      expect(SpReturnLog.last.issuer).to eq 'http://localhost:3000'
+    end
+  end
+
+  context 'when user visits OIDC SP then SAML then back to OIDC in the same session' do
+    it 'always logs the correct SP in SP Return logs' do
+      user = create(:user, :with_phone)
+
+      visit_idp_from_sp_with_ial1(:oidc)
+      fill_in_credentials_and_submit(user.email, user.password)
+      click_button t('forms.buttons.submit.default')
+      fill_in 'code', with: user.reload.direct_otp
+      click_button t('forms.buttons.submit.default')
+      click_agree_and_continue
+
+      expect(SpReturnLog.count).to eq(1)
+      expect(SpReturnLog.last.issuer).to eq 'urn:gov:gsa:openidconnect:sp:server_ial1'
+
+      visit_saml_authn_request_url
+      click_agree_and_continue
+      click_submit_default_twice
+
+      expect(SpReturnLog.count).to eq(2)
+      expect(SpReturnLog.last.issuer).to eq 'http://localhost:3000'
+
+      visit_idp_from_sp_with_ial1(:oidc)
+
+      expect(SpReturnLog.count).to eq(3)
+      expect(SpReturnLog.last.issuer).to eq 'urn:gov:gsa:openidconnect:sp:server_ial1'
+
+      visit_saml_authn_request_url
+
+      expect(SpReturnLog.count).to eq(4)
+      expect(SpReturnLog.last.issuer).to eq 'http://localhost:3000'
+    end
+  end
 end
