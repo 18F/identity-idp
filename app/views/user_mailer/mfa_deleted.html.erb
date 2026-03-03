@@ -1,5 +1,6 @@
 <p>
-  <%= t('user_mailer.multi_factor_authentication.instructions_html',
+  <%= t(
+        'user_mailer.multi_factor_authentication.instructions_html',
         change_password_link_html: link_to(
           t('user_mailer.multi_factor_authentication.change_password_link'),
           new_user_password_url,
@@ -11,5 +12,5 @@
             article: 'add-or-change-your-authentication-method',
           ),
         ),
-        )%>
+      ) %>
 </p>
