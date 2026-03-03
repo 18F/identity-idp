@@ -9,6 +9,15 @@ RSpec.describe SocureWebhookController do
     let(:socure_docv_enabled) { true }
     let(:event_type) { 'TEST_WEBHOOK' }
     let(:event_docv_transaction_token) { 'TEST_WEBHOOK_TOKEN' }
+    let(:issuer) { 'sp-issuer' }
+    let(:dcs) do
+      create(
+        :document_capture_session,
+        :socure,
+        issuer:,
+        socure_docv_transaction_token: event_docv_transaction_token,
+      )
+    end
     let(:customer_user_id) { '#1-customer' }
     let(:reference_id) { 'the-ref-id' }
     let(:webhook_body) do
@@ -32,12 +41,11 @@ RSpec.describe SocureWebhookController do
     end
 
     before do
-      allow(IdentityConfig.store).to receive(:socure_docv_webhook_secret_key)
-        .and_return(socure_secret_key)
-      allow(IdentityConfig.store).to receive(:socure_docv_webhook_secret_key_queue)
-        .and_return(socure_secret_key_queue)
-      allow(IdentityConfig.store).to receive(:socure_docv_enabled)
-        .and_return(socure_docv_enabled)
+      allow(IdentityConfig.store).to receive_messages(
+        socure_docv_webhook_secret_key: socure_secret_key,
+        socure_docv_webhook_secret_key_queue: socure_secret_key_queue,
+        socure_docv_enabled: socure_docv_enabled,
+      )
       allow(SocureDocvResultsJob).to receive(:perform_later)
 
       stub_analytics
@@ -86,7 +94,7 @@ RSpec.describe SocureWebhookController do
             allow(SocureDocvResultsJob).to receive(:perform_now)
             allow(SocureDocvRepeatWebhookJob).to receive(:perform_later)
 
-            dcs = create(:document_capture_session, :socure)
+            # dcs = create(:document_capture_session, :socure)
             webhook_body[:event][:docvTransactionToken] = dcs.socure_docv_transaction_token
 
             request.headers['Authorization'] = headers[:Authorization]
@@ -109,6 +117,7 @@ RSpec.describe SocureWebhookController do
         end
 
         it 'returns OK and logs an event with a correct secret key and body' do
+          dcs # just to create it
           post :create, params: webhook_body
 
           expect(response).to have_http_status(:ok)
@@ -118,7 +127,9 @@ RSpec.describe SocureWebhookController do
             customer_user_id:,
             docv_transaction_token: event_docv_transaction_token,
             event_type:,
+            issuer:,
             reference_id:,
+            user_id: dcs.user.uuid,
           )
         end
 
@@ -141,7 +152,6 @@ RSpec.describe SocureWebhookController do
 
         context 'when document capture session exists' do
           it 'logs the user\'s uuid' do
-            dcs = create(:document_capture_session, :socure)
             webhook_body[:event][:docvTransactionToken] = dcs.socure_docv_transaction_token
             post :create, params: webhook_body
 
@@ -152,6 +162,7 @@ RSpec.describe SocureWebhookController do
               customer_user_id:,
               docv_transaction_token: dcs.socure_docv_transaction_token,
               event_type:,
+              issuer:,
               reference_id:,
               user_id: dcs.user.uuid,
             )
@@ -163,7 +174,6 @@ RSpec.describe SocureWebhookController do
             it_behaves_like 'repeats webhooks'
 
             it 'returns OK and logs an event with a correct secret key and body' do
-              dcs = create(:document_capture_session, :socure)
               webhook_body[:event][:docvTransactionToken] = dcs.socure_docv_transaction_token
 
               post :create, params: webhook_body
@@ -174,13 +184,13 @@ RSpec.describe SocureWebhookController do
                 customer_user_id:,
                 docv_transaction_token: dcs.socure_docv_transaction_token,
                 event_type:,
+                issuer:,
                 reference_id:,
                 user_id: dcs.user.uuid,
               )
             end
 
             it 'increments rate limiter of correct user' do
-              dcs = create(:document_capture_session, :socure)
               webhook_body[:event][:docvTransactionToken] = dcs.socure_docv_transaction_token
 
               i = 0
@@ -196,7 +206,6 @@ RSpec.describe SocureWebhookController do
             end
 
             it 'enqueues a SocureDocvResultsJob' do
-              dcs = create(:document_capture_session, :socure)
               webhook_body[:event][:docvTransactionToken] = dcs.socure_docv_transaction_token
 
               post :create, params: webhook_body
@@ -206,7 +215,6 @@ RSpec.describe SocureWebhookController do
             end
 
             it 'does not reset socure_docv_capture_app_url value' do
-              dcs = create(:document_capture_session, :socure)
               webhook_body[:event][:docvTransactionToken] = dcs.socure_docv_transaction_token
               post :create, params: webhook_body
               dcs.reload
@@ -233,7 +241,6 @@ RSpec.describe SocureWebhookController do
             it_behaves_like 'repeats webhooks'
 
             it 'does not increment rate limiter of user' do
-              dcs = create(:document_capture_session, :socure)
               webhook_body[:event][:docvTransactionToken] = dcs.socure_docv_transaction_token
 
               i = 0
@@ -249,7 +256,6 @@ RSpec.describe SocureWebhookController do
             end
 
             it 'does not enqueue a SocureDocvResultsJob' do
-              dcs = create(:document_capture_session, :socure)
               webhook_body[:event][:docvTransactionToken] = dcs.socure_docv_transaction_token
 
               post :create, params: webhook_body
@@ -258,7 +264,6 @@ RSpec.describe SocureWebhookController do
             end
 
             it 'resets socure_docv_capture_app_url to nil' do
-              dcs = create(:document_capture_session, :socure)
               webhook_body[:event][:docvTransactionToken] = dcs.socure_docv_transaction_token
               expect(dcs.socure_docv_capture_app_url)
                 .not_to be_nil
@@ -274,7 +279,6 @@ RSpec.describe SocureWebhookController do
             it_behaves_like 'repeats webhooks'
 
             it 'does not increment rate limiter of user' do
-              dcs = create(:document_capture_session, :socure)
               webhook_body[:event][:docvTransactionToken] = dcs.socure_docv_transaction_token
 
               i = 0
@@ -291,7 +295,6 @@ RSpec.describe SocureWebhookController do
             end
 
             it 'does not enqueue a SocureDocvResultsJob' do
-              dcs = create(:document_capture_session, :socure)
               webhook_body[:event][:docvTransactionToken] = dcs.socure_docv_transaction_token
 
               post :create, params: webhook_body
@@ -300,7 +303,6 @@ RSpec.describe SocureWebhookController do
             end
 
             it 'resets socure_docv_capture_app_url to nil' do
-              dcs = create(:document_capture_session, :socure)
               webhook_body[:event][:docvTransactionToken] = dcs.socure_docv_transaction_token
               expect(dcs.socure_docv_capture_app_url)
                 .not_to be_nil
