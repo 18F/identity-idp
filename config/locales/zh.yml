@@ -2070,7 +2070,6 @@ user_mailer.multi_factor_authentication.authentication_methods_link: 身份证�
 user_mailer.multi_factor_authentication.backup_codes_added: 备用码 已添加到您的 %{app_name} 帐户
 user_mailer.multi_factor_authentication.backup_codes_deleted: 备用备用码 已从您的 %{app_name} 帐户中删除。
 user_mailer.multi_factor_authentication.change_password_link: 更改密码
-user_mailer.multi_factor_authentication.webauthn_platform_added: 人脸或触摸解锁 已添加到您的 %{app_name} 帐户。
 user_mailer.multi_factor_authentication.instructions_html: 如果不是您本人，%{change_password_link_html} 并立即改变您的%{authentication_methods_link_html}。
 user_mailer.multi_factor_authentication.new_auth_added: 您的 %{app_name} 帐户已添加新的身份验证方法。
 user_mailer.multi_factor_authentication.phone_added: 短信或语音留言 已添加到您的 %{app_name} 帐户
@@ -2079,6 +2078,7 @@ user_mailer.multi_factor_authentication.piv_card_added: 政府雇员身份证件
 user_mailer.multi_factor_authentication.piv_card_deleted: 政府雇员身份证件 已从您的 %{app_name} 帐户中删除。
 user_mailer.multi_factor_authentication.webauthn_added: 安全密钥 已添加到您的 %{app_name} 帐户
 user_mailer.multi_factor_authentication.webauthn_deleted: 安全密钥 已从您的 %{app_name} 帐户中删除。
+user_mailer.multi_factor_authentication.webauthn_platform_added: 人脸或触摸解锁 已添加到您的 %{app_name} 帐户。
 user_mailer.multi_factor_authentication.webauthn_platform_deleted: 人脸或触摸解锁 已从您的 %{app_name} 帐户中删除。
 user_mailer.new_device_sign_in_after_2fa.authentication_methods: 身份证实方法
 user_mailer.new_device_sign_in_after_2fa.info_p1: 你的 %{app_name} 电邮和密码在一个新设备上被用来登录和进行身份验证。

@@ -2057,7 +2057,6 @@ user_mailer.multi_factor_authentication.authentication_methods_link: méthodes d
 user_mailer.multi_factor_authentication.backup_codes_added: Des codes de sauvegarde ont été ajoutés à votre compte %{app_name}.
 user_mailer.multi_factor_authentication.backup_codes_deleted: Les codes de sauvegarde ont été supprimés de votre compte %{app_name}.
 user_mailer.multi_factor_authentication.change_password_link: réinitialiser votre mot de passe
-user_mailer.multi_factor_authentication.webauthn_platform_added: Le déverrouillage facial ou tactile a été ajouté à votre compte %{app_name}.
 user_mailer.multi_factor_authentication.instructions_html: Si ce n’est pas vous, %{change_password_link_html} et modifiez immédiatement vos %{authentication_methods_link_html}.
 user_mailer.multi_factor_authentication.new_auth_added: Une nouvelle méthode d’authentification a été ajoutée à votre compte %{app_name}.
 user_mailer.multi_factor_authentication.phone_added: L’envoi de message text ou vocal a été ajouté à votre compte %{app_name}.
@@ -2066,6 +2065,7 @@ user_mailer.multi_factor_authentication.piv_card_added: Une carte d’employé f
 user_mailer.multi_factor_authentication.piv_card_deleted: Une carte d’employé fédéral a été supprimée de votre compte %{app_name}.
 user_mailer.multi_factor_authentication.webauthn_added: Une clé de sécurité a été ajoutée à votre compte %{app_name}.
 user_mailer.multi_factor_authentication.webauthn_deleted: Une clé de sécurité a été supprimée de votre compte %{app_name}.
+user_mailer.multi_factor_authentication.webauthn_platform_added: Le déverrouillage facial ou tactile a été ajouté à votre compte %{app_name}.
 user_mailer.multi_factor_authentication.webauthn_platform_deleted: Le déverrouillage facial ou tactile a été supprimé de votre compte %{app_name}.
 user_mailer.new_device_sign_in_after_2fa.authentication_methods: méthodes d’authentification
 user_mailer.new_device_sign_in_after_2fa.info_p1: Votre e-mail et mot de passe %{app_name} ont été utilisés pour se connecter et s’authentifier sur un nouvel appareil.

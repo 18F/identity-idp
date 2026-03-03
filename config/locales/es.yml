@@ -2069,7 +2069,6 @@ user_mailer.multi_factor_authentication.authentication_methods_link: métodos de
 user_mailer.multi_factor_authentication.backup_codes_added: La opción de códigos de recuperación se ha añadido a su cuenta de %{app_name}.
 user_mailer.multi_factor_authentication.backup_codes_deleted: La opción de códigos de recuperación se eliminó de su cuenta de %{app_name}.
 user_mailer.multi_factor_authentication.change_password_link: restablecer su contraseña
-user_mailer.multi_factor_authentication.webauthn_platform_added: Su opción de desbloqueo facial o táctil se ha añadido a su cuenta de %{app_name}.
 user_mailer.multi_factor_authentication.instructions_html: Si no fue usted, %{change_password_link_html} y cambie sus %{authentication_methods_link_html} inmediatamente.
 user_mailer.multi_factor_authentication.new_auth_added: Se ha añadido un nuevo método de autenticación a su cuenta de %{app_name}.
 user_mailer.multi_factor_authentication.phone_added: La opción de mensaje de texto o de voz se ha añadido a su cuenta de %{app_name}.
@@ -2078,6 +2077,7 @@ user_mailer.multi_factor_authentication.piv_card_added: Su identificación de em
 user_mailer.multi_factor_authentication.piv_card_deleted: Su identificación de empleado gubernamental se eliminó de su cuenta de %{app_name}.
 user_mailer.multi_factor_authentication.webauthn_added: Su clave de seguridad se ha añadido a su cuenta de %{app_name}.
 user_mailer.multi_factor_authentication.webauthn_deleted: Su clave de seguridad se eliminó de su cuenta de %{app_name}.
+user_mailer.multi_factor_authentication.webauthn_platform_added: Su opción de desbloqueo facial o táctil se ha añadido a su cuenta de %{app_name}.
 user_mailer.multi_factor_authentication.webauthn_platform_deleted: Su opción de desbloqueo facial o táctil se eliminó de su cuenta de %{app_name}.
 user_mailer.new_device_sign_in_after_2fa.authentication_methods: métodos de autenticación
 user_mailer.new_device_sign_in_after_2fa.info_p1: Su correo electrónico y contraseña de %{app_name} se usaron para iniciar sesión y hacer la autenticación en un dispositivo nuevo.
