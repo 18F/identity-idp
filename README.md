@@ -1,4 +1,5 @@
 # Login.gov Identity Provider (IdP)
+[![DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/18F/identity-idp)
 
 Login.gov is the public's one account for government. Use one account and password for secure, private access to participating government agencies.
 
