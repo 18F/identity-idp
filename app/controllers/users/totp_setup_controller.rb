@@ -37,6 +37,7 @@ module Users
 
       if result.success?
         process_valid_code
+        create_mfa_added_email(event_type: :auth_app_added)
         user_session.delete(:mfa_attempts)
       else
         process_invalid_code
@@ -85,13 +86,6 @@ module Users
       handle_remember_device_preference(params[:remember_device])
       flash[:success] = t('notices.totp_configured')
       user_session.delete(:new_totp_secret)
-      current_user.confirmed_email_addresses.each do |email_address|
-        UserMailer.with(user: current_user, email_address: email_address)
-          .mfa_added(subject: t(
-            'user_mailer.multi_factor_authentication.auth_app_added',
-            app_name: APP_NAME,
-          )).deliver_now_or_later
-      end
       redirect_to next_setup_path || after_mfa_setup_path
     end
 

@@ -96,6 +96,8 @@ module Users
 
       if result.success?
         process_valid_webauthn(form)
+        create_mfa_added_email(event_type: form.event_type)
+
         user_session.delete(:mfa_attempts)
       else
         flash.now[:error] = result.first_error_message
@@ -165,13 +167,6 @@ module Users
           threatmetrix_attrs,
         )
 
-        current_user.confirmed_email_addresses.each do |email_address|
-          UserMailer.with(user: current_user, email_address: email_address)
-            .mfa_added(subject: t(
-              'user_mailer.multi_factor_authentication.ft_unlock_added',
-              app_name: APP_NAME,
-            )).deliver_now_or_later
-        end
         flash[:success] = t('notices.webauthn_platform_configured') if !form.transports_mismatch?
       else
         handle_valid_verification_for_confirmation_context(
@@ -184,13 +179,6 @@ module Users
           threatmetrix_attrs,
         )
 
-        current_user.confirmed_email_addresses.each do |email_address|
-          UserMailer.with(user: current_user, email_address: email_address)
-            .mfa_added(subject: t(
-              'user_mailer.multi_factor_authentication.security_key_added',
-              app_name: APP_NAME,
-            )).deliver_now_or_later
-        end
         flash[:success] = t('notices.webauthn_configured') if !form.transports_mismatch?
       end
 

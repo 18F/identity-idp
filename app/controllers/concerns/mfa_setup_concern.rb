@@ -103,6 +103,40 @@ module MfaSetupConcern
     }
   end
 
+  def create_mfa_added_email(event_type:)
+    subject = case event_type
+    when :auth_app_added
+      t('user_mailer.multi_factor_authentication.auth_app_added', app_name: APP_NAME)
+    when :backup_codes_added
+      t(
+        'user_mailer.multi_factor_authentication.backup_codes_added',
+        app_name: APP_NAME,
+      )
+    when :phone_added
+      t(
+        'user_mailer.multi_factor_authentication.phone_added',
+        app_name: APP_NAME,
+      )
+    when :piv_cac_added
+      t(
+        'user_mailer.multi_factor_authentication.piv_card_added',
+        app_name: APP_NAME,
+      )
+    when :webauthn_key_added
+      t(
+        'user_mailer.multi_factor_authentication.webauthn_added',
+        app_name: APP_NAME,
+      )
+    when :webauthn_platform_added
+      t(
+        'user_mailer.multi_factor_authentication.webauthn_platform_added',
+        app_name: APP_NAME,
+      )
+    end
+
+    send_mfa_added_email(subject)
+  end
+
   private
 
   def track_user_registration_mfa_setup_complete_event
@@ -150,5 +184,12 @@ module MfaSetupConcern
       mfa_context.enabled_mfa_methods_count == 1 &&
       mfa_context.phone_configurations.present? &&
       user_set_up_with_sms?
+  end
+
+  def send_mfa_added_email(subject)
+    current_user.confirmed_email_addresses.each do |email_address|
+      UserMailer.with(user: current_user, email_address: email_address)
+        .mfa_added(subject: subject).deliver_now_or_later
+    end
   end
 end

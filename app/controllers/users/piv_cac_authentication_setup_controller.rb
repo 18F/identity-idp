@@ -84,6 +84,7 @@ module Users
 
       if result.success?
         process_valid_submission
+        create_mfa_added_email(event_type: :piv_cac_added)
         user_session.delete(:mfa_attempts)
       else
         process_invalid_submission
@@ -114,13 +115,6 @@ module Users
       track_mfa_method_added
       user_session.delete(:add_piv_cac_after_2fa)
       session[:needs_to_setup_piv_cac_after_sign_in] = false
-      current_user.confirmed_email_addresses.each do |email_address|
-        UserMailer.with(user: current_user, email_address: email_address)
-          .mfa_added(subject: t(
-            'user_mailer.multi_factor_authentication.piv_card_added',
-            app_name: APP_NAME,
-          )).deliver_now_or_later
-      end
       redirect_to next_setup_path || after_sign_in_path_for(current_user)
     end
 
