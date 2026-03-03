@@ -5,11 +5,12 @@ require 'rails_helper'
 RSpec.describe SocureDocvResultsJob do
   let(:job) { described_class.new }
   let(:user) { create(:user) }
-  let(:fake_analytics) { FakeAnalytics.new }
   let(:attempts_api_tracker) { AttemptsApiTrackingHelper::FakeAttemptsTracker.new }
   let(:fraud_opt_tracker) { AttemptsApiTrackingHelper::FakeAttemptsTracker.new }
   let(:sp) { create(:service_provider, app_id: 'Test123') }
   let(:socure_docv_transaction_token) { 'abcd' }
+  let(:socure_user_id) { 'socure_user_id' }
+  let(:socure_reference_id) { SecureRandom.uuid }
   let(:document_capture_session) { DocumentCaptureSession.create(user:) }
   let(:document_capture_session_uuid) { document_capture_session.uuid }
   let(:socure_idplus_base_url) { 'https://example.com' }
@@ -30,24 +31,64 @@ RSpec.describe SocureDocvResultsJob do
   let(:pii_from_doc) { socure_response_body[:documentVerification][:documentData] }
   let(:address_data) { pii_from_doc[:parsedAddress] || {} }
   let(:include_passport_fixture) { false }
+  let(:socure_response_body) do
+    # ID+ v3.0 API Predictive Document Verification response
+    {
+      referenceId: socure_reference_id,
+      documentVerification: {
+        reasonCodes: reason_codes,
+        documentType: {
+          type: document_metadata_type,
+          country: 'USA',
+          state: 'NY',
+        },
+        decision: {
+          name: 'lenient',
+          value: decision_value,
+        },
+        documentData: {
+          firstName: 'Dwayne',
+          surName: 'Denver',
+          fullName: 'Dwayne Denver',
+          address: '123 Example Street, New York City, NY 10001',
+          parsedAddress: {
+            physicalAddress: '123 Example Street',
+            physicalAddress2: 'Apt 4',
+            city: 'New York City',
+            state: 'NY',
+            country: 'US',
+            zip: '10001',
+          },
+          documentNumber: '000000000',
+          dob: '2000-01-01',
+          issueDate: '2020-01-01',
+          expirationDate: expiration_date,
+        },
+      },
+      customerProfile: {
+        customerUserId: user.uuid,
+        userId: socure_user_id,
+      },
+    }
+  end
 
   before do
+    stub_job_analytics
     document_capture_session.update(
       socure_docv_transaction_token:,
       issuer: sp.issuer,
     )
-    allow(IdentityConfig.store).to receive(:socure_idplus_base_url)
-      .and_return(socure_idplus_base_url)
-    allow(IdentityConfig.store).to receive(:dos_passport_mrz_endpoint)
-      .and_return(dos_passport_mrz_endpoint)
+    allow(IdentityConfig.store).to receive_messages(
+      socure_idplus_base_url: socure_idplus_base_url,
+      dos_passport_mrz_endpoint: dos_passport_mrz_endpoint,
+      idv_aamva_at_doc_auth_enabled: aamva_at_doc_auth_enabled,
+    )
     stub_request(:post, IdentityConfig.store.dos_passport_mrz_endpoint)
       .to_return_json({ status: 200, body: { response: mrz_response } })
-    allow(Analytics).to receive(:new).and_return(fake_analytics)
+    # allow(Analytics).to receive(:new).and_return(fake_analytics)
     allow(AttemptsApi::Tracker).to receive(:new).and_return(attempts_api_tracker)
-    allow(IdentityConfig.store).to receive(:idv_aamva_at_doc_auth_enabled).and_return(
-      aamva_at_doc_auth_enabled,
-    )
     allow(FraudOps::Tracker).to receive(:new).and_return(fraud_opt_tracker)
+    allow(Proofing::Resolution::Plugins::AamvaPlugin).to receive(:new).and_return(aamva_proofer)
 
     rate_limiter.increment!
 
@@ -55,19 +96,13 @@ RSpec.describe SocureDocvResultsJob do
   end
 
   def enable_attempts_api
-    allow(IdentityConfig.store).to receive(:socure_doc_escrow_enabled).and_return(
-      socure_doc_escrow_enabled,
+    allow(IdentityConfig.store).to receive_messages(
+      socure_doc_escrow_enabled: socure_doc_escrow_enabled,
+      attempts_api_enabled: socure_doc_escrow_enabled,
+      allowed_attempts_providers: [{ 'issuer' => sp.issuer }],
     )
     allow(EncryptedDocStorage::DocWriter).to receive(:new).and_return(writer)
     allow(writer).to receive(:write_with_data)
-
-    allow(IdentityConfig.store).to receive(:attempts_api_enabled).and_return(
-      socure_doc_escrow_enabled,
-    )
-
-    allow(IdentityConfig.store).to receive(:allowed_attempts_providers).and_return(
-      [{ 'issuer' => sp.issuer }],
-    )
   end
 
   describe '#perform' do
@@ -79,53 +114,7 @@ RSpec.describe SocureDocvResultsJob do
       job.perform(document_capture_session_uuid:, async: false)
     end
 
-    before do
-      allow(Proofing::Resolution::Plugins::AamvaPlugin).to receive(:new).and_return(aamva_proofer)
-    end
-
     context 'when we get a 200 OK back from Socure' do
-      let(:socure_response_body) do
-        # ID+ v3.0 API Predictive Document Verification response
-        {
-          referenceId: 'a1234b56-e789-0123-4fga-56b7c890d123',
-          previousReferenceId: 'e9c170f2-b3e4-423b-a373-5d6e1e9b23f8',
-          documentVerification: {
-            reasonCodes: reason_codes,
-            documentType: {
-              type: document_metadata_type,
-              country: 'USA',
-              state: 'NY',
-            },
-            decision: {
-              name: 'lenient',
-              value: decision_value,
-            },
-            documentData: {
-              firstName: 'Dwayne',
-              surName: 'Denver',
-              fullName: 'Dwayne Denver',
-              address: '123 Example Street, New York City, NY 10001',
-              parsedAddress: {
-                physicalAddress: '123 Example Street',
-                physicalAddress2: 'Apt 4',
-                city: 'New York City',
-                state: 'NY',
-                country: 'US',
-                zip: '10001',
-              },
-              documentNumber: '000000000',
-              dob: '2000-01-01',
-              issueDate: '2020-01-01',
-              expirationDate: expiration_date,
-            },
-          },
-          customerProfile: {
-            customerUserId: user.uuid,
-            userId: 'u8JpWn4QsF3R7tA2',
-          },
-        }
-      end
-
       let(:expected_socure_log) do
         {
           success: true,
@@ -177,6 +166,55 @@ RSpec.describe SocureDocvResultsJob do
 
       context 'when the response is successful' do
         it 'stores the result from the Socure DocV request' do
+          perform
+
+          document_capture_session.reload
+          document_capture_session_result = document_capture_session.load_result
+          expect(document_capture_session_result.success).to eq(true)
+          expect(document_capture_session_result.pii[:first_name]).to eq('Dwayne')
+          expect(document_capture_session_result.attention_with_barcode).to eq(false)
+          expect(document_capture_session_result.doc_auth_success).to eq(true)
+          expect(document_capture_session_result.selfie_status).to eq(:not_processed)
+          expect(document_capture_session_result.aamva_status).to eq(:not_processed)
+          expect(document_capture_session_result.attempt).to eq(1)
+        end
+
+        it 'logs an event' do
+          perform
+
+          expect(@analytics).to have_logged_event(
+            :idv_socure_verification_data_requested,
+            hash_including(
+              address_line2_present: true,
+              async: true,
+              birth_year: 2000,
+              customer_profile: { 'customerUserId' => user.uuid, 'userId' => socure_user_id },
+              customer_user_id: user.uuid,
+              decision: { 'name' => 'lenient', 'value' => 'accept' },
+              doc_auth_success: true,
+              doc_type_supported: true,
+              document_metadata: { 'country' => 'USA',
+                                   'state' => 'NY',
+                                   'type' => 'Drivers License' },
+              document_type_received: 'drivers_license',
+              errors: {},
+              expiration_date: '2027-01-01',
+              issue_year: 2020,
+              issuer: sp.issuer,
+              liveness_enabled: false,
+              reason_codes: ['I831', 'R810'],
+              reference_id: socure_reference_id,
+              remaining_submit_attempts: 3,
+              state: 'NY',
+              submit_attempts: 1,
+              success: true,
+              vendor: 'Socure',
+              zip_code: '10001',
+            ),
+          )
+        end
+
+        it 'calls the attempts_api_tracker with the expected arguments' do
           expect(attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
             success: true,
             document_state: address_data[:state],
@@ -194,16 +232,6 @@ RSpec.describe SocureDocvResultsJob do
             failure_reason: nil,
           )
           perform
-
-          document_capture_session.reload
-          document_capture_session_result = document_capture_session.load_result
-          expect(document_capture_session_result.success).to eq(true)
-          expect(document_capture_session_result.pii[:first_name]).to eq('Dwayne')
-          expect(document_capture_session_result.attention_with_barcode).to eq(false)
-          expect(document_capture_session_result.doc_auth_success).to eq(true)
-          expect(document_capture_session_result.selfie_status).to eq(:not_processed)
-          expect(document_capture_session_result.aamva_status).to eq(:not_processed)
-          expect(document_capture_session_result.attempt).to eq(1)
         end
       end
 
@@ -502,7 +530,7 @@ RSpec.describe SocureDocvResultsJob do
           expect(document_capture_session_result.doc_auth_success).to eq(true)
           expect(document_capture_session_result.selfie_status).to eq(:not_processed)
           expect(document_capture_session.last_doc_auth_result).to eq('accept')
-          expect(fake_analytics).to have_logged_event(
+          expect(@analytics).to have_logged_event(
             :idv_socure_verification_data_requested,
             hash_including(
               :customer_user_id,
@@ -533,7 +561,7 @@ RSpec.describe SocureDocvResultsJob do
               selfie_status: :not_processed,
             )
             expect(document_capture_session.last_doc_auth_result).to eq('accept')
-            expect(fake_analytics).to have_logged_event(
+            expect(@analytics).to have_logged_event(
               :idv_socure_verification_data_requested,
               hash_including(
                 :customer_user_id,
@@ -571,8 +599,7 @@ RSpec.describe SocureDocvResultsJob do
         let(:socure_response_body) do
           # ID+ v3.0 API Predictive Document Verification response
           {
-            referenceId: 'a1234b56-e789-0123-4fga-56b7c890d123',
-            previousReferenceId: 'e9c170f2-b3e4-423b-a373-5d6e1e9b23f8',
+            referenceId: socure_reference_id,
             documentVerification: {
               reasonCodes: reason_codes,
               documentType: {
@@ -595,7 +622,7 @@ RSpec.describe SocureDocvResultsJob do
             },
             customerProfile: {
               customerUserId: user.uuid,
-              userId: 'u8JpWn4QsF3R7tA2',
+              userId: socure_user_id,
             },
           }
         end
@@ -611,7 +638,7 @@ RSpec.describe SocureDocvResultsJob do
             expect(document_capture_session_result.doc_auth_success).to eq(false)
             expect(document_capture_session_result.selfie_status).to eq(:not_processed)
             expect(document_capture_session_result.aamva_status).to eq(:not_processed)
-            expect(fake_analytics).to have_logged_event(
+            expect(@analytics).to have_logged_event(
               :idv_socure_verification_data_requested,
               hash_including(
                 :customer_user_id,
@@ -636,7 +663,7 @@ RSpec.describe SocureDocvResultsJob do
               expect(document_capture_session_result.selfie_status).to eq(:not_processed)
               expect(document_capture_session_result.aamva_status).to eq(:not_processed)
               expect(document_capture_session_result.errors).to eq({ unaccepted_id_type: true })
-              expect(fake_analytics).to have_logged_event(
+              expect(@analytics).to have_logged_event(
                 :idv_socure_verification_data_requested,
                 hash_including(
                   :customer_user_id,
@@ -655,7 +682,7 @@ RSpec.describe SocureDocvResultsJob do
           it 'logs the Socure verification data requested event' do
             perform
 
-            expect(fake_analytics).to have_logged_event(
+            expect(@analytics).to have_logged_event(
               :idv_socure_verification_data_requested,
               hash_including(
                 :customer_user_id,
@@ -725,7 +752,7 @@ RSpec.describe SocureDocvResultsJob do
                 it 'logs idv_dos_passport_verification event for successful MRZ check' do
                   perform
 
-                  expect(fake_analytics).to have_logged_event(
+                  expect(@analytics).to have_logged_event(
                     :idv_dos_passport_verification,
                     success: true,
                     submit_attempts: 1,
@@ -810,7 +837,7 @@ RSpec.describe SocureDocvResultsJob do
                   it 'logs idv_dos_passport_verification event for failed MRZ check' do
                     perform
 
-                    expect(fake_analytics).to have_logged_event(
+                    expect(@analytics).to have_logged_event(
                       :idv_dos_passport_verification,
                       success: false,
                       submit_attempts: 1,
@@ -895,7 +922,7 @@ RSpec.describe SocureDocvResultsJob do
                     expect(document_capture_session_result.aamva_status).to eq(:not_processed)
                     expect(document_capture_session_result.errors)
                       .to eq({ unaccepted_id_type: true })
-                    expect(fake_analytics).to have_logged_event(
+                    expect(@analytics).to have_logged_event(
                       :idv_socure_verification_data_requested,
                       hash_including(
                         :customer_user_id,
@@ -954,7 +981,7 @@ RSpec.describe SocureDocvResultsJob do
             state_id_address_resolution_result: nil,
             timer: an_instance_of(JobHelpers::Timer),
             doc_auth_flow: true,
-            analytics: fake_analytics,
+            analytics: @analytics,
           ).and_return(aamva_proofing_result)
         end
 
@@ -973,7 +1000,7 @@ RSpec.describe SocureDocvResultsJob do
               aamva_status: :passed,
             )
             expect(document_capture_session.last_doc_auth_result).to eq('accept')
-            expect(fake_analytics).to have_logged_event(
+            expect(@analytics).to have_logged_event(
               :idv_socure_verification_data_requested,
               hash_including(
                 :customer_user_id,
@@ -988,8 +1015,7 @@ RSpec.describe SocureDocvResultsJob do
         context 'when the socure response is missing the state_id_expiration field' do
           let(:socure_response_body) do
             {
-              referenceId: 'a1234b56-e789-0123-4fga-56b7c890d123',
-              previousReferenceId: 'e9c170f2-b3e4-423b-a373-5d6e1e9b23f8',
+              referenceId: socure_reference_id,
               documentVerification: {
                 reasonCodes: reason_codes,
                 documentType: {
@@ -1021,7 +1047,7 @@ RSpec.describe SocureDocvResultsJob do
               },
               customerProfile: {
                 customerUserId: user.uuid,
-                userId: 'u8JpWn4QsF3R7tA2',
+                userId: socure_user_id,
               },
             }
           end
@@ -1058,7 +1084,7 @@ RSpec.describe SocureDocvResultsJob do
               state_id_address_resolution_result: nil,
               timer: an_instance_of(JobHelpers::Timer),
               doc_auth_flow: true,
-              analytics: fake_analytics,
+              analytics: @analytics,
             ).and_return(aamva_proofing_result)
             perform
             document_capture_session.reload
@@ -1074,7 +1100,7 @@ RSpec.describe SocureDocvResultsJob do
               aamva_status: :passed,
             )
             expect(document_capture_session.last_doc_auth_result).to eq('accept')
-            expect(fake_analytics).to have_logged_event(
+            expect(@analytics).to have_logged_event(
               :idv_socure_verification_data_requested,
               hash_including(
                 :customer_user_id,
@@ -1086,45 +1112,45 @@ RSpec.describe SocureDocvResultsJob do
         end
 
         context 'when the socure response is missing the state_id_issued field' do
-          let(:socure_response_body) do
-            {
-              referenceId: 'a1234b56-e789-0123-4fga-56b7c890d123',
-              previousReferenceId: 'e9c170f2-b3e4-423b-a373-5d6e1e9b23f8',
-              documentVerification: {
-                reasonCodes: reason_codes,
-                documentType: {
-                  type: document_metadata_type,
-                  country: 'USA',
-                  state: 'NY',
-                },
-                decision: {
-                  name: 'lenient',
-                  value: decision_value,
-                },
-                documentData: {
-                  firstName: 'Dwayne',
-                  surName: 'Denver',
-                  fullName: 'Dwayne Denver',
-                  address: '123 Example Street, New York City, NY 10001',
-                  parsedAddress: {
-                    physicalAddress: '123 Example Street',
-                    physicalAddress2: 'Apt 4',
-                    city: 'New York City',
-                    state: 'NY',
-                    country: 'US',
-                    zip: '10001',
-                  },
-                  documentNumber: '000000000',
-                  dob: '2000-01-01',
-                  expirationDate: expiration_date,
-                },
-              },
-              customerProfile: {
-                customerUserId: user.uuid,
-                userId: 'u8JpWn4QsF3R7tA2',
-              },
-            }
-          end
+          # # REMOVE
+          # let(:socure_response_body) do
+          #   {
+          #     referenceId: socure_reference_id,
+          #     documentVerification: {
+          #       reasonCodes: reason_codes,
+          #       documentType: {
+          #         type: document_metadata_type,
+          #         country: 'USA',
+          #         state: 'NY',
+          #       },
+          #       decision: {
+          #         name: 'lenient',
+          #         value: decision_value,
+          #       },
+          #       documentData: {
+          #         firstName: 'Dwayne',
+          #         surName: 'Denver',
+          #         fullName: 'Dwayne Denver',
+          #         address: '123 Example Street, New York City, NY 10001',
+          #         parsedAddress: {
+          #           physicalAddress: '123 Example Street',
+          #           physicalAddress2: 'Apt 4',
+          #           city: 'New York City',
+          #           state: 'NY',
+          #           country: 'US',
+          #           zip: '10001',
+          #         },
+          #         documentNumber: '000000000',
+          #         dob: '2000-01-01',
+          #         expirationDate: expiration_date,
+          #       },
+          #     },
+          #     customerProfile: {
+          #       customerUserId: user.uuid,
+          #       userId: socure_user_id,
+          #     },
+          #   }
+          # end
           let(:document_capture_session_result) { document_capture_session.load_result }
 
           before do
@@ -1158,7 +1184,7 @@ RSpec.describe SocureDocvResultsJob do
               state_id_address_resolution_result: nil,
               timer: an_instance_of(JobHelpers::Timer),
               doc_auth_flow: true,
-              analytics: fake_analytics,
+              analytics: @analytics,
             ).and_return(aamva_proofing_result)
             perform
             document_capture_session.reload
@@ -1174,7 +1200,7 @@ RSpec.describe SocureDocvResultsJob do
               aamva_status: :passed,
             )
             expect(document_capture_session.last_doc_auth_result).to eq('accept')
-            expect(fake_analytics).to have_logged_event(
+            expect(@analytics).to have_logged_event(
               :idv_socure_verification_data_requested,
               hash_including(
                 :customer_user_id,
@@ -1204,7 +1230,7 @@ RSpec.describe SocureDocvResultsJob do
             expect(document_capture_session_result.aamva_status).to eq(:failed)
             expect(document_capture_session_result.errors)
               .to eq(aamva_errors)
-            expect(fake_analytics).to have_logged_event(
+            expect(@analytics).to have_logged_event(
               :idv_socure_verification_data_requested,
               hash_including(
                 :customer_user_id,
@@ -1272,7 +1298,7 @@ RSpec.describe SocureDocvResultsJob do
         it 'logs the status, reference_id, and message' do
           perform
 
-          expect(fake_analytics).to have_logged_event(
+          expect(@analytics).to have_logged_event(
             :idv_socure_verification_data_requested,
             hash_including(
               :vendor_status,
@@ -1391,7 +1417,7 @@ RSpec.describe SocureDocvResultsJob do
 
       it 'logs an idv_doc_auth_submitted_pii_validation event' do
         perform
-        expect(fake_analytics).to have_logged_event(
+        expect(@analytics).to have_logged_event(
           'IdV: doc auth image upload vendor pii validation',
           hash_including(
             :submit_attempts,
@@ -1402,7 +1428,7 @@ RSpec.describe SocureDocvResultsJob do
 
       it 'logs an idv_socure_verification_data_requested event' do
         perform
-        expect(fake_analytics).to have_logged_event(
+        expect(@analytics).to have_logged_event(
           :idv_socure_verification_data_requested,
           hash_including(
             expected_socure_log.merge({ async: true }),
@@ -1412,7 +1438,7 @@ RSpec.describe SocureDocvResultsJob do
 
       it 'expect log with perform_now to have async eq false' do
         perform_now
-        expect(fake_analytics).to have_logged_event(
+        expect(@analytics).to have_logged_event(
           :idv_socure_verification_data_requested,
           hash_including(
             expected_socure_log.merge({ async: false }),
@@ -1477,7 +1503,7 @@ RSpec.describe SocureDocvResultsJob do
           it 'logs the status, reference_id, and message' do
             perform
 
-            expect(fake_analytics).to have_logged_event(
+            expect(@analytics).to have_logged_event(
               :idv_socure_verification_data_requested,
               hash_including(
                 {
@@ -1523,7 +1549,7 @@ RSpec.describe SocureDocvResultsJob do
           it 'logs the event' do
             perform
 
-            expect(fake_analytics).to have_logged_event(
+            expect(@analytics).to have_logged_event(
               :idv_socure_verification_data_requested,
             )
           end

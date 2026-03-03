@@ -237,6 +237,7 @@ class SocureDocvResultsJob < ApplicationJob
   end
 
   def log_verification_request(docv_result_response:, vendor_request_time_in_ms:)
+    # byebug
     analytics.idv_socure_verification_data_requested(
       **docv_result_response.to_h.merge(
         submit_attempts:,
@@ -244,8 +245,8 @@ class SocureDocvResultsJob < ApplicationJob
         vendor_request_time_in_ms:,
         async:,
         pii_like_keypaths: [[:pii]],
-      ).except(:attention_with_barcode, :selfie_live, :selfie_quality_good,
-               :selfie_status),
+        issuer: document_capture_session.issuer,
+      ).except(:attention_with_barcode, :selfie_live, :selfie_quality_good, :selfie_status),
     )
   end
 
