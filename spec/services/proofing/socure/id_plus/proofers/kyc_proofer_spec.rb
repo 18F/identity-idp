@@ -1,9 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe Proofing::Socure::IdPlus::Proofers::KycProofer do
-  let(:config) do
-  end
-
   let(:analytics) { FakeAnalytics.new }
   let(:proofer) { described_class.new(config, analytics) }
   let(:applicant) { {} }
@@ -20,18 +17,22 @@ RSpec.describe Proofing::Socure::IdPlus::Proofers::KycProofer do
   let(:result) { proofer.proof(applicant) }
 
   let(:response_status) { 200 }
+  let(:idv_socure_kyc_auto_failure_reason_codes) { ['R995'] }
 
   let(:field_validation_overrides) { {} }
+  let(:reason_codes) do
+    [
+      'I919',
+      'I914',
+      'I905',
+    ]
+  end
 
   let(:response_body) do
     {
       'referenceId' => 'a-really-unique-id',
       'kyc' => {
-        'reasonCodes' => [
-          'I919',
-          'I914',
-          'I905',
-        ],
+        'reasonCodes' => reason_codes,
         'fieldValidations' => {
           'firstName' => 0.99,
           'surName' => 0.99,
@@ -48,6 +49,9 @@ RSpec.describe Proofing::Socure::IdPlus::Proofers::KycProofer do
   end
 
   before do
+    allow(IdentityConfig.store).to receive(:idv_socure_kyc_auto_failure_reason_codes)
+      .and_return(idv_socure_kyc_auto_failure_reason_codes)
+
     using_json = !response_body.is_a?(String)
 
     stub_request(:post, URI.join(base_url, '/api/3.0/EmailAuthScore').to_s)
@@ -106,6 +110,22 @@ RSpec.describe Proofing::Socure::IdPlus::Proofers::KycProofer do
             ssn
           ].to_set,
         )
+      end
+    end
+  end
+
+  context 'when specific reason code is present' do
+    let(:reason_codes) { ['R995'] }
+
+    it 'is not successful' do
+      expect(result.success).to eql(false)
+    end
+
+    context 'and the specific reason code is not configured as an auto failure reason code' do
+      let(:idv_socure_kyc_auto_failure_reason_codes) { ['R111'] }
+
+      it 'is successful' do
+        expect(result.success).to eql(true)
       end
     end
   end

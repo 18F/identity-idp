@@ -25,7 +25,7 @@ module Proofing
           # @return [Proofing::Resolution::Result]
           def build_result_from_response(response)
             Proofing::Resolution::Result.new(
-              success: response.all_required_attributes_verified?,
+              success: success?(response),
               exception: nil,
               vendor_name: VENDOR_NAME,
               verified_attributes: response.verified_attributes,
@@ -35,6 +35,10 @@ module Proofing
               customer_user_id: response.customer_user_id,
               reason_codes: SocureReasonCode.with_definitions(response.reason_codes),
             )
+          end
+
+          def success?(response)
+            response.all_required_attributes_verified? && !response.has_autofail_reason_codes?
           end
 
           def request(input)
