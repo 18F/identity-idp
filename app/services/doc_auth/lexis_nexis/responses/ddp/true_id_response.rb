@@ -111,6 +111,13 @@ module DocAuth
             selfie_status == :success
           end
 
+          def attention_with_barcode?
+            return false unless doc_auth_result_attention?
+
+            !!parsed_alerts[:failed]
+              &.any? { |alert| alert[:name] == '2D Barcode Read' && alert[:result] == 'Attention' }
+          end
+
           private
 
           def products
@@ -214,6 +221,10 @@ module DocAuth
 
           def billed?
             !!doc_auth_result
+          end
+
+          def doc_auth_result_attention?
+            doc_auth_result == 'Attention'
           end
 
           def review_status

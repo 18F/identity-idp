@@ -144,13 +144,13 @@ class ReportMailerPreview < ActionMailer::Preview
   end
 
   def sp_registration_funnel_report
-    require 'reporting/irs_registration_funnel_report'
+    require 'reporting/sp_registration_funnel_report'
 
     mock_issuers = ['test_issuer']
     mock_agency = 'Test_agency'
     date    = Time.zone.yesterday.end_of_day
 
-    builder = Reporting::IrsRegistrationFunnelReport.new(
+    builder = Reporting::SpRegistrationFunnelReport.new(
       issuers: mock_issuers,
       time_range: date.beginning_of_week(:sunday).prev_occurring(:sunday).all_week(:sunday),
       agency_abbreviation: mock_agency,
@@ -182,13 +182,13 @@ class ReportMailerPreview < ActionMailer::Preview
   end
 
   def sp_fraud_metrics_report
-    require 'reporting/irs_fraud_metrics_lg99_report'
+    require 'reporting/sp_fraud_metrics_lg99_report'
 
     date    = Time.zone.yesterday.end_of_day
     issuers = ['issuer1']
     agency  = 'Test_Agency'
 
-    builder = Reporting::IrsFraudMetricsLg99Report.new(
+    builder = Reporting::SpFraudMetricsLg99Report.new(
       time_range: date.all_month,
       issuers: issuers,
       agency_abbreviation: agency,
@@ -242,13 +242,13 @@ class ReportMailerPreview < ActionMailer::Preview
   end
 
   def sp_verification_report
-    require 'reporting/irs_verification_report'
+    require 'reporting/sp_verification_report'
 
     date    = Time.zone.yesterday.end_of_day
     issuers = ['issuer1']
     agency  = 'Test_Agency'
 
-    builder = Reporting::IrsVerificationReport.new(
+    builder = Reporting::SpVerificationReport.new(
       time_range: date.beginning_of_week(:sunday).prev_occurring(:sunday).all_week(:sunday),
       issuers: issuers,
       agency_abbreviation: agency,
@@ -281,13 +281,13 @@ class ReportMailerPreview < ActionMailer::Preview
   end
 
   def sp_verification_demographics_report
-    require 'reporting/irs_verification_demographics_report'
+    require 'reporting/sp_verification_demographics_report'
 
     mock_issuers = ['test_issuer']
     mock_agency = 'Test_agency'
     date    = Time.zone.yesterday.end_of_day
 
-    builder = Reporting::IrsVerificationDemographicsReport.new(
+    builder = Reporting::SpVerificationDemographicsReport.new(
       issuers: mock_issuers,
       time_range: date.beginning_of_week(:sunday).prev_occurring(:sunday).all_week(:sunday),
       agency_abbreviation: mock_agency,
@@ -332,13 +332,13 @@ class ReportMailerPreview < ActionMailer::Preview
   end
 
   def monthly_sp_verification_report
-    require 'reporting/irs_verification_report'
+    require 'reporting/sp_verification_report'
 
     date    = Time.zone.yesterday.end_of_day
     issuers = ['issuer1']
     agency  = 'Test_Agency'
 
-    builder = Reporting::IrsVerificationReport.new(
+    builder = Reporting::SpVerificationReport.new(
       time_range: date.all_month,
       issuers: issuers,
       agency_abbreviation: agency,
@@ -398,7 +398,7 @@ class ReportMailerPreview < ActionMailer::Preview
       'internal_emails' => ['internal1@example.com'],
     }
 
-    report = Reports::IrsMonthlyCredMetricsReport.new(report_date, :internal)
+    report = Reports::SpCredMetricsReport.new(report_date, :internal)
 
     # Apply config the same way send_report does
     report.instance_variable_set(:@report_date, report_date)

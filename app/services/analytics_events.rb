@@ -6350,6 +6350,7 @@ module AnalyticsEvents
   # @param [Boolean] in_account_creation_flow Whether user is going through account creation flow
   # @param [Integer] enabled_mfa_methods_count Number of enabled MFA methods on the account
   # @param [Hash] recaptcha_annotation Details of reCAPTCHA annotation, if submitted
+  # @param [Boolean] available_webauthn_platform_config shows user has a webauth_platform config
   # Multi-Factor Authentication
   def multi_factor_auth(
     success:,
@@ -6375,6 +6376,7 @@ module AnalyticsEvents
     frontend_error: nil,
     in_account_creation_flow: nil,
     recaptcha_annotation: nil,
+    available_webauthn_platform_config: nil,
     **extra
   )
     track_event(
@@ -6402,6 +6404,7 @@ module AnalyticsEvents
       in_account_creation_flow:,
       enabled_mfa_methods_count:,
       recaptcha_annotation:,
+      available_webauthn_platform_config:,
       **extra,
     )
   end
@@ -6668,7 +6671,7 @@ module AnalyticsEvents
   #   registration contradict the authenticator attachment for user setup. For example, a user can
   #   set up a platform authenticator through the Security Key setup flow.
   # @param [:authentication, :account_creation, nil] webauthn_platform_recommended A/B test for
-  # recommended Face or Touch Unlock setup, if applicable.
+  # @param [Integer, nil] webauthn_setup_duration Duration of webauthn setup in seconds
   def multi_factor_auth_setup(
     success:,
     multi_factor_auth_method:,
@@ -6695,6 +6698,7 @@ module AnalyticsEvents
     transports: nil,
     transports_mismatch: nil,
     webauthn_platform_recommended: nil,
+    webauthn_setup_duration: nil,
     **extra
   )
     track_event(
@@ -6724,6 +6728,7 @@ module AnalyticsEvents
       transports:,
       transports_mismatch:,
       webauthn_platform_recommended:,
+      webauthn_setup_duration:,
       **extra,
     )
   end
@@ -8200,6 +8205,7 @@ module AnalyticsEvents
   # @param [String] area_code Area code of phone number
   # @param [String] country_code Abbreviated 2-letter country code associated with phone number
   # @param [String] phone_fingerprint HMAC fingerprint of the phone number formatted as E.164
+  # @param [String, nil] ip_country 2-letter country code associated with request IP address
   # @param ["authentication", "reauthentication", "confirmation"] context User session context
   # @param ["sms", "voice"] otp_delivery_preference Channel used to send the message
   # @param [Boolean] resend
@@ -8212,12 +8218,8 @@ module AnalyticsEvents
     area_code:,
     country_code:,
     phone_fingerprint:,
-    context:,
-    otp_delivery_preference:,
-    resend:,
-    telephony_response:,
-    adapter:,
-    success:,
+    context:, otp_delivery_preference:, resend:, telephony_response:, adapter:, success:,
+    ip_country: nil,
     recaptcha_annotation: nil,
     **extra
   )
@@ -8227,6 +8229,7 @@ module AnalyticsEvents
         area_code: area_code,
         country_code: country_code,
         phone_fingerprint: phone_fingerprint,
+        ip_country: ip_country,
         context: context,
         otp_delivery_preference: otp_delivery_preference,
         resend: resend,

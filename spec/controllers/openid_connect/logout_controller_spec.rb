@@ -135,7 +135,8 @@ RSpec.describe OpenidConnect::LogoutController do
             expect(@analytics).to have_logged_event(
               :sp_integration_errors_present,
               error_details: array_including(
-                'Redirect uri redirect_uri does not match registered redirect_uri',
+                'Redirect uri redirect_uri does not match registered redirect_uri. Please see ' \
+                'our documentation at https://developers.login.gov/support/#oidc-redirect-match',
               ),
               error_types: { redirect_uri: true },
               event: :oidc_logout_requested,
@@ -286,7 +287,8 @@ RSpec.describe OpenidConnect::LogoutController do
             expect(@analytics).to have_logged_event(
               :sp_integration_errors_present,
               error_details: array_including(
-                'Redirect uri redirect_uri does not match registered redirect_uri',
+                'Redirect uri redirect_uri does not match registered redirect_uri. Please see ' \
+                'our documentation at https://developers.login.gov/support/#oidc-redirect-match',
               ),
               error_types: { redirect_uri: true },
               event: :oidc_logout_requested,
@@ -412,7 +414,8 @@ RSpec.describe OpenidConnect::LogoutController do
             :sp_integration_errors_present,
             error_details: array_including(
               'Id token hint This application is misconfigured and should not be sending ' \
-                'id_token_hint. Please send client_id instead.',
+                'id_token_hint. Please send client_id instead. Please see our documentation at ' \
+                'https://developers.login.gov/support/#id-token-hint',
             ),
             error_types: { id_token_hint: true },
             event: :oidc_logout_requested,
@@ -460,7 +463,8 @@ RSpec.describe OpenidConnect::LogoutController do
           expect(@analytics).to have_logged_event(
             :sp_integration_errors_present,
             error_details: array_including(
-              'Redirect uri redirect_uri does not match registered redirect_uri',
+              'Redirect uri redirect_uri does not match registered redirect_uri. Please see our ' \
+              'documentation at https://developers.login.gov/support/#oidc-redirect-match',
             ),
             error_types: { redirect_uri: true },
             event: :oidc_logout_requested,
@@ -685,7 +689,8 @@ RSpec.describe OpenidConnect::LogoutController do
               expect(@analytics).to have_logged_event(
                 :sp_integration_errors_present,
                 error_details: array_including(
-                  'Client client_id is missing',
+                  'Client client_id is missing. Please see our documentation at ' \
+                  'https://developers.login.gov/support/#client-id-missing',
                 ),
                 error_types: { client_id: true },
                 event: :oidc_logout_submitted,

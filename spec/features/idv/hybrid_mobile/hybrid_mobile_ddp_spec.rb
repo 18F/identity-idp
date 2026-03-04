@@ -19,6 +19,9 @@ RSpec.describe 'Hybrid Flow DDP', js: true do
   let(:success_passport_response_body) { LexisNexisFixtures.ddp_true_id_passport_response_success }
   let(:fail_response_body) { LexisNexisFixtures.ddp_true_id_response_fail }
   let(:fail_passport_response_body) { LexisNexisFixtures.ddp_true_id_response_fail_passport }
+  let(:success_barcode_attention_response_body) do
+    LexisNexisFixtures.ddp_true_id_attention_with_barcode_response_state_id_card
+  end
   let(:lexisnexis_threatmetrix_base_url) { 'https://test-base-url.com' }
   let(:fake_dos_api_endpoint) { 'http://fake_dos_api_endpoint/' }
   let(:ddp_true_id_endpoint) do
@@ -26,6 +29,7 @@ RSpec.describe 'Hybrid Flow DDP', js: true do
   end
   let(:ddp_true_id_response_body) { nil }
   let(:document_type_received) { nil }
+  let(:barcode_attention_expected) { false }
 
   before do
     allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
@@ -93,6 +97,10 @@ RSpec.describe 'Hybrid Flow DDP', js: true do
         else
           attach_and_submit_images
         end
+        if barcode_attention_expected
+          expect(page).to have_content(t('doc_auth.errors.barcode_attention.heading'))
+          click_continue
+        end
         expect(page).to have_current_path(idv_hybrid_mobile_capture_complete_url)
       end
 
@@ -122,6 +130,14 @@ RSpec.describe 'Hybrid Flow DDP', js: true do
     let(:ddp_true_id_response_body) { success_passport_response_body }
     let(:choose_id_type) { Idp::Constants::DocumentTypes::PASSPORT }
     let(:document_type_received) { Idp::Constants::DocumentTypes::PASSPORT }
+
+    it_behaves_like 'success ddp flow'
+  end
+
+  context 'success drivers license ddp with barcode attention' do
+    let(:ddp_true_id_response_body) { success_barcode_attention_response_body }
+    let(:document_type_received) { Idp::Constants::DocumentTypes::DRIVERS_LICENSE }
+    let(:barcode_attention_expected) { true }
 
     it_behaves_like 'success ddp flow'
   end

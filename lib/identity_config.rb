@@ -232,6 +232,7 @@ module IdentityConfig
     config.add(:idv_max_attempts, type: :integer)
     config.add(:idv_min_age_years, type: :integer)
     config.add(:idv_phone_precheck_percent, type: :integer)
+    config.add(:idv_proofing_agent_enabled, type: :boolean)
     config.add(:idv_rdp_version_default, type: :string)
     config.add(:idv_rdp_version_switching_enabled, type: :boolean)
     config.add(:idv_rdp_version_v2_percent, type: :integer)
@@ -242,6 +243,7 @@ module IdentityConfig
       enum: [:instant_verify, :socure_kyc, :mock],
     )
     config.add(:idv_resolution_vendor_instant_verify_percent, type: :integer)
+    config.add(:idv_resolution_vendor_instant_verify_ddp_percent, type: :integer)
     config.add(:idv_resolution_vendor_socure_kyc_percent, type: :integer)
     config.add(:idv_resolution_vendor_switching_enabled, type: :boolean)
     config.add(:idv_send_link_attempt_window_in_minutes, type: :integer)
@@ -309,6 +311,7 @@ module IdentityConfig
     config.add(:lexisnexis_request_mode, type: :string)
     config.add(:lexisnexis_threatmetrix_api_key, type: :string, allow_nil: true)
     config.add(:lexisnexis_threatmetrix_base_url, type: :string, allow_nil: true)
+    config.add(:lexisnexis_threatmetrix_hybrid_handoff_policy, :string, allow_nil: true)
     config.add(:lexisnexis_threatmetrix_js_signing_cert, type: :string)
     config.add(:lexisnexis_threatmetrix_mock_enabled, type: :boolean)
     config.add(:lexisnexis_threatmetrix_org_id, type: :string, allow_nil: true)

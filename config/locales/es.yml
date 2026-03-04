@@ -823,7 +823,7 @@ errors.messages.invalid_calling_area: No se admiten llamadas a ese número de te
 errors.messages.invalid_phone_number.international: Ingrese un número de teléfono con el número correcto de dígitos.
 errors.messages.invalid_phone_number.us: Ingrese un número de teléfono de 10 dígitos.
 errors.messages.invalid_recaptcha_token: Lo sentimos, pero es posible que tu computadora o red te estén enviando consultas automáticas. Para proteger a nuestros usuarios, no podemos procesar tu solicitud en este momento.
-errors.messages.invalid_signature: SAML request signature is invalid or does not match any registered public certificates
+errors.messages.invalid_signature: SAML request signature is invalid or does not match any registered public certificates. Please see our documentation at https://developers.login.gov/support/#saml-signature
 errors.messages.invalid_sms_number: El número de teléfono ingresado no admite mensajes de texto. Intente la opción de llamada telefónica.
 errors.messages.invalid_voice_number: Número de teléfono no válido. Verifique haber ingresado el código de país o de área correcto.
 errors.messages.issuer_missing_or_invalid: Issuer missing from SAML request
@@ -851,9 +851,9 @@ errors.messages.too_long.other: es demasiado larga (el máximo es %{count} carac
 errors.messages.too_short.one: es demasiado corta (el mínimo es 1 carácter)
 errors.messages.too_short.other: es demasiado corta (el mínimo es %{count} caracteres)
 errors.messages.try_again: Vuelva a intentarlo.
-errors.messages.unauthorized_authn_context: Contexto de autenticación no autorizado
-errors.messages.unauthorized_nameid_format: Formato de identificación de nombre no autorizado
-errors.messages.unauthorized_service_provider: Proveedor de servicio no autorizado
+errors.messages.unauthorized_authn_context: Contexto de autenticación no autorizado. Consulte nuestra documentación en https://developers.login.gov/support/#unauthorized_auth_context
+errors.messages.unauthorized_nameid_format: Formato de identificación de nombre no autorizado. Consulte nuestra documentación en https://developers.login.gov/support/#nameidformat_unrecognized
+errors.messages.unauthorized_service_provider: Proveedor de servicio no autorizado. Consulte nuestra documentación en https://developers.login.gov/support/#unauthorized
 errors.messages.voip_check_error: Hubo un error al comprobar su teléfono; inténtelo de nuevo
 errors.messages.voip_phone: Este número corresponde a un servicio de telefonía basado en la web (VoIP). Seleccione un número diferente e inténtelo de nuevo.
 errors.messages.weak_password: Su contraseña no es suficientemente segura. %{feedback}
@@ -1603,38 +1603,38 @@ notices.use_diff_email.link: use una dirección de correo electrónico diferente
 notices.use_diff_email.text_html: O %{link_html}
 notices.webauthn_configured: Se agregó una clave de seguridad a su cuenta.
 notices.webauthn_platform_configured: Usó el bloqueo de pantalla de su dispositivo para agregar el desbloqueo facial o táctil a su cuenta.
-openid_connect.authorization.errors.bad_client_id: client_id incorrecto
+openid_connect.authorization.errors.bad_client_id: client_id incorrecto. Consulte nuestra documentación en https://developers.login.gov/support/#bad-client-id
 openid_connect.authorization.errors.invalid_verified_within_duration.one: el valor debe ser al menos %{count} días o más
 openid_connect.authorization.errors.invalid_verified_within_duration.other: el valor debe ser al menos %{count} días o más
 openid_connect.authorization.errors.invalid_verified_within_format: Formato no reconocido de verified_within
-openid_connect.authorization.errors.missing_ial: Falta un nivel válido de IAL
-openid_connect.authorization.errors.no_auth: Los acr_values no están autorizados
-openid_connect.authorization.errors.no_valid_acr_values: No se encontraron ial_values aceptables
-openid_connect.authorization.errors.no_valid_scope: No se encontraron valores de ámbito válidos
-openid_connect.authorization.errors.prompt_invalid: No se encontraron valores de consulta válidos
-openid_connect.authorization.errors.redirect_uri_invalid: redirect_uri no es válido
-openid_connect.authorization.errors.redirect_uri_no_match: redirect_uri no coincide con el redirect_uri registrado
-openid_connect.authorization.errors.unauthorized_scope: Ámbito no autorizado
+openid_connect.authorization.errors.missing_ial: Falta un nivel válido de IAL. Consulte nuestra documentación en https://developers.login.gov/support/#oidc-missing-ial
+openid_connect.authorization.errors.no_auth: Los acr_values no están autorizados. Consulte nuestra documentación en https://developers.login.gov/support/#oidc-missing-acr-values
+openid_connect.authorization.errors.no_valid_acr_values: No se encontraron ial_values aceptables. Consulte nuestra documentación en https://developers.login.gov/support/#oidc-no-acr-values
+openid_connect.authorization.errors.no_valid_scope: No se encontraron valores de ámbito válidos. Consulte nuestra documentación en https://developers.login.gov/support/#oidc-no-scope
+openid_connect.authorization.errors.prompt_invalid: No se encontraron valores de consulta válidos. Consulte nuestra documentación en https://developers.login.gov/support/#oidc-no-prompt
+openid_connect.authorization.errors.redirect_uri_invalid: redirect_uri no es válido. Consulte nuestra documentación en https://developers.login.gov/support/#oidc-invalid-redirect
+openid_connect.authorization.errors.redirect_uri_no_match: redirect_uri no coincide con el redirect_uri registrado. Consulte nuestra documentación en https://developers.login.gov/support/#oidc-redirect-match
+openid_connect.authorization.errors.unauthorized_scope: Ámbito no autorizado. Consulte nuestra documentación en https://developers.login.gov/support/#oidc-unauthotized-scope
 openid_connect.logout.confirm: Sí, cerrar sesión en %{app_name}
 openid_connect.logout.deny: No, ir a la página de mi cuenta
-openid_connect.logout.errors.client_id_invalid: No se reconoció client_id
-openid_connect.logout.errors.client_id_missing: Falta client_id
+openid_connect.logout.errors.client_id_invalid: No se reconoció client_id. Consulte nuestra documentación en https://developers.login.gov/support/#client-id-not-recognized
+openid_connect.logout.errors.client_id_missing: Falta client_id. Consulte nuestra documentación en https://developers.login.gov/support/#client-id-missing
 openid_connect.logout.errors.id_token_hint: No se reconoció id_token_hint
-openid_connect.logout.errors.id_token_hint_present: Esta aplicación está mal configurada y no debería estar enviando id_token_hint. En vez de ello, enviar client_id.
-openid_connect.logout.errors.no_client_id_or_id_token_hint: Esta aplicación está mal configurada y debe enviar client_id o id_token_hint.
+openid_connect.logout.errors.id_token_hint_present: Esta aplicación está mal configurada y no debería estar enviando id_token_hint. En vez de ello, enviar client_id. Consulte nuestra documentación en https://developers.login.gov/support/#id-token-hint
+openid_connect.logout.errors.no_client_id_or_id_token_hint: Esta aplicación está mal configurada y debe enviar client_id o id_token_hint. Consulte nuestra documentación en https://developers.login.gov/oidc/logout/
 openid_connect.logout.heading: ¿Desea cerrar sesión en %{app_name}?
 openid_connect.logout.heading_with_sp: ¿Desea cerrar sesión en %{app_name} y volver a %{service_provider_name}?
 
-openid_connect.token.errors.expired_code: venció
-openid_connect.token.errors.invalid_aud: Notificación de audiencia no válida, %{url} prevista
-openid_connect.token.errors.invalid_authentication: El cliente debe autenticarse a través de PKCE o private_key_jwt, omitiendo code_challenge o client_assertion
-openid_connect.token.errors.invalid_code: no es válido porque no coincide con ningún usuario. Consulte nuestra documentación en https://developers.login.gov/oidc/#token
-openid_connect.token.errors.invalid_code_verifier: code_verifier no coincide con code_challenge
-openid_connect.token.errors.invalid_iat: iat debe ser una marca de tiempo Unix de punto flotante o un entero que represente un momento en el pasado
-openid_connect.token.errors.invalid_signature: No se pudo validar la afirmación contra ninguna clave pública registrada
-openid_connect.user_info.errors.malformed_authorization: Encabezado de autorización mal formado
-openid_connect.user_info.errors.no_authorization: No se proporcionó ningún encabezado de autorización
-openid_connect.user_info.errors.not_found: No se pudo encontrar la autorización para el contenido del access_token proporcionado o puede ser que este haya vencido
+openid_connect.token.errors.expired_code: venció. Consulte nuestra documentación en https://developers.login.gov/support/#token-expired
+openid_connect.token.errors.invalid_aud: Notificación de audiencia no válida, %{url} prevista. Consulte nuestra documentación en https://developers.login.gov/support/#invalid-aud-claim
+openid_connect.token.errors.invalid_authentication: El cliente debe autenticarse a través de PKCE o private_key_jwt, omitiendo code_challenge o client_assertion. Consulte nuestra documentación en https://developers.login.gov/support/#pkce-or-private-key
+openid_connect.token.errors.invalid_code: no es válido porque no coincide con ningún usuario. Consulte nuestra documentación en https://developers.login.gov/support/#invalid-code
+openid_connect.token.errors.invalid_code_verifier: code_verifier no coincide con code_challenge. Consulte nuestra documentación en https://developers.login.gov/support/#invalid-code-verifier
+openid_connect.token.errors.invalid_iat: iat debe ser una marca de tiempo Unix de punto flotante o un entero que represente un momento en el pasado. Consulte nuestra documentación en https://developers.login.gov/support/#invalid-iat
+openid_connect.token.errors.invalid_signature: No se pudo validar la afirmación contra ninguna clave pública registrada. Consulte nuestra documentación en https://developers.login.gov/support/#invalid-token-signature
+openid_connect.user_info.errors.malformed_authorization: Encabezado de autorización mal formado. Consulte nuestra documentación en https://developers.login.gov/support/#malformed-auth-header
+openid_connect.user_info.errors.no_authorization: No se proporcionó ningún encabezado de autorización. Consulte nuestra documentación en https://developers.login.gov/support/#no-auth-header
+openid_connect.user_info.errors.not_found: No se pudo encontrar la autorización para el contenido del access_token proporcionado o puede ser que este haya vencido. Consulte nuestra documentación en https://developers.login.gov/support/#auth-header-contents-not-found
 pages.page_took_too_long.body: Es conveniente que espere unos minutos y vuelva a intentarlo. (503)
 pages.page_took_too_long.header: El servidor tardó demasiado en procesar su solicitud.
 profiling_failed.details_html: 'Llame a nuestro centro de contacto al <strong>(844) 875-6446</strong> y mencione el código de error <strong>LG22</strong>.'

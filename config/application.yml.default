@@ -217,11 +217,13 @@ idv_contact_phone_number: (844) 555-5555
 idv_max_attempts: 5
 idv_min_age_years: 13
 idv_phone_precheck_percent: 0
+idv_proofing_agent_enabled: false
 idv_rdp_version_default: rdp_v2
 idv_rdp_version_switching_enabled: false
 idv_rdp_version_v2_percent: 100
 idv_rdp_version_v3_percent: 0
 idv_resolution_default_vendor: mock
+idv_resolution_vendor_instant_verify_ddp_percent: 0
 idv_resolution_vendor_instant_verify_percent: 0
 idv_resolution_vendor_socure_kyc_percent: 0
 idv_resolution_vendor_switching_enabled: false
@@ -297,6 +299,7 @@ lexisnexis_request_mode: testing
 lexisnexis_threatmetrix_api_key:
 lexisnexis_threatmetrix_authentication_policy: '1234'
 lexisnexis_threatmetrix_base_url:
+lexisnexis_threatmetrix_hybrid_handoff_policy:
 lexisnexis_threatmetrix_js_signing_cert: ''
 lexisnexis_threatmetrix_mock_enabled: true
 lexisnexis_threatmetrix_org_id:

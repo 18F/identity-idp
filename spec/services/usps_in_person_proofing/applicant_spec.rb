@@ -1,6 +1,14 @@
 require 'rails_helper'
 
 RSpec.describe UspsInPersonProofing::Applicant do
+  let(:document_expiration_date) { Faker::Date.in_date_period(year: 2030).strftime('%Y-%m-%d') }
+  let(:document_expiration_date_in_epoch) do
+    Time.zone.parse(document_expiration_date).to_i
+  end
+  let(:document_type) { InPersonEnrollment::DOCUMENT_TYPE_STATE_ID }
+  let(:usps_expected_document_type) do
+    UspsInPersonProofing::USPS_DOCUMENT_TYPE_MAPPINGS[document_type]
+  end
   let(:applicant_pii) do
     {
       first_name: Faker::Name.first_name,
@@ -10,12 +18,12 @@ RSpec.describe UspsInPersonProofing::Applicant do
       state: Faker::Address.state_abbr,
       zipcode: Faker::Address.zip_code,
       id_number: Faker::Number.number(digits: 9),
-      id_expiration: Faker::Date.in_date_period(year: 2030).strftime('%Y-%m-%d'),
+      id_expiration: document_expiration_date,
     }
   end
 
   describe '.from_usps_applicant_and_enrollment' do
-    context 'when values contains transliterable characters' do
+    shared_examples 'when values contains transliterable characters' do
       let(:applicant) do
         Pii::UspsApplicant.new(
           **applicant_pii.merge(
@@ -26,7 +34,7 @@ RSpec.describe UspsInPersonProofing::Applicant do
           ),
         )
       end
-      let(:enrollment) { build('in_person_enrollment', document_type: 'state_id') }
+      let(:enrollment) { build('in_person_enrollment', document_type: document_type) }
       let(:email) { Faker::Internet.email(name: 'noreply') }
 
       before do
@@ -49,16 +57,28 @@ RSpec.describe UspsInPersonProofing::Applicant do
           state: applicant.state,
           zip_code: applicant.zipcode,
           document_number: applicant.id_number,
-          document_expiration_date: applicant.id_expiration,
+          document_expiration_date: document_expiration_date_in_epoch,
           email:,
-          document_type: enrollment.document_type,
+          document_type: usps_expected_document_type,
         )
       end
     end
 
+    context 'from_usps_applicant_and_enrollment w state_id' do
+      let(:document_type) { InPersonEnrollment::DOCUMENT_TYPE_STATE_ID }
+
+      it_behaves_like 'when values contains transliterable characters'
+    end
+
+    context 'from_usps_applicant_and_enrollment w passport book' do
+      let(:document_type) { InPersonEnrollment::DOCUMENT_TYPE_PASSPORT_BOOK }
+
+      it_behaves_like 'when values contains transliterable characters'
+    end
+
     context 'when values do not contain transliterable characters' do
       let(:applicant) { Pii::UspsApplicant.new(**applicant_pii) }
-      let(:enrollment) { build('in_person_enrollment', document_type: 'state_id') }
+      let(:enrollment) { build('in_person_enrollment', document_type: document_type) }
       let(:email) { Faker::Internet.email(name: 'noreply') }
 
       before do
@@ -81,9 +101,9 @@ RSpec.describe UspsInPersonProofing::Applicant do
           state: applicant.state,
           zip_code: applicant.zipcode,
           document_number: applicant.id_number,
-          document_expiration_date: applicant.id_expiration,
+          document_expiration_date: document_expiration_date_in_epoch,
           email:,
-          document_type: enrollment.document_type,
+          document_type: usps_expected_document_type,
         )
       end
     end

@@ -11,7 +11,7 @@ rescue LoadError => e
 end
 
 module Reporting
-  class IrsFraudMetricsLg99Report
+  class SpFraudMetricsLg99Report
     include Reporting::CloudwatchQueryQuoting
 
     attr_reader :issuers, :time_range
