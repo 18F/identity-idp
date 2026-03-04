@@ -292,7 +292,7 @@ module Reporting
     def threat_metrix_idv_query
       <<~QUERY
         fields @timestamp, @message, @logStream, @log
-        | filter name = "IdV: doc auth verify proofing results"
+        | filter name in ["idv_threatmetrix_response_body", 'idv_threatmetrix_hybrid_mobile_response_body']
         | display timestamp, id
         | limit 10000
       QUERY
