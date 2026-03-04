@@ -85,7 +85,6 @@ module Users
       if result.success?
         process_valid_submission
         create_piv_cac_added_email
-        create_mfa_added_email(mfa_method: :piv_cac_added)
         user_session.delete(:mfa_attempts)
       else
         process_invalid_submission
@@ -160,7 +159,7 @@ module Users
     end
 
     def create_piv_cac_added_email
-      _event, disavowal_token = create_user_event_with_disavowal(:backup_codes_added, current_user)
+      _event, disavowal_token = create_user_event_with_disavowal(:piv_cac_added, current_user)
       create_mfa_added_email(mfa_method: :piv_cac_added, disavowal_token: disavowal_token)
     end
   end
