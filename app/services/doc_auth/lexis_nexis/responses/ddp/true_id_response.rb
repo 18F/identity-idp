@@ -54,7 +54,6 @@ module DocAuth
             transaction_status_passed? && id_type_supported? && expected_document_type_received?
           end
 
-          # To be implemented in LG-17088
           def error_messages
             return {} if successful_result?
 

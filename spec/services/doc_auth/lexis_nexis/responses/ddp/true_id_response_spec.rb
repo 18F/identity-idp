@@ -3,9 +3,9 @@ require 'rails_helper'
 RSpec.describe DocAuth::LexisNexis::Responses::Ddp::TrueIdResponse do
   let(:success_response_body) { LexisNexisFixtures.ddp_true_id_state_id_response_success }
   let(:failure_response_body) { LexisNexisFixtures.ddp_true_id_response_fail }
-  let(:passport_failure_response_body) do
-    LexisNexisFixtures.ddp_true_id_response_fail_passport
-  end
+  let(:passport_failure_response_body) { LexisNexisFixtures.ddp_true_id_response_fail_passport }
+  let(:no_liveness_response_body) { LexisNexisFixtures.ddp_true_id_response_fail_no_liveness }
+  let(:glare_response_body) { LexisNexisFixtures.ddp_true_id_response_fail_glare }
   let(:unsupported_doc_type_response_body) do
     LexisNexisFixtures.ddp_true_id_response_fail_unsupported_doc_type
   end
@@ -27,9 +27,6 @@ RSpec.describe DocAuth::LexisNexis::Responses::Ddp::TrueIdResponse do
     instance_double(Faraday::Response, status: 200, body: ddp_response_body)
   end
 
-  let(:config) do
-    DocAuth::LexisNexis::Config.new
-  end
   let(:passport_requested) { false }
   let(:front_image) { 'front_image_data' }
   let(:back_image) { 'back_image_data' }
@@ -52,7 +49,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::Ddp::TrueIdResponse do
   end
 
   let(:config) do
-    Proofing::LexisNexis::Config.new(
+    DocAuth::LexisNexis::DdpConfig.new(
       api_key: 'test_api_key',
       base_url: 'https://example.com',
       org_id: 'test_org_id',
@@ -190,6 +187,68 @@ RSpec.describe DocAuth::LexisNexis::Responses::Ddp::TrueIdResponse do
       expect(response.success?).to eq(false)
       expect(response.pii_from_doc).to be_a(Pii::StateId)
       expect(response.pii_from_doc.to_h).to eq(expected_pii_for_fail.to_h)
+    end
+
+    context 'when selfie check is not required' do
+      let(:ddp_response_body) { no_liveness_response_body }
+
+      it 'produces appropriate errors without liveness' do
+        output = response.to_h
+        errors = output[:errors]
+
+        expect(output.to_h[:log_alert_results]).to eq(
+          '2d_barcode_read': { no_side: 'Passed' },
+          birth_date_crosscheck: { no_side: 'Passed' },
+          birth_date_valid: { no_side: 'Passed' },
+          document_classification: { no_side: 'Passed' },
+          document_crosscheck_aggregation: { no_side: 'Passed' },
+          document_number_crosscheck: { no_side: 'Passed' },
+          expiration_date_crosscheck: { no_side: 'Passed' },
+          expiration_date_valid: { no_side: 'Passed' },
+          full_name_crosscheck: { no_side: 'Passed' },
+          issue_date_crosscheck: { no_side: 'Passed' },
+          issue_date_valid: { no_side: 'Passed' },
+          layout_valid: { no_side: 'Passed' },
+          sex_crosscheck: { no_side: 'Passed' },
+          visible_color_response: { no_side: 'Passed' },
+          visible_pattern: { no_side: 'Failed' },
+          visible_photo_characteristics: { no_side: 'Passed' },
+          '1d_control_number_valid': { no_side: 'Failed' },
+          '2d_barcode_content': { no_side: 'Failed' },
+          control_number_crosscheck: { no_side: 'Caution' },
+          document_expired: { no_side: 'Attention' },
+        )
+        expect(output[:success]).to eq(false)
+        expect(errors.keys).to contain_exactly(:general, :front, :back, :hints)
+        expect(errors[:general]).to contain_exactly(DocAuth::Errors::GENERAL_ERROR)
+        expect(errors[:front]).to contain_exactly(DocAuth::Errors::FALLBACK_FIELD_LEVEL)
+        expect(errors[:back]).to contain_exactly(DocAuth::Errors::FALLBACK_FIELD_LEVEL)
+        expect(errors[:hints]).to eq(true)
+      end
+    end
+
+    context 'when the failure is due to glare' do
+      let(:ddp_response_body) { glare_response_body }
+
+      it 'produces appropriate errors' do
+        output = response.to_h
+        errors = output[:errors]
+
+        expect(response.successful_result?).to eq(false)
+        expect(response.success?).to eq(false)
+        expect(response.pii_from_doc).to be_nil
+
+        expect(output.to_h[:log_alert_results]).to eq(
+          document_classification: { no_side: 'Failed' },
+          document_tampering_detection: { no_side: 'Passed' },
+        )
+        expect(output[:success]).to eq(false)
+        expect(errors.keys).to contain_exactly(:general, :front, :back, :hints)
+        expect(errors[:general]).to contain_exactly(DocAuth::Errors::DPI_LOW_BOTH_SIDES)
+        expect(errors[:front]).to contain_exactly(DocAuth::Errors::DPI_LOW_FIELD)
+        expect(errors[:back]).to contain_exactly(DocAuth::Errors::DPI_LOW_FIELD)
+        expect(errors[:hints]).to eq(false)
+      end
     end
 
     context 'passport failure is not a successful result' do
