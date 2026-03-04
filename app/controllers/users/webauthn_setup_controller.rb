@@ -41,7 +41,9 @@ module Users
       save_challenge_in_session
       @exclude_credentials = exclude_credentials
       @need_to_set_up_additional_mfa = need_to_set_up_additional_mfa?
-      user_session[:webauthn_setup_started_at] = Time.zone.now.to_f
+      if platform_authenticator?
+        user_session[:webauthn_setup_started_at] = Time.zone.now
+      end
 
       if result.errors.present?
         increment_mfa_selection_attempt_count(webauthn_auth_method)
