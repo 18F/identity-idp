@@ -29,7 +29,7 @@ module Proofing
         if verification_status == 'error'
           error_information = body.fetch('Information', {}).to_json
           "Response error with code '#{error_code}': #{error_information}"
-        elsif error_code.present?
+        elsif error_code.present? && verification_status != 'passed'
           "Verification failed with code: '#{error_code}'"
         end
       end
