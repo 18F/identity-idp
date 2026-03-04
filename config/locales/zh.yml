@@ -2107,8 +2107,6 @@ user_mailer.personal_key_regenerated.subject: 账户安全警告
 user_mailer.personal_key_sign_in.help_html: <p>你的 16 字符的个人密钥刚被用来登录你的 %{app_name} 账户。你收到这一电邮是为了确保就是你。</p><p>如果你刚用自己的个人密钥登入，没问题！你无需做任何事情。</p><p>如果你没用个人密钥登录，或者你不确定，请立即采取以下步骤来保护你账户安全：<ol><li><strong><a href="%{reset_password_url}">更改你的密码</a>。</strong>选择一个你在该账户没用过的密码。</li><li><strong><a href="%{account_url}"> 登录你的 %{app_name} 账户</a></strong>并确保你账户页面上的信息你都能认出，包括你进行双因素身份证实的方法，比如电话号码、身份证实 app 或者安全密钥。</li><li><strong>在你的<a href="%{account_url}">%{app_name} 账户页面</a>，请求新个人密钥。</strong>请记住，除非你在用密钥登入一个使用%{app_name}的受到信任的网站，绝对不要将其与人分享。</li></ol></p><br>谢谢，<br>%{app_name} 团队
 user_mailer.personal_key_sign_in.intro: 个人密钥被用来登录
 user_mailer.personal_key_sign_in.subject: 账户安全警告
-user_mailer.phone_added.disavowal_link: 重设你的密码
-user_mailer.phone_added.help_html: 如果你没做此更改，请登录进入你的用户资料并管理电邮地址。我们还建议你 %{disavowal_link_html}。
 user_mailer.please_reset_password.call_to_action: 为了谨慎起见，我们已禁用你的密码以保护你信息的安全。请按照以下步骤重设你的密码和保护你账户安全：
 user_mailer.please_reset_password.intro: 我们在你的 %{app_name} 账户上探查到了异常活动。我们担心别人（不是你）在试图访问你的信息。
 user_mailer.please_reset_password.learn_more_link_text: 了解更多有关你选项的信息。
