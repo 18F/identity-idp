@@ -38,9 +38,7 @@ module Reporting
         | filter name in [
           "IdV: doc auth welcome visited",
           "IdV: doc auth document_capture visited",
-          "Frontend: IdV: front image added",
-          "Frontend: IdV: back image added",
-          "idv_selfie_image_added",
+          "idv_socure_verification_data_requested",
           "IdV: doc auth image upload vendor submitted",
           "IdV: doc auth ssn submitted",
           "IdV: doc auth verify proofing results",
@@ -60,9 +58,7 @@ module Reporting
 
         | stats sum(name = "IdV: doc auth welcome visited") > 0 as workflow_started,
                 sum(name = "IdV: doc auth document_capture visited") > 0 as doc_auth_started,
-                sum(name = "Frontend: IdV: front image added") > 0 and sum(name = "Frontend: IdV: back image added") > 0 as document_captured,
-                sum(name = "idv_selfie_image_added") > 0 as selfie_captured,
-                sum(name = "IdV: doc auth image upload vendor submitted" and properties.event_properties.success) > 0 as doc_auth_passed,
+                sum((name = "IdV: doc auth image upload vendor submitted" and properties.event_properties.success) or (name = "idv_socure_verification_data_requested"  and properties.event_properties.success)) > 0 as doc_auth_passed,
                 sum(name = "IdV: doc auth ssn submitted") > 0 as ssn_submitted,
                 sum(name = "IdV: doc auth verify proofing results") > 0 as personal_info_submitted,
                 sum(name = "IdV: doc auth verify proofing results" and properties.event_properties.success) > 0 as personal_info_verified,

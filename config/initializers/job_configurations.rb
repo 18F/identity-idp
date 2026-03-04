@@ -128,7 +128,7 @@ else
       },
       sp_proofing_events_by_uuid_report: {
         class: 'Reports::SpProofingEventsByUuid',
-        cron: cron_every_monday_4am,
+        cron: cron_1h,
         args: -> { [Time.zone.today] },
       },
       # Sync opted out phone numbers from AWS
