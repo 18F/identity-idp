@@ -103,8 +103,8 @@ module MfaSetupConcern
     }
   end
 
-  def create_mfa_added_email(event_type:)
-    subject = case event_type
+  def create_mfa_added_email(mfa_method:, disavowal_token:)
+    subject = case mfa_method
     when :auth_app_added
       t('user_mailer.multi_factor_authentication.auth_app_added', app_name: APP_NAME)
     when :backup_codes_added
@@ -134,7 +134,10 @@ module MfaSetupConcern
       )
     end
 
-    send_mfa_added_email(subject)
+    current_user.confirmed_email_addresses.each do |email_address|
+      UserMailer.with(user: current_user, email_address: email_address)
+        .mfa_added(subject: subject, disavowal_token: disavowal_token).deliver_now_or_later
+    end
   end
 
   private
@@ -184,12 +187,5 @@ module MfaSetupConcern
       mfa_context.enabled_mfa_methods_count == 1 &&
       mfa_context.phone_configurations.present? &&
       user_set_up_with_sms?
-  end
-
-  def send_mfa_added_email(subject)
-    current_user.confirmed_email_addresses.each do |email_address|
-      UserMailer.with(user: current_user, email_address: email_address)
-        .mfa_added(subject: subject).deliver_now_or_later
-    end
   end
 end

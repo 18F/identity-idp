@@ -502,8 +502,9 @@ class UserMailer < ActionMailer::Base
     end
   end
 
-  def mfa_added(subject:)
+  def mfa_added(subject:, disavowal_token:)
     @subject = subject
+    @disavowal_token = disavowal_token
     with_user_locale(user) do
       mail(
         to: email_address.email,
