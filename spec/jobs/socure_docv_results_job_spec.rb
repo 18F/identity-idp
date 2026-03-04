@@ -79,13 +79,12 @@ RSpec.describe SocureDocvResultsJob do
       issuer: sp.issuer,
     )
     allow(IdentityConfig.store).to receive_messages(
-      socure_idplus_base_url: socure_idplus_base_url,
-      dos_passport_mrz_endpoint: dos_passport_mrz_endpoint,
+      socure_idplus_base_url:,
+      dos_passport_mrz_endpoint:,
       idv_aamva_at_doc_auth_enabled: aamva_at_doc_auth_enabled,
     )
     stub_request(:post, IdentityConfig.store.dos_passport_mrz_endpoint)
       .to_return_json({ status: 200, body: { response: mrz_response } })
-    # allow(Analytics).to receive(:new).and_return(fake_analytics)
     allow(AttemptsApi::Tracker).to receive(:new).and_return(attempts_api_tracker)
     allow(FraudOps::Tracker).to receive(:new).and_return(fraud_opt_tracker)
     allow(Proofing::Resolution::Plugins::AamvaPlugin).to receive(:new).and_return(aamva_proofer)
@@ -97,7 +96,7 @@ RSpec.describe SocureDocvResultsJob do
 
   def enable_attempts_api
     allow(IdentityConfig.store).to receive_messages(
-      socure_doc_escrow_enabled: socure_doc_escrow_enabled,
+      socure_doc_escrow_enabled:,
       attempts_api_enabled: socure_doc_escrow_enabled,
       allowed_attempts_providers: [{ 'issuer' => sp.issuer }],
     )
@@ -1112,45 +1111,6 @@ RSpec.describe SocureDocvResultsJob do
         end
 
         context 'when the socure response is missing the state_id_issued field' do
-          # # REMOVE
-          # let(:socure_response_body) do
-          #   {
-          #     referenceId: socure_reference_id,
-          #     documentVerification: {
-          #       reasonCodes: reason_codes,
-          #       documentType: {
-          #         type: document_metadata_type,
-          #         country: 'USA',
-          #         state: 'NY',
-          #       },
-          #       decision: {
-          #         name: 'lenient',
-          #         value: decision_value,
-          #       },
-          #       documentData: {
-          #         firstName: 'Dwayne',
-          #         surName: 'Denver',
-          #         fullName: 'Dwayne Denver',
-          #         address: '123 Example Street, New York City, NY 10001',
-          #         parsedAddress: {
-          #           physicalAddress: '123 Example Street',
-          #           physicalAddress2: 'Apt 4',
-          #           city: 'New York City',
-          #           state: 'NY',
-          #           country: 'US',
-          #           zip: '10001',
-          #         },
-          #         documentNumber: '000000000',
-          #         dob: '2000-01-01',
-          #         expirationDate: expiration_date,
-          #       },
-          #     },
-          #     customerProfile: {
-          #       customerUserId: user.uuid,
-          #       userId: socure_user_id,
-          #     },
-          #   }
-          # end
           let(:document_capture_session_result) { document_capture_session.load_result }
 
           before do

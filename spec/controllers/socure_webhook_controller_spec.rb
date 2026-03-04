@@ -94,7 +94,6 @@ RSpec.describe SocureWebhookController do
             allow(SocureDocvResultsJob).to receive(:perform_now)
             allow(SocureDocvRepeatWebhookJob).to receive(:perform_later)
 
-            # dcs = create(:document_capture_session, :socure)
             webhook_body[:event][:docvTransactionToken] = dcs.socure_docv_transaction_token
 
             request.headers['Authorization'] = headers[:Authorization]
