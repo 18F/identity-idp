@@ -114,14 +114,14 @@ RSpec.describe Proofing::Socure::IdPlus::Proofers::KycProofer do
     end
   end
 
-  context 'when specific reason code is present' do
+  context 'when autofail reason code is present' do
     let(:reason_codes) { ['R995'] }
 
     it 'is not successful' do
       expect(result.success).to eql(false)
     end
 
-    context 'and the specific reason code is not configured as an auto failure reason code' do
+    context 'and reason code is not configured as an autofail code' do
       let(:idv_socure_kyc_auto_failure_reason_codes) { ['R111'] }
 
       it 'is successful' do

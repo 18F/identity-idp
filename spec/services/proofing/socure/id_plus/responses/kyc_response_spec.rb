@@ -92,11 +92,14 @@ RSpec.describe Proofing::Socure::IdPlus::Responses::KycResponse do
       end
     end
 
-    context 'when auto failure reason code config is nil' do
-      let(:idv_socure_kyc_auto_failure_reason_codes) { nil }
+    context 'when response includes a mix of normal and autofail reason codes' do
+      let(:idv_socure_kyc_auto_failure_reason_codes) { ['R995'] }
+      let(:response_reason_codes) do
+        ['I919', 'R995', 'I905']
+      end
 
-      it 'returns false' do
-        expect(subject.has_autofail_reason_codes?).to eql(false)
+      it 'returns true' do
+        expect(subject.has_autofail_reason_codes?).to eql(true)
       end
     end
   end

@@ -58,7 +58,8 @@ module Proofing
           end
 
           def auto_failure_reason_codes
-            Array(IdentityConfig.store.idv_socure_kyc_auto_failure_reason_codes)
+            @auto_failure_reason_codes ||=
+              IdentityConfig.store.idv_socure_kyc_auto_failure_reason_codes
           end
 
           private
