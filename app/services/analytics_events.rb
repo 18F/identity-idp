@@ -6377,6 +6377,7 @@ module AnalyticsEvents
     in_account_creation_flow: nil,
     recaptcha_annotation: nil,
     available_webauthn_platform_config: nil,
+    webauthn_auth_duration: nil,
     **extra
   )
     track_event(
@@ -6405,6 +6406,7 @@ module AnalyticsEvents
       enabled_mfa_methods_count:,
       recaptcha_annotation:,
       available_webauthn_platform_config:,
+      webauthn_auth_duration:,
       **extra,
     )
   end
