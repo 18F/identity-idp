@@ -214,6 +214,19 @@ module AbTests
     user&.uuid
   end.freeze
 
+
+  # This "test" will permanently be in place to allow a multi-vendor configuration.
+  SIGNIN_PASSWORD_COMPROMISED = AbTest.new(
+    experiment_name: 'Sign In Password Compromised ',
+    should_log: [
+      'Email and Password Authentication',
+    ].to_set,
+    buckets: { check_password: IdentityConfig.store.sign_in_password_compromised_percent_tested },
+  ) do |service_provider:, session:, user:, user_session:, **|
+    user&.uuid
+  end.freeze
+
+
   HYBRID_MOBILE_TMX_PROCESSED = AbTest.new(
     experiment_name: 'Hybrid Mobile ThreatMetrix',
     should_log: /^idv/i,
