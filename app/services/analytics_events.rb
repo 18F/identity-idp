@@ -1847,13 +1847,15 @@ module AnalyticsEvents
   # @param [String] customer_user_id The customerUserId received from Socure
   # @param [String] docv_transaction_token The docvTransactionToken received from Socure
   # @param [String] event_type The eventType received from Socure
+  # @param [String] issuer The issuer of the Service Provider requesting IdV
   # @param [String] reference_id The referenceId received from Socure
   # @param [String] user_id The uuid of the user using Socure
   def idv_doc_auth_socure_webhook_received(
     created_at:,
     customer_user_id:,
-    event_type:,
     docv_transaction_token:,
+    event_type:,
+    issuer:,
     reference_id:,
     user_id:,
     **extra
@@ -1864,6 +1866,7 @@ module AnalyticsEvents
       customer_user_id:,
       docv_transaction_token:,
       event_type:,
+      issuer:,
       reference_id:,
       user_id:,
       **extra,
@@ -5853,6 +5856,7 @@ module AnalyticsEvents
   # @param ["hybrid","standard"] flow_path Document capture user flow
   # @param [String] document_type_received type of state issued ID or passport
   # @param [Integer] issue_year Year document was issued
+  # @param [String] issuer The issuer of the Service Provider requesting IdV
   # @param [Boolean] liveness_enabled Whether the selfie result is included in response
   # @param [Hash] reason_codes socure internal reason codes for accept reject decision
   # @param [String] reference_id socure internal id for transaction
@@ -5890,6 +5894,7 @@ module AnalyticsEvents
     flow_path: nil,
     document_type_received: nil,
     issue_year: nil,
+    issuer: nil,
     liveness_enabled: nil,
     reference_id: nil,
     reason_codes: nil,
@@ -5920,6 +5925,7 @@ module AnalyticsEvents
       flow_path:,
       document_type_received:,
       issue_year:,
+      issuer:,
       liveness_enabled:,
       reason_codes:,
       reference_id:,
