@@ -1,0 +1,102 @@
+# frozen_string_literal: true
+
+require 'csv'
+begin
+  require 'reporting/command_line_options'
+rescue LoadError => e
+  warn 'could not load paths, try running with "bundle exec rails runner"'
+  raise e
+end
+
+module Reporting
+  # Reads pre-generated CSV reports from S3 and presents them as emailable reports.
+  # This is currently manually-run dark code. In the future, this may be converted
+  # to a job inheriting from BaseReport.
+  class FraudMetricsLg99ReportS3
+    attr_reader :time_range
+
+    CSV_FILE_NAMES = %w[
+      lg99_metrics
+      suspended_metrics
+      reinstated_metrics
+    ].freeze
+
+    # @param [Range<Time>] time_range
+    # @param [String] bucket_name the S3 bucket name
+    # @param [String] s3_path_prefix the S3 key prefix \
+    # (e.g. "fraud-metrics-report/2026/2026-03-04.fraud-metrics-report")
+    def initialize(
+      time_range:,
+      bucket_name:,
+      s3_path_prefix:
+    )
+      @time_range = time_range
+      @bucket_name = bucket_name
+      @s3_path_prefix = s3_path_prefix
+    end
+
+    def as_emailable_reports
+      [
+        Reporting::EmailableReport.new(
+          title: "Monthly LG-99 Metrics #{stats_month}",
+          table: lg99_metrics_table,
+          filename: 'lg99_metrics',
+        ),
+        Reporting::EmailableReport.new(
+          title: "Monthly Suspended User Metrics #{stats_month}",
+          table: suspended_metrics_table,
+          filename: 'suspended_metrics',
+        ),
+        Reporting::EmailableReport.new(
+          title: "Monthly Reinstated User Metrics #{stats_month}",
+          table: reinstated_metrics_table,
+          filename: 'reinstated_metrics',
+        ),
+      ]
+    end
+
+    def lg99_metrics_table
+      csv_data_for('lg99_metrics')
+    end
+
+    def suspended_metrics_table
+      csv_data_for('suspended_metrics')
+    end
+
+    def reinstated_metrics_table
+      csv_data_for('reinstated_metrics')
+    end
+
+    def stats_month
+      time_range.begin.strftime('%b-%Y')
+    end
+
+    # Returns parsed CSV data (array of arrays) for the given report name.
+    # Memoized per report name.
+    # @param [String] report_name one of CSV_FILE_NAMES
+    # @return [Array<Array<String>>]
+    def csv_data_for(report_name)
+      @csv_cache ||= {}
+      @csv_cache[report_name] ||= begin
+        body = fetch_csv_from_s3(report_name)
+        CSV.parse(body)
+      end
+    end
+
+    private
+
+    # Builds the full S3 object key for the given CSV report name and fetches it.
+    # Key format: "<s3_path_prefix>/<report_name>.csv"
+    # @param [String] report_name
+    # @return [String] raw CSV body
+    def fetch_csv_from_s3(report_name)
+      key = "#{@s3_path_prefix}/#{report_name}.csv"
+      resp = s3_helper.s3_client.get_object(bucket: @bucket_name, key: key)
+      resp.body.read
+    end
+
+    def s3_helper
+      @s3_helper ||= JobHelpers::S3Helper.new
+    end
+  end
+end
