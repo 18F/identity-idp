@@ -85,7 +85,7 @@ class SocureWebhookController < ApplicationController
       customer_user_id: event[:customerUserId],
       docv_transaction_token:,
       event_type: event[:eventType],
-      issuer: document_capture_session.issuer,
+      issuer: document_capture_session&.issuer,
       reference_id: event[:referenceId],
       user_id: user&.uuid,
     )
