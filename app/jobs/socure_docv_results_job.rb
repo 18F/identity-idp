@@ -244,8 +244,8 @@ class SocureDocvResultsJob < ApplicationJob
         vendor_request_time_in_ms:,
         async:,
         pii_like_keypaths: [[:pii]],
-      ).except(:attention_with_barcode, :selfie_live, :selfie_quality_good,
-               :selfie_status),
+        issuer: document_capture_session.issuer,
+      ).except(:attention_with_barcode, :selfie_live, :selfie_quality_good, :selfie_status),
     )
   end
 

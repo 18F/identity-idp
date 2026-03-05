@@ -1847,13 +1847,15 @@ module AnalyticsEvents
   # @param [String] customer_user_id The customerUserId received from Socure
   # @param [String] docv_transaction_token The docvTransactionToken received from Socure
   # @param [String] event_type The eventType received from Socure
+  # @param [String] issuer The issuer of the Service Provider requesting IdV
   # @param [String] reference_id The referenceId received from Socure
   # @param [String] user_id The uuid of the user using Socure
   def idv_doc_auth_socure_webhook_received(
     created_at:,
     customer_user_id:,
-    event_type:,
     docv_transaction_token:,
+    event_type:,
+    issuer:,
     reference_id:,
     user_id:,
     **extra
@@ -1864,6 +1866,7 @@ module AnalyticsEvents
       customer_user_id:,
       docv_transaction_token:,
       event_type:,
+      issuer:,
       reference_id:,
       user_id:,
       **extra,
@@ -2289,18 +2292,6 @@ module AnalyticsEvents
   # @option proofing_results [String,nil] context.stages.residential_address.vendor_id Vendor's internal ID for residential address proofing requests, e.g. socureId
   # @option proofing_results [String] context.stages.residential_address.vendor_name Vendor used for residential address proofing
   # @option proofing_results [String] context.stages.residential_address.vendor_workflow Vendor-specific workflow or configuration ID associated with the request made.
-  # @option proofing_results [Hash] context.stages.state_id Object holding details about the call made to the state ID proofing vendor
-  # @option proofing_results [Boolean] context.stages.state_id.success Whether the PII associated with the user's state ID document passed proofing
-  # @option proofing_results [Hash] context.stages.state_id.errors Object describing errors encountered while proofing the user's state ID PII
-  # @option proofing_results [String,nil] context.stages.state_id.exception If an exception occured during state ID PII verification its message is provided here
-  # @option proofing_results [Boolean] context.stages.state_id.mva_exception For AAMVA, whether the exception that occurred was due to an error on the state MVA side
-  # @option proofing_results [Hash<String,Numeric>] context.stages.state_id.requested_attributes An object whose keys are field names and values are "1" representing PII attributes sent to the state ID proofing vendor for verification.
-  # @option proofing_results [Boolean] context.stages.state_id.timed_out Whether the request to the state ID verification vendor timed out
-  # @option proofing_results [String] context.stages.state_id.transaction_id Vendor-specific transaction ID for the request made to the state id proofing vendor
-  # @option proofing_results [String] context.stages.state_id.vendor_name Name of the vendor used for state ID PII verification. If the ID was not from a supported jurisdiction, it will be "UnsupportedJurisdiction". It MAY also be "UnsupportedJurisdiction" if state ID verification was not needed because other vendor calls did not succeed.
-  # @option proofing_results [String] context.stages.state_id.state The state that was listed as the user's address on their state ID. Note that this may differ from state_id_jurisdiction.
-  # @option proofing_results [String] context.stages.state_id.state_id_jurisdiction The state that issued the drivers license or ID card being used for proofing.
-  # @option proofing_results [String] context.stages.state_id.state_id_number A string describing the _format_ of the state ID number provided.
   # @option proofing_results [Hash] context.stages.threatmetrix Object holding details about the call made to the device profiling vendor
   # @option proofing_results [String] context.stages.threatmetrix.client Identifier string indicating which client was used.
   # @option proofing_results [Boolean] context.stages.threatmetrix.success Whether the request to the vendor succeeded.
@@ -5865,6 +5856,7 @@ module AnalyticsEvents
   # @param ["hybrid","standard"] flow_path Document capture user flow
   # @param [String] document_type_received type of state issued ID or passport
   # @param [Integer] issue_year Year document was issued
+  # @param [String] issuer The issuer of the Service Provider requesting IdV
   # @param [Boolean] liveness_enabled Whether the selfie result is included in response
   # @param [Hash] reason_codes socure internal reason codes for accept reject decision
   # @param [String] reference_id socure internal id for transaction
@@ -5902,6 +5894,7 @@ module AnalyticsEvents
     flow_path: nil,
     document_type_received: nil,
     issue_year: nil,
+    issuer: nil,
     liveness_enabled: nil,
     reference_id: nil,
     reason_codes: nil,
@@ -5932,6 +5925,7 @@ module AnalyticsEvents
       flow_path:,
       document_type_received:,
       issue_year:,
+      issuer:,
       liveness_enabled:,
       reason_codes:,
       reference_id:,
@@ -6351,6 +6345,7 @@ module AnalyticsEvents
   # @param [Integer] enabled_mfa_methods_count Number of enabled MFA methods on the account
   # @param [Hash] recaptcha_annotation Details of reCAPTCHA annotation, if submitted
   # @param [Boolean] available_webauthn_platform_config shows user has a webauth_platform config
+  # @param [Integer] webauthn_auth_duration the duration to complete webauthn auth in seconds
   # Multi-Factor Authentication
   def multi_factor_auth(
     success:,
@@ -6377,6 +6372,7 @@ module AnalyticsEvents
     in_account_creation_flow: nil,
     recaptcha_annotation: nil,
     available_webauthn_platform_config: nil,
+    webauthn_auth_duration: nil,
     **extra
   )
     track_event(
@@ -6405,6 +6401,7 @@ module AnalyticsEvents
       enabled_mfa_methods_count:,
       recaptcha_annotation:,
       available_webauthn_platform_config:,
+      webauthn_auth_duration:,
       **extra,
     )
   end

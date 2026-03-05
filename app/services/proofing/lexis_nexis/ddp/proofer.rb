@@ -15,7 +15,7 @@ module Proofing
           build_result_from_response(response)
         rescue => exception
           NewRelic::Agent.notice_error(exception)
-          Proofing::DdpResult.new(success: false, exception: exception)
+          build_result_from_exception(exception)
         end
 
         private
@@ -25,6 +25,10 @@ module Proofing
         end
 
         def build_result_from_response(response)
+          raise NotImplementedError
+        end
+
+        def build_result_from_exception(exception)
           raise NotImplementedError
         end
       end

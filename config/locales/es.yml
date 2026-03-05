@@ -810,6 +810,7 @@ errors.messages.backup_code_limited: Lo intentó demasiadas veces; vuelva a inte
 errors.messages.blank: Llene este campo.
 errors.messages.blank_cert_element_req: No podemos detectar un certificado en su solicitud.
 errors.messages.both_auth_and_logout_request: SAML request contains both an authnrequest and logout request. Only one can be specified.
+errors.messages.choose_authentication_method: elige otro método de autenticación
 errors.messages.confirmation_code_incorrect: Código de verificación incorrecto
 errors.messages.confirmation_invalid_token: El vínculo de confirmación no es válido. El vínculo venció o usted ya confirmó su cuenta.
 errors.messages.confirmation_period_expired: El vínculo de confirmación venció. Puede hacer clic en “Volver a enviar instrucciones de confirmación” para obtener otro.
@@ -842,7 +843,7 @@ errors.messages.phone_confirmation_limited: Lo intentó demasiadas veces; vuelva
 errors.messages.phone_duplicate: Esta cuenta ya usa el número de teléfono que ingresó como autenticador. Use un número de teléfono diferente.
 errors.messages.phone_otp_format: Introduzca el código de un solo uso enviado a su teléfono. No utilice espacios ni caracteres especiales.
 errors.messages.phone_required: Se requiere un número de teléfono.
-errors.messages.phone_unsupported: Lo sentimos, no podemos enviar un SMS en este momento. Intente la opción de llamada telefónica siguiente, o use su clave personal.
+errors.messages.phone_unsupported_html: No podemos enviarle un código único en este momento. Inténtalo de nuevo haciendo clic en “Enviar otro código” a continuación o %{link_html}.
 errors.messages.premium_rate_phone: Parece que se trata de un número de teléfono de tarifa especial. Seleccione un número diferente e inténtelo de nuevo.
 errors.messages.pwned_password: La contraseña que ingresó no es segura. Está en una lista de contraseñas conocidas expuestas a filtraciones de datos.
 errors.messages.stronger_password: Introduzca una contraseña más segura
