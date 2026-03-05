@@ -54,6 +54,21 @@ module LexisNexisFixtures
       JSON.parse(raw).to_json
     end
 
+    def ddp_phone_finder_request_json
+      raw = read_fixture_file_at_path('ddp/phone_finder/request.json')
+      JSON.parse(raw).to_json
+    end
+
+    def ddp_phone_finder_success_response_json
+      raw = read_fixture_file_at_path('ddp/phone_finder/response.json')
+      JSON.parse(raw).to_json
+    end
+
+    def ddp_phone_finder_fail_response_json
+      raw = read_fixture_file_at_path('ddp/phone_finder/fail_response.json')
+      JSON.parse(raw).to_json
+    end
+
     def threatmetrix_authentication_request_json
       raw = read_fixture_file_at_path('ddp/threatmetrix/account_creation_request.json')
       JSON.parse(raw).to_json

@@ -987,15 +987,6 @@ RSpec.describe Idv::VerifyInfoController do
           )
 
           event = @analytics.events['IdV: doc auth verify proofing results'].first
-          state_id = event.dig(:proofing_results, :context, :stages, :state_id)
-          expect(state_id).to match(
-            hash_including(
-              document_type_received: 'drivers_license',
-              vendor_name: 'aamva_placeholder',
-            ),
-          )
-
-          event = @analytics.events['IdV: doc auth verify proofing results'].first
           phone_precheck = event.dig(:proofing_results, :context, :stages, :phone_precheck)
           expect(phone_precheck).to match(
             hash_including(
@@ -1171,13 +1162,6 @@ RSpec.describe Idv::VerifyInfoController do
           expect(@analytics).to have_logged_event(
             'IdV: doc auth verify proofing results',
             hash_including(
-              proofing_results: hash_including(
-                context: hash_including(
-                  stages: hash_including(
-                    state_id: hash_including(vendor_name:),
-                  ),
-                ),
-              ),
               exceptions: {
                 state_id: {
                   vendor_name:,

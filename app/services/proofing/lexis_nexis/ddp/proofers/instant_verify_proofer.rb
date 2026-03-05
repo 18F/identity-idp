@@ -28,6 +28,15 @@ module Proofing
             )
           end
 
+          def build_result_from_exception(exception)
+            Proofing::Resolution::Result.new(
+              success: false,
+              errors: {},
+              vendor_name: 'lexisnexis:instant_verify_ddp',
+              exception: exception,
+            )
+          end
+
           def verification_request(applicant)
             Proofing::LexisNexis::Ddp::Requests::InstantVerifyRequest.new(config:, applicant:)
           end

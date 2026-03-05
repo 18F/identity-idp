@@ -799,6 +799,7 @@ errors.messages.backup_code_limited: Vous avez essayé trop de fois, veuillez r�
 errors.messages.blank: Veuillez remplir ce champ.
 errors.messages.blank_cert_element_req: Nous ne pouvons pas détecter un certificat sur votre demande.
 errors.messages.both_auth_and_logout_request: SAML request contains both an authnrequest and logout request. Only one can be specified.
+errors.messages.choose_authentication_method: choisissez une autre méthode d’authentification
 errors.messages.confirmation_code_incorrect: Code de vérification incorrect
 errors.messages.confirmation_invalid_token: Lien de confirmation non valide. Le lien est expiré ou vous avez déjà confirmé votre compte.
 errors.messages.confirmation_period_expired: Lien de confirmation expiré. Vous pouvez cliquer sur « Renvoyer les instructions de confirmation » pour en obtenir un autre.
@@ -831,7 +832,7 @@ errors.messages.phone_confirmation_limited: Vous avez essayé trop de fois, veui
 errors.messages.phone_duplicate: Ce compte utilise déjà le numéro de téléphone que vous avez saisi en tant qu’authentifiant. Veuillez utiliser un numéro de téléphone différent.
 errors.messages.phone_otp_format: Entrez le code à usage unique envoyé sur votre téléphone. N’utilisez pas d’espaces ou de caractères spéciaux.
 errors.messages.phone_required: Le numéro de téléphone est obligatoire
-errors.messages.phone_unsupported: Désolé, nous ne sommes pas en mesure d’envoyer des SMS pour le moment. Veuillez essayez l’option d’appel téléphonique ci-dessous ou utilisez votre clé personnelle.
+errors.messages.phone_unsupported_html: Nous ne pouvons pas vous envoyer de code à usage unique pour le moment. Veuillez réessayer en cliquant sur « Envoyer un autre code » ci-dessous ou %{link_html}.
 errors.messages.premium_rate_phone: Il semble s’agir d’un numéro de téléphone surtaxé. Veuillez sélectionner un autre numéro et réessayer.
 errors.messages.pwned_password: Le mot de passe que vous avez saisi n’est pas sécurisé. Il figure sur une liste de mots de passe connus exposés au cours de violations de données.
 errors.messages.stronger_password: Saisissez un mot de passe plus fort
