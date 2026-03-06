@@ -32,4 +32,8 @@ class FakeRequest
   def env
     { 'REQUEST_METHOD' => 'GET' }
   end
+
+  def referer
+    "https://gsa.gov"
+  end
 end

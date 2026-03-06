@@ -65,6 +65,7 @@ class Analytics
       hostname: request.host,
       pid: Process.pid,
       trace_id: request.headers['X-Amzn-Trace-Id'],
+      referer: request.referer,
     }
 
     attributes[:git_sha] = IdentityConfig::GIT_SHA
