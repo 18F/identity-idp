@@ -21,7 +21,7 @@ RSpec.describe 'Add a new phone number' do
     expect(user.phone_configurations[1].confirmed_at).to be_present
   end
 
-  scenario 'adding a new phone number sends the user an email with a disavowal link' do
+  scenario 'adding a new phone number sends the user a confirmation email' do
     user = create(:user, :fully_registered)
     phone = '+1 (225) 278-1234'
 
@@ -37,7 +37,7 @@ RSpec.describe 'Add a new phone number' do
     expect_delivered_email_count(1)
     expect_delivered_email(
       to: [user.email_addresses.first.email],
-      subject: t('user_mailer.phone_added.subject'),
+      subject: t('user_mailer.multi_factor_authentication.phone_added', app_name: APP_NAME),
     )
   end
 

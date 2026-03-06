@@ -1,0 +1,16 @@
+<p>
+  <%= t(
+        'user_mailer.multi_factor_authentication.instructions_html',
+        change_password_link_html: link_to(
+          t('user_mailer.multi_factor_authentication.change_password_link'),
+          new_user_password_url,
+        ),
+        authentication_methods_link_html: link_to(
+          t('user_mailer.multi_factor_authentication.authentication_methods_link'),
+          MarketingSite.help_center_article_url(
+            category: 'manage-your-account',
+            article: 'add-or-change-your-authentication-method',
+          ),
+        ),
+      ) %>
+</p>

@@ -2060,6 +2060,22 @@ user_mailer.letter_reminder_14_days.did_not_get_a_letter_html: Si vous n’avez 
 user_mailer.letter_reminder_14_days.finish: Terminer la vérification de votre identité
 user_mailer.letter_reminder_14_days.sign_in_and_request_another_letter: connectez-vous pour en demander une autre
 user_mailer.letter_reminder_14_days.subject: Terminer la vérification de votre identité
+user_mailer.multi_factor_authentication.auth_app_added: Une application d’authentification a été ajoutée à votre compte %{app_name}.
+user_mailer.multi_factor_authentication.auth_app_deleted: Une application d’authentification a été supprimée de votre compte %{app_name}.
+user_mailer.multi_factor_authentication.authentication_methods_link: méthodes d’authentification
+user_mailer.multi_factor_authentication.backup_codes_added: Des codes de sauvegarde ont été ajoutés à votre compte %{app_name}.
+user_mailer.multi_factor_authentication.backup_codes_deleted: Les codes de sauvegarde ont été supprimés de votre compte %{app_name}.
+user_mailer.multi_factor_authentication.change_password_link: réinitialiser votre mot de passe
+user_mailer.multi_factor_authentication.instructions_html: Si ce n’est pas vous, %{change_password_link_html} et modifiez immédiatement vos %{authentication_methods_link_html}.
+user_mailer.multi_factor_authentication.new_auth_added: Une nouvelle méthode d’authentification a été ajoutée à votre compte %{app_name}.
+user_mailer.multi_factor_authentication.phone_added: L’envoi de message text ou vocal a été ajouté à votre compte %{app_name}.
+user_mailer.multi_factor_authentication.phone_deleted: L’envoi de message texte ou vocal a été supprimé de votre compte %{app_name}.
+user_mailer.multi_factor_authentication.piv_card_added: Une carte d’employé fédéral a été ajoutée à votre compte %{app_name}.
+user_mailer.multi_factor_authentication.piv_card_deleted: Une carte d’employé fédéral a été supprimée de votre compte %{app_name}.
+user_mailer.multi_factor_authentication.webauthn_added: Une clé de sécurité a été ajoutée à votre compte %{app_name}.
+user_mailer.multi_factor_authentication.webauthn_deleted: Une clé de sécurité a été supprimée de votre compte %{app_name}.
+user_mailer.multi_factor_authentication.webauthn_platform_added: Le déverrouillage facial ou tactile a été ajouté à votre compte %{app_name}.
+user_mailer.multi_factor_authentication.webauthn_platform_deleted: Le déverrouillage facial ou tactile a été supprimé de votre compte %{app_name}.
 user_mailer.new_device_sign_in_after_2fa.authentication_methods: méthodes d’authentification
 user_mailer.new_device_sign_in_after_2fa.info_p1: Votre e-mail et mot de passe %{app_name} ont été utilisés pour se connecter et s’authentifier sur un nouvel appareil.
 user_mailer.new_device_sign_in_after_2fa.info_p2: Si vous reconnaissez cette activité, vous n’avez rien à faire.
@@ -2087,10 +2103,6 @@ user_mailer.personal_key_regenerated.subject: Alerte de sécurité du compte
 user_mailer.personal_key_sign_in.help_html: <p>Une connexion à votre compte %{app_name} à l’aide de votre clé personnelle vient de se produire. Le but de cet e-mail est de s’assurer que c’est bien vous qui en êtes à l’origine.</p><p>Si vous venez de vous connecter avec votre clé personnelle, c’est parfait ! Il n’y a rien que vous deviez faire.</p><p>Si vous ne vous êtes pas connecté avec une clé personnelle ou si vous n’êtes pas sûr, veuillez prendre immédiatement les mesures suivantes pour sécuriser votre compte :<ol><li><strong><a href="%{reset_password_url}">Changez votre mot de passe</a>.</strong> Choisissez un mot de passe que vous n’avez pas encore utilisé avec ce compte.</li><li><strong><a href="%{account_url}">Connectez-vous à votre compte %{app_name}</a></strong> et assurez-vous de reconnaître toutes les informations de la page de votre compte, y compris les méthodes que vous utilisez pour l’authentification à deux facteurs, comme le numéro de téléphone, l’appli d’authentification ou la clé de sécurité.</li><li><strong>Sur votre <a href="%{account_url}">page de compte %{app_name}</a>, demandez une nouvelle clé personnelle.</strong> N’oubliez pas de ne jamais la partager, à moins que vous ne l’utilisiez pour vous connecter à un site Web de confiance qui utilise %{app_name}.</li></ol></p><br>Merci,<br>L’équipe %{app_name}
 user_mailer.personal_key_sign_in.intro: Clé personnelle utilisée pour la connexion
 user_mailer.personal_key_sign_in.subject: Alerte de sécurité du compte
-user_mailer.phone_added.disavowal_link: réinitialiser votre mot de passe
-user_mailer.phone_added.help_html: Si vous n’avez pas apporté cette modification, connectez-vous à votre profil et gérez vos numéros de téléphone. Nous vous recommandons également de %{disavowal_link_html}.
-user_mailer.phone_added.intro: Un nouveau numéro de téléphone a été ajouté à votre profil %{app_name}.
-user_mailer.phone_added.subject: Nouveau numéro de téléphone ajouté
 user_mailer.please_reset_password.call_to_action: 'Par précaution, nous avons désactivé votre mot de passe pour conserver vos informations en sécurité. Veuillez suivre les étapes ci-dessous pour réinitialiser votre mot de passe et sécuriser votre compte :'
 user_mailer.please_reset_password.intro: Nous avons détecté une activité inhabituelle sur votre compte %{app_name}. Nous nous inquiétons que quelqu’un d’autre que vous pourrait être en train d’essayer d’accéder à vos informations.
 user_mailer.please_reset_password.learn_more_link_text: En savoir plus sur les options qui s’offrent à vous

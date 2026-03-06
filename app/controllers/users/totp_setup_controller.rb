@@ -37,6 +37,7 @@ module Users
 
       if result.success?
         process_valid_code
+        create_totp_added_email
         user_session.delete(:mfa_attempts)
       else
         process_invalid_code
@@ -121,6 +122,14 @@ module Users
         pii_like_keypaths: [[:mfa_method_counts, :phone]],
         attempts: mfa_attempts_count,
       }
+    end
+
+    def create_totp_added_email
+      _event, disavowal_token = create_user_event_with_disavowal(
+        :authenticator_enabled,
+        current_user,
+      )
+      create_mfa_added_email(mfa_method: :auth_app_added, disavowal_token: disavowal_token)
     end
   end
 end
