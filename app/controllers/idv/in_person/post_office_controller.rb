@@ -7,6 +7,7 @@ module Idv
       include IdvStepConcern
       include StepIndicatorConcern
       include UspsInPersonProofing
+      include Idv::HybridMobile::HybridMobileConcern
 
       def show
         @presenter = Idv::InPerson::PostOfficePresenter.new
@@ -28,6 +29,15 @@ module Idv
 
       def update
         # TODO: create needed enrollment and session data
+
+        enrollment.update!(
+          selected_location_details: selected_location,
+          issuer: current_sp&.issuer,
+          doc_auth_result: document_capture_session&.last_doc_auth_result,
+          sponsor_id: enrollment_sponsor_id,
+          document_type: nil,
+        )
+
         redirect_to idv_in_person_url
       end
 
@@ -56,6 +66,17 @@ module Idv
         )
       end
 
+      def selected_location
+        params.require(:post_office).permit(
+          :formatted_city_state_zip,
+          :name,
+          :saturday_hours,
+          :street_address,
+          :sunday_hours,
+          :weekday_hours,
+        )
+      end
+
       def formatted_city_state_zip
         "#{post_office_params[:city]}, #{post_office_params[:state]}, #{post_office_params[:zip_code_5]}-#{post_office_params[:zip_code_4]}"
       end
@@ -70,6 +91,16 @@ module Idv
           status: :establishing,
           profile: nil,
         )
+      end
+
+      def enrollment_sponsor_id
+        authn_context_enhanced_ipp? ?
+          IdentityConfig.store.usps_eipp_sponsor_id :
+          IdentityConfig.store.usps_ipp_sponsor_id
+      end
+
+      def authn_context_enhanced_ipp?
+        resolved_authn_context_result.enhanced_ipp?
       end
     end
   end
