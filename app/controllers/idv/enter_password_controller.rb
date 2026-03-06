@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-
+require 'pry'
 module Idv
   class EnterPasswordController < ApplicationController
     include Idv::AvailabilityConcern
@@ -35,6 +35,7 @@ module Idv
       clear_future_steps!
 
       init_profile
+      record_historical_events
 
       flash[:success] =
         if idv_session.verify_by_mail?
@@ -151,6 +152,21 @@ module Idv
         attempts_api_tracker.idv_enrollment_complete(reproof:)
         fraud_ops_tracker.idv_enrollment_complete(reproof:)
       end
+    end
+
+    def record_historical_events
+      profile = idv_session.profile
+      initiating_sp = profile.initiating_service_provider
+      historical_api_enabled = initiating_sp&.attempts_api_enabled?
+      attempt_events_string = user_session['idv/attempts'].to_s
+
+      AttemptsApi::UserProofingEvent.new(
+        encrypted_events: attempt_events_string,
+        profile_id: profile.id,
+        service_providers_sent: [initiating_sp],
+        cost: '',
+        salt: '',
+      )
     end
 
     def first_letter_requested_at
