@@ -215,7 +215,7 @@ module AbTests
   end.freeze
 
 
-  # This "test" will permanently be in place to allow a multi-vendor configuration.
+  # This will allow us to slowly increase compromised password checks for sign in. 
   SIGNIN_PASSWORD_COMPROMISED = AbTest.new(
     experiment_name: 'Sign In Password Compromised ',
     should_log: [
