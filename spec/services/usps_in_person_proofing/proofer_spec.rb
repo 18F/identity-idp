@@ -437,10 +437,12 @@ RSpec.describe UspsInPersonProofing::Proofer do
               state: applicant.state,
               zipCode: applicant.zip_code,
               emailAddress: applicant.email,
-              documentType: applicant.document_type,
-              documentNumber: applicant.document_number,
-              documentExpirationDate: applicant.document_expiration_date,
               IPPAssuranceLevel: '1.5',
+              docInfo: [{
+                docType: applicant.document_type,
+                docNumber: applicant.document_number,
+                docExpiration: applicant.document_expiration_date,
+              }],
             })
             .to_return(
               status: 200,

@@ -68,11 +68,11 @@ module UspsInPersonProofing
       }
 
       if IdentityConfig.store.usps_opt_in_ipp_applicant_with_document_data
-        request_body.merge!(
-          documentType: applicant.document_type,
-          documentNumber: applicant.document_number,
-          documentExpirationDate: applicant.document_expiration_date,
-        )
+        request_body[:docInfo] = [{
+          docType: applicant.document_type,
+          docNumber: applicant.document_number,
+          docExpiration: applicant.document_expiration_date,
+        }]
       end
 
       if is_enhanced_ipp
