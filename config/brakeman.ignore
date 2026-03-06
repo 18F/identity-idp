@@ -1,108 +1,75 @@
 {
   "ignored_warnings": [
     {
-      "warning_type": "Dynamic Render Path",
-      "warning_code": 15,
-      "fingerprint": "0550ef2573eae747e7e4bb6f31851ed77713409b74f7abe48c15a6a82801babb",
-      "check_name": "Render",
-      "message": "Render path contains parameter value",
-      "file": "app/views/idv/cancellations/new.html.erb",
-      "line": 31,
-      "link": "https://brakemanscanner.org/docs/warning_types/dynamic_render_path/",
-      "code": "render(action => ButtonComponent.new(:url => idv_session_path(:step => params[:step]), :method => :delete, :big => true, :wide => true, :form => ({ :\"aria-label\" => t(\"idv.cancel.actions.start_over\") })).with_content(t(\"idv.cancel.actions.start_over\")), {})",
-      "render_path": [
-        {
-          "type": "controller",
-          "class": "Idv::CancellationsController",
-          "method": "new",
-          "line": 16,
-          "file": "app/controllers/idv/cancellations_controller.rb",
-          "rendered": {
-            "name": "idv/cancellations/new",
-            "file": "app/views/idv/cancellations/new.html.erb"
-          }
-        }
-      ],
+      "warning_type": "Dangerous Eval",
+      "warning_code": 13,
+      "fingerprint": "63137429799c0fa5c7b64b3915e29ad30d676efce0f9579b55d2d1710b68015f",
+      "check_name": "Evaluation",
+      "message": "Dynamic string evaluated as code",
+      "file": "app/models/concerns/encryptable_attribute.rb",
+      "line": 16,
+      "link": "https://brakemanscanner.org/docs/warning_types/dangerous_eval/",
+      "code": null,
       "location": {
-        "type": "template",
-        "template": "idv/cancellations/new"
+        "type": "method",
+        "class": "EncryptableAttribute::ClassMethods",
+        "method": "encrypted_attribute_getter"
       },
-      "user_input": "params[:step]",
+      "user_input": null,
       "confidence": "Weak",
       "cwe_id": [
-        22
+        913,
+        95
       ],
-      "note": ""
+      "note": "controlled metaprogramming for encrypted attribute accessors"
     },
     {
-      "warning_type": "Dynamic Render Path",
-      "warning_code": 15,
-      "fingerprint": "278d16995e8a645908c9a043314cfeebd8cb094bce766ad5101c62ff08853de6",
-      "check_name": "Render",
-      "message": "Render path contains parameter value",
-      "file": "app/views/idv/cancellations/new.html.erb",
-      "line": 60,
-      "link": "https://brakemanscanner.org/docs/warning_types/dynamic_render_path/",
-      "code": "render(action => SpinnerButtonComponent.new(:url => idv_cancel_path(:step => params[:step], :location => \"cancel\"), :method => :delete, :big => true, :wide => true, :outline => true, :form => ({ :\"aria-label\" => CancellationsPresenter.new(:sp_name => decorated_sp_session.sp_name, :url_options => url_options).exit_action_text, :data => ({ :form_steps_wait => \"\" }) })).with_content(CancellationsPresenter.new(:sp_name => decorated_sp_session.sp_name, :url_options => url_options).exit_action_text), {})",
-      "render_path": [
-        {
-          "type": "controller",
-          "class": "Idv::CancellationsController",
-          "method": "new",
-          "line": 16,
-          "file": "app/controllers/idv/cancellations_controller.rb",
-          "rendered": {
-            "name": "idv/cancellations/new",
-            "file": "app/views/idv/cancellations/new.html.erb"
-          }
-        }
-      ],
+      "warning_type": "Dangerous Eval",
+      "warning_code": 13,
+      "fingerprint": "0da758f5227b9aeddd9d058b71fd25f4e0af381473330540823adbb7632ab36d",
+      "check_name": "Evaluation",
+      "message": "Dynamic string evaluated as code",
+      "file": "app/models/concerns/encryptable_attribute.rb",
+      "line": 24,
+      "link": "https://brakemanscanner.org/docs/warning_types/dangerous_eval/",
+      "code": null,
       "location": {
-        "type": "template",
-        "template": "idv/cancellations/new"
+        "type": "method",
+        "class": "EncryptableAttribute::ClassMethods",
+        "method": "encrypted_attribute_stale_predicate"
       },
-      "user_input": "params[:step]",
+      "user_input": null,
       "confidence": "Weak",
       "cwe_id": [
-        22
+        913,
+        95
       ],
-      "note": ""
+      "note": "controlled metaprogramming for encrypted attribute accessors"
     },
     {
-      "warning_type": "Dynamic Render Path",
-      "warning_code": 15,
-      "fingerprint": "341d99a0fdaf75dff50ea66c9da1b973cb36fc1aac2221480deff6e30d11540a",
-      "check_name": "Render",
-      "message": "Render path contains parameter value",
-      "file": "app/views/idv/cancellations/new.html.erb",
-      "line": 40,
-      "link": "https://brakemanscanner.org/docs/warning_types/dynamic_render_path/",
-      "code": "render(action => ButtonComponent.new(:url => idv_cancel_path(:step => params[:step]), :method => :put, :big => true, :wide => true, :outline => true, :form => ({ :\"aria-label\" => t(\"idv.cancel.actions.keep_going\") })).with_content(t(\"idv.cancel.actions.keep_going\")), {})",
-      "render_path": [
-        {
-          "type": "controller",
-          "class": "Idv::CancellationsController",
-          "method": "new",
-          "line": 16,
-          "file": "app/controllers/idv/cancellations_controller.rb",
-          "rendered": {
-            "name": "idv/cancellations/new",
-            "file": "app/views/idv/cancellations/new.html.erb"
-          }
-        }
-      ],
+      "warning_type": "Dangerous Eval",
+      "warning_code": 13,
+      "fingerprint": "e62c5a88b144e5e487c566261ebf3cc504476e6886750b2d618b8b90e773edf1",
+      "check_name": "Evaluation",
+      "message": "Dynamic string evaluated as code",
+      "file": "app/models/concerns/encryptable_attribute.rb",
+      "line": 33,
+      "link": "https://brakemanscanner.org/docs/warning_types/dangerous_eval/",
+      "code": null,
       "location": {
-        "type": "template",
-        "template": "idv/cancellations/new"
+        "type": "method",
+        "class": "EncryptableAttribute::ClassMethods",
+        "method": "encrypted_attribute_setter"
       },
-      "user_input": "params[:step]",
+      "user_input": null,
       "confidence": "Weak",
       "cwe_id": [
-        22
+        913,
+        95
       ],
-      "note": ""
+      "note": "controlled metaprogramming for encrypted attribute accessors"
     }
   ],
-  "updated": "2024-04-19 08:20:16 -0400",
-  "brakeman_version": "6.1.0"
+  "updated": "2026-03-06 10:54:18 -0500",
+  "brakeman_version": "8.0.4"
 }
