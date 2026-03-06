@@ -119,9 +119,11 @@ RSpec.describe MfaSetupConcern do
 
   describe '#create_mfa_added_email' do
     let(:disavowal_token) { SecureRandom.hex }
+    let(:event_type) { Event.event_types.keys.sample.to_sym }
+
     subject(:create_mfa_added_email) do
       controller.create_mfa_added_email(
-        event_type: :authenticator_enabled,
+        event_type: event_type,
         disavowal_token: disavowal_token,
       )
     end
