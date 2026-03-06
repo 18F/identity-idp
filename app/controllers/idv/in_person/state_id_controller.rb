@@ -9,8 +9,7 @@ module Idv
       include Idv::InPersonAamvaConcern
 
       before_action :set_usps_form_presenter
-      # TODO: uncomment after post_office_controller creates needed enrollment and session data
-      # before_action :confirm_step_allowed
+      before_action :confirm_step_allowed
       before_action :initialize_pii_from_user, only: [:show]
 
       def show
