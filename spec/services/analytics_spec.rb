@@ -29,6 +29,7 @@ RSpec.describe Analytics do
       hostname: FakeRequest.new.host,
       pid: Process.pid,
       trace_id: nil,
+      referer: FakeRequest.new.referer,
     }
   end
 
@@ -99,6 +100,19 @@ RSpec.describe Analytics do
       it 'includes the tracing header as trace_id' do
         expect(ahoy).to receive(:track)
           .with('Trackable Event', hash_including(trace_id: amazon_trace_id))
+
+        analytics.track_event('Trackable Event')
+      end
+    end
+
+    context 'request has a referer' do
+      let(:request) do
+        FakeRequest.new
+      end
+
+      it 'includes the referer as a top-level attribute' do
+        expect(ahoy).to receive(:track)
+          .with('Trackable Event', hash_including(referer: 'https://gsa.gov'))
 
         analytics.track_event('Trackable Event')
       end
