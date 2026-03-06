@@ -41,7 +41,12 @@ module Idv
         idv_session.opted_in_to_in_person_proofing = true
         idv_session.flow_path = 'standard'
         idv_session.skip_doc_auth_from_how_to_verify = true
-        redirect_to idv_document_capture_url(step: :hybrid_handoff)
+
+        if IdentityConfig.store.in_person_out_of_react
+          redirect_to idv_in_person_welcome_url
+        else
+          redirect_to idv_document_capture_url(step: :hybrid_handoff)
+        end
       elsif params[:type] == 'mobile'
         handle_phone_submission
       else
@@ -67,7 +72,7 @@ module Idv
       Idv::StepInfo.new(
         key: :hybrid_handoff,
         controller: self,
-        next_steps: [:choose_id_type, :link_sent, :document_capture, :socure_document_capture],
+        next_steps: [:choose_id_type, :link_sent, :document_capture, :socure_document_capture,  :ipp_welcome],
         preconditions: ->(idv_session:, user:) do
           idv_session.idv_consent_given? &&
           (self.selected_remote(idv_session: idv_session) || # from opt-in screen

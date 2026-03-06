@@ -33,18 +33,16 @@ module Idv
 
         # redirect_to idv_agreement_url
 
-        render plain: 'hello world'
+        redirect_to idv_in_person_post_office_url
       end
 
       def self.step_info
         Idv::StepInfo.new(
-          key: :welcome,
+          key: :ipp_welcome,
           controller: self,
-          next_steps: [:agreement],
+          next_steps: [:ipp_post_office],
           preconditions: ->(idv_session:, user:) { true },
           undo_step: ->(idv_session:, user:) do
-            idv_session.welcome_visited = nil
-            idv_session.document_capture_session_uuid = nil
           end,
         )
       end
