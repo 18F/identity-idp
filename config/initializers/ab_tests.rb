@@ -214,8 +214,7 @@ module AbTests
     user&.uuid
   end.freeze
 
-
-  # This will allow us to slowly increase compromised password checks for sign in. 
+  # This will allow us to slowly increase compromised password checks for sign in.
   SIGNIN_PASSWORD_COMPROMISED = AbTest.new(
     experiment_name: 'Sign In Password Compromised ',
     should_log: [
@@ -225,7 +224,6 @@ module AbTests
   ) do |service_provider:, session:, user:, user_session:, **|
     user&.uuid
   end.freeze
-
 
   HYBRID_MOBILE_TMX_PROCESSED = AbTest.new(
     experiment_name: 'Hybrid Mobile ThreatMetrix',
