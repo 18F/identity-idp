@@ -216,7 +216,7 @@ module AbTests
 
   # This will allow us to slowly increase compromised password checks for sign in.
   SIGNIN_PASSWORD_COMPROMISED = AbTest.new(
-    experiment_name: 'Sign In Password Compromised ',
+    experiment_name: 'Sign In Password Compromised check',
     should_log: [
       'Email and Password Authentication',
     ].to_set,
