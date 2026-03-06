@@ -41,6 +41,17 @@ module Idv
         redirect_to idv_in_person_url
       end
 
+      def self.step_info
+        Idv::StepInfo.new(
+          key: :ipp_post_office,
+          controller: self,
+          next_steps: [:ipp_state_id],
+          preconditions: ->(idv_session:, user:) { true },
+          undo_step: ->(idv_session:, user:) do
+          end,
+        )
+      end
+
       private
 
       def search_params
@@ -77,9 +88,11 @@ module Idv
         )
       end
 
+      # rubocop:disable Layout/LineLength
       def formatted_city_state_zip
         "#{post_office_params[:city]}, #{post_office_params[:state]}, #{post_office_params[:zip_code_5]}-#{post_office_params[:zip_code_4]}"
       end
+      # rubocop:enable Layout/LineLength
 
       def proofer
         @proofer ||= EnrollmentHelper.usps_proofer

@@ -10,8 +10,7 @@ module Idv
     check_or_render_not_found -> { InPersonConfig.enabled_for_issuer?(current_sp&.issuer) }
 
     before_action :confirm_two_factor_authenticated
-    # TODO: uncomment after post_office_controller creates needed enrollment and session data
-    # before_action :redirect_unless_enrollment
+    before_action :redirect_unless_enrollment
     before_action :initialize_in_person_session
     before_action :set_usps_form_presenter
 
