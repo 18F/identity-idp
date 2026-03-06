@@ -570,6 +570,9 @@ RSpec.describe Users::SessionsController, devise: true do
         let(:analytics) { FakeAnalytics.new }
         before do
           allow(FeatureManagement).to receive(:check_password_enabled?).and_return(true)
+          allow(IdentityConfig.store)
+            .to receive(:sign_in_password_compromised_percent_tested)
+            .and_return(100)
           allow(PwnedPasswords::LookupPassword).to receive(:call).and_return true
           allow(Analytics).to receive(:new).and_return(analytics)
         end
@@ -591,6 +594,9 @@ RSpec.describe Users::SessionsController, devise: true do
         let(:user) { create(:user, :fully_registered) }
         before do
           allow(FeatureManagement).to receive(:check_password_enabled?).and_return(true)
+          allow(IdentityConfig.store)
+            .to receive(:sign_in_password_compromised_percent_tested)
+            .and_return(100)
           allow(PwnedPasswords::LookupPassword).to receive(:call).and_return false
         end
 
