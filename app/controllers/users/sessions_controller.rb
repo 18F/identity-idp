@@ -313,7 +313,9 @@ module Users
     end
 
     def check_password_compromised
-      return if !FeatureManagement.check_password_enabled? || compromised_password_check_current?
+      return if !FeatureManagement.check_password_enabled? ||
+                ab_test_eligible? ||
+                compromised_password_check_current?
 
       is_pwned = PwnedPasswords::LookupPassword.call(auth_params[:password])
       track_pwned_password if is_pwned
@@ -334,6 +336,10 @@ module Users
 
     def update_user_password_compromised_checked_at
       current_user.update!(password_compromised_checked_at: Time.zone.now)
+    end
+
+    def ab_test_eligible?
+      ab_test_bucket(:SIGNIN_PASSWORD_COMPROMISED, user: current_user) != :check_password
     end
 
     def user_account_creation_device_profile_failed?
