@@ -150,7 +150,7 @@ module Users
 
     def setup_backup_codes_added_email
       _event, disavowal_token = create_user_event_with_disavowal(:backup_codes_added, current_user)
-      create_mfa_added_email(mfa_method: :backup_codes_added, disavowal_token: disavowal_token)
+      create_mfa_added_email(event_type: :backup_codes_added, disavowal_token: disavowal_token)
     end
   end
 end

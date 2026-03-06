@@ -116,4 +116,31 @@ RSpec.describe MfaSetupConcern do
       end
     end
   end
+
+  describe '#create_mfa_added_email' do
+    let(:disavowal_token) { SecureRandom.hex }
+    subject(:create_mfa_added_email) do
+      controller.create_mfa_added_email(
+        event_type: :authenticator_enabled,
+        disavowal_token: disavowal_token,
+      )
+    end
+
+    it 'receives value and sends email' do
+      delivery = instance_double(ActionMailer::MessageDelivery, deliver_now_or_later: true)
+      mailer = instance_double(UserMailer)
+
+      user.confirmed_email_addresses.each do |email_address|
+        allow(UserMailer).to receive(:with).with(
+          user: user, email_address: email_address,
+        ).and_return(mailer)
+
+        expect(mailer).to receive(:mfa_added)
+          .with(subject: instance_of(String), disavowal_token: disavowal_token)
+          .and_return(delivery)
+      end
+
+      create_mfa_added_email
+    end
+  end
 end

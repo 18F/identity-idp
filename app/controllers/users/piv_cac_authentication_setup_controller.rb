@@ -84,7 +84,6 @@ module Users
 
       if result.success?
         process_valid_submission
-        create_piv_cac_added_email
         user_session.delete(:mfa_attempts)
       else
         process_invalid_submission
@@ -111,7 +110,11 @@ module Users
         issuer: user_piv_cac_form.x509_issuer,
         presented: true,
       )
-      create_user_event(:piv_cac_enabled)
+      _event, disavowal_token = create_user_event_with_disavowal(
+        :piv_cac_enabled,
+        current_user,
+      )
+      create_mfa_added_email(event_type: :piv_cac_added, disavowal_token: disavowal_token)
       track_mfa_method_added
       user_session.delete(:add_piv_cac_after_2fa)
       session[:needs_to_setup_piv_cac_after_sign_in] = false
@@ -156,11 +159,6 @@ module Users
 
     def current_cac_count
       current_user.piv_cac_configurations.count
-    end
-
-    def create_piv_cac_added_email
-      _event, disavowal_token = create_user_event_with_disavowal(:piv_cac_enabled, current_user)
-      create_mfa_added_email(mfa_method: :piv_cac_added, disavowal_token: disavowal_token)
     end
   end
 end
