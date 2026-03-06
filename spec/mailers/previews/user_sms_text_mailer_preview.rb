@@ -5,7 +5,6 @@ class UserSmsTextMailerPreview < ActionMailer::Preview
            :authentication_otp,
            :confirmation_ipp_enrollment_result,
            :confirmation_otp,
-           :daily_voice_limit_reached,
            :doc_auth_link,
            :duplicate_profile_created,
            :duplicate_profile_sign_in_attempted,

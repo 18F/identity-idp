@@ -12,7 +12,6 @@ class UserSmsTextMailer < ActionMailer::Base
   alias_method :account_deleted_notice, :mail_to
   alias_method :duplicate_profile_created, :mail_to
   alias_method :duplicate_profile_sign_in_attempted, :mail_to
-  alias_method :daily_voice_limit_reached, :mail_to
   alias_method :personal_key_regeneration_notice, :mail_to
   alias_method :personal_key_sign_in_notice, :mail_to
 
@@ -42,7 +41,9 @@ class UserSmsTextMailer < ActionMailer::Base
   end
 
   def confirmation_otp
-    @code = OtpCodeGenerator.generate_alphanumeric_digits(TwoFactorAuthenticatable::DIRECT_OTP_LENGTH)
+    @code = OtpCodeGenerator.generate_alphanumeric_digits(
+      TwoFactorAuthenticatable::DIRECT_OTP_LENGTH,
+    )
     @expiration = otp_expiration
     @domain = domain
     mail_to
