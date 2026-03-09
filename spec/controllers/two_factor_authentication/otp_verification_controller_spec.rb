@@ -661,6 +661,16 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
 
         stub_analytics
         stub_attempts_tracker
+
+        allow(controller).to receive(:create_user_event)
+
+        @mailer = instance_double(ActionMailer::MessageDelivery, deliver_now_or_later: true)
+
+        controller.current_user.email_addresses.each do |email_address|
+          allow(UserMailer).to receive(:phone_added)
+            .with(controller.current_user, email_address, disavowal_token: instance_of(String))
+            .and_return(@mailer)
+        end
         @previous_phone = MfaContext.new(controller.current_user).phone_configurations.first&.phone
       end
 
@@ -711,6 +721,17 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
           it 'resets otp session data' do
             expect(subject.user_session[:unconfirmed_phone]).to be_nil
             expect(subject.user_session[:context]).to eq 'authentication'
+          end
+
+          it 'tracks the update event and notifies via email about number change' do
+            expect(subject).to have_received(:create_user_event).with(:phone_changed)
+            expect(subject).to have_received(:create_user_event).exactly(:once)
+
+            expect_delivered_email_count(1)
+            expect_delivered_email(
+              to: [subject.current_user.email_addresses.first.email],
+              subject: t('user_mailer.multi_factor_authentication.phone_added', app_name: APP_NAME),
+            )
           end
         end
 
