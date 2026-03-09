@@ -140,6 +140,16 @@ class FeatureManagement
     end
   end
 
+  # Whether we collect device profiling on the hybrid flow
+  def self.proofing_device_hybrid_profiling_collecting_enabled?
+    case IdentityConfig.store.proofing_device_hybrid_profiling
+    when :enabled, :collect_only then true
+    when :disabled then false
+    else
+      raise 'Invalid value for proofing_device_profiling'
+    end
+  end
+
   # Whether we collect device profiling information as part of the proofing process.
   def self.proofing_device_profiling_collecting_enabled?
     case IdentityConfig.store.proofing_device_profiling
@@ -177,5 +187,9 @@ class FeatureManagement
 
   def self.doc_escrow_enabled?(service_provider)
     IdentityConfig.store.doc_escrow_enabled && service_provider&.attempts_api_enabled?
+  end
+
+  def self.idv_proofing_agent_enabled?
+    IdentityConfig.store.idv_proofing_agent_enabled
   end
 end

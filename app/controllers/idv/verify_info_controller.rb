@@ -57,6 +57,7 @@ module Idv
           idv_session.address_edited = nil
           idv_session.verify_info_step_document_capture_session_uuid = nil
           idv_session.threatmetrix_review_status = nil
+          idv_session.hybrid_mobile_threatmetrix_review_status = nil
           idv_session.applicant = nil
           idv_session.phone_precheck_successful = nil
           idv_session.phone_precheck_vendor = nil
@@ -86,6 +87,7 @@ module Idv
       idv_session.pii_from_doc.to_h.merge(
         ssn: idv_session.ssn,
         consent_given_at: idv_session.idv_consent_given_at,
+        aamva_verified_attributes: idv_session.aamva_verified_attributes,
         **idv_session.updated_user_address.to_h,
       ).with_indifferent_access
     end

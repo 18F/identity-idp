@@ -20,6 +20,9 @@ RSpec.describe Proofing::Socure::IdPlus::Responses::PhoneRiskResponse do
           'R567',
         ],
         'score' => phonerisk_low ? 0.01 : 0.99,
+        'signals' => {
+          'phone' => {},
+        },
       },
       'customerProfile' => {
         'customerUserId' => 'somebody',

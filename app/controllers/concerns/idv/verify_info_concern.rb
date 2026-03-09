@@ -43,6 +43,8 @@ module Idv
         ipp_enrollment_in_progress: ipp_enrollment_in_progress?,
         proofing_vendor:,
         state_id_already_proofed: source_check_vendor_aamva?,
+        hybrid_mobile_threatmetrix_session_id:,
+        hybrid_mobile_request_ip:,
       )
 
       return true
@@ -69,6 +71,19 @@ module Idv
     end
 
     private
+
+    def doc_auth_document_capture_session
+      @doc_auth_document_capture_session ||=
+        DocumentCaptureSession.find_by(uuid: idv_session.document_capture_session_uuid)
+    end
+
+    def hybrid_mobile_threatmetrix_session_id
+      doc_auth_document_capture_session&.hybrid_mobile_threatmetrix_session_id
+    end
+
+    def hybrid_mobile_request_ip
+      doc_auth_document_capture_session&.hybrid_mobile_request_ip
+    end
 
     def save_in_person_notification_phone
       return unless IdentityConfig.store.in_person_proofing_enabled
@@ -209,10 +224,16 @@ module Idv
             [:proofing_results, :context, :stages, :phone_precheck, :errors, :phone],
             [:proofing_results, :context, :stages, :phone_precheck, :alternate_result, :errors,
              :phone],
+            [:proofing_results, :context, :stages, :phone_precheck, :result, :phonerisk, :signals,
+             :phone],
+            [:proofing_results, :context, :stages, :phone_precheck, :alternate_result, :phonerisk,
+             :signals, :phone],
             [:proofing_results, :context, :stages, :resolution, :errors, :ssn],
             [:proofing_results, :context, :stages, :resolution, :reason_codes],
             [:proofing_results, :context, :stages, :residential_address, :errors, :ssn],
             [:proofing_results, :context, :stages, :threatmetrix, :response_body, :first_name],
+            [:proofing_results, :context, :stages, :hybrid_mobile_threatmetrix, :response_body,
+             :first_name],
             [:proofing_results, :context, :stages, :state_id, :state_id_jurisdiction],
             [:proofing_results, :context, :stages, :state_id, :errors, :state_id_jurisdiction],
             [:proofing_results, :biographical_info, :identity_doc_address_state],
@@ -228,6 +249,15 @@ module Idv
       if threatmetrix_response_body.present?
         analytics.idv_threatmetrix_response_body(
           response_body: threatmetrix_response_body,
+        )
+      end
+
+      hybrid_mobile_threatmetrix_response_body =
+        delete_hybrid_mobile_threatmetrix_response_body(form_response)
+
+      if hybrid_mobile_threatmetrix_response_body.present?
+        analytics.idv_threatmetrix_hybrid_mobile_response_body(
+          response_body: hybrid_mobile_threatmetrix_response_body,
         )
       end
 
@@ -247,9 +277,11 @@ module Idv
       exceptions = build_proofing_exception_list(
         form_response.extra.dig(:proofing_results, :context, :stages),
       )
+      sanitized_form_response = form_response.deep_dup
+      sanitized_form_response.extra.dig(:proofing_results, :context, :stages)&.delete(:state_id)
       analytics.idv_doc_auth_verify_proofing_results(
         **analytics_arguments,
-        **form_response,
+        **sanitized_form_response,
         exceptions:,
       )
       delete_async
@@ -302,6 +334,12 @@ module Idv
     def save_threatmetrix_status(form_response)
       review_status = form_response.extra.dig(:proofing_results, :threatmetrix_review_status)
       idv_session.threatmetrix_review_status = review_status
+
+      if FeatureManagement.proofing_device_hybrid_profiling_collecting_enabled?
+        hybrid_mobile_review_status = form_response
+          .extra.dig(:proofing_results, :hybrid_mobile_threatmetrix_review_status)
+        idv_session.hybrid_mobile_threatmetrix_review_status = hybrid_mobile_review_status
+      end
     end
 
     def save_source_check_vendor(form_response)
@@ -385,29 +423,16 @@ module Idv
     def create_fraud_review_request_if_needed(result)
       return unless FeatureManagement.proofing_device_profiling_collecting_enabled?
 
-      threatmetrix_result = result.dig(:context, :stages, :threatmetrix)
-      return unless threatmetrix_result
+      threatmetrix_failed = threatmetrix_check_failed?(result)
 
-      success = (threatmetrix_result[:review_status] == 'pass')
+      hybrid_mobile_failed = hybrid_mobile_threatmetrix_check_failed?(result)
 
-      attempts_api_tracker.idv_device_risk_assessment(
-        device_fingerprint: threatmetrix_result.dig(:device_fingerprint),
-        success:,
-        failure_reason: device_risk_failure_reason(success, threatmetrix_result),
-      )
-
-      fraud_ops_tracker.idv_device_risk_assessment(
-        device_fingerprint: threatmetrix_result.dig(:device_fingerprint),
-        success:,
-        failure_reason: device_risk_failure_reason(success, threatmetrix_result),
-      )
-
-      return if success
-
-      FraudReviewRequest.create(
-        user: current_user,
-        login_session_id: Digest::SHA1.hexdigest(current_user.unique_session_id.to_s),
-      )
+      if threatmetrix_failed || hybrid_mobile_failed
+        FraudReviewRequest.create(
+          user: current_user,
+          login_session_id: Digest::SHA1.hexdigest(current_user.unique_session_id.to_s),
+        )
+      end
     end
 
     def move_applicant_to_idv_session
@@ -434,6 +459,19 @@ module Idv
 
       threatmetrix_result.delete(:device_fingerprint)
       threatmetrix_result.delete(:response_body)
+    end
+
+    def delete_hybrid_mobile_threatmetrix_response_body(form_response)
+      hybrid_threatmetrix_result = form_response.extra.dig(
+        :proofing_results,
+        :context,
+        :stages,
+        :hybrid_mobile_threatmetrix,
+      )
+      return if hybrid_threatmetrix_result.blank?
+
+      hybrid_threatmetrix_result.delete(:device_fingerprint)
+      hybrid_threatmetrix_result.delete(:response_body)
     end
 
     def device_risk_failure_reason(success, result)
@@ -502,11 +540,68 @@ module Idv
     end
 
     def source_check_vendor_aamva?
-      IdentityConfig.store.idv_aamva_at_doc_auth_enabled &&
-        !ipp_enrollment_in_progress? &&
-        (idv_session.source_check_vendor == 'aamva:state_id' ||
-          idv_session.source_check_vendor == 'aamva' ||
-          idv_session.source_check_vendor == 'StateIdMock')
+      return false if ipp_aamva_check_not_completed? || remote_aamva_check_not_completed?
+
+      idv_session.source_check_vendor == 'aamva:state_id' ||
+        idv_session.source_check_vendor == 'aamva' ||
+        idv_session.source_check_vendor == 'StateIdMock'
+    end
+
+    def ipp_aamva_check_not_completed?
+      IdentityConfig.store.idv_aamva_at_doc_auth_ipp_enabled &&
+        ipp_enrollment_in_progress? &&
+        idv_session.ipp_aamva_result.blank?
+    end
+
+    def remote_aamva_check_not_completed?
+      !ipp_enrollment_in_progress? &&
+        !IdentityConfig.store.idv_aamva_at_doc_auth_enabled
+    end
+
+    def threatmetrix_check_failed?(result)
+      threatmetrix_result = result.dig(:context, :stages, :threatmetrix)
+      return false unless threatmetrix_result
+
+      success = (threatmetrix_result[:review_status] == 'pass')
+      device_fingerprint = threatmetrix_result.dig(:device_fingerprint)
+      failure_reason = device_risk_failure_reason(success, threatmetrix_result)
+
+      attempts_api_tracker.idv_device_risk_assessment(
+        device_fingerprint:,
+        success:,
+        failure_reason:,
+      )
+
+      fraud_ops_tracker.idv_device_risk_assessment(
+        device_fingerprint:,
+        success:,
+        failure_reason:,
+      )
+
+      !success
+    end
+
+    def hybrid_mobile_threatmetrix_check_failed?(result)
+      return false unless FeatureManagement.proofing_device_hybrid_profiling_collecting_enabled?
+
+      hybrid_mobile_threatmetrix_result = result.dig(:context, :stages, :hybrid_mobile_threatmetrix)
+      return false unless hybrid_mobile_threatmetrix_result
+
+      success = (hybrid_mobile_threatmetrix_result[:review_status] == 'pass')
+
+      attempts_api_tracker.idv_device_risk_assessment(
+        device_fingerprint: hybrid_mobile_threatmetrix_result.dig(:device_fingerprint),
+        success:,
+        failure_reason: device_risk_failure_reason(success, hybrid_mobile_threatmetrix_result),
+      )
+
+      fraud_ops_tracker.idv_device_risk_assessment(
+        device_fingerprint: hybrid_mobile_threatmetrix_result.dig(:device_fingerprint),
+        success:,
+        failure_reason: device_risk_failure_reason(success, hybrid_mobile_threatmetrix_result),
+      )
+
+      !success
     end
 
     VerificationFailures = Struct.new(

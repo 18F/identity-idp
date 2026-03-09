@@ -14,7 +14,7 @@ describe('FailedCaptureAttemptsContextProvider', () => {
         value={{
           isSelfieCaptureEnabled: false,
           isUploadEnabled: true,
-          isSelfieDesktopTestMode: false,
+          isDesktopTestMode: false,
           showHelpInitially: false,
         }}
       >
@@ -154,7 +154,7 @@ describe('FailedCaptureAttemptsContextProvider', () => {
           value={{
             isSelfieCaptureEnabled: false,
             isUploadEnabled: true,
-            isSelfieDesktopTestMode: false,
+            isDesktopTestMode: false,
             showHelpInitially: false,
           }}
         >
@@ -386,7 +386,7 @@ describe('FailedCaptureAttemptsContextProvider', () => {
           value={{
             isSelfieCaptureEnabled: false,
             isUploadEnabled: true,
-            isSelfieDesktopTestMode: false,
+            isDesktopTestMode: false,
             showHelpInitially: false,
           }}
         >

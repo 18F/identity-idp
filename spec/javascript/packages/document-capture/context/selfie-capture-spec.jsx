@@ -8,7 +8,7 @@ describe('document-capture/context/selfie-capture', () => {
 
     expect(result.current).to.have.keys([
       'isSelfieCaptureEnabled',
-      'isSelfieDesktopTestMode',
+      'isDesktopTestMode',
       'isUploadEnabled',
       'showHelpInitially',
     ]);

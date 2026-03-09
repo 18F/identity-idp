@@ -8,20 +8,26 @@ RSpec.describe ResolutionProofingJob, type: :job do
     )
   end
   let(:document_capture_session) do
-    DocumentCaptureSession.new(result_id: SecureRandom.hex, uuid: SecureRandom.uuid)
+    create(:document_capture_session, result_id: SecureRandom.hex)
   end
   let(:trace_id) { SecureRandom.uuid }
-  let(:user) { create(:user, :fully_registered) }
+  let(:user) { document_capture_session.user }
   let(:service_provider) { create(:service_provider, app_id: 'fake-app-id') }
   let(:request_ip) { Faker::Internet.ip_v4_address }
   let(:threatmetrix_session_id) { SecureRandom.uuid }
   let(:proofing_device_profiling) { :enabled }
   let(:lexisnexis_threatmetrix_mock_enabled) { false }
   let(:ipp_enrollment_in_progress) { false }
+  let(:state_id_already_proofed) { false }
+  let(:hybrid_mobile_threatmetrix_session_id) { nil }
+  let(:hybrid_mobile_request_ip) { nil }
+  let(:proofing_device_hybrid_profiling) { :disabled }
 
   before do
     allow(IdentityConfig.store).to receive(:proofing_device_profiling)
       .and_return(proofing_device_profiling)
+    allow(IdentityConfig.store).to receive(:proofing_device_hybrid_profiling)
+      .and_return(proofing_device_hybrid_profiling)
     allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_mock_enabled)
       .and_return(lexisnexis_threatmetrix_mock_enabled)
     allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_base_url)
@@ -32,6 +38,29 @@ RSpec.describe ResolutionProofingJob, type: :job do
 
   describe '#perform' do
     let(:instance) { ResolutionProofingJob.new }
+
+    context 'with nil user_id' do
+      subject(:perform) do
+        instance.perform(
+          result_id: document_capture_session.result_id,
+          encrypted_arguments: encrypted_arguments,
+          trace_id: trace_id,
+          user_id: nil,
+          service_provider_issuer: service_provider.issuer,
+          threatmetrix_session_id: threatmetrix_session_id,
+          request_ip: request_ip,
+          ipp_enrollment_in_progress: ipp_enrollment_in_progress,
+          proofing_vendor: IdentityConfig.store.idv_resolution_default_vendor,
+          hybrid_mobile_threatmetrix_session_id: hybrid_mobile_threatmetrix_session_id,
+          hybrid_mobile_request_ip: hybrid_mobile_request_ip,
+        )
+      end
+
+      it 'throws UserNotFound exception' do
+        stub_vendor_requests
+        expect { perform }.to raise_error(ResolutionProofingJob::UserNotFound)
+      end
+    end
 
     subject(:perform) do
       instance.perform(
@@ -44,6 +73,9 @@ RSpec.describe ResolutionProofingJob, type: :job do
         request_ip: request_ip,
         ipp_enrollment_in_progress: ipp_enrollment_in_progress,
         proofing_vendor: IdentityConfig.store.idv_resolution_default_vendor,
+        state_id_already_proofed:,
+        hybrid_mobile_threatmetrix_session_id: hybrid_mobile_threatmetrix_session_id,
+        hybrid_mobile_request_ip: hybrid_mobile_request_ip,
       )
     end
 
@@ -144,8 +176,50 @@ RSpec.describe ResolutionProofingJob, type: :job do
         expect(result_context_stages_threatmetrix[:transaction_id]).to eq('1234')
         expect(result_context_stages_threatmetrix[:review_status]).to eq('pass')
         expect(result_context_stages_threatmetrix[:response_body]).to eq(
-          JSON.parse(LexisNexisFixtures.ddp_success_redacted_response_json, symbolize_names: true),
+          JSON.parse(
+            LexisNexisFixtures.threatmetrix_success_redacted_response_json,
+            symbolize_names: true,
+          ),
         )
+      end
+    end
+
+    context 'with hybrid mobile device profiling enabled and valid parameters' do
+      let(:proofing_device_hybrid_profiling) { :enabled }
+      let(:hybrid_mobile_threatmetrix_session_id) { SecureRandom.uuid }
+      let(:hybrid_mobile_request_ip) { Faker::Internet.ip_v4_address }
+
+      it 'stores a successful result with hybrid mobile threatmetrix data' do
+        stub_vendor_requests
+
+        perform
+
+        result = document_capture_session.load_proofing_result[:result]
+        result_context = result[:context]
+        result_context_stages = result_context[:stages]
+        result_context_stages_hybrid_mobile_threatmetrix =
+          result_context_stages[:hybrid_mobile_threatmetrix]
+
+        expect(result[:success]).to be true
+        expect(result[:hybrid_mobile_threatmetrix_review_status]).to eq('pass')
+
+        # result[:context][:stages][:hybrid_mobile_threatmetrix]
+        expect(result_context_stages_hybrid_mobile_threatmetrix[:client]).to eq('lexisnexis')
+        expect(result_context_stages_hybrid_mobile_threatmetrix[:errors]).to eq({})
+        expect(result_context_stages_hybrid_mobile_threatmetrix[:exception]).to eq(nil)
+        expect(result_context_stages_hybrid_mobile_threatmetrix[:success]).to eq(true)
+        expect(result_context_stages_hybrid_mobile_threatmetrix[:timed_out]).to eq(false)
+        expect(result_context_stages_hybrid_mobile_threatmetrix[:transaction_id]).to eq('1234')
+        expect(result_context_stages_hybrid_mobile_threatmetrix[:review_status]).to eq('pass')
+        expect(result_context_stages_hybrid_mobile_threatmetrix[:response_body]).to eq(
+          JSON.parse(
+            LexisNexisFixtures.threatmetrix_success_redacted_response_json,
+            symbolize_names: true,
+          ),
+        )
+
+        # Verify threatmetrix stub was called twice (desktop + hybrid mobile)
+        expect(@threatmetrix_stub).to have_been_requested.times(2)
       end
     end
 
@@ -168,6 +242,8 @@ RSpec.describe ResolutionProofingJob, type: :job do
         expect(result[:exception]).to be_nil
         expect(result[:timed_out]).to be false
 
+        expect(result_context[:resolution_adjudication_reason])
+          .to eq('fail_resolution_without_state_id_coverage')
         # result[:context][:stages][:resolution]
         expect(result_context_stages_resolution[:success]).to eq(false)
         expect(result_context_stages_resolution[:errors]).to include(
@@ -199,6 +275,8 @@ RSpec.describe ResolutionProofingJob, type: :job do
         expect(result[:exception]).to be_nil
         expect(result[:timed_out]).to be false
 
+        expect(result_context[:resolution_adjudication_reason])
+          .to eq('state_id_covers_failed_resolution')
         # result[:context][:stages][:resolution]
         expect(result_context_stages_resolution[:vendor_name])
           .to eq('lexisnexis:instant_verify')
@@ -229,6 +307,91 @@ RSpec.describe ResolutionProofingJob, type: :job do
             eye_color
           ],
         )
+      end
+
+      context 'when state ID has already been proofed at DocAuth' do
+        let(:state_id_already_proofed) { true }
+        context 'when attributes requiring additional verification were NOT verified by AAMVA' do
+          it 'stores an unsuccessful result' do
+            stub_vendor_requests(
+              instant_verify_response: LexisNexisFixtures.instant_verify_address_fail_response_json,
+            )
+
+            perform
+
+            result = document_capture_session.load_proofing_result[:result]
+            result_context = result[:context]
+            result_context_stages = result_context[:stages]
+            result_context_stages_resolution = result_context_stages[:resolution]
+            result_context_stages_state_id = result_context_stages[:state_id]
+
+            expect(result[:success]).to be false
+            expect(result[:errors].keys).to eq([:base, :'Execute Instant Verify'])
+            expect(result[:exception]).to be_nil
+            expect(result[:timed_out]).to be false
+
+            expect(result_context[:resolution_adjudication_reason])
+              .to eq('fail_resolution_without_state_id_coverage')
+            # result[:context][:stages][:resolution]
+            expect(result_context_stages_resolution[:vendor_name])
+              .to eq('lexisnexis:instant_verify')
+            expect(result_context_stages_resolution[:success]).to eq(false)
+            expect(result_context_stages_resolution[:can_pass_with_additional_verification])
+              .to eq(true)
+            expect(result_context_stages_resolution[:attributes_requiring_additional_verification])
+              .to eq(['address'])
+
+            # result[:context][:stages][:state_id]
+            expect(result_context_stages_state_id[:vendor_name]).to eq('AamvaCheckSkipped')
+            expect(result_context_stages_state_id[:success]).to eq(true)
+            expect(result_context_stages_state_id[:verified_attributes]).to be_empty
+
+            expect(@aamva_stub).to_not have_been_requested
+          end
+        end
+
+        context 'when attributes requiring additional verification were verified by AAMVA' do
+          let(:pii) do
+            { aamva_verified_attributes: [:address, :ssn] }
+              .merge(Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID)
+          end
+          it 'stores a successful result' do
+            stub_vendor_requests(
+              instant_verify_response: LexisNexisFixtures.instant_verify_address_fail_response_json,
+            )
+
+            perform
+
+            result = document_capture_session.load_proofing_result[:result]
+            result_context = result[:context]
+            result_context_stages = result_context[:stages]
+            result_context_stages_resolution = result_context_stages[:resolution]
+            result_context_stages_state_id = result_context_stages[:state_id]
+
+            expect(result[:success]).to be true
+            expect(result[:errors].keys).to eq([:base, :'Execute Instant Verify'])
+            expect(result[:exception]).to be_nil
+            expect(result[:timed_out]).to be false
+
+            expect(result_context[:resolution_adjudication_reason])
+              .to eq('state_id_covers_failed_resolution')
+            # result[:context][:stages][:resolution]
+            expect(result_context_stages_resolution[:vendor_name])
+              .to eq('lexisnexis:instant_verify')
+            expect(result_context_stages_resolution[:success]).to eq(false)
+            expect(result_context_stages_resolution[:can_pass_with_additional_verification])
+              .to eq(true)
+            expect(result_context_stages_resolution[:attributes_requiring_additional_verification])
+              .to eq(['address'])
+
+            # result[:context][:stages][:state_id]
+            expect(result_context_stages_state_id[:vendor_name]).to eq('AamvaCheckSkipped')
+            expect(result_context_stages_state_id[:success]).to eq(true)
+            expect(result_context_stages_state_id[:verified_attributes]).to be_empty
+
+            expect(@aamva_stub).to_not have_been_requested
+          end
+        end
       end
     end
 
@@ -268,6 +431,51 @@ RSpec.describe ResolutionProofingJob, type: :job do
         expect(result_context_stages_state_id[:success]).to eq(true)
 
         expect(@aamva_stub).to_not have_been_requested
+      end
+
+      context 'when state ID has already been proofed at DocAuth' do
+        let(:state_id_already_proofed) { true }
+        let(:pii) do
+          { aamva_verified_attributes: [:address, :ssn] }
+            .merge(Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID)
+        end
+
+        it 'stores an unsuccessful result and does not make an AAMVA request' do
+          stub_vendor_requests(
+            instant_verify_response:
+              LexisNexisFixtures.instant_verify_identity_not_found_response_json,
+          )
+
+          perform
+
+          result = document_capture_session.load_proofing_result[:result]
+          result_context = result[:context]
+          result_context_stages = result_context[:stages]
+          result_context_stages_resolution = result_context_stages[:resolution]
+          result_context_stages_state_id = result_context_stages[:state_id]
+
+          expect(result[:success]).to be false
+          expect(result[:errors].keys).to eq([:base, :'Execute Instant Verify'])
+          expect(result[:exception]).to be_nil
+          expect(result[:timed_out]).to be false
+
+          # result[:context][:stages][:resolution]
+          expect(result_context_stages_resolution[:vendor_name])
+            .to eq('lexisnexis:instant_verify')
+          expect(result_context_stages_resolution[:success]).to eq(false)
+          expect(result_context_stages_resolution[:can_pass_with_additional_verification])
+            .to eq(true)
+          expect(result_context_stages_resolution[:attributes_requiring_additional_verification])
+            .to match(['address', 'dead', 'dob', 'ssn'])
+
+          # result[:context][:stages][:state_id]
+          expect(result_context_stages_state_id[:vendor_name]).to eq(
+            Idp::Constants::Vendors::AAMVA_CHECK_SKIPPED,
+          )
+          expect(result_context_stages_state_id[:success]).to eq(true)
+
+          expect(@aamva_stub).to_not have_been_requested
+        end
       end
     end
 
@@ -358,46 +566,12 @@ RSpec.describe ResolutionProofingJob, type: :job do
       end
     end
 
-    context "when the user's state ID address does not match their residential address" do
-      let(:pii) { Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS }
-      let(:ipp_enrollment_in_progress) { true }
+    context 'with hybrid mobile device profiling disabled' do
+      let(:proofing_device_hybrid_profiling) { :disabled }
+      let(:hybrid_mobile_threatmetrix_session_id) { SecureRandom.uuid }
+      let(:hybrid_mobile_request_ip) { Faker::Internet.ip_v4_address }
 
-      let(:residential_address) do
-        {
-          address1: pii[:address1],
-          address2: pii[:address2],
-          city: pii[:city],
-          state: pii[:state],
-          state_id_jurisdiction: pii[:state_id_jurisdiction],
-          zipcode: pii[:zipcode],
-        }
-      end
-
-      let(:identity_doc_address) do
-        {
-          address1: pii[:identity_doc_address1],
-          address2: pii[:identity_doc_address2],
-          city: pii[:identity_doc_city],
-          state: pii[:identity_doc_address_state],
-          state_id_jurisdiction: pii[:state_id_jurisdiction],
-          zipcode: pii[:identity_doc_zipcode],
-        }
-      end
-
-      subject(:perform) do
-        instance.perform(
-          result_id: document_capture_session.result_id,
-          encrypted_arguments: encrypted_arguments,
-          trace_id: trace_id,
-          user_id: user.id,
-          threatmetrix_session_id: threatmetrix_session_id,
-          request_ip: request_ip,
-          ipp_enrollment_in_progress: ipp_enrollment_in_progress,
-          proofing_vendor: IdentityConfig.store.idv_resolution_default_vendor,
-        )
-      end
-
-      it 'stores a successful result' do
+      it 'does not make a request to hybrid mobile threatmetrix even with params present' do
         stub_vendor_requests
 
         perform
@@ -405,83 +579,277 @@ RSpec.describe ResolutionProofingJob, type: :job do
         result = document_capture_session.load_proofing_result[:result]
         result_context = result[:context]
         result_context_stages = result_context[:stages]
-        result_context_stages_resolution = result_context_stages[:resolution]
-        result_context_residential_address = result_context_stages[:residential_address]
-        result_context_stages_state_id = result_context_stages[:state_id]
-        result_context_stages_threatmetrix = result_context_stages[:threatmetrix]
+        result_context_stages_hybrid_mobile_threatmetrix =
+          result_context_stages[:hybrid_mobile_threatmetrix]
 
-        expect(result[:exception]).to be_nil
-        expect(result[:errors].keys).to eq([:"Execute Instant Verify"])
         expect(result[:success]).to be true
+        expect(result[:exception]).to be_nil
         expect(result[:timed_out]).to be false
+        expect(result[:hybrid_mobile_threatmetrix_review_status]).to be_nil
 
-        # result[:context]
-        expect(result_context[:should_proof_state_id])
+        # result[:context][:stages][:hybrid_mobile_threatmetrix]
+        expect(result_context_stages_hybrid_mobile_threatmetrix).to eq({})
 
-        # result[:context][:stages][:resolution]
-        expect(result_context_stages_resolution[:vendor_name])
-          .to eq('lexisnexis:instant_verify')
-        expect(result_context_stages_resolution[:errors]).to include(:"Execute Instant Verify")
-        expect(result_context_stages_resolution[:exception]).to eq(nil)
-        expect(result_context_stages_resolution[:success]).to eq(true)
-        expect(result_context_stages_resolution[:timed_out]).to eq(false)
-        expect(result_context_stages_resolution[:transaction_id]).to eq('123456')
-        expect(result_context_stages_resolution[:reference]).to eq('Reference1')
-        expect(result_context_stages_resolution[:can_pass_with_additional_verification])
-          .to eq(false)
-        expect(result_context_stages_resolution[:attributes_requiring_additional_verification])
-          .to eq([])
+        # Only desktop threatmetrix should have been called (once)
+        expect(@threatmetrix_stub).to have_been_requested.once
+      end
+    end
 
-        # result[:context][:stages][:residential_address]
-        expect(result_context_residential_address[:vendor_name]).to eq('lexisnexis:instant_verify')
-        expect(result_context_residential_address[:errors]).to include(:"Execute Instant Verify")
-        expect(result_context_residential_address[:exception]).to eq(nil)
-        expect(result_context_residential_address[:success]).to eq(true)
-        expect(result_context_residential_address[:timed_out]).to eq(false)
-        expect(result_context_residential_address[:transaction_id]).to eq('123456')
-        expect(result_context_residential_address[:reference]).to eq('Reference1')
-        expect(result_context_residential_address[:can_pass_with_additional_verification])
-          .to eq(false)
-        expect(result_context_residential_address[:attributes_requiring_additional_verification])
-          .to eq([])
+    context 'with hybrid mobile profiling enabled but without session ID' do
+      let(:proofing_device_hybrid_profiling) { :enabled }
+      let(:hybrid_mobile_threatmetrix_session_id) { nil }
+      let(:hybrid_mobile_request_ip) { Faker::Internet.ip_v4_address }
 
-        # result[:context][:stages][:state_id]
-        expect(result_context_stages_state_id[:vendor_name]).to eq('aamva:state_id')
-        expect(result_context_stages_state_id[:errors]).to eq({})
-        expect(result_context_stages_state_id[:exception]).to eq(nil)
-        expect(result_context_stages_state_id[:success]).to eq(true)
-        expect(result_context_stages_state_id[:timed_out]).to eq(false)
-        expect(result_context_stages_state_id[:transaction_id]).to eq('1234-abcd-efgh')
-        expect(result_context_stages_state_id[:verified_attributes]).to match_array(
-          %w[
-            address
-            state_id_expiration
-            state_id_issued
-            state_id_number
-            document_type_received
-            dob
-            last_name
-            first_name
-            middle_name
-            name_suffix
-            height
-            sex
-            weight
-            eye_color
-          ],
-        )
+      it 'returns threatmetrix_id_missing_result for hybrid mobile' do
+        stub_vendor_requests
 
-        # result[:context][:stages][:threatmetrix]
-        expect(result_context_stages_threatmetrix[:client]).to eq('lexisnexis')
-        expect(result_context_stages_threatmetrix[:errors]).to eq({})
-        expect(result_context_stages_threatmetrix[:exception]).to eq(nil)
-        expect(result_context_stages_threatmetrix[:success]).to eq(true)
-        expect(result_context_stages_threatmetrix[:timed_out]).to eq(false)
-        expect(result_context_stages_threatmetrix[:transaction_id]).to eq('1234')
-        expect(result_context_stages_threatmetrix[:review_status]).to eq('pass')
-        expect(result_context_stages_threatmetrix[:response_body]).to eq(
-          JSON.parse(LexisNexisFixtures.ddp_success_redacted_response_json, symbolize_names: true),
-        )
+        perform
+
+        result = document_capture_session.load_proofing_result[:result]
+        result_context = result[:context]
+        result_context_stages = result_context[:stages]
+        result_context_stages_hybrid_mobile_threatmetrix =
+          result_context_stages[:hybrid_mobile_threatmetrix]
+
+        # Desktop threatmetrix should still work
+        expect(result[:success]).to be true
+        expect(result[:threatmetrix_review_status]).to eq('pass')
+
+        # Hybrid mobile should return id_missing result (user went through hybrid flow)
+        expect(result[:hybrid_mobile_threatmetrix_review_status]).to eq('reject')
+        expect(result_context[:hybrid_mobile_device_profiling_adjudication_reason])
+          .to eq('hybrid_mobile_device_profiling_result_review_required')
+        expect(result_context_stages_hybrid_mobile_threatmetrix[:success]).to eq(false)
+        expect(result_context_stages_hybrid_mobile_threatmetrix[:client])
+          .to eq('tmx_session_id_missing')
+
+        # Only desktop threatmetrix HTTP request should have been made
+        # (hybrid returns early with id_missing result without HTTP call)
+        expect(@threatmetrix_stub).to have_been_requested.once
+      end
+    end
+
+    context 'with IPP enrollment in progress' do
+      let(:ipp_enrollment_in_progress) { true }
+      context "when the user's state ID address does not match their residential address" do
+        let(:pii) { Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS }
+
+        let(:residential_address) do
+          {
+            address1: pii[:address1],
+            address2: pii[:address2],
+            city: pii[:city],
+            state: pii[:state],
+            state_id_jurisdiction: pii[:state_id_jurisdiction],
+            zipcode: pii[:zipcode],
+          }
+        end
+
+        let(:identity_doc_address) do
+          {
+            address1: pii[:identity_doc_address1],
+            address2: pii[:identity_doc_address2],
+            city: pii[:identity_doc_city],
+            state: pii[:identity_doc_address_state],
+            state_id_jurisdiction: pii[:state_id_jurisdiction],
+            zipcode: pii[:identity_doc_zipcode],
+          }
+        end
+
+        it 'stores a successful result' do
+          stub_vendor_requests
+
+          perform
+
+          result = document_capture_session.load_proofing_result[:result]
+          result_context = result[:context]
+          result_context_stages = result_context[:stages]
+          result_context_stages_resolution = result_context_stages[:resolution]
+          result_context_residential_address = result_context_stages[:residential_address]
+          result_context_stages_state_id = result_context_stages[:state_id]
+          result_context_stages_threatmetrix = result_context_stages[:threatmetrix]
+
+          expect(result[:exception]).to be_nil
+          expect(result[:errors].keys).to eq([:"Execute Instant Verify"])
+          expect(result[:success]).to be true
+          expect(result[:timed_out]).to be false
+
+          # result[:context]
+          expect(result_context[:should_proof_state_id])
+
+          # result[:context][:stages][:resolution]
+          expect(result_context_stages_resolution[:vendor_name])
+            .to eq('lexisnexis:instant_verify')
+          expect(result_context_stages_resolution[:errors]).to include(:"Execute Instant Verify")
+          expect(result_context_stages_resolution[:exception]).to eq(nil)
+          expect(result_context_stages_resolution[:success]).to eq(true)
+          expect(result_context_stages_resolution[:timed_out]).to eq(false)
+          expect(result_context_stages_resolution[:transaction_id]).to eq('123456')
+          expect(result_context_stages_resolution[:reference]).to eq('Reference1')
+          expect(result_context_stages_resolution[:can_pass_with_additional_verification])
+            .to eq(false)
+          expect(result_context_stages_resolution[:attributes_requiring_additional_verification])
+            .to eq([])
+
+          # result[:context][:stages][:residential_address]
+          expect(result_context_residential_address[:vendor_name])
+            .to eq('lexisnexis:instant_verify')
+          expect(result_context_residential_address[:errors]).to include(:"Execute Instant Verify")
+          expect(result_context_residential_address[:exception]).to eq(nil)
+          expect(result_context_residential_address[:success]).to eq(true)
+          expect(result_context_residential_address[:timed_out]).to eq(false)
+          expect(result_context_residential_address[:transaction_id]).to eq('123456')
+          expect(result_context_residential_address[:reference]).to eq('Reference1')
+          expect(result_context_residential_address[:can_pass_with_additional_verification])
+            .to eq(false)
+          expect(result_context_residential_address[:attributes_requiring_additional_verification])
+            .to eq([])
+
+          # result[:context][:stages][:state_id]
+          expect(result_context_stages_state_id[:vendor_name]).to eq('aamva:state_id')
+          expect(result_context_stages_state_id[:errors]).to eq({})
+          expect(result_context_stages_state_id[:exception]).to eq(nil)
+          expect(result_context_stages_state_id[:success]).to eq(true)
+          expect(result_context_stages_state_id[:timed_out]).to eq(false)
+          expect(result_context_stages_state_id[:transaction_id]).to eq('1234-abcd-efgh')
+          expect(result_context_stages_state_id[:verified_attributes]).to match_array(
+            %w[
+              address
+              state_id_expiration
+              state_id_issued
+              state_id_number
+              document_type_received
+              dob
+              last_name
+              first_name
+              middle_name
+              name_suffix
+              height
+              sex
+              weight
+              eye_color
+            ],
+          )
+
+          # result[:context][:stages][:threatmetrix]
+          expect(result_context_stages_threatmetrix[:client]).to eq('lexisnexis')
+          expect(result_context_stages_threatmetrix[:errors]).to eq({})
+          expect(result_context_stages_threatmetrix[:exception]).to eq(nil)
+          expect(result_context_stages_threatmetrix[:success]).to eq(true)
+          expect(result_context_stages_threatmetrix[:timed_out]).to eq(false)
+          expect(result_context_stages_threatmetrix[:transaction_id]).to eq('1234')
+          expect(result_context_stages_threatmetrix[:review_status]).to eq('pass')
+          expect(result_context_stages_threatmetrix[:response_body]).to eq(
+            JSON.parse(
+              LexisNexisFixtures.threatmetrix_success_redacted_response_json,
+              symbolize_names: true,
+            ),
+          )
+        end
+      end
+
+      context 'when the InstantVerify proofing fails' do
+        context 'when attributes requiring additional verification were verified by AAMVA' do
+          it 'stores a successful result' do
+            stub_vendor_requests(
+              instant_verify_response: LexisNexisFixtures.instant_verify_address_fail_response_json,
+            )
+
+            perform
+
+            result = document_capture_session.load_proofing_result[:result]
+            result_context = result[:context]
+            result_context_stages = result_context[:stages]
+            result_context_stages_resolution = result_context_stages[:resolution]
+            result_context_stages_state_id = result_context_stages[:state_id]
+
+            expect(result[:success]).to be true
+            expect(result[:errors].keys).to eq([:base, :'Execute Instant Verify'])
+            expect(result[:exception]).to be_nil
+            expect(result[:timed_out]).to be false
+
+            expect(result_context[:resolution_adjudication_reason])
+              .to eq('state_id_covers_failed_resolution')
+            # result[:context][:stages][:resolution]
+            expect(result_context_stages_resolution[:vendor_name])
+              .to eq('lexisnexis:instant_verify')
+            expect(result_context_stages_resolution[:success]).to eq(false)
+            expect(result_context_stages_resolution[:can_pass_with_additional_verification])
+              .to eq(true)
+            expect(result_context_stages_resolution[:attributes_requiring_additional_verification])
+              .to eq(['address'])
+
+            # result[:context][:stages][:state_id]
+            expect(result_context_stages_state_id[:vendor_name]).to eq('aamva:state_id')
+            expect(result_context_stages_state_id[:success]).to eq(true)
+            expect(result_context_stages_state_id[:verified_attributes]).to match_array(
+              %w[
+                address
+                state_id_expiration
+                state_id_issued
+                state_id_number
+                document_type_received
+                dob
+                last_name
+                first_name
+                middle_name
+                name_suffix
+                height
+                sex
+                weight
+                eye_color
+              ],
+            )
+          end
+
+          context 'when aamva already proofed at doc auth' do
+            let(:state_id_already_proofed) { true }
+            let(:pii) do
+              { aamva_verified_attributes: [:address, :ssn] }
+                .merge(Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID)
+            end
+
+            it 'stores a successful result' do
+              stub_vendor_requests(
+                instant_verify_response: LexisNexisFixtures
+                  .instant_verify_address_fail_response_json,
+              )
+
+              perform
+
+              result = document_capture_session.load_proofing_result[:result]
+              result_context = result[:context]
+              result_context_stages = result_context[:stages]
+              result_context_stages_resolution = result_context_stages[:resolution]
+              result_context_stages_state_id = result_context_stages[:state_id]
+
+              expect(result[:success]).to be true
+              expect(result[:errors].keys).to eq([:base, :'Execute Instant Verify'])
+              expect(result[:exception]).to be_nil
+              expect(result[:timed_out]).to be false
+
+              expect(result_context[:resolution_adjudication_reason])
+                .to eq('state_id_covers_failed_resolution')
+              # result[:context][:stages][:resolution]
+              expect(result_context_stages_resolution[:vendor_name])
+                .to eq('lexisnexis:instant_verify')
+              expect(result_context_stages_resolution[:success]).to eq(false)
+              expect(result_context_stages_resolution[:can_pass_with_additional_verification])
+                .to eq(true)
+              expect(
+                result_context_stages_resolution[:attributes_requiring_additional_verification],
+              )
+                .to eq(['address'])
+
+              # result[:context][:stages][:state_id]
+              expect(result_context_stages_state_id[:vendor_name]).to eq('AamvaCheckSkipped')
+              expect(result_context_stages_state_id[:success]).to eq(true)
+              expect(result_context_stages_state_id[:verified_attributes]).to be_empty
+
+              expect(@aamva_stub).to_not have_been_requested
+            end
+          end
+        end
       end
     end
 
@@ -512,10 +880,48 @@ RSpec.describe ResolutionProofingJob, type: :job do
       end
     end
 
+    context 'with hybrid mobile parameters but without desktop threatmetrix session ID' do
+      let(:proofing_device_hybrid_profiling) { :enabled }
+      let(:threatmetrix_session_id) { nil }
+      let(:hybrid_mobile_threatmetrix_session_id) { SecureRandom.uuid }
+      let(:hybrid_mobile_request_ip) { Faker::Internet.ip_v4_address }
+
+      it 'processes hybrid mobile threatmetrix independently of desktop threatmetrix' do
+        stub_vendor_requests
+
+        perform
+
+        result = document_capture_session.load_proofing_result[:result]
+        result_context = result[:context]
+        result_context_stages = result_context[:stages]
+        result_context_stages_threatmetrix = result_context_stages[:threatmetrix]
+        result_context_stages_hybrid_mobile_threatmetrix =
+          result_context_stages[:hybrid_mobile_threatmetrix]
+
+        expect(result[:success]).to be true
+
+        # Desktop threatmetrix should be rejected due to missing session ID
+        expect(result[:threatmetrix_review_status]).to eq('reject')
+        expect(result_context_stages_threatmetrix[:success]).to eq(false)
+        expect(result_context[:device_profiling_adjudication_reason])
+          .to eq('device_profiling_result_review_required')
+        expect(result_context_stages_threatmetrix[:client]).to eq('tmx_session_id_missing')
+
+        # Hybrid mobile should succeed independently
+        expect(result[:hybrid_mobile_threatmetrix_review_status]).to eq('pass')
+        expect(result_context_stages_hybrid_mobile_threatmetrix[:success]).to eq(true)
+        expect(result_context_stages_hybrid_mobile_threatmetrix[:review_status]).to eq('pass')
+
+        # Only hybrid mobile should have called the stub (once)
+        expect(@threatmetrix_stub).to have_been_requested.once
+      end
+    end
+
     context 'with an invalid threatmetrix review_status value' do
       it 'stores an exception result' do
         stub_vendor_requests(
-          threatmetrix_response: LexisNexisFixtures.ddp_unexpected_review_status_response_json,
+          threatmetrix_response:
+            LexisNexisFixtures.threatmetrix_unexpected_review_status_response_json,
         )
 
         perform
@@ -526,13 +932,48 @@ RSpec.describe ResolutionProofingJob, type: :job do
         result_context_stages_threatmetrix = result_context_stages[:threatmetrix]
 
         expect(result[:success]).to be false
-        expect(result[:exception]).to include(LexisNexisFixtures.ddp_unexpected_review_status)
+        expect(result[:exception])
+          .to include(LexisNexisFixtures.threatmetrix_unexpected_review_status)
         expect(result[:timed_out]).to be false
         expect(result[:threatmetrix_review_status]).to be_nil
 
         expect(result_context_stages_threatmetrix[:exception]).to include(
-          LexisNexisFixtures.ddp_unexpected_review_status,
+          LexisNexisFixtures.threatmetrix_unexpected_review_status,
         )
+      end
+    end
+
+    context 'with an invalid hybrid mobile threatmetrix review_status value' do
+      let(:proofing_device_hybrid_profiling) { :enabled }
+      let(:hybrid_mobile_threatmetrix_session_id) { SecureRandom.uuid }
+      let(:hybrid_mobile_request_ip) { Faker::Internet.ip_v4_address }
+
+      it 'stores an exception result for hybrid mobile threatmetrix' do
+        stub_vendor_requests(
+          hybrid_mobile_threatmetrix_response:
+            LexisNexisFixtures.threatmetrix_unexpected_review_status_response_json,
+        )
+
+        perform
+
+        result = document_capture_session.load_proofing_result[:result]
+        result_context = result[:context]
+        result_context_stages = result_context[:stages]
+        result_context_stages_hybrid_mobile_threatmetrix =
+          result_context_stages[:hybrid_mobile_threatmetrix]
+
+        expect(result[:success]).to be false
+        expect(result[:exception])
+          .to include(LexisNexisFixtures.threatmetrix_unexpected_review_status)
+        expect(result[:timed_out]).to be false
+        expect(result[:hybrid_mobile_threatmetrix_review_status]).to be_nil
+
+        expect(result_context_stages_hybrid_mobile_threatmetrix[:exception]).to include(
+          LexisNexisFixtures.threatmetrix_unexpected_review_status,
+        )
+
+        # Both desktop and hybrid mobile should have been called
+        expect(@threatmetrix_stub).to have_been_requested.times(2)
       end
     end
 
@@ -570,12 +1011,27 @@ RSpec.describe ResolutionProofingJob, type: :job do
 
     def stub_vendor_requests(
       instant_verify_response: LexisNexisFixtures.instant_verify_success_response_json,
-      threatmetrix_response: LexisNexisFixtures.ddp_success_response_json,
+      threatmetrix_response: LexisNexisFixtures.threatmetrix_success_response_json,
+      hybrid_mobile_threatmetrix_response: LexisNexisFixtures.threatmetrix_success_response_json,
       aamva_response: AamvaFixtures.verification_response
     )
       allow(IdentityConfig.store).to receive(:proofer_mock_fallback).and_return(false)
       @instant_verify_stub = stub_instant_verify_request(instant_verify_response)
-      @threatmetrix_stub = stub_threatmetrix_request(threatmetrix_response)
+
+      if proofing_device_hybrid_profiling == :enabled &&
+         hybrid_mobile_request_ip.present? &&
+         hybrid_mobile_threatmetrix_session_id.present?
+        @threatmetrix_stub = stub_request(
+          :post,
+          'https://www.example.com/api/session-query',
+        ).to_return(
+          { body: threatmetrix_response },
+          { body: hybrid_mobile_threatmetrix_response },
+        )
+      else
+        @threatmetrix_stub = stub_threatmetrix_request(threatmetrix_response)
+      end
+
       @aamva_stub = stub_aamva_request(aamva_response)
     end
 

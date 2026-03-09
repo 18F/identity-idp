@@ -9,6 +9,7 @@ module Proofing
     ADDRESS_VENDOR_SP_COST_TOKENS = {
       mock: :mock_address,
       lexis_nexis: :lexis_nexis_address,
+      lexis_nexis_ddp: :lexis_nexis_address,
       socure: :socure_address,
     }.freeze
 
@@ -64,6 +65,13 @@ module Proofing
           hmac_secret_key: IdentityConfig.store.lexisnexis_hmac_secret_key,
           request_mode: IdentityConfig.store.lexisnexis_request_mode,
         )
+      when :lexis_nexis_ddp
+        Proofing::LexisNexis::Ddp::Proofers::PhoneFinderProofer.new(
+          api_key: IdentityConfig.store.lexisnexis_threatmetrix_api_key,
+          org_id: IdentityConfig.store.lexisnexis_threatmetrix_org_id,
+          base_url: IdentityConfig.store.lexisnexis_threatmetrix_base_url,
+          ddp_policy: IdentityConfig.store.lexisnexis_phone_finder_ddp_policy,
+        )
       when :socure
         Proofing::Socure::IdPlus::Proofers::PhoneRiskProofer.new(
           Proofing::Socure::IdPlus::Config.new(
@@ -82,7 +90,13 @@ module Proofing
     end
 
     def primary_vendor
-      IdentityConfig.store.idv_address_primary_vendor
+      @primary_vendor ||= begin
+        if (rand * 100) <= IdentityConfig.store.idv_address_vendor_socure_percent
+          :socure
+        else
+          IdentityConfig.store.idv_address_primary_vendor
+        end
+      end
     end
 
     def secondary_vendor

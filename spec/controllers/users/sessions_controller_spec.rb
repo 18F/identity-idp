@@ -564,98 +564,65 @@ RSpec.describe Users::SessionsController, devise: true do
       end
     end
 
-    context 'Password Compromised toggle is set to true' do
-      before do
-        allow(FeatureManagement).to receive(:check_password_enabled?).and_return(true)
-      end
-
-      context 'User has a compromised password' do
+    context 'when the check password toggle is set to true' do
+      context 'when the user has a compromised password' do
         let(:user) { create(:user, :fully_registered) }
+        let(:analytics) { FakeAnalytics.new }
         before do
+          allow(FeatureManagement).to receive(:check_password_enabled?).and_return(true)
           allow(PwnedPasswords::LookupPassword).to receive(:call).and_return true
+          allow(Analytics).to receive(:new).and_return(analytics)
         end
-
-        context 'user randomly chosen to be tested' do
-          before do
-            allow(SecureRandom).to receive(:random_number).and_return(5)
-            allow(IdentityConfig.store).to receive(:compromised_password_randomizer_threshold)
-              .and_return(2)
-          end
-
-          it 'updates user attribute password_compromised_checked_at' do
-            expect(user.password_compromised_checked_at).to be_falsey
+        it 'updates user attribute password_compromised_checked_at' do
+          expect(user.password_compromised_checked_at).to be_falsey
+          freeze_time do
             post :create, params: { user: { email: user.email, password: user.password } }
-            user.reload
-            expect(user.password_compromised_checked_at).to be_truthy
-          end
-
-          it 'stores in session redirect to check compromise' do
-            post :create, params: { user: { email: user.email, password: user.password } }
-            expect(controller.session[:redirect_to_change_password]).to be_truthy
+            expect(user.reload.password_compromised_checked_at).to eq Time.zone.now
           end
         end
 
-        context 'user not chosen to be tested' do
-          before do
-            allow(SecureRandom).to receive(:random_number).and_return(1)
-            allow(IdentityConfig.store).to receive(:compromised_password_randomizer_threshold)
-              .and_return(5)
-          end
-
-          it 'does not store anything in user_session' do
-            post :create, params: { user: { email: user.email, password: user.password } }
-            expect(user.password_compromised_checked_at).to be_falsey
-          end
-
-          it 'does not update the user ' do
-            post :create, params: { user: { email: user.email, password: user.password } }
-            expect(controller.session[:redirect_to_change_password]).to be_falsey
-          end
+        it 'posts an analytics event when password is compromised' do
+          post :create, params: { user: { email: user.email, password: user.password } }
+          expect(analytics).to have_logged_event(:password_found_on_pwned_list)
         end
       end
 
-      context 'user does not have a compromised password' do
+      context 'when the user does not have a compromised password' do
         let(:user) { create(:user, :fully_registered) }
         before do
+          allow(FeatureManagement).to receive(:check_password_enabled?).and_return(true)
           allow(PwnedPasswords::LookupPassword).to receive(:call).and_return false
         end
 
-        context 'user randomly chosen to be tested' do
-          before do
-            allow(SecureRandom).to receive(:random_number).and_return(5)
-            allow(IdentityConfig.store).to receive(:compromised_password_randomizer_threshold)
-              .and_return(2)
-          end
-
-          it 'updates user attribute password_compromised_checked_at' do
-            expect(user.password_compromised_checked_at).to be_falsey
+        it 'updates user attribute password_compromised_checked_at' do
+          expect(user.password_compromised_checked_at).to be_falsey
+          freeze_time do
             post :create, params: { user: { email: user.email, password: user.password } }
-            user.reload
-            expect(user.password_compromised_checked_at).to be_truthy
+            expect(user.reload.password_compromised_checked_at).to eq Time.zone.now
           end
+        end
+      end
+    end
 
-          it 'stores in session false to attempt to redirect password compromised' do
+    context 'when the check password toggle is set to false' do
+      context 'when the user has a compromised password' do
+        let(:user) { create(:user, :fully_registered) }
+        let(:analytics) { FakeAnalytics.new }
+        before do
+          allow(FeatureManagement).to receive(:check_password_enabled?).and_return(false)
+          allow(PwnedPasswords::LookupPassword).to receive(:call).and_return true
+          allow(Analytics).to receive(:new).and_return(analytics)
+        end
+        it 'does not update user attribute password_compromised_checked_at' do
+          freeze_time do
             post :create, params: { user: { email: user.email, password: user.password } }
-            expect(controller.session[:redirect_to_change_password]).to be_falsey
+            expect(user.reload.password_compromised_checked_at).to eq nil
           end
         end
 
-        context 'user not chosen to be tested' do
-          before do
-            allow(SecureRandom).to receive(:random_number).and_return(1)
-            allow(IdentityConfig.store).to receive(:compromised_password_randomizer_threshold)
-              .and_return(5)
-          end
-
-          it 'does not store anything in user_session' do
-            post :create, params: { user: { email: user.email, password: user.password } }
-            expect(user.password_compromised_checked_at).to be_falsey
-          end
-
-          it 'does not update the user ' do
-            post :create, params: { user: { email: user.email, password: user.password } }
-            expect(controller.session[:redirect_to_change_password]).to be_falsey
-          end
+        it 'does not post an analytics event when password is compromised' do
+          post :create, params: { user: { email: user.email, password: user.password } }
+          expect(analytics).not_to have_logged_event(:password_found_on_pwned_list)
         end
       end
     end

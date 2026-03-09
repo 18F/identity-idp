@@ -126,9 +126,12 @@ RSpec.feature 'Analytics Regression', :js do
       ssn_is_unique: true,
       timed_out: false,
       threatmetrix_review_status: 'pass',
+      hybrid_mobile_threatmetrix_review_status: nil,
       phone_precheck_passed: idv_phone_precheck_enabled,
       context: {
         device_profiling_adjudication_reason: 'device_profiling_result_pass',
+        hybrid_mobile_device_profiling_adjudication_reason:
+          'hybrid_mobile_device_profiling_not_enabled',
         resolution_adjudication_reason: 'pass_resolution_and_state_id',
         should_proof_state_id: true,
         stages: {
@@ -147,8 +150,8 @@ RSpec.feature 'Analytics Regression', :js do
                                  vendor_name: 'ResidentialAddressNotRequired',
                                  vendor_workflow: nil,
                                  verified_attributes: nil },
-          state_id: state_id_resolution,
           threatmetrix: threatmetrix_response,
+          hybrid_mobile_threatmetrix: {},
           phone_precheck: idv_phone_precheck_enabled ?
                           {
                             errors: {},
@@ -166,21 +169,18 @@ RSpec.feature 'Analytics Regression', :js do
     }
   end
 
-  let(:doc_auth_verify_proofing_results) do
-    base_proofing_results.deep_merge(
-      context: { stages: { state_id: state_id_resolution_with_id_type } },
-    )
-  end
-
   let(:in_person_path_proofing_results) do
     {
       exception: nil,
       ssn_is_unique: true,
       timed_out: false,
       threatmetrix_review_status: 'pass',
+      hybrid_mobile_threatmetrix_review_status: nil,
       phone_precheck_passed: false,
       context: {
         device_profiling_adjudication_reason: 'device_profiling_result_pass',
+        hybrid_mobile_device_profiling_adjudication_reason:
+          'hybrid_mobile_device_profiling_not_enabled',
         resolution_adjudication_reason: 'pass_resolution_and_state_id',
         should_proof_state_id: true,
         stages: {
@@ -199,8 +199,8 @@ RSpec.feature 'Analytics Regression', :js do
                                  vendor_name: 'ResolutionMock',
                                  vendor_workflow: nil,
                                  verified_attributes: nil },
-          state_id: state_id_resolution,
           threatmetrix: threatmetrix_response,
+          hybrid_mobile_threatmetrix: {},
           phone_precheck: {},
         },
       },
@@ -289,7 +289,7 @@ RSpec.feature 'Analytics Regression', :js do
       ),
       'IdV: doc auth verify proofing results' => {
         success: true, flow_path: 'standard', address_edited: false, address_line2_present: false, last_name_spaced: false, analytics_id: 'Doc Auth', step: 'verify',
-        proofing_results: doc_auth_verify_proofing_results,
+        proofing_results: base_proofing_results,
         proofing_components: idv_phone_precheck_enabled ? address_proofing_components : base_proofing_components
       },
       'IdV: phone of record visited' => {
@@ -420,7 +420,7 @@ RSpec.feature 'Analytics Regression', :js do
       ),
       'IdV: doc auth verify proofing results' => {
         success: true, flow_path: 'hybrid', address_edited: false, address_line2_present: false, last_name_spaced: false, analytics_id: 'Doc Auth', step: 'verify',
-        proofing_results: doc_auth_verify_proofing_results,
+        proofing_results: base_proofing_results,
         proofing_components: base_proofing_components
       },
       'IdV: phone of record visited' => {
@@ -549,7 +549,7 @@ RSpec.feature 'Analytics Regression', :js do
       ),
       'IdV: doc auth verify proofing results' => {
         success: true, flow_path: 'standard', address_edited: false, address_line2_present: false, last_name_spaced: false, analytics_id: 'Doc Auth', step: 'verify',
-        proofing_results: doc_auth_verify_proofing_results,
+        proofing_results: base_proofing_results,
         proofing_components: base_proofing_components
       },
       'IdV: phone of record visited' => {
@@ -812,7 +812,7 @@ RSpec.feature 'Analytics Regression', :js do
       ),
       'IdV: doc auth verify proofing results' => {
         success: true, flow_path: 'standard', address_edited: false, address_line2_present: false, last_name_spaced: false, analytics_id: 'Doc Auth', step: 'verify',
-        proofing_results: doc_auth_verify_proofing_results,
+        proofing_results: base_proofing_results,
         proofing_components: base_proofing_components
       },
       'IdV: phone of record visited' => {

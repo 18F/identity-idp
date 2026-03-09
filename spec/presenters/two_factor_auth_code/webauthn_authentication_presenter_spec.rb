@@ -95,10 +95,16 @@ RSpec.describe TwoFactorAuthCode::WebauthnAuthenticationPresenter do
     let(:phishing_resistant_required) { false }
 
     it 'includes option to choose another authentication method' do
-      expect(presenter.troubleshooting_options.size).to eq(2)
+      expect(presenter.troubleshooting_options.size).to eq(3)
       expect(presenter.troubleshooting_options.first).to satisfy do |c|
         c.url == login_two_factor_options_path &&
           c.content == t('two_factor_authentication.login_options_link_text')
+      end
+    end
+
+    it 'includes option to learn more about adding or changing an authenticator' do
+      expect(presenter.troubleshooting_options[2]).to satisfy do |c|
+        c.content == t('two_factor_authentication.add_or_change_authenticator')
       end
     end
 
@@ -108,7 +114,7 @@ RSpec.describe TwoFactorAuthCode::WebauthnAuthenticationPresenter do
       it 'includes option to learn more about face or touch unlock' do
         expect(presenter.troubleshooting_options.size).to eq(3)
         expect(presenter.troubleshooting_options[1]).to satisfy do |c|
-          c.content == t('instructions.mfa.webauthn_platform.learn_more_help')
+          c.content == t('instructions.mfa.webauthn_platform.issues_with_ft_unlock')
         end
       end
     end

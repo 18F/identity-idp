@@ -188,6 +188,7 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
           phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
           enabled_mfa_methods_count: 1,
           in_account_creation_flow: false,
+          available_webauthn_platform_config: false,
           attempts: 1,
         )
       end
@@ -286,6 +287,7 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
             phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
             enabled_mfa_methods_count: 1,
             in_account_creation_flow: false,
+            available_webauthn_platform_config: false,
             attempts: 1,
           )
           expect(@analytics).to have_logged_event(
@@ -331,6 +333,7 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
             phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
             enabled_mfa_methods_count: 1,
             in_account_creation_flow: false,
+            available_webauthn_platform_config: false,
             attempts: 2,
           )
           expect(@analytics).to have_logged_event(
@@ -443,12 +446,28 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
           phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
           enabled_mfa_methods_count: 1,
           in_account_creation_flow: false,
+          available_webauthn_platform_config: false,
           attempts: 1,
         )
         expect(@analytics).to have_logged_event(
           'User marked authenticated',
           authentication_type: :valid_2fa,
         )
+      end
+
+      context 'with confirmation context' do
+        before do
+          controller.user_session[:context] = 'confirmation'
+        end
+        it 'sends a recovery information changed event' do
+          expect(PushNotification::HttpPush).to receive(:deliver)
+            .with(PushNotification::RecoveryInformationChangedEvent.new(user: user))
+
+          post :create, params: {
+            code: subject.current_user.reload.direct_otp,
+            otp_delivery_preference: 'sms',
+          }
+        end
       end
 
       context 'with reauthentication context' do
@@ -499,6 +518,7 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
             phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
             enabled_mfa_methods_count: 1,
             in_account_creation_flow: false,
+            available_webauthn_platform_config: false,
             attempts: 1,
           )
           expect(@analytics).to have_logged_event(

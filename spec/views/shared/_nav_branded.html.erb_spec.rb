@@ -1,4 +1,6 @@
 require 'rails_helper'
+require 'active_storage'
+require 'active_storage/service/s3_service'
 
 RSpec.describe 'shared/_nav_branded.html.erb' do
   let(:view_context) { ActionController::Base.new.view_context }
@@ -19,7 +21,6 @@ RSpec.describe 'shared/_nav_branded.html.erb' do
   context 'with a SP-logo configured' do
     before do
       allow(view).to receive(:decorated_sp_session).and_return(decorated_sp_session)
-      allow(view).to receive(:current_sp).and_return(sp_with_logo)
       render
     end
 
@@ -35,6 +36,7 @@ RSpec.describe 'shared/_nav_branded.html.erb' do
         friendly_name: 'Awesome Application!',
         return_to_sp_url: 'www.awesomeness.com',
         remote_logo_key: 'key-to-logo',
+        logo: 'filename.png',
       )
     end
     let(:bucket) { 'bucket_id' }
@@ -48,18 +50,29 @@ RSpec.describe 'shared/_nav_branded.html.erb' do
         service_provider_request: nil,
       )
     end
+    let(:s3_double) { instance_double(ActiveStorage::Service::S3Service) }
+    let(:stubbed_bucket) do
+      Aws::S3::Bucket.new(
+        name: IdentityConfig.store.aws_logo_bucket, stub_responses: true,
+      )
+    end
 
     before do
       allow(IdentityConfig.store).to receive(:aws_logo_bucket).and_return(bucket)
       allow(FeatureManagement).to receive(:logo_upload_enabled?).and_return(true)
-      allow(view).to receive(:decorated_sp_session).and_return(decorated_sp_session)
-      allow(view).to receive(:current_sp).and_return(sp_with_s3_logo)
+      allow(view).to receive_messages(
+        decorated_sp_session: decorated_sp_session,
+      )
+      allow(ActiveStorage::Service::S3Service).to receive(:new).and_return(s3_double)
+      allow(s3_double).to receive(:bucket).and_return(stubbed_bucket)
 
       render
     end
 
     it 'renders the logo from S3' do
-      expect(rendered).to match(/src="#{img_url}"/)
+      # Include any number of non-spacing characters between the beginning of the URL and the
+      # closing quote. Those characters will vary on every call to the URL-signing algorithm.
+      expect(rendered).to match(/src="#{img_url}\S*"/)
     end
   end
 
@@ -75,8 +88,8 @@ RSpec.describe 'shared/_nav_branded.html.erb' do
     end
 
     before do
-      allow(view).to receive(:decorated_sp_session).and_return(decorated_sp_session)
-      allow(view).to receive(:current_sp).and_return(sp_without_logo)
+      allow(view).to receive_messages(decorated_sp_session: decorated_sp_session)
+
       render
     end
 
@@ -95,9 +108,9 @@ RSpec.describe 'shared/_nav_branded.html.erb' do
         service_provider_request: nil,
       )
     end
+
     before do
-      allow(view).to receive(:decorated_sp_session).and_return(decorated_sp_session)
-      allow(view).to receive(:current_sp).and_return(sp)
+      allow(view).to receive_messages(decorated_sp_session: decorated_sp_session)
     end
 
     it 'does not raise an exception' do

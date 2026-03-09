@@ -13,7 +13,7 @@ module Idv
 
     def show
       abandon_any_ipp_progress
-      @upload_enabled = idv_session.desktop_selfie_test_mode_enabled?
+      @upload_enabled = idv_session.desktop_test_mode_enabled?
       @post_office_enabled = IdentityConfig.store.in_person_proofing_opt_in_enabled &&
                              Idv::InPersonConfig.enabled_for_issuer?(
                                decorated_sp_session.sp_issuer,
@@ -257,7 +257,7 @@ module Idv
     end
 
     def update_vendor_if_test_mode_enabled
-      if idv_session.desktop_selfie_test_mode_enabled? &&
+      if idv_session.desktop_test_mode_enabled? &&
          document_capture_session.doc_auth_vendor != Idp::Constants::Vendors::MOCK
         document_capture_session.update(doc_auth_vendor: Idp::Constants::Vendors::MOCK)
       end

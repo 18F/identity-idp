@@ -72,7 +72,8 @@ RSpec.describe 'In Person Proofing Threatmetrix', js: true do
   context 'ThreatMetrix determination of Review' do
     let(:tmx_status) { 'Review' }
 
-    it 'allows the user to continue down the happy path', allow_browser_log: true do
+    it 'allows the user to continue down the happy path', allow_browser_log: true,
+                                                          timezone: 'UTC' do
       visit_idp_from_sp_with_ial2(:oidc, **{ client_id: service_provider.issuer })
       sign_in_and_2fa_user(user)
       begin_in_person_proofing(user)

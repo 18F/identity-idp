@@ -34,7 +34,7 @@ describe('document-capture/components/selfie-step', () => {
           value={{
             isSelfieCaptureEnabled: false,
             isUploadEnabled: false,
-            isSelfieDesktopTestMode: false,
+            isDesktopTestMode: false,
             showHelpInitially: false,
           }}
         >
@@ -75,7 +75,7 @@ describe('document-capture/components/selfie-step', () => {
           value={{
             isSelfieCaptureEnabled: false,
             isUploadEnabled: true,
-            isSelfieDesktopTestMode: false,
+            isDesktopTestMode: false,
             showHelpInitially: false,
           }}
         >

@@ -100,6 +100,51 @@ RSpec.describe AddressProofingJob, type: :job do
       end
     end
 
+    context 'webmock lexisnexis ddp vendor' do
+      let(:address_vendor) { :lexis_nexis_ddp }
+      before do
+        stub_request(
+          :post,
+          'https://lexisnexis.example.com/api/attribute-query',
+        ).to_return(
+          body: LexisNexisFixtures.ddp_phone_finder_success_response_json,
+          status: 200,
+        )
+
+        allow(IdentityConfig.store).to receive(:proofer_mock_fallback).and_return(false)
+        allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_api_key)
+          .and_return('abc123')
+        allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_org_id)
+          .and_return('test_org_id')
+        allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_base_url)
+          .and_return('https://lexisnexis.example.com/')
+        allow(IdentityConfig.store).to receive(:lexisnexis_phone_finder_ddp_policy)
+          .and_return('test-policy')
+      end
+
+      it 'runs' do
+        perform
+
+        result = document_capture_session.load_proofing_result[:result]
+
+        expect(result[:exception]).to be_nil
+        expect(result[:errors]).to eq({})
+        expect(result[:success]).to be true
+        expect(result[:timed_out]).to be false
+        expect(result[:vendor_name]).to eq('lexisnexis:phone_finder_ddp')
+        expect(result[:alternate_result]).to be_nil
+      end
+
+      it 'adds cost data' do
+        expect { perform }.to(change { SpCost.count }.by(1))
+
+        sp_cost = SpCost.last
+        expect(sp_cost.issuer).to eq(service_provider.issuer)
+        expect(sp_cost.transaction_id).to eq('super-cool-test-session-id')
+        expect(sp_cost.cost_type).to eq('lexis_nexis_address')
+      end
+    end
+
     context 'webmock vendor socure' do
       let(:address_vendor) { :socure }
       let(:phonerisk_score) { 0.01 }
@@ -117,6 +162,9 @@ RSpec.describe AddressProofingJob, type: :job do
             phoneRisk: {
               score: phonerisk_score,
               reasonCodes: phonerisk_reason_codes,
+              signals: {
+                phone: {},
+              },
             },
             namePhoneCorrelation: {
               score: namephone_correlation_score,

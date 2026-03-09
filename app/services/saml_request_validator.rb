@@ -33,7 +33,7 @@ class SamlRequestValidator
   def basic_saml_checks_pass
     return if saml_errors.empty?
 
-    saml_errors.each { |error| errors.add(:service_provider, error) }
+    saml_errors.uniq.each { |error| errors.add(:service_provider, error) }
   end
   # rubocop:enable IdentityIdp/ErrorsAddLinter
 

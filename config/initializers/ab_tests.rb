@@ -157,6 +157,8 @@ module AbTests
         IdentityConfig.store.idv_resolution_vendor_socure_kyc_percent : 0,
       instant_verify: IdentityConfig.store.idv_resolution_vendor_switching_enabled ?
         IdentityConfig.store.idv_resolution_vendor_instant_verify_percent : 0,
+      instant_verify_ddp: IdentityConfig.store.idv_resolution_vendor_switching_enabled ?
+        IdentityConfig.store.idv_resolution_vendor_instant_verify_ddp_percent : 0,
     },
   ) do |service_provider:, session:, user:, user_session:, **|
     verify_info_step_document_capture_session_uuid_discriminator(
@@ -210,5 +212,15 @@ module AbTests
     }.compact,
   ) do |service_provider:, session:, user:, user_session:, **|
     user&.uuid
+  end.freeze
+
+  HYBRID_MOBILE_TMX_PROCESSED = AbTest.new(
+    experiment_name: 'Hybrid Mobile ThreatMetrix',
+    should_log: /^idv/i,
+    buckets: {
+      hybrid_mobile_tmx_processed: IdentityConfig.store.hybrid_mobile_tmx_processed_percent,
+    },
+  ) do |service_provider:, session:, user:, user_session:, **|
+    document_capture_session_uuid_discriminator(service_provider:, session:, user:, user_session:)
   end.freeze
 end

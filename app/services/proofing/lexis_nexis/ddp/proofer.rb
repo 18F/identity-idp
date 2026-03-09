@@ -4,8 +4,6 @@ module Proofing
   module LexisNexis
     module Ddp
       class Proofer
-        VALID_REVIEW_STATUSES = %w[pass review reject].freeze
-
         attr_reader :config
 
         def initialize(attrs)
@@ -13,42 +11,25 @@ module Proofing
         end
 
         def proof(applicant)
-          response = VerificationRequest.new(config: config, applicant: applicant).send_request
+          response = verification_request(applicant).send_request
           build_result_from_response(response)
         rescue => exception
           NewRelic::Agent.notice_error(exception)
-          Proofing::DdpResult.new(success: false, exception: exception)
+          build_result_from_exception(exception)
         end
 
         private
 
-        def build_result_from_response(verification_response)
-          result = Proofing::DdpResult.new
-          body = verification_response.response_body
-
-          result.response_body = body
-          result.transaction_id = body['request_id']
-          request_result = body['request_result']
-          review_status = body['review_status']
-
-          validate_review_status!(review_status)
-
-          result.review_status = review_status
-          result.add_error(:request_result, request_result) unless request_result == 'success'
-          result.add_error(:review_status, review_status) unless review_status == 'pass'
-          result.account_lex_id = body['account_lex_id']
-          result.session_id = body['session_id']
-
-          result.success = !result.errors?
-          result.client = 'lexisnexis'
-
-          result
+        def verification_request(applicant)
+          raise NotImplementedError
         end
 
-        def validate_review_status!(review_status)
-          return if VALID_REVIEW_STATUSES.include?(review_status)
+        def build_result_from_response(response)
+          raise NotImplementedError
+        end
 
-          raise "Unexpected ThreatMetrix review_status value: #{review_status}"
+        def build_result_from_exception(exception)
+          raise NotImplementedError
         end
       end
     end

@@ -46,6 +46,7 @@ module Idv
         idv_session.doc_auth_vendor = document_capture_session.doc_auth_vendor
         if store_in_session
           idv_session.pii_from_doc = stored_result.pii_from_doc
+          idv_session.aamva_verified_attributes = stored_result.aamva_verified_attributes
           idv_session.selfie_check_performed = stored_result.selfie_check_performed?
         end
         idv_session.source_check_vendor ||= stored_result.state_id_vendor
@@ -83,6 +84,9 @@ module Idv
 
       expected_doc_auth_vendor = document_capture_session.doc_auth_vendor
       return if vendor == expected_doc_auth_vendor
+      # if ln accept both ln and ln_ddp
+      return if vendor == Idp::Constants::Vendors::LEXIS_NEXIS &&
+                expected_doc_auth_vendor == Idp::Constants::Vendors::LEXIS_NEXIS_DDP
       return if vendor == Idp::Constants::Vendors::LEXIS_NEXIS &&
                 expected_doc_auth_vendor == Idp::Constants::Vendors::MOCK
       return if vendor == Idp::Constants::Vendors::SOCURE &&
@@ -101,7 +105,9 @@ module Idv
       when Idp::Constants::Vendors::SOCURE, Idp::Constants::Vendors::SOCURE_MOCK
         in_hybrid_mobile ? idv_hybrid_mobile_socure_document_capture_path
                          : idv_socure_document_capture_path
-      when Idp::Constants::Vendors::LEXIS_NEXIS, Idp::Constants::Vendors::MOCK
+      when Idp::Constants::Vendors::LEXIS_NEXIS,
+           Idp::Constants::Vendors::LEXIS_NEXIS_DDP,
+           Idp::Constants::Vendors::MOCK
         in_hybrid_mobile ? idv_hybrid_mobile_document_capture_path
                          : idv_document_capture_path
       end
@@ -140,7 +146,7 @@ module Idv
     end
 
     def doc_auth_upload_enabled?
-      # false for now until we consolidate this method with desktop_selfie_test_mode_enabled
+      # false for now until we consolidate this method with desktop_test_mode_enabled
       false
     end
 

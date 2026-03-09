@@ -1,15 +1,19 @@
 require 'rails_helper'
 
 RSpec.describe Proofing::Socure::IdPlus::Responses::KycResponse do
+  let(:response_reason_codes) do
+    [
+      'I919',
+      'I914',
+      'I905',
+    ]
+  end
+
   let(:response_body) do
     {
       'referenceId' => 'a1234b56-e789-0123-4fga-56b7c890d123',
       'kyc' => {
-        'reasonCodes' => [
-          'I919',
-          'I914',
-          'I905',
-        ],
+        'reasonCodes' => response_reason_codes,
         'fieldValidations' => {
           'firstName' => 0.99,
           'surName' => 0.99,
@@ -59,6 +63,43 @@ RSpec.describe Proofing::Socure::IdPlus::Responses::KycResponse do
         expect do
           subject.reason_codes
         end.to raise_error(RuntimeError)
+      end
+    end
+  end
+
+  describe '#has_autofail_reason_codes?' do
+    let(:idv_socure_kyc_auto_failure_reason_codes) { [] }
+
+    before do
+      allow(IdentityConfig.store).to receive(:idv_socure_kyc_auto_failure_reason_codes)
+        .and_return(idv_socure_kyc_auto_failure_reason_codes)
+    end
+
+    context 'when response includes a configured autofail reason code' do
+      let(:idv_socure_kyc_auto_failure_reason_codes) { ['R995', 'R111'] }
+      let(:response_reason_codes) { ['R995'] }
+
+      it 'returns true' do
+        expect(subject.has_autofail_reason_codes?).to eql(true)
+      end
+    end
+
+    context 'when response does not include a configured autofail reason code' do
+      let(:idv_socure_kyc_auto_failure_reason_codes) { ['R995'] }
+
+      it 'returns false' do
+        expect(subject.has_autofail_reason_codes?).to eql(false)
+      end
+    end
+
+    context 'when response includes a mix of normal and autofail reason codes' do
+      let(:idv_socure_kyc_auto_failure_reason_codes) { ['R995'] }
+      let(:response_reason_codes) do
+        ['I919', 'R995', 'I905']
+      end
+
+      it 'returns true' do
+        expect(subject.has_autofail_reason_codes?).to eql(true)
       end
     end
   end

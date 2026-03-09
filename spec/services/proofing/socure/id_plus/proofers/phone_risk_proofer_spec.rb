@@ -53,6 +53,9 @@ RSpec.describe Proofing::Socure::IdPlus::Proofers::PhoneRiskProofer do
       'phoneRisk' => {
         'reasonCodes' => phonerisk_reason_codes,
         'score' => phonerisk_low ? 0.01 : 0.99,
+        'signals' => {
+          'phone' => {},
+        },
       },
       'customerProfile' => {
         'customerUserId' => user_uuid,
@@ -109,6 +112,36 @@ RSpec.describe Proofing::Socure::IdPlus::Proofers::PhoneRiskProofer do
         expect(result.result).to be_a(Hash)
         expect(result.result).to have_key(:phonerisk)
         expect(result.result).to have_key(:name_phone_correlation)
+      end
+    end
+
+    context 'when autofail reason codes are defined' do
+      before do
+        allow(IdentityConfig.store).to receive(
+          :idv_socure_phonerisk_auto_failure_reason_codes,
+        ).and_return(['R987', 'R764'])
+      end
+
+      it 'is successful' do
+        expect(result.success).to eql(true)
+      end
+
+      context 'when autofail reason codes are present in response' do
+        context 'when phonerisk_reson_codes contain autofail reason codes' do
+          let(:phonerisk_reason_codes) { ['R987'] }
+
+          it 'is not successful' do
+            expect(result.success).to eql(false)
+          end
+        end
+
+        context 'when name_phone_correlation_reason_codes contain autofail reason codes' do
+          let(:name_phone_reason_codes) { ['R764'] }
+
+          it 'is not successful' do
+            expect(result.success).to eql(false)
+          end
+        end
       end
     end
   end

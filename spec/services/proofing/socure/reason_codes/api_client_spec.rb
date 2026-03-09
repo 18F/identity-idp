@@ -55,7 +55,7 @@ RSpec.describe Proofing::Socure::ReasonCodes::ApiClient do
 
       expect { described_class.new.download_reason_codes }.to raise_error(
         Proofing::Socure::ReasonCodes::ApiClient::ApiClientError,
-        'the server responded with status 401',
+        /the server responded with status 401/,
       )
     end
   end

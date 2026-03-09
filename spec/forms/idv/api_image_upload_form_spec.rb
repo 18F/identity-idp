@@ -175,7 +175,7 @@ RSpec.describe Idv::ApiImageUploadForm do
             { width: 40, height: 40, mimeType: 'image/png', source: 'acuant' }
           end
           before do
-            allow(IdentityConfig.store).to receive(:doc_auth_selfie_desktop_test_mode)
+            allow(IdentityConfig.store).to receive(:doc_auth_desktop_test_mode)
               .and_return(false)
           end
 
@@ -1186,6 +1186,17 @@ RSpec.describe Idv::ApiImageUploadForm do
             selfie_status: :fail,
             attempt: 1,
             errors:,
+          )
+        end
+
+        it 'logs a network error analytics event' do
+          expect(fake_analytics).to have_logged_event(
+            :idv_doc_auth_network_error,
+            hash_including(
+              submit_attempts: kind_of(Numeric),
+              remaining_submit_attempts: kind_of(Numeric),
+              errors: {},
+            ),
           )
         end
 

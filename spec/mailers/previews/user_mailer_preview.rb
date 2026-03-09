@@ -123,6 +123,16 @@ class UserMailerPreview < ActionMailer::Preview
     UserMailer.with(user: user, email_address: email_address_record).please_reset_password
   end
 
+  def account_connected_to_sp
+    UserMailer.with(user: user, email_address: email_address_record)
+      .account_connected_to_sp(sp_name: 'Sample App SP', disavowal_token: SecureRandom.hex)
+  end
+
+  def account_disconnected_from_sp
+    UserMailer.with(user: user, email_address: email_address_record)
+      .account_disconnected_from_sp(sp_name: 'Sample App SP', disavowal_token: SecureRandom.hex)
+  end
+
   def verify_by_mail_letter_requested
     service_provider = unsaveable(
       ServiceProvider.new(
@@ -255,9 +265,7 @@ class UserMailerPreview < ActionMailer::Preview
     UserMailer.with(
       user: user,
       email_address: email_address_record,
-    ).dupe_profile_account_review_complete_success(
-      agency_name: 'Sample APP',
-    )
+    ).dupe_profile_account_review_complete_success
   end
 
   def dupe_profile_account_review_complete_unable

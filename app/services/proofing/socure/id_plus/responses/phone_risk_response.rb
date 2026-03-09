@@ -10,6 +10,7 @@ module Proofing
               phonerisk: {
                 reason_codes: SocureReasonCode.with_definitions(phonerisk_reason_codes),
                 score: phonerisk_score,
+                signals: phonerisk_signals,
               },
               name_phone_correlation: {
                 reason_codes: SocureReasonCode
@@ -21,7 +22,7 @@ module Proofing
           end
 
           def successful?
-            name_correlation_successful? && phonerisk_successful?
+            name_correlation_successful? && phonerisk_successful? && !has_autofail_reason_codes?
           end
 
           private
@@ -56,6 +57,10 @@ module Proofing
             phonerisk.dig('reasonCodes')
           end
 
+          def phonerisk_signals
+            phonerisk.dig('signals')
+          end
+
           def name_phone_correlation_score
             name_phone_correlation.dig('score')
           end
@@ -70,6 +75,15 @@ module Proofing
 
           def phonerisk_score_threshold
             IdentityConfig.store.idv_socure_phonerisk_score_threshold
+          end
+
+          def has_autofail_reason_codes?
+            (phonerisk_reason_codes & auto_failure_reason_codes).any? ||
+              (name_phone_correlation_reason_codes & auto_failure_reason_codes).any?
+          end
+
+          def auto_failure_reason_codes
+            IdentityConfig.store.idv_socure_phonerisk_auto_failure_reason_codes
           end
         end
       end

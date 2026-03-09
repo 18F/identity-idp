@@ -5,10 +5,7 @@ class CreateNewDeviceAlertJob < ApplicationJob
 
   def perform(now)
     emails_sent = 0
-    User.where(
-      sql_query_for_users_with_new_device,
-      tvalue: now - IdentityConfig.store.new_device_alert_delay_in_minutes.minutes,
-    ).limit(1_000).find_each(batch_size: 100) do |user|
+    users_signing_in_with_new_device(now).limit(1_000).find_each(batch_size: 100) do |user|
       emails_sent += 1 if expire_sign_in_notification_timeframe_and_send_alert(user)
     end
 
@@ -23,23 +20,20 @@ class CreateNewDeviceAlertJob < ApplicationJob
     @analytics ||= Analytics.new(user: AnonymousUser.new, request: nil, sp: nil, session: {})
   end
 
-  def sql_query_for_users_with_new_device
-    <<~SQL
-      sign_in_new_device_at IS NOT NULL AND
-      sign_in_new_device_at < :tvalue
-    SQL
+  def users_signing_in_with_new_device(now)
+    start_time = if IdentityConfig.store.new_device_alert_window_start_in_minutes.nil?
+                   nil
+                 else
+                   now - IdentityConfig.store.new_device_alert_window_start_in_minutes.minutes
+                 end
+    end_time = now - IdentityConfig.store.new_device_alert_delay_in_minutes.minutes
+    User.where(sign_in_new_device_at: start_time..end_time)
   end
 
   def expire_sign_in_notification_timeframe_and_send_alert(user)
     disavowal_event, disavowal_token = UserEventCreator.new(current_user: user)
       .create_out_of_band_user_event_with_disavowal(:sign_in_notification_timeframe_expired)
 
-    if !user.second_factor_locked_at.present? &&
-       (user.second_factor_attempts_count <
-       IdentityConfig.store.login_otp_confirmation_max_attempts)
-      UserAlerts::AlertUserAboutNewDevice.send_alert(user:, disavowal_event:, disavowal_token:)
-    end
+    UserAlerts::AlertUserAboutNewDevice.send_alert(user:, disavowal_event:, disavowal_token:)
   end
-
-  private
 end

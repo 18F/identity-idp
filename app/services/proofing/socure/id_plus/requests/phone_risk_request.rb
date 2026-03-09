@@ -21,6 +21,7 @@ module Proofing
               state: input.state,
               zip: input.zipcode,
               email: input.email,
+              returnSignals: true,
             }.to_json
           end
 

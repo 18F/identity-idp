@@ -1763,6 +1763,34 @@ module AnalyticsEvents
     )
   end
 
+  # Network error during doc auth image upload to vendor
+  # @param [Integer] submit_attempts times the user has tried submitting
+  # @param [Integer] remaining_submit_attempts attempts left before rate limit
+  # @param ["hybrid","standard"] flow_path Document capture user flow
+  # @param [String] vendor doc auth vendor that returned the error
+  # @param [Hash] errors error hash from the vendor response
+  # @param [String] exception exception message if one was raised
+  def idv_doc_auth_network_error(
+    submit_attempts:,
+    remaining_submit_attempts:,
+    flow_path:,
+    vendor: nil,
+    errors: nil,
+    exception: nil,
+    **extra
+  )
+    track_event(
+      :idv_doc_auth_network_error,
+      submit_attempts:,
+      remaining_submit_attempts:,
+      flow_path:,
+      vendor:,
+      errors:,
+      exception:,
+      **extra,
+    )
+  end
+
   # @param [String] step Current IdV step
   # @param [String] analytics_id Current IdV flow identifier
   # @param ["hybrid","standard"] flow_path Document capture user flow
@@ -1819,13 +1847,15 @@ module AnalyticsEvents
   # @param [String] customer_user_id The customerUserId received from Socure
   # @param [String] docv_transaction_token The docvTransactionToken received from Socure
   # @param [String] event_type The eventType received from Socure
+  # @param [String] issuer The issuer of the Service Provider requesting IdV
   # @param [String] reference_id The referenceId received from Socure
   # @param [String] user_id The uuid of the user using Socure
   def idv_doc_auth_socure_webhook_received(
     created_at:,
     customer_user_id:,
-    event_type:,
     docv_transaction_token:,
+    event_type:,
+    issuer:,
     reference_id:,
     user_id:,
     **extra
@@ -1836,6 +1866,7 @@ module AnalyticsEvents
       customer_user_id:,
       docv_transaction_token:,
       event_type:,
+      issuer:,
       reference_id:,
       user_id:,
       **extra,
@@ -2015,6 +2046,8 @@ module AnalyticsEvents
   #   SDK upgrades
   # @option extra [String] 'DocumentName'
   # @option extra [String] 'DocAuthResult'
+  # @option extra [String] 'DocAuthTamperResult'
+  # @option extra [String] 'DocAuthTamperSensitivity'
   # @option extra [String] 'DocIssuerCode'
   # @option extra [String] 'DocIssuerName'
   # @option extra [String] 'DocIssuerType'
@@ -2029,6 +2062,7 @@ module AnalyticsEvents
   # @option extra [Boolean] 'PresentationChanged'
   # @param ["Passport","DriversLicense"] document_type_requested Document capture user flow
   # @param [Hash] passport_check_result The results of the Dos API call
+  # @param [String] review_status The review status if the result was sent for review
   # The document capture image was uploaded to vendor during the IDV process
   def idv_doc_auth_submitted_image_upload_vendor(
     success:,
@@ -2080,6 +2114,7 @@ module AnalyticsEvents
     liveness_enabled: nil,
     document_type_requested: nil,
     passport_check_result: nil,
+    review_status: nil,
     **extra
   )
     track_event(
@@ -2133,6 +2168,7 @@ module AnalyticsEvents
       liveness_enabled:,
       document_type_requested:,
       passport_check_result:,
+      review_status:,
       **extra,
     )
   end
@@ -2256,18 +2292,6 @@ module AnalyticsEvents
   # @option proofing_results [String,nil] context.stages.residential_address.vendor_id Vendor's internal ID for residential address proofing requests, e.g. socureId
   # @option proofing_results [String] context.stages.residential_address.vendor_name Vendor used for residential address proofing
   # @option proofing_results [String] context.stages.residential_address.vendor_workflow Vendor-specific workflow or configuration ID associated with the request made.
-  # @option proofing_results [Hash] context.stages.state_id Object holding details about the call made to the state ID proofing vendor
-  # @option proofing_results [Boolean] context.stages.state_id.success Whether the PII associated with the user's state ID document passed proofing
-  # @option proofing_results [Hash] context.stages.state_id.errors Object describing errors encountered while proofing the user's state ID PII
-  # @option proofing_results [String,nil] context.stages.state_id.exception If an exception occured during state ID PII verification its message is provided here
-  # @option proofing_results [Boolean] context.stages.state_id.mva_exception For AAMVA, whether the exception that occurred was due to an error on the state MVA side
-  # @option proofing_results [Hash<String,Numeric>] context.stages.state_id.requested_attributes An object whose keys are field names and values are "1" representing PII attributes sent to the state ID proofing vendor for verification.
-  # @option proofing_results [Boolean] context.stages.state_id.timed_out Whether the request to the state ID verification vendor timed out
-  # @option proofing_results [String] context.stages.state_id.transaction_id Vendor-specific transaction ID for the request made to the state id proofing vendor
-  # @option proofing_results [String] context.stages.state_id.vendor_name Name of the vendor used for state ID PII verification. If the ID was not from a supported jurisdiction, it will be "UnsupportedJurisdiction". It MAY also be "UnsupportedJurisdiction" if state ID verification was not needed because other vendor calls did not succeed.
-  # @option proofing_results [String] context.stages.state_id.state The state that was listed as the user's address on their state ID. Note that this may differ from state_id_jurisdiction.
-  # @option proofing_results [String] context.stages.state_id.state_id_jurisdiction The state that issued the drivers license or ID card being used for proofing.
-  # @option proofing_results [String] context.stages.state_id.state_id_number A string describing the _format_ of the state ID number provided.
   # @option proofing_results [Hash] context.stages.threatmetrix Object holding details about the call made to the device profiling vendor
   # @option proofing_results [String] context.stages.threatmetrix.client Identifier string indicating which client was used.
   # @option proofing_results [Boolean] context.stages.threatmetrix.success Whether the request to the vendor succeeded.
@@ -4261,6 +4285,62 @@ module AnalyticsEvents
     )
   end
 
+  # LexisNexis Instant Verify API was called with the following results
+  # @param [Boolean] success Result from LexisNexis Instant Verify API call
+  # @param [Hash] errors Result from resolution proofing
+  # @param [String] exception Exception that occured during download or synchronizaiton
+  # @param [Boolean] timed_out Whether the proofing request timed out
+  # @param [String] transaction_id The vendor specific transaction ID for the proofing request
+  # @param [String] reference
+  # @param [Hash] reason_codes Socure internal reason codes for accept reject decision
+  # @param [Boolean] can_pass_with_additional_verification Whether the PII could be verified if
+  # another vendor verified certain attributes
+  # @param [Array<String>] attributes_requiring_additional_verification Attributes that need to
+  # be verified by another vendor
+  # @param [Array<String>, nil] source_attribution List of sources that contributed to the
+  # resolution proofing result
+  # @param [String, nil] vendor_name Vendor used
+  # @param [String] vendor_id ID of vendor
+  # @param [String] vendor_workflow ID of workflow or configuration the vendor used for this
+  # transaction
+  # @param [Array[String], nil] verified_attributes The attributes verified during proofing
+  def idv_instant_verify_results(
+    success:,
+    errors:,
+    exception:,
+    timed_out:,
+    transaction_id:,
+    reference:,
+    reason_codes:,
+    can_pass_with_additional_verification:,
+    attributes_requiring_additional_verification:,
+    source_attribution:,
+    vendor_name:,
+    vendor_id:,
+    vendor_workflow:,
+    verified_attributes:,
+    **extra
+  )
+    track_event(
+      :idv_instant_verify_results,
+      success:,
+      errors:,
+      exception:,
+      timed_out:,
+      transaction_id:,
+      reference:,
+      reason_codes:,
+      can_pass_with_additional_verification:,
+      attributes_requiring_additional_verification:,
+      source_attribution:,
+      vendor_name:,
+      vendor_id:,
+      vendor_workflow:,
+      verified_attributes:,
+      **extra,
+    )
+  end
+
   # User visits IdV
   # @param [Hash,nil] proofing_components User's proofing components.
   # @param [String,nil] active_profile_idv_level ID verification level of user's active profile.
@@ -4281,6 +4361,49 @@ module AnalyticsEvents
       profile_history: profile_history,
       **extra,
     )
+  end
+
+  # IPP AAMVA proofing result is missing from Redis (expired or not found)
+  # @param [Hash] extra Additional event data
+  def idv_ipp_aamva_proofing_result_missing(**extra)
+    track_event(:idv_ipp_aamva_proofing_result_missing, **extra)
+  end
+
+  # @param [String] step Current step in the IPP flow
+  # AAMVA rate limit hit for IPP user
+  def idv_ipp_aamva_rate_limited(
+    step:,
+    **extra
+  )
+    track_event(
+      :idv_ipp_aamva_rate_limited,
+      step:,
+      **extra,
+    )
+  end
+
+  # @param [Boolean] success Whether the AAMVA verification succeeded
+  # @param [String] vendor_name Name of the AAMVA vendor
+  # @param [String] step Current step in the IPP flow
+  # AAMVA verification completed for IPP user
+  def idv_ipp_aamva_verification_completed(
+    success:,
+    vendor_name:,
+    step:,
+    **extra
+  )
+    track_event(
+      :idv_ipp_aamva_verification_completed,
+      success:,
+      vendor_name:,
+      step:,
+      **extra,
+    )
+  end
+
+  # User visited polling wait page for IPP AAMVA verification
+  def idv_ipp_aamva_verification_polling_wait(**extra)
+    track_event(:idv_ipp_aamva_verification_polling_wait, **extra)
   end
 
   # @param [String] enrollment_id
@@ -5733,6 +5856,7 @@ module AnalyticsEvents
   # @param ["hybrid","standard"] flow_path Document capture user flow
   # @param [String] document_type_received type of state issued ID or passport
   # @param [Integer] issue_year Year document was issued
+  # @param [String] issuer The issuer of the Service Provider requesting IdV
   # @param [Boolean] liveness_enabled Whether the selfie result is included in response
   # @param [Hash] reason_codes socure internal reason codes for accept reject decision
   # @param [String] reference_id socure internal id for transaction
@@ -5770,6 +5894,7 @@ module AnalyticsEvents
     flow_path: nil,
     document_type_received: nil,
     issue_year: nil,
+    issuer: nil,
     liveness_enabled: nil,
     reference_id: nil,
     reason_codes: nil,
@@ -5800,6 +5925,7 @@ module AnalyticsEvents
       flow_path:,
       document_type_received:,
       issue_year:,
+      issuer:,
       liveness_enabled:,
       reason_codes:,
       reference_id:,
@@ -5884,6 +6010,7 @@ module AnalyticsEvents
   #   maintenance.
   # @param [Boolean] supported_jurisdiction Whether the state ID jurisdiction is supported by AAMVA.
   # @param [Boolean] timed_out Whether the proofing request timed out.
+  # @param [Boolean] aamva_checked Whether the aamva API request evaluated a state ID.
   # @param [Integer, nil] birth_year The birth year listed on the ID.
   # @param [String, nil] state The state on the ID.
   # @param [String, nil] state_id_jurisdiction The state that issued the ID.
@@ -5901,6 +6028,7 @@ module AnalyticsEvents
     jurisdiction_in_maintenance_window:,
     supported_jurisdiction:,
     timed_out:,
+    aamva_checked:,
     birth_year: nil,
     state: nil,
     state_id_jurisdiction: nil,
@@ -5921,6 +6049,7 @@ module AnalyticsEvents
       jurisdiction_in_maintenance_window:,
       supported_jurisdiction:,
       timed_out:,
+      aamva_checked:,
       birth_year:,
       state:,
       state_id_jurisdiction:,
@@ -5928,6 +6057,19 @@ module AnalyticsEvents
       errors:,
       exception:,
       mva_exception:,
+      **extra,
+    )
+  end
+
+  # The JSON body of the response returned from Hybrid Threatmetrix. PII has been removed.
+  # @param [Hash] response_body The response body returned by Hybrid ThreatMetrix
+  def idv_threatmetrix_hybrid_mobile_response_body(
+    response_body: nil,
+    **extra
+  )
+    track_event(
+      :idv_threatmetrix_hybrid_mobile_response_body,
+      response_body: response_body,
       **extra,
     )
   end
@@ -6202,6 +6344,8 @@ module AnalyticsEvents
   # @param [Boolean] in_account_creation_flow Whether user is going through account creation flow
   # @param [Integer] enabled_mfa_methods_count Number of enabled MFA methods on the account
   # @param [Hash] recaptcha_annotation Details of reCAPTCHA annotation, if submitted
+  # @param [Boolean] available_webauthn_platform_config shows user has a webauth_platform config
+  # @param [Integer] webauthn_auth_duration the duration to complete webauthn auth in seconds
   # Multi-Factor Authentication
   def multi_factor_auth(
     success:,
@@ -6227,6 +6371,8 @@ module AnalyticsEvents
     frontend_error: nil,
     in_account_creation_flow: nil,
     recaptcha_annotation: nil,
+    available_webauthn_platform_config: nil,
+    webauthn_auth_duration: nil,
     **extra
   )
     track_event(
@@ -6254,6 +6400,8 @@ module AnalyticsEvents
       in_account_creation_flow:,
       enabled_mfa_methods_count:,
       recaptcha_annotation:,
+      available_webauthn_platform_config:,
+      webauthn_auth_duration:,
       **extra,
     )
   end
@@ -6520,7 +6668,7 @@ module AnalyticsEvents
   #   registration contradict the authenticator attachment for user setup. For example, a user can
   #   set up a platform authenticator through the Security Key setup flow.
   # @param [:authentication, :account_creation, nil] webauthn_platform_recommended A/B test for
-  # recommended Face or Touch Unlock setup, if applicable.
+  # @param [Integer, nil] webauthn_setup_duration Duration of webauthn setup in seconds
   def multi_factor_auth_setup(
     success:,
     multi_factor_auth_method:,
@@ -6547,6 +6695,7 @@ module AnalyticsEvents
     transports: nil,
     transports_mismatch: nil,
     webauthn_platform_recommended: nil,
+    webauthn_setup_duration: nil,
     **extra
   )
     track_event(
@@ -6576,8 +6725,14 @@ module AnalyticsEvents
       transports:,
       transports_mismatch:,
       webauthn_platform_recommended:,
+      webauthn_setup_duration:,
       **extra,
     )
+  end
+
+  # New device alert skipped as there were no events to send
+  def new_device_alert_skipped(**extra)
+    track_event(:new_device_alert_skipped, **extra)
   end
 
   # @param [String] location Placement location
@@ -7066,6 +7221,20 @@ module AnalyticsEvents
       error_details:,
       user_id:,
       request_id_present:,
+      **extra,
+    )
+  end
+
+  # @param [Boolean, nil] active_profile if the account the reset is being requested for has an
+  #   active proofed profile
+  #   The user signed in with a password found on the pwned list
+  def password_found_on_pwned_list(
+    active_profile:,
+    **extra
+  )
+    track_event(
+      :password_found_on_pwned_list,
+      active_profile:,
       **extra,
     )
   end
@@ -8033,6 +8202,7 @@ module AnalyticsEvents
   # @param [String] area_code Area code of phone number
   # @param [String] country_code Abbreviated 2-letter country code associated with phone number
   # @param [String] phone_fingerprint HMAC fingerprint of the phone number formatted as E.164
+  # @param [String, nil] ip_country 2-letter country code associated with request IP address
   # @param ["authentication", "reauthentication", "confirmation"] context User session context
   # @param ["sms", "voice"] otp_delivery_preference Channel used to send the message
   # @param [Boolean] resend
@@ -8045,12 +8215,8 @@ module AnalyticsEvents
     area_code:,
     country_code:,
     phone_fingerprint:,
-    context:,
-    otp_delivery_preference:,
-    resend:,
-    telephony_response:,
-    adapter:,
-    success:,
+    context:, otp_delivery_preference:, resend:, telephony_response:, adapter:, success:,
+    ip_country: nil,
     recaptcha_annotation: nil,
     **extra
   )
@@ -8060,6 +8226,7 @@ module AnalyticsEvents
         area_code: area_code,
         country_code: country_code,
         phone_fingerprint: phone_fingerprint,
+        ip_country: ip_country,
         context: context,
         otp_delivery_preference: otp_delivery_preference,
         resend: resend,
