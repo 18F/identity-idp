@@ -363,7 +363,7 @@ class UserMailerPreview < ActionMailer::Preview
     UserMailer.with(
       user: user,
       email_address: email_address_record,
-    ).mfa_deleted(subject: subject_name)
+    ).mfa_deleted(subject: subject_name, disavowal_token: SecureRandom.hex)
   end
 
   private
