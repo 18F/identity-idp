@@ -34,12 +34,30 @@ RSpec.describe Reporting::FraudMetricsLg99ReportS3 do
 
   let(:s3_client) { Aws::S3::Client.new(stub_responses: true) }
 
+  before do
+    allow_any_instance_of(JobHelpers::S3Helper).to receive(:s3_client).and_return(s3_client)
+    s3_client.stub_responses(
+      :get_object,
+      lambda do |context|
+        case context.params[:key]
+        when "#{s3_path_prefix}/lg99_metrics.csv"
+          { body: StringIO.new(lg99_metrics_csv) }
+        when "#{s3_path_prefix}/suspended_metrics.csv"
+          { body: StringIO.new(suspended_metrics_csv) }
+        when "#{s3_path_prefix}/reinstated_metrics.csv"
+          { body: StringIO.new(reinstated_metrics_csv) }
+        else
+          'NoSuchKey'
+        end
+      end,
+    )
+  end
+
   subject(:report) do
     described_class.new(
       time_range: time_range,
       bucket_name: bucket_name,
       s3_path_prefix: s3_path_prefix,
-      s3_client: s3_client,
     )
   end
 

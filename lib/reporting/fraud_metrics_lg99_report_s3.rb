@@ -9,6 +9,9 @@ rescue LoadError => e
 end
 
 module Reporting
+  # Reads pre-generated CSV reports from S3 and presents them as emailable reports.
+  # This is currently manually-run dark code. In the future, this may be converted
+  # to a job inheriting from BaseReport.
   class FraudMetricsLg99ReportS3
     attr_reader :time_range
 
@@ -22,17 +25,14 @@ module Reporting
     # @param [String] bucket_name the S3 bucket name
     # @param [String] s3_path_prefix the S3 key prefix \
     # (e.g. "fraud-metrics-report/2026/2026-03-04.fraud-metrics-report")
-    # @param [Aws::S3::Client, nil] s3_client optional injectable S3 client
     def initialize(
       time_range:,
       bucket_name:,
-      s3_path_prefix:,
-      s3_client: nil
+      s3_path_prefix:
     )
       @time_range = time_range
       @bucket_name = bucket_name
       @s3_path_prefix = s3_path_prefix
-      @s3_client = s3_client
     end
 
     def as_emailable_reports
@@ -91,18 +91,12 @@ module Reporting
     # @return [String] raw CSV body
     def fetch_csv_from_s3(report_name)
       key = "#{@s3_path_prefix}/#{report_name}.csv"
-      resp = s3_client.get_object(bucket: @bucket_name, key: key)
+      resp = s3_helper.s3_client.get_object(bucket: @bucket_name, key: key)
       resp.body.read
     end
 
-    def s3_client
-      require 'aws-sdk-s3'
-
-      @s3_client ||= Aws::S3::Client.new(
-        http_open_timeout: 5,
-        http_read_timeout: 5,
-        compute_checksums: false,
-      )
+    def s3_helper
+      @s3_helper ||= JobHelpers::S3Helper.new
     end
   end
 end
