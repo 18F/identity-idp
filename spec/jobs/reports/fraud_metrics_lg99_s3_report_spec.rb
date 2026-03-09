@@ -1,3 +1,13 @@
+# To run these unit tests:
+#
+#   bundle exec rspec spec/jobs/reports/fraud_metrics_lg99_s3_report_spec.rb
+#
+# To run a specific example by line number (e.g. line 97):
+#
+#   bundle exec rspec spec/jobs/reports/fraud_metrics_lg99_s3_report_spec.rb:97
+#
+# See docs/local-development.md for general instructions on running tests locally.
+
 require 'rails_helper'
 
 RSpec.describe Reports::FraudMetricsLg99S3Report do
