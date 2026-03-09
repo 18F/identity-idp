@@ -250,6 +250,7 @@ module IdentityConfig
     config.add(:idv_send_link_max_attempts, type: :integer)
     config.add(:idv_socure_docv_flow_id_only, type: :string)
     config.add(:idv_socure_docv_flow_id_w_selfie, type: :string)
+    config.add(:idv_socure_kyc_auto_failure_reason_codes, type: :json)
     config.add(:idv_socure_phonerisk_auto_failure_reason_codes, type: :json)
     config.add(:idv_socure_phonerisk_name_correlation_score_threshold, type: :float)
     config.add(:idv_socure_phonerisk_score_threshold, type: :float)
