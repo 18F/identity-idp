@@ -514,8 +514,8 @@ class UserMailer < ActionMailer::Base
   end
 
   def mfa_deleted(subject:, disavowal_token:)
-    @disavowal_token = disavowal_token
     @subject = subject
+    @disavowal_token = disavowal_token
     with_user_locale(user) do
       mail(
         to: email_address.email,

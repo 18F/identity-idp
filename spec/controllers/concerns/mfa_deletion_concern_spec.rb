@@ -12,7 +12,10 @@ RSpec.describe MfaDeletionConcern do
   end
 
   describe '#handle_successful_mfa_deletion' do
-    let(:event_type) { Event.event_types.keys.sample.to_sym }
+    let(:event_type) do
+      [:authenticator_disabled, :backup_codes_removed, :phone_removed, :piv_cac_disabled,
+       :webauthn_key_removed, :webauthn_platform_removed].sample
+    end
     subject(:result) { controller.handle_successful_mfa_deletion(event_type:) }
 
     it 'does not return a value' do
@@ -20,7 +23,7 @@ RSpec.describe MfaDeletionConcern do
     end
 
     it 'creates user event using event_type argument' do
-      expect(controller).to receive(:create_user_event).with(event_type)
+      expect(controller).to receive(:create_user_event_with_disavowal).with(event_type, user)
 
       result
     end
@@ -39,15 +42,18 @@ RSpec.describe MfaDeletionConcern do
       result
     end
 
-    it 'sends an email that the method has been deleted' do
-      expect(controller).to receive(:create_mfa_deletion_email).with(event_type)
+    it 'sends an email confirming deletion' do
+      delivery = instance_double(ActionMailer::MessageDelivery, deliver_now_or_later: true)
+      mailer = instance_double(UserMailer)
 
-      @mailer = instance_double(ActionMailer::MessageDelivery, deliver_now_or_later: true)
+      user.confirmed_email_addresses.each do |email_address|
+        allow(UserMailer).to receive(:with).with(
+          user: user, email_address: email_address,
+        ).and_return(mailer)
 
-      controller.current_user.email_addresses.each do |email_address|
-        allow(UserMailer).to receive(:mfa_deleted)
-          .with(controller.current_user, email_address, :event_type)
-          .and_return(@mailer)
+        expect(mailer).to receive(:mfa_deleted)
+          .with(subject: instance_of(String), disavowal_token: instance_of(String))
+          .and_return(delivery)
       end
 
       result
