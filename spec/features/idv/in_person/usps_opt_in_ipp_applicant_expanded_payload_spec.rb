@@ -69,10 +69,12 @@ RSpec.describe 'In Person Proofing: opt in ipp applicant expanded payload', js: 
               'zipCode' => InPersonHelper::GOOD_IDENTITY_DOC_ZIPCODE,
               'emailAddress' =>
                 IdentityConfig.store.usps_ipp_enrollment_status_update_email_address,
-              'documentType' => usps_expected_document_type,
-              'documentNumber' => InPersonHelper::GOOD_STATE_ID_NUMBER,
-              'documentExpirationDate' => usps_expected_expiration_date,
               'IPPAssuranceLevel' => '1.5',
+              'docInfo' => [{
+                'docType' => usps_expected_document_type,
+                'docNumber' => InPersonHelper::GOOD_STATE_ID_NUMBER,
+                'docExpiration' => usps_expected_expiration_date,
+              }],
             },
           )
         end,
