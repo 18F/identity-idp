@@ -100,8 +100,43 @@ RSpec.describe Reports::FraudMetricsLg99S3Report do
       .and_return(mock_reinstated_metrics_table)
   end
 
+  it 'sends out a report with the correct subject and format' do
+    expect(ReportMailer).to receive(:tables_report).once.with(
+      to: anything,
+      subject: 'Fraud Metrics LG-99 S3 Report - 2021-03-02',
+      reports: anything,
+      message: report.preamble,
+      attachment_format: :xlsx,
+    ).and_call_original
+
+    report.perform(report_date)
+  end
+
   context 'when queued from the first of the month' do
     let(:report_date) { Date.new(2021, 3, 1).prev_day }
+
+    it 'sends out a report to everybody' do
+      expect(ReportMailer).to receive(:tables_report).once.with(
+        to: anything,
+        subject: 'Fraud Metrics LG-99 S3 Report - 2021-02-28',
+        reports: anything,
+        message: report.preamble,
+        attachment_format: :xlsx,
+      ).and_call_original
+
+      report.perform(report_date)
+    end
+  end
+
+  it 'uploads a file to S3 based on the report date' do
+    expected_s3_paths.each do |path|
+      expect(subject).to receive(:upload_file_to_s3_bucket).with(
+        path: path,
+        **s3_metadata,
+      ).exactly(1).time.and_call_original
+    end
+
+    report.perform(report_date)
   end
 
   it 'does not send out a report with no emails' do
@@ -155,6 +190,72 @@ RSpec.describe Reports::FraudMetricsLg99S3Report do
         alert = doc.at_css('.usa-alert')
         expect(alert.text).to include(env)
       end
+    end
+  end
+
+  describe '#reports' do
+    it 'is memoized' do
+      result1 = report.reports
+      result2 = report.reports
+      expect(result1).to equal(result2)
+    end
+  end
+
+  describe '#fraud_metrics_lg99_report_s3' do
+    it 'creates an instance with correct params' do
+      fresh_report = Reports::FraudMetricsLg99S3Report.new(report_date)
+      expect(Reporting::FraudMetricsLg99ReportS3).to receive(:new).with(
+        time_range: report_date.all_month,
+        bucket_name: 'login-gov-dw-reports-int-1234-us-west-1',
+        s3_path_prefix: 'fraud-metrics-report/2021/2021-03-02.fraud-metrics-report',
+      ).and_call_original
+
+      fresh_report.fraud_metrics_lg99_report_s3
+    end
+
+    it 'is memoized' do
+      result1 = report.fraud_metrics_lg99_report_s3
+      result2 = report.fraud_metrics_lg99_report_s3
+      expect(result1).to equal(result2)
+    end
+  end
+
+  describe '#upload_to_s3' do
+    context 'when bucket_name is blank' do
+      before do
+        allow(report).to receive(:bucket_name).and_return(nil)
+      end
+
+      it 'does not upload to S3' do
+        expect(report).not_to receive(:upload_file_to_s3_bucket)
+        report.upload_to_s3([['A', 'B']], report_name: 'test')
+      end
+    end
+  end
+
+  describe '#csv_file' do
+    it 'generates valid CSV from a 2D array' do
+      expect(report.csv_file([['A', 'B'], ['1', '2']])).to eq("A,B\n1,2\n")
+    end
+  end
+
+  describe '#data_warehouse_bucket_name' do
+    it 'constructs the bucket name from config and hostdata' do
+      expect(report.send(:data_warehouse_bucket_name)).to eq('login-gov-dw-reports-int-1234-us-west-1')
+    end
+  end
+
+  describe '#s3_source_path_prefix' do
+    it 'constructs the correct S3 path prefix' do
+      expect(report.send(:s3_source_path_prefix)).to eq(
+        'fraud-metrics-report/2021/2021-03-02.fraud-metrics-report',
+      )
+    end
+  end
+
+  describe 'REPORT_NAME' do
+    it 'has the expected constant value' do
+      expect(described_class::REPORT_NAME).to eq('fraud-metrics-lg99-s3-report')
     end
   end
 end
