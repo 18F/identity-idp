@@ -30,6 +30,10 @@ module Proofing
             @reason_codes ||= kyc('reasonCodes').to_set.freeze
           end
 
+          def successful?
+            all_required_attributes_verified? && !has_autofail_reason_codes?
+          end
+
           def verified_attributes
             VERIFIED_ATTRIBUTE_MAP.each_with_object([]) do |(attr_name, field_names), result|
               if Array(field_names).all? { |f| field_validations[f] }
