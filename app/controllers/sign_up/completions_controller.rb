@@ -24,6 +24,7 @@ module SignUp
       update_verified_attributes
       send_in_person_completion_survey
       notify_user_of_connected_sp
+      update_service_providers_sent if historical_events_enabled?
       if user_session[:selected_email_id_for_linked_identity].nil?
         user_session[:selected_email_id_for_linked_identity] = current_user
           .last_sign_in_email_address.id
@@ -137,6 +138,27 @@ module SignUp
           .account_connected_to_sp(sp_name: current_sp.friendly_name, disavowal_token:)
           .deliver_now_or_later
       end
+    end
+
+    def update_service_providers_sent
+      issuer = current_sp.issuer
+
+      user_proofing_event.service_providers_sent.push(issuer)
+      user_proofing_event.save
+    end
+
+    def historical_events_enabled?
+      globally_enabled = IdentityConfig.store.historical_attempts_api_enabled
+      aaca = current_sp.attempts_api_enabled?
+      idv = ial2_requested?
+      sent_to_aaca = user_proofing_event&.service_providers_sent&.include?(current_sp.issuer)
+
+      globally_enabled && aaca && idv && !sent_to_aaca
+    end
+
+    def user_proofing_event
+      @user_proofing_event ||= 
+      UserProofingEvent.find_by(profile_id: current_user.active_profile.id)
     end
 
     def pii

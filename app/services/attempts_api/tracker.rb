@@ -158,8 +158,10 @@ module AttemptsApi
     end
 
     def will_log_history?(event_type)
-      return false unless IdentityConfig.store.historical_attempts_api_enabled
-      return false unless session && session['warden.user.user.session']
+      return false unless IdentityConfig.store.historical_attempts_api_enabled &&
+                          session && session['warden.user.user.session']
+      # TODO: capture registration events. Devise isn't initialized at registration
+      return false if event_type.match 'user-registration-'
 
       event_type.start_with?(*LOG_HISTORY_PREFIXES)
     end

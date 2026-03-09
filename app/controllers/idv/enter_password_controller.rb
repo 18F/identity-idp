@@ -155,18 +155,29 @@ module Idv
     end
 
     def record_historical_events
+      return unless IdentityConfig.store.historical_attempts_api_enabled
+
       profile = idv_session.profile
       initiating_sp = profile.initiating_service_provider
-      historical_api_enabled = initiating_sp&.attempts_api_enabled?
-      attempt_events_string = user_session['idv/attempts'].to_s
+      return unless initiating_sp&.attempts_api_enabled?
 
-      AttemptsApi::UserProofingEvent.new(
-        encrypted_events: attempt_events_string,
-        profile_id: profile.id,
-        service_providers_sent: [initiating_sp],
-        cost: '',
-        salt: '',
-      )
+      attempt_events_string = user_session['idv/attempts'].to_s
+      # TODO: what do we do if the user is re-proofing? Does the event
+      # get replaced, or appended?
+      if !existing_user_proofing_event
+        # TODO: populate encrypted_events, cost, and salt
+        UserProofingEvent.new(
+          encrypted_events: attempt_events_string,
+          profile_id: profile.id,
+          service_providers_sent: [],
+          cost: '',
+          salt: '',
+        ).save
+      end
+    end
+
+    def existing_user_proofing_event
+      UserProofingEvent.find_by(profile_id: idv_session.profile.id)
     end
 
     def first_letter_requested_at

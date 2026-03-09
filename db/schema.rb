@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_02_13_183904) do
+ActiveRecord::Schema[8.0].define(version: 2026_03_06_213343) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_catalog.plpgsql"
@@ -642,7 +642,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_02_13_183904) do
     t.index ["email_address_id"], name: "index_suspended_emails_on_email_address_id"
   end
 
-  create_table "user_proofing_events", id: :string, force: :cascade do |t|
+  create_table "user_proofing_events", id: :serial, force: :cascade do |t|
     t.string "encrypted_events", null: false, comment: "sensitive=true"
     t.bigint "profile_id", null: false, comment: "sensitive=false"
     t.jsonb "service_providers_sent", default: {}, null: false, comment: "sensitive=false"
