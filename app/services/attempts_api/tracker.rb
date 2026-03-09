@@ -156,7 +156,7 @@ module AttemptsApi
 
       will_send_event? || will_log_history?(event_type)
     end
-
+    # changes here are not tested, to reduce conflicts with Protocols#84
     def will_log_history?(event_type)
       return false unless IdentityConfig.store.historical_attempts_api_enabled &&
                           session && session['warden.user.user.session']

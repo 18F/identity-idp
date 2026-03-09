@@ -15,6 +15,7 @@ RSpec.describe Idv::EnterPasswordController do
   let(:use_gpo) { false }
   let(:threatmetrix_enabled)  { true }
   let(:threatmetrix_result) { 'pass' }
+  let(:sp) { create(:service_provider, :idv, :active) }
   let(:idv_session) do
     subject.idv_session
   end
@@ -23,6 +24,7 @@ RSpec.describe Idv::EnterPasswordController do
     stub_analytics
     stub_sign_in(user)
     allow(IdentityConfig.store).to receive(:usps_mock_fallback).and_return(false)
+    session['sp'] = sp
     subject.idv_session.welcome_visited = true
     subject.idv_session.idv_consent_given_at = Time.zone.now
     subject.idv_session.proofing_started_at = 5.minutes.ago.iso8601
@@ -1102,7 +1104,7 @@ RSpec.describe Idv::EnterPasswordController do
       end
 
       context 'with a previously proofed user' do
-        context 'with an activated legacy idv  profile' do
+        context 'with an activated legacy idv profile' do
           before { create(:profile, :active, user:) }
 
           context 'when requesting ial2' do
@@ -1119,6 +1121,35 @@ RSpec.describe Idv::EnterPasswordController do
               expect(@attempts_api_tracker).to receive(:idv_enrollment_complete).with(reproof: true)
               put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
             end
+          end
+        end
+      end
+    end
+
+    describe 'historical events tracking' do
+      before do
+        allow(UserProofingEvent).to receive(:new)
+        allow(IdentityConfig.store).to receive_messages(
+          attempts_api_enabled: true,
+          historical_attempts_api_enabled: true,
+          allowed_attempts_providers: [ { 'issuer' => sp.issuer } ],
+        )
+      end
+
+      context 'when requesting ial2' do
+        before do
+          resolved_authn_context_result = Component::Parser.new(
+            acr_values: Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_REQUIRED_ACR,
+          ).parse
+
+          allow(controller).to receive(:resolved_authn_context_result)
+            .and_return(resolved_authn_context_result)
+        end
+
+        context 'with a newly proofed user' do
+          it 'creates a new UserProofingEvent' do
+            expect(UserProofingEvent).to receive(:new)
+            put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
           end
         end
       end

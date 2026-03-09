@@ -158,10 +158,10 @@ module Idv
       return unless IdentityConfig.store.historical_attempts_api_enabled
 
       profile = idv_session.profile
-      initiating_sp = profile.initiating_service_provider
-      return unless initiating_sp&.attempts_api_enabled?
-
-      attempt_events_string = user_session['idv/attempts'].to_s
+      service_provider = idv_session.service_provider
+      return unless service_provider&.attempts_api_enabled?
+      # TODO: encrypt actual events, not only the keys
+      attempt_events_string = user_session['idv/attempts'].keys.to_json
       # TODO: what do we do if the user is re-proofing? Does the event
       # get replaced, or appended?
       if !existing_user_proofing_event
