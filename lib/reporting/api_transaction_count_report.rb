@@ -282,11 +282,12 @@ module Reporting
 
     def instant_verify_query
       <<~QUERY
-        fields jsonParse(@message) as message
+        fields @timestamp, @message
+        | fields jsonParse(@message) as message
         | unnest message.properties.event_properties into event_properties
         | filter name='IdV: doc auth verify proofing results' and event_properties.proofing_results.context.stages.resolution.vendor_name='lexisnexis:instant_verify'
         | limit 10000
-      QUERY
+        QUERY
     end
 
     def threat_metrix_idv_query
@@ -354,7 +355,8 @@ module Reporting
 
     def socure_phonerisk_query
       <<~QUERY
-        filter (name IN ["idv_socure_shadow_mode_phonerisk_result"])
+        fields @timestamp, @message
+        | filter (name IN ["idv_socure_shadow_mode_phonerisk_result"])
         OR (name = 'IdV: phone confirmation vendor' AND properties.event_properties.vendor.vendor_name = "socure_phonerisk")
         | limit 10000
       QUERY
