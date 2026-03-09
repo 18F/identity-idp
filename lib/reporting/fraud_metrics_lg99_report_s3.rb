@@ -1,12 +1,6 @@
 # frozen_string_literal: true
 
 require 'csv'
-begin
-  require 'reporting/command_line_options'
-rescue LoadError => e
-  warn 'could not load paths, try running with "bundle exec rails runner"'
-  raise e
-end
 
 module Reporting
   # Reads pre-generated CSV reports from S3 and presents them as emailable reports.
