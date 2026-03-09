@@ -157,8 +157,8 @@ module SignUp
     end
 
     def user_proofing_event
-      @user_proofing_event ||= 
-      UserProofingEvent.find_by(profile_id: current_user.active_profile.id)
+      @user_proofing_event ||=
+        UserProofingEvent.find_by(profile_id: current_user.active_profile.id)
     end
 
     def pii
