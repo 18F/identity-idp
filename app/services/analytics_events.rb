@@ -5119,7 +5119,7 @@ module AnalyticsEvents
   # @param [String] customer_user_id user uuid sent to socure
   # @param [Hash] reason_codes socure internal reason codes for accept reject decision
   # @param [Hash] alternate_result Details for proofing attempt with primary vendor
-  # @param [Boolean, nil] reviewed_manually Phone was manually reviewed
+  # @param [Boolean, nil] manual_review Phone was manually reviewed
   # The vendor finished the process of confirming the users phone
   def idv_phone_confirmation_vendor_submitted(
     success:,
@@ -5129,7 +5129,7 @@ module AnalyticsEvents
     phone_fingerprint:,
     new_phone_added:,
     hybrid_handoff_phone_used:,
-    reviewed_manually:,
+    manual_review:,
     errors: nil,
     opted_in_to_in_person_proofing: nil,
     error_details: nil,
@@ -5152,7 +5152,7 @@ module AnalyticsEvents
       phone_fingerprint:,
       new_phone_added:,
       hybrid_handoff_phone_used:,
-      reviewed_manually:,
+      manual_review:,
       opted_in_to_in_person_proofing:,
       proofing_components:,
       active_profile_idv_level:,

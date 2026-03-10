@@ -218,7 +218,7 @@ module Idv
         ),
         **opt_in_analytics_properties,
         alternate_result: alternate_result&.to_h,
-        reviewed_manually: idv_session.phone_confirmation_reviewed_manually,
+        manual_review: idv_session.phone_confirmation_manually_reviewed,
       )
 
       attempts_api_tracker.idv_phone_verified(
@@ -233,7 +233,7 @@ module Idv
         failure_reason: attempts_api_tracker.parse_failure_reason(form_result),
       )
 
-      if form_result.success? || idv_session.phone_confirmation_reviewed_manually
+      if form_result.success? || idv_session.phone_confirmation_manually_reviewed
         redirect_to_next_step
       else
         handle_proofing_failure

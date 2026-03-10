@@ -699,6 +699,7 @@ RSpec.describe Idv::PhoneController do
               phone_fingerprint: Pii::Fingerprinter.fingerprint(proofing_phone.e164),
               country_code: proofing_phone.country,
               area_code: proofing_phone.area_code,
+              manual_review: false,
               vendor: {
                 exception: nil,
                 reference: 'some-reference-id',
@@ -868,6 +869,7 @@ RSpec.describe Idv::PhoneController do
             reference: '',
             result: nil,
           },
+          manual_review: false,
         )
       end
 
