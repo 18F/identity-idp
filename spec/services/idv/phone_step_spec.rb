@@ -173,11 +173,16 @@ RSpec.describe Idv::PhoneStep do
       end
 
       context 'when manually reviewed' do
-        let(:reviewed_users) { instance_double(Idv::ManuallyReviewedPhoneUserSet) }
+        let(:manually_reviewed_phone_users) { Idv::ManuallyReviewedPhoneUserSet.new }
         before do
-          allow(reviewed_users).to receive(:active_member?).and_return(true)
-          allow(Idv::ManuallyReviewedPhoneUserSet).to receive(:new)
-            .and_return(reviewed_users)
+          allow(IdentityConfig.store)
+            .to receive(:idv_phone_confirmation_manual_review_validity_hours)
+            .and_return(1)
+          manually_reviewed_phone_users.add_user!(user_uuid: user.uuid)
+        end
+
+        after do
+          manually_reviewed_phone_users.remove_user!(user_uuid: user.uuid)
         end
 
         it 'sets address_verification_vendor to manual review' do
