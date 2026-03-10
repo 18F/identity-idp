@@ -4,7 +4,7 @@ module Proofing
   module Resolution
     module Plugins
       class PhonePlugin
-        attr_reader :phone_number
+        attr_reader :phone_number, :user_uuid
         def call(
           applicant_pii:,
           current_sp:,
@@ -16,6 +16,7 @@ module Proofing
           best_effort_phone: nil
 
         )
+          @user_uuid = applicant_pii[:uuid]
           @phone_number = nil
           return {} unless precheck_enabled
           return {} if phone_confirmation_manually_reviewed?
@@ -68,7 +69,7 @@ module Proofing
         def phone_confirmation_manually_reviewed?
           @phone_confirmation_manually_reviewed ||= begin
             manually_reviewed_phone_users = Idv::ManuallyReviewedPhoneUserSet.new
-            manually_reviewed_phone_users.active_member?(user_uuid: idv_session.current_user.uuid)
+            manually_reviewed_phone_users.active_member?(user_uuid:)
           end
         end
       end
