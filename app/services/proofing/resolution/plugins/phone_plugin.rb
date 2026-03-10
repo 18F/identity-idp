@@ -67,7 +67,7 @@ module Proofing
 
         def phone_confirmation_manually_reviewed?
           @phone_confirmation_manually_reviewed ||= begin
-            manually_reviewed_phone_users = ManuallyReviewedPhoneUserSet.new
+            manually_reviewed_phone_users = Idv::ManuallyReviewedPhoneUserSet.new
             manually_reviewed_phone_users.active_member?(user_uuid: idv_session.current_user.uuid)
           end
         end
