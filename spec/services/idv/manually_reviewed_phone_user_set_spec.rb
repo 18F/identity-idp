@@ -1,9 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Idv::ManuallyReviewedPhoneUserSet do
-  # let(:redis_pool) { instance_double(Redis::Namespace) }
   let(:user_uuid) { SecureRandom.uuid }
-  # subject(:manually_reviewed_phone_user_set) { described_class.new(redis_pool: redis_pool) }
   let(:manually_reviewed_phone_user_set) { described_class.new }
   let(:key) { described_class::KEY }
 
