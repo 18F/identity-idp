@@ -42,7 +42,7 @@ module Users
       @exclude_credentials = exclude_credentials
       @need_to_set_up_additional_mfa = need_to_set_up_additional_mfa?
       if platform_authenticator?
-        user_session[:webauthn_setup_started_at] = Time.zone.now.to_f
+        user_session[:webauthn_setup_started_at] = Time.zone.now
       end
 
       if result.errors.present?
@@ -202,7 +202,7 @@ module Users
 
     def webauthn_setup_duration
       {
-        webauthn_setup_duration: Time.zone.now.to_f - user_session[:webauthn_setup_started_at],
+        webauthn_setup_duration: Time.zone.now.to_f - user_session[:webauthn_setup_started_at].to_f,
       }
     end
 

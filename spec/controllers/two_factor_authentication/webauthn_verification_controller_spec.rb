@@ -320,7 +320,7 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
 
         before do
           controller.user_session[:webauthn_challenge] = webauthn_challenge
-          controller.user_session[:webauthn_auth_started_at] = 2.seconds.ago.to_f
+          controller.user_session[:webauthn_auth_started_at] = 2.seconds.ago
         end
 
         let(:view_context) { ActionController::Base.new.view_context }
