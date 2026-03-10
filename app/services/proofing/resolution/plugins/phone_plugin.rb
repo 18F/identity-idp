@@ -18,6 +18,7 @@ module Proofing
         )
           @phone_number = nil
           return {} unless precheck_enabled
+          return {} if phone_confirmation_manually_reviewed?
 
           if !state_id_address_resolution_result.success? ||
              !residential_address_resolution_result.success? ||
@@ -62,6 +63,13 @@ module Proofing
 
         def precheck_enabled
           @precheck_enabled ||= (rand * 100) <= IdentityConfig.store.idv_phone_precheck_percent
+        end
+
+        def phone_confirmation_manually_reviewed?
+          @phone_confirmation_manually_reviewed ||= begin
+            manually_reviewed_phone_users = ManuallyReviewedPhoneUserSet.new
+            manually_reviewed_phone_users.active_member?(user_uuid: idv_session.current_user.uuid)
+          end
         end
       end
     end

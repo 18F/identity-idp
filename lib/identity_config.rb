@@ -231,6 +231,7 @@ module IdentityConfig
     config.add(:idv_contact_phone_number, type: :string)
     config.add(:idv_max_attempts, type: :integer)
     config.add(:idv_min_age_years, type: :integer)
+    config.add(:idv_phone_confirmation_manual_review_validity_hours, type: :float)
     config.add(:idv_phone_precheck_percent, type: :integer)
     config.add(:idv_proofing_agent_enabled, type: :boolean)
     config.add(:idv_rdp_version_default, type: :string)

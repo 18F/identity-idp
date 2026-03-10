@@ -46,8 +46,14 @@ module Idv
       @idv_result = async_state.result
       if (success = idv_result[:success])
         handle_successful_proofing_attempt
+        idv_session.address_verification_vendor = address_verification_vendor
       else
         handle_failed_proofing_attempt
+        puts "phone_confirmation_manually_reviewed?: #{phone_confirmation_manually_reviewed?}"
+        if phone_confirmation_manually_reviewed?
+          handle_successful_proofing_attempt
+          idv_session.address_verification_vendor = 'manual_review'
+        end
       end
 
       delete_async
@@ -148,7 +154,6 @@ module Idv
     def update_idv_session
       idv_session.applicant = applicant
       idv_session.mark_phone_step_started!
-      idv_session.address_verification_vendor = address_verification_vendor
     end
 
     def address_verification_vendor
@@ -204,6 +209,13 @@ module Idv
       return if failure_reason == :timeout
 
       idv_session.add_failed_phone_step_number(idv_session.previous_phone_step_params[:phone])
+    end
+
+    def phone_confirmation_manually_reviewed?
+      idv_session.phone_confirmation_manually_reviewed ||= begin
+        manually_reviewed_phone_user_set = ManuallyReviewedPhoneUserSet.new
+        manually_reviewed_phone_user_set.active_member?(user_uuid: idv_session.current_user.uuid)
+      end
     end
   end
 end
