@@ -284,8 +284,8 @@ module Reporting
       <<~QUERY
         fields @timestamp, @message
         | fields jsonParse(@message) as message
-        | unnest message.properties.event_properties into event_properties
-        | filter name='IdV: doc auth verify proofing results' and event_properties.proofing_results.context.stages.resolution.vendor_name='lexisnexis:instant_verify'
+        | filter name='IdV: doc auth verify proofing results' and message.properties.event_properties.proofing_results.context.stages.resolution.vendor_name='lexisnexis:instant_verify'
+        | display id
         | limit 10000
       QUERY
     end
@@ -358,6 +358,7 @@ module Reporting
         fields @timestamp, @message
         | filter (name IN ["idv_socure_shadow_mode_phonerisk_result"])
         OR (name = 'IdV: phone confirmation vendor' AND properties.event_properties.vendor.vendor_name = "socure_phonerisk")
+        | display id
         | limit 10000
       QUERY
     end
@@ -367,6 +368,7 @@ module Reporting
         fields @timestamp, @message
         | filter name = 'IdV: phone confirmation vendor'
         | filter properties.event_properties.vendor.vendor_name = "lexisnexis:phone_finder"
+        | display id
         | limit 10000
       QUERY
     end
