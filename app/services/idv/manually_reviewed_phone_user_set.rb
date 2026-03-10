@@ -22,6 +22,10 @@ module Idv
       end
     end
 
+    def member?(user_uuid:)
+      fetch_member_score(user_uuid:).present?
+    end
+
     def fetch_member_score(user_uuid:)
       redis_pool.with do |client|
         client.zscore(KEY, user_uuid)
@@ -38,12 +42,6 @@ module Idv
     def count
       redis_pool.with do |client|
         client.zcard(KEY)
-      end
-    end
-
-    def remove_expired_members!
-      redis_pool.with do |client|
-        client.zremrangebyscore(KEY, '-inf', (Time.zone.now - time_valid).to_i)
       end
     end
 
