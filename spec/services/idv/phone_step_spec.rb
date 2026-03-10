@@ -140,35 +140,66 @@ RSpec.describe Idv::PhoneStep do
       end
     end
 
-    it 'fails with bad params' do
-      proofing_phone = Phonelib.parse(bad_phone)
-      extra = {
-        phone_fingerprint: Pii::Fingerprinter.fingerprint(proofing_phone.e164),
-        country_code: proofing_phone.country,
-        area_code: proofing_phone.area_code,
-        vendor: mock_vendor,
-      }
+    context 'unverifiable phone' do
+      it 'fails' do
+        proofing_phone = Phonelib.parse(bad_phone)
+        extra = {
+          phone_fingerprint: Pii::Fingerprinter.fingerprint(proofing_phone.e164),
+          country_code: proofing_phone.country,
+          area_code: proofing_phone.area_code,
+          vendor: mock_vendor,
+        }
 
-      original_applicant = idv_session.applicant.dup
+        original_applicant = idv_session.applicant.dup
 
-      subject.submit(phone: bad_phone)
-      expect(subject.async_state.done?).to eq true
-      result = subject.async_state_done(subject.async_state)
-      expect(result).to be_kind_of(Hash)
-      result = result[:final_result]
-      expect(result).to be_kind_of(FormResponse)
-      expect(result.success?).to eq(false)
-      expect(result.errors).to eq(phone: ['The phone number could not be verified.'])
-      expect(result.extra).to eq(extra)
-      expect(idv_session.vendor_phone_confirmation).to be_falsy
-      expect(idv_session.user_phone_confirmation).to be_falsy
-      expect(idv_session.applicant).to eq(original_applicant)
-    end
-
-    it 'increments step attempts' do
-      expect do
         subject.submit(phone: bad_phone)
-      end.to(change { rate_limiter.fetch_state!.attempts }.by(1))
+        expect(subject.async_state.done?).to eq true
+        result = subject.async_state_done(subject.async_state)
+        expect(result).to be_kind_of(Hash)
+        result = result[:final_result]
+        expect(result).to be_kind_of(FormResponse)
+        expect(result.success?).to eq(false)
+        expect(result.errors).to eq(phone: ['The phone number could not be verified.'])
+        expect(result.extra).to eq(extra)
+        expect(idv_session.vendor_phone_confirmation).to be_falsy
+        expect(idv_session.user_phone_confirmation).to be_falsy
+        expect(idv_session.applicant).to eq(original_applicant)
+      end
+
+      it 'increments step attempts' do
+        expect do
+          subject.submit(phone: bad_phone)
+        end.to(change { rate_limiter.fetch_state!.attempts }.by(1))
+      end
+
+      context 'when manually reviewed' do
+        let(:reviewed_users) { instance_double(Idv::ManuallyReviewedPhoneUserSet) }
+        before do
+          allow(reviewed_users).to receive(:active_member?).and_return(true)
+          allow(Idv::ManuallyReviewedPhoneUserSet).to receive(:new)
+            .and_return(reviewed_users)
+        end
+
+        it 'sets address_verification_vendor to manual review' do
+          proofing_phone = Phonelib.parse(bad_phone)
+          extra = {
+            phone_fingerprint: Pii::Fingerprinter.fingerprint(proofing_phone.e164),
+            country_code: proofing_phone.country,
+            area_code: proofing_phone.area_code,
+            vendor: mock_vendor,
+          }
+
+          subject.submit(phone: bad_phone)
+          expect(subject.async_state).to be_done
+          result = subject.async_state_done(subject.async_state)
+          result = result[:final_result]
+
+          expect(result).to be_kind_of(FormResponse)
+          expect(result.success?).to eq(false)
+          expect(result.extra).to eq(extra)
+          expect(idv_session.address_verification_vendor).to eq('manual_review')
+        end
+      end
     end
 
     it 'increments step attempts when the vendor request times out' do
