@@ -13,16 +13,17 @@ RSpec.describe MfaDeletionConcern do
 
   describe '#handle_successful_mfa_deletion' do
     let(:event_type) do
-      [:authenticator_disabled, :backup_codes_removed, :phone_removed, :piv_cac_disabled,
-       :webauthn_key_removed, :webauthn_platform_removed].sample
+      [:authenticator_disabled, :backup_codes_removed, :webauthn_key_removed,
+       :webauthn_platform_removed, :piv_cac_disabled, :phone_removed].sample
     end
+
     subject(:result) { controller.handle_successful_mfa_deletion(event_type:) }
 
     it 'does not return a value' do
       expect(result).to be_nil
     end
 
-    it 'creates user event using event_type argument' do
+    it 'creates user event using with disavowal' do
       expect(controller).to receive(:create_user_event_with_disavowal).with(event_type, user)
 
       result
