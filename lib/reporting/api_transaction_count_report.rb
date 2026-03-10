@@ -287,7 +287,7 @@ module Reporting
         | unnest message.properties.event_properties into event_properties
         | filter name='IdV: doc auth verify proofing results' and event_properties.proofing_results.context.stages.resolution.vendor_name='lexisnexis:instant_verify'
         | limit 10000
-        QUERY
+      QUERY
     end
 
     def threat_metrix_idv_query
