@@ -31,7 +31,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
   end
 
   describe '#proof' do
-    let(:applicant_pii) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE.dup }
+    let(:applicant_pii) { { uuid: user.uuid }.merge(Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE) }
     let(:ipp_enrollment_in_progress) { false }
     let(:state_id_already_proofed) { false }
     let(:request_ip) { Faker::Internet.ip_v4_address }
@@ -491,7 +491,9 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
       end
 
       context 'residential address is same as id' do
-        let(:applicant_pii) { Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID.dup }
+        let(:applicant_pii) do
+          { uuid: user.uuid }.merge(Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID)
+        end
 
         let(:state_id_address_resolution_result) do
           residential_address_resolution_result
@@ -618,7 +620,9 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
       end
 
       context 'residential address is different than id' do
-        let(:applicant_pii) { Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS.dup }
+        let(:applicant_pii) do
+          { uuid: user.uuid }.merge(Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_ADDRESS)
+        end
 
         it 'calls ThreatMetrixPlugin' do
           expect(progressive_proofer.threatmetrix_plugin).to receive(:call).with(
@@ -718,7 +722,9 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
     end
 
     context 'when the applicant has a passport document type' do
-      let(:applicant_pii) { Idp::Constants::MOCK_IDV_PROOFING_PASSPORT_APPLICANT.dup }
+      let(:applicant_pii) do
+        { uuid: user.uuid }.merge(Idp::Constants::MOCK_IDV_PROOFING_PASSPORT_APPLICANT)
+      end
 
       it 'calls ThreatMetrixPlugin' do
         expect(progressive_proofer.threatmetrix_plugin).to receive(:call).with(
@@ -868,9 +874,10 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
 
     context 'when applicant_pii includes best_effort_phone_number_for_socure' do
       let(:applicant_pii) do
-        Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN.dup.merge(
+        {
           best_effort_phone_number_for_socure: { phone: '3608675309' },
-        )
+          uuid: user.uuid,
+        }.merge(Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN.dup.merge)
       end
 
       it 'does not pass the phone number to plugins' do
