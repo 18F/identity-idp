@@ -49,8 +49,7 @@ module Idv
         idv_session.address_verification_vendor = address_verification_vendor
       else
         handle_failed_proofing_attempt
-        puts "phone_confirmation_manually_reviewed?: #{phone_confirmation_manually_reviewed?}"
-        if phone_confirmation_manually_reviewed?
+        if phone_confirmation_reviewed_manually?
           handle_successful_proofing_attempt
           idv_session.address_verification_vendor = 'manual_review'
         end
@@ -211,8 +210,8 @@ module Idv
       idv_session.add_failed_phone_step_number(idv_session.previous_phone_step_params[:phone])
     end
 
-    def phone_confirmation_manually_reviewed?
-      idv_session.phone_confirmation_manually_reviewed ||= begin
+    def phone_confirmation_reviewed_manually?
+      idv_session.phone_confirmation_reviewed_manually ||= begin
         manually_reviewed_phone_user_set = ManuallyReviewedPhoneUserSet.new
         manually_reviewed_phone_user_set.active_member?(user_uuid: idv_session.current_user.uuid)
       end
