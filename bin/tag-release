@@ -1,9 +1,0 @@
-#!/bin/sh
-
-set -e
-set -x
-
-TAG=$(date -u +"%Y-%m-%dT%H%M%S")
-
-git tag -s $TAG -m "$TAG release"
-git push origin $TAG

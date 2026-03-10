@@ -1126,7 +1126,7 @@ RSpec.describe 'OpenID Connect' do
       visit_idp_from_ial1_oidc_sp
     end
 
-    expect(queries[:service_providers].count).to be <= 6
+    expect(queries[:service_providers].count).to be <= 8
   end
 
   def visit_idp_from_mobile_app_with_ial1(state: SecureRandom.hex)

@@ -354,7 +354,7 @@ module Reporting
 
     def socure_phonerisk_query
       <<~QUERY
-        | filter (name IN ["idv_socure_shadow_mode_phonerisk_result"])
+        filter (name IN ["idv_socure_shadow_mode_phonerisk_result"])
         OR (name = 'IdV: phone confirmation vendor' AND properties.event_properties.vendor.vendor_name = "socure_phonerisk")
         | limit 10000
       QUERY

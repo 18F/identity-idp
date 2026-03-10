@@ -1,9 +1,14 @@
 class UserSmsTextMailerPreview < ActionMailer::Preview
-  def daily_voice_limit_reached
-    UserSmsTextMailer.daily_voice_limit_reached
-  end
-
-  def account_deleted_notice
-    UserSmsTextMailer.account_deleted_notice
-  end
+  delegate :account_deleted_notice,
+           :account_deletion_started,
+           :account_deletion_cancelled,
+           :authentication_otp,
+           :confirmation_ipp_enrollment_result,
+           :confirmation_otp,
+           :doc_auth_link,
+           :duplicate_profile_created,
+           :duplicate_profile_sign_in_attempted,
+           :personal_key_regeneration_notice,
+           :personal_key_sign_in_notice,
+           to: UserSmsTextMailer
 end

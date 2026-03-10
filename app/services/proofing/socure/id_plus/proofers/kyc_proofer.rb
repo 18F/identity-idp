@@ -25,7 +25,7 @@ module Proofing
           # @return [Proofing::Resolution::Result]
           def build_result_from_response(response)
             Proofing::Resolution::Result.new(
-              success: response.all_required_attributes_verified?,
+              success: response.successful?,
               exception: nil,
               vendor_name: VENDOR_NAME,
               verified_attributes: response.verified_attributes,
