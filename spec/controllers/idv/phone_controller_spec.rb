@@ -825,6 +825,9 @@ RSpec.describe Idv::PhoneController do
       end
 
       it 'tracks event with invalid phone' do
+        allow(IdentityConfig.store)
+          .to receive(:idv_phone_confirmation_manual_review_validity_hours).and_return(1)
+
         proofing_phone = Phonelib.parse(bad_phone)
 
         expect(@attempts_api_tracker).to receive(:idv_phone_verified).with(
@@ -885,7 +888,7 @@ RSpec.describe Idv::PhoneController do
           reviewed_users.remove_user!(user_uuid: user.uuid)
         end
 
-        it 'redirects to otp page' do
+        it 'tracks event with invalid phone' do
           put :create, params: { idv_phone_form: { phone: bad_phone } }
 
           expect(response).to redirect_to idv_phone_path
