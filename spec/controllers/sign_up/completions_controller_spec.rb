@@ -361,31 +361,94 @@ RSpec.describe SignUp::CompletionsController do
       context 'historical attempts api is enabled' do
         let(:profile) { create(:profile, :verified, :active) }
         let(:user) { create(:user, profiles: [profile] )}
-        let(:proofing_event) { create(:user_proofing_event,
-                                      profile_id: profile.id) }
         let(:sp) { create(:service_provider, :idv, :active) }
 
         before do
           allow(IdentityConfig.store).to receive_messages(
             attempts_api_enabled: true,
             historical_attempts_api_enabled: true,
-            allowed_attempts_providers: [ { 'issuer' => sp.issuer } ],
           )
         end
 
-        it 'should update the appropriate user proofing event' do
-          stub_sign_in(user)
+        context 'issuer is an allowed attempts provider' do
+          before do
+            allow(IdentityConfig.store).to receive(:allowed_attempts_providers)
+              .and_return([ { 'issuer' => sp.issuer } ])
+          end
 
-          subject.session[:sp] = {
-            issuer: sp.issuer,
-            acr_values: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
-            request_url: 'http://example.com',
-            requested_attributes: %w[email first_name verified_at],
-          }
+          context 'user proofing events have not been sent to this SP' do
+            let(:proofing_event) { create(
+              :user_proofing_event,
+              profile_id: profile.id,
+              service_providers_sent: [],
+            ) }
 
-          expect(UserProofingEvent.find(proofing_event.id).service_providers_sent).to_not include(sp.issuer)
-          patch :update
-          expect(UserProofingEvent.find(proofing_event.id).service_providers_sent).to include(sp.issuer)
+            it 'should update the appropriate user proofing event' do
+              stub_sign_in(user)
+
+              subject.session[:sp] = {
+                issuer: sp.issuer,
+                acr_values: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+                request_url: 'http://example.com',
+                requested_attributes: %w[email first_name verified_at],
+              }
+
+              expect(UserProofingEvent.find(proofing_event.id).service_providers_sent).to_not include(sp.issuer)
+              patch :update
+              expect(UserProofingEvent.find(proofing_event.id).service_providers_sent).to include(sp.issuer)
+            end
+          end
+
+          context 'user proofing events have already been sent to this SP' do
+            let(:proofing_event) { create(
+              :user_proofing_event,
+              profile_id: profile.id,
+              service_providers_sent: [sp.issuer],
+            ) }
+
+            it 'should update the appropriate user proofing event' do
+              stub_sign_in(user)
+
+              subject.session[:sp] = {
+                issuer: sp.issuer,
+                acr_values: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+                request_url: 'http://example.com',
+                requested_attributes: %w[email first_name verified_at],
+              }
+
+              expect(UserProofingEvent.find(proofing_event.id).service_providers_sent).to include(sp.issuer).once
+              patch :update
+              expect(UserProofingEvent.find(proofing_event.id).service_providers_sent).to include(sp.issuer).once
+            end
+          end
+        end
+
+        context 'issuer is not an allowed attempts provider' do
+          let(:proofing_event) { create(
+              :user_proofing_event,
+              profile_id: profile.id,
+              service_providers_sent: [],
+            ) }
+
+          before do
+            allow(IdentityConfig.store).to receive(:allowed_attempts_providers)
+              .and_return([])
+          end
+
+          it 'should not update the user proofing event' do
+            stub_sign_in(user)
+
+            subject.session[:sp] = {
+              issuer: sp.issuer,
+              acr_values: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+              request_url: 'http://example.com',
+              requested_attributes: %w[email first_name verified_at],
+            }
+
+            expect(UserProofingEvent.find(proofing_event.id).service_providers_sent).to_not include(sp.issuer)
+            patch :update
+            expect(UserProofingEvent.find(proofing_event.id).service_providers_sent).to_not include(sp.issuer)
+          end
         end
       end
 
