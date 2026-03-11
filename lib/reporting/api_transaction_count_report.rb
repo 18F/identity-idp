@@ -124,6 +124,12 @@ module Reporting
       [true_id_selfie_table_count, result]
     end
 
+    def instant_verify_table
+      result = fetch_results(query: instant_verify_query)
+      instant_verify_table_count = result.count
+      [instant_verify_table_count, result]
+    end
+
     def socure_table
       result = fetch_results(query: socure_query)
       socure_table_count = result.count
@@ -146,12 +152,6 @@ module Reporting
       result = fetch_results(query: ln_emailage_query)
       ln_emailage_table_count = result.count
       [ln_emailage_table_count, result]
-    end
-
-    def instant_verify_table
-      result = fetch_results(query: instant_verify_query)
-      instant_verify_table_count = result.count
-      [instant_verify_table_count, result]
     end
 
     def threat_metrix_idv_table
