@@ -119,11 +119,13 @@ module EventSummarizer
         failed_attributes = Set.new
 
         REQUIRED_VERIFICATION_ATTRIBUTES.each do |attr|
-          failed_attributes << attr if attributes[attr] != 'VERIFIED'
+          attr_key = attr.to_s
+          failed_attributes << attr if attributes[attr_key].present? && attributes[attr_key] != 'VERIFIED'
         end
 
         REQUIRED_IF_PRESENT_ATTRIBUTES.each do |attr|
-          failed_attributes << attr if attributes[attr].present? && attributes[attr] != 'VERIFIED'
+          attr_key = attr.to_s
+          failed_attributes << attr if attributes[attr_key].present? && attributes[attr_key] != 'VERIFIED'
         end
 
         failed_attributes
