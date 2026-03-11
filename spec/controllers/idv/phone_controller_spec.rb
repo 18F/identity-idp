@@ -876,10 +876,13 @@ RSpec.describe Idv::PhoneController do
       end
 
       context 'when phone was manually reviewed' do
-        let(:reviewed_users) { ManuallyReviewedPhoneUserSet.new }
+        let(:reviewed_users) { Idv::ManuallyReviewedPhoneUserSet.new }
         before do
-          allow(IdentityConfig.store).to receive(:idv_phone_confirmation_manual_review_validity_hours).and_return(1)
-          subject.idv_session.phone_confirmation_manually_reviewed = true
+          reviewed_users.add_user!(user_uuid: user.uuid)
+        end
+
+        after do
+          reviewed_users.remove_user!(user_uuid: user.uuid)
         end
 
         it 'redirects to otp page' do
@@ -889,15 +892,40 @@ RSpec.describe Idv::PhoneController do
 
           get :new
 
-          expect(response).to redirect_to idv_otp_verification_path
+          expect(response).to redirect_to idv_phone_errors_warning_path
 
           expect(@analytics).to have_logged_event(
             'IdV: phone confirmation vendor',
             hash_including({
               success: false,
-              manual_review: true,
+              manual_review: false,
             }),
           )
+        end
+
+        context 'when manual review is not expired' do
+          before do
+            allow(IdentityConfig.store)
+              .to receive(:idv_phone_confirmation_manual_review_validity_hours).and_return(1)
+          end
+
+          it 'redirects to otp page' do
+            put :create, params: { idv_phone_form: { phone: bad_phone } }
+
+            expect(response).to redirect_to idv_phone_path
+
+            get :new
+
+            expect(response).to redirect_to idv_otp_verification_path
+
+            expect(@analytics).to have_logged_event(
+              'IdV: phone confirmation vendor',
+              hash_including({
+                success: false,
+                manual_review: true,
+              }),
+            )
+          end
         end
       end
 
