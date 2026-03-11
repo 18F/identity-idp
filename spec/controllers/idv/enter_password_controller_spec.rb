@@ -1127,13 +1127,22 @@ RSpec.describe Idv::EnterPasswordController do
     end
 
     describe 'historical events tracking' do
+      let(:mock_user_session) { {
+        'idv/attempts' => ['idv-enrollment-complete' => {
+          user_uuid: user.uuid,
+        }],
+      } }
+      let(:double) { double }
+
       before do
-        allow(UserProofingEvent).to receive(:new)
+        allow(UserProofingEvent).to receive(:new).and_return(double)
+        allow(double).to receive(:save).and_return(true)
         allow(IdentityConfig.store).to receive_messages(
           attempts_api_enabled: true,
           historical_attempts_api_enabled: true,
           allowed_attempts_providers: [ { 'issuer' => sp.issuer } ],
         )
+        allow(subject).to receive(:user_session).and_return(mock_user_session)
       end
 
       context 'when requesting ial2' do
@@ -1149,6 +1158,7 @@ RSpec.describe Idv::EnterPasswordController do
         context 'with a newly proofed user' do
           it 'creates a new UserProofingEvent' do
             expect(UserProofingEvent).to receive(:new)
+            expect(double).to receive(:save)
             put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
           end
         end

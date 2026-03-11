@@ -161,18 +161,19 @@ module Idv
       service_provider = idv_session.service_provider
       return unless service_provider&.attempts_api_enabled?
       # TODO: encrypt actual events, not only the keys
-      attempt_events_string = user_session['idv/attempts'].keys.to_json
+      attempt_events_string = user_session['idv/attempts'][0].keys.to_json
       # TODO: what do we do if the user is re-proofing? Does the event
       # get replaced, or appended?
       if !existing_user_proofing_event
         # TODO: populate encrypted_events, cost, and salt
-        UserProofingEvent.new(
+        new_event = UserProofingEvent.new(
           encrypted_events: attempt_events_string,
           profile_id: profile.id,
           service_providers_sent: [],
           cost: '',
           salt: '',
-        ).save
+        )
+        new_event.save
       end
     end
 
