@@ -277,9 +277,11 @@ module Idv
       exceptions = build_proofing_exception_list(
         form_response.extra.dig(:proofing_results, :context, :stages),
       )
+      sanitized_form_response = form_response.deep_dup
+      sanitized_form_response.extra.dig(:proofing_results, :context, :stages)&.delete(:state_id)
       analytics.idv_doc_auth_verify_proofing_results(
         **analytics_arguments,
-        **form_response,
+        **sanitized_form_response,
         exceptions:,
       )
       delete_async

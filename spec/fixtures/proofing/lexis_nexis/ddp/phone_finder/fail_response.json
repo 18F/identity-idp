@@ -1,0 +1,278 @@
+{
+  "account_date_of_birth": "19800101",
+  "account_first_name": "john",
+  "account_last_name": "smith",
+  "account_name": "john_smith",
+  "account_name_attributes": [
+    "_CHALLENGED",
+    "_CHALLENGE_FAILED",
+    "_CHALLENGE_PASSED",
+    "_REJECTED_NON_FRAUD",
+    "_TRUSTED_PROB"
+  ],
+  "account_name_first_seen": "2011-08-24",
+  "account_name_last_event": "2026-02-26",
+  "account_name_last_update": "2026-02-26",
+  "account_name_result": "success",
+  "account_name_score": "100",
+  "account_name_worst_score": "-25",
+  "account_telephone": "5555555555",
+  "account_telephone_attributes": [
+    "_CHALLENGED",
+    "_CHALLENGE_FAILED",
+    "_CHALLENGE_PASSED",
+    "_FRAUD_CONF",
+    "_LOAN_APP",
+    "_TRUSTED_CONF",
+    "_TRUSTED_PROB"
+  ],
+  "account_telephone_country_code": "1",
+  "account_telephone_first_seen": "2013-02-03",
+  "account_telephone_geo": "US",
+  "account_telephone_is_possible": "yes",
+  "account_telephone_is_valid": "no",
+  "account_telephone_last_event": "2026-02-26",
+  "account_telephone_last_update": "2026-02-26",
+  "account_telephone_result": "success",
+  "account_telephone_score": "100",
+  "account_telephone_type": "UNKNOWN",
+  "account_telephone_worst_score": "-100",
+  "api_call_datetime": "2026-02-26 22:43:05.805",
+  "api_caller_ip": "209.66.94.77",
+  "api_caller_ip_geo": "US",
+  "api_type": "attribute-query",
+  "bb_assessment": "174.51",
+  "bb_assessment_rating": "low",
+  "bb_bot_rating": "low",
+  "bb_bot_score": "500.00",
+  "bb_fraud_rating": "neutral",
+  "bb_fraud_score": "500.00",
+  "champion_request_duration": "972",
+  "digital_id_reason_code": ["acnt_phone_gbl_velocity_high", "acc_phone_weighting"],
+  "digital_id_result": "not_enough_attribs",
+  "enabled_services": ["TMX100"],
+  "event_datetime": "2026-02-26 22:43:05.805",
+  "event_type": "account_creation",
+  "integration_hub_results": {
+    "test_org_id:test-policy": {
+      "Phone Finder": {
+        "rule_id": "509746316",
+        "tps_datetime": "2026-02-26 22:43:05.822",
+        "tps_duration": "964",
+        "tps_error": "phone_finder_fail",
+        "tps_http_status_code": "200",
+        "tps_result": "failed",
+        "tps_type": "LexisNexisPhoneFinderProduction_v3_FirstClass",
+        "tps_vendor": "LexisNexis - Connectors",
+        "tps_vendor_org_id": "7ryg7owp",
+        "tps_vendor_raw_response": {
+          "Products": [
+            {
+              "ExecutedStepName": "PhoneFinder",
+              "Items": [
+                {
+                  "ItemName": "PrepaidPhoneNumber",
+                  "ItemStatus": "pass"
+                },
+                {
+                  "ItemName": "SpoofingPhoneNumber",
+                  "ItemStatus": "pass"
+                },
+                {
+                  "ItemName": "VOIPPhone",
+                  "ItemStatus": "pass"
+                },
+                {
+                  "ItemName": "LastChangeDateIMSI",
+                  "ItemStatus": "pass"
+                },
+                {
+                  "ItemName": "PhoneNotActive",
+                  "ItemStatus": "pass"
+                },
+                {
+                  "ItemName": "1stFirstSeenDate",
+                  "ItemStatus": "pass"
+                },
+                {
+                  "ItemName": "2ndFirstSeenDate",
+                  "ItemStatus": "pass"
+                },
+                {
+                  "ItemName": "PhoneForwarding",
+                  "ItemStatus": "pass"
+                },
+                {
+                  "ItemName": "SubjectDeceased",
+                  "ItemStatus": "pass"
+                },
+                {
+                  "ItemName": "3rdFirstSeenDate",
+                  "ItemStatus": "pass"
+                },
+                {
+                  "ItemName": "PhonePorted",
+                  "ItemStatus": "pass"
+                },
+                {
+                  "ItemName": "FrequentlyPhonePorted",
+                  "ItemStatus": "pass"
+                },
+                {
+                  "ItemName": "PhoneSpoofedNumOfDays",
+                  "ItemStatus": "pass"
+                },
+                {
+                  "ItemName": "LastSeenDateAge",
+                  "ItemStatus": "pass"
+                }
+              ],
+              "ProductConfigurationName": "execute.gsa2.ddp.phfdr",
+              "ProductStatus": "pass",
+              "ProductType": "PhoneFinder"
+            },
+            {
+              "ExecutedStepName": "PhoneFinder Checks",
+              "ProductConfigurationName": "PHONE_FINDER_FAIL",
+              "ProductReason": {
+                "Code": "phone_finder_fail",
+                "Description": "Failed - Input phone number could not be verified to name"
+              },
+              "ProductStatus": "fail",
+              "ProductType": "PhoneFinder_Decision"
+            }
+          ],
+          "Status": {
+            "ConversationId": "super-cool-test-session-id",
+            "RequestId": "987654321",
+            "TransactionReasonCode": {
+              "Code": "phone_finder_fail",
+              "Description": "Failed - Input phone number could not be verified to name"
+            },
+            "TransactionStatus": "failed"
+          }
+        },
+        "tps_was_timeout": "no"
+      }
+    }
+  },
+  "local_attrib_1": "test",
+  "local_attrib_1_first_seen": "2026-02-26",
+  "local_attrib_3": "test123",
+  "local_attrib_3_first_seen": "2026-02-26",
+  "org_id": "testorg",
+  "phonefinder.conversation_id": "123456789",
+  "phonefinder.product_status": "pass",
+  "phonefinder.transaction_reason_code": "phone_finder_fail",
+  "phonefinder.transaction_reason_description": "Failed - Input phone number could not be verified to name",
+  "phonefinder.transaction_status": "failed",
+  "policy": "phonefinder",
+  "policy_details_api": {
+    "policy_detail_api": [
+      {
+        "customer": {
+          "pvid": "2025300",
+          "review_status": "reject",
+          "risk_rating": "neutral",
+          "rules": [
+            {
+              "reason_code": "DOB present",
+              "rid": "509746308",
+              "score": "0"
+            },
+            {
+              "reason_code": "Phone present",
+              "rid": "509746309",
+              "score": "0"
+            },
+            {
+              "reason_code": "First Name present",
+              "rid": "509746310",
+              "score": "0"
+            },
+            {
+              "reason_code": "Last Name present",
+              "rid": "509746311",
+              "score": "0"
+            },
+            {
+              "reason_code": "- - - - - PHONE FINDER RULES - - - - -",
+              "rid": "509746315",
+              "score": "0"
+            },
+            {
+              "reason_code": "PhoneFinder Error",
+              "rid": "509746317",
+              "score": "0"
+            },
+            {
+              "reason_code": "Phone Finder Error",
+              "rid": "509746319",
+              "score": "0"
+            },
+            {
+              "reason_code": "Terminate - Communication Error",
+              "rid": "509746320",
+              "score": "0"
+            }
+          ],
+          "score": "0"
+        },
+        "id": "0",
+        "type": "champion"
+      }
+    ]
+  },
+  "policy_engine_version": "17.0.1",
+  "policy_score": "0",
+  "primary_industry": "government",
+  "reason_code": [
+    "DOB present",
+    "Phone present",
+    "First Name present",
+    "Last Name present",
+    "- - - - - PHONE FINDER RULES - - - - -",
+    "PhoneFinder Error",
+    "Phone Finder Error",
+    "Terminate - Communication Error"
+  ],
+  "request_duration": "988",
+  "request_id": "e8671760-e2ba-4694-ac90-3adcc522748b",
+  "request_result": "success",
+  "review_status": "reject",
+  "risk_rating": "neutral",
+  "secondary_industry": "civilian",
+  "service_type": "all",
+  "summary_risk_score": "0",
+  "tmx_reason_code": [
+    "_ACC_TEL_GBL_VEL_121_123_138_168",
+    "_ACC_TEL_GBL_AGE_GT_3MTHS",
+    "_ACC_NAME_GBL_VEL_88_142_207_240",
+    "_ACC_NAME_GBL_AGE_GT_3MTHS",
+    "_ACC_TEL_LCL_VEL_11_11_11_11",
+    "_ACC_TEL_LCL_AGE_LT_HR",
+    "_ACC_NAME_LCL_VEL_11_11_11_11",
+    "_ACC_NAME_LCL_AGE_LT_HR",
+    "_USER_1_LCL_VEL_11_11_11_11",
+    "_USER_1_LCL_AGE_LT_HR",
+    "_USER_3_LCL_VEL_11_11_11_11",
+    "_USER_3_LCL_AGE_LT_HR",
+    "_TMX_LOCAL_ONLY_",
+    "_EXPRESSION_ERROR",
+    "_Phone_Global_Blacklist",
+    "_TMX_GBL_TT_LIMIT_REACHED_ACC_NAME"
+  ],
+  "tmx_risk_rating": "neutral",
+  "tmx_summary_reason_code": ["Identity_Negative_History"],
+  "tmx_variables": {
+    "_accphone_gbl_velocity_hour": "120"
+  },
+  "tps_datetime": "2026-02-26 22:43:05.822",
+  "tps_duration": "964",
+  "tps_error": "phone_finder_fail",
+  "tps_result": "failed",
+  "tps_type": "LexisNexisPhoneFinderProduction_v3_FirstClass",
+  "tps_vendor": "LexisNexis - Connectors",
+  "tps_vendor_org_id": "7ryg7owp",
+  "tps_was_timeout": "no"
+}
