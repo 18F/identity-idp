@@ -40,7 +40,7 @@ module DocAuth
 
         STATE_ID_MAPPINGS = {
           Idp::Constants::DocumentTypes::IDENTIFICATION_CARD =>
-            Idp::Constants::DocIssueType::STATE_ID_CARD,
+            Idp::Constants::DocumentTypes::STATE_ID_CARD,
         }.freeze
 
         def initialize(http_response:, passport_requested: false)
