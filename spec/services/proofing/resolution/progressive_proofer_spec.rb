@@ -877,7 +877,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
         {
           best_effort_phone_number_for_socure: { phone: '3608675309' },
           uuid: user.uuid,
-        }.merge(Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN.dup.merge)
+        }.merge(Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN)
       end
 
       it 'does not pass the phone number to plugins' do
