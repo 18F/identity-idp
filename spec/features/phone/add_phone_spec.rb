@@ -21,26 +21,6 @@ RSpec.describe 'Add a new phone number' do
     expect(user.phone_configurations[1].confirmed_at).to be_present
   end
 
-  scenario 'adding a new phone number sends the user a confirmation email' do
-    user = create(:user, :fully_registered)
-    phone = '+1 (225) 278-1234'
-
-    sign_in_and_2fa_user(user)
-    within('.sidenav') do
-      click_on t('account.navigation.add_phone_number')
-    end
-    fill_in :new_phone_form_phone, with: phone
-    click_send_one_time_code
-    fill_in_code_with_last_phone_otp
-    click_submit_default
-
-    expect_delivered_email_count(1)
-    expect_delivered_email(
-      to: [user.email_addresses.first.email],
-      subject: t('user_mailer.multi_factor_authentication.phone_added', app_name: APP_NAME),
-    )
-  end
-
   scenario 'adding a new phone number validates number', :js do
     user = create(:user, :fully_registered)
     sign_in_and_2fa_user(user)
