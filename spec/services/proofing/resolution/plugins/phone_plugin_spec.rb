@@ -163,6 +163,7 @@ RSpec.describe Proofing::Resolution::Plugins::PhonePlugin do
           end
 
           it 'returns an unsuccessful result' do
+            # manual reviews are possible
             allow(IdentityConfig.store)
               .to receive(:idv_phone_confirmation_manual_review_validity_hours).and_return(1)
             result = call

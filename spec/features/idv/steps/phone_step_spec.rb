@@ -71,8 +71,6 @@ RSpec.feature 'idv phone step', :js do
     context 'when user phone has been manually reviewed' do
       let(:manually_reviewed_phone_users) { Idv::ManuallyReviewedPhoneUserSet.new }
       before do
-        allow(IdentityConfig.store)
-          .to receive(:idv_phone_confirmation_manual_review_validity_hours).and_return(1)
         manually_reviewed_phone_users.add_user!(user_uuid: user.uuid)
       end
 
@@ -80,15 +78,33 @@ RSpec.feature 'idv phone step', :js do
         manually_reviewed_phone_users.remove_user!(user_uuid: user.uuid)
       end
 
-      it 'proceeds to OTP page' do
-        click_idv_otp_delivery_method_sms
-        click_idv_send_security_code
+      context 'manual review is expired' do
+        it 'fails phone check' do
+          click_idv_otp_delivery_method_sms
+          click_idv_send_security_code
 
-        expect(page).to have_current_path(idv_otp_verification_path)
-        expect(page).to have_content(t('titles.idv.enter_one_time_code'))
-        expect(page).to have_content('+1 703-555-5555')
+          click_on t('idv.failure.phone.warning.try_again_button')
+          expect(page).to have_current_path(idv_phone_path)
+        end
+      end
+
+      context 'manual review is not expired' do
+        before do
+          allow(IdentityConfig.store)
+            .to receive(:idv_phone_confirmation_manual_review_validity_hours).and_return(1)
+        end
+
+        it 'proceeds to OTP page' do
+          click_idv_otp_delivery_method_sms
+          click_idv_send_security_code
+
+          expect(page).to have_current_path(idv_otp_verification_path)
+          expect(page).to have_content(t('titles.idv.enter_one_time_code'))
+          expect(page).to have_content('+1 703-555-5555')
+        end
       end
     end
+
     context 'resubmission after number failed verification' do
       it 'phone field is empty after invalid submission' do
         phone_field = find_field(t('two_factor_authentication.phone_label'))
@@ -202,6 +218,10 @@ RSpec.feature 'idv phone step', :js do
     end
 
     it 'goes to the cancel page when cancel link is clicked' do
+      # manual reviews are possible
+      allow(IdentityConfig.store)
+        .to receive(:idv_phone_confirmation_manual_review_validity_hours).and_return(1)
+
       start_idv_from_sp
       complete_idv_steps_before_phone_step
       fill_out_phone_form_fail
