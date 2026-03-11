@@ -163,6 +163,8 @@ RSpec.describe Proofing::Resolution::Plugins::PhonePlugin do
           end
 
           it 'returns an unsuccessful result' do
+            allow(IdentityConfig.store)
+              .to receive(:idv_phone_confirmation_manual_review_validity_hours).and_return(1)
             result = call
 
             expect(result[:success]).to eq(false)
@@ -180,8 +182,6 @@ RSpec.describe Proofing::Resolution::Plugins::PhonePlugin do
           let(:manually_reviewed_phone_users) { Idv::ManuallyReviewedPhoneUserSet.new }
 
           before do
-            allow(IdentityConfig.store)
-              .to receive(:idv_phone_confirmation_manual_review_validity_hours).and_return(1)
             manually_reviewed_phone_users.add_user!(user_uuid: user.uuid)
           end
 
@@ -189,10 +189,24 @@ RSpec.describe Proofing::Resolution::Plugins::PhonePlugin do
             manually_reviewed_phone_users.remove_user!(user_uuid: user.uuid)
           end
 
-          it 'returns an empty result without calling the proofer' do
-            expect_any_instance_of(Proofing::AddressProofer).not_to receive(:proof)
-            result = call
-            expect(result).to be_empty
+          context 'when manual review is expired' do
+            it 'returns a result' do
+              result = call
+              expect(result).not_to be_empty
+            end
+          end
+
+          context 'when manual review is not expired' do
+            before do
+              allow(IdentityConfig.store)
+                .to receive(:idv_phone_confirmation_manual_review_validity_hours).and_return(1)
+            end
+
+            it 'returns an empty result without calling the proofer' do
+              expect_any_instance_of(Proofing::AddressProofer).not_to receive(:proof)
+              result = call
+              expect(result).to be_empty
+            end
           end
         end
 
