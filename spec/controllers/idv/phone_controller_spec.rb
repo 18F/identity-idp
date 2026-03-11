@@ -888,22 +888,24 @@ RSpec.describe Idv::PhoneController do
           reviewed_users.remove_user!(user_uuid: user.uuid)
         end
 
-        it 'tracks event with invalid phone' do
-          put :create, params: { idv_phone_form: { phone: bad_phone } }
+        context 'when manual review is expired' do
+          it 'tracks event with invalid phone' do
+            put :create, params: { idv_phone_form: { phone: bad_phone } }
 
-          expect(response).to redirect_to idv_phone_path
+            expect(response).to redirect_to idv_phone_path
 
-          get :new
+            get :new
 
-          expect(response).to redirect_to idv_phone_errors_warning_path
+            expect(response).to redirect_to idv_phone_errors_warning_path
 
-          expect(@analytics).to have_logged_event(
-            'IdV: phone confirmation vendor',
-            hash_including({
-              success: false,
-              manual_review: false,
-            }),
-          )
+            expect(@analytics).to have_logged_event(
+              'IdV: phone confirmation vendor',
+              hash_including({
+                success: false,
+                manual_review: false,
+              }),
+            )
+          end
         end
 
         context 'when manual review is not expired' do
