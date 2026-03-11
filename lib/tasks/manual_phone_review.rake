@@ -2,15 +2,15 @@
 
 namespace :manual_phone_review do
   desc 'Confirm manual phone review for a user'
-  task :add_user, [:uuid] => :environment do |_t, args|
+  task add_user: :environment do
     # Implementation for adding user to manually reviewed phone set
-    uuid = args[:uuid]
+    uuid = ENV['UUID']
     if uuid.blank?
       puts 'uuid argument is required'
       next
     end
 
-    user = User.find_by(uuid: args[:uuid].downcase)
+    user = User.find_by(uuid:)
     unless user
       puts 'No user found with that uuid'
       next
@@ -23,15 +23,15 @@ namespace :manual_phone_review do
   end
 
   desc 'Remove manual phone review for a user'
-  task :remove_user, [:uuid] => :environment do |_t, args|
+  task remove_user: :environment do
     # Implementation for removing user from manually reviewed phone set
-    uuid = args[:uuid]
+    uuid = ENV['UUID']
     if uuid.blank?
       puts 'uuid argument is required'
       next
     end
 
-    user = User.find_by(uuid: args[:uuid].downcase)
+    user = User.find_by(uuid:)
     unless user
       puts 'No user found with that uuid'
       next
@@ -52,15 +52,15 @@ namespace :manual_phone_review do
   end
 
   desc 'Check user manual phone review status'
-  task :user_status, [:uuid] => :environment do |_t, args|
+  task user_status: :environment do
     # Implementation for checking if a user is in the manually reviewed phone set
-    uuid = args[:uuid]
+    uuid = ENV['UUID']
     if uuid.blank?
       puts 'uuid argument is required'
       next
     end
 
-    user = User.find_by(uuid: args[:uuid].downcase)
+    user = User.find_by(uuid:)
     unless user
       puts 'No user found with that uuid'
       next
