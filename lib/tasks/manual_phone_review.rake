@@ -6,7 +6,7 @@ namespace :manual_phone_review do
     # Implementation for adding user to manually reviewed phone set
     uuid = ENV['UUID']
     if uuid.blank?
-      puts 'uuid argument is required'
+      puts 'uuid must be provided'
       next
     end
 
@@ -27,7 +27,7 @@ namespace :manual_phone_review do
     # Implementation for removing user from manually reviewed phone set
     uuid = ENV['UUID']
     if uuid.blank?
-      puts 'uuid argument is required'
+      puts 'uuid must be provided'
       next
     end
 
@@ -56,7 +56,7 @@ namespace :manual_phone_review do
     # Implementation for checking if a user is in the manually reviewed phone set
     uuid = ENV['UUID']
     if uuid.blank?
-      puts 'uuid argument is required'
+      puts 'uuid must be provided'
       next
     end
 
