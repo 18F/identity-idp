@@ -1132,11 +1132,11 @@ RSpec.describe Idv::EnterPasswordController do
           user_uuid: user.uuid,
         }],
       } }
-      let(:double) { double }
+      let(:mock) { double }
 
       before do
-        allow(UserProofingEvent).to receive(:new).and_return(double)
-        allow(double).to receive(:save).and_return(true)
+        allow(UserProofingEvent).to receive(:new).and_return(mock)
+        allow(mock).to receive(:save).and_return(true)
         allow(IdentityConfig.store).to receive_messages(
           attempts_api_enabled: true,
           historical_attempts_api_enabled: true,
@@ -1158,7 +1158,7 @@ RSpec.describe Idv::EnterPasswordController do
         context 'with a newly proofed user' do
           it 'creates a new UserProofingEvent' do
             expect(UserProofingEvent).to receive(:new)
-            expect(double).to receive(:save)
+            expect(mock).to receive(:save)
             put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
           end
         end
