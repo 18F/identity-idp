@@ -66,10 +66,11 @@ namespace :manual_phone_review do
       next
     end
 
+    duration = IdentityConfig.store.idv_phone_confirmation_manual_review_validity_hours.hours.to_i
     user_uuid = user.uuid
     manually_reviewed_phone_user_set = Idv::ManuallyReviewedPhoneUserSet.new
     if (score = manually_reviewed_phone_user_set.fetch_member_score(user_uuid: user_uuid))
-      expiration = score + IdentityConfig.store.idv_phone_confirmation_manual_review_validity_hours.hours.to_i
+      expiration = score + duration
       puts "User #{user_uuid} found. Expiration: #{Time.zone.at(expiration)}"
     else
       puts "User #{user_uuid} was not manually reviewed."

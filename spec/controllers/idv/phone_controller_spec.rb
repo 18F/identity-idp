@@ -900,10 +900,12 @@ RSpec.describe Idv::PhoneController do
 
             expect(@analytics).to have_logged_event(
               'IdV: phone confirmation vendor',
-              hash_including({
-                success: false,
-                manual_review: false,
-              }),
+              hash_including(
+                {
+                  success: false,
+                  manual_review: false,
+                },
+              ),
             )
           end
         end
@@ -925,10 +927,12 @@ RSpec.describe Idv::PhoneController do
 
             expect(@analytics).to have_logged_event(
               'IdV: phone confirmation vendor',
-              hash_including({
-                success: false,
-                manual_review: true,
-              }),
+              hash_including(
+                {
+                  success: false,
+                  manual_review: true,
+                },
+              ),
             )
           end
         end
