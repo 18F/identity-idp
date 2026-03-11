@@ -376,7 +376,7 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
         end
       end
 
-      context 'when phone pre-check is successful' do
+      context 'when phone pre-check number is valid' do
         it 'redirects the user to enter password page' do
           expect_any_instance_of(Proofing::Socure::IdPlus::Proofers::PhoneRiskProofer)
             .not_to receive(:proof)
@@ -508,6 +508,11 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
         end
 
         context 'when precheck is successful' do
+          before do
+            allow(IdentityConfig.store)
+              .to receive(:idv_phone_confirmation_manual_review_validity_hours).and_return(1)
+          end
+
           it 'it redirects to enter password page' do
             perform_in_browser(:desktop) do
               sign_in_and_2fa_user(user)
@@ -542,6 +547,40 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
 
               expect(page).to have_current_path(idv_enter_password_path)
             end
+          end
+        end
+      end
+
+      context 'when user phone number has been manually reviewed' do
+        let(:manually_reviewed_phone_users) { Idv::ManuallyReviewedPhoneUserSet.new }
+        before do
+          manually_reviewed_phone_users.add_user!(user_uuid: user.uuid)
+        end
+
+        after do
+          manually_reviewed_phone_users.remove_user!(user_uuid: user.uuid)
+        end
+
+        context 'a user is manual review has expired' do
+          it 'proofs user phone' do
+            expect(Proofing::AddressProofer).to receive(:new).and_call_original
+            complete_ssn_step
+            complete_verify_step
+            expect(page).to have_current_path(idv_enter_password_path)
+          end
+        end
+
+        context 'a user is manual review is still valid' do
+          before do
+            allow(IdentityConfig.store)
+              .to receive(:idv_phone_confirmation_manual_review_validity_hours).and_return(1)
+          end
+
+          it 'does not proof user phone redirects the user to phone page' do
+            expect(Proofing::AddressProofer).not_to receive(:new)
+            complete_ssn_step
+            complete_verify_step
+            expect(page).to have_current_path(idv_phone_path)
           end
         end
       end
