@@ -57,7 +57,7 @@ RSpec.feature 'idv phone step', :js do
   context "when the user's information cannot be verified" do
     before do
       start_idv_from_sp
-      complete_idv_steps_before_phone_step
+      complete_idv_steps_before_phone_step(user)
       fill_out_phone_form_fail
     end
 
@@ -68,6 +68,27 @@ RSpec.feature 'idv phone step', :js do
       expect(page).to have_content('+1 703-555-5555')
     end
 
+    context 'when user phone has been manually reviewed' do
+      let(:manually_reviewed_phone_users) { Idv::ManuallyReviewedPhoneUserSet.new }
+      before do
+        allow(IdentityConfig.store)
+          .to receive(:idv_phone_confirmation_manual_review_validity_hours).and_return(1)
+        manually_reviewed_phone_users.add_user!(user_uuid: user.uuid)
+      end
+
+      after do
+        manually_reviewed_phone_users.remove_user!(user_uuid: user.uuid)
+      end
+
+      it 'proceeds to OTP page' do
+        click_idv_otp_delivery_method_sms
+        click_idv_send_security_code
+
+        expect(page).to have_current_path(idv_otp_verification_path)
+        expect(page).to have_content(t('titles.idv.enter_one_time_code'))
+        expect(page).to have_content('+1 703-555-5555')
+      end
+    end
     context 'resubmission after number failed verification' do
       it 'phone field is empty after invalid submission' do
         phone_field = find_field(t('two_factor_authentication.phone_label'))
