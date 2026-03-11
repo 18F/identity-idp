@@ -358,6 +358,37 @@ RSpec.describe SignUp::CompletionsController do
         end
       end
 
+      context 'historical attempts api is enabled' do
+        let(:profile) { create(:profile, :verified, :active) }
+        let(:user) { create(:user, profiles: [profile] )}
+        let(:proofing_event) { create(:user_proofing_event,
+                                      profile_id: profile.id) }
+        let(:sp) { create(:service_provider, :idv, :active) }
+
+        before do
+          allow(IdentityConfig.store).to receive_messages(
+            attempts_api_enabled: true,
+            historical_attempts_api_enabled: true,
+            allowed_attempts_providers: [ { 'issuer' => sp.issuer } ],
+          )
+        end
+
+        it 'should update the appropriate user proofing event' do
+          stub_sign_in(user)
+
+          subject.session[:sp] = {
+            issuer: sp.issuer,
+            acr_values: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+            request_url: 'http://example.com',
+            requested_attributes: %w[email first_name verified_at],
+          }
+
+          expect(UserProofingEvent.find(proofing_event.id).service_providers_sent).to_not include(sp.issuer)
+          patch :update
+          expect(UserProofingEvent.find(proofing_event.id).service_providers_sent).to include(sp.issuer)
+        end
+      end
+
       context 'in person completion survey delievery enabled' do
         before do
           allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)

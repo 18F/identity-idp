@@ -151,14 +151,18 @@ module SignUp
       globally_enabled = IdentityConfig.store.historical_attempts_api_enabled
       aaca = current_sp.attempts_api_enabled?
       idv = ial2_requested?
-      sent_to_aaca = user_proofing_event&.service_providers_sent&.include?(current_sp.issuer)
 
-      globally_enabled && aaca && idv && !sent_to_aaca
+      return false unless globally_enabled && aaca && idv
+
+      sent_to_aaca = user_proofing_event.service_providers_sent.include?(current_sp.issuer)
+
+      return false if sent_to_aaca
+      true
     end
 
     def user_proofing_event
       @user_proofing_event ||=
-        UserProofingEvent.find_by(profile_id: current_user.active_profile.id)
+        UserProofingEvent.find_by(profile_id: current_user&.active_profile&.id)
     end
 
     def pii
