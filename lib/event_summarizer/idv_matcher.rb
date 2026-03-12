@@ -9,6 +9,7 @@ require 'event_summarizer/vendor_result_evaluators/instant_verify'
 require 'event_summarizer/vendor_result_evaluators/phone_finder'
 require 'event_summarizer/vendor_result_evaluators/true_id'
 require 'event_summarizer/vendor_result_evaluators/socure_doc_v'
+require 'event_summarizer/vendor_result_evaluators/socure_kyc'
 
 module EventSummarizer
   class IdvMatcher
@@ -35,6 +36,11 @@ module EventSummarizer
         id: :socure_docv,
         name: 'Socure DocV',
         evaluator_module: EventSummarizer::VendorResultEvaluators::SocureDocV,
+      },
+      'socure_kyc' => {
+        id: :socure_kyc,
+        name: 'Socure KYC',
+        evaluator_module: EventSummarizer::VendorResultEvaluators::SocureKyc,
       },
       'lexisnexis:instant_verify' => {
         id: :instant_verify,
@@ -214,7 +220,7 @@ module EventSummarizer
     def for_current_idv_attempt(event:, &block)
       if !current_idv_attempt
         warn <<~WARNING
-          Encountered #{event['name']} without seeing a '#{IDV_WELCOME_SUBMITTED_EVENT}' event first. 
+          Encountered #{event['name']} without seeing a '#{IDV_WELCOME_SUBMITTED_EVENT}' event first.
           This could indicate you need to include earlier events in your request.
         WARNING
         return
@@ -578,7 +584,7 @@ module EventSummarizer
     end
 
     def add_events_for_failed_vendor_result(result, timestamp:)
-      return if result['success']
+      return if result.blank? || result['success']
 
       vendor_name = result['vendor_name'] || result.dig('vendor', 'vendor_name')
       vendor = VENDORS[vendor_name] || UNKNOWN_VENDOR
