@@ -5,7 +5,9 @@ RSpec.describe PhoneRecaptchaForm do
   let(:score_threshold_config) { 0.2 }
   let(:parsed_phone) { Phonelib.parse('+15135551234') }
   let(:analytics) { FakeAnalytics.new }
-  subject(:form) { described_class.new(parsed_phone:, analytics:) }
+  subject(:form) do
+    described_class.new(parsed_phone:, analytics:, form_class: RecaptchaEnterpriseForm)
+  end
   before do
     allow(IdentityConfig.store).to receive(:phone_recaptcha_country_score_overrides)
       .and_return(country_score_overrides_config)
