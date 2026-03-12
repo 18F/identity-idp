@@ -107,6 +107,7 @@ RSpec.describe Users::WebauthnSetupController do
         allow(IdentityConfig.store).to receive(:domain_name).and_return('localhost:3000')
         request.host = 'localhost:3000'
         controller.user_session[:webauthn_challenge] = webauthn_challenge
+        controller.user_session[:webauthn_setup_started_at] = 2.seconds.ago.to_f
       end
 
       it 'should flash a success message after successfully creating' do
@@ -216,6 +217,21 @@ RSpec.describe Users::WebauthnSetupController do
           expect(controller).to receive(:create_user_event).with(:webauthn_platform_added)
 
           response
+        end
+
+        context 'with session value deserialized as a string' do
+          before do
+            controller.user_session[:webauthn_setup_started_at] =
+              2.seconds.ago.to_f.to_s
+          end
+          it 'calculates duration without error' do
+            expect { response }.not_to raise_error
+
+            expect(@analytics).to have_logged_event(
+              'Multi-Factor Authentication Setup',
+              hash_including(webauthn_setup_duration: a_value_within(0.5).of(2)),
+            )
+          end
         end
 
         context 'with transports mismatch' do
