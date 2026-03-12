@@ -645,7 +645,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_06_213343) do
   create_table "user_proofing_events", id: :serial, force: :cascade do |t|
     t.string "encrypted_events", null: false, comment: "sensitive=true"
     t.bigint "profile_id", null: false, comment: "sensitive=false"
-    t.jsonb "service_providers_sent", default: {}, null: false, comment: "sensitive=false"
+    t.jsonb "service_providers_sent", default: [], null: false, comment: "sensitive=false"
     t.string "cost", null: false, comment: "sensitive=true"
     t.string "salt", null: false, comment: "sensitive=true"
     t.datetime "created_at", null: false, comment: "sensitive=false"

@@ -141,8 +141,9 @@ module SignUp
     end
 
     def update_service_providers_sent
-      issuer = current_sp.issuer
+      return unless user_proofing_event
 
+      issuer = current_sp.issuer
       user_proofing_event.service_providers_sent.push(issuer)
       user_proofing_event.save
     end
