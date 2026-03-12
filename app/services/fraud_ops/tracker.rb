@@ -33,6 +33,12 @@ module FraudOps
       )
 
       event
+    rescue StandardError => e
+      NewRelic::Agent.notice_error(e)
+      Rails.logger.warn(
+        { event: 'fraud_ops_tracker_error', error: e.class, message: e.message }.to_json,
+      )
+      nil
     end
 
     private
@@ -47,7 +53,8 @@ module FraudOps
     end
 
     def enabled?
-      IdentityConfig.store.fraud_ops_tracker_enabled
+      IdentityConfig.store.fraud_ops_tracker_enabled &&
+        IdentityConfig.store.fraud_ops_public_key.present?
     end
 
     def public_key
