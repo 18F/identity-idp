@@ -360,7 +360,7 @@ RSpec.describe SignUp::CompletionsController do
 
       context 'historical attempts api is enabled' do
         let(:profile) { create(:profile, :verified, :active) }
-        let(:user) { create(:user, profiles: [profile] )}
+        let(:user) { create(:user, profiles: [profile]) }
         let(:sp) { create(:service_provider, :idv, :active) }
 
         before do
@@ -373,15 +373,17 @@ RSpec.describe SignUp::CompletionsController do
         context 'issuer is an allowed attempts provider' do
           before do
             allow(IdentityConfig.store).to receive(:allowed_attempts_providers)
-              .and_return([ { 'issuer' => sp.issuer } ])
+              .and_return([{ 'issuer' => sp.issuer }])
           end
 
           context 'user proofing events have not been sent to this SP' do
-            let(:proofing_event) { create(
-              :user_proofing_event,
-              profile_id: profile.id,
-              service_providers_sent: [],
-            ) }
+            let(:proofing_event) do
+              create(
+                :user_proofing_event,
+                profile_id: profile.id,
+                service_providers_sent: [],
+              )
+            end
 
             it 'should update the appropriate user proofing event' do
               stub_sign_in(user)
@@ -393,20 +395,24 @@ RSpec.describe SignUp::CompletionsController do
                 requested_attributes: %w[email first_name verified_at],
               }
 
-              expect(UserProofingEvent.find(proofing_event.id).service_providers_sent).to_not include(sp.issuer)
+              expect(UserProofingEvent.find(proofing_event.id).service_providers_sent)
+                .to_not include(sp.issuer)
               patch :update
-              expect(UserProofingEvent.find(proofing_event.id).service_providers_sent).to include(sp.issuer)
+              expect(UserProofingEvent.find(proofing_event.id).service_providers_sent)
+                .to include(sp.issuer)
             end
           end
 
           context 'user proofing events have already been sent to this SP' do
-            let(:proofing_event) { create(
-              :user_proofing_event,
-              profile_id: profile.id,
-              service_providers_sent: [sp.issuer],
-            ) }
+            let(:proofing_event) do
+              create(
+                :user_proofing_event,
+                profile_id: profile.id,
+                service_providers_sent: [sp.issuer],
+              )
+            end
 
-            it 'should update the appropriate user proofing event' do
+            it 'should not update the user proofing event' do
               stub_sign_in(user)
 
               subject.session[:sp] = {
@@ -416,19 +422,23 @@ RSpec.describe SignUp::CompletionsController do
                 requested_attributes: %w[email first_name verified_at],
               }
 
-              expect(UserProofingEvent.find(proofing_event.id).service_providers_sent).to include(sp.issuer).once
+              expect(UserProofingEvent.find(proofing_event.id).service_providers_sent)
+                .to include(sp.issuer).once
               patch :update
-              expect(UserProofingEvent.find(proofing_event.id).service_providers_sent).to include(sp.issuer).once
+              expect(UserProofingEvent.find(proofing_event.id).service_providers_sent)
+                .to include(sp.issuer).once
             end
           end
         end
 
         context 'issuer is not an allowed attempts provider' do
-          let(:proofing_event) { create(
+          let(:proofing_event) do
+            create(
               :user_proofing_event,
               profile_id: profile.id,
               service_providers_sent: [],
-            ) }
+            )
+          end
 
           before do
             allow(IdentityConfig.store).to receive(:allowed_attempts_providers)
@@ -445,9 +455,11 @@ RSpec.describe SignUp::CompletionsController do
               requested_attributes: %w[email first_name verified_at],
             }
 
-            expect(UserProofingEvent.find(proofing_event.id).service_providers_sent).to_not include(sp.issuer)
+            expect(UserProofingEvent.find(proofing_event.id).service_providers_sent)
+              .to_not include(sp.issuer)
             patch :update
-            expect(UserProofingEvent.find(proofing_event.id).service_providers_sent).to_not include(sp.issuer)
+            expect(UserProofingEvent.find(proofing_event.id).service_providers_sent)
+              .to_not include(sp.issuer)
           end
         end
       end

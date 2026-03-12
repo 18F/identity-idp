@@ -1127,11 +1127,13 @@ RSpec.describe Idv::EnterPasswordController do
     end
 
     describe 'historical events tracking' do
-      let(:mock_user_session) { {
-        'idv/attempts' => ['idv-enrollment-complete' => {
-          user_uuid: user.uuid,
-        }],
-      } }
+      let(:mock_user_session) do
+        {
+          'idv/attempts' => ['idv-enrollment-complete' => {
+            user_uuid: user.uuid,
+          }],
+        }
+      end
       let(:mock) { double }
 
       before do
@@ -1140,7 +1142,7 @@ RSpec.describe Idv::EnterPasswordController do
         allow(IdentityConfig.store).to receive_messages(
           attempts_api_enabled: true,
           historical_attempts_api_enabled: true,
-          allowed_attempts_providers: [ { 'issuer' => sp.issuer } ],
+          allowed_attempts_providers: [{ 'issuer' => sp.issuer }],
         )
         allow(subject).to receive(:user_session).and_return(mock_user_session)
       end
