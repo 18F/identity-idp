@@ -94,6 +94,137 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
       end
     end
 
+    context 'When the resolution proofing vendor is Socure KYC' do
+      let(:response_reason_codes) { ['I200'] }
+      let(:kyc_response) do
+        {
+          status: 200,
+          body: {
+            referenceId: 'some-reference-id',
+            kyc: {
+              socureId: 'some-id',
+              nationalId: 'some-id',
+              reasonCodes: response_reason_codes,
+              fieldValidations: {
+                firstName: 0.99,
+                surName: 0.99,
+                streetAddress: 0.99,
+                city: 0.99,
+                state: 0.99,
+                zip: 0.99,
+                dob: 0.99,
+                ssn: 0.99,
+              },
+            },
+          }.to_json,
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+      end
+
+      before do
+        allow(IdentityConfig.store).to receive_messages(idv_resolution_default_vendor: :socure_kyc)
+        stub_request(:post, 'https://sandbox.socure.test/api/3.0/EmailAuthScore')
+          .to_return(kyc_response)
+      end
+
+      context 'when reason codes are configured for KYC auto failure' do
+        before do
+          allow(IdentityConfig.store).to receive_messages(
+            idv_socure_kyc_auto_failure_reason_codes: ['R995', 'R947'],
+          )
+        end
+
+        context 'When the kyc response includes an autofail error code' do
+          let(:response_reason_codes) { ['I418', 'R995'] }
+
+          it 'fails resolution proofing displaying the warning page' do
+            fill_out_ssn_form_ok
+            click_idv_continue
+            complete_verify_step
+
+            expect(page).to have_current_path(idv_session_errors_warning_path)
+            expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_info'))
+            click_on t('idv.failure.button.warning')
+
+            expect(page).to have_current_path(idv_verify_info_path)
+          end
+        end
+
+        context 'When the kyc response does not include an autofail error code' do
+          let(:response_reason_codes) { ['I418'] }
+
+          it 'passes resolution proofing' do
+            fill_out_ssn_form_ok
+            click_idv_continue
+            complete_verify_step
+
+            expect(page).to have_current_path(idv_phone_path)
+          end
+        end
+      end
+
+      context 'when no reason codes are configured for auto failure' do
+        let(:response_reason_codes) { ['R995'] }
+
+        before do
+          allow(IdentityConfig.store).to receive_messages(
+            idv_socure_kyc_auto_failure_reason_codes: [],
+          )
+        end
+
+        it 'passes resolution proofing' do
+          fill_out_ssn_form_ok
+          click_idv_continue
+          complete_verify_step
+
+          expect(page).to have_current_path(idv_phone_path)
+        end
+      end
+
+      context 'when a field fails validation' do
+        let(:kyc_response) do
+          {
+            status: 200,
+            body: {
+              referenceId: 'some-reference-id',
+              kyc: {
+                socureId: 'some-id',
+                nationalId: 'some-id',
+                reasonCodes: response_reason_codes,
+                fieldValidations: {
+                  firstName: 0.99,
+                  surName: 0.99,
+                  streetAddress: 0.99,
+                  city: 0.99,
+                  state: 0.99,
+                  zip: 0.99,
+                  dob: 0.99,
+                  ssn: 0.01,
+                },
+              },
+            }.to_json,
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          }
+        end
+
+        it 'fails resolution proofing displaying the warning page' do
+          fill_out_ssn_form_ok
+          click_idv_continue
+          complete_verify_step
+
+          expect(page).to have_current_path(idv_session_errors_warning_path)
+          expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_info'))
+          click_on t('idv.failure.button.warning')
+
+          expect(page).to have_current_path(idv_verify_info_path)
+        end
+      end
+    end
+
     it 'does not proceed to the next page if resolution fails' do
       fill_out_ssn_form_with_ssn_that_fails_resolution
       click_idv_continue
