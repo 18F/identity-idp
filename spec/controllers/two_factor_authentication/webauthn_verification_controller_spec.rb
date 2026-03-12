@@ -229,6 +229,10 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
             controller.current_user.webauthn_configurations.first
           end
 
+          before do
+            controller.user_session[:webauthn_auth_started_at] = 2.seconds.ago.to_f.to_s
+          end
+
           it 'tracks a valid submission' do
             expect(@attempts_api_tracker).to receive(:mfa_login_auth_submitted).with(
               mfa_device_type: TwoFactorAuthenticatable::AuthMethod::WEBAUTHN_PLATFORM,
@@ -262,6 +266,7 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
               new_device: true,
               available_webauthn_platform_config: true,
               attempts: 1,
+              webauthn_auth_duration: a_value_within(0.5).of(2),
             )
             expect(@analytics).to have_logged_event(
               'User marked authenticated',
@@ -384,7 +389,6 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
             available_webauthn_platform_config: true,
             frontend_error: webauthn_error,
             attempts: 1,
-            webauthn_auth_duration: a_value_within(0.5).of(2),
           )
         end
       end

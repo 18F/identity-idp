@@ -87,7 +87,7 @@ module Users
       )
       properties = result.to_h.merge(analytics_properties)
       if user_session[:webauthn_setup_started_at].present?
-        properties = properties.merge(webauthn_setup_duration)
+        properties = properties.merge(webauthn_setup_duration: webauthn_setup_duration)
       end
       analytics.multi_factor_auth_setup(**properties)
 
@@ -201,9 +201,10 @@ module Users
     end
 
     def webauthn_setup_duration
-      {
-        webauthn_setup_duration: Time.zone.now.to_f - user_session[:webauthn_setup_started_at].to_f,
-      }
+      started_at = user_session[:webauthn_setup_started_at]
+      return unless started_at
+
+      (Time.zone.now.to_f - started_at.to_f)
     end
 
     def need_to_set_up_additional_mfa?
