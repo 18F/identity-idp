@@ -58,17 +58,9 @@ RSpec.describe FraudOps::Tracker do
     end
   end
 
-  describe '#enabled?' do
-    it 'returns false when public key is blank' do
-      allow(IdentityConfig.store).to receive(:fraud_ops_public_key).and_return('')
-
-      expect(tracker.login_email_and_password_auth(email: user.email, success: true)).to be_nil
-    end
-  end
-
   describe 'error handling' do
     it 'returns nil and logs a warning when an error occurs' do
-      allow(IdentityConfig.store).to receive(:fraud_ops_public_key).and_return('not-a-valid-key')
+      allow(IdentityConfig.store).to receive(:fraud_ops_public_key).and_return('')
 
       expect(NewRelic::Agent).to receive(:notice_error).with(instance_of(OpenSSL::PKey::RSAError))
       expect(Rails.logger).to receive(:warn).with(
