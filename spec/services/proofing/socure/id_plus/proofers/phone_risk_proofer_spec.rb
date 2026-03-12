@@ -53,6 +53,9 @@ RSpec.describe Proofing::Socure::IdPlus::Proofers::PhoneRiskProofer do
       'phoneRisk' => {
         'reasonCodes' => phonerisk_reason_codes,
         'score' => phonerisk_low ? 0.01 : 0.99,
+        'signals' => {
+          'phone' => {},
+        },
       },
       'customerProfile' => {
         'customerUserId' => user_uuid,

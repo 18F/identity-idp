@@ -65,10 +65,16 @@ RSpec.feature 'Users pending ThreatMetrix review', :js do
     before do
       allow(IdentityConfig.store).to receive(:proofing_device_hybrid_profiling)
         .and_return(:enabled)
+      allow(IdentityConfig.store).to receive(:hybrid_mobile_tmx_processed_percent).and_return(100)
       allow(Telephony).to receive(:send_doc_auth_link).and_wrap_original do |impl, config|
         @sms_link = config[:link]
         impl.call(**config)
       end.at_least(1).times
+      reload_ab_tests
+    end
+
+    after do
+      reload_ab_tests
     end
 
     scenario 'user sees please call page after failing hybrid handoff ThreadMetrix' do

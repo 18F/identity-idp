@@ -12,7 +12,7 @@ interface SelfieCaptureProps {
   /**
    * Specify whether to allow uploads for selfie when in test mode.
    */
-  isSelfieDesktopTestMode: boolean;
+  isDesktopTestMode: boolean;
   /**
    * Specify whether to show help and an action button before showing
    * the capture component.
@@ -23,7 +23,7 @@ interface SelfieCaptureProps {
 const SelfieCaptureContext = createContext<SelfieCaptureProps>({
   isSelfieCaptureEnabled: false,
   isUploadEnabled: true,
-  isSelfieDesktopTestMode: false,
+  isDesktopTestMode: false,
   showHelpInitially: true,
 });
 

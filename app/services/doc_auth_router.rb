@@ -184,6 +184,26 @@ module DocAuthRouter
           glare_threshold: IdentityConfig.store.doc_auth_error_glare_threshold,
         ),
       )
+    when Idp::Constants::Vendors::LEXIS_NEXIS_DDP
+      DocAuthErrorTranslatorProxy.new(
+        DocAuth::LexisNexis::DdpClient.new(
+          api_key: IdentityConfig.store.lexisnexis_threatmetrix_api_key,
+          base_url: IdentityConfig.store.lexisnexis_threatmetrix_base_url,
+          org_id: IdentityConfig.store.lexisnexis_threatmetrix_org_id,
+          account_id: IdentityConfig.store.lexisnexis_account_id,
+          request_mode: IdentityConfig.store.lexisnexis_request_mode,
+          trueid_account_id: IdentityConfig.store.lexisnexis_trueid_account_id,
+          trueid_password: IdentityConfig.store.lexisnexis_trueid_password,
+          trueid_username: IdentityConfig.store.lexisnexis_trueid_username,
+          hmac_key_id: IdentityConfig.store.lexisnexis_trueid_hmac_key_id,
+          hmac_secret_key: IdentityConfig.store.lexisnexis_trueid_hmac_secret_key,
+          warn_notifier: warn_notifier,
+          locale: I18n.locale,
+          dpi_threshold: IdentityConfig.store.doc_auth_error_dpi_threshold,
+          sharpness_threshold: IdentityConfig.store.doc_auth_error_sharpness_threshold,
+          glare_threshold: IdentityConfig.store.doc_auth_error_glare_threshold,
+        ),
+      )
     when Idp::Constants::Vendors::MOCK
       DocAuthErrorTranslatorProxy.new(
         DocAuth::Mock::DocAuthMockClient.new(

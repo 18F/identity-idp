@@ -799,6 +799,7 @@ errors.messages.backup_code_limited: You tried too many times, please try again 
 errors.messages.blank: Please fill in this field.
 errors.messages.blank_cert_element_req: We cannot detect a certificate in your request.
 errors.messages.both_auth_and_logout_request: SAML request contains both an authnrequest and logout request. Only one can be specified.
+errors.messages.choose_authentication_method: choose another authentication method
 errors.messages.confirmation_code_incorrect: Incorrect verification code
 errors.messages.confirmation_invalid_token: Invalid confirmation link. Either the link expired or you already confirmed your account.
 errors.messages.confirmation_period_expired: Expired confirmation link. You can click “Resend confirmation instructions” to get another one.
@@ -812,7 +813,7 @@ errors.messages.invalid_calling_area: Calls to that phone number are not support
 errors.messages.invalid_phone_number.international: Enter a phone number with the correct number of digits.
 errors.messages.invalid_phone_number.us: Enter a 10 digit phone number.
 errors.messages.invalid_recaptcha_token: We’re sorry, but your computer or network may be sending automated queries. To protect our users, we can’t process your request right now.
-errors.messages.invalid_signature: SAML request contains an invalid signature
+errors.messages.invalid_signature: SAML request signature is invalid or does not match any registered public certificates. Please see our documentation at https://developers.login.gov/support/#saml-signature
 errors.messages.invalid_sms_number: The phone number entered doesn’t support text messaging. Try the Phone call option.
 errors.messages.invalid_voice_number: Invalid phone number. Check that you’ve entered the correct country code or area code.
 errors.messages.issuer_missing_or_invalid: Issuer missing from SAML request
@@ -831,7 +832,7 @@ errors.messages.phone_confirmation_limited: You tried too many times, please try
 errors.messages.phone_duplicate: This account is already using the phone number you entered as an authenticator. Please use a different phone number.
 errors.messages.phone_otp_format: Enter the one-time code sent to your phone. Do not use spaces or special characters.
 errors.messages.phone_required: Phone number is required
-errors.messages.phone_unsupported: Sorry, we are unable to send SMS at this time. Please try the phone call option below, or use your personal key.
+errors.messages.phone_unsupported_html: We can’t send you a one-time code right now. Please try again by clicking “Send another code” below or %{link_html}.
 errors.messages.premium_rate_phone: This appears to be a premium rate phone number. Please select a different number and try again.
 errors.messages.pwned_password: The password you entered is not safe. It’s in a list of known passwords exposed in data breaches.
 errors.messages.stronger_password: Enter a stronger password
@@ -840,9 +841,9 @@ errors.messages.too_long.other: is too long (maximum is %{count} characters)
 errors.messages.too_short.one: is too short (minimum is 1 character)
 errors.messages.too_short.other: is too short (minimum is %{count} characters)
 errors.messages.try_again: Please try again.
-errors.messages.unauthorized_authn_context: Unauthorized authentication context
-errors.messages.unauthorized_nameid_format: Unauthorized nameID format
-errors.messages.unauthorized_service_provider: Unauthorized Service Provider
+errors.messages.unauthorized_authn_context: Unauthorized authentication context. Please see our documentation at https://developers.login.gov/support/#unauthorized_auth_context
+errors.messages.unauthorized_nameid_format: Unauthorized nameID format. Please see our documentation at https://developers.login.gov/support/#nameidformat_unrecognized
+errors.messages.unauthorized_service_provider: Unauthorized Service Provider. Please see our documentation at https://developers.login.gov/support/#unauthorized
 errors.messages.voip_check_error: There was an error checking your phone, please try again
 errors.messages.voip_phone: This number is a web-based (VOIP) phone service. Please select a different number and try again
 errors.messages.weak_password: Your password is not strong enough. %{feedback}
@@ -896,6 +897,8 @@ event_types.sign_in_after_2fa: Signed in with second factor
 event_types.sign_in_before_2fa: Signed in with password
 event_types.sign_in_notification_timeframe_expired: Expired notification timeframe for sign-in from new device
 event_types.sign_in_unsuccessful_2fa: Failed to authenticate
+event_types.sp_user_consent_granted: User consent granted
+event_types.sp_user_consent_revoked: User consent revoked
 event_types.webauthn_key_added: Hardware security key added
 event_types.webauthn_key_removed: Hardware security key removed
 event_types.webauthn_platform_added: Face or touch unlock added
@@ -994,7 +997,7 @@ forms.webauthn_setup.step_3: Set up your security key
 forms.webauthn_setup.step_3a: Click “set up security key” below and follow your browser’s instructions.
 headings.account.activity: Activity
 headings.account.authentication_apps: Authentication apps
-headings.account.connected_accounts: Your connected accounts
+headings.account.connected_accounts: Your connected services
 headings.account.devices: Devices
 headings.account.events: Events
 headings.account.government_employee_id: Government employee ID
@@ -1455,7 +1458,9 @@ instructions.account.reactivate.with_key: Do you have your personal key?
 instructions.forgot_password.close_window: You can close this browser window once you have reset your password.
 instructions.go_back_to_mobile_app: To continue, please go back to the %{friendly_name} app and sign in.
 instructions.mfa.authenticator.confirm_code_html: Enter the code from your authenticator app. If you have several accounts set up in your app, enter the code corresponding to %{app_name_html}.
+instructions.mfa.authenticator.issues_with_authenticator: Issues with authentication applications
 instructions.mfa.authenticator.manual_entry: Or enter this code manually into your authentication app
+instructions.mfa.backup_code.issues_with_backup_codes: Issues with backup codes
 instructions.mfa.do_not_share_code_link_text: Learn how to identify fraud and report it.
 instructions.mfa.do_not_share_code_message_html: '<strong>Do not share this code.</strong> If someone calls, texts, or emails asking for this code, it may be a scam. %{link_html}'
 instructions.mfa.piv_cac.account_not_found_html: '<p>%{sign_in} with your email address and password. Then insert your PIV/CAC into a smart card reader to add to your account.</p><p>Don’t have a %{app_name} account? %{create_account}</p>'
@@ -1471,6 +1476,7 @@ instructions.mfa.piv_cac.create_account_html: '<strong>Don’t have a %{app_name
 instructions.mfa.piv_cac.did_not_work_html: Please make sure your PIV/CAC is properly inserted into your smart card reader and %{please_try_again_html}. If this problem continues, contact your agency administrator.
 instructions.mfa.piv_cac.having_trouble: 'If you have trouble signing in with your PIV/CAC card, try:'
 instructions.mfa.piv_cac.http_failure: The server took too long to respond. Please try again.
+instructions.mfa.piv_cac.issues_with_piv_cac: Issues with government employee ID
 instructions.mfa.piv_cac.no_certificate_html: Please make sure your PIV/CAC is properly inserted into your smart card reader and %{try_again_html}. If this problem continues, contact your agency administrator.
 instructions.mfa.piv_cac.not_auth_cert_html: The certificate you selected is invalid for this account. Please %{please_try_again_html} with a different certificate. If this problem continues, contact your agency administrator.
 instructions.mfa.piv_cac.please_try_again: try again
@@ -1489,9 +1495,10 @@ instructions.mfa.sms.number_message_html: We sent a text (SMS) with a one-time c
 instructions.mfa.sms.seconds_remaining_html: '<strong>%{seconds} seconds</strong> left until you have to request a new code'
 instructions.mfa.voice.code_sent_message_html: We made a call with a one-time code to %{number_html}.
 instructions.mfa.voice.number_message_html: We made a call with a one-time code to %{number_html}. This code will expire in %{expiration} minutes.
-instructions.mfa.webauthn_platform.learn_more_help: Learn more about face or touch unlock
+instructions.mfa.webauthn_platform.issues_with_ft_unlock: Issues with face or touch unlock
 instructions.mfa.webauthn.confirm_webauthn: Present the security key that you associated with your account.
 instructions.mfa.webauthn.confirm_webauthn_platform_html: '<p>You can authenticate the same way you unlock your device, whether it’s with your face or fingerprint, a password or another method. </p> <p>If you used a password manager to set up face or touch unlock, you can authenticate from any device that uses that password manager. Otherwise, use the same device where you set up face or touch unlock.</p>'
+instructions.mfa.webauthn.issues_with_security_key: Issues with security keys
 instructions.password.forgot: Don’t know your password? Reset it after confirming your email address.
 instructions.password.help_text: Avoid reusing passwords from your other accounts, such as your banks, email and social media. Don’t include words from your email address.
 instructions.password.help_text_header: Password safety tips
@@ -1585,37 +1592,37 @@ notices.use_diff_email.link: use a different email address
 notices.use_diff_email.text_html: Or, %{link_html}
 notices.webauthn_configured: A security key was added to your account.
 notices.webauthn_platform_configured: You used your device’s screen lock to add face or touch unlock to your account.
-openid_connect.authorization.errors.bad_client_id: Bad client_id
+openid_connect.authorization.errors.bad_client_id: Bad client_id. Please see our documentation at https://developers.login.gov/support/#bad-client-id
 openid_connect.authorization.errors.invalid_verified_within_duration.one: value must be at least %{count} day or older
 openid_connect.authorization.errors.invalid_verified_within_duration.other: value must be at least %{count} days or older
 openid_connect.authorization.errors.invalid_verified_within_format: Unrecognized format for verified_within
-openid_connect.authorization.errors.missing_ial: Missing a valid IAL level
-openid_connect.authorization.errors.no_auth: The acr_values are not authorized
-openid_connect.authorization.errors.no_valid_acr_values: No acceptable acr_values found
-openid_connect.authorization.errors.no_valid_scope: No valid scope values found
-openid_connect.authorization.errors.prompt_invalid: No valid prompt values found
-openid_connect.authorization.errors.redirect_uri_invalid: redirect_uri is invalid
-openid_connect.authorization.errors.redirect_uri_no_match: redirect_uri does not match registered redirect_uri
-openid_connect.authorization.errors.unauthorized_scope: Unauthorized scope
+openid_connect.authorization.errors.missing_ial: Missing a valid IAL level. Please see our documentation at https://developers.login.gov/support/#oidc-missing-ial
+openid_connect.authorization.errors.no_auth: The acr_values are not authorized. Please see our documentation at https://developers.login.gov/support/#oidc-missing-acr-values
+openid_connect.authorization.errors.no_valid_acr_values: No acceptable acr_values found. Please see our documentation at https://developers.login.gov/support/#oidc-no-acr-values
+openid_connect.authorization.errors.no_valid_scope: No valid scope values found. Please see our documentation at https://developers.login.gov/support/#oidc-no-scope
+openid_connect.authorization.errors.prompt_invalid: No valid prompt values found. Please see our documentation at https://developers.login.gov/support/#oidc-no-prompt
+openid_connect.authorization.errors.redirect_uri_invalid: redirect_uri is invalid. Please see our documentation at https://developers.login.gov/support/#oidc-invalid-redirect
+openid_connect.authorization.errors.redirect_uri_no_match: redirect_uri does not match registered redirect_uri. Please see our documentation at https://developers.login.gov/support/#oidc-redirect-match
+openid_connect.authorization.errors.unauthorized_scope: Unauthorized scope. Please see our documentation at https://developers.login.gov/support/#oidc-unauthotized-scope
 openid_connect.logout.confirm: Yes, sign out of %{app_name}
 openid_connect.logout.deny: No, go to my account page
-openid_connect.logout.errors.client_id_invalid: client_id was not recognized
-openid_connect.logout.errors.client_id_missing: client_id is missing
+openid_connect.logout.errors.client_id_invalid: client_id was not recognized. Please see our documentation at https://developers.login.gov/support/#client-id-not-recognized
+openid_connect.logout.errors.client_id_missing: client_id is missing. Please see our documentation at https://developers.login.gov/support/#client-id-missing
 openid_connect.logout.errors.id_token_hint: id_token_hint was not recognized
-openid_connect.logout.errors.id_token_hint_present: This application is misconfigured and should not be sending id_token_hint. Please send client_id instead.
-openid_connect.logout.errors.no_client_id_or_id_token_hint: This application is misconfigured and must send either client_id or id_token_hint.
+openid_connect.logout.errors.id_token_hint_present: This application is misconfigured and should not be sending id_token_hint. Please send client_id instead. Please see our documentation at https://developers.login.gov/support/#id-token-hint
+openid_connect.logout.errors.no_client_id_or_id_token_hint: This application is misconfigured and must send either client_id or id_token_hint. Please see our documentation at https://developers.login.gov/oidc/logout/
 openid_connect.logout.heading: Do you want to sign out of %{app_name}?
 openid_connect.logout.heading_with_sp: Do you want to sign out of %{app_name} and return to %{service_provider_name}?
-openid_connect.token.errors.expired_code: is expired
-openid_connect.token.errors.invalid_aud: Invalid audience claim, expected %{url}
-openid_connect.token.errors.invalid_authentication: Client must authenticate via PKCE or private_key_jwt, missing either code_challenge or client_assertion
-openid_connect.token.errors.invalid_code: is invalid because doesn’t match any user. Please see our documentation at https://developers.login.gov/oidc/#token
-openid_connect.token.errors.invalid_code_verifier: code_verifier did not match code_challenge
-openid_connect.token.errors.invalid_iat: iat must be an integer or floating point Unix timestamp representing a time in the past
-openid_connect.token.errors.invalid_signature: Could not validate assertion against any registered public keys
-openid_connect.user_info.errors.malformed_authorization: Malformed Authorization header
-openid_connect.user_info.errors.no_authorization: No Authorization header provided
-openid_connect.user_info.errors.not_found: Could not find authorization for the contents of the provided access_token or it may have expired
+openid_connect.token.errors.expired_code: is expired. Please see our documentation at https://developers.login.gov/support/#token-expired
+openid_connect.token.errors.invalid_aud: Invalid audience claim, expected %{url}. Please see our documentation at https://developers.login.gov/support/#invalid-aud-claim
+openid_connect.token.errors.invalid_authentication: Client must authenticate via PKCE or private_key_jwt, missing either code_challenge or client_assertion. Please see our documentation at https://developers.login.gov/support/#pkce-or-private-key
+openid_connect.token.errors.invalid_code: is invalid because doesn’t match any user. Please see our documentation at https://developers.login.gov/support/#invalid-code
+openid_connect.token.errors.invalid_code_verifier: code_verifier did not match code_challenge. Please see our documentation at https://developers.login.gov/support/#invalid-code-verifier
+openid_connect.token.errors.invalid_iat: iat must be an integer or floating point Unix timestamp representing a time in the past. Please see our documentation at https://developers.login.gov/support/#invalid-iat
+openid_connect.token.errors.invalid_signature: Could not validate assertion against any registered public keys. Please see our documentation at https://developers.login.gov/support/#invalid-token-signature
+openid_connect.user_info.errors.malformed_authorization: Malformed Authorization header. Please see our documentation at https://developers.login.gov/support/#malformed-auth-header
+openid_connect.user_info.errors.no_authorization: No Authorization header provided. Please see our documentation at https://developers.login.gov/support/#no-auth-header
+openid_connect.user_info.errors.not_found: Could not find authorization for the contents of the provided access_token or it may have expired. Please see our documentation at https://developers.login.gov/support/#auth-header-contents-not-found
 pages.page_took_too_long.body: You might want to wait a few minutes and try again. (503)
 pages.page_took_too_long.header: The server took too long to process your request.
 profiling_failed.details_html: 'Call our contact center at <strong>(844) 875-6446</strong> and provide them with the error code <strong>LG22</strong>.'
@@ -1770,6 +1777,7 @@ two_factor_authentication.account_reset.link: delete your account
 two_factor_authentication.account_reset.pending: You currently have a pending request to delete your account. It takes %{interval} from the time you made the request to complete the process. Please check back later.
 two_factor_authentication.account_reset.successful_cancel: Thank you. Your request to delete your %{app_name} account has been canceled.
 two_factor_authentication.account_reset.text_html: If you can’t use any of the authentication methods above, you can %{link_html} and make a new one. You will not lose any information you have stored with government agencies if you delete your account.
+two_factor_authentication.add_or_change_authenticator: How do I add or change the authentication method on my account?
 two_factor_authentication.attempt_remaining_warning_html.one: You have <strong>%{count} attempt</strong> remaining.
 two_factor_authentication.attempt_remaining_warning_html.other: You have <strong>%{count} attempts</strong> remaining.
 two_factor_authentication.auth_app.change_nickname: Change nickname
@@ -1848,7 +1856,6 @@ two_factor_authentication.phone_fee_disclosure: Message and data rates may apply
 two_factor_authentication.phone_info: We’ll send you a one-time code each time you sign in.
 two_factor_authentication.phone_label: Phone number
 two_factor_authentication.phone_verification.troubleshooting.change_number: Use another phone number
-two_factor_authentication.phone_verification.troubleshooting.code_not_received: I’m not receiving a one-time code through SMS/Text or phone call
 two_factor_authentication.phone.delete.failure: Unable to remove your phone.
 two_factor_authentication.phone.delete.success: Your phone has been removed.
 two_factor_authentication.piv_cac_header_text: Insert your government employee ID
@@ -1929,6 +1936,11 @@ user_authorization_confirmation.continue: Continue
 user_authorization_confirmation.currently_logged_in: 'You are already signed in with the following email:'
 user_authorization_confirmation.or: Or
 user_authorization_confirmation.sign_in: Switch emails
+user_mailer.account_connected_to_sp.intro_html: To disconnect your account from %{sp_name}, %{sign_in_link_html}, go to “Your connected accounts” in the sidebar and click “Disconnect” underneath the service.
+user_mailer.account_connected_to_sp.sign_in_link: sign in to your account
+user_mailer.account_connected_to_sp.subject: You connected your account to %{sp_name}
+user_mailer.account_disconnected_from_sp.intro: Visit %{sp_name} if you want to reconnect your account.
+user_mailer.account_disconnected_from_sp.subject: You disconnected %{sp_name} from your account
 user_mailer.account_reinstated.subject: Your account is unlocked
 user_mailer.account_reinstated.we_have_finished_reviewing: We have finished reviewing your %{app_name} account and you can now log back in with your account information.
 user_mailer.account_rejected.intro: We couldn’t verify your identity with %{app_name}. Please contact the agency whose service you are trying to access.
@@ -2095,6 +2107,9 @@ user_mailer.signup_with_your_email.help_html: If you did not request a new accou
 user_mailer.signup_with_your_email.intro_html: This email address is already associated with a %{app_name_html} account, so we can’t use it to create a new account. To sign in with your existing account, follow the link below. If you are not trying to sign in with this email address, you can ignore this message.
 user_mailer.signup_with_your_email.link_text: Go to %{app_name}
 user_mailer.signup_with_your_email.reset_password_html: If you can’t remember your password, go to %{app_name_html} to reset it.
+user_mailer.sp_connection.auth_method: authentication methods
+user_mailer.sp_connection.instructions_html: If this wasn’t you, %{reset_password_html} and change your %{auth_method_html} immediately.
+user_mailer.sp_connection.reset_password: reset your password
 user_mailer.suspended_create_account.message: There was an issue creating your %{app_name} account with this email address. Please give our contact center a call at %{contact_number} and provide this code - %{support_code}.
 user_mailer.suspended_create_account.subject: We can’t create your account
 user_mailer.suspended_reset_password.message: There was an issue resetting your password. Please give our contact center a call at %{contact_number} and provide this code - %{support_code}.

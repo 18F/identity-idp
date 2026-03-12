@@ -12,7 +12,8 @@ module Proofing
           timer:,
           user_email:,
           user_uuid:,
-          workflow:
+          workflow:,
+          ddp_policy:
         )
           unless FeatureManagement.proofing_device_profiling_collecting_enabled?
             return threatmetrix_disabled_result
@@ -32,7 +33,7 @@ module Proofing
           )
 
           timer.time('threatmetrix') do
-            proofer.proof(ddp_pii)
+            proofer(ddp_policy).proof(ddp_pii)
           end.tap do |result|
             Db::SpCost::AddSpCost.call(
               current_sp, :threatmetrix,
@@ -41,18 +42,17 @@ module Proofing
           end
         end
 
-        def proofer
-          @proofer ||=
-            if IdentityConfig.store.lexisnexis_threatmetrix_mock_enabled
-              Proofing::Mock::DdpMockClient.new
-            else
-              Proofing::LexisNexis::Ddp::Proofer.new(
-                api_key: IdentityConfig.store.lexisnexis_threatmetrix_api_key,
-                org_id: IdentityConfig.store.lexisnexis_threatmetrix_org_id,
-                base_url: IdentityConfig.store.lexisnexis_threatmetrix_base_url,
-                ddp_policy: IdentityConfig.store.lexisnexis_threatmetrix_policy,
-              )
-            end
+        def proofer(ddp_policy)
+          if IdentityConfig.store.lexisnexis_threatmetrix_mock_enabled
+            Proofing::Mock::DdpMockClient.new
+          else
+            Proofing::LexisNexis::Ddp::Proofers::ThreatMetrixProofer.new(
+              api_key: IdentityConfig.store.lexisnexis_threatmetrix_api_key,
+              org_id: IdentityConfig.store.lexisnexis_threatmetrix_org_id,
+              base_url: IdentityConfig.store.lexisnexis_threatmetrix_base_url,
+              ddp_policy:,
+            )
+          end
         end
 
         def threatmetrix_disabled_result

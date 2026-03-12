@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 module Idv
+  # @attr aamva_verified_attributes [Array<Symbol>, nil]
   # @attr address_edited [Boolean, nil]
   # @attr address_verification_vendor [String, nil]
   # @attr address_verification_mechanism [String, nil]
@@ -17,6 +18,10 @@ module Idv
   # @attr idv_consent_given [Boolean, nil]
   # @attr idv_consent_given_at [String, nil]
   # @attr idv_phone_step_document_capture_session_uuid [String, nil]
+  # @attr ipp_aamva_document_capture_session_uuid [String, nil]
+  # @attr ipp_aamva_pending_state_id_pii [Hash, nil]
+  # @attr ipp_aamva_redirect_url [String, nil]
+  # @attr ipp_aamva_result [Hash, nil]
   # @attr mail_only_warning_shown [Boolean, nil]
   # @attr opted_in_to_in_person_proofing [Boolean, nil]
   # @attr passport_requested [Boolean, nil]
@@ -49,6 +54,7 @@ module Idv
   # @attr_reader service_provider [ServiceProvider]
   class Session
     VALID_SESSION_ATTRIBUTES = %i[
+      aamva_verified_attributes
       address_edited
       address_verification_vendor
       address_verification_mechanism
@@ -66,6 +72,10 @@ module Idv
       idv_consent_given
       idv_consent_given_at
       idv_phone_step_document_capture_session_uuid
+      ipp_aamva_document_capture_session_uuid
+      ipp_aamva_pending_state_id_pii
+      ipp_aamva_redirect_url
+      ipp_aamva_result
       mail_only_warning_shown
       opted_in_to_in_person_proofing
       personal_key
@@ -195,7 +205,7 @@ module Idv
 
     def clear
       user_session[:idv] = {}
-      user_session['idv/attempts'] = {}
+      user_session['idv/attempts'] = []
       user_session['idv/in_person'] = {}
       @profile = nil
       @gpo_otp = nil
@@ -383,8 +393,8 @@ module Idv
       !!session[:skip_hybrid_handoff]
     end
 
-    def desktop_selfie_test_mode_enabled?
-      IdentityConfig.store.doc_auth_selfie_desktop_test_mode
+    def desktop_test_mode_enabled?
+      IdentityConfig.store.doc_auth_desktop_test_mode
     end
 
     def idv_consent_given?
@@ -397,7 +407,7 @@ module Idv
 
     def standard_flow_document_capture_eligible?
       flow_path == 'standard' &&
-        (skip_hybrid_handoff || desktop_selfie_test_mode_enabled?)
+        (skip_hybrid_handoff || desktop_test_mode_enabled?)
     end
 
     private

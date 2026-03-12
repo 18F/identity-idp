@@ -79,6 +79,7 @@ module Idv
           idv_session.selfie_check_performed = nil
           idv_session.doc_auth_vendor = nil
           idv_session.source_check_vendor = nil
+          idv_session.aamva_verified_attributes = nil
         end,
       )
     end

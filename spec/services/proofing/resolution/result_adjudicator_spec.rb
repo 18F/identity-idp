@@ -37,7 +37,7 @@ RSpec.describe Proofing::Resolution::ResultAdjudicator do
   end
 
   let(:should_proof_state_id) { true }
-  let(:ipp_enrollment_in_progress) { true }
+  let(:ipp_enrollment_in_progress) { false }
   let(:same_address_as_id) { 'false' }
 
   let(:device_profiling_success) { true }
@@ -82,38 +82,41 @@ RSpec.describe Proofing::Resolution::ResultAdjudicator do
   end
 
   describe '#adjudicated_result' do
-    context 'residential address and id address are different' do
-      context 'LexisNexis fails for the residential address' do
-        let(:resolution_success) { false }
-        let(:residential_resolution_result) do
-          Proofing::Resolution::Result.new(
-            success: resolution_success,
-            errors: {},
-            exception: nil,
-            vendor_name: 'test-resolution-vendor',
-            failed_result_can_pass_with_additional_verification:
-            can_pass_with_additional_verification,
-            attributes_requiring_additional_verification:
-            attributes_requiring_additional_verification,
-          )
+    context 'IPP enrollment is in progress' do
+      let(:ipp_enrollment_in_progress) { true }
+      context 'residential address and id address are different' do
+        context 'LexisNexis fails for the residential address' do
+          let(:resolution_success) { false }
+          let(:residential_resolution_result) do
+            Proofing::Resolution::Result.new(
+              success: resolution_success,
+              errors: {},
+              exception: nil,
+              vendor_name: 'test-resolution-vendor',
+              failed_result_can_pass_with_additional_verification:
+              can_pass_with_additional_verification,
+              attributes_requiring_additional_verification:
+              attributes_requiring_additional_verification,
+            )
+          end
+          it 'returns a failed response' do
+            result = subject.adjudicated_result
+
+            expect(result.success?).to eq(false)
+            resolution_adjudication_reason = result.extra[:context][:resolution_adjudication_reason]
+            expect(resolution_adjudication_reason).to eq(:fail_resolution_skip_state_id)
+          end
         end
-        it 'returns a failed response' do
-          result = subject.adjudicated_result
 
-          expect(result.success?).to eq(false)
-          resolution_adjudication_reason = result.extra[:context][:resolution_adjudication_reason]
-          expect(resolution_adjudication_reason).to eq(:fail_resolution_skip_state_id)
-        end
-      end
+        context 'AAMVA fails for the id address' do
+          let(:state_id_success) { false }
+          it 'returns a failed response' do
+            result = subject.adjudicated_result
 
-      context 'AAMVA fails for the id address' do
-        let(:state_id_success) { false }
-        it 'returns a failed response' do
-          result = subject.adjudicated_result
-
-          expect(result.success?).to eq(false)
-          resolution_adjudication_reason = result.extra[:context][:resolution_adjudication_reason]
-          expect(resolution_adjudication_reason).to eq(:fail_state_id)
+            expect(result.success?).to eq(false)
+            resolution_adjudication_reason = result.extra[:context][:resolution_adjudication_reason]
+            expect(resolution_adjudication_reason).to eq(:fail_state_id)
+          end
         end
       end
     end
@@ -140,7 +143,11 @@ RSpec.describe Proofing::Resolution::ResultAdjudicator do
       end
 
       context 'the applicant PII contains a residential address and document address' do
-        let(:applicant_pii) { Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID }
+        let(:applicant_pii) do
+          { aamva_verified_attributes: %i[ssn dob] }.merge(
+            Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID,
+          )
+        end
 
         it 'includes formatted PII' do
           result = subject.adjudicated_result
@@ -151,6 +158,7 @@ RSpec.describe Proofing::Resolution::ResultAdjudicator do
             identity_doc_address_state: 'MT',
             state_id_jurisdiction: 'ND',
             state_id_number: '#############',
+            state_id_verified_attributes: %i[ssn dob],
             same_address_as_id: 'true',
             phone: {
               area_code: '202',

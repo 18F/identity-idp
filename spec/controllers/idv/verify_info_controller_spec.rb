@@ -621,6 +621,46 @@ RSpec.describe Idv::VerifyInfoController do
             expect(controller.idv_session.hybrid_mobile_threatmetrix_review_status).to eq('pass')
           end
 
+          # we use the client name for some error tracking, so make sure
+          # it gets through to the analytics event log.
+          it 'logs the analytics event, including the client' do
+            get :show
+
+            expect(@analytics).to have_logged_event(
+              'IdV: doc auth verify proofing results',
+              hash_including(
+                proofing_results: hash_including(
+                  context: hash_including(
+                    stages: hash_including(
+                      hybrid_mobile_threatmetrix: hash_including(
+                        client: threatmetrix_client_id,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            )
+            expect(@analytics).to have_logged_event(
+              'IdV: doc auth verify proofing results',
+              hash_including(
+                proofing_results: hash_including(
+                  context: hash_including(
+                    stages: hash_including(
+                      hybrid_mobile_threatmetrix: hash_excluding(device_fingerprint:),
+                    ),
+                  ),
+                ),
+              ),
+            )
+
+            expect(@analytics).to have_logged_event(
+              :idv_threatmetrix_hybrid_mobile_response_body,
+              response_body: hash_including(
+                client: threatmetrix_client_id,
+              ),
+            )
+          end
+
           it 'tracks a successful hybrid mobile tmx fraud check' do
             expect(@attempts_api_tracker).to receive(:idv_device_risk_assessment).with(
               success: true,
@@ -947,15 +987,6 @@ RSpec.describe Idv::VerifyInfoController do
           )
 
           event = @analytics.events['IdV: doc auth verify proofing results'].first
-          state_id = event.dig(:proofing_results, :context, :stages, :state_id)
-          expect(state_id).to match(
-            hash_including(
-              document_type_received: 'drivers_license',
-              vendor_name: 'aamva_placeholder',
-            ),
-          )
-
-          event = @analytics.events['IdV: doc auth verify proofing results'].first
           phone_precheck = event.dig(:proofing_results, :context, :stages, :phone_precheck)
           expect(phone_precheck).to match(
             hash_including(
@@ -1131,13 +1162,6 @@ RSpec.describe Idv::VerifyInfoController do
           expect(@analytics).to have_logged_event(
             'IdV: doc auth verify proofing results',
             hash_including(
-              proofing_results: hash_including(
-                context: hash_including(
-                  stages: hash_including(
-                    state_id: hash_including(vendor_name:),
-                  ),
-                ),
-              ),
               exceptions: {
                 state_id: {
                   vendor_name:,
@@ -1601,11 +1625,28 @@ RSpec.describe Idv::VerifyInfoController do
           hash_including(
             ssn: Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn],
             consent_given_at: controller.idv_session.idv_consent_given_at,
+            aamva_verified_attributes: nil,
             **Idp::Constants::MOCK_IDV_APPLICANT,
           ),
         ).and_call_original
 
         put :update
+      end
+
+      context 'when aamva check completed' do
+        before do
+          controller.idv_session.aamva_verified_attributes = %w[ssn dob]
+        end
+
+        it 'modifies PII to include aamva verified attributes' do
+          expect(Idv::Agent).to receive(:new).with(
+            hash_including(
+              aamva_verified_attributes: %w[ssn dob],
+            ),
+          ).and_call_original
+
+          put :update
+        end
       end
     end
 

@@ -92,9 +92,6 @@ module Users
       handle_valid_verification_for_confirmation_context(
         auth_method: TwoFactorAuthenticatable::AuthMethod::BACKUP_CODE,
       )
-      event = PushNotification::RecoveryInformationChangedEvent.new(user: current_user)
-      PushNotification::HttpPush.deliver(event)
-      create_user_event(:backup_codes_added)
 
       analytics.backup_code_created(
         enabled_mfa_methods_count: mfa_user.enabled_mfa_methods_count,

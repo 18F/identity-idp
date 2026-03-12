@@ -234,6 +234,44 @@ RSpec.describe AttemptsApi::Tracker do
       end
     end
 
+    context 'with historical_attempts_api_enabled' do
+      before do
+        allow(IdentityConfig.store).to receive(:historical_attempts_api_enabled).and_return(true)
+      end
+
+      it 'populates the sessions' do
+        mock_session = { 'warden.user.user.session' => { 'idv/attempts' => [] } }
+        allow(request).to receive(:session).and_return(mock_session)
+        subject.idv_enrollment_complete(reproof: false)
+        expect(mock_session['warden.user.user.session']).to eq(
+          'idv/attempts' => ['idv-enrollment-complete' => {
+            user_uuid: user.uuid,
+          }],
+        )
+      end
+
+      it 'does not fail if the request is missing' do
+        # This happens, for example, when `SocureDocvResultsJob` runs.
+        # We'll come back later and assess if we need to make a ticket to log events from the job.
+        subject = described_class.new(
+          session_id: nil,
+          request: nil,
+          user: user,
+          sp: service_provider,
+          cookie_device_uuid: nil,
+          sp_redirect_uri: nil,
+          enabled_for_session: true,
+        )
+        expect { subject.idv_enrollment_complete(reproof: false) }.not_to raise_error
+      end
+
+      it 'does fail if the warden user session is missing' do
+        mock_session = {}
+        allow(request).to receive(:session).and_return(mock_session)
+        expect { subject.idv_enrollment_complete(reproof: false) }.to raise_error
+      end
+    end
+
     context 'the current session is not an attempts API session' do
       let(:enabled_for_session) { false }
 

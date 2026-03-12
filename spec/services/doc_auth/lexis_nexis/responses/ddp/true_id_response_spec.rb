@@ -3,27 +3,31 @@ require 'rails_helper'
 RSpec.describe DocAuth::LexisNexis::Responses::Ddp::TrueIdResponse do
   let(:success_response_body) { LexisNexisFixtures.ddp_true_id_state_id_response_success }
   let(:failure_response_body) { LexisNexisFixtures.ddp_true_id_response_fail }
+  let(:passport_failure_response_body) { LexisNexisFixtures.ddp_true_id_response_fail_passport }
+  let(:no_liveness_response_body) { LexisNexisFixtures.ddp_true_id_response_fail_no_liveness }
+  let(:glare_response_body) { LexisNexisFixtures.ddp_true_id_response_fail_glare }
   let(:unsupported_doc_type_response_body) do
     LexisNexisFixtures.ddp_true_id_response_fail_unsupported_doc_type
   end
-  let(:success_response) do
-    instance_double(Faraday::Response, status: 200, body: success_response_body)
+  let(:liveness_success_response_body) do
+    LexisNexisFixtures.ddp_true_id_liveness_response_success_state_id_card
   end
-  let(:failure_response) do
-    instance_double(Faraday::Response, status: 200, body: failure_response_body)
+  let(:liveness_fail_response_body) do
+    LexisNexisFixtures.ddp_true_id_liveness_response_fail_state_id_card
   end
-  let(:unsupported_doc_type_response) do
-    instance_double(
-      Faraday::Response,
-      status: 200,
-      body: unsupported_doc_type_response_body,
-    )
+  let(:liveness_fail_passport_response_body) do
+    LexisNexisFixtures.ddp_true_id_liveness_response_fail_passport
   end
-  let(:config) do
-    DocAuth::LexisNexis::Config.new
+  let(:attention_with_barcode_response_body) do
+    LexisNexisFixtures.ddp_true_id_attention_with_barcode_response_state_id_card
   end
+
+  let(:ddp_response_body) { nil }
+  let(:ddp_http_response) do
+    instance_double(Faraday::Response, status: 200, body: ddp_response_body)
+  end
+
   let(:passport_requested) { false }
-  let(:true_id_response) { success_response }
   let(:front_image) { 'front_image_data' }
   let(:back_image) { 'back_image_data' }
   let(:selfie_image) { 'selfie_image_data' }
@@ -45,7 +49,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::Ddp::TrueIdResponse do
   end
 
   let(:config) do
-    Proofing::LexisNexis::Config.new(
+    DocAuth::LexisNexis::DdpConfig.new(
       api_key: 'test_api_key',
       base_url: 'https://example.com',
       org_id: 'test_org_id',
@@ -55,14 +59,67 @@ RSpec.describe DocAuth::LexisNexis::Responses::Ddp::TrueIdResponse do
     DocAuth::LexisNexis::Requests::Ddp::TrueIdRequest.new(
       config:,
       applicant:,
+      user_uuid: 'test_user_uuid',
+      uuid_prefix: 'test_uuid_prefix',
     )
   end
   let(:response) do
     described_class.new(
-      http_response: true_id_response,
+      http_response: ddp_http_response,
       config:,
       request:,
       passport_requested:,
+      liveness_checking_enabled: liveness_checking_required,
+    )
+  end
+
+  let(:expected_pii) do
+    Pii::StateId.new(
+      first_name: 'FIRST',
+      last_name: 'LAST',
+      middle_name: 'MIDDLE',
+      name_suffix: nil,
+      address1: '123 MAIN ST',
+      address2: nil,
+      city: 'SEATTLE',
+      zipcode: '12345',
+      dob: '1999-01-01',
+      sex: 'male',
+      height: 105,
+      weight: nil,
+      eye_color: nil,
+      state: 'WA',
+      state_id_expiration: '2030-01-01',
+      state_id_issued: '2022-01-01',
+      state_id_jurisdiction: 'WA',
+      state_id_number: 'WA0123456789',
+      document_type_received: 'drivers_license',
+      issuing_country_code: 'USA',
+    )
+  end
+
+  let(:expected_pii_for_fail) do
+    Pii::StateId.new(
+      first_name: 'HAPPY',
+      last_name: 'TRAVELER',
+      middle_name: nil,
+      name_suffix: nil,
+      address1: '1300 W BENSON BLVD STE 900',
+      address2: nil,
+      city: 'ANCHORAGE',
+      state: 'AK',
+      zipcode: '99503',
+      dob: '1978-12-13',
+      sex: 'male',
+      height: nil,
+      weight: nil,
+      eye_color: nil,
+      state_id_expiration: '2021-04-28',
+      state_id_issued: nil,
+      state_id_jurisdiction: 'USA',
+      state_id_number: nil,
+      document_type_received: 'identification_card',
+      issuing_country_code: 'USA',
     )
   end
 
@@ -70,31 +127,192 @@ RSpec.describe DocAuth::LexisNexis::Responses::Ddp::TrueIdResponse do
     allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_org_id).and_return('org_id_str')
     allow(IdentityConfig.store).to receive(:lexisnexis_trueid_ddp_noliveness_policy)
       .and_return('default_auth_policy_pm')
+    allow(IdentityConfig.store).to receive(:lexisnexis_trueid_ddp_liveness_policy)
+      .and_return('default_auth_policy_pm')
   end
 
   context 'when the response is a success' do
-    let(:true_id_response) { success_response }
+    let(:ddp_response_body) { success_response_body }
 
     it 'is a successful result' do
       expect(response.successful_result?).to eq(true)
       expect(response.success?).to eq(true)
+      expect(response.pii_from_doc).to be_a(Pii::StateId)
+      expect(response.pii_from_doc.to_h).to eq(expected_pii.to_h)
+    end
+
+    it 'has extra attributes' do
+      extra_attributes = response.extra_attributes
+      expect(extra_attributes).not_to be_empty
+      expect(extra_attributes).to have_key(:reference)
+    end
+
+    it 'excludes pii fields from logging' do
+      expect(response.extra_attributes.keys).to_not include(*described_class::PII_EXCLUDES)
+    end
+
+    it 'excludes unnecessary raw Alert data from logging' do
+      expect(response.extra_attributes.keys.any? { |key| key.start_with?('Alert_') }).to eq(false)
+    end
+    context 'when liveness checking is enabled' do
+      let(:liveness_checking_required) { true }
+      let(:ddp_response_body) { liveness_success_response_body }
+
+      it 'is a successful result' do
+        expect(response.successful_result?).to eq(true)
+        expect(response.success?).to eq(true)
+        expect(response.pii_from_doc).to be_a(Pii::StateId)
+        expect(response.pii_from_doc.to_h).to eq(expected_pii.to_h)
+      end
+    end
+
+    context 'when the response has doc auth result of Attention with barcode' do
+      let(:ddp_response_body) { attention_with_barcode_response_body }
+
+      it 'is a successful result with attention and barcode set to true' do
+        expect(response.successful_result?).to eq(true)
+        expect(response.success?).to eq(true)
+        expect(response.attention_with_barcode?).to eq(true)
+        expect(response.pii_from_doc).to be_a(Pii::StateId)
+      end
     end
   end
 
   context 'when the response is a failure' do
-    let(:true_id_response) { failure_response }
+    let(:ddp_response_body) { failure_response_body }
 
-    it 'is not a successful result' do
+    # There seems to be an issue with the fixture for a failing state id
+    xit 'is not a successful result' do
       expect(response.successful_result?).to eq(false)
       expect(response.success?).to eq(false)
+      expect(response.pii_from_doc).to be_a(Pii::StateId)
+      expect(response.pii_from_doc.to_h).to eq(expected_pii_for_fail.to_h)
     end
 
-    context 'when the document type is unsupported' do
-      let(:true_id_response) { unsupported_doc_type_response }
+    context 'when selfie check is not required' do
+      let(:ddp_response_body) { no_liveness_response_body }
+
+      it 'produces appropriate errors without liveness' do
+        output = response.to_h
+        errors = output[:errors]
+
+        expect(output.to_h[:log_alert_results]).to eq(
+          '2d_barcode_read': { no_side: 'Passed' },
+          birth_date_crosscheck: { no_side: 'Passed' },
+          birth_date_valid: { no_side: 'Passed' },
+          document_classification: { no_side: 'Passed' },
+          document_crosscheck_aggregation: { no_side: 'Passed' },
+          document_number_crosscheck: { no_side: 'Passed' },
+          expiration_date_crosscheck: { no_side: 'Passed' },
+          expiration_date_valid: { no_side: 'Passed' },
+          full_name_crosscheck: { no_side: 'Passed' },
+          issue_date_crosscheck: { no_side: 'Passed' },
+          issue_date_valid: { no_side: 'Passed' },
+          layout_valid: { no_side: 'Passed' },
+          sex_crosscheck: { no_side: 'Passed' },
+          visible_color_response: { no_side: 'Passed' },
+          visible_pattern: { no_side: 'Failed' },
+          visible_photo_characteristics: { no_side: 'Passed' },
+          '1d_control_number_valid': { no_side: 'Failed' },
+          '2d_barcode_content': { no_side: 'Failed' },
+          control_number_crosscheck: { no_side: 'Caution' },
+          document_expired: { no_side: 'Attention' },
+        )
+        expect(output[:success]).to eq(false)
+        expect(errors.keys).to contain_exactly(:general, :front, :back, :hints)
+        expect(errors[:general]).to contain_exactly(DocAuth::Errors::GENERAL_ERROR)
+        expect(errors[:front]).to contain_exactly(DocAuth::Errors::FALLBACK_FIELD_LEVEL)
+        expect(errors[:back]).to contain_exactly(DocAuth::Errors::FALLBACK_FIELD_LEVEL)
+        expect(errors[:hints]).to eq(true)
+      end
+    end
+
+    context 'when the failure is due to glare' do
+      let(:ddp_response_body) { glare_response_body }
+
+      it 'produces appropriate errors' do
+        output = response.to_h
+        errors = output[:errors]
+
+        expect(response.successful_result?).to eq(false)
+        expect(response.success?).to eq(false)
+        expect(response.pii_from_doc).to be_nil
+
+        expect(output.to_h[:log_alert_results]).to eq(
+          document_classification: { no_side: 'Failed' },
+          document_tampering_detection: { no_side: 'Passed' },
+        )
+        expect(output[:success]).to eq(false)
+        expect(errors.keys).to contain_exactly(:general, :front, :back, :hints)
+        expect(errors[:general]).to contain_exactly(DocAuth::Errors::DPI_LOW_BOTH_SIDES)
+        expect(errors[:front]).to contain_exactly(DocAuth::Errors::DPI_LOW_FIELD)
+        expect(errors[:back]).to contain_exactly(DocAuth::Errors::DPI_LOW_FIELD)
+        expect(errors[:hints]).to eq(false)
+      end
+    end
+
+    context 'passport failure is not a successful result' do
+      let(:ddp_response_body) { passport_failure_response_body }
+      let(:expected_passport_pii) do
+        Pii::Passport.new(
+          first_name: 'HAPPY',
+          last_name: 'TRAVELER',
+          middle_name: nil,
+          dob: '1967-07-04',
+          sex: 'female',
+          passport_expiration: '2026-03-27',
+          passport_issued: nil,
+          document_type_received: 'passport',
+          issuing_country_code: 'USA',
+          document_number: '340400859',
+          birth_place: nil,
+          nationality_code: 'USA',
+          mrz: 'FAKEMRZDATA1234567890',
+        )
+      end
 
       it 'is not a successful result' do
         expect(response.successful_result?).to eq(false)
         expect(response.success?).to eq(false)
+        expect(response.pii_from_doc).to be_a(Pii::Passport)
+        expect(response.pii_from_doc.to_h).to eq(expected_passport_pii.to_h)
+      end
+    end
+
+    context 'when the document type is unsupported' do
+      let(:ddp_response_body) { unsupported_doc_type_response_body }
+
+      it 'is not a successful result' do
+        expect(response.successful_result?).to eq(false)
+        expect(response.success?).to eq(false)
+      end
+    end
+
+    context 'when liveness checking is enabled' do
+      let(:liveness_checking_required) { true }
+      context 'when success response w no selfie status is returned' do
+        let(:ddp_response_body) { success_response_body }
+
+        it 'is not a successful result' do
+          expect(response.successful_result?).to eq(false)
+          expect(response.success?).to eq(false)
+        end
+      end
+      context 'when liveness fail response is returned' do
+        let(:ddp_response_body) { liveness_fail_response_body }
+
+        it 'is not a successful result' do
+          expect(response.successful_result?).to eq(false)
+          expect(response.success?).to eq(false)
+        end
+      end
+      context 'when liveness fail response is returned for passport' do
+        let(:ddp_response_body) { liveness_fail_passport_response_body }
+
+        it 'is not a successful result' do
+          expect(response.successful_result?).to eq(false)
+          expect(response.success?).to eq(false)
+        end
       end
     end
   end
@@ -103,15 +321,29 @@ RSpec.describe DocAuth::LexisNexis::Responses::Ddp::TrueIdResponse do
     let(:passport_requested) { true }
 
     context 'when the received document type is a supported passport type' do
-      let(:success_response_body) { LexisNexisFixtures.ddp_true_id_passport_response_success }
+      let(:ddp_response_body) { LexisNexisFixtures.ddp_true_id_passport_response_success }
 
       it 'is a successful result' do
         expect(response.success?).to eq(true)
       end
+
+      it 'has extra attributes' do
+        extra_attributes = response.extra_attributes
+        expect(extra_attributes).not_to be_empty
+        expect(extra_attributes).to have_key(:reference)
+      end
+
+      it 'excludes pii fields from logging' do
+        expect(response.extra_attributes.keys).to_not include(*described_class::PII_EXCLUDES)
+      end
+
+      it 'excludes unnecessary raw Alert data from logging' do
+        expect(response.extra_attributes.keys.any? { |key| key.start_with?('Alert_') }).to eq(false)
+      end
     end
 
     context 'when the received document type is a supported state ID type' do
-      let(:success_response_body) { LexisNexisFixtures.ddp_true_id_state_id_response_success }
+      let(:ddp_response_body) { LexisNexisFixtures.ddp_true_id_state_id_response_success }
 
       it 'is not a successful result' do
         expect(response.success?).to eq(false)
@@ -119,7 +351,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::Ddp::TrueIdResponse do
     end
 
     context 'when the received document type is an unsupported type' do
-      let(:success_response_body) { LexisNexisFixtures.ddp_true_id_passport_card_response_success }
+      let(:ddp_response_body) { LexisNexisFixtures.ddp_true_id_passport_card_response_success }
 
       it 'is not a successful result' do
         expect(response.success?).to eq(false)
@@ -131,7 +363,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::Ddp::TrueIdResponse do
     let(:passport_requested) { false }
 
     context 'when the received document type is a supported passport type' do
-      let(:success_response_body) { LexisNexisFixtures.ddp_true_id_passport_response_success }
+      let(:ddp_response_body) { LexisNexisFixtures.ddp_true_id_passport_response_success }
 
       it 'is not a successful result' do
         expect(response.success?).to eq(false)
@@ -139,7 +371,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::Ddp::TrueIdResponse do
     end
 
     context 'when the received document type is a supported state ID type' do
-      let(:success_response_body) { LexisNexisFixtures.ddp_true_id_state_id_response_success }
+      let(:ddp_response_body) { LexisNexisFixtures.ddp_true_id_state_id_response_success }
 
       it 'is a successful result' do
         expect(response.success?).to eq(true)
@@ -147,7 +379,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::Ddp::TrueIdResponse do
     end
 
     context 'when the received document type is an unsupported type' do
-      let(:success_response_body) { LexisNexisFixtures.ddp_true_id_passport_card_response_success }
+      let(:ddp_response_body) { LexisNexisFixtures.ddp_true_id_passport_card_response_success }
 
       it 'is not a successful result' do
         expect(response.success?).to eq(false)

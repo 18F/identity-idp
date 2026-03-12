@@ -47,6 +47,18 @@ module TwoFactorAuthCode
       ).with_content(t('two_factor_authentication.learn_more'))
     end
 
+    def how_add_or_change_authenticator_troubleshooting_option
+      BlockLinkComponent.new(
+        url: help_center_redirect_path(
+          category: 'manage-your-account',
+          article: 'add-or-change-your-authentication-method',
+          flow: :two_factor_authentication,
+          step: redirect_location_step,
+        ),
+        new_tab: true,
+      ).with_content(t('two_factor_authentication.add_or_change_authenticator'))
+    end
+
     def remember_device_box_checked?
       return @remember_device_default if user_opted_remember_device_cookie.nil?
       ActiveModel::Type::Boolean.new.cast(user_opted_remember_device_cookie)

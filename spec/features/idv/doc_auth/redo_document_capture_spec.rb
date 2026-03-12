@@ -650,7 +650,7 @@ RSpec.feature 'document capture step', :js do
         let(:desktop_selfie_mode) { false }
 
         before do
-          allow(IdentityConfig.store).to receive(:doc_auth_selfie_desktop_test_mode)
+          allow(IdentityConfig.store).to receive(:doc_auth_desktop_test_mode)
             .and_return(desktop_selfie_mode)
         end
 
@@ -829,7 +829,7 @@ RSpec.feature 'direct access to IPP on desktop', :js do
 
     before do
       service_provider = create(:service_provider, :active, :in_person_proofing_enabled)
-      allow(IdentityConfig.store).to receive(:doc_auth_selfie_desktop_test_mode).and_return(false)
+      allow(IdentityConfig.store).to receive(:doc_auth_desktop_test_mode).and_return(false)
       allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
       allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled).and_return(
         in_person_proofing_opt_in_enabled,

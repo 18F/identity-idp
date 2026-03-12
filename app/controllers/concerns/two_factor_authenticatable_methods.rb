@@ -24,6 +24,7 @@ module TwoFactorAuthenticatableMethods
       new_device: new_device?,
       **extra_analytics.to_h,
       attempts: mfa_attempts_count,
+      available_webauthn_platform_config: mfa_context.webauthn_platform_configurations.exists?,
       recaptcha_annotation:,
     )
 
@@ -116,17 +117,10 @@ module TwoFactorAuthenticatableMethods
   end
 
   def handle_max_attempts(type)
-    _event, disavowal_token = create_user_event_with_disavowal(:max_attempts_reached)
     presenter = TwoFactorAuthCode::MaxAttemptsReachedPresenter.new(
       type,
       current_user,
     )
-
-    UserAlerts::AlertUserAboutMaxAttempts.max_attempts_alert(
-      user: current_user,
-      disavowal_token:,
-    )
-
     sign_out
     render_full_width('two_factor_authentication/_locked', locals: { presenter: presenter })
   end
@@ -166,6 +160,11 @@ module TwoFactorAuthenticatableMethods
   def handle_remember_device_preference(remember_device_preference)
     save_user_opted_remember_device_pref(remember_device_preference)
     save_remember_device_preference(remember_device_preference)
+  end
+
+  def send_recovery_information_risc_event
+    event = PushNotification::RecoveryInformationChangedEvent.new(user: current_user)
+    PushNotification::HttpPush.deliver(event)
   end
 
   def increment_mfa_selection_attempt_count(auth_method)
@@ -238,6 +237,7 @@ module TwoFactorAuthenticatableMethods
   end
 
   def handle_valid_verification_for_confirmation_context(auth_method:)
+    send_recovery_information_risc_event
     mark_user_session_authenticated(auth_method:, authentication_type: :valid_2fa_confirmation)
     reset_second_factor_attempts_count
   end

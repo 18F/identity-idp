@@ -63,7 +63,8 @@ module Proofing
 
             if doc_auth_flow
               log_state_id_validation(
-                analytics, result.to_h, applicant_pii, ipp_enrollment_in_progress
+                analytics:, result: result.to_h, applicant_pii:, ipp_enrollment_in_progress:,
+                aamva_checked: result.exception.blank?
               )
             end
           end
@@ -168,11 +169,13 @@ module Proofing
             Idp::Constants::DocumentTypes::PASSPORT
         end
 
-        def log_state_id_validation(analytics, result, applicant_pii, ipp_enrollment_in_progress)
+        def log_state_id_validation(analytics:, result:, applicant_pii:,
+                                    ipp_enrollment_in_progress:, aamva_checked:)
           analytics&.idv_state_id_validation(
             **result,
             user_id: applicant_pii[:uuid],
             ipp_enrollment_in_progress:,
+            aamva_checked:,
             supported_jurisdiction: aamva_supports_state_id_jurisdiction?(applicant_pii),
             **biographical_info(applicant_pii),
             pii_like_keypaths: [
@@ -213,7 +216,8 @@ module Proofing
           result = skipped_result
           if log_result
             log_state_id_validation(
-              analytics, result.to_h, applicant_pii, ipp_enrollment_in_progress
+              analytics:, result: result.to_h, applicant_pii:, ipp_enrollment_in_progress:,
+              aamva_checked: false
             )
           end
           return result
@@ -224,7 +228,8 @@ module Proofing
           result = unsupported_jurisdiction_result
           if log_result
             log_state_id_validation(
-              analytics, result.to_h, applicant_pii, ipp_enrollment_in_progress
+              analytics:, result: result.to_h, applicant_pii:, ipp_enrollment_in_progress:,
+              aamva_checked: false
             )
           end
           return result

@@ -114,6 +114,22 @@ RSpec.describe AttributeAsserter do
               expect(get_asserted_attribute(user, :uuid)).to eq user.last_identity.uuid
             end
 
+            it 'returns nil as the name of the attribute' do
+              email = user.asserted_attributes[:email]
+              expect(email[:name]).to be_nil
+            end
+
+            it 'returns the basic name format' do
+              email = user.asserted_attributes[:email]
+              expect(email[:name_format]).to eq 'urn:oasis:names:tc:SAML:2.0:attrname-format:basic'
+            end
+
+            it 'returns the email NameID format' do
+              email = user.asserted_attributes[:email]
+              expect(email[:name_id_format])
+                .to eq 'urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress'
+            end
+
             context 'when authn_context includes an unknown value' do
               let(:authn_context) do
                 [
@@ -786,6 +802,66 @@ RSpec.describe AttributeAsserter do
         it 'defers to user alternate email' do
           expect(get_asserted_attribute(user, :email))
             .to eq user.email_addresses.last.email
+        end
+      end
+    end
+
+    context 'Service Provider has saml_emailaddress_attribute_enabled turned on' do
+      context 'bundle includes :email' do
+        it 'includes email with SOAP schema, uuid, aal, and ial' do
+          attribute_bundle = %w[email]
+          service_provider = create(
+            :service_provider,
+            ial: service_provider_ial,
+            default_aal: service_provider_aal,
+            attribute_bundle:,
+            saml_emailaddress_attribute_enabled: true,
+          )
+          subject = described_class.new(
+            user:,
+            name_id_format:,
+            service_provider:,
+            authn_request:,
+            decrypted_pii:,
+            user_session:,
+          )
+          user.identities << identity
+          subject.build
+
+          email = user.asserted_attributes[:email]
+
+          expect(user.asserted_attributes.keys)
+            .to eq(%i[uuid email aal ial])
+          expect(email[:name]).to eq 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'
+          expect(email[:name_format]).to eq 'urn:oasis:names:tc:SAML:2.0:attrname-format:uri'
+        end
+      end
+
+      context 'bundle does not include :email' do
+        it 'includes uuid, aal, and ial' do
+          attribute_bundle = []
+          service_provider = create(
+            :service_provider,
+            ial: service_provider_ial,
+            default_aal: service_provider_aal,
+            attribute_bundle:,
+            saml_emailaddress_attribute_enabled: true,
+          )
+
+          subject = described_class.new(
+            user:,
+            name_id_format:,
+            service_provider:,
+            authn_request:,
+            decrypted_pii:,
+            user_session:,
+          )
+
+          user.identities << identity
+          subject.build
+
+          expect(user.asserted_attributes.keys)
+            .to eq(%i[uuid aal ial])
         end
       end
     end

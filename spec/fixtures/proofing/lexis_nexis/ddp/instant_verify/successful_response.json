@@ -1,0 +1,82 @@
+{
+  "integration_hub_results": {
+    "test_org_id:test-policy": {
+      "Execute Instant Verify": {
+        "rule_id": "509748600",
+        "tps_datetime": "2026-01-26 19:34:27.964",
+        "tps_duration": "10108",
+        "tps_error": "instant_verify_pass",
+        "tps_http_status_code": "200",
+        "tps_result": "ok",
+        "tps_type": "LN_Instant_Verify",
+        "tps_vendor": "LexisNexis",
+        "tps_vendor_raw_response": {
+          "Status": {
+            "ConversationId": "super-cool-test-session-id",
+            "RequestId": "7890",
+            "TransactionStatus": "passed",
+            "Reference": "Reference1"
+          },
+          "Products": [
+            {
+              "ProductType": "Verify",
+              "ExecutedStepName": "Execute Instant Verify",
+              "ProductConfigurationName": "REDACTED_CONFIGURATION",
+              "ProductStatus": "pass",
+              "Items": [
+                {
+                  "ItemName": "Addr1Zip_StateMatch",
+                  "ItemStatus": "pass"
+                },
+                {
+                  "ItemName": "SsnFullNameMatch",
+                  "ItemStatus": "pass"
+                },
+                {
+                  "ItemName": "SsnDeathMatchVerification",
+                  "ItemStatus": "pass"
+                },
+                {
+                  "ItemName": "SSNSSAValid",
+                  "ItemStatus": "pass"
+                },
+                {
+                  "ItemName": "IdentityOccupancyVerified",
+                  "ItemStatus": "pass"
+                },
+                {
+                  "ItemName": "AddrDeliverable",
+                  "ItemStatus": "pass"
+                },
+                {
+                  "ItemName": "AddrNotHighRisk",
+                  "ItemStatus": "pass"
+                },
+                {
+                  "ItemName": "DriversLicense",
+                  "ItemStatus": "pass"
+                },
+                {
+                  "ItemName": "DriversLicenseVerification",
+                  "ItemStatus": "pass"
+                },
+                {
+                  "ItemName": "DOBFullVerified",
+                  "ItemStatus": "pass"
+                },
+                {
+                  "ItemName": "DOBYearVerified",
+                  "ItemStatus": "pass"
+                },
+                {
+                  "ItemName": "LexIDDeathMatch",
+                  "ItemStatus": "pass"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }
+  }
+}

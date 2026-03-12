@@ -7,6 +7,8 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
   let(:proofing_vendor) { :mock }
   let(:idv_phone_precheck_percent) { 100 }
   let(:analytics) { FakeAnalytics.new }
+  let(:threatmetrix_ddp_policy) { 'TEST_POLICY' }
+  let(:threatmetrix_hybrid_ddp_policy) { 'HYBRID_TEST_POLICY' }
 
   subject(:progressive_proofer) do
     described_class.new(user_uuid:, proofing_vendor:, analytics:, user_email:)
@@ -35,7 +37,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
     let(:request_ip) { Faker::Internet.ip_v4_address }
     let(:threatmetrix_session_id) { SecureRandom.uuid }
     let(:current_sp) { build(:service_provider) }
-    let(:workflow) { :auth }
+    let(:workflow) { :idv }
 
     let(:residential_address_resolution_result) do
       Proofing::Resolution::Result.new(
@@ -80,7 +82,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
 
     let(:threatmetrix_proofer) do
       instance_double(
-        Proofing::LexisNexis::Ddp::Proofer,
+        Proofing::LexisNexis::Ddp::Proofers::ThreatMetrixProofer,
         proof: threatmetrix_result,
       )
     end
@@ -121,10 +123,12 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
 
       allow(progressive_proofer.aamva_plugin).to receive(:proofer)
         .and_return(aamva_proofer)
-      allow(IdentityConfig.store).to receive(:idv_phone_precheck_percent)
-        .and_return(idv_phone_precheck_percent)
-      allow(IdentityConfig.store).to receive(:proofing_device_hybrid_profiling)
-        .and_return(hybrid_device_profiling)
+      allow(IdentityConfig.store).to receive_messages(
+        idv_phone_precheck_percent: idv_phone_precheck_percent,
+        proofing_device_hybrid_profiling: hybrid_device_profiling,
+        lexisnexis_threatmetrix_policy: threatmetrix_ddp_policy,
+        lexisnexis_threatmetrix_hybrid_handoff_policy: threatmetrix_hybrid_ddp_policy,
+      )
     end
 
     context 'remote unsupervised proofing' do
@@ -174,6 +178,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
           user_email:,
           user_uuid:,
           workflow:,
+          ddp_policy: threatmetrix_ddp_policy,
         )
         proof
       end
@@ -198,6 +203,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
             user_email:,
             user_uuid:,
             workflow:,
+            ddp_policy: threatmetrix_ddp_policy,
           ).ordered
 
           expect(progressive_proofer.threatmetrix_plugin).to receive(:call).with(
@@ -208,7 +214,8 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
             timer: an_instance_of(JobHelpers::Timer),
             user_email:,
             user_uuid:,
-            workflow:,
+            workflow: :"#{workflow}_hybrid_handoff",
+            ddp_policy: threatmetrix_hybrid_ddp_policy,
           ).ordered
 
           proof
@@ -246,16 +253,20 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
         let(:hybrid_mobile_threatmetrix_session_id) { nil }
         let(:hybrid_mobile_request_ip) { Faker::Internet.ip_v4_address }
 
-        it 'calls ThreatMetrixPlugin only once (desktop only)' do
-          expect(progressive_proofer.threatmetrix_plugin).to receive(:call).once
+        it 'calls ThreatMetrixPlugin twice (user went through hybrid flow)' do
+          expect(progressive_proofer.threatmetrix_plugin).to receive(:call).twice
           proof
         end
 
-        it 'returns a ResultAdjudicator with nil hybrid_mobile_device_profiling_result' do
+        it 'returns a ResultAdjudicator with threatmetrix_id_missing_result' do
           proof.tap do |result|
             expect(result).to be_an_instance_of(Proofing::Resolution::ResultAdjudicator)
             expect(result.device_profiling_result).to eql(threatmetrix_result)
-            expect(result.hybrid_mobile_device_profiling_result).to be_nil
+            expect(result.hybrid_mobile_device_profiling_result).to be_present
+            expect(result.hybrid_mobile_device_profiling_result.success).to be false
+            expect(result.hybrid_mobile_device_profiling_result.client)
+              .to eq('tmx_session_id_missing')
+            expect(result.hybrid_mobile_device_profiling_result.review_status).to eq('reject')
           end
         end
       end
@@ -530,6 +541,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
             user_email:,
             user_uuid:,
             workflow:,
+            ddp_policy: threatmetrix_ddp_policy,
           )
           proof
         end
@@ -618,6 +630,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
             user_email:,
             user_uuid:,
             workflow:,
+            ddp_policy: threatmetrix_ddp_policy,
           )
           proof
         end
@@ -717,6 +730,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
           user_email:,
           user_uuid:,
           workflow:,
+          ddp_policy: threatmetrix_ddp_policy,
         )
         proof
       end
@@ -930,6 +944,20 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
       end
     end
 
+    context 'when proofing_vendor is :instant_verify_ddp' do
+      let(:proofing_vendor) { :instant_verify_ddp }
+
+      it 'returns ResidentialAddressPlugin with an InstantVerify proofer' do
+        expect(progressive_proofer.residential_address_plugin).to be_an_instance_of(
+          Proofing::Resolution::Plugins::ResidentialAddressPlugin,
+        )
+
+        expect(progressive_proofer.residential_address_plugin.proofer).to be_an_instance_of(
+          Proofing::LexisNexis::Ddp::Proofers::InstantVerifyProofer,
+        )
+      end
+    end
+
     context 'when proofing_vendor is :mock' do
       let(:proofing_vendor) { :mock }
 
@@ -984,6 +1012,20 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
 
         expect(progressive_proofer.state_id_address_plugin.proofer).to be_an_instance_of(
           Proofing::LexisNexis::InstantVerify::Proofer,
+        )
+      end
+    end
+
+    context 'when proofing_vendor is :instant_verify_ddp' do
+      let(:proofing_vendor) { :instant_verify_ddp }
+
+      it 'returns StateIdAddressPlugin with an InstantVerify proofer' do
+        expect(progressive_proofer.state_id_address_plugin).to be_an_instance_of(
+          Proofing::Resolution::Plugins::StateIdAddressPlugin,
+        )
+
+        expect(progressive_proofer.state_id_address_plugin.proofer).to be_an_instance_of(
+          Proofing::LexisNexis::Ddp::Proofers::InstantVerifyProofer,
         )
       end
     end

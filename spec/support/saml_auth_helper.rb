@@ -4,7 +4,7 @@ require 'saml_idp_constants'
 
 ## GET /api/saml/auth helper methods
 module SamlAuthHelper
-  PATH_YEAR = '2025'
+  PATH_YEAR = '2026'
   SP_ISSUER = 'http://localhost:3000'
 
   def saml_settings(overrides: {})
@@ -138,7 +138,7 @@ module SamlAuthHelper
   end
 
   def saml_test_idp_cert
-    AppArtifacts.store.saml_2025_cert
+    AppArtifacts.store.saml_2026_cert
   end
 
   public

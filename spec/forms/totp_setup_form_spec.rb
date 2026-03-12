@@ -23,14 +23,6 @@ RSpec.describe TotpSetupForm do
         )
         expect(user.auth_app_configurations.any?).to eq true
       end
-
-      it 'sends a recovery information changed event' do
-        expect(PushNotification::HttpPush).to receive(:deliver)
-          .with(PushNotification::RecoveryInformationChangedEvent.new(user: user))
-        form = TotpSetupForm.new(user, secret, code, name)
-
-        form.submit
-      end
     end
 
     context 'when TOTP code is invalid' do

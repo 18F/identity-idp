@@ -147,7 +147,7 @@ describe('document-capture/components/documents-step', () => {
         value={{
           isSelfieCaptureEnabled: true,
           isUploadEnabled: false,
-          isSelfieDesktopTestMode: false,
+          isDesktopTestMode: false,
           showHelpInitially: true,
         }}
       >

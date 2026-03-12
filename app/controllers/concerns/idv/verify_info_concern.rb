@@ -224,10 +224,16 @@ module Idv
             [:proofing_results, :context, :stages, :phone_precheck, :errors, :phone],
             [:proofing_results, :context, :stages, :phone_precheck, :alternate_result, :errors,
              :phone],
+            [:proofing_results, :context, :stages, :phone_precheck, :result, :phonerisk, :signals,
+             :phone],
+            [:proofing_results, :context, :stages, :phone_precheck, :alternate_result, :phonerisk,
+             :signals, :phone],
             [:proofing_results, :context, :stages, :resolution, :errors, :ssn],
             [:proofing_results, :context, :stages, :resolution, :reason_codes],
             [:proofing_results, :context, :stages, :residential_address, :errors, :ssn],
             [:proofing_results, :context, :stages, :threatmetrix, :response_body, :first_name],
+            [:proofing_results, :context, :stages, :hybrid_mobile_threatmetrix, :response_body,
+             :first_name],
             [:proofing_results, :context, :stages, :state_id, :state_id_jurisdiction],
             [:proofing_results, :context, :stages, :state_id, :errors, :state_id_jurisdiction],
             [:proofing_results, :biographical_info, :identity_doc_address_state],
@@ -243,6 +249,15 @@ module Idv
       if threatmetrix_response_body.present?
         analytics.idv_threatmetrix_response_body(
           response_body: threatmetrix_response_body,
+        )
+      end
+
+      hybrid_mobile_threatmetrix_response_body =
+        delete_hybrid_mobile_threatmetrix_response_body(form_response)
+
+      if hybrid_mobile_threatmetrix_response_body.present?
+        analytics.idv_threatmetrix_hybrid_mobile_response_body(
+          response_body: hybrid_mobile_threatmetrix_response_body,
         )
       end
 
@@ -262,9 +277,11 @@ module Idv
       exceptions = build_proofing_exception_list(
         form_response.extra.dig(:proofing_results, :context, :stages),
       )
+      sanitized_form_response = form_response.deep_dup
+      sanitized_form_response.extra.dig(:proofing_results, :context, :stages)&.delete(:state_id)
       analytics.idv_doc_auth_verify_proofing_results(
         **analytics_arguments,
-        **form_response,
+        **sanitized_form_response,
         exceptions:,
       )
       delete_async
@@ -444,6 +461,19 @@ module Idv
       threatmetrix_result.delete(:response_body)
     end
 
+    def delete_hybrid_mobile_threatmetrix_response_body(form_response)
+      hybrid_threatmetrix_result = form_response.extra.dig(
+        :proofing_results,
+        :context,
+        :stages,
+        :hybrid_mobile_threatmetrix,
+      )
+      return if hybrid_threatmetrix_result.blank?
+
+      hybrid_threatmetrix_result.delete(:device_fingerprint)
+      hybrid_threatmetrix_result.delete(:response_body)
+    end
+
     def device_risk_failure_reason(success, result)
       return nil if success
 
@@ -510,11 +540,22 @@ module Idv
     end
 
     def source_check_vendor_aamva?
-      IdentityConfig.store.idv_aamva_at_doc_auth_enabled &&
-        !ipp_enrollment_in_progress? &&
-        (idv_session.source_check_vendor == 'aamva:state_id' ||
-          idv_session.source_check_vendor == 'aamva' ||
-          idv_session.source_check_vendor == 'StateIdMock')
+      return false if ipp_aamva_check_not_completed? || remote_aamva_check_not_completed?
+
+      idv_session.source_check_vendor == 'aamva:state_id' ||
+        idv_session.source_check_vendor == 'aamva' ||
+        idv_session.source_check_vendor == 'StateIdMock'
+    end
+
+    def ipp_aamva_check_not_completed?
+      IdentityConfig.store.idv_aamva_at_doc_auth_ipp_enabled &&
+        ipp_enrollment_in_progress? &&
+        idv_session.ipp_aamva_result.blank?
+    end
+
+    def remote_aamva_check_not_completed?
+      !ipp_enrollment_in_progress? &&
+        !IdentityConfig.store.idv_aamva_at_doc_auth_enabled
     end
 
     def threatmetrix_check_failed?(result)

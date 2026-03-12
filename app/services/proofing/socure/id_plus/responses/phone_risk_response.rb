@@ -10,6 +10,7 @@ module Proofing
               phonerisk: {
                 reason_codes: SocureReasonCode.with_definitions(phonerisk_reason_codes),
                 score: phonerisk_score,
+                signals: phonerisk_signals,
               },
               name_phone_correlation: {
                 reason_codes: SocureReasonCode
@@ -54,6 +55,10 @@ module Proofing
 
           def phonerisk_reason_codes
             phonerisk.dig('reasonCodes')
+          end
+
+          def phonerisk_signals
+            phonerisk.dig('signals')
           end
 
           def name_phone_correlation_score
