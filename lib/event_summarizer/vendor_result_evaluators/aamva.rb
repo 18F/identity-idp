@@ -10,14 +10,14 @@ module EventSummarizer
 
       # TODO: Load these from the AAMVA proofer or put them somewhere common
 
-      REQUIRED_VERIFICATION_ATTRIBUTES = %i[
-        state_id_number
+      REQUIRED_VERIFICATION_ATTRIBUTES = [:state_id_number].freeze
+
+      REQUIRED_IF_PRESENT_ATTRIBUTES = %i[
+        state_id_expiration
         dob
         last_name
         first_name
       ].freeze
-
-      REQUIRED_IF_PRESENT_ATTRIBUTES = [:state_id_expiration].freeze
 
       # @param result {Hash} The result structure logged to Cloudwatch
       # @return [Hash] A Hash with a type, timestamp, and description key.
@@ -119,13 +119,14 @@ module EventSummarizer
         failed_attributes = Set.new
 
         REQUIRED_VERIFICATION_ATTRIBUTES.each do |attr|
-          attr_key = attr.to_s
-          failed_attributes << attr if attributes[attr_key].present? && attributes[attr_key] != 'VERIFIED'
+          failed_attributes << attr if attributes[attr.to_s] != 'VERIFIED'
         end
 
         REQUIRED_IF_PRESENT_ATTRIBUTES.each do |attr|
           attr_key = attr.to_s
-          failed_attributes << attr if attributes[attr_key].present? && attributes[attr_key] != 'VERIFIED'
+          if attributes[attr_key].present? && attributes[attr_key] != 'VERIFIED'
+            failed_attributes << attr
+          end
         end
 
         failed_attributes
