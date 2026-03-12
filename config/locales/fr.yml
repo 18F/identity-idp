@@ -1462,7 +1462,7 @@ instructions.mfa.authenticator.issues_with_authenticator: Problèmes avec une ap
 instructions.mfa.authenticator.manual_entry: Ou saisissez ce code manuellement dans votre appli d’authentification
 instructions.mfa.backup_code.issues_with_backup_codes: Problèmes avec les codes de sauvegarde
 instructions.mfa.do_not_share_code_link_text: Apprenez comment identifier la fraude et la signaler.
-instructions.mfa.do_not_share_code_message_html: '<strong>Ne partagez pas ce code.</strong> %{app_name} ne vous appellera, n’enverra de textos ou de courriels jamais pour vous le demander. %{link_html}'
+instructions.mfa.do_not_share_code_message_html: '<strong>Ne partagez pas ce code.</strong> Si quelqu’un vous appelle, vous envoie un SMS ou un courriel pour vous demander ce code, il s’agit probablement d’une arnaque. %{link_html}'
 instructions.mfa.phone_verification.issues_with_text_sms_phone_call: Problème liés aux SMS ou aux appels téléphoniques
 instructions.mfa.piv_cac.account_not_found_html: '<p>%{sign_in} à l’aide de votre adresse e-mail et de votre mot de passe. Introduisez ensuite la carte PIV/CAC dans un lecteur de carte à puce pour l’ajouter à votre compte.</p><p>Vous n’avez pas de compte %{app_name}? %{create_account}</p>'
 instructions.mfa.piv_cac.add_from_sign_in_html: '<strong> Instructions : </strong> Insérez votre carte PIV ou CAC dans <strong>AJOUTER PIV/CAC</strong>. Vous devrez <strong>choisir un certificat</strong> (le bon a probablement le nom que vous lui avez donné) et <strong>saisir votre PIN</strong> (votre PIN a été créé lors de la configuration de votre carte PIV/CAC).'

@@ -699,6 +699,7 @@ RSpec.describe Idv::PhoneController do
               phone_fingerprint: Pii::Fingerprinter.fingerprint(proofing_phone.e164),
               country_code: proofing_phone.country,
               area_code: proofing_phone.area_code,
+              manual_review: false,
               vendor: {
                 exception: nil,
                 reference: 'some-reference-id',
@@ -824,6 +825,9 @@ RSpec.describe Idv::PhoneController do
       end
 
       it 'tracks event with invalid phone' do
+        allow(IdentityConfig.store)
+          .to receive(:idv_phone_confirmation_manual_review_validity_hours).and_return(1)
+
         proofing_phone = Phonelib.parse(bad_phone)
 
         expect(@attempts_api_tracker).to receive(:idv_phone_verified).with(
@@ -868,7 +872,70 @@ RSpec.describe Idv::PhoneController do
             reference: '',
             result: nil,
           },
+          manual_review: false,
         )
+
+        expect(response).to redirect_to idv_phone_errors_warning_path
+      end
+
+      context 'when phone was manually reviewed' do
+        let(:reviewed_users) { Idv::ManuallyReviewedPhoneUserSet.new }
+        before do
+          reviewed_users.add_user!(user_uuid: user.uuid)
+        end
+
+        after do
+          reviewed_users.remove_user!(user_uuid: user.uuid)
+        end
+
+        context 'when manual review is expired' do
+          it 'tracks event with invalid phone' do
+            put :create, params: { idv_phone_form: { phone: bad_phone } }
+
+            expect(response).to redirect_to idv_phone_path
+
+            get :new
+
+            expect(response).to redirect_to idv_phone_errors_warning_path
+
+            expect(@analytics).to have_logged_event(
+              'IdV: phone confirmation vendor',
+              hash_including(
+                {
+                  success: false,
+                  manual_review: false,
+                },
+              ),
+            )
+          end
+        end
+
+        context 'when manual review is not expired' do
+          before do
+            allow(IdentityConfig.store)
+              .to receive(:idv_phone_confirmation_manual_review_validity_hours).and_return(1)
+          end
+
+          it 'redirects to otp page' do
+            put :create, params: { idv_phone_form: { phone: bad_phone } }
+
+            expect(response).to redirect_to idv_phone_path
+
+            get :new
+
+            expect(response).to redirect_to idv_otp_verification_path
+
+            expect(@analytics).to have_logged_event(
+              'IdV: phone confirmation vendor',
+              hash_including(
+                {
+                  success: false,
+                  manual_review: true,
+                },
+              ),
+            )
+          end
+        end
       end
 
       context 'secondary vendor is successful' do
