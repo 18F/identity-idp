@@ -50,7 +50,7 @@ module Telephony
 
     def send_doc_auth_link(to:, link:, country_code:, sp_or_app_name:)
       message = I18n.t(
-        'telephony.doc_auth_link',
+        'telephony.doc_auth_link.sms',
         app_name: APP_NAME,
         sp_or_app_name: sp_or_app_name,
         link: link,
