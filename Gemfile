@@ -6,7 +6,7 @@ ruby "~> #{File.read(File.join(__dir__, '.ruby-version')).strip}"
 gem 'rails', '~> 8.0.0'
 
 gem 'ahoy_matey', '~> 3.0'
-gem 'aws-sdk-kms', '~> 1.4'
+gem 'aws-sdk-kms', '~> 1.71.0'
 gem 'aws-sdk-cloudwatchlogs', require: false
 gem 'aws-sdk-pinpoint'
 gem 'aws-sdk-pinpointsmsvoice'
@@ -47,7 +47,7 @@ gem 'maxminddb'
 gem 'multiset'
 gem 'net-sftp'
 gem 'newrelic_rpm', '~> 9.0'
-gem 'numbers_and_words', '~> 0.11.12'
+gem 'numbers_and_words'
 gem 'prometheus_exporter'
 gem 'puma', '~> 6.0'
 gem 'pg'
@@ -104,18 +104,18 @@ group :development, :test do
   gem 'i18n-tasks', '~> 1.0'
   gem 'knapsack'
   gem 'listen'
-  gem 'net-http-persistent', '~> 4.0.2', require: false
+  gem 'net-http-persistent', '~> 4.0', require: false
   gem 'nokogiri', '~> 1.19.1'
   gem 'pg_query', require: false
   gem 'pry-byebug'
   gem 'pry-rails'
   gem 'psych'
-  gem 'rspec', '~> 3.13.0'
+  gem 'rspec', '~> 3.13'
   gem 'rspec-rails', '~> 7.0'
-  gem 'rubocop', '~> 1.75.0', require: false
-  gem 'rubocop-performance', '~> 1.25.0', require: false
-  gem 'rubocop-rails', '~> 2.27.0', require: false
-  gem 'rubocop-rspec', '~> 3.2.0', require: false
+  gem 'rubocop', '~> 1.75', require: false
+  gem 'rubocop-performance', '~> 1.25', require: false
+  gem 'rubocop-rails', '~> 2.27', require: false
+  gem 'rubocop-rspec', '~> 3.2', require: false
   gem 'rubocop-capybara', require: false
   gem 'prism'
   gem 'sqlite3', require: false

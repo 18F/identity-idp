@@ -399,7 +399,10 @@ RSpec.describe Idv::EnterPasswordController do
     context 'user picked phone confirmation' do
       before do
         allow(Rails).to receive(:cache).and_return(
-          ActiveSupport::Cache::RedisCacheStore.new(url: IdentityConfig.store.redis_throttle_url),
+          ActiveSupport::Cache::RedisCacheStore.new(
+            url: IdentityConfig.store.redis_throttle_url,
+            pool: false,
+          ),
         )
         subject.idv_session.address_verification_mechanism = 'phone'
         subject.idv_session.vendor_phone_confirmation = true
