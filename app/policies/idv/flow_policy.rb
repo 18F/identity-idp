@@ -20,6 +20,7 @@ module Idv
         hybrid_handoff: Idv::HybridHandoffController.step_info,
         choose_id_type: Idv::ChooseIdTypeController.step_info,
         link_sent: Idv::LinkSentController.step_info,
+        mdl: Idv::MdlController.step_info,
         document_capture: Idv::DocumentCaptureController.step_info,
         socure_document_capture: Idv::Socure::DocumentCaptureController.step_info,
         socure_errors: Idv::Socure::ErrorsController.step_info,
