@@ -41,9 +41,6 @@ module Users
       save_challenge_in_session
       @exclude_credentials = exclude_credentials
       @need_to_set_up_additional_mfa = need_to_set_up_additional_mfa?
-      if platform_authenticator?
-        user_session[:webauthn_setup_started_at] = Time.zone.now
-      end
 
       if result.errors.present?
         increment_mfa_selection_attempt_count(webauthn_auth_method)
@@ -86,9 +83,6 @@ module Users
         url_options:,
       )
       properties = result.to_h.merge(analytics_properties)
-      if user_session[:webauthn_setup_started_at].present?
-        properties = properties.merge(webauthn_setup_duration)
-      end
       analytics.multi_factor_auth_setup(**properties)
 
       mfa_device_type = @platform_authenticator.present? ?
@@ -102,6 +96,8 @@ module Users
 
       if result.success?
         process_valid_webauthn(form)
+        create_webauthn_added_email(form.event_type)
+
         user_session.delete(:mfa_attempts)
       else
         flash.now[:error] = result.first_error_message
@@ -170,6 +166,7 @@ module Users
           analytics,
           threatmetrix_attrs,
         )
+
         flash[:success] = t('notices.webauthn_platform_configured') if !form.transports_mismatch?
       else
         handle_valid_verification_for_confirmation_context(
@@ -181,6 +178,7 @@ module Users
           analytics,
           threatmetrix_attrs,
         )
+
         flash[:success] = t('notices.webauthn_configured') if !form.transports_mismatch?
       end
 
@@ -224,6 +222,11 @@ module Users
         :platform_authenticator,
         :transports,
       ).merge(protocol: request.protocol)
+    end
+
+    def create_webauthn_added_email(type)
+      _event, disavowal_token = create_user_event_with_disavowal(type, current_user)
+      create_mfa_added_email(event_type: type, disavowal_token: disavowal_token)
     end
   end
 end

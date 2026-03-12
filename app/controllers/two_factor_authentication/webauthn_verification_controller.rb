@@ -13,9 +13,6 @@ module TwoFactorAuthentication
       recaptcha_annotation = annotate_recaptcha(
         RecaptchaAnnotator::AnnotationReasons::INITIATED_TWO_FACTOR,
       )
-      if platform_authenticator?
-        user_session[:webauthn_auth_started_at] = Time.zone.now
-      end
       analytics.multi_factor_auth_enter_webauthn_visit(
         **analytics_properties,
         recaptcha_annotation:,
@@ -38,7 +35,6 @@ module TwoFactorAuthentication
           **analytics_properties,
           multi_factor_auth_method_created_at:
             webauthn_configuration_or_latest.created_at.strftime('%s%L'),
-          webauthn_auth_duration: platform_auth_verification_duration,
         },
       )
 
@@ -47,11 +43,6 @@ module TwoFactorAuthentication
       else
         handle_invalid_webauthn(result)
       end
-    end
-
-    def platform_auth_verification_duration
-      user_session[:webauthn_auth_started_at] ?
-        Time.zone.now.to_f - user_session[:webauthn_auth_started_at].to_f : nil
     end
 
     def handle_valid_webauthn

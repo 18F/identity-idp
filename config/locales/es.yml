@@ -1474,6 +1474,7 @@ instructions.mfa.authenticator.manual_entry: O ingrese este código manualmente 
 instructions.mfa.backup_code.issues_with_backup_codes: Problemas con los códigos de recuperación
 instructions.mfa.do_not_share_code_link_text: Aprenda cómo identificar el fraude y reportarlo.
 instructions.mfa.do_not_share_code_message_html: '<strong>No comparta este código.</strong> Si alguien lo llama, envía un mensaje de texto o un correo electrónico pidiendo este código, podría ser una estafa. %{link_html}'
+instructions.mfa.phone_verification.issues_with_text_sms_phone_call: Problemas con mensajes de texto (SMS) o llamadas telefónicas
 instructions.mfa.piv_cac.account_not_found_html: '<p>%{sign_in} con su dirección de correo electrónico y su contraseña. Luego, agregue su tarjeta PIV o CAC a su cuenta.</p><p>¿No tiene una cuenta de %{app_name}? %{create_account}</p>'
 instructions.mfa.piv_cac.add_from_sign_in_html: '<strong> Instrucciones:</strong> Inserte su tarjeta PIV o CAC en <strong> “AGREGAR TARJETA PIV O CAC” </strong>. Tendrá que <strong> elegir un certificado </strong> (es probable que el correcto tenga su nombre) e <strong> ingresar su PIN </strong> (su PIN se creó cuando configuró su tarjeta PIV o CAC).'
 instructions.mfa.piv_cac.already_associated_html: Elija un certificado de una tarjeta PIV o CAC diferente y contacte con el administrador para confirmar que su tarjeta PIV o CAC está al día. Si cree que se trata de un error, %{try_again_html}.
@@ -2070,6 +2071,22 @@ user_mailer.letter_reminder_14_days.did_not_get_a_letter_html: Si no recibió es
 user_mailer.letter_reminder_14_days.finish: Termine de verificar su identidad
 user_mailer.letter_reminder_14_days.sign_in_and_request_another_letter: inicie sesión para solicitar otra carta
 user_mailer.letter_reminder_14_days.subject: Termine de verificar su identidad
+user_mailer.multi_factor_authentication.auth_app_added: Su aplicación de autenticación se ha añadido a su cuenta de %{app_name}
+user_mailer.multi_factor_authentication.auth_app_deleted: Su aplicación de autenticación se eliminó de su cuenta de %{app_name}
+user_mailer.multi_factor_authentication.authentication_methods_link: métodos de autenticación
+user_mailer.multi_factor_authentication.backup_codes_added: La opción de códigos de recuperación se ha añadido a su cuenta de %{app_name}
+user_mailer.multi_factor_authentication.backup_codes_deleted: La opción de códigos de recuperación se eliminó de su cuenta de %{app_name}
+user_mailer.multi_factor_authentication.change_password_link: restablecer su contraseña
+user_mailer.multi_factor_authentication.instructions_html: Si no fue usted, %{change_password_link_html} y cambie sus %{authentication_methods_link_html} inmediatamente.
+user_mailer.multi_factor_authentication.new_auth_added: Se ha añadido un nuevo método de autenticación a su cuenta de %{app_name}
+user_mailer.multi_factor_authentication.phone_added: La opción de mensaje de texto o de voz se ha añadido a su cuenta de %{app_name}
+user_mailer.multi_factor_authentication.phone_deleted: La opción de mensaje de texto o de voz se eliminó de su cuenta de %{app_name}
+user_mailer.multi_factor_authentication.piv_card_added: Su identificación de empleado gubernamental se ha añadido a su cuenta de %{app_name}
+user_mailer.multi_factor_authentication.piv_card_deleted: Su identificación de empleado gubernamental se eliminó de su cuenta de %{app_name}
+user_mailer.multi_factor_authentication.webauthn_added: Su clave de seguridad se ha añadido a su cuenta de %{app_name}
+user_mailer.multi_factor_authentication.webauthn_deleted: Su clave de seguridad se eliminó de su cuenta de %{app_name}
+user_mailer.multi_factor_authentication.webauthn_platform_added: Su opción de desbloqueo facial o táctil se ha añadido a su cuenta de %{app_name}
+user_mailer.multi_factor_authentication.webauthn_platform_deleted: Su opción de desbloqueo facial o táctil se eliminó de su cuenta de %{app_name}
 user_mailer.new_device_sign_in_after_2fa.authentication_methods: métodos de autenticación
 user_mailer.new_device_sign_in_after_2fa.info_p1: Su correo electrónico y contraseña de %{app_name} se usaron para iniciar sesión y hacer la autenticación en un dispositivo nuevo.
 user_mailer.new_device_sign_in_after_2fa.info_p2: Si reconoce esta actividad, no tiene que hacer nada.
@@ -2097,10 +2114,6 @@ user_mailer.personal_key_regenerated.subject: Alerta de seguridad de la cuenta
 user_mailer.personal_key_sign_in.help_html: <p>Su cuenta de %{app_name}, acaba de ser usada para iniciar sesión con su clave personal de 16 caracteres. Está recibiendo este correo electrónico para comprobar que se trata de usted.</p><p>Si acaba de iniciar sesión con su clave personal, todo está bien. No tiene que hacer nada.</p><p>Si no inició sesión con una clave personal, o si no está seguro, siga de inmediato estos pasos para proteger su cuenta:<ol><li><strong><a href="%{reset_password_url}">Cambie su contraseña</a>.</strong> Elija una contraseña que no haya usado aún con esta cuenta.</li><li><strong><a href="%{account_url}">Inicie sesión en su cuenta de %{app_name}</a></strong> y compruebe que reconoce toda la información de la página de su cuenta, incluidos los métodos que usa para la autenticación de dos factores, como número de teléfono, aplicación de autenticación o clave de seguridad.</li><li><strong>En la <a href="%{account_url}">página de su cuenta de %{app_name}</a>, solicite una nueva clave personal.</strong> Recuerde, no la comparta nunca a menos que la esté usando para iniciar sesión en un sitio web de confianza que utilice %{app_name}.</li></ol></p><br>Gracias,<br>El equipo de %{app_name}
 user_mailer.personal_key_sign_in.intro: Clave personal utilizada para iniciar sesión
 user_mailer.personal_key_sign_in.subject: Alerta de seguridad de la cuenta
-user_mailer.phone_added.disavowal_link: restablezca su contraseña
-user_mailer.phone_added.help_html: Si usted no hizo este cambio, inicie sesión en su perfil y administre sus números de teléfono. También le recomendamos que %{disavowal_link_html}.
-user_mailer.phone_added.intro: Se agregó un nuevo número de teléfono a su perfil de %{app_name}.
-user_mailer.phone_added.subject: Nuevo número de teléfono añadido
 user_mailer.please_reset_password.call_to_action: 'Como medida de precaución, desactivamos su contraseña para mantener su información segura. Siga los pasos a continuación para restablecer su contraseña y proteger su cuenta:'
 user_mailer.please_reset_password.intro: Detectamos actividad inusual en su cuenta de %{app_name}. Nos preocupa que alguien que no sea usted pueda estar intentando acceder a su información.
 user_mailer.please_reset_password.learn_more_link_text: Obtenga más información sobre sus opciones

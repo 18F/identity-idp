@@ -27,6 +27,7 @@ module Idv
   # @attr passport_requested [Boolean, nil]
   # @attr personal_key [String, nil]
   # @attr personal_key_acknowledged [Boolean, nil]
+  # @attr phone_confirmation_manually_reviewed [Boolean, nil]
   # @attr phone_for_mobile_flow [String, nil]
   # @attr previous_phone_step_params [Array]
   # @attr previous_ssn [String, nil]
@@ -79,6 +80,7 @@ module Idv
       mail_only_warning_shown
       opted_in_to_in_person_proofing
       personal_key
+      phone_confirmation_manually_reviewed
       personal_key_acknowledged
       phone_for_mobile_flow
       phone_precheck_successful

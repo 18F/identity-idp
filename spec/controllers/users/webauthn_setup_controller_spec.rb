@@ -107,7 +107,6 @@ RSpec.describe Users::WebauthnSetupController do
         allow(IdentityConfig.store).to receive(:domain_name).and_return('localhost:3000')
         request.host = 'localhost:3000'
         controller.user_session[:webauthn_challenge] = webauthn_challenge
-        controller.user_session[:webauthn_setup_started_at] = 2.seconds.ago
       end
 
       it 'should flash a success message after successfully creating' do
@@ -153,7 +152,6 @@ RSpec.describe Users::WebauthnSetupController do
           attempts: 1,
           transports: ['usb'],
           transports_mismatch: false,
-          webauthn_setup_duration: a_value_within(0.5).of(2),
         )
         expect(@analytics).to have_logged_event(
           :webauthn_setup_submitted,

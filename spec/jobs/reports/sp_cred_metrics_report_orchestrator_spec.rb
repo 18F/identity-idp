@@ -29,7 +29,7 @@ RSpec.describe Reports::SpCredMetricsReportOrchestrator do
   let(:configs) { [config_1, config_2] }
 
   before do
-    allow(IdentityConfig.store).to receive(:sp_monthly_cred_metric_report_configs)
+    allow(IdentityConfig.store).to receive(:sp_cred_metric_report_configs)
       .and_return(configs)
   end
 

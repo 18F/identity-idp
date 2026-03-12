@@ -10,6 +10,7 @@ RSpec.describe AttemptsApi::Tracker do
     allow(request).to receive(:headers).and_return(
       { 'CloudFront-Viewer-Address' => '192.0.2.1:1234' },
     )
+    allow(request).to receive(:session).and_return({})
   end
 
   let(:attempts_api_enabled) { true }
@@ -239,15 +240,58 @@ RSpec.describe AttemptsApi::Tracker do
         allow(IdentityConfig.store).to receive(:historical_attempts_api_enabled).and_return(true)
       end
 
-      it 'populates the sessions' do
-        mock_session = { 'warden.user.user.session' => { 'idv/attempts' => [] } }
-        allow(request).to receive(:session).and_return(mock_session)
-        subject.idv_enrollment_complete(reproof: false)
-        expect(mock_session['warden.user.user.session']).to eq(
-          'idv/attempts' => ['idv-enrollment-complete' => {
-            user_uuid: user.uuid,
-          }],
-        )
+      context 'with Devise session' do
+        let(:mock_session) { { 'warden.user.user.session' => {} } }
+
+        before do
+          allow(request).to receive(:session).and_return(mock_session)
+        end
+
+        it 'populates the session info' do
+          subject.idv_enrollment_complete(reproof: false)
+          expect(mock_session['warden.user.user.session']).to eq(
+            'idv/attempts' => ['idv-enrollment-complete' => {
+              user_uuid: user.uuid,
+            }],
+          )
+        end
+
+        it 'records to redis' do
+          freeze_time do
+            subject.idv_enrollment_complete(reproof: false)
+
+            events = AttemptsApi::RedisClient.new.read_events(
+              issuer: service_provider.issuer,
+            )
+
+            expect(events.values.length).to eq(1)
+          end
+        end
+
+        context 'the current session is not an attempts API session' do
+          let(:enabled_for_session) { false }
+
+          it 'does not record any events in redis' do
+            freeze_time do
+              subject.idv_enrollment_complete(reproof: false)
+
+              events = AttemptsApi::RedisClient.new.read_events(
+                issuer: service_provider.issuer,
+              )
+
+              expect(events.values.length).to eq(0)
+            end
+          end
+
+          it 'still populates the session info' do
+            subject.idv_enrollment_complete(reproof: false)
+            expect(mock_session['warden.user.user.session']).to eq(
+              'idv/attempts' => ['idv-enrollment-complete' => {
+                user_uuid: user.uuid,
+              }],
+            )
+          end
+        end
       end
 
       it 'does not fail if the request is missing' do
@@ -263,28 +307,6 @@ RSpec.describe AttemptsApi::Tracker do
           enabled_for_session: true,
         )
         expect { subject.idv_enrollment_complete(reproof: false) }.not_to raise_error
-      end
-
-      it 'does fail if the warden user session is missing' do
-        mock_session = {}
-        allow(request).to receive(:session).and_return(mock_session)
-        expect { subject.idv_enrollment_complete(reproof: false) }.to raise_error
-      end
-    end
-
-    context 'the current session is not an attempts API session' do
-      let(:enabled_for_session) { false }
-
-      it 'does not record any events in redis' do
-        freeze_time do
-          subject.track_event(:test_event, foo: :bar)
-
-          events = AttemptsApi::RedisClient.new.read_events(
-            issuer: service_provider.issuer,
-          )
-
-          expect(events.values.length).to eq(0)
-        end
       end
     end
 
@@ -302,6 +324,31 @@ RSpec.describe AttemptsApi::Tracker do
           expect(events.values.length).to eq(0)
         end
       end
+    end
+  end
+
+  context 'with a Devise session and historical_attempts_api_disabled' do
+    let(:mock_session) { { 'warden.user.user.session' => {} } }
+
+    before do
+      allow(IdentityConfig.store).to receive(:historical_attempts_api_enabled).and_return(false)
+    end
+
+    it 'records to redis' do
+      freeze_time do
+        subject.idv_enrollment_complete(reproof: false)
+
+        events = AttemptsApi::RedisClient.new.read_events(
+          issuer: service_provider.issuer,
+        )
+
+        expect(events.values.length).to eq(1)
+      end
+    end
+
+    it 'does not populate the historical session info' do
+      subject.idv_enrollment_complete(reproof: false)
+      expect(mock_session).to eq({ 'warden.user.user.session' => {} })
     end
   end
 
