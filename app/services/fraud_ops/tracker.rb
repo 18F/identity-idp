@@ -55,7 +55,8 @@ module FraudOps
     end
 
     def enabled?
-      IdentityConfig.store.fraud_ops_tracker_enabled
+      IdentityConfig.store.fraud_ops_tracker_enabled &&
+        IdentityConfig.store.fraud_ops_public_key.present?
     end
 
     def public_key
