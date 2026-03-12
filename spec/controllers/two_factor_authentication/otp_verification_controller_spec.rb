@@ -188,6 +188,7 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
           phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
           enabled_mfa_methods_count: 1,
           in_account_creation_flow: false,
+          available_webauthn_platform_config: false,
           attempts: 1,
         )
       end
@@ -286,6 +287,7 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
             phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
             enabled_mfa_methods_count: 1,
             in_account_creation_flow: false,
+            available_webauthn_platform_config: false,
             attempts: 1,
           )
           expect(@analytics).to have_logged_event(
@@ -331,6 +333,7 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
             phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
             enabled_mfa_methods_count: 1,
             in_account_creation_flow: false,
+            available_webauthn_platform_config: false,
             attempts: 2,
           )
           expect(@analytics).to have_logged_event(
@@ -443,6 +446,7 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
           phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
           enabled_mfa_methods_count: 1,
           in_account_creation_flow: false,
+          available_webauthn_platform_config: false,
           attempts: 1,
         )
         expect(@analytics).to have_logged_event(
@@ -514,6 +518,7 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
             phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
             enabled_mfa_methods_count: 1,
             in_account_creation_flow: false,
+            available_webauthn_platform_config: false,
             attempts: 1,
           )
           expect(@analytics).to have_logged_event(

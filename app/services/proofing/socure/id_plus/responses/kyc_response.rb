@@ -30,6 +30,10 @@ module Proofing
             @reason_codes ||= kyc('reasonCodes').to_set.freeze
           end
 
+          def successful?
+            all_required_attributes_verified? && !has_autofail_reason_codes?
+          end
+
           def verified_attributes
             VERIFIED_ATTRIBUTE_MAP.each_with_object([]) do |(attr_name, field_names), result|
               if Array(field_names).all? { |f| field_validations[f] }
@@ -51,6 +55,15 @@ module Proofing
 
           def source_attribution
             kyc('sourceAttribution') || []
+          end
+
+          def has_autofail_reason_codes?
+            (reason_codes & auto_failure_reason_codes).any?
+          end
+
+          def auto_failure_reason_codes
+            @auto_failure_reason_codes ||=
+              IdentityConfig.store.idv_socure_kyc_auto_failure_reason_codes
           end
 
           private

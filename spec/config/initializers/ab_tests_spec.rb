@@ -600,9 +600,11 @@ RSpec.describe AbTests do
         allow(IdentityConfig.store).to receive(:idv_resolution_vendor_switching_enabled)
           .and_return(true)
         allow(IdentityConfig.store).to receive(:idv_resolution_vendor_socure_kyc_percent)
-          .and_return(50)
+          .and_return(25)
         allow(IdentityConfig.store).to receive(:idv_resolution_vendor_instant_verify_percent)
-          .and_return(30)
+          .and_return(25)
+        allow(IdentityConfig.store).to receive(:idv_resolution_vendor_instant_verify_ddp_percent)
+          .and_return(25)
       }
     end
 

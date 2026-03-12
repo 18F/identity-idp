@@ -157,6 +157,8 @@ module AbTests
         IdentityConfig.store.idv_resolution_vendor_socure_kyc_percent : 0,
       instant_verify: IdentityConfig.store.idv_resolution_vendor_switching_enabled ?
         IdentityConfig.store.idv_resolution_vendor_instant_verify_percent : 0,
+      instant_verify_ddp: IdentityConfig.store.idv_resolution_vendor_switching_enabled ?
+        IdentityConfig.store.idv_resolution_vendor_instant_verify_ddp_percent : 0,
     },
   ) do |service_provider:, session:, user:, user_session:, **|
     verify_info_step_document_capture_session_uuid_discriminator(
@@ -208,6 +210,17 @@ module AbTests
       lexis_nexis_ddp: IdentityConfig.store.doc_auth_passport_selfie_vendor_switching_enabled ?
         IdentityConfig.store.doc_auth_passport_selfie_vendor_lexis_nexis_ddp_percent : 0,
     }.compact,
+  ) do |service_provider:, session:, user:, user_session:, **|
+    user&.uuid
+  end.freeze
+
+  # This will allow us to slowly increase compromised password checks for sign in.
+  SIGNIN_PASSWORD_COMPROMISED = AbTest.new(
+    experiment_name: 'Sign In Password Compromised check',
+    should_log: [
+      'Email and Password Authentication',
+    ].to_set,
+    buckets: { check_password: IdentityConfig.store.sign_in_password_compromised_percent_tested },
   ) do |service_provider:, session:, user:, user_session:, **|
     user&.uuid
   end.freeze

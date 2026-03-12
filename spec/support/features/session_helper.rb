@@ -122,6 +122,7 @@ module Features
     def sign_up
       email = Faker::Internet.email
       sign_up_with(email)
+      expect(page).to have_current_path(sign_up_verify_email_path)
       confirm_last_user
     end
 
@@ -537,7 +538,11 @@ module Features
     end
 
     def skip_second_mfa_prompt
-      click_on t('mfa.skip')
+      if page.has_current_path?(webauthn_platform_recommended_path)
+        click_on t('webauthn_platform_recommended.skip')
+      else
+        click_on t('mfa.skip')
+      end
     end
 
     def sign_in_via_branded_page(user)

@@ -74,8 +74,6 @@ broken_personal_key_window_start: '2021-07-29T00:00:00Z'
 check_user_password_compromised_enabled: false
 component_previews_embed_frame_ancestors: '[]'
 component_previews_enabled: false
-compromised_password_randomizer_threshold: 900
-compromised_password_randomizer_value: 1000
 country_phone_number_overrides: '{}'
 dashboard_api_token: ''
 dashboard_url: https://dashboard.demo.login.gov
@@ -218,12 +216,15 @@ idv_available: true
 idv_contact_phone_number: (844) 555-5555
 idv_max_attempts: 5
 idv_min_age_years: 13
+idv_phone_confirmation_manual_review_validity_hours: 0
 idv_phone_precheck_percent: 0
+idv_proofing_agent_enabled: false
 idv_rdp_version_default: rdp_v2
 idv_rdp_version_switching_enabled: false
 idv_rdp_version_v2_percent: 100
 idv_rdp_version_v3_percent: 0
 idv_resolution_default_vendor: mock
+idv_resolution_vendor_instant_verify_ddp_percent: 0
 idv_resolution_vendor_instant_verify_percent: 0
 idv_resolution_vendor_socure_kyc_percent: 0
 idv_resolution_vendor_switching_enabled: false
@@ -231,6 +232,7 @@ idv_send_link_attempt_window_in_minutes: 10
 idv_send_link_max_attempts: 5
 idv_socure_docv_flow_id_only: ''
 idv_socure_docv_flow_id_w_selfie: ''
+idv_socure_kyc_auto_failure_reason_codes: '[]'
 idv_socure_phonerisk_auto_failure_reason_codes: '[]'
 idv_socure_phonerisk_name_correlation_score_threshold: 1.0
 idv_socure_phonerisk_score_threshold: 0
@@ -288,9 +290,11 @@ lexisnexis_base_url: https://www.example.com
 lexisnexis_hmac_auth_enabled: false
 lexisnexis_hmac_key_id: pf_iv_hmac_key_id
 lexisnexis_hmac_secret_key: pf_iv_hmac_secret_key
+lexisnexis_instant_verify_ddp_policy:
 lexisnexis_instant_verify_timeout: 1.0
 lexisnexis_instant_verify_workflow: gsa2.chk32.test.wf
 lexisnexis_password: test_password
+lexisnexis_phone_finder_ddp_policy:
 lexisnexis_phone_finder_timeout: 1.0
 lexisnexis_phone_finder_workflow: customers.gsa2.phonefinder.workflow
 lexisnexis_request_mode: testing
@@ -299,6 +303,7 @@ lexisnexis_request_mode: testing
 lexisnexis_threatmetrix_api_key:
 lexisnexis_threatmetrix_authentication_policy: '1234'
 lexisnexis_threatmetrix_base_url:
+lexisnexis_threatmetrix_hybrid_handoff_policy:
 lexisnexis_threatmetrix_js_signing_cert: ''
 lexisnexis_threatmetrix_mock_enabled: true
 lexisnexis_threatmetrix_org_id:
@@ -467,6 +472,7 @@ session_total_duration_timeout_in_minutes: 720
 short_term_phone_otp_max_attempt_window_in_seconds: 10
 short_term_phone_otp_max_attempts: 2
 show_user_attribute_deprecation_warnings: false
+sign_in_password_compromised_percent_tested: 0
 sign_in_recaptcha_annotation_enabled: false
 sign_in_recaptcha_percent_tested: 0
 sign_in_recaptcha_score_threshold: 0.0
@@ -490,6 +496,7 @@ socure_idplus_timeout_in_seconds: 5
 socure_reason_code_api_key: ''
 socure_reason_code_base_url: ''
 socure_reason_code_timeout_in_seconds: 5
+sp_cred_metric_report_configs: '[]'
 sp_fraud_metrics_report_configs: '[]'
 sp_handoff_bounce_max_seconds: 2
 sp_idv_weekly_dropoff_report_configs: '[]'
@@ -559,8 +566,6 @@ development:
   check_user_password_compromised_enabled: true
   component_previews_embed_frame_ancestors: '["http://localhost:4000"]'
   component_previews_enabled: true
-  compromised_password_randomizer_threshold: 0
-  compromised_password_randomizer_value: 1
   dashboard_api_token: test_token
   dashboard_url: http://localhost:3001/api/service_providers
   doc_auth_desktop_test_mode: true

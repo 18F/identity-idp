@@ -810,6 +810,7 @@ errors.messages.backup_code_limited: Lo intentó demasiadas veces; vuelva a inte
 errors.messages.blank: Llene este campo.
 errors.messages.blank_cert_element_req: No podemos detectar un certificado en su solicitud.
 errors.messages.both_auth_and_logout_request: SAML request contains both an authnrequest and logout request. Only one can be specified.
+errors.messages.choose_authentication_method: elige otro método de autenticación
 errors.messages.confirmation_code_incorrect: Código de verificación incorrecto
 errors.messages.confirmation_invalid_token: El vínculo de confirmación no es válido. El vínculo venció o usted ya confirmó su cuenta.
 errors.messages.confirmation_period_expired: El vínculo de confirmación venció. Puede hacer clic en “Volver a enviar instrucciones de confirmación” para obtener otro.
@@ -823,7 +824,7 @@ errors.messages.invalid_calling_area: No se admiten llamadas a ese número de te
 errors.messages.invalid_phone_number.international: Ingrese un número de teléfono con el número correcto de dígitos.
 errors.messages.invalid_phone_number.us: Ingrese un número de teléfono de 10 dígitos.
 errors.messages.invalid_recaptcha_token: Lo sentimos, pero es posible que tu computadora o red te estén enviando consultas automáticas. Para proteger a nuestros usuarios, no podemos procesar tu solicitud en este momento.
-errors.messages.invalid_signature: SAML request contains an invalid signature
+errors.messages.invalid_signature: SAML request signature is invalid or does not match any registered public certificates. Please see our documentation at https://developers.login.gov/support/#saml-signature
 errors.messages.invalid_sms_number: El número de teléfono ingresado no admite mensajes de texto. Intente la opción de llamada telefónica.
 errors.messages.invalid_voice_number: Número de teléfono no válido. Verifique haber ingresado el código de país o de área correcto.
 errors.messages.issuer_missing_or_invalid: Issuer missing from SAML request
@@ -842,7 +843,7 @@ errors.messages.phone_confirmation_limited: Lo intentó demasiadas veces; vuelva
 errors.messages.phone_duplicate: Esta cuenta ya usa el número de teléfono que ingresó como autenticador. Use un número de teléfono diferente.
 errors.messages.phone_otp_format: Introduzca el código de un solo uso enviado a su teléfono. No utilice espacios ni caracteres especiales.
 errors.messages.phone_required: Se requiere un número de teléfono.
-errors.messages.phone_unsupported: Lo sentimos, no podemos enviar un SMS en este momento. Intente la opción de llamada telefónica siguiente, o use su clave personal.
+errors.messages.phone_unsupported_html: No podemos enviarle un código único en este momento. Inténtalo de nuevo haciendo clic en “Enviar otro código” a continuación o %{link_html}.
 errors.messages.premium_rate_phone: Parece que se trata de un número de teléfono de tarifa especial. Seleccione un número diferente e inténtelo de nuevo.
 errors.messages.pwned_password: La contraseña que ingresó no es segura. Está en una lista de contraseñas conocidas expuestas a filtraciones de datos.
 errors.messages.stronger_password: Introduzca una contraseña más segura
@@ -851,9 +852,9 @@ errors.messages.too_long.other: es demasiado larga (el máximo es %{count} carac
 errors.messages.too_short.one: es demasiado corta (el mínimo es 1 carácter)
 errors.messages.too_short.other: es demasiado corta (el mínimo es %{count} caracteres)
 errors.messages.try_again: Vuelva a intentarlo.
-errors.messages.unauthorized_authn_context: Contexto de autenticación no autorizado
-errors.messages.unauthorized_nameid_format: Formato de identificación de nombre no autorizado
-errors.messages.unauthorized_service_provider: Proveedor de servicio no autorizado
+errors.messages.unauthorized_authn_context: Contexto de autenticación no autorizado. Consulte nuestra documentación en https://developers.login.gov/support/#unauthorized_auth_context
+errors.messages.unauthorized_nameid_format: Formato de identificación de nombre no autorizado. Consulte nuestra documentación en https://developers.login.gov/support/#nameidformat_unrecognized
+errors.messages.unauthorized_service_provider: Proveedor de servicio no autorizado. Consulte nuestra documentación en https://developers.login.gov/support/#unauthorized
 errors.messages.voip_check_error: Hubo un error al comprobar su teléfono; inténtelo de nuevo
 errors.messages.voip_phone: Este número corresponde a un servicio de telefonía basado en la web (VoIP). Seleccione un número diferente e inténtelo de nuevo.
 errors.messages.weak_password: Su contraseña no es suficientemente segura. %{feedback}
@@ -907,6 +908,8 @@ event_types.sign_in_after_2fa: Inicio de sesión con un segundo factor
 event_types.sign_in_before_2fa: Inicio de sesión con contraseña
 event_types.sign_in_notification_timeframe_expired: Venció el tiempo del mensaje para iniciar sesión en un dispositivo nuevo
 event_types.sign_in_unsuccessful_2fa: No se pudo autenticar
+event_types.sp_user_consent_granted: Consentimiento del usuario otorgado
+event_types.sp_user_consent_revoked: Consentimiento del usuario revocado
 event_types.webauthn_key_added: Clave de seguridad de hardware añadida
 event_types.webauthn_key_removed: Clave de seguridad de hardware eliminada
 event_types.webauthn_platform_added: Se agregó el desbloqueo facial o táctil
@@ -1470,7 +1473,7 @@ instructions.mfa.authenticator.issues_with_authenticator: Problemas con la aplic
 instructions.mfa.authenticator.manual_entry: O ingrese este código manualmente en su aplicación de autenticación
 instructions.mfa.backup_code.issues_with_backup_codes: Problemas con los códigos de recuperación
 instructions.mfa.do_not_share_code_link_text: Aprenda cómo identificar el fraude y reportarlo.
-instructions.mfa.do_not_share_code_message_html: '<strong>No comparta este código.</strong> %{app_name} nunca le llamará, enviará mensajes de texto o correos electrónicos pidiéndolo. %{link_html}'
+instructions.mfa.do_not_share_code_message_html: '<strong>No comparta este código.</strong> Si alguien lo llama, envía un mensaje de texto o un correo electrónico pidiendo este código, podría ser una estafa. %{link_html}'
 instructions.mfa.phone_verification.issues_with_text_sms_phone_call: Problemas con mensajes de texto (SMS) o llamadas telefónicas
 instructions.mfa.piv_cac.account_not_found_html: '<p>%{sign_in} con su dirección de correo electrónico y su contraseña. Luego, agregue su tarjeta PIV o CAC a su cuenta.</p><p>¿No tiene una cuenta de %{app_name}? %{create_account}</p>'
 instructions.mfa.piv_cac.add_from_sign_in_html: '<strong> Instrucciones:</strong> Inserte su tarjeta PIV o CAC en <strong> “AGREGAR TARJETA PIV O CAC” </strong>. Tendrá que <strong> elegir un certificado </strong> (es probable que el correcto tenga su nombre) e <strong> ingresar su PIN </strong> (su PIN se creó cuando configuró su tarjeta PIV o CAC).'
@@ -1601,38 +1604,38 @@ notices.use_diff_email.link: use una dirección de correo electrónico diferente
 notices.use_diff_email.text_html: O %{link_html}
 notices.webauthn_configured: Se agregó una clave de seguridad a su cuenta.
 notices.webauthn_platform_configured: Usó el bloqueo de pantalla de su dispositivo para agregar el desbloqueo facial o táctil a su cuenta.
-openid_connect.authorization.errors.bad_client_id: client_id incorrecto
+openid_connect.authorization.errors.bad_client_id: client_id incorrecto. Consulte nuestra documentación en https://developers.login.gov/support/#bad-client-id
 openid_connect.authorization.errors.invalid_verified_within_duration.one: el valor debe ser al menos %{count} días o más
 openid_connect.authorization.errors.invalid_verified_within_duration.other: el valor debe ser al menos %{count} días o más
 openid_connect.authorization.errors.invalid_verified_within_format: Formato no reconocido de verified_within
-openid_connect.authorization.errors.missing_ial: Falta un nivel válido de IAL
-openid_connect.authorization.errors.no_auth: Los acr_values no están autorizados
-openid_connect.authorization.errors.no_valid_acr_values: No se encontraron ial_values aceptables
-openid_connect.authorization.errors.no_valid_scope: No se encontraron valores de ámbito válidos
-openid_connect.authorization.errors.prompt_invalid: No se encontraron valores de consulta válidos
-openid_connect.authorization.errors.redirect_uri_invalid: redirect_uri no es válido
-openid_connect.authorization.errors.redirect_uri_no_match: redirect_uri no coincide con el redirect_uri registrado
-openid_connect.authorization.errors.unauthorized_scope: Ámbito no autorizado
+openid_connect.authorization.errors.missing_ial: Falta un nivel válido de IAL. Consulte nuestra documentación en https://developers.login.gov/support/#oidc-missing-ial
+openid_connect.authorization.errors.no_auth: Los acr_values no están autorizados. Consulte nuestra documentación en https://developers.login.gov/support/#oidc-missing-acr-values
+openid_connect.authorization.errors.no_valid_acr_values: No se encontraron ial_values aceptables. Consulte nuestra documentación en https://developers.login.gov/support/#oidc-no-acr-values
+openid_connect.authorization.errors.no_valid_scope: No se encontraron valores de ámbito válidos. Consulte nuestra documentación en https://developers.login.gov/support/#oidc-no-scope
+openid_connect.authorization.errors.prompt_invalid: No se encontraron valores de consulta válidos. Consulte nuestra documentación en https://developers.login.gov/support/#oidc-no-prompt
+openid_connect.authorization.errors.redirect_uri_invalid: redirect_uri no es válido. Consulte nuestra documentación en https://developers.login.gov/support/#oidc-invalid-redirect
+openid_connect.authorization.errors.redirect_uri_no_match: redirect_uri no coincide con el redirect_uri registrado. Consulte nuestra documentación en https://developers.login.gov/support/#oidc-redirect-match
+openid_connect.authorization.errors.unauthorized_scope: Ámbito no autorizado. Consulte nuestra documentación en https://developers.login.gov/support/#oidc-unauthotized-scope
 openid_connect.logout.confirm: Sí, cerrar sesión en %{app_name}
 openid_connect.logout.deny: No, ir a la página de mi cuenta
-openid_connect.logout.errors.client_id_invalid: No se reconoció client_id
-openid_connect.logout.errors.client_id_missing: Falta client_id
+openid_connect.logout.errors.client_id_invalid: No se reconoció client_id. Consulte nuestra documentación en https://developers.login.gov/support/#client-id-not-recognized
+openid_connect.logout.errors.client_id_missing: Falta client_id. Consulte nuestra documentación en https://developers.login.gov/support/#client-id-missing
 openid_connect.logout.errors.id_token_hint: No se reconoció id_token_hint
-openid_connect.logout.errors.id_token_hint_present: Esta aplicación está mal configurada y no debería estar enviando id_token_hint. En vez de ello, enviar client_id.
-openid_connect.logout.errors.no_client_id_or_id_token_hint: Esta aplicación está mal configurada y debe enviar client_id o id_token_hint.
+openid_connect.logout.errors.id_token_hint_present: Esta aplicación está mal configurada y no debería estar enviando id_token_hint. En vez de ello, enviar client_id. Consulte nuestra documentación en https://developers.login.gov/support/#id-token-hint
+openid_connect.logout.errors.no_client_id_or_id_token_hint: Esta aplicación está mal configurada y debe enviar client_id o id_token_hint. Consulte nuestra documentación en https://developers.login.gov/oidc/logout/
 openid_connect.logout.heading: ¿Desea cerrar sesión en %{app_name}?
 openid_connect.logout.heading_with_sp: ¿Desea cerrar sesión en %{app_name} y volver a %{service_provider_name}?
 
-openid_connect.token.errors.expired_code: venció
-openid_connect.token.errors.invalid_aud: Notificación de audiencia no válida, %{url} prevista
-openid_connect.token.errors.invalid_authentication: El cliente debe autenticarse a través de PKCE o private_key_jwt, omitiendo code_challenge o client_assertion
-openid_connect.token.errors.invalid_code: no es válido porque no coincide con ningún usuario. Consulte nuestra documentación en https://developers.login.gov/oidc/#token
-openid_connect.token.errors.invalid_code_verifier: code_verifier no coincide con code_challenge
-openid_connect.token.errors.invalid_iat: iat debe ser una marca de tiempo Unix de punto flotante o un entero que represente un momento en el pasado
-openid_connect.token.errors.invalid_signature: No se pudo validar la afirmación contra ninguna clave pública registrada
-openid_connect.user_info.errors.malformed_authorization: Encabezado de autorización mal formado
-openid_connect.user_info.errors.no_authorization: No se proporcionó ningún encabezado de autorización
-openid_connect.user_info.errors.not_found: No se pudo encontrar la autorización para el contenido del access_token proporcionado o puede ser que este haya vencido
+openid_connect.token.errors.expired_code: venció. Consulte nuestra documentación en https://developers.login.gov/support/#token-expired
+openid_connect.token.errors.invalid_aud: Notificación de audiencia no válida, %{url} prevista. Consulte nuestra documentación en https://developers.login.gov/support/#invalid-aud-claim
+openid_connect.token.errors.invalid_authentication: El cliente debe autenticarse a través de PKCE o private_key_jwt, omitiendo code_challenge o client_assertion. Consulte nuestra documentación en https://developers.login.gov/support/#pkce-or-private-key
+openid_connect.token.errors.invalid_code: no es válido porque no coincide con ningún usuario. Consulte nuestra documentación en https://developers.login.gov/support/#invalid-code
+openid_connect.token.errors.invalid_code_verifier: code_verifier no coincide con code_challenge. Consulte nuestra documentación en https://developers.login.gov/support/#invalid-code-verifier
+openid_connect.token.errors.invalid_iat: iat debe ser una marca de tiempo Unix de punto flotante o un entero que represente un momento en el pasado. Consulte nuestra documentación en https://developers.login.gov/support/#invalid-iat
+openid_connect.token.errors.invalid_signature: No se pudo validar la afirmación contra ninguna clave pública registrada. Consulte nuestra documentación en https://developers.login.gov/support/#invalid-token-signature
+openid_connect.user_info.errors.malformed_authorization: Encabezado de autorización mal formado. Consulte nuestra documentación en https://developers.login.gov/support/#malformed-auth-header
+openid_connect.user_info.errors.no_authorization: No se proporcionó ningún encabezado de autorización. Consulte nuestra documentación en https://developers.login.gov/support/#no-auth-header
+openid_connect.user_info.errors.not_found: No se pudo encontrar la autorización para el contenido del access_token proporcionado o puede ser que este haya vencido. Consulte nuestra documentación en https://developers.login.gov/support/#auth-header-contents-not-found
 pages.page_took_too_long.body: Es conveniente que espere unos minutos y vuelva a intentarlo. (503)
 pages.page_took_too_long.header: El servidor tardó demasiado en procesar su solicitud.
 profiling_failed.details_html: 'Llame a nuestro centro de contacto al <strong>(844) 875-6446</strong> y mencione el código de error <strong>LG22</strong>.'
@@ -1946,6 +1949,11 @@ user_authorization_confirmation.continue: Continuar
 user_authorization_confirmation.currently_logged_in: 'Ya inició sesión con el siguiente correo electrónico:'
 user_authorization_confirmation.or: O
 user_authorization_confirmation.sign_in: Cambiar de correo electrónico
+user_mailer.account_connected_to_sp.intro_html: Para desconectar su cuenta de %{sp_name}, %{sign_in_link_html}, vaya a la sección “Sus servicios conectadas” en la barra lateral y haga clic en “Desconectar” debajo del servicio.
+user_mailer.account_connected_to_sp.sign_in_link: inicie sesión en su cuenta
+user_mailer.account_connected_to_sp.subject: Usted conectó su cuenta a %{sp_name}
+user_mailer.account_disconnected_from_sp.intro: Visite %{sp_name} si desea volver a conectar su cuenta.
+user_mailer.account_disconnected_from_sp.subject: Usted ha desconectado a %{sp_name} de su cuenta
 user_mailer.account_reinstated.subject: Su cuenta está desbloqueada
 user_mailer.account_reinstated.we_have_finished_reviewing: Terminamos de revisar su cuenta de %{app_name} y ya puede volver a iniciar sesión con los datos de su cuenta.
 user_mailer.account_rejected.intro: No pudimos verificar su identidad con %{app_name}. Contacte con la agencia a cuyo servicio está intentando acceder.
@@ -2124,6 +2132,9 @@ user_mailer.signup_with_your_email.help_html: Si usted no solicitó una cuenta n
 user_mailer.signup_with_your_email.intro_html: Este email ya está asociado a una cuenta %{app_name_html}, por lo tanto no podemos usarlo para crear una cuenta nueva. Para iniciar una sesión con su cuenta existente, siga el siguiente enlace. Si no intenta iniciar una sesión con este email, puede ignorar este mensaje.
 user_mailer.signup_with_your_email.link_text: Ir a %{app_name}
 user_mailer.signup_with_your_email.reset_password_html: Si no recuerda su contraseña, vaya a %{app_name_html} para restablecerla.
+user_mailer.sp_connection.auth_method: métodos de autenticación
+user_mailer.sp_connection.instructions_html: Si no fue usted, %{reset_password_html} y cambie sus %{auth_method_html} inmediatamente.
+user_mailer.sp_connection.reset_password: restablezca su contraseña
 user_mailer.suspended_create_account.message: Hubo un problema al crear su cuenta de %{app_name} con esta dirección de correo electrónico. Llame a nuestro centro de atención al %{contact_number} y proporcione este código - %{support_code}.
 user_mailer.suspended_create_account.subject: No podemos crear su cuenta
 user_mailer.suspended_reset_password.message: Hubo un problema al restablecer su contraseña. Llame a nuestro centro de atención al %{contact_number} y proporcione este código - %{support_code}.

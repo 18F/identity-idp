@@ -18,6 +18,8 @@ module Idv
           return
         end
 
+        clear_aamva_pending_pii if idv_session.ipp_aamva_result.present?
+
         analytics.idv_in_person_proofing_state_id_visited(**analytics_arguments)
 
         render :show, locals: extra_view_variables

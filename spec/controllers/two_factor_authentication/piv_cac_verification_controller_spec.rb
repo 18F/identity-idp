@@ -160,6 +160,7 @@ RSpec.describe TwoFactorAuthentication::PivCacVerificationController do
           multi_factor_auth_method: 'piv_cac',
           new_device: true,
           enabled_mfa_methods_count: 2,
+          available_webauthn_platform_config: false,
           multi_factor_auth_method_created_at: cfg.created_at.strftime('%s%L'),
           piv_cac_configuration_id: cfg.id,
           piv_cac_configuration_dn_uuid: cfg.x509_dn_uuid,
@@ -322,6 +323,7 @@ RSpec.describe TwoFactorAuthentication::PivCacVerificationController do
             multi_factor_auth_method: 'piv_cac',
             enabled_mfa_methods_count: 2,
             new_device: true,
+            available_webauthn_platform_config: false,
             attempts: 1,
           )
           expect(@analytics).to have_logged_event(
@@ -361,6 +363,7 @@ RSpec.describe TwoFactorAuthentication::PivCacVerificationController do
             multi_factor_auth_method: 'piv_cac',
             enabled_mfa_methods_count: 2,
             new_device: true,
+            available_webauthn_platform_config: false,
             attempts: 1,
           )
           expect(@analytics).to have_logged_event(

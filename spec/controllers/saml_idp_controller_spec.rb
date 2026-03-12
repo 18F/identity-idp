@@ -111,6 +111,17 @@ RSpec.describe SamlIdpController do
       )
     end
 
+    it 'displays the errors to the partner when the saml request is invalid' do
+      delete :logout, params: { SAMLRequest: 'foo', path_year: path_year }
+
+      expect(response).to be_bad_request
+      expect(controller).to render_template('saml_idp/logout/error')
+      expect(response.status).to eq(400)
+      expect(response.body).to include(t('errors.messages.no_auth_or_logout_request'))
+      expect(response.body).to include(t('errors.messages.issuer_missing_or_invalid'))
+      expect(response.body).to include(t('errors.messages.unauthorized_service_provider'))
+    end
+
     it 'accepts requests from a correct cert' do
       saml_request = UriService.params(
         OneLogin::RubySaml::Logoutrequest.new.create(right_cert_settings),
@@ -146,12 +157,15 @@ RSpec.describe SamlIdpController do
     end
 
     context 'when the cert is not registered' do
-      it 'rejects requests from a wrong cert' do
+      it 'rejects requests from a wrong cert and displays the error to the user' do
         delete :logout, params: UriService.params(
           OneLogin::RubySaml::Logoutrequest.new.create(wrong_cert_settings),
         ).merge(path_year: path_year)
 
         expect(response).to be_bad_request
+        expect(controller).to render_template('saml_idp/logout/error')
+        expect(response.status).to eq(400)
+        expect(response.body).to include(t('errors.messages.invalid_signature'))
       end
 
       it 'tracks the request' do
@@ -223,7 +237,7 @@ RSpec.describe SamlIdpController do
         Base64.encode64(Zlib::Deflate.deflate(blank_cert_element_req, 9)[2..-5])
       end
 
-      it 'a ValidationError is raised' do
+      it 'raises a ValidationError' do
         expect do
           delete :logout, params: {
             'SAMLRequest' => deflated_encoded_req,
@@ -1038,7 +1052,8 @@ RSpec.describe SamlIdpController do
         )
         expect(@analytics).to have_logged_event(
           :sp_integration_errors_present,
-          error_details: ['Unauthorized authentication context'],
+          error_details: ['Unauthorized authentication context. Please see our documentation at ' \
+                          'https://developers.login.gov/support/#unauthorized_auth_context'],
           error_types: { saml_request_errors: true },
           event: :saml_auth_request,
           integration_exists: true,
@@ -1312,7 +1327,8 @@ RSpec.describe SamlIdpController do
         )
         expect(@analytics).to have_logged_event(
           :sp_integration_errors_present,
-          error_details: ['Unauthorized Service Provider'],
+          error_details: ['Unauthorized Service Provider. Please see our documentation at ' \
+                          'https://developers.login.gov/support/#unauthorized'],
           error_types: { saml_request_errors: true },
           event: :saml_auth_request,
           integration_exists: false,
@@ -1359,7 +1375,8 @@ RSpec.describe SamlIdpController do
         )
         expect(@analytics).to have_logged_event(
           :sp_integration_errors_present,
-          error_details: ['Unauthorized Service Provider'],
+          error_details: ['Unauthorized Service Provider. Please see our documentation at ' \
+                          'https://developers.login.gov/support/#unauthorized'],
           error_types: { saml_request_errors: true },
           event: :saml_auth_request,
           integration_exists: false,
@@ -2716,6 +2733,33 @@ RSpec.describe SamlIdpController do
 
           expect(phone).to be_nil
         end
+      end
+    end
+
+    context 'SP requests email and has saml_emailaddress_attribute_enabled turned on' do
+      it 'includes the user email attribute using the SOAP schema' do
+        user = create(:user, :fully_registered)
+        service_provider = ServiceProvider.find_by(issuer: 'http://localhost:3000')
+        service_provider.update(saml_emailaddress_attribute_enabled: true)
+
+        custom_settings = saml_settings(
+          overrides: {
+            authn_context: [
+              Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+              "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}email",
+            ],
+          },
+        )
+        generate_saml_response(user, custom_settings)
+
+        email = xmldoc.attribute_node_for('http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress')
+        value = xmldoc.attribute_value_for('http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress')
+
+        expect(email.name).to eq('Attribute')
+        expect(email['Name']).to eq('http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress')
+        expect(email['NameFormat']).to eq('urn:oasis:names:tc:SAML:2.0:attrname-format:uri')
+        expect(email['FriendlyName']).to eq('email')
+        expect(value).to eq(user.email)
       end
     end
 

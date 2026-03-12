@@ -20,6 +20,7 @@ module Proofing
       PROOFING_VENDOR_SP_COST_TOKENS = {
         mock: :mock_resolution,
         instant_verify: :lexis_nexis_resolution,
+        instant_verify_ddp: :lexis_nexis_resolution,
         socure_kyc: :socure_resolution,
       }.freeze
 
@@ -70,10 +71,12 @@ module Proofing
           user_email:,
           user_uuid:,
           workflow:,
+          ddp_policy: IdentityConfig.store.lexisnexis_threatmetrix_policy,
         )
 
+        user_went_through_hybrid_handoff = hybrid_mobile_request_ip.present?
         if FeatureManagement.proofing_device_hybrid_profiling_collecting_enabled? &&
-           hybrid_mobile_threatmetrix_session_id.present?
+           user_went_through_hybrid_handoff
           hybrid_mobile_device_profiling_result = threatmetrix_plugin.call(
             applicant_pii:,
             current_sp:,
@@ -83,6 +86,7 @@ module Proofing
             user_email:,
             user_uuid:,
             workflow: :"#{workflow}_hybrid_handoff",
+            ddp_policy: IdentityConfig.store.lexisnexis_threatmetrix_hybrid_handoff_policy,
           )
         end
 
@@ -153,6 +157,7 @@ module Proofing
       def create_proofer
         case proofing_vendor
         when :instant_verify then create_instant_verify_proofer
+        when :instant_verify_ddp then create_instant_verify_ddp_proofer
         when :mock then create_mock_proofer
         when :socure_kyc then create_socure_proofer
         else
@@ -173,6 +178,15 @@ module Proofing
             request_mode: IdentityConfig.store.lexisnexis_request_mode,
           ),
           @analytics,
+        )
+      end
+
+      def create_instant_verify_ddp_proofer
+        Proofing::LexisNexis::Ddp::Proofers::InstantVerifyProofer.new(
+          api_key: IdentityConfig.store.lexisnexis_threatmetrix_api_key,
+          org_id: IdentityConfig.store.lexisnexis_threatmetrix_org_id,
+          base_url: IdentityConfig.store.lexisnexis_threatmetrix_base_url,
+          ddp_policy: IdentityConfig.store.lexisnexis_instant_verify_ddp_policy,
         )
       end
 

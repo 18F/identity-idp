@@ -206,14 +206,11 @@ RSpec.describe DocAuth::LexisNexis::Requests::TrueIdRequest do
           body: response_body_with_doc_auth_errors(liveness_checking_required),
           status: 201,
         )
-
         response = subject.fetch
 
         expect(response.success?).to eq(false)
-        expect(response.error_messages[:unexpected_id_type])
-          .to eq(true)
-        expect(response.error_messages[:expected_id_type])
-          .to eq('drivers_license')
+        expect(response.error_messages[:unexpected_id_type]).to eq(true)
+        expect(response.error_messages[:expected_id_type]).to eq('drivers_license')
       end
     end
 
@@ -288,6 +285,24 @@ def response_body(include_liveness)
             ],
           },
           {
+            Group: 'AUTHENTICATION_RESULT',
+            Name: 'DocClassName',
+            Values: [
+              {
+                Value: document_class_name,
+              },
+            ],
+          },
+          {
+            Group: 'AUTHENTICATION_RESULT',
+            Name: 'DocIssueType',
+            Values: [
+              {
+                Value: document_type,
+              },
+            ],
+          },
+          {
             Group: 'IDAUTH_FIELD_DATA',
             Name: 'Fields_DocumentClassName',
             Values: [
@@ -327,6 +342,24 @@ def response_body_with_doc_auth_errors(include_liveness)
             Values: [
               {
                 Value: 'Failed',
+              },
+            ],
+          },
+          {
+            Group: 'AUTHENTICATION_RESULT',
+            Name: 'DocClassName',
+            Values: [
+              {
+                Value: document_class_name,
+              },
+            ],
+          },
+          {
+            Group: 'AUTHENTICATION_RESULT',
+            Name: 'DocIssueType',
+            Values: [
+              {
+                Value: document_type,
               },
             ],
           },

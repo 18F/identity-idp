@@ -72,34 +72,32 @@ module Reporting
           'True ID',
           'True ID (Selfie)',
           'Instant verify',
-          'Phone Finder',
           'Socure (DocV)',
           'Socure (DocV - Selfie)',
           'Socure (KYC)',
-          'Fraud Score and Attribute',
           'Threat Metrix (IDV)',
           'Threat Metrix (Auth Only)',
           'LN Emailage',
           'GPO',
           'AAMVA',
-          'Socure PhoneRisk (Shadow)',
+          'Socure PhoneRisk',
+          'LN Phone Finder',
         ],
         [
           "#{ time_range.begin.to_date} - #{time_range.end.to_date}",
           true_id_table.first,
           true_id_selfie_table.first,
           instant_verify_table.first,
-          phone_finder_table.first,
           socure_table.first,
           socure_docv_selfie_table.first,
           socure_kyc_table.first,
-          fraud_score_and_attribute_table.first,
           threat_metrix_idv_table.first,
           threat_metrix_auth_only_table.first,
           ln_emailage_table.first,
           gpo_table.first,
           aamva_table.first,
           socure_phonerisk_table.first,
+          ln_phonefinder_table.first,
         ],
       ]
     end
@@ -126,10 +124,10 @@ module Reporting
       [true_id_selfie_table_count, result]
     end
 
-    def phone_finder_table
-      result = fetch_results(query: phone_finder_query)
-      phone_finder_table_count = result.count
-      [phone_finder_table_count, result]
+    def instant_verify_table
+      result = fetch_results(query: instant_verify_query)
+      instant_verify_table_count = result.count
+      [instant_verify_table_count, result]
     end
 
     def socure_table
@@ -156,12 +154,6 @@ module Reporting
       [ln_emailage_table_count, result]
     end
 
-    def instant_verify_table
-      result = fetch_results(query: instant_verify_query)
-      instant_verify_table_count = result.count
-      [instant_verify_table_count, result]
-    end
-
     def threat_metrix_idv_table
       result = fetch_results(query: threat_metrix_idv_query)
       threat_metrix_table_count = result.count
@@ -172,12 +164,6 @@ module Reporting
       result = fetch_results(query: threat_metrix_auth_only_query)
       threat_metrix_table_count = result.count
       [threat_metrix_table_count, result]
-    end
-
-    def fraud_score_and_attribute_table
-      result = fetch_results(query: fraud_score_and_attribute_query)
-      fraud_score_and_attribute_table_count = result.count
-      [fraud_score_and_attribute_table_count, result]
     end
 
     def gpo_table
@@ -196,6 +182,12 @@ module Reporting
       result = fetch_results(query: socure_phonerisk_query)
       socure_phonerisk_table_count = result.count
       [socure_phonerisk_table_count, result]
+    end
+
+    def ln_phonefinder_table
+      result = fetch_results(query: ln_phonefinder_query)
+      ln_phonefinder_table_count = result.count
+      [ln_phonefinder_table_count, result]
     end
 
     def fetch_results(query:)
@@ -262,28 +254,6 @@ module Reporting
       QUERY
     end
 
-    def phone_finder_query
-      <<~QUERY
-        #PhoneFinder
-        filter name = "IdV: phone confirmation vendor"
-        | fields properties.user_id as uuid, id, @timestamp as timestamp,
-        properties.sp_request.app_differentiator as dol_state,
-        properties.service_provider as sp,
-        properties.event_properties.vendor.transaction_id as phoneFinder_transactionID,
-        properties.event_properties.vendor.reference as phoneFinder_referenceID,
-        strcontains(properties.event_properties.errors.base.0,"pass") as phoneFinder_pass,
-        properties.event_properties.success as success,
-        properties.event_properties.area_code as area_code,
-        properties.event_properties.country_code as country_code,
-        properties.event_properties.phone_fingerprint as phone_fingerprint
-        | parse @message /"Items":\[(?<temp_checks>.*?)\]/
-        | display uuid, id, timestamp, sp, dol_state, success,
-          phoneFinder_referenceID, phoneFinder_transactionID, phoneFinder_pass,
-          coalesce(temp_checks,"passed_all","") as phoneFinder_checks
-        | limit 10000
-      QUERY
-    end
-
     def socure_query
       <<~QUERY
         #socure
@@ -312,36 +282,10 @@ module Reporting
 
     def instant_verify_query
       <<~QUERY
-          #LN Stack
-        filter name = "IdV: doc auth verify proofing results"
-        | fields properties.user_id as uuid, id, @timestamp as timestamp,
-        properties.sp_request.app_differentiator as dol_state, properties.service_provider as sp,
-
-        #OVERALL
-        properties.event_properties.proofing_results.timed_out as overall_process_timed_out_flag,
-        properties.event_properties.success as overall_process_success,
-        properties.event_properties.proofing_components.document_check as document_check_vendor,
-        properties.event_properties.proofing_results.context.stages.residential_address.vendor_name as address_vendor_name,
-
-        #instantVerify --> resolution
-        properties.event_properties.proofing_results.context.stages.resolution.reference as resolution_referenceID,
-        properties.event_properties.proofing_results.context.stages.resolution.success as resolution_success,
-        properties.event_properties.proofing_results.context.stages.resolution.timed_out as resolution_timed_out_flag,
-        properties.event_properties.proofing_results.context.stages.resolution.transaction_id as resolution_transactionID,
-        properties.event_properties.proofing_results.context.stages.resolution.vendor_name as resolution_vendor_name
-
-        | display uuid, id, timestamp, sp, dol_state,
-        overall_process_timed_out_flag,
-        overall_process_success,
-        document_check_vendor,
-        address_vendor_name,
-
-        #instantVerify
-        resolution_vendor_name,
-        resolution_referenceID,
-        resolution_transactionID,
-        resolution_success,
-        resolution_timed_out_flag
+        fields @timestamp, @message
+        | fields jsonParse(@message) as message
+        | filter name='IdV: doc auth verify proofing results' and message.properties.event_properties.proofing_results.context.stages.resolution.vendor_name='lexisnexis:instant_verify'
+        | display id
         | limit 10000
       QUERY
     end
@@ -349,7 +293,7 @@ module Reporting
     def threat_metrix_idv_query
       <<~QUERY
         fields @timestamp, @message, @logStream, @log
-        | filter name = "IdV: doc auth verify proofing results"
+        | filter name in ["idv_threatmetrix_response_body", 'idv_threatmetrix_hybrid_mobile_response_body']
         | display timestamp, id
         | limit 10000
       QUERY
@@ -362,17 +306,6 @@ module Reporting
             properties.user_id as uuid,
             @timestamp as timestamp,
          | limit 10000
-      QUERY
-    end
-
-    def fraud_score_and_attribute_query
-      <<~QUERY
-        filter name = "idv_threatmetrix_response_body"
-        | fields 
-          properties.event_properties.response_body.review_status as review_status,
-          properties.event_properties.response_body.risk_rating as risk_rating,
-          properties.event_properties.response_body.summary_risk_score as summary_risk_score
-        | limit 10000
       QUERY
     end
 
@@ -400,7 +333,6 @@ module Reporting
       <<~QUERY
          fields @timestamp, @message, @log, id
         |filter name = 'gpo_confirmation_upload' #GPO confirmation records were uploaded for letter sends
-        | stats count(*) as gpo_transactions
         | limit 10000
       QUERY
     end
@@ -417,16 +349,26 @@ module Reporting
          coalesce(@should_proof_state_id,0) as should_proof_state_id
         | filter (name = 'IdV: doc auth verify proofing results' and should_proof_state_id = 1)  or (name = 'idv_state_id_validation')
         | filter vendor_name = 'aamva:state_id'
-        | stats count(*) as aamva_transactions_ipp
         | limit 10000
       QUERY
     end
 
     def socure_phonerisk_query
       <<~QUERY
-        fields @timestamp, @message, @log, id
-        | filter name IN ["idv_socure_shadow_mode_phonerisk_result"] 
-        | stats count(*) as socure_phonerisk_transactions
+        fields @timestamp, @message
+        | filter (name IN ["idv_socure_shadow_mode_phonerisk_result"])
+        OR (name = 'IdV: phone confirmation vendor' AND properties.event_properties.vendor.vendor_name = "socure_phonerisk")
+        | display id
+        | limit 10000
+      QUERY
+    end
+
+    def ln_phonefinder_query
+      <<~QUERY
+        fields @timestamp, @message
+        | filter name = 'IdV: phone confirmation vendor'
+        | filter properties.event_properties.vendor.vendor_name = "lexisnexis:phone_finder"
+        | display id
         | limit 10000
       QUERY
     end

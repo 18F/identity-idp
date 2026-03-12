@@ -66,7 +66,13 @@ class SamlIdpController < ApplicationController
     unless valid_saml_request?
       track_integration_errors(event: :saml_logout_request)
 
-      return head(:bad_request)
+      saml_errors = saml_request.errors
+      @saml_request_validator = SamlRequestValidator.new(saml_errors:)
+      # result is defined in SamlIdpAuthConcern, and populates the instance of
+      # SamlRequestValidator above with the SAML errors, which are
+      # available to the saml_idp/logout/error view
+      result
+      return render 'saml_idp/logout/error', status: :bad_request
     end
 
     handle_valid_sp_logout_request
@@ -202,7 +208,7 @@ class SamlIdpController < ApplicationController
 
   def render_template_for(message, action_url, type)
     # Returns fully formed CSP array w/"'self'", domain, and ServiceProvider#redirect_uris
-    redirect_uris = decorated_sp_session.sp_redirect_uris ||
+    redirect_uris = saml_request_service_provider&.redirect_uris ||
                     sp_from_request_issuer_logout&.redirect_uris.to_a.compact
     csp_uris = SecureHeadersAllowList.csp_with_sp_redirect_uris(
       action_url, redirect_uris

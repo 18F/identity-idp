@@ -146,7 +146,7 @@ class ApplicationController < ActionController::Base
   end
 
   def current_sp
-    @current_sp ||= sp_from_sp_session || sp_from_request_id
+    sp_from_sp_session || sp_from_request_id
   end
 
   private
