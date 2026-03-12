@@ -24,6 +24,11 @@ RSpec.describe Idv::EnterPasswordController do
     stub_analytics
     stub_sign_in(user)
     allow(IdentityConfig.store).to receive(:usps_mock_fallback).and_return(false)
+    resolved_authn_context_result = Component::Parser.new(
+      acr_values: Saml::Idp::Constants::IAL_AUTH_ONLY_ACR,
+    ).parse
+    allow(controller).to receive(:resolved_authn_context_result)
+      .and_return(resolved_authn_context_result)
     session['sp'] = sp
     subject.idv_session.welcome_visited = true
     subject.idv_session.idv_consent_given_at = Time.zone.now
