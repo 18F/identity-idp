@@ -28,8 +28,6 @@ module Idv
       end
 
       def update
-        # TODO: create needed enrollment and session data
-
         enrollment.update!(
           selected_location_details: selected_location,
           issuer: current_sp&.issuer,
