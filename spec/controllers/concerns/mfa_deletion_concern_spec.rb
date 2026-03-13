@@ -23,8 +23,8 @@ RSpec.describe MfaDeletionConcern do
       expect(result).to be_nil
     end
 
-    it 'creates user event using with disavowal' do
-      expect(controller).to receive(:create_user_event_with_disavowal).with(event_type, user)
+    it 'creates a user event' do
+      expect(controller).to receive(:create_user_event).with(event_type)
 
       result
     end
@@ -53,7 +53,7 @@ RSpec.describe MfaDeletionConcern do
         ).and_return(mailer)
 
         expect(mailer).to receive(:mfa_deleted)
-          .with(subject: instance_of(String), disavowal_token: instance_of(String))
+          .with(subject: instance_of(String))
           .and_return(delivery)
       end
 

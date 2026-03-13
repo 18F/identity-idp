@@ -96,7 +96,8 @@ module Users
 
       if result.success?
         process_valid_webauthn(form)
-        create_webauthn_added_email(form.event_type)
+        create_user_event_with_disavowal(form.event_type)
+        send_mfa_added_email(event_type: form.event_type)
 
         user_session.delete(:mfa_attempts)
       else
@@ -222,11 +223,6 @@ module Users
         :platform_authenticator,
         :transports,
       ).merge(protocol: request.protocol)
-    end
-
-    def create_webauthn_added_email(type)
-      _event, disavowal_token = create_user_event_with_disavowal(type, current_user)
-      create_mfa_added_email(event_type: type, disavowal_token: disavowal_token)
     end
   end
 end

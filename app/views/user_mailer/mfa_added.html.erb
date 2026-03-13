@@ -7,7 +7,7 @@
         'user_mailer.multi_factor_authentication.instructions_html',
         change_password_link_html: link_to(
           t('user_mailer.multi_factor_authentication.change_password_link'),
-          event_disavowal_url(disavowal_token: @disavowal_token),
+          new_user_password_url,
         ),
         authentication_methods_link_html: link_to(
           t('user_mailer.multi_factor_authentication.authentication_methods_link'),

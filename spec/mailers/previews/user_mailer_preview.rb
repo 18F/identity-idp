@@ -366,14 +366,14 @@ class UserMailerPreview < ActionMailer::Preview
   def mfa_added
     UserMailer.with(
       user: user, email_address: email_address_record,
-    ).mfa_added(subject: subject_name, disavowal_token: SecureRandom.hex)
+    ).mfa_added(subject: subject_name)
   end
 
   def mfa_deleted
     UserMailer.with(
       user: user,
       email_address: email_address_record,
-    ).mfa_deleted(subject: subject_name, disavowal_token: SecureRandom.hex)
+    ).mfa_deleted(subject: subject_name)
   end
 
   private
