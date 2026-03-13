@@ -25,6 +25,11 @@ Rails.application.routes.draw do
     end
     get '/attempts-certs' => 'attempts_certs#index', as: :attempts_certs
 
+    namespace :proof_agent do
+      post '/search_user' => 'proofing_agent#search_user'
+      post '/proof_user' => 'proofing_agent#proof_user'
+    end
+
     namespace :internal do
       get '/sessions' => 'sessions#show'
       put '/sessions' => 'sessions#update'
