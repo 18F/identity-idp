@@ -96,6 +96,9 @@ module Users
 
       if result.success?
         process_valid_webauthn(form)
+        create_user_event_with_disavowal(form.event_type)
+        send_mfa_added_email(event_type: form.event_type)
+
         user_session.delete(:mfa_attempts)
       else
         flash.now[:error] = result.first_error_message
@@ -164,6 +167,7 @@ module Users
           analytics,
           threatmetrix_attrs,
         )
+
         flash[:success] = t('notices.webauthn_platform_configured') if !form.transports_mismatch?
       else
         handle_valid_verification_for_confirmation_context(
@@ -175,6 +179,7 @@ module Users
           analytics,
           threatmetrix_attrs,
         )
+
         flash[:success] = t('notices.webauthn_configured') if !form.transports_mismatch?
       end
 

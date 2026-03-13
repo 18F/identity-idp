@@ -103,6 +103,47 @@ module MfaSetupConcern
     }
   end
 
+  def send_mfa_added_email(event_type:)
+    _disavowal_event, disavowal_token = create_user_event_with_disavowal(
+      :password_changed,
+      current_user,
+    )
+    subject = case event_type
+    when :authenticator_enabled
+      t('user_mailer.multi_factor_authentication.auth_app_added', app_name: APP_NAME)
+    when :backup_codes_added
+      t(
+        'user_mailer.multi_factor_authentication.backup_codes_added',
+        app_name: APP_NAME,
+      )
+    when :phone_added, :phone_changed, :phone_confirmed
+      t(
+        'user_mailer.multi_factor_authentication.phone_added',
+        app_name: APP_NAME,
+      )
+    when :piv_cac_added
+      t(
+        'user_mailer.multi_factor_authentication.piv_card_added',
+        app_name: APP_NAME,
+      )
+    when :webauthn_key_added
+      t(
+        'user_mailer.multi_factor_authentication.webauthn_added',
+        app_name: APP_NAME,
+      )
+    when :webauthn_platform_added
+      t(
+        'user_mailer.multi_factor_authentication.webauthn_platform_added',
+        app_name: APP_NAME,
+      )
+    end
+
+    current_user.confirmed_email_addresses.each do |email_address|
+      UserMailer.with(user: current_user, email_address: email_address)
+        .mfa_added(subject: subject, disavowal_token: disavowal_token).deliver_now_or_later
+    end
+  end
+
   private
 
   def track_user_registration_mfa_setup_complete_event

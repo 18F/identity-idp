@@ -116,4 +116,34 @@ RSpec.describe MfaSetupConcern do
       end
     end
   end
+
+  describe '#send_mfa_added_email' do
+    let(:event_type) do
+      [:authenticator_enabled, :backup_codes_added, :webauthn_key_added,
+       :webauthn_platform_added, :piv_cac_enabled, :phone_added, :phone_changed,
+       :phone_confirmed].sample
+    end
+
+    subject(:send_mfa_added_email) do
+      controller.send_mfa_added_email(
+        event_type: event_type,
+      )
+    end
+    it 'receives value and sends email' do
+      delivery = instance_double(ActionMailer::MessageDelivery, deliver_now_or_later: true)
+      mailer = instance_double(UserMailer)
+
+      user.confirmed_email_addresses.each do |email_address|
+        allow(UserMailer).to receive(:with).with(
+          user: user, email_address: email_address,
+        ).and_return(mailer)
+
+        expect(mailer).to receive(:mfa_added)
+          .with(subject: instance_of(String), disavowal_token: instance_of(String))
+          .and_return(delivery)
+      end
+
+      send_mfa_added_email
+    end
+  end
 end

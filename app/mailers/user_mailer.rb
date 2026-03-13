@@ -86,13 +86,6 @@ class UserMailer < ActionMailer::Base
     end
   end
 
-  def phone_added(disavowal_token:)
-    with_user_locale(user) do
-      @disavowal_token = disavowal_token
-      mail(to: email_address.email, subject: t('user_mailer.phone_added.subject'))
-    end
-  end
-
   def personal_key_sign_in(disavowal_token:)
     with_user_locale(user) do
       @disavowal_token = disavowal_token
@@ -528,6 +521,28 @@ class UserMailer < ActionMailer::Base
   def account_reinstated
     with_user_locale(user) do
       mail(to: email_address.email, subject: t('user_mailer.account_reinstated.subject'))
+    end
+  end
+
+  def mfa_added(subject:, disavowal_token:)
+    @subject = subject
+    @disavowal_token = disavowal_token
+    with_user_locale(user) do
+      mail(
+        to: email_address.email,
+        subject: subject,
+      )
+    end
+  end
+
+  def mfa_deleted(subject:, disavowal_token:)
+    @subject = subject
+    @disavowal_token = disavowal_token
+    with_user_locale(user) do
+      mail(
+        to: email_address.email,
+        subject: subject,
+      )
     end
   end
 

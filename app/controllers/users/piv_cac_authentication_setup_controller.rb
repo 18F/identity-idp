@@ -110,7 +110,8 @@ module Users
         issuer: user_piv_cac_form.x509_issuer,
         presented: true,
       )
-      create_user_event(:piv_cac_enabled)
+      create_user_event_with_disavowal(:piv_cac_enabled)
+      send_mfa_added_email(event_type: :piv_cac_enabled)
       track_mfa_method_added
       user_session.delete(:add_piv_cac_after_2fa)
       session[:needs_to_setup_piv_cac_after_sign_in] = false
