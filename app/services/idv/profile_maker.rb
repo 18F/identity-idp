@@ -21,6 +21,7 @@ module Idv
       gpo_verification_needed:,
       in_person_verification_needed:,
       selfie_check_performed:,
+      proofing_agent_requested:,
       proofing_components:,
       deactivation_reason: nil
     )
@@ -34,6 +35,7 @@ module Idv
       profile.idv_level = set_idv_level(
         in_person_verification_needed: in_person_verification_needed,
         selfie_check_performed: selfie_check_performed,
+        proofing_agent_requested: proofing_agent_requested,
       )
 
       profile.save!
@@ -47,7 +49,11 @@ module Idv
 
     private
 
-    def set_idv_level(in_person_verification_needed:, selfie_check_performed:)
+    def set_idv_level(
+      in_person_verification_needed:,
+      selfie_check_performed:,
+      proofing_agent_requested:
+    )
       if in_person_verification_needed
         if IdentityConfig.store.in_person_proofing_enforce_tmx &&
            FeatureManagement.proofing_device_profiling_decisioning_enabled?
@@ -57,6 +63,8 @@ module Idv
         end
       elsif selfie_check_performed
         :unsupervised_with_selfie
+      elsif proofing_agent_requested
+        :proofing_agent
       else
         :legacy_unsupervised
       end
