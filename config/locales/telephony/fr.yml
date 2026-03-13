@@ -1,12 +1,15 @@
 ---
 fr:
   telephony:
-    account_deleted_notice: Cet SMS confirme que vous avez supprimé votre compte %{app_name}.
-    account_reset_cancellation_notice: Votre demande de suppression de votre compte %{app_name} a été annulée.
-    account_reset_notice: |-
-      Comme demandé, votre compte %{app_name} sera supprimé dans les %{interval}. Attendez l’arrivée du deuxième e-mail qui vous permettra de confirmer la suppression du compte. 
+    account_deleted_notice:
+      sms: Cet SMS confirme que vous avez supprimé votre compte %{app_name}.
+    account_reset_cancellation_notice:
+      sms: Votre demande de suppression de votre compte %{app_name} a été annulée.
+    account_reset_notice:
+      sms: |-
+        Comme demandé, votre compte %{app_name} sera supprimé dans les %{interval}. Attendez l’arrivée du deuxième e-mail qui vous permettra de confirmer la suppression du compte. 
 
-      Vous ne voulez pas supprimer votre compte? Connectez-vous à votre compte %{app_name} pour le annuler.
+        Vous ne voulez pas supprimer votre compte? Connectez-vous à votre compte %{app_name} pour le annuler.
     authentication_otp:
       sms: |-
         %{app_name} : Ne partagez ce code avec personne. Votre code est %{code}. Il expire dans %{expiration} minutes.
@@ -24,10 +27,12 @@ fr:
     doc_auth_link:
       sms: |-
         %{app_name} : %{link} Vous êtes en train de confirmer votre identité pour accéder à %{sp_or_app_name}. Prenez une photo de votre pièce d'identité pour continuer.
-    dupe_profile_created_notice: |-
-      Alerte %{app_name} : Vos informations personnelles ont été vérifiées sur un autre compte. L’accès à ces comptes a été restreint. Nous vous avons envoyé un courriel contenant les instructions à suivre.
-    dupe_profile_sign_in_attempted_notice: |-
-      Alerte %{app_name} : Un autre compte utilisant vos informations personnelles s'est connecté. L'accès à ces comptes a été restreint. Nous vous avons envoyé un courriel contenant les instructions à suivre.
+    dupe_profile_created_notice:
+      sms: |-
+        Alerte %{app_name} : Vos informations personnelles ont été vérifiées sur un autre compte. L’accès à ces comptes a été restreint. Nous vous avons envoyé un courriel contenant les instructions à suivre.
+    dupe_profile_sign_in_attempted_notice:
+      sms: |-
+        Alerte %{app_name} : Un autre compte utilisant vos informations personnelles s'est connecté. L'accès à ces comptes a été restreint. Nous vous avons envoyé un courriel contenant les instructions à suivre.
     error:
       friendly_message:
         daily_voice_limit_reached: L’envoi de votre code à usage unique a échoué car vous avez dépassé le nombre maximal d’appels vers ce numéro de téléphone en 24 heures. Vous pouvez demander un code par SMS ou utiliser un autre numéro pour recevoir un appel téléphonique.
@@ -49,5 +54,7 @@ fr:
     format_type:
       character: caractères
       digit: chiffres
-    personal_key_regeneration_notice: Une nouvelle clé personnelle a été émise pour votre compte %{app_name}. Si cela ne vient pas de vous, réinitialisez votre mot de passe.
-    personal_key_sign_in_notice: Votre clé personnelle vient d’être utilisée pour vous connecter à votre compte %{app_name}. Si cela ne vient pas de vous, réinitialisez votre mot de passe.
+    personal_key_regeneration_notice:
+      sms: Une nouvelle clé personnelle a été émise pour votre compte %{app_name}. Si cela ne vient pas de vous, réinitialisez votre mot de passe.
+    personal_key_sign_in_notice:
+      sms: Votre clé personnelle vient d’être utilisée pour vous connecter à votre compte %{app_name}. Si cela ne vient pas de vous, réinitialisez votre mot de passe.
