@@ -424,5 +424,76 @@ RSpec.describe Idv::HybridHandoffController do
         end
       end
     end
+
+    context 'IPP flow' do
+      let(:analytics_args) do
+        {
+          success: true,
+          destination: :document_capture,
+          flow_path: 'standard',
+          step: 'hybrid_handoff',
+          analytics_id: 'Doc Auth',
+          selfie_check_required: sp_selfie_enabled,
+        }
+      end
+
+      context 'when IPP selection is submitted' do
+        let(:params) do
+          {
+            idv_how_to_verify_form: {
+              selection: Idv::HowToVerifyForm::IPP,
+            },
+          }
+        end
+
+        context 'when in_person_out_of_react is enabled' do
+          before do
+            allow(IdentityConfig.store).to receive(:in_person_out_of_react).and_return(true)
+            Rails.application.reload_routes!
+            put :update, params:
+          end
+
+          it 'cancels any in-progress enrollments' do
+            expect(user.establishing_in_person_enrollment).to be_nil
+          end
+
+          it 'updates the IDV session to have IPP context' do
+            expect(subject.idv_session).to have_attributes(
+              opted_in_to_in_person_proofing: true,
+              flow_path: 'standard',
+              skip_doc_auth_from_how_to_verify: true,
+            )
+          end
+
+          it 'redirects to the IPP welcome page' do
+            expect(response).to redirect_to(idv_in_person_welcome_url)
+          end
+        end
+
+        context 'when in_person_out_of_react is disabled' do
+          before do
+            allow(IdentityConfig.store).to receive(:in_person_out_of_react).and_return(false)
+            Rails.application.reload_routes!
+            put :update, params:
+          end
+
+          it 'cancels any in-progress enrollments' do
+            expect(user.establishing_in_person_enrollment).to be_nil
+          end
+
+          it 'updates the IDV session to have IPP context' do
+            expect(subject.idv_session).to have_attributes(
+              opted_in_to_in_person_proofing: true,
+              flow_path: 'standard',
+              skip_doc_auth_from_how_to_verify: true,
+            )
+          end
+
+          it 'redirects to the document capture hybrid_handoff page' do
+            expect(response).to redirect_to(idv_document_capture_url(step: :hybrid_handoff))
+          end
+        end
+      end
+    end
   end
 end

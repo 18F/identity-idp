@@ -72,7 +72,8 @@ module Idv
       Idv::StepInfo.new(
         key: :hybrid_handoff,
         controller: self,
-        next_steps: [:choose_id_type, :link_sent, :document_capture, :socure_document_capture,  :ipp_welcome],
+        next_steps: [:choose_id_type, :link_sent, :document_capture, :socure_document_capture,
+                     :ipp_welcome],
         preconditions: ->(idv_session:, user:) do
           idv_session.idv_consent_given? &&
           (self.selected_remote(idv_session: idv_session) || # from opt-in screen
