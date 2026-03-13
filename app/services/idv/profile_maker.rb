@@ -21,9 +21,9 @@ module Idv
       gpo_verification_needed:,
       in_person_verification_needed:,
       selfie_check_performed:,
-      proofing_agent_requested:,
       proofing_components:,
-      deactivation_reason: nil
+      deactivation_reason: nil,
+      proofing_agent_requested: false
     )
       profile = Profile.new(user: user, active: false, deactivation_reason: deactivation_reason)
       profile.initiating_service_provider = initiating_service_provider
