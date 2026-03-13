@@ -14,7 +14,7 @@ module MfaDeletionConcern
 
   private
 
-  def send_mfa_added_email(event)
+  def send_mfa_deleted_email(event)
     _disavowal_event, disavowal_token = create_user_event_with_disavowal(
       :password_changed,
       current_user,
