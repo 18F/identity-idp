@@ -31,8 +31,6 @@ module Idv
         # analytics.idv_doc_auth_welcome_submitted(**analytics_arguments)
         # idv_session.welcome_visited = true
 
-        # redirect_to idv_agreement_url
-
         redirect_to idv_in_person_post_office_url
       end
 
