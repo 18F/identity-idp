@@ -1152,6 +1152,18 @@ RSpec.describe Idv::EnterPasswordController do
             put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
           end
         end
+
+        context 'with a proofed user who has already sent attempts to this SP' do
+          before do
+            put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+          end
+
+          it 'does not create a new UserProofingEvent' do
+            expect(UserProofingEvent).to_not receive(:new)
+            expect(mock).to_not receive(:save)
+            put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+          end
+        end
       end
     end
   end
