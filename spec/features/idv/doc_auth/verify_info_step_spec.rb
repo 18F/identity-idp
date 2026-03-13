@@ -3,6 +3,7 @@ require 'rails_helper'
 RSpec.feature 'verify_info step and verify_info_concern', :js do
   include IdvStepHelper
   include DocAuthHelper
+  include IdvVendorRequestHelper
 
   let(:fake_analytics) { FakeAnalytics.new }
   let(:attempts_api_tracker) { AttemptsApiTrackingHelper::FakeAttemptsTracker.new }
@@ -773,6 +774,65 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
 
       click_on 'Cancel'
       expect(page).to have_current_path(idv_cancel_path(step: :gpo))
+    end
+  end
+
+  context 'when AAMVA is enabled at doc auth' do
+    before do
+      allow(IdentityConfig.store).to receive_messages(
+        idv_aamva_at_doc_auth_enabled: true,
+        proofer_mock_fallback: false,
+        idv_resolution_default_vendor: :instant_verify,
+        idv_resolution_vendor_switching_enabled: false,
+      )
+      reload_ab_tests
+      stub_aamva_request(AamvaFixtures.verification_response)
+
+      visit_idp_from_sp_with_ial2(:oidc)
+      sign_in_and_2fa_user(user)
+      complete_doc_auth_steps_before_welcome_step
+      click_idv_continue # Acknowledge mail-only alert
+      complete_welcome_step
+      complete_agreement_step
+      complete_hybrid_handoff_step
+      complete_choose_id_type_step
+      complete_document_capture_step
+      complete_ssn_step
+    end
+
+    context 'when instant verify fails with attributes covered by AAMVA' do
+      let(:instant_verify_response) do
+        LexisNexisFixtures.instant_verify_date_of_birth_fail_response_json
+      end
+
+      before do
+        stub_instant_verify_request(instant_verify_response)
+      end
+
+      it('passes the verify info step') do
+        complete_verify_step
+        expect(page).to have_current_path(idv_phone_path)
+      end
+    end
+
+    context 'when instant verify fails with attributes not covered by AAMVA' do
+      let(:instant_verify_response) do
+        LexisNexisFixtures.instant_verify_identity_not_found_response_json
+      end
+
+      before do
+        stub_instant_verify_request(instant_verify_response)
+      end
+
+      it('fails the verify info step') do
+        complete_verify_step
+
+        expect(page).to have_current_path(idv_session_errors_warning_path)
+        expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_info'))
+        click_on t('idv.failure.button.warning')
+
+        expect(page).to have_current_path(idv_verify_info_path)
+      end
     end
   end
 end
