@@ -258,15 +258,15 @@ module TwoFactorAuthentication
 
     def phone_changed
       create_user_event(:phone_changed)
-      send_mfa_added_email(event_type: :phone_added)
+      send_mfa_added_email(event_type: :phone_changed)
     end
 
     def phone_confirmed
       create_user_event(:phone_confirmed)
-      send_mfa_added_email(event_type: :phone_confirmed)
       # If the user has MFA configured, then they are not adding a phone during sign up and are
       # instead adding it outside the sign up flow
       return unless MfaPolicy.new(current_user).two_factor_enabled?
+      send_mfa_added_email(event_type: :phone_confirmed)
     end
 
     def selected_otp_make_default_number
