@@ -78,7 +78,12 @@ module Users
     end
 
     def process_valid_code
-      create_events
+      create_user_event(:authenticator_enabled)
+      send_mfa_added_email(event_type: :authenticator_enabled)
+      Funnel::Registration::AddMfa.call(
+        current_user.id, 'auth_app', analytics,
+        threatmetrix_attrs
+      )
       handle_valid_verification_for_confirmation_context(
         auth_method: TwoFactorAuthenticatable::AuthMethod::TOTP,
       )
@@ -86,15 +91,6 @@ module Users
       flash[:success] = t('notices.totp_configured')
       user_session.delete(:new_totp_secret)
       redirect_to next_setup_path || after_mfa_setup_path
-    end
-
-    def create_events
-      _event, disavowal_token = create_user_event_with_disavowal(
-        :authenticator_enabled,
-        current_user,
-      )
-      send_mfa_added_email(event_type: :authenticator_enabled, disavowal_token: disavowal_token)
-      Funnel::Registration::AddMfa.call(current_user.id, 'auth_app', analytics, threatmetrix_attrs)
     end
 
     def process_invalid_code
