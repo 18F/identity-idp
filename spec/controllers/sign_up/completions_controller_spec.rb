@@ -295,6 +295,24 @@ RSpec.describe SignUp::CompletionsController do
           )
         end
       end
+
+      context 'with unconfirmed email addresses' do
+        it 'does not send email to unconfirmed email addresses' do
+          user = create(:user, :fully_registered)
+          create(:email_address, user: user, confirmed_at: nil)
+          stub_sign_in(user)
+          subject.session[:sp] = {
+            acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+            issuer: current_sp.issuer,
+            request_url: 'http://example.com',
+          }
+
+          patch :update
+          user.reload
+          expect(user.email_addresses.count).to eq(2)
+          expect_delivered_email_count(1)
+        end
+      end
     end
 
     context 'IAL2' do
