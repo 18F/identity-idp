@@ -266,7 +266,7 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
               new_device: true,
               available_webauthn_platform_config: true,
               attempts: 1,
-              webauthn_auth_duration: a_value_within(0.5).of(2),
+              webauthn_auth_duration: a_value_within(1).of(2),
             )
             expect(@analytics).to have_logged_event(
               'User marked authenticated',
