@@ -226,7 +226,7 @@ module Users
 
     def create_webauthn_added_email(type)
       _event, disavowal_token = create_user_event_with_disavowal(type, current_user)
-      create_mfa_added_email(event_type: type, disavowal_token: disavowal_token)
+      send_mfa_added_email(event_type: type, disavowal_token: disavowal_token)
     end
   end
 end

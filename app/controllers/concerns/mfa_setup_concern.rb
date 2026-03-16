@@ -103,7 +103,7 @@ module MfaSetupConcern
     }
   end
 
-  def create_mfa_added_email(event_type:, disavowal_token:)
+  def send_mfa_added_email(event_type:, disavowal_token:)
     subject = case event_type
     when :authenticator_enabled
       t('user_mailer.multi_factor_authentication.auth_app_added', app_name: APP_NAME)

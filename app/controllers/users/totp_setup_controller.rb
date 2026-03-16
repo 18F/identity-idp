@@ -93,7 +93,7 @@ module Users
         :authenticator_enabled,
         current_user,
       )
-      create_mfa_added_email(event_type: :authenticator_enabled, disavowal_token: disavowal_token)
+      send_mfa_added_email(event_type: :authenticator_enabled, disavowal_token: disavowal_token)
       Funnel::Registration::AddMfa.call(current_user.id, 'auth_app', analytics, threatmetrix_attrs)
     end
 
