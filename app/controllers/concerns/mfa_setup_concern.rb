@@ -103,7 +103,12 @@ module MfaSetupConcern
     }
   end
 
-  def send_mfa_added_email(event_type:, disavowal_token:)
+  def send_mfa_added_email(event_type:)
+    _event, disavowal_token = create_user_event_with_disavowal(
+      event_type,
+      current_user,
+    )
+
     subject = case event_type
     when :authenticator_enabled
       t('user_mailer.multi_factor_authentication.auth_app_added', app_name: APP_NAME)
@@ -117,7 +122,7 @@ module MfaSetupConcern
         'user_mailer.multi_factor_authentication.phone_added',
         app_name: APP_NAME,
       )
-    when :piv_cac_added
+    when :piv_cac_enabled
       t(
         'user_mailer.multi_factor_authentication.piv_card_added',
         app_name: APP_NAME,

@@ -89,11 +89,7 @@ module Users
     end
 
     def create_events
-      _event, disavowal_token = create_user_event_with_disavowal(
-        :authenticator_enabled,
-        current_user,
-      )
-      send_mfa_added_email(event_type: :authenticator_enabled, disavowal_token: disavowal_token)
+      send_mfa_added_email(event_type: :authenticator_enabled)
       Funnel::Registration::AddMfa.call(current_user.id, 'auth_app', analytics, threatmetrix_attrs)
     end
 

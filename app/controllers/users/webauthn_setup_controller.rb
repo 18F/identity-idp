@@ -96,7 +96,6 @@ module Users
 
       if result.success?
         process_valid_webauthn(form)
-        create_webauthn_added_email(form.event_type)
 
         user_session.delete(:mfa_attempts)
       else
@@ -149,7 +148,7 @@ module Users
     end
 
     def process_valid_webauthn(form)
-      create_user_event(form.event_type)
+      send_mfa_added_email(event_type: form.event_type)
       analytics.webauthn_setup_submitted(
         platform_authenticator: form.platform_authenticator?,
         in_account_creation_flow: user_session[:in_account_creation_flow] || false,
@@ -167,7 +166,10 @@ module Users
           threatmetrix_attrs,
         )
 
-        flash[:success] = t('notices.webauthn_platform_configured') if !form.transports_mismatch?
+        if !form.transports_mismatch?
+          flash[:success] =
+            t('notices.webauthn_platform_configured')
+        end
       else
         handle_valid_verification_for_confirmation_context(
           auth_method: TwoFactorAuthenticatable::AuthMethod::WEBAUTHN,
@@ -222,11 +224,6 @@ module Users
         :platform_authenticator,
         :transports,
       ).merge(protocol: request.protocol)
-    end
-
-    def create_webauthn_added_email(type)
-      _event, disavowal_token = create_user_event_with_disavowal(type, current_user)
-      send_mfa_added_email(event_type: type, disavowal_token: disavowal_token)
     end
   end
 end
