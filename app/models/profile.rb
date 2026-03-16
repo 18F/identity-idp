@@ -2,7 +2,7 @@
 
 class Profile < ApplicationRecord
   # IDV levels equivalent to facial match
-  FACIAL_MATCH_IDV_LEVELS = %w[unsupervised_with_selfie in_person _proofing_agent].to_set.freeze
+  FACIAL_MATCH_IDV_LEVELS = %w[unsupervised_with_selfie in_person proofing_agent].to_set.freeze
   # Facial match through IAL2 opt-in flow
   FACIAL_MATCH_OPT_IN = %w[unsupervised_with_selfie].to_set.freeze
 
