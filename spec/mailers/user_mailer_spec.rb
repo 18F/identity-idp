@@ -1690,7 +1690,7 @@ RSpec.describe UserMailer, type: :mailer do
   describe '#mfa_added' do
     let(:mail) do
       UserMailer.with(user: user, email_address: email_address)
-        .mfa_added(subject: 'fake subject')
+        .mfa_added(subject: 'fake subject', disavowal_token: '123abc')
     end
 
     it_behaves_like 'a system email'
@@ -1710,12 +1710,15 @@ RSpec.describe UserMailer, type: :mailer do
             ),
           ),
         )
+      expect(mail.html_part.body).to include(
+        '/events/disavow?disavowal_token=123abc',
+      )
     end
   end
   describe '#mfa_deleted' do
     let(:mail) do
       UserMailer.with(user: user, email_address: email_address)
-        .mfa_deleted(subject: 'fake subject')
+        .mfa_deleted(subject: 'fake subject', disavowal_token: '123abc')
     end
 
     it_behaves_like 'a system email'
@@ -1738,6 +1741,9 @@ RSpec.describe UserMailer, type: :mailer do
             ),
           ),
         )
+      expect(mail.html_part.body).to include(
+        '/events/disavow?disavowal_token=123abc',
+      )
     end
   end
 end

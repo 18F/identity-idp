@@ -117,18 +117,17 @@ RSpec.describe MfaSetupConcern do
     end
   end
 
-  describe '#send_mfa_added_email' do
-    let(:event_type) do
-      [:authenticator_enabled, :backup_codes_added, :webauthn_key_added,
-       :webauthn_platform_added, :piv_cac_enabled, :phone_added, :phone_changed,
-       :phone_confirmed].sample
-    end
+  describe '#create_mfa_added_email' do
+    let(:disavowal_token) { SecureRandom.hex }
+    let(:event_type) { :authenticator_enabled }
 
-    subject(:send_mfa_added_email) do
-      controller.send_mfa_added_email(
+    subject(:create_mfa_added_email) do
+      controller.create_mfa_added_email(
         event_type: event_type,
+        disavowal_token: disavowal_token,
       )
     end
+
     it 'receives value and sends email' do
       delivery = instance_double(ActionMailer::MessageDelivery, deliver_now_or_later: true)
       mailer = instance_double(UserMailer)
@@ -139,11 +138,11 @@ RSpec.describe MfaSetupConcern do
         ).and_return(mailer)
 
         expect(mailer).to receive(:mfa_added)
-          .with(subject: instance_of(String))
+          .with(subject: instance_of(String), disavowal_token: disavowal_token)
           .and_return(delivery)
       end
 
-      send_mfa_added_email
+      create_mfa_added_email
     end
   end
 end

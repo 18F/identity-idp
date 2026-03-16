@@ -53,7 +53,7 @@ module Users
     end
 
     def continue
-      send_mfa_added_email(event_type: :backup_codes_added)
+      setup_backup_codes_added_email
       flash[:success] = t('notices.backup_codes_configured')
       analytics.multi_factor_auth_setup(**analytics_properties)
       redirect_to next_setup_path || after_mfa_setup_path
@@ -146,6 +146,11 @@ module Users
         in_account_creation_flow: in_account_creation_flow?,
         enabled_mfa_methods_count: mfa_context.enabled_mfa_methods_count,
       }
+    end
+
+    def setup_backup_codes_added_email
+      _event, disavowal_token = create_user_event_with_disavowal(:backup_codes_added, current_user)
+      create_mfa_added_email(event_type: :backup_codes_added, disavowal_token: disavowal_token)
     end
   end
 end
