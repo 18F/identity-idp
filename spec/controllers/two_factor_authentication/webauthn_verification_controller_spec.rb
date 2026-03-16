@@ -389,6 +389,7 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
             available_webauthn_platform_config: true,
             frontend_error: webauthn_error,
             attempts: 1,
+            webauthn_auth_duration: a_value_within(0.5).of(2),
           )
         end
       end
