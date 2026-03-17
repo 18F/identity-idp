@@ -1,4 +1,4 @@
-# Login.gov Identity Provider (IdP) 
+# Login.gov Identity Provider (IdP)
 
 Login.gov is the public's one account for government. Use one account and password for secure, private access to participating government agencies.
 
