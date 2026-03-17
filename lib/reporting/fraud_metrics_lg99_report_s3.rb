@@ -17,16 +17,25 @@ module Reporting
 
     # @param [Range<Time>] time_range
     # @param [String] bucket_name the S3 bucket name
-    # @param [String] s3_path_prefix the S3 key prefix \
-    # (e.g. "fraud-metrics-report/2026/2026-03-04.fraud-metrics-report")
+    # @param [Date, nil] report_date when provided, the S3 path prefix is derived automatically
+    #   as "fraud-metrics-report/<YEAR>/<YYYY-MM-DD>.fraud-metrics-report"
+    # @param [String, nil] s3_path_prefix explicit S3 key prefix; overrides report_date derivation
+    #   (e.g. "fraud-metrics-report/2026/2026-03-04.fraud-metrics-report")
+    # @raise [ArgumentError] if neither report_date nor s3_path_prefix is provided
     def initialize(
       time_range:,
       bucket_name:,
-      s3_path_prefix:
+      report_date: nil,
+      s3_path_prefix: nil
     )
+      if s3_path_prefix.nil? && report_date.nil?
+        raise ArgumentError, 'Must provide either report_date or s3_path_prefix'
+      end
+
       @time_range = time_range
       @bucket_name = bucket_name
-      @s3_path_prefix = s3_path_prefix
+      @s3_path_prefix = s3_path_prefix ||
+                        "fraud-metrics-report/#{report_date.year}/#{report_date.strftime('%F')}.fraud-metrics-report"
     end
 
     def as_emailable_reports

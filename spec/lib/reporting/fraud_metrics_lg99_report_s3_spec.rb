@@ -61,6 +61,52 @@ RSpec.describe Reporting::FraudMetricsLg99ReportS3 do
     )
   end
 
+  describe 'initialization' do
+    context 'when neither report_date nor s3_path_prefix is provided' do
+      it 'raises an ArgumentError' do
+        expect do
+          described_class.new(time_range: time_range, bucket_name: bucket_name)
+        end.to raise_error(ArgumentError, /report_date.*s3_path_prefix|s3_path_prefix.*report_date/)
+      end
+    end
+
+    context 'when report_date is provided without s3_path_prefix' do
+      let(:report_date) { Date.new(2026, 3, 15) }
+
+      it 'derives the correct s3_path_prefix from report_date' do
+        report_with_date = described_class.new(
+          time_range: time_range,
+          bucket_name: bucket_name,
+          report_date: report_date,
+        )
+        report_with_date.lg99_metrics_table
+
+        expected_prefix = 'fraud-metrics-report/2026/2026-03-15.fraud-metrics-report'
+        expect(s3_client.api_requests.first).to include(
+          operation_name: :get_object,
+          params: hash_including(
+            bucket: bucket_name,
+            key: "#{expected_prefix}/lg99_metrics.csv",
+          ),
+        )
+      end
+    end
+
+    context 'when s3_path_prefix is explicitly provided' do
+      it 'uses the given s3_path_prefix (backward compatibility)' do
+        report.lg99_metrics_table
+
+        expect(s3_client.api_requests.first).to include(
+          operation_name: :get_object,
+          params: hash_including(
+            bucket: bucket_name,
+            key: "#{s3_path_prefix}/lg99_metrics.csv",
+          ),
+        )
+      end
+    end
+  end
+
   describe '#lg99_metrics_table' do
     let(:expected_table) do
       [

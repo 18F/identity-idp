@@ -67,7 +67,7 @@ module Reports
       @fraud_metrics_lg99_report_s3 ||= Reporting::FraudMetricsLg99ReportS3.new(
         time_range: report_date.all_month,
         bucket_name: data_warehouse_bucket_name,
-        s3_path_prefix: s3_source_path_prefix,
+        report_date: report_date.to_date,
       )
     end
 
@@ -108,12 +108,6 @@ module Reports
       aws_account_id = Identity::Hostdata.aws_account_id
       aws_region = Identity::Hostdata.aws_region
       "#{bucket_prefix}-#{env}-#{aws_account_id}-#{aws_region}"
-    end
-
-    # The source CSVs in the data warehouse are stored under the 'fraud-metrics-report' path,
-    # independent of this job's REPORT_NAME (which identifies the output report destination).
-    def s3_source_path_prefix
-      "fraud-metrics-report/#{report_date.year}/#{report_date.strftime('%F')}.fraud-metrics-report"
     end
   end
 end

@@ -168,7 +168,7 @@ RSpec.describe Reports::FraudMetricsLg99S3Report do
       expect(Reporting::FraudMetricsLg99ReportS3).to receive(:new).with(
         time_range: report_date.all_month,
         bucket_name: 'login-gov-dw-reports-int-1234-us-west-1',
-        s3_path_prefix: 'fraud-metrics-report/2021/2021-03-02.fraud-metrics-report',
+        report_date: report_date.to_date,
       ).and_call_original
 
       fresh_report.fraud_metrics_lg99_report_s3
@@ -204,14 +204,6 @@ RSpec.describe Reports::FraudMetricsLg99S3Report do
     it 'constructs the bucket name from config and hostdata' do
       expect(report.send(:data_warehouse_bucket_name)).to \
         eq('login-gov-dw-reports-int-1234-us-west-1')
-    end
-  end
-
-  describe '#s3_source_path_prefix' do
-    it 'constructs the correct S3 path prefix' do
-      expect(report.send(:s3_source_path_prefix)).to eq(
-        'fraud-metrics-report/2021/2021-03-02.fraud-metrics-report',
-      )
     end
   end
 
