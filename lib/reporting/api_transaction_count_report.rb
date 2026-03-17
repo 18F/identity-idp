@@ -312,9 +312,11 @@ module Reporting
     def socure_kyc
       <<~QUERY
         fields @timestamp, @message, @logStream, @log
-        | filter name='IdV: doc auth verify proofing results' 
-        and properties.event_properties.proofing_results.context.stages.resolution.vendor_name='socure_kyc'
+        | fields jsonParse(@message) as message
+        | unnest message.properties.event_properties into event_properties
+        | filter name='IdV: doc auth verify proofing results' and event_properties.proofing_results.context.stages.resolution.vendor_name='socure_kyc'
         | sort @timestamp desc
+        | display timestamp, id
         | limit 10000
       QUERY
     end
