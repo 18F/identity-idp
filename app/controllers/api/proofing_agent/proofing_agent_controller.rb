@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Api
-  module ProofAgent
+  module ProofingAgent
     class ProofingAgentController < ApplicationController
       include RenderConditionConcern
 
@@ -9,7 +9,7 @@ module Api
       prepend_before_action :skip_session_expiration
       skip_before_action :verify_authenticity_token
 
-      check_or_render_not_found -> { IdentityConfig.store.idv_proofing_agent_enabled }
+      check_or_render_not_found -> { FeatureManagement.idv_proofing_agent_enabled? }
 
       def search_user
         render json: { request_id: SecureRandom.uuid }

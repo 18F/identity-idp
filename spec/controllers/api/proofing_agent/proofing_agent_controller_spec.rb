@@ -2,11 +2,11 @@
 
 require 'rails_helper'
 
-RSpec.describe Api::ProofAgent::ProofingAgentController do
+RSpec.describe Api::ProofingAgent::ProofingAgentController do
   let(:enabled) { false }
 
   before do
-    allow(IdentityConfig.store).to receive(:idv_proofing_agent_enabled).and_return(enabled)
+    allow(FeatureManagement).to receive(:idv_proofing_agent_enabled?).and_return(enabled)
   end
 
   describe '#search_user' do
