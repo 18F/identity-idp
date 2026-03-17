@@ -12,6 +12,7 @@ locals:
     <%= content_tag(
           :iframe,
           '',
+          sandbox: '',
           src: threatmetrix_iframe_url,
           style: 'width: 100px; height: 100px; border: 0; position: absolute; top: -5000px;',
         ) %>

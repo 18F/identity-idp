@@ -65,7 +65,7 @@ RSpec.describe Telephony::AlertSender do
       expect(last_message.to).to eq(recipient)
       expect(last_message.body).to eq(
         I18n.t(
-          'telephony.doc_auth_link',
+          'telephony.doc_auth_link.sms',
           app_name: app_name,
           link: link,
           sp_or_app_name: sp_or_app_name,

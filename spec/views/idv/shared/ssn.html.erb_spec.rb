@@ -106,7 +106,10 @@ RSpec.describe 'idv/shared/ssn.html.erb' do
   end
 
   def expect_noscript_tag_rendered
-    expect(rendered).to have_css("noscript iframe[src='#{tags_iframe_url}']", visible: false)
+    expect(rendered).to have_css(
+      "noscript iframe[src='#{tags_iframe_url}'][sandbox='']",
+      visible: false,
+    )
   end
 
   def expect_session_id_input_rendered

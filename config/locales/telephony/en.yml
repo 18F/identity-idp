@@ -25,8 +25,9 @@ en:
 
         @%{domain} #%{code}
       voice: Hello! Your %{format_length}-%{format_type} %{app_name} one-time code is, %{code}. Your one-time code is, %{code}. Again, your one-time code is %{code}. This code expires in %{expiration} minutes.
-    doc_auth_link: |-
-      %{app_name}: %{link} You're verifying your identity to access %{sp_or_app_name}. Take a photo of your ID to continue.
+    doc_auth_link:
+      sms: |-
+        %{app_name}: %{link} You're verifying your identity to access %{sp_or_app_name}. Take a photo of your ID to continue.
     dupe_profile_created_notice: |-
       %{app_name} Alert: Your personal information was verified on another account. We've restricted access on these accounts. We sent you an email with details on what to do next.
     dupe_profile_sign_in_attempted_notice: |-

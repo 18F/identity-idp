@@ -3,6 +3,7 @@ require 'axe-rspec'
 
 RSpec.describe 'In Person Proofing', js: true do
   include IdvStepHelper
+  include IdvVendorRequestHelper
   include SpAuthHelper
   include InPersonHelper
   include UspsIppHelper
@@ -906,6 +907,70 @@ RSpec.describe 'In Person Proofing', js: true do
 
         expect(page).to have_current_path(idv_in_person_ssn_url, wait: 10)
         expect(page).to have_content(t('doc_auth.headings.ssn'))
+      end
+    end
+
+    context 'when AAMVA is enabled at the state ID form' do
+      let(:user) { user_with_2fa }
+
+      before do
+        allow(IdentityConfig.store).to receive_messages(
+          idv_aamva_at_doc_auth_enabled: true,
+          idv_aamva_at_doc_auth_ipp_enabled: true,
+          proofer_mock_fallback: false,
+          idv_resolution_default_vendor: :instant_verify,
+          idv_resolution_vendor_switching_enabled: false,
+        )
+        reload_ab_tests
+        stub_aamva_request(AamvaFixtures.verification_response)
+
+        sign_in_and_2fa_user(user)
+        begin_in_person_proofing_with_opt_in_ipp_enabled_and_opting_in
+        complete_prepare_step(user)
+        complete_location_step(user)
+        fill_out_state_id_form_ok(same_address_as_id: true)
+        click_idv_continue
+        complete_ssn_step(user)
+      end
+
+      context 'when instant verify fails with attributes covered by AAMVA' do
+        let(:instant_verify_response) do
+          LexisNexisFixtures.instant_verify_date_of_birth_fail_response_json
+        end
+
+        before do
+          stub_instant_verify_request(instant_verify_response)
+        end
+
+        it 'allows users to complete the verify info step and reach the bar code page' do
+          complete_verify_step(user)
+          complete_phone_step(user)
+          complete_enter_password_step(user)
+          acknowledge_and_confirm_personal_key
+
+          expect(page).to have_current_path(idv_in_person_ready_to_verify_path, wait: 10)
+          expect(page).to have_content(strip_nbsp(t('in_person_proofing.headings.barcode')))
+        end
+      end
+
+      context 'when instant verify fails with attributes not covered by AAMVA' do
+        let(:instant_verify_response) do
+          LexisNexisFixtures.instant_verify_identity_not_found_response_json
+        end
+
+        before do
+          stub_instant_verify_request(instant_verify_response)
+        end
+
+        it 'does not allow users to complete the verify info step' do
+          complete_verify_step(user)
+
+          expect(page).to have_current_path(idv_session_errors_warning_path(flow: 'in_person'))
+          expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_info'))
+          click_on t('idv.failure.button.warning')
+
+          expect(page).to have_current_path(idv_in_person_verify_info_path)
+        end
       end
     end
   end

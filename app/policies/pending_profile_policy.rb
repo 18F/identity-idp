@@ -30,7 +30,8 @@ class PendingProfilePolicy
 
   def pending_legacy_profile?
     user.pending_profile&.present? &&
-      user.pending_profile.idv_level != 'unsupervised_with_selfie'
+      user.pending_profile.idv_level != 'unsupervised_with_selfie' &&
+      user.pending_profile.idv_level != 'proofing_agent'
   end
 
   def fraud_review_pending?

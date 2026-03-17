@@ -57,4 +57,34 @@ RSpec.describe FraudOps::Tracker do
       expect(redis_wrapper).to have_received(:write_event)
     end
   end
+
+  describe 'error handling' do
+    it 'returns nil and logs a warning when an error occurs' do
+      allow(IdentityConfig.store).to receive(:fraud_ops_public_key).and_return('')
+
+      expect(NewRelic::Agent).to receive(:notice_error).with(instance_of(OpenSSL::PKey::RSAError))
+      expect(Rails.logger).to receive(:warn).with(
+        include('"event":"fraud_ops_tracker_error"'),
+      )
+
+      result = tracker.login_email_and_password_auth(email: user.email, success: true)
+
+      expect(result).to be_nil
+    end
+
+    it 'returns nil and logs a warning when Redis is unavailable' do
+      redis_wrapper = instance_double(FraudOps::RedisClient)
+      allow(FraudOps::RedisClient).to receive(:new).and_return(redis_wrapper)
+      allow(redis_wrapper).to receive(:write_event).and_raise(Redis::CannotConnectError)
+
+      expect(NewRelic::Agent).to receive(:notice_error).with(instance_of(Redis::CannotConnectError))
+      expect(Rails.logger).to receive(:warn).with(
+        include('"event":"fraud_ops_tracker_error"'),
+      )
+
+      result = tracker.login_email_and_password_auth(email: user.email, success: true)
+
+      expect(result).to be_nil
+    end
+  end
 end

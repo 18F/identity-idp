@@ -21,7 +21,9 @@ es:
 
         @%{domain} #%{code}
       voice: 'Hola: Los %{format_length} %{format_type} de su código de un solo uso de %{app_name} son %{code}. Su código de un solo uso es %{code}. De nuevo, su código de un solo uso es %{code}. Este código vence en %{expiration} minutos.'
-    doc_auth_link: '%{app_name}: %{link} Está verificando su identidad para acceder a %{sp_or_app_name}. Tome una foto de su identificación para continuar.'
+    doc_auth_link:
+      sms: |-
+        %{app_name}: %{link} Está verificando su identidad para acceder a %{sp_or_app_name}. Tome una foto de su identificación para continuar.
     dupe_profile_created_notice: |-
       Alerta de %{app_name}: Su información personal fue verificada en otra cuenta. Hemos restringido el acceso a estas cuentas. Le enviamos un correo electrónico con detalles sobre qué hacer a continuación.
     dupe_profile_sign_in_attempted_notice: |-

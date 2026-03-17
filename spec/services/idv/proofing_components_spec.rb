@@ -260,6 +260,15 @@ RSpec.describe Idv::ProofingComponents do
         expect(subject.address_check).to eql('socure_address')
       end
     end
+
+    context 'with manual review' do
+      before do
+        idv_session.address_verification_vendor = 'manual_review'
+      end
+      it 'returns manual_review' do
+        expect(subject.address_check).to eql('manual_review')
+      end
+    end
   end
 
   describe '#threatmetrix' do
