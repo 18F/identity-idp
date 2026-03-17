@@ -165,11 +165,7 @@ module Users
           analytics,
           threatmetrix_attrs,
         )
-
-        if !form.transports_mismatch?
-          flash[:success] =
-            t('notices.webauthn_platform_configured')
-        end
+        flash[:success] = t('notices.webauthn_platform_configured') if !form.transports_mismatch?
       else
         handle_valid_verification_for_confirmation_context(
           auth_method: TwoFactorAuthenticatable::AuthMethod::WEBAUTHN,
@@ -180,7 +176,6 @@ module Users
           analytics,
           threatmetrix_attrs,
         )
-
         flash[:success] = t('notices.webauthn_configured') if !form.transports_mismatch?
       end
 
