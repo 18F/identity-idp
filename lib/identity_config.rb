@@ -505,6 +505,7 @@ module IdentityConfig
     config.add(:sign_in_recaptcha_annotation_enabled, type: :boolean)
     config.add(:sign_in_recaptcha_percent_tested, type: :integer)
     config.add(:sign_in_recaptcha_score_threshold, type: :float)
+    config.add(:sign_in_password_compromised_percent_tested, type: :integer)
     config.add(:skip_encryption_allowed_list, type: :json)
     config.add(:socure_doc_escrow_enabled, type: :boolean)
     config.add(:socure_docv_document_request_endpoint, type: :string)

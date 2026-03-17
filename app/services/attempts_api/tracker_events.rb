@@ -110,7 +110,7 @@ module AttemptsApi
       failure_reason: nil
     )
       track_event(
-        :idv_document_upload_submitted,
+        'idv-document-upload-submitted',
         success:,
         document_state:,
         document_number:,
@@ -151,7 +151,7 @@ module AttemptsApi
       failure_reason: nil
     )
       track_event(
-        :idv_image_retrieval_failed,
+        'idv-image-retrieval-failed',
         document_back_image_file_id:,
         document_front_image_file_id:,
         document_passport_image_file_id:,
