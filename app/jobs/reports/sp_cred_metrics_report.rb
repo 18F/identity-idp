@@ -12,14 +12,8 @@ module Reports
       super(init_date, init_receiver, report_config, *args, **rest)
     end
 
-    def partner_strings
-      @partner_strings || []
-    end
-
-    def partner_accounts
-      IaaReportingHelper.partner_accounts.filter do |account|
-        partner_strings.include?(account.partner)
-      end
+    def issuers
+      @issuers || []
     end
 
     def iaas
@@ -28,8 +22,10 @@ module Reports
       end
     end
 
-    def issuers
-      @issuers || []
+    def partner_accounts
+      IaaReportingHelper.partner_accounts.filter do |account|
+        (account.issuers & issuers).any?
+      end
     end
 
     def email_addresses
@@ -38,7 +34,7 @@ module Reports
 
       if report_receiver == :both && partner_emails.empty?
         Rails.logger.warn(
-          "#{partner_strings.first} Monthly Credential Report: recipient is :both " \
+          "#{agency_abbreviation} Monthly Credential Report: recipient is :both " \
           "but no external email specified",
         )
       end
@@ -89,11 +85,10 @@ module Reports
       @report_config = report_config
 
       @issuers = report_config['issuers']
-      @partner_strings = report_config['partner_strings']
       @partner_emails = report_config['partner_emails']
       @internal_emails = report_config['internal_emails']
-
-      @report_name = "#{@partner_strings.first.downcase}_monthly_cred_metrics"
+      @agency_abbreviation = report_config['agency_abbreviation']
+      @report_name = "#{@agency_abbreviation.downcase}_monthly_cred_metrics"
 
       emails = email_addresses
       to_emails = emails[:to].select(&:present?)
