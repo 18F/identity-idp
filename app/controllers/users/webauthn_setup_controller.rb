@@ -96,6 +96,7 @@ module Users
 
       if result.success?
         process_valid_webauthn(form)
+
         user_session.delete(:mfa_attempts)
       else
         flash.now[:error] = result.first_error_message
@@ -147,7 +148,7 @@ module Users
     end
 
     def process_valid_webauthn(form)
-      create_user_event(form.event_type)
+      send_mfa_added_email(event_type: form.event_type)
       analytics.webauthn_setup_submitted(
         platform_authenticator: form.platform_authenticator?,
         in_account_creation_flow: user_session[:in_account_creation_flow] || false,

@@ -89,7 +89,7 @@ module Users
     end
 
     def create_events
-      create_user_event(:authenticator_enabled)
+      send_mfa_added_email(event_type: :authenticator_enabled)
       Funnel::Registration::AddMfa.call(current_user.id, 'auth_app', analytics, threatmetrix_attrs)
     end
 

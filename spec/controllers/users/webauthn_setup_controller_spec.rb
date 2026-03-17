@@ -161,12 +161,6 @@ RSpec.describe Users::WebauthnSetupController do
         )
       end
 
-      it 'creates user event' do
-        expect(controller).to receive(:create_user_event).with(:webauthn_key_added)
-
-        response
-      end
-
       it 'sends a recovery information changed event' do
         expect(PushNotification::HttpPush).to receive(:deliver)
           .with(PushNotification::RecoveryInformationChangedEvent.new(user: user))
@@ -210,12 +204,6 @@ RSpec.describe Users::WebauthnSetupController do
           response
 
           expect(flash[:success]).to eq(t('notices.webauthn_platform_configured'))
-        end
-
-        it 'creates user event' do
-          expect(controller).to receive(:create_user_event).with(:webauthn_platform_added)
-
-          response
         end
 
         context 'with transports mismatch' do
