@@ -72,6 +72,25 @@ RSpec.describe Reporting::FraudMetricsLg99ReportS3 do
 
     context 'when report_date is provided without s3_path_prefix' do
       let(:report_date) { Date.new(2026, 3, 15) }
+      let(:derived_prefix) { 'fraud-metrics-report/2026/2026-03-15.fraud-metrics-report' }
+
+      before do
+        s3_client.stub_responses(
+          :get_object,
+          lambda do |context|
+            case context.params[:key]
+            when "#{derived_prefix}/lg99_metrics.csv"
+              { body: StringIO.new(lg99_metrics_csv) }
+            when "#{derived_prefix}/suspended_metrics.csv"
+              { body: StringIO.new(suspended_metrics_csv) }
+            when "#{derived_prefix}/reinstated_metrics.csv"
+              { body: StringIO.new(reinstated_metrics_csv) }
+            else
+              'NoSuchKey'
+            end
+          end,
+        )
+      end
 
       it 'derives the correct s3_path_prefix from report_date' do
         report_with_date = described_class.new(
@@ -81,12 +100,11 @@ RSpec.describe Reporting::FraudMetricsLg99ReportS3 do
         )
         report_with_date.lg99_metrics_table
 
-        expected_prefix = 'fraud-metrics-report/2026/2026-03-15.fraud-metrics-report'
         expect(s3_client.api_requests.first).to include(
           operation_name: :get_object,
           params: hash_including(
             bucket: bucket_name,
-            key: "#{expected_prefix}/lg99_metrics.csv",
+            key: "#{derived_prefix}/lg99_metrics.csv",
           ),
         )
       end
