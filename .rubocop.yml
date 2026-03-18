@@ -960,7 +960,7 @@ Rails/HttpPositionalArguments:
     - test/**/*
 
 Rails/HttpStatusNameConsistency:
-  Enabled: false
+  Enabled: true
 
 Rails/I18nLazyLookup:
   Enabled: false
@@ -987,7 +987,7 @@ Rails/MigrationClassName:
   Enabled: true
 
 Rails/MultipleRoutePaths:
-  Enabled: false
+  Enabled: true
 
 Rails/NegateInclude:
   Enabled: false
