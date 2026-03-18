@@ -430,7 +430,7 @@ remember_device_expiration_hours_aal_1: 720
 remember_device_expiration_minutes_aal_2: 0
 report_timeout: 0
 reproof_forcing_service_provider: ''
-reproof_former_ipp_enabled: false
+reproof_ipp_enabled: false
 reproof_ipp_service_providers: '[]'
 requests_per_ip_cidr_allowlist: ''
 requests_per_ip_limit: 300

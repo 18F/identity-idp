@@ -282,7 +282,7 @@ module OpenidConnect
     end
 
     def needs_to_reproof?
-      current_sp.needs_to_reproof?(current_user.active_profile&.initiating_service_provider)
+      current_sp.needs_to_reproof?(current_user.active_profile)
     end
   end
 end

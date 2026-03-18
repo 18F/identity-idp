@@ -109,6 +109,53 @@ RSpec.describe IdvController do
           end
         end
       end
+
+      context 'when IPP reproofing is required' do
+        let(:service_provider) { create(:service_provider) }
+
+        before do
+          allow(IdentityConfig.store).to receive(:reproof_ipp_enabled)
+            .and_return(true)
+          allow(IdentityConfig.store).to receive(:reproof_ipp_service_providers)
+            .and_return([service_provider.issuer])
+        end
+
+        context 'when profile was proofed via IPP' do
+          let(:user) { create(:user, :proofed_in_person_enrollment) }
+
+          before do
+            stub_sign_in(user)
+            session[:sp] =
+              {
+                issuer: service_provider.issuer,
+                acr_values: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+              }
+          end
+
+          it 'redirects to welcome for reproofing' do
+            get :index
+            expect(response).to redirect_to idv_welcome_url
+          end
+        end
+
+        context 'when profile was not proofed via IPP' do
+          let(:user) { create(:user, :proofed) }
+
+          before do
+            stub_sign_in(user)
+            session[:sp] =
+              {
+                issuer: service_provider.issuer,
+                acr_values: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+              }
+          end
+
+          it 'redirects to activated' do
+            get :index
+            expect(response).to redirect_to idv_activated_url
+          end
+        end
+      end
     end
 
     context 'if number of verify_info attempts has been exceeded' do

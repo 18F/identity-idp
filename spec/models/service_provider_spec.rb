@@ -311,6 +311,9 @@ RSpec.describe ServiceProvider do
       allow(IdentityConfig.store)
         .to receive(:reproof_forcing_service_provider)
         .and_return('reproof-forcing-issuer')
+      allow(IdentityConfig.store)
+        .to receive(:reproof_ipp_enabled)
+        .and_return(false)
     end
     context 'when the service provider is the reproof forcing SP' do
       let(:reproof_forcing_sp) do
@@ -318,16 +321,17 @@ RSpec.describe ServiceProvider do
       end
 
       it 'returns true if the initiating service provider is not the reproof forcing SP' do
-        initiating_sp = build(:service_provider, issuer: 'some-other-issuer')
-        expect(reproof_forcing_sp.needs_to_reproof?(initiating_sp)).to be true
+        profile = create(:profile, :active, initiating_service_provider_issuer: 'some-other-issuer')
+        expect(reproof_forcing_sp.needs_to_reproof?(profile)).to be true
       end
 
-      it 'returns true if the initiating service provider is the reproof forcing SP' do
-        initiating_sp = build(
-          :service_provider,
-          issuer: IdentityConfig.store.reproof_forcing_service_provider,
+      it 'returns false if the initiating service provider is the reproof forcing SP' do
+        profile = create(
+          :profile, :active,
+          initiating_service_provider_issuer:
+            IdentityConfig.store.reproof_forcing_service_provider
         )
-        expect(reproof_forcing_sp.needs_to_reproof?(initiating_sp)).to be true
+        expect(reproof_forcing_sp.needs_to_reproof?(profile)).to be false
       end
     end
 
@@ -335,16 +339,20 @@ RSpec.describe ServiceProvider do
       let(:non_reproof_forcing_sp) { build(:service_provider, issuer: 'some-other-issuer') }
 
       it 'returns false if initiating service provider is not the reproof forcing SP' do
-        initiating_sp = build(:service_provider, issuer: 'yet-another-issuer')
-        expect(non_reproof_forcing_sp.needs_to_reproof?(initiating_sp)).to be false
+        profile = create(
+          :profile, :active,
+          initiating_service_provider_issuer: 'yet-another-issuer'
+        )
+        expect(non_reproof_forcing_sp.needs_to_reproof?(profile)).to be false
       end
 
-      it 'returns true if initiating service provider is the reproof forcing SP' do
-        initiating_sp = build(
-          :service_provider,
-          issuer: IdentityConfig.store.reproof_forcing_service_provider,
+      it 'returns false if initiating service provider is the reproof forcing SP' do
+        profile = create(
+          :profile, :active,
+          initiating_service_provider_issuer:
+            IdentityConfig.store.reproof_forcing_service_provider
         )
-        expect(non_reproof_forcing_sp.needs_to_reproof?(initiating_sp)).to be true
+        expect(non_reproof_forcing_sp.needs_to_reproof?(profile)).to be false
       end
     end
   end

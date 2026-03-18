@@ -103,8 +103,7 @@ class ServiceProvider < ApplicationRecord
   end
 
   def needs_to_reproof?(user_profile)
-    # TODO Check verification date against blackout period end
-    IDV::ReproofRequiredPolicy.new(
+    Idv::ReproofRequiredPolicy.new(
       active_profile: user_profile,
       service_provider: self,
     ).needs_to_reproof?
