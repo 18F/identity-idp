@@ -24,9 +24,12 @@ module Api
       private
 
       def validate_required_headers
-        if request.headers['location-id'].blank? || request.headers['agent-id'].blank?
-          render json: { error: 'Missing required headers: location-id, agent-id' },
-                 status: :bad_request
+        if request.headers['X-Proofing-Location-Id'].blank? ||
+           request.headers['X-Agent-Id'].blank? ||
+           request.headers['X-Request-Id'].blank?
+          render json: {
+            error: 'Missing required headers: X-Proofing-Location-Id, X-Agent-Id, X-Request-Id',
+          }, status: :bad_request
         end
       end
     end
