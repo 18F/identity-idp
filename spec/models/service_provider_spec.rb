@@ -305,4 +305,47 @@ RSpec.describe ServiceProvider do
       end
     end
   end
+
+  describe '#needs_to_reproof?' do
+    before do
+      allow(IdentityConfig.store)
+        .to receive(:reproof_forcing_service_provider)
+        .and_return('reproof-forcing-issuer')
+    end
+    context 'when the service provider is the reproof forcing SP' do
+      let(:reproof_forcing_sp) do
+        build(:service_provider, issuer: IdentityConfig.store.reproof_forcing_service_provider)
+      end
+
+      it 'returns true if the initiating service provider is not the reproof forcing SP' do
+        initiating_sp = build(:service_provider, issuer: 'some-other-issuer')
+        expect(reproof_forcing_sp.needs_to_reproof?(initiating_sp)).to be true
+      end
+
+      it 'returns true if the initiating service provider is the reproof forcing SP' do
+        initiating_sp = build(
+          :service_provider,
+          issuer: IdentityConfig.store.reproof_forcing_service_provider,
+        )
+        expect(reproof_forcing_sp.needs_to_reproof?(initiating_sp)).to be true
+      end
+    end
+
+    context 'when the service provider is not the reproof forcing SP' do
+      let(:non_reproof_forcing_sp) { build(:service_provider, issuer: 'some-other-issuer') }
+
+      it 'returns false if initiating service provider is not the reproof forcing SP' do
+        initiating_sp = build(:service_provider, issuer: 'yet-another-issuer')
+        expect(non_reproof_forcing_sp.needs_to_reproof?(initiating_sp)).to be false
+      end
+
+      it 'returns true if initiating service provider is the reproof forcing SP' do
+        initiating_sp = build(
+          :service_provider,
+          issuer: IdentityConfig.store.reproof_forcing_service_provider,
+        )
+        expect(non_reproof_forcing_sp.needs_to_reproof?(initiating_sp)).to be true
+      end
+    end
+  end
 end

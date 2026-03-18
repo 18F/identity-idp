@@ -104,8 +104,15 @@ class ServiceProvider < ApplicationRecord
 
   def needs_to_reproof?(initiating_service_provider)
     # TODO Check verification date against blackout period end
-    issuer == IdentityConfig.store.reproof_forcing_service_provider &&
-      initiating_service_provider&.issuer != IdentityConfig.store.reproof_forcing_service_provider
+    reproof_forcing_sp? || initiated_by_reproof_forcing_sp?(initiating_service_provider)
+  end
+
+  def reproof_ipp_profiles_required?(active_profile)
+    return false unless IdentityConfig.store.reproof_former_ipp_enabled
+    return false unless proper_sp_for_reproof_former_ipp?(active_profile)
+    return false if active_profile.blank?
+
+    active_profile.ipp_proofed?
   end
 
   def receives_client_id_in_risc?
@@ -128,6 +135,29 @@ class ServiceProvider < ApplicationRecord
     IdentityConfig.store.allowed_attempts_providers.find do |config|
       config['issuer'] == issuer
     end
+  end
+
+  def reproof_forcing_sp?
+    issuer == IdentityConfig.store.reproof_forcing_service_provider
+  end
+
+  def initiated_by_reproof_forcing_sp?(initial_sp)
+    initial_sp&.issuer == IdentityConfig.store.reproof_forcing_service_provider
+  end
+
+  def proper_sp_for_reproof_former_ipp?(active_profile)
+    return false if IdentityConfig.store.reproof_ipp_service_providers.empty?
+    reproof_ipp_sp? ||
+      profile_is_from_ipp_proofed?(active_profile)
+  end
+
+  def reproof_ipp_sp?
+    IdentityConfig.store.reproof_ipp_service_providers.include?(issuer)
+  end
+
+  def profile_is_from_ipp_proofed?(active_profile)
+    sp = active_profile.initiating_service_provider
+    IdentityConfig.store.reproof_ipp_service_providers.include?(sp.issuer) if sp.present?
   end
 
   # @return [String,nil]
