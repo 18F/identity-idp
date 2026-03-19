@@ -49,7 +49,7 @@ module Identity
       if ENV['ALLOW_CONSOLE_DB_WRITE_ACCESS'] != 'true' &&
          Identity::Hostdata.config.database_readonly_username.present? &&
          Identity::Hostdata.config.database_readonly_password.present?
-        warn <<-EOS.squish
+        warn <<~EOS.squish
           WARNING: Loading database a configuration with the readonly database user.
           If you wish to make changes to records in the database set
           ALLOW_CONSOLE_DB_WRITE_ACCESS to "true" in the environment
