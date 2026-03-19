@@ -4,22 +4,30 @@ module Api
   module ProofingAgent
     class ProofingAgentController < ApplicationController
       include RenderConditionConcern
+      check_or_render_not_found -> { FeatureManagement.idv_proofing_agent_enabled? }
 
       prepend_before_action :skip_session_load
       prepend_before_action :skip_session_expiration
 
       skip_before_action :verify_authenticity_token
       before_action :authenticate_client
-
-      check_or_render_not_found -> { FeatureManagement.idv_proofing_agent_enabled? }
-
       before_action :validate_required_headers
 
       def search_user
+        analytics.proofing_agent_request(
+          issuer: request_token.issuer,
+          success: true,
+        )
+
         render json: { request_id: request.headers['X-Request-Id'] }
       end
 
       def proof_user
+        analytics.proofing_agent_request(
+          issuer: request_token.issuer,
+          success: true,
+        )
+
         render json: { request_id: request.headers['X-Request-Id'] }
       end
 
@@ -34,8 +42,6 @@ module Api
           }, status: :bad_request
         end
       end
-
-      private
 
       def authenticate_client
         if request_token.invalid?
