@@ -119,7 +119,7 @@ RSpec.describe MfaSetupConcern do
 
   describe '#create_mfa_added_email' do
     let(:event_type) do
-      [:authenticator_added, :backup_codes_added, :webauthn_key_added,
+      [:authenticator_enabled, :backup_codes_added, :webauthn_key_added,
        :webauthn_platform_added, :piv_cac_enabled, :phone_added].sample
     end
 
