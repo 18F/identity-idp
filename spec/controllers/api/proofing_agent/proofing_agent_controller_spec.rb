@@ -126,12 +126,22 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
       context 'with a valid authorization header' do
         it 'returns 200' do
           expect(action.status).to eq(200)
+          expect(@analytics).to have_logged_event(
+            :proofing_agent_request,
+            issuer: issuer,
+            success: true,
+          )
         end
 
         it 'includes request_id in the response' do
           action
           body = JSON.parse(response.body)
           expect(body['request_id']).to be_present
+          expect(@analytics).to have_logged_event(
+            :proofing_agent_request,
+            issuer: issuer,
+            success: true,
+          )
         end
       end
 
@@ -156,12 +166,22 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
       context 'with a valid authorization header' do
         it 'returns 200' do
           expect(action.status).to eq(200)
+          expect(@analytics).to have_logged_event(
+            :proofing_agent_request,
+            issuer: issuer,
+            success: true,
+          )
         end
 
         it 'includes request_id in the response' do
           action
           body = JSON.parse(response.body)
           expect(body['request_id']).to be_present
+          expect(@analytics).to have_logged_event(
+            :proofing_agent_request,
+            issuer: issuer,
+            success: true,
+          )
         end
       end
 
