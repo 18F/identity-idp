@@ -1,12 +1,15 @@
 ---
 es:
   telephony:
-    account_deleted_notice: Este SMS confirma que ha eliminado su cuenta de %{app_name}.
-    account_reset_cancellation_notice: Su solicitud para eliminar su cuenta de %{app_name} ha sido cancelada.
-    account_reset_notice: |-
-      Como lo solicitó, su cuenta de %{app_name} se eliminará en %{interval}. Busque un segundo correo electrónico para confirmar la eliminación de la cuenta.
+    account_deleted_notice:
+      sms: Este SMS confirma que ha eliminado su cuenta de %{app_name}.
+    account_reset_cancellation_notice:
+      sms: Su solicitud para eliminar su cuenta de %{app_name} ha sido cancelada.
+    account_reset_notice:
+      sms: |-
+        Como lo solicitó, su cuenta de %{app_name} se eliminará en %{interval}. Busque un segundo correo electrónico para confirmar la eliminación de la cuenta.
 
-      ¿No quieres eliminar tu cuenta? Inicie sesión en su cuenta %{app_name} para cancelar.
+        ¿No quieres eliminar tu cuenta? Inicie sesión en su cuenta %{app_name} para cancelar.
     authentication_otp:
       sms: |-
         %{app_name}: No compartas este codigo con nadie. Su codigo es %{code}. Caduca en %{expiration} minutos.
@@ -21,11 +24,15 @@ es:
 
         @%{domain} #%{code}
       voice: 'Hola: Los %{format_length} %{format_type} de su código de un solo uso de %{app_name} son %{code}. Su código de un solo uso es %{code}. De nuevo, su código de un solo uso es %{code}. Este código vence en %{expiration} minutos.'
-    doc_auth_link: '%{app_name}: %{link} Está verificando su identidad para acceder a %{sp_or_app_name}. Tome una foto de su identificación para continuar.'
-    dupe_profile_created_notice: |-
-      Alerta de %{app_name}: Su información personal fue verificada en otra cuenta. Hemos restringido el acceso a estas cuentas. Le enviamos un correo electrónico con detalles sobre qué hacer a continuación.
-    dupe_profile_sign_in_attempted_notice: |-
-      Alerta de %{app_name}: Otra cuenta que usa su información personal ha iniciado sesión. Hemos restringido el acceso a estas cuentas. Se enviamos un correo electrónico con información sobre qué hacer a continuación.
+    doc_auth_link:
+      sms: |-
+        %{app_name}: %{link} Está verificando su identidad para acceder a %{sp_or_app_name}. Tome una foto de su identificación para continuar.
+    dupe_profile_created_notice:
+      sms: |-
+        Alerta de %{app_name}: Su información personal fue verificada en otra cuenta. Hemos restringido el acceso a estas cuentas. Le enviamos un correo electrónico con detalles sobre qué hacer a continuación.
+    dupe_profile_sign_in_attempted_notice:
+      sms: |-
+        Alerta de %{app_name}: Otra cuenta que usa su información personal ha iniciado sesión. Hemos restringido el acceso a estas cuentas. Se enviamos un correo electrónico con información sobre qué hacer a continuación.
     error:
       friendly_message:
         daily_voice_limit_reached: No se pudo enviar su código de un solo uso porque superó el número máximo de llamadas en 24 horas a este número de teléfono. Puede solicitar un código por mensaje de texto o usar un número diferente para recibir una llamada telefónica.
@@ -47,5 +54,7 @@ es:
     format_type:
       character: caracteres
       digit: dígitos
-    personal_key_regeneration_notice: Se emitió una nueva clave personal para su cuenta de %{app_name}. Si no fue usted, restablezca su contraseña.
-    personal_key_sign_in_notice: Su clave personal acaba de se usada para iniciar sesión en su cuenta de %{app_name}. Si no fue usted, restablezca su contraseña.
+    personal_key_regeneration_notice:
+      sms: Se emitió una nueva clave personal para su cuenta de %{app_name}. Si no fue usted, restablezca su contraseña.
+    personal_key_sign_in_notice:
+      sms: Su clave personal acaba de se usada para iniciar sesión en su cuenta de %{app_name}. Si no fue usted, restablezca su contraseña.

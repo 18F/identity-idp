@@ -142,5 +142,17 @@ RSpec.describe Users::ServiceProviderRevokeController do
         )
       end
     end
+
+    context 'with unconfirmed email addresses' do
+      it 'does not send email to unconfirmed email addresses' do
+        create(:email_address, user: user, confirmed_at: nil)
+        stub_sign_in(user)
+        user.reload
+        expect(user.email_addresses.count).to eq(2)
+        subject
+
+        expect_delivered_email_count(1)
+      end
+    end
   end
 end

@@ -1,12 +1,15 @@
 ---
 zh:
   telephony:
-    account_deleted_notice: 这条信息确认你已删除了你的 %{app_name} 账户。
-    account_reset_cancellation_notice: 删除你 %{app_name} 账户的请求已被取消。
-    account_reset_notice: |-
-      按照你的请求，你的 %{app_name} 账户会在%{interval}后删除。
+    account_deleted_notice:
+      sms: 这条信息确认你已删除了你的 %{app_name} 账户。
+    account_reset_cancellation_notice:
+      sms: 删除你 %{app_name} 账户的请求已被取消。
+    account_reset_notice:
+      sms: |-
+        按照你的请求，你的 %{app_name} 账户会在%{interval}后删除。
 
-      不想删除你的账户？登入你的 %{app_name} 账户去取消。
+        不想删除你的账户？登入你的 %{app_name} 账户去取消。
     authentication_otp:
       sms: |-
         %{app_name}：请勿将此验证码分享给任何人。您的验证码是 %{code}。该验证码将在 %{expiration} 分钟后失效。
@@ -22,12 +25,15 @@ zh:
 
         @%{domain} #%{code}
       voice: 你好！你的%{format_length}%{format_type} %{app_name} 一次性代码是，%{code}。你的一次性代码是 ，%{code}。重复一下，你的一次性代码是 %{code}。此代码 %{expiration} 分钟后会作废。
-    doc_auth_link: |-
-      %{app_name}: %{link} 你在验证身份以访问 %{sp_or_app_name}。拍张你身份证件的照片以继续。
-    dupe_profile_created_notice: |-
-      %{app_name} 提醒：您的个人信息已在其他帐户上得到验证。我们已限制对这些帐户的访问权限。我们已向您发送一封电子邮件，其中包含后续操作的详细信息。
-    dupe_profile_sign_in_attempted_notice: |-
-      %{app_name} 提醒：另一个使用您个人信息的帐户已登录。我们已限制这些帐户的访问权限。我们已向您发送一封电子邮件，其中包含后续操作的详细信息。
+    doc_auth_link:
+      sms: |-
+        %{app_name}: %{link} 你在验证身份以访问 %{sp_or_app_name}。拍张你身份证件的照片以继续。
+    dupe_profile_created_notice:
+      sms: |-
+        %{app_name} 提醒：您的个人信息已在其他帐户上得到验证。我们已限制对这些帐户的访问权限。我们已向您发送一封电子邮件，其中包含后续操作的详细信息。
+    dupe_profile_sign_in_attempted_notice:
+      sms: |-
+        %{app_name} 提醒：另一个使用您个人信息的帐户已登录。我们已限制这些帐户的访问权限。我们已向您发送一封电子邮件，其中包含后续操作的详细信息。
     error:
       friendly_message:
         daily_voice_limit_reached: 你的一次性代码未能发出，因为已超出 24 小时内拨打这个电话号码的最多次数。你可以请求通过短信发送代码，或使用另外一个号码来接听电话。
@@ -49,5 +55,7 @@ zh:
     format_type:
       character: 字符
       digit: 数
-    personal_key_regeneration_notice: 已给你的 %{app_name} 账户发放了一个新个人密钥。如果不是你，请重设你的密码。
-    personal_key_sign_in_notice: 你的个人密钥刚被用来登录你的 %{app_name} 账户。如果不是你，请重设你的密码。
+    personal_key_regeneration_notice:
+      sms: 已给你的 %{app_name} 账户发放了一个新个人密钥。如果不是你，请重设你的密码。
+    personal_key_sign_in_notice:
+      sms: 你的个人密钥刚被用来登录你的 %{app_name} 账户。如果不是你，请重设你的密码。

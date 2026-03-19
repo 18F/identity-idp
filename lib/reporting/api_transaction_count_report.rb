@@ -124,6 +124,12 @@ module Reporting
       [true_id_selfie_table_count, result]
     end
 
+    def instant_verify_table
+      result = fetch_results(query: instant_verify_query)
+      instant_verify_table_count = result.count
+      [instant_verify_table_count, result]
+    end
+
     def socure_table
       result = fetch_results(query: socure_query)
       socure_table_count = result.count
@@ -146,12 +152,6 @@ module Reporting
       result = fetch_results(query: ln_emailage_query)
       ln_emailage_table_count = result.count
       [ln_emailage_table_count, result]
-    end
-
-    def instant_verify_table
-      result = fetch_results(query: instant_verify_query)
-      instant_verify_table_count = result.count
-      [instant_verify_table_count, result]
     end
 
     def threat_metrix_idv_table
@@ -282,9 +282,10 @@ module Reporting
 
     def instant_verify_query
       <<~QUERY
-        fields jsonParse(@message) as message
-        | unnest message.properties.event_properties into event_properties
-        | filter name='IdV: doc auth verify proofing results' and event_properties.proofing_results.context.stages.resolution.vendor_name='lexisnexis:instant_verify'
+        fields @timestamp, @message
+        | fields jsonParse(@message) as message
+        | filter name='IdV: doc auth verify proofing results' and message.properties.event_properties.proofing_results.context.stages.resolution.vendor_name='lexisnexis:instant_verify'
+        | display id
         | limit 10000
       QUERY
     end
@@ -311,9 +312,11 @@ module Reporting
     def socure_kyc
       <<~QUERY
         fields @timestamp, @message, @logStream, @log
-        | filter name='IdV: doc auth verify proofing results' 
-        and properties.event_properties.proofing_results.context.stages.resolution.vendor_name='socure_kyc'
+        | fields jsonParse(@message) as message
+        | unnest message.properties.event_properties into event_properties
+        | filter name='IdV: doc auth verify proofing results' and event_properties.proofing_results.context.stages.resolution.vendor_name='socure_kyc'
         | sort @timestamp desc
+        | display timestamp, id
         | limit 10000
       QUERY
     end
@@ -354,8 +357,10 @@ module Reporting
 
     def socure_phonerisk_query
       <<~QUERY
-        filter (name IN ["idv_socure_shadow_mode_phonerisk_result"])
+        fields @timestamp, @message
+        | filter (name IN ["idv_socure_shadow_mode_phonerisk_result"])
         OR (name = 'IdV: phone confirmation vendor' AND properties.event_properties.vendor.vendor_name = "socure_phonerisk")
+        | display id
         | limit 10000
       QUERY
     end
@@ -365,6 +370,7 @@ module Reporting
         fields @timestamp, @message
         | filter name = 'IdV: phone confirmation vendor'
         | filter properties.event_properties.vendor.vendor_name = "lexisnexis:phone_finder"
+        | display id
         | limit 10000
       QUERY
     end

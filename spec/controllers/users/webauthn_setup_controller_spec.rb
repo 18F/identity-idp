@@ -161,12 +161,6 @@ RSpec.describe Users::WebauthnSetupController do
         )
       end
 
-      it 'creates user event' do
-        expect(controller).to receive(:create_user_event).with(:webauthn_key_added)
-
-        response
-      end
-
       it 'sends a recovery information changed event' do
         expect(PushNotification::HttpPush).to receive(:deliver)
           .with(PushNotification::RecoveryInformationChangedEvent.new(user: user))

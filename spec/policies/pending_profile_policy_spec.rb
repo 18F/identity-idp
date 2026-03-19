@@ -30,7 +30,7 @@ RSpec.describe PendingProfilePolicy do
           allow(resolved_authn_context_result).to receive(:facial_match?).and_return(true)
         end
 
-        [:unsupervised_with_selfie, :in_person].each do |idv_level|
+        [:unsupervised_with_selfie, :in_person, :proofing_agent].each do |idv_level|
           context "when the user has a pending facial match profile with #{idv_level} idv level" do
             before do
               create(:profile, :verify_by_mail_pending, idv_level: idv_level, user: user)
@@ -57,7 +57,8 @@ RSpec.describe PendingProfilePolicy do
         [:in_person,
          :unsupervised_with_selfie,
          :legacy_in_person,
-         :legacy_unsupervised].each do |idv_level|
+         :legacy_unsupervised,
+         :proofing_agent].each do |idv_level|
           context "user has an active profile with #{idv_level} idv level" do
             before do
               create(:profile, :active, :verified, idv_level: idv_level, user: user)
@@ -76,7 +77,7 @@ RSpec.describe PendingProfilePolicy do
         allow(resolved_authn_context_result).to receive(:facial_match?).and_return(false)
       end
 
-      [:unsupervised_with_selfie].each do |idv_level|
+      [:unsupervised_with_selfie, :proofing_agent].each do |idv_level|
         context "when the user has a pending #{idv_level} profile" do
           before do
             create(:profile, :verify_by_mail_pending, idv_level: idv_level, user: user)
@@ -100,7 +101,7 @@ RSpec.describe PendingProfilePolicy do
         end
       end
 
-      [:unsupervised_with_selfie].each do |idv_level|
+      [:unsupervised_with_selfie, :proofing_agent].each do |idv_level|
         context 'when the user has a pending fraud review profile' do
           before do
             create(:profile, :fraud_review_pending, idv_level: idv_level, user: user)
@@ -115,7 +116,8 @@ RSpec.describe PendingProfilePolicy do
       [:in_person,
        :unsupervised_with_selfie,
        :legacy_in_person,
-       :legacy_unsupervised].each do |idv_level|
+       :legacy_unsupervised,
+       :proofing_agent].each do |idv_level|
         context "user has an active profile with #{idv_level} idv level" do
           before do
             create(:profile, :active, :verified, idv_level: idv_level, user: user)
