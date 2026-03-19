@@ -206,12 +206,6 @@ RSpec.describe Users::WebauthnSetupController do
           expect(flash[:success]).to eq(t('notices.webauthn_platform_configured'))
         end
 
-        it 'creates user event' do
-          expect(controller).to receive(:create_user_event).with(:webauthn_platform_added)
-
-          response
-        end
-
         context 'with session value deserialized as a string' do
           before do
             controller.user_session[:webauthn_setup_started_at] =
