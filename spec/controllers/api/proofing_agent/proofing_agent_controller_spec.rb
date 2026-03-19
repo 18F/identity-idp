@@ -139,6 +139,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
             :proofing_agent_request,
             issuer: issuer,
             success: true,
+            request_type: :search_user,
           )
         end
 
@@ -150,6 +151,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
             :proofing_agent_request,
             issuer: issuer,
             success: true,
+            request_type: :search_user,
           )
         end
 
@@ -225,6 +227,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
             :proofing_agent_request,
             issuer: issuer,
             success: true,
+            request_type: :proof_user,
           )
         end
 
@@ -236,6 +239,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
             :proofing_agent_request,
             issuer: issuer,
             success: true,
+            request_type: :proof_user,
           )
         end
 
