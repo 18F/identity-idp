@@ -7612,15 +7612,18 @@ module AnalyticsEvents
   # Tracks a proofing agent request
   # @param [Boolean] success Whether request was successful
   # @param [String] issuer The issuer associated with the proofing request, if applicable
+  #  @param ["search_user", "proof_user"] request_type The type of proofing event
   def proofing_agent_request(
     success:,
     issuer:,
+    request_type: nil,
     **extra
   )
     track_event(
       :proofing_agent_request,
       success:,
       issuer:,
+      request_type:,
       **extra,
     )
   end

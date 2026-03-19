@@ -16,6 +16,7 @@ module Api
         analytics.proofing_agent_request(
           issuer: request_token.issuer,
           success: true,
+          request_type: :search_user,
         )
 
         render json: { request_id: SecureRandom.uuid }
@@ -25,6 +26,7 @@ module Api
         analytics.proofing_agent_request(
           issuer: request_token.issuer,
           success: true,
+          request_type: :proof_user,
         )
 
         render json: { request_id: SecureRandom.uuid }
