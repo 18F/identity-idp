@@ -102,10 +102,11 @@ class ServiceProvider < ApplicationRecord
     logo_url.end_with?('.png')
   end
 
-  def needs_to_reproof?(initiating_service_provider)
-    # TODO Check verification date against blackout period end
-    issuer == IdentityConfig.store.reproof_forcing_service_provider &&
-      initiating_service_provider&.issuer != IdentityConfig.store.reproof_forcing_service_provider
+  def needs_to_reproof?(user_profile)
+    Idv::ReproofRequiredPolicy.new(
+      active_profile: user_profile,
+      service_provider: self,
+    ).needs_to_reproof?
   end
 
   def receives_client_id_in_risc?

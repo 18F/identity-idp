@@ -1489,4 +1489,30 @@ RSpec.describe Profile do
       end
     end
   end
+
+  describe '#ipp_proofed?' do
+    context 'when the profile has a pending in_person_enrollment' do
+      let(:profile) { create(:profile, :in_person_verification_pending, user: user) }
+
+      it 'returns true' do
+        expect(profile.ipp_proofed?).to be true
+      end
+    end
+
+    context 'when the profile does not have a pending in_person_enrollment' do
+      let(:profile) { create(:profile, user: user) }
+
+      it 'returns false' do
+        expect(profile.ipp_proofed?).to be false
+      end
+    end
+
+    context 'when the profile was in person proofed' do
+      let(:profile) { create(:profile, :in_person_verified, user: user) }
+
+      it 'returns true' do
+        expect(profile.ipp_proofed?).to be true
+      end
+    end
+  end
 end
