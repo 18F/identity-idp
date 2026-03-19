@@ -1131,6 +1131,7 @@ RSpec.describe Idv::EnterPasswordController do
       let(:mock) { double }
 
       before do
+        binding.pry
         allow(UserProofingEvent).to receive(:new).and_return(mock)
         allow(mock).to receive(:save).and_return(true)
         allow(IdentityConfig.store).to receive_messages(
@@ -1139,6 +1140,12 @@ RSpec.describe Idv::EnterPasswordController do
           allowed_attempts_providers: [{ 'issuer' => sp.issuer }],
         )
         allow(subject).to receive(:user_session).and_return(mock_user_session)
+        # at this point in the flow, the applicant should have a UUID
+        subject.idv_session.applicant['uuid'] = 'aabbccdd-0000-00000-0000-aabbccddeeff'
+      end
+
+      after do
+        subject.idv_session.applicant['uuid'] = nil
       end
 
       context 'when requesting ial2' do
@@ -1150,6 +1157,7 @@ RSpec.describe Idv::EnterPasswordController do
 
         context 'with a newly proofed user' do
           it 'creates a new UserProofingEvent' do
+            binding.pry
             expect(UserProofingEvent).to receive(:new)
             expect(mock).to receive(:save)
             put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }

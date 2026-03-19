@@ -3,9 +3,9 @@
 module AttemptsApi
   class HistoricalAttempts
     def initialize(idv_session:, user_session:, password:)
-      @password = password
       @idv_session = idv_session
       @user_session = user_session
+      @password = password
     end
 
     def record_events
@@ -46,7 +46,7 @@ module AttemptsApi
     end
 
     def encrypt_attempt_events_bundle
-      user_uuid = @user_session['idv']['applicant']['uuid']
+      user_uuid = @idv_session.applicant['uuid']
       encryptor = Encryption::Encryptors::PiiEncryptor.new(@password)
       encryptor.encrypt(@user_session['idv/attempts'].to_json, user_uuid:)
     end
