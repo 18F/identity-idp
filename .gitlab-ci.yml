@@ -1,5 +1,5 @@
 # Jobs defined here use the idp/ci docker image from ECR by default. To find
-# other available images: 
+# other available images:
 #   aws ecr describe-repositories | jq '.repositories[].repositoryUri'
 # Images are built via the identity-devops GitLab pipeline.
 
@@ -552,6 +552,10 @@ include:
   - template: Security/Secret-Detection.gitlab-ci.yml
   - local: .gitlab-ci-devenv.yml
   - local: .gitlab-ci-rules.yml
+
+sast:
+  tags:
+    - test-pool
 
 secret_detection:
   allow_failure: false
