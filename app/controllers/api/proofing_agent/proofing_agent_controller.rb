@@ -44,7 +44,7 @@ module Api
       end
 
       def request_id
-        SecureRandom.uuid
+        @request_id ||= request.headers['X-Request-ID']
       end
 
       def request_token
