@@ -470,8 +470,6 @@ build-ci-image:
 # Triggers devops CD to deploy to dev
 trigger_devops:
   stage: after_test
-  tags:
-    - test-pool
   rules:
     - if: $CI_COMMIT_BRANCH == "main"
   trigger: lg/identity-devops
