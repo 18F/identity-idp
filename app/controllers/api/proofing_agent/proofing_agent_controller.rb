@@ -11,12 +11,26 @@ module Api
 
       check_or_render_not_found -> { FeatureManagement.idv_proofing_agent_enabled? }
 
+      before_action :validate_required_headers
+
       def search_user
-        render json: { request_id: SecureRandom.uuid }
+        render json: { request_id: request.headers['X-Request-Id'] }
       end
 
       def proof_user
-        render json: { request_id: SecureRandom.uuid }
+        render json: { request_id: request.headers['X-Request-Id'] }
+      end
+
+      private
+
+      def validate_required_headers
+        if request.headers['X-Proofing-Location-Id'].blank? ||
+           request.headers['X-Agent-Id'].blank? ||
+           request.headers['X-Request-Id'].blank?
+          render json: {
+            error: 'Missing required headers: X-Proofing-Location-Id, X-Agent-Id, X-Request-Id',
+          }, status: :bad_request
+        end
       end
     end
   end
