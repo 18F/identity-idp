@@ -11,10 +11,9 @@ module AttemptsApi
     def record_events
       return unless historical_events_enabled?
 
-      encrypted_events = encrypt_attempt_events_bundle
-      encrypted_events_json = JSON.parse(encrypted_events)
-
       if !existing_user_proofing_event
+        encrypted_events = encrypt_attempt_events_bundle(@user_session['idv/attempts'])
+        encrypted_events_json = JSON.parse(encrypted_events)
         new_user_proofing_event = UserProofingEvent.new(
           encrypted_events:,
           profile_id: @idv_session.profile.id,
@@ -24,9 +23,14 @@ module AttemptsApi
         )
         new_user_proofing_event.save
       else
+        existing_events = JSON.parse(decrypt_user_proofing_events)
+        combined_events = existing_events.merge(@user_session['idv/attempts'])
+        encrypted_events = encrypt_attempt_events_bundle(combined_events)
+        encrypted_events_json = JSON.parse(encrypted_events)
+binding.pry
         existing_user_proofing_event.encrypted_events = encrypted_events
-        existing_user_proofing_event.cost = encrypted_events_json.cost
-        existing_user_proofing_event.salt = encrypted_events_json.salt
+        existing_user_proofing_event.cost = encrypted_events_json['cost']
+        existing_user_proofing_event.salt = encrypted_events_json['salt']
         existing_user_proofing_event.save
       end
     end
@@ -44,10 +48,20 @@ module AttemptsApi
       UserProofingEvent.find_by(profile_id: @idv_session.profile.id)
     end
 
-    def encrypt_attempt_events_bundle
-      user_uuid = @idv_session.applicant['uuid']
-      encryptor = Encryption::Encryptors::PiiEncryptor.new(@password)
-      encryptor.encrypt(@user_session['idv/attempts'].to_json, user_uuid:)
+    def encrypt_attempt_events_bundle(bundle)
+      pii_encryptor.encrypt(bundle.to_json, user_uuid:)
+    end
+
+    def decrypt_user_proofing_events
+      pii_encryptor.decrypt(existing_user_proofing_event['encrypted_events'], user_uuid:)
+    end
+
+    def pii_encryptor
+      @pii_encryptor ||= Encryption::Encryptors::PiiEncryptor.new(@password)
+    end
+
+    def user_uuid
+      @user_uuid ||= @idv_session.applicant['uuid']
     end
   end
 end

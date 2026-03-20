@@ -35,7 +35,7 @@ RSpec.describe AttemptsApi::HistoricalAttempts do
     idv_session.create_profile_from_applicant_with_password(
       user.password,
       is_enhanced_ipp: false,
-      proofing_components: Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE,
+      proofing_components: applicant,
     )
 
     described_class.new(
@@ -55,13 +55,6 @@ RSpec.describe AttemptsApi::HistoricalAttempts do
     allow(UserProofingEvent).to receive(:new).and_return(user_proofing_event_mock)
     allow(user_proofing_event_mock).to receive(:save).and_return(true)
     allow(UserProofingEvent).to receive(:save).and_return(true)
-
-    allow(Encryption::Encryptors::PiiEncryptor).to receive(:new).and_return(encryptor_mock)
-    allow(encryptor_mock).to receive(:encrypt).and_return({
-      "encrypted_data" => "encrypted_test_data",
-      "salt" => "abcdef0123456789",
-      "cost" => "000$0$0$",
-    }.to_json)
   end
 
   describe '#record_events' do
@@ -95,6 +88,8 @@ RSpec.describe AttemptsApi::HistoricalAttempts do
 
     context 'when the user does not have an existing UserProofingEvent' do
       before do
+        allow(Encryption::Encryptors::PiiEncryptor).to receive(:new).and_return(encryptor_mock)
+        allow(encryptor_mock).to receive(:encrypt).and_return(encrypted_events.to_json)
         subject.record_events
       end
 
@@ -111,6 +106,42 @@ RSpec.describe AttemptsApi::HistoricalAttempts do
           cost: encrypted_events['cost'],
           salt: encrypted_events['salt'],
         )
+      end
+    end
+
+    context 'when the user already has an existing UserProofingEvent' do
+      let(:existing_events) { { "old_attempt" => "old_data" } }
+      let(:pii_encryptor) { Encryption::Encryptors::PiiEncryptor.new(user.password) }
+      let(:encrypted_existing_events) { 
+        pii_encryptor.encrypt(existing_events.to_json, user_uuid: user.uuid)
+      }
+
+      before do
+        subject # this is required to associate a profile with the idv_session
+        allow(UserProofingEvent).to receive(:new).and_call_original
+        allow(Encryption::Encryptors::PiiEncryptor).to receive(:new).and_return(pii_encryptor)
+        allow(pii_encryptor).to receive(:decrypt).and_call_original
+        allow(pii_encryptor).to receive(:encrypt).and_call_original
+        user_proofing_event = create(
+          :user_proofing_event,
+          encrypted_events: encrypted_existing_events,
+          service_providers_sent: [],
+          cost: JSON.parse(encrypted_existing_events)['cost'],
+          salt: JSON.parse(encrypted_existing_events)['salt'],
+          profile_id: idv_session.profile.id,
+        )
+        subject.record_events
+      end
+
+      it 'decrypts existing UserProofingEvent' do
+        expect(pii_encryptor).to have_received(:decrypt).once
+      end
+
+      it 'encrypts concatenated data' do
+        expect(pii_encryptor).to have_received(:encrypt).with(
+          existing_events.merge(user_session['idv/attempts']).to_json, user_uuid: user.uuid
+        )
+        binding.pry
       end
     end
   end
