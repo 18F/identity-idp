@@ -12,23 +12,26 @@ RSpec.describe AttemptsApi::HistoricalAttempts do
   let(:issuer) { 'this:is:a:test' }
   let(:sp) { create(:service_provider, ial: 2, issuer: issuer) }
   let(:applicant) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE }
-  let(:profile) do
-    create(:profile, :active, user: user, initiating_service_provider_issuer: sp.issuer)
-  end
-  let(:mock) { double }
+  let(:user_proofing_event_mock) { double }
+  let(:encryptor_mock) { double }
+  let(:encrypted_events) { {
+    "encrypted_data" => "encrypted_test_data",
+    "salt" => "abcdef0123456789",
+    "cost" => "000$0$0$",
+  } }
+  let(:user_session) { {
+    "idv/attempts" => {
+      "test_attempt" => "some_data",
+    }
+  } }
+  let(:idv_session) { Idv::Session.new(
+    user_session: user_session,
+    current_user: user,
+    service_provider: sp,
+  ) }
 
   subject do
-    user_session = {
-      "idv/attempts" => {
-        "test_attempt" => "some_data",
-      }
-    }
-    idv_session = Idv::Session.new(
-      user_session: user_session,
-      current_user: user,
-      service_provider: sp,
-    )
-    idv_session.applicant = applicant.merge({ :uuid => user.uuid })
+    idv_session.applicant = applicant.merge({ "uuid" => user.uuid })
     idv_session.create_profile_from_applicant_with_password(
       user.password,
       is_enhanced_ipp: false,
@@ -44,13 +47,21 @@ RSpec.describe AttemptsApi::HistoricalAttempts do
 
   before do
     allow(IdentityConfig.store).to receive_messages(
-      allowed_attempts_providers: [{issuer: sp.issuer}],
+      allowed_attempts_providers: [ { "issuer" => sp.issuer} ],
       attempts_api_enabled: true,
       historical_attempts_api_enabled: true,
     )
-    allow(UserProofingEvent).to receive(:new).and_return(mock)
-    allow(mock).to receive(:save).and_return(true)
+
+    allow(UserProofingEvent).to receive(:new).and_return(user_proofing_event_mock)
+    allow(user_proofing_event_mock).to receive(:save).and_return(true)
     allow(UserProofingEvent).to receive(:save).and_return(true)
+
+    allow(Encryption::Encryptors::PiiEncryptor).to receive(:new).and_return(encryptor_mock)
+    allow(encryptor_mock).to receive(:encrypt).and_return({
+      "encrypted_data" => "encrypted_test_data",
+      "salt" => "abcdef0123456789",
+      "cost" => "000$0$0$",
+    }.to_json)
   end
 
   describe '#record_events' do
@@ -61,10 +72,10 @@ RSpec.describe AttemptsApi::HistoricalAttempts do
       end
 
       it 'does not modify or create a UserProofingEvent' do
+        subject.record_events
+
         expect(UserProofingEvent).to_not have_received(:new)
         expect(UserProofingEvent).to_not have_received(:save)
-
-        subject.record_events
       end
     end
 
@@ -75,10 +86,31 @@ RSpec.describe AttemptsApi::HistoricalAttempts do
       end
 
       it 'does not modify or create a UserProofingEvent' do
+        subject.record_events
+
         expect(UserProofingEvent).to_not have_received(:new)
         expect(UserProofingEvent).to_not have_received(:save)
+      end
+    end
 
+    context 'when the user does not have an existing UserProofingEvent' do
+      before do
         subject.record_events
+      end
+
+      it 'creates and saves a UserProofingEvent' do
+        expect(UserProofingEvent).to have_received(:new)
+        expect(user_proofing_event_mock).to have_received(:save)
+      end
+
+      it 'includes the encrypted_events' do
+        expect(UserProofingEvent).to have_received(:new).with(
+          encrypted_events:  encrypted_events.to_json,
+          profile_id: idv_session.profile.id,
+          service_providers_sent: [],
+          cost: encrypted_events['cost'],
+          salt: encrypted_events['salt'],
+        )
       end
     end
   end
