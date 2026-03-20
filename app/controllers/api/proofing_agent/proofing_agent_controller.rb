@@ -14,11 +14,11 @@ module Api
       before_action :validate_required_headers
 
       def search_user
-        render json: { request_id: SecureRandom.uuid }
+        render json: { request_id: request.headers['X-Request-Id'] }
       end
 
       def proof_user
-        render json: { request_id: SecureRandom.uuid }
+        render json: { request_id: request.headers['X-Request-Id'] }
       end
 
       private
