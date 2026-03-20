@@ -167,7 +167,8 @@ RSpec.describe Reports::FraudMetricsLg99S3Report do
       fresh_report = Reports::FraudMetricsLg99S3Report.new(report_date)
       expect(Reporting::FraudMetricsLg99ReportS3).to receive(:new).with(
         time_range: report_date.all_month,
-        bucket_name: 'login-gov-dw-reports-int-1234-us-west-1',
+        bucket_name: 'login-gov-dw-reports-1234-us-west-1',
+        env: 'int',
         report_date: report_date.to_date,
       ).and_call_original
 
@@ -203,7 +204,7 @@ RSpec.describe Reports::FraudMetricsLg99S3Report do
   describe '#data_warehouse_bucket_name' do
     it 'constructs the bucket name from config and hostdata' do
       expect(report.send(:data_warehouse_bucket_name)).to \
-        eq('login-gov-dw-reports-int-1234-us-west-1')
+        eq('login-gov-dw-reports-1234-us-west-1')
     end
   end
 

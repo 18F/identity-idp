@@ -6,7 +6,7 @@ require 'reporting/fraud_metrics_lg99_report_s3'
 RSpec.describe Reporting::FraudMetricsLg99ReportS3 do
   let(:time_range) { Date.new(2025, 11, 1).in_time_zone('UTC').all_month }
   let(:bucket_name) { 'login-gov-dw-reports-487317109730-us-west-2' }
-  let(:s3_path_prefix) { 'sliang/fraud-metrics-report/2025/2025-11-01.fraud-metrics-report' }
+  let(:s3_path_prefix) { 'sliang/idp/fraud-metrics-report/2025/2025-11-01.fraud-metrics-report' }
 
   let(:lg99_metrics_csv) do
     <<~CSV
@@ -66,13 +66,18 @@ RSpec.describe Reporting::FraudMetricsLg99ReportS3 do
       it 'raises an ArgumentError' do
         expect do
           described_class.new(time_range: time_range, bucket_name: bucket_name)
-        end.to raise_error(ArgumentError, /report_date.*s3_path_prefix|s3_path_prefix.*report_date/)
+        end.to raise_error(
+          ArgumentError,
+          /report_date.*s3_path_prefix|s3_path_prefix.*report_date/,
+        )
       end
     end
 
     context 'when report_date is provided without s3_path_prefix' do
       let(:report_date) { Date.new(2026, 3, 15) }
-      let(:derived_prefix) { 'fraud-metrics-report/2026/2026-03-15.fraud-metrics-report' }
+      let(:derived_prefix) do
+        'sliang/idp/fraud-metrics-report/2026/2026-03-15.fraud-metrics-report'
+      end
 
       before do
         s3_client.stub_responses(
@@ -96,6 +101,7 @@ RSpec.describe Reporting::FraudMetricsLg99ReportS3 do
         report_with_date = described_class.new(
           time_range: time_range,
           bucket_name: bucket_name,
+          env: 'sliang',
           report_date: report_date,
         )
         report_with_date.lg99_metrics_table

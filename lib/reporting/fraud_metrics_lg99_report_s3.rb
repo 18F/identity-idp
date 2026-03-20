@@ -16,15 +16,19 @@ module Reporting
     ].freeze
 
     # @param [Range<Time>] time_range
-    # @param [String] bucket_name the S3 bucket name
-    # @param [Date, nil] report_date when provided, the S3 path prefix is derived automatically
-    #   as "fraud-metrics-report/<YEAR>/<YYYY-MM-DD>.fraud-metrics-report"
+    # @param [String] bucket_name the S3 bucket name (without env prefix,
+    #   e.g. "login-gov-dw-reports-894947205914-us-west-2")
+    # @param [String, nil] env the deployment environment (e.g. "sliang", "prod");
+    #   prepended to the S3 key as "<env>/idp/..." when deriving from report_date
+    # @param [Date, nil] report_date when provided, the S3 key prefix is derived automatically
+    #   as "<env>/idp/fraud-metrics-report/<YEAR>/<YYYY-MM-DD>.fraud-metrics-report"
     # @param [String, nil] s3_path_prefix explicit S3 key prefix; overrides report_date derivation
-    #   (e.g. "fraud-metrics-report/2026/2026-03-04.fraud-metrics-report")
+    #   (e.g. "sliang/idp/fraud-metrics-report/2026/2026-03-04.fraud-metrics-report")
     # @raise [ArgumentError] if neither report_date nor s3_path_prefix is provided
     def initialize(
       time_range:,
       bucket_name:,
+      env: nil,
       report_date: nil,
       s3_path_prefix: nil
     )
@@ -35,8 +39,8 @@ module Reporting
       @time_range = time_range
       @bucket_name = bucket_name
       @s3_path_prefix = s3_path_prefix ||
-                        "fraud-metrics-report/#{report_date.year}/ \
-                        #{report_date.strftime('%F')}.fraud-metrics-report"
+                        "#{env}/idp/fraud-metrics-report/#{report_date.year}/" \
+                        "#{report_date.strftime('%F')}.fraud-metrics-report"
     end
 
     def as_emailable_reports
@@ -96,10 +100,10 @@ module Reporting
     def fetch_csv_from_s3(report_name)
       key = "#{@s3_path_prefix}/#{report_name}.csv"
       $stdout.puts "[FraudMetricsLg99ReportS3] Fetching S3 object: \
-       bucket=#{@bucket_name} key=#{key}"
+        bucket=#{@bucket_name} key=#{key}"
       resp = s3_helper.s3_client.get_object(bucket: @bucket_name, key: key)
       $stdout.puts "[FraudMetricsLg99ReportS3] Response: \
-      content_length=#{resp.content_length} content_type=#{resp.content_type}"
+        content_length=#{resp.content_length} content_type=#{resp.content_type}"
       resp.body.read
     end
 

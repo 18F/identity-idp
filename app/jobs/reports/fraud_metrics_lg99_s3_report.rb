@@ -67,6 +67,7 @@ module Reports
       @fraud_metrics_lg99_report_s3 ||= Reporting::FraudMetricsLg99ReportS3.new(
         time_range: report_date.all_month,
         bucket_name: data_warehouse_bucket_name,
+        env: Identity::Hostdata.env,
         report_date: report_date.to_date,
       )
     end
@@ -104,10 +105,9 @@ module Reports
 
     def data_warehouse_bucket_name
       bucket_prefix = IdentityConfig.store.s3_data_warehouse_bucket_prefix
-      env = Identity::Hostdata.env
       aws_account_id = Identity::Hostdata.aws_account_id
       aws_region = Identity::Hostdata.aws_region
-      "#{bucket_prefix}-#{env}-#{aws_account_id}-#{aws_region}"
+      "#{bucket_prefix}-#{aws_account_id}-#{aws_region}"
     end
   end
 end
