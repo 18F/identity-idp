@@ -17,20 +17,22 @@ module Api
         analytics.proofing_agent_request(
           issuer: request_token.issuer,
           success: true,
+          request_id:,
           request_type: :search_user,
         )
 
-        render json: { request_id: request.headers['X-Request-Id'] }
+        render json: { request_id: }
       end
 
       def proof_user
         analytics.proofing_agent_request(
           issuer: request_token.issuer,
           success: true,
+          request_id:,
           request_type: :proof_user,
         )
 
-        render json: { request_id: request.headers['X-Request-Id'] }
+        render json: { request_id: }
       end
 
       private
@@ -50,6 +52,10 @@ module Api
           track_failure
           render json: { error: 'Unauthorized' }, status: :unauthorized
         end
+      end
+
+      def request_id
+        request.headers['X-Request-Id']
       end
 
       def request_token

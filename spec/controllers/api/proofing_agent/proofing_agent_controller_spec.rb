@@ -68,7 +68,7 @@ RSpec.shared_examples 'an endpoint that requires authorization' do
     end
   end
 
-  context 'with a valid but not config token' do
+  context 'with a different token than they were issued' do
     let(:auth_header) { "Bearer #{issuer} not-shared-secret" }
 
     it 'returns a 401' do
@@ -106,6 +106,8 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
     SCrypt::Password.new(scrypted).digest
   end
 
+  let(:request_id) { 'test-uuid-1234-5678' }
+
   let(:auth_header) { "Bearer #{issuer} #{token}" }
   before do
     stub_analytics
@@ -139,6 +141,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
             :proofing_agent_request,
             issuer: issuer,
             success: true,
+            request_id:,
             request_type: :search_user,
           )
         end
@@ -151,6 +154,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
             :proofing_agent_request,
             issuer: issuer,
             success: true,
+            request_id:,
             request_type: :search_user,
           )
         end
@@ -227,6 +231,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
             :proofing_agent_request,
             issuer: issuer,
             success: true,
+            request_id:,
             request_type: :proof_user,
           )
         end
@@ -239,6 +244,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
             :proofing_agent_request,
             issuer: issuer,
             success: true,
+            request_id:,
             request_type: :proof_user,
           )
         end
