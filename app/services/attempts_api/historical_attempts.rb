@@ -17,7 +17,7 @@ module AttemptsApi
       if !existing_user_proofing_event
         new_user_proofing_event = UserProofingEvent.new(
           encrypted_events:,
-          profile_id: @profile.id,
+          profile_id: @idv_session.profile.id,
           service_providers_sent: [],
           cost: encrypted_events_json['cost'],
           salt: encrypted_events_json['salt'],
@@ -36,8 +36,7 @@ module AttemptsApi
     def historical_events_enabled?
       return false unless IdentityConfig.store.historical_attempts_api_enabled
 
-      @profile ||= @idv_session.profile
-      service_provider ||= @idv_session.service_provider
+      service_provider = @idv_session.service_provider
       service_provider&.attempts_api_enabled?
     end
 
