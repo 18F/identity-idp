@@ -106,12 +106,12 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
     SCrypt::Password.new(scrypted).digest
   end
 
-  let(:request_id) { 'test-uuid-1234-5678' }
-
   let(:auth_header) { "Bearer #{issuer} #{token}" }
+  let(:request_id) { 'test-request-id' }
   before do
     stub_analytics
     request.headers['Authorization'] = auth_header
+    request.headers['X-Request-ID'] = request_id
     allow(IdentityConfig.store).to receive(:idv_proofing_agent_config).and_return(
       [{
         'issuer' => sp.issuer,

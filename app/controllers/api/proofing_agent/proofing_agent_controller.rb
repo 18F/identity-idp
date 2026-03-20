@@ -55,7 +55,7 @@ module Api
       end
 
       def request_id
-        request.headers['X-Request-Id']
+        @request_id ||= request.headers['X-Request-ID']
       end
 
       def request_token
