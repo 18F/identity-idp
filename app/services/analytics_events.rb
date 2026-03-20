@@ -7609,6 +7609,28 @@ module AnalyticsEvents
     track_event('Proofing Address Result Missing')
   end
 
+  # Tracks a proofing agent request
+  # @param [Boolean] success Whether request was successful
+  # @param [String] issuer The issuer associated with the proofing request, if applicable
+  # @param [String] request_id The request ID associated with the proofing request
+  # @param ["search_user", "proof_user"] request_type The type of proofing event
+  def proofing_agent_request(
+    success:,
+    issuer:,
+    request_id: nil,
+    request_type: nil,
+    **extra
+  )
+    track_event(
+      :proofing_agent_request,
+      success:,
+      issuer:,
+      request_id:,
+      request_type:,
+      **extra,
+    )
+  end
+
   # Tracks when a user triggered a rate limiter
   # @param [String] limiter_type Name of the rate limiter configuration exceeded
   # @param [String] country_code Abbreviated 2-letter country code associated with phone number
