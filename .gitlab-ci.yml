@@ -562,6 +562,8 @@ dependency_scanning:
     - test-pool
 
 secret_detection:
+  tags:
+    - test-pool
   allow_failure: false
   needs: []
   variables:
