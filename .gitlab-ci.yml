@@ -557,6 +557,10 @@ sast:
   tags:
     - test-pool
 
+dependency_scanning:
+  tags:
+    - test-pool
+
 secret_detection:
   allow_failure: false
   needs: []
