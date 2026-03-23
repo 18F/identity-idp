@@ -6348,6 +6348,7 @@ module AnalyticsEvents
   # @param [Integer] enabled_mfa_methods_count Number of enabled MFA methods on the account
   # @param [Hash] recaptcha_annotation Details of reCAPTCHA annotation, if submitted
   # @param [Boolean] available_webauthn_platform_config shows user has a webauth_platform config
+  # @param [Integer] webauthn_auth_duration the duration to complete webauthn auth in seconds
   # Multi-Factor Authentication
   def multi_factor_auth(
     success:,
@@ -6374,6 +6375,7 @@ module AnalyticsEvents
     in_account_creation_flow: nil,
     recaptcha_annotation: nil,
     available_webauthn_platform_config: nil,
+    webauthn_auth_duration: nil,
     **extra
   )
     track_event(
@@ -6402,6 +6404,7 @@ module AnalyticsEvents
       enabled_mfa_methods_count:,
       recaptcha_annotation:,
       available_webauthn_platform_config:,
+      webauthn_auth_duration:,
       **extra,
     )
   end
@@ -6668,6 +6671,7 @@ module AnalyticsEvents
   #   registration contradict the authenticator attachment for user setup. For example, a user can
   #   set up a platform authenticator through the Security Key setup flow.
   # @param [:authentication, :account_creation, nil] webauthn_platform_recommended A/B test for
+  # @param [Integer, nil] webauthn_setup_duration Duration of webauthn setup in seconds
   def multi_factor_auth_setup(
     success:,
     multi_factor_auth_method:,
@@ -6694,6 +6698,7 @@ module AnalyticsEvents
     transports: nil,
     transports_mismatch: nil,
     webauthn_platform_recommended: nil,
+    webauthn_setup_duration: nil,
     **extra
   )
     track_event(
@@ -6723,6 +6728,7 @@ module AnalyticsEvents
       transports:,
       transports_mismatch:,
       webauthn_platform_recommended:,
+      webauthn_setup_duration:,
       **extra,
     )
   end
