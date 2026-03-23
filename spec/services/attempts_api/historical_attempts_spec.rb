@@ -14,24 +14,30 @@ RSpec.describe AttemptsApi::HistoricalAttempts do
   let(:applicant) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE }
   let(:user_proofing_event_mock) { double }
   let(:encryptor_mock) { double }
-  let(:encrypted_events) { {
-    "encrypted_data" => "encrypted_test_data",
-    "salt" => "abcdef0123456789",
-    "cost" => "000$0$0$",
-  } }
-  let(:user_session) { {
-    "idv/attempts" => {
-      "test_attempt" => "some_data",
+  let(:encrypted_events) do
+    {
+      'encrypted_data' => 'encrypted_test_data',
+      'salt' => 'abcdef0123456789',
+      'cost' => '000$0$0$',
     }
-  } }
-  let(:idv_session) { Idv::Session.new(
-    user_session: user_session,
-    current_user: user,
-    service_provider: sp,
-  ) }
+  end
+  let(:user_session) do
+    {
+      'idv/attempts' => {
+        'test_attempt' => 'some_data',
+      },
+    }
+  end
+  let(:idv_session) do
+    Idv::Session.new(
+      user_session: user_session,
+      current_user: user,
+      service_provider: sp,
+    )
+  end
 
   subject do
-    idv_session.applicant = applicant.merge({ "uuid" => user.uuid })
+    idv_session.applicant = applicant.merge({ 'uuid' => user.uuid })
     idv_session.create_profile_from_applicant_with_password(
       user.password,
       is_enhanced_ipp: false,
@@ -47,7 +53,7 @@ RSpec.describe AttemptsApi::HistoricalAttempts do
 
   before do
     allow(IdentityConfig.store).to receive_messages(
-      allowed_attempts_providers: [ { "issuer" => sp.issuer} ],
+      allowed_attempts_providers: [{ 'issuer' => sp.issuer }],
       attempts_api_enabled: true,
       historical_attempts_api_enabled: true,
     )
@@ -61,7 +67,8 @@ RSpec.describe AttemptsApi::HistoricalAttempts do
     context 'historical_attempts_api_enabled is false at the secrets level' do
       before do
         allow(IdentityConfig.store).to receive(
-          :historical_attempts_api_enabled).and_return(false)
+          :historical_attempts_api_enabled,
+        ).and_return(false)
       end
 
       it 'does not modify or create a UserProofingEvent' do
@@ -75,7 +82,8 @@ RSpec.describe AttemptsApi::HistoricalAttempts do
     context 'service_provider is not an allowed_attempts_providers' do
       before do
         allow(IdentityConfig.store).to receive(
-          :allowed_attempts_providers).and_return([])
+          :allowed_attempts_providers,
+        ).and_return([])
       end
 
       it 'does not modify or create a UserProofingEvent' do
@@ -100,7 +108,7 @@ RSpec.describe AttemptsApi::HistoricalAttempts do
 
       it 'includes the encrypted_events' do
         expect(UserProofingEvent).to have_received(:new).with(
-          encrypted_events:  encrypted_events.to_json,
+          encrypted_events: encrypted_events.to_json,
           profile_id: idv_session.profile.id,
           service_providers_sent: [],
           cost: encrypted_events['cost'],
@@ -110,26 +118,29 @@ RSpec.describe AttemptsApi::HistoricalAttempts do
     end
 
     context 'when the user already has an existing UserProofingEvent' do
-      let(:existing_events) { { "old_attempt" => "old_data" } }
+      let(:existing_events) { { 'old_attempt' => 'old_data' } }
       let(:pii_encryptor) { Encryption::Encryptors::PiiEncryptor.new(user.password) }
-      let(:encrypted_existing_events) { 
+      let(:encrypted_existing_events) do
         pii_encryptor.encrypt(existing_events.to_json, user_uuid: user.uuid)
-      }
+      end
+      let(:concatenated_events) { existing_events.merge(user_session['idv/attempts']) }
 
       before do
         subject # this is required to associate a profile with the idv_session
         allow(UserProofingEvent).to receive(:new).and_call_original
+        allow(UserProofingEvent).to receive(:save).and_return(true)
         allow(Encryption::Encryptors::PiiEncryptor).to receive(:new).and_return(pii_encryptor)
         allow(pii_encryptor).to receive(:decrypt).and_call_original
         allow(pii_encryptor).to receive(:encrypt).and_call_original
         user_proofing_event = create(
           :user_proofing_event,
           encrypted_events: encrypted_existing_events,
-          service_providers_sent: [],
+          service_providers_sent: [sp.issuer],
           cost: JSON.parse(encrypted_existing_events)['cost'],
           salt: JSON.parse(encrypted_existing_events)['salt'],
           profile_id: idv_session.profile.id,
         )
+        allow(user_proofing_event).to receive(:update_encrypted_events).and_return(true)
         subject.record_events
       end
 
@@ -139,9 +150,13 @@ RSpec.describe AttemptsApi::HistoricalAttempts do
 
       it 'encrypts concatenated data' do
         expect(pii_encryptor).to have_received(:encrypt).with(
-          existing_events.merge(user_session['idv/attempts']).to_json, user_uuid: user.uuid
+          concatenated_events.to_json, user_uuid: user.uuid
         )
-        binding.pry
+      end
+
+      it 'updates the UserProofingEvent with concatenated data' do
+        expect(UserProofingEvent.last).to have_received(:update_encrypted_events)
+          .with(concatenated_events)
       end
     end
   end

@@ -26,12 +26,8 @@ module AttemptsApi
         existing_events = JSON.parse(decrypt_user_proofing_events)
         combined_events = existing_events.merge(@user_session['idv/attempts'])
         encrypted_events = encrypt_attempt_events_bundle(combined_events)
-        encrypted_events_json = JSON.parse(encrypted_events)
-binding.pry
-        existing_user_proofing_event.encrypted_events = encrypted_events
-        existing_user_proofing_event.cost = encrypted_events_json['cost']
-        existing_user_proofing_event.salt = encrypted_events_json['salt']
-        existing_user_proofing_event.save
+
+        existing_user_proofing_event.update_encrypted_events(encrypted_events)
       end
     end
 

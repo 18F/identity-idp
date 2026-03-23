@@ -1131,7 +1131,6 @@ RSpec.describe Idv::EnterPasswordController do
       let(:mock) { double }
 
       before do
-        binding.pry
         allow(UserProofingEvent).to receive(:new).and_return(mock)
         allow(mock).to receive(:save).and_return(true)
         allow(IdentityConfig.store).to receive_messages(
@@ -1157,7 +1156,6 @@ RSpec.describe Idv::EnterPasswordController do
 
         context 'with a newly proofed user' do
           it 'creates a new UserProofingEvent' do
-            binding.pry
             expect(UserProofingEvent).to receive(:new)
             expect(mock).to receive(:save)
             put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }

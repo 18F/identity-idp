@@ -154,7 +154,7 @@ module SignUp
 
       return false unless globally_enabled && aaca && idv
 
-      sent_to_aaca = user_proofing_event&.service_providers_sent.include?(current_sp.issuer)
+      sent_to_aaca = user_proofing_event&.service_providers_sent&.include?(current_sp.issuer)
 
       return false if sent_to_aaca
       true
