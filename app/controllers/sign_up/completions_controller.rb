@@ -182,7 +182,6 @@ module SignUp
     end
 
     def redirect_if_user_duplicate_profile
-      return unless IdentityConfig.store.one_account_profile_creation_check_enabled
       return unless user_duplicate_profiles_detected?
       redirect_to duplicate_profiles_detected_url(source: :account_verified)
     end
