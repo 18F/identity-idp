@@ -34,7 +34,7 @@ module Reports
 
       if report_receiver == :both && partner_emails.empty?
         Rails.logger.warn(
-          "#{agency_abbreviation} Monthly Credential Report: recipient is :both " \
+          "#{agency_abbreviation} Credential Report: recipient is :both " \
           "but no external email specified",
         )
       end
