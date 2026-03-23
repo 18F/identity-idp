@@ -96,6 +96,8 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
     }
   end
 
+  let(:request_id) { headers['X-Request-Id'] }
+
   let(:token) { 'a-shared-secret' }
   let(:salt) { SecureRandom.hex(32) }
   let(:cost) { IdentityConfig.store.scrypt_cost }
@@ -107,11 +109,10 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
   end
 
   let(:auth_header) { "Bearer #{issuer} #{token}" }
-  let(:request_id) { 'test-request-id' }
+
   before do
     stub_analytics
     request.headers['Authorization'] = auth_header
-    request.headers['X-Request-ID'] = request_id
     allow(IdentityConfig.store).to receive(:idv_proofing_agent_config).and_return(
       [{
         'issuer' => sp.issuer,
