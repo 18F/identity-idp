@@ -95,7 +95,7 @@ module Reports
       bcc_emails = emails[:bcc].select(&:present?)
 
       if to_emails.empty? && bcc_emails.empty?
-        Rails.logger.warn "No email addresses received - #{@partner_strings.first} Monthly Credential Report NOT SENT"
+        Rails.logger.warn "No email addresses received - #{@partner_strings.first} Credential Report NOT SENT"
         return false
       end
 
@@ -117,7 +117,7 @@ module Reports
           )
         end
       else
-        Rails.logger.warn "No report available - #{@partner_strings.first} Monthly Credential Report NOT SENT"
+        Rails.logger.warn "No report available - #{@partner_strings.first} Credential Metrics Report NOT SENT"
         return false
       end
       # rubocop:enable Layout/LineLength
@@ -125,7 +125,7 @@ module Reports
       ReportMailer.tables_report(
         to: to_emails,
         bcc: bcc_emails,
-        subject: "#{@partner_strings.first} Monthly Credential Metrics - #{@report_date.to_date}",
+        subject: "#{@partner_strings.first} Credential Metrics - #{@report_date.to_date}",
         message: preamble,
         reports: reports,
         attachment_format: :csv,
@@ -151,7 +151,7 @@ module Reports
       if issuer_report_data.present?
         emailable_report_array <<
           Reporting::EmailableReport.new(
-            title: "#{partner_strings.first} Monthly Credential Metrics #{date.strftime('%B %Y')}",
+            title: "#{partner_strings.first} Credential Metrics #{date.strftime('%B %Y')}",
             table: issuer_report_data,
             filename: 'multi_issuer_monthly_cred_metrics',
           )
@@ -162,7 +162,7 @@ module Reports
       if partner_report_data.present?
         emailable_report_array <<
           Reporting::EmailableReport.new(
-            title: "Partner Monthly Credential Metrics #{date.strftime('%B %Y')}",
+            title: "Partner Credential Metrics #{date.strftime('%B %Y')}",
             table: partner_report_data,
             filename: 'partner_monthly_cred_metrics',
           )
