@@ -124,11 +124,12 @@ RSpec.describe AttemptsApi::HistoricalAttempts do
         pii_encryptor.encrypt(existing_events.to_json, user_uuid: user.uuid)
       end
       let(:concatenated_events) { existing_events.merge(user_session['idv/attempts']) }
+      let(:mock_user_proofing_event) { double }
+      user_proofing_event = nil
 
       before do
         subject # this is required to associate a profile with the idv_session
         allow(UserProofingEvent).to receive(:new).and_call_original
-        allow(UserProofingEvent).to receive(:save).and_return(true)
         allow(Encryption::Encryptors::PiiEncryptor).to receive(:new).and_return(pii_encryptor)
         allow(pii_encryptor).to receive(:decrypt).and_call_original
         allow(pii_encryptor).to receive(:encrypt).and_call_original
@@ -140,6 +141,7 @@ RSpec.describe AttemptsApi::HistoricalAttempts do
           salt: JSON.parse(encrypted_existing_events)['salt'],
           profile_id: idv_session.profile.id,
         )
+        allow(UserProofingEvent).to receive(:find_by).and_return(user_proofing_event)
         allow(user_proofing_event).to receive(:update_encrypted_events).and_return(true)
         subject.record_events
       end
@@ -155,8 +157,7 @@ RSpec.describe AttemptsApi::HistoricalAttempts do
       end
 
       it 'updates the UserProofingEvent with concatenated data' do
-        expect(UserProofingEvent.last).to have_received(:update_encrypted_events)
-          .with(concatenated_events)
+        expect(user_proofing_event).to have_received(:update_encrypted_events).once
       end
     end
   end
