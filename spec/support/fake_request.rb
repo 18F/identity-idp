@@ -34,6 +34,6 @@ class FakeRequest
   end
 
   def referer
-    'https://gsa.gov'
+    'https://secure.login.gov/openid_connect/logout?client_id=foo&state=bar'
   end
 end

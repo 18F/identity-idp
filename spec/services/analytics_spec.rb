@@ -29,7 +29,7 @@ RSpec.describe Analytics do
       hostname: FakeRequest.new.host,
       pid: Process.pid,
       trace_id: nil,
-      referer: FakeRequest.new.referer,
+      referer: 'https://secure.login.gov/openid_connect/logout',
     }
   end
 
@@ -112,7 +112,7 @@ RSpec.describe Analytics do
 
       it 'includes the referer as a top-level attribute' do
         expect(ahoy).to receive(:track)
-          .with('Trackable Event', hash_including(referer: 'https://gsa.gov'))
+          .with('Trackable Event', hash_including(referer: 'https://secure.login.gov/openid_connect/logout'))
 
         analytics.track_event('Trackable Event')
       end
