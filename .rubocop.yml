@@ -4,6 +4,8 @@
 # https://github.com/bbatsov/rubocop/blob/master/config/enabled.yml
 # https://github.com/bbatsov/rubocop/blob/master/config/disabled.yml
 require:
+  - rubocop-rails
+  - rubocop-rspec
   - ./lib/linters/i18n_helper_html_linter.rb
   - ./lib/linters/analytics_event_name_linter.rb
   - ./lib/linters/localized_validation_message_linter.rb
@@ -16,8 +18,6 @@ require:
   - ./lib/linters/capybara_current_path_equality_linter.rb
 
 plugins:
-  - rubocop-rails
-  - rubocop-rspec
   - rubocop-performance
   - rubocop-capybara
 
@@ -743,7 +743,7 @@ Naming/MemoizedInstanceVariableName:
 Naming/MethodParameterName:
   MinNameLength: 2
 
-Naming/PredicatePrefix:
+Naming/PredicateName:
   Enabled: true
   AllowedMethods:
     - is_a?
@@ -946,9 +946,6 @@ Rails/FilePath:
 Rails/FindById:
   Enabled: true
 
-Rails/FindByOrAssignmentMemoization:
-  Enabled: false
-
 Rails/FreezeTime:
   Enabled: true
 
@@ -958,9 +955,6 @@ Rails/HttpPositionalArguments:
   Include:
     - spec/**/*
     - test/**/*
-
-Rails/HttpStatusNameConsistency:
-  Enabled: true
 
 Rails/I18nLazyLookup:
   Enabled: false
@@ -986,9 +980,6 @@ Rails/MatchRoute:
 Rails/MigrationClassName:
   Enabled: true
 
-Rails/MultipleRoutePaths:
-  Enabled: true
-
 Rails/NegateInclude:
   Enabled: false
 
@@ -1000,9 +991,6 @@ Rails/Output:
     - db/**/*.rb
     - lib/**/*.rb
     - spec/**/*.rb # in addition to default
-
-Rails/OrderArguments:
-  Enabled: false
 
 Rails/Pluck:
   Enabled: false
@@ -1021,9 +1009,6 @@ Rails/RedundantPresenceValidationOnBelongsTo:
 
 Rails/RedundantTravelBack:
   Enabled: true
-
-Rails/RedirectBackOrTo:
-  Enabled: false
 
 Rails/RelativeDateConstant:
   Enabled: false
@@ -1056,9 +1041,6 @@ Rails/SkipsModelValidations:
   Enabled: true
   Exclude:
     - 'spec/**/*.rb'
-
-Rails/StrongParametersExpect:
-  Enabled: false
 
 Rails/StripHeredoc:
   Enabled: false

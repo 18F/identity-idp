@@ -578,14 +578,13 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
             :post,
             "#{IdentityConfig.store.socure_idplus_base_url}/api/3.0/EmailAuthScore",
           )
-            .with(
-              body: {
-                modules: ['documentverification'],
-                docvTransactionToken: nil,
-                customerUserId: user.uuid,
-                email: user.email,
-              }.to_json,
-            )
+            .with(body: {
+              modules: ['documentverification'],
+              docvTransactionToken: nil,
+              customerUserId: user.uuid,
+              email: user.email,
+            }
+              .to_json)
             .to_return(
               headers: {
                 'Content-Type' => 'application/json',

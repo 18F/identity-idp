@@ -47,7 +47,7 @@ RSpec::Matchers.define :label_required_fields do
       ].join('')
     end.join(', ')
 
-    <<~STR.squish
+    <<-STR.squish
       On #{page.current_path} found #{elements.count} elements with
       required=true but missing aria-invalid=false (#{elem_summaries})
     STR
@@ -66,7 +66,7 @@ RSpec::Matchers.define :be_logically_grouped do |name|
   end
 
   failure_message do
-    <<~STR.squish
+    <<-STR.squish
       Expected inputs to be logically grouped with as "#{name}"
     STR
   end
@@ -130,7 +130,7 @@ RSpec::Matchers.define :have_description do |description|
   end
 
   failure_message do |element|
-    <<~STR.squish
+    <<-STR.squish
       Expected element would have `aria-describedby` description "#{description}".
       Found #{descriptors(element)}.
     STR
@@ -141,7 +141,7 @@ RSpec::Matchers.define :have_name do |name|
   match { |element| AccessibleName.new(page:).computed_name(element).strip == name.strip }
 
   failure_message do |element|
-    <<~STR.squish
+    <<-STR.squish
       Expected element would have computed name "#{name}".
       Found #{AccessibleName.new(page:).computed_name(element)}.
     STR
@@ -276,7 +276,7 @@ class AccessibleName
       &.map { |label_id| page.find("##{label_id}")&.text }
       &.compact
 
-    valid_labels.presence&.join('')
+    valid_labels.join('') if valid_labels.present?
   end
 
   def aria_label_name(element)
@@ -336,8 +336,7 @@ class AccessibleName
     # legend element, then use the subtree of the first such element."
     begin
       return element.find('legend').text
-    rescue Capybara::ElementNotFound
-    end
+    rescue Capybara::ElementNotFound; end
 
     # "If the accessible name is still empty, then:, if the fieldset element has a title
     # attribute, then use that attribute."
