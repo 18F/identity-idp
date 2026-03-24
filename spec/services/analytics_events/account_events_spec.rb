@@ -21,7 +21,10 @@ RSpec.describe AnalyticsEvents::AccountEvents do
 
   describe '#backup_code_created' do
     it 'logs the event' do
-      analytics.backup_code_created
+      analytics.backup_code_created(
+        enabled_mfa_methods_count: 1,
+        in_account_creation_flow: false,
+      )
       expect(analytics).to have_logged_event('Backup Code Created')
     end
   end

@@ -7,7 +7,7 @@ RSpec.describe AnalyticsEvents::SpEvents do
 
   describe '#oidc_logout_requested' do
     it 'logs the event' do
-      analytics.oidc_logout_requested(success: true)
+      analytics.oidc_logout_requested(success: true, client_id: 'test')
       expect(analytics).to have_logged_event('OIDC Logout Requested')
     end
   end
@@ -40,6 +40,11 @@ RSpec.describe AnalyticsEvents::SpEvents do
         requested_aal_authn_context: nil,
         force_authn: false,
         final_auth_request: true,
+        service_provider: 'urn:gov:gsa:openidconnect.profiles:sp:sso:test',
+        request_signed: true,
+        matching_cert_serial: nil,
+        unknown_authn_contexts: [],
+        user_fully_authenticated: false,
       )
       expect(analytics).to have_logged_event('SAML Auth Request')
     end

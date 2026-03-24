@@ -33,7 +33,12 @@ RSpec.describe AnalyticsEvents::GpoEvents do
 
   describe '#idv_gpo_expired' do
     it 'logs the event' do
-      analytics.idv_gpo_expired(user_id: 1, user_has_active_profile: false, letters_sent: 1)
+      analytics.idv_gpo_expired(
+        user_id: 1,
+        user_has_active_profile: false,
+        letters_sent: 1,
+        gpo_verification_pending_at: nil,
+      )
       expect(analytics).to have_logged_event(:idv_gpo_expired)
     end
   end

@@ -7,14 +7,22 @@ RSpec.describe AnalyticsEvents::EmailEvents do
 
   describe '#add_email_confirmation' do
     it 'logs the event' do
-      analytics.add_email_confirmation(success: true)
+      analytics.add_email_confirmation(
+        user_id: 'abc123',
+        success: true,
+        from_select_email_flow: false,
+      )
       expect(analytics).to have_logged_event('Add Email: Email Confirmation')
     end
   end
 
   describe '#add_email_request' do
     it 'logs the event' do
-      analytics.add_email_request(success: true)
+      analytics.add_email_request(
+        success: true,
+        domain_name: 'example.com',
+        in_select_email_flow: false,
+      )
       expect(analytics).to have_logged_event('Add Email Requested')
     end
   end
@@ -28,7 +36,7 @@ RSpec.describe AnalyticsEvents::EmailEvents do
 
   describe '#email_deletion_request' do
     it 'logs the event' do
-      analytics.email_deletion_request
+      analytics.email_deletion_request(success: true)
       expect(analytics).to have_logged_event('Email Deletion Requested')
     end
   end

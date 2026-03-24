@@ -14,7 +14,7 @@ RSpec.describe AnalyticsEvents::NavigationEvents do
 
   describe '#event_disavowal' do
     it 'logs the event' do
-      analytics.event_disavowal
+      analytics.event_disavowal(success: true, user_id: 'abc123')
       expect(analytics).to have_logged_event('Event disavowal visited')
     end
   end

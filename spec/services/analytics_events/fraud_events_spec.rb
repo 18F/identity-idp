@@ -14,14 +14,26 @@ RSpec.describe AnalyticsEvents::FraudEvents do
 
   describe '#fraud_review_passed' do
     it 'logs the event' do
-      analytics.fraud_review_passed
+      analytics.fraud_review_passed(
+        success: true,
+        errors: {},
+        exception: nil,
+        profile_fraud_review_pending_at: nil,
+        profile_age_in_seconds: 100,
+      )
       expect(analytics).to have_logged_event('Fraud: Profile review passed')
     end
   end
 
   describe '#fraud_review_rejected' do
     it 'logs the event' do
-      analytics.fraud_review_rejected
+      analytics.fraud_review_rejected(
+        success: true,
+        errors: {},
+        exception: nil,
+        profile_fraud_review_pending_at: nil,
+        profile_age_in_seconds: 100,
+      )
       expect(analytics).to have_logged_event('Fraud: Profile review rejected')
     end
   end
