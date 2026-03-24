@@ -12,6 +12,7 @@ RSpec.shared_examples 'an endpoint that requires authorization' do
       expect(@analytics).to have_logged_event(
         :idv_proofing_agent_request_failed,
         success: false,
+        failure_type: :authorization,
       )
     end
   end
@@ -25,6 +26,7 @@ RSpec.shared_examples 'an endpoint that requires authorization' do
       expect(@analytics).to have_logged_event(
         :idv_proofing_agent_request_failed,
         success: false,
+        failure_type: :authorization,
       )
     end
   end
@@ -37,6 +39,7 @@ RSpec.shared_examples 'an endpoint that requires authorization' do
       expect(@analytics).to have_logged_event(
         :idv_proofing_agent_request_failed,
         success: false,
+        failure_type: :authorization,
       )
     end
   end
@@ -51,6 +54,7 @@ RSpec.shared_examples 'an endpoint that requires authorization' do
           :idv_proofing_agent_request_failed,
           issuer: issuer,
           success: false,
+          failure_type: :authorization,
         )
       end
     end
@@ -64,6 +68,7 @@ RSpec.shared_examples 'an endpoint that requires authorization' do
       expect(@analytics).to have_logged_event(
         :idv_proofing_agent_request_failed,
         success: false,
+        failure_type: :authorization,
       )
     end
   end
@@ -77,6 +82,7 @@ RSpec.shared_examples 'an endpoint that requires authorization' do
         :idv_proofing_agent_request_failed,
         issuer: issuer,
         success: false,
+        failure_type: :authorization,
       )
     end
   end
@@ -157,6 +163,14 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
 
           it 'returns 400' do
             expect(action.status).to eq(400)
+            expect(@analytics).to have_logged_event(
+              :idv_proofing_agent_request_failed,
+              success: false,
+              failure_type: :validation,
+              issuer: issuer,
+              agent_id: 'agent-456',
+              request_id: 'req-789',
+            )
           end
         end
 
@@ -165,6 +179,14 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
 
           it 'returns 400' do
             expect(action.status).to eq(400)
+            expect(@analytics).to have_logged_event(
+              :idv_proofing_agent_request_failed,
+              success: false,
+              failure_type: :validation,
+              issuer: issuer,
+              location_id: 'loc-123',
+              request_id: 'req-789',
+            )
           end
         end
 
@@ -173,6 +195,14 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
 
           it 'returns 400' do
             expect(action.status).to eq(400)
+            expect(@analytics).to have_logged_event(
+              :idv_proofing_agent_request_failed,
+              success: false,
+              failure_type: :validation,
+              issuer: issuer,
+              agent_id: 'agent-456',
+              location_id: 'loc-123',
+            )
           end
         end
 
@@ -181,6 +211,12 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
 
           it 'returns 400' do
             expect(action.status).to eq(400)
+            expect(@analytics).to have_logged_event(
+              :idv_proofing_agent_request_failed,
+              success: false,
+              failure_type: :validation,
+              issuer: issuer,
+            )
           end
 
           it 'lists missing headers in error' do
@@ -233,6 +269,14 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
 
           it 'returns 400' do
             expect(action.status).to eq(400)
+            expect(@analytics).to have_logged_event(
+              :idv_proofing_agent_request_failed,
+              success: false,
+              failure_type: :validation,
+              issuer: issuer,
+              agent_id: 'agent-456',
+              request_id: 'req-789',
+            )
           end
         end
 
@@ -241,6 +285,14 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
 
           it 'returns 400' do
             expect(action.status).to eq(400)
+            expect(@analytics).to have_logged_event(
+              :idv_proofing_agent_request_failed,
+              success: false,
+              failure_type: :validation,
+              issuer: issuer,
+              location_id: 'loc-123',
+              request_id: 'req-789',
+            )
           end
         end
 
@@ -249,6 +301,14 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
 
           it 'returns 400' do
             expect(action.status).to eq(400)
+            expect(@analytics).to have_logged_event(
+              :idv_proofing_agent_request_failed,
+              success: false,
+              failure_type: :validation,
+              issuer: issuer,
+              agent_id: 'agent-456',
+              location_id: 'loc-123',
+            )
           end
         end
 
@@ -257,6 +317,12 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
 
           it 'returns 400' do
             expect(action.status).to eq(400)
+            expect(@analytics).to have_logged_event(
+              :idv_proofing_agent_request_failed,
+              success: false,
+              failure_type: :validation,
+              issuer: issuer,
+            )
           end
         end
       end

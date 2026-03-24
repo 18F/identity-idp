@@ -25,7 +25,7 @@ module Api
 
       def validate_required_headers
         if location_id.blank? || agent_id.blank? || request_id.blank?
-          track_failure(agent_id:, location_id:, request_id:)
+          track_failure(failure_type: :validation, agent_id:, location_id:, request_id:)
 
           render json: {
             error: 'Missing required headers: X-Proofing-Location-Id, X-Agent-Id, X-Request-Id',
@@ -35,7 +35,7 @@ module Api
 
       def authenticate_client
         if request_token.invalid?
-          track_failure
+          track_failure(failure_type: :authorization)
           render json: { error: 'Unauthorized' }, status: :unauthorized
         end
       end
@@ -56,10 +56,11 @@ module Api
         @request_token ||= ::ProofingAgent::RequestTokenValidator.new(request.authorization)
       end
 
-      def track_failure(agent_id: nil, location_id: nil, request_id: nil)
+      def track_failure(failure_type:, agent_id: nil, location_id: nil, request_id: nil)
         analytics.idv_proofing_agent_request_failed(
           issuer: request_token&.issuer,
           success: false,
+          failure_type:,
           agent_id:,
           location_id:,
           request_id:,

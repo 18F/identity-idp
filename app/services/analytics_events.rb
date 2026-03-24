@@ -5313,13 +5313,15 @@ module AnalyticsEvents
 
   # Tracks a proofing agent request that failed authorization or validation
   # @param [Boolean] success Whether request was successful
-  # @param [String] issuer The issuer associated with the proofing request, if applicable
-  # param [String,nil] agent_id The ID of the proofing agent, if applicable
-  # param [String,nil] location_id The ID of the location where the proofing request was made, if applicable
+  # @param [String] issuer The issuer associated with the proofing request
+  # @param ['authorization', 'validation'] failure_type Determines failure type
+  # @param [String,nil] agent_id The ID of the proofing agent
+  # @param [String,nil] location_id The ID of the location where the proofing request was made
   # @param [String,nil] request_id The request ID associated with the proofing request
   def idv_proofing_agent_request_failed(
     success:,
     issuer:,
+    failure_type:,
     agent_id: nil,
     location_id: nil,
     request_id: nil,
@@ -5329,6 +5331,7 @@ module AnalyticsEvents
       :idv_proofing_agent_request_failed,
       success:,
       issuer:,
+      failure_type:,
       agent_id:,
       location_id:,
       request_id:,
