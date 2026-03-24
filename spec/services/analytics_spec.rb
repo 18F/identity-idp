@@ -29,7 +29,7 @@ RSpec.describe Analytics do
       hostname: FakeRequest.new.host,
       pid: Process.pid,
       trace_id: nil,
-      referer: 'https://secure.login.gov/openid_connect/logout',
+      referer: nil,
     }
   end
 
@@ -107,7 +107,7 @@ RSpec.describe Analytics do
 
     context 'request has a referer' do
       let(:request) do
-        FakeRequest.new
+        FakeRequest.new(referer: 'https://secure.login.gov/openid_connect/logout?client_id=foo&state=bar')
       end
 
       it 'includes the referer as a top-level attribute' do

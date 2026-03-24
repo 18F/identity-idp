@@ -1,8 +1,10 @@
 class FakeRequest
   attr_reader :headers
+  attr_reader :referer
 
-  def initialize(headers: {})
+  def initialize(headers: {}, referer: nil)
     @headers = headers
+    @referer = referer
   end
 
   def ip
@@ -31,9 +33,5 @@ class FakeRequest
 
   def env
     { 'REQUEST_METHOD' => 'GET' }
-  end
-
-  def referer
-    'https://secure.login.gov/openid_connect/logout?client_id=foo&state=bar'
   end
 end
