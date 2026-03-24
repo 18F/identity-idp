@@ -1,5 +1,12 @@
 require 'rails_helper'
 
+# Define QueryTimeout for this spec if it doesn't exist in the Rails version
+unless defined?(ActiveRecord::QueryTimeout)
+  module ActiveRecord
+    class QueryTimeout < StandardError; end
+  end
+end
+
 RSpec.describe CreateNewDeviceAlertJob do
   let(:user) { create(:user) }
   let(:now) { Time.zone.now }
@@ -125,6 +132,50 @@ RSpec.describe CreateNewDeviceAlertJob do
 
           expect(analytics).to have_logged_event(:create_new_device_alert_job_emails_sent, count: 1)
         end
+      end
+    end
+
+    context 'when a database query timeout occurs' do
+      let(:sign_in_new_device_at) { end_window - 1.second }
+
+      it 'logs analytics for query timeout instead of emails sent' do
+        analytics = FakeAnalytics.new
+        alert = CreateNewDeviceAlertJob.new
+        allow(alert).to receive(:analytics).and_return(analytics)
+        allow(User).to receive(:where).and_raise(ActiveRecord::QueryTimeout)
+
+        alert.perform(now)
+
+        expect(analytics).to have_logged_event(:create_new_device_alert_job_query_timeout)
+      end
+
+      it 'does not raise an exception' do
+        alert = CreateNewDeviceAlertJob.new
+        allow(User).to receive(:where).and_raise(ActiveRecord::QueryTimeout)
+
+        expect { alert.perform(now) }.not_to raise_error
+      end
+    end
+
+    context 'when a database statement invalid error occurs' do
+      let(:sign_in_new_device_at) { end_window - 1.second }
+
+      it 'logs analytics for query timeout' do
+        analytics = FakeAnalytics.new
+        alert = CreateNewDeviceAlertJob.new
+        allow(alert).to receive(:analytics).and_return(analytics)
+        allow(User).to receive(:where).and_raise(ActiveRecord::StatementInvalid)
+
+        alert.perform(now)
+
+        expect(analytics).to have_logged_event(:create_new_device_alert_job_query_timeout)
+      end
+
+      it 'does not raise an exception' do
+        alert = CreateNewDeviceAlertJob.new
+        allow(User).to receive(:where).and_raise(ActiveRecord::StatementInvalid)
+
+        expect { alert.perform(now) }.not_to raise_error
       end
     end
   end

@@ -518,6 +518,12 @@ module AnalyticsEvents
     track_event(:create_new_device_alert_job_emails_sent, count:, **extra)
   end
 
+
+  # Sends an alert if there is a statement timeout
+  def create_new_device_alert_job_query_timeout
+    track_event(:create_new_device_alert_job_query_timeout)
+  end
+
   # User directed to this page after TMX returns a failure
 
   def device_profiling_failed_visited
