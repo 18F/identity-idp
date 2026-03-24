@@ -117,7 +117,7 @@ module Reports
       bcc_emails = emails[:bcc].select(&:present?)
       
       if to_emails.empty? && bcc_emails.empty?
-        Rails.logger.warn "No email addresses received - #{partner_strings.first} Credential Report NOT SENT"
+        Rails.logger.warn "No email addresses received - #{@agency_abbreviation} Credential Report NOT SENT"
         return false
       end
 
@@ -140,7 +140,7 @@ module Reports
           )
         end
       else
-        Rails.logger.warn "No report available - #{partner_strings.first} Credential Metrics Report NOT SENT"
+        Rails.logger.warn "No report available - #{@agency_abbreviation} Credential Metrics Report NOT SENT"
         return false
       end
       # rubocop:enable Layout/LineLength
@@ -148,7 +148,7 @@ module Reports
       ReportMailer.tables_report(
         to: to_emails,
         bcc: bcc_emails,
-        subject: "#{partner_strings.first} Credential Metrics - #{@report_date.to_date}",
+        subject: "#{@agency_abbreviation} Credential Metrics - #{@report_date.to_date}",
         message: preamble,
         reports: reports,
         attachment_format: :csv,
@@ -175,7 +175,7 @@ module Reports
       
       if issuer_data.present?
         emailable_report_array << Reporting::EmailableReport.new(
-          title: "#{partner_strings.first} Monthly Credential Metrics #{date.strftime('%B %Y')}",
+          title: "#{@agency_abbreviation} Monthly Credential Metrics #{date.strftime('%B %Y')}",
           table: issuer_data,
           filename: 'multi_issuer_monthly_cred_metrics',
         )
@@ -291,21 +291,15 @@ module Reports
 
     def build_partner_data
       invoice_data_csv = CSV.parse(invoice_report_data, headers: true)
-
+      
+      # Filter by issuers (previously was filtering by partner_strings, which we've removed)
       partner_invoice_data = invoice_data_csv.select do |r|
-        partner_strings.include?(r['partner'])
+        issuers.include?(r['issuer']) 
       end
-
+      
       if partner_invoice_data.empty?
-        Rails.logger.warn "No data for any partners in #{partner_strings}"
+        Rails.logger.warn "No data for any issuers in #{issuers}" 
         return nil
-      else
-        # Check if all expected partners have data
-        found_partners = partner_invoice_data.map { |row| row['partner'] }.uniq
-        missing_partners = partner_strings - found_partners
-        if missing_partners.any?
-          Rails.logger.warn "Missing data for partners: #{missing_partners.join(', ')}"
-        end
       end
 
       parsed_invoice_data = CSV::Table.new(
