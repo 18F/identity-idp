@@ -125,7 +125,7 @@ RSpec.describe Reports::SpCredMetricsReport do
         to: mock_reports_partner_emails,
         bcc: mock_reports_internal_emails,
         subject:
-          "#{MOCK_PARTNER_NAME} Monthly Credential Metrics - " \
+          "#{MOCK_PARTNER_NAME} Credential Metrics - " \
           "#{report_date.to_date}",
         reports: anything,
         message: report.preamble,
@@ -148,7 +148,7 @@ RSpec.describe Reports::SpCredMetricsReport do
         to: mock_reports_internal_emails,
         bcc: [],
         subject:
-          "#{MOCK_PARTNER_NAME} Monthly Credential Metrics - " \
+          "#{MOCK_PARTNER_NAME} Credential Metrics - " \
           "#{report_date.to_date}",
         reports: anything,
         message: report.preamble,
@@ -175,7 +175,7 @@ RSpec.describe Reports::SpCredMetricsReport do
 
     it 'logs a warning and sends the report only to internal emails' do
       expect(Rails.logger).to receive(:warn).with(
-        "#{MOCK_AGENCY_ABBR} Monthly Credential Report: recipient is :both " \
+        "#{MOCK_AGENCY_ABBR} Credential Report: recipient is :both " \
         "but no external email specified",
       )
 
@@ -183,7 +183,7 @@ RSpec.describe Reports::SpCredMetricsReport do
         to: mock_reports_internal_emails,
         bcc: [],
         subject:
-          "#{MOCK_PARTNER_NAME} Monthly Credential Metrics - " \
+          "#{MOCK_PARTNER_NAME} Credential Metrics - " \
           "#{report_date.to_date}",
         reports: anything,
         message: report.preamble,
@@ -211,7 +211,7 @@ RSpec.describe Reports::SpCredMetricsReport do
     it 'logs a warning and does not send the report' do
       expect(Rails.logger).to receive(:warn).with(
         "No email addresses received - #{MOCK_PARTNER_NAME} " \
-        "Monthly Credential Report NOT SENT",
+        "Credential Report NOT SENT",
       )
 
       expect(ReportMailer).not_to receive(:tables_report)
