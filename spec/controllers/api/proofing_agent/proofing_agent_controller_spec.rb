@@ -10,7 +10,7 @@ RSpec.shared_examples 'an endpoint that requires authorization' do
       expect(action.status).to eq 401
 
       expect(@analytics).to have_logged_event(
-        :proofing_agent_request,
+        :idv_proofing_agent_request_failed,
         success: false,
       )
     end
@@ -23,7 +23,7 @@ RSpec.shared_examples 'an endpoint that requires authorization' do
       expect(action.status).to eq 401
 
       expect(@analytics).to have_logged_event(
-        :proofing_agent_request,
+        :idv_proofing_agent_request_failed,
         success: false,
       )
     end
@@ -35,7 +35,7 @@ RSpec.shared_examples 'an endpoint that requires authorization' do
     it 'returns a 401' do
       expect(action.status).to eq 401
       expect(@analytics).to have_logged_event(
-        :proofing_agent_request,
+        :idv_proofing_agent_request_failed,
         success: false,
       )
     end
@@ -48,7 +48,7 @@ RSpec.shared_examples 'an endpoint that requires authorization' do
       it 'returns a 401' do
         expect(action.status).to eq 401
         expect(@analytics).to have_logged_event(
-          :proofing_agent_request,
+          :idv_proofing_agent_request_failed,
           issuer: issuer,
           success: false,
         )
@@ -62,7 +62,7 @@ RSpec.shared_examples 'an endpoint that requires authorization' do
     it 'returns a 401' do
       expect(action.status).to eq 401
       expect(@analytics).to have_logged_event(
-        :proofing_agent_request,
+        :idv_proofing_agent_request_failed,
         success: false,
       )
     end
@@ -74,7 +74,7 @@ RSpec.shared_examples 'an endpoint that requires authorization' do
     it 'returns a 401' do
       expect(action.status).to eq 401
       expect(@analytics).to have_logged_event(
-        :proofing_agent_request,
+        :idv_proofing_agent_request_failed,
         issuer: issuer,
         success: false,
       )
@@ -138,26 +138,12 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
       context 'with a valid authorization header' do
         it 'returns 200' do
           expect(action.status).to eq(200)
-          expect(@analytics).to have_logged_event(
-            :proofing_agent_request,
-            issuer: issuer,
-            success: true,
-            request_id:,
-            request_type: :search_user,
-          )
         end
 
         it 'includes request_id in the response' do
           action
           body = JSON.parse(response.body)
           expect(body['request_id']).to be_present
-          expect(@analytics).to have_logged_event(
-            :proofing_agent_request,
-            issuer: issuer,
-            success: true,
-            request_id:,
-            request_type: :search_user,
-          )
         end
 
         it 'returns the X-Request-Id header as request_id' do
@@ -228,26 +214,12 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
       context 'with a valid authorization header' do
         it 'returns 200' do
           expect(action.status).to eq(200)
-          expect(@analytics).to have_logged_event(
-            :proofing_agent_request,
-            issuer: issuer,
-            success: true,
-            request_id:,
-            request_type: :proof_user,
-          )
         end
 
         it 'includes request_id in the response' do
           action
           body = JSON.parse(response.body)
           expect(body['request_id']).to be_present
-          expect(@analytics).to have_logged_event(
-            :proofing_agent_request,
-            issuer: issuer,
-            success: true,
-            request_id:,
-            request_type: :proof_user,
-          )
         end
 
         it 'returns the X-Request-Id header as request_id' do

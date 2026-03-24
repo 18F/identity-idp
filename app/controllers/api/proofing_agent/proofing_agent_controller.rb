@@ -14,33 +14,19 @@ module Api
       before_action :validate_required_headers
 
       def search_user
-        analytics.proofing_agent_request(
-          issuer: request_token.issuer,
-          success: true,
-          request_id:,
-          request_type: :search_user,
-        )
-
         render json: { request_id: }
       end
 
       def proof_user
-        analytics.proofing_agent_request(
-          issuer: request_token.issuer,
-          success: true,
-          request_id:,
-          request_type: :proof_user,
-        )
-
         render json: { request_id: }
       end
 
       private
 
       def validate_required_headers
-        if request.headers['X-Proofing-Location-Id'].blank? ||
-           request.headers['X-Agent-Id'].blank? ||
-           request.headers['X-Request-Id'].blank?
+        if location_id.blank? || agent_id.blank? || request_id.blank?
+          track_failure(agent_id:, location_id:, request_id:)
+
           render json: {
             error: 'Missing required headers: X-Proofing-Location-Id, X-Agent-Id, X-Request-Id',
           }, status: :bad_request
@@ -54,6 +40,14 @@ module Api
         end
       end
 
+      def agent_id
+        @agent_id ||= request.headers['X-Agent-Id']
+      end
+
+      def location_id
+        @location_id ||= request.headers['X-Proofing-Location-Id']
+      end
+
       def request_id
         @request_id ||= request.headers['X-Request-ID']
       end
@@ -62,10 +56,13 @@ module Api
         @request_token ||= ::ProofingAgent::RequestTokenValidator.new(request.authorization)
       end
 
-      def track_failure
-        analytics.proofing_agent_request(
+      def track_failure(agent_id: nil, location_id: nil, request_id: nil)
+        analytics.idv_proofing_agent_request_failed(
           issuer: request_token&.issuer,
           success: false,
+          agent_id:,
+          location_id:,
+          request_id:,
         )
       end
     end

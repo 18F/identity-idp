@@ -5311,6 +5311,31 @@ module AnalyticsEvents
     )
   end
 
+  # Tracks a proofing agent request that failed authorization or validation
+  # @param [Boolean] success Whether request was successful
+  # @param [String] issuer The issuer associated with the proofing request, if applicable
+  # param [String,nil] agent_id The ID of the proofing agent, if applicable
+  # param [String,nil] location_id The ID of the location where the proofing request was made, if applicable
+  # @param [String,nil] request_id The request ID associated with the proofing request
+  def idv_proofing_agent_request_failed(
+    success:,
+    issuer:,
+    agent_id: nil,
+    location_id: nil,
+    request_id: nil,
+    **extra
+  )
+    track_event(
+      :idv_proofing_agent_request_failed,
+      success:,
+      issuer:,
+      agent_id:,
+      location_id:,
+      request_id:,
+      **extra,
+    )
+  end
+
   # @param [Hash,nil] proofing_components User's current proofing components
   # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
   # @option proofing_components [String,nil] 'document_type_received' Type of ID detected by vendor
@@ -7613,28 +7638,6 @@ module AnalyticsEvents
   # place during the expected time frame
   def proofing_address_result_missing
     track_event('Proofing Address Result Missing')
-  end
-
-  # Tracks a proofing agent request
-  # @param [Boolean] success Whether request was successful
-  # @param [String] issuer The issuer associated with the proofing request, if applicable
-  # @param [String] request_id The request ID associated with the proofing request
-  # @param ["search_user", "proof_user"] request_type The type of proofing event
-  def proofing_agent_request(
-    success:,
-    issuer:,
-    request_id: nil,
-    request_type: nil,
-    **extra
-  )
-    track_event(
-      :proofing_agent_request,
-      success:,
-      issuer:,
-      request_id:,
-      request_type:,
-      **extra,
-    )
   end
 
   # Tracks when a user triggered a rate limiter
