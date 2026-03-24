@@ -206,6 +206,21 @@ RSpec.describe Users::WebauthnSetupController do
           expect(flash[:success]).to eq(t('notices.webauthn_platform_configured'))
         end
 
+        context 'with session value deserialized as a string' do
+          before do
+            controller.user_session[:webauthn_setup_started_at] =
+              2.seconds.ago.to_f.to_s
+          end
+          it 'calculates duration without error' do
+            expect { response }.not_to raise_error
+
+            expect(@analytics).to have_logged_event(
+              'Multi-Factor Authentication Setup',
+              hash_including(webauthn_setup_duration: a_value_within(0.5).of(2)),
+            )
+          end
+        end
+
         context 'with transports mismatch' do
           let(:params) { super().merge(transports: 'usb') }
 
