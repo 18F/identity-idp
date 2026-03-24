@@ -137,6 +137,11 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
       zip_code: '12354',
     }
   end
+  let(:malformed_residential_address) do
+    address = valid_residential_address.dup
+    address[:zip_code] = '1234'
+    address
+  end
   let(:valid_state_id) do
     {
       document_number:,
@@ -311,7 +316,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
     context 'when proofing agent is enabled' do
       let(:enabled) { true }
 
-      context 'when the id_type is drivers_licence' do
+      context 'when the id_type is drivers_licence and with valid state_id data' do
         let(:id_type) { drivers_license_type }
         let(:state_id) { valid_state_id }
 
@@ -394,18 +399,6 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
             end
           end
 
-          context 'when valid state id data is received' do
-            it 'returns 200' do
-              expect(action.status).to eq(200)
-            end
-
-            it 'includes request_id in the response' do
-              action
-              body = JSON.parse(response.body)
-              expect(body['request_id']).to be_present
-            end
-          end
-
           context 'when the first_name is missing' do
             let(:first_name) { nil }
 
@@ -482,81 +475,184 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
         context 'with an invalid authorization header' do
           it_behaves_like 'an endpoint that requires authorization'
         end
-      end
 
-      context 'when the id_type is passport' do
-          let(:id_type) { passport_type }
+        context 'when the state_id data is not provided' do
+          let(:state_id) { nil }
+
+          it 'returns 400' do
+            expect(action.status).to eq(400)
+
+            body = JSON.parse(response.body)
+            expect(body['error']).to eq('Missing parameter state_id')
+          end
+        end
+
+        context 'when state_id and invalid residential address are provided' do
+          let(:residential_address) { malformed_residential_address }
+
+          it 'returns 400' do
+            expect(action.status).to eq(400)
+
+            body = JSON.parse(response.body)
+            expect(body['zipcode'][0]).to eq('Enter a 5 or 9 digit ZIP Code')
+          end
+        end
+
+        context 'when both state_id and passport provided' do
+          let(:id_type) { drivers_license_type }
+          let(:state_id) { valid_state_id }
           let(:passport) { valid_passport }
           let(:residential_address) { valid_residential_address }
 
-          context 'when valid passport data is received' do
-            it 'returns 200' do
-              expect(action.status).to eq(200)
-            end
+          it 'returns 400' do
+            expect(action.status).to eq(400)
 
-            it 'includes request_id in the response' do
-              action
-              body = JSON.parse(response.body)
-              expect(body['request_id']).to be_present
-            end
-          end
-
-          context 'when the mrz is missing' do
-            let(:mrz) { nil }
-
-            it 'returns 400' do
-              expect(action.status).to eq(400)
-            end
-          end
-
-          context 'when the passport is expired' do
-            let(:expiration_date) { '2026-01-01' }
-
-            it 'returns 400' do
-              expect(action.status).to eq(400)
-            end
-          end
-
-          context 'when the first_name is missing' do
-            let(:first_name) { nil }
-
-            it 'returns 400' do
-              expect(action.status).to eq(400)
-            end
-          end
-
-          context 'when the last_name is missing' do
-            let(:last_name) { nil }
-
-            it 'returns 400' do
-              expect(action.status).to eq(400)
-            end
-          end
-
-          context 'when the dob is missing' do
-            let(:dob) { nil }
-
-            it 'returns 400' do
-              expect(action.status).to eq(400)
-            end
-          end
-
-          context 'when the dob does not meet our minimum age requirements' do
-            let(:dob) { (Time.zone.today - 10.years).strftime('%Y-%m-%d') }
-
-            it 'returns 400' do
-              expect(action.status).to eq(400)
-            end
-          end
-
-          context 'when the residential address is missing' do
-            let(:residential_address) { nil }
-
-            it 'returns 400' do
-              expect(action.status).to eq(400)
-            end
+            body = JSON.parse(response.body)
+            expect(body['base'][0]).to eq('cannot include both state_id and passport')
           end
         end
+      end
+
+      context 'when the id_type is passport and with valid passport data' do
+        let(:id_type) { passport_type }
+        let(:passport) { valid_passport }
+        let(:residential_address) { valid_residential_address }
+
+        context 'when valid passport data is received' do
+          it 'returns 200' do
+            expect(action.status).to eq(200)
+          end
+
+          it 'includes request_id in the response' do
+            action
+            body = JSON.parse(response.body)
+            expect(body['request_id']).to be_present
+          end
+        end
+
+        context 'when the mrz is missing' do
+          let(:mrz) { nil }
+
+          it 'returns 400' do
+            expect(action.status).to eq(400)
+          end
+        end
+
+        context 'when the passport is expired' do
+          let(:expiration_date) { '2026-01-01' }
+
+          it 'returns 400' do
+            expect(action.status).to eq(400)
+          end
+        end
+
+        context 'when the first_name is missing' do
+          let(:first_name) { nil }
+
+          it 'returns 400' do
+            expect(action.status).to eq(400)
+          end
+        end
+
+        context 'when the last_name is missing' do
+          let(:last_name) { nil }
+
+          it 'returns 400' do
+            expect(action.status).to eq(400)
+          end
+        end
+
+        context 'when the dob is missing' do
+          let(:dob) { nil }
+
+          it 'returns 400' do
+            expect(action.status).to eq(400)
+          end
+        end
+
+        context 'when the dob does not meet our minimum age requirements' do
+          let(:dob) { (Time.zone.today - 10.years).strftime('%Y-%m-%d') }
+
+          it 'returns 400' do
+            expect(action.status).to eq(400)
+          end
+        end
+
+        context 'when the residential address is missing' do
+          let(:residential_address) { nil }
+
+          it 'returns 400' do
+            expect(action.status).to eq(400)
+          end
+        end
+
+        context 'when the mrz is missing' do
+          let(:mrz) { nil }
+
+          it 'returns 400' do
+            expect(action.status).to eq(400)
+          end
+        end
+
+        context 'when the passport is expired' do
+          let(:expiration_date) { '2026-01-01' }
+
+          it 'returns 400' do
+            expect(action.status).to eq(400)
+          end
+        end
+
+        context 'when the first_name is missing' do
+          let(:first_name) { nil }
+
+          it 'returns 400' do
+            expect(action.status).to eq(400)
+          end
+        end
+
+        context 'when the last_name is missing' do
+          let(:last_name) { nil }
+
+          it 'returns 400' do
+            expect(action.status).to eq(400)
+          end
+        end
+
+        context 'when the dob is missing' do
+          let(:dob) { nil }
+
+          it 'returns 400' do
+            expect(action.status).to eq(400)
+          end
+        end
+
+        context 'when the dob does not meet our minimum age requirements' do
+          let(:dob) { (Time.zone.today - 10.years).strftime('%Y-%m-%d') }
+
+          it 'returns 400' do
+            expect(action.status).to eq(400)
+          end
+        end
+
+        context 'when the passport data is not provided' do
+          let(:passport) { nil }
+
+          it 'returns 400' do
+            expect(action.status).to eq(400)
+
+            body = JSON.parse(response.body)
+            expect(body['error']).to eq('Missing parameter passport')
+          end
+        end
+
+        context 'when the residential address is missing' do
+          let(:residential_address) { nil }
+
+          it 'returns 400' do
+            expect(action.status).to eq(400)
+          end
+        end
+      end
     end
   end
 end
