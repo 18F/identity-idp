@@ -48,7 +48,7 @@ RSpec.describe 'Setup PIV/CAC after sign-in' do
 
     perform_steps_to_get_to_add_piv_cac_during_sign_up
 
-    expected_form_action = <<~STR.squish
+    expected_form_action = <<-STR.squish
       form-action https://*.pivcac.test.example.com 'self'
       http://localhost:7654 https://example.com
     STR
