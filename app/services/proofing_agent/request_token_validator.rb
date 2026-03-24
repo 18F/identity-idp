@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module AttemptsApi
+module ProofingAgent
   class RequestTokenValidator < Api::RequestTokenValidator
     private
 
@@ -10,12 +10,12 @@ module AttemptsApi
       errors.add(
         :issuer,
         :not_authorized,
-        message: 'Issuer is not authorized to use Attempts API',
+        message: 'Issuer is not authorized to use Proofing Agent',
       )
     end
 
     def config_data
-      @config_data ||= IdentityConfig.store.allowed_attempts_providers.find do |config|
+      @config_data ||= IdentityConfig.store.idv_proofing_agent_config.find do |config|
         config['issuer'] == issuer
       end
     end

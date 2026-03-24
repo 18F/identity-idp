@@ -5311,6 +5311,34 @@ module AnalyticsEvents
     )
   end
 
+  # Tracks a proofing agent request that failed authorization or validation
+  # @param [Boolean] success Whether request was successful
+  # @param [String] issuer The issuer associated with the proofing request
+  # @param ['authorization', 'validation'] failure_type Determines failure type
+  # @param [String,nil] agent_id The ID of the proofing agent
+  # @param [String,nil] location_id The ID of the location where the proofing request was made
+  # @param [String,nil] request_id The request ID associated with the proofing request
+  def idv_proofing_agent_request_failed(
+    success:,
+    issuer:,
+    failure_type:,
+    agent_id: nil,
+    location_id: nil,
+    request_id: nil,
+    **extra
+  )
+    track_event(
+      :idv_proofing_agent_request_failed,
+      success:,
+      issuer:,
+      failure_type:,
+      agent_id:,
+      location_id:,
+      request_id:,
+      **extra,
+    )
+  end
+
   # @param [Hash,nil] proofing_components User's current proofing components
   # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
   # @option proofing_components [String,nil] 'document_type_received' Type of ID detected by vendor
