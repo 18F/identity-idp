@@ -11,7 +11,8 @@ RSpec.describe Reports::SpCredMetricsReportOrchestrator do
   let(:config_1) do
     {
       'issuers' => ['issuer1'],
-      'partner_strings' => ['Partner_1'],
+      #'partner_strings' => ['Partner_1'],
+      'agency_abbreviation' => ['PRTNR1'],
       'partner_emails' => ['partner1@example.com'],
       'internal_emails' => ['internal1@example.com'],
     }
@@ -20,7 +21,8 @@ RSpec.describe Reports::SpCredMetricsReportOrchestrator do
   let(:config_2) do
     {
       'issuers' => ['issuer2'],
-      'partner_strings' => ['Partner_2'],
+      #'partner_strings' => ['Partner_2'],
+      'agency_abbreviation' => ['PRTNR2'],
       'partner_emails' => ['partner2@example.com'],
       'internal_emails' => ['internal2@example.com'],
     }
