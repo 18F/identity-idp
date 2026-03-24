@@ -207,12 +207,13 @@ class AnalyticsEventsDocumenter
       method_object_name_parts = [object.namespace&.parent&.name, object.namespace&.name]
         .select { |part| part.present? && part != :root }
 
-      # Match methods defined directly in the class OR in a sub-module nested one level deep
-      # e.g. AnalyticsEvents::AccountEvents methods are included into AnalyticsEvents
-      object.type == :method && (
-        method_object_name_parts == class_name_parts ||
-        method_object_name_parts[0, class_name_parts.length] == class_name_parts
-      )
+      # Match methods defined directly in the class OR in a sub-module nested one level deep.
+      # e.g. AnalyticsEvents::AccountEvents methods are included into AnalyticsEvents.
+      in_class = method_object_name_parts == class_name_parts
+      in_submodule = method_object_name_parts[0, class_name_parts.length] == class_name_parts &&
+        method_object_name_parts.length == class_name_parts.length + 1
+
+      object.type == :method && (in_class || in_submodule)
     end.values
   end
 end
