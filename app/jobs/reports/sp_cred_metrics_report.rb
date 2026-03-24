@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-
 module Reports
   class SpCredMetricsReport < BaseReport
     attr_reader :report_date, :report_receiver, :report_name
@@ -15,6 +14,29 @@ module Reports
     def issuers
       @issuers || []
     end
+
+    def partner_strings
+      @partner_strings ||= begin
+        matching_partners = partner_accounts.map(&:partner).uniq
+        
+        if matching_partners.any?
+          if matching_partners.size > 1
+            Rails.logger.warn(
+              "Multiple partners found for issuers #{issuers}: #{matching_partners}. " \
+              "Using first: #{matching_partners.first}"
+            )
+          end
+          matching_partners
+        else
+          Rails.logger.warn(
+            "No partner accounts found for issuers #{issuers}. " \
+            "Falling back to agency_abbreviation: #{@agency_abbreviation}"
+          )
+          [@agency_abbreviation || 'Unknown Partner']
+        end
+      end
+    end
+
 
     def iaas
       IaaReportingHelper.iaas.filter do |iaa|
@@ -89,11 +111,11 @@ module Reports
       @internal_emails = report_config['internal_emails']
       @agency_abbreviation = report_config['agency_abbreviation']
       @report_name = "#{@agency_abbreviation.downcase}_monthly_cred_metrics"
-
+      
       emails = email_addresses
       to_emails = emails[:to].select(&:present?)
       bcc_emails = emails[:bcc].select(&:present?)
-
+      
       if to_emails.empty? && bcc_emails.empty?
         Rails.logger.warn "No email addresses received - #{@partner_strings.first} Credential Report NOT SENT"
         return false
@@ -102,6 +124,7 @@ module Reports
       reports = as_emailable_partner_report(
         date: @report_date,
       )
+
       if reports.present?
         reports.each do |report|
           _latest_path, path = generate_s3_paths(
@@ -134,42 +157,44 @@ module Reports
     end
 
     def as_emailable_partner_report(date:)
-      emailable_report_array =
-        [
-          Reporting::EmailableReport.new(
-            title: 'Definitions',
-            table: definitions_table,
-            filename: 'partner_monthly_cred_definitions',
-          ),
-          Reporting::EmailableReport.new(
-            title: 'Overview',
-            table: overview_table,
-            filename: 'partner_monthly_cred_overview',
-          ),
-        ]
-
-      if issuer_report_data.present?
-        emailable_report_array <<
-          Reporting::EmailableReport.new(
-            title: "#{partner_strings.first} Credential Metrics #{date.strftime('%B %Y')}",
-            table: issuer_report_data,
-            filename: 'multi_issuer_monthly_cred_metrics',
-          )
+      
+      emailable_report_array = [
+        Reporting::EmailableReport.new(
+          title: 'Definitions',
+          table: definitions_table,
+          filename: 'partner_monthly_cred_definitions',
+        ),
+        Reporting::EmailableReport.new(
+          title: 'Overview',
+          table: overview_table,
+          filename: 'partner_monthly_cred_overview',
+        ),
+      ]
+      
+      issuer_data = issuer_report_data
+      
+      if issuer_data.present?
+        emailable_report_array << Reporting::EmailableReport.new(
+          title: "#{partner_strings.first} Monthly Credential Metrics #{date.strftime('%B %Y')}",
+          table: issuer_data,
+          filename: 'multi_issuer_monthly_cred_metrics',
+        )
       else
         return nil
       end
-
-      if partner_report_data.present?
-        emailable_report_array <<
-          Reporting::EmailableReport.new(
-            title: "Partner Credential Metrics #{date.strftime('%B %Y')}",
-            table: partner_report_data,
-            filename: 'partner_monthly_cred_metrics',
-          )
+      
+      partner_data = partner_report_data
+      
+      if partner_data.present?
+        emailable_report_array << Reporting::EmailableReport.new(
+          title: "Partner Monthly Credential Metrics #{date.strftime('%B %Y')}",
+          table: partner_data,
+          filename: 'partner_monthly_cred_metrics',
+        )
       else
         return nil
       end
-
+      
       emailable_report_array
     end
 
