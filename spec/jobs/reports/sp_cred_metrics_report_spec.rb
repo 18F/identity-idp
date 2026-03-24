@@ -1,7 +1,7 @@
 require 'rails_helper'
 
-MOCK_PARTNER_NAME = 'Partner_1' # Matches spec/fixtures/partner_cred_metrics_input.csv
 MOCK_AGENCY_ABBR = 'PRTNR1'
+REPORT_NAME = "#{MOCK_AGENCY_ABBR.downcase}_monthly_cred_metrics"
 
 RSpec.describe Reports::SpCredMetricsReport do
   let(:report_date) { Date.new(2021, 3, 2).in_time_zone('UTC').end_of_day }
@@ -13,13 +13,11 @@ RSpec.describe Reports::SpCredMetricsReport do
   let(:mock_reports_partner_emails)  { ['mock_partner@example.com'] }
   let(:mock_reports_internal_emails) { ['mock_internal@example.com'] }
   let(:mock_issuers) { ['Issuer_4'] }
-  #let(:mock_partner_strings) { ['Partner_1'] }
   let(:mock_agency_abbreviation) { MOCK_AGENCY_ABBR }
 
   let(:report_config) do
     {
       'issuers' => mock_issuers,
-      #'partner_strings' => mock_partner_strings, # Now derived via IAAHelper
       'agency_abbreviation' => mock_agency_abbreviation,
       'partner_emails' => mock_reports_partner_emails,
       'internal_emails' => mock_reports_internal_emails,
@@ -28,7 +26,7 @@ RSpec.describe Reports::SpCredMetricsReport do
 
   # Derived by job: "#{partner_strings.first.downcase}_monthly_cred_metrics"
   #let(:report_name) { "#{mock_partner_strings.first.downcase}_monthly_cred_metrics" }
-  let(:report_name) { "#{MOCK_AGENCY_ABBR.downcase}_monthly_cred_metrics"}
+  let(:report_name) { REPORT_NAME }
   let(:report_folder) do
     "int/#{report_name}/2021/2021-03-02.#{report_name}"
   end
@@ -70,7 +68,6 @@ RSpec.describe Reports::SpCredMetricsReport do
 
 
     mock_partner_config = IaaReportingHelper::PartnerConfig.new(
-        partner: MOCK_PARTNER_NAME,
         issuers: ['Issuer_4'],
         start_date: 1.year.ago,
         end_date: 1.year.from_now
@@ -125,7 +122,7 @@ RSpec.describe Reports::SpCredMetricsReport do
         to: mock_reports_partner_emails,
         bcc: mock_reports_internal_emails,
         subject:
-          "#{MOCK_PARTNER_NAME} Credential Metrics - " \
+          "#{MOCK_AGENCY_ABBR} Credential Metrics - " \
           "#{report_date.to_date}",
         reports: anything,
         message: report.preamble,
@@ -148,7 +145,7 @@ RSpec.describe Reports::SpCredMetricsReport do
         to: mock_reports_internal_emails,
         bcc: [],
         subject:
-          "#{MOCK_PARTNER_NAME} Credential Metrics - " \
+          "#{MOCK_AGENCY_ABBR} Credential Metrics - " \
           "#{report_date.to_date}",
         reports: anything,
         message: report.preamble,
@@ -183,7 +180,7 @@ RSpec.describe Reports::SpCredMetricsReport do
         to: mock_reports_internal_emails,
         bcc: [],
         subject:
-          "#{MOCK_PARTNER_NAME} Credential Metrics - " \
+          "#{MOCK_AGENCY_ABBR} Credential Metrics - " \
           "#{report_date.to_date}",
         reports: anything,
         message: report.preamble,
@@ -210,7 +207,7 @@ RSpec.describe Reports::SpCredMetricsReport do
 
     it 'logs a warning and does not send the report' do
       expect(Rails.logger).to receive(:warn).with(
-        "No email addresses received - #{MOCK_PARTNER_NAME} " \
+        "No email addresses received - #{MOCK_AGENCY_ABBR} " \
         "Credential Report NOT SENT",
       )
 
@@ -272,7 +269,6 @@ RSpec.describe Reports::SpCredMetricsReport do
     let(:report_config) do
       super().merge(
         'issuers' => ['Issuer_2', 'Issuer_3', 'Issuer_4'],
-        #'partner_strings' => mock_partner_strings,
       )
     end
 
@@ -329,96 +325,6 @@ RSpec.describe Reports::SpCredMetricsReport do
       expect(hashed['Existing identity verification credentials authorized'])
         .to eq(expected_existing)
       expect(hashed['Total authentications']).to eq(expected_total)
-    end
-  end
-  describe '#partner_strings' do
-    let(:report_config) do
-      {
-        'issuers' => ['Issuer_4'],
-        'agency_abbreviation' => MOCK_AGENCY_ABBR,
-        'partner_emails' => mock_reports_partner_emails,
-        'internal_emails' => mock_reports_internal_emails,
-      }
-    end
-    
-    context 'when partner accounts exist for issuers' do
-      before do
-        mock_partner_config = IaaReportingHelper::PartnerConfig.new(
-          partner: MOCK_PARTNER_NAME,
-          issuers: ['Issuer_4'],
-          start_date: 1.year.ago,
-          end_date: 1.year.from_now
-        )
-        
-        allow_any_instance_of(Reports::SpCredMetricsReport)
-          .to receive(:partner_accounts)
-          .and_return([mock_partner_config])
-      end
-      
-      it 'returns partner name from partner accounts' do
-        report = Reports::SpCredMetricsReport.new(report_date, report_receiver, report_config)
-        report.instance_variable_set(:@issuers, ['Issuer_4'])
-        report.instance_variable_set(:@agency_abbreviation, MOCK_AGENCY_ABBR)
-        
-        expect(report.partner_strings).to eq([MOCK_PARTNER_NAME])
-      end
-    end
-    
-    context 'when no partner accounts exist' do
-      before do
-        allow_any_instance_of(Reports::SpCredMetricsReport)
-          .to receive(:partner_accounts)
-          .and_return([])
-      end
-      
-      it 'falls back to agency abbreviation' do
-        report = Reports::SpCredMetricsReport.new(report_date, report_receiver, report_config)
-        report.instance_variable_set(:@issuers, ['nonexistent.gov'])
-        report.instance_variable_set(:@agency_abbreviation, MOCK_AGENCY_ABBR)
-        
-        expect(Rails.logger).to receive(:warn).with(
-          "No partner accounts found for issuers [\"nonexistent.gov\"]. " \
-          "Falling back to agency_abbreviation: #{MOCK_AGENCY_ABBR}"
-        )
-        
-        expect(report.partner_strings).to eq([MOCK_AGENCY_ABBR])
-      end
-    end
-    
-    context 'when multiple partner accounts exist' do
-      before do
-        mock_configs = [
-          IaaReportingHelper::PartnerConfig.new(
-            partner: 'Partner A',
-            issuers: ['issuer1.gov'],
-            start_date: 1.year.ago,
-            end_date: 1.year.from_now
-          ),
-          IaaReportingHelper::PartnerConfig.new(
-            partner: 'Partner B',
-            issuers: ['issuer2.gov'],
-            start_date: 1.year.ago,
-            end_date: 1.year.from_now
-          )
-        ]
-        
-        allow_any_instance_of(Reports::SpCredMetricsReport)
-          .to receive(:partner_accounts)
-          .and_return(mock_configs)
-      end
-      
-      it 'returns all partner names and logs warning' do
-        report = Reports::SpCredMetricsReport.new(report_date, report_receiver, report_config)
-        report.instance_variable_set(:@issuers, ['issuer1.gov', 'issuer2.gov'])
-        report.instance_variable_set(:@agency_abbreviation, MOCK_AGENCY_ABBR)
-        
-        expect(Rails.logger).to receive(:warn).with(
-          "Multiple partners found for issuers [\"issuer1.gov\", \"issuer2.gov\"]: " \
-          "[\"Partner A\", \"Partner B\"]. Using first: Partner A"
-        )
-        
-        expect(report.partner_strings).to eq(['Partner A', 'Partner B'])
-      end
     end
   end
 end

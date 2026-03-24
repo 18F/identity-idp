@@ -246,20 +246,20 @@ class ReportMailerPreview < ActionMailer::Preview
 
     date    = Time.zone.yesterday.end_of_day
     issuers = ['issuer1']
-    agency  = 'Test_Agency'
+    agency_abbreviation  = 'TSTAGNCY'
 
     builder = Reporting::SpVerificationReport.new(
       time_range: date.beginning_of_week(:sunday).prev_occurring(:sunday).all_week(:sunday),
       issuers: issuers,
-      agency_abbreviation: agency,
+      agency_abbreviation: agency_abbreviation,
     )
     stub_cloudwatch_client(builder)
 
     ReportMailer.tables_report(
       to: 'test@example.com',
       bcc: 'bcc@example.com',
-      subject: "#{agency} Verification Report - #{date.to_date}",
-      message: "Report: #{agency} Verification Report - #{date.to_date}",
+      subject: "#{agency_abbreviation} Verification Report - #{date.to_date}",
+      message: "Report: #{agency_abbreviation} Verification Report - #{date.to_date}",
       attachment_format: :csv,
       reports: builder.as_emailable_reports,
     )
