@@ -204,11 +204,15 @@ class AnalyticsEventsDocumenter
     class_name_parts = class_name.split('::').map(&:to_sym)
 
     database.select do |_k, object|
-      # this check will fail if the namespace is nested more than once
       method_object_name_parts = [object.namespace&.parent&.name, object.namespace&.name]
         .select { |part| part.present? && part != :root }
 
-      object.type == :method && method_object_name_parts == class_name_parts
+      # Match methods defined directly in the class OR in a sub-module nested one level deep
+      # e.g. AnalyticsEvents::AccountEvents methods are included into AnalyticsEvents
+      object.type == :method && (
+        method_object_name_parts == class_name_parts ||
+        method_object_name_parts[0, class_name_parts.length] == class_name_parts
+      )
     end.values
   end
 end

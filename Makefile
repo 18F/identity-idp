@@ -309,8 +309,10 @@ lint_analytics_events: .yardoc ## Checks that all methods on AnalyticsEvents are
 	bundle exec ruby lib/analytics_events_documenter.rb --class-name="AnalyticsEvents" --check $<
 
 lint_analytics_events_sorted:
-	(grep '^  def ' app/services/analytics_events.rb | LC_COLLATE='C.UTF-8' sort -c) || \
-		(echo '\033[1;31mError: methods in analytics_events.rb are not sorted alphabetically\033[0m' && exit 1)
+	@for f in app/services/analytics_events/*.rb; do \
+		(grep '^    def ' "$$f" | LC_COLLATE='C.UTF-8' sort -c) || \
+		(echo '\033[1;31mError: methods in '"$$f"' are not sorted alphabetically\033[0m' && exit 1); \
+	done
 
 lint_tracker_events: .yardoc ## Checks that all methods on AnalyticsEvents are documented
 	bundle exec ruby lib/analytics_events_documenter.rb --class-name="AttemptsApi::TrackerEvents" --check --skip-extra-params $<
@@ -319,7 +321,7 @@ public/api/_analytics-events.json: .yardoc .yardoc/objects/root.dat
 	mkdir -p public/api
 	bundle exec ruby lib/analytics_events_documenter.rb --class-name="AnalyticsEvents" --json $< > $@
 
-.yardoc .yardoc/objects/root.dat: app/services/analytics_events.rb app/services/attempts_api/tracker_events.rb
+.yardoc .yardoc/objects/root.dat: app/services/analytics_events.rb $(wildcard app/services/analytics_events/*.rb) app/services/attempts_api/tracker_events.rb
 	bundle exec yard doc \
 		--no-progress \
 		--fail-on-warning \
