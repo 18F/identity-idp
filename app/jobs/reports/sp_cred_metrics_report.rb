@@ -15,29 +15,6 @@ module Reports
       @issuers || []
     end
 
-    def partner_strings
-      @partner_strings ||= begin
-        matching_partners = partner_accounts.map(&:partner).uniq
-        
-        if matching_partners.any?
-          if matching_partners.size > 1
-            Rails.logger.warn(
-              "Multiple partners found for issuers #{issuers}: #{matching_partners}. " \
-              "Using first: #{matching_partners.first}"
-            )
-          end
-          matching_partners
-        else
-          Rails.logger.warn(
-            "No partner accounts found for issuers #{issuers}. " \
-            "Falling back to agency_abbreviation: #{@agency_abbreviation}"
-          )
-          [@agency_abbreviation || 'Unknown Partner']
-        end
-      end
-    end
-
-
     def iaas
       IaaReportingHelper.iaas.filter do |iaa|
         iaa.end_date > 90.days.ago && (iaa.issuers & issuers).any?
