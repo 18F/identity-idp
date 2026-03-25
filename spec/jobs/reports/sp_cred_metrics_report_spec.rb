@@ -1,7 +1,7 @@
 require 'rails_helper'
 
-MOCK_AGENCY_ABBR = 'PRTNR1'
-REPORT_NAME = "#{MOCK_AGENCY_ABBR.downcase}_monthly_cred_metrics"
+MOCK_AGENCY_ABBR = 'PRTNR1'.freeze
+REPORT_NAME = "#{MOCK_AGENCY_ABBR.downcase}_monthly_cred_metrics".freeze
 
 RSpec.describe Reports::SpCredMetricsReport do
   let(:report_date) { Date.new(2021, 3, 2).in_time_zone('UTC').end_of_day }
@@ -25,7 +25,7 @@ RSpec.describe Reports::SpCredMetricsReport do
   end
 
   # Derived by job: "#{partner_strings.first.downcase}_monthly_cred_metrics"
-  #let(:report_name) { "#{mock_partner_strings.first.downcase}_monthly_cred_metrics" }
+  # let(:report_name) { "#{mock_partner_strings.first.downcase}_monthly_cred_metrics" }
   let(:report_name) { REPORT_NAME }
   let(:report_folder) do
     "int/#{report_name}/2021/2021-03-02.#{report_name}"
@@ -66,17 +66,15 @@ RSpec.describe Reports::SpCredMetricsReport do
       },
     }
 
-
     mock_partner_config = IaaReportingHelper::PartnerConfig.new(
-        issuers: ['Issuer_4'],
-        start_date: 1.year.ago,
-        end_date: 1.year.from_now
-      )
-      
+      issuers: ['Issuer_4'],
+      start_date: 1.year.ago,
+      end_date: 1.year.from_now,
+    )
+
     allow_any_instance_of(Reports::SpCredMetricsReport)
       .to receive(:partner_accounts)
       .and_return([mock_partner_config])
-      
 
     # Mock the report data methods
     allow_any_instance_of(Reports::SpCredMetricsReport)
@@ -282,21 +280,24 @@ RSpec.describe Reports::SpCredMetricsReport do
 
     it 'returns issuer and partner tables with expected shapes and values' do
       result = report.perform(report_date, :internal, report_config)
-      
-      expect(result).not_to eq(false), "Report.perform returned false, indicating an error condition"
-      expect(result).to be_an(Array), "Expected result to be an Array, got #{result.class}: #{result.inspect}"
-      expect(result.length).to eq(2), "Expected 2 elements [issuer_table, partner_table], got #{result.length}: #{result.inspect}"
-      
+
+      expect(result).not_to eq(false),
+                            'Report.perform returned false, indicating an error condition'
+      expect(result).to be_an(Array),
+                        "Expected result to be an Array, got #{result.class}: #{result.inspect}"
+      expect(result.length).to eq(2),
+                               "Expected 2 elements [issuer_table, partner_table], " \
+                               "got #{result.length}: #{result.inspect}"
+
       issuer_table, partner_table = result
-      
-      expect(issuer_table).to be_present, "Issuer table should not be nil or empty"
-      expect(partner_table).to be_present, "Partner table should not be nil or empty"
-      
+
+      expect(issuer_table).to be_present, 'Issuer table should not be nil or empty'
+      expect(partner_table).to be_present, 'Partner table should not be nil or empty'
+
       expect(issuer_table.first.length).to eq(6)
       expect(issuer_table.length).to eq(1 + 3)
       expect(partner_table.length).to eq(4)
       partner_table.each { |row| expect(row.length).to eq(2) }
-      
 
       fixture_row = parsed_invoice_data.find do |r|
         r['issuer'] == 'Issuer_4' && r['year_month'] == report_year_month

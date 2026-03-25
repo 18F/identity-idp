@@ -246,7 +246,7 @@ class ReportMailerPreview < ActionMailer::Preview
 
     date    = Time.zone.yesterday.end_of_day
     issuers = ['issuer1']
-    agency_abbreviation  = 'TSTAGNCY'
+    agency_abbreviation = 'TSTAGNCY'
 
     builder = Reporting::SpVerificationReport.new(
       time_range: date.beginning_of_week(:sunday).prev_occurring(:sunday).all_week(:sunday),
@@ -393,30 +393,30 @@ class ReportMailerPreview < ActionMailer::Preview
     report_date = Time.zone.parse('2025-11-30').end_of_day
     config = {
       'issuers' => ['Issuer_2', 'Issuer_3', 'Issuer_4'],
-      #'partner_strings' => ['Partner_1'],
+      # 'partner_strings' => ['Partner_1'],
       'agency_abbreviation' => 'PRTNR1',
       'partner_emails' => ['partner1@example.com'],
       'internal_emails' => ['internal1@example.com'],
     }
     report = Reports::SpCredMetricsReport.new(report_date, :internal)
 
-    # Mock the partner lookup 
+    # Mock the partner lookup
     def report.partner_accounts
       [
         IaaReportingHelper::PartnerConfig.new(
           partner: 'Partner_1',
-          issuers: ['Issuer_2', 'Issuer_3', 'Issuer_4'],  # ← Match your config issuers
+          issuers: ['Issuer_2', 'Issuer_3', 'Issuer_4'], # ← Match your config issuers
           start_date: 1.year.ago,
-          end_date: 1.year.from_now
-        )
+          end_date: 1.year.from_now,
+        ),
       ]
     end
-    
+
     # Apply config the same way send_report does
     report.instance_variable_set(:@report_date, report_date)
     report.instance_variable_set(:@report_receiver, :internal)
     report.instance_variable_set(:@issuers, config['issuers'])
-    #report.instance_variable_set(:@partner_strings, config['partner_strings'])
+    # report.instance_variable_set(:@partner_strings, config['partner_strings'])
     report.instance_variable_set(:@agency_abbreviation, config['agency_abbreviation'])
     report.instance_variable_set(:@partner_emails, config['partner_emails'])
     report.instance_variable_set(:@internal_emails, config['internal_emails'])
