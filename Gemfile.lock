@@ -536,13 +536,7 @@ GEM
     parser (3.3.10.2)
       ast (~> 2.4.1)
       racc
-    pg (1.6.3)
-    pg (1.6.3-aarch64-linux)
-    pg (1.6.3-aarch64-linux-musl)
-    pg (1.6.3-arm64-darwin)
-    pg (1.6.3-x86_64-darwin)
-    pg (1.6.3-x86_64-linux)
-    pg (1.6.3-x86_64-linux-musl)
+    pg (1.5.9)
     pg_query (6.2.2)
       google-protobuf (>= 3.25.3)
     phonelib (0.10.15)
@@ -924,7 +918,7 @@ DEPENDENCIES
   newrelic_rpm (~> 9.0)
   nokogiri (~> 1.19.1)
   numbers_and_words (~> 1.0)
-  pg
+  pg (~> 1.5.0)
   pg_query
   phonelib (= 0.10.15)
   premailer-rails (>= 1.12.0)
