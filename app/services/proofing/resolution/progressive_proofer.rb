@@ -2,10 +2,9 @@
 
 module Proofing
   module Resolution
-    # Uses a combination of LexisNexis and InstantVerify checks to verify that
+    # Uses a combination of LexisNexis InstantVerify checks to verify that
     # a user's identity can be resolved against authoritative sources. This includes logic for when:
-    #   1. The user is or is not within an AAMVA-participating jurisdiction
-    #   2. The user has only provided one address for their residential and identity document
+    #   1. The user has only provided one address for their residential and identity document
     #      address or separate residential and identity document addresses
     class ProgressiveProofer
       class InvalidProofingVendorError; end
@@ -40,8 +39,6 @@ module Proofing
       # @param [JobHelpers::Timer] timer indicates time elapsed to obtain results
       # @param [String] user_uuid user uuid for applicant
       # @param [String] workflow user is in idv or auth workflow
-      # @param [Boolean] state_id_already_proofed indicates the state_id check was previously done,
-      #   e.g. in doc_auth
       # @param [String] hybrid_mobile_threatmetrix_session_id identifies the hybrid tmx session
       # @param [String, nil] hybrid_mobile_request_ip IP address for hybrid mobile request
       # @return [ResultAdjudicator] object which contains the logic to determine proofing's result
@@ -53,7 +50,6 @@ module Proofing
         ipp_enrollment_in_progress:,
         current_sp:,
         workflow:,
-        state_id_already_proofed: false,
         hybrid_mobile_threatmetrix_session_id: nil,
         hybrid_mobile_request_ip: nil
       )

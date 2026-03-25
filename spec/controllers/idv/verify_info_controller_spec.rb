@@ -849,7 +849,6 @@ RSpec.describe Idv::VerifyInfoController do
 
       let(:adjudicated_result) do
         Proofing::Resolution::ResultAdjudicator.new(
-          state_id_result: Proofing::StateIdResult.new(success: true),
           phone_result: Proofing::AddressResult.new(
             success: true,
             errors: {},
@@ -862,7 +861,6 @@ RSpec.describe Idv::VerifyInfoController do
           residential_resolution_result: Proofing::Resolution::Result.new(success: true),
           resolution_result: Proofing::Resolution::Result.new(success: true),
           same_address_as_id: true,
-          should_proof_state_id: true,
           applicant_pii: Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN,
           precheck_phone_number: subject.idv_session.precheck_phone[:phone],
         ).adjudicated_result
@@ -893,10 +891,6 @@ RSpec.describe Idv::VerifyInfoController do
 
     context 'for an aamva request' do
       let(:document_capture_session) { create(:document_capture_session, user:) }
-      let(:success) { true }
-      let(:errors) { {} }
-      let(:exception) { nil }
-      let(:vendor_name) { 'aamva_placeholder' }
       let(:applicant_pii) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN }
       let(:phone_result) do
         Proofing::AddressResult.new(
@@ -909,14 +903,6 @@ RSpec.describe Idv::VerifyInfoController do
 
       let(:adjudicated_result) do
         Proofing::Resolution::ResultAdjudicator.new(
-          state_id_result: Proofing::StateIdResult.new(
-            success: success,
-            errors: errors,
-            exception: exception,
-            vendor_name: vendor_name,
-            transaction_id: 'abc123',
-            verified_attributes: [],
-          ),
           phone_result:,
           device_profiling_result: Proofing::DdpResult.new(success: true),
           hybrid_mobile_device_profiling_result: Proofing::DdpResult.new(success: true),
@@ -924,7 +910,6 @@ RSpec.describe Idv::VerifyInfoController do
           residential_resolution_result: Proofing::Resolution::Result.new(success: true),
           resolution_result: Proofing::Resolution::Result.new(success: true),
           same_address_as_id: true,
-          should_proof_state_id: true,
           applicant_pii:,
           precheck_phone_number: subject.idv_session.precheck_phone[:phone],
         ).adjudicated_result
@@ -1094,101 +1079,6 @@ RSpec.describe Idv::VerifyInfoController do
         end
       end
 
-      context 'when aamva returns success: false but no exception' do
-        let(:success) { false }
-
-        it 'tracks the event for the attempts api' do
-          expect(@attempts_api_tracker).to receive(:idv_verification_submitted).with(
-            success: false,
-            document_state: applicant_pii[:state],
-            document_number: applicant_pii[:state_id_number],
-            document_issued: applicant_pii[:state_id_issued],
-            document_expiration: applicant_pii[:state_id_expiration],
-            first_name: applicant_pii[:first_name],
-            last_name: applicant_pii[:last_name],
-            date_of_birth: applicant_pii[:dob],
-            address1: applicant_pii[:address1],
-            address2: applicant_pii[:address2],
-            ssn: SsnFormatter.format(applicant_pii[:ssn]),
-            city: applicant_pii[:city],
-            state: applicant_pii[:state],
-            zip: applicant_pii[:zip],
-            failure_reason: {
-              failed_stages: [:state_id],
-              resolution_adjudication_reason: ['fail_state_id'],
-              device_profiling_adjudication_reason: ['device_profiling_result_pass'],
-            },
-          )
-          get :show
-        end
-
-        it 'redirects to the warning URL' do
-          put :show
-          expect(response).to redirect_to(idv_session_errors_warning_url)
-        end
-      end
-
-      context 'when aamva returns an exception' do
-        let(:success) { false }
-        let(:exception) { Proofing::Aamva::VerificationError.new('ExceptionId: 0001') }
-
-        it 'tracks the event for the attempts api' do
-          expect(@attempts_api_tracker).to receive(:idv_verification_submitted).with(
-            success: false,
-            document_state: applicant_pii[:state],
-            document_number: applicant_pii[:state_id_number],
-            document_issued: applicant_pii[:state_id_issued],
-            document_expiration: applicant_pii[:state_id_expiration],
-            first_name: applicant_pii[:first_name],
-            last_name: applicant_pii[:last_name],
-            date_of_birth: applicant_pii[:dob],
-            address1: applicant_pii[:address1],
-            address2: applicant_pii[:address2],
-            ssn: SsnFormatter.format(applicant_pii[:ssn]),
-            city: applicant_pii[:city],
-            state: applicant_pii[:state],
-            zip: applicant_pii[:zip],
-            failure_reason: {
-              failed_stages: [:state_id],
-              resolution_adjudication_reason: ['fail_state_id'],
-              device_profiling_adjudication_reason: ['device_profiling_result_pass'],
-            },
-          )
-          get :show
-        end
-
-        it 'logs the doc auth verify proofing results event' do
-          put :show
-          expect(@analytics).to have_logged_event(
-            'IdV: doc auth verify proofing results',
-            hash_including(
-              exceptions: {
-                state_id: {
-                  vendor_name:,
-                  exception: exception.message,
-                  jurisdiction_in_maintenance_window: false,
-                },
-              },
-            ),
-          )
-        end
-
-        it 'redirects user to warning' do
-          put :show
-          expect(response).to redirect_to idv_session_errors_state_id_warning_url
-        end
-
-        it 'logs an event' do
-          put :show
-
-          expect(@analytics).to have_logged_event(
-            'IdV: doc auth warning visited',
-            step_name: 'verify_info',
-            remaining_submit_attempts: kind_of(Numeric),
-          )
-        end
-      end
-
       context 'when proofing results is missing values' do
         let(:adjudicated_result) do
           {
@@ -1236,7 +1126,6 @@ RSpec.describe Idv::VerifyInfoController do
       let(:applicant_pii) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN }
       let(:adjudicated_result) do
         Proofing::Resolution::ResultAdjudicator.new(
-          state_id_result: Proofing::StateIdResult.new(success: true),
           phone_result: Proofing::AddressResult.new(
             success: success,
             errors: {},
@@ -1255,7 +1144,6 @@ RSpec.describe Idv::VerifyInfoController do
             attributes_requiring_additional_verification: error_attributes,
           ),
           same_address_as_id: nil,
-          should_proof_state_id: true,
           applicant_pii:,
           precheck_phone_number: subject.idv_session.precheck_phone[:phone],
         ).adjudicated_result
@@ -1398,14 +1286,6 @@ RSpec.describe Idv::VerifyInfoController do
       let(:applicant_pii) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN }
       let(:adjudicated_result) do
         Proofing::Resolution::ResultAdjudicator.new(
-          state_id_result: Proofing::StateIdResult.new(
-            success: true,
-            errors: {},
-            exception: nil,
-            vendor_name: :aamva,
-            transaction_id: 'abc123',
-            verified_attributes: [],
-          ),
           phone_result: Proofing::AddressResult.new(
             success: true,
             errors: {},
@@ -1425,7 +1305,6 @@ RSpec.describe Idv::VerifyInfoController do
             },
           ),
           same_address_as_id: true,
-          should_proof_state_id: true,
           applicant_pii:,
           precheck_phone_number: subject.idv_session.precheck_phone[:phone],
         ).adjudicated_result
@@ -1524,14 +1403,6 @@ RSpec.describe Idv::VerifyInfoController do
       let(:residential_resolution_vendor_name) { 'ResidentialResolutionVendor' }
       let(:adjudicated_result) do
         Proofing::Resolution::ResultAdjudicator.new(
-          state_id_result: Proofing::StateIdResult.new(
-            success: true,
-            errors: {},
-            exception: nil,
-            vendor_name: :aamva,
-            transaction_id: 'abc123',
-            verified_attributes: [],
-          ),
           phone_result: Proofing::AddressResult.new(
             success: true,
             errors: {},
@@ -1550,7 +1421,6 @@ RSpec.describe Idv::VerifyInfoController do
             vendor_name: resolution_vendor_name,
           ),
           same_address_as_id: true,
-          should_proof_state_id: true,
           applicant_pii: Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN,
           precheck_phone_number: subject.idv_session.precheck_phone[:phone],
         ).adjudicated_result

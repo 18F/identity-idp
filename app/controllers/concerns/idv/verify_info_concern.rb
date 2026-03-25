@@ -117,9 +117,6 @@ module Idv
         rate_limit_redirect!(:proof_ssn, step_name: STEP_NAME)
       elsif resolution_rate_limiter.limited?
         rate_limit_redirect!(:idv_resolution, step_name: STEP_NAME)
-      elsif failures.has_exception? && failures.mva_exception?
-        idv_failure_log_warning
-        redirect_to state_id_warning_url
       elsif failures.has_exception? && failures.address_exception?
         idv_failure_log_address_warning
         redirect_to address_warning_url
@@ -165,10 +162,6 @@ module Idv
       idv_session_errors_exception_url(flow: flow_param)
     end
 
-    def state_id_warning_url
-      idv_session_errors_state_id_warning_url(flow: flow_param)
-    end
-
     def address_warning_url
       idv_session_errors_address_warning_url(flow: flow_param)
     end
@@ -208,10 +201,6 @@ module Idv
 
       form_response = idv_result_to_form_response(
         result: current_async_state.result,
-        state: pii[:state],
-        state_id_jurisdiction: pii[:state_id_jurisdiction],
-        state_id_number: pii[:state_id_number],
-        document_type_received: pii[:document_type_received] || pii[:id_doc_type],
         extra: {
           address_edited: !!idv_session.address_edited,
           address_line2_present: !pii[:address2].blank?,
@@ -233,8 +222,6 @@ module Idv
             [:proofing_results, :context, :stages, :threatmetrix, :response_body, :first_name],
             [:proofing_results, :context, :stages, :hybrid_mobile_threatmetrix, :response_body,
              :first_name],
-            [:proofing_results, :context, :stages, :state_id, :state_id_jurisdiction],
-            [:proofing_results, :context, :stages, :state_id, :errors, :state_id_jurisdiction],
             [:proofing_results, :biographical_info, :identity_doc_address_state],
             [:proofing_results, :biographical_info, :state_id_jurisdiction],
             [:proofing_results, :biographical_info, :phone],
@@ -264,7 +251,6 @@ module Idv
 
       if form_response.success?
         save_threatmetrix_status(form_response)
-        save_source_check_vendor(form_response)
         save_resolution_vendors(form_response)
         save_phone_precheck_vendor(form_response)
         move_applicant_to_idv_session
@@ -276,11 +262,9 @@ module Idv
       exceptions = build_proofing_exception_list(
         form_response.extra.dig(:proofing_results, :context, :stages),
       )
-      sanitized_form_response = form_response.deep_dup
-      sanitized_form_response.extra.dig(:proofing_results, :context, :stages)&.delete(:state_id)
       analytics.idv_doc_auth_verify_proofing_results(
         **analytics_arguments,
-        **sanitized_form_response,
+        **form_response,
         exceptions:,
       )
       delete_async
@@ -341,19 +325,6 @@ module Idv
       end
     end
 
-    def save_source_check_vendor(form_response)
-      return if idv_session.source_check_vendor.present?
-
-      vendor = form_response.extra.dig(
-        :proofing_results,
-        :context,
-        :stages,
-        :state_id,
-        :vendor_name,
-      )
-      idv_session.source_check_vendor = vendor
-    end
-
     def summarize_result_and_rate_limit(summary_result)
       proofing_results_exception = summary_result.extra.dig(:proofing_results, :exception)
       resolution_rate_limiter.increment! if proofing_results_exception.blank?
@@ -389,24 +360,8 @@ module Idv
 
     def idv_result_to_form_response(
       result:,
-      state: nil,
-      state_id_jurisdiction: nil,
-      state_id_number: nil,
-      document_type_received: nil,
       extra: {}
     )
-      state_id = result.dig(:context, :stages, :state_id)
-      if state_id
-        state_id[:state] = state if state
-        state_id[:state_id_jurisdiction] = state_id_jurisdiction if state_id_jurisdiction
-        state_id[:document_type_received] = document_type_received if document_type_received
-        state_id[:id_doc_type] = document_type_received if document_type_received
-        if state_id_number
-          state_id[:state_id_number] =
-            StringRedacter.redact_alphanumeric(state_id_number)
-        end
-      end
-
       FormResponse.new(
         success: result[:success],
         errors: result[:errors],
@@ -597,20 +552,12 @@ module Idv
         result.extra.dig(:proofing_results, :exception).present?
       end
 
-      def mva_exception?
-        state_id_stage[:mva_exception].present?
-      end
-
       def threatmetrix_exception?
         threatmetrix_stage[:exception].present?
       end
 
       def resolution_failed?
         !resolution_stage[:success]
-      end
-
-      def state_id_stage
-        stages.dig(:state_id) || {}
       end
 
       def threatmetrix_stage
