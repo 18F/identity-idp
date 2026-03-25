@@ -271,4 +271,20 @@ RSpec.describe 'Add a new phone number' do
 
     expect(page).to have_current_path(phone_setup_path)
   end
+
+  scenario 'notify users about phishing vulnerability' do
+    user = create(:user, :fully_registered)
+    phone = '+1 (225) 278-1234'
+
+    sign_in_and_2fa_user(user)
+    expect(page).to have_link(href: phone_setup_path, text: t('account.index.phone_add'))
+    within('.sidenav') do
+      click_on t('account.navigation.add_phone_number')
+    end
+
+    expect(page).to have_link(
+        t('links.setup_ft_unlock'),
+        href: webauthn_setup_url(platform: true),
+      )
+  end
 end
