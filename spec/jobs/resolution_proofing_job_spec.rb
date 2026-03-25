@@ -18,7 +18,6 @@ RSpec.describe ResolutionProofingJob, type: :job do
   let(:proofing_device_profiling) { :enabled }
   let(:lexisnexis_threatmetrix_mock_enabled) { false }
   let(:ipp_enrollment_in_progress) { false }
-  let(:state_id_already_proofed) { false }
   let(:hybrid_mobile_threatmetrix_session_id) { nil }
   let(:hybrid_mobile_request_ip) { nil }
   let(:proofing_device_hybrid_profiling) { :disabled }
@@ -73,7 +72,6 @@ RSpec.describe ResolutionProofingJob, type: :job do
         request_ip: request_ip,
         ipp_enrollment_in_progress: ipp_enrollment_in_progress,
         proofing_vendor: IdentityConfig.store.idv_resolution_default_vendor,
-        state_id_already_proofed:,
         hybrid_mobile_threatmetrix_session_id: hybrid_mobile_threatmetrix_session_id,
         hybrid_mobile_request_ip: hybrid_mobile_request_ip,
       )
@@ -115,7 +113,6 @@ RSpec.describe ResolutionProofingJob, type: :job do
         result_context = result[:context]
         result_context_stages = result_context[:stages]
         result_context_stages_resolution = result_context_stages[:resolution]
-        result_context_stages_state_id = result_context_stages[:state_id]
         result_context_stages_threatmetrix = result_context_stages[:threatmetrix]
 
         expect(result[:exception]).to be_nil
@@ -123,9 +120,6 @@ RSpec.describe ResolutionProofingJob, type: :job do
         expect(result[:success]).to be true
         expect(result[:timed_out]).to be false
         expect(result[:threatmetrix_review_status]).to eq('pass')
-
-        # result[:context]
-        expect(result_context[:should_proof_state_id])
 
         # result[:context][:stages][:resolution]
         expect(result_context_stages_resolution[:vendor_name])
@@ -140,32 +134,6 @@ RSpec.describe ResolutionProofingJob, type: :job do
           .to eq(false)
         expect(result_context_stages_resolution[:attributes_requiring_additional_verification])
           .to eq([])
-
-        # result[:context][:stages][:state_id]
-        expect(result_context_stages_state_id[:vendor_name]).to eq('aamva:state_id')
-        expect(result_context_stages_state_id[:errors]).to eq({})
-        expect(result_context_stages_state_id[:exception]).to eq(nil)
-        expect(result_context_stages_state_id[:success]).to eq(true)
-        expect(result_context_stages_state_id[:timed_out]).to eq(false)
-        expect(result_context_stages_state_id[:transaction_id]).to eq('1234-abcd-efgh')
-        expect(result_context_stages_state_id[:verified_attributes]).to match_array(
-          %w[
-            address
-            state_id_expiration
-            state_id_issued
-            state_id_number
-            document_type_received
-            dob
-            last_name
-            first_name
-            middle_name
-            name_suffix
-            height
-            sex
-            weight
-            eye_color
-          ],
-        )
 
         # result[:context][:stages][:threatmetrix]
         expect(result_context_stages_threatmetrix[:client]).to eq('lexisnexis')
@@ -256,61 +224,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
     end
 
     context 'with a InstantVerify result with failed attributes covered by the AAMVA result' do
-      it 'stores a successful result' do
-        stub_vendor_requests(
-          instant_verify_response: LexisNexisFixtures.instant_verify_address_fail_response_json,
-          aamva_response: AamvaFixtures.verification_response,
-        )
-
-        perform
-
-        result = document_capture_session.load_proofing_result[:result]
-        result_context = result[:context]
-        result_context_stages = result_context[:stages]
-        result_context_stages_resolution = result_context_stages[:resolution]
-        result_context_stages_state_id = result_context_stages[:state_id]
-
-        expect(result[:success]).to be true
-        expect(result[:errors].keys).to eq([:base, :'Execute Instant Verify'])
-        expect(result[:exception]).to be_nil
-        expect(result[:timed_out]).to be false
-
-        expect(result_context[:resolution_adjudication_reason])
-          .to eq('state_id_covers_failed_resolution')
-        # result[:context][:stages][:resolution]
-        expect(result_context_stages_resolution[:vendor_name])
-          .to eq('lexisnexis:instant_verify')
-        expect(result_context_stages_resolution[:success]).to eq(false)
-        expect(result_context_stages_resolution[:can_pass_with_additional_verification])
-          .to eq(true)
-        expect(result_context_stages_resolution[:attributes_requiring_additional_verification])
-          .to eq(['address'])
-
-        # result[:context][:stages][:state_id]
-        expect(result_context_stages_state_id[:vendor_name]).to eq('aamva:state_id')
-        expect(result_context_stages_state_id[:success]).to eq(true)
-        expect(result_context_stages_state_id[:verified_attributes]).to match_array(
-          %w[
-            address
-            state_id_expiration
-            state_id_issued
-            state_id_number
-            document_type_received
-            dob
-            last_name
-            first_name
-            middle_name
-            name_suffix
-            height
-            sex
-            weight
-            eye_color
-          ],
-        )
-      end
-
       context 'when state ID has already been proofed at DocAuth' do
-        let(:state_id_already_proofed) { true }
         context 'when attributes requiring additional verification were NOT verified by AAMVA' do
           it 'stores an unsuccessful result' do
             stub_vendor_requests(
@@ -323,7 +237,6 @@ RSpec.describe ResolutionProofingJob, type: :job do
             result_context = result[:context]
             result_context_stages = result_context[:stages]
             result_context_stages_resolution = result_context_stages[:resolution]
-            result_context_stages_state_id = result_context_stages[:state_id]
 
             expect(result[:success]).to be false
             expect(result[:errors].keys).to eq([:base, :'Execute Instant Verify'])
@@ -340,13 +253,6 @@ RSpec.describe ResolutionProofingJob, type: :job do
               .to eq(true)
             expect(result_context_stages_resolution[:attributes_requiring_additional_verification])
               .to eq(['address'])
-
-            # result[:context][:stages][:state_id]
-            expect(result_context_stages_state_id[:vendor_name]).to eq('AamvaCheckSkipped')
-            expect(result_context_stages_state_id[:success]).to eq(true)
-            expect(result_context_stages_state_id[:verified_attributes]).to be_empty
-
-            expect(@aamva_stub).to_not have_been_requested
           end
         end
 
@@ -366,7 +272,6 @@ RSpec.describe ResolutionProofingJob, type: :job do
             result_context = result[:context]
             result_context_stages = result_context[:stages]
             result_context_stages_resolution = result_context_stages[:resolution]
-            result_context_stages_state_id = result_context_stages[:state_id]
 
             expect(result[:success]).to be true
             expect(result[:errors].keys).to eq([:base, :'Execute Instant Verify'])
@@ -383,20 +288,13 @@ RSpec.describe ResolutionProofingJob, type: :job do
               .to eq(true)
             expect(result_context_stages_resolution[:attributes_requiring_additional_verification])
               .to eq(['address'])
-
-            # result[:context][:stages][:state_id]
-            expect(result_context_stages_state_id[:vendor_name]).to eq('AamvaCheckSkipped')
-            expect(result_context_stages_state_id[:success]).to eq(true)
-            expect(result_context_stages_state_id[:verified_attributes]).to be_empty
-
-            expect(@aamva_stub).to_not have_been_requested
           end
         end
       end
     end
 
-    context 'with a InstantVerify result with failed attributes that cannot be covered by AAMVA' do
-      it 'stores an unsuccessful result and does not make an AAMVA request' do
+    context 'with a InstantVerify result with failed attributes that cannot be covered' do
+      it 'stores an unsuccessful result' do
         stub_vendor_requests(
           instant_verify_response:
             LexisNexisFixtures.instant_verify_identity_not_found_response_json,
@@ -408,7 +306,6 @@ RSpec.describe ResolutionProofingJob, type: :job do
         result_context = result[:context]
         result_context_stages = result_context[:stages]
         result_context_stages_resolution = result_context_stages[:resolution]
-        result_context_stages_state_id = result_context_stages[:state_id]
 
         expect(result[:success]).to be false
         expect(result[:errors].keys).to eq([:base, :'Execute Instant Verify'])
@@ -423,24 +320,15 @@ RSpec.describe ResolutionProofingJob, type: :job do
           .to eq(true)
         expect(result_context_stages_resolution[:attributes_requiring_additional_verification])
           .to match(['address', 'dead', 'dob', 'ssn'])
-
-        # result[:context][:stages][:state_id]
-        expect(result_context_stages_state_id[:vendor_name]).to eq(
-          Idp::Constants::Vendors::AAMVA_CHECK_SKIPPED,
-        )
-        expect(result_context_stages_state_id[:success]).to eq(true)
-
-        expect(@aamva_stub).to_not have_been_requested
       end
 
       context 'when state ID has already been proofed at DocAuth' do
-        let(:state_id_already_proofed) { true }
         let(:pii) do
           { aamva_verified_attributes: [:address, :ssn] }
             .merge(Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID)
         end
 
-        it 'stores an unsuccessful result and does not make an AAMVA request' do
+        it 'stores an unsuccessful result' do
           stub_vendor_requests(
             instant_verify_response:
               LexisNexisFixtures.instant_verify_identity_not_found_response_json,
@@ -452,7 +340,6 @@ RSpec.describe ResolutionProofingJob, type: :job do
           result_context = result[:context]
           result_context_stages = result_context[:stages]
           result_context_stages_resolution = result_context_stages[:resolution]
-          result_context_stages_state_id = result_context_stages[:state_id]
 
           expect(result[:success]).to be false
           expect(result[:errors].keys).to eq([:base, :'Execute Instant Verify'])
@@ -467,76 +354,7 @@ RSpec.describe ResolutionProofingJob, type: :job do
             .to eq(true)
           expect(result_context_stages_resolution[:attributes_requiring_additional_verification])
             .to match(['address', 'dead', 'dob', 'ssn'])
-
-          # result[:context][:stages][:state_id]
-          expect(result_context_stages_state_id[:vendor_name]).to eq(
-            Idp::Constants::Vendors::AAMVA_CHECK_SKIPPED,
-          )
-          expect(result_context_stages_state_id[:success]).to eq(true)
-
-          expect(@aamva_stub).to_not have_been_requested
         end
-      end
-    end
-
-    context 'with a failed AAMVA result' do
-      it 'stores an unsuccessful result' do
-        stub_vendor_requests(aamva_response: AamvaFixtures.verification_response_namespaced_failure)
-
-        perform
-
-        result = document_capture_session.load_proofing_result[:result]
-        result_context = result[:context]
-        result_context_stages = result_context[:stages]
-        result_context_stages_state_id = result_context_stages[:state_id]
-
-        expect(result[:success]).to be false
-        expect(result[:errors]).to include(
-          :state_id_number, :document_type_received, :dob, :last_name, :first_name,
-          :address1, :address2, :city, :state, :zipcode
-        )
-        expect(result[:exception]).to be_nil
-        expect(result[:timed_out]).to be false
-
-        # result[:context][:stages][:state_id]
-        expect(result_context_stages_state_id[:vendor_name]).to eq('aamva:state_id')
-        expect(result_context_stages_state_id[:success]).to eq(false)
-        expect(result_context_stages_state_id[:errors]).to include(
-          :state_id_number, :document_type_received, :dob, :last_name, :first_name,
-          :address1, :address2, :city, :state, :zipcode
-        )
-        expect(result_context_stages_state_id[:exception]).to eq(nil)
-
-        expect(result_context_stages_state_id[:timed_out]).to eq(false)
-      end
-    end
-
-    context 'in a state where AAMVA is not supported' do
-      let(:pii) do
-        Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID.merge(state_id_jurisdiction: 'NY')
-      end
-
-      it 'does not make an AAMVA request' do
-        stub_vendor_requests
-
-        perform
-
-        result = document_capture_session.load_proofing_result[:result]
-        result_context = result[:context]
-        result_context_stages = result_context[:stages]
-        result_context_stages_state_id = result_context_stages[:state_id]
-
-        expect(result[:success]).to be true
-        expect(result[:exception]).to be_nil
-        expect(result[:timed_out]).to be false
-
-        # result[:context][:stages][:state_id]
-        expect(result_context_stages_state_id[:vendor_name]).to eq(
-          Idp::Constants::Vendors::AAMVA_UNSUPPORTED_JURISDICTION,
-        )
-        expect(result_context_stages_state_id[:success]).to eq(true)
-
-        expect(@aamva_stub).to_not have_been_requested
       end
     end
 
@@ -666,16 +484,12 @@ RSpec.describe ResolutionProofingJob, type: :job do
           result_context_stages = result_context[:stages]
           result_context_stages_resolution = result_context_stages[:resolution]
           result_context_residential_address = result_context_stages[:residential_address]
-          result_context_stages_state_id = result_context_stages[:state_id]
           result_context_stages_threatmetrix = result_context_stages[:threatmetrix]
 
           expect(result[:exception]).to be_nil
           expect(result[:errors].keys).to eq([:"Execute Instant Verify"])
           expect(result[:success]).to be true
           expect(result[:timed_out]).to be false
-
-          # result[:context]
-          expect(result_context[:should_proof_state_id])
 
           # result[:context][:stages][:resolution]
           expect(result_context_stages_resolution[:vendor_name])
@@ -705,32 +519,6 @@ RSpec.describe ResolutionProofingJob, type: :job do
           expect(result_context_residential_address[:attributes_requiring_additional_verification])
             .to eq([])
 
-          # result[:context][:stages][:state_id]
-          expect(result_context_stages_state_id[:vendor_name]).to eq('aamva:state_id')
-          expect(result_context_stages_state_id[:errors]).to eq({})
-          expect(result_context_stages_state_id[:exception]).to eq(nil)
-          expect(result_context_stages_state_id[:success]).to eq(true)
-          expect(result_context_stages_state_id[:timed_out]).to eq(false)
-          expect(result_context_stages_state_id[:transaction_id]).to eq('1234-abcd-efgh')
-          expect(result_context_stages_state_id[:verified_attributes]).to match_array(
-            %w[
-              address
-              state_id_expiration
-              state_id_issued
-              state_id_number
-              document_type_received
-              dob
-              last_name
-              first_name
-              middle_name
-              name_suffix
-              height
-              sex
-              weight
-              eye_color
-            ],
-          )
-
           # result[:context][:stages][:threatmetrix]
           expect(result_context_stages_threatmetrix[:client]).to eq('lexisnexis')
           expect(result_context_stages_threatmetrix[:errors]).to eq({})
@@ -749,10 +537,16 @@ RSpec.describe ResolutionProofingJob, type: :job do
       end
 
       context 'when the InstantVerify proofing fails' do
-        context 'when attributes requiring additional verification were verified by AAMVA' do
+        context 'when aamva already proofed at doc auth' do
+          let(:pii) do
+            { aamva_verified_attributes: [:address, :ssn] }
+              .merge(Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID)
+          end
+
           it 'stores a successful result' do
             stub_vendor_requests(
-              instant_verify_response: LexisNexisFixtures.instant_verify_address_fail_response_json,
+              instant_verify_response: LexisNexisFixtures
+                .instant_verify_address_fail_response_json,
             )
 
             perform
@@ -761,7 +555,6 @@ RSpec.describe ResolutionProofingJob, type: :job do
             result_context = result[:context]
             result_context_stages = result_context[:stages]
             result_context_stages_resolution = result_context_stages[:resolution]
-            result_context_stages_state_id = result_context_stages[:state_id]
 
             expect(result[:success]).to be true
             expect(result[:errors].keys).to eq([:base, :'Execute Instant Verify'])
@@ -776,78 +569,10 @@ RSpec.describe ResolutionProofingJob, type: :job do
             expect(result_context_stages_resolution[:success]).to eq(false)
             expect(result_context_stages_resolution[:can_pass_with_additional_verification])
               .to eq(true)
-            expect(result_context_stages_resolution[:attributes_requiring_additional_verification])
-              .to eq(['address'])
-
-            # result[:context][:stages][:state_id]
-            expect(result_context_stages_state_id[:vendor_name]).to eq('aamva:state_id')
-            expect(result_context_stages_state_id[:success]).to eq(true)
-            expect(result_context_stages_state_id[:verified_attributes]).to match_array(
-              %w[
-                address
-                state_id_expiration
-                state_id_issued
-                state_id_number
-                document_type_received
-                dob
-                last_name
-                first_name
-                middle_name
-                name_suffix
-                height
-                sex
-                weight
-                eye_color
-              ],
+            expect(
+              result_context_stages_resolution[:attributes_requiring_additional_verification],
             )
-          end
-
-          context 'when aamva already proofed at doc auth' do
-            let(:state_id_already_proofed) { true }
-            let(:pii) do
-              { aamva_verified_attributes: [:address, :ssn] }
-                .merge(Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID)
-            end
-
-            it 'stores a successful result' do
-              stub_vendor_requests(
-                instant_verify_response: LexisNexisFixtures
-                  .instant_verify_address_fail_response_json,
-              )
-
-              perform
-
-              result = document_capture_session.load_proofing_result[:result]
-              result_context = result[:context]
-              result_context_stages = result_context[:stages]
-              result_context_stages_resolution = result_context_stages[:resolution]
-              result_context_stages_state_id = result_context_stages[:state_id]
-
-              expect(result[:success]).to be true
-              expect(result[:errors].keys).to eq([:base, :'Execute Instant Verify'])
-              expect(result[:exception]).to be_nil
-              expect(result[:timed_out]).to be false
-
-              expect(result_context[:resolution_adjudication_reason])
-                .to eq('state_id_covers_failed_resolution')
-              # result[:context][:stages][:resolution]
-              expect(result_context_stages_resolution[:vendor_name])
-                .to eq('lexisnexis:instant_verify')
-              expect(result_context_stages_resolution[:success]).to eq(false)
-              expect(result_context_stages_resolution[:can_pass_with_additional_verification])
-                .to eq(true)
-              expect(
-                result_context_stages_resolution[:attributes_requiring_additional_verification],
-              )
-                .to eq(['address'])
-
-              # result[:context][:stages][:state_id]
-              expect(result_context_stages_state_id[:vendor_name]).to eq('AamvaCheckSkipped')
-              expect(result_context_stages_state_id[:success]).to eq(true)
-              expect(result_context_stages_state_id[:verified_attributes]).to be_empty
-
-              expect(@aamva_stub).to_not have_been_requested
-            end
+              .to eq(['address'])
           end
         end
       end
@@ -983,7 +708,6 @@ RSpec.describe ResolutionProofingJob, type: :job do
 
         instance.enqueued_at = 10.minutes.ago
 
-        expect(@aamva_stub).to_not have_been_requested
         expect(@instant_verify_stub).to_not have_been_requested
         expect(@threatmetrix_stub).to_not have_been_requested
 
@@ -1002,18 +726,13 @@ RSpec.describe ResolutionProofingJob, type: :job do
       expect_any_instance_of(Proofing::LexisNexis::InstantVerify::Proofer).to receive(:proof)
         .with(hash_including(uuid_info)).and_call_original
 
-      expect_any_instance_of(Proofing::Aamva::Proofer).to receive(:proof).with(
-        hash_including(uuid_info),
-      ).and_call_original
-
       perform
     end
 
     def stub_vendor_requests(
       instant_verify_response: LexisNexisFixtures.instant_verify_success_response_json,
       threatmetrix_response: LexisNexisFixtures.threatmetrix_success_response_json,
-      hybrid_mobile_threatmetrix_response: LexisNexisFixtures.threatmetrix_success_response_json,
-      aamva_response: AamvaFixtures.verification_response
+      hybrid_mobile_threatmetrix_response: LexisNexisFixtures.threatmetrix_success_response_json
     )
       allow(IdentityConfig.store).to receive(:proofer_mock_fallback).and_return(false)
       @instant_verify_stub = stub_instant_verify_request(instant_verify_response)
@@ -1031,8 +750,6 @@ RSpec.describe ResolutionProofingJob, type: :job do
       else
         @threatmetrix_stub = stub_threatmetrix_request(threatmetrix_response)
       end
-
-      @aamva_stub = stub_aamva_request(aamva_response)
     end
 
     def stub_instant_verify_request(instant_verify_response)
@@ -1054,20 +771,6 @@ RSpec.describe ResolutionProofingJob, type: :job do
         :post,
         'https://www.example.com/api/session-query',
       ).to_return(body: threatmetrix_response)
-    end
-
-    def stub_aamva_request(aamva_response)
-      allow(IdentityConfig.store).to receive(:aamva_private_key)
-        .and_return(AamvaFixtures.example_config.private_key)
-      allow(IdentityConfig.store).to receive(:aamva_public_key)
-        .and_return(AamvaFixtures.example_config.public_key)
-      stub_request(:post, IdentityConfig.store.aamva_auth_url)
-        .to_return(
-          { body: AamvaFixtures.security_token_response },
-          { body: AamvaFixtures.authentication_token_response },
-        )
-      stub_request(:post, IdentityConfig.store.aamva_verification_url)
-        .to_return(body: aamva_response)
     end
   end
 end
