@@ -42,7 +42,6 @@ module Idv
         request_ip: request.remote_ip,
         ipp_enrollment_in_progress: ipp_enrollment_in_progress?,
         proofing_vendor:,
-        state_id_already_proofed: source_check_vendor_aamva?,
         hybrid_mobile_threatmetrix_session_id:,
         hybrid_mobile_request_ip:,
       )
@@ -537,25 +536,6 @@ module Idv
           { **value.slice(:vendor_name, :exception, :jurisdiction_in_maintenance_window) }
         end
       end.compact.presence
-    end
-
-    def source_check_vendor_aamva?
-      return false if ipp_aamva_check_not_completed? || remote_aamva_check_not_completed?
-
-      idv_session.source_check_vendor == 'aamva:state_id' ||
-        idv_session.source_check_vendor == 'aamva' ||
-        idv_session.source_check_vendor == 'StateIdMock'
-    end
-
-    def ipp_aamva_check_not_completed?
-      IdentityConfig.store.idv_aamva_at_doc_auth_ipp_enabled &&
-        ipp_enrollment_in_progress? &&
-        idv_session.ipp_aamva_result.blank?
-    end
-
-    def remote_aamva_check_not_completed?
-      !ipp_enrollment_in_progress? &&
-        !IdentityConfig.store.idv_aamva_at_doc_auth_enabled
     end
 
     def threatmetrix_check_failed?(result)

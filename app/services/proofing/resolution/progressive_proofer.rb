@@ -2,7 +2,7 @@
 
 module Proofing
   module Resolution
-    # Uses a combination of LexisNexis InstantVerify and AAMVA checks to verify that
+    # Uses a combination of LexisNexis and InstantVerify checks to verify that
     # a user's identity can be resolved against authoritative sources. This includes logic for when:
     #   1. The user is or is not within an AAMVA-participating jurisdiction
     #   2. The user has only provided one address for their residential and identity document
@@ -12,7 +12,6 @@ module Proofing
 
       attr_reader :user_uuid,
                   :user_email,
-                  :aamva_plugin,
                   :threatmetrix_plugin,
                   :phone_plugin,
                   :proofing_vendor
@@ -27,7 +26,6 @@ module Proofing
       def initialize(user_uuid:, proofing_vendor:, user_email:, analytics:)
         @user_uuid = user_uuid
         @user_email = user_email
-        @aamva_plugin = Plugins::AamvaPlugin.new
         @threatmetrix_plugin = Plugins::ThreatMetrixPlugin.new
         @phone_plugin = Plugins::PhonePlugin.new
         @proofing_vendor = proofing_vendor
@@ -103,15 +101,6 @@ module Proofing
           residential_address_resolution_result:,
           ipp_enrollment_in_progress:,
           timer:,
-        )
-
-        state_id_result = aamva_plugin.call(
-          applicant_pii:,
-          current_sp:,
-          state_id_address_resolution_result:,
-          ipp_enrollment_in_progress:,
-          timer:,
-          already_proofed: state_id_already_proofed,
         )
 
         phone_result = phone_plugin.call(
