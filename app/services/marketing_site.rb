@@ -29,6 +29,7 @@ class MarketingSite
     verify-your-identity/overview
     verify-your-identity/verify-your-identity-in-person/find-a-participating-post-office
     fraud-concerns/overview
+    fraud-concerns/common-scams
   ].to_set.freeze
 
   def self.locale_segment

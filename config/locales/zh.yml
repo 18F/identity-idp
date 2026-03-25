@@ -1543,6 +1543,8 @@ links.passwords.forgot: 忘了你的密码?
 links.privacy_policy: 隐私与安全
 links.resend: 重发
 links.reverify: 请再验证你的身份。
+links.scams: 诈骗攻击
+links.setup_ft_unlock: set up face or touch unlock
 links.sign_in: 登录
 links.sign_out: 登出
 links.try_again: 然后重试
@@ -1579,6 +1581,7 @@ notices.forgot_password.first_paragraph_start: 我们已发电邮到
 notices.forgot_password.no_email_sent_explanation_start: 没有收到电邮？
 notices.forgot_password.resend_email_success: 我们发了另外一个重设密码的电邮。
 notices.password_changed: 你更改了密码。
+notices.phishing_warning_html: 手机很容易受到%{common_scams_link_html}。如果可能，请设%{ft_unlock_setup_link_html}。
 notices.phone_confirmed: 你账户添加了一个电话。
 notices.piv_cac_configured: 添加您的政府雇员身份证件
 notices.privacy.privacy_act_statement: 隐私法声明

@@ -1530,6 +1530,8 @@ links.passwords.forgot: Forgot your password?
 links.privacy_policy: Privacy & security
 links.resend: Resend
 links.reverify: Please verify your identity again.
+links.scams: scams
+links.setup_ft_unlock: set up face or touch unlock
 links.sign_in: Sign in
 links.sign_out: Sign out
 links.try_again: Try again
@@ -1567,6 +1569,7 @@ notices.forgot_password.no_email_sent_explanation_start: Didn’t receive an ema
 notices.forgot_password.resend_email_success: We sent another password reset email.
 notices.password_changed: You changed your password.
 notices.phone_confirmed: A phone was added to your account.
+notices.phishing_warning_html: Phones are vulnerable to %{common_scams_link_html}. If possible, %{ft_unlock_setup_link_html} for better account security.
 notices.piv_cac_configured: A government employee ID was added to your account.
 notices.privacy.privacy_act_statement: Privacy Act Statement
 notices.privacy.security_and_privacy_practices: Security Practices and Privacy Act Statement
