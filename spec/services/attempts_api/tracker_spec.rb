@@ -251,7 +251,7 @@ RSpec.describe AttemptsApi::Tracker do
           subject.idv_enrollment_complete(reproof: false)
           expect(mock_session['warden.user.user.session']).to eq(
             'idv/attempts' => ['idv-enrollment-complete' => {
-              "user_uuid" => user.uuid, # rubocop:disable Style/StringLiterals
+              'user_uuid' => user.uuid,
             }],
           )
         end
@@ -287,7 +287,7 @@ RSpec.describe AttemptsApi::Tracker do
             subject.idv_enrollment_complete(reproof: false)
             expect(mock_session['warden.user.user.session']).to eq(
               'idv/attempts' => ['idv-enrollment-complete' => {
-                "user_uuid" => user.uuid, # rubocop:disable Style/StringLiterals
+                'user_uuid' => user.uuid,
               }],
             )
           end
