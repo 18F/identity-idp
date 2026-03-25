@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module Reports
   class SpCredMetricsReport < BaseReport
     attr_reader :report_date, :report_receiver, :report_name
@@ -88,11 +89,11 @@ module Reports
       @internal_emails = report_config['internal_emails']
       @agency_abbreviation = report_config['agency_abbreviation']
       @report_name = "#{@agency_abbreviation.downcase}_monthly_cred_metrics"
-      
+
       emails = email_addresses
       to_emails = emails[:to].select(&:present?)
       bcc_emails = emails[:bcc].select(&:present?)
-      
+
       if to_emails.empty? && bcc_emails.empty?
         Rails.logger.warn "No email addresses received - #{@agency_abbreviation} Credential Report NOT SENT"
         return false
@@ -134,7 +135,6 @@ module Reports
     end
 
     def as_emailable_partner_report(date:)
-      
       emailable_report_array = [
         Reporting::EmailableReport.new(
           title: 'Definitions',
@@ -147,9 +147,9 @@ module Reports
           filename: 'partner_monthly_cred_overview',
         ),
       ]
-      
+
       issuer_data = issuer_report_data
-      
+
       if issuer_data.present?
         emailable_report_array << Reporting::EmailableReport.new(
           title: "#{@agency_abbreviation} Monthly Credential Metrics #{date.strftime('%B %Y')}",
@@ -159,9 +159,9 @@ module Reports
       else
         return nil
       end
-      
+
       partner_data = partner_report_data
-      
+
       if partner_data.present?
         emailable_report_array << Reporting::EmailableReport.new(
           title: "Partner Monthly Credential Metrics #{date.strftime('%B %Y')}",
@@ -171,7 +171,7 @@ module Reports
       else
         return nil
       end
-      
+
       emailable_report_array
     end
 
@@ -268,14 +268,14 @@ module Reports
 
     def build_partner_data
       invoice_data_csv = CSV.parse(invoice_report_data, headers: true)
-      
+
       # Filter by issuers (previously was filtering by partner_strings, which we've removed)
       partner_invoice_data = invoice_data_csv.select do |r|
-        issuers.include?(r['issuer']) 
+        issuers.include?(r['issuer'])
       end
-      
+
       if partner_invoice_data.empty?
-        Rails.logger.warn "No data for any issuers in #{issuers}" 
+        Rails.logger.warn "No data for any issuers in #{issuers}"
         return nil
       end
 
