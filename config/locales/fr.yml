@@ -1529,9 +1529,9 @@ links.new_tab: '(ouvre un nouvel onglet)'
 links.passwords.forgot: Mot de passe oublié ?
 links.privacy_policy: Confidentialité et sécurité
 links.resend: Renvoyer
-links.scams: scams
-links.setup_ft_unlock: set up face or touch unlock
 links.reverify: Veuillez reconfirmer votre identité.
+links.scams: aux arnaques
+links.setup_ft_unlock: configurez le déverrouillage faciale ou tactile
 links.sign_in: Se connecter
 links.sign_out: Se déconnecter
 links.try_again: Réessayer
@@ -1568,12 +1568,12 @@ notices.forgot_password.first_paragraph_start: Nous avons envoyé un e-mail à
 notices.forgot_password.no_email_sent_explanation_start: Vous n’avez pas reçu d’e-mail ?
 notices.forgot_password.resend_email_success: Nous avons envoyé un autre e-mail de réinitialisation de mot de passe.
 notices.password_changed: Vous avez changé votre mot de passe.
+notices.phishing_warning_html: Les téléphones sont vulnérables %{common_scams_link_html}. Si possible, %{ft_unlock_setup_link_html} pour une meilleure sécurité de votre compte.
 notices.phone_confirmed: Un téléphone a été ajouté à votre compte.
 notices.piv_cac_configured: Ajouter votre carte d’employé fédéral.
 notices.privacy.privacy_act_statement: Déclaration relative à la loi sur la confidentialité
 notices.privacy.security_and_privacy_practices: Déclaration relatives à la loi sur les pratiques de sécurité et la confidentialité
 notices.resend_confirmation_email.success: Nous avons envoyé un autre e-mail de confirmation.
-notices.phishing_warning_html: Les téléphones sont vulnérables %{common_scams_link_html}. Si possible, %{ft_unlock_setup_link_html} pour une meilleure sécurité de votre compte.
 notices.session_cleared: Pour votre sécurité, nous effaçons les informations que vous avez saisies si vous ne passez pas à une nouvelle page dans les %{minutes} minutes.
 notices.session_timedout: Nous vous avons déconnecté. Pour votre sécurité, %{app_name} désactive votre session si vous n’êtes pas passé à une nouvelle page après %{minutes} minutes.
 notices.sign_in.recaptcha.disclosure_statement_html: Ce site est protégé par reCAPTCHA. Les %{google_policy_link_html} et %{google_tos_link_html} de Google s’appliquent.

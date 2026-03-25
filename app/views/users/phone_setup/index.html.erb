@@ -35,20 +35,23 @@
       ).with_content(t('forms.buttons.send_one_time_code')) %>
 <% end %>
 
-<% if !@show_phishing_warning %>
+<% if !@webauthn_platform_configured %>
   <%= render(AlertComponent.new(type: :info, class: 'margin-bottom-4')) do %>
-    <%= t('notices.phishing_warning_html',
+    <%= t(
+          'notices.phishing_warning_html',
           common_scams_link_html:
           new_tab_link_to(
-          t('links.scams'),
-          MarketingSite.help_center_article_url(
-            category: 'fraud-concerns',
-            article: 'overview',
+            t('links.scams'),
+            MarketingSite.help_center_article_url(
+              category: 'fraud-concerns',
+              article: 'overview',
+            ),
           ),
-        ),
           ft_unlock_setup_link_html: link_to(
             t('links.setup_ft_unlock'),
-            webauthn_setup_url(platform: true))) %>
+            webauthn_setup_url(platform: true),
+          ),
+        ) %>
   <% end %>
 <% end %>
 

@@ -1568,8 +1568,8 @@ notices.forgot_password.first_paragraph_start: We sent an email to
 notices.forgot_password.no_email_sent_explanation_start: Didn’t receive an email?
 notices.forgot_password.resend_email_success: We sent another password reset email.
 notices.password_changed: You changed your password.
-notices.phone_confirmed: A phone was added to your account.
 notices.phishing_warning_html: Phones are vulnerable to %{common_scams_link_html}. If possible, %{ft_unlock_setup_link_html} for better account security.
+notices.phone_confirmed: A phone was added to your account.
 notices.piv_cac_configured: A government employee ID was added to your account.
 notices.privacy.privacy_act_statement: Privacy Act Statement
 notices.privacy.security_and_privacy_practices: Security Practices and Privacy Act Statement
