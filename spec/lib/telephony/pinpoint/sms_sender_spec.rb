@@ -10,7 +10,7 @@ RSpec.describe Telephony::Pinpoint::SmsSender do
   let(:mock_client) { Pinpoint::MockClient.new(sms_config) }
 
   # Monkeypatch library class so we can use it for argument matching
-  class Aws::Credentials
+  class Aws::Credentials # rubocop:disable RSpec/LeakyConstantDeclaration
     def ==(other)
       self.access_key_id == other.access_key_id &&
         self.secret_access_key == other.secret_access_key

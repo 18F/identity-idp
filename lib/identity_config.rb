@@ -233,6 +233,7 @@ module IdentityConfig
     config.add(:idv_min_age_years, type: :integer)
     config.add(:idv_phone_confirmation_manual_review_validity_hours, type: :float)
     config.add(:idv_phone_precheck_percent, type: :integer)
+    config.add(:idv_proofing_agent_config, type: :json)
     config.add(:idv_proofing_agent_enabled, type: :boolean)
     config.add(:idv_rdp_version_default, type: :string)
     config.add(:idv_rdp_version_switching_enabled, type: :boolean)
@@ -361,8 +362,6 @@ module IdentityConfig
     config.add(:new_device_alert_delay_in_minutes, type: :integer)
     config.add(:new_device_alert_window_start_in_minutes, type: :integer, allow_nil: true)
     config.add(:newrelic_license_key, type: :string)
-    config.add(:one_account_user_verification_enabled_percentage, type: :integer)
-    config.add(:one_account_profile_creation_check_enabled, type: :boolean)
     config.add(
       :openid_connect_redirect,
       type: :string,

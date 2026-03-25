@@ -615,8 +615,6 @@ RSpec.describe ApplicationController do
         .and_return([issuer])
       allow(controller).to receive(:sp_from_sp_session)
         .and_return(sp)
-
-      allow(controller).to receive(:user_in_one_account_verification_bucket?).and_return(true)
     end
 
     context 'when SP is not eligible for one account' do
