@@ -1,0 +1,113 @@
+# frozen_string_literal: true
+
+require 'csv'
+require 'reporting/fraud_metrics_lg99_report_s3'
+
+module Reports
+  class FraudMetricsLg99S3Report < BaseReport
+    REPORT_NAME = 'fraud-metrics-lg99-s3-report'
+
+    attr_reader :report_date
+
+    def initialize(report_date = nil, *args, **rest)
+      @report_date = report_date
+      super(report_date, *args, **rest)
+    end
+
+    def perform(date = Time.zone.yesterday.end_of_day)
+      @report_date = date
+
+      email_addresses = emails.select(&:present?)
+      if email_addresses.empty?
+        Rails.logger.warn 'No email addresses received - Fraud Metrics LG-99 S3 Report NOT SENT'
+        return false
+      end
+
+      reports.each do |report|
+        upload_to_s3(report.table, report_name: report.filename)
+      end
+
+      ReportMailer.tables_report(
+        to: email_addresses,
+        subject: "Fraud Metrics LG-99 S3 Report - #{report_date.to_date}",
+        reports: reports,
+        message: preamble,
+        attachment_format: :xlsx,
+      ).deliver_now
+    end
+
+    # Explanatory text to go before the report in the email
+    # @return [String]
+    def preamble(env: Identity::Hostdata.env || 'local')
+      ERB.new(<<~ERB).result(binding).html_safe # rubocop:disable Rails/OutputSafety
+        <% if env != 'prod' %>
+          <div class="usa-alert usa-alert--info usa-alert--email">
+            <div class="usa-alert__body">
+              <%#
+                NOTE: our AlertComponent doesn't support heading content like this uses,
+                so for a one-off outside the Rails pipeline it was easier to inline the HTML here.
+              %>
+              <h2 class="usa-alert__heading">
+                Non-Production Report
+              </h2>
+              <p class="usa-alert__text">
+                This was generated in the <strong><%= env %></strong> environment.
+              </p>
+            </div>
+          </div>
+        <% end %>
+      ERB
+    end
+
+    def reports
+      @reports ||= fraud_metrics_lg99_report_s3.as_emailable_reports
+    end
+
+    def fraud_metrics_lg99_report_s3
+      @fraud_metrics_lg99_report_s3 ||= Reporting::FraudMetricsLg99ReportS3.new(
+        time_range: report_date.all_month,
+        bucket_name: data_warehouse_bucket_name,
+        env: Identity::Hostdata.env,
+        report_date: report_date.to_date,
+      )
+    end
+
+    def emails
+      emails = [*IdentityConfig.store.team_daily_fraud_metrics_emails]
+      if report_date.next_day.day == 1
+        emails += IdentityConfig.store.team_monthly_fraud_metrics_emails
+      end
+      emails
+    end
+
+    def upload_to_s3(report_body, report_name: nil)
+      _latest, path = generate_s3_paths(REPORT_NAME, 'csv', subname: report_name, now: report_date)
+
+      if bucket_name.present?
+        upload_file_to_s3_bucket(
+          path: path,
+          body: csv_file(report_body),
+          content_type: 'text/csv',
+          bucket: bucket_name,
+        )
+      end
+    end
+
+    def csv_file(report_array)
+      CSV.generate do |csv|
+        report_array.each do |row|
+          csv << row
+        end
+      end
+    end
+
+    private
+
+    def data_warehouse_bucket_name
+      bucket_prefix = IdentityConfig.store.s3_data_warehouse_bucket_prefix
+      aws_account_id = Identity::Hostdata.aws_account_id
+      aws_region = Identity::Hostdata.aws_region
+      "#{bucket_prefix}-#{aws_account_id}-#{aws_region}"
+    end
+  end
+end
