@@ -19,6 +19,8 @@ module Proofing
               event_type: 'ACCOUNT_CREATION',
               policy: config.ddp_policy,
               service_type: 'all',
+              national_id_number: applicant[:ssn].to_s.gsub(/\D/, ''),
+              national_id_type: applicant[:ssn].present? ? 'US_SSN' : '',
               local_attrib_1: applicant[:uuid_prefix] || '',
               local_attrib_3: applicant[:uuid],
             }.to_json
