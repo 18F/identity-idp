@@ -52,7 +52,7 @@ RSpec.shared_examples 'an endpoint that requires authorization' do
         expect(action.status).to eq 401
         expect(@analytics).to have_logged_event(
           :idv_proofing_agent_request_failed,
-          issuer: issuer,
+          issuer:,
           success: false,
           failure_type: :authorization,
         )
@@ -80,7 +80,7 @@ RSpec.shared_examples 'an endpoint that requires authorization' do
       expect(action.status).to eq 401
       expect(@analytics).to have_logged_event(
         :idv_proofing_agent_request_failed,
-        issuer: issuer,
+        issuer:,
         success: false,
         failure_type: :authorization,
       )
@@ -239,7 +239,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
               :idv_proofing_agent_request_failed,
               success: false,
               failure_type: :validation,
-              issuer: issuer,
+              issuer:,
               agent_id: 'agent-456',
               request_id: 'req-789',
             )
@@ -255,7 +255,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
               :idv_proofing_agent_request_failed,
               success: false,
               failure_type: :validation,
-              issuer: issuer,
+              issuer:,
               location_id: 'loc-123',
               request_id: 'req-789',
             )
@@ -271,7 +271,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
               :idv_proofing_agent_request_failed,
               success: false,
               failure_type: :validation,
-              issuer: issuer,
+              issuer:,
               agent_id: 'agent-456',
               location_id: 'loc-123',
             )
@@ -287,7 +287,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
               :idv_proofing_agent_request_failed,
               success: false,
               failure_type: :validation,
-              issuer: issuer,
+              issuer:,
             )
           end
 
@@ -349,7 +349,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
                 :idv_proofing_agent_request_failed,
                 success: false,
                 failure_type: :validation,
-                issuer: issuer,
+                issuer:,
                 agent_id: 'agent-456',
                 request_id: 'req-789',
               )
@@ -365,7 +365,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
                 :idv_proofing_agent_request_failed,
                 success: false,
                 failure_type: :validation,
-                issuer: issuer,
+                issuer:,
                 location_id: 'loc-123',
                 request_id: 'req-789',
               )
@@ -381,7 +381,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
                 :idv_proofing_agent_request_failed,
                 success: false,
                 failure_type: :validation,
-                issuer: issuer,
+                issuer:,
                 agent_id: 'agent-456',
                 location_id: 'loc-123',
               )
@@ -397,7 +397,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
                 :idv_proofing_agent_request_failed,
                 success: false,
                 failure_type: :validation,
-                issuer: issuer,
+                issuer:,
               )
             end
           end
@@ -546,7 +546,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
                 :idv_proofing_agent_request_failed,
                 success: false,
                 failure_type: :validation,
-                issuer: issuer,
+                issuer:,
                 agent_id: 'agent-456',
                 request_id: 'req-789',
               )
@@ -562,7 +562,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
                 :idv_proofing_agent_request_failed,
                 success: false,
                 failure_type: :validation,
-                issuer: issuer,
+                issuer:,
                 location_id: 'loc-123',
                 request_id: 'req-789',
               )
@@ -578,7 +578,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
                 :idv_proofing_agent_request_failed,
                 success: false,
                 failure_type: :validation,
-                issuer: issuer,
+                issuer:,
                 agent_id: 'agent-456',
                 location_id: 'loc-123',
               )
@@ -594,7 +594,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
                 :idv_proofing_agent_request_failed,
                 success: false,
                 failure_type: :validation,
-                issuer: issuer,
+                issuer:,
               )
             end
           end
@@ -703,7 +703,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
                 :idv_proofing_agent_request_failed,
                 success: false,
                 failure_type: :validation,
-                issuer: issuer,
+                issuer:,
                 agent_id: 'agent-456',
                 request_id: 'req-789',
               )
@@ -719,7 +719,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
                 :idv_proofing_agent_request_failed,
                 success: false,
                 failure_type: :validation,
-                issuer: issuer,
+                issuer:,
                 location_id: 'loc-123',
                 request_id: 'req-789',
               )
@@ -735,7 +735,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
                 :idv_proofing_agent_request_failed,
                 success: false,
                 failure_type: :validation,
-                issuer: issuer,
+                issuer:,
                 agent_id: 'agent-456',
                 location_id: 'loc-123',
               )
@@ -751,7 +751,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
                 :idv_proofing_agent_request_failed,
                 success: false,
                 failure_type: :validation,
-                issuer: issuer,
+                issuer:,
               )
             end
           end
