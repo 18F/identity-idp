@@ -74,7 +74,7 @@ module AttemptsApi
       session['warden.user.user.session']['idv/attempts'] ||= []
       session['warden.user.user.session']['idv/attempts'].push(
         {
-          event.event_type => { user_uuid: user.uuid },
+          event.event_type => { 'user_uuid' => user.uuid },
         },
       )
     end
