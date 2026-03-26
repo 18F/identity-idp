@@ -268,6 +268,12 @@ else
         args: -> { [Time.zone.yesterday.end_of_day] },
       },
 
+      fraud_metrics_report_s3: {
+        class: 'Reports::FraudMetricsLg99ReportS3',
+        cron: cron_24h_and_a_bit,
+        args: -> { [Time.zone.yesterday.end_of_day] },
+      },
+
       # Send irs fraud metrics to Team Data - Daily (For internal review only)
       # And, monthly on 1st date (For IRS and Internal)
       irs_fraud_metrics_report: {
