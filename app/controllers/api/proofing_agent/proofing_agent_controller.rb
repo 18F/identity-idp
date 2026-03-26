@@ -101,6 +101,9 @@ module Api
 
       def render_bad_request(errors: nil)
         errors = { error: 'There was a problem with your request.' } if errors.nil?
+        if errors[:no_document].present?
+          errors = { id_type: "Invalid id_type: #{proof_params[:id_type]}" }
+        end
         render json: errors, status: :bad_request
       end
     end

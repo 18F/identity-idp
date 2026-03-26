@@ -117,7 +117,10 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
   let(:auth_header) { "Bearer #{issuer} #{token}" }
 
   let(:drivers_license_type) { Idp::Constants::DocumentTypes::DRIVERS_LICENSE }
+  let(:state_id_type) { Idp::Constants::DocumentTypes::STATE_ID_CARD }
+  let(:identification_card_type) { Idp::Constants::DocumentTypes::IDENTIFICATION_CARD }
   let(:passport_type) { Idp::Constants::DocumentTypes::PASSPORT }
+  let(:passport_card_type) { Idp::Constants::DocumentTypes::PASSPORT_CARD }
   let(:first_name) { 'FirstName' }
   let(:last_name) { 'LastName' }
   let(:dob) { (Time.zone.today - 14.years).strftime('%Y-%m-%d') }
@@ -513,6 +516,320 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
         end
       end
 
+      context 'when the id_type is state_id_card and with valid state_id data' do
+        let(:id_type) { state_id_type }
+        let(:state_id) { valid_state_id }
+
+        context 'with a valid authorization header' do
+          it 'returns 200' do
+            expect(action.status).to eq(200)
+          end
+
+          it 'includes request_id in the response' do
+            action
+            body = JSON.parse(response.body)
+            expect(body['request_id']).to be_present
+          end
+
+          it 'returns the X-Request-Id header as request_id' do
+            action
+            body = JSON.parse(response.body)
+            expect(body['request_id']).to eq('req-789')
+          end
+
+          context 'without X-Proofing-Location-Id header' do
+            let(:headers) { { 'X-Agent-Id' => 'agent-456', 'X-Request-Id' => 'req-789' } }
+
+            it 'returns 400' do
+              expect(action.status).to eq(400)
+              expect(@analytics).to have_logged_event(
+                :idv_proofing_agent_request_failed,
+                success: false,
+                failure_type: :validation,
+                issuer: issuer,
+                agent_id: 'agent-456',
+                request_id: 'req-789',
+              )
+            end
+          end
+
+          context 'without X-Agent-Id header' do
+            let(:headers) { { 'X-Proofing-Location-Id' => 'loc-123', 'X-Request-Id' => 'req-789' } }
+
+            it 'returns 400' do
+              expect(action.status).to eq(400)
+              expect(@analytics).to have_logged_event(
+                :idv_proofing_agent_request_failed,
+                success: false,
+                failure_type: :validation,
+                issuer: issuer,
+                location_id: 'loc-123',
+                request_id: 'req-789',
+              )
+            end
+          end
+
+          context 'without X-Request-Id header' do
+            let(:headers) { { 'X-Proofing-Location-Id' => 'loc-123', 'X-Agent-Id' => 'agent-456' } }
+
+            it 'returns 400' do
+              expect(action.status).to eq(400)
+              expect(@analytics).to have_logged_event(
+                :idv_proofing_agent_request_failed,
+                success: false,
+                failure_type: :validation,
+                issuer: issuer,
+                agent_id: 'agent-456',
+                location_id: 'loc-123',
+              )
+            end
+          end
+
+          context 'without any required headers' do
+            let(:headers) { {} }
+
+            it 'returns 400' do
+              expect(action.status).to eq(400)
+              expect(@analytics).to have_logged_event(
+                :idv_proofing_agent_request_failed,
+                success: false,
+                failure_type: :validation,
+                issuer: issuer,
+              )
+            end
+          end
+
+          context 'when the first_name is missing' do
+            let(:first_name) { nil }
+
+            it 'returns 400' do
+              expect(action.status).to eq(400)
+            end
+          end
+
+          context 'when the last_name is missing' do
+            let(:last_name) { nil }
+
+            it 'returns 400' do
+              expect(action.status).to eq(400)
+            end
+          end
+
+          context 'when the dob is missing' do
+            let(:dob) { nil }
+
+            it 'returns 400' do
+              expect(action.status).to eq(400)
+            end
+          end
+
+          context 'when the dob does not meet our minimum age requirements' do
+            let(:dob) { (Time.zone.today - 10.years).strftime('%Y-%m-%d') }
+
+            it 'returns 400' do
+              expect(action.status).to eq(400)
+            end
+          end
+
+          context 'when the address1 is missing' do
+            let(:address1) { nil }
+
+            it 'returns 400' do
+              expect(action.status).to eq(400)
+            end
+          end
+
+          context 'when the zip_code is invalid' do
+            let(:zip_code) { '123456' }
+
+            it 'returns 400' do
+              expect(action.status).to eq(400)
+            end
+          end
+
+          context 'when the jurisdiction is missing' do
+            let(:jurisdiction) { nil }
+
+            it 'returns 400' do
+              expect(action.status).to eq(400)
+            end
+          end
+
+          context 'when the document_number is missing' do
+            let(:document_number) { nil }
+
+            it 'returns 400' do
+              expect(action.status).to eq(400)
+            end
+          end
+
+          context 'when the state_id is expired' do
+            let(:expiration_date) { '2026-01-01' }
+
+            it 'returns 400' do
+              expect(action.status).to eq(400)
+            end
+          end
+        end
+      end
+
+      context 'when the id_type is identification_card and with valid state_id data' do
+        let(:id_type) { identification_card_type }
+        let(:state_id) { valid_state_id }
+
+        context 'with a valid authorization header' do
+          it 'returns 200' do
+            expect(action.status).to eq(200)
+          end
+
+          it 'includes request_id in the response' do
+            action
+            body = JSON.parse(response.body)
+            expect(body['request_id']).to be_present
+          end
+
+          it 'returns the X-Request-Id header as request_id' do
+            action
+            body = JSON.parse(response.body)
+            expect(body['request_id']).to eq('req-789')
+          end
+
+          context 'without X-Proofing-Location-Id header' do
+            let(:headers) { { 'X-Agent-Id' => 'agent-456', 'X-Request-Id' => 'req-789' } }
+
+            it 'returns 400' do
+              expect(action.status).to eq(400)
+              expect(@analytics).to have_logged_event(
+                :idv_proofing_agent_request_failed,
+                success: false,
+                failure_type: :validation,
+                issuer: issuer,
+                agent_id: 'agent-456',
+                request_id: 'req-789',
+              )
+            end
+          end
+
+          context 'without X-Agent-Id header' do
+            let(:headers) { { 'X-Proofing-Location-Id' => 'loc-123', 'X-Request-Id' => 'req-789' } }
+
+            it 'returns 400' do
+              expect(action.status).to eq(400)
+              expect(@analytics).to have_logged_event(
+                :idv_proofing_agent_request_failed,
+                success: false,
+                failure_type: :validation,
+                issuer: issuer,
+                location_id: 'loc-123',
+                request_id: 'req-789',
+              )
+            end
+          end
+
+          context 'without X-Request-Id header' do
+            let(:headers) { { 'X-Proofing-Location-Id' => 'loc-123', 'X-Agent-Id' => 'agent-456' } }
+
+            it 'returns 400' do
+              expect(action.status).to eq(400)
+              expect(@analytics).to have_logged_event(
+                :idv_proofing_agent_request_failed,
+                success: false,
+                failure_type: :validation,
+                issuer: issuer,
+                agent_id: 'agent-456',
+                location_id: 'loc-123',
+              )
+            end
+          end
+
+          context 'without any required headers' do
+            let(:headers) { {} }
+
+            it 'returns 400' do
+              expect(action.status).to eq(400)
+              expect(@analytics).to have_logged_event(
+                :idv_proofing_agent_request_failed,
+                success: false,
+                failure_type: :validation,
+                issuer: issuer,
+              )
+            end
+          end
+
+          context 'when the first_name is missing' do
+            let(:first_name) { nil }
+
+            it 'returns 400' do
+              expect(action.status).to eq(400)
+            end
+          end
+
+          context 'when the last_name is missing' do
+            let(:last_name) { nil }
+
+            it 'returns 400' do
+              expect(action.status).to eq(400)
+            end
+          end
+
+          context 'when the dob is missing' do
+            let(:dob) { nil }
+
+            it 'returns 400' do
+              expect(action.status).to eq(400)
+            end
+          end
+
+          context 'when the dob does not meet our minimum age requirements' do
+            let(:dob) { (Time.zone.today - 10.years).strftime('%Y-%m-%d') }
+
+            it 'returns 400' do
+              expect(action.status).to eq(400)
+            end
+          end
+
+          context 'when the address1 is missing' do
+            let(:address1) { nil }
+
+            it 'returns 400' do
+              expect(action.status).to eq(400)
+            end
+          end
+
+          context 'when the zip_code is invalid' do
+            let(:zip_code) { '123456' }
+
+            it 'returns 400' do
+              expect(action.status).to eq(400)
+            end
+          end
+
+          context 'when the jurisdiction is missing' do
+            let(:jurisdiction) { nil }
+
+            it 'returns 400' do
+              expect(action.status).to eq(400)
+            end
+          end
+
+          context 'when the document_number is missing' do
+            let(:document_number) { nil }
+
+            it 'returns 400' do
+              expect(action.status).to eq(400)
+            end
+          end
+
+          context 'when the state_id is expired' do
+            let(:expiration_date) { '2026-01-01' }
+
+            it 'returns 400' do
+              expect(action.status).to eq(400)
+            end
+          end
+        end
+      end
+
       context 'when the id_type is passport and with valid passport data' do
         let(:id_type) { passport_type }
         let(:passport) { valid_passport }
@@ -586,54 +903,6 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
           end
         end
 
-        context 'when the mrz is missing' do
-          let(:mrz) { nil }
-
-          it 'returns 400' do
-            expect(action.status).to eq(400)
-          end
-        end
-
-        context 'when the passport is expired' do
-          let(:expiration_date) { '2026-01-01' }
-
-          it 'returns 400' do
-            expect(action.status).to eq(400)
-          end
-        end
-
-        context 'when the first_name is missing' do
-          let(:first_name) { nil }
-
-          it 'returns 400' do
-            expect(action.status).to eq(400)
-          end
-        end
-
-        context 'when the last_name is missing' do
-          let(:last_name) { nil }
-
-          it 'returns 400' do
-            expect(action.status).to eq(400)
-          end
-        end
-
-        context 'when the dob is missing' do
-          let(:dob) { nil }
-
-          it 'returns 400' do
-            expect(action.status).to eq(400)
-          end
-        end
-
-        context 'when the dob does not meet our minimum age requirements' do
-          let(:dob) { (Time.zone.today - 10.years).strftime('%Y-%m-%d') }
-
-          it 'returns 400' do
-            expect(action.status).to eq(400)
-          end
-        end
-
         context 'when the passport data is not provided' do
           let(:passport) { nil }
 
@@ -645,11 +914,14 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
           end
         end
 
-        context 'when the residential address is missing' do
-          let(:residential_address) { nil }
+        context 'when the id_type is passport_card' do
+          let(:id_type) { passport_card_type }
 
           it 'returns 400' do
             expect(action.status).to eq(400)
+
+            body = JSON.parse(response.body)
+            expect(body['id_type']).to eq('Invalid id_type: passport_card')
           end
         end
       end
