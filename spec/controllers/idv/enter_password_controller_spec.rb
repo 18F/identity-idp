@@ -1139,6 +1139,12 @@ RSpec.describe Idv::EnterPasswordController do
           allowed_attempts_providers: [{ 'issuer' => sp.issuer }],
         )
         allow(subject).to receive(:user_session).and_return(mock_user_session)
+        # at this point in the flow, the applicant should have a UUID
+        subject.idv_session.applicant['uuid'] = 'aabbccdd-0000-00000-0000-aabbccddeeff'
+      end
+
+      after do
+        subject.idv_session.applicant['uuid'] = nil
       end
 
       context 'when requesting ial2' do
