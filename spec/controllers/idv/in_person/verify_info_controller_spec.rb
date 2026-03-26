@@ -325,14 +325,6 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
       let(:async_state) do
         # Here we're trying to match the store to redis -> read from redis flow this data travels
         adjudicated_result = Proofing::Resolution::ResultAdjudicator.new(
-          state_id_result: Proofing::StateIdResult.new(
-            success: true,
-            errors: {},
-            exception: nil,
-            vendor_name: :aamva,
-            transaction_id: 'abc123',
-            verified_attributes: [],
-          ),
           phone_result:,
           device_profiling_result: Proofing::DdpResult.new(success: true),
           ipp_enrollment_in_progress: true,
@@ -345,7 +337,6 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
             vendor_name: resolution_vendor_name,
           ),
           same_address_as_id: true,
-          should_proof_state_id: true,
           applicant_pii: Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN,
           precheck_phone_number: subject.idv_session.precheck_phone&.dig(:phone),
         ).adjudicated_result.to_h
@@ -524,7 +515,6 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
             hybrid_mobile_request_ip: nil,
             ipp_enrollment_in_progress: true,
             proofing_vendor: :mock,
-            state_id_already_proofed: true,
           )
 
         put :update
@@ -547,7 +537,6 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
             hybrid_mobile_request_ip: nil,
             ipp_enrollment_in_progress: false,
             proofing_vendor: :mock,
-            state_id_already_proofed: false,
           )
 
         put :update
@@ -570,7 +559,6 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
           hybrid_mobile_request_ip: nil,
           ipp_enrollment_in_progress: true,
           proofing_vendor: :mock,
-          state_id_already_proofed: false,
         )
 
         put :update
@@ -602,7 +590,6 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
           hybrid_mobile_request_ip: nil,
           ipp_enrollment_in_progress: true,
           proofing_vendor: :mock,
-          state_id_already_proofed: false,
         )
 
       put :update
@@ -683,7 +670,6 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
             hybrid_mobile_request_ip: nil,
             ipp_enrollment_in_progress: true,
             proofing_vendor: :default_vendor,
-            state_id_already_proofed: false,
           )
 
         put :update
@@ -703,7 +689,6 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
               hybrid_mobile_request_ip: nil,
               ipp_enrollment_in_progress: true,
               proofing_vendor: :instant_verify,
-              state_id_already_proofed: false,
             )
 
           put :update
@@ -724,7 +709,6 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
                 hybrid_mobile_request_ip: nil,
                 ipp_enrollment_in_progress: true,
                 proofing_vendor: :socure_kyc,
-                state_id_already_proofed: false,
               )
 
             put :update

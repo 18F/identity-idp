@@ -25,7 +25,6 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
   describe '#proof' do
     let(:applicant_pii) { { uuid: user.uuid }.merge(Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE) }
     let(:ipp_enrollment_in_progress) { false }
-    let(:state_id_already_proofed) { false }
     let(:request_ip) { Faker::Internet.ip_v4_address }
     let(:threatmetrix_session_id) { SecureRandom.uuid }
     let(:current_sp) { build(:service_provider) }
@@ -90,7 +89,6 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
         timer: JobHelpers::Timer.new,
         current_sp:,
         workflow:,
-        state_id_already_proofed:,
         hybrid_mobile_threatmetrix_session_id:,
         hybrid_mobile_request_ip:,
       )
