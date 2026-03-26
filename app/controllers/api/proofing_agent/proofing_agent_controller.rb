@@ -18,7 +18,12 @@ module Api
       end
 
       def proof_user
+        pii_validation = Idv::AgentPiiForm.new(pii: proof_params).submit
+        render_bad_request(errors: pii_validation.errors) and return if !pii_validation.success?
+
         render json: { request_id: }
+      rescue ActionController::ParameterMissing => e
+        render_bad_request(errors: { error: "Missing parameter #{e.param}" }) and return
       end
 
       private
@@ -65,6 +70,41 @@ module Api
           location_id:,
           request_id:,
         )
+      end
+
+      def proof_params
+        return @proof_params if defined?(@proof_params)
+
+        result = {}
+
+        required_keys = %i[suspected_fraud email first_name last_name dob phone ssn id_type]
+        required_keys.each do |key|
+          result[key] = params.expect(key)
+        end
+
+        optional_keys = %i[residential_address state_id passport]
+        optional_parameters = {
+          residential_address: %i[address1 address2 city state zip_code],
+          state_id: %i[document_number jurisdiction expiration_date issue_date
+                       address1 address2 city state zip_code],
+          passport: %i[expiration_date issue_date mrz issuing_country_code],
+        }
+        optional_keys.each do |key|
+          if params[key].present?
+            result[key] =
+              params.expect(key => optional_parameters[key]).to_h.with_indifferent_access
+          end
+        end
+
+        @proof_params = result.to_h.with_indifferent_access
+      end
+
+      def render_bad_request(errors: nil)
+        errors = { error: 'There was a problem with your request.' } if errors.nil?
+        if errors[:no_document].present?
+          errors = { id_type: "Invalid id_type: #{proof_params[:id_type]}" }
+        end
+        render json: errors, status: :bad_request
       end
     end
   end
