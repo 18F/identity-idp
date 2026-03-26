@@ -28,7 +28,8 @@ class FrontendErrorForm
 
     begin
       return if URI(filename.to_s).host == IdentityConfig.store.domain_name
-    rescue URI::InvalidURIError; end
+    rescue URI::InvalidURIError
+    end
 
     errors.add(:filename, :invalid_host, message: t('errors.general'))
   end
