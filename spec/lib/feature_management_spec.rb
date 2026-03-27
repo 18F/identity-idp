@@ -537,4 +537,26 @@ RSpec.describe 'FeatureManagement' do
       end
     end
   end
+
+  describe '.one_account_enforcement_mode' do
+    it 'returns legacy mode by default when not configured' do
+      allow(IdentityConfig.store).to receive(:one_account_enforcement_mode).and_return(nil)
+
+      expect(FeatureManagement.one_account_enforcement_mode).to eq('legacy_within_sp_allowlist')
+    end
+
+    it 'returns configured mode when value is valid' do
+      allow(IdentityConfig.store).to receive(:one_account_enforcement_mode)
+        .and_return('ial2_cross_sp_all_sps')
+
+      expect(FeatureManagement.one_account_enforcement_mode).to eq('ial2_cross_sp_all_sps')
+    end
+
+    it 'falls back to legacy mode for invalid values' do
+      allow(IdentityConfig.store).to receive(:one_account_enforcement_mode)
+        .and_return('invalid_mode')
+
+      expect(FeatureManagement.one_account_enforcement_mode).to eq('legacy_within_sp_allowlist')
+    end
+  end
 end

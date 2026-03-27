@@ -1,6 +1,11 @@
 # frozen_string_literal: true
 
 class FeatureManagement
+  ONE_ACCOUNT_ENFORCEMENT_MODES = {
+    legacy_within_sp_allowlist: 'legacy_within_sp_allowlist',
+    ial2_cross_sp_all_sps: 'ial2_cross_sp_all_sps',
+  }.freeze
+
   def self.telephony_test_adapter?
     IdentityConfig.store.telephony_adapter == 'test'
   end
@@ -191,5 +196,11 @@ class FeatureManagement
 
   def self.idv_proofing_agent_enabled?
     IdentityConfig.store.idv_proofing_agent_enabled
+  end
+
+  def self.one_account_enforcement_mode
+    configured_mode = IdentityConfig.store.one_account_enforcement_mode
+    ONE_ACCOUNT_ENFORCEMENT_MODES.value?(configured_mode) ?
+      configured_mode : ONE_ACCOUNT_ENFORCEMENT_MODES[:legacy_within_sp_allowlist]
   end
 end
