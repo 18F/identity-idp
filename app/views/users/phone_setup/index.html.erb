@@ -36,7 +36,7 @@
 <% end %>
 
 <% if !@webauthn_platform_configured %>
-  <%= render(AlertComponent.new(type: :info, class: 'margin-bottom-4')) do %>
+  <%= render(AlertComponent.new(type: :info, class: 'margin-top-4')) do %>
     <%= t(
           'notices.phishing_warning_html',
           common_scams_link_html:
