@@ -28,6 +28,7 @@ module Users
         setup_voice_preference: setup_voice_preference?,
       )
       track_phone_setup_visit
+      @webauthn_platform_configured = webauthn_platform_configured?
     end
 
     def create
@@ -131,6 +132,10 @@ module Users
         :recaptcha_token,
         :recaptcha_mock_score,
       )
+    end
+
+    def webauthn_platform_configured?
+      mfa_context.webauthn_platform_configurations.present?
     end
   end
 end
