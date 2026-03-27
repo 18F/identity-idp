@@ -98,11 +98,11 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
     {
       'X-Proofing-Location-Id' => 'loc-123',
       'X-Agent-Id' => 'agent-456',
-      'X-Request-Id' => 'req-789',
+      'X-Correlation-Id' => 'req-789',
     }
   end
 
-  let(:request_id) { headers['X-Request-Id'] }
+  let(:request_id) { headers['X-Correlation-Id'] }
 
   let(:token) { 'a-shared-secret' }
   let(:salt) { SecureRandom.hex(32) }
@@ -221,12 +221,12 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
 
         it 'includes request_id in the response' do
           action
-          expect(response.headers['X-Request-Id']).to be_present
+          expect(response.headers['X-Correlation-Id']).to be_present
         end
 
-        it 'returns the X-Request-Id header as request_id' do
+        it 'returns the X-Correlation-Id header as request_id' do
           action
-          expect(response.headers['X-Request-Id']).to eq('req-789')
+          expect(response.headers['X-Correlation-Id']).to eq('req-789')
         end
 
         it 'returns correct profiles and found attributes' do
@@ -286,7 +286,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
         end
 
         context 'without X-Proofing-Location-Id header' do
-          let(:headers) { { 'X-Agent-Id' => 'agent-456', 'X-Request-Id' => 'req-789' } }
+          let(:headers) { { 'X-Agent-Id' => 'agent-456', 'X-Correlation-Id' => 'req-789' } }
 
           it 'returns 400' do
             expect(action.status).to eq(400)
@@ -302,7 +302,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
         end
 
         context 'without X-Agent-Id header' do
-          let(:headers) { { 'X-Proofing-Location-Id' => 'loc-123', 'X-Request-Id' => 'req-789' } }
+          let(:headers) { { 'X-Proofing-Location-Id' => 'loc-123', 'X-Correlation-Id' => 'req-789' } }
 
           it 'returns 400' do
             expect(action.status).to eq(400)
@@ -317,7 +317,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
           end
         end
 
-        context 'without X-Request-Id header' do
+        context 'without X-Correlation-Id header' do
           let(:headers) { { 'X-Proofing-Location-Id' => 'loc-123', 'X-Agent-Id' => 'agent-456' } }
 
           it 'returns 400' do
@@ -351,7 +351,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
             body = JSON.parse(response.body)
             expect(body['error']).to include('X-Proofing-Location-Id')
             expect(body['error']).to include('X-Agent-Id')
-            expect(body['error']).to include('X-Request-Id')
+            expect(body['error']).to include('X-Correlation-Id')
           end
         end
       end
@@ -388,16 +388,16 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
 
           it 'includes request_id in the response' do
             action
-            expect(response.headers['X-Request-Id']).to be_present
+            expect(response.headers['X-Correlation-Id']).to be_present
           end
 
-          it 'returns the X-Request-Id header as request_id' do
+          it 'returns the X-Correlation-Id header as request_id' do
             action
-            expect(response.headers['X-Request-Id']).to eq('req-789')
+            expect(response.headers['X-Correlation-Id']).to eq('req-789')
           end
 
           context 'without X-Proofing-Location-Id header' do
-            let(:headers) { { 'X-Agent-Id' => 'agent-456', 'X-Request-Id' => 'req-789' } }
+            let(:headers) { { 'X-Agent-Id' => 'agent-456', 'X-Correlation-Id' => 'req-789' } }
 
             it 'returns 400' do
               expect(action.status).to eq(400)
@@ -413,7 +413,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
           end
 
           context 'without X-Agent-Id header' do
-            let(:headers) { { 'X-Proofing-Location-Id' => 'loc-123', 'X-Request-Id' => 'req-789' } }
+            let(:headers) { { 'X-Proofing-Location-Id' => 'loc-123', 'X-Correlation-Id' => 'req-789' } }
 
             it 'returns 400' do
               expect(action.status).to eq(400)
@@ -428,7 +428,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
             end
           end
 
-          context 'without X-Request-Id header' do
+          context 'without X-Correlation-Id header' do
             let(:headers) { { 'X-Proofing-Location-Id' => 'loc-123', 'X-Agent-Id' => 'agent-456' } }
 
             it 'returns 400' do
@@ -583,16 +583,16 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
 
           it 'includes request_id in the response' do
             action
-            expect(response.headers['X-Request-Id']).to be_present
+            expect(response.headers['X-Correlation-Id']).to be_present
           end
 
-          it 'returns the X-Request-Id header as request_id' do
+          it 'returns the X-Correlation-Id header as request_id' do
             action
-            expect(response.headers['X-Request-Id']).to eq('req-789')
+            expect(response.headers['X-Correlation-Id']).to eq('req-789')
           end
 
           context 'without X-Proofing-Location-Id header' do
-            let(:headers) { { 'X-Agent-Id' => 'agent-456', 'X-Request-Id' => 'req-789' } }
+            let(:headers) { { 'X-Agent-Id' => 'agent-456', 'X-Correlation-Id' => 'req-789' } }
 
             it 'returns 400' do
               expect(action.status).to eq(400)
@@ -608,7 +608,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
           end
 
           context 'without X-Agent-Id header' do
-            let(:headers) { { 'X-Proofing-Location-Id' => 'loc-123', 'X-Request-Id' => 'req-789' } }
+            let(:headers) { { 'X-Proofing-Location-Id' => 'loc-123', 'X-Correlation-Id' => 'req-789' } }
 
             it 'returns 400' do
               expect(action.status).to eq(400)
@@ -623,7 +623,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
             end
           end
 
-          context 'without X-Request-Id header' do
+          context 'without X-Correlation-Id header' do
             let(:headers) { { 'X-Proofing-Location-Id' => 'loc-123', 'X-Agent-Id' => 'agent-456' } }
 
             it 'returns 400' do
@@ -738,16 +738,16 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
 
           it 'includes request_id in the response' do
             action
-            expect(response.headers['X-Request-Id']).to be_present
+            expect(response.headers['X-Correlation-Id']).to be_present
           end
 
-          it 'returns the X-Request-Id header as request_id' do
+          it 'returns the X-Correlation-Id header as request_id' do
             action
-            expect(response.headers['X-Request-Id']).to eq('req-789')
+            expect(response.headers['X-Correlation-Id']).to eq('req-789')
           end
 
           context 'without X-Proofing-Location-Id header' do
-            let(:headers) { { 'X-Agent-Id' => 'agent-456', 'X-Request-Id' => 'req-789' } }
+            let(:headers) { { 'X-Agent-Id' => 'agent-456', 'X-Correlation-Id' => 'req-789' } }
 
             it 'returns 400' do
               expect(action.status).to eq(400)
@@ -763,7 +763,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
           end
 
           context 'without X-Agent-Id header' do
-            let(:headers) { { 'X-Proofing-Location-Id' => 'loc-123', 'X-Request-Id' => 'req-789' } }
+            let(:headers) { { 'X-Proofing-Location-Id' => 'loc-123', 'X-Correlation-Id' => 'req-789' } }
 
             it 'returns 400' do
               expect(action.status).to eq(400)
@@ -778,7 +778,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
             end
           end
 
-          context 'without X-Request-Id header' do
+          context 'without X-Correlation-Id header' do
             let(:headers) { { 'X-Proofing-Location-Id' => 'loc-123', 'X-Agent-Id' => 'agent-456' } }
 
             it 'returns 400' do
@@ -894,7 +894,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
 
           it 'includes request_id in the response' do
             action
-            expect(response.headers['X-Request-Id']).to be_present
+            expect(response.headers['X-Correlation-Id']).to be_present
           end
         end
 
