@@ -1969,7 +1969,7 @@ user_mailer.account_reset_granted.intro_html: Su período de espera de %{waiting
 user_mailer.account_reset_granted.subject: Elimine su cuenta de %{app_name}
 user_mailer.account_reset_request.cancel: '¿No desea eliminar su cuenta? Inicie sesión en su cuenta de %{app_name} para cancelar.'
 user_mailer.account_reset_request.subject: Cómo eliminar su cuenta de %{app_name}
-user_mailer.account_reset_request.intro_html: "Para su seguridad, %{app_name} ofrece un proceso de dos pasos para eliminar su cuenta:"
+user_mailer.account_reset_request.intro_html: 'Para su seguridad, %{app_name} ofrece un proceso de dos pasos para eliminar su cuenta:'
 user_mailer.account_reset_request.step_one.title: Espere %{waiting_period}
 user_mailer.account_reset_request.step_one.body: Este plazo le permite cancelar si encuentra su método de autenticación o si no realizó la solicitud.
 user_mailer.account_reset_request.step_two.title: Eliminar su cuenta
