@@ -444,8 +444,8 @@ RSpec.describe UserMailer, type: :mailer do
       expect(mail.html_part.body).to have_content(
         strip_tags(
           t(
-            'user_mailer.account_reset_request.intro_html', app_name: APP_NAME,
-                                                            waiting_period:
+            'user_mailer.account_reset_request.intro', app_name: APP_NAME,
+                                                       waiting_period:
                                                               account_reset_deletion_period_hours
           ),
         ),

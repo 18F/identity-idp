@@ -1956,7 +1956,7 @@ user_mailer.account_reset_granted.help_html: If you don’t want to delete your 
 user_mailer.account_reset_granted.intro_html: Your waiting period of %{waiting_period} has ended. Please complete step 2 of the process.<br><br> If you’ve been unable to locate your authentication methods, select “confirm account deletion” to delete your %{app_name} account.<br><br> In the future, if you need to access participating government websites who use %{app_name}, you can create a new %{app_name} account using the same email address after your account is deleted.<br><br>
 user_mailer.account_reset_granted.subject: Delete your %{app_name} account
 user_mailer.account_reset_request.cancel: Don’t want to delete your account? Sign in to your %{app_name} account to cancel.
-user_mailer.account_reset_request.intro_html: 'For your security, %{app_name} has a two-step process to delete your account:'
+user_mailer.account_reset_request.intro: 'For your security, %{app_name} has a two-step process to delete your account:'
 user_mailer.account_reset_request.step_one.body: This delay lets you cancel if you find your authentication method or if you didn’t make the request.
 user_mailer.account_reset_request.step_one.title: Wait %{waiting_period}
 user_mailer.account_reset_request.step_two.body_html: 'After %{waiting_period}, you will get a second email. <strong>You will have 24 hours to finish deleting your account from this second email</strong> or it will not be deleted.'

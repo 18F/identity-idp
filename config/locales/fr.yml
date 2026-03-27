@@ -1957,7 +1957,7 @@ user_mailer.account_reset_granted.help_html: Si vous ne souhaitez pas supprimer 
 user_mailer.account_reset_granted.intro_html: Votre délai d’attente de %{waiting_period} est terminé. Veuillez terminer l’étape 2 du processus.<br><br> Si vous ne parvenez pas à localiser vos méthodes d’authentification, sélectionnez « Confirmer la suppression du compte » pour supprimer votre compte %{app_name}.<br><br> À l’avenir, si vous devez accéder aux sites Web gouvernementaux participants qui utilisent %{app_name}, vous pouvez créer un nouveau compte %{app_name} en utilisant la même adresse e-mail après la suppression de votre compte.<br><br>
 user_mailer.account_reset_granted.subject: Supprimer votre compte %{app_name}
 user_mailer.account_reset_request.cancel: Vous ne voulez pas supprimer votre compte ? Connectez-vous à votre compte %{app_name} pour annuler.
-user_mailer.account_reset_request.intro_html: 'Pour votre sécurité, %{app_name} utilise une procédure en deux étapes pour supprimer votre compte :'
+user_mailer.account_reset_request.intro: 'Pour votre sécurité, %{app_name} utilise une procédure en deux étapes pour supprimer votre compte :'
 user_mailer.account_reset_request.step_one.body: Ce délai vous permet d’annuler la suppression si vous retrouvez votre méthode d’authentification ou si vous n’en êtes pas l’auteur.
 user_mailer.account_reset_request.step_one.title: Attendre %{waiting_period}
 user_mailer.account_reset_request.step_two.body_html: 'Après %{waiting_period}, vous recevrez un second courriel. <strong>Vous disposerez alors de 24 heures supplémentaires pour finaliser la suppression de votre compte à partir de ce second courriel.</strong> Passé ce délai, la suppression ne sera pas effective.'
