@@ -110,6 +110,8 @@ RSpec.describe DuplicateProfileChecker do
         end
 
         before do
+          allow(FeatureManagement).to receive(:one_account_enforcement_mode)
+            .and_return(FeatureManagement::ONE_ACCOUNT_ENFORCEMENT_MODES[:legacy_within_sp_allowlist])
           allow(IdentityConfig.store).to receive(:eligible_one_account_providers)
             .and_return([sp.issuer])
           session[:encrypted_profiles] = {
@@ -134,6 +136,47 @@ RSpec.describe DuplicateProfileChecker do
           expect(@analytics).to have_logged_event(
             :one_account_duplicate_profile_created,
           )
+        end
+
+        context 'when enforcement mode is legacy_within_sp_allowlist and the sp is not allowlisted' do
+          before do
+            allow(IdentityConfig.store).to receive(:eligible_one_account_providers)
+              .and_return([])
+          end
+
+          it 'does not create a duplicate profile set' do
+            dupe_profile_checker = DuplicateProfileChecker.new(
+              user: user,
+              user_session: session,
+              sp: sp,
+              analytics: @analytics,
+            )
+
+            expect(dupe_profile_checker.dupe_profile_set_for_user).to be_nil
+            expect(@analytics).not_to have_logged_event(:one_account_duplicate_profile_created)
+          end
+        end
+
+        context 'when enforcement mode is ial2_cross_sp_all_sps' do
+          before do
+            allow(FeatureManagement).to receive(:one_account_enforcement_mode)
+              .and_return(FeatureManagement::ONE_ACCOUNT_ENFORCEMENT_MODES[:ial2_cross_sp_all_sps])
+            allow(IdentityConfig.store).to receive(:eligible_one_account_providers)
+              .and_return([])
+          end
+
+          it 'creates a duplicate profile set even when the sp is not allowlisted' do
+            dupe_profile_checker = DuplicateProfileChecker.new(
+              user: user,
+              user_session: session,
+              sp: sp,
+              analytics: @analytics,
+            )
+            dupe_profile_set = dupe_profile_checker.dupe_profile_set_for_user
+
+            expect(dupe_profile_set.profile_ids).to match_array([profile2.id, profile.id])
+            expect(@analytics).to have_logged_event(:one_account_duplicate_profile_created)
+          end
         end
 
         context 'when duplicate profile set already exists' do

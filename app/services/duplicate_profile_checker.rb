@@ -119,6 +119,13 @@ class DuplicateProfileChecker
   end
 
   def user_sp_eligible_for_one_account?
-    IdentityConfig.store.eligible_one_account_providers.include?(sp&.issuer)
+    case FeatureManagement.one_account_enforcement_mode
+    when FeatureManagement::ONE_ACCOUNT_ENFORCEMENT_MODES[:legacy_within_sp_allowlist]
+      IdentityConfig.store.eligible_one_account_providers.include?(sp&.issuer)
+    when FeatureManagement::ONE_ACCOUNT_ENFORCEMENT_MODES[:ial2_cross_sp_all_sps]
+      sp.present?
+    else
+      false
+    end
   end
 end

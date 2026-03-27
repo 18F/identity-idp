@@ -14,15 +14,19 @@ module Idv
     end
 
     def duplicate_facial_match_profiles(service_provider:)
-      Profile
+      profiles = Profile
         .active
         .facial_match
         .where(ssn_signature: ssn_signatures)
         .joins('INNER JOIN identities ON identities.user_id = profiles.user_id')
-        .where(identities: { service_provider: service_provider })
         .where(identities: { deleted_at: nil })
         .where.not(user_id: user.id)
         .distinct
+
+      return profiles unless FeatureManagement.one_account_enforcement_mode ==
+        FeatureManagement::ONE_ACCOUNT_ENFORCEMENT_MODES[:legacy_within_sp_allowlist]
+
+      profiles.where(identities: { service_provider: service_provider })
     end
 
     # Due to potentially inconsistent normalization of stored SSNs in the past, we must check:

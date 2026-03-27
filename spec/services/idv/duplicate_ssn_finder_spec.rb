@@ -66,6 +66,9 @@ RSpec.describe Idv::DuplicateSsnFinder do
   describe '#duplicate_facial_match_profiles' do
     let(:service_provider) { OidcAuthHelper::OIDC_FACIAL_MATCH_ISSUER }
     let(:other_service_provider) { OidcAuthHelper::OIDC_FACIAL_MATCH_ISSUER }
+    let(:one_account_enforcement_mode) do
+      FeatureManagement::ONE_ACCOUNT_ENFORCEMENT_MODES[:legacy_within_sp_allowlist]
+    end
     let(:ssn) { '123-45-6789' }
     let(:user) { create(:user) }
     let(:other_user) { create(:user) }
@@ -107,6 +110,11 @@ RSpec.describe Idv::DuplicateSsnFinder do
 
     subject { described_class.new(ssn: ssn, user: user) }
 
+    before do
+      allow(FeatureManagement).to receive(:one_account_enforcement_mode)
+        .and_return(one_account_enforcement_mode)
+    end
+
     context 'when the other profile is active, has matching SSN and is at facial match IDV level' do
       it 'returns list with matching profile' do
         expect(subject.duplicate_facial_match_profiles(service_provider:).last.id)
@@ -143,6 +151,19 @@ RSpec.describe Idv::DuplicateSsnFinder do
 
       it 'is empty' do
         expect(subject.duplicate_facial_match_profiles(service_provider:)).to be_empty
+      end
+    end
+
+    context 'when enforcement mode is ial2_cross_sp_all_sps' do
+      let(:one_account_enforcement_mode) do
+        FeatureManagement::ONE_ACCOUNT_ENFORCEMENT_MODES[:ial2_cross_sp_all_sps]
+      end
+      let(:other_service_provider) { OidcAuthHelper::OIDC_ISSUER }
+
+      it 'returns matching profiles across service providers' do
+        expect(subject.duplicate_facial_match_profiles(service_provider:)).to contain_exactly(
+          other_profile,
+        )
       end
     end
   end

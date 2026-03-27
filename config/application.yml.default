@@ -160,7 +160,6 @@ dos_passport_mrz_maxretry: 2
 dos_passport_mrz_timeout_seconds: 60
 drop_off_report_config: '[{"emails":["ursula@example.com"],"issuers": ["urn:gov:gsa:openidconnect.profiles:sp:sso:agency_name:app_name"]}]'
 eligible_one_account_providers: '[]'
-one_account_enforcement_mode: 'legacy_within_sp_allowlist'
 email_from: no-reply@login.gov
 email_from_display_name: Login.gov
 email_registrations_per_ip_limit: 20
@@ -353,6 +352,7 @@ mx_timeout: 3
 new_device_alert_delay_in_minutes: 5
 new_device_alert_window_start_in_minutes: 15
 newrelic_license_key: ''
+one_account_enforcement_mode: 'legacy_within_sp_allowlist'
 openid_connect_content_security_form_action_enabled: false
 openid_connect_redirect: client_side_js
 otp_delivery_blocklist_findtime: 5
