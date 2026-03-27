@@ -1973,7 +1973,6 @@ user_mailer.account_reset_request.intro_html: 'Para su seguridad, %{app_name} of
 user_mailer.account_reset_request.step_one.title: Espere %{waiting_period}
 user_mailer.account_reset_request.step_one.body: Este plazo le permite cancelar si encuentra su método de autenticación o si no realizó la solicitud.
 user_mailer.account_reset_request.step_two.title: Eliminar su cuenta
-user_mailer.account_reset_request.step_two.body_html: 'After %{waiting_period}, you will get a second email. <strong>You will have 24 hours to finish deleting your account from this second email</strong> or it will not be deleted.' 
 user_mailer.account_reset_request.step_two.body_html: 'Después de %{waiting_period}, recibirá un segundo correo electrónico. <strong>Tendrá 24 horas para completar la eliminación de su cuenta desde este segundo correo electrónico;</strong> de lo contrario, no se eliminará'
 user_mailer.account_verified.change_password_link: restablecer su contraseña
 user_mailer.account_verified.contact_link: contacte con el servicio de asistencia de %{app_name}
