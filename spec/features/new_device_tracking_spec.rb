@@ -204,7 +204,7 @@ RSpec.describe 'New device tracking' do
   context 'user signs up and confirms email in a different browser' do
     let(:user) { build(:user) }
 
-    it 'does not send an email' do
+    it 'sends an MFA added email' do
       perform_in_browser(:one) do
         visit_idp_from_sp_with_ial1(:oidc)
         sign_up_user_from_sp_without_confirming_email(user.email)
@@ -213,7 +213,7 @@ RSpec.describe 'New device tracking' do
       perform_in_browser(:two) do
         expect do
           confirm_email_in_a_different_browser(user.email)
-        end.not_to change { ActionMailer::Base.deliveries.count }
+        end.to change { ActionMailer::Base.deliveries.count }.by(1)
       end
     end
   end
