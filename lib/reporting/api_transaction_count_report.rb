@@ -312,9 +312,11 @@ module Reporting
     def socure_kyc
       <<~QUERY
         fields @timestamp, @message, @logStream, @log
-        | filter name='IdV: doc auth verify proofing results' 
-        and properties.event_properties.proofing_results.context.stages.resolution.vendor_name='socure_kyc'
+        | fields jsonParse(@message) as message
+        | unnest message.properties.event_properties into event_properties
+        | filter name='IdV: doc auth verify proofing results' and event_properties.proofing_results.context.stages.resolution.vendor_name='socure_kyc'
         | sort @timestamp desc
+        | display timestamp, id
         | limit 10000
       QUERY
     end
@@ -380,6 +382,6 @@ if __FILE__ == $PROGRAM_NAME
   options = Reporting::CommandLineOptions.new.parse!(ARGV)
   # Generate the report and output CSVs
   Reporting::ApiTransactionCountReport.new(**options).to_csvs.each do |csv|
-    puts csv
+    puts csv # rubocop:disable Rails/Output
   end
 end

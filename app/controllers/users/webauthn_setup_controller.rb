@@ -41,6 +41,9 @@ module Users
       save_challenge_in_session
       @exclude_credentials = exclude_credentials
       @need_to_set_up_additional_mfa = need_to_set_up_additional_mfa?
+      if platform_authenticator?
+        user_session[:webauthn_setup_started_at] = Time.zone.now.to_f
+      end
 
       if result.errors.present?
         increment_mfa_selection_attempt_count(webauthn_auth_method)
@@ -83,6 +86,9 @@ module Users
         url_options:,
       )
       properties = result.to_h.merge(analytics_properties)
+      if user_session[:webauthn_setup_started_at].present?
+        properties = properties.merge(webauthn_setup_duration: webauthn_setup_duration)
+      end
       analytics.multi_factor_auth_setup(**properties)
 
       mfa_device_type = @platform_authenticator.present? ?
@@ -96,7 +102,6 @@ module Users
 
       if result.success?
         process_valid_webauthn(form)
-        create_webauthn_added_email(form.event_type)
 
         user_session.delete(:mfa_attempts)
       else
@@ -149,7 +154,7 @@ module Users
     end
 
     def process_valid_webauthn(form)
-      create_user_event(form.event_type)
+      send_mfa_added_email(event_type: form.event_type)
       analytics.webauthn_setup_submitted(
         platform_authenticator: form.platform_authenticator?,
         in_account_creation_flow: user_session[:in_account_creation_flow] || false,
@@ -199,9 +204,10 @@ module Users
     end
 
     def webauthn_setup_duration
-      {
-        webauthn_setup_duration: Time.zone.now.to_f - user_session[:webauthn_setup_started_at].to_f,
-      }
+      started_at = user_session[:webauthn_setup_started_at]
+      return unless started_at
+
+      (Time.zone.now.to_f - started_at.to_f)
     end
 
     def need_to_set_up_additional_mfa?

@@ -13,8 +13,7 @@ RSpec.describe UserSmsTextMailerPreview do
   it 'has a preview method for every SMS message' do
     i18n_key_values = I18n::Tasks::BaseTask.new.data[:en].key_values
     sms_messages = i18n_key_values.select do |msg|
-      /^telephony/.match(msg[0]) && # Telephony translations
-        !/^telephony.error|telephony.format|telephony.*voice/.match(msg[0]) # Not SMS message
+      /^telephony.*\.sms$/.match(msg[0])
     end
     preview_methods = described_class.instance_methods(false)
     expect(sms_messages.count).to eq(preview_methods.count)

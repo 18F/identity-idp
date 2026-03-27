@@ -215,6 +215,6 @@ if __FILE__ == $PROGRAM_NAME
   options = Reporting::CommandLineOptions.new.parse!(ARGV)
 
   Reporting::AuthenticationReport.new(**options).to_csvs.each do |csv|
-    puts csv
+    puts csv # rubocop:disable Rails/Output
   end
 end

@@ -42,7 +42,7 @@ module Reports
     end
 
     def preamble
-      <<~HTML.html_safe # rubocop:disable Rails/OutputSafety
+      <<~HTML.html_safe
         <h2>
           Identity Verification Report
         </h2>

@@ -199,6 +199,8 @@ build-nginx-image:
 
 check_changelog:
   stage: test
+  tags:
+    - test-pool
   variables:
     GIT_DEPTH: 100
   script:
@@ -219,6 +221,8 @@ check_changelog:
 
 migrate:
   stage: test
+  tags:
+    - test-pool
   needs:
     - job: install
   cache:
@@ -242,6 +246,8 @@ migrate:
 
 specs:
   stage: test
+  tags:
+    - test-pool
   needs:
     - job: install
   parallel: 22
@@ -301,6 +307,8 @@ specs:
 
 lint:
   stage: test
+  tags:
+    - test-pool
   needs:
     - job: install
   cache:
@@ -321,6 +329,8 @@ lint:
 
 js_build:
   stage: test
+  tags:
+    - test-pool
   needs:
     - job: install
   cache:
@@ -336,6 +346,8 @@ js_build:
 
 js_tests:
   stage: test
+  tags:
+    - test-pool
   needs:
     - job: install
   cache:
@@ -364,6 +376,8 @@ prepare_deploy:
 
 coverage:
   stage: after_test
+  tags:
+    - test-pool
   cache:
     - <<: *ruby_cache
   script:
@@ -393,6 +407,8 @@ coverage:
 # a single job based on the result of all of them.
 alert_main_test:
   stage: after_test
+  tags:
+    - test-pool
   needs:
     - job: coverage
   cache:
@@ -537,7 +553,17 @@ include:
   - local: .gitlab-ci-devenv.yml
   - local: .gitlab-ci-rules.yml
 
+sast:
+  tags:
+    - test-pool
+
+dependency_scanning:
+  tags:
+    - test-pool
+
 secret_detection:
+  tags:
+    - test-pool
   allow_failure: false
   needs: []
   variables:

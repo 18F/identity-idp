@@ -17,7 +17,7 @@ RSpec.describe Telephony::AlertSender do
       last_message = Telephony::Test::Message.messages.last
       expect(last_message.to).to eq(recipient)
       expect(last_message.body).to eq(
-        I18n.t('telephony.account_deleted_notice', app_name: APP_NAME),
+        I18n.t('telephony.account_deleted_notice.sms', app_name: APP_NAME),
       )
     end
   end
@@ -29,7 +29,7 @@ RSpec.describe Telephony::AlertSender do
       last_message = Telephony::Test::Message.messages.last
       expect(last_message.to).to eq(recipient)
       expect(last_message.body).to eq(
-        I18n.t('telephony.account_reset_notice', app_name: APP_NAME, interval: interval),
+        I18n.t('telephony.account_reset_notice.sms', app_name: APP_NAME, interval: interval),
       )
     end
   end
@@ -41,7 +41,7 @@ RSpec.describe Telephony::AlertSender do
       last_message = Telephony::Test::Message.messages.last
       expect(last_message.to).to eq(recipient)
       expect(last_message.body).to eq(
-        I18n.t('telephony.account_reset_cancellation_notice', app_name: APP_NAME),
+        I18n.t('telephony.account_reset_cancellation_notice.sms', app_name: APP_NAME),
       )
     end
   end
@@ -119,7 +119,7 @@ RSpec.describe Telephony::AlertSender do
       last_message = Telephony::Test::Message.messages.last
       expect(last_message.to).to eq(recipient)
       expect(last_message.body).to eq(
-        I18n.t('telephony.personal_key_regeneration_notice', app_name: APP_NAME),
+        I18n.t('telephony.personal_key_regeneration_notice.sms', app_name: APP_NAME),
       )
     end
   end
@@ -131,7 +131,7 @@ RSpec.describe Telephony::AlertSender do
       last_message = Telephony::Test::Message.messages.last
       expect(last_message.to).to eq(recipient)
       expect(last_message.body).to eq(
-        t('telephony.personal_key_sign_in_notice', app_name: APP_NAME),
+        t('telephony.personal_key_sign_in_notice.sms', app_name: APP_NAME),
       )
     end
   end

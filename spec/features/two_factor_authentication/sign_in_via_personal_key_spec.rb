@@ -20,7 +20,9 @@ RSpec.feature 'Signing in via one-time use personal key' do
     expect(page).to have_current_path account_path
 
     last_message = Telephony::Test::Message.messages.last
-    expect(last_message.body).to eq t('telephony.personal_key_sign_in_notice', app_name: APP_NAME)
+    expect(last_message.body).to eq t(
+      'telephony.personal_key_sign_in_notice.sms', app_name: APP_NAME
+    )
     expect(last_message.to).to eq user.phone_configurations.take.phone
 
     expect_delivered_email_count(2)
