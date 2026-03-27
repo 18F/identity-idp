@@ -133,7 +133,6 @@ RSpec.feature 'Analytics Regression', :js do
         hybrid_mobile_device_profiling_adjudication_reason:
           'hybrid_mobile_device_profiling_not_enabled',
         resolution_adjudication_reason: 'pass_resolution_and_state_id',
-        should_proof_state_id: true,
         stages: {
           resolution: resolution_block,
           residential_address: { attributes_requiring_additional_verification: [],
@@ -182,7 +181,6 @@ RSpec.feature 'Analytics Regression', :js do
         hybrid_mobile_device_profiling_adjudication_reason:
           'hybrid_mobile_device_profiling_not_enabled',
         resolution_adjudication_reason: 'pass_resolution_and_state_id',
-        should_proof_state_id: true,
         stages: {
           resolution: resolution_block,
           residential_address: { errors: {},
