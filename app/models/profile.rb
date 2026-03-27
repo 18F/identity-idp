@@ -6,8 +6,8 @@ class Profile < ApplicationRecord
   # Facial match through IAL2 opt-in flow
   FACIAL_MATCH_OPT_IN = %w[unsupervised_with_selfie].to_set.freeze
 
-  # IPP proofing levels
-  IPP_PROOFING_IDV_LEVELS = %w[in_person proofing_agent legacy_in_person].to_set.freeze
+  # IN_PERSON proofing levels
+  IN_PERSON_PROOFING_IDV_LEVELS = %w[in_person proofing_agent legacy_in_person].to_set.freeze
 
   belongs_to :user
   # rubocop:disable Rails/InverseOf
