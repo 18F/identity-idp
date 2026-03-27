@@ -320,7 +320,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
               end
 
               context 'when the profile was not proofed via IPP' do
-                let(:user) { create(:user, :proofed) }
+                let(:user) { create(:user, :proofed_with_selfie) }
 
                 it 'redirects to the service provider' do
                   action

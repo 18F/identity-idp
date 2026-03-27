@@ -137,7 +137,7 @@ RSpec.describe IdvController do
         end
 
         context 'when profile was not proofed via IPP' do
-          let(:user) { create(:user, :proofed) }
+          let(:user) { create(:user, :proofed_with_selfie) }
 
           before do
             stub_sign_in(user)
