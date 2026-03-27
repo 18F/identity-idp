@@ -307,28 +307,78 @@ RSpec.describe ServiceProvider do
   end
 
   describe '#needs_to_reproof?' do
+    let(:reproof_forcing_issuer) { 'urn:gov:gsa:openidconnect:reproof-forcing-sp' }
+    let(:ipp_reproofing_issuer) { 'urn:gov:gsa:openidconnect:ipp-reproof-sp' }
+
     before do
       allow(IdentityConfig.store)
         .to receive(:reproof_forcing_service_provider)
-        .and_return('reproof-forcing-issuer')
+        .and_return(reproof_forcing_issuer)
+      allow(IdentityConfig.store)
+        .to receive(:reproof_ipp_service_providers)
+        .and_return([ipp_reproofing_issuer])
     end
-    context 'when user profile has reproof forcing service provider as initiating SP' do
-      let(:reproof_forcing_sp) do
-        build(:service_provider, issuer: IdentityConfig.store.reproof_forcing_service_provider)
+
+    context 'when Service Provider is a reproof-forcing SP' do
+      context 'when user profile has reproof forcing service provider as initiating SP' do
+        let(:reproof_forcing_sp) do
+          build(:service_provider, issuer: reproof_forcing_issuer)
+        end
+
+        it 'returns false' do
+          profile = create(
+            :profile, :active,
+            initiating_service_provider_issuer:
+              reproof_forcing_issuer
+          )
+          expect(reproof_forcing_sp.needs_to_reproof?(profile)).to be false
+        end
       end
 
-      it 'returns true if the initiating service provider is not the reproof forcing SP' do
-        profile = create(:profile, :active, initiating_service_provider_issuer: 'some-other-issuer')
-        expect(reproof_forcing_sp.needs_to_reproof?(profile)).to be true
-      end
+      context 'when user profile has a different intiating sp' do
+        let(:reproof_forcing_sp) do
+          build(:service_provider, issuer: reproof_forcing_issuer)
+        end
 
-      it 'returns false if the initiating service provider is the reproof forcing SP' do
-        profile = create(
-          :profile, :active,
-          initiating_service_provider_issuer:
-            IdentityConfig.store.reproof_forcing_service_provider
+        it 'returns true' do
+          profile = create(
+            :profile, :active,
+            initiating_service_provider_issuer: 'some-other-issuer'
+          )
+          expect(reproof_forcing_sp.needs_to_reproof?(profile)).to be true
+        end
+      end
+    end
+
+
+    context 'when SP is an IPP reproofing SP' do
+      let(:ipp_reproofing_sp) do
+        build(
+          :service_provider,
+          issuer: ipp_reproofing_issuer,
         )
-        expect(reproof_forcing_sp.needs_to_reproof?(profile)).to be false
+      end
+      context 'when profile is not IPP proofed' do
+        it 'returns false' do
+          profile = create(:profile, :facial_match_proof)
+          expect(ipp_reproofing_sp.needs_to_reproof?(profile)).to be false
+        end
+      end
+
+      context 'when profile is IPP proofed' do
+        it 'returns true' do
+          profile = create(:profile, :in_person_verified)
+          expect(ipp_reproofing_sp.needs_to_reproof?(profile)).to be true
+        end
+      end
+    end
+
+    context 'when SP is not an IPP reproofing SP' do
+      let(:non_ipp_reproofing_sp) { build(:service_provider, issuer: 'some-other-issuer') }
+
+      it 'returns false even if the profile is IPP proofed' do
+        profile = create(:profile, :in_person_verified)
+        expect(non_ipp_reproofing_sp.needs_to_reproof?(profile)).to be false
       end
     end
   end
