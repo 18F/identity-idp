@@ -268,8 +268,9 @@ else
         args: -> { [Time.zone.yesterday.end_of_day] },
       },
 
+      # Send fraud metrics LG-99 report from S3 to Team Judy
       fraud_metrics_report_s3: {
-        class: 'Reports::FraudMetricsLg99ReportS3',
+        class: 'Reports::FraudMetricsLg99S3Report',
         cron: cron_24h_and_a_bit,
         args: -> { [Time.zone.yesterday.end_of_day] },
       },

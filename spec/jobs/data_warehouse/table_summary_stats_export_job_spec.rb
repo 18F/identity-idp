@@ -3,9 +3,9 @@ require 'rails_helper'
 RSpec.describe DataWarehouse::TableSummaryStatsExportJob, type: :job do
   let(:timestamp) { Date.new(2024, 10, 10).in_time_zone('UTC').end_of_day }
   let(:job) { described_class.new }
-  let(:expected_bucket) { 'login-gov-dw-reports-test-1234-us-west-2' }
+  let(:expected_bucket) { 'login-gov-analytics-export-test-1234-us-west-2' }
   let(:test_on_tables) { ['agencies', 'users'] }
-  let(:s3_data_warehouse_bucket_prefix) { 'login-gov-dw-reports' }
+  let(:s3_data_warehouse_bucket_prefix) { 'login-gov-analytics-export' }
   let(:data_warehouse_enabled) { true }
 
   let(:expected_json_idp) do
@@ -52,7 +52,7 @@ RSpec.describe DataWarehouse::TableSummaryStatsExportJob, type: :job do
     {
       body: anything,
       content_type: 'application/json',
-      bucket: 'login-gov-dw-reports-int-1234-us-west-1',
+      bucket: 'login-gov-analytics-export-int-1234-us-west-1',
     }
   end
 

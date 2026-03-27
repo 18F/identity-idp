@@ -104,7 +104,7 @@ module Reports
     private
 
     def data_warehouse_bucket_name
-      bucket_prefix = IdentityConfig.store.s3_data_warehouse_bucket_prefix
+      bucket_prefix = IdentityConfig.store.s3_data_warehouse_replica_bucket_prefix
       aws_account_id = Identity::Hostdata.aws_account_id
       aws_region = Identity::Hostdata.aws_region
       "#{bucket_prefix}-#{aws_account_id}-#{aws_region}"
