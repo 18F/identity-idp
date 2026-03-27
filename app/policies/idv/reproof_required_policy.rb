@@ -10,13 +10,14 @@ module Idv
     end
 
     def needs_to_reproof?
+      return false unless active_profile.present?
       reproof_forcing_sp? || ipp_reproofing_required?
     end
 
     private
 
     def initiating_service_provider
-      active_profile&.initiating_service_provider
+      active_profile.initiating_service_provider
     end
 
     def reproof_forcing_sp?
@@ -32,15 +33,15 @@ module Idv
     end
 
     def eligible_sp_for_reproofing?
-      IdentityConfig.store.reproof_ipp_service_providers.include?(service_provider&.issuer)
+      IdentityConfig.store.reproof_ipp_service_providers.include?(service_provider.issuer)
     end
 
     def current_sp_is_reproof_forcing?
-      service_provider&.issuer == IdentityConfig.store.reproof_forcing_service_provider
+      service_provider.issuer == IdentityConfig.store.reproof_forcing_service_provider
     end
 
     def initiating_sp_isnt_reproof_forcing?
-      active_profile&.initiating_service_provider_issuer !=
+      active_profile.initiating_service_provider_issuer !=
         IdentityConfig.store.reproof_forcing_service_provider
     end
   end
