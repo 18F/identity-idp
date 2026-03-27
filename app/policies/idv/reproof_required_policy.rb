@@ -25,7 +25,6 @@ module Idv
     end
 
     def ipp_reproofing_required?
-      return false unless IdentityConfig.store.reproof_ipp_enabled
       return false unless eligible_sp_for_reproofing?
       return false if active_profile.blank?
 

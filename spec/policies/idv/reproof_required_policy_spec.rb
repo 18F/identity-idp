@@ -32,8 +32,6 @@ RSpec.describe Idv::ReproofRequiredPolicy do
       before do
         allow(IdentityConfig.store).to receive(:reproof_forcing_service_provider)
           .and_return(reproof_forcing_issuer)
-        allow(IdentityConfig.store).to receive(:reproof_ipp_enabled)
-          .and_return(false)
       end
 
       context 'when current SP is the reproof-forcing SP and initiating SP is different' do
@@ -81,17 +79,14 @@ RSpec.describe Idv::ReproofRequiredPolicy do
       before do
         allow(IdentityConfig.store).to receive(:reproof_forcing_service_provider)
           .and_return('')
-        allow(IdentityConfig.store).to receive(:reproof_ipp_enabled)
-          .and_return(reproof_ipp_enabled)
         allow(IdentityConfig.store).to receive(:reproof_ipp_service_providers)
           .and_return(reproof_ipp_service_providers)
       end
 
-      let(:reproof_ipp_enabled) { true }
       let(:reproof_ipp_service_providers) { [ipp_issuer] }
 
-      context 'when reproof_ipp_enabled is false' do
-        let(:reproof_ipp_enabled) { false }
+      context 'when the SP is not in reproof_ipp_service_providers' do
+        let(:reproof_ipp_service_providers) { ['some-other-issuer'] }
         let(:active_profile) { create(:profile, :in_person_verified) }
 
         it 'returns false' do
@@ -99,51 +94,32 @@ RSpec.describe Idv::ReproofRequiredPolicy do
         end
       end
 
-      context 'when reproof_ipp_enabled is true' do
-        context 'when the SP is not in reproof_ipp_service_providers' do
-          let(:reproof_ipp_service_providers) { ['some-other-issuer'] }
-          let(:active_profile) { create(:profile, :in_person_verified) }
+      context 'when the SP is in reproof_ipp_service_providers' do
+        context 'when active_profile is nil' do
+          let(:active_profile) { nil }
 
           it 'returns false' do
             expect(policy.needs_to_reproof?).to eq false
           end
         end
 
-        context 'when the SP is in reproof_ipp_service_providers' do
-          context 'when active_profile is nil' do
-            let(:active_profile) { nil }
+        context 'when active_profile is not IPP proofed' do
+          let(:active_profile) { create(:profile, :active) }
 
-            it 'returns false' do
-              expect(policy.needs_to_reproof?).to eq false
-            end
+          it 'returns false' do
+            expect(policy.needs_to_reproof?).to eq false
           end
+        end
 
-          context 'when active_profile is not IPP proofed' do
-            let(:active_profile) { create(:profile, :active) }
+        context 'when active_profile is IPP proofed (in_person)' do
+          let(:active_profile) { create(:profile, :in_person_verified) }
 
-            it 'returns false' do
-              expect(policy.needs_to_reproof?).to eq false
-            end
-          end
-
-          context 'when active_profile is IPP proofed (in_person)' do
-            let(:active_profile) { create(:profile, :in_person_verified) }
-
-            it 'returns true' do
-              expect(policy.needs_to_reproof?).to eq true
-            end
+          it 'returns true' do
+            expect(policy.needs_to_reproof?).to eq true
           end
         end
       end
 
-      context 'when service_provider is nil' do
-        let(:service_provider) { nil }
-        let(:active_profile) { create(:profile, :in_person_verified) }
-
-        it 'returns false' do
-          expect(policy.needs_to_reproof?).to eq false
-        end
-      end
     end
   end
 end

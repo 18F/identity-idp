@@ -114,8 +114,6 @@ RSpec.describe IdvController do
         let(:service_provider) { create(:service_provider) }
 
         before do
-          allow(IdentityConfig.store).to receive(:reproof_ipp_enabled)
-            .and_return(true)
           allow(IdentityConfig.store).to receive(:reproof_ipp_service_providers)
             .and_return([service_provider.issuer])
         end

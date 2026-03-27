@@ -299,8 +299,6 @@ RSpec.describe OpenidConnect::AuthorizationController do
               let(:acr_values) { Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF }
 
               before do
-                allow(IdentityConfig.store).to receive(:reproof_ipp_enabled)
-                  .and_return(true)
                 allow(IdentityConfig.store).to receive(:reproof_ipp_service_providers)
                   .and_return([service_provider.issuer])
                 allow(IdentityConfig.store).to receive(:openid_connect_redirect)
