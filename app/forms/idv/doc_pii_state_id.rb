@@ -19,9 +19,8 @@ module Idv
     } }
     validate :state_id_expired?
 
-    attr_reader :address1, :state, :zipcode, :attention_with_barcode, :jurisdiction,
+    attr_reader :address1, :state, :zipcode, :jurisdiction,
                 :state_id_number, :state_id_expiration
-    alias_method :attention_with_barcode?, :attention_with_barcode
 
     def initialize(pii:)
       @pii_from_doc = pii
@@ -31,7 +30,6 @@ module Idv
       @jurisdiction = pii[:state_id_jurisdiction]
       @state_id_number = pii[:state_id_number]
       @state_id_expiration = pii[:state_id_expiration]
-      @attention_with_barcode = attention_with_barcode
     end
 
     def self.pii_like_keypaths

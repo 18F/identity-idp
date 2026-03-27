@@ -8,6 +8,8 @@
   "event_type": "ACCOUNT_CREATION",
   "policy": "test-policy",
   "service_type": "all",
+  "national_id_number": "123456789",
+  "national_id_type": "US_SSN",
   "local_attrib_1": "ABCD",
   "local_attrib_3": "ABCD-1234-5678-9012"
 }

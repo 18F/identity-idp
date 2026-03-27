@@ -505,8 +505,16 @@ class ApplicationController < ActionController::Base
     render template: 'pages/not_acceptable', layout: false, status: :not_acceptable, formats: :html
   end
 
-  def render_bad_request
-    render template: 'pages/bad_request', layout: false, status: :bad_request, formats: :html
+  def render_bad_request(errors: nil)
+    respond_to do |format|
+      format.json do
+        errors = { error: 'There was a problem with your request.' } if errors.nil?
+        render json: errors, status: :bad_request
+      end
+      format.any do
+        render template: 'pages/bad_request', layout: false, status: :bad_request, formats: :html
+      end
+    end
   end
 
   def render_timeout(exception)

@@ -24,7 +24,7 @@ module SignUp
       update_verified_attributes
       send_in_person_completion_survey
       notify_user_of_connected_sp
-      update_service_providers_sent if historical_events_enabled?
+      update_service_providers_sent if historical_events_permitted?
       if user_session[:selected_email_id_for_linked_identity].nil?
         user_session[:selected_email_id_for_linked_identity] = current_user
           .last_sign_in_email_address.id
@@ -141,21 +141,20 @@ module SignUp
     end
 
     def update_service_providers_sent
-      return unless user_proofing_event
+      return unless user_proofing_event && current_sp.issuer
 
-      issuer = current_sp.issuer
-      user_proofing_event.service_providers_sent.push(issuer)
+      user_proofing_event.service_providers_sent.push(current_sp.issuer)
       user_proofing_event.save
     end
 
-    def historical_events_enabled?
+    def historical_events_permitted?
       globally_enabled = IdentityConfig.store.historical_attempts_api_enabled
       aaca = current_sp.attempts_api_enabled?
       idv = ial2_requested?
 
       return false unless globally_enabled && aaca && idv
 
-      sent_to_aaca = user_proofing_event.service_providers_sent.include?(current_sp.issuer)
+      sent_to_aaca = user_proofing_event&.service_providers_sent&.include?(current_sp.issuer)
 
       return false if sent_to_aaca
       true
