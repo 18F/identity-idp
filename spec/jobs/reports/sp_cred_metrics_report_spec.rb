@@ -24,8 +24,6 @@ RSpec.describe Reports::SpCredMetricsReport do
     }
   end
 
-  # Derived by job: "#{partner_strings.first.downcase}_monthly_cred_metrics"
-  # let(:report_name) { "#{mock_partner_strings.first.downcase}_monthly_cred_metrics" }
   let(:report_name) { REPORT_NAME }
   let(:report_folder) do
     "int/#{report_name}/2021/2021-03-02.#{report_name}"

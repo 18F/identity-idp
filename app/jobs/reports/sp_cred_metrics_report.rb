@@ -269,7 +269,6 @@ module Reports
     def build_partner_data
       invoice_data_csv = CSV.parse(invoice_report_data, headers: true)
 
-      # Filter by issuers (previously was filtering by partner_strings, which we've removed)
       partner_invoice_data = invoice_data_csv.select do |r|
         issuers.include?(r['issuer'])
       end
