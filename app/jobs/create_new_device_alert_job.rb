@@ -4,6 +4,8 @@ class CreateNewDeviceAlertJob < ApplicationJob
   queue_as :long_running
 
   def perform(now)
+    log_emails_pending_over_max_window(now)
+
     emails_sent = 0
     users_signing_in_with_new_device(now).limit(1_000).find_each(batch_size: 100) do |user|
       emails_sent += 1 if expire_sign_in_notification_timeframe_and_send_alert(user)
@@ -12,8 +14,6 @@ class CreateNewDeviceAlertJob < ApplicationJob
     analytics.create_new_device_alert_job_emails_sent(count: emails_sent)
 
     emails_sent
-  rescue ActiveRecord::QueryCanceled
-    analytics.create_new_device_alert_job_query_timeout
   end
 
   private
@@ -30,6 +30,22 @@ class CreateNewDeviceAlertJob < ApplicationJob
                  end
     end_time = now - IdentityConfig.store.new_device_alert_delay_in_minutes.minutes
     User.where(sign_in_new_device_at: start_time..end_time)
+  end
+
+  def users_pending_new_device_alert_past_max_window(now)
+    max_delay_hours = IdentityConfig.store.new_device_alert_max_delay_in_hours
+    return User.none if max_delay_hours.blank?
+
+    User.where('sign_in_new_device_at < ?', now - max_delay_hours.hours)
+  end
+
+  def log_emails_pending_over_max_window(now)
+    pending_count = users_pending_new_device_alert_past_max_window(now).count
+    return if pending_count.zero?
+
+    analytics.create_new_device_alert_job_emails_pending_over_max_window(
+      count: pending_count,
+    )
   end
 
   def expire_sign_in_notification_timeframe_and_send_alert(user)

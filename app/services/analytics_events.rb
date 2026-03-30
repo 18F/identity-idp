@@ -518,9 +518,14 @@ module AnalyticsEvents
     track_event(:create_new_device_alert_job_emails_sent, count:, **extra)
   end
 
-  # Sends an alert if there is a statement timeout
-  def create_new_device_alert_job_query_timeout
-    track_event(:create_new_device_alert_job_query_timeout)
+  # New device sign-in alerts pending longer than max delay
+  # @param [Integer] count Number of users still pending notification past expected time window
+  def create_new_device_alert_job_emails_pending_over_max_window(count:, **extra)
+    track_event(
+      :create_new_device_alert_job_emails_pending_over_max_window,
+      count:,
+      **extra,
+    )
   end
 
   # User directed to this page after TMX returns a failure

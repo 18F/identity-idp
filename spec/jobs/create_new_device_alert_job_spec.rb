@@ -5,6 +5,7 @@ RSpec.describe CreateNewDeviceAlertJob do
   let(:now) { Time.zone.now }
   let(:new_device_alert_window_start_in_minutes) { nil }
   let(:new_device_alert_delay_in_minutes) { 5 }
+  let(:new_device_alert_max_delay_in_hours) { 8 }
   let(:start_window) do
     if new_device_alert_window_start_in_minutes.nil?
       nil
@@ -19,6 +20,8 @@ RSpec.describe CreateNewDeviceAlertJob do
       .and_return(new_device_alert_window_start_in_minutes)
     allow(IdentityConfig.store).to receive(:new_device_alert_delay_in_minutes)
       .and_return(new_device_alert_delay_in_minutes)
+    allow(IdentityConfig.store).to receive(:new_device_alert_max_delay_in_hours)
+      .and_return(new_device_alert_max_delay_in_hours)
     user.update! sign_in_new_device_at: sign_in_new_device_at
   end
 
@@ -128,25 +131,47 @@ RSpec.describe CreateNewDeviceAlertJob do
       end
     end
 
-    context 'when a database statement timeout occurs' do
-      let(:sign_in_new_device_at) { end_window - 1.second }
+    context 'when users are pending beyond the max notification window' do
+      let(:sign_in_new_device_at) { nil }
 
-      it 'logs analytics for query timeout' do
+      it 'logs analytics with the count and configured max delay' do
+        stale_user = create(
+          :user,
+          sign_in_new_device_at: now - (new_device_alert_max_delay_in_hours.hours + 1.minute),
+        )
+        fresh_user = create(
+          :user,
+          sign_in_new_device_at: now - (new_device_alert_max_delay_in_hours.hours - 1.minute),
+        )
         analytics = FakeAnalytics.new
         alert = CreateNewDeviceAlertJob.new
         allow(alert).to receive(:analytics).and_return(analytics)
-        allow(User).to receive(:where).and_raise(ActiveRecord::QueryCanceled)
 
         alert.perform(now)
 
-        expect(analytics).to have_logged_event(:create_new_device_alert_job_query_timeout)
+        expect(stale_user.reload.sign_in_new_device_at).to be_nil
+        expect(fresh_user.reload.sign_in_new_device_at).to be_nil
+        expect(analytics).to have_logged_event(
+          :create_new_device_alert_job_emails_pending_over_max_window,
+          count: 1,
+          max_delay_hours: new_device_alert_max_delay_in_hours,
+        )
       end
 
-      it 'does not raise an exception' do
+      it 'does not log analytics when nothing exceeds the max delay' do
+        create(
+          :user,
+          sign_in_new_device_at: now - (new_device_alert_max_delay_in_hours.hours - 1.minute),
+        )
+        analytics = FakeAnalytics.new
         alert = CreateNewDeviceAlertJob.new
-        allow(User).to receive(:where).and_raise(ActiveRecord::QueryCanceled)
+        allow(alert).to receive(:analytics).and_return(analytics)
 
-        expect { alert.perform(now) }.not_to raise_error
+        alert.perform(now)
+
+        expect(analytics).not_to have_logged_event(
+          :create_new_device_alert_job_emails_pending_over_max_window,
+        )
       end
     end
   end
