@@ -286,7 +286,9 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
         end
 
         context 'without X-Proofing-Location-ID header' do
-          let(:headers) { { 'X-Proofing-Agent-ID' => 'agent-456', 'X-Correlation-ID' => 'req-789' } }
+          let(:headers) do
+            { 'X-Proofing-Agent-ID' => 'agent-456', 'X-Correlation-ID' => 'req-789' }
+          end
 
           it 'returns 400' do
             expect(action.status).to eq(400)
@@ -302,7 +304,9 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
         end
 
         context 'without X-Proofing-Agent-ID header' do
-          let(:headers) { { 'X-Proofing-Location-ID' => 'loc-123', 'X-Correlation-ID' => 'req-789' } }
+          let(:headers) do
+            { 'X-Proofing-Location-ID' => 'loc-123', 'X-Correlation-ID' => 'req-789' }
+          end
 
           it 'returns 400' do
             expect(action.status).to eq(400)
@@ -318,7 +322,9 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
         end
 
         context 'without X-Correlation-ID header' do
-          let(:headers) { { 'X-Proofing-Location-ID' => 'loc-123', 'X-Proofing-Agent-ID' => 'agent-456' } }
+          let(:headers) do
+            { 'X-Proofing-Location-ID' => 'loc-123', 'X-Proofing-Agent-ID' => 'agent-456' }
+          end
 
           it 'returns 400' do
             expect(action.status).to eq(400)
@@ -397,7 +403,9 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
           end
 
           context 'without X-Proofing-Location-ID header' do
-            let(:headers) { { 'X-Proofing-Agent-ID' => 'agent-456', 'X-Correlation-ID' => 'req-789' } }
+            let(:headers) do
+              { 'X-Proofing-Agent-ID' => 'agent-456', 'X-Correlation-ID' => 'req-789' }
+            end
 
             it 'returns 400' do
               expect(action.status).to eq(400)
@@ -413,7 +421,9 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
           end
 
           context 'without X-Proofing-Agent-ID header' do
-            let(:headers) { { 'X-Proofing-Location-ID' => 'loc-123', 'X-Correlation-ID' => 'req-789' } }
+            let(:headers) do
+              { 'X-Proofing-Location-ID' => 'loc-123', 'X-Correlation-ID' => 'req-789' }
+            end
 
             it 'returns 400' do
               expect(action.status).to eq(400)
@@ -429,7 +439,9 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
           end
 
           context 'without X-Correlation-ID header' do
-            let(:headers) { { 'X-Proofing-Location-ID' => 'loc-123', 'X-Proofing-Agent-ID' => 'agent-456' } }
+            let(:headers) do
+              { 'X-Proofing-Location-ID' => 'loc-123', 'X-Proofing-Agent-ID' => 'agent-456' }
+            end
 
             it 'returns 400' do
               expect(action.status).to eq(400)
@@ -592,7 +604,9 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
           end
 
           context 'without X-Proofing-Location-ID header' do
-            let(:headers) { { 'X-Proofing-Agent-ID' => 'agent-456', 'X-Correlation-ID' => 'req-789' } }
+            let(:headers) do
+              { 'X-Proofing-Agent-ID' => 'agent-456', 'X-Correlation-ID' => 'req-789' }
+            end
 
             it 'returns 400' do
               expect(action.status).to eq(400)
@@ -608,7 +622,9 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
           end
 
           context 'without X-Proofing-Agent-ID header' do
-            let(:headers) { { 'X-Proofing-Location-ID' => 'loc-123', 'X-Correlation-ID' => 'req-789' } }
+            let(:headers) do
+              { 'X-Proofing-Location-ID' => 'loc-123', 'X-Correlation-ID' => 'req-789' }
+            end
 
             it 'returns 400' do
               expect(action.status).to eq(400)
@@ -624,7 +640,9 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
           end
 
           context 'without X-Correlation-ID header' do
-            let(:headers) { { 'X-Proofing-Location-ID' => 'loc-123', 'X-Proofing-Agent-ID' => 'agent-456' } }
+            let(:headers) do
+              { 'X-Proofing-Location-ID' => 'loc-123', 'X-Proofing-Agent-ID' => 'agent-456' }
+            end
 
             it 'returns 400' do
               expect(action.status).to eq(400)
@@ -747,7 +765,9 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
           end
 
           context 'without X-Proofing-Location-ID header' do
-            let(:headers) { { 'X-Proofing-Agent-ID' => 'agent-456', 'X-Correlation-ID' => 'req-789' } }
+            let(:headers) do
+              { 'X-Proofing-Agent-ID' => 'agent-456', 'X-Correlation-ID' => 'req-789' }
+            end
 
             it 'returns 400' do
               expect(action.status).to eq(400)
@@ -763,7 +783,9 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
           end
 
           context 'without X-Proofing-Agent-ID header' do
-            let(:headers) { { 'X-Proofing-Location-ID' => 'loc-123', 'X-Correlation-ID' => 'req-789' } }
+            let(:headers) do
+              { 'X-Proofing-Location-ID' => 'loc-123', 'X-Correlation-ID' => 'req-789' }
+            end
 
             it 'returns 400' do
               expect(action.status).to eq(400)
@@ -779,7 +801,9 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
           end
 
           context 'without X-Correlation-ID header' do
-            let(:headers) { { 'X-Proofing-Location-ID' => 'loc-123', 'X-Proofing-Agent-ID' => 'agent-456' } }
+            let(:headers) do
+              { 'X-Proofing-Location-ID' => 'loc-123', 'X-Proofing-Agent-ID' => 'agent-456' }
+            end
 
             it 'returns 400' do
               expect(action.status).to eq(400)

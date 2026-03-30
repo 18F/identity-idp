@@ -48,8 +48,9 @@ module Api
         if location_id.blank? || agent_id.blank? || request_id.blank?
           track_failure(failure_type: :validation, agent_id:, location_id:, request_id:)
 
+          required_headers = 'X-Proofing-Location-ID, X-Proofing-Agent-ID, X-Correlation-ID'
           render json: {
-            error: 'Missing required headers: X-Proofing-Location-ID, X-Proofing-Agent-ID, X-Correlation-ID',
+            error: "Missing required headers: #{required_headers}",
           }, status: :bad_request
         end
       end
