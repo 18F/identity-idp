@@ -353,6 +353,11 @@ mx_timeout: 3
 new_device_alert_delay_in_minutes: 5
 new_device_alert_window_start_in_minutes: 15
 newrelic_license_key: ''
+okta_vdc_base_url: 'https://credentials.okta.com'
+okta_vdc_client_id: ''
+okta_vdc_client_secret: ''
+okta_vdc_oauth_domain: ''
+okta_vdc_request_timeout: 30
 openid_connect_content_security_form_action_enabled: false
 openid_connect_redirect: client_side_js
 otp_delivery_blocklist_findtime: 5

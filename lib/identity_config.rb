@@ -363,6 +363,11 @@ module IdentityConfig
     config.add(:new_device_alert_delay_in_minutes, type: :integer)
     config.add(:new_device_alert_window_start_in_minutes, type: :integer, allow_nil: true)
     config.add(:newrelic_license_key, type: :string)
+    config.add(:okta_vdc_base_url)
+    config.add(:okta_vdc_client_id)
+    config.add(:okta_vdc_client_secret)
+    config.add(:okta_vdc_oauth_domain)
+    config.add(:okta_vdc_request_timeout, type: :integer)
     config.add(
       :openid_connect_redirect,
       type: :string,
