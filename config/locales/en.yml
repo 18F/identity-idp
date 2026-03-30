@@ -1959,7 +1959,11 @@ user_mailer.account_reset_granted.help_html: If you don’t want to delete your 
 user_mailer.account_reset_granted.intro_html: Your waiting period of %{waiting_period} has ended. Please complete step 2 of the process.<br><br> If you’ve been unable to locate your authentication methods, select “confirm account deletion” to delete your %{app_name} account.<br><br> In the future, if you need to access participating government websites who use %{app_name}, you can create a new %{app_name} account using the same email address after your account is deleted.<br><br>
 user_mailer.account_reset_granted.subject: Delete your %{app_name} account
 user_mailer.account_reset_request.cancel: Don’t want to delete your account? Sign in to your %{app_name} account to cancel.
-user_mailer.account_reset_request.intro_html: 'As a security measure, %{app_name} requires a two-step process to delete your account:<br><br> <strong>Step 1, %{waiting_period} waiting period:</strong> This email confirms that you have started the process of account deletion. There is a %{waiting_period} waiting for account deletion to go through if you have lost access to your authentication methods cannot sign in.<br/><br/> <strong>Step 2, Confirm account deletion:</strong>After your %{waiting_period} waiting period, you will receive a second email that will ask you to confirm the deletion of your %{app_name} account. <strong>Your account will not be deleted until you confirm account deletion from the second email.</strong> You will have another 24 hours to confirm account deletion.'
+user_mailer.account_reset_request.intro: 'For your security, %{app_name} has a two-step process to delete your account:'
+user_mailer.account_reset_request.step_one.body: This delay lets you cancel if you find your authentication method or if you didn’t make the request.
+user_mailer.account_reset_request.step_one.title: Wait %{waiting_period}
+user_mailer.account_reset_request.step_two.body_html: 'After %{waiting_period}, you will get a second email. <strong>You will have 24 hours to finish deleting your account from this second email</strong> or it will not be deleted.'
+user_mailer.account_reset_request.step_two.title: Delete your account
 user_mailer.account_reset_request.subject: How to delete your %{app_name} account
 user_mailer.account_verified.change_password_link: change your password
 user_mailer.account_verified.contact_link: contact %{app_name} support
