@@ -24,7 +24,7 @@ module SignUp
       update_verified_attributes
       send_in_person_completion_survey
       notify_user_of_connected_sp
-      update_service_providers_sent if historical_events_permitted?
+      queue_historical_events if historical_events_permitted?
       if user_session[:selected_email_id_for_linked_identity].nil?
         user_session[:selected_email_id_for_linked_identity] = current_user
           .last_sign_in_email_address.id
@@ -140,11 +140,10 @@ module SignUp
       end
     end
 
-    def update_service_providers_sent
+    def queue_historical_events
       return unless user_proofing_event && current_sp.issuer
 
-      user_proofing_event.service_providers_sent.push(current_sp.issuer)
-      user_proofing_event.save
+      user_proofing_event.add_sp_sent(current_sp.issuer)
     end
 
     def historical_events_permitted?
