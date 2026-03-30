@@ -1,8 +1,10 @@
 class FakeRequest
   attr_reader :headers
+  attr_reader :referer
 
-  def initialize(headers: {})
+  def initialize(headers: {}, referer: nil)
     @headers = headers
+    @referer = referer
   end
 
   def ip

@@ -126,28 +126,6 @@ module AbTests
     user&.uuid
   end.freeze
 
-  ONE_ACCOUNT_USER_VERIFICATION_ENABLED = AbTest.new(
-    experiment_name: 'One Account User Verification Enabled',
-    should_log: [
-      'Email and Password Authentication',
-      'SP redirect initiated',
-      :one_account_duplicate_profiles_please_call_visited,
-      :one_account_duplicate_profiles_warning_page_visited,
-      :one_account_duplicate_profile_updated,
-      :one_account_duplicate_profile_created,
-      :one_account_duplicate_profile_closed,
-      :one_account_clear_duplicate_profile,
-      :one_account_close_inconclusive_duplicate,
-      :one_account_deactivate_duplicate_profile,
-    ].to_set,
-    buckets: {
-      one_account_user_verification_enabled:
-        IdentityConfig.store.one_account_user_verification_enabled_percentage,
-    },
-  ) do |user:, user_session:, **|
-    user&.uuid
-  end.freeze
-
   PROOFING_VENDOR = AbTest.new(
     experiment_name: 'Proofing Vendor',
     should_log: /^idv/i,
