@@ -198,7 +198,6 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
     )
     allow(FeatureManagement).to receive(:idv_proofing_agent_enabled?).and_return(enabled)
     headers.each { |key, value| request.headers[key] = value }
-    allow(controller).to receive(:params).and_return(agent_params)
   end
 
   describe '#search_user' do
@@ -321,6 +320,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
           )
           action
           body = JSON.parse(response.body)
+          puts "Response body: #{body.inspect}"
           expect(body['request_id']).to be_present
           expect(body['email_account_found']).to eq(true)
           expect(body['ssn_profile_found']).to eq(true)
@@ -365,6 +365,9 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
   end
 
   describe '#proof_user' do
+    before do
+      allow(controller).to receive(:params).and_return(agent_params)
+    end
     let(:action) { post :proof_user }
 
     context 'when proofing agent is not enabled' do
