@@ -17,9 +17,6 @@ RSpec.describe Proofing::Resolution::Plugins::PhonePlugin do
   let(:residential_address_resolution_result) do
     Proofing::Resolution::Result.new(success: true, vendor_name: 'lexisnexis:instant_verify')
   end
-  let(:state_id_result) do
-    Proofing::Resolution::Result.new(success: true, vendor_name: 'aamva:state_id')
-  end
 
   before do
     allow(IdentityConfig.store).to receive(:idv_phone_precheck_percent)
@@ -35,7 +32,6 @@ RSpec.describe Proofing::Resolution::Plugins::PhonePlugin do
         current_sp:,
         state_id_address_resolution_result:,
         residential_address_resolution_result:,
-        state_id_result:,
         timer:,
         user_email: user.email,
         best_effort_phone:,
@@ -61,7 +57,6 @@ RSpec.describe Proofing::Resolution::Plugins::PhonePlugin do
           current_sp:,
           state_id_address_resolution_result:,
           residential_address_resolution_result:,
-          state_id_result:,
           timer:,
           user_email: user.email,
         }
@@ -79,13 +74,6 @@ RSpec.describe Proofing::Resolution::Plugins::PhonePlugin do
         )
         expect(residential_address_failed_result[:success]).to eq(false)
         expect(residential_address_failed_result[:vendor_name]).to eq('ResolutionCannotPass')
-
-        state_id_failed_result = plugin.call(
-          **default_plugin_arguments,
-          state_id_result: failed_upstream_vendor_result,
-        )
-        expect(state_id_failed_result[:success]).to eq(false)
-        expect(state_id_failed_result[:vendor_name]).to eq('ResolutionCannotPass')
       end
 
       it 'calls the proofer with best effor phone and returns the results' do

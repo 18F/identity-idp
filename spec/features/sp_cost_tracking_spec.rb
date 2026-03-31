@@ -15,6 +15,7 @@ RSpec.feature 'SP Costing', :email do
   before do
     allow(IdentityConfig.store).to receive(:allowed_verified_within_providers)
       .and_return([issuer])
+    allow(IdentityConfig.store).to receive(:idv_aamva_at_doc_auth_enabled).and_return(true)
   end
 
   it 'logs the correct costs for an ial2 user creation from sp with oidc', js: true do
@@ -25,14 +26,14 @@ RSpec.feature 'SP Costing', :email do
     expect_sp_cost_type(0, 2, 'acuant_front_image')
     expect_sp_cost_type(1, 2, 'acuant_back_image')
     expect_sp_cost_type(2, 2, 'acuant_result')
-    expect_sp_cost_type(3, 2, 'threatmetrix')
     expect_sp_cost_type(
-      4, 2, 'lexis_nexis_resolution',
-      transaction_id: Proofing::Mock::ResolutionMockClient::TRANSACTION_ID
-    )
-    expect_sp_cost_type(
-      5, 2, 'aamva',
+      3, 2, 'aamva',
       transaction_id: Proofing::Mock::IdMockClient::TRANSACTION_ID
+    )
+    expect_sp_cost_type(4, 2, 'threatmetrix')
+    expect_sp_cost_type(
+      5, 2, 'lexis_nexis_resolution',
+      transaction_id: Proofing::Mock::ResolutionMockClient::TRANSACTION_ID
     )
   end
 
@@ -60,6 +61,7 @@ RSpec.feature 'SP Costing', :email do
     %w[
       acuant_front_image
       acuant_back_image
+      aamva
       lexis_nexis_resolution
     ].each do |cost_type|
       sp_costs = SpCost.where(cost_type: cost_type)
