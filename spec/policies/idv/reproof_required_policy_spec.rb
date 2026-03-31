@@ -111,7 +111,7 @@ RSpec.describe Idv::ReproofRequiredPolicy do
           end
         end
 
-        context 'when active_profile is in_person' do
+        context 'when active_profile is an in_person profile' do
           let(:active_profile) { create(:profile, :in_person_verified) }
 
           it 'returns true' do
@@ -119,7 +119,7 @@ RSpec.describe Idv::ReproofRequiredPolicy do
           end
         end
 
-        context 'when active_profile is proofing_agent' do
+        context 'when active_profile is a proofing_agent profile' do
           let(:active_profile) { create(:profile, :active, idv_level: :proofing_agent) }
 
           it 'returns true' do

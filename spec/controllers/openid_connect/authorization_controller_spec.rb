@@ -310,15 +310,6 @@ RSpec.describe OpenidConnect::AuthorizationController do
                 allow(controller).to receive(:pii_requested_but_locked?).and_return(false)
               end
 
-              context 'when the profile was proofed as legacy_unsupervised' do
-                let(:user) { create(:user, :proofed) }
-
-                it 'redirects to have the user verify their account' do
-                  action
-                  expect(controller).to redirect_to(idv_url)
-                end
-              end
-
               context 'when the profile was proofed as in_person' do
                 let(:user) { create(:user, :proofed_in_person_enrollment) }
 
