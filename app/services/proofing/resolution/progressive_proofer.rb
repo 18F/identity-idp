@@ -2,10 +2,6 @@
 
 module Proofing
   module Resolution
-    # Uses a combination of LexisNexis InstantVerify checks to verify that
-    # a user's identity can be resolved against authoritative sources. This includes logic for when:
-    #   1. The user has only provided one address for their residential and identity document
-    #      address or separate residential and identity document addresses
     class ProgressiveProofer
       class InvalidProofingVendorError; end
 

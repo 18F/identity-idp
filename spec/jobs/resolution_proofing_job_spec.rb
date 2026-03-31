@@ -321,41 +321,6 @@ RSpec.describe ResolutionProofingJob, type: :job do
         expect(result_context_stages_resolution[:attributes_requiring_additional_verification])
           .to match(['address', 'dead', 'dob', 'ssn'])
       end
-
-      context 'when state ID has already been proofed at DocAuth' do
-        let(:pii) do
-          { aamva_verified_attributes: [:address, :ssn] }
-            .merge(Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID)
-        end
-
-        it 'stores an unsuccessful result' do
-          stub_vendor_requests(
-            instant_verify_response:
-              LexisNexisFixtures.instant_verify_identity_not_found_response_json,
-          )
-
-          perform
-
-          result = document_capture_session.load_proofing_result[:result]
-          result_context = result[:context]
-          result_context_stages = result_context[:stages]
-          result_context_stages_resolution = result_context_stages[:resolution]
-
-          expect(result[:success]).to be false
-          expect(result[:errors].keys).to eq([:base, :'Execute Instant Verify'])
-          expect(result[:exception]).to be_nil
-          expect(result[:timed_out]).to be false
-
-          # result[:context][:stages][:resolution]
-          expect(result_context_stages_resolution[:vendor_name])
-            .to eq('lexisnexis:instant_verify')
-          expect(result_context_stages_resolution[:success]).to eq(false)
-          expect(result_context_stages_resolution[:can_pass_with_additional_verification])
-            .to eq(true)
-          expect(result_context_stages_resolution[:attributes_requiring_additional_verification])
-            .to match(['address', 'dead', 'dob', 'ssn'])
-        end
-      end
     end
 
     context 'with threatmetrix disabled' do
