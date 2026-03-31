@@ -6,9 +6,7 @@ class AllowNullServiceProviderOnDuplicateProfileSets < ActiveRecord::Migration[7
   def up
     change_column_null :duplicate_profile_sets, :service_provider, true
 
-    # Add a unique index on profile_ids alone for cross-SP duplicate sets (where SP is null).
-    # The existing unique index on (service_provider, profile_ids) continues to enforce
-    # uniqueness for SP-scoped sets.
+    # Add index where SP is null
     add_index :duplicate_profile_sets, :profile_ids,
               unique: true,
               where: 'service_provider IS NULL',
