@@ -111,16 +111,16 @@ RSpec.describe Idv::ReproofRequiredPolicy do
           end
         end
 
-        context 'when active_profile is legacy_unsupervised' do
-          let(:active_profile) { create(:profile, :active, idv_level: :legacy_unsupervised) }
+        context 'when active_profile is in_person' do
+          let(:active_profile) { create(:profile, :in_person_verified) }
 
           it 'returns true' do
             expect(policy.needs_to_reproof?).to eq true
           end
         end
 
-        context 'when active_profile is in_person' do
-          let(:active_profile) { create(:profile, :in_person_verified) }
+        context 'when active_profile is proofing_agent' do
+          let(:active_profile) { create(:profile, :active, idv_level: :proofing_agent) }
 
           it 'returns true' do
             expect(policy.needs_to_reproof?).to eq true

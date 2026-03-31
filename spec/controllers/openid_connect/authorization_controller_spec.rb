@@ -319,6 +319,15 @@ RSpec.describe OpenidConnect::AuthorizationController do
                 end
               end
 
+              context 'when the profile was proofed as in_person' do
+                let(:user) { create(:user, :proofed_in_person_enrollment) }
+
+                it 'redirects to have the user verify their account' do
+                  action
+                  expect(controller).to redirect_to(idv_url)
+                end
+              end
+
               context 'when the profile was proofed as unsupervised_with_selfie' do
                 let(:user) { create(:user, :proofed_with_selfie) }
 

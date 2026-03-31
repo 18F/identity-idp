@@ -365,9 +365,23 @@ RSpec.describe ServiceProvider do
         end
       end
 
-      context 'when profile is legacy_unsupervised' do
+      context 'when profile is a legacy_unsupervised profile' do
         it 'returns true' do
           profile = create(:profile, :active, idv_level: :legacy_unsupervised)
+          expect(non_fm_reproofing_sp.needs_to_reproof?(profile)).to be true
+        end
+      end
+
+      context 'when profile is an in_person profile' do
+        it 'returns true' do
+          profile = create(:profile, :in_person_verified)
+          expect(non_fm_reproofing_sp.needs_to_reproof?(profile)).to be true
+        end
+      end
+
+      context 'when profile is a proofing_agent profile' do
+        it 'returns true' do
+          profile = create(:profile, :active, idv_level: :proofing_agent)
           expect(non_fm_reproofing_sp.needs_to_reproof?(profile)).to be true
         end
       end
