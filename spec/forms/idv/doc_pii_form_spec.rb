@@ -541,7 +541,7 @@ RSpec.describe Idv::DocPiiForm do
           result = subject.submit
 
           expect(result.success?).to eq(false)
-          expect(result.errors[:document_type_received]).to eq(
+          expect(result.errors[:no_document]).to eq(
             [I18n.t('doc_auth.errors.general.no_liveness')],
           )
           expect(result.extra).to eq(

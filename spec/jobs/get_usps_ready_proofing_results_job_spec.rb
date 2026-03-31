@@ -10,7 +10,10 @@ RSpec.describe GetUspsReadyProofingResultsJob do
 
   before do
     allow(Rails).to receive(:cache).and_return(
-      ActiveSupport::Cache::RedisCacheStore.new(url: IdentityConfig.store.redis_throttle_url),
+      ActiveSupport::Cache::RedisCacheStore.new(
+        url: IdentityConfig.store.redis_throttle_url,
+        pool: false,
+      ),
     )
     ActiveJob::Base.queue_adapter = :test
     allow(job).to receive(:analytics).and_return(job_analytics)
