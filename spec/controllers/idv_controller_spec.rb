@@ -110,16 +110,16 @@ RSpec.describe IdvController do
         end
       end
 
-      context 'when IPP reproofing is required' do
+      context 'when non-facial-match reproofing is required' do
         let(:service_provider) { create(:service_provider) }
 
         before do
-          allow(IdentityConfig.store).to receive(:reproof_ipp_service_providers)
+          allow(IdentityConfig.store).to receive(:reproof_non_facial_match_service_providers)
             .and_return([service_provider.issuer])
         end
 
-        context 'when profile was proofed via IPP' do
-          let(:user) { create(:user, :proofed_in_person_enrollment) }
+        context 'when profile was proofed as legacy_unsupervised' do
+          let(:user) { create(:user, :proofed) }
 
           before do
             stub_sign_in(user)
@@ -136,7 +136,7 @@ RSpec.describe IdvController do
           end
         end
 
-        context 'when profile was not proofed via IPP' do
+        context 'when profile was proofed as unsupervised_with_selfie' do
           let(:user) { create(:user, :proofed_with_selfie) }
 
           before do

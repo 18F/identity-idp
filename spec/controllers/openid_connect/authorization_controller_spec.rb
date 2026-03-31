@@ -295,11 +295,11 @@ RSpec.describe OpenidConnect::AuthorizationController do
               end
             end
 
-            context 'when IPP reproofing is required' do
+            context 'when non-facial-match reproofing is required' do
               let(:acr_values) { Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF }
 
               before do
-                allow(IdentityConfig.store).to receive(:reproof_ipp_service_providers)
+                allow(IdentityConfig.store).to receive(:reproof_non_facial_match_service_providers)
                   .and_return([service_provider.issuer])
                 allow(IdentityConfig.store).to receive(:openid_connect_redirect)
                   .and_return('server_side')
@@ -310,8 +310,8 @@ RSpec.describe OpenidConnect::AuthorizationController do
                 allow(controller).to receive(:pii_requested_but_locked?).and_return(false)
               end
 
-              context 'when the profile was proofed via IPP' do
-                let(:user) { create(:user, :proofed_in_person_enrollment) }
+              context 'when the profile was proofed as legacy_unsupervised' do
+                let(:user) { create(:user, :proofed) }
 
                 it 'redirects to have the user verify their account' do
                   action
@@ -319,7 +319,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
                 end
               end
 
-              context 'when the profile was not proofed via IPP' do
+              context 'when the profile was proofed as unsupervised_with_selfie' do
                 let(:user) { create(:user, :proofed_with_selfie) }
 
                 it 'redirects to the service provider' do

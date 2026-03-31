@@ -72,29 +72,29 @@ RSpec.describe Idv::ReproofRequiredPolicy do
       end
     end
 
-    context 'IPP reproofing logic' do
-      let(:ipp_issuer) { 'urn:gov:gsa:openidconnect:ipp-reproof-sp' }
-      let(:service_provider) { create(:service_provider, issuer: ipp_issuer) }
+    context 'non-facial-match reproofing logic' do
+      let(:non_fm_issuer) { 'urn:gov:gsa:openidconnect:non-fm-reproof-sp' }
+      let(:service_provider) { create(:service_provider, issuer: non_fm_issuer) }
 
       before do
         allow(IdentityConfig.store).to receive(:reproof_forcing_service_provider)
           .and_return('')
-        allow(IdentityConfig.store).to receive(:reproof_ipp_service_providers)
-          .and_return(reproof_ipp_service_providers)
+        allow(IdentityConfig.store).to receive(:reproof_non_facial_match_service_providers)
+          .and_return(reproof_non_facial_match_service_providers)
       end
 
-      let(:reproof_ipp_service_providers) { [ipp_issuer] }
+      let(:reproof_non_facial_match_service_providers) { [non_fm_issuer] }
 
-      context 'when the SP is not in reproof_ipp_service_providers' do
-        let(:reproof_ipp_service_providers) { ['some-other-issuer'] }
-        let(:active_profile) { create(:profile, :in_person_verified) }
+      context 'when the SP is not in reproof_non_facial_match_service_providers' do
+        let(:reproof_non_facial_match_service_providers) { ['some-other-issuer'] }
+        let(:active_profile) { create(:profile, :active, idv_level: :legacy_unsupervised) }
 
         it 'returns false' do
           expect(policy.needs_to_reproof?).to eq false
         end
       end
 
-      context 'when the SP is in reproof_ipp_service_providers' do
+      context 'when the SP is in reproof_non_facial_match_service_providers' do
         context 'when active_profile is nil' do
           let(:active_profile) { nil }
 
@@ -103,15 +103,23 @@ RSpec.describe Idv::ReproofRequiredPolicy do
           end
         end
 
-        context 'when active_profile is not IPP proofed' do
-          let(:active_profile) { create(:profile, :active) }
+        context 'when active_profile is unsupervised_with_selfie (opt-in facial match)' do
+          let(:active_profile) { create(:profile, :facial_match_proof) }
 
           it 'returns false' do
             expect(policy.needs_to_reproof?).to eq false
           end
         end
 
-        context 'when active_profile is IPP proofed (in_person)' do
+        context 'when active_profile is legacy_unsupervised' do
+          let(:active_profile) { create(:profile, :active, idv_level: :legacy_unsupervised) }
+
+          it 'returns true' do
+            expect(policy.needs_to_reproof?).to eq true
+          end
+        end
+
+        context 'when active_profile is in_person' do
           let(:active_profile) { create(:profile, :in_person_verified) }
 
           it 'returns true' do
@@ -119,7 +127,6 @@ RSpec.describe Idv::ReproofRequiredPolicy do
           end
         end
       end
-
     end
   end
 end

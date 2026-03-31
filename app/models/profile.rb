@@ -6,9 +6,6 @@ class Profile < ApplicationRecord
   # Facial match through IAL2 opt-in flow
   FACIAL_MATCH_OPT_IN = %w[unsupervised_with_selfie].to_set.freeze
 
-  # IN_PERSON proofing levels
-  IN_PERSON_PROOFING_IDV_LEVELS = %w[in_person proofing_agent legacy_in_person].to_set.freeze
-
   belongs_to :user
   # rubocop:disable Rails/InverseOf
   belongs_to :initiating_service_provider,
@@ -431,10 +428,6 @@ class Profile < ApplicationRecord
 
   def facial_match?
     FACIAL_MATCH_IDV_LEVELS.include?(idv_level)
-  end
-
-  def ipp_proofed?
-    IPP_PROOFING_IDV_LEVELS.include?(idv_level)
   end
 
   private

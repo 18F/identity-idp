@@ -308,15 +308,11 @@ RSpec.describe ServiceProvider do
 
   describe '#needs_to_reproof?' do
     let(:reproof_forcing_issuer) { 'urn:gov:gsa:openidconnect:reproof-forcing-sp' }
-    let(:ipp_reproofing_issuer) { 'urn:gov:gsa:openidconnect:ipp-reproof-sp' }
 
     before do
       allow(IdentityConfig.store)
         .to receive(:reproof_forcing_service_provider)
         .and_return(reproof_forcing_issuer)
-      allow(IdentityConfig.store)
-        .to receive(:reproof_ipp_service_providers)
-        .and_return([ipp_reproofing_issuer])
     end
 
     context 'when Service Provider is a reproof-forcing SP' do
@@ -350,35 +346,39 @@ RSpec.describe ServiceProvider do
       end
     end
 
-
-    context 'when SP is an IPP reproofing SP' do
-      let(:ipp_reproofing_sp) do
-        build(
-          :service_provider,
-          issuer: ipp_reproofing_issuer,
-        )
+    context 'when SP is a non-facial-match reproofing SP' do
+      let(:non_fm_reproofing_issuer) { 'urn:gov:gsa:openidconnect:non-fm-reproof-sp' }
+      let(:non_fm_reproofing_sp) do
+        build(:service_provider, issuer: non_fm_reproofing_issuer)
       end
-      context 'when profile is not IPP proofed' do
+
+      before do
+        allow(IdentityConfig.store)
+          .to receive(:reproof_non_facial_match_service_providers)
+          .and_return([non_fm_reproofing_issuer])
+      end
+
+      context 'when profile is unsupervised_with_selfie (opt-in facial match)' do
         it 'returns false' do
           profile = create(:profile, :facial_match_proof)
-          expect(ipp_reproofing_sp.needs_to_reproof?(profile)).to be false
+          expect(non_fm_reproofing_sp.needs_to_reproof?(profile)).to be false
         end
       end
 
-      context 'when profile is IPP proofed' do
+      context 'when profile is legacy_unsupervised' do
         it 'returns true' do
-          profile = create(:profile, :in_person_verified)
-          expect(ipp_reproofing_sp.needs_to_reproof?(profile)).to be true
+          profile = create(:profile, :active, idv_level: :legacy_unsupervised)
+          expect(non_fm_reproofing_sp.needs_to_reproof?(profile)).to be true
         end
       end
     end
 
-    context 'when SP is not an IPP reproofing SP' do
-      let(:non_ipp_reproofing_sp) { build(:service_provider, issuer: 'some-other-issuer') }
+    context 'when SP is not a non-facial-match reproofing SP' do
+      let(:regular_sp) { build(:service_provider, issuer: 'some-other-issuer') }
 
-      it 'returns false even if the profile is IPP proofed' do
-        profile = create(:profile, :in_person_verified)
-        expect(non_ipp_reproofing_sp.needs_to_reproof?(profile)).to be false
+      it 'returns false even if the profile is legacy_unsupervised' do
+        profile = create(:profile, :active, idv_level: :legacy_unsupervised)
+        expect(regular_sp.needs_to_reproof?(profile)).to be false
       end
     end
   end
