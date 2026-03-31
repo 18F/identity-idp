@@ -231,6 +231,62 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
           expect(body['request_id']).to eq('req-789')
         end
 
+        it 'returns correct profiles and found attributes' do
+          user = create(:user, email: email)
+          Profile.create!(
+            user_id: user.id,
+            ssn_signature: Pii::Fingerprinter.fingerprint(SsnFormatter.normalize(ssn)),
+            idv_level: 3,
+          )
+          Profile.create!(
+            user_id: create(:user, email: 'other@example.com').id,
+            ssn_signature: Pii::Fingerprinter.fingerprint(SsnFormatter.normalize(ssn)),
+            idv_level: 2,
+          )
+          Profile.create!(
+            user_id: create(:user, email: 'other1@example.com').id,
+            ssn_signature: Pii::Fingerprinter.fingerprint(SsnFormatter.normalize('987-65-4321')),
+            idv_level: 2,
+          )
+          action
+          body = JSON.parse(response.body)
+          expect(body['request_id']).to be_present
+          expect(body['email_account_found']).to eq(true)
+          expect(body['ssn_profile_found']).to eq(true)
+          expect(body['profiles'].length).to eq(2)
+          expect(body['profiles']).to include(
+            a_hash_including(
+              'email_match' => true,
+              'ssn_match' => true,
+              'idv_level' => 'enhanced',
+            ),
+            a_hash_including(
+              'email_match' => false,
+              'ssn_match' => true,
+              'idv_level' => 'enhanced',
+            ),
+          )
+          expect(@analytics).to have_logged_event(
+            :idv_proofing_agent_account_check_requested,
+            user_id: user.id,
+            response_body: a_hash_including(
+              email_account_found: true,
+              ssn_profile_found: true,
+              request_id: body['request_id'],
+            ),
+            agent_id: 'agent-456',
+            location_id: 'loc-123',
+            request_id: 'req-789',
+          )
+        end
+        it 'requires both email and ssn in the payload' do
+          post :search_user, params: { email: email }
+          expect(response.status).to eq(400)
+
+          post :search_user, params: { ssn: ssn }
+          expect(response.status).to eq(400)
+        end
+
         context 'without X-Proofing-Location-Id header' do
           let(:headers) { { 'X-Agent-Id' => 'agent-456', 'X-Request-Id' => 'req-789' } }
 
@@ -300,63 +356,8 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
             expect(body['error']).to include('X-Request-Id')
           end
         end
-
-        it 'returns correct profiles and found attributes' do
-          user = create(:user, email: email)
-          Profile.create!(
-            user_id: user.id,
-            ssn_signature: Pii::Fingerprinter.fingerprint(SsnFormatter.normalize(ssn)),
-            idv_level: 3,
-          )
-          Profile.create!(
-            user_id: create(:user, email: 'other@example.com').id,
-            ssn_signature: Pii::Fingerprinter.fingerprint(SsnFormatter.normalize(ssn)),
-            idv_level: 2,
-          )
-          Profile.create!(
-            user_id: create(:user, email: 'other1@example.com').id,
-            ssn_signature: Pii::Fingerprinter.fingerprint(SsnFormatter.normalize('987-65-4321')),
-            idv_level: 2,
-          )
-          action
-          body = JSON.parse(response.body)
-          expect(body['request_id']).to be_present
-          expect(body['email_account_found']).to eq(true)
-          expect(body['ssn_profile_found']).to eq(true)
-          expect(body['profiles'].length).to eq(2)
-          expect(body['profiles']).to include(
-            a_hash_including(
-              'email_match' => true,
-              'ssn_match' => true,
-              'idv_level' => 'enhanced',
-            ),
-            a_hash_including(
-              'email_match' => false,
-              'ssn_match' => true,
-              'idv_level' => 'enhanced',
-            ),
-          )
-          expect(@analytics).to have_logged_event(
-            :idv_proofing_agent_account_check_requested,
-            user_id: user.id,
-            response_body: a_hash_including(
-              email_account_found: true,
-              ssn_profile_found: true,
-              request_id: body['request_id'],
-            ),
-            agent_id: 'agent-456',
-            location_id: 'loc-123',
-            request_id: 'req-789',
-          )
-        end
-        it 'requires both email and ssn in the payload' do
-          post :search_user, params: { email: email }
-          expect(response.status).to eq(400)
-
-          post :search_user, params: { ssn: ssn }
-          expect(response.status).to eq(400)
-        end
       end
+
       context 'with an invalid authorization header' do
         it_behaves_like 'an endpoint that requires authorization'
       end

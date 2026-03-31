@@ -118,20 +118,14 @@ module Api
       end
 
       def build_profiles_results_array
-        return @result_array if defined?(@result_array)
-        @result_array = []
         profiles = profiles_with_matching_ssn | profiles_with_matching_account
-        profiles.each do |profile|
-          email_match = profile.user == user_account_for_email
-          ssn_match = profile.ssn_signature == ssn_signature_fingerprint
-          profile_result = {
-            email_match:,
-            ssn_match:,
+        @build_profiles_results_array ||= profiles.map do |profile|
+          {
+            email_match: profile.user == user_account_for_email,
+            ssn_match: profile.ssn_signature == ssn_signature_fingerprint,
             idv_level: Profile::PROOFING_AGENT_IDV_LEVELS[profile.idv_level],
           }
-          @result_array << profile_result
         end
-        @result_array
       end
 
       def track_failure(failure_type:, agent_id: nil, location_id: nil, request_id: nil)
