@@ -320,7 +320,6 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
           )
           action
           body = JSON.parse(response.body)
-          puts "Response body: #{body.inspect}"
           expect(body['request_id']).to be_present
           expect(body['email_account_found']).to eq(true)
           expect(body['ssn_profile_found']).to eq(true)
