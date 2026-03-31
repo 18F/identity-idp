@@ -41,7 +41,12 @@ module OneAccountConcern
   end
 
   def sp_eligible_for_one_account?
-    IdentityConfig.store.eligible_one_account_providers.include?(sp_from_sp_session&.issuer)
+    case FeatureManagement.one_account_enforcement_mode
+    when FeatureManagement::ONE_ACCOUNT_ENFORCEMENT_MODES[:ial2_cross_sp_all_sps]
+      sp_from_sp_session.present?
+    else
+      IdentityConfig.store.eligible_one_account_providers.include?(sp_from_sp_session&.issuer)
+    end
   end
 
   def profile_creation_duplicate_profile_detected?
@@ -49,9 +54,16 @@ module OneAccountConcern
   end
 
   def user_has_duplicate_account_profiles?
-    DuplicateProfileSet.involving_profile(
-      profile_id: current_user.active_profile.id,
-      service_provider: sp_from_sp_session&.issuer,
-    ).present?
+    case FeatureManagement.one_account_enforcement_mode
+    when FeatureManagement::ONE_ACCOUNT_ENFORCEMENT_MODES[:ial2_cross_sp_all_sps]
+      DuplicateProfileSet.involving_profile_any_sp(
+        profile_id: current_user.active_profile.id,
+      ).present?
+    else
+      DuplicateProfileSet.involving_profile(
+        profile_id: current_user.active_profile.id,
+        service_provider: sp_from_sp_session&.issuer,
+      ).present?
+    end
   end
 end

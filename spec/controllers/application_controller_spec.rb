@@ -750,6 +750,38 @@ RSpec.describe ApplicationController do
         expect(response.body).to eq('false')
       end
     end
+
+    context 'when enforcement mode is ial2_cross_sp_all_sps' do
+      before do
+        allow(FeatureManagement).to receive(:one_account_enforcement_mode)
+          .and_return(
+            FeatureManagement::ONE_ACCOUNT_ENFORCEMENT_MODES[:ial2_cross_sp_all_sps],
+          )
+      end
+
+      context 'when SP is present but not in eligible providers list' do
+        before do
+          allow(IdentityConfig.store).to receive(:eligible_one_account_providers)
+            .and_return([])
+        end
+
+        it 'returns true because cross-SP mode skips the allowlist' do
+          get :index
+          expect(response.body).to eq('true')
+        end
+      end
+
+      context 'when sp_from_sp_session returns nil' do
+        before do
+          allow(controller).to receive(:sp_from_sp_session).and_return(nil)
+        end
+
+        it 'returns false' do
+          get :index
+          expect(response.body).to eq('false')
+        end
+      end
+    end
   end
 
   describe '#attempts_api_tracker' do

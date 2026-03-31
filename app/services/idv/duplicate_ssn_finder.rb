@@ -14,19 +14,25 @@ module Idv
     end
 
     def duplicate_facial_match_profiles(service_provider:)
-      profiles = Profile
+      base_profiles = Profile
         .active
         .facial_match
         .where(ssn_signature: ssn_signatures)
-        .joins('INNER JOIN identities ON identities.user_id = profiles.user_id')
-        .where(identities: { deleted_at: nil })
         .where.not(user_id: user.id)
+
+      # In cross-SP mode, find all IAL2 profiles with matching SSN across the system
+      # without requiring an identity record for any specific SP.
+      unless FeatureManagement.one_account_enforcement_mode ==
+          FeatureManagement::ONE_ACCOUNT_ENFORCEMENT_MODES[:legacy_within_sp_allowlist]
+        return base_profiles.distinct
+      end
+
+      # In legacy SP-scoped mode, only match profiles whose users have an active
+      # identity with the given service provider.
+      base_profiles
+        .joins('INNER JOIN identities ON identities.user_id = profiles.user_id')
+        .where(identities: { deleted_at: nil, service_provider: service_provider })
         .distinct
-
-      return profiles unless FeatureManagement.one_account_enforcement_mode ==
-        FeatureManagement::ONE_ACCOUNT_ENFORCEMENT_MODES[:legacy_within_sp_allowlist]
-
-      profiles.where(identities: { service_provider: service_provider })
     end
 
     # Due to potentially inconsistent normalization of stored SSNs in the past, we must check:

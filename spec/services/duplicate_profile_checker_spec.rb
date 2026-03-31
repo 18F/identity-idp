@@ -386,5 +386,104 @@ RSpec.describe DuplicateProfileChecker do
         expect(dupe_profile_set).to eq(nil)
       end
     end
+
+    context 'when enforcement mode is ial2_cross_sp_all_sps' do
+      let(:sp2) { create(:service_provider) }
+      let(:user2) { create(:user, :fully_registered) }
+      let!(:user2_identity) do
+        create(
+          :service_provider_identity,
+          user: user2,
+          service_provider: sp2.issuer,
+        )
+      end
+      let!(:profile2) do
+        create(
+          :profile,
+          :active,
+          :facial_match_proof,
+          user: user2,
+        )
+      end
+
+      before do
+        allow(FeatureManagement).to receive(:one_account_enforcement_mode)
+          .and_return(
+            FeatureManagement::ONE_ACCOUNT_ENFORCEMENT_MODES[:ial2_cross_sp_all_sps],
+          )
+        allow_any_instance_of(Idv::DuplicateSsnFinder)
+          .to receive(:duplicate_facial_match_profiles)
+          .and_return([profile2])
+      end
+
+      it 'creates a duplicate profile set with nil service_provider for a cross-SP match' do
+        dupe_profile_checker = DuplicateProfileChecker.new(
+          user: user,
+          user_session: session,
+          sp: sp,
+          analytics: @analytics,
+        )
+        dupe_profile_set = dupe_profile_checker.dupe_profile_set_for_user
+
+        expect(dupe_profile_set.profile_ids).to match_array([profile.id, profile2.id])
+        expect(dupe_profile_set.service_provider).to be_nil
+        expect(@analytics).to have_logged_event(:one_account_duplicate_profile_created)
+      end
+
+      context 'when a cross-SP duplicate profile set already exists (nil SP)' do
+        let!(:existing_set) do
+          create(
+            :duplicate_profile_set,
+            profile_ids: [profile.id, profile2.id],
+            service_provider: nil,
+          )
+        end
+
+        it 'finds and reuses the existing null-SP set instead of creating a duplicate' do
+          dupe_profile_checker = DuplicateProfileChecker.new(
+            user: user,
+            user_session: session,
+            sp: sp,
+            analytics: @analytics,
+          )
+          dupe_profile_set = dupe_profile_checker.dupe_profile_set_for_user
+
+          expect(dupe_profile_set.id).to eq(existing_set.id)
+          expect(@analytics).not_to have_logged_event(:one_account_duplicate_profile_created)
+        end
+      end
+
+      context 'when no more duplicates are found and a null-SP set exists' do
+        let!(:existing_set) do
+          create(
+            :duplicate_profile_set,
+            profile_ids: [profile.id, profile2.id],
+            service_provider: nil,
+          )
+        end
+
+        before do
+          allow_any_instance_of(Idv::DuplicateSsnFinder)
+            .to receive(:duplicate_facial_match_profiles)
+            .and_return([])
+        end
+
+        it 'closes the cross-SP duplicate profile set' do
+          freeze_time do
+            dupe_profile_checker = DuplicateProfileChecker.new(
+              user: user,
+              user_session: session,
+              sp: sp,
+              analytics: @analytics,
+            )
+            dupe_profile_checker.dupe_profile_set_for_user
+
+            existing_set.reload
+            expect(existing_set.closed_at).to eq(Time.zone.now)
+            expect(@analytics).to have_logged_event(:one_account_duplicate_profile_closed)
+          end
+        end
+      end
+    end
   end
 end

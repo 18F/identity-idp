@@ -165,6 +165,18 @@ RSpec.describe Idv::DuplicateSsnFinder do
           other_profile,
         )
       end
+
+      context 'when the other user has no identity records at all' do
+        before do
+          other_identity.destroy!
+        end
+
+        it 'still returns matching profiles because cross-SP mode skips the identity join' do
+          expect(subject.duplicate_facial_match_profiles(service_provider:)).to contain_exactly(
+            other_profile,
+          )
+        end
+      end
     end
   end
 end

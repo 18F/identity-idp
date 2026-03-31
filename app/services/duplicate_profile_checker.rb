@@ -36,10 +36,16 @@ class DuplicateProfileChecker
   end
 
   def close_existing_duplicate_set_if_present
-    existing_duplicate_profile_set = DuplicateProfileSet.involving_profile(
-      profile_id: profile.id,
-      service_provider: sp.issuer,
-    )
+    existing_duplicate_profile_set = if cross_sp_mode?
+      DuplicateProfileSet.involving_profile_any_sp(
+        profile_id: profile.id,
+      )
+    else
+      DuplicateProfileSet.involving_profile(
+        profile_id: profile.id,
+        service_provider: sp.issuer,
+      )
+    end
 
     return unless existing_duplicate_profile_set.present?
     closed_at = Time.zone.now
@@ -69,10 +75,16 @@ class DuplicateProfileChecker
   end
 
   def find_existing_duplicate_profile_set(profile_ids)
-    DuplicateProfileSet.set_for_profiles_and_service_provider(
-      profile_ids: profile_ids,
-      service_provider: sp.issuer,
-    )
+    if cross_sp_mode?
+      DuplicateProfileSet.set_for_profiles(
+        profile_ids: profile_ids,
+      )
+    else
+      DuplicateProfileSet.set_for_profiles_and_service_provider(
+        profile_ids: profile_ids,
+        service_provider: sp.issuer,
+      )
+    end
   end
 
   def update_existing_duplicate_set(existing_duplicate_profile_set, new_profile_ids)
@@ -96,7 +108,7 @@ class DuplicateProfileChecker
 
   def create_duplicate_profile_set(profile_ids)
     set = DuplicateProfileSet.create(
-      service_provider: sp&.issuer,
+      service_provider: cross_sp_mode? ? nil : sp&.issuer,
       profile_ids: profile_ids,
     )
     analytics.one_account_duplicate_profile_created
@@ -127,5 +139,10 @@ class DuplicateProfileChecker
     else
       false
     end
+  end
+
+  def cross_sp_mode?
+    FeatureManagement.one_account_enforcement_mode ==
+      FeatureManagement::ONE_ACCOUNT_ENFORCEMENT_MODES[:ial2_cross_sp_all_sps]
   end
 end
