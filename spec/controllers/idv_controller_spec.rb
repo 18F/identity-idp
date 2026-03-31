@@ -117,7 +117,7 @@ RSpec.describe IdvController do
           allow(IdentityConfig.store).to receive(:reproof_non_facial_match_service_providers)
             .and_return([service_provider.issuer])
         end
-        
+
         context 'when profile was proofed as in_person' do
           let(:user) { create(:user, :proofed_in_person_enrollment) }
 
