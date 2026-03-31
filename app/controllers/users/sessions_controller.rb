@@ -11,6 +11,7 @@ module Users
     include NewDeviceConcern
     include AbTestingConcern
     include RecaptchaConcern
+    include Idv::HistoricalAttemptsConcern
 
     rescue_from ActionController::InvalidAuthenticityToken, with: :redirect_to_signin
 
@@ -203,6 +204,7 @@ module Users
       rate_limiter&.reset!
       sign_in(resource_name, resource)
       cache_profiles(auth_params[:password])
+      cache_user_proofing_events
       set_new_device_session(nil)
       event, = create_user_event(:sign_in_before_2fa)
       UserAlerts::AlertUserAboutNewDevice.schedule_alert(event:) if new_device?
@@ -349,6 +351,18 @@ module Users
       )
       profiling_result&.rejected?
     end
+
+    # def cache_user_proofing_events
+    #   AttemptsApi::HistoricalAttempts.new(
+    #     idv_session: Idv::Session.new(
+    #       user_session: user_session,
+    #       current_user:,
+    #       service_provider: current_sp,
+    #     ),
+    #     user_session:,
+    #     password: auth_params[:password],
+    #   ).cache_user_proofing_events
+    # end
   end
 
   def unsafe_redirect_error(_exception)

@@ -1,24 +1,20 @@
+
 # frozen_string_literal: true
 # omg does this need to be a concern, to gain all the vars that are available to controllers?
-module AttemptsApi
-  class HistoricalAttempts
-    attr_reader :idv_session, :user_session
+module Idv
+  module HistoricalAttemptsConcern
+    extend ActiveSupport::Concern
 
-    def initialize(idv_session:, user_session:, password:)
-      @idv_session = idv_session
-      @user_session = user_session
-      @password = password
-    end
-
-    def record_events
+    def record_user_proofing_events(password)
       return unless historical_events_enabled?
+      @password = password
 
       if !existing_user_proofing_event
         encrypted_events = encrypt_attempt_events_bundle(user_session['idv/attempts'])
         encrypted_events_json = JSON.parse(encrypted_events)
         new_user_proofing_event = UserProofingEvent.new(
           encrypted_events:,
-          profile_id: idv_session.profile.id,
+          profile_id: active_user.current_profile.id,
           service_providers_sent: [],
           cost: encrypted_events_json['cost'],
           salt: encrypted_events_json['salt'],
@@ -34,6 +30,7 @@ module AttemptsApi
     end
 
     def cache_user_proofing_events
+      binding.pry
       return unless historical_events_permitted? && existing_user_proofing_event
 
       existing_events = decrypt_user_proofing_events
@@ -43,21 +40,26 @@ module AttemptsApi
 
     private
 
+    def ial2_requested?
+      resolved_authn_context_result.identity_proofing_or_ialmax? && current_user.identity_verified?
+    end
+
     def historical_events_permitted?
       return false unless historical_events_enabled?
 
+      sent_to_aaca = existing_user_proofing_event&.service_providers_sent.include?(current_sp.issuer)
 
+      return !sent_to_aaca
     end
 
     def historical_events_enabled?
       return false unless IdentityConfig.store.historical_attempts_api_enabled
 
-      service_provider = idv_session.service_provider
-      service_provider&.attempts_api_enabled?
+      current_sp&.attempts_api_enabled? && ial2_requested?
     end
 
     def existing_user_proofing_event
-      UserProofingEvent.find_by(profile_id: idv_session.profile.id)
+      UserProofingEvent.find_by(profile_id: current_user.active_profile.id)
     end
 
     def encrypt_attempt_events_bundle(bundle)
@@ -73,7 +75,7 @@ module AttemptsApi
     end
 
     def user_uuid
-      @user_uuid ||= idv_session.current_user['uuid']
+      @user_uuid ||= current_user['uuid']
     end
   end
 end
