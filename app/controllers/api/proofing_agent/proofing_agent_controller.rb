@@ -16,7 +16,7 @@ module Api
 
       def search_user
         email_account_found = user_account_for_email.present?
-        ssn_profile_found = profiles_with_matching_ssn.count >= 1
+        ssn_profile_found = profiles_with_matching_ssn.any?
         response_body = {
           request_id:,
           email_account_found:,
@@ -108,7 +108,7 @@ module Api
       end
 
       def check_if_user_exists
-        return true if user_account_for_email.present? || profiles_with_matching_ssn.count >= 1
+        return true if user_account_for_email.present? || profiles_with_matching_ssn.any?
       end
 
       def profiles_with_matching_account
@@ -118,7 +118,7 @@ module Api
       end
 
       def build_profiles_results_array
-        return @result_array if @result_array.present?
+        return @result_array if defined?(@result_array)
         @result_array = []
         profiles = profiles_with_matching_ssn | profiles_with_matching_account
         profiles.each do |profile|
