@@ -98,7 +98,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
     {
       'X-Proofing-Location-ID' => 'loc-123',
       'X-Proofing-Agent-ID' => 'agent-456',
-      'X-Correlation-ID' => 'req-789',
+      'X-Correlation-ID' => 'correlation-789',
     }
   end
 
@@ -226,7 +226,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
 
         it 'returns the X-Correlation-ID header as correlation_id' do
           action
-          expect(response.headers['X-Correlation-ID']).to eq('req-789')
+          expect(response.headers['X-Correlation-ID']).to eq('correlation-789')
         end
 
         it 'returns correct profiles and found attributes' do
@@ -287,7 +287,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
 
         context 'without X-Proofing-Location-ID header' do
           let(:headers) do
-            { 'X-Proofing-Agent-ID' => 'agent-456', 'X-Correlation-ID' => 'req-789' }
+            { 'X-Proofing-Agent-ID' => 'agent-456', 'X-Correlation-ID' => 'correlation-789' }
           end
 
           it 'returns 400' do
@@ -298,14 +298,14 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
               failure_type: :validation,
               issuer:,
               agent_id: 'agent-456',
-              correlation_id: 'req-789',
+              correlation_id: 'correlation-789',
             )
           end
         end
 
         context 'without X-Proofing-Agent-ID header' do
           let(:headers) do
-            { 'X-Proofing-Location-ID' => 'loc-123', 'X-Correlation-ID' => 'req-789' }
+            { 'X-Proofing-Location-ID' => 'loc-123', 'X-Correlation-ID' => 'correlation-789' }
           end
 
           it 'returns 400' do
@@ -316,7 +316,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
               failure_type: :validation,
               issuer:,
               location_id: 'loc-123',
-              correlation_id: 'req-789',
+              correlation_id: 'correlation-789',
             )
           end
         end
@@ -399,12 +399,12 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
 
           it 'returns the X-Correlation-ID header as correlation_id' do
             action
-            expect(response.headers['X-Correlation-ID']).to eq('req-789')
+            expect(response.headers['X-Correlation-ID']).to eq('correlation-789')
           end
 
           context 'without X-Proofing-Location-ID header' do
             let(:headers) do
-              { 'X-Proofing-Agent-ID' => 'agent-456', 'X-Correlation-ID' => 'req-789' }
+              { 'X-Proofing-Agent-ID' => 'agent-456', 'X-Correlation-ID' => 'correlation-789' }
             end
 
             it 'returns 400' do
@@ -415,14 +415,14 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
                 failure_type: :validation,
                 issuer:,
                 agent_id: 'agent-456',
-                correlation_id: 'req-789',
+                correlation_id: 'correlation-789',
               )
             end
           end
 
           context 'without X-Proofing-Agent-ID header' do
             let(:headers) do
-              { 'X-Proofing-Location-ID' => 'loc-123', 'X-Correlation-ID' => 'req-789' }
+              { 'X-Proofing-Location-ID' => 'loc-123', 'X-Correlation-ID' => 'correlation-789' }
             end
 
             it 'returns 400' do
@@ -433,7 +433,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
                 failure_type: :validation,
                 issuer:,
                 location_id: 'loc-123',
-                correlation_id: 'req-789',
+                correlation_id: 'correlation-789',
               )
             end
           end
@@ -600,12 +600,12 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
 
           it 'returns the X-Correlation-ID header as correlation_id' do
             action
-            expect(response.headers['X-Correlation-ID']).to eq('req-789')
+            expect(response.headers['X-Correlation-ID']).to eq('correlation-789')
           end
 
           context 'without X-Proofing-Location-ID header' do
             let(:headers) do
-              { 'X-Proofing-Agent-ID' => 'agent-456', 'X-Correlation-ID' => 'req-789' }
+              { 'X-Proofing-Agent-ID' => 'agent-456', 'X-Correlation-ID' => 'correlation-789' }
             end
 
             it 'returns 400' do
@@ -616,14 +616,14 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
                 failure_type: :validation,
                 issuer:,
                 agent_id: 'agent-456',
-                correlation_id: 'req-789',
+                correlation_id: 'correlation-789',
               )
             end
           end
 
           context 'without X-Proofing-Agent-ID header' do
             let(:headers) do
-              { 'X-Proofing-Location-ID' => 'loc-123', 'X-Correlation-ID' => 'req-789' }
+              { 'X-Proofing-Location-ID' => 'loc-123', 'X-Correlation-ID' => 'correlation-789' }
             end
 
             it 'returns 400' do
@@ -634,7 +634,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
                 failure_type: :validation,
                 issuer:,
                 location_id: 'loc-123',
-                correlation_id: 'req-789',
+                correlation_id: 'correlation-789',
               )
             end
           end
@@ -761,12 +761,12 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
 
           it 'returns the X-Correlation-ID header as correlation_id' do
             action
-            expect(response.headers['X-Correlation-ID']).to eq('req-789')
+            expect(response.headers['X-Correlation-ID']).to eq('correlation-789')
           end
 
           context 'without X-Proofing-Location-ID header' do
             let(:headers) do
-              { 'X-Proofing-Agent-ID' => 'agent-456', 'X-Correlation-ID' => 'req-789' }
+              { 'X-Proofing-Agent-ID' => 'agent-456', 'X-Correlation-ID' => 'correlation-789' }
             end
 
             it 'returns 400' do
@@ -777,14 +777,14 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
                 failure_type: :validation,
                 issuer:,
                 agent_id: 'agent-456',
-                correlation_id: 'req-789',
+                correlation_id: 'correlation-789',
               )
             end
           end
 
           context 'without X-Proofing-Agent-ID header' do
             let(:headers) do
-              { 'X-Proofing-Location-ID' => 'loc-123', 'X-Correlation-ID' => 'req-789' }
+              { 'X-Proofing-Location-ID' => 'loc-123', 'X-Correlation-ID' => 'correlation-789' }
             end
 
             it 'returns 400' do
@@ -795,7 +795,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
                 failure_type: :validation,
                 issuer:,
                 location_id: 'loc-123',
-                correlation_id: 'req-789',
+                correlation_id: 'correlation-789',
               )
             end
           end
