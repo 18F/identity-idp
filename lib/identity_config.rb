@@ -476,6 +476,7 @@ module IdentityConfig
     config.add(:s3_report_bucket_prefix, type: :string)
     config.add(:s3_report_public_bucket_prefix, type: :string)
     config.add(:s3_data_warehouse_bucket_prefix, type: :string)
+    config.add(:s3_data_warehouse_replica_bucket_prefix, type: :string)
     config.add(:s3_idp_dw_tasks, type: :string)
     config.add(:s3_reports_enabled, type: :boolean)
     config.add(:saml_endpoint_configs, type: :json, options: { symbolize_names: true })
