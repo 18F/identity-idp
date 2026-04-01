@@ -25,10 +25,16 @@ class DuplicateProfilesDetectedController < ApplicationController
   end
 
   def duplicate_profile_set
-    @duplicate_profile_set ||= DuplicateProfileSet.involving_profile(
-      profile_id: current_user.active_profile.id,
-      service_provider: current_sp&.issuer,
-    )
+    @duplicate_profile_set ||= if IdentityConfig.store.enable_one_account_global_detection
+                                 DuplicateProfileSet.involving_profile_global(
+                                   profile_id: current_user.active_profile.id,
+                                 )
+    else
+      DuplicateProfileSet.involving_profile(
+        profile_id: current_user.active_profile.id,
+        service_provider: current_sp&.issuer,
+      )
+    end
   end
 
   def notify_users_of_duplicate_profile(source:)
