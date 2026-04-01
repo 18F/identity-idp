@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'aws-sdk-redshiftdataapiservice'
-
 module Reporting
   class PartnerIdvReport
     REDSHIFT_QUERY = <<~SQL.freeze
@@ -88,7 +86,10 @@ module Reporting
     end
 
     def redshift_client
-      @redshift_client ||= Aws::RedshiftDataAPIService::Client.new
+      @redshift_client ||= begin
+        require 'aws-sdk-redshiftdataapiservice'
+        Aws::RedshiftDataAPIService::Client.new
+      end
     end
 
     private
