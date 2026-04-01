@@ -19,6 +19,7 @@ default:
   tags:
     - test-pool
 
+
 .bundle_install: &bundle_install
   - bundle check || bundle install --deployment --jobs=4 --retry=3 --without deploy development doc production --path vendor/ruby
 
