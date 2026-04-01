@@ -10,6 +10,7 @@ gem 'aws-sdk-kms', '~> 1.71.0'
 gem 'aws-sdk-cloudwatchlogs', require: false
 gem 'aws-sdk-pinpoint'
 gem 'aws-sdk-pinpointsmsvoice'
+gem 'aws-sdk-redshiftdataapiservice', require: false
 gem 'aws-sdk-ses', '~> 1.6'
 gem 'aws-sdk-sns'
 gem 'aws-sdk-sqs'
