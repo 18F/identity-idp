@@ -2,7 +2,6 @@
 
 module SignUp
   class CompletionsController < ApplicationController
-    # include IdvSessionConcern
     include SecureHeadersConcern
 
     before_action :confirm_two_factor_authenticated
@@ -152,7 +151,7 @@ module SignUp
 
       # send to redis queue and upadate sp_sent
 
-      # user_proofing_event.add_sp_sent(current_sp.issuer)
+      user_proofing_event.add_sp_sent(current_sp.issuer)
     end
 
     def historical_events_permitted?

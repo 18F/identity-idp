@@ -351,18 +351,6 @@ module Users
       )
       profiling_result&.rejected?
     end
-
-    # def cache_user_proofing_events
-    #   AttemptsApi::HistoricalAttempts.new(
-    #     idv_session: Idv::Session.new(
-    #       user_session: user_session,
-    #       current_user:,
-    #       service_provider: current_sp,
-    #     ),
-    #     user_session:,
-    #     password: auth_params[:password],
-    #   ).cache_user_proofing_events
-    # end
   end
 
   def unsafe_redirect_error(_exception)

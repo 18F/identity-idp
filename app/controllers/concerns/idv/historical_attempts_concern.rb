@@ -1,6 +1,6 @@
-
 # frozen_string_literal: true
-# omg does this need to be a concern, to gain all the vars that are available to controllers?
+
+# relies on `%w[user_session current_sp current_user]` being available to the controller.
 module Idv
   module HistoricalAttemptsConcern
     extend ActiveSupport::Concern
@@ -14,7 +14,7 @@ module Idv
         encrypted_events_json = JSON.parse(encrypted_events)
         new_user_proofing_event = UserProofingEvent.new(
           encrypted_events:,
-          profile_id: active_user.current_profile.id,
+          profile_id: current_user.active_profile.id,
           service_providers_sent: [],
           cost: encrypted_events_json['cost'],
           salt: encrypted_events_json['salt'],
