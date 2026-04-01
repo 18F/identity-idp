@@ -82,7 +82,7 @@ RSpec.describe DisplayablePiiFormatter do
 
         expect(result.email).to eq('test1@example.com')
         expect(result.all_emails).to match_array(['test1@example.com', 'test2@example.com'])
-        expect(result.verified_at).to eq(I18n.l(verified_at, format: :event_timestamp))
+        expect(result.verified_at).to eq(verified_at)
         expect(result.x509_subject).to eq('foo')
         expect(result.x509_issuer).to eq('bar')
         expect(result.full_name).to be_nil
@@ -99,7 +99,7 @@ RSpec.describe DisplayablePiiFormatter do
 
         expect(result.email).to eq('test1@example.com')
         expect(result.all_emails).to match_array(['test1@example.com', 'test2@example.com'])
-        expect(result.verified_at).to eq(I18n.l(verified_at, format: :event_timestamp))
+        expect(result.verified_at).to eq(verified_at)
         expect(result.x509_subject).to eq('foo')
         expect(result.x509_issuer).to eq('bar')
         expect(result.full_name).to eq('Testy Testerson')
@@ -115,8 +115,7 @@ RSpec.describe DisplayablePiiFormatter do
         let(:verified_at) { 1.day.ago }
 
         it 'returns the date the user was verified' do
-          formatted_date = I18n.l(verified_at, format: :event_timestamp)
-          expect(formatter.format.verified_at).to eq(formatted_date)
+          expect(formatter.format.verified_at).to eq(verified_at)
         end
       end
     end
