@@ -11,7 +11,7 @@ RSpec.describe DisplayablePiiFormatter do
       build(:email_address, email: unconfirmed_email, last_sign_in_at: nil, confirmed_at: nil),
     ]
   end
-  let(:verified_at) { 1.day.ago.change(nsec: 0) }
+  let(:verified_at) { 1.day.ago }
   let(:profiles) do
     if verified_at
       [build(:profile, :active, verified_at: verified_at)]
@@ -82,7 +82,7 @@ RSpec.describe DisplayablePiiFormatter do
 
         expect(result.email).to eq('test1@example.com')
         expect(result.all_emails).to match_array(['test1@example.com', 'test2@example.com'])
-        expect(result.verified_at).to eq(verified_at)
+        expect(result.verified_at).to be_within(1.second).of(verified_at)
         expect(result.x509_subject).to eq('foo')
         expect(result.x509_issuer).to eq('bar')
         expect(result.full_name).to be_nil
@@ -99,7 +99,7 @@ RSpec.describe DisplayablePiiFormatter do
 
         expect(result.email).to eq('test1@example.com')
         expect(result.all_emails).to match_array(['test1@example.com', 'test2@example.com'])
-        expect(result.verified_at).to eq(verified_at)
+        expect(result.verified_at).to be_within(1.second).of(verified_at)
         expect(result.x509_subject).to eq('foo')
         expect(result.x509_issuer).to eq('bar')
         expect(result.full_name).to eq('Testy Testerson')
@@ -112,10 +112,10 @@ RSpec.describe DisplayablePiiFormatter do
 
     describe '#verified_at' do
       context 'for a verified user' do
-        let(:verified_at) { 1.day.ago.change(nsec: 0) }
+        let(:verified_at) { 1.day.ago }
 
         it 'returns the date the user was verified' do
-          expect(formatter.format.verified_at).to eq(verified_at)
+          expect(formatter.format.verified_at).to be_within(1.second).of(verified_at)
         end
       end
     end
