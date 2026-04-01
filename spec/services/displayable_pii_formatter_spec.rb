@@ -11,7 +11,7 @@ RSpec.describe DisplayablePiiFormatter do
       build(:email_address, email: unconfirmed_email, last_sign_in_at: nil, confirmed_at: nil),
     ]
   end
-  let(:verified_at) { 1.day.ago }
+  let(:verified_at) { 1.day.ago.change(nsec: 0) }
   let(:profiles) do
     if verified_at
       [build(:profile, :active, verified_at: verified_at)]
@@ -112,7 +112,7 @@ RSpec.describe DisplayablePiiFormatter do
 
     describe '#verified_at' do
       context 'for a verified user' do
-        let(:verified_at) { 1.day.ago }
+        let(:verified_at) { 1.day.ago.change(nsec: 0) }
 
         it 'returns the date the user was verified' do
           expect(formatter.format.verified_at).to eq(verified_at)
