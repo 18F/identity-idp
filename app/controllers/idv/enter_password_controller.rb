@@ -37,12 +37,6 @@ module Idv
 
       init_profile
 
-      # historical_attempt = AttemptsApi::HistoricalAttempts.new(
-      #   idv_session:,
-      #   user_session:,
-      #   password:,
-      # )
-      # historical_attempt.record_events
       record_user_proofing_events(password)
 
       flash[:success] =

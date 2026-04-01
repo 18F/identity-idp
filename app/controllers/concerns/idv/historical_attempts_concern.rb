@@ -29,9 +29,9 @@ module Idv
       end
     end
 
-    def cache_user_proofing_events
-      binding.pry
+    def cache_user_proofing_events(password)
       return unless historical_events_permitted? && existing_user_proofing_event
+      @password = password
 
       existing_events = decrypt_user_proofing_events
       kms_encrypted_events = SessionEncryptor.new.kms_encrypt(existing_events)
