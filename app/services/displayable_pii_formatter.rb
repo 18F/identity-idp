@@ -50,8 +50,7 @@ class DisplayablePiiFormatter
   end
 
   def verified_at
-    timestamp = current_user.active_profile&.verified_at
-    I18n.l(timestamp, format: :event_timestamp) if timestamp
+    current_user.active_profile&.verified_at
   end
 
   def x509_subject
