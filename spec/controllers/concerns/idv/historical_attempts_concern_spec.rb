@@ -134,8 +134,6 @@ RSpec.describe Idv::HistoricalAttemptsConcern, type: :controller do
 
       before do
         allow(UserProofingEvent).to receive(:new).and_call_original
-        allow(pii_encryptor).to receive(:decrypt).and_call_original
-        allow(pii_encryptor).to receive(:encrypt).and_call_original
         allow(UserProofingEvent).to receive(:find_by).and_return(user_proofing_event)
         allow(user_proofing_event).to receive(:update_encrypted_events).and_return(true)
         record_user_proofing_events
@@ -166,7 +164,7 @@ RSpec.describe Idv::HistoricalAttemptsConcern, type: :controller do
       create(
         :user_proofing_event,
         encrypted_events: encrypted_existing_events,
-        service_providers_sent: [sp.issuer],
+        service_providers_sent: [],
         cost: JSON.parse(encrypted_existing_events)['cost'],
         salt: JSON.parse(encrypted_existing_events)['salt'],
         profile_id: registered_user.active_profile.id,
@@ -174,13 +172,11 @@ RSpec.describe Idv::HistoricalAttemptsConcern, type: :controller do
     }
 
     before do
-      allow(pii_encryptor).to receive(:decrypt).and_call_original
-      allow(pii_encryptor).to receive(:encrypt).and_call_original
       allow(UserProofingEvent).to receive(:find_by).and_return(user_proofing_event)
       allow(user_proofing_event).to receive(:update_encrypted_events).and_return(true)
     end
 
-    context 'historical events are not allowed' do
+    context 'historical events are disallowed' do
       context 'historical_attempts_api_enabled is false at the secrets level' do
         before do
           allow(IdentityConfig.store).to receive(
@@ -212,6 +208,17 @@ RSpec.describe Idv::HistoricalAttemptsConcern, type: :controller do
       end
 
       context 'events already sent to SP' do
+        let(:user_proofing_event) {
+          create(
+            :user_proofing_event,
+            encrypted_events: encrypted_existing_events,
+            service_providers_sent: [sp.issuer],
+            cost: JSON.parse(encrypted_existing_events)['cost'],
+            salt: JSON.parse(encrypted_existing_events)['salt'],
+            profile_id: registered_user.active_profile.id,
+          )
+        }
+
         before do
           allow(UserProofingEvent).to receive(:find_by).and_return(user_proofing_event)
         end
@@ -222,6 +229,34 @@ RSpec.describe Idv::HistoricalAttemptsConcern, type: :controller do
 
           cache_user_proofing_events
         end
+      end
+    end
+
+    context 'historical events are permitted' do
+      let(:mock_session_encryptor) { double }
+      let(:kms_encrypted_events) { 'kms_encrypted_events' }
+
+      before do
+        allow(SessionEncryptor).to receive(:new).and_return(mock_session_encryptor)
+        allow(mock_session_encryptor).to receive(:kms_encrypt).and_return(kms_encrypted_events)
+        cache_user_proofing_events
+      end
+
+      it 'decrypts the appropriate UserProofingEvent' do
+        expect(pii_encryptor).to have_received(:decrypt).once.with(
+          user_proofing_event.encrypted_events,
+          user_uuid: registered_user.uuid,
+        )
+      end
+
+      it 'encrypts with the kms session key' do
+        expect(mock_session_encryptor).to have_received(:kms_encrypt).once.with(
+          existing_events.to_json
+        )
+      end
+
+      it 'updates the user_session with the UserProofingEvent' do
+        expect(controller.user_session[:encrypted_proofing_events]).to eq(kms_encrypted_events)
       end
     end
   end
