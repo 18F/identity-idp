@@ -16,15 +16,13 @@ module Api
       after_action :add_custom_headers_to_response
 
       def search_user
-        email_account_found = user_account_for_email.present?
-        ssn_profile_found = profiles_with_matching_ssn.any?
         response_body = {
-          email_account_found:,
-          ssn_profile_found:,
-          profiles: build_profiles_results_array,
+          email_account_found: user.present?,
+          ssn_profile_found: ssn_active_profiles.any?,
+          profiles: active_profiles,
         }
         track_account_check(
-          user_id: user_account_for_email&.id,
+          user_id: user&.id,
           response_body:,
           agent_id:,
           location_id:,
@@ -86,43 +84,31 @@ module Api
       end
 
       def email
-        @email ||= search_params[:email]
+        search_user_params[:email]
       end
 
       def ssn
-        @ssn ||= search_params[:ssn]
+        search_user_params[:ssn]
       end
 
-      def user_account_for_email
-        @user_account_for_email ||= EmailAddress.find_with_email(email)&.user
+      def user
+        @user ||= User.find_with_email(email)
       end
 
-      def ssn_signature_fingerprint
-        Pii::Fingerprinter.fingerprint(SsnFormatter.normalize(ssn))
+      def ssn_active_profiles
+        @ssn_active_profiles ||= Idv::DuplicateSsnFinder.new(user:, ssn:).ssn_profiles
       end
 
-      def profiles_with_matching_ssn
-        @profiles_with_matching_ssn ||= Profile.where(
-          ssn_signature: ssn_signature_fingerprint,
-        )
+      def user_active_profile
+        @user_active_profile ||= user&.active_profile
       end
 
-      def check_if_user_exists
-        return true if user_account_for_email.present? || profiles_with_matching_ssn.any?
-      end
-
-      def profiles_with_matching_account
-        return [] if user_account_for_email.blank?
-
-        Profile.where(user_id: user_account_for_email.id)
-      end
-
-      def build_profiles_results_array
-        profiles = profiles_with_matching_ssn | profiles_with_matching_account
-        @build_profiles_results_array ||= profiles.map do |profile|
+      def active_profiles
+        profiles = ssn_active_profiles | [user_active_profile].compact
+        @active_profiles ||= profiles.map do |profile|
           {
-            email_match: profile.user == user_account_for_email,
-            ssn_match: profile.ssn_signature == ssn_signature_fingerprint,
+            email_match: profile.user_id == user&.id,
+            ssn_match: ssn_active_profiles.any? { |ssn_profile| ssn_profile.id == profile.id },
             idv_level: Profile::PROOFING_AGENT_IDV_LEVELS[profile.idv_level],
           }
         end
@@ -130,7 +116,7 @@ module Api
 
       def track_failure(failure_type:, agent_id: nil, location_id: nil, correlation_id: nil)
         analytics.idv_proofing_agent_request_failed(
-          issuer: request_token&.issuer,
+          issuer:,
           success: false,
           failure_type:,
           agent_id:,
@@ -190,12 +176,16 @@ module Api
         )
       end
 
-      def search_params
-        params.permit(:email, :ssn)
+      def search_user_params
+        @search_user_params = params.permit(:email, :ssn)
       end
 
       def add_custom_headers_to_response
         response.set_header('X-Correlation-ID', correlation_id) if correlation_id.present?
+      end
+
+      def issuer
+        request_token&.issuer
       end
     end
   end
