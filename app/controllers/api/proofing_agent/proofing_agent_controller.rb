@@ -30,14 +30,49 @@ module Api
       end
 
       def proof_user
+        return render_user_not_found unless user.present?
+        return render_already_proofed if user_has_ial2_profile?
+
         pii_validation = Idv::AgentPiiForm.new(pii: proof_params).submit
         render_bad_request(errors: pii_validation.errors) and return if !pii_validation.success?
-        render json: {}
+
+        user_id = user&.id
+
+        document_capture_session = DocumentCaptureSession.create!(
+          user_id:,
+          issuer: request_token.issuer,
+          doc_auth_vendor: 'proofing_agent',
+          requested_at: Time.zone.now,
+        )
+
+        response_body = {
+          status: 'pending',
+          transaction_id: document_capture_session.uuid,
+        }
+
+        analytics.idv_proofing_agent_request_received(
+          response_body:,
+          user_id:,
+          agent_id:,
+          location_id:,
+          correlation_id:,
+          transaction_id:,
+        )
+
+        render json: response_body, status: :accepted
       rescue ActionController::ParameterMissing => e
         render_bad_request(errors: { error: "Missing parameter #{e.param}" }) and return
       end
 
       private
+
+      def render_user_not_found
+        render json: { status: 'failed', reason: 'email_not_found' }, status: :unprocessable_content
+      end
+
+      def render_already_proofed
+        render json: { status: 'failed', reason: 'already_proofed_enhanced' }, status: :ok
+      end
 
       def validate_required_headers
         if location_id.blank? || agent_id.blank? || correlation_id.blank?
@@ -82,11 +117,11 @@ module Api
       end
 
       def email
-        search_user_params[:email]
+        @email ||= action_name == 'proof_user' ? proof_params[:email] : search_user_params[:email]
       end
 
       def ssn
-        search_user_params[:ssn]
+        @ssn ||= action_name == 'proof_user' ? proof_params[:ssn] : search_user_params[:ssn]
       end
 
       def user
@@ -121,6 +156,15 @@ module Api
           success: false,
           failure_type:,
         )
+      end
+
+      def user_account_exists?
+        user.present? || ssn_active_profiles.any?
+      end
+
+      def user_has_ial2_profile?
+        enhanced_levels = Profile::PROOFING_AGENT_IDV_LEVELS.select { |_, v| v == 'enhanced' }.keys
+        ssn_active_profiles.exists?(idv_level: enhanced_levels)
       end
 
       def proof_params
