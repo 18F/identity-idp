@@ -6,7 +6,9 @@ RSpec.describe Reporting::SpProofingEventsByUuid do
   let(:agency_abbreviation) { 'DOL' }
   let(:agency) { Agency.find_by(abbreviation: agency_abbreviation) }
 
-  let(:time_range) { Date.new(2024, 12, 1).all_week(:sunday) }
+  let(:time_range) do
+    Time.zone.local(2024, 12, 1, 9, 0, 0)...Time.zone.local(2024, 12, 1, 10, 0, 0)
+  end
 
   let(:deleted_user_uuid) { 'deleted_user_test' }
   let(:non_agency_user_uuid) { 'non_agency_user_test' }
@@ -41,28 +43,40 @@ RSpec.describe Reporting::SpProofingEventsByUuid do
 
   let(:expect_csv_result) do
     [
-      ['Date Range', '2024-12-01 - 2024-12-07'],
       [
-        'UUID',
-        'Issuer',
-        'App Differentiator',
-        'Workflow Started',
-        'Documnet Capture Started',
-        'Document Captured',
-        'Selfie Captured',
-        'Document Authentication Passed',
-        'SSN Submitted',
-        'Personal Information Submitted',
-        'Personal Information Verified',
-        'Phone Submitted',
-        'Phone Verified',
-        'Verification Workflow Complete',
-        'Identity Verified for In-Band Users',
-        'Identity Verified for Verify-By-Mail Users',
-        'Identity Verified for Fraud Review Users',
-        'Out-of-Band Verification Pending Seconds',
-        'Agency Handoff Visited',
-        'Agency Handoff Submitted',
+        'uuid',
+        'issuer',
+        'app differentiator',
+        'workflow started',
+        'document capture started',
+        'document captured',
+        'selfie captured',
+        'document authentication passed',
+        'ssn submitted',
+        'personal information submitted',
+        'personal information verified',
+        'phone submitted',
+        'phone verified',
+        'verification workflow complete',
+        'identity verified for in-band user',
+        'ipp started',
+        'ipp updated',
+        'ipp update reason',
+        'ipp update time',
+        'ipp passed',
+        'ipp failure reason',
+        'ipp fraud suspected',
+        'ipp primary id type',
+        'ipp secondary id type',
+        'ipp post office name',
+        'ipp post office city',
+        'ipp post office state',
+        'identity verified for ipp user',
+        'identity verified for verify-by-mail user',
+        'identity verified for fraud review user',
+        'out-of-band verification pending seconds',
+        'agency handoff visited',
+        'agency handoff submitted',
       ],
       [
         agency_user_agency_uuid,
@@ -79,6 +93,19 @@ RSpec.describe Reporting::SpProofingEventsByUuid do
         false,
         false,
         false,
+        false,
+        false,
+        false,
+        nil,
+        nil,
+        false,
+        nil,
+        false,
+        nil,
+        nil,
+        nil,
+        nil,
+        nil,
         false,
         false,
         false,
@@ -117,7 +144,9 @@ RSpec.describe Reporting::SpProofingEventsByUuid do
     it 'generates a csv' do
       csv = CSV.parse(report.to_csv, headers: false)
 
-      stringified_csv = expect_csv_result.map { |row| row.map(&:to_s) }
+      stringified_csv = expect_csv_result.map do |row|
+        row.map { |value| value&.to_s }
+      end
 
       aggregate_failures do
         csv.map(&:to_a).zip(stringified_csv).each do |actual, expected|
@@ -129,19 +158,33 @@ RSpec.describe Reporting::SpProofingEventsByUuid do
 
   describe '#as_emailable_reports' do
     it 'returns an array with an emailable report' do
-      expect(report.as_emailable_reports).to eq(
-        [
-          Reporting::EmailableReport.new(
-            title: 'DOL Proofing Events By UUID',
-            table: expect_csv_result,
-            filename: 'dol_proofing_events_by_uuid',
-          ),
-        ],
-      )
+      emailable_report = report.as_emailable_reports.first
+
+      aggregate_failures do
+        expect(report.as_emailable_reports.length).to eq(1)
+        expect(emailable_report.title).to eq('DOL Proofing Events By UUID')
+        expect(emailable_report.table).to eq(expect_csv_result)
+        expect(emailable_report.filename).to eq('dol_proofing_events_by_uuid')
+      end
     end
   end
 
   describe '#data' do
+    it 'fetches CloudWatch logs using the exact half-open time range bounds' do
+      cloudwatch_client = instance_double(Reporting::CloudwatchClient)
+
+      expect(cloudwatch_client).to receive(:fetch).with(
+        hash_including(
+          from: time_range.begin,
+          to: time_range.end - 0.001,
+        ),
+      ).and_return([])
+
+      allow(report).to receive(:cloudwatch_client).and_return(cloudwatch_client)
+
+      expect(report.data).to eq([])
+    end
+
     it 'fetches additional results if 10k results are returned' do
       cloudwatch_client = double(Reporting::CloudwatchClient)
       expect(cloudwatch_client).to receive(:fetch).ordered do |args|
