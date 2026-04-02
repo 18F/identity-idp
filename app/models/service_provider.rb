@@ -102,13 +102,6 @@ class ServiceProvider < ApplicationRecord
     logo_url.end_with?('.png')
   end
 
-  def needs_to_reproof?(user_profile)
-    Idv::ServiceProviderBasedReproofingPolicy.new(
-      active_profile: user_profile,
-      service_provider: self,
-    ).needs_to_reproof?
-  end
-
   def receives_client_id_in_risc?
     IdentityConfig
       .store
