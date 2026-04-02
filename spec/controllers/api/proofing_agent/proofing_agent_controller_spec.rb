@@ -102,7 +102,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
     }
   end
 
-  let(:request_id) { headers['X-Correlation-ID'] }
+  let(:correlation_id) { headers['X-Correlation-ID'] }
 
   let(:token) { 'a-shared-secret' }
   let(:salt) { SecureRandom.hex(32) }
@@ -219,12 +219,12 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
           expect(action.status).to eq(200)
         end
 
-        it 'includes request_id in the response' do
+        it 'includes correlation_id in the response' do
           action
           expect(response.headers['X-Correlation-ID']).to be_present
         end
 
-        it 'returns the X-Correlation-ID header as request_id' do
+        it 'returns the X-Correlation-ID header as correlation_id' do
           action
           expect(response.headers['X-Correlation-ID']).to eq('req-789')
         end
@@ -298,7 +298,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
               failure_type: :validation,
               issuer:,
               agent_id: 'agent-456',
-              request_id: 'req-789',
+              correlation_id: 'req-789',
             )
           end
         end
@@ -316,7 +316,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
               failure_type: :validation,
               issuer:,
               location_id: 'loc-123',
-              request_id: 'req-789',
+              correlation_id: 'req-789',
             )
           end
         end
@@ -392,12 +392,12 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
             expect(action.status).to eq(200)
           end
 
-          it 'includes request_id in the response' do
+          it 'includes correlation_id in the response' do
             action
             expect(response.headers['X-Correlation-ID']).to be_present
           end
 
-          it 'returns the X-Correlation-ID header as request_id' do
+          it 'returns the X-Correlation-ID header as correlation_id' do
             action
             expect(response.headers['X-Correlation-ID']).to eq('req-789')
           end
@@ -415,7 +415,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
                 failure_type: :validation,
                 issuer:,
                 agent_id: 'agent-456',
-                request_id: 'req-789',
+                correlation_id: 'req-789',
               )
             end
           end
@@ -433,7 +433,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
                 failure_type: :validation,
                 issuer:,
                 location_id: 'loc-123',
-                request_id: 'req-789',
+                correlation_id: 'req-789',
               )
             end
           end
@@ -593,12 +593,12 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
             expect(action.status).to eq(200)
           end
 
-          it 'includes request_id in the response' do
+          it 'includes correlation_id in the response' do
             action
             expect(response.headers['X-Correlation-ID']).to be_present
           end
 
-          it 'returns the X-Correlation-ID header as request_id' do
+          it 'returns the X-Correlation-ID header as correlation_id' do
             action
             expect(response.headers['X-Correlation-ID']).to eq('req-789')
           end
@@ -616,7 +616,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
                 failure_type: :validation,
                 issuer:,
                 agent_id: 'agent-456',
-                request_id: 'req-789',
+                correlation_id: 'req-789',
               )
             end
           end
@@ -634,7 +634,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
                 failure_type: :validation,
                 issuer:,
                 location_id: 'loc-123',
-                request_id: 'req-789',
+                correlation_id: 'req-789',
               )
             end
           end
@@ -754,12 +754,12 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
             expect(action.status).to eq(200)
           end
 
-          it 'includes request_id in the response' do
+          it 'includes correlation_id in the response' do
             action
             expect(response.headers['X-Correlation-ID']).to be_present
           end
 
-          it 'returns the X-Correlation-ID header as request_id' do
+          it 'returns the X-Correlation-ID header as correlation_id' do
             action
             expect(response.headers['X-Correlation-ID']).to eq('req-789')
           end
@@ -777,7 +777,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
                 failure_type: :validation,
                 issuer:,
                 agent_id: 'agent-456',
-                request_id: 'req-789',
+                correlation_id: 'req-789',
               )
             end
           end
@@ -795,7 +795,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
                 failure_type: :validation,
                 issuer:,
                 location_id: 'loc-123',
-                request_id: 'req-789',
+                correlation_id: 'req-789',
               )
             end
           end
@@ -916,7 +916,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
             expect(action.status).to eq(200)
           end
 
-          it 'includes request_id in the response' do
+          it 'includes correlation_id in the response' do
             action
             expect(response.headers['X-Correlation-ID']).to be_present
           end

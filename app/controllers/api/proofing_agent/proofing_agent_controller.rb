@@ -45,8 +45,8 @@ module Api
       private
 
       def validate_required_headers
-        if location_id.blank? || agent_id.blank? || request_id.blank?
-          track_failure(failure_type: :validation, agent_id:, location_id:, request_id:)
+        if location_id.blank? || agent_id.blank? || correlation_id.blank?
+          track_failure(failure_type: :validation, agent_id:, location_id:, correlation_id:)
 
           required_headers = 'X-Proofing-Location-ID, X-Proofing-Agent-ID, X-Correlation-ID'
           render json: {
@@ -78,8 +78,8 @@ module Api
         @location_id ||= request.headers['X-Proofing-Location-ID']
       end
 
-      def request_id
-        @request_id ||= request.headers['X-Correlation-ID']
+      def correlation_id
+        @correlation_id ||= request.headers['X-Correlation-ID']
       end
 
       def request_token
@@ -129,14 +129,14 @@ module Api
         end
       end
 
-      def track_failure(failure_type:, agent_id: nil, location_id: nil, request_id: nil)
+      def track_failure(failure_type:, agent_id: nil, location_id: nil, correlation_id: nil)
         analytics.idv_proofing_agent_request_failed(
           issuer: request_token&.issuer,
           success: false,
           failure_type:,
           agent_id:,
           location_id:,
-          request_id:,
+          correlation_id:,
         )
       end
 
@@ -196,7 +196,7 @@ module Api
       end
 
       def add_custom_headers_to_response
-        response.set_header('X-Correlation-ID', request_id) if request_id.present?
+        response.set_header('X-Correlation-ID', correlation_id) if correlation_id.present?
       end
     end
   end
