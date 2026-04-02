@@ -116,7 +116,6 @@ module Reporting
 
     def as_csv
       csv = []
-      csv << ['Date Range', "#{time_range.begin.to_date} - #{time_range.end.to_date}"]
       csv << csv_header
       data.each do |result_row|
         csv << result_row

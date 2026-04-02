@@ -41,7 +41,6 @@ RSpec.describe Reporting::SpProofingEventsByUuid do
 
   let(:expect_csv_result) do
     [
-      ['Date Range', '2024-12-01 - 2024-12-07'],
       [
         'uuid',
         'issuer',
