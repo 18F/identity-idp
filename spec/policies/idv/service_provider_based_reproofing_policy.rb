@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe Idv::ReproofRequiredPolicy do
+RSpec.describe Idv::ServiceProviderBasedReproofingPolicy do
   let(:active_profile) { nil }
   let(:service_provider) { nil }
 
@@ -72,21 +72,21 @@ RSpec.describe Idv::ReproofRequiredPolicy do
       end
     end
 
-    context 'non-facial-match reproofing logic' do
+    context 'unsupervised_with_selfie reproofing logic' do
       let(:non_fm_issuer) { 'urn:gov:gsa:openidconnect:non-fm-reproof-sp' }
       let(:service_provider) { create(:service_provider, issuer: non_fm_issuer) }
 
       before do
         allow(IdentityConfig.store).to receive(:reproof_forcing_service_provider)
           .and_return('')
-        allow(IdentityConfig.store).to receive(:reproof_non_facial_match_service_providers)
-          .and_return(reproof_non_facial_match_service_providers)
+        allow(IdentityConfig.store).to receive(:reproof_if_not_unsupervised_with_selfie_service_providers)
+          .and_return(reproof_if_not_unsupervised_with_selfie_service_providers)
       end
 
-      let(:reproof_non_facial_match_service_providers) { [non_fm_issuer] }
+      let(:reproof_if_not_unsupervised_with_selfie_service_providers) { [non_fm_issuer] }
 
-      context 'when the SP is not in reproof_non_facial_match_service_providers' do
-        let(:reproof_non_facial_match_service_providers) { ['some-other-issuer'] }
+      context 'when the SP is not in reproof_if_not_unsupervised_with_selfie_service_providers' do
+        let(:reproof_if_not_unsupervised_with_selfie_service_providers) { ['some-other-issuer'] }
         let(:active_profile) { create(:profile, :active, idv_level: :legacy_unsupervised) }
 
         it 'returns false' do
@@ -94,7 +94,7 @@ RSpec.describe Idv::ReproofRequiredPolicy do
         end
       end
 
-      context 'when the SP is in reproof_non_facial_match_service_providers' do
+      context 'when the SP is in reproof_if_not_unsupervised_with_selfie_service_providers' do
         context 'when active_profile is nil' do
           let(:active_profile) { nil }
 

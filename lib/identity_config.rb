@@ -455,7 +455,7 @@ module IdentityConfig
     config.add(:remember_device_expiration_minutes_aal_2, type: :integer)
     config.add(:report_timeout, type: :integer)
     config.add(:reproof_forcing_service_provider, type: :string)
-    config.add(:reproof_non_facial_match_service_providers, type: :json)
+    config.add(:reproof_if_not_unsupervised_with_selfie_service_providers, type: :json)
     config.add(:requests_per_ip_cidr_allowlist, type: :comma_separated_string_list)
     config.add(:requests_per_ip_limit, type: :integer)
     config.add(:requests_per_ip_path_prefixes_allowlist, type: :comma_separated_string_list)

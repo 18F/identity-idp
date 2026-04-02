@@ -103,7 +103,7 @@ class ServiceProvider < ApplicationRecord
   end
 
   def needs_to_reproof?(user_profile)
-    Idv::ReproofRequiredPolicy.new(
+    Idv::ServiceProviderBasedReproofingPolicy.new(
       active_profile: user_profile,
       service_provider: self,
     ).needs_to_reproof?
