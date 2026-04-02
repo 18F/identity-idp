@@ -22,7 +22,7 @@ module Reports
       agency_abbreviation = report_config['agency_abbreviation']
       emails = report_config['emails']
 
-      agency_report_nane = "#{agency_abbreviation.downcase}_proofing_events_by_uuid"
+      agency_report_name = "#{agency_abbreviation.downcase}_proofing_events_by_uuid"
       agency_report_title = "#{agency_abbreviation} Proofing Events By UUID"
 
       report_maker = build_report_maker(
@@ -33,7 +33,7 @@ module Reports
 
       csv = report_maker.to_csv
 
-      save_report(agency_report_nane, csv, extension: 'csv')
+      save_report(agency_report_name, csv, extension: 'csv')
 
       if emails.blank?
         Rails.logger.warn "No email addresses received - #{agency_report_title} NOT SENT"
