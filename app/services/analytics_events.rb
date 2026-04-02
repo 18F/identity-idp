@@ -5316,13 +5316,13 @@ module AnalyticsEvents
   # @param [String,nil] user_id The ID of the user associated with the proof request, if applicable
   # @param [String,nil] agent_id The ID of the proofing agent
   # @param [String,nil] location_id The ID of the location where the proofing request was made
-  # @param [String,nil] request_id The request ID associated with the proof request
+  # @param [String,nil] correlation_id The request ID associated with the proof request
   def idv_proofing_agent_account_check_requested(
     response_body:,
     user_id: nil,
     agent_id: nil,
     location_id: nil,
-    request_id: nil,
+    correlation_id: nil,
     **extra
   )
     track_event(
@@ -5331,7 +5331,7 @@ module AnalyticsEvents
       user_id:,
       agent_id:,
       location_id:,
-      request_id:,
+      correlation_id:,
       **extra,
     )
   end
