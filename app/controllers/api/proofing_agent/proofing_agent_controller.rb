@@ -49,7 +49,7 @@ module Api
           track_failure(failure_type: :validation, agent_id:, location_id:, request_id:)
 
           render json: {
-            error: 'Missing required headers: X-Proofing-Location-Id, X-Agent-Id, X-Correlation-Id',
+            error: 'Missing required headers: X-Proofing-Location-ID, X-Proofing-Agent-ID, X-Correlation-ID',
           }, status: :bad_request
         end
       end
@@ -70,15 +70,15 @@ module Api
       end
 
       def agent_id
-        @agent_id ||= request.headers['X-Agent-Id']
+        @agent_id ||= request.headers['X-Proofing-Agent-ID']
       end
 
       def location_id
-        @location_id ||= request.headers['X-Proofing-Location-Id']
+        @location_id ||= request.headers['X-Proofing-Location-ID']
       end
 
       def request_id
-        @request_id ||= request.headers['X-Correlation-Id']
+        @request_id ||= request.headers['X-Correlation-ID']
       end
 
       def request_token
@@ -195,7 +195,7 @@ module Api
       end
 
       def add_custom_headers_to_response
-        response.set_header('X-Correlation-Id', request_id) if request_id.present?
+        response.set_header('X-Correlation-ID', request_id) if request_id.present?
       end
     end
   end
