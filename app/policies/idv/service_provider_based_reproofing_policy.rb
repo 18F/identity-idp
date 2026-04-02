@@ -11,6 +11,7 @@ module Idv
 
     def needs_to_reproof?
       return false unless active_profile.present?
+      return false unless service_provider.present?
       reproof_forcing_sp? || unsupervised_with_selfie_reproofing_required?
     end
 
