@@ -6,7 +6,9 @@ RSpec.describe Reporting::SpProofingEventsByUuid do
   let(:agency_abbreviation) { 'DOL' }
   let(:agency) { Agency.find_by(abbreviation: agency_abbreviation) }
 
-  let(:time_range) { Time.zone.local(2024, 12, 1, 9, 0, 0)...Time.zone.local(2024, 12, 1, 10, 0, 0) }
+  let(:time_range) do
+    Time.zone.local(2024, 12, 1, 9, 0, 0)...Time.zone.local(2024, 12, 1, 10, 0, 0)
+  end
 
   let(:deleted_user_uuid) { 'deleted_user_test' }
   let(:non_agency_user_uuid) { 'non_agency_user_test' }
@@ -143,7 +145,7 @@ RSpec.describe Reporting::SpProofingEventsByUuid do
       csv = CSV.parse(report.to_csv, headers: false)
 
       stringified_csv = expect_csv_result.map do |row|
-        row.map { |value| value.nil? ? nil : value.to_s }
+        row.map { |value| value&.to_s }
       end
 
       aggregate_failures do

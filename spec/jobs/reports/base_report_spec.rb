@@ -25,7 +25,7 @@ RSpec.describe Reports::BaseReport do
   end
 
   describe '#generate_s3_paths' do
-    let(:report_name) { 'abc_proofing_events_by_uuid' }
+    let(:report_name) { 'abc_proofing_events' }
     let(:extension) { 'csv' }
     let(:timestamp) { Time.utc(2026, 4, 1, 13, 0, 0) }
 
@@ -37,9 +37,9 @@ RSpec.describe Reports::BaseReport do
         now: timestamp,
       )
 
-      expect(latest_path).to eq('test/abc_proofing_events_by_uuid/latest.abc_proofing_events_by_uuid.csv')
+      expect(latest_path).to eq('test/abc_proofing_events/latest.abc_proofing_events.csv')
       expect(timestamped_path).to eq(
-        'test/abc_proofing_events_by_uuid/2026/2026-04-01.abc_proofing_events_by_uuid.csv',
+        'test/abc_proofing_events/2026/2026-04-01.abc_proofing_events.csv',
       )
     end
 
@@ -52,9 +52,9 @@ RSpec.describe Reports::BaseReport do
         timestamp_format: '%F.%H',
       )
 
-      expect(latest_path).to eq('test/abc_proofing_events_by_uuid/latest.abc_proofing_events_by_uuid.csv')
+      expect(latest_path).to eq('test/abc_proofing_events/latest.abc_proofing_events.csv')
       expect(timestamped_path).to eq(
-        'test/abc_proofing_events_by_uuid/2026/2026-04-01.13.abc_proofing_events_by_uuid.csv',
+        'test/abc_proofing_events/2026/2026-04-01.13.abc_proofing_events.csv',
       )
     end
   end
