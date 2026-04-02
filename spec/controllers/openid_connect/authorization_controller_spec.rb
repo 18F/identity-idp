@@ -313,7 +313,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
               context 'when the profile was proofed as in_person' do
                 let(:user) { create(:user, :proofed_in_person_enrollment) }
 
-                it 'redirects to have the user verify their account' do
+                it 'redirects to IDV welcome page for reproofing' do
                   action
                   expect(controller).to redirect_to(idv_url)
                 end
@@ -325,6 +325,15 @@ RSpec.describe OpenidConnect::AuthorizationController do
                 it 'redirects to the service provider' do
                   action
                   expect(response).to redirect_to(/^#{params[:redirect_uri]}/)
+                end
+              end
+
+              context 'when the profile is legacy_unsupervised' do
+                let(:idv_level) { :legacy_unsupervised }
+
+                it 'redirects to IDV welcome page for reproofing' do
+                  action
+                  expect(controller).to redirect_to(idv_url)
                 end
               end
             end
