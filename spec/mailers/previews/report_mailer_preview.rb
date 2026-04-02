@@ -246,20 +246,20 @@ class ReportMailerPreview < ActionMailer::Preview
 
     date    = Time.zone.yesterday.end_of_day
     issuers = ['issuer1']
-    agency  = 'Test_Agency'
+    agency_abbreviation = 'TSTAGNCY'
 
     builder = Reporting::SpVerificationReport.new(
       time_range: date.beginning_of_week(:sunday).prev_occurring(:sunday).all_week(:sunday),
       issuers: issuers,
-      agency_abbreviation: agency,
+      agency_abbreviation: agency_abbreviation,
     )
     stub_cloudwatch_client(builder)
 
     ReportMailer.tables_report(
       to: 'test@example.com',
       bcc: 'bcc@example.com',
-      subject: "#{agency} Verification Report - #{date.to_date}",
-      message: "Report: #{agency} Verification Report - #{date.to_date}",
+      subject: "#{agency_abbreviation} Verification Report - #{date.to_date}",
+      message: "Report: #{agency_abbreviation} Verification Report - #{date.to_date}",
       attachment_format: :csv,
       reports: builder.as_emailable_reports,
     )
@@ -393,23 +393,36 @@ class ReportMailerPreview < ActionMailer::Preview
     report_date = Time.zone.parse('2025-11-30').end_of_day
     config = {
       'issuers' => ['Issuer_2', 'Issuer_3', 'Issuer_4'],
-      'partner_strings' => ['Partner_1'],
+      # 'partner_strings' => ['Partner_1'],
+      'agency_abbreviation' => 'PRTNR1',
       'partner_emails' => ['partner1@example.com'],
       'internal_emails' => ['internal1@example.com'],
     }
-
     report = Reports::SpCredMetricsReport.new(report_date, :internal)
+
+    # Mock the partner lookup
+    def report.partner_accounts
+      [
+        IaaReportingHelper::PartnerConfig.new(
+          partner: 'Partner_1',
+          issuers: ['Issuer_2', 'Issuer_3', 'Issuer_4'], # ← Match your config issuers
+          start_date: 1.year.ago,
+          end_date: 1.year.from_now,
+        ),
+      ]
+    end
 
     # Apply config the same way send_report does
     report.instance_variable_set(:@report_date, report_date)
     report.instance_variable_set(:@report_receiver, :internal)
     report.instance_variable_set(:@issuers, config['issuers'])
-    report.instance_variable_set(:@partner_strings, config['partner_strings'])
+    # report.instance_variable_set(:@partner_strings, config['partner_strings'])
+    report.instance_variable_set(:@agency_abbreviation, config['agency_abbreviation'])
     report.instance_variable_set(:@partner_emails, config['partner_emails'])
     report.instance_variable_set(:@internal_emails, config['internal_emails'])
     report.instance_variable_set(
       :@report_name,
-      "#{config['partner_strings'].first.downcase}_monthly_cred_metrics",
+      "#{config['agency_abbreviation'].downcase}_monthly_cred_metrics",
     )
 
     fixture_csv_data = File.read(
