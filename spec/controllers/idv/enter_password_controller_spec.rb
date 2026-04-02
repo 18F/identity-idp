@@ -1155,6 +1155,9 @@ RSpec.describe Idv::EnterPasswordController do
           resolved_authn_context_result = Component::Parser.new(
             acr_values: Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_REQUIRED_ACR,
           ).parse
+
+          allow(controller).to receive(:resolved_authn_context_result)
+            .and_return(resolved_authn_context_result)
         end
 
         context 'with a newly proofed user' do
