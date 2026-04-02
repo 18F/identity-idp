@@ -19,7 +19,7 @@ module Api
         email_account_found = user_account_for_email.present?
         ssn_profile_found = profiles_with_matching_ssn.any?
         response_body = {
-          request_id:,
+          correlation_id:,
           email_account_found:,
           ssn_profile_found:,
           profiles: build_profiles_results_array,
@@ -29,7 +29,7 @@ module Api
           response_body:,
           agent_id:,
           location_id:,
-          request_id:,
+          correlation_id:,
         )
         render json: response_body
       end
@@ -180,14 +180,14 @@ module Api
         response_body:,
         agent_id: nil,
         location_id: nil,
-        request_id: nil
+        correlation_id: nil
       )
         analytics.idv_proofing_agent_account_check_requested(
           user_id:,
           response_body:,
           agent_id:,
           location_id:,
-          request_id:,
+          correlation_id:,
         )
       end
 

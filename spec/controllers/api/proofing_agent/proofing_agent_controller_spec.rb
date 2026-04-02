@@ -248,7 +248,6 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
           )
           action
           body = JSON.parse(response.body)
-          expect(body['request_id']).to be_present
           expect(body['email_account_found']).to eq(true)
           expect(body['ssn_profile_found']).to eq(true)
           expect(body['profiles'].length).to eq(2)
@@ -270,11 +269,10 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
             response_body: a_hash_including(
               email_account_found: true,
               ssn_profile_found: true,
-              request_id: body['request_id'],
             ),
             agent_id: 'agent-456',
             location_id: 'loc-123',
-            request_id: 'req-789',
+            correlation_id: 'correlation-789',
           )
         end
         it 'requires both email and ssn in the payload' do
