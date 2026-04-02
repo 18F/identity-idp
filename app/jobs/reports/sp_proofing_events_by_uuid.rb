@@ -21,6 +21,8 @@ module Reports
       issuers = report_config['issuers']
       agency_abbreviation = report_config['agency_abbreviation']
       emails = report_config['emails']
+      report_hour = report_date.in_time_zone.beginning_of_hour
+      previous_hour_range = (report_hour - 1.hour)...report_hour
 
       agency_report_name = "#{agency_abbreviation.downcase}_proofing_events_by_uuid"
       agency_report_title = "#{agency_abbreviation} Proofing Events By UUID"
@@ -28,12 +30,18 @@ module Reports
       report_maker = build_report_maker(
         issuers:,
         agency_abbreviation:,
-        time_range: report_date.to_date.weeks_ago(1).all_week(:sunday),
+        time_range: previous_hour_range,
       )
 
       csv = report_maker.to_csv
 
-      save_report(agency_report_name, csv, extension: 'csv')
+      save_report(
+        agency_report_name,
+        csv,
+        extension: 'csv',
+        now: report_hour.utc,
+        timestamp_format: '%F.%H',
+      )
 
       if emails.blank?
         Rails.logger.warn "No email addresses received - #{agency_report_title} NOT SENT"
@@ -47,7 +55,7 @@ module Reports
       emails.each do |email|
         ReportMailer.tables_report(
           to: email,
-          subject: "#{agency_report_title} - #{report_date.to_date}",
+          subject: "#{agency_report_title} - #{report_hour.utc.strftime('%Y-%m-%d %H:%M UTC')}",
           reports: report_maker.as_emailable_reports,
           message: email_message,
           attachment_format: :csv,

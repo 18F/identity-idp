@@ -263,10 +263,11 @@ module Reporting
     end
 
     def fetch_results(after_row: nil)
+      range_end = time_range.exclude_end? ? time_range.end - 0.001 : time_range.end
       results = cloudwatch_client.fetch(
         query: query(after_row:),
-        from: time_range.begin.beginning_of_day,
-        to: time_range.end.end_of_day,
+        from: time_range.begin,
+        to: range_end,
       )
       return results if results.count < 10000
       results + fetch_results(after_row: results.last)

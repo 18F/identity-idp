@@ -6,7 +6,7 @@ RSpec.describe Reporting::SpProofingEventsByUuid do
   let(:agency_abbreviation) { 'DOL' }
   let(:agency) { Agency.find_by(abbreviation: agency_abbreviation) }
 
-  let(:time_range) { Date.new(2024, 12, 1).all_week(:sunday) }
+  let(:time_range) { Time.zone.local(2024, 12, 1, 9, 0, 0)...Time.zone.local(2024, 12, 1, 10, 0, 0) }
 
   let(:deleted_user_uuid) { 'deleted_user_test' }
   let(:non_agency_user_uuid) { 'non_agency_user_test' }
@@ -168,6 +168,21 @@ RSpec.describe Reporting::SpProofingEventsByUuid do
   end
 
   describe '#data' do
+    it 'fetches CloudWatch logs using the exact half-open time range bounds' do
+      cloudwatch_client = instance_double(Reporting::CloudwatchClient)
+
+      expect(cloudwatch_client).to receive(:fetch).with(
+        hash_including(
+          from: time_range.begin,
+          to: time_range.end - 0.001,
+        ),
+      ).and_return([])
+
+      allow(report).to receive(:cloudwatch_client).and_return(cloudwatch_client)
+
+      expect(report.data).to eq([])
+    end
+
     it 'fetches additional results if 10k results are returned' do
       cloudwatch_client = double(Reporting::CloudwatchClient)
       expect(cloudwatch_client).to receive(:fetch).ordered do |args|
