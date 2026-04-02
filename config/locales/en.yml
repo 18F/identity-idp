@@ -598,6 +598,7 @@ doc_auth.forms.change_file: Change file
 doc_auth.forms.choose_file_html: Drag file here or <lg-underline>choose from folder</lg-underline>
 doc_auth.forms.doc_success: We verified your information
 doc_auth.forms.id_type_preference.drivers_license: U.S. driver’s license or state ID
+doc_auth.forms.id_type_preference.mdl: Mobile Driver’s License (mDL)
 doc_auth.forms.id_type_preference.passport: U.S. passport book
 doc_auth.forms.selected_file: Selected file
 doc_auth.headers.expired_id: Your ID may have expired
@@ -1220,6 +1221,24 @@ idv.messages.gpo.resend: Send me another letter
 idv.messages.gpo.timeframe_html: You’ll get a letter with a <strong>verification code</strong> in <strong>5 to 10 days</strong>.
 idv.messages.gpo.verify_address_again_html: If you cannot receive mail at this address, you’ll need to %{verify_address_again_link_html}.
 idv.messages.gpo.verify_address_again_link_text: verify your address again
+idv.mdl.button: Open Mobile Wallet
+idv.mdl.errors.canceled: Verification was canceled. Please try again.
+idv.mdl.errors.generic: An error occurred during verification. Please try again.
+idv.mdl.errors.not_supported: Your browser does not support this feature. Please try scanning the QR code instead.
+idv.mdl.learn_more: Learn more about how to use mDL
+idv.mdl.loading: Connecting to your wallet...
+idv.mdl.qr_instructions: Scan this QR code with your mobile wallet app
+idv.mdl.steps.confirm_authorize.description: We'll securely verify the authenticity of your mDL with the issuing authority. This confirms your identity details, including your name, date of birth, and address, and ID information directly from your official digital ID.
+idv.mdl.steps.confirm_authorize.title: Confirm and authorize verification
+idv.mdl.steps.follow_prompts.description: Our system will guide you through the process
+idv.mdl.steps.follow_prompts.title: Follow the prompts
+idv.mdl.steps.have_ready.description: Ensure your official, state-issued mDL is accessible on your device
+idv.mdl.steps.have_ready.title: Have your mobile driver's license ready
+idv.mdl.steps_heading: 'You''ll need to:'
+idv.mdl.subtitle: Using your mDL helps us quickly and accurately confirm your identity, making the process smoother for you!
+idv.mdl.title: Add your mobile driver's license (mDL) information
+idv.mdl.use_different_method: Use a different verification method
+idv.mdl.waiting: Waiting for credential verification... Please complete the process in the Okta Credentials app.
 idv.messages.otp_delivery_method_description: If you entered a landline above, please select “Phone call” below.
 idv.messages.phone.alert_html: '<strong>Enter a phone number that is:</strong>'
 idv.messages.phone.description: We will check records to verify that your phone number matches your verified information, and send a one-time code.
