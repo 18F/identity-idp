@@ -13,7 +13,6 @@ module Idv
       request_ip:,
       ipp_enrollment_in_progress:,
       proofing_vendor:,
-      state_id_already_proofed: false,
       hybrid_mobile_threatmetrix_session_id: nil,
       hybrid_mobile_request_ip: nil
     )
@@ -35,7 +34,6 @@ module Idv
         hybrid_mobile_request_ip:,
         ipp_enrollment_in_progress:,
         proofing_vendor:,
-        state_id_already_proofed:,
       }
 
       if IdentityConfig.store.ruby_workers_idv_enabled

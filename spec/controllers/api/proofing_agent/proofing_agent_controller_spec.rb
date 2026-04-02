@@ -198,11 +198,12 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
     )
     allow(FeatureManagement).to receive(:idv_proofing_agent_enabled?).and_return(enabled)
     headers.each { |key, value| request.headers[key] = value }
-    allow(controller).to receive(:params).and_return(agent_params)
   end
 
   describe '#search_user' do
-    let(:action) { post :search_user }
+    let(:email) { 'user@example.com' }
+    let(:ssn) { '123-45-6789' }
+    let(:action) { post :search_user, params: { email: email, ssn: ssn } }
 
     context 'when proofing agent is not enabled' do
       it 'returns 404' do
@@ -228,6 +229,62 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
           action
           body = JSON.parse(response.body)
           expect(body['request_id']).to eq('req-789')
+        end
+
+        it 'returns correct profiles and found attributes' do
+          user = create(:user, email: email)
+          Profile.create!(
+            user_id: user.id,
+            ssn_signature: Pii::Fingerprinter.fingerprint(SsnFormatter.normalize(ssn)),
+            idv_level: 3,
+          )
+          Profile.create!(
+            user_id: create(:user, email: 'other@example.com').id,
+            ssn_signature: Pii::Fingerprinter.fingerprint(SsnFormatter.normalize(ssn)),
+            idv_level: 2,
+          )
+          Profile.create!(
+            user_id: create(:user, email: 'other1@example.com').id,
+            ssn_signature: Pii::Fingerprinter.fingerprint(SsnFormatter.normalize('987-65-4321')),
+            idv_level: 2,
+          )
+          action
+          body = JSON.parse(response.body)
+          expect(body['request_id']).to be_present
+          expect(body['email_account_found']).to eq(true)
+          expect(body['ssn_profile_found']).to eq(true)
+          expect(body['profiles'].length).to eq(2)
+          expect(body['profiles']).to include(
+            a_hash_including(
+              'email_match' => true,
+              'ssn_match' => true,
+              'idv_level' => 'enhanced',
+            ),
+            a_hash_including(
+              'email_match' => false,
+              'ssn_match' => true,
+              'idv_level' => 'enhanced',
+            ),
+          )
+          expect(@analytics).to have_logged_event(
+            :idv_proofing_agent_account_check_requested,
+            user_id: user.id,
+            response_body: a_hash_including(
+              email_account_found: true,
+              ssn_profile_found: true,
+              request_id: body['request_id'],
+            ),
+            agent_id: 'agent-456',
+            location_id: 'loc-123',
+            request_id: 'req-789',
+          )
+        end
+        it 'requires both email and ssn in the payload' do
+          post :search_user, params: { email: email }
+          expect(response.status).to eq(400)
+
+          post :search_user, params: { ssn: ssn }
+          expect(response.status).to eq(400)
         end
 
         context 'without X-Proofing-Location-Id header' do
@@ -308,6 +365,9 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
   end
 
   describe '#proof_user' do
+    before do
+      allow(controller).to receive(:params).and_return(agent_params)
+    end
     let(:action) { post :proof_user }
 
     context 'when proofing agent is not enabled' do

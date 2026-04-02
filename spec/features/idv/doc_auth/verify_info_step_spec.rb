@@ -390,41 +390,6 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
       end
     end
 
-    context 'AAMVA' do
-      let(:mock_state_id_jurisdiction) do
-        [Idp::Constants::MOCK_IDV_APPLICANT_STATE_ID_JURISDICTION]
-      end
-
-      context 'when the user lives in an AAMVA supported state' do
-        it 'performs a resolution and state ID check' do
-          allow(IdentityConfig.store).to receive(:aamva_supported_jurisdictions).and_return(
-            mock_state_id_jurisdiction,
-          )
-          expect_any_instance_of(Proofing::Mock::IdMockClient).to receive(:proof).with(
-            hash_including(
-              **Idp::Constants::MOCK_IDV_APPLICANT,
-            ),
-          ).and_call_original
-
-          complete_ssn_step
-          complete_verify_step
-        end
-      end
-
-      context 'when the user does not live in an AAMVA supported state' do
-        it 'does not perform the state ID check' do
-          allow(IdentityConfig.store).to receive(:aamva_supported_jurisdictions).and_return(
-            IdentityConfig.store.aamva_supported_jurisdictions -
-            mock_state_id_jurisdiction,
-          )
-          expect_any_instance_of(Proofing::Mock::IdMockClient).to_not receive(:proof)
-
-          complete_ssn_step
-          complete_verify_step
-        end
-      end
-    end
-
     context 'when phone pre-check is enabled' do
       let(:phonerisk_risk_score) { 0 }
       let(:phonerisk_correlation_score) { 1.0 }

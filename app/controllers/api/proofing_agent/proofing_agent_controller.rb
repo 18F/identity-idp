@@ -12,9 +12,25 @@ module Api
       skip_before_action :verify_authenticity_token
       before_action :authenticate_client
       before_action :validate_required_headers
+      before_action :validate_search_user_payload, only: :search_user
 
       def search_user
-        render json: { request_id: }
+        email_account_found = user_account_for_email.present?
+        ssn_profile_found = profiles_with_matching_ssn.any?
+        response_body = {
+          request_id:,
+          email_account_found:,
+          ssn_profile_found:,
+          profiles: build_profiles_results_array,
+        }
+        track_account_check(
+          user_id: user_account_for_email&.id,
+          response_body:,
+          agent_id:,
+          location_id:,
+          request_id:,
+        )
+        render json: response_body
       end
 
       def proof_user
@@ -34,6 +50,14 @@ module Api
 
           render json: {
             error: 'Missing required headers: X-Proofing-Location-Id, X-Agent-Id, X-Request-Id',
+          }, status: :bad_request
+        end
+      end
+
+      def validate_search_user_payload
+        if email.blank? || ssn.blank?
+          render json: {
+            error: 'Missing required payload: email, ssn',
           }, status: :bad_request
         end
       end
@@ -59,6 +83,49 @@ module Api
 
       def request_token
         @request_token ||= ::ProofingAgent::RequestTokenValidator.new(request.authorization)
+      end
+
+      def email
+        @email ||= search_params[:email]
+      end
+
+      def ssn
+        @ssn ||= search_params[:ssn]
+      end
+
+      def user_account_for_email
+        @user_account_for_email ||= EmailAddress.find_with_email(email)&.user
+      end
+
+      def ssn_signature_fingerprint
+        Pii::Fingerprinter.fingerprint(SsnFormatter.normalize(ssn))
+      end
+
+      def profiles_with_matching_ssn
+        @profiles_with_matching_ssn ||= Profile.where(
+          ssn_signature: ssn_signature_fingerprint,
+        )
+      end
+
+      def check_if_user_exists
+        return true if user_account_for_email.present? || profiles_with_matching_ssn.any?
+      end
+
+      def profiles_with_matching_account
+        return [] if user_account_for_email.blank?
+
+        Profile.where(user_id: user_account_for_email.id)
+      end
+
+      def build_profiles_results_array
+        profiles = profiles_with_matching_ssn | profiles_with_matching_account
+        @build_profiles_results_array ||= profiles.map do |profile|
+          {
+            email_match: profile.user == user_account_for_email,
+            ssn_match: profile.ssn_signature == ssn_signature_fingerprint,
+            idv_level: Profile::PROOFING_AGENT_IDV_LEVELS[profile.idv_level],
+          }
+        end
       end
 
       def track_failure(failure_type:, agent_id: nil, location_id: nil, request_id: nil)
@@ -105,6 +172,26 @@ module Api
           errors = { id_type: "Invalid id_type: #{proof_params[:id_type]}" }
         end
         render json: errors, status: :bad_request
+      end
+
+      def track_account_check(
+        user_id:,
+        response_body:,
+        agent_id: nil,
+        location_id: nil,
+        request_id: nil
+      )
+        analytics.idv_proofing_agent_account_check_requested(
+          user_id:,
+          response_body:,
+          agent_id:,
+          location_id:,
+          request_id:,
+        )
+      end
+
+      def search_params
+        params.permit(:email, :ssn)
       end
     end
   end

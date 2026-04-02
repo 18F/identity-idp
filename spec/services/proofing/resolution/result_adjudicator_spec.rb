@@ -16,17 +16,6 @@ RSpec.describe Proofing::Resolution::ResultAdjudicator do
   end
   let(:residential_resolution_result) { resolution_result }
 
-  let(:state_id_success) { true }
-  let(:state_id_verified_attributes) { [] }
-  let(:state_id_result) do
-    Proofing::StateIdResult.new(
-      success: state_id_success,
-      errors: {},
-      exception: nil,
-      vendor_name: 'test-state-id-vendor',
-      verified_attributes: state_id_verified_attributes,
-    )
-  end
   let(:phone_result) do
     Proofing::AddressResult.new(
       success: true,
@@ -36,7 +25,6 @@ RSpec.describe Proofing::Resolution::ResultAdjudicator do
     ).to_h
   end
 
-  let(:should_proof_state_id) { true }
   let(:ipp_enrollment_in_progress) { false }
   let(:same_address_as_id) { 'false' }
 
@@ -69,8 +57,6 @@ RSpec.describe Proofing::Resolution::ResultAdjudicator do
     described_class.new(
       resolution_result: resolution_result,
       residential_resolution_result: residential_resolution_result,
-      state_id_result: state_id_result,
-      should_proof_state_id: should_proof_state_id,
       ipp_enrollment_in_progress: ipp_enrollment_in_progress,
       device_profiling_result: device_profiling_result,
       hybrid_mobile_device_profiling_result: hybrid_mobile_device_profiling_result,
@@ -105,17 +91,6 @@ RSpec.describe Proofing::Resolution::ResultAdjudicator do
             expect(result.success?).to eq(false)
             resolution_adjudication_reason = result.extra[:context][:resolution_adjudication_reason]
             expect(resolution_adjudication_reason).to eq(:fail_resolution_skip_state_id)
-          end
-        end
-
-        context 'AAMVA fails for the id address' do
-          let(:state_id_success) { false }
-          it 'returns a failed response' do
-            result = subject.adjudicated_result
-
-            expect(result.success?).to eq(false)
-            resolution_adjudication_reason = result.extra[:context][:resolution_adjudication_reason]
-            expect(resolution_adjudication_reason).to eq(:fail_state_id)
           end
         end
       end
