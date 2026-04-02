@@ -19,7 +19,6 @@ module Api
         email_account_found = user_account_for_email.present?
         ssn_profile_found = profiles_with_matching_ssn.any?
         response_body = {
-          correlation_id:,
           email_account_found:,
           ssn_profile_found:,
           profiles: build_profiles_results_array,
