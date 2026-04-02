@@ -21,7 +21,7 @@ module Idv
     end
 
     def reproof_forcing_sp?
-      current_sp_is_reproof_forcing? &&  current_sp_is_not_initiating_sp?
+      current_sp_is_reproof_forcing? && current_sp_is_not_initiating_sp?
     end
 
     def current_sp_is_reproof_forcing?

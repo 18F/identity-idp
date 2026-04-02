@@ -77,9 +77,11 @@ RSpec.describe Idv::ServiceProviderBasedReproofingPolicy do
       let(:service_provider) { create(:service_provider, issuer: non_fm_issuer) }
 
       before do
-        allow(IdentityConfig.store).to receive(:reproof_forcing_service_provider)
+        allow(IdentityConfig.store)
+          .to receive(:reproof_forcing_service_provider)
           .and_return('')
-        allow(IdentityConfig.store).to receive(:reproof_if_not_unsupervised_with_selfie_service_providers)
+        allow(IdentityConfig.store)
+          .to receive(:reproof_if_not_unsupervised_with_selfie_service_providers)
           .and_return(reproof_if_not_unsupervised_with_selfie_service_providers)
       end
 

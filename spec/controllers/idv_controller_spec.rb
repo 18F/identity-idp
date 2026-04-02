@@ -114,7 +114,8 @@ RSpec.describe IdvController do
         let(:service_provider) { create(:service_provider) }
 
         before do
-          allow(IdentityConfig.store).to receive(:reproof_if_not_unsupervised_with_selfie_service_providers)
+          allow(IdentityConfig.store)
+            .to receive(:reproof_if_not_unsupervised_with_selfie_service_providers)
             .and_return([service_provider.issuer])
         end
 
