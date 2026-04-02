@@ -13,6 +13,7 @@ module Api
       before_action :authenticate_client
       before_action :validate_required_headers
       before_action :validate_search_user_payload, only: :search_user
+      after_action :add_custom_headers_to_response
 
       def search_user
         email_account_found = user_account_for_email.present?
@@ -36,8 +37,7 @@ module Api
       def proof_user
         pii_validation = Idv::AgentPiiForm.new(pii: proof_params).submit
         render_bad_request(errors: pii_validation.errors) and return if !pii_validation.success?
-
-        render json: { request_id: }
+        render json: {}
       rescue ActionController::ParameterMissing => e
         render_bad_request(errors: { error: "Missing parameter #{e.param}" }) and return
       end
@@ -192,6 +192,10 @@ module Api
 
       def search_params
         params.permit(:email, :ssn)
+      end
+
+      def add_custom_headers_to_response
+        response.set_header('X-Request-Id', request_id) if request_id.present?
       end
     end
   end

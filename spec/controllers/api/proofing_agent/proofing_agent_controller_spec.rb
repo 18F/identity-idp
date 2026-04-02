@@ -221,14 +221,12 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
 
         it 'includes request_id in the response' do
           action
-          body = JSON.parse(response.body)
-          expect(body['request_id']).to be_present
+          expect(response.headers['X-Request-Id']).to be_present
         end
 
         it 'returns the X-Request-Id header as request_id' do
           action
-          body = JSON.parse(response.body)
-          expect(body['request_id']).to eq('req-789')
+          expect(response.headers['X-Request-Id']).to eq('req-789')
         end
 
         it 'returns correct profiles and found attributes' do
@@ -390,14 +388,12 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
 
           it 'includes request_id in the response' do
             action
-            body = JSON.parse(response.body)
-            expect(body['request_id']).to be_present
+            expect(response.headers['X-Request-Id']).to be_present
           end
 
           it 'returns the X-Request-Id header as request_id' do
             action
-            body = JSON.parse(response.body)
-            expect(body['request_id']).to eq('req-789')
+            expect(response.headers['X-Request-Id']).to eq('req-789')
           end
 
           context 'without X-Proofing-Location-Id header' do
@@ -587,14 +583,12 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
 
           it 'includes request_id in the response' do
             action
-            body = JSON.parse(response.body)
-            expect(body['request_id']).to be_present
+            expect(response.headers['X-Request-Id']).to be_present
           end
 
           it 'returns the X-Request-Id header as request_id' do
             action
-            body = JSON.parse(response.body)
-            expect(body['request_id']).to eq('req-789')
+            expect(response.headers['X-Request-Id']).to eq('req-789')
           end
 
           context 'without X-Proofing-Location-Id header' do
@@ -744,14 +738,12 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
 
           it 'includes request_id in the response' do
             action
-            body = JSON.parse(response.body)
-            expect(body['request_id']).to be_present
+            expect(response.headers['X-Request-Id']).to be_present
           end
 
           it 'returns the X-Request-Id header as request_id' do
             action
-            body = JSON.parse(response.body)
-            expect(body['request_id']).to eq('req-789')
+            expect(response.headers['X-Request-Id']).to eq('req-789')
           end
 
           context 'without X-Proofing-Location-Id header' do
@@ -902,8 +894,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
 
           it 'includes request_id in the response' do
             action
-            body = JSON.parse(response.body)
-            expect(body['request_id']).to be_present
+            expect(response.headers['X-Request-Id']).to be_present
           end
         end
 
