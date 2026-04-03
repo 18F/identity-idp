@@ -292,6 +292,28 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
           end
         end
 
+        context 'when the user nor ssn have any profiles' do
+          it 'returns correct profiles and found attributes' do
+            create(:profile, :deactivated, user:, ssn_signature: Pii::Fingerprinter.fingerprint(SsnFormatter.normalize(ssn)), idv_level: 3)
+            action
+            body = JSON.parse(response.body)
+            expect(body['email_account_found']).to eq(true)
+            expect(body['ssn_profile_found']).to eq(false)
+            expect(body['profiles'].length).to eq(0)
+            expect(@analytics).to have_logged_event(
+              :idv_proofing_agent_account_check_requested,
+              response_body: a_hash_including(
+                email_account_found: true,
+                ssn_profile_found: false,
+                profiles: [],
+              ),
+              agent_id: 'agent-456',
+              location_id: 'loc-123',
+              correlation_id: 'correlation-789',
+            )
+          end
+        end
+
         context 'when the email and ssn match same profiles' do
           it 'returns correct profiles and found attributes' do
             create(:profile, :active, user:, ssn_signature: Pii::Fingerprinter.fingerprint(SsnFormatter.normalize(ssn)), idv_level: 3)
@@ -331,17 +353,17 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
                   a_hash_including(
                     email_match: true,
                     ssn_match: true,
-                    idv_level: 'enhanced'
+                    idv_level: 'enhanced',
                   ),
                   a_hash_including(
                     email_match: false,
                     ssn_match: true,
-                    idv_level: 'enhanced'
+                    idv_level: 'enhanced',
                   ),
                   a_hash_including(
                     email_match: false,
                     ssn_match: true,
-                    idv_level: 'basic'
+                    idv_level: 'basic',
                   )
                 ),
               ),
