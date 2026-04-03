@@ -12,7 +12,7 @@ RSpec.describe Idv::HistoricalAttemptsConcern, type: :controller do
   end
   let(:issuer) { 'this:is:a:test' }
   let(:sp) { create(:service_provider, ial: 2, issuer: issuer) }
-  let(:profile) { create(:profile, :active, :verified )}
+  let(:profile) { create(:profile, :active, :verified) }
   let(:applicant) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE }
   let(:user_proofing_event_new) { build(:user_proofing_event) }
   let(:encryptor_mock) { double }
@@ -41,8 +41,9 @@ RSpec.describe Idv::HistoricalAttemptsConcern, type: :controller do
       current_sp: sp,
       current_user: registered_user,
       sp_from_sp_session: sp,
-      sp_session: { vtr: nil, acr_values: Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF },
-      user_session: { 'idv/attempts' => idv_attempts }
+      sp_session: { vtr: nil,
+                    acr_values: Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF },
+      user_session: { 'idv/attempts' => idv_attempts },
     )
     allow(registered_user).to receive_messages(
       active_profile: profile,
@@ -62,9 +63,9 @@ RSpec.describe Idv::HistoricalAttemptsConcern, type: :controller do
   end
 
   describe '#record_user_proofing_events' do
-    subject(:record_user_proofing_events) {
+    subject(:record_user_proofing_events) do
       controller.record_user_proofing_events(password)
-    }
+    end
 
     context 'historical_attempts_api_enabled is false at the secrets level' do
       before do
@@ -121,7 +122,7 @@ RSpec.describe Idv::HistoricalAttemptsConcern, type: :controller do
 
     context 'when the user already has an existing UserProofingEvent' do
       let(:concatenated_events) { existing_events.merge(idv_attempts) }
-      let(:user_proofing_event) {
+      let(:user_proofing_event) do
         create(
           :user_proofing_event,
           encrypted_events: encrypted_existing_events,
@@ -130,7 +131,7 @@ RSpec.describe Idv::HistoricalAttemptsConcern, type: :controller do
           salt: JSON.parse(encrypted_existing_events)['salt'],
           profile_id: registered_user.active_profile.id,
         )
-      }
+      end
 
       before do
         allow(UserProofingEvent).to receive(:new).and_call_original
@@ -156,11 +157,11 @@ RSpec.describe Idv::HistoricalAttemptsConcern, type: :controller do
   end
 
   describe '#cache_user_proofing_events' do
-    subject(:cache_user_proofing_events) {
+    subject(:cache_user_proofing_events) do
       controller.cache_user_proofing_events(password)
-    }
+    end
 
-    let(:user_proofing_event) {
+    let(:user_proofing_event) do
       create(
         :user_proofing_event,
         encrypted_events: encrypted_existing_events,
@@ -169,7 +170,7 @@ RSpec.describe Idv::HistoricalAttemptsConcern, type: :controller do
         salt: JSON.parse(encrypted_existing_events)['salt'],
         profile_id: registered_user.active_profile.id,
       )
-    }
+    end
 
     before do
       allow(UserProofingEvent).to receive(:find_by).and_return(user_proofing_event)
@@ -208,7 +209,7 @@ RSpec.describe Idv::HistoricalAttemptsConcern, type: :controller do
       end
 
       context 'events already sent to SP' do
-        let(:user_proofing_event) {
+        let(:user_proofing_event) do
           create(
             :user_proofing_event,
             encrypted_events: encrypted_existing_events,
@@ -217,7 +218,7 @@ RSpec.describe Idv::HistoricalAttemptsConcern, type: :controller do
             salt: JSON.parse(encrypted_existing_events)['salt'],
             profile_id: registered_user.active_profile.id,
           )
-        }
+        end
 
         before do
           allow(UserProofingEvent).to receive(:find_by).and_return(user_proofing_event)
@@ -251,7 +252,7 @@ RSpec.describe Idv::HistoricalAttemptsConcern, type: :controller do
 
       it 'encrypts with the kms session key' do
         expect(mock_session_encryptor).to have_received(:kms_encrypt).once.with(
-          existing_events.to_json
+          existing_events.to_json,
         )
       end
 

@@ -47,7 +47,9 @@ module Idv
     def historical_events_permitted?
       return false unless historical_events_enabled?
 
-      sent_to_aaca = existing_user_proofing_event&.service_providers_sent.include?(current_sp.issuer)
+      sent_to_aaca = existing_user_proofing_event&.service_providers_sent&.include?(
+        current_sp.issuer,
+      )
 
       return !sent_to_aaca
     end
