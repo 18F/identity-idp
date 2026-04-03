@@ -4,8 +4,6 @@ module Api
   class RequestTokenValidator
     include ActiveModel::Model
 
-    attr_reader :bearer, :issuer, :token
-
     validates :token, :issuer, :bearer, presence: true
     validates :bearer, comparison: { equal_to: 'Bearer' }
     validate :config_data_exists
@@ -25,7 +23,13 @@ module Api
       end
     end
 
+    def sp_issuer
+      service_provider&.issuer
+    end
+
     private
+
+    attr_reader :bearer, :issuer, :token
 
     def config_data_exists
       raise NotImplementedError
@@ -57,7 +61,9 @@ module Api
     end
 
     def config_data
-      raise NotImplementedError
+      @config_data ||= config.find do |issuer_config|
+        issuer_config['issuer'] == issuer
+      end
     end
 
     def config_data_exists?
@@ -66,6 +72,10 @@ module Api
 
     def service_provider
       @service_provider ||= ServiceProvider.find_by(issuer:)
+    end
+
+    def config
+      NotImplementedError
     end
   end
 end

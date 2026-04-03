@@ -14,10 +14,8 @@ module ProofingAgent
       )
     end
 
-    def config_data
-      @config_data ||= IdentityConfig.store.idv_proofing_agent_config.find do |config|
-        config['issuer'] == issuer
-      end
+    def config
+      IdentityConfig.store.idv_proofing_agent_config
     end
   end
 end
