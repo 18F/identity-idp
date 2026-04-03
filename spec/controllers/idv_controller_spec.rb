@@ -109,6 +109,52 @@ RSpec.describe IdvController do
           end
         end
       end
+
+      context 'when unsupervised_with_selfie reproofing is required' do
+        let(:service_provider) { create(:service_provider) }
+
+        before do
+          allow(IdentityConfig.store)
+            .to receive(:reproof_if_not_unsupervised_with_selfie_service_providers)
+            .and_return([service_provider.issuer])
+        end
+
+        context 'when profile was proofed as in_person' do
+          let(:user) { create(:user, :proofed_in_person_enrollment) }
+
+          before do
+            stub_sign_in(user)
+            session[:sp] =
+              {
+                issuer: service_provider.issuer,
+                acr_values: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+              }
+          end
+
+          it 'redirects to welcome for reproofing' do
+            get :index
+            expect(response).to redirect_to idv_welcome_url
+          end
+        end
+
+        context 'when profile was proofed as unsupervised_with_selfie' do
+          let(:user) { create(:user, :proofed_with_selfie) }
+
+          before do
+            stub_sign_in(user)
+            session[:sp] =
+              {
+                issuer: service_provider.issuer,
+                acr_values: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+              }
+          end
+
+          it 'redirects to activated' do
+            get :index
+            expect(response).to redirect_to idv_activated_url
+          end
+        end
+      end
     end
 
     context 'if number of verify_info attempts has been exceeded' do
