@@ -40,7 +40,7 @@ function keepalive(event: MouseEvent) {
   sessionExpiration = new Date(Date.now() + sessionTimeout);
 
   setTimeout(showModal, sessionTimeout - warning);
-  scheduleRedirect
+  scheduleRedirect()
   countdownEls.forEach((countdownEl) => countdownEl.stop());
   extendSession(sessionsURL);
 }
