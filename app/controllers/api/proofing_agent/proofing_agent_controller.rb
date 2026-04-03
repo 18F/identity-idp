@@ -177,9 +177,9 @@ module Api
       def analytics_arguments
         {
           proofing_agent: {
-            agent_id: agent_id,
-            location_id: location_id,
-            correlation_id: correlation_id,
+            agent_id:,
+            location_id:,
+            correlation_id:,
           },
           issuer:,
         }
