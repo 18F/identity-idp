@@ -24,7 +24,7 @@ module SignUp
       update_verified_attributes
       send_in_person_completion_survey
       notify_user_of_connected_sp
-      update_service_providers_sent if historical_events_permitted?
+      send_historical_events if historical_events_permitted?
       if user_session[:selected_email_id_for_linked_identity].nil?
         user_session[:selected_email_id_for_linked_identity] = current_user
           .last_sign_in_email_address.id
@@ -140,11 +140,18 @@ module SignUp
       end
     end
 
-    def update_service_providers_sent
+    def ensure_profile_on_idv_session
+      if !idv_session.profile
+        idv_session.profile_id = current_user.active_profile.id
+      end
+    end
+
+    def send_historical_events
       return unless user_proofing_event && current_sp.issuer
 
-      user_proofing_event.service_providers_sent.push(current_sp.issuer)
-      user_proofing_event.save
+      # send to redis queue and upadate sp_sent
+
+      user_proofing_event.add_sp_sent(current_sp.issuer)
     end
 
     def historical_events_permitted?
@@ -156,8 +163,7 @@ module SignUp
 
       sent_to_aaca = user_proofing_event&.service_providers_sent&.include?(current_sp.issuer)
 
-      return false if sent_to_aaca
-      true
+      return !sent_to_aaca
     end
 
     def user_proofing_event
