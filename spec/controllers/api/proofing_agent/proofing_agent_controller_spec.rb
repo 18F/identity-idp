@@ -1528,6 +1528,8 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
         let(:id_type) { passport_type }
         let(:passport) { valid_passport }
         let(:residential_address) { valid_residential_address }
+        let(:user) { create(:user, email: 'foo@bar.com') }
+        before { user }
 
         context 'when valid passport data is received' do
           it 'returns 202' do
