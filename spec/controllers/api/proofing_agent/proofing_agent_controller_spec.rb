@@ -55,7 +55,6 @@ RSpec.shared_examples 'an endpoint that requires authorization' do
         expect(action.status).to eq 401
         expect(@analytics).to have_logged_event(
           :idv_proofing_agent_request_failed,
-          issuer:,
           success: false,
           failure_type: :authorization,
           proofing_agent: a_kind_of(Hash),

@@ -17,18 +17,18 @@ module Api
         deleted_events_count = 0
         if poll_params[:ack].present?
           deleted_events_count = redis_client.delete_events(
-            issuer: request_token.issuer,
+            issuer: request_token.sp_issuer,
             keys: poll_params[:ack],
           )
         end
 
         sets = redis_client.read_events(
-          issuer: request_token.issuer,
+          issuer: request_token.sp_issuer,
           batch_size: batch_size,
         )
 
         analytics.attempts_api_poll_events_request(
-          issuer: request_token.issuer,
+          issuer: request_token.sp_issuer,
           requested_events_count: batch_size,
           requested_acknowledged_events_count: poll_params[:ack]&.length,
           returned_events_count: sets.count,
@@ -81,7 +81,7 @@ module Api
 
       def track_failure
         analytics.attempts_api_poll_events_request(
-          issuer: request_token&.issuer,
+          issuer: request_token&.sp_issuer,
           requested_events_count: nil,
           requested_acknowledged_events_count: nil,
           returned_events_count: nil,
