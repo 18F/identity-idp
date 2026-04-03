@@ -1088,7 +1088,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
                   agent_id: nil,
                   location_id: 'loc-123',
                   correlation_id: 'correlation-789',
-                )
+                ),
               )
             end
           end
