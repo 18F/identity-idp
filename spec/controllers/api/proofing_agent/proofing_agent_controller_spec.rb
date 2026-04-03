@@ -167,8 +167,8 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
     }
   end
 
-  let(:email) { 'foo@bar.com' }
-  let(:user) { create(:user, email:) }
+  let(:user) { create(:user) }
+  let(:email) { user.email }
   let(:id_type) { 'library_card' }
   let(:residential_address) { nil }
   let(:state_id) { nil }
@@ -231,44 +231,64 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
           expect(response.headers['X-Correlation-ID']).to eq('correlation-789')
         end
 
-        # context 'when the email does not match any users and the ssn does not match any profiles' do
-        #   let(:email) { 'nonexistent@example.com' }
+        context 'when the email param does not match any users' do
+          let(:user) { nil }
+          let(:email) { 'nonexistent@example.com' }
 
-        #   it 'returns email_account_found as false and ssn_profile_found as false' do
-        #     action
-        #     body = JSON.parse(response.body)
-        #     expect(body['email_account_found']).to eq(false)
-        #     expect(body['ssn_profile_found']).to eq(false)
-        #     expect(body['profiles']).to be_nil
-        #   end
-        # end
+          context 'when the ssn does not match any profiles' do
+            it 'returns email_account_found as false and ssn_profile_found as false' do
+              action
+              body = JSON.parse(response.body)
+              expect(body['email_account_found']).to eq(false)
+              expect(body['ssn_profile_found']).to eq(false)
+              expect(body['profiles']).to eq([])
+              expect(@analytics).to have_logged_event(
+                :idv_proofing_agent_account_check_requested,
+                response_body: a_hash_including(
+                  email_account_found: false,
+                  ssn_profile_found: false,
+                  profiles: [],
+                ),
+                agent_id: 'agent-456',
+                location_id: 'loc-123',
+                correlation_id: 'correlation-789',
+              )
+            end
+          end
 
-        context 'when the email does not match any users but the ssn matches profiles' do
-          it 'returns email_account_found as false and ssn_profile_found as true' do
-            create(:profile, :active, user: create(:user, email: 'other@example.com'), ssn_signature: Pii::Fingerprinter.fingerprint(SsnFormatter.normalize(ssn)), idv_level: 2)
-            action
-            body = JSON.parse(response.body)
-            expect(body['email_account_found']).to eq(true)
-            expect(body['ssn_profile_found']).to eq(true)
-            expect(body['profiles'].length).to eq(1)
-            expect(body['profiles']).to include(
-              a_hash_including(
-                'email_match' => false,
-                'ssn_match' => true,
-                'idv_level' => 'enhanced',
-              ),
-            )
-            expect(@analytics).to have_logged_event(
-              :idv_proofing_agent_account_check_requested,
-              user_id: user.id,
-              response_body: a_hash_including(
-                email_account_found: true,
-                ssn_profile_found: true,
-              ),
-              agent_id: 'agent-456',
-              location_id: 'loc-123',
-              correlation_id: 'correlation-789',
-            )
+          context 'when the ssn matches profiles' do
+            it 'returns email_account_found as false and ssn_profile_found as true' do
+              create(:profile, :active, user: create(:user, email: 'other@example.com'), ssn_signature: Pii::Fingerprinter.fingerprint(SsnFormatter.normalize(ssn)), idv_level: 2)
+              action
+              body = JSON.parse(response.body)
+              expect(body['email_account_found']).to eq(false)
+              expect(body['ssn_profile_found']).to eq(true)
+              expect(body['profiles'].length).to eq(1)
+              expect(body['profiles']).to include(
+                a_hash_including(
+                  'email_match' => false,
+                  'ssn_match' => true,
+                  'idv_level' => 'enhanced',
+                ),
+              )
+              expect(@analytics).to have_logged_event(
+                :idv_proofing_agent_account_check_requested,
+                response_body: a_hash_including(
+                  email_account_found: false,
+                  ssn_profile_found: true,
+                  profiles: include(
+                    a_hash_including(
+                      email_match: false,
+                      ssn_match: true,
+                      idv_level: 'enhanced',
+                    ),
+                  ),
+                ),
+                agent_id: 'agent-456',
+                location_id: 'loc-123',
+                correlation_id: 'correlation-789',
+              )
+            end
           end
         end
 
@@ -304,10 +324,26 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
             )
             expect(@analytics).to have_logged_event(
               :idv_proofing_agent_account_check_requested,
-              user_id: user.id,
               response_body: a_hash_including(
                 email_account_found: true,
                 ssn_profile_found: true,
+                profiles: include(
+                  a_hash_including(
+                    email_match: true,
+                    ssn_match: true,
+                    idv_level: 'enhanced'
+                  ),
+                  a_hash_including(
+                    email_match: false,
+                    ssn_match: true,
+                    idv_level: 'enhanced'
+                  ),
+                  a_hash_including(
+                    email_match: false,
+                    ssn_match: true,
+                    idv_level: 'basic'
+                  )
+                ),
               ),
               agent_id: 'agent-456',
               location_id: 'loc-123',
@@ -342,10 +378,21 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
             )
             expect(@analytics).to have_logged_event(
               :idv_proofing_agent_account_check_requested,
-              user_id: user.id,
               response_body: a_hash_including(
                 email_account_found: true,
                 ssn_profile_found: true,
+                profiles: include(
+                  a_hash_including(
+                    email_match: true,
+                    ssn_match: false,
+                    idv_level: 'enhanced',
+                  ),
+                  a_hash_including(
+                    email_match: false,
+                    ssn_match: true,
+                    idv_level: 'enhanced',
+                  ),
+                ),
               ),
               agent_id: 'agent-456',
               location_id: 'loc-123',
