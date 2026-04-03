@@ -48,6 +48,7 @@ module Api
         transaction_id = document_capture_session.uuid
 
         response_body = {
+          request_id:,
           status: 'pending',
           transaction_id:,
         }
