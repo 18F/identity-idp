@@ -99,17 +99,21 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
   let(:enabled) { false }
   let(:sp) { create(:service_provider) }
   let(:issuer) { sp.issuer }
+  let(:correlation_id) { 'correlation-789' }
+  let(:location_id) { 'loc-123' }
+  let(:agent_id) { 'agent-456' }
 
   let(:headers) do
     {
-      'X-Proofing-Location-ID' => 'loc-123',
-      'X-Proofing-Agent-ID' => 'agent-456',
-      'X-Correlation-ID' => 'correlation-789',
+      'X-Proofing-Location-ID' => location_id,
+      'X-Proofing-Agent-ID' => agent_id,
+      'X-Correlation-ID' => correlation_id,
     }
   end
 
-  let(:correlation_id) { headers['X-Correlation-ID'] }
-
+  let(:proofing_agent_analytics_hash) do
+    a_hash_including(correlation_id:, location_id:, agent_id:)
+  end
   let(:token) { 'a-shared-secret' }
   let(:salt) { SecureRandom.hex(32) }
   let(:cost) { IdentityConfig.store.scrypt_cost }
@@ -209,7 +213,6 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
   end
 
   describe '#search_user' do
-    # let(:email) { 'user@example.com' }
     let(:ssn) { '123-45-6789' }
     let(:action) { post :search_user, params: { email:, ssn: } }
 
@@ -234,7 +237,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
 
         it 'returns the X-Correlation-ID header as correlation_id' do
           action
-          expect(response.headers['X-Correlation-ID']).to eq('correlation-789')
+          expect(response.headers['X-Correlation-ID']).to eq(correlation_id)
         end
 
         context 'when the email param does not match any users' do
@@ -255,11 +258,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
                   ssn_profile_found: false,
                   profiles: [],
                 ),
-                proofing_agent: a_hash_including(
-                  agent_id: 'agent-456',
-                  location_id: 'loc-123',
-                  correlation_id: 'correlation-789',
-                ),
+                proofing_agent: proofing_agent_analytics_hash,
                 issuer:,
               )
             end
@@ -299,11 +298,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
                     ),
                   ),
                 ),
-                proofing_agent: a_hash_including(
-                  agent_id: 'agent-456',
-                  location_id: 'loc-123',
-                  correlation_id: 'correlation-789',
-                ),
+                proofing_agent: proofing_agent_analytics_hash,
                 issuer:,
               )
             end
@@ -331,11 +326,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
                 ssn_profile_found: false,
                 profiles: [],
               ),
-              proofing_agent: a_hash_including(
-                agent_id: 'agent-456',
-                location_id: 'loc-123',
-                correlation_id: 'correlation-789',
-              ),
+              proofing_agent: proofing_agent_analytics_hash,
               issuer:,
             )
           end
@@ -430,11 +421,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
                   ),
                 ),
               ),
-              proofing_agent: a_hash_including(
-                agent_id: 'agent-456',
-                location_id: 'loc-123',
-                correlation_id: 'correlation-789',
-              ),
+              proofing_agent: proofing_agent_analytics_hash,
               issuer:,
             )
           end
@@ -512,11 +499,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
                   ),
                 ),
               ),
-              proofing_agent: a_hash_including(
-                agent_id: 'agent-456',
-                location_id: 'loc-123',
-                correlation_id: 'correlation-789',
-              ),
+              proofing_agent: proofing_agent_analytics_hash,
               issuer:,
             )
           end
@@ -531,9 +514,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
         end
 
         context 'without X-Proofing-Location-ID header' do
-          let(:headers) do
-            { 'X-Proofing-Agent-ID' => 'agent-456', 'X-Correlation-ID' => 'correlation-789' }
-          end
+          let(:location_id) { nil }
 
           it 'returns 400' do
             expect(action.status).to eq(400)
@@ -542,19 +523,13 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
               success: false,
               failure_type: :validation,
               issuer:,
-              proofing_agent: a_hash_including(
-                agent_id: 'agent-456',
-                location_id: nil,
-                correlation_id: 'correlation-789',
-              ),
+              proofing_agent: proofing_agent_analytics_hash,
             )
           end
         end
 
         context 'without X-Proofing-Agent-ID header' do
-          let(:headers) do
-            { 'X-Proofing-Location-ID' => 'loc-123', 'X-Correlation-ID' => 'correlation-789' }
-          end
+          let(:agent_id) { nil }
 
           it 'returns 400' do
             expect(action.status).to eq(400)
@@ -563,19 +538,13 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
               success: false,
               failure_type: :validation,
               issuer:,
-              proofing_agent: a_hash_including(
-                agent_id: nil,
-                location_id: 'loc-123',
-                correlation_id: 'correlation-789',
-              ),
+              proofing_agent: proofing_agent_analytics_hash,
             )
           end
         end
 
         context 'without X-Correlation-ID header' do
-          let(:headers) do
-            { 'X-Proofing-Location-ID' => 'loc-123', 'X-Proofing-Agent-ID' => 'agent-456' }
-          end
+          let(:correlation_id) { nil }
 
           it 'returns 400' do
             expect(action.status).to eq(400)
@@ -594,7 +563,9 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
         end
 
         context 'without any required headers' do
-          let(:headers) { {} }
+          let(:correlation_id) { nil }
+          let(:agent_id) { nil }
+          let(:location_id) { nil }
 
           it 'returns 400' do
             expect(action.status).to eq(400)
@@ -603,11 +574,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
               success: false,
               failure_type: :validation,
               issuer:,
-              proofing_agent: a_hash_including(
-                agent_id: nil,
-                location_id: nil,
-                correlation_id: nil,
-              ),
+              proofing_agent: proofing_agent_analytics_hash,
             )
           end
 
@@ -662,9 +629,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
           end
 
           context 'without X-Proofing-Location-ID header' do
-            let(:headers) do
-              { 'X-Proofing-Agent-ID' => 'agent-456', 'X-Correlation-ID' => 'correlation-789' }
-            end
+            let(:location_id) { nil }
 
             it 'returns 400' do
               expect(action.status).to eq(400)
@@ -673,19 +638,13 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
                 success: false,
                 failure_type: :validation,
                 issuer:,
-                proofing_agent: a_hash_including(
-                  agent_id: 'agent-456',
-                  location_id: nil,
-                  correlation_id: 'correlation-789',
-                ),
+                proofing_agent: proofing_agent_analytics_hash,
               )
             end
           end
 
           context 'without X-Proofing-Agent-ID header' do
-            let(:headers) do
-              { 'X-Proofing-Location-ID' => 'loc-123', 'X-Correlation-ID' => 'correlation-789' }
-            end
+            let(:agent_id) { nil }
 
             it 'returns 400' do
               expect(action.status).to eq(400)
@@ -694,19 +653,13 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
                 success: false,
                 failure_type: :validation,
                 issuer:,
-                proofing_agent: a_hash_including(
-                  agent_id: nil,
-                  location_id: 'loc-123',
-                  correlation_id: 'correlation-789',
-                ),
+                proofing_agent: proofing_agent_analytics_hash,
               )
             end
           end
 
           context 'without X-Correlation-ID header' do
-            let(:headers) do
-              { 'X-Proofing-Location-ID' => 'loc-123', 'X-Proofing-Agent-ID' => 'agent-456' }
-            end
+            let(:correlation_id) { nil }
 
             it 'returns 400' do
               expect(action.status).to eq(400)
@@ -715,17 +668,15 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
                 success: false,
                 failure_type: :validation,
                 issuer:,
-                proofing_agent: a_hash_including(
-                  agent_id: 'agent-456',
-                  location_id: 'loc-123',
-                  correlation_id: nil,
-                ),
+                proofing_agent: proofing_agent_analytics_hash,
               )
             end
           end
 
           context 'without any required headers' do
-            let(:headers) { {} }
+            let(:correlation_id) { nil }
+            let(:agent_id) { nil }
+            let(:location_id) { nil }
 
             it 'returns 400' do
               expect(action.status).to eq(400)
@@ -734,11 +685,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
                 success: false,
                 failure_type: :validation,
                 issuer:,
-                proofing_agent: a_hash_including(
-                  agent_id: nil,
-                  location_id: nil,
-                  correlation_id: nil,
-                ),
+                proofing_agent: proofing_agent_analytics_hash,
               )
             end
           end
@@ -877,9 +824,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
           end
 
           context 'without X-Proofing-Location-ID header' do
-            let(:headers) do
-              { 'X-Proofing-Agent-ID' => 'agent-456', 'X-Correlation-ID' => 'correlation-789' }
-            end
+            let(:location_id) { nil }
 
             it 'returns 400' do
               expect(action.status).to eq(400)
@@ -898,9 +843,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
           end
 
           context 'without X-Proofing-Agent-ID header' do
-            let(:headers) do
-              { 'X-Proofing-Location-ID' => 'loc-123', 'X-Correlation-ID' => 'correlation-789' }
-            end
+            let(:agent_id) { nil }
 
             it 'returns 400' do
               expect(action.status).to eq(400)
@@ -919,9 +862,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
           end
 
           context 'without X-Correlation-ID header' do
-            let(:headers) do
-              { 'X-Proofing-Location-ID' => 'loc-123', 'X-Proofing-Agent-ID' => 'agent-456' }
-            end
+            let(:correlation_id) { nil }
 
             it 'returns 400' do
               expect(action.status).to eq(400)
@@ -940,7 +881,9 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
           end
 
           context 'without any required headers' do
-            let(:headers) { {} }
+            let(:correlation_id) { nil }
+            let(:agent_id) { nil }
+            let(:location_id) { nil }
 
             it 'returns 400' do
               expect(action.status).to eq(400)
@@ -1073,9 +1016,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
           end
 
           context 'without X-Proofing-Agent-ID header' do
-            let(:headers) do
-              { 'X-Proofing-Location-ID' => 'loc-123', 'X-Correlation-ID' => 'correlation-789' }
-            end
+            let(:agent_id) { nil }
 
             it 'returns 400' do
               expect(action.status).to eq(400)
@@ -1094,9 +1035,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
           end
 
           context 'without X-Correlation-ID header' do
-            let(:headers) do
-              { 'X-Proofing-Location-ID' => 'loc-123', 'X-Proofing-Agent-ID' => 'agent-456' }
-            end
+            let(:correlation_id) { nil }
 
             it 'returns 400' do
               expect(action.status).to eq(400)
@@ -1115,7 +1054,9 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
           end
 
           context 'without any required headers' do
-            let(:headers) { {} }
+            let(:agent_id) { nil }
+            let(:location_id) { nil }
+            let(:correlation_id) { nil }
 
             it 'returns 400' do
               expect(action.status).to eq(400)
