@@ -614,8 +614,26 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
         let(:state_id) { valid_state_id }
 
         context 'with a valid authorization header' do
-          it 'returns 200' do
-            expect(action.status).to eq(200)
+          let(:user) { create(:user, email: 'foo@bar.com') }
+          let(:user_id) { user.id }
+          let(:agent_id) { headers['X-Agent-Id'] }
+          let(:location_id) { headers['X-Proofing-Location-Id'] }
+
+          it 'returns 202 accepted' do
+            user
+            expect(action.status).to eq(202)
+            transaction_id = DocumentCaptureSession.last.uuid
+            response_body = { status: 'pending', transaction_id: }
+
+            expect(@analytics).to have_logged_event(
+              :idv_proofing_agent_request_received,
+              response_body:,
+              user_id:,
+              agent_id:,
+              location_id:,
+              request_id:,
+              transaction_id:,
+            )
           end
 
           it 'includes correlation_id in the response' do
@@ -626,6 +644,42 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
           it 'returns the X-Correlation-ID header as correlation_id' do
             action
             expect(response.headers['X-Correlation-ID']).to eq('correlation-789')
+          end
+
+          context 'user account does not exist' do
+            let(:user) { nil }
+
+            it 'returns 422 unprocessible_content' do
+              expect(action.status).to eq(422)
+            end
+
+            it 'returns a failed response body' do
+              action
+              body = JSON.parse(response.body)
+              expect(body['status']).to eq('failed')
+              expect(body['reason']).to eq('email_not_found')
+            end
+          end
+
+          context 'user already has an ial2 profile' do
+            let(:ssn) { '111-22-3333' }
+            before do
+              Profile.create!(
+                user_id: user.id,
+                ssn_signature: Pii::Fingerprinter.fingerprint(SsnFormatter.normalize(ssn)),
+                idv_level: 3,
+              )
+            end
+            it 'returns 200' do
+              expect(action.status).to eq(200)
+            end
+
+            it 'returns a failed already proofed response body' do
+              action
+              body = JSON.parse(response.body)
+              expect(body['status']).to eq('failed')
+              expect(body['reason']).to eq('already_proofed_enhanced')
+            end
           end
 
           context 'without X-Proofing-Location-ID header' do

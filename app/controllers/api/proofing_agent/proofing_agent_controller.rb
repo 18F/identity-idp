@@ -45,9 +45,11 @@ module Api
           requested_at: Time.zone.now,
         )
 
+        transaction_id = document_capture_session.uuid
+
         response_body = {
           status: 'pending',
-          transaction_id: document_capture_session.uuid,
+          transaction_id:,
         }
 
         analytics.idv_proofing_agent_request_received(
