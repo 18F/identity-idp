@@ -18,7 +18,7 @@ let redirectTimeout: ReturnType<typeof setTimeout>;
 
 function scheduleRedirect() {
   clearTimeout(redirectTimeout);
-  redirectTimeout = setTimeout(() => { forceRedirect(timeoutURL) }, sessionTimeout);
+  redirectTimeout = setTimeout(() => forceRedirect(timeoutURL), sessionTimeout);
 }
 
 function showModal() {
@@ -40,11 +40,11 @@ function keepalive(event: MouseEvent) {
   sessionExpiration = new Date(Date.now() + sessionTimeout);
 
   setTimeout(showModal, sessionTimeout - warning);
-  scheduleRedirect()
+  scheduleRedirect();
   countdownEls.forEach((countdownEl) => countdownEl.stop());
   extendSession(sessionsURL);
 }
 
 keepaliveButton.addEventListener('click', keepalive);
 setTimeout(showModal, sessionTimeout - warning);
-scheduleRedirect()
+scheduleRedirect();
