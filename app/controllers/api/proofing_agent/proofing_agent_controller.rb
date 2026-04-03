@@ -187,6 +187,10 @@ module Api
       def issuer
         request_token&.issuer
       end
+
+      def analytics_user
+        user || AnonymousUser.new
+      end
     end
   end
 end

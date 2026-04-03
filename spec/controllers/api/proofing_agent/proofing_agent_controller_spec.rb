@@ -167,6 +167,8 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
     }
   end
 
+  let(:email) { 'foo@bar.com' }
+  let(:user) { create(:user, email:) }
   let(:id_type) { 'library_card' }
   let(:residential_address) { nil }
   let(:state_id) { nil }
@@ -174,7 +176,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
   let(:agent_params) do
     ActionController::Parameters.new(
       suspected_fraud: false,
-      email: 'foo@bar.com',
+      email:,
       first_name:,
       last_name:,
       dob:,
@@ -188,7 +190,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
   end
 
   before do
-    stub_analytics
+    stub_analytics(user:)
     request.headers['Authorization'] = auth_header
     allow(IdentityConfig.store).to receive(:idv_proofing_agent_config).and_return(
       [{
@@ -230,7 +232,6 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
         end
 
         it 'returns correct profiles and found attributes' do
-          user = create(:user, email: email)
           Profile.create!(
             user_id: user.id,
             ssn_signature: Pii::Fingerprinter.fingerprint(SsnFormatter.normalize(ssn)),
