@@ -21,12 +21,14 @@ module Api
           ssn_profile_found: ssn_active_profiles.any?,
           profiles: active_profiles,
         }
-        track_account_check(
+
+        analytics.idv_proofing_agent_account_check_requested(
           response_body:,
           agent_id:,
           location_id:,
           correlation_id:,
         )
+
         render json: response_body
       end
 
@@ -158,20 +160,6 @@ module Api
           errors = { id_type: "Invalid id_type: #{proof_params[:id_type]}" }
         end
         render json: errors, status: :bad_request
-      end
-
-      def track_account_check(
-        response_body:,
-        agent_id: nil,
-        location_id: nil,
-        correlation_id: nil
-      )
-        analytics.idv_proofing_agent_account_check_requested(
-          response_body:,
-          agent_id:,
-          location_id:,
-          correlation_id:,
-        )
       end
 
       def search_user_params
