@@ -412,7 +412,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
                     email_match: false,
                     ssn_match: true,
                     idv_level: 'basic',
-                  )
+                  ),
                 ),
               ),
               agent_id: 'agent-456',

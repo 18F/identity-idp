@@ -95,8 +95,8 @@ module Api
       end
 
       def ssn_active_profiles
-        @ssn_active_profiles ||= Idv::DuplicateSsnFinder.new(user:, ssn:).
-          ssn_profiles.select(&:active?)
+        @ssn_active_profiles ||= Idv::DuplicateSsnFinder.new(user:, ssn:)
+          .ssn_profiles.select(&:active?)
       end
 
       def user_active_profile
