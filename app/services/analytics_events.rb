@@ -5313,25 +5313,19 @@ module AnalyticsEvents
 
   # Logs when a proofing agent checks for an account associated with the proofing request
   # @param [Hash] response_body The body of the response from the proofing agent's account check
-  # @param [String,nil] user_id The ID of the user associated with the proof request, if applicable
-  # @param [String,nil] agent_id The ID of the proofing agent
-  # @param [String,nil] location_id The ID of the location where the proofing request was made
-  # @param [String,nil] request_id The request ID associated with the proof request
+  # @param [Hash] proofing_agent The proofing agent information
+  # @param [String] issuer The issuer associated with the proofing request
   def idv_proofing_agent_account_check_requested(
     response_body:,
-    user_id: nil,
-    agent_id: nil,
-    location_id: nil,
-    request_id: nil,
+    proofing_agent:,
+    issuer:,
     **extra
   )
     track_event(
       :idv_proofing_agent_account_check_requested,
       response_body:,
-      user_id:,
-      agent_id:,
-      location_id:,
-      request_id:,
+      proofing_agent:,
+      issuer:,
       **extra,
     )
   end
@@ -5340,16 +5334,12 @@ module AnalyticsEvents
   # @param [Boolean] success Whether request was successful
   # @param [String] issuer The issuer associated with the proofing request
   # @param ['authorization', 'validation'] failure_type Determines failure type
-  # @param [String,nil] agent_id The ID of the proofing agent
-  # @param [String,nil] location_id The ID of the location where the proofing request was made
-  # @param [String,nil] request_id The request ID associated with the proofing request
+  # @param [Hash] proofing_agent The proofing agent information
   def idv_proofing_agent_request_failed(
     success:,
     issuer:,
     failure_type:,
-    agent_id: nil,
-    location_id: nil,
-    request_id: nil,
+    proofing_agent:,
     **extra
   )
     track_event(
@@ -5357,9 +5347,7 @@ module AnalyticsEvents
       success:,
       issuer:,
       failure_type:,
-      agent_id:,
-      location_id:,
-      request_id:,
+      proofing_agent:,
       **extra,
     )
   end

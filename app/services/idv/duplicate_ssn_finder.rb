@@ -10,7 +10,11 @@ module Idv
     end
 
     def ssn_is_unique?
-      Profile.where(ssn_signature: ssn_signatures).where.not(user_id: user.id).empty?
+      ssn_profiles.where.not(user_id: user.id).empty?
+    end
+
+    def ssn_profiles
+      Profile.where(ssn_signature: ssn_signatures)
     end
 
     def duplicate_facial_match_profiles(service_provider:)
