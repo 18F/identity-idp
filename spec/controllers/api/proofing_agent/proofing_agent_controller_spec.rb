@@ -258,7 +258,13 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
 
           context 'when the ssn matches profiles' do
             it 'returns email_account_found as false and ssn_profile_found as true' do
-              create(:profile, :active, user: create(:user, email: 'other@example.com'), ssn_signature: Pii::Fingerprinter.fingerprint(SsnFormatter.normalize(ssn)), idv_level: 2)
+              create(
+                :profile,
+                :active,
+                user: create(:user, email: 'other@example.com'),
+                idv_level: 2,
+                ssn_signature: Pii::Fingerprinter.fingerprint(SsnFormatter.normalize(ssn)),
+              )
               action
               body = JSON.parse(response.body)
               expect(body['email_account_found']).to eq(false)
@@ -294,7 +300,13 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
 
         context 'when the user nor ssn have any profiles' do
           it 'returns correct profiles and found attributes' do
-            create(:profile, :deactivated, user:, ssn_signature: Pii::Fingerprinter.fingerprint(SsnFormatter.normalize(ssn)), idv_level: 3)
+            create(
+              :profile,
+              :deactivated,
+              user:,
+              ssn_signature: Pii::Fingerprinter.fingerprint(SsnFormatter.normalize(ssn)),
+              idv_level: 3,
+            )
             action
             body = JSON.parse(response.body)
             expect(body['email_account_found']).to eq(true)
@@ -316,12 +328,48 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
 
         context 'when the email and ssn match same profiles' do
           it 'returns correct profiles and found attributes' do
-            create(:profile, :active, user:, ssn_signature: Pii::Fingerprinter.fingerprint(SsnFormatter.normalize(ssn)), idv_level: 3)
-            create(:profile, :deactivated, user:, ssn_signature: Pii::Fingerprinter.fingerprint(SsnFormatter.normalize('999-99-9999')), idv_level: 1)
-            create(:profile, :active, user: create(:user, email: 'other@example.com'), ssn_signature: Pii::Fingerprinter.fingerprint(SsnFormatter.normalize(ssn)), idv_level: 2)
-            create(:profile, :deactivated, user: create(:user, email: 'another@example.com'), ssn_signature: Pii::Fingerprinter.fingerprint(SsnFormatter.normalize(ssn)), idv_level: 2)
-            create(:profile, :active, user: create(:user, email: 'other1@example.com'), ssn_signature: Pii::Fingerprinter.fingerprint(SsnFormatter.normalize('987-65-4321')), idv_level: 2)
-            create(:profile, :active, user: create(:user, email: 'another1@example.com'), ssn_signature: Pii::Fingerprinter.fingerprint(SsnFormatter.normalize(ssn)), idv_level: 1)
+            create(
+              :profile,
+              :active,
+              user:,
+              ssn_signature: Pii::Fingerprinter.fingerprint(SsnFormatter.normalize(ssn)),
+              idv_level: 3,
+            )
+            create(
+              :profile,
+              :deactivated,
+              user:,
+              ssn_signature: Pii::Fingerprinter.fingerprint(SsnFormatter.normalize('999-99-9999')),
+              idv_level: 1,
+            )
+            create(
+              :profile,
+              :active,
+              user: create(:user, email: 'other@example.com'),
+              ssn_signature: Pii::Fingerprinter.fingerprint(SsnFormatter.normalize(ssn)),
+              idv_level: 2,
+            )
+            create(
+              :profile,
+              :deactivated,
+              user: create(:user, email: 'another@example.com'),
+              ssn_signature: Pii::Fingerprinter.fingerprint(SsnFormatter.normalize(ssn)),
+              idv_level: 2,
+            )
+            create(
+              :profile,
+              :active,
+              user: create(:user, email: 'other1@example.com'),
+              ssn_signature: Pii::Fingerprinter.fingerprint(SsnFormatter.normalize('987-65-4321')),
+              idv_level: 2,
+            )
+            create(
+              :profile,
+              :active,
+              user: create(:user, email: 'another1@example.com'),
+              ssn_signature: Pii::Fingerprinter.fingerprint(SsnFormatter.normalize(ssn)),
+              idv_level: 1,
+            )
             action
             body = JSON.parse(response.body)
             expect(body['email_account_found']).to eq(true)
@@ -376,11 +424,41 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
 
         context 'when the email and ssn match different profiles' do
           it 'returns correct profiles and found attributes' do
-            create(:profile, :active, user:, ssn_signature: Pii::Fingerprinter.fingerprint(SsnFormatter.normalize('999-99-9999')), idv_level: 3)
-            create(:profile, :deactivated, user:, ssn_signature: Pii::Fingerprinter.fingerprint(SsnFormatter.normalize('999-99-9999')), idv_level: 1)
-            create(:profile, :active, user: create(:user, email: 'other@example.com'), ssn_signature: Pii::Fingerprinter.fingerprint(SsnFormatter.normalize(ssn)), idv_level: 2)
-            create(:profile, :deactivated, user: create(:user, email: 'another@example.com'), ssn_signature: Pii::Fingerprinter.fingerprint(SsnFormatter.normalize(ssn)), idv_level: 2)
-            create(:profile, :active, user: create(:user, email: 'other1@example.com'), ssn_signature: Pii::Fingerprinter.fingerprint(SsnFormatter.normalize('987-65-4321')), idv_level: 2)
+            create(
+              :profile,
+              :active,
+              user:,
+              ssn_signature: Pii::Fingerprinter.fingerprint(SsnFormatter.normalize('999-99-9999')),
+              idv_level: 3,
+            )
+            create(
+              :profile,
+              :deactivated,
+              user:,
+              ssn_signature: Pii::Fingerprinter.fingerprint(SsnFormatter.normalize('999-99-9999')),
+              idv_level: 1,
+            )
+            create(
+              :profile,
+              :active,
+              user: create(:user, email: 'other@example.com'),
+              ssn_signature: Pii::Fingerprinter.fingerprint(SsnFormatter.normalize(ssn)),
+              idv_level: 2,
+            )
+            create(
+              :profile,
+              :deactivated,
+              user: create(:user, email: 'another@example.com'),
+              ssn_signature: Pii::Fingerprinter.fingerprint(SsnFormatter.normalize(ssn)),
+              idv_level: 2,
+            )
+            create(
+              :profile,
+              :active,
+              user: create(:user, email: 'other1@example.com'),
+              ssn_signature: Pii::Fingerprinter.fingerprint(SsnFormatter.normalize('987-65-4321')),
+              idv_level: 2,
+            )
             action
             body = JSON.parse(response.body)
             expect(body['email_account_found']).to eq(true)
