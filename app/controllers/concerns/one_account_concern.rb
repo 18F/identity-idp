@@ -47,7 +47,7 @@ module OneAccountConcern
   end
 
   def one_account_facial_match_request?
-    resolved_authn_context_result.facial_match?
+    resolved_authn_context_result&.facial_match? || false
   end
 
   def sp_eligible_for_one_account?
