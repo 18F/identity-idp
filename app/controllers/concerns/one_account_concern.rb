@@ -37,11 +37,17 @@ module OneAccountConcern
   end
 
   def user_eligible_for_one_account?
+    return false unless one_account_facial_match_request?
+
     if IdentityConfig.store.enable_one_account_global_detection
       current_user&.identity_verified_with_facial_match?
     else
       sp_eligible_for_one_account? && current_user&.active_profile.present?
     end
+  end
+
+  def one_account_facial_match_request?
+    resolved_authn_context_result.facial_match?
   end
 
   def sp_eligible_for_one_account?

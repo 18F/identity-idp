@@ -40,7 +40,7 @@ class DuplicateProfilesDetectedController < ApplicationController
   def notify_users_of_duplicate_profile(source:)
     return unless duplicate_profile_set
     return if user_session[:dupe_profiles_notified]
-    agency_name = current_sp.friendly_name || current_sp.agency&.name
+    agency_name = current_sp&.friendly_name || current_sp&.agency&.name
 
     duplicate_profile_set.profile_ids.each do |profile_id|
       next if current_user&.active_profile&.id == profile_id
