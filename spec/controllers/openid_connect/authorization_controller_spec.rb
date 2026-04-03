@@ -295,6 +295,49 @@ RSpec.describe OpenidConnect::AuthorizationController do
               end
             end
 
+            context 'when unsupervised_with_selfie reproofing is required' do
+              let(:acr_values) { Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF }
+
+              before do
+                allow(IdentityConfig.store).to receive(:reproof_if_not_unsupervised_with_selfie_service_providers)
+                  .and_return([service_provider.issuer])
+                allow(IdentityConfig.store).to receive(:openid_connect_redirect)
+                  .and_return('server_side')
+                IdentityLinker.new(user, service_provider).link_identity(ial: 2)
+                user.identities.last.update!(
+                  verified_attributes: %w[given_name family_name birthdate verified_at],
+                )
+                allow(controller).to receive(:pii_requested_but_locked?).and_return(false)
+              end
+
+              context 'when the profile was proofed as in_person' do
+                let(:user) { create(:user, :proofed_in_person_enrollment) }
+
+                it 'redirects to IDV welcome page for reproofing' do
+                  action
+                  expect(controller).to redirect_to(idv_url)
+                end
+              end
+
+              context 'when the profile was proofed as unsupervised_with_selfie' do
+                let(:user) { create(:user, :proofed_with_selfie) }
+
+                it 'redirects to the service provider' do
+                  action
+                  expect(response).to redirect_to(/^#{params[:redirect_uri]}/)
+                end
+              end
+
+              context 'when the profile is legacy_unsupervised' do
+                let(:idv_level) { :legacy_unsupervised }
+
+                it 'redirects to IDV welcome page for reproofing' do
+                  action
+                  expect(controller).to redirect_to(idv_url)
+                end
+              end
+            end
+
             context 'SP requests required facial match' do
               let(:acr_values) { Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF }
 
