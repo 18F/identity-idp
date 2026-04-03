@@ -13,6 +13,7 @@ RSpec.shared_examples 'an endpoint that requires authorization' do
         :idv_proofing_agent_request_failed,
         success: false,
         failure_type: :authorization,
+        proofing_agent: a_kind_of(Hash),
       )
     end
   end
@@ -27,6 +28,7 @@ RSpec.shared_examples 'an endpoint that requires authorization' do
         :idv_proofing_agent_request_failed,
         success: false,
         failure_type: :authorization,
+        proofing_agent: a_kind_of(Hash),
       )
     end
   end
@@ -40,6 +42,7 @@ RSpec.shared_examples 'an endpoint that requires authorization' do
         :idv_proofing_agent_request_failed,
         success: false,
         failure_type: :authorization,
+        proofing_agent: a_kind_of(Hash),
       )
     end
   end
@@ -55,6 +58,7 @@ RSpec.shared_examples 'an endpoint that requires authorization' do
           issuer:,
           success: false,
           failure_type: :authorization,
+          proofing_agent: a_kind_of(Hash),
         )
       end
     end
@@ -69,6 +73,7 @@ RSpec.shared_examples 'an endpoint that requires authorization' do
         :idv_proofing_agent_request_failed,
         success: false,
         failure_type: :authorization,
+        proofing_agent: a_kind_of(Hash),
       )
     end
   end
@@ -83,6 +88,7 @@ RSpec.shared_examples 'an endpoint that requires authorization' do
         issuer:,
         success: false,
         failure_type: :authorization,
+        proofing_agent: a_kind_of(Hash),
       )
     end
   end
@@ -249,9 +255,12 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
                   ssn_profile_found: false,
                   profiles: [],
                 ),
-                agent_id: 'agent-456',
-                location_id: 'loc-123',
-                correlation_id: 'correlation-789',
+                proofing_agent: a_hash_including(
+                  agent_id: 'agent-456',
+                  location_id: 'loc-123',
+                  correlation_id: 'correlation-789',
+                ),
+                issuer:,
               )
             end
           end
@@ -290,9 +299,12 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
                     ),
                   ),
                 ),
-                agent_id: 'agent-456',
-                location_id: 'loc-123',
-                correlation_id: 'correlation-789',
+                proofing_agent: a_hash_including(
+                  agent_id: 'agent-456',
+                  location_id: 'loc-123',
+                  correlation_id: 'correlation-789',
+                ),
+                issuer:,
               )
             end
           end
@@ -319,9 +331,12 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
                 ssn_profile_found: false,
                 profiles: [],
               ),
-              agent_id: 'agent-456',
-              location_id: 'loc-123',
-              correlation_id: 'correlation-789',
+              proofing_agent: a_hash_including(
+                agent_id: 'agent-456',
+                location_id: 'loc-123',
+                correlation_id: 'correlation-789',
+              ),
+              issuer:,
             )
           end
         end
@@ -415,9 +430,12 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
                   ),
                 ),
               ),
-              agent_id: 'agent-456',
-              location_id: 'loc-123',
-              correlation_id: 'correlation-789',
+              proofing_agent: a_hash_including(
+                agent_id: 'agent-456',
+                location_id: 'loc-123',
+                correlation_id: 'correlation-789',
+              ),
+              issuer:,
             )
           end
         end
@@ -494,9 +512,12 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
                   ),
                 ),
               ),
-              agent_id: 'agent-456',
-              location_id: 'loc-123',
-              correlation_id: 'correlation-789',
+              proofing_agent: a_hash_including(
+                agent_id: 'agent-456',
+                location_id: 'loc-123',
+                correlation_id: 'correlation-789',
+              ),
+              issuer:,
             )
           end
         end
@@ -521,8 +542,11 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
               success: false,
               failure_type: :validation,
               issuer:,
-              agent_id: 'agent-456',
-              correlation_id: 'correlation-789',
+              proofing_agent: a_hash_including(
+                agent_id: 'agent-456',
+                location_id: nil,
+                correlation_id: 'correlation-789',
+              ),
             )
           end
         end
@@ -539,8 +563,11 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
               success: false,
               failure_type: :validation,
               issuer:,
-              location_id: 'loc-123',
-              correlation_id: 'correlation-789',
+              proofing_agent: a_hash_including(
+                agent_id: nil,
+                location_id: 'loc-123',
+                correlation_id: 'correlation-789',
+              ),
             )
           end
         end
@@ -557,8 +584,11 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
               success: false,
               failure_type: :validation,
               issuer:,
-              agent_id: 'agent-456',
-              location_id: 'loc-123',
+              proofing_agent: a_hash_including(
+                agent_id: 'agent-456',
+                location_id: 'loc-123',
+                correlation_id: nil,
+              ),
             )
           end
         end
@@ -573,6 +603,11 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
               success: false,
               failure_type: :validation,
               issuer:,
+              proofing_agent: a_hash_including(
+                agent_id: nil,
+                location_id: nil,
+                correlation_id: nil,
+              ),
             )
           end
 
@@ -638,8 +673,11 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
                 success: false,
                 failure_type: :validation,
                 issuer:,
-                agent_id: 'agent-456',
-                correlation_id: 'correlation-789',
+                proofing_agent: a_hash_including(
+                  agent_id: 'agent-456',
+                  location_id: nil,
+                  correlation_id: 'correlation-789',
+                ),
               )
             end
           end
@@ -656,8 +694,11 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
                 success: false,
                 failure_type: :validation,
                 issuer:,
-                location_id: 'loc-123',
-                correlation_id: 'correlation-789',
+                proofing_agent: a_hash_including(
+                  agent_id: nil,
+                  location_id: 'loc-123',
+                  correlation_id: 'correlation-789',
+                ),
               )
             end
           end
@@ -674,8 +715,11 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
                 success: false,
                 failure_type: :validation,
                 issuer:,
-                agent_id: 'agent-456',
-                location_id: 'loc-123',
+                proofing_agent: a_hash_including(
+                  agent_id: 'agent-456',
+                  location_id: 'loc-123',
+                  correlation_id: nil,
+                ),
               )
             end
           end
@@ -690,6 +734,11 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
                 success: false,
                 failure_type: :validation,
                 issuer:,
+                proofing_agent: a_hash_including(
+                  agent_id: nil,
+                  location_id: nil,
+                  correlation_id: nil,
+                ),
               )
             end
           end
@@ -839,8 +888,11 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
                 success: false,
                 failure_type: :validation,
                 issuer:,
-                agent_id: 'agent-456',
-                correlation_id: 'correlation-789',
+                proofing_agent: a_hash_including(
+                  agent_id: 'agent-456',
+                  correlation_id: 'correlation-789',
+                  location_id: nil,
+                ),
               )
             end
           end
@@ -857,8 +909,11 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
                 success: false,
                 failure_type: :validation,
                 issuer:,
-                location_id: 'loc-123',
-                correlation_id: 'correlation-789',
+                proofing_agent: a_hash_including(
+                  agent_id: nil,
+                  location_id: 'loc-123',
+                  correlation_id: 'correlation-789',
+                ),
               )
             end
           end
@@ -875,8 +930,11 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
                 success: false,
                 failure_type: :validation,
                 issuer:,
-                agent_id: 'agent-456',
-                location_id: 'loc-123',
+                proofing_agent: a_hash_including(
+                  agent_id: 'agent-456',
+                  location_id: 'loc-123',
+                  correlation_id: nil,
+                ),
               )
             end
           end
@@ -891,6 +949,11 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
                 success: false,
                 failure_type: :validation,
                 issuer:,
+                proofing_agent: a_hash_including(
+                  agent_id: nil,
+                  location_id: nil,
+                  correlation_id: nil,
+                ),
               )
             end
           end
@@ -1000,8 +1063,11 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
                 success: false,
                 failure_type: :validation,
                 issuer:,
-                agent_id: 'agent-456',
-                correlation_id: 'correlation-789',
+                proofing_agent: a_hash_including(
+                  agent_id: 'agent-456',
+                  correlation_id: 'correlation-789',
+                  location_id: nil,
+                ),
               )
             end
           end
@@ -1018,8 +1084,11 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
                 success: false,
                 failure_type: :validation,
                 issuer:,
-                location_id: 'loc-123',
-                correlation_id: 'correlation-789',
+                proofing_agent: a_hash_including(
+                  agent_id: nil,
+                  location_id: 'loc-123',
+                  correlation_id: 'correlation-789',
+                )
               )
             end
           end
@@ -1036,8 +1105,11 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
                 success: false,
                 failure_type: :validation,
                 issuer:,
-                agent_id: 'agent-456',
-                location_id: 'loc-123',
+                proofing_agent: a_hash_including(
+                  agent_id: 'agent-456',
+                  location_id: 'loc-123',
+                  correlation_id: nil,
+                ),
               )
             end
           end
@@ -1052,6 +1124,11 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
                 success: false,
                 failure_type: :validation,
                 issuer:,
+                proofing_agent: a_hash_including(
+                  agent_id: nil,
+                  location_id: nil,
+                  correlation_id: nil,
+                ),
               )
             end
           end

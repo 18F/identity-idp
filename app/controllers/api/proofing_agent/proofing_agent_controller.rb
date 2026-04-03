@@ -23,10 +23,7 @@ module Api
         }
 
         analytics.idv_proofing_agent_account_check_requested(
-          response_body:,
-          agent_id:,
-          location_id:,
-          correlation_id:,
+          **analytics_arguments, response_body:,
         )
 
         render json: response_body
@@ -44,7 +41,7 @@ module Api
 
       def validate_required_headers
         if location_id.blank? || agent_id.blank? || correlation_id.blank?
-          track_failure(failure_type: :validation, agent_id:, location_id:, correlation_id:)
+          track_failure(failure_type: :validation)
 
           required_headers = 'X-Proofing-Location-ID, X-Proofing-Agent-ID, X-Correlation-ID'
           render json: {
@@ -118,14 +115,11 @@ module Api
         end
       end
 
-      def track_failure(failure_type:, agent_id: nil, location_id: nil, correlation_id: nil)
+      def track_failure(failure_type:)
         analytics.idv_proofing_agent_request_failed(
-          issuer:,
+          **analytics_arguments,
           success: false,
           failure_type:,
-          agent_id:,
-          location_id:,
-          correlation_id:,
         )
       end
 
@@ -178,6 +172,17 @@ module Api
 
       def analytics_user
         user || AnonymousUser.new
+      end
+
+      def analytics_arguments
+        {
+          proofing_agent: {
+            agent_id: agent_id,
+            location_id: location_id,
+            correlation_id: correlation_id,
+          },
+          issuer:,
+        }
       end
     end
   end
