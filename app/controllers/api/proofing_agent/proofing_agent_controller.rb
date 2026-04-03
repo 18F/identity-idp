@@ -106,13 +106,15 @@ module Api
       end
 
       def active_profiles
-        profiles = ssn_active_profiles | [user_active_profile].compact
-        @active_profiles ||= profiles.map do |profile|
-          {
-            email_match: profile.user_id == user&.id,
-            ssn_match: ssn_active_profiles.any? { |ssn_profile| ssn_profile.id == profile.id },
-            idv_level: Profile::PROOFING_AGENT_IDV_LEVELS[profile.idv_level],
-          }
+        @active_profiles ||= begin
+          profiles = ssn_active_profiles | [user_active_profile].compact
+          profiles.map do |profile|
+            {
+              email_match: profile.user_id == user&.id,
+              ssn_match: ssn_active_profiles.any? { |ssn_profile| ssn_profile.id == profile.id },
+              idv_level: Profile::PROOFING_AGENT_IDV_LEVELS[profile.idv_level],
+            }
+          end
         end
       end
 
