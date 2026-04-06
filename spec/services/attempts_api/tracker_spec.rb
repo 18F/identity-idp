@@ -284,11 +284,13 @@ RSpec.describe AttemptsApi::Tracker do
           end
 
           it 'still populates the session info' do
+            subject.user_registration_email_submitted(success: true, email: 'test@gsa.gov')
             subject.idv_enrollment_complete(reproof: false)
             expect(mock_session['warden.user.user.session']).to eq(
-              'idv/attempts' => ['idv-enrollment-complete' => {
-                'user_uuid' => user.uuid,
-              }],
+              'idv/attempts' => [
+                {'user-registration-email-submitted' => {'user_uuid' => user.uuid}},
+                {'idv-enrollment-complete' => {'user_uuid' => user.uuid}},
+              ],
             )
           end
         end

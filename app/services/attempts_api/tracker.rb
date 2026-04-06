@@ -76,8 +76,8 @@ module AttemptsApi
         session['registration_events'].push({ event.event_type => 'test' })
       else
         if !session['warden.user.user.session']['idv/attempts']&.present?
-          session['warden.user.user.session']['idv/attempts'] = session['registration_events']
-          session.delete['registration_events']
+          session['warden.user.user.session']['idv/attempts'] = session['registration_events'] || []
+          session.delete('registration_events')
         end
         session['warden.user.user.session']['idv/attempts'].push(
           {
