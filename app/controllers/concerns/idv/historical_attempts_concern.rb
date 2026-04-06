@@ -61,7 +61,9 @@ module Idv
     end
 
     def existing_user_proofing_event
-      UserProofingEvent.find_by(profile_id: current_user.active_profile.id)
+      @existing_user_proofing_event ||= UserProofingEvent.find_by(
+        profile_id: current_user.active_profile.id,
+      )
     end
 
     def encrypt_attempt_events_bundle(bundle)
