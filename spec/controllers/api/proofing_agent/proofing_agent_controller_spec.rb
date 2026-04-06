@@ -109,6 +109,12 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
       'X-Correlation-ID' => correlation_id,
     }
   end
+  let(:missing_headers_errors) do
+    headers = 'X-Proofing-Location-ID, X-Proofing-Agent-ID, X-Correlation-ID'
+    {
+      error: "Missing required headers: #{headers}",
+    }
+  end
 
   let(:proofing_agent_analytics_hash) do
     a_hash_including(correlation_id:, location_id:, agent_id:)
@@ -137,7 +143,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
   let(:jurisdiction) { 'MD' }
   let(:address1) { '123 Main' }
   let(:zip_code) { '12345-6789' }
-  let(:expiration_date) { (Time.zone.today + 1.day).strftime('%Y-%m-%d') }
+  let(:expiration_date) { (Time.zone.today + 1.year).strftime('%Y-%m-%d') }
   let(:issuing_country_code) { 'USA' }
   let(:mrz) { 'P<USATRAVELER<<HAPPY<<<<<<<<<<<<<<<<<<<1234567890USA8501019M2412317<<<<<<<<<<<4' }
   let(:valid_residential_address) do
@@ -178,6 +184,21 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
 
   let(:user) { create(:user) }
   let(:email) { user.email }
+  let(:body_errors) { { foo: 'bar' } }
+  let(:body_failure_event_attrs) do
+    {
+      success: false,
+      issuer:,
+      failure_type: :body_validation,
+      proofing_agent: {
+        agent_id: 'agent-456',
+        correlation_id: 'correlation-789',
+        location_id: 'loc-123',
+      },
+      errors: body_errors,
+    }
+  end
+
   let(:id_type) { 'library_card' }
   let(:residential_address) { nil }
   let(:state_id) { nil }
@@ -520,9 +541,10 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
             expect(@analytics).to have_logged_event(
               :idv_proofing_agent_request_failed,
               success: false,
-              failure_type: :validation,
+              failure_type: :header_validation,
               issuer:,
               proofing_agent: proofing_agent_analytics_hash,
+              errors: missing_headers_errors,
             )
           end
         end
@@ -535,9 +557,10 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
             expect(@analytics).to have_logged_event(
               :idv_proofing_agent_request_failed,
               success: false,
-              failure_type: :validation,
+              failure_type: :header_validation,
               issuer:,
               proofing_agent: proofing_agent_analytics_hash,
+              errors: missing_headers_errors,
             )
           end
         end
@@ -550,13 +573,14 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
             expect(@analytics).to have_logged_event(
               :idv_proofing_agent_request_failed,
               success: false,
-              failure_type: :validation,
+              failure_type: :header_validation,
               issuer:,
               proofing_agent: a_hash_including(
                 agent_id: 'agent-456',
                 location_id: 'loc-123',
                 correlation_id: nil,
               ),
+              errors: missing_headers_errors,
             )
           end
         end
@@ -571,9 +595,10 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
             expect(@analytics).to have_logged_event(
               :idv_proofing_agent_request_failed,
               success: false,
-              failure_type: :validation,
+              failure_type: :header_validation,
               issuer:,
               proofing_agent: proofing_agent_analytics_hash,
+              errors: missing_headers_errors,
             )
           end
 
@@ -701,9 +726,10 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
               expect(@analytics).to have_logged_event(
                 :idv_proofing_agent_request_failed,
                 success: false,
-                failure_type: :validation,
+                failure_type: :header_validation,
                 issuer:,
                 proofing_agent: proofing_agent_analytics_hash,
+                errors: missing_headers_errors,
               )
             end
           end
@@ -716,9 +742,10 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
               expect(@analytics).to have_logged_event(
                 :idv_proofing_agent_request_failed,
                 success: false,
-                failure_type: :validation,
+                failure_type: :header_validation,
                 issuer:,
                 proofing_agent: proofing_agent_analytics_hash,
+                errors: missing_headers_errors,
               )
             end
           end
@@ -731,9 +758,10 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
               expect(@analytics).to have_logged_event(
                 :idv_proofing_agent_request_failed,
                 success: false,
-                failure_type: :validation,
+                failure_type: :header_validation,
                 issuer:,
                 proofing_agent: proofing_agent_analytics_hash,
+                errors: missing_headers_errors,
               )
             end
           end
@@ -748,82 +776,149 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
               expect(@analytics).to have_logged_event(
                 :idv_proofing_agent_request_failed,
                 success: false,
-                failure_type: :validation,
+                failure_type: :header_validation,
                 issuer:,
                 proofing_agent: proofing_agent_analytics_hash,
+                errors: missing_headers_errors,
               )
             end
           end
 
           context 'when the first_name is missing' do
             let(:first_name) { nil }
+            let(:body_errors) { { first_name: ['cannot be blank'] } }
 
             it 'returns 400' do
               expect(action.status).to eq(400)
+              expect(@analytics).to have_logged_event(
+                :idv_proofing_agent_request_failed,
+                **body_failure_event_attrs,
+              )
+              body = JSON.parse(response.body)
+              expect(body['first_name'][0]).to eq(body_errors[:first_name][0])
             end
           end
 
           context 'when the last_name is missing' do
             let(:last_name) { nil }
+            let(:body_errors) { { last_name: ['cannot be blank'] } }
 
             it 'returns 400' do
               expect(action.status).to eq(400)
+              expect(@analytics).to have_logged_event(
+                :idv_proofing_agent_request_failed,
+                **body_failure_event_attrs,
+              )
+              body = JSON.parse(response.body)
+              expect(body['last_name'][0]).to eq(body_errors[:last_name][0])
             end
           end
 
           context 'when the dob is missing' do
             let(:dob) { nil }
+            let(:body_errors) { { dob: ['cannot be blank'] } }
 
             it 'returns 400' do
               expect(action.status).to eq(400)
+              expect(@analytics).to have_logged_event(
+                :idv_proofing_agent_request_failed,
+                **body_failure_event_attrs,
+              )
+              body = JSON.parse(response.body)
+              expect(body['dob'][0]).to eq(body_errors[:dob][0])
             end
           end
 
           context 'when the dob does not meet our minimum age requirements' do
             let(:dob) { (Time.zone.today - 10.years).strftime('%Y-%m-%d') }
+            let(:body_errors) { { dob_min_age: ['age does not meet minimum requirements'] } }
 
             it 'returns 400' do
               expect(action.status).to eq(400)
+              expect(@analytics).to have_logged_event(
+                :idv_proofing_agent_request_failed,
+                **body_failure_event_attrs,
+              )
+              body = JSON.parse(response.body)
+              expect(body['dob_min_age'][0]).to eq(body_errors[:dob_min_age][0])
             end
           end
 
           context 'when the address1 is missing' do
             let(:address1) { nil }
+            let(:body_errors) { { address1: ['cannot be blank'] } }
 
             it 'returns 400' do
               expect(action.status).to eq(400)
+              expect(@analytics).to have_logged_event(
+                :idv_proofing_agent_request_failed,
+                **body_failure_event_attrs,
+              )
+              body = JSON.parse(response.body)
+              expect(body['address1'][0]).to eq(body_errors[:address1][0])
             end
           end
 
           context 'when the zip_code is invalid' do
             let(:zip_code) { '123456' }
+            let(:body_errors) { { zip_code: ['is invalid'] } }
 
             it 'returns 400' do
               expect(action.status).to eq(400)
+              expect(@analytics).to have_logged_event(
+                :idv_proofing_agent_request_failed,
+                **body_failure_event_attrs,
+              )
+              body = JSON.parse(response.body)
+              expect(body['zip_code'][0]).to eq(body_errors[:zip_code][0])
             end
           end
 
           context 'when the jurisdiction is missing' do
             let(:jurisdiction) { nil }
+            let(:body_errors) do
+              { jurisdiction: ['cannot be blank', 'is not a valid state code'],
+                state: ['cannot be blank', 'is not a valid state code'] }
+            end
 
             it 'returns 400' do
               expect(action.status).to eq(400)
+              expect(@analytics).to have_logged_event(
+                :idv_proofing_agent_request_failed,
+                **body_failure_event_attrs,
+              )
+              body = JSON.parse(response.body)
+              expect(body['jurisdiction'][0]).to eq(body_errors[:jurisdiction][0])
             end
           end
 
           context 'when the document_number is missing' do
             let(:document_number) { nil }
+            let(:body_errors) { { document_number: ['cannot be blank'] } }
 
             it 'returns 400' do
               expect(action.status).to eq(400)
+              expect(@analytics).to have_logged_event(
+                :idv_proofing_agent_request_failed,
+                **body_failure_event_attrs,
+              )
+              body = JSON.parse(response.body)
+              expect(body['document_number'][0]).to eq(body_errors[:document_number][0])
             end
           end
 
           context 'when the state_id is expired' do
             let(:expiration_date) { '2026-01-01' }
+            let(:body_errors) { { expiration_date: ['is expired, or near expiration'] } }
 
             it 'returns 400' do
               expect(action.status).to eq(400)
+              expect(@analytics).to have_logged_event(
+                :idv_proofing_agent_request_failed,
+                **body_failure_event_attrs,
+              )
+              body = JSON.parse(response.body)
+              expect(body['expiration_date'][0]).to eq(body_errors[:expiration_date][0])
             end
           end
         end
@@ -834,23 +929,36 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
 
         context 'when the state_id data is not provided' do
           let(:state_id) { nil }
+          let(:body_errors) do
+            { base: ['either state_id or passport must be present'],
+              state_id_type: ['mis-matched type vs data'] }
+          end
 
           it 'returns 400' do
             expect(action.status).to eq(400)
+            expect(@analytics).to have_logged_event(
+              :idv_proofing_agent_request_failed,
+              **body_failure_event_attrs,
+            )
 
             body = JSON.parse(response.body)
-            expect(body['error']).to eq('Missing parameter state_id')
+            expect(body['base'][0]).to eq(body_errors[:base][0])
           end
         end
 
         context 'when state_id and invalid residential address are provided' do
           let(:residential_address) { malformed_residential_address }
+          let(:body_errors) { { zip_code: ['is invalid'] } }
 
           it 'returns 400' do
             expect(action.status).to eq(400)
+            expect(@analytics).to have_logged_event(
+              :idv_proofing_agent_request_failed,
+              **body_failure_event_attrs,
+            )
 
             body = JSON.parse(response.body)
-            expect(body['zipcode'][0]).to eq('Enter a 5 or 9 digit ZIP Code')
+            expect(body['zip_code'][0]).to eq(body_errors[:zip_code][0])
           end
         end
 
@@ -859,12 +967,17 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
           let(:state_id) { valid_state_id }
           let(:passport) { valid_passport }
           let(:residential_address) { valid_residential_address }
+          let(:body_errors) { { base: ['cannot include both state_id and passport'] } }
 
           it 'returns 400' do
             expect(action.status).to eq(400)
+            expect(@analytics).to have_logged_event(
+              :idv_proofing_agent_request_failed,
+              **body_failure_event_attrs,
+            )
 
             body = JSON.parse(response.body)
-            expect(body['base'][0]).to eq('cannot include both state_id and passport')
+            expect(body['base'][0]).to eq(body_errors[:base][0])
           end
         end
       end
@@ -905,13 +1018,14 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
               expect(@analytics).to have_logged_event(
                 :idv_proofing_agent_request_failed,
                 success: false,
-                failure_type: :validation,
+                failure_type: :header_validation,
                 issuer:,
                 proofing_agent: a_hash_including(
                   agent_id: 'agent-456',
                   correlation_id: 'correlation-789',
                   location_id: nil,
                 ),
+                errors: missing_headers_errors,
               )
             end
           end
@@ -924,13 +1038,14 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
               expect(@analytics).to have_logged_event(
                 :idv_proofing_agent_request_failed,
                 success: false,
-                failure_type: :validation,
+                failure_type: :header_validation,
                 issuer:,
                 proofing_agent: a_hash_including(
                   agent_id: nil,
                   location_id: 'loc-123',
                   correlation_id: 'correlation-789',
                 ),
+                errors: missing_headers_errors,
               )
             end
           end
@@ -943,13 +1058,14 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
               expect(@analytics).to have_logged_event(
                 :idv_proofing_agent_request_failed,
                 success: false,
-                failure_type: :validation,
+                failure_type: :header_validation,
                 issuer:,
                 proofing_agent: a_hash_including(
                   agent_id: 'agent-456',
                   location_id: 'loc-123',
                   correlation_id: nil,
                 ),
+                errors: missing_headers_errors,
               )
             end
           end
@@ -964,86 +1080,153 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
               expect(@analytics).to have_logged_event(
                 :idv_proofing_agent_request_failed,
                 success: false,
-                failure_type: :validation,
+                failure_type: :header_validation,
                 issuer:,
                 proofing_agent: a_hash_including(
                   agent_id: nil,
                   location_id: nil,
                   correlation_id: nil,
                 ),
+                errors: missing_headers_errors,
               )
             end
           end
 
           context 'when the first_name is missing' do
             let(:first_name) { nil }
+            let(:body_errors) { { first_name: ['cannot be blank'] } }
 
             it 'returns 400' do
               expect(action.status).to eq(400)
+              expect(@analytics).to have_logged_event(
+                :idv_proofing_agent_request_failed,
+                **body_failure_event_attrs,
+              )
+              body = JSON.parse(response.body)
+              expect(body['first_name'][0]).to eq(body_errors[:first_name][0])
             end
           end
 
           context 'when the last_name is missing' do
             let(:last_name) { nil }
+            let(:body_errors) { { last_name: ['cannot be blank'] } }
 
             it 'returns 400' do
               expect(action.status).to eq(400)
+              expect(@analytics).to have_logged_event(
+                :idv_proofing_agent_request_failed,
+                **body_failure_event_attrs,
+              )
+              body = JSON.parse(response.body)
+              expect(body['last_name'][0]).to eq(body_errors[:last_name][0])
             end
           end
 
           context 'when the dob is missing' do
             let(:dob) { nil }
+            let(:body_errors) { { dob: ['cannot be blank'] } }
 
             it 'returns 400' do
               expect(action.status).to eq(400)
+              expect(@analytics).to have_logged_event(
+                :idv_proofing_agent_request_failed,
+                **body_failure_event_attrs,
+              )
+              body = JSON.parse(response.body)
+              expect(body['dob'][0]).to eq(body_errors[:dob][0])
             end
           end
 
           context 'when the dob does not meet our minimum age requirements' do
             let(:dob) { (Time.zone.today - 10.years).strftime('%Y-%m-%d') }
+            let(:body_errors) { { dob_min_age: ['age does not meet minimum requirements'] } }
 
             it 'returns 400' do
               expect(action.status).to eq(400)
+              expect(@analytics).to have_logged_event(
+                :idv_proofing_agent_request_failed,
+                **body_failure_event_attrs,
+              )
+              body = JSON.parse(response.body)
+              expect(body['dob_min_age'][0]).to eq(body_errors[:dob_min_age][0])
             end
           end
 
           context 'when the address1 is missing' do
             let(:address1) { nil }
+            let(:body_errors) { { address1: ['cannot be blank'] } }
 
             it 'returns 400' do
               expect(action.status).to eq(400)
+              expect(@analytics).to have_logged_event(
+                :idv_proofing_agent_request_failed,
+                **body_failure_event_attrs,
+              )
+              body = JSON.parse(response.body)
+              expect(body['address1'][0]).to eq(body_errors[:address1][0])
             end
           end
 
           context 'when the zip_code is invalid' do
             let(:zip_code) { '123456' }
+            let(:body_errors) { { zip_code: ['is invalid'] } }
 
             it 'returns 400' do
               expect(action.status).to eq(400)
+              expect(@analytics).to have_logged_event(
+                :idv_proofing_agent_request_failed,
+                **body_failure_event_attrs,
+              )
+              body = JSON.parse(response.body)
+              expect(body['zip_code'][0]).to eq(body_errors[:zip_code][0])
             end
           end
 
           context 'when the jurisdiction is missing' do
             let(:jurisdiction) { nil }
+            let(:body_errors) do
+              { jurisdiction: ['cannot be blank', 'is not a valid state code'],
+                state: ['cannot be blank', 'is not a valid state code'] }
+            end
 
             it 'returns 400' do
               expect(action.status).to eq(400)
+              expect(@analytics).to have_logged_event(
+                :idv_proofing_agent_request_failed,
+                **body_failure_event_attrs,
+              )
+              body = JSON.parse(response.body)
+              expect(body['jurisdiction'][0]).to eq(body_errors[:jurisdiction][0])
             end
           end
 
           context 'when the document_number is missing' do
             let(:document_number) { nil }
+            let(:body_errors) { { document_number: ['cannot be blank'] } }
 
             it 'returns 400' do
               expect(action.status).to eq(400)
+              expect(@analytics).to have_logged_event(
+                :idv_proofing_agent_request_failed,
+                **body_failure_event_attrs,
+              )
+              body = JSON.parse(response.body)
+              expect(body['document_number'][0]).to eq(body_errors[:document_number][0])
             end
           end
 
           context 'when the state_id is expired' do
             let(:expiration_date) { '2026-01-01' }
+            let(:body_errors) { { expiration_date: ['is expired, or near expiration'] } }
 
             it 'returns 400' do
               expect(action.status).to eq(400)
+              expect(@analytics).to have_logged_event(
+                :idv_proofing_agent_request_failed,
+                **body_failure_event_attrs,
+              )
+              body = JSON.parse(response.body)
+              expect(body['expiration_date'][0]).to eq(body_errors[:expiration_date][0])
             end
           end
         end
@@ -1087,13 +1270,14 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
               expect(@analytics).to have_logged_event(
                 :idv_proofing_agent_request_failed,
                 success: false,
-                failure_type: :validation,
+                failure_type: :header_validation,
                 issuer:,
                 proofing_agent: a_hash_including(
                   agent_id: 'agent-456',
                   correlation_id: 'correlation-789',
                   location_id: nil,
                 ),
+                errors: missing_headers_errors,
               )
             end
           end
@@ -1106,13 +1290,14 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
               expect(@analytics).to have_logged_event(
                 :idv_proofing_agent_request_failed,
                 success: false,
-                failure_type: :validation,
+                failure_type: :header_validation,
                 issuer:,
                 proofing_agent: a_hash_including(
                   agent_id: nil,
                   location_id: 'loc-123',
                   correlation_id: 'correlation-789',
                 ),
+                errors: missing_headers_errors,
               )
             end
           end
@@ -1125,13 +1310,14 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
               expect(@analytics).to have_logged_event(
                 :idv_proofing_agent_request_failed,
                 success: false,
-                failure_type: :validation,
+                failure_type: :header_validation,
                 issuer:,
                 proofing_agent: a_hash_including(
                   agent_id: 'agent-456',
                   location_id: 'loc-123',
                   correlation_id: nil,
                 ),
+                errors: missing_headers_errors,
               )
             end
           end
@@ -1146,86 +1332,153 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
               expect(@analytics).to have_logged_event(
                 :idv_proofing_agent_request_failed,
                 success: false,
-                failure_type: :validation,
+                failure_type: :header_validation,
                 issuer:,
                 proofing_agent: a_hash_including(
                   agent_id: nil,
                   location_id: nil,
                   correlation_id: nil,
                 ),
+                errors: missing_headers_errors,
               )
             end
           end
 
           context 'when the first_name is missing' do
             let(:first_name) { nil }
+            let(:body_errors) { { first_name: ['cannot be blank'] } }
 
             it 'returns 400' do
               expect(action.status).to eq(400)
+              expect(@analytics).to have_logged_event(
+                :idv_proofing_agent_request_failed,
+                **body_failure_event_attrs,
+              )
+              body = JSON.parse(response.body)
+              expect(body['first_name'][0]).to eq(body_errors[:first_name][0])
             end
           end
 
           context 'when the last_name is missing' do
             let(:last_name) { nil }
+            let(:body_errors) { { last_name: ['cannot be blank'] } }
 
             it 'returns 400' do
               expect(action.status).to eq(400)
+              expect(@analytics).to have_logged_event(
+                :idv_proofing_agent_request_failed,
+                **body_failure_event_attrs,
+              )
+              body = JSON.parse(response.body)
+              expect(body['last_name'][0]).to eq(body_errors[:last_name][0])
             end
           end
 
           context 'when the dob is missing' do
             let(:dob) { nil }
+            let(:body_errors) { { dob: ['cannot be blank'] } }
 
             it 'returns 400' do
               expect(action.status).to eq(400)
+              expect(@analytics).to have_logged_event(
+                :idv_proofing_agent_request_failed,
+                **body_failure_event_attrs,
+              )
+              body = JSON.parse(response.body)
+              expect(body['dob'][0]).to eq(body_errors[:dob][0])
             end
           end
 
           context 'when the dob does not meet our minimum age requirements' do
             let(:dob) { (Time.zone.today - 10.years).strftime('%Y-%m-%d') }
+            let(:body_errors) { { dob_min_age: ['age does not meet minimum requirements'] } }
 
             it 'returns 400' do
               expect(action.status).to eq(400)
+              expect(@analytics).to have_logged_event(
+                :idv_proofing_agent_request_failed,
+                **body_failure_event_attrs,
+              )
+              body = JSON.parse(response.body)
+              expect(body['dob_min_age'][0]).to eq(body_errors[:dob_min_age][0])
             end
           end
 
           context 'when the address1 is missing' do
             let(:address1) { nil }
+            let(:body_errors) { { address1: ['cannot be blank'] } }
 
             it 'returns 400' do
               expect(action.status).to eq(400)
+              expect(@analytics).to have_logged_event(
+                :idv_proofing_agent_request_failed,
+                **body_failure_event_attrs,
+              )
+              body = JSON.parse(response.body)
+              expect(body['address1'][0]).to eq(body_errors[:address1][0])
             end
           end
 
           context 'when the zip_code is invalid' do
             let(:zip_code) { '123456' }
+            let(:body_errors) { { zip_code: ['is invalid'] } }
 
             it 'returns 400' do
               expect(action.status).to eq(400)
+              expect(@analytics).to have_logged_event(
+                :idv_proofing_agent_request_failed,
+                **body_failure_event_attrs,
+              )
+              body = JSON.parse(response.body)
+              expect(body['zip_code'][0]).to eq(body_errors[:zip_code][0])
             end
           end
 
           context 'when the jurisdiction is missing' do
             let(:jurisdiction) { nil }
+            let(:body_errors) do
+              { jurisdiction: ['cannot be blank', 'is not a valid state code'],
+                state: ['cannot be blank', 'is not a valid state code'] }
+            end
 
             it 'returns 400' do
               expect(action.status).to eq(400)
+              expect(@analytics).to have_logged_event(
+                :idv_proofing_agent_request_failed,
+                **body_failure_event_attrs,
+              )
+              body = JSON.parse(response.body)
+              expect(body['jurisdiction'][0]).to eq(body_errors[:jurisdiction][0])
             end
           end
 
           context 'when the document_number is missing' do
             let(:document_number) { nil }
+            let(:body_errors) { { document_number: ['cannot be blank'] } }
 
             it 'returns 400' do
               expect(action.status).to eq(400)
+              expect(@analytics).to have_logged_event(
+                :idv_proofing_agent_request_failed,
+                **body_failure_event_attrs,
+              )
+              body = JSON.parse(response.body)
+              expect(body['document_number'][0]).to eq(body_errors[:document_number][0])
             end
           end
 
           context 'when the state_id is expired' do
             let(:expiration_date) { '2026-01-01' }
+            let(:body_errors) { { expiration_date: ['is expired, or near expiration'] } }
 
             it 'returns 400' do
               expect(action.status).to eq(400)
+              expect(@analytics).to have_logged_event(
+                :idv_proofing_agent_request_failed,
+                **body_failure_event_attrs,
+              )
+              body = JSON.parse(response.body)
+              expect(body['expiration_date'][0]).to eq(body_errors[:expiration_date][0])
             end
           end
         end
@@ -1258,79 +1511,142 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
 
         context 'when the mrz is missing' do
           let(:mrz) { nil }
+          let(:body_errors) { { mrz: ['cannot be blank'] } }
 
           it 'returns 400' do
             expect(action.status).to eq(400)
+            expect(@analytics).to have_logged_event(
+              :idv_proofing_agent_request_failed,
+              **body_failure_event_attrs,
+            )
           end
         end
 
         context 'when the passport is expired' do
           let(:expiration_date) { '2026-01-01' }
+          let(:body_errors) { { expiration_date: ['is expired, or near expiration'] } }
 
           it 'returns 400' do
             expect(action.status).to eq(400)
+            expect(@analytics).to have_logged_event(
+              :idv_proofing_agent_request_failed,
+              **body_failure_event_attrs,
+            )
+            body = JSON.parse(response.body)
+            expect(body['expiration_date'][0]).to eq(body_errors[:expiration_date][0])
           end
         end
 
         context 'when the first_name is missing' do
           let(:first_name) { nil }
+          let(:body_errors) { { first_name: ['cannot be blank'] } }
 
           it 'returns 400' do
             expect(action.status).to eq(400)
+            expect(@analytics).to have_logged_event(
+              :idv_proofing_agent_request_failed,
+              **body_failure_event_attrs,
+            )
+            body = JSON.parse(response.body)
+            expect(body['first_name'][0]).to eq(body_errors[:first_name][0])
           end
         end
 
         context 'when the last_name is missing' do
           let(:last_name) { nil }
+          let(:body_errors) { { last_name: ['cannot be blank'] } }
 
           it 'returns 400' do
             expect(action.status).to eq(400)
+            expect(@analytics).to have_logged_event(
+              :idv_proofing_agent_request_failed,
+              **body_failure_event_attrs,
+            )
+            body = JSON.parse(response.body)
+            expect(body['last_name'][0]).to eq(body_errors[:last_name][0])
           end
         end
 
         context 'when the dob is missing' do
           let(:dob) { nil }
+          let(:body_errors) { { dob: ['cannot be blank'] } }
 
           it 'returns 400' do
             expect(action.status).to eq(400)
+            expect(@analytics).to have_logged_event(
+              :idv_proofing_agent_request_failed,
+              **body_failure_event_attrs,
+            )
+            body = JSON.parse(response.body)
+            expect(body['dob'][0]).to eq(body_errors[:dob][0])
           end
         end
 
         context 'when the dob does not meet our minimum age requirements' do
           let(:dob) { (Time.zone.today - 10.years).strftime('%Y-%m-%d') }
+          let(:body_errors) do
+            { dob_min_age: ['age does not meet minimum requirements'] }
+          end
 
           it 'returns 400' do
             expect(action.status).to eq(400)
+            expect(@analytics).to have_logged_event(
+              :idv_proofing_agent_request_failed,
+              **body_failure_event_attrs,
+            )
+            body = JSON.parse(response.body)
+            expect(body['dob_min_age'][0]).to eq(body_errors[:dob_min_age][0])
           end
         end
 
         context 'when the residential address is missing' do
           let(:residential_address) { nil }
+          let(:body_errors) do
+            { residential_address: ['residential address must be present with passport'] }
+          end
 
           it 'returns 400' do
             expect(action.status).to eq(400)
+            expect(@analytics).to have_logged_event(
+              :idv_proofing_agent_request_failed,
+              **body_failure_event_attrs,
+            )
+            body = JSON.parse(response.body)
+            expect(body['residential_address'][0]).to eq(body_errors[:residential_address][0])
           end
         end
 
         context 'when the passport data is not provided' do
           let(:passport) { nil }
+          let(:body_errors) do
+            { base: ['either state_id or passport must be present'],
+              passport_type: ['mis-matched type vs data'] }
+          end
 
           it 'returns 400' do
             expect(action.status).to eq(400)
-
+            expect(@analytics).to have_logged_event(
+              :idv_proofing_agent_request_failed,
+              **body_failure_event_attrs,
+            )
             body = JSON.parse(response.body)
-            expect(body['error']).to eq('Missing parameter passport')
+            expect(body['passport_type'][0]).to eq(body_errors[:passport_type][0])
           end
         end
 
         context 'when the id_type is passport_card' do
           let(:id_type) { passport_card_type }
+          let(:body_errors) { { unknown_id_type: ['unsupported id_type'] } }
 
           it 'returns 400' do
             expect(action.status).to eq(400)
+            expect(@analytics).to have_logged_event(
+              :idv_proofing_agent_request_failed,
+              **body_failure_event_attrs,
+            )
 
             body = JSON.parse(response.body)
-            expect(body['id_type']).to eq('Invalid id_type: passport_card')
+            expect(body['unknown_id_type'][0]).to eq(body_errors[:unknown_id_type][0])
           end
         end
       end

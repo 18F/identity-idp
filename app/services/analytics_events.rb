@@ -5335,11 +5335,13 @@ module AnalyticsEvents
   # @param [String] issuer The issuer associated with the proofing request
   # @param ['authorization', 'validation'] failure_type Determines failure type
   # @param [Hash] proofing_agent The proofing agent information
+  # @param [Hash, nil] errors The hash of errors that caused the failure
   def idv_proofing_agent_request_failed(
     success:,
     issuer:,
     failure_type:,
     proofing_agent:,
+    errors: nil,
     **extra
   )
     track_event(
@@ -5348,6 +5350,7 @@ module AnalyticsEvents
       issuer:,
       failure_type:,
       proofing_agent:,
+      errors:,
       **extra,
     )
   end
