@@ -5379,28 +5379,21 @@ module AnalyticsEvents
   end
 
   # Logs when a proofing agent proofs a user
-  # @param [Hash] response_body The body of the response from the proofing agent's proofing request 
-  # @param [String,nil] user_id The ID of the user associated with the proof request, if applicable
-  # @param [String,nil] agent_id The ID of the proofing agent
-  # @param [String,nil] location_id The ID of the location where the proofing request was made
-  # @param [String,nil] request_id The request ID associated with the proof request
+  # @param [Hash] response_body The body of the response from the proofing agent's proofing request
+  # @param [Hash] proofing_agent The proofing agent information
   # @param [String,nil] transaction_id The transaction ID associated with the proofing request
   def idv_proofing_agent_request_received(
     response_body:,
-    user_id: nil,
-    agent_id: nil,
-    location_id: nil,
-    request_id: nil,
+    proofing_agent:,
+    issuer:,
     transaction_id: nil,
     **extra
   )
     track_event(
       :idv_proofing_agent_request_received,
       response_body:,
-      user_id:,
-      agent_id:,
-      location_id:,
-      request_id:,
+      proofing_agent:,
+      issuer:,
       transaction_id:,
       **extra,
     )
