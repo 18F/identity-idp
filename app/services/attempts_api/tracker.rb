@@ -71,12 +71,20 @@ module AttemptsApi
     private
 
     def log_history(event)
-      session['warden.user.user.session']['idv/attempts'] ||= []
-      session['warden.user.user.session']['idv/attempts'].push(
-        {
-          event.event_type => { 'user_uuid' => user.uuid },
-        },
-      )
+      if !session.dig('warden.user.user.session')
+        session['registration_events'] ||= []
+        session['registration_events'].push({ event.event_type => 'test' })
+      else
+        if !session['warden.user.user.session']['idv/attempts']&.present?
+          session['warden.user.user.session']['idv/attempts'] = session['registration_events']
+          session.delete['registration_events']
+        end
+        session['warden.user.user.session']['idv/attempts'].push(
+          {
+            event.event_type => { 'user_uuid' => user.uuid },
+          },
+        )
+      end
     end
 
     def session
@@ -159,7 +167,6 @@ module AttemptsApi
 
     def will_log_history?(event_type)
       return false unless IdentityConfig.store.historical_attempts_api_enabled
-      return false unless session && session['warden.user.user.session']
 
       event_type.start_with?(*LOG_HISTORY_PREFIXES)
     end

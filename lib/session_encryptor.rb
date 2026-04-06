@@ -28,6 +28,7 @@ class SessionEncryptor
     ['warden.user.user.session', 'idv'],
     ['warden.user.user.session', 'personal_key'],
     ['warden.user.user.session', 'unconfirmed_phone'],
+    ['registration_events'],
     ['flash', 'flashes', 'personal_key'],
     ['flash', 'flashes', 'email'],
     ['email'],
