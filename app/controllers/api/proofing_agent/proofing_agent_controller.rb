@@ -174,8 +174,7 @@ module Api
       end
 
       def user_has_ial2_profile?
-        enhanced_levels = Profile::PROOFING_AGENT_IDV_LEVELS.select { |_, v| v == 'enhanced' }.keys
-        ssn_active_profiles.any? { |profile| enhanced_levels.include?(profile.idv_level) }
+        ssn_active_profiles.any? { |profile| Profile::PROOFING_AGENT_ENHANCED_LEVELS.include?(profile.idv_level) }
       end
 
       def proof_params

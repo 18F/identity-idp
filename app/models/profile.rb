@@ -14,6 +14,10 @@ class Profile < ApplicationRecord
     'proofing_agent' => 'enhanced',
   }.freeze
 
+  PROOFING_AGENT_ENHANCED_LEVELS =
+    %w[legacy_in_person unsupervised_with_selfie in_person proofing_agent]
+      .to_set.freeze
+
   belongs_to :user
   # rubocop:disable Rails/InverseOf
   belongs_to :initiating_service_provider,

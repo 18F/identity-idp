@@ -886,6 +886,16 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
 
           it 'returns 202' do
             expect(action.status).to eq(202)
+            transaction_id = DocumentCaptureSession.last.uuid
+            response_body = { status: 'pending', transaction_id: }
+
+            expect(@analytics).to have_logged_event(
+              :idv_proofing_agent_request_received,
+              response_body:,
+              proofing_agent: proofing_agent_analytics_hash,
+              issuer:,
+              transaction_id:,
+            )
           end
 
           it 'includes correlation_id in the response' do
@@ -1060,6 +1070,16 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
 
           it 'returns 202' do
             expect(action.status).to eq(202)
+            transaction_id = DocumentCaptureSession.last.uuid
+            response_body = { status: 'pending', transaction_id: }
+
+            expect(@analytics).to have_logged_event(
+              :idv_proofing_agent_request_received,
+              response_body:,
+              proofing_agent: proofing_agent_analytics_hash,
+              issuer:,
+              transaction_id:,
+            )
           end
 
           it 'includes correlation_id in the response' do
@@ -1236,6 +1256,16 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
         context 'when valid passport data is received' do
           it 'returns 202' do
             expect(action.status).to eq(202)
+            transaction_id = DocumentCaptureSession.last.uuid
+            response_body = { status: 'pending', transaction_id: }
+
+            expect(@analytics).to have_logged_event(
+              :idv_proofing_agent_request_received,
+              response_body:,
+              proofing_agent: proofing_agent_analytics_hash,
+              issuer:,
+              transaction_id:,
+            )
           end
 
           it 'includes correlation_id in the response' do
