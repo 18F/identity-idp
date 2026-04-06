@@ -70,11 +70,33 @@ module Api
       private
 
       def render_user_not_found
-        render json: { status: 'failed', reason: 'email_not_found' }, status: :unprocessable_content
+        response_body = { status: 'failed', reason: 'email_not_found' }
+
+        analytics.idv_proofing_agent_request_received(
+          response_body:,
+          user_id:,
+          agent_id:,
+          location_id:,
+          request_id:,
+          transaction_id:,
+        )
+
+        render json: response_body, status: :unprocessable_content
       end
 
       def render_already_proofed
-        render json: { status: 'failed', reason: 'already_proofed_enhanced' }, status: :ok
+        response_body = { status: 'failed', reason: 'already_proofed_enhanced' }
+
+        analytics.idv_proofing_agent_request_received(
+          response_body:,
+          user_id:,
+          agent_id:,
+          location_id:,
+          request_id:,
+          transaction_id:,
+        )
+
+        render json: response_body, status: :ok
       end
 
       def validate_required_headers
