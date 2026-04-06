@@ -140,16 +140,10 @@ module SignUp
       end
     end
 
-    def ensure_profile_on_idv_session
-      if !idv_session.profile
-        idv_session.profile_id = current_user.active_profile.id
-      end
-    end
-
     def send_historical_events
       return unless user_proofing_event && current_sp.issuer
 
-      # send to redis queue and upadate sp_sent
+      # send to redis queue and update sp_sent
 
       user_proofing_event.add_sp_sent(current_sp.issuer)
     end
