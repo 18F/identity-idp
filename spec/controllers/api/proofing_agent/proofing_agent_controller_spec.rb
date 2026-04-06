@@ -616,22 +616,18 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
         context 'with a valid authorization header' do
           let(:user) { create(:user, email: 'foo@bar.com') }
           let(:user_id) { user.id }
-          let(:agent_id) { headers['X-Agent-Id'] }
-          let(:location_id) { headers['X-Proofing-Location-Id'] }
           before { user }
 
           it 'returns 202 accepted' do
             expect(action.status).to eq(202)
             transaction_id = DocumentCaptureSession.last.uuid
-            response_body = { request_id:, status: 'pending', transaction_id: }
+            response_body = { status: 'pending', transaction_id: }
 
             expect(@analytics).to have_logged_event(
               :idv_proofing_agent_request_received,
               response_body:,
-              user_id:,
-              agent_id:,
-              location_id:,
-              request_id:,
+              proofing_agent: proofing_agent_analytics_hash,
+              issuer:,
               transaction_id:,
             )
           end
@@ -648,6 +644,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
 
           context 'user account does not exist' do
             let(:user) { nil }
+            let(:email) { 'nonexistent@example.com' }
 
             it 'returns 422 unprocessible_content' do
               expect(action.status).to eq(422)
@@ -656,8 +653,17 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
             it 'returns a failed response body' do
               action
               body = JSON.parse(response.body)
+              response_body = { status: 'failed', reason: 'email_not_found' }
+
               expect(body['status']).to eq('failed')
               expect(body['reason']).to eq('email_not_found')
+
+              expect(@analytics).to have_logged_event(
+                :idv_proofing_agent_request_received,
+                response_body:,
+                proofing_agent: proofing_agent_analytics_hash,
+                issuer:,
+              )
             end
           end
 
@@ -668,6 +674,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
                 user_id: user.id,
                 ssn_signature: Pii::Fingerprinter.fingerprint(SsnFormatter.normalize(ssn)),
                 idv_level: 3,
+                active: true,
               )
             end
             it 'returns 200' do
@@ -677,8 +684,16 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
             it 'returns a failed already proofed response body' do
               action
               body = JSON.parse(response.body)
+              response_body = { status: 'failed', reason: 'already_proofed_enhanced' }
               expect(body['status']).to eq('failed')
               expect(body['reason']).to eq('already_proofed_enhanced')
+
+              expect(@analytics).to have_logged_event(
+                :idv_proofing_agent_request_received,
+                response_body:,
+                proofing_agent: proofing_agent_analytics_hash,
+                issuer:,
+              )
             end
           end
 

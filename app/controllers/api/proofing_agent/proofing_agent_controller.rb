@@ -48,17 +48,13 @@ module Api
         transaction_id = document_capture_session.uuid
 
         response_body = {
-          request_id:,
           status: 'pending',
           transaction_id:,
         }
 
         analytics.idv_proofing_agent_request_received(
+          **analytics_arguments,
           response_body:,
-          user_id:,
-          agent_id:,
-          location_id:,
-          correlation_id:,
           transaction_id:,
         )
 
@@ -73,12 +69,9 @@ module Api
         response_body = { status: 'failed', reason: 'email_not_found' }
 
         analytics.idv_proofing_agent_request_received(
+          **analytics_arguments,
           response_body:,
-          user_id:,
-          agent_id:,
-          location_id:,
-          request_id:,
-          transaction_id:,
+          transaction_id: nil,
         )
 
         render json: response_body, status: :unprocessable_content
@@ -88,12 +81,9 @@ module Api
         response_body = { status: 'failed', reason: 'already_proofed_enhanced' }
 
         analytics.idv_proofing_agent_request_received(
+          **analytics_arguments,
           response_body:,
-          user_id:,
-          agent_id:,
-          location_id:,
-          request_id:,
-          transaction_id:,
+          transaction_id: nil,
         )
 
         render json: response_body, status: :ok
@@ -183,13 +173,9 @@ module Api
         )
       end
 
-      def user_account_exists?
-        user.present? || ssn_active_profiles.any?
-      end
-
       def user_has_ial2_profile?
         enhanced_levels = Profile::PROOFING_AGENT_IDV_LEVELS.select { |_, v| v == 'enhanced' }.keys
-        ssn_active_profiles.exists?(idv_level: enhanced_levels)
+        ssn_active_profiles.any? { |profile| enhanced_levels.include?(profile.idv_level) }
       end
 
       def proof_params
