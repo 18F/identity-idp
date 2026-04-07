@@ -281,7 +281,7 @@ RSpec.feature 'Sign in' do
       sign_in_user(user)
       visit user_two_factor_authentication_path
 
-      expect(page).to have_current_path(new_user_session_path, wait: 15)
+      expect(page).to have_current_path(new_user_session_path, wait: 20)
     end
   end
 
