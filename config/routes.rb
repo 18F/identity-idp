@@ -392,6 +392,8 @@ Rails.application.routes.draw do
       put '/agreement' => 'agreement#update'
       get '/how_to_verify' => 'how_to_verify#show'
       put '/how_to_verify' => 'how_to_verify#update'
+      get '/mdl' => 'mdl#show'
+      get '/mdl/status' => 'mdl#status', as: :mdl_status
       get '/document_capture' => 'document_capture#show'
       put '/document_capture' => 'document_capture#update'
       get '/in_person/direct' => 'document_capture#direct_in_person'
