@@ -40,27 +40,45 @@ module Reports
       self.class.transaction_with_timeout(...)
     end
 
-    def save_report(report_name, body, extension:)
+    def save_report(report_name, body, extension:, now: Time.zone.now, timestamp_format: '%F')
       if !IdentityConfig.store.s3_reports_enabled
         logger.info('Not uploading report to S3, s3_reports_enabled is false')
         return body
       end
-      upload_file_to_s3_timestamped_and_latest(report_name, body, extension)
+      upload_file_to_s3_timestamped_and_latest(
+        report_name,
+        body,
+        extension,
+        now:,
+        timestamp_format:,
+      )
     end
 
-    def upload_file_to_s3_timestamped_and_latest(report_name, body, extension)
-      latest_path, path = generate_s3_paths(report_name, extension)
+    def upload_file_to_s3_timestamped_and_latest(
+      report_name,
+      body,
+      extension,
+      now: Time.zone.now,
+      timestamp_format: '%F'
+    )
+      latest_path, path = generate_s3_paths(
+        report_name,
+        extension,
+        now:,
+        timestamp_format:,
+      )
       content_type = Mime::Type.lookup_by_extension(extension).to_s
       url = upload_file_to_s3_bucket(path: path, body: body, content_type: content_type)
       upload_file_to_s3_bucket(path: latest_path, body: body, content_type: content_type)
       url
     end
 
-    def generate_s3_paths(name, extension, subname: nil, now: Time.zone.now)
+    def generate_s3_paths(name, extension, subname: nil, now: Time.zone.now, timestamp_format: '%F')
       host_data_env = Identity::Hostdata.env
       name_subdir_ext = "#{name}#{subname ? '/' : ''}#{subname}.#{extension}"
       latest = "#{host_data_env}/#{name}/latest.#{name_subdir_ext}"
-      [latest, "#{host_data_env}/#{name}/#{now.year}/#{now.strftime('%F')}.#{name_subdir_ext}"]
+      timestamp = now.strftime(timestamp_format)
+      [latest, "#{host_data_env}/#{name}/#{now.year}/#{timestamp}.#{name_subdir_ext}"]
     end
 
     def logger

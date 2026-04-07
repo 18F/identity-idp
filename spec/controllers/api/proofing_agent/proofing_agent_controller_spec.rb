@@ -13,6 +13,7 @@ RSpec.shared_examples 'an endpoint that requires authorization' do
         :idv_proofing_agent_request_failed,
         success: false,
         failure_type: :authorization,
+        proofing_agent: a_kind_of(Hash),
       )
     end
   end
@@ -27,6 +28,7 @@ RSpec.shared_examples 'an endpoint that requires authorization' do
         :idv_proofing_agent_request_failed,
         success: false,
         failure_type: :authorization,
+        proofing_agent: a_kind_of(Hash),
       )
     end
   end
@@ -40,6 +42,7 @@ RSpec.shared_examples 'an endpoint that requires authorization' do
         :idv_proofing_agent_request_failed,
         success: false,
         failure_type: :authorization,
+        proofing_agent: a_kind_of(Hash),
       )
     end
   end
@@ -55,6 +58,7 @@ RSpec.shared_examples 'an endpoint that requires authorization' do
           issuer:,
           success: false,
           failure_type: :authorization,
+          proofing_agent: a_kind_of(Hash),
         )
       end
     end
@@ -69,6 +73,7 @@ RSpec.shared_examples 'an endpoint that requires authorization' do
         :idv_proofing_agent_request_failed,
         success: false,
         failure_type: :authorization,
+        proofing_agent: a_kind_of(Hash),
       )
     end
   end
@@ -83,6 +88,7 @@ RSpec.shared_examples 'an endpoint that requires authorization' do
         issuer:,
         success: false,
         failure_type: :authorization,
+        proofing_agent: a_kind_of(Hash),
       )
     end
   end
@@ -93,17 +99,21 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
   let(:enabled) { false }
   let(:sp) { create(:service_provider) }
   let(:issuer) { sp.issuer }
+  let(:correlation_id) { 'correlation-789' }
+  let(:location_id) { 'loc-123' }
+  let(:agent_id) { 'agent-456' }
 
   let(:headers) do
     {
-      'X-Proofing-Location-Id' => 'loc-123',
-      'X-Agent-Id' => 'agent-456',
-      'X-Request-Id' => 'req-789',
+      'X-Proofing-Location-ID' => location_id,
+      'X-Proofing-Agent-ID' => agent_id,
+      'X-Correlation-ID' => correlation_id,
     }
   end
 
-  let(:request_id) { headers['X-Request-Id'] }
-
+  let(:proofing_agent_analytics_hash) do
+    a_hash_including(correlation_id:, location_id:, agent_id:)
+  end
   let(:token) { 'a-shared-secret' }
   let(:salt) { SecureRandom.hex(32) }
   let(:cost) { IdentityConfig.store.scrypt_cost }
@@ -167,6 +177,8 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
     }
   end
 
+  let(:user) { create(:user) }
+  let(:email) { user.email }
   let(:id_type) { 'library_card' }
   let(:residential_address) { nil }
   let(:state_id) { nil }
@@ -174,7 +186,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
   let(:agent_params) do
     ActionController::Parameters.new(
       suspected_fraud: false,
-      email: 'foo@bar.com',
+      email:,
       first_name:,
       last_name:,
       dob:,
@@ -188,7 +200,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
   end
 
   before do
-    stub_analytics
+    stub_analytics(user:)
     request.headers['Authorization'] = auth_header
     allow(IdentityConfig.store).to receive(:idv_proofing_agent_config).and_return(
       [{
@@ -201,9 +213,8 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
   end
 
   describe '#search_user' do
-    let(:email) { 'user@example.com' }
     let(:ssn) { '123-45-6789' }
-    let(:action) { post :search_user, params: { email: email, ssn: ssn } }
+    let(:action) { post :search_user, params: { email:, ssn: } }
 
     context 'when proofing agent is not enabled' do
       it 'returns 404' do
@@ -219,66 +230,281 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
           expect(action.status).to eq(200)
         end
 
-        it 'includes request_id in the response' do
+        it 'includes correlation_id in the response' do
           action
-          body = JSON.parse(response.body)
-          expect(body['request_id']).to be_present
+          expect(response.headers['X-Correlation-ID']).to be_present
         end
 
-        it 'returns the X-Request-Id header as request_id' do
+        it 'returns the X-Correlation-ID header as correlation_id' do
           action
-          body = JSON.parse(response.body)
-          expect(body['request_id']).to eq('req-789')
+          expect(response.headers['X-Correlation-ID']).to eq(correlation_id)
         end
 
-        it 'returns correct profiles and found attributes' do
-          user = create(:user, email: email)
-          Profile.create!(
-            user_id: user.id,
-            ssn_signature: Pii::Fingerprinter.fingerprint(SsnFormatter.normalize(ssn)),
-            idv_level: 3,
-          )
-          Profile.create!(
-            user_id: create(:user, email: 'other@example.com').id,
-            ssn_signature: Pii::Fingerprinter.fingerprint(SsnFormatter.normalize(ssn)),
-            idv_level: 2,
-          )
-          Profile.create!(
-            user_id: create(:user, email: 'other1@example.com').id,
-            ssn_signature: Pii::Fingerprinter.fingerprint(SsnFormatter.normalize('987-65-4321')),
-            idv_level: 2,
-          )
-          action
-          body = JSON.parse(response.body)
-          expect(body['request_id']).to be_present
-          expect(body['email_account_found']).to eq(true)
-          expect(body['ssn_profile_found']).to eq(true)
-          expect(body['profiles'].length).to eq(2)
-          expect(body['profiles']).to include(
-            a_hash_including(
-              'email_match' => true,
-              'ssn_match' => true,
-              'idv_level' => 'enhanced',
-            ),
-            a_hash_including(
-              'email_match' => false,
-              'ssn_match' => true,
-              'idv_level' => 'enhanced',
-            ),
-          )
-          expect(@analytics).to have_logged_event(
-            :idv_proofing_agent_account_check_requested,
-            user_id: user.id,
-            response_body: a_hash_including(
-              email_account_found: true,
-              ssn_profile_found: true,
-              request_id: body['request_id'],
-            ),
-            agent_id: 'agent-456',
-            location_id: 'loc-123',
-            request_id: 'req-789',
-          )
+        context 'when the email param does not match any users' do
+          let(:user) { nil }
+          let(:email) { 'nonexistent@example.com' }
+
+          context 'when the ssn does not match any profiles' do
+            it 'returns email_account_found as false and ssn_profile_found as false' do
+              action
+              body = JSON.parse(response.body)
+              expect(body['email_account_found']).to eq(false)
+              expect(body['ssn_profile_found']).to eq(false)
+              expect(body['profiles']).to eq([])
+              expect(@analytics).to have_logged_event(
+                :idv_proofing_agent_account_check_requested,
+                response_body: a_hash_including(
+                  email_account_found: false,
+                  ssn_profile_found: false,
+                  profiles: [],
+                ),
+                proofing_agent: proofing_agent_analytics_hash,
+                issuer:,
+              )
+            end
+          end
+
+          context 'when the ssn matches profiles' do
+            it 'returns email_account_found as false and ssn_profile_found as true' do
+              create(
+                :profile,
+                :active,
+                user: create(:user, email: 'other@example.com'),
+                idv_level: 2,
+                ssn_signature: Pii::Fingerprinter.fingerprint(SsnFormatter.normalize(ssn)),
+              )
+              action
+              body = JSON.parse(response.body)
+              expect(body['email_account_found']).to eq(false)
+              expect(body['ssn_profile_found']).to eq(true)
+              expect(body['profiles'].length).to eq(1)
+              expect(body['profiles']).to include(
+                a_hash_including(
+                  'email_match' => false,
+                  'ssn_match' => true,
+                  'idv_level' => 'enhanced',
+                ),
+              )
+              expect(@analytics).to have_logged_event(
+                :idv_proofing_agent_account_check_requested,
+                response_body: a_hash_including(
+                  email_account_found: false,
+                  ssn_profile_found: true,
+                  profiles: include(
+                    a_hash_including(
+                      email_match: false,
+                      ssn_match: true,
+                      idv_level: 'enhanced',
+                    ),
+                  ),
+                ),
+                proofing_agent: proofing_agent_analytics_hash,
+                issuer:,
+              )
+            end
+          end
         end
+
+        context 'when the user nor ssn have any profiles' do
+          it 'returns correct profiles and found attributes' do
+            create(
+              :profile,
+              :deactivated,
+              user:,
+              ssn_signature: Pii::Fingerprinter.fingerprint(SsnFormatter.normalize(ssn)),
+              idv_level: 3,
+            )
+            action
+            body = JSON.parse(response.body)
+            expect(body['email_account_found']).to eq(true)
+            expect(body['ssn_profile_found']).to eq(false)
+            expect(body['profiles'].length).to eq(0)
+            expect(@analytics).to have_logged_event(
+              :idv_proofing_agent_account_check_requested,
+              response_body: a_hash_including(
+                email_account_found: true,
+                ssn_profile_found: false,
+                profiles: [],
+              ),
+              proofing_agent: proofing_agent_analytics_hash,
+              issuer:,
+            )
+          end
+        end
+
+        context 'when the email and ssn match same profiles' do
+          it 'returns correct profiles and found attributes' do
+            create(
+              :profile,
+              :active,
+              user:,
+              ssn_signature: Pii::Fingerprinter.fingerprint(SsnFormatter.normalize(ssn)),
+              idv_level: 3,
+            )
+            create(
+              :profile,
+              :deactivated,
+              user:,
+              ssn_signature: Pii::Fingerprinter.fingerprint(SsnFormatter.normalize('999-99-9999')),
+              idv_level: 1,
+            )
+            create(
+              :profile,
+              :active,
+              user: create(:user, email: 'other@example.com'),
+              ssn_signature: Pii::Fingerprinter.fingerprint(SsnFormatter.normalize(ssn)),
+              idv_level: 2,
+            )
+            create(
+              :profile,
+              :deactivated,
+              user: create(:user, email: 'another@example.com'),
+              ssn_signature: Pii::Fingerprinter.fingerprint(SsnFormatter.normalize(ssn)),
+              idv_level: 2,
+            )
+            create(
+              :profile,
+              :active,
+              user: create(:user, email: 'other1@example.com'),
+              ssn_signature: Pii::Fingerprinter.fingerprint(SsnFormatter.normalize('987-65-4321')),
+              idv_level: 2,
+            )
+            create(
+              :profile,
+              :active,
+              user: create(:user, email: 'another1@example.com'),
+              ssn_signature: Pii::Fingerprinter.fingerprint(SsnFormatter.normalize(ssn)),
+              idv_level: 1,
+            )
+            action
+            body = JSON.parse(response.body)
+            expect(body['email_account_found']).to eq(true)
+            expect(body['ssn_profile_found']).to eq(true)
+            expect(body['profiles'].length).to eq(3)
+            expect(body['profiles']).to include(
+              a_hash_including(
+                'email_match' => true,
+                'ssn_match' => true,
+                'idv_level' => 'enhanced',
+              ),
+              a_hash_including(
+                'email_match' => false,
+                'ssn_match' => true,
+                'idv_level' => 'enhanced',
+              ),
+              a_hash_including(
+                'email_match' => false,
+                'ssn_match' => true,
+                'idv_level' => 'basic',
+              ),
+            )
+            expect(@analytics).to have_logged_event(
+              :idv_proofing_agent_account_check_requested,
+              response_body: a_hash_including(
+                email_account_found: true,
+                ssn_profile_found: true,
+                profiles: include(
+                  a_hash_including(
+                    email_match: true,
+                    ssn_match: true,
+                    idv_level: 'enhanced',
+                  ),
+                  a_hash_including(
+                    email_match: false,
+                    ssn_match: true,
+                    idv_level: 'enhanced',
+                  ),
+                  a_hash_including(
+                    email_match: false,
+                    ssn_match: true,
+                    idv_level: 'basic',
+                  ),
+                ),
+              ),
+              proofing_agent: proofing_agent_analytics_hash,
+              issuer:,
+            )
+          end
+        end
+
+        context 'when the email and ssn match different profiles' do
+          it 'returns correct profiles and found attributes' do
+            create(
+              :profile,
+              :active,
+              user:,
+              ssn_signature: Pii::Fingerprinter.fingerprint(SsnFormatter.normalize('999-99-9999')),
+              idv_level: 3,
+            )
+            create(
+              :profile,
+              :deactivated,
+              user:,
+              ssn_signature: Pii::Fingerprinter.fingerprint(SsnFormatter.normalize('999-99-9999')),
+              idv_level: 1,
+            )
+            create(
+              :profile,
+              :active,
+              user: create(:user, email: 'other@example.com'),
+              ssn_signature: Pii::Fingerprinter.fingerprint(SsnFormatter.normalize(ssn)),
+              idv_level: 2,
+            )
+            create(
+              :profile,
+              :deactivated,
+              user: create(:user, email: 'another@example.com'),
+              ssn_signature: Pii::Fingerprinter.fingerprint(SsnFormatter.normalize(ssn)),
+              idv_level: 2,
+            )
+            create(
+              :profile,
+              :active,
+              user: create(:user, email: 'other1@example.com'),
+              ssn_signature: Pii::Fingerprinter.fingerprint(SsnFormatter.normalize('987-65-4321')),
+              idv_level: 2,
+            )
+            action
+            body = JSON.parse(response.body)
+            expect(body['email_account_found']).to eq(true)
+            expect(body['ssn_profile_found']).to eq(true)
+            expect(body['profiles'].length).to eq(2)
+            expect(body['profiles']).to include(
+              a_hash_including(
+                'email_match' => true,
+                'ssn_match' => false,
+                'idv_level' => 'enhanced',
+              ),
+              a_hash_including(
+                'email_match' => false,
+                'ssn_match' => true,
+                'idv_level' => 'enhanced',
+              ),
+            )
+            expect(@analytics).to have_logged_event(
+              :idv_proofing_agent_account_check_requested,
+              response_body: a_hash_including(
+                email_account_found: true,
+                ssn_profile_found: true,
+                profiles: include(
+                  a_hash_including(
+                    email_match: true,
+                    ssn_match: false,
+                    idv_level: 'enhanced',
+                  ),
+                  a_hash_including(
+                    email_match: false,
+                    ssn_match: true,
+                    idv_level: 'enhanced',
+                  ),
+                ),
+              ),
+              proofing_agent: proofing_agent_analytics_hash,
+              issuer:,
+            )
+          end
+        end
+
         it 'requires both email and ssn in the payload' do
           post :search_user, params: { email: email }
           expect(response.status).to eq(400)
@@ -287,8 +513,8 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
           expect(response.status).to eq(400)
         end
 
-        context 'without X-Proofing-Location-Id header' do
-          let(:headers) { { 'X-Agent-Id' => 'agent-456', 'X-Request-Id' => 'req-789' } }
+        context 'without X-Proofing-Location-ID header' do
+          let(:location_id) { nil }
 
           it 'returns 400' do
             expect(action.status).to eq(400)
@@ -297,14 +523,13 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
               success: false,
               failure_type: :validation,
               issuer:,
-              agent_id: 'agent-456',
-              request_id: 'req-789',
+              proofing_agent: proofing_agent_analytics_hash,
             )
           end
         end
 
-        context 'without X-Agent-Id header' do
-          let(:headers) { { 'X-Proofing-Location-Id' => 'loc-123', 'X-Request-Id' => 'req-789' } }
+        context 'without X-Proofing-Agent-ID header' do
+          let(:agent_id) { nil }
 
           it 'returns 400' do
             expect(action.status).to eq(400)
@@ -313,14 +538,13 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
               success: false,
               failure_type: :validation,
               issuer:,
-              location_id: 'loc-123',
-              request_id: 'req-789',
+              proofing_agent: proofing_agent_analytics_hash,
             )
           end
         end
 
-        context 'without X-Request-Id header' do
-          let(:headers) { { 'X-Proofing-Location-Id' => 'loc-123', 'X-Agent-Id' => 'agent-456' } }
+        context 'without X-Correlation-ID header' do
+          let(:correlation_id) { nil }
 
           it 'returns 400' do
             expect(action.status).to eq(400)
@@ -329,14 +553,19 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
               success: false,
               failure_type: :validation,
               issuer:,
-              agent_id: 'agent-456',
-              location_id: 'loc-123',
+              proofing_agent: a_hash_including(
+                agent_id: 'agent-456',
+                location_id: 'loc-123',
+                correlation_id: nil,
+              ),
             )
           end
         end
 
         context 'without any required headers' do
-          let(:headers) { {} }
+          let(:correlation_id) { nil }
+          let(:agent_id) { nil }
+          let(:location_id) { nil }
 
           it 'returns 400' do
             expect(action.status).to eq(400)
@@ -345,15 +574,16 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
               success: false,
               failure_type: :validation,
               issuer:,
+              proofing_agent: proofing_agent_analytics_hash,
             )
           end
 
           it 'lists missing headers in error' do
             action
             body = JSON.parse(response.body)
-            expect(body['error']).to include('X-Proofing-Location-Id')
-            expect(body['error']).to include('X-Agent-Id')
-            expect(body['error']).to include('X-Request-Id')
+            expect(body['error']).to include('X-Proofing-Location-ID')
+            expect(body['error']).to include('X-Proofing-Agent-ID')
+            expect(body['error']).to include('X-Correlation-ID')
           end
         end
       end
@@ -388,20 +618,18 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
             expect(action.status).to eq(200)
           end
 
-          it 'includes request_id in the response' do
+          it 'includes correlation_id in the response' do
             action
-            body = JSON.parse(response.body)
-            expect(body['request_id']).to be_present
+            expect(response.headers['X-Correlation-ID']).to be_present
           end
 
-          it 'returns the X-Request-Id header as request_id' do
+          it 'returns the X-Correlation-ID header as correlation_id' do
             action
-            body = JSON.parse(response.body)
-            expect(body['request_id']).to eq('req-789')
+            expect(response.headers['X-Correlation-ID']).to eq('correlation-789')
           end
 
-          context 'without X-Proofing-Location-Id header' do
-            let(:headers) { { 'X-Agent-Id' => 'agent-456', 'X-Request-Id' => 'req-789' } }
+          context 'without X-Proofing-Location-ID header' do
+            let(:location_id) { nil }
 
             it 'returns 400' do
               expect(action.status).to eq(400)
@@ -410,14 +638,13 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
                 success: false,
                 failure_type: :validation,
                 issuer:,
-                agent_id: 'agent-456',
-                request_id: 'req-789',
+                proofing_agent: proofing_agent_analytics_hash,
               )
             end
           end
 
-          context 'without X-Agent-Id header' do
-            let(:headers) { { 'X-Proofing-Location-Id' => 'loc-123', 'X-Request-Id' => 'req-789' } }
+          context 'without X-Proofing-Agent-ID header' do
+            let(:agent_id) { nil }
 
             it 'returns 400' do
               expect(action.status).to eq(400)
@@ -426,14 +653,13 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
                 success: false,
                 failure_type: :validation,
                 issuer:,
-                location_id: 'loc-123',
-                request_id: 'req-789',
+                proofing_agent: proofing_agent_analytics_hash,
               )
             end
           end
 
-          context 'without X-Request-Id header' do
-            let(:headers) { { 'X-Proofing-Location-Id' => 'loc-123', 'X-Agent-Id' => 'agent-456' } }
+          context 'without X-Correlation-ID header' do
+            let(:correlation_id) { nil }
 
             it 'returns 400' do
               expect(action.status).to eq(400)
@@ -442,14 +668,15 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
                 success: false,
                 failure_type: :validation,
                 issuer:,
-                agent_id: 'agent-456',
-                location_id: 'loc-123',
+                proofing_agent: proofing_agent_analytics_hash,
               )
             end
           end
 
           context 'without any required headers' do
-            let(:headers) { {} }
+            let(:correlation_id) { nil }
+            let(:agent_id) { nil }
+            let(:location_id) { nil }
 
             it 'returns 400' do
               expect(action.status).to eq(400)
@@ -458,6 +685,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
                 success: false,
                 failure_type: :validation,
                 issuer:,
+                proofing_agent: proofing_agent_analytics_hash,
               )
             end
           end
@@ -585,20 +813,18 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
             expect(action.status).to eq(200)
           end
 
-          it 'includes request_id in the response' do
+          it 'includes correlation_id in the response' do
             action
-            body = JSON.parse(response.body)
-            expect(body['request_id']).to be_present
+            expect(response.headers['X-Correlation-ID']).to be_present
           end
 
-          it 'returns the X-Request-Id header as request_id' do
+          it 'returns the X-Correlation-ID header as correlation_id' do
             action
-            body = JSON.parse(response.body)
-            expect(body['request_id']).to eq('req-789')
+            expect(response.headers['X-Correlation-ID']).to eq('correlation-789')
           end
 
-          context 'without X-Proofing-Location-Id header' do
-            let(:headers) { { 'X-Agent-Id' => 'agent-456', 'X-Request-Id' => 'req-789' } }
+          context 'without X-Proofing-Location-ID header' do
+            let(:location_id) { nil }
 
             it 'returns 400' do
               expect(action.status).to eq(400)
@@ -607,14 +833,17 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
                 success: false,
                 failure_type: :validation,
                 issuer:,
-                agent_id: 'agent-456',
-                request_id: 'req-789',
+                proofing_agent: a_hash_including(
+                  agent_id: 'agent-456',
+                  correlation_id: 'correlation-789',
+                  location_id: nil,
+                ),
               )
             end
           end
 
-          context 'without X-Agent-Id header' do
-            let(:headers) { { 'X-Proofing-Location-Id' => 'loc-123', 'X-Request-Id' => 'req-789' } }
+          context 'without X-Proofing-Agent-ID header' do
+            let(:agent_id) { nil }
 
             it 'returns 400' do
               expect(action.status).to eq(400)
@@ -623,14 +852,17 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
                 success: false,
                 failure_type: :validation,
                 issuer:,
-                location_id: 'loc-123',
-                request_id: 'req-789',
+                proofing_agent: a_hash_including(
+                  agent_id: nil,
+                  location_id: 'loc-123',
+                  correlation_id: 'correlation-789',
+                ),
               )
             end
           end
 
-          context 'without X-Request-Id header' do
-            let(:headers) { { 'X-Proofing-Location-Id' => 'loc-123', 'X-Agent-Id' => 'agent-456' } }
+          context 'without X-Correlation-ID header' do
+            let(:correlation_id) { nil }
 
             it 'returns 400' do
               expect(action.status).to eq(400)
@@ -639,14 +871,19 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
                 success: false,
                 failure_type: :validation,
                 issuer:,
-                agent_id: 'agent-456',
-                location_id: 'loc-123',
+                proofing_agent: a_hash_including(
+                  agent_id: 'agent-456',
+                  location_id: 'loc-123',
+                  correlation_id: nil,
+                ),
               )
             end
           end
 
           context 'without any required headers' do
-            let(:headers) { {} }
+            let(:correlation_id) { nil }
+            let(:agent_id) { nil }
+            let(:location_id) { nil }
 
             it 'returns 400' do
               expect(action.status).to eq(400)
@@ -655,6 +892,11 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
                 success: false,
                 failure_type: :validation,
                 issuer:,
+                proofing_agent: a_hash_including(
+                  agent_id: nil,
+                  location_id: nil,
+                  correlation_id: nil,
+                ),
               )
             end
           end
@@ -742,20 +984,20 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
             expect(action.status).to eq(200)
           end
 
-          it 'includes request_id in the response' do
+          it 'includes correlation_id in the response' do
             action
-            body = JSON.parse(response.body)
-            expect(body['request_id']).to be_present
+            expect(response.headers['X-Correlation-ID']).to be_present
           end
 
-          it 'returns the X-Request-Id header as request_id' do
+          it 'returns the X-Correlation-ID header as correlation_id' do
             action
-            body = JSON.parse(response.body)
-            expect(body['request_id']).to eq('req-789')
+            expect(response.headers['X-Correlation-ID']).to eq('correlation-789')
           end
 
-          context 'without X-Proofing-Location-Id header' do
-            let(:headers) { { 'X-Agent-Id' => 'agent-456', 'X-Request-Id' => 'req-789' } }
+          context 'without X-Proofing-Location-ID header' do
+            let(:headers) do
+              { 'X-Proofing-Agent-ID' => 'agent-456', 'X-Correlation-ID' => 'correlation-789' }
+            end
 
             it 'returns 400' do
               expect(action.status).to eq(400)
@@ -764,14 +1006,17 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
                 success: false,
                 failure_type: :validation,
                 issuer:,
-                agent_id: 'agent-456',
-                request_id: 'req-789',
+                proofing_agent: a_hash_including(
+                  agent_id: 'agent-456',
+                  correlation_id: 'correlation-789',
+                  location_id: nil,
+                ),
               )
             end
           end
 
-          context 'without X-Agent-Id header' do
-            let(:headers) { { 'X-Proofing-Location-Id' => 'loc-123', 'X-Request-Id' => 'req-789' } }
+          context 'without X-Proofing-Agent-ID header' do
+            let(:agent_id) { nil }
 
             it 'returns 400' do
               expect(action.status).to eq(400)
@@ -780,14 +1025,17 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
                 success: false,
                 failure_type: :validation,
                 issuer:,
-                location_id: 'loc-123',
-                request_id: 'req-789',
+                proofing_agent: a_hash_including(
+                  agent_id: nil,
+                  location_id: 'loc-123',
+                  correlation_id: 'correlation-789',
+                ),
               )
             end
           end
 
-          context 'without X-Request-Id header' do
-            let(:headers) { { 'X-Proofing-Location-Id' => 'loc-123', 'X-Agent-Id' => 'agent-456' } }
+          context 'without X-Correlation-ID header' do
+            let(:correlation_id) { nil }
 
             it 'returns 400' do
               expect(action.status).to eq(400)
@@ -796,14 +1044,19 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
                 success: false,
                 failure_type: :validation,
                 issuer:,
-                agent_id: 'agent-456',
-                location_id: 'loc-123',
+                proofing_agent: a_hash_including(
+                  agent_id: 'agent-456',
+                  location_id: 'loc-123',
+                  correlation_id: nil,
+                ),
               )
             end
           end
 
           context 'without any required headers' do
-            let(:headers) { {} }
+            let(:agent_id) { nil }
+            let(:location_id) { nil }
+            let(:correlation_id) { nil }
 
             it 'returns 400' do
               expect(action.status).to eq(400)
@@ -812,6 +1065,11 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
                 success: false,
                 failure_type: :validation,
                 issuer:,
+                proofing_agent: a_hash_including(
+                  agent_id: nil,
+                  location_id: nil,
+                  correlation_id: nil,
+                ),
               )
             end
           end
@@ -900,10 +1158,9 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
             expect(action.status).to eq(200)
           end
 
-          it 'includes request_id in the response' do
+          it 'includes correlation_id in the response' do
             action
-            body = JSON.parse(response.body)
-            expect(body['request_id']).to be_present
+            expect(response.headers['X-Correlation-ID']).to be_present
           end
         end
 

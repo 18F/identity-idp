@@ -398,8 +398,8 @@ RSpec.describe SignUp::CompletionsController do
             let(:proofing_event) do
               create(
                 :user_proofing_event,
+                :existing,
                 profile_id: profile.id,
-                service_providers_sent: [],
               )
             end
 
@@ -425,6 +425,7 @@ RSpec.describe SignUp::CompletionsController do
             let(:proofing_event) do
               create(
                 :user_proofing_event,
+                :existing,
                 profile_id: profile.id,
                 service_providers_sent: [sp.issuer],
               )
@@ -453,8 +454,8 @@ RSpec.describe SignUp::CompletionsController do
           let(:proofing_event) do
             create(
               :user_proofing_event,
+              :existing,
               profile_id: profile.id,
-              service_providers_sent: [],
             )
           end
 

@@ -673,6 +673,16 @@ RSpec.describe Users::SessionsController, devise: true do
         expect(cached_pii).to eq(Pii::Attributes.new(ssn: '1234'))
       end
 
+      it 'caches the UserProofingEvent in the user session' do
+        allow(controller).to receive(:cache_user_proofing_events).and_return(double)
+        user = create(:user, :fully_registered)
+        create(:profile, :active, :verified, user: user, pii: { ssn: '1234' })
+
+        post :create, params: { user: { email: user.email.upcase, password: user.password } }
+
+        expect(controller).to have_received(:cache_user_proofing_events).once
+      end
+
       it 'deactivates profile if not de-cryptable' do
         user = create(:user, :fully_registered)
         profile = create(:profile, :active, :verified, user: user, pii: { ssn: '1234' })

@@ -13,31 +13,26 @@ module Api
       before_action :authenticate_client
       before_action :validate_required_headers
       before_action :validate_search_user_payload, only: :search_user
+      after_action :add_custom_headers_to_response
 
       def search_user
-        email_account_found = user_account_for_email.present?
-        ssn_profile_found = profiles_with_matching_ssn.any?
         response_body = {
-          request_id:,
-          email_account_found:,
-          ssn_profile_found:,
-          profiles: build_profiles_results_array,
+          email_account_found: user.present?,
+          ssn_profile_found: ssn_active_profiles.any?,
+          profiles: active_profiles,
         }
-        track_account_check(
-          user_id: user_account_for_email&.id,
-          response_body:,
-          agent_id:,
-          location_id:,
-          request_id:,
+
+        analytics.idv_proofing_agent_account_check_requested(
+          **analytics_arguments, response_body:,
         )
+
         render json: response_body
       end
 
       def proof_user
         pii_validation = Idv::AgentPiiForm.new(pii: proof_params).submit
         render_bad_request(errors: pii_validation.errors) and return if !pii_validation.success?
-
-        render json: { request_id: }
+        render json: {}
       rescue ActionController::ParameterMissing => e
         render_bad_request(errors: { error: "Missing parameter #{e.param}" }) and return
       end
@@ -45,11 +40,12 @@ module Api
       private
 
       def validate_required_headers
-        if location_id.blank? || agent_id.blank? || request_id.blank?
-          track_failure(failure_type: :validation, agent_id:, location_id:, request_id:)
+        if location_id.blank? || agent_id.blank? || correlation_id.blank?
+          track_failure(failure_type: :validation)
 
+          required_headers = 'X-Proofing-Location-ID, X-Proofing-Agent-ID, X-Correlation-ID'
           render json: {
-            error: 'Missing required headers: X-Proofing-Location-Id, X-Agent-Id, X-Request-Id',
+            error: "Missing required headers: #{required_headers}",
           }, status: :bad_request
         end
       end
@@ -70,15 +66,15 @@ module Api
       end
 
       def agent_id
-        @agent_id ||= request.headers['X-Agent-Id']
+        @agent_id ||= request.headers['X-Proofing-Agent-ID']
       end
 
       def location_id
-        @location_id ||= request.headers['X-Proofing-Location-Id']
+        @location_id ||= request.headers['X-Proofing-Location-ID']
       end
 
-      def request_id
-        @request_id ||= request.headers['X-Request-ID']
+      def correlation_id
+        @correlation_id ||= request.headers['X-Correlation-ID']
       end
 
       def request_token
@@ -86,56 +82,44 @@ module Api
       end
 
       def email
-        @email ||= search_params[:email]
+        search_user_params[:email]
       end
 
       def ssn
-        @ssn ||= search_params[:ssn]
+        search_user_params[:ssn]
       end
 
-      def user_account_for_email
-        @user_account_for_email ||= EmailAddress.find_with_email(email)&.user
+      def user
+        @user ||= User.find_with_email(email)
       end
 
-      def ssn_signature_fingerprint
-        Pii::Fingerprinter.fingerprint(SsnFormatter.normalize(ssn))
+      def ssn_active_profiles
+        @ssn_active_profiles ||= Idv::DuplicateSsnFinder.new(user:, ssn:)
+          .ssn_profiles.select(&:active?)
       end
 
-      def profiles_with_matching_ssn
-        @profiles_with_matching_ssn ||= Profile.where(
-          ssn_signature: ssn_signature_fingerprint,
-        )
+      def user_active_profile
+        @user_active_profile ||= user&.active_profile
       end
 
-      def check_if_user_exists
-        return true if user_account_for_email.present? || profiles_with_matching_ssn.any?
-      end
-
-      def profiles_with_matching_account
-        return [] if user_account_for_email.blank?
-
-        Profile.where(user_id: user_account_for_email.id)
-      end
-
-      def build_profiles_results_array
-        profiles = profiles_with_matching_ssn | profiles_with_matching_account
-        @build_profiles_results_array ||= profiles.map do |profile|
-          {
-            email_match: profile.user == user_account_for_email,
-            ssn_match: profile.ssn_signature == ssn_signature_fingerprint,
-            idv_level: Profile::PROOFING_AGENT_IDV_LEVELS[profile.idv_level],
-          }
+      def active_profiles
+        @active_profiles ||= begin
+          profiles = ssn_active_profiles | [user_active_profile].compact
+          profiles.map do |profile|
+            {
+              email_match: profile.user_id == user&.id,
+              ssn_match: ssn_active_profiles.any? { |ssn_profile| ssn_profile.id == profile.id },
+              idv_level: Profile::PROOFING_AGENT_IDV_LEVELS[profile.idv_level],
+            }
+          end
         end
       end
 
-      def track_failure(failure_type:, agent_id: nil, location_id: nil, request_id: nil)
+      def track_failure(failure_type:)
         analytics.idv_proofing_agent_request_failed(
-          issuer: request_token&.issuer,
+          **analytics_arguments,
           success: false,
           failure_type:,
-          agent_id:,
-          location_id:,
-          request_id:,
         )
       end
 
@@ -174,24 +158,31 @@ module Api
         render json: errors, status: :bad_request
       end
 
-      def track_account_check(
-        user_id:,
-        response_body:,
-        agent_id: nil,
-        location_id: nil,
-        request_id: nil
-      )
-        analytics.idv_proofing_agent_account_check_requested(
-          user_id:,
-          response_body:,
-          agent_id:,
-          location_id:,
-          request_id:,
-        )
+      def search_user_params
+        @search_user_params = params.permit(:email, :ssn)
       end
 
-      def search_params
-        params.permit(:email, :ssn)
+      def add_custom_headers_to_response
+        response.set_header('X-Correlation-ID', correlation_id) if correlation_id.present?
+      end
+
+      def issuer
+        request_token&.issuer
+      end
+
+      def analytics_user
+        user || AnonymousUser.new
+      end
+
+      def analytics_arguments
+        {
+          proofing_agent: {
+            agent_id:,
+            location_id:,
+            correlation_id:,
+          },
+          issuer:,
+        }
       end
     end
   end
