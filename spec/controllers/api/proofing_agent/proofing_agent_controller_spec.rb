@@ -677,6 +677,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
                 active: true,
               )
             end
+
             it 'returns 200' do
               expect(action.status).to eq(200)
             end

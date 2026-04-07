@@ -37,7 +37,7 @@ module Api
         render_bad_request(errors: pii_validation.errors) and return if !pii_validation.success?
 
         document_capture_session = DocumentCaptureSession.create!(
-          user_id: user&.id,
+          user_id: user.id,
           issuer:,
           doc_auth_vendor: 'proofing_agent',
           requested_at: Time.zone.now,
@@ -172,7 +172,9 @@ module Api
       end
 
       def user_has_ial2_profile?
-        ssn_active_profiles.any? { |profile| Profile::PROOFING_AGENT_ENHANCED_LEVELS.include?(profile.idv_level) }
+        [user_active_profile, *ssn_active_profiles].compact.any? do |profile|
+          Profile::PROOFING_AGENT_IDV_LEVELS[profile.idv_level] == 'enhanced'
+        end
       end
 
       def proof_params
