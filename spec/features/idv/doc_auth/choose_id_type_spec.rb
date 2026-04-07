@@ -86,7 +86,7 @@ RSpec.feature 'choose id type step' do
         )
         visit idv_choose_id_type_url
         expect(page).to have_checked_field(
-          :state_id_card,
+          'doc_auth_choose_id_type_preference_state_id_card',
           visible: :all,
         )
         choose(t('doc_auth.forms.id_type_preference.passport'))
@@ -128,7 +128,7 @@ RSpec.feature 'choose id type step' do
           )
           visit idv_choose_id_type_url
           expect(page).to have_checked_field(
-            :state_id_card,
+            'doc_auth_choose_id_type_preference_state_id_card',
             visible: :all,
           )
         end
@@ -149,8 +149,9 @@ RSpec.feature 'choose id type step' do
           click_on t('forms.buttons.continue')
           expect(page).to have_current_path(idv_document_capture_url)
           visit idv_choose_id_type_url
+          binding.pry
           expect(page).to have_checked_field(
-            :state_id_card,
+            'doc_auth_choose_id_type_preference_state_id_card',
             visible: :all,
           )
         end
