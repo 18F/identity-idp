@@ -23,7 +23,9 @@ RSpec.describe Idv::HistoricalAttemptsConcern, type: :controller do
       'cost' => '000$0$0$',
     }
   end
-  let(:idv_attempts) { { 'test_attempt' => 'some_data' } }
+  let(:idv_attempts) { { 'idv-ssn-submitted' => 'test_data' } }
+  let(:registration_events) { { 'user-registration-email-submitted' => 'test_data' } }
+  let(:combined_attempts) { idv_attempts.merge(registration_events) }
   let(:pii_encryptor) { Encryption::Encryptors::PiiEncryptor.new(registered_user.password) }
   let(:existing_events) { { 'old_attempt' => 'old_data' } }
   let(:encrypted_existing_events) do
@@ -43,7 +45,8 @@ RSpec.describe Idv::HistoricalAttemptsConcern, type: :controller do
       sp_from_sp_session: sp,
       sp_session: { vtr: nil,
                     acr_values: Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF },
-      user_session: { 'idv/attempts' => idv_attempts },
+      user_session: { 'idv/attempts' => idv_attempts,
+                      'registration_events' => registration_events },
     )
     allow(registered_user).to receive_messages(
       active_profile: profile,
@@ -104,6 +107,13 @@ RSpec.describe Idv::HistoricalAttemptsConcern, type: :controller do
         record_user_proofing_events
       end
 
+      it 'concatenates idv/attempts and registration-events' do
+        expect(encryptor_mock).to have_received(:encrypt).with(
+          combined_attempts.to_json,
+          user_uuid: registered_user.uuid,
+        )
+      end
+
       it 'creates and saves a UserProofingEvent' do
         expect(UserProofingEvent).to have_received(:new)
         expect(user_proofing_event_new).to have_received(:save)
@@ -121,7 +131,7 @@ RSpec.describe Idv::HistoricalAttemptsConcern, type: :controller do
     end
 
     context 'when the user already has an existing UserProofingEvent' do
-      let(:concatenated_events) { existing_events.merge(idv_attempts) }
+      let(:concatenated_events) { existing_events.merge(idv_attempts, registration_events) }
       let(:user_proofing_event) do
         create(
           :user_proofing_event,
