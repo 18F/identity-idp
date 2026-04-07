@@ -1124,13 +1124,15 @@ RSpec.describe Idv::EnterPasswordController do
     end
 
     describe 'historical events tracking' do
-      let(:mock_user_session) do
-        {
-          'idv/attempts' => ['idv-enrollment-complete' => {
-            user_uuid: user.uuid,
-          }],
-        }
+      let(:idv_attempt) do
+        AttemptsApi::AttemptEvent.new(
+          event_type: 'idv-enrollment-complete',
+          session_id: 0,
+          occurred_at: Time.zone.now,
+          event_metadata: { event_type: 'idv-enrollment-complete', data: 'event data' },
+        )
       end
+      let(:mock_user_session) { { 'idv/attempts' => [idv_attempt] } }
       let(:mock) { double }
 
       before do
