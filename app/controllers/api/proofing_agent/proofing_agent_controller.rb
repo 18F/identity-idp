@@ -36,11 +36,9 @@ module Api
         pii_validation = Idv::AgentPiiForm.new(pii: proof_params).submit
         render_bad_request(errors: pii_validation.errors) and return if !pii_validation.success?
 
-        user_id = user&.id
-
         document_capture_session = DocumentCaptureSession.create!(
-          user_id:,
-          issuer: request_token.issuer,
+          user_id: user&.id,
+          issuer:,
           doc_auth_vendor: 'proofing_agent',
           requested_at: Time.zone.now,
         )
