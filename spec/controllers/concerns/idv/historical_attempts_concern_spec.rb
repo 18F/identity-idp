@@ -25,7 +25,7 @@ RSpec.describe Idv::HistoricalAttemptsConcern, type: :controller do
   end
   let(:idv_attempts) { [{ 'idv-ssn-submitted' => 'test_data' }] }
   let(:registration_events) { [{ 'user-registration-email-submitted' => 'test_data' }] }
-  let(:combined_attempts) { idv_attempts.union(registration_events) }
+  let(:full_attempts) { idv_attempts.union(registration_events) }
   let(:pii_encryptor) { Encryption::Encryptors::PiiEncryptor.new(registered_user.password) }
   let(:existing_events) { [{ 'old_attempt' => 'old_data' }] }
   let(:encrypted_existing_events) do
@@ -45,8 +45,8 @@ RSpec.describe Idv::HistoricalAttemptsConcern, type: :controller do
       sp_from_sp_session: sp,
       sp_session: { vtr: nil,
                     acr_values: Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF },
-      user_session: { 'idv/attempts' => idv_attempts,
-                      'registration_events' => registration_events },
+      user_session: { 'idv/attempts' => idv_attempts },
+      session: { 'registration_events' => registration_events },
     )
     allow(registered_user).to receive_messages(
       active_profile: profile,
@@ -109,7 +109,7 @@ RSpec.describe Idv::HistoricalAttemptsConcern, type: :controller do
 
       it 'concatenates idv/attempts and registration-events' do
         expect(encryptor_mock).to have_received(:encrypt).with(
-          combined_attempts.to_json,
+          full_attempts.to_json,
           user_uuid: registered_user.uuid,
         )
       end
@@ -131,7 +131,6 @@ RSpec.describe Idv::HistoricalAttemptsConcern, type: :controller do
     end
 
     context 'when the user already has an existing UserProofingEvent' do
-      let(:concatenated_events) { existing_events.union(idv_attempts, registration_events) }
       let(:user_proofing_event) do
         create(
           :user_proofing_event,
@@ -142,6 +141,7 @@ RSpec.describe Idv::HistoricalAttemptsConcern, type: :controller do
           profile_id: registered_user.active_profile.id,
         )
       end
+      let(:combined_events) { existing_events.union(full_attempts) }
 
       before do
         allow(UserProofingEvent).to receive(:new).and_call_original
@@ -156,7 +156,7 @@ RSpec.describe Idv::HistoricalAttemptsConcern, type: :controller do
 
       it 'encrypts concatenated data' do
         expect(pii_encryptor).to have_received(:encrypt).with(
-          concatenated_events.to_json, user_uuid: registered_user.uuid
+          combined_events.to_json, user_uuid: registered_user.uuid
         )
       end
 
