@@ -30,8 +30,8 @@ module Api
       end
 
       def proof_user
-        return render_user_not_found unless user.present?
-        return render_already_proofed if user_has_ial2_profile?
+        return render_user_not_found if user.blank?
+        return render_already_proofed if user_has_enhanced_profile?
 
         pii_validation = Idv::AgentPiiForm.new(pii: proof_params).submit
         render_bad_request(errors: pii_validation.errors) and return if !pii_validation.success?
@@ -171,7 +171,7 @@ module Api
         )
       end
 
-      def user_has_ial2_profile?
+      def user_has_enhanced_profile?
         [user_active_profile, *ssn_active_profiles].compact.any? do |profile|
           Profile::PROOFING_AGENT_IDV_LEVELS[profile.idv_level] == 'enhanced'
         end
