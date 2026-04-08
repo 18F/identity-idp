@@ -16,33 +16,39 @@ RSpec.describe SessionEncryptor do
 
   describe '#dump' do
     it 'transparently encrypts/decrypts sensitive elements of the session' do
-      session = { 'warden.user.user.session' => {
-        'idv' => { 'ssn' => '666-66-6666' },
+      session = {
+        'warden.user.user.session' => {
+          'idv' => { 'ssn' => '666-66-6666' },
+          'idv/in_person' => { 'ssn' => '666-66-6666' },
+          'other_value' => 42,
+        },
         'idv/attempts' => [{ 'ssn' => '666-66-6666' }],
-        'idv/in_person' => { 'ssn' => '666-66-6666' },
-        'other_value' => 42,
-      } }
+      }
 
       ciphertext = subject.dump(session)
 
       result = subject.load(ciphertext)
       expect(result).to eq(
-        { 'warden.user.user.session' => {
-          'idv' => { 'ssn' => '666-66-6666' },
+        {
+          'warden.user.user.session' => {
+            'idv' => { 'ssn' => '666-66-6666' },
+            'idv/in_person' => { 'ssn' => '666-66-6666' },
+            'other_value' => 42,
+          },
           'idv/attempts' => [{ 'ssn' => '666-66-6666' }],
-          'idv/in_person' => { 'ssn' => '666-66-6666' },
-          'other_value' => 42,
-        } },
+        },
       )
     end
 
     it 'KMS encrypts/decrypts doc auth elements of the session' do
-      session = { 'warden.user.user.session' => {
-        'idv' => { 'ssn' => '666-66-6666' },
+      session = {
+        'warden.user.user.session' => {
+          'idv' => { 'ssn' => '666-66-6666' },
+          'idv/in_person' => { 'ssn' => '666-66-6666' },
+          'other_value' => 42,
+        },
         'idv/attempts' => [{ 'ssn' => '666-66-6666' }],
-        'idv/in_person' => { 'ssn' => '666-66-6666' },
-        'other_value' => 42,
-      } }
+      }
       ciphertext = subject.dump(session)
 
       partially_decrypted = Zlib.gunzip(
