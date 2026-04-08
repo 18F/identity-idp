@@ -9,9 +9,7 @@ module Idv
       return unless historical_events_enabled?
       @password = password
 
-      idv_attempts = user_session['idv/attempts'] || []
-      registration_events = session['registration_events'] || []
-      new_events = idv_attempts.union(registration_events)
+      new_events = session['idv/attempts'] || []
 
       if !existing_user_proofing_event
         encrypted_events = encrypt_attempt_events_bundle(new_events)
@@ -31,8 +29,6 @@ module Idv
 
         existing_user_proofing_event.update_encrypted_events(encrypted_events)
       end
-      # We don't need these events in the session any longer
-      session.delete('registration_events')
     end
 
     def cache_user_proofing_events(password)

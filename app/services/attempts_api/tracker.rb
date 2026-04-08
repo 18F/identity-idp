@@ -72,13 +72,9 @@ module AttemptsApi
 
     def log_history(event)
       return unless session
-      if !session.dig('warden.user.user.session')
-        session['registration_events'] ||= []
-        session['registration_events'].push({ event.event_type => event })
-      else
-        session['warden.user.user.session']['idv/attempts'] ||= []
-        session['warden.user.user.session']['idv/attempts'].push({ event.event_type => event })
-      end
+
+      session['idv/attempts'] ||= []
+      session['idv/attempts'].push({ event.event_type => event })
     end
 
     def session

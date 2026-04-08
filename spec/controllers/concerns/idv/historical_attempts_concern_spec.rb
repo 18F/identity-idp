@@ -23,9 +23,10 @@ RSpec.describe Idv::HistoricalAttemptsConcern, type: :controller do
       'cost' => '000$0$0$',
     }
   end
-  let(:idv_attempts) { [{ 'idv-ssn-submitted' => 'test_data' }] }
-  let(:registration_events) { [{ 'user-registration-email-submitted' => 'test_data' }] }
-  let(:full_attempts) { idv_attempts.union(registration_events) }
+  let(:idv_attempts) { [
+    { 'user-registration-email-submitted' => 'test_data' },
+    { 'idv-ssn-submitted' => 'test_data' },
+  ] }
   let(:pii_encryptor) { Encryption::Encryptors::PiiEncryptor.new(registered_user.password) }
   let(:existing_events) { [{ 'old_attempt' => 'old_data' }] }
   let(:encrypted_existing_events) do
@@ -45,8 +46,7 @@ RSpec.describe Idv::HistoricalAttemptsConcern, type: :controller do
       sp_from_sp_session: sp,
       sp_session: { vtr: nil,
                     acr_values: Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF },
-      user_session: { 'idv/attempts' => idv_attempts },
-      session: { 'registration_events' => registration_events },
+      session: { 'idv/attempts' => idv_attempts },
     )
     allow(registered_user).to receive_messages(
       active_profile: profile,
@@ -107,13 +107,6 @@ RSpec.describe Idv::HistoricalAttemptsConcern, type: :controller do
         record_user_proofing_events
       end
 
-      it 'concatenates idv/attempts and registration-events' do
-        expect(encryptor_mock).to have_received(:encrypt).with(
-          full_attempts.to_json,
-          user_uuid: registered_user.uuid,
-        )
-      end
-
       it 'creates and saves a UserProofingEvent' do
         expect(UserProofingEvent).to have_received(:new)
         expect(user_proofing_event_new).to have_received(:save)
@@ -141,7 +134,7 @@ RSpec.describe Idv::HistoricalAttemptsConcern, type: :controller do
           profile_id: registered_user.active_profile.id,
         )
       end
-      let(:combined_events) { existing_events.union(full_attempts) }
+      let(:combined_events) { existing_events.union(idv_attempts) }
 
       before do
         allow(UserProofingEvent).to receive(:new).and_call_original
@@ -266,7 +259,7 @@ RSpec.describe Idv::HistoricalAttemptsConcern, type: :controller do
         )
       end
 
-      it 'updates the user_session with the UserProofingEvent' do
+      it 'updates the session with the UserProofingEvent' do
         expect(controller.user_session[:encrypted_proofing_events]).to eq(kms_encrypted_events)
       end
     end
