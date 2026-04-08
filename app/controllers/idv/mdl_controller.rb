@@ -17,10 +17,6 @@ module Idv
       @session_id = @credential_request.dig('state', 'transactionId')
       request_value = @credential_request.dig('request', 'request')
 
-      # Mobile: deep link to wallet. Desktop: QR code.
-      # Both use the same "okta-<jwt>" format that the Okta Credentials
-      # Showcase app recognizes. The JWT is URL-encoded for safe
-      # transport as a deep link URI.
       if mobile? && request_value
         @wallet_deep_link = "okta-#{request_value}"
       elsif request_value
@@ -29,7 +25,7 @@ module Idv
 
       session[:mdl_okta_session_id] = @session_id
 
-      # analytics.idv_mdl_visited
+      # TODO: add analytics event
     rescue Faraday::Error => e
       Rails.logger.error("[MdlController] Failed to create credential request: #{e.message}")
       @credential_request = nil

@@ -1,0 +1,141 @@
+<% content_for(:pre_flash_content) do %>
+  <%= render StepIndicatorComponent.new(
+        steps: Idv::StepIndicatorConcern::STEP_INDICATOR_STEPS,
+        current_step: :verify_id,
+        locale_scope: 'idv',
+        class: 'margin-x-neg-2 margin-top-neg-4 tablet:margin-x-neg-6 tablet:margin-top-neg-4',
+      ) %>
+<% end %>
+
+<% self.title = t('idv.mdl.title') %>
+
+<%= render PageHeadingComponent.new.with_content(t('idv.mdl.title')) %>
+
+<p class="margin-bottom-2"><%= t('idv.mdl.subtitle') %></p>
+
+<p class="margin-bottom-4">
+  <%= new_tab_link_to(
+        t('idv.mdl.learn_more'),
+        help_center_redirect_url(
+          category: 'verify-your-identity',
+          article: 'accepted-identification-documents',
+        ),
+      ) %>
+</p>
+
+<h2 class="margin-bottom-2"><%= t('idv.mdl.steps_heading') %></h2>
+
+<ol class="usa-process-list">
+  <li class="usa-process-list__item">
+    <h3 class="usa-process-list__heading"><%= t('idv.mdl.steps.device.title') %></h3>
+  </li>
+  <li class="usa-process-list__item">
+    <h3 class="usa-process-list__heading"><%= t('idv.mdl.steps.have_mdl.title') %></h3>
+  </li>
+</ol>
+
+<h2 class="margin-bottom-2"><%= t('idv.mdl.info_heading') %></h2>
+
+<ul class="usa-list margin-bottom-4">
+  <li><%= t('idv.mdl.info_items.name') %></li>
+  <li><%= t('idv.mdl.info_items.dob') %></li>
+  <li><%= t('idv.mdl.info_items.id_number') %></li>
+  <li><%= t('idv.mdl.info_items.expiration') %></li>
+  <li><%= t('idv.mdl.info_items.address') %></li>
+</ul>
+
+<%= render AlertComponent.new(type: :info, class: 'margin-bottom-4') do %>
+  <%= t('idv.mdl.alert_html') %>
+<% end %>
+
+<div id="mdl-error" class="usa-alert usa-alert--error display-none margin-bottom-4" role="alert">
+  <div class="usa-alert__body">
+    <p class="usa-alert__text"></p>
+  </div>
+</div>
+
+<%= button_tag(
+      t('idv.mdl.button'),
+      type: 'button',
+      id: 'mdl-verify-button',
+      class: 'usa-button usa-button--big usa-button--wide',
+      disabled: @wallet_deep_link.blank? && @qr_svg.blank?,
+      data: @wallet_deep_link ? { wallet_uri: @wallet_deep_link } : {},
+    ) %>
+
+<%# Desktop only: QR code for cross-device wallet scanning %>
+<% if @qr_svg %>
+<div id="mdl-qr" class="display-none margin-top-4 margin-bottom-4 text-center">
+  <div class="display-inline-block" style="max-width: 250px;">
+    <%= raw @qr_svg %>
+  </div>
+</div>
+<% end %>
+
+<div id="mdl-loading" class="display-none margin-top-4 margin-bottom-4 text-center">
+  <div class="spinner" aria-label="<%= t('idv.mdl.loading') %>"></div>
+  <p><%= t('idv.mdl.waiting') %></p>
+</div>
+
+<%= render 'idv/doc_auth/cancel', step: 'mdl' %>
+
+<% if @wallet_deep_link || @qr_svg %>
+<%= javascript_tag(nonce: true) do %>
+document.addEventListener('DOMContentLoaded', function() {
+  var button = document.getElementById('mdl-verify-button');
+  var qrDiv = document.getElementById('mdl-qr');
+  var errorDiv = document.getElementById('mdl-error');
+  var loadingDiv = document.getElementById('mdl-loading');
+  var walletDeepLink = button.getAttribute('data-wallet-uri') || '';
+
+  if (!button) return;
+
+  button.addEventListener('click', function() {
+    hideError();
+    button.classList.add('display-none');
+    loadingDiv.classList.remove('display-none');
+
+    if (walletDeepLink) {
+      window.location.href = walletDeepLink;
+    } else if (qrDiv) {
+      qrDiv.classList.remove('display-none');
+    }
+
+    pollForCompletion();
+  });
+
+  function pollForCompletion() {
+    var poll = setInterval(function() {
+      fetch('<%= idv_mdl_status_path %>')
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+          if (data.status === 'complete') {
+            clearInterval(poll);
+            hideLoading();
+            window.location.href = data.redirect;
+          } else if (data.status === 'failed' || data.status === 'error') {
+            clearInterval(poll);
+            hideLoading();
+            showError('<%= j t('idv.mdl.errors.generic') %>');
+          }
+        }).catch(function() {
+          // keep polling on network error
+        });
+    }, 2000);
+  }
+
+  function showError(message) {
+    errorDiv.querySelector('.usa-alert__text').textContent = message;
+    errorDiv.classList.remove('display-none');
+  }
+
+  function hideError() {
+    errorDiv.classList.add('display-none');
+  }
+
+  function hideLoading() {
+    loadingDiv.classList.add('display-none');
+  }
+});
+<% end %>
+<% end %>
