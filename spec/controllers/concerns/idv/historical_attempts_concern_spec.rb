@@ -23,10 +23,12 @@ RSpec.describe Idv::HistoricalAttemptsConcern, type: :controller do
       'cost' => '000$0$0$',
     }
   end
-  let(:idv_attempts) { [
-    { 'user-registration-email-submitted' => 'test_data' },
-    { 'idv-ssn-submitted' => 'test_data' },
-  ] }
+  let(:idv_attempts) do
+    [
+      { 'user-registration-email-submitted' => 'test_data' },
+      { 'idv-ssn-submitted' => 'test_data' },
+    ]
+  end
   let(:pii_encryptor) { Encryption::Encryptors::PiiEncryptor.new(registered_user.password) }
   let(:existing_events) { [{ 'old_attempt' => 'old_data' }] }
   let(:encrypted_existing_events) do
