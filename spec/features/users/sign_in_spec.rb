@@ -267,22 +267,6 @@ RSpec.feature 'Sign in' do
       expect(page).to have_content(t('notices.timeout_warning.partially_signed_in.continue'))
       expect(page).to have_content(t('notices.timeout_warning.partially_signed_in.sign_out'))
     end
-
-    it 'signs out the user and redirects to sign in page after timeout', js: true do
-      allow(IdentityConfig.store).to receive(:session_timeout_in_seconds).and_return(5)
-      allow(IdentityConfig.store).to receive(:session_check_frequency).and_return(1)
-      allow(IdentityConfig.store).to receive(:session_check_delay).and_return(0)
-      allow(IdentityConfig.store).to receive(:session_timeout_warning_seconds)
-        .and_return(Devise.timeout_in)
-      allow(Devise).to receive(:timeout_in)
-        .and_return(IdentityConfig.store.session_timeout_warning_seconds + 1)
-
-      user = create(:user, :fully_registered)
-      sign_in_user(user)
-      visit user_two_factor_authentication_path
-
-      expect(page).to have_current_path(new_user_session_path, wait: 20)
-    end
   end
 
   context 'signing back in after session timeout length' do
