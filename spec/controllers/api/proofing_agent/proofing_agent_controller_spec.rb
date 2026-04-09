@@ -859,6 +859,21 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
             end
           end
 
+          context 'when the zip_code is missing' do
+            let(:zip_code) { nil }
+            let(:body_errors) { { zip_code: ['cannot be blank'] } }
+
+            it 'returns 400' do
+              expect(action.status).to eq(400)
+              expect(@analytics).to have_logged_event(
+                :idv_proofing_agent_request_failed,
+                **body_failure_event_attrs,
+              )
+              body = JSON.parse(response.body)
+              expect(body['zip_code'][0]).to eq(body_errors[:zip_code][0])
+            end
+          end
+
           context 'when the zip_code is invalid' do
             let(:zip_code) { '123456' }
             let(:body_errors) { { zip_code: ['is invalid'] } }
