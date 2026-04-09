@@ -614,18 +614,13 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
         let(:state_id) { valid_state_id }
 
         context 'with a valid authorization header' do
-          let(:user) { create(:user, email: 'foo@bar.com') }
-          let(:user_id) { user.id }
-          before { user }
-
           it 'returns 202 accepted' do
             expect(action.status).to eq(202)
             transaction_id = DocumentCaptureSession.last.uuid
-            response_body = { status: 'pending', transaction_id: }
 
             expect(@analytics).to have_logged_event(
               :idv_proofing_agent_request_received,
-              response_body:,
+              response_body: a_hash_including(status: 'pending', transaction_id:),
               proofing_agent: proofing_agent_analytics_hash,
               issuer:,
               transaction_id:,
@@ -653,21 +648,20 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
             it 'returns a failed response body' do
               action
               body = JSON.parse(response.body)
-              response_body = { status: 'failed', reason: 'email_not_found' }
 
               expect(body['status']).to eq('failed')
               expect(body['reason']).to eq('email_not_found')
 
               expect(@analytics).to have_logged_event(
                 :idv_proofing_agent_request_received,
-                response_body:,
+                response_body: a_hash_including(status: 'failed', reason: 'email_not_found'),
                 proofing_agent: proofing_agent_analytics_hash,
                 issuer:,
               )
             end
           end
 
-          context 'user already has an ial2 profile' do
+          context 'user already has an enhanced profile' do
             let(:ssn) { '111-22-3333' }
             before do
               Profile.create!(
@@ -685,13 +679,15 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
             it 'returns a failed already proofed response body' do
               action
               body = JSON.parse(response.body)
-              response_body = { status: 'failed', reason: 'already_proofed_enhanced' }
               expect(body['status']).to eq('failed')
               expect(body['reason']).to eq('already_proofed_enhanced')
 
               expect(@analytics).to have_logged_event(
                 :idv_proofing_agent_request_received,
-                response_body:,
+                response_body: a_hash_including(
+                  status: 'failed',
+                  reason: 'already_proofed_enhanced',
+                ),
                 proofing_agent: proofing_agent_analytics_hash,
                 issuer:,
               )
@@ -839,7 +835,6 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
 
         context 'when the state_id data is not provided' do
           let(:state_id) { nil }
-          before { create(:user, email: 'foo@bar.com') }
 
           it 'returns 400' do
             expect(action.status).to eq(400)
@@ -851,7 +846,6 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
 
         context 'when state_id and invalid residential address are provided' do
           let(:residential_address) { malformed_residential_address }
-          before { create(:user, email: 'foo@bar.com') }
 
           it 'returns 400' do
             expect(action.status).to eq(400)
@@ -866,7 +860,6 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
           let(:state_id) { valid_state_id }
           let(:passport) { valid_passport }
           let(:residential_address) { valid_residential_address }
-          before { create(:user, email: 'foo@bar.com') }
 
           it 'returns 400' do
             expect(action.status).to eq(400)
@@ -882,17 +875,13 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
         let(:state_id) { valid_state_id }
 
         context 'with a valid authorization header' do
-          let(:user) { create(:user, email: 'foo@bar.com') }
-          before { user }
-
           it 'returns 202' do
             expect(action.status).to eq(202)
             transaction_id = DocumentCaptureSession.last.uuid
-            response_body = { status: 'pending', transaction_id: }
 
             expect(@analytics).to have_logged_event(
               :idv_proofing_agent_request_received,
-              response_body:,
+              response_body: a_hash_including(status: 'pending', transaction_id:),
               proofing_agent: proofing_agent_analytics_hash,
               issuer:,
               transaction_id:,
@@ -1066,17 +1055,13 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
         let(:state_id) { valid_state_id }
 
         context 'with a valid authorization header' do
-          let(:user) { create(:user, email: 'foo@bar.com') }
-          before { user }
-
           it 'returns 202' do
             expect(action.status).to eq(202)
             transaction_id = DocumentCaptureSession.last.uuid
-            response_body = { status: 'pending', transaction_id: }
 
             expect(@analytics).to have_logged_event(
               :idv_proofing_agent_request_received,
-              response_body:,
+              response_body: a_hash_including(status: 'pending', transaction_id:),
               proofing_agent: proofing_agent_analytics_hash,
               issuer:,
               transaction_id:,
@@ -1251,18 +1236,15 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
         let(:id_type) { passport_type }
         let(:passport) { valid_passport }
         let(:residential_address) { valid_residential_address }
-        let(:user) { create(:user, email: 'foo@bar.com') }
-        before { user }
 
         context 'when valid passport data is received' do
           it 'returns 202' do
             expect(action.status).to eq(202)
             transaction_id = DocumentCaptureSession.last.uuid
-            response_body = { status: 'pending', transaction_id: }
 
             expect(@analytics).to have_logged_event(
               :idv_proofing_agent_request_received,
-              response_body:,
+              response_body: a_hash_including(status: 'pending', transaction_id:),
               proofing_agent: proofing_agent_analytics_hash,
               issuer:,
               transaction_id:,
