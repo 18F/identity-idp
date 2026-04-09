@@ -212,9 +212,6 @@ module Api
 
       def render_bad_request(errors: nil, failure_type: :body_validation)
         errors = { base: ['There was a problem with your request.'] } if errors.nil?
-        # if errors[:no_document].present?
-        #   errors = { id_type: ["invalid id_type: #{proof_params[:id_type]}"] }
-        # end
         track_failure(failure_type:, errors:)
 
         render json: errors, status: :bad_request
