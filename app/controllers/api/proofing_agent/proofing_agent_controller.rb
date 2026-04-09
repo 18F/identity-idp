@@ -92,7 +92,7 @@ module Api
           required_headers = 'X-Proofing-Location-ID, X-Proofing-Agent-ID, X-Correlation-ID'
           errors = { error: "Missing required headers: #{required_headers}" }
 
-          track_failure(failure_type: :header_validation, errors: errors)
+          track_failure(failure_type: :header_validation, errors:)
           render json: errors, status: :bad_request
         end
       end

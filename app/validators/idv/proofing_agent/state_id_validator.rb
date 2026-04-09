@@ -15,8 +15,8 @@ module Idv
                                               message: 'is not a valid state code' }
         validates_with UspsInPersonProofing::DateValidator,
                        attributes: [:expiration_date],
-                       greater_than_or_equal_to: ->(_rec) do
-                         Time.zone.today + 2.days
+                       greater_than: ->(_rec) do
+                         Time.zone.today.to_date + 2.days
                        end,
                        message: 'is expired, or near expiration'
       end

@@ -33,7 +33,7 @@ module Idv
       def submit
         response = Idv::DocAuthFormResponse.new(
           success: valid?,
-          errors: errors,
+          errors:,
           extra: {
             pii_like_keypaths: self.class.pii_like_keypaths(document_type: id_type),
             document_type_received: id_type,
