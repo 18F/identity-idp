@@ -100,6 +100,7 @@ RSpec.describe DocAuth::LexisNexis::Requests::Ddp::TrueIdRequest do
         .with { |req|
           body = JSON.parse(req.body)
           body['account_email'] == 'person.name@email.test' &&
+            body['customer_event_type'] == 'true_id' &&
             body['service_type'] == 'basic' &&
             body['local_attrib_1'] == 'test_prefix' &&
             body['local_attrib_3'] == 'test_uuid_12345'
