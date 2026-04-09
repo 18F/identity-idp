@@ -167,7 +167,7 @@ module Api
       end
 
       def issuer
-        request_token&.issuer
+        request_token&.sp_issuer
       end
 
       def analytics_user

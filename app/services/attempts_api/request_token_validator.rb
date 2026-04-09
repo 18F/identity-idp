@@ -14,10 +14,8 @@ module AttemptsApi
       )
     end
 
-    def config_data
-      @config_data ||= IdentityConfig.store.allowed_attempts_providers.find do |config|
-        config['issuer'] == issuer
-      end
+    def config
+      IdentityConfig.store.allowed_attempts_providers
     end
   end
 end
