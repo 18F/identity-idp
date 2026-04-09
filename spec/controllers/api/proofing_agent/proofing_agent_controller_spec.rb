@@ -613,8 +613,17 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
         let(:state_id) { valid_state_id }
 
         context 'with a valid authorization header' do
-          it 'returns 200' do
-            expect(action.status).to eq(200)
+          it 'returns 202 accepted' do
+            expect(action.status).to eq(202)
+            transaction_id = DocumentCaptureSession.last.uuid
+
+            expect(@analytics).to have_logged_event(
+              :idv_proofing_agent_request_received,
+              response_body: a_hash_including(status: 'pending', transaction_id:),
+              proofing_agent: proofing_agent_analytics_hash,
+              issuer:,
+              transaction_id:,
+            )
           end
 
           it 'includes correlation_id in the response' do
@@ -625,6 +634,63 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
           it 'returns the X-Correlation-ID header as correlation_id' do
             action
             expect(response.headers['X-Correlation-ID']).to eq('correlation-789')
+          end
+
+          context 'user account does not exist' do
+            let(:user) { nil }
+            let(:email) { 'nonexistent@example.com' }
+
+            it 'returns 422 unprocessible_content' do
+              expect(action.status).to eq(422)
+            end
+
+            it 'returns a failed response body' do
+              action
+              body = JSON.parse(response.body)
+
+              expect(body['status']).to eq('failed')
+              expect(body['reason']).to eq('email_not_found')
+
+              expect(@analytics).to have_logged_event(
+                :idv_proofing_agent_request_received,
+                response_body: a_hash_including(status: 'failed', reason: 'email_not_found'),
+                proofing_agent: proofing_agent_analytics_hash,
+                issuer:,
+              )
+            end
+          end
+
+          context 'user already has an enhanced profile' do
+            let(:ssn) { '111-22-3333' }
+            before do
+              Profile.create!(
+                user_id: user.id,
+                ssn_signature: Pii::Fingerprinter.fingerprint(SsnFormatter.normalize(ssn)),
+                idv_level: 3,
+                active: true,
+              )
+            end
+
+            it 'returns 200' do
+              expect(action.status).to eq(200)
+            end
+
+            it 'returns a failed already proofed response body' do
+              action
+              body = JSON.parse(response.body)
+              expect(body['status']).to eq('failed')
+              expect(body['reason']).to eq('already_proofed_enhanced')
+
+              expect(@analytics).to have_logged_event(
+                :idv_proofing_agent_request_received,
+                response_body: a_hash_including(
+                  status: 'failed',
+                  reason: 'already_proofed_enhanced',
+                ),
+                proofing_agent: proofing_agent_analytics_hash,
+                issuer:,
+              )
+            end
           end
 
           context 'without X-Proofing-Location-ID header' do
@@ -808,8 +874,17 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
         let(:state_id) { valid_state_id }
 
         context 'with a valid authorization header' do
-          it 'returns 200' do
-            expect(action.status).to eq(200)
+          it 'returns 202' do
+            expect(action.status).to eq(202)
+            transaction_id = DocumentCaptureSession.last.uuid
+
+            expect(@analytics).to have_logged_event(
+              :idv_proofing_agent_request_received,
+              response_body: a_hash_including(status: 'pending', transaction_id:),
+              proofing_agent: proofing_agent_analytics_hash,
+              issuer:,
+              transaction_id:,
+            )
           end
 
           it 'includes correlation_id in the response' do
@@ -979,8 +1054,17 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
         let(:state_id) { valid_state_id }
 
         context 'with a valid authorization header' do
-          it 'returns 200' do
-            expect(action.status).to eq(200)
+          it 'returns 202' do
+            expect(action.status).to eq(202)
+            transaction_id = DocumentCaptureSession.last.uuid
+
+            expect(@analytics).to have_logged_event(
+              :idv_proofing_agent_request_received,
+              response_body: a_hash_including(status: 'pending', transaction_id:),
+              proofing_agent: proofing_agent_analytics_hash,
+              issuer:,
+              transaction_id:,
+            )
           end
 
           it 'includes correlation_id in the response' do
@@ -1153,8 +1237,17 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
         let(:residential_address) { valid_residential_address }
 
         context 'when valid passport data is received' do
-          it 'returns 200' do
-            expect(action.status).to eq(200)
+          it 'returns 202' do
+            expect(action.status).to eq(202)
+            transaction_id = DocumentCaptureSession.last.uuid
+
+            expect(@analytics).to have_logged_event(
+              :idv_proofing_agent_request_received,
+              response_body: a_hash_including(status: 'pending', transaction_id:),
+              proofing_agent: proofing_agent_analytics_hash,
+              issuer:,
+              transaction_id:,
+            )
           end
 
           it 'includes correlation_id in the response' do

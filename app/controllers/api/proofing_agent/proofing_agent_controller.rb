@@ -30,14 +30,62 @@ module Api
       end
 
       def proof_user
+        return render_user_not_found if user.blank?
+        return render_already_proofed if user_has_enhanced_profile?
+
         pii_validation = Idv::AgentPiiForm.new(pii: proof_params).submit
         render_bad_request(errors: pii_validation.errors) and return if !pii_validation.success?
-        render json: {}
+
+        document_capture_session = DocumentCaptureSession.create!(
+          user_id: user.id,
+          issuer:,
+          doc_auth_vendor: 'proofing_agent',
+          requested_at: Time.zone.now,
+        )
+
+        transaction_id = document_capture_session.uuid
+
+        response_body = {
+          status: 'pending',
+          transaction_id:,
+        }
+
+        analytics.idv_proofing_agent_request_received(
+          **analytics_arguments,
+          response_body:,
+          transaction_id:,
+        )
+
+        render json: response_body, status: :accepted
       rescue ActionController::ParameterMissing => e
         render_bad_request(errors: { error: "Missing parameter #{e.param}" }) and return
       end
 
       private
+
+      def render_user_not_found
+        response_body = { status: 'failed', reason: 'email_not_found' }
+
+        analytics.idv_proofing_agent_request_received(
+          **analytics_arguments,
+          response_body:,
+          transaction_id: nil,
+        )
+
+        render json: response_body, status: :unprocessable_content
+      end
+
+      def render_already_proofed
+        response_body = { status: 'failed', reason: 'already_proofed_enhanced' }
+
+        analytics.idv_proofing_agent_request_received(
+          **analytics_arguments,
+          response_body:,
+          transaction_id: nil,
+        )
+
+        render json: response_body, status: :ok
+      end
 
       def validate_required_headers
         if location_id.blank? || agent_id.blank? || correlation_id.blank?
@@ -82,11 +130,11 @@ module Api
       end
 
       def email
-        search_user_params[:email]
+        @email ||= action_name == 'proof_user' ? proof_params[:email] : search_user_params[:email]
       end
 
       def ssn
-        search_user_params[:ssn]
+        @ssn ||= action_name == 'proof_user' ? proof_params[:ssn] : search_user_params[:ssn]
       end
 
       def user
@@ -121,6 +169,12 @@ module Api
           success: false,
           failure_type:,
         )
+      end
+
+      def user_has_enhanced_profile?
+        [user_active_profile, *ssn_active_profiles].compact.any? do |profile|
+          profile.enhanced?
+        end
       end
 
       def proof_params

@@ -90,6 +90,10 @@ class Profile < ApplicationRecord
   end
 
   # Instance methods
+  def enhanced?
+    PROOFING_AGENT_IDV_LEVELS[idv_level] == 'enhanced'
+  end
+
   def fraud_review_pending?
     fraud_review_pending_at.present?
   end

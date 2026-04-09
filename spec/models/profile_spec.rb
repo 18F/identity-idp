@@ -46,6 +46,30 @@ RSpec.describe Profile do
     end
   end
 
+  describe '#enhanced?' do
+    it 'returns true if profile is enhanced' do
+      profile = create(
+        :profile,
+        :verified,
+        idv_level: :unsupervised_with_selfie,
+        user: user,
+      )
+
+      expect(profile.enhanced?).to eq(true)
+    end
+
+    it 'returns false if profile is not enhanced' do
+      profile = create(
+        :profile,
+        :verified,
+        idv_level: :legacy_unsupervised,
+        user: user,
+      )
+
+      expect(profile.enhanced?).to eq(false)
+    end
+  end
+
   describe '#in_person_verification_pending?' do
     it 'returns true if the in_person_verification_pending_at is present' do
       profile = create(
