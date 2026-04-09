@@ -128,14 +128,6 @@ module Api
         @request_token ||= ::ProofingAgent::RequestTokenValidator.new(request.authorization)
       end
 
-      def email
-        @email ||= action_name == 'proof_user' ? proof_params[:email] : search_user_params[:email]
-      end
-
-      def ssn
-        @ssn ||= action_name == 'proof_user' ? proof_params[:ssn] : search_user_params[:ssn]
-      end
-
       def user
         @user ||= User.find_with_email(email)
       end
@@ -179,8 +171,20 @@ module Api
         end
       end
 
+      def email
+        @email ||= action_name == 'proof_user' ? params.expect(:email) : search_user_params[:email]
+      end
+
+      def ssn
+        @ssn ||= action_name == 'proof_user' ? params.expect(:ssn) : search_user_params[:ssn]
+      end
+
       def id_type
-        params.expect(:id_type)
+        @id_type ||= params.expect(:id_type)
+      end
+
+      def search_user_params
+        @search_user_params = params.permit(:email, :ssn)
       end
 
       def proof_params
@@ -215,10 +219,6 @@ module Api
         track_failure(failure_type:, errors:)
 
         render json: errors, status: :bad_request
-      end
-
-      def search_user_params
-        @search_user_params = params.permit(:email, :ssn)
       end
 
       def add_custom_headers_to_response

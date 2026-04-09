@@ -956,8 +956,8 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
             let(:expiration_date) { (Time.zone.today + 3.days).strftime('%Y-%m-%d') }
             let(:body_errors) { {} }
 
-            it 'returns 200' do
-              expect(action.status).to eq(200)
+            it 'returns 202' do
+              expect(action.status).to eq(202)
               expect(@analytics).not_to have_logged_event(:idv_proofing_agent_request_failed)
             end
           end
@@ -1598,8 +1598,8 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
           let(:expiration_date) { (Time.zone.today + 3.days).strftime('%Y-%m-%d') }
           let(:body_errors) { {} }
 
-          it 'returns 200' do
-            expect(action.status).to eq(200)
+          it 'returns 202' do
+            expect(action.status).to eq(202)
             expect(@analytics).not_to have_logged_event(:idv_proofing_agent_request_failed)
           end
         end
