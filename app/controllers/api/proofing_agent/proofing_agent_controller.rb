@@ -173,7 +173,7 @@ module Api
 
       def user_has_enhanced_profile?
         [user_active_profile, *ssn_active_profiles].compact.any? do |profile|
-          Profile::PROOFING_AGENT_IDV_LEVELS[profile.idv_level] == 'enhanced'
+          profile.enhanced?
         end
       end
 
