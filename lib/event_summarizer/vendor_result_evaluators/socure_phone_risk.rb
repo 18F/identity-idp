@@ -4,20 +4,20 @@ require_relative 'socure'
 
 module EventSummarizer
   module VendorResultEvaluators
-    class SocureKyc < Socure
+    class SocurePhoneRisk < Socure
       class << self
         private
 
         def reason_codes(result)
-          result['reason_codes']
+          result['vendor']['result']['phonerisk']['reason_codes']
         end
 
         def type
-          'kyc'
+          'phonerisk'
         end
 
         def module_name
-          'KYC'
+          'Phone Risk'
         end
       end
     end
