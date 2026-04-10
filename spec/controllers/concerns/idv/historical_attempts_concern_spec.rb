@@ -23,14 +23,16 @@ RSpec.describe Idv::HistoricalAttemptsConcern, type: :controller do
       'cost' => '000$0$0$',
     }
   end
+  let(:test_data) { {"test_data": "data"} }
+  let(:old_data) { {"old_data": "data"} }
   let(:idv_attempts) do
     [
-      { 'user-registration-email-submitted' => 'test_data' },
-      { 'idv-ssn-submitted' => 'test_data' },
+      { 'user-registration-email-submitted' => test_data.to_json },
+      { 'idv-ssn-submitted' => test_data.to_json },
     ]
   end
   let(:pii_encryptor) { Encryption::Encryptors::PiiEncryptor.new(registered_user.password) }
-  let(:existing_events) { [{ 'old_attempt' => 'old_data' }] }
+  let(:existing_events) { [{ 'old_attempt' => old_data }] }
   let(:encrypted_existing_events) do
     pii_encryptor.encrypt(existing_events.to_json, user_uuid: registered_user.uuid)
   end
@@ -136,7 +138,11 @@ RSpec.describe Idv::HistoricalAttemptsConcern, type: :controller do
           profile_id: registered_user.active_profile.id,
         )
       end
-      let(:combined_events) { existing_events.union(idv_attempts) }
+      let(:combined_events) {
+        existing_events.union(idv_attempts.map do |event|
+          { event.keys[0] => JSON.parse(event.values[0]) }
+        end)
+      }
 
       before do
         allow(UserProofingEvent).to receive(:new).and_call_original

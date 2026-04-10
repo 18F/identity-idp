@@ -32,6 +32,9 @@ module Idv
         )
         new_user_proofing_event.save
       end
+
+      # Now that proofing events are saved, remove the plaintext events from session
+      session.delete('idv/attempts')
     end
 
     def cache_user_proofing_events(password)
@@ -41,8 +44,6 @@ module Idv
       existing_events = decrypt_user_proofing_events
       kms_encrypted_events = SessionEncryptor.new.kms_encrypt(existing_events)
       user_session[:encrypted_proofing_events] = kms_encrypted_events
-      # Now that proofing events are cached, remove the plaintext events from session
-      session.delete('idv/attempts')
     end
 
     private
