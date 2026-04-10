@@ -56,6 +56,15 @@ module Api
           transaction_id:,
         )
 
+        ProofingAgent::ProofUser.new(proof_params).call(
+          document_capture_session:,
+          proofing_agent_id: agent_id,
+          proofing_location_id: location_id,
+          correlation_id:,
+          trace_id: amzn_trace_id,
+          transaction_id:,
+        )
+
         render json: response_body, status: :accepted
       rescue ActionController::ParameterMissing => e
         render_bad_request(errors: { e.param => ['cannot be blank'] }) and return
