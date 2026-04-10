@@ -296,7 +296,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
             end
 
             context 'when unsupervised_with_selfie reproofing is required' do
-              let(:acr_values) { Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF }
+              let(:acr_values) { Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF }
 
               before do
                 allow(IdentityConfig.store).to receive(:reproof_if_not_unsupervised_with_selfie_service_providers)

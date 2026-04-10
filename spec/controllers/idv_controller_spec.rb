@@ -127,7 +127,7 @@ RSpec.describe IdvController do
             session[:sp] =
               {
                 issuer: service_provider.issuer,
-                acr_values: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+                acr_values: Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF,
               }
           end
 
@@ -145,7 +145,7 @@ RSpec.describe IdvController do
             session[:sp] =
               {
                 issuer: service_provider.issuer,
-                acr_values: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+                acr_values: Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF,
               }
           end
 

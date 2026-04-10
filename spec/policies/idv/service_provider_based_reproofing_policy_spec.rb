@@ -6,8 +6,19 @@ RSpec.describe Idv::ServiceProviderBasedReproofingPolicy do
   let(:active_profile) { nil }
   let(:service_provider) { nil }
 
+  let(:facial_match) { true }
+  let(:resolved_authn_context_result) do
+    if service_provider
+      double(service_provider: service_provider, facial_match?: facial_match)
+    end
+  end
+
   subject(:policy) do
-    described_class.new(active_profile: active_profile, service_provider: service_provider)
+    described_class.new(
+      active_profile: active_profile,
+      service_provider: service_provider,
+      resolved_authn_context_result: resolved_authn_context_result,
+    )
   end
 
   describe '#needs_to_reproof?' do
@@ -70,6 +81,14 @@ RSpec.describe Idv::ServiceProviderBasedReproofingPolicy do
           expect(policy.needs_to_reproof?).to eq true
         end
       end
+
+      context 'when the authn context does not require facial match' do
+        let(:facial_match) { false }
+
+        it 'returns false' do
+          expect(policy.needs_to_reproof?).to eq false
+        end
+      end
     end
 
     context 'unsupervised_with_selfie reproofing logic' do
@@ -126,6 +145,15 @@ RSpec.describe Idv::ServiceProviderBasedReproofingPolicy do
 
           it 'returns true' do
             expect(policy.needs_to_reproof?).to eq true
+          end
+        end
+
+        context 'when the authn context does not require facial match' do
+          let(:facial_match) { false }
+          let(:active_profile) { create(:profile, :in_person_verified) }
+
+          it 'returns false' do
+            expect(policy.needs_to_reproof?).to eq false
           end
         end
       end

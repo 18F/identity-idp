@@ -2,16 +2,18 @@
 
 module Idv
   class ServiceProviderBasedReproofingPolicy
-    attr_reader :active_profile, :service_provider
+    attr_reader :active_profile, :resolved_authn_context_result, :service_provider
 
-    def initialize(active_profile:, service_provider:)
+    def initialize(active_profile:, service_provider:, resolved_authn_context_result:)
       @active_profile = active_profile
       @service_provider = service_provider
+      @resolved_authn_context_result = resolved_authn_context_result
     end
 
     def needs_to_reproof?
       return false unless active_profile.present?
       return false unless service_provider.present?
+      return false unless resolved_authn_context_result&.facial_match?
       reproof_forcing_sp? || unsupervised_with_selfie_reproofing_required?
     end
 

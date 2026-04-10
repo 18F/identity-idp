@@ -64,6 +64,7 @@ module IdvSessionConcern
     Idv::ServiceProviderBasedReproofingPolicy.new(
       active_profile: idv_session_user.active_profile,
       service_provider: current_sp,
+      resolved_authn_context_result: resolved_authn_context_result,
     ).needs_to_reproof?
   end
 
