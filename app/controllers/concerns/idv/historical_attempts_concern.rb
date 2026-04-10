@@ -9,7 +9,10 @@ module Idv
       return unless historical_events_enabled?
       @password = password
 
-      new_events = session['idv/attempts'] || []
+      raw_events = session['idv/attempts'] || []
+      new_events = raw_events.map do |event|
+        { event.keys[0] => JSON.parse(event.values[0]) }
+      end
 
       if existing_user_proofing_event
         existing_events = JSON.parse(decrypt_user_proofing_events)
