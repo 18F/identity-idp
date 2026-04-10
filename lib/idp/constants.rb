@@ -38,6 +38,8 @@ module Idp
       STATE_ID_TYPES = [*SUPPORTED_STATE_ID_TYPES].freeze
     end
 
+    SUPPORTED_PASSPORT_ISSUING_COUNTRY_CODES = %w[US USA].freeze
+
     # US State and Territory codes are
     # taken from the FIPS standard, which
     # can be found at:
