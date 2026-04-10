@@ -552,6 +552,7 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
                 transaction_token: @docv_transaction_token,
               ),
             )
+            byebug
             expect(page).to have_content(t('idv.errors.try_again_later'))
 
             click_on t('idv.failure.button.warning')

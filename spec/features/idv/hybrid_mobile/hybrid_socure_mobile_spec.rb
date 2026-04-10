@@ -207,6 +207,7 @@ RSpec.describe 'Hybrid Flow' do
               transaction_token: @docv_transaction_token,
             ),
           )
+          byebug
           expect(page).to have_content(t('idv.errors.try_again_later'))
           expect(page).to have_content(
             I18n.t('idv.troubleshooting.options.use_another_id_type'),
