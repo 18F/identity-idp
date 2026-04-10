@@ -207,7 +207,7 @@ RSpec.describe 'Hybrid Flow' do
               transaction_token: @docv_transaction_token,
             ),
           )
-          # byebug
+
           expect(page).to have_content(t('doc_auth.errors.rate_limited_heading'))
           expect(page).to have_content(t('doc_auth.info.review_passport'))
           expect(page).to have_content(
