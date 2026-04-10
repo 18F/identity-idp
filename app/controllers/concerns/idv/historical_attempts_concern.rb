@@ -11,7 +11,13 @@ module Idv
 
       new_events = session['idv/attempts'] || []
 
-      if !existing_user_proofing_event
+      if existing_user_proofing_event
+        existing_events = JSON.parse(decrypt_user_proofing_events)
+        combined_events = existing_events.union(new_events)
+        encrypted_events = encrypt_attempt_events_bundle(combined_events)
+
+        existing_user_proofing_event.update_encrypted_events(encrypted_events)
+      else
         encrypted_events = encrypt_attempt_events_bundle(new_events)
         encrypted_events_json = JSON.parse(encrypted_events)
         new_user_proofing_event = UserProofingEvent.new(
@@ -22,17 +28,11 @@ module Idv
           salt: encrypted_events_json['salt'],
         )
         new_user_proofing_event.save
-      else
-        existing_events = JSON.parse(decrypt_user_proofing_events)
-        combined_events = existing_events.union(new_events)
-        encrypted_events = encrypt_attempt_events_bundle(combined_events)
-
-        existing_user_proofing_event.update_encrypted_events(encrypted_events)
       end
     end
 
     def cache_user_proofing_events(password)
-      return unless historical_events_permitted? && existing_user_proofing_event
+      return unless historical_events_need_be_sent? && existing_user_proofing_event
       @password = password
 
       existing_events = decrypt_user_proofing_events
@@ -48,7 +48,7 @@ module Idv
       resolved_authn_context_result.identity_proofing_or_ialmax? && current_user.identity_verified?
     end
 
-    def historical_events_permitted?
+    def historical_events_need_be_sent?
       return false unless historical_events_enabled?
 
       sent_to_aaca = existing_user_proofing_event&.service_providers_sent&.include?(
