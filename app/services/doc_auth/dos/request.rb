@@ -98,7 +98,7 @@ module DocAuth
       )
         DocAuth::Response.new(
           success: false,
-          errors: { network: true, passport: true },
+          errors: { passport_network: true },
           exception: exception,
           extra: {
             vendor: 'DoS',

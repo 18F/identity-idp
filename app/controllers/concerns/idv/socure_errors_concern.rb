@@ -28,6 +28,9 @@ module Idv
         :state_id_verification
       elsif result.errors[:passport]
         :passport
+      elsif result.errors[:passport_network]
+        byebug
+        :passport_network
       else
         # No error information available (shouldn't happen). Default
         # to :network if it does.
