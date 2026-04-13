@@ -71,10 +71,12 @@ module AttemptsApi
     private
 
     def log_history(event)
-      return unless session
+      return unless session && session['warden.user.user.session']
 
       session['warden.user.user.session']['idv/attempts'] ||= []
-      session['warden.user.user.session']['idv/attempts'].push({ event.event_type => JSON.parse(event.to_json) })
+      session['warden.user.user.session']['idv/attempts'].push(
+        { event.event_type => JSON.parse(event.to_json) },
+      )
     end
 
     def session
