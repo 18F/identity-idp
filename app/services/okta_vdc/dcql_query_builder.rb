@@ -9,6 +9,7 @@ module OktaVdc
       given_name
       family_name
       birth_date
+      document_number
       resident_address
       resident_city
       resident_state

@@ -1238,6 +1238,7 @@ idv.mdl.steps.device.title: A device with Apple Wallet or Google Wallet
 idv.mdl.steps.have_mdl.title: An active mobile driver's license
 idv.mdl.steps_heading: 'You''ll need:'
 idv.mdl.subtitle: Using your mDL helps us quickly and accurately confirm your identity.
+idv.mdl.success_banner: We verified your ID
 idv.mdl.title: Add your mobile driver's license (mDL) information
 idv.mdl.use_different_method: Use a different verification method
 idv.mdl.waiting: Waiting for credential verification... Please complete the process in the Okta Credentials app.

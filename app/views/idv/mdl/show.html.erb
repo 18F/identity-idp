@@ -11,8 +11,7 @@
 
 <%= render PageHeadingComponent.new.with_content(t('idv.mdl.title')) %>
 
-<p class="margin-bottom-2"><%= t('idv.mdl.subtitle') %></p>
-
+<p class="margin-bottom-0"><%= t('idv.mdl.subtitle') %></p>
 <p class="margin-bottom-4">
   <%= new_tab_link_to(
         t('idv.mdl.learn_more'),
@@ -27,22 +26,22 @@
 
 <ol class="usa-process-list">
   <li class="usa-process-list__item">
-    <h3 class="usa-process-list__heading"><%= t('idv.mdl.steps.device.title') %></h3>
+    <p class="usa-process-list__heading font-body-md text-normal"><%= t('idv.mdl.steps.device.title') %></p>
   </li>
   <li class="usa-process-list__item">
-    <h3 class="usa-process-list__heading"><%= t('idv.mdl.steps.have_mdl.title') %></h3>
+    <p class="usa-process-list__heading font-body-md text-normal"><%= t('idv.mdl.steps.have_mdl.title') %></p>
   </li>
 </ol>
 
 <h2 class="margin-bottom-2"><%= t('idv.mdl.info_heading') %></h2>
 
-<ul class="usa-list margin-bottom-4">
-  <li><%= t('idv.mdl.info_items.name') %></li>
-  <li><%= t('idv.mdl.info_items.dob') %></li>
-  <li><%= t('idv.mdl.info_items.id_number') %></li>
-  <li><%= t('idv.mdl.info_items.expiration') %></li>
-  <li><%= t('idv.mdl.info_items.address') %></li>
-</ul>
+<%= render IconListComponent.new(icon: :check_circle, color: :success, class: 'margin-bottom-4') do |c| %>
+  <% c.with_item { t('idv.mdl.info_items.name') } %>
+  <% c.with_item { t('idv.mdl.info_items.dob') } %>
+  <% c.with_item { t('idv.mdl.info_items.id_number') } %>
+  <% c.with_item { t('idv.mdl.info_items.expiration') } %>
+  <% c.with_item { t('idv.mdl.info_items.address') } %>
+<% end %>
 
 <%= render AlertComponent.new(type: :info, class: 'margin-bottom-4') do %>
   <%= t('idv.mdl.alert_html') %>

@@ -12,6 +12,7 @@ module OktaVdc
       'resident_city' => :city,
       'resident_state' => :state,
       'resident_postal_code' => :zipcode,
+      'document_number' => :state_id_number,
       'expiry_date' => :state_id_expiration,
       'issue_date' => :state_id_issued,
       'issuing_authority' => :state_id_jurisdiction,

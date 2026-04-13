@@ -16,6 +16,12 @@ locals:
 
 <% self.title = t('titles.doc_auth.ssn') %>
 
+<% if @id_verified_via_mdl %>
+  <%= render AlertComponent.new(type: :success, class: 'margin-bottom-4') do %>
+    <%= t('idv.mdl.success_banner') %>
+  <% end %>
+<% end %>
+
 <% if @ssn_presenter.updating_ssn? %>
   <%= render PageHeadingComponent.new.with_content(t('doc_auth.headings.ssn_update')) %>
 <% else %>
