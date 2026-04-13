@@ -5311,20 +5311,38 @@ module AnalyticsEvents
     )
   end
 
+  # Logs when a proofing agent checks for an account associated with the proofing request
+  # @param [Hash] response_body The body of the response from the proofing agent's account check
+  # @param [Hash] proofing_agent The proofing agent information
+  # @param [String] issuer The issuer associated with the proofing request
+  def idv_proofing_agent_account_check_requested(
+    response_body:,
+    proofing_agent:,
+    issuer:,
+    **extra
+  )
+    track_event(
+      :idv_proofing_agent_account_check_requested,
+      response_body:,
+      proofing_agent:,
+      issuer:,
+      **extra,
+    )
+  end
+
   # Tracks a proofing agent request that failed authorization or validation
   # @param [Boolean] success Whether request was successful
   # @param [String] issuer The issuer associated with the proofing request
-  # @param ['authorization', 'validation'] failure_type Determines failure type
-  # @param [String,nil] agent_id The ID of the proofing agent
-  # @param [String,nil] location_id The ID of the location where the proofing request was made
-  # @param [String,nil] request_id The request ID associated with the proofing request
+  # @param ['authorization', 'header_validation', 'body_validation] failure_type Determines failure
+  #   type
+  # @param [Hash] proofing_agent The proofing agent information
+  # @param [Hash, nil] errors The hash of errors that caused the failure
   def idv_proofing_agent_request_failed(
     success:,
     issuer:,
     failure_type:,
-    agent_id: nil,
-    location_id: nil,
-    request_id: nil,
+    proofing_agent:,
+    errors: nil,
     **extra
   )
     track_event(
@@ -5332,9 +5350,30 @@ module AnalyticsEvents
       success:,
       issuer:,
       failure_type:,
-      agent_id:,
-      location_id:,
-      request_id:,
+      proofing_agent:,
+      errors:,
+      **extra,
+    )
+  end
+
+  # Logs when a proofing agent begins proofing a user
+  # @param [Hash] response_body The body of the response from the proofing agent's proofing request
+  # @param [Hash] proofing_agent The proofing agent information
+  # @param [String] issuer The issuer associated with the proofing request
+  # @param [String,nil] transaction_id The transaction ID associated with the proofing request
+  def idv_proofing_agent_request_received(
+    response_body:,
+    proofing_agent:,
+    issuer:,
+    transaction_id: nil,
+    **extra
+  )
+    track_event(
+      :idv_proofing_agent_request_received,
+      response_body:,
+      proofing_agent:,
+      issuer:,
+      transaction_id:,
       **extra,
     )
   end

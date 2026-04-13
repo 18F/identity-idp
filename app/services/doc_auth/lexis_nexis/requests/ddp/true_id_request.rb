@@ -37,6 +37,7 @@ module DocAuth
           def body
             {
               account_email: applicant[:email],
+              customer_event_type: 'true_id',
               policy:,
               'Trueid.image_data.white_front': encode(id_front_image),
               'Trueid.image_data.white_back': back_image_value,

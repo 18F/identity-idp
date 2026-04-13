@@ -6,6 +6,14 @@ class Profile < ApplicationRecord
   # Facial match through IAL2 opt-in flow
   FACIAL_MATCH_OPT_IN = %w[unsupervised_with_selfie].to_set.freeze
 
+  PROOFING_AGENT_IDV_LEVELS = {
+    'legacy_unsupervised' => 'basic',
+    'legacy_in_person' => 'enhanced',
+    'unsupervised_with_selfie' => 'enhanced',
+    'in_person' => 'enhanced',
+    'proofing_agent' => 'enhanced',
+  }.freeze
+
   belongs_to :user
   # rubocop:disable Rails/InverseOf
   belongs_to :initiating_service_provider,
@@ -82,6 +90,10 @@ class Profile < ApplicationRecord
   end
 
   # Instance methods
+  def enhanced?
+    PROOFING_AGENT_IDV_LEVELS[idv_level] == 'enhanced'
+  end
+
   def fraud_review_pending?
     fraud_review_pending_at.present?
   end

@@ -122,7 +122,14 @@ class Analytics
     return unless request.referer
 
     uri = URI.parse(request.referer)
-    "#{uri.scheme}://#{uri.host}#{uri.path}"
+    return unless %w[http https].include?(uri.scheme)
+    return unless uri.host.present?
+
+    path = uri.path[0, 2048]
+
+    "#{uri.scheme}://#{uri.host}#{path}"
+  rescue URI::InvalidURIError, ArgumentError, Encoding::CompatibilityError
+    nil
   end
 
   def session_duration

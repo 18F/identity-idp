@@ -12,28 +12,95 @@ module Api
       skip_before_action :verify_authenticity_token
       before_action :authenticate_client
       before_action :validate_required_headers
+      before_action :validate_search_user_payload, only: :search_user
+      after_action :add_custom_headers_to_response
 
       def search_user
-        render json: { request_id: }
+        response_body = {
+          email_account_found: user.present?,
+          ssn_profile_found: ssn_active_profiles.any?,
+          profiles: active_profiles,
+        }
+
+        analytics.idv_proofing_agent_account_check_requested(
+          **analytics_arguments, response_body:,
+        )
+
+        render json: response_body
       end
 
       def proof_user
-        pii_validation = Idv::AgentPiiForm.new(pii: proof_params).submit
+        return render_user_not_found if user.blank?
+        return render_already_proofed if user_has_enhanced_profile?
+
+        pii_validation = Idv::ProofingAgent::AgentPiiForm.new(pii: proof_params).submit
         render_bad_request(errors: pii_validation.errors) and return if !pii_validation.success?
 
-        render json: { request_id: }
+        document_capture_session = DocumentCaptureSession.create!(
+          user_id: user.id,
+          issuer:,
+          doc_auth_vendor: 'proofing_agent',
+          requested_at: Time.zone.now,
+        )
+
+        transaction_id = document_capture_session.uuid
+
+        response_body = {
+          status: 'pending',
+          transaction_id:,
+        }
+
+        analytics.idv_proofing_agent_request_received(
+          **analytics_arguments,
+          response_body:,
+          transaction_id:,
+        )
+
+        render json: response_body, status: :accepted
       rescue ActionController::ParameterMissing => e
-        render_bad_request(errors: { error: "Missing parameter #{e.param}" }) and return
+        render_bad_request(errors: { e.param => ['cannot be blank'] }) and return
       end
 
       private
 
-      def validate_required_headers
-        if location_id.blank? || agent_id.blank? || request_id.blank?
-          track_failure(failure_type: :validation, agent_id:, location_id:, request_id:)
+      def render_user_not_found
+        response_body = { status: 'failed', reason: 'email_not_found' }
 
+        analytics.idv_proofing_agent_request_received(
+          **analytics_arguments,
+          response_body:,
+          transaction_id: nil,
+        )
+
+        render json: response_body, status: :unprocessable_content
+      end
+
+      def render_already_proofed
+        response_body = { status: 'failed', reason: 'already_proofed_enhanced' }
+
+        analytics.idv_proofing_agent_request_received(
+          **analytics_arguments,
+          response_body:,
+          transaction_id: nil,
+        )
+
+        render json: response_body, status: :ok
+      end
+
+      def validate_required_headers
+        if location_id.blank? || agent_id.blank? || correlation_id.blank?
+          required_headers = 'X-Proofing-Location-ID, X-Proofing-Agent-ID, X-Correlation-ID'
+          errors = { error: "Missing required headers: #{required_headers}" }
+
+          track_failure(failure_type: :header_validation, errors:)
+          render json: errors, status: :bad_request
+        end
+      end
+
+      def validate_search_user_payload
+        if email.blank? || ssn.blank?
           render json: {
-            error: 'Missing required headers: X-Proofing-Location-Id, X-Agent-Id, X-Request-Id',
+            error: 'Missing required payload: email, ssn',
           }, status: :bad_request
         end
       end
@@ -46,30 +113,78 @@ module Api
       end
 
       def agent_id
-        @agent_id ||= request.headers['X-Agent-Id']
+        @agent_id ||= request.headers['X-Proofing-Agent-ID']
       end
 
       def location_id
-        @location_id ||= request.headers['X-Proofing-Location-Id']
+        @location_id ||= request.headers['X-Proofing-Location-ID']
       end
 
-      def request_id
-        @request_id ||= request.headers['X-Request-ID']
+      def correlation_id
+        @correlation_id ||= request.headers['X-Correlation-ID']
       end
 
       def request_token
         @request_token ||= ::ProofingAgent::RequestTokenValidator.new(request.authorization)
       end
 
-      def track_failure(failure_type:, agent_id: nil, location_id: nil, request_id: nil)
+      def user
+        @user ||= User.find_with_email(email)
+      end
+
+      def ssn_active_profiles
+        @ssn_active_profiles ||= Idv::DuplicateSsnFinder.new(user:, ssn:)
+          .ssn_profiles.select(&:active?)
+      end
+
+      def user_active_profile
+        @user_active_profile ||= user&.active_profile
+      end
+
+      def active_profiles
+        @active_profiles ||= begin
+          profiles = ssn_active_profiles | [user_active_profile].compact
+          profiles.map do |profile|
+            {
+              email_match: profile.user_id == user&.id,
+              ssn_match: ssn_active_profiles.any? { |ssn_profile| ssn_profile.id == profile.id },
+              idv_level: Profile::PROOFING_AGENT_IDV_LEVELS[profile.idv_level],
+            }
+          end
+        end
+      end
+
+      def track_failure(failure_type:, errors: nil)
         analytics.idv_proofing_agent_request_failed(
-          issuer: request_token&.issuer,
+          **analytics_arguments,
           success: false,
           failure_type:,
-          agent_id:,
-          location_id:,
-          request_id:,
+          errors:,
+          pii_like_keypaths: [:header_validation, :authorization].include?(failure_type) ? [] :
+            Idv::ProofingAgent::AgentPiiForm.pii_like_keypaths(document_type: id_type),
         )
+      end
+
+      def user_has_enhanced_profile?
+        [user_active_profile, *ssn_active_profiles].compact.any? do |profile|
+          profile.enhanced?
+        end
+      end
+
+      def email
+        @email ||= action_name == 'proof_user' ? params.expect(:email) : search_user_params[:email]
+      end
+
+      def ssn
+        @ssn ||= action_name == 'proof_user' ? params.expect(:ssn) : search_user_params[:ssn]
+      end
+
+      def id_type
+        @id_type ||= params.expect(:id_type)
+      end
+
+      def search_user_params
+        @search_user_params = params.permit(:email, :ssn)
       end
 
       def proof_params
@@ -99,12 +214,34 @@ module Api
         @proof_params = result.to_h.with_indifferent_access
       end
 
-      def render_bad_request(errors: nil)
-        errors = { error: 'There was a problem with your request.' } if errors.nil?
-        if errors[:no_document].present?
-          errors = { id_type: "Invalid id_type: #{proof_params[:id_type]}" }
-        end
+      def render_bad_request(errors: nil, failure_type: :body_validation)
+        errors = { base: ['There was a problem with your request.'] } if errors.nil?
+        track_failure(failure_type:, errors:)
+
         render json: errors, status: :bad_request
+      end
+
+      def add_custom_headers_to_response
+        response.set_header('X-Correlation-ID', correlation_id) if correlation_id.present?
+      end
+
+      def issuer
+        request_token&.sp_issuer
+      end
+
+      def analytics_user
+        user || AnonymousUser.new
+      end
+
+      def analytics_arguments
+        {
+          proofing_agent: {
+            agent_id:,
+            location_id:,
+            correlation_id:,
+          },
+          issuer:,
+        }
       end
     end
   end
