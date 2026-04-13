@@ -65,7 +65,8 @@ module Idv
     end
 
     def passports_enabled?
-      IdentityConfig.store.doc_auth_passports_enabled
+      IdentityConfig.store.doc_auth_passports_enabled ||
+        IdentityConfig.store.doc_auth_passport_cards_enabled
     end
   end
 end

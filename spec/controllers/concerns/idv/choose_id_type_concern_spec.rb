@@ -292,6 +292,28 @@ RSpec.describe Idv::ChooseIdTypeConcern, :controller do
       end
     end
 
+    context 'when passports are disabled but passport card is enabled' do
+      let(:passport_status) { 'requested' }
+      before do
+        allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled)
+          .and_return(false)
+        allow(IdentityConfig.store).to receive(:doc_auth_passport_cards_enabled)
+          .and_return(true)
+        allow(response).to receive(:success?).and_return(true)
+      end
+
+      it 'returns expected local attributes with passports disabled' do
+        expect(
+          subject.locals_attrs(presenter:, form_submit_url:),
+        ).to include(
+          presenter:,
+          form_submit_url:,
+          disable_passports: false,
+          auto_check_value: :passport,
+        )
+      end
+    end
+
     context 'when passports are disabled' do
       before do
         allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled)
