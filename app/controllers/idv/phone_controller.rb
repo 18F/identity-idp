@@ -16,6 +16,7 @@ module Idv
     before_action :set_idv_form
 
     def new
+      @id_verified_via_mdl = idv_session.precheck_phone&.dig(:source)&.to_s == 'mdl'
       flash.keep(:success) if should_keep_flash_success?
       analytics.idv_phone_use_different(step: params[:step]) if params[:step]
 

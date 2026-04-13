@@ -23,8 +23,7 @@ module Idv
         ssn_form: Idv::SsnFormatForm.new(idv_session.ssn),
         step_indicator_steps: step_indicator_steps,
       )
-      @id_verified_via_mdl = idv_session.precheck_phone&.dig(:source)&.to_s == 'mdl' ||
-                             idv_session.precheck_phone&.dig('source')&.to_s == 'mdl'
+      @id_verified_via_mdl = idv_session.precheck_phone&.dig(:source)&.to_s == 'mdl'
 
       if ssn_presenter.updating_ssn?
         analytics.idv_doc_auth_redo_ssn_submitted(**analytics_arguments)

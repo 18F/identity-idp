@@ -12,6 +12,12 @@
 
 <% self.title = t('titles.idv.phone') %>
 
+<% if @id_verified_via_mdl %>
+  <%= render AlertComponent.new(type: :success, class: 'margin-bottom-4') do %>
+    <%= t('idv.mdl.success_banner') %>
+  <% end %>
+<% end %>
+
 <%= render(VendorOutageAlertComponent.new(vendors: [:sms, :voice], context: :idv)) %>
 
 <%= render PageHeadingComponent.new.with_content(t('titles.idv.phone')) %>
