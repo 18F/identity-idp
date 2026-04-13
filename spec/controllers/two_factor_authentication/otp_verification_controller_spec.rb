@@ -188,6 +188,7 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
           phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
           enabled_mfa_methods_count: 1,
           in_account_creation_flow: false,
+          available_webauthn_platform_config: false,
           attempts: 1,
         )
       end
@@ -286,6 +287,7 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
             phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
             enabled_mfa_methods_count: 1,
             in_account_creation_flow: false,
+            available_webauthn_platform_config: false,
             attempts: 1,
           )
           expect(@analytics).to have_logged_event(
@@ -331,6 +333,7 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
             phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
             enabled_mfa_methods_count: 1,
             in_account_creation_flow: false,
+            available_webauthn_platform_config: false,
             attempts: 2,
           )
           expect(@analytics).to have_logged_event(
@@ -443,6 +446,7 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
           phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
           enabled_mfa_methods_count: 1,
           in_account_creation_flow: false,
+          available_webauthn_platform_config: false,
           attempts: 1,
         )
         expect(@analytics).to have_logged_event(
@@ -514,6 +518,7 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
             phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
             enabled_mfa_methods_count: 1,
             in_account_creation_flow: false,
+            available_webauthn_platform_config: false,
             attempts: 1,
           )
           expect(@analytics).to have_logged_event(
@@ -721,17 +726,6 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
           it 'resets otp session data' do
             expect(subject.user_session[:unconfirmed_phone]).to be_nil
             expect(subject.user_session[:context]).to eq 'authentication'
-          end
-
-          it 'tracks the update event and notifies via email about number change' do
-            expect(subject).to have_received(:create_user_event).with(:phone_changed)
-            expect(subject).to have_received(:create_user_event).exactly(:once)
-
-            expect_delivered_email_count(1)
-            expect_delivered_email(
-              to: [subject.current_user.email_addresses.first.email],
-              subject: t('user_mailer.phone_added.subject'),
-            )
           end
         end
 

@@ -134,7 +134,11 @@ module Users
     end
 
     def redirect_to_otp_verification_with_error
-      flash[:error] = t('errors.messages.phone_unsupported')
+      link_html = helpers.link_to(
+        t('errors.messages.choose_authentication_method'),
+        login_two_factor_options_path,
+      )
+      flash[:error] = t('errors.messages.phone_unsupported_html', link_html:)
       redirect_to login_two_factor_url(
         otp_delivery_preference: phone_configuration.delivery_preference,
       )
@@ -226,6 +230,7 @@ module Users
         area_code: parsed_phone.area_code,
         country_code: parsed_phone.country,
         phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
+        ip_country: IpGeocoder.new(request.remote_ip).country_code,
         context: context,
         otp_delivery_preference: otp_delivery_preference,
         resend: otp_delivery_selection_result.extra[:resend],

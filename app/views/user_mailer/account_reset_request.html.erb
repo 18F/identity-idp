@@ -1,26 +1,25 @@
 
 <p class="lead">
-  <%= t('user_mailer.account_reset_request.intro_html', app_name: link_to(APP_NAME, IdentityConfig.store.mailer_domain_name, class: 'gray'), waiting_period: @account_reset_deletion_period_interval) %>
+<%= t('user_mailer.account_reset_request.intro', app_name: APP_NAME, waiting_period: @account_reset_deletion_period_interval) %>
 </p>
+
+<table class="process-list">
+  <tr>
+    <td><div class="process-list__circle">1</div></td>
+    <td>
+      <h3 class="margin-bottom-1 text-bold"><%= t('user_mailer.account_reset_request.step_one.title', waiting_period: @account_reset_deletion_period_interval) %></h3>
+      <p class="margin-top-0"><%= t('user_mailer.account_reset_request.step_one.body') %></p>
+    </td>
+  </tr>
+  <tr>
+    <td><div class="process-list__circle">2</div></td>
+    <td>
+      <h3 class="margin-bottom-1 text-bold"><%= t('user_mailer.account_reset_request.step_two.title') %></h3>
+      <p class="margin-top-0"><%= t('user_mailer.account_reset_request.step_two.body_html', waiting_period: @account_reset_deletion_period_interval) %></p>
+    </td>
+  </tr>
+</table>
 
 <p class="lead">
   <%= t('user_mailer.account_reset_request.cancel', app_name: APP_NAME) %>
 </p>
-
-<table class="spacer">
-  <tbody>
-    <tr>
-      <td class="s10" height="10px">
-        &nbsp;
-      </td>
-    </tr>
-  </tbody>
-</table>
-
-<table class="hr">
-  <tr>
-    <th>
-      &nbsp;
-    </th>
-  </tr>
-</table>

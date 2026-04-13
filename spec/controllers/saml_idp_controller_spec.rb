@@ -838,8 +838,6 @@ RSpec.describe SamlIdpController do
           allow(IdentityConfig.store)
             .to receive(:eligible_one_account_providers)
             .and_return([service_provider.issuer])
-          allow(controller).to receive(:user_in_one_account_verification_bucket?)
-            .and_return(true)
           allow_any_instance_of(DuplicateProfileChecker)
             .to receive(:dupe_profile_set_for_user).and_return(duplicate_profile_set)
           allow(controller).to receive(:current_user).and_return(user)
@@ -1052,7 +1050,8 @@ RSpec.describe SamlIdpController do
         )
         expect(@analytics).to have_logged_event(
           :sp_integration_errors_present,
-          error_details: ['Unauthorized authentication context'],
+          error_details: ['Unauthorized authentication context. Please see our documentation at ' \
+                          'https://developers.login.gov/support/#unauthorized_auth_context'],
           error_types: { saml_request_errors: true },
           event: :saml_auth_request,
           integration_exists: true,
@@ -1326,7 +1325,8 @@ RSpec.describe SamlIdpController do
         )
         expect(@analytics).to have_logged_event(
           :sp_integration_errors_present,
-          error_details: ['Unauthorized Service Provider'],
+          error_details: ['Unauthorized Service Provider. Please see our documentation at ' \
+                          'https://developers.login.gov/support/#unauthorized'],
           error_types: { saml_request_errors: true },
           event: :saml_auth_request,
           integration_exists: false,
@@ -1373,7 +1373,8 @@ RSpec.describe SamlIdpController do
         )
         expect(@analytics).to have_logged_event(
           :sp_integration_errors_present,
-          error_details: ['Unauthorized Service Provider'],
+          error_details: ['Unauthorized Service Provider. Please see our documentation at ' \
+                          'https://developers.login.gov/support/#unauthorized'],
           error_types: { saml_request_errors: true },
           event: :saml_auth_request,
           integration_exists: false,
@@ -2730,6 +2731,33 @@ RSpec.describe SamlIdpController do
 
           expect(phone).to be_nil
         end
+      end
+    end
+
+    context 'SP requests email and has saml_emailaddress_attribute_enabled turned on' do
+      it 'includes the user email attribute using the SOAP schema' do
+        user = create(:user, :fully_registered)
+        service_provider = ServiceProvider.find_by(issuer: 'http://localhost:3000')
+        service_provider.update(saml_emailaddress_attribute_enabled: true)
+
+        custom_settings = saml_settings(
+          overrides: {
+            authn_context: [
+              Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+              "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}email",
+            ],
+          },
+        )
+        generate_saml_response(user, custom_settings)
+
+        email = xmldoc.attribute_node_for('http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress')
+        value = xmldoc.attribute_value_for('http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress')
+
+        expect(email.name).to eq('Attribute')
+        expect(email['Name']).to eq('http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress')
+        expect(email['NameFormat']).to eq('urn:oasis:names:tc:SAML:2.0:attrname-format:uri')
+        expect(email['FriendlyName']).to eq('email')
+        expect(value).to eq(user.email)
       end
     end
 

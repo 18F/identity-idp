@@ -23,6 +23,8 @@ module SignUp
       track_completion_event('agency-page')
       update_verified_attributes
       send_in_person_completion_survey
+      notify_user_of_connected_sp
+      send_historical_events if historical_events_permitted?
       if user_session[:selected_email_id_for_linked_identity].nil?
         user_session[:selected_email_id_for_linked_identity] = current_user
           .last_sign_in_email_address.id
@@ -129,6 +131,40 @@ module SignUp
       user_session.delete(:in_account_creation_flow)
     end
 
+    def notify_user_of_connected_sp
+      _event, disavowal_token = create_user_event_with_disavowal(:sp_user_consent_granted)
+      current_user.confirmed_email_addresses.each do |email_address_record|
+        UserMailer.with(user: current_user, email_address: email_address_record)
+          .account_connected_to_sp(sp_name: current_sp.friendly_name, disavowal_token:)
+          .deliver_now_or_later
+      end
+    end
+
+    def send_historical_events
+      return unless user_proofing_event && current_sp.issuer
+
+      # send to redis queue and update sp_sent
+
+      user_proofing_event.add_sp_sent(current_sp.issuer)
+    end
+
+    def historical_events_permitted?
+      globally_enabled = IdentityConfig.store.historical_attempts_api_enabled
+      aaca = current_sp.attempts_api_enabled?
+      idv = ial2_requested?
+
+      return false unless globally_enabled && aaca && idv
+
+      sent_to_aaca = user_proofing_event&.service_providers_sent&.include?(current_sp.issuer)
+
+      return !sent_to_aaca
+    end
+
+    def user_proofing_event
+      @user_proofing_event ||=
+        UserProofingEvent.find_by(profile_id: current_user&.active_profile&.id)
+    end
+
     def pii
       Pii::Cacher.new(current_user, user_session).fetch(current_user.active_profile&.id) ||
         Pii::Attributes.new
@@ -145,7 +181,6 @@ module SignUp
     end
 
     def redirect_if_user_duplicate_profile
-      return unless IdentityConfig.store.one_account_profile_creation_check_enabled
       return unless user_duplicate_profiles_detected?
       redirect_to duplicate_profiles_detected_url(source: :account_verified)
     end

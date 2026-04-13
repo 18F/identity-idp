@@ -1,18 +1,21 @@
 ---
 en:
   telephony:
-    account_deleted_notice: This text message confirms you have deleted your %{app_name} account.
-    account_reset_cancellation_notice: |-
-      You have canceled your request to delete your %{app_name} account.
+    account_deleted_notice:
+      sms: This text message confirms you have deleted your %{app_name} account.
+    account_reset_cancellation_notice:
+      sms: |-
+        You have canceled your request to delete your %{app_name} account.
 
-      Sign in to access your account.
-    account_reset_notice: |-
-      As requested, your %{app_name} account will be deleted in %{interval}. Look for a second email to confirm deletion. 
+        Sign in to access your account.
+    account_reset_notice:
+      sms: |-
+        As requested, your %{app_name} account will be deleted in %{interval}. Look for a second email to confirm deletion.
 
-      Don't want to delete your account? Sign in to your %{app_name} account to cancel.
+        Don't want to delete your account? Sign in to your %{app_name} account to cancel.
     authentication_otp:
       sms: |-
-        %{app_name} will NEVER contact you for this code. Don't share it with anyone. Your code is %{code}. It expires in %{expiration} minutes.
+        %{app_name}: Don't share this code with anyone. Your code is %{code}. It expires in %{expiration} minutes.
 
         @%{domain} #%{code}
       voice: Hello! Your 6-%{format_type} %{app_name} one-time code is, %{code}. Your one-time code is, %{code}. Again, your one-time code is %{code}. This code expires in %{expiration} minutes.
@@ -21,16 +24,19 @@ en:
         %{app_name}: You visited the Post Office on %{proof_date}. Check email for your result. Not you? Report this right away: %{contact_number}. Ref: %{reference_string}
     confirmation_otp:
       sms: |-
-        %{app_name} will NEVER contact you for this code. Don't share it with anyone. Your code is %{code}. It expires in %{expiration} minutes.
+        %{app_name}: Don't share this code with anyone. Your code is %{code}. It expires in %{expiration} minutes.
 
         @%{domain} #%{code}
       voice: Hello! Your %{format_length}-%{format_type} %{app_name} one-time code is, %{code}. Your one-time code is, %{code}. Again, your one-time code is %{code}. This code expires in %{expiration} minutes.
-    doc_auth_link: |-
-      %{app_name}: %{link} You're verifying your identity to access %{sp_or_app_name}. Take a photo of your ID to continue.
-    dupe_profile_created_notice: |-
-      %{app_name} Alert: Your personal information was verified on another account. We've restricted access on these accounts. We sent you an email with details on what to do next.
-    dupe_profile_sign_in_attempted_notice: |-
-      %{app_name} Alert: Another account using your personal information has signed in. We've restricted access on these accounts. We sent you an email with details on what to do next.
+    doc_auth_link:
+      sms: |-
+        %{app_name}: %{link} You're verifying your identity to access %{sp_or_app_name}. Take a photo of your ID to continue.
+    dupe_profile_created_notice:
+      sms: |-
+        %{app_name} Alert: Your personal information was verified on another account. We've restricted access on these accounts. We sent you an email with details on what to do next.
+    dupe_profile_sign_in_attempted_notice:
+      sms: |-
+        %{app_name} Alert: Another account using your personal information has signed in. We've restricted access on these accounts. We sent you an email with details on what to do next.
     error:
       friendly_message:
         daily_voice_limit_reached: Your one-time code failed to send because you exceeded the maximum number of phone calls in 24 hours to this phone number. You can either request a code by text message or use a different number to receive a phone call.
@@ -52,5 +58,7 @@ en:
     format_type:
       character: character
       digit: digit
-    personal_key_regeneration_notice: A new personal key has been issued for your %{app_name} account. If this wasn't you, reset your password.
-    personal_key_sign_in_notice: Your personal key was just used to sign into your %{app_name} account. If this wasn't you, reset your password.
+    personal_key_regeneration_notice:
+      sms: A new personal key has been issued for your %{app_name} account. If this wasn't you, reset your password.
+    personal_key_sign_in_notice:
+      sms: Your personal key was just used to sign into your %{app_name} account. If this wasn't you, reset your password.

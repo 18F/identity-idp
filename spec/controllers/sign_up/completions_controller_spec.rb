@@ -203,6 +203,7 @@ RSpec.describe SignUp::CompletionsController do
 
   describe '#update' do
     let(:now) { Time.zone.now.change(usec: 0) }
+    let(:current_sp) { create(:service_provider) }
 
     before do
       stub_analytics
@@ -217,7 +218,7 @@ RSpec.describe SignUp::CompletionsController do
         stub_sign_in(user)
         subject.session[:sp] = {
           acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
-          issuer: 'foo',
+          issuer: current_sp.issuer,
           request_url: 'http://example.com',
         }
         subject.user_session[:in_account_creation_flow] = true
@@ -229,6 +230,7 @@ RSpec.describe SignUp::CompletionsController do
           ial2: false,
           ialmax: false,
           page_occurence: 'agency-page',
+          service_provider_name: current_sp.friendly_name,
           needs_completion_screen_reason: :new_sp,
           in_account_creation_flow: true,
         )
@@ -237,7 +239,7 @@ RSpec.describe SignUp::CompletionsController do
       it 'updates verified attributes' do
         stub_sign_in(user)
         subject.session[:sp] = {
-          issuer: 'foo',
+          issuer: current_sp.issuer,
           acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
           request_url: 'http://example.com',
           requested_attributes: ['email'],
@@ -258,7 +260,7 @@ RSpec.describe SignUp::CompletionsController do
         stub_sign_in(user)
         subject.session[:sp] = {
           acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
-          issuer: 'foo',
+          issuer: current_sp.issuer,
           requested_attributes: ['email'],
         }
 
@@ -274,7 +276,7 @@ RSpec.describe SignUp::CompletionsController do
           stub_sign_in(user)
           subject.session[:sp] = {
             acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
-            issuer: 'foo',
+            issuer: current_sp.issuer,
             request_url: 'http://example.com',
           }
           subject.user_session[:in_account_creation_flow] = true
@@ -287,9 +289,28 @@ RSpec.describe SignUp::CompletionsController do
             ialmax: false,
             page_occurence: 'agency-page',
             needs_completion_screen_reason: :new_sp,
+            service_provider_name: current_sp.friendly_name,
             in_account_creation_flow: true,
             disposable_email_domain: 'temporary.com',
           )
+        end
+      end
+
+      context 'with unconfirmed email addresses' do
+        it 'does not send email to unconfirmed email addresses' do
+          user = create(:user, :fully_registered)
+          create(:email_address, user: user, confirmed_at: nil)
+          stub_sign_in(user)
+          subject.session[:sp] = {
+            acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+            issuer: current_sp.issuer,
+            request_url: 'http://example.com',
+          }
+
+          patch :update
+          user.reload
+          expect(user.email_addresses.count).to eq(2)
+          expect_delivered_email_count(1)
         end
       end
     end
@@ -352,6 +373,113 @@ RSpec.describe SignUp::CompletionsController do
         freeze_time do
           travel_to(now)
           patch :update
+        end
+      end
+
+      context 'historical attempts api is enabled' do
+        let(:profile) { create(:profile, :verified, :active) }
+        let(:user) { create(:user, profiles: [profile]) }
+        let(:sp) { create(:service_provider, :idv, :active) }
+
+        before do
+          allow(IdentityConfig.store).to receive_messages(
+            attempts_api_enabled: true,
+            historical_attempts_api_enabled: true,
+          )
+        end
+
+        context 'issuer is an allowed attempts provider' do
+          before do
+            allow(IdentityConfig.store).to receive(:allowed_attempts_providers)
+              .and_return([{ 'issuer' => sp.issuer }])
+          end
+
+          context 'user proofing events have not been sent to this SP' do
+            let(:proofing_event) do
+              create(
+                :user_proofing_event,
+                :existing,
+                profile_id: profile.id,
+              )
+            end
+
+            it 'should update the appropriate user proofing event' do
+              stub_sign_in(user)
+
+              subject.session[:sp] = {
+                issuer: sp.issuer,
+                acr_values: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+                request_url: 'http://example.com',
+                requested_attributes: %w[email first_name verified_at],
+              }
+
+              expect(UserProofingEvent.find(proofing_event.id).service_providers_sent)
+                .to_not include(sp.issuer)
+              patch :update
+              expect(UserProofingEvent.find(proofing_event.id).service_providers_sent)
+                .to include(sp.issuer)
+            end
+          end
+
+          context 'user proofing events have already been sent to this SP' do
+            let(:proofing_event) do
+              create(
+                :user_proofing_event,
+                :existing,
+                profile_id: profile.id,
+                service_providers_sent: [sp.issuer],
+              )
+            end
+
+            it 'should not update the user proofing event' do
+              stub_sign_in(user)
+
+              subject.session[:sp] = {
+                issuer: sp.issuer,
+                acr_values: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+                request_url: 'http://example.com',
+                requested_attributes: %w[email first_name verified_at],
+              }
+
+              expect(UserProofingEvent.find(proofing_event.id).service_providers_sent)
+                .to include(sp.issuer).once
+              patch :update
+              expect(UserProofingEvent.find(proofing_event.id).service_providers_sent)
+                .to include(sp.issuer).once
+            end
+          end
+        end
+
+        context 'issuer is not an allowed attempts provider' do
+          let(:proofing_event) do
+            create(
+              :user_proofing_event,
+              :existing,
+              profile_id: profile.id,
+            )
+          end
+
+          before do
+            allow(IdentityConfig.store).to receive(:allowed_attempts_providers)
+              .and_return([])
+          end
+
+          it 'should not update the user proofing event' do
+            stub_sign_in(user)
+
+            subject.session[:sp] = {
+              issuer: sp.issuer,
+              acr_values: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+              request_url: 'http://example.com',
+              requested_attributes: %w[email first_name verified_at],
+            }
+
+            expect(UserProofingEvent.find(proofing_event.id).service_providers_sent)
+              .to_not include(sp.issuer)
+            patch :update
+            expect(UserProofingEvent.find(proofing_event.id).service_providers_sent)
+              .to_not include(sp.issuer)
+          end
         end
       end
 

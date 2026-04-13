@@ -126,28 +126,6 @@ module AbTests
     user&.uuid
   end.freeze
 
-  ONE_ACCOUNT_USER_VERIFICATION_ENABLED = AbTest.new(
-    experiment_name: 'One Account User Verification Enabled',
-    should_log: [
-      'Email and Password Authentication',
-      'SP redirect initiated',
-      :one_account_duplicate_profiles_please_call_visited,
-      :one_account_duplicate_profiles_warning_page_visited,
-      :one_account_duplicate_profile_updated,
-      :one_account_duplicate_profile_created,
-      :one_account_duplicate_profile_closed,
-      :one_account_clear_duplicate_profile,
-      :one_account_close_inconclusive_duplicate,
-      :one_account_deactivate_duplicate_profile,
-    ].to_set,
-    buckets: {
-      one_account_user_verification_enabled:
-        IdentityConfig.store.one_account_user_verification_enabled_percentage,
-    },
-  ) do |user:, user_session:, **|
-    user&.uuid
-  end.freeze
-
   PROOFING_VENDOR = AbTest.new(
     experiment_name: 'Proofing Vendor',
     should_log: /^idv/i,
@@ -157,6 +135,8 @@ module AbTests
         IdentityConfig.store.idv_resolution_vendor_socure_kyc_percent : 0,
       instant_verify: IdentityConfig.store.idv_resolution_vendor_switching_enabled ?
         IdentityConfig.store.idv_resolution_vendor_instant_verify_percent : 0,
+      instant_verify_ddp: IdentityConfig.store.idv_resolution_vendor_switching_enabled ?
+        IdentityConfig.store.idv_resolution_vendor_instant_verify_ddp_percent : 0,
     },
   ) do |service_provider:, session:, user:, user_session:, **|
     verify_info_step_document_capture_session_uuid_discriminator(
@@ -208,6 +188,17 @@ module AbTests
       lexis_nexis_ddp: IdentityConfig.store.doc_auth_passport_selfie_vendor_switching_enabled ?
         IdentityConfig.store.doc_auth_passport_selfie_vendor_lexis_nexis_ddp_percent : 0,
     }.compact,
+  ) do |service_provider:, session:, user:, user_session:, **|
+    user&.uuid
+  end.freeze
+
+  # This will allow us to slowly increase compromised password checks for sign in.
+  SIGNIN_PASSWORD_COMPROMISED = AbTest.new(
+    experiment_name: 'Sign In Password Compromised check',
+    should_log: [
+      'Email and Password Authentication',
+    ].to_set,
+    buckets: { check_password: IdentityConfig.store.sign_in_password_compromised_percent_tested },
   ) do |service_provider:, session:, user:, user_session:, **|
     user&.uuid
   end.freeze

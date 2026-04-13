@@ -35,6 +35,26 @@
       ).with_content(t('forms.buttons.send_one_time_code')) %>
 <% end %>
 
+<% if !@webauthn_platform_configured %>
+  <%= render(AlertComponent.new(type: :info, class: 'margin-top-4')) do %>
+    <%= t(
+          'notices.phishing_warning_html',
+          common_scams_link_html:
+          new_tab_link_to(
+            t('links.scams'),
+            MarketingSite.help_center_article_url(
+              category: 'fraud-concerns',
+              article: 'common-scams',
+            ),
+          ),
+          ft_unlock_setup_link_html: link_to(
+            t('links.setup_ft_unlock'),
+            webauthn_setup_url(platform: true),
+          ),
+        ) %>
+  <% end %>
+<% end %>
+
 <% if FeatureManagement.phone_recaptcha_enabled? %>
   <p class="margin-top-4">
     <%= t(

@@ -117,6 +117,7 @@ doc_auth_max_attempts: 5
 doc_auth_max_capture_attempts_before_native_camera: 3
 doc_auth_max_submission_attempts_before_native_camera: 3
 doc_auth_mock_dos_api: false
+doc_auth_passport_cards_enabled: false
 doc_auth_passport_selfie_vendor_default: 'mock'
 doc_auth_passport_selfie_vendor_lexis_nexis_ddp_percent: 0
 doc_auth_passport_selfie_vendor_lexis_nexis_percent: 100
@@ -216,12 +217,16 @@ idv_available: true
 idv_contact_phone_number: (844) 555-5555
 idv_max_attempts: 5
 idv_min_age_years: 13
+idv_phone_confirmation_manual_review_validity_hours: 0
 idv_phone_precheck_percent: 0
+idv_proofing_agent_config: '[]'
+idv_proofing_agent_enabled: false
 idv_rdp_version_default: rdp_v2
 idv_rdp_version_switching_enabled: false
 idv_rdp_version_v2_percent: 100
 idv_rdp_version_v3_percent: 0
 idv_resolution_default_vendor: mock
+idv_resolution_vendor_instant_verify_ddp_percent: 0
 idv_resolution_vendor_instant_verify_percent: 0
 idv_resolution_vendor_socure_kyc_percent: 0
 idv_resolution_vendor_switching_enabled: false
@@ -229,6 +234,7 @@ idv_send_link_attempt_window_in_minutes: 10
 idv_send_link_max_attempts: 5
 idv_socure_docv_flow_id_only: ''
 idv_socure_docv_flow_id_w_selfie: ''
+idv_socure_kyc_auto_failure_reason_codes: '[]'
 idv_socure_phonerisk_auto_failure_reason_codes: '[]'
 idv_socure_phonerisk_name_correlation_score_threshold: 1.0
 idv_socure_phonerisk_score_threshold: 0
@@ -286,9 +292,11 @@ lexisnexis_base_url: https://www.example.com
 lexisnexis_hmac_auth_enabled: false
 lexisnexis_hmac_key_id: pf_iv_hmac_key_id
 lexisnexis_hmac_secret_key: pf_iv_hmac_secret_key
+lexisnexis_instant_verify_ddp_policy:
 lexisnexis_instant_verify_timeout: 1.0
 lexisnexis_instant_verify_workflow: gsa2.chk32.test.wf
 lexisnexis_password: test_password
+lexisnexis_phone_finder_ddp_policy:
 lexisnexis_phone_finder_timeout: 1.0
 lexisnexis_phone_finder_workflow: customers.gsa2.phonefinder.workflow
 lexisnexis_request_mode: testing
@@ -297,6 +305,7 @@ lexisnexis_request_mode: testing
 lexisnexis_threatmetrix_api_key:
 lexisnexis_threatmetrix_authentication_policy: '1234'
 lexisnexis_threatmetrix_base_url:
+lexisnexis_threatmetrix_hybrid_handoff_policy:
 lexisnexis_threatmetrix_js_signing_cert: ''
 lexisnexis_threatmetrix_mock_enabled: true
 lexisnexis_threatmetrix_org_id:
@@ -344,8 +353,6 @@ mx_timeout: 3
 new_device_alert_delay_in_minutes: 5
 new_device_alert_window_start_in_minutes: 15
 newrelic_license_key: ''
-one_account_profile_creation_check_enabled: true
-one_account_user_verification_enabled_percentage: 0
 openid_connect_content_security_form_action_enabled: false
 openid_connect_redirect: client_side_js
 otp_delivery_blocklist_findtime: 5
@@ -441,6 +448,7 @@ ruby_workers_idv_enabled: true
 rules_of_use_horizon_years: 5
 rules_of_use_updated_at: '2022-01-19T00:00:00Z' # Production has a newer timestamp than this, update directly in S3
 s3_data_warehouse_bucket_prefix: 'login-gov-analytics-export'
+s3_data_warehouse_replica_bucket_prefix: 'login-gov-dw-reports'
 s3_idp_dw_tasks: 'login-gov-idp-dw-tasks'
 s3_public_reports_enabled: false
 s3_report_bucket_prefix: login-gov.reports
@@ -465,6 +473,7 @@ session_total_duration_timeout_in_minutes: 720
 short_term_phone_otp_max_attempt_window_in_seconds: 10
 short_term_phone_otp_max_attempts: 2
 show_user_attribute_deprecation_warnings: false
+sign_in_password_compromised_percent_tested: 0
 sign_in_recaptcha_annotation_enabled: false
 sign_in_recaptcha_percent_tested: 0
 sign_in_recaptcha_score_threshold: 0.0
@@ -488,6 +497,7 @@ socure_idplus_timeout_in_seconds: 5
 socure_reason_code_api_key: ''
 socure_reason_code_base_url: ''
 socure_reason_code_timeout_in_seconds: 5
+sp_cred_metric_report_configs: '[]'
 sp_fraud_metrics_report_configs: '[]'
 sp_handoff_bounce_max_seconds: 2
 sp_idv_weekly_dropoff_report_configs: '[]'

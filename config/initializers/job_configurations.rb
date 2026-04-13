@@ -128,8 +128,8 @@ else
       },
       sp_proofing_events_by_uuid_report: {
         class: 'Reports::SpProofingEventsByUuid',
-        cron: cron_every_monday_4am,
-        args: -> { [Time.zone.today] },
+        cron: cron_1h,
+        args: -> { [Time.zone.now] },
       },
       # Sync opted out phone numbers from AWS
       phone_number_opt_out_sync_job: {
@@ -202,7 +202,7 @@ else
         args: -> { [Time.zone.yesterday.end_of_day, :both] },
       },
       sp_weekly_verification_report: {
-        class: 'Reports::IrsVerificationReport',
+        class: 'Reports::SpVerificationReport',
         cron: cron_every_monday_5am,
         args: -> { [Time.zone.yesterday.end_of_day, :internal] },
       },
@@ -257,7 +257,7 @@ else
 
       # Note: this is for testing as of now.
       sp_weekly_registration_funnel_report: {
-        class: 'Reports::IrsRegistrationFunnelReport',
+        class: 'Reports::SpRegistrationFunnelReport',
         cron: cron_every_monday,
         args: -> { [Time.zone.yesterday.end_of_day, :both] },
       },
@@ -270,6 +270,13 @@ else
       # Send fraud metrics to Team Judy
       fraud_metrics_report: {
         class: 'Reports::FraudMetricsReport',
+        cron: cron_24h_and_a_bit,
+        args: -> { [Time.zone.yesterday.end_of_day] },
+      },
+
+      # Send fraud metrics LG-99 report from S3 to Team Judy
+      fraud_metrics_report_s3: {
+        class: 'Reports::FraudMetricsLg99S3Report',
         cron: cron_24h_and_a_bit,
         args: -> { [Time.zone.yesterday.end_of_day] },
       },
@@ -288,7 +295,7 @@ else
       },
 
       sp_fraud_metrics_report: {
-        class: 'Reports::IrsFraudMetricsReport',
+        class: 'Reports::SpFraudMetricsReport',
         cron: cron_24h_and_a_bit,
         args: -> {
           JobHelpers::ReportJobConfigurationHelper.build_irs_report_args(
@@ -330,7 +337,7 @@ else
 
       # Previous months's SP verification report - Added for testing as of now
       monthly_sp_verification_report: {
-        class: 'Reports::MonthlyIrsVerificationReport',
+        class: 'Reports::MonthlySpVerificationReport',
         cron: cron_24h_and_a_bit,
         args: -> {
           JobHelpers::ReportJobConfigurationHelper.build_irs_report_args(
@@ -355,7 +362,7 @@ else
 
       # Note: This is just for testing as of now
       sp_verification_demographics_report: {
-        class: 'Reports::IrsVerificationDemographicsReport',
+        class: 'Reports::SpVerificationDemographicsReport',
         cron: cron_monthly,
         args: -> {
           JobHelpers::ReportJobConfigurationHelper.build_irs_report_args(
@@ -387,7 +394,7 @@ else
       # Previous months's irs credentials report to Team Data - Daily (For internal review only)
       # And, monthly on 1st date (For IRS and Internal)
       irs_cred_metrics_report: {
-        class: 'Reports::IrsMonthlyCredMetricsReport',
+        class: 'Reports::IrsOriginalMonthlyCredMetricsReport',
         cron: cron_24h_and_a_bit,
         args: -> {
           JobHelpers::ReportJobConfigurationHelper.build_irs_report_args(
@@ -396,6 +403,18 @@ else
           )
         },
       },
+
+      sp_cred_metrics_report: {
+        class: 'Reports::SpCredMetricsReportOrchestrator',
+        cron: cron_24h_and_a_bit,
+        args: -> {
+          JobHelpers::ReportJobConfigurationHelper.build_irs_report_args(
+            Time.zone.yesterday.end_of_day,
+            :monthly,
+          )
+        },
+      },
+
       # Identity Verification Outcomes Rate Report
       identity_verification_outcomes_report: {
         class: 'Reports::IdentityVerificationOutcomesReport',

@@ -36,6 +36,7 @@ module Idv
         selfie_fail: stored_result&.errors&.dig(:selfie_fail),
         unexpected_id_type: stored_result&.errors&.dig(:unexpected_id_type),
         state_id_verification: stored_result&.errors&.dig(:state_id_verification),
+        passport: stored_result&.errors&.dig(:passport),
       }
     end
 
@@ -84,6 +85,9 @@ module Idv
 
       expected_doc_auth_vendor = document_capture_session.doc_auth_vendor
       return if vendor == expected_doc_auth_vendor
+      # if ln accept both ln and ln_ddp
+      return if vendor == Idp::Constants::Vendors::LEXIS_NEXIS &&
+                expected_doc_auth_vendor == Idp::Constants::Vendors::LEXIS_NEXIS_DDP
       return if vendor == Idp::Constants::Vendors::LEXIS_NEXIS &&
                 expected_doc_auth_vendor == Idp::Constants::Vendors::MOCK
       return if vendor == Idp::Constants::Vendors::SOCURE &&
@@ -102,7 +106,9 @@ module Idv
       when Idp::Constants::Vendors::SOCURE, Idp::Constants::Vendors::SOCURE_MOCK
         in_hybrid_mobile ? idv_hybrid_mobile_socure_document_capture_path
                          : idv_socure_document_capture_path
-      when Idp::Constants::Vendors::LEXIS_NEXIS, Idp::Constants::Vendors::MOCK
+      when Idp::Constants::Vendors::LEXIS_NEXIS,
+           Idp::Constants::Vendors::LEXIS_NEXIS_DDP,
+           Idp::Constants::Vendors::MOCK
         in_hybrid_mobile ? idv_hybrid_mobile_document_capture_path
                          : idv_document_capture_path
       end

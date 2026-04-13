@@ -4,6 +4,7 @@ module Idv
   class EnterPasswordController < ApplicationController
     include Idv::AvailabilityConcern
     include IdvStepConcern
+    include Idv::HistoricalAttemptsConcern
     include StepIndicatorConcern
     include VerifyByMailConcern
     include IppHelper
@@ -35,6 +36,8 @@ module Idv
       clear_future_steps!
 
       init_profile
+
+      record_user_proofing_events(password)
 
       flash[:success] =
         if idv_session.verify_by_mail?

@@ -1,0 +1,16 @@
+{
+  "api_key": "test_api_key",
+  "org_id": "test_org_id",
+  "account_date_of_birth": "19800101",
+  "account_first_name": "Testy",
+  "account_last_name": "McTesterson",
+  "account_telephone": "5551231234",
+  "event_type": "ACCOUNT_CREATION",
+  "customer_event_type": "phone_finder",
+  "policy": "test-policy",
+  "service_type": "all",
+  "national_id_number": "123456789",
+  "national_id_type": "US_SSN",
+  "local_attrib_1": "ABCD",
+  "local_attrib_3": "ABCD-1234-5678-9012"
+}

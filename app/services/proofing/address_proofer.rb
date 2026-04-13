@@ -9,6 +9,7 @@ module Proofing
     ADDRESS_VENDOR_SP_COST_TOKENS = {
       mock: :mock_address,
       lexis_nexis: :lexis_nexis_address,
+      lexis_nexis_ddp: :lexis_nexis_address,
       socure: :socure_address,
     }.freeze
 
@@ -63,6 +64,13 @@ module Proofing
           hmac_key_id: IdentityConfig.store.lexisnexis_hmac_key_id,
           hmac_secret_key: IdentityConfig.store.lexisnexis_hmac_secret_key,
           request_mode: IdentityConfig.store.lexisnexis_request_mode,
+        )
+      when :lexis_nexis_ddp
+        Proofing::LexisNexis::Ddp::Proofers::PhoneFinderProofer.new(
+          api_key: IdentityConfig.store.lexisnexis_threatmetrix_api_key,
+          org_id: IdentityConfig.store.lexisnexis_threatmetrix_org_id,
+          base_url: IdentityConfig.store.lexisnexis_threatmetrix_base_url,
+          ddp_policy: IdentityConfig.store.lexisnexis_phone_finder_ddp_policy,
         )
       when :socure
         Proofing::Socure::IdPlus::Proofers::PhoneRiskProofer.new(

@@ -15,14 +15,22 @@ RSpec.describe Idv::EnterPasswordController do
   let(:use_gpo) { false }
   let(:threatmetrix_enabled)  { true }
   let(:threatmetrix_result) { 'pass' }
+  let(:sp) { create(:service_provider, :idv, :active) }
   let(:idv_session) do
     subject.idv_session
   end
+  resolved_authn_context_result = Component::Parser.new(
+    acr_values: Saml::Idp::Constants::IAL_AUTH_ONLY_ACR,
+  ).parse
 
   before do
     stub_analytics
     stub_sign_in(user)
     allow(IdentityConfig.store).to receive(:usps_mock_fallback).and_return(false)
+    resolver_mock = instance_double(AuthnContextResolver)
+    allow(resolver_mock).to receive(:result).and_return(resolved_authn_context_result)
+    allow(AuthnContextResolver).to receive(:new).and_return(resolver_mock)
+    session['sp'] = sp
     subject.idv_session.welcome_visited = true
     subject.idv_session.idv_consent_given_at = Time.zone.now
     subject.idv_session.proofing_started_at = 5.minutes.ago.iso8601
@@ -335,9 +343,6 @@ RSpec.describe Idv::EnterPasswordController do
           resolved_authn_context_result = Component::Parser.new(
             acr_values: Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_REQUIRED_ACR,
           ).parse
-
-          allow(controller).to receive(:resolved_authn_context_result)
-            .and_return(resolved_authn_context_result)
         end
 
         it 'creates Profile with applicant attributes' do
@@ -358,9 +363,6 @@ RSpec.describe Idv::EnterPasswordController do
       context 'when the vector of trust is not Enhanced IPP' do
         before do
           resolved_authn_context_result = Component::Parser.new(vector_of_trust: 'Pb').parse
-
-          allow(controller).to receive(:resolved_authn_context_result)
-            .and_return(resolved_authn_context_result)
         end
 
         it 'creates Profile with applicant attributes' do
@@ -378,9 +380,6 @@ RSpec.describe Idv::EnterPasswordController do
       context 'when the vector of trust is Enhanced IPP' do
         before do
           resolved_authn_context_result = Component::Parser.new(vector_of_trust: 'Pe').parse
-
-          allow(controller).to receive(:resolved_authn_context_result)
-            .and_return(resolved_authn_context_result)
         end
 
         it 'creates Profile with applicant attributes' do
@@ -399,7 +398,10 @@ RSpec.describe Idv::EnterPasswordController do
     context 'user picked phone confirmation' do
       before do
         allow(Rails).to receive(:cache).and_return(
-          ActiveSupport::Cache::RedisCacheStore.new(url: IdentityConfig.store.redis_throttle_url),
+          ActiveSupport::Cache::RedisCacheStore.new(
+            url: IdentityConfig.store.redis_throttle_url,
+            pool: false,
+          ),
         )
         subject.idv_session.address_verification_mechanism = 'phone'
         subject.idv_session.vendor_phone_confirmation = true
@@ -1077,10 +1079,7 @@ RSpec.describe Idv::EnterPasswordController do
         create(:in_person_enrollment, :establishing, user: user)
       end
       before do
-        authn_context_result = Component::Parser.new(vector_of_trust: 'Pe').parse
-        allow(controller).to(
-          receive(:resolved_authn_context_result).and_return(authn_context_result),
-        )
+        resolved_authn_context_result = Component::Parser.new(vector_of_trust: 'Pe').parse
       end
 
       it 'passes the correct param to the enrollment helper method' do
@@ -1102,7 +1101,7 @@ RSpec.describe Idv::EnterPasswordController do
       end
 
       context 'with a previously proofed user' do
-        context 'with an activated legacy idv  profile' do
+        context 'with an activated legacy idv profile' do
           before { create(:profile, :active, user:) }
 
           context 'when requesting ial2' do
@@ -1119,6 +1118,65 @@ RSpec.describe Idv::EnterPasswordController do
               expect(@attempts_api_tracker).to receive(:idv_enrollment_complete).with(reproof: true)
               put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
             end
+          end
+        end
+      end
+    end
+
+    describe 'historical events tracking' do
+      let(:mock_user_session) do
+        {
+          'idv/attempts' => ['idv-enrollment-complete' => {
+            user_uuid: user.uuid,
+          }],
+        }
+      end
+      let(:mock) { double }
+
+      before do
+        allow(UserProofingEvent).to receive(:new).and_return(mock)
+        allow(mock).to receive(:save).and_return(true)
+        allow(IdentityConfig.store).to receive_messages(
+          attempts_api_enabled: true,
+          historical_attempts_api_enabled: true,
+          allowed_attempts_providers: [{ 'issuer' => sp.issuer }],
+        )
+        allow(subject).to receive(:user_session).and_return(mock_user_session)
+        # at this point in the flow, the applicant should have a UUID
+        subject.idv_session.applicant['uuid'] = 'aabbccdd-0000-00000-0000-aabbccddeeff'
+      end
+
+      after do
+        subject.idv_session.applicant['uuid'] = nil
+      end
+
+      context 'when requesting ial2' do
+        before do
+          resolved_authn_context_result = Component::Parser.new(
+            acr_values: Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_REQUIRED_ACR,
+          ).parse
+
+          allow(controller).to receive(:resolved_authn_context_result)
+            .and_return(resolved_authn_context_result)
+        end
+
+        context 'with a newly proofed user' do
+          it 'creates a new UserProofingEvent' do
+            expect(UserProofingEvent).to receive(:new)
+            expect(mock).to receive(:save)
+            put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+          end
+        end
+
+        context 'with a proofed user who has already sent attempts to this SP' do
+          before do
+            put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+          end
+
+          it 'does not create a new UserProofingEvent' do
+            expect(UserProofingEvent).to_not receive(:new)
+            expect(mock).to_not receive(:save)
+            put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
           end
         end
       end

@@ -46,14 +46,14 @@ module DocAuth
           def successful_result?
             return false if passport_card_detected?
 
-            doc_auth_success?
+            doc_auth_success? &&
+              (@liveness_checking_enabled ? selfie_passed? : true)
           end
 
           def doc_auth_success?
             transaction_status_passed? && id_type_supported? && expected_document_type_received?
           end
 
-          # To be implemented in LG-17088
           def error_messages
             return {} if successful_result?
 
@@ -93,6 +93,28 @@ module DocAuth
             end
 
             basic_logging_info.merge(attrs)
+          end
+
+          # @return [:success, :fail, :not_processed]
+          # When selfie result is missing or not requested:
+          #   return :not_processed
+          # Otherwise:
+          #   return :success if selfie check result == 'Pass'
+          #   return :fail
+          def selfie_status
+            return :not_processed if selfie_result.nil? || !@liveness_checking_enabled
+            selfie_result == 'Pass' ? :success : :fail
+          end
+
+          def selfie_passed?
+            selfie_status == :success
+          end
+
+          def attention_with_barcode?
+            return false unless doc_auth_result_attention?
+
+            !!parsed_alerts[:failed]
+              &.any? { |alert| alert[:name] == '2D Barcode Read' && alert[:result] == 'Attention' }
           end
 
           private
@@ -185,11 +207,11 @@ module DocAuth
           end
 
           def conversation_id
-            @conversation_id ||= parsed_response_body.dig(:Status, :ConversationId)
+            @conversation_id ||= raw_response.dig(:Status, :ConversationId)
           end
 
           def request_id
-            @request_id ||= parsed_response_body.dig(:Status, :RequestId)
+            @request_id ||= raw_response.dig(:Status, :RequestId)
           end
 
           def doc_auth_result
@@ -198,6 +220,10 @@ module DocAuth
 
           def billed?
             !!doc_auth_result
+          end
+
+          def doc_auth_result_attention?
+            doc_auth_result == 'Attention'
           end
 
           def review_status
@@ -212,8 +238,11 @@ module DocAuth
               review_status: review_status,
               vendor: 'TrueID DDP',
               billed: billed?,
-              workflow: @request_context&.dig(:workflow),
             }
+          end
+
+          def selfie_result
+            portrait_match_results&.dig(:FaceMatchResult)
           end
         end
       end

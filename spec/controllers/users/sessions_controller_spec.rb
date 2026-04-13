@@ -570,8 +570,12 @@ RSpec.describe Users::SessionsController, devise: true do
         let(:analytics) { FakeAnalytics.new }
         before do
           allow(FeatureManagement).to receive(:check_password_enabled?).and_return(true)
+          allow(IdentityConfig.store)
+            .to receive(:sign_in_password_compromised_percent_tested)
+            .and_return(100)
           allow(PwnedPasswords::LookupPassword).to receive(:call).and_return true
           allow(Analytics).to receive(:new).and_return(analytics)
+          reload_ab_tests
         end
         it 'updates user attribute password_compromised_checked_at' do
           expect(user.password_compromised_checked_at).to be_falsey
@@ -591,7 +595,11 @@ RSpec.describe Users::SessionsController, devise: true do
         let(:user) { create(:user, :fully_registered) }
         before do
           allow(FeatureManagement).to receive(:check_password_enabled?).and_return(true)
+          allow(IdentityConfig.store)
+            .to receive(:sign_in_password_compromised_percent_tested)
+            .and_return(100)
           allow(PwnedPasswords::LookupPassword).to receive(:call).and_return false
+          reload_ab_tests
         end
 
         it 'updates user attribute password_compromised_checked_at' do
@@ -663,6 +671,16 @@ RSpec.describe Users::SessionsController, devise: true do
 
         cached_pii = Pii::Cacher.new(user, controller.user_session).fetch(user.active_profile.id)
         expect(cached_pii).to eq(Pii::Attributes.new(ssn: '1234'))
+      end
+
+      it 'caches the UserProofingEvent in the user session' do
+        allow(controller).to receive(:cache_user_proofing_events).and_return(double)
+        user = create(:user, :fully_registered)
+        create(:profile, :active, :verified, user: user, pii: { ssn: '1234' })
+
+        post :create, params: { user: { email: user.email.upcase, password: user.password } }
+
+        expect(controller).to have_received(:cache_user_proofing_events).once
       end
 
       it 'deactivates profile if not de-cryptable' do

@@ -17,9 +17,6 @@ RSpec.describe Proofing::Resolution::Plugins::PhonePlugin do
   let(:residential_address_resolution_result) do
     Proofing::Resolution::Result.new(success: true, vendor_name: 'lexisnexis:instant_verify')
   end
-  let(:state_id_result) do
-    Proofing::Resolution::Result.new(success: true, vendor_name: 'aamva:state_id')
-  end
 
   before do
     allow(IdentityConfig.store).to receive(:idv_phone_precheck_percent)
@@ -35,7 +32,6 @@ RSpec.describe Proofing::Resolution::Plugins::PhonePlugin do
         current_sp:,
         state_id_address_resolution_result:,
         residential_address_resolution_result:,
-        state_id_result:,
         timer:,
         user_email: user.email,
         best_effort_phone:,
@@ -61,7 +57,6 @@ RSpec.describe Proofing::Resolution::Plugins::PhonePlugin do
           current_sp:,
           state_id_address_resolution_result:,
           residential_address_resolution_result:,
-          state_id_result:,
           timer:,
           user_email: user.email,
         }
@@ -79,13 +74,6 @@ RSpec.describe Proofing::Resolution::Plugins::PhonePlugin do
         )
         expect(residential_address_failed_result[:success]).to eq(false)
         expect(residential_address_failed_result[:vendor_name]).to eq('ResolutionCannotPass')
-
-        state_id_failed_result = plugin.call(
-          **default_plugin_arguments,
-          state_id_result: failed_upstream_vendor_result,
-        )
-        expect(state_id_failed_result[:success]).to eq(false)
-        expect(state_id_failed_result[:vendor_name]).to eq('ResolutionCannotPass')
       end
 
       it 'calls the proofer with best effor phone and returns the results' do
@@ -103,7 +91,10 @@ RSpec.describe Proofing::Resolution::Plugins::PhonePlugin do
       context 'when there is no best effort phone' do
         let(:best_effort_phone) { nil }
         context 'and no phone in applicant_pii' do
-          let(:applicant_pii) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN.dup }
+          let(:applicant_pii) do
+            { uuid_prefix: '123', uuid: user.uuid }
+              .merge(Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN)
+          end
 
           it 'returns an unsuccessful result' do
             result = call
@@ -133,7 +124,8 @@ RSpec.describe Proofing::Resolution::Plugins::PhonePlugin do
 
       context 'the applicant_pii has a phone number' do
         let(:applicant_pii) do
-          Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE.merge(uuid_prefix: '123', uuid: user.uuid)
+          { uuid_prefix: '123', uuid: user.uuid }
+            .merge(Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE)
         end
         it 'calls the proofer with applican_pii phone number and returns the results' do
           expect_any_instance_of(Proofing::AddressProofer).to receive(:proof).with(
@@ -159,6 +151,9 @@ RSpec.describe Proofing::Resolution::Plugins::PhonePlugin do
           end
 
           it 'returns an unsuccessful result' do
+            # manual reviews are possible
+            allow(IdentityConfig.store)
+              .to receive(:idv_phone_confirmation_manual_review_validity_hours).and_return(1)
             result = call
 
             expect(result[:success]).to eq(false)
@@ -172,10 +167,43 @@ RSpec.describe Proofing::Resolution::Plugins::PhonePlugin do
           end
         end
 
+        context 'when phone confirmation was manually reviewed' do
+          let(:manually_reviewed_phone_users) { Idv::ManuallyReviewedPhoneUserSet.new }
+
+          before do
+            manually_reviewed_phone_users.add_user!(user_uuid: user.uuid)
+          end
+
+          after do
+            manually_reviewed_phone_users.remove_user!(user_uuid: user.uuid)
+          end
+
+          context 'when manual review is expired' do
+            it 'returns a result' do
+              result = call
+              expect(result).not_to be_empty
+            end
+          end
+
+          context 'when manual review is not expired' do
+            before do
+              allow(IdentityConfig.store)
+                .to receive(:idv_phone_confirmation_manual_review_validity_hours).and_return(1)
+            end
+
+            it 'returns an empty result without calling the proofer' do
+              expect_any_instance_of(Proofing::AddressProofer).not_to receive(:proof)
+              result = call
+              expect(result).to be_empty
+            end
+          end
+        end
+
         context 'when phone precheck is not enabled' do
           let(:idv_phone_precheck_percent) { 0 }
           it 'does not call proofer and returns empty results' do
             expect(Proofing::AddressProofer).not_to receive(:new)
+            expect(Idv::ManuallyReviewedPhoneUserSet).not_to receive(:new)
             result = call
 
             expect(result).to be_empty

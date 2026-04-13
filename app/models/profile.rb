@@ -2,9 +2,17 @@
 
 class Profile < ApplicationRecord
   # IDV levels equivalent to facial match
-  FACIAL_MATCH_IDV_LEVELS = %w[unsupervised_with_selfie in_person].to_set.freeze
+  FACIAL_MATCH_IDV_LEVELS = %w[unsupervised_with_selfie in_person proofing_agent].to_set.freeze
   # Facial match through IAL2 opt-in flow
   FACIAL_MATCH_OPT_IN = %w[unsupervised_with_selfie].to_set.freeze
+
+  PROOFING_AGENT_IDV_LEVELS = {
+    'legacy_unsupervised' => 'basic',
+    'legacy_in_person' => 'enhanced',
+    'unsupervised_with_selfie' => 'enhanced',
+    'in_person' => 'enhanced',
+    'proofing_agent' => 'enhanced',
+  }.freeze
 
   belongs_to :user
   # rubocop:disable Rails/InverseOf
@@ -43,6 +51,7 @@ class Profile < ApplicationRecord
     legacy_in_person: 2,
     unsupervised_with_selfie: 3,
     in_person: 4,
+    proofing_agent: 5,
   }
 
   attr_reader :personal_key
@@ -81,6 +90,10 @@ class Profile < ApplicationRecord
   end
 
   # Instance methods
+  def enhanced?
+    PROOFING_AGENT_IDV_LEVELS[idv_level] == 'enhanced'
+  end
+
   def fraud_review_pending?
     fraud_review_pending_at.present?
   end

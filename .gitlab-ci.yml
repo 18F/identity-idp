@@ -16,6 +16,9 @@ variables:
 
 default:
   image: '${ECR_REGISTRY}/idp/ci@${IDP_CI_SHA}'
+  tags:
+    - test-pool
+
 
 .bundle_install: &bundle_install
   - bundle check || bundle install --deployment --jobs=4 --retry=3 --without deploy development doc production --path vendor/ruby
@@ -199,6 +202,8 @@ build-nginx-image:
 
 check_changelog:
   stage: test
+  tags:
+    - test-pool
   variables:
     GIT_DEPTH: 100
   script:
@@ -219,6 +224,8 @@ check_changelog:
 
 migrate:
   stage: test
+  tags:
+    - test-pool
   needs:
     - job: install
   cache:
@@ -242,6 +249,8 @@ migrate:
 
 specs:
   stage: test
+  tags:
+    - test-pool
   needs:
     - job: install
   parallel: 22
@@ -301,6 +310,8 @@ specs:
 
 lint:
   stage: test
+  tags:
+    - test-pool
   needs:
     - job: install
   cache:
@@ -321,6 +332,8 @@ lint:
 
 js_build:
   stage: test
+  tags:
+    - test-pool
   needs:
     - job: install
   cache:
@@ -336,6 +349,8 @@ js_build:
 
 js_tests:
   stage: test
+  tags:
+    - test-pool
   needs:
     - job: install
   cache:
@@ -364,6 +379,8 @@ prepare_deploy:
 
 coverage:
   stage: after_test
+  tags:
+    - test-pool
   cache:
     - <<: *ruby_cache
   script:
@@ -393,6 +410,8 @@ coverage:
 # a single job based on the result of all of them.
 alert_main_test:
   stage: after_test
+  tags:
+    - test-pool
   needs:
     - job: coverage
   cache:
@@ -489,7 +508,7 @@ trigger_devops:
     - echo "Address of PIVCAC review app:"
     - echo https://$CI_ENVIRONMENT_SLUG.pivcac.reviewapps.identitysandbox.gov
     - echo "Address of Dashboard review app:"
-    - echo https://$CI_ENVIRONMENT_SLUG-dashboard.reviewapps.identitysandbox.gov
+    - echo https://$CI_ENVIRONMENT_SLUG-portal.reviewapps.identitysandbox.gov
 
 
 review-app:
@@ -537,7 +556,17 @@ include:
   - local: .gitlab-ci-devenv.yml
   - local: .gitlab-ci-rules.yml
 
+sast:
+  tags:
+    - test-pool
+
+dependency_scanning:
+  tags:
+    - test-pool
+
 secret_detection:
+  tags:
+    - test-pool
   allow_failure: false
   needs: []
   variables:

@@ -1847,13 +1847,15 @@ module AnalyticsEvents
   # @param [String] customer_user_id The customerUserId received from Socure
   # @param [String] docv_transaction_token The docvTransactionToken received from Socure
   # @param [String] event_type The eventType received from Socure
+  # @param [String] issuer The issuer of the Service Provider requesting IdV
   # @param [String] reference_id The referenceId received from Socure
   # @param [String] user_id The uuid of the user using Socure
   def idv_doc_auth_socure_webhook_received(
     created_at:,
     customer_user_id:,
-    event_type:,
     docv_transaction_token:,
+    event_type:,
+    issuer:,
     reference_id:,
     user_id:,
     **extra
@@ -1864,6 +1866,7 @@ module AnalyticsEvents
       customer_user_id:,
       docv_transaction_token:,
       event_type:,
+      issuer:,
       reference_id:,
       user_id:,
       **extra,
@@ -2043,6 +2046,8 @@ module AnalyticsEvents
   #   SDK upgrades
   # @option extra [String] 'DocumentName'
   # @option extra [String] 'DocAuthResult'
+  # @option extra [String] 'DocAuthTamperResult'
+  # @option extra [String] 'DocAuthTamperSensitivity'
   # @option extra [String] 'DocIssuerCode'
   # @option extra [String] 'DocIssuerName'
   # @option extra [String] 'DocIssuerType'
@@ -2057,6 +2062,7 @@ module AnalyticsEvents
   # @option extra [Boolean] 'PresentationChanged'
   # @param ["Passport","DriversLicense"] document_type_requested Document capture user flow
   # @param [Hash] passport_check_result The results of the Dos API call
+  # @param [String] review_status The review status if the result was sent for review
   # The document capture image was uploaded to vendor during the IDV process
   def idv_doc_auth_submitted_image_upload_vendor(
     success:,
@@ -2108,6 +2114,7 @@ module AnalyticsEvents
     liveness_enabled: nil,
     document_type_requested: nil,
     passport_check_result: nil,
+    review_status: nil,
     **extra
   )
     track_event(
@@ -2161,6 +2168,7 @@ module AnalyticsEvents
       liveness_enabled:,
       document_type_requested:,
       passport_check_result:,
+      review_status:,
       **extra,
     )
   end
@@ -2284,18 +2292,6 @@ module AnalyticsEvents
   # @option proofing_results [String,nil] context.stages.residential_address.vendor_id Vendor's internal ID for residential address proofing requests, e.g. socureId
   # @option proofing_results [String] context.stages.residential_address.vendor_name Vendor used for residential address proofing
   # @option proofing_results [String] context.stages.residential_address.vendor_workflow Vendor-specific workflow or configuration ID associated with the request made.
-  # @option proofing_results [Hash] context.stages.state_id Object holding details about the call made to the state ID proofing vendor
-  # @option proofing_results [Boolean] context.stages.state_id.success Whether the PII associated with the user's state ID document passed proofing
-  # @option proofing_results [Hash] context.stages.state_id.errors Object describing errors encountered while proofing the user's state ID PII
-  # @option proofing_results [String,nil] context.stages.state_id.exception If an exception occured during state ID PII verification its message is provided here
-  # @option proofing_results [Boolean] context.stages.state_id.mva_exception For AAMVA, whether the exception that occurred was due to an error on the state MVA side
-  # @option proofing_results [Hash<String,Numeric>] context.stages.state_id.requested_attributes An object whose keys are field names and values are "1" representing PII attributes sent to the state ID proofing vendor for verification.
-  # @option proofing_results [Boolean] context.stages.state_id.timed_out Whether the request to the state ID verification vendor timed out
-  # @option proofing_results [String] context.stages.state_id.transaction_id Vendor-specific transaction ID for the request made to the state id proofing vendor
-  # @option proofing_results [String] context.stages.state_id.vendor_name Name of the vendor used for state ID PII verification. If the ID was not from a supported jurisdiction, it will be "UnsupportedJurisdiction". It MAY also be "UnsupportedJurisdiction" if state ID verification was not needed because other vendor calls did not succeed.
-  # @option proofing_results [String] context.stages.state_id.state The state that was listed as the user's address on their state ID. Note that this may differ from state_id_jurisdiction.
-  # @option proofing_results [String] context.stages.state_id.state_id_jurisdiction The state that issued the drivers license or ID card being used for proofing.
-  # @option proofing_results [String] context.stages.state_id.state_id_number A string describing the _format_ of the state ID number provided.
   # @option proofing_results [Hash] context.stages.threatmetrix Object holding details about the call made to the device profiling vendor
   # @option proofing_results [String] context.stages.threatmetrix.client Identifier string indicating which client was used.
   # @option proofing_results [Boolean] context.stages.threatmetrix.success Whether the request to the vendor succeeded.
@@ -5123,6 +5119,7 @@ module AnalyticsEvents
   # @param [String] customer_user_id user uuid sent to socure
   # @param [Hash] reason_codes socure internal reason codes for accept reject decision
   # @param [Hash] alternate_result Details for proofing attempt with primary vendor
+  # @param [Boolean, nil] manual_review Phone was manually reviewed
   # The vendor finished the process of confirming the users phone
   def idv_phone_confirmation_vendor_submitted(
     success:,
@@ -5132,6 +5129,7 @@ module AnalyticsEvents
     phone_fingerprint:,
     new_phone_added:,
     hybrid_handoff_phone_used:,
+    manual_review:,
     errors: nil,
     opted_in_to_in_person_proofing: nil,
     error_details: nil,
@@ -5154,6 +5152,7 @@ module AnalyticsEvents
       phone_fingerprint:,
       new_phone_added:,
       hybrid_handoff_phone_used:,
+      manual_review:,
       opted_in_to_in_person_proofing:,
       proofing_components:,
       active_profile_idv_level:,
@@ -5308,6 +5307,73 @@ module AnalyticsEvents
       idv_level:,
       verified_at:,
       activated_at:,
+      **extra,
+    )
+  end
+
+  # Logs when a proofing agent checks for an account associated with the proofing request
+  # @param [Hash] response_body The body of the response from the proofing agent's account check
+  # @param [Hash] proofing_agent The proofing agent information
+  # @param [String] issuer The issuer associated with the proofing request
+  def idv_proofing_agent_account_check_requested(
+    response_body:,
+    proofing_agent:,
+    issuer:,
+    **extra
+  )
+    track_event(
+      :idv_proofing_agent_account_check_requested,
+      response_body:,
+      proofing_agent:,
+      issuer:,
+      **extra,
+    )
+  end
+
+  # Tracks a proofing agent request that failed authorization or validation
+  # @param [Boolean] success Whether request was successful
+  # @param [String] issuer The issuer associated with the proofing request
+  # @param ['authorization', 'header_validation', 'body_validation] failure_type Determines failure
+  #   type
+  # @param [Hash] proofing_agent The proofing agent information
+  # @param [Hash, nil] errors The hash of errors that caused the failure
+  def idv_proofing_agent_request_failed(
+    success:,
+    issuer:,
+    failure_type:,
+    proofing_agent:,
+    errors: nil,
+    **extra
+  )
+    track_event(
+      :idv_proofing_agent_request_failed,
+      success:,
+      issuer:,
+      failure_type:,
+      proofing_agent:,
+      errors:,
+      **extra,
+    )
+  end
+
+  # Logs when a proofing agent begins proofing a user
+  # @param [Hash] response_body The body of the response from the proofing agent's proofing request
+  # @param [Hash] proofing_agent The proofing agent information
+  # @param [String] issuer The issuer associated with the proofing request
+  # @param [String,nil] transaction_id The transaction ID associated with the proofing request
+  def idv_proofing_agent_request_received(
+    response_body:,
+    proofing_agent:,
+    issuer:,
+    transaction_id: nil,
+    **extra
+  )
+    track_event(
+      :idv_proofing_agent_request_received,
+      response_body:,
+      proofing_agent:,
+      issuer:,
+      transaction_id:,
       **extra,
     )
   end
@@ -5860,6 +5926,7 @@ module AnalyticsEvents
   # @param ["hybrid","standard"] flow_path Document capture user flow
   # @param [String] document_type_received type of state issued ID or passport
   # @param [Integer] issue_year Year document was issued
+  # @param [String] issuer The issuer of the Service Provider requesting IdV
   # @param [Boolean] liveness_enabled Whether the selfie result is included in response
   # @param [Hash] reason_codes socure internal reason codes for accept reject decision
   # @param [String] reference_id socure internal id for transaction
@@ -5897,6 +5964,7 @@ module AnalyticsEvents
     flow_path: nil,
     document_type_received: nil,
     issue_year: nil,
+    issuer: nil,
     liveness_enabled: nil,
     reference_id: nil,
     reason_codes: nil,
@@ -5927,6 +5995,7 @@ module AnalyticsEvents
       flow_path:,
       document_type_received:,
       issue_year:,
+      issuer:,
       liveness_enabled:,
       reason_codes:,
       reference_id:,
@@ -6345,6 +6414,8 @@ module AnalyticsEvents
   # @param [Boolean] in_account_creation_flow Whether user is going through account creation flow
   # @param [Integer] enabled_mfa_methods_count Number of enabled MFA methods on the account
   # @param [Hash] recaptcha_annotation Details of reCAPTCHA annotation, if submitted
+  # @param [Boolean] available_webauthn_platform_config shows user has a webauth_platform config
+  # @param [Integer] webauthn_auth_duration the duration to complete webauthn auth in seconds
   # Multi-Factor Authentication
   def multi_factor_auth(
     success:,
@@ -6370,6 +6441,8 @@ module AnalyticsEvents
     frontend_error: nil,
     in_account_creation_flow: nil,
     recaptcha_annotation: nil,
+    available_webauthn_platform_config: nil,
+    webauthn_auth_duration: nil,
     **extra
   )
     track_event(
@@ -6397,6 +6470,8 @@ module AnalyticsEvents
       in_account_creation_flow:,
       enabled_mfa_methods_count:,
       recaptcha_annotation:,
+      available_webauthn_platform_config:,
+      webauthn_auth_duration:,
       **extra,
     )
   end
@@ -6663,7 +6738,7 @@ module AnalyticsEvents
   #   registration contradict the authenticator attachment for user setup. For example, a user can
   #   set up a platform authenticator through the Security Key setup flow.
   # @param [:authentication, :account_creation, nil] webauthn_platform_recommended A/B test for
-  # recommended Face or Touch Unlock setup, if applicable.
+  # @param [Integer, nil] webauthn_setup_duration Duration of webauthn setup in seconds
   def multi_factor_auth_setup(
     success:,
     multi_factor_auth_method:,
@@ -6690,6 +6765,7 @@ module AnalyticsEvents
     transports: nil,
     transports_mismatch: nil,
     webauthn_platform_recommended: nil,
+    webauthn_setup_duration: nil,
     **extra
   )
     track_event(
@@ -6719,6 +6795,7 @@ module AnalyticsEvents
       transports:,
       transports_mismatch:,
       webauthn_platform_recommended:,
+      webauthn_setup_duration:,
       **extra,
     )
   end
@@ -8195,6 +8272,7 @@ module AnalyticsEvents
   # @param [String] area_code Area code of phone number
   # @param [String] country_code Abbreviated 2-letter country code associated with phone number
   # @param [String] phone_fingerprint HMAC fingerprint of the phone number formatted as E.164
+  # @param [String, nil] ip_country 2-letter country code associated with request IP address
   # @param ["authentication", "reauthentication", "confirmation"] context User session context
   # @param ["sms", "voice"] otp_delivery_preference Channel used to send the message
   # @param [Boolean] resend
@@ -8207,12 +8285,8 @@ module AnalyticsEvents
     area_code:,
     country_code:,
     phone_fingerprint:,
-    context:,
-    otp_delivery_preference:,
-    resend:,
-    telephony_response:,
-    adapter:,
-    success:,
+    context:, otp_delivery_preference:, resend:, telephony_response:, adapter:, success:,
+    ip_country: nil,
     recaptcha_annotation: nil,
     **extra
   )
@@ -8222,6 +8296,7 @@ module AnalyticsEvents
         area_code: area_code,
         country_code: country_code,
         phone_fingerprint: phone_fingerprint,
+        ip_country: ip_country,
         context: context,
         otp_delivery_preference: otp_delivery_preference,
         resend: resend,

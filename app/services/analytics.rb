@@ -65,6 +65,7 @@ class Analytics
       hostname: request.host,
       pid: Process.pid,
       trace_id: request.headers['X-Amzn-Trace-Id'],
+      referer: referer,
     }
 
     attributes[:git_sha] = IdentityConfig::GIT_SHA
@@ -115,6 +116,20 @@ class Analytics
       browser_mobile: browser.device.mobile?,
       browser_bot: browser.bot?,
     }
+  end
+
+  def referer
+    return unless request.referer
+
+    uri = URI.parse(request.referer)
+    return unless %w[http https].include?(uri.scheme)
+    return unless uri.host.present?
+
+    path = uri.path[0, 2048]
+
+    "#{uri.scheme}://#{uri.host}#{path}"
+  rescue URI::InvalidURIError, ArgumentError, Encoding::CompatibilityError
+    nil
   end
 
   def session_duration

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_01_21_214521) do
+ActiveRecord::Schema[8.0].define(version: 2026_03_06_213343) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_catalog.plpgsql"
@@ -573,6 +573,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_21_214521) do
     t.boolean "irs_attempts_api_enabled", comment: "sensitive=false"
     t.boolean "in_person_proofing_enabled", default: false, comment: "sensitive=false"
     t.string "post_idv_follow_up_url", comment: "sensitive=false"
+    t.boolean "saml_emailaddress_attribute_enabled", default: false, comment: "sensitive=false"
     t.index ["issuer"], name: "index_service_providers_on_issuer", unique: true
   end
 
@@ -641,10 +642,10 @@ ActiveRecord::Schema[8.0].define(version: 2026_01_21_214521) do
     t.index ["email_address_id"], name: "index_suspended_emails_on_email_address_id"
   end
 
-  create_table "user_proofing_events", id: :string, force: :cascade do |t|
+  create_table "user_proofing_events", id: :serial, force: :cascade do |t|
     t.string "encrypted_events", null: false, comment: "sensitive=true"
     t.bigint "profile_id", null: false, comment: "sensitive=false"
-    t.jsonb "service_providers_sent", default: {}, null: false, comment: "sensitive=false"
+    t.jsonb "service_providers_sent", default: [], null: false, comment: "sensitive=false"
     t.string "cost", null: false, comment: "sensitive=true"
     t.string "salt", null: false, comment: "sensitive=true"
     t.datetime "created_at", null: false, comment: "sensitive=false"

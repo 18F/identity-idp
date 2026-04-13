@@ -4,24 +4,24 @@ module Proofing
   module Resolution
     module Plugins
       class PhonePlugin
-        attr_reader :phone_number
+        attr_reader :phone_number, :user_uuid
         def call(
           applicant_pii:,
           current_sp:,
           state_id_address_resolution_result:,
           residential_address_resolution_result:,
-          state_id_result:,
           user_email:,
           timer:,
           best_effort_phone: nil
 
         )
+          @user_uuid = applicant_pii[:uuid]
           @phone_number = nil
           return {} unless precheck_enabled
+          return {} if phone_confirmation_manually_reviewed?
 
           if !state_id_address_resolution_result.success? ||
-             !residential_address_resolution_result.success? ||
-             !state_id_result.success?
+             !residential_address_resolution_result.success?
             return resolution_cannot_pass_result
           end
 
@@ -62,6 +62,13 @@ module Proofing
 
         def precheck_enabled
           @precheck_enabled ||= (rand * 100) <= IdentityConfig.store.idv_phone_precheck_percent
+        end
+
+        def phone_confirmation_manually_reviewed?
+          @phone_confirmation_manually_reviewed ||= begin
+            manually_reviewed_phone_users = Idv::ManuallyReviewedPhoneUserSet.new
+            manually_reviewed_phone_users.active_member?(user_uuid:)
+          end
         end
       end
     end

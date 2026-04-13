@@ -13,7 +13,6 @@ class ResolutionProofingJob < ApplicationJob
     :result,
     :resolution_success,
     :residential_resolution_success,
-    :state_id_success,
     :device_profiling_success,
     :hybrid_device_profiling_success,
     keyword_init: true,
@@ -30,8 +29,7 @@ class ResolutionProofingJob < ApplicationJob
     threatmetrix_session_id: nil,
     request_ip: nil,
     hybrid_mobile_threatmetrix_session_id: nil,
-    hybrid_mobile_request_ip: nil,
-    state_id_already_proofed: false
+    hybrid_mobile_request_ip: nil
   )
     timer = JobHelpers::Timer.new
 
@@ -64,7 +62,6 @@ class ResolutionProofingJob < ApplicationJob
       ipp_enrollment_in_progress:,
       current_sp:,
       proofing_vendor:,
-      state_id_already_proofed:,
       analytics:,
     )
 
@@ -84,7 +81,6 @@ class ResolutionProofingJob < ApplicationJob
       trace_id: trace_id,
       resolution_success: callback_log_data&.resolution_success,
       residential_resolution_success: callback_log_data&.residential_resolution_success,
-      state_id_success: callback_log_data&.state_id_success,
       device_profiling_success: callback_log_data&.device_profiling_success,
       timing: timer.results,
       user_id: user&.uuid,
@@ -105,8 +101,7 @@ class ResolutionProofingJob < ApplicationJob
     ipp_enrollment_in_progress:,
     current_sp:,
     proofing_vendor:,
-    analytics:,
-    state_id_already_proofed: false
+    analytics:
   )
     result = progressive_proofer(user:, proofing_vendor:, analytics:).proof(
       applicant_pii:,
@@ -118,7 +113,6 @@ class ResolutionProofingJob < ApplicationJob
       timer:,
       current_sp:,
       workflow: :idv,
-      state_id_already_proofed:,
     )
 
     log_threatmetrix_info(result.device_profiling_result, user, 'ThreatMetrix')
@@ -143,7 +137,6 @@ class ResolutionProofingJob < ApplicationJob
       resolution_success: result.resolution_result.success?,
       residential_resolution_success: result.residential_resolution_result.success?,
       result: result.adjudicated_result.to_h,
-      state_id_success: result.state_id_result.success?,
     )
   end
 

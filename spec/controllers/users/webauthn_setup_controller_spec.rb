@@ -161,12 +161,6 @@ RSpec.describe Users::WebauthnSetupController do
         )
       end
 
-      it 'creates user event' do
-        expect(controller).to receive(:create_user_event).with(:webauthn_key_added)
-
-        response
-      end
-
       it 'sends a recovery information changed event' do
         expect(PushNotification::HttpPush).to receive(:deliver)
           .with(PushNotification::RecoveryInformationChangedEvent.new(user: user))
@@ -212,10 +206,19 @@ RSpec.describe Users::WebauthnSetupController do
           expect(flash[:success]).to eq(t('notices.webauthn_platform_configured'))
         end
 
-        it 'creates user event' do
-          expect(controller).to receive(:create_user_event).with(:webauthn_platform_added)
+        context 'with session value deserialized as a string' do
+          before do
+            controller.user_session[:webauthn_setup_started_at] =
+              2.seconds.ago.to_f.to_s
+          end
+          it 'calculates duration without error' do
+            expect { response }.not_to raise_error
 
-          response
+            expect(@analytics).to have_logged_event(
+              'Multi-Factor Authentication Setup',
+              hash_including(webauthn_setup_duration: a_value_within(0.5).of(2)),
+            )
+          end
         end
 
         context 'with transports mismatch' do

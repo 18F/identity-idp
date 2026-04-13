@@ -38,6 +38,11 @@ module DocAuth
           mrz: %w[documentVerification rawData mrz],
         }.freeze
 
+        STATE_ID_MAPPINGS = {
+          Idp::Constants::DocumentTypes::IDENTIFICATION_CARD =>
+            Idp::Constants::DocumentTypes::STATE_ID_CARD,
+        }.freeze
+
         def initialize(http_response:, passport_requested: false)
           @http_response = http_response
           @pii_from_doc = read_pii
@@ -201,7 +206,11 @@ module DocAuth
         end
 
         def document_type_received
-          document_id_type&.gsub(/\W/, '')&.underscore
+          doc_type = document_id_type&.gsub(/\W/, '')&.underscore
+          if !STATE_ID_MAPPINGS[doc_type].nil?
+            return STATE_ID_MAPPINGS[doc_type]
+          end
+          doc_type
         end
 
         def document_id_type

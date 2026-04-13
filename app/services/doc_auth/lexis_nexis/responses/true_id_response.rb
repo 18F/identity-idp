@@ -101,11 +101,6 @@ module DocAuth
         end
 
         # @return [:success, :fail, :not_processed]
-        # When selfie result is missing or not requested:
-        #   return :not_processed
-        # Otherwise:
-        #   return :success if selfie check result == 'Pass'
-        #   return :fail
         def selfie_status
           return :not_processed if selfie_result.nil? || !@liveness_checking_enabled
           selfie_result == 'Pass' ? :success : :fail

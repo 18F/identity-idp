@@ -21,26 +21,6 @@ RSpec.describe 'Add a new phone number' do
     expect(user.phone_configurations[1].confirmed_at).to be_present
   end
 
-  scenario 'adding a new phone number sends the user an email with a disavowal link' do
-    user = create(:user, :fully_registered)
-    phone = '+1 (225) 278-1234'
-
-    sign_in_and_2fa_user(user)
-    within('.sidenav') do
-      click_on t('account.navigation.add_phone_number')
-    end
-    fill_in :new_phone_form_phone, with: phone
-    click_send_one_time_code
-    fill_in_code_with_last_phone_otp
-    click_submit_default
-
-    expect_delivered_email_count(1)
-    expect_delivered_email(
-      to: [user.email_addresses.first.email],
-      subject: t('user_mailer.phone_added.subject'),
-    )
-  end
-
   scenario 'adding a new phone number validates number', :js do
     user = create(:user, :fully_registered)
     sign_in_and_2fa_user(user)
@@ -290,5 +270,35 @@ RSpec.describe 'Add a new phone number' do
     click_link t('two_factor_authentication.phone_verification.troubleshooting.change_number')
 
     expect(page).to have_current_path(phone_setup_path)
+  end
+
+  scenario 'notify users about phishing vulnerability' do
+    user = create(:user, :fully_registered)
+
+    sign_in_and_2fa_user(user)
+    expect(page).to have_link(href: phone_setup_path, text: t('account.index.phone_add'))
+    within('.sidenav') do
+      click_on t('account.navigation.add_phone_number')
+    end
+
+    expect(page).to have_link(
+      t('links.setup_ft_unlock'),
+      href: webauthn_setup_url(platform: true),
+    )
+  end
+
+  scenario 'no warning about phishing vulnerability' do
+    user = create(:user, :fully_registered, :with_webauthn_platform)
+
+    sign_in_and_2fa_user(user)
+    expect(page).to have_link(href: phone_setup_path, text: t('account.index.phone_add'))
+    within('.sidenav') do
+      click_on t('account.navigation.add_phone_number')
+    end
+
+    expect(page).to_not have_link(
+      t('links.setup_ft_unlock'),
+      href: webauthn_setup_url(platform: true),
+    )
   end
 end

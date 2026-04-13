@@ -128,6 +128,8 @@ class SocureErrorPresenter
       t('doc_auth.errors.selfie_fail_heading')
     when :state_id_verification
       t('doc_auth.headers.state_id_verification')
+    when :passport
+      t('doc_auth.errors.rate_limited_heading')
     else
       # i18n-tasks-use t('doc_auth.headers.unreadable_id')
       # i18n-tasks-use t('doc_auth.headers.unaccepted_id_type')
@@ -155,6 +157,8 @@ class SocureErrorPresenter
       t('doc_auth.errors.general.selfie_failure')
     when :state_id_verification
       t('doc_auth.errors.state_id_verification')
+    when :passport
+      t('doc_auth.info.review_passport')
     else
       if remapped_error(error_code) == 'underage' # special handling because it says 'Login.gov'
         I18n.t('doc_auth.errors.underage', app_name: APP_NAME)
