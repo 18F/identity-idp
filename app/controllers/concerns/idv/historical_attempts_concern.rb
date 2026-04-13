@@ -9,10 +9,7 @@ module Idv
       return unless historical_events_enabled?
       @password = password
 
-      raw_events = session['idv/attempts'] || []
-      new_events = raw_events.map do |event|
-        { event.keys[0] => JSON.parse(event.values[0]) }
-      end
+      new_events = user_session['idv/attempts'] || []
 
       if existing_user_proofing_event
         existing_events = JSON.parse(decrypt_user_proofing_events)
@@ -33,8 +30,8 @@ module Idv
         new_user_proofing_event.save
       end
 
-      # Now that proofing events are saved, remove the plaintext events from session
-      session.delete('idv/attempts')
+      # Now that proofing events are saved, remove the plaintext events from user_session
+      user_session.delete('idv/attempts')
     end
 
     def cache_user_proofing_events(password)
