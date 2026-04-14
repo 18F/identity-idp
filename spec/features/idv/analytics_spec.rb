@@ -247,7 +247,7 @@ RSpec.feature 'Analytics Regression', :js do
         step: 'choose_id_type', analytics_id: 'Doc Auth', flow_path: 'standard'
       },
       :idv_doc_auth_choose_id_type_submitted => {
-        success: true, step: 'choose_id_type', analytics_id: 'Doc Auth', flow_path: 'standard', chosen_id_type: 'drivers_license'
+        success: true, step: 'choose_id_type', analytics_id: 'Doc Auth', flow_path: 'standard', chosen_id_type: 'state_id_card'
       },
       'IdV: doc auth document_capture visited' => hash_including(flow_path: 'standard', step: 'document_capture', analytics_id: 'Doc Auth', selfie_check_required: boolean, liveness_checking_required: boolean),
       'Frontend: IdV: front image added' => {
@@ -374,7 +374,7 @@ RSpec.feature 'Analytics Regression', :js do
         step: 'hybrid_choose_id_type', analytics_id: 'Doc Auth', flow_path: 'hybrid'
       },
       :idv_doc_auth_choose_id_type_submitted => {
-        success: true, step: 'hybrid_choose_id_type', analytics_id: 'Doc Auth', flow_path: 'hybrid', chosen_id_type: 'drivers_license'
+        success: true, step: 'hybrid_choose_id_type', analytics_id: 'Doc Auth', flow_path: 'hybrid', chosen_id_type: 'state_id_card'
       },
       'IdV: doc auth document_capture visited' => {
         flow_path: 'hybrid', step: 'document_capture', analytics_id: 'Doc Auth', selfie_check_required: boolean, liveness_checking_required: boolean
@@ -502,7 +502,7 @@ RSpec.feature 'Analytics Regression', :js do
         step: 'choose_id_type', analytics_id: 'Doc Auth', flow_path: 'standard'
       },
       :idv_doc_auth_choose_id_type_submitted => {
-        success: true, step: 'choose_id_type', analytics_id: 'Doc Auth', flow_path: 'standard', chosen_id_type: 'drivers_license'
+        success: true, step: 'choose_id_type', analytics_id: 'Doc Auth', flow_path: 'standard', chosen_id_type: 'state_id_card'
       },
       'IdV: doc auth document_capture visited' => {
         flow_path: 'standard', step: 'document_capture', analytics_id: 'Doc Auth', selfie_check_required: boolean, liveness_checking_required: boolean
@@ -610,7 +610,7 @@ RSpec.feature 'Analytics Regression', :js do
         step: 'choose_id_type', analytics_id: 'Doc Auth', flow_path: 'standard'
       },
       :idv_doc_auth_choose_id_type_submitted => {
-        success: true, step: 'choose_id_type', analytics_id: 'Doc Auth', flow_path: 'standard', chosen_id_type: 'drivers_license'
+        success: true, step: 'choose_id_type', analytics_id: 'Doc Auth', flow_path: 'standard', chosen_id_type: 'state_id_card'
       },
       'IdV: doc auth document_capture visited' => {
         flow_path: 'standard', step: 'document_capture', analytics_id: 'Doc Auth', selfie_check_required: boolean, liveness_checking_required: boolean, opted_in_to_in_person_proofing: boolean
@@ -762,7 +762,7 @@ RSpec.feature 'Analytics Regression', :js do
         step: 'choose_id_type', analytics_id: 'Doc Auth', flow_path: 'standard'
       },
       :idv_doc_auth_choose_id_type_submitted => {
-        success: true, step: 'choose_id_type', analytics_id: 'Doc Auth', flow_path: 'standard', chosen_id_type: 'drivers_license'
+        success: true, step: 'choose_id_type', analytics_id: 'Doc Auth', flow_path: 'standard', chosen_id_type: 'state_id_card'
       },
       'IdV: doc auth document_capture visited' => {
         flow_path: 'standard', step: 'document_capture', analytics_id: 'Doc Auth', selfie_check_required: boolean, liveness_checking_required: true

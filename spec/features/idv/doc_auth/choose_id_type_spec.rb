@@ -74,7 +74,7 @@ RSpec.feature 'choose id type step' do
         expect(page).to have_current_path(idv_document_capture_url)
       end
 
-      it 'shows choose id type screen and continues after license option' do
+      it 'shows choose id type screen and continues after state id card option' do
         expect(page).to have_content(t('doc_auth.headings.upload_from_computer'))
         click_on t('forms.buttons.upload_photos')
         expect(page).to have_current_path(idv_choose_id_type_url)
@@ -86,7 +86,7 @@ RSpec.feature 'choose id type step' do
         )
         visit idv_choose_id_type_url
         expect(page).to have_checked_field(
-          'doc_auth_choose_id_type_preference_drivers_license',
+          'doc_auth_choose_id_type_preference_state_id_card',
           visible: :all,
         )
         choose(t('doc_auth.forms.id_type_preference.passport'))
@@ -112,7 +112,7 @@ RSpec.feature 'choose id type step' do
           complete_agreement_step
         end
 
-        it 'shows choose id type screen and continues after drivers license option' do
+        it 'shows choose id type screen and continues after state id card option' do
           expect(page).to have_current_path(idv_how_to_verify_url)
           click_button t('forms.buttons.continue_online')
           expect(page).to have_current_path(idv_choose_id_type_url)
@@ -128,7 +128,7 @@ RSpec.feature 'choose id type step' do
           )
           visit idv_choose_id_type_url
           expect(page).to have_checked_field(
-            'doc_auth_choose_id_type_preference_drivers_license',
+            'doc_auth_choose_id_type_preference_state_id_card',
             visible: :all,
           )
         end
@@ -143,14 +143,14 @@ RSpec.feature 'choose id type step' do
           complete_agreement_step
         end
 
-        it 'shows choose id type screen and continues after drivers license option' do
+        it 'shows choose id type screen and continues after state id card option' do
           expect(page).to have_current_path(idv_choose_id_type_url)
           choose(t('doc_auth.forms.id_type_preference.drivers_license'))
           click_on t('forms.buttons.continue')
           expect(page).to have_current_path(idv_document_capture_url)
           visit idv_choose_id_type_url
           expect(page).to have_checked_field(
-            'doc_auth_choose_id_type_preference_drivers_license',
+            'doc_auth_choose_id_type_preference_state_id_card',
             visible: :all,
           )
         end
