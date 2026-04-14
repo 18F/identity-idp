@@ -21,7 +21,7 @@ module Reports
       issuers = report_config['issuers']
       agency_abbreviation = report_config['agency_abbreviation']
       emails = report_config['emails']
-      report_hour = report_date.in_time_zone.beginning_of_hour
+      report_hour = report_date.utc.beginning_of_hour
       previous_hour_range = (report_hour - 1.hour)...report_hour
 
       agency_report_name = "#{agency_abbreviation.downcase}_proofing_events_by_uuid"

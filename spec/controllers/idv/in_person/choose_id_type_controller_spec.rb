@@ -184,8 +184,8 @@ RSpec.describe Idv::InPerson::ChooseIdTypeController do
             end
           end
 
-          context 'when the chosen ID type is "drivers_license"' do
-            let(:chosen_id_type) { 'drivers_license' }
+          context 'when the chosen ID type is "state_id_card"' do
+            let(:chosen_id_type) { 'state_id_card' }
             let(:params) do
               {
                 doc_auth: {

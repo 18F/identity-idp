@@ -12,7 +12,7 @@ RSpec.describe Idv::ChooseIdTypeConcern, :controller do
   let(:context_analytics) { { step: step } }
   let(:passport_status) { nil }
   let(:document_capture_session) { create(:document_capture_session, passport_status:) }
-  let(:id_type) { 'drivers_license' }
+  let(:id_type) { 'state_id_card' }
   let(:socure_docv_capture_app_url) { 'http://example.com' }
   let(:socure_docv_transaction_token) { '12345' }
   let(:parameters) do
@@ -101,7 +101,7 @@ RSpec.describe Idv::ChooseIdTypeConcern, :controller do
     end
 
     context 'when chosen_id_type is not "passport"' do
-      let(:id_type) { 'drivers_license' }
+      let(:id_type) { 'state_id_card' }
 
       before do
         allow(controller).to receive(:params).and_return(parameters)
@@ -195,8 +195,8 @@ RSpec.describe Idv::ChooseIdTypeConcern, :controller do
     context 'when the document capture session passport status is "not_requested"' do
       let(:passport_status) { 'not_requested' }
 
-      it 'returns :drivers_license' do
-        expect(subject.selected_id_type).to eq(:drivers_license)
+      it 'returns :state_id_card' do
+        expect(subject.selected_id_type).to eq(:state_id_card)
       end
     end
   end
@@ -292,6 +292,28 @@ RSpec.describe Idv::ChooseIdTypeConcern, :controller do
       end
     end
 
+    context 'when passports are disabled but passport card is enabled' do
+      let(:passport_status) { 'requested' }
+      before do
+        allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled)
+          .and_return(false)
+        allow(IdentityConfig.store).to receive(:doc_auth_passport_cards_enabled)
+          .and_return(true)
+        allow(response).to receive(:success?).and_return(true)
+      end
+
+      it 'returns expected local attributes with passports disabled' do
+        expect(
+          subject.locals_attrs(presenter:, form_submit_url:),
+        ).to include(
+          presenter:,
+          form_submit_url:,
+          disable_passports: false,
+          auto_check_value: :passport,
+        )
+      end
+    end
+
     context 'when passports are disabled' do
       before do
         allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled)
@@ -305,7 +327,7 @@ RSpec.describe Idv::ChooseIdTypeConcern, :controller do
           presenter:,
           form_submit_url:,
           disable_passports: true,
-          auto_check_value: :drivers_license,
+          auto_check_value: :state_id_card,
         )
       end
     end
@@ -323,7 +345,7 @@ RSpec.describe Idv::ChooseIdTypeConcern, :controller do
           presenter:,
           form_submit_url:,
           disable_passports: true,
-          auto_check_value: :drivers_license,
+          auto_check_value: :state_id_card,
         )
       end
     end

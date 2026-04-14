@@ -5333,13 +5333,16 @@ module AnalyticsEvents
   # Tracks a proofing agent request that failed authorization or validation
   # @param [Boolean] success Whether request was successful
   # @param [String] issuer The issuer associated with the proofing request
-  # @param ['authorization', 'validation'] failure_type Determines failure type
+  # @param ['authorization', 'header_validation', 'body_validation] failure_type Determines failure
+  #   type
   # @param [Hash] proofing_agent The proofing agent information
+  # @param [Hash, nil] errors The hash of errors that caused the failure
   def idv_proofing_agent_request_failed(
     success:,
     issuer:,
     failure_type:,
     proofing_agent:,
+    errors: nil,
     **extra
   )
     track_event(
@@ -5348,6 +5351,29 @@ module AnalyticsEvents
       issuer:,
       failure_type:,
       proofing_agent:,
+      errors:,
+      **extra,
+    )
+  end
+
+  # Logs when a proofing agent begins proofing a user
+  # @param [Hash] response_body The body of the response from the proofing agent's proofing request
+  # @param [Hash] proofing_agent The proofing agent information
+  # @param [String] issuer The issuer associated with the proofing request
+  # @param [String,nil] transaction_id The transaction ID associated with the proofing request
+  def idv_proofing_agent_request_received(
+    response_body:,
+    proofing_agent:,
+    issuer:,
+    transaction_id: nil,
+    **extra
+  )
+    track_event(
+      :idv_proofing_agent_request_received,
+      response_body:,
+      proofing_agent:,
+      issuer:,
+      transaction_id:,
       **extra,
     )
   end

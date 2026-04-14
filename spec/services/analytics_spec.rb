@@ -105,14 +105,112 @@ RSpec.describe Analytics do
       end
     end
 
-    context 'request has a referer' do
+    context 'request has a referer with valid path and parameters' do
       let(:request) do
         FakeRequest.new(referer: 'https://secure.login.gov/openid_connect/logout?client_id=foo&state=bar')
       end
 
-      it 'includes the referer as a top-level attribute' do
+      it 'includes the referer as a top-level attribute without parameters' do
         expect(ahoy).to receive(:track)
           .with('Trackable Event', hash_including(referer: 'https://secure.login.gov/openid_connect/logout'))
+
+        analytics.track_event('Trackable Event')
+      end
+    end
+
+    context 'request has an invalid referer' do
+      let(:request) do
+        FakeRequest.new(referer: 'select 1234*4556 from DUAL')
+      end
+
+      it 'rescues the URI.parse error and returns nil' do
+        expect(ahoy).to receive(:track)
+          .with('Trackable Event', hash_including(referer: nil))
+
+        analytics.track_event('Trackable Event')
+      end
+    end
+
+    context 'request has a referer with a scheme other than http or https' do
+      let(:request) do
+        FakeRequest.new(referer: 'ftp://foobar')
+      end
+
+      it 'returns nil' do
+        expect(ahoy).to receive(:track)
+          .with('Trackable Event', hash_including(referer: nil))
+
+        analytics.track_event('Trackable Event')
+      end
+    end
+
+    context 'request has a referer with no host' do
+      let(:request) do
+        FakeRequest.new(referer: 'https://')
+      end
+
+      it 'returns nil' do
+        expect(ahoy).to receive(:track)
+          .with('Trackable Event', hash_including(referer: nil))
+
+        analytics.track_event('Trackable Event')
+      end
+    end
+
+    context 'request has a referer path with invalid characters' do
+      let(:request) do
+        FakeRequest.new(referer: 'https://example.com/select<$#@!>')
+      end
+
+      it 'returns nil' do
+        expect(ahoy).to receive(:track)
+          .with('Trackable Event', hash_including(referer: nil))
+
+        analytics.track_event('Trackable Event')
+      end
+    end
+
+    context 'request has a referer path with more than 2048 characters' do
+      let(:request) do
+        # rubocop:disable Layout/LineLength
+        long_path = '/VsXIYBHdIVBdEMtGcNPaAosOdOdyGqlKlSduCXBGbIjzNKERFdCCMbsQNxlZJFdjdMIgVFOfBxtsnxUnlRzNsAQFgkVclGncBZuLKXByssYuvWLuttqUDimbslpZQKBBPoqnuDbgZCTJRdtZUqJbwpnipYieHlhMjnqtWUJNzruqwRxwBymIodUqWzJMKuijCKporxjrrhIStykTyTImsFTKcxtRKarCApKrcXzSNkkpZaXHRzrtxRqZTfIdbiljGoNILhFccKgJLKdDcgHxQuMlKzvduwxikfyaWMqFSykxigCEoGIyftCjxZtyauiMgJApGrIQdzwNxZSQKzTmwORUhEeGeXdKYJcpMkFYxuuEuoKBAFZFLtSMGcpvtOvXkmiFYPDzUUlUZosCNFDeRjgqvICcVoBxHvtVtdcopVGyJPNQGJyAdkvjlybYuYKrwNcOKKRnsJIvphAVfLWnJDZPQvJrVxOrExauUMQnmNdPryNstrCvsmIqdjLEkbOenCOYspczmeMTTKhHWYxyELHrqPzunwdMdFRNVBqejtAciUMcjkdRRvkYHIbyxBnGvFclJjhKINseymdirgCImDuGjEfaWnMoeHFzBgVFzebQdzqyTLdGOaBPlpxrfcPYNVLNsFmUhPXKhHssqEqAlqMZQxGktZwrtqrcWPZkrhKyFPaUjWmVcJplEyAoPBDIsylGhJpIbpLpTvqwCitnMwxXUlAMgQFPlSpPsQwXRcgINKMhocqLaTwKCXWAkMGPrFQStbVazLqbEAxdcJwZcMnmZwMXkKgVgEvUhSFMAbOdEZkBOQLRNlmAARxdYJMFmIdzOTWFjUiBWnypWYuCKAFGDnPqIknJHOcnLUMguOYfCNMRoYUQhkKvzliulHLUnezWQkkGAwtwUTJFUAFPFEdeENrOXJXuLBeqelpaaIAkyZSNyUAZlAkEhjEMVfwfXGPgPRJQNgIQrFOgkGqTVhbTTFfancvoZLkaizmjOyxwWbLZxpAuyfnTbtYxiaTFnXHTxGjYGOVCSjDQqpxgBTevPWGfzoQxMGKgsLJVcsmsiMxgSaisnRWiJHnPvHbrDSwbnogyeEoIXwynjBNeIlZZVZDNcHTnMaAVLqGlszpzHqWqIHJansnJwHvdYcVBpyfMGtrrweOcWDdZkVIGPNxEIBIDDKHDAjYEIERWNrveuOWOkccmmrMeOgInoayQgsxStQscrFcyWhEyLiLPRtGMoCVdPbOTWGRRQEDPVkafwvTPZZYQqnafdLtyyPjuVUDTgCkedhseUcFpFsCMYcYdKwiQpOzZvQLZWKWZGJsEwJoYHCvsoirBURTeIKbbnBUxrIlMwJqwNNdpyLwsguymvzdCPmFMKLDyyeIpibYBcaYlmhUXLxfQBZTzWflaQIumwrsFPEdvQMPfsGsxgTUmYIjHlbbtQcYdTlQgnGulrzkloNniInYrTTwxRHdRYufqnHEWHTakqEFyPdqmMIBdugZMnCIKhvczoEQUwdetXnMjaAumPbshGKMmhoXGXWiFEbdhJIXLxqOprPiIbtwNUgeYXBsyiiFuJxJgzHPudfDEvHDApDGBMWzRETjcsmMbkXGrCqMuOnocWEGlPKoWozhzCuoBDFJDqMzKLmelnfvgMkATOMvgaFfimDPxtkdfaRWyySBthwiyFJZmVhDjUrBXGEiFipgrMJtvcQfTugqIyrSJarxqsyeHLTmwyioHxtKNVFhejLkqQEwuaIeZySGbqtOrThsgOHrCJkzIXHzvIJTZOmPyrtIzpbxsiAqifnWQPaoAkdbOhfbWCQqJIPYqouyUttnzTgSJktQSrjVwWGwyRBiPsbdtIbhCckBchjrNMSehzcVDqsTdvTXKfdxCqEzmVdmzRHzWyVXhXwdkyyYrZHhXnsylyAQHFISzdByeBitxrNSwuojYMwfDGYmZFIHfhKYOoTswfYnVPtAyvUgbytAQVUXRaWyETUROMddCjfjntpWMhzutsoJBBUsspdQHLAeSbtLayhCVkrvbqqpxhqzszIYOVhjXme'
+        # rubocop:enable Layout/LineLength
+        FakeRequest.new(referer: "https://example.com#{long_path}")
+      end
+
+      it 'returns only the first 2048 characters' do
+        # rubocop:disable Layout/LineLength
+        truncated_path = '/VsXIYBHdIVBdEMtGcNPaAosOdOdyGqlKlSduCXBGbIjzNKERFdCCMbsQNxlZJFdjdMIgVFOfBxtsnxUnlRzNsAQFgkVclGncBZuLKXByssYuvWLuttqUDimbslpZQKBBPoqnuDbgZCTJRdtZUqJbwpnipYieHlhMjnqtWUJNzruqwRxwBymIodUqWzJMKuijCKporxjrrhIStykTyTImsFTKcxtRKarCApKrcXzSNkkpZaXHRzrtxRqZTfIdbiljGoNILhFccKgJLKdDcgHxQuMlKzvduwxikfyaWMqFSykxigCEoGIyftCjxZtyauiMgJApGrIQdzwNxZSQKzTmwORUhEeGeXdKYJcpMkFYxuuEuoKBAFZFLtSMGcpvtOvXkmiFYPDzUUlUZosCNFDeRjgqvICcVoBxHvtVtdcopVGyJPNQGJyAdkvjlybYuYKrwNcOKKRnsJIvphAVfLWnJDZPQvJrVxOrExauUMQnmNdPryNstrCvsmIqdjLEkbOenCOYspczmeMTTKhHWYxyELHrqPzunwdMdFRNVBqejtAciUMcjkdRRvkYHIbyxBnGvFclJjhKINseymdirgCImDuGjEfaWnMoeHFzBgVFzebQdzqyTLdGOaBPlpxrfcPYNVLNsFmUhPXKhHssqEqAlqMZQxGktZwrtqrcWPZkrhKyFPaUjWmVcJplEyAoPBDIsylGhJpIbpLpTvqwCitnMwxXUlAMgQFPlSpPsQwXRcgINKMhocqLaTwKCXWAkMGPrFQStbVazLqbEAxdcJwZcMnmZwMXkKgVgEvUhSFMAbOdEZkBOQLRNlmAARxdYJMFmIdzOTWFjUiBWnypWYuCKAFGDnPqIknJHOcnLUMguOYfCNMRoYUQhkKvzliulHLUnezWQkkGAwtwUTJFUAFPFEdeENrOXJXuLBeqelpaaIAkyZSNyUAZlAkEhjEMVfwfXGPgPRJQNgIQrFOgkGqTVhbTTFfancvoZLkaizmjOyxwWbLZxpAuyfnTbtYxiaTFnXHTxGjYGOVCSjDQqpxgBTevPWGfzoQxMGKgsLJVcsmsiMxgSaisnRWiJHnPvHbrDSwbnogyeEoIXwynjBNeIlZZVZDNcHTnMaAVLqGlszpzHqWqIHJansnJwHvdYcVBpyfMGtrrweOcWDdZkVIGPNxEIBIDDKHDAjYEIERWNrveuOWOkccmmrMeOgInoayQgsxStQscrFcyWhEyLiLPRtGMoCVdPbOTWGRRQEDPVkafwvTPZZYQqnafdLtyyPjuVUDTgCkedhseUcFpFsCMYcYdKwiQpOzZvQLZWKWZGJsEwJoYHCvsoirBURTeIKbbnBUxrIlMwJqwNNdpyLwsguymvzdCPmFMKLDyyeIpibYBcaYlmhUXLxfQBZTzWflaQIumwrsFPEdvQMPfsGsxgTUmYIjHlbbtQcYdTlQgnGulrzkloNniInYrTTwxRHdRYufqnHEWHTakqEFyPdqmMIBdugZMnCIKhvczoEQUwdetXnMjaAumPbshGKMmhoXGXWiFEbdhJIXLxqOprPiIbtwNUgeYXBsyiiFuJxJgzHPudfDEvHDApDGBMWzRETjcsmMbkXGrCqMuOnocWEGlPKoWozhzCuoBDFJDqMzKLmelnfvgMkATOMvgaFfimDPxtkdfaRWyySBthwiyFJZmVhDjUrBXGEiFipgrMJtvcQfTugqIyrSJarxqsyeHLTmwyioHxtKNVFhejLkqQEwuaIeZySGbqtOrThsgOHrCJkzIXHzvIJTZOmPyrtIzpbxsiAqifnWQPaoAkdbOhfbWCQqJIPYqouyUttnzTgSJktQSrjVwWGwyRBiPsbdtIbhCckBchjrNMSehzcVDqsTdvTXKfdxCqEzmVdmzRHzWyVXhXwdkyyYrZHhXnsylyAQHFISzdByeBitxrNSwuojYMwfDGYmZFIHfhKYOoTswfYnVPtAyvUgbytAQVUXRaWyETUROMddCjfjntpWMhzutsoJBBUsspdQHLAeSbtLayhCVkrvbqqpxhqzszIYOVhj'
+        # rubocop:enable Layout/LineLength
+
+        expect(ahoy).to receive(:track)
+          .with('Trackable Event', hash_including(referer: "https://example.com#{truncated_path}"))
+
+        analytics.track_event('Trackable Event')
+      end
+    end
+
+    context 'request has a referer with no path' do
+      let(:request) do
+        FakeRequest.new(referer: 'https://example.com')
+      end
+
+      it 'returns the scheme and host only' do
+        expect(ahoy).to receive(:track)
+          .with('Trackable Event', hash_including(referer: 'https://example.com'))
+
+        analytics.track_event('Trackable Event')
+      end
+    end
+
+    context 'request has a referer with no path but with a trailing slash' do
+      let(:request) do
+        FakeRequest.new(referer: 'https://example.com/')
+      end
+
+      it 'returns the scheme and host only with trailing slash' do
+        expect(ahoy).to receive(:track)
+          .with('Trackable Event', hash_including(referer: 'https://example.com/'))
 
         analytics.track_event('Trackable Event')
       end

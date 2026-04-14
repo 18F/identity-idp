@@ -73,7 +73,7 @@ class Idv::InPerson::ChooseIdTypeController < ApplicationController
   def id_type_to_route_url
     {
       'passport' => idv_in_person_passport_url,
-      'drivers_license' => idv_in_person_state_id_url,
+      'state_id_card' => idv_in_person_state_id_url,
     }
   end
 end
