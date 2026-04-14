@@ -110,6 +110,42 @@ class DocumentCaptureSession < ApplicationRecord
     )
   end
 
+  def load_agent_proofed_user
+    return nil unless result_id.present?
+
+    EncryptedRedisStructStorage.load(result_id, type: Idv::ProofingAgent::AgentProofedUser)
+  end
+
+  def store_agent_proofed_user(agent_proofing_result:, attempt:, mrz_response: nil,
+                               aamva_response: nil)
+    session_result = load_agent_proofed_user ||
+                     Idv::ProofingAgent::AgentProofedUser.new(id: generate_result_id)
+
+    session_result.success = agent_proofing_result.success
+    session_result.pii = agent_proofing_result.pii_from_doc.to_h
+    session_result.proofing_components = agent_proofing_result.proofing_components
+    session_result.location_id = agent_proofing_result.location_id
+    session_result.agent_id = agent_proofing_result.agent_id
+    session_result.issuer = agent_proofing_result.issuer
+    session_result.success = agent_proofing_result.success
+    session_result.errors = agent_proofing_result.errors
+    session_result.doc_auth_success = agent_proofing_result.doc_auth_success
+    session_result.mrz_status = determine_mrz_status(mrz_response)
+    session_result.aamva_status = determine_aamva_status(aamva_response)
+    if aamva_response
+      session_result.aamva_verified_attributes = aamva_response.extra[:verified_attributes]
+      session_result.state_id_vendor = aamva_response.extra[:vendor_name]
+    end
+    session_result.attempt = attempt
+    session_result.captured_at = Time.zone.now
+
+    EncryptedRedisStructStorage.store(
+      session_result,
+      expires_in: IdentityConfig.store.agent_proofed_user_time_validity_hours.hours.in_seconds,
+    )
+    save!
+  end
+
   def expired?
     return true unless requested_at
     (requested_at + IdentityConfig.store.doc_capture_request_valid_for_minutes.minutes) <

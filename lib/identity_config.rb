@@ -54,6 +54,7 @@ module IdentityConfig
     config.add(:acuant_sdk_initialization_endpoint)
     config.add(:add_email_link_valid_for_hours, type: :integer)
     config.add(:address_identity_proofing_supported_country_codes, type: :json)
+    config.add(:agent_proofed_user_time_validity_hours, type: :integer)
     config.add(:all_redirect_uris_cache_duration_minutes, type: :integer)
     config.add(:allowed_attempts_providers, type: :json)
     config.add(:allowed_client_id_in_risc_service_providers, type: :json)

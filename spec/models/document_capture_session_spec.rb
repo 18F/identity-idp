@@ -177,6 +177,139 @@ RSpec.describe DocumentCaptureSession do
     end
   end
 
+  context 'proofing agent' do
+    let(:success) { true }
+    let(:attempt) { 1 }
+    let(:agent_proofing_result) do
+      # This should be re-written to use whatever response object is created via
+      # the proofing process being developed in LG-17293
+      # rubocop:disable Style/OpenStructUse
+      OpenStruct.new(
+        pii_from_doc: { first_name: 'Testy', last_name: 'Testerson' },
+        proofing_components: { foo: 'bar' },
+        location_id: '123',
+        agent_id: '456',
+        issuer: 'test_issuer',
+        success:,
+      )
+      # rubocop:enable Style/OpenStructUse
+    end
+
+    describe '#load_agent_proofed_user' do
+      it 'loads the previously stored result' do
+        record = DocumentCaptureSession.new
+        record.store_agent_proofed_user(agent_proofing_result:, attempt:)
+        result = record.load_agent_proofed_user
+
+        expect(result.success?).to eq(agent_proofing_result.success)
+        expect(result.pii).to eq(agent_proofing_result.pii_from_doc.to_h.deep_symbolize_keys)
+      end
+
+      it 'returns nil if the previously stored result does not exist' do
+        record = DocumentCaptureSession.new
+        result = record.load_agent_proofed_user
+
+        expect(result).to eq(nil)
+      end
+
+      xit 'returns nil if the previously stored result is expired' do
+        record = DocumentCaptureSession.new
+        record.store_agent_proofed_user(agent_proofing_result:, attempt: 1)
+        past_exp = IdentityConfig.store.agent_proofed_user_time_validity_hours.hours.in_seconds
+        travel_to((2 * past_exp).seconds.from_now) do
+          result = record.load_agent_proofed_user
+
+          expect(result).to eq(nil)
+        end
+      end
+    end
+
+    describe '#store_agent_proofed_user' do
+      let(:document_capture_session) { DocumentCaptureSession.new(result_id: SecureRandom.uuid) }
+
+      it 'generates a result ID stores the result encrypted in redis' do
+        record = document_capture_session
+        record.store_agent_proofed_user(agent_proofing_result:, attempt:)
+
+        result_id = record.result_id
+        key = EncryptedRedisStructStorage.key(result_id, type: Idv::ProofingAgent::AgentProofedUser)
+        data = REDIS_POOL.with { |client| client.get(key) }
+        expect(data).to be_a(String)
+        expect(data).to_not be_blank
+        expect(data).to_not include('Testy')
+        expect(data).to_not include('Testerson')
+      end
+
+      context 'when all fields are passed in' do
+        let(:current_time) { Time.zone.now }
+
+        before do
+          freeze_time
+          travel_to(current_time) do
+            document_capture_session.store_agent_proofed_user(
+              agent_proofing_result:,
+              mrz_response:, aamva_response:, attempt: 3
+            )
+          end
+        end
+
+        it 'stores the results' do
+          expect(document_capture_session.load_agent_proofed_user).to have_attributes(
+            success: true,
+            pii: agent_proofing_result.pii_from_doc.to_h,
+            captured_at: current_time,
+            doc_auth_success: nil,
+            errors: nil,
+            mrz_status: :pass,
+            aamva_status: :passed,
+            attempt: 3,
+          )
+        end
+      end
+
+      context 'when aamva response is passed in' do
+        before do
+          document_capture_session.store_agent_proofed_user(
+            agent_proofing_result:,
+            mrz_response:,
+            aamva_response:,
+            attempt:,
+          )
+        end
+
+        context 'when the aamva response is successful' do
+          let(:aamva_response) { DocAuth::Response.new(success: true) }
+
+          it 'stores aamva_status as :passed' do
+            expect(document_capture_session.load_agent_proofed_user).to have_attributes(
+              aamva_status: :passed,
+            )
+          end
+        end
+
+        context 'when the aamva response is unsuccessful' do
+          let(:aamva_response) { DocAuth::Response.new(success: false) }
+
+          it 'stores aamva_status as :failed' do
+            expect(document_capture_session.load_agent_proofed_user).to have_attributes(
+              aamva_status: :failed,
+            )
+          end
+        end
+
+        context 'when the aamva response is nil' do
+          let(:aamva_response) { nil }
+
+          it 'stores aamva_status as :not_processed' do
+            expect(document_capture_session.load_agent_proofed_user).to have_attributes(
+              aamva_status: :not_processed,
+            )
+          end
+        end
+      end
+    end
+  end
+
   describe '#expired?' do
     before do
       allow(IdentityConfig.store).to receive(:doc_capture_request_valid_for_minutes).and_return(15)
