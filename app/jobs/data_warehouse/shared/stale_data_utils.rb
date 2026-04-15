@@ -29,13 +29,6 @@ module DataWarehouse
         log_group_name.split('/').last.tr('.', '_')
       end
 
-      def log_groups
-        [
-          "#{env}_/srv/idp/shared/log/events.log",
-          "#{env}_/srv/idp/shared/log/production.log",
-        ]
-      end
-
       def log_stream_filter_map
         base_log_group = "#{env}_/srv/idp/shared/log"
         {

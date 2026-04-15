@@ -49,5 +49,12 @@ module DataWarehouse
     def env
       Identity::Hostdata.env
     end
+
+    def log_groups
+      [
+        "#{env}_/srv/idp/shared/log/events.log",
+        "#{env}_/srv/idp/shared/log/production.log",
+      ]
+    end
   end
 end
