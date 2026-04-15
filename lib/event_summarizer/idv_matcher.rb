@@ -21,6 +21,7 @@ module EventSummarizer
     IDV_SOCURE_VERIFICATION_DATA_REQUESTED = 'idv_socure_verification_data_requested'
     IDV_PHONE_CONFIRMATION_VENDOR_EVENT = 'IdV: phone confirmation vendor'
     IDV_VERIFY_PROOFING_RESULTS_EVENT = 'IdV: doc auth verify proofing results'
+    IDV_DIFFERENT_PHONE_NUMBER = 'IdV: use different phone number'
     IPP_ENROLLMENT_STATUS_UPDATED_EVENT = 'GetUspsProofingResultsJob: Enrollment status updated'
     PROFILE_ENCRYPTION_INVALID_EVENT = 'Profile Encryption: Invalid'
     RATE_LIMIT_REACHED_EVENT = 'Rate Limit Reached'
@@ -159,6 +160,11 @@ module EventSummarizer
         when IDV_PHONE_CONFIRMATION_VENDOR_EVENT
           for_current_idv_attempt(event:) do
             handle_phone_confirmation_vendor_event(event:)
+          end
+
+        when IDV_DIFFERENT_PHONE_NUMBER
+          for_current_idv_attempt(event:) do
+            handle_different_phone_number(event:)
           end
 
         when IDV_VERIFY_PROOFING_RESULTS_EVENT
@@ -417,6 +423,14 @@ module EventSummarizer
           description: "Rate limited for #{limit_name}",
         )
       end
+    end
+
+    def handle_different_phone_number(event:)
+      add_significant_event(
+        timestamp: event['@timestamp'],
+        type: :different_phone_number,
+        description: 'User attempted to use a different phone number',
+      )
     end
 
     def handle_image_upload_vendor_submitted(event:)
