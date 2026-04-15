@@ -27,7 +27,7 @@ module DocAuth
         def handle_http_response(response)
           result = JSON.parse(response.body, symbolize_names: true)
           extra = {
-            vendor: 'DoS',
+            vendor_name: 'DoS',
             correlation_id_sent: correlation_id,
             correlation_id_received: response.headers['X-Correlation-ID'],
             response: result[:response],

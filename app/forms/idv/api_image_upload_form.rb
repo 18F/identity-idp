@@ -114,7 +114,7 @@ module Idv
           state: pii_from_doc[:state],
           zip: pii_from_doc[:zip],
           failure_reason: failure_reason(response),
-          vendor: client_response&.extra&.dig(:vendor),
+          vendor: client_response&.extra&.dig(:vendor_name),
           conversation_id: client_response&.extra&.dig(:conversation_id),
           reference_id: client_response&.extra&.dig(:reference_id),
         )

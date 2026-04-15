@@ -45,12 +45,13 @@ module Idv
         idv_session.had_barcode_read_failure = stored_result.attention_with_barcode?
         # See also Idv::InPerson::StateIdController#update
         idv_session.doc_auth_vendor = document_capture_session.doc_auth_vendor
-        if store_in_session
+        if store_in_session # can we get rid of this condition since idv_session defined
           idv_session.pii_from_doc = stored_result.pii_from_doc
           idv_session.aamva_verified_attributes = stored_result.aamva_verified_attributes
           idv_session.selfie_check_performed = stored_result.selfie_check_performed?
         end
-        idv_session.source_check_vendor ||= stored_result.state_id_vendor
+
+        idv_session.source_check_vendor = stored_result.source_check_vendor
       end
 
       track_document_issuing_state(user, stored_result.pii_from_doc[:state])

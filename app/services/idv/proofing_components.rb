@@ -15,8 +15,7 @@ module Idv
     end
 
     def source_check
-      idv_session.source_check_vendor.presence ||
-        (idv_session.verify_info_step_complete? && Idp::Constants::Vendors::AAMVA)
+      idv_session.source_check_vendor
     end
 
     def residential_resolution_check

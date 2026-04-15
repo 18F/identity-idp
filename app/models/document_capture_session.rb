@@ -39,9 +39,11 @@ class DocumentCaptureSession < ApplicationRecord
     session_result.mrz_status = determine_mrz_status(mrz_response)
     session_result.aamva_status = determine_aamva_status(aamva_response)
     if aamva_response
-      session_result.aamva_verified_attributes = aamva_response.extra[:verified_attributes]
+      session_result.source_check_vendor = aamva_response.extra[:vendor_name]
+    elsif mrz_response
+      session_result.source_check_vendor = mrz_response.extra[:vendor_name]
     end
-    session_result.state_id_vendor = aamva_response.extra[:vendor_name] if aamva_response
+    session_result.aamva_verified_attributes = aamva_response&.extra&.dig(:verified_attributes)
     session_result.attempt = attempt
 
     EncryptedRedisStructStorage.store(
