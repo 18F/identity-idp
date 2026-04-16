@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_03_06_213343) do
+ActiveRecord::Schema[8.0].define(version: 2026_03_31_000000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_catalog.plpgsql"
@@ -224,7 +224,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_06_213343) do
   end
 
   create_table "duplicate_profile_sets", force: :cascade do |t|
-    t.string "service_provider", limit: 255, null: false, comment: "sensitive=false"
+    t.string "service_provider", limit: 255, comment: "sensitive=false"
     t.bigint "profile_ids", null: false, comment: "sensitive=false", array: true
     t.datetime "closed_at", comment: "sensitive=false"
     t.boolean "self_serviced", comment: "sensitive=false"
@@ -232,6 +232,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_06_213343) do
     t.datetime "created_at", null: false, comment: "sensitive=false"
     t.datetime "updated_at", null: false, comment: "sensitive=false"
     t.index ["profile_ids"], name: "index_duplicate_profile_sets_on_profile_ids", using: :gin
+    t.index ["profile_ids"], name: "index_duplicate_profile_sets_on_profile_ids_sp_null", unique: true, where: "(service_provider IS NULL)"
     t.index ["service_provider", "profile_ids"], name: "idx_on_service_provider_profile_ids_7f75d24ae3", unique: true
   end
 
