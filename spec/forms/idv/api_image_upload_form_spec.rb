@@ -300,7 +300,7 @@ RSpec.describe Idv::ApiImageUploadForm do
               attempt: 1,
               mrz_status: :not_processed,
               aamva_status: :passed,
-              state_id_vendor: :"state_id:aamva",
+              source_check_vendor: :"state_id:aamva",
             )
           end
         end
@@ -596,7 +596,8 @@ RSpec.describe Idv::ApiImageUploadForm do
             attempt: 1,
           )
           expect(document_capture_session.reload.load_result).not_to have_attributes(
-            state_id_vendor: :"state_id:aamva",
+            state_id_vendor: :"state_id:aamva", # remove after 50/50 transition
+            source_check_vendor: :"state_id:aamva",
           )
         end
 

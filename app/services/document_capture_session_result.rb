@@ -61,8 +61,6 @@ DocumentCaptureSessionResult = RedactedStruct.new(
   end
 
   def source_check_vendor
-    return state_id_vendor unless self[:source_check_vendor] # remove after 50/50 transition
-
     self[:source_check_vendor]&.to_sym
   end
 
