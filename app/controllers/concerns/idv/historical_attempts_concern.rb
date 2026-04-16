@@ -11,24 +11,16 @@ module Idv
 
       new_events = user_session['idv/attempts'] || []
 
-      if existing_user_proofing_event
-        existing_events = JSON.parse(decrypt_user_proofing_events)
-        combined_events = existing_events.union(new_events)
-        encrypted_events = encrypt_attempt_events_bundle(combined_events)
-
-        existing_user_proofing_event.update_encrypted_events(encrypted_events)
-      else
-        encrypted_events = encrypt_attempt_events_bundle(new_events)
-        encrypted_events_json = JSON.parse(encrypted_events)
-        new_user_proofing_event = UserProofingEvent.new(
-          encrypted_events:,
-          profile_id: current_user.active_profile.id,
-          service_providers_sent: [],
-          cost: encrypted_events_json['cost'],
-          salt: encrypted_events_json['salt'],
-        )
-        new_user_proofing_event.save
-      end
+      encrypted_events = encrypt_attempt_events_bundle(new_events)
+      encrypted_events_json = JSON.parse(encrypted_events)
+      new_user_proofing_event = UserProofingEvent.new(
+        encrypted_events:,
+        profile_id: current_user.active_profile.id,
+        service_providers_sent: [],
+        cost: encrypted_events_json['cost'],
+        salt: encrypted_events_json['salt'],
+      )
+      new_user_proofing_event.save
 
       # Now that proofing events are saved, remove the plaintext events from user_session
       user_session.delete('idv/attempts')

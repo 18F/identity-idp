@@ -104,7 +104,7 @@ RSpec.describe Idv::HistoricalAttemptsConcern, type: :controller do
       end
     end
 
-    context 'when the user does not have an existing UserProofingEvent' do
+    context 'when historical events need to be sent' do
       before do
         allow(Encryption::Encryptors::PiiEncryptor).to receive(:new).and_return(encryptor_mock)
         allow(encryptor_mock).to receive(:encrypt).and_return(encrypted_events.to_json)
@@ -124,41 +124,6 @@ RSpec.describe Idv::HistoricalAttemptsConcern, type: :controller do
           cost: encrypted_events['cost'],
           salt: encrypted_events['salt'],
         )
-      end
-    end
-
-    context 'when the user already has an existing UserProofingEvent' do
-      let(:user_proofing_event) do
-        create(
-          :user_proofing_event,
-          encrypted_events: encrypted_existing_events,
-          service_providers_sent: [sp.issuer],
-          cost: JSON.parse(encrypted_existing_events)['cost'],
-          salt: JSON.parse(encrypted_existing_events)['salt'],
-          profile_id: registered_user.active_profile.id,
-        )
-      end
-      let(:combined_events) { existing_events.union(idv_attempts) }
-
-      before do
-        allow(UserProofingEvent).to receive(:new).and_call_original
-        allow(UserProofingEvent).to receive(:find_by).and_return(user_proofing_event)
-        allow(user_proofing_event).to receive(:update_encrypted_events).and_return(true)
-        record_user_proofing_events
-      end
-
-      it 'decrypts existing UserProofingEvent' do
-        expect(pii_encryptor).to have_received(:decrypt).once
-      end
-
-      it 'encrypts concatenated data' do
-        expect(pii_encryptor).to have_received(:encrypt).with(
-          combined_events.to_json, user_uuid: registered_user.uuid
-        )
-      end
-
-      it 'updates the UserProofingEvent with concatenated data' do
-        expect(user_proofing_event).to have_received(:update_encrypted_events).once
       end
     end
   end
