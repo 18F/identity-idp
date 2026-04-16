@@ -397,11 +397,11 @@ RSpec.feature 'Analytics Regression', :js do
       },
       'IdV: doc auth ssn visited' => {
         flow_path: 'hybrid', step: 'ssn', analytics_id: 'Doc Auth',
-        proofing_components: { document_check: 'mock', document_type_received: 'drivers_license' }
+        proofing_components: { document_check: 'mock', document_type_received: 'drivers_license', source_check: 'StateIdMock' }
       },
       'IdV: doc auth ssn submitted' => {
         success: true, flow_path: 'hybrid', step: 'ssn', analytics_id: 'Doc Auth',
-        proofing_components: { document_check: 'mock', document_type_received: 'drivers_license' }
+        proofing_components: { document_check: 'mock', document_type_received: 'drivers_license', source_check: 'StateIdMock' }
       },
       'IdV: doc auth verify visited' => {
         flow_path: 'hybrid', step: 'verify', analytics_id: 'Doc Auth',
