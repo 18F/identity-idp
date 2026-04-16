@@ -39,7 +39,7 @@ module DocAuth
 
       def extra
         {
-          vendor_name: 'passport_mock',
+          vendor_name: 'PassportMock',
         }
       end
     end
