@@ -61,11 +61,15 @@ module IdvSessionConcern
   end
 
   def need_to_reproof?
-    Idv::ServiceProviderBasedReproofingPolicy.new(
+    reproofing_policy.needs_to_reproof?
+  end
+
+  def reproofing_policy
+    @reproofing_policy ||= Idv::ServiceProviderBasedReproofingPolicy.new(
       active_profile: idv_session_user.active_profile,
       service_provider: current_sp,
       resolved_authn_context_result: resolved_authn_context_result,
-    ).needs_to_reproof?
+    )
   end
 
   def user_needs_facial_match?

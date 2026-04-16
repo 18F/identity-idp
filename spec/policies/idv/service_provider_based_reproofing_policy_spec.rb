@@ -159,4 +159,52 @@ RSpec.describe Idv::ServiceProviderBasedReproofingPolicy do
       end
     end
   end
+
+  describe '#reproof_reason' do
+    context 'when reproofing is not required' do
+      it 'returns nil' do
+        expect(policy.reproof_reason).to be_nil
+      end
+    end
+
+    context 'when reproof_forcing_sp is the cause' do
+      let(:reproof_forcing_issuer) { 'reproof-forcing-sp' }
+      let(:other_issuer) { 'other-sp' }
+      let(:service_provider) { create(:service_provider, issuer: reproof_forcing_issuer) }
+      let(:active_profile) do
+        create(
+          :profile, :active,
+          initiating_service_provider_issuer: other_issuer
+        )
+      end
+
+      before do
+        allow(IdentityConfig.store).to receive(:reproof_forcing_service_provider)
+          .and_return(reproof_forcing_issuer)
+      end
+
+      it 'returns :reproof_forcing_sp' do
+        expect(policy.reproof_reason).to eq :reproof_forcing_sp
+      end
+    end
+
+    context 'when unsupervised_with_selfie reproofing is the cause' do
+      let(:non_fm_issuer) { 'urn:gov:gsa:openidconnect:non-fm-reproof-sp' }
+      let(:service_provider) { create(:service_provider, issuer: non_fm_issuer) }
+      let(:active_profile) { create(:profile, :in_person_verified) }
+
+      before do
+        allow(IdentityConfig.store)
+          .to receive(:reproof_forcing_service_provider)
+          .and_return('')
+        allow(IdentityConfig.store)
+          .to receive(:reproof_if_not_unsupervised_with_selfie_service_providers)
+          .and_return([non_fm_issuer])
+      end
+
+      it 'returns :unsupervised_with_selfie_required' do
+        expect(policy.reproof_reason).to eq :unsupervised_with_selfie_required
+      end
+    end
+  end
 end

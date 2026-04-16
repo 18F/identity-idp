@@ -17,6 +17,12 @@ module Idv
       reproof_forcing_sp? || unsupervised_with_selfie_reproofing_required?
     end
 
+    def reproof_reason
+      return nil unless needs_to_reproof?
+      return :reproof_forcing_sp if reproof_forcing_sp?
+      :unsupervised_with_selfie_required
+    end
+
     private
 
     def initiating_service_provider

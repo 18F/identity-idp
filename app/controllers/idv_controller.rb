@@ -14,6 +14,7 @@ class IdvController < ApplicationController
 
   def index
     if need_to_reproof?
+      track_reproof_redirect
       verify_identity
     elsif already_verified?
       redirect_to idv_activated_url
@@ -43,11 +44,23 @@ class IdvController < ApplicationController
   end
 
   def need_to_reproof?
-    Idv::ServiceProviderBasedReproofingPolicy.new(
+    reproofing_policy.needs_to_reproof?
+  end
+
+  def track_reproof_redirect
+    analytics.idv_reproof_needed(
+      reproof_reason: reproofing_policy.reproof_reason,
+      initiating_sp_issuer: current_user.active_profile&.initiating_service_provider_issuer,
+      previous_idv_level: current_user.active_profile&.idv_level,
+    )
+  end
+
+  def reproofing_policy
+    @reproofing_policy ||= Idv::ServiceProviderBasedReproofingPolicy.new(
       active_profile: current_user.active_profile,
       service_provider: current_sp,
       resolved_authn_context_result: resolved_authn_context_result,
-    ).needs_to_reproof?
+    )
   end
 
   def verify_identity

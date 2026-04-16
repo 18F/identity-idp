@@ -32,7 +32,11 @@ module OpenidConnect
       if resolved_authn_context_result.identity_proofing?
         return redirect_to reactivate_account_url if user_needs_to_reactivate_account?
         return redirect_to url_for_pending_profile_reason if user_has_pending_profile?
-        if identity_needs_verification? || facial_match_needed? || needs_to_reproof?
+        if identity_needs_verification? || facial_match_needed?
+          return redirect_to idv_url
+        end
+        if needs_to_reproof?
+          track_reproof_redirect
           return redirect_to idv_url
         end
       end
@@ -282,11 +286,23 @@ module OpenidConnect
     end
 
     def needs_to_reproof?
-      Idv::ServiceProviderBasedReproofingPolicy.new(
+      reproofing_policy.needs_to_reproof?
+    end
+
+    def track_reproof_redirect
+      analytics.idv_reproof_needed(
+        reproof_reason: reproofing_policy.reproof_reason,
+        initiating_sp_issuer: current_user.active_profile&.initiating_service_provider_issuer,
+        previous_idv_level: current_user.active_profile&.idv_level,
+      )
+    end
+
+    def reproofing_policy
+      @reproofing_policy ||= Idv::ServiceProviderBasedReproofingPolicy.new(
         active_profile: current_user.active_profile,
         service_provider: current_sp,
         resolved_authn_context_result: resolved_authn_context_result,
-      ).needs_to_reproof?
+      )
     end
   end
 end

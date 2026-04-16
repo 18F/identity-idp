@@ -107,6 +107,18 @@ RSpec.describe IdvController do
             get :index
             expect(response).to redirect_to idv_welcome_url
           end
+
+          it 'tracks idv_reproof_needed with reproof_forcing_sp reason' do
+            stub_analytics
+            get :index
+            expect(@analytics).to have_logged_event(
+              :idv_reproof_needed,
+              reproof_reason: :reproof_forcing_sp,
+              initiating_sp_issuer: user.active_profile.initiating_service_provider_issuer,
+              previous_idv_level: user.active_profile.idv_level,
+              required_idv_level: 'unsupervised_with_selfie',
+            )
+          end
         end
       end
 
@@ -134,6 +146,17 @@ RSpec.describe IdvController do
           it 'redirects to welcome for reproofing' do
             get :index
             expect(response).to redirect_to idv_welcome_url
+          end
+
+          it 'tracks idv_reproof_needed with unsupervised_with_selfie_required reason' do
+            stub_analytics
+            get :index
+            expect(@analytics).to have_logged_event(
+              :idv_reproof_needed,
+              reproof_reason: :unsupervised_with_selfie_required,
+              initiating_sp_issuer: user.active_profile.initiating_service_provider_issuer,
+              previous_idv_level: user.active_profile.idv_level,
+            )
           end
         end
 
