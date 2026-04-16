@@ -66,10 +66,6 @@ module Idv
 
     private
 
-    def mdl_chosen?
-      chosen_id_type == Idp::Constants::DocumentTypes::MDL
-    end
-
     def next_step
       idv_document_capture_url
     end

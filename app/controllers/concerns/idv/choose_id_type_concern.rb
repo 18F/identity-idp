@@ -10,6 +10,10 @@ module Idv
       chosen_id_type == 'passport'
     end
 
+    def mdl_chosen?
+      chosen_id_type == Idp::Constants::DocumentTypes::MDL
+    end
+
     def set_passport_requested
       if passport_chosen?
         unless document_capture_session.passport_requested?

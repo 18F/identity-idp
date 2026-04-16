@@ -598,7 +598,7 @@ doc_auth.forms.change_file: Change file
 doc_auth.forms.choose_file_html: Drag file here or <lg-underline>choose from folder</lg-underline>
 doc_auth.forms.doc_success: We verified your information
 doc_auth.forms.id_type_preference.drivers_license: U.S. driver’s license or state ID
-doc_auth.forms.id_type_preference.mdl: Mobile Driver’s License (mDL)
+doc_auth.forms.id_type_preference.mdl: Mobile driver’s license (mDL)
 doc_auth.forms.id_type_preference.passport: U.S. passport book
 doc_auth.forms.selected_file: Selected file
 doc_auth.headers.expired_id: Your ID may have expired
@@ -665,7 +665,7 @@ doc_auth.info.getting_started_html: '%{sp_name} needs to make sure you are you �
 doc_auth.info.getting_started_learn_more: Learn more about verifying your identity
 doc_auth.info.hybrid_handoff_no_selfie: Take photos of your ID, then switch back to this computer.
 doc_auth.info.hybrid_handoff_selfie: Take a selfie and photos of your ID, then switch back to this computer.
-doc_auth.info.id_types_learn_more: Learn more about which ID types you can use
+doc_auth.info.id_types_learn_more: Learn about which ID types you can use
 doc_auth.info.image_loaded: Image loaded
 doc_auth.info.image_loading: Image loading
 doc_auth.info.image_updated: Image updated
@@ -685,7 +685,7 @@ doc_auth.info.passport_capture_help_1: Line up the data page of your passport bo
 doc_auth.info.passport_capture_help_2: Hold still and wait for the tool to capture a photo.
 doc_auth.info.review_examples_of_photos: Review examples of how to take clear photos of your ID.
 doc_auth.info.review_passport: We couldn’t find records matching the information from your passport. Add a new photo of your ID in case your passport information was read incorrectly.
-doc_auth.info.secure_account: We’ll encrypt your account when you re-enter your password. Encryption means your data is protected and only you will be able to change your information.
+doc_auth.info.secure_account: We’ll encrypt your account when you re-enter your password. Encryption means your data is protected and only you will be able to access or change your information.
 doc_auth.info.selfie_capture_content: We’ll check that you are the person on your ID.
 doc_auth.info.selfie_capture_help_1: Line up your face with the green circle. Hold still and wait for the tool to capture a photo.
 doc_auth.info.selfie_capture_help_2: After your photo is automatically captured, tap the green checkmark to accept the photo.
@@ -710,9 +710,9 @@ doc_auth.info.verify_at_post_office_description_passport_html: <strong>You can o
 doc_auth.info.verify_at_post_office_instruction: Enter your information online, then verify your identity in person at a participating Post Office.
 doc_auth.info.verify_at_post_office_link_text: Learn more about verifying in person
 doc_auth.info.verify_identity: We’ll ask for your ID, phone number, and other personal information to verify your identity against public records.
-doc_auth.info.verify_online_description_passport: You can use a U.S. passport book, U.S. driver’s license or state ID.
-doc_auth.info.verify_online_instruction: Take photos of your ID.
-doc_auth.info.verify_online_instruction_selfie: Take a selfie and photos of your ID.
+doc_auth.info.verify_online_description_passport: You can use a U.S. passport book, U.S. driver’s license, mobile driver’s license (mDL) or state ID.
+doc_auth.info.verify_online_instruction: You’ll take photos of your ID to verify your identity fully online.
+doc_auth.info.verify_online_instruction_selfie: You’ll take a selfie and photos of your ID to verify your identity fully online.
 doc_auth.info.verify_online_link_text: Learn more about verifying online
 doc_auth.info.welcome_sp_reproof_alert: For your security, %{sp_name} requires you to verify your identity again.
 doc_auth.info.you_entered: 'You entered:'
@@ -1222,7 +1222,7 @@ idv.messages.gpo.timeframe_html: You’ll get a letter with a <strong>verificati
 idv.messages.gpo.verify_address_again_html: If you cannot receive mail at this address, you’ll need to %{verify_address_again_link_html}.
 idv.messages.gpo.verify_address_again_link_text: verify your address again
 idv.mdl.alert_html: <strong>Don't have an mDL yet?</strong> It is available only for some U.S. states and territories. Please contact your state's DMV for more information.
-idv.mdl.button: Open mobile wallet
+idv.mdl.button: Open digital wallet
 idv.mdl.errors.canceled: Verification was canceled. Please try again.
 idv.mdl.errors.generic: An error occurred during verification. Please try again.
 idv.mdl.errors.not_supported: Your browser does not support this feature. Please try scanning the QR code instead.
@@ -1234,10 +1234,10 @@ idv.mdl.info_items.id_number: ID number and issuing state
 idv.mdl.info_items.name: Full legal name
 idv.mdl.learn_more: Learn more about how to use mDL
 idv.mdl.loading: Connecting to your wallet...
-idv.mdl.steps.device.title: A device with Apple Wallet or Google Wallet
+idv.mdl.steps.device.title: A device with a digital wallet
 idv.mdl.steps.have_mdl.title: An active mobile driver's license
 idv.mdl.steps_heading: 'You''ll need:'
-idv.mdl.subtitle: Using your mDL helps us quickly and accurately confirm your identity.
+idv.mdl.subtitle: '%{app_name} will verify your mobile driver’s license (mDL) using a trusted service provider.'
 idv.mdl.success_banner: We verified your ID
 idv.mdl.title: Add your mobile driver's license (mDL) information
 idv.mdl.use_different_method: Use a different verification method

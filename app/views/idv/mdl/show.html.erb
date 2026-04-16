@@ -11,7 +11,7 @@
 
 <%= render PageHeadingComponent.new.with_content(t('idv.mdl.title')) %>
 
-<p class="margin-bottom-0"><%= t('idv.mdl.subtitle') %></p>
+<p class="margin-bottom-0"><%= t('idv.mdl.subtitle', app_name: APP_NAME) %></p>
 <p class="margin-bottom-4">
   <%= new_tab_link_to(
         t('idv.mdl.learn_more'),
