@@ -105,7 +105,7 @@ module DocAuth
             reason_codes:,
             reference_id: get_data(DATA_PATHS[:reference_id]),
             state:,
-            vendor_name: 'Socure',
+            vendor: 'Socure',
             vendor_status: get_data(DATA_PATHS[:status]),
             vendor_status_message: get_data(DATA_PATHS[:msg]),
             zip_code: zipcode,
