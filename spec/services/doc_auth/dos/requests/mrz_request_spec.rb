@@ -48,7 +48,7 @@ RSpec.describe DocAuth::Dos::Requests::MrzRequest do
       response = subject.fetch
       expect(response.success?).to be(true)
       expect(response.extra).to include(
-        vendor: 'DoS',
+        vendor_name: 'DoS',
         correlation_id_sent: correlation_id,
         correlation_id_received: correlation_id,
       )
@@ -62,7 +62,7 @@ RSpec.describe DocAuth::Dos::Requests::MrzRequest do
       response = subject.fetch
       expect(response.success?).to be(false)
       expect(response.extra).to include(
-        vendor: 'DoS',
+        vendor_name: 'DoS',
         correlation_id_sent: correlation_id,
         correlation_id_received: correlation_id,
       )
@@ -76,7 +76,7 @@ RSpec.describe DocAuth::Dos::Requests::MrzRequest do
       response = subject.fetch
       expect(response.success?).to be(false)
       expect(response.extra).to include(
-        vendor: 'DoS',
+        vendor_name: 'DoS',
         correlation_id_sent: correlation_id,
         correlation_id_received: correlation_id,
       )
@@ -97,7 +97,7 @@ RSpec.describe DocAuth::Dos::Requests::MrzRequest do
         expect(response.success?).to be(false)
         expect(response.errors).to include(network: true)
         expect(response.extra).to include(
-          vendor: 'DoS',
+          vendor_name: 'DoS',
           error_code: 'ERR',
           error_message: 'issues @ State',
           error_reason: 'just because',
@@ -117,7 +117,7 @@ RSpec.describe DocAuth::Dos::Requests::MrzRequest do
         expect(response.success?).to be(false)
         expect(response.errors).to include(network: true)
         expect(response.extra).to include(
-          vendor: 'DoS',
+          vendor_name: 'DoS',
           error_code: nil,
           error_message: 'Authentication denied.',
           error_reason: nil,
@@ -135,7 +135,7 @@ RSpec.describe DocAuth::Dos::Requests::MrzRequest do
         expect(response.success?).to be(false)
         expect(response.errors).to include(network: true)
         expect(response.extra).to include(
-          vendor: 'DoS',
+          vendor_name: 'DoS',
           error_code: nil,
           error_message: nil,
           error_reason: nil,
