@@ -4374,7 +4374,6 @@ module AnalyticsEvents
     reproof_reason:,
     initiating_sp_issuer: nil,
     previous_idv_level: nil,
-    required_idv_level: nil,
     **extra
   )
     track_event(

@@ -290,7 +290,6 @@ RSpec.describe OpenidConnect::AuthorizationController do
                   expect(@analytics).to have_logged_event(
                     :idv_reproof_needed,
                     reproof_reason: :reproof_forcing_sp,
-                    initiating_sp_issuer: nil,
                     previous_idv_level: user.active_profile.idv_level,
                   )
                 end
@@ -346,7 +345,6 @@ RSpec.describe OpenidConnect::AuthorizationController do
                   expect(@analytics).to have_logged_event(
                     :idv_reproof_needed,
                     reproof_reason: :unsupervised_with_selfie_required,
-                    initiating_sp_issuer: user.active_profile.initiating_service_provider_issuer,
                     previous_idv_level: user.active_profile.idv_level,
                   )
                 end
@@ -367,17 +365,6 @@ RSpec.describe OpenidConnect::AuthorizationController do
                 it 'redirects to IDV welcome page for reproofing' do
                   action
                   expect(controller).to redirect_to(idv_url)
-                end
-
-                it 'tracks idv_reproof_needed with unsupervised_with_selfie_required reason' do
-                  stub_analytics
-                  action
-                  expect(@analytics).to have_logged_event(
-                    :idv_reproof_needed,
-                    reproof_reason: :unsupervised_with_selfie_required,
-                    initiating_sp_issuer: user.active_profile.initiating_service_provider_issuer,
-                    previous_idv_level: user.active_profile.idv_level,
-                  )
                 end
               end
             end

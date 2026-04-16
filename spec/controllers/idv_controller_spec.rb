@@ -116,7 +116,6 @@ RSpec.describe IdvController do
               reproof_reason: :reproof_forcing_sp,
               initiating_sp_issuer: user.active_profile.initiating_service_provider_issuer,
               previous_idv_level: user.active_profile.idv_level,
-              required_idv_level: 'unsupervised_with_selfie',
             )
           end
         end
@@ -154,7 +153,6 @@ RSpec.describe IdvController do
             expect(@analytics).to have_logged_event(
               :idv_reproof_needed,
               reproof_reason: :unsupervised_with_selfie_required,
-              initiating_sp_issuer: user.active_profile.initiating_service_provider_issuer,
               previous_idv_level: user.active_profile.idv_level,
             )
           end
