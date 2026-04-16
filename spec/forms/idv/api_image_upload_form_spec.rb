@@ -300,7 +300,7 @@ RSpec.describe Idv::ApiImageUploadForm do
               attempt: 1,
               mrz_status: :not_processed,
               aamva_status: :passed,
-              state_id_vendor: :"state_id:aamva",
+              source_check_vendor: 'state_id:aamva',
             )
           end
         end
@@ -386,7 +386,7 @@ RSpec.describe Idv::ApiImageUploadForm do
               success: true,
               errors: {},
               extra: {
-                vendor: 'DoS',
+                vendor_name: 'dos:passport',
                 correlation_id_sent: 'something',
                 correlation_id_received: 'something else',
                 response: 'YES',
@@ -596,7 +596,8 @@ RSpec.describe Idv::ApiImageUploadForm do
             attempt: 1,
           )
           expect(document_capture_session.reload.load_result).not_to have_attributes(
-            state_id_vendor: :"state_id:aamva",
+            state_id_vendor: 'state_id:aamva', # remove after 50/50 transition
+            source_check_vendor: 'state_id:aamva',
           )
         end
 
@@ -1358,7 +1359,7 @@ RSpec.describe Idv::ApiImageUploadForm do
             success: false,
             errors: { passport: 'invalid MRZ' },
             extra: {
-              vendor: 'DoS',
+              vendor_name: 'dos:passport',
               correlation_id_sent: 'something',
               correlation_id_received: 'something else',
               response: 'NO',
@@ -1419,7 +1420,7 @@ RSpec.describe Idv::ApiImageUploadForm do
               success: false,
               errors: { network: 'true' },
               extra: {
-                vendor: 'DoS',
+                vendor_name: 'dos:passport',
                 correlation_id_sent: 'something',
                 correlation_id_received: 'something else',
                 error_code: 'ERR',
@@ -1488,7 +1489,7 @@ RSpec.describe Idv::ApiImageUploadForm do
             success: true,
             errors: {},
             extra: {
-              vendor: 'DoS',
+              vendor_name: 'dos:passport',
               correlation_id_sent: 'something',
               correlation_id_received: 'something else',
               response: 'YES',
@@ -1853,7 +1854,7 @@ RSpec.describe Idv::ApiImageUploadForm do
               success: false,
               errors: { passport: 'invalid MRZ' },
               extra: {
-                vendor: 'DoS',
+                vendor_name: 'dos:passport',
                 correlation_id_sent: 'something',
                 correlation_id_received: 'something else',
                 response: 'NO',
@@ -1883,7 +1884,7 @@ RSpec.describe Idv::ApiImageUploadForm do
               success: true,
               errors: {},
               extra: {
-                vendor: 'DoS',
+                vendor_name: 'dos:passport',
                 correlation_id_sent: 'something',
                 correlation_id_received: 'something else',
                 response: 'YES',

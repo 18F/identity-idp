@@ -19,17 +19,19 @@ DocumentCaptureSessionResult = RedactedStruct.new(
   :aamva_status,
   :aamva_verified_attributes,
   :state_id_vendor,
+  :source_check_vendor,
   keyword_init: true,
   allowed_members: [:id, :success, :attention_with_barcode, :failed_front_image_fingerprints,
                     :failed_back_image_fingerprints, :failed_passport_image_fingerprints,
                     :failed_selfie_image_fingerprints, :captured_at, :doc_auth_success,
-                    :selfie_status, :errors, :mrz_status, :attempt,
-                    :aamva_status, :aamva_verified_attributes, :state_id_vendor],
+                    :selfie_status, :errors, :mrz_status, :attempt, :aamva_status,
+                    :aamva_verified_attributes, :state_id_vendor, :source_check_vendor],
 ) do
   include DocAuth::SelfieConcern
 
-  def initialize(aamva_status: :not_processed, state_id_vendor: nil, **args)
-    super(aamva_status:, state_id_vendor:, **args)
+  def initialize(aamva_status: :not_processed, state_id_vendor: nil, source_check_vendor: nil,
+                 **args)
+    super(aamva_status:, state_id_vendor:, source_check_vendor:, **args)
   end
 
   def self.redis_key_prefix
@@ -49,11 +51,16 @@ DocumentCaptureSessionResult = RedactedStruct.new(
   end
 
   def state_id_vendor
+    # remove method after 50/50 transition
     self[:state_id_vendor]&.to_sym
   end
 
   def aamva_verified_attributes
     self[:aamva_verified_attributes] || []
+  end
+
+  def source_check_vendor
+    self[:source_check_vendor]
   end
 
   alias_method :success?, :success
