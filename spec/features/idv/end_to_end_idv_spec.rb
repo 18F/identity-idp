@@ -7,6 +7,10 @@ RSpec.describe 'Identity verification', :js do
   let(:sp) { :oidc }
   let(:sp_name) { 'Test SP' }
 
+  before do
+    allow(IdentityConfig.store).to receive(:idv_aamva_at_doc_auth_enabled).and_return(true)
+  end
+
   scenario 'Unsupervised proofing happy path desktop' do
     try_to_skip_ahead_before_signing_in
     visit_idp_from_sp_with_ial2(sp)
