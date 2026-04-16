@@ -386,7 +386,7 @@ RSpec.describe Idv::ApiImageUploadForm do
               success: true,
               errors: {},
               extra: {
-                vendor_name: 'DoS',
+                vendor_name: 'dos:passport',
                 correlation_id_sent: 'something',
                 correlation_id_received: 'something else',
                 response: 'YES',
@@ -1359,7 +1359,7 @@ RSpec.describe Idv::ApiImageUploadForm do
             success: false,
             errors: { passport: 'invalid MRZ' },
             extra: {
-              vendor_name: 'DoS',
+              vendor_name: 'dos:passport',
               correlation_id_sent: 'something',
               correlation_id_received: 'something else',
               response: 'NO',
@@ -1420,7 +1420,7 @@ RSpec.describe Idv::ApiImageUploadForm do
               success: false,
               errors: { network: 'true' },
               extra: {
-                vendor_name: 'DoS',
+                vendor_name: 'dos:passport',
                 correlation_id_sent: 'something',
                 correlation_id_received: 'something else',
                 error_code: 'ERR',
@@ -1489,7 +1489,7 @@ RSpec.describe Idv::ApiImageUploadForm do
             success: true,
             errors: {},
             extra: {
-              vendor_name: 'DoS',
+              vendor_name: 'dos:passport',
               correlation_id_sent: 'something',
               correlation_id_received: 'something else',
               response: 'YES',
@@ -1854,7 +1854,7 @@ RSpec.describe Idv::ApiImageUploadForm do
               success: false,
               errors: { passport: 'invalid MRZ' },
               extra: {
-                vendor_name: 'DoS',
+                vendor_name: 'dos:passport',
                 correlation_id_sent: 'something',
                 correlation_id_received: 'something else',
                 response: 'NO',
@@ -1884,7 +1884,7 @@ RSpec.describe Idv::ApiImageUploadForm do
               success: true,
               errors: {},
               extra: {
-                vendor_name: 'DoS',
+                vendor_name: 'dos:passport',
                 correlation_id_sent: 'something',
                 correlation_id_received: 'something else',
                 response: 'YES',
