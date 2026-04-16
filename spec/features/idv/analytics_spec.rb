@@ -63,30 +63,7 @@ RSpec.feature 'Analytics Regression', :js do
   let(:gpo_letter_proofing_components) do
     base_proofing_components.merge(address_check: 'gpo_letter')
   end
-  # i think we can get rid of this: start ###
-  let(:state_id_resolution) do
-    { success: true,
-      errors: {},
-      exception: nil,
-      mva_exception: nil,
-      requested_attributes: {},
-      timed_out: false,
-      transaction_id: 'state-id-mock-transaction-id-456',
-      vendor_name: 'aamva',
-      verified_attributes: [],
-      state: 'MT',
-      state_id_jurisdiction: 'ND',
-      state_id_number: '#############',
-      jurisdiction_in_maintenance_window: false }
-  end
 
-  let(:state_id_resolution_with_id_type) do
-    state_id_resolution.merge(
-      document_type_received: 'drivers_license',
-      id_doc_type: 'drivers_license',
-    )
-  end
-  # i think we can get rid of this: end ###
   let(:resolution_block) do
     { success: true,
       errors: {},
