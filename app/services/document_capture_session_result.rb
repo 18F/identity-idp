@@ -29,7 +29,7 @@ DocumentCaptureSessionResult = RedactedStruct.new(
 ) do
   include DocAuth::SelfieConcern
 
-  def initialize(aamva_status: nil, state_id_vendor: nil, source_check_vendor: nil, **args)
+  def initialize(aamva_status: :not_processed, state_id_vendor: nil, source_check_vendor: nil, **args)
     super(aamva_status:, state_id_vendor:, source_check_vendor:, **args)
   end
 
@@ -46,8 +46,6 @@ DocumentCaptureSessionResult = RedactedStruct.new(
   end
 
   def aamva_status
-    return :not_processed unless self[:aamva_status]
-
     self[:aamva_status]&.to_sym
   end
 
