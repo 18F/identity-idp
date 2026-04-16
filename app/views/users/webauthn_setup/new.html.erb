@@ -24,6 +24,7 @@
       html: {
         class: 'margin-top-4 margin-bottom-1',
         id: 'webauthn_form',
+        data: { auto_trigger: @auto_trigger || nil },
       },
     ) do |f| %>
   <%= hidden_field_tag :user_id, current_user.id, id: 'user_id' %>

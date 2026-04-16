@@ -105,6 +105,32 @@ RSpec.describe SignUp::PasswordsController do
           web_locale: 'en',
         )
       end
+
+      context 'when account_creation_passkey_prompt is enabled' do
+        before do
+          allow(FeatureManagement).to receive(:account_creation_passkey_prompt_enabled?)
+            .and_return(true)
+        end
+
+        it 'redirects to webauthn setup with platform param' do
+          subject
+
+          expect(response).to redirect_to(webauthn_setup_url(platform: true))
+        end
+      end
+
+      context 'when account_creation_passkey_prompt is disabled' do
+        before do
+          allow(FeatureManagement).to receive(:account_creation_passkey_prompt_enabled?)
+            .and_return(false)
+        end
+
+        it 'redirects to authentication methods setup' do
+          subject
+
+          expect(response).to redirect_to(authentication_methods_setup_url)
+        end
+      end
     end
 
     context 'with an invalid password' do

@@ -81,7 +81,11 @@ module SignUp
       set_new_device_session(false)
       user_session[:in_account_creation_flow] = true
       if current_user.accepted_rules_of_use_still_valid?
-        redirect_to authentication_methods_setup_url
+        if FeatureManagement.account_creation_passkey_prompt_enabled?
+          redirect_to webauthn_setup_url(platform: true)
+        else
+          redirect_to authentication_methods_setup_url
+        end
       else
         redirect_to rules_of_use_url
       end

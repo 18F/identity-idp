@@ -41,6 +41,9 @@ module Users
       save_challenge_in_session
       @exclude_credentials = exclude_credentials
       @need_to_set_up_additional_mfa = need_to_set_up_additional_mfa?
+      @auto_trigger = platform_authenticator? &&
+                      in_account_creation_flow? &&
+                      FeatureManagement.account_creation_passkey_prompt_enabled?
       if platform_authenticator?
         user_session[:webauthn_setup_started_at] = Time.zone.now.to_f
       end

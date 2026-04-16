@@ -85,4 +85,10 @@ function webauthn() {
 
 if (process.env.NODE_ENV !== 'test') {
   webauthn();
+
+  // Auto-trigger passkey enrollment for the account creation A/B test (LG-16912).
+  const form = document.getElementById('webauthn_form') as HTMLFormElement | null;
+  if (form?.dataset.autoTrigger === 'true') {
+    form.requestSubmit();
+  }
 }

@@ -331,6 +331,61 @@ RSpec.describe Users::WebauthnSetupController do
         end
       end
 
+      context 'auto_trigger for account creation passkey prompt' do
+        before do
+          controller.user_session[:in_account_creation_flow] = true
+        end
+
+        context 'when feature flag is enabled and platform authenticator' do
+          before do
+            allow(FeatureManagement).to receive(:account_creation_passkey_prompt_enabled?)
+              .and_return(true)
+          end
+
+          it 'sets auto_trigger to true' do
+            get :new, params: { platform: true }
+            expect(assigns(:auto_trigger)).to eq(true)
+          end
+        end
+
+        context 'when feature flag is disabled' do
+          before do
+            allow(FeatureManagement).to receive(:account_creation_passkey_prompt_enabled?)
+              .and_return(false)
+          end
+
+          it 'sets auto_trigger to false' do
+            get :new, params: { platform: true }
+            expect(assigns(:auto_trigger)).to eq(false)
+          end
+        end
+
+        context 'when not a platform authenticator' do
+          before do
+            allow(FeatureManagement).to receive(:account_creation_passkey_prompt_enabled?)
+              .and_return(true)
+          end
+
+          it 'sets auto_trigger to false' do
+            get :new
+            expect(assigns(:auto_trigger)).to eq(false)
+          end
+        end
+
+        context 'when not in account creation flow' do
+          before do
+            controller.user_session[:in_account_creation_flow] = false
+            allow(FeatureManagement).to receive(:account_creation_passkey_prompt_enabled?)
+              .and_return(true)
+          end
+
+          it 'sets auto_trigger to false' do
+            get :new, params: { platform: true }
+            expect(assigns(:auto_trigger)).to eq(false)
+          end
+        end
+      end
+
       context 'when the back button is clicked after platform is added' do
         let(:user) { create(:user, :with_webauthn_platform) }
         before do
