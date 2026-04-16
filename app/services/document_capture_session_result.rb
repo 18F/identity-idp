@@ -59,7 +59,7 @@ DocumentCaptureSessionResult = RedactedStruct.new(
   end
 
   def source_check_vendor
-    self[:source_check_vendor]&.to_sym
+    self[:source_check_vendor]
   end
 
   alias_method :success?, :success
