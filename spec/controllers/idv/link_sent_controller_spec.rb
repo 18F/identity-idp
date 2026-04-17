@@ -171,6 +171,7 @@ RSpec.describe Idv::LinkSentController do
         allow(load_result).to receive(:state_id_vendor).and_return(state_id_vendor)
         allow(load_result).to receive(:aamva_verified_attributes)
           .and_return(aamva_verified_attributes)
+        allow(load_result).to receive(:source_check_vendor).and_return(state_id_vendor)
 
         document_capture_session = create(
           :document_capture_session,

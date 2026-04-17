@@ -12,11 +12,13 @@ module DocAuth
           DocAuth::Response.new(
             success: false,
             errors: { passport: I18n.t('doc_auth.errors.general.fallback_field_level') },
+            extra:,
           )
         elsif network_error?
           DocAuth::Response.new(
             success: false,
             errors: { network: true, passport: true },
+            extra:,
           )
         else
           DocAuth::Response.new(success: true)
@@ -33,6 +35,12 @@ module DocAuth
 
       def network_error?
         mock_client_response&.passport_check_result&.dig(:NetworkResult) == 'Fail'
+      end
+
+      def extra
+        {
+          vendor_name: 'PassportMock',
+        }
       end
     end
   end
