@@ -143,7 +143,8 @@ RSpec.describe DataWarehouse::CloudwatchDuplicateLogCounterJob, type: :job do
 
       job.send(:update_hourly_counts_file, log_group_name, timestamp)
 
-      s3_path = job.duplicate_row_count_file_path(log_group_name, timestamp - 1.hour)
+      base_dir = 'table_summary_stats/cw_log_duplicate_counts'
+      s3_path = job.duplicate_row_count_file_path(base_dir, log_group_name, timestamp - 1.hour)
       expect(job).to have_received(:read_duplicate_counts_from_s3).with(s3_path)
       expect(job).to have_received(:upload_duplicate_counts_to_s3).with(s3_path, "0,1\n1,2\n2,36")
     end

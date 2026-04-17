@@ -34,7 +34,8 @@ module DataWarehouse
 
     def update_hourly_counts_file(log_group_name, timestamp)
       timestamp_minus_hour = timestamp - 1.hour
-      s3_path = duplicate_row_count_file_path(log_group_name, timestamp_minus_hour)
+      base_dir = 'table_summary_stats/cw_log_duplicate_counts'
+      s3_path = duplicate_row_count_file_path(base_dir, log_group_name, timestamp_minus_hour)
       hourly_counts = read_duplicate_counts_from_s3(s3_path)
       hours_needed = hours_to_process(timestamp_minus_hour, hourly_counts)
       return if hours_needed.empty?

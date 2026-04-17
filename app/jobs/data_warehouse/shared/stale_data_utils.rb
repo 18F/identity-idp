@@ -6,7 +6,6 @@ require 'reporting/cloudwatch_client'
 module DataWarehouse
   module Shared
     module StaleDataUtils
-      REPORT_NAME = 'cw_log_duplicate_counts'
       NUM_THREADS = 6
 
       def cloudwatch_client(log_group_name: nil, slice_interval: 1.day)
@@ -18,11 +17,11 @@ module DataWarehouse
         )
       end
 
-      def duplicate_row_count_file_path(log_group_name, timestamp)
-        lg_name = get_short_log_group_name(log_group_name)
+      def duplicate_row_count_file_path(base_dir, log_group_name, timestamp)
+        short_name = get_short_log_group_name(log_group_name)
         year = timestamp.year
         file_name = timestamp.strftime('%Y-%m-%d')
-        "table_summary_stats/#{REPORT_NAME}/#{lg_name}/#{year}/#{file_name}.csv"
+        "#{base_dir}/#{short_name}/#{year}/#{file_name}.csv"
       end
 
       def get_short_log_group_name(log_group_name)

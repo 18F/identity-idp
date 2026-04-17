@@ -48,17 +48,9 @@ module DataWarehouse
       end
     end
 
-    def cloudwatch_query(log_group_name)
-      <<~QUERY
-        fields jsonParse(@message) as @messageJson
-        | filter #{log_stream_filter_map[log_group_name]}
-        | filter isPresent(@messageJson)
-        | stats count() as row_count
-      QUERY
-    end
-
     def get_offset_count(log_group_name, timestamp)
-      s3_path = duplicate_row_count_file_path(log_group_name, timestamp)
+      base_dir = 'table_summary_stats/cw_log_duplicate_counts'
+      s3_path = duplicate_row_count_file_path(base_dir, log_group_name, timestamp)
       hourly_counts = read_duplicate_counts_from_s3(s3_path)
       hourly_counts.values.sum
     end
