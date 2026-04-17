@@ -535,7 +535,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
         context 'requires both email and ssn in the payload' do
           context 'without ssn' do
             let(:ssn) { nil }
-            it 'returns 400 if ssn is missing' do 
+            it 'returns 400 if ssn is missing' do
               expect(action.status).to eq(400)
             end
           end
@@ -543,7 +543,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
           context 'without email' do
             let(:user) { nil }
             let(:email) { nil }
-            it 'returns 400 if email is missing' do 
+            it 'returns 400 if email is missing' do
               expect(action.status).to eq(400)
             end
           end
