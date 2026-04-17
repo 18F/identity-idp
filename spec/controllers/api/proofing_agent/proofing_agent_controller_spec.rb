@@ -537,6 +537,30 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
             let(:ssn) { nil }
             it 'returns 400 if ssn is missing' do
               expect(action.status).to eq(400)
+              expect(@analytics).to have_logged_event(
+                :idv_proofing_agent_request_failed,
+                success: false,
+                failure_type: :body_validation,
+                issuer:,
+                proofing_agent: proofing_agent_analytics_hash,
+                errors: { ssn: ['Please fill in this field.',
+                                'Enter a nine-digit Social Security number', 'cannot be blank'] },
+              )
+            end
+          end
+
+          context 'with invalid ssn' do
+            let(:ssn) { 'invalid' }
+            it 'returns 400 if ssn is invalid' do
+              expect(action.status).to eq(400)
+              expect(@analytics).to have_logged_event(
+                :idv_proofing_agent_request_failed,
+                success: false,
+                failure_type: :body_validation,
+                issuer:,
+                proofing_agent: proofing_agent_analytics_hash,
+                errors: { ssn: ['Enter a nine-digit Social Security number'] },
+              )
             end
           end
 
@@ -545,6 +569,14 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
             let(:email) { nil }
             it 'returns 400 if email is missing' do
               expect(action.status).to eq(400)
+              expect(@analytics).to have_logged_event(
+                :idv_proofing_agent_request_failed,
+                success: false,
+                failure_type: :body_validation,
+                issuer:,
+                proofing_agent: proofing_agent_analytics_hash,
+                errors: { email: ['cannot be blank'] },
+              )
             end
           end
         end
