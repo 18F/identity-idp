@@ -13,7 +13,7 @@ module Api
       before_action :authenticate_client
       before_action :validate_required_headers
       before_action :validate_agent_id_and_location_id
-      before_action :validate_search_user_payload, only: :search_user
+      before_action :validate_email_and_ssn
       after_action :add_custom_headers_to_response
 
       def search_user
@@ -107,27 +107,20 @@ module Api
         return if missing.empty?
 
         errors = { error: "Missing required payload: #{missing.join(', ')}" }
-        render_bad_request(errors: errors, failure_type: :body_validation)
+
+        render_bad_request(errors:, failure_type: :body_validation)
       end
 
-      def validate_search_user_payload
+      def validate_email_and_ssn
         missing = []
         missing << 'email' if email.blank?
         missing << 'ssn' if ssn.blank?
 
         return if missing.empty?
 
-        error = "Missing required payload: #{missing.join(', ')}"
+        errors = { error: "Missing required payload: #{missing.join(', ')}" }
 
-        analytics.idv_proofing_agent_request_failed(
-          **analytics_arguments,
-          success: false,
-          failure_type: :body_validation,
-          errors: { error: },
-        )
-        render json: {
-          error:,
-        }, status: :bad_request
+        render_bad_request(errors:, failure_type: :body_validation)
       end
 
       def authenticate_client
@@ -183,7 +176,8 @@ module Api
         pii_like_keypaths = []
         if failure_type == :body_validation
           if action_name == 'proof_user'
-            pii_like_keypaths = Idv::ProofingAgent::AgentPiiForm.pii_like_keypaths(document_type: id_type)
+            pii_like_keypaths = Idv::ProofingAgent::AgentPiiForm
+              .pii_like_keypaths(document_type: id_type)
           elsif action_name == 'search_user'
             pii_like_keypaths = [:email, :ssn]
           end
@@ -204,19 +198,15 @@ module Api
       end
 
       def email
-        @email ||= action_name == 'proof_user' ? params.expect(:email) : search_user_params[:email]
+        @email ||= params.permit(:email)[:email]
       end
 
       def ssn
-        @ssn ||= action_name == 'proof_user' ? params.expect(:ssn) : search_user_params[:ssn]
+        @ssn ||= action_name == 'proof_user' ? params.expect(:ssn) : params.permit(:ssn)[:ssn]
       end
 
       def id_type
         @id_type ||= params.expect(:id_type)
-      end
-
-      def search_user_params
-        @search_user_params = params.permit(:email, :ssn)
       end
 
       def proof_params
