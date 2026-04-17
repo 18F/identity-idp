@@ -104,13 +104,11 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
 
   let(:headers) do
     {
-      'X-Proofing-Location-ID' => location_id,
-      'X-Proofing-Agent-ID' => agent_id,
       'X-Correlation-ID' => correlation_id,
     }
   end
   let(:missing_headers_errors) do
-    headers = 'X-Proofing-Location-ID, X-Proofing-Agent-ID, X-Correlation-ID'
+    headers = 'X-Correlation-ID'
     {
       error: "Missing required headers: #{headers}",
     }
@@ -205,6 +203,8 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
   let(:passport) { nil }
   let(:agent_params) do
     ActionController::Parameters.new(
+      proofing_agent_id: agent_id,
+      proofing_location_id: location_id,
       suspected_fraud: false,
       email:,
       first_name:,
@@ -234,7 +234,14 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
 
   describe '#search_user' do
     let(:ssn) { '123-45-6789' }
-    let(:action) { post :search_user, params: { email:, ssn: } }
+    let(:action) do
+      post :search_user, params: {
+        proofing_agent_id: agent_id,
+        proofing_location_id: location_id,
+        email:,
+        ssn:,
+      }.compact
+    end
 
     context 'when proofing agent is not enabled' do
       it 'returns 404' do
@@ -525,15 +532,24 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
           end
         end
 
-        it 'requires both email and ssn in the payload' do
-          post :search_user, params: { email: email }
-          expect(response.status).to eq(400)
+        context 'requires both email and ssn in the payload' do
+          context 'without ssn' do
+            let(:ssn) { nil }
+            it 'returns 400 if ssn is missing' do 
+              expect(action.status).to eq(400)
+            end
+          end
 
-          post :search_user, params: { ssn: ssn }
-          expect(response.status).to eq(400)
+          context 'without email' do
+            let(:user) { nil }
+            let(:email) { nil }
+            it 'returns 400 if email is missing' do 
+              expect(action.status).to eq(400)
+            end
+          end
         end
 
-        context 'without X-Proofing-Location-ID header' do
+        context 'without proofing_locaton_id param' do
           let(:location_id) { nil }
 
           it 'returns 400' do
@@ -541,15 +557,15 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
             expect(@analytics).to have_logged_event(
               :idv_proofing_agent_request_failed,
               success: false,
-              failure_type: :header_validation,
+              failure_type: :body_validation,
               issuer:,
               proofing_agent: proofing_agent_analytics_hash,
-              errors: missing_headers_errors,
+              errors: { error: 'Missing required payload: proofing_location_id' },
             )
           end
         end
 
-        context 'without X-Proofing-Agent-ID header' do
+        context 'without proofing_agent_id param' do
           let(:agent_id) { nil }
 
           it 'returns 400' do
@@ -557,10 +573,10 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
             expect(@analytics).to have_logged_event(
               :idv_proofing_agent_request_failed,
               success: false,
-              failure_type: :header_validation,
+              failure_type: :body_validation,
               issuer:,
               proofing_agent: proofing_agent_analytics_hash,
-              errors: missing_headers_errors,
+              errors: { error: 'Missing required payload: proofing_agent_id' },
             )
           end
         end
@@ -605,8 +621,6 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
           it 'lists missing headers in error' do
             action
             body = JSON.parse(response.body)
-            expect(body['error']).to include('X-Proofing-Location-ID')
-            expect(body['error']).to include('X-Proofing-Agent-ID')
             expect(body['error']).to include('X-Correlation-ID')
           end
         end
@@ -718,7 +732,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
             end
           end
 
-          context 'without X-Proofing-Location-ID header' do
+          context 'without proofing_location_id param' do
             let(:location_id) { nil }
 
             it 'returns 400' do
@@ -726,15 +740,15 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
               expect(@analytics).to have_logged_event(
                 :idv_proofing_agent_request_failed,
                 success: false,
-                failure_type: :header_validation,
+                failure_type: :body_validation,
                 issuer:,
                 proofing_agent: proofing_agent_analytics_hash,
-                errors: missing_headers_errors,
+                errors: { error: 'Missing required payload: proofing_location_id' },
               )
             end
           end
 
-          context 'without X-Proofing-Agent-ID header' do
+          context 'without proofing_agent_id param' do
             let(:agent_id) { nil }
 
             it 'returns 400' do
@@ -742,10 +756,10 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
               expect(@analytics).to have_logged_event(
                 :idv_proofing_agent_request_failed,
                 success: false,
-                failure_type: :header_validation,
+                failure_type: :body_validation,
                 issuer:,
                 proofing_agent: proofing_agent_analytics_hash,
-                errors: missing_headers_errors,
+                errors: { error: 'Missing required payload: proofing_agent_id' },
               )
             end
           end
@@ -1050,7 +1064,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
             expect(response.headers['X-Correlation-ID']).to eq('correlation-789')
           end
 
-          context 'without X-Proofing-Location-ID header' do
+          context 'without proofing_location_id param' do
             let(:location_id) { nil }
 
             it 'returns 400' do
@@ -1058,19 +1072,15 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
               expect(@analytics).to have_logged_event(
                 :idv_proofing_agent_request_failed,
                 success: false,
-                failure_type: :header_validation,
+                failure_type: :body_validation,
                 issuer:,
-                proofing_agent: a_hash_including(
-                  agent_id: 'agent-456',
-                  correlation_id: 'correlation-789',
-                  location_id: nil,
-                ),
-                errors: missing_headers_errors,
+                proofing_agent: proofing_agent_analytics_hash,
+                errors: { error: 'Missing required payload: proofing_location_id' },
               )
             end
           end
 
-          context 'without X-Proofing-Agent-ID header' do
+          context 'without proofing_agent_id param' do
             let(:agent_id) { nil }
 
             it 'returns 400' do
@@ -1078,14 +1088,10 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
               expect(@analytics).to have_logged_event(
                 :idv_proofing_agent_request_failed,
                 success: false,
-                failure_type: :header_validation,
+                failure_type: :body_validation,
                 issuer:,
-                proofing_agent: a_hash_including(
-                  agent_id: nil,
-                  location_id: 'loc-123',
-                  correlation_id: 'correlation-789',
-                ),
-                errors: missing_headers_errors,
+                proofing_agent: proofing_agent_analytics_hash,
+                errors: { error: 'Missing required payload: proofing_agent_id' },
               )
             end
           end
@@ -1300,29 +1306,23 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
             expect(response.headers['X-Correlation-ID']).to eq('correlation-789')
           end
 
-          context 'without X-Proofing-Location-ID header' do
-            let(:headers) do
-              { 'X-Proofing-Agent-ID' => 'agent-456', 'X-Correlation-ID' => 'correlation-789' }
-            end
+          context 'without proofing_location_id param' do
+            let(:location_id) { nil }
 
             it 'returns 400' do
               expect(action.status).to eq(400)
               expect(@analytics).to have_logged_event(
                 :idv_proofing_agent_request_failed,
                 success: false,
-                failure_type: :header_validation,
+                failure_type: :body_validation,
                 issuer:,
-                proofing_agent: a_hash_including(
-                  agent_id: 'agent-456',
-                  correlation_id: 'correlation-789',
-                  location_id: nil,
-                ),
-                errors: missing_headers_errors,
+                proofing_agent: proofing_agent_analytics_hash,
+                errors: { error: 'Missing required payload: proofing_location_id' },
               )
             end
           end
 
-          context 'without X-Proofing-Agent-ID header' do
+          context 'without proofing_agent_id param' do
             let(:agent_id) { nil }
 
             it 'returns 400' do
@@ -1330,14 +1330,10 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
               expect(@analytics).to have_logged_event(
                 :idv_proofing_agent_request_failed,
                 success: false,
-                failure_type: :header_validation,
+                failure_type: :body_validation,
                 issuer:,
-                proofing_agent: a_hash_including(
-                  agent_id: nil,
-                  location_id: 'loc-123',
-                  correlation_id: 'correlation-789',
-                ),
-                errors: missing_headers_errors,
+                proofing_agent: proofing_agent_analytics_hash,
+                errors: { error: 'Missing required payload: proofing_agent_id' },
               )
             end
           end
