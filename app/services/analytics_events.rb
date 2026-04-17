@@ -4363,28 +4363,6 @@ module AnalyticsEvents
     )
   end
 
-  # User is being redirected to re-prove their identity based on SP requirements.
-  # @param [Symbol] reproof_reason Reason reproofing is required:
-  #   :reproof_forcing_sp — current SP forces reproof for users not originally proofed through it.
-  #   :unsupervised_with_selfie_required — SP requires unsupervised-with-selfie and user's profile
-  #     was not created at that level.
-  # @param [String, nil] initiating_sp_issuer Issuer of the SP that originally created the profile.
-  # @param [String, nil] previous_idv_level The IDV level of the user's existing active profile.
-  def idv_reproof_needed(
-    reproof_reason:,
-    initiating_sp_issuer: nil,
-    previous_idv_level: nil,
-    **extra
-  )
-    track_event(
-      :idv_reproof_needed,
-      reproof_reason:,
-      initiating_sp_issuer:,
-      previous_idv_level:,
-      **extra,
-    )
-  end
-
   # IPP AAMVA proofing result is missing from Redis (expired or not found)
   # @param [Hash] extra Additional event data
   def idv_ipp_aamva_proofing_result_missing(**extra)
@@ -5383,6 +5361,28 @@ module AnalyticsEvents
       proofing_components: proofing_components,
       active_profile_idv_level: active_profile_idv_level,
       pending_profile_idv_level: pending_profile_idv_level,
+      **extra,
+    )
+  end
+
+  # User is being redirected to re-prove their identity based on SP requirements.
+  # @param [Symbol] reproof_reason Reason reproofing is required:
+  #   :reproof_forcing_sp — current SP forces reproof for users not originally proofed through it.
+  #   :unsupervised_with_selfie_required — SP requires unsupervised-with-selfie and user's profile
+  #     was not created at that level.
+  # @param [String, nil] initiating_sp_issuer Issuer of the SP that originally created the profile.
+  # @param [String, nil] previous_idv_level The IDV level of the user's existing active profile.
+  def idv_reproof_needed(
+    reproof_reason:,
+    initiating_sp_issuer: nil,
+    previous_idv_level: nil,
+    **extra
+  )
+    track_event(
+      :idv_reproof_needed,
+      reproof_reason:,
+      initiating_sp_issuer:,
+      previous_idv_level:,
       **extra,
     )
   end
