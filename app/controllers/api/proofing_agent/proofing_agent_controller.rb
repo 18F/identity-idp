@@ -13,10 +13,12 @@ module Api
       before_action :authenticate_client
       before_action :validate_required_headers
       before_action :validate_agent_id_and_location_id
-      before_action :validate_email_and_ssn
       after_action :add_custom_headers_to_response
 
       def search_user
+        pii_validation = Idv::ProofingAgent::SearchUserForm.new(email:, ssn:).submit
+        render_bad_request(errors: pii_validation.errors) and return if !pii_validation.success?
+
         response_body = {
           email_account_found: user.present?,
           ssn_profile_found: ssn_active_profiles.any?,
@@ -107,16 +109,6 @@ module Api
         render_bad_request(errors:, failure_type: :body_validation)
       end
 
-      def validate_email_and_ssn
-        errors = {}
-        errors[:email] = ['cannot be blank'] if email.blank?
-        errors[:ssn] = ['cannot be blank'] if ssn.blank?
-
-        return if errors.empty?
-
-        render_bad_request(errors:, failure_type: :body_validation)
-      end
-
       def authenticate_client
         if request_token.invalid?
           track_failure(failure_type: :authorization)
@@ -183,7 +175,7 @@ module Api
           when 'proof_user'
             Idv::ProofingAgent::AgentPiiForm.pii_like_keypaths(document_type: id_type)
           when 'search_user'
-            [[:errors, :email], [:errors, :ssn]]
+            Idv::ProofingAgent::SearchUserForm.pii_like_keypaths
           else
             []
         end
