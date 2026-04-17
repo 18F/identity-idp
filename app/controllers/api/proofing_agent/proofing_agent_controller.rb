@@ -100,25 +100,19 @@ module Api
       end
 
       def validate_agent_id_and_location_id
-        missing = []
-        missing << 'proofing_agent_id' if agent_id.blank?
-        missing << 'proofing_location_id' if location_id.blank?
-
-        return if missing.empty?
-
-        errors = { error: "Missing required payload: #{missing.join(', ')}" }
-
+        errors = {}
+        errors[:proofing_agent_id] = ['cannot be blank'] if agent_id.blank?
+        errors[:proofing_location_id] = ['cannot be blank'] if location_id.blank?
+        return if errors.empty?
         render_bad_request(errors:, failure_type: :body_validation)
       end
 
       def validate_email_and_ssn
-        missing = []
-        missing << 'email' if email.blank?
-        missing << 'ssn' if ssn.blank?
+        errors = {}
+        errors[:email] = ['cannot be blank'] if email.blank?
+        errors[:ssn] = ['cannot be blank'] if ssn.blank?
 
-        return if missing.empty?
-
-        errors = { error: "Missing required payload: #{missing.join(', ')}" }
+        return if errors.empty?
 
         render_bad_request(errors:, failure_type: :body_validation)
       end
@@ -173,22 +167,26 @@ module Api
       end
 
       def track_failure(failure_type:, errors: nil)
-        pii_like_keypaths = []
-        if failure_type == :body_validation
-          if action_name == 'proof_user'
-            pii_like_keypaths = Idv::ProofingAgent::AgentPiiForm
-              .pii_like_keypaths(document_type: id_type)
-          elsif action_name == 'search_user'
-            pii_like_keypaths = [:email, :ssn]
-          end
-        end
         analytics.idv_proofing_agent_request_failed(
           **analytics_arguments,
           success: false,
           failure_type:,
           errors:,
-          pii_like_keypaths:,
+          pii_like_keypaths: pii_like_keypaths(failure_type),
         )
+      end
+
+      def pii_like_keypaths(failure_type)
+        return [] unless failure_type == :body_validation
+
+        case action_name
+          when 'proof_user'
+            Idv::ProofingAgent::AgentPiiForm.pii_like_keypaths(document_type: id_type)
+          when 'search_user'
+            [[:errors, :email], [:errors, :ssn]]
+          else
+            []
+        end
       end
 
       def user_has_enhanced_profile?
@@ -202,11 +200,11 @@ module Api
       end
 
       def ssn
-        @ssn ||= action_name == 'proof_user' ? params.expect(:ssn) : params.permit(:ssn)[:ssn]
+        @ssn ||= params.permit(:ssn)[:ssn]
       end
 
       def id_type
-        @id_type ||= params.expect(:id_type)
+        @id_type ||= params.permit(:id_type)[:id_type]
       end
 
       def proof_params

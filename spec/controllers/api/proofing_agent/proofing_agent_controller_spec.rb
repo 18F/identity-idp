@@ -560,7 +560,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
               failure_type: :body_validation,
               issuer:,
               proofing_agent: proofing_agent_analytics_hash,
-              errors: { error: 'Missing required payload: proofing_location_id' },
+              errors: { proofing_location_id: ['cannot be blank'] },
             )
           end
         end
@@ -576,7 +576,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
               failure_type: :body_validation,
               issuer:,
               proofing_agent: proofing_agent_analytics_hash,
-              errors: { error: 'Missing required payload: proofing_agent_id' },
+              errors: { proofing_agent_id: ['cannot be blank'] },
             )
           end
         end
@@ -743,7 +743,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
                 failure_type: :body_validation,
                 issuer:,
                 proofing_agent: proofing_agent_analytics_hash,
-                errors: { error: 'Missing required payload: proofing_location_id' },
+                errors: { proofing_location_id: ['cannot be blank'] },
               )
             end
           end
@@ -759,7 +759,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
                 failure_type: :body_validation,
                 issuer:,
                 proofing_agent: proofing_agent_analytics_hash,
-                errors: { error: 'Missing required payload: proofing_agent_id' },
+                errors: { proofing_agent_id: ['cannot be blank'] },
               )
             end
           end
@@ -1075,7 +1075,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
                 failure_type: :body_validation,
                 issuer:,
                 proofing_agent: proofing_agent_analytics_hash,
-                errors: { error: 'Missing required payload: proofing_location_id' },
+                errors: { proofing_location_id: ['cannot be blank'] },
               )
             end
           end
@@ -1091,7 +1091,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
                 failure_type: :body_validation,
                 issuer:,
                 proofing_agent: proofing_agent_analytics_hash,
-                errors: { error: 'Missing required payload: proofing_agent_id' },
+                errors: { proofing_agent_id: ['cannot be blank'] },
               )
             end
           end
@@ -1317,7 +1317,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
                 failure_type: :body_validation,
                 issuer:,
                 proofing_agent: proofing_agent_analytics_hash,
-                errors: { error: 'Missing required payload: proofing_location_id' },
+                errors: { proofing_location_id: ['cannot be blank'] },
               )
             end
           end
@@ -1333,7 +1333,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
                 failure_type: :body_validation,
                 issuer:,
                 proofing_agent: proofing_agent_analytics_hash,
-                errors: { error: 'Missing required payload: proofing_agent_id' },
+                errors: { proofing_agent_id: ['cannot be blank'] },
               )
             end
           end
