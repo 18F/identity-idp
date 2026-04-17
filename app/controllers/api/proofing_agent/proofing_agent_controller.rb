@@ -96,8 +96,7 @@ module Api
 
         errors = { error: "Missing required headers: #{missing.join(', ')}" }
 
-        track_failure(failure_type: :header_validation, errors:)
-        render json: errors, status: :bad_request
+        render_bad_request(errors:, failure_type: :header_validation)
       end
 
       def validate_agent_id_and_location_id
@@ -108,7 +107,6 @@ module Api
         return if missing.empty?
 
         errors = { error: "Missing required payload: #{missing.join(', ')}" }
-        puts 'missing required payload' => missing
         render_bad_request(errors: errors, failure_type: :body_validation)
       end
 
@@ -249,7 +247,7 @@ module Api
       end
 
       def render_bad_request(errors: nil, failure_type: :body_validation)
-        errors = { base: ['There was a problem with your request.'] } if errors.nil?
+        errors = { base: ['There was a problem with your request.'] } if errors.blank?
         track_failure(failure_type:, errors:)
 
         render json: errors, status: :bad_request
