@@ -8,7 +8,7 @@ RSpec.feature 'idv phone step', :js do
   let(:gpo_enabled) { true }
 
   before do
-    allow(IdentityConfig.store).to receive(:enable_usps_verification).and_return(gpo_enabled)
+    allow(IdentityConfig.store).to receive(:idv_gpo_verification_enabled).and_return(gpo_enabled)
   end
 
   context 'after submitting valid information' do
@@ -160,7 +160,7 @@ RSpec.feature 'idv phone step', :js do
 
         context 'gpo verification is disabled' do
           before do
-            allow(IdentityConfig.store).to receive(:enable_usps_verification).and_return(false)
+            allow(IdentityConfig.store).to receive(:idv_gpo_verification_enabled).and_return(false)
           end
 
           it 'does not display verify link' do
@@ -471,7 +471,7 @@ RSpec.feature 'idv phone step', :js do
 
           context 'gpo verification is disabled' do
             before do
-              allow(IdentityConfig.store).to receive(:enable_usps_verification).and_return(false)
+              allow(IdentityConfig.store).to receive(:idv_gpo_verification_enabled).and_return(false)
             end
 
             it 'does not display verify link' do

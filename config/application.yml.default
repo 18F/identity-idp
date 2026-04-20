@@ -170,7 +170,7 @@ enable_add_mfa_redirect_for_personal_key: false
 enable_load_testing_mode: false
 enable_rate_limiting: true
 enable_test_routes: true
-enable_usps_verification: true
+idv_gpo_verification_enabled: true
 encrypted_document_storage_s3_bucket: 'test-bucket'
 event_disavowal_expiration_hours: 240
 facial_match_general_availability_enabled: true
@@ -624,7 +624,7 @@ production:
   disable_email_sending: false
   email_registrations_per_ip_track_only_mode: true
   enable_test_routes: false
-  enable_usps_verification: false
+  idv_gpo_verification_enabled: false
   encrypted_document_storage_s3_bucket: ''
   facial_match_general_availability_enabled: false
   idv_sp_required: true
