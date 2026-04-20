@@ -5365,6 +5365,7 @@ module AnalyticsEvents
     response_body:,
     proofing_agent:,
     issuer:,
+    remaining_attempts: nil,
     transaction_id: nil,
     **extra
   )
@@ -5373,6 +5374,7 @@ module AnalyticsEvents
       response_body:,
       proofing_agent:,
       issuer:,
+      remaining_attempts:,
       transaction_id:,
       **extra,
     )

@@ -637,6 +637,26 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
         let(:id_type) { drivers_license_type }
         let(:state_id) { valid_state_id }
 
+        context 'when rate limit reached for the user' do
+          before do
+            RateLimiter.new(user:, rate_limit_type: :idv_resolution).increment_to_limited!
+            RateLimiter.new(user:, rate_limit_type: :proof_ssn).increment_to_limited!
+          end
+          it 'returns 429 and logs events' do
+            expect(action.status).to eq(429)
+            expect(@analytics).to have_logged_event(
+              'Rate Limit Reached',
+              limiter_type: :idv_resolution,
+              step_name: 'proof_user',
+            )
+            expect(@analytics).to have_logged_event(
+              'Rate Limit Reached',
+              limiter_type: :proof_ssn,
+              step_name: 'proof_user',
+            )
+          end
+        end
+
         context 'with a valid authorization header' do
           it 'returns 202 accepted' do
             expect(action.status).to eq(202)
@@ -648,6 +668,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
               proofing_agent: proofing_agent_analytics_hash,
               issuer:,
               transaction_id:,
+              remaining_attempts: a_kind_of(Integer),
             )
           end
 
@@ -1037,6 +1058,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
               proofing_agent: proofing_agent_analytics_hash,
               issuer:,
               transaction_id:,
+              remaining_attempts: a_kind_of(Integer),
             )
           end
 
@@ -1287,6 +1309,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
               proofing_agent: proofing_agent_analytics_hash,
               issuer:,
               transaction_id:,
+              remaining_attempts: a_kind_of(Integer),
             )
           end
 
@@ -1529,6 +1552,26 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
         let(:passport) { valid_passport }
         let(:residential_address) { valid_residential_address }
 
+        context 'when rate limit reached for the user' do
+          before do
+            RateLimiter.new(user:, rate_limit_type: :idv_resolution).increment_to_limited!
+            RateLimiter.new(user:, rate_limit_type: :proof_ssn).increment_to_limited!
+          end
+          it 'returns 429 and logs events' do
+            expect(action.status).to eq(429)
+            expect(@analytics).to have_logged_event(
+              'Rate Limit Reached',
+              limiter_type: :idv_resolution,
+              step_name: 'proof_user',
+            )
+            expect(@analytics).to have_logged_event(
+              'Rate Limit Reached',
+              limiter_type: :proof_ssn,
+              step_name: 'proof_user',
+            )
+          end
+        end
+
         context 'when valid passport data is received' do
           it 'returns 202' do
             expect(action.status).to eq(202)
@@ -1540,6 +1583,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
               proofing_agent: proofing_agent_analytics_hash,
               issuer:,
               transaction_id:,
+              remaining_attempts: a_kind_of(Integer),
             )
           end
 
