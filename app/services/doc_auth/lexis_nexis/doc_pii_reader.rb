@@ -42,7 +42,7 @@ module DocAuth
           first_name:,
           last_name:,
           middle_name:,
-          name_suffix: true_id_product&.dig(:IDAUTH_FIELD_DATA, :Fields_NameSuffix),
+          name_suffix:,
           address1: true_id_product&.dig(:IDAUTH_FIELD_DATA, :Fields_AddressLine1),
           address2: true_id_product&.dig(:IDAUTH_FIELD_DATA, :Fields_AddressLine2),
           city: true_id_product&.dig(:IDAUTH_FIELD_DATA, :Fields_City),
