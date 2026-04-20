@@ -6,7 +6,7 @@ require 'reporting/cloudwatch_client'
 module DataWarehouse
   module Shared
     module StaleDataUtils
-      NUM_THREADS = 6
+      NUM_THREADS = 3
 
       def cloudwatch_client(log_group_name: nil, slice_interval: 1.day)
         Reporting::CloudwatchClient.new(

@@ -90,31 +90,19 @@ RSpec.describe DataWarehouse::CloudwatchDuplicateLogCounterJob, type: :job do
     it 'returns correct time slices for a given hour' do
       timestamp = Time.zone.parse('2025-10-10 00:00:00')
       hour = 1
-      num_slices = 6
+      num_slices = 3
       (1 - 0.999999999).seconds
       expected_slices = [
         Time.zone.local(
           2025, 10, 10, 1, 0,
           0
-        )..(Time.zone.local(2025, 10, 10, 1, 10, 0) - 1.second).end_of_minute,
-        Time.zone.local(
-          2025, 10, 10, 1, 10,
-          0
         )..(Time.zone.local(2025, 10, 10, 1, 20, 0) - 1.second).end_of_minute,
         Time.zone.local(
           2025, 10, 10, 1, 20,
           0
-        )..(Time.zone.local(2025, 10, 10, 1, 30, 0) - 1.second).end_of_minute,
-        Time.zone.local(
-          2025, 10, 10, 1, 30,
-          0
         )..(Time.zone.local(2025, 10, 10, 1, 40, 0) - 1.second).end_of_minute,
         Time.zone.local(
           2025, 10, 10, 1, 40,
-          0
-        )..(Time.zone.local(2025, 10, 10, 1, 50, 0) - 1.second).end_of_minute,
-        Time.zone.local(
-          2025, 10, 10, 1, 50,
           0
         )..(Time.zone.local(2025, 10, 10, 2, 0, 0) - 1.second).end_of_minute,
       ]
@@ -130,7 +118,7 @@ RSpec.describe DataWarehouse::CloudwatchDuplicateLogCounterJob, type: :job do
       hour = 1
 
       result = job.send(:count_hourly_duplicate_logs, log_group_name, timestamp, hour)
-      expect(result).to eq(36)
+      expect(result).to eq(18)
     end
   end
 
@@ -146,7 +134,7 @@ RSpec.describe DataWarehouse::CloudwatchDuplicateLogCounterJob, type: :job do
       base_dir = 'table_summary_stats/cw_log_duplicate_counts'
       s3_path = job.duplicate_row_count_file_path(base_dir, log_group_name, timestamp - 1.hour)
       expect(job).to have_received(:read_duplicate_counts_from_s3).with(s3_path)
-      expect(job).to have_received(:upload_duplicate_counts_to_s3).with(s3_path, "0,1\n1,2\n2,36")
+      expect(job).to have_received(:upload_duplicate_counts_to_s3).with(s3_path, "0,1\n1,2\n2,18")
     end
   end
 end

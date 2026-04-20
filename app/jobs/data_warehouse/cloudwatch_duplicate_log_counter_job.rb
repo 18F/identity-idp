@@ -2,6 +2,7 @@
 
 module DataWarehouse
   class CloudwatchDuplicateLogCounterJob < BaseJob
+    retry_on StandardError, wait: 10.minutes, attempts: 3
     include Shared::StaleDataUtils
     include GoodJob::ActiveJobExtensions::Concurrency
     good_job_control_concurrency_with(
