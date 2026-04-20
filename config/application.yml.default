@@ -170,7 +170,6 @@ enable_add_mfa_redirect_for_personal_key: false
 enable_load_testing_mode: false
 enable_rate_limiting: true
 enable_test_routes: true
-idv_gpo_verification_enabled: true
 encrypted_document_storage_s3_bucket: 'test-bucket'
 event_disavowal_expiration_hours: 240
 facial_match_general_availability_enabled: true
@@ -215,6 +214,7 @@ idv_address_vendor_socure_percent: 0
 idv_attempt_window_in_hours: 6
 idv_available: true
 idv_contact_phone_number: (844) 555-5555
+idv_gpo_verification_enabled: true
 idv_max_attempts: 5
 idv_min_age_years: 13
 idv_phone_confirmation_manual_review_validity_hours: 0
@@ -624,9 +624,9 @@ production:
   disable_email_sending: false
   email_registrations_per_ip_track_only_mode: true
   enable_test_routes: false
-  idv_gpo_verification_enabled: false
   encrypted_document_storage_s3_bucket: ''
   facial_match_general_availability_enabled: false
+  idv_gpo_verification_enabled: false
   idv_sp_required: true
   invalid_gpo_confirmation_zipcode: ''
   lexisnexis_threatmetrix_mock_enabled: false
