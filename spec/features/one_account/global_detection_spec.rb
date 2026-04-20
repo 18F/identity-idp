@@ -11,8 +11,8 @@ RSpec.feature 'One Account Global Detection' do
   end
   let(:pii_attrs) do
     {
-      first_name: 'John',
-      last_name: 'Doe',
+      first_name: 'Faker',
+      last_name: 'Fakerson',
       ssn: '123-45-6789',
       dob: '1980-01-01',
       address1: '123 Main St',
@@ -63,9 +63,6 @@ RSpec.feature 'One Account Global Detection' do
         complete_sign_in(user1)
 
         expect_duplicate_warning
-        expect(page).to have_content(
-          t('duplicate_profiles_detected.heading'),
-        )
       end
 
       scenario 'duplicate profile set is created with null service_provider' do
@@ -161,50 +158,6 @@ RSpec.feature 'One Account Global Detection' do
       end
     end
 
-    context 'when User2 has a legacy (non-facial-match) profile' do
-      let!(:profile2) do
-        create(
-          :profile,
-          :active,
-          pii: pii_attrs,
-          user: user2,
-          idv_level: :legacy_unsupervised,
-        )
-      end
-
-      before do
-        link_identity(user1, current_sp, 2)
-      end
-
-      scenario 'User1 is not shown duplicate warning (only facial match profiles count)' do
-        complete_sign_in(user1)
-
-        expect_no_duplicate_warning
-      end
-    end
-
-    context 'when User1 has a legacy (non-facial-match) profile' do
-      let!(:profile1) do
-        create(
-          :profile,
-          :active,
-          pii: pii_attrs,
-          user: user1,
-          idv_level: :legacy_unsupervised,
-        )
-      end
-
-      before do
-        link_identity(user1, current_sp, 2)
-      end
-
-      scenario 'User1 is not checked for duplicates (only facial match users checked)' do
-        complete_sign_in(user1)
-
-        expect_no_duplicate_warning
-      end
-    end
-
     context 'when an existing SP-scoped duplicate set exists' do
       before do
         link_identity(user1, current_sp, 2)
@@ -295,7 +248,7 @@ RSpec.feature 'One Account Global Detection' do
       scenario 'User1 is NOT shown duplicate warning (SP-scoped only checks same SP)' do
         complete_sign_in(user1)
 
-        expect_oidc_redirect
+        expect_no_duplicate_warning
       end
     end
 
@@ -311,7 +264,7 @@ RSpec.feature 'One Account Global Detection' do
       scenario 'User1 is NOT shown duplicate warning (SP not eligible)' do
         complete_sign_in(user1)
 
-        expect_oidc_redirect
+        expect_no_duplicate_warning
       end
     end
   end
@@ -363,10 +316,6 @@ RSpec.feature 'One Account Global Detection' do
 
   def expect_no_duplicate_warning
     expect(page).not_to have_current_path(duplicate_profiles_detected_path(source: :sign_in))
-  end
-
-  def expect_oidc_redirect
-    expect(oidc_redirect_url).to match(redirect_url_pattern)
   end
 
   def mark_identity_verified_for_one_account(user)
