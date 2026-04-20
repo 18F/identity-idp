@@ -3,16 +3,17 @@
 module ProofingAgent
   class ProofUser
     def initialize(applicant)
-      @applicant = applicant.symbolize_keys
+      @applicant = ProofingAgent::ApplicantPiiTransformer.new(applicant).transform
     end
 
-    def self.call(
+    def call(
       document_capture_session:,
       proofing_agent_id:,
       proofing_location_id:,
       correlation_id:,
       trace_id:,
-      transaction_id:
+      transaction_id:,
+      webhook_url:
     )
       encrypted_arguments = Encryption::Encryptors::BackgroundProofingArgEncryptor.new.encrypt(
         { applicant_pii: @applicant }.to_json,
@@ -26,12 +27,23 @@ module ProofingAgent
         service_provider_issuer: document_capture_session.issuer,
         ipp_enrollment_in_progress: false,
         proofing_vendor:,
+        proofing_agent_id:,
+        proofing_location_id:,
+        correlation_id:,
+        webhook_url:,
+        transaction_id:,
       }
       if IdentityConfig.store.ruby_workers_idv_enabled
         ProofingAgentJob.perform_later(**job_arguments)
       else
         ProofingAgentJob.perform_now(**job_arguments)
       end
+    end
+
+    private
+
+    def proofing_vendor
+      'proofing_agent'
     end
   end
 end
