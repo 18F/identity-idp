@@ -15,7 +15,7 @@ class SignInRecaptchaForm
   def initialize(
     existing_device:,
     ab_test_bucket:,
-    form_class: RecaptchaForm,
+    form_class:,
     **form_args
   )
     @existing_device = existing_device

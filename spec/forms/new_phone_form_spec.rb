@@ -378,8 +378,10 @@ RSpec.describe NewPhoneForm do
     end
 
     context 'with recaptcha enabled' do
-      let(:errors) { ActiveModel::Errors.new(RecaptchaForm.new) }
-      let(:recaptcha_form) { PhoneRecaptchaForm.new(parsed_phone: nil) }
+      let(:errors) { ActiveModel::Errors.new(RecaptchaEnterpriseForm.new) }
+      let(:recaptcha_form) do
+        PhoneRecaptchaForm.new(parsed_phone: nil, form_class: RecaptchaEnterpriseForm)
+      end
       let(:recaptcha_token) { 'token' }
       let(:phone) { '3065550100' }
       let(:international_code) { 'CA' }
