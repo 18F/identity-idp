@@ -2,6 +2,10 @@
 
 module ProofingAgent
   class RequestTokenValidator < Api::RequestTokenValidator
+    def webhook_url
+      config_data&.fetch('webhook_url', nil)
+    end
+
     private
 
     def config_data_exists

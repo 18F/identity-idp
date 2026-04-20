@@ -63,6 +63,7 @@ module Api
           correlation_id:,
           trace_id: amzn_trace_id,
           transaction_id:,
+          webhook_url: request_token.webhook_url,
         )
 
         render json: response_body, status: :accepted
