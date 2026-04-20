@@ -13,6 +13,7 @@ module ProofingAgent
       correlation_id:,
       trace_id:,
       transaction_id:,
+      proofing_vendor:,
       webhook_url:
     )
       encrypted_arguments = Encryption::Encryptors::BackgroundProofingArgEncryptor.new.encrypt(
@@ -38,12 +39,6 @@ module ProofingAgent
       else
         ProofingAgentJob.perform_now(**job_arguments)
       end
-    end
-
-    private
-
-    def proofing_vendor
-      'proofing_agent'
     end
   end
 end

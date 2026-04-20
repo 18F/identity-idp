@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require 'rails_helper'
 
 RSpec.describe ProofingAgent::ProofUser do
@@ -14,6 +12,9 @@ RSpec.describe ProofingAgent::ProofUser do
     create(:document_capture_session, user:, issuer:, result_id: SecureRandom.hex)
   end
   let(:transaction_id) { document_capture_session.uuid }
+  let(:proofing_vendor) do
+    IdentityConfig.store.idv_resolution_default_vendor
+  end
 
   let(:state_id_applicant) do
     {
@@ -73,6 +74,7 @@ RSpec.describe ProofingAgent::ProofUser do
       correlation_id:,
       trace_id:,
       transaction_id:,
+      proofing_vendor:,
       webhook_url:,
     )
   end
@@ -110,7 +112,7 @@ RSpec.describe ProofingAgent::ProofUser do
               user_id: document_capture_session.user_id,
               service_provider_issuer: issuer,
               ipp_enrollment_in_progress: false,
-              proofing_vendor: 'proofing_agent',
+              proofing_vendor:,
               proofing_agent_id:,
               proofing_location_id:,
               correlation_id:,
@@ -158,7 +160,7 @@ RSpec.describe ProofingAgent::ProofUser do
               user_id: document_capture_session.user_id,
               service_provider_issuer: issuer,
               ipp_enrollment_in_progress: false,
-              proofing_vendor: 'proofing_agent',
+              proofing_vendor:,
               proofing_agent_id:,
               proofing_location_id:,
               correlation_id:,
@@ -210,7 +212,7 @@ RSpec.describe ProofingAgent::ProofUser do
             user_id: document_capture_session.user_id,
             service_provider_issuer: issuer,
             ipp_enrollment_in_progress: false,
-            proofing_vendor: 'proofing_agent',
+            proofing_vendor:,
             proofing_agent_id:,
             proofing_location_id:,
             correlation_id:,

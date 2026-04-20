@@ -42,25 +42,25 @@ module ProofingAgent
 
     def determine_failure_reason
       return 'resolution_exception' if resolution_result.present? && resolution_result[:exception].present?
-      return 'aamva_exception' if aamva_result.present? && aamva_result[:exception].present?
-      return 'mrz_exception' if mrz_result.present? && mrz_result[:exception].present?
+      return 'aamva_exception' if aamva_result.present? && aamva_result.exception.present?
+      return 'mrz_exception' if mrz_result.present? && mrz_result.exception.present?
 
       return 'resolution_failed' if resolution_result.present? && !resolution_result[:success]
       return 'aamva_failed' if aamva_result.present? && !aamva_success?
-      return 'mrz_failed' if mrz_result.present? && !mrz_result[:success]
+      return 'mrz_failed' if mrz_result.present? && !mrz_result.success?
 
       nil
     end
 
     def aamva_success?
-      aamva_result[:success] || aamva_skipped?
+      aamva_result.success? || aamva_skipped?
     end
 
     def aamva_skipped?
       [
         Idp::Constants::Vendors::AAMVA_CHECK_SKIPPED,
         Idp::Constants::Vendors::AAMVA_UNSUPPORTED_JURISDICTION,
-      ].include?(aamva_result[:vendor_name])
+      ].include?(aamva_result.vendor_name)
     end
   end
 end
