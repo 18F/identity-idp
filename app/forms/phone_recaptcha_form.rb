@@ -7,7 +7,7 @@ class PhoneRecaptchaForm
 
   delegate :submit, :errors, to: :form
 
-  def initialize(parsed_phone:, form_class: RecaptchaForm, **form_args)
+  def initialize(parsed_phone:, form_class:, **form_args)
     @parsed_phone = parsed_phone
     @form_class = form_class
     @form_args = form_args
