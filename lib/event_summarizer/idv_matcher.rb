@@ -10,6 +10,7 @@ require 'event_summarizer/vendor_result_evaluators/phone_finder'
 require 'event_summarizer/vendor_result_evaluators/true_id'
 require 'event_summarizer/vendor_result_evaluators/socure_doc_v'
 require 'event_summarizer/vendor_result_evaluators/socure_kyc'
+require 'event_summarizer/vendor_result_evaluators/socure_phone_risk'
 
 module EventSummarizer
   class IdvMatcher
@@ -41,6 +42,11 @@ module EventSummarizer
         id: :socure_kyc,
         name: 'Socure KYC',
         evaluator_module: EventSummarizer::VendorResultEvaluators::SocureKyc,
+      },
+      'socure_phonerisk' => {
+        id: :socure_phonerisk,
+        name: 'Socure Phone Risk',
+        evaluator_module: EventSummarizer::VendorResultEvaluators::SocurePhoneRisk,
       },
       'lexisnexis:instant_verify' => {
         id: :instant_verify,
@@ -508,12 +514,14 @@ module EventSummarizer
     def handle_phone_confirmation_vendor_event(event:)
       timestamp = event['@timestamp']
       success = event.dig(*EVENT_PROPERTIES, 'success')
+      vendor = event.dig(*EVENT_PROPERTIES, 'vendor', 'vendor_name')
+      vendor_name = VENDORS.dig(vendor, :name) || UNKNOWN_VENDOR.dig(:name)
 
       if success
         add_significant_event(
           timestamp:,
-          type: :passed_phone_finder,
-          description: 'Phone Finder check succeeded',
+          type: :passed_phone_confirmation,
+          description: "Phone confirmation check succeeded via #{vendor_name}",
         )
 
         return
