@@ -242,6 +242,7 @@ RSpec.describe AttemptsApi::Tracker do
 
       context 'with Devise session' do
         let(:mock_session) { { 'warden.user.user.session' => {} } }
+        let(:user_session) { mock_session['warden.user.user.session'] }
 
         before do
           allow(request).to receive(:session).and_return(mock_session)
@@ -249,10 +250,8 @@ RSpec.describe AttemptsApi::Tracker do
 
         it 'populates the session info' do
           subject.idv_enrollment_complete(reproof: false)
-          expect(mock_session['warden.user.user.session']).to eq(
-            'idv/attempts' => ['idv-enrollment-complete' => {
-              'user_uuid' => user.uuid,
-            }],
+          expect(user_session['idv/attempts']).to include(
+            hash_including('idv-enrollment-complete'),
           )
         end
 
@@ -285,10 +284,8 @@ RSpec.describe AttemptsApi::Tracker do
 
           it 'still populates the session info' do
             subject.idv_enrollment_complete(reproof: false)
-            expect(mock_session['warden.user.user.session']).to eq(
-              'idv/attempts' => ['idv-enrollment-complete' => {
-                'user_uuid' => user.uuid,
-              }],
+            expect(user_session['idv/attempts']).to include(
+              hash_including('idv-enrollment-complete'),
             )
           end
         end

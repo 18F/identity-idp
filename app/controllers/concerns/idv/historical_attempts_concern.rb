@@ -9,28 +9,25 @@ module Idv
       return unless historical_events_enabled?
       @password = password
 
-      if !existing_user_proofing_event
-        encrypted_events = encrypt_attempt_events_bundle(user_session['idv/attempts'])
-        encrypted_events_json = JSON.parse(encrypted_events)
-        new_user_proofing_event = UserProofingEvent.new(
-          encrypted_events:,
-          profile_id: current_user.active_profile.id,
-          service_providers_sent: [],
-          cost: encrypted_events_json['cost'],
-          salt: encrypted_events_json['salt'],
-        )
-        new_user_proofing_event.save
-      else
-        existing_events = JSON.parse(decrypt_user_proofing_events)
-        combined_events = existing_events.merge(user_session['idv/attempts'])
-        encrypted_events = encrypt_attempt_events_bundle(combined_events)
+      new_events = user_session['idv/attempts'] || []
 
-        existing_user_proofing_event.update_encrypted_events(encrypted_events)
-      end
+      encrypted_events = encrypt_attempt_events_bundle(new_events)
+      encrypted_events_json = JSON.parse(encrypted_events)
+      new_user_proofing_event = UserProofingEvent.new(
+        encrypted_events:,
+        profile_id: current_user.active_profile.id,
+        service_providers_sent: [],
+        cost: encrypted_events_json['cost'],
+        salt: encrypted_events_json['salt'],
+      )
+      new_user_proofing_event.save
+
+      # Now that proofing events are saved, remove the plaintext events from user_session
+      user_session.delete('idv/attempts')
     end
 
     def cache_user_proofing_events(password)
-      return unless historical_events_permitted? && existing_user_proofing_event
+      return unless historical_events_need_be_sent? && existing_user_proofing_event
       @password = password
 
       existing_events = decrypt_user_proofing_events
@@ -44,7 +41,7 @@ module Idv
       resolved_authn_context_result.identity_proofing_or_ialmax? && current_user.identity_verified?
     end
 
-    def historical_events_permitted?
+    def historical_events_need_be_sent?
       return false unless historical_events_enabled?
 
       sent_to_aaca = existing_user_proofing_event&.service_providers_sent&.include?(
