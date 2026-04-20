@@ -84,7 +84,7 @@ RSpec.describe ProofingAgent::ProofingResult do
     it 'returns failure' do
       expect(subject.combined_result).to eq(
         success: false,
-        reason: 'resolution_failed',
+        reason: 'profile_resolution_fail',
         resolution: resolution_result,
       )
     end
@@ -108,7 +108,7 @@ RSpec.describe ProofingAgent::ProofingResult do
     it 'returns failure with aamva reason' do
       expect(subject.combined_result).to eq(
         success: false,
-        reason: 'aamva_failed',
+        reason: 'id_fail',
         resolution: { success: true, errors: [], exception: nil },
         aamva: aamva_result,
       )
@@ -132,7 +132,7 @@ RSpec.describe ProofingAgent::ProofingResult do
     it 'returns failure with mrz reason' do
       expect(subject.combined_result).to eq(
         success: false,
-        reason: 'mrz_failed',
+        reason: 'passport_fail',
         resolution: { success: true, errors: [], exception: nil },
         mrz: mrz_result,
       )
