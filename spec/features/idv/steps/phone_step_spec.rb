@@ -471,7 +471,8 @@ RSpec.feature 'idv phone step', :js do
 
           context 'gpo verification is disabled' do
             before do
-              allow(IdentityConfig.store).to receive(:idv_gpo_verification_enabled).and_return(false)
+              allow(IdentityConfig.store).to receive(:idv_gpo_verification_enabled)
+                .and_return(false)
             end
 
             it 'does not display verify link' do
