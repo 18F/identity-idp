@@ -67,13 +67,10 @@ class DuplicateProfileChecker
   def handle_duplicate_profiles_found(associated_profiles)
     new_profiles_ids = (associated_profiles.map(&:id) + [profile.id]).uniq.sort
 
-    close_sp_scoped_sets_if_global_enabled
+    if global_detection_enabled?
+      DuplicateProfileSet.close_sp_scoped_sets_for_profile(profile_id: profile.id)
+    end
     find_or_create_duplicate_profile_set(new_profiles_ids)
-  end
-
-  def close_sp_scoped_sets_if_global_enabled
-    return unless global_detection_enabled?
-    DuplicateProfileSet.close_sp_scoped_sets_for_profile(profile_id: profile.id)
   end
 
   def find_or_create_duplicate_profile_set(new_profile_ids)
