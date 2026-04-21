@@ -284,7 +284,7 @@ class Profile < ApplicationRecord
     raise 'Profile not a duplicate' unless DuplicateProfileSet.open.exists?(
       ['? = ANY(profile_ids)', id],
     )
-
+    # rubocop:disable Metrics/BlockLength
     transaction do
       update!(
         active: false,
@@ -305,7 +305,9 @@ class Profile < ApplicationRecord
         end
 
         agency_name = if duplicate_profile.service_provider.present?
-          ServiceProvider.find_sole_by(issuer: duplicate_profile.service_provider)&.friendly_name
+                        ServiceProvider.find_sole_by(
+                          issuer: duplicate_profile.service_provider,
+                        )&.friendly_name
         end
         user.confirmed_email_addresses.each do |email_address|
           mailer = UserMailer.with(user: user, email_address: email_address)
@@ -315,6 +317,7 @@ class Profile < ApplicationRecord
         end
       end
     end
+    # rubocop:enable Metrics/BlockLength
   end
 
   def clear_duplicate
@@ -362,7 +365,9 @@ class Profile < ApplicationRecord
         end
 
         agency_name = if duplicate_profile.service_provider.present?
-          ServiceProvider.find_sole_by(issuer: duplicate_profile.service_provider)&.friendly_name
+                        ServiceProvider.find_sole_by(
+                          issuer: duplicate_profile.service_provider,
+                        )&.friendly_name
         end
         user.confirmed_email_addresses.each do |email_address|
           mailer = UserMailer.with(user: user, email_address: email_address)
