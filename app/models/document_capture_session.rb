@@ -120,7 +120,7 @@ class DocumentCaptureSession < ApplicationRecord
     session_result = load_agent_proofed_user ||
                      Idv::ProofingAgent::AgentProofedUser.new(id: generate_result_id)
 
-    session_result.success = agent_proofing_result[:success]
+    session_result.success = agent_proofing_success(agent_proofing_result)
     session_result.reason = agent_proofing_result[:reason]
     session_result.pii = agent_proofing_result[:pii]
     # session_result.proofing_components = agent_proofing_result.proofing_components
@@ -145,9 +145,9 @@ class DocumentCaptureSession < ApplicationRecord
     save!
   end
 
-  def agent_proofing_success(agent_proofing_result:, mrz_response: nil, aamva_response: nil)
-    agent_proofing_result.success? &&
-      (aamva_response.success? || mrz_response.success?)
+  def agent_proofing_success(agent_proofing_result)
+    agent_proofing_result[:success] &&
+      (agent_proofing_result[:aamva].success? || agent_proofing_result[:mrz].success?)
   end
 
   def expired?
