@@ -16,6 +16,8 @@ module ProofingAgent
       proofing_vendor:,
       webhook_url:
     )
+      document_capture_session.create_proofing_session
+
       encrypted_arguments = Encryption::Encryptors::BackgroundProofingArgEncryptor.new.encrypt(
         { applicant_pii: @applicant }.to_json,
       )
