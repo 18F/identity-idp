@@ -9,7 +9,7 @@ RSpec.describe ProofingAgent::ProofUser do
   let(:webhook_url) { 'https://example.com/webhook' }
   let(:issuer) { 'https://rp1.serviceprovider.com/auth/saml/metadata' }
   let(:document_capture_session) do
-    create(:document_capture_session, user:, issuer:, result_id: SecureRandom.hex)
+    create(:document_capture_session, user:, issuer:)
   end
   let(:transaction_id) { document_capture_session.uuid }
   let(:proofing_vendor) do
@@ -77,6 +77,7 @@ RSpec.describe ProofingAgent::ProofUser do
       proofing_vendor:,
       webhook_url:,
     )
+    document_capture_session.reload
   end
 
   def decrypt_applicant_pii(args)
@@ -108,7 +109,6 @@ RSpec.describe ProofingAgent::ProofUser do
           expect(ProofingAgentJob).to receive(:perform_later).with(
             hash_including(
               trace_id:,
-              result_id: document_capture_session.result_id,
               user_id: document_capture_session.user_id,
               service_provider_issuer: issuer,
               ipp_enrollment_in_progress: false,
@@ -156,7 +156,6 @@ RSpec.describe ProofingAgent::ProofUser do
           expect(ProofingAgentJob).to receive(:perform_later).with(
             hash_including(
               trace_id:,
-              result_id: document_capture_session.result_id,
               user_id: document_capture_session.user_id,
               service_provider_issuer: issuer,
               ipp_enrollment_in_progress: false,
@@ -208,7 +207,6 @@ RSpec.describe ProofingAgent::ProofUser do
         expect(ProofingAgentJob).to receive(:perform_now).with(
           hash_including(
             trace_id:,
-            result_id: document_capture_session.result_id,
             user_id: document_capture_session.user_id,
             service_provider_issuer: issuer,
             ipp_enrollment_in_progress: false,
