@@ -12,8 +12,6 @@ allOf:
         type: string
       state:
         type: string
-      country:
-        type: string
       zip:
         type: string
       address_edited:

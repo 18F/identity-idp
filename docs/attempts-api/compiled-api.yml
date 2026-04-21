@@ -279,12 +279,12 @@ paths:
                                           properties:
                                             telephony:
                                               type: array
-                                              description: |
-                                                The user registered a phone for MFA, but then opted out by replying “STOP” over text, so when attempting to send a subsequent OTP it fails with this failure reason.
+                                              description: Errors that explain the failure
                                               items:
                                                 type: string
                                                 enum:
-                                                  - 'Telephony::OptOutError - Pinpoint Error: PERMANENT_FAILURE - 400'
+                                                  - Email address is not valid
+                                                  - invalid
                                 mfa-enroll-code-rate-limited:
                                   description: |
                                     The user has exceeded the rate limit for entering an MFA code when setting up an MFA device. Note that this event is currently only generated for phone mfa types.
@@ -1192,15 +1192,9 @@ paths:
                                         document_selfie_image_file_id:
                                           type: string
                                           description: If this image existed, the ID generated for storage
-                                        document_front_image_encryption_key:
+                                        document_passport_image_file_id:
                                           type: string
-                                          description: Randomly generated Base64-encoded key generated to encrypt the front image file if it exists.
-                                        document_back_image_encryption_key:
-                                          type: string
-                                          description: Randomly generated Base64-encoded key generated to encrypt the back image file if it exists.
-                                        document_selfie_image_encryption_key:
-                                          type: string
-                                          description: Randomly generated Base64-encoded key generated to encrypt the selfie image file if it exists.
+                                          description: If this image existed, the ID generated for storage
                                         failure_reason:
                                           type: object
                                           description: |
@@ -1366,7 +1360,7 @@ paths:
                                             - proof_address
                                             - phone_confirmation
                                             - idv_send_link
-                                        phone:
+                                        phone_number:
                                           type: string
                                           description: |
                                             OPTIONAL, the provided phone number (in the event of a phone-related rate limiting)
@@ -1388,6 +1382,24 @@ paths:
                                         ssn:
                                           type: string
                                           description: User-submitted Social Security Number. Formatted with dashes (e.g. 123-45-6789).
+                                        success:
+                                          type: boolean
+                                          description: |
+                                            Indicates whether SSN was submitted successfully.
+                                        failure_reason:
+                                          type: object
+                                          description: |
+                                            An OPTIONAL object. An associative array of attributes and errors if success is false
+                                          properties:
+                                            ssn:
+                                              type: array
+                                              description: |
+                                                SSN submission errors that explain the failure.
+                                              items:
+                                                type: string
+                                                enum:
+                                                  - blank
+                                                  - invalid
                                 idv-device-risk-assessment:
                                   description: |
                                     This event captures the result of the Device Risk Assessment during Identity Verification.
