@@ -50,6 +50,7 @@ RSpec.describe SocureDocvResultsJob do
           firstName: 'Dwayne',
           surName: 'Denver',
           fullName: 'Dwayne Denver',
+          nameSuffix: 'Jr.',
           address: '123 Example Street, New York City, NY 10001',
           parsedAddress: {
             physicalAddress: '123 Example Street',
@@ -525,6 +526,7 @@ RSpec.describe SocureDocvResultsJob do
           document_capture_session_result = document_capture_session.load_result
           expect(document_capture_session_result.success).to eq(true)
           expect(document_capture_session_result.pii[:first_name]).to eq('Dwayne')
+          expedt(document_capture_session_result.pii[:name_suffix]).to eq('Jr.')
           expect(document_capture_session_result.attention_with_barcode).to eq(false)
           expect(document_capture_session_result.doc_auth_success).to eq(true)
           expect(document_capture_session_result.selfie_status).to eq(:not_processed)
