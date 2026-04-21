@@ -304,11 +304,13 @@ class Profile < ApplicationRecord
           )
         end
 
-        service_provider = ServiceProvider.find_sole_by(issuer: duplicate_profile.service_provider)
+        agency_name = if duplicate_profile.service_provider.present?
+          ServiceProvider.find_sole_by(issuer: duplicate_profile.service_provider)&.friendly_name
+        end
         user.confirmed_email_addresses.each do |email_address|
           mailer = UserMailer.with(user: user, email_address: email_address)
           mailer.dupe_profile_account_review_complete_locked(
-            agency_name: service_provider.friendly_name,
+            agency_name: agency_name,
           ).deliver_now_or_later
         end
       end
@@ -359,11 +361,13 @@ class Profile < ApplicationRecord
           )
         end
 
-        service_provider = ServiceProvider.find_sole_by(issuer: duplicate_profile.service_provider)
+        agency_name = if duplicate_profile.service_provider.present?
+          ServiceProvider.find_sole_by(issuer: duplicate_profile.service_provider)&.friendly_name
+        end
         user.confirmed_email_addresses.each do |email_address|
           mailer = UserMailer.with(user: user, email_address: email_address)
           mailer.dupe_profile_account_review_complete_unable(
-            agency_name: service_provider.friendly_name,
+            agency_name: agency_name,
           ).deliver_now_or_later
         end
       end

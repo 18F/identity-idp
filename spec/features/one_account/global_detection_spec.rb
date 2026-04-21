@@ -11,14 +11,12 @@ RSpec.feature 'One Account Global Detection' do
   end
   let(:pii_attrs) do
     {
-      first_name: 'Faker',
-      last_name: 'Fakerson',
-      ssn: '123-45-6789',
-      dob: '1980-01-01',
-      address1: '123 Main St',
-      city: 'Anytown',
-      state: 'NY',
-      zipcode: '12345',
+      first_name: Faker::Name.first_name,
+      last_name: Faker::Name.last_name,
+      address1: Faker::Address.street_address,
+      city: Faker::Address.city,
+      state: Faker::Address.state_abbr,
+      zipcode: Faker::Address.zip_code,
     }
   end
   let(:different_pii_attrs) do
