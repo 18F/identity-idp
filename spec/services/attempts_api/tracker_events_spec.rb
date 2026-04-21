@@ -1,0 +1,28 @@
+require 'rails_helper'
+RSpec.describe AttemptsApi::TrackerEvents do
+  @event_data = begin
+    spec = Openapi3Parser.load(File.open('./docs/attempts-api/compiled-api.yml'))
+    spec.components.schemas.each_with_object({}) do |(name, values), hash|
+      next unless values['allOf']
+      next if name.include?('Event')
+      props = values['allOf'][1]&.properties&.keys&.map(&:to_sym)
+      hash[name] = props || []
+    end
+  end
+
+  let(:methods) do
+    AttemptsApi::TrackerEvents.instance_methods
+  end
+
+  @event_data.each do |name, props|
+    it "defines a method for #{name} with the correct properties" do
+      expect(methods).to include(name.underscore.to_sym)
+
+      method = AttemptsApi::TrackerEvents.instance_method(name.underscore.to_sym)
+
+      # Remove :user_id from the method parameters as it is not part of the API
+      method_props = method.parameters.map(&:last).reject { |param| param == :user_id }
+      expect(method_props).to match_array(props)
+    end
+  end
+end

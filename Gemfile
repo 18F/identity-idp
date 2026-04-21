@@ -119,6 +119,7 @@ group :development, :test do
   gem 'rubocop-capybara', require: false
   gem 'prism'
   gem 'sqlite3', require: false
+  gem 'openapi3_parser', '~> 0.10.0'
 end
 
 group :test do

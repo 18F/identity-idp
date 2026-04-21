@@ -1,0 +1,1856 @@
+openapi: 3.0.3
+info:
+  version: 1.0.0
+  title: Attempts Stream API for Login.gov
+  license:
+    name: CC0 1.0 Universal
+    url: https://creativecommons.org/publicdomain/zero/1.0/legalcode
+  description: |
+    This document contains specifications for the Login.gov Attempts API, a new standards-based polling API based on the Shared Signals Framework (SSF) and the RISC poll-based SET delivery specification (RFC 8936).
+
+    The Attempts API securely transmits integration-specific identity verification event summary data to Relying Parties (RP) for the purposes of fraud prevention and mitigation.
+
+    To ensure the security of data transmission, all endpoints will utilize Bearer Tokens. The format of these Bearer Tokens will be <RP-ISSUER> <SHARED-SECRET>. To ensure the security of individual Security Event Tokens (SETs), each one will be encrypted with a public key provided from the RP.
+servers:
+  - url: https://secure.login.gov
+    description: Production server (uses live data)
+  - url: https://idp.int.identitysandbox.gov
+    description: Sandbox server (uses test data)
+paths:
+  /.well-known/ssf-configuration:
+    get:
+      summary: Request for transmitter configuration
+      description: Return Transmitter Configuration information.
+      operationId: _well_known_configuration_get
+      security: []
+      responses:
+        '200':
+          description: |
+            A set of Claims about the Transmitter's configuration,
+            including all necessary endpoints and public key location information
+          content:
+            application/json:
+              schema:
+                type: object
+                title: Transmitter Configuration Response
+                description: |
+                  Metadata describing the Login.gov transmitter configuration.
+                properties: &ref_3
+                  issuer:
+                    type: string
+                    description: |
+                      Event issuer, which will be a Login.gov URL indicating the environment in which the event occurred.
+
+                      This MUST be identical to the iss claim value in Security Event Tokens issued from this Transmitter.
+                    format: uri
+                    example: https://secure.login.gov
+                  jwks_uri:
+                    type: string
+                    description: |
+                      URL of the Transmitter's JSON Web Key Set
+                    format: uri
+                    example: https://secure.login.gov/api/openid_connect/certs
+                  delivery:
+                    type: object
+                    description: Details about the delivery method and endpoint
+                    properties:
+                      endpoint_url:
+                        type: string
+                        format: uri
+                        description: |
+                          The URL of the polling endpoint
+
+                          prod: `https://secure.login.gov/api/attempts/poll`
+
+                          sandbox: `https://idp.int.identitysandbox.gov/attempts/poll`
+                        example: https://secure.login.gov/api/attempts/poll
+                      method:
+                        type: string
+                        format: uri
+                        enum:
+                          - https://schemas.openid.net/secevent/risc/delivery-method/poll
+                  delivery_methods_supported:
+                    type: array
+                    items:
+                      type: string
+                      format: uri
+                      enum:
+                        - https://schemas.openid.net/secevent/risc/delivery-method/poll
+                    description: List of supported delivery method URIs.
+                  status_endpoint:
+                    type: string
+                    format: uri
+                    description: |
+                      The URL of the Status Endpoint.
+
+                      prod: `https://secure.login.gov/api/attempts/status`
+
+                      sandbox: `https://idp.int.identitysandbox.gov/attempts/status`
+                    example: https://secure.login.gov/api/attempts/status
+                  verification_endpoint:
+                    type: string
+                    format: uri
+                    description: |
+                      The URL of the Verification Endpoint.
+
+                      prod: `https://secure.login.gov/api/attempts/verification`
+
+                      sandbox: `https://idp.int.identitysandbox.gov/attempts/verification`
+                    example: https://secure.login.gov/api/attempts/verification
+        '400':
+          description: |
+            The 400 (Bad Request) status code indicates that the server cannot or
+            will not process the request due to something that is perceived to be
+            a client error (e.g., malformed request syntax, invalid request
+            message framing, or deceptive request routing).
+        5XX:
+          description: Unexpected error.
+  /api/attempts/poll:
+    post:
+      summary: Request for queued events to be returned.
+      description: |-
+        A Relying Party will POST this endpoint in order to receive Poll-Based Security Event Tokens (SET). These Sets will be the queued identity verification events.
+
+        The structure of this endpoint is based on the [RISC Specification](https://www.rfc-editor.org/rfc/rfc8936.html#name-polling-http-request) for polling
+      operationId: poll_events
+      security:
+        - BearerAuth: []
+      requestBody:
+        description: |
+          The request is detailed in the RISC spec (https://www.rfc-editor.org/rfc/rfc8936.html#name-polling-http-request):
+
+          When initiating a poll request, the SET Recipient constructs a JSON document that consists of
+          polling request parameters and SET acknowledgement parameters in the form of JSON objects.
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              title: Polling Request
+              description: |
+                Acceptable body to poll the Attempts API
+              properties: &ref_4
+                ack:
+                  type: array
+                  items:
+                    type: string
+                  description: |
+                    List of event JTIs that the receiver is acknowledging. The Transmitter can stop keeping track of these.
+      responses:
+        '200':
+          description: |
+            As detailed in the [RISC Spec](https://www.rfc-editor.org/rfc/rfc8936.html#name-polling-http-response):
+            In response to a poll request, the SET Transmitter checks for available SETs and responds with a JSON document containing the list of SETs.
+
+            A decoded SET looks like:
+
+            ```
+            "6454bc0b-00fc-4404-885c-7f07bef243ce": {
+             "aud": "https://serviceprovider.com",
+             "iat": 1657920726,
+             "iss": "https://secure.login.gov",
+             "jti": "6454bc0b-00fc-4404-885c-7f07bef243ce",
+             "events": {
+             "https://schemas.login.gov/secevent/attempts-api/event-type/mfa-enroll-backup-code": {
+             "application_url": "string",
+             "occurred_at": 1657920726,
+             "subject": {
+             "subject_type": "session",
+             "session_id": "12345"
+             },
+             "user_ip_address": "string",
+             "user_uuid": "string",
+             "unique_session_id": "string",
+             "success": true
+             }
+            }
+            ```
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  sets:
+                    type: object
+                    description: The key is the event JTI; the value is an encoded JWT
+                    additionalProperties:
+                      type: object
+                      title: Decoded JWT Payload
+                      description: |
+                        Default payload body for each event.
+                      properties: &ref_1
+                        aud:
+                          type: string
+                          description: Event audience, ie the issuer of the RP's integration.
+                          example: https://serviceprovider.com
+                        iat:
+                          type: integer
+                          format: int64
+                          description: |
+                            Issued at timestamp for when the SET was created. `occurred_at` within the event may be a more reliable indicator of when the user action occurred, though in practical terms the two will typically be identical.
+                          example: 1657920726
+                        iss:
+                          type: string
+                          description: Event issuer, which will be a Login.gov URL indicating the environment in which the event occurred.
+                          example: https://secure.login.gov
+                        jti:
+                          type: string
+                          description: |
+                            Transaction ID, a unique identifier for the SET. This functions as the CSP transaction ID.
+                          example: 6454bc0b-00fc-4404-885c-7f07bef243ce
+                        events:
+                          type: object
+                          allOf: &ref_2
+                            - properties: &ref_14
+                                mfa-enroll-phone-otp-sent:
+                                  description: |
+                                    Relevant only when the user is enrolling a phone as their MFA. The user has been sent a one-time password by Login.gov over SMS or voice during the MFA enrollment process.
+                                  allOf: &ref_6
+                                    - type: object
+                                      properties: &ref_0
+                                        application_url:
+                                          type: string
+                                          description: |
+                                            Indicates the SP URL (redirect_uri) where the user will be redirected after authentication.
+                                        aws_region:
+                                          type: string
+                                          description: AWS Region in which the event occurred.
+                                        client_port:
+                                          type: string
+                                          description: Known more commonly as ephemeral port numbers associated with the Client IP – This is NOT the CSP server port 443 or 80.
+                                        device_id:
+                                          type: string
+                                          description: |
+                                            Cookie device unique identifier. This value is securely randomly generated server-side as a string of 128 hexadecimal characters using the SecureRandom Ruby library.
+                                        google_analytics_cookies:
+                                          type: object
+                                          description: |
+                                            Any Google Analytics cookie values that are present
+                                        language:
+                                          type: string
+                                          description: The locale set by the user.
+                                        occurred_at:
+                                          type: number
+                                          format: float64
+                                          description: The time when the event occurred in epoch seconds.
+                                        subject:
+                                          type: object
+                                          properties: &ref_5
+                                            subject_type:
+                                              type: string
+                                              enum:
+                                                - session
+                                            session_id:
+                                              type: string
+                                              description: Matches the session ID passed in from the service provider
+                                              example: '12345'
+                                        useragent_string:
+                                          type: string
+                                          description: The end user's browser's useragent string, which identifies the type of browser, device and operating system being used as well as the version of the browser.
+                                        user_ip_address:
+                                          type: string
+                                          description: The end user’s IP address.
+                                        user_uuid:
+                                          type: string
+                                          description: |
+                                            The primary key identifying a user in Login.gov. This field is populated only for users who have used their accounts to access the Agency Application, since it is generated when a user provides their consent for the first time.
+                                        unique_session_id:
+                                          type: string
+                                          description: |
+                                            A string identifying the Login.gov session ID for the user. This is generated by Login.gov and is distinct from the SP-provided session_id within the subject attribute.
+                                    - type: object
+                                      properties:
+                                        phone_number:
+                                          type: string
+                                          description: The provided phone number
+                                        otp_delivery_method:
+                                          type: string
+                                          enum:
+                                            - sms
+                                            - voice
+                                        success:
+                                          type: boolean
+                                          description: |
+                                            Indicates whether the one-time password was sent.
+                                        failure_reason:
+                                          type: object
+                                          description: |
+                                            An OPTIONAL object. An associative array of attributes and errors if success is false
+                                          properties:
+                                            telephony:
+                                              type: array
+                                              description: |
+                                                The user registered a phone for MFA, but then opted out by replying “STOP” over text, so when attempting to send a subsequent OTP it fails with this failure reason.
+                                              items:
+                                                type: string
+                                                enum:
+                                                  - 'Telephony::OptOutError - Pinpoint Error: PERMANENT_FAILURE - 400'
+                                mfa-enroll-code-rate-limited:
+                                  description: |
+                                    The user has exceeded the rate limit for entering an MFA code when setting up an MFA device. Note that this event is currently only generated for phone mfa types.
+                                  allOf: &ref_7
+                                    - type: object
+                                      properties: *ref_0
+                                    - type: object
+                                      properties:
+                                        mfa_device_type:
+                                          type: string
+                                          enum:
+                                            - backup_code
+                                            - otp
+                                            - personal_key
+                                            - piv_cac
+                                mfa-enroll-phone-otp-sent-rate-limited:
+                                  description: |
+                                    The user has exceeded the rate limit for requesting OTPs be sent to their phone when setting up an MFA device.
+                                  allOf: &ref_8
+                                    - type: object
+                                      properties: *ref_0
+                                    - type: object
+                                      properties:
+                                        phone_number:
+                                          type: string
+                                          description: The provided phone number
+                                mfa-enrolled:
+                                  description: The user has set up multi-factor authentication
+                                  allOf: &ref_9
+                                    - type: object
+                                      properties: *ref_0
+                                    - type: object
+                                      properties:
+                                        success:
+                                          type: boolean
+                                          description: |
+                                            Indicates whether the MFA setup was successful.
+                                        mfa_device_type:
+                                          type: string
+                                          enum:
+                                            - backup_code
+                                            - phone
+                                            - piv_cac
+                                            - totp
+                                            - webauthn
+                                            - webauthn_platform
+                                        phone_number:
+                                          type: string
+                                          description: OPTIONAL UNLESS mfa_device_type is phone. The enrolled phone number.
+                                        otp_delivery_method:
+                                          type: string
+                                          enum:
+                                            - sms
+                                            - voice
+                                          description: OPTIONAL UNLESS mfa_device_type is phone. The `otp_delivery_method` is included.
+                                user-registration-email-confirmed:
+                                  description: |
+                                    User clicks on the confirmation link sent to their provided email address. Note: Internally, Login's meaning of a 'confirmed' email is overloaded, and also requires that a password has been set. This event uses the plain-language meaning of 'confirmed': a user clicked the link in an email, showing ownership of the email account.
+                                  allOf: &ref_10
+                                    - type: object
+                                      properties: *ref_0
+                                    - type: object
+                                      properties:
+                                        email:
+                                          type: string
+                                        failure_reason:
+                                          type: object
+                                          description: |
+                                            An OPTIONAL object. An associative array of attributes and errors if success is false
+                                          properties:
+                                            email:
+                                              type: array
+                                              description: An OPTIONAL key that describes errors with the email provided
+                                              items:
+                                                type: string
+                                                enum:
+                                                  - already_confirmed
+                                            confirmation_token:
+                                              type: array
+                                              description: An OPTIONAL key that describes errors with the confirmation token
+                                              items:
+                                                type: string
+                                                enum:
+                                                  - expired
+                                                  - not_found
+                                        success:
+                                          type: boolean
+                                          description: |
+                                            Indicates whether the user clicked on the link that was sent to them and confirmed the email they submitted is theirs.
+                                user-registration-email-submission-rate-limited:
+                                  description: |
+                                    This event can occur during sign up when a user attempts to submit the same email address multiple times without setting up a password. Note that Login.gov does not actually prevent the user from retrying in this case.
+                                  allOf: &ref_11
+                                    - type: object
+                                      properties: *ref_0
+                                    - type: object
+                                      properties:
+                                        email:
+                                          type: string
+                                        email_already_registered:
+                                          type: boolean
+                                          description: |
+                                            A 'true' value indicates that the user has exceeded the rate limit for submitting an email address that is already registered. A 'false' value indicates that the user has exceeded the rate limit for submitting an email address that has *not* been registered previously.
+                                user-registration-email-submitted:
+                                  description: A user provides their email address to create a new account.
+                                  allOf: &ref_12
+                                    - type: object
+                                      properties: *ref_0
+                                    - type: object
+                                      properties:
+                                        email:
+                                          type: string
+                                        failure_reason:
+                                          type: object
+                                          description: |
+                                            An OPTIONAL object. An associative array of attributes and errors if success is false
+                                          properties:
+                                            email:
+                                              type: array
+                                              description: Errors that explain the failure
+                                              items:
+                                                type: string
+                                                enum:
+                                                  - Email address is not valid
+                                                  - invalid
+                                        success:
+                                          type: boolean
+                                          description: |
+                                            Indicates whether the account was created successfully for the submitted email.
+                                user-registration-password-submitted:
+                                  description: A user provides a password for their account.
+                                  allOf: &ref_13
+                                    - type: object
+                                      properties: *ref_0
+                                    - type: object
+                                      properties:
+                                        failure_reason:
+                                          type: object
+                                          description: |
+                                            An OPTIONAL object. An associative array of attributes and errors if success is false
+                                          properties:
+                                            password:
+                                              type: array
+                                              description: Errors that explain the failure
+                                              items:
+                                                type: string
+                                                enum:
+                                                  - pwned
+                                                  - too_short
+                                        success:
+                                          type: boolean
+                                          description: |
+                                            Indicates whether the entered password is valid and matches the user’s password.
+                            - properties: &ref_26
+                                logged-in-account-purged:
+                                  description: A logged in user deletes their account.
+                                  allOf: &ref_15
+                                    - type: object
+                                      properties: *ref_0
+                                    - type: object
+                                      properties:
+                                        success:
+                                          type: boolean
+                                          description: |
+                                            Indicates whether the the account was successfully deleted.
+                                logged-in-password-change:
+                                  description: A logged in user changes the password for their account.
+                                  allOf: &ref_16
+                                    - type: object
+                                      properties: *ref_0
+                                    - type: object
+                                      properties:
+                                        failure_reason:
+                                          type: object
+                                          description: |
+                                            An OPTIONAL object. An associative array of attributes and errors if success is false
+                                          properties:
+                                            password:
+                                              type: array
+                                              description: Errors that explain the failure
+                                              items:
+                                                type: string
+                                                enum:
+                                                  - pwned
+                                                  - too_short
+                                            password_confirmation:
+                                              type: array
+                                              description: Errors that explain the failure
+                                              items:
+                                                type: string
+                                                enum:
+                                                  - pwned
+                                                  - too_short
+                                                  - mismatch
+                                        success:
+                                          type: boolean
+                                          description: |
+                                            Indicates whether the password was successfully changed by logged in user
+                                login-completed:
+                                  description: The user has logged in successfully and is being passed back to the service provider.
+                                  allOf: &ref_17
+                                    - type: object
+                                      properties: *ref_0
+                                    - type: object
+                                login-email-and-password-auth:
+                                  description: |
+                                    During a login attempt, a user has submitted a password. Rather than tracking the number of failed password auth attempts, we generate this event on each attempt.
+                                  allOf: &ref_18
+                                    - type: object
+                                      properties: *ref_0
+                                    - type: object
+                                      properties:
+                                        email:
+                                          type: string
+                                          description: |
+                                            The email address used in this login attempt.
+                                        success:
+                                          type: boolean
+                                          description: |
+                                            Indicates whether the entered email and password were correct.
+                                login-rate-limited:
+                                  description: |
+                                    The user has exceeded the limit for providing their email address and password all resulting in a failed login attempt.
+                                  allOf: &ref_19
+                                    - type: object
+                                      properties: *ref_0
+                                    - type: object
+                                      properties:
+                                        email:
+                                          type: string
+                                          description: User-provided email address
+                                logout-initiated:
+                                  description: The user has logged out of their account.
+                                  allOf: &ref_20
+                                    - type: object
+                                      properties: *ref_0
+                                    - type: object
+                                      properties:
+                                        success:
+                                          type: boolean
+                                          description: |
+                                            Indicates whether the logout was successfully initiated
+                                mfa-login-phone-otp-sent:
+                                  description: |
+                                    During a login attempt, an OTP code has been sent via SMS or Voice.
+                                    Reauthentication occurs when the user was already signed in but their session has timed out and they need to reauthenticate to continue.
+                                  allOf: &ref_21
+                                    - type: object
+                                      properties: *ref_0
+                                    - type: object
+                                      properties:
+                                        otp_delivery_method:
+                                          type: string
+                                          enum:
+                                            - sms
+                                            - voice
+                                        phone_number:
+                                          type: string
+                                          description: User-provided phone number
+                                        reauthentication:
+                                          type: boolean
+                                        success:
+                                          type: boolean
+                                          description: |
+                                            Indicates whether the one-time code was sent.
+                                        failure_reason:
+                                          type: object
+                                          description: |
+                                            An OPTIONAL object. An associative array of attributes and errors if success is false
+                                          properties:
+                                            telephony:
+                                              type: array
+                                              description: |
+                                                The user registered a phone for MFA, but then opted out by replying “STOP” over text, so when attempting to send a subsequent OTP it fails with this failure reason.
+                                              items:
+                                                type: string
+                                                enum:
+                                                  - 'Telephony::OptOutError - Pinpoint Error: PERMANENT_FAILURE - 400'
+                                mfa-login-phone-otp-sent-rate-limited:
+                                  description: |
+                                    During a login attempt, the user has exceeded the limit for requesting an OTP be sent to their phone.
+                                  allOf: &ref_22
+                                    - type: object
+                                      properties: *ref_0
+                                    - type: object
+                                      properties:
+                                        phone_number:
+                                          type: string
+                                          description: User-provided phone number
+                                mfa-login-auth-submitted:
+                                  description: |
+                                    During a login attempt, the user has submitted a verification attempt using their MFA . 
+                                    Reauthentication occurs when the user was already signed in but their session has timed out and they need to reauthenticate to continue.
+                                  allOf: &ref_23
+                                    - type: object
+                                      properties: *ref_0
+                                    - type: object
+                                      properties:
+                                        mfa_device_type:
+                                          type: string
+                                          enum:
+                                            - backup_code
+                                            - otp
+                                            - piv_cac
+                                            - totp
+                                            - webauthn
+                                            - webauthn_platform
+                                        reauthentication:
+                                          description: an OPTIONAL boolean. For use with the `otp` MFA type
+                                          type: boolean
+                                        success:
+                                          type: boolean
+                                          description: |
+                                            Indicates whether verification was valid.
+                                        failure_reason:
+                                          type: object
+                                          description: |
+                                            An OPTIONAL object. An associative array of attributes and errors if success is false.
+                                          properties:
+                                            piv_cac:
+                                              type: array
+                                              items:
+                                                type: string
+                                                enum:
+                                                  - already_associated
+                                            user:
+                                              type: array
+                                              items:
+                                                type: string
+                                                enum:
+                                                  - not_found
+                                                  - piv_cac_mismatch
+                                            certificate:
+                                              type: array
+                                              items:
+                                                type: string
+                                                enum:
+                                                  - bad
+                                                  - expired
+                                                  - invalid
+                                                  - none
+                                                  - not_auth_cert
+                                                  - revoked
+                                                  - unverified
+                                            token:
+                                              type: array
+                                              items:
+                                                type: string
+                                                enum:
+                                                  - bad
+                                                  - http_failure
+                                                  - invalid
+                                                  - missing
+                                mfa-submission-code-rate-limited:
+                                  description: |
+                                    The user has exceeded the limit for submitting an MFA code when signing in with a registered MFA device.
+                                  allOf: &ref_24
+                                    - type: object
+                                      properties: *ref_0
+                                    - type: object
+                                      properties:
+                                        mfa_device_type:
+                                          type: string
+                                          enum:
+                                            - backup_code
+                                            - otp
+                                            - piv_cac
+                                            - totp
+                                            - webauthn
+                                            - webauthn_platform
+                                session-timeout:
+                                  description: A logged in user has been inactive long enough to cause a session timeout
+                                  allOf: &ref_25
+                                    - type: object
+                                      properties: *ref_0
+                                    - type: object
+                            - properties: &ref_31
+                                account-reset-account-deleted:
+                                  description: |
+                                    A user requesting an account reset has completed the process. As a result, the account was deleted successfully.
+                                  allOf: &ref_27
+                                    - type: object
+                                      properties: *ref_0
+                                    - type: object
+                                      properties:
+                                        failure_reason:
+                                          type: object
+                                          description: |
+                                            An OPTIONAL object. An associative array of attributes and errors if success is false
+                                          properties:
+                                            token:
+                                              type: array
+                                              description: Errors that explain the failure.
+                                              items:
+                                                type: string
+                                                enum:
+                                                  - The link to delete your Login.gov account has expired. Please create another request to delete your account.
+                                        success:
+                                          type: boolean
+                                          description: |
+                                            Indicates whether the account was successfully deleted.
+                                forgot-password-email-confirmed:
+                                  description: |
+                                    A password reset having been previously requested, a user has clicked the link in the email to reset their password, confirming the email address’s validity.
+                                  allOf: &ref_28
+                                    - type: object
+                                      properties: *ref_0
+                                    - type: object
+                                      properties:
+                                        email:
+                                          type: string
+                                          description: |
+                                            An OPTIONAL string. The email address of the user who clicked the password reset link in the email
+                                            If the user is not found, this field will be nil
+                                        failure_reason:
+                                          type: object
+                                          description: |
+                                            An OPTIONAL object. An associative array of attributes and errors if success is false
+                                          properties:
+                                            user:
+                                              type: array
+                                              description: Errors that explain the failure. "blank" indicates that the token provided in the link is invalid, i.e. does not match an existing user.
+                                              items:
+                                                type: string
+                                                enum:
+                                                  - blank
+                                                  - token_expired
+                                        success:
+                                          type: boolean
+                                          description: |
+                                            Indicates whether the link clicked on by a user is valid and not expired.
+                                forgot-password-email-sent:
+                                  description: |
+                                    A user has requested a password reset.
+                                  allOf: &ref_29
+                                    - type: object
+                                      properties: *ref_0
+                                    - type: object
+                                      properties:
+                                        email:
+                                          type: string
+                                          description: User's email address
+                                forgot-password-new-password-submitted:
+                                  description: |
+                                    After previously requesting a password reset and having already clicked through from the email, a user has now submitted a new password.
+                                  allOf: &ref_30
+                                    - type: object
+                                      properties: *ref_0
+                                    - type: object
+                                      properties:
+                                        failure_reason:
+                                          type: object
+                                          description: |
+                                            An OPTIONAL object. An associative array of attributes and errors if success is false
+                                          properties:
+                                            password:
+                                              type: array
+                                              description: Errors that explain the failure.
+                                              items:
+                                                type: string
+                                                enum:
+                                                  - pwned
+                                                  - too_short
+                                            reset_password_token:
+                                              type: array
+                                              description: Errors that explain the failure.
+                                              items:
+                                                type: string
+                                                enum:
+                                                  - token_expired_error
+                                        success:
+                                          type: boolean
+                                          description: |
+                                            Indicates whether the new password was successfully submitted.
+                            - properties: &ref_49
+                                idv-address-submitted:
+                                  description: |
+                                    User manually submitted an IdV address
+                                  allOf: &ref_32
+                                    - type: object
+                                      properties: *ref_0
+                                    - type: object
+                                      properties:
+                                        address1:
+                                          type: string
+                                        address2:
+                                          type: string
+                                        city:
+                                          type: string
+                                        state:
+                                          type: string
+                                        zip:
+                                          type: string
+                                        address_edited:
+                                          type: boolean
+                                          description: |
+                                            True if updated address does not match document address
+                                        failure_reason:
+                                          type: object
+                                          description: |
+                                            An OPTIONAL object. An associative array of attributes and errors if success is false
+                                          properties:
+                                            state:
+                                              type: string
+                                              description: An OPTIONAL key if the code does not match
+                                              enum:
+                                                - blank
+                                            zipcode:
+                                              type: string
+                                              enum:
+                                                - pattern_mismatch
+                                            city:
+                                              type: string
+                                              enum:
+                                                - blank
+                                            address1:
+                                              type: string
+                                              enum:
+                                                - blank
+                                                - too_long
+                                            address2:
+                                              type: string
+                                              enum:
+                                                - too_long
+                                        success:
+                                          type: boolean
+                                          description: |
+                                            Indicates whether the entered code matched the code that was sent confirming the address
+                                idv-document-uploaded:
+                                  description: |
+                                    The user has uploaded documents locally
+                                  allOf: &ref_33
+                                    - type: object
+                                      properties: *ref_0
+                                    - type: object
+                                      properties:
+                                        document_front_image_file_id:
+                                          type: string
+                                          description: If this image exists, the ID used to retrieve it if needed
+                                        document_back_image_file_id:
+                                          type: string
+                                          description: If this image exists, the ID used to retrieve it if needed
+                                        document_passport_image_file_id:
+                                          type: string
+                                          description: If this image exists, the ID used to retrieve it if needed
+                                        document_selfie_image_file_id:
+                                          type: string
+                                          description: If this image exists, the ID used to retrieve it if needed
+                                        document_front_image_encryption_key:
+                                          type: string
+                                          description: Randomly generated Base64-encoded key used to encrypt the front image file if it exists.
+                                        document_back_image_encryption_key:
+                                          type: string
+                                          description: Randomly generated Base64-encoded key used to encrypt the back image file if it exists.
+                                        document_passport_image_encryption_key:
+                                          type: string
+                                          description: Randomly generated Base64-encoded key used to encrypt the passport image file if it exists.
+                                        document_selfie_image_encryption_key:
+                                          type: string
+                                          description: Randomly generated Base64-encoded key used to encrypt the selfie image file if it exists.
+                                        success:
+                                          type: boolean
+                                          description: |
+                                            Indicates whether the upload was successful
+                                        failure_reason:
+                                          type: object
+                                          description: |
+                                            An OPTIONAL object. An associative array of attributes and errors if success is false
+                                          properties:
+                                            limit:
+                                              type: array
+                                              description: An OPTIONAL key if the upload is rate limited
+                                              items:
+                                                type: string
+                                                enum:
+                                                  - rate_limited
+                                            front:
+                                              type: array
+                                              description: An OPTIONAL key if there are errors with the front image
+                                              items:
+                                                type: string
+                                                enum:
+                                                  - blank
+                                                  - duplicate_image
+                                                  - not_a_file
+                                            back:
+                                              type: array
+                                              description: An OPTIONAL key if there are errors with the back image
+                                              items:
+                                                type: string
+                                                enum:
+                                                  - blank
+                                                  - duplicate_image
+                                                  - not_a_file
+                                            selfie:
+                                              type: array
+                                              description: An OPTIONAL key if there are errors with the back image
+                                              items:
+                                                type: string
+                                                enum:
+                                                  - blank
+                                                  - duplicate_image
+                                                  - not_a_file
+                                idv-document-upload-submitted:
+                                  description: |
+                                    The document was uploaded during identity proofing and authenticated by the vendor.
+                                  allOf: &ref_34
+                                    - type: object
+                                      properties: *ref_0
+                                    - type: object
+                                      properties:
+                                        document_state:
+                                          type: string
+                                          description: Driver's licenses document_state
+                                        document_number:
+                                          type: string
+                                          description: Driver's license number
+                                        document_issued:
+                                          type: string
+                                          description: Issuance date
+                                        document_expiration:
+                                          type: string
+                                          description: Driver's license expiration
+                                        first_name:
+                                          type: string
+                                        last_name:
+                                          type: string
+                                        date_of_birth:
+                                          type: string
+                                        address1:
+                                          type: string
+                                        address2:
+                                          type: string
+                                        city:
+                                          type: string
+                                        state:
+                                          type: string
+                                        country:
+                                          type: string
+                                        zip:
+                                          type: string
+                                        document_front_image_file_id:
+                                          type: string
+                                          description: The ID used to retrieve this image if needed
+                                        document_back_image_file_id:
+                                          type: string
+                                          description: The ID used to retrieve this image if needed
+                                        document_passport_image_file_id:
+                                          type: string
+                                          description: The ID used to retrieve this image if needed
+                                        document_selfie_image_file_id:
+                                          type: string
+                                          description: The ID used to retrieve this image if needed
+                                        document_front_image_encryption_key:
+                                          type: string
+                                          description: Randomly generated Base64-encoded key used to encrypt the front image file.
+                                        document_back_image_encryption_key:
+                                          type: string
+                                          description: Randomly generated Base64-encoded key used to encrypt the back image file.
+                                        document_passport_image_encryption_key:
+                                          type: string
+                                          description: Randomly generated Base64-encoded key used to encrypt the passport image file if it exists.
+                                        document_selfie_image_encryption_key:
+                                          type: string
+                                          description: Randomly generated Base64-encoded key used to encrypt the selfie image file if it exists.
+                                        liveness_checking_required:
+                                          type: boolean
+                                          description: |
+                                            Indicates whether liveness checking is required
+                                        failure_reason:
+                                          type: object
+                                          description: |
+                                            An OPTIONAL object. An associative array of attributes and errors if success is false
+                                          properties:
+                                            id:
+                                              type: array
+                                              description: ID issues
+                                              items:
+                                                type: string
+                                                enum:
+                                                  - birth_date_checks
+                                                  - id_not_recognized
+                                                  - doc_crosscheck
+                                                  - doc_expired_check
+                                                  - doc_number_checks
+                                                  - expiration_checks
+                                                  - full_name_check
+                                                  - issue_date_checks
+                                                  - id_not_verified
+                                                  - sex_check
+                                                  - visible_color_check
+                                                  - general error
+                                            front:
+                                              type: array
+                                              description: Issues with the front of the ID
+                                              items:
+                                                type: string
+                                                enum:
+                                                  - visible_photo_check
+                                                  - dpi_low
+                                                  - dpi_low_field
+                                                  - sharp_low
+                                                  - sharp_low_field
+                                                  - glare_low
+                                                  - glare_low_field
+                                                  - multiple_front_id_failures
+                                                  - doc_type_check
+                                                  - card_type
+                                                  - image_load_failure_field
+                                                  - pixel_depth_failure_field
+                                                  - image_size_failure_field
+                                            back:
+                                              type: array
+                                              description: Issues with the back of the ID, if present
+                                              items:
+                                                type: string
+                                                enum:
+                                                  - ref_control_number_check
+                                                  - barcode_content_check
+                                                  - barcode_read_check
+                                                  - control_number_check
+                                                  - dpi_low
+                                                  - sharp_low_field
+                                                  - glare_low_field
+                                                  - multiple_back_id_failures
+                                                  - doc_type_check
+                                                  - card_type
+                                                  - image_load_failure_field
+                                                  - pixel_depth_failure_field
+                                                  - image_size_failure_field
+                                            selfie:
+                                              type: array
+                                              description: Issues with the selfie image, if present
+                                              items:
+                                                type: string
+                                                enum:
+                                                  - selfie_failure
+                                                  - selfie_not_live_or_poor_quality
+                                                  - dpi_low
+                                                  - sharp_low_field
+                                                  - glare_low_field
+                                                  - image_load_failure_field
+                                                  - pixel_depth_failure_field
+                                                  - image_size_failure_field
+                                            general:
+                                              type: array
+                                              description: Details about the whole requests' issues
+                                              items:
+                                                type: string
+                                                enum:
+                                                  - fallback_field_level
+                                                  - selfie_failure
+                                                  - dpi_low_one_side
+                                                  - dpi_low_both_sides
+                                                  - glare_low_both_sides
+                                                  - glare_low_one_side
+                                                  - sharp_low_both_sides
+                                                  - sharp_low_one_side
+                                                  - image_load_failure
+                                                  - pixel_depth_failure
+                                                  - image_size_failure
+                                            name:
+                                              type: array
+                                              description: Invalid or missing name
+                                              items:
+                                                type: string
+                                                enum:
+                                                  - name
+                                            dob:
+                                              type: array
+                                              description: Invalid or missing dob
+                                              items:
+                                                type: string
+                                                enum:
+                                                  - dob
+                                            dob_min_age:
+                                              type: string
+                                              description: User is too young to be verified
+                                              enum:
+                                                - dob
+                                            no_document:
+                                              type: array
+                                              description: Unknown or invalid document
+                                              items:
+                                                type: string
+                                                enum:
+                                                  - no_document
+                                            address1:
+                                              type: array
+                                              description: Address not found
+                                              items:
+                                                type: string
+                                                enum:
+                                                  - blank
+                                            zipcode:
+                                              type: array
+                                              description: Invalid or missing zipcode
+                                              items:
+                                                type: string
+                                                enum:
+                                                  - zipcode
+                                            state_id_expiration:
+                                              type: array
+                                              description: Expired ID
+                                              items:
+                                                type: string
+                                                enum:
+                                                  - state_id_expiration
+                                            state:
+                                              type: array
+                                              description: State not within US jurisdiction
+                                              items:
+                                                type: string
+                                                enum:
+                                                  - inclusion
+                                            state_id_number:
+                                              type: array
+                                              description: ID number not found
+                                              items:
+                                                type: string
+                                                enum:
+                                                  - blank
+                                            birth_place:
+                                              type: array
+                                              description: Birthplace not found
+                                              items:
+                                                type: string
+                                                enum:
+                                                  - blank
+                                            passport_issued:
+                                              type: array
+                                              description: Passport issue date not found
+                                              items:
+                                                type: string
+                                                enum:
+                                                  - blank
+                                            mrz:
+                                              type: array
+                                              description: Machine readable zone not found
+                                              items:
+                                                type: string
+                                                enum:
+                                                  - blank
+                                            issuing_country_code:
+                                              type: array
+                                              description: Country code not USA
+                                              items:
+                                                type: string
+                                                enum:
+                                                  - inclusion
+                                            nationality_code:
+                                              type: array
+                                              description: Errors that describe problems with the nationality code
+                                              items:
+                                                type: string
+                                                enum:
+                                                  - inclusion
+                                                  - blank
+                                            passport_expiration:
+                                              type: array
+                                              description: Passport has expired
+                                              items:
+                                                type: string
+                                                enum:
+                                                  - passport_expiration
+                                        success:
+                                          type: boolean
+                                          description: |
+                                            Indicates whether the backup codes were successfully generated
+                                idv-enrollment-complete:
+                                  description: |
+                                    When the user is identity verified
+                                  allOf: &ref_35
+                                    - type: object
+                                      properties: *ref_0
+                                    - type: object
+                                      properties:
+                                        reproof:
+                                          type: boolean
+                                          description: |
+                                            When true, indicates that the user has proofed previously
+                                idv-ipp-ready-to-verify-visit:
+                                  description: |
+                                    When the user becomes able to visit the post office for in-person proofing.
+                                  allOf: &ref_36
+                                    - type: object
+                                      properties: *ref_0
+                                    - type: object
+                                idv-image-retrieval-failed:
+                                  description: |
+                                    There was a network error while attempting to retrieve the images for document escrow.
+                                    Therefore, document upload failed.
+                                    These image file names and encryption keys are invalid, and are not saved in the document escrow.
+                                  allOf: &ref_37
+                                    - type: object
+                                      properties: *ref_0
+                                    - type: object
+                                      properties:
+                                        document_front_image_file_id:
+                                          type: string
+                                          description: If this image existed, the ID generated for storage
+                                        document_back_image_file_id:
+                                          type: string
+                                          description: If this image existed, the ID generated for storage
+                                        document_selfie_image_file_id:
+                                          type: string
+                                          description: If this image existed, the ID generated for storage
+                                        document_front_image_encryption_key:
+                                          type: string
+                                          description: Randomly generated Base64-encoded key generated to encrypt the front image file if it exists.
+                                        document_back_image_encryption_key:
+                                          type: string
+                                          description: Randomly generated Base64-encoded key generated to encrypt the back image file if it exists.
+                                        document_selfie_image_encryption_key:
+                                          type: string
+                                          description: Randomly generated Base64-encoded key generated to encrypt the selfie image file if it exists.
+                                        failure_reason:
+                                          type: object
+                                          description: |
+                                            An associative array of attributes and errors to explain the failure
+                                          properties:
+                                            api_failure:
+                                              type: array
+                                              description: Errors that describe the failure
+                                              items:
+                                                type: string
+                                                enum:
+                                                  - 'Images not available: Document type is not supported for verification.'
+                                                  - No Documents found
+                                                  - Unknown network error
+                                idv-phone-otp-sent:
+                                  description: |
+                                    When a security code is sent to the phone number provided by the user to verify the phone number belongs to them. The user can choose to receive the code via text message/SMS or phone call.
+                                  allOf: &ref_38
+                                    - type: object
+                                      properties: *ref_0
+                                    - type: object
+                                      properties:
+                                        phone_number:
+                                          type: string
+                                        otp_delivery_method:
+                                          type: string
+                                          enum:
+                                            - sms
+                                            - voice
+                                        failure_reason:
+                                          type: object
+                                          description: |
+                                            An OPTIONAL object. An associative array of attributes and errors if success is false
+                                          properties:
+                                            telephony_errors:
+                                              type: array
+                                              description: Errors that describe the failure
+                                              items:
+                                                type: string
+                                                enum:
+                                                  - daily_voice_limit_reached
+                                                  - duplicate_endpoint
+                                                  - generic
+                                                  - invalid_calling_area
+                                                  - invalid_phone_number
+                                                  - opt_out
+                                                  - permanent_failure
+                                                  - rate_limited
+                                                  - sms_unsupported
+                                                  - temporary_failure
+                                                  - throttled
+                                                  - timeout
+                                                  - unknown_failure
+                                                  - voice_unsupported
+                                        success:
+                                          type: boolean
+                                          description: |
+                                            Indicates whether the backup codes were successfully generated
+                                idv-phone-otp-submitted:
+                                  description: |
+                                    When the user submits the security code that they received on their phone to verify their phone or address during identity proofing.
+                                  allOf: &ref_39
+                                    - type: object
+                                      properties: *ref_0
+                                    - type: object
+                                      properties:
+                                        phone_number:
+                                          type: string
+                                        failure_reason:
+                                          type: object
+                                          description: |
+                                            An OPTIONAL object. An associative array of attributes and errors if success is false
+                                          properties:
+                                            code:
+                                              type: array
+                                              items:
+                                                type: string
+                                                enum:
+                                                  - expired
+                                                  - does_not_match
+                                        success:
+                                          type: boolean
+                                          description: |
+                                            Indicates whether the entered code matched what was sent and is still valid.
+                                idv-phone-submitted:
+                                  description: |
+                                    When the user provides their phone number for identity verification.
+                                  allOf: &ref_40
+                                    - type: object
+                                      properties: *ref_0
+                                    - type: object
+                                      properties:
+                                        phone_number:
+                                          type: string
+                                        failure_reason:
+                                          type: object
+                                          description: |
+                                            An OPTIONAL object. An associative array of attributes and errors if success is false
+                                          properties:
+                                            phone:
+                                              type: array
+                                              description: An OPTIONAL key that describes errors with the phone number
+                                              items:
+                                                type: string
+                                                enum:
+                                                  - improbable_phone
+                                                  - voice_unsupported
+                                                  - sms_unsupported
+                                            otp_delivery_preference:
+                                              type: array
+                                              description: An OPTIONAL key that describes errors with the delivery method
+                                              items:
+                                                type: string
+                                                enum:
+                                                  - inclusion
+                                        success:
+                                          type: boolean
+                                          description: |
+                                            Indicates whether the upload link was successfully sent to the user’s phone.
+                                idv-phone-verified:
+                                  description: |
+                                    The user's IdV phone number is assessed
+                                  allOf: &ref_41
+                                    - type: object
+                                      properties: *ref_0
+                                    - type: object
+                                      properties:
+                                        phone_number:
+                                          type: string
+                                        failure_reason:
+                                          type: object
+                                          description: |
+                                            An OPTIONAL object. An associative array of attributes and errors if success is false
+                                          properties:
+                                            phone:
+                                              type: array
+                                              description: An OPTIONAL key that describes errors with the phone number
+                                              items:
+                                                type: string
+                                                enum:
+                                                  - Fail - Risk Indicators match determined
+                                                  - Failed - Input phone number could not be verified to name
+                                        success:
+                                          type: boolean
+                                          description: |
+                                            Indicates whether the user’s phone was successfully verified.
+                                idv-rate-limited:
+                                  description: |
+                                    The user reaches verification submission rate limits when identity proofing.
+                                  allOf: &ref_42
+                                    - type: object
+                                      properties: *ref_0
+                                    - type: object
+                                      properties:
+                                        limiter_type:
+                                          type: string
+                                          description: |
+                                            Reason for the rate limiting
+                                          enum:
+                                            - idv_doc_auth
+                                            - idv_resolution
+                                            - proof_ssn
+                                            - proof_address
+                                            - phone_confirmation
+                                            - idv_send_link
+                                        phone:
+                                          type: string
+                                          description: |
+                                            OPTIONAL, the provided phone number (in the event of a phone-related rate limiting)
+                                idv-reproof:
+                                  description: |
+                                    This event is triggered when a user who has previously completed proofing completes identity proofing again. Note that the reproofing flow is identical to the regular proofing flow and will generate the same events as initial proofing. This is an additional event signifying that the just-completed proofing process was not the first time the user has proofed.
+                                  allOf: &ref_43
+                                    - type: object
+                                      properties: *ref_0
+                                    - type: object
+                                idv-ssn-submitted:
+                                  description: |
+                                    When the user submits their Social Security Number during identity proofing.
+                                  allOf: &ref_44
+                                    - type: object
+                                      properties: *ref_0
+                                    - type: object
+                                      properties:
+                                        ssn:
+                                          type: string
+                                          description: User-submitted Social Security Number. Formatted with dashes (e.g. 123-45-6789).
+                                idv-device-risk-assessment:
+                                  description: |
+                                    This event captures the result of the Device Risk Assessment during Identity Verification.
+                                  allOf: &ref_45
+                                    - type: object
+                                      properties: *ref_0
+                                    - type: object
+                                      properties:
+                                        device_fingerprint:
+                                          type: string
+                                          description: |
+                                            A 32-character string based exclusively on device attributes to improve detection of returning visitors, especially those trying to elude identification.
+                                        failure_reason:
+                                          type: object
+                                          description: |
+                                            An OPTIONAL object. An associative array of attributes and errors if user has failed fraud review
+                                          properties:
+                                            tmx_summary_reason_code:
+                                              type: array
+                                              description: |
+                                                An OPTIONAL key that describes rules that failed during the test. Can include multiple elements in the array.
+                                                * `Identity_Negative_History`: Rules that indicate a negative history for related Identity (such as black listed email address or phone number). 
+                                                * `IP_Negative_History`: Rules that indicate a negative history for IP Address (such as block-listed IP/Proxy address).
+                                                * `Bot`: Rules that examine velocity counts for anomalies and rules that indicate the presence of an aggregator (Online Bots).
+                                                * `Device_Spoofing`: Rules that indicate device anomalies, rules for OS spoofing, and rules that examine the mobile device for malware, root-cloaking applications and so on.
+                                                * `Geo_Spoofing`: Rules for anomalies pertaining to geographical location.
+                                                * `Identity_Spoofing`: Rules that indicate Identity spoofing such as the presence of multiple logins/email addresses/account addresses and high distance traveled.
+                                                * `IP_Spoofing`: Rules that indicate IP spoofing and rules for VPN detection.
+                                                * `MITB`: Rules that check the presence of malware tags.
+                                                * `Level_1_Link_Reject`: Rules that indicate that there is a direct link to historic confirmed fraud.
+                                                * `Level_1_Link_Accept`: Indicates the user has passed fraud check
+                                              items:
+                                                type: string
+                                                enum:
+                                                  - Bot
+                                                  - Device_Spoofing
+                                                  - Geo_Spoofing
+                                                  - Identity_Negative_History
+                                                  - Identity_Spoofing
+                                                  - IP_Negative_History
+                                                  - Level_1_Link_Accept
+                                                  - Level_1_Link_Reject
+                                                  - MITB
+                                        success:
+                                          type: boolean
+                                          description: |
+                                            Indicates whether the user has passed the device risk assessment.
+                                idv-verification-submitted:
+                                  description: |
+                                    When the user verifies their information when identity proofing.
+                                  allOf: &ref_46
+                                    - type: object
+                                      properties: *ref_0
+                                    - type: object
+                                      properties:
+                                        document_state:
+                                          type: string
+                                          description: Driver's licenses document_state
+                                        document_number:
+                                          type: string
+                                          description: Driver's license number
+                                        document_issued:
+                                          type: string
+                                          description: Issuance date
+                                        document_expiration:
+                                          type: string
+                                          description: Driver's license expiration
+                                        first_name:
+                                          type: string
+                                        last_name:
+                                          type: string
+                                        date_of_birth:
+                                          type: string
+                                        address1:
+                                          type: string
+                                        address2:
+                                          type: string
+                                        city:
+                                          type: string
+                                        state:
+                                          type: string
+                                        ssn:
+                                          type: string
+                                        zip:
+                                          type: string
+                                        failure_reason:
+                                          type: object
+                                          description: |
+                                            An OPTIONAL object. An associative array of attributes and errors if success is false
+                                          properties:
+                                            failed_stages:
+                                              type: array
+                                              description: An OPTIONAL key. A list of all the stages that failed, if any.
+                                              items:
+                                                type: string
+                                                enum:
+                                                  - resolution
+                                                  - residential_address
+                                                  - state_id
+                                                  - device_risk_assessment
+                                                  - phone_precheck
+                                            attributes_requiring_additional_verification:
+                                              type: array
+                                              description: |
+                                                An OPTIONAL key. A list of all the attributes that require additional verification
+                                              items:
+                                                type: string
+                                                enum:
+                                                  - address
+                                                  - dob
+                                                  - dead
+                                                  - ssn
+                                                  - state_id_number
+                                            resolution_adjudication_reason:
+                                              type: array
+                                              description: |
+                                                An OPTIONAL key. High-level reason for the resolution result
+                                              items:
+                                                type: string
+                                                enum:
+                                                  - fail_resolution_skip_state_id
+                                                  - pass_resolution_and_state_id
+                                                  - fail_state_id
+                                                  - fail_resolution_skip_state_id
+                                                  - state_id_covers_failed_resolution
+                                                  - fail_resolution_without_state_id_coverage
+                                            device_profiling_adjudication_reason:
+                                              type: array
+                                              description: |
+                                                An OPTIONAL key. High-level reason for the device profiling result
+                                              items:
+                                                type: string
+                                                enum:
+                                                  - device_profiling_exception
+                                                  - device_profiling_result_pass
+                                                  - device_profiling_result_review_required
+                                        success:
+                                          type: boolean
+                                          description: |
+                                            Indicates whether the verification form was submitted successfully
+                                idv-verify-by-mail-letter-requested:
+                                  description: |
+                                    The user has requested that a letter be sent via mail in order to verify their address.
+                                  allOf: &ref_47
+                                    - type: object
+                                      properties: *ref_0
+                                    - type: object
+                                      properties:
+                                        resend:
+                                          type: boolean
+                                          description: |
+                                            False indicates that this is the initial request to be sent
+                                            True indicates a resend request.
+                                idv-verify-by-mail-enter-code-submitted:
+                                  description: |
+                                    A user that requested to verify their address by mail has entered the security code contained in their letter.
+                                  allOf: &ref_48
+                                    - type: object
+                                      properties: *ref_0
+                                    - type: object
+                                      properties:
+                                        failure_reason:
+                                          type: object
+                                          description: |
+                                            An OPTIONAL object. An associative array of attributes and errors if success is false
+                                          properties:
+                                            otp:
+                                              type: string
+                                              description: An OPTIONAL key if the code does not match
+                                              enum:
+                                                - confirmation_code_incorrect
+                                        success:
+                                          type: boolean
+                                          description: |
+                                            Indicates whether the entered code matched the code that was sent confirming the address
+        '400':
+          description: |
+            The 400 (Bad Request) status code indicates that the server cannot or
+            will not process the request due to something that is perceived to be
+            a client error (e.g., malformed request syntax, invalid request
+            message framing, or deceptive request routing).
+        '401':
+          description: |
+            The 401 (Unauthorized) status code indicates that the request has not
+            been applied because it lacks valid authentication credentials for
+            the target resource. Please ensure that the request includes a valid Bearer token.
+        '403':
+          description: |
+            The 403 (Forbidden) status code indicates that the server understood
+            the request but refuses to authorize it. Please reach out to your account manager
+            if you think this is a mistake.
+        5XX:
+          description: Unexpected error.
+  /api/attempts/status:
+    get:
+      summary: Request to get the status of an Event Stream
+      description: |-
+        [Spec](https://openid.net/specs/openid-sharedsignals-framework-1_0-ID3.html#name-reading-a-streams-status)
+
+        An Event Receiver checks the current status of an event stream by making an
+        HTTP GET request to the stream’s Status Endpoint.
+      operationId: get_status
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: |-
+            On receiving a valid request the Event Transmitter responds with a 200
+            OK response containing a JSON object with an attribute status
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: &ref_50
+                  status:
+                    type: string
+                    example: disabled
+                    enum:
+                      - disabled
+                      - enabled
+                      - paused
+                    description: |-
+                      REQUIRED. The status of the stream. Values can be one of:
+
+                      `enabled`:
+                       The Transmitter MUST transmit events over the stream,
+                       according to the stream’s configured delivery method.
+
+                      `paused`:
+                       The Transmitter MUST NOT transmit events over the stream.
+                       The transmitter will hold any events it would have transmitted while paused,
+                       and SHOULD transmit them when the stream’s status becomes enabled.
+                       If a Transmitter holds successive events that affect the same Subject Principal,
+                       then the Transmitter MUST make sure that those events are transmitted in
+                       the order of time that they were generated OR the Transmitter MUST send
+                       only the last events that do not require the previous events affecting
+                       the same Subject Principal to be processed by the Receiver,
+                       because the previous events are either cancelled by the later events or
+                       the previous events are outdated.
+
+                      `disabled`:
+                       The Transmitter MUST NOT transmit events over the stream,
+                       and will not hold any events for later transmission.
+        '400':
+          description: |
+            The 400 (Bad Request) status code indicates that the server cannot or
+            will not process the request due to something that is perceived to be
+            a client error (e.g., malformed request syntax, invalid request
+            message framing, or deceptive request routing).
+        '401':
+          description: |
+            The 401 (Unauthorized) status code indicates that the request has not
+            been applied because it lacks valid authentication credentials for
+            the target resource. Please ensure that the request includes a valid Bearer token.
+        '403':
+          description: |
+            The 403 (Forbidden) status code indicates that the server understood
+            the request but refuses to authorize it. Please reach out to your account manager
+            if you think this is a mistake.
+        5XX:
+          description: Unexpected error.
+components:
+  schemas:
+    DecodedJWTPayload:
+      type: object
+      title: Decoded JWT Payload
+      description: |
+        Default payload body for each event.
+      properties: *ref_1
+    Events:
+      type: object
+      allOf: *ref_2
+    TransmitterConfiguration:
+      type: object
+      title: Transmitter Configuration Response
+      description: |
+        Metadata describing the Login.gov transmitter configuration.
+      properties: *ref_3
+    PollParameters:
+      type: object
+      title: Polling Request
+      description: |
+        Acceptable body to poll the Attempts API
+      properties: *ref_4
+    Subject:
+      type: object
+      properties: *ref_5
+    EventProperties:
+      type: object
+      properties: *ref_0
+    MfaEnrollPhoneOtpSent:
+      description: |
+        Relevant only when the user is enrolling a phone as their MFA. The user has been sent a one-time password by Login.gov over SMS or voice during the MFA enrollment process.
+      allOf: *ref_6
+    MfaEnrollCodeRateLimited:
+      description: |
+        The user has exceeded the rate limit for entering an MFA code when setting up an MFA device. Note that this event is currently only generated for phone mfa types.
+      allOf: *ref_7
+    MfaEnrollPhoneOtpSentRateLimited:
+      description: |
+        The user has exceeded the rate limit for requesting OTPs be sent to their phone when setting up an MFA device.
+      allOf: *ref_8
+    MfaEnrolled:
+      description: The user has set up multi-factor authentication
+      allOf: *ref_9
+    UserRegistrationEmailConfirmed:
+      description: |
+        User clicks on the confirmation link sent to their provided email address. Note: Internally, Login's meaning of a 'confirmed' email is overloaded, and also requires that a password has been set. This event uses the plain-language meaning of 'confirmed': a user clicked the link in an email, showing ownership of the email account.
+      allOf: *ref_10
+    UserRegistrationEmailSubmissionRateLimited:
+      description: |
+        This event can occur during sign up when a user attempts to submit the same email address multiple times without setting up a password. Note that Login.gov does not actually prevent the user from retrying in this case.
+      allOf: *ref_11
+    UserRegistrationEmailSubmitted:
+      description: A user provides their email address to create a new account.
+      allOf: *ref_12
+    UserRegistrationPasswordSubmitted:
+      description: A user provides a password for their account.
+      allOf: *ref_13
+    RegistrationEvents:
+      properties: *ref_14
+    LoggedInAccountPurged:
+      description: A logged in user deletes their account.
+      allOf: *ref_15
+    LoggedInPasswordChange:
+      description: A logged in user changes the password for their account.
+      allOf: *ref_16
+    LoginCompleted:
+      description: The user has logged in successfully and is being passed back to the service provider.
+      allOf: *ref_17
+    LoginEmailAndPasswordAuth:
+      description: |
+        During a login attempt, a user has submitted a password. Rather than tracking the number of failed password auth attempts, we generate this event on each attempt.
+      allOf: *ref_18
+    LoginRateLimited:
+      description: |
+        The user has exceeded the limit for providing their email address and password all resulting in a failed login attempt.
+      allOf: *ref_19
+    LogoutInitiated:
+      description: The user has logged out of their account.
+      allOf: *ref_20
+    MfaLoginPhoneOtpSent:
+      description: |
+        During a login attempt, an OTP code has been sent via SMS or Voice.
+        Reauthentication occurs when the user was already signed in but their session has timed out and they need to reauthenticate to continue.
+      allOf: *ref_21
+    MfaLoginPhoneOtpSentRateLimited:
+      description: |
+        During a login attempt, the user has exceeded the limit for requesting an OTP be sent to their phone.
+      allOf: *ref_22
+    MfaLoginAuthSubmitted:
+      description: |
+        During a login attempt, the user has submitted a verification attempt using their MFA . 
+        Reauthentication occurs when the user was already signed in but their session has timed out and they need to reauthenticate to continue.
+      allOf: *ref_23
+    MfaSubmissionCodeRateLimited:
+      description: |
+        The user has exceeded the limit for submitting an MFA code when signing in with a registered MFA device.
+      allOf: *ref_24
+    SessionTimeout:
+      description: A logged in user has been inactive long enough to cause a session timeout
+      allOf: *ref_25
+    SignInEvents:
+      properties: *ref_26
+    AccountResetAccountDeleted:
+      description: |
+        A user requesting an account reset has completed the process. As a result, the account was deleted successfully.
+      allOf: *ref_27
+    ForgotPasswordEmailConfirmed:
+      description: |
+        A password reset having been previously requested, a user has clicked the link in the email to reset their password, confirming the email address’s validity.
+      allOf: *ref_28
+    ForgotPasswordEmailSent:
+      description: |
+        A user has requested a password reset.
+      allOf: *ref_29
+    ForgotPasswordNewPasswordSubmitted:
+      description: |
+        After previously requesting a password reset and having already clicked through from the email, a user has now submitted a new password.
+      allOf: *ref_30
+    AccountRecoveryEvents:
+      properties: *ref_31
+    IdvAddressSubmitted:
+      description: |
+        User manually submitted an IdV address
+      allOf: *ref_32
+    IdvDocumentUploaded:
+      description: |
+        The user has uploaded documents locally
+      allOf: *ref_33
+    IdvDocumentUploadSubmitted:
+      description: |
+        The document was uploaded during identity proofing and authenticated by the vendor.
+      allOf: *ref_34
+    IdvEnrollmentComplete:
+      description: |
+        When the user is identity verified
+      allOf: *ref_35
+    IdvIppReadyToVerifyVisit:
+      description: |
+        When the user becomes able to visit the post office for in-person proofing.
+      allOf: *ref_36
+    IdvImageRetrievalFailed:
+      description: |
+        There was a network error while attempting to retrieve the images for document escrow.
+        Therefore, document upload failed.
+        These image file names and encryption keys are invalid, and are not saved in the document escrow.
+      allOf: *ref_37
+    IdvPhoneOtpSent:
+      description: |
+        When a security code is sent to the phone number provided by the user to verify the phone number belongs to them. The user can choose to receive the code via text message/SMS or phone call.
+      allOf: *ref_38
+    IdvPhoneOtpSubmitted:
+      description: |
+        When the user submits the security code that they received on their phone to verify their phone or address during identity proofing.
+      allOf: *ref_39
+    IdvPhoneSubmitted:
+      description: |
+        When the user provides their phone number for identity verification.
+      allOf: *ref_40
+    IdvPhoneVerified:
+      description: |
+        The user's IdV phone number is assessed
+      allOf: *ref_41
+    IdvRateLimited:
+      description: |
+        The user reaches verification submission rate limits when identity proofing.
+      allOf: *ref_42
+    IdvReproof:
+      description: |
+        This event is triggered when a user who has previously completed proofing completes identity proofing again. Note that the reproofing flow is identical to the regular proofing flow and will generate the same events as initial proofing. This is an additional event signifying that the just-completed proofing process was not the first time the user has proofed.
+      allOf: *ref_43
+    IdvSsnSubmitted:
+      description: |
+        When the user submits their Social Security Number during identity proofing.
+      allOf: *ref_44
+    IdvDeviceRiskAssessment:
+      description: |
+        This event captures the result of the Device Risk Assessment during Identity Verification.
+      allOf: *ref_45
+    IdvVerificationSubmitted:
+      description: |
+        When the user verifies their information when identity proofing.
+      allOf: *ref_46
+    IdvVerifyByMailLetterRequested:
+      description: |
+        The user has requested that a letter be sent via mail in order to verify their address.
+      allOf: *ref_47
+    IdvVerifyByMailEnterCodeSubmitted:
+      description: |
+        A user that requested to verify their address by mail has entered the security code contained in their letter.
+      allOf: *ref_48
+    IdentityProofingEvents:
+      properties: *ref_49
+    AllEvents:
+      type: object
+      allOf: *ref_2
+    StreamStatus:
+      type: object
+      properties: *ref_50
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: rp-issuer JWT
+      description: <rp-issuer> <token>
