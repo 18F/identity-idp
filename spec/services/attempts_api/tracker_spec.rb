@@ -251,8 +251,8 @@ RSpec.describe AttemptsApi::Tracker do
         context 'it is an event prefixed with "idv"' do
           it 'populates the session info' do
             subject.idv_enrollment_complete(reproof: false)
-            expect(user_session['idv/attempts']).to include(
-              hash_including('idv-enrollment-complete'),
+            expect(user_session['idv/attempts']).to eq(
+              [{ 'idv-enrollment-complete' => { 'user_uuid' => user.uuid } }],
             )
           end
 
@@ -292,8 +292,8 @@ RSpec.describe AttemptsApi::Tracker do
           it 'does not populate the event is not prefixed with idv-' do
             subject.idv_enrollment_complete(reproof: false)
             subject.user_registration_email_confirmed(success: true, email: 'email@example.com')
-            expect(user_session['idv/attempts']).to include(
-              hash_including('idv-enrollment-complete'),
+            expect(user_session['idv/attempts']).to eq(
+              [{ 'idv-enrollment-complete' => { 'user_uuid' => user.uuid } }],
             )
           end
 
@@ -332,8 +332,8 @@ RSpec.describe AttemptsApi::Tracker do
 
           it 'still populates the session info' do
             subject.idv_enrollment_complete(reproof: false)
-            expect(user_session['idv/attempts']).to include(
-              hash_including('idv-enrollment-complete'),
+            expect(user_session['idv/attempts']).to eq(
+              [{ 'idv-enrollment-complete' => { 'user_uuid' => user.uuid } }],
             )
           end
         end
