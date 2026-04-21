@@ -132,10 +132,10 @@ class DocumentCaptureSession < ApplicationRecord
     session_result.mrz_status = determine_mrz_status(agent_proofing_result[:mrz])
     aamva_response = agent_proofing_result[:aamva]
     session_result.aamva_status = determine_aamva_status(aamva_response)
-    if aamva_response
+    if aamva_response&.success?
       session_result.aamva_verified_attributes = aamva_response.extra[:verified_attributes]
-      session_result.state_id_vendor = aamva_response.extra[:vendor_name]
     end
+    session_result.state_id_vendor = aamva_response&.extra&.[](:vendor_name)
     session_result.captured_at = Time.zone.now
 
     EncryptedRedisStructStorage.store(
