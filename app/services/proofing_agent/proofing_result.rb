@@ -5,24 +5,30 @@ module ProofingAgent
     attr_reader :proofing_agent_id,
                 :proofing_location_id,
                 :correlation_id,
+                :pii,
                 :resolution_result,
                 :aamva_result,
-                :mrz_result
+                :mrz_result,
+                :service_provider_issuer
 
     def initialize(
       proofing_agent_id:,
       proofing_location_id:,
       correlation_id:,
+      pii:,
       resolution_result:,
       aamva_result: nil,
-      mrz_result: nil
+      mrz_result: nil,
+      service_provider_issuer:,
     )
       @proofing_agent_id = proofing_agent_id
       @proofing_location_id = proofing_location_id
       @correlation_id = correlation_id
+      @pii = pii
       @resolution_result = resolution_result
-      @aamva_result = aamva_result&.to_h
-      @mrz_result = mrz_result&.to_h
+      @aamva_result = aamva_result
+      @mrz_result = mrz_result
+      @service_provider_issuer = service_provider_issuer
     end
 
     def combined_result
@@ -31,12 +37,17 @@ module ProofingAgent
 
       result = { success:, reason: }
 
+      result[:pii] = pii if pii.present?
       if resolution_result.present?
         result[:resolution] =
-          resolution_result.slice(:success, :errors, :exception)
+          resolution_result.slice(:success, :errors, :exception) 
       end
       result[:aamva] = aamva_result if aamva_result.present?
       result[:mrz] = mrz_result if mrz_result.present?
+      result[:service_provider_issuer] = service_provider_issuer
+      result[:proofing_agent_id] = proofing_agent_id
+      result[:proofing_location_id] = proofing_location_id
+      result[:correlation_id] = correlation_id
 
       result
     end
@@ -53,7 +64,7 @@ module ProofingAgent
       return 'profile_resolution_fail' if resolution_result.present? && !resolution_result[:success]
       return 'id_fail' if aamva_result.present? && !aamva_success?
       return 'passport_fail' if mrz_result.present? && !mrz_result[:success]
-
+        
       nil
     end
 
