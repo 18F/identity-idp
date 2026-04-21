@@ -322,6 +322,41 @@ RSpec.describe DocumentCaptureSession do
           end
         end
       end
+
+      context 'when mrz response is passed in' do
+        before do
+          document_capture_session.store_agent_proofed_user(agent_proofing_result)
+        end
+
+        context 'when the mrz response is successful' do
+          let(:mrz) { DocAuth::Response.new(success: true) }
+
+          it 'stores mrz_status as :passed' do
+            expect(document_capture_session.load_agent_proofed_user).to have_attributes(
+              mrz_status: :pass,
+            )
+          end
+        end
+
+        context 'when the mrz response is unsuccessful' do
+          let(:mrz) { DocAuth::Response.new(success: false) }
+
+          it 'stores mrz_status as :failed' do
+            expect(document_capture_session.load_agent_proofed_user).to have_attributes(
+              mrz_status: :failed,
+            )
+          end
+        end
+        context 'when the mrz response is nil' do
+          let(:mrz_response) { nil }
+
+          it 'stores mrz_status as :not_processed' do
+            expect(document_capture_session.load_agent_proofed_user).to have_attributes(
+              mrz_status: :not_processed,
+            )
+          end
+        end
+      end
     end
   end
 
