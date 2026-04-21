@@ -182,16 +182,16 @@ RSpec.describe DocumentCaptureSession do
     let(:reason) { nil }
     let(:resolution) { { success: true } }
     let(:mrz) { nil }
-    let(:aamva) { nil }
+    let(:aamva) { DocAuth::Response.new(success: true) }
     # let(:attempt) { 1 }
     let(:agent_proofing_result) do
       {
         pii: { first_name: 'Testy', last_name: 'Testerson' },
         # proofing_components: { foo: 'bar' },
-        location_id: '123',
-        agent_id: '456',
+        proofing_location_id: '123',
+        proofing_agent_id: '456',
         correlation_id: '789',
-        issuer: 'test_issuer',
+        service_provider_issuer: 'test_issuer',
         success:,
         reason:,
         resolution:,
@@ -260,10 +260,14 @@ RSpec.describe DocumentCaptureSession do
             success: true,
             reason: nil,
             pii: agent_proofing_result[:pii],
+            location_id: '123',
+            agent_id: '456',
+            correlation_id: '789',
+            issuer: 'test_issuer',
             captured_at: current_time,
             resolution: { success: true },
             mrz_status: :not_processed,
-            aamva_status: :not_processed,
+            aamva_status: :passed,
           )
         end
       end

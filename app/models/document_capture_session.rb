@@ -130,11 +130,11 @@ class DocumentCaptureSession < ApplicationRecord
     session_result.issuer = agent_proofing_result[:service_provider_issuer]
     session_result.resolution = agent_proofing_result[:resolution]
     session_result.mrz_status = determine_mrz_status(agent_proofing_result[:mrz])
-    aamva_result = agent_proofing_result[:aamva]
-    session_result.aamva_status = determine_aamva_status(aamva_result)
-    if aamva_result
-      session_result.aamva_verified_attributes = aamva_result.extra[:verified_attributes]
-      session_result.state_id_vendor = aamva_result.extra[:vendor_name]
+    aamva_response = agent_proofing_result[:aamva]
+    session_result.aamva_status = determine_aamva_status(aamva_response)
+    if aamva_response
+      session_result.aamva_verified_attributes = aamva_response.extra[:verified_attributes]
+      session_result.state_id_vendor = aamva_response.extra[:vendor_name]
     end
     session_result.captured_at = Time.zone.now
 
@@ -146,8 +146,8 @@ class DocumentCaptureSession < ApplicationRecord
   end
 
   def agent_proofing_success(agent_proofing_result)
-    agent_proofing_result[:success] &&
-      (agent_proofing_result[:aamva].success? || agent_proofing_result[:mrz].success?)
+    !!agent_proofing_result[:success] &&
+      (agent_proofing_result[:aamva]&.success? || agent_proofing_result[:mrz]&.success?)
   end
 
   def expired?
