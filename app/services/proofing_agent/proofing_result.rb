@@ -31,7 +31,10 @@ module ProofingAgent
 
       result = { success:, reason: }
 
-      result[:resolution] = resolution_result.slice(:success, :errors, :exception) if resolution_result.present?
+      if resolution_result.present?
+        result[:resolution] =
+          resolution_result.slice(:success, :errors, :exception)
+      end
       result[:aamva] = aamva_result if aamva_result.present?
       result[:mrz] = mrz_result if mrz_result.present?
 
@@ -41,7 +44,9 @@ module ProofingAgent
     private
 
     def determine_failure_reason
-      return 'profile_resolution_exception' if resolution_result.present? && resolution_result[:exception].present?
+      if resolution_result.present? && resolution_result[:exception].present?
+        return 'profile_resolution_exception'
+      end
       return 'id_exception' if aamva_result.present? && aamva_result[:exception].present?
       return 'passport_exception' if mrz_result.present? && mrz_result[:exception].present?
 

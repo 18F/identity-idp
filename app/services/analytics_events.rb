@@ -5378,28 +5378,6 @@ module AnalyticsEvents
     )
   end
 
-  # Logs when a proofing agent begins proofing a user
-  # @param [Hash] response_body The body of the response from the proofing agent's proofing request
-  # @param [Hash] proofing_agent The proofing agent information
-  # @param [String] issuer The issuer associated with the proofing request
-  # @param [String,nil] transaction_id The transaction ID associated with the proofing request
-  def idv_proofing_agent_request_received(
-    response_body:,
-    proofing_agent:,
-    issuer:,
-    transaction_id: nil,
-    **extra
-  )
-    track_event(
-      :idv_proofing_agent_request_received,
-      response_body:,
-      proofing_agent:,
-      issuer:,
-      transaction_id:,
-      **extra,
-    )
-  end
-
   # @param [Hash,nil] proofing_components User's current proofing components
   # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
   # @option proofing_components [String,nil] 'document_type_received' Type of ID detected by vendor

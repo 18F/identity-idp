@@ -70,7 +70,6 @@ RSpec.describe ProofingAgent::ProofingResult do
         end
       end
     end
-
   end
 
   context 'when resolution fails' do

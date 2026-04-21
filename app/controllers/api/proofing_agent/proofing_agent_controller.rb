@@ -39,7 +39,6 @@ module Api
         document_capture_session = DocumentCaptureSession.create!(
           user_id: user.id,
           issuer:,
-          doc_auth_vendor: 'proofing_agent',
           requested_at: Time.zone.now,
         )
 
