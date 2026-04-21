@@ -67,6 +67,7 @@ module DocAuth
           first_name:,
           last_name:,
           middle_name:,
+          name_suffix:,
           dob:,
           sex:,
           passport_expiration: expiration_date,
