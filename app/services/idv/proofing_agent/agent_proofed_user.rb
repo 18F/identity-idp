@@ -8,31 +8,31 @@ module Idv
       :proofing_components,
       :location_id,
       :agent_id,
+      :correlation_id,
       :issuer,
       :success,
-      :errors,
-      :doc_auth_success,          # trueid/socure
+      :reason,
+      :resolution,                # instant_verify/socure_kyc
       :mrz_status,                # DoS
       :aamva_status,              # aamva
       :aamva_verified_attributes,
-      :address_resolution_status, # phone_finder/kyc
       :state_id_vendor,
-      :attempt,
+      :address_resolution_status, # phone_finder
       :captured_at,
       allowed_members: [
         :proofing_components,
         :location_id,
         :agent_id,
+        :correlation_id,
         :issuer,
         :success,
-        :errors,
-        :doc_auth_success,
+        :reason,
+        :resolution,
         :mrz_status,
         :aamva_status,
         :aamva_verified_attributes,
         :address_resolution_status,
         :state_id_vendor,
-        :attempt,
         :captured_at,
       ],
     ) do

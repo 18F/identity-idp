@@ -179,30 +179,35 @@ RSpec.describe DocumentCaptureSession do
 
   context 'proofing agent' do
     let(:success) { true }
-    let(:attempt) { 1 }
+    let(:reason) { nil }
+    let(:resolution) { { success: true } }
+    let(:mrz) { nil }
+    let(:aamva) { nil }
+    # let(:attempt) { 1 }
     let(:agent_proofing_result) do
-      # This should be re-written to use whatever response object is created via
-      # the proofing process being developed in LG-17293
-      # rubocop:disable Style/OpenStructUse
-      OpenStruct.new(
-        pii_from_doc: { first_name: 'Testy', last_name: 'Testerson' },
-        proofing_components: { foo: 'bar' },
+      {
+        pii: { first_name: 'Testy', last_name: 'Testerson' },
+        # proofing_components: { foo: 'bar' },
         location_id: '123',
         agent_id: '456',
+        correlation_id: '789',
         issuer: 'test_issuer',
         success:,
-      )
-      # rubocop:enable Style/OpenStructUse
+        reason:,
+        resolution:,
+        mrz:,
+        aamva:,
+      }
     end
 
     describe '#load_agent_proofed_user' do
       it 'loads the previously stored result' do
         record = DocumentCaptureSession.new
-        record.store_agent_proofed_user(agent_proofing_result:, attempt:)
+        record.store_agent_proofed_user(agent_proofing_result)
         result = record.load_agent_proofed_user
 
-        expect(result.success?).to eq(agent_proofing_result.success)
-        expect(result.pii).to eq(agent_proofing_result.pii_from_doc.to_h.deep_symbolize_keys)
+        expect(result.success?).to eq(agent_proofing_result[:success])
+        expect(result.pii).to eq(agent_proofing_result[:pii])
       end
 
       it 'returns nil if the previously stored result does not exist' do
@@ -214,7 +219,7 @@ RSpec.describe DocumentCaptureSession do
 
       xit 'returns nil if the previously stored result is expired' do
         record = DocumentCaptureSession.new
-        record.store_agent_proofed_user(agent_proofing_result:, attempt: 1)
+        record.store_agent_proofed_user(agent_proofing_result)
         past_exp = IdentityConfig.store.agent_proofed_user_time_validity_hours.hours.in_seconds
         travel_to((2 * past_exp).seconds.from_now) do
           result = record.load_agent_proofed_user
@@ -229,7 +234,7 @@ RSpec.describe DocumentCaptureSession do
 
       it 'generates a result ID stores the result encrypted in redis' do
         record = document_capture_session
-        record.store_agent_proofed_user(agent_proofing_result:, attempt:)
+        record.store_agent_proofed_user(agent_proofing_result)
 
         result_id = record.result_id
         key = EncryptedRedisStructStorage.key(result_id, type: Idv::ProofingAgent::AgentProofedUser)
@@ -246,39 +251,38 @@ RSpec.describe DocumentCaptureSession do
         before do
           freeze_time
           travel_to(current_time) do
-            document_capture_session.store_agent_proofed_user(
-              agent_proofing_result:,
-              mrz_response:, aamva_response:, attempt: 3
-            )
+            document_capture_session.store_agent_proofed_user(agent_proofing_result)
           end
         end
 
         it 'stores the results' do
           expect(document_capture_session.load_agent_proofed_user).to have_attributes(
             success: true,
-            pii: agent_proofing_result.pii_from_doc.to_h,
+            reason: nil,
+            pii: agent_proofing_result[:pii],
             captured_at: current_time,
-            doc_auth_success: nil,
-            errors: nil,
-            mrz_status: :pass,
-            aamva_status: :passed,
-            attempt: 3,
+            resolution: { success: true },
+            mrz_status: :not_processed,
+            aamva_status: :not_processed,
           )
         end
       end
 
       context 'when aamva response is passed in' do
         before do
-          document_capture_session.store_agent_proofed_user(
-            agent_proofing_result:,
-            mrz_response:,
-            aamva_response:,
-            attempt:,
-          )
+          document_capture_session.store_agent_proofed_user(agent_proofing_result)
         end
 
         context 'when the aamva response is successful' do
-          let(:aamva_response) { DocAuth::Response.new(success: true) }
+          let(:aamva) do
+            DocAuth::Response.new(
+              success: true,
+              extra: {
+                vendor_name: 'aamva',
+                verified_attributes: [:all, :of, :them],
+              },
+            )
+          end
 
           it 'stores aamva_status as :passed' do
             expect(document_capture_session.load_agent_proofed_user).to have_attributes(
@@ -288,7 +292,14 @@ RSpec.describe DocumentCaptureSession do
         end
 
         context 'when the aamva response is unsuccessful' do
-          let(:aamva_response) { DocAuth::Response.new(success: false) }
+          let(:aamva) do
+            DocAuth::Response.new(
+              success: false,
+              extra: {
+                vendor_name: 'aamva',
+              },
+            )
+          end
 
           it 'stores aamva_status as :failed' do
             expect(document_capture_session.load_agent_proofed_user).to have_attributes(
@@ -298,7 +309,7 @@ RSpec.describe DocumentCaptureSession do
         end
 
         context 'when the aamva response is nil' do
-          let(:aamva_response) { nil }
+          let(:aamva) { nil }
 
           it 'stores aamva_status as :not_processed' do
             expect(document_capture_session.load_agent_proofed_user).to have_attributes(
