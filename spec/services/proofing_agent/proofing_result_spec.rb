@@ -4,6 +4,8 @@ RSpec.describe ProofingAgent::ProofingResult do
   let(:proofing_agent_id) { SecureRandom.uuid }
   let(:proofing_location_id) { SecureRandom.uuid }
   let(:correlation_id) { SecureRandom.uuid }
+  let(:pii) { nil }
+  let(:service_provider_issuer) { 'test-service-provider' }
   let(:resolution_result) { { success: true, errors: [], exception: nil } }
   let(:aamva_result) { {} }
   let(:mrz_result) { {} }
@@ -13,6 +15,8 @@ RSpec.describe ProofingAgent::ProofingResult do
       proofing_agent_id:,
       proofing_location_id:,
       correlation_id:,
+      pii:,
+      service_provider_issuer:,
       resolution_result:,
       aamva_result:,
       mrz_result:,
@@ -40,6 +44,10 @@ RSpec.describe ProofingAgent::ProofingResult do
           expect(subject.combined_result).to eq(
             success: true,
             reason: nil,
+            proofing_agent_id:,
+            proofing_location_id:,
+            correlation_id:,
+            service_provider_issuer:,
             resolution: { success: true, errors: [], exception: nil },
             aamva: aamva_result,
           )
@@ -64,6 +72,10 @@ RSpec.describe ProofingAgent::ProofingResult do
           expect(subject.combined_result).to eq(
             success: true,
             reason: nil,
+            proofing_agent_id:,
+            proofing_location_id:,
+            correlation_id:,
+            service_provider_issuer:,
             resolution: { success: true, errors: [], exception: nil },
             mrz: mrz_result,
           )
@@ -84,6 +96,10 @@ RSpec.describe ProofingAgent::ProofingResult do
       expect(subject.combined_result).to eq(
         success: false,
         reason: 'profile_resolution_fail',
+        proofing_agent_id:,
+        proofing_location_id:,
+        correlation_id:,
+        service_provider_issuer:,
         resolution: resolution_result,
       )
     end
@@ -108,6 +124,10 @@ RSpec.describe ProofingAgent::ProofingResult do
       expect(subject.combined_result).to eq(
         success: false,
         reason: 'id_fail',
+        proofing_agent_id:,
+        proofing_location_id:,
+        correlation_id:,
+        service_provider_issuer:,
         resolution: { success: true, errors: [], exception: nil },
         aamva: aamva_result,
       )
@@ -132,6 +152,10 @@ RSpec.describe ProofingAgent::ProofingResult do
       expect(subject.combined_result).to eq(
         success: false,
         reason: 'passport_fail',
+        proofing_agent_id:,
+        proofing_location_id:,
+        correlation_id:,
+        service_provider_issuer:,
         resolution: { success: true, errors: [], exception: nil },
         mrz: mrz_result,
       )

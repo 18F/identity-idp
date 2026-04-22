@@ -15,19 +15,19 @@ module ProofingAgent
       proofing_agent_id:,
       proofing_location_id:,
       correlation_id:,
-      pii:,
       resolution_result:,
-      aamva_result: nil,
-      mrz_result: nil,
       service_provider_issuer:,
+      pii: nil,
+      aamva_result: nil,
+      mrz_result: nil
     )
       @proofing_agent_id = proofing_agent_id
       @proofing_location_id = proofing_location_id
       @correlation_id = correlation_id
       @pii = pii
       @resolution_result = resolution_result
-      @aamva_result = aamva_result
-      @mrz_result = mrz_result
+      @aamva_result = aamva_result&.to_h
+      @mrz_result = mrz_result&.to_h
       @service_provider_issuer = service_provider_issuer
     end
 
@@ -40,7 +40,7 @@ module ProofingAgent
       result[:pii] = pii if pii.present?
       if resolution_result.present?
         result[:resolution] =
-          resolution_result.slice(:success, :errors, :exception) 
+          resolution_result.slice(:success, :errors, :exception)
       end
       result[:aamva] = aamva_result if aamva_result.present?
       result[:mrz] = mrz_result if mrz_result.present?
@@ -64,7 +64,7 @@ module ProofingAgent
       return 'profile_resolution_fail' if resolution_result.present? && !resolution_result[:success]
       return 'id_fail' if aamva_result.present? && !aamva_success?
       return 'passport_fail' if mrz_result.present? && !mrz_result[:success]
-        
+
       nil
     end
 

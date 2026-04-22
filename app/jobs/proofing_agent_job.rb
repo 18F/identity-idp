@@ -57,11 +57,13 @@ class ProofingAgentJob < ApplicationJob
       correlation_id:,
     )
 
+    combined_result = proofing_result.combined_result.to_h
+
     document_capture_session = DocumentCaptureSession.new(result_id:)
     document_capture_session.store_proofing_result(proofing_result.combined_result)
 
-    success = proofing_result.success
-    reason = proofing_result.reason
+    success = combined_result[:success]
+    reason = combined_result[:reason]
 
     ProofingAgentWebhookJob.perform_later(
       webhook_url:,
@@ -73,7 +75,7 @@ class ProofingAgentJob < ApplicationJob
     logger_info_hash(
       name: 'ProofingAgent',
       trace_id:,
-      success: proofing_result.success,
+      success: combined_result&.dig(:success),
       timing: timer.results,
       user_id: @user&.uuid,
     )
