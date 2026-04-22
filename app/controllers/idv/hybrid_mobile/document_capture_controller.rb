@@ -32,8 +32,7 @@ module Idv
       def update
         document_capture_session.confirm_ocr
         result = handle_stored_result(
-          user: document_capture_user,
-          store_in_session: false,
+          user: document_capture_user
         )
 
         analytics.idv_doc_auth_document_capture_submitted(**result.to_h.merge(analytics_arguments))

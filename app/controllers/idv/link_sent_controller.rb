@@ -80,7 +80,7 @@ module Idv
     end
 
     def handle_document_verification_success
-      extract_pii_from_doc(current_user, store_in_session: true)
+      extract_pii_from_doc(current_user)
       idv_session.flow_path = 'hybrid'
     end
 

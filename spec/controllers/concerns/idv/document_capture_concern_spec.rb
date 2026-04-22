@@ -105,7 +105,7 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
       end
 
       it 'returns success response' do
-        response = controller.handle_stored_result(user: user, store_in_session: false)
+        response = controller.handle_stored_result(user: user)
         expect(response.success?).to eq(true)
       end
     end
@@ -135,7 +135,7 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
       end
 
       it 'returns success response regardless of MRZ status' do
-        response = controller.handle_stored_result(user: user, store_in_session: false)
+        response = controller.handle_stored_result(user: user)
         expect(response.success?).to eq(true)
       end
 
@@ -144,7 +144,7 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
           let(:aamva_status) { :passed }
 
           it 'returns success response' do
-            response = controller.handle_stored_result(user: user, store_in_session: false)
+            response = controller.handle_stored_result(user: user)
             expect(response.success?).to eq(true)
           end
         end
@@ -153,7 +153,7 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
           let(:aamva_status) { :failed }
 
           it 'returns failure response' do
-            response = controller.handle_stored_result(user: user, store_in_session: false)
+            response = controller.handle_stored_result(user: user)
             expect(response.success?).to eq(false)
           end
         end
@@ -162,7 +162,7 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
           let(:aamva_status) { :not_processed }
 
           it 'returns failure response' do
-            response = controller.handle_stored_result(user: user, store_in_session: false)
+            response = controller.handle_stored_result(user: user)
             expect(response.success?).to eq(false)
           end
         end
@@ -173,7 +173,7 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
         let(:aamva_status) { :failed }
 
         it 'returns success response even with failed AAMVA' do
-          response = controller.handle_stored_result(user: user, store_in_session: false)
+          response = controller.handle_stored_result(user: user)
           expect(response.success?).to eq(true)
         end
       end
