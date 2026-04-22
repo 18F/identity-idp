@@ -2033,6 +2033,7 @@ module AnalyticsEvents
   # @param [Hash] portrait_match_results
   # @param [Hash] image_metrics
   # @param [Boolean] address_line2_present
+  # @param [Boolean] name_suffix_present
   # @param [String] zip_code
   # @param [Boolean] selfie_live Selfie liveness result
   # @param [Boolean] selfie_quality_good Selfie quality result
@@ -2104,6 +2105,7 @@ module AnalyticsEvents
     portrait_match_results: nil,
     image_metrics: nil,
     address_line2_present: nil,
+    name_suffix_present: nil,
     zip_code: nil,
     selfie_live: nil,
     selfie_quality_good: nil,
@@ -2155,6 +2157,7 @@ module AnalyticsEvents
       portrait_match_results:,
       image_metrics:,
       address_line2_present:,
+      name_suffix_present:,
       liveness_checking_required:,
       zip_code:,
       selfie_live:,
@@ -2254,6 +2257,7 @@ module AnalyticsEvents
   # @param acuant_sdk_upgrade_ab_test_bucket [String] A/B test bucket for Acuant document capture SDK upgrades
   # @param address_edited [Boolean] Whether the user edited their address before submitting the "Verify your information" step
   # @param address_line2_present [Boolean] Whether the user's address includes a second address line
+  # @param name_suffix_present [Boolean] Whether the user's name includes a suffix
   # @param analytics_id [String] "Doc Auth" for remote unsupervised, "In Person Proofing" for IPP
   # @param errors [Hash] Details about vendor-specific errors encountered during the stages of the identity resolution process
   # @param flow_path [String] "hybrid" for hybrid handoff, "standard" otherwise
@@ -2314,6 +2318,7 @@ module AnalyticsEvents
     acuant_sdk_upgrade_ab_test_bucket: nil,
     address_edited: nil,
     address_line2_present: nil,
+    name_suffix_present: nil,
     analytics_id: nil,
     errors: nil,
     flow_path: nil,
@@ -2335,6 +2340,7 @@ module AnalyticsEvents
       acuant_sdk_upgrade_ab_test_bucket:,
       address_edited:,
       address_line2_present:,
+      name_suffix_present:,
       analytics_id:,
       errors:,
       flow_path:,
@@ -5934,6 +5940,7 @@ module AnalyticsEvents
   # @param [Hash] errors Errors resulting from form validation
   # @param [String] exception
   # @param [Boolean] address_line2_present wether or not we have an address that uses the 2nd line
+  # @param [Boolean] name_suffix_present whether or not we have a name suffix (Jr., Sr., etc.)
   # @param [Boolean] async whether this worker is running asynchronously
   # @param [Boolean] billed
   # @param [String] birth_year Birth year from document
@@ -5978,6 +5985,7 @@ module AnalyticsEvents
     vendor_request_time_in_ms:,
     exception: nil,
     address_line2_present: nil,
+    name_suffix_present: nil,
     billed: nil,
     birth_year: nil,
     customer_profile: nil,
@@ -6006,6 +6014,7 @@ module AnalyticsEvents
       errors:,
       exception:,
       address_line2_present:,
+      name_suffix_present:,
       async:,
       billed:,
       birth_year:,

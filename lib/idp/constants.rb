@@ -218,7 +218,7 @@ module Idp
     end
 
     MOCK_IDV_APPLICANT_WITH_PASSPORT = MOCK_IDV_APPLICANT.select do |field, _value|
-      %i[first_name middle_name last_name dob sex].include?(field)
+      %i[first_name middle_name last_name name_suffix dob sex].include?(field)
     end.merge(
       document_type_received: 'passport',
       mrz:
