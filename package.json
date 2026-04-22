@@ -25,7 +25,7 @@
     "build": "npm run build:js",
     "build:js": "concurrently 'webpack' 'make browsers.json'",
     "build:css": "build-sass app/assets/stylesheets/*.css.scss app/components/*.scss --load-path=app/assets/stylesheets --out-dir=app/assets/builds",
-    "build:openapi": "redocly bundle ./docs/attempts-api/openapi.yml -o ./docs/attempts-api/compiled-api --ext yml -d"
+    "build:openapi": "npx redocly bundle ./docs/attempts-api/openapi.yml -o ./docs/attempts-api/compiled-api --ext yml -d"
   },
   "dependencies": {
     "@18f/identity-design-system": "^9.4.0",
