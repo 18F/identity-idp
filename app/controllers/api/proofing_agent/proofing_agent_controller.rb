@@ -33,6 +33,14 @@ module Api
         return render_user_not_found if user.blank?
         return render_already_proofed if user_has_enhanced_profile?
 
+        if proofing_rate_limiter.limited? || ssn_rate_limiter.limited?
+          analytics.rate_limit_reached(limiter_type: :idv_resolution, step_name: 'proof_user')
+          analytics.rate_limit_reached(limiter_type: :proof_ssn, step_name: 'proof_user')
+          render json: { status: 'failed', reason: 'maximum_attempts_reached' },
+                 status: :too_many_requests
+          return
+        end
+
         pii_validation = Idv::ProofingAgent::AgentPiiForm.new(pii: proof_params).submit
         render_bad_request(errors: pii_validation.errors) and return if !pii_validation.success?
 
@@ -54,6 +62,14 @@ module Api
           **analytics_arguments,
           response_body:,
           transaction_id:,
+          remaining_attempts: proofing_rate_limiter.remaining_count,
+        )
+
+        proofing_rate_limiter&.increment!
+        ssn_rate_limiter&.increment!
+
+        response_body = response_body.merge(
+          { remaining_attempts: proofing_rate_limiter.remaining_count },
         )
 
         render json: response_body, status: :accepted
@@ -242,6 +258,14 @@ module Api
           },
           issuer:,
         }
+      end
+
+      def proofing_rate_limiter
+        @proofing_rate_limiter ||= RateLimiter.new(user: user, rate_limit_type: :idv_resolution)
+      end
+
+      def ssn_rate_limiter
+        @ssn_rate_limiter ||= RateLimiter.new(user: user, rate_limit_type: :proof_ssn)
       end
     end
   end
