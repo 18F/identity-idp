@@ -217,9 +217,9 @@ module AbTests
     experiment_name: 'Doc Auth Passport Cards Allowed',
     should_log: /^idv/i,
     buckets: {
-      doc_auth_passport_cards_allowed: IdentityConfig.store.doc_auth_passport_cards_enabled_percent,
+      doc_auth_passport_cards_allowed: 100,
     },
-  ) do |service_provider:, session:, user:, user_session:, **|
-    document_capture_session_uuid_discriminator(service_provider:, session:, user:, user_session:)
+  ) do |user:, user_session:, **|
+    user&.uuid
   end.freeze
 end

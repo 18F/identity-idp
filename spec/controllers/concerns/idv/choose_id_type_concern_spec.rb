@@ -299,6 +299,14 @@ RSpec.describe Idv::ChooseIdTypeConcern, :controller do
           .and_return(false)
         allow(IdentityConfig.store).to receive(:doc_auth_passport_cards_enabled)
           .and_return(true)
+        ab_test = AbTests::DOC_AUTH_PASSPORT_CARDS_ALLOWED.dup
+        allow(ab_test).to receive(:bucket).and_return(:doc_auth_passport_cards_allowed)
+        stub_const(
+          'AbTests::DOC_AUTH_PASSPORT_CARDS_ALLOWED',
+          ab_test,
+        )
+        allow(AbTests::DOC_AUTH_PASSPORT_CARDS_ALLOWED).to receive(:bucket)
+          .and_return(:doc_auth_passport_cards_allowed)
         allow(response).to receive(:success?).and_return(true)
       end
 
