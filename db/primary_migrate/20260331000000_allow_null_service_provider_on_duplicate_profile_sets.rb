@@ -9,7 +9,7 @@ class AllowNullServiceProviderOnDuplicateProfileSets < ActiveRecord::Migration[7
     # Add index where SP is null
     # This allows for multiple open duplicate profile sets for different SPs
     # But only one open duplicate profile set with a null SP. 
-    # Want to change to just this after we no need for SP. 
+    # Want to change to just this after we have no need for SP. 
     add_index :duplicate_profile_sets, :profile_ids,
               unique: true,
               where: 'service_provider IS NULL',
