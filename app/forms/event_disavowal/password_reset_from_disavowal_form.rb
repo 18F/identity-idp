@@ -35,6 +35,7 @@ module EventDisavowal
       return if user.active_profile.blank?
 
       user.active_profile&.deactivate(:password_reset)
+      user.reload
       Funnel::DocAuth::ResetSteps.call(@user.id)
     end
 
