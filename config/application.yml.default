@@ -353,6 +353,12 @@ mx_timeout: 3
 new_device_alert_delay_in_minutes: 5
 new_device_alert_window_start_in_minutes: 15
 newrelic_license_key: ''
+mattr_tenant_url: ''
+mattr_auth_url: 'https://auth.us01.mattr.global'
+mattr_audience: ''
+mattr_client_id: ''
+mattr_client_secret: ''
+mattr_request_timeout: 30
 okta_vdc_base_url: 'https://credentials.okta.com'
 okta_vdc_client_id: ''
 okta_vdc_client_secret: ''
