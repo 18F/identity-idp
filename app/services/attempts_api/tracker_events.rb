@@ -77,11 +77,12 @@ module AttemptsApi
     # @param [String] document_selfie_image_file_id Filename in S3 w/encrypted data for selfie image
     # @param [String] first_name
     # @param [String] last_name
-    # @param [String] date_of_birth
+    # @param [Boolean] liveness_checking_required
     # @param [String] address1
     # @param [String] address2
     # @param [String] city
     # @param [String] state
+    # @param [String] country
     # @param [String] zip
     # @param [Hash<Symbol,Array<Symbol>>] failure_reason
     # The document was uploaded during the IDV process
@@ -101,12 +102,14 @@ module AttemptsApi
       document_selfie_image_file_id: nil,
       first_name: nil,
       last_name: nil,
+      liveness_checking_required: nil,
       date_of_birth: nil,
       address1: nil,
       address2: nil,
       city: nil,
       state: nil,
       zip: nil,
+      country: nil,
       failure_reason: nil
     )
       track_event(
@@ -126,12 +129,14 @@ module AttemptsApi
         document_selfie_image_file_id:,
         first_name:,
         last_name:,
+        liveness_checking_required:,
         date_of_birth:,
         address1:,
         address2:,
         city:,
         state:,
         zip:,
+        country:,
         failure_reason:,
       )
     end
