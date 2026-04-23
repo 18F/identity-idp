@@ -16,6 +16,7 @@ RSpec.describe Idv::ResendOtpController do
 
   before do
     stub_analytics
+    stub_attempts_tracker
 
     sign_in(user)
     stub_verify_steps_one_and_two(user)
@@ -99,6 +100,27 @@ RSpec.describe Idv::ResendOtpController do
           context: 'idv',
           country: 'US',
         )
+      end
+    end
+
+    context 'rate limit is exceeded' do
+      let(:send_phone_confirmation_otp) { Idv::SendPhoneConfirmationOtp.new(user:, idv_session: subject.idv_session) }
+
+      before do
+        allow(subject).to receive(:send_phone_confirmation_otp_rate_limited?).and_return(true)
+        allow_any_instance_of(FormResponse).to receive(:success?).and_return(false)
+        allow(Idv::PhoneOtpSendable).to receive(:send_phone_confirmation_otp_rate_limited?).and_return(true)
+      end
+
+      it 'tracks an analytics event' do
+        expect(@attempts_api_tracker).to receive(:idv_rate_limited).with(
+          phone_number: Phonelib.parse(phone).e164,
+          limiter_type: :phone_otp,
+        )
+
+        post :create
+
+        expect(@analytics).to have_logged_event('Idv: Phone OTP sends rate limited')
       end
     end
   end
