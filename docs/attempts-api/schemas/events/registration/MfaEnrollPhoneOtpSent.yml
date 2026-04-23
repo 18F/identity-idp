@@ -27,6 +27,15 @@ allOf:
             items:
               type: string
               enum:
-                - Email address is not valid
-                - invalid
+                - DailyLimitReachedError 
+                - DuplicateEndpointError
+                - InvalidPhoneNumberError
+                - InvalidCallingAreaError
+                - OptOutError
+                - RateLimitedError
+                - SmsUnsupportedError
+                - TemporaryFailureError
+                - TimeoutError
+                - UnknownFailureError
+                - VoiceUnsupportedError
                 
