@@ -78,6 +78,7 @@ module AttemptsApi
     # @param [String] first_name
     # @param [String] last_name
     # @param [Boolean] liveness_checking_required
+    # @param [String] date_of_birth
     # @param [String] address1
     # @param [String] address2
     # @param [String] city
