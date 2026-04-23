@@ -18,7 +18,7 @@ RSpec.describe Idv::ByMail::EnterCodeController do
     allow(UserAlerts::AlertUserAboutAccountVerified).to receive(:call)
     allow(IdentityConfig.store).to receive(:proofing_device_profiling)
       .and_return(threatmetrix_enabled ? :enabled : :disabled)
-    allow(IdentityConfig.store).to receive(:enable_usps_verification).and_return(gpo_enabled)
+    allow(IdentityConfig.store).to receive(:idv_gpo_verification_enabled).and_return(gpo_enabled)
   end
 
   describe '#index' do

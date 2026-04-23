@@ -4,9 +4,9 @@ module Idv
   module DocumentCaptureConcern
     extend ActiveSupport::Concern
 
-    def handle_stored_result(user: current_user, store_in_session: true)
+    def handle_stored_result(user: current_user)
       if stored_result&.success? && validation_requirements_met?
-        extract_pii_from_doc(user, store_in_session: store_in_session)
+        extract_pii_from_doc(user)
         flash[:success] = t('doc_auth.headings.capture_complete')
         successful_response
       else
@@ -40,19 +40,15 @@ module Idv
       }
     end
 
-    def extract_pii_from_doc(user, store_in_session: false)
+    def extract_pii_from_doc(user)
       if defined?(idv_session) # hybrid mobile does not have idv_session
         idv_session.had_barcode_read_failure = stored_result.attention_with_barcode?
         # See also Idv::InPerson::StateIdController#update
         idv_session.doc_auth_vendor = document_capture_session.doc_auth_vendor
-        if store_in_session
-          idv_session.pii_from_doc = stored_result.pii_from_doc
-          idv_session.aamva_verified_attributes = stored_result.aamva_verified_attributes
-          idv_session.selfie_check_performed = stored_result.selfie_check_performed?
-        end
-
-        idv_session.source_check_vendor = stored_result.source_check_vendor ||
-                                          stored_result.state_id_vendor # 50/50
+        idv_session.pii_from_doc = stored_result.pii_from_doc
+        idv_session.aamva_verified_attributes = stored_result.aamva_verified_attributes
+        idv_session.selfie_check_performed = stored_result.selfie_check_performed?
+        idv_session.source_check_vendor = stored_result.source_check_vendor
       end
 
       track_document_issuing_state(user, stored_result.pii_from_doc[:state])

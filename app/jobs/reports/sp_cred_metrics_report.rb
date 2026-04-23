@@ -12,14 +12,8 @@ module Reports
       super(init_date, init_receiver, report_config, *args, **rest)
     end
 
-    def partner_strings
-      @partner_strings || []
-    end
-
-    def partner_accounts
-      IaaReportingHelper.partner_accounts.filter do |account|
-        partner_strings.include?(account.partner)
-      end
+    def issuers
+      @issuers || []
     end
 
     def iaas
@@ -28,8 +22,10 @@ module Reports
       end
     end
 
-    def issuers
-      @issuers || []
+    def partner_accounts
+      IaaReportingHelper.partner_accounts.filter do |account|
+        (account.issuers & issuers).any?
+      end
     end
 
     def email_addresses
@@ -38,7 +34,7 @@ module Reports
 
       if report_receiver == :both && partner_emails.empty?
         Rails.logger.warn(
-          "#{partner_strings.first} Monthly Credential Report: recipient is :both " \
+          "#{@agency_abbreviation} Credential Report: recipient is :both " \
           "but no external email specified",
         )
       end
@@ -89,24 +85,24 @@ module Reports
       @report_config = report_config
 
       @issuers = report_config['issuers']
-      @partner_strings = report_config['partner_strings']
       @partner_emails = report_config['partner_emails']
       @internal_emails = report_config['internal_emails']
-
-      @report_name = "#{@partner_strings.first.downcase}_monthly_cred_metrics"
+      @agency_abbreviation = report_config['agency_abbreviation']
+      @report_name = "#{@agency_abbreviation.downcase}_monthly_cred_metrics"
 
       emails = email_addresses
       to_emails = emails[:to].select(&:present?)
       bcc_emails = emails[:bcc].select(&:present?)
 
       if to_emails.empty? && bcc_emails.empty?
-        Rails.logger.warn "No email addresses received - #{@partner_strings.first} Monthly Credential Report NOT SENT"
+        Rails.logger.warn "No email addresses received - #{@agency_abbreviation} Credential Report NOT SENT"
         return false
       end
 
       reports = as_emailable_partner_report(
         date: @report_date,
       )
+
       if reports.present?
         reports.each do |report|
           _latest_path, path = generate_s3_paths(
@@ -122,7 +118,7 @@ module Reports
           )
         end
       else
-        Rails.logger.warn "No report available - #{@partner_strings.first} Monthly Credential Report NOT SENT"
+        Rails.logger.warn "No report available - #{@agency_abbreviation} Credential Metrics Report NOT SENT"
         return false
       end
       # rubocop:enable Layout/LineLength
@@ -130,7 +126,7 @@ module Reports
       ReportMailer.tables_report(
         to: to_emails,
         bcc: bcc_emails,
-        subject: "#{@partner_strings.first} Monthly Credential Metrics - #{@report_date.to_date}",
+        subject: "#{@agency_abbreviation} Credential Metrics - #{@report_date.to_date}",
         message: preamble,
         reports: reports,
         attachment_format: :csv,
@@ -139,38 +135,39 @@ module Reports
     end
 
     def as_emailable_partner_report(date:)
-      emailable_report_array =
-        [
-          Reporting::EmailableReport.new(
-            title: 'Definitions',
-            table: definitions_table,
-            filename: 'partner_monthly_cred_definitions',
-          ),
-          Reporting::EmailableReport.new(
-            title: 'Overview',
-            table: overview_table,
-            filename: 'partner_monthly_cred_overview',
-          ),
-        ]
+      emailable_report_array = [
+        Reporting::EmailableReport.new(
+          title: 'Definitions',
+          table: definitions_table,
+          filename: 'partner_monthly_cred_definitions',
+        ),
+        Reporting::EmailableReport.new(
+          title: 'Overview',
+          table: overview_table,
+          filename: 'partner_monthly_cred_overview',
+        ),
+      ]
 
-      if issuer_report_data.present?
-        emailable_report_array <<
-          Reporting::EmailableReport.new(
-            title: "#{partner_strings.first} Monthly Credential Metrics #{date.strftime('%B %Y')}",
-            table: issuer_report_data,
-            filename: 'multi_issuer_monthly_cred_metrics',
-          )
+      issuer_data = issuer_report_data
+
+      if issuer_data.present?
+        emailable_report_array << Reporting::EmailableReport.new(
+          title: "#{@agency_abbreviation} Monthly Credential Metrics #{date.strftime('%B %Y')}",
+          table: issuer_data,
+          filename: 'multi_issuer_monthly_cred_metrics',
+        )
       else
         return nil
       end
 
-      if partner_report_data.present?
-        emailable_report_array <<
-          Reporting::EmailableReport.new(
-            title: "Partner Monthly Credential Metrics #{date.strftime('%B %Y')}",
-            table: partner_report_data,
-            filename: 'partner_monthly_cred_metrics',
-          )
+      partner_data = partner_report_data
+
+      if partner_data.present?
+        emailable_report_array << Reporting::EmailableReport.new(
+          title: "Partner Monthly Credential Metrics #{date.strftime('%B %Y')}",
+          table: partner_data,
+          filename: 'partner_monthly_cred_metrics',
+        )
       else
         return nil
       end
@@ -273,19 +270,12 @@ module Reports
       invoice_data_csv = CSV.parse(invoice_report_data, headers: true)
 
       partner_invoice_data = invoice_data_csv.select do |r|
-        partner_strings.include?(r['partner'])
+        issuers.include?(r['issuer'])
       end
 
       if partner_invoice_data.empty?
-        Rails.logger.warn "No data for any partners in #{partner_strings}"
+        Rails.logger.warn "No data for any issuers in #{issuers}"
         return nil
-      else
-        # Check if all expected partners have data
-        found_partners = partner_invoice_data.map { |row| row['partner'] }.uniq
-        missing_partners = partner_strings - found_partners
-        if missing_partners.any?
-          Rails.logger.warn "Missing data for partners: #{missing_partners.join(', ')}"
-        end
       end
 
       parsed_invoice_data = CSV::Table.new(
