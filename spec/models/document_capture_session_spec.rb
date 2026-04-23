@@ -182,7 +182,18 @@ RSpec.describe DocumentCaptureSession do
     let(:reason) { nil }
     let(:resolution) { { success: true } }
     let(:mrz) { nil }
-    let(:aamva) { DocAuth::Response.new(success: true) }
+    let(:aamva_success) { true }
+    let(:aamva_vendor) { :document_check_vendor }
+    let(:aamva_attrs) { %w[all of them] }
+    let(:aamva) do
+      DocAuth::Response.new(
+        success: aamva_success,
+        extra: {
+          vendor_name: aamva_vendor,
+          verified_attributes: aamva_attrs,
+        }.compact,
+      )
+    end
     # let(:attempt) { 1 }
     let(:agent_proofing_result) do
       {
@@ -278,36 +289,23 @@ RSpec.describe DocumentCaptureSession do
         end
 
         context 'when the aamva response is successful' do
-          let(:aamva) do
-            DocAuth::Response.new(
-              success: true,
-              extra: {
-                vendor_name: 'aamva',
-                verified_attributes: [:all, :of, :them],
-              },
-            )
-          end
-
           it 'stores aamva_status as :passed' do
             expect(document_capture_session.load_agent_proofed_user).to have_attributes(
               aamva_status: :passed,
+              aamva_verified_attributes: aamva_attrs,
+              state_id_vendor: aamva_vendor,
             )
           end
         end
 
         context 'when the aamva response is unsuccessful' do
-          let(:aamva) do
-            DocAuth::Response.new(
-              success: false,
-              extra: {
-                vendor_name: 'aamva',
-              },
-            )
-          end
+          let(:aamva_success) { false }
+          let(:aamva_attrs) { nil }
 
           it 'stores aamva_status as :failed' do
             expect(document_capture_session.load_agent_proofed_user).to have_attributes(
               aamva_status: :failed,
+              state_id_vendor: aamva_vendor,
             )
           end
         end
