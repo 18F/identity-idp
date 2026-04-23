@@ -16,7 +16,6 @@ class ProofingAgentJob < ApplicationJob
     transaction_id:,
     proofing_vendor:,
     service_provider_issuer: nil,
-    ipp_enrollment_in_progress: false,
     proofing_agent_id: nil,
     proofing_location_id: nil,
     correlation_id: nil
@@ -50,7 +49,6 @@ class ProofingAgentJob < ApplicationJob
       trace_id:,
       user_id:,
       service_provider_issuer:,
-      ipp_enrollment_in_progress:,
       proofing_vendor:,
       proofing_agent_id:,
       proofing_location_id:,
@@ -93,23 +91,11 @@ class ProofingAgentJob < ApplicationJob
     trace_id:,
     user_id:,
     service_provider_issuer:,
-    ipp_enrollment_in_progress:,
     proofing_vendor:,
     proofing_agent_id:,
     proofing_location_id:,
     correlation_id:
   )
-    resolution_result = call_resolution_proofing_job(
-      timer:,
-      result_id:,
-      encrypted_arguments:,
-      trace_id:,
-      user_id:,
-      service_provider_issuer:,
-      ipp_enrollment_in_progress:,
-      proofing_vendor:,
-    )
-
     if applicant_pii[:state_id_number].present?
       aamva_result = call_aamva_verification(
         applicant_pii:,
@@ -126,10 +112,21 @@ class ProofingAgentJob < ApplicationJob
       )
     end
 
+    resolution_result = call_resolution_proofing_job(
+      timer:,
+      result_id:,
+      encrypted_arguments:,
+      trace_id:,
+      user_id:,
+      service_provider_issuer:,
+      proofing_vendor:,
+    )
+
     ProofingAgent::ProofingResult.new(
       proofing_agent_id:,
       proofing_location_id:,
       correlation_id:,
+      pii: applicant_pii,
       resolution_result:,
       aamva_result:,
       mrz_result:,
@@ -144,7 +141,6 @@ class ProofingAgentJob < ApplicationJob
     trace_id:,
     user_id:,
     service_provider_issuer:,
-    ipp_enrollment_in_progress:,
     proofing_vendor:
   )
     timer.time('resolution') do
@@ -154,7 +150,7 @@ class ProofingAgentJob < ApplicationJob
         trace_id:,
         user_id:,
         service_provider_issuer:,
-        ipp_enrollment_in_progress:,
+        ipp_enrollment_in_progress: @user.has_in_person_enrollment?,
         proofing_vendor:,
       )
     end
@@ -162,20 +158,11 @@ class ProofingAgentJob < ApplicationJob
     DocumentCaptureSession.new(result_id:).load_proofing_result&.result
   end
 
-  def call_aamva_verification(applicant_pii:, current_sp:, resolution_result:, timer:)
-    state_id_address_resolution_result =
-      if resolution_result.present?
-        Proofing::Resolution::Result.new(
-          success: resolution_result[:success],
-          errors: resolution_result[:errors] || {},
-          exception: resolution_result[:exception],
-        )
-      end
-
+  def call_aamva_verification(applicant_pii:, current_sp:, timer:)
     aamva_plugin.call(
       applicant_pii:,
       current_sp:,
-      state_id_address_resolution_result:,
+      state_id_address_resolution_result: nil,
       ipp_enrollment_in_progress: false,
       timer:,
       doc_auth_flow: true,

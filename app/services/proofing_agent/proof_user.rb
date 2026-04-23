@@ -28,7 +28,6 @@ module ProofingAgent
         result_id: document_capture_session.result_id,
         user_id: document_capture_session.user_id,
         service_provider_issuer: document_capture_session.issuer,
-        ipp_enrollment_in_progress: false,
         proofing_vendor:,
         proofing_agent_id:,
         proofing_location_id:,

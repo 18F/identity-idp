@@ -17,7 +17,7 @@ module ProofingAgent
       correlation_id:,
       resolution_result:,
       service_provider_issuer:,
-      pii: nil,
+      pii:,
       aamva_result: nil,
       mrz_result: nil
     )
@@ -64,8 +64,6 @@ module ProofingAgent
       return 'profile_resolution_fail' if resolution_result.present? && !resolution_result[:success]
       return 'id_fail' if aamva_result.present? && !aamva_success?
       return 'passport_fail' if mrz_result.present? && !mrz_result[:success]
-
-      nil
     end
 
     def aamva_success?
