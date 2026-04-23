@@ -498,6 +498,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
         decision_product_status: 'pass',
         processed_alerts: a_hash_including(:failed),
         address_line2_present: false,
+        name_suffix_present: false,
         alert_failure_count: a_kind_of(Numeric),
         portrait_match_results: nil,
         image_metrics: a_hash_including(:front),
