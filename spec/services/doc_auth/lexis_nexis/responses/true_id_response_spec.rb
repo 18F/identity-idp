@@ -225,6 +225,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
         decision_product_status: 'pass',
         processed_alerts: a_hash_including(:failed),
         address_line2_present: true,
+        name_suffix_present: false,
         alert_failure_count: a_kind_of(Numeric),
         portrait_match_results: nil,
         image_metrics: a_hash_including(:front, :back),
@@ -455,6 +456,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
         first_name: 'DAVID',
         last_name: 'SAMPLE',
         middle_name: 'PASSPORT',
+        name_suffix: nil,
         dob: '1986-07-01',
         sex: 'male',
         birth_place: 'MY CITY. U.S.A.',
@@ -768,6 +770,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
           doc_auth_result: 'Failed',
           processed_alerts: a_hash_including(:passed, :failed),
           address_line2_present: false,
+          name_suffix_present: false,
           alert_failure_count: a_kind_of(Numeric),
           portrait_match_results: {
             'FaceMatchResult' => 'Fail',
