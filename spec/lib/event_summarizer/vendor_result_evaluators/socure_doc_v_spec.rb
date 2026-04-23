@@ -25,7 +25,8 @@ RSpec.describe EventSummarizer::VendorResultEvaluators::SocureDocV do
         expect(evaluation).to eql(
           {
             type: :socure_docv_failures,
-            description: "Socure DocV request failed (document_type: #{document_type}):",
+            description: "Socure DocV request failed (document_type: #{document_type}): " \
+            "Without reason codes",
           },
         )
       end

@@ -8,7 +8,7 @@ module AttemptsApi
     ].freeze
 
     # These are events that should be encrypted and then persisted as historical information
-    LOG_HISTORY_PREFIXES = ['forgot-password-', 'user-registration-', 'idv-'].freeze
+    LOG_HISTORY_PREFIXES = ['idv-'].freeze
 
     attr_reader :session_id, :enabled_for_session, :request, :user, :sp, :cookie_device_uuid,
                 :sp_redirect_uri
@@ -75,7 +75,7 @@ module AttemptsApi
 
       session['warden.user.user.session']['idv/attempts'] ||= []
       session['warden.user.user.session']['idv/attempts'].push(
-        { event.event_type => JSON.parse(event.to_json) },
+        event.event_type => { 'user_uuid' => user.uuid },
       )
     end
 

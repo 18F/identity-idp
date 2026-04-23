@@ -26,7 +26,7 @@ RSpec.feature 'IdV Outage Spec' do
   let(:vendor_status_sms) { :operational }
   let(:vendor_status_voice) { :operational }
 
-  let(:enable_usps_verification) { true }
+  let(:idv_gpo_verification_enabled) { true }
   let(:feature_idv_force_gpo_verification_enabled) { false }
   let(:feature_idv_hybrid_flow_enabled) { true }
 
@@ -42,7 +42,7 @@ RSpec.feature 'IdV Outage Spec' do
 
   let(:config_flags) do
     %w[
-      enable_usps_verification
+      idv_gpo_verification_enabled
       feature_idv_force_gpo_verification_enabled
       feature_idv_hybrid_flow_enabled
     ]
@@ -122,7 +122,7 @@ RSpec.feature 'IdV Outage Spec' do
 
   context 'force GPO only, but GPO not enabled' do
     let(:feature_idv_force_gpo_verification_enabled) { true }
-    let(:enable_usps_verification) { false }
+    let(:idv_gpo_verification_enabled) { false }
 
     it 'shows mail only warning page before idv welcome page' do
       sign_in_with_idv_required(user: user)

@@ -5360,11 +5360,13 @@ module AnalyticsEvents
   # @param [Hash] response_body The body of the response from the proofing agent's proofing request
   # @param [Hash] proofing_agent The proofing agent information
   # @param [String] issuer The issuer associated with the proofing request
+  # @param [Integer, nil] remaining_attempts attempts remaining before rate limit is hit
   # @param [String,nil] transaction_id The transaction ID associated with the proofing request
   def idv_proofing_agent_request_received(
     response_body:,
     proofing_agent:,
     issuer:,
+    remaining_attempts: nil,
     transaction_id: nil,
     **extra
   )
@@ -5373,6 +5375,7 @@ module AnalyticsEvents
       response_body:,
       proofing_agent:,
       issuer:,
+      remaining_attempts:,
       transaction_id:,
       **extra,
     )
@@ -5400,6 +5403,28 @@ module AnalyticsEvents
       proofing_components: proofing_components,
       active_profile_idv_level: active_profile_idv_level,
       pending_profile_idv_level: pending_profile_idv_level,
+      **extra,
+    )
+  end
+
+  # User is being redirected to re-prove their identity based on SP requirements.
+  # @param [Symbol] reproof_reason Reason reproofing is required:
+  #   :reproof_forcing_sp — current SP forces reproof for users not originally proofed through it.
+  #   :unsupervised_with_selfie_required — SP requires unsupervised-with-selfie and user's profile
+  #     was not created at that level.
+  # @param [String, nil] initiating_sp_issuer Issuer of the SP that originally created the profile.
+  # @param [String, nil] previous_idv_level The IDV level of the user's existing active profile.
+  def idv_reproof_needed(
+    reproof_reason:,
+    initiating_sp_issuer: nil,
+    previous_idv_level: nil,
+    **extra
+  )
+    track_event(
+      :idv_reproof_needed,
+      reproof_reason:,
+      initiating_sp_issuer:,
+      previous_idv_level:,
       **extra,
     )
   end

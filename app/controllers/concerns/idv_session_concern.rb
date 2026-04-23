@@ -20,7 +20,7 @@ module IdvSessionConcern
     user_needs_facial_match? ||
       idv_session_user.active_profile.blank? ||
       decorated_sp_session.requested_more_recent_verification? ||
-      current_sp&.needs_to_reproof?(idv_session_user.active_profile.initiating_service_provider)
+      need_to_reproof?
   end
 
   def idv_session
@@ -58,6 +58,18 @@ module IdvSessionConcern
     return User.find_by(id: session[:doc_capture_user_id]) if !current_user && hybrid_session?
 
     current_user
+  end
+
+  def need_to_reproof?
+    reproofing_policy.needs_to_reproof?
+  end
+
+  def reproofing_policy
+    @reproofing_policy ||= Idv::ServiceProviderBasedReproofingPolicy.new(
+      active_profile: idv_session_user.active_profile,
+      service_provider: current_sp,
+      resolved_authn_context_result: resolved_authn_context_result,
+    )
   end
 
   def user_needs_facial_match?

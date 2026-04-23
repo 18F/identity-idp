@@ -12,10 +12,13 @@ module Api
       skip_before_action :verify_authenticity_token
       before_action :authenticate_client
       before_action :validate_required_headers
-      before_action :validate_search_user_payload, only: :search_user
+      before_action :validate_agent_id_and_location_id
       after_action :add_custom_headers_to_response
 
       def search_user
+        pii_validation = Idv::ProofingAgent::SearchUserForm.new(email:, ssn:).submit
+        render_bad_request(errors: pii_validation.errors) and return if !pii_validation.success?
+
         response_body = {
           email_account_found: user.present?,
           ssn_profile_found: ssn_active_profiles.any?,
@@ -32,6 +35,14 @@ module Api
       def proof_user
         return render_user_not_found if user.blank?
         return render_already_proofed if user_has_enhanced_profile?
+
+        if proofing_rate_limiter.limited? || ssn_rate_limiter.limited?
+          analytics.rate_limit_reached(limiter_type: :idv_resolution, step_name: 'proof_user')
+          analytics.rate_limit_reached(limiter_type: :proof_ssn, step_name: 'proof_user')
+          render json: { status: 'failed', reason: 'maximum_attempts_reached' },
+                 status: :too_many_requests
+          return
+        end
 
         pii_validation = Idv::ProofingAgent::AgentPiiForm.new(pii: proof_params).submit
         render_bad_request(errors: pii_validation.errors) and return if !pii_validation.success?
@@ -54,6 +65,14 @@ module Api
           **analytics_arguments,
           response_body:,
           transaction_id:,
+          remaining_attempts: proofing_rate_limiter.remaining_count,
+        )
+
+        proofing_rate_limiter&.increment!
+        ssn_rate_limiter&.increment!
+
+        response_body = response_body.merge(
+          { remaining_attempts: proofing_rate_limiter.remaining_count },
         )
 
         render json: response_body, status: :accepted
@@ -88,21 +107,22 @@ module Api
       end
 
       def validate_required_headers
-        if location_id.blank? || agent_id.blank? || correlation_id.blank?
-          required_headers = 'X-Proofing-Location-ID, X-Proofing-Agent-ID, X-Correlation-ID'
-          errors = { error: "Missing required headers: #{required_headers}" }
+        missing = []
+        missing << 'X-Correlation-ID' if correlation_id.blank?
 
-          track_failure(failure_type: :header_validation, errors:)
-          render json: errors, status: :bad_request
-        end
+        return if missing.empty?
+
+        errors = { error: "Missing required headers: #{missing.join(', ')}" }
+
+        render_bad_request(errors:, failure_type: :header_validation)
       end
 
-      def validate_search_user_payload
-        if email.blank? || ssn.blank?
-          render json: {
-            error: 'Missing required payload: email, ssn',
-          }, status: :bad_request
-        end
+      def validate_agent_id_and_location_id
+        errors = {}
+        errors[:proofing_agent_id] = ['cannot be blank'] if agent_id.blank?
+        errors[:proofing_location_id] = ['cannot be blank'] if location_id.blank?
+        return if errors.empty?
+        render_bad_request(errors:, failure_type: :body_validation)
       end
 
       def authenticate_client
@@ -113,11 +133,11 @@ module Api
       end
 
       def agent_id
-        @agent_id ||= request.headers['X-Proofing-Agent-ID']
+        @agent_id ||= params.permit(:proofing_agent_id)[:proofing_agent_id]
       end
 
       def location_id
-        @location_id ||= request.headers['X-Proofing-Location-ID']
+        @location_id ||= params.permit(:proofing_location_id)[:proofing_location_id]
       end
 
       def correlation_id
@@ -160,9 +180,21 @@ module Api
           success: false,
           failure_type:,
           errors:,
-          pii_like_keypaths: [:header_validation, :authorization].include?(failure_type) ? [] :
-            Idv::ProofingAgent::AgentPiiForm.pii_like_keypaths(document_type: id_type),
+          pii_like_keypaths: pii_like_keypaths(failure_type),
         )
+      end
+
+      def pii_like_keypaths(failure_type)
+        return [] unless failure_type == :body_validation
+
+        case action_name
+          when 'proof_user'
+            Idv::ProofingAgent::AgentPiiForm.pii_like_keypaths(document_type: id_type)
+          when 'search_user'
+            Idv::ProofingAgent::SearchUserForm.pii_like_keypaths
+          else
+            []
+        end
       end
 
       def user_has_enhanced_profile?
@@ -172,19 +204,15 @@ module Api
       end
 
       def email
-        @email ||= action_name == 'proof_user' ? params.expect(:email) : search_user_params[:email]
+        @email ||= params.permit(:email)[:email]
       end
 
       def ssn
-        @ssn ||= action_name == 'proof_user' ? params.expect(:ssn) : search_user_params[:ssn]
+        @ssn ||= params.permit(:ssn)[:ssn]
       end
 
       def id_type
-        @id_type ||= params.expect(:id_type)
-      end
-
-      def search_user_params
-        @search_user_params = params.permit(:email, :ssn)
+        @id_type ||= params.permit(:id_type)[:id_type]
       end
 
       def proof_params
@@ -215,7 +243,7 @@ module Api
       end
 
       def render_bad_request(errors: nil, failure_type: :body_validation)
-        errors = { base: ['There was a problem with your request.'] } if errors.nil?
+        errors = { base: ['There was a problem with your request.'] } if errors.blank?
         track_failure(failure_type:, errors:)
 
         render json: errors, status: :bad_request
@@ -242,6 +270,14 @@ module Api
           },
           issuer:,
         }
+      end
+
+      def proofing_rate_limiter
+        @proofing_rate_limiter ||= RateLimiter.new(user: user, rate_limit_type: :idv_resolution)
+      end
+
+      def ssn_rate_limiter
+        @ssn_rate_limiter ||= RateLimiter.new(user: user, rate_limit_type: :proof_ssn)
       end
     end
   end

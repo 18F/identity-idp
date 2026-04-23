@@ -12,7 +12,7 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
   let(:user) { create(:user, :with_phone, with: { phone: '+1 (415) 555-0130' }) }
   let(:service_provider) { create(:service_provider) }
   let(:enrollment) { InPersonEnrollment.new }
-  let(:state_id_vendor) { nil }
+  let(:source_check_vendor) { nil }
 
   before do
     stub_analytics
@@ -21,7 +21,7 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
     subject.idv_session.flow_path = 'standard'
     subject.idv_session.ssn = Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID[:ssn]
     subject.idv_session.idv_consent_given_at = Time.zone.now.to_s
-    subject.idv_session.source_check_vendor = state_id_vendor
+    subject.idv_session.source_check_vendor = source_check_vendor
     subject.user_session['idv/in_person'] = flow_session
     stub_up_to(:ipp_ssn, idv_session: subject.idv_session)
     reload_ab_tests

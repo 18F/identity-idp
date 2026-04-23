@@ -248,22 +248,70 @@ RSpec.describe AttemptsApi::Tracker do
           allow(request).to receive(:session).and_return(mock_session)
         end
 
-        it 'populates the session info' do
-          subject.idv_enrollment_complete(reproof: false)
-          expect(user_session['idv/attempts']).to include(
-            hash_including('idv-enrollment-complete'),
-          )
+        context 'it is an event prefixed with "idv"' do
+          it 'populates the session info' do
+            subject.idv_enrollment_complete(reproof: false)
+            expect(user_session['idv/attempts']).to eq(
+              [{ 'idv-enrollment-complete' => { 'user_uuid' => user.uuid } }],
+            )
+          end
+
+          it 'records to redis' do
+            freeze_time do
+              subject.idv_enrollment_complete(reproof: false)
+
+              events = AttemptsApi::RedisClient.new.read_events(
+                issuer: service_provider.issuer,
+              )
+
+              expect(events.values.length).to eq(1)
+            end
+          end
         end
 
-        it 'records to redis' do
-          freeze_time do
+        context 'it is an event not prefixed with "idv"' do
+          it 'does not populate the session info' do
+            subject.user_registration_email_confirmed(success: true, email: 'email@example.com')
+            expect(user_session).to eq({})
+          end
+
+          it 'records to redis' do
+            freeze_time do
+              subject.user_registration_email_confirmed(success: true, email: 'email@example.com')
+
+              events = AttemptsApi::RedisClient.new.read_events(
+                issuer: service_provider.issuer,
+              )
+
+              expect(events.values.length).to eq(1)
+            end
+          end
+        end
+
+        context 'both prefixed and not prefixed events are recorded' do
+          it 'does not populate the event is not prefixed with idv-' do
             subject.idv_enrollment_complete(reproof: false)
-
-            events = AttemptsApi::RedisClient.new.read_events(
-              issuer: service_provider.issuer,
+            subject.user_registration_email_confirmed(success: true, email: 'email@example.com')
+            expect(user_session['idv/attempts']).to eq(
+              [{ 'idv-enrollment-complete' => { 'user_uuid' => user.uuid } }],
             )
+          end
 
-            expect(events.values.length).to eq(1)
+          it 'records both to redis' do
+            freeze_time do
+              subject.idv_enrollment_complete(reproof: false)
+
+              subject.user_registration_email_confirmed(
+                success: true,
+                email: 'email@example.com',
+              )
+
+              events = AttemptsApi::RedisClient.new.read_events(
+                issuer: service_provider.issuer,
+              )
+
+              expect(events.values.length).to eq(2)
+            end
           end
         end
 
@@ -284,8 +332,8 @@ RSpec.describe AttemptsApi::Tracker do
 
           it 'still populates the session info' do
             subject.idv_enrollment_complete(reproof: false)
-            expect(user_session['idv/attempts']).to include(
-              hash_including('idv-enrollment-complete'),
+            expect(user_session['idv/attempts']).to eq(
+              [{ 'idv-enrollment-complete' => { 'user_uuid' => user.uuid } }],
             )
           end
         end
