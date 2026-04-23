@@ -2199,11 +2199,6 @@ vendor_outage.blocked.phone.default: We cannot verify phones at this time. Pleas
 vendor_outage.get_updates: Get updates
 vendor_outage.get_updates_on_status_page: Get updates on our status page
 vendor_outage.working: We are working to resolve an error
-account_creation_passkey_prompt.cta: Set up face or touch unlock
-account_creation_passkey_prompt.description: Secure your account with face or touch unlock. Use your face, fingerprint, or device PIN to keep your account safer.
-account_creation_passkey_prompt.heading: Speed up your sign in with face or touch unlock
-account_creation_passkey_prompt.skip: Skip for now
-account_creation_passkey_prompt.upsell: Face or touch unlock is phishing-resistant and we don't store any recordings of your face or fingerprint, so your information stays private.
 webauthn_platform_recommended.cta: Set up face or touch unlock
 webauthn_platform_recommended.description_security: Secure your sign in with face or touch unlock. Use your face, fingerprint, password, or another method to keep your account safer.
 webauthn_platform_recommended.heading: Set up face or touch unlock for a more secure sign in
