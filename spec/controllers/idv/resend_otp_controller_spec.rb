@@ -109,7 +109,9 @@ RSpec.describe Idv::ResendOtpController do
       before do
         allow(subject).to receive(:send_phone_confirmation_otp_rate_limited?).and_return(true)
         allow_any_instance_of(FormResponse).to receive(:success?).and_return(false)
-        allow(Idv::PhoneOtpSendable).to receive(:send_phone_confirmation_otp_rate_limited?).and_return(true)
+        allow(Idv::PhoneOtpSendable).to receive(
+          :send_phone_confirmation_otp_rate_limited?,
+        ).and_return(true)
       end
 
       it 'tracks an analytics event' do
