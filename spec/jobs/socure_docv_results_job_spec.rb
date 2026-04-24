@@ -1052,79 +1052,17 @@ RSpec.describe SocureDocvResultsJob do
         end
 
         context 'when the socure response is missing the state_id_expiration field' do
+          let(:expiration_date) { nil }
           let(:socure_response_body) do
-            {
-              referenceId: socure_reference_id,
-              documentVerification: {
-                reasonCodes: reason_codes,
-                documentType: {
-                  type: document_metadata_type,
-                  country: 'USA',
-                  state: 'NY',
-                },
-                decision: {
-                  name: 'lenient',
-                  value: decision_value,
-                },
-                documentData: {
-                  firstName: 'Dwayne',
-                  surName: 'Denver',
-                  fullName: 'Dwayne Denver',
-                  address: '123 Example Street, New York City, NY 10001',
-                  parsedAddress: {
-                    physicalAddress: '123 Example Street',
-                    physicalAddress2: 'Apt 4',
-                    city: 'New York City',
-                    state: 'NY',
-                    country: 'US',
-                    zip: '10001',
-                  },
-                  documentNumber: '000000000',
-                  dob: '2000-01-01',
-                  issueDate: issue_date,
-                },
-              },
-              customerProfile: {
-                customerUserId: user.uuid,
-                userId: socure_user_id,
-              },
-            }
+            super().merge(
+              documentVerification: super()[:documentVerification].merge(
+                documentData: super()[:documentVerification][:documentData].except(:expirationDate),
+              ),
+            )
           end
           let(:document_capture_session_result) { document_capture_session.load_result }
 
           before do
-            allow(aamva_proofer).to receive(:call).with(
-              applicant_pii: {
-                address1: '123 Example Street',
-                address2: 'Apt 4',
-                city: 'New York City',
-                dob: '2000-01-01',
-                document_type_received: 'drivers_license',
-                eye_color: nil,
-                first_name: 'Dwayne',
-                height: nil,
-                issuing_country_code: 'USA',
-                last_name: 'Denver',
-                middle_name: nil,
-                name_suffix: nil,
-                sex: nil,
-                state: 'NY',
-                state_id_expiration: nil,
-                state_id_issued: issue_date,
-                state_id_jurisdiction: 'NY',
-                state_id_number: '000000000',
-                weight: nil,
-                zipcode: '10001',
-                uuid: document_capture_session.user.uuid,
-                uuid_prefix: sp.app_id,
-              },
-              current_sp: sp,
-              ipp_enrollment_in_progress: false,
-              state_id_address_resolution_result: nil,
-              timer: an_instance_of(JobHelpers::Timer),
-              doc_auth_flow: true,
-              analytics: @analytics,
-            ).and_return(aamva_proofing_result)
             perform
             document_capture_session.reload
           end
