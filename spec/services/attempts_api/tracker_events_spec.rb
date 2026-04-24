@@ -1,16 +1,20 @@
 require 'rails_helper'
 RSpec.describe AttemptsApi::TrackerEvents do
-  after(:all) do
-    FileUtils.rm('./docs/attempts-api/compiled-api.yml')
-  end
+  # To run these specs locally, you need to compile the OpenAPI spec.
+  # Either run `npm run build:openapi` in the root of the project or uncomment out the below lines.
+  # after(:all) do
+  #   FileUtils.rm('./docs/attempts-api/compiled-api.yml')
+  # end
 
-  if !File.exist?('./docs/attempts-api/compiled-api.yml')
-    result = system('npm run build:openapi')
-    raise 'Failed to compile OpenAPI spec' unless result
-  end
+  # result = system('npm run build:openapi')
+  # raise 'Failed to compile OpenAPI spec' unless result
 
   @event_data = begin
-    spec = Openapi3Parser.load(File.open('./docs/attempts-api/compiled-api.yml'))
+    begin
+      spec = Openapi3Parser.load(File.open('./docs/attempts-api/compiled-api.yml'))
+    rescue Errno::ENOENT
+      raise 'Compiled OpenAPI spec not found. Please run `npm run build:openapi` before running these tests.'
+    end
     spec.components.schemas.each_with_object({}) do |(name, values), hash|
       next unless values['allOf']
       next if name.include?('Event')
