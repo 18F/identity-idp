@@ -934,6 +934,48 @@ RSpec.describe SocureDocvResultsJob do
                     )
                   end
                 end
+
+                context 'when a name suffix is included in the response' do
+                  let(:socure_response_body) do
+                    # ID+ v3.0 API Predictive Document Verification response
+                    {
+                      referenceId: socure_reference_id,
+                      documentVerification: {
+                        reasonCodes: reason_codes,
+                        documentType: {
+                          type: document_metadata_type,
+                          country: 'USA',
+                        },
+                        decision: {
+                          name: 'lenient',
+                          value: decision_value,
+                        },
+                        documentData: {
+                          firstName: 'Dwayne',
+                          surName: 'Denver',
+                          fullName: 'Dwayne Denver',
+                          nameSuffix: 'Jr.',
+                          documentNumber: '000000000',
+                          dob: '2000-01-01',
+                          expirationDate: expiration_date,
+                        },
+                        rawData: { mrz: },
+                      },
+                      customerProfile: {
+                        customerUserId: user.uuid,
+                        userId: socure_user_id,
+                      },
+                    }
+                  end
+
+                  it 'stores the name suffix in the document capture session result' do
+                    perform
+
+                    document_capture_session.reload
+                    document_capture_session_result = document_capture_session.load_result
+                    expect(document_capture_session_result.pii[:name_suffix]).to eq('Jr.')
+                  end
+                end
               end
             end
           end
