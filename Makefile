@@ -183,7 +183,6 @@ lint_spec_file_name:
 		-exec echo "Error: Spec files named incorrectly, should end in '.spec.(js|ts|jsx|tsx)':" {} +
 
 lint_openapi:
-	@npm run build:openapi
 	@npm run lint:openapi
 
 lintfix: ## Try to automatically fix any Ruby, ERB, JavaScript, YAML, or CSS lint errors
@@ -363,3 +362,6 @@ watch_events: ## Prints events logging as they happen
 
 tidy: clobber_assets clobber_logs ## Remove assets, logs, and unused gems, but leave DB alone
 	bundle clean
+
+compile_openapi_spec: ## Compiles the OpenAPI spec for the Attempts API
+	npm run build:openapi
