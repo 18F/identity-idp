@@ -40,6 +40,7 @@ module Api
           user_id: user.id,
           issuer:,
           requested_at: Time.zone.now,
+          doc_auth_vendor: Idp::Constants::Vendors::PROOFING_AGENT,
         )
 
         transaction_id = document_capture_session.uuid
