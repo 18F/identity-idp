@@ -149,6 +149,38 @@ RSpec.describe Users::TwoFactorAuthenticationSetupController do
         expect(response).to redirect_to(user_two_factor_authentication_url)
       end
     end
+
+    context 'when account creation passkey prompt is enabled' do
+      before do
+        allow(FeatureManagement).to receive(:account_creation_passkey_prompt_enabled?)
+          .and_return(true)
+        controller.user_session[:in_account_creation_flow] = true
+      end
+
+      context 'when platform authenticator is available' do
+        before do
+          controller.user_session[:platform_authenticator_available] = true
+        end
+
+        it 'redirects to platform webauthn setup' do
+          get :index
+
+          expect(response).to redirect_to(webauthn_setup_url(platform: true))
+        end
+      end
+
+      context 'when platform authenticator is not available' do
+        before do
+          controller.user_session[:platform_authenticator_available] = false
+        end
+
+        it 'does not redirect to platform webauthn setup' do
+          get :index
+
+          expect(response).to render_template(:index)
+        end
+      end
+    end
   end
 
   describe '#create' do

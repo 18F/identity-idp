@@ -14,6 +14,7 @@ module Users
     before_action :check_if_possible_piv_user
     before_action :override_csp_for_threat_metrix,
                   if: -> { FeatureManagement.account_creation_device_profiling_collecting_enabled? }
+    before_action :trigger_auto_passkey_setup, if: :auto_passkey_prompt_eligible?
 
     delegate :enabled_mfa_methods_count, to: :mfa_context
 
@@ -80,6 +81,16 @@ module Users
     def process_valid_form
       user_session[:mfa_selections] = @two_factor_options_form.selection
       redirect_to(first_mfa_selection_path || after_mfa_setup_path)
+    end
+
+    def trigger_auto_passkey_setup
+      redirect_to webauthn_setup_url(platform: true)
+    end
+
+    def auto_passkey_prompt_eligible?
+      FeatureManagement.account_creation_passkey_prompt_enabled? &&
+        in_account_creation_flow? &&
+        user_session[:platform_authenticator_available] == true
     end
 
     def two_factor_options_form_params
