@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe ProofingAgentJob, type: :job do
-  let(:pii) { Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID }
+  let(:pii) { Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID_WITH_PHONE }
   let(:encrypted_arguments) do
     Encryption::Encryptors::BackgroundProofingArgEncryptor.new.encrypt(
       { applicant_pii: pii }.to_json,
@@ -20,7 +20,6 @@ RSpec.describe ProofingAgentJob, type: :job do
   let(:webhook_url) { 'https://example.com/webhook' }
   let(:user) { document_capture_session.user }
   let(:service_provider) { create(:service_provider, app_id: 'fake-app-id') }
-  let(:ipp_enrollment_in_progress) { false }
   let(:proofing_vendor) { IdentityConfig.store.idv_resolution_default_vendor }
 
   describe '#perform' do
@@ -37,7 +36,6 @@ RSpec.describe ProofingAgentJob, type: :job do
         webhook_url: webhook_url,
         transaction_id: transaction_id,
         service_provider_issuer: service_provider.issuer,
-        ipp_enrollment_in_progress: ipp_enrollment_in_progress,
         proofing_vendor: proofing_vendor,
         proofing_agent_id: proofing_agent_id,
         proofing_location_id: proofing_location_id,
@@ -46,6 +44,10 @@ RSpec.describe ProofingAgentJob, type: :job do
     end
 
     context 'all proofing requests pass' do
+      before do
+        allow(IdentityConfig.store).to receive(:idv_phone_precheck_percent).and_return(100)
+      end
+
       it 'stores a successful result' do
         perform
 
@@ -89,6 +91,10 @@ RSpec.describe ProofingAgentJob, type: :job do
     end
 
     context 'when the AAMVA check passes' do
+      before do
+        allow(IdentityConfig.store).to receive(:idv_phone_precheck_percent).and_return(100)
+      end
+
       it 'stores a successful result with aamva data' do
         perform
 
@@ -97,6 +103,13 @@ RSpec.describe ProofingAgentJob, type: :job do
         expect(result[:reason]).to be_nil
         expect(result[:aamva][:success]).to be true
         expect(result[:aamva][:vendor_name]).to eq('StateIdMock')
+      end
+
+      it 'passes aamva_verified_attributes into resolution_result' do
+        perform
+
+        result = document_capture_session.load_proofing_result[:result]
+        expect(result[:pii][:aamva_verified_attributes]).to be_present
       end
     end
 

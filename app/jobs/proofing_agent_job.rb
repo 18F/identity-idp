@@ -45,7 +45,6 @@ class ProofingAgentJob < ApplicationJob
       applicant_pii:,
       current_sp:,
       result_id:,
-      encrypted_arguments:,
       trace_id:,
       user_id:,
       service_provider_issuer:,
@@ -87,7 +86,6 @@ class ProofingAgentJob < ApplicationJob
     applicant_pii:,
     current_sp:,
     result_id:,
-    encrypted_arguments:,
     trace_id:,
     user_id:,
     service_provider_issuer:,
@@ -100,9 +98,9 @@ class ProofingAgentJob < ApplicationJob
       aamva_result = call_aamva_verification(
         applicant_pii:,
         current_sp:,
-        resolution_result:,
         timer:,
       )
+      applicant_pii[:aamva_verified_attributes] = aamva_result.verified_attributes if aamva_result
     end
 
     if applicant_pii[:mrz].present?
@@ -112,10 +110,14 @@ class ProofingAgentJob < ApplicationJob
       )
     end
 
+    re_encrypted_arguments = Encryption::Encryptors::BackgroundProofingArgEncryptor.new.encrypt(
+      { applicant_pii: applicant_pii }.to_json,
+    )
+
     resolution_result = call_resolution_proofing_job(
       timer:,
       result_id:,
-      encrypted_arguments:,
+      encrypted_arguments: re_encrypted_arguments,
       trace_id:,
       user_id:,
       service_provider_issuer:,

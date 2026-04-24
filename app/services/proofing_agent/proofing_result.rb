@@ -38,10 +38,7 @@ module ProofingAgent
       result = { success:, reason: }
 
       result[:pii] = pii if pii.present?
-      if resolution_result.present?
-        result[:resolution] =
-          resolution_result.slice(:success, :errors, :exception)
-      end
+      result[:resolution] = resolution_result if resolution_result.present?
       result[:aamva] = aamva_result if aamva_result.present?
       result[:mrz] = mrz_result if mrz_result.present?
       result[:service_provider_issuer] = service_provider_issuer
@@ -62,8 +59,17 @@ module ProofingAgent
       return 'passport_exception' if mrz_result.present? && mrz_result[:exception].present?
 
       return 'profile_resolution_fail' if resolution_result.present? && !resolution_result[:success]
+      return 'phone_check_fail' if phone_precheck_attempted? && !phone_precheck_passed?
       return 'id_fail' if aamva_result.present? && !aamva_success?
       return 'passport_fail' if mrz_result.present? && !mrz_result[:success]
+    end
+
+    def phone_precheck_attempted?
+      resolution_result.dig(:context, :stages, :phone_precheck).present?
+    end
+
+    def phone_precheck_passed?
+      resolution_result[:phone_precheck_passed]
     end
 
     def aamva_success?
