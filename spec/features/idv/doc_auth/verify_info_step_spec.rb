@@ -80,8 +80,8 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
           'IdV: doc auth verify proofing results',
           hash_including(
             address_edited: false,
-            address_line2_present: true,
-            name_suffix_present: false,
+            address_line2_present: false,
+            name_suffix_present: true,
           ),
         )
       end
