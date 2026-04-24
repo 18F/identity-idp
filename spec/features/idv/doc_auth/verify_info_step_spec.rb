@@ -8,19 +8,18 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
   let(:fake_analytics) { FakeAnalytics.new }
   let(:attempts_api_tracker) { AttemptsApiTrackingHelper::FakeAttemptsTracker.new }
   let(:user) { user_with_2fa }
-
-  let(:fake_pii_details) do
-    {
-      document_state: MOCK_IDV_APPLICANT[:state],
-      document_number: MOCK_IDV_APPLICANT[:state_id_number],
-      document_issued: MOCK_IDV_APPLICANT[:state_id_issued],
-      document_expiration: MOCK_IDV_APPLICANT[:state_id_expiration],
-      first_name: MOCK_IDV_APPLICANT[:first_name],
-      last_name: MOCK_IDV_APPLICANT[:last_name],
-      date_of_birth: MOCK_IDV_APPLICANT[:dob],
-      address: MOCK_IDV_APPLICANT[:address1],
-    }
-  end
+  # let(:fake_pii_details) do
+  #   {
+  #     document_state: MOCK_IDV_APPLICANT[:state],
+  #     document_number: MOCK_IDV_APPLICANT[:state_id_number],
+  #     document_issued: MOCK_IDV_APPLICANT[:state_id_issued],
+  #     document_expiration: MOCK_IDV_APPLICANT[:state_id_expiration],
+  #     first_name: MOCK_IDV_APPLICANT[:first_name],
+  #     last_name: MOCK_IDV_APPLICANT[:last_name],
+  #     date_of_birth: MOCK_IDV_APPLICANT[:dob],
+  #     address: MOCK_IDV_APPLICANT[:address1],
+  #   }
+  # end
 
   context 'no outage' do
     before do
@@ -57,6 +56,7 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
           hash_including(
             address_edited: true,
             address_line2_present: true,
+            name_suffix_present: true,
             analytics_id: 'Doc Auth',
           ),
         )
@@ -90,7 +90,11 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
 
         expect(fake_analytics).to have_logged_event(
           'IdV: doc auth verify proofing results',
-          hash_including(address_edited: false, address_line2_present: false),
+          hash_including(
+            address_edited: false,
+            address_line2_present: true,
+            name_suffix_present: false,
+          ),
         )
       end
     end
