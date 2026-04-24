@@ -29,7 +29,7 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
         first_name: 'FAKEY',
         middle_name: nil,
         last_name: 'MCFAKERSON',
-        name_suffix: nil,
+        name_suffix: 'JR',
         address1: '1 FAKE RD',
         address2: '',
         city: 'GREAT FALLS',
