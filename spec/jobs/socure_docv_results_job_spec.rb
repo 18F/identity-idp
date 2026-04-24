@@ -186,6 +186,7 @@ RSpec.describe SocureDocvResultsJob do
             :idv_socure_verification_data_requested,
             hash_including(
               address_line2_present: true,
+              name_suffix_present: false,
               async: true,
               birth_year: 2000,
               customer_profile: { 'customerUserId' => user.uuid, 'userId' => socure_user_id },
@@ -551,12 +552,19 @@ RSpec.describe SocureDocvResultsJob do
               ),
             )
           end
+
           it 'stores the name suffix in the document capture session result pii' do
             perform
 
             document_capture_session.reload
             document_capture_session_result = document_capture_session.load_result
             expect(document_capture_session_result.pii[:name_suffix]).to eq('Jr.')
+            expect(@analytics).to have_logged_event(
+              :idv_socure_verification_data_requested,
+              hash_including(
+                name_suffix_present: true,
+              ),
+            )
           end
         end
 
