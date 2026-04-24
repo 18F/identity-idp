@@ -13,7 +13,7 @@ RSpec.describe AttemptsApi::TrackerEvents do
     begin
       spec = Openapi3Parser.load(File.open('./docs/attempts-api/compiled-api.yml'))
     rescue Errno::ENOENT
-      raise 'Compiled OpenAPI spec not found. Please run `npm run build:openapi` before running these tests.'
+      raise 'Compiled OpenAPI spec not found. Please run `npm run build:openapi`'
     end
     spec.components.schemas.each_with_object({}) do |(name, values), hash|
       next unless values['allOf']
