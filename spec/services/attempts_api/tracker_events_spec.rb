@@ -1,5 +1,12 @@
 require 'rails_helper'
 RSpec.describe AttemptsApi::TrackerEvents do
+  after(:all) do
+    FileUtils.rm('./docs/attempts-api/compiled-api.yml')
+  end
+
+  result = system('npm run build:openapi')
+  raise 'Failed to compile OpenAPI spec' unless result
+
   @event_data = begin
     spec = Openapi3Parser.load(File.open('./docs/attempts-api/compiled-api.yml'))
     spec.components.schemas.each_with_object({}) do |(name, values), hash|

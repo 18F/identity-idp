@@ -27,7 +27,7 @@ allOf:
             items:
               type: string
               enum:
-                - DailyLimitReachedError 
+                - DailyLimitReachedError
                 - DuplicateEndpointError
                 - InvalidPhoneNumberError
                 - InvalidCallingAreaError
@@ -38,4 +38,3 @@ allOf:
                 - TimeoutError
                 - UnknownFailureError
                 - VoiceUnsupportedError
-                
