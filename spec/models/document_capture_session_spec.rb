@@ -293,7 +293,7 @@ RSpec.describe DocumentCaptureSession do
             expect(document_capture_session.load_agent_proofed_user).to have_attributes(
               aamva_status: :passed,
               aamva_verified_attributes: aamva_attrs,
-              state_id_vendor: aamva_vendor,
+              source_check_vendor: aamva_vendor,
             )
           end
         end
@@ -305,7 +305,7 @@ RSpec.describe DocumentCaptureSession do
           it 'stores aamva_status as :failed' do
             expect(document_capture_session.load_agent_proofed_user).to have_attributes(
               aamva_status: :failed,
-              state_id_vendor: aamva_vendor,
+              source_check_vendor: aamva_vendor,
             )
           end
         end
@@ -321,7 +321,19 @@ RSpec.describe DocumentCaptureSession do
         end
       end
 
+      context 'when both aamva and mrz response is passed in' do
+        let(:aamva) { DocAuth::Response.new(success: true) }
+        let(:mrz) { DocAuth::Response.new(success: true) }
+
+        it 'raises an exception' do
+          expect do
+            document_capture_session.store_agent_proofed_user(agent_proofing_result)
+          end.to raise_error(ArgumentError, 'received both aamva and mrz arguments')
+        end
+      end
+
       context 'when mrz response is passed in' do
+        let(:aamva) { nil }
         before do
           document_capture_session.store_agent_proofed_user(agent_proofing_result)
         end
@@ -332,6 +344,7 @@ RSpec.describe DocumentCaptureSession do
           it 'stores mrz_status as :passed' do
             expect(document_capture_session.load_agent_proofed_user).to have_attributes(
               mrz_status: :pass,
+              source_check_vendor: :dos,
             )
           end
         end
@@ -342,6 +355,7 @@ RSpec.describe DocumentCaptureSession do
           it 'stores mrz_status as :failed' do
             expect(document_capture_session.load_agent_proofed_user).to have_attributes(
               mrz_status: :failed,
+              source_check_vendor: :dos,
             )
           end
         end

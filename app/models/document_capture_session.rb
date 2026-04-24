@@ -135,7 +135,10 @@ class DocumentCaptureSession < ApplicationRecord
     if aamva_response&.success?
       session_result.aamva_verified_attributes = aamva_response.extra[:verified_attributes]
     end
-    session_result.state_id_vendor = aamva_response&.extra&.[](:vendor_name)
+    session_result.source_check_vendor = determine_source_check_vendor(
+      aamva: aamva_response,
+      mrz: agent_proofing_result[:mrz],
+    )
     session_result.captured_at = Time.zone.now
 
     EncryptedRedisStructStorage.store(
@@ -148,6 +151,13 @@ class DocumentCaptureSession < ApplicationRecord
   def agent_proofing_success(agent_proofing_result)
     !!agent_proofing_result[:success] &&
       (agent_proofing_result[:aamva]&.success? || agent_proofing_result[:mrz]&.success?)
+  end
+
+  def determine_source_check_vendor(aamva:, mrz:)
+    raise ArgumentError.new('received both aamva and mrz args') if aamva.present? && mrz.present?
+
+    return aamva.extra[:vendor_name] if aamva.present?
+    'dos' if mrz.present?
   end
 
   def expired?

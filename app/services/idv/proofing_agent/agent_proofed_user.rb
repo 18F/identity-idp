@@ -16,7 +16,7 @@ module Idv
       :mrz_status,                # DoS
       :aamva_status,              # aamva
       :aamva_verified_attributes,
-      :state_id_vendor,
+      :source_check_vendor,
       :address_resolution_status, # phone_finder
       :captured_at,
       allowed_members: [
@@ -31,8 +31,8 @@ module Idv
         :mrz_status,
         :aamva_status,
         :aamva_verified_attributes,
+        :source_check_vendor,
         :address_resolution_status,
-        :state_id_vendor,
         :captured_at,
       ],
     ) do
@@ -48,8 +48,8 @@ module Idv
         self[:aamva_status]&.to_sym
       end
 
-      def state_id_vendor
-        self[:state_id_vendor]&.to_sym
+      def source_check_vendor
+        self[:source_check_vendor]&.to_sym
       end
 
       def aamva_verified_attributes
