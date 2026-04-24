@@ -129,7 +129,7 @@ module Idp
       issuing_country_code: 'US',
       last_name: 'MCFAKERSON',
       middle_name: nil,
-      name_suffix: nil, # 'JR',
+      name_suffix: 'JR',
       state: MOCK_IDV_APPLICANT_STATE,
       state_id_expiration: '2099-12-31',
       state_id_issued: '2019-12-31',
