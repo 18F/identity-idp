@@ -4,8 +4,10 @@ RSpec.describe AttemptsApi::TrackerEvents do
     FileUtils.rm('./docs/attempts-api/compiled-api.yml')
   end
 
-  result = system('npm run build:openapi')
-  raise 'Failed to compile OpenAPI spec' unless result
+  if !File.exist?('./docs/attempts-api/compiled-api.yml')
+    result = system('npm run build:openapi')
+    raise 'Failed to compile OpenAPI spec' unless result
+  end
 
   @event_data = begin
     spec = Openapi3Parser.load(File.open('./docs/attempts-api/compiled-api.yml'))
