@@ -6,12 +6,7 @@ RSpec.describe ProofingAgent::ProofUser do
   let(:proofing_location_id) { SecureRandom.uuid }
   let(:correlation_id) { SecureRandom.uuid }
   let(:trace_id) { SecureRandom.uuid }
-  let(:webhook_url) { 'https://example.com/webhook' }
-  let(:issuer) { 'https://rp1.serviceprovider.com/auth/saml/metadata' }
-  let(:document_capture_session) do
-    create(:document_capture_session, user:, issuer:)
-  end
-  let(:transaction_id) { document_capture_session.uuid }
+  let(:transaction_id) { SecureRandom.uuid }
   let(:proofing_vendor) do
     IdentityConfig.store.idv_resolution_default_vendor
   end
@@ -68,16 +63,13 @@ RSpec.describe ProofingAgent::ProofUser do
 
   def call_service(applicant: state_id_applicant)
     described_class.new(applicant).call(
-      document_capture_session:,
       proofing_agent_id:,
       proofing_location_id:,
       correlation_id:,
       trace_id:,
       transaction_id:,
       proofing_vendor:,
-      webhook_url:,
     )
-    document_capture_session.reload
   end
 
   def decrypt_applicant_pii(args)
@@ -98,24 +90,14 @@ RSpec.describe ProofingAgent::ProofUser do
           call_service
         end
 
-        it 'passes service_provider_issuer from the document_capture_session' do
-          expect(ProofingAgentJob).to receive(:perform_later).with(
-            hash_including(service_provider_issuer: issuer),
-          )
-          call_service
-        end
-
         it 'passes all required job arguments' do
           expect(ProofingAgentJob).to receive(:perform_later).with(
             hash_including(
               trace_id:,
-              user_id: document_capture_session.user_id,
-              service_provider_issuer: issuer,
               proofing_vendor:,
               proofing_agent_id:,
               proofing_location_id:,
               correlation_id:,
-              webhook_url:,
               transaction_id:,
             ),
           )
@@ -155,13 +137,10 @@ RSpec.describe ProofingAgent::ProofUser do
           expect(ProofingAgentJob).to receive(:perform_later).with(
             hash_including(
               trace_id:,
-              user_id: document_capture_session.user_id,
-              service_provider_issuer: issuer,
               proofing_vendor:,
               proofing_agent_id:,
               proofing_location_id:,
               correlation_id:,
-              webhook_url:,
               transaction_id:,
             ),
           )
@@ -205,13 +184,10 @@ RSpec.describe ProofingAgent::ProofUser do
         expect(ProofingAgentJob).to receive(:perform_now).with(
           hash_including(
             trace_id:,
-            user_id: document_capture_session.user_id,
-            service_provider_issuer: issuer,
             proofing_vendor:,
             proofing_agent_id:,
             proofing_location_id:,
             correlation_id:,
-            webhook_url:,
             transaction_id:,
           ),
         )

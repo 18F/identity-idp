@@ -2,13 +2,13 @@
 
 module ProofingAgent
   class WebhookCaller
-    attr_reader :webhook_url, :success, :reason, :transaction_id
+    attr_reader :success, :reason, :transaction_id, :correlation_id
 
-    def initialize(webhook_url:, success:, reason:, transaction_id:)
-      @webhook_url = webhook_url
+    def initialize(success:, reason:, transaction_id:, correlation_id:)
       @success = success
       @reason = reason
       @transaction_id = transaction_id
+      @correlation_id = correlation_id
     end
 
     def call
@@ -67,7 +67,23 @@ module ProofingAgent
     end
 
     def request_headers
-      { 'Content-Type' => 'application/json' }
+      { 'Content-Type' => 'application/json', 'X-Correlation-ID' => correlation_id }
+    end
+
+    def document_capture_session
+      @document_capture_session ||= DocumentCaptureSession.find_by(uuid: transaction_id)
+    end
+
+    def issuer
+      document_capture_session&.issuer
+    end
+
+    def webhook_url
+      config = IdentityConfig.store.idv_proofing_agent_config.find do |issuer_config|
+        issuer_config['issuer'] == issuer
+      end
+
+      config&.dig('webhook_url')
     end
   end
 end

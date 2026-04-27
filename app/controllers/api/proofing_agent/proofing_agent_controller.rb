@@ -57,14 +57,12 @@ module Api
         )
 
         ::ProofingAgent::ProofUser.new(proof_params).call(
-          document_capture_session:,
           proofing_agent_id: agent_id,
           proofing_location_id: location_id,
           correlation_id:,
           trace_id: amzn_trace_id,
           transaction_id:,
           proofing_vendor:,
-          webhook_url: request_token.webhook_url,
         )
 
         render json: response_body, status: :accepted

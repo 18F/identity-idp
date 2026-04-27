@@ -16,8 +16,7 @@ RSpec.describe ProofingAgentJob, type: :job do
   let(:proofing_location_id) { SecureRandom.uuid }
   let(:correlation_id) { SecureRandom.uuid }
   let(:trace_id) { SecureRandom.uuid }
-  let(:transaction_id) { SecureRandom.uuid }
-  let(:webhook_url) { 'https://example.com/webhook' }
+  let(:transaction_id) { document_capture_session.uuid }
   let(:user) { document_capture_session.user }
   let(:service_provider) { create(:service_provider, app_id: 'fake-app-id') }
   let(:proofing_vendor) { IdentityConfig.store.idv_resolution_default_vendor }
@@ -29,13 +28,9 @@ RSpec.describe ProofingAgentJob, type: :job do
 
     subject(:perform) do
       instance.perform(
-        result_id: document_capture_session.result_id,
         encrypted_arguments: encrypted_arguments,
         trace_id: trace_id,
-        user_id: user.id,
-        webhook_url: webhook_url,
         transaction_id: transaction_id,
-        service_provider_issuer: service_provider.issuer,
         proofing_vendor: proofing_vendor,
         proofing_agent_id: proofing_agent_id,
         proofing_location_id: proofing_location_id,
@@ -51,7 +46,7 @@ RSpec.describe ProofingAgentJob, type: :job do
       it 'stores a successful result' do
         perform
 
-        result = document_capture_session.load_proofing_result[:result]
+        result = document_capture_session.reload.load_proofing_result[:result]
         expect(result[:success]).to be true
         expect(result[:reason]).to be_nil
         expect(result[:resolution][:success]).to be true
@@ -60,10 +55,10 @@ RSpec.describe ProofingAgentJob, type: :job do
 
       it 'enqueues a ProofingAgentWebhookJob with success: true' do
         expect { perform }.to have_enqueued_job(ProofingAgentWebhookJob).with(
-          webhook_url: webhook_url,
           success: true,
           reason: nil,
           transaction_id: transaction_id,
+          correlation_id: correlation_id,
         )
       end
     end
@@ -74,7 +69,7 @@ RSpec.describe ProofingAgentJob, type: :job do
       it 'stores a failed result' do
         perform
 
-        result = document_capture_session.load_proofing_result[:result]
+        result = document_capture_session.reload.load_proofing_result[:result]
         expect(result[:success]).to be false
         expect(result[:reason]).to eq('profile_resolution_fail')
         expect(result[:resolution][:success]).to be false
@@ -82,10 +77,10 @@ RSpec.describe ProofingAgentJob, type: :job do
 
       it 'enqueues a ProofingAgentWebhookJob with success: false' do
         expect { perform }.to have_enqueued_job(ProofingAgentWebhookJob).with(
-          webhook_url: webhook_url,
           success: false,
           reason: 'profile_resolution_fail',
           transaction_id: transaction_id,
+          correlation_id: correlation_id,
         )
       end
     end
@@ -98,7 +93,7 @@ RSpec.describe ProofingAgentJob, type: :job do
       it 'stores a successful result with aamva data' do
         perform
 
-        result = document_capture_session.load_proofing_result[:result]
+        result = document_capture_session.reload.load_proofing_result[:result]
         expect(result[:success]).to be true
         expect(result[:reason]).to be_nil
         expect(result[:aamva][:success]).to be true
@@ -108,7 +103,7 @@ RSpec.describe ProofingAgentJob, type: :job do
       it 'passes aamva_verified_attributes into resolution_result' do
         perform
 
-        result = document_capture_session.load_proofing_result[:result]
+        result = document_capture_session.reload.load_proofing_result[:result]
         expect(result[:pii][:aamva_verified_attributes]).to be_present
       end
     end
@@ -121,7 +116,7 @@ RSpec.describe ProofingAgentJob, type: :job do
       it 'stores a failed result' do
         perform
 
-        result = document_capture_session.load_proofing_result[:result]
+        result = document_capture_session.reload.load_proofing_result[:result]
         expect(result[:success]).to be false
         expect(result[:reason]).to eq('id_fail')
         expect(result[:aamva][:success]).to be false
@@ -129,10 +124,10 @@ RSpec.describe ProofingAgentJob, type: :job do
 
       it 'enqueues a ProofingAgentWebhookJob with success: false' do
         expect { perform }.to have_enqueued_job(ProofingAgentWebhookJob).with(
-          webhook_url: webhook_url,
           success: false,
           reason: 'id_fail',
           transaction_id: transaction_id,
+          correlation_id: correlation_id,
         )
       end
     end
@@ -143,7 +138,7 @@ RSpec.describe ProofingAgentJob, type: :job do
       it 'stores a successful result with mrz data' do
         perform
 
-        result = document_capture_session.load_proofing_result[:result]
+        result = document_capture_session.reload.load_proofing_result[:result]
         expect(result[:success]).to be true
         expect(result[:reason]).to be_nil
         expect(result[:mrz][:success]).to be true
@@ -165,7 +160,7 @@ RSpec.describe ProofingAgentJob, type: :job do
       it 'stores a failed result' do
         perform
 
-        result = document_capture_session.load_proofing_result[:result]
+        result = document_capture_session.reload.load_proofing_result[:result]
         expect(result[:success]).to be false
         expect(result[:reason]).to eq('passport_fail')
         expect(result[:mrz][:success]).to be false
@@ -173,10 +168,10 @@ RSpec.describe ProofingAgentJob, type: :job do
 
       it 'enqueues a ProofingAgentWebhookJob with success: false' do
         expect { perform }.to have_enqueued_job(ProofingAgentWebhookJob).with(
-          webhook_url: webhook_url,
           success: false,
           reason: 'passport_fail',
           transaction_id: transaction_id,
+          correlation_id: correlation_id,
         )
       end
     end

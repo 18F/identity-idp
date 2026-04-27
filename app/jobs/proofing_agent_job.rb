@@ -7,25 +7,23 @@ class ProofingAgentJob < ApplicationJob
 
   discard_on JobHelpers::StaleJobHelper::StaleJobError
 
+  attr_reader :document_capture_session
+
   def perform(
-    result_id:,
     encrypted_arguments:,
     trace_id:,
-    user_id:,
-    webhook_url:,
     transaction_id:,
     proofing_vendor:,
-    service_provider_issuer: nil,
     proofing_agent_id: nil,
     proofing_location_id: nil,
     correlation_id: nil
   )
     timer = JobHelpers::Timer.new
 
-    @user = User.find_by(id: user_id)
-    raise ArgumentError, 'User not found' if @user.nil?
+    @document_capture_session = DocumentCaptureSession.find_by(uuid: transaction_id)
+    raise ArgumentError, 'DocumentCaptureSession not found' if @document_capture_session.nil?
 
-    @service_provider_issuer = service_provider_issuer
+    document_capture_session.create_proofing_session
 
     raise_stale_job! if stale_job?(enqueued_at)
 
@@ -38,16 +36,13 @@ class ProofingAgentJob < ApplicationJob
 
     applicant_pii = decrypted_args[:applicant_pii]
     applicant_pii[:uuid_prefix] = current_sp&.app_id
-    applicant_pii[:uuid] = @user.uuid
+    applicant_pii[:uuid] = user.uuid
 
     proofing_result = make_vendor_proofing_requests(
       timer:,
       applicant_pii:,
       current_sp:,
-      result_id:,
       trace_id:,
-      user_id:,
-      service_provider_issuer:,
       proofing_vendor:,
       proofing_agent_id:,
       proofing_location_id:,
@@ -56,17 +51,16 @@ class ProofingAgentJob < ApplicationJob
 
     combined_result = proofing_result.combined_result.to_h
 
-    document_capture_session = DocumentCaptureSession.new(result_id:)
     document_capture_session.store_proofing_result(proofing_result.combined_result)
 
     success = combined_result[:success]
     reason = combined_result[:reason]
 
     ProofingAgentWebhookJob.perform_later(
-      webhook_url:,
       success:,
       reason:,
       transaction_id:,
+      correlation_id:,
     )
   ensure
     logger_info_hash(
@@ -74,7 +68,7 @@ class ProofingAgentJob < ApplicationJob
       trace_id:,
       success: combined_result&.dig(:success),
       timing: timer.results,
-      user_id: @user&.uuid,
+      user_id: user&.uuid,
     )
   end
 
@@ -85,10 +79,7 @@ class ProofingAgentJob < ApplicationJob
     timer:,
     applicant_pii:,
     current_sp:,
-    result_id:,
     trace_id:,
-    user_id:,
-    service_provider_issuer:,
     proofing_vendor:,
     proofing_agent_id:,
     proofing_location_id:,
@@ -119,7 +110,7 @@ class ProofingAgentJob < ApplicationJob
       result_id:,
       encrypted_arguments: re_encrypted_arguments,
       trace_id:,
-      user_id:,
+      user_id: user.id,
       service_provider_issuer:,
       proofing_vendor:,
     )
@@ -152,7 +143,7 @@ class ProofingAgentJob < ApplicationJob
         trace_id:,
         user_id:,
         service_provider_issuer:,
-        ipp_enrollment_in_progress: @user.has_in_person_enrollment?,
+        ipp_enrollment_in_progress: user.has_in_person_enrollment?,
         proofing_vendor:,
       )
     end
@@ -191,14 +182,26 @@ class ProofingAgentJob < ApplicationJob
 
   def analytics
     @analytics ||= Analytics.new(
-      user: @user,
+      user:,
       request: nil,
       session: {},
-      sp: @service_provider_issuer,
+      sp: service_provider_issuer,
     )
   end
 
   def logger_info_hash(hash)
     logger.info(hash.to_json)
+  end
+
+  def user
+    @user ||= document_capture_session.user
+  end
+
+  def service_provider_issuer
+    document_capture_session.issuer
+  end
+
+  def result_id
+    document_capture_session.result_id
   end
 end
