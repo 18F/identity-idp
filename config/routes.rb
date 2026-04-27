@@ -412,6 +412,8 @@ Rails.application.routes.draw do
       get '/hybrid_mobile/socure/document_capture_errors' => 'hybrid_mobile/socure/errors#show', as: :hybrid_mobile_socure_document_capture_errors
       get '/hybrid_mobile/choose_id_type' => 'hybrid_mobile/choose_id_type#show'
       put '/hybrid_mobile/choose_id_type' => 'hybrid_mobile/choose_id_type#update'
+      get '/hybrid_mobile/mdl' => 'hybrid_mobile/mdl#show', as: :hybrid_mobile_mdl
+      post '/hybrid_mobile/mdl/callback' => 'hybrid_mobile/mdl#callback', as: :hybrid_mobile_mdl_callback
       get '/hybrid_handoff' => 'hybrid_handoff#show'
       put '/hybrid_handoff' => 'hybrid_handoff#update'
       get '/choose_id_type' => 'choose_id_type#show'

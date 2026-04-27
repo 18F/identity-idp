@@ -37,8 +37,10 @@ module Idv
           add_hybrid_threatmetrix_variables_to_document_capture_session
         end
 
-        if passport_chosen? &&
-           !dos_passport_api_healthy?(analytics:, step: 'choose_id_type')
+        if mdl_chosen?
+          redirect_to idv_hybrid_mobile_mdl_url
+        elsif passport_chosen? &&
+              !dos_passport_api_healthy?(analytics:, step: 'choose_id_type')
           redirect_to idv_hybrid_mobile_choose_id_type_url(passports: false)
         elsif result.success?
           set_passport_requested

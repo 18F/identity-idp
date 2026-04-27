@@ -1204,6 +1204,27 @@ idv.gpo.return_to_profile: Return to your profile
 idv.gpo.title: Enter your verification code
 idv.gpo.will_send_to: 'You’ll get a letter in the mail from %{app_name} in 5 to 10 days at the address we verified and associated with you:'
 idv.images.come_back_later: Letter with a check mark
+idv.mdl.alert_html: <strong>Don’t have an mDL yet?</strong> It is available only for some U.S. states and territories. Please contact your state’s DMV for more information.
+idv.mdl.button: Open digital wallet
+idv.mdl.errors.canceled: Verification was canceled. Please try again.
+idv.mdl.errors.generic: An error occurred during verification. Please try again.
+idv.mdl.errors.not_supported: Your browser does not support this feature. Please try scanning the QR code instead.
+idv.mdl.info_heading: 'Information we’ll request:'
+idv.mdl.info_items.address: Address
+idv.mdl.info_items.dob: Date of birth
+idv.mdl.info_items.expiration: ID expiration date
+idv.mdl.info_items.id_number: ID number and issuing state
+idv.mdl.info_items.name: Full legal name
+idv.mdl.learn_more: Learn more about how to use mDL
+idv.mdl.loading: Connecting to your wallet…
+idv.mdl.steps_heading: 'You’ll need:'
+idv.mdl.steps.device.title: A device with a digital wallet
+idv.mdl.steps.have_mdl.title: An active mobile driver’s license
+idv.mdl.subtitle: '%{app_name} will verify your mobile driver’s license (mDL) using a trusted service provider.'
+idv.mdl.success_banner: We verified your ID
+idv.mdl.title: Add your mobile driver’s license (mDL) information
+idv.mdl.use_different_method: Use a different verification method
+idv.mdl.waiting: Waiting for credential verification… Please complete the process in the Okta Credentials app.
 idv.messages.activated_html: Your identity has been verified. If you need to change your verified information, please %{link_html}.
 idv.messages.activated_link: contact us
 idv.messages.come_back_later: Sign back in and enter the verification code when your letter arrives.
@@ -1221,27 +1242,6 @@ idv.messages.gpo.resend: Send me another letter
 idv.messages.gpo.timeframe_html: You’ll get a letter with a <strong>verification code</strong> in <strong>5 to 10 days</strong>.
 idv.messages.gpo.verify_address_again_html: If you cannot receive mail at this address, you’ll need to %{verify_address_again_link_html}.
 idv.messages.gpo.verify_address_again_link_text: verify your address again
-idv.mdl.alert_html: <strong>Don't have an mDL yet?</strong> It is available only for some U.S. states and territories. Please contact your state's DMV for more information.
-idv.mdl.button: Open digital wallet
-idv.mdl.errors.canceled: Verification was canceled. Please try again.
-idv.mdl.errors.generic: An error occurred during verification. Please try again.
-idv.mdl.errors.not_supported: Your browser does not support this feature. Please try scanning the QR code instead.
-idv.mdl.info_heading: 'Information we''ll request:'
-idv.mdl.info_items.address: Address
-idv.mdl.info_items.dob: Date of birth
-idv.mdl.info_items.expiration: ID expiration date
-idv.mdl.info_items.id_number: ID number and issuing state
-idv.mdl.info_items.name: Full legal name
-idv.mdl.learn_more: Learn more about how to use mDL
-idv.mdl.loading: Connecting to your wallet...
-idv.mdl.steps.device.title: A device with a digital wallet
-idv.mdl.steps.have_mdl.title: An active mobile driver's license
-idv.mdl.steps_heading: 'You''ll need:'
-idv.mdl.subtitle: '%{app_name} will verify your mobile driver’s license (mDL) using a trusted service provider.'
-idv.mdl.success_banner: We verified your ID
-idv.mdl.title: Add your mobile driver's license (mDL) information
-idv.mdl.use_different_method: Use a different verification method
-idv.mdl.waiting: Waiting for credential verification... Please complete the process in the Okta Credentials app.
 idv.messages.otp_delivery_method_description: If you entered a landline above, please select “Phone call” below.
 idv.messages.phone.alert_html: '<strong>Enter a phone number that is:</strong>'
 idv.messages.phone.description: We will check records to verify that your phone number matches your verified information, and send a one-time code.

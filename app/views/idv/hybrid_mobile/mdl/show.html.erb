@@ -1,0 +1,66 @@
+<% self.title = t('idv.mdl.title') %>
+
+<%= render PageHeadingComponent.new.with_content(t('idv.mdl.title')) %>
+
+<p class="margin-bottom-0"><%= t('idv.mdl.subtitle', app_name: APP_NAME) %></p>
+<p class="margin-bottom-4">
+  <%= new_tab_link_to(
+        t('idv.mdl.learn_more'),
+        help_center_redirect_url(
+          category: 'verify-your-identity',
+          article: 'accepted-identification-documents',
+        ),
+      ) %>
+</p>
+
+<h2 class="margin-bottom-2"><%= t('idv.mdl.steps_heading') %></h2>
+
+<ol class="usa-process-list">
+  <li class="usa-process-list__item">
+    <p class="usa-process-list__heading font-body-md text-normal"><%= t('idv.mdl.steps.device.title') %></p>
+  </li>
+  <li class="usa-process-list__item">
+    <p class="usa-process-list__heading font-body-md text-normal"><%= t('idv.mdl.steps.have_mdl.title') %></p>
+  </li>
+</ol>
+
+<h2 class="margin-bottom-2"><%= t('idv.mdl.info_heading') %></h2>
+
+<%= render IconListComponent.new(icon: :check_circle, color: :success, class: 'margin-bottom-4') do |c| %>
+  <% c.with_item { t('idv.mdl.info_items.name') } %>
+  <% c.with_item { t('idv.mdl.info_items.dob') } %>
+  <% c.with_item { t('idv.mdl.info_items.id_number') } %>
+  <% c.with_item { t('idv.mdl.info_items.expiration') } %>
+  <% c.with_item { t('idv.mdl.info_items.address') } %>
+<% end %>
+
+<%= render AlertComponent.new(type: :info, class: 'margin-bottom-4') do %>
+  <%= t('idv.mdl.alert_html') %>
+<% end %>
+
+<div id="mdl-error" class="usa-alert usa-alert--error display-none margin-bottom-4" role="alert">
+  <div class="usa-alert__body">
+    <p class="usa-alert__text"></p>
+  </div>
+</div>
+
+<div data-mdl-verifier
+     data-mattr-tenant-url="<%= @mattr_tenant_url %>"
+     data-mattr-application-id="<%= @mattr_application_id %>"
+     data-callback-path="<%= @callback_path %>"
+     data-challenge="<%= @challenge %>"
+     data-error-message="<%= t('idv.mdl.errors.generic') %>">
+  <%= button_tag(
+        t('idv.mdl.button'),
+        type: 'button',
+        id: 'mdl-verify-button',
+        class: 'usa-button usa-button--big usa-button--wide',
+      ) %>
+
+  <div id="mdl-loading" class="display-none margin-top-4 margin-bottom-4 text-center">
+    <div class="spinner" aria-label="<%= t('idv.mdl.loading') %>"></div>
+    <p><%= t('idv.mdl.waiting') %></p>
+  </div>
+</div>
+
+<%= javascript_packs_tag_once 'mdl-verifier' %>

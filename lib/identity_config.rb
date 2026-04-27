@@ -366,6 +366,7 @@ module IdentityConfig
     config.add(:mattr_tenant_url)
     config.add(:mattr_auth_url)
     config.add(:mattr_audience)
+    config.add(:mattr_application_id)
     config.add(:mattr_client_id)
     config.add(:mattr_client_secret)
     config.add(:mattr_request_timeout, type: :integer)
