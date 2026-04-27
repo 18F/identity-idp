@@ -314,10 +314,12 @@ RSpec.feature 'hybrid_handoff step for ipp, selfie variances', js: true do
     let(:user) { user_with_2fa }
 
     before do
-      service_provider = build(:service_provider, :active, :in_person_proofing_enabled)
-
-      service_provider.in_person_proofing_enabled = sp_ipp_enabled
-      service_provider.save!
+      service_provider = create(
+        :service_provider,
+        :active,
+        :in_person_proofing_enabled,
+        in_person_proofing_enabled: sp_ipp_enabled,
+      )
 
       allow(IdentityConfig.store).to receive(:socure_docv_enabled).and_return(socure_docv_enabled)
       allow(IdentityConfig.store).to receive(:doc_auth_vendor_default).and_return(doc_auth_vendor)

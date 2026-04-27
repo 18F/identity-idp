@@ -13,6 +13,7 @@ RSpec.feature 'document capture step', :js do
   let(:attempts_api_tracker) { AttemptsApiTrackingHelper::FakeAttemptsTracker.new }
   let(:fraud_ops_tracker) { AttemptsApiTrackingHelper::FakeAttemptsTracker.new }
   let(:passports_enabled) { false }
+  let(:sp_name) { 'Test SP' }
 
   before(:each) do
     allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
@@ -22,18 +23,24 @@ RSpec.feature 'document capture step', :js do
     allow_any_instance_of(ApplicationController).to receive(:fraud_ops_tracker).and_return(
       fraud_ops_tracker,
     )
-    allow_any_instance_of(ServiceProviderSession).to receive(:sp_name).and_return(@sp_name)
+    allow_any_instance_of(ServiceProviderSession).to receive(:sp_name).and_return(sp_name)
     allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled)
       .and_return(passports_enabled)
     allow(IdentityConfig.store).to receive(:doc_auth_mock_dos_api).and_return(true)
   end
 
   before(:all) do
+    # This variable is used by one of the included helper modules
     @sp_name = 'Test SP'
     @user = user_with_2fa
   end
 
-  after(:all) { @user.destroy }
+  after(:all) do
+    user_id = @user.id
+    @user.destroy
+    # This is only needed when local tests fail catastrophically, but it's nice to have if they do
+    EmailAddress.where(user_id:).destroy_all
+  end
 
   context 'standard desktop flow' do
     before do
@@ -565,109 +572,6 @@ RSpec.feature 'document capture step', :js do
 
     context 'when a selfie is required by the SP' do
       context 'on mobile platform', driver: :headless_chrome_mobile, allow_browser_log: true do
-        context 'with a passing selfie' do
-          it 'proceeds to the next page with valid info, including a selfie image' do
-            perform_in_browser(:mobile) do
-              visit_idp_from_oidc_sp_with_ial2(facial_match_required: true)
-              sign_in_and_2fa_user(@user)
-              complete_doc_auth_steps_before_document_capture_step
-
-              expect(page).to have_current_path(idv_document_capture_url)
-              expect(max_capture_attempts_before_native_camera.to_i)
-                .to eq(ActiveSupport::Duration::SECONDS_PER_HOUR)
-              expect(max_submission_attempts_before_native_camera.to_i)
-                .to eq(ActiveSupport::Duration::SECONDS_PER_HOUR)
-              expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
-              expect(page).to have_text(t('doc_auth.headings.document_capture'))
-              attach_images
-              click_continue
-              expect_doc_capture_selfie_subheader
-              click_button t('doc_auth.buttons.take_picture')
-              attach_selfie
-              submit_images
-
-              expect(page).to have_current_path(idv_ssn_url)
-              expect_costing_for_document
-              expect(DocAuthLog.find_by(user_id: @user.id).state).to eq('MT')
-
-              expect(page).to have_current_path(idv_ssn_url)
-              fill_out_ssn_form_ok
-              click_idv_continue
-              complete_verify_step
-              expect(page).to have_current_path(idv_phone_url)
-            end
-          end
-
-          context 'with a valid passport', driver: :headless_chrome_mobile do
-            let(:passports_enabled) { true }
-            let(:passport_image) do
-              Rails.root.join(
-                'spec', 'fixtures',
-                'passport_credential.yml'
-              )
-            end
-            let(:fake_dos_api_endpoint) { 'http://fake_dos_api_endpoint/' }
-
-            before do
-              allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
-              allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled)
-                .and_return(true)
-              allow_any_instance_of(ServiceProvider).to receive(
-                :in_person_proofing_enabled,
-              ).and_return(true)
-              allow(IdentityConfig.store).to receive(:doc_auth_passports_percent).and_return(100)
-              allow(IdentityConfig.store).to receive(:dos_passport_mrz_endpoint)
-                .and_return(fake_dos_api_endpoint)
-              stub_request(:post, fake_dos_api_endpoint)
-                .to_return_json({ status: 200, body: { response: 'YES' } })
-              stub_health_check_settings
-              stub_health_check_endpoints_success
-              reload_ab_tests
-            end
-
-            it 'proceeds to the next page with valid info, including a selfie image' do
-              perform_in_browser(:mobile) do
-                visit_idp_from_oidc_sp_with_ial2(facial_match_required: true)
-                sign_in_and_2fa_user(@user)
-                complete_doc_auth_steps_before_hybrid_handoff_step
-
-                choose(t('doc_auth.forms.id_type_preference.passport'))
-                click_on t('forms.buttons.continue')
-
-                expect(page).to have_current_path(idv_document_capture_url, wait: 10)
-
-                click_button t('doc_auth.buttons.take_picture')
-                expect(page).to have_content(t('doc_auth.headings.document_capture_passport'))
-
-                expect(page).not_to have_content(t('doc_auth.tips.document_capture_selfie_text1'))
-                attach_passport_image(passport_image)
-                click_continue
-                expect_doc_capture_selfie_subheader
-                click_button t('doc_auth.buttons.take_picture')
-                attach_selfie
-                submit_images
-
-                expect(page).to have_content(t('doc_auth.headings.capture_complete'))
-                fill_out_ssn_form_ok
-                click_idv_continue
-                expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_info'))
-                expect(page).to have_content(t('doc_auth.headings.address'))
-                fill_in 'idv_form_address1', with: '123 Main St'
-                fill_in 'idv_form_city', with: 'Nowhere'
-                select 'Virginia', from: 'idv_form_state'
-                fill_in 'idv_form_zipcode', with: '66044'
-                click_idv_continue
-                expect(page).to have_current_path(idv_verify_info_path)
-                expect(page).to have_content('VA')
-                expect(page).to have_content('123 Main St')
-                expect(page).to have_content('Nowhere')
-                complete_verify_step
-                expect(page).to have_current_path(idv_phone_url)
-              end
-            end
-          end
-        end
-
         context 'with ipp enabled' do
           let(:ipp_service_provider) do
             create(:service_provider, :active, :in_person_proofing_enabled)
@@ -708,200 +612,311 @@ RSpec.feature 'document capture step', :js do
           end
         end
 
-        context 'documents or selfie with error is uploaded' do
-          shared_examples 'it has correct error displays' do
-            # when there are multiple doc auth errors on front and back
-            it 'shows the correct error message for the given error' do
-              perform_in_browser(:mobile) do
-                use_id_image('ial2_test_credential_multiple_doc_auth_failures_both_sides.yml')
-                click_continue
-                click_button t('doc_auth.buttons.take_picture')
-                click_idv_submit_default
-                expect(page).not_to have_content(t('doc_auth.headings.capture_complete'))
-                expect(page).not_to have_content(t('doc_auth.errors.rate_limited_heading'))
-                expect(page).to have_title(t('doc_auth.headings.selfie_capture'))
-
-                use_selfie_image('ial2_test_credential_multiple_doc_auth_failures_both_sides.yml')
-                submit_images
-
-                expect_rate_limited_header(true)
-
-                expect_try_taking_new_pictures
-                expect_review_issues_body_message('doc_auth.errors.general.no_liveness')
-                expect_rate_limit_warning(max_attempts - 1)
-
-                expect_to_try_again
-                expect_resubmit_page_h1_copy
-
-                expect_resubmit_page_body_copy('doc_auth.errors.general.no_liveness')
-                expect_resubmit_page_inline_error_messages(2)
-                expect_resubmit_page_inline_selfie_error_message(false)
-
-                # Wrong doc type is uploaded
-                use_id_image('ial2_test_credential_wrong_doc_type.yml')
-
-                use_selfie_image('ial2_test_portrait_match_success.yml')
-                submit_images
-
-                expect_rate_limited_header(true)
-                expect_try_taking_new_pictures(false)
-                # eslint-disable-next-line
-                expect_review_issues_body_message(
-                  'doc_auth.errors.rate_limited_heading',
-                )
-                expect_review_issues_body_message('doc_auth.errors.doc.doc_type_check')
-                expect_rate_limit_warning(max_attempts - 2)
-
-                expect_to_try_again
-                expect_resubmit_page_h1_copy
-
-                expect_review_issues_body_message('doc_auth.errors.general.fallback_field_level')
-                expect_resubmit_page_inline_selfie_error_message(false)
-
-                # when there are multiple front doc auth errors
-                use_id_image(
-                  'ial2_test_credential_multiple_doc_auth_failures_front_side_only.yml',
-                )
-
-                use_selfie_image(
-                  'ial2_test_credential_multiple_doc_auth_failures_front_side_only.yml',
-                )
-                submit_images
-
-                expect_rate_limited_header(true)
-                expect_try_taking_new_pictures(false)
-                expect_review_issues_body_message(
-                  'doc_auth.errors.general.multiple_front_id_failures',
-                )
-                expect_rate_limit_warning(max_attempts - 3)
-
-                expect_to_try_again
-                expect_resubmit_page_h1_copy
-
-                expect_resubmit_page_body_copy(
-                  'doc_auth.errors.general.multiple_front_id_failures',
-                )
-                expect_resubmit_page_inline_error_messages(1)
-                expect_resubmit_page_inline_selfie_error_message(false)
-
-                # when there are multiple back doc auth errors
-                use_id_image(
-                  'ial2_test_credential_multiple_doc_auth_failures_back_side_only.yml',
-                )
-
-                use_selfie_image(
-                  'ial2_test_credential_multiple_doc_auth_failures_back_side_only.yml',
-                )
-                submit_images
-
-                expect_rate_limited_header(true)
-                expect_try_taking_new_pictures(false)
-                expect_review_issues_body_message(
-                  'doc_auth.errors.general.multiple_back_id_failures',
-                )
-                expect_rate_limit_warning(max_attempts - 4)
-
-                expect_to_try_again
-                expect_resubmit_page_h1_copy
-
-                expect_resubmit_page_body_copy(
-                  'doc_auth.errors.general.multiple_back_id_failures',
-                )
-                expect_resubmit_page_inline_error_messages(1)
-                expect_resubmit_page_inline_selfie_error_message(false)
-
-                # attention barcode with invalid pii is uploaded
-                use_id_image('ial2_test_credential_barcode_attention_no_address.yml')
-                click_continue
-
-                use_selfie_image('ial2_test_portrait_match_success.yml')
-                submit_images
-
-                expect(page).to have_content(t('doc_auth.errors.alerts.address_check'))
-                expect(page).to have_current_path(idv_document_capture_path)
-
-                click_try_again
-
-                # And finally, after lots of errors, we can still succeed
-                attach_images
-                submit_images
-
-                expect(page).to have_current_path(idv_ssn_path)
-              end
-            end
+        context 'with ipp disabled' do
+          before do
+            sp = ServiceProvider.find_by(issuer: OidcAuthHelper::OIDC_ISSUER)
+            sp.in_person_proofing_enabled = false
+            sp.save!
           end
 
-          context 'IPP enabled' do
-            let(:ipp_service_provider) do
-              create(:service_provider, :active, :in_person_proofing_enabled)
-            end
-
-            before do
-              allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
-              allow(IdentityConfig.store).to receive(
-                :in_person_proofing_opt_in_enabled,
-              ).and_return(true)
-              allow_any_instance_of(ServiceProvider).to receive(
-                :in_person_proofing_enabled,
-              ).and_return(true)
-              allow(IdentityConfig.store).to receive(:doc_auth_max_attempts).and_return(99)
-              perform_in_browser(:mobile) do
-                visit_idp_from_sp_with_ial2(
-                  :oidc,
-                  **{ client_id: ipp_service_provider.issuer,
-                      facial_match_required: true },
-                )
-                sign_in_and_2fa_user(@user)
-                complete_up_to_how_to_verify_step_for_opt_in_ipp
-                complete_choose_id_type_step
-              end
-            end
-
-            it_should_behave_like 'it has correct error displays'
-          end
-
-          context 'IPP not enabled' do
-            before do
-              allow(IdentityConfig.store).to receive(:doc_auth_max_attempts).and_return(99)
+          context 'with a passing selfie' do
+            it 'proceeds to the next page with valid info, including a selfie image' do
               perform_in_browser(:mobile) do
                 visit_idp_from_oidc_sp_with_ial2(facial_match_required: true)
                 sign_in_and_2fa_user(@user)
                 complete_doc_auth_steps_before_document_capture_step
+
+                expect(page).to have_current_path(idv_document_capture_url)
+                expect(max_capture_attempts_before_native_camera.to_i)
+                  .to eq(ActiveSupport::Duration::SECONDS_PER_HOUR)
+                expect(max_submission_attempts_before_native_camera.to_i)
+                  .to eq(ActiveSupport::Duration::SECONDS_PER_HOUR)
+                expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
+                expect(page).to have_text(t('doc_auth.headings.document_capture'))
+                attach_images
+                click_continue
+                expect_doc_capture_selfie_subheader
+                click_button t('doc_auth.buttons.take_picture')
+                attach_selfie
+                submit_images
+
+                expect(page).to have_current_path(idv_ssn_url)
+                expect_costing_for_document
+                expect(DocAuthLog.find_by(user_id: @user.id).state).to eq('MT')
+
+                expect(page).to have_current_path(idv_ssn_url)
+                fill_out_ssn_form_ok
+                click_idv_continue
+                complete_verify_step
+                expect(page).to have_current_path(idv_phone_url)
               end
             end
 
-            it_should_behave_like 'it has correct error displays'
+            context 'with a valid passport', driver: :headless_chrome_mobile do
+              let(:passports_enabled) { true }
+              let(:passport_image) do
+                Rails.root.join(
+                  'spec', 'fixtures',
+                  'passport_credential.yml'
+                )
+              end
+              let(:fake_dos_api_endpoint) { 'http://fake_dos_api_endpoint/' }
+
+              before do
+                allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
+                allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled)
+                  .and_return(true)
+                allow_any_instance_of(ServiceProvider).to receive(
+                  :in_person_proofing_enabled,
+                ).and_return(true)
+                allow(IdentityConfig.store).to receive(:doc_auth_passports_percent).and_return(100)
+                allow(IdentityConfig.store).to receive(:dos_passport_mrz_endpoint)
+                  .and_return(fake_dos_api_endpoint)
+                stub_request(:post, fake_dos_api_endpoint)
+                  .to_return_json({ status: 200, body: { response: 'YES' } })
+                stub_health_check_settings
+                stub_health_check_endpoints_success
+                reload_ab_tests
+              end
+
+              it 'proceeds to the next page with valid info, including a selfie image' do
+                perform_in_browser(:mobile) do
+                  visit_idp_from_oidc_sp_with_ial2(facial_match_required: true)
+                  sign_in_and_2fa_user(@user)
+                  complete_doc_auth_steps_before_hybrid_handoff_step
+                  choose(t('doc_auth.forms.id_type_preference.passport'))
+                  click_on t('forms.buttons.continue')
+
+                  expect(page).to have_current_path(idv_document_capture_url, wait: 10)
+
+                  click_button t('doc_auth.buttons.take_picture')
+                  expect(page).to have_content(t('doc_auth.headings.document_capture_passport'))
+
+                  expect(page).not_to have_content(t('doc_auth.tips.document_capture_selfie_text1'))
+                  attach_passport_image(passport_image)
+                  click_continue
+                  expect_doc_capture_selfie_subheader
+                  click_button t('doc_auth.buttons.take_picture')
+                  attach_selfie
+                  submit_images
+
+                  expect(page).to have_content(t('doc_auth.headings.capture_complete'))
+                  fill_out_ssn_form_ok
+                  click_idv_continue
+                  expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_info'))
+                  expect(page).to have_content(t('doc_auth.headings.address'))
+                  fill_in 'idv_form_address1', with: '123 Main St'
+                  fill_in 'idv_form_city', with: 'Nowhere'
+                  select 'Virginia', from: 'idv_form_state'
+                  fill_in 'idv_form_zipcode', with: '66044'
+                  click_idv_continue
+                  expect(page).to have_current_path(idv_verify_info_path)
+                  expect(page).to have_content('VA')
+                  expect(page).to have_content('123 Main St')
+                  expect(page).to have_content('Nowhere')
+                  complete_verify_step
+                  expect(page).to have_current_path(idv_phone_url)
+                end
+              end
+            end
           end
-        end
 
-        context 'when selfie check is not enabled (flag off, and/or in production)' do
-          it 'proceeds to the next page with valid info, excluding a selfie image' do
-            perform_in_browser(:mobile) do
-              visit_idp_from_oidc_sp_with_ial2
-              sign_in_and_2fa_user(@user)
-              complete_doc_auth_steps_before_document_capture_step
+          context 'documents or selfie with error is uploaded' do
+            shared_examples 'it has correct error displays' do
+              # when there are multiple doc auth errors on front and back
+              it 'shows the correct error message for the given error' do
+                perform_in_browser(:mobile) do
+                  use_id_image('ial2_test_credential_multiple_doc_auth_failures_both_sides.yml')
+                  click_continue
+                  click_button t('doc_auth.buttons.take_picture')
+                  click_idv_submit_default
+                  expect(page).not_to have_content(t('doc_auth.headings.capture_complete'))
+                  expect(page).not_to have_content(t('doc_auth.errors.rate_limited_heading'))
+                  expect(page).to have_title(t('doc_auth.headings.selfie_capture'))
 
-              expect(page).to have_current_path(idv_document_capture_url)
-              expect(max_capture_attempts_before_native_camera).to eq(
-                IdentityConfig.store.doc_auth_max_capture_attempts_before_native_camera.to_s,
-              )
-              expect(page).not_to have_content(t('doc_auth.headings.document_capture_selfie'))
+                  use_selfie_image('ial2_test_credential_multiple_doc_auth_failures_both_sides.yml')
+                  submit_images
 
-              expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
+                  expect_rate_limited_header(true)
 
-              expect(page).not_to have_content(t('doc_auth.headings.document_capture_selfie'))
-              attach_images
-              submit_images
+                  expect_try_taking_new_pictures
+                  expect_review_issues_body_message('doc_auth.errors.general.no_liveness')
+                  expect_rate_limit_warning(max_attempts - 1)
 
-              expect(page).to have_current_path(idv_ssn_url)
-              expect_costing_for_document
-              expect(DocAuthLog.find_by(user_id: @user.id).state).to eq('MT')
+                  expect_to_try_again
+                  expect_resubmit_page_h1_copy
 
-              expect(page).to have_current_path(idv_ssn_url)
-              fill_out_ssn_form_ok
-              click_idv_continue
-              complete_verify_step
-              expect(page).to have_current_path(idv_phone_url)
+                  expect_resubmit_page_body_copy('doc_auth.errors.general.no_liveness')
+                  expect_resubmit_page_inline_error_messages(2)
+                  expect_resubmit_page_inline_selfie_error_message(false)
+
+                  # Wrong doc type is uploaded
+                  use_id_image('ial2_test_credential_wrong_doc_type.yml')
+
+                  use_selfie_image('ial2_test_portrait_match_success.yml')
+                  submit_images
+
+                  expect_rate_limited_header(true)
+                  expect_try_taking_new_pictures(false)
+                  # eslint-disable-next-line
+                  expect_review_issues_body_message(
+                    'doc_auth.errors.rate_limited_heading',
+                  )
+                  expect_review_issues_body_message('doc_auth.errors.doc.doc_type_check')
+                  expect_rate_limit_warning(max_attempts - 2)
+
+                  expect_to_try_again
+                  expect_resubmit_page_h1_copy
+
+                  expect_review_issues_body_message('doc_auth.errors.general.fallback_field_level')
+                  expect_resubmit_page_inline_selfie_error_message(false)
+
+                  # when there are multiple front doc auth errors
+                  use_id_image(
+                    'ial2_test_credential_multiple_doc_auth_failures_front_side_only.yml',
+                  )
+
+                  use_selfie_image(
+                    'ial2_test_credential_multiple_doc_auth_failures_front_side_only.yml',
+                  )
+                  submit_images
+
+                  expect_rate_limited_header(true)
+                  expect_try_taking_new_pictures(false)
+                  expect_review_issues_body_message(
+                    'doc_auth.errors.general.multiple_front_id_failures',
+                  )
+                  expect_rate_limit_warning(max_attempts - 3)
+
+                  expect_to_try_again
+                  expect_resubmit_page_h1_copy
+
+                  expect_resubmit_page_body_copy(
+                    'doc_auth.errors.general.multiple_front_id_failures',
+                  )
+                  expect_resubmit_page_inline_error_messages(1)
+                  expect_resubmit_page_inline_selfie_error_message(false)
+
+                  # when there are multiple back doc auth errors
+                  use_id_image(
+                    'ial2_test_credential_multiple_doc_auth_failures_back_side_only.yml',
+                  )
+
+                  use_selfie_image(
+                    'ial2_test_credential_multiple_doc_auth_failures_back_side_only.yml',
+                  )
+                  submit_images
+
+                  expect_rate_limited_header(true)
+                  expect_try_taking_new_pictures(false)
+                  expect_review_issues_body_message(
+                    'doc_auth.errors.general.multiple_back_id_failures',
+                  )
+                  expect_rate_limit_warning(max_attempts - 4)
+
+                  expect_to_try_again
+                  expect_resubmit_page_h1_copy
+
+                  expect_resubmit_page_body_copy(
+                    'doc_auth.errors.general.multiple_back_id_failures',
+                  )
+                  expect_resubmit_page_inline_error_messages(1)
+                  expect_resubmit_page_inline_selfie_error_message(false)
+
+                  # attention barcode with invalid pii is uploaded
+                  use_id_image('ial2_test_credential_barcode_attention_no_address.yml')
+                  click_continue
+
+                  use_selfie_image('ial2_test_portrait_match_success.yml')
+                  submit_images
+
+                  expect(page).to have_content(t('doc_auth.errors.alerts.address_check'))
+                  expect(page).to have_current_path(idv_document_capture_path)
+
+                  click_try_again
+
+                  # And finally, after lots of errors, we can still succeed
+                  attach_images
+                  submit_images
+
+                  expect(page).to have_current_path(idv_ssn_path)
+                end
+              end
+            end
+
+            context 'IPP enabled' do
+              let(:ipp_service_provider) do
+                create(:service_provider, :active, :in_person_proofing_enabled)
+              end
+
+              before do
+                allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
+                allow(IdentityConfig.store).to receive(
+                  :in_person_proofing_opt_in_enabled,
+                ).and_return(true)
+                allow_any_instance_of(ServiceProvider).to receive(
+                  :in_person_proofing_enabled,
+                ).and_return(true)
+                allow(IdentityConfig.store).to receive(:doc_auth_max_attempts).and_return(99)
+                perform_in_browser(:mobile) do
+                  visit_idp_from_sp_with_ial2(
+                    :oidc,
+                    **{ client_id: ipp_service_provider.issuer,
+                        facial_match_required: true },
+                  )
+                  sign_in_and_2fa_user(@user)
+                  complete_up_to_how_to_verify_step_for_opt_in_ipp
+                  complete_choose_id_type_step
+                end
+              end
+
+              it_should_behave_like 'it has correct error displays'
+            end
+
+            context 'IPP not enabled' do
+              before do
+                allow(IdentityConfig.store).to receive(:doc_auth_max_attempts).and_return(99)
+                perform_in_browser(:mobile) do
+                  visit_idp_from_oidc_sp_with_ial2(facial_match_required: true)
+                  sign_in_and_2fa_user(@user)
+                  complete_doc_auth_steps_before_document_capture_step
+                end
+              end
+
+              it_should_behave_like 'it has correct error displays'
+            end
+          end
+
+          context 'when selfie check is not enabled (flag off, and/or in production)' do
+            it 'proceeds to the next page with valid info, excluding a selfie image' do
+              perform_in_browser(:mobile) do
+                visit_idp_from_oidc_sp_with_ial2
+                sign_in_and_2fa_user(@user)
+                complete_doc_auth_steps_before_document_capture_step
+
+                expect(page).to have_current_path(idv_document_capture_url)
+                expect(max_capture_attempts_before_native_camera).to eq(
+                  IdentityConfig.store.doc_auth_max_capture_attempts_before_native_camera.to_s,
+                )
+                expect(page).not_to have_content(t('doc_auth.headings.document_capture_selfie'))
+
+                expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
+
+                expect(page).not_to have_content(t('doc_auth.headings.document_capture_selfie'))
+
+                attach_images
+                submit_images
+
+                expect(page).to have_current_path(idv_ssn_path)
+                expect_costing_for_document
+                expect(DocAuthLog.find_by(user_id: @user.id).state).to eq('MT')
+
+                expect(page).to have_current_path(idv_ssn_url)
+                fill_out_ssn_form_ok
+                click_idv_continue
+                complete_verify_step
+                expect(page).to have_current_path(idv_phone_url)
+              end
             end
           end
         end
@@ -1125,7 +1140,7 @@ RSpec.feature 'document capture step', :js do
   end
 
   def costing_for(cost_type)
-    SpCost.where(ial: 2, issuer: 'urn:gov:gsa:openidconnect:sp:server', cost_type: cost_type.to_s)
+    SpCost.where(ial: 2, issuer: OidcAuthHelper::OIDC_ISSUER, cost_type: cost_type.to_s)
   end
 
   def stub_aamva_request(aamva_response)
