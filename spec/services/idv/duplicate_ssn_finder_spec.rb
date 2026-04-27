@@ -146,4 +146,90 @@ RSpec.describe Idv::DuplicateSsnFinder do
       end
     end
   end
+
+  describe '#duplicate_facial_match_profiles_global' do
+    let(:ssn) { '123-45-6789' }
+    let(:user) { create(:user) }
+    let(:other_user) { create(:user) }
+    let!(:profile) do
+      create(
+        :profile,
+        idv_level: :unsupervised_with_selfie,
+        pii: { ssn: ssn },
+        user: user,
+        active: true,
+      )
+    end
+    let(:other_profile_idv_level) { :unsupervised_with_selfie }
+    let(:other_profile_ssn) { ssn }
+    let(:other_profile_active) { true }
+    let!(:other_profile) do
+      create(
+        :profile,
+        idv_level: other_profile_idv_level,
+        pii: { ssn: other_profile_ssn },
+        user: other_user,
+        active: other_profile_active,
+      )
+    end
+
+    subject { described_class.new(ssn: ssn, user: user) }
+
+    context 'when the other profile is active, has matching SSN and is at facial match level' do
+      it 'returns the matching profile regardless of service provider' do
+        expect(subject.duplicate_facial_match_profiles_global.map(&:id))
+          .to include(other_profile.id)
+      end
+    end
+
+    context 'when the other profile has no service provider identity' do
+      it 'still returns the matching profile' do
+        expect(subject.duplicate_facial_match_profiles_global.map(&:id))
+          .to include(other_profile.id)
+      end
+    end
+
+    context 'when the other profile is not at facial match IDV level' do
+      let(:other_profile_idv_level) { :legacy_unsupervised }
+
+      it 'is empty' do
+        expect(subject.duplicate_facial_match_profiles_global).to be_empty
+      end
+    end
+
+    context 'when the other profile has a different SSN' do
+      let(:other_profile_ssn) { '555-66-7788' }
+
+      it 'is empty' do
+        expect(subject.duplicate_facial_match_profiles_global).to be_empty
+      end
+    end
+
+    context 'when the other profile is not active' do
+      let(:other_profile_active) { false }
+
+      it 'is empty' do
+        expect(subject.duplicate_facial_match_profiles_global).to be_empty
+      end
+    end
+
+    context 'when multiple profiles across different SPs match' do
+      let(:third_user) { create(:user) }
+      let!(:third_profile) do
+        create(
+          :profile,
+          idv_level: :in_person,
+          pii: { ssn: ssn },
+          user: third_user,
+          active: true,
+        )
+      end
+
+      it 'returns all matching profiles' do
+        result_ids = subject.duplicate_facial_match_profiles_global.map(&:id)
+        expect(result_ids).to include(other_profile.id, third_profile.id)
+        expect(result_ids).not_to include(profile.id)
+      end
+    end
+  end
 end

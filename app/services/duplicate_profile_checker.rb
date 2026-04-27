@@ -29,17 +29,30 @@ class DuplicateProfileChecker
 
   private
 
+  def global_detection_enabled?
+    IdentityConfig.store.enable_one_account_global_detection
+  end
+
   def find_duplicate_profiles(ssn)
-    Idv::DuplicateSsnFinder
-      .new(user: user, ssn: ssn)
-      .duplicate_facial_match_profiles(service_provider: sp.issuer)
+    finder = Idv::DuplicateSsnFinder.new(user: user, ssn: ssn)
+    if global_detection_enabled?
+      finder.duplicate_facial_match_profiles_global
+    else
+      finder.duplicate_facial_match_profiles(service_provider: sp.issuer)
+    end
   end
 
   def close_existing_duplicate_set_if_present
-    existing_duplicate_profile_set = DuplicateProfileSet.involving_profile(
-      profile_id: profile.id,
-      service_provider: sp.issuer,
-    )
+    if global_detection_enabled?
+      existing_duplicate_profile_set = DuplicateProfileSet.involving_profile_global(
+        profile_id: profile.id,
+      )
+    else
+      existing_duplicate_profile_set = DuplicateProfileSet.involving_profile(
+        profile_id: profile.id,
+        service_provider: sp.issuer,
+      )
+    end
 
     return unless existing_duplicate_profile_set.present?
     closed_at = Time.zone.now
@@ -54,6 +67,9 @@ class DuplicateProfileChecker
   def handle_duplicate_profiles_found(associated_profiles)
     new_profiles_ids = (associated_profiles.map(&:id) + [profile.id]).uniq.sort
 
+    if global_detection_enabled?
+      DuplicateProfileSet.close_sp_scoped_sets_for_profile(profile_id: profile.id)
+    end
     find_or_create_duplicate_profile_set(new_profiles_ids)
   end
 
@@ -69,10 +85,14 @@ class DuplicateProfileChecker
   end
 
   def find_existing_duplicate_profile_set(profile_ids)
-    DuplicateProfileSet.set_for_profiles_and_service_provider(
-      profile_ids: profile_ids,
-      service_provider: sp.issuer,
-    )
+    if global_detection_enabled?
+      DuplicateProfileSet.set_for_profiles_global(profile_ids: profile_ids)
+    else
+      DuplicateProfileSet.set_for_profiles_and_service_provider(
+        profile_ids: profile_ids,
+        service_provider: sp.issuer,
+      )
+    end
   end
 
   def update_existing_duplicate_set(existing_duplicate_profile_set, new_profile_ids)
@@ -96,7 +116,7 @@ class DuplicateProfileChecker
 
   def create_duplicate_profile_set(profile_ids)
     set = DuplicateProfileSet.create(
-      service_provider: sp&.issuer,
+      service_provider: global_detection_enabled? ? nil : sp&.issuer,
       profile_ids: profile_ids,
     )
     analytics.one_account_duplicate_profile_created
@@ -108,7 +128,11 @@ class DuplicateProfileChecker
   end
 
   def should_check_for_duplicates?
-    user_has_ial2_profile? && user_sp_eligible_for_one_account?
+    if global_detection_enabled?
+      user_has_ial2_profile?
+    else
+      user_has_ial2_profile? && user_sp_eligible_for_one_account?
+    end
   end
 
   def fetch_ssn

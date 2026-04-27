@@ -21,6 +21,26 @@ class DuplicateProfileSet < ApplicationRecord
       .where('? = ANY(profile_ids)', profile_id)
   end
 
+  def self.set_for_profiles_global(profile_ids:)
+    where(service_provider: nil)
+      .where('profile_ids && ?', "{#{profile_ids.join(',')}}")
+      .first
+  end
+
+  def self.involving_profile_global(profile_id:)
+    open
+      .where(service_provider: nil)
+      .where('? = ANY(profile_ids)', profile_id)
+      .first
+  end
+
+  def self.close_sp_scoped_sets_for_profile(profile_id:)
+    open
+      .where.not(service_provider: nil)
+      .where('? = ANY(profile_ids)', profile_id)
+      .find_each { |set| set.update!(closed_at: Time.zone.now) }
+  end
+
   def open?
     closed_at.nil?
   end
