@@ -11,6 +11,7 @@ module Idv
 
       before_action :check_valid_document_capture_session
       before_action :confirm_mdl_enabled
+      before_action :override_csp_for_mattr, only: :show
 
       def show
         @mattr_application_id = IdentityConfig.store.mattr_application_id
@@ -57,6 +58,12 @@ module Idv
       def confirm_mdl_enabled
         return if IdentityConfig.store.mdl_verification_enabled
         redirect_to idv_hybrid_mobile_choose_id_type_url
+      end
+
+      def override_csp_for_mattr
+        policy = current_content_security_policy
+        policy.connect_src(*policy.connect_src, IdentityConfig.store.mattr_tenant_url)
+        request.content_security_policy = policy
       end
 
       def render_error(message)
