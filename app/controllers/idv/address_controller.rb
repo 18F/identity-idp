@@ -82,6 +82,7 @@ module Idv
         city: @address_form.city,
         state: @address_form.state,
         zip: @address_form.zipcode,
+        country: 'US',
         failure_reason: attempts_api_tracker.parse_failure_reason(form_result),
       )
       fraud_ops_tracker.idv_address_submitted(
@@ -90,6 +91,7 @@ module Idv
         address2: @address_form.address2,
         address_edited: address_edited?,
         city: @address_form.city,
+        country: 'US',
         state: @address_form.state,
         zip: @address_form.zipcode,
         failure_reason: fraud_ops_tracker.parse_failure_reason(form_result),

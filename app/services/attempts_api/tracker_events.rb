@@ -212,6 +212,7 @@ module AttemptsApi
     # @param [String] city
     # @param [String] state
     # @param [String] zip
+    # @param [String] country
     # @param [Hash<Symbol,Array<Symbol>>] failure_reason
     # A user has manually edited their address
     def idv_address_submitted(
@@ -221,6 +222,7 @@ module AttemptsApi
       city:,
       state:,
       zip:,
+      country:,
       address2: nil,
       failure_reason: nil
     )
@@ -233,6 +235,7 @@ module AttemptsApi
         city:,
         state:,
         zip:,
+        country:,
         failure_reason:,
       )
     end
