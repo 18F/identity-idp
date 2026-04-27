@@ -226,21 +226,6 @@ class ReportMailerPreview < ActionMailer::Preview
     )
   end
 
-  def irs_verification_report
-    irs_original_verification_report =
-      Reports::IrsOriginalVerificationReport.new(Time.zone.yesterday)
-
-    stub_cloudwatch_client(irs_original_verification_report.irs_verification_report)
-
-    ReportMailer.tables_report(
-      to: 'test@example.com',
-      subject: "Example IRS Verification Report - #{Time.zone.now.to_date}",
-      message: "Report: IRS Verification Report -  #{Time.zone.now.to_date}",
-      attachment_format: :csv,
-      reports: irs_original_verification_report.reports,
-    )
-  end
-
   def sp_verification_report
     require 'reporting/sp_verification_report'
 
