@@ -88,7 +88,7 @@ module Users
     end
 
     def auto_passkey_prompt_eligible?
-      FeatureManagement.account_creation_passkey_prompt_enabled? &&
+      FeatureManagement.account_creation_passkey_auto_prompt_enabled? &&
         in_account_creation_flow? &&
         user_session[:platform_authenticator_available] == true
     end

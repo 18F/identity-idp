@@ -152,7 +152,7 @@ RSpec.describe Users::TwoFactorAuthenticationSetupController do
 
     context 'when account creation passkey prompt is enabled' do
       before do
-        allow(FeatureManagement).to receive(:account_creation_passkey_prompt_enabled?)
+        allow(FeatureManagement).to receive(:account_creation_passkey_auto_prompt_enabled?)
           .and_return(true)
         controller.user_session[:in_account_creation_flow] = true
       end

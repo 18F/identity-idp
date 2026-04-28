@@ -106,9 +106,9 @@ RSpec.describe SignUp::PasswordsController do
         )
       end
 
-      context 'when account_creation_passkey_prompt is enabled' do
+      context 'when account_creation_passkey_auto_prompt_enabled is enabled' do
         before do
-          allow(FeatureManagement).to receive(:account_creation_passkey_prompt_enabled?)
+          allow(FeatureManagement).to receive(:account_creation_passkey_auto_prompt_enabled?)
             .and_return(true)
         end
 
@@ -121,7 +121,7 @@ RSpec.describe SignUp::PasswordsController do
 
       context 'when account_creation_passkey_prompt is disabled' do
         before do
-          allow(FeatureManagement).to receive(:account_creation_passkey_prompt_enabled?)
+          allow(FeatureManagement).to receive(:account_creation_passkey_auto_prompt_enabled?)
             .and_return(false)
         end
 
