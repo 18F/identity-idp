@@ -94,7 +94,7 @@ module IdvHelper
     elsif sp_type == :oidc
       @state = SecureRandom.hex
       @nonce = SecureRandom.hex
-      @client_id = sp_oidc_issuer
+      @client_id = extra[:client_id] || sp_oidc_issuer
       visit_idp_from_oidc_sp_with_ial2(state: @state, client_id: @client_id, nonce: @nonce, **extra)
     end
   end
