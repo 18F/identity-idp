@@ -882,6 +882,29 @@ RSpec.describe Users::SessionsController, devise: true do
         post :create, params: { user: { email: user.email, password: user.password } }
         expect(response).to redirect_to user_two_factor_authentication_url
       end
+
+      it 'marks the session as not in account creation flow' do
+        post :create, params: { user: { email: user.email, password: user.password } }
+
+        expect(controller.user_session[:in_account_creation_flow]).to eq(false)
+      end
+    end
+
+    context 'with user that has not configured MFA yet' do
+      let(:rules_of_use_updated_at) { 1.day.ago }
+      let(:accepted_terms_at) { 12.hours.ago }
+      let(:user) { create(:user, accepted_terms_at: accepted_terms_at) }
+
+      before do
+        allow(IdentityConfig.store).to receive(:rules_of_use_updated_at)
+          .and_return(rules_of_use_updated_at)
+      end
+
+      it 'marks the session as in account creation flow' do
+        post :create, params: { user: { email: user.email, password: user.password } }
+
+        expect(controller.user_session[:in_account_creation_flow]).to eq(true)
+      end
     end
 
     context 'with user that is not up to date with rules of use' do

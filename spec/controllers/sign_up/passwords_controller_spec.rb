@@ -53,6 +53,7 @@ RSpec.describe SignUp::PasswordsController do
           password_confirmation: password_confirmation,
         },
         confirmation_token: token,
+        platform_authenticator_available: 'false',
       }
     end
     let(:password) { 'NewVal!dPassw0rd' }
@@ -102,14 +103,31 @@ RSpec.describe SignUp::PasswordsController do
           'last_request_at' => kind_of(Numeric),
           new_device: false,
           in_account_creation_flow: true,
+          platform_authenticator_available: false,
           web_locale: 'en',
         )
+      end
+
+      context 'when platform authenticator is available' do
+        let(:params) do
+          super().merge(platform_authenticator_available: 'true')
+        end
+
+        it 'stores platform authenticator availability in session' do
+          response
+
+          expect(controller.user_session[:platform_authenticator_available]).to eq(true)
+        end
       end
 
       context 'when account_creation_passkey_auto_prompt_enabled is enabled' do
         before do
           allow(FeatureManagement).to receive(:account_creation_passkey_auto_prompt_enabled?)
             .and_return(true)
+        end
+
+        let(:params) do
+          super().merge(platform_authenticator_available: 'true')
         end
 
         it 'redirects to webauthn setup with platform param' do
