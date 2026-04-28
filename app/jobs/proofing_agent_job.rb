@@ -85,6 +85,8 @@ class ProofingAgentJob < ApplicationJob
     proofing_location_id:,
     correlation_id:
   )
+    aamva_result = nil
+
     if applicant_pii[:state_id_number].present?
       aamva_result = call_aamva_verification(
         applicant_pii:,
@@ -93,6 +95,8 @@ class ProofingAgentJob < ApplicationJob
       )
       applicant_pii[:aamva_verified_attributes] = aamva_result.verified_attributes if aamva_result
     end
+
+    mrz_result = nil
 
     if applicant_pii[:mrz].present?
       mrz_result = call_mrz_verification(
