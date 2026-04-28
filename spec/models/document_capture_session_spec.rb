@@ -186,19 +186,18 @@ RSpec.describe DocumentCaptureSession do
     let(:aamva_vendor) { :document_check_vendor }
     let(:aamva_attrs) { %w[all of them] }
     let(:aamva) do
-      DocAuth::Response.new(
+      {
         success: aamva_success,
         extra: {
           vendor_name: aamva_vendor,
           verified_attributes: aamva_attrs,
         }.compact,
-      )
+      }
     end
     # let(:attempt) { 1 }
     let(:agent_proofing_result) do
       {
         pii: { first_name: 'Testy', last_name: 'Testerson' },
-        # proofing_components: { foo: 'bar' },
         proofing_location_id: '123',
         proofing_agent_id: '456',
         correlation_id: '789',
@@ -268,11 +267,11 @@ RSpec.describe DocumentCaptureSession do
 
         it 'stores the results' do
           expect(document_capture_session.load_agent_proofed_user).to have_attributes(
-            success: true,
+            doc_auth_success: true,
             reason: nil,
             pii: agent_proofing_result[:pii],
-            location_id: '123',
-            agent_id: '456',
+            proofing_location_id: '123',
+            proofing_agent_id: '456',
             correlation_id: '789',
             issuer: 'test_issuer',
             captured_at: current_time,
@@ -322,8 +321,8 @@ RSpec.describe DocumentCaptureSession do
       end
 
       context 'when both aamva and mrz response is passed in' do
-        let(:aamva) { DocAuth::Response.new(success: true) }
-        let(:mrz) { DocAuth::Response.new(success: true) }
+        let(:aamva) { { success: true } }
+        let(:mrz) { { success: true } }
 
         it 'raises an exception' do
           expect do
@@ -339,7 +338,7 @@ RSpec.describe DocumentCaptureSession do
         end
 
         context 'when the mrz response is successful' do
-          let(:mrz) { DocAuth::Response.new(success: true) }
+          let(:mrz) { { success: true } }
 
           it 'stores mrz_status as :passed' do
             expect(document_capture_session.load_agent_proofed_user).to have_attributes(
@@ -350,7 +349,7 @@ RSpec.describe DocumentCaptureSession do
         end
 
         context 'when the mrz response is unsuccessful' do
-          let(:mrz) { DocAuth::Response.new(success: false) }
+          let(:mrz) { { success: false } }
 
           it 'stores mrz_status as :failed' do
             expect(document_capture_session.load_agent_proofed_user).to have_attributes(

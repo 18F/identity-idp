@@ -50,7 +50,7 @@ class ProofingAgentJob < ApplicationJob
 
     combined_result = proofing_result.combined_result.to_h
 
-    document_capture_session.store_proofing_result(proofing_result.combined_result)
+    document_capture_session.store_agent_proofed_user(proofing_result.combined_result)
 
     success = combined_result[:success]
     reason = combined_result[:reason]

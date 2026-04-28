@@ -120,20 +120,20 @@ class DocumentCaptureSession < ApplicationRecord
     session_result = load_agent_proofed_user ||
                      Idv::ProofingAgent::AgentProofedUser.new(id: generate_result_id)
 
-    session_result.success = agent_proofing_success(agent_proofing_result)
+    session_result.doc_auth_success = agent_proofing_success(agent_proofing_result)
     session_result.reason = agent_proofing_result[:reason]
     session_result.pii = agent_proofing_result[:pii]
     # session_result.proofing_components = agent_proofing_result.proofing_components
-    session_result.location_id = agent_proofing_result[:proofing_location_id]
-    session_result.agent_id = agent_proofing_result[:proofing_agent_id]
+    session_result.proofing_location_id = agent_proofing_result[:proofing_location_id]
+    session_result.proofing_agent_id = agent_proofing_result[:proofing_agent_id]
     session_result.correlation_id = agent_proofing_result[:correlation_id]
     session_result.issuer = agent_proofing_result[:service_provider_issuer]
     session_result.resolution = agent_proofing_result[:resolution]
     session_result.mrz_status = determine_mrz_status(agent_proofing_result[:mrz])
     aamva_response = agent_proofing_result[:aamva]
     session_result.aamva_status = determine_aamva_status(aamva_response)
-    if aamva_response&.success?
-      session_result.aamva_verified_attributes = aamva_response.extra[:verified_attributes]
+    if aamva_response&.dig(:success)
+      session_result.aamva_verified_attributes = aamva_response.dig(:extra, :verified_attributes)
     end
     session_result.source_check_vendor = determine_source_check_vendor(
       aamva: aamva_response,
@@ -150,13 +150,13 @@ class DocumentCaptureSession < ApplicationRecord
 
   def agent_proofing_success(agent_proofing_result)
     !!agent_proofing_result[:success] &&
-      (agent_proofing_result[:aamva]&.success? || agent_proofing_result[:mrz]&.success?)
+      (agent_proofing_result.dig(:aamva, :success) || agent_proofing_result.dig(:mrz, :success))
   end
 
   def determine_source_check_vendor(aamva:, mrz:)
     raise ArgumentError.new('received both aamva and mrz args') if aamva.present? && mrz.present?
 
-    return aamva.extra[:vendor_name] if aamva.present?
+    return aamva.dig(:extra, :vendor_name) if aamva.present?
     'dos' if mrz.present?
   end
 
@@ -201,13 +201,29 @@ class DocumentCaptureSession < ApplicationRecord
   def determine_mrz_status(mrz_response)
     return :not_processed unless mrz_response
 
-    mrz_response.success? ? :pass : :failed
+    mrz_success = false
+    if mrz_response.respond_to?(:success?)
+      mrz_success = mrz_response.success?
+    end
+    if mrz_response.is_a? Hash
+      mrz_success = mrz_response[:success]
+    end
+
+    mrz_success ? :pass : :failed
   end
 
   def determine_aamva_status(aamva_response)
     return :not_processed unless aamva_response
 
-    aamva_response.success? ? :passed : :failed
+    aamva_success = false
+    if aamva_response.respond_to?(:success?)
+      aamva_success = aamva_response.success?
+    end
+    if aamva_response.is_a? Hash
+      aamva_success = aamva_response[:success]
+    end
+
+    aamva_success ? :passed : :failed
   end
 
   def passport_not_requested_attributes

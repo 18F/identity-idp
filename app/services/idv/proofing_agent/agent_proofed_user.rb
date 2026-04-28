@@ -6,11 +6,11 @@ module Idv
       :id,
       :pii,
       :proofing_components,
-      :location_id,
-      :agent_id,
+      :proofing_location_id,
+      :proofing_agent_id,
       :correlation_id,
       :issuer,
-      :success,
+      :doc_auth_success,
       :reason,
       :resolution,                # instant_verify/socure_kyc
       :mrz_status,                # DoS
@@ -21,11 +21,11 @@ module Idv
       :captured_at,
       allowed_members: [
         :proofing_components,
-        :location_id,
-        :agent_id,
+        :proofing_location_id,
+        :proofing_agent_id,
         :correlation_id,
         :issuer,
-        :success,
+        :doc_auth_success,
         :reason,
         :resolution,
         :mrz_status,
@@ -60,7 +60,30 @@ module Idv
         self[:address_resolution_status]&.to_sym
       end
 
-      alias_method :success?, :success
+      # This hash should be merged into the idv_session in order to populate proofing components in
+      # the event logs.
+      def proofing_components
+        {
+          doc_auth_vendor:,
+          document_type_received: pii[:document_type_received],
+          source_check_vendor:,
+          residential_resolution_vendor: resolution&.dig(
+            :context, :stages, :residential_address, :vendor_name
+          ),
+          verify_info_step_complete: resolution&.dig(:success),
+          phone_precheck_vendor: resolution&.dig(
+            :context, :stages, :phone_precheck, :vendor_name
+          ),
+          address_verification_vendor: resolution&.dig(
+            :context, :stages, :residential_address, :vendor_name
+          ),
+          threat_metrix_review_status: resolution&.dig(
+            :context, :stages, :threatmetrix, :review_status
+          ),
+        }
+      end
+
+      alias_method :success?, :doc_auth_success
       alias_method :pii_from_doc, :pii
     end.freeze
   end

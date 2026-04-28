@@ -35,16 +35,19 @@ module ProofingAgent
       reason = determine_failure_reason
       success = reason.nil?
 
-      result = { success:, reason: }
+      result = {
+        success:,
+        reason:,
+        service_provider_issuer:,
+        proofing_agent_id:,
+        proofing_location_id:,
+        correlation_id:,
+      }
 
       result[:pii] = pii if pii.present?
       result[:resolution] = resolution_result if resolution_result.present?
       result[:aamva] = aamva_result if aamva_result.present?
       result[:mrz] = mrz_result if mrz_result.present?
-      result[:service_provider_issuer] = service_provider_issuer
-      result[:proofing_agent_id] = proofing_agent_id
-      result[:proofing_location_id] = proofing_location_id
-      result[:correlation_id] = correlation_id
 
       result
     end
