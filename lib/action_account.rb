@@ -580,7 +580,6 @@ class ActionAccount
       )
     end
   end
-end
 
   class SuspendUser
     include UserActions
