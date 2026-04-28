@@ -27,7 +27,7 @@ RSpec.describe 'In Person Proofing - Opt-in IPP ', js: true do
 
       it 'allows the user to continue down the happy path selecting to opt in',
          allow_browser_log: true, timezone: 'UTC' do
-        visit_idp_from_sp_with_ial2(:oidc, **{ client_id: ipp_service_provider.issuer })
+        visit_idp_from_sp_with_ial2(:oidc, client_id: ipp_service_provider.issuer)
         sign_in_via_branded_page(user)
 
         # complete welcome step, agreement step, how to verify step (and opts into Opt-in Ipp)
@@ -129,7 +129,7 @@ RSpec.describe 'In Person Proofing - Opt-in IPP ', js: true do
 
         # signing in again before completing in-person proofing at a post office
         Capybara.reset_session!
-        visit_idp_from_sp_with_ial2(:oidc, **{ client_id: ipp_service_provider.issuer })
+        visit_idp_from_sp_with_ial2(:oidc, client_id: ipp_service_provider.issuer)
         sign_in_via_branded_page(user)
         expect(page).to have_current_path(idv_in_person_ready_to_verify_path)
       end
@@ -137,7 +137,7 @@ RSpec.describe 'In Person Proofing - Opt-in IPP ', js: true do
 
     it 'works for a happy path when the user opts into opt-in ipp',
        allow_browser_log: true, timezone: 'UTC' do
-      visit_idp_from_sp_with_ial2(:oidc, **{ client_id: ipp_service_provider.issuer })
+      visit_idp_from_sp_with_ial2(:oidc, client_id: ipp_service_provider.issuer)
       sign_in_via_branded_page(user)
 
       # complete welcome step, agreement step, how to verify step (and opts into Opt-in Ipp)
@@ -306,7 +306,7 @@ RSpec.describe 'In Person Proofing - Opt-in IPP ', js: true do
 
     it 'works for a happy path when the user opts out of opt-in ipp',
        allow_browser_log: true, timezone: 'UTC' do
-      visit_idp_from_sp_with_ial2(:oidc, **{ client_id: ipp_service_provider.issuer })
+      visit_idp_from_sp_with_ial2(:oidc, client_id: ipp_service_provider.issuer)
       sign_in_via_branded_page(user)
 
       # complete welcome step, agreement step, how to verify step (and opts out of Opt-in Ipp)
@@ -483,7 +483,7 @@ RSpec.describe 'In Person Proofing - Opt-in IPP ', js: true do
 
     it 'works properly along the normal path when in_person_proofing_enabled is true' do
       allow(IdentityConfig.store).to receive(:in_person_proofing_enabled) { true }
-      visit_idp_from_sp_with_ial2(:oidc, **{ client_id: ipp_service_provider.issuer })
+      visit_idp_from_sp_with_ial2(:oidc, client_id: ipp_service_provider.issuer)
       sign_in_via_branded_page(user)
       complete_welcome_step
       complete_agreement_step

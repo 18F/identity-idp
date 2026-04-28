@@ -969,8 +969,8 @@ RSpec.feature 'direct access to IPP on desktop', :js do
 
       visit_idp_from_sp_with_ial2(
         :oidc,
-        **{ client_id: service_provider.issuer,
-            facial_match_required: facial_match_required },
+        client_id: service_provider.issuer,
+        facial_match_required: facial_match_required,
       )
       sign_in_via_branded_page(user)
       complete_doc_auth_steps_before_agreement_step

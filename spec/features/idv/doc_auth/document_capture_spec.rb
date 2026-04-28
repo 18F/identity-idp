@@ -233,7 +233,7 @@ RSpec.feature 'document capture step', :js do
 
       visit_idp_from_sp_with_ial2(
         :oidc,
-        **{ client_id: ipp_service_provider.issuer },
+        client_id: ipp_service_provider.issuer,
       )
       sign_in_and_2fa_user(@user)
       complete_doc_auth_steps_before_hybrid_handoff_step
@@ -587,8 +587,8 @@ RSpec.feature 'document capture step', :js do
             perform_in_browser(:mobile) do
               visit_idp_from_sp_with_ial2(
                 :oidc,
-                **{ client_id: ipp_service_provider.issuer,
-                    facial_match_required: true },
+                client_id: ipp_service_provider.issuer,
+                facial_match_required: true,
               )
               sign_in_and_2fa_user(@user)
             end
@@ -858,10 +858,9 @@ RSpec.feature 'document capture step', :js do
                 ).and_return(true)
                 allow(IdentityConfig.store).to receive(:doc_auth_max_attempts).and_return(99)
                 perform_in_browser(:mobile) do
-                  visit_idp_from_sp_with_ial2(
-                    :oidc,
-                    **{ client_id: ipp_service_provider.issuer,
-                        facial_match_required: true },
+                  visit_idp_from_oidc_sp_with_ial2(
+                    client_id: ipp_service_provider.issuer,
+                    facial_match_required: true,
                   )
                   sign_in_and_2fa_user(@user)
                   complete_up_to_how_to_verify_step_for_opt_in_ipp
@@ -1176,10 +1175,9 @@ RSpec.feature 'direct access to IPP on desktop', :js do
       )
       allow_any_instance_of(ServiceProvider).to receive(:in_person_proofing_enabled)
         .and_return(false)
-      visit_idp_from_sp_with_ial2(
-        :oidc,
-        **{ client_id: service_provider.issuer,
-            facial_match_required: facial_match_required },
+      visit_idp_from_oidc_sp_with_ial2(
+        client_id: service_provider.issuer,
+        facial_match_required: facial_match_required,
       )
       sign_in_via_branded_page(user)
       complete_doc_auth_steps_before_agreement_step
