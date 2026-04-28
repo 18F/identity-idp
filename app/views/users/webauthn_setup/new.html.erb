@@ -93,6 +93,18 @@
   <%= render SubmitButtonComponent.new(class: 'display-block margin-y-5').with_content(@presenter.button_text) %>
 <% end %>
 
-<%= render 'shared/cancel_or_back_to_options' %>
+<%= render(
+      'shared/cancel_or_back_to_options',
+      back_to_options_path: (
+        @auto_trigger ?
+          authentication_methods_setup_path(skip_auto_passkey: true) :
+          authentication_methods_setup_path
+      ),
+    ) %>
+
+<%= render(
+      partial: 'shared/threat_metrix_profiling',
+      locals: @account_creation_threatmetrix,
+    ) if @account_creation_threatmetrix[:threatmetrix_session_id].present? %>
 
 <%= javascript_packs_tag_once 'webauthn-setup' %>

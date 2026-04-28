@@ -6,11 +6,16 @@ module Users
     include MfaSetupConcern
     include SecureHeadersConcern
     include ReauthenticationRequiredConcern
+    include ThreatMetrixHelper
+    include ThreatMetrixConcern
 
     before_action :authenticate_user!
     before_action :confirm_user_authenticated_for_2fa_setup
     before_action :apply_secure_headers_override
+    before_action :override_csp_for_threat_metrix,
+                  if: :account_creation_threatmetrix_bootstrap_needed?
     before_action :set_webauthn_setup_presenter
+    before_action :set_account_creation_threatmetrix_variables
     before_action :confirm_recently_authenticated_2fa
     before_action :validate_existing_platform_authenticator
 
@@ -120,6 +125,10 @@ module Users
          current_user.webauthn_configurations.platform_authenticators.present?
         redirect_to authentication_methods_setup_path
       end
+    end
+
+    def set_account_creation_threatmetrix_variables
+      @account_creation_threatmetrix = account_creation_threatmetrix_variables
     end
 
     def webauthn_auth_method

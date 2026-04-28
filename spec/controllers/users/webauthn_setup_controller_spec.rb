@@ -336,6 +336,49 @@ RSpec.describe Users::WebauthnSetupController do
           controller.user_session[:in_account_creation_flow] = true
         end
 
+        context 'with threatmetrix enabled' do
+          let(:tmx_session_id) { '1234' }
+
+          before do
+            allow(FeatureManagement).to receive(:account_creation_device_profiling_collecting_enabled?)
+              .and_return(true)
+            allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_org_id)
+              .and_return('org1')
+            allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_mock_enabled)
+              .and_return(false)
+            controller.user_session[:sign_up_threatmetrix_session_id] = tmx_session_id
+          end
+
+          it 'bootstraps threatmetrix on webauthn setup' do
+            expect(controller).to receive(:override_csp_for_threat_metrix)
+
+            get :new, params: { platform: true }
+
+            expect(assigns(:account_creation_threatmetrix)).to eq(
+              threatmetrix_session_id: tmx_session_id,
+              threatmetrix_javascript_urls: [
+                "https://h.online-metrix.net/fp/tags.js?org_id=org1&session_id=#{tmx_session_id}",
+              ],
+              threatmetrix_iframe_url:
+                "https://h.online-metrix.net/fp/tags?org_id=org1&session_id=#{tmx_session_id}",
+            )
+            expect(controller.user_session[:sign_up_threatmetrix_bootstrapped]).to eq(true)
+          end
+
+          it 'does not bootstrap threatmetrix twice' do
+            controller.user_session[:sign_up_threatmetrix_bootstrapped] = true
+            expect(controller).not_to receive(:override_csp_for_threat_metrix)
+
+            get :new, params: { platform: true }
+
+            expect(assigns(:account_creation_threatmetrix)).to eq(
+              threatmetrix_session_id: nil,
+              threatmetrix_javascript_urls: [],
+              threatmetrix_iframe_url: nil,
+            )
+          end
+        end
+
         context 'when feature flag is enabled and platform authenticator' do
           before do
             allow(FeatureManagement).to receive(:account_creation_passkey_auto_prompt_enabled?)
@@ -350,7 +393,7 @@ RSpec.describe Users::WebauthnSetupController do
 
         context 'when feature flag is disabled' do
           before do
-            allow(FeatureManagement).to receive(:account_creation_passkey_auto_prompt_enableds?)
+            allow(FeatureManagement).to receive(:account_creation_passkey_auto_prompt_enabled?)
               .and_return(false)
           end
 

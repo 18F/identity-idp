@@ -43,6 +43,7 @@ RSpec.describe Users::TwoFactorAuthenticationSetupController do
         allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_org_id).and_return('org1')
         allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_mock_enabled)
           .and_return(false)
+        controller.user_session[:in_account_creation_flow] = true
         controller.user_session[:sign_up_threatmetrix_session_id] = tmx_session_id
       end
 
@@ -64,6 +65,18 @@ RSpec.describe Users::TwoFactorAuthenticationSetupController do
         expect(controller).to receive(:override_csp_for_threat_metrix)
 
         response
+      end
+
+      context 'when threatmetrix is already bootstrapped' do
+        before do
+          controller.user_session[:sign_up_threatmetrix_bootstrapped] = true
+        end
+
+        it 'does not override CSPs for ThreatMetrix again' do
+          expect(controller).not_to receive(:override_csp_for_threat_metrix)
+
+          response
+        end
       end
     end
 
@@ -167,6 +180,14 @@ RSpec.describe Users::TwoFactorAuthenticationSetupController do
 
           expect(response).to redirect_to(webauthn_setup_url(platform: true))
         end
+
+        it 'does not auto prompt when auto passkey is skipped' do
+          allow(request).to receive(:query_parameters).and_return(
+            { 'skip_auto_passkey' => 'true' },
+          )
+
+          expect(controller.send(:auto_passkey_prompt_eligible?)).to eq(false)
+        end
       end
 
       context 'when platform authenticator is not available' do
@@ -266,6 +287,7 @@ RSpec.describe Users::TwoFactorAuthenticationSetupController do
           allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_org_id).and_return('org1')
           allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_mock_enabled)
             .and_return(false)
+          controller.user_session[:in_account_creation_flow] = true
           controller.user_session[:sign_up_threatmetrix_session_id] = tmx_session_id
         end
 

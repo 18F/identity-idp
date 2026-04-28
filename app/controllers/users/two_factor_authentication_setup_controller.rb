@@ -13,19 +13,18 @@ module Users
     before_action :confirm_user_authenticated_for_2fa_setup
     before_action :check_if_possible_piv_user
     before_action :override_csp_for_threat_metrix,
-                  if: -> { FeatureManagement.account_creation_device_profiling_collecting_enabled? }
+                  if: :account_creation_threatmetrix_bootstrap_needed?
     before_action :trigger_auto_passkey_setup, if: :auto_passkey_prompt_eligible?
 
     delegate :enabled_mfa_methods_count, to: :mfa_context
 
     def index
       two_factor_options_form
-      @presenter = two_factor_options_presenter
       analytics.user_registration_2fa_setup_visit(
         enabled_mfa_methods_count:,
         gov_or_mil_email: fed_or_mil_email?,
       )
-      render :index, locals: threatmetrix_variables
+      render_index
     end
 
     def create
@@ -38,8 +37,7 @@ module Users
         process_valid_form
       else
         flash.now[:error] = result.first_error_message
-        @presenter = two_factor_options_presenter
-        render :index, locals: threatmetrix_variables
+        render_index
       end
     end
 
@@ -83,6 +81,11 @@ module Users
       redirect_to(first_mfa_selection_path || after_mfa_setup_path)
     end
 
+    def render_index
+      @presenter = two_factor_options_presenter
+      render :index, locals: account_creation_threatmetrix_variables
+    end
+
     def trigger_auto_passkey_setup
       redirect_to webauthn_setup_url(platform: true)
     end
@@ -90,7 +93,13 @@ module Users
     def auto_passkey_prompt_eligible?
       FeatureManagement.account_creation_passkey_auto_prompt_enabled? &&
         in_account_creation_flow? &&
-        user_session[:platform_authenticator_available] == true
+        user_session[:platform_authenticator_available] == true &&
+        !skip_auto_passkey_requested?
+    end
+
+    def skip_auto_passkey_requested?
+      request.query_parameters['skip_auto_passkey'].to_s == 'true' ||
+        params[:skip_auto_passkey].to_s == 'true'
     end
 
     def two_factor_options_form_params

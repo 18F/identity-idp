@@ -213,7 +213,6 @@ module Users
         email: auth_params[:email],
       )
       user_session[:captcha_validation_performed_at_sign_in] = captcha_validation_performed?
-      user_session[:in_account_creation_flow] = !MfaPolicy.new(current_user).two_factor_enabled?
       user_session[:platform_authenticator_available] =
         params[:platform_authenticator_available] == 'true'
       check_password_compromised
