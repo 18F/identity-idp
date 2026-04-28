@@ -328,7 +328,7 @@ RSpec.describe DocumentCaptureSession do
         it 'raises an exception' do
           expect do
             document_capture_session.store_agent_proofed_user(agent_proofing_result)
-          end.to raise_error(ArgumentError, 'received both aamva and mrz arguments')
+          end.to raise_error(ArgumentError, 'received both aamva and mrz args')
         end
       end
 

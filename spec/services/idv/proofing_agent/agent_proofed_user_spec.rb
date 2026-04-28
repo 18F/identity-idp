@@ -13,7 +13,6 @@ RSpec.describe Idv::ProofingAgent::AgentProofedUser do
         id:,
         success:,
         pii:,
-        attempt: 3,
       )
       EncryptedRedisStructStorage.store(result)
       loaded_result = EncryptedRedisStructStorage.load(
@@ -25,9 +24,7 @@ RSpec.describe Idv::ProofingAgent::AgentProofedUser do
         id:,
         success:,
         pii: pii.deep_symbolize_keys,
-        doc_auth_success: nil,
         aamva_status: nil,
-        attempt: 3,
       )
     end
 
@@ -35,7 +32,6 @@ RSpec.describe Idv::ProofingAgent::AgentProofedUser do
       result = Idv::ProofingAgent::AgentProofedUser.new(
         id:,
         success:,
-        doc_auth_success: success,
         mrz_status: :pass,
         pii:,
       )
@@ -96,7 +92,6 @@ RSpec.describe Idv::ProofingAgent::AgentProofedUser do
           id: id,
           success: true,
           pii: nil,
-          doc_auth_success: false,
         )
         expect(result.success?).to eq(true)
       end
