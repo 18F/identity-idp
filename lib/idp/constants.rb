@@ -19,6 +19,7 @@ module Idp
       USPS = 'usps'
       AAMVA = 'aamva'
       AAMVA_UNSUPPORTED_JURISDICTION = 'UnsupportedJurisdiction'
+      PROOFING_AGENT = 'proofing_agent'
       STATE_ID_MOCK = 'StateIdMock'
       AAMVA_CHECK_SKIPPED = 'AamvaCheckSkipped'
       SOURCE_CHECK = [AAMVA, AAMVA_UNSUPPORTED_JURISDICTION, STATE_ID_MOCK].freeze
