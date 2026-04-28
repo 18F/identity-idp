@@ -127,7 +127,6 @@ class ReportMailerPreview < ActionMailer::Preview
     )
   end
 
-
   def sp_registration_funnel_report
     require 'reporting/sp_registration_funnel_report'
 
@@ -151,7 +150,6 @@ class ReportMailerPreview < ActionMailer::Preview
       reports: builder.as_emailable_reports,
     )
   end
-
 
   def sp_fraud_metrics_report
     require 'reporting/sp_fraud_metrics_lg99_report'
@@ -222,7 +220,6 @@ class ReportMailerPreview < ActionMailer::Preview
     )
   end
 
-
   def sp_verification_demographics_report
     require 'reporting/sp_verification_demographics_report'
 
@@ -258,7 +255,6 @@ class ReportMailerPreview < ActionMailer::Preview
       reports: irs_credential_tenure_report.reports,
     )
   end
-
 
   def monthly_sp_verification_report
     require 'reporting/sp_verification_report'
