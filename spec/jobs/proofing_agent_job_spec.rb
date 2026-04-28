@@ -19,7 +19,6 @@ RSpec.describe ProofingAgentJob, type: :job do
   let(:transaction_id) { document_capture_session.uuid }
   let(:user) { document_capture_session.user }
   let(:service_provider) { create(:service_provider, app_id: 'fake-app-id') }
-  let(:proofing_vendor) { IdentityConfig.store.idv_resolution_default_vendor }
 
   describe '#perform' do
     let(:instance) { ProofingAgentJob.new }
@@ -31,7 +30,6 @@ RSpec.describe ProofingAgentJob, type: :job do
         encrypted_arguments: encrypted_arguments,
         trace_id: trace_id,
         transaction_id: transaction_id,
-        proofing_vendor: proofing_vendor,
         proofing_agent_id: proofing_agent_id,
         proofing_location_id: proofing_location_id,
         correlation_id: correlation_id,

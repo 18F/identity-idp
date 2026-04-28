@@ -62,7 +62,6 @@ module Api
           correlation_id:,
           trace_id: amzn_trace_id,
           transaction_id:,
-          proofing_vendor:,
         )
 
         render json: response_body, status: :accepted
@@ -160,13 +159,6 @@ module Api
               idv_level: Profile::PROOFING_AGENT_IDV_LEVELS[profile.idv_level],
             }
           end
-        end
-      end
-
-      def proofing_vendor
-        @proofing_vendor ||= begin
-          # if proofing vendor A/B test is disabled, return default vendor
-          ab_test_bucket(:PROOFING_VENDOR) || IdentityConfig.store.idv_resolution_default_vendor
         end
       end
 

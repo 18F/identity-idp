@@ -7,9 +7,6 @@ RSpec.describe ProofingAgent::ProofUser do
   let(:correlation_id) { SecureRandom.uuid }
   let(:trace_id) { SecureRandom.uuid }
   let(:transaction_id) { SecureRandom.uuid }
-  let(:proofing_vendor) do
-    IdentityConfig.store.idv_resolution_default_vendor
-  end
 
   let(:state_id_applicant) do
     {
@@ -68,7 +65,6 @@ RSpec.describe ProofingAgent::ProofUser do
       correlation_id:,
       trace_id:,
       transaction_id:,
-      proofing_vendor:,
     )
   end
 
@@ -94,7 +90,6 @@ RSpec.describe ProofingAgent::ProofUser do
           expect(ProofingAgentJob).to receive(:perform_later).with(
             hash_including(
               trace_id:,
-              proofing_vendor:,
               proofing_agent_id:,
               proofing_location_id:,
               correlation_id:,
@@ -137,7 +132,6 @@ RSpec.describe ProofingAgent::ProofUser do
           expect(ProofingAgentJob).to receive(:perform_later).with(
             hash_including(
               trace_id:,
-              proofing_vendor:,
               proofing_agent_id:,
               proofing_location_id:,
               correlation_id:,
@@ -184,7 +178,6 @@ RSpec.describe ProofingAgent::ProofUser do
         expect(ProofingAgentJob).to receive(:perform_now).with(
           hash_including(
             trace_id:,
-            proofing_vendor:,
             proofing_agent_id:,
             proofing_location_id:,
             correlation_id:,

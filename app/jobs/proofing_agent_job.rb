@@ -2,6 +2,7 @@
 
 class ProofingAgentJob < ApplicationJob
   include JobHelpers::StaleJobHelper
+  include AbTestingConcern
 
   queue_as :high_proofing_agent
 
@@ -13,7 +14,6 @@ class ProofingAgentJob < ApplicationJob
     encrypted_arguments:,
     trace_id:,
     transaction_id:,
-    proofing_vendor:,
     proofing_agent_id: nil,
     proofing_location_id: nil,
     correlation_id: nil
@@ -43,7 +43,6 @@ class ProofingAgentJob < ApplicationJob
       applicant_pii:,
       current_sp:,
       trace_id:,
-      proofing_vendor:,
       proofing_agent_id:,
       proofing_location_id:,
       correlation_id:,
@@ -80,7 +79,6 @@ class ProofingAgentJob < ApplicationJob
     applicant_pii:,
     current_sp:,
     trace_id:,
-    proofing_vendor:,
     proofing_agent_id:,
     proofing_location_id:,
     correlation_id:
@@ -178,6 +176,21 @@ class ProofingAgentJob < ApplicationJob
                  end
 
     timer.time('mrz') { mrz_client.fetch }
+  end
+
+  def proofing_vendor
+    @proofing_vendor ||= begin
+      # if proofing vendor A/B test is disabled, return default vendor
+      vendor = ab_test_bucket(
+        :PROOFING_VENDOR,
+        user:,
+        service_provider: service_provider_issuer,
+        current_session: nil,
+        current_user_session: nil,
+      )
+
+      vendor || IdentityConfig.store.idv_resolution_default_vendor
+    end
   end
 
   def aamva_plugin

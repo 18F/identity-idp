@@ -11,8 +11,7 @@ module ProofingAgent
       proofing_location_id:,
       correlation_id:,
       trace_id:,
-      transaction_id:,
-      proofing_vendor:
+      transaction_id:
     )
       encrypted_arguments = Encryption::Encryptors::BackgroundProofingArgEncryptor.new.encrypt(
         { applicant_pii: @applicant }.to_json,
@@ -21,7 +20,6 @@ module ProofingAgent
       job_arguments = {
         encrypted_arguments:,
         trace_id:,
-        proofing_vendor:,
         proofing_agent_id:,
         proofing_location_id:,
         correlation_id:,
