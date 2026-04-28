@@ -68,7 +68,6 @@ class ActionAccount
       'clear-device-profiling-failure' => ClearDeviceProfilingFailure,
       'deactivate-duplicate' => DeactivateDuplicate,
       'clear-duplicate' => ClearDuplicate,
-      'close-inconclusive-duplicate' => CloseInconclusiveDuplicate,
     }[name]
   end
 
