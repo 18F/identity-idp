@@ -104,7 +104,7 @@ class ProofingAgentJob < ApplicationJob
     end
 
     re_encrypted_arguments = Encryption::Encryptors::BackgroundProofingArgEncryptor.new.encrypt(
-      { applicant_pii: applicant_pii }.to_json,
+      { applicant_pii: }.to_json,
     )
 
     resolution_result = call_resolution_proofing_job(
