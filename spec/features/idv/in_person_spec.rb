@@ -20,7 +20,7 @@ RSpec.describe 'In Person Proofing', js: true do
   it 'works for a happy path', allow_browser_log: true, timezone: 'UTC' do
     user = user_with_2fa
 
-    visit_idp_from_sp_with_ial2(:oidc, **{ client_id: ipp_service_provider.issuer })
+    visit_idp_from_sp_with_ial2(:oidc, client_id: ipp_service_provider.issuer)
     sign_in_and_2fa_user(user)
     begin_in_person_proofing(user)
 
@@ -354,7 +354,7 @@ RSpec.describe 'In Person Proofing', js: true do
     before do
       allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled).and_return(true)
 
-      visit_idp_from_sp_with_ial2(:oidc, **{ client_id: ipp_service_provider.issuer })
+      visit_idp_from_sp_with_ial2(:oidc, client_id: ipp_service_provider.issuer)
       sign_in_via_branded_page(user)
       complete_welcome_step
       complete_agreement_step
@@ -402,7 +402,7 @@ RSpec.describe 'In Person Proofing', js: true do
       allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled).and_return(true)
 
       # Begin identity verification via in-person proofing
-      visit_idp_from_sp_with_ial2(:oidc, **{ client_id: ipp_service_provider.issuer })
+      visit_idp_from_sp_with_ial2(:oidc, client_id: ipp_service_provider.issuer)
       sign_in_via_branded_page(user)
       begin_in_person_proofing_with_opt_in_ipp_enabled_and_opting_in
       complete_prepare_step
@@ -476,7 +476,7 @@ RSpec.describe 'In Person Proofing', js: true do
         allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled).and_return(true)
 
         perform_in_browser(:desktop) do
-          visit_idp_from_sp_with_ial2(:oidc, **{ client_id: ipp_service_provider.issuer })
+          visit_idp_from_sp_with_ial2(:oidc, client_id: ipp_service_provider.issuer)
           sign_in_via_branded_page(user)
           complete_doc_auth_steps_before_hybrid_handoff_step
 
@@ -703,7 +703,7 @@ RSpec.describe 'In Person Proofing', js: true do
     end
 
     it 'allows the user to search by full address', allow_browser_log: true, timezone: 'UTC' do
-      visit_idp_from_sp_with_ial2(:oidc, **{ client_id: ipp_service_provider.issuer })
+      visit_idp_from_sp_with_ial2(:oidc, client_id: ipp_service_provider.issuer)
       sign_in_and_2fa_user(user)
       begin_in_person_proofing(user)
       # prepare page

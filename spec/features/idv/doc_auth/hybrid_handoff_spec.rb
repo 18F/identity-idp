@@ -333,8 +333,8 @@ RSpec.feature 'hybrid_handoff step for ipp, selfie variances', js: true do
         .and_return(sp_ipp_enabled)
       visit_idp_from_sp_with_ial2(
         :oidc,
-        **{ client_id: service_provider.issuer,
-            facial_match_required: facial_match_required },
+        client_id: service_provider.issuer,
+        facial_match_required: facial_match_required,
       )
       sign_in_via_branded_page(user)
       complete_doc_auth_steps_before_agreement_step
