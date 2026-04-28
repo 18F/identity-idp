@@ -102,9 +102,11 @@
       ),
     ) %>
 
-<%= render(
-      partial: 'shared/threat_metrix_profiling',
-      locals: @account_creation_threatmetrix,
-    ) if @account_creation_threatmetrix[:threatmetrix_session_id].present? %>
+<% if @account_creation_threatmetrix[:threatmetrix_session_id].present? %>
+  <%= render(
+        partial: 'shared/threat_metrix_profiling',
+        locals: @account_creation_threatmetrix,
+      ) %>
+<% end %>
 
 <%= javascript_packs_tag_once 'webauthn-setup' %>

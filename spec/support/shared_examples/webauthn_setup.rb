@@ -40,14 +40,19 @@ RSpec.shared_examples 'webauthn setup' do
   end
 
   context 'platform authenticator logging' do
-    let!(:user) { sign_up_and_set_password }
+    let!(:user) { create(:user, :unconfirmed) }
     let(:fake_analytics) { FakeAnalytics.new }
 
     before do
+      allow(FeatureManagement).to receive(:account_creation_passkey_auto_prompt_enabled?)
+        .and_return(false)
       allow(IdentityConfig.store)
       allow(WebauthnVerificationForm).to receive(:domain_name).and_return('localhost:3000')
       allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
       mock_webauthn_setup_challenge
+      confirm_last_user
+      submit_form_with_valid_password
+      expect(page).to have_current_path(authentication_methods_setup_path, wait: 10)
     end
 
     it 'sends a submit failure event', :js do

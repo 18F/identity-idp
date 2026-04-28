@@ -48,7 +48,9 @@ RSpec.feature 'webauthn sign up' do
       let!(:user) do
         allow(FeatureManagement).to receive(:account_creation_passkey_auto_prompt_enabled?)
           .and_return(true)
-        sign_up_and_set_password
+        user = sign_up
+        set_hidden_field('platform_authenticator_available', 'true')
+        set_password(user)
       end
 
       it 'redirects new user to webauthn platform setup page' do
