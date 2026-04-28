@@ -88,6 +88,7 @@ RSpec.feature 'Analytics Regression', :js do
       state: 'MT',
       state_id_jurisdiction: 'ND',
       state_id_number: '#############',
+      state_id_verified_attributes: ['address', 'dob', 'state_id_number'],
     }
 
     if idv_phone_precheck_enabled
@@ -185,6 +186,7 @@ RSpec.feature 'Analytics Regression', :js do
         state: 'MT',
         state_id_jurisdiction: 'ND',
         state_id_number: '#############',
+        state_id_verified_attributes: ['address', 'dob', 'state_id_number'],
       },
     }
   end
