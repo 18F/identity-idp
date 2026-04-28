@@ -14,7 +14,7 @@ class ThreatMetrixJsVerificationJob < ApplicationJob
     signature = nil
 
     # Certificate is stored ASCII-armored in config
-    raw_cert = IdentityConfig.store.lexisnexis_threatmetrix_js_signing_cert
+    raw_cert = IdentityConfig.store.lexisnexis_threatmetrix_js_public_cert
     cert = OpenSSL::X509::Certificate.new(raw_cert) if raw_cert.present?
     raise ConfigurationError, 'JS signing certificate is missing' if !cert
     raise 'JS signing certificate is expired' if cert.not_after < Time.zone.now
