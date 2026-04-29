@@ -142,7 +142,6 @@ class SocureErrorPresenter
   end
 
   def error_string_for(error_code)
-    puts "\n\nerror code: #{error_code}\n\n"
     case error_code.to_sym
     when :network
       t('doc_auth.errors.general.new_network_error')
@@ -158,19 +157,20 @@ class SocureErrorPresenter
       t('doc_auth.errors.general.selfie_failure')
     when :state_id_verification
       t('doc_auth.errors.state_id_verification')
-    when :passport
-      t('doc_auth.info.review_passport')
     when :passport_network
       safe_join(
-      [
-        t('doc_auth.errors.general.network_error_passport'),
-        link_to(
-          t('doc_auth.errors.general.network_error_passport_link_text'),
-          idv_choose_id_type_path,
-        ),
-      ],
-      ' ',
-    )
+        [
+          t('doc_auth.errors.general.network_error_passport'),
+          link_to(
+            t('doc_auth.errors.general.network_error_passport_link_text'),
+            idv_choose_id_type_path,
+          ),
+          t('doc_auth.errors.general.network_error_passport_ending'),
+        ],
+        ' ',
+      )
+    when :passport
+      t('doc_auth.info.review_passport')
     else
       if remapped_error(error_code) == 'underage' # special handling because it says 'Login.gov'
         I18n.t('doc_auth.errors.underage', app_name: APP_NAME)

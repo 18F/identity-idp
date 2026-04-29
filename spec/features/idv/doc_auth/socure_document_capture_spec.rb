@@ -617,7 +617,13 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
                 ),
               )
 
-              expect(page).to have_content(t('doc_auth.errors.general.network_error_passport'))
+              expect(page).to have_content(
+                [
+                  t('doc_auth.errors.general.network_error_passport'),
+                  t('doc_auth.errors.general.network_error_passport_link_text'),
+                  t('doc_auth.errors.general.network_error_passport_ending'),
+                ].join(' '),
+              )
               click_on t('doc_auth.errors.general.network_error_passport_link_text')
 
               remove_request_stub(@docv_stub)
