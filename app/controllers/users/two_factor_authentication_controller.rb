@@ -248,7 +248,7 @@ module Users
           success: @telephony_result.success?,
           phone_number: parsed_phone.e164,
           otp_delivery_method: otp_delivery_preference,
-          failure_reason: attempts_api_tracker.parse_failure_reason(@telephony_result),
+          failure_reason: telephony_errors,
         )
       elsif UserSessionContext.authentication_or_reauthentication_context?(context)
         attempts_api_tracker.mfa_login_phone_otp_sent(
@@ -256,9 +256,21 @@ module Users
           reauthentication: UserSessionContext.reauthentication_context?(context),
           phone_number: parsed_phone.e164,
           otp_delivery_method: otp_delivery_preference,
-          failure_reason: attempts_api_tracker.parse_failure_reason(@telephony_result),
+          failure_reason: telephony_errors,
         )
 
+      end
+    end
+
+    def telephony_errors
+      # Telephony errors are nested, and the message is end-user facing.
+      # {
+      #   telephony: "#{error.class} - #{error.message}",
+      # }
+      if @telephony_result.errors.present?
+        {
+          telephony: @telephony_result.errors[:telephony].match(/Telephony::(\w+)/)[1],
+        }
       end
     end
 

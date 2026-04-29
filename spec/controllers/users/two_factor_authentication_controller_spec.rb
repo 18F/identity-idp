@@ -781,7 +781,7 @@ RSpec.describe Users::TwoFactorAuthenticationController do
             success: false,
             phone_number: Phonelib.parse(unconfirmed_phone).e164,
             otp_delivery_method: 'sms',
-            failure_reason: { telephony: 'Telephony::TelephonyError - Simulated telephony error' },
+            failure_reason: { telephony: 'TelephonyError' },
           )
           get :send_code, params: otp_delivery_form_sms
         end
@@ -804,7 +804,7 @@ RSpec.describe Users::TwoFactorAuthenticationController do
             success: false,
             phone_number: Phonelib.parse(unconfirmed_phone).e164,
             otp_delivery_method: 'sms',
-            failure_reason: { telephony: 'Telephony::OptOutError - Simulated opt out error' },
+            failure_reason: { telephony: 'OptOutError' },
           )
 
           get :send_code, params: otp_delivery_form_sms
@@ -822,7 +822,7 @@ RSpec.describe Users::TwoFactorAuthenticationController do
               success: false,
               phone_number: Phonelib.parse(unconfirmed_phone).e164,
               otp_delivery_method: 'sms',
-              failure_reason: { telephony: 'Telephony::OptOutError - Telephony::OptOutError' },
+              failure_reason: { telephony: 'OptOutError' },
             )
 
             get :send_code, params: otp_delivery_form_sms

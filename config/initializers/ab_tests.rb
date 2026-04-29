@@ -212,4 +212,14 @@ module AbTests
   ) do |service_provider:, session:, user:, user_session:, **|
     document_capture_session_uuid_discriminator(service_provider:, session:, user:, user_session:)
   end.freeze
+
+  DOC_AUTH_PASSPORT_CARDS_ALLOWED = AbTest.new(
+    experiment_name: 'Doc Auth Passport Cards Allowed',
+    should_log: /^idv/i,
+    buckets: {
+      doc_auth_passport_cards_allowed: IdentityConfig.store.doc_auth_passport_cards_enabled_percent,
+    },
+  ) do |user:, user_session:, **|
+    user&.uuid
+  end.freeze
 end

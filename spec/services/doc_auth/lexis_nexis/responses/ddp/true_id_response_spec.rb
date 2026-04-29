@@ -257,6 +257,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::Ddp::TrueIdResponse do
         Pii::Passport.new(
           first_name: 'HAPPY',
           last_name: 'TRAVELER',
+          name_suffix: nil,
           middle_name: nil,
           dob: '1967-07-04',
           sex: 'female',
