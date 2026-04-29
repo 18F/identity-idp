@@ -3,6 +3,36 @@ require 'rails_helper'
 RSpec.describe Users::WebauthnSetupController do
   include WebAuthnHelper
   include UserAgentHelper
+  include AccountCreationThreatMetrixHelper
+
+  def expect_mfa_enrolled(success:, mfa_device_type:)
+    expect(@attempts_api_tracker).to receive(:mfa_enrolled).with(
+      success: success,
+      mfa_device_type: mfa_device_type,
+    )
+  end
+
+  def expect_user_marked_authenticated
+    expect(@analytics).to have_logged_event(
+      'User marked authenticated',
+      authentication_type: :valid_2fa_confirmation,
+    )
+  end
+
+  def expect_multi_factor_authentication_setup(attributes)
+    expect(@analytics).to have_logged_event(
+      'Multi-Factor Authentication Setup',
+      attributes,
+    )
+  end
+
+  def expect_webauthn_setup_submitted(attributes)
+    expect(@analytics).to have_logged_event(
+      :webauthn_setup_submitted,
+      attributes,
+    )
+  end
+
   before do
     stub_analytics
     stub_attempts_tracker
@@ -121,19 +151,12 @@ RSpec.describe Users::WebauthnSetupController do
 
       it 'tracks the submission' do
         Funnel::Registration::AddMfa.call(user.id, 'phone', @analytics, threatmetrix_attrs)
-        expect(@attempts_api_tracker).to receive(:mfa_enrolled).with(
-          success: true,
-          mfa_device_type: 'webauthn',
-        )
+        expect_mfa_enrolled(success: true, mfa_device_type: 'webauthn')
 
         patch :confirm, params: params
 
-        expect(@analytics).to have_logged_event(
-          'User marked authenticated',
-          authentication_type: :valid_2fa_confirmation,
-        )
-        expect(@analytics).to have_logged_event(
-          'Multi-Factor Authentication Setup',
+        expect_user_marked_authenticated
+        expect_multi_factor_authentication_setup(
           enabled_mfa_methods_count: 3,
           mfa_method_counts: {
             auth_app: 1, phone: 1, webauthn: 1
@@ -153,8 +176,7 @@ RSpec.describe Users::WebauthnSetupController do
           transports: ['usb'],
           transports_mismatch: false,
         )
-        expect(@analytics).to have_logged_event(
-          :webauthn_setup_submitted,
+        expect_webauthn_setup_submitted(
           platform_authenticator: false,
           in_account_creation_flow: false,
           success: true,
@@ -211,11 +233,11 @@ RSpec.describe Users::WebauthnSetupController do
             controller.user_session[:webauthn_setup_started_at] =
               2.seconds.ago.to_f.to_s
           end
+
           it 'calculates duration without error' do
             expect { response }.not_to raise_error
 
-            expect(@analytics).to have_logged_event(
-              'Multi-Factor Authentication Setup',
+            expect_multi_factor_authentication_setup(
               hash_including(webauthn_setup_duration: a_value_within(0.5).of(2)),
             )
           end
@@ -257,15 +279,11 @@ RSpec.describe Users::WebauthnSetupController do
         end
 
         it 'logs setup event with session value' do
-          expect(@attempts_api_tracker).to receive(:mfa_enrolled).with(
-            success: true,
-            mfa_device_type: 'webauthn',
-          )
+          expect_mfa_enrolled(success: true, mfa_device_type: 'webauthn')
 
           patch :confirm, params: params
 
-          expect(@analytics).to have_logged_event(
-            'Multi-Factor Authentication Setup',
+          expect_multi_factor_authentication_setup(
             hash_including(webauthn_platform_recommended: :authentication),
           )
         end
@@ -340,14 +358,7 @@ RSpec.describe Users::WebauthnSetupController do
           let(:tmx_session_id) { '1234' }
 
           before do
-            allow(FeatureManagement)
-              .to receive(:account_creation_device_profiling_collecting_enabled?)
-              .and_return(true)
-            allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_org_id)
-              .and_return('org1')
-            allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_mock_enabled)
-              .and_return(false)
-            controller.user_session[:sign_up_threatmetrix_session_id] = tmx_session_id
+            stub_account_creation_threatmetrix(tmx_session_id: tmx_session_id)
           end
 
           it 'bootstraps threatmetrix on webauthn setup' do
@@ -356,12 +367,7 @@ RSpec.describe Users::WebauthnSetupController do
             get :new, params: { platform: true }
 
             expect(assigns(:account_creation_threatmetrix)).to eq(
-              threatmetrix_session_id: tmx_session_id,
-              threatmetrix_javascript_urls: [
-                "https://h.online-metrix.net/fp/tags.js?org_id=org1&session_id=#{tmx_session_id}",
-              ],
-              threatmetrix_iframe_url:
-                "https://h.online-metrix.net/fp/tags?org_id=org1&session_id=#{tmx_session_id}",
+              account_creation_threatmetrix_locals(tmx_session_id: tmx_session_id),
             )
             expect(controller.user_session[:sign_up_threatmetrix_bootstrapped]).to eq(true)
           end
@@ -373,9 +379,7 @@ RSpec.describe Users::WebauthnSetupController do
             get :new, params: { platform: true }
 
             expect(assigns(:account_creation_threatmetrix)).to eq(
-              threatmetrix_session_id: nil,
-              threatmetrix_javascript_urls: [],
-              threatmetrix_iframe_url: nil,
+              empty_account_creation_threatmetrix_locals,
             )
           end
         end
@@ -483,19 +487,12 @@ RSpec.describe Users::WebauthnSetupController do
 
         it 'should log expected events' do
           Funnel::Registration::AddMfa.call(user.id, 'phone', @analytics, threatmetrix_attrs)
-          expect(@attempts_api_tracker).to receive(:mfa_enrolled).with(
-            success: true,
-            mfa_device_type: 'webauthn',
-          )
+          expect_mfa_enrolled(success: true, mfa_device_type: 'webauthn')
 
           patch :confirm, params: params
 
-          expect(@analytics).to have_logged_event(
-            'User marked authenticated',
-            authentication_type: :valid_2fa_confirmation,
-          )
-          expect(@analytics).to have_logged_event(
-            'Multi-Factor Authentication Setup',
+          expect_user_marked_authenticated
+          expect_multi_factor_authentication_setup(
             enabled_mfa_methods_count: 1,
             in_account_creation_flow: true,
             mfa_method_counts: { webauthn: 1 },
@@ -505,8 +502,7 @@ RSpec.describe Users::WebauthnSetupController do
             transports: ['usb'],
             transports_mismatch: false,
           )
-          expect(@analytics).to have_logged_event(
-            :webauthn_setup_submitted,
+          expect_webauthn_setup_submitted(
             platform_authenticator: false,
             in_account_creation_flow: true,
             success: true,
@@ -541,29 +537,21 @@ RSpec.describe Users::WebauthnSetupController do
         end
 
         it 'should log expected events' do
-          expect(@attempts_api_tracker).to receive(:mfa_enrolled).with(
-            success: true,
-            mfa_device_type: 'webauthn_platform',
-          )
+          expect_mfa_enrolled(success: true, mfa_device_type: 'webauthn_platform')
 
           patch :confirm, params: params
 
-          expect(@analytics).to have_logged_event(
-            :webauthn_setup_submitted,
+          expect_webauthn_setup_submitted(
             platform_authenticator: true,
             in_account_creation_flow: true,
             success: true,
           )
-          expect(@analytics).to have_logged_event(
-            'User marked authenticated',
-            authentication_type: :valid_2fa_confirmation,
-          )
+          expect_user_marked_authenticated
           expect(@analytics).to have_logged_event(
             'User Registration: User Fully Registered',
             mfa_method: 'webauthn_platform',
           )
-          expect(@analytics).to have_logged_event(
-            'Multi-Factor Authentication Setup',
+          expect_multi_factor_authentication_setup(
             enabled_mfa_methods_count: 1,
             in_account_creation_flow: true,
             mfa_method_counts: { webauthn_platform: 1 },
@@ -576,15 +564,11 @@ RSpec.describe Users::WebauthnSetupController do
         end
 
         it 'should log submitted failure' do
-          expect(@attempts_api_tracker).to receive(:mfa_enrolled).with(
-            success: false,
-            mfa_device_type: 'webauthn_platform',
-          )
+          expect_mfa_enrolled(success: false, mfa_device_type: 'webauthn_platform')
 
           get :new, params: { platform: true, error: 'NotAllowedError' }
 
-          expect(@analytics).to have_logged_event(
-            :webauthn_setup_submitted,
+          expect_webauthn_setup_submitted(
             hash_including(
               success: false,
               platform_authenticator: true,
@@ -608,15 +592,11 @@ RSpec.describe Users::WebauthnSetupController do
         it 'should log expected events' do
           allow(IdentityConfig.store).to receive(:domain_name).and_return('localhost:3000')
           allow(WebAuthn::AttestationStatement).to receive(:from).and_raise(StandardError)
-          expect(@attempts_api_tracker).to receive(:mfa_enrolled).with(
-            success: false,
-            mfa_device_type: 'webauthn_platform',
-          )
+          expect_mfa_enrolled(success: false, mfa_device_type: 'webauthn_platform')
 
           patch :confirm, params: params
 
-          expect(@analytics).to have_logged_event(
-            'Multi-Factor Authentication Setup',
+          expect_multi_factor_authentication_setup(
             enabled_mfa_methods_count: 0,
             error_details: { attestation_object: { invalid: true } },
             in_account_creation_flow: false,
@@ -661,15 +641,11 @@ RSpec.describe Users::WebauthnSetupController do
 
       it 'tracks the submission' do
         Funnel::Registration::AddMfa.call(user.id, 'phone', @analytics, threatmetrix_attrs)
-        expect(@attempts_api_tracker).to receive(:mfa_enrolled).with(
-          success: true,
-          mfa_device_type: 'webauthn',
-        )
+        expect_mfa_enrolled(success: true, mfa_device_type: 'webauthn')
 
         patch :confirm, params: params
 
-        expect(@analytics).to have_logged_event(
-          'Multi-Factor Authentication Setup',
+        expect_multi_factor_authentication_setup(
           enabled_mfa_methods_count: 1,
           mfa_method_counts: {
             webauthn: 1,
@@ -689,8 +665,7 @@ RSpec.describe Users::WebauthnSetupController do
           transports: ['usb'],
           transports_mismatch: false,
         )
-        expect(@analytics).to have_logged_event(
-          :webauthn_setup_submitted,
+        expect_webauthn_setup_submitted(
           platform_authenticator: false,
           in_account_creation_flow: true,
           success: true,

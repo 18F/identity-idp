@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe Users::TwoFactorAuthenticationSetupController do
+  include AccountCreationThreatMetrixHelper
+
   describe 'GET index' do
     let(:user) { create(:user) }
 
@@ -38,24 +40,13 @@ RSpec.describe Users::TwoFactorAuthenticationSetupController do
       let(:tmx_session_id) { '1234' }
 
       before do
-        allow(FeatureManagement).to receive(:account_creation_device_profiling_collecting_enabled?)
-          .and_return(true)
-        allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_org_id).and_return('org1')
-        allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_mock_enabled)
-          .and_return(false)
-        controller.user_session[:in_account_creation_flow] = true
-        controller.user_session[:sign_up_threatmetrix_session_id] = tmx_session_id
+        stub_account_creation_threatmetrix(tmx_session_id: tmx_session_id)
       end
 
       it 'renders new valid request' do
-        tmx_url = 'https://h.online-metrix.net/fp'
         expect(controller).to receive(:render).with(
           :index,
-          locals: { threatmetrix_session_id: tmx_session_id,
-                    threatmetrix_javascript_urls:
-                      ["#{tmx_url}/tags.js?org_id=org1&session_id=#{tmx_session_id}"],
-                    threatmetrix_iframe_url:
-                      "#{tmx_url}/tags?org_id=org1&session_id=#{tmx_session_id}" },
+          locals: account_creation_threatmetrix_locals(tmx_session_id: tmx_session_id),
         ).and_call_original
 
         expect(response).to render_template(:index)
@@ -281,25 +272,13 @@ RSpec.describe Users::TwoFactorAuthenticationSetupController do
         let(:tmx_session_id) { '1234' }
 
         before do
-          allow(FeatureManagement)
-            .to receive(:account_creation_device_profiling_collecting_enabled?)
-            .and_return(true)
-          allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_org_id).and_return('org1')
-          allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_mock_enabled)
-            .and_return(false)
-          controller.user_session[:in_account_creation_flow] = true
-          controller.user_session[:sign_up_threatmetrix_session_id] = tmx_session_id
+          stub_account_creation_threatmetrix(tmx_session_id: tmx_session_id)
         end
 
         it 'renders new with invalid request' do
-          tmx_url = 'https://h.online-metrix.net/fp'
           expect(controller).to receive(:render).with(
             :index,
-            locals: { threatmetrix_session_id: tmx_session_id,
-                      threatmetrix_javascript_urls:
-                        ["#{tmx_url}/tags.js?org_id=org1&session_id=#{tmx_session_id}"],
-                      threatmetrix_iframe_url:
-                        "#{tmx_url}/tags?org_id=org1&session_id=#{tmx_session_id}" },
+            locals: account_creation_threatmetrix_locals(tmx_session_id: tmx_session_id),
           ).and_call_original
 
           expect(response).to render_template(:index)
