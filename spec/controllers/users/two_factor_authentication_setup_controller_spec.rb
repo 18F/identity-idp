@@ -167,17 +167,21 @@ RSpec.describe Users::TwoFactorAuthenticationSetupController do
         end
 
         it 'redirects to platform webauthn setup' do
-          get :index
+          expect { response }
+            .to change { controller.user_session[:auto_passkey_prompted] }
+            .from(nil)
+            .to(true)
 
           expect(response).to redirect_to(webauthn_setup_url(platform: true))
         end
 
-        it 'does not auto prompt when auto passkey is skipped' do
-          allow(request).to receive(:query_parameters).and_return(
-            { 'skip_auto_passkey' => 'true' },
-          )
+        it 'does not auto prompt after it has already been triggered once' do
+          controller.user_session[:auto_passkey_prompted] = true
 
-          expect(controller.send(:auto_passkey_prompt_eligible?)).to eq(false)
+          get :index
+
+          expect(response).to render_template(:index)
+          expect(controller.user_session[:auto_passkey_prompted]).to eq(true)
         end
       end
 

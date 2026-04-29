@@ -87,6 +87,8 @@ module Users
     end
 
     def trigger_auto_passkey_setup
+      user_session[:auto_passkey_prompted] = true
+      override_csp_for_threat_metrix
       redirect_to webauthn_setup_url(platform: true)
     end
 
@@ -94,12 +96,11 @@ module Users
       FeatureManagement.account_creation_passkey_auto_prompt_enabled? &&
         in_account_creation_flow? &&
         user_session[:platform_authenticator_available] == true &&
-        !skip_auto_passkey_requested?
+        !auto_passkey_prompted?
     end
 
-    def skip_auto_passkey_requested?
-      request.query_parameters['skip_auto_passkey'].to_s == 'true' ||
-        params[:skip_auto_passkey].to_s == 'true'
+    def auto_passkey_prompted?
+      user_session[:auto_passkey_prompted] == true
     end
 
     def two_factor_options_form_params

@@ -83,12 +83,7 @@ module SignUp
       user_session[:platform_authenticator_available] =
         params[:platform_authenticator_available] == 'true'
       if current_user.accepted_rules_of_use_still_valid?
-        if FeatureManagement.account_creation_passkey_auto_prompt_enabled? &&
-           user_session[:platform_authenticator_available] == true
-          redirect_to webauthn_setup_url(platform: true)
-        else
-          redirect_to authentication_methods_setup_url
-        end
+        redirect_to authentication_methods_setup_url
       else
         redirect_to rules_of_use_url
       end

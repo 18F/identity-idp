@@ -95,11 +95,7 @@
 
 <%= render(
       'shared/cancel_or_back_to_options',
-      back_to_options_path: (
-        @auto_trigger ?
-          authentication_methods_setup_path(skip_auto_passkey: true) :
-          authentication_methods_setup_path
-      ),
+      back_to_options_path: authentication_methods_setup_path,
     ) %>
 
 <% if @account_creation_threatmetrix[:threatmetrix_session_id].present? %>

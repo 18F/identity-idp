@@ -44,7 +44,7 @@ RSpec.describe 'users/webauthn_setup/new.html.erb' do
       )
     end
 
-    it 'links back to MFA setup without auto prompting again when auto trigger is enabled' do
+    it 'links back to MFA setup with the canonical path when auto trigger is enabled' do
       allow(view).to receive(:current_user).and_return(create(:user))
       assign(:auto_trigger, true)
 
@@ -52,7 +52,7 @@ RSpec.describe 'users/webauthn_setup/new.html.erb' do
 
       expect(rendered).to have_link(
         t('two_factor_authentication.choose_another_option'),
-        href: authentication_methods_setup_path(skip_auto_passkey: true),
+        href: authentication_methods_setup_path,
       )
     end
 
