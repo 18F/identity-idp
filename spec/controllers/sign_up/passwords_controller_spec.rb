@@ -130,10 +130,10 @@ RSpec.describe SignUp::PasswordsController do
           super().merge(platform_authenticator_available: 'true')
         end
 
-        it 'redirects to webauthn setup with platform param' do
+        it 'redirects to authentication methods setup for the one-time auto prompt flow' do
           subject
 
-          expect(response).to redirect_to(webauthn_setup_url(platform: true))
+          expect(response).to redirect_to(authentication_methods_setup_url)
         end
       end
 

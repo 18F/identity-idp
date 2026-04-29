@@ -88,7 +88,6 @@ module Users
 
     def trigger_auto_passkey_setup
       user_session[:auto_passkey_prompted] = true
-      override_csp_for_threat_metrix
       redirect_to webauthn_setup_url(platform: true)
     end
 
