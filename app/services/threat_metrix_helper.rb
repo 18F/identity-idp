@@ -40,7 +40,11 @@ module ThreatMetrixHelper
   end
 
   def threatmetrix_variables(hybrid_flow: false)
-    hybrid_flow ? hybrid_flow_threatmetrix_variables : default_account_creation_threatmetrix_variables
+    if hybrid_flow
+      hybrid_flow_threatmetrix_variables
+    else
+      default_account_creation_threatmetrix_variables
+    end
   end
 
   def account_creation_threatmetrix_bootstrap_needed?

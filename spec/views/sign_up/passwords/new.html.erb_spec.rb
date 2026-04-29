@@ -48,7 +48,9 @@ RSpec.describe 'sign_up/passwords/new.html.erb' do
 
   it 'includes platform authenticator available hidden field' do
     expect(rendered).to have_css(
-      "input[type='hidden'][name='platform_authenticator_available'][id='platform_authenticator_available']",
+      "input[type='hidden']" \
+      "[name='platform_authenticator_available']" \
+      "[id='platform_authenticator_available']",
       visible: false,
     )
   end

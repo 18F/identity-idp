@@ -340,7 +340,8 @@ RSpec.describe Users::WebauthnSetupController do
           let(:tmx_session_id) { '1234' }
 
           before do
-            allow(FeatureManagement).to receive(:account_creation_device_profiling_collecting_enabled?)
+            allow(FeatureManagement)
+              .to receive(:account_creation_device_profiling_collecting_enabled?)
               .and_return(true)
             allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_org_id)
               .and_return('org1')
