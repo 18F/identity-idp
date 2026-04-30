@@ -16,6 +16,7 @@ module Idv
       encrypted_events = JSON.parse(encrypted_events_json)
 
       # TODO: Write encrypted_events['encrypted_data'] to S3
+      # TODO: Save reference to S3 object in current_user.active_profile
 
       new_user_proofing_event = current_user
         .active_profile
@@ -55,7 +56,6 @@ module Idv
       return false unless historical_events_enabled?
 
       # TODO: This will return true if existing_user_proofing_event does not exist.
-      # That seems wrong?
       sent_to_aaca = existing_user_proofing_event&.service_provider_ids_sent&.include?(
         current_sp.id,
       )
