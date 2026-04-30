@@ -140,7 +140,7 @@ RSpec.describe ProofingAgentJob, type: :job do
         expect(result[:doc_auth_success]).to be true
         expect(result[:reason]).to be_nil
         expect(result[:mrz_status]).to eq 'pass'
-        expect(result[:source_check_vendor]).to eq('dos')
+        expect(result[:source_check_vendor]).to eq('PassportMock')
       end
     end
 

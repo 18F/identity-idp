@@ -123,10 +123,10 @@ class DocumentCaptureSession < ApplicationRecord
     session_result.doc_auth_success = agent_proofing_success(agent_proofing_result)
     session_result.reason = agent_proofing_result[:reason]
     session_result.pii = agent_proofing_result[:pii]
-    # session_result.proofing_components = agent_proofing_result.proofing_components
     session_result.proofing_location_id = agent_proofing_result[:proofing_location_id]
     session_result.proofing_agent_id = agent_proofing_result[:proofing_agent_id]
     session_result.correlation_id = agent_proofing_result[:correlation_id]
+    session_result.transaction_id = agent_proofing_result[:transaction_id]
     session_result.issuer = agent_proofing_result[:service_provider_issuer]
     session_result.resolution = agent_proofing_result[:resolution]
     session_result.mrz_status = determine_mrz_status(agent_proofing_result[:mrz])
@@ -156,8 +156,8 @@ class DocumentCaptureSession < ApplicationRecord
   def determine_source_check_vendor(aamva:, mrz:)
     raise ArgumentError.new('received both aamva and mrz args') if aamva.present? && mrz.present?
 
-    return aamva.dig(:extra, :vendor_name) if aamva.present?
-    'dos' if mrz.present?
+    return aamva.dig(:vendor_name) if aamva.present?
+    mrz.presence&.dig(:vendor_name)
   end
 
   def expired?
@@ -204,8 +204,7 @@ class DocumentCaptureSession < ApplicationRecord
     mrz_success = false
     if mrz_response.respond_to?(:success?)
       mrz_success = mrz_response.success?
-    end
-    if mrz_response.is_a? Hash
+    elsif mrz_response.is_a? Hash
       mrz_success = mrz_response[:success]
     end
 
@@ -218,8 +217,7 @@ class DocumentCaptureSession < ApplicationRecord
     aamva_success = false
     if aamva_response.respond_to?(:success?)
       aamva_success = aamva_response.success?
-    end
-    if aamva_response.is_a? Hash
+    elsif aamva_response.is_a? Hash
       aamva_success = aamva_response[:success]
     end
 

@@ -194,7 +194,6 @@ RSpec.describe DocumentCaptureSession do
         }.compact,
       }
     end
-    # let(:attempt) { 1 }
     let(:agent_proofing_result) do
       {
         pii: { first_name: 'Testy', last_name: 'Testerson' },
@@ -338,23 +337,23 @@ RSpec.describe DocumentCaptureSession do
         end
 
         context 'when the mrz response is successful' do
-          let(:mrz) { { success: true } }
+          let(:mrz) { { success: true, extra: { vendor_name: 'test_dos' } } }
 
           it 'stores mrz_status as :passed' do
             expect(document_capture_session.load_agent_proofed_user).to have_attributes(
               mrz_status: :pass,
-              source_check_vendor: :dos,
+              source_check_vendor: :test_dos,
             )
           end
         end
 
         context 'when the mrz response is unsuccessful' do
-          let(:mrz) { { success: false } }
+          let(:mrz) { { success: false, extra: { vendor_name: 'test_dos' } } }
 
           it 'stores mrz_status as :failed' do
             expect(document_capture_session.load_agent_proofed_user).to have_attributes(
               mrz_status: :failed,
-              source_check_vendor: :dos,
+              source_check_vendor: :test_dos,
             )
           end
         end

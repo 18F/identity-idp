@@ -21,7 +21,7 @@ module DocAuth
             extra:,
           )
         else
-          DocAuth::Response.new(success: true)
+          DocAuth::Response.new(success: true, extra:)
         end
       end
 

@@ -23,8 +23,6 @@ class ProofingAgentJob < ApplicationJob
     @document_capture_session = DocumentCaptureSession.find_by(uuid: transaction_id)
     raise ArgumentError, 'DocumentCaptureSession not found' if @document_capture_session.nil?
 
-    document_capture_session.create_proofing_session
-
     raise_stale_job! if stale_job?(enqueued_at)
 
     decrypted_args = JSON.parse(
