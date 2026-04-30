@@ -7,19 +7,23 @@ module Idv
 
     def record_user_proofing_events(password)
       return unless historical_events_enabled?
+      # TODO: move UserProofingEvent creation to the Profile object
       @password = password
 
       new_events = user_session['idv/attempts'] || []
 
-      encrypted_events = encrypt_attempt_events_bundle(new_events)
-      encrypted_events_json = JSON.parse(encrypted_events)
-      new_user_proofing_event = UserProofingEvent.new(
-        encrypted_events:,
-        profile_id: current_user.active_profile.id,
-        service_providers_sent: [],
-        cost: encrypted_events_json['cost'],
-        salt: encrypted_events_json['salt'],
-      )
+      encrypted_events_json = encrypt_attempt_events_bundle(new_events)
+      encrypted_events = JSON.parse(encrypted_events_json)
+
+      # TODO: Write encrypted_events['encrypted_data'] to S3
+
+      new_user_proofing_event = current_user
+        .active_profile
+        .build_user_proofing_event(
+          cost: encrypted_events['cost'],
+          salt: encrypted_events['salt'],
+        )
+
       new_user_proofing_event.save
 
       # Now that proofing events are saved, remove the plaintext events from user_session
@@ -37,6 +41,12 @@ module Idv
 
     private
 
+    def data_sent_to_sp?
+      existing_user_proofing_event&.service_providers_sent&.include?(
+        current_sp.issuer,
+      )
+    end
+
     def ial2_requested?
       resolved_authn_context_result.identity_proofing_or_ialmax? && current_user.identity_verified?
     end
@@ -44,8 +54,10 @@ module Idv
     def historical_events_need_be_sent?
       return false unless historical_events_enabled?
 
-      sent_to_aaca = existing_user_proofing_event&.service_providers_sent&.include?(
-        current_sp.issuer,
+      # TODO: This will return true if existing_user_proofing_event does not exist.
+      # That seems wrong?
+      sent_to_aaca = existing_user_proofing_event&.service_provider_ids_sent&.include?(
+        current_sp.id,
       )
 
       return !sent_to_aaca
@@ -58,9 +70,7 @@ module Idv
     end
 
     def existing_user_proofing_event
-      @existing_user_proofing_event ||= UserProofingEvent.find_by(
-        profile_id: current_user.active_profile.id,
-      )
+      @existing_user_proofing_event ||= current_user.active_profile.user_proofing_event
     end
 
     def encrypt_attempt_events_bundle(bundle)
@@ -68,7 +78,15 @@ module Idv
     end
 
     def decrypt_user_proofing_events
-      pii_encryptor.decrypt(existing_user_proofing_event['encrypted_events'], user_uuid:)
+      # TODO: Retrieve encrypted_events from S3 or locally
+      # Currently this is not in use, so passing in dummy data
+      data = pii_encryptor.encrypt(
+        [
+          { 'idv-ssn-submitted' => { 'user_uuid' => user_uuid } },
+        ].to_json,
+        user_uuid:,
+      )
+      pii_encryptor.decrypt(data, user_uuid:)
     end
 
     def pii_encryptor
