@@ -163,7 +163,7 @@ class SocureErrorPresenter
           t('doc_auth.errors.general.network_error_passport'),
           link_to(
             t('doc_auth.errors.general.network_error_passport_link_text'),
-            idv_choose_id_type_path,
+            choose_id_type_path,
           ),
           t('doc_auth.errors.general.network_error_passport_ending'),
         ],
@@ -203,7 +203,7 @@ class SocureErrorPresenter
         verify_id_text,
         link_to(
           t('doc_auth.errors.verify.use_another_type_of_id'),
-          idv_choose_id_type_path,
+          choose_id_type_path,
         ),
       ],
       ' ',
@@ -222,7 +222,7 @@ class SocureErrorPresenter
   def default_options
     [
       {
-        url: hybrid_flow? ? idv_hybrid_mobile_choose_id_type_path : idv_choose_id_type_path,
+        url: choose_id_type_path,
         text: I18n.t('idv.troubleshooting.options.use_another_id_type'),
         isExternal: false,
       },
@@ -251,5 +251,9 @@ class SocureErrorPresenter
         isExternal: true,
       },
     ]
+  end
+
+  def choose_id_type_path
+    hybrid_flow? ? idv_hybrid_mobile_choose_id_type_path : idv_choose_id_type_path
   end
 end
