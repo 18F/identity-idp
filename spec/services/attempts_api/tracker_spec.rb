@@ -337,6 +337,19 @@ RSpec.describe AttemptsApi::Tracker do
             )
           end
         end
+
+        context 'there is already an event in the session' do
+          it 'appends to the existing events' do
+            user_session['idv/attempts'] = [{ 'idv-something' => { 'user_uuid' => user.uuid } }]
+            subject.idv_enrollment_complete(reproof: false)
+            expect(user_session['idv/attempts']).to eq(
+              [
+                { 'idv-something' => { 'user_uuid' => user.uuid } },
+                { 'idv-enrollment-complete' => { 'user_uuid' => user.uuid } },
+              ],
+            )
+          end
+        end
       end
 
       it 'does not fail if the request is missing' do

@@ -388,7 +388,7 @@ RSpec.describe SignUp::CompletionsController do
           )
         end
 
-        context 'issuer is an allowed attempts provider' do
+        context 'service_provider is an allowed attempts provider' do
           before do
             allow(IdentityConfig.store).to receive(:allowed_attempts_providers)
               .and_return([{ 'issuer' => sp.issuer }])
@@ -403,7 +403,7 @@ RSpec.describe SignUp::CompletionsController do
               )
             end
 
-            it 'should update the appropriate user proofing event' do
+            it 'updates the associated user proofing event' do
               stub_sign_in(user)
 
               subject.session[:sp] = {
@@ -413,11 +413,11 @@ RSpec.describe SignUp::CompletionsController do
                 requested_attributes: %w[email first_name verified_at],
               }
 
-              expect(UserProofingEvent.find(proofing_event.id).service_providers_sent)
-                .to_not include(sp.issuer)
+              expect(UserProofingEvent.find(proofing_event.id).service_provider_ids_sent)
+                .to_not include(sp.id)
               patch :update
-              expect(UserProofingEvent.find(proofing_event.id).service_providers_sent)
-                .to include(sp.issuer)
+              expect(UserProofingEvent.find(proofing_event.id).service_provider_ids_sent)
+                .to include(sp.id)
             end
           end
 
@@ -427,11 +427,11 @@ RSpec.describe SignUp::CompletionsController do
                 :user_proofing_event,
                 :existing,
                 profile_id: profile.id,
-                service_providers_sent: [sp.issuer],
+                service_provider_ids_sent: [sp.id],
               )
             end
 
-            it 'should not update the user proofing event' do
+            it 'does not update the user proofing event' do
               stub_sign_in(user)
 
               subject.session[:sp] = {
@@ -441,11 +441,9 @@ RSpec.describe SignUp::CompletionsController do
                 requested_attributes: %w[email first_name verified_at],
               }
 
-              expect(UserProofingEvent.find(proofing_event.id).service_providers_sent)
-                .to include(sp.issuer).once
               patch :update
-              expect(UserProofingEvent.find(proofing_event.id).service_providers_sent)
-                .to include(sp.issuer).once
+              expect(UserProofingEvent.find(proofing_event.id).service_provider_ids_sent)
+                .to include(sp.id).once
             end
           end
         end
@@ -464,7 +462,7 @@ RSpec.describe SignUp::CompletionsController do
               .and_return([])
           end
 
-          it 'should not update the user proofing event' do
+          it 'does not update the user proofing event' do
             stub_sign_in(user)
 
             subject.session[:sp] = {
@@ -474,10 +472,9 @@ RSpec.describe SignUp::CompletionsController do
               requested_attributes: %w[email first_name verified_at],
             }
 
-            expect(UserProofingEvent.find(proofing_event.id).service_providers_sent)
-              .to_not include(sp.issuer)
             patch :update
-            expect(UserProofingEvent.find(proofing_event.id).service_providers_sent)
+
+            expect(UserProofingEvent.find(proofing_event.id).service_provider_ids_sent)
               .to_not include(sp.issuer)
           end
         end
