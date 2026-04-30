@@ -437,6 +437,7 @@ RSpec.describe 'Hybrid Flow' do
                 ),
               )
 
+              expect(page).to have_content(t('doc_auth.errors.rate_limited_heading'))
               expect(page).to have_content(
                 [
                   t('doc_auth.errors.general.network_error_passport'),
