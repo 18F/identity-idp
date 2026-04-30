@@ -87,7 +87,7 @@ RSpec.describe Idv::HowToVerifyController do
 
         context 'when the ServiceProvider has IPP disabled' do
           let(:service_provider) do
-            create(:service_provider, :active)
+            create(:service_provider, :active, in_person_proofing_enabled: false)
           end
 
           it 'redirects to hybrid_handoff' do

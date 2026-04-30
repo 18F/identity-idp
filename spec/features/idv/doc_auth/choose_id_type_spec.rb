@@ -36,7 +36,7 @@ RSpec.feature 'choose id type step' do
     before do
       visit_idp_from_sp_with_ial2(
         :oidc,
-        **{ client_id: ipp_service_provider.issuer },
+        client_id: ipp_service_provider.issuer,
       )
       sign_in_and_2fa_user
     end

@@ -314,11 +314,11 @@ RSpec.feature 'hybrid_handoff step for ipp, selfie variances', js: true do
     let(:user) { user_with_2fa }
 
     before do
-      service_provider = create(:service_provider, :active, :in_person_proofing_enabled)
-      unless sp_ipp_enabled
-        service_provider.in_person_proofing_enabled = false
-        service_provider.save!
-      end
+      service_provider = build(:service_provider, :active, :in_person_proofing_enabled)
+
+      service_provider.in_person_proofing_enabled = sp_ipp_enabled
+      service_provider.save!
+
       allow(IdentityConfig.store).to receive(:socure_docv_enabled).and_return(socure_docv_enabled)
       allow(IdentityConfig.store).to receive(:doc_auth_vendor_default).and_return(doc_auth_vendor)
       allow(IdentityConfig.store).to receive(:doc_auth_desktop_test_mode)
@@ -333,8 +333,8 @@ RSpec.feature 'hybrid_handoff step for ipp, selfie variances', js: true do
         .and_return(sp_ipp_enabled)
       visit_idp_from_sp_with_ial2(
         :oidc,
-        **{ client_id: service_provider.issuer,
-            facial_match_required: facial_match_required },
+        client_id: service_provider.issuer,
+        facial_match_required: facial_match_required,
       )
       sign_in_via_branded_page(user)
       complete_doc_auth_steps_before_agreement_step

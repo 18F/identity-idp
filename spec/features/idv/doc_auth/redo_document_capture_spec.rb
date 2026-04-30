@@ -587,8 +587,8 @@ RSpec.feature 'document capture step', :js do
               perform_in_browser(:mobile) do
                 visit_idp_from_sp_with_ial2(
                   :oidc,
-                  **{ client_id: ipp_service_provider.issuer,
-                      facial_match_required: true },
+                  client_id: ipp_service_provider.issuer,
+                  facial_match_required: true,
                 )
                 sign_in_and_2fa_user(@user)
                 complete_up_to_how_to_verify_step_for_opt_in_ipp
@@ -838,8 +838,8 @@ RSpec.feature 'direct access to IPP on desktop', :js do
         .and_return(false)
       visit_idp_from_sp_with_ial2(
         :oidc,
-        **{ client_id: service_provider.issuer,
-            facial_match_required: facial_match_required },
+        client_id: service_provider.issuer,
+        facial_match_required: facial_match_required,
       )
       sign_in_via_branded_page(user)
       complete_doc_auth_steps_before_agreement_step
