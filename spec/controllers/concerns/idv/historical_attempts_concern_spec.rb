@@ -100,25 +100,6 @@ RSpec.describe Idv::HistoricalAttemptsConcern, type: :controller do
         expect(user_proofing_event.salt).to eq(encrypted_events['salt'])
         expect(user_proofing_event.profile).to eq(profile)
       end
-
-      context 'service_provider is not an allowed_attempts_providers' do
-        # TODO: This spec is not correct.
-        # We are recording on all IAL2 requests.
-        # We are only sending the data to SPs that are allowed_attempts_providers and have not already
-        # received the data.
-        before do
-          allow(IdentityConfig.store).to receive(
-            :allowed_attempts_providers,
-          ).and_return([])
-        end
-
-        it 'does not modify or create a UserProofingEvent' do
-          record_user_proofing_events
-
-          expect(UserProofingEvent).to_not have_received(:new)
-          expect(UserProofingEvent).to_not have_received(:save)
-        end
-      end
     end
   end
 
@@ -198,6 +179,14 @@ RSpec.describe Idv::HistoricalAttemptsConcern, type: :controller do
           expect(pii_encryptor).to_not receive(:encrypt)
 
           cache_user_proofing_events
+        end
+      end
+
+      context 'when no UserProofingEvent exists for the profile' do
+        let(:user_proofing_event) { nil }
+
+        it 'does not raise an error' do
+          expect { cache_user_proofing_events }.to_not raise_error
         end
       end
     end

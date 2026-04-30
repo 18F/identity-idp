@@ -32,7 +32,7 @@ module Idv
     end
 
     def cache_user_proofing_events(password)
-      return unless historical_events_need_be_sent? && existing_user_proofing_event
+      return unless historical_events_need_be_sent?
       @password = password
 
       existing_events = decrypt_user_proofing_events
@@ -54,13 +54,9 @@ module Idv
 
     def historical_events_need_be_sent?
       return false unless historical_events_enabled?
+      return false if existing_user_proofing_event.blank?
 
-      # TODO: This will return true if existing_user_proofing_event does not exist.
-      sent_to_aaca = existing_user_proofing_event&.service_provider_ids_sent&.include?(
-        current_sp.id,
-      )
-
-      return !sent_to_aaca
+      return !existing_user_proofing_event.already_sent_to_sp?(current_sp.id)
     end
 
     def historical_events_enabled?
