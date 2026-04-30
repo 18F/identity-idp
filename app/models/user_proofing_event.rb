@@ -11,4 +11,8 @@ class UserProofingEvent < ApplicationRecord
     self.service_provider_ids_sent.push(id)
     self.save!
   end
+
+  def already_sent_to_sp?(id)
+    service_provider_ids_sent.include?(id)
+  end
 end

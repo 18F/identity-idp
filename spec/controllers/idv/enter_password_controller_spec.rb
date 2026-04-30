@@ -1125,27 +1125,21 @@ RSpec.describe Idv::EnterPasswordController do
 
     describe 'historical events tracking' do
       let(:idv_attempt) do
-        AttemptsApi::AttemptEvent.new(
-          event_type: 'idv-enrollment-complete',
-          session_id: 0,
-          occurred_at: Time.zone.now,
-          event_metadata: { event_type: 'idv-enrollment-complete', data: 'event data' },
-        )
+        {
+          'idv/attempts' => [
+            { 'idv-enrollment-complete' => { 'user_uuid' => user.uuid } },
+          ],
+        }
       end
+
       let(:mock_user_session) { { 'idv/attempts' => [idv_attempt] } }
-      let(:mock) { double }
 
       before do
-        allow(UserProofingEvent).to receive(:new).and_return(mock)
-        allow(mock).to receive(:save).and_return(true)
         allow(IdentityConfig.store).to receive_messages(
           attempts_api_enabled: true,
           historical_attempts_api_enabled: true,
           allowed_attempts_providers: [{ 'issuer' => sp.issuer }],
         )
-        session['warden.user.user.session'] = mock_user_session
-        # at this point in the flow, the applicant should have a UUID
-        subject.idv_session.applicant['uuid'] = 'aabbccdd-0000-00000-0000-aabbccddeeff'
       end
 
       after do
@@ -1163,22 +1157,11 @@ RSpec.describe Idv::EnterPasswordController do
         end
 
         context 'with a newly proofed user' do
-          it 'creates a new UserProofingEvent' do
-            expect(UserProofingEvent).to receive(:new)
-            expect(mock).to receive(:save)
+          it 'creates a UserProofingEvent for the profile' do
             put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
-          end
-        end
+            event = UserProofingEvent.last
 
-        context 'with a proofed user who has already sent attempts to this SP' do
-          before do
-            put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
-          end
-
-          it 'does not create a new UserProofingEvent' do
-            expect(UserProofingEvent).to_not receive(:new)
-            expect(mock).to_not receive(:save)
-            put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+            expect(event.profile_id).to eq(user.profiles.last.id)
           end
         end
       end

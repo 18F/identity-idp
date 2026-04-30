@@ -141,28 +141,26 @@ module SignUp
     end
 
     def send_historical_events
-      return unless user_proofing_event && current_sp.issuer
+      # TODO: send to redis queue
 
-      # send to redis queue and update sp_sent
-
-      user_proofing_event.add_sp_sent(current_sp.issuer)
+      user_proofing_event.add_sp_sent(current_sp.id)
     end
 
     def historical_events_need_be_sent?
-      globally_enabled = IdentityConfig.store.historical_attempts_api_enabled
-      aaca = current_sp.attempts_api_enabled?
-      idv = ial2_requested?
+      return false unless IdentityConfig.store.historical_attempts_api_enabled
+      return false unless current_sp.attempts_api_enabled?
+      return false unless ial2_requested?
+      return false unless user_proofing_event.present?
 
-      return false unless globally_enabled && aaca && idv
+      return !sent_to_aaca?
+    end
 
-      sent_to_aaca = user_proofing_event&.service_providers_sent&.include?(current_sp.issuer)
-
-      return !sent_to_aaca
+    def sent_to_aaca?
+      user_proofing_event&.already_sent_to_sp?(current_sp.id)
     end
 
     def user_proofing_event
-      @user_proofing_event ||=
-        UserProofingEvent.find_by(profile_id: current_user&.active_profile&.id)
+      @user_proofing_event ||= current_user&.active_profile&.user_proofing_event
     end
 
     def pii
