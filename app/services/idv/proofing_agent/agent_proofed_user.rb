@@ -75,15 +75,15 @@ module Idv
             doc_auth_vendor:,
             document_type_received: pii[:document_type_received],
             source_check_vendor:,
+            resolution_vendor: resolution&.dig(
+              :context, :stages, :resolution, :vendor_name
+            ),
             residential_resolution_vendor: resolution&.dig(
               :context, :stages, :residential_address, :vendor_name
             ),
             verify_info_step_complete: resolution&.dig(:success),
             phone_precheck_vendor: resolution&.dig(
               :context, :stages, :phone_precheck, :vendor_name
-            ),
-            address_verification_vendor: resolution&.dig(
-              :context, :stages, :residential_address, :vendor_name
             ),
             threat_metrix_review_status: resolution&.dig(
               :context, :stages, :threatmetrix, :review_status
