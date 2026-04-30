@@ -32,6 +32,11 @@ module Idv
 
         result = Mattr::VerifierClient.new.get_presentation_result(session_id: session_id)
 
+        Rails.logger.info(
+          '[HybridMobile::MdlController] mattr result: ' \
+          "#{result.except('credentials').to_json}, stored_challenge=#{stored_challenge.inspect}",
+        )
+
         if result['challenge'] != stored_challenge
           return render_error('challenge mismatch')
         end
