@@ -235,7 +235,7 @@ RSpec.describe AttemptsApi::Tracker do
       end
     end
 
-    context 'with historical_attempts_api_enabled' do
+    context 'when historical_attempts_api_enabled is true' do
       before do
         allow(IdentityConfig.store).to receive(:historical_attempts_api_enabled).and_return(true)
       end
@@ -355,6 +355,33 @@ RSpec.describe AttemptsApi::Tracker do
       end
     end
 
+    context 'when historical_attempts_api_enabled is false' do
+      before do
+        allow(IdentityConfig.store).to receive(:historical_attempts_api_enabled).and_return(false)
+      end
+
+      context 'with Devise session' do
+        let(:mock_session) { { 'warden.user.user.session' => {} } }
+
+        it 'records to redis' do
+          freeze_time do
+            subject.idv_enrollment_complete(reproof: false)
+
+            events = AttemptsApi::RedisClient.new.read_events(
+              issuer: service_provider.issuer,
+            )
+
+            expect(events.values.length).to eq(1)
+          end
+        end
+
+        it 'does not populate the historical session info' do
+          subject.idv_enrollment_complete(reproof: false)
+          expect(mock_session).to eq({ 'warden.user.user.session' => {} })
+        end
+      end
+    end
+
     context 'the attempts API is not enabled' do
       let(:attempts_api_enabled) { false }
 
@@ -369,31 +396,6 @@ RSpec.describe AttemptsApi::Tracker do
           expect(events.values.length).to eq(0)
         end
       end
-    end
-  end
-
-  context 'with a Devise session and historical_attempts_api_disabled' do
-    let(:mock_session) { { 'warden.user.user.session' => {} } }
-
-    before do
-      allow(IdentityConfig.store).to receive(:historical_attempts_api_enabled).and_return(false)
-    end
-
-    it 'records to redis' do
-      freeze_time do
-        subject.idv_enrollment_complete(reproof: false)
-
-        events = AttemptsApi::RedisClient.new.read_events(
-          issuer: service_provider.issuer,
-        )
-
-        expect(events.values.length).to eq(1)
-      end
-    end
-
-    it 'does not populate the historical session info' do
-      subject.idv_enrollment_complete(reproof: false)
-      expect(mock_session).to eq({ 'warden.user.user.session' => {} })
     end
   end
 
