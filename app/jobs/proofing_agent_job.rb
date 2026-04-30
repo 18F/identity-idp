@@ -107,7 +107,7 @@ class ProofingAgentJob < ApplicationJob
 
     resolution_result = call_resolution_proofing_job(
       timer:,
-      result_id:,
+      result_id: SecureRandom.uuid,
       encrypted_arguments: re_encrypted_arguments,
       trace_id:,
       user_id: user.id,

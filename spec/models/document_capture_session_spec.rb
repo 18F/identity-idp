@@ -188,8 +188,8 @@ RSpec.describe DocumentCaptureSession do
     let(:aamva) do
       {
         success: aamva_success,
+        vendor_name: aamva_vendor,
         extra: {
-          vendor_name: aamva_vendor,
           verified_attributes: aamva_attrs,
         }.compact,
       }
@@ -337,7 +337,7 @@ RSpec.describe DocumentCaptureSession do
         end
 
         context 'when the mrz response is successful' do
-          let(:mrz) { { success: true, extra: { vendor_name: 'test_dos' } } }
+          let(:mrz) { { success: true, vendor_name: 'test_dos' } }
 
           it 'stores mrz_status as :passed' do
             expect(document_capture_session.load_agent_proofed_user).to have_attributes(
@@ -348,7 +348,7 @@ RSpec.describe DocumentCaptureSession do
         end
 
         context 'when the mrz response is unsuccessful' do
-          let(:mrz) { { success: false, extra: { vendor_name: 'test_dos' } } }
+          let(:mrz) { { success: false, vendor_name: 'test_dos' } }
 
           it 'stores mrz_status as :failed' do
             expect(document_capture_session.load_agent_proofed_user).to have_attributes(
