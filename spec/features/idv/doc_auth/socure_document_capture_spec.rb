@@ -617,6 +617,7 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
                 ),
               )
 
+              expect(page).to have_content(t('doc_auth.errors.rate_limited_heading'))
               expect(page).to have_content(
                 [
                   t('doc_auth.errors.general.network_error_passport'),

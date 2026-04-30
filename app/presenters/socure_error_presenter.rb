@@ -128,7 +128,7 @@ class SocureErrorPresenter
       t('doc_auth.errors.selfie_fail_heading')
     when :state_id_verification
       t('doc_auth.headers.state_id_verification')
-    when :passport
+    when :passport, :passport_network
       t('doc_auth.errors.rate_limited_heading')
     else
       # i18n-tasks-use t('doc_auth.headers.unreadable_id')

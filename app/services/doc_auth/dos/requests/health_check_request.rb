@@ -30,7 +30,7 @@ module DocAuth
           analytics.passport_api_health_check(
             **response.to_h
                 .except(*UNUSED_RESPONSE_KEYS)
-                .merge(response.extra)
+                .merge(response ? response.extra : {})
                 .merge(context_analytics),
           )
         end
