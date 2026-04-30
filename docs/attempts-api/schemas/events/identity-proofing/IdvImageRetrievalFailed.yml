@@ -15,15 +15,9 @@ allOf:
       document_selfie_image_file_id:
         type: string
         description: If this image existed, the ID generated for storage
-      document_front_image_encryption_key:
+      document_passport_image_file_id:
         type: string
-        description: Randomly generated Base64-encoded key generated to encrypt the front image file if it exists.
-      document_back_image_encryption_key:
-        type: string
-        description: Randomly generated Base64-encoded key generated to encrypt the back image file if it exists.
-      document_selfie_image_encryption_key:
-        type: string
-        description: Randomly generated Base64-encoded key generated to encrypt the selfie image file if it exists.
+        description: If this image existed, the ID generated for storage
       failure_reason:
         type: object
         description: |

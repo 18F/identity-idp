@@ -33,6 +33,7 @@ module Proofing
           exception: nil,
           vendor_name: 'StateIdMock',
           transaction_id: TRANSACTION_ID,
+          verified_attributes: %i[address dob state_id_number],
         )
       end
 

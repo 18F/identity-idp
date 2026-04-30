@@ -362,3 +362,6 @@ watch_events: ## Prints events logging as they happen
 
 tidy: clobber_assets clobber_logs ## Remove assets, logs, and unused gems, but leave DB alone
 	bundle clean
+
+compile_openapi_spec: ## Compiles the OpenAPI spec for the Attempts API
+	npm run build:openapi

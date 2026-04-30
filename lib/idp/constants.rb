@@ -19,6 +19,7 @@ module Idp
       USPS = 'usps'
       AAMVA = 'aamva'
       AAMVA_UNSUPPORTED_JURISDICTION = 'UnsupportedJurisdiction'
+      PROOFING_AGENT = 'proofing_agent'
       STATE_ID_MOCK = 'StateIdMock'
       AAMVA_CHECK_SKIPPED = 'AamvaCheckSkipped'
       SOURCE_CHECK = [AAMVA, AAMVA_UNSUPPORTED_JURISDICTION, STATE_ID_MOCK].freeze
@@ -219,6 +220,7 @@ module Idp
     MOCK_IDV_APPLICANT_WITH_PASSPORT = MOCK_IDV_APPLICANT.select do |field, _value|
       %i[first_name middle_name last_name dob sex].include?(field)
     end.merge(
+      name_suffix: nil,
       document_type_received: 'passport',
       mrz:
       'P<UTOSAMPLE<<COMPANY<<<<<<<<<<<<<<<<<<<<<<<<ACU1234P<5UTO0003067F4003065<<<<<<<<<<<<<<02',

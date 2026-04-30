@@ -16,3 +16,25 @@ allOf:
         type: boolean
         description: |
           Indicates whether the one-time password was sent.
+      failure_reason:
+        type: object
+        description: |
+          An OPTIONAL object. An associative array of attributes and errors if success is false
+        properties:
+          telephony:
+            type: array
+            description: Errors that explain the failure
+            items:
+              type: string
+              enum:
+                - DailyLimitReachedError
+                - DuplicateEndpointError
+                - InvalidPhoneNumberError
+                - InvalidCallingAreaError
+                - OptOutError
+                - RateLimitedError
+                - SmsUnsupportedError
+                - TemporaryFailureError
+                - TimeoutError
+                - UnknownFailureError
+                - VoiceUnsupportedError

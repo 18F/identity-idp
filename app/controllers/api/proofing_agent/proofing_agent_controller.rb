@@ -50,7 +50,7 @@ module Api
         document_capture_session = DocumentCaptureSession.create!(
           user_id: user.id,
           issuer:,
-          doc_auth_vendor: 'proofing_agent',
+          doc_auth_vendor: Idp::Constants::Vendors::PROOFING_AGENT,
           requested_at: Time.zone.now,
         )
 
@@ -73,6 +73,14 @@ module Api
 
         response_body = response_body.merge(
           { remaining_attempts: proofing_rate_limiter.remaining_count },
+        )
+
+        ::ProofingAgent::ProofUser.new(proof_params).call(
+          proofing_agent_id: agent_id,
+          proofing_location_id: location_id,
+          correlation_id:,
+          trace_id: amzn_trace_id,
+          transaction_id:,
         )
 
         render json: response_body, status: :accepted
