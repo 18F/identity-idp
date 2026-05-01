@@ -44,7 +44,7 @@ RSpec.describe ProofingAgentJob, type: :job do
       it 'stores a successful result' do
         perform
 
-        result = document_capture_session.reload.load_proofing_result[:result]
+        result = document_capture_session.reload.load_agent_proofed_user
         expect(result[:success]).to be true
         expect(result[:reason]).to be_nil
         expect(result[:resolution][:success]).to be true
@@ -67,7 +67,7 @@ RSpec.describe ProofingAgentJob, type: :job do
       it 'stores a failed result' do
         perform
 
-        result = document_capture_session.reload.load_proofing_result[:result]
+        result = document_capture_session.reload.load_agent_proofed_user
         expect(result[:success]).to be false
         expect(result[:reason]).to eq('profile_resolution_fail')
         expect(result[:resolution][:success]).to be false
@@ -91,17 +91,17 @@ RSpec.describe ProofingAgentJob, type: :job do
       it 'stores a successful result with aamva data' do
         perform
 
-        result = document_capture_session.reload.load_proofing_result[:result]
+        result = document_capture_session.reload.load_agent_proofed_user
         expect(result[:success]).to be true
         expect(result[:reason]).to be_nil
-        expect(result[:aamva][:success]).to be true
-        expect(result[:aamva][:vendor_name]).to eq('StateIdMock')
+        expect(result[:aamva_status]).to eq 'passed'
+        expect(result[:source_check_vendor]).to eq('StateIdMock')
       end
 
       it 'passes aamva_verified_attributes into resolution_result' do
         perform
 
-        result = document_capture_session.reload.load_proofing_result[:result]
+        result = document_capture_session.reload.load_agent_proofed_user
         expect(result[:pii][:aamva_verified_attributes]).to be_present
       end
     end
@@ -114,10 +114,10 @@ RSpec.describe ProofingAgentJob, type: :job do
       it 'stores a failed result' do
         perform
 
-        result = document_capture_session.reload.load_proofing_result[:result]
+        result = document_capture_session.reload.load_agent_proofed_user
         expect(result[:success]).to be false
         expect(result[:reason]).to eq('id_fail')
-        expect(result[:aamva][:success]).to be false
+        expect(result[:aamva_status]).to eq 'failed'
       end
 
       it 'enqueues a ProofingAgentWebhookJob with success: false' do
@@ -136,10 +136,11 @@ RSpec.describe ProofingAgentJob, type: :job do
       it 'stores a successful result with mrz data' do
         perform
 
-        result = document_capture_session.reload.load_proofing_result[:result]
+        result = document_capture_session.reload.load_agent_proofed_user
         expect(result[:success]).to be true
         expect(result[:reason]).to be_nil
-        expect(result[:mrz][:success]).to be true
+        expect(result[:mrz_status]).to eq 'pass'
+        expect(result[:source_check_vendor]).to eq('PassportMock')
       end
     end
 
@@ -158,10 +159,10 @@ RSpec.describe ProofingAgentJob, type: :job do
       it 'stores a failed result' do
         perform
 
-        result = document_capture_session.reload.load_proofing_result[:result]
+        result = document_capture_session.reload.load_agent_proofed_user
         expect(result[:success]).to be false
         expect(result[:reason]).to eq('passport_fail')
-        expect(result[:mrz][:success]).to be false
+        expect(result[:mrz_status]).to eq 'failed'
       end
 
       it 'enqueues a ProofingAgentWebhookJob with success: false' do

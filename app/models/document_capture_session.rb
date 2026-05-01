@@ -110,6 +110,50 @@ class DocumentCaptureSession < ApplicationRecord
     )
   end
 
+  def load_agent_proofed_user
+    return nil unless result_id.present?
+
+    EncryptedRedisStructStorage.load(result_id, type: Idv::ProofingAgent::AgentProofedUser)
+  end
+
+  def store_agent_proofed_user(agent_proofing_result)
+    session_result = Idv::ProofingAgent::AgentProofedUser.new(id: generate_result_id)
+
+    session_result.success = agent_proofing_result[:success]
+    session_result.reason = agent_proofing_result[:reason]
+    session_result.pii = agent_proofing_result[:pii]
+    session_result.proofing_location_id = agent_proofing_result[:proofing_location_id]
+    session_result.proofing_agent_id = agent_proofing_result[:proofing_agent_id]
+    session_result.correlation_id = agent_proofing_result[:correlation_id]
+    session_result.transaction_id = agent_proofing_result[:transaction_id]
+    session_result.issuer = agent_proofing_result[:service_provider_issuer]
+    session_result.resolution = agent_proofing_result[:resolution]
+    session_result.mrz_status = determine_mrz_status(agent_proofing_result[:mrz])
+    aamva_response = agent_proofing_result[:aamva]
+    session_result.aamva_status = determine_aamva_status(aamva_response)
+    if aamva_response&.dig(:success)
+      session_result.aamva_verified_attributes = aamva_response.dig(:extra, :verified_attributes)
+    end
+    session_result.source_check_vendor = determine_source_check_vendor(
+      aamva: aamva_response,
+      mrz: agent_proofing_result[:mrz],
+    )
+    session_result.captured_at = Time.zone.now
+
+    EncryptedRedisStructStorage.store(
+      session_result,
+      expires_in: IdentityConfig.store.agent_proofed_user_time_validity_hours.hours.in_seconds,
+    )
+    save!
+  end
+
+  def determine_source_check_vendor(aamva:, mrz:)
+    raise ArgumentError.new('received both aamva and mrz args') if aamva.present? && mrz.present?
+
+    return aamva.dig(:vendor_name) if aamva.present?
+    mrz.presence&.dig(:vendor_name)
+  end
+
   def expired?
     return true unless requested_at
     (requested_at + IdentityConfig.store.doc_capture_request_valid_for_minutes.minutes) <
@@ -151,13 +195,27 @@ class DocumentCaptureSession < ApplicationRecord
   def determine_mrz_status(mrz_response)
     return :not_processed unless mrz_response
 
-    mrz_response.success? ? :pass : :failed
+    mrz_success = false
+    if mrz_response.respond_to?(:success?)
+      mrz_success = mrz_response.success?
+    elsif mrz_response.is_a? Hash
+      mrz_success = mrz_response[:success]
+    end
+
+    mrz_success ? :pass : :failed
   end
 
   def determine_aamva_status(aamva_response)
     return :not_processed unless aamva_response
 
-    aamva_response.success? ? :passed : :failed
+    aamva_success = false
+    if aamva_response.respond_to?(:success?)
+      aamva_success = aamva_response.success?
+    elsif aamva_response.is_a? Hash
+      aamva_success = aamva_response[:success]
+    end
+
+    aamva_success ? :passed : :failed
   end
 
   def passport_not_requested_attributes

@@ -11,7 +11,6 @@ module Idv
 
       validates_presence_of(*REQUIRED_ATTRIBUTES, message: 'cannot be blank')
 
-      validate :name_valid?
       validate :dob_valid?
       validate :id_type_valid?
 
@@ -73,13 +72,9 @@ module Idv
 
       attr_reader(*ATTRIBUTES)
 
-      def name_valid?
-        return if first_name.present? && last_name.present?
-
-        errors.add(:name, name_error, type: :name)
-      end
-
       def dob_valid?
+        return unless dob
+
         dob_date = DateParser.parse_legacy(dob)
         today = Time.zone.today
         age = today.year - dob_date.year - ((today.month > dob_date.month ||
