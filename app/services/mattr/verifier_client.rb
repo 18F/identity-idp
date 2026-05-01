@@ -17,7 +17,8 @@ module Mattr
       domain:,
       redirect_uris:,
       display: {},
-      result_in_front_channel: false
+      result_in_front_channel: false,
+      dc_api_supported_platforms: nil
     )
       body = {
         name: name,
@@ -30,6 +31,10 @@ module Mattr
         }.compact,
         resultAvailableInFrontChannel: result_in_front_channel,
       }
+
+      if dc_api_supported_platforms
+        body[:dcApiConfiguration] = { supportedBrowserPlatforms: dc_api_supported_platforms }
+      end
 
       response = api_faraday.post('/v2/presentations/applications', body)
       response.body

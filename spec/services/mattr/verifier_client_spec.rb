@@ -63,8 +63,10 @@ RSpec.describe Mattr::VerifierClient do
   end
 
   describe '#create_application' do
+    let(:applications_url) { "#{tenant_url}/v2/presentations/applications" }
+
     before do
-      stub_request(:post, "#{tenant_url}/v2/presentations/applications").to_return(
+      stub_request(:post, applications_url).to_return(
         status: 201,
         body: {
           id: 'app-id-123',
@@ -82,6 +84,37 @@ RSpec.describe Mattr::VerifierClient do
       )
 
       expect(result['id']).to eq('app-id-123')
+    end
+
+    context 'without dc_api_supported_platforms' do
+      it 'omits dcApiConfiguration from the request body' do
+        client.create_application(
+          name: 'Login.gov Verifier',
+          domain: 'idp.identitysandbox.gov',
+          redirect_uris: ['https://idp.identitysandbox.gov/idv/mdl/callback'],
+        )
+
+        expect(WebMock).to have_requested(:post, applications_url).with { |req|
+          !JSON.parse(req.body).key?('dcApiConfiguration')
+        }
+      end
+    end
+
+    context 'with dc_api_supported_platforms' do
+      it 'includes dcApiConfiguration in the request body' do
+        client.create_application(
+          name: 'Login.gov Verifier',
+          domain: 'idp.identitysandbox.gov',
+          redirect_uris: ['https://idp.identitysandbox.gov/idv/mdl/callback'],
+          dc_api_supported_platforms: { mobile: true, desktop: true },
+        )
+
+        expect(WebMock).to have_requested(:post, applications_url).with { |req|
+          JSON.parse(req.body)['dcApiConfiguration'] == {
+            'supportedBrowserPlatforms' => { 'mobile' => true, 'desktop' => true },
+          }
+        }
+      end
     end
   end
 

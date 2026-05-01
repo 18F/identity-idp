@@ -118,6 +118,10 @@ if (root) {
     applicationId: config.applicationId,
   });
 
+  if (MATTRVerifierSDK.isDigitalCredentialsApiSupported()) {
+    console.log('[mdl-verifier] DC API supported');
+  }
+
   if (window.location.hash) {
     handleRedirect(config, elements);
   }
