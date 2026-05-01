@@ -1225,6 +1225,7 @@ idv.mdl.success_banner: We verified your ID
 idv.mdl.title: Add your mobile driver’s license (mDL) information
 idv.mdl.use_different_method: Use a different verification method
 idv.mdl.waiting: Waiting for credential verification… Please complete the process in the Okta Credentials app.
+idv.mdl.waiting_mattr: Waiting for credential verification… Please complete the process in the MATTR Labs Wallet app.
 idv.messages.activated_html: Your identity has been verified. If you need to change your verified information, please %{link_html}.
 idv.messages.activated_link: contact us
 idv.messages.come_back_later: Sign back in and enter the verification code when your letter arrives.
