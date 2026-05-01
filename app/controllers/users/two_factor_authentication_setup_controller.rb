@@ -128,10 +128,6 @@ module Users
         !auto_passkey_prompted?
     end
 
-    def platform_authenticator_available?
-      user_session[:platform_authenticator_available] == true
-    end
-
     def auto_passkey_prompt_bucket
       return unless auto_passkey_prompt_available?
 
