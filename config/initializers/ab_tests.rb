@@ -240,4 +240,17 @@ module AbTests
   ) do |user:, user_session:, **|
     user&.uuid
   end.freeze
+
+  PASSKEY_SETUP_UPSELL_SHOWN = AbTest.new(
+    experiment_name: 'Passkey Setup Upsell Shown',
+    should_log: [
+      :webauthn_platform_recommended_visited,
+    ],
+    buckets: {
+      doc_auth_passport_cards_allowed:
+        IdentityConfig.store.feature_account_creation_passkey_upsell_percentage,
+    },
+  ) do |user:, user_session:, **|
+    user&.uuid
+  end.freeze
 end
