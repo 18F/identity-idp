@@ -48,7 +48,8 @@ RSpec.feature 'webauthn sign up' do
       let!(:user) do
         allow(FeatureManagement).to receive(:account_creation_passkey_auto_prompt_enabled?)
           .and_return(true)
-        allow_any_instance_of(Users::TwoFactorAuthenticationSetupController).to receive(:ab_test_bucket)
+        allow_any_instance_of(Users::TwoFactorAuthenticationSetupController)
+          .to receive(:ab_test_bucket)
           .with(:PASSKEY_UPSELL)
           .and_return(:auto_passkey_prompt)
         user = sign_up

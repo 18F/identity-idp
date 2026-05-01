@@ -8444,25 +8444,6 @@ module AnalyticsEvents
     )
   end
 
-  # Tracks when account creation resolves whether to auto-prompt passkey setup.
-  # @param [Boolean] eligible Whether the user met non-experiment auto-prompt criteria
-  # @param [Boolean] prompted Whether the user was auto-redirected to WebAuthn setup
-  # @param [Boolean] in_account_creation_flow Whether user is going through account creation
-  def user_registration_passkey_auto_prompt_decision(
-    eligible:,
-    prompted:,
-    in_account_creation_flow:,
-    **extra
-  )
-    track_event(
-      'User Registration: Passkey Auto Prompt Decision',
-      eligible:,
-      prompted:,
-      in_account_creation_flow:,
-      **extra,
-    )
-  end
-
   # User registration has been handed off to agency page
   # @param [Boolean] ial2 Whether the user registration was for a verified identity
   # @param [Integer] ialmax Whether the user registration was for an IALMax request
@@ -8631,6 +8612,25 @@ module AnalyticsEvents
       enabled_mfa_methods_count:,
       in_account_creation_flow:,
       second_mfa_reminder_conversion:,
+      **extra,
+    )
+  end
+
+  # Tracks when account creation resolves whether to auto-prompt passkey setup.
+  # @param [Boolean] eligible Whether the user met non-experiment auto-prompt criteria
+  # @param [Boolean] prompted Whether the user was auto-redirected to WebAuthn setup
+  # @param [Boolean] in_account_creation_flow Whether user is going through account creation
+  def user_registration_passkey_auto_prompt_decision(
+    eligible:,
+    prompted:,
+    in_account_creation_flow:,
+    **extra
+  )
+    track_event(
+      :user_registration_passkey_auto_prompt_decision,
+      eligible:,
+      prompted:,
+      in_account_creation_flow:,
       **extra,
     )
   end

@@ -187,7 +187,7 @@ RSpec.describe Users::TwoFactorAuthenticationSetupController do
 
             expect(response).to redirect_to(webauthn_setup_url(platform: true, auto_trigger: true))
             expect(@analytics).to have_logged_event(
-              'User Registration: Passkey Auto Prompt Decision',
+              :user_registration_passkey_auto_prompt_decision,
               eligible: true,
               prompted: true,
               in_account_creation_flow: true,
@@ -216,7 +216,7 @@ RSpec.describe Users::TwoFactorAuthenticationSetupController do
 
             expect(response).to render_template(:index)
             expect(@analytics).to have_logged_event(
-              'User Registration: Passkey Auto Prompt Decision',
+              :user_registration_passkey_auto_prompt_decision,
               eligible: true,
               prompted: false,
               in_account_creation_flow: true,
@@ -235,14 +235,13 @@ RSpec.describe Users::TwoFactorAuthenticationSetupController do
 
           expect(response).to render_template(:index)
           expect(@analytics).to have_logged_event(
-            'User Registration: Passkey Auto Prompt Decision',
+            :user_registration_passkey_auto_prompt_decision,
             eligible: false,
             prompted: false,
             in_account_creation_flow: true,
           )
         end
       end
-
     end
   end
 

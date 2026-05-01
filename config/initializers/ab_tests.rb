@@ -131,7 +131,7 @@ module AbTests
     should_log: [
       'User Registration: 2FA Setup visited',
       'User Registration: 2FA Setup',
-      'User Registration: Passkey Auto Prompt Decision',
+      :user_registration_passkey_auto_prompt_decision,
       'WebAuthn Setup Visited',
       'Multi-Factor Authentication Setup',
       'User Registration: User Fully Registered',

@@ -21,7 +21,7 @@ RSpec.describe Users::WebauthnSetupController do
 
   def expect_multi_factor_authentication_setup(attributes)
     attributes = if attributes.instance_of?(Hash)
-      { auto_passkey_prompted: false }.merge(attributes)
+                   { auto_passkey_prompted: false }.merge(attributes)
     elsif attributes.instance_of?(RSpec::Matchers::BuiltIn::Include)
       include(auto_passkey_prompted: false, **attributes.expecteds.first)
     elsif attributes.instance_of?(RSpec::Mocks::ArgumentMatchers::HashIncludingMatcher)
