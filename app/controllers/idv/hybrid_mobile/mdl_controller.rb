@@ -33,7 +33,7 @@ module Idv
         result = Mattr::VerifierClient.new.get_presentation_result(session_id: session_id)
 
         Rails.logger.info(
-          '[HybridMobile::MdlController] mattr result: ' \
+          "[HybridMobile::MdlController] mattr result: " \
           "#{result.except('credentials').to_json}, stored_challenge=#{stored_challenge.inspect}",
         )
 
@@ -44,9 +44,15 @@ module Idv
         credential = result.dig('credentials', 0)
         return render_error('no credential returned') if credential.blank?
 
-        # LG-17472 will map mdoc claims to Login.gov pii here.
-        # for now stash the verified result on the session for the next step.
-        session[:mdl_mattr_result] = credential
+        parser = Mattr::ResponseParser.new(credential)
+        unless parser.parse
+          Rails.logger.error(
+            "[HybridMobile::MdlController] parse failed: #{parser.errors.join(', ')}",
+          )
+          return render_error('credential parsing failed')
+        end
+
+        store_mdl_result(parser.to_pii)
         session.delete(CHALLENGE_SESSION_KEY)
 
         render json: {
@@ -73,6 +79,29 @@ module Idv
 
       def render_error(message)
         render json: { status: 'error', message: message }, status: :unprocessable_content
+      end
+
+      def store_mdl_result(pii)
+        result = DocumentCaptureSessionResult.new(
+          id: SecureRandom.uuid,
+          success: true,
+          pii: pii.to_h,
+          captured_at: Time.zone.now,
+          attention_with_barcode: false,
+          doc_auth_success: true,
+          selfie_status: :not_processed,
+          errors: {},
+          mrz_status: :not_processed,
+          aamva_status: :not_processed,
+          attempt: 1,
+        )
+
+        EncryptedRedisStructStorage.store(
+          result,
+          expires_in:
+            IdentityConfig.store.doc_capture_request_valid_for_minutes.minutes.in_seconds,
+        )
+        document_capture_session.update!(result_id: result.id)
       end
     end
   end

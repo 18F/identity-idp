@@ -73,10 +73,20 @@ RSpec.describe Idv::HybridMobile::MdlController do
         challenge: challenge,
         credentials: [{
           docType: 'org.iso.18013.5.1.mDL',
-          verificationResult: { verified: false, reason: { type: 'IssuerNotTrusted' } },
+          verificationResult: { verified: true },
           claims: {
             'org.iso.18013.5.1' => {
               given_name: { value: 'JANE' },
+              family_name: { value: 'DOE' },
+              birth_date: { value: '1990-01-01' },
+              resident_address: { value: '123 Fake St' },
+              resident_city: { value: 'Anytown' },
+              resident_state: { value: 'ZZ' },
+              resident_postal_code: { value: '00000' },
+              document_number: { value: 'D123456' },
+              expiry_date: { value: '2030-01-01' },
+              issue_date: { value: '2020-01-01' },
+              issuing_authority: { value: 'ZZ' },
             },
           },
         }],
@@ -106,10 +116,32 @@ RSpec.describe Idv::HybridMobile::MdlController do
       expect(session[Idv::HybridMobile::MdlController::CHALLENGE_SESSION_KEY]).to be_nil
     end
 
-    it 'stores the verified credential on the session' do
+    it 'stores parsed pii on the document capture session' do
       post :callback, params: { session_id: session_id }, as: :json
-      expect(session[:mdl_mattr_result]).to be_present
-      expect(session[:mdl_mattr_result]['docType']).to eq('org.iso.18013.5.1.mDL')
+
+      stored = document_capture_session.reload.load_result
+      expect(stored).to be_present
+      expect(stored.success?).to be true
+      expect(stored.pii_from_doc[:first_name]).to eq('JANE')
+      expect(stored.pii_from_doc[:last_name]).to eq('DOE')
+      expect(stored.pii_from_doc[:state_id_number]).to eq('D123456')
+      expect(stored.pii_from_doc[:document_type_received]).to eq('drivers_license')
+    end
+
+    context 'when the credential fails to parse' do
+      let(:result_body) do
+        super().tap do |body|
+          body[:credentials][0][:verificationResult] = { verified: false }
+        end
+      end
+
+      it 'returns a parsing error and does not store a result' do
+        post :callback, params: { session_id: session_id }, as: :json
+
+        expect(response).to have_http_status(:unprocessable_content)
+        expect(JSON.parse(response.body)['message']).to eq('credential parsing failed')
+        expect(document_capture_session.reload.load_result).to be_nil
+      end
     end
 
     context 'when session_id is missing' do
