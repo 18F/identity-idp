@@ -631,7 +631,6 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
               @docv_stub = stub_docv_verification_data_pass(
                 docv_transaction_token: @docv_transaction_token,
                 reason_codes: ['not_processed'],
-                # document_type: :passport,
                 user:,
               )
               expect(page).to have_current_path(idv_choose_id_type_url)
