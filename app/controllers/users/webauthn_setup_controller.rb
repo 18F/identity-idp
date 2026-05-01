@@ -21,6 +21,7 @@ module Users
 
     helper_method :in_multi_mfa_selection_flow?
     helper_method :mobile?
+    helper_method :auto_trigger_request?
 
     def new
       form = WebauthnVisitForm.new(
@@ -42,13 +43,14 @@ module Users
         platform_authenticator: result.extra[:platform_authenticator],
         in_account_creation_flow: user_session[:in_account_creation_flow] || false,
         enabled_mfa_methods_count: result.extra[:enabled_mfa_methods_count],
+        auto_passkey_prompted: auto_trigger_request?,
       )
       save_challenge_in_session
       @exclude_credentials = exclude_credentials
       @need_to_set_up_additional_mfa = need_to_set_up_additional_mfa?
-      @auto_trigger = platform_authenticator? &&
-                      in_account_creation_flow? &&
-                      FeatureManagement.account_creation_passkey_auto_prompt_enabled?
+      @auto_trigger = auto_trigger_request? &&
+                      platform_authenticator? &&
+              in_account_creation_flow?
       if platform_authenticator?
         user_session[:webauthn_setup_started_at] = Time.zone.now.to_f
       end
@@ -209,8 +211,13 @@ module Users
       {
         in_account_creation_flow: user_session[:in_account_creation_flow] || false,
         webauthn_platform_recommended: user_session[:webauthn_platform_recommended],
+        auto_passkey_prompted: auto_trigger_request?,
         attempts: mfa_attempts_count,
       }
+    end
+
+    def auto_trigger_request?
+      params[:auto_trigger] == 'true'
     end
 
     def webauthn_setup_duration
@@ -226,7 +233,7 @@ module Users
     end
 
     def new_params
-      params.permit(:platform, :error)
+      params.permit(:platform, :error, :auto_trigger)
     end
 
     def confirm_params

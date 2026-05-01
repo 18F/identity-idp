@@ -20,6 +20,8 @@ RSpec.describe Users::TwoFactorAuthenticationSetupController do
         'User Registration: 2FA Setup visited',
         enabled_mfa_methods_count: 0,
         gov_or_mil_email: false,
+        in_account_creation_flow: false,
+        auto_passkey_prompted: false,
       )
     end
 
@@ -91,6 +93,8 @@ RSpec.describe Users::TwoFactorAuthenticationSetupController do
             'User Registration: 2FA Setup visited',
             enabled_mfa_methods_count: 0,
             gov_or_mil_email: true,
+            in_account_creation_flow: false,
+            auto_passkey_prompted: false,
           )
         end
       end
@@ -130,6 +134,8 @@ RSpec.describe Users::TwoFactorAuthenticationSetupController do
           'User Registration: 2FA Setup visited',
           enabled_mfa_methods_count: 1,
           gov_or_mil_email: false,
+          in_account_creation_flow: false,
+          auto_passkey_prompted: false,
         )
       end
     end
@@ -166,22 +172,56 @@ RSpec.describe Users::TwoFactorAuthenticationSetupController do
           controller.user_session[:platform_authenticator_available] = true
         end
 
-        it 'redirects to platform webauthn setup' do
-          expect { response }
-            .to change { controller.user_session[:auto_passkey_prompted] }
-            .from(nil)
-            .to(true)
+        context 'when user is in the auto prompt bucket' do
+          before do
+            allow(controller).to receive(:ab_test_bucket)
+              .with(:PASSKEY_UPSELL)
+              .and_return(:auto_passkey_prompt)
+          end
 
-          expect(response).to redirect_to(webauthn_setup_url(platform: true))
+          it 'redirects to platform webauthn setup' do
+            expect { response }
+              .to change { controller.user_session[:auto_passkey_prompted] }
+              .from(nil)
+              .to(true)
+
+            expect(response).to redirect_to(webauthn_setup_url(platform: true, auto_trigger: true))
+            expect(@analytics).to have_logged_event(
+              'User Registration: Passkey Auto Prompt Decision',
+              eligible: true,
+              prompted: true,
+              in_account_creation_flow: true,
+            )
+          end
+
+          it 'does not auto prompt after it has already been triggered once' do
+            controller.user_session[:auto_passkey_prompted] = true
+
+            get :index
+
+            expect(response).to render_template(:index)
+            expect(controller.user_session[:auto_passkey_prompted]).to eq(true)
+          end
         end
 
-        it 'does not auto prompt after it has already been triggered once' do
-          controller.user_session[:auto_passkey_prompted] = true
+        context 'when user is in the control bucket' do
+          before do
+            allow(controller).to receive(:ab_test_bucket)
+              .with(:PASSKEY_UPSELL)
+              .and_return(:mfa_selection)
+          end
 
-          get :index
+          it 'renders the mfa selection page' do
+            get :index
 
-          expect(response).to render_template(:index)
-          expect(controller.user_session[:auto_passkey_prompted]).to eq(true)
+            expect(response).to render_template(:index)
+            expect(@analytics).to have_logged_event(
+              'User Registration: Passkey Auto Prompt Decision',
+              eligible: true,
+              prompted: false,
+              in_account_creation_flow: true,
+            )
+          end
         end
       end
 
@@ -194,8 +234,15 @@ RSpec.describe Users::TwoFactorAuthenticationSetupController do
           get :index
 
           expect(response).to render_template(:index)
+          expect(@analytics).to have_logged_event(
+            'User Registration: Passkey Auto Prompt Decision',
+            eligible: false,
+            prompted: false,
+            in_account_creation_flow: true,
+          )
         end
       end
+
     end
   end
 

@@ -590,6 +590,59 @@ RSpec.describe AbTests do
     end
   end
 
+  describe 'PASSKEY_UPSELL' do
+    let(:user) { build(:user) }
+    let(:user_session) do
+      {
+        in_account_creation_flow: in_account_creation_flow,
+        platform_authenticator_available: platform_authenticator_available,
+      }
+    end
+
+    subject(:bucket) do
+      AbTests::PASSKEY_UPSELL.bucket(
+        request: nil,
+        service_provider: nil,
+        session: nil,
+        user:,
+        user_session:,
+      )
+    end
+
+    before do
+      allow(IdentityConfig.store).to receive(:account_creation_passkey_auto_prompt_percent)
+        .and_return(100)
+      reload_ab_tests
+    end
+
+    context 'when in account creation flow with a platform authenticator available' do
+      let(:in_account_creation_flow) { true }
+      let(:platform_authenticator_available) { true }
+
+      it 'returns a bucket' do
+        expect(bucket).not_to be_nil
+      end
+    end
+
+    context 'when not in account creation flow' do
+      let(:in_account_creation_flow) { false }
+      let(:platform_authenticator_available) { true }
+
+      it 'does not return a bucket' do
+        expect(bucket).to be_nil
+      end
+    end
+
+    context 'when a platform authenticator is unavailable' do
+      let(:in_account_creation_flow) { true }
+      let(:platform_authenticator_available) { false }
+
+      it 'does not return a bucket' do
+        expect(bucket).to be_nil
+      end
+    end
+  end
+
   describe 'PROOFING_VENDOR' do
     let(:ab_test) { :PROOFING_VENDOR }
 

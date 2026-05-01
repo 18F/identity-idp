@@ -48,13 +48,22 @@ RSpec.feature 'webauthn sign up' do
       let!(:user) do
         allow(FeatureManagement).to receive(:account_creation_passkey_auto_prompt_enabled?)
           .and_return(true)
+        allow_any_instance_of(Users::TwoFactorAuthenticationSetupController).to receive(:ab_test_bucket)
+          .with(:PASSKEY_UPSELL)
+          .and_return(:auto_passkey_prompt)
         user = sign_up
         set_hidden_field('platform_authenticator_available', 'true')
         set_password(user)
       end
 
       it 'redirects new user to webauthn platform setup page' do
-        expect(page).to have_current_path(webauthn_setup_path(platform: true))
+        expect(page).to have_current_path(webauthn_setup_path(platform: true, auto_trigger: true))
+      end
+
+      it 'lets the user go back to mfa selection without auto redirecting again' do
+        click_on t('two_factor_authentication.choose_another_option')
+
+        expect(page).to have_current_path(authentication_methods_setup_path)
       end
     end
 

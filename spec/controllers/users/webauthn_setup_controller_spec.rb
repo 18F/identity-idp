@@ -20,6 +20,16 @@ RSpec.describe Users::WebauthnSetupController do
   end
 
   def expect_multi_factor_authentication_setup(attributes)
+    attributes = if attributes.instance_of?(Hash)
+      { auto_passkey_prompted: false }.merge(attributes)
+    elsif attributes.instance_of?(RSpec::Matchers::BuiltIn::Include)
+      include(auto_passkey_prompted: false, **attributes.expecteds.first)
+    elsif attributes.instance_of?(RSpec::Mocks::ArgumentMatchers::HashIncludingMatcher)
+      hash_including(auto_passkey_prompted: false, **attributes.instance_variable_get(:@expected))
+    else
+      attributes
+    end
+
     expect(@analytics).to have_logged_event(
       'Multi-Factor Authentication Setup',
       attributes,
@@ -88,6 +98,7 @@ RSpec.describe Users::WebauthnSetupController do
           platform_authenticator: false,
           enabled_mfa_methods_count: 0,
           in_account_creation_flow: false,
+          auto_passkey_prompted: false,
         )
       end
 
@@ -384,24 +395,15 @@ RSpec.describe Users::WebauthnSetupController do
           end
         end
 
-        context 'when feature flag is enabled and platform authenticator' do
-          before do
-            allow(FeatureManagement).to receive(:account_creation_passkey_auto_prompt_enabled?)
-              .and_return(true)
-          end
-
+        context 'when auto prompt is requested and platform authenticator is used' do
           it 'sets auto_trigger to true' do
-            get :new, params: { platform: true }
+            get :new, params: { platform: true, auto_trigger: true }
+
             expect(assigns(:auto_trigger)).to eq(true)
           end
         end
 
-        context 'when feature flag is disabled' do
-          before do
-            allow(FeatureManagement).to receive(:account_creation_passkey_auto_prompt_enabled?)
-              .and_return(false)
-          end
-
+        context 'when the user was not auto prompted' do
           it 'sets auto_trigger to false' do
             get :new, params: { platform: true }
             expect(assigns(:auto_trigger)).to eq(false)
@@ -409,13 +411,8 @@ RSpec.describe Users::WebauthnSetupController do
         end
 
         context 'when not a platform authenticator' do
-          before do
-            allow(FeatureManagement).to receive(:account_creation_passkey_auto_prompt_enabled?)
-              .and_return(true)
-          end
-
           it 'sets auto_trigger to false' do
-            get :new
+            get :new, params: { auto_trigger: true }
             expect(assigns(:auto_trigger)).to eq(false)
           end
         end
@@ -423,12 +420,10 @@ RSpec.describe Users::WebauthnSetupController do
         context 'when not in account creation flow' do
           before do
             controller.user_session[:in_account_creation_flow] = false
-            allow(FeatureManagement).to receive(:account_creation_passkey_auto_prompt_enabled?)
-              .and_return(true)
           end
 
           it 'sets auto_trigger to false' do
-            get :new, params: { platform: true }
+            get :new, params: { platform: true, auto_trigger: true }
             expect(assigns(:auto_trigger)).to eq(false)
           end
         end

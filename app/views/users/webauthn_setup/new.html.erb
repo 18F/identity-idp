@@ -19,7 +19,10 @@
 
 <%= simple_form_for(
       '',
-      url: webauthn_setup_path(platform: @platform_authenticator.presence),
+      url: webauthn_setup_path(
+        platform: @platform_authenticator.presence,
+        auto_trigger: @auto_trigger.presence,
+      ),
       method: :patch,
       html: {
         class: 'margin-top-4 margin-bottom-1',
