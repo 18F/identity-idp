@@ -80,6 +80,8 @@ module SignUp
       sign_in @user
       set_new_device_session(false)
       user_session[:in_account_creation_flow] = true
+      user_session[:platform_authenticator_available] =
+        params[:platform_authenticator_available] == 'true'
       if current_user.accepted_rules_of_use_still_valid?
         redirect_to authentication_methods_setup_url
       else

@@ -22,6 +22,7 @@ RSpec.describe 'users/webauthn_setup/new.html.erb' do
     allow(view).to receive(:user_session).and_return(user_session)
     allow(view).to receive(:in_multi_mfa_selection_flow?).and_return(false)
     allow(view).to receive(:mobile?).and_return(false)
+    assign(:account_creation_threatmetrix, { threatmetrix_session_id: nil })
     assign(:platform_authenticator, platform_authenticator)
     assign(:user_session, user_session)
     assign(:presenter, presenter)
@@ -40,6 +41,18 @@ RSpec.describe 'users/webauthn_setup/new.html.erb' do
       render
       expect(rendered).to_not have_content(
         t('two_factor_authentication.two_factor_choice_options.webauthn'),
+      )
+    end
+
+    it 'links back to MFA setup with the canonical path when auto trigger is enabled' do
+      allow(view).to receive(:current_user).and_return(create(:user))
+      assign(:auto_trigger, true)
+
+      render
+
+      expect(rendered).to have_link(
+        t('two_factor_authentication.choose_another_option'),
+        href: authentication_methods_setup_path,
       )
     end
 

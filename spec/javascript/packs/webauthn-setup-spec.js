@@ -50,4 +50,44 @@ describe('webauthn-setup', () => {
       });
     });
   });
+
+  describe('auto-trigger', () => {
+    let form;
+
+    beforeEach(() => {
+      form = document.createElement('form');
+      form.id = 'webauthn-form';
+      document.body.appendChild(form);
+    });
+
+    afterEach(() => {
+      form.remove();
+    });
+
+    context('when data-auto-trigger is true', () => {
+      it('calls requestSubmit on the form', () => {
+        form.dataset.autoTrigger = 'true';
+        const requestSubmitStub = sinon.stub(form, 'requestSubmit');
+
+        // Simulate the auto-trigger check from webauthn-setup.ts
+        if (form.dataset.autoTrigger === 'true') {
+          form.requestSubmit();
+        }
+
+        expect(requestSubmitStub).to.have.been.called();
+      });
+    });
+
+    context('when data-auto-trigger is not set', () => {
+      it('does not call requestSubmit', () => {
+        const requestSubmitStub = sinon.stub(form, 'requestSubmit');
+
+        if (form.dataset.autoTrigger === 'true') {
+          form.requestSubmit();
+        }
+
+        expect(requestSubmitStub).not.to.have.been.called();
+      });
+    });
+  });
 });

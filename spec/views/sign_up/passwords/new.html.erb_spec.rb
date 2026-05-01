@@ -45,4 +45,13 @@ RSpec.describe 'sign_up/passwords/new.html.erb' do
   it 'includes a form to cancel account creation' do
     expect(rendered).to have_link(t('links.cancel_account_creation'))
   end
+
+  it 'includes platform authenticator available hidden field' do
+    expect(rendered).to have_css(
+      "input[type='hidden']" \
+      "[name='platform_authenticator_available']" \
+      "[id='platform_authenticator_available']",
+      visible: false,
+    )
+  end
 end
