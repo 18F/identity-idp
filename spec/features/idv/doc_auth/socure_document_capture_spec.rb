@@ -588,6 +588,84 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
           end
         end
 
+        context 'retries w/ state ID after network error on the MRZ check' do
+          it 'proceeds to the next page with valid info' do
+            perform_in_browser(:mobile) do
+              visit_idp_from_oidc_sp_with_ial2
+              sign_in_and_2fa_user(user)
+
+              complete_doc_auth_steps_before_hybrid_handoff_step
+              click_continue
+              expect(page).to have_current_path(idv_choose_id_type_url)
+              choose(t('doc_auth.forms.id_type_preference.passport'))
+              click_on t('forms.buttons.continue')
+
+              expect(page).to have_current_path(idv_socure_document_capture_url)
+              expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
+
+              @mrz_stub = stub_request(:post, IdentityConfig.store.dos_passport_mrz_endpoint)
+                .to_return_json({ status: 500, body: { error: 'Gone fishin' } })
+              click_idv_continue
+              socure_docv_upload_documents(
+                docv_transaction_token: @docv_transaction_token,
+              )
+              visit idv_socure_document_capture_update_path
+
+              expect(page).to have_current_path(
+                idv_socure_document_capture_errors_url(
+                  transaction_token: @docv_transaction_token,
+                ),
+              )
+
+              expect(page).to have_content(t('doc_auth.errors.rate_limited_heading'))
+              expect(page).to have_content(
+                [
+                  t('doc_auth.errors.general.network_error_passport'),
+                  t('doc_auth.errors.general.network_error_passport_link_text'),
+                  t('doc_auth.errors.general.network_error_passport_ending'),
+                ].join(' '),
+              )
+              click_on t('doc_auth.errors.general.network_error_passport_link_text')
+
+              remove_request_stub(@docv_stub)
+              @docv_stub = stub_docv_verification_data_pass(
+                docv_transaction_token: @docv_transaction_token,
+                reason_codes: ['not_processed'],
+                user:,
+              )
+              expect(page).to have_current_path(idv_choose_id_type_url)
+              choose(t('doc_auth.forms.id_type_preference.drivers_license'))
+
+              click_on t('forms.buttons.continue')
+              click_idv_continue # open capture app
+
+              expect(page).to have_current_path(fake_socure_document_capture_app_url)
+              visit idv_socure_document_capture_path
+              expect(page).to have_current_path(idv_socure_document_capture_path)
+              socure_docv_upload_documents(
+                docv_transaction_token: @docv_transaction_token,
+              )
+
+              visit idv_socure_document_capture_update_path
+
+              expect(page).to have_current_path(idv_ssn_url)
+
+              expect(fake_analytics).to have_logged_event(
+                :idv_socure_document_request_submitted,
+              )
+              expect(fake_analytics).to have_logged_event(
+                :idv_socure_verification_data_requested,
+              )
+              expect(fake_analytics).to have_logged_event(
+                'IdV: doc auth image upload vendor pii validation',
+              )
+
+              fill_out_ssn_form_ok
+              click_idv_continue
+            end
+          end
+        end
+
         context 'when a selfie is required' do
           let(:socure_docv_webhook_repeat_endpoints) { [] }
           let(:max_attempts) { 4 }

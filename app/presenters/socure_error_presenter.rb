@@ -128,7 +128,7 @@ class SocureErrorPresenter
       t('doc_auth.errors.selfie_fail_heading')
     when :state_id_verification
       t('doc_auth.headers.state_id_verification')
-    when :passport
+    when :passport, :passport_network
       t('doc_auth.errors.rate_limited_heading')
     else
       # i18n-tasks-use t('doc_auth.headers.unreadable_id')
@@ -157,6 +157,18 @@ class SocureErrorPresenter
       t('doc_auth.errors.general.selfie_failure')
     when :state_id_verification
       t('doc_auth.errors.state_id_verification')
+    when :passport_network
+      safe_join(
+        [
+          t('doc_auth.errors.general.network_error_passport'),
+          link_to(
+            t('doc_auth.errors.general.network_error_passport_link_text'),
+            choose_id_type_path,
+          ),
+          t('doc_auth.errors.general.network_error_passport_ending'),
+        ],
+        ' ',
+      )
     when :passport
       t('doc_auth.info.review_passport')
     else
@@ -191,7 +203,7 @@ class SocureErrorPresenter
         verify_id_text,
         link_to(
           t('doc_auth.errors.verify.use_another_type_of_id'),
-          idv_choose_id_type_path,
+          choose_id_type_path,
         ),
       ],
       ' ',
@@ -210,7 +222,7 @@ class SocureErrorPresenter
   def default_options
     [
       {
-        url: hybrid_flow? ? idv_hybrid_mobile_choose_id_type_path : idv_choose_id_type_path,
+        url: choose_id_type_path,
         text: I18n.t('idv.troubleshooting.options.use_another_id_type'),
         isExternal: false,
       },
@@ -239,5 +251,9 @@ class SocureErrorPresenter
         isExternal: true,
       },
     ]
+  end
+
+  def choose_id_type_path
+    hybrid_flow? ? idv_hybrid_mobile_choose_id_type_path : idv_choose_id_type_path
   end
 end
