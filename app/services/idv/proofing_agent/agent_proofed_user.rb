@@ -5,13 +5,12 @@ module Idv
     AgentProofedUser = RedactedStruct.new(
       :id,
       :pii,
-      :proofing_components,
       :proofing_location_id,
       :proofing_agent_id,
       :correlation_id,
       :transaction_id,
       :issuer,
-      :doc_auth_success,
+      :success,
       :reason,
       :resolution,                # instant_verify/socure_kyc
       :mrz_status,                # DoS
@@ -21,13 +20,12 @@ module Idv
       :address_resolution_status, # phone_finder
       :captured_at,
       allowed_members: [
-        :proofing_components,
         :proofing_location_id,
         :proofing_agent_id,
         :correlation_id,
         :transaction_id,
         :issuer,
-        :doc_auth_success,
+        :success,
         :reason,
         :resolution,
         :mrz_status,
@@ -40,11 +38,6 @@ module Idv
     ) do
       def self.redis_key_prefix
         'proofing_agent:result'
-      end
-
-      def success?
-        doc_auth_success &&
-          (aamva_status == :passed || mrz_status == :pass)
       end
 
       def mrz_status
@@ -67,30 +60,34 @@ module Idv
         self[:address_resolution_status]&.to_sym
       end
 
-      # This hash should be merged into the idv_session in order to populate proofing components in
-      # the event logs.
-      def proofing_components
-        if success?
-          {
-            doc_auth_vendor:,
-            document_type_received: pii[:document_type_received],
-            source_check_vendor:,
-            resolution_vendor: resolution&.dig(
-              :context, :stages, :resolution, :vendor_name
-            ),
-            residential_resolution_vendor: resolution&.dig(
-              :context, :stages, :residential_address, :vendor_name
-            ),
-            verify_info_step_complete: resolution&.dig(:success),
-            phone_precheck_vendor: resolution&.dig(
-              :context, :stages, :phone_precheck, :vendor_name
-            ),
-            threat_metrix_review_status: resolution&.dig(
-              :context, :stages, :threatmetrix, :review_status
-            ),
-          }
-        end
-      end
+      # This hash includes the values that should be merged into the idv_session in order to
+      # populate proofing components in the event logs.
+      #
+      # This is NOT the hash to be logged as proofing_components.
+      # See app/services/idv/proofing_components.rb
+      #
+      # This is left in to guide development of analytics logging in LG-17507 if useful.
+      #
+      # def proofing_components
+      #   {
+      #     doc_auth_vendor:,
+      #     document_type_received: pii[:document_type_received],
+      #     source_check_vendor:,
+      #     resolution_vendor: resolution&.dig(
+      #       :context, :stages, :resolution, :vendor_name
+      #     ),
+      #     residential_resolution_vendor: resolution&.dig(
+      #       :context, :stages, :residential_address, :vendor_name
+      #     ),
+      #     verify_info_step_complete: resolution&.dig(:success),
+      #     phone_precheck_vendor: resolution&.dig(
+      #       :context, :stages, :phone_precheck, :vendor_name
+      #     ),
+      #     threat_metrix_review_status: resolution&.dig(
+      #       :context, :stages, :threatmetrix, :review_status
+      #     ),
+      #   }
+      # end
 
       alias_method :pii_from_doc, :pii
     end.freeze

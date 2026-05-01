@@ -215,7 +215,7 @@ RSpec.describe DocumentCaptureSession do
         record.store_agent_proofed_user(agent_proofing_result)
         result = record.load_agent_proofed_user
 
-        expect(result.success?).to eq(agent_proofing_result[:success])
+        expect(result.success).to eq(agent_proofing_result[:success])
         expect(result.pii).to eq(agent_proofing_result[:pii])
       end
 
@@ -266,7 +266,7 @@ RSpec.describe DocumentCaptureSession do
 
         it 'stores the results' do
           expect(document_capture_session.load_agent_proofed_user).to have_attributes(
-            doc_auth_success: true,
+            success: true,
             reason: nil,
             pii: agent_proofing_result[:pii],
             proofing_location_id: '123',

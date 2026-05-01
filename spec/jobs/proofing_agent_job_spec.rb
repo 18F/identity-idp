@@ -45,7 +45,7 @@ RSpec.describe ProofingAgentJob, type: :job do
         perform
 
         result = document_capture_session.reload.load_agent_proofed_user
-        expect(result[:doc_auth_success]).to be true
+        expect(result[:success]).to be true
         expect(result[:reason]).to be_nil
         expect(result[:resolution][:success]).to be true
         expect(result[:resolution][:exception]).to be_nil
@@ -68,7 +68,7 @@ RSpec.describe ProofingAgentJob, type: :job do
         perform
 
         result = document_capture_session.reload.load_agent_proofed_user
-        expect(result[:doc_auth_success]).to be false
+        expect(result[:success]).to be false
         expect(result[:reason]).to eq('profile_resolution_fail')
         expect(result[:resolution][:success]).to be false
       end
@@ -92,7 +92,7 @@ RSpec.describe ProofingAgentJob, type: :job do
         perform
 
         result = document_capture_session.reload.load_agent_proofed_user
-        expect(result[:doc_auth_success]).to be true
+        expect(result[:success]).to be true
         expect(result[:reason]).to be_nil
         expect(result[:aamva_status]).to eq 'passed'
         expect(result[:source_check_vendor]).to eq('StateIdMock')
@@ -115,7 +115,7 @@ RSpec.describe ProofingAgentJob, type: :job do
         perform
 
         result = document_capture_session.reload.load_agent_proofed_user
-        expect(result[:doc_auth_success]).to be false
+        expect(result[:success]).to be false
         expect(result[:reason]).to eq('id_fail')
         expect(result[:aamva_status]).to eq 'failed'
       end
@@ -137,7 +137,7 @@ RSpec.describe ProofingAgentJob, type: :job do
         perform
 
         result = document_capture_session.reload.load_agent_proofed_user
-        expect(result[:doc_auth_success]).to be true
+        expect(result[:success]).to be true
         expect(result[:reason]).to be_nil
         expect(result[:mrz_status]).to eq 'pass'
         expect(result[:source_check_vendor]).to eq('PassportMock')
@@ -160,7 +160,7 @@ RSpec.describe ProofingAgentJob, type: :job do
         perform
 
         result = document_capture_session.reload.load_agent_proofed_user
-        expect(result[:doc_auth_success]).to be false
+        expect(result[:success]).to be false
         expect(result[:reason]).to eq('passport_fail')
         expect(result[:mrz_status]).to eq 'failed'
       end

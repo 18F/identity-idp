@@ -117,10 +117,9 @@ class DocumentCaptureSession < ApplicationRecord
   end
 
   def store_agent_proofed_user(agent_proofing_result)
-    session_result = load_agent_proofed_user ||
-                     Idv::ProofingAgent::AgentProofedUser.new(id: generate_result_id)
+    session_result = Idv::ProofingAgent::AgentProofedUser.new(id: generate_result_id)
 
-    session_result.doc_auth_success = agent_proofing_success(agent_proofing_result)
+    session_result.success = agent_proofing_result[:success]
     session_result.reason = agent_proofing_result[:reason]
     session_result.pii = agent_proofing_result[:pii]
     session_result.proofing_location_id = agent_proofing_result[:proofing_location_id]
@@ -146,11 +145,6 @@ class DocumentCaptureSession < ApplicationRecord
       expires_in: IdentityConfig.store.agent_proofed_user_time_validity_hours.hours.in_seconds,
     )
     save!
-  end
-
-  def agent_proofing_success(agent_proofing_result)
-    !!agent_proofing_result[:success] &&
-      (agent_proofing_result.dig(:aamva, :success) || agent_proofing_result.dig(:mrz, :success))
   end
 
   def determine_source_check_vendor(aamva:, mrz:)
