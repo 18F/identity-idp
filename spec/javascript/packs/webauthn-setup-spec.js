@@ -56,7 +56,7 @@ describe('webauthn-setup', () => {
 
     beforeEach(() => {
       form = document.createElement('form');
-      form.id = 'webauthn_form';
+      form.id = 'webauthn-form';
       document.body.appendChild(form);
     });
 
