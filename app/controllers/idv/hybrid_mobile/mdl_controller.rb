@@ -47,7 +47,8 @@ module Idv
         parser = Mattr::ResponseParser.new(credential)
         unless parser.parse
           Rails.logger.error(
-            "[HybridMobile::MdlController] parse failed: #{parser.errors.join(', ')}",
+            "[HybridMobile::MdlController] parse failed: #{parser.errors.join(', ')}, " \
+            "verificationResult=#{credential&.dig('verificationResult').to_json}",
           )
           return render_error('credential parsing failed')
         end
