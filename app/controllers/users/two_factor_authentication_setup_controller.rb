@@ -124,7 +124,6 @@ module Users
     def auto_passkey_prompt_available?
       FeatureManagement.account_creation_passkey_auto_prompt_enabled? &&
         in_account_creation_flow? &&
-        platform_authenticator_available? &&
         !auto_passkey_prompted?
     end
 
