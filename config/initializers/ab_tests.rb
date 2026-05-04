@@ -141,10 +141,7 @@ module AbTests
     default_bucket: :mfa_selection,
     persist: true,
   ) do |user:, user_session:, **|
-    if user && user_session&.[](:in_account_creation_flow) == true &&
-       user_session&.[](:platform_authenticator_available) == true
-      user.uuid
-    end
+    user.uuid
   end.freeze
 
   PROOFING_VENDOR = AbTest.new(

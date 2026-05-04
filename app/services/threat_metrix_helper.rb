@@ -56,7 +56,7 @@ module ThreatMetrixHelper
   def account_creation_threatmetrix_variables
     return NO_THREAT_METRIX_VARIABLES unless account_creation_threatmetrix_bootstrap_needed?
 
-    mark_account_creation_threatmetrix_bootstrapped
+    user_session[:sign_up_threatmetrix_bootstrapped] = true
 
     build_threatmetrix_variables(generate_threatmetrix_session_id)
   end
@@ -89,10 +89,6 @@ module ThreatMetrixHelper
 
   def account_creation_threatmetrix_bootstrapped?
     user_session[:sign_up_threatmetrix_bootstrapped]
-  end
-
-  def mark_account_creation_threatmetrix_bootstrapped
-    user_session[:sign_up_threatmetrix_bootstrapped] = true
   end
 
   def generate_threatmetrix_session_id
