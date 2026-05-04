@@ -12,10 +12,12 @@ allOf:
         type: string
       state:
         type: string
-      country:
-        type: string
       zip:
         type: string
+      country:
+        type: string
+        enum:
+          - US
       address_edited:
         type: boolean
         description: |

@@ -7,3 +7,21 @@ allOf:
       ssn:
         type: string
         description: User-submitted Social Security Number. Formatted with dashes (e.g. 123-45-6789).
+      success:
+        type: boolean
+        description: |
+          Indicates whether SSN was submitted successfully.
+      failure_reason:
+        type: object
+        description: |
+          An OPTIONAL object. An associative array of attributes and errors if success is false
+        properties:
+          ssn:
+            type: array
+            description: |
+              SSN submission errors that explain the failure.
+            items:
+              type: string
+              enum:
+                - blank
+                - invalid

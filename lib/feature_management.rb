@@ -98,6 +98,10 @@ class FeatureManagement
     IdentityConfig.store.check_user_password_compromised_enabled
   end
 
+  def self.doc_auth_passport_cards_enabled?
+    IdentityConfig.store.doc_auth_passport_cards_enabled
+  end
+
   def self.doc_capture_polling_enabled?
     IdentityConfig.store.doc_capture_polling_enabled
   end

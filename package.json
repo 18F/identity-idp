@@ -15,7 +15,7 @@
     "typecheck": "tsc",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx,.cjs,.mjs",
     "lint:css": "stylelint 'app/assets/stylesheets/**/*.scss' 'app/javascript/**/*.scss' 'app/components/*.scss'",
-    "lint:openapi": "./scripts/lint-openapi-spec.mjs",
+    "lint:openapi": "redocly lint ./docs/attempts-api/openapi.yml",
     "test": "mocha 'spec/javascript/**/**spec.+(j|t)s?(x)' 'app/javascript/packages/**/*.spec.+(j|t)s?(x)'",
     "normalize-yaml": "normalize-yaml",
     "generate-browsers-json": "./scripts/generate-browsers-json.js",
@@ -24,7 +24,8 @@
     "build:js_and_css": "concurrently 'npm run build:js' 'npm run build:css'",
     "build": "npm run build:js",
     "build:js": "concurrently 'webpack' 'make browsers.json'",
-    "build:css": "build-sass app/assets/stylesheets/*.css.scss app/components/*.scss --load-path=app/assets/stylesheets --out-dir=app/assets/builds"
+    "build:css": "build-sass app/assets/stylesheets/*.css.scss app/components/*.scss --load-path=app/assets/stylesheets --out-dir=app/assets/builds",
+    "build:openapi": "redocly bundle ./docs/attempts-api/openapi.yml -o ./docs/attempts-api/compiled-api --ext yml -d"
   },
   "dependencies": {
     "@18f/identity-design-system": "^9.4.0",
@@ -50,7 +51,7 @@
   },
   "devDependencies": {
     "@babel/cli": "^7.22.15",
-    "@redocly/openapi-core": "^1.28.5",
+    "@redocly/cli": "^1.34.0",
     "@testing-library/dom": "^8.18.1",
     "@testing-library/react": "^11.2.2",
     "@testing-library/react-hooks": "^3.7.0",

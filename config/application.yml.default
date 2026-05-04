@@ -37,6 +37,7 @@ acuant_sdk_initialization_creds: 'a2V5bGVzc0dTQV9wcm9kQGxleGlzbmV4aXNyaXNrLmNvbT
 acuant_sdk_initialization_endpoint: 'https://us.acas.acuant.net'
 add_email_link_valid_for_hours: 24
 address_identity_proofing_supported_country_codes: '["AS", "GU", "MP", "PR", "US", "VI"]'
+agent_proofed_user_time_validity_hours: 1
 all_redirect_uris_cache_duration_minutes: 2
 allowed_attempts_providers: '[]'
 allowed_client_id_in_risc_service_providers: '[]'
@@ -118,6 +119,7 @@ doc_auth_max_capture_attempts_before_native_camera: 3
 doc_auth_max_submission_attempts_before_native_camera: 3
 doc_auth_mock_dos_api: false
 doc_auth_passport_cards_enabled: false
+doc_auth_passport_cards_enabled_percent: 0
 doc_auth_passport_selfie_vendor_default: 'mock'
 doc_auth_passport_selfie_vendor_lexis_nexis_ddp_percent: 0
 doc_auth_passport_selfie_vendor_lexis_nexis_percent: 100

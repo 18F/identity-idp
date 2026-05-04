@@ -6,7 +6,7 @@ allOf:
     properties:
       phone_number:
         type: string
-      opt_delivery_method:
+      otp_delivery_method:
         type: string
         enum:
           - sms

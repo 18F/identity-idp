@@ -25,7 +25,7 @@ RSpec.describe Proofing::Mock::IdMockClient do
             timed_out: false,
             transaction_id: transaction_id,
             vendor_name: 'StateIdMock',
-            verified_attributes: [],
+            verified_attributes: %i[address dob state_id_number],
             jurisdiction_in_maintenance_window: false,
           )
         end

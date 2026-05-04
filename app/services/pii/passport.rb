@@ -6,6 +6,7 @@ module Pii
     :first_name,
     :last_name,
     :middle_name,
+    :name_suffix,
     :dob,
     :sex,
     :birth_place,

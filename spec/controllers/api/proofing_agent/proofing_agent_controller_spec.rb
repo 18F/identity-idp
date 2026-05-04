@@ -1579,6 +1579,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
         let(:id_type) { passport_type }
         let(:passport) { valid_passport }
         let(:residential_address) { valid_residential_address }
+        let(:user) { create(:user, email: 'foo@bar.com') }
 
         context 'when rate limit reached for the user' do
           before do

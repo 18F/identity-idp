@@ -536,12 +536,14 @@ RSpec.describe Idv::ApiImageUploadForm do
                 document_expiration: pii_from_doc[:state_id_expiration],
                 first_name: pii_from_doc[:first_name],
                 last_name: pii_from_doc[:last_name],
+                liveness_checking_required: false,
                 date_of_birth: pii_from_doc[:dob],
                 address1: pii_from_doc[:address1],
                 address2: pii_from_doc[:address2],
                 city: pii_from_doc[:city],
                 state: pii_from_doc[:state],
                 zip: pii_from_doc[:zip],
+                country: pii_from_doc[:issuing_country_code],
                 failure_reason: nil,
               )
               form.submit
@@ -571,12 +573,14 @@ RSpec.describe Idv::ApiImageUploadForm do
                 document_expiration: pii_from_doc[:state_id_expiration],
                 first_name: pii_from_doc[:first_name],
                 last_name: pii_from_doc[:last_name],
+                liveness_checking_required: false,
                 date_of_birth: pii_from_doc[:dob],
                 address1: pii_from_doc[:address1],
                 address2: pii_from_doc[:address2],
                 city: pii_from_doc[:city],
                 state: pii_from_doc[:state],
                 zip: pii_from_doc[:zip],
+                country: pii_from_doc[:issuing_country_code],
                 failure_reason: nil,
               )
               form.submit
@@ -762,12 +766,14 @@ RSpec.describe Idv::ApiImageUploadForm do
                   document_expiration: pii_from_doc[:state_id_expiration],
                   first_name: pii_from_doc[:first_name],
                   last_name: pii_from_doc[:last_name],
+                  liveness_checking_required: true,
                   date_of_birth: pii_from_doc[:dob],
                   address1: pii_from_doc[:address1],
                   address2: pii_from_doc[:address2],
                   city: pii_from_doc[:city],
                   state: pii_from_doc[:state],
                   zip: pii_from_doc[:zip],
+                  country: pii_from_doc[:issuing_country_code],
                   failure_reason: nil,
                 )
                 form.submit
@@ -795,12 +801,14 @@ RSpec.describe Idv::ApiImageUploadForm do
                   document_expiration: pii_from_doc[:state_id_expiration],
                   first_name: pii_from_doc[:first_name],
                   last_name: pii_from_doc[:last_name],
+                  liveness_checking_required: true,
                   date_of_birth: pii_from_doc[:dob],
                   address1: pii_from_doc[:address1],
                   address2: pii_from_doc[:address2],
                   city: pii_from_doc[:city],
                   state: pii_from_doc[:state],
                   zip: pii_from_doc[:zip],
+                  country: pii_from_doc[:issuing_country_code],
                   failure_reason: nil,
                 )
                 form.submit
@@ -1036,12 +1044,14 @@ RSpec.describe Idv::ApiImageUploadForm do
               document_expiration: nil,
               first_name: nil,
               last_name: nil,
+              liveness_checking_required: false,
               date_of_birth: nil,
               address1: nil,
               address2: nil,
               city: nil,
               state: nil,
               zip: nil,
+              country: nil,
               failure_reason: { front: 'glare' },
             )
 
@@ -1068,12 +1078,14 @@ RSpec.describe Idv::ApiImageUploadForm do
               document_expiration: nil,
               first_name: nil,
               last_name: nil,
+              liveness_checking_required: false,
               date_of_birth: nil,
               address1: nil,
               address2: nil,
               city: nil,
               state: nil,
               zip: nil,
+              country: nil,
               failure_reason: { front: 'glare' },
             )
 
