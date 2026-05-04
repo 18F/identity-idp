@@ -241,14 +241,14 @@ module AbTests
     user&.uuid
   end.freeze
 
-  PASSKEY_SETUP_UPSELL_SHOWN = AbTest.new(
-    experiment_name: 'Passkey Setup Upsell Shown',
+  ACCOUNT_CREATION_WEBAUTHN_PLATFORM_SETUP = AbTest.new(
+    experiment_name: 'Account Creation Webauthn Platform Setup',
     should_log: [
       :webauthn_platform_recommended_visited,
     ],
     buckets: {
-      doc_auth_passport_cards_allowed:
-        IdentityConfig.store.feature_account_creation_passkey_upsell_percentage,
+      account_creation_webauthn_platform_setup:
+        IdentityConfig.store.account_creation_webauthn_platform_setup_percent,
     },
   ) do |user:, user_session:, **|
     user&.uuid
