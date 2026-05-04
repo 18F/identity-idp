@@ -14,7 +14,6 @@ module Users
     before_action :check_if_possible_piv_user
     before_action :override_csp_for_threat_metrix,
                   if: :account_creation_threatmetrix_bootstrap_needed?
-    before_action :log_auto_passkey_prompt_decision, if: :should_log_auto_passkey_prompt_decision?
 
     delegate :enabled_mfa_methods_count, to: :mfa_context
 
@@ -105,22 +104,6 @@ module Users
       user_session[:auto_passkey_prompted] == true
     end
 
-    def should_log_auto_passkey_prompt_decision?
-      in_account_creation_flow? && !auto_passkey_prompt_decision_logged?
-    end
-
-    def log_auto_passkey_prompt_decision
-      prompted = auto_passkey_prompt_eligible?
-
-      analytics.user_registration_passkey_auto_prompt_decision(
-        eligible: auto_passkey_prompt_available?,
-        prompted: prompted,
-        in_account_creation_flow: in_account_creation_flow?,
-      )
-
-      user_session[:auto_passkey_prompt_decision_logged] = true
-    end
-
     def auto_passkey_prompt_available?
       FeatureManagement.account_creation_passkey_auto_prompt_enabled? &&
         in_account_creation_flow? &&
@@ -131,10 +114,6 @@ module Users
       return unless auto_passkey_prompt_available?
 
       @auto_passkey_prompt_bucket ||= ab_test_bucket(:PASSKEY_UPSELL)
-    end
-
-    def auto_passkey_prompt_decision_logged?
-      user_session[:auto_passkey_prompt_decision_logged] == true
     end
 
     def two_factor_options_form_params

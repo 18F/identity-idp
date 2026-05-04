@@ -186,12 +186,6 @@ RSpec.describe Users::TwoFactorAuthenticationSetupController do
               .to(true)
 
             expect(response).to redirect_to(webauthn_setup_url(platform: true, auto_trigger: true))
-            expect(@analytics).to have_logged_event(
-              :user_registration_passkey_auto_prompt_decision,
-              eligible: true,
-              prompted: true,
-              in_account_creation_flow: true,
-            )
           end
 
           it 'does not auto prompt after it has already been triggered once' do
@@ -215,12 +209,6 @@ RSpec.describe Users::TwoFactorAuthenticationSetupController do
             get :index
 
             expect(response).to render_template(:index)
-            expect(@analytics).to have_logged_event(
-              :user_registration_passkey_auto_prompt_decision,
-              eligible: true,
-              prompted: false,
-              in_account_creation_flow: true,
-            )
           end
         end
       end
@@ -234,12 +222,6 @@ RSpec.describe Users::TwoFactorAuthenticationSetupController do
           get :index
 
           expect(response).to render_template(:index)
-          expect(@analytics).to have_logged_event(
-            :user_registration_passkey_auto_prompt_decision,
-            eligible: false,
-            prompted: false,
-            in_account_creation_flow: true,
-          )
         end
       end
     end

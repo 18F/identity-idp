@@ -8616,25 +8616,6 @@ module AnalyticsEvents
     )
   end
 
-  # Tracks when account creation resolves whether to auto-prompt passkey setup.
-  # @param [Boolean] eligible Whether the user met non-experiment auto-prompt criteria
-  # @param [Boolean] prompted Whether the user was auto-redirected to WebAuthn setup
-  # @param [Boolean] in_account_creation_flow Whether user is going through account creation
-  def user_registration_passkey_auto_prompt_decision(
-    eligible:,
-    prompted:,
-    in_account_creation_flow:,
-    **extra
-  )
-    track_event(
-      :user_registration_passkey_auto_prompt_decision,
-      eligible:,
-      prompted:,
-      in_account_creation_flow:,
-      **extra,
-    )
-  end
-
   # @param [Integer] enabled_mfa_methods_count Number of enabled MFA methods on the account
   # Tracks when user visits the phone setup step during registration
   def user_registration_phone_setup_visit(enabled_mfa_methods_count:, **extra)
