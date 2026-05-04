@@ -50,32 +50,27 @@ module Proofing
               applicant_pii
             end
 
-          timer.time('state_id') do
+          result = timer.time('state_id') do
             proofer.proof(applicant_pii_with_state_id_address)
-          end.tap do |result|
-            if result.exception.blank?
-              Db::SpCost::AddSpCost.call(
-                current_sp,
-                :aamva,
-                transaction_id: result.transaction_id,
-              )
-            end
-
-            if contains_bypass_exception_id?(result.exception)
-              log_state_id_validation(
-                analytics:, result: result.to_h, applicant_pii:, ipp_enrollment_in_progress:,
-                aamva_checked: result.exception.blank?
-              )
-              return skipped_result(exception: result.exception)
-            end
-
-            if doc_auth_flow
-              log_state_id_validation(
-                analytics:, result: result.to_h, applicant_pii:, ipp_enrollment_in_progress:,
-                aamva_checked: result.exception.blank?
-              )
-            end
           end
+
+          if result.exception.blank?
+            Db::SpCost::AddSpCost.call(
+              current_sp,
+              :aamva,
+              transaction_id: result.transaction_id,
+            )
+          end
+
+          log_state_id_validation(
+            analytics:, result: result.to_h, applicant_pii:, ipp_enrollment_in_progress:,
+            aamva_checked: result.exception.blank?
+          )
+          if contains_bypass_exception_id?(result.exception)
+            return skipped_result(exception: result.exception)
+          end
+
+          result
         end
 
         def contains_bypass_exception_id?(result_exception)
