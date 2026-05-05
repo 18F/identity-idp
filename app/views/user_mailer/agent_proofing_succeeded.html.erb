@@ -1,0 +1,66 @@
+<table class="usa-alert usa-alert--info margin-bottom-3">
+  <tr>
+    <td style="width:16px;">
+      <%= image_tag('email/info.png', width: 16, height: 16, alt: '', style: 'margin-top: 5px;') %>
+    </td>
+    <td>
+      @presenter.banner_text
+    </td>
+  </tr>
+</table>
+
+<!-- ICON -->
+
+<h1>
+  <% @presenter.header_text %>
+</h1>
+
+<p>
+  <%= @presenter.body_text %>
+</p>
+<ul>
+  <li><%= @presenter.bullet1 %></li>
+  <li><%= @presenter.bullet2 %></li>
+  <li><%= @presenter.bullet3 %></li>
+</ul>
+
+<table class="button expanded large radius">
+  <tbody>
+  <tr>
+    <td>
+      <table>
+        <tbody>
+        <tr>
+          <td style="text-align: center; padding: 10px 20px; box-sizing: border-box;">
+            <%= link_to @presenter.cta,
+                        @presenter.confirmation_url,
+                        target: '_blank',
+                        class: 'float-center',
+                        rel: 'noopener',
+                        style: 'padding: 0; width: 100%;' %>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </td>
+    <td class="expander"></td>
+  </tr>
+  </tbody>
+</table>
+
+<p>
+  <%= link_to(
+        @presenter.confirmation_url,
+        @presenter.confirmation_url,
+        target: '_blank',
+        rel: 'noopener',
+      ) %>
+</p>
+
+<p>
+  <%= @presenter.footer_text %>
+</p>
+
+<p>
+  <%= @presenter.help_text %>
+</p>
