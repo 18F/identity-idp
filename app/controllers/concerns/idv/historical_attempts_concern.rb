@@ -42,12 +42,6 @@ module Idv
 
     private
 
-    def data_sent_to_sp?
-      existing_user_proofing_event&.service_providers_sent&.include?(
-        current_sp.issuer,
-      )
-    end
-
     def ial2_requested?
       resolved_authn_context_result.identity_proofing_or_ialmax? && current_user.identity_verified?
     end
