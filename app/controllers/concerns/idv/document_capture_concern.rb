@@ -37,6 +37,8 @@ module Idv
         unexpected_id_type: stored_result&.errors&.dig(:unexpected_id_type),
         state_id_verification: stored_result&.errors&.dig(:state_id_verification),
         passport: stored_result&.errors&.dig(:passport),
+        passport_network: stored_result&.errors&.dig(:network) &&
+          stored_result.errors.dig(:passport),
       }
     end
 

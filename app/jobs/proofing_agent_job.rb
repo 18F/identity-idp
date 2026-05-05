@@ -23,8 +23,6 @@ class ProofingAgentJob < ApplicationJob
     @document_capture_session = DocumentCaptureSession.find_by(uuid: transaction_id)
     raise ArgumentError, 'DocumentCaptureSession not found' if @document_capture_session.nil?
 
-    document_capture_session.create_proofing_session
-
     raise_stale_job! if stale_job?(enqueued_at)
 
     decrypted_args = JSON.parse(
@@ -50,7 +48,7 @@ class ProofingAgentJob < ApplicationJob
 
     combined_result = proofing_result.combined_result.to_h
 
-    document_capture_session.store_proofing_result(proofing_result.combined_result)
+    document_capture_session.store_agent_proofed_user(proofing_result.combined_result)
 
     success = combined_result[:success]
     reason = combined_result[:reason]
@@ -109,7 +107,7 @@ class ProofingAgentJob < ApplicationJob
 
     resolution_result = call_resolution_proofing_job(
       timer:,
-      result_id:,
+      result_id: SecureRandom.uuid,
       encrypted_arguments: re_encrypted_arguments,
       trace_id:,
       user_id: user.id,

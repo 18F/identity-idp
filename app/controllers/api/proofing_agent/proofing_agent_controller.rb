@@ -230,7 +230,7 @@ module Api
 
         required_keys = %i[suspected_fraud email first_name last_name dob phone ssn id_type]
         required_keys.each do |key|
-          result[key] = params.expect(key)
+          result[key] = params.permit(key).send(:[], key)
         end
 
         optional_keys = %i[residential_address state_id passport]
@@ -243,7 +243,7 @@ module Api
         optional_keys.each do |key|
           if params[key].present?
             result[key] =
-              params.expect(key => optional_parameters[key]).to_h.with_indifferent_access
+              params.permit(key => optional_parameters[key]).send(:[], key).to_h
           end
         end
 
