@@ -25,7 +25,7 @@ aamva_verification_url: https://example.org:12345/verification/url
 account_creation_device_profiling: disabled
 account_creation_passkey_auto_prompt_percent: 0
 account_creation_tmx_processed_percent: 0
-account_creation_webauthn_platform_setup_percent: 0
+account_creation_webauthn_platform_setup_percent: 100
 account_reset_attempt_window_in_minutes: 1_440
 account_reset_fraud_user_wait_period_days:
 account_reset_max_attempts: 10
