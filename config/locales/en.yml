@@ -2204,6 +2204,11 @@ webauthn_platform_recommended.description_security: Secure your sign in with fac
 webauthn_platform_recommended.heading: Set up face or touch unlock for a more secure sign in
 webauthn_platform_recommended.skip: Skip
 webauthn_platform_recommended.upsell: Face or touch unlock is phishing-resistant and we don’t store any recordings of your face or fingerprint, so your information stays private.
+webauthn_platform_setup.ft_unlock: Face or touch unlock
+webauthn_platform_setup.info_html: '%{ft_unlock_html} is %{phishing_resistant_html} and we don’t store any recordings of your face or fingerprint, so your information stays private.'
+webauthn_platform_setup.instructions: Use your face, fingerprint, or screen lock to verify it’s really you. No passwords, apps, or codes needed.
+webauthn_platform_setup.phishing_resistant: phishing-resistant
+webauthn_platform_setup.upsell: Use face or touch unlock for a faster, more secure sign in
 webauthn_setup_mismatch.description_undo: Click “Undo” to remove this option.
 webauthn_setup_mismatch.description.webauthn: We noticed you’re using a security key instead of face or touch unlock. Click “Continue” to use your security key to sign in from now on.
 webauthn_setup_mismatch.description.webauthn_platform: We noticed you’re using face or touch unlock instead of a security key. Click “Continue” to use face or touch unlock to sign in from now on.
