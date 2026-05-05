@@ -91,11 +91,15 @@ module SignUp
 
     def next_step_redirect
       if user_session[:platform_authenticator_available] == true &&
-         IdentityConfig.store.feature_account_creation_passkey_upsell_percentage
+         account_creation_webauthn_platform_bucket?
         redirect_to webauthn_platform_setup_url
       else
         redirect_to authentication_methods_setup_url
       end
+    end
+
+    def account_creation_webauthn_platform_bucket?
+      ab_test_bucket(:ACCOUNT_CREATION_WEBAUTHN_PLATFORM_SETUP) == :account_creation_webauthn_platform_setup
     end
   end
 end

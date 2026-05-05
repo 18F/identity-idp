@@ -1,3 +1,46 @@
 <% self.title = t('webauthn_platform_recommended.heading') %>
 
-<p>pls work</p>
+<%= image_tag asset_url('platform-authenticator.svg'), alt: '', width: 84, height: 95, class: 'margin-left-1 margin-bottom-2', aria: { hidden: true } %>
+
+<%= render PageHeadingComponent.new.with_content(t('webauthn_platform_setup.upsell')) %>
+
+<p>
+  <%= t('webauthn_platform_setup.info_html',
+        ft_unlock_html: link_to(
+            t('webauthn_platform_setup.ft_unlock'),
+            MarketingSite.help_center_article_url(
+              category: 'get-started',
+              article: 'authentication-methods'
+            ),
+        ),
+            phishing_resistant_html: link_to(
+            t('webauthn_platform_setup.phishing_resistant'),
+            MarketingSite.help_center_article_url(
+              category: 'get-started',
+              article: 'authentication-methods'
+            ))
+        ) %>
+</p>
+
+<p>
+    <%= t('webauthn_platform_recommended.upsell') %>
+</p>
+
+<div class="grid-row margin-top-5">
+  <div class="tablet:grid-col-9">
+    <%= render SubmitButtonComponent.new(
+      url: webauthn_setup_url(platform:true),
+      method: :post,
+      params: { add_method: true },
+      full_width: true,
+      class: 'margin-bottom-2',
+      ).with_content(t('webauthn_platform_recommended.cta')) %>
+  <%= render SubmitButtonComponent.new(
+      url: authentication_methods_setup_url,
+      method: :post,
+      unstyled: true,
+      big: false,
+      wide: false,
+      ).with_content(t('two_factor_authentication.login_options_link_text')) %>
+  </div>
+</div>
