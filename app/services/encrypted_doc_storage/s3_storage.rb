@@ -10,6 +10,14 @@ module EncryptedDocStorage
       )
     end
 
+    def write_attempt_events(path:, encrypted_attempt_events:)
+      s3_client.put_object(
+        bucket:,
+        body: encrypted_attempt_events,
+        key: path,
+      )
+    end
+
     private
 
     def s3_client

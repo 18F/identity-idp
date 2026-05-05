@@ -28,4 +28,26 @@ RSpec.describe EncryptedDocStorage::S3Storage do
       )
     end
   end
+
+  describe '#write_attempt_events' do
+    let(:stubbed_s3_client) { Aws::S3::Client.new(stub_responses: true) }
+
+    before do
+      allow(subject).to receive(:s3_client).and_return(stubbed_s3_client)
+      allow(stubbed_s3_client).to receive(:put_object)
+    end
+
+    it 'writes the attempt events to S3' do
+      path = 'attempt_events/123abc'
+      encrypted_attempt_events = SecureRandom.bytes(32)
+
+      subject.write_attempt_events(path:, encrypted_attempt_events:)
+
+      expect(stubbed_s3_client).to have_received(:put_object).with(
+        bucket: IdentityConfig.store.encrypted_document_storage_s3_bucket,
+        key: path,
+        body: encrypted_attempt_events,
+      )
+    end
+  end
 end
