@@ -645,10 +645,11 @@ RSpec.describe OpenidConnect::AuthorizationController do
               end
 
               context 'when duplicate profiles are detected for user' do
+                let(:user) do
+                  create(:profile, :active, :verified, :facial_match_proof).user
+                end
                 let(:user2) do
-                  create(
-                    :profile, :active, :verified, proofing_components: { liveness_check: true }
-                  ).user
+                  create(:profile, :active, :verified, :facial_match_proof).user
                 end
                 let(:duplicate_profile_set) do
                   create(

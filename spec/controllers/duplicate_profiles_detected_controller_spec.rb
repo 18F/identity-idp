@@ -16,6 +16,7 @@ RSpec.describe DuplicateProfilesDetectedController, type: :controller do
   before do
     stub_sign_in(user)
     stub_analytics
+    allow(IdentityConfig.store).to receive(:enable_one_account_global_detection).and_return(false)
     duplicate_profile_set
     allow(controller).to receive(:current_sp).and_return(current_sp)
   end

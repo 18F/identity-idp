@@ -827,10 +827,9 @@ RSpec.describe SamlIdpController do
       end
 
       context 'user has a duplicate profile in another account' do
+        let(:user) { create(:profile, :active, :verified, :facial_match_proof).user }
         let(:user2) do
-          create(
-            :profile, :active, :verified, proofing_components: { liveness_check: true }
-          ).user
+          create(:profile, :active, :verified, :facial_match_proof).user
         end
         let(:duplicate_profile_set) do
           create(
