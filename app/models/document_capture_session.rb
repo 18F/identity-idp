@@ -13,6 +13,11 @@ class DocumentCaptureSession < ApplicationRecord
 
   validates :passport_status, inclusion: { in: PASSPORT_STATUSES }, allow_nil: true
 
+  enum :document_type, {
+    Idp::Constants::DocumentTypes::STATE_ID => 0,
+    Idp::Constants::DocumentTypes::PASSPORT_BOOK => 1,
+  }
+
   def load_result
     return nil unless result_id.present?
 
