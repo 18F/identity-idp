@@ -212,6 +212,7 @@ module IdentityConfig
     config.add(:gpo_max_profile_age_to_send_letter_in_days, type: :integer)
     config.add(:hide_phone_mfa_signup, type: :boolean)
     config.add(:historical_attempts_api_enabled, type: :boolean)
+    config.add(:historical_attempts_s3_storage_enabled, type: :boolean)
     config.add(:hmac_fingerprinter_key, type: :string)
     config.add(:hmac_fingerprinter_key_queue, type: :json)
     config.add(:hybrid_mobile_tmx_processed_percent, type: :integer)
