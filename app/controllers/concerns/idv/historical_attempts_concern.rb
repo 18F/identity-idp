@@ -48,6 +48,7 @@ module Idv
 
     def historical_events_need_be_sent?
       return false unless historical_events_enabled?
+      return false unless current_sp&.attempts_api_enabled?
       return false if existing_user_proofing_event.blank?
 
       return !existing_user_proofing_event.already_sent_to_sp?(current_sp.id)
@@ -56,7 +57,7 @@ module Idv
     def historical_events_enabled?
       return false unless IdentityConfig.store.historical_attempts_api_enabled
 
-      current_sp&.attempts_api_enabled? && ial2_requested?
+      ial2_requested?
     end
 
     def existing_user_proofing_event

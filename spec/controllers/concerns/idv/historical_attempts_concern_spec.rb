@@ -27,6 +27,7 @@ RSpec.describe Idv::HistoricalAttemptsConcern, type: :controller do
       { 'idv-ssn-submitted' => { 'user_uuid' => registered_user.uuid } },
     ]
   end
+  let(:allowed_attempts_providers) { [{ 'issuer' => sp.issuer }] }
   let(:pii_encryptor) { Encryption::Encryptors::PiiEncryptor.new(registered_user.password) }
   let(:encrypted_existing_events) do
     pii_encryptor.encrypt(idv_attempts.to_json, user_uuid: registered_user.uuid)
@@ -51,7 +52,7 @@ RSpec.describe Idv::HistoricalAttemptsConcern, type: :controller do
       active_profile: profile,
     )
     allow(IdentityConfig.store).to receive_messages(
-      allowed_attempts_providers: [{ 'issuer' => sp.issuer }],
+      allowed_attempts_providers:,
       attempts_api_enabled: true,
       historical_attempts_api_enabled: true,
     )
@@ -99,6 +100,17 @@ RSpec.describe Idv::HistoricalAttemptsConcern, type: :controller do
         expect(user_proofing_event.cost).to eq(encrypted_events['cost'])
         expect(user_proofing_event.salt).to eq(encrypted_events['salt'])
         expect(user_proofing_event.profile).to eq(profile)
+      end
+
+      context 'when the service provider is not enabled for attempts API' do
+        let(:allowed_attempts_providers) { [] }
+
+        it 'creates a UserProofingEvent' do
+          user_proofing_event = UserProofingEvent.last
+          expect(user_proofing_event.cost).to eq(encrypted_events['cost'])
+          expect(user_proofing_event.salt).to eq(encrypted_events['salt'])
+          expect(user_proofing_event.profile).to eq(profile)
+        end
       end
     end
   end
