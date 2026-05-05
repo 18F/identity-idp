@@ -120,6 +120,20 @@ RSpec.describe SignUp::PasswordsController do
         end
       end
 
+      context 'passkey upsell A/B test' do
+        let(:params) do
+          super().merge(platform_authenticator_available: 'true')
+        end
+
+        before do
+          allow(IdentityConfig.store).to receive(:account_creation_webauthn_platform_setup_percent)
+            .and_return(100)
+        end
+        it 'redirects when the flag has been turned on' do
+          expect(response).to redirect_to(webauthn_platform_setup_url)
+        end
+      end
+
       context 'when account_creation_passkey_auto_prompt_enabled is enabled' do
         before do
           allow(FeatureManagement).to receive(:account_creation_passkey_auto_prompt_enabled?)
