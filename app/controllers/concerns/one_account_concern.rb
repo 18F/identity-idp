@@ -42,7 +42,7 @@ module OneAccountConcern
     if global_detection_enabled?
       current_user&.identity_verified_with_facial_match?
     else
-      sp_eligible_for_one_account? && current_user&.active_profile.present?
+      sp_eligible_for_one_account? && current_user&.identity_verified_with_facial_match?
     end
   end
 

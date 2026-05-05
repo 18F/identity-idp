@@ -15,8 +15,8 @@ class DuplicateProfilesDetectedController < ApplicationController
 
   private
 
-  def redirect_unless_user_has_active_duplicate_profile
-    if current_user&.active_profile.present?
+  def redirect_unless_user_going_to_ial2_page
+    if current_user.identity_verified_with_facial_match? 
       if duplicate_profile_set.present?
         return
       end
@@ -40,7 +40,7 @@ class DuplicateProfilesDetectedController < ApplicationController
   def notify_users_of_duplicate_profile(source:)
     return unless duplicate_profile_set
     return if user_session[:dupe_profiles_notified]
-    agency_name = current_sp&.friendly_name || current_sp&.agency&.name || APP_NAME
+    agency_name = current_sp&.friendly_name || current_sp&.agency&.name
 
     duplicate_profile_set.profile_ids.each do |profile_id|
       next if current_user&.active_profile&.id == profile_id
