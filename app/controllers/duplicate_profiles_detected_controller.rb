@@ -16,7 +16,7 @@ class DuplicateProfilesDetectedController < ApplicationController
   private
 
   def redirect_unless_user_going_to_ial2_page
-    if current_user.identity_verified_with_facial_match? 
+    if current_user.identity_verified_with_facial_match?
       if duplicate_profile_set.present?
         return
       end
