@@ -1133,11 +1133,11 @@ RSpec.describe Idv::EnterPasswordController do
       end
 
       let(:mock_user_session) { { 'idv/attempts' => [idv_attempt] } }
+      let(:historical_attempts_api_enabled) { true }
 
       before do
         allow(IdentityConfig.store).to receive_messages(
-          attempts_api_enabled: true,
-          historical_attempts_api_enabled: true,
+          historical_attempts_api_enabled:,
           allowed_attempts_providers: [{ 'issuer' => sp.issuer }],
         )
       end
@@ -1146,23 +1146,50 @@ RSpec.describe Idv::EnterPasswordController do
         subject.idv_session.applicant['uuid'] = nil
       end
 
-      context 'when requesting ial2' do
-        before do
-          resolved_authn_context_result = Component::Parser.new(
-            acr_values: Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_REQUIRED_ACR,
-          ).parse
+      context 'when historical attempts api is enabled' do
+        context 'when the request requires identity verification' do
+          before do
+            resolved_authn_context_result = Component::Parser.new(
+              acr_values: Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_REQUIRED_ACR,
+            ).parse
 
-          allow(controller).to receive(:resolved_authn_context_result)
-            .and_return(resolved_authn_context_result)
+            allow(controller).to receive(:resolved_authn_context_result)
+              .and_return(resolved_authn_context_result)
+          end
+
+          context 'with a newly proofed user' do
+            it 'creates a UserProofingEvent for the profile' do
+              put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+              event = UserProofingEvent.last
+
+              expect(event.profile_id).to eq(user.profiles.last.id)
+            end
+          end
         end
 
-        context 'with a newly proofed user' do
-          it 'creates a UserProofingEvent for the profile' do
-            put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
-            event = UserProofingEvent.last
+        context 'when request does not include identity verification' do
+          before do
+            resolved_authn_context_result = Component::Parser.new(
+              acr_values: Saml::Idp::Constants::IAL_AUTH_ONLY_ACR,
+            ).parse
 
-            expect(event.profile_id).to eq(user.profiles.last.id)
+            allow(controller).to receive(:resolved_authn_context_result)
+              .and_return(resolved_authn_context_result)
           end
+
+          it 'does not create a UserProofingEvent for the profile' do
+            put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+            expect(UserProofingEvent.count).to eq(0)
+          end
+        end
+      end
+
+      context 'when historical attempts api is disabled' do
+        let(:historical_attempts_api_enabled) { false }
+
+        it 'does not create a UserProofingEvent for the profile' do
+          put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+          expect(UserProofingEvent.count).to eq(0)
         end
       end
     end

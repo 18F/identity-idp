@@ -418,6 +418,35 @@ class Profile < ApplicationRecord
     FACIAL_MATCH_IDV_LEVELS.include?(idv_level)
   end
 
+  def create_user_proofing_event(password:, attempt_events:)
+    encryptor = Encryption::Encryptors::PiiEncryptor.new(password)
+    encrypted_events_json = encryptor.encrypt(attempt_events.to_json, user_uuid: user.uuid)
+    encrypted_events = JSON.parse(encrypted_events_json)
+
+    # TODO: Write encrypted_events['encrypted_data'] to S3
+    # TODO: Save reference to S3 object in current_user.active_profile
+
+    new_user_proofing_event = build_user_proofing_event(
+      cost: encrypted_events['cost'],
+      salt: encrypted_events['salt'],
+    )
+
+    new_user_proofing_event.save
+  end
+
+  def decrypt_user_proofing_events(password:)
+    encryptor = Encryption::Encryptors::PiiEncryptor.new(password)
+    #  TODO: Retrieve encrypted_events from S3 or locally
+    #   # Currently this is not in use, so passing in dummy data
+    data = encryptor.encrypt(
+      [
+        { 'idv-ssn-submitted' => { 'user_uuid' => user.uuid } },
+      ].to_json,
+      user_uuid: user.uuid,
+    )
+    encryptor.decrypt(data, user_uuid: user.uuid)
+  end
+
   private
 
   def confirm_that_profile_can_be_activated!
