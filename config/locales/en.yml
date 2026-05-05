@@ -1982,6 +1982,16 @@ user_mailer.add_email_associated_with_another_account.reset_password_html: If yo
 user_mailer.add_email.footer: This link will expire in %{confirmation_period}.
 user_mailer.add_email.header: Thanks for adding an email. Please click the link below or copy and paste the entire link into your browser.
 user_mailer.add_email.subject: Confirm your email
+user_mailer.agent_proofing_succeeded.subject: 'Action Required: Confirm Your Verified Account'
+user_mailer.agent_proofing_succeeded.banner_html: "<strong>Don't delay</strong> - confirm your account by end of day %{deadline} to start accessing your government services"
+user_mailer.agent_proofing_succeeded.header: You have successfully completed identity verification
+user_mailer.agent_proofing_succeeded.body: 'We verified your identity on %{verified_at}. Confirming your account allows you to,'
+user_mailer.agent_proofing_succeeded.bullet1_html: 'Access your "My Social Security" account and other government services with one secure account'
+user_mailer.agent_proofing_succeeded.bullet2: Protect your personal information
+user_mailer.agent_proofing_succeeded.bullet3: Simplify how you manage your online government experiences
+user_mailer.agent_proofing_succeeded.cta: Confirm account
+user_mailer.agent_proofing_succeeded.footer_html: If you did not attempt to verify your identity in person, please contact us and sign in to change your password.
+user_mailer.agent_proofing_succeeded.help_html: 'Please do not reply to this message. If you need help, visit <a href="https://www.login.gov/help">www.login.gov/help</a>'
 user_mailer.contact_link_text: contact us
 user_mailer.dupe_profile.created.description: Someone has verified another %{app_name} account using your personal information. For your safety, we have restricted access on all accounts with matching information and access to %{sp_or_app_name}.
 user_mailer.dupe_profile.created.description2_html: If this was you verifying another account, delete the duplicate account by following the %{steps_link_html}. If this wasn’t you contact the %{help_center_link_html}.

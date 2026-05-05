@@ -510,6 +510,23 @@ class UserMailer < ActionMailer::Base
     end
   end
 
+  def agent_proofing_succeeded(transaction_id:)
+    with_user_locale(user) do
+      dcs = DocumentCaptureSession.find_by(result_id: transaction_id)
+      agent_proofed_user = dcs.load_agent_proofed_user
+      return if agent_proofed_user.nil?
+      return unless agent_proofed_user.success
+
+      @presenter = ProofingAgent::AgentProofingSucceededPresenter.new(agent_proofed_user)
+      @locale = locale_url_param
+
+      mail(
+        to: agent_proofed_user.email,
+        subject: t('user_mailer.agent_proofing_succeeded.subject'),
+      )
+    end
+  end
+
   def suspension_confirmed
     with_user_locale(user) do
       @help_text = t('user_mailer.suspension_confirmed.contact_agency')

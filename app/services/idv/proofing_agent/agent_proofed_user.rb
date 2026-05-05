@@ -18,7 +18,7 @@ module Idv
       :aamva_verified_attributes,
       :source_check_vendor,
       :address_resolution_status, # phone_finder
-      :captured_at,
+      :verified_at,
       allowed_members: [
         :proofing_location_id,
         :proofing_agent_id,
@@ -33,7 +33,7 @@ module Idv
         :aamva_verified_attributes,
         :source_check_vendor,
         :address_resolution_status,
-        :captured_at,
+        :verified_at,
       ],
     ) do
       def self.redis_key_prefix
@@ -58,6 +58,10 @@ module Idv
 
       def address_resolution_status
         self[:address_resolution_status]&.to_sym
+      end
+
+      def email
+        self.dig(:pii, :email)
       end
 
       # This hash includes the values that should be merged into the idv_session in order to
