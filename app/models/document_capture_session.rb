@@ -177,14 +177,16 @@ class DocumentCaptureSession < ApplicationRecord
   end
 
   def request_passport!
-    update!(
+    attrs = {
       passport_status: 'requested',
       document_type_requested: Idp::Constants::DocumentTypes::PASSPORT,
       doc_auth_vendor: nil,
       # socure_docv_capture_app_url: nil,
       # socure_docv_transaction_token: nil,
-    )
+    }
     attrs.merge!(clear_socure_attributes) if state_id_requested?
+
+    update!(attrs)
   end
 
   def request_state_id!
