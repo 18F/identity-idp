@@ -422,10 +422,6 @@ RSpec.describe NewPhoneForm do
             )
           end
 
-          before do
-            allow(FeatureManagement).to receive(:recaptcha_enterprise?).and_return(true)
-          end
-
           it 'is valid' do
             expect(result.success?).to eq(true)
             expect(result.errors).to be_blank

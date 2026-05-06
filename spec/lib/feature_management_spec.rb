@@ -378,7 +378,6 @@ RSpec.describe 'FeatureManagement' do
 
   describe '.recaptcha_enabled?' do
     let(:recaptcha_site_key) { '' }
-    let(:recaptcha_secret_key) { '' }
     let(:recaptcha_enterprise_api_key) { '' }
     let(:recaptcha_enterprise_project_id) { '' }
 
@@ -387,8 +386,6 @@ RSpec.describe 'FeatureManagement' do
     before do
       allow(IdentityConfig.store).to receive(:recaptcha_site_key)
         .and_return(recaptcha_site_key)
-      allow(IdentityConfig.store).to receive(:recaptcha_secret_key)
-        .and_return(recaptcha_secret_key)
       allow(IdentityConfig.store).to receive(:recaptcha_enterprise_api_key)
         .and_return(recaptcha_enterprise_api_key)
       allow(IdentityConfig.store).to receive(:recaptcha_enterprise_project_id)
@@ -401,12 +398,6 @@ RSpec.describe 'FeatureManagement' do
       let(:recaptcha_site_key) { 'key' }
 
       it { is_expected.to eq(false) }
-
-      context 'with configured recaptcha secret key' do
-        let(:recaptcha_secret_key) { 'key' }
-
-        it { is_expected.to eq(true) }
-      end
 
       context 'with configured recaptcha enterprise api key' do
         let(:recaptcha_enterprise_api_key) { 'key' }
@@ -472,34 +463,6 @@ RSpec.describe 'FeatureManagement' do
         let(:recaptcha_enabled) { true }
 
         it { is_expected.to eq(true) }
-      end
-    end
-  end
-
-  describe '.recaptcha_enterprise?' do
-    let(:recaptcha_enterprise_api_key) { '' }
-    let(:recaptcha_enterprise_project_id) { '' }
-
-    subject(:recaptcha_enterprise) { FeatureManagement.recaptcha_enterprise? }
-
-    before do
-      allow(IdentityConfig.store).to receive(:recaptcha_enterprise_api_key)
-        .and_return(recaptcha_enterprise_api_key)
-      allow(IdentityConfig.store).to receive(:recaptcha_enterprise_project_id)
-        .and_return(recaptcha_enterprise_project_id)
-    end
-
-    it { expect(recaptcha_enterprise).to eq(false) }
-
-    context 'with configured recaptcha enterprise api key' do
-      let(:recaptcha_enterprise_api_key) { 'key' }
-
-      it { expect(recaptcha_enterprise).to eq(false) }
-
-      context 'with configured recaptcha enterprise project id' do
-        let(:recaptcha_enterprise_project_id) { 'project_id' }
-
-        it { expect(recaptcha_enterprise).to eq(true) }
       end
     end
   end

@@ -9,7 +9,7 @@
       **tag_options,
       'recaptcha-site-key': IdentityConfig.store.recaptcha_site_key,
       'recaptcha-action': action,
-      'recaptcha-enterprise': recaptcha_enterprise?,
+      'recaptcha-enterprise': recaptcha_enabled?,
     ) do %>
   <% if show_mock_score_field? %>
     <%= f.input(:recaptcha_token, as: :hidden, input_html: { value: 'mock_token' }) %>
