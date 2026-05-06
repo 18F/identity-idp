@@ -46,56 +46,46 @@ RSpec.describe 'document_capture_sessions rake tasks', type: :task do
     end
 
     context 'ensure only document_type_requested is updated' do
-      context 'state_id_card_session' do
-        before do
-          @state_id_attrs = state_id_card_session.attributes.except(
-            'document_type_requested',
-          )
-        end
-
-        it 'does not change other attributes' do
-          task.execute
-          expect(state_id_card_session.reload.attributes.except(
-            'document_type_requested',
-          )).to eq(@state_id_attrs)
-        end
+      let(:state_id_attrs) do
+        state_id_card_session.attributes.except(
+          'document_type_requested',
+        )
       end
 
-      context 'passport_session' do
-        before do
-          @passport_attrs = passport_session.attributes.except(
-            'document_type_requested',
-          )
-        end
-
-        it 'does not change other attributes' do
-          task.execute
-          expect(passport_session.reload.attributes.except(
-            'document_type_requested',
-          )).to eq(@passport_attrs)
-        end
+      let(:passport_attrs) do
+        passport_session.attributes.except(
+          'document_type_requested',
+        )
       end
 
-      context 'no_passport_status_session' do
-        before do
-          @no_passport_attrs = no_passport_status_session.attributes
-        end
+      it 'does not change other attributes' do
+        task.execute
 
-        it 'does not change any attributes' do
-          task.execute
-          expect(no_passport_status_session.reload.attributes).to eq(@no_passport_attrs)
-        end
-      end
+        document_type_requested_orig = state_id_card_session.document_type_requested
+        expect(state_id_attrs).to eq(
+          state_id_card_session.reload.attributes.except(
+            'document_type_requested',
+          ),
+        )
+        expect(document_type_requested_orig).not_to eq(state_id_card_session.reload.document_type_requested)
 
-      context 'already_backfilled_session' do
-        before do
-          @already_backfilled_attrs = already_backfilled_session.attributes
-        end
 
-        it 'does not change any attributes' do
-          task.execute
-          expect(already_backfilled_session.reload.attributes).to eq(@already_backfilled_attrs)
-        end
+        document_type_requested_orig = passport_session.document_type_requested
+        expect(passport_attrs).to eq(
+          passport_session.reload.attributes.except(
+            'document_type_requested',
+          ),
+        )
+        expect(document_type_requested_orig).not_to eq(passport_session.reload.document_type_requested)
+
+
+        expect(no_passport_status_session.attributes).to eq(
+          no_passport_status_session.reload.attributes
+        )
+
+        expect(already_backfilled_session.attributes).to eq(
+          already_backfilled_session.reload.attributes
+        )
       end
     end
   end
