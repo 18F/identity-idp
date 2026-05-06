@@ -552,7 +552,7 @@ RSpec.describe DocumentCaptureSession do
         :document_capture_session,
         socure_docv_capture_app_url: 'hello',
         socure_docv_transaction_token: 'world',
-        )
+      )
 
       record.request_passport!
 
