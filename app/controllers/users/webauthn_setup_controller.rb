@@ -227,6 +227,10 @@ module Users
       (Time.zone.now.to_f - started_at.to_f)
     end
 
+    def next_setup_path
+      super || (authentication_methods_setup_path if @platform_authenticator && user_session[:auto_passkey_prompted])
+    end
+
     def need_to_set_up_additional_mfa?
       return false unless @platform_authenticator
       in_multi_mfa_selection_flow? && mfa_selection_count < 2
