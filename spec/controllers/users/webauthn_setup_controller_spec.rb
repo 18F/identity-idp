@@ -442,6 +442,64 @@ RSpec.describe Users::WebauthnSetupController do
       end
     end
 
+    describe 'auto-passkey-prompt redirect after successful setup' do
+      let(:params) do
+        {
+          attestation_object: attestation_object,
+          client_data_json: setup_client_data_json,
+          name: 'mykey',
+          transports: 'internal,hybrid',
+          platform_authenticator: 'true',
+        }
+      end
+
+      before do
+        allow(IdentityConfig.store).to receive(:domain_name).and_return('localhost:3000')
+        request.host = 'localhost:3000'
+        controller.user_session[:webauthn_challenge] = webauthn_challenge
+        controller.user_session[:in_account_creation_flow] = true
+        controller.user_session[:auto_passkey_prompted] = true
+      end
+
+      context 'when auto_passkey_prompted is set and no mfa_selections queued' do
+        it 'redirects to authentication methods setup after successful platform authenticator setup' do # rubocop:disable Layout/LineLength
+          expect_mfa_enrolled(success: true, mfa_device_type: 'webauthn_platform')
+
+          patch :confirm, params: params
+
+          expect(response).to redirect_to(authentication_methods_setup_url)
+        end
+      end
+
+      context 'when mfa_selections are queued (normal multi-MFA flow takes precedence)' do
+        before do
+          controller.user_session[:mfa_selections] = ['webauthn_platform', 'voice']
+        end
+
+        it 'redirects to the next queued MFA setup instead' do
+          expect_mfa_enrolled(success: true, mfa_device_type: 'webauthn_platform')
+
+          patch :confirm, params: params
+
+          expect(response).to redirect_to(phone_setup_url)
+        end
+      end
+
+      context 'when auto_passkey_prompted is not set' do
+        before do
+          controller.user_session.delete(:auto_passkey_prompted)
+        end
+
+        it 'does not redirect to authentication methods setup' do
+          expect_mfa_enrolled(success: true, mfa_device_type: 'webauthn_platform')
+
+          patch :confirm, params: params
+
+          expect(response).not_to redirect_to(authentication_methods_setup_url)
+        end
+      end
+    end
+
     describe 'multiple MFA handling' do
       let(:mfa_selections) { ['webauthn_platform', 'voice'] }
 
