@@ -1,27 +1,35 @@
 <table class="usa-alert usa-alert--info margin-bottom-3">
   <tr>
-    <td style="width:16px;">
-      <%= image_tag('email/info.png', width: 16, height: 16, alt: '', style: 'margin-top: 5px;') %>
+    <td width="40" style="padding-top: 14px; padding-bottom: 14px; padding-left: 16px; padding-right: 10px; min-width: 40px;">
+      <%= image_tag(attachments['info.png'].url, width: 14, height: 14, alt: '', style: 'width: 14px; height: 14px; min-width: 14px;') %>
     </td>
     <td>
-      @presenter.banner_text
+      <%= t(
+            'user_mailer.agent_proofing_succeeded.banner_html',
+            alert_lead_html: content_tag(:strong, t('user_mailer.agent_proofing_succeeded.alert_lead')),
+            deadline: @deadline_display,
+          ) %>
     </td>
   </tr>
 </table>
 
-<!-- ICON -->
+<%= image_tag(
+      attachments['verify-identity.png'].url,
+      width: 88,
+      height: 68,
+      alt: '',
+      class: 'float-center padding-bottom-4',
+    ) %>
 
-<h1>
-  <% @presenter.header_text %>
-</h1>
+<h1><%= t('user_mailer.agent_proofing_succeeded.header') %></h1>
 
 <p>
-  <%= @presenter.body_text %>
+  <%= t('user_mailer.agent_proofing_succeeded.body', verified_at: @verified_at_display) %>
 </p>
 <ul>
-  <li><%= @presenter.bullet1 %></li>
-  <li><%= @presenter.bullet2 %></li>
-  <li><%= @presenter.bullet3 %></li>
+  <li><%= t('user_mailer.agent_proofing_succeeded.bullet1') %></li>
+  <li><%= t('user_mailer.agent_proofing_succeeded.bullet2') %></li>
+  <li><%= t('user_mailer.agent_proofing_succeeded.bullet3') %></li>
 </ul>
 
 <table class="button expanded large radius">
@@ -32,7 +40,7 @@
         <tbody>
         <tr>
           <td style="text-align: center; padding: 10px 20px; box-sizing: border-box;">
-            <%= link_to @presenter.cta,
+            <%= link_to t('user_mailer.agent_proofing_succeeded.cta'),
                         @presenter.confirmation_url,
                         target: '_blank',
                         class: 'float-center',
@@ -58,9 +66,15 @@
 </p>
 
 <p>
-  <%= @presenter.footer_text %>
-</p>
-
-<p>
-  <%= @presenter.help_text %>
+  <%= t(
+        'user_mailer.agent_proofing_succeeded.footer_html',
+        contact_link_html: link_to(
+          t('user_mailer.agent_proofing_succeeded.contact_link'),
+          @presenter.contact_us_url,
+        ),
+        change_password_link_html: link_to(
+          t('user_mailer.agent_proofing_succeeded.change_password_link'),
+          @presenter.change_password_url,
+        ),
+      ) %>
 </p>

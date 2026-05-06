@@ -510,18 +510,25 @@ class UserMailer < ActionMailer::Base
     end
   end
 
-  def agent_proofing_succeeded(transaction_id:)
-    with_user_locale(user) do
-      dcs = DocumentCaptureSession.find_by(result_id: transaction_id)
-      agent_proofed_user = dcs.load_agent_proofed_user
-      return if agent_proofed_user.nil?
-      return unless agent_proofed_user.success
+  def agent_proofing_succeeded(verified_at:)
+    return if verified_at.blank?
 
-      @presenter = ProofingAgent::AgentProofingSucceededPresenter.new(agent_proofed_user)
-      @locale = locale_url_param
+    attachments.inline['info.png'] =
+      Rails.root.join('app/assets/images/email/info.png').read
+    attachments.inline['verify-identity.png'] =
+      Rails.root.join('app/assets/images/email/verify-identity.png').read
+
+    with_user_locale(user) do
+      @hide_title = true
+      @presenter = Idv::ProofingAgent::AgentProofingSucceededPresenter.new(
+        verified_at:,
+        url_options:,
+      )
+      @verified_at_display = I18n.l(@presenter.verified_at, format: :event_date)
+      @deadline_display = I18n.l(@presenter.deadline, format: :event_date)
 
       mail(
-        to: agent_proofed_user.email,
+        to: email_address.email,
         subject: t('user_mailer.agent_proofing_succeeded.subject'),
       )
     end
