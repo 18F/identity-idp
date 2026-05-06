@@ -199,8 +199,8 @@ class DocumentCaptureSession < ApplicationRecord
   end
 
   def state_id_requested?
-    document_type_requested == Idp::Constants::DocumentTypes::STATE_ID_CARD
-      || passport_status == 'not_requested' # 50/50
+    document_type_requested == Idp::Constants::DocumentTypes::STATE_ID_CARD ||
+      passport_status == 'not_requested' # 50/50
   end
 
   private
