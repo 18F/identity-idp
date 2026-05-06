@@ -356,6 +356,7 @@ mx_timeout: 3
 new_device_alert_delay_in_minutes: 5
 new_device_alert_window_start_in_minutes: 15
 newrelic_license_key: ''
+openid_connect_authorization_code_expiration_seconds: 300
 openid_connect_content_security_form_action_enabled: false
 openid_connect_redirect: client_side_js
 otp_delivery_blocklist_findtime: 5

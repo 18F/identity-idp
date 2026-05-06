@@ -34,7 +34,7 @@ class OpenidConnectTokenForm
     ATTRS.each do |key|
       instance_variable_set(:"@#{key}", params[key])
     end
-    @session_expiration = IdentityConfig.store.session_timeout_in_seconds.seconds.ago
+    @code_expiration = IdentityConfig.store.openid_connect_authorization_code_expiration_seconds.seconds.ago
     @identity = find_identity_with_code
   end
 
@@ -68,7 +68,7 @@ class OpenidConnectTokenForm
 
   private
 
-  attr_reader :identity, :session_expiration
+  attr_reader :identity, :code_expiration
 
   def find_identity_with_code
     return if code.blank? || code.include?("\x00")
@@ -103,7 +103,7 @@ class OpenidConnectTokenForm
   end
 
   def validate_expired
-    if identity&.updated_at && identity.updated_at < session_expiration
+    if identity&.updated_at && identity.updated_at < code_expiration
       errors.add :code, t('openid_connect.token.errors.expired_code'), type: :expired_code
     end
   end
