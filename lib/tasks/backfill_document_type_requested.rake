@@ -13,8 +13,9 @@ namespace :document_capture_sessions do
     logger = Logger.new(STDOUT, progname: "[#{t.name}]")
     batch_size = ENV['BATCH_SIZE']&.to_i || 1000
     records_count = without_document_type_requested.count
+
     with_timeout do
-      logger.info("Found #{records_count} document_capture_sessions needing backfill")
+      logger.info("Found #{records_count} document_capture_sessions needing to backfill document_type_requested")
 
       tally = 0
       state_id_card_requested.in_batches(of: batch_size) do |batch|
@@ -22,22 +23,22 @@ namespace :document_capture_sessions do
         logger.info("commit document_type_requested (stateID) for #{tally}/#{records_count} document_capture_sessions")
       end
 
-      tally += passport_requested.in_batches(of: batch_size) do |batch|
+      passport_requested.in_batches(of: batch_size) do |batch|
         tally += batch.update_all(document_type_requested: Idp::Constants::DocumentTypes::PASSPORT) # rubocop:disable Rails/SkipsModelValidations
         logger.info("commit document_type_requested (passport) for #{tally}/#{records_count} document_capture_sessions")
       end
 
       logger.info("COMPLETE: Updated #{tally}/#{records_count} document_capture_sessions")
 
-      records_count = enrollments_without_document_type.count
-      logger.info("#{records_count} new enrollments without a document type")
+      records_count = without_document_type_requested.count
+      logger.info("Found #{records_count} document_capture_sessions needing to backfill document_type_requested")
     end
   end
 
   def without_document_type_requested
     DocumentCaptureSession
       .where(document_type_requested: nil)
-      .not.where(passport_status: nil)
+      .where.not(passport_status: nil)
   end
 
   def passport_requested
