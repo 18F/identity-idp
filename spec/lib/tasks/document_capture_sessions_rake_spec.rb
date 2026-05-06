@@ -49,14 +49,14 @@ RSpec.describe 'document_capture_sessions rake tasks', type: :task do
       context 'state_id_card_session' do
         before do
           @state_id_attrs = state_id_card_session.attributes.except(
-            'id', 'document_type_requested', 'created_at', 'updated_at'
+            'document_type_requested',
           )
         end
 
         it 'does not change other attributes' do
           task.execute
           expect(state_id_card_session.reload.attributes.except(
-            'id', 'document_type_requested', 'created_at', 'updated_at'
+            'document_type_requested',
           )).to eq(@state_id_attrs)
         end
       end
@@ -64,14 +64,14 @@ RSpec.describe 'document_capture_sessions rake tasks', type: :task do
       context 'passport_session' do
         before do
           @passport_attrs = passport_session.attributes.except(
-            'document_type_requested', 'updated_at'
+            'document_type_requested',
           )
         end
 
         it 'does not change other attributes' do
           task.execute
           expect(passport_session.reload.attributes.except(
-            'document_type_requested', 'updated_at'
+            'document_type_requested',
           )).to eq(@passport_attrs)
         end
       end
