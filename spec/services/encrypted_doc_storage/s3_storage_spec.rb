@@ -49,5 +49,26 @@ RSpec.describe EncryptedDocStorage::S3Storage do
         body: encrypted_attempt_events,
       )
     end
+
+    describe '#retrieve_attempt_object' do
+      let(:stubbed_s3_client) { Aws::S3::Client.new(stub_responses: true) }
+      let(:name) { SecureRandom.uuid }
+      let(:path) { 'attempt_events/123abc' }
+      let(:encrypted_attempt_events) { 'abcdefg' }
+
+      before do
+        allow(subject).to receive(:s3_client).and_return(stubbed_s3_client)
+        allow(stubbed_s3_client).to receive(:get_object)
+      end
+
+      it 'retrieves the attempt events from S3' do
+        subject.retrieve_attempt_object(path:)
+
+        expect(stubbed_s3_client).to have_received(:get_object).with(
+          bucket: IdentityConfig.store.encrypted_document_storage_s3_bucket,
+          key: path,
+        )
+      end
+    end
   end
 end

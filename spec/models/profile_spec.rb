@@ -1431,6 +1431,14 @@ RSpec.describe Profile do
   end
 
   describe 'create_user_proofing_event' do
+    let(:doc_writer) do
+      double('DocWriter', write_encrypted_attempt_events: double('Result', name: 'test'))
+    end
+
+    before do
+      allow(EncryptedDocStorage::DocWriter).to receive(:new).and_return(doc_writer)
+    end
+
     it 'creates a user proofing events object' do
       expect do
         profile.create_user_proofing_event(
@@ -1440,6 +1448,15 @@ RSpec.describe Profile do
       end.to change { UserProofingEvent.count }.by(1)
 
       expect(UserProofingEvent.last.profile).to eq(profile)
+    end
+
+    it 'updates the profile with the encrypted attempt events reference' do
+      profile.create_user_proofing_event(
+        password: 'password',
+        attempt_events: [{ 'event' => 'test' }],
+      )
+
+      expect(profile.encrypted_attempts_file_reference).to eq('test')
     end
   end
 
