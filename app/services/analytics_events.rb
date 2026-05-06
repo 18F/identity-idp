@@ -8745,9 +8745,19 @@ module AnalyticsEvents
     track_event(:webauthn_platform_recommended_submitted, opted_to_add:, **extra)
   end
 
+  # User visits webauth platform upsell after sign up
+  def webauthn_platform_signup_setup_submitted(opted_to_add:, **extra)
+    track_event(:webauthn_platform_signup_setup_submitted, opted_to_Add:, **extra)
+  end
+
   # User visits WebAuthn platform authenticator recommended screen
   def webauthn_platform_recommended_visited
     track_event(:webauthn_platform_recommended_visited)
+  end
+
+  # User visits webauth platform upsell after sign up
+  def webauthn_platform_signup_setup_visited
+    track_event(:webauthn_platform_signup_setup_visited)
   end
 
   # @param [Boolean] platform_authenticator Whether authentication method was registered as platform
