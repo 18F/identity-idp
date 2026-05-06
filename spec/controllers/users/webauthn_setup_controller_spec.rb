@@ -462,7 +462,7 @@ RSpec.describe Users::WebauthnSetupController do
       end
 
       context 'when auto_passkey_prompted is set and no mfa_selections queued' do
-        it 'redirects to authentication methods setup after successful platform authenticator setup' do
+        it 'redirects to authentication methods setup after successful platform authenticator setup' do # rubocop:disable Layout/LineLength
           expect_mfa_enrolled(success: true, mfa_device_type: 'webauthn_platform')
 
           patch :confirm, params: params

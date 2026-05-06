@@ -228,7 +228,9 @@ module Users
     end
 
     def next_setup_path
-      super || (authentication_methods_setup_path if @platform_authenticator && user_session[:auto_passkey_prompted])
+      return super unless @platform_authenticator && user_session[:auto_passkey_prompted]
+
+      super || authentication_methods_setup_path
     end
 
     def need_to_set_up_additional_mfa?
