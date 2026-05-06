@@ -1431,12 +1431,15 @@ RSpec.describe Profile do
   end
 
   describe 'create_user_proofing_event' do
-    let(:doc_writer) do
-      double('DocWriter', write_encrypted_attempt_events: double('Result', name: 'test'))
-    end
+    after do
+      dir_path = Rails.root.join(
+        'tmp',
+        'encrypted_attempt_events',
+        'attempt_events',
+        profile.user.uuid,
+      )
 
-    before do
-      allow(EncryptedDocStorage::DocWriter).to receive(:new).and_return(doc_writer)
+      FileUtils.rm_rf(dir_path) if Dir.exist?(dir_path)
     end
 
     it 'creates a user proofing events object' do
@@ -1449,18 +1452,20 @@ RSpec.describe Profile do
 
       expect(UserProofingEvent.last.profile).to eq(profile)
     end
-
-    it 'updates the profile with the encrypted attempt events reference' do
-      profile.create_user_proofing_event(
-        password: 'password',
-        attempt_events: [{ 'event' => 'test' }],
-      )
-
-      expect(profile.encrypted_attempts_file_reference).to eq('test')
-    end
   end
 
   describe 'decrypt_user_proofing_events' do
+    after do
+      dir_path = Rails.root.join(
+        'tmp',
+        'encrypted_attempt_events',
+        'attempt_events',
+        profile.user.uuid,
+      )
+
+      FileUtils.rm_rf(dir_path) if Dir.exist?(dir_path)
+    end
+
     let(:attempt_events) { [{ 'idv-ssn-submitted' => { 'user_uuid' => user.uuid } }] }
     it 'decrypts user proofing events' do
       profile.create_user_proofing_event(

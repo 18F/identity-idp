@@ -53,7 +53,7 @@ RSpec.describe EncryptedDocStorage::LocalStorage do
   describe '#retrieve' do
     let(:name) { SecureRandom.uuid }
     let(:path) { 'attempts' }
-    let(:encrypted_attempt_events) { 'abcdefg' }
+    let(:encrypted_attempt_events) { 'abcd1245' }
     it 'retrieves the attempt events from the disk' do
       # Write the file first
       EncryptedDocStorage::LocalStorage.new.write_attempt_events(

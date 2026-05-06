@@ -423,8 +423,12 @@ class Profile < ApplicationRecord
     encrypted_events_json = encryptor.encrypt(attempt_events.to_json, user_uuid: user.uuid)
     encrypted_events = JSON.parse(encrypted_events_json)
 
-    # TODO: Write encrypted_events['encrypted_data'] to S3
-    # TODO: Save reference to S3 object in current_user.active_profile
+    result = encrypted_doc_writer.write_encrypted_attempt_events(
+      file_path: attempt_events_file_path,
+      encrypted_attempt_events: encrypted_events,
+    )
+
+    update!(encrypted_attempts_file_reference: result.name)
 
     new_user_proofing_event = build_user_proofing_event(
       cost: encrypted_events['cost'],
@@ -436,14 +440,12 @@ class Profile < ApplicationRecord
 
   def decrypt_user_proofing_events(password:)
     encryptor = Encryption::Encryptors::PiiEncryptor.new(password)
-    #  TODO: Retrieve encrypted_events from S3 or locally
-    #   # Currently this is not in use, so passing in dummy data
-    data = encryptor.encrypt(
-      [
-        { 'idv-ssn-submitted' => { 'user_uuid' => user.uuid } },
-      ].to_json,
-      user_uuid: user.uuid,
+
+    data = attempt_data_retriever.retrieve_user_proofing_events(
+      file_path: attempt_events_file_path,
+      file_name: encrypted_attempts_file_reference,
     )
+
     encryptor.decrypt(data, user_uuid: user.uuid)
   end
 
@@ -451,6 +453,26 @@ class Profile < ApplicationRecord
 
   def confirm_that_profile_can_be_activated!
     raise reason_not_to_activate if reason_not_to_activate
+  end
+
+  def encrypted_doc_writer
+    @encrypted_doc_writer ||= EncryptedDocStorage::DocWriter.new(
+      s3_enabled: historical_attempts_s3_storage_enabled?,
+    )
+  end
+
+  def attempt_data_retriever
+    @attempt_data_retriever ||= EncryptedDocStorage::AttemptDataRetriever.new(
+      s3_enabled: historical_attempts_s3_storage_enabled?,
+    )
+  end
+
+  def attempt_events_file_path
+    "attempt_events/#{user.uuid}/#{self.id}"
+  end
+
+  def historical_attempts_s3_storage_enabled?
+    IdentityConfig.store.historical_attempts_s3_storage_enabled
   end
 
   def personal_key_generator
