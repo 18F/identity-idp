@@ -20,6 +20,12 @@ module EncryptedDocStorage
       end
     end
 
+    def retrieve(file_path:, file_name:)
+      full_path = tmp_attempt_events_dir.join(file_path, file_name)
+
+      File.read(full_path) if File.exist?(full_path)
+    end
+
     private
 
     def tmp_document_storage_dir
