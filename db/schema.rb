@@ -217,7 +217,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_05_05_164618) do
     t.string "passport_status", comment: "sensitive=false"
     t.string "hybrid_mobile_threatmetrix_session_id", comment: "sensitive=false"
     t.string "hybrid_mobile_request_ip", comment: "sensitive=false"
-    t.integer "document_type", comment: "sensitive=false"
+    t.integer "document_type_requested", comment: "sensitive=false"
     t.index ["result_id"], name: "index_document_capture_sessions_on_result_id"
     t.index ["socure_docv_transaction_token"], name: "index_socure_docv_transaction_token", unique: true
     t.index ["user_id"], name: "index_document_capture_sessions_on_user_id"
