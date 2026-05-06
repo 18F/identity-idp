@@ -5,7 +5,7 @@ namespace :document_capture_sessions do
   ##
   # Usage:
   #
-  # Commit updates to docuemnt_capture_sessions defining the document_type_requested column.
+  # Commit updates to document_capture_sessions defining the document_type_requested column.
   # bundle exec \
   #   rake document_capture_sessions:backfill_document_type_requested
   #
