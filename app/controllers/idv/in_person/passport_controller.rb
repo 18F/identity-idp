@@ -53,7 +53,7 @@ module Idv
             user.has_establishing_in_person_enrollment? &&
             DocumentCaptureSession.find_by(
               uuid: idv_session.document_capture_session_uuid,
-            ).passport_status == 'requested'
+            )&.passport_requested?
           },
           undo_step: ->(idv_session:, user:) do
             idv_session.invalidate_in_person_pii_from_user!

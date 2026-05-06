@@ -25,12 +25,8 @@ module Idv
     end
 
     def selected_id_type
-      case document_capture_session.passport_status
-      when 'requested'
-        :passport
-      when 'not_requested'
-        :state_id_card
-      end
+      return :state_id_card if document_capture_session.state_id_requested?
+      return :passport if document_capture_session.passport_requested?
     end
 
     def dos_passport_api_healthy?(

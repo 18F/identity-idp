@@ -56,7 +56,7 @@ module Idv
           if idv_session.document_capture_session_uuid
             DocumentCaptureSession.find_by(
               uuid: idv_session.document_capture_session_uuid,
-            )&.update!(passport_status: nil)
+            )&.update!(passport_status: nil, document_type_requested: nil)
           end
         end,
       )
