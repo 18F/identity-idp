@@ -595,4 +595,32 @@ RSpec.describe DocumentCaptureSession do
       end
     end
   end
+
+  describe '#document_type_requested' do
+    context 'when document_type_requested is set to state_id_card' do
+      let(:document_type_requested) { Idp::Constants::DocumentTypes::STATE_ID_CARD }
+      it 'returns the correct document type requested' do
+        record = build(:document_capture_session, document_type_requested:)
+
+        expect(record.document_type_requested).to eq('state_id_card')
+      end
+    end
+
+    context 'when document_type_requested is not set' do
+      it 'returns nil' do
+        record = build(:document_capture_session)
+
+        expect(record.document_type_requested).to be_nil
+      end
+    end
+
+    context 'when document_type_requested is set to passport' do
+      let(:document_type_requested) { Idp::Constants::DocumentTypes::PASSPORT }
+      it 'returns the correct document type requested' do
+        record = build(:document_capture_session, document_type_requested:)
+
+        expect(record.document_type_requested).to eq('passport')
+      end
+    end
+  end
 end
