@@ -34,7 +34,8 @@ class OpenidConnectTokenForm
     ATTRS.each do |key|
       instance_variable_set(:"@#{key}", params[key])
     end
-    @code_expiration = IdentityConfig.store.openid_connect_authorization_code_expiration_seconds.seconds.ago
+    code_expiration_secs = IdentityConfig.store.openid_connect_authorization_code_expiration_seconds
+    @code_expiration = code_expiration_secs.seconds.ago
     @identity = find_identity_with_code
   end
 
