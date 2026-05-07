@@ -8737,6 +8737,7 @@ module AnalyticsEvents
   end
 
   # User visits webauth platform upsell after sign up
+  # @param [Boolean] opted_to_add Whether the user chose to add a method
   def webauthn_platform_signup_setup_submitted(opted_to_add:, **extra)
     track_event(:webauthn_platform_signup_setup_submitted, opted_to_add:, **extra)
   end
