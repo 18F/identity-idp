@@ -15,7 +15,10 @@ RSpec.describe 'document_capture_sessions rake tasks', type: :task do
     end
 
     let!(:state_id_card_session) do
-      create(:document_capture_session, passport_status: 'not_requested', document_type_requested: nil)
+      create(
+        :document_capture_session, passport_status: 'not_requested',
+                                   document_type_requested: nil
+      )
     end
 
     let!(:passport_session) do
@@ -65,37 +68,29 @@ RSpec.describe 'document_capture_sessions rake tasks', type: :task do
       it 'does not change other attributes' do
         task.execute
 
-        document_type_requested_orig = state_id_card_session.document_type_requested
-        expect(state_id_attrs).to eq(
-          state_id_card_session.reload.attributes.except(
-            'document_type_requested',
-            'updated_at',
-            'created_at',
-          ),
-        )
-        expect(document_type_requested_orig)
-          .not_to eq(state_id_card_session.reload.document_type_requested)
+        verify_attributes(state_id_card_session, true)
+        verify_attributes(passport_session, true)
+        verify_attributes(no_passport_status_session, false)
+        verify_attributes(already_backfilled_session, false)
+      end
 
+      def verify_attributes(session, backfilled = false)
+        orig_document_type_requested = session.document_type_requested
+        orig_updated_at = session.updated_at
+        orig_created_at = session.created_at
 
-        document_type_requested_orig = passport_session.document_type_requested
-        expect(passport_attrs).to eq(
-          passport_session.reload.attributes.except(
-            'document_type_requested',
-            'updated_at',
-            'created_at',
-          ),
-        )
-        expect(document_type_requested_orig)
-          .not_to eq(passport_session.reload.document_type_requested)
-
-
-        expect(no_passport_status_session.attributes).to eq(
-          no_passport_status_session.reload.attributes,
-        )
-
-        expect(already_backfilled_session.attributes).to eq(
-          already_backfilled_session.reload.attributes,
-        )
+        # timestamps excepted due CI nanoseconds mismatch
+        expect(session.attributes.except('document_type_requested', 'updated_at', 'created_at'))
+          .to eq(
+            session.reload.attributes.except('document_type_requested', 'updated_at', 'created_at'),
+          )
+        expect(session.updated_at).to be_within(1.second).of(orig_updated_at)
+        expect(session.created_at).to be_within(1.second).of(orig_created_at)
+        if backfilled
+          expect(session.document_type_requested).not_to eq(orig_document_type_requested)
+        else
+          expect(session.document_type_requested).to eq(orig_document_type_requested)
+        end
       end
     end
   end
