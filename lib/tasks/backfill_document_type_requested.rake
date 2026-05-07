@@ -15,23 +15,24 @@ namespace :document_capture_sessions do
     records_count = without_document_type_requested.count
 
     with_timeout do
-      logger.info("Found #{records_count} document_capture_sessions needing to backfill document_type_requested")
+      logger.info(
+        "Found #{records_count} document_capture_sessions to backfill document_type_requested",
+      )
 
       tally = 0
       state_id_card_requested.in_batches(of: batch_size) do |batch|
-        tally += batch.update_all(document_type_requested: Idp::Constants::DocumentTypes::STATE_ID_CARD) # rubocop:disable Rails/SkipsModelValidations
-        logger.info("commit document_type_requested (stateID) for #{tally}/#{records_count} document_capture_sessions")
+        tally += batch
+          .update_all(document_type_requested: Idp::Constants::DocumentTypes::STATE_ID_CARD) # rubocop:disable Rails/SkipsModelValidations
+
+        logger.info("commit #{tally}/#{records_count} document_capture_sessions (STATE_ID_CARD)")
       end
 
       passport_requested.in_batches(of: batch_size) do |batch|
         tally += batch.update_all(document_type_requested: Idp::Constants::DocumentTypes::PASSPORT) # rubocop:disable Rails/SkipsModelValidations
-        logger.info("commit document_type_requested (passport) for #{tally}/#{records_count} document_capture_sessions")
+        logger.info("commit #{tally}/#{records_count} document_capture_sessions (PASSPORT)")
       end
 
       logger.info("COMPLETE: Updated #{tally}/#{records_count} document_capture_sessions")
-
-      records_count = without_document_type_requested.count
-      logger.info("Found #{records_count} document_capture_sessions needing to backfill document_type_requested")
     end
   end
 
