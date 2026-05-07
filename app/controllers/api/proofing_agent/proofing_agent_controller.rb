@@ -88,6 +88,19 @@ module Api
         render_bad_request(errors: { e.param => ['cannot be blank'] }) and return
       end
 
+      def result
+        document_capture_session = DocumentCaptureSession.find_by(uuid: params[:transaction_id])
+        proofing_result = document_capture_session.load_agent_proofed_user
+
+        response_body = {
+          success: proofing_result.success,
+          reason: proofing_result.reason,
+          transaction_id: params[:transaction_id],
+        }
+
+        render json: response_body, status: :ok
+      end
+
       private
 
       def render_user_not_found
