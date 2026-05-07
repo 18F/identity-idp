@@ -4,6 +4,8 @@
 
 <%= render PageHeadingComponent.new.with_content(t('webauthn_platform_setup.upsell')) %>
 
+<p><%= t('webauthn_platform_setup.instructions') %></p>
+
 <p>
   <%= t('webauthn_platform_setup.info_html',
         ft_unlock_html: link_to(
@@ -20,10 +22,6 @@
               article: 'authentication-methods'
             ))
         ) %>
-</p>
-
-<p>
-    <%= t('webauthn_platform_recommended.upsell') %>
 </p>
 
 <div class="grid-row margin-top-5">
