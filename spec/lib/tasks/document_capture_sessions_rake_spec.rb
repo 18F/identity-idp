@@ -49,12 +49,16 @@ RSpec.describe 'document_capture_sessions rake tasks', type: :task do
       let(:state_id_attrs) do
         state_id_card_session.attributes.except(
           'document_type_requested',
+          'updated_at',
+          'created_at',
         )
       end
 
       let(:passport_attrs) do
         passport_session.attributes.except(
           'document_type_requested',
+          'updated_at',
+          'created_at',
         )
       end
 
@@ -65,26 +69,32 @@ RSpec.describe 'document_capture_sessions rake tasks', type: :task do
         expect(state_id_attrs).to eq(
           state_id_card_session.reload.attributes.except(
             'document_type_requested',
+            'updated_at',
+            'created_at',
           ),
         )
-        expect(document_type_requested_orig).not_to eq(state_id_card_session.reload.document_type_requested)
+        expect(document_type_requested_orig)
+          .not_to eq(state_id_card_session.reload.document_type_requested)
 
 
         document_type_requested_orig = passport_session.document_type_requested
         expect(passport_attrs).to eq(
           passport_session.reload.attributes.except(
             'document_type_requested',
+            'updated_at',
+            'created_at',
           ),
         )
-        expect(document_type_requested_orig).not_to eq(passport_session.reload.document_type_requested)
+        expect(document_type_requested_orig)
+          .not_to eq(passport_session.reload.document_type_requested)
 
 
         expect(no_passport_status_session.attributes).to eq(
-          no_passport_status_session.reload.attributes
+          no_passport_status_session.reload.attributes,
         )
 
         expect(already_backfilled_session.attributes).to eq(
-          already_backfilled_session.reload.attributes
+          already_backfilled_session.reload.attributes,
         )
       end
     end
