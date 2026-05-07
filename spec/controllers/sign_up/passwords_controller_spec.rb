@@ -126,7 +126,7 @@ RSpec.describe SignUp::PasswordsController do
         end
 
         before do
-          allow(IdentityConfig.store).to receive(:ab_test_bucket)
+          allow(controller).to receive(:ab_test_bucket)
             .with(:ACCOUNT_CREATION_WEBAUTHN_PLATFORM_SETUP)
             .and_return(:account_creation_webauthn_platform_setup)
         end
