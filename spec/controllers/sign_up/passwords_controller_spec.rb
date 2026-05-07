@@ -126,8 +126,9 @@ RSpec.describe SignUp::PasswordsController do
         end
 
         before do
-          allow(IdentityConfig.store).to receive(:account_creation_webauthn_platform_setup_percent)
-            .and_return(100)
+          allow(IdentityConfig.store).to receive(:ab_test_bucket)
+            .with(:ACCOUNT_CREATION_WEBAUTHN_PLATFORM_SETUP)
+            .and_return(:account_creation_webauthn_platform_setup)
         end
         it 'redirects when the flag has been turned on' do
           expect(response).to redirect_to(webauthn_platform_setup_url)
