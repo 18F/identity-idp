@@ -5336,6 +5336,29 @@ module AnalyticsEvents
     )
   end
 
+  # Logs when the agent-proofing profile confirmation email was sent to a user
+  # @param [String] user_id UUID of the user who was successfully agent-proofed
+  # @param [Hash] proofing_agent The proofing agent information
+  # @option proofing_agent [String] :correlation_id
+  # @option proofing_agent [String] :transaction_id
+  # @option proofing_agent [String] :agent_id
+  # @option proofing_agent [String] :location_id
+  # @param [Time] expiration_date When the user must confirm their account by
+  def idv_proofing_agent_profile_confirmation_email_sent(
+    user_id:,
+    proofing_agent:,
+    expiration_date:,
+    **extra
+  )
+    track_event(
+      :idv_proofing_agent_profile_confirmation_email_sent,
+      user_id:,
+      proofing_agent:,
+      expiration_date:,
+      **extra,
+    )
+  end
+
   # Tracks a proofing agent request that failed authorization or validation
   # @param [Boolean] success Whether request was successful
   # @param [String] issuer The issuer associated with the proofing request
