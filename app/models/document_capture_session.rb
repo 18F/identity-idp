@@ -13,9 +13,15 @@ class DocumentCaptureSession < ApplicationRecord
 
   validates :passport_status, inclusion: { in: PASSPORT_STATUSES }, allow_nil: true
 
+<<<<<<< HEAD
   enum :document_type_requested, {
     Idp::Constants::DocumentTypes::STATE_ID_CARD => 0,
     Idp::Constants::DocumentTypes::PASSPORT => 1,
+=======
+  enum :document_type, {
+    Idp::Constants::DocumentTypes::STATE_ID => 0,
+    Idp::Constants::DocumentTypes::PASSPORT_BOOK => 1,
+>>>>>>> 5dbe91ec5a (add document_type enum to document capture sessions model)
   }
 
   def load_result
