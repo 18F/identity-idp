@@ -36,10 +36,31 @@ namespace :document_capture_sessions do
     end
   end
 
+  task rollback_backfill_document_type_requested: :environment do |t, _args|
+    logger = Logger.new(STDOUT, progname: "[#{t.name}]")
+    batch_size = ENV['BATCH_SIZE']&.to_i || 1000
+    records_count = without_document_type_requested.count
+
+    with_timeout do
+      logger.info(
+        "Found #{records_count} document_capture_sessions to backfill document_type_requested",
+      )
+
+      backfilled_document_type_requested.in_batches(of: batch_size) do |batch|
+        batch.update_all(document_type_requested: nil) # rubocop:disable Rails/SkipsModelValidations
+      end
+    end
+  end
+
   def without_document_type_requested
     DocumentCaptureSession
       .where.not(passport_status: nil)
       .where(document_type_requested: nil)
+  end
+
+  def backfilled_document_type_requested
+    DocumentCaptureSession
+      .where.not(document_type_requested: nil).where(passport_status: nil)
   end
 
   def passport_requested
