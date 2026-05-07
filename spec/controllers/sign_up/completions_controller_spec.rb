@@ -268,6 +268,24 @@ RSpec.describe SignUp::CompletionsController do
         expect(response).to redirect_to account_path
       end
 
+      it 'replaces a stale selected email session value with the last sign in email' do
+        stale_email = create(:email_address, user: user, confirmed_at: nil)
+
+        stub_sign_in(user)
+        subject.session[:sp] = {
+          acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+          issuer: current_sp.issuer,
+          request_url: 'http://example.com',
+        }
+        subject.user_session[:selected_email_id_for_linked_identity] = stale_email.id
+
+        patch :update
+
+        expect(subject.user_session[:selected_email_id_for_linked_identity].to_i).to eq(
+          user.last_sign_in_email_address.id,
+        )
+      end
+
       context 'with a disposable email address' do
         let(:user) { create(:user, :fully_registered, email: temporary_email) }
 

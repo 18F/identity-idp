@@ -25,7 +25,7 @@ module SignUp
       send_in_person_completion_survey
       notify_user_of_connected_sp
       send_historical_events if historical_events_need_be_sent?
-      if user_session[:selected_email_id_for_linked_identity].nil?
+      if selected_email_id_for_linked_identity.nil?
         user_session[:selected_email_id_for_linked_identity] = current_user
           .last_sign_in_email_address.id
       end
@@ -62,7 +62,7 @@ module SignUp
         requested_attributes: decorated_sp_session.requested_attributes.map(&:to_sym),
         ial2_requested: ial2_requested?,
         completion_context: needs_completion_screen_reason,
-        selected_email_id: user_session[:selected_email_id_for_linked_identity],
+        selected_email_id: selected_email_id_for_linked_identity,
       )
     end
 

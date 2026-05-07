@@ -98,8 +98,8 @@ module OpenidConnect
     def email_address_id
       identity = current_user.identities.find_by(service_provider: sp_session[:issuer])
       return nil if !identity&.verified_single_email_attribute?
-      if user_session[:selected_email_id_for_linked_identity].present?
-        return user_session[:selected_email_id_for_linked_identity]
+      if selected_email_id_for_linked_identity.present?
+        return selected_email_id_for_linked_identity
       end
 
       identity&.email_address_id

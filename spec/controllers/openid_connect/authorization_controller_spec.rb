@@ -1105,6 +1105,33 @@ RSpec.describe OpenidConnect::AuthorizationController do
           identity.reload
           expect(identity.email_address_id).to eq(shared_email_address.id)
         end
+
+        context 'when the session email is no longer confirmed' do
+          let!(:unconfirmed_email_address) do
+            create(
+              :email_address,
+              email: 'pending@email.com',
+              user: user,
+              confirmed_at: nil,
+            )
+          end
+
+          before do
+            identity.update!(email_address_id: shared_email_address.id)
+            controller.user_session[:selected_email_id_for_linked_identity] =
+              unconfirmed_email_address.id
+          end
+
+          it 'ignores the stale session value and clears it' do
+            identity = user.identities.find_by(service_provider: service_provider.issuer)
+
+            action
+            identity.reload
+
+            expect(identity.email_address_id).to eq(shared_email_address.id)
+            expect(controller.user_session[:selected_email_id_for_linked_identity]).to be_nil
+          end
+        end
       end
 
       context 'with SP requesting a single email and all emails' do
