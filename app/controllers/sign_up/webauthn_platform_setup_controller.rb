@@ -13,21 +13,21 @@ module SignUp
 
     def create
       analytics.webauthn_platform_signup_setup_submitted(opted_to_add: opted_to_add?)
-      user_session[:webauthn_platform_recommended] = true if opted_to_add?
+      user_session[:webauthn_platform_signup_setup_recommended] = true if opted_to_add?
       redirect_to dismiss_redirect_path
     end
 
     private
 
     def opted_to_add?
-      params[:add_method].present?
+      params[:add_webauthn_platform].present?
     end
 
     def dismiss_redirect_path
       if opted_to_add?
         webauthn_setup_path(platform: true)
       else
-        after_mfa_setup_path
+        authentication_methods_setup_url
       end
     end
   end
