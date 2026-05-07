@@ -170,6 +170,7 @@ email_registrations_per_ip_period: 20
 email_registrations_per_ip_track_only_mode: false
 enable_add_mfa_redirect_for_personal_key: false
 enable_load_testing_mode: false
+enable_one_account_global_detection: false
 enable_rate_limiting: true
 enable_test_routes: true
 encrypted_document_storage_s3_bucket: 'test-bucket'
@@ -204,6 +205,7 @@ identity_verification_outcomes_report_emails: '[]'
 identity_verification_outcomes_report_issuers: '[]'
 idv_aamva_at_doc_auth_enabled: false
 idv_aamva_at_doc_auth_ipp_enabled: false
+idv_aamva_bypass_exception_ids: '[]'
 idv_aamva_split_last_name_states: '[]'
 idv_account_verified_email_campaign_id: '20241028'
 idv_acuant_sdk_upgrade_a_b_testing_enabled: false

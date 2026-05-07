@@ -846,6 +846,28 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
               )
             end
           end
+
+          context 'when aamva returns a bypassed exception' do
+            let(:proofer_result) do
+              Proofing::StateIdResult.new(
+                success: false,
+                vendor_name: 'state_id:aamva',
+                transaction_id: proofer_transaction_id,
+                exception: RuntimeError.new('ExceptionId: bypass_id'),
+              )
+            end
+            let(:proofer_result_hash) { proofer_result.to_h }
+
+            it 'returns a skipped result' do
+              allow(IdentityConfig.store).to receive(:idv_aamva_bypass_exception_ids).and_return(
+                ['test_id', 'bypass_id'],
+              )
+              call.tap do |result|
+                expect(result.success?).to eq(true)
+                expect(result.vendor_name).to eq(Idp::Constants::Vendors::AAMVA_CHECK_SKIPPED)
+              end
+            end
+          end
         end
       end
 

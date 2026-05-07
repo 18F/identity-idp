@@ -16,25 +16,29 @@ class DuplicateProfilesDetectedController < ApplicationController
   private
 
   def redirect_unless_user_has_active_duplicate_profile
-    if current_user&.active_profile.present?
-      if duplicate_profile_set.present?
-        return
-      end
-    end
-    redirect_to root_url
+    return redirect_to(root_url) unless current_user&.identity_verified_with_facial_match?
+    return redirect_to(root_url) unless duplicate_profile_set.present?
   end
 
   def duplicate_profile_set
-    @duplicate_profile_set ||= DuplicateProfileSet.involving_profile(
-      profile_id: current_user.active_profile.id,
-      service_provider: current_sp&.issuer,
-    )
+    return nil unless current_user&.active_profile
+
+    @duplicate_profile_set ||= if IdentityConfig.store.enable_one_account_global_detection
+                                 DuplicateProfileSet.involving_profile_global(
+                                   profile_id: current_user.active_profile.id,
+                                 )
+    else
+      DuplicateProfileSet.involving_profile(
+        profile_id: current_user.active_profile.id,
+        service_provider: current_sp&.issuer,
+      )
+    end
   end
 
   def notify_users_of_duplicate_profile(source:)
     return unless duplicate_profile_set
     return if user_session[:dupe_profiles_notified]
-    agency_name = current_sp.friendly_name || current_sp.agency&.name
+    agency_name = current_sp&.friendly_name || current_sp&.agency&.name
 
     duplicate_profile_set.profile_ids.each do |profile_id|
       next if current_user&.active_profile&.id == profile_id

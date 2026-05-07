@@ -50,24 +50,36 @@ module Proofing
               applicant_pii
             end
 
-          timer.time('state_id') do
+          result = timer.time('state_id') do
             proofer.proof(applicant_pii_with_state_id_address)
-          end.tap do |result|
-            if result.exception.blank?
-              Db::SpCost::AddSpCost.call(
-                current_sp,
-                :aamva,
-                transaction_id: result.transaction_id,
-              )
-            end
-
-            if doc_auth_flow
-              log_state_id_validation(
-                analytics:, result: result.to_h, applicant_pii:, ipp_enrollment_in_progress:,
-                aamva_checked: result.exception.blank?
-              )
-            end
           end
+
+          if result.exception.blank?
+            Db::SpCost::AddSpCost.call(
+              current_sp,
+              :aamva,
+              transaction_id: result.transaction_id,
+            )
+          end
+
+          log_state_id_validation(
+            analytics:, result: result.to_h, applicant_pii:, ipp_enrollment_in_progress:,
+            aamva_checked: result.exception.blank?
+          )
+          if contains_bypass_exception_id?(result.exception)
+            return skipped_result(exception: result.exception)
+          end
+
+          result
+        end
+
+        def contains_bypass_exception_id?(result_exception)
+          return false if result_exception.blank?
+
+          IdentityConfig.store.idv_aamva_bypass_exception_ids.each do |exception_id|
+            return true if result_exception.to_s.include?("ExceptionId: #{exception_id}")
+          end
+          false
         end
 
         def aamva_supports_state_id_jurisdiction?(applicant_pii)
@@ -85,10 +97,10 @@ module Proofing
         end
 
         # @return [Proofing::StateIdResult] A result signifying that the AAMVA plugin was skipped.
-        def skipped_result
+        def skipped_result(exception: nil)
           Proofing::StateIdResult.new(
             errors: {},
-            exception: nil,
+            exception: exception,
             success: true,
             vendor_name: Idp::Constants::Vendors::AAMVA_CHECK_SKIPPED,
           )

@@ -344,4 +344,170 @@ RSpec.describe DuplicateProfileChecker do
       end
     end
   end
+
+  describe '#dupe_profile_set_for_user (global detection)' do
+    before do
+      allow(IdentityConfig.store).to receive(:enable_one_account_global_detection)
+        .and_return(true)
+      profile.encrypt_pii(active_pii, user.password)
+      profile.save
+      session[:encrypted_profiles] = {
+        profile.id.to_s => SessionEncryptor.new.kms_encrypt(active_pii.to_json),
+      }
+      stub_analytics
+    end
+
+    context 'when user has facial match profile' do
+      context 'when SP is not in eligible_one_account_providers' do
+        it 'still checks for duplicates (no SP gating)' do
+          allow(IdentityConfig.store).to receive(:eligible_one_account_providers)
+            .and_return([])
+
+          allow_any_instance_of(Idv::DuplicateSsnFinder)
+            .to receive(:duplicate_facial_match_profiles_global)
+            .and_return([])
+
+          dupe_profile_checker = DuplicateProfileChecker.new(
+            user: user,
+            user_session: session,
+            sp: sp,
+            analytics: @analytics,
+          )
+          # Should not return early — it proceeds past should_check_for_duplicates?
+          expect(dupe_profile_checker.dupe_profile_set_for_user).to be_nil
+        end
+      end
+
+      context 'when matching profiles are found globally' do
+        let(:user2) { create(:user, :fully_registered) }
+        let!(:profile2) do
+          create(
+            :profile,
+            :active,
+            :facial_match_proof,
+            user: user2,
+          )
+        end
+
+        before do
+          allow_any_instance_of(Idv::DuplicateSsnFinder)
+            .to receive(:duplicate_facial_match_profiles_global)
+            .and_return([profile2])
+        end
+
+        it 'creates a global duplicate profile set with null service_provider' do
+          dupe_profile_checker = DuplicateProfileChecker.new(
+            user: user,
+            user_session: session,
+            sp: sp,
+            analytics: @analytics,
+          )
+          dupe_profile_set = dupe_profile_checker.dupe_profile_set_for_user
+
+          expect(dupe_profile_set).to be_present
+          expect(dupe_profile_set.service_provider).to be_nil
+          expect(dupe_profile_set.profile_ids).to match_array([profile.id, profile2.id])
+          expect(@analytics).to have_logged_event(:one_account_duplicate_profile_created)
+        end
+
+        it 'closes existing SP-scoped sets for the profile' do
+          sp_scoped_set = create(
+            :duplicate_profile_set,
+            profile_ids: [profile.id, profile2.id],
+            service_provider: sp.issuer,
+          )
+
+          dupe_profile_checker = DuplicateProfileChecker.new(
+            user: user,
+            user_session: session,
+            sp: sp,
+            analytics: @analytics,
+          )
+          dupe_profile_checker.dupe_profile_set_for_user
+
+          expect(sp_scoped_set.reload.closed_at).not_to be_nil
+        end
+      end
+
+      context 'when no duplicates are found globally' do
+        before do
+          allow_any_instance_of(Idv::DuplicateSsnFinder)
+            .to receive(:duplicate_facial_match_profiles_global)
+            .and_return([])
+        end
+
+        context 'when an existing global set exists' do
+          let(:user2) { create(:user, :fully_registered) }
+          let!(:profile2) do
+            create(:profile, :active, :facial_match_proof, user: user2)
+          end
+          let!(:existing_global_set) do
+            create(
+              :duplicate_profile_set, :global,
+              profile_ids: [profile.id, profile2.id]
+            )
+          end
+
+          it 'closes the existing global set' do
+            freeze_time do
+              dupe_profile_checker = DuplicateProfileChecker.new(
+                user: user,
+                user_session: session,
+                sp: sp,
+                analytics: @analytics,
+              )
+              dupe_profile_checker.dupe_profile_set_for_user
+
+              expect(existing_global_set.reload.closed_at).to eq(Time.zone.now)
+              expect(@analytics).to have_logged_event(:one_account_duplicate_profile_closed)
+            end
+          end
+        end
+      end
+    end
+
+    context 'rollback: when global detection is disabled after being enabled' do
+      before do
+        allow(IdentityConfig.store).to receive(:enable_one_account_global_detection)
+          .and_return(false)
+        allow(IdentityConfig.store).to receive(:eligible_one_account_providers)
+          .and_return([sp.issuer])
+      end
+
+      let(:user2) { create(:user, :fully_registered) }
+      let!(:user2_identity) do
+        create(
+          :service_provider_identity,
+          user: user2,
+          service_provider: sp.issuer,
+        )
+      end
+      let!(:profile2) do
+        create(:profile, :active, :facial_match_proof, user: user2)
+      end
+
+      it 'creates SP-scoped sets again (ignoring orphaned global sets)' do
+        # Simulate an orphaned global set from when flag was on
+        create(
+          :duplicate_profile_set, :global,
+          profile_ids: [profile.id, profile2.id]
+        )
+
+        allow_any_instance_of(Idv::DuplicateSsnFinder)
+          .to receive(:duplicate_facial_match_profiles)
+          .and_return([profile2])
+
+        dupe_profile_checker = DuplicateProfileChecker.new(
+          user: user,
+          user_session: session,
+          sp: sp,
+          analytics: @analytics,
+        )
+        dupe_profile_set = dupe_profile_checker.dupe_profile_set_for_user
+
+        expect(dupe_profile_set.service_provider).to eq(sp.issuer)
+        expect(dupe_profile_set.profile_ids).to match_array([profile.id, profile2.id])
+      end
+    end
+  end
 end

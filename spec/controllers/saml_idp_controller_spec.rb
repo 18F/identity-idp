@@ -651,6 +651,14 @@ RSpec.describe SamlIdpController do
         },
       )
     end
+    let(:ial2_facial_match_settings) do
+      saml_settings(
+        overrides: {
+          issuer: sp1_issuer,
+          authn_context: Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF,
+        },
+      )
+    end
     let(:ialmax_settings) do
       saml_settings(
         overrides: {
@@ -819,10 +827,9 @@ RSpec.describe SamlIdpController do
       end
 
       context 'user has a duplicate profile in another account' do
+        let(:user) { create(:profile, :active, :verified, :facial_match_proof).user }
         let(:user2) do
-          create(
-            :profile, :active, :verified, proofing_components: { liveness_check: true }
-          ).user
+          create(:profile, :active, :verified, :facial_match_proof).user
         end
         let(:duplicate_profile_set) do
           create(
@@ -838,13 +845,15 @@ RSpec.describe SamlIdpController do
           allow(IdentityConfig.store)
             .to receive(:eligible_one_account_providers)
             .and_return([service_provider.issuer])
+          allow(IdentityConfig.store).to receive(:facial_match_general_availability_enabled)
+            .and_return(true)
           allow_any_instance_of(DuplicateProfileChecker)
             .to receive(:dupe_profile_set_for_user).and_return(duplicate_profile_set)
           allow(controller).to receive(:current_user).and_return(user)
         end
 
         it 'redirects user to duplicate profiles detected page' do
-          saml_get_auth(ial2_settings)
+          saml_get_auth(ial2_facial_match_settings)
           expect(response).to redirect_to(duplicate_profiles_detected_url(source: :sign_in))
         end
       end
