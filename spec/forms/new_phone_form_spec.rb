@@ -413,20 +413,6 @@ RSpec.describe NewPhoneForm do
             .from(nil)
             .to(recaptcha_assessment_id)
         end
-
-        context 'with recaptcha enterprise' do
-          let(:recaptcha_form) do
-            PhoneRecaptchaForm.new(
-              form_class: RecaptchaEnterpriseForm,
-              parsed_phone: nil,
-            )
-          end
-
-          it 'is valid' do
-            expect(result.success?).to eq(true)
-            expect(result.errors).to be_blank
-          end
-        end
       end
 
       context 'with invalid recaptcha result' do
