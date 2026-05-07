@@ -109,8 +109,9 @@ module I18n
         { key: 'user_mailer.in_person_failed.verifying_step_passports_enabledb1' }, # for failed proofing emails
         { key: 'user_mailer.in_person_failed.verifying_step_passports_enabledb2' }, # for failed proofing emails
         { key: 'user_mailer.in_person_failed.verifying_step_passports_enabledb3_html' }, # for failed proofing emails
-        { key: 'webauthn_platform_setup.ft_unlock' },
         { key: 'webauthn_platform_setup.info_html' },
+        { key: 'webauthn_platform_setup.instructions' },
+        { key: 'webauthn_platform_setup.ft_unlock' },
         { key: 'webauthn_platform_setup.phishing_resistant' },
         { key: 'webauthn_platform_setup.upsell' },
       ].freeze
