@@ -425,7 +425,7 @@ class Profile < ApplicationRecord
 
     result = encrypted_doc_writer.write_encrypted_attempt_events(
       file_path: attempt_events_file_path,
-      encrypted_attempt_events: encrypted_events,
+      encrypted_attempt_events: encrypted_events_json,
     )
 
     update!(encrypted_attempts_file_reference: result.name)

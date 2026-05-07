@@ -105,7 +105,7 @@ RSpec.describe EncryptedDocStorage::DocWriter do
 
   describe '#write_encrypted_attempt_events' do
     let(:file_path) { 'file_path' }
-    let(:encrypted_attempt_events) { { events: 'encrypted_attempt_events' } }
+    let(:encrypted_attempt_events) { { events: 'encrypted_attempt_events' }.to_json }
     let(:uuid) { 'test-uuid' }
     let(:path) { "#{file_path}/#{uuid}" }
     before do
@@ -117,7 +117,7 @@ RSpec.describe EncryptedDocStorage::DocWriter do
         :write_attempt_events,
       ).with(
         path:,
-        encrypted_attempt_events: encrypted_attempt_events.to_json,
+        encrypted_attempt_events:,
       )
 
       result = subject.write_encrypted_attempt_events(file_path:, encrypted_attempt_events:)
@@ -134,7 +134,7 @@ RSpec.describe EncryptedDocStorage::DocWriter do
           :write_attempt_events,
         ).with(
           path:,
-          encrypted_attempt_events: encrypted_attempt_events.to_json,
+          encrypted_attempt_events:,
         )
         expect_any_instance_of(EncryptedDocStorage::LocalStorage).not_to receive(
           :write_attempt_events,

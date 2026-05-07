@@ -210,11 +210,8 @@ module Idv
 
     def record_user_proofing_events
       return unless historical_events_enabled?
-      # TODO: move UserProofingEvent creation to the Profile object
 
       current_user.active_profile.create_user_proofing_event(password:, attempt_events:)
-
-      # Now that proofing events are saved, remove the plaintext events from user_session
 
       user_session.delete('idv/attempts')
     end
