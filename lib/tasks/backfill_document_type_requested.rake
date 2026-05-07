@@ -38,8 +38,8 @@ namespace :document_capture_sessions do
 
   def without_document_type_requested
     DocumentCaptureSession
-      .where(document_type_requested: nil)
       .where.not(passport_status: nil)
+      .where(document_type_requested: nil)
   end
 
   def passport_requested
