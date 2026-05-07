@@ -99,7 +99,8 @@ module SignUp
     end
 
     def account_creation_webauthn_platform_bucket?
-      ab_test_bucket(:ACCOUNT_CREATION_WEBAUTHN_PLATFORM_SETUP) == :account_creation_webauthn_platform_setup
+      ab_test_bucket(:ACCOUNT_CREATION_WEBAUTHN_PLATFORM_SETUP) ==
+        :account_creation_webauthn_platform_setup
     end
   end
 end

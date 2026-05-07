@@ -29,14 +29,14 @@
 <div class="grid-row margin-top-5">
   <div class="tablet:grid-col-9">
     <%= render SubmitButtonComponent.new(
-      url: webauthn_setup_url(platform:true),
+      url: webauthn_platform_setup_url,
       method: :post,
-      params: { add_method: true },
+      params: { add_webauthn_platform: true },
       full_width: true,
       class: 'margin-bottom-2',
       ).with_content(t('webauthn_platform_recommended.cta')) %>
   <%= render SubmitButtonComponent.new(
-      url: authentication_methods_setup_url,
+      url: webauthn_platform_setup_url,
       method: :post,
       unstyled: true,
       big: false,
