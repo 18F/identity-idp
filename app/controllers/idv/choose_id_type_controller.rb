@@ -11,10 +11,12 @@ module Idv
 
     def show
       analytics.idv_doc_auth_choose_id_type_visited(**analytics_arguments)
-
+      puts document_capture_session.inspect
       render 'idv/shared/choose_id_type',
              locals: locals_attrs(
-               presenter: Idv::ChooseIdTypePresenter.new,
+               presenter: Idv::ChooseIdTypePresenter.new(
+                 mdl_enabled: document_capture_session.mdl_enabled,
+               ),
                form_submit_url: idv_choose_id_type_path,
              ),
              layout: true
