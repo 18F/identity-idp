@@ -10,6 +10,6 @@ FactoryBot.define do
   end
 
   trait :passport_requested do
-    passport_status { 'requested' }
+    document_type_requested { Idp::Constants::DocumentTypes::PASSPORT }
   end
 end

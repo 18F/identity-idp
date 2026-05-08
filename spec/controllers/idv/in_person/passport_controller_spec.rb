@@ -5,7 +5,7 @@ RSpec.describe Idv::InPerson::PassportController do
 
   let(:user) { create(:user) }
   let(:document_capture_session) do
-    create(:document_capture_session, user:, passport_status: 'requested')
+    create(:document_capture_session, user:, document_type_requested: Idp::Constants::DocumentTypes::PASSPORT)
   end
   let(:idv_session) { subject.idv_session }
   let(:enrollment) { create(:in_person_enrollment, :establishing, user: user) }
@@ -67,7 +67,7 @@ RSpec.describe Idv::InPerson::PassportController do
 
       context 'when document_capture_session is "requested"' do
         before do
-          subject.document_capture_session.update!(passport_status: 'requested')
+          subject.document_capture_session.update!(document_type_requested: Idp::Constants::DocumentTypes::PASSPORT)
         end
 
         context 'when there is no stored user pii' do
@@ -121,7 +121,7 @@ RSpec.describe Idv::InPerson::PassportController do
 
       context 'when document_capture_session is "not_requested"' do
         before do
-          subject.document_capture_session.update!(passport_status: 'not_requested')
+          subject.document_capture_session.update!(document_type_requested: Idp::Constants::DocumentTypes::STATE_ID_CARD)
           get :show
         end
 

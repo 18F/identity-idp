@@ -601,7 +601,7 @@ RSpec.describe SocureDocvResultsJob do
 
           context 'when a passport was requested' do
             before do
-              document_capture_session.update(passport_status: 'requested')
+              document_capture_session.update(document_type_requested: Idp::Constants::DocumentTypes::PASSPORT)
             end
 
             it 'doc auth fails' do
@@ -758,7 +758,7 @@ RSpec.describe SocureDocvResultsJob do
               context 'when a passport was requested' do
                 before do
                   document_capture_session.update!(
-                    passport_status: 'requested',
+                    document_type_requested: Idp::Constants::DocumentTypes::PASSPORT,
                   )
                 end
 
