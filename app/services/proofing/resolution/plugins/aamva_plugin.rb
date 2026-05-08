@@ -20,7 +20,8 @@ module Proofing
           timer:,
           analytics: nil,
           doc_auth_flow: false,
-          already_proofed: false
+          already_proofed: false,
+          proofing_agent: nil
         )
           return skipped_result if passport_applicant?(applicant_pii) || already_proofed
 
@@ -66,7 +67,7 @@ module Proofing
 
           log_state_id_validation(
             analytics:, result: result.to_h, applicant_pii:, ipp_enrollment_in_progress:,
-            aamva_checked: result.exception.blank?, bypass_exception:
+            aamva_checked: result.exception.blank?, bypass_exception:, proofing_agent:
           )
           if bypass_exception
             return skipped_result(exception: result.exception)
@@ -183,7 +184,7 @@ module Proofing
 
         def log_state_id_validation(analytics:, result:, applicant_pii:,
                                     ipp_enrollment_in_progress:, aamva_checked:,
-                                    bypass_exception: nil)
+                                    bypass_exception: nil, proofing_agent: nil)
           analytics&.idv_state_id_validation(
             **result,
             user_id: applicant_pii[:uuid],
@@ -207,6 +208,7 @@ module Proofing
               [:errors, :zipcode],
               [:state_id_jurisdiction],
             ],
+            proofing_agent:,
           )
         end
 

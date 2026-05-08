@@ -94,36 +94,13 @@ module Api
         )
 
         analytics.idv_doc_auth_verify_proofing_results(
-          **analytics_arguments,
-          response_body:,
-          transaction_id:,
-          remaining_attempts: proofing_rate_limiter.remaining_count,
-        )
-
-        if params[:state_id].present?
-          analytics.idv_state_id_validation(
-            **analytics_arguments,
-            response_body:,
-            transaction_id:,
-          )
-        elsif params[:passport].present?
-          analytics.idv_dos_passport_verification(
-            **analytics_arguments,
-            response_body:,
-            transaction_id:,
-          )
-        end
-
-        analytics.idv_phone_confirmation_vendor_submitted(
-          **analytics_arguments,
-          response_body:,
-          transaction_id:,
+          **analytics_arguments.except(:issuer),
         )
 
         analytics.idv_proofing_agent_webhook(
           **analytics_arguments,
-          response_body:,
-          transaction_id:,
+          response_body: { body: response_body, status: :accepted },
+          body_payload: response_body,
         )
 
         render json: response_body, status: :accepted
