@@ -1774,14 +1774,21 @@ RSpec.describe User do
 
   describe '#connected_apps' do
     let(:user) { create(:user) }
-    let(:app) { create(:service_provider_identity, service_provider: 'aaa') }
+    let(:app) { create(:service_provider_identity) }
     let(:deleted_app) do
-      create(:service_provider_identity, service_provider: 'bbb', deleted_at: 5.days.ago)
+      create(:service_provider_identity, deleted_at: 5.days.ago)
+    end
+    let(:missing_service_provider_app) do
+      create(
+        :service_provider_identity,
+        service_provider_record: nil,
+        service_provider: 'ccc',
+      )
     end
 
-    before { user.identities << app << deleted_app }
+    before { user.identities << app << deleted_app << missing_service_provider_app }
 
-    it 'omits deleted apps' do
+    it 'omits deleted apps and apps with missing service providers' do
       expect(user.connected_apps).to eq([app])
     end
   end
