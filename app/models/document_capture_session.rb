@@ -178,7 +178,7 @@ class DocumentCaptureSession < ApplicationRecord
 
   def request_passport!
     attrs = {
-      passport_status: 'requested',
+      passport_status: nil,
       document_type_requested: Idp::Constants::DocumentTypes::PASSPORT,
       doc_auth_vendor: nil,
     }
@@ -189,7 +189,7 @@ class DocumentCaptureSession < ApplicationRecord
 
   def request_state_id!
     attrs = {
-      passport_status: 'not_requested',
+      passport_status: nil,
       document_type_requested: Idp::Constants::DocumentTypes::STATE_ID_CARD,
       doc_auth_vendor: nil,
     }
