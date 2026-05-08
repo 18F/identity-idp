@@ -83,6 +83,39 @@ module Api
           transaction_id:,
         )
 
+        analytics.idv_doc_auth_verify_proofing_results(
+          **analytics_arguments,
+          response_body:,
+          transaction_id:,
+          remaining_attempts: proofing_rate_limiter.remaining_count,
+        )
+
+        if params[:state_id].present?
+          analytics.idv_state_id_validation(
+            **analytics_arguments,
+            response_body:,
+            transaction_id:,
+          )
+        elsif params[:passport].present?
+          analytics.idv_dos_passport_verification(
+            **analytics_arguments,
+            response_body:,
+            transaction_id:,
+          )
+        end
+
+        analytics.idv_phone_confirmation_vendor_submitted(
+          **analytics_arguments,
+          response_body:,
+          transaction_id:,
+        )
+
+        analytics.idv_proofing_agent_webhook(
+          **analytics_arguments,
+          response_body:,
+          transaction_id:,
+        )
+
         render json: response_body, status: :accepted
       rescue ActionController::ParameterMissing => e
         render_bad_request(errors: { e.param => ['cannot be blank'] }) and return
