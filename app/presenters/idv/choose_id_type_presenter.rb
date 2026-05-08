@@ -3,6 +3,12 @@
 class Idv::ChooseIdTypePresenter
   include ActionView::Helpers::TranslationHelper
 
+  attr_reader :mdl_enabled
+
+  def initialize(mdl_enabled: false)
+    @mdl_enabled = mdl_enabled
+  end
+
   def choose_id_type_info_text
     t('doc_auth.info.choose_id_type')
   end
@@ -13,6 +19,10 @@ class Idv::ChooseIdTypePresenter
 
   def hybrid_flow?
     false
+  end
+
+  def mdl_enabled?
+    mdl_enabled
   end
 
   def step_indicator_steps

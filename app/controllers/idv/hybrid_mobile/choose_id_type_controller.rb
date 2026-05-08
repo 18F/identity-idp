@@ -67,7 +67,9 @@ module Idv
 
       def choose_id_type_attrs
         locals_attrs(
-          presenter: Idv::HybridMobile::ChooseIdTypePresenter.new,
+          presenter: Idv::HybridMobile::ChooseIdTypePresenter.new(
+            mdl_enabled: document_capture_session.mdl_enabled,
+          ),
           form_submit_url: idv_hybrid_mobile_choose_id_type_path,
         ).merge!(threatmetrix_variables(hybrid_flow: true))
       end

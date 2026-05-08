@@ -222,4 +222,14 @@ module AbTests
   ) do |user:, user_session:, **|
     user&.uuid
   end.freeze
+
+  DOC_AUTH_MDL = AbTest.new(
+    experiment_name: 'Doc Auth Mobile Driver License Enabled',
+    should_log: /^idv/i,
+    buckets: {
+      mdl_enabled: IdentityConfig.store.idv_doc_auth_mdl_enabled_percent,
+    },
+  ) do |user:, user_session:, **|
+    user&.uuid
+  end.freeze
 end

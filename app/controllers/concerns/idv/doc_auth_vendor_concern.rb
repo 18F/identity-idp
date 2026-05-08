@@ -16,7 +16,9 @@ module Idv
     def bucketed_doc_auth_vendor(user)
       @bucketed_doc_auth_vendor ||= begin
         bucket = nil
-        if resolved_authn_context_result.facial_match?
+        if document_capture_session.mdl_requested?
+          bucket = :socure
+        elsif resolved_authn_context_result.facial_match?
           if document_capture_session.passport_requested?
             bucket = ab_test_bucket(:DOC_AUTH_PASSPORT_SELFIE_VENDOR, user:)
           else
