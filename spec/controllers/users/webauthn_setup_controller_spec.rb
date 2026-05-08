@@ -20,6 +20,16 @@ RSpec.describe Users::WebauthnSetupController do
   end
 
   def expect_multi_factor_authentication_setup(attributes)
+    attributes = if attributes.instance_of?(Hash)
+                   { auto_passkey_prompted: false }.merge(attributes)
+    elsif attributes.instance_of?(RSpec::Matchers::BuiltIn::Include)
+      include(auto_passkey_prompted: false, **attributes.expecteds.first)
+    elsif attributes.instance_of?(RSpec::Mocks::ArgumentMatchers::HashIncludingMatcher)
+      hash_including(auto_passkey_prompted: false, **attributes.instance_variable_get(:@expected))
+    else
+      attributes
+    end
+
     expect(@analytics).to have_logged_event(
       'Multi-Factor Authentication Setup',
       attributes,
@@ -88,6 +98,7 @@ RSpec.describe Users::WebauthnSetupController do
           platform_authenticator: false,
           enabled_mfa_methods_count: 0,
           in_account_creation_flow: false,
+          auto_passkey_prompted: false,
         )
       end
 
@@ -384,24 +395,15 @@ RSpec.describe Users::WebauthnSetupController do
           end
         end
 
-        context 'when feature flag is enabled and platform authenticator' do
-          before do
-            allow(FeatureManagement).to receive(:account_creation_passkey_auto_prompt_enabled?)
-              .and_return(true)
-          end
-
+        context 'when auto prompt is requested and platform authenticator is used' do
           it 'sets auto_trigger to true' do
-            get :new, params: { platform: true }
+            get :new, params: { platform: true, auto_trigger: true }
+
             expect(assigns(:auto_trigger)).to eq(true)
           end
         end
 
-        context 'when feature flag is disabled' do
-          before do
-            allow(FeatureManagement).to receive(:account_creation_passkey_auto_prompt_enabled?)
-              .and_return(false)
-          end
-
+        context 'when the user was not auto prompted' do
           it 'sets auto_trigger to false' do
             get :new, params: { platform: true }
             expect(assigns(:auto_trigger)).to eq(false)
@@ -409,13 +411,8 @@ RSpec.describe Users::WebauthnSetupController do
         end
 
         context 'when not a platform authenticator' do
-          before do
-            allow(FeatureManagement).to receive(:account_creation_passkey_auto_prompt_enabled?)
-              .and_return(true)
-          end
-
           it 'sets auto_trigger to false' do
-            get :new
+            get :new, params: { auto_trigger: true }
             expect(assigns(:auto_trigger)).to eq(false)
           end
         end
@@ -423,12 +420,10 @@ RSpec.describe Users::WebauthnSetupController do
         context 'when not in account creation flow' do
           before do
             controller.user_session[:in_account_creation_flow] = false
-            allow(FeatureManagement).to receive(:account_creation_passkey_auto_prompt_enabled?)
-              .and_return(true)
           end
 
           it 'sets auto_trigger to false' do
-            get :new, params: { platform: true }
+            get :new, params: { platform: true, auto_trigger: true }
             expect(assigns(:auto_trigger)).to eq(false)
           end
         end
@@ -443,6 +438,64 @@ RSpec.describe Users::WebauthnSetupController do
           get :new, params: { platform: true }
 
           expect(response).to redirect_to(authentication_methods_setup_path)
+        end
+      end
+    end
+
+    describe 'auto-passkey-prompt redirect after successful setup' do
+      let(:params) do
+        {
+          attestation_object: attestation_object,
+          client_data_json: setup_client_data_json,
+          name: 'mykey',
+          transports: 'internal,hybrid',
+          platform_authenticator: 'true',
+        }
+      end
+
+      before do
+        allow(IdentityConfig.store).to receive(:domain_name).and_return('localhost:3000')
+        request.host = 'localhost:3000'
+        controller.user_session[:webauthn_challenge] = webauthn_challenge
+        controller.user_session[:in_account_creation_flow] = true
+        controller.user_session[:auto_passkey_prompted] = true
+      end
+
+      context 'when auto_passkey_prompted is set and no mfa_selections queued' do
+        it 'redirects to authentication methods setup after successful platform authenticator setup' do # rubocop:disable Layout/LineLength
+          expect_mfa_enrolled(success: true, mfa_device_type: 'webauthn_platform')
+
+          patch :confirm, params: params
+
+          expect(response).to redirect_to(authentication_methods_setup_url)
+        end
+      end
+
+      context 'when mfa_selections are queued (normal multi-MFA flow takes precedence)' do
+        before do
+          controller.user_session[:mfa_selections] = ['webauthn_platform', 'voice']
+        end
+
+        it 'redirects to the next queued MFA setup instead' do
+          expect_mfa_enrolled(success: true, mfa_device_type: 'webauthn_platform')
+
+          patch :confirm, params: params
+
+          expect(response).to redirect_to(phone_setup_url)
+        end
+      end
+
+      context 'when auto_passkey_prompted is not set' do
+        before do
+          controller.user_session.delete(:auto_passkey_prompted)
+        end
+
+        it 'does not redirect to authentication methods setup' do
+          expect_mfa_enrolled(success: true, mfa_device_type: 'webauthn_platform')
+
+          patch :confirm, params: params
+
+          expect(response).not_to redirect_to(authentication_methods_setup_url)
         end
       end
     end

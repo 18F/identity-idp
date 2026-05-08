@@ -44,18 +44,6 @@ RSpec.describe 'users/webauthn_setup/new.html.erb' do
       )
     end
 
-    it 'links back to MFA setup with the canonical path when auto trigger is enabled' do
-      allow(view).to receive(:current_user).and_return(create(:user))
-      assign(:auto_trigger, true)
-
-      render
-
-      expect(rendered).to have_link(
-        t('two_factor_authentication.choose_another_option'),
-        href: authentication_methods_setup_path,
-      )
-    end
-
     context 'when user selects multiple MFA options on account creation' do
       before do
         assign(:need_to_set_up_additional_mfa, false)
