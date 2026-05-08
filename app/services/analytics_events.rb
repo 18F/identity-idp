@@ -5419,6 +5419,30 @@ module AnalyticsEvents
     )
   end
 
+  # @param [Hash] response_body The body of the response from the proofing agent's proofing request
+  # @param [Hash] proofing_agent The proofing agent information
+  # @param [String] issuer The issuer associated with the proofing request
+  # @param [String,nil] transaction_id The transaction ID associated with the proofing request
+  # @param [Hash] response The full response object from the proofing agent's webhook request
+  def idv_proofing_agent_webhook(
+    response_body:,
+    proofing_agent:,
+    issuer:,
+    response:,
+    transaction_id: nil,
+    **extra
+  )
+    track_event(
+      :idv_proofing_agent_webhook,
+      response_body:,
+      proofing_agent:,
+      issuer:,
+      response:,
+      transaction_id:,
+      **extra,
+    )
+  end
+
   # @param [Hash,nil] proofing_components User's current proofing components
   # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
   # @option proofing_components [String,nil] 'document_type_received' Type of ID detected by vendor
