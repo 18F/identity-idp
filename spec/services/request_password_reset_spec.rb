@@ -6,7 +6,7 @@ RSpec.describe RequestPasswordReset do
     let(:user) { create(:user) }
     let(:request_id) { SecureRandom.uuid }
     let(:email_address) { user.email_addresses.first }
-    let(:email) { email_address.email }
+    let(:email) { email_address.email.downcase }
 
     context 'when the user is not found' do
       it 'sends the user missing email' do
@@ -243,6 +243,34 @@ RSpec.describe RequestPasswordReset do
           ).perform
         end
           .to_not(change { user.reload.reset_password_token })
+
+        expect(analytics).to have_logged_event(
+          'Rate Limit Reached',
+          limiter_type: :reset_password_email,
+        )
+      end
+
+      it 'rate limits the email sending when capitalization changes between attempts' do
+        max_attempts = IdentityConfig.store.reset_password_email_max_attempts
+        upcased_email = email_address.email.upcase
+
+        (max_attempts - 1).times do
+          expect do
+            RequestPasswordReset.new(
+              email:,
+              analytics:,
+              attempts_api_tracker:,
+            ).perform
+          end
+            .to(change { user.reload.reset_password_token })
+        end
+
+        # extra time, rate limited using the same email string capitalized
+        RequestPasswordReset.new(
+          email: upcased_email,
+          analytics:,
+          attempts_api_tracker:,
+        ).perform
 
         expect(analytics).to have_logged_event(
           'Rate Limit Reached',
