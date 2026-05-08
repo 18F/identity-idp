@@ -6,7 +6,7 @@ RequestPasswordReset = RedactedStruct.new(
   allowed_members: [:request_id]
 ) do
   def perform
-    rate_limiter = RateLimiter.new(target: email, rate_limit_type: :reset_password_email)
+    rate_limiter = RateLimiter.new(target: email.downcase, rate_limit_type: :reset_password_email)
     rate_limiter.increment!
     if rate_limiter.limited?
       analytics.rate_limit_reached(limiter_type: :reset_password_email)
