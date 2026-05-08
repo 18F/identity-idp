@@ -137,7 +137,7 @@ RSpec.describe Idv::ChooseIdTypeController do
 
     describe '#undo_step' do
       before do
-        subject.document_capture_session.update!(passport_status: 'requested')
+        subject.document_capture_session.update!(document_type_requested: Idp::Constants::DocumentTypes::PASSPORT)
       end
 
       context 'when idv_session has a document_capture_session_uuid' do
@@ -162,7 +162,7 @@ RSpec.describe Idv::ChooseIdTypeController do
         end
 
         it 'does not update the passport status in the document capture session' do
-          expect(subject.document_capture_session.reload.passport_status).to eq('requested')
+          expect(subject.document_capture_session.reload.passport_requested?).to be_truthy
         end
       end
     end
