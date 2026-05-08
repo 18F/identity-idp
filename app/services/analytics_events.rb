@@ -514,8 +514,8 @@ module AnalyticsEvents
 
   # New device sign-in alerts sent after expired notification timeframe
   # @param [Integer] count Number of emails sent
-  def create_new_device_alert_job_emails_sent(count:, **extra)
-    track_event(:create_new_device_alert_job_emails_sent, count:, **extra)
+  def create_new_device_alert_job_users_notified(count:, **extra)
+    track_event(:create_new_device_alert_job_users_notified, count:, **extra)
   end
 
   # User directed to this page after TMX returns a failure
