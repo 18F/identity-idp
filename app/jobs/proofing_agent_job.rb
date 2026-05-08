@@ -44,6 +44,7 @@ class ProofingAgentJob < ApplicationJob
       proofing_agent_id:,
       proofing_location_id:,
       correlation_id:,
+      transaction_id:,
     )
 
     combined_result = proofing_result.combined_result.to_h
@@ -79,15 +80,23 @@ class ProofingAgentJob < ApplicationJob
     trace_id:,
     proofing_agent_id:,
     proofing_location_id:,
-    correlation_id:
+    correlation_id:,
+    transaction_id:
   )
     aamva_result = nil
 
+    proofing_agent_log_attributes = {
+      agent_id: proofing_agent_id,
+      location_id: proofing_location_id,
+      correlation_id: correlation_id,
+      transaction_id: transaction_id,
+    }
     if applicant_pii[:state_id_number].present?
       aamva_result = call_aamva_verification(
         applicant_pii:,
         current_sp:,
         timer:,
+        proofing_agent_log_attributes:,
       )
       applicant_pii[:aamva_verified_attributes] = aamva_result.verified_attributes if aamva_result
     end
@@ -151,7 +160,7 @@ class ProofingAgentJob < ApplicationJob
     DocumentCaptureSession.new(result_id:).load_proofing_result&.result
   end
 
-  def call_aamva_verification(applicant_pii:, current_sp:, timer:)
+  def call_aamva_verification(applicant_pii:, current_sp:, timer:, proofing_agent_log_attributes:)
     aamva_plugin.call(
       applicant_pii:,
       current_sp:,
@@ -160,6 +169,7 @@ class ProofingAgentJob < ApplicationJob
       timer:,
       doc_auth_flow: true,
       analytics:,
+      proofing_agent: proofing_agent_log_attributes,
     )
   end
 

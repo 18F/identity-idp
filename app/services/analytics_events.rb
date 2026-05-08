@@ -2312,6 +2312,7 @@ module AnalyticsEvents
   # @param step [String] Always "verify" (leftover from flow state machine days)
   # @param success [Boolean] Whether identity resolution succeeded overall
   # @param previous_ssn_edit_distance [Number] The edit distance to the previous submitted SSN
+  # @param proofing_agent [Hash, nil] proofing agent information including location id, agent id, correlation id, and transaction id
   # @param exceptions [Hash, nil] The exceptions found in the proofing results.
   def idv_doc_auth_verify_proofing_results(
     ab_tests: nil,
@@ -2331,6 +2332,7 @@ module AnalyticsEvents
     step: nil,
     success: nil,
     previous_ssn_edit_distance: nil,
+    proofing_agent: nil,
     exceptions: nil,
     **extra
   )
@@ -2353,6 +2355,7 @@ module AnalyticsEvents
       step:,
       success:,
       previous_ssn_edit_distance:,
+      proofing_agent:,
       exceptions:,
       **extra,
     )
@@ -5391,12 +5394,12 @@ module AnalyticsEvents
   # @param [Hash] proofing_agent The proofing agent information
   # @param [String] issuer The issuer associated with the proofing request
   # @param [String,nil] transaction_id The transaction ID associated with the proofing request
-  # @param [Hash] response The full response object from the proofing agent's webhook request
+  # @param [Hash] body_payload The body of the webhook sent by the proofing agent
   def idv_proofing_agent_webhook(
     response_body:,
     proofing_agent:,
     issuer:,
-    response:,
+    body_payload:,
     transaction_id: nil,
     **extra
   )
@@ -5405,7 +5408,7 @@ module AnalyticsEvents
       response_body:,
       proofing_agent:,
       issuer:,
-      response:,
+      body_payload:,
       transaction_id:,
       **extra,
     )
@@ -6146,6 +6149,7 @@ module AnalyticsEvents
   # @param [Hash, nil] errors The errors encountered during proofing.
   # @param [String, nil] exception The exception message.
   # @param [Boolean, nil] mva_exception Whether an MVA exception occured.
+  # @param proofing_agent [Hash, nil] proofing agent information including location id, agent id, correlation id, and transaction id
   def idv_state_id_validation(
     success:,
     vendor_name:,
@@ -6164,6 +6168,7 @@ module AnalyticsEvents
     errors: nil,
     exception: nil,
     mva_exception: nil,
+    proofing_agent: nil,
     **extra
   )
     track_event(
@@ -6185,6 +6190,7 @@ module AnalyticsEvents
       errors:,
       exception:,
       mva_exception:,
+      proofing_agent:,
       **extra,
     )
   end
