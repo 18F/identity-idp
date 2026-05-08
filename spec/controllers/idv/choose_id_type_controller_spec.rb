@@ -162,7 +162,7 @@ RSpec.describe Idv::ChooseIdTypeController do
         end
 
         it 'does not update the passport status in the document capture session' do
-          expect(subject.document_capture_session.reload.passport_requested?).to be_truthy
+          expect(subject.document_capture_session.reload.passport_requested?).to eq(true)
         end
       end
     end

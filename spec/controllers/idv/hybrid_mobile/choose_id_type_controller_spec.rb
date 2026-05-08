@@ -151,7 +151,7 @@ RSpec.describe Idv::HybridMobile::ChooseIdTypeController do
     context 'user chooses drivers_license' do
       it 'maintains document_type_requested and redirects to correct vendor' do
         put :update, params: params
-        expect(document_capture_session.state_id_requested?).to be true
+        expect(document_capture_session.state_id_requested?).to eq(true)
         expect(response).to redirect_to idv_hybrid_mobile_document_capture_url
       end
     end
@@ -164,7 +164,7 @@ RSpec.describe Idv::HybridMobile::ChooseIdTypeController do
 
       it 'sets document_type_requested to passport wiht a supported vendor' do
         put :update, params: params
-        expect(document_capture_session.passport_requested?).to be true
+        expect(document_capture_session.passport_requested?).to eq(true)
         expect(response).to redirect_to idv_hybrid_mobile_document_capture_url
       end
     end
