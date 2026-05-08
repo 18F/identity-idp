@@ -227,6 +227,8 @@ module AbTests
     experiment_name: 'Account Creation Webauthn Platform Setup',
     should_log: [
       :webauthn_platform_recommended_visited,
+      :webauthn_platform_signup_setup_submitted,
+      'Multi-Factor Authentication Setup',
     ],
     buckets: {
       account_creation_webauthn_platform_setup:
