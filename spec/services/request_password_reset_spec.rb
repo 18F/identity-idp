@@ -6,7 +6,7 @@ RSpec.describe RequestPasswordReset do
     let(:user) { create(:user) }
     let(:request_id) { SecureRandom.uuid }
     let(:email_address) { user.email_addresses.first }
-    let(:email) { email_address.email.downcase }
+    let(:email) { email_address.email }
 
     context 'when the user is not found' do
       it 'sends the user missing email' do
@@ -252,12 +252,13 @@ RSpec.describe RequestPasswordReset do
 
       it 'rate limits the email sending when capitalization changes between attempts' do
         max_attempts = IdentityConfig.store.reset_password_email_max_attempts
+        lowercased_email = email_address.email.downcase
         upcased_email = email_address.email.upcase
 
         (max_attempts - 1).times do
           expect do
             RequestPasswordReset.new(
-              email:,
+              email: lowercased_email,
               analytics:,
               attempts_api_tracker:,
             ).perform
