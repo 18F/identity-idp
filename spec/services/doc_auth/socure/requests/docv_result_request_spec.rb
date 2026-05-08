@@ -75,7 +75,7 @@ RSpec.describe DocAuth::Socure::Requests::DocvResultRequest do
               :document_capture_session,
               user:,
               socure_docv_transaction_token: docv_transaction_token,
-              passport_status: 'requested',
+              document_type_requested: Idp::Constants::DocumentTypes::PASSPORT,
             )
           end
 
