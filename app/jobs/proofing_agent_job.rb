@@ -53,6 +53,16 @@ class ProofingAgentJob < ApplicationJob
     success = combined_result[:success]
     reason = combined_result[:reason]
 
+    if success
+      send_profile_confirmation_email(
+        verified_at: document_capture_session.load_agent_proofed_user.verified_at,
+        proofing_agent_id:,
+        proofing_location_id:,
+        correlation_id:,
+        transaction_id:,
+      )
+    end
+
     ProofingAgentWebhookJob.perform_later(
       success:,
       reason:,
@@ -193,6 +203,36 @@ class ProofingAgentJob < ApplicationJob
 
   def aamva_plugin
     @aamva_plugin ||= Proofing::Resolution::Plugins::AamvaPlugin.new
+  end
+
+  def send_profile_confirmation_email(
+    verified_at:,
+    proofing_agent_id:,
+    proofing_location_id:,
+    correlation_id:,
+    transaction_id:
+  )
+    expiration_date = Idv::ProofingAgent::AgentProofingSucceededPresenter.new(
+      verified_at:,
+      url_options: {},
+    ).deadline
+
+    user.confirmed_email_addresses.each do |email_address|
+      UserMailer.with(user:, email_address:)
+        .agent_proofing_succeeded(verified_at:)
+        .deliver_now_or_later
+    end
+
+    analytics.idv_proofing_agent_profile_confirmation_email_sent(
+      user_id: user.uuid,
+      proofing_agent: {
+        correlation_id:,
+        transaction_id:,
+        agent_id: proofing_agent_id,
+        location_id: proofing_location_id,
+      },
+      expiration_date:,
+    )
   end
 
   def analytics
