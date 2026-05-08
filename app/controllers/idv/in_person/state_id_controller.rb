@@ -178,8 +178,6 @@ module Idv
           params[:state_id] = params.delete(:identity_doc)
 
           if params[:state_id][:id_number].present?
-            params[:state_id][:id_number] =
-              params[:state_id][:id_number].to_s.gsub(/[^a-zA-Z0-9]/, '')
             params[:state_id][:state_id_number] = params[:state_id].delete(:id_number)
           end
         end
