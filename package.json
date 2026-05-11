@@ -85,7 +85,7 @@
     "eslint-plugin-testing-library": "^6.2.0",
     "jsdom": "^25.0.1",
     "json-schema-to-ts": "^3.1.1",
-    "mocha": "^11.7.0",
+    "mocha": "11.3.0",
     "mq-polyfill": "^1.1.8",
     "msw": "^2.6.5",
     "prettier": "^3.1.0",
@@ -97,6 +97,7 @@
     "svgo": "^3.2.0",
     "swr": "^2.0.0",
     "typescript": "^5.7.2"
+    ,"yaml": "^2.8.3"
   },
   "optionalDependencies": {
     "lightningcss-darwin-arm64": "^1.18.0",
@@ -110,6 +111,11 @@
     "sass-embedded-linux-x64": "^1.88.0"
   },
   "overrides": {
+    "@babel/plugin-transform-modules-systemjs": "7.29.4",
+    "fast-uri": "3.1.2",
+    "fast-xml-builder": "1.1.9",
+    "js-yaml": "4.1.1",
     "serialize-javascript": ">=7.0.3"
+    ,"styled-components": "6.4.1"
   }
 }
