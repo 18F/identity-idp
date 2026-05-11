@@ -3,6 +3,7 @@
 module SignUp
   class CompletionsController < ApplicationController
     include SecureHeadersConcern
+    include Idv::HistoricalAttemptsConcern
 
     before_action :confirm_two_factor_authenticated
     before_action :confirm_identity_verified, if: :identity_proofing_required?
@@ -146,21 +147,7 @@ module SignUp
       user_proofing_event.add_sp_sent(current_sp.id)
     end
 
-    def historical_events_need_be_sent?
-      return false unless IdentityConfig.store.historical_attempts_api_enabled
-      return false unless current_sp.attempts_api_enabled?
-      return false unless ial2_requested?
-      return false unless user_proofing_event.present?
-
-      return !sent_to_aaca?
-    end
-
-    def sent_to_aaca?
-      user_proofing_event&.already_sent_to_sp?(current_sp.id)
-    end
-
-    def user_proofing_event
-      @user_proofing_event ||= current_user&.active_profile&.user_proofing_event
+      existing_user_proofing_event.add_sp_sent(current_sp.id)
     end
 
     def pii
