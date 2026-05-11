@@ -27,7 +27,7 @@ module AttemptsApi
     include TrackerEvents
 
     def track_event(event_type, metadata = {})
-      return unless will_track?(event_type)
+      return unless should_track?(event_type)
 
       user_id = metadata.delete(:user_id)
 
@@ -42,9 +42,9 @@ module AttemptsApi
         event_metadata: event_metadata(event_type:, metadata:),
       )
 
-      log_history(event) if will_log_history?(event_type)
+      log_history(event) if should_log_history?(event_type)
 
-      return unless will_send_event?
+      return unless should_send_event?
 
       redis_client.write_event(
         event_key: event.jti,
@@ -151,19 +151,19 @@ module AttemptsApi
       Digest::SHA1.hexdigest(user&.unique_session_id)
     end
 
-    def will_track?(event_type)
+    def should_track?(event_type)
       return false unless IdentityConfig.store.attempts_api_enabled
 
-      will_send_event? || will_log_history?(event_type)
+      should_send_event? || should_log_history?(event_type)
     end
 
-    def will_log_history?(event_type)
+    def should_log_history?(event_type)
       return false unless IdentityConfig.store.historical_attempts_api_enabled
 
       event_type.start_with?(*LOG_HISTORY_PREFIXES)
     end
 
-    def will_send_event?
+    def should_send_event?
       @enabled_for_session
     end
 

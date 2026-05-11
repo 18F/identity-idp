@@ -239,6 +239,9 @@ RSpec.describe AttemptsApi::Tracker do
       before do
         allow(IdentityConfig.store).to receive(:historical_attempts_api_enabled).and_return(true)
       end
+      let(:secure_random_regex_pattern) do
+        /\A[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\z/
+      end
 
       context 'with Devise session' do
         let(:mock_session) { { 'warden.user.user.session' => {} } }
@@ -251,8 +254,11 @@ RSpec.describe AttemptsApi::Tracker do
         context 'it is an event prefixed with "idv"' do
           it 'populates the session info' do
             subject.idv_enrollment_complete(reproof: false)
-            expect(user_session['idv/attempts']).to eq(
-              [{ 'idv-enrollment-complete' => { 'user_uuid' => user.uuid } }],
+
+            event = user_session['idv/attempts'].first
+            expect(event['idv-enrollment-complete']['user_uuid']).to eq(user.uuid)
+            expect(event['idv-enrollment-complete']['jti']).to match(
+              secure_random_regex_pattern,
             )
           end
 
@@ -292,8 +298,12 @@ RSpec.describe AttemptsApi::Tracker do
           it 'does not populate the event is not prefixed with idv-' do
             subject.idv_enrollment_complete(reproof: false)
             subject.user_registration_email_confirmed(success: true, email: 'email@example.com')
-            expect(user_session['idv/attempts']).to eq(
-              [{ 'idv-enrollment-complete' => { 'user_uuid' => user.uuid } }],
+
+            expect(user_session['idv/attempts'].count).to be(1)
+            event = user_session['idv/attempts'].first
+            expect(event['idv-enrollment-complete']['user_uuid']).to eq(user.uuid)
+            expect(event['idv-enrollment-complete']['jti']).to match(
+              secure_random_regex_pattern,
             )
           end
 
@@ -332,8 +342,11 @@ RSpec.describe AttemptsApi::Tracker do
 
           it 'still populates the session info' do
             subject.idv_enrollment_complete(reproof: false)
-            expect(user_session['idv/attempts']).to eq(
-              [{ 'idv-enrollment-complete' => { 'user_uuid' => user.uuid } }],
+
+            event = user_session['idv/attempts'].first
+            expect(event['idv-enrollment-complete']['user_uuid']).to eq(user.uuid)
+            expect(event['idv-enrollment-complete']['jti']).to match(
+              secure_random_regex_pattern,
             )
           end
         end
@@ -342,11 +355,13 @@ RSpec.describe AttemptsApi::Tracker do
           it 'appends to the existing events' do
             user_session['idv/attempts'] = [{ 'idv-something' => { 'user_uuid' => user.uuid } }]
             subject.idv_enrollment_complete(reproof: false)
-            expect(user_session['idv/attempts']).to eq(
-              [
-                { 'idv-something' => { 'user_uuid' => user.uuid } },
-                { 'idv-enrollment-complete' => { 'user_uuid' => user.uuid } },
-              ],
+
+            event = user_session['idv/attempts'].first
+            expect(event['idv-something']['user_uuid']).to eq(user.uuid)
+            event2 = user_session['idv/attempts'][1]
+            expect(event2['idv-enrollment-complete']['user_uuid']).to eq(user.uuid)
+            expect(event2['idv-enrollment-complete']['jti']).to match(
+              secure_random_regex_pattern,
             )
           end
         end

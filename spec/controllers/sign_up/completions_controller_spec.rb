@@ -2,10 +2,9 @@ require 'rails_helper'
 
 RSpec.describe SignUp::CompletionsController do
   let(:temporary_email) { 'name@temporary.com' }
+  let(:current_sp) { create(:service_provider) }
 
   describe '#show' do
-    let(:current_sp) { create(:service_provider) }
-
     context 'user signed in, sp info present' do
       before do
         stub_analytics
@@ -203,7 +202,6 @@ RSpec.describe SignUp::CompletionsController do
 
   describe '#update' do
     let(:now) { Time.zone.now.change(usec: 0) }
-    let(:current_sp) { create(:service_provider) }
 
     before do
       stub_analytics
@@ -397,8 +395,8 @@ RSpec.describe SignUp::CompletionsController do
       context 'historical attempts api is enabled' do
         let(:profile) { create(:profile, :verified, :active) }
         let(:user) { create(:user, profiles: [profile]) }
-        let(:sp) { create(:service_provider, :idv, :active) }
-        let(:allowed_attempts_providers) { [{ 'issuer' => sp.issuer }] }
+        let(:current_sp) { create(:service_provider, :idv, :active) }
+        let(:allowed_attempts_providers) { [{ 'issuer' => current_sp.issuer }] }
 
         before do
           allow(IdentityConfig.store).to receive_messages(
@@ -431,7 +429,7 @@ RSpec.describe SignUp::CompletionsController do
             stub_sign_in(user)
 
             subject.session[:sp] = {
-              issuer: sp.issuer,
+              issuer: current_sp.issuer,
               acr_values: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
               request_url: 'http://example.com',
               requested_attributes: %w[email first_name verified_at],
@@ -452,19 +450,20 @@ RSpec.describe SignUp::CompletionsController do
               end
 
               it 'updates the associated user proofing event' do
-                expect(proofing_event.service_provider_ids_sent).to_not include(sp.id)
+                expect(proofing_event.service_provider_ids_sent).to_not include(current_sp.id)
                 patch :update
 
                 proofing_event.reload
                 expect(AttemptsApi::Tracker).to have_received(:write_existing_user_events).with(
-                  idv_attempts,
+                  historical_attempts: JSON.parse(idv_attempts),
+                  sp: current_sp,
                 )
-                expect(proofing_event.service_provider_ids_sent).to include(sp.id)
+                expect(proofing_event.service_provider_ids_sent).to include(current_sp.id)
               end
             end
 
             context 'user proofing events have already been sent to this SP' do
-              let(:service_provider_ids_sent) { [sp.id] }
+              let(:service_provider_ids_sent) { [current_sp.id] }
 
               it 'does not update the user proofing event' do
                 patch :update
@@ -472,7 +471,7 @@ RSpec.describe SignUp::CompletionsController do
                 expect(AttemptsApi::Tracker).to_not have_received(:write_existing_user_events)
 
                 proofing_event.reload
-                expect(proofing_event.service_provider_ids_sent).to eq([sp.id])
+                expect(proofing_event.service_provider_ids_sent).to eq([current_sp.id])
               end
             end
           end
@@ -485,7 +484,7 @@ RSpec.describe SignUp::CompletionsController do
 
               expect(AttemptsApi::Tracker).to_not have_received(:write_existing_user_events)
               expect(UserProofingEvent.find(proofing_event.id).service_provider_ids_sent)
-                .to_not include(sp.issuer)
+                .to_not include(current_sp.issuer)
             end
           end
         end
