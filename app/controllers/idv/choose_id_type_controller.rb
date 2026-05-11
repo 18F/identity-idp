@@ -11,7 +11,7 @@ module Idv
 
     def show
       analytics.idv_doc_auth_choose_id_type_visited(**analytics_arguments)
-      puts document_capture_session.inspect
+
       render 'idv/shared/choose_id_type',
              locals: locals_attrs(
                presenter: Idv::ChooseIdTypePresenter.new(
@@ -22,7 +22,7 @@ module Idv
              layout: true
     end
 
-    def update
+    def update # move to concern?
       clear_future_steps!
 
       @choose_id_type_form = Idv::ChooseIdTypeForm.new

@@ -6,16 +6,15 @@ module Idv
       choose_id_type_form_params[:choose_id_type_preference]
     end
 
-    def passport_chosen?
-      chosen_id_type == 'passport'
-    end
-
-    def set_passport_requested
-      if passport_chosen?
-        unless document_capture_session.passport_requested?
+    def set_document_type_requested
+      case chosen_id_type
+      when Idp::Constants::DocumentTypes::PASSPORT
+        unless document_capture_session.passport_requested? # needed?
           document_capture_session.request_passport!
         end
-      else
+      when Idp::Constants::DocumentTypes::MDL
+        document_capture_session.request_mdl!
+      when Idp::Constants::DocumentTypes::STATE_ID_CARD
         document_capture_session.request_state_id!
       end
     end
@@ -27,6 +26,7 @@ module Idv
     def selected_id_type
       return :state_id_card if document_capture_session.state_id_requested?
       return :passport if document_capture_session.passport_requested?
+      return :mobile_drivers_license if document_capture_session.mdl_requested?
     end
 
     def dos_passport_api_healthy?(
@@ -51,7 +51,8 @@ module Idv
         presenter:,
         form_submit_url:,
         disable_passports: disable_passports?,
-        auto_check_value: disable_passports? ? :state_id_card : selected_id_type,
+        auto_check_value: disable_passports? && document_capture_session.passport_requested? ?
+          nil : document_capture_session.document_type_requested,
       }
     end
 
