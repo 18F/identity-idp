@@ -13,6 +13,7 @@ module Api
       before_action :authenticate_client
       before_action :validate_required_headers
       before_action :validate_agent_id_and_location_id
+      before_action :validate_transaction_id, only: [:result]
       after_action :add_custom_headers_to_response
 
       def search_user
@@ -89,16 +90,33 @@ module Api
       end
 
       def result
-        document_capture_session = DocumentCaptureSession.find_by(uuid: params[:transaction_id])
-        proofing_result = document_capture_session.load_agent_proofed_user
+        document_capture_session = DocumentCaptureSession.find_by(uuid: transaction_id)
+
+        return render_proofing_result_not_found if document_capture_session.nil?
+
+        proofing_result = Rails.cache.fetch(
+          "proofing_agent_result_#{transaction_id}",
+          expires_in: IdentityConfig.store.idv_proofing_agent_result_expiration_minutes,
+          skip_nil: true,
+        ) do
+          document_capture_session.load_agent_proofed_user
+        end
+
+        return render_proofing_result_not_found if proofing_result.nil?
 
         response_body = {
           success: proofing_result.success,
           reason: proofing_result.reason,
-          transaction_id: params[:transaction_id],
+          transaction_id: proofing_result.transaction_id,
         }
 
-        render json: response_body, status: :ok
+        analytics.idv_proofing_agent_request_received(
+          **analytics_arguments,
+          response_body:,
+          transaction_id:,
+        )
+
+        render json: response_body
       end
 
       private
@@ -127,6 +145,22 @@ module Api
         render json: response_body, status: :ok
       end
 
+      def render_proofing_result_not_found
+        response_body = {
+          status: 'failed',
+          reason: 'not_found',
+          transaction_id:,
+        }
+
+        analytics.idv_proofing_agent_request_received(
+          **analytics_arguments,
+          response_body:,
+          transaction_id:,
+        )
+
+        render json: response_body, status: :not_found
+      end
+
       def validate_required_headers
         missing = []
         missing << 'X-Correlation-ID' if correlation_id.blank?
@@ -142,6 +176,13 @@ module Api
         errors = {}
         errors[:proofing_agent_id] = ['cannot be blank'] if agent_id.blank?
         errors[:proofing_location_id] = ['cannot be blank'] if location_id.blank?
+        return if errors.empty?
+        render_bad_request(errors:, failure_type: :body_validation)
+      end
+
+      def validate_transaction_id
+        errors = {}
+        errors[:transaction_id] = ['cannot be blank'] if transaction_id.blank?
         return if errors.empty?
         render_bad_request(errors:, failure_type: :body_validation)
       end
@@ -167,6 +208,10 @@ module Api
 
       def request_token
         @request_token ||= ::ProofingAgent::RequestTokenValidator.new(request.authorization)
+      end
+
+      def transaction_id
+        @transaction_id ||= params.permit(:transaction_id)[:transaction_id]
       end
 
       def user
