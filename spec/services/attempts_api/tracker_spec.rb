@@ -452,4 +452,39 @@ RSpec.describe AttemptsApi::Tracker do
       expect(test_failure_reason).to eq(mock_error_message)
     end
   end
+
+  describe '#self.write_existing_user_events' do
+    let(:sp) { service_provider }
+    let(:mock_session) { { 'warden.user.user.session' => {} } }
+    let(:user_session) { mock_session['warden.user.user.session'] }
+    let(:redis_client) { double AttemptsApi::RedisClient }
+    let(:time) { Time.zone.now }
+
+    before do
+      allow(request).to receive(:session).and_return(mock_session)
+
+      allow(IdentityConfig.store).to receive(:historical_attempts_api_enabled).and_return(true)
+      subject.idv_enrollment_complete(reproof: false)
+      subject.user_registration_email_confirmed(success: true, email: 'email@example.com')
+      allow(Time).to receive(:zone_now).and_return(time)
+    end
+
+    it 'writes existing user events to redis' do
+      expect(AttemptsApi::RedisClient).to receive(:new).and_return(redis_client)
+      expect_any_instance_of(AttemptsApi::AttemptEvent).to receive(:to_jwe).and_return('jwe_data')
+
+      event_data = user_session['idv/attempts'].first.values[0]
+      expect(redis_client).to receive(:write_event).with(
+        event_key: event_data['jti'],
+        jwe: 'jwe_data',
+        timestamp: event_data['occurred_at'],
+        issuer: sp.issuer,
+      )
+
+      described_class.write_existing_user_events(
+        sp:,
+        historical_attempts: user_session['idv/attempts'],
+      )
+    end
+  end
 end

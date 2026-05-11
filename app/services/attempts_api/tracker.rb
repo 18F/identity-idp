@@ -26,6 +26,36 @@ module AttemptsApi
 
     include TrackerEvents
 
+    def self.write_existing_user_events(sp:, historical_attempts: [])
+      historical_attempts.each do |saved_event|
+        # TODO:Historical attempts API:
+        # Clean up the data structure being used when including the whole event data
+        # And make it work with a tracker instance method.
+        event_data = saved_event.values[0]
+
+        event = AttemptEvent.new(
+          event_type: saved_event.keys[0],
+          session_id: event_data['session_id'],
+          occurred_at: event_data['occurred_at'] || Time.zone.now,
+          event_metadata: event_data['event_metadata'],
+          jti: event_data['jti'] || SecureRandom.uuid,
+          # iat: event_data['iat'],
+        )
+
+        jwe = event.to_jwe(
+          issuer: sp.issuer,
+          public_key: sp.attempts_public_key,
+        )
+
+        AttemptsApi::RedisClient.new.write_event(
+          event_key: event.jti,
+          jwe:,
+          timestamp: event.occurred_at,
+          issuer: sp.issuer,
+        )
+      end
+    end
+
     def track_event(event_type, metadata = {})
       return unless should_track?(event_type)
 
@@ -75,7 +105,7 @@ module AttemptsApi
 
       session['warden.user.user.session']['idv/attempts'] ||= []
       session['warden.user.user.session']['idv/attempts'].push(
-        event.event_type => { 'user_uuid' => user.uuid },
+        event.event_type => { 'user_uuid' => user.uuid, 'jti' => event.jti },
       )
     end
 
