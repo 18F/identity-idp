@@ -70,7 +70,7 @@ module UspsInPersonProofing
       if IdentityConfig.store.usps_opt_in_ipp_applicant_with_document_data
         request_body[:docInfo] = [{
           docType: applicant.document_type,
-          docNumber: applicant.document_number,
+          docNumber: applicant.document_number.to_s.gsub(/[^a-zA-Z0-9]/, ''),
           docExpiration: applicant.document_expiration_date,
         }]
       end

@@ -336,7 +336,7 @@ RSpec.describe UspsInPersonProofing::Proofer do
         email: Faker::Internet.email,
         unique_id: Faker::Number.number(digits: 10),
         document_type: 'state_id',
-        document_number: Faker::Number.number(digits: 9),
+        document_number: 'A*-/ 3d#9& ',
         document_expiration_date: Faker::Date.in_date_period(year: 2030).strftime('%Y-%m-%d'),
       )
     end
@@ -440,7 +440,7 @@ RSpec.describe UspsInPersonProofing::Proofer do
               IPPAssuranceLevel: '1.5',
               docInfo: [{
                 docType: applicant.document_type,
-                docNumber: applicant.document_number,
+                docNumber: 'A3d9',
                 docExpiration: applicant.document_expiration_date,
               }],
             })

@@ -574,7 +574,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_05_05_164618) do
     t.boolean "email_nameid_format_allowed", default: false, comment: "sensitive=false"
     t.boolean "use_legacy_name_id_behavior", default: false, comment: "sensitive=false"
     t.boolean "irs_attempts_api_enabled", comment: "sensitive=false"
-    t.boolean "in_person_proofing_enabled", default: false, comment: "sensitive=false"
+    t.boolean "in_person_proofing_enabled", default: true, comment: "sensitive=false"
     t.string "post_idv_follow_up_url", comment: "sensitive=false"
     t.boolean "saml_emailaddress_attribute_enabled", default: false, comment: "sensitive=false"
     t.index ["issuer"], name: "index_service_providers_on_issuer", unique: true
