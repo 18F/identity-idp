@@ -22,7 +22,7 @@ module Idv
         render 'idv/shared/choose_id_type', locals: choose_id_type_attrs
       end
 
-      def update
+      def update # move to concern?
         @choose_id_type_form = Idv::ChooseIdTypeForm.new
 
         result = @choose_id_type_form.submit(choose_id_type_form_params)
