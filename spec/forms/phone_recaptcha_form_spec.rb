@@ -5,9 +5,7 @@ RSpec.describe PhoneRecaptchaForm do
   let(:score_threshold_config) { 0.2 }
   let(:parsed_phone) { Phonelib.parse('+15135551234') }
   let(:analytics) { FakeAnalytics.new }
-  subject(:form) do
-    described_class.new(parsed_phone:, analytics:, form_class: RecaptchaEnterpriseForm)
-  end
+  subject(:form) { described_class.new(parsed_phone:, analytics:) }
   before do
     allow(IdentityConfig.store).to receive(:phone_recaptcha_country_score_overrides)
       .and_return(country_score_overrides_config)
@@ -17,10 +15,10 @@ RSpec.describe PhoneRecaptchaForm do
 
   it 'passes instance variables to form' do
     recaptcha_form = instance_double(
-      RecaptchaEnterpriseForm,
+      RecaptchaForm,
       submit: FormResponse.new(success: true),
     )
-    expect(RecaptchaEnterpriseForm).to receive(:new)
+    expect(RecaptchaForm).to receive(:new)
       .with(
         score_threshold: score_threshold_config,
         analytics:,
@@ -45,7 +43,7 @@ RSpec.describe PhoneRecaptchaForm do
 
     it 'delegates to form instance of the given class' do
       recaptcha_form = instance_double(
-        RecaptchaEnterpriseForm,
+        RecaptchaForm,
         submit: FormResponse.new(success: true),
       )
       expect(RecaptchaMockForm).to receive(:new).and_return(recaptcha_form)
@@ -58,7 +56,7 @@ RSpec.describe PhoneRecaptchaForm do
   describe '#submit' do
     it 'is delegated to recaptcha form' do
       recaptcha_form = instance_double(
-        RecaptchaEnterpriseForm,
+        RecaptchaForm,
         submit: FormResponse.new(success: true),
       )
       expect(form).to receive(:form).and_return(recaptcha_form)
@@ -70,7 +68,7 @@ RSpec.describe PhoneRecaptchaForm do
 
   describe '#errors' do
     it 'is delegated to recaptcha form' do
-      recaptcha_form = instance_double(RecaptchaEnterpriseForm, errors: ActiveModel::Errors.new({}))
+      recaptcha_form = instance_double(RecaptchaForm, errors: ActiveModel::Errors.new({}))
       expect(form).to receive(:form).and_return(recaptcha_form)
       expect(recaptcha_form).to receive(:errors)
 

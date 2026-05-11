@@ -46,16 +46,16 @@ RSpec.describe SignInRecaptchaForm do
         existing_device:,
         ab_test_bucket:,
         analytics:,
-        form_class: RecaptchaEnterpriseForm,
+        form_class: RecaptchaForm,
       )
     end
 
     it 'validates using form instance of the given class' do
       recaptcha_form = instance_double(
-        RecaptchaEnterpriseForm,
+        RecaptchaForm,
         submit: FormResponse.new(success: true),
       )
-      expect(RecaptchaEnterpriseForm).to receive(:new).and_return(recaptcha_form)
+      expect(RecaptchaForm).to receive(:new).and_return(recaptcha_form)
       expect(recaptcha_form).to receive(:submit)
 
       form.submit(recaptcha_token:)

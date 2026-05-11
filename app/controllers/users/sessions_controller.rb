@@ -150,8 +150,10 @@ module Users
           form_class: RecaptchaMockForm,
           score: params.require(:user)[:recaptcha_mock_score].to_f,
         )
-      else
+      elsif FeatureManagement.recaptcha_enterprise?
         args.merge(form_class: RecaptchaEnterpriseForm)
+      else
+        args
       end
     end
 

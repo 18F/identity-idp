@@ -418,6 +418,7 @@ recaptcha_enterprise_api_key: ''
 recaptcha_enterprise_project_id: ''
 recaptcha_mock_validator: true
 recaptcha_request_timeout_in_seconds: 5
+recaptcha_secret_key: ''
 recaptcha_site_key: ''
 recovery_code_length: 4
 redis_attempts_api_pool_size: 1

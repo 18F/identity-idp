@@ -47,9 +47,16 @@ RSpec.describe CaptchaSubmitButtonComponent, type: :component do
       )
     end
 
-    context 'with recaptcha enabled' do
+    it 'renders script tag for recaptcha' do
+      rendered
+      early_head = Nokogiri::HTML.fragment(view_context.content_for(:early_head))
+      src = "https://www.google.com/recaptcha/api.js?render=#{recaptcha_site_key}"
+      expect(early_head).to have_css("script[src='#{src}']", visible: :all)
+    end
+
+    context 'with recaptcha enterprise' do
       before do
-        allow(FeatureManagement).to receive(:recaptcha_enabled?).and_return(true)
+        allow(FeatureManagement).to receive(:recaptcha_enterprise?).and_return(true)
       end
 
       it 'renders script tag for recaptcha' do
@@ -111,7 +118,7 @@ RSpec.describe CaptchaSubmitButtonComponent, type: :component do
 
     context 'with recaptcha enterprise' do
       before do
-        allow(FeatureManagement).to receive(:recaptcha_enabled?).and_return(true)
+        allow(FeatureManagement).to receive(:recaptcha_enterprise?).and_return(true)
       end
 
       it { expect(enterprise_attribute).to eq('true') }
