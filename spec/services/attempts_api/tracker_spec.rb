@@ -251,8 +251,8 @@ RSpec.describe AttemptsApi::Tracker do
           allow(request).to receive(:session).and_return(mock_session)
         end
 
-        context 'it is an event prefixed with "idv"' do
-          it 'populates the session info' do
+        context 'when an event prefixed with "idv-" is tracked' do
+          it 'populates the session info with that event data' do
             subject.idv_enrollment_complete(reproof: false)
 
             event = user_session['idv/attempts'].first
@@ -262,7 +262,7 @@ RSpec.describe AttemptsApi::Tracker do
             )
           end
 
-          it 'records to redis' do
+          it 'records the event to redis' do
             freeze_time do
               subject.idv_enrollment_complete(reproof: false)
 
@@ -275,13 +275,13 @@ RSpec.describe AttemptsApi::Tracker do
           end
         end
 
-        context 'it is an event not prefixed with "idv"' do
-          it 'does not populate the session info' do
+        context 'when an event not prefixed with "idv" is tracked' do
+          it 'does not populate the event data into the session' do
             subject.user_registration_email_confirmed(success: true, email: 'email@example.com')
             expect(user_session).to eq({})
           end
 
-          it 'records to redis' do
+          it 'records the event to redis' do
             freeze_time do
               subject.user_registration_email_confirmed(success: true, email: 'email@example.com')
 
@@ -294,8 +294,8 @@ RSpec.describe AttemptsApi::Tracker do
           end
         end
 
-        context 'both prefixed and not prefixed events are recorded' do
-          it 'does not populate the event is not prefixed with idv-' do
+        context 'both prefixed and not prefixed events are tracked' do
+          it 'only populates the event prefixed with idv- in the session' do
             subject.idv_enrollment_complete(reproof: false)
             subject.user_registration_email_confirmed(success: true, email: 'email@example.com')
 
@@ -307,7 +307,7 @@ RSpec.describe AttemptsApi::Tracker do
             )
           end
 
-          it 'records both to redis' do
+          it 'records both events to redis' do
             freeze_time do
               subject.idv_enrollment_complete(reproof: false)
 
