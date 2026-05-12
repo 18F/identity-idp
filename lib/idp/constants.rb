@@ -34,10 +34,7 @@ module Idp
       MDL = 'mobile_drivers_license'
 
       SUPPORTED_PASSPORT_TYPES = [PASSPORT].freeze
-      SUPPORTED_STATE_ID_TYPES = (IdentityConfig.store.idv_doc_auth_mdl_enabled_percent.zero? ?
-                                   [DRIVERS_LICENSE, STATE_ID_CARD, IDENTIFICATION_CARD]
-                                   : [DRIVERS_LICENSE, STATE_ID_CARD, IDENTIFICATION_CARD, MDL]
-                                 ).freeze
+      SUPPORTED_STATE_ID_TYPES = [DRIVERS_LICENSE, STATE_ID_CARD, IDENTIFICATION_CARD].freeze
       SUPPORTED_ID_TYPES = [*SUPPORTED_PASSPORT_TYPES, *SUPPORTED_STATE_ID_TYPES].freeze
       PASSPORT_TYPES = [*SUPPORTED_PASSPORT_TYPES, PASSPORT_CARD].freeze
       # STATE_ID_TYPES = SUPPORTED_STATE_ID_TYPES
