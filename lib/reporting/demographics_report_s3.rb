@@ -5,7 +5,7 @@ require 'csv'
 module Reporting
   # Reads pre-generated demographics CSV reports from S3 and presents them as emailable reports.
   class DemographicsMetricsReportS3
-    attr_reader :report_time_range, :bucket_name, :s3_path, :time_frame, :agency_abbreviation
+    attr_reader :bucket_name, :s3_path, :agency_abbreviation
 
     CSV_FILE_NAMES = %w[
       definitions
@@ -14,39 +14,34 @@ module Reporting
       state_metrics
     ].freeze
 
-    # @param [Range<Time>] report_time_range
     # @param [String] bucket_name the S3 bucket name
     # @param [String] custom_s3_path S3 key prefix for the reports
-    # @param [String] time_frame - only quarterly for now, potentially monthly later
     # @param [String, nil] agency_abbreviation - agency abbreviation for table prefixes
-    def initialize(report_time_range:, bucket_name:, custom_s3_path:,
-                   time_frame: 'quarterly', agency_abbreviation: nil)
-      @report_time_range = report_time_range # quarterly, monthly, etc.
+    def initialize(bucket_name:, custom_s3_path:, agency_abbreviation: nil)
       @bucket_name = bucket_name
       @s3_path = custom_s3_path
-      @time_frame = time_frame
       @agency_abbreviation = agency_abbreviation
     end
 
     def as_emailable_reports
       [
         Reporting::EmailableReport.new(
-          title: "#{agency_abbreviation_prefix}Definitions - #{time_label}",
+          title: 'Definitions',
           table: definitions_table,
           filename: 'definitions',
         ),
         Reporting::EmailableReport.new(
-          title: "#{agency_abbreviation_prefix}Overview - #{time_label}",
+          title: 'Overview',
           table: overview_table,
           filename: 'overview',
         ),
         Reporting::EmailableReport.new(
-          title: "#{agency_abbreviation_prefix}Age Metrics - #{time_label}",
+          title: "#{agency_abbreviation_prefix}Age Metrics",
           table: age_metrics_table,
           filename: 'age_metrics',
         ),
         Reporting::EmailableReport.new(
-          title: "#{agency_abbreviation_prefix}State Metrics - #{time_label}",
+          title: "#{agency_abbreviation_prefix}State Metrics",
           table: state_metrics_table,
           filename: 'state_metrics',
         ),
@@ -67,19 +62,6 @@ module Reporting
 
     def state_metrics_table
       csv_data_for('state_metrics')
-    end
-
-    def time_label
-      case @time_frame
-      when 'quarterly'
-        "Q#{((report_time_range.begin.month - 1) / 3) + 1} #{report_time_range.begin.year}"
-      when 'monthly'
-        report_time_range.begin.strftime('%B %Y')
-      else
-        start_date = report_time_range.begin.strftime('%Y-%m-%d')
-        end_date = report_time_range.end.strftime('%Y-%m-%d')
-        "#{start_date} - #{end_date}"
-      end
     end
 
     def csv_file_names
