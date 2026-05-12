@@ -96,7 +96,7 @@ module Api
 
         proofing_result = Rails.cache.fetch(
           "proofing_agent_result_#{transaction_id}",
-          expires_in: IdentityConfig.store.idv_proofing_agent_result_expiration_minutes,
+          expires_in: IdentityConfig.store.idv_proofing_agent_result_expiration_minutes.minutes,
           skip_nil: true,
         ) do
           document_capture_session.load_agent_proofed_user
