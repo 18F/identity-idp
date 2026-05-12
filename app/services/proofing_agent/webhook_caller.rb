@@ -12,6 +12,8 @@ module ProofingAgent
     end
 
     def call
+      return if webhook_url.blank?
+
       send_http_post_request
     rescue => exception
       NewRelic::Agent.notice_error(
@@ -67,7 +69,9 @@ module ProofingAgent
     end
 
     def request_headers
-      { 'Content-Type' => 'application/json', 'X-Correlation-ID' => correlation_id }
+      headers = { 'Content-Type' => 'application/json', 'X-Correlation-ID' => correlation_id }
+      headers['Authorization'] = "Bearer #{webhook_secret}" if webhook_secret.present?
+      headers
     end
 
     def document_capture_session
@@ -78,12 +82,18 @@ module ProofingAgent
       document_capture_session&.issuer
     end
 
-    def webhook_url
-      config = IdentityConfig.store.idv_proofing_agent_config.find do |issuer_config|
+    def config
+      @config ||= IdentityConfig.store.idv_proofing_agent_config.find do |issuer_config|
         issuer_config['issuer'] == issuer
       end
+    end
 
-      config&.dig('webhook_url')
+    def webhook_url
+      config&.dig('webhook', 'url')
+    end
+
+    def webhook_secret
+      config&.dig('webhook', 'secret')
     end
   end
 end
