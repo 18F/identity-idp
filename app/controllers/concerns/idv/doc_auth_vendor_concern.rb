@@ -5,7 +5,11 @@ module Idv
     include AbTestingConcern
 
     def update_doc_auth_vendor(user: current_user)
-      if document_capture_session.doc_auth_vendor.blank?
+      if document_capture_session.doc_auth_vendor.blank? ||
+         (
+           document_capture_session.mdl_requested? &&
+           document_capture_session.doc_auth_vendor != Idp::Constants::Vendors::SOCURE
+         )
         document_capture_session.update!(doc_auth_vendor: bucketed_doc_auth_vendor(user))
       end
     end
