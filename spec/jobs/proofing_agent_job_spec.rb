@@ -22,8 +22,12 @@ RSpec.describe ProofingAgentJob, type: :job do
 
   describe '#perform' do
     let(:instance) { ProofingAgentJob.new }
+    let(:job_analytics) { FakeAnalytics.new }
 
-    before { ActiveJob::Base.queue_adapter = :test }
+    before do
+      ActiveJob::Base.queue_adapter = :test
+      allow(Analytics).to receive(:new).and_return(job_analytics)
+    end
 
     subject(:perform) do
       instance.perform(
@@ -59,6 +63,26 @@ RSpec.describe ProofingAgentJob, type: :job do
           correlation_id: correlation_id,
         )
       end
+
+      it 'sends a profile confirmation email to the user' do
+        expect { perform }.to change { ActionMailer::Base.deliveries.count }.by(1)
+      end
+
+      it 'logs the profile confirmation email analytics event' do
+        perform
+
+        expect(job_analytics).to have_logged_event(
+          :idv_proofing_agent_profile_confirmation_email_sent,
+          user_id: user.uuid,
+          proofing_agent: {
+            correlation_id: correlation_id,
+            transaction_id: transaction_id,
+            agent_id: proofing_agent_id,
+            location_id: proofing_location_id,
+          },
+          expiration_date: kind_of(ActiveSupport::TimeWithZone),
+        )
+      end
     end
 
     context 'when resolution proofing fails' do
@@ -79,6 +103,18 @@ RSpec.describe ProofingAgentJob, type: :job do
           reason: 'profile_resolution_fail',
           transaction_id: transaction_id,
           correlation_id: correlation_id,
+        )
+      end
+
+      it 'does not send a profile confirmation email' do
+        expect { perform }.not_to change { ActionMailer::Base.deliveries.count }
+      end
+
+      it 'does not log the profile confirmation email analytics event' do
+        perform
+
+        expect(job_analytics).not_to have_logged_event(
+          :idv_proofing_agent_profile_confirmation_email_sent,
         )
       end
     end
