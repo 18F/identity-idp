@@ -37,7 +37,7 @@ module Idv
          !dos_passport_api_healthy?(analytics:, step: 'choose_id_type')
         redirect_to idv_choose_id_type_url(passports: false)
       elsif result.success?
-        set_passport_requested
+        set_document_type_requested
         redirect_to next_step
       else
         redirect_to idv_choose_id_type_url
