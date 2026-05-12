@@ -66,6 +66,8 @@ RSpec.describe ProofingAgentJob, type: :job do
 
       it 'sends a profile confirmation email to the user' do
         expect { perform }.to change { ActionMailer::Base.deliveries.count }.by(1)
+        expect(ActionMailer::Base.deliveries.last.to)
+          .to eq([user.confirmed_email_addresses.first.email])
       end
 
       it 'logs the profile confirmation email analytics event' do
