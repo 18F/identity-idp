@@ -657,24 +657,4 @@ RSpec.describe AbTests do
 
     it_behaves_like 'an A/B test that uses user_uuid as a discriminator'
   end
-
-  describe 'ACCOUNT_CREATION_WEBAUTHN_PLATFORM_SETUP' do
-    let(:ab_test) { :ACCOUNT_CREATION_WEBAUTHN_PLATFORM_SETUP }
-
-    let(:disable_ab_test) do
-      -> {
-        allow(IdentityConfig.store).to receive(:account_creation_webauthn_platform_setup_percent)
-          .and_return(0)
-      }
-    end
-
-    let(:enable_ab_test) do
-      -> {
-        allow(IdentityConfig.store).to receive(:account_creation_webauthn_platform_setup_percent)
-          .and_return(50)
-      }
-    end
-
-    it_behaves_like 'an A/B test that uses user_uuid as a discriminator'
-  end
 end

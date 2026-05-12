@@ -42,8 +42,8 @@ module IdentityConfig
       enum: [:disabled, :collect_only, :enabled],
     )
     config.add(:account_creation_passkey_auto_prompt_percent, type: :integer)
+    config.add(:account_creation_passkey_setup_after_password_percent, type: :integer)
     config.add(:account_creation_tmx_processed_percent, type: :integer)
-    config.add(:account_creation_webauthn_platform_setup_percent, type: :integer)
     config.add(:account_reset_token_valid_for_days, type: :integer)
     config.add(:account_reset_wait_period_days, type: :integer)
     config.add(:account_reset_fraud_user_wait_period_days, type: :integer, allow_nil: true)

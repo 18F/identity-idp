@@ -134,9 +134,13 @@ module AbTests
       'WebAuthn Setup Visited',
       'Multi-Factor Authentication Setup',
       'User Registration: User Fully Registered',
+      :webauthn_platform_signup_setup_visited,
+      :webauthn_platform_signup_setup_submitted,
     ].to_set,
     buckets: {
       auto_passkey_prompt: IdentityConfig.store.account_creation_passkey_auto_prompt_percent,
+      passkey_prompt_at_password_creation: IdentityConfig
+        .store.account_creation_passkey_setup_after_password_percent,
     },
     default_bucket: :mfa_selection,
     persist: true,
@@ -236,21 +240,6 @@ module AbTests
     should_log: /^idv/i,
     buckets: {
       doc_auth_passport_cards_allowed: IdentityConfig.store.doc_auth_passport_cards_enabled_percent,
-    },
-  ) do |user:, user_session:, **|
-    user&.uuid
-  end.freeze
-
-  ACCOUNT_CREATION_WEBAUTHN_PLATFORM_SETUP = AbTest.new(
-    experiment_name: 'Account Creation Webauthn Platform Setup',
-    should_log: [
-      :webauthn_platform_signup_setup_visited,
-      :webauthn_platform_signup_setup_submitted,
-      'Multi-Factor Authentication Setup',
-    ],
-    buckets: {
-      account_creation_webauthn_platform_setup:
-        IdentityConfig.store.account_creation_webauthn_platform_setup_percent,
     },
   ) do |user:, user_session:, **|
     user&.uuid

@@ -127,10 +127,10 @@ RSpec.describe SignUp::PasswordsController do
 
         before do
           allow(controller).to receive(:ab_test_bucket)
-            .with(:ACCOUNT_CREATION_WEBAUTHN_PLATFORM_SETUP)
-            .and_return(:account_creation_webauthn_platform_setup)
+            .with(:PASSKEY_UPSELL)
+            .and_return(:passkey_prompt_at_password_creation)
         end
-        it 'redirects when the flag has been turned on' do
+        it 'redirects when the user has been placed into the bucket' do
           expect(response).to redirect_to(webauthn_platform_setup_url)
         end
       end
