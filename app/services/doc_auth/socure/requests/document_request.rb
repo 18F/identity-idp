@@ -9,7 +9,7 @@ module DocAuth
 
         PASSPORT_DOCUMENT_TYPE = 'passport'
         DRIVERS_LICENSE_DOCUMENT_TYPE = 'license'
-        MDL_DOCUMENT_TYPE = 'license' # awaiting mdl value
+        MDL_DOCUMENT_TYPE = 'mdl' # awaiting mdl value
 
         def initialize(
           customer_user_id:,
