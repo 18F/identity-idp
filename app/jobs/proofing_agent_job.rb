@@ -59,7 +59,6 @@ class ProofingAgentJob < ApplicationJob
       transaction_id:,
       correlation_id:,
     )
-    end
   ensure
     logger_info_hash(
       name: 'ProofingAgent',
