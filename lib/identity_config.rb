@@ -41,6 +41,7 @@ module IdentityConfig
       type: :symbol,
       enum: [:disabled, :collect_only, :enabled],
     )
+    config.add(:account_creation_passkey_auto_prompt_percent, type: :integer)
     config.add(:account_creation_tmx_processed_percent, type: :integer)
     config.add(:account_reset_token_valid_for_days, type: :integer)
     config.add(:account_reset_wait_period_days, type: :integer)
@@ -192,6 +193,7 @@ module IdentityConfig
     config.add(:encrypted_document_storage_s3_bucket, type: :string)
     config.add(:event_disavowal_expiration_hours, type: :integer)
     config.add(:facial_match_general_availability_enabled, type: :boolean)
+    config.add(:feature_account_creation_passkey_auto_prompt, type: :boolean)
     config.add(:feature_idv_force_gpo_verification_enabled, type: :boolean)
     config.add(:feature_idv_hybrid_flow_enabled, type: :boolean)
     config.add(:feature_show_sp_reproof_banner_enabled, type: :boolean)
@@ -212,6 +214,7 @@ module IdentityConfig
     config.add(:gpo_max_profile_age_to_send_letter_in_days, type: :integer)
     config.add(:hide_phone_mfa_signup, type: :boolean)
     config.add(:historical_attempts_api_enabled, type: :boolean)
+    config.add(:historical_attempts_s3_storage_enabled, type: :boolean)
     config.add(:hmac_fingerprinter_key, type: :string)
     config.add(:hmac_fingerprinter_key_queue, type: :json)
     config.add(:hybrid_mobile_tmx_processed_percent, type: :integer)
@@ -372,6 +375,7 @@ module IdentityConfig
       type: :string,
       enum: ['server_side', 'client_side_js'],
     )
+    config.add(:openid_connect_authorization_code_expiration_seconds, type: :integer)
     config.add(:openid_connect_content_security_form_action_enabled, type: :boolean)
     config.add(:otp_delivery_blocklist_findtime, type: :integer)
     config.add(:otp_delivery_blocklist_maxretry, type: :integer)
@@ -440,7 +444,6 @@ module IdentityConfig
     config.add(:recaptcha_enterprise_project_id, type: :string)
     config.add(:recaptcha_mock_validator, type: :boolean)
     config.add(:recaptcha_request_timeout_in_seconds, type: :integer)
-    config.add(:recaptcha_secret_key, type: :string)
     config.add(:recaptcha_site_key, type: :string)
     config.add(:recovery_code_length, type: :integer)
     config.add(:redis_attempts_api_pool_size, type: :integer)

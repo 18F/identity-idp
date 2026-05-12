@@ -1429,4 +1429,53 @@ RSpec.describe Profile do
       end
     end
   end
+
+  describe 'create_user_proofing_event' do
+    after do
+      dir_path = Rails.root.join(
+        'tmp',
+        'encrypted_attempt_events',
+        'attempt_events',
+        profile.user.uuid,
+      )
+
+      FileUtils.rm_rf(dir_path) if Dir.exist?(dir_path)
+    end
+
+    it 'creates a user proofing events object' do
+      expect do
+        profile.create_user_proofing_event(
+          password: 'password',
+          attempt_events: [{ 'event' => 'test' }],
+        )
+      end.to change { UserProofingEvent.count }.by(1)
+
+      expect(UserProofingEvent.last.profile).to eq(profile)
+    end
+  end
+
+  describe 'decrypt_user_proofing_events' do
+    after do
+      dir_path = Rails.root.join(
+        'tmp',
+        'encrypted_attempt_events',
+        'attempt_events',
+        profile.user.uuid,
+      )
+
+      FileUtils.rm_rf(dir_path) if Dir.exist?(dir_path)
+    end
+
+    let(:attempt_events) { [{ 'idv-ssn-submitted' => { 'user_uuid' => user.uuid } }] }
+    it 'decrypts user proofing events' do
+      profile.create_user_proofing_event(
+        password: 'password',
+        attempt_events:,
+      )
+
+      expect(
+        profile.decrypt_user_proofing_events(password: 'password'),
+      ).to eq(attempt_events.to_json)
+    end
+  end
 end

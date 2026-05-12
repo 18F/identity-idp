@@ -6,27 +6,19 @@ RSpec.describe Idv::HistoricalAttemptsConcern, type: :controller do
     create(
       :user,
       :fully_registered,
-      password: password,
+      password:,
       email: 'email@example.com',
     )
   end
   let(:issuer) { 'this:is:a:test' }
-  let(:sp) { create(:service_provider, ial: 2, issuer: issuer) }
+  let(:sp) { create(:service_provider, ial: 2, issuer:) }
   let(:profile) { create(:profile, :active, :verified) }
-  let(:applicant) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE }
-  let(:encryptor_mock) { double }
-  let(:encrypted_events) do
-    {
-      'encrypted_data' => 'encrypted_test_data',
-      'salt' => 'abcdef0123456789',
-      'cost' => '000$0$0$',
-    }
-  end
   let(:idv_attempts) do
     [
       { 'idv-ssn-submitted' => { 'user_uuid' => registered_user.uuid } },
     ]
   end
+  let(:allowed_attempts_providers) { [{ 'issuer' => sp.issuer }] }
   let(:pii_encryptor) { Encryption::Encryptors::PiiEncryptor.new(registered_user.password) }
   let(:encrypted_existing_events) do
     pii_encryptor.encrypt(idv_attempts.to_json, user_uuid: registered_user.uuid)
@@ -43,64 +35,19 @@ RSpec.describe Idv::HistoricalAttemptsConcern, type: :controller do
       current_sp: sp,
       current_user: registered_user,
       sp_from_sp_session: sp,
-      sp_session: { vtr: nil,
-                    acr_values: Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF },
+      sp_session: {
+        acr_values: Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
+      },
       user_session: { 'idv/attempts' => idv_attempts },
     )
     allow(registered_user).to receive_messages(
       active_profile: profile,
     )
     allow(IdentityConfig.store).to receive_messages(
-      allowed_attempts_providers: [{ 'issuer' => sp.issuer }],
+      allowed_attempts_providers:,
       attempts_api_enabled: true,
       historical_attempts_api_enabled: true,
     )
-
-    allow(UserProofingEvent).to receive(:new).and_call_original
-    allow(UserProofingEvent).to receive(:save).and_call_original
-    allow(Encryption::Encryptors::PiiEncryptor).to receive(:new).and_return(pii_encryptor)
-    allow(pii_encryptor).to receive(:decrypt).and_call_original
-    allow(pii_encryptor).to receive(:encrypt).and_call_original
-  end
-
-  describe '#record_user_proofing_events' do
-    subject(:record_user_proofing_events) do
-      controller.record_user_proofing_events(password)
-    end
-
-    context 'historical_attempts_api_enabled feature flag is false' do
-      before do
-        allow(IdentityConfig.store).to receive(
-          :historical_attempts_api_enabled,
-        ).and_return(false)
-      end
-
-      it 'does not modify or create a UserProofingEvent' do
-        record_user_proofing_events
-
-        expect(UserProofingEvent).to_not have_received(:new)
-        expect(UserProofingEvent).to_not have_received(:save)
-      end
-    end
-
-    context 'historical_attempts_api_enabled feature flag is true' do
-      before do
-        allow(Encryption::Encryptors::PiiEncryptor).to receive(:new).and_return(encryptor_mock)
-        allow(encryptor_mock).to receive(:encrypt).and_return(encrypted_events.to_json)
-        record_user_proofing_events
-      end
-
-      it 'creates and saves a UserProofingEvent' do
-        expect(UserProofingEvent).to have_received(:new)
-      end
-
-      it 'includes the encrypted event metadata' do
-        user_proofing_event = UserProofingEvent.last
-        expect(user_proofing_event.cost).to eq(encrypted_events['cost'])
-        expect(user_proofing_event.salt).to eq(encrypted_events['salt'])
-        expect(user_proofing_event.profile).to eq(profile)
-      end
-    end
   end
 
   describe '#cache_user_proofing_events' do
@@ -118,11 +65,11 @@ RSpec.describe Idv::HistoricalAttemptsConcern, type: :controller do
     context 'historical_attempts_api_enabled feature flag is false' do
       before do
         allow(IdentityConfig.store).to receive(:historical_attempts_api_enabled).and_return(false)
+        allow(profile).to receive(:decrypt_user_proofing_events)
       end
 
-      it 'does not decrypt or encrypt events' do
-        expect(pii_encryptor).to_not receive(:decrypt)
-        expect(pii_encryptor).to_not receive(:encrypt)
+      it 'does not decrypt events' do
+        expect(profile).to_not receive(:decrypt_user_proofing_events)
 
         cache_user_proofing_events
       end
@@ -135,11 +82,12 @@ RSpec.describe Idv::HistoricalAttemptsConcern, type: :controller do
       before do
         allow(SessionEncryptor).to receive(:new).and_return(mock_session_encryptor)
         allow(mock_session_encryptor).to receive(:kms_encrypt).and_return(kms_encrypted_events)
+        allow(profile).to receive(:decrypt_user_proofing_events).and_return(idv_attempts.to_json)
         cache_user_proofing_events
       end
 
       it 'decrypts the appropriate UserProofingEvent' do
-        expect(pii_encryptor).to have_received(:decrypt).once
+        expect(profile).to have_received(:decrypt_user_proofing_events).once
       end
 
       it 'encrypts with the kms session key' do
@@ -157,9 +105,8 @@ RSpec.describe Idv::HistoricalAttemptsConcern, type: :controller do
           allow(IdentityConfig.store).to receive(:allowed_attempts_providers).and_return([])
         end
 
-        it 'does not decrypt or encrypt events' do
-          expect(pii_encryptor).to_not receive(:decrypt)
-          expect(pii_encryptor).to_not receive(:encrypt)
+        it 'does not decrypt events' do
+          expect(profile).to_not receive(:decrypt_user_proofing_events)
 
           cache_user_proofing_events
         end
@@ -174,9 +121,8 @@ RSpec.describe Idv::HistoricalAttemptsConcern, type: :controller do
           )
         end
 
-        it 'does not decrypt or encrypt events' do
-          expect(pii_encryptor).to_not receive(:decrypt)
-          expect(pii_encryptor).to_not receive(:encrypt)
+        it 'does not decrypt events' do
+          expect(profile).to_not receive(:decrypt_user_proofing_events)
 
           cache_user_proofing_events
         end

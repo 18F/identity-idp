@@ -23,6 +23,7 @@ aamva_supported_jurisdictions: '["AL","AR","AZ","CO","CT","DC","DE","FL","GA","H
 aamva_verification_request_timeout: 5.0
 aamva_verification_url: https://example.org:12345/verification/url
 account_creation_device_profiling: disabled
+account_creation_passkey_auto_prompt_percent: 0
 account_creation_tmx_processed_percent: 0
 account_reset_attempt_window_in_minutes: 1_440
 account_reset_fraud_user_wait_period_days:
@@ -176,6 +177,7 @@ enable_test_routes: true
 encrypted_document_storage_s3_bucket: 'test-bucket'
 event_disavowal_expiration_hours: 240
 facial_match_general_availability_enabled: true
+feature_account_creation_passkey_auto_prompt: false
 feature_idv_force_gpo_verification_enabled: false
 feature_idv_hybrid_flow_enabled: true
 feature_show_sp_reproof_banner_enabled: false
@@ -196,6 +198,7 @@ gpo_designated_receiver_pii: '{}'
 gpo_max_profile_age_to_send_letter_in_days: 30
 hide_phone_mfa_signup: false
 historical_attempts_api_enabled: false
+historical_attempts_s3_storage_enabled: false
 hmac_fingerprinter_key:
 hmac_fingerprinter_key_queue: '[]'
 hybrid_mobile_tmx_processed_percent: 0
@@ -357,6 +360,7 @@ mx_timeout: 3
 new_device_alert_delay_in_minutes: 5
 new_device_alert_window_start_in_minutes: 15
 newrelic_license_key: ''
+openid_connect_authorization_code_expiration_seconds: 300
 openid_connect_content_security_form_action_enabled: false
 openid_connect_redirect: client_side_js
 otp_delivery_blocklist_findtime: 5
@@ -414,7 +418,6 @@ recaptcha_enterprise_api_key: ''
 recaptcha_enterprise_project_id: ''
 recaptcha_mock_validator: true
 recaptcha_request_timeout_in_seconds: 5
-recaptcha_secret_key: ''
 recaptcha_site_key: ''
 recovery_code_length: 4
 redis_attempts_api_pool_size: 1

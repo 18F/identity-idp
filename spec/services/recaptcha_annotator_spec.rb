@@ -19,9 +19,9 @@ RSpec.describe RecaptchaAnnotator do
     let(:annotation) { RecaptchaAnnotator::Annotations::LEGITIMATE }
     subject(:annotate) { RecaptchaAnnotator.annotate(assessment_id:, reason:, annotation:) }
 
-    context 'without recaptcha enterprise' do
+    context 'without recaptcha enabled' do
       before do
-        allow(FeatureManagement).to receive(:recaptcha_enterprise?).and_return(false)
+        allow(FeatureManagement).to receive(:recaptcha_enabled?).and_return(false)
       end
 
       it 'does not submit annotation' do
@@ -45,9 +45,9 @@ RSpec.describe RecaptchaAnnotator do
       end
     end
 
-    context 'with recaptcha enterprise' do
+    context 'with recaptcha enabled' do
       before do
-        allow(FeatureManagement).to receive(:recaptcha_enterprise?).and_return(true)
+        allow(FeatureManagement).to receive(:recaptcha_enabled?).and_return(true)
         allow(IdentityConfig.store).to receive(:recaptcha_enterprise_project_id)
           .and_return(recaptcha_enterprise_project_id)
         allow(IdentityConfig.store).to receive(:recaptcha_enterprise_api_key)

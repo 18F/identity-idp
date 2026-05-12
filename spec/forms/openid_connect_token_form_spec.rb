@@ -107,6 +107,23 @@ RSpec.describe OpenidConnectTokenForm do
         end
       end
 
+      context 'code expiration is independent of session timeout' do
+        before do
+          allow(IdentityConfig.store).to receive(
+            :openid_connect_authorization_code_expiration_seconds,
+          ).and_return(60)
+          allow(IdentityConfig.store).to receive(
+            :session_timeout_in_seconds,
+          ).and_return(900)
+          identity.update(updated_at: 2.minutes.ago)
+        end
+
+        it 'expires based on code expiration, not session timeout' do
+          expect(valid?).to eq(false)
+          expect(form.errors[:code]).to eq([t('openid_connect.token.errors.expired_code')])
+        end
+      end
+
       context 'code is nil' do
         before do
           # Create a service provider identity with a nil session uuid to make sure the form is not

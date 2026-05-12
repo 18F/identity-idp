@@ -40,6 +40,17 @@ module EncryptedDocStorage
       )
     end
 
+    def write_encrypted_attempt_events(file_path:, encrypted_attempt_events:)
+      name = SecureRandom.uuid
+      path = "#{file_path}/#{name}"
+
+      storage.write_attempt_events(
+        path:,
+        encrypted_attempt_events:,
+      )
+      Result.new(name:, encryption_key: nil)
+    end
+
     private
 
     def aes_cipher

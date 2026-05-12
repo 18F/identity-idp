@@ -20,7 +20,7 @@ class RecaptchaAnnotator
     def annotate(assessment_id:, reason: nil, annotation: nil)
       return if assessment_id.blank?
 
-      if FeatureManagement.recaptcha_enterprise?
+      if FeatureManagement.recaptcha_enabled?
         submit_annotation(assessment_id:, reason:, annotation:)
         # Future:
         # assessment = create_or_update_assessment!(assessment_id:, reason:, annotation:)

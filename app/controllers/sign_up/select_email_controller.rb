@@ -47,11 +47,7 @@ module SignUp
     end
 
     def last_email
-      if user_session[:selected_email_id_for_linked_identity]
-        user_emails.find(user_session[:selected_email_id_for_linked_identity]).email
-      else
-        current_user.last_sign_in_email_address.email
-      end
+      selected_email_for_linked_identity&.email || current_user.last_sign_in_email_address.email
     end
 
     def verify_needs_completions_screen

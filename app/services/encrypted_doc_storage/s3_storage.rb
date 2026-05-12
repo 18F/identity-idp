@@ -10,6 +10,23 @@ module EncryptedDocStorage
       )
     end
 
+    def write_attempt_events(path:, encrypted_attempt_events:)
+      # TODO: Make attempt_events/ directory in s3 escrow bucket
+      # TODO: Make directory readable from application
+      s3_client.put_object(
+        bucket:,
+        body: encrypted_attempt_events,
+        key: path,
+      )
+    end
+
+    def retrieve_attempt_object(path:)
+      s3_client.get_object(
+        bucket:,
+        key: path,
+      )
+    end
+
     private
 
     def s3_client

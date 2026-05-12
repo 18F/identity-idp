@@ -37,7 +37,7 @@ module Idv
 
       init_profile
 
-      record_user_proofing_events(password)
+      record_user_proofing_events
 
       flash[:success] =
         if idv_session.verify_by_mail?
@@ -206,6 +206,18 @@ module Idv
       flash[:error] = t('idv.failure.exceptions.internal_error')
       idv_session.invalidate_personal_key!
       redirect_to idv_enter_password_url
+    end
+
+    def record_user_proofing_events
+      return unless historical_events_enabled?
+
+      current_user.active_profile.create_user_proofing_event(password:, attempt_events:)
+
+      user_session.delete('idv/attempts')
+    end
+
+    def attempt_events
+      user_session['idv/attempts'] || []
     end
   end
 end

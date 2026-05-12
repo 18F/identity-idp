@@ -108,6 +108,16 @@ RSpec.describe DisplayablePiiFormatter do
         expect(result.birthdate).to eq('January 1, 1990')
         expect(result.phone).to eq('+1 202-212-1000')
       end
+
+      context 'when the selected email is no longer confirmed' do
+        let(:selected_email_id) do
+          current_user.email_addresses.find { |email_address| !email_address.confirmed? }.id
+        end
+
+        it 'falls back to the last sign in email' do
+          expect(formatter.format.email).to eq(last_sign_in_email_address)
+        end
+      end
     end
 
     describe '#verified_at' do

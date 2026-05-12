@@ -281,14 +281,14 @@ class UserMailer < ActionMailer::Base
     end
   end
 
-  def dupe_profile_account_review_complete_success
-    @hide_title = true
+  def dupe_profile_account_review_complete_success(agency_name: nil)
+    @service_provider_or_app_name = agency_name || APP_NAME
 
     with_user_locale(user) do
       @root_url = root_url(locale: locale_url_param)
       mail(
         to: email_address.email,
-        subject: t('user_mailer.dupe_profile.review_complete.success_title', app_name: APP_NAME),
+        subject: t('user_mailer.dupe_profile.review_complete.success_heading'),
       )
     end
   end

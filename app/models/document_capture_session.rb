@@ -13,6 +13,11 @@ class DocumentCaptureSession < ApplicationRecord
 
   validates :passport_status, inclusion: { in: PASSPORT_STATUSES }, allow_nil: true
 
+  enum :document_type_requested, {
+    Idp::Constants::DocumentTypes::STATE_ID_CARD => 0,
+    Idp::Constants::DocumentTypes::PASSPORT => 1,
+  }
+
   def load_result
     return nil unless result_id.present?
 
@@ -167,23 +172,35 @@ class DocumentCaptureSession < ApplicationRecord
   end
 
   def passport_requested?
-    passport_status == 'requested'
+    document_type_requested == Idp::Constants::DocumentTypes::PASSPORT ||
+      passport_status == 'requested'
   end
 
   def request_passport!
-    update!(
+    attrs = {
       passport_status: 'requested',
+      document_type_requested: Idp::Constants::DocumentTypes::PASSPORT,
       doc_auth_vendor: nil,
-      socure_docv_capture_app_url: nil,
-      socure_docv_transaction_token: nil,
-    )
+    }
+    attrs.merge!(clear_socure_attributes) if state_id_requested?
+
+    update!(attrs)
   end
 
   def request_state_id!
-    attrs = passport_not_requested_attributes
+    attrs = {
+      passport_status: 'not_requested',
+      document_type_requested: Idp::Constants::DocumentTypes::STATE_ID_CARD,
+      doc_auth_vendor: nil,
+    }
     attrs.merge!(clear_socure_attributes) if passport_requested?
 
     update!(attrs)
+  end
+
+  def state_id_requested?
+    document_type_requested == Idp::Constants::DocumentTypes::STATE_ID_CARD ||
+      passport_status == 'not_requested' # 50/50
   end
 
   private
@@ -216,13 +233,6 @@ class DocumentCaptureSession < ApplicationRecord
     end
 
     aamva_success ? :passed : :failed
-  end
-
-  def passport_not_requested_attributes
-    {
-      passport_status: 'not_requested',
-      doc_auth_vendor: nil,
-    }
   end
 
   def clear_socure_attributes

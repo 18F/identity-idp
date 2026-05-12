@@ -6,16 +6,22 @@ module Users
     include MfaSetupConcern
     include SecureHeadersConcern
     include ReauthenticationRequiredConcern
+    include ThreatMetrixHelper
+    include ThreatMetrixConcern
 
     before_action :authenticate_user!
     before_action :confirm_user_authenticated_for_2fa_setup
     before_action :apply_secure_headers_override
+    before_action :override_csp_for_threat_metrix,
+                  if: :account_creation_threatmetrix_bootstrap_needed?
     before_action :set_webauthn_setup_presenter
+    before_action :set_account_creation_threatmetrix_variables
     before_action :confirm_recently_authenticated_2fa
     before_action :validate_existing_platform_authenticator
 
     helper_method :in_multi_mfa_selection_flow?
     helper_method :mobile?
+    helper_method :auto_trigger_request?
 
     def new
       form = WebauthnVisitForm.new(
@@ -37,10 +43,14 @@ module Users
         platform_authenticator: result.extra[:platform_authenticator],
         in_account_creation_flow: user_session[:in_account_creation_flow] || false,
         enabled_mfa_methods_count: result.extra[:enabled_mfa_methods_count],
+        auto_passkey_prompted: auto_trigger_request?,
       )
       save_challenge_in_session
       @exclude_credentials = exclude_credentials
       @need_to_set_up_additional_mfa = need_to_set_up_additional_mfa?
+      @auto_trigger = auto_trigger_request? &&
+                      platform_authenticator? &&
+                      in_account_creation_flow?
       if platform_authenticator?
         user_session[:webauthn_setup_started_at] = Time.zone.now.to_f
       end
@@ -117,6 +127,10 @@ module Users
          current_user.webauthn_configurations.platform_authenticators.present?
         redirect_to authentication_methods_setup_path
       end
+    end
+
+    def set_account_creation_threatmetrix_variables
+      @account_creation_threatmetrix = account_creation_threatmetrix_variables
     end
 
     def webauthn_auth_method
@@ -197,8 +211,13 @@ module Users
       {
         in_account_creation_flow: user_session[:in_account_creation_flow] || false,
         webauthn_platform_recommended: user_session[:webauthn_platform_recommended],
+        auto_passkey_prompted: auto_trigger_request?,
         attempts: mfa_attempts_count,
       }
+    end
+
+    def auto_trigger_request?
+      params[:auto_trigger] == 'true'
     end
 
     def webauthn_setup_duration
@@ -208,13 +227,19 @@ module Users
       (Time.zone.now.to_f - started_at.to_f)
     end
 
+    def next_setup_path
+      return super unless @platform_authenticator && user_session[:auto_passkey_prompted]
+
+      super || authentication_methods_setup_path
+    end
+
     def need_to_set_up_additional_mfa?
       return false unless @platform_authenticator
       in_multi_mfa_selection_flow? && mfa_selection_count < 2
     end
 
     def new_params
-      params.permit(:platform, :error)
+      params.permit(:platform, :error, :auto_trigger)
     end
 
     def confirm_params

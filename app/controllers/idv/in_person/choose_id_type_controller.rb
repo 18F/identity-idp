@@ -53,7 +53,7 @@ class Idv::InPerson::ChooseIdTypeController < ApplicationController
         if idv_session.document_capture_session_uuid && user.has_establishing_in_person_enrollment?
           DocumentCaptureSession.find_by(
             uuid: idv_session.document_capture_session_uuid,
-          )&.update!(passport_status: nil)
+          )&.update!(passport_status: nil, document_type_requested: nil)
         end
       end,
     )
