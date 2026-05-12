@@ -54,6 +54,13 @@ class ProofingAgentJob < ApplicationJob
     success = combined_result[:success]
     reason = combined_result[:reason]
 
+    ProofingAgentWebhookJob.perform_later(
+      success:,
+      reason:,
+      transaction_id:,
+      correlation_id:,
+    )
+
     if success
       send_profile_confirmation_email(
         verified_at: document_capture_session.load_agent_proofed_user.verified_at,
@@ -63,7 +70,6 @@ class ProofingAgentJob < ApplicationJob
         transaction_id:,
       )
     end
-
     if webhook_url.present?
       ProofingAgentWebhookJob.perform_later(
         success:,
@@ -215,10 +221,8 @@ class ProofingAgentJob < ApplicationJob
     correlation_id:,
     transaction_id:
   )
-    expiration_date = Idv::ProofingAgent::AgentProofingSucceededPresenter.new(
-      verified_at:,
-      url_options: {},
-    ).deadline
+    expiration_date = Idv::ProofingAgent::AgentProofingSucceededPresenter
+      .deadline_for(verified_at:)
 
     user.confirmed_email_addresses.each do |email_address|
       UserMailer.with(user:, email_address:)

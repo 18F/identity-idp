@@ -7,6 +7,12 @@ module Idv
 
       attr_reader :verified_at_string, :url_options
 
+      # Per ticket: EOD Samoa Standard Time (UTC-11) + 2 days so the
+      # displayed date covers all U.S. timezones (-11 to +10).
+      def self.deadline_for(verified_at:)
+        Time.zone.parse(verified_at).in_time_zone('American Samoa').end_of_day + 2.days
+      end
+
       def initialize(verified_at:, url_options:)
         @verified_at_string = verified_at
         @url_options = url_options
@@ -24,11 +30,8 @@ module Idv
         edit_user_password_url
       end
 
-      # LG-17264: per ticket, deadline = end-of-day Samoa Standard Time
-      # (UTC-11) + 2 days, so the displayed date covers all U.S. timezones
-      # (-11 to +10). Aligned with May; revisit with Doug when he's back.
       def deadline
-        verified_at.end_of_day + 2.days
+        self.class.deadline_for(verified_at: @verified_at_string)
       end
 
       def verified_at

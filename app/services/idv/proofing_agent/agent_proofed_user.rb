@@ -60,10 +60,6 @@ module Idv
         self[:address_resolution_status]&.to_sym
       end
 
-      def email
-        self.dig(:pii, :email)
-      end
-
       # This hash includes the values that should be merged into the idv_session in order to
       # populate proofing components in the event logs.
       #
