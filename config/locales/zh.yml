@@ -626,6 +626,7 @@ doc_auth.headings.capture_complete: 我们验证了你的身份文件
 doc_auth.headings.capture_scan_warning_html: 我们读取不到你身份证件上的条形码。如果以下信息不正确，请把你身份证件的%{link_html}。
 doc_auth.headings.capture_scan_warning_link: 上传新照片
 doc_auth.headings.choose_id_type: 选择你的身份证件类型
+doc_auth.headings.dob_ssn: 输入您的社会安全号码和出生日期
 doc_auth.headings.document_capture: 添加你身份证件的照片
 doc_auth.headings.document_capture_back: 你身份证件的背面
 doc_auth.headings.document_capture_front: 你身份证件的正面
@@ -668,6 +669,7 @@ doc_auth.info.capture_status_none: 对齐
 doc_auth.info.capture_status_small_document: 靠近一些
 doc_auth.info.capture_status_tap_to_capture: 点击来扫描
 doc_auth.info.choose_id_type: 选择你具备的身份证件类型你将需要拍你身份证件的照片来验证身份。
+doc_auth.info.dob_ssn: 我们需要此信息，以便将本账户安全地关联至您刚刚完成当面验证的身份。
 doc_auth.info.dos_passport_api_down_message: 我们目前不能接受护照。你可以使用驾照或州ID，或稍后再试。
 doc_auth.info.exit.with_sp: 退出 %{app_name} 并返回 %{sp_name}
 doc_auth.info.exit.without_sp: 退出身份验证并到你的账户页面
