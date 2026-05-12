@@ -6,6 +6,10 @@ module Idv
       choose_id_type_form_params[:choose_id_type_preference]
     end
 
+    def passport_chosen?
+      chosen_id_type == 'passport'
+    end
+
     def set_document_type_requested
       case chosen_id_type
       when Idp::Constants::DocumentTypes::PASSPORT
