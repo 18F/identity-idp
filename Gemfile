@@ -77,7 +77,7 @@ gem 'stringex', require: false
 gem 'strong_migrations', '>= 0.4.2'
 gem 'terminal-table', require: false
 gem 'valid_email', '>= 0.1.3'
-gem 'view_component', '~> 3.0'
+gem 'view_component', '~> 4.9.0'
 gem 'webauthn', '~> 3.0'
 gem 'xmldsig', '~> 0.6'
 gem 'xmlenc', '0.8.0'
