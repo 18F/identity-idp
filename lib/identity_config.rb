@@ -242,7 +242,7 @@ module IdentityConfig
     config.add(:idv_phone_precheck_percent, type: :integer)
     config.add(:idv_proofing_agent_config, type: :json)
     config.add(:idv_proofing_agent_enabled, type: :boolean)
-    config.add(:idv_proofing_agent_result_expiration_minutes, type: :integer)
+    config.add(:idv_proofing_agent_result_expiration_seconds, type: :integer)
     config.add(:idv_rdp_version_default, type: :string)
     config.add(:idv_rdp_version_switching_enabled, type: :boolean)
     config.add(:idv_rdp_version_v2_percent, type: :integer)

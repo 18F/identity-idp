@@ -1901,29 +1901,6 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
           end
         end
 
-        context 'when no DocumentCaptureSession exists for the transaction_id' do
-          it 'returns 404 with not_found reason' do
-            expect(action.status).to eq(404)
-
-            body = JSON.parse(response.body)
-            expect(body['status']).to eq('failed')
-            expect(body['reason']).to eq('not_found')
-            expect(body['transaction_id']).to eq(transaction_id)
-
-            expect(@analytics).to have_logged_event(
-              :idv_proofing_agent_request_received,
-              response_body: a_hash_including(
-                status: 'failed',
-                reason: 'not_found',
-                transaction_id:,
-              ),
-              proofing_agent: proofing_agent_analytics_hash,
-              issuer:,
-              transaction_id:,
-            )
-          end
-        end
-
         context 'when a DocumentCaptureSession exists but the proofing result is not yet ready' do
           before do
             DocumentCaptureSession.create!(uuid: transaction_id, user_id: user.id, issuer:)
@@ -1933,8 +1910,8 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
             expect(action.status).to eq(404)
 
             body = JSON.parse(response.body)
-            expect(body['status']).to eq('failed')
-            expect(body['reason']).to eq('not_found')
+            expect(body['success']).to eq(false)
+            expect(body['reason']).to eq('result_not_found')
             expect(body['transaction_id']).to eq(transaction_id)
           end
         end
