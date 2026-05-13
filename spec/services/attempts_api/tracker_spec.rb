@@ -236,9 +236,14 @@ RSpec.describe AttemptsApi::Tracker do
     end
 
     context 'when historical_attempts_api_enabled is true' do
+      let(:historical_attempts_pii_enabled) { true }
       before do
-        allow(IdentityConfig.store).to receive(:historical_attempts_api_enabled).and_return(true)
+        allow(IdentityConfig.store).to receive_messages(
+          historical_attempts_api_enabled: true,
+          historical_attempts_pii_enabled:,
+        )
       end
+
       let(:secure_random_regex_pattern) do
         /\A[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\z/
       end
@@ -369,6 +374,18 @@ RSpec.describe AttemptsApi::Tracker do
             expect(event_data2['event_metadata']['user_uuid']).to eq(agency_uuid)
             expect(event_data2['jti']).to match(secure_random_regex_pattern)
             expect(event_data2['event_type']).to eq('idv-enrollment-complete')
+          end
+        end
+
+        context 'when historical_attempts_pii_enabled is false' do
+          let(:historical_attempts_pii_enabled) { false }
+
+          it 'does not populate the historical session info' do
+            subject.idv_enrollment_complete(reproof: false)
+            event_data = user_session['idv/attempts'].first
+
+            expect(event_data['event_metadata']).to eq({ user_uuid: agency_uuid })
+            expect(event_data['event_type']).to eq('idv-enrollment-complete')
           end
         end
       end

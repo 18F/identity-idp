@@ -98,9 +98,22 @@ module AttemptsApi
     def log_history(event)
       return unless session && session['warden.user.user.session']
 
+      if IdentityConfig.store.historical_attempts_pii_enabled
+        event_data = event.as_json
+      else
+        event_data = {
+          'event_type' => event.event_type,
+          'jti' => event.jti,
+          'event_metadata' => {
+            user_uuid: event.event_metadata[:user_uuid],
+          },
+        }
+
+      end
+
       session['warden.user.user.session']['idv/attempts'] ||= []
       session['warden.user.user.session']['idv/attempts'].push(
-        event.as_json,
+        event_data,
       )
     end
 

@@ -198,6 +198,7 @@ gpo_designated_receiver_pii: '{}'
 gpo_max_profile_age_to_send_letter_in_days: 30
 hide_phone_mfa_signup: false
 historical_attempts_api_enabled: false
+historical_attempts_pii_enabled: false
 historical_attempts_s3_storage_enabled: false
 hmac_fingerprinter_key:
 hmac_fingerprinter_key_queue: '[]'
