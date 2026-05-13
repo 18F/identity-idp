@@ -99,6 +99,7 @@ class RecaptchaEnterpriseForm
     end
 
     if response.body['error'].present?
+      Rails.logger.info("RECAPTCHA Response: #{response.body}")
       RecaptchaResult.new(success: false, errors: [response.body.dig('error', 'status')].compact)
     else
       RecaptchaResult.new(
