@@ -27,19 +27,14 @@ module AttemptsApi
     include TrackerEvents
 
     def self.write_existing_user_events(sp:, historical_attempts: [])
-      historical_attempts.each do |saved_event|
-        # TODO:Historical attempts API:
-        # Clean up the data structure being used when including the whole event data
-        # And make it work with a tracker instance method.
-        event_data = saved_event.values[0]
-
+      historical_attempts.each do |event_data|
         event = AttemptEvent.new(
-          event_type: saved_event.keys[0],
+          event_type: event_data['event_type'],
           session_id: event_data['session_id'],
-          occurred_at: event_data['occurred_at'] || Time.zone.now,
+          occurred_at: event_data['occurred_at'],
           event_metadata: event_data['event_metadata'],
-          jti: event_data['jti'] || SecureRandom.uuid,
-          # iat: event_data['iat'],
+          jti: event_data['jti'],
+          iat: event_data['iat'],
         )
 
         jwe = event.to_jwe(
@@ -105,7 +100,7 @@ module AttemptsApi
 
       session['warden.user.user.session']['idv/attempts'] ||= []
       session['warden.user.user.session']['idv/attempts'].push(
-        event.event_type => { 'user_uuid' => user.uuid, 'jti' => event.jti },
+        event.as_json,
       )
     end
 
