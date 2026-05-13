@@ -203,6 +203,21 @@ class DocumentCaptureSession < ApplicationRecord
       passport_status == 'not_requested' # 50/50
   end
 
+  def request_mdl!
+    attrs = {
+      passport_status: 'not_requested',
+      document_type_requested: Idp::Constants::DocumentTypes::MDL,
+      doc_auth_vendor: nil,
+    }
+    attrs.merge!(clear_socure_attributes) if mdl_requested?
+
+    update!(attrs)
+  end
+
+  def mdl_requested?
+    document_type_requested == Idp::Constants::DocumentTypes::MDL
+  end
+
   private
 
   def generate_result_id

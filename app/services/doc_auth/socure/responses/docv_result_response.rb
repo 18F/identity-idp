@@ -209,11 +209,13 @@ module DocAuth
         end
 
         def document_type_received
-          doc_type = document_id_type&.gsub(/\W/, '')&.underscore
-          if !STATE_ID_MAPPINGS[doc_type].nil?
-            return STATE_ID_MAPPINGS[doc_type]
+          doc_type = STATE_ID_MAPPINGS[doc_type]
+
+          if doc_type && reason_codes&.intersect?(mdl_reason_codes)
+            doc_type = Idp::Constants::DocumentTypes::MDL
           end
-          doc_type
+
+          doc_type || document_id_type&.gsub(/\W/, '')&.underscore
         end
 
         def document_id_type
@@ -288,6 +290,10 @@ module DocAuth
             IdentityConfig.store.doc_auth_passport_vendor_socure_percent > 0
           ) ||
             IdentityConfig.store.doc_auth_passport_vendor_default == Idp::Constants::Vendors::SOCURE
+        end
+
+        def mdl_reason_codes
+          IdentityConfig.store.idv_socure_reason_codes_docv_mdl
         end
       end
     end
