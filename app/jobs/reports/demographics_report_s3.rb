@@ -18,9 +18,9 @@ module Reports
       super(report_date, time_frame, report_receiver, *args, **rest)
     end
 
-    def perform(date = Time.zone.yesterday.end_of_day, time_frame = TIME_FRAME)
+    def perform(date = nil, time_frame = nil)
       @report_date = date || @report_date || REPORT_DELAY_DAYS.days.ago.end_of_day
-      @time_frame = time_frame
+      @time_frame = time_frame || TIME_FRAME
       issuer_configs = report_configs
       if issuer_configs.empty?
         Rails.logger.warn 'No issuer configurations found - Demographics Metrics S3 Report NOT SENT'
@@ -112,9 +112,11 @@ module Reports
 
     def create_report_reader(sp_id, agency_abbreviation)
       report_time_range
-      # Example: DemographicsMetricsReport/001/quarterly/001_20260101-20260228_state_metrics.csv
-      s3_path = "DemographicsMetricsReport/#{sp_id}/"\
-                "#{@time_frame}/#{sp_id}_#{start_date_formatted}_#{effective_end_date_formatted}"
+      # Example: DemographicsMetricsReport/001/quarterly/SP001_20260101-20260228_state_metrics.csv
+      # See app/jobs/reports/demographics_metrics_report.rb for filepath logic
+      base_path = generate_base_s3_path(directory: 'idp')
+      s3_path = "#{base_path}DemographicsMetricsReport/#{sp_id}/"\
+                "#{@time_frame}/SP#{sp_id}_#{start_date_formatted}_#{effective_end_date_formatted}"
       Reporting::DemographicsMetricsReportS3.new(
         bucket_name: data_warehouse_bucket_name,
         custom_s3_path: s3_path,
@@ -215,13 +217,13 @@ module Reports
     end
 
     def report_time_range
-      case time_frame
+      case @time_frame
       when 'quarterly'
-        report_date.all_quarter
+        @report_date.all_quarter
       when 'monthly'
-        report_date.all_month # Not expecting to run this yet
+        @report_date.all_month # Not expecting to run this yet
       else
-        raise ArgumentError, "Unsupported time frame: #{time_frame}"
+        raise ArgumentError, "Unsupported time frame: #{@time_frame}"
       end
     end
 
