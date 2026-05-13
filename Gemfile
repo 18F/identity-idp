@@ -81,7 +81,7 @@ gem 'view_component', '~> 3.0'
 gem 'webauthn', '~> 3.0'
 gem 'xmldsig', '~> 0.6'
 gem 'xmlenc', '0.8.0'
-gem 'yard', require: false
+gem 'yard', '>= 0.9.42', require: false
 gem 'zlib', require: false
 
 # This version of the zxcvbn gem matches the data and behavior of the zxcvbn NPM package.
