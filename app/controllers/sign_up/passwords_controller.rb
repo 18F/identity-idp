@@ -100,7 +100,7 @@ module SignUp
 
     def passkey_setup_upsell_prompt_eligible?
       ab_test_bucket(:PASSKEY_UPSELL) ==
-        :passkey_prompt_at_password_creation
+        :passkey_setup_prompt_after_password_creation
     end
   end
 end
