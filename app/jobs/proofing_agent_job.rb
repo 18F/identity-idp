@@ -3,6 +3,7 @@
 class ProofingAgentJob < ApplicationJob
   include JobHelpers::StaleJobHelper
   include AbTestingConcern
+  include ProofingAgent::Config
 
   queue_as :high_proofing_agent
 
@@ -220,19 +221,5 @@ class ProofingAgentJob < ApplicationJob
 
   def result_id
     document_capture_session.result_id
-  end
-
-  def webhook_url
-    issuer_config&.dig('webhook', 'url')
-  end
-
-  def issuer_config
-    @issuer_config ||= proofing_agent_config&.find do |config|
-      config['issuer'] == issuer
-    end
-  end
-
-  def proofing_agent_config
-    @proofing_agent_config ||= IdentityConfig.store.idv_proofing_agent_config
   end
 end

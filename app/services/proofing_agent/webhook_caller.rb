@@ -2,6 +2,7 @@
 
 module ProofingAgent
   class WebhookCaller
+    include ProofingAgent::Config
     attr_reader :success, :reason, :transaction_id, :correlation_id
 
     def initialize(success:, reason:, transaction_id:, correlation_id:)
@@ -78,26 +79,8 @@ module ProofingAgent
       @document_capture_session ||= DocumentCaptureSession.find_by(uuid: transaction_id)
     end
 
-    def issuer
+    def service_provider_issuer
       document_capture_session&.issuer
-    end
-
-    def issuer_config
-      @issuer_config ||= proofing_agent_config&.find do |config|
-        config['issuer'] == issuer
-      end
-    end
-
-    def webhook_url
-      issuer_config&.dig('webhook', 'url')
-    end
-
-    def webhook_secret
-      issuer_config&.dig('webhook', 'secret')
-    end
-
-    def proofing_agent_config
-      @proofing_agent_config ||= IdentityConfig.store.idv_proofing_agent_config
     end
   end
 end
