@@ -19,6 +19,7 @@ module Idp
       USPS = 'usps'
       AAMVA = 'aamva'
       AAMVA_UNSUPPORTED_JURISDICTION = 'UnsupportedJurisdiction'
+      PROOFING_AGENT = 'proofing_agent'
       STATE_ID_MOCK = 'StateIdMock'
       AAMVA_CHECK_SKIPPED = 'AamvaCheckSkipped'
       SOURCE_CHECK = [AAMVA, AAMVA_UNSUPPORTED_JURISDICTION, STATE_ID_MOCK].freeze
@@ -37,6 +38,8 @@ module Idp
       PASSPORT_TYPES = [*SUPPORTED_PASSPORT_TYPES, PASSPORT_CARD].freeze
       STATE_ID_TYPES = [*SUPPORTED_STATE_ID_TYPES].freeze
     end
+
+    SUPPORTED_PASSPORT_ISSUING_COUNTRY_CODES = %w[US USA].freeze
 
     # US State and Territory codes are
     # taken from the FIPS standard, which
@@ -217,6 +220,7 @@ module Idp
     MOCK_IDV_APPLICANT_WITH_PASSPORT = MOCK_IDV_APPLICANT.select do |field, _value|
       %i[first_name middle_name last_name dob sex].include?(field)
     end.merge(
+      name_suffix: nil,
       document_type_received: 'passport',
       mrz:
       'P<UTOSAMPLE<<COMPANY<<<<<<<<<<<<<<<<<<<<<<<<ACU1234P<5UTO0003067F4003065<<<<<<<<<<<<<<02',

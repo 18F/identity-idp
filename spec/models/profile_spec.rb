@@ -46,6 +46,30 @@ RSpec.describe Profile do
     end
   end
 
+  describe '#enhanced?' do
+    it 'returns true if profile is enhanced' do
+      profile = create(
+        :profile,
+        :verified,
+        idv_level: :unsupervised_with_selfie,
+        user: user,
+      )
+
+      expect(profile.enhanced?).to eq(true)
+    end
+
+    it 'returns false if profile is not enhanced' do
+      profile = create(
+        :profile,
+        :verified,
+        idv_level: :legacy_unsupervised,
+        user: user,
+      )
+
+      expect(profile.enhanced?).to eq(false)
+    end
+  end
+
   describe '#in_person_verification_pending?' do
     it 'returns true if the in_person_verification_pending_at is present' do
       profile = create(
@@ -1341,90 +1365,6 @@ RSpec.describe Profile do
 
             it 'raises an exception' do
               expect { profile.clear_duplicate }.to raise_error('Profile has other duplicates')
-            end
-          end
-        end
-      end
-    end
-  end
-
-  describe '#close_inconclusive_duplicate' do
-    context 'when the profile is not active' do
-      let(:profile) { create(:profile, :deactivated) }
-      it 'raises an exception' do
-        expect { profile.close_inconclusive_duplicate }.to raise_error('Profile not active')
-      end
-    end
-
-    context 'when the profile is active' do
-      let(:profile) { create(:profile, :active) }
-      context 'when the profile is not identified as a duplicate' do
-        it 'raises an exception' do
-          expect { profile.close_inconclusive_duplicate }
-            .to raise_error('Profile not a duplicate')
-        end
-      end
-
-      context 'when the profile is identified as a duplicate' do
-        let!(:duplicate_profile_set) do
-          create(
-            :duplicate_profile_set,
-            profile_ids: profile_ids,
-            closed_at: closed_at,
-          )
-        end
-
-        context 'when the duplicate profile has already been closed' do
-          let(:closed_at) { Time.zone.now }
-          let(:profile_ids) { [profile.id] }
-
-          it 'raises an exception' do
-            expect { profile.close_inconclusive_duplicate }
-              .to raise_error('Profile not a duplicate')
-          end
-        end
-
-        context 'when the duplicate profile is still open' do
-          let(:closed_at) { nil }
-
-          context 'when the profile is the only one in its duplicate set' do
-            let(:profile_ids) { [profile.id] }
-
-            it 'leaves the profile as active', :freeze_time do
-              profile.close_inconclusive_duplicate
-              expect(profile).to be_active
-            end
-
-            it 'closes the case as inconclusive', :freeze_time do
-              profile.close_inconclusive_duplicate
-              duplicate_profile_set.reload
-              expect(duplicate_profile_set.closed_at).to eq(Time.zone.now)
-              expect(duplicate_profile_set.self_serviced).to be(false)
-              expect(duplicate_profile_set.fraud_investigation_conclusive).to be(false)
-            end
-          end
-
-          context 'when there are other profiles in the duplicate set' do
-            let(:second_profile) { create(:profile, :active) }
-            let(:profile_ids) { [profile.id, second_profile.id] }
-
-            it 'leaves the profile as active', :freeze_time do
-              profile.close_inconclusive_duplicate
-              expect(profile).to be_active
-            end
-
-            it 'does not close the case', :freeze_time do
-              profile.close_inconclusive_duplicate
-              duplicate_profile_set.reload
-              expect(duplicate_profile_set.profile_ids).not_to include(profile.id)
-              expect(duplicate_profile_set.closed_at).to be(nil)
-              expect(duplicate_profile_set.self_serviced).to be(nil)
-              expect(duplicate_profile_set.fraud_investigation_conclusive).to be(nil)
-            end
-
-            it 'notifies the user' do
-              expect { profile.close_inconclusive_duplicate }
-                .to(change { ActionMailer::Base.deliveries.count }.by(1))
             end
           end
         end

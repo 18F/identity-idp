@@ -7,11 +7,17 @@ RSpec.describe PasswordCaptureController do
     context 'form returns success' do
       let(:pii) { { first_name: 'Jane', ssn: '111-11-1111' } }
 
+      before do
+        allow(controller).to receive(:cache_user_proofing_events).and_return(double)
+      end
+
       it 'decrypts PII and redirects' do
         create(:profile, :active, :verified, user: user, pii: pii)
+
         stub_sign_in(user)
 
         expect(controller.user_session[:encrypted_profiles]).to be nil
+        expect(controller).to_not have_received(:cache_user_proofing_events)
 
         params = { password: 'a really long sekrit' }
         get :new
@@ -19,6 +25,7 @@ RSpec.describe PasswordCaptureController do
 
         expect(response).to redirect_to account_path
         expect(controller.user_session[:encrypted_profiles]).to_not be nil
+        expect(controller).to have_received(:cache_user_proofing_events)
       end
     end
 

@@ -17,6 +17,7 @@ module Proofing
               account_last_name: applicant[:last_name] || '',
               account_telephone: applicant[:phone],
               event_type: 'ACCOUNT_CREATION',
+              customer_event_type: 'phone_finder',
               policy: config.ddp_policy,
               service_type: 'all',
               national_id_number: applicant[:ssn].to_s.gsub(/\D/, ''),

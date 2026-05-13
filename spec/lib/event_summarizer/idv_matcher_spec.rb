@@ -53,15 +53,131 @@ RSpec.describe EventSummarizer::IdvMatcher do
       end
     end
 
-    context "On 'IdV: phone confirmation vendor' (PhoneFinder) event" do
+    context "On 'IdV: phone confirmation vendor' event" do
+      context 'When the vendor is Phone Finder' do
+        let(:event) do
+          {
+            '@timestamp' => Time.zone.now,
+            'name' => 'IdV: phone confirmation vendor',
+            '@message' => {
+              'properties' => {
+                'event_properties' => {
+                  'success' => true,
+                  'vendor' => {
+                    'vendor_name' => 'lexisnexis:phone_finder',
+                  },
+                },
+              },
+            },
+          }
+        end
+
+        before do
+          allow(matcher).to receive(:current_idv_attempt).and_return(
+            EventSummarizer::IdvMatcher::IdvAttempt.new(
+              started_at: Time.zone.now,
+            ),
+          )
+        end
+
+        it 'adds a passed_phone_finder significant event when successful' do
+          matcher.handle_cloudwatch_event(event)
+
+          expect(matcher.current_idv_attempt.significant_events).to include(
+            have_attributes(
+              type: :passed_phone_confirmation,
+              description: 'Phone confirmation check succeeded via Phone Finder',
+            ),
+          )
+        end
+      end
+
+      context 'When the vendor is Phone Risk' do
+        let(:event) do
+          {
+            '@timestamp' => Time.zone.now,
+            'name' => 'IdV: phone confirmation vendor',
+            '@message' => {
+              'properties' => {
+                'event_properties' => {
+                  'success' => true,
+                  'vendor' => {
+                    'vendor_name' => 'socure_phonerisk',
+                  },
+                },
+              },
+            },
+          }
+        end
+
+        before do
+          allow(matcher).to receive(:current_idv_attempt).and_return(
+            EventSummarizer::IdvMatcher::IdvAttempt.new(
+              started_at: Time.zone.now,
+            ),
+          )
+        end
+
+        it 'adds a passed_phone_confirmation significant event when successful' do
+          matcher.handle_cloudwatch_event(event)
+
+          expect(matcher.current_idv_attempt.significant_events).to include(
+            have_attributes(
+              type: :passed_phone_confirmation,
+              description: 'Phone confirmation check succeeded via Socure Phone Risk',
+            ),
+          )
+        end
+      end
+
+      context 'When the vendor is Unknown' do
+        let(:event) do
+          {
+            '@timestamp' => Time.zone.now,
+            'name' => 'IdV: phone confirmation vendor',
+            '@message' => {
+              'properties' => {
+                'event_properties' => {
+                  'success' => true,
+                  'vendor' => {
+                    'vendor_name' => 'an unknown vendor',
+                  },
+                },
+              },
+            },
+          }
+        end
+
+        before do
+          allow(matcher).to receive(:current_idv_attempt).and_return(
+            EventSummarizer::IdvMatcher::IdvAttempt.new(
+              started_at: Time.zone.now,
+            ),
+          )
+        end
+
+        it 'adds a passed_phone_confirmation significant event when successful' do
+          matcher.handle_cloudwatch_event(event)
+
+          expect(matcher.current_idv_attempt.significant_events).to include(
+            have_attributes(
+              type: :passed_phone_confirmation,
+              description: 'Phone confirmation check succeeded via Unknown vendor',
+            ),
+          )
+        end
+      end
+    end
+
+    context "On 'IdV: use different phone number' (Phone Verification Step) event" do
       let(:event) do
         {
           '@timestamp' => Time.zone.now,
-          'name' => 'IdV: phone confirmation vendor',
+          'name' => 'IdV: use different phone number',
           '@message' => {
             'properties' => {
               'event_properties' => {
-                'success' => true,
+                'step' => 'phone_otp_verification',
               },
             },
           },
@@ -74,15 +190,14 @@ RSpec.describe EventSummarizer::IdvMatcher do
             started_at: Time.zone.now,
           ),
         )
+        matcher.handle_cloudwatch_event(event)
       end
 
-      it 'adds a passed_phone_finder significant event when successful' do
-        matcher.handle_cloudwatch_event(event)
-
+      it 'adds a different_phone_number significant event when present' do
         expect(matcher.current_idv_attempt.significant_events).to include(
           have_attributes(
-            type: :passed_phone_finder,
-            description: 'Phone Finder check succeeded',
+            type: :different_phone_number,
+            description: 'User attempted to use a different phone number',
           ),
         )
       end

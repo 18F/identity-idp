@@ -14,14 +14,6 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
     described_class.new(user_uuid:, proofing_vendor:, analytics:, user_email:)
   end
 
-  it 'assigns aamva_plugin' do
-    expect(
-      progressive_proofer.aamva_plugin,
-    ).to be_a(
-      Proofing::Resolution::Plugins::AamvaPlugin,
-    )
-  end
-
   it 'assigns threatmetrix_plugin' do
     expect(
       progressive_proofer.threatmetrix_plugin,
@@ -33,7 +25,6 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
   describe '#proof' do
     let(:applicant_pii) { { uuid: user.uuid }.merge(Idp::Constants::MOCK_IDV_APPLICANT_WITH_PHONE) }
     let(:ipp_enrollment_in_progress) { false }
-    let(:state_id_already_proofed) { false }
     let(:request_ip) { Faker::Internet.ip_v4_address }
     let(:threatmetrix_session_id) { SecureRandom.uuid }
     let(:current_sp) { build(:service_provider) }
@@ -63,15 +54,6 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
         Proofing::LexisNexis::InstantVerify::Proofer,
       )
     end
-
-    let(:aamva_result) do
-      Proofing::StateIdResult.new(
-        success: true,
-        transaction_id: 'aamva-123',
-      )
-    end
-
-    let(:aamva_proofer) { instance_double(Proofing::Aamva::Proofer, proof: aamva_result) }
 
     let(:threatmetrix_result) do
       Proofing::DdpResult.new(
@@ -107,7 +89,6 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
         timer: JobHelpers::Timer.new,
         current_sp:,
         workflow:,
-        state_id_already_proofed:,
         hybrid_mobile_threatmetrix_session_id:,
         hybrid_mobile_request_ip:,
       )
@@ -121,8 +102,6 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
       allow(progressive_proofer.threatmetrix_plugin).to receive(:proofer)
         .and_return(threatmetrix_proofer)
 
-      allow(progressive_proofer.aamva_plugin).to receive(:proofer)
-        .and_return(aamva_proofer)
       allow(IdentityConfig.store).to receive_messages(
         idv_phone_precheck_percent: idv_phone_precheck_percent,
         proofing_device_hybrid_profiling: hybrid_device_profiling,
@@ -132,18 +111,6 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
     end
 
     context 'remote unsupervised proofing' do
-      it 'calls AamvaPlugin' do
-        expect(progressive_proofer.aamva_plugin).to receive(:call).with(
-          applicant_pii:,
-          current_sp:,
-          state_id_address_resolution_result:,
-          ipp_enrollment_in_progress: false,
-          timer: an_instance_of(JobHelpers::Timer),
-          already_proofed: false,
-        ).and_call_original
-        proof
-      end
-
       it 'calls ResidentialAddressPlugin' do
         expect(progressive_proofer.residential_address_plugin).to receive(:call).with(
           applicant_pii:,
@@ -276,7 +243,6 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
           expect(result).to be_an_instance_of(Proofing::Resolution::ResultAdjudicator)
 
           expect(result.resolution_result).to eql(state_id_address_resolution_result)
-          expect(result.state_id_result).to eql(aamva_result)
           expect(result.device_profiling_result).to eql(threatmetrix_result)
           expect(result.phone_result[:alternate_result]).to be_nil
           expect(result.phone_result[:success]).to eq(true)
@@ -290,55 +256,12 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
         end
       end
 
-      context 'when aamva fails' do
-        before do
-          allow(aamva_proofer).to receive(:proof).and_return(
-            Proofing::StateIdResult.new(
-              success: false,
-              transaction_id: 'aamva-failed-123',
-            ),
-          )
-        end
-
-        it 'phone precheck auto fails' do
-          expect(Proofing::AddressProofer).not_to receive(:new)
-
-          proof.tap do |result|
-            expect(result).to be_an_instance_of(Proofing::Resolution::ResultAdjudicator)
-
-            expect(result.resolution_result.success?).to be_truthy
-            expect(result.state_id_result.success?).to be_falsey
-            expect(result.state_id_result.transaction_id).to eq('aamva-failed-123')
-            expect(result.device_profiling_result).to eql(threatmetrix_result)
-            expect(result.phone_result[:alternate_result]).to be_nil
-            expect(result.phone_result[:success]).to be_falsey
-            expect(result.phone_result[:vendor_name]).to eq('ResolutionCannotPass')
-          end
-        end
-      end
-
       context 'when state_id address resolution fails' do
         let(:state_id_address_resolution_result) do
           Proofing::Resolution::Result.new(
             success: false,
             transaction_id: 'state-id-resolution-failed-tx',
           )
-        end
-
-        it 'phone precheck auto fails and aamva is not called' do
-          expect(Proofing::AddressProofer).not_to receive(:new)
-
-          proof.tap do |result|
-            expect(result.resolution_result.success?).to be_falsey
-            expect(result.state_id_result.success?).to be_truthy
-            expect(result.state_id_result.vendor_name).to eq(
-              Idp::Constants::Vendors::AAMVA_CHECK_SKIPPED,
-            )
-            expect(result).to be_an_instance_of(Proofing::Resolution::ResultAdjudicator)
-            expect(result.phone_result[:alternate_result]).to be_nil
-            expect(result.phone_result[:success]).to be_falsey
-            expect(result.phone_result[:vendor_name]).to eq('ResolutionCannotPass')
-          end
         end
       end
 
@@ -357,7 +280,6 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
           proof.tap do |result|
             expect(result).to be_an_instance_of(Proofing::Resolution::ResultAdjudicator)
             expect(result.resolution_result).to eql(state_id_address_resolution_result)
-            expect(result.state_id_result).to eql(aamva_result)
             expect(result.device_profiling_result.success?).to be_falsey
             expect(result.device_profiling_result.transaction_id).to eq('ddp-failed-123')
             expect(result.phone_result[:alternate_result]).to be_nil
@@ -467,7 +389,6 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
             expect(result).to be_an_instance_of(Proofing::Resolution::ResultAdjudicator)
 
             expect(result.resolution_result).to eql(state_id_address_resolution_result)
-            expect(result.state_id_result).to eql(aamva_result)
             expect(result.device_profiling_result).to eql(threatmetrix_result)
             expect(result.phone_result).to be_empty
             expect(result.residential_resolution_result).to satisfy do |result|
@@ -497,19 +418,6 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
 
         let(:state_id_address_resolution_result) do
           residential_address_resolution_result
-        end
-
-        it 'calls AamvaPlugin' do
-          expect(progressive_proofer.aamva_plugin).to receive(:call).with(
-            applicant_pii:,
-            current_sp:,
-            state_id_address_resolution_result:,
-            ipp_enrollment_in_progress: true,
-            timer: an_instance_of(JobHelpers::Timer),
-            already_proofed: false,
-          ).and_call_original
-
-          proof
         end
 
         it 'calls ResidentialAddressPlugin' do
@@ -573,7 +481,6 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
             current_sp:,
             residential_address_resolution_result:,
             state_id_address_resolution_result:,
-            state_id_result: aamva_result,
             timer: an_instance_of(JobHelpers::Timer),
             best_effort_phone: nil,
             user_email:,
@@ -586,7 +493,6 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
             expect(result).to be_an_instance_of(Proofing::Resolution::ResultAdjudicator)
 
             expect(result.resolution_result).to eql(state_id_address_resolution_result)
-            expect(result.state_id_result).to eql(aamva_result)
             expect(result.device_profiling_result).to eql(threatmetrix_result)
             expect(result.phone_result[:alternate_result]).to be_nil
             expect(result.phone_result[:success]).to be_falsey
@@ -606,7 +512,6 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
               expect(result).to be_an_instance_of(Proofing::Resolution::ResultAdjudicator)
 
               expect(result.resolution_result).to eql(state_id_address_resolution_result)
-              expect(result.state_id_result).to eql(aamva_result)
               expect(result.device_profiling_result).to eql(threatmetrix_result)
               expect(result.phone_result).to be_empty
               expect(result.residential_resolution_result).to(
@@ -679,25 +584,12 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
           proof
         end
 
-        it 'calls AamvaPlugin' do
-          expect(progressive_proofer.aamva_plugin).to receive(:call).with(
-            applicant_pii:,
-            current_sp:,
-            state_id_address_resolution_result:,
-            ipp_enrollment_in_progress: true,
-            timer: an_instance_of(JobHelpers::Timer),
-            already_proofed: false,
-          ).and_call_original
-          proof
-        end
-
         it 'calls PhonePlugin' do
           expect(progressive_proofer.phone_plugin).to receive(:call).with(
             applicant_pii:,
             current_sp:,
             residential_address_resolution_result:,
             state_id_address_resolution_result:,
-            state_id_result: aamva_result,
             timer: an_instance_of(JobHelpers::Timer),
             user_email:,
             best_effort_phone: nil,
@@ -709,7 +601,6 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
           proof.tap do |result|
             expect(result).to be_an_instance_of(Proofing::Resolution::ResultAdjudicator)
             expect(result.resolution_result).to eql(state_id_address_resolution_result)
-            expect(result.state_id_result).to eql(aamva_result)
             expect(result.device_profiling_result).to eql(threatmetrix_result)
             expect(result.residential_resolution_result).to(
               eql(residential_address_resolution_result),
@@ -784,11 +675,6 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
         proof
       end
 
-      it 'calls AamvaPlugin' do
-        expect(progressive_proofer.aamva_plugin).to receive(:call).and_call_original
-        proof
-      end
-
       it 'calls PhonePlugin' do
         expect(progressive_proofer.phone_plugin).to receive(:call).with(
           applicant_pii:,
@@ -798,10 +684,6 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
             expect(result.vendor_name).to eql('ResidentialAddressNotRequired')
           end,
           state_id_address_resolution_result:,
-          state_id_result: satisfy do |result|
-            expect(result.success?).to eql(true)
-            expect(result.vendor_name).to eql(Idp::Constants::Vendors::AAMVA_CHECK_SKIPPED)
-          end,
           timer: an_instance_of(JobHelpers::Timer),
           user_email:,
           best_effort_phone: nil,
@@ -813,10 +695,6 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
         proof.tap do |result|
           expect(result).to be_an_instance_of(Proofing::Resolution::ResultAdjudicator)
           expect(result.resolution_result).to eql(state_id_address_resolution_result)
-          expect(result.state_id_result).to satisfy do |result|
-            expect(result.success?).to eql(true)
-            expect(result.vendor_name).to eql(Idp::Constants::Vendors::AAMVA_CHECK_SKIPPED)
-          end
           expect(result.device_profiling_result).to eql(threatmetrix_result)
           expect(result.residential_resolution_result).to satisfy do |result|
             expect(result.success?).to eql(true)
@@ -836,10 +714,6 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
           proof.tap do |result|
             expect(result).to be_an_instance_of(Proofing::Resolution::ResultAdjudicator)
             expect(result.resolution_result).to eql(state_id_address_resolution_result)
-            expect(result.state_id_result).to satisfy do |result|
-              expect(result.success?).to eql(true)
-              expect(result.vendor_name).to eql(Idp::Constants::Vendors::AAMVA_CHECK_SKIPPED)
-            end
             expect(result.device_profiling_result).to eql(threatmetrix_result)
             expect(result.residential_resolution_result).to satisfy do |result|
               expect(result.success?).to eql(true)
@@ -850,25 +724,6 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
             expect(result.same_address_as_id).to eql(nil)
           end
         end
-      end
-    end
-
-    context 'when idv_aamva_at_doc_auth_enabled is true' do
-      let(:state_id_address_resolution_result) do
-        residential_address_resolution_result
-      end
-      let(:state_id_already_proofed) { true }
-
-      it 'passes already_proofed: true to AamvaPlugin' do
-        expect(progressive_proofer.aamva_plugin).to receive(:call).with(
-          applicant_pii:,
-          current_sp:,
-          state_id_address_resolution_result:,
-          ipp_enrollment_in_progress:,
-          timer: an_instance_of(JobHelpers::Timer),
-          already_proofed: true,
-        ).and_call_original
-        proof
       end
     end
 
@@ -884,7 +739,6 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
         expected_applicant_pii = applicant_pii.except(:best_effort_phone_number_for_socure)
 
         plugin_methods = %i[
-          aamva_plugin
           residential_address_plugin
           state_id_address_plugin
           threatmetrix_plugin
@@ -914,7 +768,6 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
           expect(result).to be_an_instance_of(Proofing::Resolution::ResultAdjudicator)
 
           expect(result.resolution_result).to eql(state_id_address_resolution_result)
-          expect(result.state_id_result).to eql(aamva_result)
           expect(result.device_profiling_result).to eql(threatmetrix_result)
           expect(result.phone_result[:alternate_result]).to be_nil
           expect(result.phone_result[:success]).to eq(true)

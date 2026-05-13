@@ -8,7 +8,7 @@ module AttemptsApi
     ].freeze
 
     # These are events that should be encrypted and then persisted as historical information
-    LOG_HISTORY_PREFIXES = ['forgot-password-', 'user-registration-', 'idv-'].freeze
+    LOG_HISTORY_PREFIXES = ['idv-'].freeze
 
     attr_reader :session_id, :enabled_for_session, :request, :user, :sp, :cookie_device_uuid,
                 :sp_redirect_uri
@@ -71,11 +71,11 @@ module AttemptsApi
     private
 
     def log_history(event)
+      return unless session && session['warden.user.user.session']
+
       session['warden.user.user.session']['idv/attempts'] ||= []
       session['warden.user.user.session']['idv/attempts'].push(
-        {
-          event.event_type => { 'user_uuid' => user.uuid },
-        },
+        event.event_type => { 'user_uuid' => user.uuid },
       )
     end
 
@@ -159,7 +159,6 @@ module AttemptsApi
 
     def will_log_history?(event_type)
       return false unless IdentityConfig.store.historical_attempts_api_enabled
-      return false unless session && session['warden.user.user.session']
 
       event_type.start_with?(*LOG_HISTORY_PREFIXES)
     end

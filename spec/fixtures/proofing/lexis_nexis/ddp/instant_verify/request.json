@@ -15,6 +15,7 @@
   "account_drivers_license_type": "us_dl",
   "account_drivers_license_issuer": "LA",
   "event_type": "ACCOUNT_CREATION",
+  "customer_event_type": "instant_verify",
   "policy": "test-policy",
   "service_type": "all",
   "national_id_number": "123456789",

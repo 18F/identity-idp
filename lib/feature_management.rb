@@ -58,7 +58,7 @@ class FeatureManagement
 
   def self.gpo_verification_enabled?
     # leaving the usps name for backwards compatibility
-    IdentityConfig.store.enable_usps_verification
+    IdentityConfig.store.idv_gpo_verification_enabled
   end
 
   def self.reveal_gpo_code?
@@ -96,6 +96,10 @@ class FeatureManagement
 
   def self.check_password_enabled?
     IdentityConfig.store.check_user_password_compromised_enabled
+  end
+
+  def self.doc_auth_passport_cards_enabled?
+    IdentityConfig.store.doc_auth_passport_cards_enabled
   end
 
   def self.doc_capture_polling_enabled?
@@ -191,5 +195,11 @@ class FeatureManagement
 
   def self.idv_proofing_agent_enabled?
     IdentityConfig.store.idv_proofing_agent_enabled
+  end
+
+  # Whether to prompt new users to set up a passkey immediately after email/password creation.
+  # Only enabled in non-production environments as part of Test A experiment (LG-16912).
+  def self.account_creation_passkey_auto_prompt_enabled?
+    IdentityConfig.store.feature_account_creation_passkey_auto_prompt
   end
 end

@@ -60,7 +60,7 @@
       <%= render ValidatedFieldComponent.new(
             as: :radio_buttons,
             collection: [
-              [t('doc_auth.forms.id_type_preference.drivers_license'), :drivers_license],
+              [t('doc_auth.forms.id_type_preference.drivers_license'), :state_id_card],
               [t('doc_auth.forms.id_type_preference.passport'), :passport, disabled: disable_passports],
             ],
             form: f,

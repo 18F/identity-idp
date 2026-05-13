@@ -10,7 +10,6 @@ module Proofing
           current_sp:,
           state_id_address_resolution_result:,
           residential_address_resolution_result:,
-          state_id_result:,
           user_email:,
           timer:,
           best_effort_phone: nil
@@ -22,8 +21,7 @@ module Proofing
           return {} if phone_confirmation_manually_reviewed?
 
           if !state_id_address_resolution_result.success? ||
-             !residential_address_resolution_result.success? ||
-             !state_id_result.success?
+             !residential_address_resolution_result.success?
             return resolution_cannot_pass_result
           end
 

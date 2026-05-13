@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_03_06_213343) do
+ActiveRecord::Schema[8.0].define(version: 2026_04_30_204118) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_catalog.plpgsql"
@@ -224,7 +224,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_06_213343) do
   end
 
   create_table "duplicate_profile_sets", force: :cascade do |t|
-    t.string "service_provider", limit: 255, null: false, comment: "sensitive=false"
+    t.string "service_provider", limit: 255, comment: "sensitive=false"
     t.bigint "profile_ids", null: false, comment: "sensitive=false", array: true
     t.datetime "closed_at", comment: "sensitive=false"
     t.boolean "self_serviced", comment: "sensitive=false"
@@ -232,6 +232,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_06_213343) do
     t.datetime "created_at", null: false, comment: "sensitive=false"
     t.datetime "updated_at", null: false, comment: "sensitive=false"
     t.index ["profile_ids"], name: "index_duplicate_profile_sets_on_profile_ids", using: :gin
+    t.index ["profile_ids"], name: "index_duplicate_profile_sets_on_profile_ids_sp_null", unique: true, where: "(service_provider IS NULL)"
     t.index ["service_provider", "profile_ids"], name: "idx_on_service_provider_profile_ids_7f75d24ae3", unique: true
   end
 
@@ -496,6 +497,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_06_213343) do
     t.text "encrypted_pii_recovery_multi_region", comment: "sensitive=true"
     t.datetime "gpo_verification_expired_at", comment: "sensitive=false"
     t.integer "idv_level", comment: "sensitive=false"
+    t.string "encrypted_attempts_file_reference", comment: "sensitive=false"
     t.index ["fraud_pending_reason"], name: "index_profiles_on_fraud_pending_reason"
     t.index ["fraud_rejection_at"], name: "index_profiles_on_fraud_rejection_at"
     t.index ["fraud_review_pending_at"], name: "index_profiles_on_fraud_review_pending_at"
@@ -643,13 +645,14 @@ ActiveRecord::Schema[8.0].define(version: 2026_03_06_213343) do
   end
 
   create_table "user_proofing_events", id: :serial, force: :cascade do |t|
-    t.string "encrypted_events", null: false, comment: "sensitive=true"
+    t.string "encrypted_events", comment: "sensitive=true"
     t.bigint "profile_id", null: false, comment: "sensitive=false"
     t.jsonb "service_providers_sent", default: [], null: false, comment: "sensitive=false"
     t.string "cost", null: false, comment: "sensitive=true"
     t.string "salt", null: false, comment: "sensitive=true"
     t.datetime "created_at", null: false, comment: "sensitive=false"
     t.datetime "updated_at", null: false, comment: "sensitive=false"
+    t.bigint "service_provider_ids_sent", default: [], null: false, comment: "sensitive=false", array: true
     t.index ["profile_id"], name: "index_user_proofing_events_on_profile_id"
   end
 

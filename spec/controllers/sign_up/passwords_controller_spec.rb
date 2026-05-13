@@ -53,6 +53,7 @@ RSpec.describe SignUp::PasswordsController do
           password_confirmation: password_confirmation,
         },
         confirmation_token: token,
+        platform_authenticator_available: 'false',
       }
     end
     let(:password) { 'NewVal!dPassw0rd' }
@@ -102,6 +103,7 @@ RSpec.describe SignUp::PasswordsController do
           'last_request_at' => kind_of(Numeric),
           new_device: false,
           in_account_creation_flow: true,
+          platform_authenticator_available: false,
           web_locale: 'en',
         )
       end

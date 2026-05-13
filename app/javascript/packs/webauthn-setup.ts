@@ -33,7 +33,7 @@ export function reloadWithError(
 }
 
 function webauthn() {
-  const form = document.getElementById('webauthn_form') as HTMLFormElement;
+  const form = document.getElementById('webauthn-form') as HTMLFormElement;
   form.addEventListener('submit', (event) => {
     event.preventDefault();
     document.getElementById('spinner')!.hidden = false;
@@ -71,7 +71,7 @@ function webauthn() {
           (document.getElementById('transports') as HTMLInputElement).value =
             result.transports.join();
         }
-        (document.getElementById('webauthn_form') as HTMLFormElement).submit();
+        (document.getElementById('webauthn-form') as HTMLFormElement).submit();
       })
       .catch((error: Error) => {
         if (!isExpectedWebauthnError(error)) {
@@ -85,4 +85,10 @@ function webauthn() {
 
 if (process.env.NODE_ENV !== 'test') {
   webauthn();
+
+  // Auto-trigger passkey enrollment for the account creation A/B test (LG-16912).
+  const form = document.getElementById('webauthn-form') as HTMLFormElement | null;
+  if (form?.dataset.autoTrigger === 'true') {
+    form.requestSubmit();
+  }
 }

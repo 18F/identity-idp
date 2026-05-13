@@ -12,6 +12,7 @@ RSpec.describe 'proofing components' do
     before do
       allow(IdentityConfig.store).to receive(:ruby_workers_idv_enabled)
         .and_return(ruby_workers_idv_enabled)
+      allow(IdentityConfig.store).to receive(:idv_aamva_at_doc_auth_enabled).and_return(true)
 
       visit_idp_from_sp_with_ial2(:oidc)
       register_user(email)

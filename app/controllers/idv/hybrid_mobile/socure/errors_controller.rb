@@ -17,7 +17,6 @@ module Idv
           if error_code.nil?
             result = handle_stored_result(
               user: document_capture_session.user,
-              store_in_session: false,
             )
             error_code = error_code_for(result)
           end

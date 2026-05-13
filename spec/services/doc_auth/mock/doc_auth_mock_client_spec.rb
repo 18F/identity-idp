@@ -73,6 +73,7 @@ RSpec.describe DocAuth::Mock::DocAuthMockClient do
         first_name: 'Joe',
         last_name: 'Dokes',
         middle_name: 'Q',
+        name_suffix: 'JR',
         dob: '1938-10-06',
         sex: 'Male',
         birth_place: 'birthplace',

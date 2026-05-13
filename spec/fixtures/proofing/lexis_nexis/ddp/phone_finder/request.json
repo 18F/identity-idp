@@ -6,6 +6,7 @@
   "account_last_name": "McTesterson",
   "account_telephone": "5551231234",
   "event_type": "ACCOUNT_CREATION",
+  "customer_event_type": "phone_finder",
   "policy": "test-policy",
   "service_type": "all",
   "national_id_number": "123456789",

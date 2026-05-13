@@ -2033,6 +2033,7 @@ module AnalyticsEvents
   # @param [Hash] portrait_match_results
   # @param [Hash] image_metrics
   # @param [Boolean] address_line2_present
+  # @param [Boolean] name_suffix_present
   # @param [String] zip_code
   # @param [Boolean] selfie_live Selfie liveness result
   # @param [Boolean] selfie_quality_good Selfie quality result
@@ -2104,6 +2105,7 @@ module AnalyticsEvents
     portrait_match_results: nil,
     image_metrics: nil,
     address_line2_present: nil,
+    name_suffix_present: nil,
     zip_code: nil,
     selfie_live: nil,
     selfie_quality_good: nil,
@@ -2155,6 +2157,7 @@ module AnalyticsEvents
       portrait_match_results:,
       image_metrics:,
       address_line2_present:,
+      name_suffix_present:,
       liveness_checking_required:,
       zip_code:,
       selfie_live:,
@@ -2254,6 +2257,7 @@ module AnalyticsEvents
   # @param acuant_sdk_upgrade_ab_test_bucket [String] A/B test bucket for Acuant document capture SDK upgrades
   # @param address_edited [Boolean] Whether the user edited their address before submitting the "Verify your information" step
   # @param address_line2_present [Boolean] Whether the user's address includes a second address line
+  # @param name_suffix_present [Boolean] Whether the user's name includes a suffix
   # @param analytics_id [String] "Doc Auth" for remote unsupervised, "In Person Proofing" for IPP
   # @param errors [Hash] Details about vendor-specific errors encountered during the stages of the identity resolution process
   # @param flow_path [String] "hybrid" for hybrid handoff, "standard" otherwise
@@ -2314,6 +2318,7 @@ module AnalyticsEvents
     acuant_sdk_upgrade_ab_test_bucket: nil,
     address_edited: nil,
     address_line2_present: nil,
+    name_suffix_present: nil,
     analytics_id: nil,
     errors: nil,
     flow_path: nil,
@@ -2335,6 +2340,7 @@ module AnalyticsEvents
       acuant_sdk_upgrade_ab_test_bucket:,
       address_edited:,
       address_line2_present:,
+      name_suffix_present:,
       analytics_id:,
       errors:,
       flow_path:,
@@ -5311,20 +5317,38 @@ module AnalyticsEvents
     )
   end
 
+  # Logs when a proofing agent checks for an account associated with the proofing request
+  # @param [Hash] response_body The body of the response from the proofing agent's account check
+  # @param [Hash] proofing_agent The proofing agent information
+  # @param [String] issuer The issuer associated with the proofing request
+  def idv_proofing_agent_account_check_requested(
+    response_body:,
+    proofing_agent:,
+    issuer:,
+    **extra
+  )
+    track_event(
+      :idv_proofing_agent_account_check_requested,
+      response_body:,
+      proofing_agent:,
+      issuer:,
+      **extra,
+    )
+  end
+
   # Tracks a proofing agent request that failed authorization or validation
   # @param [Boolean] success Whether request was successful
   # @param [String] issuer The issuer associated with the proofing request
-  # @param ['authorization', 'validation'] failure_type Determines failure type
-  # @param [String,nil] agent_id The ID of the proofing agent
-  # @param [String,nil] location_id The ID of the location where the proofing request was made
-  # @param [String,nil] request_id The request ID associated with the proofing request
+  # @param ['authorization', 'header_validation', 'body_validation] failure_type Determines failure
+  #   type
+  # @param [Hash] proofing_agent The proofing agent information
+  # @param [Hash, nil] errors The hash of errors that caused the failure
   def idv_proofing_agent_request_failed(
     success:,
     issuer:,
     failure_type:,
-    agent_id: nil,
-    location_id: nil,
-    request_id: nil,
+    proofing_agent:,
+    errors: nil,
     **extra
   )
     track_event(
@@ -5332,9 +5356,33 @@ module AnalyticsEvents
       success:,
       issuer:,
       failure_type:,
-      agent_id:,
-      location_id:,
-      request_id:,
+      proofing_agent:,
+      errors:,
+      **extra,
+    )
+  end
+
+  # Logs when a proofing agent begins proofing a user
+  # @param [Hash] response_body The body of the response from the proofing agent's proofing request
+  # @param [Hash] proofing_agent The proofing agent information
+  # @param [String] issuer The issuer associated with the proofing request
+  # @param [Integer, nil] remaining_attempts attempts remaining before rate limit is hit
+  # @param [String,nil] transaction_id The transaction ID associated with the proofing request
+  def idv_proofing_agent_request_received(
+    response_body:,
+    proofing_agent:,
+    issuer:,
+    remaining_attempts: nil,
+    transaction_id: nil,
+    **extra
+  )
+    track_event(
+      :idv_proofing_agent_request_received,
+      response_body:,
+      proofing_agent:,
+      issuer:,
+      remaining_attempts:,
+      transaction_id:,
       **extra,
     )
   end
@@ -5361,6 +5409,28 @@ module AnalyticsEvents
       proofing_components: proofing_components,
       active_profile_idv_level: active_profile_idv_level,
       pending_profile_idv_level: pending_profile_idv_level,
+      **extra,
+    )
+  end
+
+  # User is being redirected to re-prove their identity based on SP requirements.
+  # @param [Symbol] reproof_reason Reason reproofing is required:
+  #   :reproof_forcing_sp — current SP forces reproof for users not originally proofed through it.
+  #   :unsupervised_with_selfie_required — SP requires unsupervised-with-selfie and user's profile
+  #     was not created at that level.
+  # @param [String, nil] initiating_sp_issuer Issuer of the SP that originally created the profile.
+  # @param [String, nil] previous_idv_level The IDV level of the user's existing active profile.
+  def idv_reproof_needed(
+    reproof_reason:,
+    initiating_sp_issuer: nil,
+    previous_idv_level: nil,
+    **extra
+  )
+    track_event(
+      :idv_reproof_needed,
+      reproof_reason:,
+      initiating_sp_issuer:,
+      previous_idv_level:,
       **extra,
     )
   end
@@ -5870,6 +5940,7 @@ module AnalyticsEvents
   # @param [Hash] errors Errors resulting from form validation
   # @param [String] exception
   # @param [Boolean] address_line2_present wether or not we have an address that uses the 2nd line
+  # @param [Boolean] name_suffix_present whether or not we have a name suffix (Jr., Sr., etc.)
   # @param [Boolean] async whether this worker is running asynchronously
   # @param [Boolean] billed
   # @param [String] birth_year Birth year from document
@@ -5914,6 +5985,7 @@ module AnalyticsEvents
     vendor_request_time_in_ms:,
     exception: nil,
     address_line2_present: nil,
+    name_suffix_present: nil,
     billed: nil,
     birth_year: nil,
     customer_profile: nil,
@@ -5942,6 +6014,7 @@ module AnalyticsEvents
       errors:,
       exception:,
       address_line2_present:,
+      name_suffix_present:,
       async:,
       billed:,
       birth_year:,
@@ -6700,6 +6773,7 @@ module AnalyticsEvents
   #   set up a platform authenticator through the Security Key setup flow.
   # @param [:authentication, :account_creation, nil] webauthn_platform_recommended A/B test for
   # @param [Integer, nil] webauthn_setup_duration Duration of webauthn setup in seconds
+  # @param [Boolean, nil] auto_passkey_prompted Whether the WebAuthn setup came from the auto prompt
   def multi_factor_auth_setup(
     success:,
     multi_factor_auth_method:,
@@ -6727,6 +6801,7 @@ module AnalyticsEvents
     transports_mismatch: nil,
     webauthn_platform_recommended: nil,
     webauthn_setup_duration: nil,
+    auto_passkey_prompted: nil,
     **extra
   )
     track_event(
@@ -6757,6 +6832,7 @@ module AnalyticsEvents
       transports_mismatch:,
       webauthn_platform_recommended:,
       webauthn_setup_duration:,
+      auto_passkey_prompted:,
       **extra,
     )
   end
@@ -6892,18 +6968,6 @@ module AnalyticsEvents
   def one_account_clear_duplicate_profile(success:, errors:, **extra)
     track_event(
       :one_account_clear_duplicate_profile,
-      success: success,
-      errors: errors,
-      **extra,
-    )
-  end
-
-  # Tracks when the fraud investigation is inconclusive
-  # @param [Boolean] success Whether the duplicate was successfully closed
-  # @param [Hash] errors Errors resulting from clearing
-  def one_account_close_inconclusive_duplicate(success:, errors:, **extra)
-    track_event(
-      :one_account_close_inconclusive_duplicate,
       success: success,
       errors: errors,
       **extra,
@@ -8361,15 +8425,21 @@ module AnalyticsEvents
   # Tracks when user visits MFA selection page
   # @param [Integer] enabled_mfa_methods_count Number of enabled MFA methods on the account
   # @param [Boolean] gov_or_mil_email Whether registered user has government email
+  # @param [Boolean, nil] in_account_creation_flow Whether user is going through account creation
+  # @param [Boolean, nil] auto_passkey_prompted Whether the user was auto-redirected to WebAuthn
   def user_registration_2fa_setup_visit(
     enabled_mfa_methods_count:,
     gov_or_mil_email:,
+    in_account_creation_flow: nil,
+    auto_passkey_prompted: nil,
     **extra
   )
     track_event(
       'User Registration: 2FA Setup visited',
       enabled_mfa_methods_count:,
       gov_or_mil_email:,
+      in_account_creation_flow:,
+      auto_passkey_prompted:,
       **extra,
     )
   end
@@ -8755,11 +8825,13 @@ module AnalyticsEvents
   # @param [Boolean] platform_authenticator Whether setup is for platform authenticator
   # @param [Integer] enabled_mfa_methods_count Number of enabled MFA methods on the account
   # @param [Boolean] in_account_creation_flow Whether user is going through creation flow
+  # @param [Boolean, nil] auto_passkey_prompted Whether the user was auto-redirected to setup
   # Tracks when WebAuthn setup is visited
   def webauthn_setup_visit(
     platform_authenticator:,
     enabled_mfa_methods_count:,
     in_account_creation_flow:,
+    auto_passkey_prompted: nil,
     **extra
   )
     track_event(
@@ -8767,6 +8839,7 @@ module AnalyticsEvents
       platform_authenticator:,
       enabled_mfa_methods_count:,
       in_account_creation_flow:,
+      auto_passkey_prompted:,
       **extra,
     )
   end

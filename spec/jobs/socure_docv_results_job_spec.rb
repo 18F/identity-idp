@@ -31,6 +31,7 @@ RSpec.describe SocureDocvResultsJob do
   let(:pii_from_doc) { socure_response_body[:documentVerification][:documentData] }
   let(:address_data) { pii_from_doc[:parsedAddress] || {} }
   let(:include_passport_fixture) { false }
+  let(:issue_date) { '2020-01-01' }
   let(:socure_response_body) do
     # ID+ v3.0 API Predictive Document Verification response
     {
@@ -61,7 +62,7 @@ RSpec.describe SocureDocvResultsJob do
           },
           documentNumber: '000000000',
           dob: '2000-01-01',
-          issueDate: '2020-01-01',
+          issueDate: issue_date,
           expirationDate: expiration_date,
         },
       },
@@ -185,6 +186,7 @@ RSpec.describe SocureDocvResultsJob do
             :idv_socure_verification_data_requested,
             hash_including(
               address_line2_present: true,
+              name_suffix_present: false,
               async: true,
               birth_year: 2000,
               customer_profile: { 'customerUserId' => user.uuid, 'userId' => socure_user_id },
@@ -538,6 +540,32 @@ RSpec.describe SocureDocvResultsJob do
               :expiration_date,
             ),
           )
+        end
+
+        context 'when a name suffix is included in the response' do
+          let(:socure_response_body) do
+            super().merge(
+              documentVerification: super()[:documentVerification].merge(
+                documentData: super()[:documentVerification][:documentData].merge(
+                  nameSuffix: 'Jr.',
+                ),
+              ),
+            )
+          end
+
+          it 'stores the name suffix in the document capture session result pii' do
+            perform
+
+            document_capture_session.reload
+            document_capture_session_result = document_capture_session.load_result
+            expect(document_capture_session_result.pii[:name_suffix]).to eq('Jr.')
+            expect(@analytics).to have_logged_event(
+              :idv_socure_verification_data_requested,
+              hash_including(
+                name_suffix_present: true,
+              ),
+            )
+          end
         end
 
         context 'when passports are enabled' do
@@ -932,6 +960,26 @@ RSpec.describe SocureDocvResultsJob do
                     )
                   end
                 end
+
+                context 'when a name suffix is included in the response' do
+                  let(:socure_response_body) do
+                    super().merge(
+                      documentVerification: super()[:documentVerification].merge(
+                        documentData: super()[:documentVerification][:documentData].merge(
+                          nameSuffix: 'III',
+                        ),
+                      ),
+                    )
+                  end
+
+                  it 'stores the name suffix in the document capture session result' do
+                    perform
+
+                    document_capture_session.reload
+                    document_capture_session_result = document_capture_session.load_result
+                    expect(document_capture_session_result.pii[:name_suffix]).to eq('III')
+                  end
+                end
               end
             end
           end
@@ -967,7 +1015,7 @@ RSpec.describe SocureDocvResultsJob do
               sex: nil,
               state: 'NY',
               state_id_expiration: expiration_date,
-              state_id_issued: '2020-01-01',
+              state_id_issued: issue_date,
               state_id_jurisdiction: 'NY',
               state_id_number: '000000000',
               weight: nil,
@@ -1012,79 +1060,17 @@ RSpec.describe SocureDocvResultsJob do
         end
 
         context 'when the socure response is missing the state_id_expiration field' do
+          let(:expiration_date) { nil }
           let(:socure_response_body) do
-            {
-              referenceId: socure_reference_id,
-              documentVerification: {
-                reasonCodes: reason_codes,
-                documentType: {
-                  type: document_metadata_type,
-                  country: 'USA',
-                  state: 'NY',
-                },
-                decision: {
-                  name: 'lenient',
-                  value: decision_value,
-                },
-                documentData: {
-                  firstName: 'Dwayne',
-                  surName: 'Denver',
-                  fullName: 'Dwayne Denver',
-                  address: '123 Example Street, New York City, NY 10001',
-                  parsedAddress: {
-                    physicalAddress: '123 Example Street',
-                    physicalAddress2: 'Apt 4',
-                    city: 'New York City',
-                    state: 'NY',
-                    country: 'US',
-                    zip: '10001',
-                  },
-                  documentNumber: '000000000',
-                  dob: '2000-01-01',
-                  issueDate: '2020-01-01',
-                },
-              },
-              customerProfile: {
-                customerUserId: user.uuid,
-                userId: socure_user_id,
-              },
-            }
+            super().merge(
+              documentVerification: super()[:documentVerification].merge(
+                documentData: super()[:documentVerification][:documentData].except(:expirationDate),
+              ),
+            )
           end
           let(:document_capture_session_result) { document_capture_session.load_result }
 
           before do
-            allow(aamva_proofer).to receive(:call).with(
-              applicant_pii: {
-                address1: '123 Example Street',
-                address2: 'Apt 4',
-                city: 'New York City',
-                dob: '2000-01-01',
-                document_type_received: 'drivers_license',
-                eye_color: nil,
-                first_name: 'Dwayne',
-                height: nil,
-                issuing_country_code: 'USA',
-                last_name: 'Denver',
-                middle_name: nil,
-                name_suffix: nil,
-                sex: nil,
-                state: 'NY',
-                state_id_expiration: nil,
-                state_id_issued: '2020-01-01',
-                state_id_jurisdiction: 'NY',
-                state_id_number: '000000000',
-                weight: nil,
-                zipcode: '10001',
-                uuid: document_capture_session.user.uuid,
-                uuid_prefix: sp.app_id,
-              },
-              current_sp: sp,
-              ipp_enrollment_in_progress: false,
-              state_id_address_resolution_result: nil,
-              timer: an_instance_of(JobHelpers::Timer),
-              doc_auth_flow: true,
-              analytics: @analytics,
-            ).and_return(aamva_proofing_result)
             perform
             document_capture_session.reload
           end
@@ -1111,41 +1097,17 @@ RSpec.describe SocureDocvResultsJob do
         end
 
         context 'when the socure response is missing the state_id_issued field' do
+          let(:issue_date) { nil }
+          let(:socure_response_body) do
+            super().merge(
+              documentVerification: super()[:documentVerification].merge(
+                documentData: super()[:documentVerification][:documentData].except(:issueDate),
+              ),
+            )
+          end
           let(:document_capture_session_result) { document_capture_session.load_result }
 
           before do
-            allow(aamva_proofer).to receive(:call).with(
-              applicant_pii: {
-                address1: '123 Example Street',
-                address2: 'Apt 4',
-                city: 'New York City',
-                dob: '2000-01-01',
-                document_type_received: 'drivers_license',
-                eye_color: nil,
-                first_name: 'Dwayne',
-                height: nil,
-                issuing_country_code: 'USA',
-                last_name: 'Denver',
-                middle_name: nil,
-                name_suffix: nil,
-                sex: nil,
-                state: 'NY',
-                state_id_expiration: expiration_date,
-                state_id_issued: nil,
-                state_id_jurisdiction: 'NY',
-                state_id_number: '000000000',
-                weight: nil,
-                zipcode: '10001',
-                uuid: document_capture_session.user.uuid,
-                uuid_prefix: sp.app_id,
-              },
-              current_sp: sp,
-              ipp_enrollment_in_progress: false,
-              state_id_address_resolution_result: nil,
-              timer: an_instance_of(JobHelpers::Timer),
-              doc_auth_flow: true,
-              analytics: @analytics,
-            ).and_return(aamva_proofing_result)
             perform
             document_capture_session.reload
           end
@@ -1153,7 +1115,7 @@ RSpec.describe SocureDocvResultsJob do
           it 'doc auth succeeds' do
             expect(document_capture_session_result).to have_attributes(
               success: true,
-              pii: include(first_name: 'Dwayne'),
+              pii: include(first_name: 'Dwayne', state_id_issued: nil),
               attention_with_barcode: false,
               doc_auth_success: true,
               selfie_status: :not_processed,

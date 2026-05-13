@@ -23,6 +23,7 @@ module DocAuth
           first_name: %w[documentVerification documentData firstName],
           middle_name: %w[documentVerification documentData middleName],
           last_name: %w[documentVerification documentData surName],
+          name_suffix: %w[documentVerification documentData nameSuffix],
           address1: %w[documentVerification documentData parsedAddress physicalAddress],
           address2: %w[documentVerification documentData parsedAddress physicalAddress2],
           city: %w[documentVerification documentData parsedAddress city],
@@ -91,6 +92,7 @@ module DocAuth
         def extra_attributes
           {
             address_line2_present: address2.present?,
+            name_suffix_present: name_suffix.present?,
             birth_year: dob&.year,
             customer_profile: get_data(DATA_PATHS[:customer_profile]),
             customer_user_id: get_data(DATA_PATHS[:socure_customer_user_id]),
@@ -138,6 +140,7 @@ module DocAuth
               first_name: get_data(DATA_PATHS[:first_name]),
               middle_name: get_data(DATA_PATHS[:middle_name]),
               last_name: get_data(DATA_PATHS[:last_name]),
+              name_suffix:,
               dob:,
               mrz: get_data(DATA_PATHS[:mrz]),
               issuing_country_code:,
@@ -155,7 +158,7 @@ module DocAuth
             first_name: get_data(DATA_PATHS[:first_name]),
             middle_name: get_data(DATA_PATHS[:middle_name]),
             last_name: get_data(DATA_PATHS[:last_name]),
-            name_suffix: nil,
+            name_suffix:,
             address1: get_data(DATA_PATHS[:address1]),
             address2:,
             city: get_data(DATA_PATHS[:city]),
@@ -231,6 +234,10 @@ module DocAuth
 
         def reason_codes
           get_data(DATA_PATHS[:reason_codes])
+        end
+
+        def name_suffix
+          get_data(DATA_PATHS[:name_suffix])
         end
 
         def parse_date(date_string)

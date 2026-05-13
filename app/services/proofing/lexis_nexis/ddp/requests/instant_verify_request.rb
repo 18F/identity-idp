@@ -26,6 +26,7 @@ module Proofing
               account_drivers_license_type: applicant[:state_id_number] ? 'us_dl' : '',
               account_drivers_license_issuer: applicant[:state_id_jurisdiction].to_s.strip || '',
               event_type: 'ACCOUNT_CREATION',
+              customer_event_type: 'instant_verify',
               policy: config.ddp_policy,
               service_type: 'all',
               national_id_number: applicant[:ssn]&.gsub(/\D/, '') || '',

@@ -66,74 +66,6 @@ RSpec.describe Idv::Agent do
         document_capture_session.load_proofing_result.result
       end
 
-      context 'proofing in an AAMVA state' do
-        context 'when state ID address resolution fails' do
-          let(:applicant) do
-            super().merge(ssn: '444-55-6666')
-          end
-
-          it 'does not proof state_id' do
-            expect(result[:errors][:ssn]).to eq ['Unverified SSN.']
-            expect(result[:context][:stages][:state_id][:vendor_name]).to(
-              eq(Idp::Constants::Vendors::AAMVA_CHECK_SKIPPED),
-            )
-          end
-        end
-
-        context 'when resolution succeeds' do
-          it 'proofs state_id' do
-            expect(result[:context][:stages][:state_id]).to include(
-              transaction_id: Proofing::Mock::IdMockClient::TRANSACTION_ID,
-              errors: {},
-              exception: nil,
-              success: true,
-              timed_out: false,
-              vendor_name: 'StateIdMock',
-            )
-          end
-        end
-      end
-
-      context 'non-AAMVA state' do
-        let(:applicant) do
-          super().merge(state_id_jurisdiction: 'NY')
-        end
-
-        context 'when resolution fails' do
-          let(:applicant) do
-            super().merge(ssn: '444-55-6666')
-          end
-
-          it 'does not proof state_id' do
-            expect(result[:errors][:ssn]).to eq ['Unverified SSN.']
-            expect(result[:context][:stages][:state_id][:vendor_name]).to(
-              eq(Idp::Constants::Vendors::AAMVA_UNSUPPORTED_JURISDICTION),
-            )
-          end
-        end
-
-        context 'when resolution succeeds' do
-          it 'does not proof state_id' do
-            expect(result[:context][:stages]).to_not include(
-              state_id: 'StateIdMock',
-              transaction_id: Proofing::Mock::IdMockClient::TRANSACTION_ID,
-            )
-          end
-        end
-      end
-
-      context 'when SSN does not start with 900 but is in SSN allowlist' do
-        let(:applicant) do
-          super().merge(ssn: '999-99-9999')
-        end
-
-        it 'returns a successful result' do
-          expect(result).to include(
-            success: true,
-          )
-        end
-      end
-
       it 'passes the correct service provider to the ResolutionProofingJob' do
         issuer = 'https://rp1.serviceprovider.com/auth/saml/metadata'
         document_capture_session.update!(issuer: issuer)
@@ -156,23 +88,6 @@ RSpec.describe Idv::Agent do
           expect(result).to include(
             success: false,
             timed_out: true,
-          )
-        end
-      end
-
-      context 'in-person proofing is enabled' do
-        let(:ipp_enrollment_in_progress) { true }
-        let(:applicant) do
-          Idp::Constants.mock_idv_applicant_state_id_address
-        end
-
-        it 'returns a successful result if resolution passes' do
-          expect(result[:context][:stages][:state_id]).to include(
-            transaction_id: Proofing::Mock::IdMockClient::TRANSACTION_ID,
-            errors: {},
-            exception: nil,
-            success: true,
-            timed_out: false,
           )
         end
       end

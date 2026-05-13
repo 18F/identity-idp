@@ -66,7 +66,7 @@ RSpec.describe ThreatMetrixJsVerificationJob, type: :job do
     before do
       allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_org_id)
         .and_return(threatmetrix_org_id)
-      allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_js_signing_cert)
+      allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_js_public_cert)
         .and_return(threatmetrix_signing_certificate)
       allow(IdentityConfig.store).to receive(:proofing_device_profiling)
         .and_return(threatmetrix_enabled ? :collect_only : :disabled)

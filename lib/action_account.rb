@@ -68,7 +68,6 @@ class ActionAccount
       'clear-device-profiling-failure' => ClearDeviceProfilingFailure,
       'deactivate-duplicate' => DeactivateDuplicate,
       'clear-duplicate' => ClearDuplicate,
-      'close-inconclusive-duplicate' => CloseInconclusiveDuplicate,
     }[name]
   end
 
@@ -574,90 +573,6 @@ class ActionAccount
 
       ScriptBase::Result.new(
         subtask: 'clear-duplicate',
-        uuids: users.map(&:uuid),
-        messages:,
-        table:,
-      )
-    end
-  end
-
-  class CloseInconclusiveDuplicate
-    include LogBase
-    def run(args:, config:)
-      uuids = args
-
-      users = User.where(uuid: uuids).order(:uuid)
-
-      table = []
-      table << %w[uuid status reason]
-
-      messages = []
-
-      users.each do |user|
-        profile = user.active_profile
-        success = false
-
-        log_texts = []
-
-        if !profile
-          log_texts << log_text[:profile_not_active]
-        else
-          begin
-            profile.close_inconclusive_duplicate
-            success = true
-            log_texts << log_text[:closed_inconclusive_duplicate]
-          rescue RuntimeError => error
-            log_texts << "Error: #{error.message}"
-          end
-        end
-
-        log_texts.each do |text|
-          table, messages = log_message(
-            uuid: user.uuid,
-            log: text,
-            reason: config.reason,
-            table:,
-            messages:,
-          )
-        end
-      ensure
-        if !success
-          analytics_error_hash = { message: log_texts.last }
-        end
-
-        Analytics.new(
-          user: user,
-          request: nil,
-          session: {},
-          sp: nil,
-        ).one_account_close_inconclusive_duplicate(
-          success:,
-          errors: analytics_error_hash,
-        )
-      end
-
-      missing_uuids = (uuids - users.map(&:uuid))
-
-      if config.include_missing? && !missing_uuids.empty?
-        missing_uuids.each do |missing_uuid|
-          table, messages = log_message(
-            uuid: missing_uuid,
-            log: log_text[:missing_uuid],
-            reason: config.reason,
-            table:,
-            messages:,
-          )
-        end
-        Analytics.new(
-          user: AnonymousUser.new, request: nil, session: {}, sp: nil,
-        ).one_account_close_inconclusive_duplicate(
-          success: false,
-          errors: { message: log_text[:missing_uuid] },
-        )
-      end
-
-      ScriptBase::Result.new(
-        subtask: 'close-inconclusive-duplicate',
         uuids: users.map(&:uuid),
         messages:,
         table:,

@@ -73,6 +73,7 @@ RSpec.describe Idv::AddressController do
           address2: pii_from_doc.address2,
           address_edited: false,
           city: pii_from_doc.city,
+          country: 'US',
           state: pii_from_doc.state,
           zip: pii_from_doc.zipcode,
           failure_reason: nil,
@@ -130,6 +131,7 @@ RSpec.describe Idv::AddressController do
         city: 'Beverly Hills',
         state: 'CA',
         zip: '90210',
+        country: 'US',
         failure_reason: nil,
       )
 
@@ -154,6 +156,7 @@ RSpec.describe Idv::AddressController do
           city: 'Beverly Hills',
           state: 'CA',
           zip: 'this is invalid',
+          country: 'US',
           failure_reason: { zipcode: [:invalid] },
         )
 

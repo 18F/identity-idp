@@ -128,8 +128,8 @@ else
       },
       sp_proofing_events_by_uuid_report: {
         class: 'Reports::SpProofingEventsByUuid',
-        cron: cron_every_monday_4am,
-        args: -> { [Time.zone.today] },
+        cron: cron_1h,
+        args: -> { [Time.zone.now] },
       },
       # Sync opted out phone numbers from AWS
       phone_number_opt_out_sync_job: {
@@ -189,12 +189,13 @@ else
         cron: gpo_cron_24h,
         args: -> { [Time.zone.yesterday] },
       },
-      # Send previous week's verification reports to partners
-      irs_weekly_verification_report: {
-        class: 'Reports::IrsOriginalVerificationReport',
-        cron: cron_every_monday_5am,
-        args: -> { [Time.zone.yesterday.end_of_day, :both] },
+      # Data warehouse duplicate log count check
+      cloudwatch_duplicate_log_counter_job: {
+        class: 'DataWarehouse::CloudwatchDuplicateLogCounterJob',
+        cron: '25 * * * *', # run 25 minutes past the hour
+        args: -> { [Time.zone.now] },
       },
+      # Send previous week's verification reports to partners
       sp_weekly_verification_report: {
         class: 'Reports::SpVerificationReport',
         cron: cron_every_monday_5am,
@@ -243,12 +244,6 @@ else
         args: -> { [Time.zone.yesterday.end_of_day] },
       },
       # Send previous week's IrsRegistrationFunnelReport reports to irs
-      irs_weekly_registration_funnel_report: {
-        class: 'Reports::IrsOriginalRegistrationFunnelReport',
-        cron: cron_every_monday,
-        args: -> { [Time.zone.yesterday.end_of_day, :both] },
-      },
-
       # Note: this is for testing as of now.
       sp_weekly_registration_funnel_report: {
         class: 'Reports::SpRegistrationFunnelReport',
@@ -268,19 +263,15 @@ else
         args: -> { [Time.zone.yesterday.end_of_day] },
       },
 
-      # Send irs fraud metrics to Team Data - Daily (For internal review only)
-      # And, monthly on 1st date (For IRS and Internal)
-      irs_fraud_metrics_report: {
-        class: 'Reports::IrsOriginalFraudMetricsReport',
+      # Send fraud metrics LG-99 report from S3 to Team Judy
+      fraud_metrics_report_s3: {
+        class: 'Reports::FraudMetricsLg99S3Report',
         cron: cron_24h_and_a_bit,
-        args: -> {
-          JobHelpers::ReportJobConfigurationHelper.build_irs_report_args(
-            Time.zone.yesterday.end_of_day,
-            :monthly,
-          )
-        },
+        args: -> { [Time.zone.yesterday.end_of_day] },
       },
 
+      # Send irs fraud metrics to Team Data - Daily (For internal review only)
+      # And, monthly on 1st date (For IRS and Internal)
       sp_fraud_metrics_report: {
         class: 'Reports::SpFraudMetricsReport',
         cron: cron_24h_and_a_bit,
@@ -311,17 +302,6 @@ else
         args: -> { [Time.zone.yesterday.end_of_day] },
       },
       # Previous months's irs verification report
-      monthly_irs_verification_report: {
-        class: 'Reports::MonthlyIrsOriginalVerificationReport',
-        cron: cron_24h_and_a_bit,
-        args: -> {
-          JobHelpers::ReportJobConfigurationHelper.build_irs_report_args(
-            Time.zone.yesterday.end_of_day,
-            :monthly,
-          )
-        },
-      },
-
       # Previous months's SP verification report - Added for testing as of now
       monthly_sp_verification_report: {
         class: 'Reports::MonthlySpVerificationReport',
@@ -336,17 +316,6 @@ else
 
       # Send irs quarterly metrics report to Team Data - Monthly (For internal review only)
       # And, quarterly on 1st date (For IRS and Internal)
-      irs_verification_demographics_report: {
-        class: 'Reports::IrsOriginalVerificationDemographicsReport',
-        cron: cron_monthly,
-        args: -> {
-          JobHelpers::ReportJobConfigurationHelper.build_irs_report_args(
-            Time.zone.yesterday.end_of_day,
-            :quarterly,
-          )
-        },
-      },
-
       # Note: This is just for testing as of now
       sp_verification_demographics_report: {
         class: 'Reports::SpVerificationDemographicsReport',
@@ -380,17 +349,6 @@ else
 
       # Previous months's irs credentials report to Team Data - Daily (For internal review only)
       # And, monthly on 1st date (For IRS and Internal)
-      irs_cred_metrics_report: {
-        class: 'Reports::IrsOriginalMonthlyCredMetricsReport',
-        cron: cron_24h_and_a_bit,
-        args: -> {
-          JobHelpers::ReportJobConfigurationHelper.build_irs_report_args(
-            Time.zone.yesterday.end_of_day,
-            :monthly,
-          )
-        },
-      },
-
       sp_cred_metrics_report: {
         class: 'Reports::SpCredMetricsReportOrchestrator',
         cron: cron_24h_and_a_bit,

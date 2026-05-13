@@ -6,6 +6,14 @@ class Profile < ApplicationRecord
   # Facial match through IAL2 opt-in flow
   FACIAL_MATCH_OPT_IN = %w[unsupervised_with_selfie].to_set.freeze
 
+  PROOFING_AGENT_IDV_LEVELS = {
+    'legacy_unsupervised' => 'basic',
+    'legacy_in_person' => 'enhanced',
+    'unsupervised_with_selfie' => 'enhanced',
+    'in_person' => 'enhanced',
+    'proofing_agent' => 'enhanced',
+  }.freeze
+
   belongs_to :user
   # rubocop:disable Rails/InverseOf
   belongs_to :initiating_service_provider,
@@ -16,6 +24,7 @@ class Profile < ApplicationRecord
   # rubocop:enable Rails/InverseOf
   has_many :gpo_confirmation_codes, dependent: :destroy
   has_one :in_person_enrollment, dependent: :destroy
+  has_one :user_proofing_event, dependent: :destroy
 
   validates :active, uniqueness: { scope: :user_id, if: :active? }
 
@@ -82,6 +91,10 @@ class Profile < ApplicationRecord
   end
 
   # Instance methods
+  def enhanced?
+    PROOFING_AGENT_IDV_LEVELS[idv_level] == 'enhanced'
+  end
+
   def fraud_review_pending?
     fraud_review_pending_at.present?
   end
@@ -322,36 +335,6 @@ class Profile < ApplicationRecord
         user.confirmed_email_addresses.each do |email_address|
           mailer = UserMailer.with(user: user, email_address: email_address)
           mailer.dupe_profile_account_review_complete_success.deliver_now_or_later
-        end
-      end
-    end
-  end
-
-  def close_inconclusive_duplicate
-    raise 'Profile not active' unless active
-    raise 'Profile not a duplicate' unless DuplicateProfileSet.open.exists?(
-      ['? = ANY(profile_ids)', id],
-    )
-
-    transaction do
-      DuplicateProfileSet.open.where(['? = ANY(profile_ids)', id]).find_each do |duplicate_profile|
-        if duplicate_profile.profile_ids.length > 1
-          duplicate_profile.profile_ids.delete(id)
-          duplicate_profile.save
-        else
-          duplicate_profile.update!(
-            closed_at: Time.zone.now,
-            self_serviced: false,
-            fraud_investigation_conclusive: false,
-          )
-        end
-
-        service_provider = ServiceProvider.find_sole_by(issuer: duplicate_profile.service_provider)
-        user.confirmed_email_addresses.each do |email_address|
-          mailer = UserMailer.with(user: user, email_address: email_address)
-          mailer.dupe_profile_account_review_complete_unable(
-            agency_name: service_provider.friendly_name,
-          ).deliver_now_or_later
         end
       end
     end

@@ -84,7 +84,6 @@ module Idv
 
           result = handle_stored_result(
             user: document_capture_session.user,
-            store_in_session: false,
           )
           # TODO: new analytics event?
           analytics.idv_doc_auth_document_capture_submitted(
@@ -103,7 +102,6 @@ module Idv
         def errors
           result = handle_stored_result(
             user: document_capture_user,
-            store_in_session: false,
           )
           @presenter = socure_errors_presenter(result)
         end

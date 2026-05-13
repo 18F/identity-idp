@@ -101,7 +101,7 @@ RSpec.describe DocAuth::Dos::Request do
         expect(response.success?).to be(false)
         expect(response.errors).to include(network: true)
         expect(response.extra).to include(
-          vendor: 'DoS',
+          vendor_name: 'dos:passport',
           error_code: 'ERR001',
           error_message: 'Invalid request',
           error_reason: 'Bad format',
@@ -121,7 +121,7 @@ RSpec.describe DocAuth::Dos::Request do
         expect(response.success?).to be(false)
         expect(response.errors).to include(network: true)
         expect(response.extra).to include(
-          vendor: 'DoS',
+          vendor_name: 'dos:passport',
           error_code: nil,
           error_message: 'Authentication denied.',
           error_reason: nil,
@@ -139,7 +139,7 @@ RSpec.describe DocAuth::Dos::Request do
         expect(response.success?).to be(false)
         expect(response.errors).to include(network: true)
         expect(response.extra).to include(
-          vendor: 'DoS',
+          vendor_name: 'dos:passport',
           error_code: nil,
           error_message: nil,
           error_reason: nil,
@@ -157,7 +157,7 @@ RSpec.describe DocAuth::Dos::Request do
         expect(response.success?).to be(false)
         expect(response.errors).to include(network: true)
         expect(response.extra).to include(
-          vendor: 'DoS',
+          vendor_name: 'dos:passport',
           error_code: nil,
           error_message: nil,
           error_reason: nil,

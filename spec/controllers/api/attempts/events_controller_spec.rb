@@ -323,7 +323,6 @@ RSpec.describe Api::Attempts::EventsController do
               expect(action.status).to eq 401
               expect(@analytics).to have_logged_event(
                 :attempts_api_poll_events_request,
-                issuer: issuer,
                 success: false,
               )
             end

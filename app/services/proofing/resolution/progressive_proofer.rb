@@ -2,17 +2,11 @@
 
 module Proofing
   module Resolution
-    # Uses a combination of LexisNexis InstantVerify and AAMVA checks to verify that
-    # a user's identity can be resolved against authoritative sources. This includes logic for when:
-    #   1. The user is or is not within an AAMVA-participating jurisdiction
-    #   2. The user has only provided one address for their residential and identity document
-    #      address or separate residential and identity document addresses
     class ProgressiveProofer
       class InvalidProofingVendorError; end
 
       attr_reader :user_uuid,
                   :user_email,
-                  :aamva_plugin,
                   :threatmetrix_plugin,
                   :phone_plugin,
                   :proofing_vendor
@@ -27,7 +21,6 @@ module Proofing
       def initialize(user_uuid:, proofing_vendor:, user_email:, analytics:)
         @user_uuid = user_uuid
         @user_email = user_email
-        @aamva_plugin = Plugins::AamvaPlugin.new
         @threatmetrix_plugin = Plugins::ThreatMetrixPlugin.new
         @phone_plugin = Plugins::PhonePlugin.new
         @proofing_vendor = proofing_vendor
@@ -42,8 +35,6 @@ module Proofing
       # @param [JobHelpers::Timer] timer indicates time elapsed to obtain results
       # @param [String] user_uuid user uuid for applicant
       # @param [String] workflow user is in idv or auth workflow
-      # @param [Boolean] state_id_already_proofed indicates the state_id check was previously done,
-      #   e.g. in doc_auth
       # @param [String] hybrid_mobile_threatmetrix_session_id identifies the hybrid tmx session
       # @param [String, nil] hybrid_mobile_request_ip IP address for hybrid mobile request
       # @return [ResultAdjudicator] object which contains the logic to determine proofing's result
@@ -55,7 +46,6 @@ module Proofing
         ipp_enrollment_in_progress:,
         current_sp:,
         workflow:,
-        state_id_already_proofed: false,
         hybrid_mobile_threatmetrix_session_id: nil,
         hybrid_mobile_request_ip: nil
       )
@@ -105,21 +95,11 @@ module Proofing
           timer:,
         )
 
-        state_id_result = aamva_plugin.call(
-          applicant_pii:,
-          current_sp:,
-          state_id_address_resolution_result:,
-          ipp_enrollment_in_progress:,
-          timer:,
-          already_proofed: state_id_already_proofed,
-        )
-
         phone_result = phone_plugin.call(
           applicant_pii:,
           current_sp:,
           residential_address_resolution_result:,
           state_id_address_resolution_result:,
-          state_id_result:,
           best_effort_phone:,
           timer:,
           user_email:,
@@ -130,8 +110,6 @@ module Proofing
           hybrid_mobile_device_profiling_result:,
           ipp_enrollment_in_progress:,
           resolution_result: state_id_address_resolution_result,
-          should_proof_state_id: aamva_plugin.aamva_supports_state_id_jurisdiction?(applicant_pii),
-          state_id_result:,
           residential_resolution_result: residential_address_resolution_result,
           phone_result:,
           same_address_as_id: applicant_pii[:same_address_as_id],

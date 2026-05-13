@@ -101,7 +101,7 @@ module DocAuth
           errors: { network: true, passport: true },
           exception: exception,
           extra: {
-            vendor: 'DoS',
+            vendor_name: 'dos:passport',
             error_code: error_code,
             error_message: error_message,
             error_reason: error_reason,

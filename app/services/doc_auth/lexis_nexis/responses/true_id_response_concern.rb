@@ -82,6 +82,7 @@ module DocAuth
             portrait_match_results: portrait_match_results,
             image_metrics: read_image_metrics(true_id_product),
             address_line2_present: address_line2_present,
+            name_suffix_present: !!pii_from_doc&.name_suffix.present?,
             classification_info: classification_info,
             liveness_enabled: @liveness_checking_enabled,
           }

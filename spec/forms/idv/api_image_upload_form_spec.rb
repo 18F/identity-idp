@@ -300,7 +300,7 @@ RSpec.describe Idv::ApiImageUploadForm do
               attempt: 1,
               mrz_status: :not_processed,
               aamva_status: :passed,
-              state_id_vendor: :"state_id:aamva",
+              source_check_vendor: 'state_id:aamva',
             )
           end
         end
@@ -340,7 +340,7 @@ RSpec.describe Idv::ApiImageUploadForm do
               attempt: 1,
               mrz_status: :not_processed,
               aamva_status: :failed,
-              state_id_vendor: nil,
+              source_check_vendor: nil,
               errors: aamva_doc_auth_response.errors,
             )
           end
@@ -386,7 +386,7 @@ RSpec.describe Idv::ApiImageUploadForm do
               success: true,
               errors: {},
               extra: {
-                vendor: 'DoS',
+                vendor_name: 'dos:passport',
                 correlation_id_sent: 'something',
                 correlation_id_received: 'something else',
                 response: 'YES',
@@ -536,12 +536,14 @@ RSpec.describe Idv::ApiImageUploadForm do
                 document_expiration: pii_from_doc[:state_id_expiration],
                 first_name: pii_from_doc[:first_name],
                 last_name: pii_from_doc[:last_name],
+                liveness_checking_required: false,
                 date_of_birth: pii_from_doc[:dob],
                 address1: pii_from_doc[:address1],
                 address2: pii_from_doc[:address2],
                 city: pii_from_doc[:city],
                 state: pii_from_doc[:state],
                 zip: pii_from_doc[:zip],
+                country: pii_from_doc[:issuing_country_code],
                 failure_reason: nil,
               )
               form.submit
@@ -571,12 +573,14 @@ RSpec.describe Idv::ApiImageUploadForm do
                 document_expiration: pii_from_doc[:state_id_expiration],
                 first_name: pii_from_doc[:first_name],
                 last_name: pii_from_doc[:last_name],
+                liveness_checking_required: false,
                 date_of_birth: pii_from_doc[:dob],
                 address1: pii_from_doc[:address1],
                 address2: pii_from_doc[:address2],
                 city: pii_from_doc[:city],
                 state: pii_from_doc[:state],
                 zip: pii_from_doc[:zip],
+                country: pii_from_doc[:issuing_country_code],
                 failure_reason: nil,
               )
               form.submit
@@ -596,7 +600,7 @@ RSpec.describe Idv::ApiImageUploadForm do
             attempt: 1,
           )
           expect(document_capture_session.reload.load_result).not_to have_attributes(
-            state_id_vendor: :"state_id:aamva",
+            source_check_vendor: 'state_id:aamva',
           )
         end
 
@@ -762,12 +766,14 @@ RSpec.describe Idv::ApiImageUploadForm do
                   document_expiration: pii_from_doc[:state_id_expiration],
                   first_name: pii_from_doc[:first_name],
                   last_name: pii_from_doc[:last_name],
+                  liveness_checking_required: true,
                   date_of_birth: pii_from_doc[:dob],
                   address1: pii_from_doc[:address1],
                   address2: pii_from_doc[:address2],
                   city: pii_from_doc[:city],
                   state: pii_from_doc[:state],
                   zip: pii_from_doc[:zip],
+                  country: pii_from_doc[:issuing_country_code],
                   failure_reason: nil,
                 )
                 form.submit
@@ -795,12 +801,14 @@ RSpec.describe Idv::ApiImageUploadForm do
                   document_expiration: pii_from_doc[:state_id_expiration],
                   first_name: pii_from_doc[:first_name],
                   last_name: pii_from_doc[:last_name],
+                  liveness_checking_required: true,
                   date_of_birth: pii_from_doc[:dob],
                   address1: pii_from_doc[:address1],
                   address2: pii_from_doc[:address2],
                   city: pii_from_doc[:city],
                   state: pii_from_doc[:state],
                   zip: pii_from_doc[:zip],
+                  country: pii_from_doc[:issuing_country_code],
                   failure_reason: nil,
                 )
                 form.submit
@@ -1036,12 +1044,14 @@ RSpec.describe Idv::ApiImageUploadForm do
               document_expiration: nil,
               first_name: nil,
               last_name: nil,
+              liveness_checking_required: false,
               date_of_birth: nil,
               address1: nil,
               address2: nil,
               city: nil,
               state: nil,
               zip: nil,
+              country: nil,
               failure_reason: { front: 'glare' },
             )
 
@@ -1068,12 +1078,14 @@ RSpec.describe Idv::ApiImageUploadForm do
               document_expiration: nil,
               first_name: nil,
               last_name: nil,
+              liveness_checking_required: false,
               date_of_birth: nil,
               address1: nil,
               address2: nil,
               city: nil,
               state: nil,
               zip: nil,
+              country: nil,
               failure_reason: { front: 'glare' },
             )
 
@@ -1358,7 +1370,7 @@ RSpec.describe Idv::ApiImageUploadForm do
             success: false,
             errors: { passport: 'invalid MRZ' },
             extra: {
-              vendor: 'DoS',
+              vendor_name: 'dos:passport',
               correlation_id_sent: 'something',
               correlation_id_received: 'something else',
               response: 'NO',
@@ -1419,7 +1431,7 @@ RSpec.describe Idv::ApiImageUploadForm do
               success: false,
               errors: { network: 'true' },
               extra: {
-                vendor: 'DoS',
+                vendor_name: 'dos:passport',
                 correlation_id_sent: 'something',
                 correlation_id_received: 'something else',
                 error_code: 'ERR',
@@ -1488,7 +1500,7 @@ RSpec.describe Idv::ApiImageUploadForm do
             success: true,
             errors: {},
             extra: {
-              vendor: 'DoS',
+              vendor_name: 'dos:passport',
               correlation_id_sent: 'something',
               correlation_id_received: 'something else',
               response: 'YES',
@@ -1853,7 +1865,7 @@ RSpec.describe Idv::ApiImageUploadForm do
               success: false,
               errors: { passport: 'invalid MRZ' },
               extra: {
-                vendor: 'DoS',
+                vendor_name: 'dos:passport',
                 correlation_id_sent: 'something',
                 correlation_id_received: 'something else',
                 response: 'NO',
@@ -1883,7 +1895,7 @@ RSpec.describe Idv::ApiImageUploadForm do
               success: true,
               errors: {},
               extra: {
-                vendor: 'DoS',
+                vendor_name: 'dos:passport',
                 correlation_id_sent: 'something',
                 correlation_id_received: 'something else',
                 response: 'YES',

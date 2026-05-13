@@ -29,7 +29,7 @@ module Idv
       when 'requested'
         :passport
       when 'not_requested'
-        :drivers_license
+        :state_id_card
       end
     end
 
@@ -55,7 +55,7 @@ module Idv
         presenter:,
         form_submit_url:,
         disable_passports: disable_passports?,
-        auto_check_value: disable_passports? ? :drivers_license : selected_id_type,
+        auto_check_value: disable_passports? ? :state_id_card : selected_id_type,
       }
     end
 
@@ -65,7 +65,12 @@ module Idv
     end
 
     def passports_enabled?
-      IdentityConfig.store.doc_auth_passports_enabled
+      IdentityConfig.store.doc_auth_passports_enabled ||
+        (FeatureManagement.doc_auth_passport_cards_enabled? && in_passport_cards_allowed_bucket?)
+    end
+
+    def in_passport_cards_allowed_bucket?
+      ab_test_bucket(:DOC_AUTH_PASSPORT_CARDS_ALLOWED) == :doc_auth_passport_cards_allowed
     end
   end
 end

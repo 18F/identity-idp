@@ -15,7 +15,7 @@ RSpec.describe Idv::GpoVerifyByMailPolicy do
   describe '#resend_letter_available?' do
     context 'when the feature flag is off' do
       before do
-        allow(IdentityConfig.store).to receive(:enable_usps_verification)
+        allow(IdentityConfig.store).to receive(:idv_gpo_verification_enabled)
           .and_return false
       end
 
@@ -26,7 +26,7 @@ RSpec.describe Idv::GpoVerifyByMailPolicy do
 
     context 'when the feature flag is on' do
       before do
-        allow(IdentityConfig.store).to receive(:enable_usps_verification)
+        allow(IdentityConfig.store).to receive(:idv_gpo_verification_enabled)
           .and_return true
       end
 
@@ -55,7 +55,7 @@ RSpec.describe Idv::GpoVerifyByMailPolicy do
   describe '#send_letter_available?' do
     context 'when the feature flag is off' do
       before do
-        allow(IdentityConfig.store).to receive(:enable_usps_verification)
+        allow(IdentityConfig.store).to receive(:idv_gpo_verification_enabled)
           .and_return false
       end
 
@@ -66,7 +66,7 @@ RSpec.describe Idv::GpoVerifyByMailPolicy do
 
     context 'when the feature flag is on' do
       before do
-        allow(IdentityConfig.store).to receive(:enable_usps_verification)
+        allow(IdentityConfig.store).to receive(:idv_gpo_verification_enabled)
           .and_return true
       end
 

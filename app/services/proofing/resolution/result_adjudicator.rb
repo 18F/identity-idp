@@ -4,7 +4,6 @@ module Proofing
   module Resolution
     class ResultAdjudicator
       attr_reader :resolution_result,
-                  :state_id_result,
                   :device_profiling_result,
                   :hybrid_mobile_device_profiling_result,
                   :ipp_enrollment_in_progress,
@@ -16,10 +15,8 @@ module Proofing
 
       def initialize(
         resolution_result:, # InstantVerify
-        state_id_result:, # AAMVA
         residential_resolution_result:, # InstantVerify Residential
         phone_result:, # PhoneFinder PhoneRisk
-        should_proof_state_id:,
         ipp_enrollment_in_progress:,
         device_profiling_result:, # ThreatMetrix
         same_address_as_id:,
@@ -28,8 +25,6 @@ module Proofing
         hybrid_mobile_device_profiling_result: nil # ThreatMetrix (Hybrid Mobile)
       )
         @resolution_result = resolution_result
-        @state_id_result = state_id_result
-        @should_proof_state_id = should_proof_state_id
         @ipp_enrollment_in_progress = ipp_enrollment_in_progress
         @device_profiling_result = device_profiling_result
         @hybrid_mobile_device_profiling_result = hybrid_mobile_device_profiling_result
@@ -61,11 +56,9 @@ module Proofing
               device_profiling_adjudication_reason: device_profiling_reason,
               hybrid_mobile_device_profiling_adjudication_reason: hybrid_mobile_profiling_reason,
               resolution_adjudication_reason: resolution_reason,
-              should_proof_state_id: should_proof_state_id?,
               stages: {
                 resolution: resolution_result.to_h,
                 residential_address: residential_resolution_result.to_h,
-                state_id: state_id_result.to_h,
                 threatmetrix:,
                 hybrid_mobile_threatmetrix:,
                 phone_precheck: phone_result,
@@ -76,16 +69,11 @@ module Proofing
         )
       end
 
-      def should_proof_state_id?
-        @should_proof_state_id
-      end
-
       private
 
       def errors
         resolution_result.errors
           .merge(residential_resolution_result.errors)
-          .merge(state_id_result.errors)
           .merge(device_profiling_result.errors || {})
           .merge(hybrid_mobile_device_profiling_result&.errors || {})
       end
@@ -93,7 +81,6 @@ module Proofing
       def exception
         resolution_result.exception ||
           residential_resolution_result.exception ||
-          state_id_result.exception ||
           device_profiling_result.exception ||
           hybrid_mobile_device_profiling_result&.exception
       end
@@ -115,7 +102,6 @@ module Proofing
       def timed_out?
         resolution_result.timed_out? ||
           residential_resolution_result.timed_out? ||
-          state_id_result.timed_out? ||
           device_profiling_result.timed_out? ||
           !!hybrid_mobile_device_profiling_result&.timed_out?
       end
@@ -155,12 +141,8 @@ module Proofing
         if ipp_enrollment_in_progress && !residential_resolution_result.success? &&
            same_address_as_id == 'false'
           [false, :fail_resolution_skip_state_id]
-        elsif resolution_result.success? && state_id_result.success?
+        elsif resolution_result.success?
           [true, :pass_resolution_and_state_id]
-        elsif !state_id_result.success?
-          [false, :fail_state_id]
-        elsif !should_proof_state_id?
-          [false, :fail_resolution_skip_state_id]
         elsif state_id_attributes_cover_resolution_failures?
           [true, :state_id_covers_failed_resolution]
         else
@@ -170,13 +152,9 @@ module Proofing
 
       def state_id_attributes_cover_resolution_failures?
         return false unless resolution_result.failed_result_can_pass_with_additional_verification?
+
         failed_resolution_attributes =
           resolution_result.attributes_requiring_additional_verification
-
-        # no longer needed after aamva at IPP enrollment
-        passed_state_id_attributes = state_id_result.verified_attributes
-        return true if (failed_resolution_attributes.to_a - passed_state_id_attributes.to_a).empty?
-
         passed_state_id_attributes = applicant_pii[:aamva_verified_attributes].to_a.map(&:to_sym)
         (failed_resolution_attributes.to_a - passed_state_id_attributes).empty?
       end

@@ -10,6 +10,7 @@ require 'event_summarizer/vendor_result_evaluators/phone_finder'
 require 'event_summarizer/vendor_result_evaluators/true_id'
 require 'event_summarizer/vendor_result_evaluators/socure_doc_v'
 require 'event_summarizer/vendor_result_evaluators/socure_kyc'
+require 'event_summarizer/vendor_result_evaluators/socure_phone_risk'
 
 module EventSummarizer
   class IdvMatcher
@@ -20,6 +21,7 @@ module EventSummarizer
     IDV_SOCURE_VERIFICATION_DATA_REQUESTED = 'idv_socure_verification_data_requested'
     IDV_PHONE_CONFIRMATION_VENDOR_EVENT = 'IdV: phone confirmation vendor'
     IDV_VERIFY_PROOFING_RESULTS_EVENT = 'IdV: doc auth verify proofing results'
+    IDV_DIFFERENT_PHONE_NUMBER = 'IdV: use different phone number'
     IPP_ENROLLMENT_STATUS_UPDATED_EVENT = 'GetUspsProofingResultsJob: Enrollment status updated'
     PROFILE_ENCRYPTION_INVALID_EVENT = 'Profile Encryption: Invalid'
     RATE_LIMIT_REACHED_EVENT = 'Rate Limit Reached'
@@ -41,6 +43,11 @@ module EventSummarizer
         id: :socure_kyc,
         name: 'Socure KYC',
         evaluator_module: EventSummarizer::VendorResultEvaluators::SocureKyc,
+      },
+      'socure_phonerisk' => {
+        id: :socure_phonerisk,
+        name: 'Socure Phone Risk',
+        evaluator_module: EventSummarizer::VendorResultEvaluators::SocurePhoneRisk,
       },
       'lexisnexis:instant_verify' => {
         id: :instant_verify,
@@ -153,6 +160,11 @@ module EventSummarizer
         when IDV_PHONE_CONFIRMATION_VENDOR_EVENT
           for_current_idv_attempt(event:) do
             handle_phone_confirmation_vendor_event(event:)
+          end
+
+        when IDV_DIFFERENT_PHONE_NUMBER
+          for_current_idv_attempt(event:) do
+            handle_different_phone_number(event:)
           end
 
         when IDV_VERIFY_PROOFING_RESULTS_EVENT
@@ -413,6 +425,14 @@ module EventSummarizer
       end
     end
 
+    def handle_different_phone_number(event:)
+      add_significant_event(
+        timestamp: event['@timestamp'],
+        type: :different_phone_number,
+        description: 'User attempted to use a different phone number',
+      )
+    end
+
     def handle_image_upload_vendor_submitted(event:)
       timestamp = event['@timestamp']
       success = event.dig(*EVENT_PROPERTIES, 'success')
@@ -508,12 +528,14 @@ module EventSummarizer
     def handle_phone_confirmation_vendor_event(event:)
       timestamp = event['@timestamp']
       success = event.dig(*EVENT_PROPERTIES, 'success')
+      vendor = event.dig(*EVENT_PROPERTIES, 'vendor', 'vendor_name')
+      vendor_name = VENDORS.dig(vendor, :name) || UNKNOWN_VENDOR.dig(:name)
 
       if success
         add_significant_event(
           timestamp:,
-          type: :passed_phone_finder,
-          description: 'Phone Finder check succeeded',
+          type: :passed_phone_confirmation,
+          description: "Phone confirmation check succeeded via #{vendor_name}",
         )
 
         return

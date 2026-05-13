@@ -23,6 +23,7 @@ aamva_supported_jurisdictions: '["AL","AR","AZ","CO","CT","DC","DE","FL","GA","H
 aamva_verification_request_timeout: 5.0
 aamva_verification_url: https://example.org:12345/verification/url
 account_creation_device_profiling: disabled
+account_creation_passkey_auto_prompt_percent: 0
 account_creation_tmx_processed_percent: 0
 account_reset_attempt_window_in_minutes: 1_440
 account_reset_fraud_user_wait_period_days:
@@ -37,6 +38,7 @@ acuant_sdk_initialization_creds: 'a2V5bGVzc0dTQV9wcm9kQGxleGlzbmV4aXNyaXNrLmNvbT
 acuant_sdk_initialization_endpoint: 'https://us.acas.acuant.net'
 add_email_link_valid_for_hours: 24
 address_identity_proofing_supported_country_codes: '["AS", "GU", "MP", "PR", "US", "VI"]'
+agent_proofed_user_time_validity_hours: 1
 all_redirect_uris_cache_duration_minutes: 2
 allowed_attempts_providers: '[]'
 allowed_client_id_in_risc_service_providers: '[]'
@@ -117,6 +119,8 @@ doc_auth_max_attempts: 5
 doc_auth_max_capture_attempts_before_native_camera: 3
 doc_auth_max_submission_attempts_before_native_camera: 3
 doc_auth_mock_dos_api: false
+doc_auth_passport_cards_enabled: false
+doc_auth_passport_cards_enabled_percent: 0
 doc_auth_passport_selfie_vendor_default: 'mock'
 doc_auth_passport_selfie_vendor_lexis_nexis_ddp_percent: 0
 doc_auth_passport_selfie_vendor_lexis_nexis_percent: 100
@@ -169,10 +173,10 @@ enable_add_mfa_redirect_for_personal_key: false
 enable_load_testing_mode: false
 enable_rate_limiting: true
 enable_test_routes: true
-enable_usps_verification: true
 encrypted_document_storage_s3_bucket: 'test-bucket'
 event_disavowal_expiration_hours: 240
 facial_match_general_availability_enabled: true
+feature_account_creation_passkey_auto_prompt: false
 feature_idv_force_gpo_verification_enabled: false
 feature_idv_hybrid_flow_enabled: true
 feature_show_sp_reproof_banner_enabled: false
@@ -202,6 +206,7 @@ identity_verification_outcomes_report_emails: '[]'
 identity_verification_outcomes_report_issuers: '[]'
 idv_aamva_at_doc_auth_enabled: false
 idv_aamva_at_doc_auth_ipp_enabled: false
+idv_aamva_bypass_exception_ids: '[]'
 idv_aamva_split_last_name_states: '[]'
 idv_account_verified_email_campaign_id: '20241028'
 idv_acuant_sdk_upgrade_a_b_testing_enabled: false
@@ -214,6 +219,7 @@ idv_address_vendor_socure_percent: 0
 idv_attempt_window_in_hours: 6
 idv_available: true
 idv_contact_phone_number: (844) 555-5555
+idv_gpo_verification_enabled: true
 idv_max_attempts: 5
 idv_min_age_years: 13
 idv_phone_confirmation_manual_review_validity_hours: 0
@@ -305,7 +311,7 @@ lexisnexis_threatmetrix_api_key:
 lexisnexis_threatmetrix_authentication_policy: '1234'
 lexisnexis_threatmetrix_base_url:
 lexisnexis_threatmetrix_hybrid_handoff_policy:
-lexisnexis_threatmetrix_js_signing_cert: ''
+lexisnexis_threatmetrix_js_public_cert: ''
 lexisnexis_threatmetrix_mock_enabled: true
 lexisnexis_threatmetrix_org_id:
 lexisnexis_threatmetrix_policy:
@@ -429,6 +435,7 @@ remember_device_expiration_hours_aal_1: 720
 remember_device_expiration_minutes_aal_2: 0
 report_timeout: 0
 reproof_forcing_service_provider: ''
+reproof_if_not_unsupervised_with_selfie_service_providers: '[]'
 requests_per_ip_cidr_allowlist: ''
 requests_per_ip_limit: 300
 requests_per_ip_path_prefixes_allowlist: ''
@@ -447,6 +454,7 @@ ruby_workers_idv_enabled: true
 rules_of_use_horizon_years: 5
 rules_of_use_updated_at: '2022-01-19T00:00:00Z' # Production has a newer timestamp than this, update directly in S3
 s3_data_warehouse_bucket_prefix: 'login-gov-analytics-export'
+s3_data_warehouse_replica_bucket_prefix: 'login-gov-dw-reports'
 s3_idp_dw_tasks: 'login-gov-idp-dw-tasks'
 s3_public_reports_enabled: false
 s3_report_bucket_prefix: login-gov.reports
@@ -621,9 +629,9 @@ production:
   disable_email_sending: false
   email_registrations_per_ip_track_only_mode: true
   enable_test_routes: false
-  enable_usps_verification: false
   encrypted_document_storage_s3_bucket: ''
   facial_match_general_availability_enabled: false
+  idv_gpo_verification_enabled: false
   idv_sp_required: true
   invalid_gpo_confirmation_zipcode: ''
   lexisnexis_threatmetrix_mock_enabled: false

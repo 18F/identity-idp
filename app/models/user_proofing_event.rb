@@ -1,13 +1,18 @@
 # frozen_string_literal: true
 
 class UserProofingEvent < ApplicationRecord
-  # @param [String] new_events Stringified encrypted_events from a UserProofingEvent
-  def update_encrypted_events(new_events)
-    new_events_json = JSON.parse(new_events)
+  belongs_to :profile
+  self.ignored_columns = %w[encrypted_events service_providers_sent]
 
-    self.encrypted_events = new_events
-    self.cost = new_events_json['cost']
-    self.salt = new_events_json['salt']
+  # @param [Integer] id ID of service provider to add to "sent" list
+  def add_sp_sent(id)
+    return if self.service_provider_ids_sent.include?(id)
+
+    self.service_provider_ids_sent.push(id)
     self.save!
+  end
+
+  def already_sent_to_sp?(id)
+    service_provider_ids_sent.include?(id)
   end
 end

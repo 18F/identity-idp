@@ -184,7 +184,7 @@
                 {
                   "Group": "AUTHENTICATION_RESULT",
                   "Name": "ExpirationDate_Year",
-                  "Values": [{ "Value": "2026" }]
+                  "Values": [{ "Value": "2030" }]
                 },
                 {
                   "Group": "AUTHENTICATION_RESULT",
@@ -896,7 +896,7 @@
                 {
                   "Group": "IDAUTH_FIELD_DATA",
                   "Name": "Fields_ExpirationDate_Year",
-                  "Values": [{ "Value": "2026" }]
+                  "Values": [{ "Value": "2030" }]
                 },
                 {
                   "Group": "IDAUTH_FIELD_DATA",
@@ -1048,7 +1048,7 @@
   "trueid.authentication_result.doc_class": "Passport",
   "trueid.authentication_result.doc_issuer_name": "United States",
   "trueid.authentication_result.document_number": "340400859",
-  "trueid.authentication_result.expiration_date": "2026-03-27",
+  "trueid.authentication_result.expiration_date": "2030-03-27",
   "trueid.authentication_result.fields.id_auth_field_data.country_code": "USA",
   "trueid.authentication_result.last_name": "TRAVELER",
   "trueid.id_auth_field_data.state_name": "United States"

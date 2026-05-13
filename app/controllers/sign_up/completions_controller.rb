@@ -24,7 +24,7 @@ module SignUp
       update_verified_attributes
       send_in_person_completion_survey
       notify_user_of_connected_sp
-      update_service_providers_sent if historical_events_permitted?
+      send_historical_events if historical_events_need_be_sent?
       if user_session[:selected_email_id_for_linked_identity].nil?
         user_session[:selected_email_id_for_linked_identity] = current_user
           .last_sign_in_email_address.id
@@ -140,29 +140,27 @@ module SignUp
       end
     end
 
-    def update_service_providers_sent
-      return unless user_proofing_event && current_sp.issuer
+    def send_historical_events
+      # TODO: send to redis queue
 
-      user_proofing_event.service_providers_sent.push(current_sp.issuer)
-      user_proofing_event.save
+      user_proofing_event.add_sp_sent(current_sp.id)
     end
 
-    def historical_events_permitted?
-      globally_enabled = IdentityConfig.store.historical_attempts_api_enabled
-      aaca = current_sp.attempts_api_enabled?
-      idv = ial2_requested?
+    def historical_events_need_be_sent?
+      return false unless IdentityConfig.store.historical_attempts_api_enabled
+      return false unless current_sp.attempts_api_enabled?
+      return false unless ial2_requested?
+      return false unless user_proofing_event.present?
 
-      return false unless globally_enabled && aaca && idv
+      return !sent_to_aaca?
+    end
 
-      sent_to_aaca = user_proofing_event&.service_providers_sent&.include?(current_sp.issuer)
-
-      return false if sent_to_aaca
-      true
+    def sent_to_aaca?
+      user_proofing_event&.already_sent_to_sp?(current_sp.id)
     end
 
     def user_proofing_event
-      @user_proofing_event ||=
-        UserProofingEvent.find_by(profile_id: current_user&.active_profile&.id)
+      @user_proofing_event ||= current_user&.active_profile&.user_proofing_event
     end
 
     def pii

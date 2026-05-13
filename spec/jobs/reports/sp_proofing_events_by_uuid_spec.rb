@@ -1,7 +1,9 @@
 require 'rails_helper'
 
 RSpec.describe Reports::SpProofingEventsByUuid do
-  let(:report_date) { Date.new(2024, 12, 9) }
+  let(:report_date) { Time.utc(2024, 12, 9, 15, 42, 10) }
+  let(:report_hour) { report_date.beginning_of_hour }
+  let(:previous_hour_range) { (report_hour - 1.hour)...report_hour }
   let(:agency_abbreviation) { 'ABC' }
   let(:report_emails) { ['test@example.com'] }
   let(:issuers) { ['super:cool:test:issuer'] }
@@ -51,17 +53,19 @@ RSpec.describe Reports::SpProofingEventsByUuid do
       allow(subject).to receive(:build_report_maker).with(
         issuers: issuers,
         agency_abbreviation: 'ABC',
-        time_range: Date.new(2024, 12, 1)..Date.new(2024, 12, 7),
+        time_range: previous_hour_range,
       ).and_return(report_maker)
       expect(subject).to receive(:save_report).with(
         'abc_proofing_events_by_uuid',
         csv_report,
         extension: 'csv',
+        now: report_hour.utc,
+        timestamp_format: '%F.%H',
       )
 
       expect(ReportMailer).to receive(:tables_report).once.with(
         to: 'test@example.com',
-        subject: 'ABC Proofing Events By UUID - 2024-12-09',
+        subject: 'ABC Proofing Events By UUID - 2024-12-09 15:00 UTC',
         reports: emailable_reports,
         message: anything,
         attachment_format: :csv,
@@ -82,12 +86,14 @@ RSpec.describe Reports::SpProofingEventsByUuid do
         allow(subject).to receive(:build_report_maker).with(
           issuers: issuers,
           agency_abbreviation: 'ABC',
-          time_range: Date.new(2024, 12, 1)..Date.new(2024, 12, 7),
+          time_range: previous_hour_range,
         ).and_return(report_maker)
         expect(subject).to receive(:save_report).with(
           'abc_proofing_events_by_uuid',
           'I am a CSV, see',
           extension: 'csv',
+          now: report_hour.utc,
+          timestamp_format: '%F.%H',
         )
 
         expect(ReportMailer).to_not receive(:tables_report)
@@ -102,12 +108,12 @@ RSpec.describe Reports::SpProofingEventsByUuid do
       report_maker = subject.build_report_maker(
         issuers: ['super:cool:test:issuer'],
         agency_abbreviation: 'ABC',
-        time_range: Date.new(2024, 12, 1)..Date.new(2024, 12, 7),
+        time_range: previous_hour_range,
       )
 
       expect(report_maker.issuers).to eq(['super:cool:test:issuer'])
       expect(report_maker.agency_abbreviation).to eq('ABC')
-      expect(report_maker.time_range).to eq(Date.new(2024, 12, 1)..Date.new(2024, 12, 7))
+      expect(report_maker.time_range).to eq(previous_hour_range)
     end
   end
 end

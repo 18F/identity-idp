@@ -26,6 +26,10 @@ module Idv
         :pii_validation
       elsif result.errors[:state_id_verification]
         :state_id_verification
+      elsif result.errors[:passport_network]
+        :passport_network
+      elsif result.errors[:passport]
+        :passport
       else
         # No error information available (shouldn't happen). Default
         # to :network if it does.
