@@ -1271,7 +1271,9 @@ RSpec.describe Profile do
 
             context 'when the service provider does not exist' do
               before do
-                duplicate_profile_set.update!(service_provider: 'urn:gov:gsa:openidconnect:nonexistent')
+                duplicate_profile_set.update!(
+                  service_provider: 'urn:gov:gsa:openidconnect:nonexistent',
+                )
               end
 
               it 'does not raise an error' do
@@ -1375,7 +1377,9 @@ RSpec.describe Profile do
 
             context 'when the service provider does not exist' do
               before do
-                duplicate_profile_set.update!(service_provider: 'urn:gov:gsa:openidconnect:nonexistent')
+                duplicate_profile_set.update!(
+                  service_provider: 'urn:gov:gsa:openidconnect:nonexistent',
+                )
               end
 
               it 'does not raise an error' do
