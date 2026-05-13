@@ -22,7 +22,7 @@ module EncryptedDocStorage
 
     def retrieve_attempt_object(file_path:, file_name:)
       full_path = "#{file_path}/#{file_name}"
-      
+
       s3_client.get_object(
         bucket:,
         key: full_path,

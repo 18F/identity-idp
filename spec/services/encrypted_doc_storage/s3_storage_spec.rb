@@ -54,7 +54,6 @@ RSpec.describe EncryptedDocStorage::S3Storage do
       let(:stubbed_s3_client) { Aws::S3::Client.new(stub_responses: true) }
       let(:file_name) { SecureRandom.uuid }
       let(:file_path) { 'attempt_events/123abc' }
-      let(:encrypted_attempt_events) { 'abcdefg' }
 
       before do
         allow(subject).to receive(:s3_client).and_return(stubbed_s3_client)
