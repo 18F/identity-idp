@@ -134,9 +134,13 @@ module AbTests
       'WebAuthn Setup Visited',
       'Multi-Factor Authentication Setup',
       'User Registration: User Fully Registered',
+      :webauthn_platform_signup_setup_visited,
+      :webauthn_platform_signup_setup_submitted,
     ].to_set,
     buckets: {
       auto_passkey_prompt: IdentityConfig.store.account_creation_passkey_auto_prompt_percent,
+      passkey_setup_prompt_after_password_creation: IdentityConfig
+        .store.account_creation_passkey_setup_after_password_percent,
     },
     default_bucket: :mfa_selection,
     persist: true,
