@@ -47,9 +47,7 @@ module JobHelpers
         ORDER BY sp.issuer;
       SQL
 
-      transaction_with_timeout do
-        ActiveRecord::Base.connection.execute(sql)
-      end.to_a
+      ActiveRecord::Base.connection.execute(sql).to_a
     rescue StandardError => e
       Rails.logger.error "Failed to fetch service provider metadata: #{e.message}"
       raise e
