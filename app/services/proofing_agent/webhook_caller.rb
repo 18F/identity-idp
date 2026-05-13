@@ -82,18 +82,22 @@ module ProofingAgent
       document_capture_session&.issuer
     end
 
-    def config
-      @config ||= IdentityConfig.store.idv_proofing_agent_config.find do |issuer_config|
-        issuer_config['issuer'] == issuer
+    def issuer_config
+      @issuer_config ||= proofing_agent_config&.find do |config|
+        config['issuer'] == issuer
       end
     end
 
     def webhook_url
-      config&.dig('webhook', 'url')
+      issuer_config&.dig('webhook', 'url')
     end
 
     def webhook_secret
-      config&.dig('webhook', 'secret')
+      issuer_config&.dig('webhook', 'secret')
+    end
+
+    def proofing_agent_config
+      @proofing_agent_config ||= IdentityConfig.store.idv_proofing_agent_config
     end
   end
 end

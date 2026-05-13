@@ -53,12 +53,14 @@ class ProofingAgentJob < ApplicationJob
     success = combined_result[:success]
     reason = combined_result[:reason]
 
-    ProofingAgentWebhookJob.perform_later(
-      success:,
-      reason:,
-      transaction_id:,
-      correlation_id:,
-    )
+    if webhook_url
+      ProofingAgentWebhookJob.perform_later(
+        success:,
+        reason:,
+        transaction_id:,
+        correlation_id:,
+      )
+    end
   ensure
     logger_info_hash(
       name: 'ProofingAgent',
@@ -218,5 +220,19 @@ class ProofingAgentJob < ApplicationJob
 
   def result_id
     document_capture_session.result_id
+  end
+
+  def webhook_url
+    issuer_config&.dig('webhook', 'url')
+  end
+
+  def issuer_config
+    @issuer_config ||= proofing_agent_config&.find do |config|
+      config['issuer'] == issuer
+    end
+  end
+
+  def proofing_agent_config
+    @proofing_agent_config ||= IdentityConfig.store.idv_proofing_agent_config
   end
 end
