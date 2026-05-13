@@ -60,7 +60,8 @@ module Idv
       end
 
       def ensure_choose_id_type_completed
-        return if !!document_capture_session&.passport_status&.present?
+        return if !!document_capture_session&.document_type_requested.present?
+        return if !!document_capture_session&.passport_status&.present? # 50/50
 
         redirect_to idv_hybrid_mobile_choose_id_type_url
       end

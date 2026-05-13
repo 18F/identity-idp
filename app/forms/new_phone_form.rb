@@ -145,10 +145,8 @@ class NewPhoneForm
     args = { analytics: }
     if IdentityConfig.store.recaptcha_mock_validator
       args.merge(form_class: RecaptchaMockForm, score: recaptcha_mock_score)
-    elsif FeatureManagement.recaptcha_enterprise?
-      args.merge(form_class: RecaptchaEnterpriseForm)
     else
-      args
+      args.merge(form_class: RecaptchaEnterpriseForm)
     end
   end
 

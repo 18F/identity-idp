@@ -31,6 +31,10 @@ RSpec.describe SignUp::SelectEmailController do
   describe '#show' do
     subject(:response) { get :show }
 
+    let!(:unconfirmed_email_address) do
+      create(:email_address, user: user, confirmed_at: nil, email: 'pending@example.com')
+    end
+
     it 'logs analytics event' do
       stub_analytics
 
@@ -61,6 +65,20 @@ RSpec.describe SignUp::SelectEmailController do
       it 'can add email variable set to false' do
         response
         expect(assigns(:can_add_email)).to eq(false)
+      end
+    end
+
+    context 'when the session email is no longer confirmed' do
+      before do
+        controller.user_session[:selected_email_id_for_linked_identity] =
+          unconfirmed_email_address.id
+      end
+
+      it 'falls back to the last sign in email and clears the stale session value' do
+        response
+
+        expect(assigns(:last_sign_in_email_address)).to eq(user.last_sign_in_email_address.email)
+        expect(controller.user_session[:selected_email_id_for_linked_identity]).to be_nil
       end
     end
   end

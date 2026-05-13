@@ -645,10 +645,11 @@ RSpec.describe OpenidConnect::AuthorizationController do
               end
 
               context 'when duplicate profiles are detected for user' do
+                let(:user) do
+                  create(:profile, :active, :verified, :facial_match_proof).user
+                end
                 let(:user2) do
-                  create(
-                    :profile, :active, :verified, proofing_components: { liveness_check: true }
-                  ).user
+                  create(:profile, :active, :verified, :facial_match_proof).user
                 end
                 let(:duplicate_profile_set) do
                   create(
@@ -658,11 +659,15 @@ RSpec.describe OpenidConnect::AuthorizationController do
                 end
 
                 before do
+                  params[:acr_values] = Saml::Idp::Constants::IAL2_BIO_REQUIRED_AUTHN_CONTEXT_CLASSREF
                   allow(IdentityConfig.store).to receive(:eligible_one_account_providers).and_return([service_provider.issuer])
+                  allow(IdentityConfig.store).to receive(:facial_match_general_availability_enabled)
+                    .and_return(true)
                   allow_any_instance_of(DuplicateProfileChecker)
                     .to receive(:dupe_profile_set_for_user).and_return(duplicate_profile_set)
                   allow(controller).to receive(:user_signed_in?).and_return(true)
                   allow(controller).to receive(:current_user).and_return(user)
+                  allow(controller).to receive(:pii_requested_but_locked?).and_return(false)
                 end
 
                 it 'redirects user to duplicate profiles detected page' do
@@ -1099,6 +1104,33 @@ RSpec.describe OpenidConnect::AuthorizationController do
           action
           identity.reload
           expect(identity.email_address_id).to eq(shared_email_address.id)
+        end
+
+        context 'when the session email is no longer confirmed' do
+          let!(:unconfirmed_email_address) do
+            create(
+              :email_address,
+              email: 'pending@email.com',
+              user: user,
+              confirmed_at: nil,
+            )
+          end
+
+          before do
+            identity.update!(email_address_id: shared_email_address.id)
+            controller.user_session[:selected_email_id_for_linked_identity] =
+              unconfirmed_email_address.id
+          end
+
+          it 'ignores the stale session value and clears it' do
+            identity = user.identities.find_by(service_provider: service_provider.issuer)
+
+            action
+            identity.reload
+
+            expect(identity.email_address_id).to eq(shared_email_address.id)
+            expect(controller.user_session[:selected_email_id_for_linked_identity]).to be_nil
+          end
         end
       end
 

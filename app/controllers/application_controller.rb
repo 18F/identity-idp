@@ -240,6 +240,21 @@ class ApplicationController < ActionController::Base
     @service_provider_request ||= ServiceProviderRequestProxy.from_uuid(params[:request_id])
   end
 
+  def selected_email_for_linked_identity
+    return if current_user.blank?
+
+    selected_email_id = user_session[:selected_email_id_for_linked_identity]
+    return if selected_email_id.blank?
+
+    current_user.confirmed_email_addresses.find_by(id: selected_email_id).tap do |email_address|
+      user_session.delete(:selected_email_id_for_linked_identity) if email_address.nil?
+    end
+  end
+
+  def selected_email_id_for_linked_identity
+    selected_email_for_linked_identity&.id
+  end
+
   def fix_broken_personal_key_url
     flash[:info] = t('account.personal_key.needs_new')
 

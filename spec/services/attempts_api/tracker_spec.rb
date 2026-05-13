@@ -239,6 +239,9 @@ RSpec.describe AttemptsApi::Tracker do
       before do
         allow(IdentityConfig.store).to receive(:historical_attempts_api_enabled).and_return(true)
       end
+      let(:secure_random_regex_pattern) do
+        /\A[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\z/
+      end
 
       context 'with Devise session' do
         let(:mock_session) { { 'warden.user.user.session' => {} } }
@@ -248,15 +251,18 @@ RSpec.describe AttemptsApi::Tracker do
           allow(request).to receive(:session).and_return(mock_session)
         end
 
-        context 'it is an event prefixed with "idv"' do
-          it 'populates the session info' do
+        context 'when an event prefixed with "idv-" is tracked' do
+          it 'populates the session info with that event data' do
             subject.idv_enrollment_complete(reproof: false)
-            expect(user_session['idv/attempts']).to eq(
-              [{ 'idv-enrollment-complete' => { 'user_uuid' => user.uuid } }],
+
+            event = user_session['idv/attempts'].first
+            expect(event['idv-enrollment-complete']['user_uuid']).to eq(user.uuid)
+            expect(event['idv-enrollment-complete']['jti']).to match(
+              secure_random_regex_pattern,
             )
           end
 
-          it 'records to redis' do
+          it 'records the event to redis' do
             freeze_time do
               subject.idv_enrollment_complete(reproof: false)
 
@@ -269,13 +275,13 @@ RSpec.describe AttemptsApi::Tracker do
           end
         end
 
-        context 'it is an event not prefixed with "idv"' do
-          it 'does not populate the session info' do
+        context 'when an event not prefixed with "idv" is tracked' do
+          it 'does not populate the event data into the session' do
             subject.user_registration_email_confirmed(success: true, email: 'email@example.com')
             expect(user_session).to eq({})
           end
 
-          it 'records to redis' do
+          it 'records the event to redis' do
             freeze_time do
               subject.user_registration_email_confirmed(success: true, email: 'email@example.com')
 
@@ -288,16 +294,20 @@ RSpec.describe AttemptsApi::Tracker do
           end
         end
 
-        context 'both prefixed and not prefixed events are recorded' do
-          it 'does not populate the event is not prefixed with idv-' do
+        context 'both prefixed and not prefixed events are tracked' do
+          it 'only populates the event prefixed with idv- in the session' do
             subject.idv_enrollment_complete(reproof: false)
             subject.user_registration_email_confirmed(success: true, email: 'email@example.com')
-            expect(user_session['idv/attempts']).to eq(
-              [{ 'idv-enrollment-complete' => { 'user_uuid' => user.uuid } }],
+
+            expect(user_session['idv/attempts'].count).to be(1)
+            event = user_session['idv/attempts'].first
+            expect(event['idv-enrollment-complete']['user_uuid']).to eq(user.uuid)
+            expect(event['idv-enrollment-complete']['jti']).to match(
+              secure_random_regex_pattern,
             )
           end
 
-          it 'records both to redis' do
+          it 'records both events to redis' do
             freeze_time do
               subject.idv_enrollment_complete(reproof: false)
 
@@ -332,8 +342,11 @@ RSpec.describe AttemptsApi::Tracker do
 
           it 'still populates the session info' do
             subject.idv_enrollment_complete(reproof: false)
-            expect(user_session['idv/attempts']).to eq(
-              [{ 'idv-enrollment-complete' => { 'user_uuid' => user.uuid } }],
+
+            event = user_session['idv/attempts'].first
+            expect(event['idv-enrollment-complete']['user_uuid']).to eq(user.uuid)
+            expect(event['idv-enrollment-complete']['jti']).to match(
+              secure_random_regex_pattern,
             )
           end
         end
@@ -342,11 +355,13 @@ RSpec.describe AttemptsApi::Tracker do
           it 'appends to the existing events' do
             user_session['idv/attempts'] = [{ 'idv-something' => { 'user_uuid' => user.uuid } }]
             subject.idv_enrollment_complete(reproof: false)
-            expect(user_session['idv/attempts']).to eq(
-              [
-                { 'idv-something' => { 'user_uuid' => user.uuid } },
-                { 'idv-enrollment-complete' => { 'user_uuid' => user.uuid } },
-              ],
+
+            event = user_session['idv/attempts'].first
+            expect(event['idv-something']['user_uuid']).to eq(user.uuid)
+            event2 = user_session['idv/attempts'][1]
+            expect(event2['idv-enrollment-complete']['user_uuid']).to eq(user.uuid)
+            expect(event2['idv-enrollment-complete']['jti']).to match(
+              secure_random_regex_pattern,
             )
           end
         end
@@ -435,6 +450,43 @@ RSpec.describe AttemptsApi::Tracker do
       test_failure_reason = subject.parse_failure_reason(mock_failure_reason)
 
       expect(test_failure_reason).to eq(mock_error_message)
+    end
+  end
+
+  describe '#self.write_existing_user_events' do
+    let(:sp) { service_provider }
+    let(:mock_session) { { 'warden.user.user.session' => {} } }
+    let(:user_session) { mock_session['warden.user.user.session'] }
+    let(:redis_client) { double AttemptsApi::RedisClient }
+    let(:time) { Time.zone.now }
+
+    before do
+      allow(request).to receive(:session).and_return(mock_session)
+
+      allow(IdentityConfig.store).to receive(:historical_attempts_api_enabled).and_return(true)
+      subject.idv_enrollment_complete(reproof: false)
+      subject.user_registration_email_confirmed(success: true, email: 'email@example.com')
+    end
+
+    it 'writes existing user events to redis' do
+      freeze_time do
+        allow(Time).to receive(:zone_now).and_return(time)
+        expect(AttemptsApi::RedisClient).to receive(:new).and_return(redis_client)
+        expect_any_instance_of(AttemptsApi::AttemptEvent).to receive(:to_jwe).and_return('jwe_data')
+
+        event_data = user_session['idv/attempts'].first.values[0]
+        expect(redis_client).to receive(:write_event).with(
+          event_key: event_data['jti'],
+          jwe: 'jwe_data',
+          timestamp: time,
+          issuer: sp.issuer,
+        )
+
+        described_class.write_existing_user_events(
+          sp:,
+          historical_attempts: user_session['idv/attempts'],
+        )
+      end
     end
   end
 end

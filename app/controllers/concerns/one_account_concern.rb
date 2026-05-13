@@ -37,7 +37,17 @@ module OneAccountConcern
   end
 
   def user_eligible_for_one_account?
-    sp_eligible_for_one_account? && current_user&.active_profile
+    return false unless facial_match_request?
+
+    if global_detection_enabled?
+      current_user&.identity_verified_with_facial_match?
+    else
+      sp_eligible_for_one_account? && current_user&.identity_verified_with_facial_match?
+    end
+  end
+
+  def facial_match_request?
+    resolved_authn_context_result&.facial_match? || false
   end
 
   def sp_eligible_for_one_account?
@@ -48,10 +58,20 @@ module OneAccountConcern
     user_has_duplicate_account_profiles?
   end
 
+  def global_detection_enabled?
+    IdentityConfig.store.enable_one_account_global_detection
+  end
+
   def user_has_duplicate_account_profiles?
-    DuplicateProfileSet.involving_profile(
-      profile_id: current_user.active_profile.id,
-      service_provider: sp_from_sp_session&.issuer,
-    ).present?
+    if global_detection_enabled?
+      DuplicateProfileSet.involving_profile_global(
+        profile_id: current_user.active_profile.id,
+      ).present?
+    else
+      DuplicateProfileSet.involving_profile(
+        profile_id: current_user.active_profile.id,
+        service_provider: sp_from_sp_session&.issuer,
+      ).present?
+    end
   end
 end

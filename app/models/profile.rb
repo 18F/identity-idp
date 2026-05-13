@@ -284,7 +284,7 @@ class Profile < ApplicationRecord
     raise 'Profile not a duplicate' unless DuplicateProfileSet.open.exists?(
       ['? = ANY(profile_ids)', id],
     )
-
+    # rubocop:disable Metrics/BlockLength
     transaction do
       update!(
         active: false,
@@ -304,15 +304,20 @@ class Profile < ApplicationRecord
           )
         end
 
-        service_provider = ServiceProvider.find_sole_by(issuer: duplicate_profile.service_provider)
+        agency_name = if duplicate_profile.service_provider.present?
+                        ServiceProvider.find_sole_by(
+                          issuer: duplicate_profile.service_provider,
+                        )&.friendly_name
+        end
         user.confirmed_email_addresses.each do |email_address|
           mailer = UserMailer.with(user: user, email_address: email_address)
           mailer.dupe_profile_account_review_complete_locked(
-            agency_name: service_provider.friendly_name,
+            agency_name: agency_name,
           ).deliver_now_or_later
         end
       end
     end
+    # rubocop:enable Metrics/BlockLength
   end
 
   def clear_duplicate
@@ -331,10 +336,12 @@ class Profile < ApplicationRecord
           self_serviced: false,
           fraud_investigation_conclusive: true,
         )
-
+        service_provider = ServiceProvider.find_sole_by(issuer: duplicate_profile.service_provider)
         user.confirmed_email_addresses.each do |email_address|
           mailer = UserMailer.with(user: user, email_address: email_address)
-          mailer.dupe_profile_account_review_complete_success.deliver_now_or_later
+          mailer.dupe_profile_account_review_complete_success(
+            agency_name: service_provider.friendly_name,
+          ).deliver_now_or_later
         end
       end
     end
@@ -413,10 +420,61 @@ class Profile < ApplicationRecord
     FACIAL_MATCH_IDV_LEVELS.include?(idv_level)
   end
 
+  def create_user_proofing_event(password:, attempt_events:)
+    encryptor = Encryption::Encryptors::PiiEncryptor.new(password)
+    encrypted_events_json = encryptor.encrypt(attempt_events.to_json, user_uuid: user.uuid)
+    encrypted_events = JSON.parse(encrypted_events_json)
+
+    result = encrypted_doc_writer.write_encrypted_attempt_events(
+      file_path: attempt_events_file_path,
+      encrypted_attempt_events: encrypted_events_json,
+    )
+
+    update!(encrypted_attempts_file_reference: result.name)
+
+    new_user_proofing_event = build_user_proofing_event(
+      cost: encrypted_events['cost'],
+      salt: encrypted_events['salt'],
+    )
+
+    new_user_proofing_event.save
+  end
+
+  def decrypt_user_proofing_events(password:)
+    encryptor = Encryption::Encryptors::PiiEncryptor.new(password)
+
+    data = attempt_data_retriever.retrieve_user_proofing_events(
+      file_path: attempt_events_file_path,
+      file_name: encrypted_attempts_file_reference,
+    )
+
+    encryptor.decrypt(data, user_uuid: user.uuid)
+  end
+
   private
 
   def confirm_that_profile_can_be_activated!
     raise reason_not_to_activate if reason_not_to_activate
+  end
+
+  def encrypted_doc_writer
+    @encrypted_doc_writer ||= EncryptedDocStorage::DocWriter.new(
+      s3_enabled: historical_attempts_s3_storage_enabled?,
+    )
+  end
+
+  def attempt_data_retriever
+    @attempt_data_retriever ||= EncryptedDocStorage::AttemptDataRetriever.new(
+      s3_enabled: historical_attempts_s3_storage_enabled?,
+    )
+  end
+
+  def attempt_events_file_path
+    "attempt_events/#{user.uuid}/#{self.id}"
+  end
+
+  def historical_attempts_s3_storage_enabled?
+    IdentityConfig.store.historical_attempts_s3_storage_enabled
   end
 
   def personal_key_generator

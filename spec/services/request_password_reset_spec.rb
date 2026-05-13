@@ -250,6 +250,35 @@ RSpec.describe RequestPasswordReset do
         )
       end
 
+      it 'rate limits the email sending when capitalization changes between attempts' do
+        max_attempts = IdentityConfig.store.reset_password_email_max_attempts
+        lowercased_email = email_address.email.downcase
+        upcased_email = email_address.email.upcase
+
+        (max_attempts - 1).times do
+          expect do
+            RequestPasswordReset.new(
+              email: lowercased_email,
+              analytics:,
+              attempts_api_tracker:,
+            ).perform
+          end
+            .to(change { user.reload.reset_password_token })
+        end
+
+        # extra time, rate limited using the same email string capitalized
+        RequestPasswordReset.new(
+          email: upcased_email,
+          analytics:,
+          attempts_api_tracker:,
+        ).perform
+
+        expect(analytics).to have_logged_event(
+          'Rate Limit Reached',
+          limiter_type: :reset_password_email,
+        )
+      end
+
       it 'only sends a push notification when the attempts have not been rate limited' do
         max_attempts = IdentityConfig.store.reset_password_email_max_attempts
 

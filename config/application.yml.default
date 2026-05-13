@@ -171,6 +171,7 @@ email_registrations_per_ip_period: 20
 email_registrations_per_ip_track_only_mode: false
 enable_add_mfa_redirect_for_personal_key: false
 enable_load_testing_mode: false
+enable_one_account_global_detection: false
 enable_rate_limiting: true
 enable_test_routes: true
 encrypted_document_storage_s3_bucket: 'test-bucket'
@@ -197,6 +198,7 @@ gpo_designated_receiver_pii: '{}'
 gpo_max_profile_age_to_send_letter_in_days: 30
 hide_phone_mfa_signup: false
 historical_attempts_api_enabled: false
+historical_attempts_s3_storage_enabled: false
 hmac_fingerprinter_key:
 hmac_fingerprinter_key_queue: '[]'
 hybrid_mobile_tmx_processed_percent: 0
@@ -278,17 +280,6 @@ in_person_results_delay_in_hours: 1
 in_person_send_proofing_notifications_enabled: false
 in_person_stop_expiring_enrollments: false
 invalid_gpo_confirmation_zipcode: '00001'
-irs_credential_tenure_report_config: '[]'
-irs_credential_tenure_report_issuers: '[]'
-irs_credentials_emails: '[]'
-irs_fraud_metrics_emails: '[]'
-irs_fraud_metrics_issuers: '[]'
-irs_issuers: '[]'
-irs_partner_strings: '[]'
-irs_registration_funnel_emails: '[]'
-irs_registration_funnel_issuers: '[]'
-irs_verification_report_config: '[]'
-irs_verification_report_issuers: '[]'
 
 # LexisNexis #####################################################
 # Instant Verify and Phone Finder Integrations
@@ -358,6 +349,7 @@ mx_timeout: 3
 new_device_alert_delay_in_minutes: 5
 new_device_alert_window_start_in_minutes: 15
 newrelic_license_key: ''
+openid_connect_authorization_code_expiration_seconds: 300
 openid_connect_content_security_form_action_enabled: false
 openid_connect_redirect: client_side_js
 otp_delivery_blocklist_findtime: 5
@@ -415,7 +407,6 @@ recaptcha_enterprise_api_key: ''
 recaptcha_enterprise_project_id: ''
 recaptcha_mock_validator: true
 recaptcha_request_timeout_in_seconds: 5
-recaptcha_secret_key: ''
 recaptcha_site_key: ''
 recovery_code_length: 4
 redis_attempts_api_pool_size: 1
@@ -677,10 +668,6 @@ test:
   identity_verification_outcomes_report_issuers: '["urn:gov:gsa:openidconnect.profiles:sp:sso:agency_name:app_name"]'
   idv_socure_phonerisk_name_correlation_score_threshold: 0.5
   idv_socure_phonerisk_score_threshold: 0.5
-  irs_fraud_metrics_emails: '["g@example.com", "h@example.com"]'
-  irs_fraud_metrics_issuers: '["urn:gov:gsa:openidconnect.profiles:sp:sso:agency_name:app_name"]'
-  irs_registration_funnel_emails: '["g@example.com", "h@example.com"]'
-  irs_registration_funnel_issuers: '["urn:gov:gsa:openidconnect.profiles:sp:sso:agency_name:app_name"]'
   lexisnexis_trueid_account_id: 'test_account'
   lockout_period_in_minutes: 5
   logins_per_email_and_ip_limit: 2

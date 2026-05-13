@@ -4,14 +4,14 @@ class CreateNewDeviceAlertJob < ApplicationJob
   queue_as :long_running
 
   def perform(now)
-    emails_sent = 0
+    users_notified = 0
     users_signing_in_with_new_device(now).limit(1_000).find_each(batch_size: 100) do |user|
-      emails_sent += 1 if expire_sign_in_notification_timeframe_and_send_alert(user)
+      users_notified += 1 if expire_sign_in_notification_timeframe_and_send_alert(user)
     end
 
-    analytics.create_new_device_alert_job_emails_sent(count: emails_sent)
+    analytics.create_new_device_alert_job_users_notified(count: users_notified)
 
-    emails_sent
+    users_notified
   end
 
   private

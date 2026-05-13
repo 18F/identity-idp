@@ -30,8 +30,8 @@ RSpec.describe CreateNewDeviceAlertJob do
         let(:sign_in_new_device_at) { nil }
 
         it 'disregards the user' do
-          emails_sent = CreateNewDeviceAlertJob.new.perform(now)
-          expect(emails_sent).to eq(0)
+          users_notified = CreateNewDeviceAlertJob.new.perform(now)
+          expect(users_notified).to eq(0)
         end
       end
 
@@ -39,8 +39,8 @@ RSpec.describe CreateNewDeviceAlertJob do
         let(:sign_in_new_device_at) { end_window + 1.second }
 
         it 'disregards the user' do
-          emails_sent = CreateNewDeviceAlertJob.new.perform(now)
-          expect(emails_sent).to eq(0)
+          users_notified = CreateNewDeviceAlertJob.new.perform(now)
+          expect(users_notified).to eq(0)
         end
       end
 
@@ -48,8 +48,8 @@ RSpec.describe CreateNewDeviceAlertJob do
         let(:sign_in_new_device_at) { start_window - 1.second }
 
         it 'disregards the user' do
-          emails_sent = CreateNewDeviceAlertJob.new.perform(now)
-          expect(emails_sent).to eq(0)
+          users_notified = CreateNewDeviceAlertJob.new.perform(now)
+          expect(users_notified).to eq(0)
         end
       end
 
@@ -57,8 +57,8 @@ RSpec.describe CreateNewDeviceAlertJob do
         let(:sign_in_new_device_at) { rand(start_window..end_window) }
 
         it 'sends an email for matching user' do
-          emails_sent = CreateNewDeviceAlertJob.new.perform(now)
-          expect(emails_sent).to eq(1)
+          users_notified = CreateNewDeviceAlertJob.new.perform(now)
+          expect(users_notified).to eq(1)
           email_sent_again = CreateNewDeviceAlertJob.new.perform(now)
           expect(email_sent_again).to eq(0)
         end
@@ -75,7 +75,10 @@ RSpec.describe CreateNewDeviceAlertJob do
 
           alert.perform(now)
 
-          expect(analytics).to have_logged_event(:create_new_device_alert_job_emails_sent, count: 1)
+          expect(analytics).to have_logged_event(
+            :create_new_device_alert_job_users_notified,
+            count: 1,
+          )
         end
       end
     end
@@ -87,8 +90,8 @@ RSpec.describe CreateNewDeviceAlertJob do
         let(:sign_in_new_device_at) { nil }
 
         it 'disregards the user' do
-          emails_sent = CreateNewDeviceAlertJob.new.perform(now)
-          expect(emails_sent).to eq(0)
+          users_notified = CreateNewDeviceAlertJob.new.perform(now)
+          expect(users_notified).to eq(0)
         end
       end
 
@@ -96,8 +99,8 @@ RSpec.describe CreateNewDeviceAlertJob do
         let(:sign_in_new_device_at) { end_window + 1.second }
 
         it 'disregards the user' do
-          emails_sent = CreateNewDeviceAlertJob.new.perform(now)
-          expect(emails_sent).to eq(0)
+          users_notified = CreateNewDeviceAlertJob.new.perform(now)
+          expect(users_notified).to eq(0)
         end
       end
 
@@ -105,8 +108,8 @@ RSpec.describe CreateNewDeviceAlertJob do
         let(:sign_in_new_device_at) { end_window - rand(60).seconds }
 
         it 'sends an email for matching user' do
-          emails_sent = CreateNewDeviceAlertJob.new.perform(now)
-          expect(emails_sent).to eq(1)
+          users_notified = CreateNewDeviceAlertJob.new.perform(now)
+          expect(users_notified).to eq(1)
           email_sent_again = CreateNewDeviceAlertJob.new.perform(now)
           expect(email_sent_again).to eq(0)
         end
@@ -123,7 +126,10 @@ RSpec.describe CreateNewDeviceAlertJob do
 
           alert.perform(now)
 
-          expect(analytics).to have_logged_event(:create_new_device_alert_job_emails_sent, count: 1)
+          expect(analytics).to have_logged_event(
+            :create_new_device_alert_job_users_notified,
+            count: 1,
+          )
         end
       end
     end

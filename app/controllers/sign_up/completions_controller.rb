@@ -3,6 +3,7 @@
 module SignUp
   class CompletionsController < ApplicationController
     include SecureHeadersConcern
+    include Idv::HistoricalAttemptsConcern
 
     before_action :confirm_two_factor_authenticated
     before_action :confirm_identity_verified, if: :identity_proofing_required?
@@ -25,7 +26,7 @@ module SignUp
       send_in_person_completion_survey
       notify_user_of_connected_sp
       send_historical_events if historical_events_need_be_sent?
-      if user_session[:selected_email_id_for_linked_identity].nil?
+      if selected_email_id_for_linked_identity.nil?
         user_session[:selected_email_id_for_linked_identity] = current_user
           .last_sign_in_email_address.id
       end
@@ -62,7 +63,7 @@ module SignUp
         requested_attributes: decorated_sp_session.requested_attributes.map(&:to_sym),
         ial2_requested: ial2_requested?,
         completion_context: needs_completion_screen_reason,
-        selected_email_id: user_session[:selected_email_id_for_linked_identity],
+        selected_email_id: selected_email_id_for_linked_identity,
       )
     end
 
@@ -141,26 +142,16 @@ module SignUp
     end
 
     def send_historical_events
-      # TODO: send to redis queue
+      # TODO:Historical Attempts Data: Should we extend the Pii::Cacher?
+      encrypted_proofing_events = user_session[:encrypted_proofing_events]
+      return unless encrypted_proofing_events.present?
 
-      user_proofing_event.add_sp_sent(current_sp.id)
-    end
+      historical_attempts = JSON.parse(
+        SessionEncryptor.new.kms_decrypt(encrypted_proofing_events),
+      )
+      AttemptsApi::Tracker.write_existing_user_events(historical_attempts:, sp: current_sp)
 
-    def historical_events_need_be_sent?
-      return false unless IdentityConfig.store.historical_attempts_api_enabled
-      return false unless current_sp.attempts_api_enabled?
-      return false unless ial2_requested?
-      return false unless user_proofing_event.present?
-
-      return !sent_to_aaca?
-    end
-
-    def sent_to_aaca?
-      user_proofing_event&.already_sent_to_sp?(current_sp.id)
-    end
-
-    def user_proofing_event
-      @user_proofing_event ||= current_user&.active_profile&.user_proofing_event
+      existing_user_proofing_event.add_sp_sent(current_sp.id)
     end
 
     def pii

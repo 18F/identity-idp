@@ -29,6 +29,15 @@ module Idv
         .distinct
     end
 
+    def duplicate_facial_match_profiles_global
+      Profile
+        .active
+        .facial_match
+        .where(ssn_signature: ssn_signatures)
+        .where.not(user_id: user.id)
+        .distinct
+    end
+
     # Due to potentially inconsistent normalization of stored SSNs in the past, we must check:
     # - No dashes, ex: 123456789
     # - Dashes, ex: 123-45-6789

@@ -65,6 +65,8 @@ RSpec.describe 'idv/socure/errors/show.html.erb' do
     end
 
     context 'In person verification disabled' do
+      let(:sp) { create(:service_provider, in_person_proofing_enabled: false) }
+
       it 'does not have the IPP h1' do
         expect(rendered).not_to have_css('h1', text: t('in_person_proofing.headings.cta'))
       end
@@ -84,8 +86,6 @@ RSpec.describe 'idv/socure/errors/show.html.erb' do
     end
 
     context 'In person verification enabled' do
-      let(:sp) { create(:service_provider, in_person_proofing_enabled: true) }
-
       it 'has the IPP h1' do
         expect(rendered).to have_css('h1', text: t('in_person_proofing.headings.cta'))
       end

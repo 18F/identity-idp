@@ -180,6 +180,7 @@ module IdentityConfig
     config.add(:dos_passport_mrz_maxretry, type: :integer)
     config.add(:dos_passport_mrz_timeout_seconds, type: :integer)
     config.add(:eligible_one_account_providers, type: :json)
+    config.add(:enable_one_account_global_detection, type: :boolean)
     config.add(:email_from, type: :string)
     config.add(:email_from_display_name, type: :string)
     config.add(:email_registrations_per_ip_limit, type: :integer)
@@ -213,6 +214,7 @@ module IdentityConfig
     config.add(:gpo_max_profile_age_to_send_letter_in_days, type: :integer)
     config.add(:hide_phone_mfa_signup, type: :boolean)
     config.add(:historical_attempts_api_enabled, type: :boolean)
+    config.add(:historical_attempts_s3_storage_enabled, type: :boolean)
     config.add(:hmac_fingerprinter_key, type: :string)
     config.add(:hmac_fingerprinter_key_queue, type: :json)
     config.add(:hybrid_mobile_tmx_processed_percent, type: :integer)
@@ -296,16 +298,6 @@ module IdentityConfig
     config.add(:in_person_send_proofing_notifications_enabled, type: :boolean)
     config.add(:in_person_stop_expiring_enrollments, type: :boolean)
     config.add(:invalid_gpo_confirmation_zipcode, type: :string)
-    config.add(:irs_credential_tenure_report_issuers, type: :json)
-    config.add(:irs_credential_tenure_report_config, type: :json)
-    config.add(:irs_fraud_metrics_issuers, type: :json)
-    config.add(:irs_fraud_metrics_emails, type: :json)
-    config.add(:irs_issuers, type: :json)
-    config.add(:irs_partner_strings, type: :json)
-    config.add(:irs_registration_funnel_emails, type: :json)
-    config.add(:irs_registration_funnel_issuers, type: :json)
-    config.add(:irs_verification_report_issuers, type: :json)
-    config.add(:irs_verification_report_config, type: :json)
     config.add(:lexisnexis_account_id, type: :string)
     config.add(:lexisnexis_threatmetrix_authentication_policy, type: :string)
     config.add(:lexisnexis_base_url, type: :string)
@@ -373,6 +365,7 @@ module IdentityConfig
       type: :string,
       enum: ['server_side', 'client_side_js'],
     )
+    config.add(:openid_connect_authorization_code_expiration_seconds, type: :integer)
     config.add(:openid_connect_content_security_form_action_enabled, type: :boolean)
     config.add(:otp_delivery_blocklist_findtime, type: :integer)
     config.add(:otp_delivery_blocklist_maxretry, type: :integer)
@@ -441,7 +434,6 @@ module IdentityConfig
     config.add(:recaptcha_enterprise_project_id, type: :string)
     config.add(:recaptcha_mock_validator, type: :boolean)
     config.add(:recaptcha_request_timeout_in_seconds, type: :integer)
-    config.add(:recaptcha_secret_key, type: :string)
     config.add(:recaptcha_site_key, type: :string)
     config.add(:recovery_code_length, type: :integer)
     config.add(:redis_attempts_api_pool_size, type: :integer)
@@ -588,7 +580,6 @@ module IdentityConfig
     config.add(:voice_otp_pause_time)
     config.add(:voice_otp_speech_rate)
     config.add(:weekly_auth_funnel_report_config, type: :json)
-    config.add(:irs_credentials_emails, type: :json)
   end.freeze
   # rubocop:enable Layout/LineLength
   # rubocop:enable Metrics/BlockLength

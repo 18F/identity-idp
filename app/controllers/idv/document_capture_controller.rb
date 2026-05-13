@@ -92,7 +92,8 @@ module Idv
       document_capture_session = DocumentCaptureSession.find_by(
         uuid: idv_session.document_capture_session_uuid,
       )
-      !!document_capture_session&.passport_status&.present?
+      !!document_capture_session&.document_type_requested&.present? ||
+        !!document_capture_session&.passport_status&.present? # 50/50
     end
 
     private

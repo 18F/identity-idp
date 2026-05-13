@@ -4,5 +4,9 @@ FactoryBot.define do
     service_provider { OidcAuthHelper::OIDC_FACIAL_MATCH_ISSUER }
     created_at { Time.zone.now }
     updated_at { Time.zone.now }
+
+    trait :global do
+      service_provider { nil }
+    end
   end
 end

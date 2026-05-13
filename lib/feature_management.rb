@@ -123,14 +123,8 @@ class FeatureManagement
   end
 
   def self.recaptcha_enabled?
-    IdentityConfig.store.recaptcha_site_key.present? && (
-      recaptcha_enterprise? ||
-      IdentityConfig.store.recaptcha_secret_key.present?
-    )
-  end
-
-  def self.recaptcha_enterprise?
-    IdentityConfig.store.recaptcha_enterprise_api_key.present? &&
+    IdentityConfig.store.recaptcha_site_key.present? &&
+      IdentityConfig.store.recaptcha_enterprise_api_key.present? &&
       IdentityConfig.store.recaptcha_enterprise_project_id.present?
   end
 

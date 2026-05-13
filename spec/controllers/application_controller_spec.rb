@@ -615,6 +615,7 @@ RSpec.describe ApplicationController do
         .and_return([issuer])
       allow(controller).to receive(:sp_from_sp_session)
         .and_return(sp)
+      allow(controller).to receive(:facial_match_request?).and_return(true)
     end
 
     context 'when SP is not eligible for one account' do
