@@ -90,14 +90,11 @@ module Api
       end
 
       def result
-        document_capture_session = DocumentCaptureSession.find_by(uuid: transaction_id)
-
-        return render_transaction_id_not_found if document_capture_session.nil?
-
         proofing_result = Rails.cache.fetch(
           "proofing_agent_result_#{transaction_id}",
           expires_in: IdentityConfig.store.idv_proofing_agent_result_expiration_seconds,
         ) do
+          document_capture_session = DocumentCaptureSession.find_by(uuid: transaction_id)
           document_capture_session&.load_agent_proofed_user
         end
 
@@ -142,22 +139,6 @@ module Api
         )
 
         render json: response_body, status: :ok
-      end
-
-      def render_transaction_id_not_found
-        response_body = {
-          success: false,
-          reason: 'transaction_id_not_found',
-          transaction_id:,
-        }
-
-        analytics.idv_proofing_agent_request_received(
-          **analytics_arguments,
-          response_body:,
-          transaction_id:,
-        )
-
-        render json: response_body, status: :not_found
       end
 
       def render_proofing_result_not_found
