@@ -60,7 +60,7 @@ namespace :document_capture_sessions do
 
   def backfilled_document_type_requested
     DocumentCaptureSession
-      .where.not(document_type_requested: nil).where(passport_status: nil)
+      .where.not(document_type_requested: nil, passport_status: nil)
   end
 
   def passport_requested
