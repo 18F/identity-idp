@@ -1986,7 +1986,7 @@ user_mailer.add_email.subject: Confirmer votre adresse e-mail
 user_mailer.agent_proofing_succeeded.alert_lead: Ne tardez pas
 user_mailer.agent_proofing_succeeded.banner_html: '%{alert_lead_html} : confirmez votre compte d’ici la fin de la journée du %{deadline} pour accéder à vos services gouvernementaux.'
 user_mailer.agent_proofing_succeeded.body: 'Nous avons vérifié votre identité le %{verified_at}. La confirmation de votre compte vous permet de :'
-user_mailer.agent_proofing_succeeded.bullet1: 'Accéder à votre compte « My Social Security » ainsi qu’à d’autres services gouvernementaux avec un compte sécurisé unique.'
+user_mailer.agent_proofing_succeeded.bullet1: 'Accéder à votre compte « My Social Security » ainsi qu’à d’autres services gouvernementaux avec un compte sécurisé unique.'
 user_mailer.agent_proofing_succeeded.bullet2: Protéger vos informations personnelles ;
 user_mailer.agent_proofing_succeeded.bullet3: Simplifier la gestion de vos interactions en ligne avec les services gouvernementaux.
 user_mailer.agent_proofing_succeeded.change_password_link: modifier votre mot de passe
