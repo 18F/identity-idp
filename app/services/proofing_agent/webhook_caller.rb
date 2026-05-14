@@ -2,7 +2,7 @@
 
 module ProofingAgent
   class WebhookCaller
-    include ProofingAgent::Config
+    include Config
     attr_reader :success, :reason, :transaction_id, :correlation_id
 
     def initialize(success:, reason:, transaction_id:, correlation_id:)
