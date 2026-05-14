@@ -14,7 +14,7 @@ module Idv
       )
     end
 
-    def update
+    def create
     end
   end
 end
