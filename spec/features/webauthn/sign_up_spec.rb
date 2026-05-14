@@ -80,4 +80,24 @@ RSpec.feature 'webauthn sign up' do
       end
     end
   end
+
+  describe 'account creation setup after password setup' do
+    context 'when the A/B test is enabled' do
+      let!(:user) do
+        allow(FeatureManagement).to receive(:account_creation_passkey_auto_prompt_enabled?)
+          .and_return(true)
+        allow_any_instance_of(SignUp::PasswordsController)
+          .to receive(:ab_test_bucket)
+          .with(:PASSKEY_UPSELL)
+          .and_return(:passkey_setup_prompt_after_password_creation)
+        user = sign_up
+        set_hidden_field('platform_authenticator_available', 'true')
+        set_password(user)
+      end
+
+      it 'redirects to webauthn platform setup upsell page' do
+        expect(page).to have_current_path(webauthn_platform_setup_path)
+      end
+    end
+  end
 end

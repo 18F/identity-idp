@@ -99,6 +99,7 @@ module SignUp
     end
 
     def passkey_setup_upsell_prompt_eligible?
+      FeatureManagement.account_creation_passkey_auto_prompt_enabled?
       ab_test_bucket(:PASSKEY_UPSELL) ==
         :passkey_setup_prompt_after_password_creation
     end
