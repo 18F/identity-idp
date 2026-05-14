@@ -114,9 +114,9 @@ RSpec.describe 'document_capture_sessions rake tasks', type: :task do
     it 'resets document_type_requested only for backfilled document capture sessions' do
       task.execute
 
-      verify_attributes(backfilled_state_id_card_session, false)
-      verify_attributes(backfilled_passport_session, false)
-      verify_attributes(no_passport_status_session, true)
+      verify_attributes(backfilled_state_id_card_session, true)
+      verify_attributes(backfilled_passport_session, true)
+      verify_attributes(no_passport_status_session, false)
       verify_attributes(already_nil_document_type_session, false)
     end
   end
