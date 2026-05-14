@@ -327,7 +327,17 @@ else
           )
         },
       },
-
+      demographics_metrics_s3_report: {
+        class: 'Reports::DemographicsMetricsS3Report',
+        cron: '0 6 4 * *', # 6 AM UTC on the 4th of each month
+        args: -> {
+          JobHelpers::DelayedReportConfigurationHelper.determine_end_date_for_time_period_and_receiver(
+            starting_date: Time.zone.today,
+            go_backwards_to_most_recent: 'month',
+            external_rule: 'external_if_quarter_end',
+          )
+        },
+      },
       # Download and store Socure reason codes
       socure_reason_code_download: {
         class: 'SocureReasonCodeDownloadJob',
