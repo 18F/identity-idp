@@ -24,7 +24,7 @@ module FlowPolicyHelper
         uuid: idv_session.document_capture_session_uuid,
         user: idv_session.current_user,
         requested_at: Time.zone.now,
-        passport_status: 'requested',
+        document_type_requested: Idp::Constants::DocumentTypes::PASSPORT,
       )
     when :link_sent
       idv_session.flow_path = 'hybrid'
@@ -37,7 +37,7 @@ module FlowPolicyHelper
           uuid: idv_session.document_capture_session_uuid,
           user: idv_session.current_user,
           requested_at: Time.zone.now,
-          passport_status: 'not_requested',
+          document_type_requested: Idp::Constants::DocumentTypes::STATE_ID_CARD,
         )
       end
       idv_session.pii_from_doc = Pii::StateId.new(**Idp::Constants::MOCK_IDV_APPLICANT)
@@ -53,7 +53,7 @@ module FlowPolicyHelper
           uuid: idv_session.document_capture_session_uuid,
           user: idv_session.current_user,
           requested_at: Time.zone.now,
-          passport_status: 'not_requested',
+          document_type_requested: Idp::Constants::DocumentTypes::STATE_ID_CARD,
         )
       end
       idv_session.send(:user_session)['idv/in_person'] = {
@@ -70,7 +70,7 @@ module FlowPolicyHelper
           uuid: idv_session.document_capture_session_uuid,
           user: idv_session.current_user,
           requested_at: Time.zone.now,
-          passport_status: 'not_requested',
+          document_type_requested: Idp::Constants::DocumentTypes::STATE_ID_CARD,
         )
       end
       idv_session.ssn = Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn]

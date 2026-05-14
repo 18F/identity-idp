@@ -28,6 +28,7 @@ Rails.application.routes.draw do
     namespace :proofing_agent do
       post '/search_user' => 'proofing_agent#search_user'
       post '/proof_user' => 'proofing_agent#proof_user'
+      post '/result' => 'proofing_agent#result'
     end
 
     namespace :internal do

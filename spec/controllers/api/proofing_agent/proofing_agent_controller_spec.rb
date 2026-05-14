@@ -1792,4 +1792,247 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
       end
     end
   end
+
+  describe '#result' do
+    before { stub_analytics }
+
+    let(:transaction_id) { 'a-transaction-uuid' }
+    let(:action) do
+      post :result, params: {
+        proofing_agent_id: agent_id,
+        proofing_location_id: location_id,
+        transaction_id:,
+      }.compact
+    end
+
+    let(:successful_proofing_result) do
+      Idv::ProofingAgent::AgentProofedUser.new(
+        id: SecureRandom.uuid,
+        success: true,
+        reason: nil,
+        transaction_id:,
+      )
+    end
+
+    let(:failed_proofing_result) do
+      Idv::ProofingAgent::AgentProofedUser.new(
+        id: SecureRandom.uuid,
+        success: false,
+        reason: 'id_fail',
+        transaction_id:,
+      )
+    end
+
+    context 'when proofing agent is not enabled' do
+      it 'returns 404' do
+        expect(action.status).to eq(404)
+      end
+    end
+
+    context 'when proofing agent is enabled' do
+      let(:enabled) { true }
+
+      context 'with an invalid authorization header' do
+        it_behaves_like 'an endpoint that requires authorization'
+      end
+
+      context 'with a valid authorization header' do
+        context 'without X-Correlation-ID header' do
+          let(:correlation_id) { nil }
+
+          it 'returns 400' do
+            expect(action.status).to eq(400)
+            expect(@analytics).to have_logged_event(
+              :idv_proofing_agent_request_failed,
+              success: false,
+              failure_type: :header_validation,
+              issuer:,
+              proofing_agent: a_hash_including(correlation_id: nil),
+              errors: missing_headers_errors,
+            )
+          end
+        end
+
+        context 'without proofing_agent_id param' do
+          let(:agent_id) { nil }
+
+          it 'returns 400' do
+            expect(action.status).to eq(400)
+            expect(@analytics).to have_logged_event(
+              :idv_proofing_agent_request_failed,
+              success: false,
+              failure_type: :body_validation,
+              issuer:,
+              proofing_agent: proofing_agent_analytics_hash,
+              errors: { proofing_agent_id: ['cannot be blank'] },
+            )
+          end
+        end
+
+        context 'without proofing_location_id param' do
+          let(:location_id) { nil }
+
+          it 'returns 400' do
+            expect(action.status).to eq(400)
+            expect(@analytics).to have_logged_event(
+              :idv_proofing_agent_request_failed,
+              success: false,
+              failure_type: :body_validation,
+              issuer:,
+              proofing_agent: proofing_agent_analytics_hash,
+              errors: { proofing_location_id: ['cannot be blank'] },
+            )
+          end
+        end
+
+        context 'without transaction_id param' do
+          let(:transaction_id) { nil }
+
+          it 'returns 400' do
+            expect(action.status).to eq(400)
+            expect(@analytics).to have_logged_event(
+              :idv_proofing_agent_request_failed,
+              success: false,
+              failure_type: :body_validation,
+              issuer:,
+              proofing_agent: proofing_agent_analytics_hash,
+              errors: { transaction_id: ['cannot be blank'] },
+            )
+          end
+        end
+
+        context 'when a DocumentCaptureSession exists but the proofing result is not yet ready' do
+          before do
+            DocumentCaptureSession.create!(uuid: transaction_id, user_id: user.id, issuer:)
+          end
+
+          it 'returns 404 with not_found reason' do
+            expect(action.status).to eq(404)
+
+            body = JSON.parse(response.body)
+            expect(body['success']).to eq(false)
+            expect(body['reason']).to eq('result_not_found')
+            expect(body['transaction_id']).to eq(transaction_id)
+          end
+        end
+
+        context 'when there is a successful proofing result' do
+          before do
+            session = DocumentCaptureSession.create!(
+              uuid: transaction_id,
+              user_id: user.id,
+              issuer:,
+            )
+            allow(session)
+              .to receive(:load_agent_proofed_user)
+              .and_return(successful_proofing_result)
+            allow(DocumentCaptureSession).to receive(:find_by).with(uuid: transaction_id)
+              .and_return(session)
+          end
+
+          it 'returns 200' do
+            expect(action.status).to eq(200)
+          end
+
+          it 'returns a true success and the transaction_id in the body' do
+            action
+            body = JSON.parse(response.body)
+            expect(body['success']).to eq(true)
+            expect(body['reason']).to be_nil
+            expect(body['transaction_id']).to eq(transaction_id)
+          end
+
+          it 'logs the analytics event' do
+            action
+            expect(@analytics).to have_logged_event(
+              :idv_proofing_agent_request_received,
+              response_body: a_hash_including(
+                success: true,
+                transaction_id:,
+              ),
+              proofing_agent: proofing_agent_analytics_hash,
+              issuer:,
+              transaction_id:,
+            )
+          end
+
+          it 'echoes the X-Correlation-ID in the response headers' do
+            action
+            expect(response.headers['X-Correlation-ID']).to eq(correlation_id)
+          end
+        end
+
+        context 'when there is a failed proofing result' do
+          before do
+            session = DocumentCaptureSession.create!(
+              uuid: transaction_id,
+              user_id: user.id,
+              issuer:,
+            )
+            allow(session).to receive(:load_agent_proofed_user).and_return(failed_proofing_result)
+            allow(DocumentCaptureSession).to receive(:find_by).with(uuid: transaction_id)
+              .and_return(session)
+          end
+
+          it 'returns 200' do
+            expect(action.status).to eq(200)
+          end
+
+          it 'returns a false success and the failure reason in the body' do
+            action
+            body = JSON.parse(response.body)
+            expect(body['success']).to eq(false)
+            expect(body['reason']).to eq('id_fail')
+            expect(body['transaction_id']).to eq(transaction_id)
+          end
+
+          it 'logs the analytics event' do
+            action
+            expect(@analytics).to have_logged_event(
+              :idv_proofing_agent_request_received,
+              response_body: a_hash_including(
+                success: false,
+                reason: 'id_fail',
+                transaction_id:,
+              ),
+              proofing_agent: proofing_agent_analytics_hash,
+              issuer:,
+              transaction_id:,
+            )
+          end
+        end
+
+        context 'when the result is cached' do
+          before do
+            session = DocumentCaptureSession.create!(
+              uuid: transaction_id,
+              user_id: user.id,
+              issuer:,
+            )
+            allow(session)
+              .to receive(:load_agent_proofed_user)
+              .and_return(successful_proofing_result)
+            allow(DocumentCaptureSession).to receive(:find_by).with(uuid: transaction_id)
+              .and_return(session)
+          end
+
+          it 'only calls load_agent_proofed_user once across two requests' do
+            session = DocumentCaptureSession.find_by(uuid: transaction_id)
+            expect(session)
+              .to receive(:load_agent_proofed_user)
+              .once.and_return(successful_proofing_result)
+            allow(DocumentCaptureSession).to receive(:find_by).with(uuid: transaction_id)
+              .and_return(session)
+
+            post :result, params: { proofing_agent_id: agent_id,
+                                    proofing_location_id: location_id,
+                                    transaction_id: }
+            post :result, params: { proofing_agent_id: agent_id,
+                                    proofing_location_id: location_id,
+                                    transaction_id: }
+          end
+        end
+      end
+    end
+  end
 end

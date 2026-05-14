@@ -24,7 +24,7 @@ RSpec.describe Idv::DocumentCaptureController do
       user:,
       requested_at: document_capture_session_requested_at,
       doc_auth_vendor: idv_vendor,
-      passport_status: 'not_requested',
+      document_type_requested: Idp::Constants::DocumentTypes::STATE_ID_CARD,
     )
   end
 
@@ -116,7 +116,7 @@ RSpec.describe Idv::DocumentCaptureController do
           user:,
           requested_at: document_capture_session_requested_at,
           doc_auth_vendor: idv_vendor,
-          passport_status: nil,
+          document_type_requested: nil,
         )
       end
 
@@ -152,7 +152,7 @@ RSpec.describe Idv::DocumentCaptureController do
             user:,
             requested_at: document_capture_session_requested_at,
             doc_auth_vendor: idv_vendor,
-            passport_status: 'requested',
+            document_type_requested: Idp::Constants::DocumentTypes::PASSPORT,
           )
         end
 
@@ -170,7 +170,7 @@ RSpec.describe Idv::DocumentCaptureController do
             user:,
             requested_at: document_capture_session_requested_at,
             doc_auth_vendor: idv_vendor,
-            passport_status: 'not_requested',
+            document_type_requested: Idp::Constants::DocumentTypes::STATE_ID_CARD,
           )
         end
 
@@ -190,7 +190,7 @@ RSpec.describe Idv::DocumentCaptureController do
             user:,
             requested_at: document_capture_session_requested_at,
             doc_auth_vendor: idv_vendor,
-            passport_status: nil,
+            document_type_requested: nil,
           )
         end
 
@@ -212,7 +212,7 @@ RSpec.describe Idv::DocumentCaptureController do
             user:,
             requested_at: document_capture_session_requested_at,
             doc_auth_vendor: idv_vendor,
-            passport_status: nil,
+            document_type_requested: nil,
           )
         end
 
@@ -235,7 +235,7 @@ RSpec.describe Idv::DocumentCaptureController do
           user:,
           requested_at: document_capture_session_requested_at,
           doc_auth_vendor: idv_vendor,
-          passport_status: nil, # This simulates not having completed choose_id_type
+          document_type_requested: nil, # This simulates not having completed choose_id_type
         )
       end
 
@@ -251,7 +251,7 @@ RSpec.describe Idv::DocumentCaptureController do
         expect(response).to redirect_to(idv_choose_id_type_path)
       end
 
-      it 'prevents access when document_capture_session has no passport_status set' do
+      it 'prevents access when document_capture_session has not chosen a document type' do
         expect(
           Idv::DocumentCaptureController.ensure_choose_id_type_completed(
             idv_session: subject.idv_session,

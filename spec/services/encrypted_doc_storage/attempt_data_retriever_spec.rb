@@ -11,7 +11,7 @@ RSpec.describe EncryptedDocStorage::AttemptDataRetriever do
     end
 
     it 'defaults to retrieving events from local storage' do
-      expect(local_storage).to receive(:retrieve).with(file_path:, file_name:)
+      expect(local_storage).to receive(:retrieve_attempt_object).with(file_path:, file_name:)
       subject.retrieve_user_proofing_events(file_path:, file_name:)
     end
 
@@ -24,7 +24,7 @@ RSpec.describe EncryptedDocStorage::AttemptDataRetriever do
       end
 
       it 'retrieves events from S3 storage' do
-        expect(s3_storage).to receive(:retrieve).with(file_path:, file_name:)
+        expect(s3_storage).to receive(:retrieve_attempt_object).with(file_path:, file_name:)
         subject.retrieve_user_proofing_events(file_path:, file_name:)
       end
     end

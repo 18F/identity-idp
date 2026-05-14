@@ -41,24 +41,32 @@ RSpec.describe DocumentCaptureSession do
     allow(doc_auth_response).to receive(:selfie_status).and_return(:success)
   end
 
-  context 'validates passport status' do
-    context 'passport_status is invalid' do
+  context 'validates document type requested' do
+    context 'document_type_requested is invalid' do
       it 'throws error' do
-        expect { create(:document_capture_session, passport_status: 'invalid') }
-          .to raise_error(ActiveRecord::RecordInvalid)
+        expect do
+          create(:document_capture_session, document_type_requested: 'invalid')
+        end.to raise_error(ArgumentError)
       end
     end
 
-    context 'passport_status is requested' do
+    context 'document_type_requested is valid' do
       it 'does not throw error' do
-        expect { create(:document_capture_session, passport_status: 'requested') }
+        expect { create(:document_capture_session, document_type_requested: Idp::Constants::DocumentTypes::PASSPORT) }
           .not_to raise_error(ActiveRecord::RecordInvalid)
       end
     end
 
-    context 'passport_status is nil' do
+    context 'passport is requested' do
+      it 'does not throw error' do
+        expect { create(:document_capture_session, document_type_requested: Idp::Constants::DocumentTypes::PASSPORT) }
+          .not_to raise_error(ActiveRecord::RecordInvalid)
+      end
+    end
+
+    context 'document_type_requested is nil' do
       it 'does not throws error' do
-        expect { create(:document_capture_session, passport_status: nil) }
+        expect { create(:document_capture_session, document_type_requested: nil) }
           .not_to raise_error(ActiveRecord::RecordInvalid)
       end
     end
@@ -528,21 +536,12 @@ RSpec.describe DocumentCaptureSession do
     end
   end
 
-  describe '#passport_requested?' do
-    context 'when passport_status is allowed' do
-      it 'returns false' do
-        record = build(:document_capture_session)
+  context 'when document_type_requested is nil' do
+    it 'returns false' do
+      record = build(:document_capture_session, document_type_requested: nil)
 
-        expect(record.passport_requested?).to eq(false)
-      end
-    end
-
-    context 'when passport_status is requested' do
-      it 'returns false' do
-        record = build(:document_capture_session, passport_status: 'requested')
-
-        expect(record.passport_requested?).to eq(true)
-      end
+      expect(record.passport_requested?).to eq(false)
+      expect(record.state_id_requested?).to eq(false)
     end
   end
 
@@ -557,19 +556,21 @@ RSpec.describe DocumentCaptureSession do
       record.request_passport!
 
       expect(record).to have_attributes(
-        passport_status: 'requested',
+        passport_status: nil,
         document_type_requested: Idp::Constants::DocumentTypes::PASSPORT,
         doc_auth_vendor: nil,
-        socure_docv_capture_app_url: 'hello',
-        socure_docv_transaction_token: 'world',
+        socure_docv_capture_app_url: nil,
+        socure_docv_transaction_token: nil,
       )
+
+      expect(record.passport_requested?).to eq(true)
+      expect(record.state_id_requested?).to eq(false)
     end
 
     context 'when state_id was requested before' do
       it 'clears the socure attributes' do
         record = build(
           :document_capture_session,
-          passport_status: 'not_requested',
           document_type_requested: Idp::Constants::DocumentTypes::STATE_ID_CARD,
           doc_auth_vendor: nil,
           socure_docv_capture_app_url: 'some-url',
@@ -579,7 +580,7 @@ RSpec.describe DocumentCaptureSession do
         record.request_passport!
 
         expect(record).to have_attributes(
-          passport_status: 'requested',
+          passport_status: nil,
           document_type_requested: Idp::Constants::DocumentTypes::PASSPORT,
           doc_auth_vendor: nil,
           socure_docv_capture_app_url: nil,
@@ -601,12 +602,15 @@ RSpec.describe DocumentCaptureSession do
         record.request_state_id!
 
         expect(record).to have_attributes(
-          passport_status: 'not_requested',
+          passport_status: nil,
           document_type_requested: Idp::Constants::DocumentTypes::STATE_ID_CARD,
           doc_auth_vendor: nil,
-          socure_docv_capture_app_url: 'hello',
-          socure_docv_transaction_token: 'world',
+          socure_docv_capture_app_url: nil,
+          socure_docv_transaction_token: nil,
         )
+
+        expect(record.passport_requested?).to eq(false)
+        expect(record.state_id_requested?).to eq(true)
       end
     end
 
@@ -614,7 +618,8 @@ RSpec.describe DocumentCaptureSession do
       it 'sets the socure attributes to nil' do
         record = build(
           :document_capture_session,
-          passport_status: 'requested',
+          document_type_requested: Idp::Constants::DocumentTypes::PASSPORT,
+          doc_auth_vendor: 'a vendor',
           socure_docv_capture_app_url: 'some-url',
           socure_docv_transaction_token: '12345',
         )
@@ -622,40 +627,15 @@ RSpec.describe DocumentCaptureSession do
         record.request_state_id!
 
         expect(record).to have_attributes(
-          passport_status: 'not_requested',
+          passport_status: nil,
           document_type_requested: Idp::Constants::DocumentTypes::STATE_ID_CARD,
           doc_auth_vendor: nil,
           socure_docv_capture_app_url: nil,
           socure_docv_transaction_token: nil,
         )
-      end
-    end
-  end
 
-  describe '#document_type_requested' do
-    context 'when document_type_requested is set to state_id_card' do
-      let(:document_type_requested) { Idp::Constants::DocumentTypes::STATE_ID_CARD }
-      it 'returns the correct document type requested' do
-        record = build(:document_capture_session, document_type_requested:)
-
-        expect(record.document_type_requested).to eq('state_id_card')
-      end
-    end
-
-    context 'when document_type_requested is not set' do
-      it 'returns nil' do
-        record = build(:document_capture_session)
-
-        expect(record.document_type_requested).to be_nil
-      end
-    end
-
-    context 'when document_type_requested is set to passport' do
-      let(:document_type_requested) { Idp::Constants::DocumentTypes::PASSPORT }
-      it 'returns the correct document type requested' do
-        record = build(:document_capture_session, document_type_requested:)
-
-        expect(record.document_type_requested).to eq('passport')
+        expect(record.passport_requested?).to eq(false)
+        expect(record.state_id_requested?).to eq(true)
       end
     end
   end

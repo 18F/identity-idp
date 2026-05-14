@@ -26,8 +26,38 @@ module AttemptsApi
 
     include TrackerEvents
 
+    def self.write_existing_user_events(sp:, historical_attempts: [])
+      historical_attempts.each do |saved_event|
+        # TODO:Historical attempts API:
+        # Clean up the data structure being used when including the whole event data
+        # And make it work with a tracker instance method.
+        event_data = saved_event.values[0]
+
+        event = AttemptEvent.new(
+          event_type: saved_event.keys[0],
+          session_id: event_data['session_id'],
+          occurred_at: event_data['occurred_at'] || Time.zone.now,
+          event_metadata: event_data['event_metadata'],
+          jti: event_data['jti'] || SecureRandom.uuid,
+          # iat: event_data['iat'],
+        )
+
+        jwe = event.to_jwe(
+          issuer: sp.issuer,
+          public_key: sp.attempts_public_key,
+        )
+
+        AttemptsApi::RedisClient.new.write_event(
+          event_key: event.jti,
+          jwe:,
+          timestamp: event.occurred_at,
+          issuer: sp.issuer,
+        )
+      end
+    end
+
     def track_event(event_type, metadata = {})
-      return unless will_track?(event_type)
+      return unless should_track?(event_type)
 
       user_id = metadata.delete(:user_id)
 
@@ -42,9 +72,9 @@ module AttemptsApi
         event_metadata: event_metadata(event_type:, metadata:),
       )
 
-      log_history(event) if will_log_history?(event_type)
+      log_history(event) if should_log_history?(event_type)
 
-      return unless will_send_event?
+      return unless should_send_event?
 
       redis_client.write_event(
         event_key: event.jti,
@@ -75,7 +105,7 @@ module AttemptsApi
 
       session['warden.user.user.session']['idv/attempts'] ||= []
       session['warden.user.user.session']['idv/attempts'].push(
-        event.event_type => { 'user_uuid' => user.uuid },
+        event.event_type => { 'user_uuid' => user.uuid, 'jti' => event.jti },
       )
     end
 
@@ -151,19 +181,19 @@ module AttemptsApi
       Digest::SHA1.hexdigest(user&.unique_session_id)
     end
 
-    def will_track?(event_type)
+    def should_track?(event_type)
       return false unless IdentityConfig.store.attempts_api_enabled
 
-      will_send_event? || will_log_history?(event_type)
+      should_send_event? || should_log_history?(event_type)
     end
 
-    def will_log_history?(event_type)
+    def should_log_history?(event_type)
       return false unless IdentityConfig.store.historical_attempts_api_enabled
 
       event_type.start_with?(*LOG_HISTORY_PREFIXES)
     end
 
-    def will_send_event?
+    def should_send_event?
       @enabled_for_session
     end
 

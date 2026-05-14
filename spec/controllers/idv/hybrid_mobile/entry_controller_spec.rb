@@ -3,14 +3,14 @@ require 'rails_helper'
 RSpec.describe Idv::HybridMobile::EntryController do
   describe '#show' do
     let(:user) { create(:user) }
-    let(:passport_status) { nil }
+    let(:document_type_requested) { nil }
 
     let!(:document_capture_session) do
       create(
         :document_capture_session,
         user:,
         requested_at: Time.zone.now,
-        passport_status:,
+        document_type_requested:,
       )
     end
 

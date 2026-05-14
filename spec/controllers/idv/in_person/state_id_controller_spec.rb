@@ -38,7 +38,7 @@ RSpec.describe Idv::InPerson::StateIdController do
           uuid: subject.idv_session.document_capture_session_uuid,
           user:,
           requested_at: Time.zone.now,
-          passport_status: 'requested',
+          document_type_requested: Idp::Constants::DocumentTypes::PASSPORT,
         )
 
         get :show

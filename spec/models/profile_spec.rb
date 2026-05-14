@@ -1268,6 +1268,23 @@ RSpec.describe Profile do
               expect { profile.deactivate_duplicate }
                 .to(change { ActionMailer::Base.deliveries.count }.by(1))
             end
+
+            context 'when the service provider does not exist' do
+              before do
+                duplicate_profile_set.update!(
+                  service_provider: 'urn:gov:gsa:openidconnect:nonexistent',
+                )
+              end
+
+              it 'does not raise an error' do
+                expect { profile.deactivate_duplicate }.not_to raise_error
+              end
+
+              it 'notifies the user' do
+                expect { profile.deactivate_duplicate }
+                  .to(change { ActionMailer::Base.deliveries.count }.by(1))
+              end
+            end
           end
 
           context 'when there are other profiles in the duplicate set' do
@@ -1356,6 +1373,23 @@ RSpec.describe Profile do
             it 'notifies the user' do
               expect { profile.clear_duplicate }
                 .to(change { ActionMailer::Base.deliveries.count }.by(1))
+            end
+
+            context 'when the service provider does not exist' do
+              before do
+                duplicate_profile_set.update!(
+                  service_provider: 'urn:gov:gsa:openidconnect:nonexistent',
+                )
+              end
+
+              it 'does not raise an error' do
+                expect { profile.clear_duplicate }.not_to raise_error
+              end
+
+              it 'notifies the user' do
+                expect { profile.clear_duplicate }
+                  .to(change { ActionMailer::Base.deliveries.count }.by(1))
+              end
             end
           end
 
