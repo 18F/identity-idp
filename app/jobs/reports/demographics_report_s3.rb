@@ -1,26 +1,57 @@
 # frozen_string_literal: true
 
-require 'csv'
-require 'reporting/demographics_metrics_report_s3'
 module Reports
-  class DemographicsMetricsS3Report < BaseReport
+  # This job reads pre-generated demographics CSV files from S3 and emails them to partners.
+  # It's designed to run a few days after the end of a reporting period to account for
+  # data processing delays.
+  #
+  # @param end_reporting_window_date [Time] The date that represents the end of the reporting
+  #   period, e.g., Feb 28th for "month of February". This should be the date when the report
+  #   would have been executed if there were no data sync lags. For contemporary reports,
+  #   this should be a couple days before today's date.
+  #
+  # @param report_receiver [Symbol] :internal (Login only) or :both (partners + Login)
+  # @param time_frame [String] 'quarterly' for now - determines time range for report
+  #
+  #   Note: Even though the demographics report is currently a "quarterly" time range, we are
+  #         sending it monthly internally, and so end_reporting_window_date should be the end of the
+  #         most recent month.
+  # @example
+  #   # Manual execution for February 2025 data (run on March 4th, time range Jan 1 - March 31)
+  #   job = Reports::DemographicsMetricsS3Report.new(
+  #     Date.parse('2026-02-28').end_of_day,
+  #     :both,
+  #     'monthly'
+  #   )
+  #   job.perform()
+  class Reports::DemographicsMetricsS3Report < BaseReport
     include JobHelpers::ServiceProviderMetadata
+
     REPORT_NAME = 'demographics-metrics-s3-report'
-    TIME_FRAME = 'quarterly' # Could eventually be monthly, etc.
-    MAX_FILE_AGE_DAYS = 30
-    REPORT_DELAY_DAYS = 4 # Account for data processing lags, 1 day later than reporting-rails delay
-    attr_reader :report_date, :time_frame, :report_receiver
-    def initialize(report_date = nil, time_frame = TIME_FRAME,
-                   report_receiver = :internal, *args, **rest)
-      @report_date = report_date
-      @time_frame = time_frame
-      @report_receiver = report_receiver.to_sym
-      super(report_date, time_frame, report_receiver, *args, **rest)
+    TIME_FRAME = 'quarterly' # Report coverage is full quarter even if run mid quarter internally
+    MAX_FILE_AGE_DAYS = 30 # Realistically, report should have been generated within a few days
+    REPORT_DELAY_DAYS = 5 # Cron job assumed to run 4th day of new month
+
+    attr_reader :end_reporting_window_date, :report_receiver, :time_frame
+
+    def initialize(init_end_date = nil, init_receiver = :internal, init_time_frame = TIME_FRAME,
+                   *args, **rest)
+      @end_reporting_window_date = init_end_date
+      @report_receiver = init_receiver.to_sym
+      @time_frame = init_time_frame
+      super(init_end_date, init_receiver, init_time_frame, *args, **rest)
     end
 
-    def perform(date = nil, time_frame = nil)
-      @report_date = date || @report_date || REPORT_DELAY_DAYS.days.ago.end_of_day
-      @time_frame = time_frame || TIME_FRAME
+    def perform(perform_end_date = nil, perform_receiver = :internal,
+                perform_time_frame = TIME_FRAME)
+      # Use perform params if provided, otherwise fall back to constructor values, then defaults
+      @end_reporting_window_date = perform_end_date || @end_reporting_window_date ||
+                                   REPORT_DELAY_DAYS.days.ago.end_of_day
+      @report_receiver = (perform_receiver || @report_receiver || :internal).to_sym
+      @time_frame = perform_time_frame || @time_frame || TIME_FRAME
+
+      raise ArgumentError, 'end_reporting_window_date is required' unless @end_reporting_window_date
+
       issuer_configs = report_configs
       if issuer_configs.empty?
         Rails.logger.warn 'No issuer configurations found - Demographics Metrics S3 Report NOT SENT'
@@ -38,7 +69,7 @@ module Reports
     def effective_end_date
       # Matches logic in reporting-rails, handles quarterly reports that are run
       # mid-quarter by setting end date to end of month, not end of quarter
-      @effective_end_date ||= [@report_date.all_month.end, report_time_range.end].min
+      @effective_end_date ||= [@end_reporting_window_date.all_month.end, report_time_range.end].min
     end
 
     def effective_end_date_formatted
@@ -219,9 +250,9 @@ module Reports
     def report_time_range
       case @time_frame
       when 'quarterly'
-        @report_date.all_quarter
+        @end_reporting_window_date.all_quarter
       when 'monthly'
-        @report_date.all_month # Not expecting to run this yet
+        @end_reporting_window_date.all_month # Not expecting to run this yet
       else
         raise ArgumentError, "Unsupported time frame: #{@time_frame}"
       end
