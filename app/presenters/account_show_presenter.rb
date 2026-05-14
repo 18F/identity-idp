@@ -60,6 +60,11 @@ class AccountShowPresenter
     )
   end
 
+  def pending_in_person_enrollment
+    return nil unless IdentityConfig.store.in_person_proofing_enabled
+    user.pending_in_person_enrollment
+  end
+
   def pending_idv?
     authn_context.identity_proofing? && !active_profile_for_authn_context?
   end
