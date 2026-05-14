@@ -8,6 +8,12 @@ $ bundle install
 $ npm install
 ```
 
+If you receive the an error `connection to server at "127.0.0.1", port 5432 failed: Connection refused`, check that you have Postgres installed and running:
+```
+brew install postgresql
+brew services start postgres
+```
+
 ## I am receiving errors when creating the development and test databases
 
 If you receive the following error (where _whoami_ == _your username_):
