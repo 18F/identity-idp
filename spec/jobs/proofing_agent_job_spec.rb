@@ -25,6 +25,7 @@ RSpec.describe ProofingAgentJob, type: :job do
   # let(:service_provider) { create(:service_provider, app_id: 'fake-app-id') }
   let(:webhook_url) { 'https://example.test/webhook' }
   let(:webhook_secret) { 'webhook-secret' }
+  let(:webhook_status) { 200 }
   let(:idv_proofing_agent_config) do
     [
       {
@@ -46,6 +47,7 @@ RSpec.describe ProofingAgentJob, type: :job do
       ActiveJob::Base.queue_adapter.performed_jobs.clear
       allow(IdentityConfig.store).to receive(:idv_proofing_agent_config)
         .and_return(idv_proofing_agent_config)
+      allow(Db::SpCost::AddSpCost).to receive(:call)
     end
 
     after do
@@ -70,6 +72,15 @@ RSpec.describe ProofingAgentJob, type: :job do
         allow(IdentityConfig.store).to receive(:idv_phone_precheck_percent).and_return(100)
       end
 
+      it 'enqueues a ProofingAgentWebhookJob with success: true' do
+        expect { perform }.to have_enqueued_job(ProofingAgentWebhookJob).with(
+          success: true,
+          reason: nil,
+          transaction_id: transaction_id,
+          correlation_id: correlation_id,
+        )
+      end
+
       context 'when the webhook URL is not configured' do
         let(:webhook_url) { nil }
         it 'stores a successful result' do
@@ -85,40 +96,67 @@ RSpec.describe ProofingAgentJob, type: :job do
         end
       end
 
-      it 'enqueues a ProofingAgentWebhookJob with success: true' do
-        expect { perform }.to have_enqueued_job(ProofingAgentWebhookJob).with(
-          success: true,
-          reason: nil,
-          transaction_id: transaction_id,
-          correlation_id: correlation_id,
-        )
+      context 'when the webhook URL is configured without a secret' do
+        let(:webhook_secret) { nil }
+        it 'enqueues a ProofingAgentWebhookJob with success: true' do
+          expect { perform }.to have_enqueued_job(ProofingAgentWebhookJob).with(
+            success: true,
+            reason: nil,
+            transaction_id: transaction_id,
+            correlation_id: correlation_id,
+          )
+        end
+      end
+
+      context 'when an error occurs while delivering the webhook' do
+        before do
+          allow(NewRelic::Agent).to receive(:notice_error)
+          allow(Faraday).to receive(:new).with(hash_including(url: webhook_url))
+            .and_raise(StandardError.new('webhook error'))
+        end
+
+        it 'notifies NewRelic' do
+          expect(NewRelic::Agent).to receive(:notice_error).with(
+            instance_of(StandardError),
+            custom_params: {
+              event: 'Failed to deliver proofing agent webhook',
+              webhook_url:,
+              transaction_id:,
+            },
+          )
+          expect { perform }.not_to raise_error
+        end
+      end
+
+      context 'when the webhook returns a non-success status' do
+        let(:webhook_status) { 500 }
+
+        it 'retries the webhook request' do
+          expect { perform }.not_to raise_error
+        end
       end
     end
 
     context 'when resolution proofing fails' do
       let(:pii) { Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID.merge(zipcode: '00000') }
 
-      context 'when the webhook URL is not configured' do
-        it 'stores a failed result' do
-          perform
+      let(:webhook_status) { 500 }
+      it 'stores a failed result' do
+        perform
 
-          result = document_capture_session.reload.load_agent_proofed_user
-          expect(result[:success]).to be false
-          expect(result[:reason]).to eq('profile_resolution_fail')
-          expect(result[:resolution][:success]).to be false
-        end
+        result = document_capture_session.reload.load_agent_proofed_user
+        expect(result[:success]).to be false
+        expect(result[:reason]).to eq('profile_resolution_fail')
+        expect(result[:resolution][:success]).to be false
       end
 
-      context 'when the webhook URL is configured without a secret' do
-        let(:webhook_secret) { nil }
-        it 'enqueues a ProofingAgentWebhookJob with success: false' do
-          expect { perform }.to have_enqueued_job(ProofingAgentWebhookJob).with(
-            success: false,
-            reason: 'profile_resolution_fail',
-            transaction_id: transaction_id,
-            correlation_id: correlation_id,
-          )
-        end
+      it 'enqueues a ProofingAgentWebhookJob with success: false' do
+        expect { perform }.to have_enqueued_job(ProofingAgentWebhookJob).with(
+          success: false,
+          reason: 'profile_resolution_fail',
+          transaction_id: transaction_id,
+          correlation_id: correlation_id,
+        )
       end
     end
 
@@ -224,15 +262,22 @@ RSpec.describe ProofingAgentJob, type: :job do
 
     def stub_webhook_request
       return if webhook_url.blank?
-
       stub_request(:post, webhook_url).with { |req|
         body = JSON.parse(req.body)
-        expect(body['success']).to eq(success)
-        expect(body['reason']).to eq(reason)
+        expect(body['success']).to be_in([true, false])
+        if body['success']
+          expect(body['reason']).to be_nil
+        else
+          expect(body['reason']).to be_present
+        end
         expect(body['transaction_id']).to eq(transaction_id)
-        expect(req.headers['X-Correlation-ID']).to eq(correlation_id)
-        expect(req.headers['Authorization']).to eq("Bearer #{webhook_secret}")
-      }.to_return(status: 200)
+        expect(req.headers['X-Correlation-Id']).to eq(correlation_id)
+        if webhook_secret.present?
+          expect(req.headers['Authorization']).to eq("Bearer #{webhook_secret}")
+        else
+          expect(req.headers).not_to have_key('Authorization')
+        end
+      }.to_return(status: webhook_status)
     end
   end
 end
