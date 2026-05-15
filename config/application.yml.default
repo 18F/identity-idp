@@ -101,6 +101,7 @@ database_worker_jobs_sslmode: 'verify-full'
 database_worker_jobs_username: ''
 deleted_user_accounts_report_configs: '[]'
 deliver_mail_async: false
+demographics_metrics_S3_report_configs: '[]'
 development_mailer_deliver_method: letter_opener
 disable_email_sending: true
 disposable_email_services: '[]'

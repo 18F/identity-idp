@@ -12,6 +12,7 @@ cron_every_monday_5am = 'every Monday at 5:00 UTC' # equivalent to '0 5 * * 1'
 cron_monthly = '30 0 1 * *' # monthly, 0:30 UTC to not overlap with jobs running at 0000
 cron_monthly_5am = '0 5 1 * *' # monthly, 5 AM UTC to not overlap with jobs running at 0000
 s3_cron_24h = '0 6 * * *' # 6am UTC is 1am EST/2am EDT
+cron_4th_of_month_6am = '0 6 4 * *' # 6 AM UTC on the 4th of each month
 
 if defined?(Rails::Console)
   Rails.logger.info 'job_configurations: console detected, skipping schedule'
@@ -327,7 +328,17 @@ else
           )
         },
       },
-
+      demographics_metrics_S3_report: {
+        class: 'Reports::DemographicsMetricsS3Report',
+        cron: cron_4th_of_month_6am,
+        args: -> {
+          JobHelpers::DelayedReportConfigurationHelper.determine_job_args_for_demographics(
+            run_date: Time.zone.now,
+            lookback_days: 5,
+            external_rule: 'external_if_quarter_end',
+          )
+        },
+      },
       # Download and store Socure reason codes
       socure_reason_code_download: {
         class: 'SocureReasonCodeDownloadJob',
