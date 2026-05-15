@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'csv'
+
 module Reports
   # This job reads pre-generated demographics CSV files from S3 and emails them to partners.
   #
@@ -116,16 +118,15 @@ module Reports
 
     def create_report_reader(sp_id, agency_abbreviation)
       # Determine file suffix based on report_receiver
-      file_suffix = (@report_receiver == :internal) ? 'latest' : 'latest_external'
+      file_prefix = (@report_receiver == :internal) ? 'latest' : 'latest_external'
 
       base_path = generate_base_s3_path(directory: 'idp')
-      s3_path = "#{base_path}DemographicsReport/#{sp_id}/"\
-                "#{@time_frame}/#{report_time_range_label}/SP#{sp_id}_"
+      s3_path = "#{base_path}DemographicsMetricsReport/#{sp_id}/"\
+                "#{@time_frame}/#{report_time_range_label}/#{file_prefix}_SP#{sp_id}_"
 
       Reporting::DemographicsMetricsReportS3.new(
         bucket_name: data_warehouse_bucket_name,
         custom_s3_path: s3_path,
-        file_suffix: file_suffix,
         agency_abbreviation: agency_abbreviation,
       )
     end
