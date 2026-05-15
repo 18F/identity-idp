@@ -257,7 +257,7 @@ module Reports
     end
 
     def report_configs
-      configs = IdentityConfig.store.demographics_metrics_s3_report_configs || []
+      configs = IdentityConfig.store.demographics_metrics_S3_report_configs || []
       # Set default report_receiver if not specified
       configs.map do |config|
         config['report_receiver'] ||= 'internal'
