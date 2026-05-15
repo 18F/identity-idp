@@ -262,7 +262,7 @@ RSpec.describe ProofingAgentJob, type: :job do
 
     def stub_webhook_request
       return if webhook_url.blank?
-      stub_request(:post, webhook_url).with { |req|
+      stub_request(:post, webhook_url).with do |req|
         body = JSON.parse(req.body)
         expect(body['success']).to be_in([true, false])
         if body['success']
@@ -277,7 +277,7 @@ RSpec.describe ProofingAgentJob, type: :job do
         else
           expect(req.headers).not_to have_key('Authorization')
         end
-      }.to_return(status: webhook_status)
+      end.to_return(status: webhook_status)
     end
   end
 end
