@@ -77,11 +77,29 @@ module Proofing
           end
 
           def raw_response(verification_response)
-            verification_response.response_body.dig(
+            service_block = instant_verify_service_block(verification_response.response_body)
+            raw = service_block.dig('tps_vendor_raw_response')
+            return raw if raw
+
+            raise_missing_raw_response_error(service_block)
+          end
+
+          def instant_verify_service_block(body)
+            body.dig(
               'integration_hub_results',
               "#{IdentityConfig.store.lexisnexis_threatmetrix_org_id}:#{config.ddp_policy}",
-              'Execute Instant Verify', 'tps_vendor_raw_response'
-            )
+              'Execute Instant Verify',
+            ) || {}
+          end
+
+          def raise_missing_raw_response_error(service_block)
+            service_block = {} unless service_block.is_a?(Hash)
+
+            if service_block['tps_was_timeout'].to_s == 'yes'
+              raise Proofing::TimeoutError, 'LexisNexis InstantVerify DDP timed out'
+            end
+
+            raise 'LexisNexis InstantVerify DDP returned no tps_vendor_raw_response'
           end
         end
       end
