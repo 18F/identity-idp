@@ -31,7 +31,7 @@ module AttemptsApi
         event = AttemptEvent.new(
           event_type: event_data['event_type'],
           session_id: event_data['session_id'],
-          occurred_at: event_data['occurred_at'],
+          occurred_at: event_data['occurred_at'] || Time.zone.now,
           event_metadata: event_data['event_metadata'],
           jti: event_data['jti'],
           iat: event_data['iat'],
@@ -104,6 +104,8 @@ module AttemptsApi
         event_data = {
           'event_type' => event.event_type,
           'jti' => event.jti,
+          'iat' => event.iat,
+          'occurred_at' => event.occurred_at,
           'event_metadata' => {
             user_uuid: event.event_metadata[:user_uuid],
           },
