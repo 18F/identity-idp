@@ -104,6 +104,8 @@ module AttemptsApi
         event_data = {
           'event_type' => event.event_type,
           'jti' => event.jti,
+          'iat' => event.iat,
+          'occurred_at' => event.occurred_at,
           'event_metadata' => {
             user_uuid: event.event_metadata[:user_uuid],
           },
