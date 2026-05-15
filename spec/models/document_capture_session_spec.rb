@@ -287,6 +287,19 @@ RSpec.describe DocumentCaptureSession do
             aamva_status: :passed,
           )
         end
+
+        context 'when the result is successful' do
+          it 'updates pending_agent_proofed_user to true' do
+            expect(document_capture_session.pending_agent_proofed_user).to eq true
+          end
+        end
+
+        context 'when the result is unsuccessful' do
+          let(:success) { false }
+          it 'updates pending_agent_proofed_user to false' do
+            expect(document_capture_session.pending_agent_proofed_user).to eq false
+          end
+        end
       end
 
       context 'when aamva response is passed in' do

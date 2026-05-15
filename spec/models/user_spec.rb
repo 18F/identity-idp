@@ -1518,6 +1518,20 @@ RSpec.describe User do
     end
   end
 
+  describe '#proofing_agent_pending?' do
+    let(:user) { create(:user) }
+    let(:pending_agent_proofed_user) { true }
+
+    it 'returns true if there is a pending agent proofed user' do
+      create(
+        :document_capture_session,
+        pending_agent_proofed_user: pending_agent_proofed_user,
+        user: user,
+      )
+      expect(user.proofing_agent_pending?).to eq true
+    end
+  end
+
   describe '#locked_out?' do
     let(:locked_at) { nil }
     let(:user) { User.new }
