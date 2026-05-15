@@ -31,7 +31,7 @@ module AttemptsApi
         event = AttemptEvent.new(
           event_type: event_data['event_type'],
           session_id: event_data['session_id'],
-          occurred_at: event_data['occurred_at'] || Time.zone.now,
+          occurred_at: event_data['occurred_at'],
           event_metadata: event_data['event_metadata'],
           jti: event_data['jti'],
           iat: event_data['iat'],
