@@ -54,7 +54,7 @@ class ProofingAgentJob < ApplicationJob
     success = combined_result[:success]
     reason = combined_result[:reason]
 
-    if webhook_url
+    if webhook_url.present?
       ProofingAgentWebhookJob.perform_later(
         success:,
         reason:,
