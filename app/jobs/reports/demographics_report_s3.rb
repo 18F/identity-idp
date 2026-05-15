@@ -11,11 +11,12 @@ module Reports
   # @param time_frame [String] 'quarterly' for now - determines time range for report
   #
   # @example
-  #   # Manual execution (run on March 4th for Q1 data, looking back 5 days)
+  #   # Manual execution (run on March 5th for Q1 data, looking back 5 days)
   #   job = Reports::DemographicsMetricsS3Report.new(
-  #     run_date: Time.zone.now,
-  #     days_back: 5,
-  #     receiver: :both
+  #     Time.zone.now,  # run_date
+  #     5,              # days_back_for_time_period
+  #     :both,          # receiver
+  #     'quarterly'     # time_frame
   #   )
   #   job.perform
   class Reports::DemographicsMetricsS3Report < BaseReport
@@ -81,7 +82,7 @@ module Reports
         return
       end
 
-      agency_abbreviation = sp_info['agency_abbreviation']
+      agency_abbreviation = sp_info[:agency_abbreviation] 
       sp_id = sp_info[:id]
 
       internal_emails = Array(config['internal_emails']).select(&:present?)
@@ -120,9 +121,9 @@ module Reports
       # Determine file suffix based on report_receiver
       file_prefix = (@report_receiver == :internal) ? 'latest' : 'latest_external'
 
-      base_path = generate_base_s3_path(directory: 'idp')
+      base_path = generate_base_S3_path(directory: 'idp')
       s3_path = "#{base_path}DemographicsMetricsReport/#{sp_id}/"\
-                "#{@time_frame}/#{report_time_range_label}/#{file_prefix}_SP#{sp_id}_"
+                "#{@time_frame}/#{report_time_range_label}/#{file_prefix}_SP#{sp_id}"
 
       Reporting::DemographicsMetricsReportS3.new(
         bucket_name: data_warehouse_bucket_name,
