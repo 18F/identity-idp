@@ -265,10 +265,12 @@ RSpec.describe ProofingAgentJob, type: :job do
       stub_request(:post, webhook_url).with do |req|
         body = JSON.parse(req.body)
         expect(body['success']).to be_in([true, false])
-        if body['success']
+        if body['success'] == true
           expect(body['reason']).to be_nil
-        else
+        elsif body['success'] == false
           expect(body['reason']).to be_present
+        else
+          raise "Unexpected success value: #{body['success']}"
         end
         expect(body['transaction_id']).to eq(transaction_id)
         expect(req.headers['X-Correlation-Id']).to eq(correlation_id)
