@@ -143,7 +143,7 @@ class DocumentCaptureSession < ApplicationRecord
       aamva: aamva_response,
       mrz: agent_proofing_result[:mrz],
     )
-    session_result.captured_at = Time.zone.now
+    session_result.verified_at = Time.zone.now.to_s # UTC
 
     EncryptedRedisStructStorage.store(
       session_result,
