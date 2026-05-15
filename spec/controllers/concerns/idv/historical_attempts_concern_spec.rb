@@ -52,7 +52,7 @@ RSpec.describe Idv::HistoricalAttemptsConcern, type: :controller do
 
   describe '#cache_user_proofing_events' do
     subject(:cache_user_proofing_events) do
-      controller.cache_user_proofing_events(password)
+      controller.cache_user_proofing_events(password:)
     end
 
     let!(:user_proofing_event) do
