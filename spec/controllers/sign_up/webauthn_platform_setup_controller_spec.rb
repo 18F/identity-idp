@@ -42,12 +42,6 @@ RSpec.describe SignUp::WebauthnPlatformSetupController do
         )
       end
 
-      it 'does not set webauthn_platform_signup_setup_recommended in session' do
-        post :create
-
-        expect(controller.user_session[:webauthn_platform_signup_setup_recommended]).to be_nil
-      end
-
       it 'redirects to authentication_methods_setup' do
         post :create
 
@@ -65,12 +59,6 @@ RSpec.describe SignUp::WebauthnPlatformSetupController do
           :webauthn_platform_signup_setup_submitted,
           opted_to_add: true,
         )
-      end
-
-      it 'sets webauthn_platform_signup_setup_recommended to true in session' do
-        post :create, params: { add_webauthn_platform: true }
-
-        expect(controller.user_session[:webauthn_platform_signup_setup_recommended]).to eq true
       end
 
       it 'redirects to webauthn platform setup url' do
