@@ -3,7 +3,6 @@
 module SignUp
   class WebauthnPlatformSetupController < ApplicationController
     include SecureHeadersConcern
-    include MfaSetupConcern
 
     before_action :confirm_user_authenticated_for_2fa_setup
     before_action :apply_secure_headers_override
@@ -16,7 +15,6 @@ module SignUp
       analytics.webauthn_platform_signup_setup_submitted(opted_to_add: opted_to_add?)
       if opted_to_add?
         user_session[:webauthn_platform_signup_setup_recommended] = true
-        set_mfa_selections(['webauthn_platform'])
       end
       redirect_to dismiss_redirect_path
     end

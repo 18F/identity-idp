@@ -228,9 +228,14 @@ module Users
     end
 
     def next_setup_path
-      return super unless @platform_authenticator && user_session[:auto_passkey_prompted]
+      if @platform_authenticator &&
+         (user_session[:auto_passkey_prompted] ||
+          user_session[:webauthnn_platform_signup_setup_recommended])
 
-      super || authentication_methods_setup_path
+        return super || authentication_methods_setup_path
+      end
+
+      super
     end
 
     def need_to_set_up_additional_mfa?
