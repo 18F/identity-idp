@@ -14,13 +14,15 @@ module PhoneFormatter
     formatted = Phonelib.parse(phone).national.to_s
     return '' if formatted.blank?
 
-    visible_digits = 0
+    # Count only digits so Phonelib's locale-specific separators stay intact
+    # while we mask every leading digit except the last four.
+    digits_to_mask = [formatted.count('0-9') - 4, 0].max
 
-    formatted.reverse.chars.map do |char|
-      next char unless char.match?(/\d/)
+    formatted.gsub(/\d/) do |digit|
+      next digit if digits_to_mask.zero?
 
-      visible_digits += 1
-      visible_digits <= 4 ? char : '*'
-    end.reverse.join
+      digits_to_mask -= 1
+      '*'
+    end
   end
 end
