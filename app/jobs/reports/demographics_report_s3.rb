@@ -128,7 +128,7 @@ module Reports
       # Determine file suffix based on report_receiver
       file_prefix = (@report_receiver == :internal) ? 'latest' : 'latest_external'
 
-      base_path = generate_base_S3_path(directory: 'idp')
+      base_path = generate_base_s3_path(directory: 'idp')
       s3_path = "#{base_path}DemographicsMetricsReport/#{sp_id}/"\
                 "#{@time_frame}/#{report_time_range_label}/#{file_prefix}_SP#{sp_id}"
 
