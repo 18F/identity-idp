@@ -50,7 +50,8 @@ module Users
       @need_to_set_up_additional_mfa = need_to_set_up_additional_mfa?
       @auto_trigger = auto_trigger_request? &&
                       platform_authenticator? &&
-                      in_account_creation_flow?
+                      in_account_creation_flow? &&
+                      result.success?
       if platform_authenticator?
         user_session[:webauthn_setup_started_at] = Time.zone.now.to_f
       end

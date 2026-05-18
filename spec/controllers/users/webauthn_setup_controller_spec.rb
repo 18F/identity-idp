@@ -401,6 +401,12 @@ RSpec.describe Users::WebauthnSetupController do
 
             expect(assigns(:auto_trigger)).to eq(true)
           end
+
+          it 'does not auto-trigger again after the browser prompt is canceled' do
+            get :new, params: { platform: true, auto_trigger: true, error: 'NotAllowedError' }
+
+            expect(assigns(:auto_trigger)).to eq(false)
+          end
         end
 
         context 'when the user was not auto prompted' do
