@@ -2,7 +2,7 @@ require 'rails_helper'
 require 'rake'
 
 RSpec.describe 'events rake tasks', type: :task do
-  let(:task_name) { 'events:remove_max_attempts_reached_references' }
+  let(:task_name) { 'events:delete_max_attempts_reached' }
   let(:target_event_type) { 28 }
 
   before do
@@ -17,7 +17,7 @@ RSpec.describe 'events rake tasks', type: :task do
     ENV.delete('BATCH_SIZE')
   end
 
-  describe 'events:remove_max_attempts_reached_references' do
+  describe 'events:delete_max_attempts_reached' do
     subject(:task) { Rake::Task[task_name].execute }
 
     it 'prints a message when there is nothing to delete' do
@@ -36,7 +36,7 @@ RSpec.describe 'events rake tasks', type: :task do
       end
 
       it 'deletes only rows with the stored event_type value' do
-        expect { task }.to output("Deleted 2\n      events with event_type=28.\n").to_stdout
+        expect { task }.to output("Deleted 2 events with event_type=28.\n").to_stdout
 
         expect(Event.exists?(first_matching_event.id)).to eq(false)
         expect(Event.exists?(other_event.id)).to eq(true)
