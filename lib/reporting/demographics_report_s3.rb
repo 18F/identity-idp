@@ -107,22 +107,12 @@ module Reporting
     # @raise [Aws::S3::Errors::NoSuchKey] if the CSV file does not exist in S3
     def fetch_csv_from_s3(report_name)
       key = "#{s3_path}_#{report_name}.csv"
-      Rails.logger.info(
-        "#{self.class.name}#fetch_csv_from_s3: fetching s3://#{bucket_name}/#{key}",
-      )
       resp = s3_helper.s3_client.get_object(bucket: bucket_name, key: key)
       resp.body.read
+
+      # Shouldn't fail, already verified file exists in job
     rescue Aws::S3::Errors::NoSuchKey => e
-      Rails.logger.error(
-        "#{self.class.name}#fetch_csv_from_s3: CSV file not found in S3 " \
-        "(bucket=#{bucket_name}, key=#{key}): #{e.message}",
-      )
-      raise
-    rescue Aws::S3::Errors::ServiceError => e
-      Rails.logger.error(
-        "#{self.class.name}#fetch_csv_from_s3: S3 service error while fetching " \
-        "(bucket=#{bucket_name}, key=#{key}): #{e.message}",
-      )
+      Rails.logger.error "Unexpected failure reading CSV file from S3: #{key} - #{e}"
       raise
     end
 

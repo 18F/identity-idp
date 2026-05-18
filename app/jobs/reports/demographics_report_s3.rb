@@ -19,10 +19,10 @@ module Reports
   #     'quarterly'     # time_frame
   #   )
   #   job.perform
-  class Reports::DemographicsMetricsS3Report < BaseReport
+  class DemographicsMetricsS3Report < BaseReport
     include JobHelpers::ServiceProviderMetadata
 
-    REPORT_NAME = 'demographics-metrics-s3-report'
+    REPORT_NAME = 'demographics-metrics-s3-report' # Different name than the reporting-rails report
     TIME_FRAME = 'quarterly' # Report coverage is full quarter even if run mid quarter internally
     MAX_FILE_AGE_DAYS = 30 # Realistically, report should have been generated within a few days
     REPORT_DELAY_DAYS = 5 # Cron job assumed to run 4th day of new month
@@ -30,7 +30,8 @@ module Reports
     attr_reader :run_date, :days_back_for_time_period, :report_receiver, :time_frame
 
     # rubocop:disable Metrics/ParameterLists
-    def initialize(init_run_date = Time.zone.now, init_days_back_for_time_period = 5,
+    def initialize(init_run_date = Time.zone.now, 
+                   init_days_back_for_time_period = REPORT_DELAY_DAYS,
                    init_receiver = :internal, init_time_frame = TIME_FRAME,
                    *args, **rest)
       # rubocop:enable Metrics/ParameterLists
@@ -38,6 +39,9 @@ module Reports
       @days_back_for_time_period = init_days_back_for_time_period
       @report_receiver = init_receiver.to_sym
       @time_frame = init_time_frame
+
+      validate_parameters!
+
       super(init_run_date, init_days_back_for_time_period, init_receiver, *args, **rest)
     end
 
@@ -53,11 +57,7 @@ module Reports
       @report_receiver = (perform_receiver || @report_receiver || :internal).to_sym
       @time_frame = perform_time_frame || @time_frame || TIME_FRAME
 
-      unless @days_back_for_time_period.between?(0, 90)
-        raise ArgumentError, "days_back_for_time_period must be between 0 and 90, "\
-                            "got #{@days_back_for_time_period}. Adjust run_date for periods "\
-                            "greater than 90 days."
-      end
+      validate_parameters!
 
       issuer_configs = report_configs
       if issuer_configs.empty?
@@ -74,22 +74,24 @@ module Reports
     private
 
     def process_issuer_report(config)
+      unless validate_config(config)
+        return
+      end
+
       issuer_string = config['issuer_string']
-      # Get service provider info using helper
+      # Get service provider info using helper (SQL call to app DB)
       sp_info = get_service_provider_info(issuer_string)
       unless sp_info
         Rails.logger.error "No service provider found for issuer: #{issuer_string} - skipping"
         return
       end
 
-      agency_abbreviation = sp_info[:agency_abbreviation] 
+      agency_abbreviation = sp_info[:agency_abbreviation]
       sp_id = sp_info[:id]
 
       internal_emails = Array(config['internal_emails']).select(&:present?)
       partner_emails = Array(config['partner_emails']).select(&:present?)
-      unless validate_config(config, issuer_string)
-        return
-      end
+
       email_addresses = determine_email_addresses(
         internal_emails, partner_emails,
         agency_abbreviation
@@ -99,9 +101,14 @@ module Reports
 
       report_reader = create_report_reader(sp_id, agency_abbreviation)
 
+      # First check: Do all required files exist? (Comprehensive logging here)
+      unless validate_all_files_exist(report_reader, sp_info)
+        return
+      end
+
+      # Second check: Are the files recent enough? (Minimal logging)
       unless validate_report_freshness(report_reader)
-        Rails.logger.error "Report files are too old or missing for issuer: "\
-                           "#{issuer_string} - skipping"
+        Rails.logger.error "Report files are too old for issuer: #{issuer_string} - skipping"
         return
       end
 
@@ -132,14 +139,42 @@ module Reports
       )
     end
 
+    def validate_all_files_exist(report_reader, sp_info)
+      missing_files = []
+
+      report_reader.csv_file_names.each do |file_name|
+        begin
+          report_reader.get_file_last_modified(file_name)
+        rescue Aws::S3::Errors::NoSuchKey
+          missing_files << file_name
+        end
+      end
+
+      if missing_files.any?
+        Rails.logger.error "Missing report files for issuer: #{sp_info[:issuer_string]}"
+        Rails.logger.error "  Service Provider ID: #{sp_info[:id]}"
+        Rails.logger.error "  Agency: #{sp_info[:agency_abbreviation]}"
+        Rails.logger.error "  Missing files: #{missing_files.join(', ')}"
+        Rails.logger.error "  Expected path: #{report_reader.s3_path}_*.csv"
+        Rails.logger.error "  Bucket: #{report_reader.bucket_name}"
+        Rails.logger.error "  Time frame: #{@time_frame} (#{report_time_range_label})"
+        Rails.logger.error "  Report receiver: #{@report_receiver}"
+        return false
+      end
+
+      true
+    end
+
     def validate_report_freshness(report_reader)
-      # Check if at least one of the expected files exists and is recent
+      # Check freshness of files we validated existence of
       cutoff_time = MAX_FILE_AGE_DAYS.days.ago
-      report_reader.csv_file_names.any? do |file_name|
+
+      report_reader.csv_file_names.all? do |file_name|
         begin
           last_modified = report_reader.get_file_last_modified(file_name)
           last_modified > cutoff_time
         rescue Aws::S3::Errors::NoSuchKey
+          # Shouldn't happen if validate_all_files_exist passed, but just in case
           false
         end
       end
@@ -197,17 +232,17 @@ module Reports
     end
 
     def get_report_file_date(report_reader)
-      # Try to get the last modified date from the first available file
-      report_reader.csv_file_names.each do |file_name|
-        begin
-          last_modified = report_reader.get_file_last_modified(file_name)
-          return last_modified.strftime('%Y-%m-%d')
-        rescue Aws::S3::Errors::NoSuchKey
-          next
-        end
+      # We know files exist, so just get the first one
+      file_name = report_reader.csv_file_names.first
+      begin
+        last_modified = report_reader.get_file_last_modified(file_name)
+        last_modified.strftime('%Y-%m-%d')
+      rescue Aws::S3::Errors::NoSuchKey
+        # Shouldn't happen, but fallback gracefully
+        Rails.logger.warn 'Unexpected S3 file access issue when getting modified date'\
+                          ', using today for email subject'
+        Date.current.strftime('%Y-%m-%d')
       end
-      # Fallback to today if no files found
-      Date.current.strftime('%Y-%m-%d')
     end
 
     def demographics_email_preamble
@@ -265,20 +300,49 @@ module Reports
       end
     end
 
-    def validate_config(config, issuer_string)
-      required_fields = %w[issuer_string]
-      missing_fields = required_fields.select { |field| config[field].nil? }
-      if missing_fields.any?
-        Rails.logger.error "Missing required fields for issuer #{issuer_string}:"\
-                           " #{missing_fields.join(', ')}"
+    def validate_parameters!
+      unless @days_back_for_time_period.is_a?(Integer) && @days_back_for_time_period.between?(0, 90)
+        raise ArgumentError, "days_back_for_time_period must be between 0 and 90,"\
+                             " got #{@days_back_for_time_period}"
+      end
+
+      unless [:internal, :both].include?(@report_receiver)
+        raise ArgumentError, "report_receiver must be :internal or :both, got #{@report_receiver}"
+      end
+
+      unless %w[quarterly monthly daily].include?(@time_frame)
+        raise ArgumentError, "time_frame must be quarterly, monthly, or daily, got #{@time_frame}"
+      end
+    end
+
+    def validate_config(config)
+      if config['issuer_string'].blank?
+        Rails.logger.error 'Missing issuer_string for config'
         return false
       end
-      # Validate report_receiver if present
-      if config['report_receiver'] && !%w[internal both].include?(config['report_receiver'])
-        Rails.logger.error "Invalid report_receiver for issuer #{issuer_string}:"\
-                           " #{config['report_receiver']}"
+
+      issuer_string = config['issuer_string']
+
+      receiver = config['report_receiver'] || 'internal'
+      unless %w[internal both].include?(receiver)
+        Rails.logger.error "Invalid report_receiver for issuer #{issuer_string}: #{receiver}"
         return false
       end
+
+      # Check that we'll have 1+ email to send to
+      internal_emails = Array(config['internal_emails']).select(&:present?)
+      partner_emails = Array(config['partner_emails']).select(&:present?)
+
+      if internal_emails.empty? && partner_emails.empty?
+        Rails.logger.error "No emails provided for issuer #{issuer_string}"
+        return false
+      end
+
+      if receiver == 'both' && partner_emails.empty?
+        Rails.logger.error "Receiver is 'both' but no partner emails for issuer #{issuer_string}"
+        return false
+      end
+
       true
     end
 
