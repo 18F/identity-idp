@@ -11,7 +11,16 @@ module PhoneFormatter
   def self.mask(phone)
     return '' if phone.blank?
 
-    formatted = Phonelib.parse(phone).national
-    formatted[0..-5].gsub(/\d/, '*') + formatted[-4..-1]
+    formatted = Phonelib.parse(phone).national.to_s
+    return '' if formatted.blank?
+
+    visible_digits = 0
+
+    formatted.reverse.chars.map do |char|
+      next char unless char.match?(/\d/)
+
+      visible_digits += 1
+      visible_digits <= 4 ? char : '*'
+    end.reverse.join
   end
 end

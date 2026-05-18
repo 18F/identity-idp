@@ -38,10 +38,20 @@ RSpec.describe PhoneFormatter do
     end
 
     it 'uses the international code for the country specified in the country code option' do
-      phone = '636023853'
-      formatted_phone = PhoneFormatter.format(phone, country_code: 'MA')
+      cases = {
+        'MA' => ['636023853', '+212 6 36 02 38 53'],
+        'FR' => ['612345678', '+33 6 12 34 56 78'],
+        'GB' => ['7700900123', '+44 7700 900123'],
+        'DE' => ['15123456789', '+49 1512 3456789'],
+        'IN' => ['9123456789', '+91 91234 56789'],
+        'BR' => ['11987654321', '+55 11 98765-4321'],
+      }
 
-      expect(formatted_phone).to eq('+212 636-023853')
+      cases.each do |country_code, (phone, expected_phone)|
+        formatted_phone = PhoneFormatter.format(phone, country_code: country_code)
+
+        expect(formatted_phone).to eq(expected_phone)
+      end
     end
 
     it 'returns nil for nil' do
@@ -67,7 +77,7 @@ RSpec.describe PhoneFormatter do
     it 'masks all but the last four digits of formatted international numbers' do
       phone = '+212 636-023853'
       masked_phone = PhoneFormatter.mask(phone)
-      expect(masked_phone).to eq('****-**3853')
+      expect(masked_phone).to eq('** ** ** 38 53')
     end
 
     it 'returns an empty string for a blank phone number' do
