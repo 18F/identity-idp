@@ -326,7 +326,7 @@ else
           )
         },
       },
-      demographics_metrics_S3_report: {
+      demographics_metrics_s3_report: {
         class: 'Reports::DemographicsMetricsS3Report',
 <<<<<<< HEAD
         cron: cron_1st_of_month_12pm,
