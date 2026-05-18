@@ -1126,13 +1126,14 @@ RSpec.describe Idv::EnterPasswordController do
     describe 'historical events tracking' do
       let(:idv_attempt) do
         {
-          'idv/attempts' => [
-            { 'idv-enrollment-complete' => { 'user_uuid' => user.uuid } },
-          ],
+          'event_type' => 'idv-enrollment-complete',
+          'jti' => 'random-jti',
+          'event_metadata' => {
+            'user_uuid' => user.uuid,
+          },
         }
       end
 
-      let(:mock_user_session) { { 'idv/attempts' => [idv_attempt] } }
       let(:historical_attempts_api_enabled) { true }
 
       before do
@@ -1140,6 +1141,7 @@ RSpec.describe Idv::EnterPasswordController do
           historical_attempts_api_enabled:,
           allowed_attempts_providers: [{ 'issuer' => sp.issuer }],
         )
+        allow(controller).to receive(:user_session).and_return({ 'idv/attempts' => [idv_attempt] })
       end
 
       after do
@@ -1163,6 +1165,16 @@ RSpec.describe Idv::EnterPasswordController do
               event = UserProofingEvent.last
 
               expect(event.profile_id).to eq(user.profiles.last.id)
+            end
+
+            it 'caches user proofing events' do
+              put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+              data = controller.user_session[:encrypted_proofing_events]
+              historical_attempts = JSON.parse(
+                SessionEncryptor.new.kms_decrypt(data),
+              )
+
+              expect(historical_attempts).to eq([idv_attempt])
             end
           end
         end
