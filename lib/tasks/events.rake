@@ -13,6 +13,6 @@ namespace :events do
     end
 
     deleted_count = target_events.in_batches(of: batch_size).delete_all
-    puts "Deleted #{deleted_count} #{'event'.pluralize(deleted_count)} with event_type=#{target_event_type}."
+    puts "Deleted #{deleted_count} with event_type=#{target_event_type}."
   end
 end
