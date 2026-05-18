@@ -38,7 +38,9 @@ module UserAlerts
       # buffer is added to account for delays of the job run or within the job itself.
       [
         user.sign_in_new_device_at,
-        (IdentityConfig.store.new_device_alert_delay_in_minutes * 3).minutes.ago,
+        # (IdentityConfig.store.new_device_alert_delay_in_minutes * 3).minutes.ago,
+        # TODO: create a more reasonable buffer // should I create a config variable for the buffer?
+        (IdentityConfig.store.new_device_alert_delay_in_minutes + 10).minutes.ago,
       ].max
     end
 
