@@ -348,8 +348,8 @@ mfa_report_config: '[]'
 min_password_score: 3
 minimum_wait_before_another_usps_letter_in_hours: 24
 mx_timeout: 3
-new_device_alert_delay_in_minutes: 460
-new_device_alert_window_start_in_minutes: 15
+new_device_alert_delay_in_minutes: 5
+new_device_alert_window_start_in_minutes: 460
 newrelic_license_key: ''
 openid_connect_authorization_code_expiration_seconds: 300
 openid_connect_content_security_form_action_enabled: false
