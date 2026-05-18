@@ -129,26 +129,11 @@ RSpec.describe SignUp::PasswordsController do
           allow(controller).to receive(:ab_test_bucket)
             .with(:PASSKEY_UPSELL)
             .and_return(:passkey_setup_prompt_after_password_creation)
-        end
-        it 'redirects when the user has been placed into the bucket' do
-          expect(response).to redirect_to(webauthn_platform_setup_url)
-        end
-      end
-
-      context 'when account_creation_passkey_auto_prompt_enabled is enabled' do
-        before do
           allow(FeatureManagement).to receive(:account_creation_passkey_auto_prompt_enabled?)
             .and_return(true)
         end
-
-        let(:params) do
-          super().merge(platform_authenticator_available: 'true')
-        end
-
-        it 'redirects to authentication methods setup for the one-time auto prompt flow' do
-          subject
-
-          expect(response).to redirect_to(authentication_methods_setup_url)
+        it 'redirects when the user has been placed into the bucket' do
+          expect(response).to redirect_to(webauthn_platform_setup_url)
         end
       end
 
