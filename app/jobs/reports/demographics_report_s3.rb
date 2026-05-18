@@ -30,7 +30,7 @@ module Reports
     attr_reader :run_date, :days_back_for_time_period, :report_receiver, :time_frame
 
     # rubocop:disable Metrics/ParameterLists
-    def initialize(init_run_date = Time.zone.now, 
+    def initialize(init_run_date = Time.zone.now,
                    init_days_back_for_time_period = REPORT_DELAY_DAYS,
                    init_receiver = :internal, init_time_frame = TIME_FRAME,
                    *args, **rest)
