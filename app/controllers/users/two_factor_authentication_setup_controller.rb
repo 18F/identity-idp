@@ -23,13 +23,8 @@ module Users
         enabled_mfa_methods_count:,
         gov_or_mil_email: fed_or_mil_email?,
         in_account_creation_flow: in_account_creation_flow?,
-        auto_passkey_prompted: auto_passkey_prompted?,
       )
-      if auto_passkey_prompt_eligible?
-        trigger_auto_passkey_setup
-      else
-        render_index
-      end
+      render_index
     end
 
     def create
@@ -89,31 +84,6 @@ module Users
     def render_index
       @presenter = two_factor_options_presenter
       render :index, locals: account_creation_threatmetrix_variables
-    end
-
-    def trigger_auto_passkey_setup
-      user_session[:auto_passkey_prompted] = true
-      redirect_to webauthn_setup_url(platform: true, auto_trigger: true)
-    end
-
-    def auto_passkey_prompt_eligible?
-      auto_passkey_prompt_available? && auto_passkey_prompt_bucket == :auto_passkey_prompt
-    end
-
-    def auto_passkey_prompted?
-      user_session[:auto_passkey_prompted] == true
-    end
-
-    def auto_passkey_prompt_available?
-      FeatureManagement.account_creation_passkey_auto_prompt_enabled? &&
-        in_account_creation_flow? &&
-        !auto_passkey_prompted?
-    end
-
-    def auto_passkey_prompt_bucket
-      return unless auto_passkey_prompt_available?
-
-      @auto_passkey_prompt_bucket ||= ab_test_bucket(:PASSKEY_UPSELL)
     end
 
     def two_factor_options_form_params

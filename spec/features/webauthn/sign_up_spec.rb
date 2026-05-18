@@ -46,8 +46,6 @@ RSpec.feature 'webauthn sign up' do
   describe 'account creation passkey prompt' do
     context 'when feature flag is enabled' do
       let!(:user) do
-        allow(FeatureManagement).to receive(:account_creation_passkey_auto_prompt_enabled?)
-          .and_return(true)
         allow_any_instance_of(Users::TwoFactorAuthenticationSetupController)
           .to receive(:ab_test_bucket)
           .with(:PASSKEY_UPSELL)
@@ -70,8 +68,6 @@ RSpec.feature 'webauthn sign up' do
 
     context 'when feature flag is disabled' do
       let!(:user) do
-        allow(FeatureManagement).to receive(:account_creation_passkey_auto_prompt_enabled?)
-          .and_return(false)
         sign_up_and_set_password
       end
 
@@ -84,8 +80,6 @@ RSpec.feature 'webauthn sign up' do
   describe 'account creation setup after password setup' do
     context 'when the A/B test is enabled' do
       let!(:user) do
-        allow(FeatureManagement).to receive(:account_creation_passkey_auto_prompt_enabled?)
-          .and_return(true)
         allow_any_instance_of(SignUp::PasswordsController)
           .to receive(:ab_test_bucket)
           .with(:PASSKEY_UPSELL)

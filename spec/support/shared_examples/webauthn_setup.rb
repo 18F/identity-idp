@@ -44,8 +44,6 @@ RSpec.shared_examples 'webauthn setup' do
     let(:fake_analytics) { FakeAnalytics.new }
 
     before do
-      allow(FeatureManagement).to receive(:account_creation_passkey_auto_prompt_enabled?)
-        .and_return(false)
       allow(IdentityConfig.store)
       allow(WebauthnVerificationForm).to receive(:domain_name).and_return('localhost:3000')
       allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)

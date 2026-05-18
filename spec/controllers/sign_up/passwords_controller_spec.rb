@@ -136,11 +136,6 @@ RSpec.describe SignUp::PasswordsController do
       end
 
       context 'when account_creation_passkey_auto_prompt_enabled is enabled' do
-        before do
-          allow(FeatureManagement).to receive(:account_creation_passkey_auto_prompt_enabled?)
-            .and_return(true)
-        end
-
         let(:params) do
           super().merge(platform_authenticator_available: 'true')
         end
@@ -153,11 +148,6 @@ RSpec.describe SignUp::PasswordsController do
       end
 
       context 'when account_creation_passkey_prompt is disabled' do
-        before do
-          allow(FeatureManagement).to receive(:account_creation_passkey_auto_prompt_enabled?)
-            .and_return(false)
-        end
-
         it 'redirects to authentication methods setup' do
           subject
 
