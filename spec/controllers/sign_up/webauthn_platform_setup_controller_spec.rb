@@ -78,7 +78,7 @@ RSpec.describe SignUp::WebauthnPlatformSetupController do
 
         response
 
-        expect(response).to redirect_to(webauthn_setup_path(platform: true))
+        expect(response).to redirect_to(webauthn_setup_path(platform: true, auto_trigger: true))
       end
     end
   end

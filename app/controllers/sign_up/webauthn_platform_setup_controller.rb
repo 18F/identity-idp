@@ -25,7 +25,7 @@ module SignUp
 
     def dismiss_redirect_path
       if opted_to_add?
-        webauthn_setup_path(platform: true)
+        webauthn_setup_path(platform: true, auto_trigger: true)
       else
         authentication_methods_setup_url
       end
