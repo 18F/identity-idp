@@ -48,9 +48,7 @@ module Users
       save_challenge_in_session
       @exclude_credentials = exclude_credentials
       @need_to_set_up_additional_mfa = need_to_set_up_additional_mfa?
-      @auto_trigger = auto_trigger_request? &&
-                      platform_authenticator? &&
-                      in_account_creation_flow? &&
+      @auto_trigger = consume_auto_passkey_prompt? &&
                       result.success?
       if platform_authenticator?
         user_session[:webauthn_setup_started_at] = Time.zone.now.to_f
@@ -219,6 +217,14 @@ module Users
 
     def auto_trigger_request?
       params[:auto_trigger] == 'true'
+    end
+
+    def consume_auto_passkey_prompt?
+      return false unless auto_trigger_request? &&
+                          platform_authenticator? &&
+                          in_account_creation_flow?
+
+      user_session.delete(:auto_passkey_prompt_pending) == true
     end
 
     def webauthn_setup_duration
