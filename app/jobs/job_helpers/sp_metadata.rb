@@ -18,11 +18,6 @@ module JobHelpers
       issuer_strings.index_with { |issuer| @sp_metadata_mapping[issuer] }.compact
     end
 
-    # Clears the cached metadata mapping (useful for tests or when data changes)
-    def clear_service_provider_metadata_cache
-      @sp_metadata_mapping = nil
-    end
-
     private
 
     def build_service_provider_metadata_mapping
