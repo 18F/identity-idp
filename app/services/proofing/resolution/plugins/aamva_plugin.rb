@@ -62,11 +62,13 @@ module Proofing
             )
           end
 
+          bypass_exception = contains_bypass_exception_id?(result.exception)
+
           log_state_id_validation(
             analytics:, result: result.to_h, applicant_pii:, ipp_enrollment_in_progress:,
-            aamva_checked: result.exception.blank?
+            aamva_checked: result.exception.blank?, bypass_exception:
           )
-          if contains_bypass_exception_id?(result.exception)
+          if bypass_exception
             return skipped_result(exception: result.exception)
           end
 
@@ -182,13 +184,15 @@ module Proofing
         end
 
         def log_state_id_validation(analytics:, result:, applicant_pii:,
-                                    ipp_enrollment_in_progress:, aamva_checked:)
+                                    ipp_enrollment_in_progress:, aamva_checked:,
+                                    bypass_exception: nil)
           analytics&.idv_state_id_validation(
             **result,
             user_id: applicant_pii[:uuid],
             ipp_enrollment_in_progress:,
             aamva_checked:,
             supported_jurisdiction: aamva_supports_state_id_jurisdiction?(applicant_pii),
+            bypass_exception:,
             **biographical_info(applicant_pii),
             pii_like_keypaths: [
               [:requested_attributes, :first_name],
