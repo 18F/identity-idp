@@ -60,6 +60,13 @@ If using Devenv.sh:
    nix-env --install --attr devenv -f https://github.com/NixOS/nixpkgs/tarball/nixpkgs-unstable
    ```
 
+1. Install `postgres`
+
+   ```
+   brew install postgresql
+   brew services start postgres
+   ```
+
 1. Activate your development environment, and launch Postgres and Redis:
 
    ```

@@ -1500,7 +1500,12 @@ RSpec.describe Profile do
       FileUtils.rm_rf(dir_path) if Dir.exist?(dir_path)
     end
 
-    let(:attempt_events) { [{ 'idv-ssn-submitted' => { 'user_uuid' => user.uuid } }] }
+    let(:attempt_events) do
+      [{ 'jti' => 'some-jti',
+         'event_metadata' => { 'user_uuid' => user.uuid },
+         'event_type' => 'idv-ssn-submitted' }]
+    end
+
     it 'decrypts user proofing events' do
       profile.create_user_proofing_event(
         password: 'password',
