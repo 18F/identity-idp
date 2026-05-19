@@ -22,17 +22,17 @@ RSpec.describe AttemptsApi::HistoricalAttemptEvent do
   end
   let(:event_data) do
     {
-      'jti' => jti,
-      'iat' => iat,
-      'occurred_at' => occurred_at.to_f,
-      'event_type' => event_type,
-      'session_id' => session_id,
-      'event_metadata' => {
-        'user_uuid' => proofing_identity.uuid,
-        'application_url' => 'https://example.com/app',
-        'client_port' => '8080',
+      jti:,
+      iat:,
+      occurred_at:,
+      event_type:,
+      session_id:,
+      event_metadata: {
+        user_uuid: proofing_identity.uuid,
+        application_url: 'https://example.com/app',
+        client_port: '8080',
       },
-    }
+    }.as_json
   end
 
   subject do
