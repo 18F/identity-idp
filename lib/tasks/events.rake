@@ -3,7 +3,7 @@
 namespace :events do
   desc 'Delete max_attempts_reached events by stored event type'
   task delete_max_attempts_reached: :environment do |_task, _args|
-    batch_size = Integer(ENV.fetch('BATCH_SIZE', 1000), 10)
+    batch_size = Integer(ENV.fetch('BATCH_SIZE', '1000'), 10)
     target_event_type = 28
     target_events = Event.where(event_type: target_event_type)
 
