@@ -76,11 +76,11 @@ RSpec.describe PhoneFormatter do
 
     it 'masks formatted international numbers while preserving country-specific separators' do
       cases = {
-        'MA' => ['636023853', '** ** ** 38 53'],
-        'FR' => ['612345678', '** ** ** 56 78'],
-        'GB' => ['7700900123', '***** **0123'],
-        'DE' => ['15123456789', '***** ***6789'],
-        'IN' => ['9123456789', '****** *6789'],
+        'MA' => ['636023853', '* ** ** 38 53'],
+        'FR' => ['612345678', '* ** ** 56 78'],
+        'GB' => ['7700900123', '**** **0123'],
+        'DE' => ['15123456789', '**** ***6789'],
+        'IN' => ['9123456789', '***** *6789'],
         'BR' => ['11987654321', '(**) *****-4321'],
       }
 
@@ -89,6 +89,7 @@ RSpec.describe PhoneFormatter do
         masked_phone = PhoneFormatter.mask(formatted_phone)
 
         expect(masked_phone).to eq(expected_masked_phone)
+        expect(masked_phone.count('*') + masked_phone.count('0-9')).to eq(phone.length)
       end
     end
 

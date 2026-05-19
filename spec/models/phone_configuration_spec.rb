@@ -53,7 +53,7 @@ RSpec.describe PhoneConfiguration do
       let(:phone) { '+212 636-023853' }
 
       it 'keeps the groupings and leaves the last 4 digits' do
-        expect(masked_phone).to eq('** ** ** 38 53')
+        expect(masked_phone).to eq('* ** ** 38 53')
       end
     end
   end

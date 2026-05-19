@@ -11,11 +11,21 @@ module PhoneFormatter
   def self.mask(phone)
     return '' if phone.blank?
 
-    formatted = Phonelib.parse(phone).national.to_s
+    parsed_phone = Phonelib.parse(phone)
+    formatted = parsed_phone.national.to_s
     return '' if formatted.blank?
 
-    # Count only digits so Phonelib's locale-specific separators stay intact
-    # while we mask every leading digit except the last four.
+    national_digits = parsed_phone.raw_national.to_s
+    if formatted.count('0-9') > national_digits.length
+      formatted_without_country_code = parsed_phone.international.to_s.sub(
+        /\A\+#{Regexp.escape(parsed_phone.country_code)}\s*/,
+        '',
+      )
+      if formatted_without_country_code.gsub(/\D/, '') == national_digits
+        formatted = formatted_without_country_code
+      end
+    end
+
     digits_to_mask = [formatted.count('0-9') - 4, 0].max
 
     formatted.gsub(/\d/) do |digit|
