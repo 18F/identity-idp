@@ -22,7 +22,6 @@ RSpec.describe ProofingAgentJob, type: :job do
   let(:trace_id) { SecureRandom.uuid }
   let(:transaction_id) { document_capture_session.uuid }
   let(:user) { document_capture_session.user }
-  # let(:service_provider) { create(:service_provider, app_id: 'fake-app-id') }
   let(:webhook_url) { 'https://example.test/webhook' }
   let(:webhook_secret) { 'webhook-secret' }
   let(:webhook_status) { 200 }
