@@ -15,18 +15,14 @@ module PhoneFormatter
     formatted = parsed_phone.national.to_s
     return '' if formatted.blank?
 
-    national_digits = parsed_phone.raw_national.to_s
-    if formatted.count('0-9') > national_digits.length
-      formatted_without_country_code = parsed_phone.international.to_s.sub(
-        /\A\+#{Regexp.escape(parsed_phone.country_code)}\s*/,
-        '',
-      )
-      if formatted_without_country_code.gsub(/\D/, '') == national_digits
-        formatted = formatted_without_country_code
-      end
+    digits = parsed_phone.raw_national.to_s.presence || formatted.gsub(/\D/, '')
+    if formatted.count('0-9') > digits.length
+      formatted = parsed_phone.international.to_s.delete_prefix(
+        "+#{parsed_phone.country_code}",
+      ).strip
     end
 
-    digits_to_mask = [formatted.count('0-9') - 4, 0].max
+    digits_to_mask = [digits.length - 4, 0].max
 
     formatted.gsub(/\d/) do |digit|
       next digit if digits_to_mask.zero?
