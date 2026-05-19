@@ -2,7 +2,7 @@ class AddPendingAgentProofingUserToDocumentCaptureSessions < ActiveRecord::Migra
   disable_ddl_transaction!
 
   def change
-    add_column :document_capture_sessions, :pending_agent_proofed_user, :boolean, default: false, null: false
-    add_index :document_capture_sessions, [:user_id, :pending_agent_proofed_user], algorithm: :concurrently
+    add_column :document_capture_sessions, :pending_agent_proofed_user_at, :datetime
+    add_index :document_capture_sessions, [:user_id, :pending_agent_proofed_user_at], algorithm: :concurrently
   end
 end

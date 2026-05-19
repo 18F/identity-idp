@@ -391,11 +391,11 @@ class User < ApplicationRecord
   end
 
   def proofing_agent_pending?
-    document_capture_sessions.exists?(pending_agent_proofed_user: true)
+    document_capture_sessions.where.not(pending_agent_proofed_user_at: nil).exists?
   end
 
   def pending_agent_proofed_session
-    document_capture_sessions.find_by(pending_agent_proofed_user: true)
+    document_capture_sessions.where.not(pending_agent_proofed_user_at: nil).first
   end
 
   def pending_agent_proofed_user

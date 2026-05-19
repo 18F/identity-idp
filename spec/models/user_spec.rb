@@ -1520,12 +1520,12 @@ RSpec.describe User do
 
   describe '#proofing_agent_pending?' do
     let(:user) { create(:user) }
-    let(:pending_agent_proofed_user) { true }
+    let(:pending_agent_proofed_user_at) { Time.zone.now }
 
     it 'returns true if there is a pending agent proofed user' do
       create(
         :document_capture_session,
-        pending_agent_proofed_user: pending_agent_proofed_user,
+        pending_agent_proofed_user_at: pending_agent_proofed_user_at,
         user: user,
       )
       expect(user.proofing_agent_pending?).to eq true
