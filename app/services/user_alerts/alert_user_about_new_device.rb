@@ -30,10 +30,10 @@ module UserAlerts
     end
 
     def self.sign_in_events_start_time(user:)
-      [
-        user.sign_in_new_device_at,
-        IdentityConfig.store.new_device_alert_window_start_in_minutes.minutes.ago,
-      ].max
+      window_start_in_minutes = IdentityConfig.store.new_device_alert_window_start_in_minutes
+      start_times = [user.sign_in_new_device_at]
+      start_times << window_start_in_minutes.minutes.ago if window_start_in_minutes
+      start_times.max
     end
 
     def self.send_email(user, events, disavowal_event, disavowal_token)
