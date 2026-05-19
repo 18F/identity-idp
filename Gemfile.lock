@@ -438,7 +438,7 @@ GEM
       bigdecimal (>= 3.1, < 5)
     jwe (1.1.1)
       base64
-    jwt (3.1.2)
+    jwt (3.2.0)
       base64
     knapsack (4.0.0)
       rake
