@@ -93,6 +93,7 @@ module Users
 
     def trigger_auto_passkey_setup
       user_session[:auto_passkey_prompted] = true
+      user_session[:auto_passkey_prompt_pending] = true
       redirect_to webauthn_setup_url(platform: true, auto_trigger: true)
     end
 
@@ -107,6 +108,7 @@ module Users
     def auto_passkey_prompt_available?
       FeatureManagement.account_creation_passkey_auto_prompt_enabled? &&
         in_account_creation_flow? &&
+        user_session[:platform_authenticator_available] == true &&
         !auto_passkey_prompted?
     end
 

@@ -642,6 +642,7 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
                   state_id_number: '#' * applicant_pii[:state_id_number].length,
                   user_id: user_uuid,
                   aamva_checked: false,
+                  bypass_exception: false,
                 }
               )
             end
@@ -842,6 +843,7 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
                   state_id_number: '#' * applicant_pii[:state_id_number].length,
                   user_id: user_uuid,
                   aamva_checked: false,
+                  bypass_exception: false,
                 }
               )
             end
@@ -865,6 +867,11 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
               call.tap do |result|
                 expect(result.success?).to eq(true)
                 expect(result.vendor_name).to eq(Idp::Constants::Vendors::AAMVA_CHECK_SKIPPED)
+                expect(analytics).to have_logged_event(
+                  :idv_state_id_validation, hash_including(
+                    bypass_exception: true,
+                  )
+                )
               end
             end
           end
