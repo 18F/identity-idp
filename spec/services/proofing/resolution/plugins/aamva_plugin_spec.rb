@@ -506,7 +506,6 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
                   state_id_number: '#' * applicant_pii[:state_id_number].length,
                   user_id: user_uuid,
                   aamva_checked: true,
-                  bypass_exception: false,
                 }
               )
             end
@@ -592,7 +591,6 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
                   state_id_number: '#' * applicant_pii[:state_id_number].length,
                   user_id: user_uuid,
                   aamva_checked: true,
-                  bypass_exception: false,
                 }
               )
             end
@@ -709,7 +707,6 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
                   state_id_number: '#' * applicant_pii[:state_id_number].length,
                   user_id: user_uuid,
                   aamva_checked: true,
-                  bypass_exception: false,
                 }
               )
             end
@@ -795,7 +792,6 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
                   state_id_number: '#' * applicant_pii[:state_id_number].length,
                   user_id: user_uuid,
                   aamva_checked: true,
-                  bypass_exception: false,
                 }
               )
             end

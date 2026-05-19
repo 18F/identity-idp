@@ -76,7 +76,7 @@ module Proofing
         end
 
         def contains_bypass_exception_id?(result_exception)
-          return false if result_exception.blank?
+          return nil if result_exception.blank?
 
           IdentityConfig.store.idv_aamva_bypass_exception_ids.each do |exception_id|
             return true if result_exception.to_s.include?("ExceptionId: #{exception_id}")
