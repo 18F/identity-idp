@@ -646,6 +646,10 @@ RSpec.describe Reports::DemographicsMetricsS3Report do
         else # head_object
           { last_modified: 1.day.ago }
         end
+      elsif context.operation_name == :get_object # Default to fresh files
+        { body: StringIO.new(csv_data[report_type] || '') }
+        else # head_object
+          { last_modified: 1.day.ago } # Fresh file
       end
     end
 
