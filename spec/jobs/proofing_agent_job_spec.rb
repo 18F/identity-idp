@@ -306,6 +306,7 @@ RSpec.describe ProofingAgentJob, type: :job do
           expect(req.headers).not_to have_key('Authorization')
         end
       end.to_return(status: webhook_status)
+    end
 
     context 'failure email on final attempt' do
       let(:job_analytics) { FakeAnalytics.new }
