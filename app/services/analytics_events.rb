@@ -6773,6 +6773,7 @@ module AnalyticsEvents
   #   set up a platform authenticator through the Security Key setup flow.
   # @param [:authentication, :account_creation, nil] webauthn_platform_recommended A/B test for
   # @param [Integer, nil] webauthn_setup_duration Duration of webauthn setup in seconds
+  # @param [Boolean, nil] auto_passkey_prompted Whether the WebAuthn setup came from the auto prompt
   def multi_factor_auth_setup(
     success:,
     multi_factor_auth_method:,
@@ -6800,6 +6801,7 @@ module AnalyticsEvents
     transports_mismatch: nil,
     webauthn_platform_recommended: nil,
     webauthn_setup_duration: nil,
+    auto_passkey_prompted: nil,
     **extra
   )
     track_event(
@@ -6830,6 +6832,7 @@ module AnalyticsEvents
       transports_mismatch:,
       webauthn_platform_recommended:,
       webauthn_setup_duration:,
+      auto_passkey_prompted:,
       **extra,
     )
   end
@@ -8422,15 +8425,21 @@ module AnalyticsEvents
   # Tracks when user visits MFA selection page
   # @param [Integer] enabled_mfa_methods_count Number of enabled MFA methods on the account
   # @param [Boolean] gov_or_mil_email Whether registered user has government email
+  # @param [Boolean, nil] in_account_creation_flow Whether user is going through account creation
+  # @param [Boolean, nil] auto_passkey_prompted Whether the user was auto-redirected to WebAuthn
   def user_registration_2fa_setup_visit(
     enabled_mfa_methods_count:,
     gov_or_mil_email:,
+    in_account_creation_flow: nil,
+    auto_passkey_prompted: nil,
     **extra
   )
     track_event(
       'User Registration: 2FA Setup visited',
       enabled_mfa_methods_count:,
       gov_or_mil_email:,
+      in_account_creation_flow:,
+      auto_passkey_prompted:,
       **extra,
     )
   end
@@ -8741,6 +8750,16 @@ module AnalyticsEvents
     track_event(:webauthn_platform_recommended_visited)
   end
 
+  # User submits form to add passkey to account during account creation
+  def webauthn_platform_signup_setup_ab_test_submitted(opted_to_add:, **extra)
+    track_event(:webauthn_platform_signup_setup_sb_test_submitted)
+  end
+
+  # User visits webauth platform upsell after sign up
+  def webauthn_platform_signup_setup_ab_test_visited
+    track_event(:webauthn_platform_signup_setup_ab_test_visited)
+  end
+
   # @param [Boolean] platform_authenticator Whether authentication method was registered as platform
   #   authenticator
   # @param [Number] configuration_id Database ID of WebAuthn configuration
@@ -8816,11 +8835,15 @@ module AnalyticsEvents
   # @param [Boolean] platform_authenticator Whether setup is for platform authenticator
   # @param [Integer] enabled_mfa_methods_count Number of enabled MFA methods on the account
   # @param [Boolean] in_account_creation_flow Whether user is going through creation flow
+  # @param [Boolean, nil] auto_passkey_prompted Whether the user was auto-redirected to setup
+  # @param [Boolean, nil] webauthn_platform_signup_recommended suggesting users to setup f/t unlock after password creation
   # Tracks when WebAuthn setup is visited
   def webauthn_setup_visit(
     platform_authenticator:,
     enabled_mfa_methods_count:,
     in_account_creation_flow:,
+    auto_passkey_prompted: nil,
+    webauthn_platform_signup_recommended: nil,
     **extra
   )
     track_event(
@@ -8828,6 +8851,8 @@ module AnalyticsEvents
       platform_authenticator:,
       enabled_mfa_methods_count:,
       in_account_creation_flow:,
+      auto_passkey_prompted:,
+      webauthn_platform_signup_recommended:,
       **extra,
     )
   end

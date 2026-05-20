@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe Users::TwoFactorAuthenticationSetupController do
+  include AccountCreationThreatMetrixHelper
+
   describe 'GET index' do
     let(:user) { create(:user) }
 
@@ -18,6 +20,8 @@ RSpec.describe Users::TwoFactorAuthenticationSetupController do
         'User Registration: 2FA Setup visited',
         enabled_mfa_methods_count: 0,
         gov_or_mil_email: false,
+        in_account_creation_flow: false,
+        auto_passkey_prompted: false,
       )
     end
 
@@ -38,23 +42,13 @@ RSpec.describe Users::TwoFactorAuthenticationSetupController do
       let(:tmx_session_id) { '1234' }
 
       before do
-        allow(FeatureManagement).to receive(:account_creation_device_profiling_collecting_enabled?)
-          .and_return(true)
-        allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_org_id).and_return('org1')
-        allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_mock_enabled)
-          .and_return(false)
-        controller.user_session[:sign_up_threatmetrix_session_id] = tmx_session_id
+        stub_account_creation_threatmetrix(tmx_session_id: tmx_session_id)
       end
 
       it 'renders new valid request' do
-        tmx_url = 'https://h.online-metrix.net/fp'
         expect(controller).to receive(:render).with(
           :index,
-          locals: { threatmetrix_session_id: tmx_session_id,
-                    threatmetrix_javascript_urls:
-                      ["#{tmx_url}/tags.js?org_id=org1&session_id=#{tmx_session_id}"],
-                    threatmetrix_iframe_url:
-                      "#{tmx_url}/tags?org_id=org1&session_id=#{tmx_session_id}" },
+          locals: account_creation_threatmetrix_locals(tmx_session_id: tmx_session_id),
         ).and_call_original
 
         expect(response).to render_template(:index)
@@ -64,6 +58,18 @@ RSpec.describe Users::TwoFactorAuthenticationSetupController do
         expect(controller).to receive(:override_csp_for_threat_metrix)
 
         response
+      end
+
+      context 'when threatmetrix is already bootstrapped' do
+        before do
+          controller.user_session[:sign_up_threatmetrix_bootstrapped] = true
+        end
+
+        it 'does not override CSPs for ThreatMetrix again' do
+          expect(controller).not_to receive(:override_csp_for_threat_metrix)
+
+          response
+        end
       end
     end
 
@@ -87,6 +93,8 @@ RSpec.describe Users::TwoFactorAuthenticationSetupController do
             'User Registration: 2FA Setup visited',
             enabled_mfa_methods_count: 0,
             gov_or_mil_email: true,
+            in_account_creation_flow: false,
+            auto_passkey_prompted: false,
           )
         end
       end
@@ -126,6 +134,8 @@ RSpec.describe Users::TwoFactorAuthenticationSetupController do
           'User Registration: 2FA Setup visited',
           enabled_mfa_methods_count: 1,
           gov_or_mil_email: false,
+          in_account_creation_flow: false,
+          auto_passkey_prompted: false,
         )
       end
     end
@@ -147,6 +157,72 @@ RSpec.describe Users::TwoFactorAuthenticationSetupController do
         get :index
 
         expect(response).to redirect_to(user_two_factor_authentication_url)
+      end
+    end
+
+    context 'when account creation passkey prompt is enabled' do
+      before do
+        allow(FeatureManagement).to receive(:account_creation_passkey_auto_prompt_enabled?)
+          .and_return(true)
+        controller.user_session[:in_account_creation_flow] = true
+      end
+
+      context 'when platform authenticator is available' do
+        before do
+          controller.user_session[:platform_authenticator_available] = true
+        end
+
+        context 'when user is in the auto prompt bucket' do
+          before do
+            allow(controller).to receive(:ab_test_bucket)
+              .with(:PASSKEY_UPSELL)
+              .and_return(:auto_passkey_prompt)
+          end
+
+          it 'redirects to platform webauthn setup' do
+            expect { response }
+              .to change { controller.user_session[:auto_passkey_prompted] }
+              .from(nil)
+              .to(true)
+
+            expect(response).to redirect_to(webauthn_setup_url(platform: true, auto_trigger: true))
+          end
+
+          it 'does not auto prompt after it has already been triggered once' do
+            controller.user_session[:auto_passkey_prompted] = true
+
+            get :index
+
+            expect(response).to render_template(:index)
+            expect(controller.user_session[:auto_passkey_prompted]).to eq(true)
+          end
+        end
+
+        context 'when user is in the control bucket' do
+          before do
+            allow(controller).to receive(:ab_test_bucket)
+              .with(:PASSKEY_UPSELL)
+              .and_return(:mfa_selection)
+          end
+
+          it 'renders the mfa selection page' do
+            get :index
+
+            expect(response).to render_template(:index)
+          end
+        end
+      end
+
+      context 'when platform authenticator is not available' do
+        before do
+          controller.user_session[:platform_authenticator_available] = false
+        end
+
+        it 'does not redirect to platform webauthn setup' do
+          get :index
+
+          expect(response).to render_template(:index)
+        end
       end
     end
   end
@@ -228,24 +304,13 @@ RSpec.describe Users::TwoFactorAuthenticationSetupController do
         let(:tmx_session_id) { '1234' }
 
         before do
-          allow(FeatureManagement)
-            .to receive(:account_creation_device_profiling_collecting_enabled?)
-            .and_return(true)
-          allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_org_id).and_return('org1')
-          allow(IdentityConfig.store).to receive(:lexisnexis_threatmetrix_mock_enabled)
-            .and_return(false)
-          controller.user_session[:sign_up_threatmetrix_session_id] = tmx_session_id
+          stub_account_creation_threatmetrix(tmx_session_id: tmx_session_id)
         end
 
         it 'renders new with invalid request' do
-          tmx_url = 'https://h.online-metrix.net/fp'
           expect(controller).to receive(:render).with(
             :index,
-            locals: { threatmetrix_session_id: tmx_session_id,
-                      threatmetrix_javascript_urls:
-                        ["#{tmx_url}/tags.js?org_id=org1&session_id=#{tmx_session_id}"],
-                      threatmetrix_iframe_url:
-                        "#{tmx_url}/tags?org_id=org1&session_id=#{tmx_session_id}" },
+            locals: account_creation_threatmetrix_locals(tmx_session_id: tmx_session_id),
           ).and_call_original
 
           expect(response).to render_template(:index)

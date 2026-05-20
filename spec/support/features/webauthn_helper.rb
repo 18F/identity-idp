@@ -31,7 +31,12 @@ module WebAuthnHelper
   end
 
   def mock_submit_without_pressing_button_on_hardware_key_on_setup
-    click_setup
+    if javascript_enabled?
+      separator = current_url.include?('?') ? '&' : '?'
+      visit("#{current_url}#{separator}error=SecurityError")
+    else
+      click_setup
+    end
   end
 
   def mock_press_button_on_hardware_key_on_setup

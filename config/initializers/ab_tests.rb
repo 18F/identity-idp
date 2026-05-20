@@ -126,6 +126,28 @@ module AbTests
     user&.uuid
   end.freeze
 
+  PASSKEY_UPSELL = AbTest.new(
+    experiment_name: 'Passkey Upsell',
+    should_log: [
+      'User Registration: 2FA Setup visited',
+      'User Registration: 2FA Setup',
+      'WebAuthn Setup Visited',
+      'Multi-Factor Authentication Setup',
+      'User Registration: User Fully Registered',
+      :webauthn_platform_signup_setup_ab_test_visited,
+      :webauthn_platform_signup_setup_sb_test_submitted,
+    ].to_set,
+    buckets: {
+      auto_passkey_prompt: IdentityConfig.store.account_creation_passkey_auto_prompt_percent,
+      passkey_setup_prompt_after_password_creation: IdentityConfig
+        .store.account_creation_passkey_setup_after_password_percent,
+    },
+    default_bucket: :mfa_selection,
+    persist: true,
+  ) do |user:, user_session:, **|
+    user.uuid
+  end.freeze
+
   PROOFING_VENDOR = AbTest.new(
     experiment_name: 'Proofing Vendor',
     should_log: /^idv/i,

@@ -22,6 +22,7 @@ RSpec.describe 'users/webauthn_setup/new.html.erb' do
     allow(view).to receive(:user_session).and_return(user_session)
     allow(view).to receive(:in_multi_mfa_selection_flow?).and_return(false)
     allow(view).to receive(:mobile?).and_return(false)
+    assign(:account_creation_threatmetrix, { threatmetrix_session_id: nil })
     assign(:platform_authenticator, platform_authenticator)
     assign(:user_session, user_session)
     assign(:presenter, presenter)

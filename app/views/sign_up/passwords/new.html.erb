@@ -15,9 +15,12 @@
         },
       ) %>
   <%= hidden_field_tag :confirmation_token, @confirmation_token, id: 'confirmation_token' %>
+  <%= hidden_field_tag :platform_authenticator_available, nil, id: 'platform_authenticator_available' %>
   <%= f.submit t('forms.buttons.continue'), class: 'display-block margin-y-5' %>
 <% end %>
 
 <%= render 'shared/password_accordion' %>
 
 <%= render 'shared/cancel' %>
+
+<%= javascript_packs_tag_once('platform-authenticator-available', preload_links_header: false) %>

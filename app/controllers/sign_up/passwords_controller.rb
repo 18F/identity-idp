@@ -80,11 +80,28 @@ module SignUp
       sign_in @user
       set_new_device_session(false)
       user_session[:in_account_creation_flow] = true
+      user_session[:platform_authenticator_available] =
+        params[:platform_authenticator_available] == 'true'
       if current_user.accepted_rules_of_use_still_valid?
-        redirect_to authentication_methods_setup_url
+        next_step_redirect
       else
         redirect_to rules_of_use_url
       end
+    end
+
+    def next_step_redirect
+      if user_session[:platform_authenticator_available] == true &&
+         passkey_setup_upsell_prompt_eligible?
+        redirect_to webauthn_platform_setup_url
+      else
+        redirect_to authentication_methods_setup_url
+      end
+    end
+
+    def passkey_setup_upsell_prompt_eligible?
+      FeatureManagement.account_creation_passkey_auto_prompt_enabled? &&
+        ab_test_bucket(:PASSKEY_UPSELL) ==
+          :passkey_setup_prompt_after_password_creation
     end
   end
 end

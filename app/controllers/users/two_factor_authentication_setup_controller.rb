@@ -13,18 +13,23 @@ module Users
     before_action :confirm_user_authenticated_for_2fa_setup
     before_action :check_if_possible_piv_user
     before_action :override_csp_for_threat_metrix,
-                  if: -> { FeatureManagement.account_creation_device_profiling_collecting_enabled? }
+                  if: :account_creation_threatmetrix_bootstrap_needed?
 
     delegate :enabled_mfa_methods_count, to: :mfa_context
 
     def index
       two_factor_options_form
-      @presenter = two_factor_options_presenter
       analytics.user_registration_2fa_setup_visit(
         enabled_mfa_methods_count:,
         gov_or_mil_email: fed_or_mil_email?,
+        in_account_creation_flow: in_account_creation_flow?,
+        auto_passkey_prompted: auto_passkey_prompted?,
       )
-      render :index, locals: threatmetrix_variables
+      if auto_passkey_prompt_eligible?
+        trigger_auto_passkey_setup
+      else
+        render_index
+      end
     end
 
     def create
@@ -37,8 +42,7 @@ module Users
         process_valid_form
       else
         flash.now[:error] = result.first_error_message
-        @presenter = two_factor_options_presenter
-        render :index, locals: threatmetrix_variables
+        render_index
       end
     end
 
@@ -80,6 +84,36 @@ module Users
     def process_valid_form
       user_session[:mfa_selections] = @two_factor_options_form.selection
       redirect_to(first_mfa_selection_path || after_mfa_setup_path)
+    end
+
+    def render_index
+      @presenter = two_factor_options_presenter
+      render :index, locals: account_creation_threatmetrix_variables
+    end
+
+    def trigger_auto_passkey_setup
+      user_session[:auto_passkey_prompted] = true
+      redirect_to webauthn_setup_url(platform: true, auto_trigger: true)
+    end
+
+    def auto_passkey_prompt_eligible?
+      auto_passkey_prompt_available? && auto_passkey_prompt_bucket == :auto_passkey_prompt
+    end
+
+    def auto_passkey_prompted?
+      user_session[:auto_passkey_prompted] == true
+    end
+
+    def auto_passkey_prompt_available?
+      FeatureManagement.account_creation_passkey_auto_prompt_enabled? &&
+        in_account_creation_flow? &&
+        !auto_passkey_prompted?
+    end
+
+    def auto_passkey_prompt_bucket
+      return unless auto_passkey_prompt_available?
+
+      @auto_passkey_prompt_bucket ||= ab_test_bucket(:PASSKEY_UPSELL)
     end
 
     def two_factor_options_form_params
