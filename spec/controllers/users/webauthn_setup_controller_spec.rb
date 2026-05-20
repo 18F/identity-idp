@@ -99,7 +99,6 @@ RSpec.describe Users::WebauthnSetupController do
           enabled_mfa_methods_count: 0,
           in_account_creation_flow: false,
           auto_passkey_prompted: false,
-          webauthn_platform_signup_recommended: false,
         )
       end
 
