@@ -230,7 +230,7 @@ module Users
     def next_setup_path
       if @platform_authenticator &&
          (user_session[:auto_passkey_prompted] ||
-          user_session[:webauthnn_platform_signup_setup_recommended])
+          user_session[:webauthn_platform_signup_setup_recommended])
 
         return super || authentication_methods_setup_path
       end

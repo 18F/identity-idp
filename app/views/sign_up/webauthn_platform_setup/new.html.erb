@@ -12,9 +12,10 @@
         ft_unlock_html: link_to(
           t('webauthn_platform_setup.ft_unlock'),
           MarketingSite.help_center_article_url(
-            category: 'get-started',
-            article: 'authentication-methods',
+            category: 'create-account',
+            article: 'authentication-methods/face-or-touch-unlock',
           ),
+            new_tab: true,
         ),
         phishing_resistant_html: link_to(
           t('webauthn_platform_setup.phishing_resistant'),
