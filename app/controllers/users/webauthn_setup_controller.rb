@@ -45,7 +45,7 @@ module Users
         enabled_mfa_methods_count: result.extra[:enabled_mfa_methods_count],
         auto_passkey_prompted: auto_trigger_request?,
         webauthn_platform_signup_recommended:
-          user_session[:webauthn_platform_signup_setup_recommended],
+          user_session[:webauthn_platform_signup_setup_recommended] || false,
       )
       save_challenge_in_session
       @exclude_credentials = exclude_credentials
