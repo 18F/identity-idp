@@ -1,6 +1,6 @@
 <% content_for(:pre_flash_content) do %>
   <%= render StepIndicatorComponent.new(
-        steps: @ssn_presenter.step_indicator_steps,
+        steps: step_indicator_steps,
         current_step: :verify_info,
         locale_scope: 'idv',
         class: 'margin-x-neg-2 margin-top-neg-4 tablet:margin-x-neg-6 tablet:margin-top-neg-4',
@@ -28,7 +28,7 @@
   </div>
 <% end %>
 
-<%= simple_form_for(@ssn_presenter.ssn_form, url: url_for, method: :put) do |f| %>
+<%= simple_form_for(@dob_ssn_form, url: url_for, method: :post) do |f| %>
   <div class="tablet:grid-col-8">
     <%= render 'shared/ssn_field', f: f %>
   </div>
