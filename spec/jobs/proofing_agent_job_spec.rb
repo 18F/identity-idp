@@ -38,6 +38,9 @@ RSpec.describe ProofingAgentJob, type: :job do
       }.with_indifferent_access,
     ]
   end
+  let(:service_provider) { create(:service_provider, app_id: 'fake-app-id') }
+  let(:submit_attempts) { 1 }
+  let(:remaining_attempts) { 2 }
 
   describe '#perform' do
     let(:instance) { ProofingAgentJob.new }
@@ -67,6 +70,8 @@ RSpec.describe ProofingAgentJob, type: :job do
         proofing_location_id: proofing_location_id,
         correlation_id: correlation_id,
         final_attempt: final_attempt,
+        submit_attempts: submit_attempts,
+        remaining_attempts: remaining_attempts,
       )
     end
 
@@ -183,6 +188,8 @@ RSpec.describe ProofingAgentJob, type: :job do
 
     context 'when the AAMVA check passes' do
       before do
+        stub_analytics
+        allow(Analytics).to receive(:new).and_return(@analytics)
         allow(IdentityConfig.store).to receive(:idv_phone_precheck_percent).and_return(100)
       end
 
@@ -194,6 +201,37 @@ RSpec.describe ProofingAgentJob, type: :job do
         expect(result[:reason]).to be_nil
         expect(result[:aamva_status]).to eq 'passed'
         expect(result[:source_check_vendor]).to eq('StateIdMock')
+      end
+
+      it 'logs phone confirmation vendor event with proofing agent' do
+        perform
+        expect(@analytics).to have_logged_event(
+          'IdV: phone confirmation vendor',
+          success: true,
+          errors: {},
+          vendor: {
+            exception: nil,
+            errors: {},
+            success: true,
+            timed_out: false,
+            transaction_id: Proofing::Mock::AddressMockClient::TRANSACTION_ID,
+            reference: '',
+            vendor_name: 'AddressMock',
+            result: nil,
+          },
+          area_code: '202',
+          country_code: 'US',
+          new_phone_added: true,
+          hybrid_handoff_phone_used: false,
+          manual_review: false,
+          reason_codes: {},
+          proofing_agent: {
+            agent_id: proofing_agent_id,
+            location_id: proofing_location_id,
+            correlation_id: correlation_id,
+            transaction_id: transaction_id,
+          },
+        )
       end
 
       it 'passes aamva_verified_attributes into resolution_result' do

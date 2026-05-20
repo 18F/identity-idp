@@ -15,6 +15,8 @@ class ProofingAgentJob < ApplicationJob
     encrypted_arguments:,
     trace_id:,
     transaction_id:,
+    submit_attempts:,
+    remaining_attempts:,
     proofing_agent_id: nil,
     proofing_location_id: nil,
     correlation_id: nil,
@@ -47,6 +49,8 @@ class ProofingAgentJob < ApplicationJob
       proofing_location_id:,
       correlation_id:,
       transaction_id:,
+      submit_attempts:,
+      remaining_attempts:,
     )
 
     combined_result = proofing_result.combined_result.to_h
@@ -96,7 +100,9 @@ class ProofingAgentJob < ApplicationJob
     proofing_agent_id:,
     proofing_location_id:,
     correlation_id:,
-    transaction_id:
+    transaction_id:,
+    submit_attempts:,
+    remaining_attempts:
   )
     aamva_result = nil
 
@@ -123,6 +129,13 @@ class ProofingAgentJob < ApplicationJob
         applicant_pii:,
         timer:,
       )
+      analytics.idv_dos_passport_verification(
+        success: mrz_result&.success?,
+        submit_attempts:,
+        remaining_submit_attempts: remaining_attempts,
+        document_type_requested: Idp::Constants::DocumentTypes::PASSPORT,
+        proofing_agent: proofing_agent_log_attributes,
+      )
     end
 
     re_encrypted_arguments = Encryption::Encryptors::BackgroundProofingArgEncryptor.new.encrypt(
@@ -137,6 +150,7 @@ class ProofingAgentJob < ApplicationJob
       user_id: user.id,
       service_provider_issuer:,
       proofing_vendor:,
+      proofing_agent: proofing_agent_log_attributes,
     )
 
     ProofingAgent::ProofingResult.new(
@@ -159,7 +173,8 @@ class ProofingAgentJob < ApplicationJob
     trace_id:,
     user_id:,
     service_provider_issuer:,
-    proofing_vendor:
+    proofing_vendor:,
+    proofing_agent:
   )
     timer.time('resolution') do
       ResolutionProofingJob.perform_now(
@@ -174,7 +189,26 @@ class ProofingAgentJob < ApplicationJob
       )
     end
 
-    DocumentCaptureSession.new(result_id:).load_proofing_result&.result
+    proofing_result = DocumentCaptureSession.new(result_id:).load_proofing_result&.result
+
+    phone_precheck_body = proofing_result&.dig(:context, :stages, :phone_precheck)
+    phone_info = proofing_result&.dig(:biographical_info, :phone)
+
+    analytics.idv_phone_confirmation_vendor_submitted(
+      success: proofing_result&.dig(:success),
+      vendor: phone_precheck_body,
+      area_code: phone_info&.dig(:area_code),
+      country_code: phone_info&.dig(:country_code),
+      phone_fingerprint: phone_info&.dig(:fingerprint),
+      new_phone_added: true,
+      hybrid_handoff_phone_used: false,
+      manual_review: false,
+      errors: phone_precheck_body&.dig(:errors),
+      reason_codes: proofing_result&.dig(:context, :stages, :resolution, :reason_codes),
+      proofing_agent:,
+    )
+
+    proofing_result
   end
 
   def call_aamva_verification(applicant_pii:, current_sp:, timer:, proofing_agent_log_attributes:)

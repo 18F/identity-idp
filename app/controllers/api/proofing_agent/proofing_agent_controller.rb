@@ -91,6 +91,8 @@ module Api
           trace_id: amzn_trace_id,
           transaction_id:,
           final_attempt:,
+          submit_attempts: proofing_rate_limiter.attempts,
+          remaining_attempts: proofing_rate_limiter.remaining_count,
         )
 
         analytics.idv_doc_auth_verify_proofing_results(

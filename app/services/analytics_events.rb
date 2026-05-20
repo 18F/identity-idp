@@ -2312,7 +2312,8 @@ module AnalyticsEvents
   # @param step [String] Always "verify" (leftover from flow state machine days)
   # @param success [Boolean] Whether identity resolution succeeded overall
   # @param previous_ssn_edit_distance [Number] The edit distance to the previous submitted SSN
-  # @param proofing_agent [Hash, nil] proofing agent information including location id, agent id, correlation id, and transaction id
+  # @param proofing_agent [Hash, nil] proofing agent information including location id, agent id,
+  #   correlation id, and transaction id
   # @param exceptions [Hash, nil] The exceptions found in the proofing results.
   def idv_doc_auth_verify_proofing_results(
     ab_tests: nil,
@@ -2490,6 +2491,8 @@ module AnalyticsEvents
   # @param [String] error_message The error message if provided in a failed response
   # @param [String] error_reason The error reason if provided in a failed response
   # @param [String] errors The DocAuth response error for failure
+  # @param proofing_agent [Hash, nil] proofing agent information including location id, agent id,
+  #   correlation id, and transaction id
   def idv_dos_passport_verification(
     success:,
     submit_attempts:,
@@ -2503,6 +2506,7 @@ module AnalyticsEvents
     error_message: nil,
     error_reason: nil,
     errors: nil,
+    proofing_agent: nil,
     **extra
   )
     track_event(
@@ -2519,6 +2523,7 @@ module AnalyticsEvents
       error_reason:,
       errors:,
       exception:,
+      proofing_agent:,
       **extra,
     )
   end
@@ -5129,6 +5134,8 @@ module AnalyticsEvents
   # @param [Hash] reason_codes socure internal reason codes for accept reject decision
   # @param [Hash] alternate_result Details for proofing attempt with primary vendor
   # @param [Boolean, nil] manual_review Phone was manually reviewed
+  # @param proofing_agent [Hash, nil] proofing agent information including location id, agent id,
+  #   correlation id, and transaction id
   # The vendor finished the process of confirming the users phone
   def idv_phone_confirmation_vendor_submitted(
     success:,
@@ -5148,6 +5155,7 @@ module AnalyticsEvents
     reason_codes: nil,
     customer_user_id: nil,
     alternate_result: nil,
+    proofing_agent: nil,
     **extra
   )
     track_event(
@@ -5169,6 +5177,7 @@ module AnalyticsEvents
       reason_codes:,
       customer_user_id:,
       alternate_result:,
+      proofing_agent:,
       **extra,
     )
   end
@@ -6182,7 +6191,8 @@ module AnalyticsEvents
   # @param [Hash, nil] errors The errors encountered during proofing.
   # @param [String, nil] exception The exception message.
   # @param [Boolean, nil] mva_exception Whether an MVA exception occured.
-  # @param proofing_agent [Hash, nil] proofing agent information including location id, agent id, correlation id, and transaction id
+  # @param proofing_agent [Hash, nil] proofing agent information including location id, agent id,
+  #   correlation id, and transaction id
   def idv_state_id_validation(
     success:,
     vendor_name:,
