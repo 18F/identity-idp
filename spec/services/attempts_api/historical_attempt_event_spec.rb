@@ -20,6 +20,8 @@ RSpec.describe AttemptsApi::HistoricalAttemptEvent do
   let!(:aaca_identity) do
     AgencyIdentityLinker.for(user:, service_provider: aaca_sp, skip_create: false)
   end
+  let(:user_uuid) { proofing_identity.uuid }
+
   let(:event_data) do
     {
       jti:,
@@ -28,7 +30,7 @@ RSpec.describe AttemptsApi::HistoricalAttemptEvent do
       event_type:,
       session_id:,
       event_metadata: {
-        user_uuid: proofing_identity.uuid,
+        user_uuid:,
         application_url: 'https://example.com/app',
         client_port: '8080',
       },
@@ -53,6 +55,14 @@ RSpec.describe AttemptsApi::HistoricalAttemptEvent do
           'client_port' => nil,
         },
       )
+    end
+
+    context 'when the user is not found' do
+      let(:user_uuid) { 'non-existent-uuid' }
+
+      it 'initializes the event with nil user_uuid in metadata' do
+        expect(subject.event_metadata['user_uuid']).to be_nil
+      end
     end
   end
 end

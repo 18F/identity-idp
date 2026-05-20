@@ -14,13 +14,13 @@ module AttemptsApi
     end
 
     def transformed_metadata(metadata:, sp:)
-      user = AgencyIdentity.find_by(uuid: metadata['user_uuid']).user
+      user = AgencyIdentity.find_by(uuid: metadata['user_uuid'])&.user
+      user_uuid = user.present? ?
+        AgencyIdentityLinker.for(user:, service_provider: sp, skip_create: true).uuid :
+        nil
 
       metadata.merge(
-        'user_uuid' => AgencyIdentityLinker.for(
-          user:, service_provider: sp,
-          skip_create: true
-        ).uuid,
+        'user_uuid' => user_uuid,
         'application_url' => nil,
         'client_port' => nil,
       )
