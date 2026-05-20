@@ -58,7 +58,7 @@ module ProofingAgent
 
       timeout = 15
 
-      Faraday.new(url: URI.join(webhook_url).to_s, headers: request_headers) do |conn|
+      Faraday.new(url: URI.join(webhook_url).to_s) do |conn|
         conn.request :retry, retry_options
         conn.request :instrumentation, name: 'request_metric.faraday'
         conn.adapter :net_http
@@ -66,13 +66,11 @@ module ProofingAgent
         conn.options.read_timeout = timeout
         conn.options.open_timeout = timeout
         conn.options.write_timeout = timeout
+        conn.headers['Authorization'] = "Bearer #{webhook_secret}" if webhook_secret.present?
+        conn.headers['X-Correlation-ID'] = correlation_id
+        conn.headers['Content-Type'] = 'application/json'
+        conn.headers.merge!(webhook_custom_headers)
       end
-    end
-
-    def request_headers
-      headers = { 'Content-Type' => 'application/json', 'X-Correlation-ID' => correlation_id }
-      headers['Authorization'] = "Bearer #{webhook_secret}" if webhook_secret.present?
-      headers
     end
 
     def document_capture_session

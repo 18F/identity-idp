@@ -25,6 +25,7 @@ RSpec.describe ProofingAgentJob, type: :job do
   let(:webhook_url) { 'https://example.test/webhook' }
   let(:webhook_secret) { 'webhook-secret' }
   let(:webhook_status) { 200 }
+  let(:webhook_headers) { nil }
   let(:idv_proofing_agent_config) do
     [
       {
@@ -32,6 +33,7 @@ RSpec.describe ProofingAgentJob, type: :job do
         webhook: {
           url: webhook_url,
           secret: webhook_secret,
+          headers: webhook_headers,
         },
       }.with_indifferent_access,
     ]
@@ -104,6 +106,24 @@ RSpec.describe ProofingAgentJob, type: :job do
             transaction_id: transaction_id,
             correlation_id: correlation_id,
           )
+        end
+      end
+
+      context 'when the webhook URL is configured with additional headers' do
+        let(:webhook_headers) { { 'X-Test-Header' => 'test-value' } }
+        it 'includes the additional headers in the webhook request' do
+          expect { perform }.to have_enqueued_job(ProofingAgentWebhookJob).with(
+            success: true,
+            reason: nil,
+            transaction_id: transaction_id,
+            correlation_id: correlation_id,
+          )
+
+          result = document_capture_session.reload.load_agent_proofed_user
+          expect(result[:success]).to be true
+          expect(result[:reason]).to be_nil
+          expect(result[:resolution][:success]).to be true
+          expect(result[:resolution][:exception]).to be_nil
         end
       end
 
@@ -273,6 +293,11 @@ RSpec.describe ProofingAgentJob, type: :job do
         end
         expect(body['transaction_id']).to eq(transaction_id)
         expect(req.headers['X-Correlation-Id']).to eq(correlation_id)
+
+        webhook_headers&.each do |key, value|
+          expect(req.headers[key]).to eq(value)
+        end
+
         if webhook_secret.present?
           expect(req.headers['Authorization']).to eq("Bearer #{webhook_secret}")
         else

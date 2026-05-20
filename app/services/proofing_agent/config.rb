@@ -21,5 +21,9 @@ module ProofingAgent
     def webhook_secret
       issuer_config&.dig('webhook', 'secret')
     end
+
+    def webhook_custom_headers
+      issuer_config&.dig('webhook', 'headers') || {}
+    end
   end
 end
