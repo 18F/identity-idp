@@ -209,13 +209,12 @@ module DocAuth
         end
 
         def document_type_received
-          doc_type = STATE_ID_MAPPINGS[doc_type]
+          doc_type = document_id_type&.gsub(/\W/, '')&.underscore
 
-          if doc_type && reason_codes&.intersect?(mdl_reason_codes)
-            doc_type = Idp::Constants::DocumentTypes::MDL
-          end
+          return doc_type if STATE_ID_MAPPINGS[doc_type].nil?
+          return Idp::Constants::DocumentTypes::MDL if reason_codes&.intersect?(mdl_reason_codes)
 
-          doc_type || document_id_type&.gsub(/\W/, '')&.underscore
+          STATE_ID_MAPPINGS[doc_type]
         end
 
         def document_id_type
