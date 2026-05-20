@@ -111,32 +111,17 @@ module MfaSetupConcern
 
     subject = case event_type
     when :authenticator_enabled
-      t('user_mailer.multi_factor_authentication.auth_app_added', app_name: APP_NAME)
+      t('user_mailer.multi_factor_authentication.auth_app_added')
     when :backup_codes_added
-      t(
-        'user_mailer.multi_factor_authentication.backup_codes_added',
-        app_name: APP_NAME,
-      )
+      t('user_mailer.multi_factor_authentication.backup_codes_added')
     when :phone_added
-      t(
-        'user_mailer.multi_factor_authentication.phone_added',
-        app_name: APP_NAME,
-      )
+      t('user_mailer.multi_factor_authentication.phone_added')
     when :piv_cac_enabled
-      t(
-        'user_mailer.multi_factor_authentication.piv_card_added',
-        app_name: APP_NAME,
-      )
+      t('user_mailer.multi_factor_authentication.piv_card_added')
     when :webauthn_key_added
-      t(
-        'user_mailer.multi_factor_authentication.webauthn_added',
-        app_name: APP_NAME,
-      )
+      t('user_mailer.multi_factor_authentication.webauthn_added')
     when :webauthn_platform_added
-      t(
-        'user_mailer.multi_factor_authentication.webauthn_platform_added',
-        app_name: APP_NAME,
-      )
+      t('user_mailer.multi_factor_authentication.webauthn_platform_added')
     end
 
     current_user.confirmed_email_addresses.each do |email_address|

@@ -6116,6 +6116,7 @@ module AnalyticsEvents
   # @param [Boolean] timed_out Whether the proofing request timed out.
   # @param [Boolean] aamva_checked Whether the aamva API request evaluated a state ID.
   # @param [Integer, nil] birth_year The birth year listed on the ID.
+  # @param [Boolean, nil] bypass_exception Whether the aamva exception was bypassed
   # @param [String, nil] state The state on the ID.
   # @param [String, nil] state_id_jurisdiction The state that issued the ID.
   # @param [String, nil] state_id_number A string describing the format of the ID number.
@@ -6134,6 +6135,7 @@ module AnalyticsEvents
     timed_out:,
     aamva_checked:,
     birth_year: nil,
+    bypass_exception: nil,
     state: nil,
     state_id_jurisdiction: nil,
     state_id_number: nil,
@@ -6155,6 +6157,7 @@ module AnalyticsEvents
       timed_out:,
       aamva_checked:,
       birth_year:,
+      bypass_exception:,
       state:,
       state_id_jurisdiction:,
       state_id_number:,

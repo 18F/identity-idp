@@ -213,9 +213,9 @@ module Idv
 
       current_user.active_profile.create_user_proofing_event(password:, attempt_events:)
 
-      # TODO:Historical Attempts Data: Save encrypted proofing events to
-      # the user session idv/encrypted_proofing_events so a user
-      # who has just identity proofed has available events
+      kms_encrypted_events = SessionEncryptor.new.kms_encrypt(attempt_events.to_json)
+      user_session[:encrypted_proofing_events] = kms_encrypted_events
+
       user_session.delete('idv/attempts')
     end
 
