@@ -1746,4 +1746,51 @@ RSpec.describe UserMailer, type: :mailer do
       )
     end
   end
+
+  describe '#agent_proofing_failure' do
+    let(:visited_at) { '2026-03-18T12:00:00-04:00' }
+    let(:mail) do
+      UserMailer.with(user: user, email_address: email_address)
+        .agent_proofing_failure(visited_at: visited_at)
+    end
+
+    it_behaves_like 'a system email'
+
+    it 'has the expected subject' do
+      expect(mail.subject)
+        .to eq(I18n.t('user_mailer.agent_proofing_failure.subject'))
+    end
+
+    it 'renders the header' do
+      expect(mail.html_part.body)
+        .to have_content(I18n.t('user_mailer.agent_proofing_failure.header'))
+    end
+
+    it 'renders the visit date in the body' do
+      expect(mail.html_part.body).to have_content('2026')
+    end
+
+    it 'links to the help center' do
+      expect(mail.html_part.body).to have_link(
+        I18n.t('user_mailer.agent_proofing_failure.help_center_link'),
+        href: MarketingSite.help_url,
+      )
+    end
+
+    it 'links to contact us in the footer' do
+      expect(mail.html_part.body).to have_link(
+        I18n.t('user_mailer.agent_proofing_failure.contact_link'),
+        href: MarketingSite.contact_url,
+      )
+    end
+
+    context 'when visited_at is blank' do
+      let(:visited_at) { nil }
+
+      it 'returns without sending mail' do
+        expect(mail.subject).to be_nil
+        expect(mail.body).to be_blank
+      end
+    end
+  end
 end

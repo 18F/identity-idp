@@ -11,7 +11,8 @@ module ProofingAgent
       proofing_location_id:,
       correlation_id:,
       trace_id:,
-      transaction_id:
+      transaction_id:,
+      final_attempt: false
     )
       encrypted_arguments = Encryption::Encryptors::BackgroundProofingArgEncryptor.new.encrypt(
         { applicant_pii: @applicant }.to_json,
@@ -24,6 +25,7 @@ module ProofingAgent
         proofing_location_id:,
         correlation_id:,
         transaction_id:,
+        final_attempt:,
       }
       if IdentityConfig.store.ruby_workers_idv_enabled
         ProofingAgentJob.perform_later(**job_arguments)

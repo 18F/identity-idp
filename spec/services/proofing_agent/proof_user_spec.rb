@@ -58,13 +58,14 @@ RSpec.describe ProofingAgent::ProofUser do
     }
   end
 
-  def call_service(applicant: state_id_applicant)
+  def call_service(applicant: state_id_applicant, final_attempt: false)
     described_class.new(applicant).call(
       proofing_agent_id:,
       proofing_location_id:,
       correlation_id:,
       trace_id:,
       transaction_id:,
+      final_attempt:,
     )
   end
 
@@ -161,6 +162,19 @@ RSpec.describe ProofingAgent::ProofUser do
           end
           call_service(applicant: passport_applicant)
         end
+      end
+    end
+
+    context 'when final_attempt is true' do
+      before do
+        allow(IdentityConfig.store).to receive(:ruby_workers_idv_enabled).and_return(true)
+      end
+
+      it 'forwards final_attempt: true to the job' do
+        expect(ProofingAgentJob).to receive(:perform_later).with(
+          hash_including(final_attempt: true),
+        )
+        call_service(final_attempt: true)
       end
     end
 
