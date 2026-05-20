@@ -93,9 +93,7 @@ module Proofing
           end
 
           def raise_missing_raw_response_error(service_block)
-            service_block = {} unless service_block.is_a?(Hash)
-
-            if service_block['tps_was_timeout'].to_s == 'yes'
+            if service_block.is_a?(Hash) && service_block['tps_was_timeout'].to_s == 'yes'
               raise Proofing::TimeoutError, 'LexisNexis InstantVerify DDP timed out'
             end
 
