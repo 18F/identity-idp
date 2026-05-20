@@ -4,7 +4,7 @@ require 'rails_helper'
 require 'reporting/demographics_metrics_s3_report'
 
 RSpec.describe Reports::DemographicsMetricsS3Report do
-  let(:frozen_time) { Time.zone.parse('2026-05-04 10:00:00') } # Day after reporting-rails runs
+  let(:frozen_time) { Time.zone.parse('2026-05-04 10:00:00') } # Day after reporting-rails upload
   let(:run_date) { frozen_time }
   let(:days_back) { 5 }
   let(:receiver) { :internal }
@@ -332,10 +332,10 @@ RSpec.describe Reports::DemographicsMetricsS3Report do
         # Both issuers should use internal emails when job receiver is :internal
         expect(ReportMailer).to receive(:tables_report).with(
           hash_including(
-            to: ['gsa.internal@example.com'],  # Both use internal emails
+            to: ['gsa.internal@example.com'], # Both use internal emails
             bcc: [],
           ),
-        ).and_return(double(deliver_now: true)).twice  # Both issuers
+        ).and_return(double(deliver_now: true)).twice # Both issuers
 
         job.perform
       end
@@ -351,7 +351,7 @@ RSpec.describe Reports::DemographicsMetricsS3Report do
           ),
         ).and_return(double(deliver_now: true))
 
-        # Second issuer (VA)  
+        # Second issuer (VA)
         expect(ReportMailer).to receive(:tables_report).with(
           hash_including(
             to: ['va.partner@example.com'],
@@ -364,7 +364,7 @@ RSpec.describe Reports::DemographicsMetricsS3Report do
 
       it 'warns when receiver is :both but no partner emails' do
         # Remove partner emails from one config
-        mock_configs[0]['partner_emails'] = []  # Remove SSA partner emails
+        mock_configs[0]['partner_emails'] = [] # Remove SSA partner emails
 
         expect(Rails.logger).to receive(:warn)
           .with(/SSA Demographics Metrics Report: recipient is :both but no external email/)
@@ -512,24 +512,24 @@ RSpec.describe Reports::DemographicsMetricsS3Report do
   def setup_s3_responses(config = {})
     # config structure:
     # {
-    #   missing: [sp_id1, sp_id2],     # SPs with missing files  
+    #   missing: [sp_id1, sp_id2],     # SPs with missing files
     #   old: [sp_id3],                 # SPs with old files
     #   fresh: [sp_id4, sp_id5]        # SPs with fresh files (default)
     # }
-    
+
     stub_response = lambda do |context|
       key = context.params[:key]
-      
+
       # Extract SP ID from key
       sp_match = key.match(/SP(\d+)/)
       return 'NoSuchKey' unless sp_match
       sp_id = sp_match[1].to_i
-      
+
       # Check file type
       file_match = key.match(/_(definitions|overview|age_metrics|state_metrics)\.csv$/)
       return 'NoSuchKey' unless file_match
       report_type = file_match[1]
-      
+
       # Determine response based on configuration
       if config[:missing]&.include?(sp_id)
         'NoSuchKey'
@@ -537,17 +537,15 @@ RSpec.describe Reports::DemographicsMetricsS3Report do
         if context.operation_name == :get_object
           { body: StringIO.new(csv_data[report_type] || '') }
         else # head_object
-          { last_modified: 35.days.ago }  # Old file
+          { last_modified: 35.days.ago } # Old file
         end
-      else # Default to fresh files
-        if context.operation_name == :get_object
-          { body: StringIO.new(csv_data[report_type] || '') }
-        else # head_object  
-          { last_modified: 1.day.ago }   # Fresh file
-        end
+      elsif context.operation_name == :get_object # Default to fresh files
+        { body: StringIO.new(csv_data[report_type] || '') }
+        else # head_object
+          { last_modified: 1.day.ago } # Fresh file
       end
     end
-    
+
     s3_client.stub_responses(:get_object, stub_response)
     s3_client.stub_responses(:head_object, stub_response)
   end
