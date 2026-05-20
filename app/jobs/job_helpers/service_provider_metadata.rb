@@ -66,6 +66,7 @@ module JobHelpers
 
         mapping[issuer] = {
           id: row['id'],
+          issuer_string: issuer,
           friendly_name: row['friendly_name'],
           active: row['active'],
           agency_id: row['agency_id'],

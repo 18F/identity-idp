@@ -132,7 +132,7 @@ module Reports
       s3_path = "#{base_path}DemographicsMetricsReport/#{sp_id}/"\
                 "#{@time_frame}/#{report_time_range_label}/#{file_prefix}_SP#{sp_id}"
 
-      Reporting::DemographicsMetricsReportS3.new(
+      Reporting::DemographicsMetricsS3Report.new(
         bucket_name: data_warehouse_bucket_name,
         custom_s3_path: s3_path,
         agency_abbreviation: agency_abbreviation,
@@ -141,7 +141,6 @@ module Reports
 
     def validate_all_files_exist(report_reader, sp_info)
       missing_files = []
-
       report_reader.csv_file_names.each do |file_name|
         begin
           report_reader.get_file_last_modified(file_name)
@@ -149,7 +148,6 @@ module Reports
           missing_files << file_name
         end
       end
-
       if missing_files.any?
         Rails.logger.error "Missing report files for issuer: #{sp_info[:issuer_string]}"
         Rails.logger.error "  Service Provider ID: #{sp_info[:id]}"
@@ -161,7 +159,6 @@ module Reports
         Rails.logger.error "  Report receiver: #{@report_receiver}"
         return false
       end
-
       true
     end
 
@@ -227,7 +224,7 @@ module Reports
       # Get file date from S3, fallback to today
       report_date = get_report_file_date(report_reader)
 
-      "#{agency_abbreviation_formatted}Demographics Report "\
+      "#{agency_abbreviation_formatted}Verification Demographics Report "\
       "#{report_time_range_label} - #{report_date}"
     end
 
@@ -292,12 +289,7 @@ module Reports
     end
 
     def report_configs
-      configs = IdentityConfig.store.demographics_metrics_s3_report_configs || []
-      # Set default report_receiver if not specified
-      configs.map do |config|
-        config['report_receiver'] ||= 'internal'
-        config
-      end
+      IdentityConfig.store.demographics_metrics_s3_report_configs
     end
 
     def validate_parameters!
@@ -323,23 +315,12 @@ module Reports
 
       issuer_string = config['issuer_string']
 
-      receiver = config['report_receiver'] || 'internal'
-      unless %w[internal both].include?(receiver)
-        Rails.logger.error "Invalid report_receiver for issuer #{issuer_string}: #{receiver}"
-        return false
-      end
-
       # Check that we'll have 1+ email to send to
       internal_emails = Array(config['internal_emails']).select(&:present?)
       partner_emails = Array(config['partner_emails']).select(&:present?)
 
       if internal_emails.empty? && partner_emails.empty?
         Rails.logger.error "No emails provided for issuer #{issuer_string}"
-        return false
-      end
-
-      if receiver == 'both' && partner_emails.empty?
-        Rails.logger.error "Receiver is 'both' but no partner emails for issuer #{issuer_string}"
         return false
       end
 

@@ -4,7 +4,7 @@ require 'csv'
 
 module Reporting
   # Reads pre-generated demographics CSV reports from S3 and presents them as emailable reports.
-  class DemographicsMetricsReportS3
+  class DemographicsMetricsS3Report
     attr_reader :bucket_name, :s3_path, :agency_abbreviation
 
     CSV_FILE_NAMES = %w[
