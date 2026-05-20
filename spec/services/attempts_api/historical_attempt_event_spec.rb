@@ -5,7 +5,7 @@ RSpec.describe AttemptsApi::HistoricalAttemptEvent do
   let(:attempts_api_public_key) { attempts_api_private_key.public_key }
 
   let(:signing_key) { OpenSSL::PKey::EC.generate('prime256v1') }
-  let(:singing_private_key) { signing_key.private_to_pem }
+  let(:signing_private_key) { signing_key.private_to_pem }
   let(:signing_public_key) { OpenSSL::PKey::EC.new(signing_key.public_to_pem) }
 
   let(:jti) { 'test-unique-id' }
