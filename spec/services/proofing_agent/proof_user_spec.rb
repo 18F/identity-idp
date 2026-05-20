@@ -7,6 +7,8 @@ RSpec.describe ProofingAgent::ProofUser do
   let(:correlation_id) { SecureRandom.uuid }
   let(:trace_id) { SecureRandom.uuid }
   let(:transaction_id) { SecureRandom.uuid }
+  let(:submit_attempts) { 1 }
+  let(:remaining_attempts) { 2 }
 
   let(:state_id_applicant) do
     {
@@ -66,6 +68,8 @@ RSpec.describe ProofingAgent::ProofUser do
       trace_id:,
       transaction_id:,
       final_attempt:,
+      submit_attempts:,
+      remaining_attempts:,
     )
   end
 
