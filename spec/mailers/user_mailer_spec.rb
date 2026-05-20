@@ -1772,7 +1772,7 @@ RSpec.describe UserMailer, type: :mailer do
 
     it 'links to the help center' do
       expect(mail.html_part.body).to have_link(
-        I18n.t('user_mailer.agent_proofing_failure.help_center_link'),
+        I18n.t('user_mailer.agent_proofing_failure.help_center_link', app_name: APP_NAME),
         href: MarketingSite.help_url,
       )
     end

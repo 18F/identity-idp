@@ -2002,7 +2002,7 @@ user_mailer.agent_proofing_failure.contact_link: contáctenos
 user_mailer.agent_proofing_failure.footer_html: Si no intentó verificar su identidad en persona, %{contact_link_html} e inicie sesión para %{change_password_link_html}.
 user_mailer.agent_proofing_failure.header: No pudimos verificar su identidad en esta ocasión
 user_mailer.agent_proofing_failure.help_center_html: Por favor, visite nuestro %{help_center_link_html} para obtener más información.
-user_mailer.agent_proofing_failure.help_center_link: Centro de ayuda
+user_mailer.agent_proofing_failure.help_center_link: 'centro de ayuda de %{app_name}'
 user_mailer.agent_proofing_failure.subject: Completemos su verificación de identidad
 user_mailer.contact_link_text: contáctenos
 user_mailer.dupe_profile.created.description: Alguien verificó otra cuenta de %{app_name} usando la información personal de usted. Por su seguridad, hemos restringido su acceso a todas las cuentas con información que coincide y a %{sp_or_app_name}.

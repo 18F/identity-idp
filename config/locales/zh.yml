@@ -2003,7 +2003,7 @@ user_mailer.agent_proofing_failure.contact_link: 联系我们
 user_mailer.agent_proofing_failure.footer_html: 如果您未曾尝试亲自验证您的身份，请%{contact_link_html}并登录以%{change_password_link_html}。
 user_mailer.agent_proofing_failure.header: 目前我们无法验证您的身份
 user_mailer.agent_proofing_failure.help_center_html: 请访问我们的%{help_center_link_html}，获取分步操作指南。
-user_mailer.agent_proofing_failure.help_center_link: 帮助中心
+user_mailer.agent_proofing_failure.help_center_link: '%{app_name} 帮助中心'
 user_mailer.agent_proofing_failure.subject: 让我们来完成您的身份验证
 user_mailer.contact_link_text: 联系我们
 user_mailer.dupe_profile.created.description: 有人使用你的个人信息验证了另一个 %{app_name} 账户。 为了你的安全，我们已限制了具有同样信息的所有账户的访问权以及对 %{sp_or_app_name} 的访问权.

@@ -1991,7 +1991,7 @@ user_mailer.agent_proofing_failure.contact_link: nous contacter
 user_mailer.agent_proofing_failure.footer_html: Si vous n’avez pas tenté de vérifier votre identité en personne, veuillez %{contact_link_html} et vous connecter pour %{change_password_link_html}.
 user_mailer.agent_proofing_failure.header: Nous n’avons pas pu vérifier votre identité pour le moment
 user_mailer.agent_proofing_failure.help_center_html: Veuillez consulter notre %{help_center_link_html} pour obtenir des instructions étape par étape.
-user_mailer.agent_proofing_failure.help_center_link: Centre d’aide
+user_mailer.agent_proofing_failure.help_center_link: 'centre d’aide de %{app_name}'
 user_mailer.agent_proofing_failure.subject: Finalisons la vérification de votre identité
 user_mailer.contact_link_text: nous contacter
 user_mailer.dupe_profile.created.description: Quelqu’un a utilisé vos renseignements personnels pour confirmer un autre compte %{app_name}. Pour votre sécurité, nous avons restreint votre accès sur tous les comptes comportant des informations identiques et ayant accès à %{sp_or_app_name}.

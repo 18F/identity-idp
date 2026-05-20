@@ -8,7 +8,7 @@
   <%= t(
         'user_mailer.agent_proofing_failure.help_center_html',
         help_center_link_html: link_to(
-          t('user_mailer.agent_proofing_failure.help_center_link'),
+          t('user_mailer.agent_proofing_failure.help_center_link', app_name: APP_NAME),
           @presenter.help_center_url,
           style: 'text-decoration: underline;',
         ),

@@ -1990,7 +1990,7 @@ user_mailer.agent_proofing_failure.contact_link: contact us
 user_mailer.agent_proofing_failure.footer_html: If you did not attempt to verify your identity in person, please %{contact_link_html} and sign in to %{change_password_link_html}.
 user_mailer.agent_proofing_failure.header: We were unable to verify your identity at this time
 user_mailer.agent_proofing_failure.help_center_html: Please visit our %{help_center_link_html} to get step-by-step guidance.
-user_mailer.agent_proofing_failure.help_center_link: Login.gov Help Center
+user_mailer.agent_proofing_failure.help_center_link: '%{app_name} Help Center'
 user_mailer.agent_proofing_failure.subject: 'Let’s complete your identity verification'
 user_mailer.contact_link_text: contact us
 user_mailer.dupe_profile.created.description: Someone has verified another %{app_name} account using your personal information. For your safety, we have restricted access on all accounts with matching information and access to %{sp_or_app_name}.
