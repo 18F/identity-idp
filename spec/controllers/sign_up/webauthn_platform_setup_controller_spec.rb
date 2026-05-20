@@ -23,7 +23,7 @@ RSpec.describe SignUp::WebauthnPlatformSetupController do
 
       get :new
 
-      expect(@analytics).to have_logged_event(:webauthn_platform_signup_setup_visited)
+      expect(@analytics).to have_logged_event(:webauthn_platform_signup_setup_ab_test_visited)
     end
   end
 
@@ -37,7 +37,7 @@ RSpec.describe SignUp::WebauthnPlatformSetupController do
         post :create
 
         expect(@analytics).to have_logged_event(
-          :webauthn_platform_signup_setup_submitted,
+          :webauthn_platform_signup_setup_ab_test_submitted,
           opted_to_add: false,
         )
       end

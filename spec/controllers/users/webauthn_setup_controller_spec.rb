@@ -99,6 +99,7 @@ RSpec.describe Users::WebauthnSetupController do
           enabled_mfa_methods_count: 0,
           in_account_creation_flow: false,
           auto_passkey_prompted: false,
+          webauthn_platform_signup_recommended: false,
         )
       end
 
@@ -459,6 +460,7 @@ RSpec.describe Users::WebauthnSetupController do
         controller.user_session[:webauthn_challenge] = webauthn_challenge
         controller.user_session[:in_account_creation_flow] = true
         controller.user_session[:auto_passkey_prompted] = true
+        controller.user_session[:webauthn_platform_signup_setup_recommended]
       end
 
       context 'when auto_passkey_prompted is set and no mfa_selections queued' do

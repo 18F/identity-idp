@@ -8,11 +8,11 @@ module SignUp
     before_action :apply_secure_headers_override
 
     def new
-      analytics.webauthn_platform_signup_setup_visited
+      analytics.webauthn_platform_signup_setup_ab_test_visited
     end
 
     def create
-      analytics.webauthn_platform_signup_setup_submitted(opted_to_add: opted_to_add?)
+      analytics.webauthn_platform_signup_setup_ab_test_submitted(opted_to_add: opted_to_add?)
       if opted_to_add?
         user_session[:webauthn_platform_signup_setup_recommended] = true
       end
