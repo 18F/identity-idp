@@ -82,7 +82,8 @@ module Reports
       # Get service provider info using helper (SQL call to app DB)
       sp_info = get_service_provider_info(issuer_string)
       unless sp_info
-        Rails.logger.error "No service provider found for issuer: #{issuer_string} - skipping"
+        Rails.logger.error "No service provider metadata found for issuer: "\
+                           "#{issuer_string} - skipping"
         return
       end
 

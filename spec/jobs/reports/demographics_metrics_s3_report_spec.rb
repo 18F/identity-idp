@@ -26,7 +26,7 @@ RSpec.describe Reports::DemographicsMetricsS3Report do
       {
         'issuer_string' => issuer2,
         'internal_emails' => ['gsa.internal@example.com'],
-        'partner_emails' => ['va.partner@example.com'],
+        'partner_emails' => ['va.partner@example.com', 'va2.partner@example.com'],
       },
     ]
   end
@@ -54,6 +54,23 @@ RSpec.describe Reports::DemographicsMetricsS3Report do
     }
   end
 
+  # Utility getters for tests (hash is single source of truth)
+  def issuer1_id
+    sp_metadata[issuer1][:id]
+  end
+
+  def issuer2_id
+    sp_metadata[issuer2][:id]
+  end
+
+  def issuer1_agency
+    sp_metadata[issuer1][:agency_abbreviation]
+  end
+
+  def issuer2_agency
+    sp_metadata[issuer2][:agency_abbreviation]
+  end
+
   let(:csv_data) do
     {
       'definitions' => <<~CSV,
@@ -61,7 +78,7 @@ RSpec.describe Reports::DemographicsMetricsS3Report do
         Age range/Verification Demographics,Count,The number of users for this issuer who verified within the reporting period
       CSV
       'overview' => <<~CSV,
-        Report Timeframe,2026-01-01 to 2026-03-31
+        Report Timeframe,2026-04-01 to 2026-06-30
         Report Generated,2026-05-05
         Issuer,#{issuer1}
       CSV
@@ -116,7 +133,12 @@ RSpec.describe Reports::DemographicsMetricsS3Report do
       .with(directory: 'idp').and_return('env/idp/')
 
     # Default S3 stubbing - files exist and are fresh
-    setup_s3_responses(fresh: [123, 456])
+    setup_s3_responses(
+      fresh: [
+        issuer1_id,
+        issuer2_id,
+      ],
+    )
   end
 
   subject(:job) { described_class.new(run_date, days_back, receiver, time_frame) }
@@ -200,13 +222,14 @@ RSpec.describe Reports::DemographicsMetricsS3Report do
         new_date = Time.zone.parse('2026-06-01')
         new_days = 3
         new_receiver = :both
+        new_time_frame = 'monthly'
 
-        job.perform(new_date, new_days, new_receiver, 'monthly')
+        job.perform(new_date, new_days, new_receiver, new_time_frame)
 
         expect(job.run_date).to eq(new_date)
         expect(job.days_back_for_time_period).to eq(new_days)
         expect(job.report_receiver).to eq(:both)
-        expect(job.time_frame).to eq('monthly')
+        expect(job.time_frame).to eq(new_time_frame)
       end
     end
 
@@ -224,11 +247,15 @@ RSpec.describe Reports::DemographicsMetricsS3Report do
         # since it returns early when SP is not found
         expect(Rails.logger).to receive(:info).with('Processing demographics reports for 2 issuers')
         expect(Rails.logger).to receive(:error)
-          .with("No service provider found for issuer: #{issuer1} - skipping")
-        expect(Rails.logger).to receive(:info).with("Processing demographics report for issuer: #{issuer2}")
+          .with("No service provider metadata found for issuer: #{issuer1} - skipping")
+        expect(Rails.logger).to receive(:info).with(
+          "Processing demographics report for issuer: #{issuer2}",
+        )
         expect(Rails.logger).to receive(:info)
           .with("Successfully sent demographics report for issuer: #{issuer2}")
-        expect(Rails.logger).to receive(:info).with('Completed demographics metrics S3 report processing')
+        expect(Rails.logger).to receive(:info).with(
+          'Completed demographics metrics S3 report processing',
+        )
 
         expect(ReportMailer).to receive(:tables_report).once.and_return(
           double(deliver_now: true),
@@ -240,8 +267,8 @@ RSpec.describe Reports::DemographicsMetricsS3Report do
 
     context 'with missing S3 files' do
       before do
-        # Override the default stubbing to make SP123 files missing
-        setup_s3_responses(missing: [123], fresh: [456])
+        # Override the default stubbing to make issuer1 files missing
+        setup_s3_responses(missing: [issuer1_id], fresh: [issuer2_id])
       end
 
       it 'logs detailed error information and skips issuer' do
@@ -252,13 +279,13 @@ RSpec.describe Reports::DemographicsMetricsS3Report do
         expect(Rails.logger).to receive(:error).ordered
           .with("Missing report files for issuer: #{issuer1}")
         expect(Rails.logger).to receive(:error).ordered
-          .with('  Service Provider ID: 123')
+          .with("  Service Provider ID: #{issuer1_id}")
         expect(Rails.logger).to receive(:error).ordered
-          .with('  Agency: SSA')
+          .with("  Agency: #{issuer1_agency}")
         expect(Rails.logger).to receive(:error).ordered
           .with(/Missing files:.*definitions/)
         expect(Rails.logger).to receive(:error).ordered
-          .with(/Expected path:.*SP123/)
+          .with(/Expected path:.*SP#{issuer1_id}/)
         expect(Rails.logger).to receive(:error).ordered
           .with("  Bucket: #{bucket_name}")
         expect(Rails.logger).to receive(:error).ordered
@@ -266,9 +293,15 @@ RSpec.describe Reports::DemographicsMetricsS3Report do
         expect(Rails.logger).to receive(:error).ordered
           .with('  Report receiver: internal')
 
-        expect(Rails.logger).to receive(:info).ordered.with("Processing demographics report for issuer: #{issuer2}")
-        expect(Rails.logger).to receive(:info).ordered.with("Successfully sent demographics report for issuer: #{issuer2}")
-        expect(Rails.logger).to receive(:info).ordered.with('Completed demographics metrics S3 report processing')
+        expect(Rails.logger).to receive(:info).ordered.with(
+          "Processing demographics report for issuer: #{issuer2}",
+        )
+        expect(Rails.logger).to receive(:info).ordered.with(
+          "Successfully sent demographics report for issuer: #{issuer2}",
+        )
+        expect(Rails.logger).to receive(:info).ordered.with(
+          'Completed demographics metrics S3 report processing',
+        )
 
         expect(ReportMailer).to receive(:tables_report).once.and_return(
           double(deliver_now: true),
@@ -280,17 +313,30 @@ RSpec.describe Reports::DemographicsMetricsS3Report do
 
     context 'with old S3 files' do
       before do
-        setup_s3_responses(old: [123], fresh: [456])
+        setup_s3_responses(
+          old: [issuer1_id],
+          fresh: [issuer2_id],
+        )
       end
 
       it 'logs error about old files and skips issuer' do
-        expect(Rails.logger).to receive(:info).with('Processing demographics reports for 2 issuers')
-        expect(Rails.logger).to receive(:info).with("Processing demographics report for issuer: #{issuer1}")
+        expect(Rails.logger).to receive(:info).with(
+          'Processing demographics reports for 2 issuers',
+        )
+        expect(Rails.logger).to receive(:info).with(
+          "Processing demographics report for issuer: #{issuer1}",
+        )
         expect(Rails.logger).to receive(:error)
           .with("Report files are too old for issuer: #{issuer1} - skipping")
-        expect(Rails.logger).to receive(:info).with("Processing demographics report for issuer: #{issuer2}")
-        expect(Rails.logger).to receive(:info).with("Successfully sent demographics report for issuer: #{issuer2}")
-        expect(Rails.logger).to receive(:info).with('Completed demographics metrics S3 report processing')
+        expect(Rails.logger).to receive(:info).with(
+          "Processing demographics report for issuer: #{issuer2}",
+        )
+        expect(Rails.logger).to receive(:info).with(
+          "Successfully sent demographics report for issuer: #{issuer2}",
+        )
+        expect(Rails.logger).to receive(:info).with(
+          'Completed demographics metrics S3 report processing',
+        )
 
         expect(ReportMailer).to receive(:tables_report).once.and_return(
           double(deliver_now: true),
@@ -317,7 +363,9 @@ RSpec.describe Reports::DemographicsMetricsS3Report do
         expect(Rails.logger).to receive(:info).with('Processing demographics reports for 2 issuers')
         expect(Rails.logger).to receive(:error).with('Missing issuer_string for config')
         expect(Rails.logger).to receive(:error).with('No emails provided for issuer valid.issuer')
-        expect(Rails.logger).to receive(:info).with('Completed demographics metrics S3 report processing')
+        expect(Rails.logger).to receive(:info).with(
+          'Completed demographics metrics S3 report processing',
+        )
 
         expect(ReportMailer).not_to receive(:tables_report)
 
@@ -346,16 +394,16 @@ RSpec.describe Reports::DemographicsMetricsS3Report do
         # First issuer (SSA)
         expect(ReportMailer).to receive(:tables_report).with(
           hash_including(
-            to: ['ssa.partner@example.com'],
-            bcc: ['gsa.internal@example.com'],
+            to: mock_configs[0]['partner_emails'],
+            bcc: mock_configs[0]['internal_emails'],
           ),
         ).and_return(double(deliver_now: true))
 
         # Second issuer (VA)
         expect(ReportMailer).to receive(:tables_report).with(
           hash_including(
-            to: ['va.partner@example.com'],
-            bcc: ['gsa.internal@example.com'],
+            to: mock_configs[1]['partner_emails'],
+            bcc: mock_configs[1]['internal_emails'],
           ),
         ).and_return(double(deliver_now: true))
 
@@ -366,9 +414,10 @@ RSpec.describe Reports::DemographicsMetricsS3Report do
         # Remove partner emails from one config
         mock_configs[0]['partner_emails'] = [] # Remove SSA partner emails
 
-        expect(Rails.logger).to receive(:warn)
-          .with(/SSA Demographics Metrics Report: recipient is :both but no external email/)
-
+        expect(Rails.logger).to receive(:warn).with(
+          a_string_matching(/#{issuer1_agency} Demographics Metrics/) &
+          a_string_matching(/ Report: recipient is :both but no external email/),
+        )
         # Should still send to internal emails for SSA, and normally for VA
         expect(ReportMailer).to receive(:tables_report).twice.and_return(
           double(deliver_now: true),
@@ -398,17 +447,24 @@ RSpec.describe Reports::DemographicsMetricsS3Report do
     context 'with error handling' do
       it 'continues processing when one issuer fails' do
         # Force an error by making csv_data_for raise after files are validated to exist
-        allow_any_instance_of(Reporting::DemographicsMetricsS3Report).to receive(:as_emailable_reports)
+        allow_any_instance_of(Reporting::DemographicsMetricsS3Report)
+          .to receive(:as_emailable_reports)
           .and_raise(StandardError, 'S3 read error')
 
         expect(Rails.logger).to receive(:info).with('Processing demographics reports for 2 issuers')
-        expect(Rails.logger).to receive(:info).with("Processing demographics report for issuer: #{issuer1}")
+        expect(Rails.logger).to receive(:info).with(
+          "Processing demographics report for issuer: #{issuer1}",
+        )
         expect(Rails.logger).to receive(:error)
           .with("Failed to process demographics report for issuer #{issuer1}: S3 read error")
-        expect(Rails.logger).to receive(:info).with("Processing demographics report for issuer: #{issuer2}")
+        expect(Rails.logger).to receive(:info).with(
+          "Processing demographics report for issuer: #{issuer2}",
+        )
         expect(Rails.logger).to receive(:error)
           .with("Failed to process demographics report for issuer #{issuer2}: S3 read error")
-        expect(Rails.logger).to receive(:info).with('Completed demographics metrics S3 report processing')
+        expect(Rails.logger).to receive(:info).with(
+          'Completed demographics metrics S3 report processing',
+        )
 
         expect(ReportMailer).not_to receive(:tables_report)
 
@@ -493,7 +549,8 @@ RSpec.describe Reports::DemographicsMetricsS3Report do
           .and_raise(Aws::S3::Errors::NoSuchKey.new('', ''))
 
         expect(Rails.logger).to receive(:warn)
-          .with('Unexpected S3 file access issue when getting modified date, using today for email subject')
+          .with('Unexpected S3 file access issue when getting '\
+                'modified date, using today for email subject')
 
         subject_line = job.send(:demographics_email_subject, 'VA', report_reader)
         expect(subject_line).to include(Date.current.strftime('%Y-%m-%d'))
@@ -509,40 +566,59 @@ RSpec.describe Reports::DemographicsMetricsS3Report do
 
   private
 
+  # Sets up S3 client stub responses for testing different file states
+  #
+  # @param config [Hash] Configuration for different SP file states:
+  #   - :missing [Array<Integer>] SP IDs that should have missing files (returns NoSuchKey)
+  #   - :old [Array<Integer>] SP IDs that should have old files (returns files with old timestamps)
+  #   - :fresh [Array<Integer>] SP IDs that should have fresh files (returns recent files)
+  #   - Files not specified in any category default to fresh
+  #
+  # @example
+  #   setup_s3_responses(
+  #     missing: [123],      # SP 123 files don't exist
+  #     old: [456],          # SP 456 files are old
+  #     fresh: [789]         # SP 789 files are recent (could be omitted, it's the default)
+  #   )
   def setup_s3_responses(config = {})
-    # config structure:
-    # {
-    #   missing: [sp_id1, sp_id2],     # SPs with missing files
-    #   old: [sp_id3],                 # SPs with old files
-    #   fresh: [sp_id4, sp_id5]        # SPs with fresh files (default)
-    # }
-
     stub_response = lambda do |context|
       key = context.params[:key]
 
-      # Extract SP ID from key
+      # Extract SP ID from the S3 key path
       sp_match = key.match(/SP(\d+)/)
       return 'NoSuchKey' unless sp_match
       sp_id = sp_match[1].to_i
 
-      # Check file type
+      # Extract report type from filename
       file_match = key.match(/_(definitions|overview|age_metrics|state_metrics)\.csv$/)
       return 'NoSuchKey' unless file_match
       report_type = file_match[1]
 
-      # Determine response based on configuration
-      if config[:missing]&.include?(sp_id)
+      # Determine which category this SP falls into
+      file_state = if config[:missing]&.include?(sp_id)
+                     :missing
+                  elsif config[:old]&.include?(sp_id)
+                    :old
+                  else
+                    :fresh # Default behavior
+                  end
+
+      # Return appropriate response based on file state and operation
+      case file_state
+      when :missing
         'NoSuchKey'
-      elsif config[:old]&.include?(sp_id)
+      when :old
         if context.operation_name == :get_object
           { body: StringIO.new(csv_data[report_type] || '') }
         else # head_object
-          { last_modified: 35.days.ago } # Old file
+          { last_modified: 35.days.ago }
         end
-      elsif context.operation_name == :get_object # Default to fresh files
-        { body: StringIO.new(csv_data[report_type] || '') }
+      when :fresh
+        if context.operation_name == :get_object
+          { body: StringIO.new(csv_data[report_type] || '') }
         else # head_object
-          { last_modified: 1.day.ago } # Fresh file
+          { last_modified: 1.day.ago }
+        end
       end
     end
 

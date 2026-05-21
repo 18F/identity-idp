@@ -6,7 +6,7 @@ require 'reporting/demographics_metrics_s3_report'
 RSpec.describe Reporting::DemographicsMetricsS3Report do
   let(:bucket_name) { 'test-bucket' }
   let(:custom_s3_path) { 'test/path/to/reports' }
-  let(:agency_abbreviation) { 'GSA' }
+  let(:agency_abbreviation) { 'VA' }
   let(:s3_client) { instance_double(Aws::S3::Client) }
   let(:s3_helper) { instance_double(JobHelpers::S3Helper) }
 
@@ -163,10 +163,10 @@ RSpec.describe Reporting::DemographicsMetricsS3Report do
       expect(reports[1].title).to eq('Overview')
       expect(reports[1].filename).to eq('overview')
 
-      expect(reports[2].title).to eq('GSA Age Metrics')
+      expect(reports[2].title).to eq("#{agency_abbreviation} Age Metrics")
       expect(reports[2].filename).to eq('age_metrics')
 
-      expect(reports[3].title).to eq('GSA State Metrics')
+      expect(reports[3].title).to eq("#{agency_abbreviation} State Metrics")
       expect(reports[3].filename).to eq('state_metrics')
     end
 
