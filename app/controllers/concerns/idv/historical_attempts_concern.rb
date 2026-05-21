@@ -10,12 +10,7 @@ module Idv
       # in case we have to re-encrypt them
       return unless IdentityConfig.store.historical_attempts_api_enabled
 
-      existing_events = current_user
-        .active_profile
-        .decrypt_user_proofing_events(password:)
-
-      kms_encrypted_events = SessionEncryptor.new.kms_encrypt(existing_events)
-      user_session[:encrypted_proofing_events] = kms_encrypted_events
+      AttemptsApi::Cacher.new(current_user, user_session).save(password:)
     end
 
     private

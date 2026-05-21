@@ -213,8 +213,7 @@ module Idv
 
       current_user.active_profile.create_user_proofing_event(password:, attempt_events:)
 
-      kms_encrypted_events = SessionEncryptor.new.kms_encrypt(attempt_events.to_json)
-      user_session[:encrypted_proofing_events] = kms_encrypted_events
+      AttemptsApi::Cacher.new(current_user, user_session).save(password:)
 
       user_session.delete('idv/attempts')
     end

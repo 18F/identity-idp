@@ -49,12 +49,7 @@ module Users
     end
 
     def decrypted_attempt_events
-      encrypted_proofing_events = user_session[:encrypted_proofing_events]
-      return unless encrypted_proofing_events.present?
-
-      JSON.parse(
-        SessionEncryptor.new.kms_decrypt(encrypted_proofing_events),
-      )
+      AttemptsApi::Cacher.new(current_user, user_session).fetch
     end
   end
 end
