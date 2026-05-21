@@ -207,17 +207,23 @@ class ProofingAgentJob < ApplicationJob
     phone_info = proofing_result&.dig(:biographical_info, :phone)
 
     analytics.idv_phone_confirmation_vendor_submitted(
-      success: phone_precheck_body&.dig(:success),
-      vendor: phone_precheck_body,
-      area_code: phone_info&.dig(:area_code),
-      country_code: phone_info&.dig(:country_code),
-      phone_fingerprint: phone_info&.dig(:fingerprint),
-      new_phone_added: true,
-      hybrid_handoff_phone_used: false,
-      manual_review: false,
-      errors: phone_precheck_body&.dig(:errors),
-      reason_codes: proofing_result&.dig(:context, :stages, :resolution, :reason_codes),
-      proofing_agent:,
+      **{
+        success: phone_precheck_body&.dig(:success),
+        vendor: phone_precheck_body,
+        area_code: phone_info&.dig(:area_code),
+        country_code: phone_info&.dig(:country_code),
+        phone_fingerprint: phone_info&.dig(:fingerprint),
+        new_phone_added: true,
+        hybrid_handoff_phone_used: false,
+        manual_review: false,
+        errors: phone_precheck_body&.dig(:errors),
+        reason_codes: proofing_result&.dig(:context, :stages, :resolution, :reason_codes),
+        proofing_agent:,
+      }.to_h.merge(
+        pii_like_keypaths: [
+          [:errors, :phone],
+        ],
+      ),
     )
 
     proofing_result
