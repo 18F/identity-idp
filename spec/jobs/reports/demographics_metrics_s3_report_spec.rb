@@ -500,7 +500,32 @@ RSpec.describe Reports::DemographicsMetricsS3Report do
         expect(daily_job.send(:report_time_range_label)).to eq('May032026')
       end
     end
+    describe '#report_time_range_label_email_subject' do
+      it 'formats quarterly labels with CY and spaces' do
+        # Q2 2026 (May 5 - 5 days = April 30, which is Q2)
+        expect(job.send(:report_time_range_label_email_subject)).to eq('Q2 CY 2026')
 
+        # Q4 2025
+        q4_job = described_class.new(
+          Time.zone.parse('2026-01-04'), 5, :internal, 'quarterly'
+        )
+        expect(q4_job.send(:report_time_range_label_email_subject)).to eq('Q4 CY 2025')
+      end
+
+      it 'formats monthly labels with spaces' do
+        monthly_job = described_class.new(
+          Time.zone.parse('2026-05-04'), 5, :internal, 'monthly'
+        )
+        expect(monthly_job.send(:report_time_range_label_email_subject)).to eq('Apr 2026')
+      end
+
+      it 'formats daily labels with spaces' do
+        daily_job = described_class.new(
+          Time.zone.parse('2026-05-04'), 1, :internal, 'daily'
+        )
+        expect(daily_job.send(:report_time_range_label_email_subject)).to eq('May 3 2026')
+      end
+    end
     describe '#report_time_range' do
       it 'calculates correct quarterly range' do
         range = job.send(:report_time_range)
@@ -531,7 +556,7 @@ RSpec.describe Reports::DemographicsMetricsS3Report do
       it 'formats subject with agency abbreviation' do
         subject_line = job.send(:demographics_email_subject, 'SSA', report_reader)
         expect(subject_line).to eq(
-          'SSA Verification Demographics Report Q22026 - 2026-05-04',
+          'SSA Verification Demographics Report Q2 CY 2026 - 2026-05-04',
         )
       end
 
@@ -540,7 +565,7 @@ RSpec.describe Reports::DemographicsMetricsS3Report do
 
         subject_line = job.send(:demographics_email_subject, nil, report_reader)
         expect(subject_line).to eq(
-          'Verification Demographics Report Q22026 - 2026-05-04',
+          'Verification Demographics Report Q2 CY 2026 - 2026-05-04',
         )
       end
 

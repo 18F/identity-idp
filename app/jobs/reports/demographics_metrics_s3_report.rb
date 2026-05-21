@@ -225,7 +225,7 @@ module Reports
       report_date = get_report_file_date(report_reader)
 
       "#{agency_abbreviation_formatted}Verification Demographics Report "\
-      "#{report_time_range_label} - #{report_date}"
+      "#{report_time_range_label_email_subject} - #{report_date}"
     end
 
     def get_report_file_date(report_reader)
@@ -286,6 +286,22 @@ module Reports
         raise ArgumentError, "Unsupported time frame: #{@time_frame}"
       end
       "#{label_start}#{end_of_range.strftime('%Y')}" # Q12026, Jan2026, Jan012026
+    end
+
+    def report_time_range_label_email_subject
+      end_of_range = report_time_range.end
+      case @time_frame
+      when 'quarterly'
+        # Add CY to indicate calendary year
+        q_int = ((end_of_range.month - 1) / 3) + 1
+        "Q#{q_int} CY #{end_of_range.year}" # Q1 CY 2026
+      when 'monthly'
+        end_of_range.strftime('%b %Y') # Jan 2026
+      when 'daily'
+        end_of_range.strftime('%b %-d %Y') # Jan 1 2026
+      else
+        raise ArgumentError, "Unsupported time frame: #{@time_frame}"
+      end
     end
 
     def report_configs
