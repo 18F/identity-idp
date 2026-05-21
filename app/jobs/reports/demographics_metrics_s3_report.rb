@@ -22,7 +22,6 @@ module Reports
   class DemographicsMetricsS3Report < BaseReport
     include JobHelpers::ServiceProviderMetadata
 
-    REPORT_NAME = 'demographics-metrics-s3-report' # Different name than the reporting-rails report
     TIME_FRAME = 'quarterly' # Report coverage is full quarter even if run mid quarter internally
     MAX_FILE_AGE_DAYS = 30 # Realistically, report should have been generated within a few days
     REPORT_DELAY_DAYS = 5 # Cron job assumed to run 4th day of new month
