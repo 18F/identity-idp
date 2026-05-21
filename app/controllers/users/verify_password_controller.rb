@@ -44,6 +44,16 @@ module Users
         user: current_user,
         password: params.require(:user).permit(:password)[:password],
         decrypted_pii: reactivate_account_session.decrypted_pii,
+        decrypted_attempt_events:,
+      )
+    end
+
+    def decrypted_attempt_events
+      encrypted_proofing_events = user_session[:encrypted_proofing_events]
+      return unless encrypted_proofing_events.present?
+
+      JSON.parse(
+        SessionEncryptor.new.kms_decrypt(encrypted_proofing_events),
       )
     end
   end

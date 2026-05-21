@@ -113,6 +113,7 @@ RSpec.describe EncryptedDocStorage::DocWriter do
     end
 
     it 'writes the encrypted attempt events to storage' do
+      expect(SecureRandom).to receive(:uuid).and_return(uuid)
       expect_any_instance_of(EncryptedDocStorage::LocalStorage).to receive(
         :write_attempt_events,
       ).with(
@@ -122,6 +123,26 @@ RSpec.describe EncryptedDocStorage::DocWriter do
 
       result = subject.write_encrypted_attempt_events(file_path:, encrypted_attempt_events:)
       expect(result.name).to eq(uuid)
+    end
+
+    context 'when a file name is passed in' do
+      let(:name) { 'test-name' }
+      let(:path) { "#{file_path}/#{name}" }
+      it 'writes the encrypted attempt events to storage with the provided name' do
+        expect(SecureRandom).not_to receive(:uuid)
+        expect_any_instance_of(EncryptedDocStorage::LocalStorage).to receive(
+          :write_attempt_events,
+        ).with(
+          path:,
+          encrypted_attempt_events:,
+        )
+
+        subject.write_encrypted_attempt_events(
+          file_path:,
+          encrypted_attempt_events:,
+          name:,
+        )
+      end
     end
 
     context 'when S3Storage is initalized' do
