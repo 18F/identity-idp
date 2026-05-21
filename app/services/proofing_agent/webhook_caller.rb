@@ -3,19 +3,28 @@
 module ProofingAgent
   class WebhookCaller
     include Config
-    attr_reader :success, :reason, :transaction_id, :correlation_id
+    attr_reader :success, :reason, :transaction_id, :correlation_id, :proofing_agent_log_attributes
 
-    def initialize(success:, reason:, transaction_id:, correlation_id:)
+    def initialize(success:, reason:, transaction_id:, correlation_id:,
+                   proofing_agent_log_attributes:)
       @success = success
       @reason = reason
       @transaction_id = transaction_id
       @correlation_id = correlation_id
+      @proofing_agent_log_attributes = proofing_agent_log_attributes
     end
 
     def call
       return if webhook_url.blank?
 
-      send_http_post_request
+      response = send_http_post_request
+      analytics.idv_proofing_agent_webhook(
+        success: true,
+        proofing_agent: proofing_agent_log_attributes,
+        body_payload: payload,
+        issuer: service_provider_issuer,
+        response: response&.body,
+      )
     rescue => exception
       NewRelic::Agent.notice_error(
         exception,
@@ -24,6 +33,13 @@ module ProofingAgent
           webhook_url:,
           transaction_id:,
         },
+      )
+      analytics.idv_proofing_agent_webhook(
+        success: false,
+        proofing_agent: proofing_agent_log_attributes,
+        body_payload: payload,
+        issuer: service_provider_issuer,
+        response: exception&.message,
       )
     end
 
@@ -79,6 +95,19 @@ module ProofingAgent
 
     def service_provider_issuer
       document_capture_session&.issuer
+    end
+
+    def user
+      @user ||= document_capture_session.user
+    end
+
+    def analytics
+      @analytics ||= Analytics.new(
+        user: user,
+        request: nil,
+        session: {},
+        sp: service_provider_issuer,
+      )
     end
   end
 end

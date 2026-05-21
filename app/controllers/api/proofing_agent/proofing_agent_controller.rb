@@ -95,16 +95,6 @@ module Api
           remaining_attempts: proofing_rate_limiter.remaining_count,
         )
 
-        analytics.idv_doc_auth_verify_proofing_results(
-          **analytics_arguments.except(:issuer),
-        )
-
-        analytics.idv_proofing_agent_webhook(
-          **analytics_arguments,
-          response_body: { body: response_body, status: :accepted },
-          body_payload: response_body,
-        )
-
         render json: response_body, status: :accepted
       rescue ActionController::ParameterMissing => e
         render_bad_request(errors: { e.param => ['cannot be blank'] }) and return
@@ -350,6 +340,7 @@ module Api
             agent_id:,
             location_id:,
             correlation_id:,
+            transaction_id:,
           },
           issuer:,
         }

@@ -5431,13 +5431,15 @@ module AnalyticsEvents
     )
   end
 
-  # @param [Hash] response_body The body of the response from the proofing agent's proofing request
+  # @param [Boolean] success Whether webhook was sent successfully
+  # @param [Hash] response The response from the proofing agent's proofing request
   # @param [Hash] proofing_agent The proofing agent information
   # @param [String] issuer The issuer associated with the proofing request
   # @param [String,nil] transaction_id The transaction ID associated with the proofing request
   # @param [Hash] body_payload The body of the webhook sent by the proofing agent
   def idv_proofing_agent_webhook(
-    response_body:,
+    success:,
+    response:,
     proofing_agent:,
     issuer:,
     body_payload:,
@@ -5446,7 +5448,8 @@ module AnalyticsEvents
   )
     track_event(
       :idv_proofing_agent_webhook,
-      response_body:,
+      success:,
+      response:,
       proofing_agent:,
       issuer:,
       body_payload:,

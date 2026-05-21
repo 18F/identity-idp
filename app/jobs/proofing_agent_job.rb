@@ -60,12 +60,24 @@ class ProofingAgentJob < ApplicationJob
     success = combined_result[:success]
     reason = combined_result[:reason]
 
+    proofing_agent_log_attributes = {
+      agent_id: proofing_agent_id,
+      location_id: proofing_location_id,
+      correlation_id: correlation_id,
+      transaction_id: transaction_id,
+    }
+
+    analytics.idv_doc_auth_verify_proofing_results(
+      success:,
+      proofing_agent: proofing_agent_log_attributes,
+    )
     if webhook_url.present?
       ProofingAgentWebhookJob.perform_later(
         success:,
         reason:,
         transaction_id:,
         correlation_id:,
+        proofing_agent_log_attributes:,
       )
     end
 
@@ -195,7 +207,7 @@ class ProofingAgentJob < ApplicationJob
     phone_info = proofing_result&.dig(:biographical_info, :phone)
 
     analytics.idv_phone_confirmation_vendor_submitted(
-      success: proofing_result&.dig(:success),
+      success: phone_precheck_body&.dig(:success),
       vendor: phone_precheck_body,
       area_code: phone_info&.dig(:area_code),
       country_code: phone_info&.dig(:country_code),
