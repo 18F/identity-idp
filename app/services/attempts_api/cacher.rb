@@ -15,7 +15,7 @@ module AttemptsApi
     end
 
     def fetch
-      return unless user_session[:encrypted_proofing_events].present?
+      return if user_session[:encrypted_proofing_events].blank?
 
       encrypted_events = user_session[:encrypted_proofing_events]
       JSON.parse(SessionEncryptor.new.kms_decrypt(encrypted_events))
