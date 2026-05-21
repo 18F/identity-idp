@@ -3,15 +3,15 @@
 module ProofingAgent
   class WebhookCaller
     include Config
-    attr_reader :success, :reason, :transaction_id, :correlation_id, :proofing_agent_log_attributes
+    attr_reader :success, :reason, :transaction_id, :correlation_id, :analytics_attributes
 
     def initialize(success:, reason:, transaction_id:, correlation_id:,
-                   proofing_agent_log_attributes:)
+                   analytics_attributes:)
       @success = success
       @reason = reason
       @transaction_id = transaction_id
       @correlation_id = correlation_id
-      @proofing_agent_log_attributes = proofing_agent_log_attributes
+      @analytics_attributes = analytics_attributes
     end
 
     def call
@@ -20,7 +20,7 @@ module ProofingAgent
       response = send_http_post_request
       analytics.idv_proofing_agent_webhook(
         success: true,
-        proofing_agent: proofing_agent_log_attributes,
+        proofing_agent: analytics_attributes,
         body_payload: payload,
         issuer: service_provider_issuer,
         response: response&.body,
@@ -36,7 +36,7 @@ module ProofingAgent
       )
       analytics.idv_proofing_agent_webhook(
         success: false,
-        proofing_agent: proofing_agent_log_attributes,
+        proofing_agent: analytics_attributes,
         body_payload: payload,
         issuer: service_provider_issuer,
         response: exception&.message,

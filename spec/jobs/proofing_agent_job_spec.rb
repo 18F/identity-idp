@@ -86,7 +86,7 @@ RSpec.describe ProofingAgentJob, type: :job do
           reason: nil,
           transaction_id: transaction_id,
           correlation_id: correlation_id,
-          proofing_agent_log_attributes: an_instance_of(Hash),
+          analytics_attributes: an_instance_of(Hash),
         )
       end
 
@@ -113,7 +113,7 @@ RSpec.describe ProofingAgentJob, type: :job do
             reason: nil,
             transaction_id: transaction_id,
             correlation_id: correlation_id,
-            proofing_agent_log_attributes: an_instance_of(Hash),
+            analytics_attributes: an_instance_of(Hash),
           )
         end
       end
@@ -184,7 +184,7 @@ RSpec.describe ProofingAgentJob, type: :job do
           reason: 'profile_resolution_fail',
           transaction_id: transaction_id,
           correlation_id: correlation_id,
-          proofing_agent_log_attributes: an_instance_of(Hash),
+          analytics_attributes: an_instance_of(Hash),
         )
       end
     end
@@ -265,7 +265,7 @@ RSpec.describe ProofingAgentJob, type: :job do
           reason: 'id_fail',
           transaction_id: transaction_id,
           correlation_id: correlation_id,
-          proofing_agent_log_attributes: an_instance_of(Hash),
+          analytics_attributes: an_instance_of(Hash),
         )
       end
     end
@@ -311,7 +311,7 @@ RSpec.describe ProofingAgentJob, type: :job do
           reason: 'passport_fail',
           transaction_id: transaction_id,
           correlation_id: correlation_id,
-          proofing_agent_log_attributes: an_instance_of(Hash),
+          analytics_attributes: an_instance_of(Hash),
         )
       end
     end

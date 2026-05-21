@@ -60,7 +60,7 @@ class ProofingAgentJob < ApplicationJob
     success = combined_result[:success]
     reason = combined_result[:reason]
 
-    proofing_agent_log_attributes = {
+    analytics_attributes = {
       agent_id: proofing_agent_id,
       location_id: proofing_location_id,
       correlation_id: correlation_id,
@@ -68,8 +68,34 @@ class ProofingAgentJob < ApplicationJob
     }
 
     analytics.idv_doc_auth_verify_proofing_results(
-      success:,
-      proofing_agent: proofing_agent_log_attributes,
+      **{
+        success:,
+        proofing_agent: analytics_attributes,
+        analytics_id: 'Doc Auth',
+        address_edited: false,
+        address_line2_present: false,
+        errors: combined_result&.dig(:resolution, :errors),
+        last_name_spaced: combined_result&.dig(:pii, :last_name)&.include?(' '),
+        opted_in_to_in_person_proofing: false,
+        proofing_results: combined_result&.dig(:resolution),
+        ssn_is_unique: combined_result&.dig(:resolution, :ssn_is_unique),
+        step: 'Proofing Agent Job',
+        flow_path: 'Proofing Agent',
+      }.to_h.merge(
+        pii_like_keypaths: [
+          [:proofing_results, :biographical_info],
+          [:proofing_results, :errors, :zipcode],
+          [:proofing_results, :errors, :ssn],
+          [:proofing_results, :biographical_info, :identity_doc_address_state],
+          [:proofing_results, :biographical_info, :state_id_jurisdiction],
+          [:proofing_results, :context, :stages, :resolution, :errors, :zipcode],
+          [:proofing_results, :biographical_info, :same_address_as_id],
+          [:proofing_results, :biographical_info, :phone],
+          [:proofing_results, :context, :stages, :resolution, :errors, :ssn],
+          [:errors, :zipcode],
+          [:errors, :ssn],
+        ],
+      ),
     )
     if webhook_url.present?
       ProofingAgentWebhookJob.perform_later(
@@ -77,7 +103,7 @@ class ProofingAgentJob < ApplicationJob
         reason:,
         transaction_id:,
         correlation_id:,
-        proofing_agent_log_attributes:,
+        analytics_attributes:,
       )
     end
 
@@ -118,7 +144,7 @@ class ProofingAgentJob < ApplicationJob
   )
     aamva_result = nil
 
-    proofing_agent_log_attributes = {
+    analytics_attributes = {
       agent_id: proofing_agent_id,
       location_id: proofing_location_id,
       correlation_id: correlation_id,
@@ -129,7 +155,7 @@ class ProofingAgentJob < ApplicationJob
         applicant_pii:,
         current_sp:,
         timer:,
-        proofing_agent_log_attributes:,
+        analytics_attributes:,
       )
       applicant_pii[:aamva_verified_attributes] = aamva_result.verified_attributes if aamva_result
     end
@@ -141,12 +167,16 @@ class ProofingAgentJob < ApplicationJob
         applicant_pii:,
         timer:,
       )
+
       analytics.idv_dos_passport_verification(
         success: mrz_result&.success?,
         submit_attempts:,
         remaining_submit_attempts: remaining_attempts,
         document_type_requested: Idp::Constants::DocumentTypes::PASSPORT,
-        proofing_agent: proofing_agent_log_attributes,
+        proofing_agent: analytics_attributes,
+        correlation_id_sent: correlation_id,
+        error_message: mrz_result&.errors&.dig(:passport),
+        exception: mrz_result&.exception&.message,
       )
     end
 
@@ -162,7 +192,7 @@ class ProofingAgentJob < ApplicationJob
       user_id: user.id,
       service_provider_issuer:,
       proofing_vendor:,
-      proofing_agent: proofing_agent_log_attributes,
+      analytics_attributes:,
     )
 
     ProofingAgent::ProofingResult.new(
@@ -186,7 +216,7 @@ class ProofingAgentJob < ApplicationJob
     user_id:,
     service_provider_issuer:,
     proofing_vendor:,
-    proofing_agent:
+    analytics_attributes:
   )
     timer.time('resolution') do
       ResolutionProofingJob.perform_now(
@@ -218,7 +248,7 @@ class ProofingAgentJob < ApplicationJob
         manual_review: false,
         errors: phone_precheck_body&.dig(:errors),
         reason_codes: proofing_result&.dig(:context, :stages, :resolution, :reason_codes),
-        proofing_agent:,
+        proofing_agent: analytics_attributes,
       }.to_h.merge(
         pii_like_keypaths: [
           [:errors, :phone],
@@ -229,7 +259,7 @@ class ProofingAgentJob < ApplicationJob
     proofing_result
   end
 
-  def call_aamva_verification(applicant_pii:, current_sp:, timer:, proofing_agent_log_attributes:)
+  def call_aamva_verification(applicant_pii:, current_sp:, timer:, analytics_attributes:)
     aamva_plugin.call(
       applicant_pii:,
       current_sp:,
@@ -238,7 +268,7 @@ class ProofingAgentJob < ApplicationJob
       timer:,
       doc_auth_flow: true,
       analytics:,
-      proofing_agent: proofing_agent_log_attributes,
+      proofing_agent: analytics_attributes,
     )
   end
 
