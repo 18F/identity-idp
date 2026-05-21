@@ -15,7 +15,7 @@
             category: 'create-account',
             article: 'authentication-methods/face-or-touch-unlock',
           ),
-            new_tab: true,
+          new_tab: true,
         ),
         phishing_resistant_html: link_to(
           t('webauthn_platform_setup.phishing_resistant'),
@@ -23,6 +23,7 @@
             category: 'get-started',
             article: 'authentication-methods',
           ),
+          new_tab: true,
         ),
       ) %>
 </p>
@@ -32,16 +33,12 @@
     <%= render SubmitButtonComponent.new(
           url: webauthn_platform_setup_url,
           method: :post,
-          params: { add_webauthn_platform: true },
           full_width: true,
           class: 'margin-bottom-2',
         ).with_content(t('webauthn_platform_recommended.cta')) %>
-  <%= render SubmitButtonComponent.new(
-        url: webauthn_platform_setup_url,
-        method: :post,
-        unstyled: true,
-        big: false,
-        wide: false,
-      ).with_content(t('two_factor_authentication.login_options_link_text')) %>
+  <%= render(
+        'shared/cancel_or_back_to_options',
+        back_to_options_path: authentication_methods_setup_path,
+      ) %>
   </div>
 </div>

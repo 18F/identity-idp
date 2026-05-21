@@ -135,7 +135,7 @@ module AbTests
       'Multi-Factor Authentication Setup',
       'User Registration: User Fully Registered',
       :webauthn_platform_signup_setup_ab_test_visited,
-      :webauthn_platform_signup_setup_sb_test_submitted,
+      :webauthn_platform_signup_setup_ab_test_submitted,
     ].to_set,
     buckets: {
       auto_passkey_prompt: IdentityConfig.store.account_creation_passkey_auto_prompt_percent,
