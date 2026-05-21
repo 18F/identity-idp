@@ -8751,8 +8751,8 @@ module AnalyticsEvents
   end
 
   # User submits form to add passkey to account during account creation
-  def webauthn_platform_signup_setup_ab_test_submitted(opted_to_add:, **extra)
-    track_event(:webauthn_platform_signup_setup_sb_test_submitted)
+  def webauthn_platform_signup_setup_ab_test_submitted
+    track_event(:webauthn_platform_signup_setup_ab_test_submitted)
   end
 
   # User visits webauth platform upsell after sign up
@@ -8836,7 +8836,7 @@ module AnalyticsEvents
   # @param [Integer] enabled_mfa_methods_count Number of enabled MFA methods on the account
   # @param [Boolean] in_account_creation_flow Whether user is going through creation flow
   # @param [Boolean, nil] auto_passkey_prompted Whether the user was auto-redirected to setup
-  # @param [Boolean, nil] webauthn_platform_signup_recommended suggesting users to setup f/t unlock after password creation
+  # @param [Boolean, nil] webauthn_platform_signup_recommended passkey setup after password creation
   # Tracks when WebAuthn setup is visited
   def webauthn_setup_visit(
     platform_authenticator:,
