@@ -749,11 +749,11 @@ duplicate_profiles_detected.accounts_list.heading: Accounts with the same verifi
 duplicate_profiles_detected.cant_access: 'I can’t access an account'
 duplicate_profiles_detected.connected_acct_html: '<strong> Connected agencies: </strong> %{count}'
 duplicate_profiles_detected.created_at_html: '<strong> Created: </strong> %{timestamp_html}'
-duplicate_profiles_detected.delete_duplicates.details_html: Sign into the account you are going to delete at <a href="https://secure.login.gov">https://secure.login.gov</a>. Here's %{link_html}
-duplicate_profiles_detected.delete_duplicates.details2_html: If you want, you may %{link_html} to the account you're keeping after deleting the duplicate account.
+duplicate_profiles_detected.delete_duplicates.details_html: Sign into the account you are going to delete at <a href="https://secure.login.gov">https://secure.login.gov</a>. Here’s %{link_html}
+duplicate_profiles_detected.delete_duplicates.details2_html: If you want, you may %{link_html} to the account you’re keeping after deleting the duplicate account.
+duplicate_profiles_detected.delete_duplicates.details2.link: add the email
 duplicate_profiles_detected.delete_duplicates.heading: 'Delete the duplicate account(s)'
 duplicate_profiles_detected.delete_duplicates.link: how to delete your account.
-duplicate_profiles_detected.delete_duplicates.details2.link: add the email
 duplicate_profiles_detected.dont_recognize_account: I don’t recognize an account above
 duplicate_profiles_detected.duplicate: Duplicate
 duplicate_profiles_detected.get_help: Get Help
@@ -762,7 +762,7 @@ duplicate_profiles_detected.intro_html: 'The %{sp_name} requires that you only h
 duplicate_profiles_detected.intro.link: duplicate accounts
 duplicate_profiles_detected.last_sign_in_at_html: '<strong> Last login: </strong> %{timestamp_html}'
 duplicate_profiles_detected.never_logged_in: Never logged in to
-duplicate_profiles_detected.select_an_account.details_html: 'Keep the account that’s connected to the most services. Go to %{link_html} page to view connected agencies by selecting "Your connected accounts" in the left menu.'
+duplicate_profiles_detected.select_an_account.details_html: 'Keep the account that’s connected to the most services. Go to %{link_html} page to view connected agencies by selecting “Your connected accounts” in the left menu.'
 duplicate_profiles_detected.select_an_account.details.link: Your account
 duplicate_profiles_detected.select_an_account.heading: Choose an account to keep
 duplicate_profiles_detected.sign_back_in.details: Go back to the %{app_name} website and sign in using the one %{app_name} account you kept.
