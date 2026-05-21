@@ -6,7 +6,9 @@ module Idv
     extend ActiveSupport::Concern
 
     def cache_user_proofing_events(password:)
-      return unless historical_events_need_be_sent?
+      # we always need to cache events if the feature is enabled
+      # in case we have to re-encrypt them
+      return unless IdentityConfig.store.historical_attempts_api_enabled
 
       existing_events = current_user
         .active_profile
@@ -38,10 +40,6 @@ module Idv
 
     def existing_user_proofing_event
       @existing_user_proofing_event ||= current_user.active_profile.user_proofing_event
-    end
-
-    def user_uuid
-      @user_uuid ||= current_user['uuid']
     end
   end
 end
