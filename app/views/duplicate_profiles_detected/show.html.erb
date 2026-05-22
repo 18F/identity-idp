@@ -17,21 +17,27 @@
 
   <%= render ProcessListComponent.new(class: 'margin-y-3') do |c| %>
     <%= c.with_item(heading: t('duplicate_profiles_detected.select_an_account.heading')) do %>
-      <p> <%= t('duplicate_profiles_detected.select_an_account.details_html',
-                link_html: link_to(
-                 t('duplicate_profiles_detected.select_an_account.details.link'),
-                 account_path,
-               ),
-                ) %> </p>
+      <p> 
+        <%= t(
+              'duplicate_profiles_detected.select_an_account.details_html',
+              link_html: link_to(
+                t('duplicate_profiles_detected.select_an_account.details.link'),
+                account_path,
+              ),
+            )
+        %> 
+      </p>
     <% end %>
     <%= c.with_item(heading: t('duplicate_profiles_detected.delete_duplicates.heading')) do %>
-      <p><%= t(
-               'duplicate_profiles_detected.delete_duplicates.details_html',
-               link_html: new_tab_link_to(
-                 t('duplicate_profiles_detected.delete_duplicates.link'),
-                 MarketingSite.help_center_article_url(category: 'manage-your-account', article: 'delete-your-account'),
-               ),
-             ) %></p>
+      <p>
+        <%= t(
+              'duplicate_profiles_detected.delete_duplicates.details_html',
+              link_html: new_tab_link_to(
+                t('duplicate_profiles_detected.delete_duplicates.link'),
+                MarketingSite.help_center_article_url(category: 'manage-your-account', article: 'delete-your-account'),
+              ),
+            ) %>
+      s</p>
       <p><%= t(
                'duplicate_profiles_detected.delete_duplicates.details2_html',
                link_html: new_tab_link_to(
