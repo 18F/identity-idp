@@ -125,5 +125,24 @@ RSpec.describe Idv::StepIndicatorConcern, type: :controller do
         end
       end
     end
+
+    context 'with a proofing agent component' do
+      let(:doc_auth_step_indicator_steps_proofing_agent) do
+        [
+          { name: :getting_started },
+          { name: :verify_id },
+          { name: :confirm_your_information },
+          { name: :re_enter_password },
+        ]
+      end
+
+      before do
+        DocumentCaptureSession.create!(user: user, pending_agent_proofed_user_at: Time.zone.now)
+      end
+
+      it 'returns doc auth proofing_agent steps' do
+        expect(steps).to eq doc_auth_step_indicator_steps_proofing_agent
+      end
+    end
   end
 end

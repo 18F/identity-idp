@@ -1701,6 +1701,7 @@ simple_form.required.mark: ''
 simple_form.required.text: Este campo es obligatorio
 simple_form.yes: Sí
 step_indicator.accessible_label: Avance por pasos
+step_indicator.flows.idv.confirm_your_information: Confirme su información
 step_indicator.flows.idv.find_a_post_office: Busque una oficina de correos
 step_indicator.flows.idv.getting_started: Inicio
 step_indicator.flows.idv.go_to_the_post_office: Vaya a la oficina de correos

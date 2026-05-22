@@ -101,6 +101,7 @@ function VerifyFlowStepIndicator({
   // i18n-tasks-use t('step_indicator.flows.idv.find_a_post_office')
   // i18n-tasks-use t('step_indicator.flows.idv.go_to_the_post_office')
   // i18n-tasks-use t('step_indicator.flows.idv.verify_address')
+  // i18n-tasks-use t('step_indicator.flows.idv.confirm_your_information')
   // i18n-tasks-use t('step_indicator.flows.idv.re_enter_password')
 
   return (

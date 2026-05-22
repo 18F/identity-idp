@@ -23,6 +23,8 @@ module Idv
 
       if form_response.success?
         return redirect_to idv_enter_password_url if verify_dob_ssn_matches_applicant_pii?
+      else
+        flash.now[:error] = form_response.first_error_message
       end
 
       render :new

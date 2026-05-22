@@ -31,7 +31,7 @@ module Idv
     STEP_INDICATOR_STEPS_PROOFING_AGENT = [
       { name: :getting_started },
       { name: :verify_id },
-      { name: :verify_info },
+      { name: :confirm_your_information },
       { name: :re_enter_password },
     ].freeze
 
