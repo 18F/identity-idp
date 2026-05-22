@@ -26,7 +26,9 @@ module Idv
           pii_like_keypaths: [
             [:same_address_as_id],
             [:errors, :ssn],
+            [:errors, :dob],
             [:error_details, :ssn],
+            [:error_details, :dob],
           ],
         },
       )
