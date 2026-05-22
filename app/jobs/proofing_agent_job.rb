@@ -236,6 +236,14 @@ class ProofingAgentJob < ApplicationJob
     phone_precheck_body = proofing_result&.dig(:context, :stages, :phone_precheck)
     phone_info = proofing_result&.dig(:biographical_info, :phone)
 
+    proofing_components = {
+      document_check: proofing_vendor,
+      threatmetrix_review_status: proofing_result&.dig(:threatmetrix_review_status),
+      threatmetrix: proofing_result&.dig(:context, :stages, :threatmetrix).present?,
+      address_check: proofing_result&.dig(:context, :stages, :residential_address, :vendor_name),
+      resolution_check: proofing_result&.dig(:context, :stages, :resolution, :vendor_name),
+    }
+
     analytics.idv_phone_confirmation_vendor_submitted(
       **{
         success: phone_precheck_body&.dig(:success),
@@ -249,6 +257,7 @@ class ProofingAgentJob < ApplicationJob
         errors: phone_precheck_body&.dig(:errors),
         reason_codes: proofing_result&.dig(:context, :stages, :resolution, :reason_codes),
         proofing_agent: analytics_attributes,
+        proofing_components:,
       }.to_h.merge(
         pii_like_keypaths: [
           [:errors, :phone],

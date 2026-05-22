@@ -234,6 +234,13 @@ RSpec.describe ProofingAgentJob, type: :job do
             correlation_id: correlation_id,
             transaction_id: transaction_id,
           },
+          proofing_components: {
+            address_check: 'ResidentialAddressNotRequired',
+            document_check: :mock,
+            resolution_check: 'ResolutionMock',
+            threatmetrix: true,
+            threatmetrix_review_status: 'reject',
+          },
         )
       end
 
