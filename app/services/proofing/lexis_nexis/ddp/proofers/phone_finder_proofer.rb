@@ -5,6 +5,8 @@ module Proofing
     module Ddp
       module Proofers
         class PhoneFinderProofer < Proofing::LexisNexis::Ddp::Proofer
+          NOT_VERIFIED_TO_NAME = 'Input phone number could not be verified to name'
+
           private
 
           def build_result_from_response(verification_response)
@@ -17,6 +19,7 @@ module Proofing
               exception: nil,
               vendor_name: 'lexisnexis:phone_finder_ddp',
               transaction_id: parsed_response.conversation_id,
+              dual_vendor_check_eligible: dual_vendor_check_eligible?(parsed_response),
             )
           end
 
@@ -63,6 +66,21 @@ module Proofing
             end
 
             raise 'LexisNexis PhoneFinder DDP returned no tps_vendor_raw_response'
+          end
+
+          def dual_vendor_check_eligible?(response)
+            has_name_verification_error?(response) && !has_additional_verification_errors?(response)
+          end
+
+          def has_name_verification_error?(response)
+            !!response
+              .verification_errors
+              .dig(:'PhoneFinder Checks', 'ProductReason', 'Description')
+              &.match?(NOT_VERIFIED_TO_NAME)
+          end
+
+          def has_additional_verification_errors?(response)
+            response.verification_errors.dig(:PhoneFinder, 'ProductStatus') == 'fail'
           end
         end
       end

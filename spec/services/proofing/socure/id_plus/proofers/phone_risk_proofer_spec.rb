@@ -144,6 +144,36 @@ RSpec.describe Proofing::Socure::IdPlus::Proofers::PhoneRiskProofer do
         end
       end
     end
+
+    context 'when response contains dual vendor check eligible reason codes' do
+      let(:phonerisk_reason_codes) { ['I123', 'R666'] }
+      let(:name_phone_reason_codes) { ['I123', 'R777'] }
+
+      before do
+        allow(IdentityConfig.store).to receive(
+          :idv_phone_verification_dual_vendor_check_socure_reason_codes,
+        ).and_return(['R666', 'R777'])
+      end
+
+      it 'returns a result with dual_vendor_check_eligible set to true' do
+        expect(result.dual_vendor_check_eligible).to eql(true)
+      end
+    end
+
+    context 'when response does not contain dual vendor check eligible reason codes' do
+      let(:phonerisk_reason_codes) { ['I123', 'R800'] }
+      let(:name_phone_reason_codes) { ['I123', 'R500'] }
+
+      before do
+        allow(IdentityConfig.store).to receive(
+          :idv_phone_verification_dual_vendor_check_socure_reason_codes,
+        ).and_return(['R666'])
+      end
+
+      it 'returns a result with dual_vendor_check_eligible set to false' do
+        expect(result.dual_vendor_check_eligible).to eql(false)
+      end
+    end
   end
 
   context 'when phonerisk score is above threshold' do

@@ -38,7 +38,7 @@ module Proofing
             )
           end
         results << result
-        break if result.success?
+        break if stop_processing_vendors?(result)
       end
 
       if results.many?
@@ -120,6 +120,12 @@ module Proofing
 
     def determine_dual_vendors(primary_vendor)
       DUAL_VENDOR_CHECK_ADDRESS_VENDORS[primary_vendor]
+    end
+
+    def stop_processing_vendors?(result)
+      FeatureManagement.dual_vendor_check_enabled? ?
+        result.success || !result.dual_vendor_check_eligible :
+        result.success
     end
   end
 end

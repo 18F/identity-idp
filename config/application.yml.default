@@ -229,6 +229,7 @@ idv_min_age_years: 13
 idv_phone_confirmation_manual_review_validity_hours: 0
 idv_phone_precheck_percent: 0
 idv_phone_verification_dual_vendor_check_enabled: false
+idv_phone_verification_dual_vendor_check_socure_reason_codes: '[]'
 idv_proofing_agent_config: '[]'
 idv_proofing_agent_enabled: false
 idv_proofing_agent_result_expiration_seconds: 10
