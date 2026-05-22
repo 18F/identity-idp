@@ -7,6 +7,7 @@ module Idv
     include Idv::StepIndicatorConcern
 
     before_action :confirm_two_factor_authenticated
+    before_action :confirm_verification_needed
     before_action :move_agent_proofed_user_pii_to_idv_session, only: [:new]
 
     def new
@@ -54,6 +55,11 @@ module Idv
 
       idv_session.proofing_agent_match = ssn_match && dob_match
       idv_session.proofing_agent_match
+    end
+
+    def confirm_verification_needed
+      return if current_user.proofing_agent_pending?
+      redirect_to account_url
     end
   end
 end

@@ -28,6 +28,7 @@ RSpec.describe Idv::EnterDobSsnController do
       expect(subject).to have_actions(
         :before,
         :confirm_two_factor_authenticated,
+        :confirm_verification_needed,
         :move_agent_proofed_user_pii_to_idv_session,
       )
     end
@@ -38,9 +39,19 @@ RSpec.describe Idv::EnterDobSsnController do
   end
 
   describe '#new' do
-    it 'moves agent proofed user pii to idv_session applicant' do
-      get :new
-      expect(subject.idv_session.applicant).to eq(pii.stringify_keys)
+    before { get :new }
+    context 'user does not have a proofing agent pending pii' do
+      let(:success) { false }
+
+      it 'redirects to account_url if user does not have a pending proofing agent' do
+        expect(response).to redirect_to(account_url)
+      end
+    end
+
+    context 'user has proofing agent pending pii' do
+      it 'moves agent proofed user pii to idv_session applicant' do
+        expect(subject.idv_session.applicant).to eq(pii.stringify_keys)
+      end
     end
   end
 
