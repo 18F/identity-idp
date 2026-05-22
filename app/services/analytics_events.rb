@@ -2315,6 +2315,14 @@ module AnalyticsEvents
   # @param proofing_agent [Hash, nil] proofing agent information including location id, agent id,
   #   correlation id, and transaction id
   # @param exceptions [Hash, nil] The exceptions found in the proofing results.
+  # @param [Hash,nil] proofing_components User's current proofing components
+  # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
+  # @option proofing_components [String,nil] 'document_type_received' Type of ID detected by vendor
+  # @option proofing_components [String,nil] 'source_check' Source used to verify user's PII
+  # @option proofing_components [String,nil] 'resolution_check' Vendor for identity resolution check
+  # @option proofing_components [String,nil] 'address_check' Method used to verify user's address
+  # @option proofing_components [Boolean,nil] 'threatmetrix' Whether ThreatMetrix check was done
+  # @option proofing_components [String,nil] 'threatmetrix_review_status' TMX decision on the user
   def idv_doc_auth_verify_proofing_results(
     ab_tests: nil,
     acuant_sdk_upgrade_ab_test_bucket: nil,
@@ -2335,6 +2343,7 @@ module AnalyticsEvents
     previous_ssn_edit_distance: nil,
     proofing_agent: nil,
     exceptions: nil,
+    proofing_components: nil,
     **extra
   )
     track_event(
@@ -2358,6 +2367,7 @@ module AnalyticsEvents
       previous_ssn_edit_distance:,
       proofing_agent:,
       exceptions:,
+      proofing_components:,
       **extra,
     )
   end
@@ -5435,14 +5445,16 @@ module AnalyticsEvents
   # @param [Hash] response The response from the proofing agent's proofing request
   # @param [Hash] proofing_agent The proofing agent information
   # @param [String] issuer The issuer associated with the proofing request
-  # @param [String,nil] transaction_id The transaction ID associated with the proofing request
   # @param [Hash] body_payload The body of the webhook sent by the proofing agent
+  # @param [Hash] proofing_components User's current proofing components
+  # @param [String,nil] transaction_id The transaction ID associated with the proofing request
   def idv_proofing_agent_webhook(
     success:,
     response:,
     proofing_agent:,
     issuer:,
     body_payload:,
+    proofing_components:,
     transaction_id: nil,
     **extra
   )
@@ -5454,6 +5466,7 @@ module AnalyticsEvents
       issuer:,
       body_payload:,
       transaction_id:,
+      proofing_components:,
       **extra,
     )
   end

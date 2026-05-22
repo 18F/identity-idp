@@ -20,10 +20,11 @@ module ProofingAgent
       response = send_http_post_request
       analytics.idv_proofing_agent_webhook(
         success: true,
-        proofing_agent: analytics_attributes,
+        proofing_agent: analytics_attributes.except(:proofing_components),
         body_payload: payload,
         issuer: service_provider_issuer,
         response: response&.body,
+        proofing_components: analytics_attributes[:proofing_components],
       )
     rescue => exception
       NewRelic::Agent.notice_error(
@@ -36,10 +37,11 @@ module ProofingAgent
       )
       analytics.idv_proofing_agent_webhook(
         success: false,
-        proofing_agent: analytics_attributes,
+        proofing_agent: analytics_attributes.except(:proofing_components),
         body_payload: payload,
         issuer: service_provider_issuer,
         response: exception&.message,
+        proofing_components: analytics_attributes[:proofing_components],
       )
     end
 

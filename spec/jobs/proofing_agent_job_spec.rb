@@ -236,10 +236,8 @@ RSpec.describe ProofingAgentJob, type: :job do
           },
           proofing_components: {
             address_check: 'ResidentialAddressNotRequired',
-            document_check: :mock,
+            document_check: nil,
             resolution_check: 'ResolutionMock',
-            threatmetrix: true,
-            threatmetrix_review_status: 'reject',
           },
         )
       end

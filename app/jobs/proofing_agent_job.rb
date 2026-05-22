@@ -67,10 +67,23 @@ class ProofingAgentJob < ApplicationJob
       transaction_id: transaction_id,
     }
 
+    proofing_components = {
+      document_check: document_capture_session.doc_auth_vendor,
+      address_check: combined_result&.dig(
+        :resolution, :context, :stages, :residential_address,
+        :vendor_name
+      ),
+      resolution_check: combined_result&.dig(
+        :resolution, :context, :stages, :resolution,
+        :vendor_name
+      ),
+    }
+
     analytics.idv_doc_auth_verify_proofing_results(
       **{
         success:,
         proofing_agent: analytics_attributes,
+        proofing_components:,
         analytics_id: 'Doc Auth',
         address_edited: false,
         address_line2_present: false,
@@ -97,13 +110,14 @@ class ProofingAgentJob < ApplicationJob
         ],
       ),
     )
+
     if webhook_url.present?
       ProofingAgentWebhookJob.perform_later(
         success:,
         reason:,
         transaction_id:,
         correlation_id:,
-        analytics_attributes:,
+        analytics_attributes: analytics_attributes.merge(proofing_components: proofing_components),
       )
     end
 
@@ -237,9 +251,7 @@ class ProofingAgentJob < ApplicationJob
     phone_info = proofing_result&.dig(:biographical_info, :phone)
 
     proofing_components = {
-      document_check: proofing_vendor,
-      threatmetrix_review_status: proofing_result&.dig(:threatmetrix_review_status),
-      threatmetrix: proofing_result&.dig(:context, :stages, :threatmetrix).present?,
+      document_check: document_capture_session.doc_auth_vendor,
       address_check: proofing_result&.dig(:context, :stages, :residential_address, :vendor_name),
       resolution_check: proofing_result&.dig(:context, :stages, :resolution, :vendor_name),
     }
