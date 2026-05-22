@@ -289,15 +289,15 @@ RSpec.describe DocumentCaptureSession do
         end
 
         context 'when the result is successful' do
-          it 'updates pending_agent_proofed_user to true' do
-            expect(document_capture_session.pending_agent_proofed_user).to eq true
+          it 'updates pending_agent_proofed_user_at timestamp' do
+            expect(document_capture_session.pending_agent_proofed_user_at).to be_present
           end
         end
 
         context 'when the result is unsuccessful' do
           let(:success) { false }
-          it 'updates pending_agent_proofed_user to false' do
-            expect(document_capture_session.pending_agent_proofed_user).to eq false
+          it 'does not update pending_agent_proofed_user timestamp' do
+            expect(document_capture_session.pending_agent_proofed_user_at).to_not be_present
           end
         end
       end
