@@ -268,7 +268,7 @@ class ProofingAgentJob < ApplicationJob
       timer:,
       doc_auth_flow: true,
       analytics:,
-      proofing_agent: analytics_attributes,
+      proofing_agent_analytics_arguments: analytics_attributes,
     )
   end
 
