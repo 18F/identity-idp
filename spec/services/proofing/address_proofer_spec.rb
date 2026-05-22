@@ -267,23 +267,49 @@ RSpec.describe Proofing::AddressProofer do
               )
             end
 
-            before do
-              expect(Db::SpCost::AddSpCost).to receive(:call).with(
-                service_provider,
-                :lexis_nexis_address,
-                transaction_id: ddp_phone_finder_result.transaction_id,
-              )
-              expect(Db::SpCost::AddSpCost).to receive(:call).with(
-                service_provider,
-                :socure_address,
-                transaction_id: socure_phone_risk_result.transaction_id,
-              )
+            context 'when traffic percentage threshold is met' do
+              before do
+                allow(IdentityConfig.store).to receive(
+                  :idv_phone_verification_dual_vendor_check_ddp_lexis_nexis_percent,
+                ).and_return(100)
+                expect(Db::SpCost::AddSpCost).to receive(:call).with(
+                  service_provider,
+                  :lexis_nexis_address,
+                  transaction_id: ddp_phone_finder_result.transaction_id,
+                )
+                expect(Db::SpCost::AddSpCost).to receive(:call).with(
+                  service_provider,
+                  :socure_address,
+                  transaction_id: socure_phone_risk_result.transaction_id,
+                )
+              end
+
+              it 'returns a results hash with both vendor checks' do
+                expect(subject.proof(applicant_pii:, current_sp: service_provider)).to eq(
+                  socure_phone_risk_result.to_h.merge(
+                    alternate_result: ddp_phone_finder_result.to_h,
+                  ),
+                )
+              end
             end
 
-            it 'returns a results hash with both vendor checks' do
-              expect(subject.proof(applicant_pii:, current_sp: service_provider)).to eq(
-                socure_phone_risk_result.to_h.merge(alternate_result: ddp_phone_finder_result.to_h),
-              )
+            context 'when traffic percentage threshold is not met' do
+              before do
+                allow(IdentityConfig.store).to receive(
+                  :idv_phone_verification_dual_vendor_check_ddp_lexis_nexis_percent,
+                ).and_return(0)
+                expect(Db::SpCost::AddSpCost).to receive(:call).with(
+                  service_provider,
+                  :lexis_nexis_address,
+                  transaction_id: ddp_phone_finder_result.transaction_id,
+                )
+              end
+
+              it 'returns a ddp_lexis_nexis results hash' do
+                expect(subject.proof(applicant_pii:, current_sp: service_provider)).to eq(
+                  ddp_phone_finder_result.to_h,
+                )
+              end
             end
           end
 
@@ -349,23 +375,49 @@ RSpec.describe Proofing::AddressProofer do
               )
             end
 
-            before do
-              expect(Db::SpCost::AddSpCost).to receive(:call).with(
-                service_provider,
-                :socure_address,
-                transaction_id: socure_phone_risk_result.transaction_id,
-              )
-              expect(Db::SpCost::AddSpCost).to receive(:call).with(
-                service_provider,
-                :lexis_nexis_address,
-                transaction_id: ddp_phone_finder_result.transaction_id,
-              )
+            context 'when traffic percentage threshold is met' do
+              before do
+                allow(IdentityConfig.store).to receive(
+                  :idv_phone_verification_dual_vendor_check_socure_percent,
+                ).and_return(100)
+                expect(Db::SpCost::AddSpCost).to receive(:call).with(
+                  service_provider,
+                  :socure_address,
+                  transaction_id: socure_phone_risk_result.transaction_id,
+                )
+                expect(Db::SpCost::AddSpCost).to receive(:call).with(
+                  service_provider,
+                  :lexis_nexis_address,
+                  transaction_id: ddp_phone_finder_result.transaction_id,
+                )
+              end
+
+              it 'returns a results hash with both vendor checks' do
+                expect(subject.proof(applicant_pii:, current_sp: service_provider)).to eq(
+                  ddp_phone_finder_result.to_h.merge(
+                    alternate_result: socure_phone_risk_result.to_h,
+                  ),
+                )
+              end
             end
 
-            it 'returns a results hash with both vendor checks' do
-              expect(subject.proof(applicant_pii:, current_sp: service_provider)).to eq(
-                ddp_phone_finder_result.to_h.merge(alternate_result: socure_phone_risk_result.to_h),
-              )
+            context 'when traffic percentage threshold is not met' do
+              before do
+                allow(IdentityConfig.store).to receive(
+                  :idv_phone_verification_dual_vendor_check_socure_percent,
+                ).and_return(0)
+                expect(Db::SpCost::AddSpCost).to receive(:call).with(
+                  service_provider,
+                  :socure_address,
+                  transaction_id: socure_phone_risk_result.transaction_id,
+                )
+              end
+
+              it 'returns a socure_phone_risk_result results hash' do
+                expect(subject.proof(applicant_pii:, current_sp: service_provider)).to eq(
+                  socure_phone_risk_result.to_h,
+                )
+              end
             end
           end
 
