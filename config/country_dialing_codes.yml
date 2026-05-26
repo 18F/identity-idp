@@ -573,7 +573,7 @@ KY:
   supports_sms: true
   supports_voice: false
 KZ:
-  country_code: '7'
+  country_code: '77'
   name: Kazakhstan
   supports_sms: true
   supports_sms_unconfirmed: false
