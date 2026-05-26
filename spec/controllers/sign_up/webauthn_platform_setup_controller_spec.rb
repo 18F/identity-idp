@@ -26,28 +26,4 @@ RSpec.describe SignUp::WebauthnPlatformSetupController do
       expect(@analytics).to have_logged_event(:webauthn_platform_signup_setup_ab_test_visited)
     end
   end
-
-  describe '#create' do
-    before do
-      stub_analytics
-    end
-
-    context 'when the user opts in to add webauthn platform' do
-      it 'logs analytics accordingly' do
-        post :create
-
-        expect(@analytics).to have_logged_event(
-          :webauthn_platform_signup_setup_ab_test_submitted,
-        )
-      end
-
-      it 'redirects to webauthn platform setup url' do
-        post :create
-
-        response
-
-        expect(response).to redirect_to(webauthn_setup_path(platform: true, auto_trigger: true))
-      end
-    end
-  end
 end

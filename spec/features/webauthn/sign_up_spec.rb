@@ -96,7 +96,7 @@ RSpec.feature 'webauthn sign up' do
       end
 
       it 'redirects to webauthn platform setup upsell page' do
-        expect(page).to have_current_path(webauthn_platform_setup_path)
+        expect(page).to have_current_path(sign_up_webauthn_platform_setup_path)
       end
     end
   end

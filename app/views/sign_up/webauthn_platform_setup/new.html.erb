@@ -28,17 +28,64 @@
       ) %>
 </p>
 
-<div class="grid-row margin-top-5">
+<div class="grid-row">
   <div class="tablet:grid-col-9">
+
+  <%= simple_form_for(
+        '',
+        url: confirm_signup_webauthn_platform_setup_path,
+        method: :patch,
+        html: {
+          class: 'margin-bottom-1',
+          id: 'webauthn-form',
+          data: { auto_trigger: false },
+        },
+      ) do |f| %>
+    <%= hidden_field_tag :user_id, current_user.id, id: 'user_id' %>
+    <%= hidden_field_tag :user_email, current_user.last_sign_in_email_address.email, id: 'user_email' %>
+    <%= hidden_field_tag :user_challenge, user_session[:webauthn_challenge].to_json, id: 'user_challenge' %>
+    <%= hidden_field_tag :exclude_credentials, @exclude_credentials&.join(','), id: 'exclude_credentials' %>
+    <%= hidden_field_tag :webauthn_id, '', id: 'webauthn_id' %>
+    <%= hidden_field_tag :attestation_object, '', id: 'attestation_object' %>
+    <%= hidden_field_tag :client_data_json, '', id: 'client_data_json' %>
+    <%= hidden_field_tag :authenticator_data_value, '', id: 'authenticator_data_value' %>
+    <%= hidden_field_tag :transports, '', id: 'transports' %>
+    <%= hidden_field_tag :platform_authenticator, true, id: 'platform_authenticator' %>
+
+    <div class="margin-y-4 text-center" id="spinner" hidden>
+      <%= image_tag(
+            asset_url('loading-badge.gif'),
+            height: 144,
+            width: 144,
+            alt: '',
+          ) %>
+      <strong class="display-block margin-top-2">
+        <%= t('forms.webauthn_setup.saving') %>
+      </strong>
+    </div>
+    <%= f.input(
+          :remember_device,
+          as: :boolean,
+          label: t('forms.messages.remember_device'),
+          aria: { describedby: 'remember-browser-description' },
+          input_html: {
+            class: 'usa-checkbox__input--bordered',
+            checked: @presenter.remember_device_box_checked?,
+          },
+        ) %>
+    <p class='margin-top-1 font-body-2xs' id='remember-browser-description'><%= t('forms.messages.public_shared_device_html') %></p>
+
     <%= render SubmitButtonComponent.new(
-          url: webauthn_platform_setup_url,
-          method: :post,
-          full_width: true,
-          class: 'margin-bottom-2',
-        ).with_content(t('webauthn_platform_recommended.cta')) %>
+          # class: 'margin-y-5',
+          full_width: true
+          ).with_content(t('webauthn_platform_recommended.cta')) %>
+  <% end %>
+
   <%= render(
         'shared/cancel_or_back_to_options',
         back_to_options_path: authentication_methods_setup_path,
       ) %>
   </div>
 </div>
+
+<%= javascript_packs_tag_once 'webauthn-setup' %>

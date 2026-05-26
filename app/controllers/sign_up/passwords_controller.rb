@@ -92,7 +92,7 @@ module SignUp
     def next_step_redirect
       if user_session[:platform_authenticator_available] == true &&
          passkey_setup_upsell_prompt_eligible?
-        redirect_to webauthn_platform_setup_url
+        redirect_to sign_up_webauthn_platform_setup_url
       else
         redirect_to authentication_methods_setup_url
       end
