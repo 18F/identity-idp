@@ -8,6 +8,7 @@ module Users
     include ReauthenticationRequiredConcern
     include ThreatMetrixHelper
     include ThreatMetrixConcern
+    include WebauthnSetupFormConcern
 
     before_action :authenticate_user!
     before_action :confirm_user_authenticated_for_2fa_setup
@@ -31,14 +32,7 @@ module Users
       )
       result = form.submit(new_params)
       @platform_authenticator = form.platform_authenticator?
-      @presenter = WebauthnSetupPresenter.new(
-        current_user: current_user,
-        user_fully_authenticated: user_fully_authenticated?,
-        user_opted_remember_device_cookie: user_opted_remember_device_cookie,
-        remember_device_default: remember_device_default,
-        platform_authenticator: @platform_authenticator,
-        url_options:,
-      )
+      @presenter = build_webauthn_setup_presenter(platform_authenticator: @platform_authenticator)
       analytics.webauthn_setup_visit(
         platform_authenticator: result.extra[:platform_authenticator],
         in_account_creation_flow: user_session[:in_account_creation_flow] || false,
@@ -47,15 +41,11 @@ module Users
         webauthn_platform_signup_recommended:
           user_session[:webauthn_platform_signup_setup_recommended] || false,
       )
-      save_challenge_in_session
-      @exclude_credentials = exclude_credentials
-      @need_to_set_up_additional_mfa = need_to_set_up_additional_mfa?
-      @auto_trigger = auto_trigger_request? &&
-                      platform_authenticator? &&
-                      in_account_creation_flow?
-      if platform_authenticator?
-        user_session[:webauthn_setup_started_at] = Time.zone.now.to_f
-      end
+      prepare_webauthn_setup_form(
+        platform_authenticator: @platform_authenticator,
+        auto_trigger: auto_trigger_request? && platform_authenticator? && in_account_creation_flow?,
+        need_to_set_up_additional_mfa: need_to_set_up_additional_mfa?,
+      )
 
       if result.errors.present?
         increment_mfa_selection_attempt_count(webauthn_auth_method)
@@ -89,14 +79,7 @@ module Users
       )
       result = form.submit(confirm_params)
       @platform_authenticator = form.platform_authenticator?
-      @presenter = WebauthnSetupPresenter.new(
-        current_user: current_user,
-        user_fully_authenticated: user_fully_authenticated?,
-        user_opted_remember_device_cookie: user_opted_remember_device_cookie,
-        remember_device_default: remember_device_default,
-        platform_authenticator: @platform_authenticator,
-        url_options:,
-      )
+      @presenter = build_webauthn_setup_presenter(platform_authenticator: @platform_authenticator)
       properties = result.to_h.merge(analytics_properties)
       if user_session[:webauthn_setup_started_at].present?
         properties = properties.merge(webauthn_setup_duration: webauthn_setup_duration)
@@ -158,15 +141,6 @@ module Users
 
     def flash_error(errors)
       flash.now[:error] = errors.values.first.first
-    end
-
-    def exclude_credentials
-      current_user.webauthn_configurations.map(&:credential_id)
-    end
-
-    def save_challenge_in_session
-      credential_creation_options = WebAuthn::Credential.options_for_create(user: current_user)
-      user_session[:webauthn_challenge] = credential_creation_options.challenge.bytes.to_a
     end
 
     def process_valid_webauthn(form)

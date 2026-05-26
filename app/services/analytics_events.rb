@@ -8751,13 +8751,15 @@ module AnalyticsEvents
   end
 
   # User submits form to add passkey to account during account creation
-  def webauthn_platform_signup_setup_ab_test_submitted
-    track_event(:webauthn_platform_signup_setup_ab_test_submitted)
+  # @param [Symbol] passkey_upsell_bucket The PASSKEY_UPSELL A/B test bucket the user is in
+  def webauthn_platform_signup_setup_ab_test_submitted(passkey_upsell_bucket:)
+    track_event(:webauthn_platform_signup_setup_ab_test_submitted, passkey_upsell_bucket:)
   end
 
-  # User visits webauth platform upsell after sign up
-  def webauthn_platform_signup_setup_ab_test_visited
-    track_event(:webauthn_platform_signup_setup_ab_test_visited)
+  # User visits webauthn platform upsell page after sign up
+  # @param [Symbol] passkey_upsell_bucket The PASSKEY_UPSELL A/B test bucket the user is in
+  def webauthn_platform_signup_setup_ab_test_visited(passkey_upsell_bucket:)
+    track_event(:webauthn_platform_signup_setup_ab_test_visited, passkey_upsell_bucket:)
   end
 
   # @param [Boolean] platform_authenticator Whether authentication method was registered as platform

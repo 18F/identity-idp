@@ -91,23 +91,29 @@ module SignUp
 
     def next_step_redirect
       if user_session[:platform_authenticator_available] == true &&
-         in_passkey_upsell_test_buckets?
+         passkey_upsell_prompt_eligible?
+        user_session[:auto_passkey_prompted] = true if auto_passkey_prompt_bucket?
         redirect_to webauthn_platform_setup_url
       else
         redirect_to authentication_methods_setup_url
       end
     end
 
-    def in_passkey_upsell_test_buckets?
-      ab_test_bucket(:PASSKEY_UPSELL).present? &&
-        (ab_test_bucket(:PASSKEY_UPSELL) == :passkey_setup_prompt_after_password_creation ||
-        ab_test_bucket(:PASSKEY_UPSELL) == :auto_passkey_prompt)
+    def passkey_upsell_prompt_eligible?
+      FeatureManagement.account_creation_passkey_auto_prompt_enabled? &&
+        passkey_upsell_bucket.present? &&
+        [
+          :passkey_setup_prompt_after_password_creation,
+          :auto_passkey_prompt,
+        ].include?(passkey_upsell_bucket)
     end
 
-    def passkey_setup_upsell_prompt_eligible?
-      FeatureManagement.account_creation_passkey_auto_prompt_enabled? &&
-        ab_test_bucket(:PASSKEY_UPSELL) ==
-          :passkey_setup_prompt_after_password_creation
+    def auto_passkey_prompt_bucket?
+      passkey_upsell_bucket == :auto_passkey_prompt
+    end
+
+    def passkey_upsell_bucket
+      @passkey_upsell_bucket ||= ab_test_bucket(:PASSKEY_UPSELL)
     end
   end
 end

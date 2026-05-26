@@ -48,7 +48,11 @@ RSpec.feature 'webauthn sign up' do
       let!(:user) do
         allow(FeatureManagement).to receive(:account_creation_passkey_auto_prompt_enabled?)
           .and_return(true)
-        allow_any_instance_of(Users::TwoFactorAuthenticationSetupController)
+        allow_any_instance_of(SignUp::PasswordsController)
+          .to receive(:ab_test_bucket)
+          .with(:PASSKEY_UPSELL)
+          .and_return(:auto_passkey_prompt)
+        allow_any_instance_of(SignUp::WebauthnPlatformSetupController)
           .to receive(:ab_test_bucket)
           .with(:PASSKEY_UPSELL)
           .and_return(:auto_passkey_prompt)
@@ -58,7 +62,7 @@ RSpec.feature 'webauthn sign up' do
       end
 
       it 'redirects new user to webauthn platform setup page' do
-        expect(page).to have_current_path(webauthn_setup_path(platform: true, auto_trigger: true))
+        expect(page).to have_current_path(webauthn_platform_setup_path)
       end
 
       it 'lets the user go back to mfa selection without auto redirecting again' do
@@ -87,6 +91,10 @@ RSpec.feature 'webauthn sign up' do
         allow(FeatureManagement).to receive(:account_creation_passkey_auto_prompt_enabled?)
           .and_return(true)
         allow_any_instance_of(SignUp::PasswordsController)
+          .to receive(:ab_test_bucket)
+          .with(:PASSKEY_UPSELL)
+          .and_return(:passkey_setup_prompt_after_password_creation)
+        allow_any_instance_of(SignUp::WebauthnPlatformSetupController)
           .to receive(:ab_test_bucket)
           .with(:PASSKEY_UPSELL)
           .and_return(:passkey_setup_prompt_after_password_creation)

@@ -18,36 +18,134 @@ RSpec.describe SignUp::WebauthnPlatformSetupController do
   end
 
   describe '#new' do
-    it 'logs analytics value' do
-      stub_analytics
+    before { stub_analytics }
 
-      get :new
+    context 'when user is in the auto_passkey_prompt bucket' do
+      before do
+        allow(controller).to receive(:ab_test_bucket).with(:PASSKEY_UPSELL)
+          .and_return(:auto_passkey_prompt)
+        allow(WebAuthn::Credential).to receive(:options_for_create).and_return(
+          instance_double(
+            WebAuthn::PublicKeyCredential::CreationOptions,
+            challenge: SecureRandom.random_bytes(32),
+          ),
+        )
+      end
 
-      expect(@analytics).to have_logged_event(:webauthn_platform_signup_setup_ab_test_visited)
+      it 'logs analytics with the bucket' do
+        get :new
+
+        expect(@analytics).to have_logged_event(
+          :webauthn_platform_signup_setup_ab_test_visited,
+          passkey_upsell_bucket: :auto_passkey_prompt,
+        )
+      end
+
+      it 'renders the shared webauthn setup page with auto-trigger on page load' do
+        get :new
+
+        expect(response).to render_template('users/webauthn_setup/new')
+        expect(assigns(:auto_trigger)).to be(true)
+        expect(assigns(:platform_authenticator)).to be(true)
+      end
+
+      it 'marks the passkey prompt as already shown' do
+        get :new
+
+        expect(controller.user_session[:auto_passkey_prompted]).to eq(true)
+      end
+
+      it 'saves the webauthn challenge in the session' do
+        get :new
+
+        expect(controller.user_session[:webauthn_challenge]).to be_present
+      end
+    end
+
+    context 'when user is in the passkey_setup_prompt_after_password_creation bucket' do
+      before do
+        allow(controller).to receive(:ab_test_bucket).with(:PASSKEY_UPSELL)
+          .and_return(:passkey_setup_prompt_after_password_creation)
+      end
+
+      it 'logs analytics with the bucket' do
+        get :new
+
+        expect(@analytics).to have_logged_event(
+          :webauthn_platform_signup_setup_ab_test_visited,
+          passkey_upsell_bucket: :passkey_setup_prompt_after_password_creation,
+        )
+      end
+
+      it 'renders the upsell page without triggering webauthn' do
+        get :new
+
+        expect(response).to render_template(:new)
+      end
+
+      it 'marks the passkey prompt as already shown' do
+        get :new
+
+        expect(controller.user_session[:auto_passkey_prompted]).to eq(true)
+      end
+    end
+
+    context 'when user already has a platform authenticator' do
+      let(:user) { create(:user, :with_webauthn_platform) }
+
+      before do
+        allow(controller).to receive(:user_fully_authenticated?).and_return(true)
+      end
+
+      it 'redirects to authentication methods setup' do
+        get :new
+
+        expect(response).to redirect_to(authentication_methods_setup_path)
+      end
     end
   end
 
   describe '#create' do
     before do
       stub_analytics
+      allow(controller).to receive(:ab_test_bucket).with(:PASSKEY_UPSELL)
+        .and_return(:passkey_setup_prompt_after_password_creation)
+      allow(WebAuthn::Credential).to receive(:options_for_create).and_return(
+        instance_double(
+          WebAuthn::PublicKeyCredential::CreationOptions,
+          challenge: SecureRandom.random_bytes(32),
+        ),
+      )
     end
 
-    context 'when the user opts in to add webauthn platform' do
-      it 'logs analytics accordingly' do
-        post :create
+    it 'logs analytics with the bucket' do
+      post :create
 
-        expect(@analytics).to have_logged_event(
-          :webauthn_platform_signup_setup_ab_test_submitted,
-        )
-      end
+      expect(@analytics).to have_logged_event(
+        :webauthn_platform_signup_setup_ab_test_submitted,
+        passkey_upsell_bucket: :passkey_setup_prompt_after_password_creation,
+      )
+    end
 
-      it 'redirects to webauthn platform setup url' do
-        post :create
+    it 'renders the shared webauthn setup page without auto-trigger' do
+      post :create
 
-        response
+      expect(response).to render_template('users/webauthn_setup/new')
+      expect(assigns(:auto_trigger)).to be(false)
+      expect(assigns(:platform_authenticator)).to be(true)
+    end
 
-        expect(response).to redirect_to(webauthn_setup_path(platform: true, auto_trigger: true))
-      end
+    it 'sets the signup recommended and prompt-shown session flags' do
+      post :create
+
+      expect(controller.user_session[:webauthn_platform_signup_setup_recommended]).to eq(true)
+      expect(controller.user_session[:auto_passkey_prompted]).to eq(true)
+    end
+
+    it 'saves the webauthn challenge in the session' do
+      post :create
+
+      expect(controller.user_session[:webauthn_challenge]).to be_present
     end
   end
 end

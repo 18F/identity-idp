@@ -137,8 +137,39 @@ RSpec.describe SignUp::PasswordsController do
         end
       end
 
-      context 'when account_creation_passkey_prompt is disabled' do
+      context 'auto passkey upsell A/B test' do
+        let(:params) do
+          super().merge(platform_authenticator_available: 'true')
+        end
+
         before do
+          allow(controller).to receive(:ab_test_bucket)
+            .with(:PASSKEY_UPSELL)
+            .and_return(:auto_passkey_prompt)
+          allow(FeatureManagement).to receive(:account_creation_passkey_auto_prompt_enabled?)
+            .and_return(true)
+        end
+
+        it 'redirects to the passkey upsell page' do
+          expect(response).to redirect_to(webauthn_platform_setup_url)
+        end
+
+        it 'marks the auto prompt as already triggered' do
+          response
+
+          expect(controller.user_session[:auto_passkey_prompted]).to eq(true)
+        end
+      end
+
+      context 'when account_creation_passkey_prompt is disabled' do
+        let(:params) do
+          super().merge(platform_authenticator_available: 'true')
+        end
+
+        before do
+          allow(controller).to receive(:ab_test_bucket)
+            .with(:PASSKEY_UPSELL)
+            .and_return(:auto_passkey_prompt)
           allow(FeatureManagement).to receive(:account_creation_passkey_auto_prompt_enabled?)
             .and_return(false)
         end
