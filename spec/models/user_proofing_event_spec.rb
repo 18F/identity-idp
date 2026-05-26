@@ -5,8 +5,6 @@ RSpec.describe UserProofingEvent, type: :model do
     UserProofingEvent.new(
       profile_id: 1,
       service_provider_ids_sent: [],
-      cost: '0$cost$',
-      salt: 'salt0',
     )
   end
 

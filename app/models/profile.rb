@@ -429,7 +429,6 @@ class Profile < ApplicationRecord
     # TODO: refactor to use reencrypt_user_proofing_events
     encryptor = Encryption::Encryptors::PiiEncryptor.new(password)
     encrypted_events_json = encryptor.encrypt(attempt_events.to_json, user_uuid: user.uuid)
-    encrypted_events = JSON.parse(encrypted_events_json)
 
     result = encrypted_doc_writer.write_encrypted_attempt_events(
       file_path: attempt_events_file_path,
@@ -439,10 +438,6 @@ class Profile < ApplicationRecord
     update!(encrypted_attempts_file_reference: result.name)
 
     new_user_proofing_event = build_user_proofing_event(
-      # TODO refactor to remove cost and salt from the event
-      # They are saved in s3 with the bundle
-      cost: encrypted_events['cost'],
-      salt: encrypted_events['salt'],
       service_provider_ids_sent: service_provider_ids_sent(sent_to_sp:),
     )
 
