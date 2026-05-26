@@ -184,6 +184,7 @@ RSpec.describe Users::TwoFactorAuthenticationSetupController do
               .to change { controller.user_session[:auto_passkey_prompted] }
               .from(nil)
               .to(true)
+            expect(controller.user_session[:auto_passkey_prompt_pending]).to eq(true)
 
             expect(response).to redirect_to(webauthn_platform_setup_url)
           end
@@ -233,6 +234,9 @@ RSpec.describe Users::TwoFactorAuthenticationSetupController do
       context 'when platform authenticator is not available' do
         before do
           controller.user_session[:platform_authenticator_available] = false
+          allow(controller).to receive(:ab_test_bucket)
+            .with(:PASSKEY_UPSELL)
+            .and_return(:auto_passkey_prompt)
         end
 
         it 'does not redirect to platform webauthn setup' do

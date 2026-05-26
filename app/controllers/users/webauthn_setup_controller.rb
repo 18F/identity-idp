@@ -196,6 +196,14 @@ module Users
       params[:auto_trigger] == 'true'
     end
 
+    def consume_auto_passkey_prompt?
+      return false unless auto_trigger_request? &&
+                          platform_authenticator? &&
+                          in_account_creation_flow?
+
+      user_session.delete(:auto_passkey_prompt_pending) == true
+    end
+
     def webauthn_setup_duration
       started_at = user_session[:webauthn_setup_started_at]
       return unless started_at

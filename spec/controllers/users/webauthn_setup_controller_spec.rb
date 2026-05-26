@@ -397,10 +397,29 @@ RSpec.describe Users::WebauthnSetupController do
         end
 
         context 'when auto prompt is requested and platform authenticator is used' do
+          before do
+            controller.user_session[:auto_passkey_prompt_pending] = true
+          end
+
           it 'sets auto_trigger to true' do
             get :new, params: { platform: true, auto_trigger: true }
 
             expect(assigns(:auto_trigger)).to eq(true)
+            expect(controller.user_session[:auto_passkey_prompt_pending]).to be_nil
+          end
+
+          it 'does not auto-trigger again after the pending prompt is consumed' do
+            get :new, params: { platform: true, auto_trigger: true }
+            get :new, params: { platform: true, auto_trigger: true }
+
+            expect(assigns(:auto_trigger)).to eq(false)
+          end
+
+          it 'does not auto-trigger again after the browser prompt is canceled' do
+            get :new, params: { platform: true, auto_trigger: true, error: 'NotAllowedError' }
+
+            expect(assigns(:auto_trigger)).to eq(false)
+            expect(controller.user_session[:auto_passkey_prompt_pending]).to be_nil
           end
         end
 

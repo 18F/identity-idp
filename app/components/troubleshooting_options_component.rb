@@ -11,16 +11,12 @@ class TroubleshootingOptionsComponent < BaseComponent
     @tag_options = tag_options.dup
   end
 
-  def options
-    @options_from_constructor.map(&method(:render)) + get_slot(:options)
-  end
-
-  def options?
-    options.present?
+  def all_options
+    @all_options ||= @options_from_constructor.map(&method(:render)) + options
   end
 
   def render?
-    options?
+    all_options.present?
   end
 
   def css_class

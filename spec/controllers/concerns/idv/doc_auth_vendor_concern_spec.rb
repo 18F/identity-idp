@@ -72,7 +72,7 @@ RSpec.describe Idv::DocAuthVendorConcern, :controller do
 
       context 'passport requested' do
         before do
-          document_capture_session.update!(passport_status: 'requested')
+          document_capture_session.update!(document_type_requested: Idp::Constants::DocumentTypes::PASSPORT)
           allow(controller).to receive(:ab_test_bucket)
             .with(:DOC_AUTH_PASSPORT_VENDOR, user:)
             .and_return(bucket)
@@ -128,7 +128,7 @@ RSpec.describe Idv::DocAuthVendorConcern, :controller do
 
       context 'passport requested' do
         before do
-          document_capture_session.update!(passport_status: 'requested')
+          document_capture_session.update!(document_type_requested: Idp::Constants::DocumentTypes::PASSPORT)
           allow(controller).to receive(:ab_test_bucket)
             .with(:DOC_AUTH_PASSPORT_SELFIE_VENDOR, user:)
             .and_return(bucket)

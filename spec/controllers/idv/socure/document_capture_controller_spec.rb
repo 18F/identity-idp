@@ -20,7 +20,7 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
   end
   let(:idv_socure_docv_flow_id_only) { 'id only flow' }
   let(:idv_socure_docv_flow_id_w_selfie) { 'selfie flow' }
-  let(:passport_status) { 'not_requested' }
+  let(:document_type_requested) { Idp::Constants::DocumentTypes::STATE_ID_CARD }
 
   let(:stored_result) do
     DocumentCaptureSessionResult.new(
@@ -39,7 +39,7 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
       user:,
       requested_at: Time.zone.now,
       doc_auth_vendor: idv_vendor,
-      passport_status:,
+      document_type_requested:,
     )
     allow(IdentityConfig.store).to receive(:socure_docv_enabled)
       .and_return(socure_docv_enabled)
@@ -276,7 +276,7 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
         end
 
         context 'passport requested' do
-          let(:passport_status) { 'requested' }
+          let(:document_type_requested) { Idp::Constants::DocumentTypes::PASSPORT }
 
           it 'creates a DocumentRequest' do
             expect(request_class).to have_received(:new)
@@ -352,7 +352,7 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
         end
 
         context 'passport requested' do
-          let(:passport_status) { 'requested' }
+          let(:document_type_requested) { Idp::Constants::DocumentTypes::PASSPORT }
 
           it 'creates a DocumentRequest' do
             expect(request_class).to have_received(:new)

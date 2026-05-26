@@ -1268,6 +1268,23 @@ RSpec.describe Profile do
               expect { profile.deactivate_duplicate }
                 .to(change { ActionMailer::Base.deliveries.count }.by(1))
             end
+
+            context 'when the service provider does not exist' do
+              before do
+                duplicate_profile_set.update!(
+                  service_provider: 'urn:gov:gsa:openidconnect:nonexistent',
+                )
+              end
+
+              it 'does not raise an error' do
+                expect { profile.deactivate_duplicate }.not_to raise_error
+              end
+
+              it 'notifies the user' do
+                expect { profile.deactivate_duplicate }
+                  .to(change { ActionMailer::Base.deliveries.count }.by(1))
+              end
+            end
           end
 
           context 'when there are other profiles in the duplicate set' do
@@ -1356,6 +1373,23 @@ RSpec.describe Profile do
             it 'notifies the user' do
               expect { profile.clear_duplicate }
                 .to(change { ActionMailer::Base.deliveries.count }.by(1))
+            end
+
+            context 'when the service provider does not exist' do
+              before do
+                duplicate_profile_set.update!(
+                  service_provider: 'urn:gov:gsa:openidconnect:nonexistent',
+                )
+              end
+
+              it 'does not raise an error' do
+                expect { profile.clear_duplicate }.not_to raise_error
+              end
+
+              it 'notifies the user' do
+                expect { profile.clear_duplicate }
+                  .to(change { ActionMailer::Base.deliveries.count }.by(1))
+              end
             end
           end
 
@@ -1466,7 +1500,12 @@ RSpec.describe Profile do
       FileUtils.rm_rf(dir_path) if Dir.exist?(dir_path)
     end
 
-    let(:attempt_events) { [{ 'idv-ssn-submitted' => { 'user_uuid' => user.uuid } }] }
+    let(:attempt_events) do
+      [{ 'jti' => 'some-jti',
+         'event_metadata' => { 'user_uuid' => user.uuid },
+         'event_type' => 'idv-ssn-submitted' }]
+    end
+
     it 'decrypts user proofing events' do
       profile.create_user_proofing_event(
         password: 'password',

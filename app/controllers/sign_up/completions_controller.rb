@@ -3,6 +3,7 @@
 module SignUp
   class CompletionsController < ApplicationController
     include SecureHeadersConcern
+    include Idv::HistoricalAttemptsConcern
 
     before_action :confirm_two_factor_authenticated
     before_action :confirm_identity_verified, if: :identity_proofing_required?
@@ -141,26 +142,16 @@ module SignUp
     end
 
     def send_historical_events
-      # TODO: send to redis queue
+      # TODO:Historical Attempts Data: Should we extend the Pii::Cacher?
+      encrypted_proofing_events = user_session[:encrypted_proofing_events]
+      return unless encrypted_proofing_events.present?
 
-      user_proofing_event.add_sp_sent(current_sp.id)
-    end
+      historical_attempts = JSON.parse(
+        SessionEncryptor.new.kms_decrypt(encrypted_proofing_events),
+      )
+      AttemptsApi::Tracker.write_existing_user_events(historical_attempts:, sp: current_sp)
 
-    def historical_events_need_be_sent?
-      return false unless IdentityConfig.store.historical_attempts_api_enabled
-      return false unless current_sp.attempts_api_enabled?
-      return false unless ial2_requested?
-      return false unless user_proofing_event.present?
-
-      return !sent_to_aaca?
-    end
-
-    def sent_to_aaca?
-      user_proofing_event&.already_sent_to_sp?(current_sp.id)
-    end
-
-    def user_proofing_event
-      @user_proofing_event ||= current_user&.active_profile&.user_proofing_event
+      existing_user_proofing_event.add_sp_sent(current_sp.id)
     end
 
     def pii

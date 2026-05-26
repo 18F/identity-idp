@@ -199,6 +199,7 @@ gpo_designated_receiver_pii: '{}'
 gpo_max_profile_age_to_send_letter_in_days: 30
 hide_phone_mfa_signup: false
 historical_attempts_api_enabled: false
+historical_attempts_pii_enabled: false
 historical_attempts_s3_storage_enabled: false
 hmac_fingerprinter_key:
 hmac_fingerprinter_key_queue: '[]'
@@ -229,6 +230,7 @@ idv_phone_confirmation_manual_review_validity_hours: 0
 idv_phone_precheck_percent: 0
 idv_proofing_agent_config: '[]'
 idv_proofing_agent_enabled: false
+idv_proofing_agent_result_expiration_seconds: 10
 idv_rdp_version_default: rdp_v2
 idv_rdp_version_switching_enabled: false
 idv_rdp_version_v2_percent: 100
@@ -281,17 +283,6 @@ in_person_results_delay_in_hours: 1
 in_person_send_proofing_notifications_enabled: false
 in_person_stop_expiring_enrollments: false
 invalid_gpo_confirmation_zipcode: '00001'
-irs_credential_tenure_report_config: '[]'
-irs_credential_tenure_report_issuers: '[]'
-irs_credentials_emails: '[]'
-irs_fraud_metrics_emails: '[]'
-irs_fraud_metrics_issuers: '[]'
-irs_issuers: '[]'
-irs_partner_strings: '[]'
-irs_registration_funnel_emails: '[]'
-irs_registration_funnel_issuers: '[]'
-irs_verification_report_config: '[]'
-irs_verification_report_issuers: '[]'
 
 # LexisNexis #####################################################
 # Instant Verify and Phone Finder Integrations
@@ -680,10 +671,6 @@ test:
   identity_verification_outcomes_report_issuers: '["urn:gov:gsa:openidconnect.profiles:sp:sso:agency_name:app_name"]'
   idv_socure_phonerisk_name_correlation_score_threshold: 0.5
   idv_socure_phonerisk_score_threshold: 0.5
-  irs_fraud_metrics_emails: '["g@example.com", "h@example.com"]'
-  irs_fraud_metrics_issuers: '["urn:gov:gsa:openidconnect.profiles:sp:sso:agency_name:app_name"]'
-  irs_registration_funnel_emails: '["g@example.com", "h@example.com"]'
-  irs_registration_funnel_issuers: '["urn:gov:gsa:openidconnect.profiles:sp:sso:agency_name:app_name"]'
   lexisnexis_trueid_account_id: 'test_account'
   lockout_period_in_minutes: 5
   logins_per_email_and_ip_limit: 2

@@ -2,10 +2,9 @@ require 'rails_helper'
 
 RSpec.describe SignUp::CompletionsController do
   let(:temporary_email) { 'name@temporary.com' }
+  let(:current_sp) { create(:service_provider) }
 
   describe '#show' do
-    let(:current_sp) { create(:service_provider) }
-
     context 'user signed in, sp info present' do
       before do
         stub_analytics
@@ -203,7 +202,6 @@ RSpec.describe SignUp::CompletionsController do
 
   describe '#update' do
     let(:now) { Time.zone.now.change(usec: 0) }
-    let(:current_sp) { create(:service_provider) }
 
     before do
       stub_analytics
@@ -397,103 +395,97 @@ RSpec.describe SignUp::CompletionsController do
       context 'historical attempts api is enabled' do
         let(:profile) { create(:profile, :verified, :active) }
         let(:user) { create(:user, profiles: [profile]) }
-        let(:sp) { create(:service_provider, :idv, :active) }
+        let(:current_sp) { create(:service_provider, :idv, :active) }
+        let(:allowed_attempts_providers) { [{ 'issuer' => current_sp.issuer }] }
 
         before do
           allow(IdentityConfig.store).to receive_messages(
             attempts_api_enabled: true,
             historical_attempts_api_enabled: true,
+            allowed_attempts_providers:,
           )
         end
 
-        context 'service_provider is an allowed attempts provider' do
-          before do
-            allow(IdentityConfig.store).to receive(:allowed_attempts_providers)
-              .and_return([{ 'issuer' => sp.issuer }])
-          end
+        context 'user has existing proofing events' do
+          let(:service_provider_ids_sent) { [] }
 
-          context 'user proofing events have not been sent to this SP' do
-            let(:proofing_event) do
-              create(
-                :user_proofing_event,
-                :existing,
-                profile_id: profile.id,
-              )
-            end
-
-            it 'updates the associated user proofing event' do
-              stub_sign_in(user)
-
-              subject.session[:sp] = {
-                issuer: sp.issuer,
-                acr_values: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
-                request_url: 'http://example.com',
-                requested_attributes: %w[email first_name verified_at],
-              }
-
-              expect(UserProofingEvent.find(proofing_event.id).service_provider_ids_sent)
-                .to_not include(sp.id)
-              patch :update
-              expect(UserProofingEvent.find(proofing_event.id).service_provider_ids_sent)
-                .to include(sp.id)
-            end
-          end
-
-          context 'user proofing events have already been sent to this SP' do
-            let(:proofing_event) do
-              create(
-                :user_proofing_event,
-                :existing,
-                profile_id: profile.id,
-                service_provider_ids_sent: [sp.id],
-              )
-            end
-
-            it 'does not update the user proofing event' do
-              stub_sign_in(user)
-
-              subject.session[:sp] = {
-                issuer: sp.issuer,
-                acr_values: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
-                request_url: 'http://example.com',
-                requested_attributes: %w[email first_name verified_at],
-              }
-
-              patch :update
-              expect(UserProofingEvent.find(proofing_event.id).service_provider_ids_sent)
-                .to include(sp.id).once
-            end
-          end
-        end
-
-        context 'issuer is not an allowed attempts provider' do
           let(:proofing_event) do
             create(
               :user_proofing_event,
               :existing,
               profile_id: profile.id,
+              service_provider_ids_sent:,
             )
+          end
+          let(:idv_attempts) do
+            [
+              { 'idv-ssn-submitted' => { 'user_uuid' => user.uuid } },
+            ].to_json
           end
 
           before do
-            allow(IdentityConfig.store).to receive(:allowed_attempts_providers)
-              .and_return([])
-          end
+            allow(AttemptsApi::Tracker).to receive(:write_existing_user_events)
 
-          it 'does not update the user proofing event' do
             stub_sign_in(user)
 
             subject.session[:sp] = {
-              issuer: sp.issuer,
+              issuer: current_sp.issuer,
               acr_values: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
               request_url: 'http://example.com',
               requested_attributes: %w[email first_name verified_at],
             }
 
-            patch :update
+            kms_encrypted_events = SessionEncryptor.new.kms_encrypt(idv_attempts)
+            subject.user_session[:encrypted_proofing_events] = kms_encrypted_events
+          end
 
-            expect(UserProofingEvent.find(proofing_event.id).service_provider_ids_sent)
-              .to_not include(sp.issuer)
+          context 'service_provider is an allowed attempts provider' do
+            context 'user proofing events have not been sent to this SP' do
+              let(:proofing_event) do
+                create(
+                  :user_proofing_event,
+                  :existing,
+                  profile_id: profile.id,
+                )
+              end
+
+              it 'updates the associated user proofing event' do
+                expect(proofing_event.service_provider_ids_sent).to_not include(current_sp.id)
+                patch :update
+
+                proofing_event.reload
+                expect(AttemptsApi::Tracker).to have_received(:write_existing_user_events).with(
+                  historical_attempts: JSON.parse(idv_attempts),
+                  sp: current_sp,
+                )
+                expect(proofing_event.service_provider_ids_sent).to include(current_sp.id)
+              end
+            end
+
+            context 'user proofing events have already been sent to this SP' do
+              let(:service_provider_ids_sent) { [current_sp.id] }
+
+              it 'does not update the user proofing event' do
+                patch :update
+
+                expect(AttemptsApi::Tracker).to_not have_received(:write_existing_user_events)
+
+                proofing_event.reload
+                expect(proofing_event.service_provider_ids_sent).to eq([current_sp.id])
+              end
+            end
+          end
+
+          context 'issuer is not an allowed attempts provider' do
+            let(:allowed_attempts_providers) { [] }
+
+            it 'does not update the user proofing event' do
+              patch :update
+
+              expect(AttemptsApi::Tracker).to_not have_received(:write_existing_user_events)
+              expect(UserProofingEvent.find(proofing_event.id).service_provider_ids_sent)
+                .to_not include(current_sp.issuer)
+            end
           end
         end
       end

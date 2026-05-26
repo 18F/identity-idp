@@ -175,8 +175,8 @@ RSpec.describe Idv::InPerson::ChooseIdTypeController do
               )
             end
 
-            it 'updates the passport status to "requested" in document capture session' do
-              expect(controller.document_capture_session.passport_status).to eq('requested')
+            it 'requests a passport in document capture session' do
+              expect(controller.document_capture_session.passport_requested?).to eq(true)
             end
 
             it 'redirects to the in person passport page' do
@@ -218,8 +218,9 @@ RSpec.describe Idv::InPerson::ChooseIdTypeController do
               )
             end
 
-            it 'updates the passport status to "not_requested" in document capture session' do
-              expect(controller.document_capture_session.passport_status).to eq('not_requested')
+            it 'requests a state ID in document capture session' do
+              expect(controller.document_capture_session.state_id_requested?).to eq(true)
+              expect(controller.document_capture_session.passport_requested?).to eq(false)
             end
 
             it 'redirects to the in person state ID page' do
@@ -263,7 +264,15 @@ RSpec.describe Idv::InPerson::ChooseIdTypeController do
           end
 
           it 'does not update the passport status in document_capture_session' do
-            expect(controller.document_capture_session.passport_status).to be_nil
+            expect(controller.document_capture_session.passport_requested?).to eq(false)
+          end
+
+          it 'does not update the state ID status in document_capture_session' do
+            expect(controller.document_capture_session.state_id_requested?).to eq(false)
+          end
+
+          it 'does not update the document type requested in document_capture_session' do
+            expect(controller.document_capture_session.document_type_requested).to be_nil
           end
 
           it 'redirects to the in in person choose id type page' do
@@ -321,7 +330,7 @@ RSpec.describe Idv::InPerson::ChooseIdTypeController do
       let(:user) { create(:user, :with_establishing_in_person_enrollment) }
 
       before do
-        subject.document_capture_session.update!(passport_status: 'requested')
+        subject.document_capture_session.update!(document_type_requested: Idp::Constants::DocumentTypes::PASSPORT)
       end
 
       context 'when idv session has a document capture session uuid' do
@@ -330,7 +339,9 @@ RSpec.describe Idv::InPerson::ChooseIdTypeController do
         end
 
         it 'sets passport status to nil in the document capture session' do
-          expect(subject.document_capture_session.reload.passport_status).to be_nil
+          expect(subject.document_capture_session.reload.document_type_requested).to be_nil
+          expect(subject.document_capture_session.reload.passport_requested?).to eq(false)
+          expect(subject.document_capture_session.reload.state_id_requested?).to eq(false)
         end
       end
 
@@ -341,7 +352,10 @@ RSpec.describe Idv::InPerson::ChooseIdTypeController do
         end
 
         it 'does not update the passport status in the document capture session' do
-          expect(subject.document_capture_session.reload.passport_status).to eq('requested')
+          expect(subject.document_capture_session.reload.passport_requested?).to eq(true)
+        end
+        it 'does not update the state ID status in the document capture session' do
+          expect(subject.document_capture_session.reload.state_id_requested?).to eq(false)
         end
       end
     end

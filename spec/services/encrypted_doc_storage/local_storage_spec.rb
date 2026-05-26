@@ -61,7 +61,9 @@ RSpec.describe EncryptedDocStorage::LocalStorage do
         encrypted_attempt_events:,
       )
 
-      result = EncryptedDocStorage::LocalStorage.new.retrieve(file_path: path, file_name: name)
+      result = EncryptedDocStorage::LocalStorage.new.retrieve_attempt_object(
+        file_path: path, file_name: name,
+      )
 
       # cleanup
       File.delete(Rails.root.join('tmp', 'encrypted_attempt_events', path, name))

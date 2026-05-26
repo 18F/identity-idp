@@ -3,6 +3,7 @@
 class ProofingAgentJob < ApplicationJob
   include JobHelpers::StaleJobHelper
   include AbTestingConcern
+  include ProofingAgent::Config
 
   queue_as :high_proofing_agent
 
@@ -53,12 +54,14 @@ class ProofingAgentJob < ApplicationJob
     success = combined_result[:success]
     reason = combined_result[:reason]
 
-    ProofingAgentWebhookJob.perform_later(
-      success:,
-      reason:,
-      transaction_id:,
-      correlation_id:,
-    )
+    if webhook_url.present?
+      ProofingAgentWebhookJob.perform_later(
+        success:,
+        reason:,
+        transaction_id:,
+        correlation_id:,
+      )
+    end
   ensure
     logger_info_hash(
       name: 'ProofingAgent',

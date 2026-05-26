@@ -92,7 +92,7 @@ RSpec.describe Idv::LinkSentController do
             uuid: subject.idv_session.document_capture_session_uuid,
             user: user,
             requested_at: Time.zone.now,
-            passport_status: 'requested',
+            document_type_requested: Idp::Constants::DocumentTypes::PASSPORT,
           )
 
           get :show

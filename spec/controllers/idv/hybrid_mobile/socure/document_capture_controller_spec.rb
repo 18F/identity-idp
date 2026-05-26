@@ -15,7 +15,7 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
       user: user,
       requested_at: Time.zone.now,
       doc_auth_vendor: idv_vendor,
-      passport_status: 'not_requested',
+      document_type_requested: Idp::Constants::DocumentTypes::STATE_ID_CARD,
     )
   end
   let(:document_capture_session_uuid) { document_capture_session&.uuid }

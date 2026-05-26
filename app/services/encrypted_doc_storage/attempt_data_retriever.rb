@@ -7,7 +7,7 @@ module EncryptedDocStorage
     end
 
     def retrieve_user_proofing_events(file_path:, file_name:)
-      storage.retrieve(file_path:, file_name:)
+      storage.retrieve_attempt_object(file_path:, file_name:)
     end
 
     private

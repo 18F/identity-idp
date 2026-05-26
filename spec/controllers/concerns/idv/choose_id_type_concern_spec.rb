@@ -10,16 +10,16 @@ RSpec.describe Idv::ChooseIdTypeConcern, :controller do
   let(:analytics) { FakeAnalytics.new }
   let(:step) { 'choose_id_type' }
   let(:context_analytics) { { step: step } }
-  let(:passport_status) { nil }
-  let(:document_capture_session) { create(:document_capture_session, passport_status:) }
-  let(:id_type) { 'state_id_card' }
+  let(:document_type_requested) { nil }
+  let(:document_capture_session) { create(:document_capture_session, document_type_requested:) }
+  let(:document_type_chosen) { 'state_id_card' }
   let(:socure_docv_capture_app_url) { 'http://example.com' }
   let(:socure_docv_transaction_token) { '12345' }
   let(:parameters) do
     ActionController::Parameters.new(
       {
         doc_auth: {
-          choose_id_type_preference: id_type,
+          choose_id_type_preference: document_type_chosen,
         },
       },
     )
@@ -30,20 +30,20 @@ RSpec.describe Idv::ChooseIdTypeConcern, :controller do
   end
 
   describe '#chosen_id_type' do
-    let(:id_type) { 'passport' }
+    let(:document_type_chosen) { 'passport' }
 
     before do
       allow(controller).to receive(:params).and_return(parameters)
     end
 
     it 'returns the choose_id_type_prefence from params' do
-      expect(subject.chosen_id_type).to eq(id_type)
+      expect(subject.chosen_id_type).to eq(document_type_chosen)
     end
   end
 
   describe '#set_passport_requested' do
     context 'when chosen_id_type is "passport"' do
-      let(:id_type) { 'passport' }
+      let(:document_type_chosen) { 'passport' }
 
       before do
         allow(controller).to receive(:params).and_return(parameters)
@@ -63,7 +63,7 @@ RSpec.describe Idv::ChooseIdTypeConcern, :controller do
         let(:document_capture_session) do
           create(
             :document_capture_session,
-            passport_status: 'requested',
+            document_type_requested: Idp::Constants::DocumentTypes::PASSPORT,
             doc_auth_vendor: Idp::Constants::Vendors::SOCURE,
             socure_docv_capture_app_url: socure_docv_capture_app_url,
             socure_docv_transaction_token: socure_docv_transaction_token,
@@ -82,7 +82,7 @@ RSpec.describe Idv::ChooseIdTypeConcern, :controller do
         let(:document_capture_session) do
           create(
             :document_capture_session,
-            passport_status: 'not_requested',
+            document_type_requested: Idp::Constants::DocumentTypes::STATE_ID_CARD,
             doc_auth_vendor: Idp::Constants::Vendors::SOCURE,
             socure_docv_capture_app_url: socure_docv_capture_app_url,
             socure_docv_transaction_token: socure_docv_transaction_token,
@@ -101,7 +101,7 @@ RSpec.describe Idv::ChooseIdTypeConcern, :controller do
     end
 
     context 'when chosen_id_type is not "passport"' do
-      let(:id_type) { 'state_id_card' }
+      let(:document_type_chosen) { 'state_id_card' }
 
       before do
         allow(controller).to receive(:params).and_return(parameters)
@@ -109,14 +109,14 @@ RSpec.describe Idv::ChooseIdTypeConcern, :controller do
       end
 
       it 'updates the document_capture_session passport status to "not_requested"' do
-        expect(document_capture_session.passport_status).to eq('not_requested')
+        expect(document_capture_session.document_type_requested).to eq('state_id_card')
       end
 
       context 'when document_capture_session.passport_requested? is true' do
         let(:document_capture_session) do
           create(
             :document_capture_session,
-            passport_status: 'requested',
+            document_type_requested: Idp::Constants::DocumentTypes::PASSPORT,
             doc_auth_vendor: Idp::Constants::Vendors::SOCURE,
             socure_docv_capture_app_url: socure_docv_capture_app_url,
             socure_docv_transaction_token: socure_docv_transaction_token,
@@ -133,7 +133,7 @@ RSpec.describe Idv::ChooseIdTypeConcern, :controller do
         let(:document_capture_session) do
           create(
             :document_capture_session,
-            passport_status:,
+            document_type_requested:,
             doc_auth_vendor: Idp::Constants::Vendors::SOCURE,
           )
         end
@@ -147,7 +147,7 @@ RSpec.describe Idv::ChooseIdTypeConcern, :controller do
 
   describe '#choose_id_type_form_params' do
     context 'when the parameters has allowed params' do
-      let(:id_type) { 'passport' }
+      let(:document_type_chosen) { 'passport' }
 
       before do
         allow(controller).to receive(:params).and_return(parameters)
@@ -185,7 +185,7 @@ RSpec.describe Idv::ChooseIdTypeConcern, :controller do
     end
 
     context 'when the document capture session passport status is "requested"' do
-      let(:passport_status) { 'requested' }
+      let(:document_type_requested) { Idp::Constants::DocumentTypes::PASSPORT }
 
       it 'returns :passport' do
         expect(subject.selected_id_type).to eq(:passport)
@@ -193,7 +193,7 @@ RSpec.describe Idv::ChooseIdTypeConcern, :controller do
     end
 
     context 'when the document capture session passport status is "not_requested"' do
-      let(:passport_status) { 'not_requested' }
+      let(:document_type_requested) { Idp::Constants::DocumentTypes::STATE_ID_CARD }
 
       it 'returns :state_id_card' do
         expect(subject.selected_id_type).to eq(:state_id_card)
@@ -274,7 +274,7 @@ RSpec.describe Idv::ChooseIdTypeConcern, :controller do
     end
 
     context 'when the dos passport api is healthy' do
-      let(:passport_status) { 'requested' }
+      let(:document_type_requested) { Idp::Constants::DocumentTypes::PASSPORT }
 
       before do
         allow(response).to receive(:success?).and_return(true)
@@ -293,7 +293,7 @@ RSpec.describe Idv::ChooseIdTypeConcern, :controller do
     end
 
     context 'when passports are disabled but passport card is enabled' do
-      let(:passport_status) { 'requested' }
+      let(:document_type_requested) { Idp::Constants::DocumentTypes::PASSPORT }
       before do
         allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled)
           .and_return(false)

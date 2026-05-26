@@ -172,35 +172,31 @@ class DocumentCaptureSession < ApplicationRecord
   end
 
   def passport_requested?
-    document_type_requested == Idp::Constants::DocumentTypes::PASSPORT ||
-      passport_status == 'requested'
+    document_type_requested == Idp::Constants::DocumentTypes::PASSPORT
   end
 
   def request_passport!
     attrs = {
-      passport_status: 'requested',
+      passport_status: nil,
       document_type_requested: Idp::Constants::DocumentTypes::PASSPORT,
       doc_auth_vendor: nil,
-    }
-    attrs.merge!(clear_socure_attributes) if state_id_requested?
+    }.merge(clear_socure_attributes)
 
-    update!(attrs)
+    update!(attrs) if !passport_requested?
   end
 
   def request_state_id!
     attrs = {
-      passport_status: 'not_requested',
+      passport_status: nil,
       document_type_requested: Idp::Constants::DocumentTypes::STATE_ID_CARD,
       doc_auth_vendor: nil,
-    }
-    attrs.merge!(clear_socure_attributes) if passport_requested?
+    }.merge(clear_socure_attributes)
 
-    update!(attrs)
+    update!(attrs) if !state_id_requested?
   end
 
   def state_id_requested?
-    document_type_requested == Idp::Constants::DocumentTypes::STATE_ID_CARD ||
-      passport_status == 'not_requested' # 50/50
+    document_type_requested == Idp::Constants::DocumentTypes::STATE_ID_CARD
   end
 
   private
