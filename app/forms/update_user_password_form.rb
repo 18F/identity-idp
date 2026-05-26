@@ -56,6 +56,7 @@ class UpdateUserPasswordForm
 
   def reencrypt_attempt_events
     return if user.active_profile.blank?
+    return if user_session.blank?
 
     decrypted_events = AttemptsApi::Cacher.new(user, user_session).fetch
     return if decrypted_events.blank?
