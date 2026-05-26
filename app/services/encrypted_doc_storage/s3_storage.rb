@@ -26,7 +26,7 @@ module EncryptedDocStorage
       s3_client.get_object(
         bucket:,
         key: full_path,
-      )
+      ).body.read
     end
 
     private
