@@ -384,7 +384,7 @@ RSpec.describe AttemptsApi::Tracker do
             subject.idv_enrollment_complete(reproof: false)
             event_data = user_session['idv/attempts'].first
 
-            expect(event_data['event_metadata']).to eq({ user_uuid: agency_uuid })
+            expect(event_data['event_metadata']).to eq({ 'user_uuid' => agency_uuid })
             expect(event_data['event_type']).to eq('idv-enrollment-complete')
           end
         end
@@ -477,7 +477,14 @@ RSpec.describe AttemptsApi::Tracker do
   end
 
   describe '#self.write_existing_user_events' do
-    let(:sp) { service_provider }
+    let(:user) { create(:user) }
+    let(:proofing_identity) do
+      AgencyIdentityLinker.for(user:, service_provider:, skip_create: false)
+    end
+    let(:aaca_sp) { create(:service_provider, :idv) }
+    let!(:aaca_identity) do
+      AgencyIdentityLinker.for(user:, service_provider: aaca_sp, skip_create: false)
+    end
     let(:mock_session) { { 'warden.user.user.session' => {} } }
     let(:user_session) { mock_session['warden.user.user.session'] }
     let(:redis_client) { double AttemptsApi::RedisClient }
@@ -498,14 +505,39 @@ RSpec.describe AttemptsApi::Tracker do
       expect(redis_client).to receive(:write_event).with(
         event_key: event_data['jti'],
         jwe: 'jwe_data',
-        timestamp: event_data['occurred_at'],
-        issuer: sp.issuer,
+        timestamp: Time.zone.at(Time.zone.parse(event_data['occurred_at']).to_f),
+        issuer: service_provider.issuer,
       )
 
       described_class.write_existing_user_events(
-        sp:,
+        sp: service_provider,
         historical_attempts: user_session['idv/attempts'],
       )
+    end
+
+    context 'when historical_attempts_pii_enabled is true' do
+      before do
+        allow(IdentityConfig.store).to receive(:historical_attempts_pii_enabled).and_return(true)
+      end
+
+      it 'writes existing user events to redis with PII' do
+        expect(AttemptsApi::RedisClient).to receive(:new).and_return(redis_client)
+        expect_any_instance_of(AttemptsApi::AttemptEvent).to receive(:to_jwe).and_return('jwe_data')
+
+        event_data = user_session['idv/attempts'].first
+
+        expect(redis_client).to receive(:write_event).with(
+          event_key: event_data['jti'],
+          jwe: 'jwe_data',
+          timestamp: Time.zone.at(Time.zone.parse(event_data['occurred_at']).to_f),
+          issuer: service_provider.issuer,
+        )
+
+        described_class.write_existing_user_events(
+          sp: service_provider,
+          historical_attempts: user_session['idv/attempts'],
+        )
+      end
     end
   end
 end
