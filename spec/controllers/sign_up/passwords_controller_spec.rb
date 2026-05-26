@@ -132,8 +132,8 @@ RSpec.describe SignUp::PasswordsController do
           allow(FeatureManagement).to receive(:account_creation_passkey_auto_prompt_enabled?)
             .and_return(true)
         end
-        it 'redirects when the user has been placed into the bucket' do
-          expect(response).to redirect_to(webauthn_platform_setup_url)
+        it 'always hands off to MFA selection (upsell handled downstream)' do
+          expect(response).to redirect_to(authentication_methods_setup_url)
         end
       end
 
@@ -150,14 +150,8 @@ RSpec.describe SignUp::PasswordsController do
             .and_return(true)
         end
 
-        it 'redirects to the passkey upsell page' do
-          expect(response).to redirect_to(webauthn_platform_setup_url)
-        end
-
-        it 'marks the auto prompt as already triggered' do
-          response
-
-          expect(controller.user_session[:auto_passkey_prompted]).to eq(true)
+        it 'hands off to MFA selection so the upsell controller can branch' do
+          expect(response).to redirect_to(authentication_methods_setup_url)
         end
       end
 

@@ -32,7 +32,11 @@ module Users
       )
       result = form.submit(new_params)
       @platform_authenticator = form.platform_authenticator?
-      @presenter = build_webauthn_setup_presenter(platform_authenticator: @platform_authenticator)
+      log_passkey_upsell_visit if passkey_upsell_request?
+      @presenter = build_webauthn_setup_presenter(
+        platform_authenticator: @platform_authenticator,
+        passkey_upsell: passkey_upsell_request?,
+      )
       analytics.webauthn_setup_visit(
         platform_authenticator: result.extra[:platform_authenticator],
         in_account_creation_flow: user_session[:in_account_creation_flow] || false,
@@ -45,7 +49,16 @@ module Users
         platform_authenticator: @platform_authenticator,
         auto_trigger: auto_trigger_request? && platform_authenticator? && in_account_creation_flow?,
         need_to_set_up_additional_mfa: need_to_set_up_additional_mfa?,
+        passkey_upsell: passkey_upsell_request?,
       )
+      save_challenge_in_session
+      @exclude_credentials = exclude_credentials
+      @need_to_set_up_additional_mfa = need_to_set_up_additional_mfa?
+      @auto_trigger = consume_auto_passkey_prompt? &&
+                      result.success?
+      if platform_authenticator?
+        user_session[:webauthn_setup_started_at] = Time.zone.now.to_f
+      end
 
       if result.errors.present?
         increment_mfa_selection_attempt_count(webauthn_auth_method)
@@ -79,7 +92,10 @@ module Users
       )
       result = form.submit(confirm_params)
       @platform_authenticator = form.platform_authenticator?
-      @presenter = build_webauthn_setup_presenter(platform_authenticator: @platform_authenticator)
+      @presenter = build_webauthn_setup_presenter(
+        platform_authenticator: @platform_authenticator,
+        passkey_upsell: passkey_upsell_request?,
+      )
       properties = result.to_h.merge(analytics_properties)
       if user_session[:webauthn_setup_started_at].present?
         properties = properties.merge(webauthn_setup_duration: webauthn_setup_duration)
@@ -106,6 +122,28 @@ module Users
     end
 
     private
+
+    def log_passkey_upsell_visit
+      analytics.webauthn_platform_signup_setup_ab_test_visited(
+        passkey_upsell_bucket: passkey_upsell_bucket,
+      )
+      user_session[:auto_passkey_prompted] = true if passkey_upsell_bucket.present?
+      user_session[:webauthn_platform_signup_setup_recommended] = true
+    end
+
+    def log_passkey_upsell_submitted
+      analytics.webauthn_platform_signup_setup_ab_test_submitted(
+        passkey_upsell_bucket: passkey_upsell_bucket,
+      )
+    end
+
+    def passkey_upsell_request?
+      params[:passkey_upsell] == 'true' && in_account_creation_flow?
+    end
+
+    def passkey_upsell_bucket
+      @passkey_upsell_bucket ||= ab_test_bucket(:PASSKEY_UPSELL)
+    end
 
     def validate_existing_platform_authenticator
       if platform_authenticator? && in_account_creation_flow? &&
@@ -150,6 +188,7 @@ module Users
         in_account_creation_flow: user_session[:in_account_creation_flow] || false,
         success: true,
       )
+      log_passkey_upsell_submitted if passkey_upsell_request?
       handle_remember_device_preference(params[:remember_device])
       if form.setup_as_platform_authenticator?
         handle_valid_verification_for_confirmation_context(
@@ -228,7 +267,7 @@ module Users
     end
 
     def new_params
-      params.permit(:platform, :error, :auto_trigger)
+      params.permit(:platform, :error, :auto_trigger, :passkey_upsell)
     end
 
     def confirm_params
