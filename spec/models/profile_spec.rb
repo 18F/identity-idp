@@ -1485,6 +1485,34 @@ RSpec.describe Profile do
       end.to change { UserProofingEvent.count }.by(1)
 
       expect(UserProofingEvent.last.profile).to eq(profile)
+      expect(UserProofingEvent.last.service_provider_ids_sent).to eq([])
+    end
+
+    context 'if sent_to_sp is true' do
+      let(:initiating_service_provider) { create(:service_provider, :active) }
+
+      before do
+        profile.update!(initiating_service_provider: initiating_service_provider)
+
+        profile.create_user_proofing_event(
+          password: 'password',
+          attempt_events: [{ 'event' => 'test' }],
+          sent_to_sp: true,
+        )
+      end
+      it 'creates a user proofing events object with the correct service_provider_ids_sent value' do
+        expect(UserProofingEvent.last.service_provider_ids_sent).to eq(
+          [profile.initiating_service_provider.id],
+        )
+      end
+
+      context 'there is no initiating service provider' do
+        let(:initiating_service_provider) { nil }
+
+        it 'does not include the service provider id in the service_provider_ids_sent' do
+          expect(UserProofingEvent.last.service_provider_ids_sent).to eq([])
+        end
+      end
     end
   end
 
