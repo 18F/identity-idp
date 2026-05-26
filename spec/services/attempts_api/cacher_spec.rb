@@ -26,7 +26,11 @@ RSpec.describe AttemptsApi::Cacher do
 
       expect(user_session[:encrypted_proofing_events]).to be_present
 
-      result = JSON.parse(SessionEncryptor.new.kms_decrypt(user_session[:encrypted_proofing_events]))
+      result = JSON.parse(
+        SessionEncryptor.new.kms_decrypt(
+          user_session[:encrypted_proofing_events],
+        ),
+      )
       expect(result).to eq(decrypted_events.as_json)
     end
   end
