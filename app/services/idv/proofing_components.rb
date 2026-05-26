@@ -11,7 +11,7 @@ module Idv
     end
 
     def document_type_received
-      idv_session.pii_from_doc&.document_type_received || idv_session.pii_from_doc&.id_doc_type
+      idv_session.pii_from_doc&.document_type_received
     end
 
     def source_check
