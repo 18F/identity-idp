@@ -762,7 +762,7 @@ duplicate_profiles_detected.intro_html: 'L’%{sp_name} exige que vous ne dispos
 duplicate_profiles_detected.intro.link: comptes en double
 duplicate_profiles_detected.intro2: 'Vous devez supprimer les comptes en double avant de vous connecter à %{app_name}. Voici comment faire :'
 duplicate_profiles_detected.last_sign_in_at_html: '<strong> Dernière connexion : </strong> %{timestamp_html}'
-duplicate_profiles_detected.never_logged_in: Jamais connecté à
+duplicate_profiles_detected.never_logged_in: 'Jamais connecté à'
 duplicate_profiles_detected.select_an_account.details_html: 'Conservez le compte connecté au plus grand nombre de services. Rendez-vous sur la page %{link_html} pour consulter les agences connectées en sélectionnant « Vos comptes connectés » dans le menu de gauche.'
 duplicate_profiles_detected.select_an_account.details.link: '« Votre compte »'
 duplicate_profiles_detected.select_an_account.heading: Choisir le compte que vous voulez conserver
