@@ -142,13 +142,8 @@ module SignUp
     end
 
     def send_historical_events
-      # TODO:Historical Attempts Data: Should we extend the Pii::Cacher?
-      encrypted_proofing_events = user_session[:encrypted_proofing_events]
-      return unless encrypted_proofing_events.present?
+      historical_attempts = AttemptsApi::Cacher.new(current_user, user_session).fetch
 
-      historical_attempts = JSON.parse(
-        SessionEncryptor.new.kms_decrypt(encrypted_proofing_events),
-      )
       AttemptsApi::Tracker.write_existing_user_events(historical_attempts:, sp: current_sp)
 
       existing_user_proofing_event.add_sp_sent(current_sp.id)

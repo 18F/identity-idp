@@ -6,18 +6,22 @@ class VerifyPasswordForm
   validates :password, presence: true
   validate :validate_password
 
-  attr_reader :user, :password, :decrypted_pii, :personal_key
+  attr_reader :user, :password, :decrypted_pii, :personal_key, :decrypted_attempt_events
 
-  def initialize(user:, password:, decrypted_pii:)
+  def initialize(user:, password:, decrypted_pii:, decrypted_attempt_events: nil)
     @user = user
     @password = password
     @decrypted_pii = decrypted_pii
+    @decrypted_attempt_events = decrypted_attempt_events
   end
 
   def submit
     success = valid?
 
     @personal_key = reencrypt_pii if success
+    if success && decrypted_attempt_events.present?
+      profile.reencrypt_user_proofing_events(password:, attempt_events: decrypted_attempt_events)
+    end
 
     FormResponse.new(success:, errors:)
   end
