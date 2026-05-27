@@ -5336,6 +5336,16 @@ module AnalyticsEvents
     )
   end
 
+  # Logs when a user clicks continue on the proofing agent confirmation window expired screen
+  def idv_proofing_agent_expired_continued(**extra)
+    track_event(:idv_proofing_agent_expired_continued, **extra)
+  end
+
+  # Logs when a user visits the proofing agent confirmation window expired screen
+  def idv_proofing_agent_expired_visited(**extra)
+    track_event(:idv_proofing_agent_expired_visited, **extra)
+  end
+
   # Logs when a "couldn't verify" email is sent after a failed final proofing attempt or rate limit
   # @param [String] user_id User UUID
   # @param [Hash] proofing_agent The proofing agent information

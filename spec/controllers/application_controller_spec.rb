@@ -275,6 +275,16 @@ RSpec.describe ApplicationController do
     end
   end
 
+  describe '#signed_in_url' do
+    it 'sends an expired agent-proofed user to the expired screen' do
+      user = create(:user)
+      allow(controller).to receive(:current_user).and_return(user)
+      allow(user).to receive(:agent_proofing_expired?).and_return(true)
+
+      expect(controller.send(:signed_in_url)).to eq(idv_proofing_agent_expired_path)
+    end
+  end
+
   describe '#analytics' do
     context 'when a current_user is present' do
       it 'calls the Analytics class by default with current_user, request, and issuer' do

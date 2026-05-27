@@ -587,6 +587,102 @@ RSpec.describe User do
     end
   end
 
+  describe '#agent_proofing_document_capture_session' do
+    let(:user) { create(:user) }
+
+    it 'returns the latest agent proofing document capture session' do
+      create(
+        :document_capture_session,
+        user: user,
+        doc_auth_vendor: 'proofing_agent',
+        requested_at: 1.day.ago,
+      )
+      session2 = create(
+        :document_capture_session,
+        user: user,
+        doc_auth_vendor: 'proofing_agent',
+        requested_at: 1.hour.ago,
+      )
+      create(
+        :document_capture_session,
+        user: user,
+        doc_auth_vendor: 'lexisnexis',
+        requested_at: 1.minute.ago,
+      )
+
+      expect(user.agent_proofing_document_capture_session).to eq(session2)
+    end
+  end
+
+  describe '#agent_proofing_expired?' do
+    let(:user) { create(:user) }
+
+    context 'when identity is already verified' do
+      before do
+        allow(user).to receive(:identity_verified?).and_return(true)
+      end
+
+      it 'returns false' do
+        expect(user.agent_proofing_expired?).to eq(false)
+      end
+    end
+
+    context 'when user has no agent proofing session' do
+      it 'returns false' do
+        expect(user.agent_proofing_expired?).to eq(false)
+      end
+    end
+
+    context 'when user has an agent proofing session' do
+      let!(:session) do
+        create(
+          :document_capture_session,
+          user: user,
+          doc_auth_vendor: 'proofing_agent',
+          requested_at: requested_at,
+        )
+      end
+
+      context 'when the session validity window has expired' do
+        let(:requested_at) { 49.hours.ago }
+
+        it 'returns true' do
+          expect(user.agent_proofing_expired?).to eq(true)
+        end
+      end
+
+      context 'when the session validity window has not expired' do
+        let(:requested_at) { 10.minutes.ago }
+
+        context 'when the redis cached data is present' do
+          before do
+            allow(session).to receive(:load_agent_proofed_user)
+              .and_return(double('AgentProofedUser'))
+            allow(user).to receive(:agent_proofing_document_capture_session)
+              .and_return(session)
+          end
+
+          it 'returns false' do
+            expect(user.agent_proofing_expired?).to eq(false)
+          end
+        end
+
+        context 'when the redis cached data is missing' do
+          before do
+            allow(session).to receive(:load_agent_proofed_user)
+              .and_return(nil)
+            allow(user).to receive(:agent_proofing_document_capture_session)
+              .and_return(session)
+          end
+
+          it 'returns true' do
+            expect(user.agent_proofing_expired?).to eq(true)
+          end
+        end
+      end
+    end
+  end
+
   describe '#authenticatable_salt' do
     it 'returns the multi-region password salt if it exists' do
       user = create(:user)

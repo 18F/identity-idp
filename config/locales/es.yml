@@ -1250,6 +1250,10 @@ idv.messages.sessions.enter_password_message: Cuando vuelva a ingresar su contra
 idv.messages.sessions.no_pii: SITIO DE PRUEBA - No use información personal real (para fines de demostración únicamente) - SITIO DE PRUEBA
 idv.messages.verify_info: Revisaremos los registros para verificar que su dirección y su número de Seguro Social coincidan con la información de su identificación.
 idv.messages.verifying: Verificando…
+idv.proofing_agent_expired.body: Por su seguridad, el correo electrónico para confirmar su cuenta que le enviamos ha caducado. Era válido durante solo 48 horas. Para continuar, complete nuevamente el paso de verificación de identidad.
+idv.proofing_agent_expired.cancel: Cancelar
+idv.proofing_agent_expired.continue: Continuar
+idv.proofing_agent_expired.heading: Finalicemos la verificación de su identidad
 idv.titles.activated: Ya se verificó su identidad
 idv.titles.come_back_later: Su carta está en camino
 idv.titles.enter_password: Revise y envíe

@@ -1,0 +1,20 @@
+<% self.title = t('idv.proofing_agent_expired.heading') %>
+
+<%= render AlertIconComponent.new(icon_name: :warning, class: 'display-block margin-bottom-4') %>
+
+<%= render PageHeadingComponent.new.with_content(t('idv.proofing_agent_expired.heading')) %>
+
+<p class="margin-bottom-5">
+  <%= t('idv.proofing_agent_expired.body') %>
+</p>
+
+<%= button_or_link_to(
+      t('idv.proofing_agent_expired.continue'),
+      idv_proofing_agent_expired_path,
+      class: 'usa-button usa-button--big usa-button--wide display-block',
+      method: :post,
+    ) %>
+
+<%= render PageFooterComponent.new do %>
+  <%= link_to t('idv.proofing_agent_expired.cancel'), account_path %>
+<% end %>
