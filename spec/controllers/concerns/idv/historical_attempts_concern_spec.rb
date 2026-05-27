@@ -45,13 +45,6 @@ RSpec.describe Idv::HistoricalAttemptsConcern, type: :controller do
   end
 
   describe '#cache_user_proofing_events' do
-    let!(:user_proofing_event) do
-      user.active_profile.build_user_proofing_event(
-        cost: JSON.parse(encrypted_existing_events)['cost'],
-        salt: JSON.parse(encrypted_existing_events)['salt'],
-      )
-    end
-
     context 'historical_attempts_api_enabled feature flag is false' do
       before do
         allow(IdentityConfig.store).to receive(:historical_attempts_api_enabled).and_return(false)
@@ -74,49 +67,67 @@ RSpec.describe Idv::HistoricalAttemptsConcern, type: :controller do
         controller.cache_user_proofing_events(password:)
       end
 
-      it 'decrypts the appropriate UserProofingEvent' do
-        expect(user.active_profile).to have_received(:decrypt_user_proofing_events).once
-      end
+      context 'user does not have an active profile' do
+        let(:user) { create(:user, :fully_registered, password:, profiles: []) }
+        it 'does not attempt to decrypt events' do
+          expect(user.active_profile).to_not receive(:decrypt_user_proofing_events)
 
-      it 'encrypts with the kms session key' do
-        expect(mock_session_encryptor).to have_received(:kms_encrypt).once.with(
-          idv_attempts.to_json,
-        )
-      end
-
-      it 'updates the session with the UserProofingEvent' do
-        expect(controller.user_session[:encrypted_proofing_events]).to eq(kms_encrypted_events)
-      end
-
-      context 'service_provider is not an allowed_attempts_providers' do
-        before do
-          allow(IdentityConfig.store).to receive(:allowed_attempts_providers).and_return([])
-        end
-
-        it 'decrypts events' do
-          expect(user.active_profile).to have_received(:decrypt_user_proofing_events).once
+          controller.cache_user_proofing_events(password:)
         end
       end
 
-      context 'events already sent to SP' do
-        let(:user_proofing_event) do
+      context 'when user has an active profile' do
+        let!(:user_proofing_event) do
           user.active_profile.build_user_proofing_event(
             cost: JSON.parse(encrypted_existing_events)['cost'],
             salt: JSON.parse(encrypted_existing_events)['salt'],
-            service_provider_ids_sent: [sp.id],
           )
         end
 
-        it 'decrypts events' do
+        it 'decrypts the appropriate UserProofingEvent' do
           expect(user.active_profile).to have_received(:decrypt_user_proofing_events).once
         end
-      end
 
-      context 'when no UserProofingEvent exists for the profile' do
-        let(:user_proofing_event) { nil }
+        it 'encrypts with the kms session key' do
+          expect(mock_session_encryptor).to have_received(:kms_encrypt).once.with(
+            idv_attempts.to_json,
+          )
+        end
 
-        it 'does not raise an error' do
-          expect { controller.cache_user_proofing_events(password:) }.to_not raise_error
+        it 'updates the session with the UserProofingEvent' do
+          expect(controller.user_session[:encrypted_proofing_events]).to eq(kms_encrypted_events)
+        end
+
+        context 'service_provider is not an allowed_attempts_providers' do
+          before do
+            allow(IdentityConfig.store).to receive(:allowed_attempts_providers).and_return([])
+          end
+
+          it 'decrypts events' do
+            expect(user.active_profile).to have_received(:decrypt_user_proofing_events).once
+          end
+        end
+
+        context 'events already sent to SP' do
+          let(:user_proofing_event) do
+            user.active_profile.build_user_proofing_event(
+              cost: JSON.parse(encrypted_existing_events)['cost'],
+              salt: JSON.parse(encrypted_existing_events)['salt'],
+              service_provider_ids_sent: [sp.id],
+            )
+          end
+
+          it 'decrypts events' do
+            expect(user.active_profile).to have_received(:decrypt_user_proofing_events).once
+          end
+        end
+
+        context 'when no UserProofingEvent exists for the profile' do
+          let(:user_proofing_event) { nil }
+
+          it 'does not raise an error' do
+            expect { controller.cache_user_proofing_events(password:) }.to_not raise_error
+          end
         end
       end
     end

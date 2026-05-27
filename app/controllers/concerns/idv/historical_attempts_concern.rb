@@ -9,6 +9,7 @@ module Idv
       # we always need to cache events if the feature is enabled
       # in case we have to re-encrypt them
       return unless IdentityConfig.store.historical_attempts_api_enabled
+      return unless current_user.active_profile.present?
 
       AttemptsApi::Cacher.new(current_user, user_session).save(password:)
     end
