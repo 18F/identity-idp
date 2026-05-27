@@ -771,7 +771,6 @@ duplicate_profiles_detected.get_help: Obtener ayuda
 duplicate_profiles_detected.heading: Encontramos otras cuentas que pueden ser suyas
 duplicate_profiles_detected.intro_html: '%{sp_name} requiere que usted tenga sólo una cuenta de %{app_name} con una identidad verificada. Debe eliminar %{link_html} antes de iniciar sesión en %{sp_name}. Esto es lo que debe hacer:'
 duplicate_profiles_detected.intro.link: las cuentas duplicativas
-duplicate_profiles_detected.intro2: 'Antes de iniciar sesión en %{app_name}, necesita eliminar las cuentas duplicadas. Esto es lo que tiene que hacer:'
 duplicate_profiles_detected.last_sign_in_at_html: '<strong> Último inicio de sesión: </strong> %{timestamp_html}'
 duplicate_profiles_detected.never_logged_in: Nunca he iniciado sesión en
 duplicate_profiles_detected.select_an_account.details_html: 'Conserve la cuenta que esté vinculada a la mayor cantidad de servicios. Diríjase a la página %{link_html} para ver las agencias conectadas; para ello, seleccione «Sus cuentas conectadas» en el menú a la izquierda.'

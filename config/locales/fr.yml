@@ -760,7 +760,6 @@ duplicate_profiles_detected.get_help: Obtenir de l’aide
 duplicate_profiles_detected.heading: Nous avons trouvé d’autres comptes susceptibles de vous appartenir
 duplicate_profiles_detected.intro_html: 'L’%{sp_name} exige que vous ne disposiez que d’un seul et unique compte %{app_name} avec une identité vérifiée. Vous devez supprimer les %{link_html} avant de vous connecter à l’%{sp_name}. Voici la marche à suivre :'
 duplicate_profiles_detected.intro.link: comptes en double
-duplicate_profiles_detected.intro2: 'Vous devez supprimer les comptes en double avant de vous connecter à %{app_name}. Voici comment faire :'
 duplicate_profiles_detected.last_sign_in_at_html: '<strong> Dernière connexion : </strong> %{timestamp_html}'
 duplicate_profiles_detected.never_logged_in: 'Jamais connecté à'
 duplicate_profiles_detected.select_an_account.details_html: 'Conservez le compte connecté au plus grand nombre de services. Rendez-vous sur la page %{link_html} pour consulter les agences connectées en sélectionnant « Vos comptes connectés » dans le menu de gauche.'
