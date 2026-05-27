@@ -38,6 +38,7 @@ module SignUp
           in_account_creation_flow: true,
           success: result.success?,
           multi_factor_auth_method: 'webauthn_platform',
+          passkey_signup_setup_recommended: true,
         ),
       )
 
