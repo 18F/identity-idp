@@ -133,7 +133,7 @@ RSpec.describe SignUp::PasswordsController do
             .and_return(true)
         end
         it 'redirects when the user has been placed into the bucket' do
-          expect(response).to redirect_to(webauthn_platform_setup_url)
+          expect(response).to redirect_to(sign_up_webauthn_platform_setup_url)
         end
       end
 
