@@ -6802,6 +6802,7 @@ module AnalyticsEvents
     webauthn_platform_recommended: nil,
     webauthn_setup_duration: nil,
     auto_passkey_prompted: nil,
+    passkey_signup_setup_recommended: nil,
     **extra
   )
     track_event(
@@ -6833,6 +6834,7 @@ module AnalyticsEvents
       webauthn_platform_recommended:,
       webauthn_setup_duration:,
       auto_passkey_prompted:,
+      passkey_signup_setup_recommended:,
       **extra,
     )
   end
@@ -8820,6 +8822,7 @@ module AnalyticsEvents
     success:,
     in_account_creation_flow: nil,
     errors: nil,
+    webauthn_platform_recommended: nil,
     **extra
   )
     track_event(
@@ -8828,6 +8831,7 @@ module AnalyticsEvents
       success:,
       errors:,
       in_account_creation_flow:,
+      webauthn_platform_recommended:,
       **extra,
     )
   end
@@ -8836,14 +8840,12 @@ module AnalyticsEvents
   # @param [Integer] enabled_mfa_methods_count Number of enabled MFA methods on the account
   # @param [Boolean] in_account_creation_flow Whether user is going through creation flow
   # @param [Boolean, nil] auto_passkey_prompted Whether the user was auto-redirected to setup
-  # @param [Boolean, nil] webauthn_platform_signup_recommended passkey setup after password creation
   # Tracks when WebAuthn setup is visited
   def webauthn_setup_visit(
     platform_authenticator:,
     enabled_mfa_methods_count:,
     in_account_creation_flow:,
     auto_passkey_prompted: nil,
-    webauthn_platform_signup_recommended: nil,
     **extra
   )
     track_event(
@@ -8852,7 +8854,6 @@ module AnalyticsEvents
       enabled_mfa_methods_count:,
       in_account_creation_flow:,
       auto_passkey_prompted:,
-      webauthn_platform_signup_recommended:,
       **extra,
     )
   end

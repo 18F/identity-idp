@@ -44,8 +44,6 @@ module Users
         in_account_creation_flow: user_session[:in_account_creation_flow] || false,
         enabled_mfa_methods_count: result.extra[:enabled_mfa_methods_count],
         auto_passkey_prompted: auto_trigger_request?,
-        webauthn_platform_signup_recommended:
-          user_session[:webauthn_platform_signup_setup_recommended] || false,
       )
       save_challenge_in_session
       @exclude_credentials = exclude_credentials
@@ -230,14 +228,9 @@ module Users
     end
 
     def next_setup_path
-      if @platform_authenticator &&
-         (user_session[:auto_passkey_prompted] ||
-          user_session[:webauthn_platform_signup_setup_recommended])
+      return super unless @platform_authenticator && user_session[:auto_passkey_prompted]
 
-        return super || authentication_methods_setup_path
-      end
-
-      super
+      super || authentication_methods_setup_path
     end
 
     def need_to_set_up_additional_mfa?
