@@ -328,24 +328,21 @@ class ProofingAgentJob < ApplicationJob
       document_check: document_capture_session.doc_auth_vendor,
     }
     if proofing_result&.dig(:context, :stages, :resolution, :success) == true
-      @proofing_components[:resolution_check] = proofing_result&.dig(
+      @proofing_components[:residential_resolution_check] = proofing_result&.dig(
         :context, :stages, :residential_address, :vendor_name
       )
-      @proofing_components[:address_check] = proofing_result&.dig(
+      @proofing_components[:resolution_check] = proofing_result&.dig(
         :context, :stages, :resolution, :vendor_name
       )
     end
-
     if @aamva_result&.success? == true
       @proofing_components[:source_check] = @aamva_result.to_h[:vendor_name]
     end
-
     if @mrz_result&.success? == true
       @proofing_components[:source_check] = @mrz_result.to_h[:vendor_name]
     end
-
     if proofing_result&.dig(:context, :stages, :phone_precheck, :success) == true
-      @proofing_components[:phone_check] = proofing_result&.dig(
+      @proofing_components[:address_check] = proofing_result&.dig(
         :context, :stages, :phone_precheck, :vendor_name
       )
     end

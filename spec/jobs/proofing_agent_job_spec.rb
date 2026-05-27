@@ -235,10 +235,10 @@ RSpec.describe ProofingAgentJob, type: :job do
             transaction_id: transaction_id,
           },
           proofing_components: {
-            address_check: 'ResolutionMock',
             document_check: nil,
-            resolution_check: 'ResidentialAddressNotRequired',
-            phone_check: 'AddressMock',
+            residential_resolution_check: 'ResidentialAddressNotRequired',
+            resolution_check: 'ResolutionMock',
+            address_check: 'AddressMock',
             source_check: 'StateIdMock',
           },
         )
