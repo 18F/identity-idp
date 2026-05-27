@@ -22,7 +22,8 @@ RSpec.describe Users::VerifyPasswordController do
   end
 
   context 'with password reset profile' do
-    let(:profiles) { [create(:profile, :verified, :password_reset)] }
+    let(:profile) { create(:profile, :verified, :password_reset) }
+    let(:profiles) { [profile] }
 
     context 'without personal key flag set' do
       describe '#new' do
@@ -65,6 +66,7 @@ RSpec.describe Users::VerifyPasswordController do
 
         context 'with valid password' do
           let(:password) { user.password }
+          let(:encrypted_proofing_events) { nil }
 
           before do
             pii = Pii::Attributes.new_from_hash(Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN)
@@ -73,22 +75,48 @@ RSpec.describe Users::VerifyPasswordController do
               user_session: controller.user_session,
             ).store_decrypted_pii(pii)
 
-            put :update, params: user_params
+            controller.user_session[:encrypted_proofing_events] = encrypted_proofing_events
           end
 
-          it 'logs an appropriate analytics event' do
-            expect(@analytics).to have_logged_event(
-              :reactivate_account_verify_password_submitted,
-              success: true,
-            )
+          context 'with no stored historical attempt events' do
+            before do
+              put :update, params: user_params
+            end
+
+            it 'logs an appropriate analytics event' do
+              expect(@analytics).to have_logged_event(
+                :reactivate_account_verify_password_submitted,
+                success: true,
+              )
+            end
+
+            it 'redirects to the manage personal key page' do
+              expect(response).to redirect_to(manage_personal_key_url)
+            end
+
+            it 'sets the new personal key as a user session value' do
+              expect(controller.user_session[:personal_key]).to match(/^([A-Z0-9]{4}(-|$)){4}/)
+            end
           end
 
-          it 'redirects to the manage personal key page' do
-            expect(response).to redirect_to(manage_personal_key_url)
-          end
+          context 'with stored historical attempt events' do
+            let(:attempt_events) { [{ 'event' => 'event1' }, { 'event' => 'event2' }] }
+            let(:encrypted_proofing_events) do
+              SessionEncryptor.new.kms_encrypt(attempt_events.to_json)
+            end
 
-          it 'sets the new personal key as a user session value' do
-            expect(controller.user_session[:personal_key]).to match(/^([A-Z0-9]{4}(-|$)){4}/)
+            before do
+              allow(user).to receive(:password_reset_profile).and_return(profile)
+              allow(profile).to receive(:reencrypt_user_proofing_events)
+            end
+
+            it 're-encrypts the historical events with the new password' do
+              put :update, params: user_params
+              expect(profile).to have_received(:reencrypt_user_proofing_events).with(
+                password:,
+                attempt_events:,
+              )
+            end
           end
         end
 

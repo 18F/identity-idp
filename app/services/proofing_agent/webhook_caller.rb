@@ -2,6 +2,7 @@
 
 module ProofingAgent
   class WebhookCaller
+    include Config
     attr_reader :success, :reason, :transaction_id, :correlation_id
 
     def initialize(success:, reason:, transaction_id:, correlation_id:)
@@ -12,6 +13,8 @@ module ProofingAgent
     end
 
     def call
+      return if webhook_url.blank?
+
       send_http_post_request
     rescue => exception
       NewRelic::Agent.notice_error(
@@ -55,7 +58,7 @@ module ProofingAgent
 
       timeout = 15
 
-      Faraday.new(url: URI.join(webhook_url).to_s, headers: request_headers) do |conn|
+      Faraday.new(url: URI.join(webhook_url).to_s) do |conn|
         conn.request :retry, retry_options
         conn.request :instrumentation, name: 'request_metric.faraday'
         conn.adapter :net_http
@@ -63,27 +66,19 @@ module ProofingAgent
         conn.options.read_timeout = timeout
         conn.options.open_timeout = timeout
         conn.options.write_timeout = timeout
+        conn.headers['Authorization'] = "Bearer #{webhook_secret}" if webhook_secret.present?
+        conn.headers['X-Correlation-ID'] = correlation_id
+        conn.headers['Content-Type'] = 'application/json'
+        conn.headers.merge!(webhook_custom_headers)
       end
-    end
-
-    def request_headers
-      { 'Content-Type' => 'application/json', 'X-Correlation-ID' => correlation_id }
     end
 
     def document_capture_session
       @document_capture_session ||= DocumentCaptureSession.find_by(uuid: transaction_id)
     end
 
-    def issuer
+    def service_provider_issuer
       document_capture_session&.issuer
-    end
-
-    def webhook_url
-      config = IdentityConfig.store.idv_proofing_agent_config.find do |issuer_config|
-        issuer_config['issuer'] == issuer
-      end
-
-      config&.dig('webhook_url')
     end
   end
 end
