@@ -774,7 +774,7 @@ duplicate_profiles_detected.intro.link: 删除重复账户
 duplicate_profiles_detected.intro2: '你需要在登录 %{app_name}. 之前删除重复帐户。操作步骤如下：'
 duplicate_profiles_detected.last_sign_in_at_html: '<strong> 上次登录: </strong> %{timestamp_html}'
 duplicate_profiles_detected.never_logged_in: 从未登录过
-duplicate_profiles_detected.select_an_account.details_html: 请保留关联服务最多的那个账户。请前往"%{link_html}"页面，通过左侧菜单中的"您关联的账户"选项，查看已关联的机构。
+duplicate_profiles_detected.select_an_account.details_html: 请保留关联服务最多的那个账户。请前往”%{link_html}”页面，通过左侧菜单中的”您关联的账户”选项，查看已关联的机构。
 duplicate_profiles_detected.select_an_account.details.link: 您的账户
 duplicate_profiles_detected.select_an_account.heading: 选择要保留的帐户
 duplicate_profiles_detected.sign_back_in.details: 返回 %{app_name} 网站，使用你保留的那个 %{app_name} 帐户登录。
