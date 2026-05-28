@@ -760,19 +760,21 @@ duplicate_profiles_detected.accounts_list.heading: Cuentas con la misma informac
 duplicate_profiles_detected.cant_access: 'No puedo acceder a una cuenta'
 duplicate_profiles_detected.connected_acct_html: '<strong> Agencias conectadas: </strong> %{count}'
 duplicate_profiles_detected.created_at_html: '<strong> Creado: </strong> %{timestamp_html}'
-duplicate_profiles_detected.delete_duplicates.details_html: Inicie sesión y, en la página de “Su cuenta”, elimine la cuenta. %{link_html}
+duplicate_profiles_detected.delete_duplicates.details_html: Inicia sesión en la cuenta que va a eliminar en <a href="https://secure.login.gov">https://secure.login.gov</a>. Así es %{link_html}
+duplicate_profiles_detected.delete_duplicates.details2_html: Si lo desea, %{link_html} a la cuenta que conservará después de eliminar la cuenta duplicada.
+duplicate_profiles_detected.delete_duplicates.details2.link: puede añadir ese correo electrónico
 duplicate_profiles_detected.delete_duplicates.heading: 'Elimine las cuentas duplicadas.'
-duplicate_profiles_detected.delete_duplicates.link: Cómo eliminar su cuenta.
+duplicate_profiles_detected.delete_duplicates.link: como puede eliminar su cuenta.
 duplicate_profiles_detected.dont_recognize_account: No reconozco una de estas cuentas
 duplicate_profiles_detected.duplicate: Duplicada
 duplicate_profiles_detected.get_help: Obtener ayuda
 duplicate_profiles_detected.heading: Encontramos otras cuentas que pueden ser suyas
-duplicate_profiles_detected.intro_html: '%{sp_name} requiere que usted tenga una sola cuenta de %{app_name} en la cual haya verificado su identidad. %{link_html}'
-duplicate_profiles_detected.intro.link: Obtenga más información acerca de las cuentas duplicadas.
-duplicate_profiles_detected.intro2: 'Antes de iniciar sesión en %{app_name}, necesita eliminar las cuentas duplicadas. Esto es lo que tiene que hacer:'
+duplicate_profiles_detected.intro_html: '%{sp_name} requiere que usted tenga sólo una cuenta de %{app_name} con una identidad verificada. Debe eliminar %{link_html} antes de iniciar sesión en %{sp_name}. Esto es lo que debe hacer:'
+duplicate_profiles_detected.intro.link: las cuentas duplicativas
 duplicate_profiles_detected.last_sign_in_at_html: '<strong> Último inicio de sesión: </strong> %{timestamp_html}'
 duplicate_profiles_detected.never_logged_in: Nunca he iniciado sesión en
-duplicate_profiles_detected.select_an_account.details: Conserve la cuenta que más usa. Por ejemplo, la que está vinculada a más servicios. Así, no tendrá que volver a conectar los servicios.
+duplicate_profiles_detected.select_an_account.details_html: 'Conserve la cuenta que esté vinculada a la mayor cantidad de servicios. Diríjase a la página %{link_html} para ver las agencias conectadas; para ello, seleccione «Sus cuentas conectadas» en el menú a la izquierda.'
+duplicate_profiles_detected.select_an_account.details.link: «Su cuenta»
 duplicate_profiles_detected.select_an_account.heading: Elija la cuenta que desea conservar.
 duplicate_profiles_detected.sign_back_in.details: Vuelva al sitio web de %{app_name} e inicie sesión usando la cuenta de %{app_name} que conservó.
 duplicate_profiles_detected.sign_back_in.heading: Vuelva a iniciar sesión en %{app_name} con una cuenta.
