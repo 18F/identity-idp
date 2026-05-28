@@ -6774,7 +6774,7 @@ module AnalyticsEvents
   # @param [:authentication, :account_creation, nil] webauthn_platform_recommended A/B test for
   # @param [Integer, nil] webauthn_setup_duration Duration of webauthn setup in seconds
   # @param [Boolean, nil] auto_passkey_prompted Whether the WebAuthn setup came from the auto prompt
-  # @param [Boolean, nil] passkey_signup_setup_recommended user is in the passkey setup signup a/b test
+  # @param [Boolean, nil] passkey_signup_setup_recommended user is recommended to add passkey
   def multi_factor_auth_setup(
     success:,
     multi_factor_auth_method:,

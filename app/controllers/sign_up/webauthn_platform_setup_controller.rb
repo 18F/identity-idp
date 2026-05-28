@@ -23,7 +23,6 @@ module SignUp
 
     def confirm
       analytics.webauthn_platform_signup_setup_ab_test_submitted
-      user_session[:webauthn_platform_signup_setup_recommended] = true
 
       form = WebauthnSetupForm.new(
         user: current_user,
