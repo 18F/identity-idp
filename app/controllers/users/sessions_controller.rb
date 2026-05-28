@@ -202,7 +202,7 @@ module Users
       rate_limiter&.reset!
       sign_in(resource_name, resource)
       cache_profiles(auth_params[:password])
-      cache_user_proofing_events(auth_params[:password])
+      cache_user_proofing_events(password: auth_params[:password])
       set_new_device_session(nil)
       event, = create_user_event(:sign_in_before_2fa)
       UserAlerts::AlertUserAboutNewDevice.schedule_alert(event:) if new_device?

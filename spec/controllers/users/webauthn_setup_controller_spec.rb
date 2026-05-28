@@ -99,6 +99,7 @@ RSpec.describe Users::WebauthnSetupController do
           enabled_mfa_methods_count: 0,
           in_account_creation_flow: false,
           auto_passkey_prompted: false,
+          webauthn_platform_signup_recommended: false,
         )
       end
 
@@ -396,10 +397,29 @@ RSpec.describe Users::WebauthnSetupController do
         end
 
         context 'when auto prompt is requested and platform authenticator is used' do
+          before do
+            controller.user_session[:auto_passkey_prompt_pending] = true
+          end
+
           it 'sets auto_trigger to true' do
             get :new, params: { platform: true, auto_trigger: true }
 
             expect(assigns(:auto_trigger)).to eq(true)
+            expect(controller.user_session[:auto_passkey_prompt_pending]).to be_nil
+          end
+
+          it 'does not auto-trigger again after the pending prompt is consumed' do
+            get :new, params: { platform: true, auto_trigger: true }
+            get :new, params: { platform: true, auto_trigger: true }
+
+            expect(assigns(:auto_trigger)).to eq(false)
+          end
+
+          it 'does not auto-trigger again after the browser prompt is canceled' do
+            get :new, params: { platform: true, auto_trigger: true, error: 'NotAllowedError' }
+
+            expect(assigns(:auto_trigger)).to eq(false)
+            expect(controller.user_session[:auto_passkey_prompt_pending]).to be_nil
           end
         end
 
@@ -459,6 +479,7 @@ RSpec.describe Users::WebauthnSetupController do
         controller.user_session[:webauthn_challenge] = webauthn_challenge
         controller.user_session[:in_account_creation_flow] = true
         controller.user_session[:auto_passkey_prompted] = true
+        controller.user_session[:webauthn_platform_signup_setup_recommended]
       end
 
       context 'when auto_passkey_prompted is set and no mfa_selections queued' do

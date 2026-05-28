@@ -5,7 +5,7 @@ module Idv
   module HistoricalAttemptsConcern
     extend ActiveSupport::Concern
 
-    def cache_user_proofing_events(password)
+    def cache_user_proofing_events(password:)
       return unless historical_events_need_be_sent?
 
       existing_events = current_user

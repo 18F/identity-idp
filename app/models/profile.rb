@@ -305,14 +305,14 @@ class Profile < ApplicationRecord
         end
 
         agency_name = if duplicate_profile.service_provider.present?
-                        ServiceProvider.find_sole_by(
+                        ServiceProvider.find_by(
                           issuer: duplicate_profile.service_provider,
                         )&.friendly_name
         end
         user.confirmed_email_addresses.each do |email_address|
           mailer = UserMailer.with(user: user, email_address: email_address)
           mailer.dupe_profile_account_review_complete_locked(
-            agency_name: agency_name,
+            agency_name: agency_name || APP_NAME,
           ).deliver_now_or_later
         end
       end
@@ -336,11 +336,16 @@ class Profile < ApplicationRecord
           self_serviced: false,
           fraud_investigation_conclusive: true,
         )
-        service_provider = ServiceProvider.find_sole_by(issuer: duplicate_profile.service_provider)
+
+        agency_name = if duplicate_profile.service_provider.present?
+                        ServiceProvider.find_by(
+                          issuer: duplicate_profile.service_provider,
+                        )&.friendly_name
+        end
         user.confirmed_email_addresses.each do |email_address|
           mailer = UserMailer.with(user: user, email_address: email_address)
           mailer.dupe_profile_account_review_complete_success(
-            agency_name: service_provider.friendly_name,
+            agency_name: agency_name || APP_NAME,
           ).deliver_now_or_later
         end
       end

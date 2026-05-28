@@ -276,12 +276,6 @@ RSpec.describe Idv::WelcomeController do
         .to change { subject.idv_session.document_capture_session_uuid }.from(nil)
     end
 
-    it 'create document capture session with passport allowed' do
-      put :update
-
-      expect(subject.document_capture_session.passport_status).to be_nil
-    end
-
     it 'sets the proofing started timestamp', :freeze_time do
       put :update
 

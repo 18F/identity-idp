@@ -6116,6 +6116,7 @@ module AnalyticsEvents
   # @param [Boolean] timed_out Whether the proofing request timed out.
   # @param [Boolean] aamva_checked Whether the aamva API request evaluated a state ID.
   # @param [Integer, nil] birth_year The birth year listed on the ID.
+  # @param [Boolean, nil] bypass_exception Whether the aamva exception was bypassed
   # @param [String, nil] state The state on the ID.
   # @param [String, nil] state_id_jurisdiction The state that issued the ID.
   # @param [String, nil] state_id_number A string describing the format of the ID number.
@@ -6134,6 +6135,7 @@ module AnalyticsEvents
     timed_out:,
     aamva_checked:,
     birth_year: nil,
+    bypass_exception: nil,
     state: nil,
     state_id_jurisdiction: nil,
     state_id_number: nil,
@@ -6155,6 +6157,7 @@ module AnalyticsEvents
       timed_out:,
       aamva_checked:,
       birth_year:,
+      bypass_exception:,
       state:,
       state_id_jurisdiction:,
       state_id_number:,
@@ -8750,15 +8753,16 @@ module AnalyticsEvents
     track_event(:webauthn_platform_recommended_visited)
   end
 
-  # User visits webauth platform upsell after sign up
-  # @param [Boolean] opted_to_add Whether the user chose to add a method
-  def webauthn_platform_signup_setup_submitted(opted_to_add:, **extra)
-    track_event(:webauthn_platform_signup_setup_submitted, opted_to_add:, **extra)
+  # User submits form to add passkey to account during account creation
+  # @param [Symbol] passkey_upsell_bucket The PASSKEY_UPSELL A/B test bucket the user is in
+  def webauthn_platform_signup_setup_ab_test_submitted(passkey_upsell_bucket:)
+    track_event(:webauthn_platform_signup_setup_ab_test_submitted, passkey_upsell_bucket:)
   end
 
-  # User visits webauth platform upsell after sign up
-  def webauthn_platform_signup_setup_visited
-    track_event(:webauthn_platform_signup_setup_visited)
+  # User visits webauthn platform upsell page after sign up
+  # @param [Symbol] passkey_upsell_bucket The PASSKEY_UPSELL A/B test bucket the user is in
+  def webauthn_platform_signup_setup_ab_test_visited(passkey_upsell_bucket:)
+    track_event(:webauthn_platform_signup_setup_ab_test_visited, passkey_upsell_bucket:)
   end
 
   # @param [Boolean] platform_authenticator Whether authentication method was registered as platform
@@ -8837,12 +8841,14 @@ module AnalyticsEvents
   # @param [Integer] enabled_mfa_methods_count Number of enabled MFA methods on the account
   # @param [Boolean] in_account_creation_flow Whether user is going through creation flow
   # @param [Boolean, nil] auto_passkey_prompted Whether the user was auto-redirected to setup
+  # @param [Boolean, nil] webauthn_platform_signup_recommended passkey setup after password creation
   # Tracks when WebAuthn setup is visited
   def webauthn_setup_visit(
     platform_authenticator:,
     enabled_mfa_methods_count:,
     in_account_creation_flow:,
     auto_passkey_prompted: nil,
+    webauthn_platform_signup_recommended: nil,
     **extra
   )
     track_event(
@@ -8851,6 +8857,7 @@ module AnalyticsEvents
       enabled_mfa_methods_count:,
       in_account_creation_flow:,
       auto_passkey_prompted:,
+      webauthn_platform_signup_recommended:,
       **extra,
     )
   end

@@ -20,10 +20,12 @@ module EncryptedDocStorage
       )
     end
 
-    def retrieve_attempt_object(path:)
+    def retrieve_attempt_object(file_path:, file_name:)
+      full_path = "#{file_path}/#{file_name}"
+
       s3_client.get_object(
         bucket:,
-        key: path,
+        key: full_path,
       )
     end
 

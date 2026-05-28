@@ -100,5 +100,23 @@ RSpec.describe 'accounts/connected_accounts/show.html.erb' do
         )
       end
     end
+
+    context 'when another identity references a missing service provider' do
+      before do
+        create(
+          :service_provider_identity,
+          user:,
+          service_provider_record: nil,
+          service_provider: 'urn:gov:gsa:missing-service-provider',
+        )
+      end
+
+      it 'renders only connected apps with existing service providers' do
+        expect { render }.not_to raise_error
+
+        expect(rendered).to have_css('li', count: 1)
+        expect(rendered).to have_content(identity.display_name)
+      end
+    end
   end
 end
