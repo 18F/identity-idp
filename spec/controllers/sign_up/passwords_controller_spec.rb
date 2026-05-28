@@ -132,7 +132,6 @@ RSpec.describe SignUp::PasswordsController do
           allow(FeatureManagement).to receive(:account_creation_passkey_auto_prompt_enabled?)
             .and_return(true)
         end
-<<<<<<< HEAD
         it 'always hands off to MFA selection (upsell handled downstream)' do
           expect(response).to redirect_to(authentication_methods_setup_url)
         end
@@ -153,15 +152,10 @@ RSpec.describe SignUp::PasswordsController do
 
         it 'hands off to MFA selection so the upsell controller can branch' do
           expect(response).to redirect_to(authentication_methods_setup_url)
-=======
-        it 'redirects when the user has been placed into the bucket' do
-          expect(response).to redirect_to(sign_up_webauthn_platform_setup_url)
->>>>>>> origin/main
         end
       end
 
       context 'when account_creation_passkey_prompt is disabled' do
-<<<<<<< HEAD
         let(:params) do
           super().merge(platform_authenticator_available: 'true')
         end
@@ -170,9 +164,6 @@ RSpec.describe SignUp::PasswordsController do
           allow(controller).to receive(:ab_test_bucket)
             .with(:PASSKEY_UPSELL)
             .and_return(:auto_passkey_prompt)
-=======
-        before do
->>>>>>> origin/main
           allow(FeatureManagement).to receive(:account_creation_passkey_auto_prompt_enabled?)
             .and_return(false)
         end
