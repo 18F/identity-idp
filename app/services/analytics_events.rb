@@ -8763,7 +8763,10 @@ module AnalyticsEvents
 
   # User visits webauth platform upsell after sign up
   def webauthn_platform_signup_setup_ab_test_visited
-    track_event(:webauthn_platform_signup_setup_ab_test_visited)
+    track_event(
+      :webauthn_platform_signup_setup_ab_test_visited,
+      upsell_bucket: IdentityConfig.store.webauthn_platform_signup_setup_upsell_bucket,
+    )
   end
 
   # @param [Boolean] platform_authenticator Whether authentication method was registered as platform
