@@ -28,7 +28,8 @@ RSpec.describe UserAlerts::AlertUserAboutNewDevice do
     end
 
     before do
-      allow(IdentityConfig.store).to receive(:new_device_alert_delay_in_minutes).and_return(5)
+      allow(IdentityConfig.store)
+        .to receive(:new_device_alert_window_start_in_minutes).and_return(5)
     end
 
     it 'returns true' do
