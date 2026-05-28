@@ -86,8 +86,133 @@ RSpec.describe ProofingAgentJob, type: :job do
           reason: nil,
           transaction_id: transaction_id,
           correlation_id: correlation_id,
-          analytics_attributes: an_instance_of(Hash),
+          analytics_attributes: {
+            agent_id: proofing_agent_id,
+            location_id: proofing_location_id,
+            correlation_id: correlation_id,
+            transaction_id: transaction_id,
+            proofing_components: {
+              document_check: nil,
+              source_check: 'StateIdMock',
+              residential_resolution_check: 'ResidentialAddressNotRequired',
+              resolution_check: 'ResolutionMock',
+              address_check: 'AddressMock',
+            },
+          },
         )
+      end
+
+      context 'logging' do
+        before do
+          stub_analytics
+          allow(Analytics).to receive(:new).and_return(@analytics)
+        end
+        it 'logs idv_doc_auth_verify_proofing_results event with proofing agent' do
+          perform
+          expect(@analytics).to have_logged_event(
+            'IdV: doc auth verify proofing results',
+            address_edited: false,
+            address_line2_present: false,
+            analytics_id: 'Doc Auth',
+            flow_path: 'Proofing Agent',
+            last_name_spaced: false,
+            opted_in_to_in_person_proofing: false,
+            proofing_results:
+            { success: true,
+              errors: nil,
+              exception: nil,
+              timed_out: false,
+              threatmetrix_review_status: 'reject',
+              hybrid_mobile_threatmetrix_review_status: nil,
+              phone_precheck_passed: true,
+              context:
+              { device_profiling_adjudication_reason:
+                'device_profiling_result_review_required',
+                hybrid_mobile_device_profiling_adjudication_reason:
+                'hybrid_mobile_device_profiling_not_enabled',
+                resolution_adjudication_reason: 'pass_resolution_and_state_id',
+                stages:
+                { resolution:
+                  { success: true,
+                    errors: {},
+                    exception: nil,
+                    timed_out: false,
+                    transaction_id: Proofing::Mock::ResolutionMockClient::TRANSACTION_ID,
+                    reference: Proofing::Mock::ResolutionMockClient::REFERENCE,
+                    reason_codes: {},
+                    can_pass_with_additional_verification: false,
+                    attributes_requiring_additional_verification: [],
+                    source_attribution: [],
+                    vendor_name: 'ResolutionMock',
+                    vendor_id: nil,
+                    vendor_workflow: nil,
+                    verified_attributes: nil },
+                  residential_address:
+                  { success: true,
+                    errors: {},
+                    exception: nil,
+                    timed_out: false,
+                    transaction_id: '',
+                    reference: '',
+                    reason_codes: {},
+                    can_pass_with_additional_verification: false,
+                    attributes_requiring_additional_verification: [],
+                    source_attribution: [],
+                    vendor_name: 'ResidentialAddressNotRequired',
+                    vendor_id: nil,
+                    vendor_workflow: nil,
+                    verified_attributes: nil },
+                  threatmetrix:
+                  { client: 'tmx_session_id_missing',
+                    success: false,
+                    errors: {},
+                    exception: nil,
+                    timed_out: false,
+                    transaction_id: nil,
+                    review_status: 'reject',
+                    account_lex_id: nil,
+                    session_id: nil,
+                    response_body: nil,
+                    device_fingerprint: nil },
+                  hybrid_mobile_threatmetrix: {},
+                  phone_precheck:
+                  { exception: nil,
+                    errors: {},
+                    success: true,
+                    timed_out: false,
+                    transaction_id: Proofing::Mock::AddressMockClient::TRANSACTION_ID,
+                    reference: '',
+                    vendor_name: 'AddressMock',
+                    result: nil } } },
+              biographical_info:
+              { birth_year: 1938,
+                state: 'MT',
+                identity_doc_address_state: 'MT',
+                state_id_jurisdiction: 'ND',
+                state_id_number: '#############',
+                same_address_as_id: 'true',
+                phone:
+                { area_code: '202',
+                  country_code: 'US',
+                  phone_fingerprint: an_instance_of(String) },
+                state_id_verified_attributes: ['address', 'dob', 'state_id_number'] },
+              ssn_is_unique: true },
+            ssn_is_unique: true,
+            step: 'Proofing Agent Job',
+            success: true,
+            proofing_agent:
+            { agent_id: proofing_agent_id,
+              location_id: proofing_location_id,
+              correlation_id: correlation_id,
+              transaction_id: transaction_id },
+            proofing_components:
+            { document_check: nil,
+              source_check: 'StateIdMock',
+              residential_resolution_check: 'ResidentialAddressNotRequired',
+              resolution_check: 'ResolutionMock',
+              address_check: 'AddressMock' },
+          )
+        end
       end
 
       context 'when the webhook URL is not configured' do
@@ -279,6 +404,10 @@ RSpec.describe ProofingAgentJob, type: :job do
 
     context 'when the MRZ check passes' do
       let(:pii) { Idp::Constants::MOCK_IDV_PROOFING_PASSPORT_APPLICANT.merge(phone: '12025551212').freeze }
+      before do
+        stub_analytics
+        allow(Analytics).to receive(:new).and_return(@analytics)
+      end
 
       it 'stores a successful result with mrz data' do
         perform
@@ -288,6 +417,24 @@ RSpec.describe ProofingAgentJob, type: :job do
         expect(result[:reason]).to be_nil
         expect(result[:mrz_status]).to eq 'pass'
         expect(result[:source_check_vendor]).to eq('PassportMock')
+      end
+
+      it 'logs idv_dos_passport_verification event with proofing agent' do
+        perform
+        expect(@analytics).to have_logged_event(
+          :idv_dos_passport_verification,
+          success: true,
+          submit_attempts: 1,
+          remaining_submit_attempts: 2,
+          document_type_requested: 'passport',
+          correlation_id_sent: correlation_id,
+          proofing_agent: {
+            agent_id: proofing_agent_id,
+            location_id: proofing_location_id,
+            correlation_id: correlation_id,
+            transaction_id: transaction_id,
+          },
+        )
       end
     end
 

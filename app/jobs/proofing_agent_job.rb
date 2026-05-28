@@ -9,7 +9,7 @@ class ProofingAgentJob < ApplicationJob
 
   discard_on JobHelpers::StaleJobHelper::StaleJobError
 
-  attr_reader :document_capture_session, :mrz_result, :aamva_result
+  attr_reader :document_capture_session, :proofing_components
 
   def perform(
     encrypted_arguments:,
@@ -40,6 +40,8 @@ class ProofingAgentJob < ApplicationJob
     applicant_pii[:uuid_prefix] = current_sp&.app_id
     applicant_pii[:uuid] = user.uuid
 
+    @proofing_components = { document_check: @document_capture_session.doc_auth_vendor }
+
     proofing_result = make_vendor_proofing_requests(
       timer:,
       applicant_pii:,
@@ -54,6 +56,21 @@ class ProofingAgentJob < ApplicationJob
     )
 
     combined_result = proofing_result.combined_result.to_h
+
+    if combined_result&.dig(:resolution, :context, :stages, :resolution, :success) == true
+      @proofing_components[:residential_resolution_check] = combined_result&.dig(
+        :resolution, :context, :stages, :residential_address, :vendor_name
+      )
+      @proofing_components[:resolution_check] = combined_result&.dig(
+        :resolution, :context, :stages, :resolution, :vendor_name
+      )
+    end
+
+    if combined_result&.dig(:resolution, :context, :stages, :phone_precheck, :success) == true
+      @proofing_components[:address_check] = combined_result&.dig(
+        :resolution, :context, :stages, :phone_precheck, :vendor_name
+      )
+    end
 
     document_capture_session.store_agent_proofed_user(proofing_result.combined_result)
 
@@ -98,6 +115,34 @@ class ProofingAgentJob < ApplicationJob
         ],
       ),
     )
+
+    if proofing_result.phone_precheck_attempted?
+      phone_precheck_body = combined_result&.dig(:resolution, :context, :stages, :phone_precheck)
+      phone_info = combined_result&.dig(:resolution, :biographical_info, :phone)
+
+      analytics.idv_phone_confirmation_vendor_submitted(
+        **{
+          success: phone_precheck_body&.dig(:success),
+          vendor: phone_precheck_body,
+          area_code: phone_info&.dig(:area_code),
+          country_code: phone_info&.dig(:country_code),
+          phone_fingerprint: phone_info&.dig(:fingerprint),
+          new_phone_added: true,
+          hybrid_handoff_phone_used: false,
+          manual_review: false,
+          errors: phone_precheck_body&.dig(:errors),
+          reason_codes: combined_result&.dig(
+            :resolution, :context, :stages, :resolution, :reason_codes
+          ),
+          proofing_agent: analytics_attributes,
+          proofing_components:,
+        }.to_h.merge(
+          pii_like_keypaths: [
+            [:errors, :phone],
+          ],
+        ),
+      )
+    end
 
     if webhook_url.present?
       ProofingAgentWebhookJob.perform_later(
@@ -153,33 +198,40 @@ class ProofingAgentJob < ApplicationJob
       transaction_id: transaction_id,
     }
     if applicant_pii[:state_id_number].present?
-      @aamva_result = call_aamva_verification(
+      aamva_result = call_aamva_verification(
         applicant_pii:,
         current_sp:,
         timer:,
         analytics_attributes:,
       )
-      applicant_pii[:aamva_verified_attributes] = @aamva_result.verified_attributes if @aamva_result
+      applicant_pii[:aamva_verified_attributes] = aamva_result.verified_attributes if aamva_result
+      if aamva_result&.success?
+        proofing_components[:source_check] = aamva_result.to_h[:vendor_name]
+      end
     end
 
-    @mrz_result = nil
+    mrz_result = nil
 
     if applicant_pii[:mrz].present?
-      @mrz_result = call_mrz_verification(
+      mrz_result = call_mrz_verification(
         applicant_pii:,
         timer:,
       )
 
       analytics.idv_dos_passport_verification(
-        success: @mrz_result&.success?,
+        success: mrz_result&.success?,
         submit_attempts:,
         remaining_submit_attempts: remaining_attempts,
         document_type_requested: Idp::Constants::DocumentTypes::PASSPORT,
         proofing_agent: analytics_attributes,
         correlation_id_sent: correlation_id,
-        error_message: @mrz_result&.errors&.dig(:passport),
-        exception: @mrz_result&.exception&.message,
+        error_message: mrz_result&.errors&.dig(:passport),
+        exception: mrz_result&.exception&.message,
       )
+
+      if mrz_result&.success? == true
+        proofing_components[:source_check] = mrz_result.to_h[:vendor_name]
+      end
     end
 
     re_encrypted_arguments = Encryption::Encryptors::BackgroundProofingArgEncryptor.new.encrypt(
@@ -194,7 +246,6 @@ class ProofingAgentJob < ApplicationJob
       user_id: user.id,
       service_provider_issuer:,
       proofing_vendor:,
-      analytics_attributes:,
     )
 
     ProofingAgent::ProofingResult.new(
@@ -217,8 +268,7 @@ class ProofingAgentJob < ApplicationJob
     trace_id:,
     user_id:,
     service_provider_issuer:,
-    proofing_vendor:,
-    analytics_attributes:
+    proofing_vendor:
   )
     timer.time('resolution') do
       ResolutionProofingJob.perform_now(
@@ -233,33 +283,7 @@ class ProofingAgentJob < ApplicationJob
       )
     end
 
-    proofing_result = DocumentCaptureSession.new(result_id:).load_proofing_result&.result
-
-    phone_precheck_body = proofing_result&.dig(:context, :stages, :phone_precheck)
-    phone_info = proofing_result&.dig(:biographical_info, :phone)
-
-    analytics.idv_phone_confirmation_vendor_submitted(
-      **{
-        success: phone_precheck_body&.dig(:success),
-        vendor: phone_precheck_body,
-        area_code: phone_info&.dig(:area_code),
-        country_code: phone_info&.dig(:country_code),
-        phone_fingerprint: phone_info&.dig(:fingerprint),
-        new_phone_added: true,
-        hybrid_handoff_phone_used: false,
-        manual_review: false,
-        errors: phone_precheck_body&.dig(:errors),
-        reason_codes: proofing_result&.dig(:context, :stages, :resolution, :reason_codes),
-        proofing_agent: analytics_attributes,
-        proofing_components: proofing_components(result_id:),
-      }.to_h.merge(
-        pii_like_keypaths: [
-          [:errors, :phone],
-        ],
-      ),
-    )
-
-    proofing_result
+    DocumentCaptureSession.new(result_id:).load_proofing_result&.result
   end
 
   def call_aamva_verification(applicant_pii:, current_sp:, timer:, analytics_attributes:)
@@ -314,39 +338,6 @@ class ProofingAgentJob < ApplicationJob
       session: {},
       sp: service_provider_issuer,
     )
-  end
-
-  def proofing_components(result_id: nil)
-    return @proofing_components if defined?(@proofing_components)
-
-    proofing_result = document_capture_session.load_proofing_result&.result
-    if result_id.present?
-      proofing_result = DocumentCaptureSession.new(result_id:).load_proofing_result&.result
-    end
-
-    @proofing_components = {
-      document_check: document_capture_session.doc_auth_vendor,
-    }
-    if proofing_result&.dig(:context, :stages, :resolution, :success) == true
-      @proofing_components[:residential_resolution_check] = proofing_result&.dig(
-        :context, :stages, :residential_address, :vendor_name
-      )
-      @proofing_components[:resolution_check] = proofing_result&.dig(
-        :context, :stages, :resolution, :vendor_name
-      )
-    end
-    if @aamva_result&.success? == true
-      @proofing_components[:source_check] = @aamva_result.to_h[:vendor_name]
-    end
-    if @mrz_result&.success? == true
-      @proofing_components[:source_check] = @mrz_result.to_h[:vendor_name]
-    end
-    if proofing_result&.dig(:context, :stages, :phone_precheck, :success) == true
-      @proofing_components[:address_check] = proofing_result&.dig(
-        :context, :stages, :phone_precheck, :vendor_name
-      )
-    end
-    @proofing_components
   end
 
   def logger_info_hash(hash)

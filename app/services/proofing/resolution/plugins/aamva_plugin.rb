@@ -12,6 +12,8 @@ module Proofing
           identity_doc_zipcode: :zipcode,
         }.freeze
 
+        attr_reader :proofing_agent_analytics_arguments
+
         def call(
           applicant_pii:,
           current_sp:,
@@ -23,6 +25,7 @@ module Proofing
           already_proofed: false,
           proofing_agent_analytics_arguments: nil
         )
+          @proofing_agent_analytics_arguments = proofing_agent_analytics_arguments
           return skipped_result if passport_applicant?(applicant_pii) || already_proofed
 
           if !aamva_supports_state_id_jurisdiction?(applicant_pii)
@@ -67,8 +70,7 @@ module Proofing
 
           log_state_id_validation(
             analytics:, result: result.to_h, applicant_pii:, ipp_enrollment_in_progress:,
-            aamva_checked: result.exception.blank?, proofing_agent_analytics_arguments:,
-            bypass_exception:
+            aamva_checked: result.exception.blank?, bypass_exception:
           )
           if bypass_exception
             return skipped_result(exception: result.exception)
@@ -185,7 +187,7 @@ module Proofing
 
         def log_state_id_validation(analytics:, result:, applicant_pii:,
                                     ipp_enrollment_in_progress:, aamva_checked:,
-                                    proofing_agent_analytics_arguments: nil, bypass_exception: nil)
+                                    bypass_exception: nil)
           analytics&.idv_state_id_validation(
             **result,
             user_id: applicant_pii[:uuid],

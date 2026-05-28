@@ -19,11 +19,11 @@ module ProofingAgent
 
       response = send_http_post_request
       analytics.idv_proofing_agent_webhook(
-        success: true,
+        success: response.success?,
         proofing_agent: analytics_attributes.except(:proofing_components),
         body_payload: payload,
         issuer: service_provider_issuer,
-        response: response&.body,
+        response: response.to_h,
         proofing_components: analytics_attributes[:proofing_components],
       )
     rescue => exception
