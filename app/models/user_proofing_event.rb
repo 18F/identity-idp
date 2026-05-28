@@ -22,7 +22,7 @@ class UserProofingEvent < ApplicationRecord
 
     encrypted_doc_writer.write_encrypted_attempt_events(
       file_path: attempt_events_file_path,
-      encrypted_attempt_events: encrypted_events_json,
+      encrypted_attempt_events: formatted_events(password_encrypted_events: encrypted_events_json),
       name: profile.encrypted_attempts_file_reference,
     )
   end
@@ -30,15 +30,34 @@ class UserProofingEvent < ApplicationRecord
   def decrypt_events(password:)
     encryptor = Encryption::Encryptors::PiiEncryptor.new(password)
 
-    data = attempt_data_retriever.retrieve_user_proofing_events(
-      file_path: attempt_events_file_path,
-      file_name: profile.encrypted_attempts_file_reference,
+    data = JSON.parse(
+      attempt_data_retriever.retrieve_user_proofing_events(
+        file_path: attempt_events_file_path,
+        file_name: profile.encrypted_attempts_file_reference,
+      ),
     )
-
-    encryptor.decrypt(data, user_uuid: user.uuid)
+    encryptor.decrypt(data['password_encrypted_events'], user_uuid: user.uuid)
   end
 
   private
+
+  def formatted_events(password_encrypted_events:)
+    { password_encrypted_events: }.to_json
+  end
+
+  # We will need the data in storage to look like this:
+  # {
+  #   password_encrypted_events: {
+  #     encrypted_data: "encrypted_string",
+  #     cost: 'cost',
+  #     salt: 'salt'
+  #     },
+  #   personal_key_encrypted_events: {
+  #     encrypted_data: "encrypted_string",
+  #     cost: 'cost',
+  #     salt: 'salt'
+  #     }
+  # }
 
   def user
     @user ||= profile.user

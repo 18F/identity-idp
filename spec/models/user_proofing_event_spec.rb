@@ -79,7 +79,10 @@ RSpec.describe UserProofingEvent, type: :model do
     let(:user_proofing_event) { create(:user_proofing_event, profile:) }
     let(:encrypted_data) do
       encryptor = Encryption::Encryptors::PiiEncryptor.new(password)
-      encryptor.encrypt(attempt_events.to_json, user_uuid: profile.user.uuid)
+      { password_encrypted_events: encryptor.encrypt(
+        attempt_events.to_json,
+        user_uuid: profile.user.uuid,
+      ) }.to_json
     end
 
     before do
@@ -91,7 +94,7 @@ RSpec.describe UserProofingEvent, type: :model do
       expect(doc_retriever).to receive(:retrieve_user_proofing_events).with(
         file_path: "attempt_events/#{profile.user.uuid}/#{profile.id}",
         file_name: 'test-file-reference',
-      )
+      ).and_return(encrypted_data)
 
       expect(user_proofing_event.decrypt_events(password:)).to eq(attempt_events.to_json)
     end
