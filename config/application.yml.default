@@ -163,7 +163,7 @@ dos_passport_mrz_endpoint: ''
 dos_passport_mrz_maxretry: 2
 dos_passport_mrz_timeout_seconds: 60
 drop_off_report_config: '[{"emails":["ursula@example.com"],"issuers": ["urn:gov:gsa:openidconnect.profiles:sp:sso:agency_name:app_name"]}]'
-eligible_one_account_providers: '["urn:gov:gsa:openidconnect.profiles:sp:sso:agency_name:app_name"]'
+eligible_one_account_providers: '[]'
 email_from: no-reply@login.gov
 email_from_display_name: Login.gov
 email_registrations_per_ip_limit: 20
@@ -171,7 +171,7 @@ email_registrations_per_ip_period: 20
 email_registrations_per_ip_track_only_mode: false
 enable_add_mfa_redirect_for_personal_key: false
 enable_load_testing_mode: false
-enable_one_account_global_detection: true
+enable_one_account_global_detection: false
 enable_rate_limiting: true
 enable_test_routes: true
 encrypted_document_storage_s3_bucket: 'test-bucket'
@@ -675,7 +675,6 @@ test:
   logins_per_email_and_ip_limit: 2
   logins_per_ip_limit: 3
   max_mail_events: 2
-  new_device_alert_window_start_in_minutes: 2
   otp_delivery_blocklist_findtime: 1
   otp_delivery_blocklist_maxretry: 2
   otp_min_attempts_remaining_warning_count: 1
