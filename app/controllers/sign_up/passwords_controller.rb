@@ -90,7 +90,18 @@ module SignUp
     end
 
     def next_step_redirect
-      redirect_to authentication_methods_setup_url
+      if user_session[:platform_authenticator_available] == true &&
+         passkey_setup_upsell_prompt_eligible?
+        redirect_to sign_up_webauthn_platform_setup_url
+      else
+        redirect_to authentication_methods_setup_url
+      end
+    end
+
+    def passkey_setup_upsell_prompt_eligible?
+      FeatureManagement.account_creation_passkey_auto_prompt_enabled? &&
+        ab_test_bucket(:PASSKEY_UPSELL) ==
+          :passkey_setup_prompt_after_password_creation
     end
   end
 end

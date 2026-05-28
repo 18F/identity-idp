@@ -44,7 +44,12 @@ module Users
         user: current_user,
         password: params.require(:user).permit(:password)[:password],
         decrypted_pii: reactivate_account_session.decrypted_pii,
+        decrypted_attempt_events:,
       )
+    end
+
+    def decrypted_attempt_events
+      AttemptsApi::Cacher.new(current_user, user_session).fetch
     end
   end
 end

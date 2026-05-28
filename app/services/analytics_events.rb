@@ -6777,6 +6777,7 @@ module AnalyticsEvents
   # @param [:authentication, :account_creation, nil] webauthn_platform_recommended A/B test for
   # @param [Integer, nil] webauthn_setup_duration Duration of webauthn setup in seconds
   # @param [Boolean, nil] auto_passkey_prompted Whether the WebAuthn setup came from the auto prompt
+  # @param [Boolean, nil] passkey_signup_setup_recommended user is recommended to add passkey
   def multi_factor_auth_setup(
     success:,
     multi_factor_auth_method:,
@@ -6805,6 +6806,7 @@ module AnalyticsEvents
     webauthn_platform_recommended: nil,
     webauthn_setup_duration: nil,
     auto_passkey_prompted: nil,
+    passkey_signup_setup_recommended: nil,
     **extra
   )
     track_event(
@@ -6836,6 +6838,7 @@ module AnalyticsEvents
       webauthn_platform_recommended:,
       webauthn_setup_duration:,
       auto_passkey_prompted:,
+      passkey_signup_setup_recommended:,
       **extra,
     )
   end
@@ -8754,15 +8757,13 @@ module AnalyticsEvents
   end
 
   # User submits form to add passkey to account during account creation
-  # @param [Symbol] passkey_upsell_bucket The PASSKEY_UPSELL A/B test bucket the user is in
-  def webauthn_platform_signup_setup_ab_test_submitted(passkey_upsell_bucket:)
-    track_event(:webauthn_platform_signup_setup_ab_test_submitted, passkey_upsell_bucket:)
+  def webauthn_platform_signup_setup_ab_test_submitted
+    track_event(:webauthn_platform_signup_setup_ab_test_submitted)
   end
 
-  # User visits webauthn platform upsell page after sign up
-  # @param [Symbol] passkey_upsell_bucket The PASSKEY_UPSELL A/B test bucket the user is in
-  def webauthn_platform_signup_setup_ab_test_visited(passkey_upsell_bucket:)
-    track_event(:webauthn_platform_signup_setup_ab_test_visited, passkey_upsell_bucket:)
+  # User visits webauth platform upsell after sign up
+  def webauthn_platform_signup_setup_ab_test_visited
+    track_event(:webauthn_platform_signup_setup_ab_test_visited)
   end
 
   # @param [Boolean] platform_authenticator Whether authentication method was registered as platform
