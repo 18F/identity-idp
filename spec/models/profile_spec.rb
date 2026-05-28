@@ -1517,4 +1517,42 @@ RSpec.describe Profile do
       ).to eq(attempt_events.to_json)
     end
   end
+
+  describe '#reencrypt_user_proofing_events' do
+    let(:dir_path) do
+      Rails.root.join('tmp', 'encrypted_attempt_events', 'attempt_events', profile.user.uuid)
+    end
+
+    after do
+      FileUtils.rm_rf(dir_path) if Dir.exist?(dir_path)
+    end
+
+    let(:attempt_events) do
+      [
+        {
+          'jti' => 'some-jti',
+          'event_metadata' => { 'user_uuid' => user.uuid },
+          'event_type' => 'idv-ssn-submitted',
+        },
+      ]
+    end
+
+    it 'reencrypts user proofing events' do
+      profile.create_user_proofing_event(
+        password: 'password',
+        attempt_events:,
+      )
+      events_path = dir_path.join(profile.id.to_s, profile.encrypted_attempts_file_reference)
+
+      encrypted_events = File.read(events_path)
+
+      expect do
+        profile.reencrypt_user_proofing_events(password: 'new-password', attempt_events:)
+      end.to_not change { UserProofingEvent.last }
+
+      reencrypted_events = File.read(events_path)
+
+      expect(reencrypted_events).to_not eq(encrypted_events)
+    end
+  end
 end
