@@ -1,0 +1,282 @@
+{
+  // OpenCode Configuration for SBX + USAi Testing
+  //
+  // IMPORTANT: This file contains NO secrets.
+  // API key is injected via USAI_API_KEY environment variable.
+  //
+  // Usage (inside SBX):
+  //   sbx exec -it -e USAI_API_KEY="$USAI_API_KEY" -w /Users/williamjzujkowski/git/sbx-testing usai-test opencode
+  "$schema": "https://opencode.ai/config.json",
+  "enabled_providers": [
+    "usai"
+  ],
+  "provider": {
+    "usai": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "GSA USAI",
+      "options": {
+        "baseURL": "https://api.gsa.usai.gov/api/v1",
+        "apiKey": "{env:USAI_API_KEY}",
+        "timeout": 600000,
+        "chunkTimeout": 45000,
+        "headers": {
+          "User-Agent": "OpenCode-USAI/1.0"
+        }
+      },
+      "models": {
+        "claude_4_5_opus": {
+          "name": "Claude 4.5 Opus",
+          "limit": {
+            "context": 200000,
+            "output": 32768
+          }
+        },
+        "claude_4_5_sonnet": {
+          "name": "Claude 4.5 Sonnet",
+          "limit": {
+            "context": 200000,
+            "output": 32768
+          }
+        },
+        "claude_3_5_haiku": {
+          "name": "Claude 3.5 Haiku",
+          "limit": {
+            "context": 200000,
+            "output": 8192
+          }
+        },
+        "gpt-5.4-latest-guardrails-defaultv2": {
+          "name": "GPT-5.4 Latest — Guardrails Default v2",
+          "limit": {
+            "context": 400000,
+            "output": 32768
+          }
+        },
+        "gpt-5.2-latest-guardrails-defaultv2": {
+          "name": "GPT-5.2 Latest — Guardrails Default v2",
+          "limit": {
+            "context": 400000,
+            "output": 32768
+          }
+        },
+        "gemini-2.5-pro": {
+          "name": "Gemini 2.5 Pro",
+          "limit": {
+            "context": 1048576,
+            "output": 65536
+          }
+        },
+        "gemini-2.5-flash": {
+          "name": "Gemini 2.5 Flash",
+          "limit": {
+            "context": 1048576,
+            "output": 65536
+          }
+        },
+        "gemini-2.5-flash-lite": {
+          "name": "Gemini 2.5 Flash Lite",
+          "limit": {
+            "context": 1048576,
+            "output": 32768
+          }
+        },
+        "llama_4_maverick": {
+          "name": "Llama 4 Maverick",
+          "limit": {
+            "context": 128000,
+            "output": 16384
+          }
+        },
+        "cohere_english_v3": {
+          "name": "Cohere English v3",
+          "limit": {
+            "context": 128000,
+            "output": 8192
+          }
+        }
+        // Intentionally omitted:
+        // "text-embedding-005"
+        //
+        // That model appears to be an embedding model, not a chat/coding model.
+        // Add it only if OpenCode/USAI exposes a separate embedding-model config path.
+      }
+    }
+  },
+  // Main coding model.
+  "model": "usai/claude_4_5_sonnet",
+  // Lightweight model for small OpenCode tasks such as title generation.
+  "small_model": "usai/claude_3_5_haiku",
+  "agent": {
+    "compaction": {
+      // Use an OpenAI model through the USAi endpoint for context compaction.
+      // GPT-5.2 is the better default here: strong enough for summaries without
+      // spending the highest-tier model on routine state compression.
+      "model": "usai/gpt-5.2-latest-guardrails-defaultv2"
+    }
+  },
+  "compaction": {
+    "auto": true,
+    "prune": true,
+    "reserved": 10000
+  },
+  "instructions": [
+    "AGENTS.md",
+    "CLAUDE.md",
+    "CONTRIBUTING.md",
+    ".cursor/rules/*.md",
+    ".github/copilot-instructions.md"
+  ],
+  "permission": {
+    // Conservative default: anything not explicitly handled asks first.
+    "*": "ask",
+    // Read permissions.
+    //
+    // OpenCode already denies .env-style files by default, but keeping these
+    // rules explicit makes the policy clear and portable.
+    //
+    // Rule order matters: OpenCode uses "last matching rule wins", so examples
+    // must come after broader deny rules.
+    "read": {
+      "*": "allow",
+      ".env": "deny",
+      ".env.*": "deny",
+      "*.env": "deny",
+      "*.env.*": "deny",
+      "*.pem": "deny",
+      "*.key": "deny",
+      "*.p12": "deny",
+      "*.pfx": "deny",
+      "*id_rsa*": "deny",
+      "*id_ed25519*": "deny",
+      "*.tfvars": "deny",
+      "*.tfvars.json": "deny",
+      ".env.example": "allow",
+      "*.env.example": "allow",
+      "*.tfvars.example": "allow"
+    },
+    // File modification.
+    //
+    // OpenCode controls edit, write, and apply_patch through the edit permission.
+    // Keep this as ask so the agent can propose changes but not silently modify files.
+    "edit": "ask",
+    // Workspace discovery and code intelligence.
+    "glob": "allow",
+    "grep": "allow",
+    // LSP is experimental in OpenCode and only active when the related
+    // experimental environment flag is enabled. Safe enough to allow.
+    "lsp": "allow",
+    // Todo tracking is useful for multi-step coding tasks and does not mutate
+    // the project workspace.
+    "todowrite": "allow",
+    // Let the agent ask structured clarification questions during a task.
+    "question": "allow",
+    // Skills can inject additional instructions. Useful, but keep gated because
+    // skills are effectively prompt/runtime behavior extensions.
+    "skill": "ask",
+    // Subagents can do substantial work. Keep gated unless you later define
+    // specific trusted subagents with narrower permissions.
+    "task": "ask",
+    // Web tools.
+    //
+    // webfetch retrieves a specific URL. websearch performs discovery through
+    // OpenCode's search integration, so keep search gated by default.
+    "webfetch": "allow",
+    "websearch": "ask",
+    // Safety guards.
+    "external_directory": "ask",
+    "doom_loop": "ask",
+    // Shell command policy:
+    // - allow low-risk inspection
+    // - ask for mutating, installing, testing, or network shell commands
+    // - deny obvious foot-guns and privilege/remote-access paths
+    "bash": {
+      "*": "ask",
+      // Basic inspection.
+      "pwd": "allow",
+      "ls": "allow",
+      "ls *": "allow",
+      "tree": "allow",
+      "tree *": "allow",
+      // Search/read-only discovery.
+      "rg": "allow",
+      "rg *": "allow",
+      "grep": "allow",
+      "grep *": "allow",
+      // Keep find gated. It can run -exec, traverse unexpected paths, or delete files.
+      "find": "ask",
+      "find *": "ask",
+      // Git read-only operations.
+      "git status": "allow",
+      "git status *": "allow",
+      "git diff": "allow",
+      "git diff *": "allow",
+      "git log": "allow",
+      "git log *": "allow",
+      "git show": "allow",
+      "git show *": "allow",
+      "git branch": "allow",
+      "git branch *": "allow",
+      // Git state-changing or remote operations.
+      "git checkout *": "ask",
+      "git switch *": "ask",
+      "git add *": "ask",
+      "git commit *": "ask",
+      "git push *": "ask",
+      "git pull *": "ask",
+      "git fetch *": "ask",
+      "git merge *": "ask",
+      "git rebase *": "ask",
+      "git reset *": "ask",
+      "git clean": "deny",
+      "git clean *": "deny",
+      // Language/package/test commands.
+      "uv *": "ask",
+      "python *": "ask",
+      "pytest *": "ask",
+      "npm *": "ask",
+      "pnpm *": "ask",
+      "bun *": "ask",
+      "go test *": "ask",
+      "cargo test *": "ask",
+      // Shell-based network access should stay gated.
+      "curl *": "ask",
+      "wget *": "ask",
+      // Destructive / privilege / remote access.
+      "rm": "deny",
+      "rm *": "deny",
+      "rmdir": "deny",
+      "rmdir *": "deny",
+      "mv *": "ask",
+      "cp *": "ask",
+      "chmod *": "ask",
+      "chown": "deny",
+      "chown *": "deny",
+      "sudo": "deny",
+      "sudo *": "deny",
+      "su": "deny",
+      "su *": "deny",
+      "ssh": "deny",
+      "ssh *": "deny",
+      "scp *": "deny",
+      "sftp *": "deny",
+      "rsync *": "ask"
+    }
+  },
+  "watcher": {
+    "ignore": [
+      ".git/**",
+      "node_modules/**",
+      "dist/**",
+      "build/**",
+      ".next/**",
+      ".cache/**",
+      ".venv/**",
+      "venv/**",
+      "__pycache__/**",
+      ".pytest_cache/**",
+      ".mypy_cache/**",
+      ".ruff_cache/**",
+      "coverage/**"
+    ]
+  }
+}
