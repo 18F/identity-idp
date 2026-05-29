@@ -124,7 +124,7 @@ module Users
 
     def log_passkey_upsell_visit
       analytics.webauthn_platform_signup_setup_ab_test_visited(
-        passkey_upsell_bucket: passkey_upsell_bucket,
+        upsell_bucket: passkey_upsell_bucket,
       )
       user_session[:auto_passkey_prompted] = true if passkey_upsell_bucket.present?
       user_session[:webauthn_platform_signup_setup_recommended] = true
@@ -132,7 +132,7 @@ module Users
 
     def log_passkey_upsell_submitted
       analytics.webauthn_platform_signup_setup_ab_test_submitted(
-        passkey_upsell_bucket: passkey_upsell_bucket,
+        upsell_bucket: passkey_upsell_bucket,
       )
     end
 
