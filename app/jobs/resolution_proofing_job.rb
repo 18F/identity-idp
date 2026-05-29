@@ -29,7 +29,8 @@ class ResolutionProofingJob < ApplicationJob
     threatmetrix_session_id: nil,
     request_ip: nil,
     hybrid_mobile_threatmetrix_session_id: nil,
-    hybrid_mobile_request_ip: nil
+    hybrid_mobile_request_ip: nil,
+    is_proofing_agent: false
   )
     timer = JobHelpers::Timer.new
 
@@ -63,6 +64,7 @@ class ResolutionProofingJob < ApplicationJob
       current_sp:,
       proofing_vendor:,
       analytics:,
+      is_proofing_agent:,
     )
 
     ssn_is_unique = Idv::DuplicateSsnFinder.new(
@@ -101,9 +103,10 @@ class ResolutionProofingJob < ApplicationJob
     ipp_enrollment_in_progress:,
     current_sp:,
     proofing_vendor:,
-    analytics:
+    analytics:,
+    is_proofing_agent:
   )
-    result = progressive_proofer(user:, proofing_vendor:, analytics:).proof(
+    result = progressive_proofer(user:, proofing_vendor:, analytics:, is_proofing_agent:).proof(
       applicant_pii:,
       threatmetrix_session_id:,
       request_ip:,
@@ -161,9 +164,10 @@ class ResolutionProofingJob < ApplicationJob
     logger.info(hash.to_json)
   end
 
-  def progressive_proofer(user:, proofing_vendor:, analytics:)
+  def progressive_proofer(user:, proofing_vendor:, analytics:, is_proofing_agent:)
     @progressive_proofer ||= Proofing::Resolution::ProgressiveProofer.new(
       user_uuid: user.uuid, proofing_vendor:, analytics:, user_email: user_email_for_proofing(user),
+      is_proofing_agent:
     )
   end
 end
