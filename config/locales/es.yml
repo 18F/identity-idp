@@ -2218,6 +2218,7 @@ webauthn_platform_recommended.heading: Configuración del desbloqueo facial o t�
 webauthn_platform_recommended.skip: Omitir
 webauthn_platform_recommended.upsell: El desbloqueo facial o táctil está protegido contra el phishing y no almacenamos ninguna grabación de su rostro ni de su huella dactilar, con el fin de resguardar la privacidad de su información.
 webauthn_platform_setup.ft_unlock: Face or touch unlock
+webauthn_platform_setup.heading: Use Face or Touch unlock for a faster, more secure sign in
 webauthn_platform_setup.info_html: '%{ft_unlock_html} is %{phishing_resistant_html} and we don’t store any recordings of your face or fingerprint, so your information stays private.'
 webauthn_platform_setup.instructions: Use your face, fingerprint, or screen lock to verify it’s really you. No passwords, apps, or codes needed.
 webauthn_platform_setup.phishing_resistant: phishing-resistant

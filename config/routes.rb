@@ -350,8 +350,6 @@ Rails.application.routes.draw do
     get '/sign_up/enter_email' => 'sign_up/registrations#new', as: :sign_up_email
     post '/sign_up/enter_email' => 'sign_up/registrations#create', as: :sign_up_register
     get '/sign_up/enter_password' => 'sign_up/passwords#new'
-    get '/sign_up/webauthn_platform_setup' => 'sign_up/webauthn_platform_setup#new', as: :sign_up_webauthn_platform_setup
-    patch '/sign_up/webauthn_platform_setup' => 'sign_up/webauthn_platform_setup#confirm', as: :confirm_signup_webauthn_platform_setup
     get '/sign_up/select_email' => 'sign_up/select_email#show'
     post '/sign_up/select_email' => 'sign_up/select_email#create'
     get '/sign_up/verify_email' => 'sign_up/emails#show', as: :sign_up_verify_email

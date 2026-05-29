@@ -650,8 +650,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_05_29_170050) do
     t.string "encrypted_events", comment: "sensitive=true"
     t.bigint "profile_id", null: false, comment: "sensitive=false"
     t.jsonb "service_providers_sent", default: [], null: false, comment: "sensitive=false"
-    t.string "cost", null: false, comment: "sensitive=true"
-    t.string "salt", null: false, comment: "sensitive=true"
+    t.string "cost", comment: "sensitive=true"
+    t.string "salt", comment: "sensitive=true"
     t.datetime "created_at", null: false, comment: "sensitive=false"
     t.datetime "updated_at", null: false, comment: "sensitive=false"
     t.bigint "service_provider_ids_sent", default: [], null: false, comment: "sensitive=false", array: true

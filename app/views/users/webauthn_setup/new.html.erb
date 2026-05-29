@@ -22,6 +22,7 @@
       url: webauthn_setup_path(
         platform: @platform_authenticator.presence,
         auto_trigger: @auto_trigger.presence,
+        passkey_upsell: @passkey_upsell.presence,
       ),
       method: :patch,
       html: {

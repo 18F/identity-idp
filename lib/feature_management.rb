@@ -196,4 +196,9 @@ class FeatureManagement
   def self.account_creation_passkey_auto_prompt_enabled?
     IdentityConfig.store.feature_account_creation_passkey_auto_prompt
   end
+
+  # @returns [Boolean] Whether the phone verification dual vendor check is enabled
+  def self.dual_vendor_check_enabled?
+    IdentityConfig.store.idv_phone_verification_dual_vendor_check_enabled
+  end
 end

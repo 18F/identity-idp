@@ -8757,13 +8757,21 @@ module AnalyticsEvents
   end
 
   # User submits form to add passkey to account during account creation
-  def webauthn_platform_signup_setup_ab_test_submitted
-    track_event(:webauthn_platform_signup_setup_ab_test_submitted)
+  # @param [String] upsell_bucket Which bucket user landed on or submitted with
+  def webauthn_platform_signup_setup_ab_test_submitted(upsell_bucket:, **extra)
+    track_event(
+      :webauthn_platform_signup_setup_ab_test_submitted, upsell_bucket: upsell_bucket,
+                                                         **extra
+    )
   end
 
-  # User visits webauth platform upsell after sign up
-  def webauthn_platform_signup_setup_ab_test_visited
-    track_event(:webauthn_platform_signup_setup_ab_test_visited)
+  # User visits webauthn platform upsell after sign up
+  # @param [String] upsell_bucket Which bucket user landed on
+  def webauthn_platform_signup_setup_ab_test_visited(upsell_bucket:, **extra)
+    track_event(
+      :webauthn_platform_signup_setup_ab_test_visited, upsell_bucket: upsell_bucket,
+                                                       **extra
+    )
   end
 
   # @param [Boolean] platform_authenticator Whether authentication method was registered as platform
@@ -8842,12 +8850,14 @@ module AnalyticsEvents
   # @param [Integer] enabled_mfa_methods_count Number of enabled MFA methods on the account
   # @param [Boolean] in_account_creation_flow Whether user is going through creation flow
   # @param [Boolean, nil] auto_passkey_prompted Whether the user was auto-redirected to setup
+  # @param [Boolean, nil] webauthn_platform_signup_recommended passkey setup after password creation
   # Tracks when WebAuthn setup is visited
   def webauthn_setup_visit(
     platform_authenticator:,
     enabled_mfa_methods_count:,
     in_account_creation_flow:,
     auto_passkey_prompted: nil,
+    webauthn_platform_signup_recommended: nil,
     **extra
   )
     track_event(
@@ -8856,6 +8866,7 @@ module AnalyticsEvents
       enabled_mfa_methods_count:,
       in_account_creation_flow:,
       auto_passkey_prompted:,
+      webauthn_platform_signup_recommended:,
       **extra,
     )
   end
