@@ -16,51 +16,73 @@ class UserProofingEvent < ApplicationRecord
     service_provider_ids_sent.include?(id)
   end
 
-  def write_events(password:, attempt_events:)
-    encryptor = Encryption::Encryptors::PiiEncryptor.new(password)
-    encrypted_events_json = encryptor.encrypt(attempt_events.to_json, user_uuid: user.uuid)
+  def write_events(attempt_events:, password:, personal_key:)
+    encrypted_attempt_events = {
+      password_encrypted_events: encrypted_json(password, attempt_events),
+      personal_key_encrypted_events: encrypted_json(personal_key, attempt_events),
+    }.to_json
 
-    encrypted_doc_writer.write_encrypted_attempt_events(
-      file_path: attempt_events_file_path,
-      encrypted_attempt_events: formatted_events(password_encrypted_events: encrypted_events_json),
-      name: profile.encrypted_attempts_file_reference,
-    )
+    write_attempts_data(encrypted_attempt_events:)
   end
 
   def decrypt_events(password:)
     encryptor = Encryption::Encryptors::PiiEncryptor.new(password)
 
-    data = JSON.parse(
+    encryptor.decrypt(retrieved_attempts_data['password_encrypted_events'], user_uuid: user.uuid)
+  end
+
+  def reencrypt_recovery_attempt_data(attempt_events:, personal_key:)
+    personal_key_encrypted_events = encrypted_json(personal_key, attempt_events)
+
+    # merge the new personal key encrypted data in
+    encrypted_attempt_events = retrieved_attempts_data.merge(
+      'personal_key_encrypted_events' => personal_key_encrypted_events,
+    )
+    # rewrite the data
+    write_attempts_data(encrypted_attempt_events:)
+  end
+
+  private
+
+  def encrypted_json(key, data)
+    encryptor = Encryption::Encryptors::PiiEncryptor.new(key)
+    encryptor.encrypt(data.to_json, user_uuid: user.uuid)
+  end
+
+  def retrieved_attempts_data
+    JSON.parse(
       attempt_data_retriever.retrieve_user_proofing_events(
         file_path: attempt_events_file_path,
         file_name: profile.encrypted_attempts_file_reference,
       ),
     )
-    encryptor.decrypt(data['password_encrypted_events'], user_uuid: user.uuid)
   end
 
-  private
-
-  def formatted_events(password_encrypted_events:)
-    { password_encrypted_events: }.to_json
-  end
-
-  # We will need the data in storage to look like this:
+  # Stored data looks like this:
   # {
-  #   password_encrypted_events: {
+  #   'password_encrypted_events' => {
   #     encrypted_data: "encrypted_string",
   #     cost: 'cost',
   #     salt: 'salt'
-  #     },
-  #   personal_key_encrypted_events: {
+  #     }.to_json,
+  #   'personal_key_encrypted_events' => {
   #     encrypted_data: "encrypted_string",
   #     cost: 'cost',
   #     salt: 'salt'
-  #     }
+  #     }.to_json
   # }
 
   def user
     @user ||= profile.user
+  end
+
+  def write_attempts_data(encrypted_attempt_events:)
+    encrypted_doc_writer.write_encrypted_attempt_events(
+      file_path: attempt_events_file_path,
+      encrypted_attempt_events:,
+      # on first write name will be `nil`. the DocWriter will take care of that
+      name: profile.encrypted_attempts_file_reference,
+    )
   end
 
   def encrypted_doc_writer

@@ -436,11 +436,9 @@ class Profile < ApplicationRecord
     FACIAL_MATCH_IDV_LEVELS.include?(idv_level)
   end
 
-  def create_user_proofing_event(password:, attempt_events:, sent_to_sp: false)
-    user_proofing_event = build_user_proofing_event(
-      service_provider_ids_sent: service_provider_ids_sent(sent_to_sp:),
-    )
-    result = user_proofing_event.write_events(password:, attempt_events:)
+  def create_user_proofing_event(password:, personal_key:, attempt_events:, sent_to_sp: false)
+    build_user_proofing_event(service_provider_ids_sent: service_provider_ids_sent(sent_to_sp:))
+    result = user_proofing_event.write_events(password:, personal_key:, attempt_events:)
 
     update!(encrypted_attempts_file_reference: result.name)
 
@@ -451,8 +449,12 @@ class Profile < ApplicationRecord
     user_proofing_event.decrypt_events(password:)
   end
 
-  def reencrypt_user_proofing_events(password:, attempt_events:)
-    user_proofing_event.write_events(password:, attempt_events:)
+  def reencrypt_user_proofing_events(password:, personal_key:, attempt_events:)
+    user_proofing_event.write_events(password:, personal_key:, attempt_events:)
+  end
+
+  def reencrypt_recovery_attempt_data(attempt_events:, personal_key:)
+    user_proofing_event.rewrite_recovery_attempt_data(personal_key:, attempt_events:)
   end
 
   private

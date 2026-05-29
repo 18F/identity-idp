@@ -12,7 +12,16 @@ module PersonalKeyConcern
   def create_new_code
     if active_profile.present?
       Pii::ReEncryptor.new(user: current_user, user_session: user_session).perform
-      active_profile.personal_key
+
+      # If there is attempts data, reencrypt it here
+      attempt_events = AttemptsApi::Cacher.new(current_user, user_session).fetch
+      if attempts_data.present?
+        profile.reencrypt_recovery_attempts_data(
+          attempt_events:,
+          personal_key: active_profile.personal_key,
+        )
+        active_profile.personal_key
+      end
     else
       PersonalKeyGenerator.new(current_user).generate!
     end

@@ -20,7 +20,11 @@ class VerifyPasswordForm
 
     @personal_key = reencrypt_pii if success
     if success && decrypted_attempt_events.present?
-      profile.reencrypt_user_proofing_events(password:, attempt_events: decrypted_attempt_events)
+      profile.reencrypt_user_proofing_events(
+        password:,
+        attempt_events: decrypted_attempt_events,
+        personal_key:,
+      )
     end
 
     FormResponse.new(success:, errors:)

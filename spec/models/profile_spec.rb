@@ -1500,6 +1500,7 @@ RSpec.describe Profile do
         profile.create_user_proofing_event(
           password: 'password',
           attempt_events: [{ 'event' => 'test' }],
+          personal_key: 'personal_key',
         )
       end.to change { UserProofingEvent.count }.by(1)
 
@@ -1515,6 +1516,7 @@ RSpec.describe Profile do
 
         profile.create_user_proofing_event(
           password: 'password',
+          personal_key: 'personal-key',
           attempt_events: [{ 'event' => 'test' }],
           sent_to_sp: true,
         )
@@ -1557,6 +1559,7 @@ RSpec.describe Profile do
       profile.create_user_proofing_event(
         password: 'password',
         attempt_events:,
+        personal_key: 'personal-key',
       )
 
       expect(
@@ -1569,6 +1572,7 @@ RSpec.describe Profile do
     let(:dir_path) do
       Rails.root.join('tmp', 'encrypted_attempt_events', 'attempt_events', profile.user.uuid)
     end
+    let(:personal_key) { 'personal-key ' }
 
     after do
       FileUtils.rm_rf(dir_path) if Dir.exist?(dir_path)
@@ -1588,13 +1592,18 @@ RSpec.describe Profile do
       profile.create_user_proofing_event(
         password: 'password',
         attempt_events:,
+        personal_key:,
       )
       events_path = dir_path.join(profile.id.to_s, profile.encrypted_attempts_file_reference)
 
       encrypted_events = File.read(events_path)
 
       expect do
-        profile.reencrypt_user_proofing_events(password: 'new-password', attempt_events:)
+        profile.reencrypt_user_proofing_events(
+          password: 'new-password',
+          attempt_events:,
+          personal_key:,
+        )
       end.to_not change { UserProofingEvent.last }
 
       reencrypted_events = File.read(events_path)
