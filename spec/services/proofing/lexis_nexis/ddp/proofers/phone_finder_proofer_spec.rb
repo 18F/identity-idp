@@ -92,6 +92,7 @@ RSpec.describe Proofing::LexisNexis::Ddp::Proofers::PhoneFinderProofer do
           expect(result.errors).to be_empty
           expect(result.transaction_id).to eq('super-cool-test-session-id')
           expect(result.vendor_name).to eq('lexisnexis:phone_finder_ddp')
+          expect(result.dual_vendor_check_eligible).to be(false)
         end
       end
 
@@ -113,20 +114,152 @@ RSpec.describe Proofing::LexisNexis::Ddp::Proofers::PhoneFinderProofer do
           expect(result.success?).to eq(false)
           expect(result.errors).to be_empty
           expect(result.exception).to eq(error)
+          expect(result.dual_vendor_check_eligible).to be(false)
         end
       end
 
-      context 'when the response  is a failure' do
+      context 'when the response is a failure' do
         let(:response_body) { LexisNexisFixtures.ddp_phone_finder_fail_response_json }
 
-        it 'is a failure result' do
-          result = proofer.proof(proofing_applicant)
-          result_json_hash = result.errors[:'PhoneFinder Checks'].first
+        context 'when the failure is "could not be verified to name" without additional errors' do
+          it 'is a failure result' do
+            result = proofer.proof(proofing_applicant)
+            result_json_hash = result.errors[:'PhoneFinder Checks'].first
 
-          expect(result.success?).to eq(false)
-          expect(result_json_hash['ProductStatus']).to eq('fail')
-          expect(result.transaction_id).to eq('super-cool-test-session-id')
-          expect(result.vendor_name).to eq('lexisnexis:phone_finder_ddp')
+            expect(result.success?).to eq(false)
+            expect(result_json_hash['ProductStatus']).to eq('fail')
+            expect(result.transaction_id).to eq('super-cool-test-session-id')
+            expect(result.vendor_name).to eq('lexisnexis:phone_finder_ddp')
+            expect(result.dual_vendor_check_eligible).to be(true)
+          end
+        end
+
+        context 'when the failure is "could not be verified to name" with additional errors' do
+          let(:response_body) do
+            {
+              'integration_hub_results' => {
+                'test_org_id:test-policy' => {
+                  'Phone Finder' => {
+                    'tps_vendor_raw_response' => {
+                      'Products' => [
+                        {
+                          'ExecutedStepName' => 'PhoneFinder',
+                          'ProductStatus' => 'fail',
+                          'ProductType' => 'PhoneFinder',
+                          'ProductReason' => {
+                            'Code' => 'phone_finder_fail',
+                            'Description' => 'Phone Finder Fail',
+                          },
+                          'Items' => [
+                            {
+                              'ItemName' => 'VOIPPhone',
+                              'ItemReason' => {
+                                'Code' => 'VOIPPHONE.HIGH',
+                                'Description' => 'VOIP phone detected',
+                              },
+                              'ItemStatus' => 'fail',
+                            },
+                          ],
+                        }, {
+                          'ExecutedStepName' => 'PhoneFinder Checks',
+                          'ProductType' => 'PhoneFinder_Decision',
+                          'ProductStatus' => 'fail',
+                          'ProductReason' => {
+                            'Code' => 'phone_finder_fail',
+                            'Description' =>
+                              'Failed - Input phone number could not be verified to name',
+                          },
+                        }
+                      ],
+                      'Status' => {
+                        'ConversationId' => 'super-cool-test-session-id',
+                        'TransactionReasonCode' => {
+                          'Code' => 'phone_finder_fail',
+                          'Description' =>
+                            'Failed - Input phone number could not be verified to name',
+                        },
+                        'TransactionStatus' => 'failed',
+                      },
+                    },
+                  },
+                },
+              },
+            }.to_json
+          end
+
+          it 'is a failure result' do
+            result = proofer.proof(proofing_applicant)
+            result_json_hash = result.errors[:'PhoneFinder Checks'].first
+
+            expect(result.success?).to eq(false)
+            expect(result_json_hash['ProductStatus']).to eq('fail')
+            expect(result.transaction_id).to eq('super-cool-test-session-id')
+            expect(result.vendor_name).to eq('lexisnexis:phone_finder_ddp')
+            expect(result.dual_vendor_check_eligible).to be(false)
+          end
+        end
+
+        context 'when the response fails with "Risk Indicators match determined"' do
+          let(:response_body) do
+            {
+              'integration_hub_results' => {
+                'test_org_id:test-policy' => {
+                  'Phone Finder' => {
+                    'tps_vendor_raw_response' => {
+                      'Products' => [
+                        {
+                          'ExecutedStepName' => 'PhoneFinder',
+                          'ProductStatus' => 'fail',
+                          'ProductType' => 'PhoneFinder',
+                          'ProductReason' => {
+                            'Code' => 'phone_finder_fail',
+                            'Description' => 'Phone Finder Fail',
+                          },
+                          'Items' => [
+                            {
+                              'ItemName' => 'VOIPPhone',
+                              'ItemReason' => {
+                                'Code' => 'VOIPPHONE.HIGH',
+                                'Description' => 'VOIP phone detected',
+                              },
+                              'ItemStatus' => 'fail',
+                            },
+                          ],
+                        }, {
+                          'ExecutedStepName' => 'PhoneFinder Checks',
+                          'ProductType' => 'PhoneFinder_Decision',
+                          'ProductStatus' => 'fail',
+                          'ProductReason' => {
+                            'Code' => 'phone_finder_fail',
+                            'Description' => 'Fail - Risk Indicators match determined',
+                          },
+                        }
+                      ],
+                      'Status' => {
+                        'ConversationId' => 'super-cool-test-session-id',
+                        'TransactionReasonCode' => {
+                          'Code' => 'phone_finder_fail',
+                          'Description' => 'Fail - Risk Indicators match determined',
+                        },
+                        'TransactionStatus' => 'failed',
+                      },
+                    },
+                  },
+                },
+              },
+            }.to_json
+          end
+
+          it 'is a failure result' do
+            result = proofer.proof(proofing_applicant)
+            result_json_hash = result.errors[:'PhoneFinder Checks'].first
+
+            expect(result.success?).to eq(false)
+            expect(result_json_hash['ProductStatus']).to eq('fail')
+            expect(result.transaction_id).to eq('super-cool-test-session-id')
+            expect(result.vendor_name).to eq('lexisnexis:phone_finder_ddp')
+            expect(result.dual_vendor_check_eligible).to be(false)
+          end
         end
       end
 
@@ -160,6 +293,7 @@ RSpec.describe Proofing::LexisNexis::Ddp::Proofers::PhoneFinderProofer do
             expect(result.exception).to be_a(Proofing::TimeoutError)
             expect(result.exception.message)
               .to eq('LexisNexis PhoneFinder DDP timed out')
+            expect(result.dual_vendor_check_eligible).to be(false)
           end
         end
 
@@ -179,6 +313,7 @@ RSpec.describe Proofing::LexisNexis::Ddp::Proofers::PhoneFinderProofer do
             expect(result.exception).to be_a(RuntimeError)
             expect(result.exception.message)
               .to eq('LexisNexis PhoneFinder DDP returned no tps_vendor_raw_response')
+            expect(result.dual_vendor_check_eligible).to be(false)
           end
         end
 
@@ -198,6 +333,7 @@ RSpec.describe Proofing::LexisNexis::Ddp::Proofers::PhoneFinderProofer do
             expect(result.exception).to be_a(RuntimeError)
             expect(result.exception.message)
               .to eq('LexisNexis PhoneFinder DDP returned no tps_vendor_raw_response')
+            expect(result.dual_vendor_check_eligible).to be(false)
           end
         end
       end

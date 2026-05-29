@@ -32,6 +32,7 @@ module Proofing
               reference:,
               transaction_id: reference,
               result: response.to_h,
+              dual_vendor_check_eligible: response.dual_vendor_check_eligible?,
             )
           end
 

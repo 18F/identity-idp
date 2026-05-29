@@ -255,33 +255,62 @@ RSpec.describe Proofing::AddressProofer do
         end
 
         context 'when the lexis_nexis_ddp proofing request fails' do
-          let(:ddp_phone_finder_result) do
-            Proofing::AddressResult.new(
-              success: false,
-              errors: [{ message: 'Unsuccessful result' }],
-              exception: nil,
-              vendor_name: 'lexis_nexis:phone_finder_ddp',
-              transaction_id: Faker::Internet.uuid,
-            )
+          context 'when the response is dual vendor eligible' do
+            let(:ddp_phone_finder_result) do
+              Proofing::AddressResult.new(
+                success: false,
+                errors: [{ message: 'Unsuccessful result' }],
+                exception: nil,
+                vendor_name: 'lexis_nexis:phone_finder_ddp',
+                transaction_id: Faker::Internet.uuid,
+                dual_vendor_check_eligible: true,
+              )
+            end
+
+            before do
+              expect(Db::SpCost::AddSpCost).to receive(:call).with(
+                service_provider,
+                :lexis_nexis_address,
+                transaction_id: ddp_phone_finder_result.transaction_id,
+              )
+              expect(Db::SpCost::AddSpCost).to receive(:call).with(
+                service_provider,
+                :socure_address,
+                transaction_id: socure_phone_risk_result.transaction_id,
+              )
+            end
+
+            it 'returns a results hash with both vendor checks' do
+              expect(subject.proof(applicant_pii:, current_sp: service_provider)).to eq(
+                socure_phone_risk_result.to_h.merge(alternate_result: ddp_phone_finder_result.to_h),
+              )
+            end
           end
 
-          before do
-            expect(Db::SpCost::AddSpCost).to receive(:call).with(
-              service_provider,
-              :lexis_nexis_address,
-              transaction_id: ddp_phone_finder_result.transaction_id,
-            )
-            expect(Db::SpCost::AddSpCost).to receive(:call).with(
-              service_provider,
-              :socure_address,
-              transaction_id: socure_phone_risk_result.transaction_id,
-            )
-          end
+          context 'when the response is not dual vendor eligible' do
+            let(:ddp_phone_finder_result) do
+              Proofing::AddressResult.new(
+                success: false,
+                errors: [{ message: 'Unsuccessful result' }],
+                exception: nil,
+                vendor_name: 'lexis_nexis:phone_finder_ddp',
+                transaction_id: Faker::Internet.uuid,
+              )
+            end
 
-          it 'returns a results hash with both vendor checks' do
-            expect(subject.proof(applicant_pii:, current_sp: service_provider)).to eq(
-              socure_phone_risk_result.to_h.merge(alternate_result: ddp_phone_finder_result.to_h),
-            )
+            before do
+              expect(Db::SpCost::AddSpCost).to receive(:call).with(
+                service_provider,
+                :lexis_nexis_address,
+                transaction_id: ddp_phone_finder_result.transaction_id,
+              )
+            end
+
+            it 'returns a lexis_nexis_ddp results hash' do
+              expect(subject.proof(applicant_pii:, current_sp: service_provider)).to eq(
+                ddp_phone_finder_result.to_h,
+              )
+            end
           end
         end
       end
@@ -308,33 +337,62 @@ RSpec.describe Proofing::AddressProofer do
         end
 
         context 'when the socure proofing request fails' do
-          let(:socure_phone_risk_result) do
-            Proofing::AddressResult.new(
-              success: false,
-              errors: [{ message: 'Unsuccessful result' }],
-              exception: nil,
-              vendor_name: 'socure_phonerisk',
-              transaction_id: Faker::Internet.uuid,
-            )
+          context 'when the response is dual vendor eligible' do
+            let(:socure_phone_risk_result) do
+              Proofing::AddressResult.new(
+                success: false,
+                errors: [{ message: 'Unsuccessful result' }],
+                exception: nil,
+                vendor_name: 'socure_phonerisk',
+                transaction_id: Faker::Internet.uuid,
+                dual_vendor_check_eligible: true,
+              )
+            end
+
+            before do
+              expect(Db::SpCost::AddSpCost).to receive(:call).with(
+                service_provider,
+                :socure_address,
+                transaction_id: socure_phone_risk_result.transaction_id,
+              )
+              expect(Db::SpCost::AddSpCost).to receive(:call).with(
+                service_provider,
+                :lexis_nexis_address,
+                transaction_id: ddp_phone_finder_result.transaction_id,
+              )
+            end
+
+            it 'returns a results hash with both vendor checks' do
+              expect(subject.proof(applicant_pii:, current_sp: service_provider)).to eq(
+                ddp_phone_finder_result.to_h.merge(alternate_result: socure_phone_risk_result.to_h),
+              )
+            end
           end
 
-          before do
-            expect(Db::SpCost::AddSpCost).to receive(:call).with(
-              service_provider,
-              :socure_address,
-              transaction_id: socure_phone_risk_result.transaction_id,
-            )
-            expect(Db::SpCost::AddSpCost).to receive(:call).with(
-              service_provider,
-              :lexis_nexis_address,
-              transaction_id: ddp_phone_finder_result.transaction_id,
-            )
-          end
+          context 'when the response is not dual vendor eligible' do
+            let(:socure_phone_risk_result) do
+              Proofing::AddressResult.new(
+                success: false,
+                errors: [{ message: 'Unsuccessful result' }],
+                exception: nil,
+                vendor_name: 'socure_phonerisk',
+                transaction_id: Faker::Internet.uuid,
+              )
+            end
 
-          it 'returns a results hash with both vendor checks' do
-            expect(subject.proof(applicant_pii:, current_sp: service_provider)).to eq(
-              ddp_phone_finder_result.to_h.merge(alternate_result: socure_phone_risk_result.to_h),
-            )
+            before do
+              expect(Db::SpCost::AddSpCost).to receive(:call).with(
+                service_provider,
+                :socure_address,
+                transaction_id: socure_phone_risk_result.transaction_id,
+              )
+            end
+
+            it 'returns a socure_phonerisk results hash' do
+              expect(subject.proof(applicant_pii:, current_sp: service_provider)).to eq(
+                socure_phone_risk_result.to_h,
+              )
+            end
           end
         end
       end

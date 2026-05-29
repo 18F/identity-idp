@@ -17,6 +17,10 @@ module Proofing
           http_response.body.dig('customerProfile', 'customerUserId')
         end
 
+        def dual_vendor_check_eligible?
+          false
+        end
+
         private
 
         attr_reader :http_response

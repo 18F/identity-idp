@@ -25,6 +25,11 @@ module Proofing
             name_correlation_successful? && phonerisk_successful? && !has_autofail_reason_codes?
           end
 
+          def dual_vendor_check_eligible?
+            has_name_verification_error_reason_codes? &&
+              !has_additional_verification_error_reason_codes?
+          end
+
           private
 
           attr_reader :http_response
@@ -80,6 +85,25 @@ module Proofing
           def has_autofail_reason_codes?
             (phonerisk_reason_codes & auto_failure_reason_codes).any? ||
               (name_phone_correlation_reason_codes & auto_failure_reason_codes).any?
+          end
+
+          def has_name_verification_error_reason_codes?
+            (phonerisk_reason_codes & name_verification_error_reason_codes).any? ||
+              (name_phone_correlation_reason_codes & name_verification_error_reason_codes).any?
+          end
+
+          def has_additional_verification_error_reason_codes?
+            (error_reason_codes - name_verification_error_reason_codes).any?
+          end
+
+          def error_reason_codes
+            (phonerisk_reason_codes | name_phone_correlation_reason_codes).select do |code|
+              code.match?(/^R\d+/)
+            end
+          end
+
+          def name_verification_error_reason_codes
+            IdentityConfig.store.idv_phone_verification_dual_vendor_check_socure_reason_codes
           end
 
           def auto_failure_reason_codes
