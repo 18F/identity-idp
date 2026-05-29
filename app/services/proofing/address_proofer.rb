@@ -38,7 +38,7 @@ module Proofing
             )
           end
         results << result
-        break if stop_processing_vendors?(result)
+        break if stop_processing_vendors?(result, address_vendor)
       end
 
       if results.many?
@@ -122,10 +122,27 @@ module Proofing
       DUAL_VENDOR_CHECK_ADDRESS_VENDORS[primary_vendor]
     end
 
-    def stop_processing_vendors?(result)
+    def stop_processing_vendors?(result, vendor)
+      return true if result.success?
+
       FeatureManagement.dual_vendor_check_enabled? ?
-        result.success || !result.dual_vendor_check_eligible :
-        result.success
+        !(result.dual_vendor_check_eligible && dual_vendor_check_allowed?(vendor)) :
+        false
+    end
+
+    def dual_vendor_check_allowed?(vendor)
+      (rand * 100) <= vendor_percentage(vendor)
+    end
+
+    def vendor_percentage(vendor)
+      case vendor
+      when :lexis_nexis_ddp
+        IdentityConfig.store.idv_phone_verification_dual_vendor_check_ddp_lexis_nexis_percent
+      when :socure
+        IdentityConfig.store.idv_phone_verification_dual_vendor_check_socure_percent
+      else
+        0
+      end
     end
   end
 end
