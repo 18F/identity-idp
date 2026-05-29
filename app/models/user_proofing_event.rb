@@ -2,7 +2,7 @@
 
 class UserProofingEvent < ApplicationRecord
   belongs_to :profile
-  self.ignored_columns = %w[encrypted_events service_providers_sent]
+  self.ignored_columns = %w[encrypted_events service_providers_sent cost salt]
 
   # @param [Integer] id ID of service provider to add to "sent" list
   def add_sp_sent(id)

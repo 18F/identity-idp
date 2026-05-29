@@ -425,11 +425,10 @@ class Profile < ApplicationRecord
     FACIAL_MATCH_IDV_LEVELS.include?(idv_level)
   end
 
-  def create_user_proofing_event(password:, attempt_events:)
+  def create_user_proofing_event(password:, attempt_events:, sent_to_sp: false)
     # TODO: refactor to use reencrypt_user_proofing_events
     encryptor = Encryption::Encryptors::PiiEncryptor.new(password)
     encrypted_events_json = encryptor.encrypt(attempt_events.to_json, user_uuid: user.uuid)
-    encrypted_events = JSON.parse(encrypted_events_json)
 
     result = encrypted_doc_writer.write_encrypted_attempt_events(
       file_path: attempt_events_file_path,
@@ -439,10 +438,7 @@ class Profile < ApplicationRecord
     update!(encrypted_attempts_file_reference: result.name)
 
     new_user_proofing_event = build_user_proofing_event(
-      # TODO refactor to remove cost and salt from the event
-      # They are saved in s3 with the bundle
-      cost: encrypted_events['cost'],
-      salt: encrypted_events['salt'],
+      service_provider_ids_sent: service_provider_ids_sent(sent_to_sp:),
     )
 
     new_user_proofing_event.save
@@ -525,5 +521,13 @@ class Profile < ApplicationRecord
       idv_level: idv_level,
       issuer: initiating_service_provider_issuer,
     )
+  end
+
+  def service_provider_ids_sent(sent_to_sp:)
+    return [] unless sent_to_sp
+
+    # if sent_to_sp is true, there SHOULD be an initiating_service_provider
+    # but would rather err on the side of a guard
+    [initiating_service_provider&.id].compact
   end
 end
