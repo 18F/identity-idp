@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_05_07_152408) do
+ActiveRecord::Schema[8.0].define(version: 2026_05_29_170050) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_catalog.plpgsql"
@@ -244,7 +244,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_05_07_152408) do
     t.datetime "confirmed_at", precision: nil, comment: "sensitive=false"
     t.datetime "confirmation_sent_at", precision: nil, comment: "sensitive=false"
     t.string "email_fingerprint", default: "", null: false, comment: "sensitive=false"
-    t.string "encrypted_email", default: "", null: false, comment: "sensitive=true"
+    t.string "encrypted_email", default: "", null: false, comment: "sensitive=false"
     t.datetime "created_at", precision: nil, null: false, comment: "sensitive=false"
     t.datetime "updated_at", precision: nil, null: false, comment: "sensitive=false"
     t.datetime "last_sign_in_at", precision: nil, comment: "sensitive=false"
