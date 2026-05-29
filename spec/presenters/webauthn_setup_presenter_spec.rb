@@ -135,5 +135,75 @@ RSpec.describe WebauthnSetupPresenter do
 
       it { is_expected.to eq(t('forms.webauthn_platform_setup.continue')) }
     end
+
+    context 'with passkey_upsell' do
+      let(:presenter) do
+        described_class.new(
+          current_user: user,
+          user_fully_authenticated: user_fully_authenticated,
+          user_opted_remember_device_cookie: user_opted_remember_device_cookie,
+          remember_device_default: remember_device_default,
+          platform_authenticator: true,
+          url_options: {},
+          passkey_upsell: true,
+        )
+      end
+
+      describe '#page_title' do
+        subject { presenter.page_title }
+
+        it { is_expected.to eq(t('webauthn_platform_setup.heading')) }
+      end
+
+      describe '#heading' do
+        subject { presenter.heading }
+
+        it { is_expected.to eq(t('webauthn_platform_setup.upsell')) }
+      end
+
+      describe '#button_text' do
+        subject { presenter.button_text }
+
+        it { is_expected.to eq(t('webauthn_platform_recommended.cta')) }
+      end
+
+      describe '#passkey_upsell?' do
+        subject { presenter.passkey_upsell? }
+
+        it { is_expected.to eq(true) }
+      end
+
+      describe '#intro_html' do
+        subject { presenter.intro_html }
+
+        it 'contains instructions paragraph and info paragraph' do
+          expect(subject).to include(t('webauthn_platform_setup.instructions'))
+          expect(subject).to include(t('webauthn_platform_setup.ft_unlock'))
+          expect(subject).to include(t('webauthn_platform_setup.phishing_resistant'))
+        end
+      end
+    end
+
+    context 'with passkey_upsell but platform_authenticator false' do
+      let(:presenter) do
+        described_class.new(
+          current_user: user,
+          user_fully_authenticated: user_fully_authenticated,
+          user_opted_remember_device_cookie: user_opted_remember_device_cookie,
+          remember_device_default: remember_device_default,
+          platform_authenticator: false,
+          url_options: {},
+          passkey_upsell: true,
+        )
+      end
+
+      describe '#passkey_upsell?' do
+        subject { presenter.passkey_upsell? }
+
+        it 'is false when platform_authenticator is false' do
+          is_expected.to eq(false)
+        end
+      end
+    end
   end
 end

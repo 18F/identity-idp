@@ -186,7 +186,9 @@ RSpec.describe Users::TwoFactorAuthenticationSetupController do
               .to(true)
             expect(controller.user_session[:auto_passkey_prompt_pending]).to eq(true)
 
-            expect(response).to redirect_to(webauthn_setup_url(platform: true, auto_trigger: true))
+            expect(response).to redirect_to(
+              webauthn_setup_url(platform: true, passkey_upsell: true, auto_trigger: true),
+            )
           end
 
           it 'does not auto prompt after it has already been triggered once' do
@@ -196,6 +198,25 @@ RSpec.describe Users::TwoFactorAuthenticationSetupController do
 
             expect(response).to render_template(:index)
             expect(controller.user_session[:auto_passkey_prompted]).to eq(true)
+          end
+        end
+
+        context 'when user is in the passkey setup prompt after password creation bucket' do
+          before do
+            allow(controller).to receive(:ab_test_bucket)
+              .with(:PASSKEY_UPSELL)
+              .and_return(:passkey_setup_prompt_after_password_creation)
+          end
+
+          it 'redirects to platform webauthn setup' do
+            expect { response }
+              .to change { controller.user_session[:auto_passkey_prompted] }
+              .from(nil)
+              .to(true)
+
+            expect(response).to redirect_to(
+              webauthn_setup_url(platform: true, passkey_upsell: true),
+            )
           end
         end
 
