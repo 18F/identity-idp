@@ -153,6 +153,8 @@ module Idv
         )
         attempts_api_tracker.idv_enrollment_complete(reproof:)
         fraud_ops_tracker.idv_enrollment_complete(reproof:)
+
+        remove_agent_proofed_profile_pending_status_if_needed
       end
     end
 
@@ -192,6 +194,11 @@ module Idv
       else
         idv_personal_key_url
       end
+    end
+
+    def remove_agent_proofed_profile_pending_status_if_needed
+      # move this to user.rb probably
+      current_user.pending_agent_proofed_session.update!(pending_agent_proofed_user_at: nil)
     end
 
     def handle_request_enroll_exception(err)
