@@ -262,7 +262,7 @@ RSpec.describe AuthnContextResolver do
           ].join(' ')
         end
 
-        it 'asserts the AAL2 value, even though the ddefault aal value was passed in' do
+        it 'asserts the AAL2 value, even though the default aal value was passed in' do
           expect(subject.asserted_aal_acr).to eq Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF
         end
 
@@ -310,11 +310,30 @@ RSpec.describe AuthnContextResolver do
             context 'without facial match comparison' do
               let(:user) { build(:user, :proofed) }
 
-              it 'falls back on proofing without facial match comparison' do
+              it 'asserts facial match as true' do
                 expect(result.identity_proofing?).to be true
-                expect(result.facial_match?).to be false
-                expect(result.two_pieces_of_fair_evidence?).to be false
+                expect(result.facial_match?).to be true
+                expect(result.two_pieces_of_fair_evidence?).to be true
                 expect(result.aal2?).to be true
+              end
+
+              context 'when the user has already connected with the service provider' do
+                let(:user) do
+                  build(
+                    :user,
+                    :proofed,
+                    identities: [
+                      create(:service_provider_identity, service_provider_record: service_provider),
+                    ],
+                  )
+                end
+
+                it 'falls back on proofing without facial match comparison' do
+                  expect(result.identity_proofing?).to be true
+                  expect(result.facial_match?).to be false
+                  expect(result.two_pieces_of_fair_evidence?).to be false
+                  expect(result.aal2?).to be true
+                end
               end
             end
 
@@ -595,12 +614,30 @@ RSpec.describe AuthnContextResolver do
             context 'without facial match comparison' do
               let(:user) { build(:user, :proofed) }
 
-              it 'falls back on proofing without facial match comparison' do
+              it 'asserts facial match as true' do
                 expect(result.identity_proofing?).to be true
-                expect(result.facial_match?).to be false
-                expect(result.two_pieces_of_fair_evidence?).to be false
+                expect(result.facial_match?).to be true
+                expect(result.two_pieces_of_fair_evidence?).to be true
                 expect(result.aal2?).to be true
                 expect(result.ialmax?).to be false
+              end
+
+              context 'when the user has already connected with the service provider' do
+                let(:user) do
+                  build(
+                    :user, :proofed,
+                    identities: [
+                      create(:service_provider_identity, service_provider_record: service_provider),
+                    ]
+                  )
+                end
+
+                it 'falls back on proofing without facial match comparison' do
+                  expect(result.identity_proofing?).to be true
+                  expect(result.facial_match?).to be false
+                  expect(result.two_pieces_of_fair_evidence?).to be false
+                  expect(result.aal2?).to be true
+                end
               end
             end
 
