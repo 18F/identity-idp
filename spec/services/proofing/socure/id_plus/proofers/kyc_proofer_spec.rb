@@ -27,12 +27,20 @@ RSpec.describe Proofing::Socure::IdPlus::Proofers::KycProofer do
       'I905',
     ]
   end
+  let(:source_attribution) do
+    [
+      'Credit',
+      'Alternative Credit',
+      'https://example.com/',
+    ]
+  end
 
   let(:response_body) do
     {
       'referenceId' => 'a-really-unique-id',
       'kyc' => {
         'reasonCodes' => reason_codes,
+        'sourceAttribution' => source_attribution,
         'fieldValidations' => {
           'firstName' => 0.99,
           'surName' => 0.99,
@@ -69,6 +77,7 @@ RSpec.describe Proofing::Socure::IdPlus::Proofers::KycProofer do
   it 'calls proper analytics event' do
     result
     expect(analytics).to have_logged_event(:idv_socure_kyc_results)
+    expect(analytics.events[:idv_socure_kyc_results][0][:source_attribution]).to include 'Web Proof'
   end
 
   it 'reports reason codes as errors' do
