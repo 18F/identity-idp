@@ -242,6 +242,7 @@ module IdentityConfig
     config.add(:idv_min_age_years, type: :integer)
     config.add(:idv_phone_confirmation_manual_review_validity_hours, type: :float)
     config.add(:idv_phone_precheck_percent, type: :integer)
+    config.add(:idv_phone_verification_dual_vendor_check_enabled, type: :boolean)
     config.add(:idv_proofing_agent_config, type: :json)
     config.add(:idv_proofing_agent_enabled, type: :boolean)
     config.add(:idv_proofing_agent_result_expiration_seconds, type: :integer)
