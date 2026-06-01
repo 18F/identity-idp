@@ -306,6 +306,15 @@ RSpec.describe AuthnContextResolver do
             Saml::Idp::Constants::IAL2_BIO_PREFERRED_AUTHN_CONTEXT_CLASSREF
           end
 
+          context 'when user is nil' do
+            let(:user) { nil }
+
+            it 'asserts facial match as true without raising' do
+              expect { result }.not_to raise_error
+              expect(result.facial_match?).to be true
+            end
+          end
+
           context 'when the user is already verified' do
             context 'without facial match comparison' do
               let(:user) { build(:user, :proofed) }
@@ -630,7 +639,7 @@ RSpec.describe AuthnContextResolver do
 
           context 'when the user is already verified' do
             context 'without facial match comparison' do
-              let(:user) { build(:user, :proofed) }
+              let(:user) { create(:user, :proofed) }
 
               it 'asserts facial match as true' do
                 expect(result.identity_proofing?).to be true
@@ -642,7 +651,7 @@ RSpec.describe AuthnContextResolver do
 
               context 'when the user has already connected with a service provider' do
                 let(:user) do
-                  build(
+                  create(
                     :user, :proofed,
                     identities: [
                       create(:service_provider_identity, service_provider_record:),
@@ -657,6 +666,29 @@ RSpec.describe AuthnContextResolver do
                     expect(result.facial_match?).to be false
                     expect(result.two_pieces_of_fair_evidence?).to be false
                     expect(result.aal2?).to be true
+                  end
+
+                  context 'when the connection has been soft-deleted' do
+                    let(:user) do
+                      create(
+                        :user, :proofed,
+                        identities: [
+                          create(
+                            :service_provider_identity,
+                            service_provider_record:,
+                            deleted_at: 5.minutes.ago,
+                          ),
+                        ]
+                      )
+                    end
+
+                    it 'asserts facial match comparison' do
+                      expect(result.identity_proofing?).to be true
+                      expect(result.facial_match?).to be true
+                      expect(result.two_pieces_of_fair_evidence?).to be true
+                      expect(result.aal2?).to be true
+                      expect(result.ialmax?).to be false
+                    end
                   end
                 end
 
