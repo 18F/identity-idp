@@ -1240,7 +1240,6 @@ idv.messages.sessions.no_pii: TEST SITE - Do not use real personal information (
 idv.messages.verify_info: We will check records to verify that your address and Social Security number match the information on your ID.
 idv.messages.verifying: Verifying…
 idv.proofing_agent_expired.body: For your security, the ‘confirm account’ email we sent has expired. It was valid for 48 hours. To continue, please complete the identity verification step again.
-idv.proofing_agent_expired.cancel: Cancel
 idv.proofing_agent_expired.continue: Continue
 idv.proofing_agent_expired.heading: Let’s finish setting up your identity verification
 idv.titles.activated: Your identity has already been verified
