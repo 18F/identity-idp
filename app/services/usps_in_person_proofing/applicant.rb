@@ -15,6 +15,13 @@ module UspsInPersonProofing
     :email, :document_type, :document_number, :document_expiration_date, keyword_init: true
   ) do
     def self.from_usps_applicant_and_enrollment(applicant, enrollment)
+      id_expiration = Time.zone.parse(applicant&.id_expiration || '')
+      document_expiration_date =
+        if id_expiration.present?
+          offset = IdentityConfig.store.in_person_expiration_time_offset_hours.hours
+          (id_expiration + offset).to_i
+        end
+
       self.new(
         unique_id: enrollment.unique_id,
         first_name: transliterate(applicant.first_name),
@@ -25,8 +32,7 @@ module UspsInPersonProofing
         zip_code: applicant.zipcode,
         email: IdentityConfig.store.usps_ipp_enrollment_status_update_email_address.presence,
         document_number: applicant.id_number,
-        document_expiration_date:
-          Time.zone.parse(applicant&.id_expiration || '').to_i,
+        document_expiration_date:,
         document_type: USPS_DOCUMENT_TYPE_MAPPINGS[enrollment.document_type],
       )
     end
