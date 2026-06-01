@@ -121,8 +121,13 @@ class Profile < ApplicationRecord
 
     now = Time.zone.now
     profile_to_deactivate = Profile.find_by(user_id: user_id, active: true)
-    is_reproof = profile_to_deactivate.present?
-    is_facial_match_upgrade = is_reproof && facial_match? && !profile_to_deactivate.facial_match?
+    is_reproof = activated_at.present? ||
+                 user.profiles.where.not(id: id).where.not(activated_at: nil).exists?
+    # Must guard on profile_to_deactivate (not is_reproof): on the password_reset
+    # path the prior profile is deactivated, so is_reproof is true but
+    # profile_to_deactivate is nil — calling .facial_match? on it would raise.
+    is_facial_match_upgrade = profile_to_deactivate.present? && facial_match? &&
+                              !profile_to_deactivate.facial_match?
 
     attrs = {
       active: true,
