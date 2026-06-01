@@ -72,5 +72,19 @@ RSpec.describe DeletedAccountsReport do
       expect(ServiceProviderIdentity.count).to eq(1)
       expect(rows.count).to eq(0)
     end
+
+    it 'safely handles service_provider values with SQL injection attempts' do
+      malicious_sp = "'; DROP TABLE users; --"
+
+      # Should not raise an error and should return empty results
+      # (no matching service provider exists)
+      expect { DeletedAccountsReport.call(malicious_sp, days_ago) }.not_to raise_error
+
+      rows = DeletedAccountsReport.call(malicious_sp, days_ago)
+      expect(rows.count).to eq(0)
+
+      # Verify the users table still exists and is accessible
+      expect { User.count }.not_to raise_error
+    end
   end
 end
