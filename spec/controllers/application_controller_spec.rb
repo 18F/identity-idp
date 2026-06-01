@@ -275,6 +275,19 @@ RSpec.describe ApplicationController do
     end
   end
 
+  describe '#after_sign_in_path_for' do
+    it 'sends an expired agent-proofed user to the expired screen' do
+      user = create(:user)
+      allow(controller).to receive(:current_user).and_return(user)
+      allow(user).to receive(:agent_proofing_expired?).and_return(true)
+      allow(user).to receive(:accepted_rules_of_use_still_valid?).and_return(true)
+      allow(controller).to receive(:user_needs_sp_auth_method_setup?).and_return(false)
+      allow(controller).to receive(:user_session).and_return({})
+
+      expect(controller.send(:after_sign_in_path_for, user)).to eq(idv_proofing_agent_expired_path)
+    end
+  end
+
   describe '#signed_in_url' do
     it 'sends an expired agent-proofed user to the expired screen' do
       user = create(:user)
