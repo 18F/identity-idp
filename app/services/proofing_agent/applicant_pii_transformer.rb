@@ -3,7 +3,7 @@
 module ProofingAgent
   class ApplicantPiiTransformer
     def initialize(proof_params)
-      @pii = proof_params.symbolize_keys
+      @pii = proof_params.deep_symbolize_keys
     end
 
     def transform
