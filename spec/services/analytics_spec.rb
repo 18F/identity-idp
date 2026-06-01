@@ -476,6 +476,10 @@ RSpec.describe Analytics do
     end
 
     context 'and selects optional facial match identity proofing' do
+      before do
+        allow(IdentityConfig.store).to receive(:facial_match_preferred_on_connected_accounts)
+          .and_return(true)
+      end
       shared_examples 'with user scenarios' do |acr_values_list|
         context "using #{acr_values_list}" do
           let(:acr_values) { acr_values_list }

@@ -73,7 +73,9 @@ class AuthnContextResolver
     return result if user&.identity_verified_with_facial_match? ||
                      facial_match_is_required?(result)
 
-    return result unless user_has_account_with_sp?
+    if IdentityConfig.store.facial_match_preferred_on_connected_accounts
+      return result unless user_has_account_with_sp?
+    end
 
     if user&.identity_verified?
       result.with(facial_match?: false, two_pieces_of_fair_evidence?: false)

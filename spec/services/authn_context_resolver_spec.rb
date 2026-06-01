@@ -316,6 +316,12 @@ RSpec.describe AuthnContextResolver do
           end
 
           context 'when the user is already verified' do
+            let(:facial_match_preferred_on_connected_accounts) { true }
+            before do
+              allow(IdentityConfig.store).to receive(:facial_match_preferred_on_connected_accounts)
+                .and_return(facial_match_preferred_on_connected_accounts)
+            end
+
             context 'without facial match comparison' do
               let(:user) { build(:user, :proofed) }
 
@@ -349,6 +355,17 @@ RSpec.describe AuthnContextResolver do
                     expect(result.two_pieces_of_fair_evidence?).to be false
                     expect(result.aal2?).to be true
                   end
+
+                  context 'facial_match_preferred_on_connected_accounts is not enabled' do
+                    let(:facial_match_preferred_on_connected_accounts) { false }
+
+                    it 'falls back on proofing without facial match comparison' do
+                      expect(result.identity_proofing?).to be true
+                      expect(result.facial_match?).to be false
+                      expect(result.two_pieces_of_fair_evidence?).to be false
+                      expect(result.aal2?).to be true
+                    end
+                  end
                 end
 
                 context 'when the connected sp is a different sp' do
@@ -359,6 +376,17 @@ RSpec.describe AuthnContextResolver do
                     expect(result.facial_match?).to be true
                     expect(result.two_pieces_of_fair_evidence?).to be true
                     expect(result.aal2?).to be true
+                  end
+
+                  context 'facial_match_preferred_on_connected_accounts is not enabled' do
+                    let(:facial_match_preferred_on_connected_accounts) { false }
+
+                    it 'falls back on proofing without facial match comparison' do
+                      expect(result.identity_proofing?).to be true
+                      expect(result.facial_match?).to be false
+                      expect(result.two_pieces_of_fair_evidence?).to be false
+                      expect(result.aal2?).to be true
+                    end
                   end
                 end
               end
@@ -636,6 +664,11 @@ RSpec.describe AuthnContextResolver do
           let(:bio_acr_value) do
             Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_PREFERRED_ACR
           end
+          let(:facial_match_preferred_on_connected_accounts) { true }
+          before do
+            allow(IdentityConfig.store).to receive(:facial_match_preferred_on_connected_accounts)
+              .and_return(facial_match_preferred_on_connected_accounts)
+          end
 
           context 'when the user is already verified' do
             context 'without facial match comparison' do
@@ -689,6 +722,17 @@ RSpec.describe AuthnContextResolver do
                       expect(result.aal2?).to be true
                       expect(result.ialmax?).to be false
                     end
+
+                    context 'facial_match_preferred_on_connected_accounts is not enabled' do
+                      let(:facial_match_preferred_on_connected_accounts) { false }
+
+                      it 'falls back on proofing without facial match comparison' do
+                        expect(result.identity_proofing?).to be true
+                        expect(result.facial_match?).to be false
+                        expect(result.two_pieces_of_fair_evidence?).to be false
+                        expect(result.aal2?).to be true
+                      end
+                    end
                   end
                 end
 
@@ -700,6 +744,17 @@ RSpec.describe AuthnContextResolver do
                     expect(result.facial_match?).to be true
                     expect(result.two_pieces_of_fair_evidence?).to be true
                     expect(result.aal2?).to be true
+                  end
+
+                  context 'facial_match_preferred_on_connected_accounts is not enabled' do
+                    let(:facial_match_preferred_on_connected_accounts) { false }
+
+                    it 'falls back on proofing without facial match comparison' do
+                      expect(result.identity_proofing?).to be true
+                      expect(result.facial_match?).to be false
+                      expect(result.two_pieces_of_fair_evidence?).to be false
+                      expect(result.aal2?).to be true
+                    end
                   end
                 end
               end
