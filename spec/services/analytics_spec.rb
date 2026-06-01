@@ -542,7 +542,7 @@ RSpec.describe Analytics do
             include_examples 'track event with :sp_request'
           end
 
-          context 'when user is proofed w/basic idv and connected but connection has been deleted' do
+          context 'when user proofs w/basic idv and connected sp but connection has been deleted' do
             let(:current_user) do
               build(
                 :user, :proofed,
