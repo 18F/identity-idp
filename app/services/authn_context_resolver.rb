@@ -93,6 +93,7 @@ class AuthnContextResolver
   end
 
   def user_has_account_with_sp?
+    return false unless user && service_provider
     user.connected_apps.map(&:service_provider).include?(service_provider.issuer)
   end
 
