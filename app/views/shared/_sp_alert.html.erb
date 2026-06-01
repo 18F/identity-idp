@@ -1,5 +1,9 @@
 <% alert = decorated_sp_session.sp_alert(section) %>
 <% if alert %>
+  <%# Security note: alert comes from sp.help_text database configuration, which is
+      controlled by administrators (not end users). Content is sanitized with strict
+      whitelist allowing only safe HTML tags (a, b, strong, em, br, p, ol, ul, li).
+      See: ServiceProviderSession#sp_alert (app/decorators/service_provider_session.rb:58-65) %>
   <%= render AlertComponent.new(type: :info, text_tag: 'div', class: 'margin-bottom-4') do %>
     <%= raw sanitize(alert, tags: %w[a b strong em br p ol ul li], attributes: %w[href target]) %>
   <% end %>

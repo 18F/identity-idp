@@ -15,6 +15,9 @@
 <% end %>
 
 <p class="margin-top-4 margin-bottom-4">
+  <%# Security note: @presenter.intro uses safe_join and content_tag with i18n
+      translations. The sp_name is HTML-escaped before being passed to content_tag.
+      See: CompletionsPresenter#intro (lines 80-100) %>
   <%= @presenter.intro.html_safe %>
 </p>
 

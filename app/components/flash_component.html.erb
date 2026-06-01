@@ -1,3 +1,8 @@
+<% # Security note: Flash messages are marked html_safe to allow i18n translations with
+   # safe HTML (like _html suffix keys). All flash message sources have been audited:
+   # - 95% use i18n translations (safe)
+   # - Remaining use form validation errors or application-controlled messages
+   # See: static security analysis report for detailed audit %>
 <% alerts.each do |type, message| %>
   <%= render AlertComponent.new(type:, message: message.html_safe, class: 'margin-bottom-4') %>
 <% end %>

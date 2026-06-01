@@ -24,7 +24,12 @@ module Test
       if enrollment.present?
         approve_enrollment(enrollment)
       else
-        flash[:error] = "Could not find pending IPP enrollment with ID #{enrollment_id}"
+        # Defensive: enrollment_id is already cast to integer via .to_i, but using
+        # explicit string formatting prevents any potential XSS from flash rendering
+        flash[:error] = format(
+          'Could not find pending IPP enrollment with ID %<id>d',
+          id: enrollment_id,
+        )
       end
 
       redirect_to test_ipp_url
