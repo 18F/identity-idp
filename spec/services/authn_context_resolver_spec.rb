@@ -317,22 +317,40 @@ RSpec.describe AuthnContextResolver do
                 expect(result.aal2?).to be true
               end
 
-              context 'when the user has already connected with the service provider' do
+              context 'when the user has already connected with a service provider' do
                 let(:user) do
                   build(
                     :user,
                     :proofed,
                     identities: [
-                      create(:service_provider_identity, service_provider_record: service_provider),
+                      create(
+                        :service_provider_identity,
+                        service_provider_record:,
+                      ),
                     ],
                   )
                 end
 
-                it 'falls back on proofing without facial match comparison' do
-                  expect(result.identity_proofing?).to be true
-                  expect(result.facial_match?).to be false
-                  expect(result.two_pieces_of_fair_evidence?).to be false
-                  expect(result.aal2?).to be true
+                context 'when the connected sp is the requesting sp' do
+                  let(:service_provider_record) { service_provider }
+
+                  it 'falls back on proofing without facial match comparison' do
+                    expect(result.identity_proofing?).to be true
+                    expect(result.facial_match?).to be false
+                    expect(result.two_pieces_of_fair_evidence?).to be false
+                    expect(result.aal2?).to be true
+                  end
+                end
+
+                context 'when the connected sp is a different sp' do
+                  let(:service_provider_record) { create(:service_provider) }
+
+                  it 'asserts facial match as true' do
+                    expect(result.identity_proofing?).to be true
+                    expect(result.facial_match?).to be true
+                    expect(result.two_pieces_of_fair_evidence?).to be true
+                    expect(result.aal2?).to be true
+                  end
                 end
               end
             end
@@ -622,21 +640,35 @@ RSpec.describe AuthnContextResolver do
                 expect(result.ialmax?).to be false
               end
 
-              context 'when the user has already connected with the service provider' do
+              context 'when the user has already connected with a service provider' do
                 let(:user) do
                   build(
                     :user, :proofed,
                     identities: [
-                      create(:service_provider_identity, service_provider_record: service_provider),
+                      create(:service_provider_identity, service_provider_record:),
                     ]
                   )
                 end
 
-                it 'falls back on proofing without facial match comparison' do
-                  expect(result.identity_proofing?).to be true
-                  expect(result.facial_match?).to be false
-                  expect(result.two_pieces_of_fair_evidence?).to be false
-                  expect(result.aal2?).to be true
+                context 'when the connected sp is the requesting sp' do
+                  let(:service_provider_record) { service_provider }
+                  it 'falls back on proofing without facial match comparison' do
+                    expect(result.identity_proofing?).to be true
+                    expect(result.facial_match?).to be false
+                    expect(result.two_pieces_of_fair_evidence?).to be false
+                    expect(result.aal2?).to be true
+                  end
+                end
+
+                context 'when the connected sp is a different sp' do
+                  let(:service_provider_record) { create(:service_provider) }
+
+                  it 'asserts facial match as true' do
+                    expect(result.identity_proofing?).to be true
+                    expect(result.facial_match?).to be true
+                    expect(result.two_pieces_of_fair_evidence?).to be true
+                    expect(result.aal2?).to be true
+                  end
                 end
               end
             end

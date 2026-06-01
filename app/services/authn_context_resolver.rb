@@ -93,7 +93,7 @@ class AuthnContextResolver
   end
 
   def user_has_account_with_sp?
-    user.connected_apps.map(&:service_provider).include?(service_provider.issuer)
+    user.connected_apps.any? { |app| app.service_provider == service_provider.issuer }
   end
 
   def acr_aal_component_values
