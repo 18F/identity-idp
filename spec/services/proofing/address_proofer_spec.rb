@@ -9,7 +9,7 @@ RSpec.describe Proofing::AddressProofer do
       success: true,
       errors: [],
       exception: nil,
-      vendor_name: 'lexis_nexis:phone_finder_ddp',
+      vendor_name: 'lexisnexis:phone_finder_ddp',
       transaction_id: Faker::Internet.uuid,
     )
   end
@@ -150,7 +150,7 @@ RSpec.describe Proofing::AddressProofer do
                 success: false,
                 errors: [{ message: 'Unsuccessful result' }],
                 exception: nil,
-                vendor_name: 'lexis_nexis:phone_finder_ddp',
+                vendor_name: 'lexisnexis:phone_finder_ddp',
                 transaction_id: Faker::Internet.uuid,
               )
             end
@@ -261,7 +261,7 @@ RSpec.describe Proofing::AddressProofer do
                 success: false,
                 errors: [{ message: 'Unsuccessful result' }],
                 exception: nil,
-                vendor_name: 'lexis_nexis:phone_finder_ddp',
+                vendor_name: 'lexisnexis:phone_finder_ddp',
                 transaction_id: Faker::Internet.uuid,
                 dual_vendor_check_eligible: true,
               )
@@ -319,7 +319,7 @@ RSpec.describe Proofing::AddressProofer do
                 success: false,
                 errors: [{ message: 'Unsuccessful result' }],
                 exception: nil,
-                vendor_name: 'lexis_nexis:phone_finder_ddp',
+                vendor_name: 'lexisnexis:phone_finder_ddp',
                 transaction_id: Faker::Internet.uuid,
               )
             end
