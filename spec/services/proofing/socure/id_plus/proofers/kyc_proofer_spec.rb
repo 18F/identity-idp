@@ -20,12 +20,14 @@ RSpec.describe Proofing::Socure::IdPlus::Proofers::KycProofer do
   let(:idv_socure_kyc_auto_failure_reason_codes) { ['R995'] }
 
   let(:field_validation_overrides) { {} }
-  let(:reason_codes) do
+  let(:reason_codes) { %w[I919 I914 I905] }
+  let(:web_source) { nil }
+  let(:source_attribution) do
     [
-      'I919',
-      'I914',
-      'I905',
-    ]
+      'Credit',
+      'Alternative Credit',
+      web_source,
+    ].compact
   end
 
   let(:response_body) do
@@ -33,6 +35,7 @@ RSpec.describe Proofing::Socure::IdPlus::Proofers::KycProofer do
       'referenceId' => 'a-really-unique-id',
       'kyc' => {
         'reasonCodes' => reason_codes,
+        'sourceAttribution' => source_attribution,
         'fieldValidations' => {
           'firstName' => 0.99,
           'surName' => 0.99,
@@ -69,6 +72,26 @@ RSpec.describe Proofing::Socure::IdPlus::Proofers::KycProofer do
   it 'calls proper analytics event' do
     result
     expect(analytics).to have_logged_event(:idv_socure_kyc_results)
+  end
+
+  context 'with source attributions starting with http://' do
+    let(:web_source) { 'http://example.org/' }
+
+    it 'obfuscates web-sourced attributions' do
+      result
+      attribution = analytics.events[:idv_socure_kyc_results][0][:source_attribution]
+      expect(attribution).to include 'Web Proof'
+    end
+  end
+
+  context 'with source attributions starting with https://' do
+    let(:web_source) { 'https://example.org/' }
+
+    it 'obfuscates web-sourced attributions' do
+      result
+      attribution = analytics.events[:idv_socure_kyc_results][0][:source_attribution]
+      expect(attribution).to include 'Web Proof'
+    end
   end
 
   it 'reports reason codes as errors' do
