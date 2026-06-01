@@ -335,6 +335,55 @@ RSpec.describe AuthnContextResolver do
                   expect(result.aal2?).to be true
                 end
               end
+
+              context 'when the user is connected only to a different service provider' do
+                let(:other_sp) { create(:service_provider) }
+                let(:user) do
+                  create(:user, :proofed).tap do |u|
+                    create(
+                      :service_provider_identity,
+                      user: u,
+                      service_provider_record: other_sp,
+                    )
+                  end
+                end
+
+                it 'asserts facial match as true' do
+                  expect(result.identity_proofing?).to be true
+                  expect(result.facial_match?).to be true
+                  expect(result.two_pieces_of_fair_evidence?).to be true
+                  expect(result.aal2?).to be true
+                end
+              end
+
+              context 'when the prior identity with this SP is soft-deleted' do
+                let(:user) do
+                  create(:user, :proofed).tap do |u|
+                    create(
+                      :service_provider_identity,
+                      :soft_deleted_5m_ago,
+                      user: u,
+                      service_provider_record: service_provider,
+                    )
+                  end
+                end
+
+                it 'asserts facial match as true (deleted identities do not count)' do
+                  expect(result.identity_proofing?).to be true
+                  expect(result.facial_match?).to be true
+                  expect(result.two_pieces_of_fair_evidence?).to be true
+                  expect(result.aal2?).to be true
+                end
+              end
+            end
+
+            context 'when the user is nil' do
+              let(:user) { nil }
+
+              it 'asserts facial match as true without raising' do
+                expect { result }.not_to raise_error
+                expect(result.facial_match?).to be true
+              end
             end
 
             context 'with facial match comparison' do
