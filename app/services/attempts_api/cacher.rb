@@ -10,6 +10,7 @@ module AttemptsApi
     end
 
     def save(password:)
+      return unless user.active_profile.encrypted_attempts_file_reference.present?
       decrypted_events = user.active_profile.decrypt_user_proofing_events(password:)
 
       kms_encrypted_events = SessionEncryptor.new.kms_encrypt(decrypted_events)
