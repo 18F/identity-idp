@@ -494,11 +494,72 @@ RSpec.describe Analytics do
             include_examples 'track event with :sp_request'
           end
 
-          context 'when the identity verified user has not proofed with facial match' do
-            let(:current_user) { build(:user, :proofed) }
+          context 'when the user is proofed w/basic idv but has an account with the SP' do
+            let(:current_user) do
+              build(
+                :user, :proofed,
+                identities: [build(:service_provider_identity, service_provider: 'http://localhost:3000')]
+              )
+            end
             let(:sp_request) do
               {
                 aal2: true,
+                identity_proofing: true,
+              }
+            end
+
+            include_examples 'track event with :sp_request'
+          end
+
+          context 'when the user is proofed w/basic idv but has no connected accounts' do
+            let(:current_user) { create(:user, :proofed) }
+            let(:sp_request) do
+              {
+                aal2: true,
+                facial_match: true,
+                two_pieces_of_fair_evidence: true,
+                identity_proofing: true,
+
+              }
+            end
+
+            include_examples 'track event with :sp_request'
+          end
+
+          context 'when the user is proofed w/basic idv but connected account is not sp' do
+            let(:current_user) do
+              create(:user, :proofed, identities: [create(:service_provider_identity)])
+            end
+            let(:sp_request) do
+              {
+                aal2: true,
+                facial_match: true,
+                two_pieces_of_fair_evidence: true,
+                identity_proofing: true,
+              }
+            end
+
+            include_examples 'track event with :sp_request'
+          end
+
+          context 'when user is proofed w/basic idv and connected but connection has been deleted' do
+            let(:current_user) do
+              build(
+                :user, :proofed,
+                identities: [
+                  build(
+                    :service_provider_identity,
+                    service_provider: 'http://localhost:3000',
+                    deleted_at: 5.minutes.ago,
+                  ),
+                ]
+              )
+            end
+            let(:sp_request) do
+              {
+                aal2: true,
+                facial_match: true,
+                two_pieces_of_fair_evidence: true,
                 identity_proofing: true,
               }
             end
