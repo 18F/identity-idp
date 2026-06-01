@@ -16,6 +16,8 @@ module ProofingAgent
       correlation_id:,
       transaction_id:
     )
+      return if verified_at.blank?
+
       expiration_date = Idv::ProofingAgent::AgentProofingSucceededPresenter
         .deadline_for(verified_at: verified_at)
 

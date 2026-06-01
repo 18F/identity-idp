@@ -62,5 +62,23 @@ RSpec.describe ProofingAgent::SuccessEmailSender do
         expiration_date: expected_expiration,
       )
     end
+
+    context 'when verified_at is blank' do
+      it 'does not deliver an email or log the analytics event' do
+        expect do
+          sender.call(
+            verified_at: nil,
+            proofing_agent_id: proofing_agent_id,
+            proofing_location_id: proofing_location_id,
+            correlation_id: correlation_id,
+            transaction_id: transaction_id,
+          )
+        end.to_not change { ActionMailer::Base.deliveries.count }
+
+        expect(analytics).to_not have_logged_event(
+          :idv_proofing_agent_profile_confirmation_email_sent,
+        )
+      end
+    end
   end
 end
