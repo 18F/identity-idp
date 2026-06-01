@@ -5,7 +5,7 @@ class DuplicateProfileSet < ApplicationRecord
 
   def self.set_for_profiles_and_service_provider(profile_ids:, service_provider:)
     where(service_provider: service_provider)
-      .where('profile_ids && ?', "{#{profile_ids.join(',')}}")
+      .where('profile_ids && ARRAY[?]::bigint[]', profile_ids)
       .first
   end
 
@@ -23,7 +23,7 @@ class DuplicateProfileSet < ApplicationRecord
 
   def self.set_for_profiles_global(profile_ids:)
     where(service_provider: nil)
-      .where('profile_ids && ?', "{#{profile_ids.join(',')}}")
+      .where('profile_ids && ARRAY[?]::bigint[]', profile_ids)
       .first
   end
 
