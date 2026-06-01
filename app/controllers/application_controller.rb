@@ -283,7 +283,6 @@ class ApplicationController < ActionController::Base
     return manage_password_url if session[:redirect_to_change_password].present?
     return authentication_methods_setup_url if user_needs_sp_auth_method_setup?
     return fix_broken_personal_key_url if current_user.broken_personal_key?
-    return idv_enter_dob_ssn_path if current_user.proofing_agent_pending?
     return user_session.delete(:stored_location) if user_session.key?(:stored_location)
     return setup_piv_cac_url if user_session[:add_piv_cac_after_2fa]
     return login_add_piv_cac_prompt_url if session[:needs_to_setup_piv_cac_after_sign_in].present?
