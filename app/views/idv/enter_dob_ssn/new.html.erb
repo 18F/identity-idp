@@ -1,0 +1,45 @@
+<% content_for(:pre_flash_content) do %>
+  <%= render StepIndicatorComponent.new(
+        steps: step_indicator_steps,
+        current_step: :confirm_your_information,
+        locale_scope: 'idv',
+        class: 'margin-x-neg-2 margin-top-neg-4 tablet:margin-x-neg-6 tablet:margin-top-neg-4',
+      ) %>
+<% end %>
+
+<% self.title = t('doc_auth.headings.dob_ssn') %>
+
+<%= render PageHeadingComponent.new.with_content(t('doc_auth.headings.dob_ssn')) %>
+
+<p>
+  <%= t('doc_auth.info.dob_ssn') %>
+  <%= new_tab_link_to(MarketingSite.security_and_privacy_practices_url, class: 'display-inline') do %>
+    <%= t('doc_auth.info.learn_more') %>
+  <% end %>
+</p>
+
+<% if IdentityConfig.store.proofer_mock_fallback %>
+  <div class="usa-alert usa-alert--info margin-bottom-4" role="status">
+    <div class="usa-alert__body">
+      <p class="usa-alert__text">
+        <%= t('doc_auth.instructions.test_ssn') %>
+      </p>
+    </div>
+  </div>
+<% end %>
+
+<%= simple_form_for(@dob_ssn_form, url: url_for, method: :post) do |f| %>
+  <div class="tablet:grid-col-8">
+    <%= render 'shared/ssn_field', f: f %>
+  </div>
+
+  <div class="tablet:grid-col-8">
+    <%= render 'shared/dob_field', f: f %>
+  </div>
+
+  <%= f.submit class: 'display-block margin-y-5' do %>
+    <%= t('forms.buttons.continue') %>
+  <% end %>
+<% end %>
+
+<%= render 'idv/doc_auth/cancel', step: 'ssn' %>

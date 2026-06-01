@@ -150,6 +150,7 @@ class DocumentCaptureSession < ApplicationRecord
       expires_in: IdentityConfig.store.agent_proofed_user_time_validity_hours.hours.in_seconds,
     )
     save!
+    update!(pending_agent_proofed_user_at: Time.zone.now) if agent_proofing_result[:success]
   end
 
   def determine_source_check_vendor(aamva:, mrz:)

@@ -433,6 +433,8 @@ Rails.application.routes.draw do
       post '/phone/resend_code' => 'resend_otp#create', as: :resend_otp
       get '/phone_confirmation' => 'otp_verification#show', as: :otp_verification
       put '/phone_confirmation' => 'otp_verification#update', as: :nil
+      get '/enter_dob_ssn' => 'enter_dob_ssn#new', as: :enter_dob_ssn
+      post '/enter_dob_ssn' => 'enter_dob_ssn#create'
       get '/enter_password' => 'enter_password#new'
       put '/enter_password' => 'enter_password#create'
       get '/session/errors/warning' => 'session_errors#warning'

@@ -615,6 +615,7 @@ doc_auth.headings.capture_complete: We verified your identity document
 doc_auth.headings.capture_scan_warning_html: We couldn’t read the barcode on your ID. If the information below is incorrect, please %{link_html} of your ID.
 doc_auth.headings.capture_scan_warning_link: upload new photos
 doc_auth.headings.choose_id_type: Choose your ID type
+doc_auth.headings.dob_ssn: Enter your Social Security number and Date of Birth
 doc_auth.headings.document_capture: Add photos of your driver’s license or state ID card
 doc_auth.headings.document_capture_back: Back of your ID
 doc_auth.headings.document_capture_front: Front of your ID
@@ -657,6 +658,7 @@ doc_auth.info.capture_status_none: Align
 doc_auth.info.capture_status_small_document: Move Closer
 doc_auth.info.capture_status_tap_to_capture: Tap to Capture
 doc_auth.info.choose_id_type: Select the type of document that you have. You’ll need to take photos of your ID to verify your identity.
+doc_auth.info.dob_ssn: We need this information to securely link this account to the identity you just verified in person.
 doc_auth.info.dos_passport_api_down_message: We cannot accept passports at this time. You can use a driver’s license or state ID, or try again later.
 doc_auth.info.exit.with_sp: Exit %{app_name} and return to %{sp_name}
 doc_auth.info.exit.without_sp: Exit identity verification and go to your account page
@@ -1687,6 +1689,7 @@ simple_form.required.mark: ''
 simple_form.required.text: This field is required
 simple_form.yes: 'Yes'
 step_indicator.accessible_label: Step progress
+step_indicator.flows.idv.confirm_your_information: Confirm your information
 step_indicator.flows.idv.find_a_post_office: Find a Post Office
 step_indicator.flows.idv.getting_started: Getting started
 step_indicator.flows.idv.go_to_the_post_office: Go to the Post Office
