@@ -390,6 +390,18 @@ class User < ApplicationRecord
     active_profile.present? && active_profile.facial_match?
   end
 
+  def proofing_agent_pending?
+    document_capture_sessions.where.not(pending_agent_proofed_user_at: nil).exists?
+  end
+
+  def pending_agent_proofed_session
+    document_capture_sessions.where.not(pending_agent_proofed_user_at: nil).first
+  end
+
+  def pending_agent_proofed_user
+    pending_agent_proofed_session&.load_agent_proofed_user
+  end
+
   # The users most recently activated or pending in person enrollment profile
   # that has also been deactivated due to a password reset, or nil if there is
   # no such profile

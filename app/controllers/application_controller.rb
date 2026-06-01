@@ -295,6 +295,7 @@ class ApplicationController < ActionController::Base
   end
 
   def signed_in_url
+    return idv_enter_dob_ssn_path if current_user.proofing_agent_pending?
     return idv_verify_by_mail_enter_code_url if current_user.gpo_verification_pending_profile?
     stored_location_for(current_user) ||
       account_path

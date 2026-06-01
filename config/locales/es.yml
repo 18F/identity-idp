@@ -626,6 +626,7 @@ doc_auth.headings.capture_complete: Verificamos su documento de identidad
 doc_auth.headings.capture_scan_warning_html: No pudimos leer el código de barras de su identificación. Si la información siguiente es incorrecta, %{link_html} de su identificación.
 doc_auth.headings.capture_scan_warning_link: cargue nuevas fotos
 doc_auth.headings.choose_id_type: Elija el tipo de su identificación
+doc_auth.headings.dob_ssn: Ingrese su número de Seguro Social y fecha de nacimiento
 doc_auth.headings.document_capture: Añade fotos de tu licencia de conducir o credencial de identificación oficial
 doc_auth.headings.document_capture_back: Reverso de su identificación
 doc_auth.headings.document_capture_front: Frente de su identificación
@@ -668,6 +669,7 @@ doc_auth.info.capture_status_none: Alinear
 doc_auth.info.capture_status_small_document: Acercar
 doc_auth.info.capture_status_tap_to_capture: Tocar para capturar
 doc_auth.info.choose_id_type: Seleccione el tipo de documento que tenga. Tendrá que tomar fotografías de su identificación para verificar su identidad.
+doc_auth.info.dob_ssn: Necesitamos esta información para vincular de forma segura esta cuenta con la identidad que acaba de verificar en persona.
 doc_auth.info.dos_passport_api_down_message: No podemos aceptar pasaportes por ahora. Puede usar una licencia de conducir o identificación estatal, o bien vuelva a intentarlo más tarde.
 doc_auth.info.exit.with_sp: Salir de %{app_name} y volver a %{sp_name}
 doc_auth.info.exit.without_sp: Salga de la verificación de identidad y vaya a la página de su cuenta
@@ -1699,6 +1701,7 @@ simple_form.required.mark: ''
 simple_form.required.text: Este campo es obligatorio
 simple_form.yes: Sí
 step_indicator.accessible_label: Avance por pasos
+step_indicator.flows.idv.confirm_your_information: Confirme su información
 step_indicator.flows.idv.find_a_post_office: Busque una oficina de correos
 step_indicator.flows.idv.getting_started: Inicio
 step_indicator.flows.idv.go_to_the_post_office: Vaya a la oficina de correos

@@ -5,6 +5,7 @@ module Idv
   # @attr address_edited [Boolean, nil]
   # @attr address_verification_vendor [String, nil]
   # @attr address_verification_mechanism [String, nil]
+  # @attr agent_proofed [Boolean, nil]
   # @attr applicant [Struct, nil]
   # @attr doc_auth_vendor [String, nil]
   # @attr document_capture_session_uuid [String, nil]
@@ -32,6 +33,7 @@ module Idv
   # @attr previous_phone_step_params [Array]
   # @attr previous_ssn [String, nil]
   # @attr profile_id [Integer, nil]
+  # @attr proofing_agent_match [Boolean, nil]
   # @attr proofing_started_at [String, nil]
   # @attr redo_document_capture [Boolean, nil]
   # @attr residential_resolution_vendor [String, nil]
@@ -59,6 +61,7 @@ module Idv
       address_edited
       address_verification_vendor
       address_verification_mechanism
+      agent_proofed
       applicant
       bucketed_doc_auth_vendor
       doc_auth_vendor
@@ -89,6 +92,7 @@ module Idv
       previous_phone_step_params
       previous_ssn
       profile_id
+      proofing_agent_match
       proofing_started_at
       redo_document_capture
       residential_resolution_vendor
@@ -348,7 +352,7 @@ module Idv
     end
 
     def phone_or_address_step_complete?
-      verify_by_mail? || phone_confirmed?
+      verify_by_mail? || phone_confirmed? || proofing_agent_match?
     end
 
     def address_mechanism_chosen?
@@ -357,6 +361,10 @@ module Idv
 
     def phone_confirmed?
       vendor_phone_confirmation == true && user_phone_confirmation == true
+    end
+
+    def proofing_agent_match?
+      proofing_agent_match == true
     end
 
     def address_confirmed?
