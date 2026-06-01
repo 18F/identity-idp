@@ -20,8 +20,6 @@ module UspsInPersonProofing
         if id_expiration.present?
           offset = IdentityConfig.store.in_person_expiration_time_offset_hours.hours
           (id_expiration + offset).to_i
-        else
-          0
         end
 
       self.new(
