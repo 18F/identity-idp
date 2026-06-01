@@ -26,12 +26,13 @@ class UserProofingEvent < ApplicationRecord
   end
 
   def decrypt_events(password:)
+    return nil if retrieved_attempts_data.blank?
     encryptor = Encryption::Encryptors::PiiEncryptor.new(password)
 
     encryptor.decrypt(retrieved_attempts_data['password_encrypted_events'], user_uuid: user.uuid)
   end
 
-  def reencrypt_recovery_attempt_data(attempt_events:, personal_key:)
+  def reencrypt_recovery_attempts_data(attempt_events:, personal_key:)
     personal_key_encrypted_events = encrypted_json(personal_key, attempt_events)
 
     # merge the new personal key encrypted data in
@@ -42,6 +43,16 @@ class UserProofingEvent < ApplicationRecord
     write_attempts_data(encrypted_attempt_events:)
   end
 
+  def recover_attempt_events(personal_key:)
+    return nil if retrieved_attempts_data.blank?
+    encryptor = Encryption::Encryptors::PiiEncryptor.new(personal_key)
+
+    encryptor.decrypt(
+      retrieved_attempts_data['personal_key_encrypted_events'],
+      user_uuid: user.uuid,
+    )
+  end
+
   private
 
   def encrypted_json(key, data)
@@ -50,12 +61,12 @@ class UserProofingEvent < ApplicationRecord
   end
 
   def retrieved_attempts_data
-    JSON.parse(
-      attempt_data_retriever.retrieve_user_proofing_events(
-        file_path: attempt_events_file_path,
-        file_name: profile.encrypted_attempts_file_reference,
-      ),
+    data = attempt_data_retriever.retrieve_user_proofing_events(
+      file_path: attempt_events_file_path,
+      file_name: profile.encrypted_attempts_file_reference,
     )
+
+    JSON.parse(data) if data.present?
   end
 
   # Stored data looks like this:

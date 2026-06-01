@@ -271,7 +271,7 @@ class ApplicationController < ActionController::Base
 
       # If there is attempts data, reencrypt it here
       attempt_events = AttemptsApi::Cacher.new(current_user, user_session).fetch
-      if attempts_data.present?
+      if attempt_events.present?
         profile.reencrypt_recovery_attempts_data(
           attempt_events:,
           personal_key: user_session[:personal_key],

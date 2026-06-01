@@ -453,8 +453,12 @@ class Profile < ApplicationRecord
     user_proofing_event.write_events(password:, personal_key:, attempt_events:)
   end
 
-  def reencrypt_recovery_attempt_data(attempt_events:, personal_key:)
-    user_proofing_event.rewrite_recovery_attempt_data(personal_key:, attempt_events:)
+  def reencrypt_recovery_attempts_data(attempt_events:, personal_key:)
+    user_proofing_event.reencrypt_recovery_attempts_data(personal_key:, attempt_events:)
+  end
+
+  def recover_attempt_events(personal_key:)
+    user_proofing_event.recover_attempt_events(personal_key:)
   end
 
   private

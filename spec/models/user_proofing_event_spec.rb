@@ -108,9 +108,19 @@ RSpec.describe UserProofingEvent, type: :model do
 
       expect(user_proofing_event.decrypt_events(password:)).to eq(attempt_events.to_json)
     end
+
+    context 'when there is no data retrieved' do
+      before do
+        allow(doc_retriever).to receive(:retrieve_user_proofing_events).and_return(nil)
+      end
+
+      it 'returns an empty JSON object' do
+        expect(user_proofing_event.decrypt_events(password:)).to be nil
+      end
+    end
   end
 
-  describe '#reencrypt_recovery_attempt_data' do
+  describe '#reencrypt_recovery_attempts_data' do
     let(:new_personal_key) { 'new-personal-key' }
 
     before do
@@ -139,7 +149,7 @@ RSpec.describe UserProofingEvent, type: :model do
         name: 'test-file-reference',
       )
 
-      user_proofing_event.reencrypt_recovery_attempt_data(
+      user_proofing_event.reencrypt_recovery_attempts_data(
         attempt_events:,
         personal_key: new_personal_key,
       )
