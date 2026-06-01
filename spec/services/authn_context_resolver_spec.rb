@@ -319,13 +319,13 @@ RSpec.describe AuthnContextResolver do
 
               context 'when the user has already connected with the service provider' do
                 let(:user) do
-                  build(
-                    :user,
-                    :proofed,
-                    identities: [
-                      create(:service_provider_identity, service_provider_record: service_provider),
-                    ],
-                  )
+                  create(:user, :proofed).tap do |u|
+                    create(
+                      :service_provider_identity,
+                      user: u,
+                      service_provider_record: service_provider,
+                    )
+                  end
                 end
 
                 it 'falls back on proofing without facial match comparison' do
@@ -624,12 +624,13 @@ RSpec.describe AuthnContextResolver do
 
               context 'when the user has already connected with the service provider' do
                 let(:user) do
-                  build(
-                    :user, :proofed,
-                    identities: [
-                      create(:service_provider_identity, service_provider_record: service_provider),
-                    ]
-                  )
+                  create(:user, :proofed).tap do |u|
+                    create(
+                      :service_provider_identity,
+                      user: u,
+                      service_provider_record: service_provider,
+                    )
+                  end
                 end
 
                 it 'falls back on proofing without facial match comparison' do
