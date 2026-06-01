@@ -103,7 +103,7 @@ RSpec.describe UspsInPersonProofing::Applicant do
       end
     end
 
-    context 'with an offset to the expiration time' do
+    context 'with an offset to the expiration time', timezone: 'UTC' do
       context 'with an offset of zero' do
         it 'shows the previous date if interpreted in US timezone' do
           exp_date = described_class.from_usps_applicant_and_enrollment(
