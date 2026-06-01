@@ -322,6 +322,12 @@ class UserMailerPreview < ActionMailer::Preview
     )
   end
 
+  def agent_proofing_failure
+    UserMailer.with(user: user, email_address: email_address_record).agent_proofing_failure(
+      visited_at: Time.zone.now.iso8601,
+    )
+  end
+
   def idv_please_call
     UserMailer.with(user: user, email_address: email_address_record).idv_please_call
   end

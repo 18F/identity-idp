@@ -1985,6 +1985,14 @@ user_mailer.add_email_associated_with_another_account.reset_password_html: Si vo
 user_mailer.add_email.footer: Ce lien expirera dans %{confirmation_period}.
 user_mailer.add_email.header: Merci d’avoir ajouté une adresse e-mail. Veuillez cliquer sur le lien ci-dessous ou faire un copier-coller de l’ensemble du lien dans votre navigateur.
 user_mailer.add_email.subject: Confirmer votre adresse e-mail
+user_mailer.agent_proofing_failure.body: 'La vérification de votre identité n’a pas pu être finalisée lors de votre visite en personne le %{visited_at}. Nous comprenons que cette situation puisse être frustrante et sommes là pour vous aider à mener ce processus à terme.'
+user_mailer.agent_proofing_failure.change_password_link: modifier votre mot de passe
+user_mailer.agent_proofing_failure.contact_link: nous contacter
+user_mailer.agent_proofing_failure.footer_html: Si vous n’avez pas tenté de vérifier votre identité en personne, veuillez %{contact_link_html} et vous connecter pour %{change_password_link_html}.
+user_mailer.agent_proofing_failure.header: Nous n’avons pas pu vérifier votre identité pour le moment
+user_mailer.agent_proofing_failure.help_center_html: Veuillez consulter notre %{help_center_link_html} pour obtenir des instructions étape par étape.
+user_mailer.agent_proofing_failure.help_center_link: 'centre d’aide de %{app_name}'
+user_mailer.agent_proofing_failure.subject: Finalisons la vérification de votre identité
 user_mailer.contact_link_text: nous contacter
 user_mailer.dupe_profile.created.description: Quelqu’un a utilisé vos renseignements personnels pour confirmer un autre compte %{app_name}. Pour votre sécurité, nous avons restreint votre accès sur tous les comptes comportant des informations identiques et ayant accès à %{sp_or_app_name}.
 user_mailer.dupe_profile.created.description2_html: Si c’est vous qui avez confirmé un autre compte, veuillez supprimer le compte en double en suivant %{steps_link_html}. Si vous n’avez pas effectué cette action, veuillez prendre contact avec le %{help_center_link_html}.
