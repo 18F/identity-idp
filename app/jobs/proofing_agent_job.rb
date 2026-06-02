@@ -123,7 +123,7 @@ class ProofingAgentJob < ApplicationJob
       analytics.idv_phone_confirmation_vendor_submitted(
         **{
           success: phone_precheck_body&.dig(:success),
-          vendor: phone_precheck_body,
+          vendor: phone_precheck_body&.dig(:vendor_name),
           area_code: phone_info&.dig(:area_code),
           country_code: phone_info&.dig(:country_code),
           phone_fingerprint: phone_info&.dig(:fingerprint),
@@ -131,9 +131,7 @@ class ProofingAgentJob < ApplicationJob
           hybrid_handoff_phone_used: false,
           manual_review: false,
           errors: phone_precheck_body&.dig(:errors),
-          reason_codes: combined_result&.dig(
-            :resolution, :context, :stages, :resolution, :reason_codes
-          ),
+          reason_codes: phone_precheck_body&.dig(:reason_codes),
           proofing_agent: analytics_attributes,
           proofing_components:,
         }.to_h.merge(
