@@ -484,6 +484,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
             timer: an_instance_of(JobHelpers::Timer),
             best_effort_phone: nil,
             user_email:,
+            is_proofing_agent: false,
           ).and_call_original
           proof
         end
@@ -593,6 +594,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
             timer: an_instance_of(JobHelpers::Timer),
             user_email:,
             best_effort_phone: nil,
+            is_proofing_agent: false,
           ).and_call_original
           proof
         end
@@ -687,6 +689,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
           timer: an_instance_of(JobHelpers::Timer),
           user_email:,
           best_effort_phone: nil,
+          is_proofing_agent: false,
         ).and_call_original
         proof
       end

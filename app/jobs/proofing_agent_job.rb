@@ -160,6 +160,7 @@ class ProofingAgentJob < ApplicationJob
         service_provider_issuer:,
         ipp_enrollment_in_progress: user.has_in_person_enrollment?,
         proofing_vendor:,
+        is_proofing_agent: true,
       )
     end
 

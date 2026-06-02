@@ -139,6 +139,31 @@ RSpec.describe ProofingAgent::ProofingResult do
     end
   end
 
+  context 'phone verification blank' do
+    let(:resolution_result) do
+      {
+        success: true,
+        errors: [],
+        exception: nil,
+        phone_precheck_passed:,
+        context: {
+          stages: {},
+        },
+      }
+    end
+    it 'returns failure' do
+      expect(subject.combined_result).to eq(
+        success: false,
+        reason: 'phone_check_fail',
+        proofing_agent_id:,
+        proofing_location_id:,
+        correlation_id:,
+        service_provider_issuer:,
+        resolution: resolution_result,
+      )
+    end
+  end
+
   context 'when aamva fails' do
     let(:aamva_result) do
       {
