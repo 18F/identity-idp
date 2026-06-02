@@ -42,7 +42,15 @@ module Proofing
           end
 
           def log_result(result_hash)
+            result_hash[:source_attribution] =
+              sanitize_source_attribution(result_hash[:source_attribution])
             @analytics&.idv_socure_kyc_results(**result_hash)
+          end
+
+          def sanitize_source_attribution(attribution)
+            attribution.map do |source|
+              /https?:\/\//.match?(source) ? 'Web Proof' : source
+            end
           end
         end
       end

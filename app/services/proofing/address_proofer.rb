@@ -13,6 +13,13 @@ module Proofing
       socure: :socure_address,
     }.freeze
 
+    DUAL_VENDOR_CHECK_ADDRESS_VENDORS = {
+      lexis_nexis_ddp: [:lexis_nexis_ddp, :socure],
+      socure: [:socure, :lexis_nexis_ddp],
+      lexis_nexis: [:lexis_nexis],
+      mock: [:mock],
+    }.freeze
+
     def initialize(user_uuid:, user_email:)
       @user_uuid = user_uuid
       @user_email = user_email
@@ -31,7 +38,7 @@ module Proofing
             )
           end
         results << result
-        break if result.success?
+        break if stop_processing_vendors?(result, address_vendor)
       end
 
       if results.many?
@@ -104,7 +111,38 @@ module Proofing
     end
 
     def address_vendors
-      [primary_vendor, secondary_vendor].uniq.compact
+      if FeatureManagement.dual_vendor_check_enabled?
+        determine_dual_vendors(primary_vendor)
+      else
+        [primary_vendor, secondary_vendor].uniq.compact
+      end
+    end
+
+    def determine_dual_vendors(primary_vendor)
+      DUAL_VENDOR_CHECK_ADDRESS_VENDORS[primary_vendor]
+    end
+
+    def stop_processing_vendors?(result, vendor)
+      return true if result.success?
+
+      FeatureManagement.dual_vendor_check_enabled? ?
+        !(result.dual_vendor_check_eligible && dual_vendor_check_allowed?(vendor)) :
+        false
+    end
+
+    def dual_vendor_check_allowed?(vendor)
+      (rand * 100) <= vendor_percentage(vendor)
+    end
+
+    def vendor_percentage(vendor)
+      case vendor
+      when :lexis_nexis_ddp
+        IdentityConfig.store.idv_phone_verification_dual_vendor_check_ddp_lexis_nexis_percent
+      when :socure
+        IdentityConfig.store.idv_phone_verification_dual_vendor_check_socure_percent
+      else
+        0
+      end
     end
   end
 end

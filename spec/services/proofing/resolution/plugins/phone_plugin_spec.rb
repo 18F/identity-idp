@@ -8,6 +8,7 @@ RSpec.describe Proofing::Resolution::Plugins::PhonePlugin do
   end
   let(:current_sp) { build(:service_provider) }
   let(:ipp_enrollment_in_progress) { false }
+  let(:is_proofing_agent) { false }
   let(:timer) { JobHelpers::Timer.new }
   let(:best_effort_phone) { { phone: '19876543210' } }
 
@@ -35,6 +36,7 @@ RSpec.describe Proofing::Resolution::Plugins::PhonePlugin do
         timer:,
         user_email: user.email,
         best_effort_phone:,
+        is_proofing_agent:,
       )
     end
 
@@ -207,6 +209,18 @@ RSpec.describe Proofing::Resolution::Plugins::PhonePlugin do
             result = call
 
             expect(result).to be_empty
+          end
+
+          context 'when it is a proofing agent' do
+            let(:is_proofing_agent) { true }
+
+            it 'calls the proofer and returns results' do
+              expect(Proofing::AddressProofer).to receive(:new).and_call_original
+              result = call
+
+              expect(result[:success]).to eq(true)
+              expect(result[:vendor_name]).to eq('AddressMock')
+            end
           end
         end
       end

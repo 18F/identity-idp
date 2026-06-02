@@ -6,6 +6,10 @@ module Idv
       @idv_session = idv_session
     end
 
+    def agent_proofed
+      idv_session.agent_proofed
+    end
+
     def document_check
       idv_session.doc_auth_vendor
     end
@@ -58,6 +62,7 @@ module Idv
 
     def to_h
       {
+        agent_proofed:,
         document_check:,
         document_type_received:,
         source_check:,

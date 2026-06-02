@@ -28,6 +28,13 @@ module Idv
       { name: :go_to_the_post_office },
     ].freeze
 
+    STEP_INDICATOR_STEPS_PROOFING_AGENT = [
+      { name: :getting_started },
+      { name: :verify_id },
+      { name: :confirm_your_information },
+      { name: :re_enter_password },
+    ].freeze
+
     included do
       helper_method :step_indicator_steps
     end
@@ -37,6 +44,8 @@ module Idv
         Idv::StepIndicatorConcern::STEP_INDICATOR_STEPS_IPP
       elsif gpo_address_verification?
         Idv::StepIndicatorConcern::STEP_INDICATOR_STEPS_GPO
+      elsif proofing_agent?
+        Idv::StepIndicatorConcern::STEP_INDICATOR_STEPS_PROOFING_AGENT
       else
         Idv::StepIndicatorConcern::STEP_INDICATOR_STEPS
       end
@@ -55,6 +64,10 @@ module Idv
       return true if current_user.gpo_verification_pending_profile?
 
       return idv_session.verify_by_mail?
+    end
+
+    def proofing_agent?
+      current_user&.proofing_agent_pending?
     end
   end
 end

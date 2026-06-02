@@ -92,13 +92,20 @@ module Users
     end
 
     def trigger_auto_passkey_setup
+      auto_bucket = auto_passkey_prompt_bucket == :auto_passkey_prompt
       user_session[:auto_passkey_prompted] = true
-      user_session[:auto_passkey_prompt_pending] = true
-      redirect_to webauthn_setup_url(platform: true, auto_trigger: true)
+      user_session[:auto_passkey_prompt_pending] = true if auto_bucket
+      redirect_to webauthn_setup_url(
+        platform: true,
+        passkey_upsell: true,
+        auto_trigger: auto_bucket.presence,
+      )
     end
 
     def auto_passkey_prompt_eligible?
-      auto_passkey_prompt_available? && auto_passkey_prompt_bucket == :auto_passkey_prompt
+      auto_passkey_prompt_available? &&
+        [:auto_passkey_prompt, :passkey_setup_prompt_after_password_creation]
+          .include?(auto_passkey_prompt_bucket)
     end
 
     def auto_passkey_prompted?
@@ -116,6 +123,10 @@ module Users
       return unless auto_passkey_prompt_available?
 
       @auto_passkey_prompt_bucket ||= ab_test_bucket(:PASSKEY_UPSELL)
+    end
+
+    def platform_authenticator_available?
+      user_session[:platform_authenticator_available] == true
     end
 
     def two_factor_options_form_params

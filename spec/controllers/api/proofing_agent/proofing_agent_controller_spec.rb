@@ -201,6 +201,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
   let(:residential_address) { nil }
   let(:state_id) { nil }
   let(:passport) { nil }
+  let(:final_attempt) { nil }
   let(:agent_params) do
     ActionController::Parameters.new(
       proofing_agent_id: agent_id,
@@ -216,6 +217,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
       residential_address:,
       state_id:,
       passport:,
+      final_attempt:,
     )
   end
 
@@ -687,6 +689,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
           before do
             RateLimiter.new(user:, rate_limit_type: :idv_resolution).increment_to_limited!
             RateLimiter.new(user:, rate_limit_type: :proof_ssn).increment_to_limited!
+            ActionMailer::Base.deliveries.clear
           end
           it 'returns 429 and logs events' do
             expect(action.status).to eq(429)
@@ -699,6 +702,22 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
               'Rate Limit Reached',
               limiter_type: :proof_ssn,
               step_name: 'proof_user',
+            )
+          end
+
+          it 'sends a failure email to the user' do
+            expect { action }.to change { ActionMailer::Base.deliveries.count }.by(1)
+            expect(ActionMailer::Base.deliveries.last.to)
+              .to eq([user.confirmed_email_addresses.first.email])
+          end
+
+          it 'logs the failure-to-proof email analytics event' do
+            action
+            expect(@analytics).to have_logged_event(
+              :idv_proofing_agent_failure_to_proof_email_sent,
+              user_id: user.uuid,
+              proofing_agent: proofing_agent_analytics_hash,
+              reason: 'maximum_attempts_reached',
             )
           end
         end
@@ -715,7 +734,33 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
               issuer:,
               transaction_id:,
               remaining_attempts: a_kind_of(Integer),
+              final_attempt: false,
             )
+          end
+
+          context 'when final_attempt is true in the request body' do
+            let(:final_attempt) { true }
+
+            it 'logs final_attempt: true in the request_received event' do
+              action
+              transaction_id = DocumentCaptureSession.last.uuid
+
+              expect(@analytics).to have_logged_event(
+                :idv_proofing_agent_request_received,
+                response_body: a_hash_including(status: 'pending', transaction_id:),
+                proofing_agent: proofing_agent_analytics_hash,
+                issuer:,
+                transaction_id:,
+                remaining_attempts: a_kind_of(Integer),
+                final_attempt: true,
+              )
+            end
+
+            it 'forwards final_attempt: true to ProofUser' do
+              expect_any_instance_of(::ProofingAgent::ProofUser).to receive(:call)
+                .with(hash_including(final_attempt: true))
+              action
+            end
           end
 
           it 'includes correlation_id in the response' do
@@ -1105,6 +1150,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
               issuer:,
               transaction_id:,
               remaining_attempts: a_kind_of(Integer),
+              final_attempt: false,
             )
           end
 
@@ -1348,6 +1394,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
               issuer:,
               transaction_id:,
               remaining_attempts: a_kind_of(Integer),
+              final_attempt: false,
             )
           end
 
@@ -1613,6 +1660,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
               issuer:,
               transaction_id:,
               remaining_attempts: a_kind_of(Integer),
+              final_attempt: false,
             )
           end
 

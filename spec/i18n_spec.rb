@@ -114,6 +114,7 @@ module I18n
         { key: 'webauthn_platform_setup.ft_unlock' },
         { key: 'webauthn_platform_setup.phishing_resistant' },
         { key: 'webauthn_platform_setup.upsell' },
+        { key: 'webauthn_platform_setup.heading', locales: %i[es fr zh] }, # Translations pending
       ].freeze
       # rubocop:enable Layout/LineLength
 

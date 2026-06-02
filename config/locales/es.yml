@@ -626,6 +626,7 @@ doc_auth.headings.capture_complete: Verificamos su documento de identidad
 doc_auth.headings.capture_scan_warning_html: No pudimos leer el código de barras de su identificación. Si la información siguiente es incorrecta, %{link_html} de su identificación.
 doc_auth.headings.capture_scan_warning_link: cargue nuevas fotos
 doc_auth.headings.choose_id_type: Elija el tipo de su identificación
+doc_auth.headings.dob_ssn: Ingrese su número de Seguro Social y fecha de nacimiento
 doc_auth.headings.document_capture: Añade fotos de tu licencia de conducir o credencial de identificación oficial
 doc_auth.headings.document_capture_back: Reverso de su identificación
 doc_auth.headings.document_capture_front: Frente de su identificación
@@ -668,6 +669,7 @@ doc_auth.info.capture_status_none: Alinear
 doc_auth.info.capture_status_small_document: Acercar
 doc_auth.info.capture_status_tap_to_capture: Tocar para capturar
 doc_auth.info.choose_id_type: Seleccione el tipo de documento que tenga. Tendrá que tomar fotografías de su identificación para verificar su identidad.
+doc_auth.info.dob_ssn: Necesitamos esta información para vincular de forma segura esta cuenta con la identidad que acaba de verificar en persona.
 doc_auth.info.dos_passport_api_down_message: No podemos aceptar pasaportes por ahora. Puede usar una licencia de conducir o identificación estatal, o bien vuelva a intentarlo más tarde.
 doc_auth.info.exit.with_sp: Salir de %{app_name} y volver a %{sp_name}
 doc_auth.info.exit.without_sp: Salga de la verificación de identidad y vaya a la página de su cuenta
@@ -760,19 +762,21 @@ duplicate_profiles_detected.accounts_list.heading: Cuentas con la misma informac
 duplicate_profiles_detected.cant_access: 'No puedo acceder a una cuenta'
 duplicate_profiles_detected.connected_acct_html: '<strong> Agencias conectadas: </strong> %{count}'
 duplicate_profiles_detected.created_at_html: '<strong> Creado: </strong> %{timestamp_html}'
-duplicate_profiles_detected.delete_duplicates.details_html: Inicie sesión y, en la página de “Su cuenta”, elimine la cuenta. %{link_html}
+duplicate_profiles_detected.delete_duplicates.details_html: Inicia sesión en la cuenta que va a eliminar en <a href="https://secure.login.gov">https://secure.login.gov</a>. Así es %{link_html}
+duplicate_profiles_detected.delete_duplicates.details2_html: Si lo desea, %{link_html} a la cuenta que conservará después de eliminar la cuenta duplicada.
+duplicate_profiles_detected.delete_duplicates.details2.link: puede añadir ese correo electrónico
 duplicate_profiles_detected.delete_duplicates.heading: 'Elimine las cuentas duplicadas.'
-duplicate_profiles_detected.delete_duplicates.link: Cómo eliminar su cuenta.
+duplicate_profiles_detected.delete_duplicates.link: como puede eliminar su cuenta.
 duplicate_profiles_detected.dont_recognize_account: No reconozco una de estas cuentas
 duplicate_profiles_detected.duplicate: Duplicada
 duplicate_profiles_detected.get_help: Obtener ayuda
 duplicate_profiles_detected.heading: Encontramos otras cuentas que pueden ser suyas
-duplicate_profiles_detected.intro_html: '%{sp_name} requiere que usted tenga una sola cuenta de %{app_name} en la cual haya verificado su identidad. %{link_html}'
-duplicate_profiles_detected.intro.link: Obtenga más información acerca de las cuentas duplicadas.
-duplicate_profiles_detected.intro2: 'Antes de iniciar sesión en %{app_name}, necesita eliminar las cuentas duplicadas. Esto es lo que tiene que hacer:'
+duplicate_profiles_detected.intro_html: '%{sp_name} requiere que usted tenga sólo una cuenta de %{app_name} con una identidad verificada. Debe eliminar %{link_html} antes de iniciar sesión en %{sp_name}. Esto es lo que debe hacer:'
+duplicate_profiles_detected.intro.link: las cuentas duplicativas
 duplicate_profiles_detected.last_sign_in_at_html: '<strong> Último inicio de sesión: </strong> %{timestamp_html}'
 duplicate_profiles_detected.never_logged_in: Nunca he iniciado sesión en
-duplicate_profiles_detected.select_an_account.details: Conserve la cuenta que más usa. Por ejemplo, la que está vinculada a más servicios. Así, no tendrá que volver a conectar los servicios.
+duplicate_profiles_detected.select_an_account.details_html: 'Conserve la cuenta que esté vinculada a la mayor cantidad de servicios. Diríjase a la página %{link_html} para ver las agencias conectadas; para ello, seleccione «Sus cuentas conectadas» en el menú a la izquierda.'
+duplicate_profiles_detected.select_an_account.details.link: «Su cuenta»
 duplicate_profiles_detected.select_an_account.heading: Elija la cuenta que desea conservar.
 duplicate_profiles_detected.sign_back_in.details: Vuelva al sitio web de %{app_name} e inicie sesión usando la cuenta de %{app_name} que conservó.
 duplicate_profiles_detected.sign_back_in.heading: Vuelva a iniciar sesión en %{app_name} con una cuenta.
@@ -1246,6 +1250,9 @@ idv.messages.sessions.enter_password_message: Cuando vuelva a ingresar su contra
 idv.messages.sessions.no_pii: SITIO DE PRUEBA - No use información personal real (para fines de demostración únicamente) - SITIO DE PRUEBA
 idv.messages.verify_info: Revisaremos los registros para verificar que su dirección y su número de Seguro Social coincidan con la información de su identificación.
 idv.messages.verifying: Verificando…
+idv.proofing_agent_expired.body: Por su seguridad, el correo electrónico para confirmar su cuenta que le enviamos ha caducado. Era válido durante solo 48 horas. Para continuar, complete nuevamente el paso de verificación de identidad.
+idv.proofing_agent_expired.continue: Continuar
+idv.proofing_agent_expired.heading: Finalicemos la verificación de su identidad
 idv.titles.activated: Ya se verificó su identidad
 idv.titles.come_back_later: Su carta está en camino
 idv.titles.enter_password: Revise y envíe
@@ -1697,6 +1704,7 @@ simple_form.required.mark: ''
 simple_form.required.text: Este campo es obligatorio
 simple_form.yes: Sí
 step_indicator.accessible_label: Avance por pasos
+step_indicator.flows.idv.confirm_your_information: Confirme su información
 step_indicator.flows.idv.find_a_post_office: Busque una oficina de correos
 step_indicator.flows.idv.getting_started: Inicio
 step_indicator.flows.idv.go_to_the_post_office: Vaya a la oficina de correos
@@ -1994,6 +2002,14 @@ user_mailer.add_email_associated_with_another_account.reset_password_html: Si no
 user_mailer.add_email.footer: Este vínculo vence en %{confirmation_period}.
 user_mailer.add_email.header: Gracias por agregar un correo electrónico. Haga clic en el vínculo siguiente, o copie y pegue el vínculo completo en su navegador.
 user_mailer.add_email.subject: Confirme su correo electrónico
+user_mailer.agent_proofing_failure.body: 'No fue posible completar su verificación de identidad durante su visita el %{visited_at}. Entendemos que esto pueda resultar frustrante y estamos aquí para ayudarle a completar este proceso.'
+user_mailer.agent_proofing_failure.change_password_link: cambiar su contraseña
+user_mailer.agent_proofing_failure.contact_link: contáctenos
+user_mailer.agent_proofing_failure.footer_html: Si no intentó verificar su identidad en persona, %{contact_link_html} e inicie sesión para %{change_password_link_html}.
+user_mailer.agent_proofing_failure.header: No pudimos verificar su identidad en esta ocasión
+user_mailer.agent_proofing_failure.help_center_html: Por favor, visite nuestro %{help_center_link_html} para obtener más información.
+user_mailer.agent_proofing_failure.help_center_link: 'centro de ayuda de %{app_name}'
+user_mailer.agent_proofing_failure.subject: Completemos su verificación de identidad
 user_mailer.contact_link_text: contáctenos
 user_mailer.dupe_profile.created.description: Alguien verificó otra cuenta de %{app_name} usando la información personal de usted. Por su seguridad, hemos restringido su acceso a todas las cuentas con información que coincide y a %{sp_or_app_name}.
 user_mailer.dupe_profile.created.description2_html: Si fue usted quien verificó otra cuenta, elimine la cuenta duplicada siguiendo %{steps_link_html}. Si no fue usted, contacte con %{help_center_link_html}.
@@ -2216,6 +2232,7 @@ webauthn_platform_recommended.heading: Configuración del desbloqueo facial o t�
 webauthn_platform_recommended.skip: Omitir
 webauthn_platform_recommended.upsell: El desbloqueo facial o táctil está protegido contra el phishing y no almacenamos ninguna grabación de su rostro ni de su huella dactilar, con el fin de resguardar la privacidad de su información.
 webauthn_platform_setup.ft_unlock: Face or touch unlock
+webauthn_platform_setup.heading: Use Face or Touch unlock for a faster, more secure sign in
 webauthn_platform_setup.info_html: '%{ft_unlock_html} is %{phishing_resistant_html} and we don’t store any recordings of your face or fingerprint, so your information stays private.'
 webauthn_platform_setup.instructions: Use your face, fingerprint, or screen lock to verify it’s really you. No passwords, apps, or codes needed.
 webauthn_platform_setup.phishing_resistant: phishing-resistant

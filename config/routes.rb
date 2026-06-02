@@ -350,8 +350,6 @@ Rails.application.routes.draw do
     get '/sign_up/enter_email' => 'sign_up/registrations#new', as: :sign_up_email
     post '/sign_up/enter_email' => 'sign_up/registrations#create', as: :sign_up_register
     get '/sign_up/enter_password' => 'sign_up/passwords#new'
-    get '/sign_up/webauthn_platform_setup' => 'sign_up/webauthn_platform_setup#new', as: :sign_up_webauthn_platform_setup
-    patch '/sign_up/webauthn_platform_setup' => 'sign_up/webauthn_platform_setup#confirm', as: :confirm_signup_webauthn_platform_setup
     get '/sign_up/select_email' => 'sign_up/select_email#show'
     post '/sign_up/select_email' => 'sign_up/select_email#create'
     get '/sign_up/verify_email' => 'sign_up/emails#show', as: :sign_up_verify_email
@@ -387,6 +385,8 @@ Rails.application.routes.draw do
     end
     scope '/verify', module: 'idv', as: 'idv' do
       get '/mail_only_warning' => 'mail_only_warning#show'
+      get '/proofing_agent/expired' => 'proofing_agent_expired#show'
+      post '/proofing_agent/expired' => 'proofing_agent_expired#update'
       get '/personal_key' => 'personal_key#show'
       post '/personal_key' => 'personal_key#update'
       get '/forgot_password' => 'forgot_password#new'
@@ -435,6 +435,8 @@ Rails.application.routes.draw do
       post '/phone/resend_code' => 'resend_otp#create', as: :resend_otp
       get '/phone_confirmation' => 'otp_verification#show', as: :otp_verification
       put '/phone_confirmation' => 'otp_verification#update', as: :nil
+      get '/enter_dob_ssn' => 'enter_dob_ssn#new', as: :enter_dob_ssn
+      post '/enter_dob_ssn' => 'enter_dob_ssn#create'
       get '/enter_password' => 'enter_password#new'
       put '/enter_password' => 'enter_password#create'
       get '/session/errors/warning' => 'session_errors#warning'

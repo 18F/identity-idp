@@ -30,15 +30,13 @@ module UserAlerts
     end
 
     def self.sign_in_events_start_time(user:)
-      # Avoid scenarios where stale events may be reflected in the time since sign in, such as if
-      # the server is not always active and the job may not run until later.
-      #
-      # Typically, it's guaranteed that even in the worst-case of a sign-in occurring immediately
-      # after a scheduled job run, it should take no longer than twice the scheduled delay. A small
-      # buffer is added to account for delays of the job run or within the job itself.
+      # window_start_in_minutes = IdentityConfig.store.new_device_alert_window_start_in_minutes
+      # start_times = [user.sign_in_new_device_at]
+      # start_times << window_start_in_minutes.minutes.ago if window_start_in_minutes
+      # start_times.max
       [
         user.sign_in_new_device_at,
-        (IdentityConfig.store.new_device_alert_delay_in_minutes * 3).minutes.ago,
+        IdentityConfig.store.new_device_alert_window_start_in_minutes.minutes.ago,
       ].max
     end
 

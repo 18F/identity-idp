@@ -178,6 +178,7 @@ enable_test_routes: true
 encrypted_document_storage_s3_bucket: 'test-bucket'
 event_disavowal_expiration_hours: 240
 facial_match_general_availability_enabled: true
+facial_match_preferred_on_connected_accounts: false
 feature_account_creation_passkey_auto_prompt: false
 feature_idv_force_gpo_verification_enabled: false
 feature_idv_hybrid_flow_enabled: true
@@ -228,6 +229,10 @@ idv_max_attempts: 5
 idv_min_age_years: 13
 idv_phone_confirmation_manual_review_validity_hours: 0
 idv_phone_precheck_percent: 0
+idv_phone_verification_dual_vendor_check_ddp_lexis_nexis_percent: 0
+idv_phone_verification_dual_vendor_check_enabled: false
+idv_phone_verification_dual_vendor_check_socure_percent: 0
+idv_phone_verification_dual_vendor_check_socure_reason_codes: '[]'
 idv_proofing_agent_config: '[]'
 idv_proofing_agent_enabled: false
 idv_proofing_agent_result_expiration_seconds: 10
@@ -268,6 +273,7 @@ in_person_enrollments_ready_job_max_number_of_messages: 10
 in_person_enrollments_ready_job_queue_url: ''
 in_person_enrollments_ready_job_visibility_timeout_seconds: 30
 in_person_enrollments_ready_job_wait_time_seconds: 20
+in_person_expiration_time_offset_hours: 0
 in_person_opt_in_available_completion_survey_url: 'https://handbook.login.gov'
 in_person_outage_emailed_by_date: 'November 1, 2024'
 # in_person_outage_expected_update_date and in_person_outage_emailed_by_date below
@@ -350,7 +356,7 @@ min_password_score: 3
 minimum_wait_before_another_usps_letter_in_hours: 24
 mx_timeout: 3
 new_device_alert_delay_in_minutes: 5
-new_device_alert_window_start_in_minutes: 15
+new_device_alert_window_start_in_minutes: 480
 newrelic_license_key: ''
 openid_connect_authorization_code_expiration_seconds: 300
 openid_connect_content_security_form_action_enabled: false

@@ -615,6 +615,7 @@ doc_auth.headings.capture_complete: We verified your identity document
 doc_auth.headings.capture_scan_warning_html: We couldn’t read the barcode on your ID. If the information below is incorrect, please %{link_html} of your ID.
 doc_auth.headings.capture_scan_warning_link: upload new photos
 doc_auth.headings.choose_id_type: Choose your ID type
+doc_auth.headings.dob_ssn: Enter your Social Security number and Date of Birth
 doc_auth.headings.document_capture: Add photos of your driver’s license or state ID card
 doc_auth.headings.document_capture_back: Back of your ID
 doc_auth.headings.document_capture_front: Front of your ID
@@ -657,6 +658,7 @@ doc_auth.info.capture_status_none: Align
 doc_auth.info.capture_status_small_document: Move Closer
 doc_auth.info.capture_status_tap_to_capture: Tap to Capture
 doc_auth.info.choose_id_type: Select the type of document that you have. You’ll need to take photos of your ID to verify your identity.
+doc_auth.info.dob_ssn: We need this information to securely link this account to the identity you just verified in person.
 doc_auth.info.dos_passport_api_down_message: We cannot accept passports at this time. You can use a driver’s license or state ID, or try again later.
 doc_auth.info.exit.with_sp: Exit %{app_name} and return to %{sp_name}
 doc_auth.info.exit.without_sp: Exit identity verification and go to your account page
@@ -749,19 +751,21 @@ duplicate_profiles_detected.accounts_list.heading: Accounts with the same verifi
 duplicate_profiles_detected.cant_access: 'I can’t access an account'
 duplicate_profiles_detected.connected_acct_html: '<strong> Connected agencies: </strong> %{count}'
 duplicate_profiles_detected.created_at_html: '<strong> Created: </strong> %{timestamp_html}'
-duplicate_profiles_detected.delete_duplicates.details_html: Sign in and delete the account from the “Your account” page. %{link_html}
+duplicate_profiles_detected.delete_duplicates.details_html: Sign into the account you are going to delete at <a href="https://secure.login.gov">https://secure.login.gov</a>. Here’s %{link_html}
+duplicate_profiles_detected.delete_duplicates.details2_html: If you want, you may %{link_html} to the account you’re keeping after deleting the duplicate account.
+duplicate_profiles_detected.delete_duplicates.details2.link: add the email
 duplicate_profiles_detected.delete_duplicates.heading: 'Delete the duplicate account(s)'
-duplicate_profiles_detected.delete_duplicates.link: How to delete your account.
+duplicate_profiles_detected.delete_duplicates.link: how to delete your account.
 duplicate_profiles_detected.dont_recognize_account: I don’t recognize an account above
 duplicate_profiles_detected.duplicate: Duplicate
 duplicate_profiles_detected.get_help: Get Help
 duplicate_profiles_detected.heading: We found other accounts that may be yours
-duplicate_profiles_detected.intro_html: 'The %{sp_name} requires that you only have one identity verified %{app_name} account. %{link_html}'
-duplicate_profiles_detected.intro.link: Learn more about duplicate accounts.
-duplicate_profiles_detected.intro2: 'You need to delete duplicate accounts before signing into %{app_name}. Here’s what to do:'
+duplicate_profiles_detected.intro_html: 'The %{sp_name} requires that you only have one %{app_name} account with a verified identity. You need to delete %{link_html} before signing into %{sp_name}. Here’s what to do:'
+duplicate_profiles_detected.intro.link: duplicate accounts
 duplicate_profiles_detected.last_sign_in_at_html: '<strong> Last login: </strong> %{timestamp_html}'
 duplicate_profiles_detected.never_logged_in: Never logged in to
-duplicate_profiles_detected.select_an_account.details: Keep the account you use the most. For example, the one tied to the most services. That way, you won’t have to reconnect services.
+duplicate_profiles_detected.select_an_account.details_html: 'Keep the account that’s connected to the most services. Go to %{link_html} page to view connected agencies by selecting “Your connected accounts” in the left menu.'
+duplicate_profiles_detected.select_an_account.details.link: Your account
 duplicate_profiles_detected.select_an_account.heading: Choose an account to keep
 duplicate_profiles_detected.sign_back_in.details: Go back to the %{app_name} website and sign in using the one %{app_name} account you kept.
 duplicate_profiles_detected.sign_back_in.heading: Sign back into %{app_name} with one account
@@ -1235,6 +1239,9 @@ idv.messages.sessions.enter_password_message: When you re-enter your password, %
 idv.messages.sessions.no_pii: TEST SITE - Do not use real personal information (demo purposes only) - TEST SITE
 idv.messages.verify_info: We will check records to verify that your address and Social Security number match the information on your ID.
 idv.messages.verifying: Verifying…
+idv.proofing_agent_expired.body: For your security, the ‘confirm account’ email we sent has expired. It was valid for 48 hours. To continue, please complete the identity verification step again.
+idv.proofing_agent_expired.continue: Continue
+idv.proofing_agent_expired.heading: Let’s finish setting up your identity verification
 idv.titles.activated: Your identity has already been verified
 idv.titles.come_back_later: Your letter is on the way
 idv.titles.enter_password: Review and submit
@@ -1685,6 +1692,7 @@ simple_form.required.mark: ''
 simple_form.required.text: This field is required
 simple_form.yes: 'Yes'
 step_indicator.accessible_label: Step progress
+step_indicator.flows.idv.confirm_your_information: Confirm your information
 step_indicator.flows.idv.find_a_post_office: Find a Post Office
 step_indicator.flows.idv.getting_started: Getting started
 step_indicator.flows.idv.go_to_the_post_office: Go to the Post Office
@@ -1982,6 +1990,14 @@ user_mailer.add_email_associated_with_another_account.reset_password_html: If yo
 user_mailer.add_email.footer: This link will expire in %{confirmation_period}.
 user_mailer.add_email.header: Thanks for adding an email. Please click the link below or copy and paste the entire link into your browser.
 user_mailer.add_email.subject: Confirm your email
+user_mailer.agent_proofing_failure.body: 'Your identity verification could not be completed during your in-person visit on %{visited_at}. We understand this may be frustrating and are here to help you complete this process.'
+user_mailer.agent_proofing_failure.change_password_link: change your password
+user_mailer.agent_proofing_failure.contact_link: contact us
+user_mailer.agent_proofing_failure.footer_html: If you did not attempt to verify your identity in person, please %{contact_link_html} and sign in to %{change_password_link_html}.
+user_mailer.agent_proofing_failure.header: We were unable to verify your identity at this time
+user_mailer.agent_proofing_failure.help_center_html: Please visit our %{help_center_link_html} to get step-by-step guidance.
+user_mailer.agent_proofing_failure.help_center_link: '%{app_name} Help Center'
+user_mailer.agent_proofing_failure.subject: 'Let’s complete your identity verification'
 user_mailer.contact_link_text: contact us
 user_mailer.dupe_profile.created.description: Someone has verified another %{app_name} account using your personal information. For your safety, we have restricted access on all accounts with matching information and access to %{sp_or_app_name}.
 user_mailer.dupe_profile.created.description2_html: If this was you verifying another account, delete the duplicate account by following the %{steps_link_html}. If this wasn’t you contact the %{help_center_link_html}.
@@ -2204,6 +2220,7 @@ webauthn_platform_recommended.heading: Set up face or touch unlock for a more se
 webauthn_platform_recommended.skip: Skip
 webauthn_platform_recommended.upsell: Face or touch unlock is phishing-resistant and we don’t store any recordings of your face or fingerprint, so your information stays private.
 webauthn_platform_setup.ft_unlock: Face or touch unlock
+webauthn_platform_setup.heading: Use Face or Touch unlock for a faster, more secure sign in
 webauthn_platform_setup.info_html: '%{ft_unlock_html} is %{phishing_resistant_html} and we don’t store any recordings of your face or fingerprint, so your information stays private.'
 webauthn_platform_setup.instructions: Use your face, fingerprint, or screen lock to verify it’s really you. No passwords, apps, or codes needed.
 webauthn_platform_setup.phishing_resistant: phishing-resistant

@@ -2,6 +2,7 @@ require 'rails_helper'
 
 RSpec.describe UspsInPersonProofing::Applicant do
   let(:document_expiration_date) { Faker::Date.in_date_period(year: 2030).strftime('%Y-%m-%d') }
+  let(:expiration_time_offset_hours) { 0 }
   let(:document_expiration_date_in_epoch) do
     Time.zone.parse(document_expiration_date).to_i
   end
@@ -21,6 +22,16 @@ RSpec.describe UspsInPersonProofing::Applicant do
       id_expiration: document_expiration_date,
     }
   end
+  let(:applicant) { Pii::UspsApplicant.new(**applicant_pii) }
+  let(:enrollment) { build('in_person_enrollment', document_type: document_type) }
+  let(:email) { Faker::Internet.email(name: 'noreply') }
+
+  before do
+    allow(IdentityConfig.store).to receive(:usps_ipp_enrollment_status_update_email_address)
+      .and_return(email)
+    allow(IdentityConfig.store).to receive(:in_person_expiration_time_offset_hours)
+      .and_return(expiration_time_offset_hours)
+  end
 
   describe '.from_usps_applicant_and_enrollment' do
     shared_examples 'when values contains transliterable characters' do
@@ -33,13 +44,6 @@ RSpec.describe UspsInPersonProofing::Applicant do
             city: 'Qüertyton',
           ),
         )
-      end
-      let(:enrollment) { build('in_person_enrollment', document_type: document_type) }
-      let(:email) { Faker::Internet.email(name: 'noreply') }
-
-      before do
-        allow(IdentityConfig.store).to receive(:usps_ipp_enrollment_status_update_email_address)
-          .and_return(email)
       end
 
       it 'returns a UspsInPersonProofing::Applicant' do
@@ -77,15 +81,6 @@ RSpec.describe UspsInPersonProofing::Applicant do
     end
 
     context 'when values do not contain transliterable characters' do
-      let(:applicant) { Pii::UspsApplicant.new(**applicant_pii) }
-      let(:enrollment) { build('in_person_enrollment', document_type: document_type) }
-      let(:email) { Faker::Internet.email(name: 'noreply') }
-
-      before do
-        allow(IdentityConfig.store).to receive(:usps_ipp_enrollment_status_update_email_address)
-          .and_return(email)
-      end
-
       it 'returns a UspsInPersonProofing::Applicant' do
         expect(
           described_class.from_usps_applicant_and_enrollment(
@@ -105,6 +100,40 @@ RSpec.describe UspsInPersonProofing::Applicant do
           email:,
           document_type: usps_expected_document_type,
         )
+      end
+    end
+
+    context 'with an offset to the expiration time', timezone: 'UTC' do
+      context 'with an offset of zero' do
+        it 'shows the previous date if interpreted in US timezone' do
+          exp_date = described_class.from_usps_applicant_and_enrollment(
+            applicant,
+            enrollment,
+          ).document_expiration_date
+          expect(
+            Time.at(
+              exp_date,
+              in: '-07:00',
+            ).strftime('%Y-%m-%d'),
+          ).not_to eq document_expiration_date
+        end
+      end
+
+      context 'with an offset of 23 hrs' do
+        let(:expiration_time_offset_hours) { 23 }
+
+        it 'shows the correct date if interpreted in US timezone' do
+          exp_date = described_class.from_usps_applicant_and_enrollment(
+            applicant,
+            enrollment,
+          ).document_expiration_date
+          expect(
+            Time.at(
+              exp_date,
+              in: '-07:00',
+            ).strftime('%Y-%m-%d'),
+          ).to eq document_expiration_date
+        end
       end
     end
   end

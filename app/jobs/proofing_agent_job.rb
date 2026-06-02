@@ -17,7 +17,8 @@ class ProofingAgentJob < ApplicationJob
     transaction_id:,
     proofing_agent_id: nil,
     proofing_location_id: nil,
-    correlation_id: nil
+    correlation_id: nil,
+    final_attempt: false
   )
     timer = JobHelpers::Timer.new
 
@@ -60,6 +61,17 @@ class ProofingAgentJob < ApplicationJob
         reason:,
         transaction_id:,
         correlation_id:,
+      )
+    end
+
+    if !success && final_attempt
+      ProofingAgent::FailureEmailSender.new(user: user, analytics: analytics).call(
+        visited_at: (document_capture_session.requested_at || Time.zone.now).iso8601,
+        reason: reason,
+        proofing_agent_id: proofing_agent_id,
+        proofing_location_id: proofing_location_id,
+        correlation_id: correlation_id,
+        transaction_id: transaction_id,
       )
     end
   ensure
@@ -148,6 +160,7 @@ class ProofingAgentJob < ApplicationJob
         service_provider_issuer:,
         ipp_enrollment_in_progress: user.has_in_person_enrollment?,
         proofing_vendor:,
+        is_proofing_agent: true,
       )
     end
 

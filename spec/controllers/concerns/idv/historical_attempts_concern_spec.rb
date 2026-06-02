@@ -78,10 +78,7 @@ RSpec.describe Idv::HistoricalAttemptsConcern, type: :controller do
 
       context 'when user has an active profile' do
         let!(:user_proofing_event) do
-          user.active_profile.build_user_proofing_event(
-            cost: JSON.parse(encrypted_existing_events)['cost'],
-            salt: JSON.parse(encrypted_existing_events)['salt'],
-          )
+          user.active_profile.build_user_proofing_event
         end
 
         it 'decrypts the appropriate UserProofingEvent' do
@@ -111,8 +108,6 @@ RSpec.describe Idv::HistoricalAttemptsConcern, type: :controller do
         context 'events already sent to SP' do
           let(:user_proofing_event) do
             user.active_profile.build_user_proofing_event(
-              cost: JSON.parse(encrypted_existing_events)['cost'],
-              salt: JSON.parse(encrypted_existing_events)['salt'],
               service_provider_ids_sent: [sp.id],
             )
           end

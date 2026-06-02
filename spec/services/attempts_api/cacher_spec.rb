@@ -4,7 +4,8 @@ RSpec.describe AttemptsApi::Cacher do
   let(:user) { create(:user, :proofed) }
   let(:user_session) { {} }
   let(:password) { 'correct horse battery staple' }
-  let(:profile) { user.active_profile }
+  let(:encrypted_attempts_file_reference) { 'file-name' }
+  let(:profile) { create(:profile, :active, encrypted_attempts_file_reference:) }
   subject(:cacher) { described_class.new(user, user_session) }
   let(:decrypted_events) do
     [
@@ -32,6 +33,15 @@ RSpec.describe AttemptsApi::Cacher do
         ),
       )
       expect(result).to eq(decrypted_events.as_json)
+    end
+
+    context 'profile does not have an encrypted_attempts_file_reference' do
+      let(:encrypted_attempts_file_reference) { nil }
+      it 'does not attempt to retrieve the events' do
+        subject.save(password:)
+
+        expect(user_session[:encrypted_proofing_events]).to be_blank
+      end
     end
   end
 
