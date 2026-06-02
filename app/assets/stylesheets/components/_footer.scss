@@ -60,6 +60,19 @@ body {
 
 .site-wrap {
   flex: 1 0 auto; // 2
+
+  &:has(.proofing-agent-expired-page) {
+    @include at-media-max('tablet') {
+      display: flex;
+      flex-direction: column;
+      background-color: color('white');
+
+      > .grid-container {
+        flex: 1 0 auto;
+        margin-bottom: 0;
+      }
+    }
+  }
 }
 
 .footer__language-picker {

@@ -385,6 +385,8 @@ Rails.application.routes.draw do
     end
     scope '/verify', module: 'idv', as: 'idv' do
       get '/mail_only_warning' => 'mail_only_warning#show'
+      get '/proofing_agent/expired' => 'proofing_agent_expired#show'
+      post '/proofing_agent/expired' => 'proofing_agent_expired#update'
       get '/personal_key' => 'personal_key#show'
       post '/personal_key' => 'personal_key#update'
       get '/forgot_password' => 'forgot_password#new'
