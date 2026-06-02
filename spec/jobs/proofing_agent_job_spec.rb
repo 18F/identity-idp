@@ -229,7 +229,7 @@ RSpec.describe ProofingAgentJob, type: :job do
     end
 
     context 'when the MRZ check passes' do
-      let(:pii) { Idp::Constants::MOCK_IDV_PROOFING_PASSPORT_APPLICANT }
+      let(:pii) { Idp::Constants::MOCK_IDV_PROOFING_PASSPORT_APPLICANT.merge(phone: '12025551212').freeze }
 
       it 'stores a successful result with mrz data' do
         perform
@@ -243,7 +243,7 @@ RSpec.describe ProofingAgentJob, type: :job do
     end
 
     context 'when the MRZ check fails' do
-      let(:pii) { Idp::Constants::MOCK_IDV_PROOFING_PASSPORT_APPLICANT }
+      let(:pii) { Idp::Constants::MOCK_IDV_PROOFING_PASSPORT_APPLICANT.merge(phone: '12025551212').freeze }
 
       before do
         failing_response = DocAuth::Response.new(

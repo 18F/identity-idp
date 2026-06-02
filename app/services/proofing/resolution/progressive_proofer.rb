@@ -9,7 +9,8 @@ module Proofing
                   :user_email,
                   :threatmetrix_plugin,
                   :phone_plugin,
-                  :proofing_vendor
+                  :proofing_vendor,
+                  :is_proofing_agent
 
       PROOFING_VENDOR_SP_COST_TOKENS = {
         mock: :mock_resolution,
@@ -18,13 +19,15 @@ module Proofing
         socure_kyc: :socure_resolution,
       }.freeze
 
-      def initialize(user_uuid:, proofing_vendor:, user_email:, analytics:)
+      def initialize(user_uuid:, proofing_vendor:, user_email:, analytics:,
+                     is_proofing_agent: false)
         @user_uuid = user_uuid
         @user_email = user_email
         @threatmetrix_plugin = Plugins::ThreatMetrixPlugin.new
         @phone_plugin = Plugins::PhonePlugin.new
         @proofing_vendor = proofing_vendor
         @analytics = analytics
+        @is_proofing_agent = is_proofing_agent
       end
 
       # @param [Hash] applicant_pii keys are symbols and values are strings, confidential user info
@@ -103,6 +106,7 @@ module Proofing
           best_effort_phone:,
           timer:,
           user_email:,
+          is_proofing_agent:,
         )
 
         ResultAdjudicator.new(

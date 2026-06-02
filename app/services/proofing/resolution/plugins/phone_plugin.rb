@@ -12,12 +12,12 @@ module Proofing
           residential_address_resolution_result:,
           user_email:,
           timer:,
-          best_effort_phone: nil
-
+          best_effort_phone: nil,
+          is_proofing_agent: false
         )
           @user_uuid = applicant_pii[:uuid]
           @phone_number = nil
-          return {} unless precheck_enabled
+          return {} unless precheck_enabled || is_proofing_agent
           return {} if phone_confirmation_manually_reviewed?
 
           if !state_id_address_resolution_result.success? ||
