@@ -251,6 +251,7 @@ RSpec.describe ProofingAgentJob, type: :job do
             reason: nil,
             transaction_id: transaction_id,
             correlation_id: correlation_id,
+            analytics_attributes: an_instance_of(Hash),
           )
 
           result = document_capture_session.reload.load_agent_proofed_user
