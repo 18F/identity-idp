@@ -1252,6 +1252,9 @@ idv.messages.sessions.enter_password_message: 你重新输入密码时， %{app_
 idv.messages.sessions.no_pii: 测试站点 - 请勿使用真实个人信息（仅为演示目的）- 测试站点
 idv.messages.verify_info: 我们会检查记录以验证你的地址和社会保障号码是否与你身份证件上的信息相符。
 idv.messages.verifying: 验证中。。。
+idv.proofing_agent_expired.body: 为了您的账户安全，我们发送的“确认账户”邮件有效期为48小时，现已过期。请重新完成身份验证步骤，以便继续操作。
+idv.proofing_agent_expired.continue: 继续
+idv.proofing_agent_expired.heading: 请完成身份验证设置
 idv.titles.activated: 你的身份已验证
 idv.titles.come_back_later: 你的信件已寄出。
 idv.titles.enter_password: 审阅并提交
