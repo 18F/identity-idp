@@ -5336,6 +5336,25 @@ module AnalyticsEvents
     )
   end
 
+  # Logs when a "couldn't verify" email is sent after a failed final proofing attempt or rate limit
+  # @param [String] user_id User UUID
+  # @param [Hash] proofing_agent The proofing agent information
+  # @param [String] reason Why proofing failed (e.g. 'id_fail', 'maximum_attempts_reached')
+  def idv_proofing_agent_failure_to_proof_email_sent(
+    user_id:,
+    proofing_agent:,
+    reason:,
+    **extra
+  )
+    track_event(
+      :idv_proofing_agent_failure_to_proof_email_sent,
+      user_id:,
+      proofing_agent:,
+      reason:,
+      **extra,
+    )
+  end
+
   # Logs when the agent-proofing profile confirmation email was sent to a user
   # @param [String] user_id UUID of the user who was successfully agent-proofed
   # @param [Hash] proofing_agent The proofing agent information
@@ -5391,12 +5410,14 @@ module AnalyticsEvents
   # @param [String] issuer The issuer associated with the proofing request
   # @param [Integer, nil] remaining_attempts attempts remaining before rate limit is hit
   # @param [String,nil] transaction_id The transaction ID associated with the proofing request
+  # @param [Boolean,nil] final_attempt Whether the request was marked as the final attempt
   def idv_proofing_agent_request_received(
     response_body:,
     proofing_agent:,
     issuer:,
     remaining_attempts: nil,
     transaction_id: nil,
+    final_attempt: nil,
     **extra
   )
     track_event(
@@ -5406,6 +5427,7 @@ module AnalyticsEvents
       issuer:,
       remaining_attempts:,
       transaction_id:,
+      final_attempt:,
       **extra,
     )
   end
@@ -6800,6 +6822,7 @@ module AnalyticsEvents
   # @param [:authentication, :account_creation, nil] webauthn_platform_recommended A/B test for
   # @param [Integer, nil] webauthn_setup_duration Duration of webauthn setup in seconds
   # @param [Boolean, nil] auto_passkey_prompted Whether the WebAuthn setup came from the auto prompt
+  # @param [Boolean, nil] passkey_signup_setup_recommended user is recommended to add passkey
   def multi_factor_auth_setup(
     success:,
     multi_factor_auth_method:,
@@ -6828,6 +6851,7 @@ module AnalyticsEvents
     webauthn_platform_recommended: nil,
     webauthn_setup_duration: nil,
     auto_passkey_prompted: nil,
+    passkey_signup_setup_recommended: nil,
     **extra
   )
     track_event(
@@ -6859,6 +6883,7 @@ module AnalyticsEvents
       webauthn_platform_recommended:,
       webauthn_setup_duration:,
       auto_passkey_prompted:,
+      passkey_signup_setup_recommended:,
       **extra,
     )
   end
@@ -8776,6 +8801,24 @@ module AnalyticsEvents
     track_event(:webauthn_platform_recommended_visited)
   end
 
+  # User submits form to add passkey to account during account creation
+  # @param [String] upsell_bucket Which bucket user landed on or submitted with
+  def webauthn_platform_signup_setup_ab_test_submitted(upsell_bucket:, **extra)
+    track_event(
+      :webauthn_platform_signup_setup_ab_test_submitted, upsell_bucket: upsell_bucket,
+                                                         **extra
+    )
+  end
+
+  # User visits webauthn platform upsell after sign up
+  # @param [String] upsell_bucket Which bucket user landed on
+  def webauthn_platform_signup_setup_ab_test_visited(upsell_bucket:, **extra)
+    track_event(
+      :webauthn_platform_signup_setup_ab_test_visited, upsell_bucket: upsell_bucket,
+                                                       **extra
+    )
+  end
+
   # @param [Boolean] platform_authenticator Whether authentication method was registered as platform
   #   authenticator
   # @param [Number] configuration_id Database ID of WebAuthn configuration
@@ -8852,12 +8895,14 @@ module AnalyticsEvents
   # @param [Integer] enabled_mfa_methods_count Number of enabled MFA methods on the account
   # @param [Boolean] in_account_creation_flow Whether user is going through creation flow
   # @param [Boolean, nil] auto_passkey_prompted Whether the user was auto-redirected to setup
+  # @param [Boolean, nil] webauthn_platform_signup_recommended passkey setup after password creation
   # Tracks when WebAuthn setup is visited
   def webauthn_setup_visit(
     platform_authenticator:,
     enabled_mfa_methods_count:,
     in_account_creation_flow:,
     auto_passkey_prompted: nil,
+    webauthn_platform_signup_recommended: nil,
     **extra
   )
     track_event(
@@ -8866,6 +8911,7 @@ module AnalyticsEvents
       enabled_mfa_methods_count:,
       in_account_creation_flow:,
       auto_passkey_prompted:,
+      webauthn_platform_signup_recommended:,
       **extra,
     )
   end

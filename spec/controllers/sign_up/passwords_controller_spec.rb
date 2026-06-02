@@ -107,6 +107,73 @@ RSpec.describe SignUp::PasswordsController do
           web_locale: 'en',
         )
       end
+
+      context 'when platform authenticator is available' do
+        let(:params) do
+          super().merge(platform_authenticator_available: 'true')
+        end
+
+        it 'stores platform authenticator availability in session' do
+          response
+
+          expect(controller.user_session[:platform_authenticator_available]).to eq(true)
+        end
+      end
+
+      context 'passkey upsell A/B test' do
+        let(:params) do
+          super().merge(platform_authenticator_available: 'true')
+        end
+
+        before do
+          allow(controller).to receive(:ab_test_bucket)
+            .with(:PASSKEY_UPSELL)
+            .and_return(:passkey_setup_prompt_after_password_creation)
+          allow(FeatureManagement).to receive(:account_creation_passkey_auto_prompt_enabled?)
+            .and_return(true)
+        end
+        it 'always hands off to MFA selection (upsell handled downstream)' do
+          expect(response).to redirect_to(authentication_methods_setup_url)
+        end
+      end
+
+      context 'auto passkey upsell A/B test' do
+        let(:params) do
+          super().merge(platform_authenticator_available: 'true')
+        end
+
+        before do
+          allow(controller).to receive(:ab_test_bucket)
+            .with(:PASSKEY_UPSELL)
+            .and_return(:auto_passkey_prompt)
+          allow(FeatureManagement).to receive(:account_creation_passkey_auto_prompt_enabled?)
+            .and_return(true)
+        end
+
+        it 'hands off to MFA selection so the upsell controller can branch' do
+          expect(response).to redirect_to(authentication_methods_setup_url)
+        end
+      end
+
+      context 'when account_creation_passkey_prompt is disabled' do
+        let(:params) do
+          super().merge(platform_authenticator_available: 'true')
+        end
+
+        before do
+          allow(controller).to receive(:ab_test_bucket)
+            .with(:PASSKEY_UPSELL)
+            .and_return(:auto_passkey_prompt)
+          allow(FeatureManagement).to receive(:account_creation_passkey_auto_prompt_enabled?)
+            .and_return(false)
+        end
+
+        it 'redirects to authentication methods setup' do
+          subject
+
+          expect(response).to redirect_to(authentication_methods_setup_url)
+        end
+      end
     end
 
     context 'with an invalid password' do

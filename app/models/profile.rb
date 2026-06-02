@@ -121,8 +121,13 @@ class Profile < ApplicationRecord
 
     now = Time.zone.now
     profile_to_deactivate = Profile.find_by(user_id: user_id, active: true)
-    is_reproof = profile_to_deactivate.present?
-    is_facial_match_upgrade = is_reproof && facial_match? && !profile_to_deactivate.facial_match?
+    is_reproof = activated_at.present? ||
+                 user.profiles.where.not(id: id).where.not(activated_at: nil).exists?
+    # Must guard on profile_to_deactivate (not is_reproof): on the password_reset
+    # path the prior profile is deactivated, so is_reproof is true but
+    # profile_to_deactivate is nil — calling .facial_match? on it would raise.
+    is_facial_match_upgrade = profile_to_deactivate.present? && facial_match? &&
+                              !profile_to_deactivate.facial_match?
 
     attrs = {
       active: true,
@@ -425,10 +430,10 @@ class Profile < ApplicationRecord
     FACIAL_MATCH_IDV_LEVELS.include?(idv_level)
   end
 
-  def create_user_proofing_event(password:, attempt_events:)
+  def create_user_proofing_event(password:, attempt_events:, sent_to_sp: false)
+    # TODO: refactor to use reencrypt_user_proofing_events
     encryptor = Encryption::Encryptors::PiiEncryptor.new(password)
     encrypted_events_json = encryptor.encrypt(attempt_events.to_json, user_uuid: user.uuid)
-    encrypted_events = JSON.parse(encrypted_events_json)
 
     result = encrypted_doc_writer.write_encrypted_attempt_events(
       file_path: attempt_events_file_path,
@@ -438,8 +443,7 @@ class Profile < ApplicationRecord
     update!(encrypted_attempts_file_reference: result.name)
 
     new_user_proofing_event = build_user_proofing_event(
-      cost: encrypted_events['cost'],
-      salt: encrypted_events['salt'],
+      service_provider_ids_sent: service_provider_ids_sent(sent_to_sp:),
     )
 
     new_user_proofing_event.save
@@ -454,6 +458,17 @@ class Profile < ApplicationRecord
     )
 
     encryptor.decrypt(data, user_uuid: user.uuid)
+  end
+
+  def reencrypt_user_proofing_events(password:, attempt_events:)
+    encryptor = Encryption::Encryptors::PiiEncryptor.new(password)
+    encrypted_events_json = encryptor.encrypt(attempt_events.to_json, user_uuid: user.uuid)
+
+    encrypted_doc_writer.write_encrypted_attempt_events(
+      file_path: attempt_events_file_path,
+      encrypted_attempt_events: encrypted_events_json,
+      name: encrypted_attempts_file_reference,
+    )
   end
 
   private
@@ -511,5 +526,13 @@ class Profile < ApplicationRecord
       idv_level: idv_level,
       issuer: initiating_service_provider_issuer,
     )
+  end
+
+  def service_provider_ids_sent(sent_to_sp:)
+    return [] unless sent_to_sp
+
+    # if sent_to_sp is true, there SHOULD be an initiating_service_provider
+    # but would rather err on the side of a guard
+    [initiating_service_provider&.id].compact
   end
 end

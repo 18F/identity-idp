@@ -35,6 +35,11 @@ RSpec.describe UpdateUserPasswordForm, type: :model do
           error_details: hash_including(:password, :password_confirmation),
         )
       end
+
+      it 'does not attempt to reencrypt the attempt events' do
+        expect(AttemptsApi::Cacher).not_to receive(:new)
+        subject.submit(params)
+      end
     end
 
     context 'when the password is valid' do
@@ -85,6 +90,44 @@ RSpec.describe UpdateUserPasswordForm, type: :model do
           pending_profile_present: false,
         )
       end
+
+      context 'there are no existing attempt events cached in the session' do
+        it 'does not attempt to reencrypt the attempt events' do
+          expect(AttemptsApi::Cacher).to receive(:new).with(user, user_session).and_call_original
+          expect_any_instance_of(Profile).not_to receive(:reencrypt_user_proofing_events)
+
+          subject.submit(params)
+        end
+      end
+
+      context 'there are existing attempt events cached in the session' do
+        let(:decrypted_events) do
+          [
+            { event_type: 'idv-event', jti: 'some-jti' },
+            { event_type: 'idv-another-event', jti: 'another-jti' },
+          ]
+        end
+
+        let(:user_session) do
+          {
+            encrypted_proofing_events: SessionEncryptor.new.kms_encrypt(decrypted_events.to_json),
+          }
+        end
+
+        before do
+          allow_any_instance_of(Profile).to receive(:reencrypt_user_proofing_events)
+        end
+
+        it 'attempts to reencrypt the attempt events with the new password' do
+          expect(AttemptsApi::Cacher).to receive(:new).with(user, user_session).and_call_original
+          expect_any_instance_of(Profile).to receive(:reencrypt_user_proofing_events).with(
+            password:,
+            attempt_events: decrypted_events.as_json,
+          )
+
+          subject.submit(params)
+        end
+      end
     end
 
     context 'the user has a pending profile' do
@@ -115,6 +158,11 @@ RSpec.describe UpdateUserPasswordForm, type: :model do
           pending_profile_present: true,
         )
       end
+
+      it 'does not attempt to reencrypt the attempt events' do
+        expect(AttemptsApi::Cacher).not_to receive(:new)
+        subject.submit(params)
+      end
     end
 
     context 'when the user does not have a profile' do
@@ -131,6 +179,11 @@ RSpec.describe UpdateUserPasswordForm, type: :model do
           active_profile_present: false,
           pending_profile_present: false,
         )
+      end
+
+      it 'does not attempt to reencrypt the attempt events' do
+        expect(AttemptsApi::Cacher).not_to receive(:new)
+        subject.submit(params)
       end
     end
   end

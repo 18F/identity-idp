@@ -1,0 +1,32 @@
+<h1 style="margin-bottom: 24px;"><%= t('user_mailer.agent_proofing_failure.header') %></h1>
+
+<p style="margin-bottom: 24px;">
+  <%= t('user_mailer.agent_proofing_failure.body', visited_at: @visited_at_display) %>
+</p>
+
+<p style="margin-bottom: 24px;">
+  <%= t(
+        'user_mailer.agent_proofing_failure.help_center_html',
+        help_center_link_html: link_to(
+          t('user_mailer.agent_proofing_failure.help_center_link', app_name: APP_NAME),
+          @presenter.help_center_url,
+          style: 'text-decoration: underline;',
+        ),
+      ) %>
+</p>
+
+<p style="margin-bottom: 0;">
+  <%= t(
+        'user_mailer.agent_proofing_failure.footer_html',
+        contact_link_html: link_to(
+          t('user_mailer.agent_proofing_failure.contact_link'),
+          @presenter.contact_us_url,
+          style: 'text-decoration: underline;',
+        ),
+        change_password_link_html: link_to(
+          t('user_mailer.agent_proofing_failure.change_password_link'),
+          @presenter.change_password_url,
+          style: 'text-decoration: underline;',
+        ),
+      ) %>
+</p>

@@ -83,10 +83,14 @@ module SignUp
       user_session[:platform_authenticator_available] =
         params[:platform_authenticator_available] == 'true'
       if current_user.accepted_rules_of_use_still_valid?
-        redirect_to authentication_methods_setup_url
+        next_step_redirect
       else
         redirect_to rules_of_use_url
       end
+    end
+
+    def next_step_redirect
+      redirect_to authentication_methods_setup_url
     end
   end
 end

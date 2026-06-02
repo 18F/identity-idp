@@ -3,6 +3,8 @@
 class WebauthnSetupPresenter < SetupPresenter
   include Rails.application.routes.url_helpers
   include ActionView::Helpers::UrlHelper
+  include ActionView::Helpers::TagHelper
+  include ActionView::Helpers::OutputSafetyHelper
   include ActionView::Helpers::TranslationHelper
   include LinkHelper
 
@@ -14,7 +16,8 @@ class WebauthnSetupPresenter < SetupPresenter
     user_opted_remember_device_cookie:,
     remember_device_default:,
     platform_authenticator:,
-    url_options:
+    url_options:,
+    passkey_upsell: false
   )
     super(
       current_user: current_user,
@@ -25,6 +28,11 @@ class WebauthnSetupPresenter < SetupPresenter
 
     @platform_authenticator = platform_authenticator
     @url_options = url_options
+    @passkey_upsell = passkey_upsell && platform_authenticator
+  end
+
+  def passkey_upsell?
+    @passkey_upsell
   end
 
   def learn_more_html
@@ -43,7 +51,9 @@ class WebauthnSetupPresenter < SetupPresenter
   end
 
   def page_title
-    if @platform_authenticator
+    if @passkey_upsell
+      t('webauthn_platform_setup.heading')
+    elsif @platform_authenticator
       t('headings.webauthn_platform_setup.new')
     else
       t('titles.webauthn_setup')
@@ -51,7 +61,9 @@ class WebauthnSetupPresenter < SetupPresenter
   end
 
   def heading
-    if @platform_authenticator
+    if @passkey_upsell
+      t('webauthn_platform_setup.upsell')
+    elsif @platform_authenticator
       t('headings.webauthn_platform_setup.new')
     else
       t('headings.webauthn_setup.new')
@@ -65,7 +77,37 @@ class WebauthnSetupPresenter < SetupPresenter
   end
 
   def intro_html
-    if @platform_authenticator
+    if @passkey_upsell
+      safe_join(
+        [
+          content_tag(:p, t('webauthn_platform_setup.instructions')),
+          content_tag(
+            :p,
+            t(
+              'webauthn_platform_setup.info_html',
+              ft_unlock_html: link_to(
+                t('webauthn_platform_setup.ft_unlock'),
+                MarketingSite.help_center_article_url(
+                  category: 'create-account',
+                  article: 'authentication-methods/face-or-touch-unlock',
+                ),
+                target: '_blank',
+                rel: 'noopener noreferrer',
+              ),
+              phishing_resistant_html: link_to(
+                t('webauthn_platform_setup.phishing_resistant'),
+                MarketingSite.help_center_article_url(
+                  category: 'get-started',
+                  article: 'authentication-methods',
+                ),
+                target: '_blank',
+                rel: 'noopener noreferrer',
+              ),
+            ).html_safe,
+          ),
+        ],
+      )
+    elsif @platform_authenticator
       t(
         'forms.webauthn_platform_setup.intro_html',
         link: link_to(
@@ -92,7 +134,9 @@ class WebauthnSetupPresenter < SetupPresenter
   end
 
   def button_text
-    if @platform_authenticator
+    if @passkey_upsell
+      t('webauthn_platform_recommended.cta')
+    elsif @platform_authenticator
       t('forms.webauthn_platform_setup.continue')
     else
       t('forms.webauthn_setup.set_up')

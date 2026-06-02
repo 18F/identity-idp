@@ -14,7 +14,7 @@ RSpec.describe ProofingAgentJob, type: :job do
   let(:result_id) { SecureRandom.uuid }
   let(:issuer) { 'favorite-sp-issuer' }
   let(:document_capture_session) do
-    create(:document_capture_session, result_id:, issuer:)
+    create(:document_capture_session, result_id:, issuer:, requested_at: Time.zone.now)
   end
   let(:proofing_agent_id) { SecureRandom.uuid }
   let(:proofing_location_id) { SecureRandom.uuid }
@@ -25,6 +25,7 @@ RSpec.describe ProofingAgentJob, type: :job do
   let(:webhook_url) { 'https://example.test/webhook' }
   let(:webhook_secret) { 'webhook-secret' }
   let(:webhook_status) { 200 }
+  let(:webhook_headers) { nil }
   let(:idv_proofing_agent_config) do
     [
       {
@@ -32,6 +33,7 @@ RSpec.describe ProofingAgentJob, type: :job do
         webhook: {
           url: webhook_url,
           secret: webhook_secret,
+          headers: webhook_headers,
         },
       }.with_indifferent_access,
     ]
@@ -40,6 +42,7 @@ RSpec.describe ProofingAgentJob, type: :job do
   describe '#perform' do
     let(:instance) { ProofingAgentJob.new }
     let(:job_analytics) { FakeAnalytics.new }
+    let(:final_attempt) { false }
 
     before do
       ActiveJob::Base.queue_adapter = :test
@@ -65,6 +68,7 @@ RSpec.describe ProofingAgentJob, type: :job do
         proofing_agent_id: proofing_agent_id,
         proofing_location_id: proofing_location_id,
         correlation_id: correlation_id,
+        final_attempt: final_attempt,
       )
     end
 
@@ -128,6 +132,24 @@ RSpec.describe ProofingAgentJob, type: :job do
             transaction_id: transaction_id,
             correlation_id: correlation_id,
           )
+        end
+      end
+
+      context 'when the webhook URL is configured with additional headers' do
+        let(:webhook_headers) { { 'X-Test-Header' => 'test-value' } }
+        it 'includes the additional headers in the webhook request' do
+          expect { perform }.to have_enqueued_job(ProofingAgentWebhookJob).with(
+            success: true,
+            reason: nil,
+            transaction_id: transaction_id,
+            correlation_id: correlation_id,
+          )
+
+          result = document_capture_session.reload.load_agent_proofed_user
+          expect(result[:success]).to be true
+          expect(result[:reason]).to be_nil
+          expect(result[:resolution][:success]).to be true
+          expect(result[:resolution][:exception]).to be_nil
         end
       end
 
@@ -309,12 +331,88 @@ RSpec.describe ProofingAgentJob, type: :job do
         end
         expect(body['transaction_id']).to eq(transaction_id)
         expect(req.headers['X-Correlation-Id']).to eq(correlation_id)
+
+        webhook_headers&.each do |key, value|
+          expect(req.headers[key]).to eq(value)
+        end
+
         if webhook_secret.present?
           expect(req.headers['Authorization']).to eq("Bearer #{webhook_secret}")
         else
           expect(req.headers).not_to have_key('Authorization')
         end
       end.to_return(status: webhook_status)
+    end
+
+    context 'failure email on final attempt' do
+      let(:job_analytics) { FakeAnalytics.new }
+
+      before do
+        ActionMailer::Base.deliveries.clear
+        allow(Analytics).to receive(:new).and_return(job_analytics)
+      end
+
+      context 'when final_attempt is true and proofing fails' do
+        let(:pii) { Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID.merge(zipcode: '00000') }
+        let(:final_attempt) { true }
+
+        it 'sends a failure email to the user' do
+          expect { perform }.to change { ActionMailer::Base.deliveries.count }.by(1)
+          expect(ActionMailer::Base.deliveries.last.to)
+            .to eq([user.confirmed_email_addresses.first.email])
+        end
+
+        it 'logs the failure email analytics event' do
+          perform
+
+          expect(job_analytics).to have_logged_event(
+            :idv_proofing_agent_failure_to_proof_email_sent,
+            user_id: user.uuid,
+            proofing_agent: {
+              correlation_id: correlation_id,
+              transaction_id: transaction_id,
+              agent_id: proofing_agent_id,
+              location_id: proofing_location_id,
+            },
+            reason: 'profile_resolution_fail',
+          )
+        end
+
+        context 'when requested_at is nil' do
+          before do
+            document_capture_session.update!(requested_at: nil)
+          end
+
+          it 'sends a failure email to the user with a fallback timestamp' do
+            expect { perform }.to change { ActionMailer::Base.deliveries.count }.by(1)
+            expect(ActionMailer::Base.deliveries.last.to)
+              .to eq([user.confirmed_email_addresses.first.email])
+          end
+        end
+      end
+
+      context 'when final_attempt is true and proofing succeeds' do
+        let(:final_attempt) { true }
+
+        before do
+          allow(IdentityConfig.store).to receive(:idv_phone_precheck_percent).and_return(100)
+        end
+
+        it 'does not send a failure email' do
+          perform
+          expect(job_analytics).to_not have_logged_event(
+            :idv_proofing_agent_failure_to_proof_email_sent,
+          )
+        end
+      end
+
+      context 'when final_attempt is false and proofing fails' do
+        let(:pii) { Idp::Constants::MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID.merge(zipcode: '00000') }
+
+        it 'does not send a failure email' do
+          expect { perform }.not_to change { ActionMailer::Base.deliveries.count }
+        end
+      end
     end
   end
 end

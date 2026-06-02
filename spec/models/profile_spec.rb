@@ -431,34 +431,53 @@ RSpec.describe Profile do
       expect(profile.verified_at).to be_present # changed
     end
 
-    # this spec will pass for a deactivated profile which is non-active,
-    # but will fail for password_reset and encryption_error profiles,
-    # which are non-active, but are not activate-able
-    it 'does not send a reproof event when there is a non active profile' do
-      expect(PushNotification::HttpPush).to_not receive(:deliver)
-
+    it 'sends a reproof event when reactivating a previously active profile' do
       profile = create(:profile, :deactivated)
 
       expect(profile.activated_at).to be_present
       expect(profile.active).to eq(false) # to change
       expect(profile.deactivation_reason).to be_nil
-      expect(profile.fraud_review_pending?).to eq(false)
-      expect(profile.gpo_verification_pending_at).to be_nil
-      expect(profile.in_person_verification_pending_at).to be_nil
-      expect(profile.initiating_service_provider).to be_nil
-      expect(profile.verified_at).to be_nil # to change
 
       expect(profile.user.analytics).to receive(:idv_profile_activated).once
+      expect(PushNotification::HttpPush).to receive(:deliver)
+        .with(PushNotification::ReproofCompletedEvent.new(user: profile.user))
+
       profile.activate
 
       expect(profile.activated_at).to be_present
       expect(profile.active).to eq(true) # changed
-      expect(profile.deactivation_reason).to be_nil
-      expect(profile.fraud_review_pending?).to eq(false)
-      expect(profile.gpo_verification_pending_at).to be_nil
-      expect(profile.in_person_verification_pending_at).to be_nil
-      expect(profile.initiating_service_provider).to be_nil
       expect(profile.verified_at).to be_present # changed
+    end
+
+    it 'sends a reproof event after a password_reset reactivation' do
+      profile = create(:profile, :active, user: user)
+      profile.deactivate(:password_reset)
+
+      expect(profile.activated_at).to be_present
+      expect(profile.active).to eq(false)
+      expect(profile.deactivation_reason).to eq('password_reset')
+
+      expect(profile.user.analytics).to receive(:idv_profile_activated).once
+      expect(PushNotification::HttpPush).to receive(:deliver)
+        .with(PushNotification::ReproofCompletedEvent.new(user: user))
+
+      profile.clear_password_reset_deactivation_reason
+
+      expect(profile.active).to eq(true)
+      expect(profile.deactivation_reason).to be_nil
+    end
+
+    it 'sends a reproof event for a new profile when the user has a prior activated profile' do
+      old_profile = create(:profile, :active, user: user)
+      old_profile.deactivate(:password_reset)
+
+      new_profile = create(:profile, user: user)
+
+      expect(new_profile.user.analytics).to receive(:idv_profile_activated).once
+      expect(PushNotification::HttpPush).to receive(:deliver)
+        .with(PushNotification::ReproofCompletedEvent.new(user: user))
+
+      new_profile.activate
     end
 
     it 'does not send a reproof event when there is no active profile' do
@@ -1485,6 +1504,34 @@ RSpec.describe Profile do
       end.to change { UserProofingEvent.count }.by(1)
 
       expect(UserProofingEvent.last.profile).to eq(profile)
+      expect(UserProofingEvent.last.service_provider_ids_sent).to eq([])
+    end
+
+    context 'if sent_to_sp is true' do
+      let(:initiating_service_provider) { create(:service_provider, :active) }
+
+      before do
+        profile.update!(initiating_service_provider: initiating_service_provider)
+
+        profile.create_user_proofing_event(
+          password: 'password',
+          attempt_events: [{ 'event' => 'test' }],
+          sent_to_sp: true,
+        )
+      end
+      it 'creates a user proofing events object with the correct service_provider_ids_sent value' do
+        expect(UserProofingEvent.last.service_provider_ids_sent).to eq(
+          [profile.initiating_service_provider.id],
+        )
+      end
+
+      context 'there is no initiating service provider' do
+        let(:initiating_service_provider) { nil }
+
+        it 'does not include the service provider id in the service_provider_ids_sent' do
+          expect(UserProofingEvent.last.service_provider_ids_sent).to eq([])
+        end
+      end
     end
   end
 
@@ -1515,6 +1562,44 @@ RSpec.describe Profile do
       expect(
         profile.decrypt_user_proofing_events(password: 'password'),
       ).to eq(attempt_events.to_json)
+    end
+  end
+
+  describe '#reencrypt_user_proofing_events' do
+    let(:dir_path) do
+      Rails.root.join('tmp', 'encrypted_attempt_events', 'attempt_events', profile.user.uuid)
+    end
+
+    after do
+      FileUtils.rm_rf(dir_path) if Dir.exist?(dir_path)
+    end
+
+    let(:attempt_events) do
+      [
+        {
+          'jti' => 'some-jti',
+          'event_metadata' => { 'user_uuid' => user.uuid },
+          'event_type' => 'idv-ssn-submitted',
+        },
+      ]
+    end
+
+    it 'reencrypts user proofing events' do
+      profile.create_user_proofing_event(
+        password: 'password',
+        attempt_events:,
+      )
+      events_path = dir_path.join(profile.id.to_s, profile.encrypted_attempts_file_reference)
+
+      encrypted_events = File.read(events_path)
+
+      expect do
+        profile.reencrypt_user_proofing_events(password: 'new-password', attempt_events:)
+      end.to_not change { UserProofingEvent.last }
+
+      reencrypted_events = File.read(events_path)
+
+      expect(reencrypted_events).to_not eq(encrypted_events)
     end
   end
 end

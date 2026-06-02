@@ -53,7 +53,7 @@ RSpec.describe ProofingAgent::ApplicantPiiTransformer do
           described_class.new(
             applicant.merge(
               state_id: state_id,
-            ),
+            ).with_indifferent_access,
           )
         end
 
@@ -87,7 +87,7 @@ RSpec.describe ProofingAgent::ApplicantPiiTransformer do
             applicant.merge(
               state_id: state_id,
               residential_address: residential_address,
-            ),
+            ).with_indifferent_access,
           )
         end
 
@@ -129,7 +129,7 @@ RSpec.describe ProofingAgent::ApplicantPiiTransformer do
           applicant.merge(
             residential_address: residential_address,
             passport: passport,
-          ),
+          ).with_indifferent_access,
         )
       end
 

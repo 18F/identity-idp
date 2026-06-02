@@ -6,9 +6,12 @@ class MarketingSite
   BASE_URL = URI('https://www.login.gov').freeze
 
   HELP_CENTER_ARTICLES = %w[
+    create-account/authentication-methods
+    create-account/authentication-methods/face-or-touch-unlock
     get-started/authentication-methods
     manage-your-account/add-or-change-your-authentication-method
     manage-your-account/delete-your-account
+    manage-your-account/change-your-email-address
     manage-your-account/personal-key
     manage-your-account/resolve-duplicate-accounts
     trouble-signing-in/face-or-touch-unlock

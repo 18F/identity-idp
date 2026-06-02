@@ -28,19 +28,9 @@ module AttemptsApi
 
     def self.write_existing_user_events(sp:, historical_attempts: [])
       historical_attempts.each do |event_data|
-        event = AttemptEvent.new(
-          event_type: event_data['event_type'],
-          session_id: event_data['session_id'],
-          occurred_at: event_data['occurred_at'],
-          event_metadata: event_data['event_metadata'],
-          jti: event_data['jti'],
-          iat: event_data['iat'],
-        )
+        event = HistoricalAttemptEvent.new(event_data:, sp:)
 
-        jwe = event.to_jwe(
-          issuer: sp.issuer,
-          public_key: sp.attempts_public_key,
-        )
+        jwe = event.to_jwe(issuer: sp.issuer, public_key: sp.attempts_public_key)
 
         AttemptsApi::RedisClient.new.write_event(
           event_key: event.jti,
@@ -102,14 +92,14 @@ module AttemptsApi
         event_data = event.as_json
       else
         event_data = {
-          'event_type' => event.event_type,
-          'jti' => event.jti,
-          'iat' => event.iat,
-          'occurred_at' => event.occurred_at.to_f,
-          'event_metadata' => {
+          event_type: event.event_type,
+          jti: event.jti,
+          iat: event.iat,
+          occurred_at: Time.zone.at(event.occurred_at).iso8601,
+          event_metadata: {
             user_uuid: event.event_metadata[:user_uuid],
           },
-        }
+        }.as_json
 
       end
 

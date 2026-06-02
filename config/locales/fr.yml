@@ -615,6 +615,7 @@ doc_auth.headings.capture_complete: Nous avons vérifié votre pièce d’identi
 doc_auth.headings.capture_scan_warning_html: Nous n’avons pas pu lire le code-barres de votre pièce d’identité. Si les informations ci-dessous sont incorrectes, veuillez %{link_html} de votre pièce d’identité.
 doc_auth.headings.capture_scan_warning_link: télécharger de nouvelles photos
 doc_auth.headings.choose_id_type: Choisir le type de votre pièce d’identité
+doc_auth.headings.dob_ssn: Veuillez saisir votre numéro de sécurité sociale et votre date de naissance
 doc_auth.headings.document_capture: Ajoutez des photos de votre permis de conduire ou de votre carte d’identité nationale
 doc_auth.headings.document_capture_back: Verso de votre pièce d’identité
 doc_auth.headings.document_capture_front: Recto de votre carte d’identité
@@ -657,6 +658,7 @@ doc_auth.info.capture_status_none: Alignez
 doc_auth.info.capture_status_small_document: Approchez-vous
 doc_auth.info.capture_status_tap_to_capture: Appuyez pour prendre la photo
 doc_auth.info.choose_id_type: Sélectionnez le type de document dont vous disposez. Vous devrez prendre des photos de votre pièce d’identité pour confirmer votre identité.
+doc_auth.info.dob_ssn: Nous avons besoin de ces informations pour associer, en toute sécurité, ce compte à l’identité que vous venez de vérifier en personne.
 doc_auth.info.dos_passport_api_down_message: Nous ne pouvons actuellement pas accepter les passeports. Vous pouvez utiliser un permis de conduire, une carte d’identité d’un État ou réessayer ultérieurement.
 doc_auth.info.exit.with_sp: Quitter %{app_name} et revenir à %{sp_name}
 doc_auth.info.exit.without_sp: Quitter la vérification d’identité et accéder à la page de votre compte
@@ -749,19 +751,21 @@ duplicate_profiles_detected.accounts_list.heading: Comptes ayant les mêmes info
 duplicate_profiles_detected.cant_access: 'Je ne peux pas accéder à un compte'
 duplicate_profiles_detected.connected_acct_html: '<strong> Agences connectées: </strong> %{count}'
 duplicate_profiles_detected.created_at_html: '<strong> Créé: </strong> %{timestamp_html}'
-duplicate_profiles_detected.delete_duplicates.details_html: Connectez-vous au compte puis supprimez-le depuis la page « Votre compte » . %{link_html}
+duplicate_profiles_detected.delete_duplicates.details_html: Connectez-vous au compte que vous souhaitez supprimer sur <a href="https://secure.login.gov">https://secure.login.gov</a> . Voici %{link_html}
+duplicate_profiles_detected.delete_duplicates.details2_html: 'Si vous le souhaitez, vous pouvez ajouter %{link_html} au compte que vous conservez après avoir supprimé le compte en double.'
+duplicate_profiles_detected.delete_duplicates.details2.link: cette adresse e-mail
 duplicate_profiles_detected.delete_duplicates.heading: 'Supprimer le(s) compte(s) en double'
-duplicate_profiles_detected.delete_duplicates.link: 'Comment supprimer votre compte :'
+duplicate_profiles_detected.delete_duplicates.link: comment supprimer votre compte.
 duplicate_profiles_detected.dont_recognize_account: Je ne reconnais pas l’un des comptes ci-dessus
 duplicate_profiles_detected.duplicate: En double
 duplicate_profiles_detected.get_help: Obtenir de l’aide
 duplicate_profiles_detected.heading: Nous avons trouvé d’autres comptes susceptibles de vous appartenir
-duplicate_profiles_detected.intro_html: Pour accéder à %{sp_name}, vous devez disposer d’un seul compte %{app_name} avec votre identité vérifiée. %{link_html}
-duplicate_profiles_detected.intro.link: En savoir plus sur les comptes en double.
-duplicate_profiles_detected.intro2: 'Vous devez supprimer les comptes en double avant de vous connecter à %{app_name}. Voici comment faire :'
+duplicate_profiles_detected.intro_html: 'L’%{sp_name} exige que vous ne disposiez que d’un seul et unique compte %{app_name} avec une identité vérifiée. Vous devez supprimer les %{link_html} avant de vous connecter à l’%{sp_name}. Voici la marche à suivre :'
+duplicate_profiles_detected.intro.link: comptes en double
 duplicate_profiles_detected.last_sign_in_at_html: '<strong> Dernière connexion : </strong> %{timestamp_html}'
-duplicate_profiles_detected.never_logged_in: Jamais connecté à
-duplicate_profiles_detected.select_an_account.details: Conservez le compte que vous utilisez le plus. Par exemple, celui qui est connecté au plus grand nombre de services. Ainsi, vous n’aurez pas à recommencer les démarches pour vous reconnecter à des services.
+duplicate_profiles_detected.never_logged_in: 'Jamais connecté à'
+duplicate_profiles_detected.select_an_account.details_html: 'Conservez le compte connecté au plus grand nombre de services. Rendez-vous sur la page %{link_html} pour consulter les agences connectées en sélectionnant «Vos comptes connectés» dans le menu de gauche.'
+duplicate_profiles_detected.select_an_account.details.link: '«Votre compte»'
 duplicate_profiles_detected.select_an_account.heading: Choisir le compte que vous voulez conserver
 duplicate_profiles_detected.sign_back_in.details: Retournez sur le site web de %{app_name} et connectez-vous à l’aide du compte %{app_name} que vous avez conservé.
 duplicate_profiles_detected.sign_back_in.heading: Reconnectez-vous à %{app_name} avec un seul compte
@@ -1686,6 +1690,7 @@ simple_form.required.mark: ''
 simple_form.required.text: Ce champ est obligatoire
 simple_form.yes: Oui
 step_indicator.accessible_label: Progression par étapes
+step_indicator.flows.idv.confirm_your_information: Confirmez vos informations
 step_indicator.flows.idv.find_a_post_office: Trouver un bureau de poste
 step_indicator.flows.idv.getting_started: Démarrer
 step_indicator.flows.idv.go_to_the_post_office: Se rendre au bureau de poste
@@ -1983,6 +1988,14 @@ user_mailer.add_email_associated_with_another_account.reset_password_html: Si vo
 user_mailer.add_email.footer: Ce lien expirera dans %{confirmation_period}.
 user_mailer.add_email.header: Merci d’avoir ajouté une adresse e-mail. Veuillez cliquer sur le lien ci-dessous ou faire un copier-coller de l’ensemble du lien dans votre navigateur.
 user_mailer.add_email.subject: Confirmer votre adresse e-mail
+user_mailer.agent_proofing_failure.body: 'La vérification de votre identité n’a pas pu être finalisée lors de votre visite en personne le %{visited_at}. Nous comprenons que cette situation puisse être frustrante et sommes là pour vous aider à mener ce processus à terme.'
+user_mailer.agent_proofing_failure.change_password_link: modifier votre mot de passe
+user_mailer.agent_proofing_failure.contact_link: nous contacter
+user_mailer.agent_proofing_failure.footer_html: Si vous n’avez pas tenté de vérifier votre identité en personne, veuillez %{contact_link_html} et vous connecter pour %{change_password_link_html}.
+user_mailer.agent_proofing_failure.header: Nous n’avons pas pu vérifier votre identité pour le moment
+user_mailer.agent_proofing_failure.help_center_html: Veuillez consulter notre %{help_center_link_html} pour obtenir des instructions étape par étape.
+user_mailer.agent_proofing_failure.help_center_link: 'centre d’aide de %{app_name}'
+user_mailer.agent_proofing_failure.subject: Finalisons la vérification de votre identité
 user_mailer.agent_proofing_succeeded.alert_lead: Ne tardez pas
 user_mailer.agent_proofing_succeeded.banner_html: '%{alert_lead_html} : confirmez votre compte d’ici la fin de la journée du %{deadline} pour accéder à vos services gouvernementaux.'
 user_mailer.agent_proofing_succeeded.body: 'Nous avons vérifié votre identité le %{verified_at}. La confirmation de votre compte vous permet de :'
@@ -2216,6 +2229,12 @@ webauthn_platform_recommended.description_security: Save time by using your face
 webauthn_platform_recommended.heading: Configurar el desbloqueo facial o táctil
 webauthn_platform_recommended.skip: Ignorer
 webauthn_platform_recommended.upsell: La confidentialité de vos informations est assurée car le déverrouillage par reconnaissance faciale ou tactile résiste à l’hameçonnage et nous ne conservons aucun enregistrement de votre visage ou de vos empreintes digitales.
+webauthn_platform_setup.ft_unlock: Face or touch unlock
+webauthn_platform_setup.heading: Use Face or Touch unlock for a faster, more secure sign in
+webauthn_platform_setup.info_html: '%{ft_unlock_html} is %{phishing_resistant_html} and we don’t store any recordings of your face or fingerprint, so your information stays private.'
+webauthn_platform_setup.instructions: Use your face, fingerprint, or screen lock to verify it’s really you. No passwords, apps, or codes needed.
+webauthn_platform_setup.phishing_resistant: phishing-resistant
+webauthn_platform_setup.upsell: Use face or touch unlock for a faster, more secure sign in
 webauthn_setup_mismatch.description_undo: Cliquez sur « Annuler » pour supprimer cette option.
 webauthn_setup_mismatch.description.webauthn: Nous avons remarqué que vous utilisiez une clé de sécurité au lieu du déverrouillage facial ou tactile. Cliquez sur « Suite » pour utiliser votre clé de sécurité afin de vous connecter à partir de maintenant.
 webauthn_setup_mismatch.description.webauthn_platform: Nous avons remarqué que vous utilisiez le déverrouillage facial ou tactile au lieu d’une clé de sécurité. Cliquez sur « Suite » pour utiliser le déverrouillage facial ou tactile afin de vous connecter à partir de maintenant.

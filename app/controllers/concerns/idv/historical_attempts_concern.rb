@@ -6,14 +6,12 @@ module Idv
     extend ActiveSupport::Concern
 
     def cache_user_proofing_events(password:)
-      return unless historical_events_need_be_sent?
+      # we always need to cache events if the feature is enabled
+      # in case we have to re-encrypt them
+      return unless IdentityConfig.store.historical_attempts_api_enabled
+      return unless current_user.active_profile.present?
 
-      existing_events = current_user
-        .active_profile
-        .decrypt_user_proofing_events(password:)
-
-      kms_encrypted_events = SessionEncryptor.new.kms_encrypt(existing_events)
-      user_session[:encrypted_proofing_events] = kms_encrypted_events
+      AttemptsApi::Cacher.new(current_user, user_session).save(password:)
     end
 
     private
@@ -38,10 +36,6 @@ module Idv
 
     def existing_user_proofing_event
       @existing_user_proofing_event ||= current_user.active_profile.user_proofing_event
-    end
-
-    def user_uuid
-      @user_uuid ||= current_user['uuid']
     end
   end
 end
