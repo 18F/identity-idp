@@ -59,12 +59,11 @@ class IdentityLinker
 
   def process_ial(ial)
     @ial = ial
-    now = Time.zone.now
-    process_ial_at(now)
-    process_verified_at(now)
+    process_ial_authenticated_at
+    process_verified_at
   end
 
-  def process_ial_at(now)
+  def process_ial_authenticated_at
     if ial2? || ialmax_with_active_profile?
       identity.last_ial2_authenticated_at = now
     else
@@ -72,7 +71,7 @@ class IdentityLinker
     end
   end
 
-  def process_verified_at(now)
+  def process_verified_at
     return unless (ial2? || ialmax_with_active_profile?) && identity.verified_at.nil?
     identity.verified_at = now
   end
@@ -87,6 +86,10 @@ class IdentityLinker
 
   def identity
     @identity ||= user.identities.create_or_find_by(service_provider: service_provider.issuer)
+  end
+
+  def now
+    @now ||= Time.zone.now
   end
 
   def identity_attributes
