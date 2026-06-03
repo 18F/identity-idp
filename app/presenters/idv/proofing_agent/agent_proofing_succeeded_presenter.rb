@@ -10,7 +10,7 @@ module Idv
       # Per ticket: EOD Samoa Standard Time (UTC-11) + 2 days so the
       # displayed date covers all U.S. timezones (-11 to +10).
       def self.deadline_for(verified_at:)
-        Time.zone.parse(verified_at).in_time_zone('American Samoa').end_of_day + 2.days
+        Time.zone.parse(verified_at).in_time_zone('Etc/GMT+5').end_of_day + 2.days
       end
 
       def initialize(verified_at:, url_options:)

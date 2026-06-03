@@ -42,8 +42,8 @@ RSpec.describe Idv::ProofingAgent::AgentProofingSucceededPresenter do
         expect(presenter.deadline.to_date).to eq(Date.new(2026, 4, 4))
       end
 
-      it 'returns end of day in American Samoa time' do
-        expect(presenter.deadline.utc_offset).to eq(-11 * 60 * 60)
+      it 'returns end of day in UTC-05:00 time' do
+        expect(presenter.deadline.utc_offset).to eq(-5 * 60 * 60)
         expect(presenter.deadline.strftime('%H:%M:%S')).to eq('23:59:59')
       end
     end
@@ -56,8 +56,8 @@ RSpec.describe Idv::ProofingAgent::AgentProofingSucceededPresenter do
         )
       end
 
-      it 'returns April 4, 2026 (Samoa still on April 2 at that moment)' do
-        expect(presenter.deadline.to_date).to eq(Date.new(2026, 4, 4))
+      it 'returns April 5, 2026 (Samoa still on April 2 at that moment)' do
+        expect(presenter.deadline.to_date).to eq(Date.new(2026, 4, 5))
       end
     end
 
@@ -69,7 +69,7 @@ RSpec.describe Idv::ProofingAgent::AgentProofingSucceededPresenter do
         )
       end
 
-      it 'returns April 2, 2026 (Samoa still on March 31 at that moment)' do
+      it 'returns April 2, 2026 (Continental US still on March 31 at that moment)' do
         expect(presenter.deadline.to_date).to eq(Date.new(2026, 4, 2))
       end
     end
@@ -87,10 +87,10 @@ RSpec.describe Idv::ProofingAgent::AgentProofingSucceededPresenter do
       end
     end
 
-    context 'when verified in the evening Pacific Time (10pm PT April 2, UTC-7)' do
+    context 'when verified in the evening Pacific Time (9pm PT April 2, UTC-7)' do
       subject(:presenter) do
         described_class.new(
-          verified_at: '2026-04-02 22:00:00 -0700',
+          verified_at: '2026-04-02 21:00:00 -0700',
           url_options: { host: 'example.com' },
         )
       end
@@ -110,6 +110,71 @@ RSpec.describe Idv::ProofingAgent::AgentProofingSucceededPresenter do
 
       it 'returns April 4, 2026 (no zone shift needed)' do
         expect(presenter.deadline.to_date).to eq(Date.new(2026, 4, 4))
+      end
+    end
+
+    context 'across American timezones' do
+      it 'gives the correct deadline after 3pm in Pacific/Guam' do
+        # rubocop:disable Rails/TimeZoneAssignment
+        Time.zone = 'Pacific/Guam'
+        # rubocop:enable Rails/TimeZoneAssignment
+
+        verified_at = Time.new(2026, 6, 1, 15, 0, 0, Time.zone).to_s
+        presenter = described_class.new(
+          verified_at:,
+          url_options: { host: 'example.com' },
+        )
+
+        expect(presenter.deadline.to_date).to eq(Date.new(2026, 6, 3))
+
+        verified_at = Time.new(2026, 6, 1, 23, 59, 59, Time.zone).to_s
+        presenter = described_class.new(
+          verified_at:,
+          url_options: { host: 'example.com' },
+        )
+
+        expect(presenter.deadline.to_date).to eq(Date.new(2026, 6, 3))
+      end
+
+      shared_examples 'gives the correct deadline for the whole business day' do |tz|
+        before do
+          # rubocop:disable Rails/TimeZoneAssignment
+          Time.zone = tz
+          # rubocop:enable Rails/TimeZoneAssignment
+        end
+
+        it "gives the correct deadline at 8am in #{tz}" do
+          verified_at = Time.new(2026, 6, 1, 8, 0, 0, Time.zone).to_s
+          presenter = described_class.new(
+            verified_at:,
+            url_options: { host: 'example.com' },
+          )
+
+          expect(presenter.deadline.to_date).to eq(Date.new(2026, 6, 3))
+        end
+
+        it "gives the correct deadline at 5:59pm in #{tz}" do
+          verified_at = Time.new(2026, 6, 1, 17, 59, 59, Time.zone).to_s
+          presenter = described_class.new(
+            verified_at:,
+            url_options: { host: 'example.com' },
+          )
+
+          expect(presenter.deadline.to_date).to eq(Date.new(2026, 6, 3))
+        end
+      end
+
+      %w[
+        US/Samoa
+        US/Hawaii
+        US/Alaska
+        US/Pacific
+        US/Mountain
+        US/Central
+        US/Eastern
+        America/Puerto_Rico
+      ].each do |tz|
+        it_behaves_like 'gives the correct deadline for the whole business day', tz
       end
     end
   end
