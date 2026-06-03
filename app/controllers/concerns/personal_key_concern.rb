@@ -13,7 +13,6 @@ module PersonalKeyConcern
     if active_profile.present?
       Pii::ReEncryptor.new(user: current_user, user_session: user_session).perform
 
-      # If there is attempts data, reencrypt it here
       attempt_events = AttemptsApi::Cacher.new(current_user, user_session).fetch
       if attempt_events.present?
         active_profile.reencrypt_recovery_attempts_data(

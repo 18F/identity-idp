@@ -83,11 +83,6 @@ module Users
         .save_with_personal_key(personal_key: params.permit(:personal_key)[:personal_key])
     end
 
-    def decrypted_attempt_events
-      @decrypted_attempt_events ||= password_reset_profile
-        .recover_attempt_events(personal_key:)
-    end
-
     def handle_failure(result)
       flash[:error] = result.errors[:personal_key].last
       redirect_to verify_personal_key_url

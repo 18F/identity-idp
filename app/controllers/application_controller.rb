@@ -269,7 +269,6 @@ class ApplicationController < ActionController::Base
       profile = current_user.active_profile
       user_session[:personal_key] = profile.encrypt_recovery_pii(cacher.fetch(profile.id))
 
-      # If there is attempts data, reencrypt it here
       attempt_events = AttemptsApi::Cacher.new(current_user, user_session).fetch
       if attempt_events.present?
         profile.reencrypt_recovery_attempts_data(
