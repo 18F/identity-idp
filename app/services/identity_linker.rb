@@ -65,7 +65,7 @@ class IdentityLinker
   end
 
   def process_ial_at(now)
-    if @ial == Idp::Constants::IAL2 || (identity.verified_at.present? && @ial&.zero?)
+    if ial2? || ialmax_with_active_profile?
       identity.last_ial2_authenticated_at = now
     else
       identity.last_ial1_authenticated_at = now
@@ -73,8 +73,16 @@ class IdentityLinker
   end
 
   def process_verified_at(now)
-    return unless @ial == Idp::Constants::IAL2 && identity.verified_at.nil?
+    return unless (ial2? || ialmax_with_active_profile?) && identity.verified_at.nil?
     identity.verified_at = now
+  end
+
+  def ialmax_with_active_profile?
+    @ial == Idp::Constants::IAL_MAX && user.active_profile
+  end
+
+  def ial2?
+    @ial == Idp::Constants::IAL2
   end
 
   def identity

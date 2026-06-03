@@ -156,7 +156,7 @@ RSpec.describe IdentityLinker do
       IdentityLinker.new(user, service_provider2).link_identity(rails_session_id: rails_session_id)
     end
 
-    context '#identity.last_ial2_authenticated_at' do
+    context 'identity.last_ial2_authenticated_at' do
       let(:ial) { 2 }
       before do
         IdentityLinker.new(user, service_provider).link_identity(ial:)
@@ -263,7 +263,7 @@ RSpec.describe IdentityLinker do
         end
       end
 
-      context 'the request inludes IAMLAX' do
+      context 'the request inludes IALMAX' do
         context 'when the user is identity proofed' do
           let(:user) { create(:user, :proofed) }
 
