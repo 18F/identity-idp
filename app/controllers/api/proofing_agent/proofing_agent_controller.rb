@@ -40,6 +40,13 @@ module Api
         if proofing_rate_limiter.limited? || ssn_rate_limiter.limited?
           analytics.rate_limit_reached(limiter_type: :idv_resolution, step_name: 'proof_user')
           analytics.rate_limit_reached(limiter_type: :proof_ssn, step_name: 'proof_user')
+          ::ProofingAgent::FailureEmailSender.new(user: user, analytics: analytics).call(
+            visited_at: Time.zone.now.iso8601,
+            reason: 'maximum_attempts_reached',
+            proofing_agent_id: agent_id,
+            proofing_location_id: location_id,
+            correlation_id: correlation_id,
+          )
           render json: { status: 'failed', reason: 'maximum_attempts_reached' },
                  status: :too_many_requests
           return
@@ -67,6 +74,7 @@ module Api
           response_body:,
           transaction_id:,
           remaining_attempts: proofing_rate_limiter.remaining_count,
+          final_attempt:,
         )
 
         proofing_rate_limiter&.increment!
@@ -82,6 +90,7 @@ module Api
           correlation_id:,
           trace_id: amzn_trace_id,
           transaction_id:,
+          final_attempt:,
         )
 
         render json: response_body, status: :accepted
@@ -332,6 +341,10 @@ module Api
           },
           issuer:,
         }
+      end
+
+      def final_attempt
+        @final_attempt ||= ActiveModel::Type::Boolean.new.cast(params[:final_attempt]) || false
       end
 
       def proofing_rate_limiter

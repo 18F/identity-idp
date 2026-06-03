@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_05_07_152408) do
+ActiveRecord::Schema[8.0].define(version: 2026_05_29_170050) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_catalog.plpgsql"
@@ -218,9 +218,11 @@ ActiveRecord::Schema[8.0].define(version: 2026_05_07_152408) do
     t.string "hybrid_mobile_threatmetrix_session_id", comment: "sensitive=false"
     t.string "hybrid_mobile_request_ip", comment: "sensitive=false"
     t.integer "document_type_requested", comment: "sensitive=false"
+    t.datetime "pending_agent_proofed_user_at", comment: "sensitive=false"
     t.index ["passport_status"], name: "idx_document_capture_sessions_on_passport_status_null_doc_type", where: "((document_type_requested IS NULL) AND (passport_status IS NOT NULL))"
     t.index ["result_id"], name: "index_document_capture_sessions_on_result_id"
     t.index ["socure_docv_transaction_token"], name: "index_socure_docv_transaction_token", unique: true
+    t.index ["user_id", "pending_agent_proofed_user_at"], name: "idx_on_user_id_pending_agent_proofed_user_at_9c062ecb7b"
     t.index ["user_id"], name: "index_document_capture_sessions_on_user_id"
     t.index ["uuid"], name: "index_document_capture_sessions_on_uuid"
   end
@@ -244,7 +246,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_05_07_152408) do
     t.datetime "confirmed_at", precision: nil, comment: "sensitive=false"
     t.datetime "confirmation_sent_at", precision: nil, comment: "sensitive=false"
     t.string "email_fingerprint", default: "", null: false, comment: "sensitive=false"
-    t.string "encrypted_email", default: "", null: false, comment: "sensitive=true"
+    t.string "encrypted_email", default: "", null: false, comment: "sensitive=false"
     t.datetime "created_at", precision: nil, null: false, comment: "sensitive=false"
     t.datetime "updated_at", precision: nil, null: false, comment: "sensitive=false"
     t.datetime "last_sign_in_at", precision: nil, comment: "sensitive=false"
@@ -650,8 +652,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_05_07_152408) do
     t.string "encrypted_events", comment: "sensitive=true"
     t.bigint "profile_id", null: false, comment: "sensitive=false"
     t.jsonb "service_providers_sent", default: [], null: false, comment: "sensitive=false"
-    t.string "cost", null: false, comment: "sensitive=true"
-    t.string "salt", null: false, comment: "sensitive=true"
+    t.string "cost", comment: "sensitive=true"
+    t.string "salt", comment: "sensitive=true"
     t.datetime "created_at", null: false, comment: "sensitive=false"
     t.datetime "updated_at", null: false, comment: "sensitive=false"
     t.bigint "service_provider_ids_sent", default: [], null: false, comment: "sensitive=false", array: true

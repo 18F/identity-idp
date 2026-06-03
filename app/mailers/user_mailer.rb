@@ -443,6 +443,22 @@ class UserMailer < ActionMailer::Base
     end
   end
 
+  def agent_proofing_failure(visited_at:)
+    return if visited_at.blank?
+    with_user_locale(user) do
+      @hide_title = true
+      @presenter = Idv::ProofingAgent::AgentProofingFailurePresenter.new(
+        visited_at: visited_at,
+        url_options: url_options,
+      )
+      @visited_at_display = I18n.l(@presenter.visited_at, format: :event_date)
+      mail(
+        to: email_address.email,
+        subject: t('user_mailer.agent_proofing_failure.subject'),
+      )
+    end
+  end
+
   def in_person_failed_fraud(enrollment:, visited_location_name: nil)
     with_user_locale(user) do
       @presenter = Idv::InPerson::VerificationResultsEmailPresenter.new(

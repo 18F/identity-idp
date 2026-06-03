@@ -62,9 +62,9 @@ module ProofingAgent
       return 'passport_exception' if mrz_result.present? && mrz_result[:exception].present?
 
       return 'profile_resolution_fail' if resolution_result.present? && !resolution_result[:success]
-      return 'phone_check_fail' if phone_precheck_attempted? && !phone_precheck_passed?
       return 'id_fail' if aamva_result.present? && !aamva_success?
       return 'passport_fail' if mrz_result.present? && !mrz_result[:success]
+      return 'phone_check_fail' if !phone_precheck_attempted? || !phone_precheck_passed?
     end
 
     def phone_precheck_attempted?

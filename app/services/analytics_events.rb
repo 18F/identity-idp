@@ -5336,6 +5336,35 @@ module AnalyticsEvents
     )
   end
 
+  # Logs when a user clicks continue on the proofing agent confirmation window expired screen
+  def idv_proofing_agent_expired_continued(**extra)
+    track_event(:idv_proofing_agent_expired_continued, **extra)
+  end
+
+  # Logs when a user visits the proofing agent confirmation window expired screen
+  def idv_proofing_agent_expired_visited(**extra)
+    track_event(:idv_proofing_agent_expired_visited, **extra)
+  end
+
+  # Logs when a "couldn't verify" email is sent after a failed final proofing attempt or rate limit
+  # @param [String] user_id User UUID
+  # @param [Hash] proofing_agent The proofing agent information
+  # @param [String] reason Why proofing failed (e.g. 'id_fail', 'maximum_attempts_reached')
+  def idv_proofing_agent_failure_to_proof_email_sent(
+    user_id:,
+    proofing_agent:,
+    reason:,
+    **extra
+  )
+    track_event(
+      :idv_proofing_agent_failure_to_proof_email_sent,
+      user_id:,
+      proofing_agent:,
+      reason:,
+      **extra,
+    )
+  end
+
   # Tracks a proofing agent request that failed authorization or validation
   # @param [Boolean] success Whether request was successful
   # @param [String] issuer The issuer associated with the proofing request
@@ -5368,12 +5397,14 @@ module AnalyticsEvents
   # @param [String] issuer The issuer associated with the proofing request
   # @param [Integer, nil] remaining_attempts attempts remaining before rate limit is hit
   # @param [String,nil] transaction_id The transaction ID associated with the proofing request
+  # @param [Boolean,nil] final_attempt Whether the request was marked as the final attempt
   def idv_proofing_agent_request_received(
     response_body:,
     proofing_agent:,
     issuer:,
     remaining_attempts: nil,
     transaction_id: nil,
+    final_attempt: nil,
     **extra
   )
     track_event(
@@ -5383,6 +5414,7 @@ module AnalyticsEvents
       issuer:,
       remaining_attempts:,
       transaction_id:,
+      final_attempt:,
       **extra,
     )
   end
@@ -8757,13 +8789,21 @@ module AnalyticsEvents
   end
 
   # User submits form to add passkey to account during account creation
-  def webauthn_platform_signup_setup_ab_test_submitted
-    track_event(:webauthn_platform_signup_setup_ab_test_submitted)
+  # @param [String] upsell_bucket Which bucket user landed on or submitted with
+  def webauthn_platform_signup_setup_ab_test_submitted(upsell_bucket:, **extra)
+    track_event(
+      :webauthn_platform_signup_setup_ab_test_submitted, upsell_bucket: upsell_bucket,
+                                                         **extra
+    )
   end
 
-  # User visits webauth platform upsell after sign up
-  def webauthn_platform_signup_setup_ab_test_visited
-    track_event(:webauthn_platform_signup_setup_ab_test_visited)
+  # User visits webauthn platform upsell after sign up
+  # @param [String] upsell_bucket Which bucket user landed on
+  def webauthn_platform_signup_setup_ab_test_visited(upsell_bucket:, **extra)
+    track_event(
+      :webauthn_platform_signup_setup_ab_test_visited, upsell_bucket: upsell_bucket,
+                                                       **extra
+    )
   end
 
   # @param [Boolean] platform_authenticator Whether authentication method was registered as platform

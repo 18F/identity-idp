@@ -262,7 +262,7 @@ RSpec.describe AuthnContextResolver do
           ].join(' ')
         end
 
-        it 'asserts the AAL2 value, even though the ddefault aal value was passed in' do
+        it 'asserts the AAL2 value, even though the default aal value was passed in' do
           expect(subject.asserted_aal_acr).to eq Saml::Idp::Constants::AAL2_AUTHN_CONTEXT_CLASSREF
         end
 
@@ -306,15 +306,101 @@ RSpec.describe AuthnContextResolver do
             Saml::Idp::Constants::IAL2_BIO_PREFERRED_AUTHN_CONTEXT_CLASSREF
           end
 
+          context 'when user is nil' do
+            let(:user) { nil }
+
+            it 'asserts facial match as true without raising' do
+              expect { result }.not_to raise_error
+              expect(result.facial_match?).to be true
+            end
+          end
+
+          context 'with an anonymous user' do
+            let(:user) { AnonymousUser.new }
+
+            it 'asserts facial match as true' do
+              expect(result.identity_proofing?).to be true
+              expect(result.facial_match?).to be true
+              expect(result.two_pieces_of_fair_evidence?).to be true
+              expect(result.aal2?).to be true
+              expect(result.ialmax?).to be false
+            end
+          end
+
           context 'when the user is already verified' do
+            let(:facial_match_preferred_on_connected_accounts) { true }
+            before do
+              allow(IdentityConfig.store).to receive(:facial_match_preferred_on_connected_accounts)
+                .and_return(facial_match_preferred_on_connected_accounts)
+            end
+
             context 'without facial match comparison' do
               let(:user) { build(:user, :proofed) }
 
-              it 'falls back on proofing without facial match comparison' do
+              it 'asserts facial match as true' do
                 expect(result.identity_proofing?).to be true
-                expect(result.facial_match?).to be false
-                expect(result.two_pieces_of_fair_evidence?).to be false
+                expect(result.facial_match?).to be true
+                expect(result.two_pieces_of_fair_evidence?).to be true
                 expect(result.aal2?).to be true
+              end
+
+              context 'when the user has already connected with a service provider' do
+                let(:user) do
+                  build(
+                    :user,
+                    :proofed,
+                    identities: [
+                      create(
+                        :service_provider_identity,
+                        service_provider_record:,
+                      ),
+                    ],
+                  )
+                end
+
+                context 'when the connected sp is the requesting sp' do
+                  let(:service_provider_record) { service_provider }
+
+                  it 'falls back on proofing without facial match comparison' do
+                    expect(result.identity_proofing?).to be true
+                    expect(result.facial_match?).to be false
+                    expect(result.two_pieces_of_fair_evidence?).to be false
+                    expect(result.aal2?).to be true
+                  end
+
+                  context 'facial_match_preferred_on_connected_accounts is not enabled' do
+                    let(:facial_match_preferred_on_connected_accounts) { false }
+
+                    it 'falls back on proofing without facial match comparison' do
+                      expect(result.identity_proofing?).to be true
+                      expect(result.facial_match?).to be false
+                      expect(result.two_pieces_of_fair_evidence?).to be false
+                      expect(result.aal2?).to be true
+                    end
+                  end
+                end
+
+                context 'when the connected sp is a different sp' do
+                  let(:service_provider_record) { create(:service_provider) }
+
+                  it 'asserts facial match as true' do
+                    expect(result.identity_proofing?).to be true
+                    expect(result.facial_match?).to be true
+                    expect(result.two_pieces_of_fair_evidence?).to be true
+                    expect(result.aal2?).to be true
+                  end
+
+                  context 'facial_match_preferred_on_connected_accounts is not enabled' do
+                    let(:facial_match_preferred_on_connected_accounts) { false }
+
+                    it 'falls back on proofing without facial match comparison' do
+                      expect(result.identity_proofing?).to be true
+                      expect(result.facial_match?).to be false
+                      expect(result.two_pieces_of_fair_evidence?).to be false
+                      expect(result.aal2?).to be true
+                    end
+                  end
+                end
               end
             end
 
@@ -590,17 +676,111 @@ RSpec.describe AuthnContextResolver do
           let(:bio_acr_value) do
             Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_PREFERRED_ACR
           end
+          let(:facial_match_preferred_on_connected_accounts) { true }
+          before do
+            allow(IdentityConfig.store).to receive(:facial_match_preferred_on_connected_accounts)
+              .and_return(facial_match_preferred_on_connected_accounts)
+          end
+
+          context 'with an anonymous user' do
+            let(:user) { AnonymousUser.new }
+
+            it 'asserts facial match as true' do
+              expect(result.identity_proofing?).to be true
+              expect(result.facial_match?).to be true
+              expect(result.two_pieces_of_fair_evidence?).to be true
+              expect(result.aal2?).to be true
+              expect(result.ialmax?).to be false
+            end
+          end
 
           context 'when the user is already verified' do
             context 'without facial match comparison' do
-              let(:user) { build(:user, :proofed) }
+              let(:user) { create(:user, :proofed) }
 
-              it 'falls back on proofing without facial match comparison' do
+              it 'asserts facial match as true' do
                 expect(result.identity_proofing?).to be true
-                expect(result.facial_match?).to be false
-                expect(result.two_pieces_of_fair_evidence?).to be false
+                expect(result.facial_match?).to be true
+                expect(result.two_pieces_of_fair_evidence?).to be true
                 expect(result.aal2?).to be true
                 expect(result.ialmax?).to be false
+              end
+
+              context 'when the user has already connected with a service provider' do
+                let(:user) do
+                  create(
+                    :user, :proofed,
+                    identities: [
+                      create(:service_provider_identity, service_provider_record:),
+                    ]
+                  )
+                end
+
+                context 'when the connected sp is the requesting sp' do
+                  let(:service_provider_record) { service_provider }
+                  it 'falls back on proofing without facial match comparison' do
+                    expect(result.identity_proofing?).to be true
+                    expect(result.facial_match?).to be false
+                    expect(result.two_pieces_of_fair_evidence?).to be false
+                    expect(result.aal2?).to be true
+                  end
+
+                  context 'when the connection has been soft-deleted' do
+                    let(:user) do
+                      create(
+                        :user, :proofed,
+                        identities: [
+                          create(
+                            :service_provider_identity,
+                            service_provider_record:,
+                            deleted_at: 5.minutes.ago,
+                          ),
+                        ]
+                      )
+                    end
+
+                    it 'asserts facial match comparison' do
+                      expect(result.identity_proofing?).to be true
+                      expect(result.facial_match?).to be true
+                      expect(result.two_pieces_of_fair_evidence?).to be true
+                      expect(result.aal2?).to be true
+                      expect(result.ialmax?).to be false
+                    end
+
+                    context 'facial_match_preferred_on_connected_accounts is not enabled' do
+                      let(:facial_match_preferred_on_connected_accounts) { false }
+
+                      it 'falls back on proofing without facial match comparison' do
+                        expect(result.identity_proofing?).to be true
+                        expect(result.facial_match?).to be false
+                        expect(result.two_pieces_of_fair_evidence?).to be false
+                        expect(result.aal2?).to be true
+                      end
+                    end
+                  end
+                end
+
+                context 'when the connected sp is a different sp' do
+                  let(:service_provider_record) { create(:service_provider) }
+
+                  it 'asserts facial match as true' do
+                    expect(result.identity_proofing?).to be true
+                    expect(result.facial_match?).to be true
+                    expect(result.two_pieces_of_fair_evidence?).to be true
+                    expect(result.aal2?).to be true
+                  end
+
+                  context 'facial_match_preferred_on_connected_accounts is not enabled' do
+                    let(:facial_match_preferred_on_connected_accounts) { false }
+
+                    it 'falls back on proofing without facial match comparison' do
+                      expect(result.identity_proofing?).to be true
+                      expect(result.facial_match?).to be false
+                      expect(result.two_pieces_of_fair_evidence?).to be false
+                      expect(result.aal2?).to be true
+                    end
+                  end
+                end
               end
             end
 

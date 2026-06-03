@@ -500,4 +500,29 @@ RSpec.describe 'FeatureManagement' do
       end
     end
   end
+
+  describe '#dual_vendor_check_enabled?' do
+    let(:enabled) { nil }
+
+    before do
+      allow(IdentityConfig.store).to receive(:idv_phone_verification_dual_vendor_check_enabled)
+        .and_return(enabled)
+    end
+
+    context 'when idv_phone_verification_dual_vendor_check_enabled is true' do
+      let(:enabled) { true }
+
+      it 'returns true' do
+        expect(FeatureManagement.dual_vendor_check_enabled?).to be(true)
+      end
+    end
+
+    context 'when idv_phone_verification_dual_vendor_check_enabled is false' do
+      let(:enabled) { false }
+
+      it 'returns false' do
+        expect(FeatureManagement.dual_vendor_check_enabled?).to be(false)
+      end
+    end
+  end
 end

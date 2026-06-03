@@ -120,7 +120,10 @@ RSpec.describe SocureShadowModePhoneRiskJob do
       let(:expected_event_body) do
         {
           user_id: user.uuid,
-          phone_result: proofing_result.to_h.merge(vendor_workflow: nil),
+          phone_result: proofing_result.to_h.merge(
+            vendor_workflow: nil,
+            dual_vendor_check_eligible: false,
+          ),
           socure_result: {
             # attributes_requiring_additional_verification: [],
             # can_pass_with_additional_verification: false,

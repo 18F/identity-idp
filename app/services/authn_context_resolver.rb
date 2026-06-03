@@ -73,6 +73,10 @@ class AuthnContextResolver
     return result if user&.identity_verified_with_facial_match? ||
                      facial_match_is_required?(result)
 
+    if IdentityConfig.store.facial_match_preferred_on_connected_accounts
+      return result unless user_has_account_with_sp?
+    end
+
     if user&.identity_verified?
       result.with(facial_match?: false, two_pieces_of_fair_evidence?: false)
     else
@@ -88,6 +92,11 @@ class AuthnContextResolver
     else
       result
     end
+  end
+
+  def user_has_account_with_sp?
+    return false unless user && service_provider
+    user.connected_apps.exists?(service_provider: service_provider.issuer)
   end
 
   def acr_aal_component_values

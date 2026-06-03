@@ -18,6 +18,7 @@ RSpec.describe Idv::ProofingComponents do
   end
 
   let(:pii_from_doc) { nil }
+  let(:agent_proofed) { nil }
   let(:hybrid_device_profiling) { :disabled }
   let(:hybrid_mobile_tmx_review_status) { nil }
 
@@ -41,6 +42,7 @@ RSpec.describe Idv::ProofingComponents do
       idv_session.address_verification_mechanism = 'gpo'
       allow(FeatureManagement).to receive(:proofing_device_profiling_collecting_enabled?)
         .and_return(true)
+      idv_session.agent_proofed = agent_proofed
       idv_session.threatmetrix_review_status = 'pass'
       idv_session.source_check_vendor = 'aamva'
       idv_session.resolution_vendor = 'lexis_nexis'
@@ -64,6 +66,25 @@ RSpec.describe Idv::ProofingComponents do
           },
         )
       end
+
+      context 'with proofing agent' do
+        let(:agent_proofed) { true }
+
+        it 'returns expected result' do
+          expect(subject.to_h).to eql(
+            {
+              agent_proofed: true,
+              document_check: 'feedabee',
+              document_type_received: 'drivers_license',
+              source_check: 'aamva',
+              resolution_check: 'lexis_nexis',
+              address_check: 'gpo_letter',
+              threatmetrix: true,
+              threatmetrix_review_status: 'pass',
+            },
+          )
+        end
+      end
     end
 
     context 'with state_id' do
@@ -82,6 +103,25 @@ RSpec.describe Idv::ProofingComponents do
           },
         )
       end
+
+      context 'with proofing agent' do
+        let(:agent_proofed) { true }
+
+        it 'returns expected result' do
+          expect(subject.to_h).to eql(
+            {
+              agent_proofed: true,
+              document_check: 'feedabee',
+              document_type_received: 'state_id',
+              source_check: 'aamva',
+              resolution_check: 'lexis_nexis',
+              address_check: 'gpo_letter',
+              threatmetrix: true,
+              threatmetrix_review_status: 'pass',
+            },
+          )
+        end
+      end
     end
 
     context 'with passport' do
@@ -99,6 +139,25 @@ RSpec.describe Idv::ProofingComponents do
             threatmetrix_review_status: 'pass',
           },
         )
+      end
+
+      context 'with proofing agent' do
+        let(:agent_proofed) { true }
+
+        it 'returns expected result' do
+          expect(subject.to_h).to eql(
+            {
+              agent_proofed: true,
+              document_check: 'feedabee',
+              document_type_received: 'passport',
+              source_check: 'aamva',
+              resolution_check: 'lexis_nexis',
+              address_check: 'gpo_letter',
+              threatmetrix: true,
+              threatmetrix_review_status: 'pass',
+            },
+          )
+        end
       end
     end
 
@@ -120,6 +179,22 @@ RSpec.describe Idv::ProofingComponents do
             hybrid_mobile_threatmetrix_review_status: 'pass',
           },
         )
+      end
+    end
+  end
+
+  describe '#agent_proofed' do
+    context 'idv_session.agent_proofed is nil' do
+      it 'returns nil' do
+        expect(subject.agent_proofed).to eq nil
+      end
+    end
+
+    context 'idv_session.agent_proofed is true' do
+      before { idv_session.agent_proofed = true }
+
+      it 'returns true' do
+        expect(subject.agent_proofed).to eq true
       end
     end
   end

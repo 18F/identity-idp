@@ -99,7 +99,7 @@ class CalendarService
 
   # Last Monday of May
   def memorial
-    Date.new(year, 6, 1)
+    Date.new(year, 5, 31)
       .step(Date.new(year, 5, 1), -1)
       .find(&:monday?)
   end

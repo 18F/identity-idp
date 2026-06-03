@@ -125,7 +125,7 @@ module Users
 
     def log_passkey_upsell_visit
       analytics.webauthn_platform_signup_setup_ab_test_visited(
-        passkey_upsell_bucket: passkey_upsell_bucket,
+        upsell_bucket: passkey_upsell_bucket,
       )
       user_session[:auto_passkey_prompted] = true if passkey_upsell_bucket.present?
       user_session[:webauthn_platform_signup_setup_recommended] = true
@@ -133,7 +133,7 @@ module Users
 
     def log_passkey_upsell_submitted
       analytics.webauthn_platform_signup_setup_ab_test_submitted(
-        passkey_upsell_bucket: passkey_upsell_bucket,
+        upsell_bucket: passkey_upsell_bucket,
       )
     end
 
@@ -283,9 +283,45 @@ module Users
       ).merge(protocol: request.protocol)
     end
 
-    def create_webauthn_added_email(type)
-      _event, disavowal_token = create_user_event_with_disavowal(type, current_user)
-      create_mfa_added_email(event_type: type, disavowal_token: disavowal_token)
+    def prepare_webauthn_setup_form(
+      platform_authenticator:,
+      auto_trigger:,
+      need_to_set_up_additional_mfa:,
+      passkey_upsell: false
+    )
+      save_challenge_in_session
+      @exclude_credentials = exclude_credentials
+      @platform_authenticator = platform_authenticator
+      @auto_trigger = auto_trigger
+      @passkey_upsell = passkey_upsell
+      @presenter = build_webauthn_setup_presenter(
+        platform_authenticator: @platform_authenticator,
+        passkey_upsell: @passkey_upsell,
+      )
+      @need_to_set_up_additional_mfa = need_to_set_up_additional_mfa
+      @account_creation_threatmetrix ||= account_creation_threatmetrix_variables
+      user_session[:webauthn_setup_started_at] = Time.zone.now.to_f if platform_authenticator
+    end
+
+    def save_challenge_in_session
+      credential_creation_options = WebAuthn::Credential.options_for_create(user: current_user)
+      user_session[:webauthn_challenge] = credential_creation_options.challenge.bytes.to_a
+    end
+
+    def exclude_credentials
+      current_user.webauthn_configurations.map(&:credential_id)
+    end
+
+    def build_webauthn_setup_presenter(platform_authenticator:, passkey_upsell: false)
+      WebauthnSetupPresenter.new(
+        current_user: current_user,
+        user_fully_authenticated: user_fully_authenticated?,
+        user_opted_remember_device_cookie: user_opted_remember_device_cookie,
+        remember_device_default: remember_device_default,
+        platform_authenticator: platform_authenticator,
+        passkey_upsell: passkey_upsell,
+        url_options:,
+      )
     end
   end
 end

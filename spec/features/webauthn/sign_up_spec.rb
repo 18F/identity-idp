@@ -92,7 +92,11 @@ RSpec.feature 'webauthn sign up' do
       let!(:user) do
         allow(FeatureManagement).to receive(:account_creation_passkey_auto_prompt_enabled?)
           .and_return(true)
-        allow_any_instance_of(SignUp::PasswordsController)
+        allow_any_instance_of(Users::TwoFactorAuthenticationSetupController)
+          .to receive(:ab_test_bucket)
+          .with(:PASSKEY_UPSELL)
+          .and_return(:passkey_setup_prompt_after_password_creation)
+        allow_any_instance_of(Users::WebauthnSetupController)
           .to receive(:ab_test_bucket)
           .with(:PASSKEY_UPSELL)
           .and_return(:passkey_setup_prompt_after_password_creation)
@@ -102,7 +106,9 @@ RSpec.feature 'webauthn sign up' do
       end
 
       it 'redirects to webauthn platform setup upsell page' do
-        expect(page).to have_current_path(sign_up_webauthn_platform_setup_path)
+        expect(page).to have_current_path(
+          webauthn_setup_path(platform: true, passkey_upsell: true),
+        )
       end
     end
   end
