@@ -19,5 +19,6 @@ FactoryBot.define do
 
   trait :verified do
     last_ial2_authenticated_at { Time.zone.now }
+    verified_at { Time.zone.now }
   end
 end

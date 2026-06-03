@@ -2,6 +2,7 @@ require 'rails_helper'
 
 RSpec.describe Db::Identity::SpUserCounts do
   subject { described_class }
+  let(:proofed_user) { create(:user, :proofed) }
 
   describe '.by_issuer' do
     let(:issuer) { 'foo' }
@@ -23,7 +24,7 @@ RSpec.describe Db::Identity::SpUserCounts do
         verified_at: Time.zone.now
       )
       ServiceProviderIdentity.create(
-        user_id: 4, service_provider: issuer2, uuid: 'foo4',
+        user_id: proofed_user.id, service_provider: issuer2, uuid: 'foo4',
         verified_at: Time.zone.now
       )
       result = { issuer: issuer, total: 3, ial1_total: 2, ial2_total: 1, app_id: app_id }.to_json
@@ -54,8 +55,11 @@ RSpec.describe Db::Identity::SpUserCounts do
     end
 
     it 'aggregates across all issuers' do
-      create(:service_provider_identity, user_id: 1, service_provider_record: sp1)
-      create(:service_provider_identity, :verified, user_id: 1, service_provider_record: sp2)
+      create(:service_provider_identity, user_id: proofed_user.id, service_provider_record: sp1)
+      create(
+        :service_provider_identity, :verified, user_id: proofed_user.id,
+                                               service_provider_record: sp2
+      )
 
       create(:service_provider_identity, user_id: 2, service_provider_record: sp1)
 
