@@ -280,6 +280,20 @@ RSpec.describe IdentityLinker do
 
             expect(user.last_identity.verified_at).to be_nil
           end
+
+          context 'when the user identity proofs elsewhere and returns' do
+            it 'sets the timestamp' do
+              freeze_time
+              travel_to 1.week.ago do
+                IdentityLinker.new(user, service_provider).link_identity(ial:)
+              end
+
+              user.update(profiles: [create(:profile, :active, user:)])
+
+              IdentityLinker.new(user, service_provider).link_identity(ial:)
+              expect(user.last_identity.verified_at).to be_within(1.second).of(Time.zone.now)
+            end
+          end
         end
       end
 
