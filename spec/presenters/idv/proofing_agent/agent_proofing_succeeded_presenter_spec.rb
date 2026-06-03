@@ -31,8 +31,8 @@ RSpec.describe Idv::ProofingAgent::AgentProofingSucceededPresenter do
   end
 
   describe '#verified_at' do
-    it 'returns a Time in American Samoa zone (UTC-11)' do
-      expect(presenter.verified_at.utc_offset).to eq(-11 * 60 * 60)
+    it 'returns a Time in UTC-5' do
+      expect(presenter.verified_at.utc_offset).to eq(-5 * 60 * 60)
     end
   end
 
@@ -56,7 +56,7 @@ RSpec.describe Idv::ProofingAgent::AgentProofingSucceededPresenter do
         )
       end
 
-      it 'returns April 5, 2026 (Samoa still on April 2 at that moment)' do
+      it 'returns April 5, 2026' do
         expect(presenter.deadline.to_date).to eq(Date.new(2026, 4, 5))
       end
     end
@@ -114,6 +114,22 @@ RSpec.describe Idv::ProofingAgent::AgentProofingSucceededPresenter do
     end
 
     context 'across American timezones' do
+      let(:correct_deadline) { Date.new(2026, 6, 3) }
+
+      it 'gives the incorrect deadline before 3pm in Pacific/Guam' do
+        # rubocop:disable Rails/TimeZoneAssignment
+        Time.zone = 'Pacific/Guam'
+        # rubocop:enable Rails/TimeZoneAssignment
+
+        verified_at = Time.new(2026, 6, 1, 14, 0, 0, Time.zone).to_s
+        presenter = described_class.new(
+          verified_at:,
+          url_options: { host: 'example.com' },
+        )
+
+        expect(presenter.deadline.to_date).to eq(correct_deadline - 1.day)
+      end
+
       it 'gives the correct deadline after 3pm in Pacific/Guam' do
         # rubocop:disable Rails/TimeZoneAssignment
         Time.zone = 'Pacific/Guam'
@@ -125,7 +141,7 @@ RSpec.describe Idv::ProofingAgent::AgentProofingSucceededPresenter do
           url_options: { host: 'example.com' },
         )
 
-        expect(presenter.deadline.to_date).to eq(Date.new(2026, 6, 3))
+        expect(presenter.deadline.to_date).to eq(correct_deadline)
 
         verified_at = Time.new(2026, 6, 1, 23, 59, 59, Time.zone).to_s
         presenter = described_class.new(
@@ -133,7 +149,7 @@ RSpec.describe Idv::ProofingAgent::AgentProofingSucceededPresenter do
           url_options: { host: 'example.com' },
         )
 
-        expect(presenter.deadline.to_date).to eq(Date.new(2026, 6, 3))
+        expect(presenter.deadline.to_date).to eq(correct_deadline)
       end
 
       shared_examples 'gives the correct deadline for the whole business day' do |tz|
@@ -150,7 +166,7 @@ RSpec.describe Idv::ProofingAgent::AgentProofingSucceededPresenter do
             url_options: { host: 'example.com' },
           )
 
-          expect(presenter.deadline.to_date).to eq(Date.new(2026, 6, 3))
+          expect(presenter.deadline.to_date).to eq(correct_deadline)
         end
 
         it "gives the correct deadline at 5:59pm in #{tz}" do
@@ -160,7 +176,7 @@ RSpec.describe Idv::ProofingAgent::AgentProofingSucceededPresenter do
             url_options: { host: 'example.com' },
           )
 
-          expect(presenter.deadline.to_date).to eq(Date.new(2026, 6, 3))
+          expect(presenter.deadline.to_date).to eq(correct_deadline)
         end
       end
 

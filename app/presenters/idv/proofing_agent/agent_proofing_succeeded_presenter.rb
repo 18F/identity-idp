@@ -7,8 +7,8 @@ module Idv
 
       attr_reader :verified_at_string, :url_options
 
-      # Per ticket: EOD Samoa Standard Time (UTC-11) + 2 days so the
-      # displayed date covers all U.S. timezones (-11 to +10).
+      # Per analysis linked on ticket: EOD UTC-5 + 2 days provides the best
+      # coverage over all U.S. timezones (-11 to +10). +10 will be correct after 3pm local.
       def self.deadline_for(verified_at:)
         Time.zone.parse(verified_at).in_time_zone('Etc/GMT+5').end_of_day + 2.days
       end
@@ -35,7 +35,7 @@ module Idv
       end
 
       def verified_at
-        Time.zone.parse(@verified_at_string).in_time_zone('American Samoa')
+        Time.zone.parse(@verified_at_string).in_time_zone('Etc/GMT+5')
       end
     end
   end
