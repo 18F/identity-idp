@@ -46,6 +46,7 @@ class ProofingAgentJob < ApplicationJob
       proofing_agent_id:,
       proofing_location_id:,
       correlation_id:,
+      transaction_id:,
     )
 
     combined_result = proofing_result.combined_result.to_h
@@ -94,7 +95,8 @@ class ProofingAgentJob < ApplicationJob
     trace_id:,
     proofing_agent_id:,
     proofing_location_id:,
-    correlation_id:
+    correlation_id:,
+    transaction_id:
   )
     aamva_result = nil
 
@@ -134,6 +136,7 @@ class ProofingAgentJob < ApplicationJob
       proofing_agent_id:,
       proofing_location_id:,
       correlation_id:,
+      transaction_id:,
       pii: applicant_pii,
       resolution_result:,
       aamva_result:,
