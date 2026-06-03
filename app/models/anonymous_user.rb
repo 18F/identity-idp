@@ -76,4 +76,8 @@ class AnonymousUser
   def email_language
     nil
   end
+
+  def connected_apps
+    ServiceProviderIdentity.none
+  end
 end
