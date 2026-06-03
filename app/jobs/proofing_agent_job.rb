@@ -40,7 +40,7 @@ class ProofingAgentJob < ApplicationJob
     applicant_pii[:uuid_prefix] = current_sp&.app_id
     applicant_pii[:uuid] = user.uuid
 
-    @proofing_components = { document_check: @document_capture_session.doc_auth_vendor }
+    @proofing_components = {}
 
     proofing_result = make_vendor_proofing_requests(
       timer:,
@@ -58,6 +58,7 @@ class ProofingAgentJob < ApplicationJob
     combined_result = proofing_result.combined_result.to_h
 
     if combined_result&.dig(:resolution, :context, :stages, :resolution, :success) == true
+      @proofing_components[:document_check] = Idp::Constants::PROOFING_AGENT
       @proofing_components[:residential_resolution_check] = combined_result&.dig(
         :resolution, :context, :stages, :residential_address, :vendor_name
       )

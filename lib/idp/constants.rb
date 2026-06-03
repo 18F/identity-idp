@@ -40,6 +40,7 @@ module Idp
     end
 
     SUPPORTED_PASSPORT_ISSUING_COUNTRY_CODES = %w[US USA].freeze
+    PROOFING_AGENT = 'proofing agent'
 
     # US State and Territory codes are
     # taken from the FIPS standard, which
