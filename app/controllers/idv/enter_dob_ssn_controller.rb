@@ -46,10 +46,6 @@ module Idv
       MemorableDateComponent.extract_date_param(dob_ssn_params[:dob])
     end
 
-    def sp
-      ServiceProvider.find_by(issuer: current_user.pending_agent_proofed_session&.issuer)
-    end
-
     def move_agent_proofed_user_pii_to_idv_session
       agent_proofed_user = current_user.pending_agent_proofed_user
       if agent_proofed_user
