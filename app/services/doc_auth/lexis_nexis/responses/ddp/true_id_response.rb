@@ -128,11 +128,27 @@ module DocAuth
           end
 
           def raw_response
+            service_block = authentication_service_block
+            raw = service_block&.dig('tps_vendor_raw_response')
+            return raw if raw
+
+            raise_missing_raw_response_error(service_block)
+          end
+
+          def authentication_service_block
             parsed_response_body.dig(
               :integration_hub_results,
               "#{IdentityConfig.store.lexisnexis_threatmetrix_org_id}:#{policy}",
-              'Authentication', 'tps_vendor_raw_response'
-            )
+              'Authentication',
+            ) || {}
+          end
+
+          def raise_missing_raw_response_error(service_block)
+            if service_block.is_a?(Hash) && service_block['tps_was_timeout'].to_s == 'yes'
+              raise Proofing::TimeoutError, 'LexisNexis TrueID DDP timed out'
+            end
+
+            raise 'LexisNexis TrueID DDP returned no tps_vendor_raw_response'
           end
 
           def policy
