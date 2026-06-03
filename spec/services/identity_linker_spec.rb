@@ -157,54 +157,59 @@ RSpec.describe IdentityLinker do
     end
 
     context 'identity.last_ial2_authenticated_at' do
-      context 'the request includes identity proofing' do
-        it 'sets the timestamp' do
-          IdentityLinker.new(user, service_provider).link_identity(ial: 2)
+      let(:ial) { Idp::Constants::IAL2 }
+      before do
+        IdentityLinker.new(user, service_provider).link_identity(ial:)
+      end
 
+      context 'when the request is for the identity proofing service level' do
+        it 'sets the timestamp' do
           expect(
             user.last_identity.last_ial2_authenticated_at,
           ).to be_within(1.second).of(Time.zone.now)
         end
       end
 
-      context 'the request does not include identity proofing' do
+      context 'when the request is for the auth-only service level' do
+        let(:ial) { Idp::Constants::IAL1 }
         it 'does not set the timestamp' do
-          IdentityLinker.new(user, service_provider).link_identity(ial: 1)
-
           expect(user.last_identity.last_ial2_authenticated_at).to be_nil
         end
       end
 
-      context 'the request is IALMax and verified_at is null' do
-        it 'does not set the timestamp' do
-          IdentityLinker.new(user, service_provider).link_identity(ial: 0)
-
-          expect(user.last_identity.last_ial2_authenticated_at).to be_nil
+      context 'when the request is for the IALMax service level' do
+        let(:ial) { Idp::Constants::IAL_MAX }
+        context 'and the user is not verified' do
+          it 'does not set the timestamp' do
+            expect(user.last_identity.last_ial2_authenticated_at).to be_nil
+          end
         end
-      end
 
-      context 'the request is IALMax and verified_at is not null' do
-        it 'sets the timestamp' do
-          IdentityLinker.new(user, service_provider).link_identity(ial: 2)
-          IdentityLinker.new(user, service_provider).link_identity(ial: 0)
-
-          expect(
-            user.last_identity.last_ial2_authenticated_at,
-          ).to be_within(1.second).of(Time.zone.now)
+        context 'the user is verified' do
+          let(:user) { create(:user, :proofed) }
+          it 'sets the timestamp' do
+            expect(user.last_identity.last_ial2_authenticated_at).to be_within(
+              1.second,
+            ).of(Time.zone.now)
+          end
         end
       end
     end
 
     context 'identity.last_ial1_authenticated_at' do
+      let(:ial) { Idp::Constants::IAL2 }
+      before do
+        IdentityLinker.new(user, service_provider).link_identity(ial:)
+      end
+
       context 'the request includes identity proofing' do
         it 'does not set the timestamp' do
-          IdentityLinker.new(user, service_provider).link_identity(ial: 2)
-
           expect(user.last_identity.last_ial1_authenticated_at).to be_nil
         end
       end
 
       context 'the request does not include identity proofing' do
+        let(:ial) { Idp::Constants::IAL1 }
         it 'sets the timestamp' do
           IdentityLinker.new(user, service_provider).link_identity(ial: 1)
 
@@ -213,34 +218,87 @@ RSpec.describe IdentityLinker do
           ).to be_within(1.second).of(Time.zone.now)
         end
       end
+
+      context 'when the request is IALMax' do
+        let(:ial) { Idp::Constants::IAL_MAX }
+        context 'and the user is not verified' do
+          it 'sets the timestamp' do
+            expect(user.last_identity.last_ial1_authenticated_at).to be_within(
+              1.second,
+            ).of(Time.zone.now)
+          end
+        end
+
+        context 'the user is verified' do
+          let(:user) { create(:user, :proofed) }
+          it 'does not set the timestamp' do
+            expect(user.last_identity.last_ial1_authenticated_at).to be_nil
+          end
+        end
+      end
     end
 
     context 'identity.verified_at' do
-      context 'the request includes identity proofing and verified_at is null' do
+      let(:ial) { Idp::Constants::IAL2 }
+      context 'the request is for the identity proofing service level' do
         it 'sets the timestamp' do
-          IdentityLinker.new(user, service_provider).link_identity(ial: 2)
+          IdentityLinker.new(user, service_provider).link_identity(ial:)
 
           expect(
             user.last_identity.verified_at,
           ).to be_within(1.second).of(Time.zone.now)
         end
-      end
 
-      context 'the request includes identity proofing and verified_at is not null' do
-        it 'does not set the timestamp' do
-          freeze_time
-          travel_to 1.week.ago do
-            IdentityLinker.new(user, service_provider).link_identity(ial: 2)
+        context 'it is not the first connection to the service provider' do
+          it 'does not set the timestamp' do
+            freeze_time
+            travel_to 1.week.ago do
+              IdentityLinker.new(user, service_provider).link_identity(ial:)
+            end
+            IdentityLinker.new(user, service_provider).link_identity(ial:)
+
+            expect(user.last_identity.verified_at).to eq(1.week.ago)
           end
-          IdentityLinker.new(user, service_provider).link_identity(ial: 2)
-
-          expect(
-            user.last_identity.verified_at,
-          ).to eq(1.week.ago)
         end
       end
 
-      context 'the request does not include identity proofing' do
+      context 'the request is for an IALMAX service level' do
+        let(:ial) { Idp::Constants::IAL_MAX }
+        context 'when the user is identity proofed' do
+          let(:user) { create(:user, :proofed) }
+
+          it 'sets the timestamp' do
+            IdentityLinker.new(user, service_provider).link_identity(ial:)
+
+            expect(user.last_identity.verified_at).to be_within(1.second).of(Time.zone.now)
+          end
+        end
+
+        context 'when the user is not identity proofed' do
+          it 'does not set the timestamp' do
+            IdentityLinker.new(user, service_provider).link_identity(ial:)
+
+            expect(user.last_identity.verified_at).to be_nil
+          end
+
+          context 'when the user identity proofs elsewhere and returns' do
+            it 'sets the timestamp' do
+              freeze_time
+              travel_to 1.week.ago do
+                IdentityLinker.new(user, service_provider).link_identity(ial:)
+              end
+
+              user.update(profiles: [create(:profile, :active, user:)])
+
+              IdentityLinker.new(user, service_provider).link_identity(ial:)
+              expect(user.last_identity.verified_at).to be_within(1.second).of(Time.zone.now)
+            end
+          end
+        end
+      end
+
+      context 'the request is at an auth-only service level' do
+        let(:ial) { Idp::Constants::IAL1 }
         it 'does not set the timestamp' do
           IdentityLinker.new(user, service_provider).link_identity(ial: 1)
 
