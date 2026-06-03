@@ -141,3 +141,5 @@ group :test do
   gem 'webmock'
   gem 'zonebie'
 end
+
+gem 'google-cloud-recaptcha_enterprise', '~> 2.1'
