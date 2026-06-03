@@ -240,6 +240,26 @@ RSpec.describe IdentityLinker do
         end
       end
 
+      context 'the request inludes IAMLAX' do
+        context 'when the user is identity proofed' do
+          let(:user) { create(:user, :proofed) }
+
+          it 'sets the timestamp' do
+            IdentityLinker.new(user, service_provider).link_identity(ial: 0)
+
+            expect(user.last_identity.verified_at).to be_within(1.second).of(Time.zone.now)
+          end
+        end
+
+        context 'when the user is not identity proofed' do
+          it 'sets the timestamp' do
+            IdentityLinker.new(user, service_provider).link_identity(ial: 0)
+
+            expect(user.last_identity.verified_at).to be_nil
+          end
+        end
+      end
+
       context 'the request does not include identity proofing' do
         it 'does not set the timestamp' do
           IdentityLinker.new(user, service_provider).link_identity(ial: 1)
