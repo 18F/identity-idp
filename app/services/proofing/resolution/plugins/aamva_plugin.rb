@@ -178,9 +178,7 @@ module Proofing
         end
 
         def passport_applicant?(applicant_pii)
-          # Check both new field name and old field name for backwards compatibility during deploy
-          (applicant_pii[:document_type_received] || applicant_pii[:id_doc_type]) ==
-            Idp::Constants::DocumentTypes::PASSPORT
+          applicant_pii[:document_type_received] == Idp::Constants::DocumentTypes::PASSPORT
         end
 
         def log_state_id_validation(analytics:, result:, applicant_pii:,
