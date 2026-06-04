@@ -395,7 +395,8 @@ class User < ApplicationRecord
   end
 
   def pending_agent_proofed_session
-    document_capture_sessions.where.not(pending_agent_proofed_user_at: nil).first
+    document_capture_sessions.where.not(pending_agent_proofed_user_at: nil)
+      .order(pending_agent_proofed_user_at: :desc).first
   end
 
   def pending_agent_proofed_user

@@ -200,7 +200,7 @@ module Idv
 
     def remove_agent_proofed_profile_pending_status_if_needed
       # move this to user.rb probably
-      current_user.pending_agent_proofed_session.update!(pending_agent_proofed_user_at: nil)
+      current_user.pending_agent_proofed_session&.update!(pending_agent_proofed_user_at: nil)
     end
 
     def handle_request_enroll_exception(err)

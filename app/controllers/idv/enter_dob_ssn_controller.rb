@@ -8,7 +8,7 @@ module Idv
 
     before_action :confirm_two_factor_authenticated
     before_action :confirm_verification_needed
-    before_action :move_agent_proofed_user_pii_to_idv_session, only: [:new]
+    before_action :move_agent_proofed_user_pii_to_idv_session
 
     def new
       @dob_ssn_form = Idv::DobSsnForm.new(idv_session.applicant)
@@ -24,6 +24,7 @@ module Idv
 
       if form_response.success?
         return redirect_to idv_enter_password_url if verify_dob_ssn_matches_applicant_pii?
+        flash.now[:error] = t('idv.failure.dob_ssn.warning')
       else
         flash.now[:error] = form_response.first_error_message
       end
