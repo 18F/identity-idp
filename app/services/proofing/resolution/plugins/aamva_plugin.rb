@@ -195,6 +195,7 @@ module Proofing
             aamva_checked:,
             supported_jurisdiction: aamva_supports_state_id_jurisdiction?(applicant_pii),
             bypass_exception:,
+            proofing_agent: proofing_agent_analytics_arguments,
             **biographical_info(applicant_pii),
             pii_like_keypaths: [
               [:requested_attributes, :first_name],
@@ -211,7 +212,6 @@ module Proofing
               [:errors, :zipcode],
               [:state_id_jurisdiction],
             ],
-            proofing_agent: proofing_agent_analytics_arguments,
           )
         end
 

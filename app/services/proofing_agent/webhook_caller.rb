@@ -20,7 +20,7 @@ module ProofingAgent
       response = send_http_post_request
       analytics.idv_proofing_agent_webhook(
         success: response.success?,
-        proofing_agent: analytics_attributes.except(:proofing_components),
+        proofing_agent: analytics_attributes[:proofing_agent],
         body_payload: payload,
         issuer: service_provider_issuer,
         response: response.to_h,
@@ -37,7 +37,7 @@ module ProofingAgent
       )
       analytics.idv_proofing_agent_webhook(
         success: false,
-        proofing_agent: analytics_attributes.except(:proofing_components),
+        proofing_agent: analytics_attributes[:proofing_agent],
         body_payload: payload,
         issuer: service_provider_issuer,
         response: exception&.message,

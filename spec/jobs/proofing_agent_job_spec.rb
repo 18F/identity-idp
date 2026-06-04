@@ -87,12 +87,14 @@ RSpec.describe ProofingAgentJob, type: :job do
           transaction_id: transaction_id,
           correlation_id: correlation_id,
           analytics_attributes: {
-            agent_id: proofing_agent_id,
-            location_id: proofing_location_id,
-            correlation_id: correlation_id,
-            transaction_id: transaction_id,
+            proofing_agent: {
+              agent_id: proofing_agent_id,
+              location_id: proofing_location_id,
+              correlation_id: correlation_id,
+              transaction_id: transaction_id,
+            },
             proofing_components: {
-              document_check: Idp::Constants::PROOFING_AGENT,
+              document_check: Idp::Constants::Vendors::PROOFING_AGENT,
               source_check: 'StateIdMock',
               residential_resolution_check: 'ResidentialAddressNotRequired',
               resolution_check: 'ResolutionMock',
@@ -206,7 +208,7 @@ RSpec.describe ProofingAgentJob, type: :job do
               correlation_id: correlation_id,
               transaction_id: transaction_id },
             proofing_components:
-            { document_check: Idp::Constants::PROOFING_AGENT,
+            { document_check: Idp::Constants::Vendors::PROOFING_AGENT,
               source_check: 'StateIdMock',
               residential_resolution_check: 'ResidentialAddressNotRequired',
               resolution_check: 'ResolutionMock',
@@ -351,7 +353,7 @@ RSpec.describe ProofingAgentJob, type: :job do
             transaction_id: transaction_id,
           },
           proofing_components: {
-            document_check: Idp::Constants::PROOFING_AGENT,
+            document_check: Idp::Constants::Vendors::PROOFING_AGENT,
             residential_resolution_check: 'ResidentialAddressNotRequired',
             resolution_check: 'ResolutionMock',
             address_check: 'AddressMock',

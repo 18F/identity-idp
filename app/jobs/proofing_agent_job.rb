@@ -57,18 +57,21 @@ class ProofingAgentJob < ApplicationJob
 
     combined_result = proofing_result.combined_result.to_h
 
+    if combined_result&.dig(:success)
+      proofing_components[:document_check] = Idp::Constants::Vendors::PROOFING_AGENT
+    end
+
     if combined_result&.dig(:resolution, :context, :stages, :resolution, :success) == true
-      @proofing_components[:document_check] = Idp::Constants::PROOFING_AGENT
-      @proofing_components[:residential_resolution_check] = combined_result&.dig(
+      proofing_components[:residential_resolution_check] = combined_result&.dig(
         :resolution, :context, :stages, :residential_address, :vendor_name
       )
-      @proofing_components[:resolution_check] = combined_result&.dig(
+      proofing_components[:resolution_check] = combined_result&.dig(
         :resolution, :context, :stages, :resolution, :vendor_name
       )
     end
 
     if combined_result&.dig(:resolution, :context, :stages, :phone_precheck, :success) == true
-      @proofing_components[:address_check] = combined_result&.dig(
+      proofing_components[:address_check] = combined_result&.dig(
         :resolution, :context, :stages, :phone_precheck, :vendor_name
       )
     end
@@ -149,7 +152,10 @@ class ProofingAgentJob < ApplicationJob
         reason:,
         transaction_id:,
         correlation_id:,
-        analytics_attributes: analytics_attributes.merge(proofing_components:),
+        analytics_attributes: {
+          proofing_agent: analytics_attributes,
+          proofing_components:,
+        },
       )
     end
 
@@ -188,7 +194,7 @@ class ProofingAgentJob < ApplicationJob
     submit_attempts:,
     remaining_attempts:
   )
-    @aamva_result = nil
+    aamva_result = nil
 
     analytics_attributes = {
       agent_id: proofing_agent_id,
