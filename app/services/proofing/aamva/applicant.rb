@@ -30,11 +30,7 @@ module Proofing
         :state_id_issued,
         :state_id_expiration,
         keyword_init: true,
-      ) do
-        def id_doc_type
-          document_type_received
-        end
-      end.freeze
+      ).freeze
 
       # @param applicant [Hash, Struct]
       # @option applicant [String, nil] :uuid
@@ -102,8 +98,7 @@ module Proofing
         self::StateIdData.new(
           state_id_number: applicant.dig(:state_id_number)&.gsub(/[^\w\d]/, ''),
           state_id_jurisdiction: applicant[:state_id_jurisdiction],
-          # Check both new and old field names for backwards compatibility
-          document_type_received: applicant[:document_type_received] || applicant[:id_doc_type],
+          document_type_received: applicant[:document_type_received],
           state_id_issued: applicant[:state_id_issued],
           state_id_expiration: applicant[:state_id_expiration],
         )

@@ -23,12 +23,6 @@ RSpec.describe Pii::Passport do
 
   subject { described_class.new(**passport) }
 
-  describe '#id_doc_type' do
-    it 'returns the value of document_type_received' do
-      expect(subject.id_doc_type).to eq(passport[:document_type_received])
-    end
-  end
-
   describe '#residential_address_required?' do
     it 'returns true' do
       expect(subject.residential_address_required?).to be(true)
