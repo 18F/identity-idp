@@ -38,6 +38,7 @@ module Users
 
     def create
       session[:sign_in_flow] = :sign_in
+      delete_session_timeout_flash_if_present
       return process_rate_limited if session_sign_in_failure_count_max_exceeded?
       return process_locked_out_user if current_user && user_locked_out?(current_user)
       return process_rate_limited if rate_limited?
@@ -64,6 +65,10 @@ module Users
     end
 
     private
+
+    def delete_session_timeout_flash_if_present
+      flash.delete(:session_timed_out)
+    end
 
     def clear_session_sign_in_failure_count_if_window_expired
       locked_at = session[:max_sign_in_failures_at]

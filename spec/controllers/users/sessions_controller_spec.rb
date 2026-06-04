@@ -931,6 +931,16 @@ RSpec.describe Users::SessionsController, devise: true do
       post :create, params: { user: { email: user.email, password: user.password } }
       expect(response).to redirect_to account_reset_pending_url
     end
+
+    context 'when session_timed_out flash is present' do
+      it 'deletes the flash message' do
+        flash[:session_timed_out] = 'Your session has timed out'
+
+        post :create, params: { user: { email: 'test@example.com', password: 'password' } }
+
+        expect(flash[:session_timed_out]).to be_nil
+      end
+    end
   end
 
   describe '#new' do
