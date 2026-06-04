@@ -1212,9 +1212,13 @@ RSpec.describe Idv::EnterPasswordController do
       end
     end
 
-    context 'user is agent-proofed' do
+    context 'user is agent proofed' do
       let(:document_capture_session) do
-        DocumentCaptureSession.create!(user: user, issuer: sp.issuer)
+        DocumentCaptureSession.create!(
+          user: user,
+          doc_auth_vendor: Idp::Constants::Vendors::PROOFING_AGENT,
+          issuer: sp.issuer,
+        )
       end
 
       before do

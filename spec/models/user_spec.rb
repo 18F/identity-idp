@@ -596,18 +596,21 @@ RSpec.describe User do
         user: user,
         doc_auth_vendor: 'proofing_agent',
         requested_at: 1.day.ago,
+        pending_agent_proofed_user_at: 1.day.ago,
       )
       session2 = create(
         :document_capture_session,
         user: user,
         doc_auth_vendor: 'proofing_agent',
         requested_at: 1.hour.ago,
+        pending_agent_proofed_user_at: 1.hour.ago,
       )
       create(
         :document_capture_session,
         user: user,
         doc_auth_vendor: 'lexisnexis',
         requested_at: 1.minute.ago,
+        pending_agent_proofed_user_at: 1.minute.ago,
       )
 
       expect(user.agent_proofing_document_capture_session).to eq(session2)
@@ -639,12 +642,13 @@ RSpec.describe User do
           :document_capture_session,
           user: user,
           doc_auth_vendor: 'proofing_agent',
-          requested_at: requested_at,
+          requested_at: pending_agent_proofed_user_at,
+          pending_agent_proofed_user_at: pending_agent_proofed_user_at,
         )
       end
 
       context 'when the session validity window has expired' do
-        let(:requested_at) { 49.hours.ago }
+        let(:pending_agent_proofed_user_at) { 49.hours.ago }
 
         it 'returns true' do
           expect(user.agent_proofing_expired?).to eq(true)
@@ -652,7 +656,7 @@ RSpec.describe User do
       end
 
       context 'when the session validity window has not expired' do
-        let(:requested_at) { 10.minutes.ago }
+        let(:pending_agent_proofed_user_at) { 10.minutes.ago }
 
         context 'when the redis cached data is present' do
           before do

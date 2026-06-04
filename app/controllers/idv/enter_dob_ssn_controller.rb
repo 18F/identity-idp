@@ -42,11 +42,14 @@ module Idv
     end
 
     def move_agent_proofed_user_pii_to_idv_session
-      agent_proofed_user = current_user.pending_agent_proofed_session&.load_agent_proofed_user
+      agent_proofed_user = current_user.pending_agent_proofed_user
       if agent_proofed_user
         session[:sp] = { issuer: current_user.pending_agent_proofed_session&.issuer }
         idv_session.applicant = agent_proofed_user&.pii
         idv_session.agent_proofed = true
+        # a successful agent proofed user should have phone precheck completed
+        idv_session.mark_phone_step_started!
+        idv_session.mark_phone_step_complete!
       else
         redirect_to idv_proofing_agent_expired_url
       end
