@@ -196,6 +196,7 @@ module IdentityConfig
     config.add(:facial_match_general_availability_enabled, type: :boolean)
     config.add(:facial_match_preferred_on_connected_accounts, type: :boolean)
     config.add(:feature_account_creation_passkey_auto_prompt, type: :boolean)
+    config.add(:feature_webauthn_verification_auto_prompt_enabled, type: :boolean)
     config.add(:feature_idv_force_gpo_verification_enabled, type: :boolean)
     config.add(:feature_idv_hybrid_flow_enabled, type: :boolean)
     config.add(:feature_show_sp_reproof_banner_enabled, type: :boolean)

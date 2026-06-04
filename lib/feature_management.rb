@@ -201,4 +201,8 @@ class FeatureManagement
   def self.dual_vendor_check_enabled?
     IdentityConfig.store.idv_phone_verification_dual_vendor_check_enabled
   end
+
+  def self.webauthn_verification_auto_prompt?
+    IdentityConfig.store.feature_webauthn_verification_auto_prompt_enabled
+  end
 end

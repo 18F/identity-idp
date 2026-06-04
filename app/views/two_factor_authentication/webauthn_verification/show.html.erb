@@ -20,6 +20,7 @@
   <%= render WebauthnVerifyButtonComponent.new(
         credentials: @presenter.credentials,
         user_challenge: user_session[:webauthn_challenge],
+      data: { auto_prompt: @presenter.auto_prompt? || nil },
       ).with_content(@presenter.authenticate_button_text) %>
 
   <%= f.input(
