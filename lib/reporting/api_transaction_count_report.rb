@@ -282,9 +282,15 @@ module Reporting
 
     def instant_verify_query
       <<~QUERY
-        fields @timestamp, @message
+        fields @timestamp, @message, id
+        | filter name in ['IdV: doc auth verify proofing results']
         | fields jsonParse(@message) as message
-        | filter name='IdV: doc auth verify proofing results' and message.properties.event_properties.proofing_results.context.stages.resolution.vendor_name='lexisnexis:instant_verify'
+        | unnest message.properties.event_properties into event_properties
+        | unnest event_properties.proofing_results into proofing_results
+        | unnest proofing_results.context into context
+        | unnest context.stages into stages
+        | unnest stages.resolution into resolution
+        | filter resolution.vendor_name like /lexisnexis/
         | display id
         | limit 10000
       QUERY
@@ -367,9 +373,9 @@ module Reporting
 
     def ln_phonefinder_query
       <<~QUERY
-        fields @timestamp, @message
+        fields @timestamp, @message, id
         | filter name = 'IdV: phone confirmation vendor'
-        | filter properties.event_properties.vendor.vendor_name = "lexisnexis:phone_finder"
+        | filter properties.event_properties.vendor.vendor_name = "lexisnexis:phone_finder" or properties.event_properties.vendor.vendor_name = "lexisnexis:phone_finder_ddp"
         | display id
         | limit 10000
       QUERY
