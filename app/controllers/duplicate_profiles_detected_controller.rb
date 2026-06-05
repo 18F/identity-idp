@@ -68,7 +68,6 @@ class DuplicateProfilesDetectedController < ApplicationController
       #{IdentityConfig.store.enable_one_account_global_detection}",
     )
 
-    flash[:error] = t('errors.messages.not_found')
     return redirect_to(root_url)
   end
 end
