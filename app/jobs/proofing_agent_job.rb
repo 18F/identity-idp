@@ -9,7 +9,7 @@ class ProofingAgentJob < ApplicationJob
 
   discard_on JobHelpers::StaleJobHelper::StaleJobError
 
-  attr_reader :document_capture_session, :proofing_components
+  attr_reader :document_capture_session, :proofing_components, :proofing_agent
 
   def perform(
     encrypted_arguments:,
@@ -41,6 +41,12 @@ class ProofingAgentJob < ApplicationJob
     applicant_pii[:uuid] = user.uuid
 
     @proofing_components = {}
+    @proofing_agent = {
+      agent_id: proofing_agent_id,
+      location_id: proofing_location_id,
+      correlation_id: correlation_id,
+      transaction_id: transaction_id,
+    }
 
     proofing_result = make_vendor_proofing_requests(
       timer:,
@@ -61,90 +67,10 @@ class ProofingAgentJob < ApplicationJob
       proofing_components[:document_check] = Idp::Constants::Vendors::PROOFING_AGENT
     end
 
-    if combined_result&.dig(:resolution, :context, :stages, :resolution, :success) == true
-      proofing_components[:residential_resolution_check] = combined_result&.dig(
-        :resolution, :context, :stages, :residential_address, :vendor_name
-      )
-      proofing_components[:resolution_check] = combined_result&.dig(
-        :resolution, :context, :stages, :resolution, :vendor_name
-      )
-    end
-
-    if combined_result&.dig(:resolution, :context, :stages, :phone_precheck, :success) == true
-      proofing_components[:address_check] = combined_result&.dig(
-        :resolution, :context, :stages, :phone_precheck, :vendor_name
-      )
-    end
-
     document_capture_session.store_agent_proofed_user(proofing_result.combined_result)
 
     success = combined_result[:success]
     reason = combined_result[:reason]
-
-    analytics_attributes = {
-      agent_id: proofing_agent_id,
-      location_id: proofing_location_id,
-      correlation_id: correlation_id,
-      transaction_id: transaction_id,
-    }
-
-    analytics.idv_doc_auth_verify_proofing_results(
-      **{
-        success:,
-        proofing_agent: analytics_attributes,
-        proofing_components:,
-        analytics_id: 'Doc Auth',
-        address_edited: false,
-        address_line2_present: false,
-        errors: combined_result&.dig(:resolution, :errors),
-        last_name_spaced: combined_result&.dig(:pii, :last_name)&.include?(' '),
-        opted_in_to_in_person_proofing: false,
-        proofing_results: combined_result&.dig(:resolution),
-        ssn_is_unique: combined_result&.dig(:resolution, :ssn_is_unique),
-        step: 'Proofing Agent Job',
-        flow_path: 'Proofing Agent',
-      }.to_h.merge(
-        pii_like_keypaths: [
-          [:proofing_results, :biographical_info],
-          [:proofing_results, :errors, :zipcode],
-          [:proofing_results, :errors, :ssn],
-          [:proofing_results, :biographical_info, :identity_doc_address_state],
-          [:proofing_results, :biographical_info, :state_id_jurisdiction],
-          [:proofing_results, :context, :stages, :resolution, :errors, :zipcode],
-          [:proofing_results, :biographical_info, :same_address_as_id],
-          [:proofing_results, :biographical_info, :phone],
-          [:proofing_results, :context, :stages, :resolution, :errors, :ssn],
-          [:errors, :zipcode],
-          [:errors, :ssn],
-        ],
-      ),
-    )
-
-    if proofing_result.phone_precheck_attempted?
-      phone_precheck_body = combined_result&.dig(:resolution, :context, :stages, :phone_precheck)
-      phone_info = combined_result&.dig(:resolution, :biographical_info, :phone)
-
-      analytics.idv_phone_confirmation_vendor_submitted(
-        **{
-          success: phone_precheck_body&.dig(:success),
-          vendor: phone_precheck_body&.dig(:vendor_name),
-          area_code: phone_info&.dig(:area_code),
-          country_code: phone_info&.dig(:country_code),
-          phone_fingerprint: phone_info&.dig(:fingerprint),
-          new_phone_added: true,
-          hybrid_handoff_phone_used: false,
-          manual_review: false,
-          errors: phone_precheck_body&.dig(:errors),
-          reason_codes: phone_precheck_body&.dig(:reason_codes),
-          proofing_agent: analytics_attributes,
-          proofing_components:,
-        }.to_h.merge(
-          pii_like_keypaths: [
-            [:errors, :phone],
-          ],
-        ),
-      )
-    end
 
     if webhook_url.present?
       ProofingAgentWebhookJob.perform_later(
@@ -153,7 +79,7 @@ class ProofingAgentJob < ApplicationJob
         transaction_id:,
         correlation_id:,
         analytics_attributes: {
-          proofing_agent: analytics_attributes,
+          proofing_agent:,
           proofing_components:,
         },
       )
@@ -196,18 +122,11 @@ class ProofingAgentJob < ApplicationJob
   )
     aamva_result = nil
 
-    analytics_attributes = {
-      agent_id: proofing_agent_id,
-      location_id: proofing_location_id,
-      correlation_id: correlation_id,
-      transaction_id: transaction_id,
-    }
     if applicant_pii[:state_id_number].present?
       aamva_result = call_aamva_verification(
         applicant_pii:,
         current_sp:,
         timer:,
-        analytics_attributes:,
       )
       applicant_pii[:aamva_verified_attributes] = aamva_result.verified_attributes if aamva_result
       if aamva_result&.success?
@@ -228,7 +147,7 @@ class ProofingAgentJob < ApplicationJob
         submit_attempts:,
         remaining_submit_attempts: remaining_attempts,
         document_type_requested: Idp::Constants::DocumentTypes::PASSPORT,
-        proofing_agent: analytics_attributes,
+        proofing_agent:,
         correlation_id_sent: correlation_id,
         error_message: mrz_result&.errors&.dig(:passport),
         exception: mrz_result&.exception&.message,
@@ -252,6 +171,79 @@ class ProofingAgentJob < ApplicationJob
       service_provider_issuer:,
       proofing_vendor:,
     )
+
+    if resolution_result&.dig(:context, :stages, :resolution, :success) == true
+      proofing_components[:residential_resolution_check] = resolution_result&.dig(
+        :context, :stages, :residential_address, :vendor_name
+      )
+      proofing_components[:resolution_check] = resolution_result&.dig(
+        :context, :stages, :resolution, :vendor_name
+      )
+    end
+
+    if resolution_result&.dig(:context, :stages, :phone_precheck, :success) == true
+      proofing_components[:address_check] = resolution_result&.dig(
+        :context, :stages, :phone_precheck, :vendor_name
+      )
+    end
+
+    analytics.idv_doc_auth_verify_proofing_results(
+      **{
+        success: resolution_result&.dig(:context, :stages, :resolution, :success),
+        proofing_agent:,
+        proofing_components:,
+        analytics_id: 'Doc Auth',
+        address_edited: false,
+        address_line2_present: false,
+        errors: resolution_result&.dig(:errors),
+        last_name_spaced: applicant_pii&.dig(:last_name)&.include?(' '),
+        opted_in_to_in_person_proofing: false,
+        proofing_results: resolution_result.to_h,
+        ssn_is_unique: resolution_result&.dig(:ssn_is_unique),
+        step: 'Proofing Agent Job',
+        flow_path: 'Proofing Agent',
+      }.to_h.merge(
+        pii_like_keypaths: [
+          [:proofing_results, :biographical_info],
+          [:proofing_results, :errors, :zipcode],
+          [:proofing_results, :errors, :ssn],
+          [:proofing_results, :biographical_info, :identity_doc_address_state],
+          [:proofing_results, :biographical_info, :state_id_jurisdiction],
+          [:proofing_results, :context, :stages, :resolution, :errors, :zipcode],
+          [:proofing_results, :biographical_info, :same_address_as_id],
+          [:proofing_results, :biographical_info, :phone],
+          [:proofing_results, :context, :stages, :resolution, :errors, :ssn],
+          [:errors, :zipcode],
+          [:errors, :ssn],
+        ],
+      ),
+    )
+
+    if resolution_result.dig(:context, :stages, :phone_precheck).present?
+      phone_precheck_body = resolution_result&.dig(:context, :stages, :phone_precheck)
+      phone_info = resolution_result&.dig(:biographical_info, :phone)
+
+      analytics.idv_phone_confirmation_vendor_submitted(
+        **{
+          success: phone_precheck_body&.dig(:success),
+          vendor: phone_precheck_body&.dig(:vendor_name),
+          area_code: phone_info&.dig(:area_code),
+          country_code: phone_info&.dig(:country_code),
+          phone_fingerprint: phone_info&.dig(:fingerprint),
+          new_phone_added: true,
+          hybrid_handoff_phone_used: false,
+          manual_review: false,
+          errors: phone_precheck_body&.dig(:errors),
+          reason_codes: phone_precheck_body&.dig(:reason_codes),
+          proofing_agent:,
+          proofing_components:,
+        }.to_h.merge(
+          pii_like_keypaths: [
+            [:errors, :phone],
+          ],
+        ),
+      )
+    end
 
     ProofingAgent::ProofingResult.new(
       proofing_agent_id:,
@@ -291,7 +283,7 @@ class ProofingAgentJob < ApplicationJob
     DocumentCaptureSession.new(result_id:).load_proofing_result&.result
   end
 
-  def call_aamva_verification(applicant_pii:, current_sp:, timer:, analytics_attributes:)
+  def call_aamva_verification(applicant_pii:, current_sp:, timer:)
     aamva_plugin.call(
       applicant_pii:,
       current_sp:,
@@ -300,7 +292,9 @@ class ProofingAgentJob < ApplicationJob
       timer:,
       doc_auth_flow: true,
       analytics:,
-      proofing_agent_analytics_arguments: analytics_attributes,
+      analytics_arguments: {
+        proofing_agent:,
+      },
     )
   end
 

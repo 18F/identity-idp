@@ -8,7 +8,7 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
   let(:current_sp) { build(:service_provider) }
   let(:state_id_address_resolution_result) { nil }
   let(:ipp_enrollment_in_progress) { false }
-  let(:proofing_agent_analytics_arguments) { nil }
+  let(:analytics_arguments) { {} }
   let(:proofing_agent_id) { 'test-agent-id' }
   let(:proofing_location_id) { 'test-location-id' }
   let(:correlation_id) { 'test-correlation-id' }
@@ -52,7 +52,7 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
         ipp_enrollment_in_progress:,
         timer: JobHelpers::Timer.new,
         already_proofed:,
-        proofing_agent_analytics_arguments:,
+        analytics_arguments:,
       )
     end
 
@@ -401,7 +401,7 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
           timer: JobHelpers::Timer.new,
           analytics:,
           doc_auth_flow:,
-          proofing_agent_analytics_arguments:,
+          analytics_arguments:,
         )
       end
 
@@ -866,12 +866,14 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
               )
             end
             let(:proofer_result_hash) { proofer_result.to_h }
-            let(:proofing_agent_analytics_arguments) do
+            let(:analytics_arguments) do
               {
-                agent_id: proofing_agent_id,
-                location_id: proofing_location_id,
-                correlation_id: correlation_id,
-                transaction_id: transaction_id,
+                proofing_agent: {
+                  agent_id: proofing_agent_id,
+                  location_id: proofing_location_id,
+                  correlation_id: correlation_id,
+                  transaction_id: transaction_id,
+                },
               }
             end
 
@@ -885,7 +887,7 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
                 expect(analytics).to have_logged_event(
                   :idv_state_id_validation, hash_including(
                     bypass_exception: true,
-                    proofing_agent: proofing_agent_analytics_arguments,
+                    proofing_agent: analytics_arguments[:proofing_agent],
                   )
                 )
               end
@@ -897,12 +899,14 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
       context 'when the state ID cannot proof' do
         let(:state) { 'NP' }
         let(:state_id_jurisdiction) { 'NP' }
-        let(:proofing_agent_analytics_arguments) do
+        let(:analytics_arguments) do
           {
-            agent_id: proofing_agent_id,
-            location_id: proofing_location_id,
-            correlation_id: correlation_id,
-            transaction_id: transaction_id,
+            proofing_agent: {
+              agent_id: proofing_agent_id,
+              location_id: proofing_location_id,
+              correlation_id: correlation_id,
+              transaction_id: transaction_id,
+            },
           }
         end
 
@@ -950,7 +954,7 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
               state_id_number: '#' * applicant_pii[:state_id_number].length,
               user_id: user_uuid,
               aamva_checked: false,
-              proofing_agent: proofing_agent_analytics_arguments,
+              proofing_agent: analytics_arguments[:proofing_agent],
             }
           )
         end

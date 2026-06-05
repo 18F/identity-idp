@@ -12,7 +12,7 @@ module Proofing
           identity_doc_zipcode: :zipcode,
         }.freeze
 
-        attr_reader :proofing_agent_analytics_arguments
+        attr_reader :analytics_arguments
 
         def call(
           applicant_pii:,
@@ -23,9 +23,9 @@ module Proofing
           analytics: nil,
           doc_auth_flow: false,
           already_proofed: false,
-          proofing_agent_analytics_arguments: nil
+          analytics_arguments: {}
         )
-          @proofing_agent_analytics_arguments = proofing_agent_analytics_arguments
+          @analytics_arguments = analytics_arguments
           return skipped_result if passport_applicant?(applicant_pii) || already_proofed
 
           if !aamva_supports_state_id_jurisdiction?(applicant_pii)
@@ -195,8 +195,8 @@ module Proofing
             aamva_checked:,
             supported_jurisdiction: aamva_supports_state_id_jurisdiction?(applicant_pii),
             bypass_exception:,
-            proofing_agent: proofing_agent_analytics_arguments,
             **biographical_info(applicant_pii),
+            **analytics_arguments,
             pii_like_keypaths: [
               [:requested_attributes, :first_name],
               [:requested_attributes, :last_name],

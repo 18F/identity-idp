@@ -202,17 +202,19 @@ RSpec.describe ProofingAgentJob, type: :job do
             ssn_is_unique: true,
             step: 'Proofing Agent Job',
             success: true,
-            proofing_agent:
-            { agent_id: proofing_agent_id,
+            proofing_agent: {
+              agent_id: proofing_agent_id,
               location_id: proofing_location_id,
               correlation_id: correlation_id,
-              transaction_id: transaction_id },
-            proofing_components:
-            { document_check: Idp::Constants::Vendors::PROOFING_AGENT,
+              transaction_id: transaction_id,
+            },
+            proofing_components: {
+              document_check: Idp::Constants::Vendors::PROOFING_AGENT,
               source_check: 'StateIdMock',
               residential_resolution_check: 'ResidentialAddressNotRequired',
               resolution_check: 'ResolutionMock',
-              address_check: 'AddressMock' },
+              address_check: 'AddressMock',
+            },
           )
         end
       end
