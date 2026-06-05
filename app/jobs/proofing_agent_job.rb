@@ -191,7 +191,7 @@ class ProofingAgentJob < ApplicationJob
       **{
         success: resolution_result&.dig(:context, :stages, :resolution, :success),
         proofing_agent:,
-        proofing_components:,
+        proofing_components: proofing_components.dup,
         analytics_id: 'Doc Auth',
         address_edited: false,
         address_line2_present: false,
@@ -236,7 +236,7 @@ class ProofingAgentJob < ApplicationJob
           errors: phone_precheck_body&.dig(:errors),
           reason_codes: phone_precheck_body&.dig(:reason_codes),
           proofing_agent:,
-          proofing_components:,
+          proofing_components: proofing_components.dup,
         }.to_h.merge(
           pii_like_keypaths: [
             [:errors, :phone],

@@ -209,7 +209,6 @@ RSpec.describe ProofingAgentJob, type: :job do
               transaction_id: transaction_id,
             },
             proofing_components: {
-              document_check: Idp::Constants::Vendors::PROOFING_AGENT,
               source_check: 'StateIdMock',
               residential_resolution_check: 'ResidentialAddressNotRequired',
               resolution_check: 'ResolutionMock',
@@ -355,7 +354,6 @@ RSpec.describe ProofingAgentJob, type: :job do
             transaction_id: transaction_id,
           },
           proofing_components: {
-            document_check: Idp::Constants::Vendors::PROOFING_AGENT,
             residential_resolution_check: 'ResidentialAddressNotRequired',
             resolution_check: 'ResolutionMock',
             address_check: 'AddressMock',
