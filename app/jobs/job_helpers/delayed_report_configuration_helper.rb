@@ -16,7 +16,7 @@ module JobHelpers
 
     module_function
 
-    def determine_job_args_for_demographics(
+    def determine_receiver_for_demographics_report(
       run_date: Time.zone.now,
       lookback_days: 5,
 >>>>>>> bceb4ab03c (refactor job emailing to mirror reporting-rails and be simpler date logic)
