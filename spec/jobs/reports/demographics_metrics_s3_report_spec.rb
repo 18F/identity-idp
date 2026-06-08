@@ -158,9 +158,9 @@ RSpec.describe Reports::DemographicsMetricsS3Report do
 
       it 'uses default values' do
         expect(default_job.run_date).to be_within(1.second).of(Time.zone.now)
-        expect(default_job.days_back_for_time_period).to eq(5)
+        expect(default_job.days_back_for_time_period).to eq(described_class::DEFAULT_LOOK_BACK_DAYS)
         expect(default_job.report_receiver).to eq(:internal)
-        expect(default_job.time_frame).to eq('quarterly')
+        expect(default_job.time_frame).to eq(described_class::DEFAULT_TIME_FRAME)
       end
     end
 

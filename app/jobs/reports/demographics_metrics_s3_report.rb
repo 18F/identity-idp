@@ -6,15 +6,15 @@ module Reports
   # This job reads pre-generated demographics CSV files from S3 and emails them to partners.
   #
   # @param run_date [Time] When the job runs (defaults to now)
-  # @param days_back [Integer] How many days to look back for the reporting period (defaults to 5)
+  # @param days_back [Integer] How many days to look back for the reporting period (defaults to 3)
   # @param receiver [Symbol] :internal (Login only) or :both (partners + Login)
   # @param time_frame [String] 'quarterly' for now - determines time range for report
   #
   # @example
-  #   # Manual execution (run on March 5th for Q1 data, looking back 5 days)
+  #   # Manual execution (run late in day on March 1st for Q1 data, looking back 3 days)
   #   job = Reports::DemographicsMetricsS3Report.new(
   #     Time.zone.now,  # run_date
-  #     5,              # days_back_for_time_period
+  #     3,              # days_back_for_time_period
   #     :both,          # receiver
   #     'quarterly'     # time_frame
   #   )
@@ -22,16 +22,16 @@ module Reports
   class DemographicsMetricsS3Report < BaseReport
     include JobHelpers::ServiceProviderMetadata
 
-    TIME_FRAME = 'quarterly' # Report coverage is full quarter even if run mid quarter internally
+    DEFAULT_TIME_FRAME = 'quarterly' # Report coverage is full quarter even if run mid quarter internally
     MAX_FILE_AGE_DAYS = 30 # Realistically, report should have been generated within a few days
-    REPORT_DELAY_DAYS = 5 # Cron job assumed to run 4th day of new month
+    DEFAULT_LOOK_BACK_DAYS = 3 # Assume job runs 1st day of month late in day, after report upload
 
     attr_reader :run_date, :days_back_for_time_period, :report_receiver, :time_frame
 
     # rubocop:disable Metrics/ParameterLists
     def initialize(init_run_date = Time.zone.now,
-                   init_days_back_for_time_period = REPORT_DELAY_DAYS,
-                   init_receiver = :internal, init_time_frame = TIME_FRAME,
+                   init_days_back_for_time_period = DEFAULT_LOOK_BACK_DAYS,
+                   init_receiver = :internal, init_time_frame = DEFAULT_TIME_FRAME,
                    *args, **rest)
       # rubocop:enable Metrics/ParameterLists
       @run_date = init_run_date
@@ -52,9 +52,9 @@ module Reports
       @run_date = perform_run_date || @run_date || Time.zone.now
       @days_back_for_time_period = perform_days_back_for_time_period ||
                                    @days_back_for_time_period ||
-                                   5
+                                   DEFAULT_LOOK_BACK_DAYS
       @report_receiver = (perform_receiver || @report_receiver || :internal).to_sym
-      @time_frame = perform_time_frame || @time_frame || TIME_FRAME
+      @time_frame = perform_time_frame || @time_frame || DEFAULT_TIME_FRAME
 
       validate_parameters!
 
@@ -172,6 +172,8 @@ module Reports
           last_modified > cutoff_time
         rescue Aws::S3::Errors::NoSuchKey
           # Shouldn't happen if validate_all_files_exist passed, but just in case
+          Rails.logger.error "Unexpected file access issue during freshness check despite"\
+          " validate_all_files_exist passing for file: #{file_name}"
           false
         end
       end
