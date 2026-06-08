@@ -1135,7 +1135,9 @@ RSpec.describe 'Hybrid Flow' do
 
     context 'Pii validation fails' do
       before do
-        allow_any_instance_of(Idv::DocPiiStateId).to receive(:zipcode).and_return(:invalid_junk)
+        allow_any_instance_of(Idv::DocPiiForm).to receive(:validate_zipcode_format) do |form|
+          form.errors.add(:zipcode, 'doc_auth.errors.general.no_liveness', type: :zipcode)
+        end
       end
 
       it 'presents as a type 1 error', js: true do

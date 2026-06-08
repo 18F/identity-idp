@@ -126,7 +126,7 @@ module Idv
       def state_id_valid?
         return if !state_id_present?
 
-        form = StateIdForm.new(state_id: state_id)
+        form = Pii::StateIdForm.new(state_id: state_id)
         return if form.valid?
 
         errors.merge!(form.errors)
@@ -135,7 +135,7 @@ module Idv
       def residential_address_valid?
         return if !residential_address_present?
 
-        form = AddressForm.new(address: residential_address)
+        form = Pii::UspsStrictAddressForm.new(address: residential_address)
         return if form.valid?
 
         errors.merge!(form.errors)
@@ -144,7 +144,7 @@ module Idv
       def passport_valid?
         return if !passport_present?
 
-        form = PassportForm.new(passport: passport)
+        form = Pii::PassportForm.new(passport: passport)
         return if form.valid?
 
         errors.merge!(form.errors)
