@@ -340,6 +340,7 @@ RSpec.describe ProofingAgentJob, type: :job do
           vendor: 'AddressMock',
           area_code: '202',
           country_code: 'US',
+          phone_fingerprint: an_instance_of(String),
           new_phone_added: true,
           hybrid_handoff_phone_used: false,
           manual_review: false,

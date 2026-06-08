@@ -229,7 +229,7 @@ class ProofingAgentJob < ApplicationJob
           vendor: phone_precheck_body&.dig(:vendor_name),
           area_code: phone_info&.dig(:area_code),
           country_code: phone_info&.dig(:country_code),
-          phone_fingerprint: phone_info&.dig(:fingerprint),
+          phone_fingerprint: phone_info&.dig(:phone_fingerprint),
           new_phone_added: true,
           hybrid_handoff_phone_used: false,
           manual_review: false,

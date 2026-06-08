@@ -23,7 +23,7 @@ module ProofingAgent
         proofing_agent: analytics_attributes[:proofing_agent],
         body_payload: payload,
         issuer: service_provider_issuer,
-        response: response.to_h,
+        response: response.to_hash,
         proofing_components: analytics_attributes[:proofing_components],
       )
     rescue => exception
