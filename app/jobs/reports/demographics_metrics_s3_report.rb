@@ -22,6 +22,7 @@ module Reports
   class DemographicsMetricsS3Report < BaseReport
     include JobHelpers::ServiceProviderMetadata
 
+    REPORT_NAME = 'DemographicsMetricsReport'
     DEFAULT_TIME_FRAME = 'quarterly' # Report coverage is full quarter even if run mid quarter internally
     MAX_FILE_AGE_DAYS = 30 # Realistically, report should have been generated within a few days
     DEFAULT_LOOK_BACK_DAYS = 3 # Assume job runs 1st day of month late in day, after report upload
@@ -129,7 +130,7 @@ module Reports
       file_prefix = (@report_receiver == :internal) ? 'latest' : 'latest_external'
 
       base_path = generate_base_s3_path(directory: 'idp')
-      s3_path = "#{base_path}DemographicsMetricsReport/#{sp_id}/"\
+      s3_path = "#{base_path}#{REPORT_NAME}/#{sp_id}/"\
                 "#{@time_frame}/#{report_time_range_label}/#{file_prefix}_SP#{sp_id}"
 
       Reporting::DemographicsMetricsS3Report.new(
