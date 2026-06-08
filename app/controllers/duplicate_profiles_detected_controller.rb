@@ -68,6 +68,6 @@ class DuplicateProfilesDetectedController < ApplicationController
       #{IdentityConfig.store.enable_one_account_global_detection}",
     )
 
-    return redirect_to(root_url)
+    redirect_to root_url(locale: locale)
   end
 end
