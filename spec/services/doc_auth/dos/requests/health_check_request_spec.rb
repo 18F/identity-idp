@@ -128,6 +128,29 @@ RSpec.describe DocAuth::Dos::Requests::HealthCheckRequest do
           end
         end
       end
+
+      context 'when there is an HTTP 503 error with a non-JSON response body' do
+        before do
+          stub_request(:get, endpoint).to_return(
+            status: 503,
+            body: '<html>Something went wrong</html>',
+            headers: { 'Content-Type' => 'text/html' },
+          )
+        end
+
+        it 'logs the request without raising' do
+          expect { result }.not_to raise_error
+
+          expect(analytics).to have_logged_event(
+            :passport_api_health_check,
+            hash_including(
+              success: false,
+              errors: { network: 503 },
+              exception: a_string_matching(/Faraday::/),
+            ),
+          )
+        end
+      end
     end
   end
 
