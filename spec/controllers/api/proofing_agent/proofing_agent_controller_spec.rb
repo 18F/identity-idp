@@ -101,6 +101,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
   let(:correlation_id) { 'correlation-789' }
   let(:location_id) { 'loc-123' }
   let(:agent_id) { 'agent-456' }
+  let(:transaction_id) { nil }
 
   let(:headers) do
     {
@@ -115,7 +116,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
   end
 
   let(:proofing_agent_analytics_hash) do
-    a_hash_including(correlation_id:, location_id:, agent_id:)
+    a_hash_including(correlation_id:, location_id:, agent_id:, transaction_id:)
   end
   let(:token) { 'a-shared-secret' }
   let(:salt) { SecureRandom.hex(32) }
@@ -192,6 +193,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
         agent_id: 'agent-456',
         correlation_id: 'correlation-789',
         location_id: 'loc-123',
+        transaction_id: nil,
       },
       errors: body_errors,
     }
