@@ -91,6 +91,8 @@ module Api
           trace_id: amzn_trace_id,
           transaction_id:,
           final_attempt:,
+          submit_attempts: proofing_rate_limiter.attempts,
+          remaining_attempts: proofing_rate_limiter.remaining_count,
         )
 
         render json: response_body, status: :accepted
@@ -338,6 +340,7 @@ module Api
             agent_id:,
             location_id:,
             correlation_id:,
+            transaction_id:,
           },
           issuer:,
         }
