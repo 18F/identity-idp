@@ -53,6 +53,8 @@ RSpec.describe ProofingAgentJob, type: :job do
       allow(IdentityConfig.store).to receive(:idv_proofing_agent_config)
         .and_return(idv_proofing_agent_config)
       allow(Db::SpCost::AddSpCost).to receive(:call)
+      stub_analytics
+      allow(Analytics).to receive(:new).and_return(@analytics)
     end
 
     after do
@@ -105,10 +107,6 @@ RSpec.describe ProofingAgentJob, type: :job do
       end
 
       context 'logging' do
-        before do
-          stub_analytics
-          allow(Analytics).to receive(:new).and_return(@analytics)
-        end
         it 'logs idv_doc_auth_verify_proofing_results event with proofing agent' do
           perform
           expect(@analytics).to have_logged_event(
@@ -320,8 +318,6 @@ RSpec.describe ProofingAgentJob, type: :job do
 
     context 'when the AAMVA check passes' do
       before do
-        stub_analytics
-        allow(Analytics).to receive(:new).and_return(@analytics)
         allow(IdentityConfig.store).to receive(:idv_phone_precheck_percent).and_return(100)
       end
 
@@ -397,10 +393,6 @@ RSpec.describe ProofingAgentJob, type: :job do
 
     context 'when the MRZ check passes' do
       let(:pii) { Idp::Constants::MOCK_IDV_PROOFING_PASSPORT_APPLICANT.merge(phone: '12025551212').freeze }
-      before do
-        stub_analytics
-        allow(Analytics).to receive(:new).and_return(@analytics)
-      end
 
       it 'stores a successful result with mrz data' do
         perform
