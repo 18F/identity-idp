@@ -57,6 +57,7 @@ module Idv
         disable_passports: disable_passports?,
         auto_check_value: disable_passports? && document_capture_session.passport_requested? ?
           nil : document_capture_session.document_type_requested,
+        mdl_enabled: mdl_enabled?,
       }
     end
 
@@ -67,11 +68,15 @@ module Idv
 
     def passports_enabled?
       IdentityConfig.store.doc_auth_passports_enabled ||
-        (FeatureManagement.doc_auth_passport_cards_enabled? && in_passport_cards_allowed_bucket?)
+        (FeatureManagement.doc_auth_passport_cards_enabled? && passport_card_allowed?)
     end
 
-    def in_passport_cards_allowed_bucket?
+    def passport_card_allowed?
       ab_test_bucket(:DOC_AUTH_PASSPORT_CARDS_ALLOWED) == :doc_auth_passport_cards_allowed
+    end
+
+    def mdl_enabled?
+      document_capture_session.mdl_enabled
     end
   end
 end
