@@ -23,7 +23,7 @@ module Reports
     include JobHelpers::ServiceProviderMetadata
 
     REPORT_NAME = 'DemographicsMetricsReport'
-    DEFAULT_TIME_FRAME = 'quarterly' # Report coverage is full quarter even if run mid quarter internally
+    DEFAULT_TIME_FRAME = 'quarterly' # Report coverage - quarter even if run mid quarter internally
     MAX_FILE_AGE_DAYS = 30 # Realistically, report should have been generated within a few days
     DEFAULT_LOOK_BACK_DAYS = 3 # Assume job runs 1st day of month late in day, after report upload
 
