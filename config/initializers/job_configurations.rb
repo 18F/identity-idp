@@ -332,11 +332,14 @@ else
         class: 'Reports::DemographicsMetricsS3Report',
         cron: cron_1st_of_month_12pm,
         args: -> {
-          JobHelpers::DelayedReportConfigurationHelper.determine_job_args_for_demographics(
-            run_date: Time.zone.now,
-            lookback_days: 2,
-            external_rule: 'external_if_quarter_end',
-          )
+          [Time.zone.now, # Report run date
+           3, # Lookback days to determine report period from run date
+           JobHelpers::DelayedReportConfigurationHelper.determine_receiver_for_demographics_report(
+             run_date: Time.zone.now,
+             lookback_days: 3,
+             external_rule: 'external_if_quarter_end',
+           ), # Receiver (internal or both)
+           'quarterly'] # Report time period
         },
       },
       # Download and store Socure reason codes

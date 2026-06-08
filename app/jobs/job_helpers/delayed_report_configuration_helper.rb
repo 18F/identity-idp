@@ -2,13 +2,14 @@
 
 module JobHelpers
   module DelayedReportConfigurationHelper
-    DATA_LAG_DAYS = 2 # 2 day lag to account for data sync delay into DW
+    DATA_LAG_DAYS = 0 # 0 day lag - for this report, log replication has minimal delay
+    # (For modeled data in marts tables, this lag could be a few days)
 
     module_function
 
-    def determine_job_args_for_demographics(
+    def determine_receiver_for_demographics_report(
       run_date: Time.zone.now,
-      lookback_days: 5,
+      lookback_days: 3,
       external_rule: 'external_if_quarter_end'
     )
       # Figure out what reporting period we're covering
@@ -16,9 +17,7 @@ module JobHelpers
       quarter_end = report_period_date.all_quarter.end
 
       # Determine receiver based on rule
-      receiver = determine_receiver_for_period(quarter_end, external_rule)
-
-      [run_date, lookback_days, receiver]
+      determine_receiver_for_period(quarter_end, external_rule)
     end
 
     private
