@@ -156,6 +156,7 @@ module Idv
         in_person_verification_needed: active_enrollment.present?,
         selfie_check_performed: session[:selfie_check_performed],
         proofing_components:,
+        proofing_agent_requested: agent_proofed,
       )
 
       profile.activate unless profile.reason_not_to_activate

@@ -1121,6 +1121,7 @@ idv.failure.attempts_html.one: Vous avez encore <strong>un essai.</strong> Vous 
 idv.failure.attempts_html.other: Vous pouvez encore essayer <strong>%{count} fois de plus.</strong> Ensuite vous devrez ensuite attendre 6 heures avant de réessayer.
 idv.failure.button.try_online: Réessayer en ligne
 idv.failure.button.warning: Réessayer
+idv.failure.dob_ssn.warning: Veuillez vérifier les informations que vous avez saisies et réessayer.
 idv.failure.exceptions.in_person_outage_error_message.post_cta.body: En attendant, vous pouvez toujours commencer la procédure de vérification en personne sur %{app_name} avant de vous rendre dans un bureau de poste. Si vous avez un besoin urgent d’accès aux services, veuillez contacter directement l’organisme concerné.
 idv.failure.exceptions.in_person_outage_error_message.post_cta.title: Nous travaillons à la résolution d’un problème technique. Il se peut que les résultats de votre vérification d’identité ne vous soient pas envoyés par e-mail avant le %{date}.
 idv.failure.exceptions.in_person_outage_error_message.ready_to_verify.body: Vous pouvez toujours vous rendre dans un bureau de poste pour achever la vérification de votre identité. Si vous avez un besoin urgent d’accès aux services, veuillez contacter directement l’organisme concerné.
