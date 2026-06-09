@@ -13,6 +13,7 @@ module Idv
     before_action :confirm_step_allowed
     before_action :confirm_no_profile_yet
     before_action :confirm_current_password, only: [:create]
+    before_action :save_proofing_agent_threatmetrix_status, only: [:new]
 
     helper_method :step_indicator_step
 
@@ -238,6 +239,18 @@ module Idv
 
     def attempt_events
       user_session['idv/attempts'] || []
+    end
+
+    def save_proofing_agent_threatmetrix_status
+      return unless FeatureManagement.proofing_agent_device_profiling_collecting_enabled?
+      return if idv_session.threatmetrix_review_status.present?
+      return if idv_session.hybrid_mobile_threatmetrix_review_status.present?
+
+      device_profile = DeviceProfilingResult.for_user(
+        user_id: current_user.id,
+        type: DeviceProfilingResult::PROFILING_TYPES[:proofing_agent],
+      ).order(created_at: :desc).first
+      idv_session.threatmetrix_review_status = device_profile.review_status
     end
   end
 end

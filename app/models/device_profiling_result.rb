@@ -5,6 +5,7 @@ class DeviceProfilingResult < ApplicationRecord
 
   PROFILING_TYPES = {
     account_creation: 'ACCOUNT_CREATION',
+    proofing_agent: 'PROOFING_AGENT',
   }.freeze
 
   def self.find_or_create_by(user_id:, profiling_type:)
