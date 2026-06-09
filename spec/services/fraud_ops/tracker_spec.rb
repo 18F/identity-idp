@@ -40,6 +40,26 @@ RSpec.describe FraudOps::Tracker do
       expect(tracker).to respond_to(:session_timeout)
     end
 
+    it 'uses no_provider as the issuer when sp is nil' do
+      redis_wrapper = instance_double(FraudOps::RedisClient)
+      allow(FraudOps::RedisClient).to receive(:new).and_return(redis_wrapper)
+      allow(redis_wrapper).to receive(:write_event) do |**args|
+        decrypted_event = JWE.decrypt(args[:jwe], fraud_ops_private_key)
+        expect(JSON.parse(decrypted_event)['aud']).to eq('no_provider')
+      end
+
+      nil_sp_tracker = FraudOps::Tracker.new(
+        request: request,
+        user: user,
+        sp: nil,
+        cookie_device_uuid: cookie_device_uuid,
+      )
+
+      nil_sp_tracker.login_email_and_password_auth(email: user.email, success: true)
+
+      expect(redis_wrapper).to have_received(:write_event)
+    end
+
     it 'uses FraudOps::RedisClient for Redis operations' do
       redis_wrapper = instance_double(FraudOps::RedisClient)
       allow(FraudOps::RedisClient).to receive(:new).and_return(redis_wrapper)
