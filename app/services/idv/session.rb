@@ -82,7 +82,6 @@ module Idv
       ipp_aamva_redirect_url
       ipp_aamva_result
       mail_only_warning_shown
-      mdl_enabled
       opted_in_to_in_person_proofing
       personal_key
       phone_confirmation_manually_reviewed
