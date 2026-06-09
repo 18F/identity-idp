@@ -529,7 +529,6 @@
   "spec/jobs/reports/sp_issuer_user_counts_report_spec.rb": 0.122115946,
   "spec/jobs/reports/sp_proofing_events_by_uuid_spec.rb": 0.132234919,
   "spec/jobs/reports/sp_user_counts_report_spec.rb": 0.086243144,
-  "spec/jobs/reports/total_ial2_costs_report_spec.rb": 0.026251925,
   "spec/jobs/reports/total_monthly_auths_report_spec.rb": 0.039838284,
   "spec/jobs/reports/verification_failures_report_spec.rb": 0.36902441,
   "spec/jobs/resolution_proofing_job_spec.rb": 1.903914922,

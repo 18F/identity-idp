@@ -29,12 +29,6 @@ RSpec.describe Pii::StateId do
 
   subject { described_class.new(**state_id) }
 
-  describe '#id_doc_type' do
-    it 'returns the value of document_type_received' do
-      expect(subject.id_doc_type).to eq(state_id[:document_type_received])
-    end
-  end
-
   describe '#residential_address_required?' do
     context 'when the state is Puerto Rico' do
       subject { described_class.new(**state_id, state: 'PR') }

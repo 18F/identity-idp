@@ -2312,7 +2312,17 @@ module AnalyticsEvents
   # @param step [String] Always "verify" (leftover from flow state machine days)
   # @param success [Boolean] Whether identity resolution succeeded overall
   # @param previous_ssn_edit_distance [Number] The edit distance to the previous submitted SSN
+  # @param proofing_agent [Hash, nil] proofing agent information including location id, agent id,
+  #   correlation id, and transaction id
   # @param exceptions [Hash, nil] The exceptions found in the proofing results.
+  # @param [Hash,nil] proofing_components User's current proofing components
+  # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
+  # @option proofing_components [String,nil] 'document_type_received' Type of ID detected by vendor
+  # @option proofing_components [String,nil] 'source_check' Source used to verify user's PII
+  # @option proofing_components [String,nil] 'resolution_check' Vendor for identity resolution check
+  # @option proofing_components [String,nil] 'address_check' Method used to verify user's address
+  # @option proofing_components [Boolean,nil] 'threatmetrix' Whether ThreatMetrix check was done
+  # @option proofing_components [String,nil] 'threatmetrix_review_status' TMX decision on the user
   def idv_doc_auth_verify_proofing_results(
     ab_tests: nil,
     acuant_sdk_upgrade_ab_test_bucket: nil,
@@ -2331,7 +2341,9 @@ module AnalyticsEvents
     step: nil,
     success: nil,
     previous_ssn_edit_distance: nil,
+    proofing_agent: nil,
     exceptions: nil,
+    proofing_components: nil,
     **extra
   )
     track_event(
@@ -2353,7 +2365,9 @@ module AnalyticsEvents
       step:,
       success:,
       previous_ssn_edit_distance:,
+      proofing_agent:,
       exceptions:,
+      proofing_components:,
       **extra,
     )
   end
@@ -2487,6 +2501,8 @@ module AnalyticsEvents
   # @param [String] error_message The error message if provided in a failed response
   # @param [String] error_reason The error reason if provided in a failed response
   # @param [String] errors The DocAuth response error for failure
+  # @param proofing_agent [Hash, nil] proofing agent information including location id, agent id,
+  #   correlation id, and transaction id
   def idv_dos_passport_verification(
     success:,
     submit_attempts:,
@@ -2500,6 +2516,7 @@ module AnalyticsEvents
     error_message: nil,
     error_reason: nil,
     errors: nil,
+    proofing_agent: nil,
     **extra
   )
     track_event(
@@ -2516,6 +2533,7 @@ module AnalyticsEvents
       error_reason:,
       errors:,
       exception:,
+      proofing_agent:,
       **extra,
     )
   end
@@ -5126,6 +5144,8 @@ module AnalyticsEvents
   # @param [Hash] reason_codes socure internal reason codes for accept reject decision
   # @param [Hash] alternate_result Details for proofing attempt with primary vendor
   # @param [Boolean, nil] manual_review Phone was manually reviewed
+  # @param proofing_agent [Hash, nil] proofing agent information including location id, agent id,
+  #   correlation id, and transaction id
   # The vendor finished the process of confirming the users phone
   def idv_phone_confirmation_vendor_submitted(
     success:,
@@ -5145,6 +5165,7 @@ module AnalyticsEvents
     reason_codes: nil,
     customer_user_id: nil,
     alternate_result: nil,
+    proofing_agent: nil,
     **extra
   )
     track_event(
@@ -5166,6 +5187,7 @@ module AnalyticsEvents
       reason_codes:,
       customer_user_id:,
       alternate_result:,
+      proofing_agent:,
       **extra,
     )
   end
@@ -5336,6 +5358,16 @@ module AnalyticsEvents
     )
   end
 
+  # Logs when a user clicks continue on the proofing agent confirmation window expired screen
+  def idv_proofing_agent_expired_continued(**extra)
+    track_event(:idv_proofing_agent_expired_continued, **extra)
+  end
+
+  # Logs when a user visits the proofing agent confirmation window expired screen
+  def idv_proofing_agent_expired_visited(**extra)
+    track_event(:idv_proofing_agent_expired_visited, **extra)
+  end
+
   # Logs when a "couldn't verify" email is sent after a failed final proofing attempt or rate limit
   # @param [String] user_id User UUID
   # @param [Hash] proofing_agent The proofing agent information
@@ -5428,6 +5460,36 @@ module AnalyticsEvents
       remaining_attempts:,
       transaction_id:,
       final_attempt:,
+      **extra,
+    )
+  end
+
+  # @param [Boolean] success Whether webhook was sent successfully
+  # @param [Hash] response The response from the proofing agent's proofing request
+  # @param [Hash] proofing_agent The proofing agent information
+  # @param [String] issuer The issuer associated with the proofing request
+  # @param [Hash] body_payload The body of the webhook sent by the proofing agent
+  # @param [Hash] proofing_components User's current proofing components
+  # @param [String,nil] transaction_id The transaction ID associated with the proofing request
+  def idv_proofing_agent_webhook(
+    success:,
+    response:,
+    proofing_agent:,
+    issuer:,
+    body_payload:,
+    proofing_components:,
+    transaction_id: nil,
+    **extra
+  )
+    track_event(
+      :idv_proofing_agent_webhook,
+      success:,
+      response:,
+      proofing_agent:,
+      issuer:,
+      body_payload:,
+      transaction_id:,
+      proofing_components:,
       **extra,
     )
   end
@@ -6168,6 +6230,8 @@ module AnalyticsEvents
   # @param [Hash, nil] errors The errors encountered during proofing.
   # @param [String, nil] exception The exception message.
   # @param [Boolean, nil] mva_exception Whether an MVA exception occured.
+  # @param proofing_agent [Hash, nil] proofing agent information including location id, agent id,
+  #   correlation id, and transaction id
   def idv_state_id_validation(
     success:,
     vendor_name:,
@@ -6187,6 +6251,7 @@ module AnalyticsEvents
     errors: nil,
     exception: nil,
     mva_exception: nil,
+    proofing_agent: nil,
     **extra
   )
     track_event(
@@ -6209,6 +6274,7 @@ module AnalyticsEvents
       errors:,
       exception:,
       mva_exception:,
+      proofing_agent:,
       **extra,
     )
   end

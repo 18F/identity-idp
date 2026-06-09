@@ -1239,6 +1239,9 @@ idv.messages.sessions.enter_password_message: Lorsque vous ressaisirez votre mot
 idv.messages.sessions.no_pii: SITE DE TEST - N’utilisez pas de véritables informations personnelles (à des fins de démonstration uniquement) - SITE DE TEST
 idv.messages.verify_info: Nous vérifierons que votre adresse et votre numéro de sécurité sociale correspondent aux informations figurant sur votre pièce d’identité.
 idv.messages.verifying: Vérification en cours…
+idv.proofing_agent_expired.body: Pour votre sécurité, l’e-mail de confirmation de compte que nous vous avons envoyé a expiré. Les informations contenues dans cet email avaient une durée de validité de 48 heures. Veuillez effectuer une nouvelle demande de vérification d’identité.
+idv.proofing_agent_expired.continue: Suite
+idv.proofing_agent_expired.heading: Finalisons la configuration de votre vérification d’identité.
 idv.titles.activated: Votre identité a déjà été vérifiée
 idv.titles.come_back_later: Votre lettre est en route
 idv.titles.enter_password: Révisez et validez

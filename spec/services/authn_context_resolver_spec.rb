@@ -315,6 +315,18 @@ RSpec.describe AuthnContextResolver do
             end
           end
 
+          context 'with an anonymous user' do
+            let(:user) { AnonymousUser.new }
+
+            it 'asserts facial match as true' do
+              expect(result.identity_proofing?).to be true
+              expect(result.facial_match?).to be true
+              expect(result.two_pieces_of_fair_evidence?).to be true
+              expect(result.aal2?).to be true
+              expect(result.ialmax?).to be false
+            end
+          end
+
           context 'when the user is already verified' do
             let(:facial_match_preferred_on_connected_accounts) { true }
             before do
@@ -668,6 +680,18 @@ RSpec.describe AuthnContextResolver do
           before do
             allow(IdentityConfig.store).to receive(:facial_match_preferred_on_connected_accounts)
               .and_return(facial_match_preferred_on_connected_accounts)
+          end
+
+          context 'with an anonymous user' do
+            let(:user) { AnonymousUser.new }
+
+            it 'asserts facial match as true' do
+              expect(result.identity_proofing?).to be true
+              expect(result.facial_match?).to be true
+              expect(result.two_pieces_of_fair_evidence?).to be true
+              expect(result.aal2?).to be true
+              expect(result.ialmax?).to be false
+            end
           end
 
           context 'when the user is already verified' do

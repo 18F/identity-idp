@@ -286,6 +286,7 @@ class ApplicationController < ActionController::Base
     return user_session.delete(:stored_location) if user_session.key?(:stored_location)
     return setup_piv_cac_url if user_session[:add_piv_cac_after_2fa]
     return login_add_piv_cac_prompt_url if session[:needs_to_setup_piv_cac_after_sign_in].present?
+    return idv_proofing_agent_expired_path if current_user.agent_proofing_expired?
     return reactivate_account_url if user_needs_to_reactivate_account?
     return login_piv_cac_recommended_path if user_recommended_for_piv_cac?
     return second_mfa_reminder_url if user_needs_second_mfa_reminder?
@@ -295,6 +296,7 @@ class ApplicationController < ActionController::Base
   end
 
   def signed_in_url
+    return idv_proofing_agent_expired_path if current_user.agent_proofing_expired?
     return idv_enter_dob_ssn_path if current_user.proofing_agent_pending?
     return idv_verify_by_mail_enter_code_url if current_user.gpo_verification_pending_profile?
     stored_location_for(current_user) ||

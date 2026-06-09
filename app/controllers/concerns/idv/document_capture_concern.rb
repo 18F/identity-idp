@@ -172,8 +172,7 @@ module Idv
     end
 
     def document_type_received
-      stored_result.pii_from_doc&.dig(:document_type_received) ||
-        stored_result.pii_from_doc&.dig(:id_doc_type)
+      stored_result.pii_from_doc&.dig(:document_type_received)
     end
 
     def document_type_requested

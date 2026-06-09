@@ -18,10 +18,6 @@ module Pii
     :document_number,
     :document_type_received,
   ) do
-    def id_doc_type
-      document_type_received
-    end
-
     # @returns [Boolean] Whether the document requires a residential address.
     def residential_address_required?
       true

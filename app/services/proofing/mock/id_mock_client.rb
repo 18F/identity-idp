@@ -3,7 +3,7 @@
 module Proofing
   module Mock
     class IdMockClient
-      SUPPORTED_ID_DOC_TYPES = %w[
+      SUPPORTED_DOCUMENT_TYPES_RECEIVED = %w[
         drivers_license drivers_permit passport state_id_card
       ].to_set.freeze
 
@@ -19,9 +19,7 @@ module Proofing
           errors[:state_id_jurisdiction] = ['The jurisdiction could not be verified']
         elsif invalid_state_id_number?(applicant[:state_id_number])
           errors[:state_id_number] = ['The state ID number could not be verified']
-        elsif invalid_document_type_received?(
-          applicant[:document_type_received] || applicant[:id_doc_type],
-        )
+        elsif invalid_document_type_received?(applicant[:document_type_received])
           errors[:document_type_received] = ['The state ID type could not be verified']
         end
 
@@ -67,8 +65,7 @@ module Proofing
       end
 
       def jurisdiction_not_supported?(applicant)
-        # Check both new and old field names for backwards compatibility
-        doc_type = applicant[:document_type_received] || applicant[:id_doc_type]
+        doc_type = applicant[:document_type_received]
         return false if doc_type == 'passport'
 
         state_id_jurisdiction = applicant[:state_id_jurisdiction]
@@ -80,7 +77,7 @@ module Proofing
       end
 
       def invalid_document_type_received?(document_type_received)
-        !SUPPORTED_ID_DOC_TYPES.include?(document_type_received) &&
+        !SUPPORTED_DOCUMENT_TYPES_RECEIVED.include?(document_type_received) &&
           !document_type_received.nil?
       end
     end

@@ -4,6 +4,7 @@ RSpec.describe ProofingAgent::ProofingResult do
   let(:proofing_agent_id) { SecureRandom.uuid }
   let(:proofing_location_id) { SecureRandom.uuid }
   let(:correlation_id) { SecureRandom.uuid }
+  let(:transaction_id) { SecureRandom.uuid }
   let(:pii) { nil }
   let(:service_provider_issuer) { 'test-service-provider' }
   let(:phone_precheck_passed) { true }
@@ -28,6 +29,7 @@ RSpec.describe ProofingAgent::ProofingResult do
       proofing_agent_id:,
       proofing_location_id:,
       correlation_id:,
+      transaction_id:,
       pii:,
       service_provider_issuer:,
       resolution_result:,
@@ -60,6 +62,7 @@ RSpec.describe ProofingAgent::ProofingResult do
             proofing_agent_id:,
             proofing_location_id:,
             correlation_id:,
+            transaction_id:,
             service_provider_issuer:,
             resolution: resolution_result,
             aamva: aamva_result,
@@ -88,6 +91,7 @@ RSpec.describe ProofingAgent::ProofingResult do
             proofing_agent_id:,
             proofing_location_id:,
             correlation_id:,
+            transaction_id:,
             service_provider_issuer:,
             resolution: resolution_result,
             mrz: mrz_result,
@@ -118,6 +122,7 @@ RSpec.describe ProofingAgent::ProofingResult do
         proofing_agent_id:,
         proofing_location_id:,
         correlation_id:,
+        transaction_id:,
         service_provider_issuer:,
         resolution: resolution_result,
       )
@@ -133,6 +138,33 @@ RSpec.describe ProofingAgent::ProofingResult do
         proofing_agent_id:,
         proofing_location_id:,
         correlation_id:,
+        transaction_id:,
+        service_provider_issuer:,
+        resolution: resolution_result,
+      )
+    end
+  end
+
+  context 'phone verification blank' do
+    let(:resolution_result) do
+      {
+        success: true,
+        errors: [],
+        exception: nil,
+        phone_precheck_passed:,
+        context: {
+          stages: {},
+        },
+      }
+    end
+    it 'returns failure' do
+      expect(subject.combined_result).to eq(
+        success: false,
+        reason: 'phone_check_fail',
+        proofing_agent_id:,
+        proofing_location_id:,
+        correlation_id:,
+        transaction_id:,
         service_provider_issuer:,
         resolution: resolution_result,
       )
@@ -161,6 +193,7 @@ RSpec.describe ProofingAgent::ProofingResult do
         proofing_agent_id:,
         proofing_location_id:,
         correlation_id:,
+        transaction_id:,
         service_provider_issuer:,
         resolution: resolution_result,
         aamva: aamva_result,
@@ -189,6 +222,7 @@ RSpec.describe ProofingAgent::ProofingResult do
         proofing_agent_id:,
         proofing_location_id:,
         correlation_id:,
+        transaction_id:,
         service_provider_issuer:,
         resolution: resolution_result,
         mrz: mrz_result,
