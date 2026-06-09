@@ -1134,6 +1134,7 @@ idv.failure.attempts_html.one: 您可以再试<strong>1次。</strong> 然后您
 idv.failure.attempts_html.other: 您可以再试<strong>%{count}次。</strong> 然后您必须等6个小时才能再试。
 idv.failure.button.try_online: 在网上再试一下
 idv.failure.button.warning: 再试一下。
+idv.failure.dob_ssn.warning: 请检查一下你输入的信息，然后再试一下。
 idv.failure.exceptions.in_person_outage_error_message.post_cta.body: 与此同时，你仍然可以在 %{app_name}开始亲身验证身份流程，然后去邮局。如果你迫切需要得到服务，请直接联系该政府机构。
 idv.failure.exceptions.in_person_outage_error_message.post_cta.title: 我们正在解决一个技术问题。你身份验证结果可能要到 %{date} 才能寄到。
 idv.failure.exceptions.in_person_outage_error_message.ready_to_verify.body: 你仍然可以到邮局去完成验证你的身份。如果你迫切需要得到服务，请直接联系该政府机构。

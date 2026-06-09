@@ -14,13 +14,26 @@ RSpec.describe Idv::EnterDobSsnController do
       success: success,
     }
   end
+  let(:sp) { create(:service_provider, :idv, :active) }
   let(:user) { create(:user, :fully_registered) }
-  let(:document_capture_session) { DocumentCaptureSession.create!(user: user) }
+  let(:document_capture_session) do
+    DocumentCaptureSession.create!(
+      user: user,
+      doc_auth_vendor: Idp::Constants::Vendors::PROOFING_AGENT,
+      issuer: sp.issuer,
+    )
+  end
   let(:idv_session) { subject.idv_session }
+  let(:resolved_authn_context_result) do
+    Component::Parser.new(acr_values: Saml::Idp::Constants::IAL_AUTH_ONLY_ACR).parse
+  end
 
   before do
     stub_sign_in(user)
     document_capture_session.store_agent_proofed_user(agent_proofed_user)
+    resolver_mock = instance_double(AuthnContextResolver)
+    allow(resolver_mock).to receive(:result).and_return(resolved_authn_context_result)
+    allow(AuthnContextResolver).to receive(:new).and_return(resolver_mock)
   end
 
   describe 'before_actions' do
@@ -51,6 +64,20 @@ RSpec.describe Idv::EnterDobSsnController do
     context 'user has proofing agent pending pii' do
       it 'moves agent proofed user pii to idv_session applicant' do
         expect(subject.idv_session.applicant).to eq(pii.stringify_keys)
+      end
+
+      it 'sets session[:sp] as a hash with the issuer' do
+        expect(session[:sp].with_indifferent_access[:issuer]).to eq(sp.issuer)
+      end
+
+      it 'sets current_sp to the service provider from the agent proofed session' do
+        expect(controller.current_sp).to eq(sp)
+      end
+
+      it 'sets phone step to completed' do
+        expect(subject.idv_session.address_verification_mechanism).to eq('phone')
+        expect(subject.idv_session.vendor_phone_confirmation).to eq true
+        expect(subject.idv_session.user_phone_confirmation).to eq true
       end
     end
   end

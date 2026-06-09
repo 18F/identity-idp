@@ -1121,6 +1121,7 @@ idv.failure.attempts_html.one: You can try <strong>1 more time.</strong> Then yo
 idv.failure.attempts_html.other: You can try <strong>%{count} more times.</strong> Then you must wait 6 hours before trying again.
 idv.failure.button.try_online: Try again online
 idv.failure.button.warning: Try again
+idv.failure.dob_ssn.warning: Please check the information you entered and try again.
 idv.failure.exceptions.in_person_outage_error_message.post_cta.body: In the meantime, you can still begin the in-person verification process on %{app_name} and then visit a Post Office. If you urgently need access to services, please contact your agency directly.
 idv.failure.exceptions.in_person_outage_error_message.post_cta.title: We’re working on a technical issue. Your identity verification results may not be emailed to you until %{date}.
 idv.failure.exceptions.in_person_outage_error_message.ready_to_verify.body: You can still visit a Post Office to complete verifying your identity. If you urgently need access to services, please contact your agency directly.

@@ -1132,6 +1132,7 @@ idv.failure.attempts_html.one: Puede intentarlo <strong>una vez más.</strong> L
 idv.failure.attempts_html.other: Puede intentarlo <strong>%{count} veces más.</strong> Luego debe esperar 6 horas antes de volver a intentarlo.
 idv.failure.button.try_online: Vuelva a intentarlo en línea
 idv.failure.button.warning: Vuelva a intentarlo
+idv.failure.dob_ssn.warning: Revise la información que ingresó y vuelva a intentarlo.
 idv.failure.exceptions.in_person_outage_error_message.post_cta.body: Mientras tanto, todavía puede iniciar el proceso de verificación en persona en %{app_name} y luego acudir a una oficina de correos. Si necesita acceso urgente a los servicios, contacte directamente con su agencia.
 idv.failure.exceptions.in_person_outage_error_message.post_cta.title: Estamos resolviendo un problema técnico. Es posible que los resultados de su verificación de identidad no se le envíen por correo electrónico sino hasta el %{date}.
 idv.failure.exceptions.in_person_outage_error_message.ready_to_verify.body: Todavía puede acudir a una oficina de correos para completar el proceso de verificación de su identidad. Si necesita acceso urgente a los servicios, contacte directamente con su agencia.

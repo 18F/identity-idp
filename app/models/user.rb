@@ -395,7 +395,8 @@ class User < ApplicationRecord
   end
 
   def pending_agent_proofed_session
-    document_capture_sessions.where.not(pending_agent_proofed_user_at: nil).first
+    document_capture_sessions.where.not(pending_agent_proofed_user_at: nil)
+      .order(pending_agent_proofed_user_at: :desc).first
   end
 
   def pending_agent_proofed_user
@@ -415,8 +416,8 @@ class User < ApplicationRecord
     return false unless session
 
     validity_hours = IdentityConfig.store.agent_proofed_user_time_validity_hours
-    if session.requested_at &&
-       (session.requested_at + validity_hours.hours) < Time.zone.now
+    if session.pending_agent_proofed_user_at &&
+       (session.pending_agent_proofed_user_at + validity_hours.hours) < Time.zone.now
       return true
     end
 
