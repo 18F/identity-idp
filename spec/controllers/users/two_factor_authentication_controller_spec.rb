@@ -334,6 +334,21 @@ RSpec.describe Users::TwoFactorAuthenticationController do
         )
       end
 
+      it 'allows country mismatch in authentication context' do
+        @user.phone_configurations.first.update!(phone: '+44 7700 900123')
+
+        allow(IdentityConfig.store).to receive(:phone_setup_blocked_ip_country_codes)
+          .and_return(['PK'])
+        allow(IdentityConfig.store).to receive(:phone_setup_country_mismatch_check_country_codes)
+          .and_return(['PK'])
+        allow_any_instance_of(IpGeocoder).to receive(:country_code).and_return('PK')
+
+        get :send_code, params: otp_delivery_form_sms
+
+        expect(Telephony).to have_received(:send_authentication_otp)
+        expect(response).to redirect_to(login_two_factor_path(**otp_preference_sms))
+      end
+
       it 'tracks the analytics events' do
         stub_analytics
         stub_attempts_tracker
@@ -771,6 +786,8 @@ RSpec.describe Users::TwoFactorAuthenticationController do
 
         allow(IdentityConfig.store).to receive(:phone_setup_blocked_ip_country_codes)
           .and_return(['PK'])
+        allow(IdentityConfig.store).to receive(:phone_setup_country_mismatch_check_country_codes)
+          .and_return(['GB'])
         allow_any_instance_of(IpGeocoder).to receive(:country_code).and_return('PK')
 
         expect(Telephony).not_to receive(:send_confirmation_otp)
@@ -793,7 +810,7 @@ RSpec.describe Users::TwoFactorAuthenticationController do
         )
       end
 
-      it 'does not block confirmation OTP resend for US phone numbers' do
+      it 'does not block confirmation OTP resend when US phone country is not opted in' do
         stub_analytics
         sign_in_before_2fa(@user)
         subject.user_session[:context] = 'confirmation'
@@ -801,6 +818,52 @@ RSpec.describe Users::TwoFactorAuthenticationController do
 
         allow(IdentityConfig.store).to receive(:phone_setup_blocked_ip_country_codes)
           .and_return(['PK'])
+        allow(IdentityConfig.store).to receive(:phone_setup_country_mismatch_check_country_codes)
+          .and_return(['GB'])
+        allow_any_instance_of(IpGeocoder).to receive(:country_code).and_return('PK')
+        allow(Telephony).to receive(:send_confirmation_otp).and_call_original
+
+        get :send_code, params: otp_delivery_form_sms
+
+        expect(Telephony).to have_received(:send_confirmation_otp)
+        expect(response).to redirect_to(login_two_factor_url(otp_delivery_preference: 'sms'))
+      end
+
+      it 'does not block confirmation OTP resend when phone country is not opted in ' \
+        'even if IP country is US' do
+        non_us_phone = '+44 7700 900123'
+
+        stub_analytics
+        sign_in_before_2fa(@user)
+        subject.user_session[:context] = 'confirmation'
+        subject.user_session[:unconfirmed_phone] = non_us_phone
+
+        allow(IdentityConfig.store).to receive(:phone_setup_blocked_ip_country_codes)
+          .and_return(['US'])
+        allow(IdentityConfig.store).to receive(:phone_setup_country_mismatch_check_country_codes)
+          .and_return(['US'])
+        allow_any_instance_of(IpGeocoder).to receive(:country_code).and_return('US')
+        allow(Telephony).to receive(:send_confirmation_otp).and_call_original
+
+        get :send_code, params: otp_delivery_form_sms
+
+        expect(Telephony).to have_received(:send_confirmation_otp)
+        expect(response).to redirect_to(login_two_factor_url(otp_delivery_preference: 'sms'))
+      end
+
+      it 'does not block confirmation OTP resend when phone country is not opted into ' \
+        'mismatch check' do
+        exempt_phone = '+61 0491 570 006'
+
+        stub_analytics
+        sign_in_before_2fa(@user)
+        subject.user_session[:context] = 'confirmation'
+        subject.user_session[:unconfirmed_phone] = exempt_phone
+
+        allow(IdentityConfig.store).to receive(:phone_setup_blocked_ip_country_codes)
+          .and_return(['PK'])
+        allow(IdentityConfig.store).to receive(:phone_setup_country_mismatch_check_country_codes)
+          .and_return(['MA'])
         allow_any_instance_of(IpGeocoder).to receive(:country_code).and_return('PK')
         allow(Telephony).to receive(:send_confirmation_otp).and_call_original
 

@@ -132,14 +132,10 @@ class NewPhoneForm
     return false if request_ip.blank? || phone.blank?
     return false if blocked_ip_country_codes.empty?
     return false if ip_country.blank?
-    return false if us_phone_number?
     return false unless blocked_ip_country_codes.include?(ip_country)
+    return false unless country_mismatch_check_country_codes.include?(parsed_phone.country)
 
     !parsed_phone.valid_countries.include?(ip_country)
-  end
-
-  def us_phone_number?
-    parsed_phone.country == 'US'
   end
 
   def ip_country
@@ -154,6 +150,10 @@ class NewPhoneForm
 
   def blocked_ip_country_codes
     Array(IdentityConfig.store.phone_setup_blocked_ip_country_codes)
+  end
+
+  def country_mismatch_check_country_codes
+    Array(IdentityConfig.store.phone_setup_country_mismatch_check_country_codes)
   end
 
   def validate_not_duplicate

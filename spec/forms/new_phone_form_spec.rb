@@ -326,6 +326,8 @@ RSpec.describe NewPhoneForm do
       before do
         allow(IdentityConfig.store).to receive(:phone_setup_blocked_ip_country_codes)
           .and_return(['PK'])
+        allow(IdentityConfig.store).to receive(:phone_setup_country_mismatch_check_country_codes)
+          .and_return(['AU'])
       end
 
       after do
@@ -370,7 +372,7 @@ RSpec.describe NewPhoneForm do
         end
       end
 
-      context 'when request IP geolocates to a blocked country and phone is US' do
+      context 'when phone country is not in mismatch check list and phone is US' do
         before do
           Geocoder::Lookup::Test.add_stub(
             request_ip,
@@ -410,6 +412,30 @@ RSpec.describe NewPhoneForm do
         end
       end
 
+      context 'when phone country is not in mismatch check list' do
+        let(:phone) { '+61 0491 570 006' }
+        let(:international_code) { 'AU' }
+
+        before do
+          allow(IdentityConfig.store).to receive(:phone_setup_country_mismatch_check_country_codes)
+            .and_return(['MA'])
+          Geocoder::Lookup::Test.add_stub(
+            request_ip,
+            [{ 'country_code' => 'PK', 'country' => 'Pakistan' }],
+          )
+        end
+
+        it 'is valid and does not flag ip_country_mismatch' do
+          result = form.submit(params)
+
+          expect(result.success?).to eq(true)
+          expect(result.to_h[:error_details]).to_not match(
+            hash_including(phone: include(:ip_country_mismatch)),
+          )
+          expect(result.extra).to include(ip_country: 'PK', ip_country_blocked: false)
+        end
+      end
+
       context 'when request IP geolocates to an unblocked country' do
         before do
           Geocoder::Lookup::Test.add_stub(
@@ -422,6 +448,32 @@ RSpec.describe NewPhoneForm do
           result = form.submit(params)
 
           expect(result.success?).to eq(true)
+          expect(result.extra).to include(ip_country: 'US', ip_country_blocked: false)
+        end
+      end
+
+      context 'when IP is US and phone country is not opted in' do
+        let(:phone) { '+61 0491 570 006' }
+        let(:international_code) { 'AU' }
+
+        before do
+          allow(IdentityConfig.store).to receive(:phone_setup_blocked_ip_country_codes)
+            .and_return(['US'])
+          allow(IdentityConfig.store).to receive(:phone_setup_country_mismatch_check_country_codes)
+            .and_return(['MA'])
+          Geocoder::Lookup::Test.add_stub(
+            request_ip,
+            [{ 'country_code' => 'US', 'country' => 'United States' }],
+          )
+        end
+
+        it 'is valid and does not flag ip_country_mismatch' do
+          result = form.submit(params)
+
+          expect(result.success?).to eq(true)
+          expect(result.to_h[:error_details]).to_not match(
+            hash_including(phone: include(:ip_country_mismatch)),
+          )
           expect(result.extra).to include(ip_country: 'US', ip_country_blocked: false)
         end
       end
