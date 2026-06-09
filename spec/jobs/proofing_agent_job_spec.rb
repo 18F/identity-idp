@@ -393,7 +393,7 @@ RSpec.describe ProofingAgentJob, type: :job do
     end
 
     context 'when phone check fails' do
-      let(:pii) { Idp::Constants::MOCK_IDV_PROOFING_PASSPORT_APPLICANT.merge(phone: nil).freeze }
+      let(:pii) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN.merge(phone: nil).freeze }
 
       before do
         allow(IdentityConfig.store).to receive(:idv_phone_precheck_percent).and_return(100)
