@@ -4,7 +4,7 @@ module DocAuth
   module Socure
     module Responses
       class DocvResultResponse < DocAuth::Response
-        attr_reader :http_response, :passport_requested
+        attr_reader :http_response, :document_capture_session
 
         DATA_PATHS = {
           reference_id: %w[referenceId],
@@ -44,10 +44,10 @@ module DocAuth
             Idp::Constants::DocumentTypes::STATE_ID_CARD,
         }.freeze
 
-        def initialize(http_response:, passport_requested: false)
+        def initialize(http_response:, document_capture_session:)
           @http_response = http_response
           @pii_from_doc = read_pii
-          @passport_requested = passport_requested
+          @document_capture_session = document_capture_session
 
           super(
             success: doc_auth_success?,
@@ -260,10 +260,15 @@ module DocAuth
         end
 
         def id_type_expected?
-          if document_type_received == Idp::Constants::DocumentTypes::PASSPORT
-            passport_requested
+          case document_type_received
+          when Idp::Constants::DocumentTypes::PASSPORT
+            document_capture_session.passport_requested?
+          when Idp::Constants::DocumentTypes::MDL
+            document_capture_session.mdl_requested?
+          when Idp::Constants::DocumentTypes::STATE_ID_CARD, Idp::Constants::DocumentTypes::DRIVERS_LICENSE
+            document_capture_session.state_id_requested?
           else
-            !passport_requested
+            false
           end
         end
 
