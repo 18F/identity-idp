@@ -413,6 +413,7 @@ RSpec.describe ProofingAgentJob, type: :job do
           reason: 'phone_check_fail',
           transaction_id: transaction_id,
           correlation_id: correlation_id,
+          analytics_attributes: an_instance_of(Hash),
         )
       end
     end
