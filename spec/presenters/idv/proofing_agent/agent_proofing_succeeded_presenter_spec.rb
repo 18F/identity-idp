@@ -31,86 +31,89 @@ RSpec.describe Idv::ProofingAgent::AgentProofingSucceededPresenter do
   end
 
   describe '#verified_at' do
-    it 'returns a Time in American Samoa zone (UTC-11)' do
-      expect(presenter.verified_at.utc_offset).to eq(-11 * 60 * 60)
+    it 'returns a Time in UTC-5' do
+      expect(presenter.verified_at.utc_offset).to eq(-5 * 60 * 60)
     end
   end
 
   describe '#deadline' do
-    context 'with the ticket worked example (4:24pm CT April 2)' do
-      it 'returns April 4, 2026 per ticket spec' do
-        expect(presenter.deadline.to_date).to eq(Date.new(2026, 4, 4))
+    let(:correct_deadline) { Date.new(2026, 6, 3) }
+
+    it 'gives the incorrect deadline before 3pm in Pacific/Guam' do
+      # rubocop:disable Rails/TimeZoneAssignment
+      Time.zone = 'Pacific/Guam'
+      # rubocop:enable Rails/TimeZoneAssignment
+
+      verified_at = Time.new(2026, 6, 1, 14, 0, 0, Time.zone).to_s
+      presenter = described_class.new(
+        verified_at:,
+        url_options: { host: 'example.com' },
+      )
+
+      expect(presenter.deadline.to_date).to eq(correct_deadline - 1.day)
+    end
+
+    it 'gives the correct deadline after 3pm in Pacific/Guam' do
+      # rubocop:disable Rails/TimeZoneAssignment
+      Time.zone = 'Pacific/Guam'
+      # rubocop:enable Rails/TimeZoneAssignment
+
+      verified_at = Time.new(2026, 6, 1, 15, 0, 0, Time.zone).to_s
+      presenter = described_class.new(
+        verified_at:,
+        url_options: { host: 'example.com' },
+      )
+
+      expect(presenter.deadline.to_date).to eq(correct_deadline)
+
+      verified_at = Time.new(2026, 6, 1, 23, 59, 59, Time.zone).to_s
+      presenter = described_class.new(
+        verified_at:,
+        url_options: { host: 'example.com' },
+      )
+
+      expect(presenter.deadline.to_date).to eq(correct_deadline)
+    end
+
+    shared_examples 'gives the correct deadline for the whole business day' do |tz|
+      before do
+        # rubocop:disable Rails/TimeZoneAssignment
+        Time.zone = tz
+        # rubocop:enable Rails/TimeZoneAssignment
       end
 
-      it 'returns end of day in American Samoa time' do
-        expect(presenter.deadline.utc_offset).to eq(-11 * 60 * 60)
-        expect(presenter.deadline.strftime('%H:%M:%S')).to eq('23:59:59')
+      it "gives the correct deadline at 8am in #{tz}" do
+        verified_at = Time.new(2026, 6, 1, 8, 0, 0, Time.zone).to_s
+        presenter = described_class.new(
+          verified_at:,
+          url_options: { host: 'example.com' },
+        )
+
+        expect(presenter.deadline.to_date).to eq(correct_deadline)
+      end
+
+      it "gives the correct deadline at 5:59pm in #{tz}" do
+        verified_at = Time.new(2026, 6, 1, 17, 59, 59, Time.zone).to_s
+        presenter = described_class.new(
+          verified_at:,
+          url_options: { host: 'example.com' },
+        )
+
+        expect(presenter.deadline.to_date).to eq(correct_deadline)
       end
     end
 
-    context 'when verified just past midnight Eastern (12:30am ET April 3)' do
-      subject(:presenter) do
-        described_class.new(
-          verified_at: '2026-04-03 00:30:00 -0500',
-          url_options: { host: 'example.com' },
-        )
-      end
-
-      it 'returns April 4, 2026 (Samoa still on April 2 at that moment)' do
-        expect(presenter.deadline.to_date).to eq(Date.new(2026, 4, 4))
-      end
-    end
-
-    context 'when verified in the morning in Guam (9am April 1, UTC+10)' do
-      subject(:presenter) do
-        described_class.new(
-          verified_at: '2026-04-01 09:00:00 +1000',
-          url_options: { host: 'example.com' },
-        )
-      end
-
-      it 'returns April 2, 2026 (Samoa still on March 31 at that moment)' do
-        expect(presenter.deadline.to_date).to eq(Date.new(2026, 4, 2))
-      end
-    end
-
-    context 'when verified in the afternoon in Hawaii (5pm April 2, UTC-10)' do
-      subject(:presenter) do
-        described_class.new(
-          verified_at: '2026-04-02 17:00:00 -1000',
-          url_options: { host: 'example.com' },
-        )
-      end
-
-      it 'returns April 4, 2026' do
-        expect(presenter.deadline.to_date).to eq(Date.new(2026, 4, 4))
-      end
-    end
-
-    context 'when verified in the evening Pacific Time (10pm PT April 2, UTC-7)' do
-      subject(:presenter) do
-        described_class.new(
-          verified_at: '2026-04-02 22:00:00 -0700',
-          url_options: { host: 'example.com' },
-        )
-      end
-
-      it 'returns April 4, 2026' do
-        expect(presenter.deadline.to_date).to eq(Date.new(2026, 4, 4))
-      end
-    end
-
-    context 'when verified in American Samoa local time (UTC-11)' do
-      subject(:presenter) do
-        described_class.new(
-          verified_at: '2026-04-02 10:00:00 -1100',
-          url_options: { host: 'example.com' },
-        )
-      end
-
-      it 'returns April 4, 2026 (no zone shift needed)' do
-        expect(presenter.deadline.to_date).to eq(Date.new(2026, 4, 4))
-      end
+    %w[
+      US/Samoa
+      US/Hawaii
+      US/Alaska
+      US/Pacific
+      US/Mountain
+      US/Central
+      US/Eastern
+      America/Puerto_Rico
+    ].each do |tz|
+      it_behaves_like 'gives the correct deadline for the whole business day', tz
     end
   end
 end
