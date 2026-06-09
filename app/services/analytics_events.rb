@@ -6809,6 +6809,9 @@ module AnalyticsEvents
   # @param [String] country_code Abbreviated 2-letter country code associated with phone number
   # @param [String] phone_type Pinpoint phone classification type
   # @param [Array<String>] types Phonelib parsed phone types
+  # @param [String, nil] ip_country Two-letter country code geolocated from request remote IP
+  # @param [Boolean] ip_country_blocked
+  #   Whether the request was blocked due to IP/phone country mismatch
   def multi_factor_auth_phone_setup(
       success:,
       otp_delivery_preference:,
@@ -6817,6 +6820,8 @@ module AnalyticsEvents
       country_code:,
       phone_type:,
       types:,
+      ip_country: nil,
+      ip_country_blocked: false,
       error_details: nil,
       **extra
     )
@@ -6830,6 +6835,8 @@ module AnalyticsEvents
       country_code:,
       phone_type:,
       types:,
+      ip_country:,
+      ip_country_blocked:,
       **extra,
     )
   end
@@ -7805,6 +7812,8 @@ module AnalyticsEvents
   # @param [String] limiter_type Name of the rate limiter configuration exceeded
   # @param [String] country_code Abbreviated 2-letter country code associated with phone number
   # @param [String] phone_fingerprint HMAC fingerprint of the phone number formatted as E.164
+  # @param [Boolean,nil] country_mismatch
+  #   Whether rate limit was triggered by blocked IP/phone country mismatch
   # @param ["authentication", "reauthentication", "confirmation"] context User session context
   # @param ["sms", "voice"] otp_delivery_preference Channel used to send the message
   # @param [String,nil] step_name Name of step in user flow where rate limit occurred
@@ -7813,6 +7822,7 @@ module AnalyticsEvents
     limiter_type:,
     country_code: nil,
     phone_fingerprint: nil,
+    country_mismatch: nil,
     context: nil,
     otp_delivery_preference: nil,
     step_name: nil,
@@ -7823,6 +7833,7 @@ module AnalyticsEvents
       limiter_type:,
       country_code:,
       phone_fingerprint:,
+      country_mismatch:,
       context:,
       otp_delivery_preference:,
       step_name:,

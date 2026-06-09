@@ -401,6 +401,7 @@ module IdentityConfig
     )
     config.add(:phone_recaptcha_score_threshold, type: :float)
     config.add(:phone_service_check, type: :boolean)
+    config.add(:phone_setup_blocked_ip_country_codes, type: :json)
     config.add(:phone_setups_per_ip_limit, type: :integer)
     config.add(:phone_setups_per_ip_period, type: :integer)
     config.add(:phone_setups_per_ip_track_only_mode, type: :boolean)

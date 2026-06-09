@@ -32,7 +32,11 @@ module Users
     end
 
     def create
-      @new_phone_form = NewPhoneForm.new(user: current_user, analytics: analytics)
+      @new_phone_form = NewPhoneForm.new(
+        user: current_user,
+        analytics: analytics,
+        request_ip: request.remote_ip,
+      )
       result = @new_phone_form.submit(new_phone_form_params)
       analytics.multi_factor_auth_phone_setup(**result)
 

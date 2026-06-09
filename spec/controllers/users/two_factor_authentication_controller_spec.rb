@@ -759,6 +759,36 @@ RSpec.describe Users::TwoFactorAuthenticationController do
         end
       end
 
+      it 'blocks confirmation OTP resend when IP country is blocked and mismatches phone country' do
+        stub_analytics
+        sign_in_before_2fa(@user)
+        subject.user_session[:context] = 'confirmation'
+        subject.user_session[:unconfirmed_phone] = unconfirmed_phone
+
+        allow(IdentityConfig.store).to receive(:phone_setup_blocked_ip_country_codes)
+          .and_return(['PK'])
+        allow_any_instance_of(IpGeocoder).to receive(:country_code).and_return('PK')
+
+        expect(Telephony).not_to receive(:send_confirmation_otp)
+
+        get :send_code, params: otp_delivery_form_sms
+
+        rate_limited_message = I18n.t(
+          'errors.messages.phone_confirmation_limited',
+          timeout: '(10|9) minutes',
+        )
+
+        expect(flash[:error]).to match(/#{rate_limited_message}/)
+        expect(response).to redirect_to authentication_methods_setup_url
+        expect(@analytics).to have_logged_event(
+          'Rate Limit Reached',
+          country_code: parsed_phone.country,
+          country_mismatch: true,
+          limiter_type: :phone_confirmation,
+          phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
+        )
+      end
+
       context 'when telephony gem responds with an sms error' do
         let(:unconfirmed_phone) { '+1 (225) 555-1000' }
 

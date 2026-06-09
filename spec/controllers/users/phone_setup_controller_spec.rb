@@ -81,6 +81,8 @@ RSpec.describe Users::PhoneSetupController do
         carrier: 'Test Mobile Carrier',
         phone_type: :mobile,
         types: [],
+        ip_country: 'US',
+        ip_country_blocked: false,
       )
       expect(response).to render_template(:index)
       expect(flash[:error]).to be_blank
@@ -130,6 +132,47 @@ RSpec.describe Users::PhoneSetupController do
       end
     end
 
+    context 'with blocked IP country mismatch' do
+      before do
+        sign_in(user)
+        stub_analytics
+        allow(IdentityConfig.store).to receive(:phone_setup_blocked_ip_country_codes)
+          .and_return(['PK'])
+        allow_any_instance_of(IpGeocoder).to receive(:country_code).and_return('PK')
+      end
+
+      it 'renders form and logs mismatch details' do
+        post(
+          :create,
+          params: {
+            new_phone_form: {
+              phone: '703-555-0100',
+              international_code: 'US',
+            },
+          },
+        )
+
+        expect(@analytics).to have_logged_event(
+          'Multi-Factor Authentication: phone setup',
+          success: false,
+          error_details: {
+            phone: {
+              ip_country_mismatch: true,
+            },
+          },
+          otp_delivery_preference: 'sms',
+          area_code: '703',
+          carrier: 'Test Mobile Carrier',
+          country_code: 'US',
+          phone_type: :mobile,
+          types: [:fixed_or_mobile],
+          ip_country: 'PK',
+          ip_country_blocked: true,
+        )
+        expect(response).to render_template(:index)
+      end
+    end
+
     context 'with voice' do
       let(:user) { create(:user, otp_delivery_preference: 'voice') }
 
@@ -154,6 +197,8 @@ RSpec.describe Users::PhoneSetupController do
           country_code: 'US',
           phone_type: :mobile,
           types: [:fixed_or_mobile],
+          ip_country: 'US',
+          ip_country_blocked: false,
         )
         expect(response).to redirect_to(
           otp_send_path(
@@ -187,6 +232,8 @@ RSpec.describe Users::PhoneSetupController do
           country_code: 'US',
           phone_type: :mobile,
           types: [:fixed_or_mobile],
+          ip_country: 'US',
+          ip_country_blocked: false,
         )
         expect(response).to redirect_to(
           otp_send_path(
@@ -220,6 +267,8 @@ RSpec.describe Users::PhoneSetupController do
           country_code: 'US',
           phone_type: :mobile,
           types: [:fixed_or_mobile],
+          ip_country: 'US',
+          ip_country_blocked: false,
         )
         expect(response).to redirect_to(
           otp_send_path(

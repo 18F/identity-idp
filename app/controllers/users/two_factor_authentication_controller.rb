@@ -197,6 +197,10 @@ module Users
       if exceeded_short_term_otp_rate_limit?
         return handle_too_many_short_term_otp_sends(method: method, default: default)
       end
+      if blocked_confirmation_country_mismatch?
+        phone_confirmation_rate_limiter.increment!
+        return handle_too_many_confirmation_sends(country_mismatch: true)
+      end
       return handle_too_many_confirmation_sends if exceeded_phone_confirmation_limit?
 
       @telephony_result = send_user_otp(method)
@@ -301,6 +305,30 @@ module Users
       return false unless UserSessionContext.confirmation_context?(context)
       phone_confirmation_rate_limiter.increment!
       phone_confirmation_rate_limiter.limited?
+    end
+
+    def blocked_confirmation_country_mismatch?
+      return false unless UserSessionContext.confirmation_context?(context)
+      return false if phone_to_deliver_to.blank?
+      return false if blocked_ip_country_codes.empty?
+      return false if ip_country.blank?
+      return false unless blocked_ip_country_codes.include?(ip_country)
+
+      !parsed_phone.valid_countries.include?(ip_country)
+    rescue StandardError
+      false
+    end
+
+    def blocked_ip_country_codes
+      Array(IdentityConfig.store.phone_setup_blocked_ip_country_codes)
+    end
+
+    def ip_country
+      return @ip_country if defined?(@ip_country)
+
+      @ip_country = IpGeocoder.new(request.remote_ip).country_code
+    rescue StandardError
+      nil
     end
 
     def send_user_otp(method)
@@ -416,11 +444,12 @@ module Users
       )
     end
 
-    def handle_too_many_confirmation_sends
+    def handle_too_many_confirmation_sends(country_mismatch: nil)
       analytics.rate_limit_reached(
         limiter_type: phone_confirmation_rate_limiter.rate_limit_type,
         country_code: parsed_phone.country,
         phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
+        country_mismatch: country_mismatch,
       )
 
       flash[:error] = t(

@@ -17,6 +17,7 @@ class NewPhoneForm
   validate :validate_not_premium_rate
   validate :validate_recaptcha_token
   validate :validate_allowed_carrier
+  validate :validate_ip_country_allowed
 
   attr_reader :phone,
               :international_code,
@@ -29,12 +30,13 @@ class NewPhoneForm
 
   alias_method :setup_voice_preference?, :setup_voice_preference
 
-  def initialize(user:, analytics: nil, setup_voice_preference: false)
+  def initialize(user:, analytics: nil, setup_voice_preference: false, request_ip: nil)
     @user = user
     @analytics = analytics
     @otp_delivery_preference = user.otp_delivery_preference
     @otp_make_default_number = false
     @setup_voice_preference = setup_voice_preference
+    @request_ip = request_ip
   end
 
   def submit(params)
@@ -74,7 +76,7 @@ class NewPhoneForm
 
   private
 
-  attr_reader :user, :submitted_phone, :analytics
+  attr_reader :user, :submitted_phone, :analytics, :request_ip
 
   def ingest_phone_number(params)
     @international_code = params[:international_code]
@@ -90,6 +92,8 @@ class NewPhoneForm
       carrier: phone_info&.carrier,
       country_code: parsed_phone.country,
       area_code: parsed_phone.area_code,
+      ip_country: ip_country,
+      ip_country_blocked: ip_country_blocked?,
       pii_like_keypaths: [[:errors, :phone], [:error_details, :phone]],
     }.tap do |extra|
       extra[:redacted_phone] = @redacted_phone if @redacted_phone
@@ -113,6 +117,38 @@ class NewPhoneForm
     if IdentityConfig.store.phone_carrier_registration_blocklist_array.include?(phone_info.carrier)
       errors.add(:phone, I18n.t('errors.messages.phone_carrier'), type: :phone_carrier)
     end
+  end
+
+  def validate_ip_country_allowed
+    return unless ip_country_blocked?
+    errors.add(
+      :phone,
+      I18n.t('errors.messages.improbable_phone'),
+      type: :ip_country_mismatch,
+    )
+  end
+
+  def ip_country_blocked?
+    return false if request_ip.blank? || phone.blank?
+    return false if blocked_ip_country_codes.empty?
+    return false if ip_country.blank?
+    return false unless blocked_ip_country_codes.include?(ip_country)
+
+    !parsed_phone.valid_countries.include?(ip_country)
+  end
+
+  def ip_country
+    return @ip_country if defined?(@ip_country)
+    @ip_country =
+      if request_ip.present?
+        IpGeocoder.new(request_ip).country_code
+      end
+  rescue StandardError
+    nil
+  end
+
+  def blocked_ip_country_codes
+    Array(IdentityConfig.store.phone_setup_blocked_ip_country_codes)
   end
 
   def validate_not_duplicate
