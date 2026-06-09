@@ -392,6 +392,32 @@ RSpec.describe ProofingAgentJob, type: :job do
       end
     end
 
+    context 'when phone check fails' do
+      let(:pii) { Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN.merge(phone: nil).freeze }
+
+      before do
+        allow(IdentityConfig.store).to receive(:idv_phone_precheck_percent).and_return(100)
+      end
+
+      it 'stores a failed result' do
+        perform
+
+        result = document_capture_session.reload.load_agent_proofed_user
+        expect(result[:success]).to be false
+        expect(result[:reason]).to eq('phone_check_fail')
+      end
+
+      it 'enqueues a ProofingAgentWebhookJob with success: false' do
+        expect { perform }.to have_enqueued_job(ProofingAgentWebhookJob).with(
+          success: false,
+          reason: 'phone_check_fail',
+          transaction_id: transaction_id,
+          correlation_id: correlation_id,
+          analytics_attributes: an_instance_of(Hash),
+        )
+      end
+    end
+
     context 'when the MRZ check passes' do
       let(:pii) { Idp::Constants::MOCK_IDV_PROOFING_PASSPORT_APPLICANT.merge(phone: '12025551212').freeze }
 

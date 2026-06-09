@@ -129,6 +129,49 @@ RSpec.describe ProofingAgent::ProofingResult do
     end
   end
 
+  context 'when residential address check fails' do
+    let(:resolution_result) do
+      {
+        success: false,
+        errors: [{ base: ['Residential address check failed'] }],
+        exception: nil,
+        phone_precheck_passed:,
+        context: {
+          stages: {
+            residential_address: {
+              success: false,
+              errors: {},
+              exception: nil,
+              timed_out: false,
+              transaction_id: '',
+              reference: '',
+              reason_codes: {},
+              can_pass_with_additional_verification: false,
+              attributes_requiring_additional_verification: [],
+              source_attribution: [],
+              vendor_name: 'ResidentialAddressNotRequired',
+              vendor_id: nil,
+              vendor_workflow: nil,
+              verified_attributes: nil,
+            },
+          },
+        },
+      }
+    end
+    it 'returns failure' do
+      expect(subject.combined_result).to eq(
+        success: false,
+        reason: 'profile_resolution_fail',
+        proofing_agent_id:,
+        proofing_location_id:,
+        correlation_id:,
+        transaction_id:,
+        service_provider_issuer:,
+        resolution: resolution_result,
+      )
+    end
+  end
+
   context 'phone verification fails' do
     let(:phone_precheck_passed) { false }
     it 'returns failure' do
