@@ -17,7 +17,7 @@ module Idv
       @first_name = pii[:first_name]
       @last_name = pii[:last_name]
       @dob = pii[:dob]
-      @document_type_received = pii[:document_type_received] || pii[:id_doc_type]
+      @document_type_received = pii[:document_type_received]
       @attention_with_barcode = attention_with_barcode
     end
 

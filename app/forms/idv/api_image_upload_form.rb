@@ -214,8 +214,7 @@ module Idv
       response.extra.merge!(extra_attributes)
       pii_hash = response.pii_from_doc.to_h
       response.extra[:state] = pii_hash[:state]
-      response.extra[:document_type_received] = pii_hash[:document_type_received] ||
-                                                pii_hash[:id_doc_type]
+      response.extra[:document_type_received] = pii_hash[:document_type_received]
       response.extra[:country] = pii_hash[:issuing_country_code]
 
       update_analytics(
@@ -254,8 +253,7 @@ module Idv
       side_classification = doc_side_classification(client_response)
       response_with_classification =
         response.to_h.merge(side_classification)
-          .merge(document_type_received: client_response.pii_from_doc.document_type_received ||
-                 client_response.pii_from_doc.id_doc_type)
+          .merge(document_type_received: client_response.pii_from_doc.document_type_received)
 
       analytics.idv_doc_auth_submitted_pii_validation(**response_with_classification)
 
@@ -263,8 +261,7 @@ module Idv
     end
 
     def validate_mrz(client_response)
-      id_type = client_response.pii_from_doc.document_type_received ||
-                client_response.pii_from_doc.id_doc_type
+      id_type = client_response.pii_from_doc.document_type_received
       unless id_type == 'passport'
         return DocAuth::Response.new(
           success: false,

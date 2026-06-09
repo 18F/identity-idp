@@ -79,11 +79,7 @@ module EventSummarizer
           attributes[key] = values.first
         end
 
-        # We need to check both document_type_received and id_doc_type in case
-        # we are looking at data over a timespan that is before this is deployed.
-        document_type = ID_TYPES[result['document_type_received']] ||
-                        ID_TYPES[result['id_doc_type']] ||
-                        'id card'
+        document_type = ID_TYPES[result['document_type_received']] || 'id card'
         state = result['state_id_jurisdiction']
 
         if mva_says_invalid_id_number?(attributes)

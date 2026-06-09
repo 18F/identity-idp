@@ -387,4 +387,70 @@ RSpec.describe DocAuth::LexisNexis::Responses::Ddp::TrueIdResponse do
       end
     end
   end
+
+  context 'when the response is missing tps_vendor_raw_response' do
+    let(:service_block) do
+      {}
+    end
+    let(:ddp_response_body) do
+      {
+        'integration_hub_results' => {
+          'org_id_str:default_auth_policy_pm' => {
+            'Authentication' => service_block,
+          },
+        },
+      }.to_json
+    end
+
+    context 'when the service block indicates a vendor timeout' do
+      let(:service_block) do
+        { 'tps_was_timeout' => 'yes' }
+      end
+
+      it 'returns a failed result with a Proofing::TimeoutError exception' do
+        expect(NewRelic::Agent).to receive(:notice_error)
+          .with(an_instance_of(Proofing::TimeoutError))
+
+        expect(response.success?).to eq(false)
+        expect(response.errors).to eq({ network: true })
+        expect(response.exception).to be_a(Proofing::TimeoutError)
+        expect(response.exception.message)
+          .to eq('LexisNexis TrueID DDP timed out')
+      end
+    end
+
+    context 'when the service block does not indicate a timeout' do
+      let(:service_block) do
+        { 'tps_was_timeout' => 'no', 'tps_error' => 'auth_error' }
+      end
+
+      it 'returns a failed result with a RuntimeError exception' do
+        expect(NewRelic::Agent).to receive(:notice_error)
+          .with(an_instance_of(RuntimeError))
+
+        expect(response.success?).to eq(false)
+        expect(response.errors).to eq({ network: true })
+        expect(response.exception).to be_a(RuntimeError)
+        expect(response.exception.message)
+          .to eq('LexisNexis TrueID DDP returned no tps_vendor_raw_response')
+      end
+    end
+
+    context 'when the service block is entirely absent from integration_hub_results' do
+      let(:ddp_response_body) do
+        { 'integration_hub_results' => {} }.to_json
+      end
+
+      it 'returns a failed result with a RuntimeError exception' do
+        expect(NewRelic::Agent).to receive(:notice_error)
+          .with(an_instance_of(RuntimeError))
+
+        expect(response.success?).to eq(false)
+        expect(response.errors).to eq({ network: true })
+        expect(response.exception).to be_a(RuntimeError)
+        expect(response.exception.message)
+          .to eq('LexisNexis TrueID DDP returned no tps_vendor_raw_response')
+      end
+    end
+  end
 end

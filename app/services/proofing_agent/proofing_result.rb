@@ -5,6 +5,7 @@ module ProofingAgent
     attr_reader :proofing_agent_id,
                 :proofing_location_id,
                 :correlation_id,
+                :transaction_id,
                 :pii,
                 :resolution_result,
                 :aamva_result,
@@ -15,6 +16,7 @@ module ProofingAgent
       proofing_agent_id:,
       proofing_location_id:,
       correlation_id:,
+      transaction_id:,
       resolution_result:,
       service_provider_issuer:,
       pii:,
@@ -24,6 +26,7 @@ module ProofingAgent
       @proofing_agent_id = proofing_agent_id
       @proofing_location_id = proofing_location_id
       @correlation_id = correlation_id
+      @transaction_id = transaction_id
       @pii = pii
       @resolution_result = resolution_result
       @aamva_result = aamva_result&.to_h
@@ -42,6 +45,7 @@ module ProofingAgent
         proofing_agent_id:,
         proofing_location_id:,
         correlation_id:,
+        transaction_id:,
       }
 
       result[:pii] = pii if pii.present?
@@ -50,6 +54,10 @@ module ProofingAgent
       result[:mrz] = mrz_result if mrz_result.present?
 
       result
+    end
+
+    def phone_precheck_attempted?
+      resolution_result.dig(:context, :stages, :phone_precheck).present?
     end
 
     private
@@ -65,10 +73,6 @@ module ProofingAgent
       return 'id_fail' if aamva_result.present? && !aamva_success?
       return 'passport_fail' if mrz_result.present? && !mrz_result[:success]
       return 'phone_check_fail' if !phone_precheck_attempted? || !phone_precheck_passed?
-    end
-
-    def phone_precheck_attempted?
-      resolution_result.dig(:context, :stages, :phone_precheck).present?
     end
 
     def phone_precheck_passed?
