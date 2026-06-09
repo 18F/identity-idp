@@ -14,8 +14,12 @@ module Idv
           correlation_id: agent_proofed_user.correlation_id,
           transaction_id: agent_proofed_user.transaction_id,
         },
-        issuer: agent_proofed_user.issuer,
+        issuer:,
       }
+    end
+
+    def issuer
+      agent_proofed_user.issuer || current_user.pending_agent_proofed_session.issuer
     end
 
     def agent_proofed_user

@@ -13,7 +13,7 @@ module Idv
 
     def new
       @dob_ssn_form = Idv::DobSsnForm.new(idv_session.applicant)
-      analytics.idv_proofing_agent_user_confirmation_visited(**analytics_arguments)
+      analytics.idv_proofing_agent_user_confirmation_visited(**proofing_agent_analytics)
     end
 
     def create

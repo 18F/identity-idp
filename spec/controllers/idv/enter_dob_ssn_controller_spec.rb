@@ -12,6 +12,10 @@ RSpec.describe Idv::EnterDobSsnController do
     {
       pii: pii,
       success: success,
+      proofing_agent_id: 'agent_123',
+      proofing_location_id: 'location_456',
+      correlation_id: 'correlation_789',
+      transaction_id: document_capture_session.uuid,
     }
   end
   let(:sp) { create(:service_provider, :idv, :active) }
@@ -30,6 +34,7 @@ RSpec.describe Idv::EnterDobSsnController do
 
   before do
     stub_sign_in(user)
+    stub_analytics
     document_capture_session.store_agent_proofed_user(agent_proofed_user)
     resolver_mock = instance_double(AuthnContextResolver)
     allow(resolver_mock).to receive(:result).and_return(resolved_authn_context_result)
@@ -53,6 +58,7 @@ RSpec.describe Idv::EnterDobSsnController do
 
   describe '#new' do
     before { get :new }
+
     context 'user does not have a proofing agent pending pii' do
       let(:success) { false }
 
@@ -79,6 +85,14 @@ RSpec.describe Idv::EnterDobSsnController do
         expect(subject.idv_session.vendor_phone_confirmation).to eq true
         expect(subject.idv_session.user_phone_confirmation).to eq true
       end
+
+      it 'sends the correct analytics' do
+        expect(@analytics).to have_logged_event(
+          :idv_proofing_agent_user_confirmation_visited,
+          issuer: sp.issuer,
+          proofing_agent: a_kind_of(Hash),
+        )
+      end
     end
   end
 
@@ -94,6 +108,15 @@ RSpec.describe Idv::EnterDobSsnController do
           },
         }
         expect(response).to redirect_to(idv_enter_password_url)
+        expect(@analytics).to have_logged_event(
+          :idv_proofing_agent_user_confirmation_submitted,
+          success: true,
+          dob_match: true,
+          ssn_match: true,
+          dob_and_ssn_match: true,
+          issuer: sp.issuer,
+          proofing_agent: a_kind_of(Hash),
+        )
       end
     end
 
