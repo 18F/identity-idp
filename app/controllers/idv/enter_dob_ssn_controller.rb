@@ -5,6 +5,7 @@ module Idv
     include Idv::AvailabilityConcern
     include IdvStepConcern
     include Idv::StepIndicatorConcern
+    include Idv::ProofingAgentConcern
 
     before_action :confirm_two_factor_authenticated
     before_action :confirm_verification_needed
@@ -12,6 +13,7 @@ module Idv
 
     def new
       @dob_ssn_form = Idv::DobSsnForm.new(idv_session.applicant)
+      analytics.idv_proofing_agent_user_confirmation_visited(**analytics_arguments)
     end
 
     def create
@@ -20,6 +22,14 @@ module Idv
       form_response = @dob_ssn_form.submit(
         ssn: normalized_ssn,
         dob: parse_form_date,
+      )
+
+      analytics.idv_proofing_agent_user_confirmation_submitted(
+        **proofing_agent_analytics,
+        success: form_response.success?,
+        dob_match: dob_match?,
+        ssn_match: ssn_match?,
+        dob_and_ssn_match: verify_dob_ssn_matches_applicant_pii?,
       )
 
       if form_response.success?
@@ -47,9 +57,8 @@ module Idv
     end
 
     def move_agent_proofed_user_pii_to_idv_session
-      agent_proofed_user = current_user.pending_agent_proofed_user
       if agent_proofed_user
-        session[:sp] = { issuer: current_user.pending_agent_proofed_session&.issuer }
+        session[:sp] = { issuer: agent_proofed_user&.issuer }
         idv_session.applicant = agent_proofed_user&.pii
         idv_session.agent_proofed = true
         # a successful agent proofed user should have phone precheck completed
@@ -60,11 +69,16 @@ module Idv
       end
     end
 
-    def verify_dob_ssn_matches_applicant_pii?
-      ssn_match = idv_session.applicant[:ssn] == normalized_ssn
-      dob_match = idv_session.applicant[:dob] == parse_form_date
+    def dob_match?
+      idv_session.applicant[:dob] == parse_form_date
+    end
 
-      idv_session.proofing_agent_match = ssn_match && dob_match
+    def ssn_match?
+      idv_session.applicant[:ssn] == normalized_ssn
+    end
+
+    def verify_dob_ssn_matches_applicant_pii?
+      idv_session.proofing_agent_match = ssn_match? && dob_match?
       idv_session.proofing_agent_match
     end
 
