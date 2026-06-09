@@ -18,7 +18,7 @@ module Idv
       @dob_ssn_form = Idv::DobSsnForm.new(idv_session.applicant)
 
       form_response = @dob_ssn_form.submit(
-        ssn: dob_ssn_params[:ssn],
+        ssn: normalized_ssn,
         dob: parse_form_date,
       )
 
@@ -36,6 +36,10 @@ module Idv
 
     def dob_ssn_params
       params.require(:doc_auth).permit(:ssn, dob: [:month, :day, :year])
+    end
+
+    def normalized_ssn
+      SsnFormatter.normalize(dob_ssn_params[:ssn])
     end
 
     def parse_form_date
@@ -57,7 +61,7 @@ module Idv
     end
 
     def verify_dob_ssn_matches_applicant_pii?
-      ssn_match = idv_session.applicant[:ssn] == dob_ssn_params[:ssn]
+      ssn_match = idv_session.applicant[:ssn] == normalized_ssn
       dob_match = idv_session.applicant[:dob] == parse_form_date
 
       idv_session.proofing_agent_match = ssn_match && dob_match
