@@ -141,7 +141,7 @@ RSpec.describe Users::PhoneSetupController do
         allow_any_instance_of(IpGeocoder).to receive(:country_code).and_return('PK')
       end
 
-      it 'renders form and logs mismatch details' do
+      it 'does not block US phone numbers even when IP country is blocked' do
         post(
           :create,
           params: {
@@ -154,12 +154,7 @@ RSpec.describe Users::PhoneSetupController do
 
         expect(@analytics).to have_logged_event(
           'Multi-Factor Authentication: phone setup',
-          success: false,
-          error_details: {
-            phone: {
-              ip_country_mismatch: true,
-            },
-          },
+          success: true,
           otp_delivery_preference: 'sms',
           area_code: '703',
           carrier: 'Test Mobile Carrier',
@@ -167,9 +162,16 @@ RSpec.describe Users::PhoneSetupController do
           phone_type: :mobile,
           types: [:fixed_or_mobile],
           ip_country: 'PK',
-          ip_country_blocked: true,
+          ip_country_blocked: false,
         )
-        expect(response).to render_template(:index)
+        expect(response).to redirect_to(
+          otp_send_path(
+            otp_delivery_selection_form: {
+              otp_delivery_preference: 'sms',
+              otp_make_default_number: false,
+            },
+          ),
+        )
       end
     end
 

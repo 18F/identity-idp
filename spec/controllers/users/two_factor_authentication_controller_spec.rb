@@ -759,11 +759,15 @@ RSpec.describe Users::TwoFactorAuthenticationController do
         end
       end
 
-      it 'blocks confirmation OTP resend when IP country is blocked and mismatches phone country' do
+      it 'blocks confirmation OTP resend when IP country is blocked and mismatches ' \
+        'non-US phone country' do
+        non_us_phone = '+44 7700 900123'
+        parsed_non_us_phone = Phonelib.parse(non_us_phone)
+
         stub_analytics
         sign_in_before_2fa(@user)
         subject.user_session[:context] = 'confirmation'
-        subject.user_session[:unconfirmed_phone] = unconfirmed_phone
+        subject.user_session[:unconfirmed_phone] = non_us_phone
 
         allow(IdentityConfig.store).to receive(:phone_setup_blocked_ip_country_codes)
           .and_return(['PK'])
@@ -782,11 +786,28 @@ RSpec.describe Users::TwoFactorAuthenticationController do
         expect(response).to redirect_to authentication_methods_setup_url
         expect(@analytics).to have_logged_event(
           'Rate Limit Reached',
-          country_code: parsed_phone.country,
+          country_code: parsed_non_us_phone.country,
           country_mismatch: true,
           limiter_type: :phone_confirmation,
-          phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
+          phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_non_us_phone.e164),
         )
+      end
+
+      it 'does not block confirmation OTP resend for US phone numbers' do
+        stub_analytics
+        sign_in_before_2fa(@user)
+        subject.user_session[:context] = 'confirmation'
+        subject.user_session[:unconfirmed_phone] = unconfirmed_phone
+
+        allow(IdentityConfig.store).to receive(:phone_setup_blocked_ip_country_codes)
+          .and_return(['PK'])
+        allow_any_instance_of(IpGeocoder).to receive(:country_code).and_return('PK')
+        allow(Telephony).to receive(:send_confirmation_otp).and_call_original
+
+        get :send_code, params: otp_delivery_form_sms
+
+        expect(Telephony).to have_received(:send_confirmation_otp)
+        expect(response).to redirect_to(login_two_factor_url(otp_delivery_preference: 'sms'))
       end
 
       context 'when telephony gem responds with an sms error' do

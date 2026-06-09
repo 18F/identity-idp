@@ -328,9 +328,24 @@ RSpec.describe NewPhoneForm do
           .and_return(['PK'])
       end
 
-      after { Geocoder::Lookup::Test.reset }
+      after do
+        Geocoder::Lookup::Test.reset
+        Geocoder::Lookup::Test.set_default_stub(
+          [
+            {
+              'city' => '',
+              'country' => 'United States',
+              'country_code' => 'US',
+              'state_code' => '',
+            },
+          ],
+        )
+      end
 
-      context 'when request IP geolocates to a blocked country and phone is from elsewhere' do
+      context 'when blocked IP country mismatches a non-US phone' do
+        let(:phone) { '+61 0491 570 006' }
+        let(:international_code) { 'AU' }
+
         before do
           Geocoder::Lookup::Test.add_stub(
             request_ip,
@@ -352,6 +367,25 @@ RSpec.describe NewPhoneForm do
           result = form.submit(params)
 
           expect(result.extra).to include(ip_country: 'PK', ip_country_blocked: true)
+        end
+      end
+
+      context 'when request IP geolocates to a blocked country and phone is US' do
+        before do
+          Geocoder::Lookup::Test.add_stub(
+            request_ip,
+            [{ 'country_code' => 'PK', 'country' => 'Pakistan' }],
+          )
+        end
+
+        it 'is valid and does not flag ip_country_mismatch' do
+          result = form.submit(params)
+
+          expect(result.success?).to eq(true)
+          expect(result.to_h[:error_details]).to_not match(
+            hash_including(phone: include(:ip_country_mismatch)),
+          )
+          expect(result.extra).to include(ip_country: 'PK', ip_country_blocked: false)
         end
       end
 

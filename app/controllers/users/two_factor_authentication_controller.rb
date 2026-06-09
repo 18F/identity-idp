@@ -312,6 +312,7 @@ module Users
       return false if phone_to_deliver_to.blank?
       return false if blocked_ip_country_codes.empty?
       return false if ip_country.blank?
+      return false if parsed_phone.country == 'US'
       return false unless blocked_ip_country_codes.include?(ip_country)
 
       !parsed_phone.valid_countries.include?(ip_country)

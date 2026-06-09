@@ -132,9 +132,14 @@ class NewPhoneForm
     return false if request_ip.blank? || phone.blank?
     return false if blocked_ip_country_codes.empty?
     return false if ip_country.blank?
+    return false if us_phone_number?
     return false unless blocked_ip_country_codes.include?(ip_country)
 
     !parsed_phone.valid_countries.include?(ip_country)
+  end
+
+  def us_phone_number?
+    parsed_phone.country == 'US'
   end
 
   def ip_country
