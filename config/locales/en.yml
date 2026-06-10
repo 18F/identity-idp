@@ -629,7 +629,7 @@ doc_auth.headings.how_to_verify: Choose how to verify your ID
 doc_auth.headings.interstitial: We are processing your information
 doc_auth.headings.lets_go: How verifying your identity works
 doc_auth.headings.mailing_address: Enter your mailing address
-doc_auth.headings.mdl_capture: Add a photo of your mobile driver’s license (mDL) information
+doc_auth.headings.mdl_capture: Add your mobile driver’s license (mDL) information
 doc_auth.headings.no_ssn: Don’t have a Social Security number?
 doc_auth.headings.passport: Your passport
 doc_auth.headings.passport_capture: Add a photo of your passport
