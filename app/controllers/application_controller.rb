@@ -31,7 +31,7 @@ class ApplicationController < ActionController::Base
 
   prepend_before_action :add_new_relic_trace_attributes
   prepend_before_action :set_session_start_value_if_nil
-  prepend_before_action :show_flash_if_session_timeout
+  prepend_before_action :show_flash_with_redirect_if_session_timeout
   prepend_before_action :set_locale
   before_action :disable_caching
   before_action :cache_issuer_in_cookie
@@ -190,7 +190,7 @@ class ApplicationController < ActionController::Base
                           end
   end
 
-  def show_flash_if_session_timeout
+  def show_flash_with_redirect_if_session_timeout
     return unless params[:timeout]
 
     if params[:timeout] == 'session'
