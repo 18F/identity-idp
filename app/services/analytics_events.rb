@@ -5410,6 +5410,34 @@ module AnalyticsEvents
     )
   end
 
+  # Logs when a proofing agent begins proofing a user
+  # @param [Hash] response_body The body of the response from the proofing agent's proofing request
+  # @param [Hash] proofing_agent The proofing agent information
+  # @param [String] issuer The issuer associated with the proofing request
+  # @param [Integer, nil] remaining_attempts attempts remaining before rate limit is hit
+  # @param [String,nil] transaction_id The transaction ID associated with the proofing request
+  # @param [Boolean,nil] final_attempt Whether the request was marked as the final attempt
+  def idv_proofing_agent_proof_user_requested(
+    response_body:,
+    proofing_agent:,
+    issuer:,
+    remaining_attempts: nil,
+    transaction_id: nil,
+    final_attempt: nil,
+    **extra
+  )
+    track_event(
+      :idv_proofing_agent_proof_user_requested,
+      response_body:,
+      proofing_agent:,
+      issuer:,
+      remaining_attempts:,
+      transaction_id:,
+      final_attempt:,
+      **extra,
+    )
+  end
+
   # Tracks a proofing agent request that failed authorization or validation
   # @param [Boolean] success Whether request was successful
   # @param [String] issuer The issuer associated with the proofing request
@@ -5436,14 +5464,14 @@ module AnalyticsEvents
     )
   end
 
-  # Logs when a proofing agent begins proofing a user
+  # Logs when a proofing agent requests the result of proofing a user
   # @param [Hash] response_body The body of the response from the proofing agent's proofing request
   # @param [Hash] proofing_agent The proofing agent information
   # @param [String] issuer The issuer associated with the proofing request
   # @param [Integer, nil] remaining_attempts attempts remaining before rate limit is hit
   # @param [String,nil] transaction_id The transaction ID associated with the proofing request
   # @param [Boolean,nil] final_attempt Whether the request was marked as the final attempt
-  def idv_proofing_agent_request_received(
+  def idv_proofing_agent_result_requested(
     response_body:,
     proofing_agent:,
     issuer:,
@@ -5453,7 +5481,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      :idv_proofing_agent_request_received,
+      :idv_proofing_agent_result_requested,
       response_body:,
       proofing_agent:,
       issuer:,
