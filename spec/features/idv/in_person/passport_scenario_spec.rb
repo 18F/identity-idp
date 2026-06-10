@@ -47,7 +47,7 @@ RSpec.describe 'In Person Proofing Passports', js: true do
         expect(page).to have_current_path(idv_agreement_path)
         complete_agreement_step
 
-        expect(page).to have_content t('doc_auth.info.verify_online_description')
+        expect(page).to have_content t('doc_auth.info.verify_online_description_passport')
 
         click_on t('forms.buttons.continue_ipp')
 
@@ -82,7 +82,7 @@ RSpec.describe 'In Person Proofing Passports', js: true do
           expect(page).to have_current_path(idv_agreement_path)
           complete_agreement_step
 
-          expect(page).to have_content t('doc_auth.info.verify_online_description')
+          expect(page).to have_content t('doc_auth.info.verify_online_description_passport')
 
           click_on t('forms.buttons.continue_ipp')
 
@@ -123,7 +123,7 @@ RSpec.describe 'In Person Proofing Passports', js: true do
           expect(page).to have_current_path(idv_agreement_path)
           complete_agreement_step
 
-          expect(page).to have_content t('doc_auth.info.verify_online_description')
+          expect(page).to have_content t('doc_auth.info.verify_online_description_passport')
 
           click_on t('forms.buttons.continue_ipp')
 
@@ -192,7 +192,7 @@ RSpec.describe 'In Person Proofing Passports', js: true do
           expect(page).to have_current_path(idv_agreement_path)
           complete_agreement_step
 
-          expect(page).to have_content t('doc_auth.info.verify_online_description')
+          expect(page).to have_content t('doc_auth.info.verify_online_description_passport')
 
           click_on t('forms.buttons.continue_ipp')
 
@@ -281,7 +281,7 @@ RSpec.describe 'In Person Proofing Passports', js: true do
       expect(page).to have_current_path(idv_agreement_path)
       complete_agreement_step
 
-      expect(page).not_to have_content t('doc_auth.info.verify_online_description')
+      expect(page).not_to have_content t('doc_auth.info.verify_online_description_passport')
       expect(page).to have_content strip_tags(
         t('doc_auth.info.verify_at_post_office_description_passport_html'),
       )
