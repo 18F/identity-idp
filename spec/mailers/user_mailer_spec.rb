@@ -745,6 +745,64 @@ RSpec.describe UserMailer, type: :mailer do
     end
   end
 
+  describe '#agent_proofing_succeeded' do
+    around { |ex| Time.use_zone('UTC') { ex.run } }
+
+    let(:verified_at) { '2026-03-18 14:00:00 UTC' }
+
+    let(:mail) do
+      UserMailer.with(user: user, email_address: email_address)
+        .agent_proofing_succeeded(verified_at: verified_at)
+    end
+
+    it_behaves_like 'a system email'
+    it_behaves_like 'an email that respects user email locale preference'
+
+    it 'sends to the current email' do
+      expect(mail.to).to eq [email_address.email]
+    end
+
+    it 'renders the subject' do
+      expect(mail.subject).to eq t('user_mailer.agent_proofing_succeeded.subject')
+    end
+
+    it 'renders the formatted verified date in the body' do
+      expect(mail.html_part.body).to have_content('March 18, 2026')
+    end
+
+    it 'renders the formatted deadline in the alert banner' do
+      expect(mail.html_part.body).to have_content('March 20, 2026')
+    end
+
+    it 'inlines the info icon' do
+      icon = mail.attachments['info.png']
+      expect(icon).not_to be_nil
+      expect(icon.inline?).to eq(true)
+    end
+
+    it 'inlines the verify-identity icon' do
+      icon = mail.attachments['verify-identity.png']
+      expect(icon).not_to be_nil
+      expect(icon.inline?).to eq(true)
+    end
+
+    it 'links to the marketing contact page' do
+      expect(mail.html_part.body).to have_selector("a[href='#{MarketingSite.contact_url}']")
+    end
+
+    it 'links to the change password page' do
+      expect(mail.html_part.body).to have_selector("a[href*='users/password/edit']")
+    end
+
+    context 'when verified_at is blank' do
+      let(:verified_at) { nil }
+
+      it 'does not send the email' do
+        expect(mail.to).to be_nil
+      end
+    end
+  end
+
   describe '#idv_please_call' do
     let(:mail) do
       UserMailer.with(user: user, email_address: email_address).idv_please_call

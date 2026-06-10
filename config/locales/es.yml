@@ -2011,6 +2011,18 @@ user_mailer.agent_proofing_failure.header: No pudimos verificar su identidad en 
 user_mailer.agent_proofing_failure.help_center_html: Por favor, visite nuestro %{help_center_link_html} para obtener más información.
 user_mailer.agent_proofing_failure.help_center_link: 'centro de ayuda de %{app_name}'
 user_mailer.agent_proofing_failure.subject: Completemos su verificación de identidad
+user_mailer.agent_proofing_succeeded.alert_lead: No lo retrase
+user_mailer.agent_proofing_succeeded.banner_html: '%{alert_lead_html}: confirme su cuenta antes del final del día %{deadline} para comenzar ha acceder a sus servicios gubernamentales.'
+user_mailer.agent_proofing_succeeded.body: 'Verificamos su identidad el %{verified_at}. Confirmar su cuenta le permite:'
+user_mailer.agent_proofing_succeeded.bullet1: Acceder a su cuenta de My Social Security y a otros servicios gubernamentales con una sola cuenta segura.
+user_mailer.agent_proofing_succeeded.bullet2: Proteger su información personal
+user_mailer.agent_proofing_succeeded.bullet3: Simplificar sus interacciones gubernamentales en línea
+user_mailer.agent_proofing_succeeded.change_password_link: cambiar su contraseña
+user_mailer.agent_proofing_succeeded.contact_link: contáctenos
+user_mailer.agent_proofing_succeeded.cta: Confirmar cuenta
+user_mailer.agent_proofing_succeeded.footer_html: Si usted no intentó verificar su identidad en persona, por favor %{contact_link_html} e inicie sesión para %{change_password_link_html}.
+user_mailer.agent_proofing_succeeded.header: Ha completado con éxito su verificación de identidad
+user_mailer.agent_proofing_succeeded.subject: 'Acción requerida: Confirme su cuenta verificada'
 user_mailer.contact_link_text: contáctenos
 user_mailer.dupe_profile.created.description: Alguien verificó otra cuenta de %{app_name} usando la información personal de usted. Por su seguridad, hemos restringido su acceso a todas las cuentas con información que coincide y a %{sp_or_app_name}.
 user_mailer.dupe_profile.created.description2_html: Si fue usted quien verificó otra cuenta, elimine la cuenta duplicada siguiendo %{steps_link_html}. Si no fue usted, contacte con %{help_center_link_html}.

@@ -106,6 +106,28 @@ RSpec.describe ProofingAgentJob, type: :job do
         )
       end
 
+      it 'sends a profile confirmation email to the user' do
+        expect { perform }.to change { ActionMailer::Base.deliveries.count }.by(1)
+        expect(ActionMailer::Base.deliveries.last.to)
+          .to eq([user.confirmed_email_addresses.first.email])
+      end
+
+      it 'logs the profile confirmation email analytics event' do
+        perform
+
+        expect(@analytics).to have_logged_event(
+          :idv_proofing_agent_profile_confirmation_email_sent,
+          user_id: user.uuid,
+          proofing_agent: {
+            correlation_id: correlation_id,
+            transaction_id: transaction_id,
+            agent_id: proofing_agent_id,
+            location_id: proofing_location_id,
+          },
+          expiration_date: kind_of(ActiveSupport::TimeWithZone),
+        )
+      end
+
       context 'logging' do
         it 'logs idv_doc_auth_verify_proofing_results event with proofing agent' do
           perform
@@ -312,6 +334,18 @@ RSpec.describe ProofingAgentJob, type: :job do
           transaction_id: transaction_id,
           correlation_id: correlation_id,
           analytics_attributes: an_instance_of(Hash),
+        )
+      end
+
+      it 'does not send a profile confirmation email' do
+        expect { perform }.not_to change { ActionMailer::Base.deliveries.count }
+      end
+
+      it 'does not log the profile confirmation email analytics event' do
+        perform
+
+        expect(@analytics).not_to have_logged_event(
+          :idv_proofing_agent_profile_confirmation_email_sent,
         )
       end
     end
@@ -572,7 +606,10 @@ RSpec.describe ProofingAgentJob, type: :job do
         end
 
         it 'does not send a failure email' do
-          expect { perform }.not_to change { ActionMailer::Base.deliveries.count }
+          perform
+          expect(job_analytics).to_not have_logged_event(
+            :idv_proofing_agent_failure_to_proof_email_sent,
+          )
         end
       end
 

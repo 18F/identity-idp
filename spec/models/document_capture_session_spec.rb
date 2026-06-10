@@ -281,7 +281,7 @@ RSpec.describe DocumentCaptureSession do
             proofing_agent_id: '456',
             correlation_id: '789',
             issuer: 'test_issuer',
-            captured_at: current_time,
+            verified_at: current_time.to_s,
             resolution: { success: true },
             mrz_status: :not_processed,
             aamva_status: :passed,
