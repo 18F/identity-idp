@@ -387,12 +387,12 @@ RSpec.describe ApplicationController do
     end
   end
 
-  describe '#show_flash_if_session_timeout' do
+  describe '#show_flash_with_redirect_if_session_timeout' do
     before { routes.draw { get 'index' => 'anonymous#index' } }
     after { Rails.application.reload_routes! }
 
     controller do
-      prepend_before_action :show_flash_if_session_timeout
+      prepend_before_action :show_flash_with_redirect_if_session_timeout
       def index
         render plain: 'Hello'
       end
