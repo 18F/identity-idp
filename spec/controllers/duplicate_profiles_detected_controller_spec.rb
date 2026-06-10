@@ -84,8 +84,15 @@ RSpec.describe DuplicateProfilesDetectedController, type: :controller do
       end
 
       it 'redirects to the root path' do
+        expect(Rails.logger).to receive(:error)
+          .with(a_string_including('Template error in duplicate_profiles_detected#show')
+            .and(a_string_including('global_detection_enabled: true'))
+            .and(a_string_including('no implicit conversion of nil into String'))
+            .and(a_string_including('sp_name: ')))
+
         get :show, params: { source: :account_page }
-        expect(response.status).to eq(302)
+        expect(response).to render_template(:show)
+        expect(response).to redirect_to(root_path)
       end
     end
   end

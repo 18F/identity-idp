@@ -56,18 +56,15 @@ class DuplicateProfilesDetectedController < ApplicationController
   end
 
   def handle_template_error(exception)
-    controller_info = "#{controller_path}##{action_name}"
-    analytics.unsafe_redirect_error(
-      controller: controller_info,
-      user_signed_in: user_signed_in?,
-      referer: request.referer,
-    )
+    global_detection_enabled = IdentityConfig.store.enable_one_account_global_detection.to_s
+    sp_name = decorated_sp_session.try(:sp_name)
     Rails.logger.error(
-      "Template error in #{controller_info}: #{exception.message}
-      enable_one_account_global_detection:
-      #{IdentityConfig.store.enable_one_account_global_detection}",
+      "Template error in #{controller_path}##{action_name}-" \
+      "#{exception.message}-" \
+      "global_detection_enabled: #{global_detection_enabled}-" \
+      "sp_name: #{sp_name}",
     )
 
-    redirect_to root_url(locale: locale)
+    redirect_to root_url
   end
 end
