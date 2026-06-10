@@ -4,6 +4,8 @@ module FraudOps
   class Tracker < AttemptsApi::Tracker
     include TrackerEvents
 
+    NO_PROVIDER_ISSUER = 'no_provider'
+
     def initialize(request:, user:, sp:, cookie_device_uuid:)
       super(
         session_id: nil,
@@ -67,9 +69,13 @@ module FraudOps
     def jwe(event)
       to_jwe(
         event: event,
-        issuer: sp.issuer,
+        issuer: event_issuer,
         public_key: public_key,
       )
+    end
+
+    def event_issuer
+      sp&.issuer || NO_PROVIDER_ISSUER
     end
 
     def to_jwe(event:, issuer:, public_key:)
