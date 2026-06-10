@@ -82,6 +82,7 @@ module Idv
     end
 
     def id_type_copy
+      mdl_enabled ? t('doc_auth.instructions.bullet1_mdl') :
       t('doc_auth.instructions.bullet1')
     end
 

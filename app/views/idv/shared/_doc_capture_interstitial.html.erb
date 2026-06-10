@@ -1,4 +1,8 @@
-<% self.title = t('titles.doc_auth.verify') %>
+<% if @mdl_requested %>
+  <% self.title = t('idv.mdl.title') %>
+<% else %>
+  <% self.title = t('titles.doc_auth.verify') %>
+<% end %>
 <% content_for(:pre_flash_content) do %>
   <%= render StepIndicatorComponent.new(
         steps: Idv::StepIndicatorConcern::STEP_INDICATOR_STEPS,
@@ -15,6 +19,8 @@
 <%= render PageHeadingComponent.new do %>
   <% if @passport_requested %>
     <%= t('doc_auth.headings.passport_capture') %>
+  <% elsif @mdl_requested %>
+      <%= t('doc_auth.headings.mdl_capture') %>
   <% else %>
     <%= t('doc_auth.headings.document_capture') %>
   <% end %>
@@ -30,6 +36,27 @@
       <%= t('doc_auth.info.socure_passport', app_name: APP_NAME) %>
     </p>
   <% end %>
+<% elsif @mdl_requested %>
+  <h2 class="margin-bottom-2"><%= t('idv.mdl.steps_heading') %></h2>
+
+  <ol class="usa-process-list">
+    <li class="usa-process-list__item">
+      <p class="usa-process-list__heading font-body-md text-normal"><%= t('idv.mdl.steps.device.title') %></p>
+    </li>
+    <li class="usa-process-list__item">
+      <p class="usa-process-list__heading font-body-md text-normal"><%= t('idv.mdl.steps.have_mdl.title') %></p>
+    </li>
+  </ol>
+
+  <h2 class="margin-bottom-2"><%= t('idv.mdl.info_heading') %></h2>
+
+  <%= render IconListComponent.new(icon: :check_circle, color: :success, class: 'margin-bottom-4') do |c| %>
+    <% c.with_item { t('idv.mdl.info_items.name') } %>
+    <% c.with_item { t('idv.mdl.info_items.dob') } %>
+    <% c.with_item { t('idv.mdl.info_items.id_number') } %>
+    <% c.with_item { t('idv.mdl.info_items.expiration') } %>
+    <% c.with_item { t('idv.mdl.info_items.address') } %>
+  <% end %>
 <% else %>
   <p>
     <%= t('doc_auth.info.socure_basic_idv', app_name: APP_NAME) %>
@@ -39,10 +66,14 @@
 <p>
 <% if @passport_requested %>
   <%= t('doc_auth.info.socure_ial2_idv_finish_passport', app_name: APP_NAME) %>
+<% elsif @mdl_requested %>
+  <%= render AlertComponent.new(type: :info, class: 'margin-bottom-4') do %>
+    <%= t('idv.mdl.alert_html') %>
+  <% end %>
 <% else %>
   <%= t('doc_auth.info.socure_ial2_idv_finish', app_name: APP_NAME) %>
 <% end %>
 </p>
 
-<%= link_to t('forms.buttons.continue'), @url, class: 'usa-button usa-button--big usa-button--wide margin-top-4 margin-bottom-4' %>
+<%= link_to (@mdl_requested ? t('idv.mdl.button') : t('forms.buttons.continue')), @url, class: 'usa-button usa-button--big usa-button--wide margin-top-4 margin-bottom-4' %>
 <%= render 'idv/doc_auth/cancel', step: 'verify_id' %>
