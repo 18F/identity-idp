@@ -206,6 +206,12 @@ class ApplicationController < ActionController::Base
         minutes: IdentityConfig.store.session_timeout_in_seconds.seconds.in_minutes.to_i,
       )
     end
+
+    begin
+      redirect_to url_for(permitted_timeout_params)
+    rescue ActionController::UrlGenerationError # Binary data in parameters throw on redirect
+      head :bad_request
+    end
   end
 
   def log_session_timeout
