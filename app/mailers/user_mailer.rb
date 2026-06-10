@@ -526,6 +526,30 @@ class UserMailer < ActionMailer::Base
     end
   end
 
+  def agent_proofing_succeeded(verified_at:)
+    return if verified_at.blank?
+
+    attachments.inline['info.png'] =
+      Rails.root.join('app/assets/images/email/info.png').read
+    attachments.inline['verify-identity.png'] =
+      Rails.root.join('app/assets/images/email/verify-identity.png').read
+
+    with_user_locale(user) do
+      @hide_title = true
+      @presenter = Idv::ProofingAgent::AgentProofingSucceededPresenter.new(
+        verified_at:,
+        url_options:,
+      )
+      @verified_at_display = I18n.l(@presenter.verified_at, format: :event_date)
+      @deadline_display = I18n.l(@presenter.deadline, format: :event_date)
+
+      mail(
+        to: email_address.email,
+        subject: t('user_mailer.agent_proofing_succeeded.subject'),
+      )
+    end
+  end
+
   def suspension_confirmed
     with_user_locale(user) do
       @help_text = t('user_mailer.suspension_confirmed.contact_agency')
