@@ -72,6 +72,15 @@ class ProofingAgentJob < ApplicationJob
     success = combined_result[:success]
     reason = combined_result[:reason]
 
+    if success
+      ProofingAgent::SuccessEmailSender.new(user: user, analytics: analytics).call(
+        verified_at: document_capture_session.load_agent_proofed_user.verified_at,
+        proofing_agent_id: proofing_agent_id,
+        proofing_location_id: proofing_location_id,
+        correlation_id: correlation_id,
+        transaction_id: transaction_id,
+      )
+    end
     if webhook_url.present?
       ProofingAgentWebhookJob.perform_later(
         success:,
