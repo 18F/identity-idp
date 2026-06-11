@@ -1,6 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Idv::EnterDobSsnController do
+  let(:proofing_agent_enabled) { true }
   let(:success) { true }
   let(:pii) do
     {
@@ -16,6 +17,7 @@ RSpec.describe Idv::EnterDobSsnController do
       proofing_location_id: 'location_456',
       correlation_id: 'correlation_789',
       transaction_id: document_capture_session.uuid,
+      service_provider_issuer: sp.issuer,
     }
   end
   let(:sp) { create(:service_provider, :idv, :active) }
@@ -39,6 +41,8 @@ RSpec.describe Idv::EnterDobSsnController do
     resolver_mock = instance_double(AuthnContextResolver)
     allow(resolver_mock).to receive(:result).and_return(resolved_authn_context_result)
     allow(AuthnContextResolver).to receive(:new).and_return(resolver_mock)
+    allow(IdentityConfig.store).to receive(:idv_proofing_agent_enabled)
+      .and_return(proofing_agent_enabled)
   end
 
   describe 'before_actions' do
@@ -59,10 +63,18 @@ RSpec.describe Idv::EnterDobSsnController do
   describe '#new' do
     before { get :new }
 
+    context 'proofing agent feature is disabled' do
+      let(:proofing_agent_enabled) { false }
+
+      it 'redirects to the account page' do
+        expect(response).to redirect_to(account_url)
+      end
+    end
+
     context 'user does not have a proofing agent pending pii' do
       let(:success) { false }
 
-      it 'redirects to account_url if user does not have a pending proofing agent' do
+      it 'redirects to account url if user does not have a pending proofing agent' do
         expect(response).to redirect_to(account_url)
       end
     end

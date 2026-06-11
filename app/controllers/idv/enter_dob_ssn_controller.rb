@@ -83,8 +83,12 @@ module Idv
     end
 
     def confirm_verification_needed
-      return if current_user.proofing_agent_pending?
-      redirect_to account_url
+      redirect_to account_url unless verification_needed?
+    end
+
+    def verification_needed?
+      IdentityConfig.store.idv_proofing_agent_enabled &&
+        current_user.proofing_agent_pending?
     end
   end
 end
