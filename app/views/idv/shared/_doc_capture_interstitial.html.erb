@@ -55,16 +55,6 @@
       <p class="usa-process-list__heading font-body-md text-normal"><%= t('idv.mdl.steps.have_mdl.title') %></p>
     </li>
   </ol>
-
-  <h2 class="margin-bottom-2"><%= t('idv.mdl.info_heading') %></h2>
-
-  <%= render IconListComponent.new(icon: :check_circle, color: :success, class: 'margin-bottom-4') do |c| %>
-    <% c.with_item { t('idv.mdl.info_items.name') } %>
-    <% c.with_item { t('idv.mdl.info_items.dob') } %>
-    <% c.with_item { t('idv.mdl.info_items.id_number') } %>
-    <% c.with_item { t('idv.mdl.info_items.expiration') } %>
-    <% c.with_item { t('idv.mdl.info_items.address') } %>
-  <% end %>
 <% else %>
   <p>
     <%= t('doc_auth.info.socure_basic_idv', app_name: APP_NAME) %>
@@ -75,7 +65,7 @@
 <% if @passport_requested %>
   <%= t('doc_auth.info.socure_ial2_idv_finish_passport', app_name: APP_NAME) %>
 <% elsif @mdl_requested %>
-  <%= render AlertComponent.new(type: :info, class: 'margin-bottom-4') do %>
+  <%= render AlertComponent.new(type: :info, class: 'margin-top-5') do %>
     <%= t('idv.mdl.alert_html') %>
   <% end %>
 <% else %>
