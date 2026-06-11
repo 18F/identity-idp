@@ -173,8 +173,7 @@ module DocAuth
         return if !parsed_data_from_uploaded_file.has_key?('document')
 
         document = parsed_data_from_uploaded_file['document'].symbolize_keys
-        # Check both new field name and old field name for backwards compatibility during deploy
-        doc_type = document[:document_type_received] || document[:id_doc_type]
+        doc_type = document[:document_type_received]
 
         if doc_type == 'passport'
           Pii::Passport.new(

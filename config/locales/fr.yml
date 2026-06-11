@@ -1121,6 +1121,7 @@ idv.failure.attempts_html.one: Vous avez encore <strong>un essai.</strong> Vous 
 idv.failure.attempts_html.other: Vous pouvez encore essayer <strong>%{count} fois de plus.</strong> Ensuite vous devrez ensuite attendre 6 heures avant de réessayer.
 idv.failure.button.try_online: Réessayer en ligne
 idv.failure.button.warning: Réessayer
+idv.failure.dob_ssn.warning: Veuillez vérifier les informations que vous avez saisies et réessayer.
 idv.failure.exceptions.in_person_outage_error_message.post_cta.body: En attendant, vous pouvez toujours commencer la procédure de vérification en personne sur %{app_name} avant de vous rendre dans un bureau de poste. Si vous avez un besoin urgent d’accès aux services, veuillez contacter directement l’organisme concerné.
 idv.failure.exceptions.in_person_outage_error_message.post_cta.title: Nous travaillons à la résolution d’un problème technique. Il se peut que les résultats de votre vérification d’identité ne vous soient pas envoyés par e-mail avant le %{date}.
 idv.failure.exceptions.in_person_outage_error_message.ready_to_verify.body: Vous pouvez toujours vous rendre dans un bureau de poste pour achever la vérification de votre identité. Si vous avez un besoin urgent d’accès aux services, veuillez contacter directement l’organisme concerné.
@@ -1999,6 +2000,18 @@ user_mailer.agent_proofing_failure.header: Nous n’avons pas pu vérifier votre
 user_mailer.agent_proofing_failure.help_center_html: Veuillez consulter notre %{help_center_link_html} pour obtenir des instructions étape par étape.
 user_mailer.agent_proofing_failure.help_center_link: 'centre d’aide de %{app_name}'
 user_mailer.agent_proofing_failure.subject: Finalisons la vérification de votre identité
+user_mailer.agent_proofing_succeeded.alert_lead: Ne tardez pas
+user_mailer.agent_proofing_succeeded.banner_html: '%{alert_lead_html} : confirmez votre compte d’ici la fin de la journée du %{deadline} pour accéder à vos services gouvernementaux.'
+user_mailer.agent_proofing_succeeded.body: 'Nous avons vérifié votre identité le %{verified_at}. La confirmation de votre compte vous permet de :'
+user_mailer.agent_proofing_succeeded.bullet1: 'Accéder à votre compte « My Social Security » ainsi qu’à d’autres services gouvernementaux avec un compte sécurisé unique.'
+user_mailer.agent_proofing_succeeded.bullet2: Protéger vos informations personnelles ;
+user_mailer.agent_proofing_succeeded.bullet3: Simplifier la gestion de vos interactions en ligne avec les services gouvernementaux.
+user_mailer.agent_proofing_succeeded.change_password_link: modifier votre mot de passe
+user_mailer.agent_proofing_succeeded.contact_link: nous contacter
+user_mailer.agent_proofing_succeeded.cta: Confirmer le compte
+user_mailer.agent_proofing_succeeded.footer_html: 'Si vous n’avez pas tenté de vérifier votre identité en personne, veuillez %{contact_link_html} et %{change_password_link_html} en vous connectant à votre compte.'
+user_mailer.agent_proofing_succeeded.header: Vous avez completé la vérification de votre identité avec succès.
+user_mailer.agent_proofing_succeeded.subject: 'Action requise : Confirmez votre compte vérifié'
 user_mailer.contact_link_text: nous contacter
 user_mailer.dupe_profile.created.description: Quelqu’un a utilisé vos renseignements personnels pour confirmer un autre compte %{app_name}. Pour votre sécurité, nous avons restreint votre accès sur tous les comptes comportant des informations identiques et ayant accès à %{sp_or_app_name}.
 user_mailer.dupe_profile.created.description2_html: Si c’est vous qui avez confirmé un autre compte, veuillez supprimer le compte en double en suivant %{steps_link_html}. Si vous n’avez pas effectué cette action, veuillez prendre contact avec le %{help_center_link_html}.

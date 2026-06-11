@@ -384,6 +384,11 @@ class UserMailerPreview < ActionMailer::Preview
     ).mfa_deleted(subject: subject_name, disavowal_token: SecureRandom.hex)
   end
 
+  def agent_proofing_succeeded
+    UserMailer.with(user: user, email_address: email_address_record)
+      .agent_proofing_succeeded(verified_at: Time.zone.now.to_s)
+  end
+
   private
 
   def user

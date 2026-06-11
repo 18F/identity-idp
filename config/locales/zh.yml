@@ -1134,6 +1134,7 @@ idv.failure.attempts_html.one: 您可以再试<strong>1次。</strong> 然后您
 idv.failure.attempts_html.other: 您可以再试<strong>%{count}次。</strong> 然后您必须等6个小时才能再试。
 idv.failure.button.try_online: 在网上再试一下
 idv.failure.button.warning: 再试一下。
+idv.failure.dob_ssn.warning: 请检查一下你输入的信息，然后再试一下。
 idv.failure.exceptions.in_person_outage_error_message.post_cta.body: 与此同时，你仍然可以在 %{app_name}开始亲身验证身份流程，然后去邮局。如果你迫切需要得到服务，请直接联系该政府机构。
 idv.failure.exceptions.in_person_outage_error_message.post_cta.title: 我们正在解决一个技术问题。你身份验证结果可能要到 %{date} 才能寄到。
 idv.failure.exceptions.in_person_outage_error_message.ready_to_verify.body: 你仍然可以到邮局去完成验证你的身份。如果你迫切需要得到服务，请直接联系该政府机构。
@@ -2011,6 +2012,18 @@ user_mailer.agent_proofing_failure.header: 目前我们无法验证您的身份
 user_mailer.agent_proofing_failure.help_center_html: 请访问我们的%{help_center_link_html}，获取分步操作指南。
 user_mailer.agent_proofing_failure.help_center_link: '%{app_name} 帮助中心'
 user_mailer.agent_proofing_failure.subject: 让我们来完成您的身份验证
+user_mailer.agent_proofing_succeeded.alert_lead: 刻不容缓
+user_mailer.agent_proofing_succeeded.banner_html: '%{alert_lead_html} —— 请务必在 %{deadline} 当天结束前确认您的账户，以便开始使用各项政府服务。'
+user_mailer.agent_proofing_succeeded.body: '我们已于 %{verified_at} 验证了您的身份。确认您的账户后，您将能够：'
+user_mailer.agent_proofing_succeeded.bullet1: '通过一个安全的账户，访问您的“我的社会保障”（My Social Security）账户及其他政府服务。'
+user_mailer.agent_proofing_succeeded.bullet2: 保护您的个人信息安全
+user_mailer.agent_proofing_succeeded.bullet3: 简化您管理在线政府服务体验的流程
+user_mailer.agent_proofing_succeeded.change_password_link: 更改密码
+user_mailer.agent_proofing_succeeded.contact_link: 联系我们
+user_mailer.agent_proofing_succeeded.cta: 确认账户
+user_mailer.agent_proofing_succeeded.footer_html: 如果您并未亲自尝试进行身份验证，请%{contact_link_html}，并登录您的账户以%{change_password_link_html}。
+user_mailer.agent_proofing_succeeded.header: 您已成功完成身份验证
+user_mailer.agent_proofing_succeeded.subject: 需采取行动：确认您的已验证账户
 user_mailer.contact_link_text: 联系我们
 user_mailer.dupe_profile.created.description: 有人使用你的个人信息验证了另一个 %{app_name} 账户。 为了你的安全，我们已限制了具有同样信息的所有账户的访问权以及对 %{sp_or_app_name} 的访问权.
 user_mailer.dupe_profile.created.description2_html: 如果另一个账户是你本人验证的，请按照这里列出的 %{steps_link_html}。如果不是你本人，请联系 %{help_center_link_html}.

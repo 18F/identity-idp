@@ -12,6 +12,8 @@ module Proofing
           identity_doc_zipcode: :zipcode,
         }.freeze
 
+        attr_reader :analytics_arguments
+
         def call(
           applicant_pii:,
           current_sp:,
@@ -20,8 +22,10 @@ module Proofing
           timer:,
           analytics: nil,
           doc_auth_flow: false,
-          already_proofed: false
+          already_proofed: false,
+          analytics_arguments: {}
         )
+          @analytics_arguments = analytics_arguments
           return skipped_result if passport_applicant?(applicant_pii) || already_proofed
 
           if !aamva_supports_state_id_jurisdiction?(applicant_pii)
@@ -178,9 +182,7 @@ module Proofing
         end
 
         def passport_applicant?(applicant_pii)
-          # Check both new field name and old field name for backwards compatibility during deploy
-          (applicant_pii[:document_type_received] || applicant_pii[:id_doc_type]) ==
-            Idp::Constants::DocumentTypes::PASSPORT
+          applicant_pii[:document_type_received] == Idp::Constants::DocumentTypes::PASSPORT
         end
 
         def log_state_id_validation(analytics:, result:, applicant_pii:,
@@ -194,6 +196,7 @@ module Proofing
             supported_jurisdiction: aamva_supports_state_id_jurisdiction?(applicant_pii),
             bypass_exception:,
             **biographical_info(applicant_pii),
+            **analytics_arguments,
             pii_like_keypaths: [
               [:requested_attributes, :first_name],
               [:requested_attributes, :last_name],
