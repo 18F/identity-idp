@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe 'Proofing agent activation', :js do
-  include InPersonHelper
+  include IdvStepHelper
 
   let(:user) { create(:user, :fully_registered) }
   let(:service_provider) do
@@ -93,8 +93,6 @@ RSpec.describe 'Proofing agent activation', :js do
 
   context 'when the proofing agent session has expired' do
     before do
-      # Simulate Redis TTL expiry: blanking result_id causes load_agent_proofed_user
-      # to return nil, which makes agent_proofing_expired? return true.
       document_capture_session.update!(result_id: nil)
     end
 
