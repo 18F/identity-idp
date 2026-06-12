@@ -2,7 +2,7 @@ require 'rails_helper'
 require 'csv'
 
 RSpec.describe Reports::QuarterlyAccountStats do
-  subject(:report) { described_class.new }
+  subject(:report) { QuarterlyAccountStats.new }
 
   describe '#perform' do
     let(:end_date) { Time.zone.today }

@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Reports::BaseReport do
-  subject(:report) { described_class.new }
+  subject(:report) { BaseReport.new }
 
   before do
     allow(Identity::Hostdata).to receive(:env).and_return('test')

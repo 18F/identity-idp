@@ -10,7 +10,7 @@ RSpec.describe Reports::VerificationFailuresReport do
   let(:uuid2) { 'foo2' }
   let(:now) { Time.zone.now.beginning_of_day }
 
-  subject { described_class.new }
+  subject { VerificationFailuresReport.new }
 
   it 'is does not send out an email with nothing configured' do
     expect(UserMailer).to_not receive(:verification_errors_report)
