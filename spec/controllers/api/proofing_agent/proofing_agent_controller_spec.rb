@@ -730,7 +730,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
             transaction_id = DocumentCaptureSession.last.uuid
 
             expect(@analytics).to have_logged_event(
-              :idv_proofing_agent_request_received,
+              :idv_proofing_agent_proof_user_requested,
               response_body: a_hash_including(status: 'pending', transaction_id:),
               proofing_agent: proofing_agent_analytics_hash,
               issuer:,
@@ -748,7 +748,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
               transaction_id = DocumentCaptureSession.last.uuid
 
               expect(@analytics).to have_logged_event(
-                :idv_proofing_agent_request_received,
+                :idv_proofing_agent_proof_user_requested,
                 response_body: a_hash_including(status: 'pending', transaction_id:),
                 proofing_agent: proofing_agent_analytics_hash,
                 issuer:,
@@ -791,7 +791,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
               expect(body['reason']).to eq('email_not_found')
 
               expect(@analytics).to have_logged_event(
-                :idv_proofing_agent_request_received,
+                :idv_proofing_agent_proof_user_requested,
                 response_body: a_hash_including(status: 'failed', reason: 'email_not_found'),
                 proofing_agent: proofing_agent_analytics_hash,
                 issuer:,
@@ -821,7 +821,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
               expect(body['reason']).to eq('already_proofed_enhanced')
 
               expect(@analytics).to have_logged_event(
-                :idv_proofing_agent_request_received,
+                :idv_proofing_agent_proof_user_requested,
                 response_body: a_hash_including(
                   status: 'failed',
                   reason: 'already_proofed_enhanced',
@@ -1146,7 +1146,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
             transaction_id = DocumentCaptureSession.last.uuid
 
             expect(@analytics).to have_logged_event(
-              :idv_proofing_agent_request_received,
+              :idv_proofing_agent_proof_user_requested,
               response_body: a_hash_including(status: 'pending', transaction_id:),
               proofing_agent: proofing_agent_analytics_hash,
               issuer:,
@@ -1390,7 +1390,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
             transaction_id = DocumentCaptureSession.last.uuid
 
             expect(@analytics).to have_logged_event(
-              :idv_proofing_agent_request_received,
+              :idv_proofing_agent_proof_user_requested,
               response_body: a_hash_including(status: 'pending', transaction_id:),
               proofing_agent: proofing_agent_analytics_hash,
               issuer:,
@@ -1656,7 +1656,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
             transaction_id = DocumentCaptureSession.last.uuid
 
             expect(@analytics).to have_logged_event(
-              :idv_proofing_agent_request_received,
+              :idv_proofing_agent_proof_user_requested,
               response_body: a_hash_including(status: 'pending', transaction_id:),
               proofing_agent: proofing_agent_analytics_hash,
               issuer:,
@@ -1995,7 +1995,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
           it 'logs the analytics event' do
             action
             expect(@analytics).to have_logged_event(
-              :idv_proofing_agent_request_received,
+              :idv_proofing_agent_result_requested,
               response_body: a_hash_including(
                 success: true,
                 transaction_id:,
@@ -2039,7 +2039,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
           it 'logs the analytics event' do
             action
             expect(@analytics).to have_logged_event(
-              :idv_proofing_agent_request_received,
+              :idv_proofing_agent_result_requested,
               response_body: a_hash_including(
                 success: false,
                 reason: 'id_fail',
