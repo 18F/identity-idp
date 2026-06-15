@@ -2560,6 +2560,8 @@ module AnalyticsEvents
   # @param [String,nil] pending_profile_idv_level ID verification level of user's pending profile.
   # @param [Integer,nil] proofing_workflow_time_in_seconds The time since starting proofing
   # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
+  # @param [Hash,nil] proofing_agent hash about proofing agent information
+  # @param [String,nil] issuer The issuer of the user's ID document, if applicable
   # @identity.idp.previous_event_name  IdV: review info visited
   def idv_enter_password_submitted(
     success:,
@@ -2576,6 +2578,8 @@ module AnalyticsEvents
     active_profile_idv_level: nil,
     pending_profile_idv_level: nil,
     proofing_workflow_time_in_seconds: nil,
+    proofing_agent: nil,
+    issuer: nil,
     **extra
   )
     track_event(
@@ -2594,6 +2598,8 @@ module AnalyticsEvents
       active_profile_idv_level:,
       pending_profile_idv_level:,
       proofing_workflow_time_in_seconds:,
+      proofing_agent:,
+      issuer:,
       **extra,
     )
   end
@@ -2613,6 +2619,8 @@ module AnalyticsEvents
   # @param [String,nil] pending_profile_idv_level ID verification level of user's pending profile.
   #        used to verify the user's identity
   # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
+  # @param [Hash,nil] proofing_agent hash about proofing agent information
+  # @param [String,nil] issuer The issuer of the user's ID document, if applicable
   # User visited IDV password confirm page
   # @identity.idp.previous_event_name  IdV: review info visited
   def idv_enter_password_visited(
@@ -2623,6 +2631,8 @@ module AnalyticsEvents
     address_verification_method: nil,
     active_profile_idv_level: nil,
     pending_profile_idv_level: nil,
+    proofing_agent: nil,
+    issuer: nil,
     **extra
   )
     track_event(
@@ -2634,6 +2644,8 @@ module AnalyticsEvents
       proofing_components:,
       active_profile_idv_level:,
       pending_profile_idv_level:,
+      proofing_agent:,
+      issuer:,
       **extra,
     )
   end
@@ -2660,6 +2672,8 @@ module AnalyticsEvents
   # @param [Array,nil] profile_history Array of user's profiles (oldest to newest).
   # @param [Integer,nil] proofing_workflow_time_in_seconds The time since starting proofing
   # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
+  # @param [Hash,nil] proofing_agent hash about proofing agent information
+  # @param [String,nil] issuer The issuer of the user's ID document, if applicable
   # @see Reporting::IdentityVerificationReport#query This event is used by the identity verification
   #       report. Changes here should be reflected there.
   # Tracks the last step of IDV, indicates the user successfully proofed
@@ -2679,6 +2693,8 @@ module AnalyticsEvents
     pending_profile_idv_level: nil,
     profile_history: nil,
     proofing_workflow_time_in_seconds: nil,
+    proofing_agent: nil,
+    issuer: nil,
     **extra
   )
     track_event(
@@ -2698,6 +2714,8 @@ module AnalyticsEvents
       pending_profile_idv_level:,
       profile_history:,
       proofing_workflow_time_in_seconds:,
+      proofing_agent:,
+      issuer:,
       **extra,
     )
   end
@@ -5488,6 +5506,50 @@ module AnalyticsEvents
       remaining_attempts:,
       transaction_id:,
       final_attempt:,
+      **extra,
+    )
+  end
+
+  # @param [Boolean] success Whether the user confirmed the proofing agent results
+  # @param [Boolean] dob_match the user's date of birth matched the proofing agent's results
+  # @param [Boolean] ssn_match the user's SSN matched the proofing agent's results
+  # @param [Boolean] dob_and_ssn_match the user's dob and SSN matched the proofing agent's results
+  # @param [Hash] proofing_agent The proofing agent information
+  # @param [String] issuer The issuer associated with the proofing request
+  # User submits their confirmation of the proofing agent results
+  def idv_proofing_agent_user_confirmation_submitted(
+    success:,
+    dob_match:,
+    ssn_match:,
+    dob_and_ssn_match:,
+    proofing_agent:,
+    issuer:,
+    **extra
+  )
+    track_event(
+      :idv_proofing_agent_user_confirmation_submitted,
+      success:,
+      dob_match:,
+      ssn_match:,
+      dob_and_ssn_match:,
+      proofing_agent:,
+      issuer:,
+      **extra,
+    )
+  end
+
+  # @param [Hash] proofing_agent The proofing agent information
+  # @param [String] issuer The issuer associated with the proofing request
+  # User visits the page to confirm the proofing agent results
+  def idv_proofing_agent_user_confirmation_visited(
+    proofing_agent:,
+    issuer:,
+    **extra
+  )
+    track_event(
+      :idv_proofing_agent_user_confirmation_visited,
+      proofing_agent:,
+      issuer:,
       **extra,
     )
   end
