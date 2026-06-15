@@ -382,6 +382,8 @@ phone_confirmation_max_attempts: 20
 phone_recaptcha_country_score_overrides: '{"AS":0.0,"GU":0.0,"MP":0.0,"PR":0.0,"US":0.0,"VI":0.0,"CA":0.0,"MX":0.0}'
 phone_recaptcha_score_threshold: 0.0
 phone_service_check: true
+phone_setup_blocked_ip_country_codes: '[]'
+phone_setup_country_mismatch_check_country_codes: '[]'
 phone_setups_per_ip_limit: 25
 phone_setups_per_ip_period: 300
 phone_setups_per_ip_track_only_mode: false
