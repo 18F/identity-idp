@@ -47,6 +47,8 @@ module DocAuth
 
         def parsed_body
           @parsed_body ||= body.present? && JSON.parse(body, symbolize_names: true)
+        rescue JSON::ParserError
+          { invalid_json: body }
         end
 
         def errors
