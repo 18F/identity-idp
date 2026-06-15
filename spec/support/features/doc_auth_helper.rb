@@ -13,6 +13,8 @@ module DocAuthHelper
   SSN_THAT_FAILS_RESOLUTION = '123-45-6666'.freeze
   SSN_THAT_RAISES_EXCEPTION = '000-00-0000'.freeze
 
+  GOOD_DOB = Idp::Constants::MOCK_IDV_APPLICANT[:dob].freeze
+
   def clear_and_fill_in(field_name, text)
     fill_in field_name, with: ''
     fill_in field_name, with: text
@@ -32,6 +34,14 @@ module DocAuthHelper
 
   def fill_out_ssn_form_fail
     fill_in t('idv.form.ssn_label'), with: ''
+  end
+
+  def fill_out_dob_form_ok
+    field_name = 'doc_auth[dob]'
+    year, month, day = GOOD_DOB.split('-')
+    fill_in "#{field_name}[month]", with: month
+    fill_in "#{field_name}[day]", with: day
+    fill_in "#{field_name}[year]", with: year
   end
 
   def click_doc_auth_back_link

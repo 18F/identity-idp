@@ -5,6 +5,7 @@ module Idv
     include Idv::AvailabilityConcern
     include IdvStepConcern
     include Idv::HistoricalAttemptsConcern
+    include Idv::ProofingAgentConcern
     include StepIndicatorConcern
     include VerifyByMailConcern
     include IppHelper
@@ -24,6 +25,7 @@ module Idv
       analytics.idv_enter_password_visited(
         address_verification_method: idv_session.address_verification_mechanism,
         **ab_test_analytics_buckets,
+        **proofing_agent_analytics,
       )
 
       @title = title
@@ -58,6 +60,7 @@ module Idv
         deactivation_reason: idv_session.profile.deactivation_reason,
         proofing_workflow_time_in_seconds: idv_session.proofing_workflow_time_in_seconds,
         **ab_test_analytics_buckets,
+        **proofing_agent_analytics,
       )
       Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer)
         .call(:verified, :view, true)
@@ -71,6 +74,7 @@ module Idv
         deactivation_reason: idv_session.profile.deactivation_reason,
         proofing_workflow_time_in_seconds: idv_session.proofing_workflow_time_in_seconds,
         **ab_test_analytics_buckets,
+        **proofing_agent_analytics,
       )
 
       return unless FeatureManagement.reveal_gpo_code?
@@ -123,6 +127,7 @@ module Idv
         fraud_rejection: fraud_rejection?,
         fraud_pending_reason: nil,
         **ab_test_analytics_buckets,
+        **proofing_agent_analytics,
       )
 
       flash[:error] = t('idv.errors.incorrect_password')

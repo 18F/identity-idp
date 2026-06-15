@@ -77,6 +77,12 @@ module IdvStepHelper
     click_link(link_text)
   end
 
+  def complete_idv_enter_dob_ssn_step
+    fill_out_ssn_form_ok
+    fill_out_dob_form_ok
+    click_idv_continue
+  end
+
   def complete_enter_password_step(user = user_with_2fa)
     password = user.password || user_password
     fill_in 'Password', with: password
