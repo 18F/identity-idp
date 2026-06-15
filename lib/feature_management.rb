@@ -191,6 +191,10 @@ class FeatureManagement
     IdentityConfig.store.idv_proofing_agent_enabled
   end
 
+  def self.idv_proofing_agent_passport_enabled?
+    IdentityConfig.store.idv_proofing_agent_passport_enabled
+  end
+
   # Whether to prompt new users to set up a passkey immediately after email/password creation.
   # Only enabled in non-production environments as part of Test A experiment (LG-16912).
   def self.account_creation_passkey_auto_prompt_enabled?
