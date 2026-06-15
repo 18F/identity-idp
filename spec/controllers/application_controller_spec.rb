@@ -424,12 +424,21 @@ RSpec.describe ApplicationController do
     context 'when the current user is present' do
       it 'does not display flash message' do
         allow(subject).to receive(:current_user).and_return(user)
-        allow(subject).to receive(:user_session).and_return({})
 
         get :index, params: { timeout: 'form', request_id: '123' }
 
         expect(flash[:info]).to be_nil
       end
+    end
+
+    it 'returns a 400 bad request when a url generation error is raised on the redirect' do
+      allow_any_instance_of(ApplicationController).to \
+        receive(:redirect_to).and_raise(ActionController::UrlGenerationError.new('bad request'))
+      allow(subject).to receive(:current_user).and_return(user)
+
+      get :index, params: { timeout: 'form', request_id: '123' }
+
+      expect(response).to be_bad_request
     end
 
     context 'when there is no current user' do
