@@ -8,7 +8,7 @@ RSpec.describe Reports::MonthlySpVerificationReport do
 
   let(:report_date)     { (Time.zone.today.beginning_of_month - 1.day).end_of_day }
   let(:report_receiver) { :internal }
-  let(:report) { MonthlySpVerificationReport.new(report_date, report_receiver) }
+  let(:report) { Reports::MonthlySpVerificationReport.new(report_date, report_receiver) }
   let(:agency_abbreviation) { 'Test_agency' }
 
   let(:base_config) do

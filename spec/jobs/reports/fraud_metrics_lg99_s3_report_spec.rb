@@ -54,7 +54,7 @@ RSpec.describe Reporting::FraudMetricsLg99ReportS3 do
   end
 
   subject(:report) do
-    FraudMetricsLg99ReportS3.new(
+    Reports::FraudMetricsLg99ReportS3.new(
       time_range: time_range,
       bucket_name: bucket_name,
       custom_s3_path: custom_s3_path,
@@ -65,7 +65,7 @@ RSpec.describe Reporting::FraudMetricsLg99ReportS3 do
     context 'when neither report_date nor custom_s3_path is provided' do
       it 'raises an ArgumentError' do
         expect do
-          FraudMetricsLg99ReportS3.new(time_range: time_range, bucket_name: bucket_name)
+          Reports::FraudMetricsLg99ReportS3.new(time_range: time_range, bucket_name: bucket_name)
         end.to raise_error(
           ArgumentError,
           /report_date.*custom_s3_path|custom_s3_path.*report_date/,
@@ -98,7 +98,7 @@ RSpec.describe Reporting::FraudMetricsLg99ReportS3 do
       end
 
       it 'derives the correct custom_s3_path from report_date' do
-        report_with_date = FraudMetricsLg99ReportS3.new(
+        report_with_date = Reports::FraudMetricsLg99ReportS3.new(
           time_range: time_range,
           bucket_name: bucket_name,
           env: 'sliang',
