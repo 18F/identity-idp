@@ -416,11 +416,12 @@ module Users
       )
     end
 
-    def handle_too_many_confirmation_sends
+    def handle_too_many_confirmation_sends(country_mismatch: nil)
       analytics.rate_limit_reached(
         limiter_type: phone_confirmation_rate_limiter.rate_limit_type,
         country_code: parsed_phone.country,
         phone_fingerprint: Pii::Fingerprinter.fingerprint(parsed_phone.e164),
+        country_mismatch: country_mismatch,
       )
 
       flash[:error] = t(

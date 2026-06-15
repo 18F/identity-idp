@@ -319,6 +319,208 @@ RSpec.describe NewPhoneForm do
       end
     end
 
+    context 'with IP country blocklist' do
+      let(:request_ip) { '203.0.113.10' }
+      subject(:form) { NewPhoneForm.new(user:, request_ip:) }
+
+      before do
+        allow(IdentityConfig.store).to receive(:phone_setup_blocked_ip_country_codes)
+          .and_return(['PK'])
+        allow(IdentityConfig.store).to receive(:phone_setup_country_mismatch_check_country_codes)
+          .and_return(['AU'])
+      end
+
+      after do
+        Geocoder::Lookup::Test.reset
+        Geocoder::Lookup::Test.set_default_stub(
+          [
+            {
+              'city' => '',
+              'country' => 'United States',
+              'country_code' => 'US',
+              'state_code' => '',
+            },
+          ],
+        )
+      end
+
+      context 'when blocked IP country mismatches a non-US phone' do
+        let(:phone) { '+61 0491 570 006' }
+        let(:international_code) { 'AU' }
+
+        before do
+          Geocoder::Lookup::Test.add_stub(
+            request_ip,
+            [{ 'country_code' => 'PK', 'country' => 'Pakistan' }],
+          )
+        end
+
+        it 'is invalid with an ip_country_mismatch error' do
+          result = form.submit(params)
+
+          expect(result.success?).to eq(false)
+          expect(result.errors[:phone]).to eq([I18n.t('errors.messages.improbable_phone')])
+          expect(result.to_h[:error_details]).to match(
+            hash_including(phone: include(:ip_country_mismatch)),
+          )
+        end
+
+        it 'logs the IP country and blocked flag in analytics extra' do
+          result = form.submit(params)
+
+          expect(result.extra).to include(ip_country: 'PK', ip_country_blocked: true)
+        end
+      end
+
+      context 'when phone country is not in mismatch check list and phone is US' do
+        before do
+          Geocoder::Lookup::Test.add_stub(
+            request_ip,
+            [{ 'country_code' => 'PK', 'country' => 'Pakistan' }],
+          )
+        end
+
+        it 'is valid and does not flag ip_country_mismatch' do
+          result = form.submit(params)
+
+          expect(result.success?).to eq(true)
+          expect(result.to_h[:error_details]).to_not match(
+            hash_including(phone: include(:ip_country_mismatch)),
+          )
+          expect(result.extra).to include(ip_country: 'PK', ip_country_blocked: false)
+        end
+      end
+
+      context 'when request IP geolocates to a blocked country matching the phone country' do
+        let(:phone) { '+92 300 1234567' }
+        let(:international_code) { 'PK' }
+
+        before do
+          Geocoder::Lookup::Test.add_stub(
+            request_ip,
+            [{ 'country_code' => 'PK', 'country' => 'Pakistan' }],
+          )
+        end
+
+        it 'is valid' do
+          result = form.submit(params)
+
+          expect(result.to_h[:error_details]).to_not match(
+            hash_including(phone: include(:ip_country_mismatch)),
+          )
+          expect(result.extra).to include(ip_country: 'PK', ip_country_blocked: false)
+        end
+      end
+
+      context 'when phone country is not in mismatch check list' do
+        let(:phone) { '+61 0491 570 006' }
+        let(:international_code) { 'AU' }
+
+        before do
+          allow(IdentityConfig.store).to receive(:phone_setup_country_mismatch_check_country_codes)
+            .and_return(['MA'])
+          Geocoder::Lookup::Test.add_stub(
+            request_ip,
+            [{ 'country_code' => 'PK', 'country' => 'Pakistan' }],
+          )
+        end
+
+        it 'is valid and does not flag ip_country_mismatch' do
+          result = form.submit(params)
+
+          expect(result.success?).to eq(true)
+          expect(result.to_h[:error_details]).to_not match(
+            hash_including(phone: include(:ip_country_mismatch)),
+          )
+          expect(result.extra).to include(ip_country: 'PK', ip_country_blocked: false)
+        end
+      end
+
+      context 'when request IP geolocates to an unblocked country' do
+        before do
+          Geocoder::Lookup::Test.add_stub(
+            request_ip,
+            [{ 'country_code' => 'US', 'country' => 'United States' }],
+          )
+        end
+
+        it 'is valid' do
+          result = form.submit(params)
+
+          expect(result.success?).to eq(true)
+          expect(result.extra).to include(ip_country: 'US', ip_country_blocked: false)
+        end
+      end
+
+      context 'when IP is US and phone country is not opted in' do
+        let(:phone) { '+61 0491 570 006' }
+        let(:international_code) { 'AU' }
+
+        before do
+          allow(IdentityConfig.store).to receive(:phone_setup_blocked_ip_country_codes)
+            .and_return(['US'])
+          allow(IdentityConfig.store).to receive(:phone_setup_country_mismatch_check_country_codes)
+            .and_return(['MA'])
+          Geocoder::Lookup::Test.add_stub(
+            request_ip,
+            [{ 'country_code' => 'US', 'country' => 'United States' }],
+          )
+        end
+
+        it 'is valid and does not flag ip_country_mismatch' do
+          result = form.submit(params)
+
+          expect(result.success?).to eq(true)
+          expect(result.to_h[:error_details]).to_not match(
+            hash_including(phone: include(:ip_country_mismatch)),
+          )
+          expect(result.extra).to include(ip_country: 'US', ip_country_blocked: false)
+        end
+      end
+
+      context 'when geocoder returns no country' do
+        before do
+          Geocoder::Lookup::Test.add_stub(request_ip, [])
+        end
+
+        it 'fails open and is valid' do
+          result = form.submit(params)
+
+          expect(result.success?).to eq(true)
+          expect(result.extra).to include(ip_country: nil, ip_country_blocked: false)
+        end
+      end
+
+      context 'when blocklist is empty' do
+        before do
+          allow(IdentityConfig.store).to receive(:phone_setup_blocked_ip_country_codes)
+            .and_return([])
+          Geocoder::Lookup::Test.add_stub(
+            request_ip,
+            [{ 'country_code' => 'PK', 'country' => 'Pakistan' }],
+          )
+        end
+
+        it 'is valid' do
+          result = form.submit(params)
+
+          expect(result.success?).to eq(true)
+          expect(result.extra).to include(ip_country_blocked: false)
+        end
+      end
+
+      context 'when no request_ip is provided' do
+        subject(:form) { NewPhoneForm.new(user:) }
+
+        it 'is valid and reports nil ip_country' do
+          result = form.submit(params)
+
+          expect(result.success?).to eq(true)
+          expect(result.extra).to include(ip_country: nil, ip_country_blocked: false)
+        end
+      end
+    end
+
     context 'premium rate phone numbers like 1-900' do
       let(:premium_rate_phone_number) { '+1 900 867 5309' }
 
