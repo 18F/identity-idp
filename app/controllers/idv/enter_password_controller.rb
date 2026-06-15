@@ -224,8 +224,8 @@ module Idv
       current_user.active_profile.create_user_proofing_event(
         attempt_events:,
         password:,
-        sent_to_sp: attempts_api_enabled_for_session?,
         personal_key: idv_session.personal_key,
+        sent_to_sp: attempts_api_enabled_for_session?,
       )
 
       AttemptsApi::Cacher.new(current_user, user_session).save(password:)

@@ -1572,7 +1572,7 @@ RSpec.describe Profile do
     let(:dir_path) do
       Rails.root.join('tmp', 'encrypted_attempt_events', 'attempt_events', profile.user.uuid)
     end
-    let(:personal_key) { 'personal-key ' }
+    let(:personal_key) { 'personal-key' }
 
     after do
       FileUtils.rm_rf(dir_path) if Dir.exist?(dir_path)
