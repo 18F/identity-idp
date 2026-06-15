@@ -91,6 +91,11 @@ module Idv
 
           errors.add(:state_id_type, 'mis-matched type vs data', type: :id_type)
         when *Idp::Constants::DocumentTypes::SUPPORTED_PASSPORT_TYPES
+          if !FeatureManagement.idv_proofing_agent_passport_enabled?
+            errors.add(:unknown_id_type, 'unsupported id_type', type: :id_type)
+            return
+          end
+
           return if passport_present?
 
           errors.add(:passport_type, 'mis-matched type vs data', type: :id_type)
