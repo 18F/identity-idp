@@ -590,10 +590,34 @@ class User < ApplicationRecord
     encrypted_recovery_code_digest_multi_region.present? || encrypted_recovery_code_digest.present?
   end
 
+  attr_writer :requesting_reset_email
+
+  def send_reset_password_instructions
+    token = set_reset_password_token
+    update_column(:reset_password_email, @requesting_reset_email || email)
+    send_devise_notification(:reset_password_intructions, token, {})
+  end
+
+  validate :reset_email_still_active, if: :reset_password_token_in_use?
+
   private
 
+  # TODO: maybe remove this
   def find_password_reset_profile
     find_in_person_in_progress_or_active_profile
+  end
+
+  def reset_password_token_in_use?
+    reset_password_token_changed? && reset_password_token.blank? && reset_password_email.present
+  end
+
+  def reset_email_still_active
+    matching_email_address = EmailAddress.find_with_email(reset_password_email)
+    unless matching_email_address &&
+           matching_email_address.user_id == id &&
+           matching_email_address.confirmed?
+      erros.add(:base, :reset_email_removed)
+    end
   end
 
   def find_in_person_in_progress_or_active_profile

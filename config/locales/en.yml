@@ -2145,7 +2145,7 @@ user_mailer.please_reset_password.step_1: Visit the %{app_name} website and sele
 user_mailer.please_reset_password.step_2: Select “forgot your password?” at the bottom of the page
 user_mailer.please_reset_password.step_3: Follow the instructions to reset your password
 user_mailer.please_reset_password.subject: Unusual activity — reset your %{app_name} password
-user_mailer.reset_password_instructions.footer: This link expires in %{expires} hours.
+user_mailer.reset_password_instructions.footer: This link expires in %{expires} minutes.
 user_mailer.reset_password_instructions.gpo_letter_description: If you reset your password, the verification code in your letter will no longer work and you’ll have to verify your identity again.
 user_mailer.reset_password_instructions.gpo_letter_header: Your letter is on the way
 user_mailer.reset_password_instructions.header_html: 'If you made this request, click “Reset your password” to continue.<br/><br/>If you didn’t make this request, do not change your password. Report any suspicious activity to our help center.<br/><br/>We’ll never ask you to share your password, security codes, or other sensitive information by email, phone, or text.'
