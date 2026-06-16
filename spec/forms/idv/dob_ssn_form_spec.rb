@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Idv::DobSsnForm do
-  let(:ssn) { '111-11-1111' }
+  let(:ssn) { '111111111' }
   let(:dob) { '1990-01-01' }
   let(:pii) do
     {
@@ -15,8 +15,7 @@ RSpec.describe Idv::DobSsnForm do
   describe '#submit' do
     context 'when the form is valid' do
       it 'returns a successful form response' do
-        result = subject.submit(ssn: '111111111', dob: '1990-01-01')
-
+        result = subject.submit(ssn: '111-11-1111', dob: { year: '1990', month: '01', day: '01' })
         expect(result).to be_kind_of(FormResponse)
         expect(result.success?).to eq(true)
         expect(result.errors).to be_empty
@@ -30,6 +29,15 @@ RSpec.describe Idv::DobSsnForm do
         expect(result).to be_kind_of(FormResponse)
         expect(result.success?).to eq(false)
         expect(result.errors).to include(:ssn, :dob)
+      end
+    end
+
+    context 'when the ssn and dob do not match' do
+      it 'returns a successful form response' do
+        result = subject.submit(ssn: '111-22-3333', dob: { year: '2000', month: '01', day: '01' })
+        expect(result).to be_kind_of(FormResponse)
+        expect(result.success?).to eq(false)
+        expect(result.errors).to include(:mismatch)
       end
     end
   end

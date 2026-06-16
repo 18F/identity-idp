@@ -2,58 +2,61 @@
 
 module Idv
   class EnterDobSsnController < ApplicationController
-    include Idv::AvailabilityConcern
+    include AvailabilityConcern
     include IdvStepConcern
-    include Idv::StepIndicatorConcern
-    include Idv::ProofingAgentConcern
+    include StepIndicatorConcern
+    include ProofingAgentConcern
+    include Steps::ThreatMetrixStepHelper
+    include ThreatMetrixConcern
 
     before_action :confirm_two_factor_authenticated
     before_action :confirm_verification_needed
     before_action :move_agent_proofed_user_pii_to_idv_session
+    before_action :override_csp_for_threat_metrix,
+                  if: -> {
+                    FeatureManagement.proofing_agent_device_profiling_collecting_enabled?
+                  }
 
     def new
       @dob_ssn_form = Idv::DobSsnForm.new(idv_session.applicant)
       analytics.idv_proofing_agent_user_confirmation_visited(**proofing_agent_analytics)
+
+      render :new, locals: threatmetrix_view_variables
     end
 
     def create
       @dob_ssn_form = Idv::DobSsnForm.new(idv_session.applicant)
 
       form_response = @dob_ssn_form.submit(
-        ssn: normalized_ssn,
-        dob: parse_form_date,
+        ssn: dob_ssn_params[:ssn],
+        dob: dob_ssn_params[:dob],
       )
+      idv_session.proofing_agent_match = form_response.success?
 
       analytics.idv_proofing_agent_user_confirmation_submitted(
         **proofing_agent_analytics,
         success: form_response.success?,
-        dob_match: dob_match?,
-        ssn_match: ssn_match?,
-        dob_and_ssn_match: verify_dob_ssn_matches_applicant_pii?,
+        dob_match: @dob_ssn_form.dob_match?,
+        ssn_match: @dob_ssn_form.ssn_match?,
+        dob_and_ssn_match: @dob_ssn_form.ssn_match? && @dob_ssn_form.dob_match?,
       )
 
       if form_response.success?
-        return redirect_to idv_enter_password_url if verify_dob_ssn_matches_applicant_pii?
-        flash.now[:error] = t('idv.failure.dob_ssn.warning')
+        if FeatureManagement.proofing_agent_device_profiling_collecting_enabled?
+          ::ProofingAgentThreatMetrixJob.perform_now(**tmx_job_attrs)
+        end
+        return redirect_to idv_enter_password_url
       else
         flash.now[:error] = form_response.first_error_message
       end
 
-      render :new
+      render :new, locals: threatmetrix_view_variables
     end
 
     private
 
     def dob_ssn_params
       params.require(:doc_auth).permit(:ssn, dob: [:month, :day, :year])
-    end
-
-    def normalized_ssn
-      SsnFormatter.normalize(dob_ssn_params[:ssn])
-    end
-
-    def parse_form_date
-      MemorableDateComponent.extract_date_param(dob_ssn_params[:dob])
     end
 
     def move_agent_proofed_user_pii_to_idv_session
@@ -69,19 +72,6 @@ module Idv
       end
     end
 
-    def dob_match?
-      idv_session.applicant[:dob] == parse_form_date
-    end
-
-    def ssn_match?
-      idv_session.applicant[:ssn] == normalized_ssn
-    end
-
-    def verify_dob_ssn_matches_applicant_pii?
-      idv_session.proofing_agent_match = ssn_match? && dob_match?
-      idv_session.proofing_agent_match
-    end
-
     def confirm_verification_needed
       redirect_to account_url unless verification_needed?
     end
@@ -89,6 +79,18 @@ module Idv
     def verification_needed?
       IdentityConfig.store.idv_proofing_agent_enabled &&
         current_user.proofing_agent_pending?
+    end
+
+    def tmx_job_attrs
+      {
+        user_id: current_user.id,
+        applicant_pii: idv_session.applicant,
+        request_ip: request&.ip,
+        threatmetrix_session_id: idv_session.threatmetrix_session_id,
+        timer: JobHelpers::Timer.new,
+        current_sp:,
+        workflow: :proofing_agent,
+      }
     end
   end
 end
