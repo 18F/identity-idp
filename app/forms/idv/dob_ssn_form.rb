@@ -37,8 +37,9 @@ module Idv
     end
 
     def dob_ssn_matches_applicant_pii
-      errors.add(:ssn, 'SSN mismatch', type: :mismatch) unless ssn_match?
-      errors.add(:dob, 'Date of Birth mismatch', type: :mismatch) unless dob_match?
+      unless ssn_match? && dob_match?
+        errors.add(:mismatch, I18n.t('idv.failure.dob_ssn.warning'), type: :mismatch)
+      end
     end
 
     def dob_match?

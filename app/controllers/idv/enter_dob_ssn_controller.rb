@@ -47,7 +47,7 @@ module Idv
         end
         return redirect_to idv_enter_password_url
       else
-        flash.now[:error] = t('idv.failure.dob_ssn.warning')
+        flash.now[:error] = form_response.first_error_message
       end
 
       render :new, locals: threatmetrix_view_variables
