@@ -46,8 +46,10 @@ RSpec.describe Reports::SpVerificationReport do
     allow(IdentityConfig.store).to receive(:s3_reports_enabled).and_return(true)
 
     # Prevent real AWS calls
-    allow_any_instance_of(Reports::SpVerificationReport).to receive(:bucket_name).and_return('test-bucket')
-    allow_any_instance_of(Reports::SpVerificationReport).to receive(:upload_file_to_s3_bucket).and_return(true)
+    allow_any_instance_of(Reports::SpVerificationReport)
+      .to receive(:bucket_name).and_return('test-bucket')
+    allow_any_instance_of(Reports::SpVerificationReport)
+      .to receive(:upload_file_to_s3_bucket).and_return(true)
 
     # No-op mailer
     allow(ReportMailer).to receive_message_chain(:tables_report, :deliver_now).and_return(true)
