@@ -69,7 +69,7 @@ module Api
           transaction_id:,
         }
 
-        analytics.idv_proofing_agent_request_received(
+        analytics.idv_proofing_agent_proof_user_requested(
           **analytics_arguments,
           response_body:,
           transaction_id:,
@@ -117,7 +117,7 @@ module Api
           transaction_id: proofing_result.transaction_id,
         }
 
-        analytics.idv_proofing_agent_request_received(
+        analytics.idv_proofing_agent_result_requested(
           **analytics_arguments,
           response_body:,
           transaction_id:,
@@ -131,7 +131,7 @@ module Api
       def render_user_not_found
         response_body = { status: 'failed', reason: 'email_not_found' }
 
-        analytics.idv_proofing_agent_request_received(
+        analytics.idv_proofing_agent_proof_user_requested(
           **analytics_arguments,
           response_body:,
           transaction_id: nil,
@@ -143,7 +143,7 @@ module Api
       def render_already_proofed
         response_body = { status: 'failed', reason: 'already_proofed_enhanced' }
 
-        analytics.idv_proofing_agent_request_received(
+        analytics.idv_proofing_agent_proof_user_requested(
           **analytics_arguments,
           response_body:,
           transaction_id: nil,
@@ -159,7 +159,7 @@ module Api
           transaction_id:,
         }
 
-        analytics.idv_proofing_agent_request_received(
+        analytics.idv_proofing_agent_result_requested(
           **analytics_arguments,
           response_body:,
           transaction_id:,

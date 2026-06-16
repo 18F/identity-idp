@@ -96,6 +96,7 @@ end
 RSpec.describe Api::ProofingAgent::ProofingAgentController do
   include Rails.application.routes.url_helpers
   let(:enabled) { false }
+  let(:idv_proofing_agent_passport_enabled) { false }
   let(:sp) { create(:service_provider) }
   let(:issuer) { sp.issuer }
   let(:correlation_id) { 'correlation-789' }
@@ -233,6 +234,8 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
       }],
     )
     allow(FeatureManagement).to receive(:idv_proofing_agent_enabled?).and_return(enabled)
+    allow(FeatureManagement).to receive(:idv_proofing_agent_passport_enabled?)
+      .and_return(idv_proofing_agent_passport_enabled)
     headers.each { |key, value| request.headers[key] = value }
   end
 
@@ -730,7 +733,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
             transaction_id = DocumentCaptureSession.last.uuid
 
             expect(@analytics).to have_logged_event(
-              :idv_proofing_agent_request_received,
+              :idv_proofing_agent_proof_user_requested,
               response_body: a_hash_including(status: 'pending', transaction_id:),
               proofing_agent: proofing_agent_analytics_hash,
               issuer:,
@@ -748,7 +751,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
               transaction_id = DocumentCaptureSession.last.uuid
 
               expect(@analytics).to have_logged_event(
-                :idv_proofing_agent_request_received,
+                :idv_proofing_agent_proof_user_requested,
                 response_body: a_hash_including(status: 'pending', transaction_id:),
                 proofing_agent: proofing_agent_analytics_hash,
                 issuer:,
@@ -791,7 +794,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
               expect(body['reason']).to eq('email_not_found')
 
               expect(@analytics).to have_logged_event(
-                :idv_proofing_agent_request_received,
+                :idv_proofing_agent_proof_user_requested,
                 response_body: a_hash_including(status: 'failed', reason: 'email_not_found'),
                 proofing_agent: proofing_agent_analytics_hash,
                 issuer:,
@@ -821,7 +824,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
               expect(body['reason']).to eq('already_proofed_enhanced')
 
               expect(@analytics).to have_logged_event(
-                :idv_proofing_agent_request_received,
+                :idv_proofing_agent_proof_user_requested,
                 response_body: a_hash_including(
                   status: 'failed',
                   reason: 'already_proofed_enhanced',
@@ -1146,7 +1149,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
             transaction_id = DocumentCaptureSession.last.uuid
 
             expect(@analytics).to have_logged_event(
-              :idv_proofing_agent_request_received,
+              :idv_proofing_agent_proof_user_requested,
               response_body: a_hash_including(status: 'pending', transaction_id:),
               proofing_agent: proofing_agent_analytics_hash,
               issuer:,
@@ -1390,7 +1393,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
             transaction_id = DocumentCaptureSession.last.uuid
 
             expect(@analytics).to have_logged_event(
-              :idv_proofing_agent_request_received,
+              :idv_proofing_agent_proof_user_requested,
               response_body: a_hash_including(status: 'pending', transaction_id:),
               proofing_agent: proofing_agent_analytics_hash,
               issuer:,
@@ -1625,6 +1628,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
       end
 
       context 'when the id_type is passport and with valid passport data' do
+        let(:idv_proofing_agent_passport_enabled) { true }
         let(:id_type) { passport_type }
         let(:passport) { valid_passport }
         let(:residential_address) { valid_residential_address }
@@ -1656,7 +1660,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
             transaction_id = DocumentCaptureSession.last.uuid
 
             expect(@analytics).to have_logged_event(
-              :idv_proofing_agent_request_received,
+              :idv_proofing_agent_proof_user_requested,
               response_body: a_hash_including(status: 'pending', transaction_id:),
               proofing_agent: proofing_agent_analytics_hash,
               issuer:,
@@ -1669,6 +1673,22 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
           it 'includes correlation_id in the response' do
             action
             expect(response.headers['X-Correlation-ID']).to be_present
+          end
+
+          context 'when passport id types are not supported' do
+            let(:idv_proofing_agent_passport_enabled) { false }
+            let(:body_errors) { { unknown_id_type: ['unsupported id_type'] } }
+
+            it 'returns 400 and logs events' do
+              expect(action.status).to eq(400)
+              expect(@analytics).to have_logged_event(
+                :idv_proofing_agent_request_failed,
+                **body_failure_event_attrs,
+              )
+
+              body = JSON.parse(response.body)
+              expect(body['unknown_id_type'][0]).to eq(body_errors[:unknown_id_type][0])
+            end
           end
         end
 
@@ -1995,7 +2015,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
           it 'logs the analytics event' do
             action
             expect(@analytics).to have_logged_event(
-              :idv_proofing_agent_request_received,
+              :idv_proofing_agent_result_requested,
               response_body: a_hash_including(
                 success: true,
                 transaction_id:,
@@ -2039,7 +2059,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
           it 'logs the analytics event' do
             action
             expect(@analytics).to have_logged_event(
-              :idv_proofing_agent_request_received,
+              :idv_proofing_agent_result_requested,
               response_body: a_hash_including(
                 success: false,
                 reason: 'id_fail',
