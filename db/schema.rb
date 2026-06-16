@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_05_29_170050) do
+ActiveRecord::Schema[8.0].define(version: 2026_06_16_161534) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_catalog.plpgsql"
@@ -688,6 +688,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_05_29_170050) do
     t.datetime "sign_in_new_device_at", comment: "sensitive=false"
     t.datetime "password_compromised_checked_at", comment: "sensitive=false"
     t.datetime "webauthn_platform_recommended_dismissed_at", comment: "sensitive=false"
+    t.string "reset_password_email", limit: 255
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["sign_in_new_device_at"], name: "index_users_on_sign_in_new_device_at"
     t.index ["uuid"], name: "index_users_on_uuid", unique: true
