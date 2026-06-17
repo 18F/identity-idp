@@ -352,8 +352,14 @@ class SocureDocvResultsJob < ApplicationJob
   end
 
   def document_type_requested
-    @document_type_requested ||= document_capture_session.passport_requested? \
-      ? DocAuth::Socure::DocumentTypes::PASSPORT : DocAuth::Socure::DocumentTypes::DRIVERS_LICENSE
+    case document_capture_session.document_type_requested
+    when Idp::Constants::DocumentTypes::PASSPORT
+      DocAuth::Socure::DocumentTypes::PASSPORT
+    when Idp::Constants::DocumentTypes::DRIVERS_LICENSE
+      DocAuth::Socure::DocumentTypes::DRIVERS_LICENSE
+    when Idp::Constants::DocumentTypes::MDL
+      DocAuth::Socure::DocumentTypes::DIGITAL_ID
+    end
   end
 
   def user_uuid
