@@ -253,9 +253,6 @@ RSpec.describe ResetPasswordForm, type: :model do
       end
     end
 
-    # NOTE: invalid_account? now feeds into token_invalid?, which reports 'invalid_token'
-    # rather than 'token_expired'. This was previously grouped with the time-expiry case;
-    # see ResetPasswordForm#valid_token for the current grouping rationale.
     context 'when the unconfirmed email address has been confirmed by another account' do
       let(:user) { create(:user, :unconfirmed, reset_password_sent_at: Time.zone.now) }
 

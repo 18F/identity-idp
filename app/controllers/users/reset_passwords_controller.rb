@@ -58,7 +58,6 @@ module Users
           @reset_password_form = ResetPasswordForm.new(user: build_user)
           @forbidden_passwords = forbidden_passwords(token_user.email_addresses)
         else
-          # TODO:  send people here when they email doesn't exist anymore
           handle_invalid_or_expired_token(result)
         end
       end
