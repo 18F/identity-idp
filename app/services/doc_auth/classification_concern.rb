@@ -50,10 +50,5 @@ module DocAuth
     def supported_country_codes
       IdentityConfig.store.doc_auth_supported_country_codes
     end
-
-    def passport_cards_supported?
-      ab_test_bucket(:DOC_AUTH_PASSPORT_CARDS_ALLOWED) == :doc_auth_passport_cards_allowed &&
-        FeatureManagement.doc_auth_passport_cards_enabled?
-    end
   end
 end
