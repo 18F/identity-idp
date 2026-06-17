@@ -12,9 +12,16 @@ module Users
     end
 
     def create
-      # resource is a method/attribute provided by Devise's controller base class and is
-      # the standard used across all Devise's controllers. It stands in for User, Admin, Customer so
-      # in our case it just means User
+      @password_reset_email_form = PasswordResetEmailForm.new(email)
+      result = @password_reset_email_form.submit
+
+      analytics.password_reset_email(**result)
+
+      unless result.success?
+        render :new
+        return
+      end
+
       self.resource = User.find_with_email(email) || resource_class.new
 
       if resource.persisted?
