@@ -12,13 +12,13 @@ module Users
     end
 
     def create
-      email = params.dig(:user, :email).to_s.strip.downcase
       # resource is a method/attribute provided by Devise's controller base class and is
       # the standard used across all Devise's controllers. It stands in for User, Admin, Customer so
       # in our case it just means User
       self.resource = User.find_with_email(email) || resource_class.new
 
       if resource.persisted?
+        resource.email = email
         resource.requesting_reset_email = email
         resource.send_reset_password_instructions
       end

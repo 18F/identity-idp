@@ -2095,4 +2095,177 @@ RSpec.describe User do
       end
     end
   end
+  describe '#send_reset_password_instructions' do
+    let(:user) { create(:user, email: 'primary@example.com') }
+
+    context 'when requesting_reset_email is set' do
+      before { user.requesting_reset_email = 'secondary@example.com' }
+
+      it 'stores the requesting email, not the primary email' do
+        user.send_reset_password_instructions
+
+        expect(user.reload.reset_password_email).to eq('secondary@example.com')
+      end
+    end
+
+    context 'when requesting_reset_email is not set' do
+      it 'falls back to the primary email attribute' do
+        user.send_reset_password_instructions
+
+        expect(user.reload.reset_password_email).to eq('primary@example.com')
+      end
+    end
+
+    it 'sets a reset_password_token' do
+      user.send_reset_password_instructions
+
+      expect(user.reload.reset_password_token).to be_present
+    end
+  end
+
+  describe '#resetting_password?' do
+    let(:user) { create(:user) }
+
+    it 'returns false before any reset is requested' do
+      expect(user.send(:resetting_password?)).to eq(false)
+    end
+
+    it 'returns false after a reset is requested but before a new password is set' do
+      user.send_reset_password_instructions
+      user.reload
+
+      expect(user.send(:resetting_password?)).to eq(false)
+    end
+
+    it 'returns true once a new password is assigned and a reset_password_email is present' do
+      user.send_reset_password_instructions
+      user.reload
+
+      user.password = 'new_password123'
+      user.password_confirmation = 'new_password123'
+
+      expect(user.send(:resetting_password?)).to eq(true)
+    end
+
+    it 'returns false if the password changes without a reset_password_email present' do
+      user.password = 'new_password123'
+      user.password_confirmation = 'new_password123'
+
+      expect(user.send(:resetting_password?)).to eq(false)
+    end
+  end
+
+  describe '#reset_email_still_active validation' do
+    let(:user) { create(:user, email: 'primary@example.com') }
+    let!(:secondary_email_address) do
+      create(:email_address, user: user, email: 'secondary@example.com')
+    end
+
+    context 'when the requesting email is still confirmed on the account' do
+      before { user.requesting_reset_email = 'primary@example.com' }
+
+      it 'allows the password update to succeed' do
+        user.send_reset_password_instructions
+        user.reload
+
+        result = user.update(password: 'new_password123', password_confirmation: 'new_password123')
+
+        expect(result).to eq(true)
+        expect(user.errors[:base]).to be_empty
+      end
+    end
+
+    context 'when the requesting email was removed from the account before redemption' do
+      before { user.requesting_reset_email = 'secondary@example.com' }
+
+      it 'blocks the password update' do
+        user.send_reset_password_instructions
+        user.reload
+
+        secondary_email_address.destroy
+
+        result = user.update(password: 'new_password123', password_confirmation: 'new_password123')
+
+        expect(result).to eq(false)
+        expect(user.errors[:base]).not_to be_empty
+      end
+
+      it 'raises with update! matching the real ResetPasswordForm call path' do
+        user.send_reset_password_instructions
+        user.reload
+
+        secondary_email_address.destroy
+
+        expect do
+          user.update!(password: 'new_password123', password_confirmation: 'new_password123')
+        end.to raise_error(ActiveRecord::RecordInvalid)
+      end
+
+      it 'does not change the password' do
+        user.send_reset_password_instructions
+        user.reload
+        original_digest = user.encrypted_password_digest_multi_region
+
+        secondary_email_address.destroy
+        user.update(password: 'new_password123', password_confirmation: 'new_password123')
+
+        expect(user.reload.encrypted_password_digest_multi_region).to eq(original_digest)
+      end
+    end
+
+    context 'when the requesting email still exists but is unconfirmed' do
+      before do
+        secondary_email_address.update!(confirmed_at: nil)
+        user.requesting_reset_email = 'secondary@example.com'
+      end
+
+      it 'blocks the password update' do
+        user.send_reset_password_instructions
+        user.reload
+
+        result = user.update(password: 'new_password123', password_confirmation: 'new_password123')
+
+        expect(result).to eq(false)
+      end
+    end
+
+    context 'when reset_password_email belongs to a different user' do
+      let!(:other_user) { create(:user, email: 'other@example.com') }
+
+      before { user.requesting_reset_email = 'primary@example.com' }
+
+      it 'does not validate against another user\'s matching email' do
+        user.send_reset_password_instructions
+        user.reload
+
+        # Simulate cross-account confusion: reset_password_email points to
+        # an email that exists but belongs to someone else.
+        user.update_column(:reset_password_email, 'other@example.com')
+
+        result = user.update(password: 'new_password123', password_confirmation: 'new_password123')
+
+        expect(result).to eq(false)
+      end
+    end
+
+    context 'when an unrelated attribute changes (not a password reset)' do
+      it 'does not run reset_email_still_active' do
+        expect(user).not_to receive(:reset_email_still_active)
+
+        expect(user.update(email_language: 'es')).to eq(true)
+      end
+    end
+
+    context 'when the password changes outside the reset-password flow' do
+      it 'does not run reset_email_still_active if reset_password_email is blank' do
+        expect(user.reset_password_email).to be_blank
+
+        expect(user).not_to receive(:reset_email_still_active)
+
+        expect(
+          user.update(password: 'new_password123', password_confirmation: 'new_password123'),
+        ).to eq(true)
+      end
+    end
+  end
 end

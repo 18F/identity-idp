@@ -253,6 +253,9 @@ RSpec.describe ResetPasswordForm, type: :model do
       end
     end
 
+    # NOTE: invalid_account? now feeds into token_invalid?, which reports 'invalid_token'
+    # rather than 'token_expired'. This was previously grouped with the time-expiry case;
+    # see ResetPasswordForm#valid_token for the current grouping rationale.
     context 'when the unconfirmed email address has been confirmed by another account' do
       let(:user) { create(:user, :unconfirmed, reset_password_sent_at: Time.zone.now) }
 
@@ -265,7 +268,77 @@ RSpec.describe ResetPasswordForm, type: :model do
 
       it 'does not raise an error and is not successful' do
         expect(result.success?).to eq(false)
-        expect(result.errors).to eq({ reset_password_token: ['token_expired'] })
+        expect(result.errors).to eq({ reset_password_token: ['invalid_token'] })
+      end
+    end
+
+    context 'when the requesting email is still confirmed on the account' do
+      let(:user) { create(:user, reset_password_sent_at: Time.zone.now) }
+
+      before do
+        user.requesting_reset_email = user.email_addresses.first.email
+        user.send_reset_password_instructions
+        user.reload
+      end
+
+      it 'succeeds' do
+        expect(result.success?).to eq(true)
+      end
+    end
+
+    context 'when the requesting email was removed from the account before redemption' do
+      let(:user) { create(:user, reset_password_sent_at: Time.zone.now) }
+      let!(:secondary_email_address) do
+        create(:email_address, user: user, email: 'secondary@example.com')
+      end
+
+      before do
+        user.requesting_reset_email = 'secondary@example.com'
+        user.send_reset_password_instructions
+        user.reload
+
+        secondary_email_address.destroy
+      end
+
+      it 'is not successful and reports an invalid_token error' do
+        expect(result.success?).to eq(false)
+        expect(result.errors).to eq({ reset_password_token: ['invalid_token'] })
+      end
+
+      it 'does not change the password' do
+        original_digest = user.encrypted_password_digest_multi_region
+
+        result
+
+        expect(user.reload.encrypted_password_digest_multi_region).to eq(original_digest)
+      end
+    end
+
+    context 'when the requesting email still exists on the account but is unconfirmed' do
+      let(:user) { create(:user, reset_password_sent_at: Time.zone.now) }
+      let!(:secondary_email_address) do
+        create(:email_address, user: user, email: 'secondary@example.com', confirmed_at: nil)
+      end
+
+      before do
+        user.requesting_reset_email = 'secondary@example.com'
+        user.send_reset_password_instructions
+        user.reload
+      end
+
+      it 'is not successful' do
+        expect(result.success?).to eq(false)
+        expect(result.errors).to eq({ reset_password_token: ['invalid_token'] })
+      end
+    end
+
+    context 'when no reset_password_email was ever recorded (legacy token)' do
+      let(:user) { create(:user, reset_password_sent_at: Time.zone.now) }
+
+      it 'does not block the reset on that basis alone' do
+        expect(user.reset_password_email).to be_blank
+
+        expect(result.success?).to eq(true)
       end
     end
   end

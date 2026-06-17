@@ -595,7 +595,7 @@ class User < ApplicationRecord
   def send_reset_password_instructions
     token = set_reset_password_token
     update_column(:reset_password_email, @requesting_reset_email || email)
-    send_devise_notification(:reset_password_instructions, token, {})
+    token
   end
 
   private
