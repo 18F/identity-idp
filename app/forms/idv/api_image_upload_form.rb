@@ -4,6 +4,7 @@ module Idv
   class ApiImageUploadForm
     include ActiveModel::Model
     include ActionView::Helpers::TranslationHelper
+    include AbTestingConcern
 
     validates_presence_of :document_capture_session
 

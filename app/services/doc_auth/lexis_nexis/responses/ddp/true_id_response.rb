@@ -9,6 +9,7 @@ module DocAuth
           include DocAuth::LexisNexis::Responses::TrueIdResponseConcern
           include DocAuth::LexisNexis::DocPiiReader
           include DocAuth::ClassificationConcern
+          include AbTestingConcern
 
           attr_reader :config, :http_response, :passport_requested
 

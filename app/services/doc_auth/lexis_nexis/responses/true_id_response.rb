@@ -8,6 +8,7 @@ module DocAuth
         include TrueIdResponseConcern
         include DocPiiReader
         include ClassificationConcern
+        include AbTestingConcern
         include SelfieConcern
 
         attr_reader :config, :http_response, :passport_requested
