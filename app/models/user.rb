@@ -598,26 +598,10 @@ class User < ApplicationRecord
     send_devise_notification(:reset_password_instructions, token, {})
   end
 
-  validate :reset_email_still_active, if: :resetting_password?
-
   private
 
-  # TODO: maybe remove this
   def find_password_reset_profile
     find_in_person_in_progress_or_active_profile
-  end
-
-  def resetting_password?
-    reset_password_email.present? && will_save_change_to_encrypted_password_digest_multi_region?
-  end
-
-  def reset_email_still_active
-    matching_email_address = EmailAddress.find_with_email(reset_password_email)
-    unless matching_email_address &&
-           matching_email_address.user_id == id &&
-           matching_email_address.confirmed?
-      errors.add(:base, :reset_email_removed)
-    end
   end
 
   def find_in_person_in_progress_or_active_profile

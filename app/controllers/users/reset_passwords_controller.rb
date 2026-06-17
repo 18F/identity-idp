@@ -16,15 +16,14 @@ module Users
       # resource is a method/attribute provided by Devise's controller base class and is
       # the standard used across all Devise's controllers. It stands in for User, Admin, Customer so
       # in our case it just means User
-      self.resource = resource_class.find_or_initialize_with_errors(
-        resource_class.reset_password_keys, { email: email }, :not_found
-      )
+      self.resource = User.find_with_email(email) || resource_class.new
+
       if resource.persisted?
         resource.requesting_reset_email = email
         resource.send_reset_password_instructions
       end
 
-      yeild resource if block_given?
+      yield resource if block_given?
 
       if successfully_sent?(resource)
         handle_valid_email
@@ -59,12 +58,6 @@ module Users
     end
 
     def update
-      # YES - this is where we fail them
-      # TODO: This is what is run when we actually update the password
-      # what do we do when we invalidate that the token is alive
-      # 1. Fail the reset for time expiration
-      # 2. Them, where do we send the user
-
       self.resource = user_matching_token(user_params[:reset_password_token])
       @reset_password_form = ResetPasswordForm.new(user: resource)
 
