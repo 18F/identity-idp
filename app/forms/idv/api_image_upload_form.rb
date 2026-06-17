@@ -262,7 +262,8 @@ module Idv
 
     def validate_mrz(client_response)
       id_type = client_response.pii_from_doc.document_type_received
-      unless id_type == 'passport'
+
+      unless valid_passport_type?(id_type)
         return DocAuth::Response.new(
           success: false,
           errors: { passport: "Cannot validate MRZ for id type: #{id_type}" },
@@ -270,7 +271,10 @@ module Idv
       end
       mrz_client = IdentityConfig.store.doc_auth_mock_dos_api ?
                      DocAuth::Mock::DosPassportApiClient.new(client_response) :
-                     DocAuth::Dos::Requests::MrzRequest.new(mrz: client_response.pii_from_doc.mrz)
+                     DocAuth::Dos::Requests::MrzRequest.new(
+                       mrz: client_response.pii_from_doc.mrz,
+                       id_type:,
+                     )
       response = mrz_client.fetch
 
       analytics.idv_dos_passport_verification(
@@ -288,6 +292,20 @@ module Idv
 
       response.extra.merge!(extra_attributes)
       response
+    end
+
+    def valid_passport_type?(id_type)
+      return true if id_type == Idp::Constants::DocumentTypes::PASSPORT
+
+      return true if id_type == Idp::Constants::DocumentTypes::PASSPORT_CARD &&
+                     passport_cards_supported?
+
+      false
+    end
+
+    def passport_cards_supported?
+      ab_test_bucket(:DOC_AUTH_PASSPORT_CARDS_ALLOWED) == :doc_auth_passport_cards_allowed &&
+        FeatureManagement.doc_auth_passport_cards_enabled?
     end
 
     def doc_side_classification(client_response)

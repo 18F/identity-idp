@@ -10,8 +10,9 @@ RSpec.describe DocAuth::Dos::Requests::MrzRequest do
   let(:client_secret) { 'client_secret' }
   let(:mrz) { '1234567890' }
   let(:correlation_id) { '1234567890' }
+  let(:id_type) { Idp::Constants::DocumentTypes::PASSPORT }
   let(:subject) do
-    described_class.new(mrz: mrz)
+    described_class.new(mrz: mrz, id_type: id_type)
   end
   let(:mrz_result) { 'YES' }
   let(:response_body) { { response: mrz_result }.to_json }

@@ -4,16 +4,21 @@ module DocAuth
   module Dos
     module Requests
       class MrzRequest < DocAuth::Dos::Request
-        def initialize(mrz:)
+        def initialize(mrz:, id_type:)
           @mrz = mrz
+          @id_type = id_type
         end
 
         private
 
-        attr_reader :mrz
+        attr_reader :mrz, :id_type
 
         def category
-          :book # for now, the only supported option
+          if id_type == Idp::Constants::DocumentTypes::PASSPORT
+            :book
+          elsif id_type == Idp::Constants::DocumentTypes::PASSPORT_CARD
+            :card
+          end
         end
 
         def http_method
