@@ -595,10 +595,10 @@ class User < ApplicationRecord
   def send_reset_password_instructions
     token = set_reset_password_token
     update_column(:reset_password_email, @requesting_reset_email || email)
-    send_devise_notification(:reset_password_intructions, token, {})
+    send_devise_notification(:reset_password_instructions, token, {})
   end
 
-  validate :reset_email_still_active, if: :reset_password_token_in_use?
+  validate :reset_email_still_active, if: :resetting_password?
 
   private
 
@@ -607,8 +607,8 @@ class User < ApplicationRecord
     find_in_person_in_progress_or_active_profile
   end
 
-  def reset_password_token_in_use?
-    reset_password_token_changed? && reset_password_token.blank? && reset_password_email.present
+  def resetting_password?
+    reset_password_email.present? && will_save_change_to_encrypted_password_digest_multi_region?
   end
 
   def reset_email_still_active
@@ -616,7 +616,7 @@ class User < ApplicationRecord
     unless matching_email_address &&
            matching_email_address.user_id == id &&
            matching_email_address.confirmed?
-      erros.add(:base, :reset_email_removed)
+      errors.add(:base, :reset_email_removed)
     end
   end
 
