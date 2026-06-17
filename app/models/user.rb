@@ -594,7 +594,13 @@ class User < ApplicationRecord
 
   def send_reset_password_instructions
     token = set_reset_password_token
+    # We need to avoid running all model validations because it is possible that the user
+    # will not be able to meet other validations in its current state.  This is similar to
+    # how Devise internally uses `save(validate: false)` when setting reset_password_token.
+
+    # rubocop:disable Rails/SkipsModelValidations
     update_column(:reset_password_email, @requesting_reset_email || email)
+    # rubocop:enable Rails/SkipsModelValidations
     token
   end
 
