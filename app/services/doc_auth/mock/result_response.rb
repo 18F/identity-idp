@@ -8,15 +8,16 @@ module DocAuth
       include DocAuth::Mock::YmlLoaderConcern
 
       attr_reader :uploaded_file, :config, :selfie_required, :passport_submittal,
-                  :passport_requested
+                  :passport_requested, :passport_cards_supported
 
       def initialize(uploaded_file, config, selfie_required: false, passport_submittal: false,
-                     passport_requested: false)
+                     passport_requested: false, passport_cards_supported: false)
         @uploaded_file = uploaded_file.to_s
         @config = config
         @selfie_required = selfie_required
         @passport_submittal = passport_submittal
         @passport_requested = passport_requested
+        @passport_cards_supported = passport_cards_supported
         super(
           success: success?,
           errors:,
@@ -248,6 +249,9 @@ module DocAuth
           Idp::Constants::DocumentTypes::SUPPORTED_PASSPORT_TYPES :
           Idp::Constants::DocumentTypes::SUPPORTED_STATE_ID_TYPES
 
+        if passport_cards_supported?
+          expected_id_types += [Idp::Constants::DocumentTypes::PASSPORT_CARD]
+        end
         expected_id_types.include?(id_type)
       end
 
