@@ -438,7 +438,11 @@ class Profile < ApplicationRecord
 
   def create_user_proofing_event(password:, personal_key:, attempt_events:, sent_to_sp: false)
     build_user_proofing_event(service_provider_ids_sent: service_provider_ids_sent(sent_to_sp:))
-    result = user_proofing_event.write_events(password:, personal_key:, attempt_events:)
+    result = user_proofing_event.write_events(
+      password:,
+      personal_key: personal_key_generator.normalize(personal_key),
+      attempt_events:,
+    )
 
     update!(encrypted_attempts_file_reference: result.name)
 
@@ -450,11 +454,18 @@ class Profile < ApplicationRecord
   end
 
   def reencrypt_user_proofing_events(password:, personal_key:, attempt_events:)
-    user_proofing_event&.write_events(password:, personal_key:, attempt_events:)
+    user_proofing_event&.write_events(
+      password:,
+      personal_key: personal_key_generator.normalize(personal_key),
+      attempt_events:,
+    )
   end
 
   def reencrypt_recovery_attempts_data(attempt_events:, personal_key:)
-    user_proofing_event&.reencrypt_recovery_attempts_data(personal_key:, attempt_events:)
+    user_proofing_event&.reencrypt_recovery_attempts_data(
+      personal_key: personal_key_generator.normalize(personal_key),
+      attempt_events:,
+    )
   end
 
   def recover_attempt_events(personal_key:)

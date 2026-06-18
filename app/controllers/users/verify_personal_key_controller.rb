@@ -79,8 +79,10 @@ module Users
     end
 
     def cache_attempt_events
-      AttemptsApi::Cacher.new(current_user, user_session)
-        .save_with_personal_key(personal_key: params.permit(:personal_key)[:personal_key])
+      personal_key = PersonalKeyGenerator
+        .new(current_user)
+        .normalize(personal_key_params)
+      AttemptsApi::Cacher.new(current_user, user_session).save_with_personal_key(personal_key:)
     end
 
     def handle_failure(result)
@@ -91,8 +93,12 @@ module Users
     def personal_key_form
       VerifyPersonalKeyForm.new(
         user: current_user,
-        personal_key: params.permit(:personal_key)[:personal_key],
+        personal_key: personal_key_params,
       )
+    end
+
+    def personal_key_params
+      params.permit(:personal_key)[:personal_key]
     end
   end
 end
