@@ -319,7 +319,7 @@ class SocureDocvResultsJob < ApplicationJob
 
   def validate_mrz(doc_pii_response)
     id_type = doc_pii_response.extra[:document_type_received]
-    unless document_capture_session.in_supported_passport_types?(id_type)
+    unless in_supported_passport_types?(id_type)
       return unless document_capture_session.passport_requested?
     end
 
@@ -345,6 +345,14 @@ class SocureDocvResultsJob < ApplicationJob
     )
 
     response
+  end
+
+  def in_supported_passport_types?(id_type)
+    return true if id_type == Idp::Constants::DocumentTypes::PASSPORT
+    if document_capture_session.passport_cards_supported?
+      return id_type == Idp::Constants::DocumentTypes::PASSPORT_CARD
+    end
+    false
   end
 
   def document_type_requested
