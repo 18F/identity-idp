@@ -75,7 +75,7 @@ module DocAuth
             Idp::Constants::DocumentTypes::SUPPORTED_PASSPORT_TYPES :
             Idp::Constants::DocumentTypes::SUPPORTED_STATE_ID_TYPES
 
-          if passport_cards_supported?
+          if passport_cards_supported
             expected_id_types += [Idp::Constants::DocumentTypes::PASSPORT_CARD]
           end
           expected_id_types.include?(id_type)
