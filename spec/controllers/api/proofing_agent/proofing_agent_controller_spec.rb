@@ -835,6 +835,38 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
             end
           end
 
+          context 'user already has a pending agent proofed document_capture_session' do
+            before do
+              DocumentCaptureSession.create!(
+                user: user,
+                issuer:,
+                doc_auth_vendor: Idp::Constants::Vendors::PROOFING_AGENT,
+                requested_at: Time.zone.now,
+                pending_agent_proofed_user_at: Time.zone.now,
+              )
+            end
+            it 'returns 200' do
+              expect(action.status).to eq(200)
+            end
+
+            it 'returns a failed already proofed response body' do
+              action
+              body = JSON.parse(response.body)
+              expect(body['status']).to eq('failed')
+              expect(body['reason']).to eq('already_proofed_enhanced')
+
+              expect(@analytics).to have_logged_event(
+                :idv_proofing_agent_proof_user_requested,
+                response_body: a_hash_including(
+                  status: 'failed',
+                  reason: 'already_proofed_enhanced',
+                ),
+                proofing_agent: proofing_agent_analytics_hash,
+                issuer:,
+              )
+            end
+          end
+
           context 'without proofing_location_id param' do
             let(:location_id) { nil }
 
