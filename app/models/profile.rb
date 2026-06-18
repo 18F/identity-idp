@@ -148,6 +148,8 @@ class Profile < ApplicationRecord
       activated_at:,
     )
 
+    remove_agent_proofed_pending_status_if_needed
+
     track_facial_match_reproof if is_facial_match_upgrade
     send_push_notifications if is_reproof
   end
@@ -214,6 +216,10 @@ class Profile < ApplicationRecord
         activate(reason_deactivated: :password_reset) if activated_at.present?
       end
     end
+  end
+
+  def remove_agent_proofed_pending_status_if_needed
+    user.pending_agent_proofed_session&.update!(pending_agent_proofed_user_at: nil)
   end
 
   def deactivate(reason)

@@ -21,6 +21,7 @@ const countdownEls: NodeListOf<CountdownElement> = modal.querySelectorAll('lg-co
 function success({ isLive, timeout }: SessionStatus) {
   if (!isLive) {
     if (timeoutURL) {
+      // Handles redirect when user is partially signed-in to account (i.e. password not yet created and/or MFA method(s) not yet added)
       forceRedirect(timeoutURL);
     }
     return;

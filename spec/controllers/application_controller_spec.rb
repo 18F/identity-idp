@@ -360,39 +360,38 @@ RSpec.describe ApplicationController do
     end
   end
 
-  describe '#session_expires_at' do
+  describe '#set_session_start_value_if_nil' do
     before { routes.draw { get 'index' => 'anonymous#index' } }
     after { Rails.application.reload_routes! }
 
     controller do
-      prepend_before_action :session_expires_at
+      prepend_before_action :set_session_start_value_if_nil
 
       def index
         render plain: 'Hello'
       end
     end
 
-    context 'when URL contains the host parameter' do
-      it 'does not redirect to the host' do
-        get :index, params: { timeout: true, host: 'www.monfresh.com' }
+    context 'when session start value is nil' do
+      it 'sets the session start value to the current time' do
+        freeze_time do
+          session[:session_started_at] = nil
 
-        expect(response.header['Location']).to_not match 'www.monfresh.com'
+          get :index
+
+          expect(session[:session_started_at]).to eq(Time.zone.now)
+        end
       end
     end
 
-    context 'when URL does not contain the timeout parameter' do
-      it 'does not redirect anywhere' do
-        get :index, params: { host: 'www.monfresh.com' }
+    context 'when session start value is not nil' do
+      it 'does not change the session start value' do
+        original_time = 1.hour.ago
+        session[:session_started_at] = original_time
 
-        expect(response).to_not be_redirect
-      end
-    end
+        get :index
 
-    context 'when URL contains the request_id parameter' do
-      it 'preserves the request_id parameter' do
-        get :index, params: { timeout: true, request_id: '123' }
-
-        expect(response.header['Location']).to match '123'
+        expect(session[:session_started_at]).to eq(original_time)
       end
     end
   end
@@ -411,11 +410,12 @@ RSpec.describe ApplicationController do
     end
   end
 
-  describe '#redirect_with_flash_if_timeout' do
+  describe '#show_flash_with_redirect_if_session_timeout' do
     before { routes.draw { get 'index' => 'anonymous#index' } }
     after { Rails.application.reload_routes! }
 
     controller do
+      prepend_before_action :show_flash_with_redirect_if_session_timeout
       def index
         render plain: 'Hello'
       end
@@ -436,7 +436,7 @@ RSpec.describe ApplicationController do
       it 'displays flash message for session timeout' do
         get :index, params: { timeout: 'session', request_id: '123' }
 
-        expect(flash[:info]).to eq t(
+        expect(flash[:session_timed_out]).to eq t(
           'notices.session_timedout',
           app_name: APP_NAME,
           minutes: IdentityConfig.store.session_timeout_in_seconds.seconds.in_minutes.to_i,
