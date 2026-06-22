@@ -79,10 +79,9 @@ module Users
     end
 
     def cache_attempt_events
-      personal_key = PersonalKeyGenerator
-        .new(current_user)
-        .normalize(personal_key_params)
-      AttemptsApi::Cacher.new(current_user, user_session).save_with_personal_key(personal_key:)
+      AttemptsApi::Cacher.new(current_user, user_session).save_with_personal_key(
+        personal_key: personal_key_params,
+      )
     end
 
     def handle_failure(result)

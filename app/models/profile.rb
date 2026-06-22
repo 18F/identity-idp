@@ -469,7 +469,9 @@ class Profile < ApplicationRecord
   end
 
   def recover_attempt_events(personal_key:)
-    user_proofing_event&.recover_attempt_events(personal_key:)
+    user_proofing_event&.recover_attempt_events(
+      personal_key: personal_key_generator.normalize(personal_key),
+    )
   end
 
   private
