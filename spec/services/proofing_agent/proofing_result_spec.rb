@@ -272,4 +272,14 @@ RSpec.describe ProofingAgent::ProofingResult do
       )
     end
   end
+
+  context 'when resolution_result is nil' do
+    let(:resolution_result) { nil }
+
+    it 'does not raise and returns a failure reason' do
+      expect { subject.combined_result }.not_to raise_error
+      expect(subject.combined_result[:success]).to be false
+      expect(subject.combined_result[:reason]).to eq('phone_check_fail')
+    end
+  end
 end

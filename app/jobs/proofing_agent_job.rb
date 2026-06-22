@@ -167,91 +167,100 @@ class ProofingAgentJob < ApplicationJob
       end
     end
 
-    re_encrypted_arguments = Encryption::Encryptors::BackgroundProofingArgEncryptor.new.encrypt(
-      { applicant_pii: }.to_json,
-    )
+    # Only call the proofing vendors once the ID has been validated (AAMVA or DoS/MRZ).
+    # If the relevant source check was unsuccessful, skip resolution entirely so we
+    # don't spend on the resolution/phone vendors or log their events.
+    source_check_succeeded = aamva_result&.success? || mrz_result&.success?
 
-    resolution_result = call_resolution_proofing_job(
-      timer:,
-      result_id: SecureRandom.uuid,
-      encrypted_arguments: re_encrypted_arguments,
-      trace_id:,
-      user_id: user.id,
-      service_provider_issuer:,
-      proofing_vendor:,
-    )
+    resolution_result = nil
 
-    if resolution_result&.dig(:context, :stages, :resolution, :success) == true
-      proofing_components[:residential_resolution_check] = resolution_result&.dig(
-        :context, :stages, :residential_address, :vendor_name
+    if source_check_succeeded
+      re_encrypted_arguments = Encryption::Encryptors::BackgroundProofingArgEncryptor.new.encrypt(
+        { applicant_pii: }.to_json,
       )
-      proofing_components[:resolution_check] = resolution_result&.dig(
-        :context, :stages, :resolution, :vendor_name
+
+      resolution_result = call_resolution_proofing_job(
+        timer:,
+        result_id: SecureRandom.uuid,
+        encrypted_arguments: re_encrypted_arguments,
+        trace_id:,
+        user_id: user.id,
+        service_provider_issuer:,
+        proofing_vendor:,
       )
-    end
 
-    if resolution_result&.dig(:context, :stages, :phone_precheck, :success) == true
-      proofing_components[:address_check] = resolution_result&.dig(
-        :context, :stages, :phone_precheck, :vendor_name
-      )
-    end
+      if resolution_result&.dig(:context, :stages, :resolution, :success) == true
+        proofing_components[:residential_resolution_check] = resolution_result&.dig(
+          :context, :stages, :residential_address, :vendor_name
+        )
+        proofing_components[:resolution_check] = resolution_result&.dig(
+          :context, :stages, :resolution, :vendor_name
+        )
+      end
 
-    analytics.idv_doc_auth_verify_proofing_results(
-      **{
-        success: resolution_result&.dig(:context, :stages, :resolution, :success),
-        proofing_agent:,
-        proofing_components: proofing_components.dup,
-        analytics_id: 'Doc Auth',
-        address_edited: false,
-        address_line2_present: false,
-        errors: resolution_result&.dig(:errors),
-        last_name_spaced: applicant_pii&.dig(:last_name)&.include?(' '),
-        opted_in_to_in_person_proofing: false,
-        proofing_results: resolution_result.to_h,
-        ssn_is_unique: resolution_result&.dig(:ssn_is_unique),
-        step: 'Proofing Agent Job',
-        flow_path: 'Proofing Agent',
-      }.to_h.merge(
-        pii_like_keypaths: [
-          [:proofing_results, :biographical_info],
-          [:proofing_results, :errors, :zipcode],
-          [:proofing_results, :errors, :ssn],
-          [:proofing_results, :biographical_info, :identity_doc_address_state],
-          [:proofing_results, :biographical_info, :state_id_jurisdiction],
-          [:proofing_results, :context, :stages, :resolution, :errors, :zipcode],
-          [:proofing_results, :biographical_info, :same_address_as_id],
-          [:proofing_results, :biographical_info, :phone],
-          [:proofing_results, :context, :stages, :resolution, :errors, :ssn],
-          [:errors, :zipcode],
-          [:errors, :ssn],
-        ],
-      ),
-    )
+      if resolution_result&.dig(:context, :stages, :phone_precheck, :success) == true
+        proofing_components[:address_check] = resolution_result&.dig(
+          :context, :stages, :phone_precheck, :vendor_name
+        )
+      end
 
-    if resolution_result.dig(:context, :stages, :phone_precheck).present?
-      phone_precheck_body = resolution_result&.dig(:context, :stages, :phone_precheck)
-      phone_info = resolution_result&.dig(:biographical_info, :phone)
-
-      analytics.idv_phone_confirmation_vendor_submitted(
+      analytics.idv_doc_auth_verify_proofing_results(
         **{
-          success: phone_precheck_body&.dig(:success),
-          vendor: phone_precheck_body&.dig(:vendor_name),
-          area_code: phone_info&.dig(:area_code),
-          country_code: phone_info&.dig(:country_code),
-          phone_fingerprint: phone_info&.dig(:phone_fingerprint),
-          new_phone_added: true,
-          hybrid_handoff_phone_used: false,
-          manual_review: false,
-          errors: phone_precheck_body&.dig(:errors),
-          reason_codes: phone_precheck_body&.dig(:reason_codes),
+          success: resolution_result&.dig(:context, :stages, :resolution, :success),
           proofing_agent:,
           proofing_components: proofing_components.dup,
+          analytics_id: 'Doc Auth',
+          address_edited: false,
+          address_line2_present: false,
+          errors: resolution_result&.dig(:errors),
+          last_name_spaced: applicant_pii&.dig(:last_name)&.include?(' '),
+          opted_in_to_in_person_proofing: false,
+          proofing_results: resolution_result.to_h,
+          ssn_is_unique: resolution_result&.dig(:ssn_is_unique),
+          step: 'Proofing Agent Job',
+          flow_path: 'Proofing Agent',
         }.to_h.merge(
           pii_like_keypaths: [
-            [:errors, :phone],
+            [:proofing_results, :biographical_info],
+            [:proofing_results, :errors, :zipcode],
+            [:proofing_results, :errors, :ssn],
+            [:proofing_results, :biographical_info, :identity_doc_address_state],
+            [:proofing_results, :biographical_info, :state_id_jurisdiction],
+            [:proofing_results, :context, :stages, :resolution, :errors, :zipcode],
+            [:proofing_results, :biographical_info, :same_address_as_id],
+            [:proofing_results, :biographical_info, :phone],
+            [:proofing_results, :context, :stages, :resolution, :errors, :ssn],
+            [:errors, :zipcode],
+            [:errors, :ssn],
           ],
         ),
       )
+
+      if resolution_result&.dig(:context, :stages, :phone_precheck).present?
+        phone_precheck_body = resolution_result&.dig(:context, :stages, :phone_precheck)
+        phone_info = resolution_result&.dig(:biographical_info, :phone)
+
+        analytics.idv_phone_confirmation_vendor_submitted(
+          **{
+            success: phone_precheck_body&.dig(:success),
+            vendor: phone_precheck_body&.dig(:vendor_name),
+            area_code: phone_info&.dig(:area_code),
+            country_code: phone_info&.dig(:country_code),
+            phone_fingerprint: phone_info&.dig(:phone_fingerprint),
+            new_phone_added: true,
+            hybrid_handoff_phone_used: false,
+            manual_review: false,
+            errors: phone_precheck_body&.dig(:errors),
+            reason_codes: phone_precheck_body&.dig(:reason_codes),
+            proofing_agent:,
+            proofing_components: proofing_components.dup,
+          }.to_h.merge(
+            pii_like_keypaths: [
+              [:errors, :phone],
+            ],
+          ),
+        )
+      end
     end
 
     ProofingAgent::ProofingResult.new(
