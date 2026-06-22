@@ -56,7 +56,7 @@ module DocAuth
         end
 
         def passport_card_detected?
-          doc_issue_type == 'Passport Card'
+          Idp::Constants::DocumentTypes::PASSPORT_CARD_RESPONSES.include?(doc_issue_type)
         end
 
         def expected_document_type_received?
