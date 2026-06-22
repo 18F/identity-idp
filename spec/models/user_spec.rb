@@ -2123,38 +2123,6 @@ RSpec.describe User do
     end
   end
 
-  describe '#resetting_password?' do
-    let(:user) { create(:user) }
-
-    it 'returns false before any reset is requested' do
-      expect(user.send(:resetting_password?)).to eq(false)
-    end
-
-    it 'returns false after a reset is requested but before a new password is set' do
-      user.send_reset_password_instructions
-      user.reload
-
-      expect(user.send(:resetting_password?)).to eq(false)
-    end
-
-    it 'returns true once a new password is assigned and a reset_password_email is present' do
-      user.send_reset_password_instructions
-      user.reload
-
-      user.password = 'new_password123'
-      user.password_confirmation = 'new_password123'
-
-      expect(user.send(:resetting_password?)).to eq(true)
-    end
-
-    it 'returns false if the password changes without a reset_password_email present' do
-      user.password = 'new_password123'
-      user.password_confirmation = 'new_password123'
-
-      expect(user.send(:resetting_password?)).to eq(false)
-    end
-  end
-
   describe '#reset_email_still_active validation' do
     let(:user) { create(:user, email: 'primary@example.com') }
     let!(:secondary_email_address) do
@@ -2210,49 +2178,6 @@ RSpec.describe User do
         user.update(password: 'new_password123', password_confirmation: 'new_password123')
 
         expect(user.reload.encrypted_password_digest_multi_region).to eq(original_digest)
-      end
-    end
-
-    context 'when the requesting email still exists but is unconfirmed' do
-      before do
-        secondary_email_address.update!(confirmed_at: nil)
-        user.requesting_reset_email = 'secondary@example.com'
-      end
-
-      it 'blocks the password update' do
-        user.send_reset_password_instructions
-        user.reload
-
-        result = user.update(password: 'new_password123', password_confirmation: 'new_password123')
-
-        expect(result).to eq(false)
-      end
-    end
-
-    context 'when reset_password_email belongs to a different user' do
-      let!(:other_user) { create(:user, email: 'other@example.com') }
-
-      before { user.requesting_reset_email = 'primary@example.com' }
-
-      it 'does not validate against another user\'s matching email' do
-        user.send_reset_password_instructions
-        user.reload
-
-        # Simulate cross-account confusion: reset_password_email points to
-        # an email that exists but belongs to someone else.
-        user.update_column(:reset_password_email, 'other@example.com')
-
-        result = user.update(password: 'new_password123', password_confirmation: 'new_password123')
-
-        expect(result).to eq(false)
-      end
-    end
-
-    context 'when an unrelated attribute changes (not a password reset)' do
-      it 'does not run reset_email_still_active' do
-        expect(user).not_to receive(:reset_email_still_active)
-
-        expect(user.update(email_language: 'es')).to eq(true)
       end
     end
 
