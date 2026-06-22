@@ -143,8 +143,8 @@ RSpec.describe UserProofingEvent, type: :model do
       expect(doc_writer).to receive(:write_encrypted_attempt_events).with(
         file_path: "attempt_events/#{profile.user.uuid}/#{profile.id}",
         encrypted_attempt_events: satisfy do |arg|
-          arg['password_encrypted_events'] == password_encrypted_events &&
-          arg['personal_key_encrypted_events'] != personal_key_encrypted_events
+          JSON.parse(arg)['password_encrypted_events'] == password_encrypted_events &&
+          JSON.parse(arg)['personal_key_encrypted_events'] != personal_key_encrypted_events
         end,
         name: 'test-file-reference',
       )
@@ -153,6 +153,62 @@ RSpec.describe UserProofingEvent, type: :model do
         attempt_events:,
         personal_key: new_personal_key,
       )
+    end
+  end
+
+  context 'round-trip specs' do
+    let(:normalizer) { PersonalKeyGenerator.new(profile.user) }
+    after do
+      path = Rails.root.join(
+        'tmp',
+        'encrypted_attempt_events',
+        'attempt_events',
+        profile.user.uuid.to_s,
+      )
+      # cleanup
+      FileUtils.rm_rf(path) if Dir.exist?(path)
+    end
+
+    describe '#decrypt_events' do
+      it 'retrieves and decrypts the events from storage' do
+        user_proofing_event.write_events(
+          attempt_events:, password:,
+          personal_key: normalizer.normalize(personal_key)
+        )
+        expect(user_proofing_event.decrypt_events(password:)).to eq(attempt_events.to_json)
+      end
+    end
+
+    describe '#reencrypting with personal key' do
+      let(:new_personal_key) { 'new-personal-key' }
+
+      context 'with stored data' do
+        before do
+          user_proofing_event.write_events(attempt_events:, password:, personal_key:)
+          user_proofing_event.reencrypt_recovery_attempts_data(
+            attempt_events:,
+            personal_key: new_personal_key,
+          )
+        end
+        it 'reencrypts the events in storage so they are recoverable with the new key' do
+          expect(
+            user_proofing_event.recover_attempt_events(personal_key: new_personal_key),
+          ).to eq(attempt_events.to_json)
+        end
+      end
+
+      context 'if stored data does not exist' do
+        # This method is only called if event data is cached in the session
+        # If the session data exists but stored data does not, something is weird.
+        it 'crashes on reencryption because that is a bad state' do
+          expect do
+            user_proofing_event.reencrypt_recovery_attempts_data(
+              attempt_events:,
+              personal_key:,
+            )
+          end.to raise_error NoMethodError, "undefined method 'merge' for nil"
+        end
+      end
     end
   end
 end

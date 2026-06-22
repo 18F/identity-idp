@@ -21,6 +21,9 @@ module AttemptsApi
 
     def save_with_personal_key(personal_key:)
       profile = user.active_profile || user.password_reset_profile
+
+      return if profile.blank?
+
       decrypted_events = profile.recover_attempt_events(personal_key:)
       return if decrypted_events.blank?
 

@@ -16,6 +16,20 @@ class UserProofingEvent < ApplicationRecord
     service_provider_ids_sent.include?(id)
   end
 
+  # Stored data looks like this:
+  # {
+  #   'password_encrypted_events' => {
+  #     encrypted_data: "encrypted_string",
+  #     cost: 'cost',
+  #     salt: 'salt'
+  #     }.to_json,
+  #   'personal_key_encrypted_events' => {
+  #     encrypted_data: "encrypted_string",
+  #     cost: 'cost',
+  #     salt: 'salt'
+  #     }.to_json
+  # }
+
   def write_events(attempt_events:, password:, personal_key:)
     encrypted_attempt_events = {
       password_encrypted_events: encrypted_json(password, attempt_events),
@@ -26,10 +40,11 @@ class UserProofingEvent < ApplicationRecord
   end
 
   def decrypt_events(password:)
-    return nil if retrieved_attempts_data.blank?
+    attempts_data = retrieved_attempts_data
+    return nil if attempts_data.blank?
     encryptor = Encryption::Encryptors::PiiEncryptor.new(password)
 
-    encryptor.decrypt(retrieved_attempts_data['password_encrypted_events'], user_uuid: user.uuid)
+    encryptor.decrypt(attempts_data['password_encrypted_events'], user_uuid: user.uuid)
   end
 
   def reencrypt_recovery_attempts_data(attempt_events:, personal_key:)
@@ -38,17 +53,18 @@ class UserProofingEvent < ApplicationRecord
     # merge the new personal key encrypted data in
     encrypted_attempt_events = retrieved_attempts_data.merge(
       'personal_key_encrypted_events' => personal_key_encrypted_events,
-    )
+    ).to_json
     # rewrite the data
     write_attempts_data(encrypted_attempt_events:)
   end
 
   def recover_attempt_events(personal_key:)
-    return nil if retrieved_attempts_data.blank?
+    attempt_data = retrieved_attempts_data
+    return nil if attempt_data.blank?
     encryptor = Encryption::Encryptors::PiiEncryptor.new(personal_key)
 
     encryptor.decrypt(
-      retrieved_attempts_data['personal_key_encrypted_events'],
+      attempt_data['personal_key_encrypted_events'],
       user_uuid: user.uuid,
     )
   end
@@ -68,20 +84,6 @@ class UserProofingEvent < ApplicationRecord
 
     JSON.parse(data) if data.present?
   end
-
-  # Stored data looks like this:
-  # {
-  #   'password_encrypted_events' => {
-  #     encrypted_data: "encrypted_string",
-  #     cost: 'cost',
-  #     salt: 'salt'
-  #     }.to_json,
-  #   'personal_key_encrypted_events' => {
-  #     encrypted_data: "encrypted_string",
-  #     cost: 'cost',
-  #     salt: 'salt'
-  #     }.to_json
-  # }
 
   def user
     @user ||= profile.user
@@ -109,7 +111,7 @@ class UserProofingEvent < ApplicationRecord
   end
 
   def attempt_events_file_path
-    "attempt_events/#{profile.user.uuid}/#{profile.id}"
+    "attempt_events/#{user.uuid}/#{profile.id}"
   end
 
   def historical_attempts_s3_storage_enabled?
