@@ -19,8 +19,8 @@ module PersonalKeyConcern
           attempt_events:,
           personal_key: active_profile.personal_key,
         )
-        active_profile.personal_key
       end
+      active_profile.personal_key
     else
       PersonalKeyGenerator.new(current_user).generate!
     end
