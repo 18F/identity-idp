@@ -104,6 +104,8 @@ class EmailAddress < ApplicationRecord
       user_id: user_id,
       email_address_id: id,
     ).update_all(email_address_id: nil)
+
+    User.where(reset_password_email_address_id: id).update_all(reset_password_email_address_id: nil)
     # rubocop:enable Rails/SkipsModelValidations
   end
 end

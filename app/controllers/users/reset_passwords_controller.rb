@@ -26,7 +26,7 @@ module Users
 
       if resource.persisted?
         resource.email = email
-        resource.requesting_reset_email = email
+        resource.requesting_reset_email_address = EmailAddress.confirmed.find_with_email(email)
         resource.send_reset_password_instructions
       end
 

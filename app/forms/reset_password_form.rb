@@ -44,13 +44,10 @@ class ResetPasswordForm
   end
 
   def reset_email_no_longer_active?
-    return false if user.reset_password_email.blank?
+    return false if user.reset_password_email_address_id.blank?
 
-    matching_email_address = EmailAddress.find_with_email(user.reset_password_email)
-
-    !(matching_email_address &&
-      matching_email_address.user_id == user.id &&
-      matching_email_address.confirmed?)
+    email_address = user.reset_password_email_address
+    !(email_address && email_address.user_id == user.id && email_address.confirmed?)
   end
 
   def handle_valid_password
