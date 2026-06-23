@@ -66,8 +66,7 @@ module ProofingAgent
     private
 
     def determine_failure_reason
-      return 'system_error' if system_error.present?
-      return 'system_error' if all_vendor_results_missing?
+      return 'system_error' if system_error.present? || all_vendor_results_missing?
 
       if resolution_result.present? && resolution_result[:exception].present?
         return 'profile_resolution_exception'

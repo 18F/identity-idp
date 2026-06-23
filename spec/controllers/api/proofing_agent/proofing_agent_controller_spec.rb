@@ -1899,7 +1899,6 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
       let(:id_type) { drivers_license_type }
       let(:state_id) { valid_state_id }
       let(:user) { create(:user, email: 'system_error@example.com') }
-      let(:email) { user.email }
 
       before do
         allow(Identity::Hostdata).to receive(:in_datacenter?).and_return(false)
@@ -1916,8 +1915,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
       end
 
       context 'when email matches system_error+500@example.com' do
-        let(:user) { create(:user, email: 'system_error+500@example.com') }
-        let(:email) { user.email }
+        let(:email) { 'system_error+500@example.com' }
 
         it 'returns 500 with system_error body' do
           expect(action.status).to eq(500)
