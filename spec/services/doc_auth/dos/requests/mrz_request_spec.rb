@@ -10,8 +10,10 @@ RSpec.describe DocAuth::Dos::Requests::MrzRequest do
   let(:client_secret) { 'client_secret' }
   let(:mrz) { '1234567890' }
   let(:correlation_id) { '1234567890' }
+  let(:id_type) { Idp::Constants::DocumentTypes::PASSPORT }
+  let(:category) { :book }
   let(:subject) do
-    described_class.new(mrz: mrz)
+    described_class.new(mrz: mrz, id_type: id_type)
   end
   let(:mrz_result) { 'YES' }
   let(:response_body) { { response: mrz_result }.to_json }
@@ -30,7 +32,7 @@ RSpec.describe DocAuth::Dos::Requests::MrzRequest do
     allow(SecureRandom).to receive(:uuid).and_return(correlation_id)
     stub_request(:post, mrz_endpoint)
       .with(
-        body: "{\"mrz\":\"#{mrz}\",\"category\":\"book\"}",
+        body: "{\"mrz\":\"#{mrz}\",\"category\":\"#{category}\"}",
         headers: {
           'Accept' => '*/*',
           'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
@@ -41,6 +43,28 @@ RSpec.describe DocAuth::Dos::Requests::MrzRequest do
         },
       )
       .to_return(status: http_status, body: response_body, headers: response_headers)
+  end
+
+  context 'checks request body for correct category' do
+    context 'when id_type is PASSPORT BOOK' do
+      let(:id_type) { Idp::Constants::DocumentTypes::PASSPORT }
+
+      it 'sends the correct category' do
+        subject.fetch
+        expect(WebMock).to have_requested(:post, mrz_endpoint)
+          .with(body: "{\"mrz\":\"#{mrz}\",\"category\":\"book\"}")
+      end
+    end
+    context 'when id_type is PASSPORT CARD' do
+      let(:id_type) { Idp::Constants::DocumentTypes::PASSPORT_CARD }
+      let(:category) { :card }
+
+      it 'sends the correct category' do
+        subject.fetch
+        expect(WebMock).to have_requested(:post, mrz_endpoint)
+          .with(body: "{\"mrz\":\"#{mrz}\",\"category\":\"card\"}")
+      end
+    end
   end
 
   context 'when the MRZ matches' do

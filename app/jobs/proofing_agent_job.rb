@@ -329,7 +329,10 @@ class ProofingAgentJob < ApplicationJob
     mrz_client = if IdentityConfig.store.proofer_mock_fallback
                    DocAuth::Mock::DosPassportApiClient.new
                  else
-                   DocAuth::Dos::Requests::MrzRequest.new(mrz:)
+                   DocAuth::Dos::Requests::MrzRequest.new(
+                     mrz:,
+                     id_type: applicant_pii[:document_type_received],
+                   )
                  end
 
     timer.time('mrz') { mrz_client.fetch }

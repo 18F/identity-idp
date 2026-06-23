@@ -329,7 +329,10 @@ class SocureDocvResultsJob < ApplicationJob
 
     mrz_client = Rails.env.development? ?
                     DocAuth::Mock::DosPassportApiClient.new :
-                    DocAuth::Dos::Requests::MrzRequest.new(mrz: doc_pii_response.pii_from_doc[:mrz])
+                    DocAuth::Dos::Requests::MrzRequest.new(
+                      mrz: doc_pii_response.pii_from_doc[:mrz],
+                      id_type:,
+                    )
     response = mrz_client.fetch
 
     analytics.idv_dos_passport_verification(
