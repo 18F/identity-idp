@@ -154,21 +154,20 @@ module Idv
     private
 
     def validation_requirements_met?
-      return false if document_type_mismatch?
-
-      selfie_requirement_met? && mrz_requirement_met? && aamva_requirement_met?
+      document_type_match? && selfie_requirement_met? &&
+        mrz_requirement_met? && aamva_requirement_met?
     end
 
-    def document_type_mismatch?
-      # Reject when user requested passport flow but submitted a different document type
-      return true if document_capture_session.passport_requested? &&
-                     document_type_received != Idp::Constants::DocumentTypes::PASSPORT
-
-      # Reject when user didn't request passport flow but submitted a passport
-      return true if !document_capture_session.passport_requested? &&
-                     document_type_received == Idp::Constants::DocumentTypes::PASSPORT
-
-      false
+    def document_type_match?
+      case document_capture_session.document_type_requested
+      when Idp::Constants::DocumentTypes::STATE_ID_CARD
+        Idp::Constants::DocumentTypes::SUPPORTED_STATE_ID_TYPES
+          .include?(document_type_received)
+      when Idp::Constants::DocumentTypes::PASSPORT
+        document_type_received == Idp::Constants::DocumentTypes::PASSPORT
+      when Idp::Constants::DocumentTypes::MOBILE_DRIVERS_LICENSE
+        document_type_received == Idp::Constants::DocumentTypes::MOBILE_DRIVERS_LICENSE
+      end
     end
 
     def document_type_received
