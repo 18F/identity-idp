@@ -49,14 +49,14 @@ GIT
 
 GIT
   remote: https://github.com/18F/saml_idp.git
-  revision: de86eb14453a8d0f844f98e51db8be743fb346ce
-  tag: v0.24.0-18f
+  revision: c47713c595a463f3cc0f01c5df7f338ffa731414
+  tag: v0.24.2-18f
   specs:
-    saml_idp (0.24.0.pre.18f)
-      activesupport
+    saml_idp (0.24.2.pre.18f)
+      activesupport (>= 7.2.3)
       builder
-      faraday
-      nokogiri (>= 1.10.2)
+      faraday (>= 2.14.1)
+      nokogiri (>= 1.19.4)
       ostruct
       pkcs11
 
