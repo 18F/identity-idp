@@ -114,7 +114,9 @@ RSpec.describe UpdateUserPasswordForm, type: :model do
           }
         end
 
+        let(:personal_key) { 'personal-key' }
         before do
+          allow_any_instance_of(Profile).to receive(:encrypt_pii).and_return(personal_key)
           allow_any_instance_of(Profile).to receive(:reencrypt_user_proofing_events)
         end
 
@@ -123,6 +125,7 @@ RSpec.describe UpdateUserPasswordForm, type: :model do
           expect_any_instance_of(Profile).to receive(:reencrypt_user_proofing_events).with(
             password:,
             attempt_events: decrypted_events.as_json,
+            personal_key:,
           )
 
           subject.submit(params)

@@ -4,7 +4,6 @@ FactoryBot.define do
     profile_id { nil }
 
     trait :existing do
-      service_provider_ids_sent { [] }
       association :profile
     end
   end

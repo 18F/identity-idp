@@ -121,7 +121,10 @@ RSpec.describe EncryptedDocStorage::DocWriter do
         encrypted_attempt_events:,
       )
 
-      result = subject.write_encrypted_attempt_events(file_path:, encrypted_attempt_events:)
+      result = subject.write_encrypted_attempt_events(
+        file_path:, encrypted_attempt_events:,
+        name: nil
+      )
       expect(result.name).to eq(uuid)
     end
 
@@ -161,7 +164,10 @@ RSpec.describe EncryptedDocStorage::DocWriter do
           :write_attempt_events,
         )
 
-        result = subject.write_encrypted_attempt_events(file_path:, encrypted_attempt_events:)
+        result = subject.write_encrypted_attempt_events(
+          file_path:, encrypted_attempt_events:,
+          name: nil
+        )
         expect(result.name).to eq(uuid)
       end
     end

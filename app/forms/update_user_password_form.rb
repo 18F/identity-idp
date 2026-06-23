@@ -33,8 +33,8 @@ class UpdateUserPasswordForm
   def encrypt_user_profiles
     return if user.active_or_pending_profile.blank?
 
-    reencrypt_attempt_events
     encryptor.encrypt
+    encrypt_attempt_events
   end
 
   def encryptor
@@ -54,13 +54,15 @@ class UpdateUserPasswordForm
     }
   end
 
-  def reencrypt_attempt_events
+  def encrypt_attempt_events
     return if user.active_profile.blank?
     return if user_session.blank?
 
     decrypted_events = AttemptsApi::Cacher.new(user, user_session).fetch
     return if decrypted_events.blank?
 
-    user.active_profile.reencrypt_user_proofing_events(password:, attempt_events: decrypted_events)
+    user
+      .active_profile
+      .reencrypt_user_proofing_events(password:, personal_key:, attempt_events: decrypted_events)
   end
 end

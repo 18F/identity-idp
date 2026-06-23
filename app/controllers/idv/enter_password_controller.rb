@@ -222,8 +222,9 @@ module Idv
       return unless historical_events_enabled?
 
       current_user.active_profile.create_user_proofing_event(
-        password:,
         attempt_events:,
+        password:,
+        personal_key: idv_session.personal_key,
         sent_to_sp: attempts_api_enabled_for_session?,
       )
 
