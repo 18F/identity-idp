@@ -20,7 +20,7 @@ gem 'bigdecimal'
 gem 'bootsnap', '~> 1.0', require: false
 gem 'browser'
 gem 'caxlsx', require: false
-gem 'concurrent-ruby'
+gem 'concurrent-ruby', '>= 1.3.7'
 gem 'connection_pool'
 gem 'csv'
 gem 'cssbundling-rails'
