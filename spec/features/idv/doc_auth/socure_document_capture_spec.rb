@@ -14,6 +14,8 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
   let(:fake_socure_docv_document_request_endpoint) { 'https://fake-socure.test/document-request' }
   let(:fake_socure_document_capture_app_url) { 'https://verify.fake-socure.test/something' }
   let(:socure_docv_webhook_repeat_endpoints) { [] }
+  let(:idv_socure_reason_codes_docv_mdl) { ['mdl_code1', 'mdl_code2'] }
+  let(:idv_doc_auth_mdl_enabled_percent) { 0 }
 
   before do
     allow(IdentityConfig.store).to receive_messages(
@@ -30,11 +32,13 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
       doc_auth_vendor_lexis_nexis_percent: 0,
       doc_auth_vendor_socure_percent: 100,
       doc_auth_vendor_switching_enabled: true,
+      idv_socure_reason_codes_docv_mdl:,
       ruby_workers_idv_enabled: false,
       socure_docv_document_request_endpoint: fake_socure_docv_document_request_endpoint,
       socure_docv_enabled: true,
       socure_docv_webhook_repeat_endpoints:,
       socure_docv_webhook_secret_key:,
+      idv_doc_auth_mdl_enabled_percent:,
     )
     allow_any_instance_of(ServiceProviderSession).to receive(:sp_name).and_return('Test SP')
     socure_docv_webhook_repeat_endpoints.each { |endpoint| stub_request(:post, endpoint) }
@@ -503,6 +507,83 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
           click_idv_continue
           complete_verify_step
           expect(page).to have_current_path(idv_phone_url)
+        end
+      end
+
+      context 'when an mDL is submitted' do
+        let(:idv_doc_auth_mdl_enabled_percent) { 100 }
+        before do
+          DocAuth::Mock::DocAuthMockClient.reset!
+        end
+
+        it 'proceeds to the next page with valid info' do
+          perform_in_browser(:mobile) do
+            visit_idp_from_oidc_sp_with_ial2
+            sign_in_and_2fa_user(user)
+
+            complete_doc_auth_steps_before_hybrid_handoff_step
+            click_continue
+            expect(page).to have_current_path(idv_choose_id_type_url)
+            choose(t('doc_auth.forms.id_type_preference.mdl'))
+            click_on t('forms.buttons.continue')
+
+            expect(page).to have_current_path(idv_socure_document_capture_url)
+            expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
+
+            # remove_request_stub(@docv_stub)
+            @docv_stub = stub_docv_verification_data_pass(
+              docv_transaction_token: @docv_transaction_token,
+              user:,
+            )
+
+            click_on t('idv.mdl.button')
+            socure_docv_upload_documents(
+              docv_transaction_token: @docv_transaction_token,
+            )
+            visit idv_socure_document_capture_update_path
+
+            expect(page).to have_current_path(
+              idv_socure_document_capture_errors_url(
+                transaction_token: @docv_transaction_token,
+              ),
+            )
+
+            expect(page).to have_content(t('doc_auth.errors.verify_drivers_license_heading'))
+
+            click_on t('idv.failure.button.warning')
+
+
+            expect(page).to have_current_path(idv_socure_document_capture_url)
+            expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
+
+            remove_request_stub(@docv_stub)
+            @docv_stub = stub_docv_verification_data_pass(
+              docv_transaction_token: @docv_transaction_token,
+              reason_codes: idv_socure_reason_codes_docv_mdl.push(['random_code']),
+              user:,
+            )
+            click_on t('idv.mdl.button')
+            socure_docv_upload_documents(
+              docv_transaction_token: @docv_transaction_token,
+            )
+
+            visit idv_socure_document_capture_update_path
+
+            expect(page).to have_current_path(idv_ssn_url)
+
+            expect(fake_analytics).to have_logged_event(
+              :idv_socure_document_request_submitted,
+            )
+            expect(fake_analytics).to have_logged_event(
+              :idv_socure_verification_data_requested,
+            )
+            expect(fake_analytics).to have_logged_event(
+              'IdV: doc auth image upload vendor pii validation',
+            )
+
+            fill_out_ssn_form_ok
+            click_idv_continue
+          end
         end
       end
 
