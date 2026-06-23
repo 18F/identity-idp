@@ -272,4 +272,39 @@ RSpec.describe ProofingAgent::ProofingResult do
       )
     end
   end
+
+  context 'when system_error is explicitly provided' do
+    subject do
+      described_class.new(
+        proofing_agent_id:,
+        proofing_location_id:,
+        correlation_id:,
+        transaction_id:,
+        pii:,
+        service_provider_issuer:,
+        resolution_result:,
+        system_error: 'database_unavailable',
+      )
+    end
+
+    it 'returns failure with system_error reason' do
+      expect(subject.combined_result).to include(
+        success: false,
+        reason: 'system_error',
+      )
+    end
+  end
+
+  context 'when all vendor results are missing' do
+    let(:resolution_result) { nil }
+    let(:aamva_result) { nil }
+    let(:mrz_result) { nil }
+
+    it 'returns failure with system_error reason' do
+      expect(subject.combined_result).to include(
+        success: false,
+        reason: 'system_error',
+      )
+    end
+  end
 end
