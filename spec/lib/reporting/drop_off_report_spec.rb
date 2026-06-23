@@ -151,9 +151,9 @@ RSpec.describe Reporting::DropOffReport do
 
   describe '#cloudwatch_client' do
     let(:opts) { {} }
-    let(:subject) {
+    let(:subject) do
       Reporting::DropOffReport.new(issuers: Array(issuer), time_range:, **opts)
-    }
+    end
     let(:default_args) do
       {
         num_threads: 5,
