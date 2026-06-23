@@ -138,6 +138,18 @@ class FeatureManagement
     end
   end
 
+  # Whether we collect device profiling as part of the proofing_agent idv process
+  def self.proofing_agent_device_profiling_collecting_enabled?
+    return false unless proofing_device_profiling_decisioning_enabled?
+
+    case IdentityConfig.store.proofing_agent_device_profiling
+    when :enabled, :collect_only then true
+    when :disabled then false
+    else
+      raise 'Invalid value for proofing_agent_device_profiling'
+    end
+  end
+
   # Whether we collect device profiling on the hybrid flow
   def self.proofing_device_hybrid_profiling_collecting_enabled?
     case IdentityConfig.store.proofing_device_hybrid_profiling
@@ -189,6 +201,10 @@ class FeatureManagement
 
   def self.idv_proofing_agent_enabled?
     IdentityConfig.store.idv_proofing_agent_enabled
+  end
+
+  def self.idv_proofing_agent_passport_enabled?
+    IdentityConfig.store.idv_proofing_agent_passport_enabled
   end
 
   # Whether to prompt new users to set up a passkey immediately after email/password creation.

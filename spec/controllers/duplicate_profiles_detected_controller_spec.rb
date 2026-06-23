@@ -66,5 +66,34 @@ RSpec.describe DuplicateProfilesDetectedController, type: :controller do
         )
       end
     end
+
+    context 'when service provider is not available and global detection is enabled' do
+      render_views
+
+      let(:global_duplicate_profile_set) do
+        create(:duplicate_profile_set, :global, profile_ids: [user.active_profile.id, profile2.id])
+      end
+
+      before do
+        global_duplicate_profile_set
+        allow(controller).to receive(:user_session).and_return(session)
+        allow(controller).to receive(:current_sp).and_return(nil)
+        allow(IdentityConfig.store)
+          .to receive(:enable_one_account_global_detection)
+          .and_return(true)
+      end
+
+      it 'redirects to the root path' do
+        expect(Rails.logger).to receive(:error)
+          .with(a_string_including('Template error in duplicate_profiles_detected#show')
+            .and(a_string_including('global_detection_enabled: true'))
+            .and(a_string_including('no implicit conversion of nil into String'))
+            .and(a_string_including('sp_name: ')))
+
+        get :show, params: { source: :account_page }
+        expect(response).to render_template(:show)
+        expect(response).to redirect_to(root_path)
+      end
+    end
   end
 end

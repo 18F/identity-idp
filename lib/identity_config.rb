@@ -119,6 +119,7 @@ module IdentityConfig
     config.add(:database_worker_jobs_username, type: :string)
     config.add(:deleted_user_accounts_report_configs, type: :json)
     config.add(:deliver_mail_async, type: :boolean)
+    config.add(:demographics_metrics_s3_report_configs, type: :json)
     config.add(:development_mailer_deliver_method, type: :symbol, enum: [:file, :letter_opener])
     config.add(:disable_email_sending, type: :boolean)
     config.add(:disposable_email_services, type: :json)
@@ -249,6 +250,7 @@ module IdentityConfig
     config.add(:idv_phone_verification_dual_vendor_check_socure_reason_codes, type: :json)
     config.add(:idv_proofing_agent_config, type: :json)
     config.add(:idv_proofing_agent_enabled, type: :boolean)
+    config.add(:idv_proofing_agent_passport_enabled, type: :boolean)
     config.add(:idv_proofing_agent_result_expiration_seconds, type: :integer)
     config.add(:idv_rdp_version_default, type: :string)
     config.add(:idv_rdp_version_switching_enabled, type: :boolean)
@@ -401,6 +403,8 @@ module IdentityConfig
     )
     config.add(:phone_recaptcha_score_threshold, type: :float)
     config.add(:phone_service_check, type: :boolean)
+    config.add(:phone_setup_blocked_ip_country_codes, type: :json)
+    config.add(:phone_setup_country_mismatch_check_country_codes, type: :json)
     config.add(:phone_setups_per_ip_limit, type: :integer)
     config.add(:phone_setups_per_ip_period, type: :integer)
     config.add(:phone_setups_per_ip_track_only_mode, type: :boolean)
@@ -420,6 +424,11 @@ module IdentityConfig
     config.add(:proof_ssn_max_attempt_window_in_minutes, type: :integer)
     config.add(:proof_ssn_max_attempts, type: :integer)
     config.add(:proofer_mock_fallback, type: :boolean)
+    config.add(
+      :proofing_agent_device_profiling,
+      type: :symbol,
+      enum: [:disabled, :collect_only, :enabled],
+    )
     config.add(
       :proofing_device_hybrid_profiling,
       type: :symbol,

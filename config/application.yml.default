@@ -102,6 +102,7 @@ database_worker_jobs_sslmode: 'verify-full'
 database_worker_jobs_username: ''
 deleted_user_accounts_report_configs: '[]'
 deliver_mail_async: false
+demographics_metrics_s3_report_configs: '[]'
 development_mailer_deliver_method: letter_opener
 disable_email_sending: true
 disposable_email_services: '[]'
@@ -235,6 +236,7 @@ idv_phone_verification_dual_vendor_check_socure_percent: 0
 idv_phone_verification_dual_vendor_check_socure_reason_codes: '[]'
 idv_proofing_agent_config: '[]'
 idv_proofing_agent_enabled: false
+idv_proofing_agent_passport_enabled: false
 idv_proofing_agent_result_expiration_seconds: 10
 idv_rdp_version_default: rdp_v2
 idv_rdp_version_switching_enabled: false
@@ -382,6 +384,8 @@ phone_confirmation_max_attempts: 20
 phone_recaptcha_country_score_overrides: '{"AS":0.0,"GU":0.0,"MP":0.0,"PR":0.0,"US":0.0,"VI":0.0,"CA":0.0,"MX":0.0}'
 phone_recaptcha_score_threshold: 0.0
 phone_service_check: true
+phone_setup_blocked_ip_country_codes: '[]'
+phone_setup_country_mismatch_check_country_codes: '[]'
 phone_setups_per_ip_limit: 25
 phone_setups_per_ip_period: 300
 phone_setups_per_ip_track_only_mode: false
@@ -401,6 +405,7 @@ proof_address_max_attempts: 5
 proof_ssn_max_attempt_window_in_minutes: 60
 proof_ssn_max_attempts: 10
 proofer_mock_fallback: true
+proofing_agent_device_profiling: enabled
 proofing_device_hybrid_profiling: disabled
 proofing_device_profiling: enabled
 protocols_report_config: '[]'

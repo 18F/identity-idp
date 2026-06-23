@@ -5,6 +5,7 @@ module Idv
     include Idv::AvailabilityConcern
     include IdvStepConcern
     include Idv::HistoricalAttemptsConcern
+    include Idv::ProofingAgentConcern
     include StepIndicatorConcern
     include VerifyByMailConcern
     include IppHelper
@@ -12,6 +13,7 @@ module Idv
     before_action :confirm_step_allowed
     before_action :confirm_no_profile_yet
     before_action :confirm_current_password, only: [:create]
+    before_action :save_proofing_agent_threatmetrix_status, only: [:new]
 
     helper_method :step_indicator_step
 
@@ -24,6 +26,7 @@ module Idv
       analytics.idv_enter_password_visited(
         address_verification_method: idv_session.address_verification_mechanism,
         **ab_test_analytics_buckets,
+        **proofing_agent_analytics,
       )
 
       @title = title
@@ -58,6 +61,7 @@ module Idv
         deactivation_reason: idv_session.profile.deactivation_reason,
         proofing_workflow_time_in_seconds: idv_session.proofing_workflow_time_in_seconds,
         **ab_test_analytics_buckets,
+        **proofing_agent_analytics,
       )
       Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer)
         .call(:verified, :view, true)
@@ -71,6 +75,7 @@ module Idv
         deactivation_reason: idv_session.profile.deactivation_reason,
         proofing_workflow_time_in_seconds: idv_session.proofing_workflow_time_in_seconds,
         **ab_test_analytics_buckets,
+        **proofing_agent_analytics,
       )
 
       return unless FeatureManagement.reveal_gpo_code?
@@ -123,6 +128,7 @@ module Idv
         fraud_rejection: fraud_rejection?,
         fraud_pending_reason: nil,
         **ab_test_analytics_buckets,
+        **proofing_agent_analytics,
       )
 
       flash[:error] = t('idv.errors.incorrect_password')
@@ -198,11 +204,6 @@ module Idv
       end
     end
 
-    def remove_agent_proofed_profile_pending_status_if_needed
-      # move this to user.rb probably
-      current_user.pending_agent_proofed_session&.update!(pending_agent_proofed_user_at: nil)
-    end
-
     def handle_request_enroll_exception(err)
       analytics.idv_in_person_usps_request_enroll_exception(
         context: context,
@@ -233,6 +234,18 @@ module Idv
 
     def attempt_events
       user_session['idv/attempts'] || []
+    end
+
+    def save_proofing_agent_threatmetrix_status
+      return unless FeatureManagement.proofing_agent_device_profiling_collecting_enabled?
+      return if idv_session.threatmetrix_review_status.present?
+      return if idv_session.hybrid_mobile_threatmetrix_review_status.present?
+
+      device_profile = DeviceProfilingResult.for_user(
+        user_id: current_user.id,
+        type: DeviceProfilingResult::PROFILING_TYPES[:proofing_agent],
+      ).order(created_at: :desc).first
+      idv_session.threatmetrix_review_status = device_profile.review_status
     end
   end
 end

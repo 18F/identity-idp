@@ -2560,6 +2560,8 @@ module AnalyticsEvents
   # @param [String,nil] pending_profile_idv_level ID verification level of user's pending profile.
   # @param [Integer,nil] proofing_workflow_time_in_seconds The time since starting proofing
   # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
+  # @param [Hash,nil] proofing_agent hash about proofing agent information
+  # @param [String,nil] issuer The issuer of the user's ID document, if applicable
   # @identity.idp.previous_event_name  IdV: review info visited
   def idv_enter_password_submitted(
     success:,
@@ -2576,6 +2578,8 @@ module AnalyticsEvents
     active_profile_idv_level: nil,
     pending_profile_idv_level: nil,
     proofing_workflow_time_in_seconds: nil,
+    proofing_agent: nil,
+    issuer: nil,
     **extra
   )
     track_event(
@@ -2594,6 +2598,8 @@ module AnalyticsEvents
       active_profile_idv_level:,
       pending_profile_idv_level:,
       proofing_workflow_time_in_seconds:,
+      proofing_agent:,
+      issuer:,
       **extra,
     )
   end
@@ -2613,6 +2619,8 @@ module AnalyticsEvents
   # @param [String,nil] pending_profile_idv_level ID verification level of user's pending profile.
   #        used to verify the user's identity
   # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
+  # @param [Hash,nil] proofing_agent hash about proofing agent information
+  # @param [String,nil] issuer The issuer of the user's ID document, if applicable
   # User visited IDV password confirm page
   # @identity.idp.previous_event_name  IdV: review info visited
   def idv_enter_password_visited(
@@ -2623,6 +2631,8 @@ module AnalyticsEvents
     address_verification_method: nil,
     active_profile_idv_level: nil,
     pending_profile_idv_level: nil,
+    proofing_agent: nil,
+    issuer: nil,
     **extra
   )
     track_event(
@@ -2634,6 +2644,8 @@ module AnalyticsEvents
       proofing_components:,
       active_profile_idv_level:,
       pending_profile_idv_level:,
+      proofing_agent:,
+      issuer:,
       **extra,
     )
   end
@@ -2660,6 +2672,8 @@ module AnalyticsEvents
   # @param [Array,nil] profile_history Array of user's profiles (oldest to newest).
   # @param [Integer,nil] proofing_workflow_time_in_seconds The time since starting proofing
   # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
+  # @param [Hash,nil] proofing_agent hash about proofing agent information
+  # @param [String,nil] issuer The issuer of the user's ID document, if applicable
   # @see Reporting::IdentityVerificationReport#query This event is used by the identity verification
   #       report. Changes here should be reflected there.
   # Tracks the last step of IDV, indicates the user successfully proofed
@@ -2679,6 +2693,8 @@ module AnalyticsEvents
     pending_profile_idv_level: nil,
     profile_history: nil,
     proofing_workflow_time_in_seconds: nil,
+    proofing_agent: nil,
+    issuer: nil,
     **extra
   )
     track_event(
@@ -2698,6 +2714,8 @@ module AnalyticsEvents
       pending_profile_idv_level:,
       profile_history:,
       proofing_workflow_time_in_seconds:,
+      proofing_agent:,
+      issuer:,
       **extra,
     )
   end
@@ -5492,6 +5510,90 @@ module AnalyticsEvents
     )
   end
 
+  # @param [Boolean] success Check whether threatmetrix succeeded properly.
+  # @param [String] transaction_id Vendor-specific transaction ID for the request.
+  # @param [String, nil] client Client user was directed from when creating account
+  # @param [array<String>, nil] errors error response from api call
+  # @param [String, nil] exception Error exception from api call
+  # @param [Boolean] timed_out set whether api call timed out
+  # @param [String] review_status TMX decision on the user
+  # @param [String] account_lex_id LexID associated with the response.
+  # @param [String] session_id Session ID associated with response
+  # @param [Hash] response_body total response body for api call
+  # Result when threatmetrix is completed for proofing agent and result
+  def idv_proofing_agent_tmx_result(
+    client:,
+    success:,
+    errors:,
+    exception:,
+    timed_out:,
+    transaction_id:,
+    review_status:,
+    account_lex_id:,
+    session_id:,
+    response_body:,
+    **extra
+  )
+    track_event(
+      :idv_proofing_agent_tmx_result,
+      client:,
+      success:,
+      errors:,
+      exception:,
+      timed_out:,
+      transaction_id:,
+      review_status:,
+      account_lex_id:,
+      session_id:,
+      response_body:,
+      **extra,
+    )
+  end
+
+  # @param [Boolean] success Whether the user confirmed the proofing agent results
+  # @param [Boolean] dob_match the user's date of birth matched the proofing agent's results
+  # @param [Boolean] ssn_match the user's SSN matched the proofing agent's results
+  # @param [Boolean] dob_and_ssn_match the user's dob and SSN matched the proofing agent's results
+  # @param [Hash] proofing_agent The proofing agent information
+  # @param [String] issuer The issuer associated with the proofing request
+  # User submits their confirmation of the proofing agent results
+  def idv_proofing_agent_user_confirmation_submitted(
+    success:,
+    dob_match:,
+    ssn_match:,
+    dob_and_ssn_match:,
+    proofing_agent:,
+    issuer:,
+    **extra
+  )
+    track_event(
+      :idv_proofing_agent_user_confirmation_submitted,
+      success:,
+      dob_match:,
+      ssn_match:,
+      dob_and_ssn_match:,
+      proofing_agent:,
+      issuer:,
+      **extra,
+    )
+  end
+
+  # @param [Hash] proofing_agent The proofing agent information
+  # @param [String] issuer The issuer associated with the proofing request
+  # User visits the page to confirm the proofing agent results
+  def idv_proofing_agent_user_confirmation_visited(
+    proofing_agent:,
+    issuer:,
+    **extra
+  )
+    track_event(
+      :idv_proofing_agent_user_confirmation_visited,
+      proofing_agent:,
+      issuer:,
+      **extra,
+    )
+  end
+
   # @param [Boolean] success Whether webhook was sent successfully
   # @param [Hash] response The response from the proofing agent's proofing request
   # @param [Hash] proofing_agent The proofing agent information
@@ -6860,6 +6962,9 @@ module AnalyticsEvents
   # @param [String] country_code Abbreviated 2-letter country code associated with phone number
   # @param [String] phone_type Pinpoint phone classification type
   # @param [Array<String>] types Phonelib parsed phone types
+  # @param [String, nil] ip_country Two-letter country code geolocated from request remote IP
+  # @param [Boolean] ip_country_blocked
+  #   Whether the request was blocked due to IP/phone country mismatch
   def multi_factor_auth_phone_setup(
       success:,
       otp_delivery_preference:,
@@ -6868,6 +6973,8 @@ module AnalyticsEvents
       country_code:,
       phone_type:,
       types:,
+      ip_country: nil,
+      ip_country_blocked: false,
       error_details: nil,
       **extra
     )
@@ -6881,6 +6988,8 @@ module AnalyticsEvents
       country_code:,
       phone_type:,
       types:,
+      ip_country:,
+      ip_country_blocked:,
       **extra,
     )
   end
@@ -7856,6 +7965,8 @@ module AnalyticsEvents
   # @param [String] limiter_type Name of the rate limiter configuration exceeded
   # @param [String] country_code Abbreviated 2-letter country code associated with phone number
   # @param [String] phone_fingerprint HMAC fingerprint of the phone number formatted as E.164
+  # @param [Boolean,nil] country_mismatch
+  #   Whether rate limit was triggered by blocked IP/phone country mismatch
   # @param ["authentication", "reauthentication", "confirmation"] context User session context
   # @param ["sms", "voice"] otp_delivery_preference Channel used to send the message
   # @param [String,nil] step_name Name of step in user flow where rate limit occurred
@@ -7864,6 +7975,7 @@ module AnalyticsEvents
     limiter_type:,
     country_code: nil,
     phone_fingerprint: nil,
+    country_mismatch: nil,
     context: nil,
     otp_delivery_preference: nil,
     step_name: nil,
@@ -7874,6 +7986,7 @@ module AnalyticsEvents
       limiter_type:,
       country_code:,
       phone_fingerprint:,
+      country_mismatch:,
       context:,
       otp_delivery_preference:,
       step_name:,

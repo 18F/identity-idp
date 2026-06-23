@@ -334,6 +334,15 @@ RSpec.describe Users::TwoFactorAuthenticationController do
         )
       end
 
+      it 'allows country mismatch in authentication context' do
+        @user.phone_configurations.first.update!(phone: '+44 7700 900123')
+
+        get :send_code, params: otp_delivery_form_sms
+
+        expect(Telephony).to have_received(:send_authentication_otp)
+        expect(response).to redirect_to(login_two_factor_path(**otp_preference_sms))
+      end
+
       it 'tracks the analytics events' do
         stub_analytics
         stub_attempts_tracker
