@@ -32,7 +32,7 @@ module Deploy
         local_path: geolocation_db_path,
       )
       download_from_secrets_s3_unless_exists(
-        s3_path: '/common/pwned-passwords.txt',
+        s3_path: '/common/pwned_passwords.txt',
         local_path: pwned_passwords_path,
       )
     end
