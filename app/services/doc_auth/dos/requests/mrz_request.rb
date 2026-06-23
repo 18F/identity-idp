@@ -14,11 +14,10 @@ module DocAuth
         attr_reader :mrz, :id_type
 
         def category
-          if id_type == Idp::Constants::DocumentTypes::PASSPORT
-            :book
-          elsif id_type == Idp::Constants::DocumentTypes::PASSPORT_CARD
-            :card
+          if id_type == Idp::Constants::DocumentTypes::PASSPORT_CARD
+            return :card
           end
+          :book
         end
 
         def http_method
