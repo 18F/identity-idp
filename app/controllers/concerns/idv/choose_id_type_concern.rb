@@ -18,7 +18,7 @@ module Idv
         end
       when Idp::Constants::DocumentTypes::MDL
         document_capture_session.request_mdl!
-      when Idp::Constants::DocumentTypes::STATE_ID_CARD
+      when *Idp::Constants::DocumentTypes::SUPPORTED_STATE_ID_TYPES
         document_capture_session.request_state_id!
       end
     end
