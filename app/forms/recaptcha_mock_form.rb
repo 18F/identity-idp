@@ -11,6 +11,6 @@ class RecaptchaMockForm < RecaptchaEnterpriseForm
   private
 
   def recaptcha_result
-    RecaptchaResult.new(success: true, assessment_id: SecureRandom.uuid, score:)
+    RecaptchaService::RecaptchaResult.new(success: true, assessment_id: SecureRandom.uuid, score:)
   end
 end
