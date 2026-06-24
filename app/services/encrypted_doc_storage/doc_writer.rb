@@ -11,7 +11,7 @@ module EncryptedDocStorage
       @s3_enabled = s3_enabled
     end
 
-    def write(issuer: nil, image: nil)
+    def write(image: nil)
       if image.blank?
         return Result.new(name: nil, encryption_key: nil)
       end
