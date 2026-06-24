@@ -273,13 +273,50 @@ RSpec.describe ProofingAgent::ProofingResult do
     end
   end
 
-  context 'when resolution_result is nil' do
+  context 'when id validation fails and resolution is skipped' do
     let(:resolution_result) { nil }
+    let(:aamva_result) { { success: false, vendor_name: 'TestVendor' } }
+    let(:mrz_result) { {} }
 
-    it 'does not raise and returns a failure reason' do
+    it 'does not raise and reports the id failure' do
       expect { subject.combined_result }.not_to raise_error
       expect(subject.combined_result[:success]).to be false
-      expect(subject.combined_result[:reason]).to eq('phone_check_fail')
+      expect(subject.combined_result[:reason]).to eq('id_fail')
+    end
+  end
+
+  context 'when system_error is explicitly provided' do
+    subject do
+      described_class.new(
+        proofing_agent_id:,
+        proofing_location_id:,
+        correlation_id:,
+        transaction_id:,
+        pii:,
+        service_provider_issuer:,
+        resolution_result:,
+        system_error: 'database_unavailable',
+      )
+    end
+
+    it 'returns failure with system_error reason' do
+      expect(subject.combined_result).to include(
+        success: false,
+        reason: 'system_error',
+      )
+    end
+  end
+
+  context 'when all vendor results are missing' do
+    let(:resolution_result) { nil }
+    let(:aamva_result) { nil }
+    let(:mrz_result) { nil }
+
+    it 'returns failure with system_error reason' do
+      expect(subject.combined_result).to include(
+        success: false,
+        reason: 'system_error',
+      )
     end
   end
 end

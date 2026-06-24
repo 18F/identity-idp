@@ -546,6 +546,57 @@ RSpec.describe ProofingAgentJob, type: :job do
       end
     end
 
+    context 'when Redis raises during the resolution proofing job' do
+      before do
+        allow(ResolutionProofingJob).to receive(:perform_now)
+          .and_raise(Redis::BaseConnectionError)
+      end
+
+      it 'stores a system_error result' do
+        perform
+
+        result = document_capture_session.reload.load_agent_proofed_user
+        expect(result[:success]).to be false
+        expect(result[:reason]).to eq('system_error')
+      end
+
+      it 'enqueues a ProofingAgentWebhookJob with success: false and system_error reason' do
+        expect { perform }.to have_enqueued_job(ProofingAgentWebhookJob).with(
+          success: false,
+          reason: 'system_error',
+          transaction_id: transaction_id,
+          correlation_id: correlation_id,
+          analytics_attributes: an_instance_of(Hash),
+        )
+      end
+    end
+
+    context 'when the resolution proofing result is nil' do
+      before do
+        allow_any_instance_of(DocumentCaptureSession).to receive(:load_proofing_result)
+          .and_return(nil)
+      end
+
+      it 'stores a system_error result' do
+        perform
+
+        result = document_capture_session.reload.load_agent_proofed_user
+        expect(result[:success]).to be false
+        expect(result[:reason]).to eq('system_error')
+      end
+    end
+
+    context 'when storing the proofing result raises a Redis error' do
+      before do
+        allow_any_instance_of(DocumentCaptureSession).to receive(:store_agent_proofed_user)
+          .and_raise(Redis::BaseConnectionError)
+      end
+
+      it 're-raises the error' do
+        expect { perform }.to raise_error(Redis::BaseConnectionError)
+      end
+    end
+
     context 'a stale job' do
       it 'bails and does not do any proofing' do
         instance.enqueued_at = 10.minutes.ago

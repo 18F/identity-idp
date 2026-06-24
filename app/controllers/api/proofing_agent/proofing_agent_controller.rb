@@ -14,6 +14,7 @@ module Api
       before_action :validate_required_headers
       before_action :validate_agent_id_and_location_id
       before_action :validate_transaction_id, only: [:result]
+      before_action :mock_system_error
       after_action :add_custom_headers_to_response
 
       def search_user
@@ -35,7 +36,7 @@ module Api
 
       def proof_user
         return render_user_not_found if user.blank?
-        return render_already_proofed if user_has_enhanced_profile?
+        return render_already_proofed if user_has_enhanced_profile? || user.proofing_agent_pending?
 
         if proofing_rate_limiter.limited? || ssn_rate_limiter.limited?
           analytics.rate_limit_reached(limiter_type: :idv_resolution, step_name: 'proof_user')
@@ -320,6 +321,24 @@ module Api
         track_failure(failure_type:, errors:)
 
         render json: errors, status: :bad_request
+      end
+
+      def mock_system_error
+        return if Identity::Hostdata.in_datacenter? && Identity::Hostdata.env == 'prod'
+
+        m = /system_error\+?(\d{3})?@example.com/.match(email)
+        return unless m
+
+        render json: {
+          success: false,
+          reason: 'system_error',
+          transaction_id:,
+        }, status: system_error_status_code(m[1])
+      end
+
+      def system_error_status_code(code)
+        status = code&.to_i
+        status&.positive? ? status : 503
       end
 
       def add_custom_headers_to_response

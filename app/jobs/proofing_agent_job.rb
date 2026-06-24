@@ -67,14 +67,24 @@ class ProofingAgentJob < ApplicationJob
       proofing_components[:document_check] = Idp::Constants::Vendors::PROOFING_AGENT
     end
 
-    document_capture_session.store_agent_proofed_user(proofing_result.combined_result)
+    begin
+      document_capture_session.store_agent_proofed_user(proofing_result.combined_result)
+    rescue Redis::BaseConnectionError, ActiveRecord::StatementInvalid => e
+      logger_info_hash(
+        name: 'ProofingAgent',
+        reason: 'system_error',
+        error: e.message,
+        transaction_id:,
+      )
+      raise
+    end
 
     success = combined_result[:success]
     reason = combined_result[:reason]
 
     if success
       ProofingAgent::SuccessEmailSender.new(user: user, analytics: analytics).call(
-        verified_at: document_capture_session.load_agent_proofed_user.verified_at,
+        verified_at: document_capture_session.load_agent_proofed_user&.verified_at,
         proofing_agent_id: proofing_agent_id,
         proofing_location_id: proofing_location_id,
         correlation_id: correlation_id,
@@ -179,15 +189,19 @@ class ProofingAgentJob < ApplicationJob
         { applicant_pii: }.to_json,
       )
 
-      resolution_result = call_resolution_proofing_job(
-        timer:,
-        result_id: SecureRandom.uuid,
-        encrypted_arguments: re_encrypted_arguments,
-        trace_id:,
-        user_id: user.id,
-        service_provider_issuer:,
-        proofing_vendor:,
-      )
+      resolution_result = begin
+        call_resolution_proofing_job(
+          timer:,
+          result_id: SecureRandom.uuid,
+          encrypted_arguments: re_encrypted_arguments,
+          trace_id:,
+          user_id: user.id,
+          service_provider_issuer:,
+          proofing_vendor:,
+        )
+      rescue Redis::BaseConnectionError
+        nil
+      end
 
       if resolution_result&.dig(:context, :stages, :resolution, :success) == true
         proofing_components[:residential_resolution_check] = resolution_result&.dig(
@@ -215,7 +229,7 @@ class ProofingAgentJob < ApplicationJob
           errors: resolution_result&.dig(:errors),
           last_name_spaced: applicant_pii&.dig(:last_name)&.include?(' '),
           opted_in_to_in_person_proofing: false,
-          proofing_results: resolution_result.to_h,
+          proofing_results: resolution_result&.to_h,
           ssn_is_unique: resolution_result&.dig(:ssn_is_unique),
           step: 'Proofing Agent Job',
           flow_path: 'Proofing Agent',
@@ -272,6 +286,7 @@ class ProofingAgentJob < ApplicationJob
       resolution_result:,
       aamva_result:,
       mrz_result:,
+      system_error: (source_check_succeeded && resolution_result.nil?) ? 'system_error' : nil,
       service_provider_issuer:,
     )
   end
@@ -323,7 +338,10 @@ class ProofingAgentJob < ApplicationJob
     mrz_client = if IdentityConfig.store.proofer_mock_fallback
                    DocAuth::Mock::DosPassportApiClient.new
                  else
-                   DocAuth::Dos::Requests::MrzRequest.new(mrz:)
+                   DocAuth::Dos::Requests::MrzRequest.new(
+                     mrz:,
+                     id_type: applicant_pii[:document_type_received],
+                   )
                  end
 
     timer.time('mrz') { mrz_client.fetch }

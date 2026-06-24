@@ -395,8 +395,9 @@ RSpec.describe Idv::ApiImageUploadForm do
           end
 
           before do
-            allow(DocAuth::Dos::Requests::MrzRequest).to receive(:new).with(mrz: pii[:mrz])
-              .and_return(mrz_request)
+            allow(DocAuth::Dos::Requests::MrzRequest).to receive(:new).with(
+              mrz: pii[:mrz], id_type: pii[:document_type_received],
+            ).and_return(mrz_request)
             allow(mrz_request).to receive(:fetch).and_return(mrz_response)
             form.submit
           end

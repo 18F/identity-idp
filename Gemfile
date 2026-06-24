@@ -20,13 +20,13 @@ gem 'bigdecimal'
 gem 'bootsnap', '~> 1.0', require: false
 gem 'browser'
 gem 'caxlsx', require: false
-gem 'concurrent-ruby'
+gem 'concurrent-ruby', '>= 1.3.7'
 gem 'connection_pool'
 gem 'csv'
 gem 'cssbundling-rails'
 gem 'devise', '~> 5.0.4'
 gem 'dotiw', '>= 4.0.1'
-gem 'faraday', '~> 2'
+gem 'faraday', '~> 2.14.3'
 gem 'faraday-retry'
 gem 'fugit'
 gem 'foundation_emails'
@@ -70,7 +70,7 @@ gem 'rqrcode'
 gem 'ruby-progressbar'
 gem 'ruby-saml'
 gem 'safe_target_blank', '>= 1.0.2'
-gem 'saml_idp', github: '18F/saml_idp', tag: 'v0.24.0-18f'
+gem 'saml_idp', github: '18F/saml_idp', tag: 'v0.24.2-18f'
 gem 'scrypt'
 gem 'simple_form', '>= 5.0.2'
 gem 'stringex', require: false
@@ -105,7 +105,7 @@ group :development, :test do
   gem 'knapsack'
   gem 'listen'
   gem 'net-http-persistent', '~> 4.0', require: false
-  gem 'nokogiri', '~> 1.19.1'
+  gem 'nokogiri', '~> 1.19.4'
   gem 'pg_query', require: false
   gem 'pry-byebug'
   gem 'pry-rails'
