@@ -11,6 +11,8 @@ RSpec.describe 'Hybrid Flow' do
   let(:fake_socure_docv_document_request_endpoint) { 'https://fake-socure.test/document-request' }
   let(:fake_analytics) { FakeAnalytics.new }
   let(:socure_docv_webhook_repeat_endpoints) { [] }
+  let(:idv_doc_auth_mdl_enabled_percent) { 0 }
+  let(:idv_socure_reason_codes_docv_mdl) { ['mdl_code3', 'mdl_code4'] }
 
   before do
     allow(IdentityConfig.store).to receive_messages(
@@ -31,6 +33,8 @@ RSpec.describe 'Hybrid Flow' do
       socure_docv_enabled: true,
       socure_docv_webhook_repeat_endpoints:,
       use_vot_in_sp_requests: true,
+      idv_doc_auth_mdl_enabled_percent:,
+      idv_socure_reason_codes_docv_mdl:,
     )
     socure_docv_webhook_repeat_endpoints.each { |endpoint| stub_request(:post, endpoint) }
     allow(FeatureManagement).to receive(:doc_capture_polling_enabled?).and_return(true)
@@ -152,6 +156,85 @@ RSpec.describe 'Hybrid Flow' do
         click_agree_and_continue
 
         validate_return_to_sp
+      end
+    end
+
+    context 'when an mDL is submitted' do
+      let(:idv_doc_auth_mdl_enabled_percent) { 100 }
+      before do
+        DocAuth::Mock::DocAuthMockClient.reset!
+      end
+
+      it 'proofs and hands off to mobile', js: true do
+        expect(SocureDocvRepeatWebhookJob).not_to receive(:perform_later)
+
+        perform_in_browser(:desktop) do
+          visit_idp_from_oidc_sp_with_ial2
+          sign_in_and_2fa_user(user)
+
+          complete_doc_auth_steps_before_hybrid_handoff_step
+          clear_and_fill_in(:doc_auth_phone, phone_number)
+          click_send_link
+        end
+
+        expect(@sms_link).to be_present
+
+        perform_in_browser(:mobile) do
+          visit @sms_link
+
+          expect(page).to have_current_path(idv_hybrid_mobile_choose_id_type_url)
+          choose(t('doc_auth.forms.id_type_preference.mdl'))
+          click_on t('forms.buttons.continue')
+
+          expect(page).to have_current_path(idv_hybrid_mobile_socure_document_capture_url)
+
+          click_on t('idv.mdl.button')
+          expect(page).to have_current_path(fake_socure_document_capture_app_url)
+          socure_docv_upload_documents(docv_transaction_token: @docv_transaction_token)
+          visit idv_hybrid_mobile_socure_document_capture_update_url
+
+          expect(page).to have_current_path(
+            idv_hybrid_mobile_socure_document_capture_errors_url(
+              transaction_token: @docv_transaction_token,
+            ),
+          )
+
+          expect(page).to have_content(t('doc_auth.errors.verify_drivers_license_heading'))
+
+          click_on t('idv.failure.button.warning')
+
+          expect(page).to have_current_path(idv_hybrid_mobile_socure_document_capture_url)
+          expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
+
+          remove_request_stub(@docv_stub)
+          @docv_stub = stub_docv_verification_data_pass(
+            docv_transaction_token: @docv_transaction_token,
+            reason_codes: idv_socure_reason_codes_docv_mdl.push('random_code'),
+            user:,
+          )
+          click_on t('idv.mdl.button')
+          socure_docv_upload_documents(
+            docv_transaction_token: @docv_transaction_token,
+          )
+          visit idv_hybrid_mobile_socure_document_capture_update_url
+
+          expect(page).to have_current_path(idv_hybrid_mobile_capture_complete_url)
+          expect(page).to have_content(strip_nbsp(t('doc_auth.headings.capture_complete')))
+          expect(page).to have_text(t('doc_auth.instructions.switch_back'))
+          expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
+        end
+
+        perform_in_browser(:desktop) do
+          expect(page).to_not have_content(t('doc_auth.headings.text_message'), wait: 10)
+          expect(page).to have_current_path(idv_ssn_path)
+          expect(@analytics).to have_logged_event(:idv_socure_document_request_submitted)
+          expect(@analytics).to have_logged_event(:idv_socure_verification_data_requested)
+          expect(@analytics).to have_logged_event(
+            'IdV: doc auth image upload vendor pii validation',
+          )
+          fill_out_ssn_form_ok
+          click_idv_continue
+        end
       end
     end
 
