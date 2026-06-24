@@ -60,7 +60,7 @@ module ProofingAgent
     end
 
     def phone_precheck_attempted?
-      resolution_result.dig(:context, :stages, :phone_precheck).present?
+      resolution_result&.dig(:context, :stages, :phone_precheck).present?
     end
 
     private
@@ -85,7 +85,7 @@ module ProofingAgent
     end
 
     def phone_precheck_passed?
-      resolution_result[:phone_precheck_passed]
+      resolution_result&.dig(:phone_precheck_passed)
     end
 
     def aamva_success?
