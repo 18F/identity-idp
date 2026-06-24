@@ -2,6 +2,16 @@ require 'rails_helper'
 
 RSpec.describe Idv::DocumentCaptureConcern, :controller do
   let(:acr_values) { Saml::Idp::Constants::IAL_VERIFIED_ACR }
+  let(:passport_requested) { false }
+  let(:document_capture_session) do
+    create(
+      :document_capture_session,
+      doc_auth_vendor: Idp::Constants::Vendors::MOCK,
+      document_type_requested: passport_requested ?
+        Idp::Constants::DocumentTypes::PASSPORT : Idp::Constants::DocumentTypes::STATE_ID_CARD,
+    )
+  end
+  let(:user) { document_capture_session.user }
 
   idv_document_capture_controller_class = Class.new(ApplicationController) do
     def self.name
@@ -18,13 +28,9 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
   describe '#handle_stored_result' do
     controller(idv_document_capture_controller_class) do
     end
-
-    let(:user) { build(:user) }
-    let(:document_capture_session) { instance_double(DocumentCaptureSession) }
     let(:mrz_status) { nil }
     let(:selfie_status) { :not_processed }
     let(:success) { true }
-    let(:passport_requested) { false }
     let(:doc_auth_success) { true }
     let(:attention_with_barcode) { false }
     let(:pii_data) do
@@ -32,6 +38,7 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
         first_name: 'Test',
         last_name: 'User',
         state: 'MD',
+        document_type_received: Idp::Constants::DocumentTypes::DRIVERS_LICENSE,
       }
     end
     let(:passport_pii_data) do
@@ -65,10 +72,6 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
       allow(controller).to receive(:current_user).and_return(user)
       allow(controller).to receive(:flash).and_return({})
       allow(controller).to receive(:track_document_issuing_state)
-      allow(document_capture_session).to receive(:passport_requested?)
-        .and_return(passport_requested)
-      allow(document_capture_session).to receive(:doc_auth_vendor)
-        .and_return(Idp::Constants::Vendors::MOCK)
 
       resolution_result = Component::Parser.new(acr_values:).parse
       allow(controller).to receive(:resolved_authn_context_result).and_return(resolution_result)
@@ -265,7 +268,6 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
     end
 
     let(:aamva_status) { nil }
-    let(:document_capture_session) { instance_double(DocumentCaptureSession) }
     let(:aamva_enabled) { true }
     let(:doc_auth_success) { true }
     let(:selfie_status) { :not_processed }
@@ -389,7 +391,6 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
     end
 
     let(:mrz_status) { nil }
-    let(:document_capture_session) { instance_double(DocumentCaptureSession) }
     let(:passport_requested) { false }
     let(:doc_auth_success) { true }
     let(:selfie_status) { :not_processed }
@@ -432,10 +433,6 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
       stored_result = EncryptedRedisStructStorage.load(id, type: DocumentCaptureSessionResult)
       allow(controller).to receive(:stored_result).and_return(stored_result)
       allow(controller).to receive(:document_capture_session).and_return(document_capture_session)
-      allow(document_capture_session).to receive(:passport_requested?)
-        .and_return(passport_requested)
-      allow(document_capture_session).to receive(:doc_auth_vendor)
-        .and_return(Idp::Constants::Vendors::MOCK)
     end
 
     context 'when passport not requested' do
