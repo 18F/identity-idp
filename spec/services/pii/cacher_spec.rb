@@ -124,6 +124,35 @@ RSpec.describe Pii::Cacher do
         subject.save('incorrect password', active_profile)
       end.to raise_error(Encryption::EncryptionError)
     end
+
+    context 'when the source_check for a passport is incorrect' do
+      it 'corrects the source_check for a passport' do
+        profile = create(:profile, :active, :verified, user: user)
+        profile.proofing_components = {
+          'document_type' => 'passport',
+          'source_check' => 'incorrect:source',
+        }
+        profile.save!
+
+        subject.save(password, profile)
+
+        expect(profile.reload.proofing_components['source_check']).to eq('dos:passport')
+      end
+
+      it 'does not correct the source_check for a passport created after May 1, 2026' do
+        profile = create(:profile, :active, :verified, user: user)
+        profile.proofing_components = {
+          'document_type' => 'passport',
+          'source_check' => 'incorrect:source',
+        }
+        profile.created_at = DateTime.new(2026, 5, 2)
+        profile.save!
+
+        subject.save(password, profile)
+
+        expect(profile.reload.proofing_components['source_check']).to eq('incorrect:source')
+      end
+    end
   end
 
   describe '#fetch' do
