@@ -207,15 +207,41 @@ RSpec.describe 'Hybrid Flow' do
           expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
 
           remove_request_stub(@docv_stub)
-          @docv_stub = stub_docv_verification_data_pass(
+          @docv_stub = stub_docv_verification_data_fail_with(
             docv_transaction_token: @docv_transaction_token,
-            reason_codes: idv_socure_reason_codes_docv_mdl.push('random_code'),
+            reason_codes: idv_socure_reason_codes_docv_mdl.prepend('R899'),
             user:,
           )
           click_on t('idv.mdl.button')
           socure_docv_upload_documents(
             docv_transaction_token: @docv_transaction_token,
           )
+          visit idv_hybrid_mobile_socure_document_capture_update_url
+
+          expect(page).to have_current_path(
+            idv_hybrid_mobile_socure_document_capture_errors_url(
+              transaction_token: @docv_transaction_token,
+            ),
+          )
+
+          expect(page).to have_content(t('doc_auth.errors.state_id_verification'))
+
+          click_on t('idv.failure.button.warning')
+
+          expect(page).to have_current_path(idv_hybrid_mobile_socure_document_capture_url)
+          expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
+
+          remove_request_stub(@docv_stub)
+          @docv_stub = stub_docv_verification_data_pass(
+            docv_transaction_token: @docv_transaction_token,
+            reason_codes: idv_socure_reason_codes_docv_mdl.push('random_code'),
+            user:,
+          )
+
+          click_on t('idv.mdl.button')
+          expect(page).to have_current_path(fake_socure_document_capture_app_url)
+          socure_docv_upload_documents(docv_transaction_token: @docv_transaction_token)
+
           visit idv_hybrid_mobile_socure_document_capture_update_url
 
           expect(page).to have_current_path(idv_hybrid_mobile_capture_complete_url)
