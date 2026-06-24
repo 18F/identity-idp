@@ -43,15 +43,15 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
       document_type_requested:,
     )
     allow(IdentityConfig.store).to receive_messages(
-      socure_docv_enabled: socure_docv_enabled,
+      socure_docv_enabled:,
       socure_docv_document_request_endpoint: fake_socure_endpoint,
       doc_auth_vendor: idv_vendor,
       doc_auth_vendor_default: idv_vendor,
       doc_auth_vendor_switching_enabled: vendor_switching_enabled,
       doc_auth_selfie_vendor_default: idv_vendor,
       doc_auth_selfie_vendor_switching_enabled: vendor_switching_enabled,
-      idv_socure_docv_flow_id_w_selfie: idv_socure_docv_flow_id_w_selfie,
-      idv_socure_docv_flow_id_only: idv_socure_docv_flow_id_only,
+      idv_socure_docv_flow_id_w_selfie:,
+      idv_socure_docv_flow_id_only:,
     )
 
     user_session = {}
@@ -304,6 +304,41 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
               )
           end
         end
+
+        context 'mdl requested' do
+          let(:document_type_requested) { Idp::Constants::DocumentTypes::MDL }
+
+          it 'creates a DocumentRequest' do
+            expect(request_class).to have_received(:new)
+              .with(
+                customer_user_id: user.uuid,
+                document_capture_session: subject.document_capture_session,
+                redirect_url: idv_socure_document_capture_update_url,
+                language: expected_language,
+                liveness_checking_required: false,
+              )
+          end
+
+          it 'creates a DocumentRequest with mdl requested' do
+            expect(WebMock).to have_requested(:post, fake_socure_endpoint)
+              .with(
+                body: JSON.generate(
+                  {
+                    config: {
+                      documentType: 'digital_id',
+                      redirect: {
+                        method: 'GET',
+                        url: idv_socure_document_capture_update_url,
+                      },
+                      language: :en,
+                      useCaseKey: idv_socure_docv_flow_id_only,
+                    },
+                    customerUserId: user.uuid,
+                  },
+                ),
+              )
+          end
+        end
       end
 
       context 'selfie required' do
@@ -542,6 +577,19 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
 
         expect(response).to redirect_to(idv_ssn_path)
         expect(@analytics).to have_logged_event('IdV: doc auth document_capture submitted')
+      end
+
+      context 'document_type_received is different than document_type_requested' do
+        let(:document_type_received) { Idp::Constants::DocumentTypes::PASSPORT }
+
+        it 'redirects to the errors page' do
+          get :update
+
+          expect(response).to redirect_to idv_socure_document_capture_errors_url(
+            transaction_token: socure_docv_transaction_token,
+          )
+          expect(@analytics).to have_logged_event('IdV: doc auth document_capture submitted')
+        end
       end
     end
 
