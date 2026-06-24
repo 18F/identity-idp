@@ -8,6 +8,7 @@ class OpenidConnectConfigurationPresenter
       acr_values_supported: Saml::Idp::Constants::VALID_AUTHN_CONTEXTS,
       claims_supported: claims_supported,
       grant_types_supported: %w[authorization_code],
+      prompt_values_supported: %w[login select_account create],
       response_types_supported: %w[code],
       scopes_supported: OpenidConnectAttributeScoper::VALID_SCOPES,
       subject_types_supported: %w[pairwise],

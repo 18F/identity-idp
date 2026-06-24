@@ -285,9 +285,14 @@ RSpec.describe OpenidConnectAuthorizeForm do
       end
     end
 
-    context 'when prompt is not select_account or login' do
+    context 'when prompt is not select_account, login, or create' do
       let(:prompt) { 'aaa' }
       it { expect(valid?).to eq(false) }
+    end
+
+    context 'when prompt is create' do
+      let(:prompt) { 'create' }
+      it { expect(valid?).to eq(true) }
     end
 
     context 'when prompt is not given' do

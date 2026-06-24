@@ -100,6 +100,26 @@ RSpec.feature 'IAL1 Single Sign On' do
     end
   end
 
+  context 'when the SP requests the account creation flow', email: true do
+    it 'sends the user straight to account creation and back to the SP when complete' do
+      email = 'test@test.com'
+
+      visit saml_authn_request_url(params: { prompt: 'create' })
+
+      expect(page).to have_current_path(sign_up_email_path)
+
+      submit_form_with_valid_email(email)
+      click_confirmation_link_in_email(email)
+      submit_form_with_valid_password
+      set_up_2fa_with_valid_phone
+      skip_second_mfa_prompt
+      click_agree_and_continue
+
+      expect(page).to have_current_path complete_saml_path
+      expect(page.get_rack_session.keys).to include('sp')
+    end
+  end
+
   context 'fully signed up user authenticates new sp' do
     let(:user) { create(:user, :fully_registered) }
     let(:saml_authn_request) { saml_authn_request_url }

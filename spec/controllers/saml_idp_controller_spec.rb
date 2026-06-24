@@ -2318,6 +2318,17 @@ RSpec.describe SamlIdpController do
         expect(session[:sp][:request_id]).to eq sp_request_id
       end
 
+      it 'redirects to account creation when prompt=create' do
+        get :auth, params: {
+          SAMLRequest: CGI.unescape(saml_request(saml_settings)),
+          path_year: path_year,
+          prompt: 'create',
+        }
+        sp_request_id = ServiceProviderRequestProxy.last.uuid
+        expect(response).to redirect_to sign_up_email_path
+        expect(session[:sp][:request_id]).to eq sp_request_id
+      end
+
       it 'logs SAML Auth Request but does not log SAML Auth' do
         stub_analytics
 
