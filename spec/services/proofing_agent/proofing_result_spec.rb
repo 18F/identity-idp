@@ -273,6 +273,18 @@ RSpec.describe ProofingAgent::ProofingResult do
     end
   end
 
+  context 'when id validation fails and resolution is skipped' do
+    let(:resolution_result) { nil }
+    let(:aamva_result) { { success: false, vendor_name: 'TestVendor' } }
+    let(:mrz_result) { {} }
+
+    it 'does not raise and reports the id failure' do
+      expect { subject.combined_result }.not_to raise_error
+      expect(subject.combined_result[:success]).to be false
+      expect(subject.combined_result[:reason]).to eq('id_fail')
+    end
+  end
+
   context 'when system_error is explicitly provided' do
     subject do
       described_class.new(
