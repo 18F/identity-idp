@@ -552,14 +552,13 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
 
             click_on t('idv.failure.button.warning')
 
-
             expect(page).to have_current_path(idv_socure_document_capture_url)
             expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
 
             remove_request_stub(@docv_stub)
             @docv_stub = stub_docv_verification_data_pass(
               docv_transaction_token: @docv_transaction_token,
-              reason_codes: idv_socure_reason_codes_docv_mdl.push(['random_code']),
+              reason_codes: idv_socure_reason_codes_docv_mdl.push('random_code'),
               user:,
             )
             click_on t('idv.mdl.button')

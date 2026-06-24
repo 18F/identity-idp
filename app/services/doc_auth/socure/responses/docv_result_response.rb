@@ -146,7 +146,7 @@ module DocAuth
               issuing_country_code:,
               nationality_code: issuing_country_code,
               document_number: get_data(DATA_PATHS[:document_number]),
-              document_type_received: document_type_received,
+              document_type_received:,
               passport_expiration: expiration_date,
               sex: nil,
               birth_place: nil,
