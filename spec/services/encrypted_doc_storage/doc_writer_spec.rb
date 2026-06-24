@@ -28,6 +28,9 @@ RSpec.describe EncryptedDocStorage::DocWriter do
         result = subject.write(image:)
         result1 = subject.write(image:)
 
+        File.delete(file_path(result.name))
+        File.delete(file_path(result1.name))
+
         expect(result.name).not_to eq(result1.name)
         expect(result.encryption_key).not_to eq(result1.encryption_key)
       end

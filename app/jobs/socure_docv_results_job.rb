@@ -292,7 +292,7 @@ class SocureDocvResultsJob < ApplicationJob
   end
 
   def socure_doc_escrow_enabled?
-    sp&.attempts_api_enabled? && IdentityConfig.store.socure_doc_escrow_enabled
+    FeatureManagement.doc_escrow_enabled?(sp)
   end
 
   def doc_escrow_name

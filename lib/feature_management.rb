@@ -197,8 +197,8 @@ class FeatureManagement
 
   def self.doc_escrow_enabled?(service_provider)
     IdentityConfig.store.doc_escrow_enabled && (
-      service_provider&.attempts_api_enabled? ||
-        IdentityConfig.store.historical_attempts_api_enabled
+      IdentityConfig.store.historical_attempts_api_enabled ||
+      service_provider&.attempts_api_enabled?
     )
   end
 
