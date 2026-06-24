@@ -165,8 +165,8 @@ module Idv
           .include?(document_type_received)
       when Idp::Constants::DocumentTypes::PASSPORT
         document_type_received == Idp::Constants::DocumentTypes::PASSPORT
-      when Idp::Constants::DocumentTypes::MOBILE_DRIVERS_LICENSE
-        document_type_received == Idp::Constants::DocumentTypes::MOBILE_DRIVERS_LICENSE
+      when Idp::Constants::DocumentTypes::MDL
+        document_type_received == Idp::Constants::DocumentTypes::MDL
       end
     end
 
