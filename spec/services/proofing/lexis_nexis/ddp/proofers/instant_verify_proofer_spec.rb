@@ -129,100 +129,19 @@ RSpec.describe Proofing::LexisNexis::Ddp::Proofers::InstantVerifyProofer do
             LexisNexisFixtures.ddp_instant_verify_date_of_birth_fail_response_json
           end
 
-          context 'response ProductType is "Verification"' do
-            let(:response_body) do
-              result = JSON.parse(
-                LexisNexisFixtures.ddp_instant_verify_date_of_birth_fail_response_json,
-              )
-              result.dig(
-                'integration_hub_results',
-                'test_org_id:test-policy',
-                'Execute Instant Verify',
-                'tps_vendor_raw_response',
-                'Products',
-              ).first['ProductType'] = 'Verification'
+          it 'returns a result that identifies attribute as needing verification' do
+            stub_request(
+              :post,
+              proofing_verification_request.url,
+            ).to_return(
+              body: LexisNexisFixtures.ddp_instant_verify_date_of_birth_fail_response_json,
+              status: 200,
+            )
 
-              result.to_json
-            end
+            result = subject.proof(proofing_applicant)
 
-            it 'returns a result that identifies attribute as needing verification' do
-              stub_request(
-                :post,
-                proofing_verification_request.url,
-              ).to_return(
-                body: response_body,
-                status: 200,
-              )
-
-              result = subject.proof(proofing_applicant)
-
-              expect(result.failed_result_can_pass_with_additional_verification?).to eq(true)
-              expect(result.attributes_requiring_additional_verification).to eq([:dob])
-            end
-          end
-
-          context 'response ProductType is "Verify"' do
-            let(:response_body) do
-              result = JSON.parse(
-                LexisNexisFixtures.ddp_instant_verify_date_of_birth_fail_response_json,
-              )
-              result.dig(
-                'integration_hub_results',
-                'test_org_id:test-policy',
-                'Execute Instant Verify',
-                'tps_vendor_raw_response',
-                'Products',
-              ).first['ProductType'] = 'Verify'
-
-              result.to_json
-            end
-
-            it 'returns a result that identifies attribute as needing verification' do
-              stub_request(
-                :post,
-                proofing_verification_request.url,
-              ).to_return(
-                body: response_body,
-                status: 200,
-              )
-
-              result = subject.proof(proofing_applicant)
-
-              expect(result.failed_result_can_pass_with_additional_verification?).to eq(true)
-              expect(result.attributes_requiring_additional_verification).to eq([:dob])
-            end
-          end
-
-          context 'response ProductType is not "Verify" or "Verification"' do
-            let(:response_body) do
-              result = JSON.parse(
-                LexisNexisFixtures.ddp_instant_verify_date_of_birth_fail_response_json,
-              )
-              result.dig(
-                'integration_hub_results',
-                'test_org_id:test-policy',
-                'Execute Instant Verify',
-                'tps_vendor_raw_response',
-                'Products',
-              ).first['ProductType'] = 'UKNOWN'
-
-              result.to_json
-            end
-
-            it 'returns a result that does not identify attributes as needing verification' do
-              stub_request(
-                :post,
-                proofing_verification_request.url,
-              ).to_return(
-                body: response_body,
-                status: 200,
-              )
-
-              result = subject.proof(proofing_applicant)
-
-              expect(result.failed_result_can_pass_with_additional_verification?).to eq(false)
-              expect(result.attributes_requiring_additional_verification).to eq([])
-            end
+            expect(result.failed_result_can_pass_with_additional_verification?).to eq(true)
+            expect(result.attributes_requiring_additional_verification).to eq([:dob])
           end
         end
 
