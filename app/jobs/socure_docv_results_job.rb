@@ -124,7 +124,7 @@ class SocureDocvResultsJob < ApplicationJob
   )
     image_data = {}
 
-    if socure_doc_escrow_enabled? &&
+    if doc_escrow_enabled? &&
        docv_result_response.instance_of?(DocAuth::Socure::Responses::DocvResultResponse)
 
       job_data = {
@@ -291,12 +291,12 @@ class SocureDocvResultsJob < ApplicationJob
     @sp ||= ServiceProvider.find_by(issuer: document_capture_session.issuer)
   end
 
-  def socure_doc_escrow_enabled?
+  def doc_escrow_enabled?
     FeatureManagement.doc_escrow_enabled?(sp)
   end
 
   def doc_escrow_name
-    "#{sp.issuer}/#{SecureRandom.uuid}"
+    "encrypted_images/#{SecureRandom.uuid}"
   end
 
   def doc_escrow_key
