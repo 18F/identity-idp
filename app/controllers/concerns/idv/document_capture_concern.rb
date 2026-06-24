@@ -167,6 +167,8 @@ module Idv
         document_type_received == Idp::Constants::DocumentTypes::PASSPORT
       when Idp::Constants::DocumentTypes::MDL
         document_type_received == Idp::Constants::DocumentTypes::MDL
+      else
+        false
       end
     end
 
