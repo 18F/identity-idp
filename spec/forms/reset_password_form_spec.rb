@@ -273,7 +273,7 @@ RSpec.describe ResetPasswordForm, type: :model do
       let(:user) { create(:user, reset_password_sent_at: Time.zone.now) }
 
       before do
-        user.requesting_reset_email = user.email_addresses.first.email
+        user.requesting_reset_email_address = user.email_addresses.first
         user.send_reset_password_instructions
         user.reload
       end
@@ -290,7 +290,7 @@ RSpec.describe ResetPasswordForm, type: :model do
       end
 
       before do
-        user.requesting_reset_email = 'secondary@example.com'
+        user.requesting_reset_email_address = secondary_email_address
         user.send_reset_password_instructions
         user.reload
 
@@ -318,7 +318,7 @@ RSpec.describe ResetPasswordForm, type: :model do
       end
 
       before do
-        user.requesting_reset_email = 'secondary@example.com'
+        user.requesting_reset_email_address = secondary_email_address
         user.send_reset_password_instructions
         user.reload
       end
@@ -329,11 +329,11 @@ RSpec.describe ResetPasswordForm, type: :model do
       end
     end
 
-    context 'when no reset_password_email was ever recorded (legacy token)' do
+    context 'when no reset_password_email_address was ever recorded (legacy token)' do
       let(:user) { create(:user, reset_password_sent_at: Time.zone.now) }
 
       it 'does not block the reset on that basis alone' do
-        expect(user.reset_password_email).to be_blank
+        expect(user.reset_password_email_address).to be_blank
 
         expect(result.success?).to eq(true)
       end

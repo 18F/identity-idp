@@ -371,7 +371,7 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
           email: 'secondary@example.com',
         )
 
-        user.requesting_reset_email = 'secondary@example.com'
+        user.requesting_reset_email_address = secondary_email_address
         raw_reset_token = user.send_reset_password_instructions
         user.reload
 
@@ -413,7 +413,7 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
           email: 'secondary@example.com',
         )
 
-        user.requesting_reset_email = 'secondary@example.com'
+        user.requesting_reset_email_address = secondary_email_address
         raw_reset_token = user.send_reset_password_instructions
         user.reload
         original_digest = user.encrypted_password_digest_multi_region
@@ -444,7 +444,7 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
           email_addresses: [create(:email_address, email: user.email_addresses.first.email)],
         )
 
-        user.requesting_reset_email = user.email_addresses.first.email
+        user.requesting_reset_email_address = user.email_addresses.first
         raw_reset_token = user.send_reset_password_instructions
         user.reload
 

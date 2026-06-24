@@ -2098,8 +2098,8 @@ RSpec.describe User do
   describe '#send_reset_password_instructions' do
     let(:user) { create(:user, email: 'primary@example.com') }
 
-    context 'when requesting_reset_email is set' do
-      before { user.requesting_reset_email = 'secondary@example.com' }
+    context 'when requesting_reset_email_address is set' do
+      before { user.requesting_reset_email_address = 'secondary@example.com' }
 
       it 'stores the requesting email, not the primary email' do
         user.send_reset_password_instructions
@@ -2108,7 +2108,7 @@ RSpec.describe User do
       end
     end
 
-    context 'when requesting_reset_email is not set' do
+    context 'when requesting_reset_email_address is not set' do
       it 'falls back to the primary email attribute' do
         user.send_reset_password_instructions
 

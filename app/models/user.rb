@@ -600,7 +600,7 @@ class User < ApplicationRecord
     # how Devise internally uses `save(validate: false)` when setting reset_password_token.
 
     # rubocop:disable Rails/SkipsModelValidations
-    update_column(:reset_password_email_address_id, @requesting_reset_email_address&.id || email)
+    update_column(:reset_password_email_address_id, @requesting_reset_email_address&.id)
     # rubocop:enable Rails/SkipsModelValidations
     token
   end
