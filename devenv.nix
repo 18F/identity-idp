@@ -8,6 +8,15 @@
 
 let
   pkgs-unstable = import inputs.nixpkgs-unstable { system = pkgs.stdenv.system; config.allowUnfree = true; };
+  # google-chrome has no aarch64-linux build; fall back to chromium there.
+  chromeBrowser =
+    if pkgs.stdenv.hostPlatform.isLinux && pkgs.stdenv.hostPlatform.isAarch64
+    then pkgs-unstable.chromium
+    else pkgs-unstable.google-chrome;
+  chromeBinary =
+    if pkgs.stdenv.hostPlatform.isLinux && pkgs.stdenv.hostPlatform.isAarch64
+    then "${chromeBrowser}/bin/chromium"
+    else "${chromeBrowser}/bin/google-chrome-stable";
 in
 {
   packages = with pkgs; [
@@ -21,7 +30,7 @@ in
     libyaml
     openssl
     pkgs-unstable.chromedriver
-    pkgs-unstable.google-chrome
+    chromeBrowser
     ssm-session-manager-plugin
     yubikey-manager
     zlib
@@ -69,7 +78,7 @@ in
   env = {
     AWS_VAULT_KEYCHAIN_NAME = "login";
     AWS_VAULT_PROMPT = "ykman";
-    NIX_GOOGLE_CHROME = "${pkgs-unstable.google-chrome}/bin/google-chrome-stable";
+    NIX_GOOGLE_CHROME = chromeBinary;
   };
 
   git-hooks.hooks = {

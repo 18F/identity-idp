@@ -6,6 +6,20 @@ require 'extensions/capybara/node/simple'
 # temporary fix for local development feature tests
 # remove when we get a new working version of Chromedriver
 
+# When a chromedriver binary is already on PATH (e.g. provided by devenv/Nix),
+# point Selenium at it explicitly. Otherwise Selenium falls back to its bundled
+# `selenium-manager` helper to locate a driver. selenium-manager ships a macOS
+# universal binary (x86_64 + arm64) but only an x86_64 build for Linux, so on
+# aarch64-linux it cannot execute and raises `NoSuchDriverError`. On platforms
+# where chromedriver is not on PATH (typical macOS/CI), this returns nil and
+# Selenium behaves as before.
+def chromedriver_service
+  path = ENV['CHROMEDRIVER_PATH'].presence || `command -v chromedriver 2>/dev/null`.strip.presence
+  return nil if path.nil?
+
+  Selenium::WebDriver::Service.chrome(path: path)
+end
+
 Capybara.register_driver :headless_chrome do |app|
   options = Selenium::WebDriver::Chrome::Options.new
   options.binary = ENV['NIX_GOOGLE_CHROME'] if ENV.key?('NIX_GOOGLE_CHROME')
@@ -18,7 +32,8 @@ Capybara.register_driver :headless_chrome do |app|
 
   Capybara::Selenium::Driver.new app,
                                  browser: :chrome,
-                                 options: options
+                                 options: options,
+                                 service: chromedriver_service
 end
 Capybara.javascript_driver = :headless_chrome
 
@@ -40,7 +55,8 @@ Capybara.register_driver(:headless_chrome_mobile) do |app|
 
   Capybara::Selenium::Driver.new app,
                                  browser: :chrome,
-                                 options: options
+                                 options: options,
+                                 service: chromedriver_service
 end
 
 Capybara.server = :puma, { Silent: true }
