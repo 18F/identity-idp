@@ -41,13 +41,13 @@ RSpec.describe Idv::ChooseIdTypeConcern, :controller do
     end
   end
 
-  describe '#set_passport_requested' do
+  describe '#set_document_type_requested' do
     context 'when chosen_id_type is "passport"' do
       let(:document_type_chosen) { 'passport' }
 
       before do
         allow(controller).to receive(:params).and_return(parameters)
-        subject.set_passport_requested
+        subject.set_document_type_requested
       end
 
       it 'updates the document_capture_session passport status to "requested"' do
@@ -105,7 +105,7 @@ RSpec.describe Idv::ChooseIdTypeConcern, :controller do
 
       before do
         allow(controller).to receive(:params).and_return(parameters)
-        subject.set_passport_requested
+        subject.set_document_type_requested
       end
 
       it 'updates the document_capture_session passport status to "not_requested"' do
