@@ -4,14 +4,15 @@ require 'rails_helper'
 
 RSpec.describe SocureDocvResultsJob do
   let(:job) { described_class.new }
-  let(:user) { create(:user) }
   let(:attempts_api_tracker) { AttemptsApiTrackingHelper::FakeAttemptsTracker.new }
   let(:fraud_opt_tracker) { AttemptsApiTrackingHelper::FakeAttemptsTracker.new }
   let(:sp) { create(:service_provider, app_id: 'Test123') }
   let(:socure_docv_transaction_token) { 'abcd' }
   let(:socure_user_id) { 'socure_user_id' }
   let(:socure_reference_id) { SecureRandom.uuid }
-  let(:document_capture_session) { DocumentCaptureSession.create(user:) }
+  let(:document_type_requested) { Idp::Constants::DocumentTypes::STATE_ID_CARD }
+  let(:document_capture_session) { create(:document_capture_session, document_type_requested:) }
+  let(:user) { document_capture_session.user }
   let(:document_capture_session_uuid) { document_capture_session.uuid }
   let(:socure_idplus_base_url) { 'https://example.com' }
   let(:dos_passport_mrz_endpoint) { 'https://mrz.example.com' }
@@ -600,9 +601,7 @@ RSpec.describe SocureDocvResultsJob do
           end
 
           context 'when a passport was requested' do
-            before do
-              document_capture_session.update(document_type_requested: Idp::Constants::DocumentTypes::PASSPORT)
-            end
+            let(:document_type_requested) { Idp::Constants::DocumentTypes::PASSPORT }
 
             it 'doc auth fails' do
               perform
@@ -756,11 +755,7 @@ RSpec.describe SocureDocvResultsJob do
               end
 
               context 'when a passport was requested' do
-                before do
-                  document_capture_session.update!(
-                    document_type_requested: Idp::Constants::DocumentTypes::PASSPORT,
-                  )
-                end
+                let(:document_type_requested) { Idp::Constants::DocumentTypes::PASSPORT }
 
                 it 'result succeeds' do
                   perform
