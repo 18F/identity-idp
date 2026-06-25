@@ -51,8 +51,20 @@ module Idv
     end
 
     def locals_attrs(presenter:, form_submit_url: nil)
-      auto_check_value = document_capture_session.document_type_requested&.to_sym
-      auto_check_value = :state_id_card if disable_passports? && auto_check_value != :mdl
+      auto_check_value = case document_capture_session.document_type_requested
+                        when Idp::Constants::DocumentTypes::MDL
+                          :mdl
+                        when *Idp::Constants::DocumentTypes::SUPPORTED_STATE_ID_TYPES
+                          :state_id_card
+                        when Idp::Constants::DocumentTypes::PASSPORT
+                          if disable_passports?
+                            :state_id_card
+                          else
+                            :passport
+                          end
+                        else
+                          :state_id_card
+                        end
 
       {
         presenter:,
