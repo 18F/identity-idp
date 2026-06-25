@@ -625,7 +625,7 @@ module Features
       expect(last_email.html_part.body).to have_content(
         t(
           'user_mailer.reset_password_instructions.footer',
-          expires: (Devise.reset_password_within / 60),
+          expires: Devise.reset_password_within.in_minutes.to_i,
         ),
       )
       open_last_email
