@@ -11,6 +11,10 @@ RSpec.describe AccountsController do
         :before,
         :confirm_user_is_not_suspended,
       )
+      expect(subject).to have_actions(
+        :before,
+        :confirm_password_change_not_required,
+      )
     end
   end
 
@@ -151,6 +155,18 @@ RSpec.describe AccountsController do
         get :show
 
         expect(response).to redirect_to(user_please_call_url)
+      end
+    end
+
+    context 'when a password change is required' do
+      it 'redirects to the manage password page' do
+        user = create(:user, :fully_registered)
+
+        sign_in user
+        session[:redirect_to_change_password] = true
+        get :show
+
+        expect(response).to redirect_to(manage_password_url)
       end
     end
 
