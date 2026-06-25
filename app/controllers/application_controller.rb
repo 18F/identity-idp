@@ -607,4 +607,10 @@ class ApplicationController < ActionController::Base
 
     redirect_to user_please_call_url
   end
+
+  def confirm_password_change_not_required
+    return unless session[:redirect_to_change_password]
+
+    redirect_to manage_password_url
+  end
 end
