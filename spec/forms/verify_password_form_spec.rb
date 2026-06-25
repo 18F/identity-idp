@@ -38,6 +38,7 @@ RSpec.describe VerifyPasswordForm, type: :model do
           expect(profile).to receive(:reencrypt_user_proofing_events).with(
             password: attempted_password,
             attempt_events: decrypted_attempt_events,
+            personal_key: String,
           )
 
           form.submit

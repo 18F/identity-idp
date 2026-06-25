@@ -70,7 +70,7 @@ gem 'rqrcode'
 gem 'ruby-progressbar'
 gem 'ruby-saml'
 gem 'safe_target_blank', '>= 1.0.2'
-gem 'saml_idp', github: '18F/saml_idp', tag: 'v0.24.0-18f'
+gem 'saml_idp', github: '18F/saml_idp', tag: 'v0.24.2-18f'
 gem 'scrypt'
 gem 'simple_form', '>= 5.0.2'
 gem 'stringex', require: false
@@ -141,3 +141,5 @@ group :test do
   gem 'webmock'
   gem 'zonebie'
 end
+
+gem 'google-cloud-recaptcha_enterprise', '~> 2.1'
