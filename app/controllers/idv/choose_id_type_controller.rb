@@ -20,7 +20,7 @@ module Idv
              layout: true
     end
 
-    def update # move to concern?
+    def update
       clear_future_steps!
 
       @choose_id_type_form = Idv::ChooseIdTypeForm.new(
