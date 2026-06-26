@@ -126,12 +126,13 @@ RSpec.describe Pii::Cacher do
     end
 
     context 'when the source_check for a passport is incorrect' do
-      it 'corrects the source_check for a passport' do
-        profile = create(:profile, :active, :verified, user: user)
+      it 'corrects the source_check for a passport created before May 1, 2026' do
+        profile = active_profile
         profile.proofing_components = {
           'document_type' => 'passport',
           'source_check' => 'incorrect:source',
         }
+        profile.created_at = DateTime.new(2026, 4, 30)
         profile.save!
 
         subject.save(password, profile)
@@ -140,7 +141,7 @@ RSpec.describe Pii::Cacher do
       end
 
       it 'does not correct the source_check for a passport created after May 1, 2026' do
-        profile = create(:profile, :active, :verified, user: user)
+        profile = active_profile
         profile.proofing_components = {
           'document_type' => 'passport',
           'source_check' => 'incorrect:source',
