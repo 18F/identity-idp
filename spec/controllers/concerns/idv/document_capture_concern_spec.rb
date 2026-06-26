@@ -180,6 +180,21 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
           expect(response.success?).to eq(true)
         end
       end
+
+      context 'when mdL is submitted' do
+        let(:pii_data) do
+          {
+            first_name: 'Test',
+            last_name: 'User',
+            state: 'MD',
+            document_type_received: Idp::Constants::DocumentTypes::MDL,
+          }
+        end
+        it 'returns success response regardless of MRZ status' do
+          response = controller.handle_stored_result(user:)
+          expect(response.success?).to eq(true)
+        end
+      end
     end
   end
 
