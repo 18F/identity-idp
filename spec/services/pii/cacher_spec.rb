@@ -132,7 +132,7 @@ RSpec.describe Pii::Cacher do
           'document_type' => 'passport',
           'source_check' => 'incorrect:source',
         }
-        profile.created_at = DateTime.new(2026, 4, 30)
+        profile.created_at = Time.zone.local(2026, 4, 30)
         profile.save!
 
         subject.save(password, profile)
@@ -146,7 +146,7 @@ RSpec.describe Pii::Cacher do
           'document_type' => 'passport',
           'source_check' => 'incorrect:source',
         }
-        profile.created_at = DateTime.new(2026, 5, 2)
+        profile.created_at = Time.zone.local(2026, 5, 2)
         profile.save!
 
         subject.save(password, profile)

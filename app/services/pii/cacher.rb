@@ -50,7 +50,7 @@ module Pii
     # Presently we only have one valid source to verify a passport, so we can force the correction.
     def correct_passport_source_check(profile)
       # The fix was deployed in April 2026 - only correct profiles created before May 1, 2026
-      return if profile.created_at > DateTime.new(2026, 5, 1)
+      return if profile.created_at > Time.zone.local(2026, 5, 1)
 
       proofing_components = profile.proofing_components
       if proofing_components.present? &&
