@@ -509,7 +509,6 @@ RSpec.describe Idv::ApiImageUploadForm do
               form.send(:images).each do |image|
                 # testing that the storage is happening
                 expect(writer).to receive(:write).with(
-                  issuer: service_provider.issuer,
                   image: image.bytes,
                 ).exactly(1).time
               end
@@ -735,7 +734,6 @@ RSpec.describe Idv::ApiImageUploadForm do
                 form.send(:images).each do |image|
                   # testing that the storage is happening
                   expect(writer).to receive(:write).with(
-                    issuer: service_provider.issuer,
                     image: image.bytes,
                   ).exactly(1).time
                 end
@@ -935,7 +933,6 @@ RSpec.describe Idv::ApiImageUploadForm do
             form.send(:images).each do |image|
               # testing that the storage is happening
               expect(writer).to receive(:write).with(
-                issuer: service_provider.issuer,
                 image: image.bytes,
               ).exactly(1).time.and_return(result)
             end
@@ -1018,7 +1015,6 @@ RSpec.describe Idv::ApiImageUploadForm do
             form.send(:images).each do |image|
               # testing that the storage is happening
               expect(writer).to receive(:write).with(
-                issuer: service_provider.issuer,
                 image: image.bytes,
               ).exactly(1).time
             end
