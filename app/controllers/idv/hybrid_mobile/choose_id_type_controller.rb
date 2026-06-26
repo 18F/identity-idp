@@ -22,7 +22,7 @@ module Idv
         render 'idv/shared/choose_id_type', locals: choose_id_type_attrs
       end
 
-      def update # move to concern?
+      def update
         @choose_id_type_form = Idv::ChooseIdTypeForm.new(
           mdl_enabled: mdl_enabled?,
         )

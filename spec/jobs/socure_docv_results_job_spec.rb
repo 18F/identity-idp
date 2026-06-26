@@ -84,7 +84,7 @@ RSpec.describe SocureDocvResultsJob do
       socure_idplus_base_url:,
       dos_passport_mrz_endpoint:,
       idv_aamva_at_doc_auth_enabled: aamva_at_doc_auth_enabled,
-      idv_socure_reason_codes_docv_mdl: ['mdl_pass','mdl_fail'],
+      idv_socure_reason_codes_docv_mdl: ['mdl_pass', 'mdl_fail'],
     )
     stub_request(:post, IdentityConfig.store.dos_passport_mrz_endpoint)
       .to_return_json({ status: 200, body: { response: mrz_response } })
@@ -272,8 +272,8 @@ RSpec.describe SocureDocvResultsJob do
                 doc_auth_success: true,
                 doc_type_supported: true,
                 document_metadata: { 'country' => 'USA',
-                                      'state' => 'NY',
-                                      'type' => 'Drivers License' },
+                                     'state' => 'NY',
+                                     'type' => 'Drivers License' },
                 document_type_received: 'mobile_drivers_license',
                 errors: {},
                 expiration_date: '2027-01-01',
