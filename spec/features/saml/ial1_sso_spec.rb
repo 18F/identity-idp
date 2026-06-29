@@ -100,11 +100,12 @@ RSpec.feature 'IAL1 Single Sign On' do
       expect(page).to have_current_path(test_saml_decode_assertion_path)
     end
 
-    context 'when the sp request user registration flow' do
+    context 'when the sp requests user registration flow' do
       before do
         expect(IdentityConfig.store).to receive(:allowed_create_prompt_providers)
           .and_return(['http://localhost:3000'])
       end
+
       it 'sends the user to the account creation view initially' do
         visit saml_authn_request_url(params: { prompt: 'create' })
 

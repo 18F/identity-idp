@@ -66,8 +66,13 @@ RSpec.feature 'IAL2 Single Sign On' do
       expect(page).to have_content(sp_content)
     end
 
-    context 'when prompt=create is passed in a params' do
-      it 'send the user to account creation' do
+    context 'when the sp requests user registration flow' do
+      before do
+        allow(IdentityConfig.store).to receive(:allowed_create_prompt_providers)
+          .and_return(['http://localhost:3000'])
+      end
+
+      it 'sends the user to account creation' do
         visit saml_ial2_request_url(params: { prompt: 'create' })
 
         expect(page).to have_current_path(sign_up_email_path)

@@ -1348,7 +1348,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
         end
       end
 
-      context 'sp is on the allowist for prompt=create' do
+      context 'sp is on the allowlist for prompt=create' do
         before do
           allow(IdentityConfig.store).to receive(:allowed_create_prompt_providers)
             .and_return([client_id])
