@@ -263,6 +263,7 @@ RSpec.describe SocureDocvResultsJob do
             expect(document_capture_session_result.selfie_status).to eq(:not_processed)
             expect(document_capture_session_result.aamva_status).to eq(:not_processed)
             expect(document_capture_session_result.attempt).to eq(1)
+            expect(document_capture_session_result.aamva_status).to eq(:not_processed)
           end
 
           it 'logs an event' do
@@ -378,7 +379,9 @@ RSpec.describe SocureDocvResultsJob do
             expect(document_capture_session_result.doc_auth_success).to eq(false)
             expect(document_capture_session_result.selfie_status).to eq(:not_processed)
             expect(document_capture_session_result.mrz_status).to eq(:not_processed)
+            expect(document_capture_session_result.aamva_status).to eq(:not_processed)
             expect(document_capture_session_result.errors).to eq({ unexpected_id_type: true })
+
           end
         end
       end

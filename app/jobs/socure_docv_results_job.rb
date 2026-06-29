@@ -303,12 +303,8 @@ class SocureDocvResultsJob < ApplicationJob
     Base64.strict_encode64(SecureRandom.bytes(32))
   end
 
-  def passport_requested?
-    document_capture_session.passport_requested?
-  end
-
   def validate_aamva(doc_pii_response)
-    if aamva_enabled? && !passport_requested?
+    if aamva_enabled? && document_capture_session.state_id_requested?
       aamva_proofer.call(
         applicant_pii: to_aamva_applicant_pii(doc_pii_response.pii_from_doc.to_h),
         current_sp: sp,
