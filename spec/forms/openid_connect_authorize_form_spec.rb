@@ -785,4 +785,20 @@ RSpec.describe OpenidConnectAuthorizeForm do
       end
     end
   end
+
+  describe '#initiate_user_registration?' do
+    context 'when prompt is "create"' do
+      let(:prompt) { 'create' }
+      it 'returns true' do
+        expect(form.initiate_user_registration?).to be true
+      end
+    end
+
+    context 'when prompt is "create"' do
+      let(:prompt) { 'create' }
+      it 'returns false' do
+        expect(form.initiate_user_registration?).to be true
+      end
+    end
+  end
 end

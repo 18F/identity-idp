@@ -1326,6 +1326,41 @@ RSpec.describe OpenidConnect::AuthorizationController do
         end
       end
     end
+
+    context 'with prompt=create' do
+      let(:acr_values) { Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF }
+      let(:prompt) { 'create' }
+
+      context 'sp is not on the allowlist for prompt=create' do
+        it 'redirects back to the sp with errors' do
+          action
+          expect(controller).to render_template('openid_connect/shared/redirect_js')
+          uri = URI(assigns(:oidc_redirect_uri))
+          resp_params = CGI.parse(uri.query)
+
+          expect(uri.to_s).to start_with(params[:redirect_uri])
+          expect(resp_params['error']).to eq ['invalid_request']
+          expect(resp_params['error_description']).to eq(
+            [
+              'Prompt No valid prompt values found. Please see our documentation at https://developers.login.gov/support/#oidc-no-prompt',
+            ],
+          )
+        end
+      end
+
+      context 'sp is on the allowist for prompt=create' do
+        before do
+          allow(IdentityConfig.store).to receive(:allowed_create_prompt_providers)
+            .and_return([client_id])
+        end
+
+        it 'redirects to the create view' do
+          action
+
+          expect(response).to redirect_to(sign_up_email_url)
+        end
+      end
+    end
   end
 end
 # rubocop:enable Layout/LineLength

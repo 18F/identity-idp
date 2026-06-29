@@ -145,6 +145,10 @@ class OpenidConnectAuthorizeForm
       Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF
   end
 
+  def initiate_user_registration?
+    prompt == 'create'
+  end
+
   private
 
   attr_reader :identity, :success
