@@ -236,9 +236,11 @@ RSpec.describe Reports::DemographicsMetricsS3Report do
     context 'with missing service provider' do
       before do
         # Remove issuer1 from metadata
-        allow_any_instance_of(Reports::DemographicsMetricsS3Report).to receive(:get_service_provider_info)
+        allow_any_instance_of(Reports::DemographicsMetricsS3Report)
+          .to receive(:get_service_provider_info)
           .with(issuer1).and_return(nil)
-        allow_any_instance_of(Reports::DemographicsMetricsS3Report).to receive(:get_service_provider_info)
+        allow_any_instance_of(Reports::DemographicsMetricsS3Report)
+          .to receive(:get_service_provider_info)
           .with(issuer2).and_return(sp_metadata[issuer2])
       end
 
