@@ -14,7 +14,7 @@ RSpec.describe Reporting::SpVerificationReport do
   end
 
   subject(:report) do
-    described_class.new(
+    Reporting::SpVerificationReport.new(
       time_range: time_range,
       issuers: issuers,
       agency_abbreviation: agency_abbreviation,
