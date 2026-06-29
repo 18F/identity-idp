@@ -263,7 +263,7 @@ module DocAuth
             if !passport_cards_supported && DocAuth::DocumentClassifications::PASSPORT_CARD_CLASSIFICATIONS.include?(document_id_type)
               return false
             end
-            true
+            return true
           else
             DocAuth::DocumentClassifications::STATE_ID_CLASSIFICATIONS.include?(document_id_type)
           end
