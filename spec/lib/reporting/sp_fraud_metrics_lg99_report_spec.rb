@@ -38,7 +38,7 @@ RSpec.describe Reporting::SpFraudMetricsLg99Report do
   end
 
   subject(:report) do
-    described_class.new(
+    Reporting::SpFraudMetricsLg99Report.new(
       issuers: [issuer],
       time_range:,
       agency_abbreviation: agency_abbreviation,
@@ -191,7 +191,7 @@ RSpec.describe Reporting::SpFraudMetricsLg99Report do
     let(:opts) { {} }
 
     subject(:report_with_opts) do
-      described_class.new(
+      Reporting::SpFraudMetricsLg99Report.new(
         issuers: [issuer],
         time_range:,
         agency_abbreviation: agency_abbreviation,

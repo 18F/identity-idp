@@ -11,7 +11,7 @@ RSpec.describe Reporting::DemographicsMetricsS3Report do
   let(:s3_helper) { instance_double(JobHelpers::S3Helper) }
 
   let(:report_reader) do
-    described_class.new(
+    Reporting::DemographicsMetricsS3Report.new(
       bucket_name: bucket_name,
       custom_s3_path: custom_s3_path,
       agency_abbreviation: agency_abbreviation,
@@ -31,7 +31,7 @@ RSpec.describe Reporting::DemographicsMetricsS3Report do
     end
 
     it 'allows nil agency_abbreviation' do
-      reader = described_class.new(
+      reader = Reporting::DemographicsMetricsS3Report.new(
         bucket_name: bucket_name,
         custom_s3_path: custom_s3_path,
         agency_abbreviation: nil,

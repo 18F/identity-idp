@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Reports::AbTestsReport do
-  subject(:job) { described_class.new(report_date) }
+  subject(:job) { Reports::AbTestsReport.new(report_date) }
   let(:report_date) { Date.new(2023, 12, 25) }
   let(:email) { 'email@example.com' }
   let(:tested_percent) { 1 }
@@ -109,7 +109,7 @@ RSpec.describe Reports::AbTestsReport do
       it 'emails the table report' do
         expect(ReportMailer).to receive(:tables_report)
 
-        described_class.perform_now(report_date)
+        Reports::AbTestsReport.perform_now(report_date)
       end
     end
   end
