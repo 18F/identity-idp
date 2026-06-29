@@ -59,6 +59,7 @@ module Pii
         proofing_components['source_check'] = 'dos:passport'
         profile.proofing_components = proofing_components
         profile.save!
+        analytics&.idv_passport_source_check_corrected
       end
     end
 
