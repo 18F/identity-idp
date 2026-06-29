@@ -4675,6 +4675,14 @@ module AnalyticsEvents
   end
   # rubocop:enable Naming/VariableName,Naming/MethodParameterName,IdentityIdp/AnalyticsEventNameLinter
 
+  # Tracks if a user's passport source_check was corrected
+  def idv_passport_source_check_corrected(**extra)
+    track_event(
+      :idv_passport_source_check_corrected,
+      **extra,
+    )
+  end
+
   # Tracks if a user clicks the 'acknowledge' checkbox during personal
   # key creation
   # @param [Hash,nil] proofing_components User's current proofing components
