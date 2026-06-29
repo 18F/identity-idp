@@ -8,11 +8,9 @@
       ) %>
 <% end %>
 
-<% unless @mdl_requested %>
-  <div class="text-center margin-bottom-4">
-    <%= image_tag asset_url('idv/interstitial_icons.svg'), width: 207, height: 88, alt: '', class: 'display-block margin-x-auto' %>
-  </div>
-<% end %>
+<div class="text-center margin-bottom-4">
+  <%= image_tag asset_url('idv/interstitial_icons.svg'), width: 207, height: 88, alt: '', class: 'display-block margin-x-auto' %>
+</div>
 
 <%= render PageHeadingComponent.new do %>
   <% if @passport_requested %>
