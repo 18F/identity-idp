@@ -5,7 +5,7 @@ RSpec.feature 'IAL2 Single Sign On' do
   include IdvStepHelper
   include DocAuthHelper
 
-  def saml_ial2_request_url
+  def saml_ial2_request_url(params: {})
     saml_authn_request_url(
       overrides: {
         issuer: 'saml_sp_ial2',
@@ -15,6 +15,7 @@ RSpec.feature 'IAL2 Single Sign On' do
           "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}phone",
         ],
       },
+      params:,
     )
   end
 
@@ -63,6 +64,14 @@ RSpec.feature 'IAL2 Single Sign On' do
 
       expect(page).to have_current_path(new_user_session_path)
       expect(page).to have_content(sp_content)
+    end
+
+    context 'when prompt=create is passed in a params' do
+      it 'send the user to account creation' do
+        visit saml_ial2_request_url(params: { prompt: 'create' })
+
+        expect(page).to have_current_path(sign_up_email_path)
+      end
     end
 
     it 'shows user the start page with a link back to the SP' do

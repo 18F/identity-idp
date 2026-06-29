@@ -2318,6 +2318,30 @@ RSpec.describe SamlIdpController do
         expect(session[:sp][:request_id]).to eq sp_request_id
       end
 
+      context 'when prompt=create is passed as a query params' do
+        context 'when sp is not on allowlist' do
+          it 'redirects the user to the new user session path' do
+            saml_get_auth(saml_settings, prompt: 'create')
+            sp_request_id = ServiceProviderRequestProxy.last.uuid
+            expect(response).to redirect_to new_user_session_path
+            expect(session[:sp][:request_id]).to eq sp_request_id
+          end
+        end
+
+        context 'when sp is on allowlist' do
+          before do
+            allow(IdentityConfig.store).to receive(:allowed_create_prompt_providers)
+              .and_return(['http://localhost:3000'])
+          end
+          it 'redirects the user to the sign up email path' do
+            saml_get_auth(saml_settings, prompt: 'create')
+            sp_request_id = ServiceProviderRequestProxy.last.uuid
+            expect(response).to redirect_to sign_up_email_path
+            expect(session[:sp][:request_id]).to eq sp_request_id
+          end
+        end
+      end
+
       it 'logs SAML Auth Request but does not log SAML Auth' do
         stub_analytics
 
