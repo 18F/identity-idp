@@ -129,7 +129,7 @@ RSpec.describe Reports::DemographicsMetricsS3Report do
     allow(connection).to receive(:execute).and_return(mock_sql_results)
 
     # Mock BaseReport method
-    allow_any_instance_of(described_class).to receive(:generate_base_s3_path)
+    allow_any_instance_of(Reports::DemographicsMetricsS3Report).to receive(:generate_base_s3_path)
       .with(directory: 'idp').and_return('env/idp/')
 
     # Default S3 stubbing - files exist and are fresh
@@ -141,7 +141,7 @@ RSpec.describe Reports::DemographicsMetricsS3Report do
     )
   end
 
-  subject(:job) { described_class.new(run_date, days_back, receiver, time_frame) }
+  subject(:job) { Reports::DemographicsMetricsS3Report.new(run_date, days_back, receiver, time_frame) }
 
   describe '#initialize' do
     context 'with valid parameters' do
@@ -154,29 +154,29 @@ RSpec.describe Reports::DemographicsMetricsS3Report do
     end
 
     context 'with defaults' do
-      subject(:default_job) { described_class.new }
+      subject(:default_job) { Reports::DemographicsMetricsS3Report.new }
 
       it 'uses default values' do
         expect(default_job.run_date).to be_within(1.second).of(Time.zone.now)
-        expect(default_job.days_back_for_time_period).to eq(described_class::DEFAULT_LOOK_BACK_DAYS)
+        expect(default_job.days_back_for_time_period).to eq(Reports::DemographicsMetricsS3Report::DEFAULT_LOOK_BACK_DAYS)
         expect(default_job.report_receiver).to eq(:internal)
-        expect(default_job.time_frame).to eq(described_class::DEFAULT_TIME_FRAME)
+        expect(default_job.time_frame).to eq(Reports::DemographicsMetricsS3Report::DEFAULT_TIME_FRAME)
       end
     end
 
     context 'with invalid parameters' do
       it 'raises error for invalid days_back' do
-        expect { described_class.new(run_date, 95, receiver, time_frame) }
+        expect { Reports::DemographicsMetricsS3Report.new(run_date, 95, receiver, time_frame) }
           .to raise_error(ArgumentError, /days_back_for_time_period must be between 0 and 90/)
       end
 
       it 'raises error for invalid receiver' do
-        expect { described_class.new(run_date, days_back, :external, time_frame) }
+        expect { Reports::DemographicsMetricsS3Report.new(run_date, days_back, :external, time_frame) }
           .to raise_error(ArgumentError, /report_receiver must be :internal or :both/)
       end
 
       it 'raises error for invalid time_frame' do
-        expect { described_class.new(run_date, days_back, receiver, 'weekly') }
+        expect { Reports::DemographicsMetricsS3Report.new(run_date, days_back, receiver, 'weekly') }
           .to raise_error(ArgumentError, /time_frame must be quarterly, monthly, or daily/)
       end
     end
@@ -236,9 +236,9 @@ RSpec.describe Reports::DemographicsMetricsS3Report do
     context 'with missing service provider' do
       before do
         # Remove issuer1 from metadata
-        allow_any_instance_of(described_class).to receive(:get_service_provider_info)
+        allow_any_instance_of(Reports::DemographicsMetricsS3Report).to receive(:get_service_provider_info)
           .with(issuer1).and_return(nil)
-        allow_any_instance_of(described_class).to receive(:get_service_provider_info)
+        allow_any_instance_of(Reports::DemographicsMetricsS3Report).to receive(:get_service_provider_info)
           .with(issuer2).and_return(sp_metadata[issuer2])
       end
 
@@ -375,7 +375,7 @@ RSpec.describe Reports::DemographicsMetricsS3Report do
 
     context 'with email recipient handling' do
       it 'sends to internal emails only when receiver is :internal' do
-        job = described_class.new(run_date, days_back, :internal, time_frame)
+        job = Reports::DemographicsMetricsS3Report.new(run_date, days_back, :internal, time_frame)
 
         # Both issuers should use internal emails when job receiver is :internal
         expect(ReportMailer).to receive(:tables_report).with(
@@ -389,7 +389,7 @@ RSpec.describe Reports::DemographicsMetricsS3Report do
       end
 
       it 'sends to partner emails with internal BCC when receiver is :both' do
-        job = described_class.new(run_date, days_back, :both, time_frame)
+        job = Reports::DemographicsMetricsS3Report.new(run_date, days_back, :both, time_frame)
 
         # First issuer (SSA)
         expect(ReportMailer).to receive(:tables_report).with(
@@ -423,7 +423,7 @@ RSpec.describe Reports::DemographicsMetricsS3Report do
           double(deliver_now: true),
         )
 
-        job = described_class.new(run_date, days_back, :both, time_frame)
+        job = Reports::DemographicsMetricsS3Report.new(run_date, days_back, :both, time_frame)
         job.perform
       end
     end
@@ -480,21 +480,21 @@ RSpec.describe Reports::DemographicsMetricsS3Report do
         expect(job.send(:report_time_range_label)).to eq('Q22026')
 
         # Q4 2025
-        q4_job = described_class.new(
+        q4_job = Reports::DemographicsMetricsS3Report.new(
           Time.zone.parse('2026-01-04'), 5, :internal, 'quarterly'
         )
         expect(q4_job.send(:report_time_range_label)).to eq('Q42025')
       end
 
       it 'formats monthly labels correctly' do
-        monthly_job = described_class.new(
+        monthly_job = Reports::DemographicsMetricsS3Report.new(
           Time.zone.parse('2026-05-04'), 5, :internal, 'monthly'
         )
         expect(monthly_job.send(:report_time_range_label)).to eq('Apr2026')
       end
 
       it 'formats daily labels correctly' do
-        daily_job = described_class.new(
+        daily_job = Reports::DemographicsMetricsS3Report.new(
           Time.zone.parse('2026-05-04'), 1, :internal, 'daily'
         )
         expect(daily_job.send(:report_time_range_label)).to eq('May032026')
@@ -506,21 +506,21 @@ RSpec.describe Reports::DemographicsMetricsS3Report do
         expect(job.send(:report_time_range_label_email_subject)).to eq('Q2 CY 2026')
 
         # Q4 2025
-        q4_job = described_class.new(
+        q4_job = Reports::DemographicsMetricsS3Report.new(
           Time.zone.parse('2026-01-04'), 5, :internal, 'quarterly'
         )
         expect(q4_job.send(:report_time_range_label_email_subject)).to eq('Q4 CY 2025')
       end
 
       it 'formats monthly labels with spaces' do
-        monthly_job = described_class.new(
+        monthly_job = Reports::DemographicsMetricsS3Report.new(
           Time.zone.parse('2026-05-04'), 5, :internal, 'monthly'
         )
         expect(monthly_job.send(:report_time_range_label_email_subject)).to eq('Apr 2026')
       end
 
       it 'formats daily labels with spaces' do
-        daily_job = described_class.new(
+        daily_job = Reports::DemographicsMetricsS3Report.new(
           Time.zone.parse('2026-05-04'), 1, :internal, 'daily'
         )
         expect(daily_job.send(:report_time_range_label_email_subject)).to eq('May 3 2026')
@@ -535,7 +535,7 @@ RSpec.describe Reports::DemographicsMetricsS3Report do
       end
 
       it 'calculates correct monthly range' do
-        monthly_job = described_class.new(
+        monthly_job = Reports::DemographicsMetricsS3Report.new(
           Time.zone.parse('2026-05-04'), 5, :internal, 'monthly'
         )
         range = monthly_job.send(:report_time_range)
