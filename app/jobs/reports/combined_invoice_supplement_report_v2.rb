@@ -99,6 +99,7 @@ module Reports
           'iaa_ial1_unique_users',
           'iaa_ial2_unique_users',
           'iaa_unique_users',
+          'iaa_auth_billable',
           'partner_ial2_unique_user_events_year1',
           'partner_ial2_unique_user_events_year2',
           'partner_ial2_unique_user_events_year3',
@@ -140,6 +141,7 @@ module Reports
           'issuer_ial1_unique_users',
           'issuer_ial2_unique_users',
           'issuer_unique_users',
+          'issuer_auth_billable',
         ]
         by_issuer_iaa_issuer_year_months.each do |iaa_key, issuer_year_months|
           issuer_year_months.each do |issuer, year_months_data|
@@ -188,6 +190,8 @@ module Reports
                 extract(iaa_results, :unique_users, ial: 1),
                 extract(iaa_results, :unique_users, ial: 2),
                 extract(iaa_results, :unique_users, ial: :all),
+                (extract(iaa_results, :unique_users, ial: :all) -
+                extract(iaa_results, :unique_users, ial: 2)),
                 partner_results[:partner_ial2_unique_user_events_year1] || 0,
                 partner_results[:partner_ial2_unique_user_events_year2] || 0,
                 partner_results[:partner_ial2_unique_user_events_year3] || 0,
@@ -229,6 +233,8 @@ module Reports
                 extract(issuer_results, :unique_users, ial: 1),
                 extract(issuer_results, :unique_users, ial: 2),
                 extract(issuer_results, :unique_users, ial: :all),
+                (extract(issuer_results, :unique_users, ial: :all) -
+                extract(issuer_results, :unique_users, ial: 2)),
               ]
             end
           end
