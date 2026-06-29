@@ -424,6 +424,21 @@ RSpec.describe ProofingAgentJob, type: :job do
           analytics_attributes: an_instance_of(Hash),
         )
       end
+
+      it 'does not call ResolutionProofingJob' do
+        expect(ResolutionProofingJob).not_to receive(:perform_now)
+        perform
+      end
+
+      it 'does not log idv_doc_auth_verify_proofing_results' do
+        perform
+        expect(@analytics).not_to have_logged_event('IdV: doc auth verify proofing results')
+      end
+
+      it 'does not log idv_phone_confirmation_vendor_submitted' do
+        perform
+        expect(@analytics).not_to have_logged_event('IdV: phone confirmation vendor')
+      end
     end
 
     context 'when phone check fails' do
@@ -513,6 +528,72 @@ RSpec.describe ProofingAgentJob, type: :job do
           correlation_id: correlation_id,
           analytics_attributes: an_instance_of(Hash),
         )
+      end
+
+      it 'does not call ResolutionProofingJob' do
+        expect(ResolutionProofingJob).not_to receive(:perform_now)
+        perform
+      end
+
+      it 'does not log idv_doc_auth_verify_proofing_results' do
+        perform
+        expect(@analytics).not_to have_logged_event('IdV: doc auth verify proofing results')
+      end
+
+      it 'does not log idv_phone_confirmation_vendor_submitted' do
+        perform
+        expect(@analytics).not_to have_logged_event('IdV: phone confirmation vendor')
+      end
+    end
+
+    context 'when Redis raises during the resolution proofing job' do
+      before do
+        allow(ResolutionProofingJob).to receive(:perform_now)
+          .and_raise(Redis::BaseConnectionError)
+      end
+
+      it 'stores a system_error result' do
+        perform
+
+        result = document_capture_session.reload.load_agent_proofed_user
+        expect(result[:success]).to be false
+        expect(result[:reason]).to eq('system_error')
+      end
+
+      it 'enqueues a ProofingAgentWebhookJob with success: false and system_error reason' do
+        expect { perform }.to have_enqueued_job(ProofingAgentWebhookJob).with(
+          success: false,
+          reason: 'system_error',
+          transaction_id: transaction_id,
+          correlation_id: correlation_id,
+          analytics_attributes: an_instance_of(Hash),
+        )
+      end
+    end
+
+    context 'when the resolution proofing result is nil' do
+      before do
+        allow_any_instance_of(DocumentCaptureSession).to receive(:load_proofing_result)
+          .and_return(nil)
+      end
+
+      it 'stores a system_error result' do
+        perform
+
+        result = document_capture_session.reload.load_agent_proofed_user
+        expect(result[:success]).to be false
+        expect(result[:reason]).to eq('system_error')
+      end
+    end
+
+    context 'when storing the proofing result raises a Redis error' do
+      before do
+        allow_any_instance_of(DocumentCaptureSession).to receive(:store_agent_proofed_user)
+          .and_raise(Redis::BaseConnectionError)
+      end
+
+      it 're-raises the error' do
+        expect { perform }.to raise_error(Redis::BaseConnectionError)
       end
     end
 

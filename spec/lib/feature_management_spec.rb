@@ -525,4 +525,66 @@ RSpec.describe 'FeatureManagement' do
       end
     end
   end
+
+  describe '#doc_escrow_enabled?' do
+    let(:service_provider) { create(:service_provider) }
+    let(:attempts_api_enabled) { false }
+    let(:doc_escrow_enabled) { false }
+    let(:historical_attempts_api_enabled) { false }
+
+    before do
+      allow(IdentityConfig.store).to receive(:doc_escrow_enabled).and_return(doc_escrow_enabled)
+      allow(IdentityConfig.store).to receive(:attempts_api_enabled).and_return(attempts_api_enabled)
+      allow(IdentityConfig.store).to receive(:historical_attempts_api_enabled).and_return(
+        historical_attempts_api_enabled,
+      )
+    end
+    context 'when enabled' do
+      let(:doc_escrow_enabled) { true }
+
+      describe 'when historic attempts api is not enabled' do
+        describe 'when no service provider is passed in' do
+          it 'disables the feature' do
+            expect(FeatureManagement.doc_escrow_enabled?(nil)).to eq(false)
+          end
+        end
+
+        describe 'when the service provider is not on the allowlist' do
+          it 'disables the feature' do
+            expect(FeatureManagement.doc_escrow_enabled?(service_provider)).to eq(false)
+          end
+
+          describe 'when the service_provider passed in is on the allowlist' do
+            let(:attempts_api_enabled) { true }
+            before do
+              allow(IdentityConfig.store).to receive(:allowed_attempts_providers).and_return(
+                [{ 'issuer' => service_provider.issuer }],
+              )
+            end
+
+            it 'enables the feature' do
+              expect(FeatureManagement.doc_escrow_enabled?(service_provider)).to eq(true)
+            end
+          end
+        end
+      end
+
+      describe 'when historic attempts api is enabled' do
+        let(:historical_attempts_api_enabled) { true }
+        it 'enables the feature' do
+          expect(FeatureManagement.doc_escrow_enabled?(service_provider)).to eq(true)
+        end
+      end
+    end
+
+    context 'when disabled' do
+      before do
+        allow(IdentityConfig.store).to receive(:doc_escrow_enabled).and_return(false)
+      end
+
+      it 'disables the feature' do
+        expect(FeatureManagement.doc_escrow_enabled?(nil)).to eq(false)
+      end
+    end
+  end
 end

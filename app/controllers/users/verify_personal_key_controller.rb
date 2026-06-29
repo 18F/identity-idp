@@ -74,7 +74,14 @@ module Users
     def handle_success(decrypted_pii:)
       analytics.personal_key_reactivation
       reactivate_account_session.store_decrypted_pii(decrypted_pii)
+      cache_attempt_events
       redirect_to verify_password_url
+    end
+
+    def cache_attempt_events
+      AttemptsApi::Cacher.new(current_user, user_session).save_with_personal_key(
+        personal_key: personal_key_params,
+      )
     end
 
     def handle_failure(result)
@@ -85,8 +92,12 @@ module Users
     def personal_key_form
       VerifyPersonalKeyForm.new(
         user: current_user,
-        personal_key: params.permit(:personal_key)[:personal_key],
+        personal_key: personal_key_params,
       )
+    end
+
+    def personal_key_params
+      params.permit(:personal_key)[:personal_key]
     end
   end
 end
