@@ -63,10 +63,7 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
       before do
         visit_idp_from_oidc_sp_with_ial2
         sign_in_and_2fa_user(user)
-        #binding.pry
         complete_doc_auth_steps_before_hybrid_handoff_step
-       #binding.pry
-        complete_hybrid_handoff_step
         complete_choose_id_type_step
         click_idv_continue
       end
