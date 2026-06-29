@@ -59,7 +59,7 @@ module IdentityConfig
     config.add(:agent_proofed_user_time_validity_hours, type: :integer)
     config.add(:all_redirect_uris_cache_duration_minutes, type: :integer)
     config.add(:allowed_attempts_providers, type: :json)
-    config.add(:allowed_create_login_providers, type: :json)
+    config.add(:allowed_create_prompt_providers, type: :json)
     config.add(:allowed_client_id_in_risc_service_providers, type: :json)
     config.add(:allowed_ialmax_providers, type: :json)
     config.add(:allowed_verified_within_providers, type: :json)

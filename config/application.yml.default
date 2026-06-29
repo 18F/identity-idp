@@ -43,7 +43,7 @@ agent_proofed_user_time_validity_hours: 1
 all_redirect_uris_cache_duration_minutes: 2
 allowed_attempts_providers: '[]'
 allowed_client_id_in_risc_service_providers: '[]'
-allowed_create_login_providers: '[]'
+allowed_create_prompt_providers: '[]'
 allowed_ialmax_providers: '[]'
 allowed_verified_within_providers: '[]'
 api_transaction_count_report_config: '[]'
