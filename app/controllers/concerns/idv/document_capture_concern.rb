@@ -63,6 +63,7 @@ module Idv
 
     def selfie_requirement_met?
       !resolved_authn_context_result.facial_match? ||
+        mdl_received? ||
         stored_result.selfie_check_performed?
     end
 
@@ -166,10 +167,14 @@ module Idv
       when Idp::Constants::DocumentTypes::PASSPORT
         document_type_received == Idp::Constants::DocumentTypes::PASSPORT
       when Idp::Constants::DocumentTypes::MDL
-        document_type_received == Idp::Constants::DocumentTypes::MDL
+        mdl_received?
       else
         false
       end
+    end
+
+    def mdl_received?
+      document_type_received == Idp::Constants::DocumentTypes::MDL
     end
 
     def document_type_received
