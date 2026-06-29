@@ -259,11 +259,13 @@ module DocAuth
 
         def id_type_supported?
           if passports_enabled?
-            DocAuth::DocumentClassifications::ALL_CLASSIFICATIONS.include?(document_id_type)
-            if !passport_cards_supported && DocAuth::DocumentClassifications::PASSPORT_CARD_CLASSIFICATIONS.include?(document_id_type)
-              return false
+            if DocAuth::DocumentClassifications::ALL_CLASSIFICATIONS.include?(document_id_type)
+              if !passport_cards_supported && DocAuth::DocumentClassifications::PASSPORT_CARD_CLASSIFICATIONS.include?(document_id_type)
+                return false
+              end
+              return true
             end
-            return true
+            return false
           else
             DocAuth::DocumentClassifications::STATE_ID_CLASSIFICATIONS.include?(document_id_type)
           end
