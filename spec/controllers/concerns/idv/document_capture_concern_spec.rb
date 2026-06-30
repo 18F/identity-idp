@@ -132,8 +132,6 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
 
       context 'with AAMVA enabled' do
         context 'when AAMVA check passes' do
-          let(:aamva_status) { :passed }
-
           it 'returns success response' do
             response = controller.handle_stored_result(user:)
             expect(response.success?).to eq(true)
@@ -156,21 +154,21 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
             response = controller.handle_stored_result(user:)
             expect(response.success?).to eq(false)
           end
-        end
 
-        context 'when mdL is requested and submitted' do
-          let(:pii_data) do
-            {
-              first_name: 'Test',
-              last_name: 'User',
-              state: 'MD',
-              document_type_received: Idp::Constants::DocumentTypes::MDL,
-            }
-          end
-          let(:document_type_requested) { Idp::Constants::DocumentTypes::MDL }
-          it 'returns success response' do
-            response = controller.handle_stored_result(user:)
-            expect(response.success?).to eq(true)
+          context 'when mdL is requested and submitted' do
+            let(:pii_data) do
+              {
+                first_name: 'Test',
+                last_name: 'User',
+                state: 'MD',
+                document_type_received: Idp::Constants::DocumentTypes::MDL,
+              }
+            end
+            let(:document_type_requested) { Idp::Constants::DocumentTypes::MDL }
+            it 'returns success response' do
+              response = controller.handle_stored_result(user:)
+              expect(response.success?).to eq(true)
+            end
           end
         end
       end
