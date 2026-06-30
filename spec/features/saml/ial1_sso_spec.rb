@@ -4,8 +4,9 @@ RSpec.feature 'IAL1 Single Sign On' do
   include SamlAuthHelper
 
   context 'First time registration', email: true do
+    let(:email) { 'test@test.com' }
+
     it 'takes user to agency handoff page when sign up flow complete' do
-      email = 'test@test.com'
       request_url = saml_authn_request_url
 
       perform_in_browser(:one) do
@@ -97,6 +98,30 @@ RSpec.feature 'IAL1 Single Sign On' do
       click_agree_and_continue
 
       expect(page).to have_current_path(test_saml_decode_assertion_path)
+    end
+
+    context 'when the sp requests user registration flow' do
+      before do
+        allow(IdentityConfig.store).to receive(:allowed_create_prompt_providers)
+          .and_return(['http://localhost:3000'])
+      end
+
+      it 'sends the user to the account creation view initially' do
+        visit saml_authn_request_url(params: { prompt: 'create' })
+
+        expect(page).to have_current_path(sign_up_email_path)
+
+        submit_form_with_valid_email(email)
+        click_confirmation_link_in_email(email)
+
+        submit_form_with_valid_password
+        set_up_2fa_with_valid_phone
+        skip_second_mfa_prompt
+        click_agree_and_continue
+
+        expect(page).to have_current_path complete_saml_path
+        expect(page.get_rack_session.keys).to include('sp')
+      end
     end
   end
 
