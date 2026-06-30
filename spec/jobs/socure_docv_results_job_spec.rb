@@ -296,7 +296,6 @@ RSpec.describe SocureDocvResultsJob do
             expect(document_capture_session_result.mrz_status).to eq(:not_processed)
             expect(document_capture_session_result.aamva_status).to eq(:not_processed)
             expect(document_capture_session_result.errors).to eq({ unexpected_id_type: true })
-
           end
         end
       end
@@ -1190,8 +1189,8 @@ RSpec.describe SocureDocvResultsJob do
                 doc_auth_success: true,
                 doc_type_supported: true,
                 document_metadata: { 'country' => 'USA',
-                                      'state' => 'NY',
-                                      'type' => 'Drivers License' },
+                                     'state' => 'NY',
+                                     'type' => 'Drivers License' },
                 document_type_received: 'mobile_drivers_license',
                 errors: {},
                 expiration_date: '2027-01-01',
