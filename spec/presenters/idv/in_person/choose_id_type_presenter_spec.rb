@@ -26,4 +26,10 @@ RSpec.describe Idv::InPerson::ChooseIdTypePresenter do
       )
     end
   end
+
+  describe '#passport_card_available?' do
+    it 'returns false (passports are not accepted in person)' do
+      expect(subject.passport_card_available?).to be(false)
+    end
+  end
 end

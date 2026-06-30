@@ -7,7 +7,7 @@ module Idv
     end
 
     def passport_chosen?
-      ['passport', 'passport_card'].include?(chosen_id_type)
+      Idp::Constants::DocumentTypes::PASSPORT_TYPES.include?(chosen_id_type)
     end
 
     def set_passport_requested
@@ -52,7 +52,7 @@ module Idv
         form_submit_url:,
         disable_passports: disable_passports?,
         auto_check_value: disable_passports? ? :state_id_card : selected_id_type,
-        passport_cards_enabled: passport_cards_available?,
+        passport_cards_enabled: passport_cards_available? && presenter.passport_card_available?,
       }
     end
 
