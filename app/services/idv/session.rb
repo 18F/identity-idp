@@ -24,6 +24,7 @@ module Idv
   # @attr ipp_aamva_redirect_url [String, nil]
   # @attr ipp_aamva_result [Hash, nil]
   # @attr mail_only_warning_shown [Boolean, nil]
+  # @attr mdl_enabled [Boolean, nil]
   # @attr opted_in_to_in_person_proofing [Boolean, nil]
   # @attr passport_requested [Boolean, nil]
   # @attr personal_key [String, nil]

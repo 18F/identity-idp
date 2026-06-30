@@ -722,7 +722,7 @@ doc_auth.info.verify_at_post_office_description_passport_html: <strong>Solo pued
 doc_auth.info.verify_at_post_office_instruction: Ingrese su información en línea, y verifique su identidad en persona en una oficina de correos participante.
 doc_auth.info.verify_at_post_office_link_text: Obtenga más información sobre la verificación en persona
 doc_auth.info.verify_identity: Le pediremos su identificación, número de teléfono y otros datos personales para verificar su identidad comparándola con los registros públicos.
-doc_auth.info.verify_online_description_passport: Puede usar un pasaporte estadounidense, una licencia de conducir de los EE. UU. o una identificación estatal.
+doc_auth.info.verify_online_description: Puede usar un pasaporte estadounidense, una licencia de conducir de los EE. UU. o una identificación estatal.
 doc_auth.info.verify_online_instruction: Tome fotos de su identificación.
 doc_auth.info.verify_online_instruction_selfie: Tómese una selfi y fotos de su identificación.
 doc_auth.info.verify_online_link_text: Obtenga más información sobre la verificación en línea

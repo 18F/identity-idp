@@ -10,12 +10,15 @@ module Idv
       chosen_id_type == 'passport'
     end
 
-    def set_passport_requested
-      if passport_chosen?
-        unless document_capture_session.passport_requested?
+    def set_document_type_requested
+      case chosen_id_type
+      when Idp::Constants::DocumentTypes::PASSPORT
+        unless document_capture_session.passport_requested? # needed?
           document_capture_session.request_passport!
         end
-      else
+      when Idp::Constants::DocumentTypes::MDL
+        document_capture_session.request_mdl!
+      when *Idp::Constants::DocumentTypes::SUPPORTED_STATE_ID_TYPES
         document_capture_session.request_state_id!
       end
     end
@@ -27,6 +30,7 @@ module Idv
     def selected_id_type
       return :state_id_card if document_capture_session.state_id_requested?
       return :passport if document_capture_session.passport_requested?
+      return :mobile_drivers_license if document_capture_session.mdl_requested?
     end
 
     def dos_passport_api_healthy?(
@@ -47,11 +51,27 @@ module Idv
     end
 
     def locals_attrs(presenter:, form_submit_url: nil)
+      auto_check_value = case document_capture_session.document_type_requested
+                        when Idp::Constants::DocumentTypes::MDL
+                          :mdl
+                        when *Idp::Constants::DocumentTypes::SUPPORTED_STATE_ID_TYPES
+                          :state_id_card
+                        when Idp::Constants::DocumentTypes::PASSPORT
+                          if disable_passports?
+                            :state_id_card
+                          else
+                            :passport
+                          end
+                        else
+                          :state_id_card
+                        end
+
       {
         presenter:,
         form_submit_url:,
         disable_passports: disable_passports?,
-        auto_check_value: disable_passports? ? :state_id_card : selected_id_type,
+        auto_check_value:,
+        mdl_enabled: mdl_enabled?,
       }
     end
 
@@ -62,11 +82,15 @@ module Idv
 
     def passports_enabled?
       IdentityConfig.store.doc_auth_passports_enabled ||
-        (FeatureManagement.doc_auth_passport_cards_enabled? && in_passport_cards_allowed_bucket?)
+        (FeatureManagement.doc_auth_passport_cards_enabled? && passport_card_allowed?)
     end
 
-    def in_passport_cards_allowed_bucket?
+    def passport_card_allowed?
       ab_test_bucket(:DOC_AUTH_PASSPORT_CARDS_ALLOWED) == :doc_auth_passport_cards_allowed
+    end
+
+    def mdl_enabled?
+      document_capture_session.mdl_enabled
     end
   end
 end
