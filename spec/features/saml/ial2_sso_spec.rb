@@ -69,7 +69,7 @@ RSpec.feature 'IAL2 Single Sign On' do
     context 'when the sp requests user registration flow' do
       before do
         allow(IdentityConfig.store).to receive(:allowed_create_prompt_providers)
-          .and_return(['http://localhost:3000'])
+          .and_return(['saml_sp_ial2'])
       end
 
       it 'sends the user to account creation' do
