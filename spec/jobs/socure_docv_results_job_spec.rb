@@ -236,83 +236,6 @@ RSpec.describe SocureDocvResultsJob do
           )
           perform
         end
-
-        context 'when an mDL is submitted' do
-          let(:document_type_requested) { Idp::Constants::DocumentTypes::MDL }
-          let(:reason_codes) { ['mdl_pass'] }
-          it 'stores the result from the Socure DocV request' do
-            perform
-
-            document_capture_session.reload
-            document_capture_session_result = document_capture_session.load_result
-            expect(document_capture_session_result.success).to eq(true)
-            expect(document_capture_session_result.pii[:first_name]).to eq('Dwayne')
-            expect(document_capture_session_result.pii[:document_type_received])
-              .to eq('mobile_drivers_license')
-            expect(document_capture_session_result.attention_with_barcode).to eq(false)
-            expect(document_capture_session_result.doc_auth_success).to eq(true)
-            expect(document_capture_session_result.selfie_status).to eq(:not_processed)
-            expect(document_capture_session_result.aamva_status).to eq(:not_processed)
-            expect(document_capture_session_result.attempt).to eq(1)
-            expect(document_capture_session_result.aamva_status).to eq(:not_processed)
-          end
-
-          it 'logs an event' do
-            perform
-
-            expect(@analytics).to have_logged_event(
-              :idv_socure_verification_data_requested,
-              hash_including(
-                address_line2_present: true,
-                name_suffix_present: false,
-                async: true,
-                birth_year: 2000,
-                customer_profile: { 'customerUserId' => user.uuid, 'userId' => socure_user_id },
-                customer_user_id: user.uuid,
-                decision: { 'name' => 'lenient', 'value' => 'accept' },
-                doc_auth_success: true,
-                doc_type_supported: true,
-                document_metadata: { 'country' => 'USA',
-                                     'state' => 'NY',
-                                     'type' => 'Drivers License' },
-                document_type_received: 'mobile_drivers_license',
-                errors: {},
-                expiration_date: '2027-01-01',
-                issue_year: 2020,
-                issuer: sp.issuer,
-                liveness_enabled: false,
-                reason_codes: ['mdl_pass'],
-                reference_id: socure_reference_id,
-                remaining_submit_attempts: 3,
-                state: 'NY',
-                submit_attempts: 1,
-                success: true,
-                vendor: 'Socure',
-                zip_code: '10001',
-              ),
-            )
-          end
-
-          it 'calls the attempts_api_tracker with the expected arguments' do
-            expect(attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
-              success: true,
-              document_state: address_data[:state],
-              document_number: pii_from_doc[:documentNumber],
-              document_issued: Date.parse(pii_from_doc[:issueDate]),
-              document_expiration: Date.parse(pii_from_doc[:expirationDate]),
-              first_name: pii_from_doc[:firstName],
-              last_name: pii_from_doc[:surName],
-              date_of_birth: Date.parse(pii_from_doc[:dob]),
-              address1: address_data[:physicalAddress],
-              address2: address_data[:physicalAddress2],
-              city: address_data[:city],
-              state: address_data[:state],
-              zip: address_data[:zip],
-              failure_reason: nil,
-            )
-            perform
-          end
-        end
       end
 
       context 'when the response is not successful' do
@@ -361,6 +284,7 @@ RSpec.describe SocureDocvResultsJob do
           let(:document_type_requested) { Idp::Constants::DocumentTypes::MDL }
 
           it 'doc auth fails' do
+            expect(Proofing::Resolution::Plugins::AamvaPlugin).not_to receive(:new)
             perform
 
             document_capture_session.reload
@@ -1127,6 +1051,7 @@ RSpec.describe SocureDocvResultsJob do
 
         context 'when aamva check is successful' do
           it 'doc auth succeeds' do
+            expect(Proofing::Resolution::Plugins::AamvaPlugin).to receive(:new).and_call_original
             perform
 
             document_capture_session.reload
@@ -1224,6 +1149,85 @@ RSpec.describe SocureDocvResultsJob do
                 :expiration_date,
               ),
             )
+          end
+        end
+
+        context 'when an mDL is submitted' do
+          let(:document_type_requested) { Idp::Constants::DocumentTypes::MDL }
+          let(:reason_codes) { ['mdl_pass'] }
+          it 'stores the result from the Socure DocV request' do
+            expect(Proofing::Resolution::Plugins::AamvaPlugin).not_to receive(:new)
+
+            perform
+
+            document_capture_session.reload
+            document_capture_session_result = document_capture_session.load_result
+            expect(document_capture_session_result.success).to eq(true)
+            expect(document_capture_session_result.pii[:first_name]).to eq('Dwayne')
+            expect(document_capture_session_result.pii[:document_type_received])
+              .to eq('mobile_drivers_license')
+            expect(document_capture_session_result.attention_with_barcode).to eq(false)
+            expect(document_capture_session_result.doc_auth_success).to eq(true)
+            expect(document_capture_session_result.selfie_status).to eq(:not_processed)
+            expect(document_capture_session_result.aamva_status).to eq(:not_processed)
+            expect(document_capture_session_result.attempt).to eq(1)
+            expect(document_capture_session_result.aamva_status).to eq(:not_processed)
+          end
+
+          it 'logs an event' do
+            perform
+
+            expect(@analytics).to have_logged_event(
+              :idv_socure_verification_data_requested,
+              hash_including(
+                address_line2_present: true,
+                name_suffix_present: false,
+                async: true,
+                birth_year: 2000,
+                customer_profile: { 'customerUserId' => user.uuid, 'userId' => socure_user_id },
+                customer_user_id: user.uuid,
+                decision: { 'name' => 'lenient', 'value' => 'accept' },
+                doc_auth_success: true,
+                doc_type_supported: true,
+                document_metadata: { 'country' => 'USA',
+                                      'state' => 'NY',
+                                      'type' => 'Drivers License' },
+                document_type_received: 'mobile_drivers_license',
+                errors: {},
+                expiration_date: '2027-01-01',
+                issue_year: 2020,
+                issuer: sp.issuer,
+                liveness_enabled: false,
+                reason_codes: ['mdl_pass'],
+                reference_id: socure_reference_id,
+                remaining_submit_attempts: 3,
+                state: 'NY',
+                submit_attempts: 1,
+                success: true,
+                vendor: 'Socure',
+                zip_code: '10001',
+              ),
+            )
+          end
+
+          it 'calls the attempts_api_tracker with the expected arguments' do
+            expect(attempts_api_tracker).to receive(:idv_document_upload_submitted).with(
+              success: true,
+              document_state: address_data[:state],
+              document_number: pii_from_doc[:documentNumber],
+              document_issued: Date.parse(pii_from_doc[:issueDate]),
+              document_expiration: Date.parse(pii_from_doc[:expirationDate]),
+              first_name: pii_from_doc[:firstName],
+              last_name: pii_from_doc[:surName],
+              date_of_birth: Date.parse(pii_from_doc[:dob]),
+              address1: address_data[:physicalAddress],
+              address2: address_data[:physicalAddress2],
+              city: address_data[:city],
+              state: address_data[:state],
+              zip: address_data[:zip],
+              failure_reason: nil,
+            )
+            perform
           end
         end
 
