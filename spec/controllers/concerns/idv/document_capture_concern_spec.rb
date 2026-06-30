@@ -1,12 +1,11 @@
 require 'rails_helper'
 
 RSpec.describe Idv::DocumentCaptureConcern, :controller do
-  let(:acr_values) { Saml::Idp::Constants::IAL_VERIFIED_ACR }
-  let(:passport_requested) { false }
-  let(:document_type_requested) do
-    passport_requested ?
-        Idp::Constants::DocumentTypes::PASSPORT : Idp::Constants::DocumentTypes::STATE_ID_CARD
+  controller ApplicationController do
+    include Idv::DocumentCaptureConcern
   end
+  let(:acr_values) { Saml::Idp::Constants::IAL_VERIFIED_ACR }
+  let(:document_type_requested) { Idp::Constants::DocumentTypes::STATE_ID_CARD }
   let(:document_capture_session) do
     create(
       :document_capture_session,
@@ -16,21 +15,7 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
   end
   let(:user) { document_capture_session.user }
 
-  idv_document_capture_controller_class = Class.new(ApplicationController) do
-    def self.name
-      'AnonymousController'
-    end
-
-    include Idv::DocumentCaptureConcern
-
-    def show
-      render plain: 'Hello'
-    end
-  end
-
   describe '#handle_stored_result' do
-    controller(idv_document_capture_controller_class) do
-    end
     let(:mrz_status) { nil }
     let(:selfie_status) { :not_processed }
     let(:success) { true }
@@ -82,7 +67,7 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
 
     context 'when document is a passport with failed MRZ check' do
       let(:mrz_status) { :failed }
-      let(:passport_requested) { true }
+      let(:document_type_requested) { Idp::Constants::DocumentTypes::PASSPORT }
 
       it 'returns failure response' do
         response = controller.handle_stored_result(user:)
@@ -92,7 +77,7 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
 
     context 'when document is a passport with passed MRZ check' do
       let(:mrz_status) { :pass }
-      let(:passport_requested) { true }
+      let(:document_type_requested) { Idp::Constants::DocumentTypes::PASSPORT }
 
       let(:pii_data) do
         {
@@ -173,7 +158,7 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
           end
         end
 
-        context 'when mdL is requesteed and submitted' do
+        context 'when mdL is requested and submitted' do
           let(:pii_data) do
             {
               first_name: 'Test',
@@ -203,9 +188,6 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
   end
 
   describe '#selfie_requirement_met?' do
-    controller(idv_document_capture_controller_class) do
-    end
-
     context 'selfie checks enabled' do
       let(:selfie_status) { :not_processed }
       before do
@@ -283,9 +265,6 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
   end
 
   describe '#aamva_requirement_met?' do
-    controller(idv_document_capture_controller_class) do
-    end
-
     let(:aamva_status) { nil }
     let(:aamva_enabled) { true }
     let(:doc_auth_success) { true }
@@ -406,11 +385,7 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
   end
 
   describe '#mrz_requirement_met?' do
-    controller(idv_document_capture_controller_class) do
-    end
-
     let(:mrz_status) { nil }
-    let(:passport_requested) { false }
     let(:doc_auth_success) { true }
     let(:selfie_status) { :not_processed }
     let(:success) { true }
@@ -455,15 +430,13 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
     end
 
     context 'when passport not requested' do
-      let(:passport_requested) { false }
-
       it 'returns true' do
         expect(controller.mrz_requirement_met?).to eq(true)
       end
     end
 
     context 'when passport requested but state ID submitted' do
-      let(:passport_requested) { true }
+      let(:document_type_requested) { Idp::Constants::DocumentTypes::PASSPORT }
 
       before do
       end
@@ -474,7 +447,7 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
     end
 
     context 'when document is a passport' do
-      let(:passport_requested) { true }
+      let(:document_type_requested) { Idp::Constants::DocumentTypes::PASSPORT }
 
       before do
       end
