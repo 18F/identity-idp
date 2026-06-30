@@ -81,6 +81,26 @@ RSpec.describe 'FeatureManagement' do
     end
   end
 
+  describe '#openid_connect_auth_time_enabled?' do
+    subject(:enabled) { FeatureManagement.openid_connect_auth_time_enabled? }
+
+    context 'when enabled' do
+      before do
+        allow(IdentityConfig.store).to receive(:openid_connect_auth_time_enabled).and_return(true)
+      end
+
+      it { expect(enabled).to eq(true) }
+    end
+
+    context 'when disabled' do
+      before do
+        allow(IdentityConfig.store).to receive(:openid_connect_auth_time_enabled).and_return(false)
+      end
+
+      it { expect(enabled).to eq(false) }
+    end
+  end
+
   describe '#use_dashboard_service_providers?' do
     context 'when enabled' do
       before do
