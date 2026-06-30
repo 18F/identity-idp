@@ -184,6 +184,7 @@ feature_account_creation_passkey_auto_prompt: false
 feature_idv_force_gpo_verification_enabled: false
 feature_idv_hybrid_flow_enabled: true
 feature_show_sp_reproof_banner_enabled: false
+feature_webauthn_verification_auto_prompt_enabled: false
 fraud_ops_event_ttl_seconds: 604800
 fraud_ops_public_key: ''
 fraud_ops_s3_bucket: ''
