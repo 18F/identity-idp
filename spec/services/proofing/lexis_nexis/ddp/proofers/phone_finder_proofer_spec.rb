@@ -94,6 +94,45 @@ RSpec.describe Proofing::LexisNexis::Ddp::Proofers::PhoneFinderProofer do
           expect(result.vendor_name).to eq('lexisnexis:phone_finder_ddp')
           expect(result.dual_vendor_check_eligible).to be(false)
         end
+
+        it 'surfaces phone metadata in result' do
+          result = proofer.proof(proofing_applicant)
+
+          expect(result.result).to eq(
+            phone_type: 'POSSIBLE WIRELESS',
+            account_telephone_type: 'UNKNOWN',
+            risk_indicator_status: 'PASS',
+            risk_count_high: '0',
+            risk_count_med: '1',
+            risk_count_low: '4',
+          )
+        end
+
+        context 'when the phone metadata fields are absent' do
+          let(:response_body) do
+            {
+              'integration_hub_results' => {
+                'test_org_id:test-policy' => {
+                  'Phone Finder' => {
+                    'tps_vendor_raw_response' => {
+                      'Products' => [],
+                      'Status' => {
+                        'ConversationId' => 'super-cool-test-session-id',
+                        'TransactionStatus' => 'passed',
+                      },
+                    },
+                  },
+                },
+              },
+            }.to_json
+          end
+
+          it 'returns a nil result' do
+            result = proofer.proof(proofing_applicant)
+
+            expect(result.result).to be_nil
+          end
+        end
       end
 
       context 'when the response raises an exception' do
