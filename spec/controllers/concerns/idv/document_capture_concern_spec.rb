@@ -3,12 +3,15 @@ require 'rails_helper'
 RSpec.describe Idv::DocumentCaptureConcern, :controller do
   let(:acr_values) { Saml::Idp::Constants::IAL_VERIFIED_ACR }
   let(:passport_requested) { false }
+  let(:document_type_requested) do
+    passport_requested ?
+        Idp::Constants::DocumentTypes::PASSPORT : Idp::Constants::DocumentTypes::STATE_ID_CARD
+  end
   let(:document_capture_session) do
     create(
       :document_capture_session,
       doc_auth_vendor: Idp::Constants::Vendors::MOCK,
-      document_type_requested: passport_requested ?
-        Idp::Constants::DocumentTypes::PASSPORT : Idp::Constants::DocumentTypes::STATE_ID_CARD,
+      document_type_requested:,
     )
   end
   let(:user) { document_capture_session.user }
@@ -169,6 +172,22 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
             expect(response.success?).to eq(false)
           end
         end
+
+        context 'when mdL is requesteed and submitted' do
+          let(:pii_data) do
+            {
+              first_name: 'Test',
+              last_name: 'User',
+              state: 'MD',
+              document_type_received: Idp::Constants::DocumentTypes::MDL,
+            }
+          end
+          let(:document_type_requested) { Idp::Constants::DocumentTypes::MDL }
+          it 'returns success response' do
+            response = controller.handle_stored_result(user:)
+            expect(response.success?).to eq(true)
+          end
+        end
       end
 
       context 'with AAMVA disabled' do
@@ -176,21 +195,6 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
         let(:aamva_status) { :failed }
 
         it 'returns success response even with failed AAMVA' do
-          response = controller.handle_stored_result(user:)
-          expect(response.success?).to eq(true)
-        end
-      end
-
-      context 'when mdL is submitted' do
-        let(:pii_data) do
-          {
-            first_name: 'Test',
-            last_name: 'User',
-            state: 'MD',
-            document_type_received: Idp::Constants::DocumentTypes::MDL,
-          }
-        end
-        it 'returns success response regardless of MRZ status' do
           response = controller.handle_stored_result(user:)
           expect(response.success?).to eq(true)
         end

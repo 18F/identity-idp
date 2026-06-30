@@ -75,8 +75,12 @@ module Idv
     end
 
     def aamva_requirement_met?
-      return true if document_type_received == 'passport'
       return true unless IdentityConfig.store.idv_aamva_at_doc_auth_enabled
+
+      if [*Idp::Constants::DocumentTypes::PASSPORT_TYPES, Idp::Constants::DocumentTypes::MDL]
+          .include?(document_type_received)
+        return true
+      end
 
       stored_result.aamva_status == :passed
     end
