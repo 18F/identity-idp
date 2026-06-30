@@ -73,7 +73,7 @@ class AuthnContextResolver
     return result if user&.identity_verified_with_facial_match? ||
                      facial_match_is_required?(result)
 
-    if IdentityConfig.store.facial_match_preferred_on_connected_accounts
+    if IdentityConfig.store.facial_match_preferred_on_connected_services
       return result unless user_has_account_with_sp?
     end
 

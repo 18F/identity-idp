@@ -93,7 +93,7 @@ RSpec.describe Accounts::ConnectedAccounts::SelectedEmailController do
     subject(:response) { patch :update, params: }
 
     it 'redirects to connected accounts path with the appropriate flash message' do
-      expect(response).to redirect_to(account_connected_accounts_path)
+      expect(response).to redirect_to(account_connected_services_path)
       expect(flash[:email_updated_identity_id]).to eq(identity.id)
     end
 
@@ -113,7 +113,7 @@ RSpec.describe Accounts::ConnectedAccounts::SelectedEmailController do
       let(:params) { super().merge(select_email_form: { selected_email_id: '' }) }
 
       it 'redirects to form with flash' do
-        expect(response).to redirect_to(edit_connected_account_selected_email_path(identity.id))
+        expect(response).to redirect_to(edit_connected_service_selected_email_path(identity.id))
         expect(flash[:error]).to eq(t('email_address.not_found'))
       end
 

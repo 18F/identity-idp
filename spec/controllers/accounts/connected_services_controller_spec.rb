@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe Accounts::ConnectedAccountsController do
+RSpec.describe Accounts::ConnectedServicesController do
   describe '#show' do
     let(:user) { create(:user, :fully_registered) }
 
@@ -15,7 +15,7 @@ RSpec.describe Accounts::ConnectedAccountsController do
 
       get :show
 
-      expect(@analytics).to have_logged_event(:connected_accounts_page_visited)
+      expect(@analytics).to have_logged_event(:connected_services_page_visited)
     end
   end
 end
