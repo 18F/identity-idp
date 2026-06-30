@@ -94,6 +94,10 @@ class ServiceProvider < ApplicationRecord
     end
   end
 
+  def create_prompt_allowed?
+    IdentityConfig.store.allowed_create_prompt_providers.include?(issuer)
+  end
+
   def logo_url
     LogoUrl.new(logo, remote_logo_key).url
   end

@@ -22,7 +22,7 @@ module OpenidConnect
     before_action :handle_banned_user
     before_action :handle_duplicate_profile_user, only: :index
     before_action :bump_auth_count, only: :index
-    before_action :redirect_to_sign_in, only: :index, unless: :user_signed_in?
+    before_action :redirect_to_sign_in_or_create, only: :index, unless: :user_signed_in?
     before_action :confirm_two_factor_authenticated, only: :index
     before_action :redirect_to_reauthenticate, only: :index, if: :remember_device_expired_for_sp?
     before_action :prompt_for_password_if_ial2_request_and_pii_locked, only: [:index]
@@ -74,8 +74,12 @@ module OpenidConnect
       true
     end
 
-    def redirect_to_sign_in
-      redirect_to new_user_session_url
+    def redirect_to_sign_in_or_create
+      if @authorize_form.initiate_user_registration?
+        redirect_to sign_up_email_url
+      else
+        redirect_to new_user_session_url
+      end
     end
 
     def redirect_to_reauthenticate
