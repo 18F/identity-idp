@@ -5150,6 +5150,10 @@ module AnalyticsEvents
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
   # @param [Hash,nil] proofing_components User's current proofing components
   # @param [Hash] vendor Vendor response payload
+  # @option vendor [Hash,nil] 'result' Vendor-specific result details. For the LexisNexis
+  #   PhoneFinder (DDP) vendor this includes the phone metadata fields 'phone_type',
+  #   'account_telephone_type', 'risk_indicator_status', 'risk_count_high',
+  #   'risk_count_med', and 'risk_count_low'.
   # @param [Boolean] new_phone_added Whether phone number was added to account in submission
   # @param [Boolean] hybrid_handoff_phone_used Whether phone is the same as what was used for hybrid
   #   document capture
