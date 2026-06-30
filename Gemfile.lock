@@ -276,8 +276,9 @@ GEM
       bigdecimal
       rexml
     crass (1.0.7)
-    css_parser (2.2.0)
+    css_parser (3.0.0)
       addressable
+      ssrf_filter (~> 1.5)
     cssbundling-rails (1.4.3)
       railties (>= 6.0.0)
     csv (3.3.5)
@@ -560,7 +561,7 @@ GEM
     minitest (6.0.6)
       drb (~> 2.0)
       prism (~> 1.5)
-    msgpack (1.8.0)
+    msgpack (1.8.3)
     multi_json (1.21.1)
     multiset (0.5.3)
     net-http (0.9.1)
@@ -858,6 +859,7 @@ GEM
     sqlite3 (2.9.1-x86_64-darwin)
     sqlite3 (2.9.1-x86_64-linux-gnu)
     sqlite3 (2.9.1-x86_64-linux-musl)
+    ssrf_filter (1.5.0)
     stringex (2.8.6)
     stringio (3.2.0)
     strong_migrations (2.5.2)
