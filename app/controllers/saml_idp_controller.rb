@@ -119,7 +119,11 @@ class SamlIdpController < ApplicationController
   private
 
   def redirect_to_sign_in
-    redirect_to new_user_session_url
+    if params[:prompt] == 'create' && session[:sp].present?
+      redirect_to sign_up_email_url
+    else
+      redirect_to new_user_session_url
+    end
   end
 
   def redirect_to_reauthenticate

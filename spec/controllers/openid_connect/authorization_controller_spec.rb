@@ -1297,6 +1297,18 @@ RSpec.describe OpenidConnect::AuthorizationController do
             vtr: nil,
           )
         end
+
+        context 'when the SP requests the account creation flow with prompt=create' do
+          let(:prompt) { 'create' }
+
+          it 'redirects to account creation with the request_id in the session' do
+            action
+            sp_request_id = ServiceProviderRequestProxy.last.uuid
+
+            expect(response).to redirect_to sign_up_email_url
+            expect(controller.session[:sp][:request_id]).to eq(sp_request_id)
+          end
+        end
       end
     end
 

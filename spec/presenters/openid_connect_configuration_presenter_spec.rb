@@ -19,6 +19,7 @@ RSpec.describe OpenidConnectConfigurationPresenter do
         expect(configuration[:service_documentation]).to eq('https://developers.login.gov/')
         expect(configuration[:response_types_supported]).to eq(%w[code])
         expect(configuration[:grant_types_supported]).to eq(%w[authorization_code])
+        expect(configuration[:prompt_values_supported]).to eq(%w[login select_account create])
         expect(configuration[:acr_values_supported])
           .to match_array(Saml::Idp::Constants::VALID_AUTHN_CONTEXTS)
         expect(configuration[:subject_types_supported]).to eq(%w[pairwise])

@@ -57,7 +57,7 @@ class OpenidConnectAuthorizeForm
   validates :nonce, presence: true, length: { minimum: RANDOM_VALUE_MINIMUM_LENGTH }
 
   validates :response_type, inclusion: { in: %w[code] }
-  validates :prompt, presence: true, inclusion: { in: %w[login select_account] }
+  validates :prompt, presence: true, inclusion: { in: %w[login select_account create] }
   validates :code_challenge_method, inclusion: { in: %w[S256] }, if: :code_challenge
 
   validate :validate_acr_values
@@ -207,6 +207,7 @@ class OpenidConnectAuthorizeForm
 
   def validate_prompt
     return if prompt == 'select_account'
+    return if prompt == 'create'
     return if prompt == 'login' && service_provider&.allow_prompt_login
     errors.add(
       :prompt, t('openid_connect.authorization.errors.prompt_invalid'),
