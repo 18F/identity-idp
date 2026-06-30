@@ -251,6 +251,7 @@ class OpenidConnectAuthorizeForm
       client_id: client_id,
       prompt: prompt,
       allow_prompt_login: service_provider&.allow_prompt_login,
+      allow_prompt_create: service_provider&.create_prompt_allowed?,
       redirect_uri: result_uri,
       scope: scope&.sort&.join(' '),
       acr_values: acr_values&.sort&.join(' '),

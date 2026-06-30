@@ -127,6 +127,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
               client_id: client_id,
               prompt: 'select_account',
               allow_prompt_login: true,
+              allow_prompt_create: false,
               unauthorized_scope: true,
               user_fully_authenticated: true,
               acr_values: 'http://idmanagement.gov/ns/assurance/ial/1',
@@ -228,6 +229,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
                 client_id: client_id,
                 prompt: 'select_account',
                 allow_prompt_login: true,
+                allow_prompt_create: false,
                 unauthorized_scope: false,
                 user_fully_authenticated: true,
                 acr_values: 'http://idmanagement.gov/ns/assurance/ial/2',
@@ -619,6 +621,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
                   client_id: client_id,
                   prompt: 'select_account',
                   allow_prompt_login: true,
+                  allow_prompt_create: false,
                   unauthorized_scope: false,
                   user_fully_authenticated: true,
                   acr_values: 'http://idmanagement.gov/ns/assurance/ial/0',
@@ -727,6 +730,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
                   client_id: client_id,
                   prompt: 'select_account',
                   allow_prompt_login: true,
+                  allow_prompt_create: false,
                   unauthorized_scope: false,
                   user_fully_authenticated: true,
                   acr_values: 'http://idmanagement.gov/ns/assurance/ial/0',
@@ -806,6 +810,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
                   client_id: client_id,
                   prompt: 'select_account',
                   allow_prompt_login: true,
+                  allow_prompt_create: false,
                   unauthorized_scope: false,
                   user_fully_authenticated: true,
                   acr_values: 'http://idmanagement.gov/ns/assurance/ial/0',
@@ -929,6 +934,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
             client_id: client_id,
             prompt: '',
             allow_prompt_login: true,
+            allow_prompt_create: false,
             unauthorized_scope: true,
             error_details: hash_including(:prompt),
             user_fully_authenticated: true,
@@ -990,6 +996,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
               client_id:,
               prompt:,
               allow_prompt_login: true,
+              allow_prompt_create: false,
               unauthorized_scope: false,
               error_details: hash_including(:acr_values),
               user_fully_authenticated: true,
@@ -1030,6 +1037,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
                 client_id:,
                 prompt:,
                 allow_prompt_login: true,
+                allow_prompt_create: false,
                 unauthorized_scope: false,
                 user_fully_authenticated: true,
                 acr_values: known_value,
@@ -1276,6 +1284,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
             client_id: client_id,
             prompt: 'select_account',
             allow_prompt_login: true,
+            allow_prompt_create: false,
             unauthorized_scope: true,
             user_fully_authenticated: false,
             acr_values: 'http://idmanagement.gov/ns/assurance/ial/1',
@@ -1330,6 +1339,10 @@ RSpec.describe OpenidConnect::AuthorizationController do
     context 'with prompt=create' do
       let(:acr_values) { Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF }
       let(:prompt) { 'create' }
+      let(:now) { Time.zone.now }
+      let(:user) { create(:user) }
+
+      before { stub_analytics }
 
       context 'sp is not on the allowlist for prompt=create' do
         it 'redirects back to the sp with errors' do
@@ -1346,6 +1359,25 @@ RSpec.describe OpenidConnect::AuthorizationController do
             ],
           )
         end
+
+        it 'tracks the prompt value' do
+          action
+
+          expect(@analytics).to have_logged_event(
+            'OpenID Connect: authorization request',
+            success: false,
+            client_id: client_id,
+            prompt: 'create',
+            allow_prompt_login: true,
+            allow_prompt_create: false,
+            unauthorized_scope: true,
+            user_fully_authenticated: false,
+            acr_values: 'http://idmanagement.gov/ns/assurance/ial/1',
+            code_challenge_present: false,
+            scope: 'openid',
+            error_details: { prompt: { prompt_invalid: true } },
+          )
+        end
       end
 
       context 'sp is on the allowlist for prompt=create' do
@@ -1358,6 +1390,24 @@ RSpec.describe OpenidConnect::AuthorizationController do
           action
 
           expect(response).to redirect_to(sign_up_email_url)
+        end
+
+        it 'tracks the prompt value' do
+          action
+
+          expect(@analytics).to have_logged_event(
+            'OpenID Connect: authorization request',
+            success: true,
+            client_id: client_id,
+            prompt: 'create',
+            allow_prompt_login: true,
+            allow_prompt_create: true,
+            unauthorized_scope: true,
+            user_fully_authenticated: false,
+            acr_values: 'http://idmanagement.gov/ns/assurance/ial/1',
+            code_challenge_present: false,
+            scope: 'openid',
+          )
         end
       end
     end

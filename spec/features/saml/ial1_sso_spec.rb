@@ -102,7 +102,7 @@ RSpec.feature 'IAL1 Single Sign On' do
 
     context 'when the sp requests user registration flow' do
       before do
-        expect(IdentityConfig.store).to receive(:allowed_create_prompt_providers)
+        allow(IdentityConfig.store).to receive(:allowed_create_prompt_providers)
           .and_return(['http://localhost:3000'])
       end
 

@@ -45,6 +45,7 @@ RSpec.describe OpenidConnectAuthorizeForm do
           client_id: client_id,
           prompt: 'select_account',
           allow_prompt_login: true,
+          allow_prompt_create: false,
           redirect_uri: nil,
           unauthorized_scope: true,
           acr_values:,
@@ -68,6 +69,7 @@ RSpec.describe OpenidConnectAuthorizeForm do
             client_id: client_id,
             prompt: 'select_account',
             allow_prompt_login: true,
+            allow_prompt_create: false,
             redirect_uri: "#{redirect_uri}?error=invalid_request&error_description=" \
                           "Response+type+is+not+included+in+the+list&state=#{state}",
             unauthorized_scope: true,

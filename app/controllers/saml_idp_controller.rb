@@ -119,11 +119,17 @@ class SamlIdpController < ApplicationController
   private
 
   def redirect_to_sign_in_or_create
-    if params[:prompt] == 'create' && saml_request_service_provider&.create_prompt_allowed?
+    # Using query params &prompt=create to trigger user registration
+    # from authentication in order to mirror standard OIDC behavior
+    if params[:prompt] == 'create' && create_prompt_allowed?
       redirect_to sign_up_email_url
     else
       redirect_to new_user_session_url
     end
+  end
+
+  def create_prompt_allowed?
+    saml_request_service_provider&.create_prompt_allowed?
   end
 
   def redirect_to_reauthenticate
@@ -158,6 +164,8 @@ class SamlIdpController < ApplicationController
       matching_cert_serial:,
       requested_nameid_format: saml_request.name_id_format,
       unknown_authn_contexts:,
+      prompt: params[:prompt],
+      allow_prompt_create: create_prompt_allowed?,
     )
 
     if result.success? && saml_request.signed?
@@ -189,6 +197,8 @@ class SamlIdpController < ApplicationController
       matching_cert_serial:,
       unknown_authn_contexts:,
       user_fully_authenticated: user_fully_authenticated?,
+      prompt: params[:prompt],
+      allow_prompt_create: create_prompt_allowed?,
     )
   end
 
