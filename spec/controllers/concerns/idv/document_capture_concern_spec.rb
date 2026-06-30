@@ -155,7 +155,7 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
             expect(response.success?).to eq(false)
           end
 
-          context 'when mdL is requested and submitted' do
+          context 'when mdL is requested' do
             let(:pii_data) do
               {
                 first_name: 'Test',
@@ -169,11 +169,25 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
               response = controller.handle_stored_result(user:)
               expect(response.success?).to eq(true)
             end
+
+            context 'when doc auth fails' do
+              let(:success) { false }
+              let(:doc_auth_success) { false }
+              it 'returns failed response' do
+                response = controller.handle_stored_result(user:)
+                expect(response.success?).to eq(false)
+              end
+            end
+
+            context 'when a drivers license is submitted' do
+              let(:document_type_received) { Idp::Constants::DocumentTypes::DRIVERS_LICENSE }
+
+            end
           end
         end
       end
 
-      context 'with AAMVA disabled' do
+      context 'with AAMVA at DocAuth disabled' do
         let(:aamva_enabled) { false }
         let(:aamva_status) { :failed }
 
