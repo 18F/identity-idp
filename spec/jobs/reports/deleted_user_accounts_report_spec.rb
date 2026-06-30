@@ -8,7 +8,7 @@ RSpec.describe Reports::DeletedUserAccountsReport do
   let(:uuid) { 'foo' }
   let(:last_authenticated_at) { '2020-01-02 12:03:04 UTC' }
 
-  subject { described_class.new }
+  subject { Reports::DeletedUserAccountsReport.new }
 
   it 'is does not send out an email with nothing configured' do
     expect(ReportMailer).to_not receive(:deleted_user_accounts_report)

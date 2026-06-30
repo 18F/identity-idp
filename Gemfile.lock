@@ -275,7 +275,7 @@ GEM
     crack (1.0.1)
       bigdecimal
       rexml
-    crass (1.0.6)
+    crass (1.0.7)
     css_parser (2.2.0)
       addressable
     cssbundling-rails (1.4.3)
@@ -924,7 +924,7 @@ GEM
       nokogiri (~> 1.11)
     xpath (3.2.0)
       nokogiri (~> 1.8)
-    yard (0.9.43)
+    yard (0.9.44)
     zeitwerk (2.7.5)
     zlib (3.2.3)
     zonebie (0.6.1)

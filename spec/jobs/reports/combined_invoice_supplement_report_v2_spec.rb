@@ -106,6 +106,7 @@ RSpec.describe Reports::CombinedInvoiceSupplementReportV2 do
             expect(row['iaa_ial1_unique_users'].to_i).to eq(1)
             expect(row['iaa_ial2_unique_users'].to_i).to eq(2)
             expect(row['iaa_unique_users'].to_i).to eq(2)
+            expect(row['iaa_auth_billable'].to_i).to eq(0)
             expect(row['partner_ial2_unique_user_events_year1'].to_i).to eq(0)
             expect(row['partner_ial2_unique_user_events_year2'].to_i).to eq(2)
             expect(row['partner_ial2_unique_user_events_year3'].to_i).to eq(0)
@@ -145,6 +146,7 @@ RSpec.describe Reports::CombinedInvoiceSupplementReportV2 do
             expect(row['issuer_ial1_unique_users'].to_i).to eq(1)
             expect(row['issuer_ial2_unique_users'].to_i).to eq(2)
             expect(row['issuer_unique_users'].to_i).to eq(2)
+            expect(row['issuer_auth_billable'].to_i).to eq(0)
           end
         end
 
