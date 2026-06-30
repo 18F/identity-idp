@@ -7,7 +7,7 @@ module Idv
     end
 
     def passport_chosen?
-      chosen_id_type == 'passport'
+      ['passport', 'passport_card'].include?(chosen_id_type)
     end
 
     def set_passport_requested
@@ -52,6 +52,7 @@ module Idv
         form_submit_url:,
         disable_passports: disable_passports?,
         auto_check_value: disable_passports? ? :state_id_card : selected_id_type,
+        passport_cards_enabled: passport_cards_available?,
       }
     end
 
@@ -61,8 +62,11 @@ module Idv
     end
 
     def passports_enabled?
-      IdentityConfig.store.doc_auth_passports_enabled ||
-        (FeatureManagement.doc_auth_passport_cards_enabled? && in_passport_cards_allowed_bucket?)
+      IdentityConfig.store.doc_auth_passports_enabled || passport_cards_available?
+    end
+
+    def passport_cards_available?
+      FeatureManagement.doc_auth_passport_cards_enabled? && in_passport_cards_allowed_bucket?
     end
 
     def in_passport_cards_allowed_bucket?

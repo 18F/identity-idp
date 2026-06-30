@@ -100,6 +100,24 @@ RSpec.describe Idv::ChooseIdTypeConcern, :controller do
       end
     end
 
+    context 'when chosen_id_type is "passport_card"' do
+      let(:document_type_chosen) { 'passport_card' }
+
+      before do
+        allow(controller).to receive(:params).and_return(parameters)
+        subject.set_passport_requested
+      end
+
+      it 'updates the document_capture_session passport status to "requested"' do
+        expect(document_capture_session.passport_requested?).to be true
+      end
+
+      it 'sets socure attributes to nil' do
+        expect(document_capture_session.socure_docv_capture_app_url).to be_nil
+        expect(document_capture_session.socure_docv_transaction_token).to be_nil
+      end
+    end
+
     context 'when chosen_id_type is not "passport"' do
       let(:document_type_chosen) { 'state_id_card' }
 
