@@ -100,6 +100,24 @@ RSpec.describe Idv::ChooseIdTypeConcern, :controller do
       end
     end
 
+    context 'when chosen_id_type is "passport_card"' do
+      let(:document_type_chosen) { 'passport_card' }
+
+      before do
+        allow(controller).to receive(:params).and_return(parameters)
+        subject.set_passport_requested
+      end
+
+      it 'updates the document_capture_session passport status to "requested"' do
+        expect(document_capture_session.passport_requested?).to be true
+      end
+
+      it 'sets socure attributes to nil' do
+        expect(document_capture_session.socure_docv_capture_app_url).to be_nil
+        expect(document_capture_session.socure_docv_transaction_token).to be_nil
+      end
+    end
+
     context 'when chosen_id_type is not "passport"' do
       let(:document_type_chosen) { 'state_id_card' }
 
@@ -259,7 +277,7 @@ RSpec.describe Idv::ChooseIdTypeConcern, :controller do
   end
 
   describe '#locals_attrs' do
-    let(:presenter) { double(Idv::ChooseIdTypePresenter) }
+    let(:presenter) { double(Idv::ChooseIdTypePresenter, passport_card_available?: true) }
     let(:form_submit_url) { '/verify/choose_id_type' }
     let(:request) { double(DocAuth::Dos::Requests::HealthCheckRequest) }
     let(:response) { double(DocAuth::Dos::Responses::HealthCheckResponse) }
@@ -317,6 +335,35 @@ RSpec.describe Idv::ChooseIdTypeConcern, :controller do
           disable_passports: false,
           auto_check_value: :passport,
         )
+      end
+    end
+
+    context 'when passport cards are enabled' do
+      before do
+        allow(IdentityConfig.store).to receive(:doc_auth_passport_cards_enabled)
+          .and_return(true)
+        ab_test = AbTests::DOC_AUTH_PASSPORT_CARDS_ALLOWED.dup
+        allow(ab_test).to receive(:bucket).and_return(:doc_auth_passport_cards_allowed)
+        stub_const('AbTests::DOC_AUTH_PASSPORT_CARDS_ALLOWED', ab_test)
+        allow(response).to receive(:success?).and_return(true)
+      end
+
+      context 'and the presenter allows passport cards' do
+        it 'enables passport cards' do
+          expect(
+            subject.locals_attrs(presenter:, form_submit_url:),
+          ).to include(passport_cards_enabled: true)
+        end
+      end
+
+      context 'and the presenter does not allow passport cards (in person)' do
+        let(:presenter) { double(Idv::ChooseIdTypePresenter, passport_card_available?: false) }
+
+        it 'keeps passport cards disabled' do
+          expect(
+            subject.locals_attrs(presenter:, form_submit_url:),
+          ).to include(passport_cards_enabled: false)
+        end
       end
     end
 

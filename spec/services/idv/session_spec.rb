@@ -476,4 +476,34 @@ RSpec.describe Idv::Session do
       end
     end
   end
+
+  describe '#pii_from_doc' do
+    before { subject.pii_from_doc = { document_type_received:, first_name: 'JANE' } }
+
+    context 'when the document is a passport book' do
+      let(:document_type_received) { 'passport' }
+
+      it 'builds a Pii::Passport that requires a residential address' do
+        expect(subject.pii_from_doc).to be_a(Pii::Passport)
+        expect(subject.pii_from_doc.residential_address_required?).to be(true)
+      end
+    end
+
+    context 'when the document is a passport card' do
+      let(:document_type_received) { 'passport_card' }
+
+      it 'builds a Pii::Passport that requires a residential address' do
+        expect(subject.pii_from_doc).to be_a(Pii::Passport)
+        expect(subject.pii_from_doc.residential_address_required?).to be(true)
+      end
+    end
+
+    context 'when the document is a state ID' do
+      let(:document_type_received) { 'drivers_license' }
+
+      it 'builds a Pii::StateId' do
+        expect(subject.pii_from_doc).to be_a(Pii::StateId)
+      end
+    end
+  end
 end
