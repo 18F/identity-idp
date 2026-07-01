@@ -11,21 +11,15 @@ module EncryptedDocStorage
       @s3_enabled = s3_enabled
     end
 
-    def write(issuer:, image: nil)
-      raise if issuer.blank?
-
+    def write(image: nil)
       if image.blank?
         return Result.new(name: nil, encryption_key: nil)
       end
 
-      name = "#{issuer}/#{SecureRandom.uuid}"
+      name = "encrypted_images/#{SecureRandom.uuid}"
       encryption_key = SecureRandom.bytes(32)
 
-      write_with_data(
-        image:,
-        encryption_key:,
-        name:,
-      )
+      write_with_data(image:, encryption_key:, name:)
 
       Result.new(
         name:,
@@ -40,8 +34,8 @@ module EncryptedDocStorage
       )
     end
 
-    def write_encrypted_attempt_events(file_path:, encrypted_attempt_events:,
-                                       name: SecureRandom.uuid)
+    def write_encrypted_attempt_events(file_path:, encrypted_attempt_events:, name:)
+      name = name.presence || SecureRandom.uuid
       path = "#{file_path}/#{name}"
 
       storage.write_attempt_events(path:, encrypted_attempt_events:)

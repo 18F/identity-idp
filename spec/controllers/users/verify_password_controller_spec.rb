@@ -115,6 +115,7 @@ RSpec.describe Users::VerifyPasswordController do
               expect(profile).to have_received(:reencrypt_user_proofing_events).with(
                 password:,
                 attempt_events:,
+                personal_key: controller.user_session[:personal_key],
               )
             end
           end

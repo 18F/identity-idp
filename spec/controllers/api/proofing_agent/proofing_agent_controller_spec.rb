@@ -835,6 +835,38 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
             end
           end
 
+          context 'user already has a pending agent proofed document_capture_session' do
+            before do
+              DocumentCaptureSession.create!(
+                user: user,
+                issuer:,
+                doc_auth_vendor: Idp::Constants::Vendors::PROOFING_AGENT,
+                requested_at: Time.zone.now,
+                pending_agent_proofed_user_at: Time.zone.now,
+              )
+            end
+            it 'returns 200' do
+              expect(action.status).to eq(200)
+            end
+
+            it 'returns a failed already proofed response body' do
+              action
+              body = JSON.parse(response.body)
+              expect(body['status']).to eq('failed')
+              expect(body['reason']).to eq('already_proofed_enhanced')
+
+              expect(@analytics).to have_logged_event(
+                :idv_proofing_agent_proof_user_requested,
+                response_body: a_hash_including(
+                  status: 'failed',
+                  reason: 'already_proofed_enhanced',
+                ),
+                proofing_agent: proofing_agent_analytics_hash,
+                issuer:,
+              )
+            end
+          end
+
           context 'without proofing_location_id param' do
             let(:location_id) { nil }
 
@@ -1858,6 +1890,50 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
             body = JSON.parse(response.body)
             expect(body['unknown_id_type'][0]).to eq(body_errors[:unknown_id_type][0])
           end
+        end
+      end
+    end
+
+    context 'mock_system_error' do
+      let(:enabled) { true }
+      let(:id_type) { drivers_license_type }
+      let(:state_id) { valid_state_id }
+      let(:user) { create(:user, email: 'system_error@example.com') }
+
+      before do
+        allow(Identity::Hostdata).to receive(:in_datacenter?).and_return(false)
+      end
+
+      context 'when email matches system_error@example.com' do
+        it 'returns 503 with system_error body' do
+          expect(action.status).to eq(503)
+          body = JSON.parse(response.body)
+          expect(body['success']).to eq(false)
+          expect(body['reason']).to eq('system_error')
+          expect(body['transaction_id']).to be_nil
+        end
+      end
+
+      context 'when email matches system_error+500@example.com' do
+        let(:email) { 'system_error+500@example.com' }
+
+        it 'returns 500 with system_error body' do
+          expect(action.status).to eq(500)
+          body = JSON.parse(response.body)
+          expect(body['success']).to eq(false)
+          expect(body['reason']).to eq('system_error')
+          expect(body['transaction_id']).to be_nil
+        end
+      end
+
+      context 'when in prod environment' do
+        before do
+          allow(Identity::Hostdata).to receive(:in_datacenter?).and_return(true)
+          allow(Identity::Hostdata).to receive(:env).and_return('prod')
+        end
+
+        it 'does not trigger mock and returns 202' do
+          expect(action.status).to eq(202)
         end
       end
     end

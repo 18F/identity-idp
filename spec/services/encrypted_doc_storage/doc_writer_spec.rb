@@ -7,7 +7,7 @@ RSpec.describe EncryptedDocStorage::DocWriter do
   subject { EncryptedDocStorage::DocWriter.new }
   describe '#write' do
     it 'encrypts the document and writes it to storage' do
-      result = subject.write(issuer:, image:)
+      result = subject.write(image:)
 
       key = Base64.strict_decode64(result.encryption_key)
       aes_cipher = Encryption::AesCipherV2.new
@@ -25,13 +25,14 @@ RSpec.describe EncryptedDocStorage::DocWriter do
 
     context 'when two images are written with the same writer object' do
       it 'each image has a different key' do
-        result = subject.write(issuer:, image:)
-        result1 = subject.write(issuer:, image:)
+        result = subject.write(image:)
+        result1 = subject.write(image:)
+
+        File.delete(file_path(result.name))
+        File.delete(file_path(result1.name))
 
         expect(result.name).not_to eq(result1.name)
         expect(result.encryption_key).not_to eq(result1.encryption_key)
-        expect(result.name).to start_with(issuer)
-        expect(result1.name).to start_with(issuer)
       end
     end
 
@@ -39,7 +40,7 @@ RSpec.describe EncryptedDocStorage::DocWriter do
       expect_any_instance_of(EncryptedDocStorage::LocalStorage).to receive(:write_image).once
       expect_any_instance_of(EncryptedDocStorage::S3Storage).to_not receive(:write_image)
 
-      subject.write(issuer:, image:)
+      subject.write(image:)
     end
 
     context 'when S3Storage is initalized' do
@@ -51,15 +52,15 @@ RSpec.describe EncryptedDocStorage::DocWriter do
         expect_any_instance_of(EncryptedDocStorage::S3Storage).to receive(:write_image).once
         expect_any_instance_of(EncryptedDocStorage::LocalStorage).not_to receive(:write_image)
 
-        result = subject.write(issuer:, image:)
-        expect(result.name).to start_with(issuer)
+        result = subject.write(image:)
+        expect(result.name).to start_with('encrypted_images')
       end
     end
 
     context 'when an image is not passed in' do
       context 'when the image value is nil' do
         it 'returns a blank Result object' do
-          result = subject.write(issuer:, image: nil)
+          result = subject.write(image: nil)
 
           expect(result.name).to be nil
           expect(result.encryption_key).to be nil
@@ -68,7 +69,7 @@ RSpec.describe EncryptedDocStorage::DocWriter do
 
       context 'when the image value is an empty string' do
         it 'returns a blank Result object' do
-          result = subject.write(issuer:, image: '')
+          result = subject.write(image: '')
 
           expect(result.name).to be nil
           expect(result.encryption_key).to be nil
@@ -121,7 +122,10 @@ RSpec.describe EncryptedDocStorage::DocWriter do
         encrypted_attempt_events:,
       )
 
-      result = subject.write_encrypted_attempt_events(file_path:, encrypted_attempt_events:)
+      result = subject.write_encrypted_attempt_events(
+        file_path:, encrypted_attempt_events:,
+        name: nil
+      )
       expect(result.name).to eq(uuid)
     end
 
@@ -161,7 +165,10 @@ RSpec.describe EncryptedDocStorage::DocWriter do
           :write_attempt_events,
         )
 
-        result = subject.write_encrypted_attempt_events(file_path:, encrypted_attempt_events:)
+        result = subject.write_encrypted_attempt_events(
+          file_path:, encrypted_attempt_events:,
+          name: nil
+        )
         expect(result.name).to eq(uuid)
       end
     end

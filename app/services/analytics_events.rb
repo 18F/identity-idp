@@ -4675,6 +4675,14 @@ module AnalyticsEvents
   end
   # rubocop:enable Naming/VariableName,Naming/MethodParameterName,IdentityIdp/AnalyticsEventNameLinter
 
+  # Tracks if a user's passport source_check was corrected
+  def idv_passport_source_check_corrected(**extra)
+    track_event(
+      :idv_passport_source_check_corrected,
+      **extra,
+    )
+  end
+
   # Tracks if a user clicks the 'acknowledge' checkbox during personal
   # key creation
   # @param [Hash,nil] proofing_components User's current proofing components
@@ -7364,8 +7372,9 @@ module AnalyticsEvents
   # Tracks when openid authorization request is made
   # @param [Boolean] success Whether form validations were succcessful
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
-  # @param [String] prompt OIDC prompt parameter
+  # @param ['create','login','select_account'] prompt OIDC prompt parameter
   # @param [Boolean] allow_prompt_login Whether service provider is configured to allow prompt=login
+  # @param [Boolean] allow_prompt_create if service provider is configured to allow prompt=create
   # @param [Boolean] code_challenge_present Whether code challenge is present
   # @param [Boolean, nil] service_provider_pkce Whether service provider is configured with PKCE
   # @param [String, nil] referer Request referer
@@ -7379,6 +7388,7 @@ module AnalyticsEvents
     success:,
     prompt:,
     allow_prompt_login:,
+    allow_prompt_create:,
     code_challenge_present:,
     service_provider_pkce:,
     referer:,
@@ -7397,6 +7407,7 @@ module AnalyticsEvents
       error_details:,
       prompt:,
       allow_prompt_login:,
+      allow_prompt_create:,
       code_challenge_present:,
       service_provider_pkce:,
       referer:,
@@ -8223,6 +8234,8 @@ module AnalyticsEvents
   # @param [Boolean] finish_profile
   # @param [String] requested_ial
   # @param [Boolean] request_signed
+  # @param [Boolean] allow_prompt_create If service provider is configured to allow prompt=create
+  # @param ['create', nil] prompt
   # @param [String] matching_cert_serial matches the request certificate in a successful, signed
   #   request
   # @param [Hash] cert_error_details Details for errors that occurred because of an invalid
@@ -8241,9 +8254,11 @@ module AnalyticsEvents
     requested_ial:,
     request_signed:,
     matching_cert_serial:,
+    allow_prompt_create:,
     error_details: nil,
     cert_error_details: nil,
     unknown_authn_contexts: nil,
+    prompt: nil,
     **extra
   )
     track_event(
@@ -8263,6 +8278,8 @@ module AnalyticsEvents
       matching_cert_serial:,
       cert_error_details:,
       unknown_authn_contexts:,
+      prompt:,
+      allow_prompt_create:,
       **extra,
     )
   end
@@ -8277,6 +8294,8 @@ module AnalyticsEvents
   # @param [String] matching_cert_serial
   # @param [String] unknown_authn_contexts space separated list of unknown contexts
   # @param [Boolean] user_fully_authenticated
+  # @param [Boolean] allow_prompt_create If service provider is configured to allow prompt=create
+  # @param ['create', nil] prompt
   # An external request for SAML Authentication was received
   def saml_auth_request(
     requested_ial:,
@@ -8289,6 +8308,8 @@ module AnalyticsEvents
     matching_cert_serial:,
     unknown_authn_contexts:,
     user_fully_authenticated:,
+    allow_prompt_create:,
+    prompt: nil,
     **extra
   )
     track_event(
@@ -8303,6 +8324,8 @@ module AnalyticsEvents
       matching_cert_serial:,
       unknown_authn_contexts:,
       user_fully_authenticated:,
+      prompt:,
+      allow_prompt_create:,
       **extra,
     )
   end

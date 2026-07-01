@@ -59,11 +59,11 @@ RSpec.describe Idv::IdvImages do
       expect(EncryptedDocStorage::DocWriter).to receive(:new).with(s3_enabled: false)
       expect(writer).to receive(:write).exactly(2).times
 
-      subject.attempts_file_data(issuer: issuer)
+      subject.attempts_file_data
     end
 
     it 'returns a hash of objects' do
-      expect(subject.attempts_file_data(issuer: issuer)).to be_a_kind_of(Hash)
+      expect(subject.attempts_file_data).to be_a_kind_of(Hash)
     end
 
     context 'when s3 storage is turned on' do
@@ -73,7 +73,7 @@ RSpec.describe Idv::IdvImages do
         expect(EncryptedDocStorage::DocWriter).to receive(:new).with(s3_enabled: true)
         expect(writer).to receive(:write).exactly(2).times
 
-        subject.attempts_file_data(issuer: issuer)
+        subject.attempts_file_data
       end
     end
   end

@@ -790,6 +790,7 @@ RSpec.describe SamlIdpController do
             request_signed: true,
             matching_cert_serial: saml_test_sp_cert_serial,
             user_fully_authenticated: true,
+            allow_prompt_create: false,
           }
         )
         expect(@analytics).to have_logged_event(
@@ -806,6 +807,7 @@ RSpec.describe SamlIdpController do
             finish_profile: false,
             request_signed: true,
             matching_cert_serial: saml_test_sp_cert_serial,
+            allow_prompt_create: false,
           ),
         )
         expect(@analytics).to have_logged_event(
@@ -982,6 +984,7 @@ RSpec.describe SamlIdpController do
             request_signed: true,
             matching_cert_serial: saml_test_sp_cert_serial,
             user_fully_authenticated: true,
+            allow_prompt_create: false,
           }
         )
         expect(@analytics).to have_logged_event(
@@ -998,6 +1001,7 @@ RSpec.describe SamlIdpController do
             finish_profile: false,
             request_signed: true,
             matching_cert_serial: saml_test_sp_cert_serial,
+            allow_prompt_create: false,
           ),
         )
         expect(@analytics).to have_logged_event(
@@ -1286,6 +1290,7 @@ RSpec.describe SamlIdpController do
             matching_cert_serial: saml_test_sp_cert_serial,
             force_authn: true,
             user_fully_authenticated: false,
+            allow_prompt_create: false,
           }
         )
       end
@@ -2318,6 +2323,72 @@ RSpec.describe SamlIdpController do
         expect(session[:sp][:request_id]).to eq sp_request_id
       end
 
+      it 'logs SAML Auth Request' do
+        stub_analytics
+
+        saml_get_auth(saml_settings, prompt: 'create')
+
+        expect(@analytics).to have_logged_event(
+          'SAML Auth Request', {
+            authn_context: request_authn_contexts,
+            requested_ial: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+            service_provider: 'http://localhost:3000',
+            requested_aal_authn_context: Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
+            request_signed: true,
+            matching_cert_serial: saml_test_sp_cert_serial,
+            force_authn: false,
+            user_fully_authenticated: false,
+            allow_prompt_create: false,
+            prompt: 'create',
+          }
+        )
+      end
+
+      context 'when prompt=create is passed as a query params' do
+        context 'when sp is not on allowlist' do
+          it 'redirects the user to the new user session path' do
+            saml_get_auth(saml_settings, prompt: 'create')
+            sp_request_id = ServiceProviderRequestProxy.last.uuid
+            expect(response).to redirect_to new_user_session_path
+            expect(session[:sp][:request_id]).to eq sp_request_id
+          end
+        end
+
+        context 'when sp is on allowlist' do
+          before do
+            allow(IdentityConfig.store).to receive(:allowed_create_prompt_providers)
+              .and_return(['http://localhost:3000'])
+          end
+          it 'redirects the user to the sign up email path' do
+            saml_get_auth(saml_settings, prompt: 'create')
+            sp_request_id = ServiceProviderRequestProxy.last.uuid
+            expect(response).to redirect_to sign_up_email_path
+            expect(session[:sp][:request_id]).to eq sp_request_id
+          end
+
+          it 'logs SAML Auth Request' do
+            stub_analytics
+
+            saml_get_auth(saml_settings, prompt: 'create')
+
+            expect(@analytics).to have_logged_event(
+              'SAML Auth Request', {
+                authn_context: request_authn_contexts,
+                requested_ial: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+                service_provider: 'http://localhost:3000',
+                requested_aal_authn_context: Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
+                request_signed: true,
+                matching_cert_serial: saml_test_sp_cert_serial,
+                force_authn: false,
+                user_fully_authenticated: false,
+                allow_prompt_create: true,
+                prompt: 'create',
+              }
+            )
+          end
+        end
+      end
+
       it 'logs SAML Auth Request but does not log SAML Auth' do
         stub_analytics
 
@@ -2333,6 +2404,7 @@ RSpec.describe SamlIdpController do
             matching_cert_serial: saml_test_sp_cert_serial,
             force_authn: false,
             user_fully_authenticated: false,
+            allow_prompt_create: false,
           }
         )
       end
@@ -2795,6 +2867,7 @@ RSpec.describe SamlIdpController do
             force_authn: false,
             request_signed: false,
             user_fully_authenticated: true,
+            allow_prompt_create: false,
           }
         )
         expect(@analytics).to have_logged_event(
@@ -2812,6 +2885,7 @@ RSpec.describe SamlIdpController do
             endpoint: "/api/saml/auth#{path_year}",
             idv: true,
             finish_profile: false,
+            allow_prompt_create: false,
             request_signed: false,
           ),
         )
@@ -2850,6 +2924,7 @@ RSpec.describe SamlIdpController do
             request_signed: true,
             matching_cert_serial: saml_test_sp_cert_serial,
             user_fully_authenticated: true,
+            allow_prompt_create: false,
           }
         )
         expect(@analytics).to have_logged_event(
@@ -2866,6 +2941,7 @@ RSpec.describe SamlIdpController do
             finish_profile: false,
             request_signed: true,
             matching_cert_serial: saml_test_sp_cert_serial,
+            allow_prompt_create: false,
           ),
         )
         expect(@analytics).to have_logged_event(
@@ -2904,6 +2980,7 @@ RSpec.describe SamlIdpController do
             request_signed: true,
             matching_cert_serial: saml_test_sp_cert_serial,
             user_fully_authenticated: true,
+            allow_prompt_create: false,
           }
         )
         expect(@analytics).to have_logged_event(
@@ -2920,6 +2997,7 @@ RSpec.describe SamlIdpController do
             finish_profile: true,
             request_signed: true,
             matching_cert_serial: saml_test_sp_cert_serial,
+            allow_prompt_create: false,
           ),
         )
         expect(@analytics).to have_logged_event(
