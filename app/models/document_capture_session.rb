@@ -177,7 +177,7 @@ class DocumentCaptureSession < ApplicationRecord
   end
 
   def passport_cards_supported?
-    passport_cards_supported
+    !!passport_cards_supported
   end
 
   def in_supported_passport_types?(id_type)
