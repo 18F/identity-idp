@@ -17,7 +17,22 @@ module Users
 
       analytics.password_reset_email(**result)
 
-      if result.success?
+      unless result.success?
+        render :new
+        return
+      end
+
+      self.resource = User.find_with_email(email) || resource_class.new
+
+      if resource.persisted?
+        resource.email = email
+        resource.requesting_reset_email_address = EmailAddress.confirmed.find_with_email(email)
+        resource.send_reset_password_instructions
+      end
+
+      yield resource if block_given?
+
+      if successfully_sent?(resource)
         handle_valid_email
       else
         render :new
@@ -28,6 +43,7 @@ module Users
       if params[:reset_password_token]
         redirect_to edit_user_password_url
       else
+
         result = PasswordResetTokenValidator.new(token_user).submit
 
         analytics.password_reset_token(**result)

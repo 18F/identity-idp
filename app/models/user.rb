@@ -61,6 +61,7 @@ class User < ApplicationRecord
           -> { where(status: :establishing).order(created_at: :desc) },
           class_name: 'InPersonEnrollment', foreign_key: :user_id, inverse_of: :user,
           dependent: :destroy
+  belongs_to :reset_password_email_address, class_name: 'EmailAddress', optional: true
 
   attr_accessor :asserted_attributes, :email
 
@@ -588,6 +589,20 @@ class User < ApplicationRecord
 
   def has_recovery_code?
     encrypted_recovery_code_digest_multi_region.present? || encrypted_recovery_code_digest.present?
+  end
+
+  attr_writer :requesting_reset_email_address
+
+  def send_reset_password_instructions
+    token = set_reset_password_token
+    # We need to avoid running all model validations because it is possible that the user
+    # will not be able to meet other validations in its current state.  This is similar to
+    # how Devise internally uses `save(validate: false)` when setting reset_password_token.
+
+    # rubocop:disable Rails/SkipsModelValidations
+    update_column(:reset_password_email_address_id, @requesting_reset_email_address&.id)
+    # rubocop:enable Rails/SkipsModelValidations
+    token
   end
 
   private
