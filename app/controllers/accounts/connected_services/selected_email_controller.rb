@@ -28,7 +28,7 @@ module Accounts
           redirect_to account_connected_services_path
         else
           flash[:error] = result.first_error_message
-          redirect_to edit_connected_services_selected_email_path(identity.id)
+          redirect_to edit_connected_service_selected_email_path(identity.id)
         end
       end
 
