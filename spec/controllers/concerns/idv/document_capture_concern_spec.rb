@@ -180,8 +180,19 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
             end
 
             context 'when a drivers license is submitted' do
-              let(:document_type_received) { Idp::Constants::DocumentTypes::DRIVERS_LICENSE }
+              let(:pii_data) do
+                {
+                  first_name: 'Test',
+                  last_name: 'User',
+                  state: 'MD',
+                  document_type_received: Idp::Constants::DocumentTypes::DRIVERS_LICENSE,
+                }
+              end
 
+              it 'returns failed response' do
+                response = controller.handle_stored_result(user:)
+                expect(response.success?).to eq(false)
+              end
             end
           end
         end
