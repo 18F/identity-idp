@@ -36,8 +36,8 @@ RSpec.feature 'Accessibility on account pages', :js do
     expect_page_to_have_no_accessibility_violations(page)
   end
 
-  scenario '"Your connected accounts" path' do
-    visit account_connected_accounts_path
+  scenario '"Your connected services" path' do
+    visit account_connected_services_path
 
     expect_page_to_have_no_accessibility_violations(page)
   end

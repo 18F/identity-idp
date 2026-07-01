@@ -196,7 +196,7 @@ module IdentityConfig
     config.add(:encrypted_document_storage_s3_bucket, type: :string)
     config.add(:event_disavowal_expiration_hours, type: :integer)
     config.add(:facial_match_general_availability_enabled, type: :boolean)
-    config.add(:facial_match_preferred_on_connected_accounts, type: :boolean)
+    config.add(:facial_match_preferred_on_connected_services, type: :boolean)
     config.add(:feature_account_creation_passkey_auto_prompt, type: :boolean)
     config.add(:feature_idv_force_gpo_verification_enabled, type: :boolean)
     config.add(:feature_idv_hybrid_flow_enabled, type: :boolean)
