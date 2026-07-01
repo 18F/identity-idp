@@ -9,7 +9,7 @@
 
   <%= simple_form_for(
         @select_email_form,
-        url: connected_account_selected_email_path(identity_id: @identity.id),
+        url: connected_services_selected_email_path(identity_id: @identity.id),
         method: :patch,
       ) do |f| %>
     <%= f.input(
