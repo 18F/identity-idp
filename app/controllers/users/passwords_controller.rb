@@ -59,16 +59,12 @@ module Users
       # that the user remains authenticated.
       bypass_sign_in current_user
 
-      flash[:info] = t('notices.password_changed')
-      if @update_user_password_form.personal_key.present?
-        user_session[:personal_key] = @update_user_password_form.personal_key
-        redirect_to manage_personal_key_url
-      elsif required_password_change?
-        session.delete(:redirect_to_change_password)
-        redirect_to after_sign_in_path_for(current_user)
-      else
-        redirect_to account_path
-      end
+      # Clear the flag for required password change if it was set.
+      session.delete(:redirect_to_change_password) if required_password_change?
+
+      flash[:success] = t('notices.password_changed')
+
+      redirect_to post_update_user_password_path
     end
 
     def handle_invalid_password
@@ -96,6 +92,17 @@ module Users
 
     def user_password_params
       params.require(:update_user_password_form).permit(:password, :password_confirmation)
+    end
+
+    def post_update_user_password_path
+      if @update_user_password_form.personal_key.present?
+        user_session[:personal_key] = @update_user_password_form.personal_key
+        manage_personal_key_url
+      elsif required_password_change?
+        after_sign_in_path_for(current_user)
+      else
+        account_path
+      end
     end
   end
 end
