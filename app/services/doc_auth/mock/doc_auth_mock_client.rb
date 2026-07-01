@@ -65,7 +65,8 @@ module DocAuth
         user_uuid: nil,
         uuid_prefix: nil,
         liveness_checking_required: false,
-        passport_requested: false
+        passport_requested: false,
+        passport_cards_supported: false
       )
         return mocked_response_for_method(__method__) if method_mocked?(__method__)
 
@@ -89,11 +90,12 @@ module DocAuth
           selfie_required: liveness_checking_required,
           passport_submittal: passport_image.present?,
           passport_requested:,
+          passport_cards_supported:,
         )
       end
 
       def get_results(instance_id:, selfie_required: false, passport_submittal: false,
-                      passport_requested: false)
+                      passport_requested: false, passport_cards_supported: false)
         return mocked_response_for_method(__method__) if method_mocked?(__method__)
         last_image = passport_submittal ?
                        self.class.last_uploaded_passport_image : self.class.last_uploaded_back_image
@@ -111,6 +113,7 @@ module DocAuth
           selfie_required:,
           passport_submittal:,
           passport_requested:,
+          passport_cards_supported:,
         )
       end
       # rubocop:enable Lint/UnusedMethodArgument

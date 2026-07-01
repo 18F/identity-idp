@@ -10,13 +10,15 @@ module DocAuth
         include ClassificationConcern
         include SelfieConcern
 
-        attr_reader :config, :http_response, :passport_requested
+        attr_reader :config, :http_response, :passport_requested, :passport_cards_supported
 
         def initialize(http_response:, config:, passport_requested: false,
-                       liveness_checking_enabled: false, request_context: {})
+                       passport_cards_supported: false, liveness_checking_enabled: false,
+                       request_context: {})
           @config = config
           @http_response = http_response
           @passport_requested = passport_requested
+          @passport_cards_supported = passport_cards_supported
           @request_context = request_context
           @liveness_checking_enabled = liveness_checking_enabled
           @pii_from_doc = read_pii
@@ -42,7 +44,7 @@ module DocAuth
         ## returns full check success status, considering all checks:
         #    vendor (document and selfie if requested)
         def successful_result?
-          return false if passport_card_detected?
+          return false if passport_card_detected? && !passport_cards_supported
 
           doc_auth_success? &&
             (@liveness_checking_enabled ? selfie_passed? : true)
@@ -59,7 +61,7 @@ module DocAuth
         def error_messages
           return {} if successful_result?
 
-          if passport_card_detected?
+          if passport_card_detected? && !passport_cards_supported
             { passport_card: I18n.t('doc_auth.errors.doc.doc_type_check') }
           elsif id_type.present? && !expected_document_type_received?
             { unexpected_id_type: true, expected_id_type: expected_id_type }
@@ -126,14 +128,6 @@ module DocAuth
 
         def request_id
           @request_id ||= parsed_response_body.dig(:Status, :RequestId)
-        end
-
-        def expected_document_type_received?
-          expected_id_types = passport_requested ?
-            Idp::Constants::DocumentTypes::SUPPORTED_PASSPORT_TYPES :
-            Idp::Constants::DocumentTypes::SUPPORTED_STATE_ID_TYPES
-
-          expected_id_types.include?(id_type)
         end
 
         def id_type

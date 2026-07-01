@@ -21,7 +21,8 @@ module DocAuth
         user_uuid: nil,
         uuid_prefix: nil,
         liveness_checking_required: false,
-        passport_requested: false
+        passport_requested: false,
+        passport_cards_supported: false
       )
         Requests::TrueIdRequest.new(
           config: config,
@@ -36,6 +37,7 @@ module DocAuth
           liveness_checking_required: liveness_checking_required,
           document_type_requested: document_type_requested,
           passport_requested: passport_requested,
+          passport_cards_supported: passport_cards_supported,
         ).fetch
       end
     end

@@ -13,7 +13,9 @@ module Idv
     def set_passport_requested
       if passport_chosen?
         unless document_capture_session.passport_requested?
-          document_capture_session.request_passport!
+          document_capture_session.request_passport!(
+            passport_cards_supported: passport_cards_supported?,
+          )
         end
       else
         document_capture_session.request_state_id!
@@ -61,8 +63,11 @@ module Idv
     end
 
     def passports_enabled?
-      IdentityConfig.store.doc_auth_passports_enabled ||
-        (FeatureManagement.doc_auth_passport_cards_enabled? && in_passport_cards_allowed_bucket?)
+      IdentityConfig.store.doc_auth_passports_enabled || passport_cards_supported?
+    end
+
+    def passport_cards_supported?
+      FeatureManagement.doc_auth_passport_cards_enabled? && in_passport_cards_allowed_bucket?
     end
 
     def in_passport_cards_allowed_bucket?

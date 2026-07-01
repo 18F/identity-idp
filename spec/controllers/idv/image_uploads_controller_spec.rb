@@ -609,6 +609,7 @@ RSpec.describe Idv::ImageUploadsController do
               liveness_checking_required: true,
               images_cropped: false,
               passport_requested: false,
+              passport_cards_supported: false,
             ).and_call_original
 
           action
@@ -632,6 +633,7 @@ RSpec.describe Idv::ImageUploadsController do
             liveness_checking_required: false,
             images_cropped: false,
             passport_requested: false,
+            passport_cards_supported: false,
           ).and_call_original
 
         action
@@ -1677,6 +1679,7 @@ RSpec.describe Idv::ImageUploadsController do
             liveness_checking_required: true,
             images_cropped: false,
             passport_requested: false,
+            passport_cards_supported: false,
           ).and_call_original
 
         action
@@ -1703,6 +1706,7 @@ RSpec.describe Idv::ImageUploadsController do
             liveness_checking_required: false,
             images_cropped: false,
             passport_requested: false,
+            passport_cards_supported: false,
           ).and_call_original
 
         action

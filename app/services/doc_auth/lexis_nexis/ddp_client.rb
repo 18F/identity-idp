@@ -16,6 +16,7 @@ module DocAuth
       def post_images(
         document_type_requested: nil,
         passport_requested: false,
+        passport_cards_supported: false,
         liveness_checking_required: false,
         front_image: nil,
         back_image: nil,
@@ -36,6 +37,7 @@ module DocAuth
           document_type_requested:,
           liveness_checking_required:,
           passport_requested:,
+          passport_cards_supported:,
           uuid_prefix:,
           uuid: user_uuid,
           email: user_email,
