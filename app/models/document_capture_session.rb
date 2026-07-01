@@ -180,12 +180,19 @@ class DocumentCaptureSession < ApplicationRecord
     passport_cards_supported
   end
 
+  def in_supported_passport_types?(id_type)
+    return true if id_type == Idp::Constants::DocumentTypes::PASSPORT
+    return id_type == Idp::Constants::DocumentTypes::PASSPORT_CARD if passport_cards_supported?
+
+    false
+  end
+
   def request_passport!(passport_cards_supported: false)
     attrs = {
       passport_status: nil,
       document_type_requested: Idp::Constants::DocumentTypes::PASSPORT,
       doc_auth_vendor: nil,
-      passport_cards_supported: passport_cards_supported,
+      passport_cards_supported:,
     }.merge(clear_socure_attributes)
 
     update!(attrs) if !passport_requested?
