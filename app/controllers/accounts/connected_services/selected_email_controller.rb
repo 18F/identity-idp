@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Accounts
-  module ConnectedAccounts
+  module ConnectedServices
     class SelectedEmailController < ApplicationController
       include RenderConditionConcern
 

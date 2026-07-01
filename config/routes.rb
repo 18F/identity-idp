@@ -232,9 +232,9 @@ Rails.application.routes.draw do
     get '/account' => 'accounts#show'
     get '/account/connected_services' => 'accounts/connected_services#show'
     get '/account/connected_services/:identity_id/selected_email' => 'accounts/connected_services/selected_email#edit',
-        as: :edit_connected_service_selected_email
+        as: :edit_connected_services_selected_email
     patch '/account/connected_services/:identity_id/selected_email' => 'accounts/connected_services/selected_email#update',
-          as: :connected_service_selected_email
+          as: :connected_services_selected_email
     post '/account/reauthentication' => 'accounts#reauthentication'
     get '/account/devices/:id/events' => 'events#show', as: :account_events
     get '/account/delete' => 'users/delete#show', as: :account_delete

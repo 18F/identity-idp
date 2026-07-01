@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe Accounts::ConnectedAccounts::SelectedEmailController do
+RSpec.describe Accounts::ConnectedServices::SelectedEmailController do
   let(:identity) { create(:service_provider_identity, :active, verified_attributes: ['email']) }
   let(:user) { create(:user, :with_multiple_emails, identities: [identity]) }
 
@@ -113,7 +113,7 @@ RSpec.describe Accounts::ConnectedAccounts::SelectedEmailController do
       let(:params) { super().merge(select_email_form: { selected_email_id: '' }) }
 
       it 'redirects to form with flash' do
-        expect(response).to redirect_to(edit_connected_service_selected_email_path(identity.id))
+        expect(response).to redirect_to(edit_connected_services_selected_email_path(identity.id))
         expect(flash[:error]).to eq(t('email_address.not_found'))
       end
 

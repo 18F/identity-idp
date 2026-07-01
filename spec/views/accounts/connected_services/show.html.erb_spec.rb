@@ -47,7 +47,7 @@ RSpec.describe 'accounts/connected_services/show.html.erb' do
       expect(rendered).to have_content(t('account.connected_apps.email_not_selected'))
       expect(rendered).to have_link(
         t('help_text.requested_attributes.change_email_link'),
-        href: edit_connected_service_selected_email_path(identity_id: identity.id),
+        href: edit_connected_services_selected_email_path(identity_id: identity.id),
       )
     end
 
@@ -60,7 +60,7 @@ RSpec.describe 'accounts/connected_services/show.html.erb' do
         expect(rendered).not_to have_content(t('account.connected_apps.email_not_selected'))
         expect(rendered).not_to have_link(
           t('help_text.requested_attributes.change_email_link'),
-          href: edit_connected_service_selected_email_path(identity_id: identity.id),
+          href: edit_connected_services_selected_email_path(identity_id: identity.id),
         )
       end
     end
@@ -74,7 +74,7 @@ RSpec.describe 'accounts/connected_services/show.html.erb' do
         expect(rendered).not_to have_content(t('account.connected_apps.email_not_selected'))
         expect(rendered).to_not have_link(
           t('help_text.requested_attributes.change_email_link'),
-          href: edit_connected_service_selected_email_path(identity_id: identity.id),
+          href: edit_connected_services_selected_email_path(identity_id: identity.id),
         )
       end
     end
@@ -96,7 +96,7 @@ RSpec.describe 'accounts/connected_services/show.html.erb' do
         expect(rendered).to have_content(email_address.email)
         expect(rendered).to have_link(
           t('help_text.requested_attributes.change_email_link'),
-          href: edit_connected_service_selected_email_path(identity_id: identity.id),
+          href: edit_connected_services_selected_email_path(identity_id: identity.id),
         )
       end
     end
