@@ -263,7 +263,7 @@ module Idv
 
     def validate_mrz(client_response)
       id_type = client_response.pii_from_doc.document_type_received
-      unless in_supported_passport_types?(id_type)
+      unless document_capture_session.in_supported_passport_types?(id_type)
         return DocAuth::Response.new(
           success: false,
           errors: { passport: "Cannot validate MRZ for id type: #{id_type}" },
@@ -292,14 +292,6 @@ module Idv
 
       response.extra.merge!(extra_attributes)
       response
-    end
-
-    def in_supported_passport_types?(id_type)
-      return true if id_type == Idp::Constants::DocumentTypes::PASSPORT
-      if document_capture_session.passport_cards_supported?
-        return id_type == Idp::Constants::DocumentTypes::PASSPORT_CARD
-      end
-      false
     end
 
     def doc_side_classification(client_response)
