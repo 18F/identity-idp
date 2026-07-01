@@ -206,6 +206,7 @@ module Idv
           liveness_checking_required: liveness_checking_required,
           document_type_requested: document_type_requested,
           passport_requested: document_capture_session.passport_requested?,
+          passport_cards_supported: document_capture_session.passport_cards_supported?,
         }
         post_images_args[:user_email] = user_email if ddp_client?
         doc_auth_client.post_images(**post_images_args)
@@ -262,8 +263,7 @@ module Idv
 
     def validate_mrz(client_response)
       id_type = client_response.pii_from_doc.document_type_received
-
-      unless id_type == 'passport'
+      unless document_capture_session.in_supported_passport_types?(id_type)
         return DocAuth::Response.new(
           success: false,
           errors: { passport: "Cannot validate MRZ for id type: #{id_type}" },
