@@ -310,7 +310,7 @@ class ApplicationController < ActionController::Base
 
   def signed_in_url
     return idv_proofing_agent_expired_path if current_user.agent_proofing_expired?
-    return idv_enter_dob_ssn_path if current_user.proofing_agent_pending?
+    return idv_enter_dob_ssn_path if current_user.proofing_agent_user_awaiting_binding?
     return idv_verify_by_mail_enter_code_url if current_user.gpo_verification_pending_profile?
     stored_location_for(current_user) ||
       account_path

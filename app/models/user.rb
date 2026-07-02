@@ -390,38 +390,35 @@ class User < ApplicationRecord
     active_profile.present? && active_profile.facial_match?
   end
 
-  def proofing_agent_pending?
+  def proofing_agent_user_awaiting_binding?
     document_capture_sessions.where.not(pending_agent_proofed_user_at: nil).exists?
   end
 
   def pending_agent_proofed_session
-    document_capture_sessions.where.not(pending_agent_proofed_user_at: nil)
+    @pending_agent_proofed_session ||= document_capture_sessions
+      .where(doc_auth_vendor: Idp::Constants::Vendors::PROOFING_AGENT)
+      .where.not(pending_agent_proofed_user_at: nil)
       .order(pending_agent_proofed_user_at: :desc).first
   end
 
   def pending_agent_proofed_user
-    pending_agent_proofed_session&.load_agent_proofed_user
-  end
-
-  def agent_proofing_document_capture_session
-    document_capture_sessions.where(
-      doc_auth_vendor: Idp::Constants::Vendors::PROOFING_AGENT,
-    ).order(requested_at: :desc).first
+    @pending_agent_proofed_user ||= pending_agent_proofed_session&.load_agent_proofed_user
   end
 
   def agent_proofing_expired?
-    return false if identity_verified?
+    # return false if identity_verified? # could be a step up
 
-    session = agent_proofing_document_capture_session
+    session = pending_agent_proofed_session
     return false unless session
 
+    # do we need this?
     validity_hours = IdentityConfig.store.agent_proofed_user_time_validity_hours
     if session.pending_agent_proofed_user_at &&
        (session.pending_agent_proofed_user_at + validity_hours.hours) < Time.zone.now
       return true
     end
 
-    session.load_agent_proofed_user.nil?
+    pending_agent_proofed_user.nil?
   end
 
   # The users most recently activated or pending in person enrollment profile

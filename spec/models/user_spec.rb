@@ -1618,7 +1618,7 @@ RSpec.describe User do
     end
   end
 
-  describe '#proofing_agent_pending?' do
+  describe '#proofing_agent_user_awaiting_binding?' do
     let(:user) { create(:user) }
     let(:pending_agent_proofed_user_at) { Time.zone.now }
 
@@ -1628,7 +1628,7 @@ RSpec.describe User do
         pending_agent_proofed_user_at: pending_agent_proofed_user_at,
         user: user,
       )
-      expect(user.proofing_agent_pending?).to eq true
+      expect(user.proofing_agent_user_awaiting_binding?).to eq true
     end
   end
 
