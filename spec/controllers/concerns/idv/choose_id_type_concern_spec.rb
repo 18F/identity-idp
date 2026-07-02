@@ -352,7 +352,7 @@ RSpec.describe Idv::ChooseIdTypeConcern, :controller do
           presenter:,
           form_submit_url:,
           disable_passports: false,
-          auto_check_value: :mdl,
+          auto_check_value: :mobile_drivers_license,
           mdl_enabled: true,
         )
       end
@@ -384,7 +384,7 @@ RSpec.describe Idv::ChooseIdTypeConcern, :controller do
             presenter:,
             form_submit_url:,
             disable_passports: true,
-            auto_check_value: :mdl,
+            auto_check_value: :mobile_drivers_license,
             mdl_enabled: true,
           )
         end
