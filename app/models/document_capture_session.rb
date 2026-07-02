@@ -218,10 +218,9 @@ class DocumentCaptureSession < ApplicationRecord
       passport_status: nil,
       document_type_requested: Idp::Constants::DocumentTypes::MDL,
       doc_auth_vendor: nil,
-    }
-    attrs.merge!(clear_socure_attributes) if !mdl_requested?
+    }.merge!(clear_socure_attributes)
 
-    update!(attrs)
+    update!(attrs) if !mdl_requested?
   end
 
   def mdl_requested?
