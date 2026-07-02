@@ -55,7 +55,7 @@ module Idv
     def locals_attrs(presenter:, form_submit_url: nil)
       auto_check_value = case document_capture_session.document_type_requested
                         when Idp::Constants::DocumentTypes::MDL
-                          :mdl
+                          :mobile_drivers_license
                         when *Idp::Constants::DocumentTypes::SUPPORTED_STATE_ID_TYPES
                           :state_id_card
                         when Idp::Constants::DocumentTypes::PASSPORT
