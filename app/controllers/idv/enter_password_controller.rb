@@ -160,9 +160,9 @@ module Idv
         attempts_api_tracker.idv_enrollment_complete(reproof:)
         fraud_ops_tracker.idv_enrollment_complete(reproof:)
 
-        if current_user.proofing_agent_user_awaiting_binding?
-          remove_agent_proofed_profile_pending_status_if_needed
-        end
+        # if current_user.proofing_agent_user_awaiting_binding?
+        #   remove_agent_proofed_profile_pending_status_if_needed
+        # end
       end
     end
 
