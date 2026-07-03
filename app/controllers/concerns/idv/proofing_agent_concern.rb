@@ -19,7 +19,8 @@ module Idv
     end
 
     def issuer
-      agent_proofed_user.issuer || current_user.pending_agent_proofed_document_capture_session.issuer
+      agent_proofed_user&.issuer ||
+        current_user&.pending_agent_proofed_document_capture_session&.issuer
     end
 
     def agent_proofed_user
