@@ -144,6 +144,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
   let(:address1) { '123 Main' }
   let(:zip_code) { '12345-6789' }
   let(:expiration_date) { (Time.zone.today + 1.year).strftime('%Y-%m-%d') }
+  let(:issue_date) { '2025-01-01' }
   let(:issuing_country_code) { 'USA' }
   let(:mrz) { 'P<USATRAVELER<<HAPPY<<<<<<<<<<<<<<<<<<<1234567890USA8501019M2412317<<<<<<<<<<<4' }
   let(:valid_residential_address) do
@@ -165,7 +166,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
       document_number:,
       jurisdiction:,
       expiration_date:,
-      issue_date: '2025-01-01',
+      issue_date:,
       address1:,
       address2: nil,
       city: 'City',
@@ -176,7 +177,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
   let(:valid_passport) do
     {
       expiration_date:,
-      issue_date: '2025-01-01',
+      issue_date:,
       issuing_country_code:,
       mrz:,
     }
@@ -1086,6 +1087,15 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
             end
           end
 
+          context 'when the state_id expiration and issue date are not provided' do
+            let(:expiration_date) { nil }
+            let(:issue_date) { nil }
+
+            it 'returns 202' do
+              expect(action.status).to eq(202)
+            end
+          end
+
           context 'when the state_id is near expiration (2 days away)' do
             let(:expiration_date) { (Time.zone.today + 2.days).strftime('%Y-%m-%d') }
             let(:body_errors) { { expiration_date: ['is expired, or near expiration'] } }
@@ -1751,6 +1761,15 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
             )
             body = JSON.parse(response.body)
             expect(body['expiration_date'][0]).to eq(body_errors[:expiration_date][0])
+          end
+        end
+
+        context 'when the passport expiration and issue date are not provided' do
+          let(:expiration_date) { nil }
+          let(:issue_date) { nil }
+
+          it 'returns 202' do
+            expect(action.status).to eq(202)
           end
         end
 

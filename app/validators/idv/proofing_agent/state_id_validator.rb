@@ -6,15 +6,18 @@ module Idv
       extend ActiveSupport::Concern
       include AddressValidator
 
-      REQUIRED_STATE_ID_ATTRS = %i[document_number jurisdiction expiration_date issue_date].freeze
-      STATE_ID_ATTRS = (REQUIRED_STATE_ID_ATTRS + AddressValidator::ADDRESS_ATTRS).freeze
+      REQUIRED_STATE_ID_ATTRS = %i[document_number jurisdiction].freeze
+      OPTIONAL_STATE_ID_ATTRS = %i[expiration_date issue_date].freeze
+      STATE_ID_ATTRS = (REQUIRED_STATE_ID_ATTRS + OPTIONAL_STATE_ID_ATTRS + AddressValidator::ADDRESS_ATTRS).freeze
 
       included do
         validates_presence_of(*REQUIRED_STATE_ID_ATTRS, message: 'cannot be blank')
         validates :jurisdiction, inclusion: { in: Idp::Constants::STATE_AND_TERRITORY_CODES,
                                               message: 'is not a valid state code' }
+
         validates_with UspsInPersonProofing::DateValidator,
                        attributes: [:expiration_date],
+                       if: -> { expiration_date.present? },
                        greater_than: ->(_rec) do
                          Time.zone.today.to_date + 2.days
                        end,
