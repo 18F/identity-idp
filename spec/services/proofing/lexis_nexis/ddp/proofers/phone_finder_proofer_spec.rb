@@ -84,6 +84,16 @@ RSpec.describe Proofing::LexisNexis::Ddp::Proofers::PhoneFinderProofer do
     context 'when user is going through Idv' do
       context 'when the response is a success' do
         let(:response_body) { LexisNexisFixtures.ddp_phone_finder_success_response_json }
+        let(:expected_phone_metadata) do
+          {
+            phone_type: 'POSSIBLE WIRELESS',
+            account_telephone_type: 'UNKNOWN',
+            risk_indicator_status: 'PASS',
+            risk_count_high: '0',
+            risk_count_med: '1',
+            risk_count_low: '4',
+          }
+        end
 
         it 'is a successful result' do
           result = proofer.proof(proofing_applicant)
@@ -98,14 +108,7 @@ RSpec.describe Proofing::LexisNexis::Ddp::Proofers::PhoneFinderProofer do
         it 'surfaces phone metadata in result' do
           result = proofer.proof(proofing_applicant)
 
-          expect(result.result).to eq(
-            phone_type: 'POSSIBLE WIRELESS',
-            account_telephone_type: 'UNKNOWN',
-            risk_indicator_status: 'PASS',
-            risk_count_high: '0',
-            risk_count_med: '1',
-            risk_count_low: '4',
-          )
+          expect(result.result).to eq(expected_phone_metadata)
         end
 
         context 'when the phone metadata fields are absent' do
