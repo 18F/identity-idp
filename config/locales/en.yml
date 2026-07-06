@@ -1013,7 +1013,7 @@ headings.add_email: Add a new email address
 headings.add_info.phone: Add a phone number
 headings.cancellations.login_cancel_prompt: Are you sure you want to cancel and exit %{app_name}?
 headings.cancellations.prompt: Are you sure you want to cancel?
-headings.create_account_new_users: Create an account for new users
+headings.create_account_new_users: Create an account as a new user
 headings.create_account_with_sp.sp_text: is using %{app_name} to allow you to sign in to your account safely and securely.
 headings.edit_info.password: Change your password
 headings.edit_info.phone: Manage your phone settings
