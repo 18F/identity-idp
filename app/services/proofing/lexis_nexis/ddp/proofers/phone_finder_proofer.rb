@@ -65,7 +65,7 @@ module Proofing
               risk_count_high: response_body['phonefinder.primary_phone.risk_count_high'],
               risk_count_med: response_body['phonefinder.primary_phone.risk_count_med'],
               risk_count_low: response_body['phonefinder.primary_phone.risk_count_low'],
-            }.compact.presence
+            }
           end
 
           def phone_finder_service_block(body)
