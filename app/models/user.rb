@@ -408,8 +408,6 @@ class User < ApplicationRecord
   end
 
   def agent_proofing_expired?
-    # return false if identity_verified? # could be a step up
-
     session = pending_agent_proofed_document_capture_session
     return false unless session
 
