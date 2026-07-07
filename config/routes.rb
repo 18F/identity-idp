@@ -235,12 +235,13 @@ Rails.application.routes.draw do
     get '/account/connected_services' => 'accounts/connected_services#show'
     get '/account/connected_services/:identity_id/selected_email' => 'accounts/connected_services/selected_email#edit',
         as: :edit_connected_service_selected_email
+    patch '/account/connected_services/:identity_id/selected_email' => 'accounts/connected_services/selected_email#update',
+          as: :connected_services_selected_email
     # old routes kept alive for redirects (connected accounts)
     get '/account/connected_accounts', to: redirect('/account/connected_services')
     get '/account/connected_accounts/:identity_id/selected_email', to: redirect { |params, _req| "/account/connected_services/#{params[:identity_id]}/selected_email" }
+    patch '/account/connected_services/:identity_id/selected_email', to: redirect { |params, _req| "/account/connected_services/#{params[:identity_id]}/selected_email" }
 
-    patch '/account/connected_services/:identity_id/selected_email' => 'accounts/connected_services/selected_email#update',
-          as: :connected_services_selected_email
     post '/account/reauthentication' => 'accounts#reauthentication'
     get '/account/devices/:id/events' => 'events#show', as: :account_events
     get '/account/delete' => 'users/delete#show', as: :account_delete
