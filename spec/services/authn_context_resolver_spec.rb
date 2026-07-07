@@ -328,10 +328,10 @@ RSpec.describe AuthnContextResolver do
           end
 
           context 'when the user is already verified' do
-            let(:facial_match_preferred_on_connected_services) { true }
+            let(:facial_match_preferred_on_connected_accounts) { true }
             before do
-              allow(IdentityConfig.store).to receive(:facial_match_preferred_on_connected_services)
-                .and_return(facial_match_preferred_on_connected_services)
+              allow(IdentityConfig.store).to receive(:facial_match_preferred_on_connected_accounts)
+                .and_return(facial_match_preferred_on_connected_accounts)
             end
 
             context 'without facial match comparison' do
@@ -368,8 +368,8 @@ RSpec.describe AuthnContextResolver do
                     expect(result.aal2?).to be true
                   end
 
-                  context 'facial_match_preferred_on_connected_services is not enabled' do
-                    let(:facial_match_preferred_on_connected_services) { false }
+                  context 'facial_match_preferred_on_connected_accounts is not enabled' do
+                    let(:facial_match_preferred_on_connected_accounts) { false }
 
                     it 'falls back on proofing without facial match comparison' do
                       expect(result.identity_proofing?).to be true
@@ -390,8 +390,8 @@ RSpec.describe AuthnContextResolver do
                     expect(result.aal2?).to be true
                   end
 
-                  context 'facial_match_preferred_on_connected_services is not enabled' do
-                    let(:facial_match_preferred_on_connected_services) { false }
+                  context 'facial_match_preferred_on_connected_accounts is not enabled' do
+                    let(:facial_match_preferred_on_connected_accounts) { false }
 
                     it 'falls back on proofing without facial match comparison' do
                       expect(result.identity_proofing?).to be true
@@ -676,10 +676,10 @@ RSpec.describe AuthnContextResolver do
           let(:bio_acr_value) do
             Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_PREFERRED_ACR
           end
-          let(:facial_match_preferred_on_connected_services) { true }
+          let(:facial_match_preferred_on_connected_accounts) { true }
           before do
-            allow(IdentityConfig.store).to receive(:facial_match_preferred_on_connected_services)
-              .and_return(facial_match_preferred_on_connected_services)
+            allow(IdentityConfig.store).to receive(:facial_match_preferred_on_connected_accounts)
+              .and_return(facial_match_preferred_on_connected_accounts)
           end
 
           context 'with an anonymous user' do
@@ -747,8 +747,8 @@ RSpec.describe AuthnContextResolver do
                       expect(result.ialmax?).to be false
                     end
 
-                    context 'facial_match_preferred_on_connected_services is not enabled' do
-                      let(:facial_match_preferred_on_connected_services) { false }
+                    context 'facial_match_preferred_on_connected_accounts is not enabled' do
+                      let(:facial_match_preferred_on_connected_accounts) { false }
 
                       it 'falls back on proofing without facial match comparison' do
                         expect(result.identity_proofing?).to be true
@@ -770,8 +770,8 @@ RSpec.describe AuthnContextResolver do
                     expect(result.aal2?).to be true
                   end
 
-                  context 'facial_match_preferred_on_connected_services is not enabled' do
-                    let(:facial_match_preferred_on_connected_services) { false }
+                  context 'facial_match_preferred_on_connected_accounts is not enabled' do
+                    let(:facial_match_preferred_on_connected_accounts) { false }
 
                     it 'falls back on proofing without facial match comparison' do
                       expect(result.identity_proofing?).to be true
