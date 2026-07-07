@@ -231,7 +231,7 @@ Rails.application.routes.draw do
 
     get '/account' => 'accounts#show'
 
-    # updates routes (connected services)
+    # updated routes (connected services)
     get '/account/connected_services' => 'accounts/connected_services#show'
     get '/account/connected_services/:identity_id/selected_email' => 'accounts/connected_services/selected_email#edit',
         as: :edit_connected_service_selected_email
