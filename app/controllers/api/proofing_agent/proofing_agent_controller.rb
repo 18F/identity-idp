@@ -36,7 +36,8 @@ module Api
 
       def proof_user
         return render_user_not_found if user.blank?
-        return render_already_proofed if user_has_enhanced_profile? || user.proofing_agent_pending?
+        return render_already_proofed if user_has_enhanced_profile?
+        return render_user_awaiting_binding if user.proofing_agent_user_awaiting_binding?
 
         if proofing_rate_limiter.limited? || ssn_rate_limiter.limited?
           analytics.rate_limit_reached(limiter_type: :idv_resolution, step_name: 'proof_user')
@@ -143,6 +144,21 @@ module Api
 
       def render_already_proofed
         response_body = { status: 'failed', reason: 'already_proofed_enhanced' }
+
+        analytics.idv_proofing_agent_proof_user_requested(
+          **analytics_arguments,
+          response_body:,
+          transaction_id: nil,
+        )
+
+        render json: response_body, status: :ok
+      end
+
+      def render_user_awaiting_binding
+        response_body = {
+          status: 'failed',
+          reason: 'already_proofed_awaiting_binding',
+        }
 
         analytics.idv_proofing_agent_proof_user_requested(
           **analytics_arguments,
