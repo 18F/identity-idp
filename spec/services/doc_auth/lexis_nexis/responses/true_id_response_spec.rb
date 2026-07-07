@@ -72,6 +72,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
   # rubocop:enable Layout/LineLength
 
   let(:passport_requested) { false }
+  let(:passport_cards_supported) { false }
   let(:config) do
     DocAuth::LexisNexis::Config.new
   end
@@ -401,6 +402,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
         config:,
         liveness_checking_enabled:,
         request_context:,
+        passport_cards_supported:,
       )
     end
 
@@ -419,6 +421,22 @@ RSpec.describe DocAuth::LexisNexis::Responses::TrueIdResponse do
         expect(response.error_messages[:passport_card]).to eq(
           I18n.t('doc_auth.errors.doc.doc_type_check'),
         )
+      end
+    end
+
+    context 'when passport cards are supported' do
+      let(:passport_cards_supported) { true }
+      let(:passport_requested) { true }
+      it 'is a successful result' do
+        expect(response.successful_result?).to eq(true)
+      end
+
+      it 'records the document_type_received as passport_card' do
+        expect(response.pii_from_doc.document_type_received).to eq('passport_card')
+      end
+
+      it 'does not have error messages' do
+        expect(response.error_messages[:passport_card]).to eq(nil)
       end
     end
   end
