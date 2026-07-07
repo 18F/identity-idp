@@ -28,7 +28,6 @@ RSpec.describe Idv::EnterDobSsnController do
       user: user,
       doc_auth_vendor: Idp::Constants::Vendors::PROOFING_AGENT,
       issuer: sp.issuer,
-      pending_agent_proofed_user_at: Time.zone.now,
     )
   end
   let(:idv_session) { subject.idv_session }
