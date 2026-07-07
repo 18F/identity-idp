@@ -32,13 +32,22 @@ class ResetPasswordForm
   attr_reader :success, :active_profile, :pending_profile
 
   def valid_token
-    if !user.persisted?
-      # If the user is not saved in the database, that means looking them up by
-      # their token failed
+    if token_invalid?
       errors.add(:reset_password_token, 'invalid_token', type: :invalid_token)
-    elsif !user.reset_password_period_valid? || invalid_account?
+    elsif !user.reset_password_period_valid?
       errors.add(:reset_password_token, 'token_expired', type: :token_expired)
     end
+  end
+
+  def token_invalid?
+    !user.persisted? || invalid_account? || reset_email_no_longer_active?
+  end
+
+  def reset_email_no_longer_active?
+    return false if user.reset_password_email_address_id.blank?
+
+    email_address = user.reset_password_email_address
+    !(email_address && email_address.user_id == user.id && email_address.confirmed?)
   end
 
   def handle_valid_password

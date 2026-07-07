@@ -2115,4 +2115,34 @@ RSpec.describe User do
       end
     end
   end
+  describe '#send_reset_password_instructions' do
+    let(:user) { create(:user, :fully_registered) }
+    let!(:secondary_email_address) do
+      create(:email_address, user: user, email: 'secondary@example.com')
+    end
+
+    context 'when requesting_reset_email_address is set' do
+      before { user.requesting_reset_email_address = secondary_email_address }
+
+      it 'stores the requesting email, not the primary email' do
+        user.send_reset_password_instructions
+
+        expect(user.reload.reset_password_email_address).to eq(secondary_email_address)
+      end
+    end
+
+    context 'when requesting_reset_email_address is not set' do
+      it 'falls back to the primary email attribute' do
+        user.send_reset_password_instructions
+
+        expect(user.reload.reset_password_email_address).not_to eq(secondary_email_address)
+      end
+    end
+
+    it 'sets a reset_password_token' do
+      user.send_reset_password_instructions
+
+      expect(user.reload.reset_password_token).to be_present
+    end
+  end
 end
