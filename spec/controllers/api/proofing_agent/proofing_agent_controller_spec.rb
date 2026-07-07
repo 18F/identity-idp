@@ -144,6 +144,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
   let(:address1) { '123 Main' }
   let(:zip_code) { '12345-6789' }
   let(:expiration_date) { (Time.zone.today + 1.year).strftime('%Y-%m-%d') }
+  let(:issue_date) { '2025-01-01' }
   let(:issuing_country_code) { 'USA' }
   let(:mrz) { 'P<USATRAVELER<<HAPPY<<<<<<<<<<<<<<<<<<<1234567890USA8501019M2412317<<<<<<<<<<<4' }
   let(:valid_residential_address) do
@@ -165,7 +166,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
       document_number:,
       jurisdiction:,
       expiration_date:,
-      issue_date: '2025-01-01',
+      issue_date:,
       address1:,
       address2: nil,
       city: 'City',
@@ -176,7 +177,7 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
   let(:valid_passport) do
     {
       expiration_date:,
-      issue_date: '2025-01-01',
+      issue_date:,
       issuing_country_code:,
       mrz:,
     }
@@ -836,14 +837,34 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
           end
 
           context 'user already has a pending agent proofed document_capture_session' do
-            before do
-              DocumentCaptureSession.create!(
-                user: user,
+            let(:session) do
+              create(
+                :document_capture_session,
+                user:,
                 issuer:,
                 doc_auth_vendor: Idp::Constants::Vendors::PROOFING_AGENT,
                 requested_at: Time.zone.now,
                 pending_agent_proofed_user_at: Time.zone.now,
               )
+            end
+
+            let(:agent_proofing_result) do
+              {
+                pii: { first_name: 'Testy', last_name: 'Testerson' },
+                proofing_location_id: '123',
+                proofing_agent_id: '456',
+                correlation_id: '789',
+                service_provider_issuer: 'test_issuer',
+                success: true,
+                reason: nil,
+                resolution: nil,
+                mrz: nil,
+                aamva: nil,
+              }
+            end
+
+            before do
+              session.store_agent_proofed_user(agent_proofing_result)
             end
             it 'returns 200' do
               expect(action.status).to eq(200)
@@ -853,13 +874,13 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
               action
               body = JSON.parse(response.body)
               expect(body['status']).to eq('failed')
-              expect(body['reason']).to eq('already_proofed_enhanced')
+              expect(body['reason']).to eq('already_proofed_awaiting_binding')
 
               expect(@analytics).to have_logged_event(
                 :idv_proofing_agent_proof_user_requested,
                 response_body: a_hash_including(
                   status: 'failed',
-                  reason: 'already_proofed_enhanced',
+                  reason: 'already_proofed_awaiting_binding',
                 ),
                 proofing_agent: proofing_agent_analytics_hash,
                 issuer:,
@@ -1083,6 +1104,15 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
               )
               body = JSON.parse(response.body)
               expect(body['expiration_date'][0]).to eq(body_errors[:expiration_date][0])
+            end
+          end
+
+          context 'when the state_id expiration and issue date are not provided' do
+            let(:expiration_date) { nil }
+            let(:issue_date) { nil }
+
+            it 'returns 202' do
+              expect(action.status).to eq(202)
             end
           end
 
@@ -1751,6 +1781,15 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
             )
             body = JSON.parse(response.body)
             expect(body['expiration_date'][0]).to eq(body_errors[:expiration_date][0])
+          end
+        end
+
+        context 'when the passport expiration and issue date are not provided' do
+          let(:expiration_date) { nil }
+          let(:issue_date) { nil }
+
+          it 'returns 202' do
+            expect(action.status).to eq(202)
           end
         end
 
