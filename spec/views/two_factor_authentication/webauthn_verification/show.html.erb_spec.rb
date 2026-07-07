@@ -3,6 +3,7 @@ require 'rails_helper'
 RSpec.describe 'two_factor_authentication/webauthn_verification/show.html.erb' do
   let(:user) { build_stubbed(:user) }
   let(:platform_authenticator) { false }
+  let(:auto_prompt) { false }
 
   subject(:rendered) { render }
 
@@ -15,6 +16,7 @@ RSpec.describe 'two_factor_authentication/webauthn_verification/show.html.erb' d
       data: {},
       service_provider: nil,
       platform_authenticator:,
+      auto_prompt:,
     )
   end
 
@@ -34,6 +36,14 @@ RSpec.describe 'two_factor_authentication/webauthn_verification/show.html.erb' d
       t('two_factor_authentication.login_options_link_text'),
       href: login_two_factor_options_path,
     )
+  end
+
+  context 'when auto prompt is enabled' do
+    let(:auto_prompt) { true }
+
+    it 'adds the auto prompt dataset to the webauthn button element' do
+      expect(rendered).to have_css('lg-webauthn-verify-button[data-auto-prompt="true"]')
+    end
   end
 
   context 'with platform authenticator' do

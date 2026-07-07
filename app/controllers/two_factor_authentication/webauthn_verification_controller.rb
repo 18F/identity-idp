@@ -9,6 +9,7 @@ module TwoFactorAuthentication
     before_action :confirm_webauthn_enabled, only: :show
 
     def show
+      @auto_prompt = trigger_auto_prompt_if_applicable
       save_challenge_in_session
       recaptcha_annotation = annotate_recaptcha(
         RecaptchaAnnotator::AnnotationReasons::INITIATED_TWO_FACTOR,
@@ -19,6 +20,9 @@ module TwoFactorAuthentication
       analytics.multi_factor_auth_enter_webauthn_visit(
         **analytics_properties,
         recaptcha_annotation:,
+        webauthn_verification_auto_prompt_enabled:
+          FeatureManagement.webauthn_verification_auto_prompt?,
+        webauthn_verification_auto_prompt_triggered: @auto_prompt,
       )
       @presenter = presenter_for_two_factor_authentication_method
     end
@@ -90,6 +94,7 @@ module TwoFactorAuthentication
         service_provider: current_sp,
         remember_device_default: remember_device_default,
         platform_authenticator: platform_authenticator?,
+        auto_prompt: @auto_prompt,
       )
     end
 
@@ -113,13 +118,19 @@ module TwoFactorAuthentication
                     else
                       TwoFactorAuthenticatable::AuthMethod::WEBAUTHN
                     end
-      {
+      properties = {
         context: context,
         multi_factor_auth_method: auth_method,
         webauthn_configuration_id: form&.webauthn_configuration&.id,
         multi_factor_auth_method_created_at: form&.webauthn_configuration
           &.created_at&.strftime('%s%L'),
       }
+
+      if user_session[:webauthn_verification_auto_prompted] == true
+        properties[:webauthn_verification_auto_prompted] = true
+      end
+
+      properties
     end
 
     def form
@@ -140,6 +151,19 @@ module TwoFactorAuthentication
 
     def platform_authenticator_param?
       params[:platform].to_s == 'true'
+    end
+
+    def trigger_auto_prompt_if_applicable
+      return false unless platform_authenticator? && eligible_for_auto_prompt?
+
+      user_session[:webauthn_verification_auto_prompted] = true
+      true
+    end
+
+    def eligible_for_auto_prompt?
+      FeatureManagement.webauthn_verification_auto_prompt? &&
+        !user_session[:webauthn_verification_auto_prompted] &&
+        webauthn_configurations.any? { |config| config.platform_authenticator? }
     end
 
     def platform_authenticator?

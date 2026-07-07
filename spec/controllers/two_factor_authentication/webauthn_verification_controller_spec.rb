@@ -28,6 +28,7 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
       stub_analytics
       stub_attempts_tracker
       sign_in_before_2fa(user)
+      allow(FeatureManagement).to receive(:webauthn_verification_auto_prompt?).and_return(false)
     end
 
     describe 'GET show' do
@@ -46,7 +47,51 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
             'Multi-Factor Authentication: enter webAuthn authentication visited',
             context: 'authentication',
             multi_factor_auth_method: 'webauthn_platform',
+            webauthn_verification_auto_prompt_enabled: false,
+            webauthn_verification_auto_prompt_triggered: false,
           )
+        end
+
+        context 'when auto-prompt experiment is enabled' do
+          let!(:webauthn_platform_configuration) do
+            create(:webauthn_configuration, :platform_authenticator, user:)
+          end
+
+          before do
+            allow(FeatureManagement)
+              .to receive(:webauthn_verification_auto_prompt?)
+              .and_return(true)
+          end
+
+          it 'auto-prompts once and tracks the visit with trigger metadata' do
+            get :show, params: { platform: true }
+
+            expect(assigns(:presenter).auto_prompt?).to eq(true)
+            expect(controller.user_session[:webauthn_verification_auto_prompted]).to eq(true)
+            expect(@analytics).to have_logged_event(
+              'Multi-Factor Authentication: enter webAuthn authentication visited',
+              context: 'authentication',
+              multi_factor_auth_method: 'webauthn_platform',
+              webauthn_verification_auto_prompt_enabled: true,
+              webauthn_verification_auto_prompt_triggered: true,
+              webauthn_verification_auto_prompted: true,
+            )
+          end
+
+          it 'does not auto-prompt again after first visit' do
+            get :show, params: { platform: true }
+            get :show, params: { platform: true }
+
+            expect(assigns(:presenter).auto_prompt?).to eq(false)
+            expect(@analytics).to have_logged_event(
+              'Multi-Factor Authentication: enter webAuthn authentication visited',
+              context: 'authentication',
+              multi_factor_auth_method: 'webauthn_platform',
+              webauthn_verification_auto_prompt_enabled: true,
+              webauthn_verification_auto_prompt_triggered: false,
+              webauthn_verification_auto_prompted: true,
+            )
+          end
         end
 
         it 'assigns presenter instance variable with initialized credentials' do
@@ -231,6 +276,7 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
 
           before do
             controller.user_session[:webauthn_auth_started_at] = 2.seconds.ago.to_f.to_s
+            controller.user_session[:webauthn_verification_auto_prompted] = true
           end
 
           it 'tracks a valid submission' do
@@ -267,6 +313,7 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
               available_webauthn_platform_config: true,
               attempts: 1,
               webauthn_auth_duration: a_value_within(1).of(2),
+              webauthn_verification_auto_prompted: true,
             )
             expect(@analytics).to have_logged_event(
               'User marked authenticated',

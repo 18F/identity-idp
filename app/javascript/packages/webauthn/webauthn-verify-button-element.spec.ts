@@ -20,6 +20,7 @@ describe('WebauthnVerifyButtonElement', () => {
   beforeEach(() => {
     verifyWebauthnDevice.reset();
     trackError.reset();
+    trackEvent.reset();
   });
 
   after(() => {
@@ -27,9 +28,20 @@ describe('WebauthnVerifyButtonElement', () => {
   });
 
   function createElement(data?: Partial<WebauthnVerifyButtonDataset>) {
+    const dataset: WebauthnVerifyButtonDataset = {
+      credentials: '[]',
+      userChallenge: '[]',
+      autoPrompt: 'false',
+      ...data,
+    };
+
     document.body.innerHTML = `
       <form>
-        <lg-webauthn-verify-button>
+        <lg-webauthn-verify-button
+          data-credentials='${dataset.credentials}'
+          data-user-challenge='${dataset.userChallenge}'
+          data-auto-prompt='${dataset.autoPrompt}'
+        >
           <div class="webauthn-verify-button__spinner" hidden>
             <p>Authenticating</p>
           </div>
@@ -48,7 +60,6 @@ describe('WebauthnVerifyButtonElement', () => {
       </form>
     `;
     const element = document.querySelector('lg-webauthn-verify-button')!;
-    Object.assign(element.dataset, { credentials: '[]', userChallenge: '[]' }, data);
     const form = document.querySelector('form')!;
     sinon.stub(form, 'submit');
     return element;
@@ -101,6 +112,21 @@ describe('WebauthnVerifyButtonElement', () => {
     // This test also implicitly verifies that the form would not submit on a second button click,
     // since JSDOM will throw an error about not implementing form submission if the form submission
     // was left unhandled.
+  });
+
+  it('auto prompts when configured via dataset', async () => {
+    verifyWebauthnDevice.resolves({
+      credentialId: Buffer.from('123', 'utf-8'),
+      authenticatorData: Buffer.from('auth', 'utf-8'),
+      clientDataJSON: Buffer.from('json', 'utf-8'),
+      signature: Buffer.from('sig', 'utf-8'),
+    });
+    createElement({ autoPrompt: 'true' });
+
+    await Promise.resolve();
+
+    expect(verifyWebauthnDevice).to.have.been.calledOnce();
+    expect(trackEvent).to.have.been.calledWith('passkey_authentication_initiated');
   });
 
   it('submits with error name as input on thrown expected error', async () => {
