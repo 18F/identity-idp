@@ -67,7 +67,7 @@ module Idv
     end
 
     def proofing_agent?
-      current_user&.proofing_agent_pending?
+      current_user&.proofing_agent_user_awaiting_binding?
     end
   end
 end
