@@ -390,29 +390,25 @@ class User < ApplicationRecord
     active_profile.present? && active_profile.facial_match?
   end
 
-  def proofing_agent_pending?
-    document_capture_sessions.where.not(pending_agent_proofed_user_at: nil).exists?
+  def proofing_agent_user_awaiting_binding?
+    pending_agent_proofed_user.present? &&
+      !agent_proofing_expired?
   end
 
-  def pending_agent_proofed_session
-    document_capture_sessions.where.not(pending_agent_proofed_user_at: nil)
+  def pending_agent_proofed_document_capture_session
+    @pending_agent_proofed_document_capture_session ||= document_capture_sessions
+      .where(doc_auth_vendor: Idp::Constants::Vendors::PROOFING_AGENT)
+      .where.not(pending_agent_proofed_user_at: nil)
       .order(pending_agent_proofed_user_at: :desc).first
   end
 
   def pending_agent_proofed_user
-    pending_agent_proofed_session&.load_agent_proofed_user
-  end
-
-  def agent_proofing_document_capture_session
-    document_capture_sessions.where(
-      doc_auth_vendor: Idp::Constants::Vendors::PROOFING_AGENT,
-    ).order(requested_at: :desc).first
+    @pending_agent_proofed_user ||=
+      pending_agent_proofed_document_capture_session&.load_agent_proofed_user
   end
 
   def agent_proofing_expired?
-    return false if identity_verified?
-
-    session = agent_proofing_document_capture_session
+    session = pending_agent_proofed_document_capture_session
     return false unless session
 
     validity_hours = IdentityConfig.store.agent_proofed_user_time_validity_hours
@@ -421,7 +417,7 @@ class User < ApplicationRecord
       return true
     end
 
-    session.load_agent_proofed_user.nil?
+    pending_agent_proofed_user.nil?
   end
 
   # The users most recently activated or pending in person enrollment profile

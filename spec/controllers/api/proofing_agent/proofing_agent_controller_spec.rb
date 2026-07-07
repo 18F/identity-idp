@@ -837,14 +837,34 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
           end
 
           context 'user already has a pending agent proofed document_capture_session' do
-            before do
-              DocumentCaptureSession.create!(
-                user: user,
+            let(:session) do
+              create(
+                :document_capture_session,
+                user:,
                 issuer:,
                 doc_auth_vendor: Idp::Constants::Vendors::PROOFING_AGENT,
                 requested_at: Time.zone.now,
                 pending_agent_proofed_user_at: Time.zone.now,
               )
+            end
+
+            let(:agent_proofing_result) do
+              {
+                pii: { first_name: 'Testy', last_name: 'Testerson' },
+                proofing_location_id: '123',
+                proofing_agent_id: '456',
+                correlation_id: '789',
+                service_provider_issuer: 'test_issuer',
+                success: true,
+                reason: nil,
+                resolution: nil,
+                mrz: nil,
+                aamva: nil,
+              }
+            end
+
+            before do
+              session.store_agent_proofed_user(agent_proofing_result)
             end
             it 'returns 200' do
               expect(action.status).to eq(200)
@@ -854,13 +874,13 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
               action
               body = JSON.parse(response.body)
               expect(body['status']).to eq('failed')
-              expect(body['reason']).to eq('already_proofed_enhanced')
+              expect(body['reason']).to eq('already_proofed_awaiting_binding')
 
               expect(@analytics).to have_logged_event(
                 :idv_proofing_agent_proof_user_requested,
                 response_body: a_hash_including(
                   status: 'failed',
-                  reason: 'already_proofed_enhanced',
+                  reason: 'already_proofed_awaiting_binding',
                 ),
                 proofing_agent: proofing_agent_analytics_hash,
                 issuer:,

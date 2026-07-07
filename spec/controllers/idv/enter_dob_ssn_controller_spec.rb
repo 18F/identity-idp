@@ -23,7 +23,8 @@ RSpec.describe Idv::EnterDobSsnController do
   let(:sp) { create(:service_provider, :idv, :active) }
   let(:user) { create(:user, :fully_registered) }
   let(:document_capture_session) do
-    DocumentCaptureSession.create!(
+    create(
+      :document_capture_session,
       user: user,
       doc_auth_vendor: Idp::Constants::Vendors::PROOFING_AGENT,
       issuer: sp.issuer,
