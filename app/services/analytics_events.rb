@@ -492,8 +492,8 @@ module AnalyticsEvents
   end
 
   # User visits the connected accounts page
-  def connected_accounts_page_visited
-    track_event(:connected_accounts_page_visited)
+  def connected_services_page_visited
+    track_event(:connected_services_page_visited)
   end
 
   # @param [String] redirect_url URL user was directed to

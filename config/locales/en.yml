@@ -47,7 +47,7 @@ account_reset.request.no_cancel2: No, cancel account deletion
 account_reset.request.yes_continue: Yes, continue account deletion
 account.connected_apps.associated_attributes_html: 'Connected %{timestamp_html} with:'
 account.connected_apps.associated_html: Connected %{timestamp_html}
-account.connected_apps.description: With your %{app_name} account, you can securely connect to multiple government accounts online. Below is a list of all the accounts you currently have connected.
+account.connected_apps.description: With your %{app_name} account, you can securely connect to multiple government services online. Below is a list of all the services you currently have connected.
 account.connected_apps.email_not_selected: Email not yet selected
 account.connected_apps.email_update_success_html: Your email for <strong>%{sp_name}</strong> was updated successfully.
 account.email_language.default: '%{language} (default)'
@@ -58,7 +58,7 @@ account.email_language.name.es: Español
 account.email_language.name.fr: Français
 account.email_language.name.zh: 中文（简体）
 account.email_language.updated: Your email language preference has been updated.
-account.emails.confirmed_html: You have confirmed your email address. Go to <a href="%{url}">your connected accounts</a> to update the email you share with connected agencies.
+account.emails.confirmed_html: You have confirmed your email address. Go to <a href="%{url}">your connected services</a> to update the email you share with connected agencies.
 account.forget_all_browsers.longer_description: Once you choose to ‘forget all browsers,’ we’ll need additional information to know that it’s actually you signing in to your account. We’ll ask for a multi-factor authentication method (such as text/SMS code or a security key) each time you want to access your account.
 account.index.auth_app_add: Add app
 account.index.auth_app_disabled: not enabled
@@ -124,7 +124,7 @@ account.navigation.add_phone_number: Add phone number
 account.navigation.add_platform_authenticator: Add face or touch unlock
 account.navigation.add_security_key: Add security key
 account.navigation.close: Close
-account.navigation.connected_accounts: Your connected accounts
+account.navigation.connected_services: Your connected services
 account.navigation.customer_support: Customer support
 account.navigation.delete_account: Delete account
 account.navigation.edit_password: Edit password
@@ -764,7 +764,7 @@ duplicate_profiles_detected.intro_html: 'The %{sp_name} requires that you only h
 duplicate_profiles_detected.intro.link: duplicate accounts
 duplicate_profiles_detected.last_sign_in_at_html: '<strong> Last login: </strong> %{timestamp_html}'
 duplicate_profiles_detected.never_logged_in: Never logged in to
-duplicate_profiles_detected.select_an_account.details_html: 'Keep the account that’s connected to the most services. Go to %{link_html} page to view connected agencies by selecting “Your connected accounts” in the left menu.'
+duplicate_profiles_detected.select_an_account.details_html: 'Keep the account that’s connected to the most services. Go to %{link_html} page to view connected agencies by selecting “Your connected services” in the left menu.'
 duplicate_profiles_detected.select_an_account.details.link: Your account
 duplicate_profiles_detected.select_an_account.heading: Choose an account to keep
 duplicate_profiles_detected.sign_back_in.details: Go back to the %{app_name} website and sign in using the one %{app_name} account you kept.
@@ -1001,7 +1001,7 @@ forms.webauthn_setup.step_3: Set up your security key
 forms.webauthn_setup.step_3a: Click “set up security key” below and follow your browser’s instructions.
 headings.account.activity: Activity
 headings.account.authentication_apps: Authentication apps
-headings.account.connected_accounts: Your connected services
+headings.account.connected_services: Your connected services
 headings.account.devices: Devices
 headings.account.events: Events
 headings.account.government_employee_id: Government employee ID
@@ -1949,7 +1949,7 @@ user_authorization_confirmation.continue: Continue
 user_authorization_confirmation.currently_logged_in: 'You are already signed in with the following email:'
 user_authorization_confirmation.or: Or
 user_authorization_confirmation.sign_in: Switch emails
-user_mailer.account_connected_to_sp.intro_html: To disconnect your account from %{sp_name}, %{sign_in_link_html}, go to “Your connected accounts” in the sidebar and click “Disconnect” underneath the service.
+user_mailer.account_connected_to_sp.intro_html: To disconnect your account from %{sp_name}, %{sign_in_link_html}, go to “Your connected services” in the sidebar and click “Disconnect” underneath the service.
 user_mailer.account_connected_to_sp.sign_in_link: sign in to your account
 user_mailer.account_connected_to_sp.subject: You connected your account to %{sp_name}
 user_mailer.account_disconnected_from_sp.intro: Visit %{sp_name} if you want to reconnect your account.

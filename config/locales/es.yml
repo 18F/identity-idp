@@ -47,7 +47,7 @@ account_reset.request.no_cancel2: No, cancelar la eliminación de la cuenta
 account_reset.request.yes_continue: Sí, continuar con la eliminación
 account.connected_apps.associated_attributes_html: 'Conectado el %{timestamp_html} con:'
 account.connected_apps.associated_html: 'Conectado: %{timestamp_html}'
-account.connected_apps.description: Con su cuenta de %{app_name}, puede conectarse de manera segura a muchas cuentas del gobierno en línea. Esta es una lista de todas las cuentas que tiene conectadas actualmente.
+account.connected_apps.description: Con tu cuenta de %{app_name}, puedes conectarte de forma segura a múltiples servicios gubernamentales en línea. A continuación, encontrarás una lista de todos los servicios a los que estás conectado actualmente.
 account.connected_apps.email_not_selected: No se ha seleccionado aún una dirección de correo electrónico
 account.connected_apps.email_update_success_html: Se actualizó su correo electrónico para la <strong>%{sp_name}</strong>.
 account.email_language.default: '%{language} (predeterminado)'
@@ -58,7 +58,7 @@ account.email_language.name.es: Español
 account.email_language.name.fr: Français
 account.email_language.name.zh: 中文（简体）
 account.email_language.updated: Se actualizó su preferencia de idioma del correo electrónico.
-account.emails.confirmed_html: Usted confirmó su dirección de correo electrónico. Vaya a <a href="%{url}">Sus cuentas conectadas</a> para actualizar el correo electrónico que proporcionó a las agencias conectadas.
+account.emails.confirmed_html: Has confirmado tu dirección de correo electrónico. Ve a <a href="%{url}">tus servicios conectados</a> para actualizar el correo electrónico que compartes con las agencias conectadas.
 account.forget_all_browsers.longer_description: Una vez que elija “Olvidar todos los navegadores”, necesitaremos más información para saber que realmente es usted quien está iniciando sesión en su cuenta. Le pediremos un método de autenticación multifactor (como código de texto o de SMS, o una clave de seguridad) cada vez que desee acceder a su cuenta.
 account.index.auth_app_add: Agregar aplicación
 account.index.auth_app_disabled: no habilitada
@@ -124,7 +124,7 @@ account.navigation.add_phone_number: Agregar número de teléfono
 account.navigation.add_platform_authenticator: Agregar desbloqueo facial o táctil
 account.navigation.add_security_key: Agregar clave de seguridad
 account.navigation.close: Cerrar
-account.navigation.connected_accounts: Sus cuentas conectadas
+account.navigation.connected_services: Sus cuentas conectadas
 account.navigation.customer_support: Atención al cliente
 account.navigation.delete_account: Eliminar cuenta
 account.navigation.edit_password: Editar contraseña
@@ -775,7 +775,7 @@ duplicate_profiles_detected.intro_html: '%{sp_name} requiere que usted tenga só
 duplicate_profiles_detected.intro.link: las cuentas duplicativas
 duplicate_profiles_detected.last_sign_in_at_html: '<strong> Último inicio de sesión: </strong> %{timestamp_html}'
 duplicate_profiles_detected.never_logged_in: Nunca he iniciado sesión en
-duplicate_profiles_detected.select_an_account.details_html: 'Conserve la cuenta que esté vinculada a la mayor cantidad de servicios. Diríjase a la página %{link_html} para ver las agencias conectadas; para ello, seleccione «Sus cuentas conectadas» en el menú a la izquierda.'
+duplicate_profiles_detected.select_an_account.details_html: 'Conserva la cuenta que esté conectada a la mayor cantidad de servicios. Ve a la página %{link_html} para ver las agencias conectadas seleccionando “Tus servicios conectados” en el menú de la izquierda.'
 duplicate_profiles_detected.select_an_account.details.link: «Su cuenta»
 duplicate_profiles_detected.select_an_account.heading: Elija la cuenta que desea conservar.
 duplicate_profiles_detected.sign_back_in.details: Vuelva al sitio web de %{app_name} e inicie sesión usando la cuenta de %{app_name} que conservó.
@@ -1012,7 +1012,7 @@ forms.webauthn_setup.step_3: Configure su clave de seguridad
 forms.webauthn_setup.step_3a: Haga clic en “configurar clave de seguridad” más abajo y siga las instrucciones de su navegador.
 headings.account.activity: Actividad
 headings.account.authentication_apps: Aplicaciones de autenticación
-headings.account.connected_accounts: Sus cuentas conectadas
+headings.account.connected_services: Sus servicios conectados
 headings.account.devices: Dispositivos
 headings.account.events: Eventos
 headings.account.government_employee_id: Identificación de empleado gubernamental
@@ -1961,7 +1961,7 @@ user_authorization_confirmation.continue: Continuar
 user_authorization_confirmation.currently_logged_in: 'Ya inició sesión con el siguiente correo electrónico:'
 user_authorization_confirmation.or: O
 user_authorization_confirmation.sign_in: Cambiar de correo electrónico
-user_mailer.account_connected_to_sp.intro_html: Para desconectar su cuenta de %{sp_name}, %{sign_in_link_html}, vaya a la sección “Sus servicios conectadas” en la barra lateral y haga clic en “Desconectar” debajo del servicio.
+user_mailer.account_connected_to_sp.intro_html: Para desconectar su cuenta de %{sp_name}, %{sign_in_link_html}, ve a “Sus servicios conectados” en la barra lateral y haz clic en “Desconectar” debajo del servicio.
 user_mailer.account_connected_to_sp.sign_in_link: inicie sesión en su cuenta
 user_mailer.account_connected_to_sp.subject: Usted conectó su cuenta a %{sp_name}
 user_mailer.account_disconnected_from_sp.intro: Visite %{sp_name} si desea volver a conectar su cuenta.

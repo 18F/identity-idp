@@ -47,7 +47,7 @@ account_reset.request.no_cancel2: Non, annuler la suppression du compte
 account_reset.request.yes_continue: Oui, continuer la suppression du compte
 account.connected_apps.associated_attributes_html: 'Connecté %{timestamp_html} avec :'
 account.connected_apps.associated_html: Connecté %{timestamp_html}
-account.connected_apps.description: Avec votre compte %{app_name}, vous pouvez vous connecter en toute sécurité à plusieurs comptes de l’administration en ligne. Vous trouverez ci-dessous une liste de tous vos comptes actuellement connectés.
+account.connected_apps.description: Avec votre compte %{app_name}, vous pouvez vous connecter en toute sécurité à plusieurs services de l’administration en ligne. Vous trouverez ci-dessous une liste de tous vos services actuellement connectés.
 account.connected_apps.email_not_selected: Adresse e-mail non encore sélectionnée
 account.connected_apps.email_update_success_html: Vous avez réussi à modifier votre adresse e-mail pour <strong>%{sp_name}</strong>.
 account.email_language.default: '%{language} (par défaut)'
@@ -58,7 +58,7 @@ account.email_language.name.es: Español
 account.email_language.name.fr: Français
 account.email_language.name.zh: 中文（简体）
 account.email_language.updated: Votre langue de préférence pour les e-mails a été mise à jour.
-account.emails.confirmed_html: Vous avez confirmé votre adresse e-mail. Rendez-vous sur <a href="%{url}">vos comptes connectés</a> pour actualiser l’adresse e-mail que vous communiquez aux organismes connectés.
+account.emails.confirmed_html: Vous avez confirmé votre adresse e-mail. Rendez-vous sur <a href="%{url}">vos services connectés</a> pour actualiser l’adresse e-mail que vous communiquez aux organismes connectés.
 account.forget_all_browsers.longer_description: Une fois que vous aurez choisi d’« oublier tous les navigateurs », nous aurons besoin d’informations supplémentaires pour savoir que c’est bien vous qui vous connectez à votre compte. Nous vous demanderons une méthode d’authentification multi-facteurs (comme un code SMS/texto ou une clé de sécurité) chaque fois que vous souhaiterez accéder à votre compte.
 account.index.auth_app_add: Ajouter une appli
 account.index.auth_app_disabled: non activé
@@ -124,7 +124,7 @@ account.navigation.add_phone_number: Ajouter un numéro de téléphone
 account.navigation.add_platform_authenticator: Ajouter le déverrouillage facial ou tactile
 account.navigation.add_security_key: Ajouter une clé de sécurité
 account.navigation.close: Fermer
-account.navigation.connected_accounts: Vos comptes connectés
+account.navigation.connected_services: Vos comptes connectés
 account.navigation.customer_support: Service client
 account.navigation.delete_account: Supprimer le compte
 account.navigation.edit_password: Modifier le mot de passe
@@ -764,7 +764,7 @@ duplicate_profiles_detected.intro_html: 'L’%{sp_name} exige que vous ne dispos
 duplicate_profiles_detected.intro.link: comptes en double
 duplicate_profiles_detected.last_sign_in_at_html: '<strong> Dernière connexion : </strong> %{timestamp_html}'
 duplicate_profiles_detected.never_logged_in: 'Jamais connecté à'
-duplicate_profiles_detected.select_an_account.details_html: 'Conservez le compte connecté au plus grand nombre de services. Rendez-vous sur la page %{link_html} pour consulter les agences connectées en sélectionnant «Vos comptes connectés» dans le menu de gauche.'
+duplicate_profiles_detected.select_an_account.details_html: 'Conservez le compte connecté au plus grand nombre de services. Rendez-vous sur la page %{link_html} pour consulter les agences connectées en sélectionnant «Vos services connectés» dans le menu de gauche.'
 duplicate_profiles_detected.select_an_account.details.link: '«Votre compte»'
 duplicate_profiles_detected.select_an_account.heading: Choisir le compte que vous voulez conserver
 duplicate_profiles_detected.sign_back_in.details: Retournez sur le site web de %{app_name} et connectez-vous à l’aide du compte %{app_name} que vous avez conservé.
@@ -1001,7 +1001,7 @@ forms.webauthn_setup.step_3: Configurer votre clé de sécurité
 forms.webauthn_setup.step_3a: Cliquez sur « Configurer une clé de sécurité » ci-dessous et suivez les instructions de votre navigateur.
 headings.account.activity: Activité
 headings.account.authentication_apps: Applis d’authentification
-headings.account.connected_accounts: Vos comptes connectés
+headings.account.connected_services: Vos services connectés
 headings.account.devices: Appareils
 headings.account.events: Événements
 headings.account.government_employee_id: Carte d’employé fédéral
