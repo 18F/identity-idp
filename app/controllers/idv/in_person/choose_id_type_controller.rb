@@ -21,7 +21,9 @@ class Idv::InPerson::ChooseIdTypeController < ApplicationController
   def update
     clear_future_steps!
 
-    form = Idv::ChooseIdTypeForm.new
+    form = Idv::ChooseIdTypeForm.new(
+      mdl_enabled: false,
+    )
     result = form.submit(choose_id_type_form_params)
 
     analytics.idv_in_person_proofing_choose_id_type_submitted(
