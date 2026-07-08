@@ -77,7 +77,8 @@ class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresent
       # but there are designs to remove personal key from the option list and
       # make it a link with some additional text to call it out as a special
       # case.
-      if TwoFactorAuthentication::PersonalKeyPolicy.new(user).enabled?
+      if TwoFactorAuthentication::PersonalKeyPolicy.new(user).enabled? &&
+         !IdentityConfig.store.personal_key_retired
         configurations << mfa.personal_key_configuration
       end
     end
