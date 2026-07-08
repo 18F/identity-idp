@@ -39,7 +39,11 @@ module DocAuth
           interval: 0.05,
           interval_randomness: 0.5,
           backoff_factor: 2,
+          methods: %i[get],
           retry_statuses: [404, 500],
+          retry_if: lambda do |env, exception|
+            env[:method] == :post && !exception.is_a?(Faraday::RetriableResponse)
+          end,
           retry_block: lambda do |env:, options:, retry_count:, exception:, will_retry_in:|
             NewRelic::Agent.notice_error(exception, custom_params: { retry: retry_count })
           end,
