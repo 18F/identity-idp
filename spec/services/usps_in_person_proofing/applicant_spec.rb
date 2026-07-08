@@ -103,6 +103,58 @@ RSpec.describe UspsInPersonProofing::Applicant do
       end
     end
 
+    context 'when the applicant has a second address line' do
+      let(:applicant) do
+        Pii::UspsApplicant.new(
+          **applicant_pii.merge(address1: '123 Main St', address2: 'Apt 4'),
+        )
+      end
+
+      it 'joins both lines into the address with a space' do
+        expect(
+          described_class.from_usps_applicant_and_enrollment(
+            applicant,
+            enrollment,
+          ).address,
+        ).to eq('123 Main St Apt 4')
+      end
+    end
+
+    context 'when the second address line is blank' do
+      let(:applicant) do
+        Pii::UspsApplicant.new(
+          **applicant_pii.merge(address1: '123 Main St', address2: ''),
+        )
+      end
+
+      it 'uses only the first line with no trailing space' do
+        expect(
+          described_class.from_usps_applicant_and_enrollment(
+            applicant,
+            enrollment,
+          ).address,
+        ).to eq('123 Main St')
+      end
+    end
+
+    context 'when the combined address exceeds 255 characters' do
+      let(:applicant) do
+        Pii::UspsApplicant.new(
+          **applicant_pii.merge(address1: 'A' * 200, address2: 'B' * 200),
+        )
+      end
+
+      it 'truncates the address to 255 characters' do
+        address = described_class.from_usps_applicant_and_enrollment(
+          applicant,
+          enrollment,
+        ).address
+
+        expect(address.length).to eq(255)
+        expect(address).to eq(('A' * 200) + ' ' + ('B' * 54))
+      end
+    end
+
     context 'with an offset to the expiration time', timezone: 'UTC' do
       context 'with an offset of zero' do
         it 'shows the previous date if interpreted in US timezone' do
