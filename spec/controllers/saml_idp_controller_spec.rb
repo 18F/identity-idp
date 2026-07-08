@@ -2427,9 +2427,14 @@ RSpec.describe SamlIdpController do
       let(:status) { xmldoc.status[0] }
       let(:status_code) { xmldoc.status_code[0] }
       let(:user) { create(:user, :fully_registered) }
+      let(:authn_at) { nil }
 
       before do
-        generate_saml_response(user, saml_settings)
+        if authn_at
+          travel_to(authn_at) { generate_saml_response(user, saml_settings) }
+        else
+          generate_saml_response(user, saml_settings)
+        end
       end
 
       it 'returns a valid xml document' do
@@ -2739,6 +2744,20 @@ RSpec.describe SamlIdpController do
 
         it 'has an AuthnInstant attribute' do
           expect(subject.attributes['AuthnInstant'].value).to_not be_nil
+        end
+
+        context 'when authentication timestamp support is enabled' do
+          let(:authn_at) { Time.zone.parse('2026-07-08 12:34:56 UTC') }
+
+          before do
+            allow(FeatureManagement).to receive(:auth_time_attribute_enabled?).and_return(true)
+          end
+
+          it 'uses the identity authentication timestamp for AuthnInstant' do
+            authn_instant = Time.zone.parse(subject.attributes['AuthnInstant'].value)
+
+            expect(authn_instant).to be_within(1.second).of(authn_at)
+          end
         end
 
         it 'has a SessionIndex attribute' do
