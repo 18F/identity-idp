@@ -55,6 +55,7 @@ attempts_api_signing_enabled: false
 attempts_api_signing_key: ''
 attribute_encryption_key:
 attribute_encryption_key_queue: '[]'
+auth_time_attribute_enabled: false
 available_locales: 'en,es,fr,zh'
 aws_http_retry_limit: 2
 aws_http_retry_max_delay: 1
@@ -360,7 +361,6 @@ mx_timeout: 3
 new_device_alert_delay_in_minutes: 5
 new_device_alert_window_start_in_minutes: 480
 newrelic_license_key: ''
-auth_time_attribute_enabled: false
 openid_connect_authorization_code_expiration_seconds: 300
 openid_connect_content_security_form_action_enabled: false
 openid_connect_redirect: client_side_js

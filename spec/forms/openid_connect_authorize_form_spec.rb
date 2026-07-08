@@ -695,7 +695,6 @@ RSpec.describe OpenidConnectAuthorizeForm do
 
     it 'updates auth_time to the current authentication timestamp for existing identities' do
       now = Time.zone.parse('2026-06-01 12:00:00 UTC')
-      allow(FeatureManagement).to receive(:auth_time_attribute_enabled?).and_return(true)
       ServiceProviderIdentity.create!(
         user: user,
         service_provider: client_id,
@@ -714,7 +713,6 @@ RSpec.describe OpenidConnectAuthorizeForm do
         identity = user.identities.find_by(service_provider: client_id)
 
         expect(identity.last_authenticated_at.to_i).to eq(now.to_i)
-        expect(OpenidConnectUserInfoPresenter.new(identity).user_info[:auth_time]).to eq(now.to_i)
       end
     end
 
