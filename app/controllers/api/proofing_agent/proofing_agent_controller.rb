@@ -290,7 +290,7 @@ module Api
       end
 
       def user_has_enhanced_profile?
-        active_profiles.compact.any? do |profile|
+        active_profiles.any? do |profile|
           profile.enhanced?
         end
       end
