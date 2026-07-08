@@ -377,6 +377,7 @@ outbound_connection_check_url: 'https://checkip.amazonaws.com'
 participate_in_dap: false
 password_max_attempts: 3
 password_pepper:
+personal_key_deprecated: false
 personal_key_retired: true
 phone_carrier_registration_blocklist_array: '[]'
 phone_confirmation_max_attempt_window_in_minutes: 1_440

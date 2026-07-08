@@ -392,6 +392,7 @@ module IdentityConfig
     config.add(:participate_in_dap, type: :boolean)
     config.add(:password_max_attempts, type: :integer)
     config.add(:password_pepper, type: :string)
+    config.add(:personal_key_deprecated, type: :boolean)
     config.add(:personal_key_retired, type: :boolean)
     config.add(:phone_carrier_registration_blocklist_array, type: :json)
     config.add(:phone_confirmation_max_attempt_window_in_minutes, type: :integer)

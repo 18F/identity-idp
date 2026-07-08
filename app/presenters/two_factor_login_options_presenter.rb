@@ -78,7 +78,7 @@ class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresent
       # make it a link with some additional text to call it out as a special
       # case.
       if TwoFactorAuthentication::PersonalKeyPolicy.new(user).enabled? &&
-         !IdentityConfig.store.personal_key_retired
+         !IdentityConfig.store.personal_key_deprecated
         configurations << mfa.personal_key_configuration
       end
     end
