@@ -26,7 +26,7 @@ class OpenidConnectUserInfoPresenter
     info[:verified_at] = verified_at if scoper.verified_at_requested?
     info[:ial] = authn_context_resolver.asserted_ial_acr
     info[:aal] = requested_aal_value
-    info[:auth_time] = auth_time if FeatureManagement.openid_connect_auth_time_enabled?
+    info[:auth_time] = auth_time if FeatureManagement.auth_time_attribute_enabled?
 
     scoper.filter(info)
   end
@@ -182,7 +182,7 @@ class OpenidConnectUserInfoPresenter
   end
 
   def auth_time
-    identity.happened_at.to_i if identity.last_authenticated_at.present?
+    (identity.happened_at || Time.zone.now).to_i
   end
 
   def out_of_band_session_accessor

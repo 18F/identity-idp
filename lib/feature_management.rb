@@ -114,8 +114,8 @@ class FeatureManagement
     !Rails.env.test? && IdentityConfig.store.log_to_stdout
   end
 
-  def self.openid_connect_auth_time_enabled?
-    IdentityConfig.store.openid_connect_auth_time_enabled
+  def self.auth_time_attribute_enabled?
+    IdentityConfig.store.auth_time_attribute_enabled
   end
 
   def self.phone_recaptcha_enabled?

@@ -67,9 +67,9 @@ RSpec.describe OpenidConnectUserInfoPresenter do
 
     subject(:user_info) { presenter.user_info }
 
-    context 'when OIDC auth_time is enabled' do
+    context 'when auth_time attribute is enabled' do
       before do
-        allow(FeatureManagement).to receive(:openid_connect_auth_time_enabled?).and_return(true)
+        allow(FeatureManagement).to receive(:auth_time_attribute_enabled?).and_return(true)
       end
 
       it 'includes auth_time from the identity authentication timestamp' do
@@ -78,16 +78,19 @@ RSpec.describe OpenidConnectUserInfoPresenter do
 
       context 'without an identity authentication timestamp' do
         let(:last_authenticated_at) { nil }
+        let(:now) { Time.zone.parse('2026-06-01 12:00:00 UTC') }
 
-        it 'includes a null auth_time' do
-          expect(user_info[:auth_time]).to be_nil
+        it 'falls back to the current time' do
+          travel_to(now) do
+            expect(user_info[:auth_time]).to eq(now.to_i)
+          end
         end
       end
     end
 
-    context 'when OIDC auth_time is disabled' do
+    context 'when auth_time attribute is disabled' do
       before do
-        allow(FeatureManagement).to receive(:openid_connect_auth_time_enabled?).and_return(false)
+        allow(FeatureManagement).to receive(:auth_time_attribute_enabled?).and_return(false)
       end
 
       it 'does not include auth_time' do

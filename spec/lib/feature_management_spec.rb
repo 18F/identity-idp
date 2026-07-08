@@ -81,12 +81,12 @@ RSpec.describe 'FeatureManagement' do
     end
   end
 
-  describe '#openid_connect_auth_time_enabled?' do
-    subject(:enabled) { FeatureManagement.openid_connect_auth_time_enabled? }
+  describe '#auth_time_attribute_enabled?' do
+    subject(:enabled) { FeatureManagement.auth_time_attribute_enabled? }
 
     context 'when enabled' do
       before do
-        allow(IdentityConfig.store).to receive(:openid_connect_auth_time_enabled).and_return(true)
+        allow(IdentityConfig.store).to receive(:auth_time_attribute_enabled).and_return(true)
       end
 
       it { expect(enabled).to eq(true) }
@@ -94,7 +94,7 @@ RSpec.describe 'FeatureManagement' do
 
     context 'when disabled' do
       before do
-        allow(IdentityConfig.store).to receive(:openid_connect_auth_time_enabled).and_return(false)
+        allow(IdentityConfig.store).to receive(:auth_time_attribute_enabled).and_return(false)
       end
 
       it { expect(enabled).to eq(false) }
