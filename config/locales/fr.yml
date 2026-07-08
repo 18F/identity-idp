@@ -721,7 +721,7 @@ doc_auth.info.verify_online_link_text: En savoir plus sur la vérification en li
 doc_auth.info.welcome_sp_reproof_alert: Pour votre sécurité, %{sp_name} exige que vous vérifiiez à nouveau votre identité.
 doc_auth.info.you_entered: 'Vous avez saisi :'
 doc_auth.instructions.bullet1: Munissez-vous d’un passeport, d’un permis de conduire ou d’une carte d’identité d’un État des États-Unis
-doc_auth.instructions.bullet1_mdl: Posséder un passeport américain, un permis de conduire, un permis de conduire mobile ou une carte d'identité délivrée par un État.
+doc_auth.instructions.bullet1_mdl: Posséder un passeport américain, un permis de conduire, un permis de conduire mobile ou une carte d’identité délivrée par un État.
 doc_auth.instructions.bullet2: Saisir votre numéro de sécurité sociale
 doc_auth.instructions.bullet3: Vérifier la correspondance avec votre numéro de téléphone
 doc_auth.instructions.bullet4: Saisir à nouveau votre mot de passe %{app_name}
@@ -1217,7 +1217,7 @@ idv.mdl.button: Ouvrir le portefeuille numérique
 idv.mdl.learn_more: En savoir plus sur l’utilisation du permis de conduire mobile
 idv.mdl.steps_heading: 'Vous aurez besoin de:'
 idv.mdl.steps.device.title: Un appareil doté d’un portefeuille numérique
-idv.mdl.steps.have_mdl.title:  Un permis de conduire mobile actif
+idv.mdl.steps.have_mdl.title: Un permis de conduire mobile actif
 idv.mdl.subtitle: '%{app_name} vérifiera votre permis de conduire mobile par l’intermédiaire d’un prestataire de services de confiance (Socure).'
 idv.messages.activated_html: Votre identité a été vérifiée. Si vous souhaitez modifier les informations qui ont été vérifiées, veuillez %{link_html}.
 idv.messages.activated_link: nous contacter

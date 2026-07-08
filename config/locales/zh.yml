@@ -608,8 +608,8 @@ doc_auth.errors.verify.use_another_type_of_id: 或使用另一种类型的 ID。
 doc_auth.forms.change_file: 更改文件
 doc_auth.forms.choose_file_html: 将文件拖到此处或者<lg-underline>从文件夹中选择</lg-underline>。
 doc_auth.forms.doc_success: 我们验证了你的信息
-doc_auth.forms.id_type_preference.mdl: 移动驾驶证 (mDL)
 doc_auth.forms.id_type_preference.drivers_license: 美国驾照或州身份证件
+doc_auth.forms.id_type_preference.mdl: 移动驾驶证 (mDL)
 doc_auth.forms.id_type_preference.passport: 美国护照本
 doc_auth.forms.selected_file: 被选文件
 doc_auth.headers.expired_id: 你的身份证件可能已过期
