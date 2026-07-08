@@ -98,7 +98,7 @@ RSpec.describe AccountsController do
         it 'renders the proper flash message' do
           flash_message = t(
             'account.emails.confirmed_html',
-            url: account_connected_accounts_url,
+            url: account_connected_services_url,
           )
           user = create(:user, :fully_registered)
           sign_in user

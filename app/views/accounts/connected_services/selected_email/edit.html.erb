@@ -9,7 +9,7 @@
 
   <%= simple_form_for(
         @select_email_form,
-        url: connected_account_selected_email_path(identity_id: @identity.id),
+        url: connected_services_selected_email_path(identity_id: @identity.id),
         method: :patch,
       ) do |f| %>
     <%= f.input(
@@ -44,5 +44,5 @@
         ).with_content(t('account.index.email_add')) %>
   <% end %>
 
-  <% c.with_footer { link_to t('forms.buttons.back'), account_connected_accounts_path } %>
+  <% c.with_footer { link_to t('forms.buttons.back'), account_connected_services_path } %>
 <% end %>

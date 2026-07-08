@@ -24,7 +24,7 @@ class AccountsController < ApplicationController
     if session.delete(:from_select_email_flow)
       flash.now[:success] = t(
         'account.emails.confirmed_html',
-        url: account_connected_accounts_url,
+        url: account_connected_services_url,
       )
     end
   end

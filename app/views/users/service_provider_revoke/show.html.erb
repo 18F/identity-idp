@@ -12,5 +12,5 @@
 <%= button_to(service_provider_revoke_url(@service_provider.id), method: 'delete', class: 'usa-button usa-button--wide usa-button--big margin-top-4') { t('forms.buttons.continue') } %>
 
 <%= render PageFooterComponent.new do %>
-  <%= link_to(t('links.cancel'), account_connected_accounts_path) %>
+  <%= link_to(t('links.cancel'), account_connected_services_path) %>
 <% end %>

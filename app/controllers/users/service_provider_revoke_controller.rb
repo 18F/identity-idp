@@ -6,7 +6,7 @@ module Users
     before_action :confirm_two_factor_authenticated
 
     rescue_from ActiveRecord::RecordNotFound do
-      redirect_to account_connected_accounts_path
+      redirect_to account_connected_services_path
     end
 
     def show
@@ -24,7 +24,7 @@ module Users
       notify_user_of_revoked_consent
       analytics.sp_revoke_consent_revoked(issuer: @service_provider.issuer)
 
-      redirect_to account_connected_accounts_path
+      redirect_to account_connected_services_path
     end
 
     private

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'accounts/connected_accounts/selected_email/edit.html.erb' do
+RSpec.describe 'accounts/connected_services/selected_email/edit.html.erb' do
   let(:identity) { create(:service_provider_identity, :active) }
   let(:user) do
     create(

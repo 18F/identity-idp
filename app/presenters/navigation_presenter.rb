@@ -45,8 +45,8 @@ class NavigationPresenter
         ].compact
       ),
       NavItem.new(
-        I18n.t('account.navigation.connected_accounts'),
-        account_connected_accounts_path, []
+        I18n.t('account.navigation.connected_services'),
+        account_connected_services_path, []
       ),
       NavItem.new(
         I18n.t('account.navigation.history'), account_history_path, [

@@ -41,11 +41,11 @@ RSpec.describe 'Account connected applications' do
   before do
     sign_in_and_2fa_user(user)
     build_account_connected_apps
-    within_sidenav { click_on t('account.navigation.connected_accounts') }
+    within_sidenav { click_on t('account.navigation.connected_services') }
   end
 
   scenario 'viewing account connected applications' do
-    expect(page).to have_content(t('headings.account.connected_accounts'))
+    expect(page).to have_content(t('headings.account.connected_services'))
 
     expect(identity_without_link_timestamp).to appear_before(identity_timestamp)
 
@@ -75,7 +75,7 @@ RSpec.describe 'Account connected applications' do
 
     # Canceling should return to the Connected Accounts page
     click_on t('links.cancel')
-    expect(page).to have_current_path(account_connected_accounts_path)
+    expect(page).to have_current_path(account_connected_services_path)
 
     # Revoke again and confirm revocation
     within('li', text: identity.display_name) do

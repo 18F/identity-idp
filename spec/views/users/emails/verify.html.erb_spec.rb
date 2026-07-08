@@ -102,7 +102,7 @@ RSpec.describe 'users/emails/verify.html.erb' do
       it 'contains a link to return back to connected accounts screen' do
         expect(rendered).to have_link(
           t('forms.buttons.back'),
-          href: account_connected_accounts_path,
+          href: account_connected_services_path,
         )
       end
     end

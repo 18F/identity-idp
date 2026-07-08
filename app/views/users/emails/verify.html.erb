@@ -44,7 +44,7 @@
   <% if @pending_completions_consent %>
     <%= link_to t('forms.buttons.back'), sign_up_select_email_path %>
   <% else %>
-    <%= link_to t('forms.buttons.back'), account_connected_accounts_path %>
+    <%= link_to t('forms.buttons.back'), account_connected_services_path %>
   <% end %>
 <% else %>
   <%= link_to t('idv.messages.return_to_profile', app_name: APP_NAME), account_path %>
