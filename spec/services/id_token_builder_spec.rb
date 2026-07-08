@@ -5,6 +5,7 @@ RSpec.describe IdTokenBuilder do
 
   let(:code) { SecureRandom.hex }
   let(:user) { create(:user) }
+  let(:last_authenticated_at) { Time.zone.parse('2026-05-29 12:00:00 UTC') }
   let(:identity) do
     build(
       :service_provider_identity,
@@ -16,6 +17,7 @@ RSpec.describe IdTokenBuilder do
       # https://www.pingidentity.com/content/developer/en/resources/openid-connect-developers-guide.html
       access_token: 'dNZX1hEZ9wBCzNL40Upu646bdzQA',
       user: user,
+      last_authenticated_at: last_authenticated_at,
     )
   end
 
@@ -163,6 +165,26 @@ RSpec.describe IdTokenBuilder do
 
     it 'sets the not-before to now' do
       expect(decoded_payload[:nbf]).to eq(now.to_i)
+    end
+
+    context 'when auth_time attribute is enabled' do
+      before do
+        allow(FeatureManagement).to receive(:auth_time_attribute_enabled?).and_return(true)
+      end
+
+      it 'sets auth_time to the authentication timestamp' do
+        expect(decoded_payload[:auth_time]).to eq(last_authenticated_at.to_i)
+      end
+    end
+
+    context 'when auth_time attribute is disabled' do
+      before do
+        allow(FeatureManagement).to receive(:auth_time_attribute_enabled?).and_return(false)
+      end
+
+      it 'does not include auth_time' do
+        expect(decoded_payload).to_not have_key(:auth_time)
+      end
     end
 
     it 'sets the access token hash correctly' do

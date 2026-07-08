@@ -114,6 +114,10 @@ class FeatureManagement
     !Rails.env.test? && IdentityConfig.store.log_to_stdout
   end
 
+  def self.auth_time_attribute_enabled?
+    IdentityConfig.store.auth_time_attribute_enabled
+  end
+
   def self.phone_recaptcha_enabled?
     IdentityConfig.store.phone_recaptcha_score_threshold.positive? && recaptcha_enabled?
   end

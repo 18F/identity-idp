@@ -26,7 +26,8 @@ RSpec.describe OpenidConnectConfigurationPresenter do
         expect(configuration[:token_endpoint_auth_methods_supported]).to eq(%w[private_key_jwt])
         expect(configuration[:token_endpoint_auth_signing_alg_values_supported]).to eq(%w[RS256])
 
-        claims = %w[iss sub] + OpenidConnectAttributeScoper::CLAIMS
+        claims = OpenidConnectAttributeScoper::UNSCOPED_CLAIMS +
+                 OpenidConnectAttributeScoper::CLAIMS
         expect(configuration[:claims_supported]).to match_array(claims)
       end
     end

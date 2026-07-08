@@ -25,6 +25,24 @@ RSpec.describe ServiceProviderIdentity do
     end
   end
 
+  describe '#happened_at' do
+    context 'when last_authenticated_at is present' do
+      it 'returns last_authenticated_at in UTC' do
+        identity.last_authenticated_at = Time.zone.parse('2026-06-01 12:00:00 UTC')
+
+        expect(identity.happened_at).to eq(identity.last_authenticated_at.in_time_zone('UTC'))
+      end
+    end
+
+    context 'when last_authenticated_at is missing' do
+      it 'returns nil' do
+        identity.last_authenticated_at = nil
+
+        expect(identity.happened_at).to be_nil
+      end
+    end
+  end
+
   describe 'uuid validations' do
     it 'uses a DB constraint to enforce presence' do
       identity = create(:service_provider_identity)
