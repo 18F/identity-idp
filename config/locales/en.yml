@@ -1218,7 +1218,7 @@ idv.mdl.learn_more: Learn more about how to use mDL
 idv.mdl.steps_heading: 'You’ll need:'
 idv.mdl.steps.device.title: A device with a digital wallet
 idv.mdl.steps.have_mdl.title: An active mobile driver’s license
-idv.mdl.subtitle: '%{app_name} will verify your mobile driver’s license (mDL) using a trusted service provider.'
+idv.mdl.subtitle: '%{app_name} will verify your mobile driver’s license (mDL) using a trusted service provider, Socure.'
 idv.messages.activated_html: Your identity has been verified. If you need to change your verified information, please %{link_html}.
 idv.messages.activated_link: contact us
 idv.messages.come_back_later: Sign back in and enter the verification code when your letter arrives.
