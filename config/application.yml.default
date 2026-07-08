@@ -56,6 +56,7 @@ attempts_api_signing_enabled: false
 attempts_api_signing_key: ''
 attribute_encryption_key:
 attribute_encryption_key_queue: '[]'
+auth_time_attribute_enabled: false
 available_locales: 'en,es,fr,zh'
 aws_http_retry_limit: 2
 aws_http_retry_max_delay: 1
