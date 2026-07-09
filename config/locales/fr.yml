@@ -1381,6 +1381,9 @@ in_person_proofing.form.state_id.errors.unsupported_chars: 'Notre système ne pa
 in_person_proofing.form.state_id.expiration_date: Date d’expiration
 in_person_proofing.form.state_id.expiration_date_hint: 'Exemple : 4 28 2028'
 in_person_proofing.form.state_id.first_name: Prénom
+in_person_proofing.form.state_id.id_type: "Type d’identification"
+in_person_proofing.form.state_id.id_type_drivers_license: "Permis de conduire"
+in_person_proofing.form.state_id.id_type_state_id: "Carte d’identité d’un État"
 in_person_proofing.form.state_id.identity_doc_address_state: État
 in_person_proofing.form.state_id.identity_doc_address_state_prompt: '- Sélectionnez -'
 in_person_proofing.form.state_id.last_name: Nom de famille

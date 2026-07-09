@@ -1392,6 +1392,9 @@ in_person_proofing.form.state_id.errors.unsupported_chars: 'Nuestro sistema no p
 in_person_proofing.form.state_id.expiration_date: Fecha de vencimiento
 in_person_proofing.form.state_id.expiration_date_hint: 'Ejemplo: 4 28 2028'
 in_person_proofing.form.state_id.first_name: Nombre
+in_person_proofing.form.state_id.id_type: Tipo de identificación
+in_person_proofing.form.state_id.id_type_drivers_license: Licencia de conducir
+in_person_proofing.form.state_id.id_type_state_id: Tarjeta de identificación estatal
 in_person_proofing.form.state_id.identity_doc_address_state: Estado
 in_person_proofing.form.state_id.identity_doc_address_state_prompt: '- Seleccione -'
 in_person_proofing.form.state_id.last_name: Apellido

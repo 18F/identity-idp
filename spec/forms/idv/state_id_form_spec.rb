@@ -38,6 +38,7 @@ RSpec.describe Idv::StateIdForm do
   let(:first_name) { Faker::Name.first_name }
   let(:dob) { valid_dob }
   let(:id_expiration) { valid_exp }
+  let(:asserted_id_type) { 'drivers_license' }
   let(:params) do
     {
       first_name:,
@@ -52,6 +53,7 @@ RSpec.describe Idv::StateIdForm do
       state_id_jurisdiction: 'AL',
       state_id_number: Faker::IdNumber.valid,
       id_expiration:,
+      asserted_id_type:,
     }
   end
   let(:invalid_char) { '1' }
@@ -153,6 +155,18 @@ RSpec.describe Idv::StateIdForm do
         expect(result.success?).to eq(false)
         expect(subject.errors.empty?).to be(false)
         expect(subject.errors[:same_address_as_id]).to eq [
+          I18n.t('errors.messages.missing_field'),
+        ]
+      end
+    end
+
+    context 'when the asserted_id_type field is missing' do
+      let(:asserted_id_type) { nil }
+
+      it 'returns an error' do
+        expect(result.success?).to eq(false)
+        expect(subject.errors.empty?).to be(false)
+        expect(subject.errors[:asserted_id_type]).to eq [
           I18n.t('errors.messages.missing_field'),
         ]
       end

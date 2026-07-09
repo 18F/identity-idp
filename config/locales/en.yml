@@ -1381,6 +1381,9 @@ in_person_proofing.form.state_id.errors.unsupported_chars: 'Our system cannot re
 in_person_proofing.form.state_id.expiration_date: Expiration date
 in_person_proofing.form.state_id.expiration_date_hint: 'Example: 4 28 2028'
 in_person_proofing.form.state_id.first_name: First name
+in_person_proofing.form.state_id.id_type: ID type
+in_person_proofing.form.state_id.id_type_drivers_license: "State Driver’s license"
+in_person_proofing.form.state_id.id_type_state_id: "State Non-Driver’s Identification Card"
 in_person_proofing.form.state_id.identity_doc_address_state: State
 in_person_proofing.form.state_id.identity_doc_address_state_prompt: '- Select -'
 in_person_proofing.form.state_id.last_name: Last name

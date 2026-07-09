@@ -1394,6 +1394,9 @@ in_person_proofing.form.state_id.errors.unsupported_chars: 我们的系统无法
 in_person_proofing.form.state_id.expiration_date: 过期日期
 in_person_proofing.form.state_id.expiration_date_hint: 举例：4 28 2028
 in_person_proofing.form.state_id.first_name: 名
+in_person_proofing.form.state_id.id_type: 身份证类型
+in_person_proofing.form.state_id.id_type_drivers_license: 的驾照
+in_person_proofing.form.state_id.id_type_state_id: 州颁发的非驾照 ID 卡
 in_person_proofing.form.state_id.identity_doc_address_state: 州
 in_person_proofing.form.state_id.identity_doc_address_state_prompt: '- 选择 -'
 in_person_proofing.form.state_id.last_name: 姓

@@ -6,9 +6,10 @@ RSpec.describe UspsInPersonProofing::Applicant do
   let(:document_expiration_date_in_epoch) do
     Time.zone.parse(document_expiration_date).to_i
   end
-  let(:document_type) { InPersonEnrollment::DOCUMENT_TYPE_STATE_ID }
+  let(:enrollment_document_type) { InPersonEnrollment::DOCUMENT_TYPE_STATE_ID }
+  let(:applicant_document_type) { Idp::Constants::DocumentTypes::DRIVERS_LICENSE }
   let(:usps_expected_document_type) do
-    UspsInPersonProofing::USPS_DOCUMENT_TYPE_MAPPINGS[document_type]
+    UspsInPersonProofing::USPS_DOCUMENT_TYPE_MAPPINGS[applicant_document_type]
   end
   let(:applicant_pii) do
     {
@@ -20,10 +21,11 @@ RSpec.describe UspsInPersonProofing::Applicant do
       zipcode: Faker::Address.zip_code,
       id_number: Faker::Number.number(digits: 9),
       id_expiration: document_expiration_date,
+      document_type: applicant_document_type,
     }
   end
   let(:applicant) { Pii::UspsApplicant.new(**applicant_pii) }
-  let(:enrollment) { build('in_person_enrollment', document_type: document_type) }
+  let(:enrollment) { build('in_person_enrollment', document_type: enrollment_document_type) }
   let(:email) { Faker::Internet.email(name: 'noreply') }
 
   before do
@@ -69,13 +71,15 @@ RSpec.describe UspsInPersonProofing::Applicant do
     end
 
     context 'from_usps_applicant_and_enrollment w state_id' do
-      let(:document_type) { InPersonEnrollment::DOCUMENT_TYPE_STATE_ID }
+      let(:enrollment_document_type) { InPersonEnrollment::DOCUMENT_TYPE_STATE_ID }
+      let(:applicant_document_type) { Idp::Constants::DocumentTypes::STATE_ID_CARD }
 
       it_behaves_like 'when values contains transliterable characters'
     end
 
     context 'from_usps_applicant_and_enrollment w passport book' do
-      let(:document_type) { InPersonEnrollment::DOCUMENT_TYPE_PASSPORT_BOOK }
+      let(:enrollment_document_type) { InPersonEnrollment::DOCUMENT_TYPE_PASSPORT_BOOK }
+      let(:applicant_document_type) { Idp::Constants::DocumentTypes::PASSPORT }
 
       it_behaves_like 'when values contains transliterable characters'
     end
