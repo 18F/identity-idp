@@ -310,6 +310,7 @@ module IdentityConfig
     config.add(:in_person_proofing_opt_in_enabled, type: :boolean)
     config.add(:in_person_results_delay_in_hours, type: :integer)
     config.add(:in_person_send_proofing_notifications_enabled, type: :boolean)
+    config.add(:in_person_state_id_expiration_skip_state_codes, type: :json)
     config.add(:in_person_stop_expiring_enrollments, type: :boolean)
     config.add(:invalid_gpo_confirmation_zipcode, type: :string)
     config.add(:lexisnexis_account_id, type: :string)
