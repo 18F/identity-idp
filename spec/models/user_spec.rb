@@ -587,7 +587,7 @@ RSpec.describe User do
     end
   end
 
-  describe '#agent_proofing_document_capture_session' do
+  describe '#pending_agent_proofed_document_capture_session' do
     let(:user) { create(:user) }
 
     it 'returns the latest agent proofing document capture session' do
@@ -613,7 +613,7 @@ RSpec.describe User do
         pending_agent_proofed_user_at: 1.minute.ago,
       )
 
-      expect(user.agent_proofing_document_capture_session).to eq(session2)
+      expect(user.pending_agent_proofed_document_capture_session).to eq(session2)
     end
   end
 
@@ -662,7 +662,7 @@ RSpec.describe User do
           before do
             allow(session).to receive(:load_agent_proofed_user)
               .and_return(double('AgentProofedUser'))
-            allow(user).to receive(:agent_proofing_document_capture_session)
+            allow(user).to receive(:pending_agent_proofed_document_capture_session)
               .and_return(session)
           end
 
@@ -675,7 +675,7 @@ RSpec.describe User do
           before do
             allow(session).to receive(:load_agent_proofed_user)
               .and_return(nil)
-            allow(user).to receive(:agent_proofing_document_capture_session)
+            allow(user).to receive(:pending_agent_proofed_document_capture_session)
               .and_return(session)
           end
 
@@ -1618,17 +1618,37 @@ RSpec.describe User do
     end
   end
 
-  describe '#proofing_agent_pending?' do
-    let(:user) { create(:user) }
+  describe '#proofing_agent_user_awaiting_binding?' do
     let(:pending_agent_proofed_user_at) { Time.zone.now }
-
-    it 'returns true if there is a pending agent proofed user' do
+    let(:session) do
       create(
         :document_capture_session,
-        pending_agent_proofed_user_at: pending_agent_proofed_user_at,
-        user: user,
+        pending_agent_proofed_user_at:,
+        doc_auth_vendor: Idp::Constants::Vendors::PROOFING_AGENT,
       )
-      expect(user.proofing_agent_pending?).to eq true
+    end
+    let(:agent_proofing_result) do
+      {
+        pii: { first_name: 'Testy', last_name: 'Testerson' },
+        proofing_location_id: '123',
+        proofing_agent_id: '456',
+        correlation_id: '789',
+        service_provider_issuer: 'test_issuer',
+        success: true,
+        reason: nil,
+        resolution: nil,
+        mrz: nil,
+        aamva: nil,
+      }
+    end
+    let(:user) { session.user }
+
+    before do
+      session.store_agent_proofed_user(agent_proofing_result)
+    end
+
+    it 'returns true if there is a pending agent proofed user' do
+      expect(user.proofing_agent_user_awaiting_binding?).to eq true
     end
   end
 
@@ -2093,6 +2113,36 @@ RSpec.describe User do
           expect(user.has_proofed_before?).to be true
         end
       end
+    end
+  end
+  describe '#send_reset_password_instructions' do
+    let(:user) { create(:user, :fully_registered) }
+    let!(:secondary_email_address) do
+      create(:email_address, user: user, email: 'secondary@example.com')
+    end
+
+    context 'when requesting_reset_email_address is set' do
+      before { user.requesting_reset_email_address = secondary_email_address }
+
+      it 'stores the requesting email, not the primary email' do
+        user.send_reset_password_instructions
+
+        expect(user.reload.reset_password_email_address).to eq(secondary_email_address)
+      end
+    end
+
+    context 'when requesting_reset_email_address is not set' do
+      it 'falls back to the primary email attribute' do
+        user.send_reset_password_instructions
+
+        expect(user.reload.reset_password_email_address).not_to eq(secondary_email_address)
+      end
+    end
+
+    it 'sets a reset_password_token' do
+      user.send_reset_password_instructions
+
+      expect(user.reload.reset_password_token).to be_present
     end
   end
 end

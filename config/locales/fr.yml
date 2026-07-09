@@ -2146,7 +2146,7 @@ user_mailer.please_reset_password.step_1: Visitez le site Web %{app_name} et sé
 user_mailer.please_reset_password.step_2: Sélectionnez « Mot de passe oublié ? » au bas de la page
 user_mailer.please_reset_password.step_3: Suivez les instructions pour réinitialiser votre mot de passe
 user_mailer.please_reset_password.subject: Activité inhabituelle — réinitialisez votre mot de passe %{app_name}
-user_mailer.reset_password_instructions.footer: Ce lien expire dans %{expires} heures.
+user_mailer.reset_password_instructions.footer: Ce lien expire dans %{expires} minutes.
 user_mailer.reset_password_instructions.gpo_letter_description: Si vous réinitialisez votre mot de passe, le code de vérification contenu dans votre lettre ne fonctionnera plus et vous devrez reconfirmer votre identité.
 user_mailer.reset_password_instructions.gpo_letter_header: Votre lettre est en route
 user_mailer.reset_password_instructions.header_html: 'Si vous avez fait cette demande, cliquez sur «&nbsp;Réinitialiser votre mot de passe&nbsp;» pour continuer.<br/><br/>Si vous n’avez pas fait cette demande, ne changez pas votre mot de passe. Signalez toute activité suspecte à notre centre d’aide.<br/><br/>Nous ne vous demanderons jamais de partager votre mot de passe, vos codes de sécurité ou d’autres informations sensibles par courriel, téléphone ou message texte.'
