@@ -16,6 +16,7 @@ class DocumentCaptureSession < ApplicationRecord
   enum :document_type_requested, {
     Idp::Constants::DocumentTypes::STATE_ID_CARD => 0,
     Idp::Constants::DocumentTypes::PASSPORT => 1,
+    Idp::Constants::DocumentTypes::MDL => 3,
   }
 
   def load_result

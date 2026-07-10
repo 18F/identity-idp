@@ -14,9 +14,7 @@ module Idv
 
       render 'idv/shared/choose_id_type',
              locals: locals_attrs(
-               presenter: Idv::ChooseIdTypePresenter.new(
-                 mdl_enabled: document_capture_session.mdl_enabled,
-               ),
+               presenter: Idv::ChooseIdTypePresenter.new,
                form_submit_url: idv_choose_id_type_path,
              ),
              layout: true
@@ -25,7 +23,9 @@ module Idv
     def update # move to concern?
       clear_future_steps!
 
-      @choose_id_type_form = Idv::ChooseIdTypeForm.new
+      @choose_id_type_form = Idv::ChooseIdTypeForm.new(
+        mdl_enabled: mdl_enabled?,
+      )
       result = @choose_id_type_form.submit(choose_id_type_form_params)
 
       analytics.idv_doc_auth_choose_id_type_submitted(
