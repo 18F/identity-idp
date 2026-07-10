@@ -6,7 +6,7 @@ module Reporting
   # Reads the pre-generated IDV key-metrics CSV reports (condensed IDV + proofing rate)
   # that reporting-rails generates from Redshift and uploads to S3, and presents them
   # as emailable reports so the Monthly Key Metrics email matches what the in-app
-  # CloudWatch-based reports used to produce.
+  # CloudWatch-based reports used to produce (99.9% similar in prod testing 6/26 and 5/26)
   class MonthlyKeyMetricsIdvS3Report
     attr_reader :bucket_name, :s3_path
 
@@ -36,7 +36,7 @@ module Reporting
     def condensed_idv_emailable_report
       Reporting::EmailableReport.new(
         title: 'Proofing Rate Metrics',
-        subtitle: 'Condensed (NEW)',
+        subtitle: 'Condensed (NEW)', # (NEW) was in original formatting
         float_as_percent: true,
         precision: 2,
         table: condensed_idv_table,
@@ -67,12 +67,7 @@ module Reporting
       CSV_FILE_NAMES
     end
 
-    # Returns parsed CSV data (array of arrays) for the given report name, with numeric
-    # cells coerced back to Integer/Float so EmailableReport's float_as_percent
-    # formatting behaves the same as when the in-app report produced real floats.
-    # Memoized per report name.
     # @param [String] report_name one of CSV_FILE_NAMES
-    # @return [Array<Array>]
     def csv_data_for(report_name)
       @csv_cache ||= {}
       @csv_cache[report_name] ||= begin
@@ -82,7 +77,6 @@ module Reporting
     end
 
     # Get the last modified time for a specific file
-    # @param [String] report_name
     # @return [Time] last modified time
     # @raise [Aws::S3::Errors::NoSuchKey] if the file doesn't exist
     def get_file_last_modified(report_name)
@@ -117,9 +111,7 @@ module Reporting
 
     # Builds the full S3 object key for the given CSV report name and fetches it.
     # Key format: "<s3_path>_<report_name>.csv"
-    # @param [String] report_name
     # @return [String] raw CSV body
-    # @raise [Aws::S3::Errors::NoSuchKey] if the CSV file does not exist in S3
     def fetch_csv_from_s3(report_name)
       key = "#{s3_path}_#{report_name}.csv"
       resp = s3_helper.s3_client.get_object(bucket: bucket_name, key: key)

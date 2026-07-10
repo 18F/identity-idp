@@ -43,7 +43,6 @@ RSpec.describe Reports::MonthlyKeyMetricsS3Report do
   let(:mock_all_login_emails) { ['mock_feds@example.com', 'mock_contractors@example.com'] }
   let(:mock_daily_reports_emails) { ['mock_agnes@example.com', 'mock_daily@example.com'] }
 
-  # Stubbed IDV reader so we never hit S3 in the job spec.
   let(:condensed_idv_table) { [['Metric', 'Mar 2026'], ['IDV started', 100]] }
   let(:proofing_rate_table) { [['Metric', 'Trailing 30d'], ['IDV Started', 100]] }
 
@@ -95,7 +94,6 @@ RSpec.describe Reports::MonthlyKeyMetricsS3Report do
       },
     }
 
-    # Stub the reader so the job doesn't touch S3 for IDV data.
     allow(report).to receive(:idv_s3_report).and_return(idv_s3_report)
     allow(idv_s3_report).to receive(:get_file_last_modified)
       .and_return(fresh_last_modified)
