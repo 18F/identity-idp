@@ -73,12 +73,9 @@ class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresent
       configurations = mfa.phishing_resistant_configurations
     else
       configurations = mfa.two_factor_configurations
-      # for now, we include the personal key since that's our current behavior,
-      # but there are designs to remove personal key from the option list and
-      # make it a link with some additional text to call it out as a special
-      # case.
+
       if TwoFactorAuthentication::PersonalKeyPolicy.new(user).enabled? &&
-         !IdentityConfig.store.personal_key_deprecated
+         IdentityConfig.store.personal_key_as_mfa_active
         configurations << mfa.personal_key_configuration
       end
     end

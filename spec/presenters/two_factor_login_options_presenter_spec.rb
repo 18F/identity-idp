@@ -282,7 +282,7 @@ RSpec.describe TwoFactorLoginOptionsPresenter do
 
     context 'deprecating personal keys' do
       it 'does not show the personal key option' do
-        allow(IdentityConfig.store).to receive(:personal_key_deprecated).and_return(true)
+        allow(IdentityConfig.store).to receive(:personal_key_as_mfa_active).and_return(false)
         expect(options_classes).to eq(
           [
             TwoFactorAuthentication::SignInPhoneSelectionPresenter,
