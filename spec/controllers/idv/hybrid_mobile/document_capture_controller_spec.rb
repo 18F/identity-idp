@@ -10,7 +10,7 @@ RSpec.describe Idv::HybridMobile::DocumentCaptureController do
       user:,
       requested_at: document_capture_session_requested_at,
       doc_auth_vendor: idv_vendor,
-      passport_status: 'not_requested',
+      document_type_requested: Idp::Constants::DocumentTypes::STATE_ID_CARD,
     )
   end
 
@@ -285,6 +285,7 @@ RSpec.describe Idv::HybridMobile::DocumentCaptureController do
         id: 1234,
         pii: {
           state: 'WA',
+          document_type_received: Idp::Constants::DocumentTypes::DRIVERS_LICENSE,
         },
         attention_with_barcode: true,
         captured_at: document_capture_session_result_captured_at,

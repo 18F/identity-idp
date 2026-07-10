@@ -609,6 +609,7 @@ doc_auth.forms.change_file: 更改文件
 doc_auth.forms.choose_file_html: 将文件拖到此处或者<lg-underline>从文件夹中选择</lg-underline>。
 doc_auth.forms.doc_success: 我们验证了你的信息
 doc_auth.forms.id_type_preference.drivers_license: 美国驾照或州身份证件
+doc_auth.forms.id_type_preference.mdl: 移动驾驶证 （mDL）
 doc_auth.forms.id_type_preference.passport: 美国护照本
 doc_auth.forms.selected_file: 被选文件
 doc_auth.headers.expired_id: 你的身份证件可能已过期
@@ -636,9 +637,10 @@ doc_auth.headings.document_capture_subheader_selfie: 拍一张自拍照
 doc_auth.headings.document_capture_subheader_selfie_review: 自拍照
 doc_auth.headings.front: 驾照或州政府颁发身份证件的正面
 doc_auth.headings.how_to_verify: 选择如何验证你的身份证件
-doc_auth.headings.interstitial: 我们正在处理你的图像
+doc_auth.headings.interstitial: 我们正在处理您的信息。
 doc_auth.headings.lets_go: 你的身份是如何验证的
 doc_auth.headings.mailing_address: 输入你的邮寄地址
+doc_auth.headings.mdl_capture: 添加您的移动驾驶证 （mDL） 信息
 doc_auth.headings.no_ssn: 没有社会保障号码？
 doc_auth.headings.passport: 你的护照
 doc_auth.headings.passport_capture: 添加一张你护照的照片
@@ -722,13 +724,15 @@ doc_auth.info.verify_at_post_office_description_passport_html: <strong>你只能
 doc_auth.info.verify_at_post_office_instruction: 在网上输入你的信息，然后到一个参与本项目的邮局去亲身验证你的身份。
 doc_auth.info.verify_at_post_office_link_text: 对亲身验证获得更多了解
 doc_auth.info.verify_identity: 我们会要求获得你的身份识别、电话号码和其他个人信息并通过与公共记录核对来验证你的身份。
-doc_auth.info.verify_online_description_passport: 你可以使用美国护照本、美国驾照或州身份证件。
+doc_auth.info.verify_online_description: 你可以使用美国护照本、美国驾照或州身份证件。
+doc_auth.info.verify_online_description_mdl: 您可以使用美国护照、驾驶执照、移动驾驶执照或州身份证。
 doc_auth.info.verify_online_instruction: 拍你 ID的照片。
 doc_auth.info.verify_online_instruction_selfie: 拍一张自拍照，并拍摄你 ID的照片。
 doc_auth.info.verify_online_link_text: 对网上验证获得更多了解
 doc_auth.info.welcome_sp_reproof_alert: 为了您的安全，%{sp_name} 要求您再次验证您的身份。
 doc_auth.info.you_entered: 你输入了：
 doc_auth.instructions.bullet1: 拥有美国护照本、美国驾照或州身份证件
+doc_auth.instructions.bullet1_mdl: 持有美国护照本、驾驶执照、移动驾驶执照 （mDL） 或州身份证
 doc_auth.instructions.bullet2: 输入你的社会保障号码
 doc_auth.instructions.bullet3: 与你电话号码匹配
 doc_auth.instructions.bullet4: 重新输入你 %{app_name} 密码
@@ -1221,6 +1225,13 @@ idv.gpo.return_to_profile: 返回你的用户资料
 idv.gpo.title: 输入你的验证代码
 idv.gpo.will_send_to: 你会在5到10天内在我们验证过的与你相关的地址收到来自%{app_name}寄给你的一封信：
 idv.images.come_back_later: 带有打勾符的信件
+idv.mdl.alert_html: <strong>还没有 mDL？</strong> 目前仅部分美国州和领地提供此服务。请联系您所在州的机动车管理局 （DMV） 了解详情。
+idv.mdl.button: 打开数字钱包
+idv.mdl.learn_more: 了解如何使用 mDL
+idv.mdl.steps_heading: '您需要准备：'
+idv.mdl.steps.device.title: 带有数字钱包功能的设备
+idv.mdl.steps.have_mdl.title: 有效的移动驾驶证
+idv.mdl.subtitle: '%{app_name} 将通过可信服务提供商 Socure 验证您的移动驾驶证 （mDL）。'
 idv.messages.activated_html: 你的身份已经验证。如要更改已验证过的你的信息，请 %{link_html}。
 idv.messages.activated_link: 联系我们
 idv.messages.come_back_later: 收到信件后请再登录并输入其中的验证码。

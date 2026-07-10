@@ -108,6 +108,8 @@ class SocureErrorPresenter
 
     'I856' => 'id_not_found',
     'R819' => 'id_not_found',
+
+    'R899' => 'state_id_verification',
   }.freeze
 
   def remapped_error(error_code)

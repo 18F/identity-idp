@@ -3,4 +3,5 @@
 module DocAuth::Socure::DocumentTypes
   PASSPORT = 'Passport'
   DRIVERS_LICENSE = 'DriversLicense'
+  DIGITAL_ID = 'DigitalID'
 end

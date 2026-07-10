@@ -23,7 +23,9 @@ module Idv
       end
 
       def update
-        @choose_id_type_form = Idv::ChooseIdTypeForm.new
+        @choose_id_type_form = Idv::ChooseIdTypeForm.new(
+          mdl_enabled: mdl_enabled?,
+        )
 
         result = @choose_id_type_form.submit(choose_id_type_form_params)
 
@@ -41,7 +43,7 @@ module Idv
            !dos_passport_api_healthy?(analytics:, step: 'choose_id_type')
           redirect_to idv_hybrid_mobile_choose_id_type_url(passports: false)
         elsif result.success?
-          set_passport_requested
+          set_document_type_requested
           redirect_to next_step
         else
           redirect_to idv_hybrid_mobile_choose_id_type_url

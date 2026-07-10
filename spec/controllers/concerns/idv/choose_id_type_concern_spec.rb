@@ -11,7 +11,10 @@ RSpec.describe Idv::ChooseIdTypeConcern, :controller do
   let(:step) { 'choose_id_type' }
   let(:context_analytics) { { step: step } }
   let(:document_type_requested) { nil }
-  let(:document_capture_session) { create(:document_capture_session, document_type_requested:) }
+  let(:mdl_enabled) { true }
+  let(:document_capture_session) do
+    create(:document_capture_session, document_type_requested:, mdl_enabled:)
+  end
   let(:document_type_chosen) { 'state_id_card' }
   let(:socure_docv_capture_app_url) { 'http://example.com' }
   let(:socure_docv_transaction_token) { '12345' }
@@ -41,40 +44,23 @@ RSpec.describe Idv::ChooseIdTypeConcern, :controller do
     end
   end
 
-  describe '#set_passport_requested' do
-    context 'when chosen_id_type is passport and passport cards supported' do
-      let(:document_type_chosen) { 'passport' }
-      before do
-        allow(IdentityConfig.store).to receive(:doc_auth_passport_cards_enabled)
-          .and_return(true)
-        ab_test = AbTests::DOC_AUTH_PASSPORT_CARDS_ALLOWED.dup
-        allow(ab_test).to receive(:bucket).and_return(:doc_auth_passport_cards_allowed)
-        stub_const(
-          'AbTests::DOC_AUTH_PASSPORT_CARDS_ALLOWED',
-          ab_test,
-        )
-        allow(controller).to receive(:params).and_return(parameters)
-        subject.set_passport_requested
-      end
-
-      it 'expect the document capture session to show passport cards supported' do
-        expect(document_capture_session.passport_cards_supported?).to be true
-      end
-    end
-
+  describe '#set_document_type_requested' do
     context 'when chosen_id_type is "passport"' do
       let(:document_type_chosen) { 'passport' }
 
       before do
         allow(controller).to receive(:params).and_return(parameters)
-        subject.set_passport_requested
       end
 
       it 'updates the document_capture_session passport status to "requested"' do
+        subject.set_document_type_requested
+
         expect(document_capture_session.passport_requested?).to be true
       end
 
       it 'sets socure attributes to nil' do
+        subject.set_document_type_requested
+
         expect(document_capture_session.socure_docv_capture_app_url).to be_nil
         expect(document_capture_session.socure_docv_transaction_token).to be_nil
       end
@@ -91,6 +77,8 @@ RSpec.describe Idv::ChooseIdTypeConcern, :controller do
         end
 
         it 'keeps the socure attributes' do
+          subject.set_document_type_requested
+
           expect(document_capture_session.socure_docv_capture_app_url)
             .to eq(socure_docv_capture_app_url)
           expect(document_capture_session.socure_docv_transaction_token)
@@ -110,12 +98,36 @@ RSpec.describe Idv::ChooseIdTypeConcern, :controller do
         end
 
         it 'sets doc_auth_vendor to nil' do
+          subject.set_document_type_requested
+
           expect(document_capture_session.doc_auth_vendor).to be_nil
         end
 
         it 'resets socure attributes to nil' do
+          subject.set_document_type_requested
+
           expect(document_capture_session.socure_docv_capture_app_url).to be_nil
           expect(document_capture_session.socure_docv_transaction_token).to be_nil
+        end
+      end
+
+      context 'when chosen_id_type is passport and passport cards supported' do
+        let(:document_type_chosen) { 'passport' }
+        before do
+          allow(IdentityConfig.store).to receive(:doc_auth_passport_cards_enabled)
+            .and_return(true)
+          ab_test = AbTests::DOC_AUTH_PASSPORT_CARDS_ALLOWED.dup
+          allow(ab_test).to receive(:bucket).and_return(:doc_auth_passport_cards_allowed)
+          stub_const(
+            'AbTests::DOC_AUTH_PASSPORT_CARDS_ALLOWED',
+            ab_test,
+          )
+          allow(controller).to receive(:params).and_return(parameters)
+        end
+
+        it 'expect the document capture session to show passport cards supported' do
+          subject.set_document_type_requested
+          expect(document_capture_session.passport_cards_supported?).to be true
         end
       end
     end
@@ -125,10 +137,11 @@ RSpec.describe Idv::ChooseIdTypeConcern, :controller do
 
       before do
         allow(controller).to receive(:params).and_return(parameters)
-        subject.set_passport_requested
       end
 
       it 'updates the document_capture_session passport status to "not_requested"' do
+        subject.set_document_type_requested
+
         expect(document_capture_session.document_type_requested).to eq('state_id_card')
       end
 
@@ -144,6 +157,8 @@ RSpec.describe Idv::ChooseIdTypeConcern, :controller do
         end
 
         it 'sets socure attributes to nil' do
+          subject.set_document_type_requested
+
           expect(document_capture_session.socure_docv_capture_app_url).to be_nil
           expect(document_capture_session.socure_docv_transaction_token).to be_nil
         end
@@ -159,6 +174,8 @@ RSpec.describe Idv::ChooseIdTypeConcern, :controller do
         end
 
         it 'sets the doc_auth_vendor to nil' do
+          subject.set_document_type_requested
+
           expect(document_capture_session.doc_auth_vendor).to be_nil
         end
       end
@@ -340,6 +357,21 @@ RSpec.describe Idv::ChooseIdTypeConcern, :controller do
       end
     end
 
+    context 'when mdl has been selected' do
+      let(:document_type_requested) { Idp::Constants::DocumentTypes::MDL }
+      it 'returns expected local attributes' do
+        expect(
+          subject.locals_attrs(presenter:, form_submit_url:),
+        ).to include(
+          presenter:,
+          form_submit_url:,
+          disable_passports: false,
+          auto_check_value: :mobile_drivers_license,
+          mdl_enabled: true,
+        )
+      end
+    end
+
     context 'when passports are disabled' do
       before do
         allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled)
@@ -355,6 +387,21 @@ RSpec.describe Idv::ChooseIdTypeConcern, :controller do
           disable_passports: true,
           auto_check_value: :state_id_card,
         )
+      end
+
+      context 'when mdl has been selected' do
+        let(:document_type_requested) { Idp::Constants::DocumentTypes::MDL }
+        it 'returns expected local attributes' do
+          expect(
+            subject.locals_attrs(presenter:, form_submit_url:),
+          ).to include(
+            presenter:,
+            form_submit_url:,
+            disable_passports: true,
+            auto_check_value: :mobile_drivers_license,
+            mdl_enabled: true,
+          )
+        end
       end
     end
 
