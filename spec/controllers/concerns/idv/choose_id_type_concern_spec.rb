@@ -50,14 +50,17 @@ RSpec.describe Idv::ChooseIdTypeConcern, :controller do
 
       before do
         allow(controller).to receive(:params).and_return(parameters)
-        subject.set_document_type_requested
       end
 
       it 'updates the document_capture_session passport status to "requested"' do
+        subject.set_document_type_requested
+
         expect(document_capture_session.passport_requested?).to be true
       end
 
       it 'sets socure attributes to nil' do
+        subject.set_document_type_requested
+
         expect(document_capture_session.socure_docv_capture_app_url).to be_nil
         expect(document_capture_session.socure_docv_transaction_token).to be_nil
       end
@@ -74,6 +77,8 @@ RSpec.describe Idv::ChooseIdTypeConcern, :controller do
         end
 
         it 'keeps the socure attributes' do
+          subject.set_document_type_requested
+
           expect(document_capture_session.socure_docv_capture_app_url)
             .to eq(socure_docv_capture_app_url)
           expect(document_capture_session.socure_docv_transaction_token)
@@ -93,10 +98,14 @@ RSpec.describe Idv::ChooseIdTypeConcern, :controller do
         end
 
         it 'sets doc_auth_vendor to nil' do
+          subject.set_document_type_requested
+
           expect(document_capture_session.doc_auth_vendor).to be_nil
         end
 
         it 'resets socure attributes to nil' do
+          subject.set_document_type_requested
+
           expect(document_capture_session.socure_docv_capture_app_url).to be_nil
           expect(document_capture_session.socure_docv_transaction_token).to be_nil
         end
@@ -128,10 +137,11 @@ RSpec.describe Idv::ChooseIdTypeConcern, :controller do
 
       before do
         allow(controller).to receive(:params).and_return(parameters)
-        subject.set_document_type_requested
       end
 
       it 'updates the document_capture_session passport status to "not_requested"' do
+        subject.set_document_type_requested
+
         expect(document_capture_session.document_type_requested).to eq('state_id_card')
       end
 
@@ -147,6 +157,8 @@ RSpec.describe Idv::ChooseIdTypeConcern, :controller do
         end
 
         it 'sets socure attributes to nil' do
+          subject.set_document_type_requested
+
           expect(document_capture_session.socure_docv_capture_app_url).to be_nil
           expect(document_capture_session.socure_docv_transaction_token).to be_nil
         end
@@ -162,6 +174,8 @@ RSpec.describe Idv::ChooseIdTypeConcern, :controller do
         end
 
         it 'sets the doc_auth_vendor to nil' do
+          subject.set_document_type_requested
+
           expect(document_capture_session.doc_auth_vendor).to be_nil
         end
       end
