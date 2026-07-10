@@ -157,7 +157,7 @@ RSpec.describe Idv::InPerson::StateIdController do
     let(:zipcode) { InPersonHelper::GOOD_ZIPCODE }
     let(:id_number) { 'ABC123234' }
     let(:state_id_jurisdiction) { 'AL' }
-    let(:same_address_as_id) { 'true' }
+    let(:ipp_current_address_matches_id) { 'true' }
     let(:identity_doc_address1) { InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS1 }
     let(:identity_doc_address2) { InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS2 }
     let(:identity_doc_city) { InPersonHelper::GOOD_IDENTITY_DOC_CITY }
@@ -170,7 +170,7 @@ RSpec.describe Idv::InPerson::StateIdController do
         identity_doc: {
           first_name:,
           last_name:,
-          same_address_as_id:,
+          ipp_current_address_matches_id:,
           identity_doc_address1:,
           identity_doc_address2:,
           identity_doc_city:,
@@ -243,7 +243,7 @@ RSpec.describe Idv::InPerson::StateIdController do
           subject.user_session['idv/in_person']['pii_from_user'].merge!(
             first_name: 'Committed',
             last_name: 'Data',
-            same_address_as_id: 'true',
+            ipp_current_address_matches_id: true,
           )
           subject.idv_session.ipp_aamva_result = {
             success: true, vendor_name: 'TestAAMVA'
@@ -297,11 +297,11 @@ RSpec.describe Idv::InPerson::StateIdController do
       end
     end
 
-    context 'when same_address_as_id is...' do
+    context 'when ipp_current_address_matches_id is...' do
       let(:pii_from_user) { subject.user_session['idv/in_person'][:pii_from_user] }
 
       context 'changed from "true" to "false"' do
-        let(:same_address_as_id) { 'false' }
+        let(:ipp_current_address_matches_id) { 'false' }
 
         it 'retains identity_doc_ attrs/value but removes addr attr in flow session' do
           Idv::StateIdForm::ATTRIBUTES.each do |attr|
@@ -310,8 +310,8 @@ RSpec.describe Idv::InPerson::StateIdController do
 
           build_pii_before_state_id_update
 
-          # since same_address_as_id was initially true, pii includes residential address attrs,
-          # which are the same as state id address attrs, on re-visiting state id pg
+          # since ipp_current_address_matches_id was initially true, pii includes residential
+          # address attrs, which are the same as state id address attrs, on re-visiting state id pg
           expect(subject.user_session['idv/in_person'][:pii_from_user]).to include(
             identity_doc_address1:,
             identity_doc_address2:,
@@ -358,7 +358,7 @@ RSpec.describe Idv::InPerson::StateIdController do
             expect(subject.user_session['idv/in_person'][:pii_from_user]).to_not have_key attr
           end
 
-          build_pii_before_state_id_update(same_address_as_id: 'false')
+          build_pii_before_state_id_update(current_address_matches_id: false)
 
           # On Verify, user changes response from "No,..." to
           # "Yes, I live at the address on my state-issued ID
@@ -373,7 +373,7 @@ RSpec.describe Idv::InPerson::StateIdController do
       end
 
       context 'not changed from "false"' do
-        let(:same_address_as_id) { 'false' }
+        let(:ipp_current_address_matches_id) { 'false' }
 
         it 'retains identity_doc_ and addr attrs/value in flow session' do
           Idv::StateIdForm::ATTRIBUTES.each do |attr|
@@ -381,7 +381,7 @@ RSpec.describe Idv::InPerson::StateIdController do
           end
 
           # User picks "No, I live at a different address" on state ID
-          build_pii_before_state_id_update(same_address_as_id: 'false')
+          build_pii_before_state_id_update(current_address_matches_id: false)
 
           # On Verify, user does not changes response "No,..."
           put :update, params: params
@@ -440,12 +440,12 @@ RSpec.describe Idv::InPerson::StateIdController do
       allow(IdentityConfig.store).to receive(:idv_aamva_at_doc_auth_ipp_enabled).and_return(true)
     end
 
-    def valid_state_id_params(same_address_as_id: 'true')
+    def valid_state_id_params(ipp_current_address_matches_id: 'true')
       {
         identity_doc: {
           first_name: 'Charity',
           last_name: 'Johnson',
-          same_address_as_id: same_address_as_id,
+          ipp_current_address_matches_id: ipp_current_address_matches_id,
           identity_doc_address1: InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS1,
           identity_doc_address2: InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS2,
           identity_doc_city: InPersonHelper::GOOD_IDENTITY_DOC_CITY,
@@ -460,8 +460,8 @@ RSpec.describe Idv::InPerson::StateIdController do
       }
     end
 
-    context 'when redirecting to SSN page (same_address_as_id is true)' do
-      let(:params) { valid_state_id_params(same_address_as_id: 'true') }
+    context 'when redirecting to SSN page (ipp_current_address_matches_id is true)' do
+      let(:params) { valid_state_id_params(ipp_current_address_matches_id: 'true') }
 
       it 'enqueues async AAMVA job and redirects to state_id page for polling' do
         expect(IppAamvaProofingJob).to receive(:perform_later)
@@ -561,7 +561,7 @@ RSpec.describe Idv::InPerson::StateIdController do
           subject.idv_session.ipp_aamva_pending_state_id_pii = {
             first_name: 'Charity',
             last_name: 'Johnson',
-            same_address_as_id: 'true',
+            ipp_current_address_matches_id: true,
           }
 
           get :show
@@ -769,7 +769,7 @@ RSpec.describe Idv::InPerson::StateIdController do
           subject.idv_session.ipp_aamva_pending_state_id_pii = {
             first_name: 'Charity',
             last_name: 'Johnson',
-            same_address_as_id: 'true',
+            ipp_current_address_matches_id: true,
           }
 
           get :show
@@ -783,7 +783,7 @@ RSpec.describe Idv::InPerson::StateIdController do
           subject.idv_session.ipp_aamva_pending_state_id_pii = {
             first_name: 'Charity',
             last_name: 'Johnson',
-            same_address_as_id: 'true',
+            ipp_current_address_matches_id: true,
           }
 
           get :show
@@ -798,7 +798,7 @@ RSpec.describe Idv::InPerson::StateIdController do
             subject.user_session['idv/in_person']['pii_from_user'].merge!(
               first_name: 'Committed',
               last_name: 'Data',
-              same_address_as_id: 'true',
+              ipp_current_address_matches_id: true,
             )
             subject.idv_session.ipp_aamva_result = {
               success: true, vendor_name: 'TestAAMVA'
@@ -806,7 +806,7 @@ RSpec.describe Idv::InPerson::StateIdController do
             subject.idv_session.ipp_aamva_pending_state_id_pii = {
               first_name: 'Re-edit',
               last_name: 'Attempt',
-              same_address_as_id: 'true',
+              ipp_current_address_matches_id: true,
             }
           end
 
@@ -858,7 +858,7 @@ RSpec.describe Idv::InPerson::StateIdController do
             subject.idv_session.ipp_aamva_pending_state_id_pii = {
               first_name: 'Stale',
               last_name: 'Data',
-              same_address_as_id: 'true',
+              ipp_current_address_matches_id: true,
             }
           end
 
@@ -882,7 +882,7 @@ RSpec.describe Idv::InPerson::StateIdController do
             subject.idv_session.ipp_aamva_pending_state_id_pii = {
               first_name: 'First',
               last_name: 'Attempt',
-              same_address_as_id: 'true',
+              ipp_current_address_matches_id: true,
             }
           end
 
@@ -909,7 +909,7 @@ RSpec.describe Idv::InPerson::StateIdController do
             subject.user_session['idv/in_person']['pii_from_user'].merge!(
               first_name: 'Passed',
               last_name: 'User',
-              same_address_as_id: 'true',
+              ipp_current_address_matches_id: true,
             )
             subject.idv_session.ipp_aamva_result = {
               success: true, vendor_name: 'TestAAMVA'
@@ -917,7 +917,7 @@ RSpec.describe Idv::InPerson::StateIdController do
             subject.idv_session.ipp_aamva_pending_state_id_pii = {
               first_name: 'Failed',
               last_name: 'Edit',
-              same_address_as_id: 'true',
+              ipp_current_address_matches_id: true,
             }
           end
 
@@ -967,7 +967,7 @@ RSpec.describe Idv::InPerson::StateIdController do
           subject.idv_session.ipp_aamva_pending_state_id_pii = {
             first_name: 'Charity',
             last_name: 'Johnson',
-            same_address_as_id: 'true',
+            ipp_current_address_matches_id: true,
           }
 
           get :show
@@ -1003,8 +1003,8 @@ RSpec.describe Idv::InPerson::StateIdController do
       end
     end
 
-    context 'when redirecting to Address page (same_address_as_id is false)' do
-      let(:params) { valid_state_id_params(same_address_as_id: 'false') }
+    context 'when redirecting to Address page (ipp_current_address_matches_id is false)' do
+      let(:params) { valid_state_id_params(ipp_current_address_matches_id: 'false') }
 
       it 'enqueues AAMVA job and redirects to state_id page for polling' do
         expect(IppAamvaProofingJob).to receive(:perform_later)
@@ -1061,7 +1061,7 @@ RSpec.describe Idv::InPerson::StateIdController do
     end
 
     context 'when rate limited' do
-      let(:params) { valid_state_id_params(same_address_as_id: 'true') }
+      let(:params) { valid_state_id_params(ipp_current_address_matches_id: 'true') }
 
       before do
         allow(subject).to receive(:idv_attempter_rate_limited?).with(:idv_doc_auth).and_return(true)
@@ -1091,7 +1091,7 @@ RSpec.describe Idv::InPerson::StateIdController do
     end
 
     context 'rate limiter increment' do
-      let(:params) { valid_state_id_params(same_address_as_id: 'true') }
+      let(:params) { valid_state_id_params(ipp_current_address_matches_id: 'true') }
       let(:document_capture_session) do
         create(:document_capture_session, user:, requested_at: Time.zone.now)
       end

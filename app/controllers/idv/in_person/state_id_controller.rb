@@ -28,8 +28,7 @@ module Idv
       def update
         clear_future_steps_from!(controller: Idv::InPerson::SsnController)
 
-        initial_current_address_matches_id =
-          Pii::CurrentAddressMatchesId.read(pii_from_user)
+        initial_current_address_matches_id = pii_from_user[:ipp_current_address_matches_id]
 
         form_result = form.submit(flow_params)
 
@@ -101,10 +100,9 @@ module Idv
           pending[attr] = flow_params[attr]
         end
 
-        # Dual-write during the same_address_as_id -> ipp_current_address_matches_id rename
-        # migration (LG-16085). Keep the legacy string field written for 50/50 compatibility.
+        # `flow_params` holds the raw radio value ("true"/"false"); store a real boolean.
         pending[:ipp_current_address_matches_id] =
-          Pii::CurrentAddressMatchesId.coerce(pending[:same_address_as_id])
+          ActiveModel::Type::Boolean.new.cast(pending[:ipp_current_address_matches_id])
 
         formatted_dob = MemorableDateComponent.extract_date_param flow_params&.[](:dob)
         pending[:dob] = formatted_dob if formatted_dob
@@ -117,7 +115,7 @@ module Idv
           pending.delete(:id_expiration)
         end
 
-        if Pii::CurrentAddressMatchesId.read(pending)
+        if pending[:ipp_current_address_matches_id] == true
           pending[:address1] = flow_params[:identity_doc_address1]
           pending[:address2] = flow_params[:identity_doc_address2]
           pending[:city] = flow_params[:identity_doc_city]
@@ -129,7 +127,7 @@ module Idv
       end
 
       def determine_redirect_url(pending_pii, initial_current_address_matches_id)
-        pending_current_address_matches_id = Pii::CurrentAddressMatchesId.read(pending_pii)
+        pending_current_address_matches_id = pending_pii[:ipp_current_address_matches_id]
 
         if initial_current_address_matches_id == true &&
            pending_current_address_matches_id == false
