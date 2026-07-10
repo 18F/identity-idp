@@ -27,7 +27,7 @@ module Reports
     end
 
     def perform(date = Time.zone.yesterday.end_of_day)
-      @report_date = date
+      @report_date ||= date
 
       email_addresses = emails.select(&:present?)
       if email_addresses.empty?
@@ -45,6 +45,8 @@ module Reports
         return false
       end
 
+      Rails.logger.info "Generating Monthly Key Metrics Reports (and pulling IDV tables from S3)" \
+        " for date: #{report_date.to_date}"
       reports.each do |report|
         upload_to_s3(report.table, report_name: report.filename)
       end
@@ -90,16 +92,28 @@ module Reports
     # (monthly_idv + proofing_rate) now come from the S3 reader instead of the in-app
     # reporting classes.
     def reports
-      @reports ||= [
-        active_users_count_report.active_users_count_emailable_report,
-        total_user_count_report.total_user_count_emailable_report,
-        idv_s3_report.condensed_idv_emailable_report,
-        idv_s3_report.proofing_rate_emailable_report,
-        account_deletion_rate_report.account_deletion_emailable_report,
-        account_reuse_report.account_reuse_emailable_report,
-        agency_and_sp_report.agency_and_sp_emailable_report,
-        active_users_count_report.active_users_count_apg_emailable_report,
-      ]
+      @reports ||= begin
+        report_builders = [
+          ['active_users_count',
+           -> { active_users_count_report.active_users_count_emailable_report }],
+          ['total_user_count', -> { total_user_count_report.total_user_count_emailable_report }],
+          ['condensed_idv (S3)', -> { idv_s3_report.condensed_idv_emailable_report }],
+          ['proofing_rate (S3)', -> { idv_s3_report.proofing_rate_emailable_report }],
+          ['account_deletion_rate',
+           -> { account_deletion_rate_report.account_deletion_emailable_report }],
+          ['account_reuse', -> { account_reuse_report.account_reuse_emailable_report }],
+          ['agency_and_sp', -> { agency_and_sp_report.agency_and_sp_emailable_report }],
+          ['active_users_count (APG)',
+           -> { active_users_count_report.active_users_count_apg_emailable_report }],
+        ]
+
+        report_builders.each_with_index.map do |(label, builder), index|
+          Rails.logger.info(
+            "#{REPORT_NAME}: generating report #{index + 1}/#{report_builders.size}: #{label}",
+          )
+          builder.call
+        end
+      end
     end
 
     def emails
@@ -178,6 +192,12 @@ module Reports
             )
             next false
           end
+
+          Rails.logger.info(
+            "#{REPORT_NAME}: IDV S3 report '#{file_name}' found and fresh " \
+            "(age #{((Time.zone.now - last_modified) / 1.day).round(2)} days, " \
+            "last modified #{last_modified}) - key: #{idv_s3_path}_#{file_name}.csv",
+          )
 
           true
         rescue Aws::S3::Errors::NoSuchKey
