@@ -15,6 +15,8 @@
 <%= render PageHeadingComponent.new do %>
   <% if @passport_requested %>
     <%= t('doc_auth.headings.passport_capture') %>
+  <% elsif @mdl_requested %>
+    <%= t('doc_auth.headings.mdl_capture') %>
   <% else %>
     <%= t('doc_auth.headings.document_capture') %>
   <% end %>
@@ -30,6 +32,27 @@
       <%= t('doc_auth.info.socure_passport', app_name: APP_NAME) %>
     </p>
   <% end %>
+<% elsif @mdl_requested %>
+  <p class="margin-bottom-0"><%= t('idv.mdl.subtitle', app_name: APP_NAME) %></p>
+  <p class="margin-bottom-4">
+    <%= new_tab_link_to(
+          t('idv.mdl.learn_more'),
+          help_center_redirect_url(
+            category: 'verify-your-identity',
+            article: 'accepted-identification-documents',
+          ),
+        ) %>
+  </p>
+  <h2 class="margin-bottom-2"><%= t('idv.mdl.steps_heading') %></h2>
+
+  <ol class="usa-process-list">
+    <li class="usa-process-list__item">
+      <p class="usa-process-list__heading font-body-md text-normal"><%= t('idv.mdl.steps.device.title') %></p>
+    </li>
+    <li class="usa-process-list__item">
+      <p class="usa-process-list__heading font-body-md text-normal"><%= t('idv.mdl.steps.have_mdl.title') %></p>
+    </li>
+  </ol>
 <% else %>
   <p>
     <%= t('doc_auth.info.socure_basic_idv', app_name: APP_NAME) %>
@@ -39,10 +62,14 @@
 <p>
 <% if @passport_requested %>
   <%= t('doc_auth.info.socure_ial2_idv_finish_passport', app_name: APP_NAME) %>
+<% elsif @mdl_requested %>
+  <%= render AlertComponent.new(type: :info, class: 'margin-top-5') do %>
+    <%= t('idv.mdl.alert_html') %>
+  <% end %>
 <% else %>
   <%= t('doc_auth.info.socure_ial2_idv_finish', app_name: APP_NAME) %>
 <% end %>
 </p>
 
-<%= link_to t('forms.buttons.continue'), @url, class: 'usa-button usa-button--big usa-button--wide margin-top-4 margin-bottom-4' %>
+<%= link_to (@mdl_requested ? t('idv.mdl.button') : t('forms.buttons.continue')), @url, class: 'usa-button usa-button--big usa-button--wide margin-top-4 margin-bottom-4' %>
 <%= render 'idv/doc_auth/cancel', step: 'verify_id' %>

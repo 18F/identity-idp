@@ -100,6 +100,7 @@ module Idv
       @selfie_required = idv_session.selfie_check_required
       @presenter = Idv::HowToVerifyPresenter.new(
         selfie_check_required: @selfie_required,
+        mdl_enabled: document_capture_session.mdl_enabled,
       )
     end
   end
