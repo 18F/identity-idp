@@ -57,7 +57,7 @@ class OpenidConnectAuthorizeForm
   validates :nonce, presence: true, length: { minimum: RANDOM_VALUE_MINIMUM_LENGTH }
 
   validates :response_type, inclusion: { in: %w[code] }
-  validates :prompt, presence: true, inclusion: { in: %w[login select_account] }
+  validates :prompt, presence: true, inclusion: { in: %w[create login select_account] }
   validates :code_challenge_method, inclusion: { in: %w[S256] }, if: :code_challenge
 
   validate :validate_acr_values
@@ -145,6 +145,10 @@ class OpenidConnectAuthorizeForm
       Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF
   end
 
+  def initiate_user_registration?
+    prompt == 'create'
+  end
+
   private
 
   attr_reader :identity, :success
@@ -208,6 +212,8 @@ class OpenidConnectAuthorizeForm
   def validate_prompt
     return if prompt == 'select_account'
     return if prompt == 'login' && service_provider&.allow_prompt_login
+    return if prompt == 'create' && service_provider&.create_prompt_allowed?
+
     errors.add(
       :prompt, t('openid_connect.authorization.errors.prompt_invalid'),
       type: :prompt_invalid
@@ -245,6 +251,7 @@ class OpenidConnectAuthorizeForm
       client_id: client_id,
       prompt: prompt,
       allow_prompt_login: service_provider&.allow_prompt_login,
+      allow_prompt_create: service_provider&.create_prompt_allowed?,
       redirect_uri: result_uri,
       scope: scope&.sort&.join(' '),
       acr_values: acr_values&.sort&.join(' '),

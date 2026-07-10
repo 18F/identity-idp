@@ -111,9 +111,10 @@ module SamlAuthHelper
     page.driver.post remote_logout_request_url
   end
 
-  def saml_get_auth(settings)
+  def saml_get_auth(settings, prompt: nil)
     # GET redirect binding Authn Request
-    get :auth, params: { SAMLRequest: CGI.unescape(saml_request(settings)), path_year: PATH_YEAR }
+    params = { SAMLRequest: CGI.unescape(saml_request(settings)), path_year: PATH_YEAR, prompt: }
+    get :auth, params: params.compact
   end
 
   def saml_post_auth(saml_request)

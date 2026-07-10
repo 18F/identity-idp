@@ -114,6 +114,10 @@ class FeatureManagement
     !Rails.env.test? && IdentityConfig.store.log_to_stdout
   end
 
+  def self.auth_time_attribute_enabled?
+    IdentityConfig.store.auth_time_attribute_enabled
+  end
+
   def self.phone_recaptcha_enabled?
     IdentityConfig.store.phone_recaptcha_score_threshold.positive? && recaptcha_enabled?
   end
@@ -219,5 +223,9 @@ class FeatureManagement
   # @returns [Boolean] Whether the phone verification dual vendor check is enabled
   def self.dual_vendor_check_enabled?
     IdentityConfig.store.idv_phone_verification_dual_vendor_check_enabled
+  end
+
+  def self.webauthn_verification_auto_prompt?
+    IdentityConfig.store.feature_webauthn_verification_auto_prompt_enabled
   end
 end

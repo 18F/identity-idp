@@ -59,6 +59,7 @@ module IdentityConfig
     config.add(:agent_proofed_user_time_validity_hours, type: :integer)
     config.add(:all_redirect_uris_cache_duration_minutes, type: :integer)
     config.add(:allowed_attempts_providers, type: :json)
+    config.add(:allowed_create_prompt_providers, type: :json)
     config.add(:allowed_client_id_in_risc_service_providers, type: :json)
     config.add(:allowed_ialmax_providers, type: :json)
     config.add(:allowed_verified_within_providers, type: :json)
@@ -72,6 +73,7 @@ module IdentityConfig
     config.add(:attempts_api_signing_enabled, type: :boolean)
     config.add(:attribute_encryption_key, type: :string)
     config.add(:attribute_encryption_key_queue, type: :json)
+    config.add(:auth_time_attribute_enabled, type: :boolean)
     config.add(:available_locales, type: :comma_separated_string_list)
     config.add(:aws_http_retry_limit, type: :integer)
     config.add(:aws_http_retry_max_delay, type: :integer)
@@ -197,6 +199,7 @@ module IdentityConfig
     config.add(:facial_match_general_availability_enabled, type: :boolean)
     config.add(:facial_match_preferred_on_connected_accounts, type: :boolean)
     config.add(:feature_account_creation_passkey_auto_prompt, type: :boolean)
+    config.add(:feature_webauthn_verification_auto_prompt_enabled, type: :boolean)
     config.add(:feature_idv_force_gpo_verification_enabled, type: :boolean)
     config.add(:feature_idv_hybrid_flow_enabled, type: :boolean)
     config.add(:feature_show_sp_reproof_banner_enabled, type: :boolean)
@@ -371,13 +374,13 @@ module IdentityConfig
     config.add(:new_device_alert_delay_in_minutes, type: :integer)
     config.add(:new_device_alert_window_start_in_minutes, type: :integer, allow_nil: true)
     config.add(:newrelic_license_key, type: :string)
+    config.add(:openid_connect_authorization_code_expiration_seconds, type: :integer)
+    config.add(:openid_connect_content_security_form_action_enabled, type: :boolean)
     config.add(
       :openid_connect_redirect,
       type: :string,
       enum: ['server_side', 'client_side_js'],
     )
-    config.add(:openid_connect_authorization_code_expiration_seconds, type: :integer)
-    config.add(:openid_connect_content_security_form_action_enabled, type: :boolean)
     config.add(:otp_delivery_blocklist_findtime, type: :integer)
     config.add(:otp_delivery_blocklist_maxretry, type: :integer)
     config.add(:otp_expiration_warning_seconds, type: :integer)

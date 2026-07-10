@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Accounts
-  module ConnectedAccounts
+  module ConnectedServices
     class SelectedEmailController < ApplicationController
       include RenderConditionConcern
 
@@ -25,10 +25,10 @@ module Accounts
 
         if result.success?
           flash[:email_updated_identity_id] = identity.id
-          redirect_to account_connected_accounts_path
+          redirect_to account_connected_services_path
         else
           flash[:error] = result.first_error_message
-          redirect_to edit_connected_account_selected_email_path(identity.id)
+          redirect_to edit_connected_service_selected_email_path(identity.id)
         end
       end
 

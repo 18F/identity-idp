@@ -11,6 +11,7 @@ RSpec.describe SamlPostController do
     let(:sig_alg) { 'aes256' }
     let(:signature) { 'xyz789' }
     let(:path_year) { SamlAuthHelper::PATH_YEAR }
+    let(:prompt) { 'create' }
 
     it 'renders the appropriate form' do
       post :auth, params: {
@@ -18,7 +19,8 @@ RSpec.describe SamlPostController do
         'RelayState' => relay_state,
         'SigAlg' => sig_alg,
         'Signature' => signature,
-        path_year: path_year,
+        path_year:,
+        prompt:,
       }
 
       expect(response.body).to match(form_action_regex)
@@ -26,10 +28,11 @@ RSpec.describe SamlPostController do
       expect(response.body).to match(hidden_field_tag('RelayState', relay_state))
       expect(response.body).to match(hidden_field_tag('SigAlg', sig_alg))
       expect(response.body).to match(hidden_field_tag('Signature', signature))
+      expect(response.body).to match(hidden_field_tag('prompt', prompt))
     end
 
     it 'does not render extra parameters' do
-      post :auth, params: { 'Foo' => 'bar', path_year: path_year }
+      post :auth, params: { 'Foo' => 'bar', path_year: }
 
       expect(response.body).not_to match(hidden_field_tag('Foo', 'bar'))
     end

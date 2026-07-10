@@ -45,6 +45,7 @@ RSpec.describe OpenidConnectAuthorizeForm do
           client_id: client_id,
           prompt: 'select_account',
           allow_prompt_login: true,
+          allow_prompt_create: false,
           redirect_uri: nil,
           unauthorized_scope: true,
           acr_values:,
@@ -68,6 +69,7 @@ RSpec.describe OpenidConnectAuthorizeForm do
             client_id: client_id,
             prompt: 'select_account',
             allow_prompt_login: true,
+            allow_prompt_create: false,
             redirect_uri: "#{redirect_uri}?error=invalid_request&error_description=" \
                           "Response+type+is+not+included+in+the+list&state=#{state}",
             unauthorized_scope: true,
@@ -285,38 +287,61 @@ RSpec.describe OpenidConnectAuthorizeForm do
       end
     end
 
-    context 'when prompt is not select_account or login' do
-      let(:prompt) { 'aaa' }
-      it { expect(valid?).to eq(false) }
-    end
-
-    context 'when prompt is not given' do
-      let(:prompt) { nil }
-
-      it { expect(valid?).to eq(true) }
-    end
-
-    context 'when prompt is login and allowed by sp' do
-      let(:prompt) { 'login' }
-      before do
-        allow_any_instance_of(ServiceProvider).to receive(:allow_prompt_login).and_return true
+    context 'prompt' do
+      context 'when prompt is select_account' do
+        it { expect(valid?).to eq(true) }
       end
 
-      it { expect(valid?).to eq(true) }
-    end
-
-    context 'when prompt is login but not allowed by sp' do
-      let(:prompt) { 'login' }
-      before do
-        allow_any_instance_of(ServiceProvider).to receive(:allow_prompt_login).and_return false
+      context 'when prompt is a random string' do
+        let(:prompt) { 'aaa' }
+        it { expect(valid?).to eq(false) }
       end
 
-      it { expect(valid?).to eq(false) }
-    end
+      context 'when prompt is not given' do
+        let(:prompt) { nil }
 
-    context 'when prompt is blank' do
-      let(:prompt) { '' }
-      it { expect(valid?).to eq(false) }
+        it { expect(valid?).to eq(true) }
+      end
+
+      context 'when prompt is an empty string' do
+        let(:prompt) { '' }
+        it { expect(valid?).to eq(false) }
+      end
+
+      context 'when prompt is login' do
+        let(:prompt) { 'login' }
+
+        context 'when prompt=login is not allowed by sp' do
+          before do
+            allow_any_instance_of(ServiceProvider).to receive(:allow_prompt_login).and_return false
+          end
+
+          it { expect(valid?).to eq(false) }
+        end
+
+        context 'when prompt=login is allowed by sp' do
+          before do
+            allow_any_instance_of(ServiceProvider).to receive(:allow_prompt_login).and_return true
+          end
+
+          it { expect(valid?).to eq(true) }
+        end
+      end
+
+      context 'when prompt is create' do
+        let(:prompt) { 'create' }
+
+        it { expect(valid?).to eq false }
+
+        context 'when prompt=create is allowed by sp' do
+          before do
+            allow(IdentityConfig.store).to receive(:allowed_create_prompt_providers)
+              .and_return([client_id])
+          end
+
+          it { expect(valid?).to eq(true) }
+        end
+      end
     end
 
     context 'when scope does not contain valid scopes' do
@@ -693,6 +718,29 @@ RSpec.describe OpenidConnectAuthorizeForm do
     let(:user) { create(:user) }
     let(:rails_session_id) { SecureRandom.hex }
 
+    it 'updates auth_time to the current authentication timestamp for existing identities' do
+      now = Time.zone.parse('2026-06-01 12:00:00 UTC')
+      ServiceProviderIdentity.create!(
+        user: user,
+        service_provider: client_id,
+        service_provider_record: form.service_provider,
+        last_authenticated_at: 1.week.ago,
+      )
+
+      travel_to(now) do
+        form.link_identity_to_service_provider(
+          current_user: user,
+          ial: 1,
+          rails_session_id: rails_session_id,
+          email_address_id: 4,
+        )
+
+        identity = user.identities.find_by(service_provider: client_id)
+
+        expect(identity.last_authenticated_at.to_i).to eq(now.to_i)
+      end
+    end
+
     context 'with PKCE' do
       let(:code_challenge) { 'abcdef' }
       let(:code_challenge_method) { 'S256' }
@@ -759,6 +807,22 @@ RSpec.describe OpenidConnectAuthorizeForm do
         expect(ServiceProvider).to_not receive(:find_by)
 
         expect(form.service_provider).to be_nil
+      end
+    end
+  end
+
+  describe '#initiate_user_registration?' do
+    context 'when prompt is "create"' do
+      let(:prompt) { 'create' }
+      it 'returns true' do
+        expect(form.initiate_user_registration?).to be true
+      end
+    end
+
+    context 'when prompt is "select_account"' do
+      let(:prompt) { 'select_account' }
+      it 'returns false' do
+        expect(form.initiate_user_registration?).to be false
       end
     end
   end
