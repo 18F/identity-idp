@@ -161,6 +161,7 @@
             month: parsed_expiration&.month,
             year: parsed_expiration&.year,
             required: false,
+            can_skip: true,
             hint: t('in_person_proofing.form.state_id.expiration_date_hint'),
             input_html: { class: 'jurisdiction-state-selector' },
             label: t('in_person_proofing.form.state_id.expiration_date'),

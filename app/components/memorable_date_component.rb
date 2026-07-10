@@ -11,7 +11,7 @@
 # The errors for this component are configurable via +error_messages+, and you may
 # include custom min/max validations via +range_errors+.
 class MemorableDateComponent < BaseComponent
-  attr_reader :name, :month, :day, :year, :required, :hint, :label, :form, :tag_options
+  attr_reader :name, :month, :day, :year, :required, :can_skip, :hint, :label, :form, :tag_options
 
   alias_method :f, :form
 
@@ -37,6 +37,7 @@ class MemorableDateComponent < BaseComponent
     day: nil,
     year: nil,
     required: false,
+    can_skip: false,
     min: nil,
     max: nil,
     error_messages: {},
@@ -48,6 +49,7 @@ class MemorableDateComponent < BaseComponent
     @day = day
     @year = year
     @required = required
+    @can_skip = can_skip
     @min = min
     @max = max
     @hint = hint
@@ -66,7 +68,6 @@ class MemorableDateComponent < BaseComponent
   # Includes both a hash lookup for general error messages
   # and an array lookup for custom range error messages.
   def error_messages
-    return {} if !required
     {
       'error_messages' => generate_error_messages(label, @min, @max, @error_messages),
       'range_errors' => @range_errors.map do |err|
@@ -152,6 +153,7 @@ class MemorableDateComponent < BaseComponent
       invalid_year: t('components.memorable_date.errors.invalid_year'),
       invalid_date: t('components.memorable_date.errors.invalid_date'),
     }
+    base_error_messages = {} if !required && can_skip
     if label && min
       base_error_messages[:range_underflow] =
         t(
