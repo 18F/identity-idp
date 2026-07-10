@@ -165,6 +165,7 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
               }
             end
             let(:document_type_requested) { Idp::Constants::DocumentTypes::MDL }
+
             it 'returns success response' do
               response = controller.handle_stored_result(user:)
               expect(response.success?).to eq(true)
@@ -173,6 +174,7 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
             context 'when doc auth fails' do
               let(:success) { false }
               let(:doc_auth_success) { false }
+
               it 'returns failed response' do
                 response = controller.handle_stored_result(user:)
                 expect(response.success?).to eq(false)
