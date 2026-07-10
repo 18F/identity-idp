@@ -279,6 +279,7 @@ module IdentityConfig
     config.add(:idv_socure_phonerisk_score_threshold, type: :float)
     config.add(:idv_socure_phonerisk_shadow_mode, type: :boolean)
     config.add(:idv_socure_reason_code_download_enabled, type: :boolean)
+    config.add(:idv_socure_reason_codes_docv_mdl, type: :json)
     config.add(:idv_socure_reason_codes_docv_selfie_fail, type: :json)
     config.add(:idv_socure_reason_codes_docv_selfie_not_processed, type: :json)
     config.add(:idv_socure_reason_codes_docv_selfie_pass, type: :json)

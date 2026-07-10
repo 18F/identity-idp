@@ -5,23 +5,24 @@ module DocAuth
     module Requests
       class DocumentRequest < DocAuth::Socure::Request
         attr_reader :customer_user_id, :redirect_url, :language,
-                    :liveness_checking_required, :passport_requested
+                    :liveness_checking_required, :document_capture_session
 
         PASSPORT_DOCUMENT_TYPE = 'passport'
         DRIVERS_LICENSE_DOCUMENT_TYPE = 'license'
+        MDL_DOCUMENT_TYPE = 'license' # awaiting mdl value
 
         def initialize(
           customer_user_id:,
           redirect_url:,
           language:,
-          liveness_checking_required: false,
-          passport_requested: false
+          document_capture_session:,
+          liveness_checking_required: false
         )
           @customer_user_id = customer_user_id
           @redirect_url = redirect_url
           @language = language
           @liveness_checking_required = liveness_checking_required
-          @passport_requested = passport_requested
+          @document_capture_session = document_capture_session
         end
 
         def body
@@ -79,7 +80,10 @@ module DocAuth
         end
 
         def document_type_requested
-          passport_requested ? PASSPORT_DOCUMENT_TYPE : DRIVERS_LICENSE_DOCUMENT_TYPE
+          return PASSPORT_DOCUMENT_TYPE if document_capture_session.passport_requested?
+          return MDL_DOCUMENT_TYPE if document_capture_session.mdl_requested?
+
+          DRIVERS_LICENSE_DOCUMENT_TYPE
         end
       end
     end

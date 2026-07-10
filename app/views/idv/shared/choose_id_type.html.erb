@@ -62,7 +62,7 @@
             collection: [
               [t('doc_auth.forms.id_type_preference.drivers_license'), :state_id_card],
               [t('doc_auth.forms.id_type_preference.passport'), :passport, disabled: disable_passports],
-              (presenter.mdl_enabled? ? [t('doc_auth.forms.id_type_preference.mdl'), :mdl] : nil),
+              (presenter.mdl_enabled? ? [t('doc_auth.forms.id_type_preference.mdl'), :mobile_drivers_license] : nil),
             ].compact,
             form: f,
             input_html: { class: 'usa-radio__input--tile' },
