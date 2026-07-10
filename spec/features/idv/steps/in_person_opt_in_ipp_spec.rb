@@ -12,6 +12,8 @@ RSpec.describe 'In Person Proofing - Opt-in IPP ', js: true do
 
   before do
     allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
+    allow(IdentityConfig.store).to receive(:in_person_state_id_expiration_skip_state_codes)
+      .and_return(['TX'])
     allow(IdentityConfig.store).to receive(:in_person_proofing_opt_in_enabled).and_return(true)
     allow(IdentityConfig.store).to receive(:otp_delivery_blocklist_maxretry).and_return(5)
   end

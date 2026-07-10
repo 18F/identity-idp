@@ -137,6 +137,7 @@ class MemorableDateComponent < BaseComponent
   # Configure default generic error messages for component,
   # then integrate any overrides
   def generate_error_messages(label, min, max, override_error_messages)
+    return {} if !required && can_skip
     base_error_messages = {
       missing_month_day_year: t(
         'components.memorable_date.errors.missing_month_day_year',
@@ -153,7 +154,6 @@ class MemorableDateComponent < BaseComponent
       invalid_year: t('components.memorable_date.errors.invalid_year'),
       invalid_date: t('components.memorable_date.errors.invalid_date'),
     }
-    base_error_messages = {} if !required && can_skip
     if label && min
       base_error_messages[:range_underflow] =
         t(

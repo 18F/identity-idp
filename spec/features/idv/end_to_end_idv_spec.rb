@@ -142,7 +142,8 @@ RSpec.describe 'Identity verification', :js do
   context 'with an sp that allows in person proofing' do
     before do
       allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
-
+      allow(IdentityConfig.store).to receive(:in_person_state_id_expiration_skip_state_codes)
+        .and_return(['TX'])
       ServiceProvider.find_by(issuer: service_provider_issuer(sp))
         .update(in_person_proofing_enabled: true)
     end
