@@ -41,33 +41,13 @@ RSpec.describe Idv::ChooseIdTypeConcern, :controller do
     end
   end
 
-  describe '#set_passport_requested' do
-    context 'when chosen_id_type is passport and passport cards supported' do
-      let(:document_type_chosen) { 'passport' }
-      before do
-        allow(IdentityConfig.store).to receive(:doc_auth_passport_cards_enabled)
-          .and_return(true)
-        ab_test = AbTests::DOC_AUTH_PASSPORT_CARDS_ALLOWED.dup
-        allow(ab_test).to receive(:bucket).and_return(:doc_auth_passport_cards_allowed)
-        stub_const(
-          'AbTests::DOC_AUTH_PASSPORT_CARDS_ALLOWED',
-          ab_test,
-        )
-        allow(controller).to receive(:params).and_return(parameters)
-        subject.set_passport_requested
-      end
-
-      it 'expect the document capture session to show passport cards supported' do
-        expect(document_capture_session.passport_cards_supported?).to be true
-      end
-    end
-
+  describe '#set_document_type_requested' do
     context 'when chosen_id_type is "passport"' do
       let(:document_type_chosen) { 'passport' }
 
       before do
         allow(controller).to receive(:params).and_return(parameters)
-        subject.set_passport_requested
+        subject.set_document_type_requested
       end
 
       it 'updates the document_capture_session passport status to "requested"' do
@@ -118,6 +98,26 @@ RSpec.describe Idv::ChooseIdTypeConcern, :controller do
           expect(document_capture_session.socure_docv_transaction_token).to be_nil
         end
       end
+
+      context 'when chosen_id_type is passport and passport cards supported' do
+        let(:document_type_chosen) { 'passport' }
+        before do
+          allow(IdentityConfig.store).to receive(:doc_auth_passport_cards_enabled)
+            .and_return(true)
+          ab_test = AbTests::DOC_AUTH_PASSPORT_CARDS_ALLOWED.dup
+          allow(ab_test).to receive(:bucket).and_return(:doc_auth_passport_cards_allowed)
+          stub_const(
+            'AbTests::DOC_AUTH_PASSPORT_CARDS_ALLOWED',
+            ab_test,
+          )
+          allow(controller).to receive(:params).and_return(parameters)
+          subject.set_passport_requested
+        end
+
+        it 'expect the document capture session to show passport cards supported' do
+          expect(document_capture_session.passport_cards_supported?).to be true
+        end
+      end
     end
 
     context 'when chosen_id_type is not "passport"' do
@@ -125,7 +125,7 @@ RSpec.describe Idv::ChooseIdTypeConcern, :controller do
 
       before do
         allow(controller).to receive(:params).and_return(parameters)
-        subject.set_passport_requested
+        subject.set_document_type_requested
       end
 
       it 'updates the document_capture_session passport status to "not_requested"' do
