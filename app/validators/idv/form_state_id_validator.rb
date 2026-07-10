@@ -14,9 +14,13 @@ module Idv
                 :state_id_jurisdiction,
                 :state_id_number,
                 :id_expiration,
-                :same_address_as_id,
                 :asserted_id_type,
                 presence: true
+
+      # A boolean; `presence: true` would reject a legitimate `false`, so validate
+      # that an explicit answer (true or false) was provided.
+      validates :ipp_current_address_matches_id,
+                inclusion: { in: [true, false] }
 
       validates_with UspsInPersonProofing::TransliterableValidator,
                      fields: [:first_name, :last_name, :identity_doc_city],

@@ -241,7 +241,6 @@ class ProofingAgentJob < ApplicationJob
             [:proofing_results, :biographical_info, :identity_doc_address_state],
             [:proofing_results, :biographical_info, :state_id_jurisdiction],
             [:proofing_results, :context, :stages, :resolution, :errors, :zipcode],
-            [:proofing_results, :biographical_info, :same_address_as_id],
             [:proofing_results, :biographical_info, :ipp_current_address_matches_id],
             [:proofing_results, :biographical_info, :phone],
             [:proofing_results, :context, :stages, :resolution, :errors, :ssn],

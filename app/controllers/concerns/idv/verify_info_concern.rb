@@ -370,7 +370,7 @@ module Idv
           proofing_results: {
             **result.except(:errors, :success),
             biographical_info: result[:biographical_info]&.except(
-              :same_address_as_id, :ipp_current_address_matches_id
+              :ipp_current_address_matches_id
             ),
           },
         ),

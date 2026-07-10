@@ -40,7 +40,7 @@ RSpec.describe 'state id controller enabled', :js do
 
     it 'allows user to submit valid inputs on form', allow_browser_log: true do
       complete_steps_before_state_id_controller
-      fill_out_state_id_form_ok(same_address_as_id: true)
+      fill_out_state_id_form_ok(current_address_matches_id: true)
       click_idv_continue
 
       expect(page).to have_current_path(idv_in_person_ssn_url, wait: 10)
@@ -63,7 +63,7 @@ RSpec.describe 'state id controller enabled', :js do
     it 'validates zip code input', allow_browser_log: true do
       complete_steps_before_state_id_controller
 
-      fill_out_state_id_form_ok(same_address_as_id: true)
+      fill_out_state_id_form_ok(current_address_matches_id: true)
       fill_in t('in_person_proofing.form.state_id.zipcode'), with: ''
       fill_in t('in_person_proofing.form.state_id.zipcode'), with: 'invalid input'
       expect(page).to have_field(t('in_person_proofing.form.state_id.zipcode'), with: '')
@@ -243,7 +243,7 @@ RSpec.describe 'state id controller enabled', :js do
       expect(page).to have_content(I18n.t('in_person_proofing.form.state_id.address2_hint'))
 
       # change state selection
-      fill_out_state_id_form_ok(same_address_as_id: true)
+      fill_out_state_id_form_ok(current_address_matches_id: true)
       expect(page).not_to have_content(I18n.t('in_person_proofing.form.state_id.address1_hint'))
       expect(page).not_to have_content(I18n.t('in_person_proofing.form.state_id.address2_hint'))
 

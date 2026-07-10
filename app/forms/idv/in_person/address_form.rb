@@ -6,7 +6,11 @@ module Idv
       include ActiveModel::Model
       include Idv::InPerson::FormAddressValidator
 
-      ATTRIBUTES = %i[state zipcode city address1 address2 same_address_as_id].freeze
+      ATTRIBUTES = %i[state zipcode city address1 address2
+                      ipp_current_address_matches_id].freeze
+
+      # Cast the boolean attribute at the form boundary; `nil` is preserved.
+      BOOLEAN_ATTRIBUTES = %i[ipp_current_address_matches_id].freeze
 
       attr_accessor(*ATTRIBUTES)
 
@@ -35,6 +39,7 @@ module Idv
       def consume_params(params)
         params.each do |key, value|
           raise_invalid_address_parameter_error(key) unless ATTRIBUTES.include?(key.to_sym)
+          value = ActiveModel::Type::Boolean.new.cast(value) if BOOLEAN_ATTRIBUTES.include?(key.to_sym)
           send(:"#{key}=", value)
         end
       end

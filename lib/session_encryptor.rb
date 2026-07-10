@@ -10,7 +10,7 @@ class SessionEncryptor
     'first_name', 'middle_name', 'last_name', 'address1', 'address2', 'city', 'state', 'zipcode',
     'zip_code', 'identity_doc_address1', 'identity_doc_address2', 'identity_doc_city',
     'identity_doc_zipcode', 'identity_doc_address_state', 'state_id_jurisdiction',
-    'same_address_as_id', 'ipp_current_address_matches_id', 'dob', 'phone_number', 'phone', 'ssn',
+    'ipp_current_address_matches_id', 'dob', 'phone_number', 'phone', 'ssn',
     'prev_address1', 'prev_address2', 'prev_city', 'prev_state', 'prev_zipcode', 'pii',
     'pii_from_doc', 'pii_from_user', 'password', 'personal_key', 'email', 'email_address',
     'unconfirmed_phone'
