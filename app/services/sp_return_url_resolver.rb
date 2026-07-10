@@ -17,7 +17,11 @@ class SpReturnUrlResolver
   end
 
   def failure_to_proof_url
-    service_provider.failure_to_proof_url.presence || return_to_sp_url
+    url = service_provider.failure_to_proof_url.presence
+    return return_to_sp_url if url.blank?
+    return url if oidc_state.blank? || !FeatureManagement.idv_failure_to_proof_oidc_state_enabled?
+
+    UriService.add_params(url, state: oidc_state) || url
   end
 
   def homepage_url
