@@ -13,7 +13,9 @@ module Idv
     def set_passport_requested
       if passport_chosen?
         unless document_capture_session.passport_requested?
-          document_capture_session.request_passport!
+          document_capture_session.request_passport!(
+            passport_cards_supported: passport_cards_supported?,
+          )
         end
       else
         document_capture_session.request_state_id!
@@ -52,7 +54,7 @@ module Idv
         form_submit_url:,
         disable_passports: disable_passports?,
         auto_check_value: disable_passports? ? :state_id_card : selected_id_type,
-        passport_cards_enabled: passport_cards_available? && presenter.passport_card_available?,
+        passport_cards_enabled: passport_cards_supported? && presenter.passport_card_available?,
       }
     end
 
@@ -62,10 +64,10 @@ module Idv
     end
 
     def passports_enabled?
-      IdentityConfig.store.doc_auth_passports_enabled || passport_cards_available?
+      IdentityConfig.store.doc_auth_passports_enabled || passport_cards_supported?
     end
 
-    def passport_cards_available?
+    def passport_cards_supported?
       FeatureManagement.doc_auth_passport_cards_enabled? && in_passport_cards_allowed_bucket?
     end
 

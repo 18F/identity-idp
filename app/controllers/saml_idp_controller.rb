@@ -27,7 +27,7 @@ class SamlIdpController < ApplicationController
   before_action :handle_banned_user
   before_action :handle_duplicate_profile_user, only: :auth
   before_action :bump_auth_count, only: :auth
-  before_action :redirect_to_sign_in, only: :auth, unless: :user_signed_in?
+  before_action :redirect_to_sign_in_or_create, only: :auth, unless: :user_signed_in?
   before_action :confirm_two_factor_authenticated, only: :auth
   before_action :redirect_to_reauthenticate, only: :auth, if: :remember_device_expired_for_sp?
   before_action :prompt_for_password_if_ial2_request_and_pii_locked, only: :auth
@@ -118,8 +118,18 @@ class SamlIdpController < ApplicationController
 
   private
 
-  def redirect_to_sign_in
-    redirect_to new_user_session_url
+  def redirect_to_sign_in_or_create
+    # Using query params &prompt=create to trigger user registration
+    # from authentication in order to mirror standard OIDC behavior
+    if params[:prompt] == 'create' && create_prompt_allowed?
+      redirect_to sign_up_email_url
+    else
+      redirect_to new_user_session_url
+    end
+  end
+
+  def create_prompt_allowed?
+    saml_request_service_provider&.create_prompt_allowed?
   end
 
   def redirect_to_reauthenticate
@@ -154,6 +164,8 @@ class SamlIdpController < ApplicationController
       matching_cert_serial:,
       requested_nameid_format: saml_request.name_id_format,
       unknown_authn_contexts:,
+      prompt: params[:prompt],
+      allow_prompt_create: create_prompt_allowed?,
     )
 
     if result.success? && saml_request.signed?
@@ -185,6 +197,8 @@ class SamlIdpController < ApplicationController
       matching_cert_serial:,
       unknown_authn_contexts:,
       user_fully_authenticated: user_fully_authenticated?,
+      prompt: params[:prompt],
+      allow_prompt_create: create_prompt_allowed?,
     )
   end
 

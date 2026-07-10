@@ -5,11 +5,12 @@ module TwoFactorAuthCode
   class WebauthnAuthenticationPresenter < TwoFactorAuthCode::GenericDeliveryPresenter
     include ActionView::Helpers::TranslationHelper
 
-    attr_reader :credentials, :user_opted_remember_device_cookie
+    attr_reader :credentials, :user_opted_remember_device_cookie, :auto_prompt
 
     def initialize(data:, view:, service_provider:, remember_device_default: true,
-                   platform_authenticator: false)
+                   platform_authenticator: false, auto_prompt: false)
       @platform_authenticator = platform_authenticator
+      @auto_prompt = auto_prompt
       super(
         data: data,
         view: view,
@@ -90,5 +91,7 @@ module TwoFactorAuthCode
     def platform_authenticator?
       @platform_authenticator
     end
+
+    alias_method :auto_prompt?, :auto_prompt
   end
 end

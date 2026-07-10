@@ -492,8 +492,8 @@ module AnalyticsEvents
   end
 
   # User visits the connected accounts page
-  def connected_accounts_page_visited
-    track_event(:connected_accounts_page_visited)
+  def connected_services_page_visited
+    track_event(:connected_services_page_visited)
   end
 
   # @param [String] redirect_url URL user was directed to
@@ -6702,6 +6702,7 @@ module AnalyticsEvents
   # @param [Hash] recaptcha_annotation Details of reCAPTCHA annotation, if submitted
   # @param [Boolean] available_webauthn_platform_config shows user has a webauth_platform config
   # @param [Integer] webauthn_auth_duration the duration to complete webauthn auth in seconds
+  # @param [Boolean, nil] webauthn_verification_auto_prompted Whether passkey auth was auto-prompted
   # Multi-Factor Authentication
   def multi_factor_auth(
     success:,
@@ -6729,6 +6730,7 @@ module AnalyticsEvents
     recaptcha_annotation: nil,
     available_webauthn_platform_config: nil,
     webauthn_auth_duration: nil,
+    webauthn_verification_auto_prompted: nil,
     **extra
   )
     track_event(
@@ -6758,6 +6760,7 @@ module AnalyticsEvents
       recaptcha_annotation:,
       available_webauthn_platform_config:,
       webauthn_auth_duration:,
+      webauthn_verification_auto_prompted:,
       **extra,
     )
   end
@@ -6901,6 +6904,10 @@ module AnalyticsEvents
   # @param [Integer, nil] webauthn_configuration_id webauthn database ID
   # @param [String] multi_factor_auth_method_created_at When the authentication method was created
   # @param [Hash] recaptcha_annotation Details of reCAPTCHA annotation, if submitted
+  # @param [Boolean, nil] webauthn_verification_auto_prompted Whether this session has auto-prompted
+  # @param [Boolean, nil] webauthn_verification_auto_prompt_enabled Whether experiment is enabled
+  # @param [Boolean, nil] webauthn_verification_auto_prompt_triggered
+  #   Whether this visit auto-triggered
   # User visited the page to authenticate with webauthn (yubikey, face ID or touch ID)
   def multi_factor_auth_enter_webauthn_visit(
     context:,
@@ -6908,6 +6915,9 @@ module AnalyticsEvents
     webauthn_configuration_id:,
     multi_factor_auth_method_created_at:,
     recaptcha_annotation: nil,
+    webauthn_verification_auto_prompted: nil,
+    webauthn_verification_auto_prompt_enabled: nil,
+    webauthn_verification_auto_prompt_triggered: nil,
     **extra
   )
     track_event(
@@ -6917,6 +6927,9 @@ module AnalyticsEvents
       webauthn_configuration_id:,
       multi_factor_auth_method_created_at:,
       recaptcha_annotation:,
+      webauthn_verification_auto_prompted:,
+      webauthn_verification_auto_prompt_enabled:,
+      webauthn_verification_auto_prompt_triggered:,
       **extra,
     )
   end
@@ -7372,8 +7385,9 @@ module AnalyticsEvents
   # Tracks when openid authorization request is made
   # @param [Boolean] success Whether form validations were succcessful
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
-  # @param [String] prompt OIDC prompt parameter
+  # @param ['create','login','select_account'] prompt OIDC prompt parameter
   # @param [Boolean] allow_prompt_login Whether service provider is configured to allow prompt=login
+  # @param [Boolean] allow_prompt_create if service provider is configured to allow prompt=create
   # @param [Boolean] code_challenge_present Whether code challenge is present
   # @param [Boolean, nil] service_provider_pkce Whether service provider is configured with PKCE
   # @param [String, nil] referer Request referer
@@ -7387,6 +7401,7 @@ module AnalyticsEvents
     success:,
     prompt:,
     allow_prompt_login:,
+    allow_prompt_create:,
     code_challenge_present:,
     service_provider_pkce:,
     referer:,
@@ -7405,6 +7420,7 @@ module AnalyticsEvents
       error_details:,
       prompt:,
       allow_prompt_login:,
+      allow_prompt_create:,
       code_challenge_present:,
       service_provider_pkce:,
       referer:,
@@ -8231,6 +8247,8 @@ module AnalyticsEvents
   # @param [Boolean] finish_profile
   # @param [String] requested_ial
   # @param [Boolean] request_signed
+  # @param [Boolean] allow_prompt_create If service provider is configured to allow prompt=create
+  # @param ['create', nil] prompt
   # @param [String] matching_cert_serial matches the request certificate in a successful, signed
   #   request
   # @param [Hash] cert_error_details Details for errors that occurred because of an invalid
@@ -8249,9 +8267,11 @@ module AnalyticsEvents
     requested_ial:,
     request_signed:,
     matching_cert_serial:,
+    allow_prompt_create:,
     error_details: nil,
     cert_error_details: nil,
     unknown_authn_contexts: nil,
+    prompt: nil,
     **extra
   )
     track_event(
@@ -8271,6 +8291,8 @@ module AnalyticsEvents
       matching_cert_serial:,
       cert_error_details:,
       unknown_authn_contexts:,
+      prompt:,
+      allow_prompt_create:,
       **extra,
     )
   end
@@ -8285,6 +8307,8 @@ module AnalyticsEvents
   # @param [String] matching_cert_serial
   # @param [String] unknown_authn_contexts space separated list of unknown contexts
   # @param [Boolean] user_fully_authenticated
+  # @param [Boolean] allow_prompt_create If service provider is configured to allow prompt=create
+  # @param ['create', nil] prompt
   # An external request for SAML Authentication was received
   def saml_auth_request(
     requested_ial:,
@@ -8297,6 +8321,8 @@ module AnalyticsEvents
     matching_cert_serial:,
     unknown_authn_contexts:,
     user_fully_authenticated:,
+    allow_prompt_create:,
+    prompt: nil,
     **extra
   )
     track_event(
@@ -8311,6 +8337,8 @@ module AnalyticsEvents
       matching_cert_serial:,
       unknown_authn_contexts:,
       user_fully_authenticated:,
+      prompt:,
+      allow_prompt_create:,
       **extra,
     )
   end

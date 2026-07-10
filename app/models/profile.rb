@@ -219,7 +219,7 @@ class Profile < ApplicationRecord
   end
 
   def remove_agent_proofed_pending_status_if_needed
-    user.pending_agent_proofed_session&.update!(pending_agent_proofed_user_at: nil)
+    user.pending_agent_proofed_document_capture_session&.update!(pending_agent_proofed_user_at: nil)
   end
 
   def deactivate(reason)

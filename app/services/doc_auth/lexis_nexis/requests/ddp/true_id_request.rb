@@ -27,6 +27,7 @@ module DocAuth
             LexisNexis::Responses::Ddp::TrueIdResponse.new(
               http_response:,
               passport_requested: applicant[:passport_requested],
+              passport_cards_supported: applicant[:passport_cards_supported],
               config:,
               liveness_checking_enabled: liveness_checking_required?,
               request_context: request_context,

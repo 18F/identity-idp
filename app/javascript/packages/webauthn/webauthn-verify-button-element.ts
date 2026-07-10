@@ -8,6 +8,7 @@ import type { VerifyCredentialDescriptor } from './verify-webauthn-device';
 export interface WebauthnVerifyButtonDataset extends DOMStringMap {
   credentials: string;
   userChallenge: string;
+  autoPrompt?: string;
 }
 
 class WebauthnVerifyButtonElement extends HTMLElement {
@@ -15,6 +16,10 @@ class WebauthnVerifyButtonElement extends HTMLElement {
 
   connectedCallback() {
     this.form.addEventListener('submit', this.#handleSubmit, { once: true });
+
+    if (this.autoPrompt) {
+      queueMicrotask(() => this.form.requestSubmit(this.button));
+    }
   }
 
   get form(): HTMLFormElement {
@@ -39,6 +44,10 @@ class WebauthnVerifyButtonElement extends HTMLElement {
 
   get userChallenge(): string {
     return this.dataset.userChallenge;
+  }
+
+  get autoPrompt(): boolean {
+    return this.dataset.autoPrompt === 'true';
   }
 
   async verify() {

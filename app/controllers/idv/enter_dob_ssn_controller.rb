@@ -78,7 +78,7 @@ module Idv
 
     def verification_needed?
       IdentityConfig.store.idv_proofing_agent_enabled &&
-        current_user.proofing_agent_pending?
+        current_user.proofing_agent_user_awaiting_binding?
     end
 
     def tmx_job_attrs

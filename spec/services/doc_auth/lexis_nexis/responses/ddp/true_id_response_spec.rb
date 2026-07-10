@@ -28,6 +28,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::Ddp::TrueIdResponse do
   end
 
   let(:passport_requested) { false }
+  let(:passport_cards_supported) { false }
   let(:front_image) { 'front_image_data' }
   let(:back_image) { 'back_image_data' }
   let(:selfie_image) { 'selfie_image_data' }
@@ -70,6 +71,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::Ddp::TrueIdResponse do
       request:,
       passport_requested:,
       liveness_checking_enabled: liveness_checking_required,
+      passport_cards_supported:,
     )
   end
 
@@ -356,6 +358,15 @@ RSpec.describe DocAuth::LexisNexis::Responses::Ddp::TrueIdResponse do
 
       it 'is not a successful result' do
         expect(response.success?).to eq(false)
+      end
+    end
+
+    context 'when the received document type is a passport card and passport cards are supported' do
+      let(:passport_cards_supported) { true }
+      let(:ddp_response_body) { LexisNexisFixtures.ddp_true_id_passport_card_response_success }
+
+      it 'is a successful result' do
+        expect(response.success?).to eq(true)
       end
     end
   end
