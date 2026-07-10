@@ -114,10 +114,10 @@ RSpec.describe Idv::ChooseIdTypeConcern, :controller do
             ab_test,
           )
           allow(controller).to receive(:params).and_return(parameters)
-          subject.set_passport_requested
         end
 
         it 'expect the document capture session to show passport cards supported' do
+          subject.set_document_type_requested
           expect(document_capture_session.passport_cards_supported?).to be true
         end
       end

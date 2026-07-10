@@ -87,11 +87,9 @@ module Idv
     end
 
     def passport_cards_supported?
-      FeatureManagement.doc_auth_passport_cards_enabled? && passport_card_allowed?
-    end
-
-    def passport_card_allowed?
-      ab_test_bucket(:DOC_AUTH_PASSPORT_CARDS_ALLOWED) == :doc_auth_passport_cards_allowed
+      @passport_cards_supported ||=
+        FeatureManagement.doc_auth_passport_cards_enabled? &&
+        ab_test_bucket(:DOC_AUTH_PASSPORT_CARDS_ALLOWED) == :doc_auth_passport_cards_allowed
     end
 
     def mdl_enabled?
