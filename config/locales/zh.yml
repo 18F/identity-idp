@@ -1412,9 +1412,9 @@ in_person_proofing.form.state_id.memorable_date.errors.date_of_birth.missing_mon
 in_person_proofing.form.state_id.memorable_date.errors.date_of_birth.range_min_age: 你年龄必须超过 13 岁才能使用 %{app_name}
 in_person_proofing.form.state_id.memorable_date.errors.date_of_birth.range_overflow: 输入过去的一个日期
 in_person_proofing.form.state_id.memorable_date.errors.expiration_date.expired: 你不能使用过期 ID。
-in_person_proofing.form.state_id.same_address_as_id: 你目前所住地址是州政府颁发的身份证件上所列地址吗？
-in_person_proofing.form.state_id.same_address_as_id_no: 不是，我住在一个不同的地址。
-in_person_proofing.form.state_id.same_address_as_id_yes: 是的，我住在州政府颁发的身份证件上所列地址。
+in_person_proofing.form.state_id.current_address_matches_id: 你目前所住地址是州政府颁发的身份证件上所列地址吗？
+in_person_proofing.form.state_id.current_address_matches_id_no: 不是，我住在一个不同的地址。
+in_person_proofing.form.state_id.current_address_matches_id_yes: 是的，我住在州政府颁发的身份证件上所列地址。
 in_person_proofing.form.state_id.state_id_jurisdiction: 颁发州
 in_person_proofing.form.state_id.state_id_jurisdiction_hint: 这是颁发你身份证件的州
 in_person_proofing.form.state_id.state_id_jurisdiction_prompt: '- 选择 -'

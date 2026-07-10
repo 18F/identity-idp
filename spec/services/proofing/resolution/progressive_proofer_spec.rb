@@ -252,7 +252,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
             expect(result.vendor_name).to eql('ResidentialAddressNotRequired')
           end
           expect(result.ipp_enrollment_in_progress).to eql(false)
-          expect(result.same_address_as_id).to eql(nil)
+          expect(result.ipp_current_address_matches_id).to eql(nil)
         end
       end
 
@@ -396,7 +396,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
               expect(result.vendor_name).to eql('ResidentialAddressNotRequired')
             end
             expect(result.ipp_enrollment_in_progress).to eql(false)
-            expect(result.same_address_as_id).to eql(nil)
+            expect(result.ipp_current_address_matches_id).to eql(nil)
           end
         end
       end
@@ -502,7 +502,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
               eql(state_id_address_resolution_result),
             )
             expect(result.ipp_enrollment_in_progress).to eql(true)
-            expect(proof.same_address_as_id).to eq(applicant_pii[:same_address_as_id])
+            expect(proof.ipp_current_address_matches_id).to eq(applicant_pii[:ipp_current_address_matches_id])
           end
         end
 
@@ -519,7 +519,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
                 eql(state_id_address_resolution_result),
               )
               expect(result.ipp_enrollment_in_progress).to eql(true)
-              expect(proof.same_address_as_id).to eq(applicant_pii[:same_address_as_id])
+              expect(proof.ipp_current_address_matches_id).to eq(applicant_pii[:ipp_current_address_matches_id])
             end
           end
         end
@@ -608,7 +608,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
               eql(residential_address_resolution_result),
             )
             expect(result.ipp_enrollment_in_progress).to eql(true)
-            expect(result.same_address_as_id).to eql('false')
+            expect(result.ipp_current_address_matches_id).to eql(false)
           end
         end
       end
@@ -707,7 +707,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
           expect(result.phone_result[:success]).to eq(false)
           expect(result.phone_result[:vendor_name]).to eq('NoPhoneNumberAvailable')
           expect(result.ipp_enrollment_in_progress).to eql(false)
-          expect(result.same_address_as_id).to eql(nil)
+          expect(result.ipp_current_address_matches_id).to eql(nil)
         end
       end
 
@@ -724,7 +724,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
             end
             expect(result.phone_result).to be_empty
             expect(result.ipp_enrollment_in_progress).to eql(false)
-            expect(result.same_address_as_id).to eql(nil)
+            expect(result.ipp_current_address_matches_id).to eql(nil)
           end
         end
       end
@@ -780,7 +780,7 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
             expect(result.vendor_name).to eql('ResidentialAddressNotRequired')
           end
           expect(result.ipp_enrollment_in_progress).to eql(false)
-          expect(result.same_address_as_id).to eql(nil)
+          expect(result.ipp_current_address_matches_id).to eql(nil)
         end
       end
     end

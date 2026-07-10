@@ -54,9 +54,9 @@ module InPersonHelper
     select GOOD_STATE,
            from: t('in_person_proofing.form.state_id.identity_doc_address_state')
     if same_address_as_id
-      choose t('in_person_proofing.form.state_id.same_address_as_id_yes')
+      choose t('in_person_proofing.form.state_id.current_address_matches_id_yes')
     else
-      choose t('in_person_proofing.form.state_id.same_address_as_id_no')
+      choose t('in_person_proofing.form.state_id.current_address_matches_id_no')
     end
   end
 
@@ -213,6 +213,8 @@ module InPersonHelper
 
   def build_pii_before_state_id_update(same_address_as_id: 'true')
     pii_from_user[:same_address_as_id] = same_address_as_id
+    pii_from_user[:ipp_current_address_matches_id] =
+      Pii::CurrentAddressMatchesId.coerce(same_address_as_id)
     pii_from_user[:identity_doc_address1] = identity_doc_address1
     pii_from_user[:identity_doc_address2] = identity_doc_address2
     pii_from_user[:identity_doc_city] = identity_doc_city

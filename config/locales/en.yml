@@ -1399,9 +1399,9 @@ in_person_proofing.form.state_id.memorable_date.errors.date_of_birth.missing_mon
 in_person_proofing.form.state_id.memorable_date.errors.date_of_birth.range_min_age: You must be over 13 years of age to use %{app_name}
 in_person_proofing.form.state_id.memorable_date.errors.date_of_birth.range_overflow: Enter a date that is in the past
 in_person_proofing.form.state_id.memorable_date.errors.expiration_date.expired: You cannot use an expired ID.
-in_person_proofing.form.state_id.same_address_as_id: Do you currently live at the address listed on your state‑issued ID?
-in_person_proofing.form.state_id.same_address_as_id_no: No, I live at a different address
-in_person_proofing.form.state_id.same_address_as_id_yes: Yes, I live at the address on my state‑issued ID
+in_person_proofing.form.state_id.current_address_matches_id: Do you currently live at the address listed on your state‑issued ID?
+in_person_proofing.form.state_id.current_address_matches_id_no: No, I live at a different address
+in_person_proofing.form.state_id.current_address_matches_id_yes: Yes, I live at the address on my state‑issued ID
 in_person_proofing.form.state_id.state_id_jurisdiction: Issuing state
 in_person_proofing.form.state_id.state_id_jurisdiction_hint: This is the state that issued your ID
 in_person_proofing.form.state_id.state_id_jurisdiction_prompt: '- Select -'
