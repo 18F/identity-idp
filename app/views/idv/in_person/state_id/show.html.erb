@@ -155,15 +155,14 @@
   <div class="margin-bottom-4 id_expiration">
       <%= render MemorableDateComponent.new(
             content_tag: 'memorable-date',
-            class: 'expiration-date',
             name: :id_expiration,
             day: parsed_expiration&.day,
             month: parsed_expiration&.month,
             year: parsed_expiration&.year,
             required: false,
             can_skip: true,
+            min: Time.zone.today + 1.day,
             hint: t('in_person_proofing.form.state_id.expiration_date_hint'),
-            input_html: { class: 'jurisdiction-state-selector' },
             label: t('in_person_proofing.form.state_id.expiration_date'),
             form: f,
             error_messages: {
