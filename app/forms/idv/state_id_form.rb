@@ -22,17 +22,17 @@ module Idv
 
     def submit(params)
       consume_params(params)
-      validation_success = valid?
-      cleaned_errors = errors.dup
-      cleaned_errors.delete(:first_name, :nontransliterable_field)
-      cleaned_errors.delete(:last_name, :nontransliterable_field)
-      cleaned_errors.delete(:identity_doc_city, :nontransliterable_field)
-      cleaned_errors.delete(:identity_doc_address1, :nontransliterable_field)
-      cleaned_errors.delete(:identity_doc_address2, :nontransliterable_field)
-
+      @validation_success = valid?
+      @cleaned_errors = errors.dup
+      @cleaned_errors.delete(:first_name, :nontransliterable_field)
+      @cleaned_errors.delete(:last_name, :nontransliterable_field)
+      @cleaned_errors.delete(:identity_doc_city, :nontransliterable_field)
+      @cleaned_errors.delete(:identity_doc_address1, :nontransliterable_field)
+      @cleaned_errors.delete(:identity_doc_address2, :nontransliterable_field)
+      check_skip_state_id_expiration(params)
       FormResponse.new(
-        success: validation_success,
-        errors: cleaned_errors,
+        success: @validation_success,
+        errors: @cleaned_errors,
         extra: extra_analytics_attributes(params),
       )
     end
@@ -48,6 +48,18 @@ module Idv
 
     def raise_invalid_state_id_parameter_error(key)
       raise ArgumentError, "#{key} is an invalid state ID attribute"
+    end
+
+    def check_skip_state_id_expiration(params)
+      if IdentityConfig.store.in_person_state_id_expiration_skip_state_codes.include?(
+        params[:state_id_jurisdiction],
+      )
+        @cleaned_errors.delete(:id_expiration)
+        @validation_success = true if @cleaned_errors.empty?
+      elsif params[:id_expiration].blank?
+        @validation_success = false
+        @cleaned_errors.add(:id_expiration, I18n.t('simple_form.required.text'))
+      end
     end
 
     def extra_analytics_attributes(params)

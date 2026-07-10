@@ -66,6 +66,7 @@ class MemorableDateComponent < BaseComponent
   # Includes both a hash lookup for general error messages
   # and an array lookup for custom range error messages.
   def error_messages
+    return {} if !required
     {
       'error_messages' => generate_error_messages(label, @min, @max, @error_messages),
       'range_errors' => @range_errors.map do |err|
@@ -97,7 +98,7 @@ class MemorableDateComponent < BaseComponent
   # @option date [String] year
   # @return [String,nil] The formatted date, or nil if the param cannot be converted
   def self.extract_date_param(date)
-    if date.instance_of?(String) || date.empty?
+    if date.blank? || date.instance_of?(String) || date.empty?
       nil
     else
       formatted_date = [

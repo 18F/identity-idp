@@ -57,8 +57,8 @@
         ) %>
   </div>
 
-    <div class="margin-bottom-4 display-none">
-      <%= render ValidatedFieldComponent.new(
+  <div class="margin-bottom-4 display-none">
+    <%= render ValidatedFieldComponent.new(
           name: :skip_state_id_expiration,
           form: f,
           input_html: { value: skip_state_id_expiration, class: 'skip-state-id-expiration' },
@@ -66,7 +66,7 @@
           maxlength: 255,
           required: true,
         ) %>
-    </div>
+  </div>
 
   <div class="margin-bottom-4">
   <%= render MemorableDateComponent.new(
@@ -153,22 +153,24 @@
   </div>
 
   <div class="margin-bottom-4 id_expiration">
-    <%= render MemorableDateComponent.new(
-          content_tag: 'memorable-date',
-          name: :id_expiration,
-          day: parsed_expiration&.day,
-          month: parsed_expiration&.month,
-          year: parsed_expiration&.year,
-          hint: t('in_person_proofing.form.state_id.expiration_date_hint'),
-          label: t('in_person_proofing.form.state_id.expiration_date'),
-          required: false,
-          form: f,
-          error_messages: {
-            missing_month_day_year: t('simple_form.required.text'),
-            range_underflow: t('in_person_proofing.form.state_id.memorable_date.errors.expiration_date.expired'),
-          },
-        )
-    %>
+      <%= render MemorableDateComponent.new(
+            content_tag: 'memorable-date',
+            class: 'expiration-date',
+            name: :id_expiration,
+            day: parsed_expiration&.day,
+            month: parsed_expiration&.month,
+            year: parsed_expiration&.year,
+            required: false,
+            hint: t('in_person_proofing.form.state_id.expiration_date_hint'),
+            input_html: { class: 'jurisdiction-state-selector' },
+            label: t('in_person_proofing.form.state_id.expiration_date'),
+            form: f,
+            error_messages: {
+              missing_month_day_year: t('simple_form.required.text'),
+              range_underflow: t('in_person_proofing.form.state_id.memorable_date.errors.expiration_date.expired'),
+            },
+          )
+      %>
   </div>
 
   <h2> <%= t('in_person_proofing.headings.id_address') %> </h2>
