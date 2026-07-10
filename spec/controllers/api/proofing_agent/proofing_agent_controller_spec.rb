@@ -555,9 +555,9 @@ RSpec.describe Api::ProofingAgent::ProofingAgentController do
               :document_capture_session,
               user:,
               issuer:,
+              result_id: SecureRandom.uuid,
               doc_auth_vendor: Idp::Constants::Vendors::PROOFING_AGENT,
               pending_agent_proofed_user_at: Time.zone.now,
-              result_id: SecureRandom.uuid,
             )
           end
 
