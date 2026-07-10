@@ -708,17 +708,20 @@ doc_auth.info.socure_passport_ial2: '%{app_name} vérifiera votre passeport en f
 doc_auth.info.ssn: Nous avons besoin de votre numéro de sécurité sociale pour confirmer vos nom, date de naissance et adresse.
 doc_auth.info.stepping_up_html: Veuillez confirmer à nouveau votre identité pour accéder à ce service. %{link_html}
 doc_auth.info.upload_from_computer: Vous n’avez pas de téléphone ? Téléchargez les photos de votre pièce d’identité depuis cet ordinateur.
+doc_auth.info.verify_at_post_office_description_passport_book: Vous pouvez utiliser un passeport, un permis de conduire une carte d’identité d’un État des États-Unis.
 doc_auth.info.verify_at_post_office_description_passport_html: <strong>Vous pouvez seulement utiliser un permis de conduire ou une carte d’identité d’un État des États-Unis.</strong> Le passeport des États-Unis n’est pas accepté dans ce cas.
 doc_auth.info.verify_at_post_office_instruction: Saisissez vos renseignements en ligne puis confirmez votre identité en personne dans un bureau de poste participant.
 doc_auth.info.verify_at_post_office_link_text: En savoir plus sur la vérification en personne
 doc_auth.info.verify_identity: Nous vous demanderons votre pièce d’identité, numéro de téléphone et d’autres renseignements personnels afin de confirmer votre identité par rapport aux registres publics.
-doc_auth.info.verify_online_description_passport: Vous pouvez utiliser un passeport américain (livret ou carte), un permis de conduire américain ou une carte d’identité délivrée par un État.
+doc_auth.info.verify_online_description_passport: Vous pouvez utiliser un passeport, un permis de conduire une carte d’identité d’un État des États-Unis.
+doc_auth.info.verify_online_description_passport_card: Vous pouvez utiliser un passeport américain (livret ou carte), un permis de conduire américain ou une carte d’identité délivrée par un État.
 doc_auth.info.verify_online_instruction: Vous prendrez des photos de votre pièce d’identité afin de vérifier votre identité entièrement en ligne.
 doc_auth.info.verify_online_instruction_selfie: Prenez un selfie et des photos de votre pièce d’identité.
 doc_auth.info.verify_online_link_text: En savoir plus sur la vérification en ligne
 doc_auth.info.welcome_sp_reproof_alert: Pour votre sécurité, %{sp_name} exige que vous vérifiiez à nouveau votre identité.
 doc_auth.info.you_entered: 'Vous avez saisi :'
-doc_auth.instructions.bullet1: Posséder un passeport américain (livret ou carte), un permis de conduire américain ou une carte d’identité délivrée par un État.
+doc_auth.instructions.bullet1: Munissez-vous d’un passeport, d’un permis de conduire ou d’une carte d’identité d’un État des États-Unis
+doc_auth.instructions.bullet1_passport_card: Posséder un passeport américain (livret ou carte), un permis de conduire américain ou une carte d’identité délivrée par un État.
 doc_auth.instructions.bullet2: Saisir votre numéro de sécurité sociale
 doc_auth.instructions.bullet3: Vérifier la correspondance avec votre numéro de téléphone
 doc_auth.instructions.bullet4: Saisir à nouveau votre mot de passe %{app_name}

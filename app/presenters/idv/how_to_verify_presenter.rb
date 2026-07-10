@@ -4,10 +4,11 @@ class Idv::HowToVerifyPresenter
   include ActionView::Helpers::TagHelper
   include ActionView::Helpers::TranslationHelper
 
-  attr_reader :selfie_required
+  attr_reader :selfie_required, :passport_cards_supported
 
-  def initialize(selfie_check_required:)
+  def initialize(selfie_check_required:, passport_cards_supported: false)
     @selfie_required = selfie_check_required
+    @passport_cards_supported = passport_cards_supported
   end
 
   def how_to_verify_info
@@ -45,7 +46,11 @@ class Idv::HowToVerifyPresenter
   end
 
   def verify_online_description
-    t('doc_auth.info.verify_online_description_passport')
+    if passport_cards_supported
+      t('doc_auth.info.verify_online_description_passport_card')
+    else
+      t('doc_auth.info.verify_online_description_passport')
+    end
   end
 
   def online_submit
@@ -72,9 +77,11 @@ class Idv::HowToVerifyPresenter
     t('doc_auth.info.verify_at_post_office_instruction')
   end
 
+  # In-person proofing never accepts passport cards, so this copy stays book-only
+  # regardless of whether passport cards are supported online.
   def post_office_description
     IdentityConfig.store.in_person_passports_enabled ?
-      t('doc_auth.info.verify_online_description_passport') :
+      t('doc_auth.info.verify_at_post_office_description_passport_book') :
       t('doc_auth.info.verify_at_post_office_description_passport_html')
   end
 

@@ -20,6 +20,7 @@ module Idv
       @presenter = Idv::WelcomePresenter.new(
         decorated_sp_session:,
         show_sp_reproof_banner: show_sp_reproof_banner?,
+        passport_cards_supported: passport_cards_supported?,
       )
     end
 

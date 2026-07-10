@@ -6,6 +6,7 @@ module Idv
     include IdvStepConcern
     include RenderConditionConcern
     include DocAuthVendorConcern
+    include Idv::PassportCardsConcern
 
     before_action :confirm_step_allowed
     before_action :set_how_to_verify_presenter
@@ -100,6 +101,7 @@ module Idv
       @selfie_required = idv_session.selfie_check_required
       @presenter = Idv::HowToVerifyPresenter.new(
         selfie_check_required: @selfie_required,
+        passport_cards_supported: passport_cards_supported?,
       )
     end
   end
