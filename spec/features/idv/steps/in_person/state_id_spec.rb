@@ -137,16 +137,14 @@ RSpec.describe 'state id controller enabled', :js do
         yesterday.month,
         yesterday.day,
       ].join('-')
-
+      select InPersonHelper::GOOD_STATE_ID_JURISDICTION,
+             from: t('in_person_proofing.form.state_id.state_id_jurisdiction')
       fill_in_memorable_date('identity_doc[id_expiration]', exp)
 
       click_idv_continue
 
       expect(page).to have_content(
-        t(
-          'in_person_proofing.form.state_id.memorable_date.errors.expiration_date.expired',
-          app_name: APP_NAME,
-        ),
+        t('simple_form.required.text'),
       )
 
       two_days_from_today = Time.zone.now + 2.days
