@@ -20,8 +20,6 @@ RSpec.describe 'In Person Proofing: opt in ipp applicant expanded payload', js: 
   before do
     allow(IdentityConfig.store).to receive(:usps_mock_fallback).and_return(false)
     allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
-    allow(IdentityConfig.store).to receive(:in_person_state_id_expiration_skip_state_codes)
-      .and_return(['TX'])
     allow(IdentityConfig.store).to receive(:in_person_completion_survey_delivery_enabled)
       .and_return(true)
     stub_request_token

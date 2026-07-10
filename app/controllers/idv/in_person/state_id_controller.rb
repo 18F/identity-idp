@@ -71,7 +71,7 @@ module Idv
           parsed_expiration:,
           updating_state_id: updating_state_id?,
           skip_state_id_expiration:
-            IdentityConfig.store.in_person_state_id_expiration_skip_state_codes || [],
+            IdentityConfig.store.in_person_state_id_expiration_skip_state_codes + [Idp::Constants::NOT_APPLICABLE_STATE_CODE],
         }
       end
 

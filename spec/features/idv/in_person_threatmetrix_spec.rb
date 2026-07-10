@@ -26,8 +26,6 @@ RSpec.describe 'In Person Proofing Threatmetrix', js: true do
 
   before do
     allow(IdentityConfig.store).to receive(:in_person_proofing_enabled).and_return(true)
-    allow(IdentityConfig.store).to receive(:in_person_state_id_expiration_skip_state_codes)
-      .and_return(['TX'])
     allow(IdentityConfig.store).to receive(:in_person_proofing_enforce_tmx).and_return(true)
     service_provider.update(in_person_proofing_enabled: true)
   end
