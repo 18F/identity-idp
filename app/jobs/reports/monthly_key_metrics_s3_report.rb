@@ -60,7 +60,6 @@ module Reports
       ).deliver_now
     end
 
-    # Explanatory text to go before the report in the email
     # @return [String]
     def preamble(env: Identity::Hostdata.env || 'local')
       ERB.new(<<~ERB).result(binding).html_safe # rubocop:disable Rails/OutputSafety
@@ -88,9 +87,8 @@ module Reports
       ERB
     end
 
-    # Same ordering as MonthlyKeyMetricsReport, but the two CloudWatch-derived tables
-    # (monthly_idv + proofing_rate) now come from the S3 reader instead of the in-app
-    # reporting classes.
+    # Same ordering as original MonthlyKeyMetricsReport, but the two CloudWatch-derived tables
+    # (monthly_idv + proofing_rate) now come from the S3 reader
     def reports
       @reports ||= begin
         report_builders = [
@@ -124,7 +122,7 @@ module Reports
       emails
     end
 
-    # --- Database-backed reports (unchanged from MonthlyKeyMetricsReport) ---
+    # Database-backed reports (unchanged from MonthlyKeyMetricsReport)
 
     def account_reuse_report
       @account_reuse_report ||= Reporting::AccountReuseReport.new(report_date)
@@ -153,7 +151,7 @@ module Reports
       )
     end
 
-    # --- S3-backed IDV reports (replaces CloudWatch-based monthly_idv + proofing_rate) ---
+    # S3-backed IDV reports
 
     # Builds the S3 key prefix so that the reader appending "_<filename>.csv"
     # reproduces the key reporting-rails wrote in #paths_for:
@@ -169,8 +167,6 @@ module Reports
       "#{base_path}#{REPORT_NAME}/#{year}/#{month}/#{date_prefix}_monthly"
     end
 
-    # Confirms both IDV CSVs exist in S3 and are recent enough. If any file is missing
-    # or stale, the whole report is aborted (no partial email).
     def idv_s3_reports_available?
       bucket = data_warehouse_bucket_name
       if bucket.blank?
@@ -210,8 +206,6 @@ module Reports
       end
     end
 
-    # --- S3 upload (unchanged from MonthlyKeyMetricsReport) ---
-
     def upload_to_s3(report_body, report_name: nil)
       _latest, path = generate_s3_paths(REPORT_NAME, 'csv', subname: report_name, now: report_date)
 
@@ -233,8 +227,6 @@ module Reports
       end
     end
 
-    # Bucket where reporting-rails uploaded the IDV CSVs (same data-warehouse replica
-    # bucket used by the demographics S3 reader).
     def data_warehouse_bucket_name
       bucket_prefix = IdentityConfig.store.s3_data_warehouse_replica_bucket_prefix
       aws_account_id = Identity::Hostdata.aws_account_id
