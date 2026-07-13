@@ -296,7 +296,9 @@ RSpec.describe Idv::InPerson::AddressController do
             put :update, params: params
 
             expect(
-              subject.user_session['idv/in_person'][:pii_from_user][:ipp_current_address_matches_id],
+              subject.user_session.dig(
+                'idv/in_person', :pii_from_user, :ipp_current_address_matches_id
+              ),
             ).to eq(false)
           end
         end
@@ -311,7 +313,9 @@ RSpec.describe Idv::InPerson::AddressController do
             put :update, params: params
 
             expect(
-              subject.user_session['idv/in_person'][:pii_from_user][:ipp_current_address_matches_id],
+              subject.user_session.dig(
+                'idv/in_person', :pii_from_user, :ipp_current_address_matches_id
+              ),
             ).to eq(false)
           end
         end
