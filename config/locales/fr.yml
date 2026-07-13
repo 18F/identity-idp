@@ -1383,6 +1383,9 @@ in_person_proofing.form.state_id.address1_hint: 'Exemple : 150 Calle A Apt 3'
 in_person_proofing.form.state_id.address2: Adresse ligne 2
 in_person_proofing.form.state_id.address2_hint: 'Exemple : URB Las Gladiolas ou COND Miraflor'
 in_person_proofing.form.state_id.city: Ville
+in_person_proofing.form.state_id.current_address_matches_id: Vivez-vous actuellement à l’adresse indiquée sur votre pièce d’identité émise par l’État ?
+in_person_proofing.form.state_id.current_address_matches_id_no: Non, j’habite à une adresse différente
+in_person_proofing.form.state_id.current_address_matches_id_yes: Oui, j’habite à l’adresse indiquée sur ma pièce d’identité émise par l’État
 in_person_proofing.form.state_id.date_hint.day: 'Exemple : 28'
 in_person_proofing.form.state_id.date_hint.month: 'Exemple : 4'
 in_person_proofing.form.state_id.date_hint.year: 'Exemple : 1986'
@@ -1399,9 +1402,6 @@ in_person_proofing.form.state_id.memorable_date.errors.date_of_birth.missing_mon
 in_person_proofing.form.state_id.memorable_date.errors.date_of_birth.range_min_age: Vous devez avoir plus de 13 ans pour utiliser %{app_name}
 in_person_proofing.form.state_id.memorable_date.errors.date_of_birth.range_overflow: Saisissez une date dans le passé
 in_person_proofing.form.state_id.memorable_date.errors.expiration_date.expired: Vous ne pouvez pas utiliser une pièce d’identité expirée.
-in_person_proofing.form.state_id.current_address_matches_id: Vivez-vous actuellement à l’adresse indiquée sur votre pièce d’identité émise par l’État ?
-in_person_proofing.form.state_id.current_address_matches_id_no: Non, j’habite à une adresse différente
-in_person_proofing.form.state_id.current_address_matches_id_yes: Oui, j’habite à l’adresse indiquée sur ma pièce d’identité émise par l’État
 in_person_proofing.form.state_id.state_id_jurisdiction: État d’émission
 in_person_proofing.form.state_id.state_id_jurisdiction_hint: Il s’agit de l’État qui a émis votre pièce d’identité
 in_person_proofing.form.state_id.state_id_jurisdiction_prompt: '- Sélectionnez -'

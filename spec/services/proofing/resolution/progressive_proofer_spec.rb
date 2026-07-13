@@ -502,7 +502,8 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
               eql(state_id_address_resolution_result),
             )
             expect(result.ipp_enrollment_in_progress).to eql(true)
-            expect(proof.ipp_current_address_matches_id).to eq(applicant_pii[:ipp_current_address_matches_id])
+            expect(proof.ipp_current_address_matches_id)
+              .to eq(applicant_pii[:ipp_current_address_matches_id])
           end
         end
 
@@ -519,7 +520,8 @@ RSpec.describe Proofing::Resolution::ProgressiveProofer do
                 eql(state_id_address_resolution_result),
               )
               expect(result.ipp_enrollment_in_progress).to eql(true)
-              expect(proof.ipp_current_address_matches_id).to eq(applicant_pii[:ipp_current_address_matches_id])
+              expect(proof.ipp_current_address_matches_id)
+                .to eq(applicant_pii[:ipp_current_address_matches_id])
             end
           end
         end

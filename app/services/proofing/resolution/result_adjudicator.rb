@@ -30,7 +30,7 @@ module Proofing
         @hybrid_mobile_device_profiling_result = hybrid_mobile_device_profiling_result
         @residential_resolution_result = residential_resolution_result
         @phone_result = phone_result
-        @ipp_current_address_matches_id = ipp_current_address_matches_id # boolean, or nil outside IPP
+        @ipp_current_address_matches_id = ipp_current_address_matches_id # boolean(nil outside IPP)
         @applicant_pii = applicant_pii
         @precheck_phone_number = precheck_phone_number
       end

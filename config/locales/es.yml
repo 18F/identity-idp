@@ -1394,6 +1394,9 @@ in_person_proofing.form.state_id.address1_hint: 'Ejemplo: 150 Calle A Apt 3'
 in_person_proofing.form.state_id.address2: Línea de dirección 2
 in_person_proofing.form.state_id.address2_hint: 'Ejemplo: URB Las Gladiolas o COND Miraflor'
 in_person_proofing.form.state_id.city: Ciudad
+in_person_proofing.form.state_id.current_address_matches_id: '¿Vive actualmente en la dirección que figura en su identificación emitida por el estado?'
+in_person_proofing.form.state_id.current_address_matches_id_no: No, vivo en otra dirección
+in_person_proofing.form.state_id.current_address_matches_id_yes: Sí, vivo en la misma dirección que figura en mi identificación emitida por el estado
 in_person_proofing.form.state_id.date_hint.day: 'Ejemplo: 28'
 in_person_proofing.form.state_id.date_hint.month: 'Ejemplo: 4'
 in_person_proofing.form.state_id.date_hint.year: 'Ejemplo: 1986'
@@ -1410,9 +1413,6 @@ in_person_proofing.form.state_id.memorable_date.errors.date_of_birth.missing_mon
 in_person_proofing.form.state_id.memorable_date.errors.date_of_birth.range_min_age: Debe ser mayor de 13 años para usar %{app_name}
 in_person_proofing.form.state_id.memorable_date.errors.date_of_birth.range_overflow: Ingrese una fecha ya transcurrida
 in_person_proofing.form.state_id.memorable_date.errors.expiration_date.expired: No puede usar una identificación vencida.
-in_person_proofing.form.state_id.current_address_matches_id: '¿Vive actualmente en la dirección que figura en su identificación emitida por el estado?'
-in_person_proofing.form.state_id.current_address_matches_id_no: No, vivo en otra dirección
-in_person_proofing.form.state_id.current_address_matches_id_yes: Sí, vivo en la misma dirección que figura en mi identificación emitida por el estado
 in_person_proofing.form.state_id.state_id_jurisdiction: Estado emisor
 in_person_proofing.form.state_id.state_id_jurisdiction_hint: Este es el estado que emitió su identificación
 in_person_proofing.form.state_id.state_id_jurisdiction_prompt: '- Seleccione -'
