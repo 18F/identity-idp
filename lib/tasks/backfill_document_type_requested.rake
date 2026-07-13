@@ -14,26 +14,28 @@ namespace :document_capture_sessions do
     batch_size = ENV['BATCH_SIZE']&.to_i || 1000
     records_count = without_document_type_requested.count
 
-    with_timeout do
-      logger.info(
-        "Found #{records_count} document_capture_sessions to backfill document_type_requested",
-      )
+    logger.info(
+      "Found #{records_count} document_capture_sessions to backfill document_type_requested",
+    )
 
-      tally = 0
-      state_id_card_requested.in_batches(of: batch_size) do |batch|
+    tally = 0
+    state_id_card_requested.in_batches(of: batch_size) do |batch|
+      with_timeout do
         tally += batch
           .update_all(document_type_requested: Idp::Constants::DocumentTypes::STATE_ID_CARD) # rubocop:disable Rails/SkipsModelValidations
-
-        logger.info("commit #{tally}/#{records_count} document_capture_sessions (STATE_ID_CARD)")
       end
 
-      passport_requested.in_batches(of: batch_size) do |batch|
-        tally += batch.update_all(document_type_requested: Idp::Constants::DocumentTypes::PASSPORT) # rubocop:disable Rails/SkipsModelValidations
-        logger.info("commit #{tally}/#{records_count} document_capture_sessions (PASSPORT)")
-      end
-
-      logger.info("COMPLETE: Updated #{tally}/#{records_count} document_capture_sessions")
+      logger.info("commit #{tally}/#{records_count} document_capture_sessions (STATE_ID_CARD)")
     end
+
+    passport_requested.in_batches(of: batch_size) do |batch|
+      with_timeout do
+        tally += batch.update_all(document_type_requested: Idp::Constants::DocumentTypes::PASSPORT) # rubocop:disable Rails/SkipsModelValidations
+      end
+      logger.info("commit #{tally}/#{records_count} document_capture_sessions (PASSPORT)")
+    end
+
+    logger.info("COMPLETE: Updated #{tally}/#{records_count} document_capture_sessions")
   end
 
   task rollback_backfill_document_type_requested: :environment do |t, _args|
@@ -41,12 +43,12 @@ namespace :document_capture_sessions do
     batch_size = ENV['BATCH_SIZE']&.to_i || 1000
     records_count = without_document_type_requested.count
 
-    with_timeout do
-      logger.info(
-        "Found #{records_count} document_capture_sessions to backfill document_type_requested",
-      )
+    logger.info(
+      "Found #{records_count} document_capture_sessions to backfill document_type_requested",
+    )
 
-      backfilled_document_type_requested.in_batches(of: batch_size) do |batch|
+    backfilled_document_type_requested.in_batches(of: batch_size) do |batch|
+      with_timeout do
         batch.update_all(document_type_requested: nil) # rubocop:disable Rails/SkipsModelValidations
       end
     end
