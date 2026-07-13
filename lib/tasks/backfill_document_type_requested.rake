@@ -55,7 +55,6 @@ namespace :document_capture_sessions do
       records_count:,
       label: 'ROLLBACK',
       batch_size:,
-      log_progress: false,
     )
   end
 
@@ -79,7 +78,7 @@ namespace :document_capture_sessions do
     without_document_type_requested.where(passport_status: 'not_requested')
   end
 
-  def update_in_batches(scope, document_type_requested, logger:, records_count:, label:, batch_size:, log_progress: true)
+  def update_in_batches(scope, document_type_requested, logger:, records_count:, label:, batch_size:)
     tally = 0
 
     scope.in_batches(of: batch_size, load: false) do |batch|
@@ -87,14 +86,14 @@ namespace :document_capture_sessions do
         tally += batch.update_all(document_type_requested:) # rubocop:disable Rails/SkipsModelValidations
       end
 
-      logger.info("commit #{tally}/#{records_count} document_capture_sessions (#{label})") if log_progress
+      logger.info("commit #{tally}/#{records_count} document_capture_sessions (#{label})")
     end
 
     tally
   end
 
   def with_timeout
-    timeout_in_seconds = ENV['STATEMENT_TIMEOUT_IN_SECONDS']&.to_i || 60.seconds
+    timeout_in_seconds = ENV['STATEMENT_TIMEOUT_IN_SECONDS']&.to_i || 30.seconds
     ActiveRecord::Base.transaction do
       quoted_timeout = ActiveRecord::Base.connection.quote(timeout_in_seconds.in_milliseconds)
       ActiveRecord::Base.connection.execute("SET LOCAL statement_timeout = #{quoted_timeout}")
