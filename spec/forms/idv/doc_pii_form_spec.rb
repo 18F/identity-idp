@@ -112,7 +112,7 @@ RSpec.describe Idv::DocPiiForm do
         expect(result).to be_kind_of(FormResponse)
         expect(result.success?).to eq(false)
         expect(result.errors[:no_document]).to eq [
-          t('doc_auth.errors.general.no_liveness'),
+          'doc_auth.errors.general.no_liveness',
         ]
       end
     end
@@ -125,7 +125,7 @@ RSpec.describe Idv::DocPiiForm do
 
         expect(result).to be_kind_of(FormResponse)
         expect(result.success?).to eq(false)
-        expect(result.errors[:name]).to eq [t('doc_auth.errors.alerts.full_name_check')]
+        expect(result.errors[:name]).to eq ['doc_auth.errors.alerts.full_name_check']
         expect(result.extra).to eq(
           attention_with_barcode: false,
           document_type_received: 'drivers_license',
@@ -172,7 +172,7 @@ RSpec.describe Idv::DocPiiForm do
         expect(result).to be_kind_of(FormResponse)
         expect(result.success?).to eq(false)
         expect(result.errors[:dob_min_age]).to eq [
-          t('doc_auth.errors.pii.birth_date_min_age'),
+          'doc_auth.errors.pii.birth_date_min_age',
         ]
         expect(result.extra).to eq(
           attention_with_barcode: false,
@@ -217,7 +217,7 @@ RSpec.describe Idv::DocPiiForm do
           expect(result).to be_kind_of(FormResponse)
           expect(result.success?).to eq(false)
           expect(result.errors[:state_id_expiration]).to eq [
-            t('doc_auth.errors.general.no_liveness'),
+            'doc_auth.errors.general.no_liveness',
           ]
           expect(result.extra).to eq(
             attention_with_barcode: false,
@@ -238,7 +238,7 @@ RSpec.describe Idv::DocPiiForm do
             expect(result).to be_kind_of(FormResponse)
             expect(result.success?).to eq(false)
             expect(result.errors[:state_id_expiration]).to eq [
-              t('doc_auth.errors.general.no_liveness'),
+              'doc_auth.errors.general.no_liveness',
             ]
             expect(result.extra).to eq(
               attention_with_barcode: false,
@@ -264,7 +264,7 @@ RSpec.describe Idv::DocPiiForm do
             expect(result).to be_kind_of(FormResponse)
             expect(result.success?).to eq(false)
             expect(result.errors[:state_id_expiration]).to eq [
-              t('doc_auth.errors.general.no_liveness'),
+              'doc_auth.errors.general.no_liveness',
             ]
             expect(result.extra).to eq(
               attention_with_barcode: false,
@@ -308,7 +308,7 @@ RSpec.describe Idv::DocPiiForm do
           expect(result).to be_kind_of(FormResponse)
           expect(result.success?).to eq(false)
           expect(result.errors[:zipcode]).to eq [
-            t('doc_auth.errors.general.no_liveness'),
+            'doc_auth.errors.general.no_liveness',
           ]
           expect(result.extra).to eq(
             attention_with_barcode: false,
@@ -331,7 +331,7 @@ RSpec.describe Idv::DocPiiForm do
           expect(result).to be_kind_of(FormResponse)
           expect(result.success?).to eq(false)
           expect(result.errors[:zipcode]).to eq [
-            t('doc_auth.errors.general.no_liveness'),
+            'doc_auth.errors.general.no_liveness',
           ]
           expect(result.extra).to eq(
             attention_with_barcode: false,
@@ -354,7 +354,7 @@ RSpec.describe Idv::DocPiiForm do
           expect(result).to be_kind_of(FormResponse)
           expect(result.success?).to eq(false)
           expect(result.errors[:zipcode]).to eq [
-            t('doc_auth.errors.general.no_liveness'),
+            'doc_auth.errors.general.no_liveness',
           ]
         end
       end
@@ -377,7 +377,7 @@ RSpec.describe Idv::DocPiiForm do
 
           expect(result).to be_kind_of(FormResponse)
           expect(result.success?).to eq(false)
-          expect(result.errors[:address1]).to eq [t('doc_auth.errors.alerts.address_check')]
+          expect(result.errors[:address1]).to eq ['doc_auth.errors.alerts.address_check']
           expect(result.extra).to eq(
             attention_with_barcode: false,
             document_type_received: 'drivers_license',
@@ -398,7 +398,7 @@ RSpec.describe Idv::DocPiiForm do
 
           expect(result.success?).to eq(false)
           expect(result.errors[:jurisdiction])
-            .to eq([I18n.t('doc_auth.errors.general.no_liveness')])
+            .to eq(['doc_auth.errors.general.no_liveness'])
         end
       end
 
@@ -409,7 +409,7 @@ RSpec.describe Idv::DocPiiForm do
           result = subject.submit
 
           expect(result.success?).to eq(false)
-          expect(result.errors[:state]).to eq([I18n.t('doc_auth.errors.general.no_liveness')])
+          expect(result.errors[:state]).to eq(['doc_auth.errors.general.no_liveness'])
         end
       end
       context 'when the state_id_number is missing' do
@@ -420,7 +420,7 @@ RSpec.describe Idv::DocPiiForm do
 
           expect(result.success?).to eq(false)
           expect(result.errors[:state_id_number]).to eq(
-            [I18n.t('doc_auth.errors.general.no_liveness')],
+            ['doc_auth.errors.general.no_liveness'],
           )
         end
       end
@@ -456,7 +456,7 @@ RSpec.describe Idv::DocPiiForm do
 
           expect(result.success?).to eq(false)
           expect(result.errors[:passport_expiration]).to eq(
-            [I18n.t('doc_auth.errors.general.no_liveness')],
+            ['doc_auth.errors.general.no_liveness'],
           )
           expect(result.extra).to eq(
             attention_with_barcode: false,
@@ -498,7 +498,7 @@ RSpec.describe Idv::DocPiiForm do
 
           expect(result.success?).to eq(false)
           expect(result.errors[:issuing_country_code]).to eq(
-            [I18n.t('doc_auth.errors.general.no_liveness')],
+            ['doc_auth.errors.general.no_liveness'],
           )
           expect(result.extra).to eq(
             attention_with_barcode: false,
@@ -520,7 +520,7 @@ RSpec.describe Idv::DocPiiForm do
 
           expect(result.success?).to eq(false)
           expect(result.errors[:mrz]).to eq(
-            [I18n.t('doc_auth.errors.general.no_liveness')],
+            ['doc_auth.errors.general.no_liveness'],
           )
           expect(result.extra).to eq(
             attention_with_barcode: false,
@@ -542,7 +542,7 @@ RSpec.describe Idv::DocPiiForm do
 
           expect(result.success?).to eq(false)
           expect(result.errors[:no_document]).to eq(
-            [I18n.t('doc_auth.errors.general.no_liveness')],
+            ['doc_auth.errors.general.no_liveness'],
           )
           expect(result.extra).to eq(
             attention_with_barcode: false,
@@ -578,8 +578,8 @@ RSpec.describe Idv::DocPiiForm do
         expect(errors).to eq(
           {
             **errors,
-            front: [I18n.t('doc_auth.errors.general.multiple_front_id_failures')],
-            back: [I18n.t('doc_auth.errors.general.multiple_back_id_failures')],
+            front: ['doc_auth.errors.general.multiple_front_id_failures'],
+            back: ['doc_auth.errors.general.multiple_back_id_failures'],
           },
         )
       end
@@ -592,8 +592,8 @@ RSpec.describe Idv::DocPiiForm do
         expect(errors).to eq(
           {
             **errors,
-            front: [I18n.t('doc_auth.errors.general.multiple_front_id_failures')],
-            back: [I18n.t('doc_auth.errors.general.multiple_back_id_failures')],
+            front: ['doc_auth.errors.general.multiple_front_id_failures'],
+            back: ['doc_auth.errors.general.multiple_back_id_failures'],
           },
         )
       end
@@ -603,7 +603,7 @@ RSpec.describe Idv::DocPiiForm do
       let(:errors) { { name: 'invalid', dob: 'invalid', dob_min_age: 'invalid', state: 'invalid' } }
 
       it 'updates the error hash with a pii error' do
-        expect(errors).to eq({ **errors, pii: [I18n.t('doc_auth.errors.general.no_liveness')] })
+        expect(errors).to eq({ **errors, pii: ['doc_auth.errors.general.no_liveness'] })
       end
     end
 

@@ -21,6 +21,7 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
   let(:idv_socure_docv_flow_id_only) { 'id only flow' }
   let(:idv_socure_docv_flow_id_w_selfie) { 'selfie flow' }
   let(:document_type_requested) { Idp::Constants::DocumentTypes::STATE_ID_CARD }
+  let(:document_type_received) { document_type_requested }
 
   let(:stored_result) do
     DocumentCaptureSessionResult.new(
@@ -28,7 +29,7 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
       success: doc_auth_success,
       doc_auth_success: doc_auth_success,
       selfie_status: :none,
-      pii: { first_name: 'Testy', last_name: 'Testerson' },
+      pii: { first_name: 'Testy', last_name: 'Testerson', document_type_received: },
       attention_with_barcode: false,
     )
   end
@@ -41,23 +42,17 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
       doc_auth_vendor: idv_vendor,
       document_type_requested:,
     )
-    allow(IdentityConfig.store).to receive(:socure_docv_enabled)
-      .and_return(socure_docv_enabled)
-    allow(IdentityConfig.store).to receive(:socure_docv_document_request_endpoint)
-      .and_return(fake_socure_endpoint)
-    allow(IdentityConfig.store).to receive(:doc_auth_vendor).and_return(idv_vendor)
-    allow(IdentityConfig.store).to receive(:doc_auth_vendor_default).and_return(idv_vendor)
-    allow(IdentityConfig.store).to receive(:doc_auth_vendor_switching_enabled)
-      .and_return(vendor_switching_enabled)
-    allow(IdentityConfig.store).to receive(:doc_auth_selfie_vendor_default).and_return(idv_vendor)
-    allow(IdentityConfig.store).to receive(:doc_auth_selfie_vendor_switching_enabled)
-      .and_return(vendor_switching_enabled)
-    allow(IdentityConfig.store).to receive(:idv_socure_docv_flow_id_w_selfie)
-      .and_return(idv_socure_docv_flow_id_w_selfie)
-    allow(IdentityConfig.store).to receive(:idv_socure_docv_flow_id_only)
-      .and_return(idv_socure_docv_flow_id_only)
-    allow_any_instance_of(ApplicationController).to receive(:current_user).and_return(user)
-    allow(subject).to receive(:stored_result).and_return(stored_result)
+    allow(IdentityConfig.store).to receive_messages(
+      socure_docv_enabled:,
+      socure_docv_document_request_endpoint: fake_socure_endpoint,
+      doc_auth_vendor: idv_vendor,
+      doc_auth_vendor_default: idv_vendor,
+      doc_auth_vendor_switching_enabled: vendor_switching_enabled,
+      doc_auth_selfie_vendor_default: idv_vendor,
+      doc_auth_selfie_vendor_switching_enabled: vendor_switching_enabled,
+      idv_socure_docv_flow_id_w_selfie:,
+      idv_socure_docv_flow_id_only:,
+    )
 
     user_session = {}
     allow(subject).to receive(:user_session).and_return(user_session)
@@ -191,7 +186,7 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
           expect(request_class).to have_received(:new)
             .with(
               customer_user_id: user.uuid,
-              passport_requested: false,
+              document_capture_session: subject.document_capture_session,
               redirect_url: idv_socure_document_capture_update_url,
               language: expected_language,
               liveness_checking_required: false,
@@ -282,7 +277,7 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
             expect(request_class).to have_received(:new)
               .with(
                 customer_user_id: user.uuid,
-                passport_requested: true,
+                document_capture_session: subject.document_capture_session,
                 redirect_url: idv_socure_document_capture_update_url,
                 language: expected_language,
                 liveness_checking_required: false,
@@ -296,6 +291,41 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
                   {
                     config: {
                       documentType: 'passport',
+                      redirect: {
+                        method: 'GET',
+                        url: idv_socure_document_capture_update_url,
+                      },
+                      language: :en,
+                      useCaseKey: idv_socure_docv_flow_id_only,
+                    },
+                    customerUserId: user.uuid,
+                  },
+                ),
+              )
+          end
+        end
+
+        context 'mdl requested' do
+          let(:document_type_requested) { Idp::Constants::DocumentTypes::MDL }
+
+          it 'creates a DocumentRequest' do
+            expect(request_class).to have_received(:new)
+              .with(
+                customer_user_id: user.uuid,
+                document_capture_session: subject.document_capture_session,
+                redirect_url: idv_socure_document_capture_update_url,
+                language: expected_language,
+                liveness_checking_required: false,
+              )
+          end
+
+          it 'creates a DocumentRequest with mdl requested' do
+            expect(WebMock).to have_requested(:post, fake_socure_endpoint)
+              .with(
+                body: JSON.generate(
+                  {
+                    config: {
+                      documentType: 'digital_id',
                       redirect: {
                         method: 'GET',
                         url: idv_socure_document_capture_update_url,
@@ -324,7 +354,7 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
           expect(request_class).to have_received(:new)
             .with(
               customer_user_id: user.uuid,
-              passport_requested: false,
+              document_capture_session: subject.document_capture_session,
               redirect_url: idv_socure_document_capture_update_url,
               language: expected_language,
               liveness_checking_required: true,
@@ -358,7 +388,7 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
             expect(request_class).to have_received(:new)
               .with(
                 customer_user_id: user.uuid,
-                passport_requested: true,
+                document_capture_session: subject.document_capture_session,
                 redirect_url: idv_socure_document_capture_update_url,
                 language: expected_language,
                 liveness_checking_required: true,
@@ -532,18 +562,34 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
       allow(subject.document_capture_session).to receive(:load_result).and_return(stored_result)
       allow(subject.document_capture_session).to receive(:socure_docv_transaction_token)
         .and_return(socure_docv_transaction_token)
-      get :update
     end
 
     context 'when doc auth succeeds' do
       it 'correctly stores doc_auth_vendor in Idv::Session' do
+        get :update
+
         expect(subject.idv_session.doc_auth_vendor).to_not be_nil
         expect(subject.idv_session.doc_auth_vendor).to match(idv_vendor)
       end
 
       it 'returns FOUND (302) and redirects to SSN' do
+        get :update
+
         expect(response).to redirect_to(idv_ssn_path)
         expect(@analytics).to have_logged_event('IdV: doc auth document_capture submitted')
+      end
+
+      context 'document_type_received is different than document_type_requested' do
+        let(:document_type_received) { Idp::Constants::DocumentTypes::PASSPORT }
+
+        it 'redirects to the errors page' do
+          get :update
+
+          expect(response).to redirect_to idv_socure_document_capture_errors_url(
+            transaction_token: socure_docv_transaction_token,
+          )
+          expect(@analytics).to have_logged_event('IdV: doc auth document_capture submitted')
+        end
       end
     end
 
@@ -639,6 +685,7 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
       let(:socure_docv_enabled) { false }
 
       it 'the webhook route does not exist' do
+        get(:update)
         expect(response).to be_not_found
       end
     end
