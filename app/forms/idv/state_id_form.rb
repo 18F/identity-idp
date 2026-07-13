@@ -47,7 +47,8 @@ module Idv
     def consume_params(params)
       params.each do |key, value|
         raise_invalid_state_id_parameter_error(key) unless ATTRIBUTES.include?(key.to_sym)
-        value = ActiveModel::Type::Boolean.new.cast(value) if BOOLEAN_ATTRIBUTES.include?(key.to_sym)
+        value = ActiveModel::Type::Boolean.new.cast(value) if BOOLEAN_ATTRIBUTES
+          .include?(key.to_sym)
         send(:"#{key}=", value)
       end
     end

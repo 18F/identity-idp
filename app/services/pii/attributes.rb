@@ -3,7 +3,7 @@
 module Pii
   DEPRECATED_PII_ATTRIBUTES = [
     :otp, # https://github.com/18F/identity-idp/pull/1661
-    # Deprecated string ('true'/'false') predecessor of the boolean `ipp_current_address_matches_id` (LG-16085)
+    # Deprecated string. Predecessor of boolean `ipp_current_address_matches_id` (LG-16085)
     :same_address_as_id,
     # Address fields that we might be able to remove. We don't think these were ever used in prod
     :prev_address1, :prev_address2, :prev_city, :prev_state, :prev_zipcode
