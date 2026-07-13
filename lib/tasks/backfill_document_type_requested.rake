@@ -78,7 +78,14 @@ namespace :document_capture_sessions do
     without_document_type_requested.where(passport_status: 'not_requested')
   end
 
-  def update_in_batches(scope, document_type_requested, logger:, records_count:, label:, batch_size:)
+  def update_in_batches(
+    scope,
+    document_type_requested,
+    logger:,
+    records_count:,
+    label:,
+    batch_size:
+  )
     tally = 0
 
     scope.in_batches(of: batch_size, load: false) do |batch|
