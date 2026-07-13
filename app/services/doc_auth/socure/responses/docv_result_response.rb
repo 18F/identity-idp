@@ -4,7 +4,8 @@ module DocAuth
   module Socure
     module Responses
       class DocvResultResponse < DocAuth::Response
-        attr_reader :http_response, :passport_requested, :passport_cards_supported, :document_capture_session
+        attr_reader :http_response, :passport_requested, :passport_cards_supported,
+                    :document_capture_session
 
         DATA_PATHS = {
           reference_id: %w[referenceId],
@@ -44,7 +45,12 @@ module DocAuth
             Idp::Constants::DocumentTypes::STATE_ID_CARD,
         }.freeze
 
-        def initialize(http_response:, document_capture_session:, passport_requested: false, passport_cards_supported: false)
+        def initialize(
+          http_response:,
+          document_capture_session:,
+          passport_requested: false,
+          passport_cards_supported: false
+        )
           @http_response = http_response
           @pii_from_doc = read_pii
           @passport_requested = passport_requested
