@@ -14,6 +14,8 @@ module UspsInPersonProofing
     :unique_id, :first_name, :last_name, :address, :city, :state, :zip_code,
     :email, :document_type, :document_number, :document_expiration_date, keyword_init: true
   ) do
+    STREET_ADDRESS_MAX_LENGTH = 255
+
     def self.from_usps_applicant_and_enrollment(applicant, enrollment)
       id_expiration = Time.zone.parse(applicant&.id_expiration || '')
       document_expiration_date =
@@ -22,11 +24,13 @@ module UspsInPersonProofing
           (id_expiration + offset).to_i
         end
 
+      street_address = [applicant.address1, applicant.address2].select(&:present?).join(' ')
+
       self.new(
         unique_id: enrollment.unique_id,
         first_name: transliterate(applicant.first_name),
         last_name: transliterate(applicant.last_name),
-        address: transliterate(applicant.address1),
+        address: transliterate(street_address)[0, STREET_ADDRESS_MAX_LENGTH],
         city: transliterate(applicant.city),
         state: applicant.state,
         zip_code: applicant.zipcode,
