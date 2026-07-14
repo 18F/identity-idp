@@ -301,7 +301,7 @@ RSpec.describe MfaContext do
     end
 
     context 'with a phone and a personal key' do
-      it 'returns 2' do
+      it 'returns 1' do
         user = create(:user, :with_phone, :with_personal_key)
         subject = described_class.new(user.reload)
 
