@@ -65,7 +65,7 @@ module Idv
         # (the sp-required guard, confirm_idv_needed, ...) raises without them
         session[:sp] = {
           issuer: agent_proofed_user&.issuer,
-          acr_values: Saml::Idp::Constants::IAL_VERIFIED_ACR,
+          acr_values: Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_REQUIRED_ACR,
         }
         idv_session.applicant = agent_proofed_user&.pii
         idv_session.agent_proofed = true
