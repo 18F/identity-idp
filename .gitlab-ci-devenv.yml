@@ -1,5 +1,5 @@
 devenv-test:
-  image: $ECR_REGISTRY/github/cachix/devenv/devenv:v1.8.1
+  image: $ECR_REGISTRY/github/cachix/devenv/devenv:v1.10
   before_script:
     # Set up a local cache directory for Nix
     - export CACHEDIR="$(pwd)/.nix-cache"
