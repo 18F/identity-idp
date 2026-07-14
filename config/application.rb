@@ -172,7 +172,10 @@ module Identity
       require 'lookbook'
 
       config.view_component.previews.controller = 'ComponentPreviewController'
-      config.view_component.previews.paths = [Rails.root.join('spec', 'components', 'previews').to_s]
+      config.view_component.previews.paths = [Rails.root.join(
+        'spec', 'components',
+        'previews'
+      ).to_s]
       config.view_component.previews.default_layout = 'component_preview'
       config.lookbook.auto_refresh = false
       config.lookbook.project_name = "#{APP_NAME} Component Previews"
