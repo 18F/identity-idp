@@ -106,7 +106,7 @@ module Idv
 
     def document_type_received_valid?
       case document_type_received
-      when *Idp::Constants::DocumentTypes::SUPPORTED_STATE_ID_TYPES
+      when *Idp::Constants::DocumentTypes::SUPPORTED_STATE_ID_TYPES, Idp::Constants::DocumentTypes::MDL
         state_id_validation = DocPiiStateId.new(pii: pii_from_doc)
         state_id_validation.valid? || errors.merge!(state_id_validation.errors)
       when *Idp::Constants::DocumentTypes::SUPPORTED_PASSPORT_TYPES

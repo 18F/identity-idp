@@ -63,7 +63,7 @@ class ServiceProviderIdentity < ApplicationRecord
   end
 
   def happened_at
-    last_authenticated_at.in_time_zone('UTC')
+    last_authenticated_at&.in_time_zone('UTC')
   end
 
   def verified_single_email_attribute?

@@ -718,6 +718,29 @@ RSpec.describe OpenidConnectAuthorizeForm do
     let(:user) { create(:user) }
     let(:rails_session_id) { SecureRandom.hex }
 
+    it 'updates auth_time to the current authentication timestamp for existing identities' do
+      now = Time.zone.parse('2026-06-01 12:00:00 UTC')
+      ServiceProviderIdentity.create!(
+        user: user,
+        service_provider: client_id,
+        service_provider_record: form.service_provider,
+        last_authenticated_at: 1.week.ago,
+      )
+
+      travel_to(now) do
+        form.link_identity_to_service_provider(
+          current_user: user,
+          ial: 1,
+          rails_session_id: rails_session_id,
+          email_address_id: 4,
+        )
+
+        identity = user.identities.find_by(service_provider: client_id)
+
+        expect(identity.last_authenticated_at.to_i).to eq(now.to_i)
+      end
+    end
+
     context 'with PKCE' do
       let(:code_challenge) { 'abcdef' }
       let(:code_challenge_method) { 'S256' }

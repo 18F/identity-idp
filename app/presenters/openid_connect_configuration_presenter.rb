@@ -41,6 +41,6 @@ class OpenidConnectConfigurationPresenter
   end
 
   def claims_supported
-    %w[iss sub] + OpenidConnectAttributeScoper::CLAIMS
+    OpenidConnectAttributeScoper::UNSCOPED_CLAIMS + OpenidConnectAttributeScoper::CLAIMS
   end
 end

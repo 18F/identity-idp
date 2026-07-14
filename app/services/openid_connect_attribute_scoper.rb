@@ -62,6 +62,7 @@ class OpenidConnectAttributeScoper
   end.with_indifferent_access.freeze
 
   CLAIMS = ATTRIBUTE_SCOPES_MAP.keys.freeze
+  UNSCOPED_CLAIMS = %w[auth_time iss sub].freeze
 
   attr_reader :scopes
 

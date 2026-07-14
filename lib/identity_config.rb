@@ -73,6 +73,7 @@ module IdentityConfig
     config.add(:attempts_api_signing_enabled, type: :boolean)
     config.add(:attribute_encryption_key, type: :string)
     config.add(:attribute_encryption_key_queue, type: :json)
+    config.add(:auth_time_attribute_enabled, type: :boolean)
     config.add(:available_locales, type: :comma_separated_string_list)
     config.add(:aws_http_retry_limit, type: :integer)
     config.add(:aws_http_retry_max_delay, type: :integer)
@@ -241,6 +242,7 @@ module IdentityConfig
     config.add(:idv_attempt_window_in_hours, type: :integer)
     config.add(:idv_available, type: :boolean)
     config.add(:idv_contact_phone_number, type: :string)
+    config.add(:idv_doc_auth_mdl_enabled_percent, type: :integer)
     config.add(:idv_gpo_verification_enabled, type: :boolean)
     config.add(:idv_max_attempts, type: :integer)
     config.add(:idv_min_age_years, type: :integer)
@@ -277,6 +279,7 @@ module IdentityConfig
     config.add(:idv_socure_phonerisk_score_threshold, type: :float)
     config.add(:idv_socure_phonerisk_shadow_mode, type: :boolean)
     config.add(:idv_socure_reason_code_download_enabled, type: :boolean)
+    config.add(:idv_socure_reason_codes_docv_mdl, type: :json)
     config.add(:idv_socure_reason_codes_docv_selfie_fail, type: :json)
     config.add(:idv_socure_reason_codes_docv_selfie_not_processed, type: :json)
     config.add(:idv_socure_reason_codes_docv_selfie_pass, type: :json)
@@ -373,13 +376,13 @@ module IdentityConfig
     config.add(:new_device_alert_delay_in_minutes, type: :integer)
     config.add(:new_device_alert_window_start_in_minutes, type: :integer, allow_nil: true)
     config.add(:newrelic_license_key, type: :string)
+    config.add(:openid_connect_authorization_code_expiration_seconds, type: :integer)
+    config.add(:openid_connect_content_security_form_action_enabled, type: :boolean)
     config.add(
       :openid_connect_redirect,
       type: :string,
       enum: ['server_side', 'client_side_js'],
     )
-    config.add(:openid_connect_authorization_code_expiration_seconds, type: :integer)
-    config.add(:openid_connect_content_security_form_action_enabled, type: :boolean)
     config.add(:otp_delivery_blocklist_findtime, type: :integer)
     config.add(:otp_delivery_blocklist_maxretry, type: :integer)
     config.add(:otp_expiration_warning_seconds, type: :integer)

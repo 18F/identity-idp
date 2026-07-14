@@ -81,6 +81,26 @@ RSpec.describe 'FeatureManagement' do
     end
   end
 
+  describe '#auth_time_attribute_enabled?' do
+    subject(:enabled) { FeatureManagement.auth_time_attribute_enabled? }
+
+    context 'when enabled' do
+      before do
+        allow(IdentityConfig.store).to receive(:auth_time_attribute_enabled).and_return(true)
+      end
+
+      it { expect(enabled).to eq(true) }
+    end
+
+    context 'when disabled' do
+      before do
+        allow(IdentityConfig.store).to receive(:auth_time_attribute_enabled).and_return(false)
+      end
+
+      it { expect(enabled).to eq(false) }
+    end
+  end
+
   describe '#use_dashboard_service_providers?' do
     context 'when enabled' do
       before do
