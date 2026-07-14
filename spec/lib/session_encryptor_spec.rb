@@ -140,6 +140,31 @@ RSpec.describe SessionEncryptor do
         SessionEncryptor::SensitiveValueError,
       )
     end
+
+    # LG-16085: `same_address_as_id` is a deprecated (allowlisted) sensitive key.
+    # A session encrypted before the rename deploy carries it inside the
+    # `idv/in_person` pii_from_user, and must dump/load without raising a
+    # SensitiveKeyError and without losing the value.
+    it 'round-trips a session containing the deprecated same_address_as_id key' do
+      session = { 'warden.user.user.session' => {
+        'idv/in_person' => {
+          'pii_from_user' => {
+            'same_address_as_id' => 'false',
+            'ipp_current_address_matches_id' => false,
+          },
+        },
+      } }
+
+      ciphertext = subject.dump(session)
+      result = subject.load(ciphertext)
+
+      expect(
+        result.dig('warden.user.user.session', 'idv/in_person', 'pii_from_user'),
+      ).to eq(
+        'same_address_as_id' => 'false',
+        'ipp_current_address_matches_id' => false,
+      )
+    end
   end
 
   describe '#kms_encrypt_sensitive_paths!' do
