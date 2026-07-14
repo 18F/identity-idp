@@ -976,7 +976,9 @@ RSpec.describe SocureDocvResultsJob do
                     expect(document_capture_session_result.doc_auth_success).to eq(false)
                     expect(document_capture_session_result.selfie_status).to eq(:not_processed)
                     expect(document_capture_session_result.aamva_status).to eq(:not_processed)
-                    expect(document_capture_session_result.errors[:unexpected_id_type]).to eq(true)
+                    expect(document_capture_session_result.errors).to eq(
+                      { unaccepted_id_type: true },
+                    )
                     expect(@analytics).to have_logged_event(
                       :idv_socure_verification_data_requested,
                       hash_including(
@@ -986,6 +988,20 @@ RSpec.describe SocureDocvResultsJob do
                         :expiration_date,
                       ),
                     )
+                  end
+
+                  context 'when passport cards are supported' do
+                    before do
+                      document_capture_session.update(passport_cards_supported: true)
+                    end
+
+                    it 'doc auth succeeds' do
+                      perform
+
+                      document_capture_session.reload
+                      document_capture_session_result = document_capture_session.load_result
+                      expect(document_capture_session_result.success).to eq(false)
+                    end
                   end
                 end
 
