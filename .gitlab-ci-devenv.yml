@@ -3,6 +3,7 @@ devenv-test:
   before_script:
     # Set up a local cache directory for Nix
     - export CACHEDIR="$(pwd)/.nix-cache"
+    - if [ ! -d "$CACHEDIR" ]; then mkdir -p "$CACHEDIR"; fi
     # If the cache directory exists, add it as an extra substituter in the Nix configuration
     - if [ -d "$CACHEDIR" ]; then echo "extra-substituters = file://$CACHEDIR?priority=10&trusted=true" >>/etc/nix/nix.conf ; fi
     # Install findutils which is used for cache management.
