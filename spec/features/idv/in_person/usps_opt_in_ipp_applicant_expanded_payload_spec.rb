@@ -63,7 +63,9 @@ RSpec.describe 'In Person Proofing: opt in ipp applicant expanded payload', js: 
               'uniqueID' => InPersonEnrollment.first.unique_id,
               'firstName' => InPersonHelper::GOOD_FIRST_NAME,
               'lastName' => InPersonHelper::GOOD_LAST_NAME,
-              'streetAddress' => InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS1,
+              'streetAddress' =>
+                "#{InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS1} " \
+                "#{InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS2}",
               'city' => InPersonHelper::GOOD_IDENTITY_DOC_CITY,
               'state' => InPersonHelper::GOOD_STATE_ABBR,
               'zipCode' => InPersonHelper::GOOD_IDENTITY_DOC_ZIPCODE,
@@ -116,7 +118,9 @@ RSpec.describe 'In Person Proofing: opt in ipp applicant expanded payload', js: 
               'uniqueID' => InPersonEnrollment.first.unique_id,
               'firstName' => InPersonHelper::GOOD_FIRST_NAME,
               'lastName' => InPersonHelper::GOOD_LAST_NAME,
-              'streetAddress' => InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS1,
+              'streetAddress' =>
+                "#{InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS1} " \
+                "#{InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS2}",
               'city' => InPersonHelper::GOOD_IDENTITY_DOC_CITY,
               'state' => InPersonHelper::GOOD_STATE_ABBR,
               'zipCode' => InPersonHelper::GOOD_IDENTITY_DOC_ZIPCODE,
