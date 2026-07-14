@@ -61,7 +61,12 @@ module Idv
 
     def move_agent_proofed_user_pii_to_idv_session
       if agent_proofed_user
-        session[:sp] = { issuer: agent_proofed_user&.issuer }
+        # acr_values are required here. anything that resolves the authn context
+        # (the sp-required guard, confirm_idv_needed, ...) raises without them
+        session[:sp] = {
+          issuer: agent_proofed_user&.issuer,
+          acr_values: Saml::Idp::Constants::IAL_VERIFIED_ACR,
+        }
         idv_session.applicant = agent_proofed_user&.pii
         idv_session.agent_proofed = true
         # a successful agent proofed user should have phone precheck completed

@@ -89,6 +89,19 @@ RSpec.describe Idv::EnterDobSsnController do
       end
     end
 
+    # idv_sp_required is false in dev/test but true in staging and prod. The SP that sends
+    # an agent proofed user here only asks for authentication, so without an exemption the
+    # sp-required guard bounces them to /account before they can bind.
+    context 'when idv_sp_required is enabled' do
+      before do
+        allow(IdentityConfig.store).to receive(:idv_sp_required).and_return(true)
+      end
+
+      it 'still renders the binding page' do
+        expect(response).to render_template(:new)
+      end
+    end
+
     context 'user has proofing agent pending pii' do
       before { get :new }
 
@@ -189,6 +202,27 @@ RSpec.describe Idv::EnterDobSsnController do
           issuer: sp.issuer,
           proofing_agent: a_kind_of(Hash),
         )
+      end
+    end
+
+    # the binding page puts an sp session in place before the submit. if it lacks
+    # acr_values, anything resolving the authn context raises ParseException and
+    # the submit 500s. idv_sp_required is false in dev/test, which hid this.
+    context 'when idv_sp_required is enabled' do
+      before do
+        allow(IdentityConfig.store).to receive(:idv_sp_required).and_return(true)
+        allow(AuthnContextResolver).to receive(:new).and_call_original
+        get :new
+      end
+
+      it 'stores acr values in the sp session' do
+        expect(session[:sp][:acr_values]).to be_present
+      end
+
+      it 'submits without raising' do
+        post :create, params: params
+
+        expect(response).to redirect_to(idv_enter_password_url)
       end
     end
 
