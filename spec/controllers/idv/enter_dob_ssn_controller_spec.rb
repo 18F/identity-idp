@@ -73,6 +73,20 @@ RSpec.describe Idv::EnterDobSsnController do
   describe '#new' do
     let(:response) { get :new }
 
+    context 'when idv_sp_required is enabled' do
+      # agent proofed users come in from a plain sign in link with no sp
+      # session, so nothing asks for identity proofing on their behalf
+      let(:idv_sp_required) { true }
+
+      before do
+        allow(IdentityConfig.store).to receive(:idv_sp_required).and_return(idv_sp_required)
+      end
+
+      it 'renders the binding page instead of the account page' do
+        expect(response).to render_template(:new)
+      end
+    end
+
     context 'proofing agent feature is disabled' do
       let(:idv_proofing_agent_enabled) { false }
 
