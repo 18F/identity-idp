@@ -124,6 +124,22 @@ RSpec.describe Idv::EnterPasswordController do
   end
 
   describe '#new' do
+    context 'when proofing agent device profiling is collect_only' do
+      # the proofing agent flow reaches this step with no review status yet
+      let(:threatmetrix_result) { nil }
+
+      before do
+        allow(IdentityConfig.store).to receive(:proofing_agent_device_profiling)
+          .and_return(:collect_only)
+      end
+
+      it 'renders without a stored device profiling result' do
+        get :new
+
+        expect(response).to render_template :new
+      end
+    end
+
     context 'user has completed all steps' do
       it 'shows completed session' do
         get :new

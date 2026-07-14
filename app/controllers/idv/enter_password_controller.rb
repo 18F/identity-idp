@@ -234,7 +234,8 @@ module Idv
     end
 
     def save_proofing_agent_threatmetrix_status
-      return unless FeatureManagement.proofing_agent_device_profiling_collecting_enabled?
+      # results are only stored when device profiling is :enabled, not :collect_only
+      return unless IdentityConfig.store.proofing_agent_device_profiling == :enabled
       return if idv_session.threatmetrix_review_status.present?
       return if idv_session.hybrid_mobile_threatmetrix_review_status.present?
 
@@ -242,7 +243,7 @@ module Idv
         user_id: current_user.id,
         type: DeviceProfilingResult::PROFILING_TYPES[:proofing_agent],
       ).order(created_at: :desc).first
-      idv_session.threatmetrix_review_status = device_profile.review_status
+      idv_session.threatmetrix_review_status = device_profile&.review_status
     end
   end
 end
