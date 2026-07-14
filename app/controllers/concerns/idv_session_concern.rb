@@ -49,6 +49,10 @@ module IdvSessionConcern
   def redirect_unless_sp_requested_verification
     return if !IdentityConfig.store.idv_sp_required
     return if idv_session_user.profiles.any?
+    # must come before resolved_authn_context_result. the binding page puts a
+    # partial sp session in place (issuer, no acr_values), so resolving the authn
+    # context for these users raises "Component parser called without ACR values"
+    return if idv_session_user.proofing_agent_user_awaiting_binding?
     return if resolved_authn_context_result.identity_proofing?
 
     redirect_to account_url
