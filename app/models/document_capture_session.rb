@@ -16,6 +16,7 @@ class DocumentCaptureSession < ApplicationRecord
   enum :document_type_requested, {
     Idp::Constants::DocumentTypes::STATE_ID_CARD => 0,
     Idp::Constants::DocumentTypes::PASSPORT => 1,
+    Idp::Constants::DocumentTypes::MDL => 3,
   }
 
   def load_result
@@ -210,6 +211,20 @@ class DocumentCaptureSession < ApplicationRecord
 
   def state_id_requested?
     document_type_requested == Idp::Constants::DocumentTypes::STATE_ID_CARD
+  end
+
+  def request_mdl!
+    attrs = {
+      passport_status: nil,
+      document_type_requested: Idp::Constants::DocumentTypes::MDL,
+      doc_auth_vendor: nil,
+    }.merge!(clear_socure_attributes)
+
+    update!(attrs) if !mdl_requested?
+  end
+
+  def mdl_requested?
+    document_type_requested == Idp::Constants::DocumentTypes::MDL
   end
 
   private

@@ -598,6 +598,7 @@ doc_auth.forms.change_file: Changer de fichier
 doc_auth.forms.choose_file_html: Faites glisser le fichier ici ou <lg-underline>choisissez dans un dossier</lg-underline>
 doc_auth.forms.doc_success: Nous avons vérifié vos informations
 doc_auth.forms.id_type_preference.drivers_license: Permis de conduire ou carte d’identité d’un État
+doc_auth.forms.id_type_preference.mdl: Permis de conduire mobile (mDL)
 doc_auth.forms.id_type_preference.passport: Passeport américain
 doc_auth.forms.id_type_preference.passport_card: Carte de passeport américain
 doc_auth.forms.selected_file: Fichier sélectionné
@@ -626,9 +627,10 @@ doc_auth.headings.document_capture_subheader_selfie: Prenez un selfie
 doc_auth.headings.document_capture_subheader_selfie_review: Selfie
 doc_auth.headings.front: Recto de votre permis de conduire ou de votre carte d’identité d’un État
 doc_auth.headings.how_to_verify: Choisir la manière dont vous souhaitez confirmer votre identité
-doc_auth.headings.interstitial: Nous traitons vos images
+doc_auth.headings.interstitial: Nous traitons vos informations.
 doc_auth.headings.lets_go: Comment fonctionne la vérification de votre identité
 doc_auth.headings.mailing_address: Saisir votre adresse postale de contact
+doc_auth.headings.mdl_capture: Renseignez les informations de votre permis de conduire mobile
 doc_auth.headings.no_ssn: Vous n’avez pas de numéro de sécurité sociale ?
 doc_auth.headings.passport: Votre passeport
 doc_auth.headings.passport_capture: Ajouter une photo de votre passeport
@@ -712,13 +714,15 @@ doc_auth.info.verify_at_post_office_description_passport_html: <strong>Vous pouv
 doc_auth.info.verify_at_post_office_instruction: Saisissez vos renseignements en ligne puis confirmez votre identité en personne dans un bureau de poste participant.
 doc_auth.info.verify_at_post_office_link_text: En savoir plus sur la vérification en personne
 doc_auth.info.verify_identity: Nous vous demanderons votre pièce d’identité, numéro de téléphone et d’autres renseignements personnels afin de confirmer votre identité par rapport aux registres publics.
-doc_auth.info.verify_online_description_passport: Vous pouvez utiliser un passeport américain (livret ou carte), un permis de conduire américain ou une carte d’identité délivrée par un État.
+doc_auth.info.verify_online_description: Vous pouvez utiliser un passeport américain (livret ou carte), un permis de conduire américain ou une carte d’identité délivrée par un État.
+doc_auth.info.verify_online_description_mdl: Vous pouvez utiliser un passeport américain (livret), un permis de conduire, un permis de conduire mobile ou une carte d’identité délivrée par un État.
 doc_auth.info.verify_online_instruction: Vous prendrez des photos de votre pièce d’identité afin de vérifier votre identité entièrement en ligne.
 doc_auth.info.verify_online_instruction_selfie: Prenez un selfie et des photos de votre pièce d’identité.
 doc_auth.info.verify_online_link_text: En savoir plus sur la vérification en ligne
 doc_auth.info.welcome_sp_reproof_alert: Pour votre sécurité, %{sp_name} exige que vous vérifiiez à nouveau votre identité.
 doc_auth.info.you_entered: 'Vous avez saisi :'
 doc_auth.instructions.bullet1: Posséder un passeport américain (livret ou carte), un permis de conduire américain ou une carte d’identité délivrée par un État.
+doc_auth.instructions.bullet1_mdl: Posséder un passeport américain, un permis de conduire, un permis de conduire mobile ou une carte d’identité délivrée par un État.
 doc_auth.instructions.bullet2: Saisir votre numéro de sécurité sociale
 doc_auth.instructions.bullet3: Vérifier la correspondance avec votre numéro de téléphone
 doc_auth.instructions.bullet4: Saisir à nouveau votre mot de passe %{app_name}
@@ -1209,6 +1213,13 @@ idv.gpo.return_to_profile: Retourner à votre profil
 idv.gpo.title: Saisir votre code de vérification
 idv.gpo.will_send_to: 'Vous recevrez un courrier de %{app_name} d’ici 5 à 10 jours à l’adresse que nous avons confirmée qui est associée à votre nom :'
 idv.images.come_back_later: Lettre avec une coche
+idv.mdl.alert_html: <strong>Vous n’avez pas encore de permis de conduire mobile ?</strong> Ce service n’est disponible que dans certains États et territoires des États-Unis. Veuillez contacter le service des immatriculations et des permis (Department of Motor Vehicles) de votre État pour plus d’informations.
+idv.mdl.button: Ouvrir le portefeuille numérique
+idv.mdl.learn_more: En savoir plus sur l’utilisation du permis de conduire mobile
+idv.mdl.steps_heading: 'Vous aurez besoin de:'
+idv.mdl.steps.device.title: Un appareil doté d’un portefeuille numérique
+idv.mdl.steps.have_mdl.title: Un permis de conduire mobile actif
+idv.mdl.subtitle: '%{app_name} vérifiera votre permis de conduire mobile par l’intermédiaire d’un prestataire de services de confiance (Socure).'
 idv.messages.activated_html: Votre identité a été vérifiée. Si vous souhaitez modifier les informations qui ont été vérifiées, veuillez %{link_html}.
 idv.messages.activated_link: nous contacter
 idv.messages.come_back_later: Une fois ce courrier reçu, reconnectez-vous pour saisir le code de vérification qui y figure.
