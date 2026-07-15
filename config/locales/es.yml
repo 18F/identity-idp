@@ -124,7 +124,7 @@ account.navigation.add_phone_number: Agregar número de teléfono
 account.navigation.add_platform_authenticator: Agregar desbloqueo facial o táctil
 account.navigation.add_security_key: Agregar clave de seguridad
 account.navigation.close: Cerrar
-account.navigation.connected_services: Sus cuentas conectadas
+account.navigation.connected_services: Sus servicios conectados
 account.navigation.customer_support: Atención al cliente
 account.navigation.delete_account: Eliminar cuenta
 account.navigation.edit_password: Editar contraseña
@@ -609,6 +609,7 @@ doc_auth.forms.change_file: Cambiar archivo
 doc_auth.forms.choose_file_html: Arrastrar el archivo aquí o <lg-underline>seleccionarlo de la carpeta</lg-underline>
 doc_auth.forms.doc_success: Verificamos su información
 doc_auth.forms.id_type_preference.drivers_license: Licencia de conducir de los EE. UU. o identificación estatal
+doc_auth.forms.id_type_preference.mdl: Licencia de conducir móvil (mDL)
 doc_auth.forms.id_type_preference.passport: Pasaporte estadounidense
 doc_auth.forms.id_type_preference.passport_card: Tarjeta de pasaporte de los EE. UU.
 doc_auth.forms.selected_file: Archivo seleccionado
@@ -637,9 +638,10 @@ doc_auth.headings.document_capture_subheader_selfie: Tómese una selfi
 doc_auth.headings.document_capture_subheader_selfie_review: Selfi
 doc_auth.headings.front: Frente de su licencia de conducir o identificación estatal
 doc_auth.headings.how_to_verify: Elija cómo desea verificar su identidad
-doc_auth.headings.interstitial: Estamos procesando sus imágenes
+doc_auth.headings.interstitial: Estamos procesando su información.
 doc_auth.headings.lets_go: Cómo funciona la verificación de su identidad
 doc_auth.headings.mailing_address: Ingrese su dirección postal
+doc_auth.headings.mdl_capture: Añada la información de su licencia de conducir móvil (mDL)
 doc_auth.headings.no_ssn: '¿No tiene un número de Seguro Social?'
 doc_auth.headings.passport: Su pasaporte
 doc_auth.headings.passport_capture: Agregue una foto de su pasaporte
@@ -719,12 +721,12 @@ doc_auth.info.socure_passport_ial2: '%{app_name} verificará su pasaporte por me
 doc_auth.info.ssn: Necesitamos su número de Seguro Social para verificar su nombre, fecha de nacimiento y dirección.
 doc_auth.info.stepping_up_html: Verifique de nuevo su identidad para acceder a este servicio. %{link_html}
 doc_auth.info.upload_from_computer: '¿No tiene un teléfono? Cargue fotos de su identificación desde esta computadora.'
-doc_auth.info.verify_at_post_office_description_passport_book: Puede usar un pasaporte estadounidense, una licencia de conducir de los EE. UU. o una identificación estatal.
 doc_auth.info.verify_at_post_office_description_passport_html: <strong>Solo puede usar una licencia de conducir de los EE. UU. o una identificación estatal.</strong> Para esta opción, no puede usar un pasaporte estadounidense.
 doc_auth.info.verify_at_post_office_instruction: Ingrese su información en línea, y verifique su identidad en persona en una oficina de correos participante.
 doc_auth.info.verify_at_post_office_link_text: Obtenga más información sobre la verificación en persona
 doc_auth.info.verify_identity: Le pediremos su identificación, número de teléfono y otros datos personales para verificar su identidad comparándola con los registros públicos.
-doc_auth.info.verify_online_description_passport: Puede usar un pasaporte estadounidense, una licencia de conducir de los EE. UU. o una identificación estatal.
+doc_auth.info.verify_online_description: Puede usar un pasaporte estadounidense, una licencia de conducir de los EE. UU. o una identificación estatal.
+doc_auth.info.verify_online_description_mdl: Puede utilizar un pasaporte, licencia de conducir, licencia de conducir móvil o tarjeta de identificación estatal de los EE. UU.
 doc_auth.info.verify_online_description_passport_card: Puede utilizar una libreta o tarjeta de pasaporte, licencia de conducir o una identificación estatal de los EE. UU.
 doc_auth.info.verify_online_instruction: Tomará fotos de su documento de identidad para verificar su identidad de forma totalmente en línea.
 doc_auth.info.verify_online_instruction_selfie: Tómese una selfi y fotos de su identificación.
@@ -732,6 +734,7 @@ doc_auth.info.verify_online_link_text: Obtenga más información sobre la verifi
 doc_auth.info.welcome_sp_reproof_alert: Por su seguridad, %{sp_name} requiere que verifique su identidad nuevamente.
 doc_auth.info.you_entered: 'Usted ingresó:'
 doc_auth.instructions.bullet1: Tener un pasaporte estadounidense, una licencia de conducir de los EE. UU. o una identificación estatal
+doc_auth.instructions.bullet1_mdl: Tener un pasaporte, licencia de conducir, licencia de conducir móvil (mDL) o tarjeta de identificación estatal de los EE. UU.
 doc_auth.instructions.bullet1_passport_card: Tener un libreta o tarjeta de pasaporte, licencia de conducir o una tarjeta de identificación estatal de los EE. UU.
 doc_auth.instructions.bullet2: Ingresar su número de Seguro Social
 doc_auth.instructions.bullet3: Hacer coincidir su número de teléfono
@@ -1223,6 +1226,13 @@ idv.gpo.return_to_profile: Vuelva a su perfil
 idv.gpo.title: Introduzca su código de verificación
 idv.gpo.will_send_to: 'En un plazo de 5 a 10 días, recibirá por correo una carta de %{app_name} en la dirección que verificamos y asociamos con usted:'
 idv.images.come_back_later: Carta con una marca de verificación
+idv.mdl.alert_html: <strong>¿Aún no tiene una mDL?</strong> Solo está disponible en algunos estados y territorios de EE. UU. Comuníquese con el DMV de su estado para obtener más información.
+idv.mdl.button: Abrir cartera digital
+idv.mdl.learn_more: Más información sobre cómo usar su mDL
+idv.mdl.steps_heading: 'Necesitará:'
+idv.mdl.steps.device.title: Un dispositivo con una cartera digital
+idv.mdl.steps.have_mdl.title: Una licencia de conducir móvil (mDL) activa
+idv.mdl.subtitle: '%{app_name} verificará su licencia de conducir móvil (mDL) mediante un proveedor de servicios de confianza: Socure.'
 idv.messages.activated_html: Se verificó su identidad. Si necesita cambiar la información verificada, %{link_html}.
 idv.messages.activated_link: contáctenos
 idv.messages.come_back_later: Cuando reciba su carta, vuelva a iniciar sesión e ingrese el código de verificación.

@@ -4,11 +4,12 @@ class Idv::HowToVerifyPresenter
   include ActionView::Helpers::TagHelper
   include ActionView::Helpers::TranslationHelper
 
-  attr_reader :selfie_required, :passport_cards_supported
+  attr_reader :selfie_required, :passport_cards_supported, :mdl_enabled
 
-  def initialize(selfie_check_required:, passport_cards_supported: false)
+  def initialize(selfie_check_required:, passport_cards_supported: false, mdl_enabled: false)
     @selfie_required = selfie_check_required
     @passport_cards_supported = passport_cards_supported
+    @mdl_enabled = mdl_enabled
   end
 
   def how_to_verify_info
@@ -46,11 +47,10 @@ class Idv::HowToVerifyPresenter
   end
 
   def verify_online_description
-    if passport_cards_supported
-      t('doc_auth.info.verify_online_description_passport_card')
-    else
-      t('doc_auth.info.verify_online_description_passport')
-    end
+    return t('doc_auth.info.verify_online_description_mdl') if mdl_enabled
+    return t('doc_auth.info.verify_online_description_passport_card') if passport_cards_supported
+
+    t('doc_auth.info.verify_online_description')
   end
 
   def online_submit
@@ -81,7 +81,7 @@ class Idv::HowToVerifyPresenter
   # regardless of whether passport cards are supported online.
   def post_office_description
     IdentityConfig.store.in_person_passports_enabled ?
-      t('doc_auth.info.verify_at_post_office_description_passport_book') :
+      t('doc_auth.info.verify_online_description') :
       t('doc_auth.info.verify_at_post_office_description_passport_html')
   end
 

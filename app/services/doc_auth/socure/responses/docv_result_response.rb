@@ -4,7 +4,8 @@ module DocAuth
   module Socure
     module Responses
       class DocvResultResponse < DocAuth::Response
-        attr_reader :http_response, :passport_requested
+        attr_reader :http_response, :passport_requested, :passport_cards_supported,
+                    :document_capture_session
 
         DATA_PATHS = {
           reference_id: %w[referenceId],
@@ -44,10 +45,17 @@ module DocAuth
             Idp::Constants::DocumentTypes::STATE_ID_CARD,
         }.freeze
 
-        def initialize(http_response:, passport_requested: false)
+        def initialize(
+          http_response:,
+          document_capture_session:,
+          passport_requested: false,
+          passport_cards_supported: false
+        )
           @http_response = http_response
           @pii_from_doc = read_pii
           @passport_requested = passport_requested
+          @passport_cards_supported = passport_cards_supported
+          @document_capture_session = document_capture_session
 
           super(
             success: doc_auth_success?,
@@ -146,7 +154,7 @@ module DocAuth
               issuing_country_code:,
               nationality_code: issuing_country_code,
               document_number: get_data(DATA_PATHS[:document_number]),
-              document_type_received: document_type_received,
+              document_type_received:,
               passport_expiration: expiration_date,
               sex: nil,
               birth_place: nil,
@@ -210,10 +218,15 @@ module DocAuth
 
         def document_type_received
           doc_type = document_id_type&.gsub(/\W/, '')&.underscore
-          if !STATE_ID_MAPPINGS[doc_type].nil?
-            return STATE_ID_MAPPINGS[doc_type]
+
+          if reason_codes&.intersect?(mdl_reason_codes) &&
+             doc_type == Idp::Constants::DocumentTypes::DRIVERS_LICENSE
+            doc_type = Idp::Constants::DocumentTypes::MDL
           end
-          doc_type
+
+          return doc_type if STATE_ID_MAPPINGS[doc_type].nil?
+
+          STATE_ID_MAPPINGS[doc_type]
         end
 
         def document_id_type
@@ -252,17 +265,28 @@ module DocAuth
 
         def id_type_supported?
           if passports_enabled?
-            DocAuth::DocumentClassifications::ALL_CLASSIFICATIONS.include?(document_id_type)
+            if DocAuth::DocumentClassifications::ALL_CLASSIFICATIONS.include?(document_id_type)
+              if !passport_cards_supported && DocAuth::DocumentClassifications::PASSPORT_CARD_CLASSIFICATIONS.include?(document_id_type)
+                return false
+              end
+              return true
+            end
+            return false
           else
             DocAuth::DocumentClassifications::STATE_ID_CLASSIFICATIONS.include?(document_id_type)
           end
         end
 
         def id_type_expected?
-          if document_type_received == Idp::Constants::DocumentTypes::PASSPORT
-            passport_requested
+          case document_type_received
+          when Idp::Constants::DocumentTypes::PASSPORT
+            document_capture_session.passport_requested?
+          when Idp::Constants::DocumentTypes::MDL
+            document_capture_session.mdl_requested?
+          when Idp::Constants::DocumentTypes::STATE_ID_CARD, Idp::Constants::DocumentTypes::DRIVERS_LICENSE
+            document_capture_session.state_id_requested?
           else
-            !passport_requested
+            false
           end
         end
 
@@ -288,6 +312,10 @@ module DocAuth
             IdentityConfig.store.doc_auth_passport_vendor_socure_percent > 0
           ) ||
             IdentityConfig.store.doc_auth_passport_vendor_default == Idp::Constants::Vendors::SOCURE
+        end
+
+        def mdl_reason_codes
+          IdentityConfig.store.idv_socure_reason_codes_docv_mdl
         end
       end
     end

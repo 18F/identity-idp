@@ -24,7 +24,7 @@ RSpec.describe Idv::HowToVerifyPresenter do
     context 'when passport cards are not supported' do
       it 'does not mention the passport card' do
         expect(presenter.verify_online_description)
-          .to eq(t('doc_auth.info.verify_online_description_passport'))
+          .to eq(t('doc_auth.info.verify_online_description'))
       end
     end
   end
@@ -37,7 +37,7 @@ RSpec.describe Idv::HowToVerifyPresenter do
 
       it 'does not mention the passport card' do
         expect(presenter.post_office_description)
-          .to eq(t('doc_auth.info.verify_at_post_office_description_passport_book'))
+          .to eq(t('doc_auth.info.verify_online_description'))
       end
 
       context 'when passport cards are supported' do

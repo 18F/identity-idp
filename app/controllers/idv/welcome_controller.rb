@@ -21,6 +21,7 @@ module Idv
         decorated_sp_session:,
         show_sp_reproof_banner: show_sp_reproof_banner?,
         passport_cards_supported: passport_cards_supported?,
+        mdl_enabled: mdl_enabled?,
       )
     end
 
@@ -73,6 +74,7 @@ module Idv
       document_capture_session = DocumentCaptureSession.create!(
         user_id: current_user.id,
         issuer: sp_session[:issuer],
+        mdl_enabled: mdl_enabled?,
       )
       idv_session.document_capture_session_uuid = document_capture_session.uuid
     end
@@ -81,6 +83,12 @@ module Idv
       UspsInPersonProofing::EnrollmentHelper.cancel_establishing_and_in_progress_enrollments(
         current_user,
       )
+    end
+
+    def mdl_enabled?
+      return false if IdentityConfig.store.idv_doc_auth_mdl_enabled_percent.zero?
+
+      ab_test_bucket(:DOC_AUTH_MDL, user: current_user) == :mdl_enabled
     end
   end
 end

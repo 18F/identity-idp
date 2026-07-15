@@ -222,7 +222,7 @@ module Users
 
       success = current_user.present? &&
                 !user_locked_out?(user) &&
-                (recaptcha_response.success? || log_captcha_failures_only?)
+                recaptcha_response.success?
       session[:sign_in_recaptcha_assessment_id] = recaptcha_assessment_id if recaptcha_assessment_id
 
       analytics.email_and_password_auth(
