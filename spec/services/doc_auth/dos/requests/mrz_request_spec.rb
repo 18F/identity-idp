@@ -104,7 +104,10 @@ RSpec.describe DocAuth::Dos::Requests::MrzRequest do
         correlation_id_sent: correlation_id,
         correlation_id_received: correlation_id,
       )
-      expect(response.errors).to include(message: "Unexpected response: #{mrz_result}")
+      expect(response.errors).to include(
+        passport: "Unexpected response: #{mrz_result}",
+        network: true,
+      )
     end
   end
 

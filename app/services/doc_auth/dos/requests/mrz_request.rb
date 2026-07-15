@@ -49,7 +49,7 @@ module DocAuth
           else
             DocAuth::Response.new(
               success: false,
-              errors: { message: "Unexpected response: #{result[:response]}" },
+              errors: { passport: "Unexpected response: #{result[:response]}", network: true },
               exception: nil,
               extra:,
             )
