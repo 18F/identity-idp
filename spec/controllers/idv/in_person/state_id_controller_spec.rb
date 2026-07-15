@@ -163,6 +163,7 @@ RSpec.describe Idv::InPerson::StateIdController do
     let(:identity_doc_city) { InPersonHelper::GOOD_IDENTITY_DOC_CITY }
     let(:identity_doc_address_state) { InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS_STATE }
     let(:identity_doc_zipcode) { InPersonHelper::GOOD_IDENTITY_DOC_ZIPCODE }
+    let(:asserted_id_type) { Idp::Constants::DocumentTypes::DRIVERS_LICENSE }
 
     let(:params) do
       {
@@ -179,6 +180,7 @@ RSpec.describe Idv::InPerson::StateIdController do
           identity_doc_zipcode:,
           dob:,
           id_expiration:,
+          asserted_id_type:,
         },
       }
     end
@@ -452,6 +454,7 @@ RSpec.describe Idv::InPerson::StateIdController do
           identity_doc_zipcode: InPersonHelper::GOOD_IDENTITY_DOC_ZIPCODE,
           dob: { month: '1', day: '1', year: '1980' },
           id_expiration: { month: '12', day: '31', year: '2030' },
+          asserted_id_type: Idp::Constants::DocumentTypes::DRIVERS_LICENSE,
         },
       }
     end
