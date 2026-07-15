@@ -64,7 +64,6 @@ RSpec.describe Idv::EnterDobSsnController do
         :confirm_verification_needed,
         :move_agent_proofed_user_pii_to_idv_session,
         :override_csp_for_threat_metrix,
-        :set_sp_acr_values,
       )
     end
 
