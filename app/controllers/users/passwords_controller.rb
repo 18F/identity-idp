@@ -98,8 +98,6 @@ module Users
       if @update_user_password_form.personal_key.present?
         user_session[:personal_key] = @update_user_password_form.personal_key
         manage_personal_key_url
-      elsif required_password_change?
-        after_sign_in_path_for(current_user)
       else
         account_path
       end
