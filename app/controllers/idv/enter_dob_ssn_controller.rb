@@ -96,7 +96,9 @@ module Idv
 
     def set_sp_acr_values
       session[:sp] ||= {}
-      session[:sp][:acr_values] ||= Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_REQUIRED_ACR
+      # agent proofing is an in-person identity check with no selfie, so this is
+      # IAL2 identity proofing WITHOUT facial match
+      session[:sp][:acr_values] ||= Saml::Idp::Constants::IAL_VERIFIED_ACR
     end
   end
 end

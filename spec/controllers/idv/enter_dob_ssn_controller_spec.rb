@@ -33,7 +33,7 @@ RSpec.describe Idv::EnterDobSsnController do
   let(:idv_session) { subject.idv_session }
   let(:resolved_authn_context_result) do
     Component::Parser.new(
-      acr_values: Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_REQUIRED_ACR,
+      acr_values: Saml::Idp::Constants::IAL_VERIFIED_ACR,
     ).parse
   end
   let(:proofing_agent_device_profiling) { :disabled }
@@ -182,7 +182,7 @@ RSpec.describe Idv::EnterDobSsnController do
       response
 
       expect(session[:sp].with_indifferent_access[:acr_values]).to eq(
-        Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_REQUIRED_ACR,
+        Saml::Idp::Constants::IAL_VERIFIED_ACR,
       )
     end
   end
@@ -260,7 +260,7 @@ RSpec.describe Idv::EnterDobSsnController do
       post :create, params: params
 
       expect(session[:sp].with_indifferent_access[:acr_values]).to eq(
-        Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_REQUIRED_ACR,
+        Saml::Idp::Constants::IAL_VERIFIED_ACR,
       )
     end
   end
