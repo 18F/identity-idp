@@ -130,7 +130,7 @@ class ApplicationController < ActionController::Base
     return @resolved_authn_context_result if defined?(@resolved_authn_context_result)
 
     service_provider = sp_from_sp_session
-    if service_provider.nil?
+    if service_provider.nil? || sp_session[:acr_values].blank?
       @resolved_authn_context_result = Component::Parser::Result.no_sp_result
     else
       @resolved_authn_context_result = AuthnContextResolver.new(
