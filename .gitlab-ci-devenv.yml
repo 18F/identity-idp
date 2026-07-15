@@ -1,5 +1,5 @@
 devenv-test:
-  image: $ECR_REGISTRY/github/cachix/devenv/devenv:v1.11
+  image: $ECR_REGISTRY/github/cachix/devenv/devenv:v1.10
   script:
     - devenv test
   needs: []
