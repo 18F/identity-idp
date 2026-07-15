@@ -546,6 +546,16 @@ RSpec.describe ApplicationController do
       end
     end
 
+    context 'with an SP but neither acr_values nor vtr' do
+      # the proofing agent binding flow hand-rolls a session like this
+      let(:acr_values) { nil }
+      let(:vtr) { nil }
+
+      it 'returns a no-SP result instead of raising' do
+        expect(result).to eq(Component::Parser::Result.no_sp_result)
+      end
+    end
+
     context 'when using vot values' do
       let(:acr_values) { nil }
       let(:vtr) { ['P1'] }

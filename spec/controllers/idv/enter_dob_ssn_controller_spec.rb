@@ -64,7 +64,6 @@ RSpec.describe Idv::EnterDobSsnController do
         :confirm_verification_needed,
         :move_agent_proofed_user_pii_to_idv_session,
         :override_csp_for_threat_metrix,
-        :set_sp_acr_values,
       )
     end
 
@@ -177,14 +176,6 @@ RSpec.describe Idv::EnterDobSsnController do
         response
       end
     end
-
-    it 'sets session[:sp] as a hash with the acr_values' do
-      response
-
-      expect(session[:sp].with_indifferent_access[:acr_values]).to eq(
-        Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_REQUIRED_ACR,
-      )
-    end
   end
 
   describe '#create' do
@@ -254,14 +245,6 @@ RSpec.describe Idv::EnterDobSsnController do
         expect(result.review_status).to eq('pass')
         expect(result.transaction_id).to eq('ddp-mock-transaction-id-123')
       end
-    end
-
-    it 'sets session[:sp] as a hash with the acr_values' do
-      post :create, params: params
-
-      expect(session[:sp].with_indifferent_access[:acr_values]).to eq(
-        Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_REQUIRED_ACR,
-      )
     end
   end
 end

@@ -130,7 +130,12 @@ class ApplicationController < ActionController::Base
     return @resolved_authn_context_result if defined?(@resolved_authn_context_result)
 
     service_provider = sp_from_sp_session
-    if service_provider.nil? || sp_session[:acr_values].blank?
+    # the proofing agent binding flow hand-rolls an sp session with an issuer but
+    # neither acr_values nor vtr, which makes Component::Parser raise. treat that
+    # as no sp. a vtr-only session still falls through to preserve existing
+    # behavior (this method resolves acr, not vtr).
+    if service_provider.nil? ||
+       (sp_session[:acr_values].blank? && sp_session[:vtr].blank?)
       @resolved_authn_context_result = Component::Parser::Result.no_sp_result
     else
       @resolved_authn_context_result = AuthnContextResolver.new(
