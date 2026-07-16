@@ -1,0 +1,27 @@
+<% is_primary_phone = current_user.default_phone_configuration == phone_configuration &&
+                      mfa_context.phone_configurations.count > 1 %>
+
+<li class="ads-account__row">
+  <div class="ads-account__row-main">
+    <p class="ads-account__row-text">
+      <span class="ads-account__row-value">
+        <%= PhoneFormatter.format(phone_configuration.phone) %>
+      </span>
+
+      <% if is_primary_phone %>
+        <span class="ads-account__badge">
+          <%= t('account.dashboard.account.phone.primary') %>
+        </span>
+      <% end %>
+    </p>
+  </div>
+
+  <div class="ads-account__row-actions">
+    <%= render ButtonComponent.new(
+          url: manage_phone_path(id: phone_configuration.id),
+          variant: :quaternary,
+          size: :md,
+          'aria-label': "#{t('forms.buttons.manage')}: #{PhoneFormatter.format(phone_configuration.phone)}",
+        ).with_content(t('forms.buttons.manage')) %>
+  </div>
+</li>

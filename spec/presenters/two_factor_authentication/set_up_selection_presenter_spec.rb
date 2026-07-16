@@ -73,26 +73,6 @@ RSpec.describe TwoFactorAuthentication::SetUpSelectionPresenter do
     end
   end
 
-  describe '#mfa_added_label' do
-    subject(:mfa_added_label) { presenter.mfa_added_label }
-    before do
-      allow(presenter).to receive(:mfa_configuration_count).and_return('1')
-    end
-    it 'is a count of configured MFAs' do
-      expect(presenter.mfa_added_label).to include('added')
-    end
-
-    context 'with single configuration only' do
-      before do
-        allow(presenter).to receive(:single_configuration_only?).and_return(true)
-      end
-
-      it 'is an empty string' do
-        expect(presenter.mfa_added_label).to eq('')
-      end
-    end
-  end
-
   describe '#type' do
     it 'raises with missing implementation' do
       expect { presenter.type }.to raise_error(NotImplementedError)

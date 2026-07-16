@@ -25,7 +25,7 @@ describe('SpinnerButtonElement', () => {
     longWaitDurationMs = 1000,
   }: WrapperOptions = {}) {
     let button = `
-      <button class="usa-button">
+      <button class="ads-button">
         <span class="spinner-button__content">Click Me</span>
         <span class="spinner-dots" aria-hidden="true">
           <span class="spinner-dots__dot"></span>
@@ -49,7 +49,7 @@ describe('SpinnerButtonElement', () => {
             ? `<div
                  role="status"
                  data-message="${actionMessage}"
-                 class="spinner-button__action-message usa-sr-only"></div>`
+                 class="spinner-button__action-message ads-sr-only"></div>`
             : ''
         }
       </lg-spinner-button>`;
@@ -170,7 +170,7 @@ describe('SpinnerButtonElement', () => {
     await userEvent.click(button);
 
     expect(status.textContent).to.equal('Verifying...');
-    expect(status.classList.contains('usa-sr-only')).to.be.true();
+    expect(status.classList.contains('ads-sr-only')).to.be.true();
   });
 
   it('shows action message visually after long delay', async () => {
@@ -183,9 +183,9 @@ describe('SpinnerButtonElement', () => {
 
     await userEvent.click(button);
     clock.tick(longWaitDurationMs - 1);
-    expect(status.classList.contains('usa-sr-only')).to.be.true();
+    expect(status.classList.contains('ads-sr-only')).to.be.true();
     clock.tick(1);
-    expect(status.classList.contains('usa-sr-only')).to.be.false();
+    expect(status.classList.contains('ads-sr-only')).to.be.false();
   });
 
   it('does not show visual action message when given infinite delay', async () => {

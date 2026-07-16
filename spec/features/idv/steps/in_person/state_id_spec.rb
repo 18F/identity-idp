@@ -18,26 +18,6 @@ RSpec.describe 'state id controller enabled', :js do
       )
     end
 
-    it 'allows the user to cancel and start over', allow_browser_log: true do
-      complete_steps_before_state_id_controller
-
-      expect(page).not_to have_content('forms.buttons.back')
-
-      click_link t('links.cancel')
-      click_on t('idv.cancel.actions.start_over')
-      expect(page).to have_current_path(idv_welcome_path)
-    end
-
-    it 'allows the user to cancel and return', allow_browser_log: true do
-      complete_steps_before_state_id_controller
-
-      expect(page).not_to have_content('forms.buttons.back')
-
-      click_link t('links.cancel')
-      click_on t('idv.cancel.actions.keep_going')
-      expect(page).to have_current_path(idv_in_person_state_id_path, wait: 10)
-    end
-
     it 'allows user to submit valid inputs on form', allow_browser_log: true do
       complete_steps_before_state_id_controller
       fill_out_state_id_form_ok(same_address_as_id: true)
@@ -72,7 +52,7 @@ RSpec.describe 'state id controller enabled', :js do
       fill_in t('in_person_proofing.form.state_id.zipcode'), with: '123'
       click_idv_continue
       expect(page).to have_css(
-        '.usa-error-message',
+        '.ads-input__error--visible',
         text: t('idv.errors.pattern_mismatch.zipcode'),
       )
 
@@ -94,11 +74,11 @@ RSpec.describe 'state id controller enabled', :js do
       less_than_13_years_ago = Time.zone.now - (13.years - buffer_to_avoid_test_flakiness)
       dob = [
         less_than_13_years_ago.year,
-        less_than_13_years_ago.month,
-        less_than_13_years_ago.day,
+        format('%02d', less_than_13_years_ago.month),
+        format('%02d', less_than_13_years_ago.day),
       ].join('-')
 
-      fill_in_memorable_date('identity_doc[dob]', dob)
+      fill_in t('in_person_proofing.form.state_id.dob'), with: dob
 
       click_idv_continue
       expect(page).to have_content(
@@ -111,11 +91,11 @@ RSpec.describe 'state id controller enabled', :js do
       thirteenish_years_ago = Time.zone.now - (13.years + buffer_to_avoid_test_flakiness)
       dob = [
         thirteenish_years_ago.year,
-        thirteenish_years_ago.month,
-        thirteenish_years_ago.day,
+        format('%02d', thirteenish_years_ago.month),
+        format('%02d', thirteenish_years_ago.day),
       ].join('-')
 
-      fill_in_memorable_date('identity_doc[dob]', dob)
+      fill_in t('in_person_proofing.form.state_id.dob'), with: dob
 
       click_idv_continue
       expect(page).not_to have_content(
@@ -132,11 +112,11 @@ RSpec.describe 'state id controller enabled', :js do
       yesterday = Time.zone.now - 1.day
       exp = [
         yesterday.year,
-        yesterday.month,
-        yesterday.day,
+        format('%02d', yesterday.month),
+        format('%02d', yesterday.day),
       ].join('-')
 
-      fill_in_memorable_date('identity_doc[id_expiration]', exp)
+      fill_in t('in_person_proofing.form.state_id.expiration_date'), with: exp
 
       click_idv_continue
 
@@ -150,11 +130,11 @@ RSpec.describe 'state id controller enabled', :js do
       two_days_from_today = Time.zone.now + 2.days
       exp = [
         two_days_from_today.year,
-        two_days_from_today.month,
-        two_days_from_today.day,
+        format('%02d', two_days_from_today.month),
+        format('%02d', two_days_from_today.day),
       ].join('-')
 
-      fill_in_memorable_date('identity_doc[id_expiration]', exp)
+      fill_in t('in_person_proofing.form.state_id.expiration_date'), with: exp
 
       click_idv_continue
       expect(page).not_to have_content(
@@ -231,70 +211,20 @@ RSpec.describe 'state id controller enabled', :js do
   end
 
   context 'state selection' do
-    it 'shows address hint when user selects state that has a specific hint',
+    it 'submits when Puerto Rico is selected as address state',
        allow_browser_log: true do
       complete_steps_before_state_id_controller
 
-      # state id page
-      select 'Puerto Rico',
-             from: t('in_person_proofing.form.state_id.identity_doc_address_state')
-
-      expect(page).to have_content(I18n.t('in_person_proofing.form.state_id.address1_hint'))
-      expect(page).to have_content(I18n.t('in_person_proofing.form.state_id.address2_hint'))
-
-      # change state selection
       fill_out_state_id_form_ok(same_address_as_id: true)
-      expect(page).not_to have_content(I18n.t('in_person_proofing.form.state_id.address1_hint'))
-      expect(page).not_to have_content(I18n.t('in_person_proofing.form.state_id.address2_hint'))
-
-      # re-select puerto rico
       select 'Puerto Rico',
              from: t('in_person_proofing.form.state_id.identity_doc_address_state')
       click_idv_continue
 
-      # ssn page
       expect(page).to have_current_path(idv_in_person_ssn_url)
       complete_ssn_step
 
-      # verify page
       expect(page).to have_current_path(idv_in_person_verify_info_path)
       expect(page).to have_text('PR')
-    end
-
-    it 'shows id number hint when user selects issuing state that has a specific hint',
-       allow_browser_log: true do
-      complete_steps_before_state_id_controller
-
-      # expect default hint to be present
-      expect(page).to have_content(t('in_person_proofing.form.state_id.state_id_number_hint'))
-
-      select 'Texas',
-             from: t('in_person_proofing.form.state_id.state_id_jurisdiction')
-      expect(page).to have_content(t('in_person_proofing.form.state_id.state_id_number_texas_hint'))
-      expect(page).not_to have_content(t('in_person_proofing.form.state_id.state_id_number_hint'))
-
-      select 'Florida',
-             from: t('in_person_proofing.form.state_id.state_id_jurisdiction')
-      expect(page).not_to have_content(
-        t('in_person_proofing.form.state_id.state_id_number_texas_hint'),
-      )
-      expect(page).not_to have_content(t('in_person_proofing.form.state_id.state_id_number_hint'))
-      expect(page).to have_content strip_tags(
-        t('in_person_proofing.form.state_id.state_id_number_florida_hint_html').gsub(
-          /&nbsp;/, ' '
-        ),
-      )
-
-      # select a state without a state specific hint
-      select 'Ohio',
-             from: t('in_person_proofing.form.state_id.state_id_jurisdiction')
-      expect(page).to have_content(t('in_person_proofing.form.state_id.state_id_number_hint'))
-      expect(page).not_to have_content(
-        t('in_person_proofing.form.state_id.state_id_number_texas_hint'),
-      )
-      expect(page).not_to have_content(
-        t('in_person_proofing.form.state_id.state_id_number_florida_hint_html'),
-      )
     end
   end
 end

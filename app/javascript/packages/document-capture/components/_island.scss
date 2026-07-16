@@ -1,0 +1,100 @@
+@use 'variables/ads' as ads;
+
+.ads-auth:has(#document-capture-form) {
+  --ads-flow-align: stretch;
+}
+
+#document-capture-form {
+  font-family: ads.$font-family;
+}
+
+.page-heading {
+  color: ads.$off-black;
+  font-family: ads.$font-family;
+  font-size: ads.$text-heading-m;
+  font-weight: ads.$font-semibold;
+  letter-spacing: -0.0675rem;
+  line-height: 1.1;
+  margin: 0;
+  text-align: center;
+  text-wrap: pretty;
+
+  &[tabindex='-1']:not(:focus-visible):focus {
+    outline: none;
+  }
+}
+
+.usa-label {
+  color: ads.$off-black;
+  display: block;
+  font-family: ads.$font-family;
+  font-size: ads.$text-label-m;
+  font-weight: ads.$font-semibold;
+  letter-spacing: ads.$text-letter-spacing-label;
+  line-height: 1.5;
+  margin-bottom: ads.space(8);
+}
+
+.usa-hint,
+.usa-error-message,
+.usa-success-message {
+  color: ads.alpha(ads.$off-black, 65%);
+  display: block;
+  font-family: ads.$font-family;
+  font-size: ads.$text-body-s;
+  line-height: 1.5;
+  margin-top: ads.space(8);
+}
+
+.usa-error-message,
+.usa-label--error {
+  color: ads.$red-600;
+}
+
+.usa-success-message {
+  color: ads.$green-600;
+}
+
+.usa-process-list {
+  counter-reset: doc-capture-process;
+  list-style: none;
+  margin: 0 0 ads.space(32);
+  padding: 0;
+  text-align: left;
+}
+
+.usa-process-list__item {
+  margin-bottom: ads.space(24);
+  padding-left: ads.space(40);
+  position: relative;
+
+  &::before {
+    align-items: center;
+    background: ads.$off-black;
+    border-radius: ads.radius(pill);
+    color: ads.$white;
+    content: counter(doc-capture-process);
+    counter-increment: doc-capture-process;
+    display: inline-flex;
+    font-family: ads.$font-family;
+    font-size: ads.$text-body-s;
+    font-weight: ads.$font-semibold;
+    height: ads.space(32);
+    justify-content: center;
+    left: 0;
+    line-height: 1;
+    position: absolute;
+    top: 0;
+    width: ads.space(32);
+  }
+}
+
+.usa-process-list__heading {
+  color: ads.$off-black;
+  font-family: ads.$font-family;
+  font-size: ads.$text-label-m;
+  font-weight: ads.$font-semibold;
+  letter-spacing: ads.$text-letter-spacing-label;
+  line-height: 1.5;
+  margin: 0 0 ads.space(8);
+}

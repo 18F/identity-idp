@@ -68,6 +68,8 @@ class TwoFactorOptionsPresenter
       t('two_factor_authentication.two_factor_hspd12_choice')
     elsif phishing_resistant_only? && mfa_policy.two_factor_enabled?
       t('two_factor_authentication.two_factor_aal3_choice')
+    elsif two_factor_enabled?
+      t('two_factor_authentication.two_factor_choice_other.backup_heading')
     else
       t('two_factor_authentication.two_factor_choice')
     end
@@ -78,6 +80,8 @@ class TwoFactorOptionsPresenter
       t('two_factor_authentication.two_factor_hspd12_choice_intro')
     elsif phishing_resistant_only?
       t('two_factor_authentication.two_factor_aal3_choice_intro')
+    elsif two_factor_enabled?
+      t('two_factor_authentication.two_factor_choice_other.backup_intro')
     else
       t('mfa.info', app_name: APP_NAME)
     end

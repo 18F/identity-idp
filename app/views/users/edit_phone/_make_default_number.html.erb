@@ -1,19 +1,20 @@
-<div class="margin-bottom-4">
-  <fieldset class="margin-0 padding-0 border-0">
-    <legend class="usa-label margin-bottom-1">
-      <% if @edit_phone_form.one_phone_configured? %>
-        <%= t('two_factor_authentication.otp_make_default_number.one_number_title') %>
-      <% else %>
-        <%= t('two_factor_authentication.otp_make_default_number.title') %>
-      <% end %>
-    </legend>
-    <p class="margin-top-0 margin-bottom-2">
-      <% if @edit_phone_form.one_phone_configured? %>
-        <%= t('two_factor_authentication.otp_make_default_number.one_number_instruction') %>
-      <% else %>
-        <%= t('two_factor_authentication.otp_make_default_number.instruction') %>
-      <% end %>
-    </p>
+<fieldset class="ads-fieldset" aria-describedby="otp_make_default_number_instruction">
+  <legend class="ads-fieldset__legend">
+    <% if @edit_phone_form.one_phone_configured? %>
+      <%= t('two_factor_authentication.otp_make_default_number.one_number_title') %>
+    <% else %>
+      <%= t('two_factor_authentication.otp_make_default_number.title') %>
+    <% end %>
+  </legend>
+  <p class="ads-fieldset__hint" id="otp_make_default_number_instruction">
+    <% if @edit_phone_form.one_phone_configured? %>
+      <%= t('two_factor_authentication.otp_make_default_number.one_number_instruction') %>
+    <% else %>
+      <%= t('two_factor_authentication.otp_make_default_number.instruction') %>
+    <% end %>
+  </p>
+
+  <div class="ads-checkbox">
     <%= check_box_tag(
           'edit_phone_form[make_default_number]',
           :otp_make_default_number,
@@ -21,11 +22,10 @@
           class: 'usa-checkbox__input usa-checkbox__input--bordered',
           disabled: @edit_phone_form.one_phone_configured?,
         ) %>
-    <label
-      class="usa-checkbox__label"
-      for="edit_phone_form_make_default_number"
-    >
-      <%= t('two_factor_authentication.otp_make_default_number.label') %>
-    </label>
-  </fieldset>
-</div>
+    <%= label_tag(
+          'edit_phone_form_make_default_number',
+          t('two_factor_authentication.otp_make_default_number.label'),
+          class: 'ads-checkbox__label',
+        ) %>
+  </div>
+</fieldset>

@@ -21,9 +21,7 @@ class Idv::InPerson::ChooseIdTypeController < ApplicationController
   def update
     clear_future_steps!
 
-    form = Idv::ChooseIdTypeForm.new(
-      mdl_enabled: false,
-    )
+    form = Idv::ChooseIdTypeForm.new
     result = form.submit(choose_id_type_form_params)
 
     analytics.idv_in_person_proofing_choose_id_type_submitted(
@@ -36,7 +34,7 @@ class Idv::InPerson::ChooseIdTypeController < ApplicationController
        !dos_passport_api_healthy?(analytics:, step: 'choose_id_type')
       redirect_to idv_in_person_choose_id_type_url(passports: false)
     elsif result.success?
-      set_document_type_requested
+      set_passport_requested
       redirect_to id_type_to_route_url[form.chosen_id_type]
     else
       redirect_to idv_in_person_choose_id_type_url

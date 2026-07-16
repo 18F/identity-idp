@@ -36,14 +36,14 @@ RSpec.describe 'idv/by_mail/request_letter/index.html.erb' do
   end
 
   it 'renders fallback link to return to phone verify path' do
-    expect(rendered).to have_link('‹ ' + t('forms.buttons.back'), href: idv_phone_path)
+    expect(rendered).to have_link(t('forms.buttons.back'), href: idv_phone_path)
   end
 
   context 'has page to go back to' do
     let(:go_back_path) { idv_otp_verification_path }
 
     it 'renders back link to return to previous path' do
-      expect(rendered).to have_link('‹ ' + t('forms.buttons.back'), href: go_back_path)
+      expect(rendered).to have_link(t('forms.buttons.back'), href: go_back_path)
     end
   end
 

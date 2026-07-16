@@ -1,16 +1,6 @@
-<% content_for(:pre_flash_content) do %>
-  <%= render StepIndicatorComponent.new(
-        steps: Idv::StepIndicatorConcern::STEP_INDICATOR_STEPS,
-        current_step: :verify_id,
-        locale_scope: 'idv',
-        class: 'margin-x-neg-2 margin-top-neg-4 tablet:margin-x-neg-6 tablet:margin-top-neg-4',
-      ) %>
-<% end %>
+<% self.title = t('doc_auth.headings.capture_complete_ads') %>
 
-<div class="text-center margin-bottom-2">
-  <%= image_tag(asset_url('idv/switch-back-to-computer.svg'), width: 207, height: 88, alt: t('doc_auth.instructions.switch_back_image')) %>
-</div>
-
-<% self.title = t('titles.doc_auth.switch_back') %>
-
-<%= render PageHeadingComponent.new.with_content(t('doc_auth.instructions.switch_back')) %>
+<%= render ADS::FormPageComponent.new(
+      title: t('doc_auth.headings.capture_complete_ads'),
+      subtitle: t('doc_auth.instructions.switch_back_continue'),
+    ) %>

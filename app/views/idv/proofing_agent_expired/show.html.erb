@@ -1,32 +1,19 @@
 <% self.title = t('idv.proofing_agent_expired.heading') %>
 
-<div class="proofing-agent-expired-page">
-  <%= render AlertIconComponent.new(icon_name: :warning, class: 'display-block margin-bottom-4') %>
-
-  <%= render PageHeadingComponent.new.with_content(t('idv.proofing_agent_expired.heading')) %>
-
-  <p class="margin-bottom-5">
-    <%= t('idv.proofing_agent_expired.body') %>
-  </p>
-
-  <%= simple_form_for(
-        '',
-        url: idv_proofing_agent_expired_path,
-        method: :post,
-        html: { class: 'margin-top-2 margin-bottom-5' },
-      ) do |f| %>
-    <div class="margin-top-4">
-      <%= render(
-            SpinnerButtonComponent.new(
-              type: :submit,
-              big: true,
-              wide: true,
-              spin_on_click: false,
-              class: 'tablet:width-auto',
-            ).with_content(t('idv.proofing_agent_expired.continue')),
+<%= render ADS::FormPageComponent.new(
+      title: t('idv.proofing_agent_expired.heading'),
+      subtitle: t('idv.proofing_agent_expired.body'),
+    ) do |page| %>
+  <% page.with_body do %>
+    <%= simple_form_for(
+          '',
+          url: idv_proofing_agent_expired_path,
+          method: :post,
+          html: { class: 'ads-form ads-form--align-stretch' },
+        ) do %>
+      <%= render ButtonComponent.new(size: :lg, type: :submit).with_content(
+            t('idv.proofing_agent_expired.continue'),
           ) %>
-    </div>
+    <% end %>
   <% end %>
-
-  <%= render 'shared/cancel', link: account_path %>
-</div>
+<% end %>

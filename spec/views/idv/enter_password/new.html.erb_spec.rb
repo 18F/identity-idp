@@ -32,10 +32,9 @@ RSpec.describe 'idv/enter_password/new.html.erb' do
       end
 
       it 'shows the step indicator' do
-        expect(view.content_for(:pre_flash_content)).to have_css(
-          '.step-indicator__step--current',
-          text: t('step_indicator.flows.idv.re_enter_password'),
-        )
+        progress = view.instance_variable_get(:@ads_progress_component)
+    expect(progress).to be_a(ProgressComponent)
+    expect(progress.steps[progress.current_step]).to eq(t('step_indicator.flows.idv.re_enter_password'))
       end
     end
 

@@ -62,26 +62,50 @@ RSpec.describe 'two_factor_authentication/otp_verification/show.html.erb' do
       expect(rendered).to include(
         t(
           'instructions.mfa.sms.code_sent_message_html',
-          number_html: content_tag(:strong, presenter_data[:phone_number]),
-          expiration: TwoFactorAuthenticatable::DIRECT_OTP_VALID_FOR_MINUTES,
+          number_html: presenter_data[:phone_number],
         ),
       )
+      expect(rendered).not_to include('<strong>')
     end
 
     it 'informs the user to not share their OTP code' do
       render
 
       expect(rendered).to include(
-        t(
-          'instructions.mfa.do_not_share_code_message_html',
-          link_html: new_tab_link_to(
-            t('instructions.mfa.do_not_share_code_link_text'),
-            MarketingSite.help_center_article_url(
-              category: 'fraud-concerns',
-              article: 'overview',
-            ),
-          ),
+        strip_tags(
+          t('instructions.mfa.do_not_share_code_message_html', link_html: ''),
         ),
+      )
+      expect(rendered).to have_css(
+        '.ads-auth--form-page > lg-alert.ads-alert-mount + .ads-auth__header',
+      )
+      expect(rendered).to have_css('lg-alert .ads-alert__close')
+      expect(rendered).to have_link(
+        t('instructions.mfa.do_not_share_code_link_text'),
+        href: MarketingSite.help_center_article_url(
+          category: 'fraud-concerns',
+          article: 'overview',
+        ),
+      )
+    end
+
+    it 'shows a toast when a resend succeeds' do
+      flash[:success] = t('idv.otp_verification.resend_success')
+
+      render
+
+      expect(rendered).to have_css(
+        'lg-toast.ads-toast',
+        text: t('idv.otp_verification.resend_success'),
+      )
+    end
+
+    it 'does not show a resend toast on the initial OTP page' do
+      render
+
+      expect(rendered).not_to have_css(
+        'lg-toast.ads-toast',
+        text: t('idv.otp_verification.resend_success'),
       )
     end
 
@@ -108,37 +132,12 @@ RSpec.describe 'two_factor_authentication/otp_verification/show.html.erb' do
         render
       end
 
-      it 'provides a cancel link to return to profile' do
-        expect(rendered).to have_link(
-          t('links.cancel'),
-          href: account_path,
-        )
+      it 'does not provide a cancel link' do
+        expect(rendered).not_to have_link(t('links.cancel'))
       end
 
-      it 'renders the reauthn partial' do
-        expect(view).to render_template(
-          partial: 'two_factor_authentication/totp_verification/_reauthn',
-        )
-      end
-    end
-
-    context 'user is changing phone number' do
-      it 'provides a cancel link to return to profile' do
-        user = create(:user, :fully_registered, personal_key: '1')
-        allow(view).to receive(:current_user).and_return(user)
-        data = presenter_data.merge(confirmation_for_add_phone: true)
-        @presenter = TwoFactorAuthCode::PhoneDeliveryPresenter.new(
-          data: data,
-          view: view,
-          service_provider: nil,
-        )
-
-        render
-
-        expect(rendered).to have_link(
-          t('links.cancel'),
-          href: account_path,
-        )
+      it 'includes a reauthn hidden field' do
+        expect(rendered).to have_field('reauthn', type: :hidden, with: 'true')
       end
     end
 
@@ -182,7 +181,7 @@ RSpec.describe 'two_factor_authentication/otp_verification/show.html.erb' do
         )
 
         expect(rendered).to have_link(
-          t('links.two_factor_authentication.send_another_code'),
+          t('links.resend'),
           href: resend_path,
         )
       end
@@ -221,7 +220,7 @@ RSpec.describe 'two_factor_authentication/otp_verification/show.html.erb' do
         )
 
         expect(rendered).to have_link(
-          t('links.two_factor_authentication.send_another_code'),
+          t('links.resend'),
           href: resend_path,
         )
       end
@@ -300,16 +299,10 @@ RSpec.describe 'two_factor_authentication/otp_verification/show.html.erb' do
         allow(@presenter).to receive(:otp_expiration).and_return(otp_expiration)
       end
 
-      it 'should render countdown component' do
+      it 'does not render the legacy countdown alert' do
         render
 
-        expect(rendered).to include('countdown-phase-alert')
-
-        expect(rendered).to have_css(
-          'lg-countdown[data-expiration].display-none[aria-hidden="true"]',
-        )
-
-        expect(rendered).to include(%(data-expiration="#{@presenter.otp_expiration.iso8601}"))
+        expect(rendered).not_to include('countdown-phase-alert')
       end
     end
 

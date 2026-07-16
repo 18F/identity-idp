@@ -11,9 +11,8 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
   let(:socure_docv_verification_data_test_mode) { false }
 
   let(:document_capture_session) do
-    create(
-      :document_capture_session,
-      user:,
+    DocumentCaptureSession.create(
+      user: user,
       requested_at: Time.zone.now,
       doc_auth_vendor: idv_vendor,
       document_type_requested: Idp::Constants::DocumentTypes::STATE_ID_CARD,
@@ -135,7 +134,7 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
           expect(request_class).to have_received(:new)
             .with(
               customer_user_id: user.uuid,
-              document_capture_session:,
+              passport_requested: false,
               redirect_url: idv_hybrid_mobile_socure_document_capture_update_url,
               language: expected_language,
               liveness_checking_required: false,
@@ -403,7 +402,7 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
       DocumentCaptureSessionResult.new(
         success: true,
         selfie_status: 'not_processed',
-        pii: { state: 'MD', document_type_received: 'drivers_license' },
+        pii: { state: 'MD' },
       )
     end
 

@@ -40,12 +40,12 @@ describe('SpinnerButton', () => {
     await userEvent.click(button);
 
     expect(status.textContent).not.to.be.empty();
-    expect(status.classList.contains('usa-sr-only')).to.be.true();
+    expect(status.classList.contains('ads-sr-only')).to.be.true();
 
     clock.tick(1);
 
     expect(status.textContent).not.to.be.empty();
-    expect(status.classList.contains('usa-sr-only')).to.be.false();
+    expect(status.classList.contains('ads-sr-only')).to.be.false();
   });
 
   it('forwards options for SpinnerButton', async () => {
@@ -63,7 +63,7 @@ describe('SpinnerButton', () => {
 
     spinner.toggleSpinner(true);
     clock.tick(1);
-    expect(status.classList.contains('usa-sr-only')).to.be.false();
+    expect(status.classList.contains('ads-sr-only')).to.be.false();
   });
 
   it('forwards additional props to Button', () => {
@@ -71,7 +71,7 @@ describe('SpinnerButton', () => {
 
     const button = getByRole('button')!;
 
-    expect(button.classList.contains('usa-button--outline')).to.be.true();
+    expect(button.classList.contains('ads-button--secondary')).to.be.true();
   });
 
   it('includes additional class for outline buttons', () => {

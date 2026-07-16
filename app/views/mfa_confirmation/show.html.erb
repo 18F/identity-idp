@@ -1,26 +1,22 @@
 <% self.title = @content.heading %>
+<%# Page copy already confirms the method was added; suppress redundant success toast. %>
+<% flash.delete(:success) %>
 
-<%= image_tag asset_url('user-signup.svg'), width: 107, height: 119, alt: '', class: 'margin-bottom-4', aria: { hidden: true } %>
+<%= render ADS::FormPageComponent.new(
+      title: @content.heading,
+      subtitle: @content.info,
+    ) do |page| %>
+  <% page.with_actions do %>
+    <%= render ButtonComponent.new(
+          url: authentication_methods_setup_path,
+        ).with_content(@content.button) %>
 
-<%= render PageHeadingComponent.new.with_content(@content.heading) %>
-
-<p class='margin-top-1 margin-bottom-4'>
-  <%= @content.info %>
-</p>
-
-<div class="col-12">
-  <%= link_to(
-        authentication_methods_setup_path,
-        class: 'usa-button usa-button--wide usa-button--big margin-bottom-3',
-      ) { @content.button } %>
-</div>
-
-<% if @content.show_skip_additional_mfa_link? %>
-  <%= button_to(
-        auth_method_confirmation_skip_path,
-        method: :post,
-        class: 'usa-button usa-button--unstyled',
-      ) do %>
-    <%= t('mfa.skip') %>
+    <% if @content.show_skip_additional_mfa_link? %>
+      <%= render ButtonComponent.new(
+            url: auth_method_confirmation_skip_path,
+            method: :post,
+            variant: :quaternary,
+          ).with_content(t('mfa.skip')) %>
+    <% end %>
   <% end %>
 <% end %>

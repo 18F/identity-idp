@@ -44,7 +44,7 @@ function Link({
   children,
   ...anchorProps
 }: LinkProps) {
-  const classes = ['usa-link', className, isExternal && 'usa-link--external']
+  const classes = ['ads-link', className, isExternal && 'ads-link--external']
     .filter(Boolean)
     .join(' ');
 
@@ -63,7 +63,7 @@ function Link({
   return (
     <a href={href} {...newTabProps} {...anchorProps} className={classes} onClick={handleClick}>
       {children}
-      {isNewTab && <span className="usa-sr-only">{t('links.new_tab')}</span>}
+      {isNewTab && <span className="ads-sr-only">{t('links.new_tab')}</span>}
     </a>
   );
 }

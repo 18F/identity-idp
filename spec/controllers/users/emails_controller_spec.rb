@@ -203,7 +203,7 @@ RSpec.describe Users::EmailsController do
         controller.request.headers.merge({ HTTP_REFERER: account_url })
 
         get :show
-        expect(response).to redirect_to(account_url(anchor: 'emails'))
+        expect(response).to redirect_to(account_settings_url(anchor: 'emails'))
         expect(response.request.flash[:email_error]).to_not be_nil
       end
     end
@@ -274,7 +274,7 @@ RSpec.describe Users::EmailsController do
     end
 
     it 'redirects to account page' do
-      expect(response).to redirect_to(account_url)
+      expect(response).to redirect_to(account_settings_url)
     end
 
     context 'with invalid submisson' do

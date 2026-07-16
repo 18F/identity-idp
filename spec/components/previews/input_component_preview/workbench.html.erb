@@ -1,0 +1,15 @@
+<%= form_with(url: '#', scope: :preview, local: true) do |f| %>
+  <%= render InputComponent.new(
+        form: f,
+        attribute: :input,
+        label:,
+        type: type.to_sym,
+        floating_label:,
+        country_selector:,
+        selected_country:,
+        value: value.presence,
+        readonly:,
+        disabled:,
+        error_message: (error ? 'Enter a valid email address.' : nil),
+      ) %>
+<% end %>

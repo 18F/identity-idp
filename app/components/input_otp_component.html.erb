@@ -1,0 +1,31 @@
+<%= content_tag(:'lg-ads-input-otp', data: root_data) do %>
+  <%= content_tag :div, class: field_classes, data: field_data do %>
+    <%= tag.label label, for: input_id, class: 'ads-input-otp__label' %>
+    <div class="ads-input-otp__shell">
+      <%= tag.input(**input_html_options) %>
+      <div class="ads-input-otp__slots" aria-hidden="true">
+        <% groups.each_with_index do |group_length, group_index| %>
+          <% if group_index.positive? %>
+            <span class="<%= separator_classes %>" aria-hidden="true"><%= separator %></span>
+          <% end %>
+          <span
+            class="ads-input-otp__group"
+            style="--ads-input-otp-group-size: <%= group_length %>"
+          >
+            <% group_length.times do %>
+              <span class="ads-input-otp__slot" data-ads-input-otp-slot></span>
+            <% end %>
+          </span>
+        <% end %>
+      </div>
+    </div>
+
+    <% if has_hint? %>
+      <p id="<%= hint_id %>" class="ads-input-otp__hint"><%= hint_text %></p>
+    <% end %>
+
+    <% if error_message.present? %>
+      <p id="<%= error_id %>" class="ads-input__error" aria-live="polite"><%= error_message %></p>
+    <% end %>
+  <% end %>
+<% end %>

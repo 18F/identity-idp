@@ -1,42 +1,55 @@
 <% form_name = form_obj.class.name.underscore.to_s
    form_name_label = form_name + '[otp_delivery_preference]'
    form_name_tag_sms = form_name + '_otp_delivery_preference_sms'
-   form_name_tag_voice = form_name + '_otp_delivery_preference_voice' %>
+   form_name_tag_voice = form_name + '_otp_delivery_preference_voice'
+   outage_status = OutageStatus.new
+   sms_outage = outage_status.vendor_outage?(:sms)
+   voice_outage = outage_status.vendor_outage?(:voice) %>
 
-<div class="js-otp-delivery-preferences margin-bottom-2">
-  <fieldset class="margin-0 padding-0 border-0">
-    <legend class="usa-label margin-bottom-1">
-      <%= t('two_factor_authentication.otp_delivery_preference.title') %>
-    </legend>
-    <div class="grid-row grid-gap-2">
-      <div class="grid-col-12 tablet:grid-col-6">
-        <%= radio_button_tag(
-              form_name_label,
-              :sms,
-              form_obj.delivery_preference_sms?,
-              disabled: OutageStatus.new.vendor_outage?(:sms),
-              class: 'js-otp-delivery-preference usa-radio__input usa-radio__input--bordered',
-            ) %>
-        <label class="usa-radio__label width-full" for="<%= form_name_tag_sms %>">
-          <%= t('two_factor_authentication.otp_delivery_preference.sms') %>
-        </label>
-      </div>
-      <div class="grid-col-12 tablet:grid-col-6">
-        <%= radio_button_tag(
-              form_name_label,
-              :voice,
-              form_obj.delivery_preference_voice?,
-              disabled: OutageStatus.new.vendor_outage?(:voice),
-              class: 'js-otp-delivery-preference usa-radio__input usa-radio__input--bordered',
-            ) %>
-        <label class="usa-radio__label width-full" for="<%= form_name_tag_voice %>">
-          <%= t('two_factor_authentication.otp_delivery_preference.voice') %>
-        </label>
-      </div>
+<fieldset
+  class="js-otp-delivery-preferences ads-fieldset"
+  aria-label="<%= t('two_factor_authentication.otp_delivery_preference.title') %>"
+  aria-describedby="otp_delivery_preference_instruction"
+>
+  <p
+    class="ads-fieldset__hint"
+    id="otp_delivery_preference_instruction"
+    aria-live="polite"
+    hidden
+  ></p>
+
+  <div class="ads-radio-group">
+    <div class="ads-radio">
+      <%= radio_button_tag(
+            form_name_label,
+            :sms,
+            form_obj.delivery_preference_sms?,
+            disabled: sms_outage,
+            data: { vendor_outage: sms_outage },
+            class: 'js-otp-delivery-preference ads-radio__input ads-sr-only',
+          ) %>
+      <%= label_tag(
+            form_name_tag_sms,
+            t('two_factor_authentication.otp_delivery_preference.sms'),
+            class: 'ads-radio__label',
+          ) %>
     </div>
-    <p class="margin-top-1 margin-bottom-2" id="otp_delivery_preference_instruction">
-      <%= t('two_factor_authentication.otp_delivery_preference.instruction') %>
-    </p>
-  </fieldset>
-</div>
+
+    <div class="ads-radio">
+      <%= radio_button_tag(
+            form_name_label,
+            :voice,
+            form_obj.delivery_preference_voice?,
+            disabled: voice_outage,
+            data: { vendor_outage: voice_outage },
+            class: 'js-otp-delivery-preference ads-radio__input ads-sr-only',
+          ) %>
+      <%= label_tag(
+            form_name_tag_voice,
+            t('two_factor_authentication.otp_delivery_preference.voice'),
+            class: 'ads-radio__label',
+          ) %>
+    </div>
+  </div>
+</fieldset>
 <%= javascript_packs_tag_once('otp-delivery-preference') %>

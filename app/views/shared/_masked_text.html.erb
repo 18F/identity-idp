@@ -8,24 +8,36 @@ locals:
 %>
 <% id = local_assigns.fetch(:id, "masked-text-#{SecureRandom.hex(6)}")
    checkbox_id = "#{id}-checkbox" %>
-<%= tag.span(id: id) do %>
-  <span class="masked-text__text" data-masked="true">
-    <span class="usa-sr-only"><%= accessible_masked_text %></span>
-    <span aria-hidden="true" class="text-no-wrap"><%= masked_text %></span>
-  </span>
-  <span class="masked-text__text display-none" data-masked="false">
-    <%= text %>
-  </span>
-<% end %>
-<% if local_assigns[:toggle_label] %>
-  <div class="margin-top-2">
+<span class="ads-masked-text<%= ' ads-masked-text--toggleable' if local_assigns[:toggle_label] %>">
+  <%= tag.span(id: id) do %>
+    <span class="ads-masked-text__text" data-masked="true">
+      <span class="ads-sr-only"><%= accessible_masked_text %></span>
+      <span aria-hidden="true" class="ads-masked-text__value"><%= masked_text.to_s.tr('*', '•') %></span>
+    </span>
+    <span class="ads-masked-text__text" data-masked="false" hidden>
+      <%= text %>
+    </span>
+  <% end %>
+  <% if local_assigns[:toggle_label] %>
     <%= tag.input(
           type: 'checkbox',
           id: checkbox_id,
           aria: { controls: id },
-          class: 'masked-text__toggle usa-checkbox__input usa-checkbox__input--bordered',
+          class: 'ads-masked-text__toggle ads-sr-only',
         ) %>
-    <%= tag.label(toggle_label, for: checkbox_id, class: 'usa-checkbox__label') %>
-  </div>
-  <%= javascript_packs_tag_once 'masked-text-toggle' %>
-<% end %>
+    <%= tag.label(for: checkbox_id, class: 'ads-masked-text__icon-toggle') do %>
+      <%= render IconComponent.new(
+            icon: :not_visible_hide,
+            size: 20,
+            class: 'ads-masked-text__icon ads-masked-text__icon--masked',
+          ) %>
+      <%= render IconComponent.new(
+            icon: :visible_show,
+            size: 20,
+            class: 'ads-masked-text__icon ads-masked-text__icon--revealed',
+          ) %>
+      <span class="ads-sr-only"><%= toggle_label %></span>
+    <% end %>
+    <%= javascript_packs_tag_once 'masked-text-toggle' %>
+  <% end %>
+</span>

@@ -49,10 +49,6 @@ module IdvSessionConcern
   def redirect_unless_sp_requested_verification
     return if !IdentityConfig.store.idv_sp_required
     return if idv_session_user.profiles.any?
-    # agent proofed users have no sp session on the way in (the success email is
-    # a plain sign in link), so nothing here asks for identity proofing on their
-    # behalf and they would otherwise be sent to the account page
-    return if idv_session_user.proofing_agent_user_awaiting_binding?
     return if resolved_authn_context_result.identity_proofing?
 
     redirect_to account_url

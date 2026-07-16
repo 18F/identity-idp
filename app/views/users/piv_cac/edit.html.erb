@@ -1,32 +1,39 @@
 <% self.title = @presenter.heading %>
 
-<%= render PageHeadingComponent.new.with_content(@presenter.heading) %>
+<%= render ADS::FormPageComponent.new(title: @presenter.heading) do |page| %>
+  <% page.with_body do %>
+    <%= form_with(
+          model: @form,
+          scope: :form,
+          method: :put,
+          url: piv_cac_path(id: @form.configuration.id),
+          local: true,
+          class: 'ads-form',
+        ) do |f| %>
+      <%= render ADS::StackComponent.new(kind: :form, gap: 16, align: :stretch) do %>
+        <%= render InputComponent.new(
+              form: f,
+              attribute: :name,
+              label: @presenter.nickname_field_label,
+              error_message: @form.errors.full_messages_for(:name).first,
+            ) %>
 
-<%= simple_form_for(
-      @form,
-      as: :form,
-      method: :put,
-      url: piv_cac_path(id: @form.configuration.id),
-    ) do |f| %>
-  <%= render ValidatedFieldComponent.new(
-        form: f,
-        name: :name,
-        label: @presenter.nickname_field_label,
-      ) %>
-  <%= f.submit(
-        @presenter.rename_button_label,
-        class: 'display-block margin-top-5',
-      ) %>
+        <%= render ButtonComponent.new(
+              type: :submit,
+            ).with_content(@presenter.rename_button_label) %>
+      <% end %>
+    <% end %>
+  <% end %>
+
+  <% page.with_actions do %>
+    <%= render ButtonComponent.new(
+          url: confirm_delete_piv_cac_path(id: @form.configuration.id),
+          variant: :destructive,
+        ).with_content(@presenter.delete_button_label) %>
+
+    <%= render ButtonComponent.new(
+          url: account_security_path,
+          variant: :secondary,
+        ).with_content(t('links.cancel')) %>
+  <% end %>
 <% end %>
-
-<%= render ButtonComponent.new(
-      url: piv_cac_path(id: @form.configuration.id),
-      method: :delete,
-      form: { aria: { label: @presenter.delete_button_label } },
-      big: true,
-      wide: true,
-      danger: true,
-      class: 'display-block margin-top-2',
-    ).with_content(@presenter.delete_button_label) %>
-
-<%= render 'shared/cancel', link: account_path %>

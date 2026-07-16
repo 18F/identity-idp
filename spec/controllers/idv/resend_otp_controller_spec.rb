@@ -53,6 +53,7 @@ RSpec.describe Idv::ResendOtpController do
     it 'tracks an analytics event' do
       post :create
 
+      expect(flash[:success]).to eq(t('idv.otp_verification.resend_success'))
       expect(@analytics).to have_logged_event(
         'IdV: phone confirmation otp resent',
         hash_including(

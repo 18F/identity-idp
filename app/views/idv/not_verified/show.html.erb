@@ -1,24 +1,31 @@
-<%= render(
-      'idv/shared/error',
-      title: t('titles.failure.information_not_verified'),
-      heading: t('idv.failure.verify.heading'),
-      action: { text: t('idv.failure.verify.exit', app_name: APP_NAME), url: :return_to_sp_failure_to_proof, method: :get },
-    ) do %>
-    <p>
-      <% if decorated_sp_session.sp_name.present? %>
-        <%= link_to(
-              t('idv.failure.verify.fail_link_html', sp_name: decorated_sp_session.sp_name),
-              return_to_sp_failure_to_proof_path(
-                step: 'verify_info',
-                location: request.params[:action],
-              ),
-            ) %>
-      <% else %>
-        <%= link_to(
-              t('idv.failure.verify.fail_link_html', sp_name: APP_NAME),
-              account_path,
-            ) %>
-      <% end %>
-      <%= t('idv.failure.verify.fail_text') %>
-    </p>
+<% self.title = t('titles.failure.information_not_verified') %>
+
+<%= render ADS::FormPageComponent.new(title: t('idv.failure.verify.heading')) do |page| %>
+  <% page.with_body do %>
+    <div class="ads-copy ads-copy--centered">
+      <p>
+        <% if decorated_sp_session.sp_name.present? %>
+          <%= render ADS::LinkComponent.new(
+                url: return_to_sp_failure_to_proof_path(
+                  step: 'verify_info',
+                  location: request.params[:action],
+                ),
+              ) do %>
+            <%= t('idv.failure.verify.fail_link_html', sp_name: decorated_sp_session.sp_name) %>
+          <% end %>
+        <% else %>
+          <%= render ADS::LinkComponent.new(url: account_path) do %>
+            <%= t('idv.failure.verify.fail_link_html', sp_name: APP_NAME) %>
+          <% end %>
+        <% end %>
+        <%= t('idv.failure.verify.fail_text') %>
+      </p>
+    </div>
+  <% end %>
+
+  <% page.with_actions do %>
+    <%= render ButtonComponent.new(
+          url: return_to_sp_failure_to_proof_path,
+        ).with_content(t('idv.failure.verify.exit', app_name: APP_NAME)) %>
+  <% end %>
 <% end %>

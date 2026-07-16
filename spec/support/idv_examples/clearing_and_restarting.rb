@@ -1,6 +1,5 @@
 RSpec.shared_examples 'clearing and restarting idv' do
   it 'allows the user to retry verification with phone', js: true do
-    click_on t('idv.gpo.address_accordion.title')
     click_on t('idv.gpo.address_accordion.cta_link')
     click_idv_continue
 
@@ -16,7 +15,6 @@ RSpec.shared_examples 'clearing and restarting idv' do
   end
 
   it 'allows the user to retry verification with gpo', js: true do
-    click_on t('idv.gpo.address_accordion.title')
     click_on t('idv.gpo.address_accordion.cta_link')
     click_idv_continue
 
@@ -42,7 +40,6 @@ RSpec.shared_examples 'clearing and restarting idv' do
   end
 
   it 'deletes decrypted PII from the session and does not display it on the account page' do
-    click_on t('idv.gpo.address_accordion.title')
     click_on t('idv.gpo.address_accordion.cta_link')
     click_idv_continue
 

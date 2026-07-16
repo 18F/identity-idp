@@ -1,0 +1,76 @@
+@use 'variables/ads' as ads;
+@use 'variables/email' as *;
+@use 'mixins' as mailer;
+
+.mailer-button-shell {
+  margin: $mailer-button-margin-y 0 0;
+}
+
+.mailer-section__intro + .mailer-button-shell {
+  margin-top: ads.space(24);
+}
+
+.mailer-template__content a.mailer-button-link,
+.mailer-button-link {
+  background-color: $black;
+  border-radius: $mailer-button-radius;
+  box-sizing: border-box;
+  color: $white;
+  display: inline-block;
+  font-family: $body-font-family;
+  font-size: $mailer-button-font-size;
+  font-weight: ads.$font-semibold;
+  letter-spacing: -0.02em;
+  line-height: $mailer-button-line-height;
+  min-height: $mailer-button-height;
+  padding: $mailer-button-padding;
+  text-align: center;
+  text-decoration: none;
+
+  &:hover,
+  &:active,
+  &:visited {
+    color: $white;
+    text-decoration: none;
+  }
+}
+
+.mailer-button-link--danger {
+  background-color: $red;
+}
+
+.mailer-button-url-shell {
+  width: 100%;
+}
+
+.mailer-button-url-cell {
+  padding-top: $mailer-button-url-padding-top;
+  text-align: left;
+}
+
+.mailer-button-url-table {
+  margin: 0;
+  max-width: $mailer-container-width;
+  width: 100%;
+}
+
+.mailer-button-url {
+  @include mailer.mailer-text-body;
+
+  color: $mailer-muted-text;
+  letter-spacing: 0;
+  line-height: 1.5;
+  margin: 0 0 $mailer-button-margin-y;
+  padding: 0;
+  text-align: left;
+  word-break: break-all;
+}
+
+.mailer-template__content a.mailer-button-url-link,
+.mailer-button-url-link {
+  @include mailer.mailer-text-body;
+
+  color: $mailer-muted-text;
+  text-align: left;
+  text-decoration: underline;
+}

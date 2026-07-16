@@ -1,0 +1,14 @@
+<%= form_with(url: '#', scope: :preview, local: true) do |form| %>
+  <div style="display: flex; flex-direction: column; gap: 12px; max-width: 27rem;">
+    <%= render InputComponent.new(
+          form:,
+          attribute: :password,
+          label: 'Password',
+          type: :password,
+        ) %>
+    <%= render PasswordStrengthComponent.new(
+          input_id: form.field_id(:password),
+          forbidden_passwords: %w[password],
+        ) %>
+  </div>
+<% end %>

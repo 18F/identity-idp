@@ -92,37 +92,13 @@ RSpec.describe 'users/webauthn_setup/new.html.erb' do
       )
     end
 
-    it 'links to help screen' do
+    it 'displays numbered setup steps' do
       render
 
-      expect(rendered).to have_link(
-        t('forms.webauthn_setup.learn_more'),
-        href: help_center_redirect_path(
-          category: 'get-started',
-          article: 'authentication-methods',
-          article_anchor: 'security-key',
-          flow: :two_factor_authentication,
-          step: :security_key_setup,
-        ),
-      )
-    end
-
-    it 'displays the step 1 heading' do
-      render
-
-      expect(rendered).to have_css('h2', text: t('forms.webauthn_setup.step_1'))
-    end
-
-    it 'displays the step 2 heading' do
-      render
-
-      expect(rendered).to have_css('h2', text: t('forms.webauthn_setup.step_2'))
-    end
-
-    it 'displays the step 3 heading' do
-      render
-
-      expect(rendered).to have_css('h2', text: t('forms.webauthn_setup.step_3'))
+      expect(rendered).to have_content("1. #{t('forms.webauthn_setup.step_1')}")
+      expect(rendered).to have_content("2. #{t('forms.webauthn_setup.step_2')}")
+      expect(rendered).to have_content("3. #{t('forms.webauthn_setup.step_3')}")
+      expect(rendered).to have_content(t('forms.webauthn_setup.step_3a'))
     end
 
     it 'displays the nickname input field' do
@@ -137,24 +113,15 @@ RSpec.describe 'users/webauthn_setup/new.html.erb' do
       expect(rendered).to have_button(t('forms.webauthn_setup.set_up'))
     end
 
-    describe 'security key image' do
-      it 'displays the security key image' do
-        render
+    it 'renders security key insert animations' do
+      render
 
-        expect(rendered).to have_css('svg')
-      end
-
-      context 'when on a mobile device' do
-        before do
-          allow(view).to receive(:mobile?).and_return(true)
-        end
-
-        it 'displays the mobile security key image' do
-          render
-
-          expect(rendered).to have_css('svg.security-key--mobile')
-        end
-      end
+      expect(rendered).to have_css(
+        'lg-animated-media.ads-animated-media--desktop img[src*="security-key-insert-desktop"]',
+      )
+      expect(rendered).to have_css(
+        'lg-animated-media.ads-animated-media--mobile img[src*="security-key-insert-mobile"]',
+      )
     end
   end
 end

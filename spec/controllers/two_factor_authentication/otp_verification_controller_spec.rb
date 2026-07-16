@@ -107,13 +107,7 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
         get :show, params: { otp_delivery_preference: 'sms' }
 
         expect(response.body).to include(
-          t(
-            'two_factor_authentication.otp_delivery_preference.landline_warning_html',
-            phone_setup_path: controller.view_context.link_to(
-              t('two_factor_authentication.otp_delivery_preference.phone_call'),
-              phone_setup_path(otp_delivery_preference: 'voice'),
-            ),
-          ),
+          t('two_factor_authentication.otp_delivery_preference.landline_warning'),
         )
       end
     end
@@ -859,7 +853,7 @@ RSpec.describe TwoFactorAuthentication::OtpVerificationController do
           end
 
           it 'redirects to profile page' do
-            expect(response).to redirect_to(account_path)
+            expect(response).to redirect_to(account_path(anchor: 'welcome'))
           end
 
           it 'tracks the confirmation event' do

@@ -1,0 +1,215 @@
+@use '../variables/ads' as ads;
+@use 'modal/primitives' as modal;
+
+.ads-modal--active {
+  overflow: hidden;
+}
+
+.ads-modal {
+  @include modal.dialog-frame(
+    $margin: auto,
+    $max-height: calc(100vh - #{ads.space(48)}),
+    $max-width: 27rem
+  );
+  @include modal.backdrop(
+    $background: ads.alpha(ads.$off-black, 25%),
+    $backdrop-filter: blur(#{ads.space(12)}),
+    $transition: (
+      opacity ads.$tr-duration-md ads.$tr-easing-cubic,
+      backdrop-filter ads.$tr-duration-md ads.$tr-easing-cubic,
+    )
+  );
+
+  box-sizing: border-box;
+  inset: 50% auto auto 50%;
+  opacity: 0;
+  transform: translate(-50%, calc(-50% + #{ads.space(16)})) scale(0.98);
+  transition:
+    opacity ads.$tr-duration-md ads.$tr-easing-cubic,
+    transform ads.$tr-duration-md ads.$tr-easing-cubic;
+  width: calc(100% - #{ads.space(32)});
+
+  &[open].is-open {
+    @include modal.backdrop-open;
+
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+
+  &[open].is-closing {
+    @include modal.backdrop-closing($backdrop-filter: blur(0));
+
+    opacity: 0;
+    transform: translate(-50%, calc(-50% + #{ads.space(8)})) scale(0.99);
+  }
+}
+
+.ads-modal--wide {
+  max-width: 660px;
+}
+
+@mixin ads-modal-sheet {
+  inset: auto 0 0;
+  margin: 0;
+  max-height: none;
+  max-width: none;
+  transform: translateY(100%);
+  transition:
+    opacity ads.$tr-duration-lg ads.$tr-easing-cubic,
+    transform ads.$tr-duration-lg ads.$tr-easing-cubic;
+  width: 100%;
+
+  &::backdrop {
+    transition-duration: ads.$tr-duration-lg;
+  }
+
+  &[open].is-open {
+    transform: translateY(0);
+  }
+
+  &[open].is-closing {
+    transform: translateY(100%);
+  }
+}
+
+@mixin ads-modal-sheet-body {
+  border-radius: ads.radius(32) ads.radius(32) 0 0;
+  max-height: calc(100dvh - env(safe-area-inset-top) - #{ads.space(24)});
+  padding-bottom: calc(#{ads.space(32)} + env(safe-area-inset-bottom));
+}
+
+.ads-modal__close {
+  @include modal.circular-icon-button;
+
+  position: absolute;
+  right: ads.space(16);
+  top: ads.space(16);
+  z-index: 1;
+}
+
+.ads-modal__body {
+  background: ads.$white;
+  border-radius: ads.radius(32);
+  box-shadow: ads.$shadow-large;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: ads.space(32);
+  max-height: calc(100vh - #{ads.space(48)});
+  padding: ads.space(64) ads.space(32) ads.space(32);
+  width: 100%;
+
+  @include modal.scroll-panel;
+}
+
+.ads-modal__body--media {
+  gap: 0;
+  padding: 0;
+}
+
+.ads-modal__media {
+  align-self: stretch;
+  border-bottom: 1px solid ads.alpha(ads.$off-black, 10%);
+  width: 100%;
+
+  img {
+    display: block;
+    height: auto;
+    width: 100%;
+  }
+}
+
+.ads-modal__body-inner {
+  align-items: center;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: ads.space(20);
+  padding: ads.space(40);
+  text-align: center;
+  width: 100%;
+}
+
+.ads-modal__body--media .ads-modal__heading {
+  align-items: center;
+  padding-inline-end: 0;
+}
+
+.ads-modal__body--media .ads-modal__title {
+  font-size: ads.$text-heading-m;
+  letter-spacing: ads.$text-letter-spacing-heading;
+  line-height: 1.1;
+}
+
+.ads-modal__body--media .ads-modal__description {
+  max-width: 432px;
+}
+
+.ads-modal__body--media .ads-modal__actions {
+  align-items: center;
+  width: auto;
+}
+
+@media (width <= 40em) {
+  .ads-modal {
+    @include ads-modal-sheet;
+  }
+
+  .ads-modal__body {
+    @include ads-modal-sheet-body;
+  }
+}
+
+.ads-modal__heading {
+  display: flex;
+  flex-direction: column;
+  gap: ads.space(12);
+  // Clear the absolutely-positioned close control.
+  padding-inline-end: ads.space(48);
+  width: 100%;
+}
+
+.ads-modal__title {
+  color: ads.$off-black;
+  font-family: ads.$font-family;
+  font-size: ads.$text-heading-section;
+  font-weight: ads.$font-semibold;
+  letter-spacing: ads.$text-letter-spacing-heading-section;
+  line-height: 1.2;
+  margin: 0;
+  text-wrap: pretty;
+}
+
+.ads-modal__description,
+.ads-modal__content {
+  color: ads.alpha(ads.$off-black, 65%);
+  font-family: ads.$font-family;
+  font-size: ads.$text-body-m;
+  line-height: 1.5;
+  margin: 0;
+  width: 100%;
+
+  > * {
+    margin: 0;
+  }
+}
+
+.ads-modal__content {
+  display: flex;
+  flex-direction: column;
+  gap: ads.space(16);
+}
+
+.ads-modal__actions {
+  display: flex;
+  flex-direction: column;
+  gap: ads.space(12);
+  width: 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ads-modal,
+  .ads-modal::backdrop {
+    transition: none;
+  }
+}

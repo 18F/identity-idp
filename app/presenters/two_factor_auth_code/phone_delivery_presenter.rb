@@ -46,6 +46,7 @@ module TwoFactorAuthCode
         phone_setup_path: link_to(
           phone_call_text,
           phone_setup_path(otp_delivery_preference: 'voice'),
+          class: 'ads-link',
         ),
       )
     end
@@ -102,7 +103,9 @@ module TwoFactorAuthCode
       locale = LinkLocaleResolver.locale
       if in_multi_mfa_selection_flow
         authentication_methods_setup_path(locale: locale)
-      elsif confirmation_for_add_phone || reauthn
+      elsif reauthn
+        account_security_path(locale: locale)
+      elsif confirmation_for_add_phone
         account_path(locale: locale)
       else
         sign_out_path(locale: locale)

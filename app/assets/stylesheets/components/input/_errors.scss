@@ -1,0 +1,54 @@
+@use '../../variables/ads' as ads;
+
+.ads-input__error {
+  display: grid;
+  grid-template-rows: 0fr;
+  margin: 0;
+  min-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition:
+    grid-template-rows ads.$tr-duration-md ads.$tr-easing-cubic,
+    margin-top ads.$tr-duration-md ads.$tr-easing-cubic,
+    opacity ads.$tr-duration-md ads.$tr-easing-cubic;
+}
+
+.ads-input__error--visible,
+.ads-input__error:has(.ads-input__error-inner:not(:empty)) {
+  grid-template-rows: 1fr;
+  margin: ads.space(8) 0 0;
+  opacity: 1;
+}
+
+.ads-input__error-inner {
+  align-items: flex-start;
+  color: ads.$red-600;
+  display: flex;
+  font-family: ads.$font-family;
+  font-size: ads.$text-body-s;
+  font-weight: ads.$font-semibold;
+  gap: ads.space(8);
+  letter-spacing: ads.$text-letter-spacing-label;
+  line-height: ads.space(16);
+  min-height: 0;
+  overflow: hidden;
+  text-align: left;
+  text-wrap: pretty;
+}
+
+.ads-input__error-inner::before {
+  background-color: currentcolor;
+  content: '';
+  display: inline-block;
+  flex-shrink: 0;
+  height: ads.space(16);
+  mask: url('/ads/icons/error/16.svg') center / contain no-repeat;
+  width: ads.space(16);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ads-input__error {
+    grid-template-rows: 1fr;
+    transition: none;
+  }
+}

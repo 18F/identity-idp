@@ -40,25 +40,8 @@ RSpec.describe 'idv/shared/ssn.html.erb' do
     }
   end
 
-  context 'with a service provider' do
-    it 'contains a no-ssn exit link' do
-      expect(rendered).to have_content(t('doc_auth.info.no_ssn'))
-      expect(rendered).to have_content(
-        t(
-          'doc_auth.info.exit.with_sp', app_name: APP_NAME,
-                                        sp_name: 'SP'
-        ),
-      )
-    end
-  end
-
-  context 'without a service provider' do
-    let(:sp_name) { nil }
-
-    it 'contains a no-ssn exit link' do
-      expect(rendered).to have_content(t('doc_auth.info.no_ssn'))
-      expect(rendered).to have_content(t('doc_auth.info.exit.without_sp'))
-    end
+  it 'does not render an ssn offramp exit link' do
+    expect(rendered).not_to have_link(href: idv_cancel_url(step: 'ssn_offramp'))
   end
 
   context 'when threatmetrix collection enabled' do

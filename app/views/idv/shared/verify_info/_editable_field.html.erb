@@ -1,0 +1,35 @@
+<%#
+locals:
+  label: (required)
+  value: (required)
+  url: (required)
+  aria_label: (required)
+  divider: false
+  click_observer_event: nil
+%>
+<% if value.present? %>
+  <% if local_assigns[:divider] %>
+    <hr class="ads-card__divider" />
+  <% end %>
+  <div class="ads-card__row">
+    <div class="ads-card__stack">
+      <p class="ads-card__label"><%= label %></p>
+      <p class="ads-card__value"><%= value %></p>
+    </div>
+    <% edit_button = capture do %>
+      <%= render ButtonComponent.new(
+            url: url,
+            variant: :quaternary,
+            size: :sm,
+            'aria-label': aria_label,
+          ).with_content(t('forms.buttons.edit')) %>
+    <% end %>
+    <% if local_assigns[:click_observer_event] %>
+      <%= render ClickObserverComponent.new(event_name: click_observer_event) do %>
+        <%= edit_button %>
+      <% end %>
+    <% else %>
+      <%= edit_button %>
+    <% end %>
+  </div>
+<% end %>

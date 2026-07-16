@@ -8,22 +8,25 @@ locals:
 * step: (Optional) Name of step to which user should be returned.
 * fallback_path: (Optional) Path to redirect absent action, step, and HTTP referer.
 %>
-<% text = '‹ ' + t('forms.buttons.back')
-   step = local_assigns[:action] || local_assigns[:step]
+<% text = t('forms.buttons.back')
    path = go_back_path
    path ||= local_assigns[:fallback_path]
-   classes = []
-   classes << local_assigns[:class] if local_assigns[:class] %>
+   classes = class_names('ads-idv-support__back-action', local_assigns[:class]) %>
 <% if path %>
-  <div class="margin-top-5 padding-top-2 border-top border-primary-light">
+  <div class="ads-idv-support__back">
     <% if local_assigns[:action] %>
-      <%= button_to(
-            path,
+      <%= render ButtonComponent.new(
+            url: path,
             method: :put,
-            class: [*classes, 'usa-button usa-button--unstyled'],
-          ) { text } %>
+            variant: :quaternary,
+            class: classes,
+          ).with_content(text) %>
     <% else %>
-      <%= link_to(text, path, class: classes) %>
+      <%= render ButtonComponent.new(
+            url: path,
+            variant: :quaternary,
+            class: classes,
+          ).with_content(text) %>
     <% end %>
   </div>
 <% end %>

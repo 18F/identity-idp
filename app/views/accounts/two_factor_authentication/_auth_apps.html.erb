@@ -1,0 +1,25 @@
+<section class="ads-auth-methods__section" aria-labelledby="authentication-apps-heading">
+  <h2 id="authentication-apps-heading" class="ads-auth-methods__heading">
+    <%= t('account.dashboard.auth_methods.auth_app.title') %>
+  </h2>
+
+  <div class="ads-auth-methods__panel">
+    <%= render 'accounts/two_factor_authentication/authenticator_rows',
+               configurations: mfa_context.auth_app_configurations,
+               edit_path_helper: :edit_auth_app_path,
+               manage_accessible_label:
+                 t('two_factor_authentication.auth_app.manage_accessible_label') %>
+
+    <% if current_user.auth_app_configurations.count < IdentityConfig.store.max_auth_apps_per_account %>
+      <% if mfa_context.auth_app_configurations.any? %>
+        <div class="ads-auth-methods__rule"></div>
+      <% end %>
+
+      <%= render ButtonComponent.new(
+            url: authenticator_setup_url,
+            variant: :secondary,
+            size: :md,
+          ).with_content(t('account.index.auth_app_add')) %>
+    <% end %>
+  </div>
+</section>

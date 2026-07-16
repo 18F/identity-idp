@@ -1,74 +1,112 @@
 <% self.title = t('forms.backup_code.title') %>
 
-<%= render PageHeadingComponent.new.with_content(t('forms.backup_code.title')) %>
-
-<p>
-  <%= t('forms.backup_code.subinfo_html', app_name: APP_NAME) %>
-</p>
-<p>
-  <%= t('forms.backup_code.warning_html', app_name: APP_NAME) %>
-  <%= new_tab_link_to t('forms.backup_code.warning_link'), help_center_redirect_path(category: 'fraud-concerns', article: 'overview', flow: :create_account) %>
-</p>
-
-<div class="margin-y-4">
-  <div class="grid-row">
-    <% [@codes.first((@codes.length / 2.0).ceil), @codes.last(@codes.length / 2)].each do |section| %>
-      <div class="grid-col-12 tablet:grid-col-6">
-        <% section.each do |code| %>
-          <div class="margin-bottom-2">
-            <code class="text-bold h2 bg-base-lightest">
-              <%= RandomPhrase.format(code, separator: '-') %>
-            </code>
-          </div>
-        <% end %>
-      </div>
+<%= render ADS::FormPageComponent.new(
+      title: t('forms.backup_code.title'),
+      subtitle: t('forms.backup_code.subinfo_html', app_name: APP_NAME),
+    ) do |page| %>
+  <% page.with_body do %>
+    <% fraud_link_html = capture do %>
+      <%= render ADS::LinkComponent.new(
+            url: help_center_redirect_path(
+              category: 'fraud-concerns',
+              article: 'overview',
+              flow: :create_account,
+            ),
+            target: '_blank',
+            rel: 'noopener',
+          ) do %>
+        <%= t('forms.backup_code.warning_link') %>
+      <% end %>
     <% end %>
-  </div>
 
-  <%= render AlertComponent.new(type: :warning, class: 'margin-bottom-4') do %>
-    <%= t('forms.backup_code.caution_codes', count: ReadableNumber.of(BackupCodeGenerator::NUMBER_OF_CODES)) %>
-  <% end %>
+    <%= render ADS::StackComponent.new(gap: 24, align: :stretch) do %>
+      <%= render AlertComponent.new(type: :warning, dismissible: false) do %>
+        <%= t('forms.backup_code.warning_html', app_name: APP_NAME) %>
+        <%= fraud_link_html %>
+      <% end %>
 
-  <div class="margin-top-1">
-    <%= render ClickObserverComponent.new(event_name: 'Multi-Factor Authentication: download backup code') do %>
-      <%= render DownloadButtonComponent.new(
-            file_data: @codes.join("\n"),
-            file_name: 'backup_codes.txt',
-            outline: true,
+      <%= render CardComponent.new do %>
+        <% code_column_size = (@codes.length / 2.0).ceil %>
+        <div class="ads-card__code-grid">
+          <% [@codes.first(code_column_size), @codes.drop(code_column_size)].each do |section| %>
+            <div class="ads-card__code-grid-col">
+              <% section.each do |code| %>
+                <code class="ads-card__value"><%= RandomPhrase.format(code, separator: '-') %></code>
+              <% end %>
+            </div>
+          <% end %>
+        </div>
+
+        <%= render ADS::StackComponent.new(
+              kind: :actions,
+              gap: 8,
+              class: 'ads-action-row',
+            ) do %>
+          <%= render ClipboardButtonComponent.new(
+                clipboard_text: @codes.join(' '),
+                variant: :quaternary,
+                size: :sm,
+              ) %>
+          <%= render ClickObserverComponent.new(
+                event_name: 'Multi-Factor Authentication: download backup code',
+              ) do %>
+            <%= render DownloadButtonComponent.new(
+                  file_data: @codes.join("\n"),
+                  file_name: 'backup_codes.txt',
+                  variant: :quaternary,
+                  size: :sm,
+                ) %>
+          <% end %>
+          <%= render PrintButtonComponent.new(
+                variant: :quaternary,
+                size: :sm,
+                icon_position: :right,
+              ) %>
+        <% end %>
+      <% end %>
+
+      <%= render AlertComponent.new(
+            type: :warning,
+            message: t(
+              'forms.backup_code.caution_codes',
+              count: ReadableNumber.of(BackupCodeGenerator::NUMBER_OF_CODES),
+            ),
+            dismissible: false,
           ) %>
     <% end %>
-    <%= render PrintButtonComponent.new(
-          icon: :print,
-          outline: true,
-          type: :button,
-          class: 'margin-top-2 tablet:margin-top-0 tablet:margin-left-2',
-        ) %>
-    <%= render ClipboardButtonComponent.new(
-          clipboard_text: @codes.join(' '),
-          outline: true,
-          class: 'margin-top-2 tablet:margin-top-0 tablet:margin-left-2',
-        ) %>
-  </div>
-</div>
+  <% end %>
 
-<%= simple_form_for(:backup_code_accepted_form, url: backup_code_continue_path, method: :patch) do |f| %>
-  <%= render ValidatedFieldComponent.new(
-        form: f,
-        name: :backup_code_notice_accepted,
-        as: :boolean,
-        label: t('forms.backup_code.saved'),
-        required: true,
-      ) %>
-  <%= f.submit t('forms.buttons.continue'), class: 'margin-top-2' %>
-<% end %>
+  <% page.with_actions do %>
+    <%= render ADS::StackComponent.new(kind: :actions, gap: 8, align: :stretch) do %>
+      <%= simple_form_for(
+            :backup_code_accepted_form,
+            url: backup_code_continue_path,
+            method: :patch,
+          ) do |f| %>
+        <%= render ADS::StackComponent.new(kind: :form, gap: 32, align: :stretch) do %>
+          <%= render ValidatedFieldComponent.new(
+                form: f,
+                name: :backup_code_notice_accepted,
+                as: :boolean,
+                label: t('forms.backup_code.saved'),
+                required: true,
+                label_html: { class: 'ads-checkbox__label--regular' },
+                wrapper_html: { class: 'ads-checkbox' },
+              ) %>
+          <%= render ButtonComponent.new(
+                size: :lg,
+                type: :submit,
+              ).with_content(t('forms.buttons.continue')) %>
+        <% end %>
+      <% end %>
 
-<% if in_multi_mfa_selection_flow? %>
-  <%= render PageFooterComponent.new do %>
-
-    <%= form_tag(backup_code_delete_path, method: :delete) do %>
-
-      <%= button_tag t('two_factor_authentication.choose_another_option'), type: 'submit', class: 'usa-button usa-button--unstyled' %>
-
+      <% if in_multi_mfa_selection_flow? %>
+        <%= render ButtonComponent.new(
+              url: backup_code_delete_path,
+              method: :delete,
+              variant: :quaternary,
+            ).with_content(t('two_factor_authentication.choose_another_option')) %>
+      <% end %>
     <% end %>
   <% end %>
 <% end %>

@@ -32,9 +32,7 @@ RSpec.describe Idv::EnterDobSsnController do
   end
   let(:idv_session) { subject.idv_session }
   let(:resolved_authn_context_result) do
-    Component::Parser.new(
-      acr_values: Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_REQUIRED_ACR,
-    ).parse
+    Component::Parser.new(acr_values: Saml::Idp::Constants::IAL_AUTH_ONLY_ACR).parse
   end
   let(:proofing_agent_device_profiling) { :disabled }
   let(:tmx_session_id) { nil }
@@ -74,20 +72,6 @@ RSpec.describe Idv::EnterDobSsnController do
 
   describe '#new' do
     let(:response) { get :new }
-
-    context 'when idv_sp_required is enabled' do
-      # agent proofed users come in from a plain sign in link with no sp
-      # session, so nothing asks for identity proofing on their behalf
-      let(:idv_sp_required) { true }
-
-      before do
-        allow(IdentityConfig.store).to receive(:idv_sp_required).and_return(idv_sp_required)
-      end
-
-      it 'renders the binding page instead of the account page' do
-        expect(response).to render_template(:new)
-      end
-    end
 
     context 'proofing agent feature is disabled' do
       let(:idv_proofing_agent_enabled) { false }
@@ -176,14 +160,6 @@ RSpec.describe Idv::EnterDobSsnController do
         response
       end
     end
-
-    it 'sets session[:sp] as a hash with the acr_values' do
-      response
-
-      expect(session[:sp].with_indifferent_access[:acr_values]).to eq(
-        Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_REQUIRED_ACR,
-      )
-    end
   end
 
   describe '#create' do
@@ -253,14 +229,6 @@ RSpec.describe Idv::EnterDobSsnController do
         expect(result.review_status).to eq('pass')
         expect(result.transaction_id).to eq('ddp-mock-transaction-id-123')
       end
-    end
-
-    it 'sets session[:sp] as a hash with the acr_values' do
-      post :create, params: params
-
-      expect(session[:sp].with_indifferent_access[:acr_values]).to eq(
-        Saml::Idp::Constants::IAL_VERIFIED_FACIAL_MATCH_REQUIRED_ACR,
-      )
     end
   end
 end

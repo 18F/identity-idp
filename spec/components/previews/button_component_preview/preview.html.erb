@@ -1,0 +1,20 @@
+<% variants = %i[primary secondary tertiary quaternary ghost destructive] %>
+<% sizes = %i[lg md sm] %>
+
+<div style="display: flex; flex-direction: column; gap: 32px;">
+  <% variants.each do |variant| %>
+    <div>
+      <p style="margin: 0 0 12px; font: 600 12px/1 system-ui; text-transform: capitalize;"><%= variant %></p>
+      <div style="display: flex; flex-direction: column; gap: 12px;">
+        <% sizes.each do |size| %>
+          <div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center;">
+            <%= render ButtonComponent.new(variant:, size:).with_content('Label') %>
+            <%= render ButtonComponent.new(variant:, size:, icon: :plus).with_content('Label') %>
+            <%= render ButtonComponent.new(variant:, size:, icon: :plus, icon_position: :right).with_content('Label') %>
+            <%= render ButtonComponent.new(variant:, size:, icon: :plus) %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+</div>

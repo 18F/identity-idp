@@ -1,0 +1,52 @@
+@mixin stack(
+  $gap: null,
+  $align: null,
+  $justify: null,
+  $width: null,
+  $max-width: null,
+  $margin: null,
+  $reset-flow: false,
+  $text-align: null,
+  $box-border: false
+) {
+  display: flex;
+  flex-direction: column;
+
+  @if $align {
+    align-items: $align;
+  }
+
+  @if $justify {
+    justify-content: $justify;
+  }
+
+  @if $gap {
+    gap: $gap;
+  }
+
+  @if $width {
+    width: $width;
+  }
+
+  @if $max-width {
+    max-width: $max-width;
+  }
+
+  @if $margin {
+    margin: $margin;
+  }
+
+  @if $text-align {
+    text-align: $text-align;
+  }
+
+  @if $box-border {
+    box-sizing: border-box;
+  }
+
+  @if $reset-flow {
+    > * + * {
+      margin-top: 0;
+    }
+  }
+}

@@ -1,22 +1,5 @@
 <% self.title = @presenter.page_title %>
 
-<% if @platform_authenticator %>
-  <%= image_tag asset_url('platform-authenticator.svg'), alt: '', width: 84, height: 95, class: 'margin-left-1 margin-bottom-2', aria: { hidden: true } %>
-<% end %>
-
-<%= render PageHeadingComponent.new.with_content(@presenter.heading) %>
-
-<% if @need_to_set_up_additional_mfa %>
-  <%= render AlertComponent.new(type: :info, class: 'margin-bottom-4') do %>
-    <%= t('forms.webauthn_platform_setup.info_text') %>
-  <% end %>
-<% end %>
-
-<span id="webauthn-intro">
-  <%= @presenter.intro_html %>
-</span>
-<%= @presenter.learn_more_html unless @platform_authenticator %>
-
 <%= simple_form_for(
       '',
       url: webauthn_setup_path(
@@ -26,7 +9,6 @@
       ),
       method: :patch,
       html: {
-        class: 'margin-top-4 margin-bottom-1',
         id: 'webauthn-form',
         data: { auto_trigger: @auto_trigger || nil },
       },
@@ -40,67 +22,106 @@
   <%= hidden_field_tag :client_data_json, '', id: 'client_data_json' %>
   <%= hidden_field_tag :authenticator_data_value, '', id: 'authenticator_data_value' %>
   <%= hidden_field_tag :transports, '', id: 'transports' %>
-
   <%= hidden_field_tag :platform_authenticator, @platform_authenticator, id: 'platform_authenticator' %>
-  <% if !@platform_authenticator %>
-    <fieldset aria-labelledby="webauthn-intro" class="padding-0 border-0 margin-y-4 margin-x-0">
-      <%= render ProcessListComponent.new(connected: true) do |c| %>
-        <%= c.with_item(heading: t('forms.webauthn_setup.step_1'), heading_id: 'step-1-label') do %>
-          <p><%= t('forms.webauthn_setup.step_1a') %></p>
-          <%= render ValidatedFieldComponent.new(
-                form: f,
-                name: :name,
-                required: true,
-                label: false,
-                hint: @presenter.device_nickname_hint,
-                wrapper_html: { class: 'margin-bottom-0' },
-                input_html: {
-                  aria: { labelledby: 'step-1-label' },
-                  id: 'nickname',
-                  class: 'font-family-mono',
-                  size: 16,
-                  maxlength: 20,
-                },
-              ) %>
-        <% end %>
-        <%= c.with_item(heading: t('forms.webauthn_setup.step_2')) do %>
-            <%= render SecurityKeyImageComponent.new(mobile: mobile?) %>
+
+  <%= render ADS::FormPageComponent.new(title: @presenter.heading) do |page| %>
+    <% page.with_body do %>
+      <%= render ADS::StackComponent.new(kind: :form, gap: 16, align: :stretch) do %>
+        <% if @need_to_set_up_additional_mfa %>
+          <%= render AlertComponent.new(type: :neutral, text_tag: :div) do %>
+            <%= t('forms.webauthn_platform_setup.info_text') %>
           <% end %>
-        <%= c.with_item(heading: t('forms.webauthn_setup.step_3')) do %>
-          <p><%= t('forms.webauthn_setup.step_3a') %></p>
+        <% end %>
+
+        <% if @platform_authenticator %>
+          <div class="ads-copy">
+            <%= @presenter.intro_html %>
+          </div>
+        <% else %>
+          <%= render CardComponent.new(padding: :compact) do %>
+            <div class="ads-card__stack--divided">
+              <p class="ads-card__title">1. <%= t('forms.webauthn_setup.step_1') %></p>
+              <%= render InputComponent.new(
+                    form: f,
+                    attribute: :name,
+                    label: t('forms.webauthn_setup.nickname'),
+                    required: true,
+                    id: 'nickname',
+                    maxlength: 20,
+                    autocomplete: 'off',
+                    error_messages: {
+                      valueMissing: t('components.input.errors.nickname'),
+                    },
+                  ) %>
+            </div>
+          <% end %>
+
+          <%= render CardComponent.new(padding: :compact) do %>
+            <div class="ads-card__stack--divided">
+              <p class="ads-card__title">2. <%= t('forms.webauthn_setup.step_2') %></p>
+              <%= render AnimatedMediaComponent.new(
+                    image: 'security-key-insert-desktop.gif',
+                    alt: t('forms.webauthn_setup.step_2_image_alt'),
+                    width: 864,
+                    height: 400,
+                    class: 'ads-card__media ads-animated-media--desktop',
+                  ) %>
+              <%= render AnimatedMediaComponent.new(
+                    image: 'security-key-insert-mobile.gif',
+                    alt: t('forms.webauthn_setup.step_2_image_mobile_alt'),
+                    width: 432,
+                    height: 200,
+                    class: 'ads-card__media ads-animated-media--mobile',
+                  ) %>
+            </div>
+          <% end %>
+
+          <%= render CardComponent.new(padding: :compact) do %>
+            <div class="ads-card__stack--divided">
+              <p class="ads-card__title">3. <%= t('forms.webauthn_setup.step_3') %></p>
+              <p class="ads-card__description"><%= t('forms.webauthn_setup.step_3a') %></p>
+            </div>
+          <% end %>
+        <% end %>
+
+        <div class="ads-checkbox">
+          <%= hidden_field_tag :remember_device, '0', id: nil %>
+          <%= check_box_tag(
+                :remember_device,
+                '1',
+                @presenter.remember_device_box_checked?,
+                class: 'ads-checkbox__input',
+              ) %>
+          <%= label_tag(
+                :remember_device,
+                t('forms.messages.remember_device'),
+                class: 'ads-checkbox__label',
+              ) %>
+        </div>
+      <% end %>
+    <% end %>
+
+    <% page.with_actions do %>
+      <%= render ADS::StackComponent.new(kind: :actions, gap: 8, align: :stretch) do %>
+        <%= render ButtonComponent.new(
+              type: :submit,
+            ).with_content(@presenter.button_text) %>
+
+        <% if MfaPolicy.new(current_user).two_factor_enabled? && !in_multi_mfa_selection_flow? %>
+          <%= render ButtonComponent.new(
+                url: account_path,
+                variant: :quaternary,
+              ).with_content(t('links.cancel')) %>
+        <% else %>
+          <%= render ButtonComponent.new(
+                url: authentication_methods_setup_path,
+                variant: :quaternary,
+              ).with_content(t('forms.webauthn_setup.use_different_method')) %>
         <% end %>
       <% end %>
-    </fieldset>
+    <% end %>
   <% end %>
-  <div class="margin-y-4 text-center" id="spinner" hidden>
-    <%= image_tag(
-          asset_url('loading-badge.gif'),
-          height: 144,
-          width: 144,
-          alt: '',
-        ) %>
-    <strong class="display-block margin-top-2">
-      <%= t('forms.webauthn_setup.saving') %>
-    </strong>
-  </div>
-  <%= f.input(
-        :remember_device,
-        as: :boolean,
-        label: t('forms.messages.remember_device'),
-        aria: { describedby: 'remember-browser-description' },
-        input_html: {
-          class: 'usa-checkbox__input--bordered',
-          checked: @presenter.remember_device_box_checked?,
-        },
-      ) %>
-  <p class='margin-top-1 font-body-2xs' id='remember-browser-description'><%= t('forms.messages.public_shared_device_html') %></p>
-  <%= render SubmitButtonComponent.new(class: 'display-block margin-y-5').with_content(@presenter.button_text) %>
 <% end %>
-
-<%= render(
-      'shared/cancel_or_back_to_options',
-      back_to_options_path: authentication_methods_setup_path,
-    ) %>
 
 <% if @account_creation_threatmetrix[:threatmetrix_session_id].present? %>
   <%= render(

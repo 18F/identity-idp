@@ -1,3 +1,14 @@
-<%= render AlertComponent.new(type: :info) do %>
-  <%= link_to(t('account.index.continue_to_service_provider', service_provider: presenter.sp_name), presenter.sp_session_request_url) %>
-<% end %>
+<%= render AlertComponent.new(
+      type: :neutral,
+      message: t(
+        'account.index.continue_to_service_provider_prompt',
+        service_provider: presenter.sp_name,
+      ),
+      action: {
+        label: t(
+          'account.index.continue_to_service_provider',
+          service_provider: presenter.sp_name,
+        ),
+        url: presenter.sp_session_request_url,
+      },
+    ) %>

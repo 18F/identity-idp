@@ -5,14 +5,7 @@ locals:
   @presenter - An instance of Idv::InPerson::VerifyInfoPresenter
 %>
 
-<% content_for(:pre_flash_content) do %>
-  <%= render StepIndicatorComponent.new(
-        steps: @presenter.step_indicator_steps,
-        current_step: :verify_info,
-        locale_scope: 'idv',
-        class: 'margin-x-neg-2 margin-top-neg-4 tablet:margin-x-neg-6 tablet:margin-top-neg-4',
-      ) %>
-<% end %>
+<%= render 'idv/shared/step_indicator', current_step: :verify_info, steps: @presenter.step_indicator_steps %>
 
 <div id="form-steps-wait-alert">
   <!-- Needed by form steps wait javascript -->
@@ -20,25 +13,33 @@ locals:
 
 <% self.title = t('titles.idv.verify_info') %>
 
-<%= render PageHeadingComponent.new.with_content(t('headings.verify')) %>
-<% if @presenter.passport_flow? %>
-  <p>
-    <%= t('in_person_proofing.form.verify_info.passport_intro_text') %>
-  </p>
-<% end %>
-<div class='margin-top-4 margin-bottom-2'>
-  <%= render @presenter.identity_info_partial, pii: @pii %>
-  <%= render 'address_section', pii: @pii %>
-  <%= render 'ssn_section', ssn: @ssn %>
-  <div class="margin-top-5">
-    <%= render SpinnerButtonComponent.new(
+<%= render ADS::FormPageComponent.new(
+      title: t('headings.verify'),
+      subtitle: t('idv.messages.verify_info'),
+    ) do |page| %>
+  <% page.with_body do %>
+    <%= render CardComponent.new do %>
+      <div class="ads-card__stack ads-card__stack--divided">
+        <%= render @presenter.identity_info_partial, pii: @pii %>
+        <%= render 'idv/shared/verify_info/address',
+                   pii: @pii,
+                   url: idv_in_person_address_url,
+                   divider: true,
+                   click_observer_event: 'idv_in_person_proofing_verify_info_update_address_button_clicked' %>
+        <%= render 'idv/shared/verify_info/ssn',
+                   ssn: @ssn,
+                   url: idv_in_person_ssn_url,
+                   divider: true,
+                   click_observer_event: 'idv_in_person_proofing_verify_info_update_ssn_button_clicked' %>
+      </div>
+    <% end %>
+  <% end %>
+
+  <% page.with_actions do %>
+    <%= render ButtonComponent.new(
           url: idv_in_person_verify_info_path,
-          big: true,
-          wide: true,
-          action_message: t('idv.messages.verifying'),
           method: :put,
           form: {
-            class: 'button_to',
             data: {
               form_steps_wait: '',
               error_message: t('idv.failure.exceptions.internal_error'),
@@ -47,9 +48,8 @@ locals:
               poll_interval_ms: IdentityConfig.store.poll_rate_for_verify_in_seconds * 1000,
             },
           },
-        ).with_content(t('forms.buttons.submit.default')) %>
-  </div>
-</div>
+        ).with_content(t('forms.buttons.continue')) %>
+  <% end %>
+<% end %>
 
 <% javascript_packs_tag_once 'form-steps-wait' %>
-<%= render 'idv/doc_auth/cancel', step: 'verify' %>

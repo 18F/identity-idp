@@ -1,5 +1,32 @@
-<%= tag.div(role:, **tag_options, class: css_class) do %>
-  <div class="usa-alert__body">
-    <%= content_tag(text_tag, content, class: 'usa-alert__text') %>
-  </div>
+<% if dismissible %><lg-alert class="ads-alert-mount" data-open="false"><div class="ads-alert-mount__inner"><% end %>
+<%= tag.div(role:, **tag_options.except(:class), class: css_class) do %>
+  <% if title.present? %>
+    <div class="ads-alert__copy">
+      <p class="ads-alert__title"><%= title %></p>
+      <%= content_tag(text_tag, content, class: 'ads-alert__text') %>
+    </div>
+  <% else %>
+    <%= content_tag(text_tag, content, class: 'ads-alert__text') %>
+  <% end %>
+  <% if action? %>
+    <%= render ButtonComponent.new(
+          url: action_url,
+          variant: :tertiary,
+          size: :sm,
+          class: 'ads-alert__action',
+        ).with_content(action_label) %>
+  <% end %>
+  <% if dismissible %>
+    <span class="ads-alert__spacer" aria-hidden="true"></span>
+    <%= render ButtonComponent.new(
+          type: :button,
+          variant: :quaternary,
+          size: :sm,
+          icon: :close,
+          class: 'ads-alert__close',
+          'aria-label': t('doc_auth.buttons.close'),
+          data: { dismiss: true },
+        ) %>
+  <% end %>
 <% end %>
+<% if dismissible %></div></lg-alert><% end %>

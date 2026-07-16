@@ -1,17 +1,14 @@
 <% self.title = t('titles.verify_email') %>
 
-<%= render PageHeadingComponent.new.with_content(t('headings.verify_email')) %>
-
-<% t('account_reset.confirm_request.info_html', email: email, waiting_period: waiting_period).each do |info_p| %>
-  <p><%= info_p %></p>
+<%= render ADS::FormPageComponent.new(title: t('headings.verify_email')) do |page| %>
+  <% page.with_body do %>
+    <ul class="ads-list">
+      <% t('account_reset.confirm_request.info_html', email: email, waiting_period: waiting_period).each do |info_p| %>
+        <li><%= info_p %></li>
+      <% end %>
+      <% if sms_phone %>
+        <li><%= t('account_reset.confirm_request.security_note') %></li>
+      <% end %>
+    </ul>
+  <% end %>
 <% end %>
-
-<div class="width-10">
-  <hr class="margin-y-4 border-width-05 border-info">
-</div>
-
-<% if sms_phone %>
-  <p><%= t('account_reset.confirm_request.security_note') %></p>
-<% end %>
-
-<p><%= t('account_reset.confirm_request.close_window') %></p>

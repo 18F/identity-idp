@@ -13,8 +13,8 @@ class BlockLinkComponent < BaseComponent
   end
 
   def css_class
-    classes = ['usa-link', 'block-link', *tag_options[:class]]
-    classes << 'usa-link--external' if new_tab?
+    classes = ['ads-link', 'block-link', *tag_options[:class]]
+    classes << 'ads-link--external' if new_tab?
     classes
   end
 

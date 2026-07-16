@@ -74,8 +74,8 @@ SimpleForm.setup do |config|
   config.wrappers :uswds_checkbox do |b|
     b.use :html5_no_aria_required
     b.optional :hint, wrap_with: { tag: 'div', class: 'usa-hint' }
-    b.use :input, class: 'usa-checkbox__input', error_class: 'usa-input--error'
-    b.optional :label, class: 'usa-checkbox__label'
+    b.use :input, class: 'ads-checkbox__input', error_class: 'usa-input--error'
+    b.optional :label, class: 'ads-checkbox__label'
     b.use :error, wrap_with: { tag: 'div', class: 'usa-error-message' }
   end
 

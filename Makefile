@@ -200,7 +200,7 @@ lintfix: ## Try to automatically fix any Ruby, ERB, JavaScript, YAML, or CSS lin
 brakeman: ## Runs brakeman code security check
 	(bundle exec brakeman) || (echo "Error: update code as needed to remove security issues. For known exceptions already in brakeman.ignore, use brakeman to interactively update exceptions."; exit 1)
 
-public/packs/manifest.json: package-lock.json $(shell find app/javascript -type f) ## Builds JavaScript assets
+public/packs/manifest.json: package-lock.json $(shell find app/javascript app/components -type f \( -name '*.js' -o -name '*.jsx' -o -name '*.ts' -o -name '*.tsx' \)) ## Builds JavaScript assets
 	npm run build:js
 
 browsers.json: package-lock.json .browserslistrc ## Generates browsers.json browser support file

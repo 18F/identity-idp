@@ -42,10 +42,6 @@ RSpec.describe 'idv/socure/errors/show.html.erb' do
       expect(rendered).to have_css('h1', text: t('idv.errors.technical_difficulties'))
     end
 
-    it 'shows try again' do
-      expect(rendered).to have_text(t('idv.errors.try_again_later'))
-    end
-
     it 'shows remaining attempts' do
       expect(rendered).to have_text(
         strip_tags(
@@ -57,6 +53,10 @@ RSpec.describe 'idv/socure/errors/show.html.erb' do
       )
     end
 
+    it 'does not show try again later' do
+      expect(rendered).not_to have_text(t('idv.errors.try_again_later'))
+    end
+
     it 'shows a primary action' do
       expect(rendered).to have_link(
         t('idv.failure.button.warning'),
@@ -66,10 +66,6 @@ RSpec.describe 'idv/socure/errors/show.html.erb' do
 
     context 'In person verification disabled' do
       let(:sp) { create(:service_provider, in_person_proofing_enabled: false) }
-
-      it 'does not have the IPP h1' do
-        expect(rendered).not_to have_css('h1', text: t('in_person_proofing.headings.cta'))
-      end
 
       it 'does not explain in person verification' do
         expect(rendered).not_to have_text(t('in_person_proofing.body.cta.prompt_detail'))
@@ -86,16 +82,20 @@ RSpec.describe 'idv/socure/errors/show.html.erb' do
     end
 
     context 'In person verification enabled' do
-      it 'has the IPP h1' do
-        expect(rendered).to have_css('h1', text: t('in_person_proofing.headings.cta'))
-      end
-
       it 'explains in person verification' do
         expect(rendered).to have_text(t('in_person_proofing.body.cta.prompt_detail'))
       end
 
-      it 'has a secondary cta for IPP' do
+      it 'has a secondary cta for IPP in the actions group' do
         url = idv_in_person_direct_path
+        expect(rendered).to have_css(
+          '.ads-auth__actions a',
+          text: t('idv.failure.button.warning'),
+        )
+        expect(rendered).to have_css(
+          '.ads-auth__actions a',
+          text: t('in_person_proofing.body.cta.button'),
+        )
         expect(rendered).to have_link(
           t('in_person_proofing.body.cta.button'),
           href: %r{#{url}},
@@ -118,8 +118,8 @@ RSpec.describe 'idv/socure/errors/show.html.erb' do
       expect(rendered).to have_css('h1', text: t('idv.errors.technical_difficulties'))
     end
 
-    it 'shows try again' do
-      expect(rendered).to have_text(t('idv.errors.try_again_later'))
+    it 'does not show try again later' do
+      expect(rendered).not_to have_text(t('idv.errors.try_again_later'))
     end
 
     it 'does not show remaining attempts' do

@@ -265,8 +265,7 @@ RSpec.feature 'document capture step', :js do
         # Navigate to choose ID type page and select passport
         visit idv_choose_id_type_url
 
-        choose(t('doc_auth.forms.id_type_preference.passport'))
-        click_on t('forms.buttons.continue')
+        click_on t('doc_auth.forms.id_type_preference.passport')
 
         expect(page).to have_current_path(idv_document_capture_url, wait: 10)
         expect(page).to have_content(t('doc_auth.headings.document_capture_passport'))
@@ -303,8 +302,7 @@ RSpec.feature 'document capture step', :js do
       end
 
       it 'fails due to mrz' do
-        choose(t('doc_auth.forms.id_type_preference.passport'))
-        click_on t('forms.buttons.continue')
+        click_on t('doc_auth.forms.id_type_preference.passport')
         expect(page).to have_current_path(idv_document_capture_url)
         expect(page).not_to have_content(t('doc_auth.tips.document_capture_selfie_text1'))
         attach_passport_image(passport_image)
@@ -336,8 +334,7 @@ RSpec.feature 'document capture step', :js do
       end
 
       it 'shows the error message' do
-        choose(t('doc_auth.forms.id_type_preference.passport'))
-        click_on t('forms.buttons.continue')
+        click_on t('doc_auth.forms.id_type_preference.passport')
         expect(page).to have_current_path(idv_document_capture_url)
         expect(page).not_to have_content(t('doc_auth.tips.document_capture_selfie_text1'))
         attach_passport_image(passport_image)
@@ -357,8 +354,7 @@ RSpec.feature 'document capture step', :js do
       end
 
       it 'fails pii check' do
-        choose(t('doc_auth.forms.id_type_preference.passport'))
-        click_on t('forms.buttons.continue')
+        click_on t('doc_auth.forms.id_type_preference.passport')
         expect(page).to have_current_path(idv_document_capture_url)
         expect(page).not_to have_content(t('doc_auth.tips.document_capture_selfie_text1'))
         attach_passport_image(passport_image)
@@ -388,8 +384,7 @@ RSpec.feature 'document capture step', :js do
       end
 
       it 'shows the error message' do
-        choose(t('doc_auth.forms.id_type_preference.passport'))
-        click_on t('forms.buttons.continue')
+        click_on t('doc_auth.forms.id_type_preference.passport')
         expect(page).to have_current_path(idv_document_capture_url)
         expect(page).not_to have_content(t('doc_auth.tips.document_capture_selfie_text1'))
         attach_passport_image(passport_image)
@@ -411,8 +406,7 @@ RSpec.feature 'document capture step', :js do
       end
 
       it 'shows the error message' do
-        choose(t('doc_auth.forms.id_type_preference.passport'))
-        click_on t('forms.buttons.continue')
+        click_on t('doc_auth.forms.id_type_preference.passport')
         expect(page).to have_current_path(idv_document_capture_url)
         expect(page).not_to have_content(t('doc_auth.tips.document_capture_selfie_text1'))
         attach_passport_image
@@ -684,8 +678,7 @@ RSpec.feature 'document capture step', :js do
                   visit_idp_from_oidc_sp_with_ial2(facial_match_required: true)
                   sign_in_and_2fa_user(@user)
                   complete_doc_auth_steps_before_hybrid_handoff_step
-                  choose(t('doc_auth.forms.id_type_preference.passport'))
-                  click_on t('forms.buttons.continue')
+                  click_on t('doc_auth.forms.id_type_preference.passport')
 
                   expect(page).to have_current_path(idv_document_capture_url, wait: 10)
 
@@ -1035,8 +1028,7 @@ RSpec.feature 'document capture step', :js do
     context 'when capturing for state ID flow' do
       before do
         visit idv_choose_id_type_url
-        choose(t('doc_auth.forms.id_type_preference.drivers_license'))
-        click_on t('forms.buttons.continue')
+        click_on t('doc_auth.forms.id_type_preference.drivers_license')
       end
 
       context 'when aamva check is successful' do

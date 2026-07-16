@@ -1,16 +1,29 @@
 <% self.title = t('titles.revoke_consent') %>
 
-<%= render PageHeadingComponent.new.with_content(t('titles.revoke_consent')) %>
+<%= render ADS::FormPageComponent.new(title: t('titles.revoke_consent')) do |page| %>
+  <% page.with_body do %>
+    <div class="ads-copy">
+      <p>
+        <%= t(
+              'account.revoke_consent.longer_description_html',
+              service_provider_html: content_tag(:strong, @service_provider.friendly_name),
+            ) %>
+      </p>
+    </div>
+  <% end %>
 
-<p>
-  <%= t(
-        'account.revoke_consent.longer_description_html',
-        service_provider_html: content_tag(:b, @service_provider.friendly_name),
-      ) %>
-</p>
+  <% page.with_actions do %>
+    <%= render ADS::StackComponent.new(kind: :actions, gap: 8, align: :stretch) do %>
+      <%= render ButtonComponent.new(
+            url: service_provider_revoke_url(@service_provider.id),
+            method: :delete,
+            variant: :destructive,
+          ).with_content(t('forms.buttons.continue')) %>
 
-<%= button_to(service_provider_revoke_url(@service_provider.id), method: 'delete', class: 'usa-button usa-button--wide usa-button--big margin-top-4') { t('forms.buttons.continue') } %>
-
-<%= render PageFooterComponent.new do %>
-  <%= link_to(t('links.cancel'), account_connected_services_path) %>
+      <%= render ButtonComponent.new(
+            url: account_connected_services_path,
+            variant: :quaternary,
+          ).with_content(t('links.cancel')) %>
+    <% end %>
+  <% end %>
 <% end %>

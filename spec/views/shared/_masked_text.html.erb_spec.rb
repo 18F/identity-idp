@@ -20,9 +20,12 @@ RSpec.describe 'shared/_masked_text.html.erb' do
   end
 
   it 'renders texts' do
-    expect(rendered).to have_css('.display-none', text: text)
-    expect(rendered).to have_css('[aria-hidden]', text: masked_text)
-    expect(rendered).to have_css('.usa-sr-only', text: accessible_masked_text)
+    expect(rendered).to have_css('.ads-masked-text__text[hidden]', text: text, visible: :hidden)
+    expect(rendered).to have_css(
+      '.ads-masked-text__value[aria-hidden]',
+      text: masked_text.tr('*', '•'),
+    )
+    expect(rendered).to have_css('.ads-sr-only', text: accessible_masked_text)
   end
 
   context 'without toggle' do
@@ -36,15 +39,19 @@ RSpec.describe 'shared/_masked_text.html.erb' do
   context 'with toggle' do
     let(:toggle_label) { 'Show password' }
 
-    it 'renders with toggle' do
-      expect(rendered).to have_css('input[aria-controls]')
+    it 'renders with icon toggle' do
+      expect(rendered).to have_css('input.ads-masked-text__toggle[aria-controls]', visible: :hidden)
+      expect(rendered).to have_css('label.ads-masked-text__icon-toggle', text: toggle_label)
     end
 
     context 'with custom id' do
       let(:id) { 'custom-id' }
 
       it 'renders with custom id' do
-        expect(rendered).to have_css('input#custom-id-checkbox[aria-controls="custom-id"]')
+        expect(rendered).to have_css(
+          'input#custom-id-checkbox[aria-controls="custom-id"]',
+          visible: :hidden,
+        )
       end
     end
   end

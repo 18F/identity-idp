@@ -1,26 +1,27 @@
 <% @events.group_by { |event| IpGeocoder.new(event.device.last_ip).location }.each do |location, events| %>
-  <div class="margin-top-5">
-    <table class="usa-table">
-      <thead>
-        <tr>
-          <th scope="col" class="font-family-mono">
-            <%= t('user_mailer.new_device_sign_in_attempts.new_sign_in_from', location:) %>
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        <% events.each do |event| %>
-          <tr>
-            <td class="font-family-mono">
-              <%# i18n-tasks-use t('user_mailer.new_device_sign_in_attempts.events.sign_in_after_2fa') %>
-              <%# i18n-tasks-use t('user_mailer.new_device_sign_in_attempts.events.sign_in_before_2fa') %>
-              <%# i18n-tasks-use t('user_mailer.new_device_sign_in_attempts.events.sign_in_unsuccessful_2fa') %>
-              <%= t(event.event_type, scope: [:user_mailer, :new_device_sign_in_attempts, :events]) %><br />
-              <%= EasternTimePresenter.new(event.created_at) %>
-            </td>
-          </tr>
-        <% end %>
-      </tbody>
-    </table>
-  </div>
+  <table class="mailer-info-card" width="100%" cellpadding="0" cellspacing="0" border="0" role="presentation">
+    <tr>
+      <td class="mailer-info-card__cell">
+        <p class="mailer-text mailer-text--emphasized">
+          <%= t('user_mailer.new_device_sign_in_attempts.new_sign_in_from', location:) %>
+        </p>
+      </td>
+    </tr>
+    <% events.each do |event| %>
+      <tr>
+        <td class="mailer-info-card__rule">&nbsp;</td>
+      </tr>
+      <tr>
+        <td class="mailer-info-card__cell">
+          <p class="mailer-text mailer-text--emphasized">
+            <%# i18n-tasks-use t('user_mailer.new_device_sign_in_attempts.events.sign_in_after_2fa') %>
+            <%# i18n-tasks-use t('user_mailer.new_device_sign_in_attempts.events.sign_in_before_2fa') %>
+            <%# i18n-tasks-use t('user_mailer.new_device_sign_in_attempts.events.sign_in_unsuccessful_2fa') %>
+            <%= t(event.event_type, scope: [:user_mailer, :new_device_sign_in_attempts, :events]) %><br />
+            <span class="mailer-text--normal"><%= EasternTimePresenter.new(event.created_at) %></span>
+          </p>
+        </td>
+      </tr>
+    <% end %>
+  </table>
 <% end %>

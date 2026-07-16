@@ -25,7 +25,7 @@ RSpec.describe 'accounts/connected_services/selected_email/edit.html.erb' do
 
   it 'renders introduction text' do
     expect(rendered).to have_content(
-      strip_tags(t('help_text.select_preferred_email_html', sp: identity.display_name)),
+      strip_tags(t('help_text.select_preferred_email_html', sp_html: identity.display_name)),
     )
   end
 

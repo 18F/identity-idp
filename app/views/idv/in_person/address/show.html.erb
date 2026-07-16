@@ -1,92 +1,154 @@
-<% content_for(:pre_flash_content) do %>
-  <%= render StepIndicatorComponent.new(
-        steps: Idv::StepIndicatorConcern::STEP_INDICATOR_STEPS_IPP,
-        current_step: :verify_info,
-        locale_scope: 'idv',
-        class: 'margin-x-neg-2 margin-top-neg-4 tablet:margin-x-neg-6 tablet:margin-top-neg-4',
-      ) %>
-<% end %>
+<%= render 'idv/shared/step_indicator',
+           current_step: :verify_info,
+           steps: Idv::StepIndicatorConcern::STEP_INDICATOR_STEPS_IPP %>
 
-<% if updating_address %>
-  <% self.title = t('in_person_proofing.headings.update_address') %>
-  <%= render PageHeadingComponent.new.with_content(t('in_person_proofing.headings.update_address')) %>
-<% else %>
-  <% self.title = t('in_person_proofing.headings.address') %>
-  <%= render PageHeadingComponent.new.with_content(t('in_person_proofing.headings.address')) %>
-<% end %>
+<% page_title = updating_address ?
+     t('in_person_proofing.headings.update_address') :
+     t('in_person_proofing.headings.address') %>
+<% self.title = page_title %>
 
-<%= simple_form_for(form, url: url_for, method: 'PUT') do |f| %>
-  <%= render ValidatedFieldComponent.new(
-        collection: @presenter.usps_states_territories,
-        form: f,
-        input_html: { class: 'address-state-selector' },
-        label: t('idv.form.state'),
-        label_html: { class: 'usa-label' },
-        name: :state,
-        prompt: t('in_person_proofing.form.address.state_prompt'),
-        required: true,
-        selected: pii[:state],
-      ) %>
-  <%= render ValidatedFieldComponent.new(
-        form: f,
-        hint: t('in_person_proofing.form.state_id.address1_hint'),
-        hint_html: { class: ['display-none', 'puerto-rico-extras'] },
-        input_html: { value: pii[:address1] },
-        label: t('idv.form.address1'),
-        label_html: { class: 'usa-label' },
-        maxlength: 255,
-        name: :address1,
-        required: true,
-      ) %>
-  <%= render ValidatedFieldComponent.new(
-        form: f,
-        hint: t('in_person_proofing.form.state_id.address2_hint'),
-        hint_html: { class: ['display-none', 'puerto-rico-extras'] },
-        input_html: { value: pii[:address2] },
-        label: t('idv.form.address2'),
-        label_html: { class: 'usa-label' },
-        maxlength: 255,
-        name: :address2,
-        required: false,
-      ) %>
-  <%= render ValidatedFieldComponent.new(
-        form: f,
-        input_html: { value: pii[:city] },
-        label: t('idv.form.city'),
-        label_html: { class: 'usa-label' },
-        maxlength: 255,
-        name: :city,
-        required: true,
-      ) %>
+<%= render ADS::FormPageComponent.new(title: page_title) do |page| %>
+  <% page.with_body do %>
+    <%= simple_form_for(
+          form,
+          url: url_for,
+          method: :put,
+          html: { class: 'ads-form ads-form--align-stretch' },
+        ) do |f| %>
+      <%= render ADS::StackComponent.new(gap: 32, align: :stretch) do %>
+      <%= render ADS::StackComponent.new(gap: 12) do %>
+        <%= render InputComponent.new(
+              form: f,
+              attribute: :address1,
+              label: t('idv.form.address'),
+              required: true,
+              maxlength: 255,
+              autocomplete: 'address-line1',
+              value: pii[:address1],
+              aria: { describedby: 'in_person_address_address1_hint' },
+              error_message: form.errors.full_messages_for(:address1).first,
+              error_messages: {
+                valueMissing: t('components.input.errors.address'),
+              },
+            ) do %>
+          <%= tag.p(
+                t('in_person_proofing.form.state_id.address1_hint'),
+                id: 'in_person_address_address1_hint',
+                class: 'ads-input__hint puerto-rico-extras',
+                hidden: true,
+              ) %>
+        <% end %>
 
-  <div class="tablet:grid-col-6">
-    <%# using :tel for mobile numeric keypad %>
-    <%= render ValidatedFieldComponent.new(
-          as: :tel,
-          error_messages: { patternMismatch: t('idv.errors.pattern_mismatch.zipcode') },
-          form: f,
-          input_html: { value: pii[:zipcode], class: 'zipcode' },
-          label: t('idv.form.zipcode'),
-          label_html: { class: 'usa-label' },
-          name: :zipcode,
-          pattern: '\d{5}([\-]\d{4})?',
-          required: true,
-        ) %>
-  </div>
+        <%= render InputComponent.new(
+              form: f,
+              attribute: :address2,
+              label: t('idv.form.address2'),
+              required: false,
+              maxlength: 255,
+              autocomplete: 'address-line2',
+              value: pii[:address2],
+              aria: { describedby: 'in_person_address_address2_hint' },
+              error_message: form.errors.full_messages_for(:address2).first,
+            ) do %>
+          <%= tag.p(
+                t('in_person_proofing.form.state_id.address2_hint'),
+                id: 'in_person_address_address2_hint',
+                class: 'ads-input__hint puerto-rico-extras',
+                hidden: true,
+              ) %>
+        <% end %>
 
-  <%= f.submit class: 'margin-top-1' do %>
-    <% if updating_address %>
-      <%= t('forms.buttons.submit.update') %>
-    <% else %>
-      <%= t('forms.buttons.continue') %>
+        <%= render InputComponent.new(
+              form: f,
+              attribute: :city,
+              label: t('idv.form.city'),
+              required: true,
+              maxlength: 255,
+              autocomplete: 'address-level2',
+              value: pii[:city],
+              error_message: form.errors.full_messages_for(:city).first,
+              error_messages: {
+                valueMissing: t('components.input.errors.city'),
+              },
+            ) %>
+
+        <%= content_tag :div,
+                        class: 'ads-input',
+                        data: {
+                          ads_validation_messages: {
+                            valueMissing: t('components.input.errors.state'),
+                          },
+                        } do %>
+          <% state_error = form.errors.full_messages_for(:state).first %>
+          <%= f.label(:state, t('idv.form.state'), class: 'ads-input__label') %>
+          <div class="ads-input__shell">
+            <%= f.select(
+                  :state,
+                  @presenter.usps_states_territories,
+                  { include_blank: true, selected: pii[:state] },
+                  class: 'ads-input__control ads-input__control--floating address-state-selector',
+                  required: true,
+                  autocomplete: 'address-level1',
+                  aria: {
+                    describedby: 'in_person_address_state_ads_error',
+                    invalid: state_error.present? || nil,
+                  }.compact,
+                ) %>
+            <span class="ads-input__floating-label" aria-hidden="true">
+              <%= t('idv.form.state') %>
+            </span>
+          </div>
+          <p
+            class="ads-input__error<%= ' ads-input__error--visible' if state_error.present? %>"
+            data-ads-error
+            id="in_person_address_state_ads_error"
+            aria-live="polite"
+          ><span class="ads-input__error-inner"><%= state_error %></span></p>
+        <% end %>
+
+        <%= render InputComponent.new(
+              form: f,
+              attribute: :zipcode,
+              label: t('idv.form.zipcode'),
+              type: :tel,
+              required: true,
+              pattern: '(\d{5}([\-]\d{4})?)',
+              autocomplete: 'postal-code',
+              inputmode: :numeric,
+              class: 'zipcode',
+              value: pii[:zipcode],
+              error_message: form.errors.full_messages_for(:zipcode).first,
+              error_messages: {
+                valueMissing: t('components.input.errors.zipcode'),
+                typeMismatch: t('components.input.errors.zipcode'),
+                patternMismatch: t('idv.errors.pattern_mismatch.zipcode'),
+                badInput: t('components.input.errors.zipcode'),
+              },
+            ) %>
+      <% end %>
+
+      <%= render ADS::StackComponent.new(kind: :actions, gap: 8, align: :stretch) do %>
+        <%= render ButtonComponent.new(
+              type: :submit,
+            ).with_content(
+              updating_address ? t('forms.buttons.submit.update') : t('forms.buttons.continue'),
+            ) %>
+
+        <% if updating_address %>
+          <%= render ButtonComponent.new(
+                url: idv_in_person_verify_info_path,
+                variant: :quaternary,
+              ).with_content(t('forms.buttons.back')) %>
+        <% else %>
+          <%= render ButtonComponent.new(
+                url: idv_cancel_path(step: 'address'),
+                variant: :quaternary,
+              ).with_content(cancel_link_text) %>
+        <% end %>
+      <% end %>
+      <% end %>
     <% end %>
   <% end %>
-<% end %>
-
-<% if updating_address %>
-  <%= render 'idv/shared/back', fallback_path: idv_in_person_verify_info_path %>
-<% else %>
-  <%= render 'idv/doc_auth/cancel', step: 'address' %>
 <% end %>
 
 <%= javascript_packs_tag_once('formatted-fields', 'state-guidance') %>

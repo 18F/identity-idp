@@ -307,12 +307,12 @@ RSpec.feature 'Two Factor Authentication' do
       visit account_path
     end
 
-    scenario 'user can return to the 2fa options screen' do
+    scenario 'user can choose another authentication method' do
       user = create(:user, :fully_registered)
       sign_in_before_2fa(user)
-      click_link t('links.cancel')
+      click_link t('two_factor_authentication.login_options_link_text')
 
-      expect(page).to have_current_path root_path
+      expect(page).to have_current_path login_two_factor_options_path
     end
 
     scenario 'user does not have to focus on OTP field', js: true do
@@ -463,12 +463,12 @@ RSpec.feature 'Two Factor Authentication' do
       expect(page).to have_current_path login_two_factor_path(otp_delivery_preference: 'voice')
     end
 
-    scenario 'user can cancel TOTP process' do
+    scenario 'user can choose another authentication method from the OTP page' do
       user = create(:user, :fully_registered)
       sign_in_before_2fa(user)
-      click_link t('links.cancel')
+      click_link t('two_factor_authentication.login_options_link_text')
 
-      expect(page).to have_current_path root_path
+      expect(page).to have_current_path login_two_factor_options_path
     end
 
     scenario 'attempting to reuse a TOTP code results in an error' do

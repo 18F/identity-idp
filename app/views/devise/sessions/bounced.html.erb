@@ -1,13 +1,29 @@
 <% self.title = t('headings.sp_handoff_bounced', sp_name: @sp_name) %>
-<%= render PageHeadingComponent.new.with_content(t('headings.sp_handoff_bounced', sp_name: @sp_name)) %>
-<p class='margin-top-2 margin-bottom-2'>
-  <%= t(
-        'instructions.sp_handoff_bounced',
-        app_name: APP_NAME,
-        sp_name: @sp_name,
-        sp_link: @sp_link.blank? ? @sp_name : link_to(@sp_name, @sp_link),
-      ) %>
-</p>
-<div class='margin-top-4'>
-  <%= link_to t('instructions.mfa.piv_cac.back_to_sign_in'), root_url, class: 'usa-button' %>
-</div>
+
+<%= render ADS::FormPageComponent.new(title: t('headings.sp_handoff_bounced', sp_name: @sp_name)) do |page| %>
+  <% page.with_body do %>
+    <% sp_link = @sp_name %>
+    <% if @sp_link.present? %>
+      <% sp_link = capture do %>
+        <%= render ADS::LinkComponent.new(url: @sp_link) do %>
+          <%= @sp_name %>
+        <% end %>
+      <% end %>
+    <% end %>
+
+    <%= render AlertComponent.new(type: :warning, dismissible: false) do %>
+      <%= t(
+            'instructions.sp_handoff_bounced',
+            app_name: APP_NAME,
+            sp_name: @sp_name,
+            sp_link: sp_link,
+          ) %>
+    <% end %>
+  <% end %>
+
+  <% page.with_actions do %>
+    <%= render ButtonComponent.new(url: root_url) do %>
+      <%= t('instructions.mfa.piv_cac.back_to_sign_in') %>
+    <% end %>
+  <% end %>
+<% end %>

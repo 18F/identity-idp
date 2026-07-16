@@ -10,7 +10,7 @@ class AccountsController < ApplicationController
   def show
     analytics.account_visit
     delete_session_timeout_flash_if_present
-    session[:account_redirect_path] = account_path
+    session[:account_redirect_path] = account_settings_path
     cacher = Pii::Cacher.new(current_user, user_session)
     @presenter = AccountShowPresenter.new(
       decrypted_pii: cacher.fetch(current_user.active_or_pending_profile&.id),
@@ -27,16 +27,6 @@ class AccountsController < ApplicationController
         url: account_connected_services_url,
       )
     end
-  end
-
-  def reauthentication
-    # This route sends a user through reauthentication and returns them to the account page, since
-    # some actions within the account dashboard require a fresh reauthentication (e.g. managing an
-    # MFA method or viewing verified profile information).
-    user_session[:stored_location] = account_url(params.permit(:manage_authenticator))
-    user_session[:context] = 'reauthentication'
-
-    redirect_to login_two_factor_options_path
   end
 
   private

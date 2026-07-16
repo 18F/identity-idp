@@ -1,94 +1,180 @@
-<% content_for(:pre_flash_content) do %>
-  <%= render StepIndicatorComponent.new(
-        steps: step_indicator_steps,
-        current_step: :verify_info,
-        locale_scope: 'idv',
-        class: 'margin-x-neg-2 margin-top-neg-4 tablet:margin-x-neg-6 tablet:margin-top-neg-4',
-      ) %>
-<% end %>
-
 <% self.title = t('titles.doc_auth.address') %>
+<%= render 'idv/shared/step_indicator', current_step: :verify_info %>
 
-<%= render PageHeadingComponent.new.with_content(@presenter.address_heading) %>
+<% title_prefix = if @presenter.gpo_request_letter_visited
+                    'doc_auth.headings.mailing_address_title'
+                  elsif @presenter.address_update_request
+                    'doc_auth.headings.address_update_title'
+                  else
+                    'doc_auth.headings.address_title'
+                  end %>
 
-<%= render AlertComponent.new(
-      type: :info,
-      id: 'puerto-rico-extra-text',
-      class: @presenter.hint_class + ['margin-bottom-4'],
-    ) do
-      t('doc_auth.info.address_guidance_puerto_rico_html')
-    end
-%>
+<%= render ADS::FormPageComponent.new(
+      title: safe_join(
+        [t("#{title_prefix}_line_one"), tag.br, t("#{title_prefix}_line_two")],
+      ),
+      subtitle: @presenter.address_info,
+    ) do |page| %>
+  <% page.with_alert do %>
+    <div id="puerto-rico-extra-text" class="puerto-rico-extras" hidden>
+      <%= render AlertComponent.new(type: :neutral, dismissible: true) do
+            t('doc_auth.info.address_guidance_puerto_rico_html')
+          end %>
+    </div>
+  <% end %>
 
-<p><%= @presenter.address_info %></p>
+  <% page.with_body do %>
+    <%= simple_form_for(
+          @address_form,
+          url: idv_address_path,
+          html: { class: 'ads-form ads-form--align-stretch' },
+        ) do |f| %>
+      <%= render ADS::StackComponent.new(gap: 32, align: :stretch) do %>
+        <%= render ADS::StackComponent.new(gap: 12) do %>
+          <%= render InputComponent.new(
+                form: f,
+                attribute: :address1,
+                label: t('idv.form.address'),
+                required: true,
+                maxlength: 255,
+                autocomplete: 'address-line1',
+                aria: { describedby: 'idv_form_address1_hint' },
+                error_message: @address_form.errors.full_messages_for(:address1).first,
+                error_messages: {
+                  valueMissing: t('components.input.errors.address'),
+                },
+              ) do %>
+            <%= tag.p(
+                  @presenter.address_line1_hint,
+                  id: 'idv_form_address1_hint',
+                  class: 'ads-input__hint puerto-rico-extras',
+                  hidden: true,
+                ) %>
+          <% end %>
 
-<%= simple_form_for(
-      @address_form,
-      url: idv_address_path,
-      html: { class: 'margin-top-5' },
-    ) do |f| %>
-  <%= render ValidatedFieldComponent.new(
-        form: f,
-        id: 'address1',
-        name: :address1,
-        label: t('idv.form.address1'),
-        hint: @presenter.address_line1_hint,
-        hint_html: { class: @presenter.hint_class },
-        required: true,
-        maxlength: 255,
-      ) %>
-  <%= render ValidatedFieldComponent.new(
-        form: f,
-        name: :address2,
-        label: t('idv.form.address2'),
-        hint: @presenter.address_line2_hint,
-        hint_html: { class: @presenter.hint_class },
-        required: false,
-        maxlength: 255,
-      ) %>
-  <%= render ValidatedFieldComponent.new(
-        form: f,
-        name: :city,
-        label: t('idv.form.city'),
-        hint: @presenter.city_hint,
-        hint_html: { class: @presenter.hint_class },
-        required: true,
-        maxlength: 255,
-      ) %>
-  <%= render ValidatedFieldComponent.new(
-        form: f,
-        name: :state,
-        collection: us_states_territories,
-        label: t('idv.form.state'),
-        required: true,
-      ) %>
-  <div class="tablet:grid-col-6">
-    <%# using :tel for mobile numeric keypad %>
-    <%= render ValidatedFieldComponent.new(
-          form: f,
-          name: :zipcode,
-          as: :tel,
-          label: t('idv.form.zipcode'),
-          hint: @presenter.zipcode_hint,
-          hint_html: { class: @presenter.hint_class },
-          required: true,
-          pattern: '(\d{5}([\-]\d{4})?)',
-          input_html: { class: 'zipcode' },
-          error_messages: {
-            patternMismatch: t('idv.errors.pattern_mismatch.zipcode'),
-          },
-        ) %>
-  </div>
+          <%= render InputComponent.new(
+                form: f,
+                attribute: :address2,
+                label: t('idv.form.address2'),
+                required: false,
+                maxlength: 255,
+                autocomplete: 'address-line2',
+                aria: { describedby: 'idv_form_address2_hint' },
+                error_message: @address_form.errors.full_messages_for(:address2).first,
+              ) do %>
+            <%= tag.p(
+                  @presenter.address_line2_hint,
+                  id: 'idv_form_address2_hint',
+                  class: 'ads-input__hint puerto-rico-extras',
+                  hidden: true,
+                ) %>
+          <% end %>
 
-  <%= f.submit @presenter.update_or_continue_button, class: 'display-block margin-y-5' %>
-<% end %>
+          <%= render InputComponent.new(
+                form: f,
+                attribute: :city,
+                label: t('idv.form.city'),
+                required: true,
+                maxlength: 255,
+                autocomplete: 'address-level2',
+                aria: { describedby: 'idv_form_city_hint' },
+                error_message: @address_form.errors.full_messages_for(:city).first,
+                error_messages: {
+                  valueMissing: t('components.input.errors.city'),
+                },
+              ) do %>
+            <%= tag.p(
+                  @presenter.city_hint,
+                  id: 'idv_form_city_hint',
+                  class: 'ads-input__hint puerto-rico-extras',
+                  hidden: true,
+                ) %>
+          <% end %>
 
-<% if @presenter.address_update_request %>
-  <%= render 'idv/shared/back', step: 'verify', fallback_path: idv_verify_info_path %>
-<% elsif @presenter.gpo_request_letter_visited %>
-  <%= render 'idv/shared/back', step: 'verify', fallback_path: idv_request_letter_path %>
-<% else %>
-  <%= render 'idv/doc_auth/cancel', step: 'verify' %>
+          <%= content_tag :div,
+                          class: 'ads-input',
+                          data: {
+                            ads_validation_messages: {
+                              valueMissing: t('components.input.errors.state'),
+                            },
+                          } do %>
+            <% state_error = @address_form.errors.full_messages_for(:state).first %>
+            <%= f.label(:state, t('idv.form.state'), class: 'ads-input__label') %>
+            <div class="ads-input__shell">
+              <%= f.select(
+                    :state,
+                    us_states_territories,
+                    { include_blank: true },
+                    class: 'ads-input__control ads-input__control--floating',
+                    required: true,
+                    autocomplete: 'address-level1',
+                    aria: {
+                      describedby: 'idv_form_state_ads_error',
+                      invalid: state_error.present? || nil,
+                    }.compact,
+                  ) %>
+              <span class="ads-input__floating-label" aria-hidden="true">
+                <%= t('idv.form.state') %>
+              </span>
+            </div>
+            <p
+              class="ads-input__error<%= ' ads-input__error--visible' if state_error.present? %>"
+              data-ads-error
+              id="idv_form_state_ads_error"
+              aria-live="polite"
+            ><span class="ads-input__error-inner"><%= state_error %></span></p>
+          <% end %>
+
+          <%= render InputComponent.new(
+                form: f,
+                attribute: :zipcode,
+                label: t('idv.form.zipcode'),
+                type: :tel,
+                required: true,
+                pattern: '(\d{5}([\-]\d{4})?)',
+                autocomplete: 'postal-code',
+                inputmode: :numeric,
+                class: 'zipcode',
+                aria: { describedby: 'idv_form_zipcode_hint' },
+                error_message: @address_form.errors.full_messages_for(:zipcode).first,
+                error_messages: {
+                  valueMissing: t('components.input.errors.zipcode'),
+                  typeMismatch: t('components.input.errors.zipcode'),
+                  patternMismatch: t('idv.errors.pattern_mismatch.zipcode'),
+                  badInput: t('components.input.errors.zipcode'),
+                },
+              ) do %>
+            <%= tag.p(
+                  @presenter.zipcode_hint,
+                  id: 'idv_form_zipcode_hint',
+                  class: 'ads-input__hint puerto-rico-extras',
+                  hidden: true,
+                ) %>
+          <% end %>
+        <% end %>
+
+        <%= render ADS::StackComponent.new(kind: :actions, gap: 8, align: :stretch) do %>
+          <%= render ButtonComponent.new(
+                type: :submit,
+              ).with_content(@presenter.update_or_continue_button) %>
+
+          <% if @presenter.address_update_request || @presenter.gpo_request_letter_visited %>
+            <% back_path = if @presenter.address_update_request
+                             go_back_path || idv_verify_info_path
+                           else
+                             go_back_path || idv_request_letter_path
+                           end %>
+            <% if back_path %>
+              <%= render ButtonComponent.new(
+                    url: back_path,
+                    variant: :quaternary,
+                  ).with_content(t('forms.buttons.back')) %>
+            <% end %>
+          <% end %>
+        <% end %>
+      <% end %>
+    <% end %>
+  <% end %>
 <% end %>
 
 <%= javascript_packs_tag_once('formatted-fields') %>

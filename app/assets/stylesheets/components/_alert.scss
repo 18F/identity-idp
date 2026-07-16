@@ -1,21 +1,210 @@
-@use 'uswds-core' as *;
+@use '../variables/ads' as ads;
 
-.usa-alert--info-time {
-  &::before {
-    @include add-color-icon(
-      (
-        name: 'timer',
-        color: 'info',
-        'svg-width': 24,
-        'svg-height': 24,
-        height: units(2),
-      )
-    );
-    top: 50%;
-    transform: translateY(-50%);
+$alert-duration: ads.$tr-duration-lg;
+$alert-easing: ads.$tr-easing-cubic;
+
+.ads-alert-mount {
+  display: grid;
+  // Cancel parent flex/grid gap while collapsed so removal does not snap.
+  grid-template-rows: 0fr;
+  margin-block-end: calc(-1 * var(--ads-alert-stack-gap, 0px));
+  transition:
+    grid-template-rows $alert-duration $alert-easing,
+    margin-block-end $alert-duration $alert-easing;
+  width: 100%;
+
+  &[data-open='true'] {
+    grid-template-rows: 1fr;
+    margin-block-end: 0;
+
+    .ads-alert-mount__inner {
+      opacity: 1;
+    }
   }
 }
 
-.usa-alert__text > p:last-child {
-  margin-bottom: 0;
+.ads-auth > .ads-alert-mount,
+.ads-flow > .ads-alert-mount {
+  --ads-alert-stack-gap: var(--ads-section-gap);
+}
+
+.ads-alert-mount__inner {
+  min-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: opacity $alert-duration $alert-easing;
+}
+
+.ads-flash {
+  --ads-alert-stack-gap: #{ads.space(12)};
+
+  @include ads.stack($gap: ads.space(12), $reset-flow: true, $width: 100%);
+}
+
+.ads-alert {
+  --ads-alert-bg: #{ads.alpha(ads.$off-black, 5%)};
+  --ads-alert-color: #{ads.$off-black};
+  --ads-alert-close-hover: #{ads.alpha(ads.$off-black, 25%)};
+
+  align-items: flex-start;
+  background: var(--ads-alert-bg);
+  border-radius: ads.radius(24);
+  box-sizing: border-box;
+  color: var(--ads-alert-color);
+  display: flex;
+  gap: ads.space(4);
+  padding: ads.space(20);
+  position: relative;
+  text-align: start;
+  width: 100%;
+}
+
+.ads-alert__copy {
+  display: flex;
+  flex: 1 0 0;
+  flex-direction: column;
+  gap: ads.space(8);
+  min-width: 0;
+}
+
+.ads-alert__title,
+.ads-alert__text {
+  font-family: ads.$font-family;
+  font-size: ads.$text-body-m;
+  letter-spacing: ads.$text-letter-spacing-label;
+  line-height: 1.5;
+  margin: 0;
+  text-wrap: pretty;
+}
+
+.ads-alert__title {
+  font-weight: ads.$font-semibold;
+}
+
+.ads-alert__text {
+  flex: 1 0 0;
+  font-weight: 400;
+  min-width: 0;
+
+  > * {
+    margin: 0;
+  }
+
+  > * + * {
+    margin-top: ads.space(8);
+  }
+
+  strong,
+  b {
+    font-weight: inherit;
+  }
+}
+
+.ads-alert .ads-copy {
+  color: inherit;
+}
+
+.ads-alert .ads-link {
+  color: inherit;
+
+  &:is(:link, :visited),
+  &:hover,
+  &:active,
+  &:focus-visible {
+    color: inherit;
+  }
+}
+
+.ads-alert--with-action {
+  align-items: flex-start;
+  flex-direction: column;
+  gap: ads.space(20);
+
+  .ads-alert__copy,
+  .ads-alert__text {
+    flex: none;
+    width: 100%;
+  }
+
+  .ads-alert__spacer {
+    display: none;
+  }
+}
+
+.ads-alert .ads-alert__action {
+  border-color: currentColor;
+  color: inherit;
+  flex: none;
+
+  &:is(:link, :visited) {
+    color: inherit;
+  }
+
+  &:hover,
+  &:active,
+  &:focus-visible {
+    border-color: currentColor;
+    color: inherit;
+    outline-color: currentColor;
+  }
+}
+
+.ads-alert__spacer {
+  align-self: stretch;
+  flex: 0 0 auto;
+  width: ads.space(32);
+}
+
+.ads-alert .ads-alert__close {
+  color: inherit;
+  position: absolute;
+  right: ads.space(12);
+  top: ads.space(12);
+
+  &:is(:link, :visited) {
+    color: inherit;
+  }
+
+  &:hover,
+  &:active,
+  &:focus-visible {
+    background: var(--ads-alert-close-hover);
+    color: inherit;
+  }
+}
+
+.ads-alert--single-line .ads-alert__close {
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.ads-alert--neutral {
+  --ads-alert-bg: #{ads.alpha(ads.$off-black, 5%)};
+  --ads-alert-color: #{ads.$off-black};
+  --ads-alert-close-hover: #{ads.alpha(ads.$off-black, 25%)};
+}
+
+.ads-alert--warning {
+  --ads-alert-bg: #{ads.alpha(ads.$yellow-300, 10%)};
+  --ads-alert-color: #{ads.$yellow-900};
+  --ads-alert-close-hover: #{ads.alpha(ads.$yellow-300, 25%)};
+}
+
+.ads-alert--success {
+  --ads-alert-bg: #{ads.alpha(ads.$green-300, 10%)};
+  --ads-alert-color: #{ads.$green-600};
+  --ads-alert-close-hover: #{ads.alpha(ads.$green-300, 25%)};
+}
+
+.ads-alert--error {
+  --ads-alert-bg: #{ads.alpha(ads.$red-300, 10%)};
+  --ads-alert-color: #{ads.$red-600};
+  --ads-alert-close-hover: #{ads.alpha(ads.$red-300, 25%)};
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ads-alert-mount,
+  .ads-alert-mount__inner {
+    transition: none;
+  }
 }

@@ -17,7 +17,7 @@ class SubmitButtonElement extends HTMLElement {
   }
 
   #activate = () => {
-    this.button.classList.add('usa-button--active');
+    this.button.classList.add('ads-button--active');
     this.button.setAttribute('aria-disabled', 'true');
   };
 

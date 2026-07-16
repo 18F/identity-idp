@@ -1,0 +1,31 @@
+@use '../../../variables/ads' as ads;
+
+.ads-protocol-redirect-page {
+  background: ads.$white;
+  color: ads.$off-black;
+  font-family: ads.$font-family;
+  margin: 0;
+  min-height: 100vh;
+}
+
+.ads-protocol-redirect {
+  align-items: center;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: flex-start;
+  min-height: 100vh;
+  padding: ads.space(48) ads.space(24) ads.space(96);
+  width: 100%;
+}
+
+.ads-protocol-redirect__content {
+  --ads-section-gap: #{ads.space(32)};
+  --ads-flow-width: #{ads.$form-width};
+}
+
+@media (width >= 48rem) {
+  .ads-protocol-redirect {
+    justify-content: center;
+    padding: ads.space(96) ads.space(48);
+  }
+}

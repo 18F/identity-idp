@@ -1,0 +1,60 @@
+@use '../../../variables/ads' as ads;
+
+$ads-stack-gaps: 4, 8, 12, 16, 20, 24, 32, 40, 48;
+
+.ads-stack,
+.ads-form,
+.ads-actions,
+.ads-links {
+  @include ads.stack($reset-flow: true, $width: 100%);
+}
+
+.ads-stack {
+  gap: ads.space(16);
+}
+
+.ads-form {
+  gap: ads.space(32);
+}
+
+.ads-actions {
+  gap: ads.space(24);
+}
+
+.ads-links {
+  gap: ads.space(32);
+}
+
+@each $gap in $ads-stack-gaps {
+  .ads-stack--gap-#{$gap},
+  .ads-flow--gap-#{$gap},
+  .ads-form--gap-#{$gap},
+  .ads-actions--gap-#{$gap},
+  .ads-links--gap-#{$gap} {
+    gap: ads.space($gap);
+  }
+}
+
+.ads-stack--align-center,
+.ads-flow--align-center,
+.ads-form--align-center,
+.ads-actions--align-center,
+.ads-links--align-center {
+  align-items: center;
+}
+
+.ads-stack--align-start,
+.ads-flow--align-start,
+.ads-form--align-start,
+.ads-actions--align-start,
+.ads-links--align-start {
+  align-items: flex-start;
+}
+
+.ads-stack--align-stretch,
+.ads-flow--align-stretch,
+.ads-form--align-stretch,
+.ads-actions--align-stretch,
+.ads-links--align-stretch {
+  align-items: stretch;
+}

@@ -10,8 +10,21 @@ RSpec.describe 'accounts/_nav_auth.html.erb' do
     render partial: 'accounts/nav_auth'
   end
 
-  it 'contains welcome message' do
-    expect(rendered).to have_content "Welcome #{@user.email}", normalize_ws: true
+  it 'contains an account menu whose accessible name includes the user email' do
+    menu_label = t('account.navigation.account_menu')
+
+    # The visible email is part of the summary's accessible name (WCAG 2.5.3
+    # Label in Name), so no aria-label overrides it; the "Account menu" context
+    # is supplied by an sr-only label alongside the visible email.
+    expect(rendered).to have_css(
+      'details.ads-account-header__menu summary:not([aria-label])',
+      text: @user.email,
+    )
+    expect(rendered).to have_css(
+      'details.ads-account-header__menu summary .ads-sr-only',
+      text: menu_label,
+      visible: :all,
+    )
   end
 
   it 'does not contain link to cancel the auth process' do
@@ -19,13 +32,17 @@ RSpec.describe 'accounts/_nav_auth.html.erb' do
   end
 
   it 'contains menu button' do
-    expect(rendered).to have_button t('account.navigation.menu')
+    expect(rendered).to have_css(
+      '.ads-account-mobile-menu__summary',
+      text: t('account.navigation.menu'),
+    )
   end
 
-  it 'contains sign out link' do
-    expect(rendered).to have_button(t('links.sign_out'))
-    expect(rendered).to have_selector('form') do |f|
-      expect(f['action']).to eq logout_path
-    end
+  it 'contains sign out button inside the account menu' do
+    expect(rendered).to have_css(
+      ".ads-account-header__menu-panel form.ads-account-header__menu-form[action='#{logout_path}']",
+      visible: :all,
+    )
+    expect(rendered).to have_button(t('links.sign_out'), visible: :all)
   end
 end

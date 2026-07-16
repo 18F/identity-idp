@@ -16,7 +16,7 @@ class ImageUploadResponsePresenter
     form_response_errors = @form_response.errors.deep_dup
     Idv::DocPiiForm.present_error(form_response_errors)
     form_response_errors.except(:hints).flat_map do |key, errs|
-      Array(errs).map { |err| { field: key, message: render_error_message(key, err) } }
+      Array(errs).map { |err| { field: key, message: err } }
     end
   end
 
@@ -72,17 +72,6 @@ class ImageUploadResponsePresenter
   end
 
   private
-
-  # Errors arrive here as one of:
-  #  - i18n key strings emitted by DocPiiForm / present_error (e.g. 'doc_auth.errors.alerts...')
-  #  - pre-rendered strings from upstream callers (vendor/network/rate-limit failures)
-  # We try to translate; if there is no translation we fall back to the original message.
-  def render_error_message(_key, err)
-    return err unless err.is_a?(String)
-    return err unless err.start_with?('doc_auth.')
-
-    I18n.t(err)
-  end
 
   def result_code_invalid?
     @form_response.to_h[:doc_auth_result] != DocAuth::LexisNexis::ResultCodes::PASSED.name &&

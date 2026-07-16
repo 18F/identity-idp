@@ -1,23 +1,35 @@
 <% self.title = t('headings.redirecting') %>
 
-<%= extends_layout :base do %>
-  <div class="grid-container tablet:padding-y-6 no-js">
-    <div class="grid-row">
-      <div class="tablet:grid-col-6 tablet:grid-offset-3">
-        <%= render PageHeadingComponent.new.with_content(t('saml_idp.shared.saml_post_binding.heading')) %>
+<%= extends_layout :base, body_class: 'ads-protocol-redirect-page' do %>
+  <main id="main-content" class="ads-protocol-redirect">
+    <%= render ADS::FormPageComponent.new(
+          title: t('saml_idp.shared.saml_post_binding.heading'),
+          class_name: 'ads-protocol-redirect__content',
+        ) do |page| %>
+      <% page.with_body do %>
+        <div class="ads-copy ads-copy--centered">
+          <p>
+            <%= t('saml_idp.shared.saml_post_binding.no_js') %>
+          </p>
+        </div>
+      <% end %>
 
-        <p>
-          <%= t('saml_idp.shared.saml_post_binding.no_js') %>
-        </p>
-
-        <%= simple_form_for('', url: action_url) do |f| %>
+      <% page.with_actions do %>
+        <%= simple_form_for(
+              '',
+              url: action_url,
+              html: { class: 'ads-form ads-form--align-stretch' },
+            ) do %>
           <% form_params.each do |key, val| %>
             <%= hidden_field_tag(key, val) %>
           <% end %>
-          <%= f.submit t('forms.buttons.submit.default'), data: { click_immediate: '' } %>
+          <%= render ButtonComponent.new(
+                type: :submit,
+                data: { click_immediate: '' },
+              ).with_content(t('forms.buttons.submit.default')) %>
         <% end %>
-      </div>
-    </div>
-  </div>
+      <% end %>
+    <% end %>
+  </main>
   <%= render_javascript_pack_once_tags 'click-immediate' %>
 <% end %>

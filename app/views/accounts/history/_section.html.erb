@@ -1,0 +1,13 @@
+<section class="ads-history__section" aria-labelledby="<%= heading_id %>">
+  <h2 id="<%= heading_id %>" class="ads-history__heading"><%= heading %></h2>
+
+  <div class="ads-history__panel">
+    <% if rows.any? %>
+      <ul class="ads-history__rows">
+        <%= render partial: row_partial, collection: rows, as: row_as %>
+      </ul>
+    <% else %>
+      <p class="ads-history__empty"><%= empty_message %></p>
+    <% end %>
+  </div>
+</section>

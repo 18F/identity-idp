@@ -15,6 +15,7 @@ module Idv
       result = send_phone_confirmation_otp
       analytics.idv_phone_confirmation_otp_resent(**result)
       if result.success?
+        flash[:success] = t('idv.otp_verification.resend_success')
         redirect_to idv_otp_verification_url
       else
         handle_send_phone_confirmation_otp_failure(result)

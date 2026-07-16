@@ -1,0 +1,25 @@
+<% self.title = heading %>
+
+<%= render ADS::FormPageComponent.new(title: heading) do |page| %>
+  <% page.with_body do %>
+    <%= render AlertComponent.new(
+          type: :warning,
+          message: caution,
+          dismissible: false,
+        ) %>
+  <% end %>
+
+  <% page.with_actions do %>
+    <%= render ButtonComponent.new(
+          url: delete_url,
+          method: :delete,
+          variant: :destructive,
+          form: { aria: { label: delete_label } },
+        ).with_content(delete_label) %>
+
+    <%= render ButtonComponent.new(
+          url: cancel_url,
+          variant: :secondary,
+        ).with_content(t('links.cancel')) %>
+  <% end %>
+<% end %>

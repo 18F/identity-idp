@@ -31,7 +31,7 @@ RSpec.feature 'Accessibility on account pages', :js do
   end
 
   scenario '"Your authentication methods" path' do
-    visit account_two_factor_authentication_path
+    visit account_security_path
 
     expect_page_to_have_no_accessibility_violations(page)
   end

@@ -1,0 +1,33 @@
+@use 'sass:map';
+@use 'sass:math';
+@use 'sass:meta';
+
+$radii: (
+  8: 8px,
+  12: 12px,
+  16: 16px,
+  24: 24px,
+  32: 32px,
+  40: 40px,
+  pill: 9999px,
+);
+
+@function radius($value) {
+  @if map.has-key($radii, $value) {
+    @return map.get($radii, $value);
+  }
+
+  @if meta.type-of($value) == 'number' {
+    @if $value == 0 {
+      @return 0;
+    }
+
+    @if math.is-unitless($value) {
+      @return $value * 1px;
+    }
+
+    @return $value;
+  }
+
+  @error 'radius() expected a radius key or number, got #{$value}';
+}

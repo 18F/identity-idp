@@ -1087,7 +1087,7 @@ RSpec.describe 'OpenID Connect' do
       click_submit_default
 
       visit account_path
-      click_button t('links.sign_out')
+      click_button t('links.sign_out'), visible: :all
 
       visit_idp_from_ial1_oidc_sp(prompt: 'select_account')
       fill_in_credentials_and_submit(user.email, user.password)

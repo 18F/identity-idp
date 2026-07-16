@@ -224,7 +224,7 @@ export function StepErrorAlert({ error }: { error: Error }) {
   const messageProcessor = error instanceof FormError ? error.messageProcessor : null;
   const transformedMessage = messageProcessor ? messageProcessor(message) : message;
   return (
-    <Alert key={message} type="error" className="margin-bottom-4">
+    <Alert key={message} type="error">
       {transformedMessage}
     </Alert>
   );
@@ -438,7 +438,12 @@ function FormSteps({
   const isLastStep = stepIndex + 1 === steps.length;
 
   return (
-    <form ref={formRef} onSubmit={toNextStep} noValidate>
+    <form
+      ref={formRef}
+      className="ads-stack ads-stack--gap-24 ads-stack--align-stretch"
+      onSubmit={toNextStep}
+      noValidate
+    >
       {promptOnNavigate && Object.keys(values).length > 0 && <PromptOnNavigate />}
       {stepErrors.map((error) => (
         <StepErrorAlert key={error.message} error={error} />

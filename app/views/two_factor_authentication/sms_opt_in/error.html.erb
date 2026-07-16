@@ -1,20 +1,26 @@
 <% self.title = t('two_factor_authentication.opt_in.title') %>
 
-<%= render AlertIconComponent.new(icon_name: :error, class: 'margin-bottom-2') %>
+<%= render ADS::FormPageComponent.new(title: t('two_factor_authentication.opt_in.title')) do |page| %>
+  <% page.with_body do %>
+    <%= render ADS::StackComponent.new(gap: 24) do %>
+      <div class="ads-copy">
+        <p>
+          <%= t(
+                'two_factor_authentication.opt_in.opted_out_last_30d_html',
+                phone_number_html: tag.span(@phone_configuration.masked_phone, class: 'ads-nowrap'),
+              ) %>
+        </p>
 
-<%= render PageHeadingComponent.new.with_content(t('two_factor_authentication.opt_in.title')) %>
+        <p><%= t('two_factor_authentication.opt_in.wait_30d_opt_in') %></p>
+      </div>
 
-<p>
-  <%= t(
-        'two_factor_authentication.opt_in.opted_out_last_30d_html',
-        phone_number_html: content_tag(:strong, @phone_configuration.masked_phone),
-      ) %>
-</p>
+      <%= render 'two_factor_authentication/troubleshooting_options', presenter: @presenter %>
+    <% end %>
+  <% end %>
 
-<p><%= t('two_factor_authentication.opt_in.wait_30d_opt_in') %></p>
-
-<%= render 'two_factor_authentication/troubleshooting_options', presenter: @presenter %>
-
-<%= render PageFooterComponent.new do %>
-  <%= link_to cancel_link_text, @cancel_url %>
+  <% page.with_actions do %>
+    <%= render ADS::LinkComponent.new(url: @cancel_url) do %>
+      <%= cancel_link_text %>
+    <% end %>
+  <% end %>
 <% end %>

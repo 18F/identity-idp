@@ -1,0 +1,74 @@
+@use 'variables/ads' as ads;
+
+@view-transition {
+  navigation: auto;
+}
+
+[data-ads-page-transition] > .ads-auth-page__main {
+  view-transition-name: ads-main;
+}
+
+[data-ads-page-transition] > .ads-auth-page__footer-wrapper {
+  view-transition-name: ads-footer;
+}
+
+[data-ads-page-transition] > .ads-auth-page__top-chrome,
+[data-ads-page-transition] .ads-progress {
+  view-transition-name: none;
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 1ms;
+  mix-blend-mode: normal;
+}
+
+::view-transition-old(ads-main) {
+  animation: ads-page-exit-up ads.$tr-duration-md ads.$tr-easing-cubic forwards;
+}
+
+::view-transition-new(ads-main) {
+  animation: ads-page-enter-up ads.$tr-duration-lg ads.$tr-easing-cubic ads.$tr-duration-md both;
+}
+
+::view-transition-old(ads-footer),
+::view-transition-new(ads-footer) {
+  animation-duration: ads.$tr-duration-md;
+  animation-timing-function: ads.$tr-easing-cubic;
+}
+
+@keyframes ads-page-exit-up {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  to {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes ads-page-enter-up {
+  0% {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  20% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none;
+  }
+}

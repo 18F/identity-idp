@@ -24,8 +24,7 @@ module Api
         response_body = {
           email_account_found: user.present?,
           ssn_profile_found: ssn_active_profiles.any?,
-          profiles: active_profiles_info,
-          email_account_awaiting_binding: !!user&.proofing_agent_user_awaiting_binding?,
+          profiles: active_profiles,
         }
 
         analytics.idv_proofing_agent_account_check_requested(
@@ -253,16 +252,15 @@ module Api
       end
 
       def active_profiles
-        @active_profiles ||= ssn_active_profiles | [user_active_profile].compact
-      end
-
-      def active_profiles_info
-        active_profiles.map do |profile|
-          {
-            email_match: profile.user_id == user&.id,
-            ssn_match: ssn_active_profiles.any? { |ssn_profile| ssn_profile.id == profile.id },
-            idv_level: Profile::PROOFING_AGENT_IDV_LEVELS[profile.idv_level],
-          }
+        @active_profiles ||= begin
+          profiles = ssn_active_profiles | [user_active_profile].compact
+          profiles.map do |profile|
+            {
+              email_match: profile.user_id == user&.id,
+              ssn_match: ssn_active_profiles.any? { |ssn_profile| ssn_profile.id == profile.id },
+              idv_level: Profile::PROOFING_AGENT_IDV_LEVELS[profile.idv_level],
+            }
+          end
         end
       end
 
@@ -290,7 +288,7 @@ module Api
       end
 
       def user_has_enhanced_profile?
-        active_profiles.any? do |profile|
+        [user_active_profile, *ssn_active_profiles].compact.any? do |profile|
           profile.enhanced?
         end
       end

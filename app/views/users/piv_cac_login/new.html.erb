@@ -1,15 +1,19 @@
 <% self.title = @presenter.title %>
 
-<%= render PageHeadingComponent.new.with_content(@presenter.heading) %>
+<%= render ADS::FormPageComponent.new(
+      title: @presenter.heading,
+      subtitle: @presenter.info,
+    ) do |page| %>
+  <% page.with_actions do %>
+    <%= render ADS::StackComponent.new(kind: :actions, gap: 8, align: :stretch) do %>
+      <%= render ButtonComponent.new(
+            url: @presenter.piv_cac_service_link,
+          ).with_content(@presenter.piv_cac_capture_text) %>
 
-<p class="margin-bottom-5">
-  <%= @presenter.info %>
-</p>
-
-<%= render SpinnerButtonComponent.new(
-      url: @presenter.piv_cac_service_link,
-      big: true,
-      wide: true,
-    ).with_content(@presenter.piv_cac_capture_text) %>
-
-<%= render 'shared/cancel', link: new_user_session_url %>
+      <%= render ButtonComponent.new(
+            url: new_user_session_url,
+            variant: :quaternary,
+          ).with_content(cancel_link_text) %>
+    <% end %>
+  <% end %>
+<% end %>

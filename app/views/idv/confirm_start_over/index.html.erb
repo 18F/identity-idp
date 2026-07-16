@@ -1,27 +1,28 @@
-<%= render(
-      'idv/shared/error',
-      type: :warning,
-      heading: t('idv.cancel.headings.prompt.standard'),
-      current_step: @step_indicator_step,
-    ) do %>
-  <p>
-    <%= t('idv.cancel.description.gpo.start_over') %>
-  </p>
-  <ul class="usa-list">
-    <% t('idv.cancel.description.gpo.warnings').each do | warning_text | %>
-      <li>
-        <%= warning_text %>
-      </li>
-    <% end %>
-  </ul>
+<% self.title = t('idv.cancel.headings.prompt.standard') %>
 
-  <div class="margin-y-5">
+<%= render 'idv/shared/step_indicator', current_step: @step_indicator_step %>
+
+<%= render ADS::FormPageComponent.new(title: t('idv.cancel.headings.prompt.standard')) do |page| %>
+  <% page.with_body do %>
+    <div class="ads-copy">
+      <p><%= t('idv.cancel.description.gpo.start_over') %></p>
+      <ul class="ads-list">
+        <% t('idv.cancel.description.gpo.warnings').each do |warning_text| %>
+          <li><%= warning_text %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <% page.with_actions do %>
     <%= render ButtonComponent.new(
           url: idv_session_path(step: :gpo_verify),
           method: :delete,
-          big: true,
-          wide: true,
         ).with_content(t('idv.buttons.continue_plain')) %>
-  </div>
+
+    <%= render ButtonComponent.new(
+          url: go_back_path || idv_verify_by_mail_enter_code_path,
+          variant: :quaternary,
+        ).with_content(t('forms.buttons.back')) %>
+  <% end %>
 <% end %>
-<%= render('idv/shared/back', step: 'gpo_verify', fallback_path: idv_verify_by_mail_enter_code_path) %>

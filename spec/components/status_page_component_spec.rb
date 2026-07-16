@@ -33,16 +33,16 @@ RSpec.describe StatusPageComponent, type: :component do
       content_tag(:p, 'Content')
     end
 
-    expect(rendered).to have_css('h1 + p', text: 'Content')
+    expect(rendered).to have_css('.ads-copy p', text: 'Content')
   end
 
   it 'renders action buttons' do
     rendered = render_inline(StatusPageComponent.new) do |c|
-      c.with_action_button(outline: true) { 'Cancel' }
+      c.with_action_button(variant: :secondary) { 'Cancel' }
     end
 
     expect(rendered).to have_css(
-      '.usa-button.usa-button--big.usa-button--wide.usa-button--outline',
+      '.ads-auth__actions .ads-button.ads-button--lg.ads-button--secondary',
       text: 'Cancel',
     )
   end
@@ -57,12 +57,6 @@ RSpec.describe StatusPageComponent, type: :component do
 
     expect(rendered).to have_content('Troubleshooting')
     expect(rendered).to have_link('Option', href: '/')
-  end
-
-  it 'does not render page footer' do
-    rendered = render_inline(StatusPageComponent.new)
-
-    expect(rendered).not_to have_css('.page-footer')
   end
 
   it 'validates status' do
@@ -81,15 +75,5 @@ RSpec.describe StatusPageComponent, type: :component do
     expect do
       render_inline StatusPageComponent.new(status: :info)
     end.to raise_error(ActiveModel::ValidationError)
-  end
-
-  context 'with footer' do
-    it 'renders page footer' do
-      rendered = render_inline(StatusPageComponent.new) do |c|
-        c.with_footer.with_content('Footer')
-      end
-
-      expect(rendered).to have_css('.page-footer', text: 'Footer')
-    end
   end
 end

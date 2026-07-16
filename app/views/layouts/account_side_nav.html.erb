@@ -1,14 +1,57 @@
-<% content_for(:header) do %>
-  <%= render 'accounts/nav_auth', greeting: @presenter.header_personalization %>
-<% end %>
+<%= extends_layout :base, body_class: 'site' do %>
+  <%= link_to t('shared.skip_link'), '#main-content', class: 'ads-skip-link' %>
+  <%= render ADS::PageShellComponent.new(
+        width: :wide,
+        density: :fullscreen,
+        align: :stretch,
+        main_tag: :div,
+        transition: false,
+      ) do |shell| %>
+    <% shell.with_chrome do %>
+      <%= render 'accounts/nav_auth', greeting: @presenter.header_personalization %>
+    <% end %>
 
-<%= extends_layout :application, body_class: 'site', disable_card: true, user_main_tag: false do %>
-  <div class="grid-row grid-gap">
-    <div class="display-none tablet:display-block tablet:grid-col-4">
-      <%= render 'accounts/side_nav' %>
-    </div>
-    <main class="tablet:grid-col-8" id="main-content">
-      <%= yield %>
-    </main>
-  </div>
+    <% shell.with_body do %>
+      <%= yield(:pre_flash_content) if content_for?(:pre_flash_content) %>
+      <% unless content_for?(:skip_layout_flash) %>
+        <% flash_component = FlashComponent.new(flash: flash) %>
+        <% if flash_component.alerts? %>
+          <div class="ads-auth-page__flash">
+            <%= render flash_component %>
+          </div>
+        <% elsif flash_component.render? %>
+          <%= render flash_component %>
+        <% end %>
+      <% end %>
+
+      <div class="ads-account-shell">
+        <aside class="ads-account-shell__nav">
+          <%= render 'accounts/side_nav' %>
+        </aside>
+
+        <main class="ads-account-shell__main" id="main-content">
+          <%= yield %>
+        </main>
+      </div>
+    <% end %>
+  <% end %>
+
+  <% if current_user %>
+    <%= render partial: 'session_timeout/ping',
+               locals: {
+                 warning: session_timeout_warning,
+                 start: session_timeout_start,
+                 frequency: session_timeout_frequency,
+                 modal: session_modal,
+               } %>
+  <% elsif !@skip_session_expiration %>
+    <%= render partial: 'session_timeout/expire_session',
+               locals: {
+                 session_timeout_in: Devise.timeout_in,
+                 warning: session_timeout_warning,
+                 modal: session_modal,
+               } %>
+  <% end %>
+
+  <%= javascript_packs_tag_once('application') %>
 <% end %>

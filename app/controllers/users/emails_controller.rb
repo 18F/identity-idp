@@ -64,7 +64,7 @@ module Users
         flash[:error] = t('email_addresses.delete.failure')
       end
 
-      redirect_to account_url
+      redirect_to account_settings_url
     end
 
     def pending_completions_consent?
@@ -134,7 +134,7 @@ module Users
     def check_max_emails_per_account
       return if EmailPolicy.new(current_user).can_add_email?
       flash[:email_error] = t('email_addresses.add.limit')
-      redirect_to account_url(anchor: 'emails')
+      redirect_to account_settings_url(anchor: 'emails')
     end
 
     def retain_confirmed_emails

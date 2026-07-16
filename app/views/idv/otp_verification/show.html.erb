@@ -1,52 +1,26 @@
-<% content_for(:pre_flash_content) do %>
-  <%= render StepIndicatorComponent.new(
-        steps: step_indicator_steps,
-        current_step: :verify_phone,
-        locale_scope: 'idv',
-        class: 'margin-x-neg-2 margin-top-neg-4 tablet:margin-x-neg-6 tablet:margin-top-neg-4',
+<%= render 'idv/shared/step_indicator', current_step: :verify_phone %>
+
+<% self.title = t('titles.enter_2fa_code.one_time_code') %>
+
+<% extra_actions = capture do %>
+  <%= render ButtonComponent.new(
+        url: idv_phone_path(step: 'phone_otp_verification'),
+        variant: :quaternary,
+      ).with_content(
+        t('two_factor_authentication.phone_verification.troubleshooting.change_number'),
       ) %>
 <% end %>
 
-<% self.title = t('titles.idv.enter_one_time_code') %>
-
-<%= render PageHeadingComponent.new.with_content(t('two_factor_authentication.header_text')) %>
-
-<p>
-  <%= @presenter.phone_number_message %>
-</p>
-
-<p>
-  <%= @presenter.do_not_share_code_message %>
-</p>
-
-<%= simple_form_for('', method: :put) do |f| %>
-  <%= render OneTimeCodeInputComponent.new(
-        form: f,
-        value: @code,
-        numeric: false,
-        autofocus: true,
-        code_length: @otp_code_length,
-        optional_prefix: '#',
-        class: 'margin-bottom-5',
-        field_options: {
-          error_messages: {
-            patternMismatch: t('errors.messages.phone_otp_format'),
-          },
-        },
-      ) %>
-  <%= f.submit t('forms.buttons.submit.default'), class: 'margin-bottom-5' %>
-<% end %>
-
-<%= render ButtonComponent.new(
-      url: idv_resend_otp_path,
-      method: :post,
-      outline: true,
-      icon: :loop,
-      class: 'margin-bottom-4',
-    ).with_content(t('links.two_factor_authentication.send_another_code')) %>
-
-<p>
-  <%= link_to(t('forms.two_factor.try_again'), idv_phone_path(step: 'phone_otp_verification')) %>
-</p>
-
-<%= render 'idv/doc_auth/cancel', step: 'phone_otp_verification' %>
+<%= render 'shared/otp_verification',
+           subtitle: strip_tags(@presenter.phone_number_message),
+           form_url: request.path,
+           form_method: :put,
+           code_value: @code,
+           otp: {
+             numeric: false,
+             length: @otp_code_length,
+             transport: @presenter.otp_delivery_preference,
+           },
+           resend_url: idv_resend_otp_path,
+           resend_method: :post,
+           extra_actions: %>

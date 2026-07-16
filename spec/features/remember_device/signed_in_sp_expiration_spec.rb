@@ -20,7 +20,7 @@ RSpec.feature 'SP expiration while signed in' do
     click_submit_default
     skip_second_mfa_prompt
 
-    first(:button, t('links.sign_out')).click
+    first(:button, t('links.sign_out'), visible: :all).click
 
     sign_in_user(user)
 

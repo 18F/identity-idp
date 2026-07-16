@@ -1,34 +1,45 @@
 <% self.title = 'Enter PIV/CAC Test Information' %>
 
-<%= render PageHeadingComponent.new.with_content('Enter PIV/CAC Test Information') %>
+<%= render ADS::FormPageComponent.new(title: 'Enter PIV/CAC Test Information') do |page| %>
+  <% page.with_body do %>
+    <div class="ads-copy">
+      <p>
+        Either enter a subject for a certificate or select an error to simulate a PIV/CAC response.
+      </p>
+    </div>
 
-<p>
-  Either enter a subject for a certificate or select an error to simulate a PIV/CAC response.
-</p>
+    <%= simple_form_for('') do |f| %>
+      <%= render ADS::StackComponent.new(kind: :form, gap: 16, align: :stretch) do %>
+        <%= hidden_field_tag(:redirect_uri, @referrer) %>
+        <%= f.input(:subject, label: 'Certificate Subject') %>
+        <%= f.input(
+              :error,
+              as: :radio_buttons,
+              label: 'Error Conditions',
+              collection: [
+                ['No error', ''],
+                ['No certificate', 'certificate.none'],
+                ['Bad certificate', 'certificate.bad'],
+                ['Expired certificate', 'certificate.expired'],
+                ['Revoked certificate', 'certificate.revoked'],
+                ['Invalid certificate', 'certificate.invalid'],
+                ['Unverified certificate', 'certificate.unverified'],
+                ['Missing token', 'token.missing'],
+                ['Invalid token', 'token.invalid'],
+                ['Incorrect certificate type', 'certificate.not_auth_cert'],
+              ],
+            ) %>
+        <%= render ButtonComponent.new(
+              type: :submit,
+            ).with_content('Proceed') %>
+      <% end %>
+    <% end %>
+  <% end %>
 
-<%= simple_form_for('') do |f| %>
-  <%= hidden_field_tag(:redirect_uri, @referrer) %>
-  <%= f.input(:subject, label: 'Certificate Subject') %>
-  <%= f.input(
-        :error,
-        as: :radio_buttons,
-        label: 'Error Conditions',
-        collection: [
-          ['No error', ''],
-          ['No certificate', 'certificate.none'],
-          ['Bad certificate', 'certificate.bad'],
-          ['Expired certificate', 'certificate.expired'],
-          ['Revoked certificate', 'certificate.revoked'],
-          ['Invalid certificate', 'certificate.invalid'],
-          ['Unverified certificate', 'certificate.unverified'],
-          ['Missing token', 'token.missing'],
-          ['Invalid token', 'token.invalid'],
-          # This error is only applicable when a user is attempting to sign in with their PIV card
-          # At the HSPD12 authentication assurance level
-          ['Incorrect certificate type', 'certificate.not_auth_cert'],
-        ],
-      ) %>
-  <%= f.submit('Proceed', class: 'display-block margin-y-5 usa-button usa-button--big usa-button--wide') %>
+  <% page.with_actions do %>
+    <%= render ButtonComponent.new(
+          url: @referrer,
+          variant: :quaternary,
+        ).with_content(cancel_link_text) %>
+  <% end %>
 <% end %>
-
-<%= render 'shared/cancel', link: @referrer %>

@@ -1,24 +1,43 @@
-<%= render(
-      'idv/shared/error',
-      heading: t('vendor_outage.working'),
-      options: [
-        @show_gpo_option && {
-          text: t('idv.troubleshooting.options.verify_by_mail'),
-          url: idv_request_letter_path,
-        },
-        {
-          text: t('vendor_outage.get_updates_on_status_page'),
-          url: StatusPage.base_url,
-          new_tab: true,
-        },
-        {
-          text: t('idv.troubleshooting.options.contact_support', app_name: APP_NAME),
-          url: contact_redirect_url,
-          new_tab: true,
-        },
-      ].select(&:present?),
-    ) do %>
-  <p><%= @specific_message %></p>
-<% end %>
+<% self.title = t('vendor_outage.working') %>
 
-<%= render('idv/shared/back') %>
+<%= render ADS::FormPageComponent.new(title: t('vendor_outage.working')) do |page| %>
+  <% page.with_body do %>
+    <div class="ads-copy">
+      <p><%= @specific_message %></p>
+    </div>
+  <% end %>
+
+  <% page.with_actions do %>
+    <%= render ADS::StackComponent.new(kind: :actions, gap: 8, align: :stretch) do %>
+      <% if @show_gpo_option %>
+        <%= render ButtonComponent.new(url: idv_request_letter_path).with_content(
+              t('idv.troubleshooting.options.verify_by_mail'),
+            ) %>
+      <% end %>
+
+      <%= render ButtonComponent.new(
+            url: StatusPage.base_url,
+            variant: :secondary,
+            target: '_blank',
+            rel: 'noopener noreferrer',
+          ) do %>
+        <%= t('vendor_outage.get_updates_on_status_page') %>
+        <span class="ads-sr-only"><%= t('links.new_tab') %></span>
+      <% end %>
+
+      <%= render ButtonComponent.new(
+            url: contact_redirect_url,
+            variant: :quaternary,
+            target: '_blank',
+            rel: 'noopener noreferrer',
+          ) do %>
+        <%= t('idv.troubleshooting.options.contact_support', app_name: APP_NAME) %>
+        <span class="ads-sr-only"><%= t('links.new_tab') %></span>
+      <% end %>
+
+      <% if (back_path = go_back_path) %>
+        <%= render ADS::LinkComponent.new(url: back_path).with_content(t('forms.buttons.back')) %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% end %>

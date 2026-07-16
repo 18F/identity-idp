@@ -1,40 +1,84 @@
 <% self.title = t('titles.edit_info.password') %>
 
-<% if @update_password_presenter.required_password_change? %>
-  <%= render AlertComponent.new(
-        type: :warning,
-        class: 'margin-bottom-4',
-      ) do
-        t('users.password_compromised.warning', app_name: APP_NAME)
-      end
-  %>
-<% end %>
+<%= render ADS::FormPageComponent.new(
+      title: t('headings.edit_info.password'),
+      subtitle: t('instructions.password.info.lead_html', min_length: Devise.password_length.first),
+    ) do |page| %>
+  <% page.with_body do %>
+    <%= render AlertComponent.new(
+          type: :neutral,
+          title: t('instructions.password.help_text_header'),
+          message: t('instructions.password.help_text'),
+          dismissible: false,
+        ) %>
 
-<%= render PageHeadingComponent.new.with_content(t('headings.edit_info.password')) %>
+    <% if @update_password_presenter.required_password_change? %>
+      <%= render AlertComponent.new(
+            type: :warning,
+            message: t('users.password_compromised.warning', app_name: APP_NAME),
+            dismissible: false,
+          ) %>
+    <% end %>
 
-<p id="password-description">
-  <%= t('instructions.password.info.lead_html', min_length: Devise.password_length.first) %>
-</p>
-<p id="phishing-warning">
-  <%= t('users.edit_info.warning') %>
-  <%= new_tab_link_to t('users.edit_info.link'), help_center_redirect_path(category: 'fraud-concerns', article: 'overview') %>
-</p>
+    <%= render AlertComponent.new(type: :warning, dismissible: false) do %>
+      <%= t('users.edit_info.warning') %>
+      <%= render ADS::LinkComponent.new(
+            url: help_center_redirect_path(category: 'fraud-concerns', article: 'overview'),
+            target: '_blank',
+            rel: 'noopener',
+          ) do %>
+        <%= t('users.edit_info.link') %>
+      <% end %>
+    <% end %>
 
-<%= simple_form_for(@update_user_password_form, url: manage_password_path, method: :patch) do |f| %>
-  <%= f.error_notification %>
-  <%= render PasswordConfirmationComponent.new(
-        form: f,
-        password_label: t('forms.passwords.edit.labels.password'),
-        forbidden_passwords: @update_password_presenter.forbidden_passwords,
-        field_options: {
-          input_html: { aria: { describedby: 'password-description' } },
-        },
-      ) %>
-  <%= f.submit @update_password_presenter.submit_text, class: 'display-block margin-top-5 margin-bottom-4' %>
-<% end %>
+    <%= form_with(
+          model: @update_user_password_form,
+          url: manage_password_path,
+          method: :patch,
+          local: true,
+          class: 'ads-form ads-form--gap-16',
+        ) do |f| %>
+      <%= render InputComponent.new(
+            form: f,
+            attribute: :password,
+            type: :password,
+            id: 'new-password',
+            label: t('forms.passwords.edit.labels.password'),
+            required: true,
+            autocomplete: 'new-password',
+            error_message: @update_user_password_form.errors.full_messages_for(:password).first,
+          ) do %>
+        <%= render PasswordStrengthComponent.new(
+              input_id: 'new-password',
+              forbidden_passwords: @update_password_presenter.forbidden_passwords,
+            ) %>
+      <% end %>
+      <%= render InputComponent.new(
+            form: f,
+            attribute: :password_confirmation,
+            type: :password,
+            label: t('components.password_confirmation.confirm_label'),
+            required: true,
+            autocomplete: 'new-password',
+            error_message: @update_user_password_form.errors
+              .full_messages_for(:password_confirmation)
+              .first,
+            error_messages: {
+              customError: t('components.password_confirmation.errors.mismatch'),
+            },
+          ) %>
+      <%= render ADS::StackComponent.new(kind: :actions, gap: 8, align: :stretch) do %>
+        <%= render ButtonComponent.new(
+              type: :submit,
+            ).with_content(@update_password_presenter.submit_text) %>
 
-<%= render 'shared/password_accordion' %>
-
-<% unless @update_password_presenter.required_password_change? %>
-  <%= render 'shared/cancel', link: account_path %>
+        <% if !@update_password_presenter.required_password_change? %>
+          <%= render ButtonComponent.new(
+                url: account_settings_path,
+                variant: :quaternary,
+              ).with_content(t('links.cancel')) %>
+        <% end %>
+      <% end %>
+    <% end %>
+  <% end %>
 <% end %>

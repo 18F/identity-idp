@@ -23,20 +23,23 @@ RSpec.describe 'idv/address/new' do
 
     it 'has correct address content' do
       if gpo_request_letter_visited
-        expect(parsed_page).to have_content(t('doc_auth.headings.mailing_address'))
+        expect(parsed_page).to have_content(t('doc_auth.headings.mailing_address_title_line_one'))
+        expect(parsed_page).to have_content(t('doc_auth.headings.mailing_address_title_line_two'))
         expect(parsed_page).to have_content(t('doc_auth.info.mailing_address'))
         expect(parsed_page).to have_content(t('forms.buttons.continue'))
         expect(parsed_page).to have_link(t('forms.buttons.back'), href: idv_request_letter_path)
       elsif address_update_request
-        expect(parsed_page).to have_content(t('doc_auth.headings.address_update'))
+        expect(parsed_page).to have_content(t('doc_auth.headings.address_update_title_line_one'))
+        expect(parsed_page).to have_content(t('doc_auth.headings.address_update_title_line_two'))
         expect(parsed_page).to have_content(t('doc_auth.info.address'))
         expect(parsed_page).to have_content(t('forms.buttons.submit.update'))
         expect(parsed_page).to have_link(t('forms.buttons.back'), href: idv_verify_info_path)
       else
-        expect(parsed_page).to have_content(t('doc_auth.headings.address'))
+        expect(parsed_page).to have_content(t('doc_auth.headings.address_title_line_one'))
+        expect(parsed_page).to have_content(t('doc_auth.headings.address_title_line_two'))
         expect(parsed_page).to have_content(t('doc_auth.info.address'))
         expect(parsed_page).to have_content(t('forms.buttons.continue'))
-        expect(parsed_page).to have_link(t('links.cancel'))
+        expect(parsed_page).not_to have_link(t('links.cancel'))
       end
     end
 
@@ -49,13 +52,13 @@ RSpec.describe 'idv/address/new' do
       end
 
       it 'is hidden' do
-        expect(guidance.classes).to include('display-none')
+        expect(guidance['hidden']).not_to be_nil
       end
     end
 
     describe 'the Puerto Rico address1 blurb' do
       let(:hint) do
-        parsed_page.at_css('input#idv_form_address1').parent.at_css('.usa-hint')
+        parsed_page.at_css('input#idv_form_address1').parent.parent.at_css('.ads-input__hint')
       end
 
       it 'has the correct text' do
@@ -65,13 +68,13 @@ RSpec.describe 'idv/address/new' do
       end
 
       it 'is hidden' do
-        expect(hint.classes).to include('display-none')
+        expect(hint['hidden']).not_to be_nil
       end
     end
 
     describe 'the Puerto Rico address2 blurb' do
       let(:hint) do
-        parsed_page.at_css('input#idv_form_address2').parent.at_css('.usa-hint')
+        parsed_page.at_css('input#idv_form_address2').parent.parent.at_css('.ads-input__hint')
       end
 
       it 'has the correct text' do
@@ -81,13 +84,13 @@ RSpec.describe 'idv/address/new' do
       end
 
       it 'is hidden' do
-        expect(hint.classes).to include('display-none')
+        expect(hint['hidden']).not_to be_nil
       end
     end
 
     describe 'the Puerto Rico city blurb' do
       let(:hint) do
-        parsed_page.at_css('input#idv_form_city').parent.at_css('.usa-hint')
+        parsed_page.at_css('input#idv_form_city').parent.parent.at_css('.ads-input__hint')
       end
 
       it 'has the correct text' do
@@ -97,13 +100,13 @@ RSpec.describe 'idv/address/new' do
       end
 
       it 'is hidden' do
-        expect(hint.classes).to include('display-none')
+        expect(hint['hidden']).not_to be_nil
       end
     end
 
     describe 'the Puerto Rico zipcode blurb' do
       let(:hint) do
-        parsed_page.at_css('input#idv_form_zipcode').parent.at_css('.usa-hint')
+        parsed_page.at_css('input#idv_form_zipcode').parent.parent.at_css('.ads-input__hint')
       end
 
       it 'has the correct text' do
@@ -113,7 +116,7 @@ RSpec.describe 'idv/address/new' do
       end
 
       it 'is hidden' do
-        expect(hint.classes).to include('display-none')
+        expect(hint['hidden']).not_to be_nil
       end
     end
   end

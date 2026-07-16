@@ -52,60 +52,37 @@ RSpec.describe 'idv/in_person/verify_info/show.html.erb' do
         assign(:ssn, pii[:ssn])
       end
 
-      it 'renders the state_id section' do
-        # Heading
-        expect(rendered).to have_content(t('headings.state_id'))
-        # First Name
+      it 'renders the state_id fields' do
         expect(rendered).to have_content(t('idv.form.first_name'))
         expect(rendered).to have_content(pii[:first_name])
-        # Last Name
         expect(rendered).to have_content(t('idv.form.last_name'))
         expect(rendered).to have_content(pii[:last_name])
-        # Date of Birth
         expect(rendered).to have_content(t('idv.form.dob'))
         expect(rendered).to have_content(
           I18n.l(Date.parse(pii[:dob]), format: I18n.t('time.formats.event_date')),
         )
-        # Issuing State
         expect(rendered).to have_content(t('idv.form.issuing_state'))
         expect(rendered).to have_content(pii[:state_id_jurisdiction])
-        # State ID number
         expect(rendered).to have_content(t('idv.form.id_number'))
         expect(rendered).to have_content(pii[:state_id_number])
-        # State ID address 1
         expect(rendered).to have_content(t('idv.form.address1'))
         expect(rendered).to have_content(pii[:identity_doc_address1])
-        # State ID address 2
         expect(rendered).to have_content(t('idv.form.address2'))
         expect(rendered).to have_content(pii[:identity_doc_address2])
-        # State ID address city
         expect(rendered).to have_content(t('idv.form.city'))
         expect(rendered).to have_content(pii[:identity_doc_city])
-        # State ID address state
         expect(rendered).to have_content(t('idv.form.state'))
         expect(rendered).to have_content(pii[:identity_doc_address_state])
-        # State ID address zipcode
         expect(rendered).to have_content(t('idv.form.zipcode'))
         expect(rendered).to have_content(pii[:identity_doc_zipcode])
       end
 
       it 'renders the address section' do
-        # Heading
-        expect(rendered).to have_content(t('headings.residential_address'))
-        # address 1
-        expect(rendered).to have_content(t('idv.form.address1'))
+        expect(rendered).to have_content(t('idv.form.address'))
         expect(rendered).to have_content(pii[:address1])
-        # address 2
-        expect(rendered).to have_content(t('idv.form.address2'))
         expect(rendered).to have_content(pii[:address2])
-        # address city
-        expect(rendered).to have_content(t('idv.form.city'))
         expect(rendered).to have_content(pii[:city])
-        # address state
-        expect(rendered).to have_content(t('idv.form.state'))
         expect(rendered).to have_content(pii[:state])
-        # address zipcode
-        expect(rendered).to have_content(t('idv.form.zipcode'))
         expect(rendered).to have_content(pii[:zipcode])
       end
 
@@ -117,11 +94,8 @@ RSpec.describe 'idv/in_person/verify_info/show.html.erb' do
       end
 
       it 'renders the ssn section' do
-        # Heading
-        expect(rendered).to have_content(t('headings.ssn'))
-        # SSN
         expect(rendered).to have_content(t('idv.form.ssn'))
-        expect(rendered).to have_content(SsnFormatter.format_masked(pii[:ssn]))
+        expect(rendered).to have_content(SsnFormatter.format_masked(pii[:ssn]).tr('*', '•'))
       end
 
       it 'renders the ssn update link with click observer' do
@@ -131,8 +105,8 @@ RSpec.describe 'idv/in_person/verify_info/show.html.erb' do
         )
       end
 
-      it 'does not render the passport section' do
-        expect(rendered).to_not have_content(t('in_person_proofing.form.verify_info.passport'))
+      it 'does not render the passport fields' do
+        expect(rendered).to_not have_content(t('in_person_proofing.form.passport.surname'))
       end
     end
 
@@ -160,16 +134,11 @@ RSpec.describe 'idv/in_person/verify_info/show.html.erb' do
         assign(:ssn, pii[:ssn])
       end
 
-      it 'renders the passport section' do
-        # Heading
-        expect(rendered).to have_content(t('in_person_proofing.form.verify_info.passport'))
-        # Surname
+      it 'renders the passport fields' do
         expect(rendered).to have_content(t('in_person_proofing.form.passport.surname'))
         expect(rendered).to have_content(pii[:passport_surname])
-        # First Name
         expect(rendered).to have_content(t('in_person_proofing.form.passport.first_name'))
         expect(rendered).to have_content(pii[:passport_first_name])
-        # Date of Birth
         expect(rendered).to have_content(t('in_person_proofing.form.passport.dob'))
         expect(rendered).to have_content(
           I18n.l(Date.parse(pii[:passport_dob]), format: I18n.t('time.formats.event_date')),
@@ -177,35 +146,22 @@ RSpec.describe 'idv/in_person/verify_info/show.html.erb' do
       end
 
       it 'renders the address section' do
-        # Heading
-        expect(rendered).to have_content(t('headings.residential_address'))
-        # address 1
-        expect(rendered).to have_content(t('idv.form.address1'))
+        expect(rendered).to have_content(t('idv.form.address'))
         expect(rendered).to have_content(pii[:address1])
-        # address 2
-        expect(rendered).to have_content(t('idv.form.address2'))
         expect(rendered).to have_content(pii[:address2])
-        # address city
-        expect(rendered).to have_content(t('idv.form.city'))
         expect(rendered).to have_content(pii[:city])
-        # address state
-        expect(rendered).to have_content(t('idv.form.state'))
         expect(rendered).to have_content(pii[:state])
-        # address zipcode
-        expect(rendered).to have_content(t('idv.form.zipcode'))
         expect(rendered).to have_content(pii[:zipcode])
       end
 
       it 'renders the ssn section' do
-        # Heading
-        expect(rendered).to have_content(t('headings.ssn'))
-        # SSN
         expect(rendered).to have_content(t('idv.form.ssn'))
-        expect(rendered).to have_content(SsnFormatter.format_masked(pii[:ssn]))
+        expect(rendered).to have_content(SsnFormatter.format_masked(pii[:ssn]).tr('*', '•'))
       end
 
-      it 'does not render the state-id section' do
-        expect(rendered).to_not have_content(t('headings.state_id'))
+      it 'does not render the state-id fields' do
+        expect(rendered).to_not have_content(t('idv.form.issuing_state'))
+        expect(rendered).to_not have_content(t('idv.form.id_number'))
       end
     end
   end

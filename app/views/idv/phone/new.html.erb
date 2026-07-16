@@ -1,136 +1,118 @@
-<% content_for(:pre_flash_content) do %>
-  <%= render StepIndicatorComponent.new(
-        steps: step_indicator_steps,
-        current_step: :verify_phone,
-        locale_scope: 'idv',
-        class: 'margin-x-neg-2 margin-top-neg-4 tablet:margin-x-neg-6 tablet:margin-top-neg-4',
-      ) %>
-<% end %>
+<%= render 'idv/shared/step_indicator', current_step: :verify_phone %>
 
 <div id="form-steps-wait-alert">
 </div>
 
 <% self.title = t('titles.idv.phone') %>
 
-<%= render(VendorOutageAlertComponent.new(vendors: [:sms, :voice], context: :idv)) %>
-
-<%= render PageHeadingComponent.new.with_content(t('titles.idv.phone')) %>
-
-<p>
-  <%= t('idv.messages.phone.description') %>
-</p>
-
-<p class="margin-bottom-1">
-  <%= t('idv.messages.phone.alert_html') %>
-</p>
-
-<ul>
-  <% t('idv.messages.phone.rules').each do |msg| %>
-    <li>
-      <%= msg %>
-    </li>
-  <% end %>
-</ul>
-
-<p>
-    <%= new_tab_link_to(
-          t('idv.troubleshooting.options.learn_more_verify_by_phone'),
-          help_center_redirect_url(
-            category: 'verify-your-identity',
-            article: 'phone-number',
-            flow: :idv,
-            step: :phone,
-          ),
-        ) %>
-</p>
-
-<%= simple_form_for(
-      @idv_form,
-      url: idv_phone_path,
-      data: {
-        form_steps_wait: '',
-        error_message: t('idv.failure.exceptions.internal_error'),
-        alert_target: '#form-steps-wait-alert',
-        wait_step_path: idv_phone_path,
-        poll_interval_ms: IdentityConfig.store.poll_rate_for_verify_in_seconds * 1000,
-      },
-      method: :put,
-    ) do |f| %>
-  <%= render PhoneInputComponent.new(
-        form: f,
-        allowed_countries: @idv_form.allowed_countries,
-        required: true,
-        class: 'margin-bottom-4',
-      ) %>
-  <%= render AlertComponent.new(
-        type: :warning,
-        class: 'margin-bottom-4',
-        id: 'phone-already-submitted-alert',
-        data: {
-          failed_phone_numbers: @idv_form.failed_phone_numbers,
-        },
-        hidden: true,
-      ) do %>
-    <%= t('idv.messages.phone.failed_number.alert_text') %>
-    <% if gpo_letter_available %>
-      <%= t(
-            'idv.messages.phone.failed_number.gpo_alert_html',
-            link_html: link_to(
-              t('idv.messages.phone.failed_number.gpo_verify_link'),
-              idv_request_letter_path,
-            ),
-          ) %>
-    <% else %>
-      <%= t('idv.messages.phone.failed_number.try_again_html') %>
+<%= render ADS::FormPageComponent.new(
+      title: t('titles.idv.phone'),
+      subtitle: t('idv.messages.phone.description'),
+    ) do |page| %>
+  <% page.with_alert do %>
+    <%= tag.div(
+          id: 'phone-already-submitted-alert',
+          hidden: true,
+          data: { failed_phone_numbers: @idv_form.failed_phone_numbers },
+        ) do %>
+      <%= render AlertComponent.new(type: :warning, dismissible: true) do %>
+        <%= t('idv.messages.phone.failed_number.alert_text') %>
+        <% if gpo_letter_available %>
+          <% gpo_verify_link = capture do %>
+            <%= render ADS::LinkComponent.new(
+                  url: idv_request_letter_path,
+                ).with_content(t('idv.messages.phone.failed_number.gpo_verify_link')) %>
+          <% end %>
+          <%= t(
+                'idv.messages.phone.failed_number.gpo_alert_html',
+                link_html: gpo_verify_link,
+              ) %>
+        <% else %>
+          <%= t('idv.messages.phone.failed_number.try_again_html') %>
+        <% end %>
+      <% end %>
     <% end %>
   <% end %>
 
-  <p><%= t('idv.messages.otp_delivery_method_description') %></p>
+  <% page.with_body do %>
+    <%= render ADS::StackComponent.new(gap: 24) do %>
+      <%= render(VendorOutageAlertComponent.new(vendors: [:sms, :voice], context: :idv)) %>
 
-  <div class="grid-row grid-gap-2">
-    <div class="grid-col-12 tablet:grid-col-6">
-      <%= f.radio_button(
-            :otp_delivery_preference,
-            :sms,
-            checked: !OutageStatus.new.vendor_outage?(:sms), # We want SMS to be default checked
-            disabled: OutageStatus.new.vendor_outage?(:sms),
-            class: 'usa-radio__input usa-radio__input--bordered',
-          ) %>
-        <%= f.label :otp_delivery_preference_sms, t('two_factor_authentication.otp_delivery_preference.sms'), class: 'usa-radio__label width-full' %>
-    </div>
-    <div class="grid-col-12 tablet:grid-col-6">
-      <%= f.radio_button(
-            :otp_delivery_preference,
-            :voice,
-            disabled: OutageStatus.new.vendor_outage?(:voice),
-            class: 'usa-radio__input usa-radio__input--bordered',
-          ) %>
-      <%= f.label :otp_delivery_preference_voice, t('two_factor_authentication.otp_delivery_preference.voice'), class: 'usa-radio__label width-full' %>
-    </div>
-  </div>
+      <%= simple_form_for(
+            @idv_form,
+            url: idv_phone_path,
+            data: {
+              form_steps_wait: '',
+              error_message: t('idv.failure.exceptions.internal_error'),
+              alert_target: '#form-steps-wait-alert',
+              wait_step_path: idv_phone_path,
+              poll_interval_ms: IdentityConfig.store.poll_rate_for_verify_in_seconds * 1000,
+            },
+            html: { class: 'ads-form ads-form--align-stretch' },
+            method: :put,
+          ) do |f| %>
+        <%= render ADS::StackComponent.new(gap: 32, align: :stretch) do %>
+          <%= render InputComponent.new(
+                form: f,
+                attribute: :phone,
+                label: t('two_factor_authentication.phone_label'),
+                type: :tel,
+                country_selector: true,
+                allowed_countries: @idv_form.allowed_countries,
+                required: true,
+              ) %>
 
-  <div class="margin-y-5">
-    <%= render SpinnerButtonComponent.new(
-          action_message: t('idv.messages.verifying'),
-          type: :submit,
-          big: true,
-          wide: true,
-        ).with_content(t('forms.buttons.send_one_time_code')) %>
-  </div>
+          <fieldset class="ads-fieldset">
+            <div class="ads-radio-group">
+              <div class="ads-radio">
+                <%= f.radio_button(
+                      :otp_delivery_preference,
+                      :sms,
+                      checked: !OutageStatus.new.vendor_outage?(:sms),
+                      disabled: OutageStatus.new.vendor_outage?(:sms),
+                      class: 'ads-radio__input ads-sr-only',
+                    ) %>
+                <%= f.label(
+                      :otp_delivery_preference_sms,
+                      t('two_factor_authentication.otp_delivery_preference.sms'),
+                      class: 'ads-radio__label',
+                    ) %>
+              </div>
+
+              <div class="ads-radio">
+                <%= f.radio_button(
+                      :otp_delivery_preference,
+                      :voice,
+                      disabled: OutageStatus.new.vendor_outage?(:voice),
+                      class: 'ads-radio__input ads-sr-only',
+                    ) %>
+                <%= f.label(
+                      :otp_delivery_preference_voice,
+                      t('two_factor_authentication.otp_delivery_preference.voice'),
+                      class: 'ads-radio__label',
+                    ) %>
+              </div>
+            </div>
+          </fieldset>
+
+          <%= render ADS::StackComponent.new(kind: :actions, gap: 12, align: :stretch) do %>
+            <%= render ButtonComponent.new(
+                  type: :submit,
+                  size: :lg,
+                ).with_content(t('forms.buttons.send_one_time_code')) %>
+
+            <% if gpo_letter_available %>
+              <%= render ButtonComponent.new(
+                    url: idv_request_letter_path,
+                    variant: :quaternary,
+                    size: :lg,
+                  ).with_content(t('idv.buttons.phone.no_us_phone_number')) %>
+            <% end %>
+          <% end %>
+        <% end %>
+      <% end %>
+    <% end %>
+  <% end %>
 <% end %>
-
-
-<%= render(
-      'shared/troubleshooting_options',
-      heading: t('components.troubleshooting_options.default_heading'),
-      options: [
-        gpo_letter_available && {
-          url: idv_request_letter_path,
-          text: t('idv.troubleshooting.options.verify_by_mail'),
-        },
-      ].select(&:present?),
-    ) %>
-
-<%= render 'idv/doc_auth/cancel', step: 'phone' %>
 
 <% javascript_packs_tag_once 'form-steps-wait', 'idv-phone-alert' %>

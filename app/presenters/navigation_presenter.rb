@@ -3,68 +3,24 @@
 class NavigationPresenter
   include Rails.application.routes.url_helpers
 
-  NavItem = Struct.new(:title, :href, :children)
+  NavItem = Struct.new(:title, :href, :icon)
 
-  attr_reader :user, :url_options
+  attr_reader :url_options
 
-  def initialize(user:, url_options:)
-    @user = user
+  def initialize(url_options:)
     @url_options = url_options
   end
 
   def navigation_items
     [
+      NavItem.new(I18n.t('account.navigation.home'), account_path, :house),
       NavItem.new(
-        I18n.t('account.navigation.your_account'), account_path, [
-          NavItem.new(I18n.t('account.navigation.add_email'), add_email_path),
-          NavItem.new(I18n.t('account.navigation.edit_password'), manage_password_path),
-          NavItem.new(I18n.t('account.navigation.delete_account'), account_delete_path),
-          user.has_recovery_code? && user.active_profile ? NavItem.new(
-            I18n.t('account.navigation.reset_personal_key'), create_new_personal_key_path
-          ) : nil,
-        ].compact
+        I18n.t('account.navigation.profile'),
+        account_settings_path,
+        :profile_circle,
       ),
-      NavItem.new(
-        I18n.t('account.navigation.two_factor_authentication'),
-        account_two_factor_authentication_path, [
-          NavItem.new(I18n.t('account.navigation.add_phone_number'), phone_setup_path),
-          NavItem.new(
-            I18n.t('account.navigation.add_authentication_apps'),
-            authenticator_setup_url,
-          ),
-          NavItem.new(
-            I18n.t('account.navigation.add_platform_authenticator'),
-            webauthn_setup_path(platform: true),
-          ),
-          NavItem.new(I18n.t('account.navigation.add_security_key'), webauthn_setup_path),
-          NavItem.new(I18n.t('account.navigation.add_federal_id'), setup_piv_cac_path),
-          NavItem.new(
-            I18n.t('account.navigation.get_backup_codes'),
-            backup_codes_path,
-          ),
-        ].compact
-      ),
-      NavItem.new(
-        I18n.t('account.navigation.connected_services'),
-        account_connected_services_path, []
-      ),
-      NavItem.new(
-        I18n.t('account.navigation.history'), account_history_path, [
-          NavItem.new(
-            I18n.t('account.navigation.forget_browsers'),
-            forget_all_browsers_path,
-          ),
-        ]
-      ),
-      NavItem.new(I18n.t('account.navigation.customer_support'), help_center_redirect_url, []),
+      NavItem.new(I18n.t('account.navigation.security'), account_security_path, :lock),
+      NavItem.new(I18n.t('account.navigation.history'), account_history_path, :clock),
     ]
-  end
-
-  def backup_codes_path
-    if TwoFactorAuthentication::BackupCodePolicy.new(user).configured?
-      backup_code_regenerate_path
-    else
-      backup_code_setup_path
-    end
   end
 end

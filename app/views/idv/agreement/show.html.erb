@@ -1,60 +1,77 @@
 <% self.title = t('doc_auth.headings.lets_go') %>
 
-<% content_for(:pre_flash_content) do %>
-  <%= render StepIndicatorComponent.new(
-        steps: Idv::StepIndicatorConcern::STEP_INDICATOR_STEPS,
-        current_step: :getting_started,
-        locale_scope: 'idv',
-        class: 'margin-x-neg-2 margin-top-neg-4 tablet:margin-x-neg-6 tablet:margin-top-neg-4',
-      ) %>
-<% end %>
+<%= render 'idv/shared/step_indicator',
+           current_step: :getting_started,
+           steps: Idv::StepIndicatorConcern::STEP_INDICATOR_STEPS %>
 
-<%= render PageHeadingComponent.new.with_content(t('doc_auth.headings.lets_go')) %>
-<p><%= t('doc_auth.info.lets_go') %></p>
-<h2><%= t('doc_auth.headings.verify_identity') %></h2>
-<p><%= t('doc_auth.info.verify_identity') %></p>
-<h2><%= t('doc_auth.headings.secure_account') %></h2>
-<p><%= t('doc_auth.info.secure_account') %></p>
+<%= render ADS::FormPageComponent.new(title: t('doc_auth.headings.lets_go')) do |page| %>
+  <% page.with_body do %>
+    <%= render ADS::StackComponent.new(gap: 24) do %>
+      <%= render CardComponent.new(padding: :compact) do %>
+        <div class="ads-card__stack">
+          <p class="ads-card__title"><%= t('doc_auth.headings.verify_identity') %></p>
+          <p class="ads-card__description"><%= t('doc_auth.info.verify_identity') %></p>
+        </div>
+      <% end %>
 
-<%= simple_form_for(
-      @consent_form,
-      as: :doc_auth,
-      url: url_for,
-      method: 'put',
-      html: { class: 'margin-top-2 margin-bottom-5 js-consent-continue-form' },
-    ) do |f| %>
-  <%= render ClickObserverComponent.new(event_name: 'IdV: consent checkbox toggled') do %>
-    <%= render ValidatedFieldComponent.new(
-          form: f,
-          name: :idv_consent_given,
-          as: :boolean,
-          label: t('doc_auth.instructions.consent', app_name: APP_NAME),
-          required: true,
-        ) %>
+      <%= render CardComponent.new(padding: :compact) do %>
+        <div class="ads-card__stack">
+          <p class="ads-card__title"><%= t('doc_auth.headings.secure_account') %></p>
+          <p class="ads-card__description"><%= t('doc_auth.info.secure_account') %></p>
+        </div>
+      <% end %>
+
+      <%= simple_form_for(
+            @consent_form,
+            as: :doc_auth,
+            url: url_for,
+            method: :put,
+            html: { class: 'ads-form ads-form--align-stretch js-consent-continue-form' },
+          ) do |f| %>
+        <% consent_label = capture do %>
+          <%= t('doc_auth.instructions.consent', app_name: APP_NAME) %>
+          <%= render ADS::LinkComponent.new(
+                url: policy_redirect_url(
+                  policy: :privacy_act_statement,
+                  flow: :idv,
+                  step: :agreement,
+                  location: :consent,
+                ),
+                target: '_blank',
+                rel: 'noopener noreferrer',
+              ) do %>
+            <%= t('doc_auth.instructions.learn_more') %>
+            <span class="ads-sr-only"><%= t('links.new_tab') %></span>
+          <% end %>
+        <% end %>
+
+        <%= render ADS::StackComponent.new(gap: 24) do %>
+          <%= render ClickObserverComponent.new(event_name: 'IdV: consent checkbox toggled') do %>
+            <%= render ValidatedFieldComponent.new(
+                  form: f,
+                  name: :idv_consent_given,
+                  as: :boolean,
+                  label: consent_label,
+                  required: true,
+                  label_html: { class: 'ads-checkbox__label--regular' },
+                  wrapper_html: { class: 'ads-checkbox' },
+                ) %>
+          <% end %>
+
+          <%= render ADS::StackComponent.new(kind: :actions, gap: 8, align: :stretch) do %>
+            <%= render ButtonComponent.new(
+                  type: :submit,
+                ).with_content(t('doc_auth.buttons.continue')) %>
+
+            <%= render ButtonComponent.new(
+                  url: idv_cancel_path(step: 'agreement'),
+                  variant: :quaternary,
+                ).with_content(cancel_link_text) %>
+          <% end %>
+        <% end %>
+      <% end %>
+    <% end %>
   <% end %>
-  <p class="margin-top-2">
-    <%= new_tab_link_to(
-          t('doc_auth.instructions.learn_more'),
-          policy_redirect_url(
-            policy: :privacy_act_statement,
-            flow: :idv,
-            step: :agreement,
-            location: :consent,
-          ),
-        ) %>
-  </p>
-  <div class="margin-top-4">
-    <%= render(
-          SpinnerButtonComponent.new(
-            type: :submit,
-            big: true,
-            wide: true,
-            spin_on_click: false,
-          ).with_content(t('doc_auth.buttons.continue')),
-        ) %>
-  </div>
 <% end %>
-
-<%= render 'idv/doc_auth/cancel', step: 'agreement' %>
 
 <%= javascript_packs_tag_once('document-capture-welcome') %>

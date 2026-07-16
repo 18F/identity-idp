@@ -21,48 +21,15 @@ RSpec.describe 'layouts/application.html.erb' do
   end
 
   context 'no content for nav present' do
-    it 'displays only the logo' do
+    it 'renders the ADS page shell' do
       render
 
-      expect(rendered).to have_css('.page-header--basic')
-      expect(rendered).to_not have_content(t('account.welcome'))
+      expect(rendered).to have_css('.ads-auth-page')
+      expect(rendered).to have_css('.ads-auth-page__logo-banner')
+      expect(rendered).to have_css('.ads-page-footer')
+      expect(rendered).to_not have_css('.page-header--basic')
+      expect(rendered).to_not have_css('.ads-account-header')
       expect(rendered).to_not have_button(t('links.sign_out'))
-    end
-  end
-
-  context 'when FeatureManagement.show_demo_banner? is true' do
-    it 'displays the demo banner' do
-      allow(FeatureManagement).to receive(:show_demo_banner?).and_return(true)
-      render
-
-      expect(rendered).to have_content('DEMO')
-    end
-  end
-
-  context 'when FeatureManagement.show_demo_banner? is false' do
-    it 'does not display the demo banner' do
-      allow(FeatureManagement).to receive(:show_demo_banner?).and_return(false)
-      render
-
-      expect(rendered).to_not have_content('DEMO')
-    end
-  end
-
-  context 'when FeatureManagement.show_no_pii_banner? is true' do
-    it 'displays the no PII banner' do
-      allow(FeatureManagement).to receive(:show_no_pii_banner?).and_return(true)
-      render
-
-      expect(rendered).to have_content('Do not use real personal information')
-    end
-  end
-
-  context 'when FeatureManagement.show_no_pii_banner? is false' do
-    it 'does not display the no PII banner' do
-      allow(FeatureManagement).to receive(:show_no_pii_banner?).and_return(false)
-      render
-
-      expect(rendered).to_not have_content('Do not use real personal information')
     end
   end
 

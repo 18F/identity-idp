@@ -1,6 +1,6 @@
 <%= content_tag(
       'lg-phone-input',
-      class: tag_options[:class],
+      class: ['ads-phone-input', tag_options[:class]],
       data: {
         delivery_methods:,
         translated_country_code_names:,
@@ -15,41 +15,45 @@
         },
         false,
       ) %>
-  <div class="phone-input__international-code-wrapper">
+  <div class="phone-input__international-code-wrapper ads-input">
     <%= f.label(
           :international_code,
-          class: 'usa-label',
+          class: 'ads-input__label ads-input__label--visible',
         ) { t('components.phone_input.country_code_label') } %>
-    <%= f.input(
-          :international_code,
-          collection: international_phone_codes,
-          include_blank: false,
+    <div class="ads-input__shell">
+      <%= f.input(
+            :international_code,
+            collection: international_phone_codes,
+            include_blank: false,
+            label: false,
+            input_html: {
+              class: 'phone-input__international-code ads-input__control',
+              data: { countries: supported_country_codes },
+            },
+            wrapper_html: {
+              class: 'ads-input__wrapper',
+            },
+          ) %>
+    </div>
+  </div>
+  <div class="ads-input">
+    <%= f.label(
+          :phone,
+          class: 'ads-input__label ads-input__label--visible',
+        ) { t('two_factor_authentication.phone_label') } %>
+    <%= render ValidatedFieldComponent.new(
+          form: f,
+          name: :phone,
+          error_messages: {
+            valueMissing: t('errors.messages.phone_required'),
+          },
+          as: :tel,
+          required:,
           label: false,
           input_html: {
-            class: 'phone-input__international-code',
-            data: { countries: supported_country_codes },
+            class: 'phone-input__number ads-input__control',
           },
         ) %>
   </div>
-  <%= f.label(
-        :phone,
-        class: 'usa-label',
-      ) { t('two_factor_authentication.phone_label') } %>
-  <%= render ValidatedFieldComponent.new(
-        form: f,
-        name: :phone,
-        error_messages: {
-          valueMissing: t('errors.messages.phone_required'),
-        },
-        as: :tel,
-        required:,
-        label: false,
-        wrapper_html: {
-          class: 'margin-bottom-0',
-        },
-        input_html: {
-          class: 'phone-input__number',
-        },
-      ) %>
 <% end %>
 <%= stylesheet_link_tag 'intlTelInput' %>

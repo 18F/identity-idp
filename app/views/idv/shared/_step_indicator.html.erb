@@ -1,0 +1,19 @@
+<%#
+locals:
+* current_step: Symbol matching a step indicator step name
+* steps: Optional step list (defaults to step_indicator_steps from StepIndicatorConcern)
+
+Renders nothing in-body. Assigns @ads_progress_component for PageShell chrome using the
+same step lists / current_step symbols IDV already uses — no parallel route map.
+%>
+<% steps_list = local_assigns.fetch(:steps) { step_indicator_steps } %>
+<% step_names = steps_list.map { |step| step[:name].to_sym } %>
+<% current = local_assigns[:current_step]&.to_sym %>
+<% index = step_names.index(current) %>
+<% if index %>
+  <% @ads_progress_component = ProgressComponent.new(
+       steps: step_names.map { |name| t("step_indicator.flows.idv.#{name}") },
+       current_step: index,
+       label: t('step_indicator.accessible_label'),
+     ) %>
+<% end %>

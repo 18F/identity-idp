@@ -1,0 +1,46 @@
+@use 'variables/ads' as ads;
+@use 'variables/email' as *;
+
+@mixin mailer-divider-line {
+  border-top: 1px solid $mailer-divider-color;
+  font-size: 0;
+  line-height: 0;
+}
+
+@mixin mailer-heading-s {
+  color: ads.$off-black;
+  font-family: ads.$font-family;
+  font-size: ads.$text-heading-m-mobile;
+  font-style: normal;
+  font-weight: ads.$font-semibold;
+  letter-spacing: ads.$text-letter-spacing-heading;
+  line-height: 1.2;
+}
+
+@mixin mailer-text-body($weight: 400) {
+  font-family: ads.$font-family;
+  font-size: ads.$text-body-m;
+  font-weight: $weight;
+  letter-spacing: 0;
+  line-height: 1.5;
+}
+
+@mixin mailer-text-body-emphasized {
+  @include mailer-text-body($weight: ads.$font-semibold);
+}
+
+@mixin mailer-label-m {
+  font-family: ads.$font-family;
+  font-size: ads.$text-label-m;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+@mixin mailer-label-s-emphasis {
+  font-family: ads.$font-family;
+  font-size: ads.$text-label-s;
+  font-weight: ads.$font-semibold;
+  letter-spacing: 0;
+  line-height: 1;
+}

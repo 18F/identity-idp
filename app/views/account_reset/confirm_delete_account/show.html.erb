@@ -1,14 +1,24 @@
 <% self.title = t('account_reset.confirm_delete_account.title') %>
-<%= render StatusPageComponent.new(status: :delete) do |c| %>
-  <% c.with_header { t('account_reset.confirm_delete_account.title') } %>
-  <p><%= t('account_reset.confirm_delete_account.info_html', email: email) %></p>
-  <p class="margin-bottom-0">
-    <%= t(
-          'account_reset.confirm_delete_account.cta_html',
-          link_html: link_to(
-            t('account_reset.confirm_delete_account.link_text'),
-            sign_up_email_path,
-          ),
-        ) %>
-    </p>
+
+<%= render ADS::FormPageComponent.new(title: t('account_reset.confirm_delete_account.title')) do |page| %>
+  <% page.with_body do %>
+    <% sign_up_link_html = capture do %>
+      <%= render ADS::LinkComponent.new(url: sign_up_email_path) do %>
+        <%= t('account_reset.confirm_delete_account.link_text') %>
+      <% end %>
+    <% end %>
+
+    <div class="ads-copy">
+      <p><%= t('account_reset.confirm_delete_account.info_html', email: email) %></p>
+    </div>
+
+    <div class="ads-copy ads-copy--centered">
+      <p>
+        <%= t(
+              'account_reset.confirm_delete_account.cta_html',
+              link_html: sign_up_link_html,
+            ) %>
+      </p>
+    </div>
+  <% end %>
 <% end %>

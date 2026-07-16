@@ -1,0 +1,12 @@
+<% steps = ['Create account', 'Secure account', 'Connect service'] %>
+
+<div style="display: flex; flex-direction: column; gap: 32px; width: 100%;">
+  <%= render ProgressComponent.new(steps:, current_step: 0) %>
+  <%= render ProgressComponent.new(
+        steps:,
+        current_step: 1,
+        current_substep: 1,
+        substep_count: 2,
+      ) %>
+  <%= render ProgressComponent.new(steps:, current_step: 2) %>
+</div>

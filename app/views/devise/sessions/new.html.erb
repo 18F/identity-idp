@@ -1,107 +1,107 @@
 <% self.title = t('titles.sign_in') %>
 
-<% if decorated_sp_session.sp_name %>
-  <%= render 'sign_up/registrations/sp_registration_heading' %>
-<% end %>
+<% page_subtitle = if decorated_sp_session.sp_name
+                     safe_join(
+                       [
+                         tag.span(decorated_sp_session.sp_name, class: 'ads-nowrap'),
+                         ' ',
+                         t('headings.create_account_with_sp.sp_text', app_name: APP_NAME),
+                       ],
+                     )
+                   end %>
 
-<%= render TabNavigationComponent.new(
-      label: t('account.login.tab_navigation'),
-      routes: [
-        { text: t('links.sign_in'), path: new_user_session_path },
-        { text: t('links.create_account'), path: sign_up_email_path },
-      ],
-      class: 'margin-bottom-4',
-    ) %>
+<%= render ADS::FormPageComponent.new(
+      title: t('titles.sign_in'),
+      subtitle: page_subtitle,
+      divider: true,
+    ) do |page| %>
+  <% page.with_body do %>
+    <%= render ADS::StackComponent.new(kind: :form, gap: 12, align: :stretch) do %>
+      <%= render 'shared/sp_alert', section: 'sign_in' %>
 
-<%= render PageHeadingComponent.new.with_content(t('headings.sign_in_existing_users')) %>
+      <% if @issuer_forced_reauthentication %>
+        <div class="ads-copy">
+          <p>
+            <%= t(
+                  'account.login.forced_reauthentication_notice_html',
+                  sp_name: decorated_sp_session.sp_name,
+                ) %>
+          </p>
+        </div>
+      <% end %>
 
-<%= render 'shared/sp_alert', section: 'sign_in' %>
+      <%= simple_form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
+        <%= render ADS::StackComponent.new(kind: :form, gap: 32, align: :stretch) do %>
+          <%= render ADS::StackComponent.new(kind: :form, gap: 12, align: :stretch) do %>
+            <%= render InputComponent.new(
+                  form: f,
+                  attribute: :email,
+                  label: t('account.index.email_short'),
+                  type: :email,
+                  required: true,
+                  autocorrect: 'off',
+                  autocomplete: 'email',
+                  error_message: resource.errors.full_messages_for(:email).first,
+                ) %>
+            <%= render InputComponent.new(
+                  form: f,
+                  attribute: :password,
+                  label: t('forms.password'),
+                  type: :password,
+                  required: true,
+                  autocomplete: 'current-password',
+                  error_message: resource.errors.full_messages_for(:password).first,
+                  error_messages: {
+                    valueMissing: t('components.input.errors.password_current'),
+                  },
+                ) %>
+            <%= hidden_field_tag(
+                  :platform_authenticator_available,
+                  id: 'platform_authenticator_available',
+                ) %>
+          <% end %>
 
-<% if @issuer_forced_reauthentication %>
-  <p>
-    <%= t('account.login.forced_reauthentication_notice_html', sp_name: decorated_sp_session.sp_name) %>
-  </p>
-<% end %>
+          <%= render ADS::StackComponent.new(kind: :actions, gap: 8, align: :stretch) do %>
+            <% if FeatureManagement.sign_in_recaptcha_enabled? || IdentityConfig.store.recaptcha_mock_validator %>
+              <%= render CaptchaSubmitButtonComponent.new(
+                    form: f,
+                    action: SignInRecaptchaForm::RECAPTCHA_ACTION,
+                  ).with_content(t('forms.buttons.continue')) %>
+            <% else %>
+              <%= render ButtonComponent.new(
+                    type: :submit,
+                  ).with_content(t('forms.buttons.continue')) %>
+            <% end %>
+          <% end %>
+        <% end %>
+      <% end %>
 
-<%= simple_form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
-  <%= render ValidatedFieldComponent.new(
-        form: f,
-        name: :email,
-        label: t('account.index.email'),
-        required: true,
-        input_html: { autocorrect: 'off' },
-      ) %>
-  <%= render PasswordToggleComponent.new(
-        form: f,
-        class: 'margin-bottom-4',
-        field_options: {
-          required: true,
-          input_html: {
-            autocomplete: 'current-password',
-          },
-        },
-      ) %>
-  <%= hidden_field_tag :platform_authenticator_available, id: 'platform_authenticator_available' %>
-
-  <% if FeatureManagement.sign_in_recaptcha_enabled? || IdentityConfig.store.recaptcha_mock_validator %>
-    <%= render CaptchaSubmitButtonComponent.new(
-          form: f,
-          action: SignInRecaptchaForm::RECAPTCHA_ACTION,
-          button_options: { full_width: true },
-        ).with_content(t('forms.buttons.submit.default')) %>
-  <% else %>
-    <%= f.submit t('forms.buttons.submit.default'), full_width: true, wide: false %>
+      <%= render ButtonComponent.new(
+            url: new_user_password_url,
+            variant: :quaternary,
+          ).with_content(t('account.login.forgot_password')) %>
+    <% end %>
   <% end %>
-<% end %>
-<% if desktop_device? %>
-  <div class='margin-top-205'>
-    <%= link_to(
-          t('account.login.piv_cac'),
-          login_piv_cac_url,
-        ) %>
-  </div>
-<% end %>
 
-<%= render PageFooterComponent.new do %>
-  <% if decorated_sp_session.sp_name %>
-    <div class="margin-bottom-1">
-      <%= render 'devise/sessions/return_to_service_provider' %>
-    </div>
-  <% end %>
+  <% page.with_actions do %>
+    <%= render ADS::StackComponent.new(kind: :links, align: :center) do %>
+      <%= render ADS::LinkComponent.new(url: sign_up_email_path) do %>
+        <%= t('links.create_account') %>
+      <% end %>
 
-  <div class="margin-bottom-1">
-    <%= link_to(t('links.passwords.forgot'), new_user_password_url) %>
-  </div>
+      <% if desktop_device? %>
+        <%= render ADS::LinkComponent.new(url: login_piv_cac_url) do %>
+          <%= t('account.login.piv_cac') %>
+        <% end %>
+      <% end %>
 
-  <p class="margin-y-1">
-    <%= new_tab_link_to(
-          t('notices.privacy.security_and_privacy_practices'),
-          policy_redirect_url(
-            policy: :security_and_privacy_practices,
-            flow: :sign_in,
-            step: :sign_in,
-          ),
-        ) %>
-  </p>
-
-  <p class="margin-y-1">
-    <%= new_tab_link_to(
-          t('notices.privacy.privacy_act_statement'),
-          policy_redirect_url(
-            policy: :privacy_act_statement,
-            flow: :sign_in,
-            step: :sign_in,
-          ),
-        ) %>
-  </p>
-  <% if FeatureManagement.sign_in_recaptcha_enabled? %>
-    <p class="margin-top-4">
-      <%= t(
-            'notices.sign_in.recaptcha.disclosure_statement_html',
-            google_policy_link_html: new_tab_link_to(t('two_factor_authentication.recaptcha.google_policy_link'), GooglePolicySite.privacy_url),
-            google_tos_link_html: new_tab_link_to(t('two_factor_authentication.recaptcha.google_tos_link'), GooglePolicySite.terms_url),
-          ) %>
-    </p>
+      <% if decorated_sp_session.sp_name %>
+        <%= render ButtonComponent.new(
+              url: return_to_sp_cancel_path(step: :authentication),
+              variant: :quaternary,
+            ).with_content(t('links.back_to_sp', sp: decorated_sp_session.sp_name)) %>
+      <% end %>
+    <% end %>
   <% end %>
 <% end %>
 

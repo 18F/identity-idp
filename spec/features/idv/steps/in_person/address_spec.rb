@@ -70,7 +70,7 @@ RSpec.describe 'doc auth In person proofing residential address step', :js do
 
       # address page has fields that are pre-populated
       expect(page).to have_content(t('in_person_proofing.headings.update_address'))
-      expect(page).to have_field(t('idv.form.address1'), with: InPersonHelper::GOOD_ADDRESS1)
+      expect(page).to have_field(t('idv.form.address'), with: InPersonHelper::GOOD_ADDRESS1)
       expect(page).to have_field(t('idv.form.city'), with: InPersonHelper::GOOD_CITY)
       expect(page).to have_field(t('idv.form.zipcode'), with: InPersonHelper::GOOD_ZIPCODE)
       expect(page).to have_field(
@@ -86,7 +86,7 @@ RSpec.describe 'doc auth In person proofing residential address step', :js do
       complete_idv_steps_before_address
 
       fill_out_address_form_ok(same_address_as_id: false)
-      fill_in t('idv.form.address1'), with: '#1 $treet'
+      fill_in t('idv.form.address'), with: '#1 $treet'
       fill_in t('idv.form.address2'), with: 'Gr@nd Lañe^'
       fill_in t('idv.form.city'), with: 'N3w C!ty'
       click_idv_continue
@@ -113,7 +113,7 @@ RSpec.describe 'doc auth In person proofing residential address step', :js do
       )
 
       select InPersonHelper::GOOD_STATE, from: t('idv.form.state')
-      fill_in t('idv.form.address1'),
+      fill_in t('idv.form.address'),
               with: InPersonHelper::GOOD_ADDRESS1
       fill_in t('idv.form.address2'),
               with: InPersonHelper::GOOD_ADDRESS2

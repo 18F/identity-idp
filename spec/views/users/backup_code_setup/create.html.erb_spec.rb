@@ -30,9 +30,8 @@ RSpec.describe 'users/backup_code_setup/create.html.erb' do
   it 'displays alert for backup code usage' do
     render
 
-    expect(rendered).to have_selector(
-      '.usa-alert',
-      text: t(
+    expect(rendered).to have_content(
+      t(
         'forms.backup_code.caution_codes',
         count: ReadableNumber.of(BackupCodeGenerator::NUMBER_OF_CODES),
       ),
@@ -42,7 +41,6 @@ RSpec.describe 'users/backup_code_setup/create.html.erb' do
   it 'displays save backup codes checkbox' do
     render
 
-    expect(rendered).to have_selector('lg-validated-field')
     expect(rendered).to have_selector('input[type=checkbox]')
   end
 

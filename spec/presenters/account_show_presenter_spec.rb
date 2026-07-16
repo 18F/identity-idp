@@ -368,64 +368,6 @@ RSpec.describe AccountShowPresenter do
     end
   end
 
-  describe '#totp_content' do
-    context 'user has enabled an authenticator app' do
-      it 'returns localization for auth_app_enabled' do
-        user = User.new
-        allow_any_instance_of(
-          TwoFactorAuthentication::AuthAppPolicy,
-        ).to receive(:enabled?).and_return(true)
-
-        profile_index = AccountShowPresenter.new(
-          decrypted_pii: {},
-          user: user,
-          sp_session_request_url: nil,
-          authn_context: nil,
-          sp_name: nil,
-          locked_for_session: false,
-        )
-
-        expect(profile_index.totp_content).to eq t('account.index.auth_app_enabled')
-      end
-    end
-
-    context 'user does not have an authenticator app enabled' do
-      it 'returns localization for auth_app_disabled' do
-        user = User.new
-        allow_any_instance_of(
-          TwoFactorAuthentication::AuthAppPolicy,
-        ).to receive(:enabled?).and_return(false)
-        profile_index = AccountShowPresenter.new(
-          decrypted_pii: {},
-          user: user,
-          sp_session_request_url: nil,
-          authn_context: nil,
-          sp_name: nil,
-          locked_for_session: false,
-        )
-
-        expect(profile_index.totp_content).to eq t('account.index.auth_app_disabled')
-      end
-    end
-  end
-
-  describe '#connected_apps' do
-    let(:user) { create(:user, identities: [create(:service_provider_identity)]) }
-
-    subject(:connected_apps) { presenter.connected_apps }
-
-    it 'delegates to user, eager-loading view-specific relations' do
-      expect(connected_apps).to be_present
-        .and eq(user.connected_apps)
-        .and all(
-          satisfy do |app|
-            app.association(:service_provider_record).loaded? &&
-              app.association(:email_address).loaded?
-          end,
-        )
-    end
-  end
-
   describe '#backup_codes_generated_at' do
     it 'returns the created_at date of the oldest backup code' do
       user = create(:user)
@@ -484,74 +426,6 @@ RSpec.describe AccountShowPresenter do
 
       it 'parses the birthday' do
         expect(pii.dob).to eq('January 01, 1970')
-      end
-    end
-  end
-
-  describe '#personal_key_generated_at' do
-    context 'the user has a encrypted_recovery_code_digest_generated_at date' do
-      it 'returns the date in the digest' do
-        digest_generated_at = 1.day.ago
-        profile = create(
-          :profile,
-          :active,
-          :verified,
-          user: create(:user, encrypted_recovery_code_digest_generated_at: digest_generated_at),
-        )
-        user = profile.user
-        profile_index = AccountShowPresenter.new(
-          decrypted_pii: {},
-          user: user,
-          sp_session_request_url: nil,
-          authn_context: nil,
-          sp_name: nil,
-          locked_for_session: false,
-        )
-
-        expect(
-          profile_index.personal_key_generated_at,
-        ).to be_within(1.second).of(digest_generated_at)
-      end
-    end
-
-    context 'the user does not have a encrypted_recovery_code_digest_generated_at but is proofed' do
-      it 'returns the date the user was proofed' do
-        profile = create(
-          :profile,
-          :active,
-          :verified,
-          user: create(:user),
-        )
-        user = profile.user
-        profile_index = AccountShowPresenter.new(
-          decrypted_pii: {},
-          user: user,
-          sp_session_request_url: nil,
-          authn_context: nil,
-          sp_name: nil,
-          locked_for_session: false,
-        )
-
-        expect(
-          profile_index.personal_key_generated_at,
-        ).to be_within(1.second).of(profile.verified_at)
-      end
-    end
-
-    context 'the user has no encrypted_recovery_code_digest_generated_at and is not proofed' do
-      it 'returns nil' do
-        user = create(:user)
-
-        profile_index = AccountShowPresenter.new(
-          decrypted_pii: {},
-          user: user,
-          sp_session_request_url: nil,
-          authn_context: nil,
-          sp_name: nil,
-          locked_for_session: false,
-        )
-
-        expect(profile_index.personal_key_generated_at).to be_nil
       end
     end
   end

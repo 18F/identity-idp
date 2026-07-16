@@ -1,0 +1,12 @@
+@use 'variables/ads' as ads;
+
+.document-capture-selfie-feedback {
+  background: ads.$off-black;
+  color: ads.$white;
+  left: 50%;
+  padding: 0 ads.space(4);
+  position: fixed;
+  top: 10%;
+  transform: translateX(-50%);
+  z-index: 11;
+}

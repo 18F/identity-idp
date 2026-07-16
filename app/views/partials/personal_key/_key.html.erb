@@ -1,40 +1,49 @@
-<div class="border-y border-primary-light bg-primary-lightest padding-y-3 text-center">
-  <div class="bg-personal-key padding-top-4 margin-y-2">
-    <div class="personal-key-block">
-      <% code_html = safe_join(
-           code.split('-').map { |word| content_tag(:strong, word, class: 'personal-key-block__code') },
-         ) %>
-      <% if local_assigns[:code_example] %>
-        <div class="usa-sr-only"><%= t('users.personal_key.accessible_labels.code_example') %></div>
-        <div aria-hidden="true"><%= code_html %></div>
-      <% else %>
-        <%= code_html %>
-      <% end %>
-    </div>
-  </div>
-  <p class="margin-bottom-105">
-    <% if local_assigns[:personal_key_generated_at].present? %>
-      <%= t(
-            'users.personal_key.generated_on_html',
-            date_html: I18n.l(personal_key_generated_at, format: I18n.t('time.formats.event_date')),
-          ) %>
-    <% else %>
-      <%= t(
-            'users.personal_key.generated_on_html',
-            date_html: I18n.l(Time.zone.today, format: I18n.t('time.formats.event_date')),
-          ) %>
-    <% end %>
+<% generated_on = local_assigns[:personal_key_generated_at].presence || Time.zone.today %>
+<% formatted_date = I18n.l(generated_on, format: I18n.t('time.formats.event_date')) %>
+<% code_html = safe_join(
+     code.split('-').map { |word| tag.strong(word, class: 'ads-personal-key-display__word') },
+     ' - ',
+   ) %>
+
+<div class="ads-personal-key-display">
+  <p class="ads-personal-key-display__meta">
+    <%= t('forms.personal_key.generated_on', date: formatted_date) %>
   </p>
-  <% if show_save_buttons %>
-    <%= render ClipboardButtonComponent.new(clipboard_text: code, unstyled: true) %>
-    <%= render ClickObserverComponent.new(event_name: 'IdV: download personal key') do %>
-      <%= render DownloadButtonComponent.new(
-            file_data: code,
-            file_name: 'personal_key.txt',
-            unstyled: true,
-            class: 'margin-x-2 display-inline-block',
-          ).with_content(t('forms.personal_key.download')) %>
+
+  <div class="ads-personal-key-display__code">
+    <% if local_assigns[:code_example] %>
+      <span class="ads-sr-only"><%= t('users.personal_key.accessible_labels.code_example') %></span>
+      <code aria-hidden="true"><%= code_html %></code>
+    <% else %>
+      <code><%= code_html %></code>
     <% end %>
-    <%= render PrintButtonComponent.new(unstyled: true) %>
+  </div>
+
+  <% if show_save_buttons %>
+    <hr class="ads-card__divider">
+
+    <%= render ADS::StackComponent.new(
+          kind: :actions,
+          gap: 8,
+          class: 'ads-action-row',
+        ) do %>
+      <%= render ClipboardButtonComponent.new(
+            clipboard_text: code,
+            variant: :quaternary,
+            size: :sm,
+          ) %>
+      <%= render ClickObserverComponent.new(event_name: 'IdV: download personal key') do %>
+        <%= render DownloadButtonComponent.new(
+              file_data: code,
+              file_name: 'personal_key.txt',
+              variant: :quaternary,
+              size: :sm,
+            ) %>
+      <% end %>
+      <%= render PrintButtonComponent.new(
+            variant: :quaternary,
+            size: :sm,
+          ) %>
+    <% end %>
   <% end %>
 </div>

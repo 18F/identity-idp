@@ -1,15 +1,24 @@
 <% self.title = t('headings.verify_personal_key') %>
 
-<%= render PageHeadingComponent.new.with_content(t('headings.verify_personal_key')) %>
+<% timeout = distance_of_time_in_words(
+     Time.zone.now,
+     [@expires_at, Time.zone.now].compact.max,
+     except: :seconds,
+   ) %>
 
-<p>
-  <%= t(
-        'errors.verify_personal_key.rate_limited',
-        timeout: distance_of_time_in_words(
-          Time.zone.now,
-          [@expires_at, Time.zone.now].compact.max,
-          except: :seconds,
-        ),
-      ) %>
-  <%= link_to(t('links.go_back'), account_path) %>.
-</p>
+<%= render ADS::FormPageComponent.new(title: t('headings.verify_personal_key')) do |page| %>
+  <% page.with_body do %>
+    <%= render CardComponent.new do %>
+      <p class="ads-card__value">
+        <%= t('errors.verify_personal_key.rate_limited', timeout:) %>
+      </p>
+    <% end %>
+  <% end %>
+
+  <% page.with_actions do %>
+    <%= render ButtonComponent.new(
+          url: account_path,
+          variant: :secondary,
+        ).with_content(t('links.go_back')) %>
+  <% end %>
+<% end %>

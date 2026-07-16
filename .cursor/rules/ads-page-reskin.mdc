@@ -1,0 +1,30 @@
+---
+description: Login.gov ADS redesign — reduce, tokenize, clean
+alwaysApply: true
+---
+
+# NON-NEGOTIABLE CONSTRAINTS
+
+These apply on **every** ADS change. Violations are failures.
+
+## Minimum code — no bloat
+
+- **Delete aggressively** on every change: dead markup, CSS, helpers, wrappers, cards, legacy `usa-*` / unused classes, unused imports, and any scaffolding left behind after replacing UI.
+- **Net line count must trend down or stay flat.** Adding lines requires justification; removing lines is the default.
+- **No verbose markup.** Prefer the smallest correct diff — fewer nested stacks/cards, no one-off wrappers, reuse shared modifiers (`ads-copy--muted`, etc.).
+
+## No backend changes — ever, unless explicitly asked
+
+Do **not** modify controllers, forms, models, routes, services, jobs, migrations, or Ruby request/validation logic. Frontend-only page reskin. If backend work seems necessary, stop and ask — do not "helpfully" patch Ruby.
+
+---
+
+# ADS page / component reskin
+
+When redesigning Login.gov UI to ADS:
+
+1. **Tokenize everything** — Use ADS tokens (`@use '.../variables/ads' as ads`, `ads.space()`, `ads.radius()`, `ads.alpha()`, color/type tokens). No hardcoded hex/px when a token exists. Shared tokens go in `_ads.scss`; component-local tokens stay in the component file.
+2. **Scope discipline** — Only touch components/pages the user names. Use `ads-*` classnames (not `usa-*`). No drive-by migrations of untouched components.
+3. **Cleaner, smaller views** — Fewer nested stacks/cards; reuse shared modifiers; avoid verbose one-off markup.
+
+Align with existing ADS prefs: modular tokens only (no `$ads-*` shims), no decorative SCSS section banners, meaningful tests only (behavior/a11y, not class-presence asserts).

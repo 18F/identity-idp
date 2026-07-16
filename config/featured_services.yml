@@ -1,0 +1,120 @@
+# Curated catalog of government services surfaced in the "More ways to use your
+# account" discovery section of the account homepage (Accounts::HomeController).
+#
+# `name` values are proper nouns (agency/product names) and are intentionally
+# plain strings, NOT i18n keys — they must never enter config/locales/*.yml.
+# `description_key` and category `label_key` values ARE i18n keys and must exist
+# in all four locales with real translations.
+#
+# `logo` is an optional path under app/assets/images. When omitted, the row
+# falls back to the initials circle used by accounts/_connected_app.
+#
+# Source: Figma Login.gov homepage (node 11876-24688) and empty homepage
+# (node 11893-26303). Agency logos exported from component set 11929:11209.
+categories:
+  - slug: taxes_and_money
+    label_key: account.dashboard.discovery.categories.taxes_and_money
+  - slug: health_and_benefits
+    label_key: account.dashboard.discovery.categories.health_and_benefits
+  - slug: jobs_and_retirement
+    label_key: account.dashboard.discovery.categories.jobs_and_retirement
+  - slug: travel
+    label_key: account.dashboard.discovery.categories.travel
+  - slug: veterans_and_military
+    label_key: account.dashboard.discovery.categories.veterans_and_military
+  - slug: business_and_professional
+    label_key: account.dashboard.discovery.categories.business_and_professional
+
+services:
+  - key: ssa
+    name: Social Security Administration
+    description_key: account.dashboard.discovery.services.ssa
+    url: https://www.ssa.gov/
+    logo: agency-logos/ssa.png
+    categories:
+      - health_and_benefits
+      - jobs_and_retirement
+  - key: cbp_ttp
+    name: CBP Trusted Traveler Programs
+    description_key: account.dashboard.discovery.services.cbp_ttp
+    url: https://ttp.cbp.dhs.gov/
+    categories:
+      - travel
+  - key: irs
+    name: Internal Revenue Service
+    description_key: account.dashboard.discovery.services.irs
+    url: https://www.irs.gov/
+    logo: agency-logos/irs.png
+    categories:
+      - taxes_and_money
+  - key: rrb
+    name: Railroad Retirement Board
+    description_key: account.dashboard.discovery.services.rrb
+    url: https://www.rrb.gov/
+    categories:
+      - jobs_and_retirement
+      - health_and_benefits
+  - key: medicare
+    name: Medicare.gov
+    description_key: account.dashboard.discovery.services.medicare
+    url: https://www.medicare.gov/
+    categories:
+      - health_and_benefits
+  - key: va
+    name: VA.gov and My HealtheVet
+    description_key: account.dashboard.discovery.services.va
+    url: https://www.va.gov/
+    logo: agency-logos/va.png
+    categories:
+      - veterans_and_military
+      - health_and_benefits
+  - key: mytravelgov
+    name: MyTravelGov
+    description_key: account.dashboard.discovery.services.mytravelgov
+    url: https://mytravel.state.gov/
+    logo: agency-logos/dos.png
+    categories:
+      - travel
+  - key: dol
+    name: Department of Labor
+    description_key: account.dashboard.discovery.services.dol
+    url: https://www.dol.gov/
+    logo: agency-logos/dol.png
+    categories:
+      - jobs_and_retirement
+  - key: opm
+    name: OPM Retirement Services
+    description_key: account.dashboard.discovery.services.opm
+    url: https://www.opm.gov/retirement-center/
+    categories:
+      - jobs_and_retirement
+  - key: usajobs
+    name: USAJOBS
+    description_key: account.dashboard.discovery.services.usajobs
+    url: https://www.usajobs.gov/
+    categories:
+      - jobs_and_retirement
+  - key: sam
+    name: SAM.gov
+    description_key: account.dashboard.discovery.services.sam
+    url: https://sam.gov/
+    categories:
+      - business_and_professional
+  - key: sba
+    name: Small Business Administration
+    description_key: account.dashboard.discovery.services.sba
+    url: https://www.sba.gov/
+    categories:
+      - business_and_professional
+  - key: usda_farmers
+    name: USDA Farmers.gov
+    description_key: account.dashboard.discovery.services.usda_farmers
+    url: https://www.farmers.gov/
+    categories:
+      - business_and_professional
+  - key: dea
+    name: DEA Diversion Control
+    description_key: account.dashboard.discovery.services.dea
+    url: https://www.deadiversion.usdoj.gov/
+    categories:
+      - business_and_professional

@@ -1,36 +1,38 @@
-<div class="margin-bottom-4">
-  <fieldset class="margin-0 padding-0 border-0">
-    <legend class="usa-label margin-bottom-1">
-      <%= t('two_factor_authentication.otp_delivery_preference.title') %>
-    </legend>
-    <p class="margin-top-0 margin-bottom-2" id="otp_delivery_preference_instruction">
-      <%= t('two_factor_authentication.otp_delivery_preference.instruction') %>
-    </p>
-    <div class="grid-row grid-gap-2">
-      <div class="grid-col-12 tablet:grid-col-6">
-        <%= radio_button_tag(
-              'edit_phone_form[delivery_preference]',
-              :sms,
-              @edit_phone_form.delivery_preference_sms?,
-              class: 'usa-radio__input usa-radio__input--bordered',
-            ) %>
-        <label
-          class="usa-radio__label width-full"
-          for="edit_phone_form_delivery_preference_sms"
-        ><%= t('two_factor_authentication.otp_delivery_preference.sms') %></label>
-      </div>
-      <div class="grid-col-12 tablet:grid-col-6">
-        <%= radio_button_tag(
-              'edit_phone_form[delivery_preference]',
-              :voice,
-              @edit_phone_form.delivery_preference_voice?,
-              class: 'usa-radio__input usa-radio__input--bordered',
-            ) %>
-        <label
-          class="usa-radio__label width-full"
-          for="edit_phone_form_delivery_preference_voice"
-        ><%= t('two_factor_authentication.otp_delivery_preference.voice') %></label>
-      </div>
+<fieldset class="ads-fieldset" aria-describedby="otp_delivery_preference_instruction">
+  <legend class="ads-fieldset__legend">
+    <%= t('two_factor_authentication.otp_delivery_preference.title') %>
+  </legend>
+  <p class="ads-fieldset__hint" id="otp_delivery_preference_instruction">
+    <%= t('two_factor_authentication.otp_delivery_preference.instruction') %>
+  </p>
+
+  <div class="ads-radio-group">
+    <div class="ads-radio">
+      <%= radio_button_tag(
+            'edit_phone_form[delivery_preference]',
+            :sms,
+            @edit_phone_form.delivery_preference_sms?,
+            class: 'ads-radio__input ads-sr-only',
+          ) %>
+      <%= label_tag(
+            'edit_phone_form_delivery_preference_sms',
+            t('two_factor_authentication.otp_delivery_preference.sms'),
+            class: 'ads-radio__label',
+          ) %>
     </div>
-  </fieldset>
-</div>
+
+    <div class="ads-radio">
+      <%= radio_button_tag(
+            'edit_phone_form[delivery_preference]',
+            :voice,
+            @edit_phone_form.delivery_preference_voice?,
+            class: 'ads-radio__input ads-sr-only',
+          ) %>
+      <%= label_tag(
+            'edit_phone_form_delivery_preference_voice',
+            t('two_factor_authentication.otp_delivery_preference.voice'),
+            class: 'ads-radio__label',
+          ) %>
+    </div>
+  </div>
+</fieldset>

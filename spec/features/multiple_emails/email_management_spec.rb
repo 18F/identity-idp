@@ -129,7 +129,7 @@ RSpec.feature 'managing email address' do
       )
       click_button t('forms.email.buttons.delete')
 
-      expect(page).to have_current_path(account_path)
+      expect(page).to have_current_path(account_settings_path)
       expect(page).to have_content t('email_addresses.delete.failure')
     end
 
@@ -141,7 +141,7 @@ RSpec.feature 'managing email address' do
       )
       click_button t('forms.email.buttons.delete')
 
-      expect(page).to have_current_path(account_path)
+      expect(page).to have_current_path(account_settings_path)
       expect(page).to have_content t('email_addresses.delete.success')
     end
   end

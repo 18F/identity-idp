@@ -1,0 +1,109 @@
+@use 'variables/ads' as ads;
+
+// Minimal USWDS-era spacing/display utilities still used by the document-capture React island.
+$u: (
+  '05': ads.space(4),
+  '1': ads.space(8),
+  '2': ads.space(16),
+  '3': ads.space(24),
+  '4': ads.space(32),
+  '5': ads.space(40),
+);
+
+@each $name, $size in $u {
+  .margin-top-#{$name} {
+    margin-top: $size;
+  }
+
+  .margin-bottom-#{$name} {
+    margin-bottom: $size;
+  }
+
+  .margin-left-#{$name} {
+    margin-left: $size;
+  }
+
+  .margin-right-#{$name} {
+    margin-right: $size;
+  }
+
+  .margin-y-#{$name} {
+    margin-block: $size;
+  }
+
+  .margin-x-#{$name} {
+    margin-inline: $size;
+  }
+
+  .padding-top-#{$name} {
+    padding-top: $size;
+  }
+
+  .padding-left-#{$name} {
+    padding-left: $size;
+  }
+
+  .padding-right-#{$name} {
+    padding-right: $size;
+  }
+}
+
+.margin-top-1em {
+  margin-top: 1em;
+}
+
+.margin-x-neg-2 {
+  margin-inline: -#{ads.space(16)};
+}
+
+.margin-top-neg-4 {
+  margin-top: -#{ads.space(32)};
+}
+
+.margin-bottom-0 {
+  margin-bottom: 0;
+}
+
+.display-block {
+  display: block;
+}
+
+.display-flex {
+  display: flex;
+}
+
+.display-inline {
+  display: inline;
+}
+
+.display-none {
+  display: none;
+}
+
+.text-bold {
+  font-weight: ads.$font-semibold;
+}
+
+.text-base {
+  color: ads.alpha(ads.$off-black, 65%);
+}
+
+.border-top {
+  border-top: 1px solid ads.alpha(ads.$off-black, 10%);
+}
+
+.border-primary-light {
+  border-color: ads.alpha(ads.$off-black, 10%);
+}
+
+/* stylelint-disable selector-class-pattern -- escaped USWDS utility class names */
+@media (width >= 40em) {
+  .tablet\:margin-x-neg-6 {
+    margin-inline: -#{ads.space(48)};
+  }
+
+  .tablet\:margin-top-neg-4 {
+    margin-top: -#{ads.space(32)};
+  }
+}
+/* stylelint-enable selector-class-pattern */

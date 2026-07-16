@@ -1,0 +1,30 @@
+<% is_last_used_email = email.email == last_used_email %>
+
+<li class="ads-account__row">
+  <div class="ads-account__row-main">
+    <p class="ads-account__row-text">
+      <span class="ads-account__row-value"><%= email.email %></span>
+
+      <% if is_last_used_email %>
+        <span class="ads-account__badge">
+          <%= t('account.dashboard.account.email.last_used') %>
+        </span>
+      <% elsif email.confirmed_at.blank? %>
+        <strong class="ads-account__status">
+          <%= t('email_addresses.unconfirmed') %>
+        </strong>
+      <% end %>
+    </p>
+  </div>
+
+  <% if email_policy.can_delete_email?(email) %>
+    <div class="ads-account__row-actions">
+      <%= render ButtonComponent.new(
+            url: manage_email_confirm_delete_path(id: email.id),
+            variant: :quaternary,
+            size: :md,
+            'aria-label': "#{t('forms.buttons.delete')}: #{email.email}",
+          ).with_content(t('forms.buttons.delete')) %>
+    </div>
+  <% end %>
+</li>

@@ -1,0 +1,6 @@
+<%= render 'users/confirm_delete_authenticator',
+           heading: t('two_factor_authentication.auth_app.confirm_delete'),
+           caution: t('two_factor_authentication.auth_app.caution_delete'),
+           delete_url: auth_app_path(id: @form.configuration.id),
+           delete_label: t('two_factor_authentication.auth_app.delete'),
+           cancel_url: edit_auth_app_path(id: @form.configuration.id) %>

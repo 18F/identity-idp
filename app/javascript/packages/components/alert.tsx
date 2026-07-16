@@ -25,24 +25,31 @@ interface AlertProps {
   children?: ReactNode;
 
   /**
-   * Which tag to use for the usa-alert__text element.
+   * Which tag to use for the alert text element.
    * Optional and defaults to p
    */
   textTag?: string;
 }
 
+const TYPE_CLASS: Record<AlertType, string> = {
+  success: 'ads-alert--success',
+  warning: 'ads-alert--warning',
+  error: 'ads-alert--error',
+  info: 'ads-alert--neutral',
+};
+
 function Alert(
   { type, className, isFocusable, children, textTag = 'p' }: AlertProps,
   ref: ForwardedRef<any>,
 ) {
-  const classes = ['usa-alert', type && `usa-alert--${type}`, className].filter(Boolean).join(' ');
+  const classes = ['ads-alert', type && TYPE_CLASS[type], className].filter(Boolean).join(' ');
   const role = type === 'error' ? 'alert' : 'status';
 
-  const inner = createElement(textTag, { className: 'usa-alert__text' }, children);
+  const inner = createElement(textTag, { className: 'ads-alert__text' }, children);
 
   return (
     <div ref={ref} className={classes} role={role} tabIndex={isFocusable ? -1 : undefined}>
-      <div className="usa-alert__body">{inner}</div>
+      {inner}
     </div>
   );
 }

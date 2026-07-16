@@ -127,7 +127,7 @@ RSpec.describe 'In Person Proofing Threatmetrix', js: true do
         t('step_indicator.flows.idv.verify_phone'),
       )
       fill_in_code_with_last_phone_otp
-      click_submit_default
+      click_button t('forms.buttons.continue')
 
       # password confirm page
       expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.re_enter_password'))

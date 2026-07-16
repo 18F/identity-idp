@@ -1,8 +1,6 @@
 require 'rails_helper'
 
 RSpec.feature 'taking an action that revokes remember device' do
-  include NavigationHelper
-
   before do
     allow(IdentityConfig.store).to receive(:otp_delivery_blocklist_maxretry).and_return(1000)
   end
@@ -14,10 +12,10 @@ RSpec.feature 'taking an action that revokes remember device' do
       sign_in_with_remember_device_and_sign_out
 
       sign_in_user(user)
-      find_sidenav_forget_browsers_link.click
+      visit forget_all_browsers_path
       click_on(t('forms.buttons.confirm'))
 
-      first(:button, t('links.sign_out')).click
+      first(:button, t('links.sign_out'), visible: :all).click
 
       expect_mfa_to_be_required_for_user(user)
     end
@@ -31,10 +29,10 @@ RSpec.feature 'taking an action that revokes remember device' do
         sign_in_with_remember_device_and_sign_out
 
         sign_in_user(user)
-        find_sidenav_forget_browsers_link.click
+        visit forget_all_browsers_path
         click_on(t('forms.buttons.confirm'))
 
-        first(:button, t('links.sign_out')).click
+        first(:button, t('links.sign_out'), visible: :all).click
 
         expect_mfa_to_be_required_for_user(user)
       end
@@ -51,7 +49,7 @@ RSpec.feature 'taking an action that revokes remember device' do
     check t('forms.messages.remember_device')
     fill_in_code_with_last_phone_otp
     click_submit_default
-    first(:button, t('links.sign_out')).click
+    first(:button, t('links.sign_out'), visible: :all).click
   end
 
   def expect_mfa_to_be_required_for_user(user)

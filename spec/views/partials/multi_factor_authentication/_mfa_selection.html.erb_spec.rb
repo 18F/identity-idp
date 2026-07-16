@@ -1,164 +1,55 @@
 require 'rails_helper'
 
 RSpec.describe 'partials/multi_factor_authentication/_mfa_selection.html.erb' do
-  include SimpleForm::ActionViewExtensions::FormHelper
   include Devise::Test::ControllerHelpers
 
-  let(:lookup_context) { ActionView::LookupContext.new(ActionController::Base.view_paths) }
-  let(:view_context) { ActionView::Base.new(lookup_context, {}, controller) }
   let(:user) { create(:user) }
-  let(:form_object) { user }
   let(:presenter) { TwoFactorOptionsPresenter.new(user_agent: nil, user: user) }
-  let(:form_builder) do
-    SimpleForm::FormBuilder.new(form_object.model_name.param_key, form_object, view_context, {})
-  end
-  let(:option) { presenter.options.first }
-  subject(:rendered) { render(partial: 'mfa_selection', locals: { form: form_builder, option: }) }
-
-  context 'before selecting options' do
-    subject(:rendered) do
-      render partial: 'mfa_selection', locals: {
-        form: form_builder,
-        option: presenter.options[4],
-      }
-    end
-
-    it 'renders an unchecked, enabled checkbox field' do
-      expect(rendered).to have_field(
-        'two_factor_options_form[selection][]',
-        checked: false,
-        disabled: false,
-      )
-    end
+  let(:option) { presenter.options.find { |o| o.type == :phone } }
+  subject(:rendered) do
+    render partial: 'partials/multi_factor_authentication/mfa_selection', locals: { option: }
   end
 
-  context 'user already setup an auth app mfa configuration and is returning to create a second' do
-    let(:user) { create(:user, :with_authentication_app) }
-    let(:form_object) { user }
-    let(:presenter) { TwoFactorOptionsPresenter.new(user_agent: nil, user: user) }
-    let(:form_builder) do
-      SimpleForm::FormBuilder.new(form_object.model_name.param_key, form_object, view_context, {})
-    end
-    subject(:rendered) do
-      render partial: 'mfa_selection', locals: {
-        form: form_builder,
-        option: presenter.options.find do |option|
-                  option.is_a?(TwoFactorAuthentication::SetUpAuthAppSelectionPresenter)
-                end,
-      }
+  it 'renders a submit card for the option' do
+    expect(rendered).to have_button(
+      type: 'submit',
+      id: 'two_factor_options_form_selection_phone',
+    )
+    expect(rendered).to have_content(option.label)
+    expect(rendered).to have_content(option.info)
+  end
+
+  context 'when option is disabled' do
+    before do
+      allow(option).to receive(:disabled?).and_return(true)
     end
 
-    it 'does not show a disabled checkbox for the configuration already created' do
-      expect(rendered).to have_field('two_factor_options_form[selection][]', disabled: false)
+    it 'renders a disabled card without chevron or description' do
+      expect(rendered).to have_css('#two_factor_options_form_selection_phone[disabled]')
+      expect(rendered).not_to have_css('.ads-card__trailing')
+      expect(rendered).not_to have_css('.ads-card__description')
     end
+  end
 
-    it 'does not show a checked checkbox for the configuration already created' do
-      expect(rendered).to have_field(
-        'two_factor_options_form[selection][]',
-        disabled: false,
-        checked: false,
-      )
-    end
+  context 'when option is recommended' do
+    let(:option) { presenter.options.find { |o| o.type == :webauthn_platform } }
 
-    it 'the checkbox for the configuration created communicates it is already created' do
-      expect(rendered).to have_content(
-        t(
-          'two_factor_authentication.two_factor_choice_options.configurations_added',
-          count: 1,
-        ),
+    it 'renders recommended badge' do
+      expect(rendered).to have_css(
+        '.ads-card__badge',
+        text: t('two_factor_authentication.recommended'),
       )
     end
   end
 
-  context 'user has setup a backup codes mfa configuration and is returning to create a second' do
-    let(:user) { create(:user, :with_backup_code) }
-    let(:form_object) { user }
-    let(:presenter) { TwoFactorOptionsPresenter.new(user_agent: nil, user: user) }
-    let(:form_builder) do
-      SimpleForm::FormBuilder.new(form_object.model_name.param_key, form_object, view_context, {})
-    end
-    subject(:rendered) do
-      render partial: 'mfa_selection', locals: {
-        form: form_builder,
-        option: presenter.options.find do |option|
-                  option.is_a?(TwoFactorAuthentication::SetUpBackupCodeSelectionPresenter)
-                end,
-      }
-    end
-
-    it 'shows a disabled checkbox for the configuration already created' do
-      expect(rendered).to have_field('two_factor_options_form[selection][]', disabled: true)
-    end
-
-    it 'shows a checked checkbox for the configuration already created' do
-      expect(rendered).to have_field(
-        'two_factor_options_form[selection][]',
-        disabled: true,
-        checked: true,
-      )
-    end
-
-    it 'the checkbox for the configuration created communicates it is already created' do
-      expect(rendered).to have_content(
-        t(
-          'two_factor_authentication.two_factor_choice_options.no_count_configuration_added',
-          count: 10,
-        ),
-      )
-    end
-  end
-
-  context 'user already setup a piv/cac mfa configuration and is returning to create a second' do
+  context 'when configuration already exists' do
     let(:user) { create(:user, :with_piv_or_cac) }
-    let(:form_object) { user }
-    let(:presenter) { TwoFactorOptionsPresenter.new(user_agent: nil, user: user) }
-    let(:form_builder) do
-      SimpleForm::FormBuilder.new(form_object.model_name.param_key, form_object, view_context, {})
-    end
-    subject(:rendered) do
-      render partial: 'mfa_selection', locals: {
-        form: form_builder,
-        option: presenter.options.find do |option|
-                  option.is_a?(TwoFactorAuthentication::SetUpPivCacSelectionPresenter)
-                end,
-      }
-    end
+    let(:option) { presenter.options.find { |o| o.type == :piv_cac } }
 
-    it 'shows a disabled checkbox for the configuration already created' do
-      expect(rendered).to have_field('two_factor_options_form[selection][]', disabled: true)
-    end
-
-    it 'shows a checked checkbox for the configuration already created' do
-      expect(rendered).to have_field(
-        'two_factor_options_form[selection][]',
-        disabled: true,
-        checked: true,
-      )
-    end
-
-    it 'the checkbox for the configuration created communicates it is already created' do
+    it 'communicates the configuration is enabled' do
       expect(rendered).to have_content(
-        t(
-          'two_factor_authentication.two_factor_choice_options.no_count_configuration_added',
-          count: 10,
-        ),
+        t('two_factor_authentication.two_factor_choice_options.no_count_configuration_enabled'),
       )
-    end
-  end
-
-  describe 'recommended tag' do
-    it 'does not render recommended tag' do
-      expect(rendered).not_to have_css('.usa-tag', text: t('two_factor_authentication.recommended'))
-    end
-
-    context 'when option is recommended' do
-      before do
-        allow(option).to receive(:recommended?).and_return(true)
-      end
-
-      it 'renders with recommended tag' do
-        expect(rendered).to have_css('.usa-tag', text: t('two_factor_authentication.recommended'))
-      end
     end
   end
 end

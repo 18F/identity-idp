@@ -25,9 +25,9 @@ RSpec.describe TwoFactorAuthentication::SetUpPivCacSelectionPresenter do
     context 'user has configured piv/cac' do
       let(:user) { create(:user, :with_piv_or_cac) }
 
-      it 'returns the translated string for added' do
+      it 'returns the translated enabled status' do
         expect(description).to eq(
-          t('two_factor_authentication.two_factor_choice_options.no_count_configuration_added'),
+          t('two_factor_authentication.two_factor_choice_options.no_count_configuration_enabled'),
         )
       end
     end

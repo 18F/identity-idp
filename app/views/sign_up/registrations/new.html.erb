@@ -1,75 +1,81 @@
-<% self.title = t('titles.create_account') %>
+<% self.title = t('headings.create_account_entry_title') %>
 
-<%= render 'shared/sp_alert', section: 'sign_up' %>
+<% page_title = if decorated_sp_session.sp_name.present?
+                  t('headings.create_account_for_sp', sp: decorated_sp_session.sp_name)
+                else
+                  t('headings.create_account_entry_title')
+                end %>
+<% page_subtitle = if decorated_sp_session.sp_name.present?
+                     t(
+                       'headings.create_account_entry_description_for_sp',
+                       sp: decorated_sp_session.sp_name,
+                       app_name: APP_NAME,
+                     )
+                   else
+                     t('headings.create_account_entry_description')
+                   end %>
 
-<% if decorated_sp_session.sp_name %>
-  <%= render 'sign_up/registrations/sp_registration_heading' %>
+<%= render ADS::FormPageComponent.new(
+      title: page_title,
+      subtitle: page_subtitle,
+      divider: true,
+    ) do |page| %>
+  <% page.with_body do %>
+    <%= render ADS::StackComponent.new(kind: :form, gap: 16, align: :stretch) do %>
+      <%= render 'shared/sp_alert', section: 'sign_up' %>
+
+      <%= simple_form_for(
+            @register_user_email_form,
+            url: sign_up_register_path,
+            html: { autocomplete: 'off' },
+          ) do |f| %>
+        <% rules_of_use_link_html = capture do %>
+          <%= render ADS::LinkComponent.new(
+                url: MarketingSite.rules_of_use_url,
+                target: '_blank',
+                rel: 'noopener noreferrer',
+                aria: {
+                  label: "#{t('titles.rules_of_use')} #{t('links.new_tab')}",
+                },
+              ) do %>
+            <%= t('titles.rules_of_use') %>
+          <% end %>
+        <% end %>
+
+        <%= render ADS::StackComponent.new(kind: :form, gap: 16, align: :stretch) do %>
+          <%= render InputComponent.new(
+                form: f,
+                attribute: :email,
+                label: t('account.index.email_short'),
+                type: :email,
+                required: true,
+                autocorrect: 'off',
+                autocomplete: 'email',
+                error_message: @register_user_email_form.errors.full_messages_for(:email).first,
+              ) %>
+          <%= f.hidden_field(
+                :email_language,
+                value: @register_user_email_form.email_language.presence || I18n.locale,
+              ) %>
+          <%= f.hidden_field :terms_accepted, value: '1' %>
+
+          <%= render ButtonComponent.new(
+                type: :submit,
+              ).with_content(t('forms.buttons.continue')) %>
+
+          <div class="ads-copy ads-copy--centered ads-copy--muted">
+            <p><%= t('sign_up.entry_terms_html', rules_of_use_link_html: rules_of_use_link_html) %></p>
+          </div>
+        <% end %>
+      <% end %>
+    <% end %>
+  <% end %>
+
+  <% page.with_actions do %>
+    <%= render ADS::StackComponent.new(kind: :links, align: :center) do %>
+      <%= render ADS::LinkComponent.new(url: new_user_session_path) do %>
+        <%= t('account.entry.already_have_account') %>
+      <% end %>
+    <% end %>
+  <% end %>
 <% end %>
-
-<%= render TabNavigationComponent.new(
-      label: t('account.login.tab_navigation'),
-      routes: [
-        { text: t('links.sign_in'), path: new_user_session_path },
-        { text: t('links.create_account'), path: sign_up_email_path },
-      ],
-      class: 'margin-bottom-4',
-    ) %>
-
-<%= render PageHeadingComponent.new.with_content(t('headings.create_account_new_users')) %>
-
-<%= simple_form_for(@register_user_email_form, url: sign_up_register_path) do |f| %>
-  <%= render ValidatedFieldComponent.new(
-        form: f,
-        name: :email,
-        as: :email,
-        label: t('forms.registration.labels.email'),
-        required: true,
-        input_html: { autocorrect: 'off' },
-      ) %>
-
-  <%= render partial: 'shared/email_languages',
-             locals: { f: f, selection: @register_user_email_form.email_language } %>
-
-  <%= render ValidatedFieldComponent.new(
-        form: f,
-        name: :terms_accepted,
-        as: :boolean,
-        label: capture do %>
-          <%= t('sign_up.terms', app_name: APP_NAME) %>
-          <%= new_tab_link_to(t('titles.rules_of_use'), MarketingSite.rules_of_use_url) %>
-        <% end,
-        label_html: { class: 'margin-y-0' },
-        required: true,
-      ) %>
-
-  <%= f.submit(
-        t('forms.buttons.submit.default'),
-        full_width: true,
-        wide: false,
-        class: 'display-block margin-y-5',
-      ) %>
-<% end %>
-
-<%= render 'shared/cancel', link: decorated_sp_session.cancel_link_url %>
-
-<p class='margin-top-2'>
-  <%= new_tab_link_to(
-        t('notices.privacy.security_and_privacy_practices'),
-        policy_redirect_url(
-          policy: :security_and_privacy_practices,
-          flow: :create_account,
-          step: :enter_email,
-        ),
-      ) %>
-</p>
-
-<p>
-  <%= new_tab_link_to(
-        t('notices.privacy.privacy_act_statement'),
-        policy_redirect_url(
-          policy: :privacy_act_statement,
-          flow: :create_account,
-          step: :enter_email,
-        ),
-      ) %>
-</p>

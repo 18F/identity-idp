@@ -5,7 +5,7 @@ import FormStepsContext from './form-steps-context';
 
 interface FormStepsButtonProps {
   /**
-   * Optional additional class names to apply to button.
+   * Optional additional class names to apply to button wrapper.
    */
   className?: string;
 
@@ -20,14 +20,10 @@ function FormStepsButton({ className, children }: FormStepsButtonProps) {
   const { isSubmitting } = useContext(FormStepsContext);
   useEffect(() => ref.current?.toggleSpinner(isSubmitting), [isSubmitting]);
 
-  const classes = ['margin-y-5', className].filter(Boolean).join(' ');
-
   return (
-    <div className={classes}>
-      <SpinnerButton ref={ref} spinOnClick={false} type="submit" isBig isWide>
-        {children}
-      </SpinnerButton>
-    </div>
+    <SpinnerButton ref={ref} className={className} spinOnClick={false} type="submit" isBig isWide>
+      {children}
+    </SpinnerButton>
   );
 }
 

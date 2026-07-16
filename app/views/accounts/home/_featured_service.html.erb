@@ -1,0 +1,36 @@
+<div class="ads-discovery-service">
+  <span class="ads-discovery-service__mark" aria-hidden="true">
+    <% if service.logo? %>
+      <%= image_tag(
+            service.logo,
+            alt: '',
+            class: 'ads-discovery-service__logo',
+            width: 48,
+            height: 48,
+          ) %>
+    <% else %>
+      <%= agency_initials(service.name) %>
+    <% end %>
+  </span>
+
+  <div class="ads-discovery-service__content">
+    <h3 class="ads-discovery-service__title"><%= service.name %></h3>
+    <p class="ads-discovery-service__description"><%= t(service.description_key) %></p>
+  </div>
+
+  <div class="ads-discovery-service__actions">
+    <%= render ButtonComponent.new(
+          url: service.url,
+          variant: :quaternary,
+          size: :md,
+          icon: :external_link,
+          icon_position: :right,
+          target: '_blank',
+          rel: 'noopener noreferrer',
+          aria: {
+            label: "#{t('account.dashboard.discovery.visit_label', service: service.name)} " \
+                   "#{t('links.new_tab')}",
+          },
+        ).with_content(t('account.dashboard.visit')) %>
+  </div>
+</div>

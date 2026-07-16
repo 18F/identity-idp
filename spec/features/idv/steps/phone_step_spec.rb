@@ -266,7 +266,7 @@ RSpec.feature 'idv phone step', :js do
       fill_out_phone_form_fail
       click_idv_send_security_code
 
-      expect(page).to have_content(t('idv.troubleshooting.headings.need_assistance'))
+      expect(page).to have_content(t('idv.failure.phone.rate_limited.heading'))
       expect(page).to_not have_content(t('idv.troubleshooting.options.verify_by_mail'))
     end
   end
@@ -578,7 +578,7 @@ RSpec.feature 'idv phone step', :js do
           fill_out_phone_form_fail
           click_idv_send_security_code
 
-          expect(page).to have_content(t('idv.troubleshooting.headings.need_assistance'))
+          expect(page).to have_content(t('idv.failure.phone.rate_limited.heading'))
           expect(page).to_not have_content(t('idv.troubleshooting.options.verify_by_mail'))
         end
       end

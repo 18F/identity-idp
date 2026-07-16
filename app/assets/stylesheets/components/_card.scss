@@ -1,16 +1,224 @@
-@use 'uswds-core' as *;
-@use '../variables/app' as *;
+@use '../variables/ads' as ads;
 
-.card {
-  @include u-padding(4);
-  background-color: color('white');
-  max-width: $container-skinny-width;
+.ads-card {
+  background: ads.$white;
+  border: 1px solid ads.alpha(ads.$off-black, 10%);
+  border-radius: ads.radius(24);
+  box-sizing: border-box;
+  color: ads.$off-black;
+  display: block;
+  font-family: ads.$font-family;
+  max-width: 100%;
+  padding: ads.space(24);
+  position: relative;
+  text-align: left;
+  width: 100%;
+}
 
-  & + & {
-    @include u-margin-top(4);
+.ads-card__badge {
+  background: ads.alpha(ads.$blue-600, 10%);
+  border-radius: ads.radius(pill);
+  color: ads.$blue-600;
+  font-family: ads.$font-family;
+  font-size: ads.$text-label-s;
+  font-weight: ads.$font-semibold;
+  line-height: 1;
+  padding: ads.space(8) ads.space(12);
+  pointer-events: none;
+  position: absolute;
+  right: ads.space(12);
+  top: ads.space(12);
+  z-index: 1;
+}
+
+.ads-card__badge--success {
+  background: ads.alpha(ads.$green-600, 10%);
+  color: ads.$green-600;
+}
+
+.ads-card--compact {
+  padding: ads.space(20) ads.space(24);
+}
+
+.ads-card--spacious {
+  padding: ads.space(32);
+}
+
+.ads-card--elevated {
+  box-shadow: ads.$shadow-compact;
+}
+
+.ads-card--centered {
+  text-align: center;
+
+  .ads-card__body {
+    align-items: center;
+    text-align: center;
+  }
+}
+
+.ads-card--interactive {
+  appearance: none;
+  cursor: pointer;
+  margin: 0;
+  text-decoration: none;
+  transition: ads.$transition;
+
+  &:is(:link, :visited) {
+    color: ads.$off-black;
   }
 
-  @include at-media('tablet') {
-    border-radius: 5px;
+  &:hover {
+    border-color: ads.$off-black;
+    color: ads.$off-black;
+    text-decoration: none;
   }
+
+  &:active {
+    background: ads.alpha(ads.$off-black, 5%);
+  }
+
+  &:focus {
+    outline: 0;
+  }
+
+  &:focus-visible {
+    @include ads.focus-ring;
+  }
+
+  &:is(:disabled, [aria-disabled='true']) {
+    background: ads.alpha(ads.$off-white, 85%);
+    border-color: ads.alpha(ads.$off-black, 10%);
+    color: ads.$off-black;
+    cursor: not-allowed;
+
+    .ads-card__title,
+    .ads-card__description,
+    .ads-icon {
+      color: inherit;
+    }
+  }
+}
+
+.ads-card-form {
+  margin: 0;
+  width: 100%;
+}
+
+.ads-card__inner {
+  align-items: center;
+  display: flex;
+  gap: ads.space(16);
+  width: 100%;
+}
+
+.ads-card__body {
+  @include ads.stack($gap: ads.space(24), $width: 100%, $box-border: true);
+
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.ads-card__trailing {
+  align-items: center;
+  color: ads.alpha(ads.$off-black, 65%);
+  display: inline-flex;
+  flex-shrink: 0;
+  justify-content: center;
+}
+
+.ads-card__stack {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  width: 100%;
+}
+
+.ads-card__row {
+  align-items: center;
+  display: flex;
+  gap: ads.space(8);
+  width: 100%;
+
+  > .ads-card__stack {
+    flex: 1 1 auto;
+  }
+}
+
+.ads-card__stack--divided {
+  @include ads.stack($gap: ads.space(16), $width: 100%, $box-border: true);
+}
+
+// Backup codes (and similar secret lists): left-aligned columns, group centered in the card.
+.ads-card__code-grid {
+  display: grid;
+  gap: ads.space(16) ads.space(24);
+  grid-template-columns: max-content;
+  justify-content: center;
+  justify-items: start;
+  width: 100%;
+
+  @media (width >= 768px) {
+    grid-template-columns: repeat(2, max-content);
+  }
+}
+
+.ads-card__code-grid-col {
+  @include ads.stack($align: flex-start, $gap: ads.space(16), $box-border: true);
+}
+
+.ads-card__media {
+  display: block;
+  height: auto;
+  max-width: 100%;
+  width: 100%;
+}
+
+.ads-card__title,
+.ads-card__description,
+.ads-card__label,
+.ads-card__value,
+.ads-card__meta {
+  font-family: ads.$font-family;
+  font-size: ads.$text-body-m;
+  letter-spacing: ads.$text-letter-spacing-label;
+  line-height: 1.5;
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.ads-card__title {
+  color: ads.$off-black;
+  font-weight: ads.$font-semibold;
+}
+
+.ads-card__description,
+.ads-card__label,
+.ads-card__meta {
+  color: ads.alpha(ads.$off-black, 65%);
+  font-weight: 400;
+}
+
+.ads-card__description .ads-link {
+  color: inherit;
+
+  &:is(:link, :visited),
+  &:active,
+  &:focus-visible {
+    color: inherit;
+  }
+}
+
+.ads-card__value {
+  color: ads.$off-black;
+  font-weight: 400;
+}
+
+.ads-card__divider {
+  background: ads.alpha(ads.$off-black, 10%);
+  border: 0;
+  height: 1px;
+  margin: 0;
+  width: 100%;
 }

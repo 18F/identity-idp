@@ -1,0 +1,232 @@
+@use '../../variables/ads' as ads;
+
+$border-width: 1px;
+$control-height: ads.space(56);
+$padding-x: 15px;
+$control-value-padding-x: $padding-x - 0.25px;
+$select-icon-size: ads.space(16);
+$select-padding-right: ads.space(40);
+$select-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M8 9.486 3.766 5.251 2.634 6.383 8 11.749l5.366-5.366-1.132-1.132L8 9.486Z' fill='%230c0c0c'/%3E%3C/svg%3E");
+$overflow-fade-size: ads.space(24);
+
+@mixin focus-ring($color: ads.$black) {
+  border-color: $color;
+  box-shadow: 0 0 0 $border-width $color;
+  outline: 0;
+}
+
+/* stylelint-disable length-zero-no-unit -- @property/<length> initial values require a unit */
+@property --ads-overflow-fade-l {
+  syntax: '<length>';
+  inherits: false;
+  initial-value: 0px;
+}
+
+@property --ads-overflow-fade-r {
+  syntax: '<length>';
+  inherits: false;
+  initial-value: 0px;
+}
+
+@keyframes ads-overflow-scroll-fade {
+  0% {
+    --ads-overflow-fade-l: 0px;
+    --ads-overflow-fade-r: #{$overflow-fade-size};
+  }
+
+  10%,
+  90% {
+    --ads-overflow-fade-l: #{$overflow-fade-size};
+    --ads-overflow-fade-r: #{$overflow-fade-size};
+  }
+
+  100% {
+    --ads-overflow-fade-l: #{$overflow-fade-size};
+    --ads-overflow-fade-r: 0px;
+  }
+}
+
+@mixin overflow-scroll-fade {
+  @supports (animation-timeline: scroll(self inline)) {
+    animation: ads-overflow-scroll-fade linear both;
+    animation-timeline: scroll(self inline);
+    mask-image: linear-gradient(
+      to right,
+      transparent,
+      ads.$black var(--ads-overflow-fade-l, 0px),
+      ads.$black calc(100% - var(--ads-overflow-fade-r, 0px)),
+      transparent
+    );
+  }
+}
+/* stylelint-enable length-zero-no-unit */
+
+.ads-input,
+.ads-input__shell {
+  width: 100%;
+}
+
+.ads-input__shell {
+  position: relative;
+}
+
+.ads-input__label,
+.ads-input__country-label {
+  border: 0;
+  clip: rect(0, 0, 0, 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
+}
+
+.ads-input__label--visible {
+  clip: auto;
+  display: block;
+  font-family: ads.$font-family;
+  font-size: ads.$text-label-m;
+  font-weight: ads.$font-semibold;
+  height: auto;
+  line-height: 1.5;
+  margin: 0 0 ads.space(8);
+  overflow: visible;
+  position: static;
+  white-space: normal;
+  width: auto;
+}
+
+.ads-input__hint {
+  color: ads.alpha(ads.$off-black, 65%);
+  font-family: ads.$font-family;
+  font-size: ads.$text-body-s;
+  font-weight: 400;
+  letter-spacing: 0;
+  line-height: 1.5;
+  margin: ads.space(8) 0 0;
+  text-align: left;
+}
+
+.ads-input__control,
+.ads-overflow-scroll-fade {
+  @include overflow-scroll-fade;
+}
+
+.ads-input__control {
+  background: ads.$white;
+  border: $border-width solid ads.alpha(ads.$off-black, 45%);
+  border-radius: ads.radius(16);
+  box-sizing: border-box;
+  color: ads.$off-black;
+  font-family: ads.$font-family;
+  font-size: ads.$text-body-m;
+  font-weight: 400;
+  height: $control-height;
+  letter-spacing: 0;
+  line-height: 1.5;
+  padding: 0 $padding-x;
+  transition:
+    border-color ads.$tr-duration-md ads.$tr-easing-cubic,
+    box-shadow ads.$tr-duration-md ads.$tr-easing-cubic;
+  width: 100%;
+}
+
+.ads-input__control::placeholder {
+  color: ads.alpha(ads.$off-black, 65%);
+  opacity: 1;
+}
+
+.ads-input__control:where(:focus, :focus-visible) {
+  @include focus-ring;
+}
+
+.ads-input:has(.ads-input__control[aria-invalid='true']) .ads-input__control {
+  border-color: ads.$red-600;
+}
+
+.ads-input:has(.ads-input__control[aria-invalid='true'])
+  .ads-input__control:where(:focus, :focus-visible) {
+  @include focus-ring(ads.$red-600);
+}
+
+.ads-input__control--floating::placeholder {
+  color: transparent;
+}
+
+.ads-input__control:where(:not(.ads-input__control--phone, :placeholder-shown, select)) {
+  padding-left: $control-value-padding-x;
+}
+
+.ads-input__floating-label {
+  color: ads.alpha(ads.$off-black, 65%);
+  font-family: ads.$font-family;
+  font-size: ads.$text-body-m;
+  font-weight: 400;
+  left: calc(#{$padding-x} + #{$border-width});
+  line-height: 1.5;
+  pointer-events: none;
+  position: absolute;
+  top: calc(#{$control-height} / 2);
+  transform: translateY(-50%);
+  transition:
+    font-size ads.$tr-duration-md ads.$tr-easing-cubic,
+    top ads.$tr-duration-md ads.$tr-easing-cubic,
+    transform ads.$tr-duration-md ads.$tr-easing-cubic;
+}
+
+// Selects have no :placeholder-shown; empty = blank option selected.
+// :-webkit-autofill: Chrome/Safari autofill often leaves :placeholder-shown true until interaction.
+.ads-input__control--floating:where(
+    :focus,
+    :not(select, :placeholder-shown),
+    :-webkit-autofill,
+    select:not(:has(> option[value='']:checked))
+  ) {
+  padding: ads.space(20) $padding-x ads.space(8) $control-value-padding-x;
+}
+
+.ads-input__control--floating:where(:focus:placeholder-shown:not(:-webkit-autofill)) {
+  padding-left: calc(#{$padding-x} + #{$border-width});
+}
+
+.ads-input__control--floating:where(
+    :focus,
+    :not(select, :placeholder-shown),
+    :-webkit-autofill,
+    select:not(:has(> option[value='']:checked))
+  )
+  + .ads-input__floating-label {
+  font-size: ads.$text-label-s;
+  line-height: 1;
+  top: ads.space(12);
+  transform: none;
+}
+
+select.ads-input__control {
+  appearance: none;
+  background-image: $select-chevron;
+  background-position: right $padding-x center;
+  background-repeat: no-repeat;
+  background-size: $select-icon-size;
+  padding-right: $select-padding-right;
+}
+
+select.ads-input__control--floating:where(:focus, :not(:has(> option[value='']:checked))) {
+  padding-right: $select-padding-right;
+}
+
+select.ads-input__control::-ms-expand {
+  display: none;
+}
+
+.ads-input__control:where([readonly], :disabled, [aria-disabled='true']) {
+  background-color: ads.alpha(ads.$off-black, 5%);
+}
+
+.ads-input__control:where(:disabled, [aria-disabled='true']) {
+  cursor: not-allowed;
+  opacity: 1;
+  -webkit-text-fill-color: ads.$off-black;
+}

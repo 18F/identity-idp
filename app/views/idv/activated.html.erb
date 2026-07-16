@@ -1,10 +1,18 @@
 <% self.title = t('idv.titles.activated') %>
 
-<%= render PageHeadingComponent.new.with_content(t('idv.titles.activated')) %>
-
-<p class="margin-bottom-0">
-  <%= t(
-        'idv.messages.activated_html',
-        link_html: link_to(t('idv.messages.activated_link'), contact_redirect_url),
-      ) %>
-</p>
+<%= render ADS::FormPageComponent.new(title: t('idv.titles.activated')) do |page| %>
+  <% page.with_body do %>
+    <div class="ads-copy ads-copy--centered">
+      <p>
+        <%= t(
+              'idv.messages.activated_html',
+              link_html: render(
+                ADS::LinkComponent.new(url: contact_redirect_url).with_content(
+                  t('idv.messages.activated_link'),
+                ),
+              ),
+            ) %>
+      </p>
+    </div>
+  <% end %>
+<% end %>

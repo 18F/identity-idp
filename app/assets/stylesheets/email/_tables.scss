@@ -1,0 +1,118 @@
+@use 'variables/ads' as ads;
+@use 'variables/email' as *;
+@use 'email/components/mixins' as mailer;
+
+.mailer-shell-table {
+  background-color: $body-background;
+}
+
+.mailer-shell-cell {
+  padding: 0;
+}
+
+.mailer-frame {
+  max-width: $mailer-frame-width;
+  width: 100%;
+}
+
+.mailer-frame-cell {
+  padding: ads.space(96) $mailer-template-shell-padding-x;
+}
+
+.mailer-info-card,
+.mailer-barcode-card {
+  background-color: $white;
+  border: 1px solid $mailer-border-color;
+  border-collapse: separate;
+  border-radius: ads.radius(24);
+  overflow: hidden;
+  width: 100%;
+}
+
+.mailer-barcode-card {
+  box-shadow: 0 2px 8px ads.alpha($black, 6%);
+}
+
+.mailer-info-card__cell {
+  padding: ads.space(24);
+}
+
+.mailer-info-card__rule {
+  @include mailer.mailer-divider-line;
+}
+
+.mailer-step-marker-cell {
+  padding-right: $global-margin;
+  vertical-align: top;
+  width: $mailer-brand-padding-top;
+}
+
+.mailer-step-content {
+  vertical-align: top;
+}
+
+.mailer-step-table {
+  margin-bottom: $mailer-section-gap;
+}
+
+.mailer-process-image-cell {
+  width: $mailer-process-image-width;
+}
+
+.mailer-process-gap-cell {
+  width: $global-padding;
+}
+
+.mailer-button-cell {
+  background-color: $black;
+  border-radius: $mailer-button-radius;
+}
+
+.mailer-button-cell--danger {
+  background-color: $red;
+}
+
+
+.app-table {
+  border-collapse: separate;
+  border-spacing: 0;
+
+  tbody td {
+    border-top: 0;
+  }
+
+  thead th:first-child {
+    border-top-left-radius: $mailer-table-radius;
+  }
+
+  thead th:last-child {
+    border-top-right-radius: $mailer-table-radius;
+  }
+
+  tbody tr:last-child td:first-child {
+    border-bottom-left-radius: $mailer-table-radius;
+  }
+
+  tbody tr:last-child td:last-child {
+    border-bottom-right-radius: $mailer-table-radius;
+  }
+}
+
+/* stylelint-disable declaration-no-important -- Email clients require !important for reliable responsive behavior */
+@media only screen and (max-width: #{$global-breakpoint}) {
+  .mailer-shell-cell {
+    padding: 0;
+  }
+
+  .mailer-frame {
+    width: 100% !important;
+  }
+
+  .mailer-frame-cell {
+    padding: ads.space(48) ads.space(24) !important;
+  }
+
+  .mailer-template {
+    width: 100% !important;
+  }
+}

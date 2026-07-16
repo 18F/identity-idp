@@ -23,39 +23,35 @@ RSpec.describe 'users/two_factor_authentication_setup/index.html.erb' do
     @two_factor_options_form = TwoFactorLoginOptionsForm.new(user)
   end
 
-  it 'has link to cancel account creation' do
-    expect(rendered).to have_css('.page-footer')
-    expect(rendered).to have_link(t('links.cancel_account_creation'), href: sign_up_cancel_path)
-  end
-
-  it 'does not list currently configured mfa methods' do
-    expect(rendered).not_to have_content(t('headings.account.two_factor'))
+  it 'does not render continue or cancel actions' do
+    expect(rendered).not_to have_css('.ads-auth__actions')
+    expect(rendered).not_to have_button(t('forms.buttons.continue'))
+    expect(rendered).not_to have_link(t('links.cancel_account_creation'))
   end
 
   it 'renders hidden input for platform authenticator support' do
     expect(rendered).to have_css('input#platform_authenticator_available', visible: false)
   end
 
+  it 'renders option cards that submit a selection' do
+    expect(rendered).to have_button(
+      type: 'submit',
+      id: 'two_factor_options_form_selection_phone',
+    )
+    expect(rendered).to have_css(
+      'button[name="two_factor_options_form[selection][]"][value="phone"]',
+    )
+  end
+
   context 'with configured mfa methods' do
     let(:user) { build(:user, :with_phone) }
 
-    it 'lists currently configured mfa methods' do
-      expect(rendered).to have_content(t('headings.account.two_factor'))
+    it 'does not list currently configured mfa methods' do
+      expect(rendered).not_to have_content(t('headings.account.two_factor'))
     end
 
-    it 'has link to skip additional mfa setup' do
-      expect(rendered).to have_css('.page-footer')
-      expect(rendered).to have_link(t('mfa.skip'), href: after_mfa_setup_path)
-    end
-
-    context 'with skip link hidden' do
-      let(:show_skip_additional_mfa_link) { false }
-
-      it 'does not have footer link' do
-        expect(rendered).not_to have_css('.page-footer')
-        expect(rendered).not_to have_link(t('links.cancel_account_creation'))
-        expect(rendered).not_to have_link(t('mfa.skip'))
-      end
+    it 'does not render skip link' do
+      expect(rendered).not_to have_link(t('mfa.skip'))
     end
   end
 
@@ -66,14 +62,12 @@ RSpec.describe 'users/two_factor_authentication_setup/index.html.erb' do
     end
 
     it 'renders alert banner' do
-      expect(rendered).to have_selector('.usa-alert.usa-alert--error')
+      expect(rendered).to have_selector('.ads-alert.ads-alert--error')
     end
 
     it 'disables phone option' do
-      expect(rendered).to have_field(
-        'two_factor_options_form[selection][]',
-        with: :phone,
-        disabled: true,
+      expect(rendered).to have_css(
+        '#two_factor_options_form_selection_phone[disabled]',
       )
     end
   end
@@ -89,11 +83,7 @@ RSpec.describe 'users/two_factor_authentication_setup/index.html.erb' do
     end
 
     it 'does not disable phone option' do
-      expect(rendered).to have_field(
-        'two_factor_options_form[selection][]',
-        with: :phone,
-        disabled: false,
-      )
+      expect(rendered).to have_css('#two_factor_options_form_selection_phone:not([disabled])')
     end
   end
 
@@ -108,9 +98,9 @@ RSpec.describe 'users/two_factor_authentication_setup/index.html.erb' do
       )
     end
 
-    it 'shows a cancel link that aborts the login' do
+    it 'does not show cancel or skip links' do
       expect(rendered).not_to have_link(t('mfa.skip'))
-      expect(rendered).to have_link(t('links.cancel'))
+      expect(rendered).not_to have_link(t('links.cancel'))
     end
   end
 end

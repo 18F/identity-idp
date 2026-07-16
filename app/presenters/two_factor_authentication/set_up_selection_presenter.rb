@@ -43,14 +43,6 @@ module TwoFactorAuthentication
       raise NotImplementedError
     end
 
-    def mfa_added_label
-      if single_configuration_only?
-        ''
-      else
-        "(#{mfa_configuration_description})"
-      end
-    end
-
     def visible?
       if piv_cac_required?
         type == :piv_cac
@@ -82,10 +74,10 @@ module TwoFactorAuthentication
     def mfa_configuration_description
       return '' if mfa_configuration_count == 0
       if single_configuration_only?
-        t('two_factor_authentication.two_factor_choice_options.no_count_configuration_added')
+        t('two_factor_authentication.two_factor_choice_options.no_count_configuration_enabled')
       else
         t(
-          'two_factor_authentication.two_factor_choice_options.configurations_added',
+          'two_factor_authentication.two_factor_choice_options.configurations_enabled',
           count: mfa_configuration_count,
         )
       end

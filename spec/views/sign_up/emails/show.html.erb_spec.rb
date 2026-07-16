@@ -16,17 +16,28 @@ RSpec.describe 'sign_up/emails/show.html.erb' do
   it 'has a localized header' do
     render
 
-    expect(rendered).to have_selector('h1', text: t('headings.verify_email'))
+    expect(rendered).to have_selector('h1', text: t('sign_up.verify_email.heading'))
   end
 
-  it 'contains a form link to resend confirmation page' do
+  it 'contains an ADS form action to resend confirmation email' do
     render
 
-    expect(rendered).to have_selector('lg-form-link')
-    expect(rendered).to have_link(href: '#', class: ['usa-link', 'block-link'])
     expect(rendered)
-      .to have_button(t('notices.signed_up_but_unconfirmed.resend_confirmation_email'))
+      .to have_button(
+        t('notices.signed_up_but_unconfirmed.resend_confirmation_email'),
+        class: 'ads-button--lg',
+      )
     expect(rendered).to have_css("form[action='#{sign_up_register_path}']")
+  end
+
+  it 'contains an ADS action to use a different email' do
+    render
+
+    expect(rendered).to have_link(
+      t('sign_up.verify_email.use_different_email'),
+      href: sign_up_email_path,
+      class: 'ads-button--lg',
+    )
   end
 
   context 'when enable_load_testing_mode? is true and email address found' do

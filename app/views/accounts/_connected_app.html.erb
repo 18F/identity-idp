@@ -1,42 +1,87 @@
-<div class="padding-1 border-top border-left border-right border-primary-light">
+<div class="ads-connected-service">
   <% if flash[:email_updated_identity_id] == identity.id %>
-    <%= render AlertComponent.new(type: :success, class: 'margin-bottom-2', message: t('account.connected_apps.email_update_success_html', sp_name: identity.display_name)) %>
-  <% end %>
-
-  <h2 class="h3 margin-top-0 margin-bottom-1">
-    <% if identity.return_to_sp_url.present? %>
-      <%= link_to(identity.display_name, identity.return_to_sp_url) %>
-    <% else %>
-      <%= identity.display_name %>
-    <% end %>
-  </h2>
-
-  <% if identity.verified_single_email_attribute? %>
-    <%= t(
-          'account.connected_apps.associated_attributes_html',
-          timestamp_html: render(TimeComponent.new(time: identity.created_at)),
-        ) %>
-    <br>
-    <strong>
-      <%= identity.email_address&.email || t('account.connected_apps.email_not_selected') %>
-    </strong>
-    <%= link_to(
-          t('help_text.requested_attributes.change_email_link'),
-          edit_connected_service_selected_email_path(identity_id: identity.id),
-        ) %>
-  <% else %>
-    <%= t(
-          'account.connected_apps.associated_html',
-          timestamp_html: render(TimeComponent.new(time: identity.created_at)),
+    <%= render AlertComponent.new(
+          type: :success,
+          message: t('account.connected_apps.email_update_success_html', sp_name: identity.display_name),
         ) %>
   <% end %>
 
-  <% if identity.service_provider_id %>
-    <div class="margin-y-1">
-      <%= render ButtonComponent.new(
-            url: service_provider_revoke_url(sp_id: identity.service_provider_id),
-            outline: true,
-          ).with_content(t('account.revoke_consent.link_title')) %>
+  <div class="ads-connected-service__row">
+    <% logo_url = identity.service_provider_record&.logo_url %>
+
+    <span class="ads-connected-service__mark" aria-hidden="true">
+      <% if logo_url.present? %>
+        <%= image_tag(
+              logo_url,
+              alt: '',
+              class: 'ads-connected-service__logo',
+              width: 48,
+              height: 48,
+            ) %>
+      <% else %>
+        <%= agency_initials(identity.display_name) %>
+      <% end %>
+      <span class="ads-connected-service__indicator"></span>
+    </span>
+
+    <div class="ads-connected-service__content">
+      <h3 class="ads-connected-service__title"><%= identity.display_name %></h3>
+
+      <p class="ads-connected-service__meta">
+        <%= t(
+              'account.connected_apps.associated_html',
+              timestamp_html: render(TimeComponent.new(time: identity.created_at)),
+            ) %>
+      </p>
+
+      <% if identity.verified_single_email_attribute? %>
+        <p class="ads-connected-service__email">
+          <%= identity.email_address&.email || t('account.connected_apps.email_not_selected') %>
+        </p>
+      <% end %>
     </div>
-  <% end %>
+
+    <% if identity.verified_single_email_attribute? || identity.service_provider_id || identity.return_to_sp_url.present? %>
+      <div class="ads-connected-service__actions">
+        <% if identity.verified_single_email_attribute? || identity.service_provider_id %>
+          <details class="ads-connected-service__menu" data-dismissable-menu>
+            <summary
+              class="ads-connected-service__menu-button"
+              aria-label="<%= t('account.dashboard.agency_menu.toggle_label', agency: identity.display_name) %>"
+            >
+              <%= render IconComponent.new(icon: :ellipse, size: 20) %>
+            </summary>
+            <div class="ads-connected-service__menu-panel">
+              <% if identity.verified_single_email_attribute? %>
+                <%= link_to(
+                      t('account.dashboard.agency_menu.change_email'),
+                      edit_connected_service_selected_email_path(identity_id: identity.id),
+                      class: 'ads-connected-service__menu-item',
+                    ) %>
+              <% end %>
+
+              <% if identity.service_provider_id %>
+                <%= link_to(
+                      t('account.dashboard.agency_menu.disconnect'),
+                      service_provider_revoke_url(sp_id: identity.service_provider_id),
+                      class: 'ads-connected-service__menu-item ads-connected-service__menu-item--danger',
+                    ) %>
+              <% end %>
+            </div>
+          </details>
+        <% end %>
+
+        <% if identity.return_to_sp_url.present? %>
+          <%= render ButtonComponent.new(
+                url: identity.return_to_sp_url,
+                variant: :quaternary,
+                size: :sm,
+                icon: :external_link,
+                icon_position: :right,
+                aria: { label: t('account.connected_apps.demo_visit_label', agency: identity.display_name) },
+              ).with_content(t('account.dashboard.visit')) %>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
 </div>

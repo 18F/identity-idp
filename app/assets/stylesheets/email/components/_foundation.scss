@@ -1,0 +1,58 @@
+@use 'variables/email' as *;
+
+.gray {
+  &:active,
+  &:hover,
+  &:link,
+  &:visited {
+    color: $gray;
+  }
+}
+
+.hr {
+  margin: $hr-margin;
+}
+
+.lead {
+  hyphens: none;
+  margin-bottom: $h1-font-size;
+}
+
+.s10 {
+  font-size: $text-padding;
+  line-height: $text-padding;
+}
+
+.s24 {
+  font-size: $global-padding;
+  line-height: $global-padding;
+}
+
+.s30 {
+  font-size: $h1-font-size;
+  line-height: $h1-font-size;
+}
+
+.s60 {
+  font-size: $mailer-spacer-xl;
+  line-height: $mailer-spacer-xl;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: $black;
+  line-height: 1.3;
+}
+
+h1 {
+  font-weight: 600;
+}
+
+.button.large.expanded {
+  background-color: $black;
+  border-radius: $mailer-button-radius;
+}

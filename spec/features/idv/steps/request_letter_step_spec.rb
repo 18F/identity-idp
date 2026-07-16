@@ -24,7 +24,7 @@ RSpec.feature 'idv request letter step' do
       trigger_reset_password_and_click_email_link(user.email)
       reset_password_and_sign_back_in(user)
       fill_in_code_with_last_phone_otp
-      click_submit_default
+      click_button t('forms.buttons.continue')
       click_on(t('links.account.reactivate.without_key'))
       click_continue
       complete_all_doc_auth_steps
@@ -59,7 +59,7 @@ RSpec.feature 'idv request letter step' do
       trigger_reset_password_and_click_email_link(user.email)
       reset_password_and_sign_back_in(user, new_password)
       fill_in_code_with_last_phone_otp
-      click_submit_default
+      click_button t('forms.buttons.continue')
       click_on(t('links.account.reactivate.without_key'))
       click_continue
       complete_all_doc_auth_steps
@@ -71,7 +71,7 @@ RSpec.feature 'idv request letter step' do
       visit_idp_from_ial2_oidc_sp
       signin(user.email, new_password)
       fill_in_code_with_last_phone_otp
-      click_submit_default
+      click_button t('forms.buttons.continue')
 
       expect(page).to have_content(t('idv.gpo.intro'))
     end

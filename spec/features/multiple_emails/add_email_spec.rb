@@ -175,7 +175,7 @@ RSpec.feature 'adding email address' do
 
     expect(page).to_not have_link(t('account.index.email_add'))
     visit add_email_path
-    expect(page).to have_current_path(account_path)
+    expect(page).to have_current_path(account_settings_path)
     expect(page).to have_content t('email_addresses.add.limit')
   end
 
@@ -189,8 +189,8 @@ RSpec.feature 'adding email address' do
 
     expect(page).to have_current_path(add_email_path)
 
-    fill_in t('forms.registration.labels.email'), with: 'foo'
-    click_button t('forms.buttons.submit.default')
+    fill_in t('account.index.email_short'), with: 'foo'
+    click_button t('account.dashboard.account.email.add')
 
     expect(page).to have_current_path(add_email_path)
   end
@@ -205,8 +205,8 @@ RSpec.feature 'adding email address' do
 
     expect(page).to have_current_path(add_email_path)
 
-    fill_in t('forms.registration.labels.email'), with: user.email_addresses.first.email
-    click_button t('forms.buttons.submit.default')
+    fill_in t('account.index.email_short'), with: user.email_addresses.first.email
+    click_button t('account.dashboard.account.email.add')
 
     expect(page).to have_current_path(add_email_path)
     expect(page).to have_content(I18n.t('email_addresses.add.duplicate'))
@@ -273,8 +273,8 @@ RSpec.feature 'adding email address' do
     expect(fake_email).to receive(:confirmation_sent_at=)
     expect(EmailAddress).to receive(:new).and_return(fake_email)
 
-    fill_in t('forms.registration.labels.email'), with: email
-    click_button t('forms.buttons.submit.default')
+    fill_in t('account.index.email_short'), with: email
+    click_button t('account.dashboard.account.email.add')
 
     expect(page).to have_current_path(add_email_path)
     expect(page).to have_content(t('email_addresses.add.duplicate'))
@@ -292,8 +292,8 @@ RSpec.feature 'adding email address' do
 
     expect(page).to have_current_path(add_email_path)
 
-    fill_in t('forms.registration.labels.email'), with: email
-    click_button t('forms.buttons.submit.default')
+    fill_in t('account.index.email_short'), with: email
+    click_button t('account.dashboard.account.email.add')
 
     expect(page).to have_current_path(add_email_verify_email_path)
     expect(page).to have_content email

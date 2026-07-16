@@ -1,48 +1,59 @@
 <% self.title = t('titles.select_email') %>
 
-<%= render StatusPageComponent.new(status: :info, icon: :question) do |c| %>
-  <% c.with_header(id: 'select-email-heading') { t('titles.select_email') } %>
+<%= render ADS::FormPageComponent.new(
+      title: t('titles.select_email'),
+      subtitle: t(
+        'help_text.select_preferred_email_html',
+        sp: @identity.display_name,
+        sp_html: tag.span(@identity.display_name, class: 'ads-nowrap'),
+      ),
+    ) do |page| %>
+  <% page.with_body do %>
+    <%= form_with(
+          model: @select_email_form,
+          url: connected_services_selected_email_path(identity_id: @identity.id),
+          method: :patch,
+          local: true,
+          class: 'ads-form ads-form--gap-16 ads-form--align-stretch',
+        ) do |f| %>
+      <fieldset class="ads-fieldset">
+        <legend class="ads-sr-only"><%= t('titles.select_email') %></legend>
+        <div class="ads-radio-group">
+          <% current_user.confirmed_email_addresses.each do |email| %>
+            <% field_id = "select_email_form_selected_email_id_#{email.id}" %>
+            <div class="ads-radio">
+              <%= f.radio_button(
+                    :selected_email_id,
+                    email.id,
+                    id: field_id,
+                    checked: email.id == @email_id,
+                    required: true,
+                    class: 'ads-radio__input ads-sr-only',
+                  ) %>
+              <%= label_tag(field_id, class: 'ads-radio__label') do %>
+                <%= email.email %>
+              <% end %>
+            </div>
+          <% end %>
+        </div>
+      </fieldset>
 
-  <p id="select-email-intro">
-    <%= t('help_text.select_preferred_email_html', sp: @identity.display_name) %>
-  </p>
-
-  <%= simple_form_for(
-        @select_email_form,
-        url: connected_services_selected_email_path(identity_id: @identity.id),
-        method: :patch,
-      ) do |f| %>
-    <%= f.input(
-          :selected_email_id,
-          as: :radio_buttons,
-          label: false,
-          required: true,
-          wrapper_html: {
-            aria: {
-              labelledby: 'select-email-heading',
-              describedby: 'select-email-intro',
-            },
-          },
-          collection: current_user.confirmed_email_addresses.map do |email|
-            [
-              email.email,
-              email.id,
-              checked: email.id == @email_id,
-            ]
-          end,
-        ) %>
-    <%= f.submit(t('help_text.requested_attributes.select_email_link'), class: 'margin-top-1') %>
+      <%= render ButtonComponent.new(size: :lg, type: :submit) do %>
+        <%= t('account.dashboard.modals.select_email.primary') %>
+      <% end %>
+    <% end %>
   <% end %>
 
-  <% if @can_add_email %>
-    <%= render ButtonComponent.new(
-          url: add_email_path(in_select_email_flow: true),
-          outline: true,
-          big: true,
-          wide: true,
-          class: 'margin-top-2',
-        ).with_content(t('account.index.email_add')) %>
-  <% end %>
+  <% page.with_actions do %>
+    <% if @can_add_email %>
+      <%= render ButtonComponent.new(
+            url: add_email_path(in_select_email_flow: true),
+            variant: :secondary,
+          ).with_content(t('account.dashboard.modals.select_email.add_email')) %>
+    <% end %>
 
-  <% c.with_footer { link_to t('forms.buttons.back'), account_connected_services_path } %>
+    <%= render ADS::LinkComponent.new(url: account_connected_services_path) do %>
+      <%= t('forms.buttons.back') %>
+    <% end %>
+  <% end %>
 <% end %>

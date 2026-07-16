@@ -1,0 +1,48 @@
+@use '../../../variables/ads' as ads;
+
+.ads-ready-to-verify {
+  --ads-intro-gap: #{ads.space(16)};
+  --ads-form-gap: #{ads.space(32)};
+  --ads-section-gap: #{ads.space(32)};
+}
+
+.ads-ready-to-verify__location-panel {
+  background: ads.$white;
+  border: 1px solid ads.alpha(ads.$off-black, 10%);
+  border-radius: ads.radius(24);
+  box-shadow: ads.$shadow-compact;
+  box-sizing: border-box;
+  padding: ads.space(24);
+  text-align: left;
+}
+
+.ads-ready-to-verify__location {
+  @include ads.stack($gap: ads.space(24), $reset-flow: true, $width: 100%);
+
+  color: ads.$off-black;
+  font-family: ads.$font-family;
+  font-size: ads.$text-body-m;
+  font-style: normal;
+  letter-spacing: ads.$text-letter-spacing-label;
+  line-height: 1.5;
+}
+
+.ads-ready-to-verify__location-details,
+.ads-ready-to-verify__location-hours {
+  @include ads.stack($gap: ads.space(8), $reset-flow: true, $width: 100%);
+}
+
+.ads-ready-to-verify__location-name,
+.ads-ready-to-verify__location-hours h2 {
+  color: ads.$off-black;
+  font-family: ads.$font-family;
+  font-size: ads.$text-label-m;
+  font-weight: ads.$font-semibold;
+  letter-spacing: ads.$text-letter-spacing-label;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.ads-ready-to-verify__location p {
+  margin: 0;
+}

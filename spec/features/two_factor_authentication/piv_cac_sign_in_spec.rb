@@ -41,12 +41,14 @@ RSpec.feature 'sign in with piv/cac' do
 
       stub_piv_cac_service
       fill_in t('forms.totp_setup.totp_step_1'), with: 'New PIV'
-      click_on t('forms.piv_cac_setup.submit')
+      click_on t('forms.buttons.continue')
       follow_piv_cac_redirect
 
       expect(page).to have_current_path(account_path)
-      within(page.find('.card', text: t('headings.account.government_employee_id'))) do
-        expect(page).to have_css('lg-manageable-authenticator', count: 2)
+
+      visit account_security_path
+      within('section[aria-labelledby="piv-cac-heading"]') do
+        expect(page).to have_css('.ads-auth-methods__row', count: 2)
       end
     end
 
@@ -81,7 +83,7 @@ RSpec.feature 'sign in with piv/cac' do
 
         stub_piv_cac_service
         fill_in t('forms.totp_setup.totp_step_1'), with: 'New PIV'
-        click_on t('forms.piv_cac_setup.submit')
+        click_on t('forms.buttons.continue')
         follow_piv_cac_redirect
 
         expect(page).to have_current_path(sign_up_completed_path)

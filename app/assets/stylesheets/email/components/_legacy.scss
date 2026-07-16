@@ -1,0 +1,69 @@
+@use 'variables/email' as *;
+@use 'mixins' as mailer;
+
+.mailer-text {
+  line-height: $mailer-copy-line-height;
+  margin: 0;
+}
+
+.mailer-text--emphasized {
+  font-weight: 600;
+  margin: 0;
+}
+
+.mailer-text--normal {
+  font-weight: 400;
+}
+
+.mailer-text--spaced {
+  margin: 0 0 $mailer-section-gap;
+}
+
+.mailer-text--compact {
+  margin: 0 0 $global-margin;
+}
+
+.mailer-text--muted {
+  color: $mailer-muted-text;
+  font-size: $mailer-footer-text-size;
+}
+
+.mailer-list {
+  line-height: $mailer-copy-line-height;
+  margin: 0 0 $mailer-section-gap;
+  padding-left: $mailer-list-padding-left;
+}
+
+.mailer-section-separator {
+  @include mailer.mailer-divider-line;
+
+  margin-top: $mailer-section-gap;
+  padding-top: $mailer-section-gap;
+}
+
+.mailer-step-marker {
+  background-color: $black;
+  border-radius: 50%;
+  color: $white;
+  font-size: $mailer-footer-text-size;
+  font-weight: 600;
+  height: $mailer-step-marker-size;
+  line-height: $mailer-step-marker-size;
+  text-align: center;
+  width: $mailer-step-marker-size;
+}
+
+.mailer-step-heading {
+  @include mailer.mailer-text-body-emphasized;
+
+  color: $black;
+  font-size: $global-font-size;
+  margin: 0 0 $subheader-margin-bottom;
+}
+
+.mailer-gmail-font-guard {
+  display: none;
+  font: $mailer-gmail-guard-font-size courier;
+  line-height: 0;
+  white-space: nowrap;
+}

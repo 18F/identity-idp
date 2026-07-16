@@ -1,58 +1,93 @@
-<% self.title = @presenter.title %>
+<% page_title = if @presenter.show_sp_reproof_banner
+                  t('doc_auth.headings.welcome_sp_reproof', sp_name: @presenter.sp_name)
+                else
+                  t('headings.identity_verification_intro.title', sp: @presenter.sp_name)
+                end %>
+<% self.title = page_title %>
+<%= render 'idv/shared/step_indicator', current_step: :getting_started %>
 <%= render JavascriptRequiredComponent.new(
       header: t('idv.welcome.no_js_header'),
       intro: t('idv.welcome.no_js_intro', sp_name: @presenter.sp_name),
       location: :idv_welcome,
     ) do %>
-<% if @presenter.show_sp_reproof_banner %>
-  <%= render AlertComponent.new(type: :info, class: 'margin-bottom-4') do %>
-    <%= t('doc_auth.info.welcome_sp_reproof_alert', sp_name: @presenter.sp_name) %>
-  <% end %>
-<% end %>
-<%= render PageHeadingComponent.new.with_content(@presenter.title) %>
-  <p>
-    <%= @presenter.explanation_text(
-          new_tab_link_to(
-            t('doc_auth.info.getting_started_learn_more'),
-            help_center_redirect_path(
-              category: 'verify-your-identity',
-              article: 'overview',
-              flow: :idv,
-              step: :welcome,
-              location: 'intro_paragraph',
-            ),
-          ),
-        ) %>
-  </p>
+  <%= render ADS::FormPageComponent.new(
+        title: page_title,
+        subtitle: t('headings.identity_verification_intro.intro', sp: @presenter.sp_name),
+      ) do |page| %>
+    <% logo_url = current_sp&.logo.present? ? current_sp.logo_url : nil %>
+    <% if logo_url.present? %>
+      <% page.with_media do %>
+        <%= image_tag(
+              logo_url,
+              alt: @presenter.sp_name,
+              class: 'ads-auth__media',
+              width: 96,
+              height: 96,
+            ) %>
+      <% end %>
+    <% end %>
 
-  <h2><%= t('doc_auth.instructions.getting_started') %></h2>
+    <% if @presenter.show_sp_reproof_banner %>
+      <% page.with_alert do %>
+        <%= render AlertComponent.new(type: :neutral, dismissible: false) do %>
+          <%= t('doc_auth.info.welcome_sp_reproof_alert', sp_name: @presenter.sp_name) %>
+        <% end %>
+      <% end %>
+    <% end %>
 
-  <%= render ProcessListComponent.new(heading_level: :h3, class: 'margin-y-3') do |c| %>
-    <% @presenter.bullet_points.each do |point| %>
-      <%= c.with_item(heading: point.bullet) do %>
-        <p><%= point.text %></p>
+    <% page.with_body do %>
+      <hr class="ads-divider">
+
+      <div class="ads-copy">
+        <%= render ADS::StackComponent.new(gap: 24) do %>
+          <h2><%= t('headings.identity_verification_intro.what_youll_need') %></h2>
+
+          <% [
+               [:requirement_id_title, :requirement_id_description],
+               [:requirement_smartphone_title, :requirement_smartphone_description],
+               [:requirement_ssn_title, :requirement_ssn_description],
+               [:requirement_phone_title, :requirement_phone_description],
+             ].each do |title_key, description_key| %>
+            <div class="ads-card__stack">
+              <p class="ads-card__title">
+                <%= t("headings.identity_verification_intro.#{title_key}") %>
+              </p>
+              <p class="ads-card__description">
+                <%= t("headings.identity_verification_intro.#{description_key}") %>
+              </p>
+            </div>
+          <% end %>
+        <% end %>
+      </div>
+
+      <div class="ads-copy">
+        <h2><%= t('headings.identity_verification_intro.protect_data_heading') %></h2>
+        <p class="ads-card__description">
+          <%= t(
+                'headings.identity_verification_intro.protect_data_body',
+                sp: @presenter.sp_name,
+              ) %>
+        </p>
+      </div>
+
+      <%= simple_form_for(
+            :doc_auth,
+            url: url_for,
+            method: :put,
+            html: { class: 'ads-form ads-form--align-stretch js-consent-continue-form' },
+          ) do %>
+        <%= render ADS::StackComponent.new(kind: :actions, gap: 12, align: :stretch) do %>
+          <%= render ButtonComponent.new(
+                type: :submit,
+              ).with_content(t('doc_auth.buttons.continue')) %>
+
+          <%= render ButtonComponent.new(
+                url: idv_cancel_path(step: 'welcome'),
+                variant: :quaternary,
+              ).with_content(t('idv.buttons.phone.no_us_phone_number')) %>
+        <% end %>
       <% end %>
     <% end %>
   <% end %>
-
-  <%= simple_form_for(
-        :doc_auth,
-        url: url_for,
-        method: 'put',
-        html: { class: 'margin-top-2 margin-bottom-5 js-consent-continue-form' },
-      ) do |f| %>
-    <div class="margin-top-4">
-      <%= render(
-            SpinnerButtonComponent.new(
-              type: :submit,
-              big: true,
-              wide: true,
-              spin_on_click: false,
-            ).with_content(t('doc_auth.buttons.continue')),
-          ) %>
-    </div>
-  <% end %>
-
-  <%= render 'shared/cancel', link: idv_cancel_path(step: 'welcome') %>
 <% end %>
 <%= javascript_packs_tag_once('document-capture-welcome') %>

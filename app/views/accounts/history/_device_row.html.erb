@@ -1,0 +1,21 @@
+<li>
+  <div class="ads-history__row">
+    <div class="ads-history__row-content">
+      <h3 class="ads-history__row-title"><%= device.nice_name %></h3>
+      <p class="ads-history__row-meta">
+        <%= render TimeComponent.new(time: device.happened_at) %>
+      </p>
+      <p class="ads-history__row-description">
+        <%= device.last_sign_in_location_and_ip %>
+      </p>
+    </div>
+
+    <div class="ads-history__row-actions">
+      <%= render ButtonComponent.new(
+            url: account_events_path(id: device.id),
+            variant: :quaternary,
+            size: :md,
+          ).with_content(t('account.dashboard.history.details')) %>
+    </div>
+  </div>
+</li>

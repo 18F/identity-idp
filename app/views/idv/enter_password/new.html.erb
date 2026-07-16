@@ -1,52 +1,52 @@
 <% self.title = @title %>
 
-<% content_for(:pre_flash_content) do %>
-  <%= render StepIndicatorComponent.new(
-        steps: step_indicator_steps,
-        current_step: step_indicator_step,
-        locale_scope: 'idv',
-        class: 'margin-x-neg-2 margin-top-neg-4 tablet:margin-x-neg-6 tablet:margin-top-neg-4',
-      ) %>
-<% end %>
+<%= render 'idv/shared/step_indicator', current_step: step_indicator_step %>
 
-<%= render PageHeadingComponent.new.with_content(@heading) %>
+<%= render ADS::FormPageComponent.new(title: @heading) do |page| %>
+  <% page.with_body do %>
+    <%= render ADS::StackComponent.new(gap: 24) do %>
+      <div class="ads-copy ads-copy--centered">
+        <p><%= t('idv.messages.enter_password.message', app_name: APP_NAME) %></p>
+      </div>
 
-<p>
-  <%= t('idv.messages.enter_password.message', app_name: APP_NAME) %>
-</p>
+      <%= simple_form_for(
+            current_user,
+            url: idv_enter_password_path,
+            method: :put,
+            html: { class: 'ads-form ads-form--align-stretch' },
+          ) do |f| %>
+        <%= render ADS::StackComponent.new(gap: 32, align: :stretch) do %>
+          <%= render InputComponent.new(
+                form: f,
+                attribute: :password,
+                label: t('idv.form.password'),
+                type: :password,
+                required: true,
+                autocomplete: 'current-password',
+              ) %>
 
-<%= simple_form_for(
-      current_user,
-      url: idv_enter_password_path,
-      method: :put,
-      html: { class: 'margin-top-4' },
-    ) do |f| %>
-  <%= render PasswordToggleComponent.new(
-        form: f,
-        field_options: {
-          label: t('idv.form.password'),
-          required: true,
-          input_html: {
-            autocomplete: 'current-password',
-          },
-        },
-      ) %>
-  <div class="text-right margin-top-neg-4">
-    <%= link_to(t('idv.forgot_password.link_text'), idv_forgot_password_url, class: 'margin-left-1') %>
-  </div>
+          <% if @verify_by_mail %>
+            <%= render AlertComponent.new(
+                  type: :warning,
+                  dismissible: false,
+                  id: 'by-mail-password-warning',
+                ) do
+                  t('idv.messages.enter_password.by_mail_password_reminder_html')
+                end %>
+          <% end %>
 
-  <% if @verify_by_mail %>
-    <%= render AlertComponent.new(
-          type: :warning,
-          id: 'by-mail-password-warning',
-          class: 'margin-top-4',
-        ) do
-          t('idv.messages.enter_password.by_mail_password_reminder_html')
-        end
-    %>
+          <%= render ADS::StackComponent.new(kind: :actions, gap: 8, align: :stretch) do %>
+            <%= render ButtonComponent.new(
+                  type: :submit,
+                ).with_content(t('forms.buttons.continue')) %>
+
+            <%= render ButtonComponent.new(
+                  url: idv_forgot_password_url,
+                  variant: :quaternary,
+                ).with_content(t('idv.forgot_password.link_text')) %>
+          <% end %>
+        <% end %>
+      <% end %>
+    <% end %>
   <% end %>
-
-  <%= f.submit t('forms.buttons.continue'), class: 'margin-top-5' %>
 <% end %>
-
-<%= render 'idv/doc_auth/cancel', step: 'review' %>

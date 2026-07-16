@@ -22,7 +22,14 @@
             },
           },
           hint_html: { id: hint_id },
-          error_html: { id: error_id },
+          error_html: {
+            id: error_id,
+            class: [
+              *tag_options.dig(:error_html, :class),
+              'ads-input__error',
+              ('ads-input__error--visible' if has_errors?),
+            ].compact,
+          },
         ),
       ) %>
 <% end %>

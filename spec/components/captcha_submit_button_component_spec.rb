@@ -17,6 +17,12 @@ RSpec.describe CaptchaSubmitButtonComponent, type: :component do
     expect(rendered).to have_css("lg-captcha-submit-button[recaptcha-action='#{action}']")
   end
 
+  it 'renders with ADS form button wrappers and large button' do
+    expect(rendered).to have_css('lg-captcha-submit-button.ads-form__button-wrapper')
+    expect(rendered).to have_css('lg-spinner-button.ads-form__button-wrapper')
+    expect(rendered).to have_css('.ads-button--lg')
+  end
+
   it 'renders with content' do
     expect(rendered).to have_content(content)
   end
@@ -70,10 +76,10 @@ RSpec.describe CaptchaSubmitButtonComponent, type: :component do
   end
 
   context 'with button options' do
-    let(:options) { super().merge(button_options: { full_width: true }) }
+    let(:options) { super().merge(button_options: { variant: :secondary }) }
 
-    it 'renders spinner button with additional options' do
-      expect(rendered).to have_css('lg-spinner-button .usa-button--full-width')
+    it 'renders ADS button with additional options' do
+      expect(rendered).to have_css('lg-spinner-button .ads-button--secondary')
     end
   end
 
@@ -96,8 +102,12 @@ RSpec.describe CaptchaSubmitButtonComponent, type: :component do
     context 'with mock validator enabled' do
       let(:recaptcha_mock_validator) { true }
 
-      it 'renders mock score field' do
-        expect(rendered).to have_field(t('components.captcha_submit_button.mock_score_label'))
+      it 'does not render mock score field while UI is disabled' do
+        expect(rendered).not_to have_field(t('components.captcha_submit_button.mock_score_label'))
+      end
+
+      it 'submits a default mock score when the override UI is hidden' do
+        expect(rendered).to have_field('recaptcha_mock_score', type: :hidden, with: '1.0')
       end
     end
   end

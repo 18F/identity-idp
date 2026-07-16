@@ -25,7 +25,7 @@ describe('HybridDocCaptureWarning', () => {
       );
       const alertElement = getByRole('status');
 
-      expect(alertElement.classList.contains('usa-alert--warning'));
+      expect(alertElement.classList.contains('ads-alert--warning'));
     });
   });
 

@@ -67,7 +67,7 @@ module Users
         session.delete(:redirect_to_change_password)
         redirect_to after_sign_in_path_for(current_user)
       else
-        redirect_to account_path
+        redirect_to account_settings_path
       end
     end
 

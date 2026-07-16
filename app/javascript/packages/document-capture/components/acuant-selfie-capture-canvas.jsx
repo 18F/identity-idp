@@ -42,7 +42,7 @@ function AcuantSelfieCaptureCanvas({ imageCaptureText, onSelfieCaptureClosed }) 
         </p>
       </div>
       {!loadedAcuantCamera && (
-        <button type="button" onClick={onSelfieCaptureClosed} className="usa-sr-only">
+        <button type="button" onClick={onSelfieCaptureClosed} className="ads-sr-only">
           {t('doc_auth.buttons.close')}
         </button>
       )}

@@ -15,14 +15,6 @@ RSpec.describe 'idv/session_errors/state_id_warning.html.erb' do
     expect(rendered).to have_text(t('idv.warning.state_id.explanation'))
   end
 
-  it 'shows next steps' do
-    expect(rendered).to have_text(strip_tags(t('idv.warning.state_id.next_steps.preamble')))
-
-    t('idv.warning.state_id.next_steps.items_html', app_name: APP_NAME).each do |item|
-      expect(rendered).to have_text(strip_tags(item))
-    end
-  end
-
   it 'shows a primary action' do
     expect(rendered).to have_link(t('idv.warning.state_id.try_again_button'), href: '/try_again')
   end

@@ -135,7 +135,7 @@ RSpec.describe Users::BackupCodeSetupController do
 
       post :delete
 
-      expect(response).to redirect_to(account_two_factor_authentication_path)
+      expect(response).to redirect_to(account_security_path)
       expect(user.backup_code_configurations.length).to eq 0
     end
 
@@ -156,7 +156,7 @@ RSpec.describe Users::BackupCodeSetupController do
 
       post :delete
 
-      expect(response).to redirect_to(account_two_factor_authentication_path)
+      expect(response).to redirect_to(account_security_path)
       expect(user.backup_code_configurations.length).to eq BackupCodeGenerator::NUMBER_OF_CODES
     end
   end
@@ -197,7 +197,7 @@ RSpec.describe Users::BackupCodeSetupController do
       codes = BackupCodeGenerator.new(user).delete_and_regenerate
       controller.user_session[:backup_codes] = codes
       post :continue
-      expect(response).to redirect_to(account_url)
+      expect(response).to redirect_to(account_url(anchor: 'welcome'))
     end
   end
 

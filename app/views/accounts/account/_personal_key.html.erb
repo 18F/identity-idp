@@ -1,0 +1,22 @@
+<section class="ads-account__section" aria-labelledby="account-personal-key-heading">
+  <h2 id="account-personal-key-heading" class="ads-account__heading">
+    <%= t('account.items.personal_key') %>
+  </h2>
+
+  <div class="ads-account__panel">
+    <div class="ads-account__row">
+      <p class="ads-account__row-text">
+        <%= t('account.personal_key.reset_instructions') %>
+      </p>
+
+      <div class="ads-account__row-actions">
+        <%= render ButtonComponent.new(
+              url: create_new_personal_key_url,
+              variant: :quaternary,
+              size: :md,
+              'aria-label': "#{t('account.links.regenerate_personal_key')}: #{t('account.items.personal_key')}",
+            ).with_content(t('account.links.regenerate_personal_key')) %>
+      </div>
+    </div>
+  </div>
+</section>

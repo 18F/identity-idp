@@ -15,104 +15,39 @@ RSpec.describe ButtonComponent, type: :component do
     expect(rendered).to have_content(content)
   end
 
-  it 'renders with design system classes' do
-    expect(rendered).to have_css('button.usa-button')
+  it 'renders the primary large button by default' do
+    expect(rendered).to have_css('button.ads-button.ads-button--primary.ads-button--lg')
   end
 
-  context 'with outline' do
-    let(:options) { { outline: true } }
+  context 'with variant' do
+    let(:options) { { variant: :secondary } }
 
-    it 'renders with design system classes' do
-      expect(rendered).to have_css('button.usa-button.usa-button--outline')
-    end
-  end
-
-  context 'as big' do
-    let(:options) { { big: true } }
-
-    it 'renders with design system classes' do
-      expect(rendered).to have_css('button.usa-button.usa-button--big')
+    it 'renders the variant class' do
+      expect(rendered).to have_css('button.ads-button.ads-button--secondary')
     end
   end
 
-  context 'as wide' do
-    let(:options) { { wide: true } }
+  context 'with ghost variant' do
+    let(:options) { { variant: :ghost } }
 
-    it 'renders with design system classes' do
-      expect(rendered).to have_css('button.usa-button.usa-button--wide')
+    it 'renders the ghost class' do
+      expect(rendered).to have_css('button.ads-button.ads-button--ghost')
     end
   end
 
-  context 'as full width' do
-    let(:options) { { full_width: true } }
+  context 'with destructive variant' do
+    let(:options) { { variant: :destructive } }
 
-    it 'renders with design system classes' do
-      expect(rendered).to have_css('button.usa-button.usa-button--full-width')
+    it 'renders the destructive class' do
+      expect(rendered).to have_css('button.ads-button.ads-button--destructive')
     end
   end
 
-  context 'as unstyled' do
-    let(:options) { { unstyled: true } }
+  context 'with size' do
+    let(:options) { { size: :lg } }
 
-    it 'renders with design system classes' do
-      expect(rendered).to have_css('button.usa-button.usa-button--unstyled')
-    end
-  end
-
-  context 'as dangerous' do
-    let(:options) { { danger: true } }
-
-    it 'renders with design system classes' do
-      expect(rendered).to have_css('button.usa-button.usa-button--danger')
-    end
-  end
-
-  context 'with tag options' do
-    it 'renders as attributes' do
-      rendered = render_inline ButtonComponent.new(
-        type: :button,
-        class: 'my-custom-class',
-        data: { foo: 'bar' },
-      )
-
-      expect(rendered).to have_css('.usa-button.my-custom-class[type="button"][data-foo="bar"]')
-    end
-  end
-
-  context 'with icon' do
-    it 'renders an icon' do
-      rendered = render_inline ButtonComponent.new(icon: :print).with_content(content)
-
-      expect(rendered).to have_xpath('//style[contains(text(), "/print-")]')
-      expect(rendered.first_element_child.xpath('./text()').text).to eq(content)
-    end
-
-    context 'with content including whitespace and safe html' do
-      let(:content) { safe_join([" \n ", content_tag('span', 'Button', class: 'example')]) }
-
-      it 'trims text of the content, maintaining html safety' do
-        rendered = render_inline ButtonComponent.new(icon: :print).with_content(content)
-
-        expect(rendered.to_html).to include('</span><span class="example">Button</span>')
-      end
-    end
-
-    context 'with content including whitespace and unsafe html' do
-      let(:content) { safe_join([" \n ", '<span class="example">Button</span>']) }
-
-      it 'trims text of the content, maintaining html safety' do
-        rendered = render_inline ButtonComponent.new(icon: :print).with_content(content)
-
-        expect(rendered.to_html).to include(
-          '</span>&lt;span class="example"&gt;Button&lt;/span&gt;',
-        )
-      end
-    end
-
-    context 'with no content' do
-      it 'renders without error' do
-        render_inline ButtonComponent.new(icon: :print)
-      end
+    it 'renders the size class' do
+      expect(rendered).to have_css('button.ads-button.ads-button--lg')
     end
   end
 
@@ -129,7 +64,7 @@ RSpec.describe ButtonComponent, type: :component do
       let(:options) { super().merge(method:) }
 
       it 'renders button to url' do
-        expect(rendered).to have_selector("form[action='#{url}']")
+        expect(rendered).to have_selector("form.ads-form__button-wrapper[action='#{url}']")
         expect(rendered).to have_selector("input[name='_method'][value='#{method}']", visible: :all)
         expect(rendered).to have_selector("button[type='submit']")
         expect(rendered).to have_text(content)

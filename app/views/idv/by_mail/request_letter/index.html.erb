@@ -1,66 +1,73 @@
 <% self.title = t('titles.idv.get_letter') %>
 
-<% content_for(:pre_flash_content) do %>
-  <%= render StepIndicatorComponent.new(
-        steps: step_indicator_steps,
-        current_step: :verify_address,
-        locale_scope: 'idv',
-        class: 'margin-x-neg-2 margin-top-neg-4 tablet:margin-x-neg-6 tablet:margin-top-neg-4',
-      ) %>
-<% end %>
+<%= render 'idv/shared/step_indicator', current_step: :verify_address %>
 
-<%= render AlertComponent.new(
-      type: :info,
-      message: t('idv.messages.gpo.info_alert'),
-      class: 'margin-bottom-4',
-    ) %>
+<%= render ADS::FormPageComponent.new(title: t('idv.titles.mail.verify')) do |page| %>
+  <% page.with_body do %>
+    <% learn_more_link_html = capture do %>
+      <%= render ADS::LinkComponent.new(
+            url: help_center_redirect_url(
+              category: 'verify-your-identity',
+              article: 'verify-your-address-by-mail',
+              flow: :idv,
+              step: :gpo_send_letter,
+            ),
+            target: '_blank',
+            rel: 'noopener noreferrer',
+          ) do %>
+        <%= t('idv.messages.gpo.learn_more_verify_by_mail') %>
+        <span class="ads-sr-only"><%= t('links.new_tab') %></span>
+      <% end %>
+    <% end %>
 
-<%= render PageHeadingComponent.new.with_content(t('idv.titles.mail.verify')) %>
+    <% verify_address_again_link_html = capture do %>
+      <%= render ADS::LinkComponent.new(url: idv_address_url) do %>
+        <%= t('idv.messages.gpo.verify_address_again_link_text') %>
+      <% end %>
+    <% end %>
 
-<p>
-  <%= t('idv.messages.gpo.timeframe_html') %>
-  <br />
-  <%= new_tab_link_to(
-        t('idv.messages.gpo.learn_more_verify_by_mail'),
-        help_center_redirect_url(
-          category: 'verify-your-identity',
-          article: 'verify-your-address-by-mail',
-          flow: :idv,
-          step: :gpo_send_letter,
-        ),
-      )
-  %>
-</p>
-<p>
-  <%= t('idv.messages.gpo.address_on_file') %>
-</p>
+    <%= render ADS::StackComponent.new(gap: 24) do %>
+      <div class="ads-copy">
+        <p><%= t('idv.messages.gpo.info_alert') %></p>
+        <p>
+          <%= t('idv.messages.gpo.timeframe_html') %>
+          <%= learn_more_link_html %>
+        </p>
+        <p><%= t('idv.messages.gpo.address_on_file') %></p>
+      </div>
 
-<p>
-  <%= render 'shared/address',
-             address: @applicant.slice(:address1, :address2, :city, :state, :zipcode)
-  %>
-</p>
+      <%= render CardComponent.new(padding: :compact) do %>
+        <div class="ads-card__stack">
+          <p class="ads-card__description"><%= render 'shared/address', address: @applicant %></p>
+        </div>
+      <% end %>
 
-<p>
-  <%= t(
-        'idv.messages.gpo.verify_address_again_html',
-        verify_address_again_link_html: link_to(
-          t('idv.messages.gpo.verify_address_again_link_text'),
-          idv_address_url,
-        ),
-      )
-  %>
-</p>
+      <div class="ads-copy">
+        <p>
+          <%= t(
+                'idv.messages.gpo.verify_address_again_html',
+                verify_address_again_link_html:,
+              ) %>
+        </p>
+      </div>
+    <% end %>
+  <% end %>
 
-<div class="margin-y-5">
-  <%= button_to t('idv.buttons.mail.send'),
-                idv_request_letter_path,
-                method: 'put',
-                class: 'usa-button usa-button--big usa-button--wide' %>
-</div>
+  <% page.with_actions do %>
+    <%= render ButtonComponent.new(
+          url: idv_request_letter_path,
+          method: :put,
+        ).with_content(t('idv.buttons.mail.send')) %>
 
-<% if FeatureManagement.idv_by_mail_only? %>
-  <%= render 'idv/doc_auth/cancel', step: 'gpo' %>
-<% else %>
-  <%= render 'idv/shared/back', fallback_path: idv_phone_path %>
+    <% if FeatureManagement.idv_by_mail_only? %>
+      <%= render ADS::LinkComponent.new(url: idv_cancel_path(step: 'gpo')) do %>
+        <%= t('links.cancel') %>
+      <% end %>
+    <% else %>
+      <%= render ButtonComponent.new(
+            url: go_back_path || idv_phone_path,
+            variant: :quaternary,
+          ).with_content(t('forms.buttons.back')) %>
+    <% end %>
+  <% end %>
 <% end %>

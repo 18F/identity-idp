@@ -1,210 +1,128 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html
-  xmlns="http://www.w3.org/1999/xhtml">
+<html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
-    <meta content="width=device-width" name="viewport" /><%= stylesheet_link_tag 'email' %>
-    <title><%= @header || message.subject %>
-    </title>
+    <meta content="width=device-width" name="viewport" />
+    <meta content="light" name="color-scheme" />
+    <% mailer_url_options = Rails.application.config.action_mailer.default_url_options %>
+    <% font_asset_url = lambda do |path|
+         if Rails.env.development?
+           asset_pathname = URI.parse(asset_path(path)).path
+           "#{mailer_url_options.fetch(:protocol)}://#{mailer_url_options.fetch(:host)}#{asset_pathname}"
+         else
+           asset_url(path)
+         end
+       end %>
+    <style type="text/css">
+      @font-face {
+        font-family: 'Inter Variable';
+        font-style: normal;
+        font-weight: 100 900;
+        font-display: swap;
+        src: url('<%= font_asset_url.call('inter/InterVariable.woff2') %>') format('woff2-variations');
+      }
+
+      @font-face {
+        font-family: 'Inter Variable';
+        font-style: italic;
+        font-weight: 100 900;
+        font-display: swap;
+        src: url('<%= font_asset_url.call('inter/InterVariable-Italic.woff2') %>') format('woff2-variations');
+      }
+    </style>
+    <%= stylesheet_link_tag 'email' %>
+    <title><%= @header || message.subject %></title>
   </head>
-  <body>
-    <table class="body" data-made-with-foundation="">
-      <tbody>
-        <tr>
-          <td align="center" class="float-center" valign="top">
-            <center>
-              <table class="spacer">
-                <tbody>
-                  <tr>
-                    <td class="s10" height="10px">
-                      &nbsp;
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-              <table class="container float-center">
-                <tbody>
+  <body class="mailer-shell">
+    <table class="mailer-shell-table" width="100%" cellpadding="0" cellspacing="0" border="0" role="presentation">
+      <tr>
+        <td class="mailer-shell-cell" align="center">
+          <!--[if mso]>
+          <table width="568" cellpadding="0" cellspacing="0" border="0" role="presentation">
+            <tr>
+              <td>
+          <![endif]-->
+          <table class="mailer-frame" width="100%" cellpadding="0" cellspacing="0" border="0" role="presentation" style="max-width: 568px;">
+            <tr>
+              <td class="mailer-frame-cell" align="center">
+                <!--[if mso]>
+                <table width="520" cellpadding="0" cellspacing="0" border="0" role="presentation">
                   <tr>
                     <td>
-                      <table class="spacer">
-                        <tbody>
-                          <tr>
-                            <td class="s60" height="60px">
-                              &nbsp;
-                            </td>
-                          </tr>
-                        </tbody>
-                      </table>
-                      <table class="row">
-                        <tbody>
-                        <% if @sp_name %>
-                          <tr>
-                            <th class="small-12 large-12 columns first last">
-                              <table>
-                                <tr style="display: table">
-                                  <th width="142px" style="padding-right: 20px; vertical-align: middle; display: table-cell">
-                                    <%= image_tag(
-                                          attachments['logo.png'].url,
-                                          size: '142x19',
-                                          style: 'width: 142px; height: 19px;',
-                                          alt: t('mailer.logo', app_name: APP_NAME),
-                                        ) %>
-                                  </th>
-                                  <% if @logo_url %>
-                                    <th style="vertical-align: middle; display: table-cell; border-left-width: 1px; padding-left: 20px; border-left-style: solid; border-color: #3C3C3C"> <%= image_tag(@logo_url, height: 40, width: 'auto', alt: @sp_name) %> </th> 
-                                  <% else %>
-                                    <th style="vertical-align: middle; display: table-cell; border-left-width: 1px; padding-left: 20px; border-left-style: solid; border-color: #3C3C3C"> <%= @sp_name =%> </th> 
-                                  <% end %>
-                                  <th class="expander"></th>
-                                </tr>
-                              </table>
-                            </th>
-                          </tr>
-                        <% else %>
-                          <tr>
-                            <th class="small-12 large-12 columns first last">
-                              <table>
-                                <tr>
-                                  <th>
-                                    <%= image_tag(
-                                          attachments['logo.png'].url,
-                                          size: '142x19',
-                                          style: 'width: 142px; height: 19px;',
-                                          alt: t('mailer.logo', app_name: APP_NAME),
-                                        ) %>
-                                  </th>
-                                  <th class="expander"></th>
-                                </tr>
-                              </table>
-                            </th>
-                          </tr>
-                        <% end %>
-                        </tbody>
-                      </table>
-                      <table class="row">
-                        <tbody>
-                          <tr>
-                            <th class="small-12 large-12 columns first last">
-                              <table>
-                                <tr>
-                                  <th>
-                                    <table class="spacer">
-                                      <tbody>
-                                        <tr>
-                                          <td class="s30" height="30px">
-                                            &nbsp;
-                                          </td>
-                                        </tr>
-                                      </tbody>
-                                    </table>
-                                    <% unless @hide_title %>
-                                      <h1><%= @header || message.subject %></h1>
-                                    <% end %>
-                                    <%= yield %>
-                                    <table class="spacer">
-                                      <tbody>
-                                        <tr>
-                                          <td class="s30" height="30px">
-                                            &nbsp;
-                                          </td>
-                                        </tr>
-                                      </tbody>
-                                    </table>
-                                  </th>
-                                </tr>
-                              </table>
-                            </th>
-                          </tr>
-                        </tbody>
-                      </table>
-                      <table align="center" class="wrapper">
-                        <tr>
-                          <td class="wrapper-inner">
-                            <table class="row">
-                              <tbody>
-                                <tr>
-                                  <th class="small-12 large-12 columns first last">
-                                    <table>
-                                      <tr>
-                                        <th>
-                                          <p>
-                                            <%= t('mailer.no_reply') %>
-                                            <%= @help_text || t(
-                                                  'mailer.help_html',
-                                                  link_html: link_to(
-                                                    MarketingSite.nice_help_url,
-                                                    MarketingSite.help_url,
-                                                  ),
-                                                ) %>
-                                          </p>
-                                        </th>
-                                      </tr>
-                                    </table>
-                                  </th>
-                                </tr>
-                              </tbody>
-                            </table>
-                          </td>
-                        </tr>
-                      </table>
-                      <table class="xwrapper">
-                        <tr>
-                          <td class="xwrapper-inner">
-                            <table class="row">
-                              <tbody>
-                                <tr>
-                                  <th class="small-12 large-12 columns first last">
-                                    <table class="hr">
-                                      <tr>
-                                        <th>
-                                          &nbsp;
-                                        </th>
-                                      </tr>
-                                    </table>
-                                    <table>
-                                      <tr>
-                                        <th>
-                                          <p>
-                                            <%= link_to(
-                                                  t('mailer.about', app_name: APP_NAME),
-                                                  MarketingSite.base_url,
-                                                  style: 'text-decoration: underline;',
-                                                ).html_safe %>
-                                            &nbsp;&nbsp;|&nbsp;&nbsp;
-                                            <%= link_to(
-                                                  t('mailer.privacy_policy'),
-                                                  MarketingSite.security_and_privacy_practices_url,
-                                                  style: 'text-decoration: underline;',
-                                                ).html_safe %>
-                                          </p>
-                                          <p>
-                                            <%= t('mailer.sent_at', formatted_timestamp: Time.zone.now.iso8601(6)) %>
-                                          </p>
-                                        </th>
-                                        <th class="expander"></th>
-                                      </tr>
-                                    </table>
-                                  </th>
-                                </tr>
-                              </tbody>
-                            </table>
-                          </td>
-                        </tr>
-                      </table>
+                <![endif]-->
+                <table class="mailer-template" width="100%" cellpadding="0" cellspacing="0" border="0" role="presentation" style="max-width: 520px;">
+                  <tr>
+                    <td align="center">
+                      <%= render 'shared/login_gov_logo',
+                                 width: 209,
+                                 height: 28,
+                                 class: 'mailer-template__logo' %>
                     </td>
                   </tr>
-                </tbody>
-              </table>
-            </center>
-          </td>
-        </tr>
-      </tbody>
-      <!--prevent Gmail on iOS font size manipulation-->
-      <div style="display:none; white-space:nowrap; font:15px courier; line-height:0;">
-        &#xA0; &#xA0; &#xA0; &#xA0; &#xA0; &#xA0; &#xA0; &#xA0; &#xA0; &#xA0; &#xA0; &#xA0; &#xA0;
-        &#xA0; &#xA0; &#xA0; &#xA0; &#xA0; &#xA0; &#xA0; &#xA0; &#xA0; &#xA0; &#xA0; &#xA0; &#xA0;
-        &#xA0; &#xA0; &#xA0; &#xA0;
-      </div>
+                  <tr>
+                    <td class="mailer-template__gap mailer-template__gap--after-logo">&nbsp;</td>
+                  </tr>
+                  <% unless @ipp_email %>
+                    <tr>
+                      <td class="mailer-template__rule">&nbsp;</td>
+                    </tr>
+                  <% end %>
+                  <tr>
+                    <td class="mailer-template__content">
+                      <% unless @hide_title %>
+                        <h1 class="mailer-template__title<%= ' mailer-template__title--ipp' if @ipp_email %>"><%= @header || message.subject %></h1>
+                      <% end %>
+                      <%= yield %>
+                    </td>
+                  </tr>
+                  <% unless @ipp_email %>
+                    <tr>
+                      <td class="mailer-template__rule">&nbsp;</td>
+                    </tr>
+                  <% end %>
+                  <tr>
+                    <td class="mailer-template__footer" align="center">
+                      <%= render 'shared/gsa_logo',
+                                 width: 48,
+                                 height: 48,
+                                 class: 'mailer-template__agency-logo mailer-template__agency-logo--solo' %>
+                      <p class="mailer-template__footer-text"><%= t('mailer.official_communication') %></p>
+                      <p class="mailer-template__footer-text mailer-template__footer-text--help">
+                        <%= mailer_html(
+                              'mailer.help_contact_html',
+                              help_center_link_html: mailer_link_to(
+                                t('mailer.help_center_link_text'),
+                                MarketingSite.help_url,
+                                class: 'mailer-template__footer-link',
+                                target: '_blank',
+                                rel: 'noopener',
+                              ),
+                            ) %>
+                      </p>
+                    </td>
+                  </tr>
+                </table>
+                <!--[if mso]>
+                    </td>
+                  </tr>
+                </table>
+                <![endif]-->
+              </td>
+            </tr>
+          </table>
+          <!--[if mso]>
+              </td>
+            </tr>
+          </table>
+          <![endif]-->
+        </td>
+      </tr>
     </table>
+    <!--prevent Gmail on iOS font size manipulation-->
+    <div class="mailer-gmail-font-guard">
+      &#xA0; &#xA0; &#xA0; &#xA0; &#xA0; &#xA0; &#xA0; &#xA0; &#xA0; &#xA0; &#xA0; &#xA0; &#xA0;
+      &#xA0; &#xA0; &#xA0; &#xA0; &#xA0; &#xA0; &#xA0; &#xA0; &#xA0; &#xA0; &#xA0; &#xA0; &#xA0;
+      &#xA0; &#xA0; &#xA0; &#xA0;
+    </div>
   </body>
 </html>

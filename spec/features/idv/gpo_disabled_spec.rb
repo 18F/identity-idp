@@ -28,7 +28,7 @@ RSpec.feature 'disabling GPO address verification' do
       fill_out_phone_form_ok('2342255432')
       choose_idv_otp_delivery_method_sms
       fill_in_code_with_last_phone_otp
-      click_submit_default
+      click_button t('forms.buttons.continue')
       fill_in 'Password', with: user.password
       click_continue
       acknowledge_and_confirm_personal_key

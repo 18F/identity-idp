@@ -7,19 +7,15 @@ export function showOrHideJurisdictionExtras(jurisdictionCode) {
     const shouldShow =
       element.dataset.state === jurisdictionCode ||
       (!hasJurisdictionSpecificHint && element.dataset.state === 'default');
-    element.classList.toggle('display-none', !shouldShow);
+    element.hidden = !shouldShow;
   });
 }
 
 export function showOrHidePuertoRicoExtras(forStateCode) {
   const isPuertoRico = forStateCode === 'PR';
 
-  document.querySelectorAll('.puerto-rico-extras').forEach((element) => {
-    if (isPuertoRico) {
-      element.classList.remove('display-none');
-    } else {
-      element.classList.add('display-none');
-    }
+  document.querySelectorAll<HTMLElement>('.puerto-rico-extras').forEach((element) => {
+    element.hidden = !isPuertoRico;
   });
 }
 

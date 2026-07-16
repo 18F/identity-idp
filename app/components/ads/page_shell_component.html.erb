@@ -1,0 +1,35 @@
+<% helpers.stylesheet_tag_once('ads-transition') if transition %>
+<div class="<%= body_class %>"<%= ' data-ads-page-transition' if transition %>>
+  <% unless hide_chrome %>
+    <% if chrome? %>
+      <%= chrome %>
+    <% else %>
+      <% progress = helpers.ads_chrome_progress %>
+      <%= render ADS::PageChromeComponent.new do |chrome| %>
+        <% if progress.present? %>
+          <% chrome.with_progress do %>
+            <%= progress %>
+          <% end %>
+        <% end %>
+      <% end %>
+    <% end %>
+  <% end %>
+
+  <%= content_tag(main_tag, **main_options) do %>
+    <% if body? %>
+      <%= body %>
+    <% else %>
+      <%= content %>
+    <% end %>
+  <% end %>
+
+  <% unless hide_footer %>
+    <div class="ads-auth-page__footer-wrapper">
+      <% if footer? %>
+        <%= footer %>
+      <% else %>
+        <%= render ADS::PageFooterChromeComponent.new %>
+      <% end %>
+    </div>
+  <% end %>
+</div>

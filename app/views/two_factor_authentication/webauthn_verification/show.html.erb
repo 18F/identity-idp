@@ -1,43 +1,49 @@
 <% self.title = @presenter.webauthn_title %>
 
-<%= render PageHeadingComponent.new.with_content(@presenter.header) %>
+<%= render ADS::FormPageComponent.new(
+      title: @presenter.header,
+      subtitle: @presenter.webauthn_help,
+    ) do |page| %>
+  <% page.with_body do %>
+    <%= form_with(
+          url: login_two_factor_webauthn_path,
+          method: :patch,
+          local: true,
+          id: 'webauthn-form',
+          class: 'ads-form',
+        ) do %>
+      <%= render ADS::StackComponent.new(kind: :form, gap: 32, align: :stretch) do %>
+        <%= hidden_field_tag :platform, @presenter.platform_authenticator? %>
 
-<p>
-  <%= @presenter.webauthn_help %>
-</p>
+        <div class="ads-checkbox">
+          <%= check_box_tag(
+                :remember_device,
+                '1',
+                @presenter.remember_device_box_checked?,
+                class: 'ads-checkbox__input',
+              ) %>
+          <%= label_tag(
+                :remember_device,
+                t('forms.messages.remember_device'),
+                class: 'ads-checkbox__label',
+              ) %>
+        </div>
 
-<%= simple_form_for(
-      '',
-      url: login_two_factor_webauthn_path,
-      method: :patch,
-      html: {
-        class: 'margin-bottom-1',
-        id: 'webauthn-form',
-      },
-    ) do |f| %>
-  <%= hidden_field_tag :platform, @presenter.platform_authenticator? %>
+        <%= render ADS::StackComponent.new(kind: :actions, gap: 8, align: :stretch) do %>
+          <%= render WebauthnVerifyButtonComponent.new(
+                credentials: @presenter.credentials,
+                user_challenge: user_session[:webauthn_challenge],
+                data: {
+                  auto_prompt: @presenter.auto_prompt? || nil,
+                },
+              ).with_content(@presenter.authenticate_button_text) %>
 
-  <%= render WebauthnVerifyButtonComponent.new(
-        credentials: @presenter.credentials,
-        user_challenge: user_session[:webauthn_challenge],
-        data: {
-          auto_prompt: @presenter.auto_prompt? || nil,
-        },
-      ).with_content(@presenter.authenticate_button_text) %>
-
-  <%= f.input(
-        :remember_device,
-        as: :boolean,
-        label: t('forms.messages.remember_device'),
-        aria: { describedby: 'remember-browser-description' },
-        wrapper_html: { class: 'margin-y-5' },
-        input_html: {
-          class: 'usa-checkbox__input--bordered',
-          checked: @presenter.remember_device_box_checked?,
-        },
-      ) %>
-  <p class='margin-top-1 font-body-2xs' id='remember-browser-description'><%= t('forms.messages.public_shared_device_html') %></p>
-
-  <%= render 'two_factor_authentication/troubleshooting_options', presenter: @presenter %>
+          <%= render ButtonComponent.new(
+                url: login_two_factor_options_path,
+                variant: :quaternary,
+              ).with_content(t('two_factor_authentication.login_options_link_text')) %>
+        <% end %>
+      <% end %>
+    <% end %>
+  <% end %>
 <% end %>
-<%= render 'shared/cancel', link: @presenter.cancel_link %>

@@ -1,8 +1,5 @@
 /** @type {Record<string, string[]>} */
-const DEPENDENCY_LOAD_PATHS_MAPPING = {
-  '@18f/identity-design-system': ['node_modules/@18f/identity-design-system/packages'],
-  '@uswds/uswds': ['node_modules/@uswds/uswds/packages'],
-};
+const DEPENDENCY_LOAD_PATHS_MAPPING = {};
 
 /**
  * Returns an array of load paths which should be loaded by default based on supported dependencies.

@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.feature 'Backup codes' do
   before do
     sign_in_and_2fa_user(user)
-    visit account_two_factor_authentication_path
+    visit account_security_path
   end
 
   context 'with backup codes' do
@@ -22,7 +22,7 @@ RSpec.feature 'Backup codes' do
       click_continue
 
       expect(page).to have_content(t('notices.backup_codes_configured'))
-      expect(page).to have_current_path(account_two_factor_authentication_path)
+      expect(page).to have_current_path(account_security_path)
     end
 
     it 'allows you to delete the backup codes' do
@@ -34,7 +34,7 @@ RSpec.feature 'Backup codes' do
       click_button t('account.index.backup_code_confirm_delete')
 
       expect(page).to have_content(t('notices.backup_codes_deleted'))
-      expect(page).to have_current_path(account_two_factor_authentication_path)
+      expect(page).to have_current_path(account_security_path)
     end
   end
 
@@ -55,11 +55,11 @@ RSpec.feature 'Backup codes' do
       # Allow user to cancel
       expect do
         click_on t('links.cancel')
-        expect(page).to have_current_path(account_two_factor_authentication_path)
+        expect(page).to have_current_path(account_security_path)
       end.to_not change { user.backup_code_configurations.count }
 
-      # Create codes from navigation sidebar
-      within('.sidenav') { click_on t('account.navigation.get_backup_codes') }
+      # Create codes by returning to backup code setup
+      visit backup_code_setup_path
 
       # Allow user to confirm and continue
       expect(page).to have_current_path(backup_code_confirm_setup_path)
@@ -79,7 +79,7 @@ RSpec.feature 'Backup codes' do
       click_continue
 
       expect(page).to have_content(t('notices.backup_codes_configured'))
-      expect(page).to have_current_path(account_two_factor_authentication_path)
+      expect(page).to have_current_path(account_security_path)
       expect(page).to have_content(expected_message)
     end
   end
@@ -88,7 +88,7 @@ RSpec.feature 'Backup codes' do
     let(:user) { create(:user, :with_backup_code) }
 
     it 'the user is not prompted to set up another MFA upon login' do
-      expect(page).to have_current_path account_two_factor_authentication_path
+      expect(page).to have_current_path account_security_path
     end
   end
 end

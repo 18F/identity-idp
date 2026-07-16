@@ -1,0 +1,32 @@
+<%= content_tag(
+      :'lg-animated-media',
+      **tag_options.except(:class, :data),
+      class: css_class,
+      data: {
+        playing: 'true',
+        pause_label: t('components.animated_media.pause'),
+        play_label: t('components.animated_media.play'),
+        **tag_options.fetch(:data, {}),
+      },
+    ) do %>
+  <%= image_tag(
+        image,
+        alt:,
+        width:,
+        height:,
+        class: 'ads-animated-media__image',
+      ) %>
+  <canvas class="ads-animated-media__frame" hidden aria-hidden="true"></canvas>
+  <button
+    type="button"
+    class="ads-animated-media__toggle"
+    aria-label="<%= t('components.animated_media.pause') %>"
+  >
+    <span class="ads-animated-media__icon ads-animated-media__icon--pause" aria-hidden="true">
+      <%= render IconComponent.new(icon: :pause, size: 16) %>
+    </span>
+    <span class="ads-animated-media__icon ads-animated-media__icon--play" aria-hidden="true">
+      <%= render IconComponent.new(icon: :play, size: 16) %>
+    </span>
+  </button>
+<% end %>

@@ -26,7 +26,7 @@ RSpec.describe 'Remembering a webauthn device' do
         sign_in_user(user)
         check t('forms.messages.remember_device')
         mock_successful_webauthn_authentication { click_webauthn_authenticate_button }
-        first(:button, t('links.sign_out')).click
+        first(:button, t('links.sign_out'), visible: :all).click
         user
       end
 
@@ -46,7 +46,7 @@ RSpec.describe 'Remembering a webauthn device' do
         mock_press_button_on_hardware_key_on_setup
         skip_second_mfa_prompt
 
-        first(:button, t('links.sign_out')).click
+        first(:button, t('links.sign_out'), visible: :all).click
         user
       end
 
@@ -57,14 +57,14 @@ RSpec.describe 'Remembering a webauthn device' do
       def remember_device_and_sign_out_user
         mock_webauthn_setup_challenge
         sign_in_and_2fa_user(user)
-        visit account_two_factor_authentication_path
+        visit account_security_path
 
         first(:link, t('account.index.webauthn_add'), href: webauthn_setup_path).click
         fill_in_nickname_and_click_continue
         check t('forms.messages.remember_device')
         mock_press_button_on_hardware_key_on_setup
-        expect(page).to have_current_path(account_two_factor_authentication_path)
-        first(:button, t('links.sign_out')).click
+        expect(page).to have_current_path(account_security_path)
+        first(:button, t('links.sign_out'), visible: :all).click
         user
       end
 
@@ -89,7 +89,7 @@ RSpec.describe 'Remembering a webauthn device' do
         sign_in_user(user)
         check t('forms.messages.remember_device')
         mock_successful_webauthn_authentication { click_webauthn_authenticate_button }
-        first(:button, t('links.sign_out')).click
+        first(:button, t('links.sign_out'), visible: :all).click
         user
       end
 
@@ -98,7 +98,7 @@ RSpec.describe 'Remembering a webauthn device' do
 
     context 'sign up' do
       def click_2fa_option(option)
-        find("label[for='two_factor_options_form_selection_#{option}']").click
+        find("#two_factor_options_form_selection_#{option}").click
       end
 
       def remember_device_and_sign_out_user
@@ -132,7 +132,7 @@ RSpec.describe 'Remembering a webauthn device' do
         fill_in_code_with_last_phone_otp
         click_submit_default
 
-        first(:button, t('links.sign_out')).click
+        first(:button, t('links.sign_out'), visible: :all).click
         user
       end
 
@@ -143,13 +143,13 @@ RSpec.describe 'Remembering a webauthn device' do
       def remember_device_and_sign_out_user
         mock_webauthn_setup_challenge
         sign_in_and_2fa_user(user)
-        visit account_two_factor_authentication_path
+        visit account_security_path
         first(:link, t('account.index.webauthn_add'), href: webauthn_setup_path).click
         fill_in_nickname_and_click_continue
         check t('forms.messages.remember_device')
         mock_press_button_on_hardware_key_on_setup
-        expect(page).to have_current_path(account_two_factor_authentication_path)
-        first(:button, t('links.sign_out')).click
+        expect(page).to have_current_path(account_security_path)
+        first(:button, t('links.sign_out'), visible: :all).click
         user
       end
 

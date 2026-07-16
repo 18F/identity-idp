@@ -150,7 +150,7 @@ module Users
 
     def cap_piv_cac_count
       return unless IdentityConfig.store.max_piv_cac_per_account <= current_cac_count
-      redirect_to account_two_factor_authentication_path
+      redirect_to account_security_path
     end
 
     def current_cac_count

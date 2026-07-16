@@ -1,0 +1,19 @@
+<%= render ADS::PageShellComponent.new(width: :form) do |shell| %>
+  <% shell.with_body do %>
+    <%= render ADS::FormPageComponent.new(
+          title: 'Sign in',
+          subtitle: 'Enter your email address associated with your Login.gov account.',
+        ) do |page| %>
+      <% page.with_body do %>
+        <%= render ADS::StackComponent.new(kind: :form, gap: 16, align: :stretch) do %>
+          <p class="ads-auth__intro-description">Email field placeholder</p>
+          <p class="ads-auth__intro-description">Password field placeholder</p>
+        <% end %>
+      <% end %>
+      <% page.with_actions do %>
+        <%= render ButtonComponent.new(variant: :primary).with_content('Continue') %>
+        <%= render ButtonComponent.new(variant: :secondary).with_content('Create an account') %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% end %>

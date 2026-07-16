@@ -35,7 +35,20 @@ RSpec.describe 'devise/sessions/new.html.erb' do
   it 'has a localized page heading' do
     render
 
-    expect(rendered).to have_selector('h1', text: t('headings.sign_in_existing_users'))
+    expect(rendered).to have_selector('h1', text: t('titles.sign_in'))
+  end
+
+  it 'renders flash above the form page title' do
+    flash[:session_timed_out] = t('devise.failure.timeout')
+
+    render
+
+    expect(view.content_for?(:skip_layout_flash)).to eq(true)
+    expect(rendered).to have_css(
+      '.ads-auth--form-page > .ads-flash',
+      text: t('devise.failure.timeout'),
+    )
+    expect(rendered).to have_css('.ads-auth--form-page > .ads-flash + .ads-auth__intro')
   end
 
   it 'includes a link to create a new account' do
@@ -44,26 +57,12 @@ RSpec.describe 'devise/sessions/new.html.erb' do
     expect(rendered).to have_link(t('links.create_account'), href: sign_up_email_path)
   end
 
-  it 'includes a link to security / privacy page and privacy statement act' do
+  it 'includes the sign-in secondary links' do
     render
 
-    expect(rendered).to have_link(
-      t('notices.privacy.security_and_privacy_practices'),
-      href: policy_redirect_url(
-        policy: :security_and_privacy_practices,
-        flow: :sign_in,
-        step: :sign_in,
-      ),
-    ) { |link| link[:target] == '_blank' && link[:rel] == 'noopener noreferrer' }
-
-    expect(rendered).to have_link(
-      t('notices.privacy.privacy_act_statement'),
-      href: policy_redirect_url(
-        policy: :privacy_act_statement,
-        flow: :sign_in,
-        step: :sign_in,
-      ),
-    ) { |link| link[:target] == '_blank' && link[:rel] == 'noopener noreferrer' }
+    expect(rendered).to have_link(t('links.passwords.forgot'), href: new_user_password_url)
+    expect(rendered).to have_link(t('links.create_account'), href: sign_up_email_path)
+    expect(rendered).to have_link(t('account.login.piv_cac'), href: login_piv_cac_url)
   end
 
   context 'when SP is present' do
@@ -96,16 +95,20 @@ RSpec.describe 'devise/sessions/new.html.erb' do
       ].join(' ')
 
       expect(rendered).to have_content(sp_content, normalize_ws: true)
+      expect(rendered).to have_css('.ads-auth__intro-description')
+      expect(rendered).not_to have_css('img[src*="user-access"]')
     end
 
-    it 'displays a back to sp link' do
+    it 'displays a back to sp button' do
       render
 
       expect(rendered).to have_link(
         t(
           'links.back_to_sp',
           sp: 'Awesome Application!',
-        ), href: return_to_sp_cancel_path(step: :authentication)
+        ),
+        href: return_to_sp_cancel_path(step: :authentication),
+        class: 'ads-button--quaternary',
       )
     end
 
@@ -113,7 +116,7 @@ RSpec.describe 'devise/sessions/new.html.erb' do
       render
 
       expect(rendered).to have_selector(
-        '.usa-alert',
+        '.ads-alert',
         text: 'custom sign in help text for Awesome Application!',
       )
     end
@@ -131,7 +134,7 @@ RSpec.describe 'devise/sessions/new.html.erb' do
         render
 
         expect(rendered).to_not have_selector(
-          '.usa-alert',
+          '.ads-alert',
           text: 'custom sign in help text for Awesome Application!',
         )
       end
@@ -218,32 +221,15 @@ RSpec.describe 'devise/sessions/new.html.erb' do
       let(:sign_in_recaptcha_enabled) { false }
 
       it 'renders default sign-in submit button' do
-        expect(rendered).to have_button(t('forms.buttons.submit.default'))
+        expect(rendered).to have_button(t('forms.buttons.continue'))
         expect(rendered).not_to have_css('lg-captcha-submit-button')
-      end
-
-      it 'does not render the recaptcha disclaimer text' do
-        expect(rendered).not_to have_content(
-          strip_tags(
-            t(
-              'notices.sign_in.recaptcha.disclosure_statement_html',
-              google_policy_link_html: new_tab_link_to(
-                t('two_factor_authentication.recaptcha.google_policy_link'),
-                GooglePolicySite.privacy_url,
-              ),
-              google_tos_link_html: new_tab_link_to(
-                t('two_factor_authentication.recaptcha.google_tos_link'), GooglePolicySite.terms_url
-              ),
-            ),
-          ),
-        )
       end
 
       context 'recaptcha mock validator is enabled' do
         let(:recaptcha_mock_validator) { true }
 
         it 'renders captcha sign-in submit button' do
-          expect(rendered).to have_button(t('forms.buttons.submit.default'))
+          expect(rendered).to have_button(t('forms.buttons.continue'))
           expect(rendered).to have_css('lg-captcha-submit-button')
         end
       end
@@ -253,25 +239,8 @@ RSpec.describe 'devise/sessions/new.html.erb' do
       let(:sign_in_recaptcha_enabled) { true }
 
       it 'renders captcha sign-in submit button' do
-        expect(rendered).to have_button(t('forms.buttons.submit.default'))
+        expect(rendered).to have_button(t('forms.buttons.continue'))
         expect(rendered).to have_css('lg-captcha-submit-button')
-      end
-
-      it 'renders recaptcha disclaimer text' do
-        expect(rendered).to have_content(
-          strip_tags(
-            t(
-              'notices.sign_in.recaptcha.disclosure_statement_html',
-              google_policy_link_html: new_tab_link_to(
-                t('two_factor_authentication.recaptcha.google_policy_link'),
-                GooglePolicySite.privacy_url,
-              ),
-              google_tos_link_html: new_tab_link_to(
-                t('two_factor_authentication.recaptcha.google_tos_link'), GooglePolicySite.terms_url
-              ),
-            ),
-          ),
-        )
       end
     end
   end

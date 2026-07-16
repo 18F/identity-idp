@@ -5,10 +5,10 @@ class DownloadButtonComponent < ButtonComponent
 
   def initialize(file_data:, file_name:, **tag_options)
     super(
-      icon: :file_download,
+      **tag_options,
+      icon: :download,
       url: "data:text/plain;charset=utf-8,#{ERB::Util.url_encode(file_data)}",
       download: file_name,
-      **tag_options,
     )
 
     @file_data = file_data

@@ -20,7 +20,7 @@ RSpec.feature 'Visitor sets password during signup' do
     it 'visitor gets field is required message' do
       fill_in t('forms.password'), with: ''
       click_button t('forms.buttons.continue')
-      expect(page).to have_content t('simple_form.required.text')
+      expect(page).to have_content t('components.input.errors.password')
     end
   end
 

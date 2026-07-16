@@ -33,23 +33,6 @@ RSpec.describe 'idv/phone_errors/warning.html.erb' do
     expect(rendered).to have_text(formatted_phone)
   end
 
-  it 'shows next steps' do
-    expect(rendered).to include(t('idv.failure.phone.warning.next_steps_html'))
-  end
-
-  it 'links to help screen' do
-    expect(rendered).to have_link(
-      t('idv.failure.phone.warning.learn_more_link'),
-      href: help_center_redirect_path(
-        category: 'verify-your-identity',
-        article: 'phone-number',
-        flow: :idv,
-        step: :phone,
-        location: 'learn_more',
-      ),
-    )
-  end
-
   it 'shows remaining attempts' do
     expect(rendered).to have_text(
       strip_tags(
@@ -79,10 +62,6 @@ RSpec.describe 'idv/phone_errors/warning.html.erb' do
 
   context 'gpo verification enabled' do
     let(:gpo_letter_available) { true }
-
-    it 'has an h2' do
-      expect(rendered).to have_css('h2', text: t('idv.failure.phone.warning.gpo.heading'))
-    end
 
     it 'explains gpo' do
       expect(rendered).to have_text(

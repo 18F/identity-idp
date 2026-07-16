@@ -25,7 +25,7 @@ The custom element will implement the behavior for validation, but all markup mu
       class="password-confirmation__toggle"
       aria-controls="input-1"
     >
-    <label for="toggle-1" class="usa-checkbox__label password-confirmation__toggle-label">
+    <label for="toggle-1" class="ads-checkbox__label password-confirmation__toggle-label">
       Show password
     </label>
   </div>`;

@@ -36,7 +36,6 @@ RSpec.feature 'idv gpo confirm start over', js: true do
     it 'can cancel from confirmation screen' do
       expect(page).to have_current_path idv_verify_by_mail_enter_code_path
 
-      click_on t('idv.gpo.address_accordion.title')
       click_on t('idv.gpo.address_accordion.cta_link')
 
       expect(page).to have_current_path idv_confirm_start_over_path
@@ -50,7 +49,6 @@ RSpec.feature 'idv gpo confirm start over', js: true do
     end
 
     it 'can return back to verify screen from confirm screen' do
-      click_on t('idv.gpo.address_accordion.title')
       click_on t('idv.gpo.address_accordion.cta_link')
       click_on t('forms.buttons.back')
 

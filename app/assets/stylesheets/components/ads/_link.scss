@@ -1,0 +1,44 @@
+@use '../../variables/ads' as ads;
+
+.ads-link {
+  color: ads.$off-black;
+  font-family: ads.$font-family;
+  font-size: inherit;
+  font-weight: inherit;
+  letter-spacing: inherit;
+  line-height: inherit;
+  text-decoration-line: underline;
+  text-decoration-thickness: from-font;
+  transition: color ads.$tr-duration-md ads.$tr-easing-cubic;
+  word-break: break-word;
+
+  &:is(:link, :visited) {
+    color: ads.$off-black;
+  }
+
+  &:hover {
+    color: ads.$blue-600;
+  }
+
+  &:active {
+    color: ads.$off-black;
+  }
+
+  &:focus-visible {
+    @include ads.focus-ring;
+    color: ads.$off-black;
+  }
+}
+
+button.ads-link {
+  appearance: none;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  display: inline;
+  padding: 0;
+}
+
+.ads-link--nowrap {
+  white-space: nowrap;
+}

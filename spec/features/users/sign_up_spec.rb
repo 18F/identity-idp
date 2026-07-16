@@ -51,17 +51,6 @@ RSpec.feature 'Sign Up' do
     end
   end
 
-  context 'user cancels sign up on email screen' do
-    before do
-      visit sign_up_email_path
-      click_on t('links.cancel')
-    end
-
-    it 'redirects user to the home page' do
-      expect(page).to have_current_path root_path
-    end
-  end
-
   context 'user cancels on the enter password screen', email: true do
     before(:each) do
       confirm_email('test@test.com')
@@ -70,26 +59,6 @@ RSpec.feature 'Sign Up' do
 
     it 'sends them to the cancel page' do
       expect(page).to have_current_path sign_up_cancel_path
-    end
-  end
-
-  context 'user cancels on MFA screen', email: true do
-    before(:each) do
-      confirm_email('test@test.com')
-      submit_form_with_valid_password
-      click_on t('links.cancel_account_creation')
-    end
-
-    it 'sends them to the cancel page' do
-      expect(page).to have_current_path sign_up_cancel_path
-    end
-  end
-
-  context 'user cancels with language preference set' do
-    it 'redirects user to the translated home page' do
-      visit sign_up_email_path(locale: 'es')
-      click_on t('links.cancel')
-      expect(page).to have_current_path '/es'
     end
   end
 
@@ -247,13 +216,12 @@ RSpec.feature 'Sign Up' do
       click_on t('components.clipboard_button.label')
       expect(did_validate_name.call).to_not eq true
 
-      otp_input = page.find('.one-time-code-input__input')
-      otp_input.set(generate_totp_code(clipboard_text))
-      click_button 'Submit'
+      fill_in 'code', with: generate_totp_code(clipboard_text)
+      click_button t('forms.buttons.continue')
       expect(did_validate_name.call).to eq true
 
       fill_in 'name', with: 'Authentication app'
-      click_button 'Submit'
+      click_button t('forms.buttons.continue')
       skip_second_mfa_prompt
 
       expect(page).to have_current_path account_path
@@ -609,6 +577,6 @@ RSpec.feature 'Sign Up' do
   end
 
   def click_2fa_option(option)
-    find("label[for='two_factor_options_form_selection_#{option}']").click
+    find("#two_factor_options_form_selection_#{option}").click
   end
 end

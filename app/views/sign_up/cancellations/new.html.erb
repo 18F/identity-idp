@@ -1,26 +1,35 @@
 <% self.title = t('headings.cancellations.prompt') %>
 
-<%= render StatusPageComponent.new(status: :warning) do |c| %>
-  <% c.with_header { t('headings.cancellations.prompt') } %>
+<%= render ADS::FormPageComponent.new(
+      title: t('headings.cancellations.prompt'),
+    ) do |page| %>
+  <% page.with_body do %>
+    <div class="ads-copy">
+      <p><%= t('sign_up.cancel.warning_header') %></p>
 
-  <p>
-    <strong><%= t('sign_up.cancel.warning_header') %></strong>
-  </p>
+      <ul class="ads-list">
+        <% [
+             t('users.delete.bullet_1', app_name: APP_NAME),
+             t('users.delete.bullet_2_basic'),
+             t('users.delete.bullet_3', app_name: APP_NAME),
+             t('users.delete.bullet_4', app_name: APP_NAME),
+           ].each do |item| %>
+          <li><%= item %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
 
-  <ul class="usa-list">
-    <li><%= t('users.delete.bullet_1', app_name: APP_NAME) %></li>
-    <li><%= t('users.delete.bullet_2_basic') %></li>
-    <li><%= t('users.delete.bullet_3', app_name: APP_NAME) %></li>
-    <li><%= t('users.delete.bullet_4', app_name: APP_NAME) %></li>
-  </ul>
+  <% page.with_actions do %>
+    <%= render ButtonComponent.new(
+          url: sign_up_destroy_path,
+          method: :delete,
+          variant: :destructive,
+        ).with_content(t('forms.buttons.cancel')) %>
 
-  <% c.with_action_button(
-       url: sign_up_destroy_path,
-       method: :delete,
-     ) { t('forms.buttons.cancel') } %>
-
-  <% c.with_action_button(
-       url: @presenter.go_back_path,
-       outline: true,
-     ) { t('links.go_back') } %>
+    <%= render ButtonComponent.new(
+          url: @presenter.go_back_path,
+          variant: :secondary,
+        ).with_content(t('links.go_back')) %>
+  <% end %>
 <% end %>

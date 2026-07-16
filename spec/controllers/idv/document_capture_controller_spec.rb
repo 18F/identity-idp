@@ -16,8 +16,7 @@ RSpec.describe Idv::DocumentCaptureController do
   # document capture setup
   let(:doc_auth_success) { true }
   let(:document_capture_session_requested_at) { Time.zone.now }
-  let(:document_type_requested) { Idp::Constants::DocumentTypes::STATE_ID_CARD }
-  let(:document_type_received) { document_type_requested }
+  let(:document_capture_session_uuid) { document_capture_session&.uuid }
 
   let(:document_capture_session) do
     create(
@@ -25,10 +24,9 @@ RSpec.describe Idv::DocumentCaptureController do
       user:,
       requested_at: document_capture_session_requested_at,
       doc_auth_vendor: idv_vendor,
-      document_type_requested:,
+      document_type_requested: Idp::Constants::DocumentTypes::STATE_ID_CARD,
     )
   end
-  let(:document_capture_session_uuid) { document_capture_session&.uuid }
 
   let(:stored_result) do
     DocumentCaptureSessionResult.new(
@@ -36,7 +34,7 @@ RSpec.describe Idv::DocumentCaptureController do
       success: doc_auth_success,
       doc_auth_success: doc_auth_success,
       selfie_status: :none,
-      pii: { first_name: 'Testy', last_name: 'Testerson', document_type_received: },
+      pii: { first_name: 'Testy', last_name: 'Testerson' },
       attention_with_barcode: false,
     )
   end
@@ -112,9 +110,18 @@ RSpec.describe Idv::DocumentCaptureController do
     end
 
     context 'when user tries to skip ahead without completing choose_id_type' do
+      let(:document_capture_session) do
+        create(
+          :document_capture_session,
+          user:,
+          requested_at: document_capture_session_requested_at,
+          doc_auth_vendor: idv_vendor,
+          document_type_requested: nil,
+        )
+      end
+
       it 'redirects to choose_id_type' do
         get :show
-
         expect(response).to redirect_to(idv_choose_id_type_path)
       end
 
@@ -123,7 +130,6 @@ RSpec.describe Idv::DocumentCaptureController do
 
         it 'redirects to choose_id_type' do
           get :show
-
           expect(response).to redirect_to(idv_choose_id_type_path)
         end
       end
@@ -133,7 +139,6 @@ RSpec.describe Idv::DocumentCaptureController do
 
         it 'redirects to choose_id_type' do
           get :show
-
           expect(response).to redirect_to(idv_choose_id_type_path)
         end
       end
@@ -141,7 +146,15 @@ RSpec.describe Idv::DocumentCaptureController do
 
     context 'when user has completed choose_id_type' do
       context 'with passport requested' do
-        let(:document_type_requested) { Idp::Constants::DocumentTypes::PASSPORT }
+        let(:document_capture_session) do
+          create(
+            :document_capture_session,
+            user:,
+            requested_at: document_capture_session_requested_at,
+            doc_auth_vendor: idv_vendor,
+            document_type_requested: Idp::Constants::DocumentTypes::PASSPORT,
+          )
+        end
 
         it 'allows access to document capture' do
           subject.idv_session.skip_hybrid_handoff = true
@@ -151,6 +164,16 @@ RSpec.describe Idv::DocumentCaptureController do
       end
 
       context 'with state ID requested' do
+        let(:document_capture_session) do
+          create(
+            :document_capture_session,
+            user:,
+            requested_at: document_capture_session_requested_at,
+            doc_auth_vendor: idv_vendor,
+            document_type_requested: Idp::Constants::DocumentTypes::STATE_ID_CARD,
+          )
+        end
+
         it 'allows access to document capture' do
           subject.idv_session.skip_hybrid_handoff = true
           get :show
@@ -161,7 +184,15 @@ RSpec.describe Idv::DocumentCaptureController do
 
     context 'when user bypasses choose_id_type via allowed flows' do
       context 'with skip_doc_auth_from_handoff' do
-        let(:document_type_requested) { nil }
+        let(:document_capture_session) do
+          create(
+            :document_capture_session,
+            user:,
+            requested_at: document_capture_session_requested_at,
+            doc_auth_vendor: idv_vendor,
+            document_type_requested: nil,
+          )
+        end
 
         before do
           subject.idv_session.skip_doc_auth_from_handoff = true
@@ -175,7 +206,15 @@ RSpec.describe Idv::DocumentCaptureController do
       end
 
       context 'with skip_hybrid_handoff' do
-        let(:document_type_requested) { nil }
+        let(:document_capture_session) do
+          create(
+            :document_capture_session,
+            user:,
+            requested_at: document_capture_session_requested_at,
+            doc_auth_vendor: idv_vendor,
+            document_type_requested: nil,
+          )
+        end
 
         before do
           subject.idv_session.skip_hybrid_handoff = true
@@ -184,14 +223,21 @@ RSpec.describe Idv::DocumentCaptureController do
 
         it 'allows access without choose_id_type completion' do
           get :show
-
           expect(response).to render_template :show
         end
       end
     end
 
     context 'mobile flow scenario - user tries to skip choose_id_type' do
-      let(:document_type_requested) { nil }
+      let(:document_capture_session) do
+        create(
+          :document_capture_session,
+          user:,
+          requested_at: document_capture_session_requested_at,
+          doc_auth_vendor: idv_vendor,
+          document_type_requested: nil, # This simulates not having completed choose_id_type
+        )
+      end
 
       before do
         # Simulate mobile flow - no special bypass flags set

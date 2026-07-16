@@ -1,84 +1,100 @@
-//  Foundation for Emails Settings
-//  ------------------------------
-//
-//  Table of Contents:
-//
-//   1. Global
-//   2. Grid
-//   3. Block Grid
-//   4. Typography
-//   5. Button
-//   6. Callout
-//   7. Menu
-//   8. Thumbnail
+@use 'sass:color';
+@use 'variables/ads' as ads;
 
-// 1. Global
-// ---------
-
-$primary-color: #0071bb;
-$secondary-color: #112e51;
-$success-color: #3adb76;
-$warning-color: #ffae00;
-$alert-color: #ec5840;
-$light-gray: #f3f3f3;
-$black: #111;
-$white: #fff;
-$gray: #5b616a;
-$medium-gray: #cacaca;
-$dark-gray: #212121;
-$blue-light: #ebf3fa;
-$red: #e21c3d;
-$red-lightest: #fff7f8;
-$pre-color: #ff6908;
-$global-width: 580px;
+$primary-color: ads.$off-black;
+$secondary-color: ads.$off-black;
+$success-color: ads.$green-600;
+$warning-color: ads.$yellow-500;
+$alert-color: ads.$red-600;
+$light-gray: ads.alpha(ads.$off-black, 5%);
+$black: ads.$off-black;
+$white: ads.$white;
+$gray: ads.alpha(ads.$off-black, 65%);
+$medium-gray: ads.alpha(ads.$off-black, 45%);
+$dark-gray: ads.$off-black;
+$red: ads.$red-600;
+$pre-color: ads.$yellow-500;
+$mailer-border-color: ads.alpha(ads.$off-black, 10%);
+// Solid mix — premailer maps td background-color to bgcolor, which mangles 8-digit alpha hex.
+$mailer-divider-color: color.mix(ads.$off-black, ads.$white, 10%);
+$mailer-muted-surface: ads.alpha(ads.$off-black, 5%);
+$mailer-support-surface: ads.alpha(ads.$off-black, 5%);
+$mailer-warning-surface: ads.alpha(ads.$yellow-300, 10%);
+$mailer-muted-text: ads.alpha(ads.$off-black, 65%);
+$mailer-frame-width: 568px;
+$mailer-template-width: 520px;
+$mailer-container-width: 560px;
+$mailer-template-shell-padding-x: ads.space(24);
+$mailer-letter-spacing-display-tight: -0.03em;
+$mailer-brand-padding-top: ads.space(32);
+$mailer-section-gap: ads.space(32);
+$mailer-brand-logo-width: 142px;
+$mailer-list-padding-left: ads.space(20);
+$mailer-brand-logo-size: ads.$text-heading-s;
+$mailer-brand-logo-line-height: 1.2;
+$mailer-brand-logo-letter-spacing: -0.04em;
+$mailer-copy-line-height: 1.6;
+$mailer-footer-text-size: ads.$text-body-s;
+$mailer-step-marker-size: 28px;
+$mailer-process-image-width: 110px;
+$mailer-button-margin-y: ads.space(32);
+$mailer-button-radius: ads.radius(pill);
+$mailer-button-height: ads.space(56);
+$mailer-button-padding: ads.space(20) ads.space(32);
+$mailer-button-font-size: ads.$text-body-m;
+$mailer-button-line-height: 1;
+$mailer-button-url-padding-top: ads.space(48);
+$mailer-alert-border-width: 4px;
+$mailer-alert-margin-y: ads.space(16);
+$mailer-alert-cell-padding-y: ads.space(12);
+$mailer-alert-cell-padding-x: ads.space(16);
+$mailer-alert-heading-margin-bottom: ads.space(8);
+$mailer-tag-padding-y: ads.space(4);
+$mailer-tag-padding-x: ads.space(8);
+$mailer-tag-font-size: ads.$text-body-s - 1px;
+$mailer-table-radius: ads.radius(8);
+$mailer-gmail-guard-font-size: 15px;
+$mailer-spacer-xl: ads.space(64);
+$global-width: 640px;
 $global-width-small: 95%;
-$global-gutter: 60px;
-$global-gutter-small: 16px;
-$body-background: $blue-light;
+$global-gutter: 56px;
+$global-gutter-small: 20px;
+$body-background: $white;
 $container-background: $white;
-$global-padding: 16px;
-$global-margin: 16px;
-$global-radius: 5px;
-$global-rounded: 500px;
+$global-padding: ads.space(24);
+$global-margin: ads.space(16);
+$global-radius: ads.radius(8);
+$global-rounded: ads.radius(pill);
 $global-breakpoint: 596px;
-
-// 2. Grid
-// -------
 
 $grid-column-count: 12;
 $column-padding-bottom: $global-padding;
-$container-radius: 5px;
-
-// 3. Block Grid
-// -------------
+$container-radius: 0;
 
 $block-grid-max: 8;
 $block-grid-gutter: $global-gutter;
 
-// 4. Typography
-// -------------
-
 $global-font-color: $gray;
-$body-font-family: 'Arial', 'Helvetica', sans-serif;
+$body-font-family: ads.$font-family, 'Arial', 'Helvetica', sans-serif;
 $global-font-weight: normal;
-$header-color: inherit;
+$header-color: $black;
 $global-line-height: 1.5;
-$global-font-size: 16px;
+$global-font-size: ads.$text-body-m;
 $body-line-height: $global-line-height;
 $header-font-family: $body-font-family;
-$header-font-weight: 700;
-$h1-font-size: 28px;
+$header-font-weight: ads.$font-semibold;
+$h1-font-size: 30px;
 $h2-font-size: 22px;
-$h3-font-size: 18px;
-$h4-font-size: 16px;
-$h5-font-size: 14px;
-$h6-font-size: 12px;
-$header-margin-bottom: 16px;
-$paragraph-margin-bottom: 10px;
+$h3-font-size: ads.$text-heading-s;
+$h4-font-size: ads.$text-body-m;
+$h5-font-size: ads.$text-body-s;
+$h6-font-size: ads.$text-body-s;
+$header-margin-bottom: 18px;
+$paragraph-margin-bottom: 12px;
 $small-font-size: 80%;
 $small-font-color: $medium-gray;
 $lead-font-size: $global-font-size;
-$lead-line-height: $global-line-height;
+$lead-line-height: 1.6;
 $text-padding: 10px;
 $subheader-lineheight: 1.4;
 $subheader-color: $dark-gray;
@@ -86,66 +102,53 @@ $subheader-font-weight: $global-font-weight;
 $subheader-margin-top: 4px;
 $subheader-margin-bottom: 8px;
 $hr-width: $global-width;
-$hr-border: 2px solid $blue-light;
+$hr-border: 1px solid $mailer-divider-color;
 $hr-margin: 10px auto;
 $anchor-text-decoration: none;
 $anchor-color: $primary-color;
 $anchor-color-visited: $anchor-color;
-$anchor-color-hover: darken($primary-color, 10%);
+$anchor-color-hover: color.adjust($primary-color, $lightness: -10%);
 $anchor-color-active: $anchor-color-hover;
 $stat-font-size: 40px;
 
-// 5. Button
-// ---------
-
 $button-padding: (
   tiny: 4px 8px 4px 8px,
-  small: 5px 10px 5px 10px,
-  default: 8px 16px 8px 16px,
-  large: 10px 20px 10px 20px,
+  small: 8px 16px 8px 16px,
+  default: 16px 32px 16px 32px,
+  large: 18px 40px 18px 40px,
 );
 $button-font-size: (
   tiny: 10px,
   small: 12px,
   default: 16px,
-  large: 20px,
+  large: 16px,
 );
 $button-color: $white;
 $button-color-alt: $medium-gray;
-$button-font-weight: bold;
+$button-font-weight: 500;
 $button-margin: 0 0 $global-margin 0;
-$button-background: $primary-color;
-$button-border: 2px solid $button-background;
+$button-background: $black;
+$button-border: 0;
 $button-radius: $global-radius;
 $button-rounded: $global-rounded;
 
-// 6. Callout
-// ----------
-
-$callout-background: $white;
 $callout-background-fade: 85%;
-$callout-padding: 10px;
+$callout-padding: 16px;
 $callout-margin-bottom: $global-margin;
-$callout-border: 1px solid darken($callout-background, 20%);
-$callout-border-secondary: 1px solid darken($secondary-color, 20%);
-$callout-border-success: 1px solid darken($success-color, 20%);
-$callout-border-warning: 1px solid darken($warning-color, 20%);
-$callout-border-alert: 1px solid darken($alert-color, 20%);
-
-// 7. Menu
-// -------
+$callout-border: 1px solid $mailer-border-color;
+$callout-border-secondary: 1px solid $black;
+$callout-border-success: 1px solid $success-color;
+$callout-border-warning: 1px solid $warning-color;
+$callout-border-alert: 1px solid $alert-color;
 
 $menu-item-padding: 10px;
 $menu-item-gutter: 10px;
-$menu-item-color: $primary-color;
-
-// 8. Thumbnail
-// ------------
+$menu-item-color: $black;
 
 $thumbnail-border: solid 4px $white;
 $thumbnail-margin-bottom: $global-margin;
-$thumbnail-shadow: 0 0 0 1px rgba($black, 0.2);
-$thumbnail-shadow-hover: 0 0 6px 1px rgba($primary-color, 0.5);
+$thumbnail-shadow: 0 0 0 1px ads.alpha($black, 10%);
+$thumbnail-shadow-hover: 0 0 6px 1px ads.alpha($black, 20%);
 $thumbnail-transition: box-shadow 200ms ease-out;
 $thumbnail-radius: $global-radius;
 

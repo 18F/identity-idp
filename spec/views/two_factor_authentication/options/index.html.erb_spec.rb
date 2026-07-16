@@ -44,7 +44,7 @@ RSpec.describe 'two_factor_authentication/options/index.html.erb' do
   end
 
   it 'has a cancel link' do
-    expect(rendered).to have_link(t('links.cancel_account_creation'), href: sign_up_cancel_path)
+    expect(rendered).to have_link(t('links.cancel_account_creation'), href: sign_out_path)
   end
 
   it 'does not display info text for adding piv cac after 2fa' do
@@ -62,19 +62,15 @@ RSpec.describe 'two_factor_authentication/options/index.html.erb' do
     end
 
     it 'renders alert banner' do
-      expect(rendered).to have_selector('.usa-alert.usa-alert--error')
+      expect(rendered).to have_selector('.ads-alert.ads-alert--error')
     end
 
     it 'disables problematic vendor option' do
-      expect(rendered).to have_checked_field(
-        'two_factor_options_form[selection]',
-        with: :voice,
-        disabled: false,
+      expect(rendered).to have_css(
+        "button[name='two_factor_options_form[selection]'][value='voice']:not([disabled])",
       )
-      expect(rendered).to have_field(
-        'two_factor_options_form[selection]',
-        with: :sms,
-        disabled: true,
+      expect(rendered).to have_css(
+        "button[name='two_factor_options_form[selection]'][value='sms'][disabled]",
       )
     end
   end
@@ -84,7 +80,7 @@ RSpec.describe 'two_factor_authentication/options/index.html.erb' do
 
     it 'displays info text for adding piv cac after 2fa' do
       expect(rendered).to have_selector(
-        '.usa-alert.usa-alert--info',
+        '.ads-alert.ads-alert--neutral',
         text: t('two_factor_authentication.piv_cac_mismatch.2fa_before_add'),
       )
     end
@@ -108,10 +104,8 @@ RSpec.describe 'two_factor_authentication/options/index.html.erb' do
 
     it 'displays warning text' do
       expect(rendered).to have_selector(
-        '.usa-alert.usa-alert--warning',
-        text: strip_tags(
-          t('two_factor_authentication.aal2_request.phishing_resistant_html', sp_name: APP_NAME),
-        ),
+        '.ads-alert.ads-alert--warning',
+        text: t('two_factor_authentication.aal2_request.phishing_resistant', sp_name: APP_NAME),
       )
     end
   end
@@ -134,10 +128,8 @@ RSpec.describe 'two_factor_authentication/options/index.html.erb' do
 
     it 'displays warning text' do
       expect(rendered).to have_selector(
-        '.usa-alert.usa-alert--warning',
-        text: strip_tags(
-          t('two_factor_authentication.aal2_request.piv_cac_only_html', sp_name: APP_NAME),
-        ),
+        '.ads-alert.ads-alert--warning',
+        text: t('two_factor_authentication.aal2_request.piv_cac_only', sp_name: APP_NAME),
       )
     end
   end

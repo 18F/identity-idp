@@ -1,0 +1,18 @@
+<%
+  id = 'checkbox-workbench'
+  input_classes = [
+    'ads-checkbox__input',
+    ('usa-input--error' if error),
+  ].compact
+%>
+<div class="ads-checkbox">
+  <input
+    id="<%= id %>"
+    type="checkbox"
+    class="<%= input_classes.join(' ') %>"
+    <%= 'checked' if checked %>
+    <%= 'disabled' if disabled %>
+    <%= 'aria-invalid="true"' if error %>
+  >
+  <label class="ads-checkbox__label" for="<%= id %>"><%= label %></label>
+</div>

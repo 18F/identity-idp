@@ -1,38 +1,11 @@
-<p class="lead">
-  <%= t('user_mailer.add_email.header') %>
+<p class="mailer-text mailer-text--spaced">
   <%= t('user_mailer.add_email.footer', confirmation_period: @confirmation_period) %>
 </p>
 
-<table class="button expanded large radius">
-  <tbody>
-    <tr>
-      <td>
-        <table>
-          <tbody>
-            <tr>
-              <td>
-                <center>
-                  <%= link_to t('user_mailer.email_confirmation_instructions.link_text'),
-                              @add_email_url,
-                              target: '_blank',
-                              class: 'float-center',
-                              align: 'center',
-                              rel: 'noopener' %>
-                </center>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </td>
-      <td class="expander">
-      </td>
-    </tr>
-  </tbody>
-</table>
-
-<p>
-  <%= link_to @add_email_url,
-              @add_email_url,
-              target: '_blank',
-              rel: 'noopener' %>
+<p class="mailer-text">
+  <%= t('user_mailer.add_email.link_ignore') %>
 </p>
+
+<%= render 'shared/email/button',
+           url: @add_email_url,
+           text: t('user_mailer.add_email.link_text') %>

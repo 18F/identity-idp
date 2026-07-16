@@ -1,0 +1,6 @@
+<%= render 'users/confirm_delete_authenticator',
+           heading: t('two_factor_authentication.phone.delete.heading'),
+           caution: t('two_factor_authentication.phone.delete.caution'),
+           delete_url: manage_phone_path(id: @phone_configuration.id),
+           delete_label: t('forms.phone.buttons.delete'),
+           cancel_url: manage_phone_path(id: @phone_configuration.id) %>

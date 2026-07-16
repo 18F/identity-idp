@@ -25,7 +25,7 @@ RSpec.feature 'Second MFA Reminder' do
         sign_in_user(user)
         fill_in_code_with_last_phone_otp
         click_submit_default
-        first(:button, t('links.sign_out')).click
+        first(:button, t('links.sign_out'), visible: :all).click
       end
 
       it 'prompts the user on sign in and allows them to continue', :js do
@@ -71,7 +71,7 @@ RSpec.feature 'Second MFA Reminder' do
           fill_in_code_with_last_phone_otp
           click_submit_default
           click_button t('users.second_mfa_reminder.continue', sp_name: APP_NAME)
-          first(:button, t('links.sign_out')).click
+          first(:button, t('links.sign_out'), visible: :all).click
         end
 
         it 'does not prompt the user on sign in' do

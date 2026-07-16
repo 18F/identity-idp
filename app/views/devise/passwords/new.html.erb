@@ -1,37 +1,57 @@
 <% self.title = t('titles.passwords.forgot') %>
 
-<%= render 'shared/sp_alert', section: 'forgot_password' %>
+<%= render ADS::FormPageComponent.new(
+      title: t('headings.passwords.forgot'),
+      subtitle: t('instructions.password.forgot'),
+    ) do |page| %>
+  <% page.with_body do %>
+    <% sp_alert = decorated_sp_session.sp_alert('forgot_password') %>
+    <% if sp_alert.present? %>
+      <%= render AlertComponent.new(
+            type: :neutral,
+            message: sanitize(
+              sp_alert,
+              tags: %w[a b strong em br p ol ul li],
+              attributes: %w[href target],
+            ),
+            dismissible: false,
+          ) %>
+    <% end %>
 
-<%= render PageHeadingComponent.new.with_content(t('headings.passwords.forgot')) %>
+    <%= form_with(
+          model: @password_reset_email_form,
+          url: user_password_path,
+          local: true,
+          class: 'ads-form',
+        ) do |f| %>
+      <%= render InputComponent.new(
+            form: f,
+            attribute: :email,
+            type: :email,
+            label: t('account.index.email_short'),
+            required: true,
+            autocorrect: 'off',
+            autocomplete: 'email',
+            error_message: @password_reset_email_form.errors.full_messages_for(:email).first,
+          ) %>
+      <%= render ButtonComponent.new(
+            type: :submit,
+          ).with_content(t('forms.buttons.send_link')) %>
+    <% end %>
 
-<p id="email-description">
-  <%= t('instructions.password.forgot') %>
-</p>
-
-<%= simple_form_for(@password_reset_email_form, url: user_password_path) do |f| %>
-  <%= render ValidatedFieldComponent.new(
-        form: f,
-        name: :email,
-        label: t('account.index.email'),
-        required: true,
-        input_html: { autocorrect: 'off',
-                      aria: { describedby: 'email-description' } },
-      ) %>
-  <%= f.submit t('forms.buttons.continue'), class: 'display-block margin-y-5' %>
-<% end %>
-
-<%= render TroubleshootingOptionsComponent.new do |c| %>
-  <% c.with_header { t('components.troubleshooting_options.default_heading') } %>
-      <% c.with_option(
-           url: help_center_redirect_path(category: 'trouble-signing-in', article: 'forgot-your-password'),
-           new_tab: true,
-         ).with_content(t('forms.passwords.reset.how_to_reset')) %>
-      <% c.with_option(
-           url: help_center_redirect_path(category: 'trouble-signing-in', article: 'forgot-your-personal-key', article_anchor: 'if-you-have-a-personal-key'),
-           new_tab: true,
-         ).with_content(t('forms.passwords.reset.how_to_reset_with_personal_key')) %>
-<% end %>
-
-<%= render(PageFooterComponent.new) do %>
-  <%= link_to t('links.cancel'), decorated_sp_session.cancel_link_url %>
+    <div class="ads-copy ads-copy--centered">
+      <p><%= t('forms.passwords.reset.having_trouble') %></p>
+      <%= render ADS::LinkComponent.new(
+            url: help_center_redirect_path(
+              category: 'trouble-signing-in',
+              article: 'forgot-your-password',
+            ),
+            target: '_blank',
+            rel: 'noopener',
+            class: 'ads-link--nowrap',
+          ) do %>
+        <%= t('forms.passwords.reset.how_to_reset') %>
+      <% end %>
+    </div>
+  <% end %>
 <% end %>

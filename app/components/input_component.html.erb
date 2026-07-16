@@ -1,0 +1,80 @@
+<%= content_tag :div,
+                class: field_classes,
+                data: field_data.merge(ads_validation_messages: validation_error_messages) do %>
+  <%= form.label attribute, label, class: label_classes, for: input_id %>
+  <% if country_selector %>
+    <div class="ads-input__phone-shell">
+      <%= form.label(
+            country_attribute,
+            t('components.phone_input.country_code_label'),
+            class: 'ads-input__country-label',
+          ) %>
+      <div class="ads-input__country-shell">
+        <span
+          class="ads-input__country-value"
+          aria-hidden="true"
+          data-ads-phone-country-value
+        ><%= country_dial_code %></span>
+        <%= render IconComponent.new(
+              icon: :chevron_down,
+              size: 16,
+              class: 'ads-input__country-icon',
+            ) %>
+        <%= form.select(
+              country_attribute,
+              country_options,
+              { selected: country_value },
+              {
+                class: 'ads-input__country',
+                autocomplete: 'country',
+                data: { ads_phone_country: true },
+              },
+            ) %>
+      </div>
+      <div class="ads-input__phone-body">
+        <%= render_input %>
+        <% if @floating_label %>
+          <span class="ads-input__floating-label" aria-hidden="true"><%= label %></span>
+        <% end %>
+      </div>
+    </div>
+  <% else %>
+    <div class="ads-input__shell">
+      <%= render_input %>
+      <% if @floating_label %>
+        <span class="ads-input__floating-label" aria-hidden="true"><%= label %></span>
+      <% end %>
+      <% if password? %>
+        <button
+          type="button"
+          class="ads-input__toggle"
+          data-ads-password-toggle
+          data-label-show="<%= password_toggle_label %>"
+          data-label-hide="<%= password_toggle_hide_label %>"
+          aria-controls="<%= input_id %>"
+          aria-label="<%= password_toggle_label %>"
+          aria-pressed="false"
+        >
+          <%= render IconComponent.new(
+                icon: :not_visible_hide,
+                size: 20,
+                data: { ads_password_icon_show: true },
+              ) %>
+          <%= render IconComponent.new(
+                icon: :visible_show,
+                size: 20,
+                hidden: true,
+                data: { ads_password_icon_hide: true },
+              ) %>
+        </button>
+      <% end %>
+    </div>
+  <% end %>
+  <p
+    class="ads-input__error<%= ' ads-input__error--visible' if error_message.present? %>"
+    data-ads-error
+    id="<%= error_id %>"
+    aria-live="polite"
+  ><span class="ads-input__error-inner"><%= error_message %></span></p>
+  <%= content %>
+<% end %>

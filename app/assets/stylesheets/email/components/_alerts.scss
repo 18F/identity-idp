@@ -1,0 +1,36 @@
+@use 'variables/ads' as ads;
+@use 'variables/email' as *;
+@use 'mixins' as mailer;
+
+.mailer-alert {
+  border-collapse: separate;
+  margin: 0 0 ads.space(48);
+  width: 100%;
+}
+
+.mailer-alert--warning .mailer-alert__cell {
+  background: $mailer-warning-surface;
+  border-radius: ads.radius(24);
+  padding: ads.space(20) ads.space(16) ads.space(20) ads.space(20);
+}
+
+.mailer-alert__text {
+  @include mailer.mailer-text-body;
+
+  color: ads.$yellow-900;
+  letter-spacing: 0;
+  line-height: 1.5;
+  margin: 0;
+  text-align: left;
+}
+
+.app-tag {
+  background: $mailer-support-surface;
+  border-radius: $mailer-button-radius;
+  color: $gray;
+  display: inline-block;
+  font-size: $mailer-tag-font-size;
+  font-weight: 700;
+  line-height: 1;
+  padding: $mailer-tag-padding-y $mailer-tag-padding-x;
+}

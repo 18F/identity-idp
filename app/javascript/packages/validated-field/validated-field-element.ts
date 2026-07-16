@@ -1,17 +1,73 @@
+import { bindFormSubmitters } from './form-submitters';
+
+const FORM_VALIDATION_READY = 'adsFormValidationReady';
+const ERROR_INNER_CLASS = 'ads-input__error-inner';
+const VISIBLE_ERROR_CLASS = 'ads-input__error--visible';
+
+type ValidatedControl = HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
+
+const validationControls = (form: HTMLFormElement) =>
+  Array.from(
+    form.querySelectorAll<ValidatedControl>('.ads-input__control, .validated-field__input'),
+  );
+
+const submitterSkipsValidation = (event: SubmitEvent) => {
+  const { submitter } = event;
+
+  return (
+    (submitter instanceof HTMLButtonElement || submitter instanceof HTMLInputElement) &&
+    submitter.formNoValidate
+  );
+};
+
+const bindFormValidation = (form: HTMLFormElement) => {
+  bindFormSubmitters(form);
+
+  if (form.dataset[FORM_VALIDATION_READY] === 'true') {
+    return;
+  }
+
+  form.dataset[FORM_VALIDATION_READY] = 'true';
+  form.noValidate = true;
+  form.addEventListener('submit', (event) => {
+    if (submitterSkipsValidation(event)) {
+      return;
+    }
+
+    if (form.checkValidity()) {
+      return;
+    }
+
+    event.preventDefault();
+    validationControls(form)
+      .find((control) => !control.validity.valid)
+      ?.focus();
+  });
+};
+
 class ValidatedFieldElement extends HTMLElement {
-  input: HTMLInputElement | null;
+  input: ValidatedControl | null;
 
   inputWrapper: HTMLElement | null;
 
   errorMessage: HTMLElement | null;
 
+  isCheckingValidity = false;
+
   connectedCallback() {
-    this.input = this.querySelector('.validated-field__input');
+    this.input = this.querySelector<ValidatedControl>('.validated-field__input');
     this.inputWrapper = this.querySelector('.validated-field__input-wrapper');
     this.errorMessage = this.ownerDocument.getElementById(this.errorId);
+    this.normalizeExistingErrorMessage();
     this.input?.addEventListener('input', () => this.setErrorMessage());
     this.input?.addEventListener('input', () => this.setInputIsValid(true));
+    this.input?.addEventListener('change', () => this.setErrorMessage());
+    this.input?.addEventListener('change', () => this.setInputIsValid(true));
+    this.input?.addEventListener('blur', () => this.validate({ checkValidity: true }));
     this.input?.addEventListener('invalid', (event) => this.toggleErrorMessage(event));
+    if (this.input?.form) {
+      bindFormValidation(this.input.form);
+    }
   }
 
   get errorStrings(): Partial<ValidityState> {
@@ -42,13 +98,29 @@ class ValidatedFieldElement extends HTMLElement {
    */
   toggleErrorMessage(event: Event) {
     event.preventDefault();
+    this.validate({ focus: !this.isCheckingValidity });
+  }
+
+  validate({ focus = false, checkValidity = false } = {}) {
+    if (checkValidity && this.input && !this.isCheckingValidity) {
+      this.isCheckingValidity = true;
+      try {
+        this.input.checkValidity();
+      } finally {
+        this.isCheckingValidity = false;
+      }
+    }
 
     const errorMessage = this.getNormalizedValidationMessage(this.input);
     const isValid = !errorMessage;
 
     this.setErrorMessage(errorMessage);
-    this.focusOnError(isValid);
+    if (focus) {
+      this.focusOnError(isValid);
+    }
     this.setInputIsValid(isValid);
+
+    return isValid;
   }
 
   /**
@@ -59,12 +131,43 @@ class ValidatedFieldElement extends HTMLElement {
   setErrorMessage(message?: string | null) {
     if (message) {
       this.getOrCreateErrorMessageElement();
-      this.errorMessage!.textContent = message;
+      this.ensureErrorInner(this.errorMessage!).textContent = message;
+      this.errorMessage!.classList.add(VISIBLE_ERROR_CLASS);
       this.errorMessage!.classList.remove('display-none');
+      this.errorMessage!.hidden = false;
     } else if (this.errorMessage) {
-      this.errorMessage.textContent = '';
-      this.errorMessage.classList.add('display-none');
+      this.ensureErrorInner(this.errorMessage).textContent = '';
+      this.errorMessage.classList.remove(VISIBLE_ERROR_CLASS);
+      this.errorMessage.hidden = true;
     }
+  }
+
+  private ensureErrorInner(error: HTMLElement) {
+    let inner = error.querySelector<HTMLElement>(`.${ERROR_INNER_CLASS}`);
+    if (inner) {
+      return inner;
+    }
+
+    inner = this.ownerDocument.createElement('span');
+    inner.className = ERROR_INNER_CLASS;
+    if (error.textContent) {
+      inner.textContent = error.textContent;
+      error.textContent = '';
+    }
+    error.appendChild(inner);
+    return inner;
+  }
+
+  private normalizeExistingErrorMessage() {
+    if (!this.errorMessage) {
+      return;
+    }
+
+    const inner = this.ensureErrorInner(this.errorMessage);
+    const hasText = (inner.textContent?.trim().length ?? 0) > 0;
+    this.errorMessage.classList.toggle(VISIBLE_ERROR_CLASS, hasText);
+    this.errorMessage.classList.toggle('display-none', !hasText);
+    this.errorMessage.hidden = !hasText;
   }
 
   /**
@@ -77,14 +180,17 @@ class ValidatedFieldElement extends HTMLElement {
       return;
     }
 
-    this.input?.classList.toggle('usa-input--error', !isValid);
     this.input?.setAttribute('aria-invalid', String(!isValid));
 
     const idRefs = this.descriptorIdRefs.filter((idRef) => idRef !== this.errorId);
     if (!isValid) {
       idRefs.push(this.errorId);
     }
-    this.input?.setAttribute('aria-describedby', idRefs.join(' '));
+    if (idRefs.length) {
+      this.input?.setAttribute('aria-describedby', idRefs.join(' '));
+    } else {
+      this.input?.removeAttribute('aria-describedby');
+    }
   }
 
   /**
@@ -95,7 +201,7 @@ class ValidatedFieldElement extends HTMLElement {
    *
    * @return Validation message.
    */
-  getNormalizedValidationMessage(input?: HTMLInputElement | null): string {
+  getNormalizedValidationMessage(input?: ValidatedControl | null): string {
     if (!input || input.validity.valid) {
       return '';
     }
@@ -117,9 +223,13 @@ class ValidatedFieldElement extends HTMLElement {
    */
   getOrCreateErrorMessageElement(): Element {
     if (!this.errorMessage) {
-      this.errorMessage = this.ownerDocument.createElement('div');
-      this.errorMessage.classList.add('usa-error-message');
+      this.errorMessage = this.ownerDocument.createElement('p');
+      this.errorMessage.classList.add('ads-input__error');
       this.errorMessage.id = this.errorId;
+      this.errorMessage.setAttribute('aria-live', 'polite');
+      const inner = this.ownerDocument.createElement('span');
+      inner.className = ERROR_INNER_CLASS;
+      this.errorMessage.appendChild(inner);
       this.inputWrapper?.appendChild(this.errorMessage);
     }
 
@@ -133,7 +243,7 @@ class ValidatedFieldElement extends HTMLElement {
    * @param isValid Whether input is valid.
    */
   private focusOnError(isValid: boolean) {
-    if (!isValid && !document.activeElement?.classList.contains('usa-input--error')) {
+    if (!isValid && document.activeElement?.getAttribute('aria-invalid') !== 'true') {
       this.input?.focus();
     }
   }

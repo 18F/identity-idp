@@ -68,7 +68,7 @@ function SpinnerButton(
         <div
           role="status"
           data-message={actionMessage}
-          className="spinner-button__action-message usa-sr-only"
+          className="spinner-button__action-message ads-sr-only"
         />
       )}
     </lg-spinner-button>

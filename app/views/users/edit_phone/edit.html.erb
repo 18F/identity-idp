@@ -1,23 +1,42 @@
 <% self.title = t('titles.edit_info.phone') %>
-<%= render PageHeadingComponent.new.with_content(t('headings.edit_info.phone')) %>
 
-<%= simple_form_for(
-      @edit_phone_form,
-      method: :put,
-      url: manage_phone_path(id: @phone_configuration.id),
-    ) do |f| %>
+<%= render ADS::FormPageComponent.new(title: t('headings.edit_info.phone')) do |page| %>
+  <% page.with_body do %>
+    <%= form_with(
+          model: @edit_phone_form,
+          method: :put,
+          url: manage_phone_path(id: @phone_configuration.id),
+          class: 'ads-form',
+        ) do |_f| %>
+      <%= render ADS::StackComponent.new(kind: :form, gap: 16, align: :stretch) do %>
+        <div class="ads-copy">
+          <p>
+            <%= t('two_factor_authentication.phone_label') %>:
+            <strong><%= @edit_phone_form.masked_phone %></strong>
+          </p>
+        </div>
 
-  <div class="margin-bottom-1 h4">
-    <%= t('two_factor_authentication.phone_label') %>:&nbsp;
-    <strong><%= @edit_phone_form.masked_phone %></strong>
-  </div><br/>
+        <%= render 'delivery_preference_selection' %>
+        <%= render 'make_default_number' %>
 
-  <%= render 'delivery_preference_selection' %>
-  <%= render 'make_default_number' %>
+        <%= render ButtonComponent.new(
+              type: :submit,
+            ).with_content(t('forms.buttons.submit.confirm_change')) %>
+      <% end %>
+    <% end %>
+  <% end %>
 
-  <%= f.submit t('forms.buttons.submit.confirm_change') %>
+  <% page.with_actions do %>
+    <% if MfaPolicy.new(current_user).multiple_factors_enabled? %>
+      <%= render ButtonComponent.new(
+            url: confirm_delete_phone_path(id: @phone_configuration.id),
+            variant: :destructive,
+          ).with_content(t('forms.phone.buttons.delete')) %>
+    <% end %>
+
+    <%= render ButtonComponent.new(
+          url: account_security_path,
+          variant: :secondary,
+        ).with_content(t('links.cancel')) %>
+  <% end %>
 <% end %>
-
-<%= render 'remove_phone' %>
-
-<%= render 'shared/cancel', link: account_path %>

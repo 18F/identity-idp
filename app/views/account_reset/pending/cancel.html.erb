@@ -1,13 +1,17 @@
 <% self.title = t('account_reset.pending.canceled') %>
 
-<%= render PageHeadingComponent.new.with_content(t('account_reset.pending.canceled')) %>
+<%= render ADS::FormPageComponent.new(title: t('account_reset.pending.canceled')) do |page| %>
+  <% page.with_body do %>
+    <%= render AlertComponent.new(
+          type: :neutral,
+          message: t('account_reset.pending.canceled_info', app_name: APP_NAME),
+          dismissible: false,
+        ) %>
+  <% end %>
 
-<p>
-  <%= t('account_reset.pending.canceled_info', app_name: APP_NAME) %>
-</p>
-
-<%= link_to(
-      t('links.continue_sign_in'),
-      user_two_factor_authentication_path,
-      class: 'usa-button usa-button--wide usa-button--big',
-    ) %>
+  <% page.with_actions do %>
+    <%= render ButtonComponent.new(url: user_two_factor_authentication_path) do %>
+      <%= t('links.continue_sign_in') %>
+    <% end %>
+  <% end %>
+<% end %>

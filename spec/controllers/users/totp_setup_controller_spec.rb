@@ -132,7 +132,7 @@ RSpec.describe Users::TotpSetupController, devise: true do
 
         it 'redirects to account_path with a success message' do
           patch :confirm, params: { name: name, code: generate_totp_code(secret) }
-          expect(response).to redirect_to(account_path)
+          expect(response).to redirect_to(account_path(anchor: 'welcome'))
           expect(subject.user_session[:new_totp_secret]).to be_nil
 
           expect(@analytics).to have_logged_event(

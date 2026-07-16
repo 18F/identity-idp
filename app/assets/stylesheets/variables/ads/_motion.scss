@@ -1,0 +1,10 @@
+$tr-duration-md: 150ms;
+$tr-duration-lg: 300ms;
+
+$tr-easing-cubic: cubic-bezier(0.33, 1, 0.68, 1);
+
+$transition:
+  background-color $tr-duration-md $tr-easing-cubic,
+  border-color $tr-duration-md $tr-easing-cubic,
+  box-shadow $tr-duration-md $tr-easing-cubic,
+  color $tr-duration-md $tr-easing-cubic;

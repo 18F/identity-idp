@@ -1,28 +1,22 @@
-<nav class="usa-nav tablet:display-none sidenav-mobile" aria-label="<%= t('account.navigation.landmark_label') %>">
-  <div class="usa-nav__inner">
-    <button class="usa-nav__close">
-      <%= render IconComponent.new(icon: :close, size: 3) %>
-      <span class="usa-sr-only">
-        <%= t('account.navigation.close') %>
-      </span>
-    </button>
-    <ul class="usa-nav__primary usa-accordion">
-      <% NavigationPresenter.new(user: current_user, url_options: url_options).navigation_items.each do |nav_item| %>
-        <li class="usa-nav__primary-item">
-          <%= link_to nav_item.href, class: current_page?(nav_item.href) ? 'usa-current' : '' do %>
-            <strong><%= nav_item.title %></strong>
-          <% end %>
-          <% if nav_item.children&.any? %>
-            <ul class="usa-nav__submenu">
-              <% nav_item.children.each do |child_nav_item| %>
-                <li class="usa-nav__submenu-item">
-                  <%= link_to child_nav_item.title, child_nav_item.href, class: current_page?(child_nav_item.href) ? 'usa-current' : '' %>
-                </li>
-              <% end %>
-            </ul>
-          <% end %>
-        </li>
-      <% end %>
-    </ul>
+<details class="ads-account-mobile-menu" data-dismissable-menu>
+  <summary class="ads-account-mobile-menu__summary">
+    <%= render IconComponent.new(icon: :menu, size: 20) %>
+    <span><%= t('account.navigation.menu') %></span>
+  </summary>
+
+  <div class="ads-account-mobile-menu__panel">
+    <%= render 'accounts/side_nav', mobile: true %>
+
+    <div class="ads-account-mobile-menu__logout">
+      <%= render ButtonComponent.new(
+            url: logout_path,
+            method: :delete,
+            variant: :quaternary,
+            icon: :log_out,
+            icon_position: :right,
+            form_class: 'ads-account-mobile-menu__logout-form',
+            class: 'ads-account-mobile-menu__logout-button',
+          ).with_content(t('links.sign_out')) %>
+    </div>
   </div>
-</nav>
+</details>

@@ -1,0 +1,39 @@
+@use 'sass:color';
+@use 'sass:math';
+@use 'sass:meta';
+
+$black: #000;
+$off-black: #0c0c0c;
+$off-white: #f7f7f7;
+$white: #fff;
+
+$red-600: #d80007;
+$red-500: #ff5252;
+$red-300: #ff7f7b;
+
+$yellow-900: #8e5e00;
+$yellow-500: #e99b00;
+$yellow-300: #e7a800;
+
+$green-600: #007f26;
+$green-500: #0aa93a;
+$green-300: #6eb385;
+
+$blue-600: #004ac3;
+$blue-900: #182d4e;
+
+@function alpha($color, $opacity) {
+  @if meta.type-of($opacity) != 'number' {
+    @error 'alpha() expected a percentage or unitless 0–1, got #{$opacity}';
+  }
+
+  @if math.unit($opacity) == '%' {
+    @return color.change($color, $alpha: math.div($opacity, 100%));
+  }
+
+  @if math.is-unitless($opacity) {
+    @return color.change($color, $alpha: $opacity);
+  }
+
+  @error 'alpha() expected a percentage or unitless 0–1, got #{$opacity}';
+}

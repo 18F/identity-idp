@@ -1,0 +1,182 @@
+@use '../variables/ads' as ads;
+
+// Match chrome: @media (width < 768px)
+$ads-progress-breakpoint-m: 768px;
+
+.ads-progress {
+  --ads-progress-pill-height: #{ads.space(40) + ads.space(4)};
+
+  align-items: center;
+  box-sizing: border-box;
+  display: flex;
+  flex: 0 0 auto;
+  justify-content: center;
+  max-width: 100%;
+  min-height: var(--ads-progress-pill-height);
+  min-width: 0;
+  padding-block: ads.space(8);
+  position: relative;
+  user-select: none;
+  width: 100%;
+}
+
+.ads-progress__scroll {
+  box-sizing: border-box;
+  max-width: 100%;
+  min-width: 0;
+  overflow: auto visible;
+  overscroll-behavior-x: contain;
+  padding-block: ads.space(8);
+  scroll-padding-inline: ads.space(16);
+  scrollbar-width: none;
+  width: 100%;
+  -webkit-overflow-scrolling: touch;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  &:focus {
+    outline: none;
+  }
+
+  &:focus-visible {
+    @include ads.focus-ring;
+  }
+}
+
+.ads-progress__stepper {
+  align-items: center;
+  display: flex;
+  flex-wrap: nowrap;
+  gap: ads.space(24);
+  justify-content: center;
+  list-style: none;
+  margin: 0 auto;
+  padding: 0;
+  width: max-content;
+}
+
+.ads-progress__stepper > li {
+  display: flex;
+  flex: 0 0 auto;
+}
+
+.ads-progress__step {
+  align-items: center;
+  display: inline-flex;
+  flex: 0 0 auto;
+  justify-content: center;
+  min-height: var(--ads-progress-pill-height);
+  padding-block: ads.space(4);
+  position: relative;
+}
+
+.ads-progress__step-surface {
+  align-items: center;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: ads.radius(pill);
+  box-sizing: border-box;
+  color: ads.alpha(ads.$off-black, 65%);
+  display: inline-flex;
+  font-family: ads.$font-family;
+  font-size: ads.$text-label-m;
+  font-variant-numeric: tabular-nums;
+  font-weight: ads.$font-semibold;
+  gap: ads.space(8);
+  height: var(--ads-progress-pill-height);
+  justify-content: center;
+  letter-spacing: ads.$text-letter-spacing-label;
+  line-height: ads.$text-line-height-none;
+  min-width: var(--ads-progress-pill-height);
+  padding: ads.space(8) ads.space(20);
+  transition:
+    background-color ads.$tr-duration-md ads.$tr-easing-cubic,
+    color ads.$tr-duration-md ads.$tr-easing-cubic,
+    padding ads.$tr-duration-lg ads.$tr-easing-cubic;
+  white-space: nowrap;
+}
+
+.ads-progress__step[aria-current='step'] .ads-progress__step-surface {
+  background: ads.alpha(ads.$off-white, 85%);
+  color: ads.$off-black;
+}
+
+.ads-progress__step[data-complete='true'] .ads-progress__step-surface {
+  background: transparent;
+  color: ads.alpha(ads.$off-black, 65%);
+  min-width: 0;
+  padding: ads.space(8) ads.space(20) ads.space(8) ads.space(12);
+}
+
+.ads-progress__step-check {
+  display: block;
+  flex: 0 0 auto;
+  height: ads.space(20);
+  width: ads.space(20);
+}
+
+.ads-progress__step[data-complete='true'] .ads-progress__step-check {
+  align-items: center;
+  background: ads.$green-600;
+  border-radius: ads.radius(pill);
+  box-sizing: border-box;
+  color: ads.$off-white;
+  display: inline-flex;
+  height: ads.space(20);
+  justify-content: center;
+  padding: ads.space(4);
+  width: ads.space(20);
+
+  &.ads-icon {
+    height: ads.space(20);
+    width: ads.space(20);
+  }
+}
+
+.ads-progress__step-counter {
+  align-items: center;
+  color: ads.alpha(ads.$off-black, 65%);
+  display: inline-flex;
+  flex: 0 0 auto;
+  font-family: ads.$font-family;
+  font-size: ads.$text-body-m;
+  font-variant-numeric: tabular-nums;
+  font-weight: normal;
+  letter-spacing: ads.$text-letter-spacing-label;
+  line-height: ads.$text-line-height-none;
+}
+
+@media (width < #{$ads-progress-breakpoint-m}) {
+  .ads-progress__scroll {
+    --ads-progress-scroll-fade-size: #{ads.space(40) + ads.space(4)};
+
+    mask-image: linear-gradient(
+      90deg,
+      transparent,
+      ads.$black var(--ads-progress-scroll-fade-size),
+      ads.$black calc(100% - var(--ads-progress-scroll-fade-size)),
+      transparent
+    );
+    padding-block: ads.space(4);
+    scroll-snap-type: x mandatory;
+  }
+
+  // CSS-only end slack so first/last pills can sit near center (no JS insets).
+  .ads-progress__stepper {
+    justify-content: flex-start;
+    padding-inline: calc(50% - #{ads.space(48)});
+  }
+
+  .ads-progress__step {
+    scroll-snap-align: center;
+    scroll-snap-stop: always;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ads-progress__step-surface {
+    transition: none;
+  }
+}

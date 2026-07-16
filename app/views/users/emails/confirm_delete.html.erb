@@ -1,21 +1,30 @@
 <% self.title = t('titles.confirmations.delete') %>
 
-<%= render PageHeadingComponent.new.with_content(@presenter.confirm_delete_message) %>
+<%= render ADS::FormPageComponent.new(title: @presenter.confirm_delete_message) do |page| %>
+  <% page.with_body do %>
+    <%= render CardComponent.new do %>
+      <div class="ads-card__stack">
+        <p class="ads-card__label"><%= t('email_addresses.delete.warning') %></p>
+        <div class="ads-card__value">
+          <ul>
+            <li><%= t('email_addresses.delete.bullet1', app_name: APP_NAME) %></li>
+            <li><%= t('email_addresses.delete.bullet2') %></li>
+          </ul>
+        </div>
+      </div>
+    <% end %>
+  <% end %>
 
-<br/>
+  <% page.with_actions do %>
+    <%= render ButtonComponent.new(
+          url: delete_email_url(id: params[:id]),
+          method: :delete,
+          variant: :destructive,
+        ).with_content(t('forms.email.buttons.delete')) %>
 
-<h5 class='margin-top-0'>
-  <%= t('email_addresses.delete.warning') %>
-</h5>
-<ul>
-  <li><%= t('email_addresses.delete.bullet1', app_name: APP_NAME) %></li>
-  <li><%= t('email_addresses.delete.bullet2') %></li>
-</ul>
-
-<br/>
-
-<%= button_to t('forms.email.buttons.delete'), delete_email_url(id: params[:id]),
-              class: 'usa-button usa-button--big usa-button--danger usa-button--wide',
-              method: :delete %>
-
-<%= render 'shared/cancel', link: account_path %>
+    <%= render ButtonComponent.new(
+          url: account_settings_path,
+          variant: :secondary,
+        ).with_content(t('links.cancel')) %>
+  <% end %>
+<% end %>

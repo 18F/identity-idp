@@ -158,7 +158,7 @@ RSpec.describe Users::WebauthnSetupController do
       end
 
       it 'redirects to next setup path' do
-        expect(response).to redirect_to(account_url)
+        expect(response).to redirect_to(account_url(anchor: 'welcome'))
       end
 
       it 'tracks the submission' do

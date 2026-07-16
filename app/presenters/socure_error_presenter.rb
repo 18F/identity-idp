@@ -42,10 +42,6 @@ class SocureErrorPresenter
     }
   end
 
-  def secondary_action_heading
-    I18n.t('in_person_proofing.headings.cta')
-  end
-
   def secondary_action_text
     I18n.t('in_person_proofing.body.cta.prompt_detail')
   end
@@ -108,8 +104,6 @@ class SocureErrorPresenter
 
     'I856' => 'id_not_found',
     'R819' => 'id_not_found',
-
-    'R899' => 'state_id_verification',
   }.freeze
 
   def remapped_error(error_code)

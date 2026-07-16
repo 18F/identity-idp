@@ -1,27 +1,29 @@
 <% self.title = t('users.second_mfa_reminder.heading') %>
 
-<%= render StatusPageComponent.new(status: :info, icon: :question) do |c| %>
-  <% c.with_header { t('users.second_mfa_reminder.heading') } %>
+<%= render ADS::FormPageComponent.new(
+      title: t('users.second_mfa_reminder.heading'),
+    ) do |page| %>
+  <% page.with_body do %>
+    <%= render AlertComponent.new(
+          type: :neutral,
+          message: t('users.second_mfa_reminder.description'),
+          dismissible: false,
+        ) %>
+  <% end %>
 
-  <p><%= t('users.second_mfa_reminder.description') %></p>
+  <% page.with_actions do %>
+    <%= render ButtonComponent.new(
+          url: second_mfa_reminder_path,
+          method: :post,
+          params: { add_method: true },
+        ).with_content(t('users.second_mfa_reminder.add_method')) %>
 
-  <div class="grid-row margin-top-5">
-    <div class="tablet:grid-col-9">
-      <%= render ButtonComponent.new(
-            url: second_mfa_reminder_path,
-            method: :post,
-            params: { add_method: true },
-            big: true,
-            full_width: true,
-            class: 'margin-bottom-2',
-          ).with_content(t('users.second_mfa_reminder.add_method')) %>
-      <%= render ButtonComponent.new(
-            url: second_mfa_reminder_path,
-            method: :post,
-            outline: true,
-            big: true,
-            full_width: true,
-          ).with_content(t('users.second_mfa_reminder.continue', sp_name: decorated_sp_session.sp_name || APP_NAME)) %>
-    </div>
-  </div>
+    <%= render ButtonComponent.new(
+          url: second_mfa_reminder_path,
+          method: :post,
+          variant: :secondary,
+        ).with_content(
+          t('users.second_mfa_reminder.continue', sp_name: decorated_sp_session.sp_name || APP_NAME),
+        ) %>
+  <% end %>
 <% end %>

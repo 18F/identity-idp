@@ -1,6 +1,6 @@
 import { extendSession } from '@18f/identity-session';
 import type { CountdownElement } from '@18f/identity-countdown/countdown-element';
-import type { ModalElement } from '@18f/identity-modal';
+import { closeModal, openModal } from '@18f/identity-modal/modal';
 import { forceRedirect } from '@18f/identity-url';
 
 const warningEl = document.getElementById('session-timeout-cntnr')!;
@@ -8,8 +8,9 @@ const warningEl = document.getElementById('session-timeout-cntnr')!;
 const warning = Number(warningEl.dataset.warning!) * 1000;
 const sessionsURL = warningEl.dataset.sessionsUrl!;
 const sessionTimeout = Number(warningEl.dataset.sessionTimeoutIn!) * 1000;
-const modal = document.querySelector<ModalElement>('lg-modal.session-timeout-modal')!;
+const modal = document.querySelector<HTMLDialogElement>('dialog.session-timeout-modal')!;
 const keepaliveButton = document.getElementById('session-keepalive-btn')!;
+const closeButton = modal.querySelector<HTMLButtonElement>('[data-ads-modal-close]');
 const countdownEls: NodeListOf<CountdownElement> = modal.querySelectorAll('lg-countdown');
 const timeoutURL = warningEl?.dataset.timeoutUrl!;
 
@@ -25,7 +26,7 @@ function scheduleRedirect() {
 }
 
 function showModal() {
-  modal.show();
+  openModal(modal);
   countdownEls.forEach((countdownEl) => {
     countdownEl.expiration = sessionExpiration;
     countdownEl.start();
@@ -39,7 +40,7 @@ function keepalive(event: MouseEvent) {
   }
 
   event.preventDefault();
-  modal.hide();
+  closeModal(modal);
   sessionExpiration = new Date(Date.now() + sessionTimeout);
 
   setTimeout(showModal, sessionTimeout - warning);
@@ -49,5 +50,7 @@ function keepalive(event: MouseEvent) {
 }
 
 keepaliveButton.addEventListener('click', keepalive);
+// Close control keeps the session alive (same as the primary action).
+closeButton?.addEventListener('click', keepalive);
 setTimeout(showModal, sessionTimeout - warning);
 scheduleRedirect();

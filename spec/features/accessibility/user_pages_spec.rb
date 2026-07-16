@@ -47,19 +47,18 @@ RSpec.feature 'Accessibility on pages that require authentication', :js do
 
       expect(page).to have_current_path(authentication_methods_setup_path)
       expect_page_to_have_no_accessibility_violations(page)
-      phone_checkbox = page.find_field('two_factor_options_form_selection_phone', visible: :all)
-      expect(phone_checkbox).to have_name(
+      phone_option = page.find('#two_factor_options_form_selection_phone')
+      expect(phone_option).to have_content(
         t('two_factor_authentication.two_factor_choice_options.phone'),
       )
-      expect(phone_checkbox).to have_description(
+      expect(phone_option).to have_content(
         t('two_factor_authentication.two_factor_choice_options.phone_info'),
       )
     end
 
     scenario 'phone setup page' do
       sign_up_and_set_password
-      find("label[for='two_factor_options_form_selection_phone']").click
-      click_button t('forms.buttons.continue')
+      find('#two_factor_options_form_selection_phone').click
 
       expect(page).to have_current_path(phone_setup_path)
       expect_page_to_have_no_accessibility_violations(page)

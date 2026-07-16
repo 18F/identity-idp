@@ -1,25 +1,31 @@
-
-<p class="lead">
-<%= t('user_mailer.account_reset_request.intro', app_name: APP_NAME, waiting_period: @account_reset_deletion_period_interval) %>
+<p class="mailer-text mailer-text--spaced">
+  <%= t('user_mailer.account_reset_request.intro', app_name: APP_NAME, waiting_period: @account_reset_deletion_period_interval) %>
 </p>
 
-<table class="process-list">
+<table class="mailer-step-table" width="100%" cellpadding="0" cellspacing="0" border="0">
   <tr>
-    <td><div class="process-list__circle">1</div></td>
-    <td>
-      <h3 class="margin-bottom-1 text-bold"><%= t('user_mailer.account_reset_request.step_one.title', waiting_period: @account_reset_deletion_period_interval) %></h3>
-      <p class="margin-top-0"><%= t('user_mailer.account_reset_request.step_one.body') %></p>
+    <td class="mailer-step-marker-cell">
+      <div class="mailer-step-marker">1</div>
     </td>
-  </tr>
-  <tr>
-    <td><div class="process-list__circle">2</div></td>
-    <td>
-      <h3 class="margin-bottom-1 text-bold"><%= t('user_mailer.account_reset_request.step_two.title') %></h3>
-      <p class="margin-top-0"><%= t('user_mailer.account_reset_request.step_two.body_html', waiting_period: @account_reset_deletion_period_interval) %></p>
+    <td class="mailer-step-content">
+      <h3 class="mailer-step-heading"><%= t('user_mailer.account_reset_request.step_one.title', waiting_period: @account_reset_deletion_period_interval) %></h3>
+      <p class="mailer-text"><%= t('user_mailer.account_reset_request.step_one.body') %></p>
     </td>
   </tr>
 </table>
 
-<p class="lead">
+<table class="mailer-step-table" width="100%" cellpadding="0" cellspacing="0" border="0">
+  <tr>
+    <td class="mailer-step-marker-cell">
+      <div class="mailer-step-marker">2</div>
+    </td>
+    <td class="mailer-step-content">
+      <h3 class="mailer-step-heading"><%= t('user_mailer.account_reset_request.step_two.title') %></h3>
+      <p class="mailer-text"><%= t('user_mailer.account_reset_request.step_two.body_html', waiting_period: @account_reset_deletion_period_interval) %></p>
+    </td>
+  </tr>
+</table>
+
+<p class="mailer-text">
   <%= t('user_mailer.account_reset_request.cancel', app_name: APP_NAME) %>
 </p>

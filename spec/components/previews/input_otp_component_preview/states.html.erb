@@ -1,0 +1,28 @@
+<%
+  examples = [
+    ['Empty', :empty, {}],
+    ['Focused', :focused, { autofocus: true }],
+    ['Filled', :filled, { value: '123456' }],
+    ['Grouped', :grouped, { value: '123456', groups: [3, 3] }],
+    ['Alphanumeric with prefix', :prefixed, { value: '#A1B2C3', numeric: false, optional_prefix: '#' }],
+    ['Masked', :masked, { value: '123456', type: :password }],
+    ['Error', :invalid, { value: '12345', error_message: 'Enter the complete one-time code.' }],
+    ['Disabled', :disabled, { value: '123456', disabled: true }],
+    ['Readonly', :readonly, { value: '123456', readonly: true }],
+  ]
+%>
+<%= form_with(url: '#', scope: :preview, local: true) do |form| %>
+  <div style="display: flex; flex-direction: column; gap: 24px; max-width: 27rem;">
+    <% examples.each do |title, name, options| %>
+      <div>
+        <p style="margin: 0 0 12px; font: 600 12px/1 system-ui;"><%= title %></p>
+        <%= render InputOtpComponent.new(
+              form:,
+              name:,
+              label: title,
+              **options,
+            ) %>
+      </div>
+    <% end %>
+  </div>
+<% end %>

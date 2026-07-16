@@ -1,35 +1,20 @@
 <% self.title = t('account.navigation.two_factor_authentication') %>
+<% mfa_context = MfaContext.new(current_user) %>
 
-<%= render PageHeadingComponent.new.with_content(t('headings.account.two_factor')) %>
+<div class="ads-auth-methods">
+  <h1 class="ads-sr-only"><%= t('headings.account.two_factor') %></h1>
 
-<div class="card">
+  <%= render 'accounts/two_factor_authentication/webauthn_platform',
+             mfa_context: %>
+  <%= render 'accounts/two_factor_authentication/auth_apps',
+             mfa_context: %>
   <% if TwoFactorAuthentication::PhonePolicy.new(current_user).visible? %>
-    <%= render 'accounts/phone' %>
+    <%= render 'accounts/two_factor_authentication/phone',
+               mfa_context: %>
   <% end %>
+  <%= render 'accounts/two_factor_authentication/webauthn_roaming',
+             mfa_context: %>
+  <%= render 'accounts/two_factor_authentication/backup_codes' %>
+  <%= render 'accounts/two_factor_authentication/piv_cac',
+             mfa_context: %>
 </div>
-
-<div class="card">
-  <%= render 'accounts/auth_apps' %>
-</div>
-
-<div class="card">
-  <%= render 'accounts/webauthn_platform' %>
-</div>
-
-<div class="card">
-  <%= render 'accounts/webauthn_roaming' %>
-</div>
-
-<div class="card">
-  <%= render 'accounts/piv_cac' %>
-</div>
-
-<div class="card">
-  <%= render 'accounts/backup_codes' %>
-</div>
-
-<% if @presenter.show_manage_personal_key_partial? %>
-  <div class="card">
-    <%= render 'accounts/manage_personal_key' %>
-  </div>
-<% end %>

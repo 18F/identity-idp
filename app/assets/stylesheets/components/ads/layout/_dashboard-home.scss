@@ -1,0 +1,202 @@
+@use '../../../variables/ads' as ads;
+@use 'service-list' as service;
+
+$ads-dashboard-home-breakpoint-m: 768px;
+
+.ads-dashboard-home {
+  @include ads.stack(
+    $gap: ads.space(80),
+    $margin: 0 auto,
+    $max-width: ads.$dashboard-width,
+    $reset-flow: true,
+    $width: 100%
+  );
+
+  color: ads.$off-black;
+  font-family: ads.$font-family;
+  text-align: left;
+}
+
+.ads-dashboard-home__greeting {
+  color: ads.$off-black;
+  font-size: ads.$text-heading-l;
+  font-weight: ads.$font-semibold;
+  letter-spacing: ads.$text-letter-spacing-heading;
+  line-height: 1.1;
+  margin: 0;
+  // Translated greetings can wrap; never clamp them to a single line.
+  overflow-wrap: anywhere;
+}
+
+// "More ways to use your account" discovery section.
+.ads-discovery {
+  @include ads.stack($gap: ads.space(32), $reset-flow: true, $width: 100%);
+
+  width: 100%;
+}
+
+.ads-discovery__header {
+  @include service.section-header;
+}
+
+.ads-discovery__heading,
+.ads-discovery__description {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.ads-discovery__heading {
+  @include service.section-heading;
+}
+
+.ads-discovery__description {
+  @include service.section-description;
+}
+
+// Filter chips — horizontal scroll with an edge fade. The fade is applied as a
+// mask on the scroll container, but is removed on :focus-within so a focused
+// chip's focus ring is never clipped by the fade.
+.ads-discovery__filters {
+  width: 100%;
+}
+
+.ads-discovery__chips {
+  display: flex;
+  gap: ads.space(4);
+  list-style: none;
+  margin: 0;
+  overflow-x: auto;
+  padding: ads.space(4);
+  scrollbar-width: none;
+  mask-image: linear-gradient(to right, ads.$off-black 92%, transparent 100%);
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  &:focus-within {
+    mask-image: none;
+  }
+
+  > li {
+    flex: 0 0 auto;
+  }
+}
+
+.ads-discovery__chip {
+  align-items: center;
+  background: ads.$white;
+  border: 1px solid ads.alpha(ads.$off-black, 15%);
+  border-radius: ads.radius(pill);
+  color: ads.$off-black;
+  display: inline-flex;
+  font-size: ads.$text-body-s;
+  font-weight: ads.$font-semibold;
+  letter-spacing: ads.$text-letter-spacing-label;
+  line-height: 1;
+  min-height: ads.space(36);
+  padding: ads.space(8) ads.space(16);
+  text-decoration: none;
+  transition: ads.$transition;
+  white-space: nowrap;
+
+  &:is(:link, :visited) {
+    color: ads.$off-black;
+  }
+
+  &:hover {
+    background: ads.alpha(ads.$off-black, 5%);
+  }
+
+  &:focus {
+    outline: 0;
+  }
+
+  &:focus-visible {
+    @include ads.focus-ring;
+  }
+}
+
+.ads-discovery__chip--current {
+  &,
+  &:is(:link, :visited),
+  &:hover {
+    background: ads.$off-black;
+    border-color: ads.$off-black;
+    color: ads.$white;
+  }
+}
+
+.ads-discovery__list {
+  @include service.panel;
+}
+
+.ads-discovery__rows {
+  @include service.rows;
+}
+
+.ads-discovery__rows > li + li {
+  @include service.rows-divider;
+}
+
+.ads-discovery__empty {
+  color: ads.alpha(ads.$off-black, 65%);
+  font-size: ads.$text-body-m;
+  letter-spacing: ads.$text-letter-spacing-label;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.ads-discovery-service {
+  @include service.row;
+}
+
+.ads-discovery-service__mark {
+  @include service.mark;
+
+  background: ads.alpha(ads.$off-black, 5%);
+  overflow: hidden;
+}
+
+.ads-discovery-service__logo {
+  @include service.logo;
+}
+
+.ads-discovery-service__content {
+  @include service.content;
+}
+
+.ads-discovery-service__title,
+.ads-discovery-service__description {
+  @include service.text;
+}
+
+.ads-discovery-service__title {
+  @include service.title;
+}
+
+.ads-discovery-service__description {
+  @include service.muted;
+}
+
+.ads-discovery-service__actions {
+  @include service.actions;
+}
+
+@media (width < #{$ads-dashboard-home-breakpoint-m}) {
+  .ads-dashboard-home__greeting {
+    font-size: ads.$text-heading-l-mobile;
+  }
+
+  .ads-discovery__list {
+    @include service.panel-mobile;
+  }
+
+  .ads-discovery-service {
+    @include service.row-mobile;
+  }
+
+  .ads-discovery-service__actions {
+    @include service.actions-mobile;
+  }
+}

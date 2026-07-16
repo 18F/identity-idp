@@ -27,14 +27,6 @@ RSpec.describe 'users/phone_setup/index.html.erb' do
     )
   end
 
-  context 'voip numbers' do
-    it 'tells users to not use VOIP numbers' do
-      expect(render).to have_content(
-        t('two_factor_authentication.two_factor_choice_options.phone_info_no_voip'),
-      )
-    end
-  end
-
   context 'recaptcha enabled' do
     before do
       allow(FeatureManagement).to receive(:phone_recaptcha_enabled?).and_return(true)
@@ -75,7 +67,7 @@ RSpec.describe 'users/phone_setup/index.html.erb' do
     end
 
     it 'renders alert banner' do
-      expect(render).to have_selector('.usa-alert.usa-alert--error')
+      expect(render).to have_content(t('vendor_outage.alerts.sms.default'))
     end
   end
 end

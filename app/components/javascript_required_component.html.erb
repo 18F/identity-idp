@@ -8,7 +8,7 @@
 
     <p><%= t('components.javascript_required.browser_instructions') %></p>
 
-    <ul class="usa-list">
+    <ul class="ads-list">
       <% browser_resources.each do |resource| %>
         <li><%= new_tab_link_to resource[:name], resource[:url] %></li>
       <% end %>
@@ -20,7 +20,7 @@
 </noscript>
 <div class="js">
   <% if was_no_js? %>
-    <%= render AlertComponent.new(type: :success, class: 'margin-bottom-4') do %>
+    <%= render AlertComponent.new(type: :success) do %>
       <%= t('components.javascript_required.enabled_alert') %>
     <% end %>
   <% end %>

@@ -1,35 +1,62 @@
-
 <% self.title = t('account_reset.request.delete_account') %>
 
-<%= render PageHeadingComponent.new.with_content(t('account_reset.request.delete_account')) %>
-<p><%= t(
-         'account_reset.request.delete_request_details_html',
-         account_delete_link: new_tab_link_to(
-           t('account_reset.request.account_delete_link'),
-           MarketingSite.help_center_article_url(
-             category: 'manage-your-account',
-             article: 'delete-your-account',
-           ),
-         ),
-       ) %></p>
+<%= render ADS::FormPageComponent.new(title: t('account_reset.request.delete_account')) do |page| %>
+  <% page.with_body do %>
+    <% account_delete_link = capture do %>
+      <%= render ADS::LinkComponent.new(
+            url: MarketingSite.help_center_article_url(
+              category: 'manage-your-account',
+              article: 'delete-your-account',
+            ),
+            target: '_blank',
+            rel: 'noopener',
+          ) do %>
+        <%= t('account_reset.request.account_delete_link') %>
+      <% end %>
+    <% end %>
 
-<p><%= t('account_reset.request.choose_to_continue') %></p>
+    <div class="ads-copy">
+      <p>
+        <%= t(
+              'account_reset.request.delete_request_details_html',
+              account_delete_link: account_delete_link,
+            ) %>
+      </p>
 
-<p><%= t('account_reset.request.delete_email1_html') %></p>
-<p><%= t('account_reset.request.delete_email2_html', interval: @account_reset_deletion_period_interval) %></p>
+      <p><%= t('account_reset.request.choose_to_continue') %></p>
 
-<p><strong><%= t('account_reset.request.continue_deletion') %></strong></p>
+      <ul class="ads-list">
+        <li><%= t('account_reset.request.delete_email1_html') %></li>
+        <li>
+          <%= t(
+                'account_reset.request.delete_email2_html',
+                interval: @account_reset_deletion_period_interval,
+              ) %>
+        </li>
+      </ul>
+    </div>
+  <% end %>
 
-<%= simple_form_for(
-      :account_reset,
-      url: account_reset_request_path,
-      method: 'POST',
-    ) do |f| %>
-  <%= f.submit(t('account_reset.request.yes_continue'), data: { disable_with: 'Confirming...' }, class: 'margin-bottom-2') %>
+  <% page.with_actions do %>
+    <%= form_with(
+          scope: :account_reset,
+          url: account_reset_request_path,
+          method: :post,
+          local: true,
+          class: 'ads-form',
+        ) do %>
+      <%= render ButtonComponent.new(
+            type: :submit,
+            variant: :destructive,
+            data: { disable_with: 'Confirming...' },
+          ) do %>
+        <%= t('account_reset.request.yes_continue') %>
+      <% end %>
+    <% end %>
+
+    <%= render ButtonComponent.new(
+          url: root_url,
+          variant: :quaternary,
+        ).with_content(t('account_reset.request.no_cancel2')) %>
+  <% end %>
 <% end %>
-
-<%= button_to(
-      root_url,
-      method: :get,
-      class: 'usa-button usa-button--unstyled',
-    ) { t('account_reset.request.no_cancel2') } %>

@@ -2,7 +2,6 @@ require 'rails_helper'
 
 RSpec.feature 'User profile' do
   include IdvStepHelper
-  include NavigationHelper
   include PersonalKeyHelper
   include PushNotificationsHelper
   include BrowserEmulationHelper
@@ -29,7 +28,7 @@ RSpec.feature 'User profile' do
       user.agency_identities << AgencyIdentity.create(user_id: user.id, agency_id: 1, uuid: '1234')
       visit account_path
 
-      find_sidenav_delete_account_link.click
+      visit account_delete_path
       expect(User.count).to eq 1
       expect(AgencyIdentity.count).to eq 1
 
@@ -58,7 +57,7 @@ RSpec.feature 'User profile' do
 
       visit account_path
 
-      find_sidenav_delete_account_link.click
+      visit account_delete_path
 
       request = stub_push_notification_request(
         service_provider: service_provider,
@@ -84,7 +83,7 @@ RSpec.feature 'User profile' do
       sign_in_live_with_2fa(profile.user)
       visit account_path
 
-      find_sidenav_delete_account_link.click
+      visit account_delete_path
       expect(User.count).to eq 1
       expect(Profile.count).to eq 1
 
@@ -103,7 +102,7 @@ RSpec.feature 'User profile' do
       expect(User.count).to eq 1
       sign_in_live_with_2fa(profile.user)
       visit account_path
-      find_sidenav_delete_account_link.click
+      visit account_delete_path
       fill_in(t('idv.form.password'), with: profile.user.password)
       click_button t('users.delete.actions.delete')
 
@@ -119,9 +118,7 @@ RSpec.feature 'User profile' do
   describe 'Editing the password' do
     it 'includes the password strength indicator when JS is on', js: true do
       sign_in_and_2fa_user
-      within('.sidenav') do
-        click_link 'Edit', href: manage_password_path
-      end
+      visit manage_password_path
 
       expect(page).not_to have_content(t('instructions.password.strength.intro'))
 
@@ -139,7 +136,7 @@ RSpec.feature 'User profile' do
 
       click_button 'Update'
 
-      expect(page).to have_current_path account_path
+      expect(page).to have_current_path account_settings_path
     end
 
     context 'IAL2 user' do

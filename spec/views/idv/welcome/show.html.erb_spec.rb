@@ -10,6 +10,7 @@ RSpec.describe 'idv/welcome/show.html.erb' do
 
   before do
     allow(view_context).to receive(:current_user).and_return(user)
+    allow(view).to receive(:current_sp).and_return(sp)
 
     decorated_sp_session = ServiceProviderSession.new(
       sp: sp,
@@ -24,56 +25,26 @@ RSpec.describe 'idv/welcome/show.html.erb' do
   end
 
   context 'in doc auth with an authenticated user' do
-    it 'renders a link to return to the SP' do
-      expect(rendered).to have_link(t('links.cancel'))
+    it 'renders exit and continue actions' do
+      expect(rendered).to have_link(t('idv.buttons.phone.no_us_phone_number'))
+      expect(rendered).to have_button(t('doc_auth.buttons.continue'))
     end
 
     it 'renders the welcome template' do
       expect(rendered).to have_content(
-        t('doc_auth.headings.welcome', sp_name: sp.friendly_name),
+        t('headings.identity_verification_intro.title', sp: sp.friendly_name),
       )
-
       expect(rendered).to have_content(
-        t(
-          'doc_auth.info.getting_started_html',
-          sp_name: sp.friendly_name,
-          link_html: '',
-        ),
+        t('headings.identity_verification_intro.intro', sp: sp.friendly_name),
       )
-      expect(rendered).to have_content(t('doc_auth.instructions.bullet1'))
-      expect(rendered).to have_link(
-        t('doc_auth.info.getting_started_learn_more'),
-        href: help_center_redirect_path(
-          category: 'verify-your-identity',
-          article: 'overview',
-          flow: :idv,
-          step: :welcome,
-          location: 'intro_paragraph',
-        ),
+      expect(rendered).to have_content(
+        t('headings.identity_verification_intro.what_youll_need'),
       )
-    end
-  end
-
-  context 'when a user has the passport option' do
-    it 'renders the modified bullet point' do
-      expect(rendered).to have_content(t('doc_auth.instructions.bullet1'))
-    end
-  end
-
-  context 'in doc auth with a step-up user' do
-    let(:user) { create(:user, :proofed) }
-
-    it 'renders a modified welcome template' do
-      expect(rendered).to have_content(t('doc_auth.info.stepping_up_html', link_html: ''))
-      expect(rendered).to have_link(
-        t('doc_auth.info.getting_started_learn_more'),
-        href: help_center_redirect_path(
-          category: 'verify-your-identity',
-          article: 'overview',
-          flow: :idv,
-          step: :welcome,
-          location: 'intro_paragraph',
-        ),
+      expect(rendered).to have_content(
+        t('headings.identity_verification_intro.requirement_id_title'),
+      )
+      expect(rendered).to have_content(
+        t('headings.identity_verification_intro.protect_data_heading'),
       )
     end
   end

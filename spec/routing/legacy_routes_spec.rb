@@ -10,4 +10,9 @@ RSpec.describe 'Connected services legacy redirects', type: :request do
     get '/account/connected_accounts/123/selected_email'
     expect(response).to redirect_to('/account/connected_services/123/selected_email')
   end
+
+  it 'redirects an in-flight PATCH to the old selected_email path, preserving identity_id' do
+    patch '/account/connected_accounts/123/selected_email'
+    expect(response).to redirect_to('/account/connected_services/123/selected_email')
+  end
 end

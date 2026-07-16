@@ -54,7 +54,7 @@ RSpec.describe 'doc auth IPP VerifyInfo', js: true, allow_browser_log: true do
       # click update address link
       click_link t('idv.buttons.change_address_label')
       expect(page).to have_content(t('in_person_proofing.headings.update_address'))
-      fill_in t('idv.form.address1'), with: 'bad address'
+      fill_in t('idv.form.address'), with: 'bad address'
       click_doc_auth_back_link
       expect(page).to have_content(t('headings.verify'))
       expect(page).to have_current_path(idv_in_person_verify_info_path)
@@ -75,7 +75,7 @@ RSpec.describe 'doc auth IPP VerifyInfo', js: true, allow_browser_log: true do
       # click update address link
       click_link t('idv.buttons.change_address_label')
       expect(page).to have_content(t('in_person_proofing.headings.update_address'))
-      fill_in t('idv.form.address1'), with: '987 Fake St.'
+      fill_in t('idv.form.address'), with: '987 Fake St.'
       click_button t('forms.buttons.submit.update')
       expect(page).to have_content(t('headings.verify'))
       expect(page).to have_current_path(idv_in_person_verify_info_path)
@@ -89,7 +89,7 @@ RSpec.describe 'doc auth IPP VerifyInfo', js: true, allow_browser_log: true do
       click_button t('forms.buttons.submit.update')
       expect(page).to have_content(t('headings.verify'))
       expect(page).to have_current_path(idv_in_person_verify_info_path)
-      expect(page).to have_text('9**-**-***5')
+      expect(page).to have_text('9••-••-•••5')
     end
   end
 

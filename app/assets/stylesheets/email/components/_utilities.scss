@@ -1,0 +1,88 @@
+@use 'variables/email' as *;
+
+$margin-bottom-values: (
+  0: 0,
+  1: $subheader-margin-bottom,
+  105: $paragraph-margin-bottom,
+  2: $global-margin,
+  3: $mailer-section-gap,
+  4: $mailer-brand-padding-top,
+);
+
+$margin-top-values: (
+  0: 0,
+  3: $mailer-section-gap,
+  5: $stat-font-size,
+);
+
+.app-border-bottom {
+  border-bottom: 1px solid $mailer-divider-color;
+}
+
+.display-inline-block {
+  display: inline-block;
+}
+
+.display-block {
+  display: block;
+}
+
+.font-heading-md {
+  font-size: $h2-font-size;
+  font-weight: $header-font-weight;
+  line-height: 1.3;
+}
+
+@each $step, $value in $margin-bottom-values {
+  .margin-bottom-#{$step} {
+    margin-bottom: $value;
+  }
+}
+
+@each $step, $value in $margin-top-values {
+  .margin-top-#{$step} {
+    margin-top: $value;
+  }
+}
+
+.margin-y-1 {
+  margin-bottom: $subheader-margin-bottom;
+  margin-top: $subheader-margin-bottom;
+}
+
+.margin-x-auto {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.margin-y-4 {
+  margin-bottom: $mailer-brand-padding-top;
+  margin-top: $mailer-brand-padding-top;
+}
+
+.padding-x-4 {
+  padding-left: $mailer-brand-padding-top;
+  padding-right: $mailer-brand-padding-top;
+}
+
+.padding-top-4 {
+  padding-top: $mailer-brand-padding-top;
+}
+
+.text-bold {
+  font-weight: 700;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.app-list {
+  margin-bottom: $global-margin;
+  margin-top: $global-margin;
+  padding-left: $global-padding;
+
+  li {
+    margin-bottom: $subheader-margin-bottom;
+  }
+}

@@ -156,7 +156,7 @@ RSpec.describe 'New device tracking' do
     context 'authenticating after new account creation from the same device' do
       let(:user) do
         user = sign_up_and_2fa_ial1_user
-        click_on t('links.sign_out')
+        click_on t('links.sign_out'), visible: :all
         user
       end
 

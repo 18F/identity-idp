@@ -116,10 +116,7 @@ module Users
       max_phones_count = IdentityConfig.store.max_phone_numbers_per_account
       return if current_user.phone_configurations.count < max_phones_count
       flash[:phone_error] = t('users.phones.error_message')
-      redirect_path = request.referer.match(account_two_factor_authentication_url) ?
-                        account_two_factor_authentication_url(anchor: 'phones') :
-                        account_url(anchor: 'phones')
-      redirect_to redirect_path
+      redirect_to account_security_url(anchor: 'phones')
     end
 
     def redirect_if_phone_vendor_outage

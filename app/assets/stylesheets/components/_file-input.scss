@@ -1,0 +1,241 @@
+@use '../variables/ads' as ads;
+
+$file-input-max-width: 27rem;
+$file-input-padding: ads.space(24);
+$file-input-border-width: 1px;
+$file-input-border-width-focus: 2px;
+$file-input-border-radius: ads.radius(16);
+$file-input-margin-top: ads.space(8);
+$file-input-preview-size: ads.space(40);
+$file-input-icon-size: ads.space(24);
+$file-input-loader-size: ads.space(32);
+$file-input-transition: border-color ads.$tr-duration-md ads.$tr-easing-cubic;
+
+@mixin file-input-typography {
+  font-family: ads.$font-family;
+  font-size: ads.$text-body-m;
+  font-weight: 400;
+  letter-spacing: ads.$text-letter-spacing-label;
+  line-height: 1.5;
+}
+
+[type='file'].ads-file-input {
+  border: none;
+  margin-top: $file-input-margin-top;
+  padding-left: 0;
+  padding-top: 0.2rem;
+}
+
+.ads-file-input {
+  display: block;
+  max-width: $file-input-max-width;
+  width: 100%;
+}
+
+.ads-file-input__target {
+  background-color: ads.$white;
+  border: $file-input-border-width solid ads.alpha(ads.$off-black, 10%);
+  border-radius: $file-input-border-radius;
+  box-sizing: border-box;
+  display: block;
+  margin-top: $file-input-margin-top;
+  overflow: hidden;
+  padding: $file-input-padding;
+  position: relative;
+  text-align: center;
+  transition: $file-input-transition;
+  width: 100%;
+
+  &:hover {
+    border-color: ads.alpha(ads.$off-black, 45%);
+  }
+}
+
+.ads-file-input__target.has-invalid-file {
+  border-color: ads.$red-600;
+}
+
+.ads-file-input__accepted-files-message {
+  @include file-input-typography;
+  color: ads.$red-600;
+  font-weight: ads.$font-semibold;
+  margin: -#{ads.space(24)} 0 ads.space(24);
+  pointer-events: none;
+  position: relative;
+  z-index: 3;
+}
+
+.ads-file-input__choose {
+  color: ads.alpha(ads.$off-black, 65%);
+  font-weight: 400;
+  text-decoration: underline;
+  text-underline-offset: 0.1em;
+}
+
+.ads-file-input__instructions {
+  @include file-input-typography;
+  color: ads.alpha(ads.$off-black, 65%);
+  pointer-events: none;
+  position: relative;
+  z-index: 3;
+}
+
+.ads-file-input__box {
+  border-radius: inherit;
+  inset: 0;
+  pointer-events: none;
+  position: absolute;
+  z-index: 2;
+}
+
+.ads-file-input .ads-file-input__input[type] {
+  border: none;
+  box-sizing: border-box;
+  cursor: pointer;
+  inset: 0;
+  margin: 0;
+  max-width: none;
+  opacity: 0;
+  outline-offset: 2px;
+  padding: 0;
+  position: absolute;
+  text-indent: -999em;
+  z-index: 1;
+
+  &:not([disabled]):focus-visible {
+    outline: $file-input-border-width-focus solid ads.$off-black;
+    outline-offset: -#{$file-input-border-width-focus};
+  }
+}
+
+.ads-file-input .ads-file-input__input[type]::-webkit-file-upload-button {
+  display: none;
+}
+
+.ads-file-input--drag .ads-file-input__target {
+  border-color: ads.alpha(ads.$off-black, 45%);
+}
+
+.ads-file-input__preview-heading {
+  @include file-input-typography;
+  align-items: center;
+  color: ads.$off-black;
+  display: flex;
+  font-weight: ads.$font-semibold;
+  justify-content: space-between;
+  margin-bottom: ads.space(16);
+  pointer-events: none;
+  position: relative;
+  text-align: left;
+  z-index: 3;
+}
+
+.ads-file-input__preview {
+  align-items: center;
+  color: ads.alpha(ads.$off-black, 65%);
+  display: flex;
+  font-size: ads.$text-body-s;
+  margin-top: 1px;
+  padding: ads.space(4) 0;
+  pointer-events: none;
+  position: relative;
+  text-align: left;
+  word-wrap: anywhere;
+  z-index: 3;
+
+  &:last-child {
+    margin-bottom: -#{ads.space(24)};
+  }
+}
+
+.ads-file-input__preview-image {
+  border: none;
+  display: block;
+  height: $file-input-preview-size;
+  margin-right: ads.space(8);
+  object-fit: contain;
+  width: $file-input-preview-size;
+}
+
+.ads-file-input__preview-image.is-loading {
+  background-image: url('/loader.svg');
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: $file-input-loader-size;
+}
+
+.ads-file-input__preview-image--generic,
+.ads-file-input__preview-image--pdf,
+.ads-file-input__preview-image--word,
+.ads-file-input__preview-image--excel,
+.ads-file-input__preview-image--video {
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: $file-input-icon-size;
+}
+
+.ads-file-input__preview-image--pdf {
+  background-image: url('/file-pdf.svg');
+}
+
+.ads-file-input__preview-image--generic {
+  background-image: url('/file.svg');
+}
+
+.ads-file-input__preview-image--word {
+  background-image: url('/file-word.svg');
+}
+
+.ads-file-input__preview-image--excel {
+  background-image: url('/file-excel.svg');
+}
+
+.ads-file-input__preview-image--video {
+  background-image: url('/file-video.svg');
+}
+
+.ads-form-group--error .ads-file-input__target {
+  border-color: ads.$red-600;
+  border-width: $file-input-border-width;
+
+  &:hover {
+    border-color: ads.$red-600;
+  }
+}
+
+.ads-file-input--disabled {
+  .ads-file-input__instructions,
+  .ads-file-input__choose {
+    color: ads.alpha(ads.$off-black, 65%);
+  }
+
+  .ads-file-input__box {
+    background-color: ads.alpha(ads.$off-black, 5%);
+  }
+
+  .ads-file-input__input[type] {
+    cursor: not-allowed;
+  }
+
+  .ads-file-input__target {
+    background-color: ads.alpha(ads.$off-black, 5%);
+    border-color: ads.alpha(ads.$off-black, 45%);
+    border-width: $file-input-border-width;
+
+    &:hover {
+      border-color: ads.alpha(ads.$off-black, 45%);
+    }
+  }
+
+  @media (forced-colors: active) {
+    .ads-file-input__instructions,
+    .ads-file-input__choose {
+      color: GrayText;
+    }
+
+    .ads-file-input__target,
+    .ads-file-input__target:hover {
+      border-color: GrayText;
+    }
+  }
+}

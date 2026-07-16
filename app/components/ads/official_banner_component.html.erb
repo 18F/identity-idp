@@ -1,0 +1,11 @@
+<section class="ads-official-banner" aria-label="<%= t('shared.banner.landmark_label') %>">
+  <div class="ads-official-banner__content">
+    <span class="ads-official-banner__flag" aria-hidden="true">
+      <%= render IconComponent.new(icon: :flag_20, size: 20) %>
+    </span>
+    <p class="ads-official-banner__text"><%= t('shared.banner.official_site') %></p>
+  </div>
+  <% if FeatureManagement.show_no_pii_banner? %>
+    <p class="ads-official-banner__test-notice"><%= t('idv.messages.sessions.no_pii') %></p>
+  <% end %>
+</section>

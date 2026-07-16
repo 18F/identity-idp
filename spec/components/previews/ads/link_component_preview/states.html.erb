@@ -1,0 +1,14 @@
+<%= render ADS::StackComponent.new(gap: 24, align: :start) do %>
+  <div>
+    <p>Default</p>
+    <%= render ADS::LinkComponent.new(url: '#default').with_content('Create an account') %>
+  </div>
+
+  <div>
+    <%= render ADS::LinkComponent.new(url: '#hover').with_content('Create an account') %>
+  </div>
+
+  <div>
+    <%= render ADS::LinkComponent.new(url: '#focus').with_content('Create an account') %>
+  </div>
+<% end %>

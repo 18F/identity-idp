@@ -1,0 +1,83 @@
+<%#
+  Shared phone OTP verification layout (sign-up / login MFA and IdV).
+
+  locals:
+    subtitle: String — phone delivery message (plain text for intro)
+    form_url:, form_method: (default :post)
+    code_value: optional prefilled code
+    otp: optional kwargs for InputOtpComponent (length, numeric, transport, …)
+    fields: optional captured HTML after the OTP input
+    landline_alert: optional captured HTML before the form
+    resend_url:, resend_method: optional
+    extra_actions: optional captured HTML after resend
+%>
+<% form_id = 'otp-verification-form' %>
+<%= render ADS::FormPageComponent.new(
+      title: t('two_factor_authentication.header_text'),
+      subtitle: subtitle,
+    ) do |page| %>
+  <% page.with_alert do %>
+    <%= render AlertComponent.new(type: :warning) do %>
+      <%= strip_tags(
+            t(
+              'instructions.mfa.do_not_share_code_message_html',
+              link_html: '',
+            ),
+          ) %>
+      <%= render ADS::LinkComponent.new(
+            url: MarketingSite.help_center_article_url(
+              category: 'fraud-concerns',
+              article: 'overview',
+            ),
+            target: '_blank',
+            rel: 'noopener',
+          ) do %>
+        <%= t('instructions.mfa.do_not_share_code_link_text') %>
+      <% end %>
+    <% end %>
+  <% end %>
+
+  <% page.with_body do %>
+    <%= render ADS::StackComponent.new(gap: 32, align: :stretch) do %>
+      <%= landline_alert if local_assigns[:landline_alert].present? %>
+
+      <%= form_with(
+            url: form_url,
+            method: local_assigns.fetch(:form_method, :post),
+            local: true,
+            id: form_id,
+            class: 'ads-form',
+          ) do |f| %>
+        <%= render ADS::StackComponent.new(kind: :form, gap: 16, align: :stretch) do %>
+          <%= render InputOtpComponent.new(
+                form: f,
+                autofocus: true,
+                value: local_assigns[:code_value],
+                optional_prefix: '#',
+                hint: false,
+                **local_assigns.fetch(:otp, {}),
+              ) %>
+
+          <%= fields if local_assigns[:fields].present? %>
+        <% end %>
+      <% end %>
+
+      <%= render ADS::StackComponent.new(kind: :actions, gap: 8, align: :stretch) do %>
+        <%= render ButtonComponent.new(
+              type: :submit,
+              form: form_id,
+            ).with_content(t('forms.buttons.continue')) %>
+
+        <% if local_assigns[:resend_url].present? %>
+          <%= render ButtonComponent.new(
+                url: resend_url,
+                method: local_assigns[:resend_method],
+                variant: :secondary,
+              ).with_content(t('links.resend')) %>
+        <% end %>
+
+        <%= extra_actions if local_assigns[:extra_actions].present? %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% end %>

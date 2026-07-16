@@ -1,0 +1,38 @@
+<%= content_tag(
+      :'ads-progress',
+      **tag_options.except(:class, :data),
+      class: css_class,
+      data: { progress_label: label }.merge(tag_options[:data].to_h),
+    ) do %>
+  <div class="ads-progress__scroll">
+    <%= tag.ol(class: 'ads-progress__stepper', aria: { label: label }) do %>
+      <% steps.each_with_index do |step_label, index| %>
+        <li>
+          <%= tag.span(**step_options(index)) do %>
+            <span class="ads-progress__step-surface">
+              <% if completed_step?(index) %>
+                <%= render IconComponent.new(
+                      icon: :checkmark,
+                      size: 20,
+                      class: 'ads-progress__step-check',
+                    ) %>
+              <% end %>
+              <span class="ads-progress__step-label"><%= step_label %></span>
+              <% if show_substep_counter?(index) %>
+                <span class="ads-progress__step-counter" aria-hidden="true">
+                  <%= current_substep %>/<%= substep_count %>
+                </span>
+              <% end %>
+            </span>
+            <% if (status = status_sr_text(index)).present? %>
+              <span class="ads-sr-only"><%= status %></span>
+            <% end %>
+            <% if (substep = substep_sr_text(index)).present? %>
+              <span class="ads-sr-only"><%= substep %></span>
+            <% end %>
+          <% end %>
+        </li>
+      <% end %>
+    <% end %>
+  </div>
+<% end %>

@@ -19,7 +19,7 @@ RSpec.feature 'Password recovery via personal key for a GPO-verified user' do
     check t('forms.personal_key.required_checkbox')
     click_continue
 
-    click_on t('links.sign_out')
+    click_on t('links.sign_out'), visible: :all
 
     trigger_reset_password_and_click_email_link(user.email)
     reset_password_and_sign_back_in(user, new_password)

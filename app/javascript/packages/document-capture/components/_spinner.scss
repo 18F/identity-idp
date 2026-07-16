@@ -1,0 +1,99 @@
+@use 'variables/ads' as ads;
+
+lg-spinner-button {
+  .ads-button {
+    position: relative;
+  }
+
+  &:not(.spinner-button--spinner-active) .spinner-dots {
+    display: none;
+  }
+
+  &:not(.spinner-button--outline) .spinner-dots {
+    color: ads.$off-white;
+  }
+}
+
+.spinner-button--spinner-active .spinner-button__content {
+  opacity: 0;
+}
+
+.spinner-button__action-message {
+  color: ads.$off-black;
+  font-weight: ads.$font-semibold;
+  margin-top: ads.space(16);
+}
+
+@keyframes spinner-dot-one {
+  0% {
+    transform: scale(0);
+  }
+
+  25% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(0);
+  }
+}
+
+@keyframes spinner-dot-two {
+  0%,
+  20% {
+    transform: scale(0);
+  }
+
+  45% {
+    transform: scale(1);
+  }
+
+  70% {
+    transform: scale(0);
+  }
+}
+
+@keyframes spinner-dot-three {
+  0%,
+  40% {
+    transform: scale(0);
+  }
+
+  65% {
+    transform: scale(1);
+  }
+
+  90% {
+    transform: scale(0);
+  }
+}
+
+.spinner-dots {
+  color: inherit;
+  display: inline-flex;
+  gap: ads.space(4);
+}
+
+.spinner-dots--centered {
+  left: 50%;
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.spinner-dots__dot {
+  animation: spinner-dot-one 1s infinite ease-in-out;
+  background: currentcolor;
+  border-radius: ads.radius(pill);
+  display: block;
+  height: ads.space(8);
+  width: ads.space(8);
+
+  &:nth-child(2) {
+    animation-name: spinner-dot-two;
+  }
+
+  &:nth-child(3) {
+    animation-name: spinner-dot-three;
+  }
+}

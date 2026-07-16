@@ -1,0 +1,29 @@
+<% variants = [
+  [:neutral, 'This is an example of a dismissible neutral message in the experience for users to see.'],
+  [:warning, 'This is an example of a dismissible warning message in the experience for users to see.'],
+  [:error, 'This is an example of a dismissible error message in the experience for users to see.'],
+] %>
+
+<% non_dismissible_variants = [
+  [:neutral, 'This is an example of a non-dismissible neutral message in the experience for users to see.'],
+  [:warning, 'This is an example of a non-dismissible warning message in the experience for users to see.'],
+  [:error, 'This is an example of a non-dismissible error message in the experience for users to see.'],
+] %>
+
+<div style="display: flex; flex-direction: column; max-width: 432px;">
+  <% variants.each do |type, message| %>
+    <%= render AlertComponent.new(type:, message:, style: 'margin-bottom: 16px') %>
+  <% end %>
+
+  <% non_dismissible_variants.each do |type, message| %>
+    <%= render AlertComponent.new(type:, message:, dismissible: false, style: 'margin-bottom: 16px') %>
+  <% end %>
+
+  <%= render AlertComponent.new(
+        type: :error,
+        title: "That didn't work, try again",
+        message: "Something went wrong on our end. You can try 4 more times, then you'll need to wait 6 hours. Most people who can't finish online verify at a Post Office.",
+        dismissible: false,
+        action: { label: 'Verify in person', url: '#' },
+      ) %>
+</div>

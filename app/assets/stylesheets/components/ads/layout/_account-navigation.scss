@@ -1,0 +1,291 @@
+@use '../../../variables/ads' as ads;
+@use 'popover-menu' as popover;
+
+$ads-account-nav-breakpoint-m: 768px;
+$ads-account-nav-width: 252px;
+
+.ads-account-header {
+  align-items: center;
+  background: ads.$white;
+  border-bottom: 1px solid ads.alpha(ads.$off-black, 10%);
+  box-sizing: border-box;
+  display: flex;
+  flex: 0 0 ads.space(80);
+  gap: ads.space(24);
+  height: ads.space(80);
+  justify-content: space-between;
+  padding-inline: ads.space(24);
+}
+
+.ads-account-header__logo-link {
+  align-items: center;
+  display: inline-flex;
+  flex: 0 0 auto;
+  min-width: 0;
+
+  &:focus-visible {
+    @include ads.focus-ring;
+  }
+}
+
+.ads-account-header__logo {
+  display: block;
+  height: auto;
+  max-width: 100%;
+}
+
+.ads-account-header__actions {
+  align-items: center;
+  display: flex;
+  flex: 0 1 auto;
+  gap: ads.space(8);
+  justify-content: flex-end;
+  min-width: 0;
+}
+
+.ads-account-header__menu {
+  min-width: 0;
+  position: relative;
+}
+
+.ads-account-header__menu-button {
+  align-items: center;
+  border-radius: ads.radius(pill);
+  box-sizing: border-box;
+  color: ads.$off-black;
+  cursor: pointer;
+  display: flex;
+  font-family: ads.$font-family;
+  font-size: ads.$text-label-m;
+  font-weight: ads.$font-semibold;
+  gap: ads.space(8);
+  letter-spacing: ads.$text-letter-spacing-label;
+  line-height: ads.$text-line-height-none;
+  list-style: none;
+  min-height: ads.space(40);
+  min-width: 0;
+  padding: ads.space(8) ads.space(16);
+  transition: ads.$transition;
+
+  &::-webkit-details-marker {
+    display: none;
+  }
+
+  &:hover,
+  &:active {
+    background: ads.alpha(ads.$off-black, 5%);
+  }
+
+  &:focus {
+    outline: 0;
+  }
+
+  &:focus-visible {
+    @include ads.focus-ring;
+    background: ads.alpha(ads.$off-black, 5%);
+  }
+}
+
+.ads-account-header__menu-email {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.ads-account-header__menu-chevron {
+  flex: 0 0 auto;
+  transition: ads.$transition;
+
+  .ads-account-header__menu[open] & {
+    transform: rotate(180deg);
+  }
+}
+
+.ads-account-header__menu-panel {
+  @include popover.panel($z-index: 10);
+}
+
+.ads-account-header__menu-form {
+  margin: 0;
+}
+
+.ads-account-header__menu-item {
+  @include popover.item;
+
+  // Button reset — this item is a button_to submit, not a link.
+  background: none;
+  border: 0;
+  box-sizing: border-box;
+  cursor: pointer;
+  text-align: left;
+  width: 100%;
+}
+
+.ads-account-shell {
+  display: grid;
+  grid-template-columns: $ads-account-nav-width minmax(0, 1fr);
+  min-height: 100%;
+  width: 100%;
+}
+
+.ads-account-shell__nav {
+  border-right: 1px solid ads.alpha(ads.$off-black, 10%);
+  box-sizing: border-box;
+}
+
+.ads-account-shell__main {
+  box-sizing: border-box;
+  min-width: 0;
+  padding: ads.space(64) ads.space(24) ads.space(96);
+
+  &:has(> .ads-dashboard-home) {
+    padding-block-start: ads.space(80);
+  }
+}
+
+.ads-account-nav {
+  box-sizing: border-box;
+  font-family: ads.$font-family;
+  padding: ads.space(24);
+  width: 100%;
+}
+
+.ads-account-nav__list {
+  @include ads.stack($gap: ads.space(4), $reset-flow: true, $width: 100%);
+
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.ads-account-nav__item {
+  min-width: 0;
+}
+
+.ads-account-nav__link {
+  gap: ads.space(8);
+  height: auto;
+  justify-content: flex-start;
+  min-height: ads.space(56);
+  overflow-wrap: anywhere;
+  padding-block: ads.space(8);
+  padding-inline: ads.space(16) ads.space(24);
+  width: 100%;
+
+  .ads-icon {
+    height: ads.space(16);
+    width: ads.space(16);
+  }
+}
+
+.ads-account-nav__link--current,
+.ads-account-nav__link--current:is(:link, :visited) {
+  background: ads.alpha(ads.$off-black, 5%);
+  color: ads.$off-black;
+}
+
+.ads-account-mobile-menu {
+  display: none;
+  position: relative;
+}
+
+.ads-account-mobile-menu__summary {
+  align-items: center;
+  border-radius: ads.radius(pill);
+  box-sizing: border-box;
+  color: ads.$off-black;
+  cursor: pointer;
+  display: inline-flex;
+  font-family: ads.$font-family;
+  font-size: ads.$text-label-m;
+  font-weight: ads.$font-semibold;
+  gap: ads.space(4);
+  letter-spacing: ads.$text-letter-spacing-label;
+  line-height: ads.$text-line-height-none;
+  list-style: none;
+  min-height: ads.space(40);
+  padding-inline: ads.space(12);
+
+  &::-webkit-details-marker {
+    display: none;
+  }
+
+  &:hover {
+    background: ads.alpha(ads.$off-black, 5%);
+  }
+
+  &:focus-visible {
+    @include ads.focus-ring;
+  }
+
+  .ads-icon {
+    height: ads.space(16);
+    width: ads.space(16);
+  }
+}
+
+.ads-account-mobile-menu__panel {
+  background: ads.$white;
+  border: 1px solid ads.alpha(ads.$off-black, 10%);
+  border-radius: ads.radius(24);
+  box-shadow: ads.$shadow-large;
+  box-sizing: border-box;
+  max-height: calc(100vh - #{ads.space(120)});
+  min-width: min(20rem, calc(100vw - #{ads.space(32)}));
+  overflow: auto;
+  padding: ads.space(8);
+  position: absolute;
+  right: 0;
+  top: calc(100% + #{ads.space(8)});
+  z-index: 10;
+}
+
+.ads-account-nav--mobile {
+  padding: 0;
+}
+
+.ads-account-mobile-menu__logout {
+  border-top: 1px solid ads.alpha(ads.$off-black, 10%);
+  margin-top: ads.space(8);
+  padding-top: ads.space(8);
+}
+
+.ads-account-mobile-menu__logout-form {
+  margin: 0;
+}
+
+.ads-account-mobile-menu__logout-button {
+  justify-content: flex-start;
+  width: 100%;
+}
+
+@media (width < #{$ads-account-nav-breakpoint-m}) {
+  .ads-account-header {
+    flex-basis: ads.space(64);
+    height: ads.space(64);
+    padding-inline: ads.space(24);
+  }
+
+  .ads-account-header__menu {
+    display: none;
+  }
+
+  .ads-account-shell {
+    display: block;
+  }
+
+  .ads-account-shell__nav {
+    display: none;
+  }
+
+  .ads-account-shell__main {
+    padding: ads.space(48) ads.space(24) ads.space(80);
+
+    &:has(> .ads-dashboard-home) {
+      padding-block-start: ads.space(80);
+    }
+  }
+
+  .ads-account-mobile-menu {
+    display: block;
+  }
+}

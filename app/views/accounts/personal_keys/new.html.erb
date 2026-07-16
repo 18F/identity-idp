@@ -1,18 +1,22 @@
 <% self.title = t('account.personal_key.get_new') %>
 
-<%= render PageHeadingComponent.new.with_content(t('account.personal_key.get_new')) %>
+<%= render ADS::FormPageComponent.new(title: t('account.personal_key.get_new')) do |page| %>
+  <% page.with_body do %>
+    <%= render AlertComponent.new(
+          type: :warning,
+          message: t('account.personal_key.get_new_description'),
+          dismissible: false,
+        ) %>
+  <% end %>
 
-<p>
-  <%= t('account.personal_key.get_new_description') %>
-</p>
+  <% page.with_actions do %>
+    <%= render ButtonComponent.new(
+          url: create_new_personal_key_path,
+          method: :post,
+        ).with_content(t('forms.buttons.continue')) %>
 
-<%= button_to(
-      create_new_personal_key_path,
-      method: 'post',
-      class: 'usa-button usa-button--wide usa-button--big',
-      form_class: 'margin-y-5',
-    ) do %>
-  <%= t('forms.buttons.continue') %>
+    <%= render ADS::LinkComponent.new(url: account_settings_path) do %>
+      <%= t('links.cancel') %>
+    <% end %>
+  <% end %>
 <% end %>
-
-<%= render 'shared/cancel', link: account_path %>

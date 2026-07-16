@@ -1,21 +1,23 @@
 <% self.title = t('titles.idv.reset_password') %>
 
-<%= render StatusPageComponent.new(status: :info, icon: :question) do |c| %>
-  <% c.with_header { t('idv.forgot_password.modal_header') } %>
+<%= render ADS::FormPageComponent.new(title: t('idv.forgot_password.modal_header')) do |page| %>
+  <% page.with_body do %>
+    <ul class="ads-list">
+      <% t('idv.forgot_password.warnings').each do |warning| %>
+        <li><%= warning %></li>
+      <% end %>
+    </ul>
+  <% end %>
 
-  <ul class="usa-list">
-    <% t('idv.forgot_password.warnings').each do |warning| %>
-      <li><%= warning %></li>
-    <% end %>
-  </ul>
+  <% page.with_actions do %>
+    <%= render ButtonComponent.new(url: idv_enter_password_path, size: :lg).with_content(
+          t('idv.forgot_password.try_again'),
+        ) %>
 
-  <% c.with_action_button(
-       url: idv_enter_password_path,
-     ) { t('idv.forgot_password.try_again') } %>
-
-  <% c.with_action_button(
-       url: idv_forgot_password_path,
-       method: :post,
-       outline: true,
-     ) { t('idv.forgot_password.reset_password') } %>
+    <%= render ButtonComponent.new(
+          url: idv_forgot_password_path,
+          method: :post,
+          variant: :secondary,
+        ).with_content(t('idv.forgot_password.reset_password')) %>
+  <% end %>
 <% end %>

@@ -1,28 +1,30 @@
 <% self.title = t('titles.backup_codes') %>
 
-<%= render PageHeadingComponent.new.with_content(t('titles.backup_codes')) %>
+<%= render ADS::FormPageComponent.new(title: t('titles.backup_codes')) do |page| %>
+  <% page.with_alert do %>
+    <%= render AlertComponent.new(
+          type: :warning,
+          message: t('two_factor_authentication.backup_codes.warning_html'),
+        ) %>
+  <% end %>
 
-<p>
-  <%= t('two_factor_authentication.backup_codes.warning_html') %>
-</p>
+  <% page.with_body do %>
+    <p class="ads-copy">
+      <%= t('two_factor_authentication.backup_codes.instructions', app_name: APP_NAME) %>
+    </p>
+  <% end %>
 
-<p>
-  <%= t('two_factor_authentication.backup_codes.instructions', app_name: APP_NAME) %>
-</p>
+  <% page.with_actions do %>
+    <%= render ADS::StackComponent.new(kind: :actions, gap: 8, align: :stretch) do %>
+      <%= render ButtonComponent.new(
+            url: authentication_methods_setup_path,
+          ).with_content(t('mfa.add')) %>
 
-<%= render ButtonComponent.new(
-      url: authentication_methods_setup_path,
-      big: true,
-      full_width: false,
-      class: 'margin-top-3 margin-bottom-1',
-    ).with_content(t('mfa.add')) %>
-
-<%= render PageFooterComponent.new do %>
-  <%= button_to(
-        auth_method_confirmation_skip_path,
-        method: :post,
-        class: 'usa-button usa-button--unstyled',
-      ) do %>
-    <%= t('forms.buttons.continue') %>
+      <%= render ButtonComponent.new(
+            url: auth_method_confirmation_skip_path,
+            method: :post,
+            variant: :quaternary,
+          ).with_content(t('forms.buttons.continue')) %>
+    <% end %>
   <% end %>
 <% end %>

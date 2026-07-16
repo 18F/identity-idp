@@ -1,79 +1,147 @@
 <% self.title = t('titles.totp_setup.new') %>
+<% totp_apps = [
+     ['google-authenticator.png', 'Google Authenticator'],
+     ['lastpass-authenticator.png', 'LastPass Authenticator'],
+     ['microsoft-authenticator.png', 'Microsoft Authenticator'],
+     ['1password.png', '1Password'],
+     ['authy.png', 'Authy'],
+   ] %>
 
-<%= render PageHeadingComponent.new.with_content(t('headings.totp_setup.new')) %>
-
-<p>
-  <span id="totp-intro"><%= t('forms.totp_setup.totp_intro') %></span>
-  <%= new_tab_link_to(
-        t('links.what_is_totp'),
-        help_center_redirect_path(
-          category: 'get-started',
-          article: 'authentication-methods',
-          article_anchor: 'authentication-application',
-          flow: :two_factor_authentication,
-          step: :totp_setup,
+<%= simple_form_for('', method: :patch) do |f| %>
+  <%= render ADS::FormPageComponent.new(
+        title: safe_join(
+          [
+            t('headings.totp_setup.scan_qr_line_one'),
+            tag.br,
+            t('headings.totp_setup.scan_qr_line_two'),
+          ],
         ),
-      ) %>
-</p>
+        class_name: 'ads-totp-setup-page',
+      ) do |page| %>
+    <% page.with_body do %>
+      <%= render ADS::StackComponent.new(kind: :form, gap: 16, align: :stretch) do %>
+        <ol class="ads-totp-setup">
+          <li class="ads-card ads-totp-setup__step">
+            <h2 class="ads-totp-setup__heading" id="totp-step-1-label">
+              <%= t('forms.totp_setup.totp_step_1') %>
+            </h2>
+            <%= render InputComponent.new(
+                  form: f,
+                  attribute: :name,
+                  label: t('forms.totp_setup.nickname_placeholder'),
+                  required: true,
+                  aria: { labelledby: 'totp-step-1-label' },
+                  maxlength: 20,
+                  error_messages: {
+                    valueMissing: t('components.input.errors.nickname'),
+                  },
+                ) %>
+          </li>
 
-<%= simple_form_for('', method: :patch, html: { class: 'margin-bottom-4' }) do |f| %>
-  <fieldset aria-labelledby="totp-intro" class="padding-0 border-0 margin-y-4 margin-x-0">
-    <%= render ProcessListComponent.new(connected: true) do |c| %>
-      <%= c.with_item(heading: t('forms.totp_setup.totp_step_1'), heading_id: 'totp-step-1-label') do %>
-        <p><%= t('forms.totp_setup.totp_step_1a') %></p>
-        <%= render ValidatedFieldComponent.new(
-              form: f,
-              name: :name,
-              required: true,
-              label: false,
-              wrapper_html: { class: 'margin-bottom-0' },
-              input_html: {
-                aria: { labelledby: 'totp-step-1-label' },
-                maxlength: 20,
-              },
-            ) %>
-      <% end %>
-      <%= c.with_item(heading: t('forms.totp_setup.totp_step_2')) %>
-      <%= c.with_item(heading: t('forms.totp_setup.totp_step_3')) do %>
-        <div class="text-center">
-          <%= image_tag @qrcode, size: 240, skip_pipeline: true, alt: t('image_description.totp_qrcode') %>
-        </div>
-        <p><%= t('instructions.mfa.authenticator.manual_entry') %></p>
-        <code class="display-block margin-y-2 font-family-mono padding-y-2 padding-x-1 border-base-lighter border-1px text-bold text-wrap-anywhere" id="qr-code">
-          <%= @code %>
-        </code>
-        <%= render ClipboardButtonComponent.new(clipboard_text: @code.upcase, outline: true) %>
-      <% end %>
-      <%= c.with_item(heading: t('forms.totp_setup.totp_step_4'), heading_id: 'totp-step-4-label') do %>
-        <%= render OneTimeCodeInputComponent.new(
-              form: f,
-              transport: nil,
-              code_length: TwoFactorAuthenticatable::OTP_LENGTH,
-              field_options: {
-                label: false,
-                wrapper_html: {
-                  class: 'margin-bottom-0',
-                },
-                input_html: {
+          <li class="ads-card ads-totp-setup__step">
+            <h2 class="ads-totp-setup__heading">
+              <%= t('forms.totp_setup.totp_step_2') %>
+            </h2>
+            <ul class="ads-totp-setup__apps" aria-label="<%= t('image_description.totp_app_icons') %>">
+              <% totp_apps.each do |filename, name| %>
+                <li>
+                  <%= image_tag(
+                        "ads/totp-apps/#{filename}",
+                        alt: name,
+                        class: 'ads-totp-setup__app-icon',
+                        size: '56x56',
+                      ) %>
+                </li>
+              <% end %>
+            </ul>
+          </li>
+
+          <li class="ads-card ads-totp-setup__step">
+            <h2 class="ads-totp-setup__heading">
+              <span class="ads-totp-setup__step-3-desktop">
+                <%= t('forms.totp_setup.totp_step_3') %>
+              </span>
+              <span class="ads-totp-setup__step-3-mobile">
+                <%= t('forms.totp_setup.totp_step_3_mobile') %>
+              </span>
+            </h2>
+            <div class="ads-totp-setup__qr">
+              <%= image_tag(
+                    @qrcode,
+                    size: 220,
+                    skip_pipeline: true,
+                    alt: t('image_description.totp_qrcode'),
+                  ) %>
+            </div>
+            <div class="ads-totp-setup__manual">
+              <div class="ads-totp-setup__manual-text">
+                <span class="ads-totp-setup__manual-label">
+                  <%= t('forms.totp_setup.setup_code_label') %>
+                </span>
+                <code class="ads-totp-setup__manual-code ads-overflow-scroll-fade" id="qr-code"><%= @code.upcase %></code>
+              </div>
+              <%= render ClipboardButtonComponent.new(
+                    clipboard_text: @code.upcase,
+                    icon_only: true,
+                    unstyled: true,
+                    variant: :ghost,
+                    size: :sm,
+                  ) %>
+            </div>
+          </li>
+
+          <li class="ads-card ads-totp-setup__step">
+            <h2 class="ads-totp-setup__heading" id="totp-step-4-label">
+              <%= t('forms.totp_setup.totp_step_4') %>
+            </h2>
+            <%= render InputComponent.new(
+                  form: f,
+                  attribute: :code,
+                  label: t('forms.totp_setup.code_placeholder'),
+                  required: true,
+                  inputmode: :numeric,
+                  autocomplete: 'one-time-code',
+                  maxlength: TwoFactorAuthenticatable::OTP_LENGTH,
                   aria: { labelledby: 'totp-step-4-label' },
-                },
-              },
-            ) %>
+                ) %>
+          </li>
+        </ol>
+
+        <div class="ads-checkbox">
+          <%= hidden_field_tag :remember_device, '0', id: nil %>
+          <%= check_box_tag(
+                :remember_device,
+                '1',
+                @presenter.remember_device_box_checked?,
+                class: 'ads-checkbox__input',
+              ) %>
+          <%= label_tag(
+                :remember_device,
+                t('forms.messages.remember_device'),
+                class: 'ads-checkbox__label',
+              ) %>
+        </div>
       <% end %>
     <% end %>
-  </fieldset>
-  <%= f.input(
-        :remember_device,
-        as: :boolean,
-        label: t('forms.messages.remember_device'),
-        aria: { describedby: 'remember-browser-description' },
-        input_html: {
-          class: 'usa-checkbox__input--bordered',
-          checked: @presenter.remember_device_box_checked?,
-        },
-      ) %>
-  <p class='margin-top-1 font-body-2xs' id='remember-browser-description'><%= t('forms.messages.public_shared_device_html') %></p>
-  <%= f.submit t('forms.buttons.submit.default'), class: 'display-block margin-y-5' %>
-<% end %>
 
-<%= render 'shared/cancel_or_back_to_options' %>
+    <% page.with_actions do %>
+      <%= render ADS::StackComponent.new(kind: :actions, gap: 8, align: :stretch) do %>
+        <%= render ButtonComponent.new(
+              type: :submit,
+            ).with_content(t('forms.buttons.continue')) %>
+
+        <% if MfaPolicy.new(current_user).two_factor_enabled? && !in_multi_mfa_selection_flow? %>
+          <%= render ButtonComponent.new(
+                url: account_path,
+                variant: :quaternary,
+              ).with_content(t('links.cancel')) %>
+        <% else %>
+          <%= render ButtonComponent.new(
+                url: authentication_methods_setup_path,
+                variant: :quaternary,
+              ).with_content(t('forms.totp_setup.choose_another_method')) %>
+        <% end %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% end %>

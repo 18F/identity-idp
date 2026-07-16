@@ -8,7 +8,7 @@ module DocAuthHelper
   include UserAgentHelper
 
   GOOD_SSN = Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN[:ssn].freeze
-  GOOD_SSN_MASKED = '9**-**-***4'.freeze
+  GOOD_SSN_MASKED = '9••-••-•••4'.freeze
   GOOD_SSN_FORMATTED = SsnFormatter.format(GOOD_SSN).freeze
   SSN_THAT_FAILS_RESOLUTION = '123-45-6666'.freeze
   SSN_THAT_RAISES_EXCEPTION = '000-00-0000'.freeze
@@ -45,10 +45,14 @@ module DocAuthHelper
   end
 
   def click_doc_auth_back_link
-    click_on '‹ ' + t('forms.buttons.back')
+    click_on t('forms.buttons.back')
   end
 
   def click_send_link
+    click_on t('headings.continue_on_phone.text_link') if page.has_button?(
+      t('headings.continue_on_phone.text_link'),
+      wait: 0,
+    )
     click_on t('forms.buttons.send_link')
   end
 
@@ -84,8 +88,8 @@ module DocAuthHelper
     # If there is a phone outage, the hybrid_handoff step is
     # skipped and the user is taken straight to document capture.
     return if OutageStatus.new.any_phone_vendor_outage?
-    expect(page).to have_content(t('doc_auth.headings.upload_from_computer'))
-    click_on t('forms.buttons.upload_photos')
+    expect(page).to have_content(t('headings.continue_on_phone.title'))
+    click_on t('forms.buttons.continue_on_desktop')
   end
 
   def complete_choose_id_type_step(
@@ -93,13 +97,13 @@ module DocAuthHelper
   )
     expect(page).to have_content(t('doc_auth.headings.choose_id_type'))
 
-    if choose_id_type == Idp::Constants::DocumentTypes::PASSPORT
-      choose(t('doc_auth.forms.id_type_preference.passport'))
-    else
-      choose(t('doc_auth.forms.id_type_preference.drivers_license'))
-    end
-
-    click_on t('forms.buttons.continue')
+    click_on(
+      if choose_id_type == Idp::Constants::DocumentTypes::PASSPORT
+        t('doc_auth.forms.id_type_preference.passport')
+      else
+        t('doc_auth.forms.id_type_preference.drivers_license')
+      end,
+    )
     expect_page_to_have_no_accessibility_violations(page) if expect_accessible
   end
 
@@ -175,7 +179,7 @@ module DocAuthHelper
   end
 
   def complete_verify_step
-    click_idv_submit_default
+    click_idv_continue
   end
 
   def complete_doc_auth_steps_before_address_step(expect_accessible: false, with_selfie: false)
@@ -258,7 +262,7 @@ module DocAuthHelper
   def verify_phone_otp
     choose_idv_otp_delivery_method_sms
     fill_in_code_with_last_phone_otp
-    click_submit_default
+    click_button t('forms.buttons.continue')
   end
 
   def fill_out_address_form_fail

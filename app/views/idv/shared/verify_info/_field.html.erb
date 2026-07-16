@@ -1,0 +1,15 @@
+<%#
+locals:
+  label: (required)
+  value: (required)
+  divider: false
+%>
+<% if value.present? %>
+  <% if local_assigns[:divider] %>
+    <hr class="ads-card__divider" />
+  <% end %>
+  <div class="ads-card__stack">
+    <p class="ads-card__label"><%= label %></p>
+    <p class="ads-card__value"><%= value %></p>
+  </div>
+<% end %>

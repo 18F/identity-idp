@@ -1,0 +1,14 @@
+<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 24px;">
+  <% IconComponent::REGISTRY.each do |icon, variants| %>
+    <div style="display: flex; flex-direction: column; gap: 12px;">
+      <code><%= icon %></code>
+      <div style="display: flex; align-items: center; gap: 16px;">
+        <% variants.each_key do |size| %>
+          <span title="<%= "#{icon}, #{size}px" %>">
+            <%= render IconComponent.new(icon:, size:) %>
+          </span>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
+</div>

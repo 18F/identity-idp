@@ -1,24 +1,29 @@
-<% content_for(:header) do %>
-  <%= render 'accounts/nav_auth', greeting: @presenter.header_personalization %>
-<% end %>
+<% self.title = @device.nice_name %>
 
-<% self.title = t('titles.account') %>
+<div class="ads-history">
+  <div class="ads-history__header">
+    <%= render ButtonComponent.new(
+          url: account_history_path,
+          variant: :secondary,
+          size: :sm,
+          icon: :chevron_left,
+          class: 'ads-history__back',
+          'aria-label': t('account.dashboard.history.back_to_history'),
+        ) %>
 
-<%= render PageHeadingComponent.new.with_content(t('headings.account.activity')) %>
+    <h1 class="ads-history__heading"><%= @device.nice_name %></h1>
+  </div>
 
-<div class="card">
-  <div class="border-bottom border-primary-light">
-    <h2 class="margin-top-0">
-      <%= @device.nice_name %>
-    </h2>
-
-    <% @events.each do |event| %>
-      <%= render 'accounts/event_item', event: event %>
+  <div class="ads-history__panel">
+    <% if @events.any? %>
+      <ul class="ads-history__rows">
+        <%= render partial: 'accounts/history/event_row',
+                   collection: @events,
+                   as: :event,
+                   locals: { title_tag: nil } %>
+      </ul>
+    <% else %>
+      <p class="ads-history__empty"><%= t('account.history.no_activity') %></p>
     <% end %>
   </div>
-
-  <div class="margin-top-2">
-    <%= link_to t('forms.buttons.back'), account_path %>
-  </div>
 </div>
-

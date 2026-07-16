@@ -6,7 +6,7 @@ class MaskedTextToggle {
     this.elements = {
       toggle,
       texts: /** @type {NodeListOf<HTMLElement>} */ (
-        document.querySelectorAll(`#${toggle.getAttribute('aria-controls')} .masked-text__text`)
+        document.querySelectorAll(`#${toggle.getAttribute('aria-controls')} .ads-masked-text__text`)
       ),
     };
   }
@@ -20,7 +20,7 @@ class MaskedTextToggle {
     const { toggle, texts } = this.elements;
     const isMasked = !toggle.checked;
     texts.forEach((text) => {
-      text.classList.toggle('display-none', text.dataset.masked !== isMasked.toString());
+      text.hidden = text.dataset.masked !== isMasked.toString();
     });
   }
 }

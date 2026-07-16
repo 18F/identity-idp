@@ -25,7 +25,7 @@ RSpec.describe 'Setup PIV/CAC after sign-in' do
     perform_steps_to_get_to_add_piv_cac_during_sign_up
 
     fill_in t('forms.piv_cac_setup.nickname'), with: 'Card 1'
-    click_on t('forms.piv_cac_setup.submit')
+    click_on t('forms.buttons.continue')
     follow_piv_cac_redirect
 
     expect(page).to have_current_path(sign_up_completed_path)
@@ -36,7 +36,7 @@ RSpec.describe 'Setup PIV/CAC after sign-in' do
 
     fill_in t('forms.piv_cac_setup.nickname'), with: 'Card 1'
     stub_piv_cac_service(error: 'certificate.bad')
-    click_on t('forms.piv_cac_setup.submit')
+    click_on t('forms.buttons.continue')
     follow_piv_cac_redirect
 
     expect(page).to have_current_path(setup_piv_cac_error_path(error: 'certificate.bad'))
@@ -65,7 +65,7 @@ RSpec.describe 'Setup PIV/CAC after sign-in' do
       check(t('forms.messages.remember_device'))
       fill_in_code_with_last_phone_otp
       click_submit_default
-      click_on t('links.sign_out')
+      click_on t('links.sign_out'), visible: :all
     end
 
     # Try signing in with PIV/CAC
@@ -86,7 +86,7 @@ RSpec.describe 'Setup PIV/CAC after sign-in' do
     expect(page).to have_current_path login_add_piv_cac_prompt_path
     stub_piv_cac_service
     fill_in 'name', with: 'Card 1'
-    click_on t('forms.piv_cac_setup.submit')
+    click_on t('forms.buttons.continue')
     follow_piv_cac_redirect
 
     expect(page).to have_content(t('notices.piv_cac_configured'))

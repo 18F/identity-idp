@@ -1,57 +1,32 @@
+<% time_left = distance_of_time_in_words(
+     Time.zone.now,
+     [@expires_at, Time.zone.now].compact.max,
+     except: :seconds,
+   ) %>
+
 <%= render(
       'idv/shared/error',
       title: t('titles.failure.phone_verification'),
       heading: t('idv.failure.phone.rate_limited.heading'),
       current_step: :verify_phone,
-      options: [
-        {
-          url: contact_redirect_url,
-          text: t('idv.troubleshooting.options.contact_support', app_name: APP_NAME),
-          new_tab: true,
-        },
-      ].select(&:present?),
+      action: @gpo_letter_available && {
+        text: t('idv.failure.phone.rate_limited.gpo.button'),
+        url: idv_request_letter_path,
+      },
     ) do %>
-      <p>
-        <%= t('idv.failure.phone.rate_limited.body') %>
-      </p>
-      <% if @gpo_letter_available %>
-        <%= t('idv.failure.phone.rate_limited.options_header') %>
-        <ul>
-          <li><%= t('idv.failure.phone.rate_limited.option_verify_by_mail_html') %></li>
-            <li>
-            <%= t(
-                  'idv.failure.phone.rate_limited.option_try_again_later_html',
-                  time_left: distance_of_time_in_words(
-                    Time.zone.now,
-                    [@expires_at, Time.zone.now].compact.max,
-                    except: :seconds,
-                  ),
-                ) %>
-          </li>
-        </ul>
-      <% else %>
-        <p>
-          <%= t(
-                'idv.failure.phone.rate_limited.option_try_again_later_no_gpo_html',
-                time_left: distance_of_time_in_words(
-                  Time.zone.now,
-                  [@expires_at, Time.zone.now].compact.max,
-                  except: :seconds,
-                ),
-              ) %>
-        </p>
-      <% end %>
+  <p><%= t('idv.failure.phone.rate_limited.body') %></p>
 
-      <% if @gpo_letter_available %>
-        <div class="margin-y-5">
-          <%= render ButtonComponent.new(
-                url: idv_request_letter_path,
-                big: true,
-                wide: true,
-              ).with_content(t('idv.failure.phone.rate_limited.gpo.button')) %>
-        </div>
-      <% end %>
-    <% end %>
-    <%= render PageFooterComponent.new do %>
-      <%= link_to(t('links.cancel'), idv_cancel_path(step: :phone_error)) %>
-    <% end %>
+  <% if @gpo_letter_available %>
+    <p><%= t('idv.failure.phone.rate_limited.options_header') %></p>
+    <ul class="ads-list">
+      <li><%= t('idv.failure.phone.rate_limited.option_verify_by_mail_html') %></li>
+      <li>
+        <%= t('idv.failure.phone.rate_limited.option_try_again_later_html', time_left:) %>
+      </li>
+    </ul>
+  <% else %>
+    <p>
+      <%= t('idv.failure.phone.rate_limited.option_try_again_later_no_gpo_html', time_left:) %>
+    </p>
+  <% end %>
+<% end %>

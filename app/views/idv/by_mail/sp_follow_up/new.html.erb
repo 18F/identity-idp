@@ -1,24 +1,20 @@
 <% self.title = @presenter.heading %>
 
-<div class="text-center">
-  <%= image_tag(asset_url('user-access.svg'), width: '280', height: '91', alt: '', aria: { hidden: true }) %>
-  <h1 class="margin-bottom-4"><%= @presenter.heading %></h1>
-</div>
+<%= render ADS::FormPageComponent.new(title: @presenter.heading) do |page| %>
+  <% page.with_body do %>
+    <div class="ads-copy">
+      <p><%= @presenter.body %></p>
+    </div>
+  <% end %>
 
-<p><%= @presenter.body %></p>
+  <% page.with_actions do %>
+    <%= render ButtonComponent.new(url: idv_sp_follow_up_connect_path).with_content(
+          t('idv.by_mail.sp_follow_up.connect_account'),
+        ) %>
 
-<div class='margin-top-5 margin-bottom-2'>
-  <%= render ButtonComponent.new(
-        url: idv_sp_follow_up_connect_path,
-        big: true,
-        wide: true,
-      ).with_content(t('idv.by_mail.sp_follow_up.connect_account')) %>
-</div>
-<div>
-  <%= render ButtonComponent.new(
-        url: idv_sp_follow_up_cancel_path,
-        big: true,
-        wide: true,
-        outline: true,
-      ).with_content(t('idv.by_mail.sp_follow_up.go_to_account')) %>
-</div>
+    <%= render ButtonComponent.new(
+          url: idv_sp_follow_up_cancel_path,
+          variant: :secondary,
+        ).with_content(t('idv.by_mail.sp_follow_up.go_to_account')) %>
+  <% end %>
+<% end %>

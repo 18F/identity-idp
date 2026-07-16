@@ -1,0 +1,24 @@
+@use '../../../variables/ads' as ads;
+
+.ads-handoff {
+  --ads-section-gap: #{ads.space(32)};
+  --ads-form-gap: #{ads.space(32)};
+  --ads-intro-gap: #{ads.space(16)};
+  --ads-flow-width: #{ads.$form-width};
+  width: 100%;
+}
+
+.ads-handoff .ads-auth__intro-description {
+  color: ads.alpha(ads.$off-black, 65%);
+}
+
+.ads-handoff__qr-image {
+  display: block;
+  height: ads.space(220);
+  margin-inline: auto;
+  width: ads.space(220);
+}
+
+.ads-handoff .ads-form {
+  gap: 0;
+}

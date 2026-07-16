@@ -360,6 +360,7 @@ RSpec.describe Users::TwoFactorAuthenticationController do
           otp_delivery_selection_form: { **otp_preference_sms, resend: 'true' },
         }
 
+        expect(flash[:success]).to eq(t('idv.otp_verification.resend_success'))
         expect(@analytics).to have_logged_event(
           'OTP: Delivery Selection',
           success: true,

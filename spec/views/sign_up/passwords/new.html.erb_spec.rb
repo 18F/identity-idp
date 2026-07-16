@@ -15,7 +15,7 @@ RSpec.describe 'sign_up/passwords/new.html.erb' do
   end
 
   it 'renders the correct heading' do
-    expect(rendered).to have_content(t('forms.confirmation.show_hdr'))
+    expect(rendered).to have_content(t('titles.sign_up.create_password'))
   end
 
   it 'renders the proper Password label' do
@@ -42,16 +42,19 @@ RSpec.describe 'sign_up/passwords/new.html.erb' do
     )
   end
 
-  it 'includes a form to cancel account creation' do
-    expect(rendered).to have_link(t('links.cancel_account_creation'))
-  end
-
   it 'includes platform authenticator available hidden field' do
     expect(rendered).to have_css(
       "input[type='hidden']" \
       "[name='platform_authenticator_available']" \
       "[id='platform_authenticator_available']",
       visible: false,
+    )
+  end
+
+  it 'renders the continue button with the large ADS variant' do
+    expect(rendered).to have_button(
+      t('forms.buttons.continue'),
+      class: 'ads-button--lg',
     )
   end
 end

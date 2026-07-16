@@ -1,25 +1,32 @@
 <% self.title = t('two_factor_authentication.confirm_backup_code_setup_title') %>
 
-<%= render PageHeadingComponent.new.with_content(t('two_factor_authentication.confirm_backup_code_setup_title')) %>
-
-<% t(
+<% backup_code_content = t(
      'two_factor_authentication.confirm_backup_code_setup_content_html',
      number_of_codes: BackupCodeGenerator::NUMBER_OF_CODES,
-   ).each do |desc_p| %>
-  <p><%= desc_p %></p>
+   ) %>
+<%= render ADS::FormPageComponent.new(
+      title: t('two_factor_authentication.confirm_backup_code_setup_title'),
+    ) do |page| %>
+  <% page.with_alert do %>
+    <%= render AlertComponent.new(
+          type: :warning,
+          message: backup_code_content.first,
+        ) %>
+  <% end %>
+
+  <% page.with_body do %>
+    <p class="ads-copy ads-copy--centered"><%= backup_code_content.second %></p>
+  <% end %>
+
+  <% page.with_actions do %>
+    <%= render ButtonComponent.new(
+          url: backup_code_setup_path,
+          method: :post,
+        ).with_content(t('forms.buttons.continue')) %>
+
+    <%= render ButtonComponent.new(
+          url: session[:account_redirect_path] || account_path,
+          variant: :quaternary,
+        ).with_content(t('links.cancel')) %>
+  <% end %>
 <% end %>
-
-<%= render ButtonComponent.new(
-      url: backup_code_setup_path,
-      method: :post,
-      big: true,
-      wide: true,
-      class: 'display-block margin-top-5 margin-bottom-2',
-    ).with_content(t('forms.buttons.continue')) %>
-
-<%= render ButtonComponent.new(
-      url: session[:account_redirect_path] || account_path,
-      big: true,
-      wide: true,
-      outline: true,
-    ).with_content(t('links.cancel')) %>

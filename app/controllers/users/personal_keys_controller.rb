@@ -16,7 +16,7 @@ module Users
         personal_key_present: personal_key.present?,
       )
 
-      return redirect_to account_url if personal_key.blank?
+      return redirect_to account_settings_url if personal_key.blank?
 
       @code = personal_key
       @personal_key_generated_at = current_user.personal_key_generated_at
@@ -36,7 +36,7 @@ module Users
         sign_up_completed_url
       else
         flash[:success] = t('account.personal_key.reset_success')
-        account_url
+        account_settings_url
       end
     end
 

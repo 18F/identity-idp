@@ -1,0 +1,15 @@
+<%= action.call(
+      **wrapper_options,
+      class: css_class,
+    ) do %>
+  <div class="ads-card__inner">
+    <div class="ads-card__body">
+      <%= content %>
+    </div>
+    <% if trailing? %>
+      <div class="ads-card__trailing">
+        <%= trailing %>
+      </div>
+    <% end %>
+  </div>
+<% end %>

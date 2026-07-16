@@ -1,0 +1,7 @@
+@use 'color' as *;
+
+$shadow-compact: 0 10px 20px alpha($black, 8%);
+$shadow-large: 0 10px 40px alpha($black, 8%);
+$shadow-focus:
+  0 0 0 2px $white,
+  0 0 0 4px $off-black;

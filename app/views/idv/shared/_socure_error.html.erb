@@ -1,0 +1,24 @@
+body = presenter.body_text
+  skip_body = [
+    t('doc_auth.errors.general.new_network_error'),
+    t('idv.errors.try_again_later'),
+  ].include?(body)
+%>
+<%= render(
+      'idv/shared/error',
+      type: :warning,
+      heading: presenter.heading,
+      action: presenter.action,
+      secondary_action: presenter.secondary_action,
+      current_step: :verify_id,
+      secondary_action_text: presenter.secondary_action_text,
+      step_indicator_steps: presenter.step_indicator_steps,
+    ) do
+%>
+  <% unless skip_body %>
+    <p><%= body %></p>
+  <% end %>
+  <% if presenter.rate_limit_text.present? %>
+    <p><%= presenter.rate_limit_text %></p>
+  <% end %>
+<% end %>

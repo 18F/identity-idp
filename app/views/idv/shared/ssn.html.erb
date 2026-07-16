@@ -5,74 +5,98 @@ This template is used from both the remote and in person (IPP) SsnControllers.
 locals:
   @ssn_presenter - contains step_indicator_steps and ssn_form
 %>
-<% content_for(:pre_flash_content) do %>
-  <%= render StepIndicatorComponent.new(
-        steps: @ssn_presenter.step_indicator_steps,
-        current_step: :verify_info,
-        locale_scope: 'idv',
-        class: 'margin-x-neg-2 margin-top-neg-4 tablet:margin-x-neg-6 tablet:margin-top-neg-4',
-      ) %>
-<% end %>
+<%= render 'idv/shared/step_indicator', current_step: :verify_info, steps: @ssn_presenter.step_indicator_steps %>
 
 <% self.title = t('titles.doc_auth.ssn') %>
+<% page_title = @ssn_presenter.updating_ssn? ?
+     t('doc_auth.headings.ssn_update') :
+     t('doc_auth.headings.ssn') %>
+<% in_person_ssn = request.path == idv_in_person_ssn_path %>
 
-<% if @ssn_presenter.updating_ssn? %>
-  <%= render PageHeadingComponent.new.with_content(t('doc_auth.headings.ssn_update')) %>
-<% else %>
-  <%= render PageHeadingComponent.new.with_content(t('doc_auth.headings.ssn')) %>
-<% end %>
+<%= render ADS::FormPageComponent.new(title: page_title) do |page| %>
+  <% page.with_body do %>
+    <%= render ADS::StackComponent.new(gap: 24) do %>
+      <div class="ads-copy">
+        <p>
+          <%= t('doc_auth.info.ssn') %>
+          <%= render ADS::LinkComponent.new(
+                url: MarketingSite.security_and_privacy_practices_url,
+                target: '_blank',
+                rel: 'noopener noreferrer',
+              ) do %>
+            <%= t('doc_auth.info.learn_more') %>
+            <span class="ads-sr-only"><%= t('links.new_tab') %></span>
+          <% end %>
+        </p>
+      </div>
 
-<p>
-  <%= t('doc_auth.info.ssn') %>
-  <%= new_tab_link_to(MarketingSite.security_and_privacy_practices_url, class: 'display-inline') do %>
-    <%= t('doc_auth.info.learn_more') %>
-  <% end %>
-</p>
+      <% if FeatureManagement.proofing_device_profiling_collecting_enabled? %>
+        <%= render partial: 'shared/threat_metrix_profiling',
+                   locals: {
+                     threatmetrix_session_id:,
+                     threatmetrix_javascript_urls:,
+                     threatmetrix_iframe_url:,
+                   } %>
+      <% end %>
 
-<h2 class="h3"><%= t('doc_auth.headings.no_ssn') %></h2>
-<p>
-  <%= t('doc_auth.info.no_ssn') %>
-  <%= link_to(
-        @ssn_presenter.exit_text,
-        idv_cancel_url(step: 'ssn_offramp'),
-      ) %>
-</p>
+      <% if IdentityConfig.store.proofer_mock_fallback %>
+        <%= render AlertComponent.new(type: :neutral, dismissible: false) do %>
+          <%= t('doc_auth.instructions.test_ssn') %>
+        <% end %>
+      <% end %>
 
-<% if FeatureManagement.proofing_device_profiling_collecting_enabled? %>
-  <%= render partial: 'shared/threat_metrix_profiling',
-             locals: {
-               threatmetrix_session_id:,
-               threatmetrix_javascript_urls:,
-               threatmetrix_iframe_url:,
-             } %>
-<% end %>
+      <%= simple_form_for(
+            @ssn_presenter.ssn_form,
+            url: url_for,
+            method: :put,
+            html: { class: 'ads-form ads-form--align-stretch' },
+          ) do |f| %>
+        <%= render ADS::StackComponent.new(gap: 32, align: :stretch) do %>
+          <%= render InputComponent.new(
+                form: f,
+                attribute: :ssn,
+                label: t('idv.form.ssn_label'),
+                type: :password,
+                required: true,
+                pattern: '^\d{3}-?\d{2}-?\d{4}$',
+                maxlength: 11,
+                autocomplete: 'off',
+                inputmode: :numeric,
+                value: f.object.ssn,
+                class: 'ssn-toggle',
+                password_toggle_label: t('forms.ssn.show'),
+                password_toggle_hide_label: t('forms.ssn.hide'),
+                error_message: @ssn_presenter.ssn_form.errors.full_messages_for(:ssn).first,
+                error_messages: {
+                  valueMissing: t('components.input.errors.ssn'),
+                },
+              ) %>
 
-<% if IdentityConfig.store.proofer_mock_fallback %>
-  <div class="usa-alert usa-alert--info margin-bottom-4" role="status">
-    <div class="usa-alert__body">
-      <p class="usa-alert__text">
-        <%= t('doc_auth.instructions.test_ssn') %>
-      </p>
-    </div>
-  </div>
-<% end %>
+          <%= render ADS::StackComponent.new(kind: :actions, gap: 8, align: :stretch) do %>
+            <%= render ButtonComponent.new(
+                  type: :submit,
+                ).with_content(
+                  @ssn_presenter.updating_ssn? ?
+                    t('forms.buttons.submit.update') :
+                    t('forms.buttons.continue'),
+                ) %>
 
-<%= simple_form_for(@ssn_presenter.ssn_form, url: url_for, method: :put) do |f| %>
-  <div class="tablet:grid-col-8">
-    <%= render 'shared/ssn_field', f: f %>
-  </div>
-
-  <%= f.submit class: 'display-block margin-y-5' do %>
-    <% if @ssn_presenter.updating_ssn? %>
-      <%= t('forms.buttons.submit.update') %>
-    <% else %>
-      <%= t('forms.buttons.continue') %>
+            <% if @ssn_presenter.updating_ssn? %>
+              <%= render ButtonComponent.new(
+                    url: in_person_ssn ? idv_in_person_verify_info_path : idv_verify_info_path,
+                    variant: :quaternary,
+                  ).with_content(t('forms.buttons.back')) %>
+            <% else %>
+              <%= render ButtonComponent.new(
+                    url: idv_cancel_path(step: 'ssn'),
+                    variant: :quaternary,
+                  ).with_content(cancel_link_text) %>
+            <% end %>
+          <% end %>
+        <% end %>
+      <% end %>
     <% end %>
   <% end %>
 <% end %>
 
-<% if @ssn_presenter.updating_ssn? %>
-  <%= render 'idv/shared/back', fallback_path: idv_verify_info_path %>
-<% else %>
-  <%= render 'idv/doc_auth/cancel', step: 'ssn' %>
-<% end %>
+<%= javascript_packs_tag_once('ssn-field') %>

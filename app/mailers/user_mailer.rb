@@ -15,6 +15,7 @@
 #     reset_password_instructions(token: token)
 #
 class UserMailer < ActionMailer::Base
+  helper ::LinkHelper
   include Mailable
   include LocaleHelper
   include AccountResetConcern
@@ -23,7 +24,6 @@ class UserMailer < ActionMailer::Base
   class UserEmailAddressMismatchError < StandardError; end
 
   before_action :validate_user_and_email_address
-  before_action :attach_images
   after_action :add_metadata
 
   default(
@@ -42,8 +42,14 @@ class UserMailer < ActionMailer::Base
   def email_confirmation_instructions(token, request_id:)
     with_user_locale(user) do
       presenter = ConfirmationEmailPresenter.new(user, view_context)
-      @first_sentence = presenter.first_sentence
       @confirmation_period = presenter.confirmation_period
+      @confirmation_url = sign_up_create_email_confirmation_url(
+        _request_id: request_id,
+        confirmation_token: token,
+        locale: locale_url_param,
+      )
+      @header = t('user_mailer.email_confirmation_instructions.title')
+      @first_sentence = presenter.first_sentence
       @request_id = request_id
       @locale = locale_url_param
       @token = token
@@ -56,31 +62,30 @@ class UserMailer < ActionMailer::Base
 
   def signup_with_your_email(request_id:)
     with_user_locale(user) do
-      @root_url = root_url(locale: locale_url_param, request_id: request_id)
-      mail(to: email_address.email, subject: t('mailer.email_reuse_notice.subject'))
+      @root_url = new_user_session_url(locale: locale_url_param, request_id: request_id)
+      @header = t('user_mailer.signup_with_your_email.title')
+      mail(to: email_address.email, subject: t('user_mailer.signup_with_your_email.subject'))
     end
   end
 
   def reset_password_instructions(token:, request_id:)
     with_user_locale(user) do
+      @header = t('user_mailer.reset_password_instructions.title')
       @locale = locale_url_param
       @token = token
       @request_id = request_id
       @gpo_verification_pending_profile = user.gpo_verification_pending_profile?
       @in_person_verification_pending_profile = user.in_person_pending_profile?
-      @hide_title = @gpo_verification_pending_profile || @in_person_verification_pending_profile
       mail(
         to: email_address.email,
-        subject: t(
-          'user_mailer.reset_password_instructions.subject',
-          app_name: APP_NAME,
-        ),
+        subject: t('user_mailer.reset_password_instructions.subject'),
       )
     end
   end
 
   def password_changed(disavowal_token:)
     with_user_locale(user) do
+      @header = t('user_mailer.password_changed.title')
       @disavowal_token = disavowal_token
       mail(to: email_address.email, subject: t('devise.mailer.password_updated.subject'))
     end
@@ -103,7 +108,7 @@ class UserMailer < ActionMailer::Base
 
       mail(
         to: email_address.email,
-        subject: t('user_mailer.new_device_sign_in_after_2fa.subject', app_name: APP_NAME),
+        subject: t('user_mailer.new_device_sign_in_after_2fa.subject'),
       )
     end
   end
@@ -119,7 +124,7 @@ class UserMailer < ActionMailer::Base
 
       mail(
         to: email_address.email,
-        subject: t('user_mailer.new_device_sign_in_before_2fa.subject', app_name: APP_NAME),
+        subject: t('user_mailer.new_device_sign_in_before_2fa.subject'),
       )
     end
   end
@@ -134,10 +139,10 @@ class UserMailer < ActionMailer::Base
     with_user_locale(user) do
       @token = account_reset&.request_token
       @account_reset_deletion_period_interval = account_reset_deletion_period_interval(user)
-      @header = t('user_mailer.account_reset_request.subject', app_name: APP_NAME)
+      @header = t('user_mailer.account_reset_request.subject')
       mail(
         to: email_address.email,
-        subject: t('user_mailer.account_reset_request.subject', app_name: APP_NAME),
+        subject: t('user_mailer.account_reset_request.subject'),
       )
     end
   end
@@ -150,7 +155,7 @@ class UserMailer < ActionMailer::Base
       @account_reset_token_valid_period = account_reset_token_valid_period
       mail(
         to: email_address.email,
-        subject: t('user_mailer.account_reset_granted.subject', app_name: APP_NAME),
+        subject: t('user_mailer.account_reset_granted.subject'),
       )
     end
   end
@@ -171,23 +176,24 @@ class UserMailer < ActionMailer::Base
     with_user_locale(user) do
       mail(
         to: email_address.email,
-        subject: t('user_mailer.account_reset_cancel.subject', app_name: APP_NAME),
+        subject: t('user_mailer.account_reset_cancel.subject'),
       )
     end
   end
 
   def please_reset_password
     with_user_locale(user) do
+      @header = t('user_mailer.please_reset_password.title')
       mail(
         to: email_address.email,
-        subject: t('user_mailer.please_reset_password.subject', app_name: APP_NAME),
+        subject: t('user_mailer.please_reset_password.subject'),
       )
     end
   end
 
   def verify_by_mail_letter_requested
     with_user_locale(user) do
-      @hide_title = true
+      @header = t('user_mailer.verify_by_mail_letter_requested.subject')
       @presenter = Idv::ByMail::LetterRequestedEmailPresenter.new(
         current_user: user,
         url_options:,
@@ -202,6 +208,7 @@ class UserMailer < ActionMailer::Base
   def add_email(token:, request_id:, from_select_email_flow: nil)
     with_user_locale(user) do
       presenter = ConfirmationEmailPresenter.new(user, view_context)
+      @header = t('user_mailer.add_email.title')
       @first_sentence = presenter.first_sentence
       @confirmation_period = presenter.confirmation_period
       @add_email_url = add_email_confirmation_url(
@@ -216,12 +223,14 @@ class UserMailer < ActionMailer::Base
 
   def email_added
     with_user_locale(user) do
+      @header = t('user_mailer.email_added.title')
       mail(to: email_address.email, subject: t('user_mailer.email_added.subject'))
     end
   end
 
   def email_deleted
     with_user_locale(user) do
+      @header = t('user_mailer.email_deleted.title')
       mail(to: email_address.email, subject: t('user_mailer.email_deleted.subject'))
     end
   end
@@ -229,34 +238,29 @@ class UserMailer < ActionMailer::Base
   def add_email_associated_with_another_account
     with_user_locale(user) do
       @root_url = root_url(locale: locale_url_param)
+      @header = t('user_mailer.add_email_associated_with_another_account.title')
       mail(to: email_address.email, subject: t('mailer.email_reuse_notice.subject'))
     end
   end
 
   def account_verified(profile:)
-    attachments.inline['verified.png'] =
-      Rails.root.join('app/assets/images/email/user-signup-ial2.png').read
     with_user_locale(user) do
       @presenter = Idv::AccountVerifiedEmailPresenter.new(profile:, url_options:)
-      @hide_title = true
+      @header = t('user_mailer.account_verified.subject')
       @date = I18n.l(profile.verified_at, format: :event_date)
       mail(
         to: email_address.email,
-        subject: t('user_mailer.account_verified.subject', app_name: APP_NAME),
+        subject: t('user_mailer.account_verified.subject'),
       )
     end
   end
 
   def idv_please_call(**)
-    attachments.inline['phone_icon.png'] =
-      Rails.root.join('app/assets/images/email/phone_icon.png').read
-
     with_user_locale(user) do
-      @hide_title = true
-
+      @header = t('user_mailer.idv_please_call.header')
       mail(
         to: email_address.email,
-        subject: t('user_mailer.idv_please_call.subject', app_name: APP_NAME),
+        subject: t('user_mailer.idv_please_call.subject'),
         template_name: 'idv_please_call',
       )
     end
@@ -268,7 +272,7 @@ class UserMailer < ActionMailer::Base
       @root_url = root_url(locale: locale_url_param)
       mail(
         to: email_address.email,
-        subject: t('user_mailer.dupe_profile.created.heading', app_name: APP_NAME),
+        subject: t('user_mailer.dupe_profile.created.heading'),
       )
     end
   end
@@ -281,14 +285,13 @@ class UserMailer < ActionMailer::Base
     end
   end
 
-  def dupe_profile_account_review_complete_success(agency_name: nil)
-    @service_provider_or_app_name = agency_name || APP_NAME
-
+  def dupe_profile_account_review_complete_success
     with_user_locale(user) do
       @root_url = root_url(locale: locale_url_param)
+      @header = t('user_mailer.dupe_profile.review_complete.success_title')
       mail(
         to: email_address.email,
-        subject: t('user_mailer.dupe_profile.review_complete.success_heading'),
+        subject: t('user_mailer.dupe_profile.review_complete.success_title'),
       )
     end
   end
@@ -317,7 +320,7 @@ class UserMailer < ActionMailer::Base
 
   def in_person_completion_survey
     with_user_locale(user) do
-      @header = t('user_mailer.in_person_completion_survey.header')
+      @header = t('user_mailer.in_person_completion_survey.title')
       @privacy_url = MarketingSite.security_and_privacy_practices_url
       if locale == :en
         @survey_url = IdentityConfig.store.in_person_opt_in_available_completion_survey_url
@@ -327,14 +330,14 @@ class UserMailer < ActionMailer::Base
 
       mail(
         to: email_address.email,
-        subject: t('user_mailer.in_person_completion_survey.subject', app_name: APP_NAME),
+        subject: t('user_mailer.in_person_completion_survey.subject'),
       )
     end
   end
 
   def in_person_deadline_passed(enrollment:, visited_location_name: nil)
     with_user_locale(user) do
-      @header = t('user_mailer.in_person_deadline_passed.header')
+      @header = t('user_mailer.in_person_deadline_passed.title')
       @presenter = Idv::InPerson::VerificationResultsEmailPresenter.new(
         enrollment: enrollment,
         url_options: url_options,
@@ -342,7 +345,7 @@ class UserMailer < ActionMailer::Base
       )
       mail(
         to: email_address.email,
-        subject: t('user_mailer.in_person_deadline_passed.subject', app_name: APP_NAME),
+        subject: t('user_mailer.in_person_deadline_passed.subject'),
       )
     end
   end
@@ -353,9 +356,7 @@ class UserMailer < ActionMailer::Base
     ).image_data
 
     with_user_locale(user) do
-      @hide_title = IdentityConfig.store.in_person_outage_message_enabled &&
-                    IdentityConfig.store.in_person_outage_emailed_by_date.present? &&
-                    IdentityConfig.store.in_person_outage_expected_update_date.present?
+      @ipp_email = true
       @presenter = Idv::InPerson::ReadyToVerifyPresenter.new(
         enrollment: enrollment,
         barcode_image_url: attachments['barcode.png'].url,
@@ -378,7 +379,7 @@ class UserMailer < ActionMailer::Base
 
       mail(
         to: email_address.email,
-        subject: t('user_mailer.in_person_ready_to_verify.subject', app_name: APP_NAME),
+        subject: t('user_mailer.in_person_ready_to_verify.subject'),
       )
     end
   end
@@ -389,6 +390,7 @@ class UserMailer < ActionMailer::Base
     ).image_data
 
     with_user_locale(user) do
+      @ipp_email = true
       @presenter = Idv::InPerson::ReadyToVerifyPresenter.new(
         enrollment: enrollment,
         barcode_image_url: attachments['barcode.png'].url,
@@ -416,7 +418,8 @@ class UserMailer < ActionMailer::Base
 
   def in_person_verified(enrollment:, visited_location_name: nil)
     with_user_locale(user) do
-      @hide_title = true
+      @ipp_email = true
+      @header = t('user_mailer.in_person_verified.title')
       @presenter = Idv::InPerson::VerificationResultsEmailPresenter.new(
         enrollment: enrollment,
         url_options: url_options,
@@ -424,13 +427,14 @@ class UserMailer < ActionMailer::Base
       )
       mail(
         to: email_address.email,
-        subject: t('user_mailer.in_person_verified.subject', app_name: APP_NAME),
+        subject: t('user_mailer.in_person_verified.subject'),
       )
     end
   end
 
   def in_person_failed(enrollment:, visited_location_name: nil)
     with_user_locale(user) do
+      @header = t('user_mailer.in_person_failed.title')
       @presenter = Idv::InPerson::VerificationResultsEmailPresenter.new(
         enrollment: enrollment,
         url_options: url_options,
@@ -438,29 +442,14 @@ class UserMailer < ActionMailer::Base
       )
       mail(
         to: email_address.email,
-        subject: t('user_mailer.in_person_failed.subject', app_name: APP_NAME),
-      )
-    end
-  end
-
-  def agent_proofing_failure(visited_at:)
-    return if visited_at.blank?
-    with_user_locale(user) do
-      @hide_title = true
-      @presenter = Idv::ProofingAgent::AgentProofingFailurePresenter.new(
-        visited_at: visited_at,
-        url_options: url_options,
-      )
-      @visited_at_display = I18n.l(@presenter.visited_at, format: :event_date)
-      mail(
-        to: email_address.email,
-        subject: t('user_mailer.agent_proofing_failure.subject'),
+        subject: t('user_mailer.in_person_failed.subject'),
       )
     end
   end
 
   def in_person_failed_fraud(enrollment:, visited_location_name: nil)
     with_user_locale(user) do
+      @header = t('user_mailer.in_person_failed.title')
       @presenter = Idv::InPerson::VerificationResultsEmailPresenter.new(
         enrollment: enrollment,
         url_options: url_options,
@@ -476,6 +465,7 @@ class UserMailer < ActionMailer::Base
   def account_connected_to_sp(sp_name:, disavowal_token:)
     with_user_locale(user) do
       @sp_name = sp_name
+      @header = t('user_mailer.account_connected_to_sp.title', sp_name:)
       @disavowal_token = disavowal_token
       mail(
         to: email_address.email,
@@ -487,6 +477,7 @@ class UserMailer < ActionMailer::Base
   def account_disconnected_from_sp(sp_name:, disavowal_token:)
     with_user_locale(user) do
       @sp_name = sp_name
+      @header = t('user_mailer.account_disconnected_from_sp.title', sp_name:)
       @disavowal_token = disavowal_token
       mail(
         to: email_address.email,
@@ -495,7 +486,8 @@ class UserMailer < ActionMailer::Base
     end
   end
 
-  def account_rejected
+  def account_rejected(agency_name: nil)
+    @service_provider_or_app_name = agency_name || APP_NAME
     with_user_locale(user) do
       mail(
         to: email_address.email,
@@ -526,6 +518,22 @@ class UserMailer < ActionMailer::Base
     end
   end
 
+  def agent_proofing_failure(visited_at:)
+    return if visited_at.blank?
+    with_user_locale(user) do
+      @hide_title = true
+      @presenter = Idv::ProofingAgent::AgentProofingFailurePresenter.new(
+        visited_at: visited_at,
+        url_options: url_options,
+      )
+      @visited_at_display = I18n.l(@presenter.visited_at, format: :event_date)
+      mail(
+        to: email_address.email,
+        subject: t('user_mailer.agent_proofing_failure.subject'),
+      )
+    end
+  end
+
   def agent_proofing_succeeded(verified_at:)
     return if verified_at.blank?
 
@@ -552,8 +560,6 @@ class UserMailer < ActionMailer::Base
 
   def suspension_confirmed
     with_user_locale(user) do
-      @help_text = t('user_mailer.suspension_confirmed.contact_agency')
-
       mail(to: email_address.email, subject: t('user_mailer.suspension_confirmed.subject'))
     end
   end

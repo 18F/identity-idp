@@ -15,14 +15,14 @@ RSpec.feature 'phone otp verification step spec', :js do
 
     # Enter an incorrect otp
     fill_in 'code', with: '000000'
-    click_submit_default
+    click_button t('forms.buttons.continue')
 
     expect(page).to have_content(t('two_factor_authentication.invalid_otp'))
     expect(page).to have_current_path(idv_otp_verification_path)
 
     # Enter the correct code
     fill_in_code_with_last_phone_otp
-    click_submit_default
+    click_button t('forms.buttons.continue')
 
     expect(page).to have_content(t('idv.titles.session.enter_password', app_name: APP_NAME))
     expect(page).to have_current_path(idv_enter_password_path)
@@ -36,7 +36,7 @@ RSpec.feature 'phone otp verification step spec', :js do
 
     travel_to(expiration_minutes.minutes.from_now) do
       fill_in_code_with_last_phone_otp
-      click_button t('forms.buttons.submit.default')
+      click_button t('forms.buttons.continue')
 
       expect(page).to have_content(t('two_factor_authentication.invalid_otp'))
       expect(page).to have_current_path(idv_otp_verification_path)
@@ -49,13 +49,13 @@ RSpec.feature 'phone otp verification step spec', :js do
 
     sent_message_count = Telephony::Test::Message.messages.count
 
-    click_on t('links.two_factor_authentication.send_another_code')
+    click_on t('links.resend')
 
     expect(Telephony::Test::Message.messages.count).to eq(sent_message_count + 1)
     expect(page).to have_current_path(idv_otp_verification_path)
 
     fill_in_code_with_last_phone_otp
-    click_submit_default
+    click_button t('forms.buttons.continue')
 
     expect(page).to have_content(t('idv.titles.session.enter_password', app_name: APP_NAME))
     expect(page).to have_current_path(idv_enter_password_path)
@@ -75,7 +75,7 @@ RSpec.feature 'phone otp verification step spec', :js do
     )
     allow(Telephony).to receive(:send_confirmation_otp).and_return(response)
 
-    click_on t('links.two_factor_authentication.send_another_code')
+    click_on t('links.resend')
 
     expect(page).to have_content(I18n.t('telephony.error.friendly_message.generic'))
     expect(page).to have_current_path(idv_phone_path)
@@ -93,7 +93,7 @@ RSpec.feature 'phone otp verification step spec', :js do
     )
     allow(Telephony).to receive(:send_confirmation_otp).and_return(response)
 
-    click_on t('links.two_factor_authentication.send_another_code')
+    click_on t('links.resend')
 
     expect(page).to have_content(calling_area_error.friendly_message)
     expect(page).to have_current_path(idv_phone_path)

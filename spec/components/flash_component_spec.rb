@@ -29,6 +29,18 @@ RSpec.describe FlashComponent, type: :component do
     end
   end
 
+  context 'success flash type' do
+    let(:flash) { { 'success' => 'You have confirmed your email address' } }
+
+    it 'renders a toast instead of an alert' do
+      expect(rendered).to have_css(
+        'lg-toast.ads-toast',
+        text: 'You have confirmed your email address',
+      )
+      expect(rendered).not_to have_css('.ads-alert')
+    end
+  end
+
   context 'unknown flash keys' do
     let(:flash) { { 'nonsense' => 'an error' } }
 

@@ -3,12 +3,12 @@ require 'rails_helper'
 RSpec.describe Users::PersonalKeysController do
   describe '#show' do
     context 'when user signed in but user_session[:personal_key] is not present' do
-      it 'redirects to account_url' do
+      it 'redirects to account settings' do
         stub_sign_in
 
         get :show
 
-        expect(response).to redirect_to(account_url)
+        expect(response).to redirect_to(account_settings_url)
       end
     end
 
@@ -61,7 +61,7 @@ RSpec.describe Users::PersonalKeysController do
 
         patch :update
 
-        expect(response).to redirect_to account_url
+        expect(response).to redirect_to account_settings_url
         expect(flash[:success]).to eq(t('account.personal_key.reset_success'))
       end
     end

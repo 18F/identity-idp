@@ -301,7 +301,7 @@ RSpec.describe TwoFactorLoginOptionsPresenter do
 
       it 'returns phishing resistant required warning text for app' do
         expect(restricted_options_warning_text).to eq(
-          t('two_factor_authentication.aal2_request.phishing_resistant_html', sp_name: APP_NAME),
+          t('two_factor_authentication.aal2_request.phishing_resistant', sp_name: APP_NAME),
         )
       end
 
@@ -311,7 +311,7 @@ RSpec.describe TwoFactorLoginOptionsPresenter do
         it 'returns phishing resistant required warning text for service provider' do
           expect(restricted_options_warning_text).to eq(
             t(
-              'two_factor_authentication.aal2_request.phishing_resistant_html',
+              'two_factor_authentication.aal2_request.phishing_resistant',
               sp_name: service_provider.friendly_name,
             ),
           )
@@ -345,7 +345,7 @@ RSpec.describe TwoFactorLoginOptionsPresenter do
 
       it 'returns piv cac required warning text for app' do
         expect(restricted_options_warning_text).to eq(
-          t('two_factor_authentication.aal2_request.piv_cac_only_html', sp_name: APP_NAME),
+          t('two_factor_authentication.aal2_request.piv_cac_only', sp_name: APP_NAME),
         )
       end
 
@@ -355,7 +355,7 @@ RSpec.describe TwoFactorLoginOptionsPresenter do
         it 'returns piv cac required warning text for service provider' do
           expect(restricted_options_warning_text).to eq(
             t(
-              'two_factor_authentication.aal2_request.piv_cac_only_html',
+              'two_factor_authentication.aal2_request.piv_cac_only',
               sp_name: service_provider.friendly_name,
             ),
           )
@@ -388,7 +388,7 @@ RSpec.describe TwoFactorLoginOptionsPresenter do
     context 'reauthentication user session context' do
       let(:reauthentication_context) { true }
 
-      it { should eq account_path }
+      it { should eq account_security_path }
     end
   end
 

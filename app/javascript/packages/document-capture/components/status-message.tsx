@@ -14,8 +14,8 @@ interface StatusMessageProps {
 
 function StatusMessage({ id, status, className, children }: StatusMessageProps) {
   const classes = [
-    status === Status.ERROR && 'usa-error-message',
-    status === Status.SUCCESS && 'usa-success-message',
+    status === Status.ERROR && 'ads-error-message',
+    status === Status.SUCCESS && 'ads-success-message',
     !children && 'display-none',
     className,
   ]

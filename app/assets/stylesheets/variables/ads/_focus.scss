@@ -1,0 +1,6 @@
+@use 'shadow' as *;
+
+@mixin focus-ring {
+  box-shadow: $shadow-focus;
+  outline: 0;
+}

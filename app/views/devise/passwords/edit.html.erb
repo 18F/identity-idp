@@ -1,29 +1,70 @@
 <% self.title = t('titles.passwords.change') %>
 
-<%= render PageHeadingComponent.new.with_content(t('headings.passwords.change')) %>
+<%= render ADS::FormPageComponent.new(
+      title: t('headings.passwords.change'),
+      subtitle: t('instructions.password.password_key'),
+    ) do |page| %>
+  <% page.with_body do %>
+    <% token_error = @reset_password_form.errors.full_messages_for(:reset_password_token).first %>
+    <% if token_error.present? %>
+      <%= render AlertComponent.new(
+            type: :error,
+            message: token_error,
+            dismissible: false,
+          ) %>
+    <% end %>
 
-<p id="password-description">
-  <%= t('instructions.password.password_key') %>
-</p>
-<p id="phishing-warning">
-  <%= t('users.edit_info.warning') %>
-  <%= new_tab_link_to t('users.edit_info.link'), help_center_redirect_path(category: 'fraud-concerns', article: 'overview') %>
-</p>
+    <%= render AlertComponent.new(type: :warning, dismissible: false) do %>
+      <%= t('users.edit_info.warning') %>
+      <%= render ADS::LinkComponent.new(
+            url: help_center_redirect_path(category: 'fraud-concerns', article: 'overview'),
+            target: '_blank',
+            rel: 'noopener',
+          ) do %>
+        <%= t('users.edit_info.link') %>
+      <% end %>
+    <% end %>
 
-<%= simple_form_for(@reset_password_form, url: user_password_path, method: :put) do |f| %>
-  <%= f.input :reset_password_token, as: :hidden %>
-  <%= f.full_error :reset_password_token %>
-  <%= render PasswordConfirmationComponent.new(
-        form: f,
-        password_label: t('forms.passwords.edit.labels.password'),
-        forbidden_passwords: @forbidden_passwords,
-        field_options: {
-          input_html: {
-            aria: { describedby: 'password-description' },
-          },
-        },
-      ) %>
-  <%= f.submit t('forms.passwords.edit.buttons.submit'), class: 'display-block margin-y-5' %>
+    <%= form_with(
+          model: @reset_password_form,
+          url: user_password_path,
+          method: :put,
+          local: true,
+          class: 'ads-form ads-form--gap-16',
+        ) do |f| %>
+      <%= f.hidden_field :reset_password_token %>
+      <%= render InputComponent.new(
+            form: f,
+            attribute: :password,
+            type: :password,
+            id: 'new-password',
+            label: t('forms.passwords.edit.labels.password'),
+            required: true,
+            autocomplete: 'new-password',
+            error_message: @reset_password_form.errors.full_messages_for(:password).first,
+          ) do %>
+        <%= render PasswordStrengthComponent.new(
+              input_id: 'new-password',
+              forbidden_passwords: @forbidden_passwords,
+            ) %>
+      <% end %>
+      <%= render InputComponent.new(
+            form: f,
+            attribute: :password_confirmation,
+            type: :password,
+            label: t('components.password_confirmation.confirm_label'),
+            required: true,
+            autocomplete: 'new-password',
+            error_message: @reset_password_form.errors
+              .full_messages_for(:password_confirmation)
+              .first,
+            error_messages: {
+              customError: t('components.password_confirmation.errors.mismatch'),
+            },
+          ) %>
+      <%= render ButtonComponent.new(
+            type: :submit,
+          ).with_content(t('forms.passwords.edit.buttons.submit')) %>
+    <% end %>
+  <% end %>
 <% end %>
-
-<%= render 'shared/password_accordion' %>

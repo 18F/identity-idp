@@ -20,13 +20,6 @@ RSpec.describe 'idv/phone_errors/failure.html.erb' do
     render
   end
 
-  it 'renders a list of troubleshooting options' do
-    expect(rendered).to have_link(
-      t('idv.troubleshooting.options.contact_support', app_name: APP_NAME),
-      href: contact_redirect_url,
-    )
-  end
-
   it 'tells them they can try again later' do
     raw_expected_text = t(
       'idv.failure.phone.rate_limited.option_try_again_later_html',

@@ -1,0 +1,29 @@
+<%# Shared history event row. Used by the History index Activity section and the %>
+<%# device drill-in. `title_tag` sets the row title's element: a heading (e.g. :h3) %>
+<%# where the row is a distinct subsection, or nil for non-heading strong text when %>
+<%# the rows are repetitive (the drill-in lists many identical event titles). %>
+<% title_tag = local_assigns.fetch(:title_tag, :h3) %>
+<% event_title = account_history_event_title(event) %>
+<% event_description = account_history_event_description(event) %>
+
+<li>
+  <div class="ads-history__row">
+    <div class="ads-history__row-content">
+      <% if title_tag %>
+        <%= content_tag(title_tag, event_title, class: 'ads-history__row-title') %>
+      <% else %>
+        <p class="ads-history__row-title"><%= event_title %></p>
+      <% end %>
+
+      <p class="ads-history__row-meta">
+        <%= render TimeComponent.new(time: event.happened_at) %>
+      </p>
+
+      <% if event_description.present? %>
+        <p class="ads-history__row-description">
+          <%= event_description %>
+        </p>
+      <% end %>
+    </div>
+  </div>
+</li>

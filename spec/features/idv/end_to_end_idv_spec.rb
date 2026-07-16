@@ -184,7 +184,7 @@ RSpec.describe 'Identity verification', :js do
   def validate_welcome_page
     expect(page).to have_current_path(idv_welcome_path)
 
-    expect(page).to have_content t('doc_auth.headings.welcome', sp_name: sp_name)
+    expect(page).to have_content t('headings.identity_verification_intro.title', sp: sp_name)
 
     stepping_up_info_message = t(
       'doc_auth.info.stepping_up_html',
@@ -264,11 +264,6 @@ RSpec.describe 'Identity verification', :js do
     expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_info'))
 
     expect(page.find_field(t('idv.form.ssn_label'))['aria-invalid']).to eq('false')
-    expect(page).to have_content(t('doc_auth.info.no_ssn'))
-    click_link(t('doc_auth.info.exit.with_sp', app_name: APP_NAME, sp_name: sp_name))
-
-    expect(page).to have_current_path(idv_cancel_path(step: 'ssn_offramp'))
-    click_on t('idv.cancel.actions.keep_going')
 
     # shows error message on invalid ssn
     fill_out_ssn_form_fail
@@ -332,11 +327,11 @@ RSpec.describe 'Identity verification', :js do
     expect(page).to have_current_path(idv_otp_verification_path)
 
     # without a code, stay on page
-    click_submit_default
+    click_button t('forms.buttons.continue')
     expect(page).to have_current_path(idv_otp_verification_path)
 
     fill_in_code_with_last_phone_otp
-    click_submit_default
+    click_button t('forms.buttons.continue')
   end
 
   def validate_enter_password_page
@@ -391,11 +386,11 @@ RSpec.describe 'Identity verification', :js do
     expect(page).to have_content(t('forms.personal_key_partial.acknowledgement.help_link_text'))
     expect(page).to have_content(t('idv.messages.confirm'))
     expect(page).to have_css(
-      '.step-indicator__step--complete',
+      'ads-progress [data-complete="true"]',
       text: t('step_indicator.flows.idv.verify_phone'),
     )
     expect(page).to have_css(
-      '.step-indicator__step--current',
+      'ads-progress [aria-current="step"]',
       text: t('step_indicator.flows.idv.re_enter_password'),
     )
     expect(page).not_to have_content(t('step_indicator.flows.idv.verify_address'))

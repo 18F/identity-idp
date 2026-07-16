@@ -9,9 +9,13 @@ RSpec.feature 'removing a phone number from an account' do
 
     expect(MfaPolicy.new(user).multiple_factors_enabled?).to eq true
 
+    click_link t('forms.phone.buttons.delete')
+
+    expect(page).to have_current_path(confirm_delete_phone_path(id: phone_configuration.id))
+
     click_button t('forms.phone.buttons.delete')
 
-    expect(page).to have_current_path(account_path)
+    expect(page).to have_current_path(account_security_path)
 
     visit account_history_path
     expect(page).to have_content t('event_types.phone_removed')
@@ -29,7 +33,7 @@ RSpec.feature 'removing a phone number from an account' do
 
       visit manage_phone_path(id: phone_configuration.id)
 
-      expect(page).to_not have_button(t('forms.phone.buttons.delete'))
+      expect(page).to_not have_link(t('forms.phone.buttons.delete'))
     end
   end
 end

@@ -33,10 +33,10 @@ RSpec.describe 'users/auth_app/edit.html.erb' do
     )
   end
 
-  it 'has labelled form with button to delete configuration' do
-    expect(rendered).to have_button_to_with_accessibility(
+  it 'has a link to confirm deleting the configuration' do
+    expect(rendered).to have_link(
       t('two_factor_authentication.auth_app.delete'),
-      auth_app_path(id: configuration.id),
+      href: confirm_delete_auth_app_path(id: configuration.id),
     )
   end
 end

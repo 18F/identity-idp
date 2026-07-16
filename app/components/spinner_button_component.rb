@@ -32,7 +32,7 @@ class SpinnerButtonComponent < BaseComponent
   end
 
   def css_class
-    classes = [*wrapper_options[:class]]
+    classes = ['ads-form__button-wrapper', *wrapper_options[:class]]
     classes << 'spinner-button--outline' if outline
     classes
   end

@@ -3,7 +3,6 @@ import type { SinonStub } from 'sinon';
 import baseUserEvent from '@testing-library/user-event';
 import { screen, waitFor, fireEvent } from '@testing-library/dom';
 import { useSandbox, useDefineProperty } from '@18f/identity-test-helpers';
-import '@18f/identity-spinner-button/spinner-button-element';
 
 describe('CaptchaSubmitButtonElement', () => {
   let FAILED_LOAD_DELAY_MS: number;

@@ -63,11 +63,13 @@ function InPersonPrepareStep({ toPreviousStep }) {
           headingUnstyled
         />
       </ProcessList>
-      {inPersonURL && flowPath === 'standard' ? (
-        <FormStepsButton.Continue className="margin-y-5" />
-      ) : (
-        <FormStepsButton.Continue />
-      )}
+      <div className="ads-actions ads-actions--gap-8 ads-actions--align-stretch">
+        {inPersonURL && flowPath === 'standard' ? (
+          <FormStepsButton.Continue className="margin-y-5" />
+        ) : (
+          <FormStepsButton.Continue />
+        )}
+      </div>
       <p>
         {t('in_person_proofing.body.prepare.privacy_disclaimer', {
           app_name: getConfigValue('appName'),

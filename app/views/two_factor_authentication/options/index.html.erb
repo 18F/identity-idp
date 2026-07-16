@@ -1,55 +1,87 @@
 <% self.title = @presenter.title %>
 
-<%= render(VendorOutageAlertComponent.new(vendors: [:sms, :voice])) %>
+<%= render ADS::FormPageComponent.new(
+      title: @presenter.heading,
+      subtitle: @presenter.info,
+    ) do |page| %>
+  <% page.with_body do %>
+    <%= render ADS::StackComponent.new do %>
+      <%= render(VendorOutageAlertComponent.new(vendors: [:sms, :voice])) %>
 
-<% if @presenter.add_piv_cac_after_2fa? %>
-  <%= render AlertComponent.new(
-        type: :info,
-        class: 'margin-bottom-4',
-      ).with_content(t('two_factor_authentication.piv_cac_mismatch.2fa_before_add')) %>
-<% end %>
-
-<%= render PageHeadingComponent.new.with_content(@presenter.heading) %>
-
-<p>
-  <%= @presenter.info %>
-</p>
-
-<% if @presenter.restricted_options_warning_text.present? %>
-  <%= render AlertComponent.new(type: :warning, class: 'margin-top-4') do %>
-    <%= @presenter.restricted_options_warning_text %>
-  <% end %>
-<% end %>
-
-<%= simple_form_for(@two_factor_options_form, url: login_two_factor_options_path) do |f| %>
-  <div role="group" aria-label="<%= @presenter.heading %>">
-    <% @presenter.options.each_with_index do |option, index| %>
-      <%= render(option) do %>
-        <%= radio_button_tag(
-              'two_factor_options_form[selection]',
-              option.type,
-              index == @presenter.first_enabled_option_index,
-              disabled: option.disabled?,
-              class: 'usa-radio__input usa-radio__input--tile',
+      <% if @presenter.add_piv_cac_after_2fa? %>
+        <%= render AlertComponent.new(
+              type: :neutral,
+              message: t('two_factor_authentication.piv_cac_mismatch.2fa_before_add'),
+              dismissible: false,
             ) %>
-        <%= label_tag(
-              "two_factor_options_form_selection_#{option.type}",
-              class: 'usa-radio__label',
-            ) do %>
-              <%= option.label %>
-              <span class="usa-radio__label-description">
-                <%= option.info %>
-              </span>
+      <% end %>
+
+      <% if @presenter.restricted_options_warning_text.present? %>
+        <%= render AlertComponent.new(
+              type: :warning,
+              message: strip_tags(@presenter.restricted_options_warning_text),
+              dismissible: false,
+            ) %>
+      <% end %>
+
+      <%= form_with(
+            url: login_two_factor_options_path,
+            method: :post,
+            local: true,
+            class: 'ads-form',
+          ) do %>
+        <% icons = {
+             webauthn_platform: :fingerprint,
+             auth_app: :qr,
+             phone: :chat,
+             sms: :chat,
+             voice: :phone,
+             webauthn: :key,
+             backup_code: :download_backup,
+             piv_cac: :id,
+             personal_key: :lock,
+           } %>
+        <%= render ADS::StackComponent.new do %>
+          <% @presenter.options.each do |option| %>
+            <% icon = icons[
+                 icons.keys.find { |k| option.type == k || option.type.to_s.start_with?("#{k}_") },
+               ] %>
+            <%= render CardComponent.new(
+                  button: true,
+                  type: :submit,
+                  padding: :compact,
+                  name: 'two_factor_options_form[selection]',
+                  value: option.type,
+                  disabled: option.disabled?,
+                  'aria-disabled': option.disabled?,
+                ) do |card| %>
+              <% unless option.disabled? %>
+                <% card.with_trailing do %>
+                  <%= render IconComponent.new(icon: :chevron_right, size: 20) %>
+                <% end %>
+              <% end %>
+              <%= render IconComponent.new(icon:, size: 24) %>
+              <div class="ads-card__stack">
+                <p class="ads-card__title"><%= option.label %></p>
+                <p class="ads-card__description"><%= option.info %></p>
+              </div>
             <% end %>
+          <% end %>
+        <% end %>
       <% end %>
     <% end %>
-  </div>
+  <% end %>
 
-  <%= f.submit t('forms.buttons.continue'), class: 'display-block margin-y-5' %>
+  <% page.with_actions do %>
+    <% request = current_user.account_reset_request %>
+    <% if request&.granted_token_valid? %>
+      <%= render ADS::LinkComponent.new(
+            url: account_reset_cancel_path(token: request.request_token),
+          ).with_content(t('two_factor_authentication.account_reset.cancel_link')) %>
+    <% end %>
+    <%= render ButtonComponent.new(
+          url: @presenter.cancel_link,
+          variant: :quaternary,
+        ).with_content(cancel_link_text) %>
+  <% end %>
 <% end %>
-
-<p>
-  <%= @presenter.account_reset_or_cancel_link %>
-</p>
-
-<%= render 'shared/cancel', link: @presenter.cancel_link %>

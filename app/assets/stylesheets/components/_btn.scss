@@ -1,24 +1,311 @@
-@use 'uswds-core' as *;
+@use '../variables/ads' as ads;
 
-.usa-button {
-  // Temporary: To be backported to design system. Margins should be applied at the button element,
-  // or at the very least (a) we don't want the margins to offset full-width buttons on mobile, and
-  // (b) the default margin would not be large enough on its own.
-  margin-right: 0;
+@mixin button-size($height, $pad-x, $pad-icon) {
+  height: $height;
+  min-height: $height;
+  padding-inline: $pad-x;
+
+  &.ads-button--icon-left {
+    padding-inline-start: $pad-icon;
+  }
+
+  &.ads-button--icon-right {
+    padding-inline-end: $pad-icon;
+  }
+
+  &.ads-button--icon-only {
+    padding-inline: 0;
+    width: $height;
+  }
 }
 
-.usa-button:disabled.usa-button--active,
-.usa-button[aria-disabled='true'].usa-button--active {
-  &:not(
-      .usa-button--unstyled,
-      .usa-button--secondary,
-      .usa-button--accent-cool,
-      .usa-button--accent-warm,
-      .usa-button--base,
-      .usa-button--outline,
-      .usa-button--inverse,
-      .usa-button--danger
-    ) {
-    @include set-text-and-bg('primary-darker', $context: 'Button');
+.ads-button {
+  align-items: center;
+  appearance: none;
+  background: transparent;
+  border: 0;
+  border-radius: ads.radius(pill);
+  box-sizing: border-box;
+  cursor: pointer;
+  display: inline-flex;
+  font-family: ads.$font-family;
+  font-size: ads.$text-label-m;
+  font-weight: ads.$font-semibold;
+  gap: ads.space(4);
+  justify-content: center;
+  letter-spacing: ads.$text-letter-spacing-label;
+  line-height: ads.$text-line-height-none;
+  margin: 0;
+  overflow: hidden;
+  text-align: center;
+  text-decoration: none;
+  transition: ads.$transition;
+
+  .ads-icon {
+    align-items: center;
+    display: inline-flex;
+    flex-shrink: 0;
+    height: ads.space(20);
+    justify-content: center;
+    width: ads.space(20);
+
+    svg {
+      flex-shrink: 0;
+      height: 0.875rem;
+      width: 0.875rem;
+    }
+  }
+
+  &:focus {
+    outline: 0;
+  }
+
+  &:is(:disabled, [aria-disabled='true']) {
+    cursor: not-allowed;
+  }
+}
+
+.ads-button--lg {
+  @include button-size(ads.space(56), ads.space(24), ads.space(16));
+}
+
+.ads-button--md {
+  @include button-size(ads.space(44), ads.space(20), ads.space(16));
+}
+
+.ads-button--sm {
+  @include button-size(ads.space(36), ads.space(12), ads.space(8));
+}
+
+.ads-button--primary {
+  background: ads.$off-black;
+  box-shadow: ads.$shadow-compact;
+  color: ads.$off-white;
+
+  &.ads-button--lg {
+    box-shadow: ads.$shadow-large;
+  }
+
+  &:is(:link, :visited) {
+    color: ads.$off-white;
+  }
+
+  &:hover {
+    background: ads.alpha(ads.$off-black, 85%);
+    box-shadow: ads.$shadow-compact;
+    color: ads.$off-white;
+    text-decoration: none;
+  }
+
+  &:active {
+    background: ads.$off-black;
+    box-shadow: none;
+    color: ads.$off-white;
+  }
+
+  &:focus-visible {
+    @include ads.focus-ring;
+    background: ads.$off-black;
+    color: ads.$off-white;
+  }
+
+  &:is(:disabled, [aria-disabled='true']) {
+    background: ads.alpha(ads.$off-white, 85%);
+    box-shadow: none;
+    color: ads.alpha(ads.$off-black, 25%);
+  }
+}
+
+.ads-button--destructive {
+  background: ads.$red-600;
+  box-shadow: ads.$shadow-compact;
+  color: ads.$off-white;
+
+  &.ads-button--lg {
+    box-shadow: ads.$shadow-large;
+  }
+
+  &:is(:link, :visited) {
+    color: ads.$off-white;
+  }
+
+  &:hover {
+    background: ads.alpha(ads.$red-600, 85%);
+    box-shadow: ads.$shadow-compact;
+    color: ads.$off-white;
+    text-decoration: none;
+  }
+
+  &:active {
+    background: ads.$red-600;
+    box-shadow: none;
+    color: ads.$off-white;
+  }
+
+  &:focus-visible {
+    @include ads.focus-ring;
+    background: ads.$red-600;
+    color: ads.$off-white;
+  }
+
+  &:is(:disabled, [aria-disabled='true']) {
+    background: ads.alpha(ads.$off-white, 85%);
+    box-shadow: none;
+    color: ads.alpha(ads.$off-black, 25%);
+  }
+}
+
+.ads-button--secondary {
+  backdrop-filter: blur(25px);
+  background: ads.alpha(ads.$off-black, 5%);
+  color: ads.$off-black;
+
+  &:is(:link, :visited) {
+    color: ads.$off-black;
+  }
+
+  &:hover {
+    background: ads.alpha(ads.$off-white, 85%);
+    color: ads.alpha(ads.$off-black, 65%);
+    text-decoration: none;
+  }
+
+  &:active {
+    background: ads.alpha(ads.$off-black, 5%);
+    color: ads.$off-black;
+  }
+
+  &:focus-visible {
+    @include ads.focus-ring;
+    background: ads.alpha(ads.$off-black, 5%);
+    color: ads.$off-black;
+  }
+
+  &:is(:disabled, [aria-disabled='true']) {
+    background: ads.alpha(ads.$off-black, 5%);
+    box-shadow: none;
+    color: ads.alpha(ads.$off-black, 25%);
+  }
+}
+
+.ads-button--tertiary {
+  background: transparent;
+  border: 1px solid ads.alpha(ads.$off-black, 45%);
+  color: ads.$off-black;
+
+  &:is(:link, :visited) {
+    color: ads.$off-black;
+  }
+
+  &:hover,
+  &:active {
+    border-color: ads.alpha(ads.$off-black, 85%);
+    color: ads.$off-black;
+    outline: 1.5px solid ads.alpha(ads.$off-black, 85%);
+    outline-offset: -1.5px;
+    text-decoration: none;
+  }
+
+  &:focus-visible {
+    @include ads.focus-ring;
+    border-color: ads.alpha(ads.$off-black, 85%);
+    color: ads.$off-black;
+  }
+
+  &:is(:disabled, [aria-disabled='true']) {
+    border-color: ads.alpha(ads.$off-black, 25%);
+    box-shadow: none;
+    color: ads.alpha(ads.$off-black, 25%);
+  }
+}
+
+.ads-button--quaternary {
+  background: transparent;
+  color: ads.$off-black;
+
+  &:is(:link, :visited) {
+    color: ads.$off-black;
+  }
+
+  &:hover,
+  &:active {
+    background: ads.alpha(ads.$off-black, 5%);
+    color: ads.$off-black;
+    text-decoration: none;
+  }
+
+  &:focus-visible {
+    @include ads.focus-ring;
+    background: ads.alpha(ads.$off-black, 5%);
+    color: ads.$off-black;
+  }
+
+  &:is(:disabled, [aria-disabled='true']) {
+    background: transparent;
+    box-shadow: none;
+    color: ads.alpha(ads.$off-black, 25%);
+  }
+
+  &.ads-button--md {
+    @include button-size(ads.space(40), ads.space(20), ads.space(16));
+  }
+}
+
+.ads-button--ghost {
+  backdrop-filter: blur(25px);
+  background: transparent;
+  color: ads.$off-black;
+
+  &:is(:link, :visited) {
+    color: ads.$off-black;
+  }
+
+  &:hover,
+  &:active {
+    background: ads.alpha(ads.$off-black, 12%);
+    color: ads.$off-black;
+    text-decoration: none;
+  }
+
+  &:focus-visible {
+    @include ads.focus-ring;
+    background: ads.alpha(ads.$off-black, 8%);
+    color: ads.$off-black;
+  }
+
+  &:is(:disabled, [aria-disabled='true']) {
+    background: transparent;
+    box-shadow: none;
+    color: ads.alpha(ads.$off-black, 25%);
+  }
+}
+
+.ads-form,
+.ads-auth__actions,
+.ads-actions,
+.ads-modal__actions {
+  :where(.ads-form__button-wrapper) {
+    display: block;
+    width: 100%;
+  }
+
+  :where(.ads-button) {
+    display: flex;
+    width: 100%;
+  }
+}
+
+.ads-button--wide {
+  display: flex;
+  width: 100%;
+}
+
+.ads-button--flexible-width {
+  width: auto;
+}
+
+.ads-auth__actions {
+  :where(.ads-button--primary, .ads-button--destructive) {
+    @include button-size(ads.space(56), ads.space(24), ads.space(16));
   }
 }

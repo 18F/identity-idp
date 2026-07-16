@@ -7,7 +7,7 @@ RSpec.describe SpinnerButtonComponent, type: :component do
       data: { foo: 'bar' },
     ).with_content('Click Me')
 
-    button = page.find_button('Click Me', class: 'usa-button--outline')
+    button = page.find_button('Click Me', class: 'ads-button--primary')
     expect(button['data-foo']).to eq('bar')
   end
 
@@ -39,6 +39,7 @@ RSpec.describe SpinnerButtonComponent, type: :component do
       ).with_content('')
 
       expect(rendered).to have_css('.spinner-button__action-message[data-message="Verifying..."]')
+      expect(rendered).to have_css('.spinner-button__action-message.ads-sr-only')
     end
   end
 
@@ -46,7 +47,9 @@ RSpec.describe SpinnerButtonComponent, type: :component do
     it 'renders with additional css class' do
       rendered = render_inline SpinnerButtonComponent.new(outline: true).with_content('')
 
-      expect(rendered).to have_css('lg-spinner-button.spinner-button--outline')
+      expect(rendered).to have_css(
+        'lg-spinner-button.ads-form__button-wrapper.spinner-button--outline',
+      )
     end
   end
 

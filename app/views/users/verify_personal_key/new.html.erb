@@ -1,29 +1,51 @@
 <% self.title = t('forms.personal_key.title') %>
+<% key_word_length = RandomPhrase::WORD_LENGTH %>
+<% key_word_count = IdentityConfig.store.recovery_code_length %>
 
-<%= simple_form_for('', url: create_verify_personal_key_path, method: 'post', html: { class: 'margin-top-8' }) do |f| %>
-  <div class="padding-top-6 padding-bottom-1 padding-x-1 tablet:padding-x-4 position-relative border border-secondary rounded-xl">
-    <%= render AlertIconComponent.new(
-          icon_name: :personal_key,
-          class: 'alert-icon--centered-top',
-        ) %>
+<%= render ADS::FormPageComponent.new(
+      title: t('forms.personal_key.title'),
+      subtitle: t('forms.personal_key.instructions'),
+    ) do |page| %>
+  <% page.with_body do %>
+    <%= simple_form_for(
+          '',
+          url: create_verify_personal_key_path,
+          method: :post,
+          html: { class: 'ads-form' },
+        ) do |f| %>
+      <%= render ADS::StackComponent.new(kind: :form, gap: 16, align: :stretch) do %>
+        <%= render InputOtpComponent.new(
+              form: f,
+              name: :personal_key,
+              label: t('forms.personal_key.confirmation_label'),
+              length: key_word_length * key_word_count,
+              groups: Array.new(key_word_count, key_word_length),
+              separator: '-',
+              numeric: false,
+              transport: nil,
+              autocomplete: 'off',
+              autocapitalize: 'none',
+              spellcheck: false,
+            ) %>
 
-    <%= render PageHeadingComponent.new.with_content(t('forms.personal_key.title')) %>
+        <%= render ButtonComponent.new(
+              type: :submit,
+            ).with_content(t('forms.buttons.continue')) %>
+      <% end %>
+    <% end %>
+  <% end %>
 
-    <p class="margin-bottom-4">
-      <%= t('forms.personal_key.instructions') %>
-    </p>
+  <% page.with_actions do %>
+    <%= render ADS::StackComponent.new(kind: :actions, gap: 16) do %>
+      <p class="ads-card__value"><%= t('forms.personal_key.alternative') %></p>
 
-    <%= render 'shared/personal_key_input', code: '', form: f %>
-  </div>
+      <%= render ButtonComponent.new(
+            url: reactivate_account_path,
+            method: :put,
+            variant: :secondary,
+          ).with_content(t('links.reverify')) %>
 
-  <%= f.submit t('forms.buttons.continue'), class: 'display-block margin-y-5' %>
+      <%= render ADS::LinkComponent.new(url: account_path).with_content(cancel_link_text) %>
+    <% end %>
+  <% end %>
 <% end %>
-
-<%= t('forms.personal_key.alternative') %>
-<%= render ButtonComponent.new(
-      url: reactivate_account_path,
-      method: :put,
-      unstyled: true,
-    ).with_content(t('links.reverify')) %>
-
-<%= render 'shared/cancel', link: account_path %>

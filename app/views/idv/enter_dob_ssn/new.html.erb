@@ -1,22 +1,6 @@
-<% content_for(:pre_flash_content) do %>
-  <%= render StepIndicatorComponent.new(
-        steps: step_indicator_steps,
-        current_step: :confirm_your_information,
-        locale_scope: 'idv',
-        class: 'margin-x-neg-2 margin-top-neg-4 tablet:margin-x-neg-6 tablet:margin-top-neg-4',
-      ) %>
-<% end %>
+<%= render 'idv/shared/step_indicator', current_step: :confirm_your_information %>
 
 <% self.title = t('doc_auth.headings.dob_ssn') %>
-
-<%= render PageHeadingComponent.new.with_content(t('doc_auth.headings.dob_ssn')) %>
-
-<p>
-  <%= t('doc_auth.info.dob_ssn') %>
-  <%= new_tab_link_to(MarketingSite.security_and_privacy_practices_url, class: 'display-inline') do %>
-    <%= t('doc_auth.info.learn_more') %>
-  <% end %>
-</p>
 
 <% if FeatureManagement.proofing_agent_device_profiling_collecting_enabled? %>
   <%= render partial: 'shared/threat_metrix_profiling',
@@ -27,28 +11,109 @@
              } %>
 <% end %>
 
-<% if IdentityConfig.store.proofer_mock_fallback %>
-  <div class="usa-alert usa-alert--info margin-bottom-4" role="status">
-    <div class="usa-alert__body">
-      <p class="usa-alert__text">
-        <%= t('doc_auth.instructions.test_ssn') %>
-      </p>
-    </div>
-  </div>
-<% end %>
+<%= render ADS::FormPageComponent.new(title: t('doc_auth.headings.dob_ssn')) do |page| %>
+  <% page.with_body do %>
+    <%= render ADS::StackComponent.new(gap: 24) do %>
+      <div class="ads-copy ads-copy--centered">
+        <p>
+          <%= t('doc_auth.info.dob_ssn') %>
+          <%= render ADS::LinkComponent.new(
+                url: MarketingSite.security_and_privacy_practices_url,
+                target: '_blank',
+                rel: 'noopener noreferrer',
+              ) do %>
+            <%= t('doc_auth.info.learn_more') %>
+            <span class="ads-sr-only"><%= t('links.new_tab') %></span>
+          <% end %>
+        </p>
+      </div>
 
-<%= simple_form_for(@dob_ssn_form, url: url_for, method: :post) do |f| %>
-  <div class="tablet:grid-col-8">
-    <%= render 'shared/ssn_field', f: f %>
-  </div>
+      <% if IdentityConfig.store.proofer_mock_fallback %>
+        <%= render AlertComponent.new(type: :neutral, dismissible: false) do %>
+          <%= t('doc_auth.instructions.test_ssn') %>
+        <% end %>
+      <% end %>
 
-  <div class="tablet:grid-col-8">
-    <%= render 'shared/dob_field', f: f %>
-  </div>
+      <%= simple_form_for(
+            @dob_ssn_form,
+            url: url_for,
+            method: :post,
+            html: { class: 'ads-form ads-form--gap-16 ads-form--align-stretch' },
+          ) do |f| %>
+        <%= render InputComponent.new(
+              form: f,
+              attribute: :ssn,
+              label: t('idv.form.ssn_label'),
+              type: :password,
+              required: true,
+              pattern: '^\d{3}-?\d{2}-?\d{4}$',
+              maxlength: 11,
+              autocomplete: 'off',
+              inputmode: :numeric,
+              value: f.object.ssn,
+              class: 'ssn-toggle',
+              password_toggle_label: t('forms.ssn.show'),
+              password_toggle_hide_label: t('forms.ssn.hide'),
+              error_message: @dob_ssn_form.errors.full_messages_for(:ssn).first,
+              error_messages: {
+                valueMissing: t('components.input.errors.ssn'),
+              },
+            ) %>
 
-  <%= f.submit class: 'display-block margin-y-5' do %>
-    <%= t('forms.buttons.continue') %>
+        <% dob_iso = @dob_ssn_form.dob.to_s.presence %>
+        <% dob_year, dob_month, dob_day = dob_iso.to_s.split('-') %>
+        <%= render InputComponent.new(
+              form: f,
+              attribute: :dob,
+              label: t('in_person_proofing.form.state_id.dob'),
+              type: :date,
+              required: true,
+              value: dob_iso,
+              autocomplete: 'bday',
+              name: 'dob_date',
+              error_message: @dob_ssn_form.errors.full_messages_for(:dob).first,
+              error_messages: {
+                valueMissing: t('components.input.errors.dob'),
+                typeMismatch: t('components.input.errors.dob'),
+                badInput: t('components.input.errors.dob'),
+              },
+            ) %>
+        <%= hidden_field_tag 'doc_auth[dob][year]', dob_year, id: 'doc_auth_dob_year' %>
+        <%= hidden_field_tag 'doc_auth[dob][month]', dob_month, id: 'doc_auth_dob_month' %>
+        <%= hidden_field_tag 'doc_auth[dob][day]', dob_day, id: 'doc_auth_dob_day' %>
+
+        <%= render ADS::StackComponent.new(kind: :actions, gap: 8, align: :stretch) do %>
+          <%= render ButtonComponent.new(
+                type: :submit,
+              ).with_content(t('forms.buttons.continue')) %>
+
+          <%= render ButtonComponent.new(
+                url: idv_cancel_path(step: 'ssn'),
+                variant: :quaternary,
+              ).with_content(cancel_link_text) %>
+        <% end %>
+      <% end %>
+    <% end %>
   <% end %>
 <% end %>
 
-<%= render 'idv/doc_auth/cancel', step: 'ssn' %>
+<%= javascript_tag(nonce: true) do %>
+  (function () {
+    var dateInput = document.getElementById('doc_auth_dob');
+    if (!dateInput) return;
+    var year = document.getElementById('doc_auth_dob_year');
+    var month = document.getElementById('doc_auth_dob_month');
+    var day = document.getElementById('doc_auth_dob_day');
+    function sync() {
+      var parts = (dateInput.value || '').split('-');
+      year.value = parts[0] || '';
+      month.value = parts[1] || '';
+      day.value = parts[2] || '';
+    }
+    dateInput.addEventListener('input', sync);
+    dateInput.addEventListener('change', sync);
+    if (dateInput.form) dateInput.form.addEventListener('submit', sync);
+    sync();
+  })();
+<% end %>
+<%= javascript_packs_tag_once('ssn-field') %>

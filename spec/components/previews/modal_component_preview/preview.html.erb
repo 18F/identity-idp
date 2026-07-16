@@ -1,0 +1,15 @@
+<div style="min-height: 50vh; display: flex; flex-direction: column; gap: 16px; max-width: 27rem;">
+  <p style="margin: 0;">
+    Desktop: centered modal. Mobile: bottom sheet. Backdrop dismiss, Escape,
+    and focus management use <code>&lt;dialog&gt;</code>.
+  </p>
+
+  <%= render ModalComponent.new do |modal| %>
+    <% modal.with_trigger { 'Open modal' } %>
+    <% modal.with_title { 'Default modal' } %>
+    <% modal.with_description { 'Used for focused information with a primary action.' } %>
+    <% modal.with_footer do %>
+      <%= render ButtonComponent.new(type: :button, data: { ads_modal_close: true }).with_content('Continue') %>
+    <% end %>
+  <% end %>
+</div>

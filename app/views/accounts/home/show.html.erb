@@ -1,0 +1,116 @@
+<% self.title = t('account.navigation.home') %>
+<% connected_apps = @presenter.connected_apps.to_a %>
+
+<div class="ads-dashboard-home">
+  <h1 class="ads-dashboard-home__greeting"><%= @presenter.greeting %></h1>
+
+  <% if connected_apps.any? %>
+    <section class="ads-connected-services" aria-labelledby="connected-services-heading">
+      <header class="ads-connected-services__header">
+        <h2 id="connected-services-heading" class="ads-connected-services__heading">
+          <%= t('headings.account.connected_services') %>
+        </h2>
+        <p class="ads-connected-services__description">
+          <%= t('account.connected_apps.description', app_name: APP_NAME) %>
+        </p>
+      </header>
+
+      <div class="ads-connected-services__list">
+        <ul class="ads-connected-services__rows">
+          <% connected_apps.each do |identity| %>
+            <li>
+              <%= render 'accounts/connected_app', identity: identity %>
+            </li>
+          <% end %>
+        </ul>
+      </div>
+    </section>
+  <% end %>
+
+  <section class="ads-discovery" aria-labelledby="discovery-heading">
+    <header class="ads-discovery__header">
+      <h2 id="discovery-heading" class="ads-discovery__heading">
+        <%= t('account.dashboard.discovery.title') %>
+      </h2>
+      <p class="ads-discovery__description">
+        <%= t('account.dashboard.discovery.description') %>
+      </p>
+    </header>
+
+    <% if @presenter.show_filters? %>
+      <div
+        class="ads-discovery__filters"
+        role="navigation"
+        aria-label="<%= t('account.dashboard.discovery.filters_label') %>"
+      >
+        <ul class="ads-discovery__chips">
+          <li>
+            <%= link_to(
+                  t('account.dashboard.discovery.categories.all'),
+                  account_path,
+                  class: class_names(
+                    'ads-discovery__chip',
+                    'ads-discovery__chip--current':
+                      @presenter.category_selected?(FeaturedService::ALL_CATEGORY_SLUG),
+                  ),
+                  aria: {
+                    current: (
+                      'true' if @presenter.category_selected?(FeaturedService::ALL_CATEGORY_SLUG)
+                    ),
+                  },
+                ) %>
+          </li>
+          <% @presenter.categories.each do |category| %>
+            <li>
+              <%= link_to(
+                    t(category.label_key),
+                    account_path(category: category.slug),
+                    class: class_names(
+                      'ads-discovery__chip',
+                      'ads-discovery__chip--current': @presenter.category_selected?(category.slug),
+                    ),
+                    aria: { current: ('true' if @presenter.category_selected?(category.slug)) },
+                  ) %>
+            </li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <% if @presenter.featured_services? %>
+      <div class="ads-discovery__list">
+        <ul class="ads-discovery__rows">
+          <% @presenter.featured_services.each do |service| %>
+            <li>
+              <%= render 'accounts/home/featured_service', service: service %>
+            </li>
+          <% end %>
+        </ul>
+      </div>
+    <% else %>
+      <p class="ads-discovery__empty"><%= t('account.dashboard.discovery.empty') %></p>
+    <% end %>
+  </section>
+</div>
+
+<%= render ModalComponent.new(wide: true, id: 'welcome-modal') do |modal| %>
+  <% modal.with_media do %>
+    <%= image_tag(
+          'account/welcome-modal-agencies.png',
+          alt: '',
+          width: 660,
+          height: 245,
+          aria: { hidden: true },
+        ) %>
+  <% end %>
+  <% modal.with_title { t('account.dashboard.welcome_modal.title') } %>
+  <% modal.with_description { t('account.dashboard.welcome_modal.body') } %>
+  <% modal.with_footer do %>
+    <%= render ButtonComponent.new(
+          type: :button,
+          size: :md,
+          data: { ads_modal_close: true },
+        ).with_content(t('account.dashboard.welcome_modal.cta')) %>
+  <% end %>
+<% end %>
+<%= javascript_packs_tag_once 'welcome-modal' %>

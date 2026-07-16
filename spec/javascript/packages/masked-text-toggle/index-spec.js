@@ -6,25 +6,25 @@ describe('MaskedTextToggle', () => {
   beforeEach(() => {
     document.body.innerHTML = `
       <span id="masked-text-1fd0eb71134c">
-        <span class="masked-text__text" data-masked="true">
-          <span class="usa-sr-only">secure text, starting with 1 and ending with 4</span>
+        <span class="ads-masked-text__text" data-masked="true">
+          <span class="ads-sr-only">secure text, starting with 1 and ending with 4</span>
           <span aria-hidden="true">1**-**-***4</span>
         </span>
-        <span class="masked-text__text display-none" data-masked="false">
+        <span class="ads-masked-text__text" data-masked="false" hidden>
           123-12-1234
         </span>
       </span>
-      <div class="margin-top-2">
+      <div class="ads-masked-text__toggle-row">
         <input
           type="checkbox"
           id="masked-text-1fd0eb71134c-checkbox"
           aria-controls="masked-text-1fd0eb71134c"
-          class="masked-text__toggle usa-checkbox__input usa-checkbox__input--bordered"
+          class="ads-masked-text__toggle ads-sr-only"
           aria-label="Show Social Security Number"
         >
         <label
           for="masked-text-1fd0eb71134c-checkbox"
-          class="usa-checkbox__label"
+          class="ads-checkbox__label"
         >
           Show Social Security Number
         </label>
@@ -39,18 +39,18 @@ describe('MaskedTextToggle', () => {
     await userEvent.click(getToggle());
     initialize();
 
-    screen.getByText('123-12-1234', { ignore: '.display-none' });
+    expect(screen.getByText('123-12-1234').closest('[hidden]')).to.not.exist();
   });
 
   it('toggles masked texts', async () => {
     initialize();
 
-    expect(screen.getByText('123-12-1234').closest('.display-none')).to.exist();
-    expect(screen.getByText('1**-**-***4').closest('.display-none')).to.not.exist();
+    expect(screen.getByText('123-12-1234').closest('[hidden]')).to.exist();
+    expect(screen.getByText('1**-**-***4').closest('[hidden]')).to.not.exist();
 
     await userEvent.click(getToggle());
 
-    expect(screen.getByText('123-12-1234').closest('.display-none')).to.not.exist();
-    expect(screen.getByText('1**-**-***4').closest('.display-none')).to.exist();
+    expect(screen.getByText('123-12-1234').closest('[hidden]')).to.not.exist();
+    expect(screen.getByText('1**-**-***4').closest('[hidden]')).to.exist();
   });
 });

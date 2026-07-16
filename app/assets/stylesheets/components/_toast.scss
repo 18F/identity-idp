@@ -1,0 +1,104 @@
+@use '../variables/ads' as ads;
+
+$toast-duration: ads.$tr-duration-lg;
+$toast-easing: ads.$tr-easing-cubic;
+$toast-enter-offset: ads.space(32);
+$toast-viewport-inset: ads.space(16);
+$toast-z-index: 400;
+$toast-mobile-breakpoint: 40em;
+
+.ads-toast {
+  align-items: center;
+  backdrop-filter: blur(25px);
+  background: ads.alpha(ads.$off-black, 85%);
+  border: 0;
+  border-radius: ads.radius(pill);
+  box-sizing: border-box;
+  color: ads.$off-white;
+  cursor: pointer;
+  display: inline-flex;
+  font-family: ads.$font-family;
+  font-size: ads.$text-label-m;
+  font-weight: ads.$font-semibold;
+  gap: ads.space(12);
+  left: 50%;
+  letter-spacing: ads.$text-letter-spacing-label;
+  line-height: ads.$text-line-height-none;
+  margin: 0;
+  max-width: calc(100vw - #{ads.space(32)});
+  opacity: 0;
+  padding: ads.space(16) ads.space(20) ads.space(16) ads.space(16);
+  pointer-events: none;
+  position: fixed;
+  // Below official banner + sticky nav (:root chrome vars).
+  top: calc(
+    var(--ads-official-banner-height, #{ads.space(40)}) + var(--ads-nav-height, #{ads.space(80)}) +
+      #{$toast-viewport-inset}
+  );
+  transform: translate(-50%, calc(-1 * #{$toast-enter-offset}));
+  transition:
+    opacity $toast-duration $toast-easing,
+    transform $toast-duration $toast-easing;
+  width: max-content;
+  z-index: $toast-z-index;
+
+  &[data-open='true'] {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translate(-50%, 0);
+  }
+}
+
+.ads-toast__icon {
+  align-items: center;
+  background: ads.$green-500;
+  border-radius: ads.radius(pill);
+  color: ads.$white;
+  display: inline-flex;
+  flex-shrink: 0;
+  height: ads.space(20);
+  justify-content: center;
+  width: ads.space(20);
+
+  .ads-icon {
+    color: inherit;
+    display: block;
+    height: ads.space(16);
+    width: ads.space(16);
+  }
+}
+
+.ads-toast__announcement {
+  align-items: center;
+  display: inline-flex;
+  gap: ads.space(12);
+}
+
+.ads-toast__text {
+  color: inherit;
+  margin: 0;
+  min-width: 0;
+  white-space: nowrap;
+}
+
+@media (max-width: #{$toast-mobile-breakpoint - 0.01em}) {
+  .ads-toast {
+    bottom: $toast-viewport-inset;
+    top: auto;
+    transform: translate(-50%, $toast-enter-offset);
+
+    &[data-open='true'] {
+      transform: translate(-50%, 0);
+    }
+  }
+
+  .ads-toast__text {
+    white-space: normal;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ads-toast {
+    transition: none;
+  }
+}

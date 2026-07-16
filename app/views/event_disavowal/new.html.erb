@@ -1,26 +1,40 @@
 <% self.title = t('titles.passwords.change') %>
 
-<%= render PageHeadingComponent.new.with_content(t('headings.passwords.change')) %>
-
-<%= simple_form_for(@password_reset_from_disavowal_form, url: events_disavowal_url) do |f| %>
-    <%= f.input :disavowal_token, as: :hidden,
-                                  input_html: { value: @disavowal_token, name: :disavowal_token } %>
-    <%= render PasswordToggleComponent.new(
-          form: f,
-          field_options: {
+<%= render ADS::FormPageComponent.new(title: t('headings.passwords.change')) do |page| %>
+  <% page.with_body do %>
+    <%= form_with(
+          model: @password_reset_from_disavowal_form,
+          url: events_disavowal_url,
+          local: true,
+          class: 'ads-form',
+        ) do |f| %>
+      <%= hidden_field_tag :disavowal_token, @disavowal_token %>
+      <%= render InputComponent.new(
+            form: f,
+            attribute: :password,
+            type: :password,
+            id: 'new-password',
             label: t('forms.passwords.edit.labels.password'),
             required: true,
-            input_html: {
-              id: 'new-password',
-              autocomplete: 'new-password',
-            },
-          },
-        ) %>
-    <%= render PasswordStrengthComponent.new(
-          input_id: 'new-password',
-          forbidden_passwords: @forbidden_passwords,
-        ) %>
-    <%= f.submit t('forms.passwords.edit.buttons.submit'), class: 'margin-bottom-4' %>
-<% end %>
+            autocomplete: 'new-password',
+            error_message: @password_reset_from_disavowal_form.errors
+              .full_messages_for(:password)
+              .first,
+          ) %>
+      <%= render PasswordStrengthComponent.new(
+            input_id: 'new-password',
+            forbidden_passwords: @forbidden_passwords,
+          ) %>
+      <%= render ButtonComponent.new(
+            type: :submit,
+          ).with_content(t('forms.passwords.edit.buttons.submit')) %>
+    <% end %>
 
-<%= render 'shared/password_accordion' %>
+    <%= render CardComponent.new do %>
+      <div class="ads-card__stack">
+        <p class="ads-card__label"><%= t('instructions.password.help_text_header') %></p>
+        <p class="ads-card__value"><%= t('instructions.password.help_text') %></p>
+      </div>
+    <% end %>
+  <% end %>
+<% end %>

@@ -344,7 +344,7 @@ RSpec.describe 'Phishing-resistant authentication required in an SAML context' d
   end
 
   def has_2fa_option?(auth_method)
-    page.find("label[for='two_factor_options_form_selection_#{auth_method}']")
+    page.find("button[name='two_factor_options_form[selection]'][value='#{auth_method}']")
     true
   rescue Capybara::ElementNotFound
     false

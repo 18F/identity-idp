@@ -28,6 +28,20 @@ RSpec.describe TwoFactorAuthentication::PivCacEditPresenter do
     end
   end
 
+  describe '#confirm_delete_heading' do
+    it 'returns the confirm delete heading' do
+      expect(presenter.confirm_delete_heading)
+        .to eq(t('two_factor_authentication.piv_cac.confirm_delete'))
+    end
+  end
+
+  describe '#caution_delete' do
+    it 'returns the caution copy' do
+      expect(presenter.caution_delete)
+        .to eq(t('two_factor_authentication.piv_cac.caution_delete'))
+    end
+  end
+
   describe '#rename_success_alert_text' do
     it 'returns rename success alert text' do
       expect(presenter.rename_success_alert_text)

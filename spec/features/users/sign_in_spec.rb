@@ -70,7 +70,7 @@ RSpec.feature 'Sign in' do
   scenario 'user is not logged in and tries to access a protected page' do
     user = create(:user, :fully_registered)
 
-    visit account_two_factor_authentication_path
+    visit account_security_path
 
     expect(page).to have_current_path new_user_session_path
 
@@ -78,7 +78,7 @@ RSpec.feature 'Sign in' do
     fill_in_code_with_last_phone_otp
     click_submit_default
 
-    expect(page).to have_current_path account_two_factor_authentication_path
+    expect(page).to have_current_path account_security_path
   end
 
   scenario 'user with old terms of use can accept and continue to IAL2 SP' do
@@ -276,7 +276,7 @@ RSpec.feature 'Sign in' do
 
     it 'fails to sign in the user, with CSRF error' do
       user = sign_in_and_2fa_user
-      click_button(t('links.sign_out'), match: :first)
+      click_button(t('links.sign_out'), match: :first, visible: :all)
 
       travel(Devise.timeout_in + 1.minute) do
         expect(page).to_not have_content(t('forms.buttons.continue'))

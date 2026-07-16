@@ -1,37 +1,10 @@
-<div class="location_search_skipped_notice text-center">
-  <h2 class="location_search_skipped_notice__heading text-center margin-top-5 margin-bottom-4"><%= t('in_person_proofing.headings.po_search.location') %></h2>
-  <p class="location_search_skipped_notice__body text-left margin-bottom-4"><%= t('in_person_proofing.body.location.location_skipped_notice') %></p>
-  <table class="button expanded large radius">
-    <tbody>
-      <tr>
-        <td>
-          <table>
-            <tbody>
-              <tr>
-                <td>
-                  <center>
-                    <%= link_to(
-                          t('in_person_proofing.body.location.location_skipped_notice_button_text'),
-                          help_center_redirect_url(
-                            category: 'verify-your-identity',
-                            article: 'verify-your-identity-in-person/find-a-participating-post-office',
-                          ),
-                          target: '_blank',
-                          class: 'float-center',
-                          align: 'center',
-                          rel: 'noopener',
-                        )
-                    %>
-                  </center>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </td>
-        <td class="expander">
-        </td>
-      </tr>
-    </tbody>
-  </table>
-</div>
-<hr class="border-0 border-bottom border-primary-light margin-y-4" />
+<section class="mailer-section">
+  <h2 class="mailer-section__title"><%= t('in_person_proofing.headings.po_search.location') %></h2>
+  <p class="mailer-text mailer-section__intro"><%= t('in_person_proofing.body.location.location_skipped_notice') %></p>
+  <%= render 'shared/email/button',
+             url: help_center_redirect_url(
+               category: 'verify-your-identity',
+               article: 'verify-your-identity-in-person/find-a-participating-post-office',
+             ),
+             text: t('in_person_proofing.body.location.location_skipped_notice_button_text') %>
+</section>

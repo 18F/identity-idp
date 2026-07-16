@@ -108,7 +108,7 @@ module Users
 
     def cap_auth_app_count
       return unless IdentityConfig.store.max_auth_apps_per_account <= current_auth_app_count
-      redirect_to account_two_factor_authentication_path
+      redirect_to account_security_path
     end
 
     def current_auth_app_count

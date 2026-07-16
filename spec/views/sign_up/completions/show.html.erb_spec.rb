@@ -61,6 +61,15 @@ RSpec.describe 'sign_up/completions/show.html.erb' do
     )
   end
 
+  it 'renders the continue button with the large ADS variant' do
+    render
+
+    expect(rendered).to have_button(
+      t('sign_up.agree_and_continue'),
+      class: 'ads-button--lg',
+    )
+  end
+
   context 'select email to send to partner' do
     it 'shows email change link' do
       render

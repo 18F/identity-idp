@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class AccountShowPresenter
+  include HeaderPersonalization
+
   attr_reader :user,
               :decrypted_pii,
               :locked_for_session,
@@ -105,42 +107,8 @@ class AccountShowPresenter
     !!identity&.last_ial2_authenticated_at.present?
   end
 
-  def show_unphishable_badge?
-    MfaPolicy.new(user).unphishable?
-  end
-
-  def show_verified_badge?
-    user.identity_verified?
-  end
-
-  def showing_any_badges?
-    show_unphishable_badge? || show_verified_badge?
-  end
-
   def backup_codes_generated_at
     user.backup_code_configurations.order(created_at: :asc).first&.created_at
-  end
-
-  def personal_key_generated_at
-    user.personal_key_generated_at
-  end
-
-  def header_personalization
-    return decrypted_pii.first_name if decrypted_pii.present?
-
-    user.last_sign_in_email_address.email
-  end
-
-  def totp_content
-    if TwoFactorAuthentication::AuthAppPolicy.new(user).enabled?
-      I18n.t('account.index.auth_app_enabled')
-    else
-      I18n.t('account.index.auth_app_disabled')
-    end
-  end
-
-  def connected_apps
-    user.connected_apps.includes([:service_provider_record, :email_address])
   end
 
   delegate :recent_events, :recent_devices, to: :user

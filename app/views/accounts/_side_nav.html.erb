@@ -1,19 +1,30 @@
-<nav class="sidenav" aria-label="<%= t('account.navigation.landmark_label') %>">
-  <ul class="bg-white border-x border-base-lighter usa-sidenav">
-    <% NavigationPresenter.new(user: current_user, url_options: url_options).navigation_items.each do |nav_item| %>
-      <li class="usa-sidenav__item">
-        <%= link_to nav_item.href, class: current_page?(nav_item.href) ? 'usa-current' : '' do %>
-          <strong><%= nav_item.title %></strong>
-        <% end %>
-        <% if nav_item.children&.any? %>
-          <ul class="usa-sidenav__sublist">
-            <% nav_item.children.each do |child_nav_item| %>
-              <li class="usa-sidenav__item">
-                <%= link_to child_nav_item.title, child_nav_item.href, class: current_page?(child_nav_item.href) ? 'usa-current' : '' %>
-              </li>
-            <% end %>
-          </ul>
-        <% end %>
+<% nav_items = NavigationPresenter.new(url_options: url_options).navigation_items %>
+
+<nav
+  class="<%= class_names('ads-account-nav', 'ads-account-nav--mobile': local_assigns[:mobile]) %>"
+  aria-label="<%= t('account.navigation.landmark_label') %>"
+>
+  <ul class="ads-account-nav__list">
+    <% nav_items.each do |nav_item| %>
+      <% exact_match = current_page?(nav_item.href) %>
+      <% prefix_match = nav_item.href != account_path &&
+                        request.path.start_with?("#{nav_item.href}/") %>
+      <% override_match = @account_nav_current_path.present? &&
+                          @account_nav_current_path == nav_item.href %>
+      <% current = exact_match || prefix_match || override_match %>
+
+      <li class="ads-account-nav__item">
+        <%= render ButtonComponent.new(
+              url: nav_item.href,
+              variant: :quaternary,
+              size: :lg,
+              icon: current ? :"#{nav_item.icon}_filled" : nav_item.icon,
+              class: class_names(
+                'ads-account-nav__link',
+                'ads-account-nav__link--current': current,
+              ),
+              aria: { current: ('page' if exact_match) },
+            ).with_content(nav_item.title) %>
       </li>
     <% end %>
   </ul>

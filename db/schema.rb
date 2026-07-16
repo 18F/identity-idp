@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_07_10_150518) do
+ActiveRecord::Schema[8.0].define(version: 2026_06_18_151409) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_catalog.plpgsql"
@@ -220,7 +220,6 @@ ActiveRecord::Schema[8.0].define(version: 2026_07_10_150518) do
     t.integer "document_type_requested", comment: "sensitive=false"
     t.datetime "pending_agent_proofed_user_at", comment: "sensitive=false"
     t.boolean "passport_cards_supported", default: false, comment: "sensitive=false"
-    t.boolean "mdl_enabled", comment: "sensitive=false"
     t.index ["passport_status"], name: "idx_document_capture_sessions_on_passport_status_null_doc_type", where: "((document_type_requested IS NULL) AND (passport_status IS NOT NULL))"
     t.index ["result_id"], name: "index_document_capture_sessions_on_result_id"
     t.index ["socure_docv_transaction_token"], name: "index_socure_docv_transaction_token", unique: true

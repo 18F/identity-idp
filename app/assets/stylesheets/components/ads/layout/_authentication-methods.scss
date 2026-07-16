@@ -1,0 +1,111 @@
+@use '../../../variables/ads' as ads;
+
+$ads-auth-methods-breakpoint-m: 768px;
+
+.ads-auth-methods {
+  @include ads.stack(
+    $gap: ads.space(64),
+    $margin: 0 auto,
+    $max-width: ads.$dashboard-width,
+    $reset-flow: true,
+    $width: 100%
+  );
+
+  color: ads.$off-black;
+  font-family: ads.$font-family;
+  text-align: left;
+}
+
+.ads-auth-methods__section {
+  @include ads.stack($gap: ads.space(24), $reset-flow: true, $width: 100%);
+}
+
+.ads-auth-methods__heading {
+  color: ads.$off-black;
+  font-size: ads.$text-heading-section;
+  font-weight: ads.$font-semibold;
+  letter-spacing: ads.$text-letter-spacing-heading-section;
+  line-height: 1.2;
+  margin: 0;
+  overflow-wrap: anywhere;
+  padding-inline: ads.space(24);
+}
+
+.ads-auth-methods__panel {
+  @include ads.stack($gap: ads.space(24), $reset-flow: true, $width: 100%);
+  align-items: flex-start;
+  background: ads.$white;
+  border: 1px solid ads.alpha(ads.$off-black, 10%);
+  border-radius: ads.radius(24);
+  box-sizing: border-box;
+  padding: ads.space(24);
+}
+
+.ads-auth-methods__rows {
+  @include ads.stack($gap: 0, $reset-flow: true, $width: 100%);
+}
+
+.ads-auth-methods__rows > * + * {
+  border-top: 1px solid ads.alpha(ads.$off-black, 10%);
+  margin-top: ads.space(12);
+  padding-top: ads.space(12);
+}
+
+.ads-auth-methods__rule {
+  border-top: 1px solid ads.alpha(ads.$off-black, 10%);
+  width: 100%;
+}
+
+.ads-auth-methods__row {
+  align-items: center;
+  display: flex;
+  gap: ads.space(20);
+  justify-content: space-between;
+  min-width: 0;
+  width: 100%;
+}
+
+.ads-auth-methods__row-text {
+  color: ads.alpha(ads.$off-black, 65%);
+  flex: 1 1 auto;
+  font-size: ads.$text-body-m;
+  font-weight: 400;
+  letter-spacing: ads.$text-letter-spacing-label;
+  line-height: 1.5;
+  margin: 0;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.ads-auth-methods__row-actions {
+  align-items: center;
+  display: flex;
+  flex: 0 0 auto;
+  flex-wrap: wrap;
+  gap: ads.space(8);
+  justify-content: flex-end;
+}
+
+@media (width < #{$ads-auth-methods-breakpoint-m}) {
+  .ads-auth-methods {
+    gap: ads.space(48);
+  }
+
+  .ads-auth-methods__heading {
+    padding-inline: 0;
+  }
+
+  .ads-auth-methods__panel {
+    padding: ads.space(20);
+  }
+
+  .ads-auth-methods__row {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: ads.space(12);
+  }
+
+  .ads-auth-methods__row-actions {
+    justify-content: flex-start;
+  }
+}

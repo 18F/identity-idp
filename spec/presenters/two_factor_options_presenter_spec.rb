@@ -22,6 +22,38 @@ RSpec.describe TwoFactorOptionsPresenter do
     end
   end
 
+  describe '#heading' do
+    it 'uses first-method copy when no MFA is configured' do
+      expect(presenter.heading).to eq(t('two_factor_authentication.two_factor_choice'))
+    end
+
+    context 'with mfa configured' do
+      let(:user) { build(:user, :with_phone) }
+
+      it 'uses second-method copy' do
+        expect(presenter.heading).to eq(
+          t('two_factor_authentication.two_factor_choice_other.backup_heading'),
+        )
+      end
+    end
+  end
+
+  describe '#intro' do
+    it 'uses first-method copy when no MFA is configured' do
+      expect(presenter.intro).to eq(t('mfa.info', app_name: APP_NAME))
+    end
+
+    context 'with mfa configured' do
+      let(:user) { build(:user, :with_phone) }
+
+      it 'uses second-method copy' do
+        expect(presenter.intro).to eq(
+          t('two_factor_authentication.two_factor_choice_other.backup_intro'),
+        )
+      end
+    end
+  end
+
   describe '#options' do
     it 'supplies all the options for a user' do
       expect(presenter.options.map(&:class)).to eq [

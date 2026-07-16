@@ -11,9 +11,8 @@ module Features
 
     def sign_up_with(email)
       visit sign_up_email_path
-      check t('sign_up.terms', app_name: APP_NAME)
-      fill_in t('forms.registration.labels.email'), with: email
-      click_button t('forms.buttons.submit.default')
+      fill_in t('account.index.email_short'), with: email
+      click_button t('forms.buttons.continue')
     end
 
     def choose_another_security_option(option)
@@ -25,9 +24,12 @@ module Features
     end
 
     def select_2fa_option(option, **find_options)
-      find("label[for='two_factor_options_form_selection_#{option}']", **find_options).click
-      click_on t('forms.buttons.continue')
-      click_button t('forms.buttons.continue') if page.has_button?(t('forms.buttons.continue'))
+      card_selector = "button[name='two_factor_options_form[selection]'][value='#{option}']"
+      if page.has_css?(card_selector, **find_options)
+        find(card_selector, **find_options).click
+      else
+        find("#two_factor_options_form_selection_#{option}", **find_options).click
+      end
     end
 
     def select_phone_delivery_option(delivery_option)
@@ -41,7 +43,7 @@ module Features
       click_send_one_time_code
       uncheck(t('forms.messages.remember_device'))
       fill_in_code_with_last_phone_otp
-      click_submit_default
+      click_button t('forms.buttons.continue')
       skip_second_mfa_prompt
       user
     end
@@ -94,9 +96,9 @@ module Features
     end
 
     def fill_in_credentials_and_submit(email, password)
-      fill_in t('account.index.email'), with: email
-      fill_in t('account.index.password'), with: password
-      click_button t('forms.buttons.submit.default')
+      fill_in t('account.index.email_short'), with: email
+      fill_in t('forms.password'), with: password
+      click_button t('forms.buttons.continue')
     end
 
     def fill_in_totp_name(nickname = 'App')
@@ -116,7 +118,7 @@ module Features
 
     def fill_in_password_and_submit(password)
       fill_in t('account.index.password'), with: password
-      click_button t('forms.buttons.submit.default')
+      click_button t('forms.buttons.continue')
     end
 
     def sign_up
@@ -245,7 +247,7 @@ module Features
       expect(page).to have_current_path(login_two_factor_path(otp_delivery_preference: 'sms'))
       uncheck(t('forms.messages.remember_device'))
       fill_in_code_with_last_phone_otp
-      click_submit_default
+      click_button t('forms.buttons.continue')
       expect(page).to_not have_current_path(login_two_factor_path(otp_delivery_preference: 'sms'))
       user
     end
@@ -264,12 +266,16 @@ module Features
     end
 
     def click_submit_default
-      click_on t('forms.buttons.submit.default')
+      if page.has_button?(t('forms.buttons.continue'), wait: 0)
+        click_on t('forms.buttons.continue')
+      else
+        click_on t('forms.buttons.submit.default')
+      end
     end
 
     def click_submit_default_twice
-      click_button t('forms.buttons.submit.default')
-      click_button t('forms.buttons.submit.default')
+      click_button t('forms.buttons.continue')
+      click_button t('forms.buttons.continue')
     end
 
     def click_continue
@@ -399,23 +405,23 @@ module Features
     def submit_form_with_invalid_email
       check t('sign_up.terms', app_name: APP_NAME)
       fill_in t('forms.registration.labels.email'), with: 'invalidemail'
-      click_button t('forms.buttons.submit.default')
+      click_button t('forms.buttons.continue')
     end
 
     def submit_form_with_valid_but_wrong_email
       check t('sign_up.terms', app_name: APP_NAME)
       fill_in t('forms.registration.labels.email'), with: 'test@example.com'
-      click_button t('forms.buttons.submit.default')
+      click_button t('forms.buttons.continue')
     end
 
     def click_link_to_use_a_different_email
-      click_link t('notices.use_diff_email.link').upcase_first
+      click_link t('sign_up.verify_email.use_different_email')
     end
 
     def submit_form_with_valid_email(email = 'test@test.com')
       check t('sign_up.terms', app_name: APP_NAME)
-      fill_in t('forms.registration.labels.email'), with: email
-      click_button t('forms.buttons.submit.default')
+      fill_in t('account.index.email_short'), with: email
+      click_button t('forms.buttons.continue')
     end
 
     def click_link_to_resend_the_email
@@ -429,7 +435,7 @@ module Features
     end
 
     def submit_resend_email_confirmation_form_with_correct_email(email)
-      fill_in t('forms.registration.labels.email'), with: email
+      fill_in t('account.index.email_short'), with: email
       check t('sign_up.terms', app_name: APP_NAME)
       click_submit_default
     end
@@ -455,14 +461,14 @@ module Features
       fill_in 'new_phone_form[phone]', with: '202-555-1212'
       click_send_one_time_code
       fill_in_code_with_last_phone_otp
-      click_submit_default
+      click_button t('forms.buttons.continue')
     end
 
     def set_up_mfa_with_valid_phone
       fill_in 'new_phone_form[phone]', with: '202-555-1212'
       click_send_one_time_code
       fill_in_code_with_last_phone_otp
-      click_submit_default
+      click_button t('forms.buttons.continue')
     end
 
     def set_up_mfa_with_backup_codes
@@ -533,7 +539,7 @@ module Features
       stub_piv_cac_service
       select_2fa_option('piv_cac')
       fill_in t('instructions.mfa.piv_cac.step_1'), with: 'Card'
-      click_on t('forms.piv_cac_setup.submit')
+      click_on t('forms.buttons.continue')
       follow_piv_cac_redirect
     end
 
@@ -550,7 +556,7 @@ module Features
       fill_in_credentials_and_submit(user.last_sign_in_email_address.email, user.password)
       expect(page).to have_current_path(login_two_factor_path(otp_delivery_preference: 'sms'))
       fill_in_code_with_last_phone_otp
-      click_submit_default
+      click_button t('forms.buttons.continue')
     end
 
     def stub_piv_cac_service(error: nil, uuid: Random.uuid)

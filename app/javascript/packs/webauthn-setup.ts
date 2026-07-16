@@ -36,7 +36,6 @@ function webauthn() {
   const form = document.getElementById('webauthn-form') as HTMLFormElement;
   form.addEventListener('submit', (event) => {
     event.preventDefault();
-    document.getElementById('spinner')!.hidden = false;
 
     const platformAuthenticator =
       (document.getElementById('platform_authenticator') as HTMLInputElement).value === 'true';

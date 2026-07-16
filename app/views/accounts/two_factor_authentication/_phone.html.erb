@@ -1,0 +1,51 @@
+<section class="ads-auth-methods__section" aria-labelledby="phone-heading">
+  <h2 id="phone-heading" class="ads-auth-methods__heading">
+    <%= t('account.dashboard.auth_methods.phone.title') %>
+  </h2>
+
+  <div class="ads-auth-methods__panel">
+    <% if flash[:phone_error] %>
+      <%= render AlertComponent.new(type: :error, id: 'phones', message: flash[:phone_error]) %>
+    <% end %>
+    <% if mfa_context.phone_configurations.any? %>
+      <div class="ads-auth-methods__rows" role="list">
+        <% mfa_context.phone_configurations.each do |phone_configuration| %>
+          <div class="ads-auth-methods__row" role="listitem">
+            <p class="ads-auth-methods__row-text">
+              <%= PhoneFormatter.format(phone_configuration.phone) %>
+              <% if current_user.default_phone_configuration == phone_configuration &&
+                    mfa_context.phone_configurations.count > 1 %>
+                &middot; <%= I18n.t('account.index.default') %>
+              <% end %>
+            </p>
+
+            <div class="ads-auth-methods__row-actions">
+              <%= render ButtonComponent.new(
+                    url: manage_phone_path(id: phone_configuration.id),
+                    variant: :quaternary,
+                    size: :md,
+                  ) do %>
+                <span aria-hidden="true"><%= t('forms.buttons.manage') %></span>
+                <span class="ads-sr-only">
+                  <%= t('two_factor_authentication.phone.manage_accessible_label') %>:
+                  <%= PhoneFormatter.format(phone_configuration.phone) %>
+                </span>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+    <% if current_user.phone_configurations.count < IdentityConfig.store.max_phone_numbers_per_account %>
+      <% if mfa_context.phone_configurations.any? %>
+        <div class="ads-auth-methods__rule"></div>
+      <% end %>
+
+      <%= render ButtonComponent.new(
+            url: phone_setup_path,
+            variant: :secondary,
+            size: :md,
+          ).with_content(t('account.index.phone_add')) %>
+    <% end %>
+  </div>
+</section>

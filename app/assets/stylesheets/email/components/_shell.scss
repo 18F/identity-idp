@@ -1,0 +1,68 @@
+@use 'variables/ads' as ads;
+@use 'variables/email' as *;
+@use 'mixins' as mailer;
+
+.body {
+  background: $body-background;
+}
+
+.mailer-official-row {
+  background: $mailer-muted-surface;
+  border-bottom: 1px solid $mailer-divider-color;
+}
+
+.mailer-official-text {
+  @include mailer.mailer-label-s-emphasis;
+
+  color: $mailer-muted-text;
+  line-height: 1.3;
+  margin: 0;
+}
+
+.mailer-shell {
+  background-color: $body-background;
+  font-family: $body-font-family;
+  margin: 0;
+  padding: 0;
+}
+
+.mailer-frame {
+  background-color: $container-background;
+  border-radius: 0;
+}
+
+.mailer-template {
+  color: $black;
+  font-family: $body-font-family;
+  max-width: $mailer-template-width;
+  width: 100%;
+}
+
+.mailer-template__logo {
+  display: block;
+}
+
+.mailer-template__gap {
+  font-size: 0;
+  line-height: 0;
+}
+
+.mailer-template__gap--after-logo {
+  height: ads.space(40);
+}
+
+.mailer-template__rule {
+  @include mailer.mailer-divider-line;
+}
+
+.mailer-section-rule {
+  @include mailer.mailer-divider-line;
+
+  margin-top: $mailer-section-gap;
+  padding-top: $mailer-section-gap;
+}
+
+.mailer-template__content {
+  padding: ads.space(48) 0;
+  text-align: left;
+}

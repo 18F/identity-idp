@@ -13,10 +13,9 @@
 #   AnonymousMailer.with(email:).password_reset_missing_user(request_id:).deliver_now
 #
 class AnonymousMailer < ActionMailer::Base
+  helper ::LinkHelper
   include Mailable
   include LocaleHelper
-
-  before_action :attach_images
 
   after_action :add_metadata
 

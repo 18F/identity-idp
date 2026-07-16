@@ -1,0 +1,29 @@
+<%= tag.section(**html_options.except(:class).merge(class: css_class)) do %>
+  <%= render flash_component if claim_flash! && flash_component.render? %>
+  <%= alert if alert? && !alert_below? %>
+
+  <div class="ads-auth__header<%= ' ads-auth__header--with-media' if media? %>">
+    <%= media if media? %>
+    <div class="ads-auth__intro">
+      <h1><%= title %></h1>
+      <% if subtitle.present? %>
+        <p class="ads-auth__intro-description"><%= subtitle %></p>
+      <% end %>
+    </div>
+  </div>
+
+  <%= alert if alert? && alert_below? %>
+
+  <% if body? %>
+    <div class="ads-auth__form-page-body">
+      <%= body %>
+    </div>
+  <% end %>
+
+  <% if actions? %>
+    <%= tag.hr(class: 'ads-divider') if divider %>
+    <div class="ads-auth__actions">
+      <%= actions %>
+    </div>
+  <% end %>
+<% end %>

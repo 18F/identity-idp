@@ -1,0 +1,53 @@
+<fieldset class="ads-fieldset"<% if hint.present? && hint_id.present? %> aria-describedby="<%= hint_id %>"<% end %>>
+  <legend class="ads-fieldset__legend"><%= legend %></legend>
+  <% if hint.present? %>
+    <p class="ads-fieldset__hint"<% if hint_id.present? %> id="<%= hint_id %>"<% end %>><%= hint %></p>
+  <% end %>
+  <%= form.simple_fields_for attribute do |fields| %>
+    <div class="ads-date-fields">
+      <%= render InputComponent.new(
+            form: fields,
+            attribute: :month,
+            label: t('components.memorable_date.month'),
+            type: :tel,
+            floating_label: false,
+            required: true,
+            pattern: '(1[0-2])|(0?[1-9])',
+            minlength: 1,
+            maxlength: 2,
+            inputmode: :numeric,
+            autocomplete: autocomplete_for(:month),
+            value: month,
+          ) %>
+      <%= render InputComponent.new(
+            form: fields,
+            attribute: :day,
+            label: t('components.memorable_date.day'),
+            type: :tel,
+            floating_label: false,
+            required: true,
+            pattern: '(3[01])|([12][0-9])|(0?[1-9])',
+            minlength: 1,
+            maxlength: 2,
+            inputmode: :numeric,
+            autocomplete: autocomplete_for(:day),
+            value: day,
+          ) %>
+      <%= render InputComponent.new(
+            form: fields,
+            attribute: :year,
+            label: t('components.memorable_date.year'),
+            type: :tel,
+            floating_label: false,
+            required: true,
+            pattern: '\d{4}',
+            minlength: 4,
+            maxlength: 4,
+            inputmode: :numeric,
+            autocomplete: autocomplete_for(:year),
+            value: year,
+            error_message:,
+          ) %>
+    </div>
+  <% end %>
+</fieldset>

@@ -1,0 +1,30 @@
+<% unless hide_banner %>
+  <%= render ADS::OfficialBannerComponent.new %>
+<% end %>
+
+<header class="ads-auth-page__top-chrome">
+  <% unless hide_logo %>
+    <div class="ads-auth-page__logo-banner">
+      <%= link_to root_path, class: 'ads-auth-page__logo-banner-link', aria: { label: APP_NAME } do %>
+        <%= image_tag(
+              asset_url('logo.svg'),
+              alt: '',
+              class: 'ads-auth-page__logo-banner-image',
+              aria: { hidden: true },
+              width: 155,
+              height: 21,
+            ) %>
+      <% end %>
+    </div>
+  <% end %>
+
+  <% if progress? %>
+    <div class="ads-auth-page__top-chrome-progress">
+      <%= progress %>
+    </div>
+  <% end %>
+
+  <% if trailing? %>
+    <%= trailing %>
+  <% end %>
+</header>

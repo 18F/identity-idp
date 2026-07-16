@@ -1,55 +1,53 @@
 <% self.title = t('titles.reactivate_account') %>
 
-<div class="no-js">
-  <%= render AlertComponent.new(
-        type: :warning,
-        class: 'margin-bottom-4',
-      ) do %>
-    <div class="text-bold">
-      <%= t('instructions.account.reactivate.modal.copy') %>
+<%= render ADS::FormPageComponent.new(
+      title: t('headings.account.reactivate'),
+      subtitle: t('instructions.account.reactivate.intro'),
+    ) do |page| %>
+  <% page.with_body do %>
+    <div class="no-js">
+      <%= render AlertComponent.new(
+            type: :warning,
+            message: t('instructions.account.reactivate.modal.copy'),
+            dismissible: false,
+          ) %>
     </div>
-  <% end %>
-</div>
 
-<%= render PageHeadingComponent.new.with_content(t('headings.account.reactivate')) %>
+    <%= render CardComponent.new do %>
+      <div class="ads-card__stack">
+        <p class="ads-card__label"><%= t('instructions.account.reactivate.begin') %></p>
+        <p class="ads-card__title"><%= t('instructions.account.reactivate.with_key') %></p>
+        <p class="ads-card__value"><%= t('instructions.account.reactivate.explanation') %></p>
 
-<p class="margin-bottom-6">
-  <%= t('instructions.account.reactivate.intro') %>
-</p>
-
-<h2 class="h4 padding-bottom-1 border-bottom border-primary-light">
-  <%= t('instructions.account.reactivate.begin') %>
-</h2>
-
-<h3 class="fs-20p margin-top-6">
-  <%= t('instructions.account.reactivate.with_key') %>
-</h3>
-
-<p class="margin-bottom-0">
-  <%= t('instructions.account.reactivate.explanation') %>
-</p>
-
-<figure class="margin-0 scale-down" aria-label="<%= t('users.personal_key.accessible_labels.preview') %>">
-  <%= render 'partials/personal_key/key',
-             code: 'XXXX-XXXX-XXXX-XXXX',
-             code_example: true,
-             personal_key_generated_at: @personal_key_generated_at,
-             show_save_buttons: false
-  %>
-</figure>
-
-<div class="grid-row">
-  <div class="tablet:grid-col-10 tablet:grid-offset-1">
-    <%= link_to t('links.account.reactivate.with_key'), verify_personal_key_path,
-                class: 'usa-button usa-button--big usa-button--full-width margin-bottom-2' %>
-
-    <%= form_tag reactivate_account_path, method: :put do %>
-      <%= button_tag t('links.account.reactivate.without_key'),
-                     type: 'submit',
-                     class: 'usa-button usa-button--big usa-button--outline usa-button--full-width',
-                     id: 'no-key-reactivate' %>
+        <figure class="ads-card__value" aria-label="<%= t('users.personal_key.accessible_labels.preview') %>">
+          <%= render 'partials/personal_key/key',
+                     code: 'XXXX-XXXX-XXXX-XXXX',
+                     code_example: true,
+                     personal_key_generated_at: @personal_key_generated_at,
+                     show_save_buttons: false
+          %>
+        </figure>
+      </div>
     <% end %>
-  </div>
-</div>
+  <% end %>
+
+  <% page.with_actions do %>
+    <%= render ButtonComponent.new(url: verify_personal_key_path) do %>
+      <%= t('links.account.reactivate.with_key') %>
+    <% end %>
+
+    <%= form_tag reactivate_account_path, method: :put, class: 'ads-form' do %>
+      <%= render ButtonComponent.new(
+            type: :submit,
+            variant: :secondary,
+            id: 'no-key-reactivate',
+            data: { ads_modal_open: true },
+            aria: { controls: 'reactivate-account-modal' },
+          ) do %>
+        <%= t('links.account.reactivate.without_key') %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% end %>
 
 <%= render 'reactivate_account/modal' %>

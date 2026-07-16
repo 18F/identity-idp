@@ -17,7 +17,7 @@ RSpec.describe TwoFactorAuthentication::SignInWebauthnPlatformSelectionPresenter
   describe '#label' do
     it 'returns the label text' do
       expect(presenter.label).to eq(
-        t('two_factor_authentication.two_factor_choice_options.webauthn_platform'),
+        t('two_factor_authentication.login_options.webauthn_platform'),
       )
     end
   end

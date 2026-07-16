@@ -13,8 +13,8 @@ RSpec.describe 'partials/personal_key/_key.html.erb' do
     render partial: 'key', locals: locals
   end
 
-  it 'renders the code without whitespace between segments' do
-    expect(rendered).to have_content('abcdefghijklmnop')
+  it 'renders the code segments with separators' do
+    expect(rendered).to have_content('abcd - efgh - ijkl - mnop')
   end
 
   context 'with example code' do
@@ -22,7 +22,7 @@ RSpec.describe 'partials/personal_key/_key.html.erb' do
 
     it 'renders code example description' do
       expect(rendered).to have_content(t('users.personal_key.accessible_labels.code_example'))
-      expect(rendered).to have_css('[aria-hidden]', text: 'abcdefghijklmnop')
+      expect(rendered).to have_css('[aria-hidden]', text: 'abcd - efgh - ijkl - mnop')
     end
   end
 
@@ -31,11 +31,16 @@ RSpec.describe 'partials/personal_key/_key.html.erb' do
     let(:locals) { super().merge(personal_key_generated_at: personal_key_generated_at) }
 
     it 'displays the specified date without time' do
-      expect(rendered).to have_content('April 9, 2020')
+      expect(rendered).to have_content(
+        t(
+          'forms.personal_key.generated_on',
+          date: I18n.l(personal_key_generated_at, format: I18n.t('time.formats.event_date')),
+        ),
+      )
     end
 
     it 'displays personal key block' do
-      expect(rendered).to have_css('.personal-key-block__code')
+      expect(rendered).to have_css('.ads-personal-key-display__code')
     end
   end
 
@@ -48,7 +53,7 @@ RSpec.describe 'partials/personal_key/_key.html.erb' do
     end
 
     it 'displays personal key block' do
-      expect(rendered).to have_css('.personal-key-block__code')
+      expect(rendered).to have_css('.ads-personal-key-display__code')
     end
   end
 end

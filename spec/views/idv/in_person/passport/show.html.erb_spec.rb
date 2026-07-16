@@ -24,33 +24,20 @@ RSpec.describe 'idv/in_person/passport/show.html.erb' do
       end
 
       it 'renders passport fields' do
-        # Surname
-        expect(rendered).to have_content(t('in_person_proofing.form.passport.surname'))
-        # First name
-        expect(rendered).to have_content(t('in_person_proofing.form.passport.first_name_hint'))
-        expect(rendered).to have_content(t('in_person_proofing.form.passport.first_name'))
-        # Date of birth
-        expect(rendered).to have_content(t('in_person_proofing.form.passport.dob_hint'))
-        expect(rendered).to have_content(t('in_person_proofing.form.passport.dob'))
-        # Passport
-        expect(rendered).to have_content(t('in_person_proofing.form.passport.passport_number_hint'))
-        expect(rendered).to have_content(t('in_person_proofing.form.passport.passport_number'))
-        # Expiration date
-        expect(rendered).to have_content(t('in_person_proofing.form.passport.expiration_date_hint'))
-        expect(rendered).to have_content(t('in_person_proofing.form.passport.expiration_date'))
+        expect(rendered).to have_field('in_person_passport[passport_surname]')
+        expect(rendered).to have_field('in_person_passport[passport_first_name]')
+        expect(rendered).to have_field('passport_dob_date')
+        expect(rendered).to have_field('in_person_passport[passport_number]', type: :password)
+        expect(rendered).to have_button(t('forms.passport.show'))
+        expect(rendered).to have_field('passport_expiration_date')
       end
 
-      it 'renders submit' do
-        expect(rendered).to have_content(t('forms.buttons.submit.default'))
-      end
-
-      it 'renders troubleshooting content' do
-        expect(rendered).to have_content(t('components.troubleshooting_options.default_heading'))
-        expect(rendered).to have_content(t('idv.troubleshooting.options.use_another_id_type'))
-      end
-
-      it 'renders a cancel link' do
-        expect(rendered).to have_link(t('links.cancel'))
+      it 'renders submit and choose another ID type' do
+        expect(rendered).to have_button(t('forms.buttons.submit.default'))
+        expect(rendered).to have_link(
+          t('in_person_proofing.form.passport.choose_another_id_type'),
+          href: idv_in_person_choose_id_type_url,
+        )
       end
     end
 
@@ -84,65 +71,61 @@ RSpec.describe 'idv/in_person/passport/show.html.erb' do
         expect(rendered).to have_content(t('in_person_proofing.body.passport.info'))
       end
 
-      it 'renders passport fields' do
-        # Surname
+      it 'renders passport fields with values' do
         expect(rendered).to have_field(
           'in_person_passport[passport_surname]',
           with: pii[:passport_surname],
         )
-        # First name
-        expect(rendered).to have_content(t('in_person_proofing.form.passport.first_name_hint'))
         expect(rendered).to have_field(
           'in_person_passport[passport_first_name]',
           with: pii[:passport_first_name],
         )
-        # Date of birth
-        expect(rendered).to have_content(t('in_person_proofing.form.passport.dob_hint'))
-        expect(rendered).to have_field(
-          'in_person_passport[passport_dob][day]',
-          with: dob_day,
-        )
-        expect(rendered).to have_field(
-          'in_person_passport[passport_dob][month]',
-          with: dob_month,
-        )
+        expect(rendered).to have_field('passport_dob_date', with: '1985-10-13')
         expect(rendered).to have_field(
           'in_person_passport[passport_dob][year]',
           with: dob_year,
+          type: :hidden,
         )
-        # Passport
-        expect(rendered).to have_content(t('in_person_proofing.form.passport.passport_number_hint'))
+        expect(rendered).to have_field(
+          'in_person_passport[passport_dob][month]',
+          with: format('%02d', dob_month),
+          type: :hidden,
+        )
+        expect(rendered).to have_field(
+          'in_person_passport[passport_dob][day]',
+          with: format('%02d', dob_day),
+          type: :hidden,
+        )
         expect(rendered).to have_field(
           'in_person_passport[passport_number]',
           with: pii[:passport_number],
+          type: :password,
         )
-        # Expiration date
-        expect(rendered).to have_content(t('in_person_proofing.form.passport.expiration_date_hint'))
-        expect(rendered).to have_field(
-          'in_person_passport[passport_expiration][day]',
-          with: expiration_day,
-        )
-        expect(rendered).to have_field(
-          'in_person_passport[passport_expiration][month]',
-          with: expiration_month,
-        )
+        expect(rendered).to have_button(t('forms.passport.show'))
+        expect(rendered).to have_field('passport_expiration_date', with: '2100-12-20')
         expect(rendered).to have_field(
           'in_person_passport[passport_expiration][year]',
           with: expiration_year,
+          type: :hidden,
+        )
+        expect(rendered).to have_field(
+          'in_person_passport[passport_expiration][month]',
+          with: format('%02d', expiration_month),
+          type: :hidden,
+        )
+        expect(rendered).to have_field(
+          'in_person_passport[passport_expiration][day]',
+          with: format('%02d', expiration_day),
+          type: :hidden,
         )
       end
 
-      it 'renders submit' do
-        expect(rendered).to have_content(t('forms.buttons.submit.default'))
-      end
-
-      it 'renders troubleshooting content' do
-        expect(rendered).to have_content(t('components.troubleshooting_options.default_heading'))
-        expect(rendered).to have_content(t('idv.troubleshooting.options.use_another_id_type'))
-      end
-
-      it 'renders a cancel link' do
-        expect(rendered).to have_link(t('links.cancel'))
+      it 'renders submit and choose another ID type' do
+        expect(rendered).to have_button(t('forms.buttons.submit.default'))
+        expect(rendered).to have_link(
+          t('in_person_proofing.form.passport.choose_another_id_type'),
+          href: idv_in_person_choose_id_type_url,
+        )
       end
     end
   end

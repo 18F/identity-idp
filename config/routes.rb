@@ -34,15 +34,6 @@ Rails.application.routes.draw do
     namespace :internal do
       get '/sessions' => 'sessions#show'
       put '/sessions' => 'sessions#update'
-
-      namespace :two_factor_authentication do
-        put '/piv_cac/:id' => 'piv_cac#update', as: :piv_cac
-        delete '/piv_cac/:id' => 'piv_cac#destroy', as: nil
-        put '/webauthn/:id' => 'webauthn#update', as: :webauthn
-        delete '/webauthn/:id' => 'webauthn#destroy', as: nil
-        put '/auth_app/:id' => 'auth_app#update', as: :auth_app
-        delete '/auth_app/:id' => 'auth_app#destroy', as: nil
-      end
     end
   end
 
@@ -229,20 +220,22 @@ Rails.application.routes.draw do
     get '/.well-known/risc-configuration' => 'risc/configuration#index',
         as: :risc_configuration
 
-    get '/account' => 'accounts#show'
+    get '/account' => 'accounts/home#show', as: :account
+    get '/account/settings' => 'accounts#show', as: :account_settings
 
     # updated routes (connected services)
-    get '/account/connected_services' => 'accounts/connected_services#show'
+    # The connected-services list now lives on the account homepage (/account);
+    # the selected-email nesting below is unchanged.
+    get '/account/connected_services', to: redirect('/account'), as: :account_connected_services
     get '/account/connected_services/:identity_id/selected_email' => 'accounts/connected_services/selected_email#edit',
         as: :edit_connected_service_selected_email
     patch '/account/connected_services/:identity_id/selected_email' => 'accounts/connected_services/selected_email#update',
           as: :connected_services_selected_email
     # old routes kept alive for redirects (connected accounts)
-    get '/account/connected_accounts', to: redirect('/account/connected_services')
+    get '/account/connected_accounts', to: redirect('/account')
     get '/account/connected_accounts/:identity_id/selected_email', to: redirect { |params, _req| "/account/connected_services/#{params[:identity_id]}/selected_email" }
-    patch '/account/connected_services/:identity_id/selected_email', to: redirect { |params, _req| "/account/connected_services/#{params[:identity_id]}/selected_email" }
+    patch '/account/connected_accounts/:identity_id/selected_email', to: redirect { |params, _req| "/account/connected_services/#{params[:identity_id]}/selected_email" }
 
-    post '/account/reauthentication' => 'accounts#reauthentication'
     get '/account/devices/:id/events' => 'events#show', as: :account_events
     get '/account/delete' => 'users/delete#show', as: :account_delete
     post '/account/delete' => 'users/delete#delete'
@@ -258,7 +251,9 @@ Rails.application.routes.draw do
         as: :verify_personal_key
     post '/account/reactivate/verify_personal_key' => 'users/verify_personal_key#create',
          as: :create_verify_personal_key
-    get '/account/two_factor_authentication' => 'accounts/two_factor_authentication#show'
+    get '/account/security' => 'accounts/two_factor_authentication#show', as: :account_security
+    # old route kept alive for redirects (two factor authentication)
+    get '/account/two_factor_authentication', to: redirect('/account/security')
 
     get '/errors/service_provider_inactive' => 'users/service_provider_inactive#index',
         as: :sp_inactive_error
@@ -307,17 +302,25 @@ Rails.application.routes.draw do
         as: :manage_email_confirm_delete
 
     get '/manage/phone/:id' => 'users/edit_phone#edit', as: :manage_phone
+    get '/manage/phone/:id/confirm_delete' => 'users/edit_phone#confirm_delete',
+        as: :confirm_delete_phone
     match '/manage/phone/:id' => 'users/edit_phone#update', via: %i[patch put]
     delete '/manage/phone/:id' => 'users/edit_phone#destroy'
     get '/manage/personal_key' => 'users/personal_keys#show', as: :manage_personal_key
     post '/manage/personal_key' => 'users/personal_keys#update'
     get '/manage/piv_cac/:id' => 'users/piv_cac#edit', as: :edit_piv_cac
+    get '/manage/piv_cac/:id/confirm_delete' => 'users/piv_cac#confirm_delete',
+        as: :confirm_delete_piv_cac
     put '/manage/piv_cac/:id' => 'users/piv_cac#update', as: :piv_cac
     delete '/manage/piv_cac/:id' => 'users/piv_cac#destroy', as: nil
     get '/manage/webauthn/:id' => 'users/webauthn#edit', as: :edit_webauthn
+    get '/manage/webauthn/:id/confirm_delete' => 'users/webauthn#confirm_delete',
+        as: :confirm_delete_webauthn
     put '/manage/webauthn/:id' => 'users/webauthn#update', as: :webauthn
     delete '/manage/webauthn/:id' => 'users/webauthn#destroy', as: nil
     get '/manage/auth_app/:id' => 'users/auth_app#edit', as: :edit_auth_app
+    get '/manage/auth_app/:id/confirm_delete' => 'users/auth_app#confirm_delete',
+        as: :confirm_delete_auth_app
     put '/manage/auth_app/:id' => 'users/auth_app#update', as: :auth_app
     delete '/manage/auth_app/:id' => 'users/auth_app#destroy', as: nil
     get '/account/personal_key' => 'accounts/personal_keys#new', as: :create_new_personal_key

@@ -1,42 +1,44 @@
-<% content_for(:pre_flash_content) do %>
-  <%= render StepIndicatorComponent.new(
-        steps: Idv::StepIndicatorConcern::STEP_INDICATOR_STEPS,
-        current_step: :verify_id,
-        locale_scope: 'idv',
-        class: 'margin-x-neg-2 margin-top-neg-4 tablet:margin-x-neg-6 tablet:margin-top-neg-4',
-      ) %>
-<% end %>
+<%= render 'idv/shared/step_indicator',
+           current_step: :verify_id,
+           steps: Idv::StepIndicatorConcern::STEP_INDICATOR_STEPS %>
 
 <% self.title = t('titles.doc_auth.link_sent') %>
 
-<%= render AlertComponent.new(type: :warning, class: 'margin-bottom-4') do %>
-  <strong><%= t('doc_auth.info.keep_window_open') %></strong>
-  <% if FeatureManagement.doc_capture_polling_enabled? %>
-    <%= t('doc_auth.info.link_sent_complete_polling') %>
-  <% else %>
-    <%= t('doc_auth.info.link_sent_complete_no_polling') %>
+<%= render ADS::FormPageComponent.new(title: t('doc_auth.headings.text_message')) do |page| %>
+  <% page.with_alert do %>
+    <%= render AlertComponent.new(type: :warning, text_tag: 'div', dismissible: false) do %>
+      <%= t('doc_auth.info.keep_window_open') %>
+      <% if FeatureManagement.doc_capture_polling_enabled? %>
+        <%= t('doc_auth.info.link_sent_complete_polling') %>
+      <% else %>
+        <%= t('doc_auth.info.link_sent_complete_no_polling') %>
+      <% end %>
+    <% end %>
+  <% end %>
+
+  <% page.with_body do %>
+    <p class="ads-copy ads-copy--centered">
+      <%= t('doc_auth.info.you_entered') %>
+      <%= local_assigns[:phone] %>
+      <%= t('doc_auth.info.link_sent') %>
+    </p>
+  <% end %>
+
+  <% page.with_actions do %>
+    <%= render ADS::StackComponent.new(kind: :actions, gap: 8, align: :stretch) do %>
+      <%= render ButtonComponent.new(
+            url: idv_link_sent_url,
+            method: :put,
+            form_class: 'link-sent-continue-button-form',
+          ).with_content(t('forms.buttons.continue')) %>
+
+      <%= render ButtonComponent.new(
+            url: idv_hybrid_handoff_url(redo: true),
+            variant: :quaternary,
+          ).with_content(t('forms.buttons.back')) %>
+    <% end %>
   <% end %>
 <% end %>
-<div class="text-center margin-bottom-2 margin-top-2">
-  <%= image_tag asset_url('idv/computer-to-phone.svg'), width: 207, height: 88, alt: t('image_description.camera_mobile_phone') %>
-</div>
-<%= render PageHeadingComponent.new.with_content(t('doc_auth.headings.text_message')) %>
-<div class="grid-row">
-  <p>
-    <%= t('doc_auth.info.you_entered') %>
-    <strong><%= local_assigns[:phone] %></strong>
-  </p>
-  <p><%= t('doc_auth.info.link_sent') %></p>
-</div>
-
-<div class="margin-top-4 margin-bottom-0">
-  <%= button_to(
-        idv_link_sent_url,
-        method: :put,
-        class: 'usa-button usa-button--big usa-button--wide',
-        form_class: 'link-sent-continue-button-form',
-      ) { t('forms.buttons.continue') } %>
-</div>
 
 <% if FeatureManagement.doc_capture_polling_enabled? %>
   <%= content_tag 'script', '', data: {
@@ -44,11 +46,3 @@
       } %>
   <%= javascript_packs_tag_once 'doc-capture-polling' %>
 <% end %>
-
-<div class="margin-top-5 padding-top-2 border-top border-primary-light">
-  <%= link_to(
-        '‹ ' + t('forms.buttons.back'),
-        idv_hybrid_handoff_url(redo: true),
-        class: 'link-sent-back-link',
-      ) %>
-</div>

@@ -1,52 +1,87 @@
 <% self.title = @presenter.title %>
 
-<%= render PageHeadingComponent.new.with_content(t('titles.piv_cac_login.add')) %>
+<%= form_with(
+      url: submit_new_piv_cac_url,
+      method: :post,
+      local: true,
+    ) do |f| %>
+  <%= render ADS::FormPageComponent.new(
+        title: t('titles.piv_cac_login.add'),
+        subtitle: t('headings.piv_cac_login.add'),
+      ) do |page| %>
+    <% page.with_body do %>
+      <%= render ADS::StackComponent.new(kind: :form, gap: 16, align: :stretch) do %>
+        <%= render CardComponent.new(padding: :compact) do %>
+          <div class="ads-card__stack--divided">
+            <p class="ads-card__title">1. <%= t('instructions.mfa.piv_cac.step_1') %></p>
+            <%= render InputComponent.new(
+                  form: f,
+                  attribute: :name,
+                  label: t('forms.piv_cac_setup.nickname'),
+                  required: true,
+                  maxlength: 20,
+                  autocomplete: 'off',
+                  error_messages: {
+                    valueMissing: t('components.input.errors.nickname'),
+                  },
+                ) %>
+          </div>
+        <% end %>
 
-<p><%= t('headings.piv_cac_login.add') %></p>
+        <%= render CardComponent.new(padding: :compact) do %>
+          <div class="ads-card__stack--divided">
+            <p class="ads-card__title">2. <%= t('instructions.mfa.piv_cac.step_2') %></p>
+            <%= render AnimatedMediaComponent.new(
+                  image: 'piv-cac-insert-windows.gif',
+                  alt: t('image_description.piv_cac_insert'),
+                  width: 864,
+                  height: 400,
+                  class: 'ads-card__media',
+                ) %>
+          </div>
+        <% end %>
 
-<%= simple_form_for('', url: submit_new_piv_cac_url) do |f| %>
-  <%= render ProcessListComponent.new(connected: true, class: 'margin-y-4') do |c| %>
-    <%= c.with_item(heading: t('instructions.mfa.piv_cac.step_1')) do %>
-      <p>
-        <%= t('instructions.mfa.piv_cac.step_1_info') %>
-      </p>
-      <%= render ValidatedFieldComponent.new(
-            form: f,
-            name: :name,
-            label: false,
-            required: true,
-            wrapper_html: { class: 'margin-bottom-0' },
-            input_html: {
-              aria: { label: t('instructions.mfa.piv_cac.step_1') },
-              size: 16,
-              maxlength: 20,
-            },
-          ) %>
+        <%= render CardComponent.new(padding: :compact) do %>
+          <div class="ads-card__stack--divided">
+            <p class="ads-card__title">3. <%= t('instructions.mfa.piv_cac.step_3') %></p>
+            <p class="ads-card__description"><%= t('instructions.mfa.piv_cac.step_3_info') %></p>
+          </div>
+        <% end %>
+      <% end %>
     <% end %>
-    <%= c.with_item(heading: t('instructions.mfa.piv_cac.step_2')) %>
-    <%= c.with_item(heading: t('instructions.mfa.piv_cac.step_3')) do %>
-      <p>
-        <%= t('instructions.mfa.piv_cac.step_3_info_html') %>
-      </p>
+
+    <% page.with_actions do %>
+      <%= render ADS::StackComponent.new(kind: :actions, gap: 8, align: :stretch) do %>
+        <%= render ButtonComponent.new(
+              type: :submit,
+            ).with_content(t('forms.buttons.continue')) %>
+
+        <% if user_session[:add_piv_cac_after_2fa] %>
+          <%= render ButtonComponent.new(
+                url: sign_out_path,
+                variant: :quaternary,
+              ).with_content(t('links.cancel')) %>
+        <% elsif MfaPolicy.new(current_user).two_factor_enabled? && !in_multi_mfa_selection_flow? %>
+          <%= render ButtonComponent.new(
+                url: account_path,
+                variant: :quaternary,
+              ).with_content(t('links.cancel')) %>
+        <% else %>
+          <%= render ButtonComponent.new(
+                url: authentication_methods_setup_path,
+                variant: :quaternary,
+              ).with_content(t('two_factor_authentication.choose_another_option')) %>
+        <% end %>
+
+        <% if user_session[:add_piv_cac_after_2fa] && !@piv_cac_required %>
+          <%= render ButtonComponent.new(
+                url: submit_new_piv_cac_url,
+                method: :post,
+                params: { skip: 'true' },
+                variant: :tertiary,
+              ).with_content(t('mfa.skip')) %>
+        <% end %>
+      <% end %>
     <% end %>
   <% end %>
-
-  <%= f.submit t('forms.piv_cac_setup.submit'), class: 'display-block margin-top-5 margin-bottom-2' %>
-<% end %>
-
-<% if user_session[:add_piv_cac_after_2fa] && !@piv_cac_required %>
-  <%= render ButtonComponent.new(
-        url: submit_new_piv_cac_url,
-        method: :post,
-        params: { skip: 'true' },
-        unstyled: true,
-      ).with_content(t('mfa.skip')) %>
-<% end %>
-
-<% if user_session[:add_piv_cac_after_2fa] %>
-  <%= render PageFooterComponent.new do %>
-    <%= link_to t('links.cancel'), sign_out_path %>
-  <% end %>
-<% else %>
-  <%= render 'shared/cancel_or_back_to_options' %>
 <% end %>

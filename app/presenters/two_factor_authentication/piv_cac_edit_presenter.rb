@@ -22,6 +22,14 @@ module TwoFactorAuthentication
       t('two_factor_authentication.piv_cac.delete')
     end
 
+    def confirm_delete_heading
+      t('two_factor_authentication.piv_cac.confirm_delete')
+    end
+
+    def caution_delete
+      t('two_factor_authentication.piv_cac.caution_delete')
+    end
+
     def rename_success_alert_text
       t('two_factor_authentication.piv_cac.renamed')
     end

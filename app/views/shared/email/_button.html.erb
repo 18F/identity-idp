@@ -1,0 +1,51 @@
+<% variant ||= :primary %>
+<% align ||= 'left' %>
+<% bg_color = variant == :danger ? '#d80007' : '#0c0c0c' %>
+<% text_color = variant == :danger ? '#ffffff' : '#f7f7f7' %>
+<% button_cell_class = variant == :danger ? 'mailer-button-cell mailer-button-cell--danger' : 'mailer-button-cell' %>
+<% button_link_class = variant == :danger ? 'mailer-button-link mailer-button-link--danger' : 'mailer-button-link' %>
+
+<% button_link_style = "background-color: #{bg_color}; border-radius: 999px; box-sizing: border-box; color: #{text_color}; display: inline-block; font-family: Inter, Arial, Helvetica, sans-serif; font-size: 16px; font-weight: 600; letter-spacing: -0.02em; line-height: 1; min-height: 56px; padding: 20px 32px; text-align: center; text-decoration: none;" %>
+<table class="mailer-button-shell" width="100%" cellpadding="0" cellspacing="0" border="0" role="presentation">
+  <tr>
+    <td align="<%= align %>">
+      <table cellpadding="0" cellspacing="0" border="0" role="presentation">
+        <tr>
+          <td class="<%= button_cell_class %>" align="center">
+            <!--[if mso]>
+            <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="<%= url %>" style="height:56px;v-text-anchor:middle;width:224px;" arcsize="50%" strokecolor="<%= bg_color %>" fillcolor="<%= bg_color %>">
+            <w:anchorlock/>
+            <center style="color:<%= text_color %>;font-family:Inter,Arial,Helvetica,sans-serif;font-size:16px;font-weight:600;letter-spacing:-0.02em;">
+              <%= text %>
+            </center>
+            </v:roundrect>
+            <![endif]-->
+            <!--[if !mso]><!-->
+            <%= mailer_link_to(
+                  text,
+                  url,
+                  class: button_link_class,
+                  style: button_link_style,
+                ) %>
+            <!--<![endif]-->
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+<table class="mailer-button-url-shell" width="100%" cellpadding="0" cellspacing="0" border="0" role="presentation">
+  <tr>
+    <td class="mailer-button-url-cell" align="left">
+      <table class="mailer-button-url-table" width="100%" cellpadding="0" cellspacing="0" border="0" role="presentation">
+        <tr>
+          <td align="left">
+            <p class="mailer-button-url" align="left">
+              <%= mailer_link_to url, url, class: 'mailer-button-url-link' %>
+            </p>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>

@@ -1,41 +1,43 @@
-<%= render PageHeadingComponent.new.with_content(t('forms.personal_key_partial.header')) %>
+<%= render ADS::FormPageComponent.new(
+      title: t('forms.personal_key_partial.header'),
+      subtitle: t('forms.personal_key.description_ads'),
+      class_name: 'ads-personal-key',
+    ) do |page| %>
+  <% page.with_body do %>
+    <%= render ADS::StackComponent.new do %>
+      <%= render CardComponent.new(class: 'ads-card--centered') do %>
+        <%= render 'partials/personal_key/key',
+                   code: code,
+                   personal_key_generated_at: personal_key_generated_at,
+                   show_save_buttons: true
+        %>
+      <% end %>
 
-<p>
-  <strong>
-    <%= t('forms.personal_key_partial.acknowledgement.header') %>
-  </strong>
-</p>
-
-<p>
-  <%= t('forms.personal_key_partial.acknowledgement.text') %>
-  <%= new_tab_link_to(
-        t('forms.personal_key_partial.acknowledgement.help_link_text'),
-        help_center_redirect_url(
-          category: 'manage-your-account',
-          article: 'personal-key',
-        ),
-      ) %>
-</p>
-
-<div class="full-width-box margin-y-5">
-  <%= render 'partials/personal_key/key',
-             code: code,
-             personal_key_generated_at: personal_key_generated_at,
-             show_save_buttons: true
-    %>
-</div>
-
-<%= simple_form_for('', url: update_path) do |f| %>
-  <%= render ClickObserverComponent.new(event_name: 'IdV: personal key acknowledgment toggled') do %>
-    <%= render ValidatedFieldComponent.new(
-          form: f,
-          name: :acknowledgment,
-          as: :boolean,
-          label: t('forms.personal_key.required_checkbox'),
-          label_html: { class: 'margin-bottom-105' },
-          required: true,
-        ) %>
+      <%= render AlertComponent.new(
+            type: :warning,
+            message: t('forms.personal_key.warning'),
+            dismissible: false,
+          ) %>
+    <% end %>
   <% end %>
 
-  <%= f.submit(t('forms.buttons.continue'), class: 'margin-top-3') %>
+  <% page.with_actions do %>
+    <%= simple_form_for('', url: update_path, html: { class: 'ads-form' }) do |f| %>
+      <%= render ClickObserverComponent.new(event_name: 'IdV: personal key acknowledgment toggled') do %>
+        <%= render ValidatedFieldComponent.new(
+              form: f,
+              name: :acknowledgment,
+              as: :boolean,
+              label: t('forms.personal_key.required_checkbox'),
+              required: true,
+              label_html: { class: 'ads-checkbox__label--regular' },
+              wrapper_html: { class: 'ads-checkbox' },
+            ) %>
+      <% end %>
+
+      <%= render ButtonComponent.new(
+            type: :submit,
+          ).with_content(t('forms.buttons.continue')) %>
+    <% end %>
+  <% end %>
 <% end %>

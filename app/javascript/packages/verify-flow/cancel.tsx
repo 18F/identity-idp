@@ -1,7 +1,7 @@
 import { useContext } from 'react';
 import { useI18n } from '@18f/identity-react-i18n';
 import { addSearchParams } from '@18f/identity-url';
-import { PageFooter } from '@18f/identity-components';
+import { Button } from '@18f/identity-components';
 import FlowContext from './context/flow-context';
 
 function Cancel() {
@@ -9,9 +9,9 @@ function Cancel() {
   const { t } = useI18n();
 
   return (
-    <PageFooter>
-      <a href={addSearchParams(cancelURL, { step })}>{t('links.cancel')}</a>
-    </PageFooter>
+    <Button href={addSearchParams(cancelURL, { step })} isUnstyled>
+      {t('links.cancel')}
+    </Button>
   );
 }
 

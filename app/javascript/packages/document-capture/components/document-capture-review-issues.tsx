@@ -86,8 +86,10 @@ function DocumentCaptureReviewIssues({
           showSelfieHelp={() => undefined}
         />
       )}
-      <FormStepsButton.Submit />
-      <Cancel />
+      <div className="ads-actions ads-actions--gap-8 ads-actions--align-stretch">
+        <FormStepsButton.Submit />
+        <Cancel />
+      </div>
     </>
   );
 }

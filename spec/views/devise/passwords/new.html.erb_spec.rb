@@ -69,7 +69,7 @@ RSpec.describe 'devise/passwords/new.html.erb' do
   it 'renders troubleshooting content' do
     render
 
-    expect(rendered).to have_content(t('components.troubleshooting_options.default_heading'))
+    expect(rendered).to have_content(t('forms.passwords.reset.having_trouble'))
     expect(rendered).to have_link(t('forms.passwords.reset.how_to_reset'))
     expect(rendered).to have_link(t('forms.passwords.reset.how_to_reset_with_personal_key'))
   end

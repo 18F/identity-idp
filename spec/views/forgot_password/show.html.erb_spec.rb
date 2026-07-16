@@ -37,8 +37,6 @@ RSpec.describe 'forgot_password/show.html.erb' do
     expect(rendered).to have_content t('notices.forgot_password.first_paragraph_start')
     expect(rendered).to have_content email
     expect(rendered).to have_content t('notices.forgot_password.first_paragraph_end')
-    expect(rendered).to have_content t('notices.forgot_password.no_email_sent_explanation_start')
-    expect(rendered).to have_content t('instructions.forgot_password.close_window')
     expect(rendered).to_not have_content t('notices.forgot_password.resend_email_success')
   end
 

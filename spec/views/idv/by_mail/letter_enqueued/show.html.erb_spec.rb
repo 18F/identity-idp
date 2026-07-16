@@ -60,10 +60,9 @@ RSpec.describe 'idv/by_mail/letter_enqueued/show.html.erb' do
   end
 
   it 'shows step indicator with current step' do
-    expect(view.content_for(:pre_flash_content)).to have_css(
-      '.step-indicator__step--current',
-      text: t('step_indicator.flows.idv.verify_address'),
-    )
+    progress = view.instance_variable_get(:@ads_progress_component)
+    expect(progress).to be_a(ProgressComponent)
+    expect(progress.steps[progress.current_step]).to eq(t('step_indicator.flows.idv.verify_address'))
   end
 
   context 'when address line 2 is not present' do

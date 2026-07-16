@@ -1,129 +1,110 @@
-<% content_for(:pre_flash_content) do %>
-  <%= render StepIndicatorComponent.new(
-        steps: Idv::StepIndicatorConcern::STEP_INDICATOR_STEPS,
-        current_step: :getting_started,
-        locale_scope: 'idv',
-        class: 'margin-x-neg-2 margin-top-neg-4 tablet:margin-x-neg-6 tablet:margin-top-neg-4',
-      ) %>
-<% end %>
+<%= render 'idv/shared/step_indicator',
+           current_step: :getting_started,
+           steps: Idv::StepIndicatorConcern::STEP_INDICATOR_STEPS %>
 
 <% self.title = @presenter.header_text %>
 
-<%= render PageHeadingComponent.new(id: 'how-to-verify-info').with_content(@presenter.header_text) %>
+<%= render ADS::FormPageComponent.new(title: @presenter.header_text) do |page| %>
+  <% page.with_body do %>
+    <%= render ADS::StackComponent.new(gap: 32, align: :stretch) do %>
+      <%= render ADS::StackComponent.new(gap: 24) do %>
+        <% if defined?(error) %>
+          <%= render AlertComponent.new(type: :error, dismissible: false) do %>
+            <%= error %>
+          <% end %>
+        <% end %>
 
-<% if defined?(error) %>
-  <%= render AlertComponent.new(
-        type: :error,
-        class: 'margin-bottom-4',
-        text_tag: 'div',
-      ) do %>
-    <%= error %>
-  <% end %>
-<% end %>
-
-<div role="group" aria-labelledby="how-to-verify-info" class="border-bottom border-primary-light grid-row grid-gap grid-gap-2">
-  <div class="grid-col-12 tablet:grid-col-auto margin-top-3">
-    <%= image_tag(
-          asset_url(@presenter.online_asset_url),
-          width: 88,
-          height: 88,
-          alt: @presenter.online_asset_alt_text,
-        ) %>
-  </div>
-  <div class="grid-col-12 tablet:grid-col-fill">
-  <%= simple_form_for(
-        @idv_how_to_verify_form,
-        html: {
-          id: nil,
-          aria: { label: @presenter.online_submit },
-          class: 'margin-top-3',
-        },
-        method: :put,
-        url: idv_how_to_verify_url,
-      ) do |f|
-  %>
-  <%= f.hidden_field(
-        :selection,
-        value: Idv::HowToVerifyForm::REMOTE,
-      ) %>
-  <%= f.label(
-        :selection_remote,
-      ) do %>
-          <h2 class="margin-top-0"><%= @presenter.verify_online_text %></h2>
-          <div>
-            <p>
-              <%= @presenter.verify_online_instruction %>
-              <%= @presenter.verify_online_description %>
-            </p>
-            <p class="margin-top-2">
-              <%= new_tab_link_to(
-                    t('doc_auth.info.verify_online_link_text'),
-                    help_center_redirect_path(
+        <%= render CardComponent.new(padding: :compact) do %>
+          <div class="ads-card__stack">
+            <p class="ads-card__title"><%= @presenter.verify_online_text %></p>
+            <p class="ads-card__description"><%= @presenter.verify_online_instruction %></p>
+            <p class="ads-card__description"><%= @presenter.verify_online_description %></p>
+            <p class="ads-card__description">
+              <%= render ADS::LinkComponent.new(
+                    url: help_center_redirect_path(
                       category: 'verify-your-identity',
                       article: 'overview',
                       flow: :idv,
                       step: :how_to_verify,
                       location: 'troubleshooting_options',
                     ),
-                  ) %>
+                    target: '_blank',
+                    rel: 'noopener noreferrer',
+                  ) do %>
+                <%= t('doc_auth.info.verify_online_link_text') %>
+                <span class="ads-sr-only"><%= t('links.new_tab') %></span>
+              <% end %>
             </p>
           </div>
+        <% end %>
+
+        <%= render CardComponent.new(padding: :compact) do %>
+          <div class="ads-card__stack">
+            <p class="ads-card__title"><%= @presenter.verify_at_post_office_text %></p>
+            <p class="ads-card__description">
+              <%= @presenter.post_office_instruction %>
+              <%= @presenter.post_office_description %>
+            </p>
+            <p class="ads-card__description">
+              <%= render ADS::LinkComponent.new(
+                    url: help_center_redirect_path(
+                      category: 'verify-your-identity',
+                      article: 'verify-your-identity-in-person',
+                      flow: :idv,
+                      step: :how_to_verify,
+                      location: 'troubleshooting_options',
+                    ),
+                    target: '_blank',
+                    rel: 'noopener noreferrer',
+                  ) do %>
+                <%= t('doc_auth.info.verify_at_post_office_link_text') %>
+                <span class="ads-sr-only"><%= t('links.new_tab') %></span>
+              <% end %>
+            </p>
+          </div>
+        <% end %>
       <% end %>
-      <%= f.submit @presenter.online_submit, class: 'display-block margin-top-3 margin-bottom-5' %>
-  <% end %>
-  </div>
-</div>
 
-<div role="group" aria-labelledby="how-to-verify-info" class="grid-row grid-gap grid-gap-2">
-  <div class="grid-col-12 tablet:grid-col-auto">
-    <%= image_tag(
-          asset_url(@presenter.post_office_asset_url),
-          width: 88,
-          height: 88,
-          class: 'margin-top-3',
-          alt: @presenter.post_office_asset_alt_text,
-        ) %>
-  </div>
-  <div class="grid-col-12 tablet:grid-col-fill">
-    <%= simple_form_for(
-          @idv_how_to_verify_form,
-          html: {
-            id: nil,
-            class: 'margin-top-3',
-            aria: { label: @presenter.post_office_submit },
-          },
-          method: :put,
-          url: idv_how_to_verify_url,
-        ) do |f|
-    %>
-      <%= f.hidden_field(
-            :selection,
-            value: Idv::HowToVerifyForm::IPP,
-          ) %>
-      <%= f.label(
-            :selection_ipp,
-          ) do %>
-            <h2 class="margin-top-0"><%= @presenter.verify_at_post_office_text %></h2>
-            <div>
-              <p><%= @presenter.post_office_instruction %>
-                 <%= @presenter.post_office_description %></p>
-              <p class="margin-top-2">
-                <%= new_tab_link_to(
-                      t('doc_auth.info.verify_at_post_office_link_text'),
-                      help_center_redirect_path(
-                        category: 'verify-your-identity',
-                        article: 'verify-your-identity-in-person',
-                        flow: :idv,
-                        step: :how_to_verify,
-                        location: 'troubleshooting_options',
-                      ),
-                    ) %>
-              </p>
-            </div>
-          <% end %>
-      <%= f.submit t('forms.buttons.continue_ipp'), class: 'display-block margin-top-3 margin-bottom-5', outline: true %>
+      <%= render ADS::StackComponent.new(kind: :actions, gap: 8, align: :stretch) do %>
+        <%= simple_form_for(
+              @idv_how_to_verify_form,
+              html: {
+                id: nil,
+                aria: { label: @presenter.online_submit },
+                class: 'ads-form ads-form--align-stretch',
+              },
+              method: :put,
+              url: idv_how_to_verify_url,
+            ) do |f| %>
+          <%= f.hidden_field(
+                :selection,
+                value: Idv::HowToVerifyForm::REMOTE,
+              ) %>
+          <%= render ButtonComponent.new(
+                type: :submit,
+              ).with_content(@presenter.online_submit) %>
+        <% end %>
+
+        <%= simple_form_for(
+              @idv_how_to_verify_form,
+              html: {
+                id: nil,
+                aria: { label: @presenter.post_office_submit },
+                class: 'ads-form ads-form--align-stretch',
+              },
+              method: :put,
+              url: idv_how_to_verify_url,
+            ) do |f| %>
+          <%= f.hidden_field(
+                :selection,
+                value: Idv::HowToVerifyForm::IPP,
+              ) %>
+          <%= render ButtonComponent.new(
+                type: :submit,
+                variant: :secondary,
+              ).with_content(@presenter.post_office_submit) %>
+        <% end %>
+      <% end %>
     <% end %>
-  </div>
-</div>
-
-<%= render 'idv/doc_auth/cancel', step: 'how_to_verify' %>
+  <% end %>
+<% end %>

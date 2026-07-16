@@ -1,11 +1,10 @@
 import { t } from '@18f/identity-i18n';
-import type { PhoneInputElement } from '@18f/identity-phone-input';
 
 /**
  * Returns the OTP delivery preference element.
  */
 const getOTPDeliveryMethodContainer = (): HTMLElement =>
-  document.querySelector<HTMLElement>('.js-otp-delivery-preferences')!;
+  document.querySelector<HTMLElement>('.js-otp-delivery-preferences .ads-radio-group')!;
 
 const getOTPDeliveryMethods = () =>
   Array.from(document.querySelectorAll<HTMLInputElement>('.js-otp-delivery-preference'));
@@ -24,12 +23,11 @@ const getHintTextForDisabledDeliveryOption = (
   // i18n-tasks-use t('two_factor_authentication.otp_delivery_preference.sms_unsupported')
   t(`two_factor_authentication.otp_delivery_preference.${delivery}_unsupported`, { location });
 
-function setHintText(
-  hintText: string = t('two_factor_authentication.otp_delivery_preference.instruction'),
-) {
-  const hintElement = document.querySelector('#otp_delivery_preference_instruction');
+function setHintText(hintText?: string) {
+  const hintElement = document.querySelector<HTMLElement>('#otp_delivery_preference_instruction');
   if (hintElement) {
-    hintElement.textContent = hintText;
+    hintElement.textContent = hintText || '';
+    hintElement.toggleAttribute('hidden', !hintText);
   }
 }
 
@@ -51,19 +49,9 @@ const getFirstEnabledInput = (inputs: HTMLInputElement[]): HTMLInputElement | un
  * @param isVisible Whether the selection element should be visible.
  */
 const toggleDeliveryPreferencesVisible = (isVisible: boolean) =>
-  getOTPDeliveryMethodContainer().classList.toggle('display-none', !isVisible);
+  getOTPDeliveryMethodContainer().toggleAttribute('hidden', !isVisible);
 
-function updateOTPDeliveryMethods(event: Event) {
-  if (!(event.target instanceof HTMLSelectElement)) {
-    return;
-  }
-
-  const { target: select, currentTarget } = event;
-  const { textInput } = currentTarget as PhoneInputElement;
-  if (!textInput) {
-    return;
-  }
-
+function updateOTPDeliveryMethods(select: HTMLSelectElement) {
   const selectedOption = select.options[select.selectedIndex];
   const methods = getOTPDeliveryMethods();
   setHintText();
@@ -73,24 +61,33 @@ function updateOTPDeliveryMethods(event: Event) {
   methods.forEach((method) => {
     const delivery = method.value;
     const isSupported = isDeliveryOptionSupported(delivery, selectedOption);
-    method.disabled = !isSupported;
+    method.disabled = !isSupported || method.dataset.vendorOutage === 'true';
     if (!isSupported) {
       setHintText(getHintTextForDisabledDeliveryOption(delivery, location));
+    }
 
-      if (method.checked) {
-        method.checked = false;
-        const nextEnabledInput = getFirstEnabledInput(methods);
-        if (nextEnabledInput) {
-          nextEnabledInput.checked = true;
-        }
+    if (method.disabled && method.checked) {
+      method.checked = false;
+      const nextEnabledInput = getFirstEnabledInput(methods);
+      if (nextEnabledInput) {
+        nextEnabledInput.checked = true;
       }
     }
   });
 
   const isAllMethodsDisabled = isAllDisabled(methods);
+  const isAllMethodsUnsupported = methods.every(
+    (method) => !isDeliveryOptionSupported(method.value, selectedOption),
+  );
+  if (isAllMethodsUnsupported) {
+    setHintText(
+      t('two_factor_authentication.otp_delivery_preference.no_supported_options', { location }),
+    );
+  }
   toggleDeliveryPreferencesVisible(!isAllMethodsDisabled);
 }
 
-document.querySelectorAll('lg-phone-input').forEach((phoneInput) => {
-  phoneInput.addEventListener('change', updateOTPDeliveryMethods);
+document.querySelectorAll<HTMLSelectElement>('[data-ads-phone-country]').forEach((select) => {
+  select.addEventListener('change', () => updateOTPDeliveryMethods(select));
+  updateOTPDeliveryMethods(select);
 });

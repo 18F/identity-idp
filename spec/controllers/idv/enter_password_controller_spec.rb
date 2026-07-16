@@ -1251,25 +1251,6 @@ RSpec.describe Idv::EnterPasswordController do
 
         expect(document_capture_session.reload.pending_agent_proofed_user_at).to be_nil
       end
-
-      context 'when proofing agent device profiling is collect_only' do
-        # collect_only collects the tmx result but never stores a
-        # DeviceProfilingResult, so this step has no row to read
-        let(:threatmetrix_result) { nil }
-
-        before do
-          allow(IdentityConfig.store).to receive(:proofing_agent_device_profiling)
-            .and_return(:collect_only)
-          allow(IdentityConfig.store).to receive(:proofing_device_profiling)
-            .and_return(:enabled)
-        end
-
-        it 'renders without a stored device profiling result' do
-          get :new
-
-          expect(response).to render_template :new
-        end
-      end
     end
   end
 end

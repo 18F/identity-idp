@@ -113,7 +113,7 @@ function FullScreen(
           type="button"
           aria-label={t('account.navigation.close')}
           onClick={onRequestClose}
-          className="full-screen__close-button usa-button padding-2 margin-2"
+          className="full-screen__close-button ads-button ads-button--primary ads-button--md padding-2 margin-2"
         >
           <img
             alt=""

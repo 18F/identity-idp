@@ -1,70 +1,47 @@
 <% self.title = t('titles.idv.cancellation_prompt') %>
 
-<%= render StatusPageComponent.new(status: :warning) do |c| %>
+<%= render ADS::FormPageComponent.new(
+      title: @hybrid_session ? t('idv.cancel.headings.prompt.hybrid') : t('idv.cancel.headings.prompt.standard'),
+    ) do |page| %>
   <% if @hybrid_session %>
-    <% c.with_header { t('idv.cancel.headings.prompt.hybrid') } %>
+    <% page.with_body do %>
+      <div class="ads-copy">
+        <p><%= t('idv.cancel.description.hybrid') %></p>
+      </div>
+    <% end %>
 
-    <p><%= t('idv.cancel.description.hybrid') %></p>
+    <% page.with_actions do %>
+      <%= render ButtonComponent.new(
+            url: idv_cancel_path(step: params[:step], location: 'cancel'),
+            method: :delete,
+            variant: :destructive,
+          ).with_content(t('forms.buttons.cancel')) %>
 
-    <% c.with_action_button(
-         url: idv_cancel_path(step: params[:step], location: 'cancel'),
-         method: :delete,
-       ).with_content(t('forms.buttons.cancel')) %>
-    <% c.with_action_button(
-         url: idv_cancel_path(step: params[:step]),
-         method: :put,
-         outline: true,
-       ).with_content(t('links.go_back')) %>
+      <%= render ButtonComponent.new(
+            url: idv_cancel_path(step: params[:step]),
+            method: :put,
+            variant: :secondary,
+          ).with_content(t('links.go_back')) %>
+    <% end %>
   <% else %>
-    <% c.with_header { t('idv.cancel.headings.prompt.standard') } %>
+    <% page.with_body do %>
+      <p class="ads-copy ads-copy--centered"><%= t('idv.cancel.description.start_over') %></p>
+    <% end %>
 
-    <h2 class="margin-top-4 margin-bottom-2"><%= t('idv.cancel.headings.start_over') %></h2>
-
-    <p><%= t('idv.cancel.description.start_over') %></p>
-
-    <div class="margin-top-4">
+    <% page.with_actions do %>
       <%= render ButtonComponent.new(
             url: idv_session_path(step: params[:step]),
             method: :delete,
-            big: true,
-            wide: true,
+            variant: :destructive,
             form: { 'aria-label': t('idv.cancel.actions.start_over') },
-          ).with_content(t('idv.cancel.actions.start_over'))
-      %>
-      <div class="margin-top-2">
-        <%= render ButtonComponent.new(
-              url: idv_cancel_path(step: params[:step]),
-              method: :put,
-              big: true,
-              wide: true,
-              outline: true,
-              form: { 'aria-label': t('idv.cancel.actions.keep_going') },
-            ).with_content(t('idv.cancel.actions.keep_going')) %>
-      </div>
-    </div>
+          ).with_content(t('idv.cancel.actions.start_over')) %>
 
-    <hr class="margin-y-5" />
-
-    <h2 class="margin-top-4 margin-bottom-2"><%= @presenter.exit_heading %></h2>
-
-    <% @presenter.exit_description.each do |p_content| %>
-      <p><%= p_content %></p>
+      <%= render ButtonComponent.new(
+            url: idv_cancel_path(step: params[:step]),
+            method: :put,
+            variant: :secondary,
+            form: { 'aria-label': t('idv.cancel.actions.keep_going') },
+          ).with_content(t('idv.cancel.actions.keep_going')) %>
     <% end %>
-
-    <div class="margin-top-4">
-      <%= render SpinnerButtonComponent.new(
-            url: idv_cancel_path(step: params[:step], location: 'cancel'),
-            method: :delete,
-            big: true,
-            wide: true,
-            outline: true,
-            form: {
-              "aria-label": @presenter.exit_action_text,
-              data: { form_steps_wait: '' },
-            },
-          ).with_content(@presenter.exit_action_text) %>
-    </div>
   <% end %>
 <% end %>
-
-<% javascript_packs_tag_once 'form-steps-wait' %>

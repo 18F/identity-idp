@@ -31,7 +31,7 @@ RSpec.describe 'users/emails/verify.html.erb' do
   it 'contains link to return to account page' do
     expect(rendered).to have_link(
       t('idv.messages.return_to_profile', app_name: APP_NAME),
-      href: account_path,
+      href: account_settings_path,
     )
   end
 

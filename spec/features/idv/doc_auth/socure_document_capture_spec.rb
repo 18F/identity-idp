@@ -14,8 +14,6 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
   let(:fake_socure_docv_document_request_endpoint) { 'https://fake-socure.test/document-request' }
   let(:fake_socure_document_capture_app_url) { 'https://verify.fake-socure.test/something' }
   let(:socure_docv_webhook_repeat_endpoints) { [] }
-  let(:idv_socure_reason_codes_docv_mdl) { ['mdl_code1', 'mdl_code2'] }
-  let(:idv_doc_auth_mdl_enabled_percent) { 0 }
 
   before do
     allow(IdentityConfig.store).to receive_messages(
@@ -32,13 +30,11 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
       doc_auth_vendor_lexis_nexis_percent: 0,
       doc_auth_vendor_socure_percent: 100,
       doc_auth_vendor_switching_enabled: true,
-      idv_socure_reason_codes_docv_mdl:,
       ruby_workers_idv_enabled: false,
       socure_docv_document_request_endpoint: fake_socure_docv_document_request_endpoint,
       socure_docv_enabled: true,
       socure_docv_webhook_repeat_endpoints:,
       socure_docv_webhook_secret_key:,
-      idv_doc_auth_mdl_enabled_percent:,
     )
     allow_any_instance_of(ServiceProviderSession).to receive(:sp_name).and_return('Test SP')
     socure_docv_webhook_repeat_endpoints.each { |endpoint| stub_request(:post, endpoint) }
@@ -117,7 +113,7 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
               transaction_token: @docv_transaction_token,
             ),
           )
-          expect(page).to have_content(I18n.t('idv.errors.try_again_later'))
+          expect(page).to have_content(I18n.t('idv.errors.technical_difficulties'))
 
           # Try in person
           click_on t('in_person_proofing.body.cta.button')
@@ -325,7 +321,12 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
             complete_doc_auth_steps_before_hybrid_handoff_step
             complete_choose_id_type_step
             expect(page).to have_content(t('doc_auth.headers.general.network_error'))
-            expect(page).to have_content(t('doc_auth.errors.general.new_network_error'))
+            expect(page).to have_content(
+              t(
+                'doc_auth.rate_limit_warning_html',
+                count: IdentityConfig.store.doc_auth_max_attempts,
+              ),
+            )
             expect(fake_analytics).to have_logged_event(
               :idv_socure_document_request_submitted,
             )
@@ -510,110 +511,6 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
         end
       end
 
-      context 'when an mDL is submitted' do
-        let(:idv_doc_auth_mdl_enabled_percent) { 100 }
-        before do
-          DocAuth::Mock::DocAuthMockClient.reset!
-        end
-
-        it 'proceeds to the next page with valid info' do
-          perform_in_browser(:mobile) do
-            visit_idp_from_oidc_sp_with_ial2
-            sign_in_and_2fa_user(user)
-
-            complete_doc_auth_steps_before_hybrid_handoff_step
-
-            expect(page).to have_current_path(idv_choose_id_type_url)
-
-            choose(t('doc_auth.forms.id_type_preference.mdl'))
-            click_on t('forms.buttons.continue')
-
-            expect(page).to have_current_path(idv_socure_document_capture_url)
-            expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
-
-            # remove_request_stub(@docv_stub)
-            @docv_stub = stub_docv_verification_data_pass(
-              docv_transaction_token: @docv_transaction_token,
-              user:,
-            )
-
-            click_on t('idv.mdl.button')
-            socure_docv_upload_documents(
-              docv_transaction_token: @docv_transaction_token,
-            )
-            visit idv_socure_document_capture_update_path
-
-            expect(page).to have_current_path(
-              idv_socure_document_capture_errors_url(
-                transaction_token: @docv_transaction_token,
-              ),
-            )
-
-            expect(page).to have_content(t('doc_auth.errors.verify_drivers_license_heading'))
-
-            click_on t('idv.failure.button.warning')
-
-            expect(page).to have_current_path(idv_socure_document_capture_url)
-            expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
-
-            remove_request_stub(@docv_stub)
-            @docv_stub = stub_docv_verification_data_fail_with(
-              docv_transaction_token: @docv_transaction_token,
-              reason_codes: idv_socure_reason_codes_docv_mdl.prepend('R899'),
-              user:,
-            )
-            click_on t('idv.mdl.button')
-            socure_docv_upload_documents(
-              docv_transaction_token: @docv_transaction_token,
-            )
-
-            visit idv_socure_document_capture_update_path
-
-            expect(page).to have_current_path(
-              idv_socure_document_capture_errors_url(
-                transaction_token: @docv_transaction_token,
-              ),
-            )
-
-            expect(page).to have_content(t('doc_auth.headers.state_id_verification'))
-            expect(page).to have_content(t('doc_auth.errors.state_id_verification'))
-
-            click_on t('idv.failure.button.warning')
-
-            expect(page).to have_current_path(idv_socure_document_capture_url)
-            expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
-
-            remove_request_stub(@docv_stub)
-            @docv_stub = stub_docv_verification_data_pass(
-              docv_transaction_token: @docv_transaction_token,
-              reason_codes: idv_socure_reason_codes_docv_mdl.push('random_code'),
-              user:,
-            )
-            click_on t('idv.mdl.button')
-            socure_docv_upload_documents(
-              docv_transaction_token: @docv_transaction_token,
-            )
-
-            visit idv_socure_document_capture_update_path
-
-            expect(page).to have_current_path(idv_ssn_url)
-
-            expect(fake_analytics).to have_logged_event(
-              :idv_socure_document_request_submitted,
-            )
-            expect(fake_analytics).to have_logged_event(
-              :idv_socure_verification_data_requested,
-            )
-            expect(fake_analytics).to have_logged_event(
-              'IdV: doc auth image upload vendor pii validation',
-            )
-
-            fill_out_ssn_form_ok
-            click_idv_continue
-          end
-        end
-      end
-
       context 'when a passport is submitted' do
         before do
           allow(IdentityConfig.store).to receive_messages(
@@ -639,10 +536,9 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
             sign_in_and_2fa_user(user)
 
             complete_doc_auth_steps_before_hybrid_handoff_step
-
+            click_continue
             expect(page).to have_current_path(idv_choose_id_type_url)
-            choose(t('doc_auth.forms.id_type_preference.passport'))
-            click_on t('forms.buttons.continue')
+            click_on t('doc_auth.forms.id_type_preference.passport')
 
             expect(page).to have_current_path(idv_socure_document_capture_url)
             expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
@@ -703,10 +599,9 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
               sign_in_and_2fa_user(user)
 
               complete_doc_auth_steps_before_hybrid_handoff_step
-
+              click_continue
               expect(page).to have_current_path(idv_choose_id_type_url)
-              choose(t('doc_auth.forms.id_type_preference.passport'))
-              click_on t('forms.buttons.continue')
+              click_on t('doc_auth.forms.id_type_preference.passport')
 
               expect(page).to have_current_path(idv_socure_document_capture_url)
               expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
@@ -742,9 +637,8 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
                 user:,
               )
               expect(page).to have_current_path(idv_choose_id_type_url)
-              choose(t('doc_auth.forms.id_type_preference.drivers_license'))
+              click_on t('doc_auth.forms.id_type_preference.drivers_license')
 
-              click_on t('forms.buttons.continue')
               click_idv_continue # open capture app
 
               expect(page).to have_current_path(fake_socure_document_capture_app_url)
@@ -775,234 +669,127 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
         end
 
         context 'when a selfie is required' do
-          let(:facial_match_required) { true }
-          context ' when a passport id is submitted' do
-            let(:socure_docv_webhook_repeat_endpoints) { [] }
-            let(:max_attempts) { 4 }
+          let(:socure_docv_webhook_repeat_endpoints) { [] }
+          let(:max_attempts) { 4 }
 
-            before do
-              allow(IdentityConfig.store).to receive_messages(
-                doc_auth_socure_wait_polling_timeout_minutes: 0,
-                idv_socure_reason_codes_docv_selfie_fail: ['fail'],
-                idv_socure_reason_codes_docv_selfie_not_processed: ['not_processed'],
-                idv_socure_reason_codes_docv_selfie_pass: ['pass'],
-                use_vot_in_sp_requests: true,
-              )
-              stub_request(:post, IdentityConfig.store.dos_passport_mrz_endpoint)
-                .to_return_json({ status: 200, body: { response: 'YES' } })
-            end
-
-            it 'proceeds to the next page with valid info' do
-              visit_idp_from_oidc_sp_with_ial2(facial_match_required:)
-              sign_in_and_2fa_user(user)
-
-              complete_doc_auth_steps_before_hybrid_handoff_step
-
-              expect(page).to have_current_path(idv_choose_id_type_url)
-              choose(t('doc_auth.forms.id_type_preference.passport'))
-              click_on t('forms.buttons.continue')
-
-              expect(page).to have_current_path(idv_socure_document_capture_url)
-              expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
-              click_idv_continue
-              socure_docv_upload_documents(
-                docv_transaction_token: @docv_transaction_token,
-              )
-
-              visit idv_socure_document_capture_update_path
-              expect(page).to have_current_path(
-                idv_socure_document_capture_errors_url(
-                  transaction_token: @docv_transaction_token,
-                ),
-              )
-              expect(page).to have_content(t('idv.errors.try_again_later'))
-
-              click_on t('idv.failure.button.warning')
-
-              remove_request_stub(@docv_stub)
-              @docv_stub = stub_docv_verification_data_pass(
-                docv_transaction_token: @docv_transaction_token,
-                reason_codes: ['fail'],
-                user:,
-                document_type: :passport,
-              )
-
-              click_idv_continue
-              socure_docv_upload_documents(
-                docv_transaction_token: @docv_transaction_token,
-                webhooks: selfie_webhook_list,
-              )
-
-              visit idv_socure_document_capture_update_path
-              expect(page).to have_current_path(
-                idv_socure_document_capture_errors_url(
-                  transaction_token: @docv_transaction_token,
-                ),
-              )
-
-              expect(page).to have_content(t('doc_auth.errors.selfie_fail_heading'))
-
-              click_on t('idv.failure.button.warning')
-
-              remove_request_stub(@docv_stub)
-              @docv_stub = stub_docv_verification_data_fail_with(
-                docv_transaction_token: @docv_transaction_token,
-                reason_codes: ['pass'],
-                user:,
-                document_type: :passport,
-              )
-
-              click_idv_continue
-              socure_docv_upload_documents(
-                docv_transaction_token: @docv_transaction_token,
-                webhooks: selfie_webhook_list,
-              )
-
-              visit idv_socure_document_capture_update_path
-              expect(page).to have_current_path(
-                idv_socure_document_capture_errors_url(
-                  transaction_token: @docv_transaction_token,
-                ),
-              )
-              expect(page).to have_content(t('doc_auth.headers.unreadable_id'))
-
-              click_on t('idv.failure.button.warning')
-
-              remove_request_stub(@docv_stub)
-              @docv_stub = stub_docv_verification_data_pass(
-                docv_transaction_token: @docv_transaction_token,
-                reason_codes: ['pass'],
-                user:,
-                document_type: :passport,
-              )
-
-              click_idv_continue
-              socure_docv_upload_documents(
-                docv_transaction_token: @docv_transaction_token,
-                webhooks: selfie_webhook_list,
-              )
-
-              visit idv_socure_document_capture_update_path
-
-              expect(page).to have_current_path(idv_ssn_url)
-
-              expect(fake_analytics).to have_logged_event(
-                :idv_socure_document_request_submitted,
-              )
-              expect(fake_analytics).to have_logged_event(
-                :idv_socure_verification_data_requested,
-              )
-              expect(fake_analytics).to have_logged_event(
-                'IdV: doc auth image upload vendor pii validation',
-              )
-
-              fill_out_ssn_form_ok
-              click_idv_continue
-            end
+          before do
+            allow(IdentityConfig.store).to receive_messages(
+              doc_auth_socure_wait_polling_timeout_minutes: 0,
+              idv_socure_reason_codes_docv_selfie_fail: ['fail'],
+              idv_socure_reason_codes_docv_selfie_not_processed: ['not_processed'],
+              idv_socure_reason_codes_docv_selfie_pass: ['pass'],
+              use_vot_in_sp_requests: true,
+            )
+            visit_idp_from_oidc_sp_with_ial2(facial_match_required: true)
+            stub_request(:post, IdentityConfig.store.dos_passport_mrz_endpoint)
+              .to_return_json({ status: 200, body: { response: 'YES' } })
           end
 
-          context 'when a mdl is used' do
-            context 'when an mDL is submitted' do
-              let(:idv_doc_auth_mdl_enabled_percent) { 100 }
-              before do
-                DocAuth::Mock::DocAuthMockClient.reset!
-              end
+          it 'proceeds to the next page with valid info' do
+            visit_idp_from_oidc_sp_with_ial2(facial_match_required: true)
+            sign_in_and_2fa_user(user)
 
-              it 'proceeds to the next page with valid info' do
-                visit_idp_from_oidc_sp_with_ial2(facial_match_required:)
-                sign_in_and_2fa_user(user)
+            complete_doc_auth_steps_before_hybrid_handoff_step
+            click_continue
+            expect(page).to have_current_path(idv_choose_id_type_url)
+            click_on t('doc_auth.forms.id_type_preference.passport')
 
-                complete_doc_auth_steps_before_hybrid_handoff_step
+            expect(page).to have_current_path(idv_socure_document_capture_url)
+            expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
+            click_idv_continue
+            socure_docv_upload_documents(
+              docv_transaction_token: @docv_transaction_token,
+            )
 
-                expect(page).to have_current_path(idv_choose_id_type_url)
+            visit idv_socure_document_capture_update_path
+            expect(page).to have_current_path(
+              idv_socure_document_capture_errors_url(
+                transaction_token: @docv_transaction_token,
+              ),
+            )
+            expect(page).to have_content(t('idv.errors.technical_difficulties'))
 
-                choose(t('doc_auth.forms.id_type_preference.mdl'))
-                click_on t('forms.buttons.continue')
+            click_on t('idv.failure.button.warning')
 
-                expect(page).to have_current_path(idv_socure_document_capture_url)
-                expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
+            remove_request_stub(@docv_stub)
+            @docv_stub = stub_docv_verification_data_pass(
+              docv_transaction_token: @docv_transaction_token,
+              reason_codes: ['fail'],
+              user:,
+              document_type: :passport,
+            )
 
-                # remove_request_stub(@docv_stub)
-                @docv_stub = stub_docv_verification_data_pass(
-                  docv_transaction_token: @docv_transaction_token,
-                  user:,
-                )
+            click_idv_continue
+            socure_docv_upload_documents(
+              docv_transaction_token: @docv_transaction_token,
+              webhooks: selfie_webhook_list,
+            )
 
-                click_on t('idv.mdl.button')
-                socure_docv_upload_documents(
-                  docv_transaction_token: @docv_transaction_token,
-                )
-                visit idv_socure_document_capture_update_path
+            visit idv_socure_document_capture_update_path
+            expect(page).to have_current_path(
+              idv_socure_document_capture_errors_url(
+                transaction_token: @docv_transaction_token,
+              ),
+            )
 
-                expect(page).to have_current_path(
-                  idv_socure_document_capture_errors_url(
-                    transaction_token: @docv_transaction_token,
-                  ),
-                )
+            expect(page).to have_content(t('doc_auth.errors.selfie_fail_heading'))
 
-                expect(page).to have_content(t('doc_auth.errors.verify_drivers_license_heading'))
+            click_on t('idv.failure.button.warning')
 
-                click_on t('idv.failure.button.warning')
+            remove_request_stub(@docv_stub)
+            @docv_stub = stub_docv_verification_data_fail_with(
+              docv_transaction_token: @docv_transaction_token,
+              reason_codes: ['pass'],
+              user:,
+              document_type: :passport,
+            )
 
-                expect(page).to have_current_path(idv_socure_document_capture_url)
-                expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
+            click_idv_continue
+            socure_docv_upload_documents(
+              docv_transaction_token: @docv_transaction_token,
+              webhooks: selfie_webhook_list,
+            )
 
-                remove_request_stub(@docv_stub)
-                @docv_stub = stub_docv_verification_data_fail_with(
-                  docv_transaction_token: @docv_transaction_token,
-                  reason_codes: idv_socure_reason_codes_docv_mdl.prepend('R899'),
-                  user:,
-                )
-                click_on t('idv.mdl.button')
-                socure_docv_upload_documents(
-                  docv_transaction_token: @docv_transaction_token,
-                )
+            visit idv_socure_document_capture_update_path
+            expect(page).to have_current_path(
+              idv_socure_document_capture_errors_url(
+                transaction_token: @docv_transaction_token,
+              ),
+            )
+            expect(page).to have_content(t('doc_auth.headers.unreadable_id'))
 
-                visit idv_socure_document_capture_update_path
+            click_on t('idv.failure.button.warning')
 
-                expect(page).to have_current_path(
-                  idv_socure_document_capture_errors_url(
-                    transaction_token: @docv_transaction_token,
-                  ),
-                )
+            remove_request_stub(@docv_stub)
+            @docv_stub = stub_docv_verification_data_pass(
+              docv_transaction_token: @docv_transaction_token,
+              reason_codes: ['pass'],
+              user:,
+              document_type: :passport,
+            )
 
-                expect(page).to have_content(t('doc_auth.headers.state_id_verification'))
-                expect(page).to have_content(t('doc_auth.errors.state_id_verification'))
+            click_idv_continue
+            socure_docv_upload_documents(
+              docv_transaction_token: @docv_transaction_token,
+              webhooks: selfie_webhook_list,
+            )
 
-                click_on t('idv.failure.button.warning')
+            visit idv_socure_document_capture_update_path
 
-                expect(page).to have_current_path(idv_socure_document_capture_url)
-                expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
+            expect(page).to have_current_path(idv_ssn_url)
 
-                remove_request_stub(@docv_stub)
-                @docv_stub = stub_docv_verification_data_pass(
-                  docv_transaction_token: @docv_transaction_token,
-                  reason_codes: idv_socure_reason_codes_docv_mdl.push('random_code'),
-                  user:,
-                )
-                click_on t('idv.mdl.button')
-                socure_docv_upload_documents(
-                  docv_transaction_token: @docv_transaction_token,
-                )
+            expect(fake_analytics).to have_logged_event(
+              :idv_socure_document_request_submitted,
+            )
+            expect(fake_analytics).to have_logged_event(
+              :idv_socure_verification_data_requested,
+            )
+            expect(fake_analytics).to have_logged_event(
+              'IdV: doc auth image upload vendor pii validation',
+            )
 
-                visit idv_socure_document_capture_update_path
-
-                expect(page).to have_current_path(idv_ssn_url)
-
-                expect(fake_analytics).to have_logged_event(
-                  :idv_socure_document_request_submitted,
-                )
-                expect(fake_analytics).to have_logged_event(
-                  :idv_socure_verification_data_requested,
-                )
-                expect(fake_analytics).to have_logged_event(
-                  'IdV: doc auth image upload vendor pii validation',
-                )
-
-                fill_out_ssn_form_ok
-                click_idv_continue
-              end
-            end
+            fill_out_ssn_form_ok
+            click_idv_continue
           end
         end
       end
@@ -1038,7 +825,7 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
             transaction_token: @docv_transaction_token,
           ),
         )
-        expect(page).to have_content(t('idv.errors.try_again_later'))
+        expect(page).to have_content(t('idv.errors.technical_difficulties'))
 
         click_on t('idv.failure.button.warning')
 
@@ -1061,7 +848,7 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
             transaction_token: @docv_transaction_token,
           ),
         )
-        expect(page).to have_content(t('idv.errors.try_again_later'))
+        expect(page).to have_content(t('idv.errors.technical_difficulties'))
 
         click_on t('idv.failure.button.warning')
 
@@ -1186,9 +973,7 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
 
   context 'Pii validation fails' do
     before do
-      allow_any_instance_of(Idv::DocPiiForm).to receive(:validate_zipcode_format) do |form|
-        form.errors.add(:zipcode, 'doc_auth.errors.general.no_liveness', type: :zipcode)
-      end
+      allow_any_instance_of(Idv::DocPiiStateId).to receive(:zipcode).and_return(:invalid_junk)
     end
 
     it 'presents as a type 1 error' do

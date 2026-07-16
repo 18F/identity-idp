@@ -1,0 +1,100 @@
+@use '../../variables/ads' as ads;
+
+@mixin dialog-frame(
+  $margin: 0,
+  $max-height: none,
+  $max-width: none,
+  $overflow: visible,
+  $padding: 0
+) {
+  background: transparent;
+  border: 0;
+  margin: $margin;
+  max-height: $max-height;
+  max-width: $max-width;
+  overflow: $overflow;
+  padding: $padding;
+}
+
+@mixin backdrop($background, $opacity: 0, $backdrop-filter: null, $transition: null) {
+  &::backdrop {
+    @if $backdrop-filter {
+      backdrop-filter: $backdrop-filter;
+    }
+    background: $background;
+    opacity: $opacity;
+    @if $transition {
+      transition: $transition;
+    }
+  }
+}
+
+@mixin backdrop-open {
+  &::backdrop {
+    opacity: 1;
+  }
+}
+
+@mixin backdrop-closing($backdrop-filter: null) {
+  &::backdrop {
+    @if $backdrop-filter {
+      backdrop-filter: $backdrop-filter;
+    }
+    opacity: 0;
+  }
+}
+
+@mixin circular-icon-button {
+  align-items: center;
+  backdrop-filter: blur(25px);
+  background: ads.alpha(ads.$off-black, 5%);
+  border: 0;
+  border-radius: ads.radius(pill);
+  box-sizing: border-box;
+  color: ads.$off-black;
+  cursor: pointer;
+  display: flex;
+  height: ads.space(40);
+  justify-content: center;
+  padding: 0;
+  transition: background-color ads.$tr-duration-md ads.$tr-easing-cubic;
+  width: ads.space(40);
+
+  .ads-icon {
+    color: inherit;
+    display: block;
+  }
+
+  &:hover {
+    background: ads.alpha(ads.$off-black, 10%);
+  }
+
+  &:focus-visible {
+    outline: 1px solid ads.$off-black;
+    outline-offset: 0;
+  }
+}
+
+@mixin scroll-panel {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-color: ads.alpha(ads.$off-black, 16%) transparent;
+  scrollbar-gutter: stable;
+  scrollbar-width: thin;
+
+  &::-webkit-scrollbar {
+    width: ads.space(8);
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+    margin-block: ads.space(24);
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-clip: padding-box;
+    background-color: ads.alpha(ads.$off-black, 16%);
+    border: 2px solid transparent;
+    border-radius: ads.radius(pill);
+  }
+}

@@ -12,18 +12,18 @@ RSpec.feature 'PIV/CAC Management' do
       stub_piv_cac_service(uuid:)
 
       sign_in_and_2fa_user(user)
-      visit account_two_factor_authentication_path
+      visit account_security_path
       click_link t('account.index.piv_cac_add'), href: setup_piv_cac_url
 
       expect(page.response_headers['Content-Security-Policy'].split(';').map(&:strip))
         .to(include("form-action https://*.pivcac.test.example.com 'self'"))
 
       fill_in t('instructions.mfa.piv_cac.step_1'), with: 'Card'
-      click_on t('forms.piv_cac_setup.submit')
+      click_on t('forms.buttons.continue')
       follow_piv_cac_redirect
 
       expect(page).to have_current_path account_path
-      visit account_two_factor_authentication_path
+      visit account_security_path
       user.reload
       expect(page).to have_link(href: edit_piv_cac_path(id: user.piv_cac_configurations.first.id))
 
@@ -37,37 +37,37 @@ RSpec.feature 'PIV/CAC Management' do
       ::PivCacConfiguration.create!(user_id: user_id, x509_dn_uuid: 'foo', name: 'key1')
 
       sign_in_and_2fa_user(user)
-      visit account_two_factor_authentication_path
+      visit account_security_path
 
       expect(page).to have_link(t('account.index.piv_cac_add'), href: setup_piv_cac_url)
-      visit account_two_factor_authentication_path
+      visit account_security_path
 
       ::PivCacConfiguration.create!(user_id: user_id, x509_dn_uuid: 'bar', name: 'key2')
-      visit account_two_factor_authentication_path
+      visit account_security_path
       expect(page).to_not have_link(t('account.index.piv_cac_add'), href: setup_piv_cac_url)
 
       visit setup_piv_cac_path
-      expect(page).to have_current_path account_two_factor_authentication_path
+      expect(page).to have_current_path account_security_path
     end
 
     scenario 'disallows association of a piv/cac with the same name' do
       stub_piv_cac_service(uuid:)
 
       sign_in_and_2fa_user(user)
-      visit account_two_factor_authentication_path
+      visit account_security_path
       click_link t('account.index.piv_cac_add'), href: setup_piv_cac_url
 
       fill_in t('instructions.mfa.piv_cac.step_1'), with: 'Card'
-      click_on t('forms.piv_cac_setup.submit')
+      click_on t('forms.buttons.continue')
       follow_piv_cac_redirect
 
       expect(page).to have_current_path account_path
 
-      visit account_two_factor_authentication_path
+      visit account_security_path
       click_link t('account.index.piv_cac_add'), href: setup_piv_cac_url
       user.reload
       fill_in 'name', with: user.piv_cac_configurations.first.name
-      click_button t('forms.piv_cac_setup.submit')
+      click_button t('forms.buttons.continue')
 
       expect(page).to have_content(I18n.t('errors.piv_cac_setup.unique_name'))
     end
@@ -76,11 +76,11 @@ RSpec.feature 'PIV/CAC Management' do
       stub_piv_cac_service(error: 'certificate.none')
 
       sign_in_and_2fa_user(user)
-      visit account_two_factor_authentication_path
+      visit account_security_path
       click_link t('account.index.piv_cac_add'), href: setup_piv_cac_url
 
       fill_in t('instructions.mfa.piv_cac.step_1'), with: 'Card'
-      click_on t('forms.piv_cac_setup.submit')
+      click_on t('forms.buttons.continue')
       follow_piv_cac_redirect
 
       expect(page).to have_current_path(setup_piv_cac_error_path, ignore_query: true)
@@ -97,11 +97,11 @@ RSpec.feature 'PIV/CAC Management' do
       stub_piv_cac_service(error: 'certificate.expired')
 
       sign_in_and_2fa_user(user)
-      visit account_two_factor_authentication_path
+      visit account_security_path
       click_link t('account.index.piv_cac_add'), href: setup_piv_cac_url
 
       fill_in t('instructions.mfa.piv_cac.step_1'), with: 'Card'
-      click_on t('forms.piv_cac_setup.submit')
+      click_on t('forms.buttons.continue')
       follow_piv_cac_redirect
 
       expect(page).to have_current_path(setup_piv_cac_error_path, ignore_query: true)
@@ -135,7 +135,7 @@ RSpec.feature 'PIV/CAC Management' do
       stub_piv_cac_service
 
       sign_in_and_2fa_user(user)
-      visit account_two_factor_authentication_path
+      visit account_security_path
       expect(page).to have_link(t('account.index.piv_cac_add'), href: setup_piv_cac_url)
     end
 
@@ -143,7 +143,7 @@ RSpec.feature 'PIV/CAC Management' do
       stub_piv_cac_service
 
       sign_in_and_2fa_user(user)
-      visit account_two_factor_authentication_path
+      visit account_security_path
 
       expect(page).to have_content(piv_name)
 
@@ -158,6 +158,11 @@ RSpec.feature 'PIV/CAC Management' do
       expect(page).to have_current_path(
         edit_piv_cac_path(id: user.piv_cac_configurations.first.id),
       )
+      click_link t('two_factor_authentication.piv_cac.delete')
+
+      expect(page).to have_current_path(
+        confirm_delete_piv_cac_path(id: user.piv_cac_configurations.first.id),
+      )
       click_button t('two_factor_authentication.piv_cac.delete')
 
       expect(page).to have_content(t('two_factor_authentication.piv_cac.deleted'))
@@ -171,22 +176,27 @@ RSpec.feature 'PIV/CAC Management' do
   context 'with PIV/CAC as the only MFA method' do
     let(:user) { create(:user, :with_piv_or_cac) }
 
-    scenario 'disallows disassociation PIV/CAC', :js, allow_browser_log: true do
+    scenario 'disallows disassociation PIV/CAC' do
       sign_in_and_2fa_user(user)
-      visit account_path
+      visit account_security_path
 
-      click_button(
+      configuration = user.piv_cac_configurations.first
+
+      click_link(
         format(
           '%s: %s',
           t('two_factor_authentication.piv_cac.manage_accessible_label'),
-          user.piv_cac_configurations.first.name,
+          configuration.name,
         ),
       )
-      accept_confirm(wait: 5) { click_button t('components.manageable_authenticator.delete') }
-      expect(page).to have_content(
-        t('errors.manage_authenticator.remove_only_method_error'),
-        wait: 5,
-      )
+
+      click_link t('two_factor_authentication.piv_cac.delete')
+
+      expect(page).to have_current_path(confirm_delete_piv_cac_path(id: configuration.id))
+
+      click_button t('two_factor_authentication.piv_cac.delete')
+
+      expect(page).to have_content(t('errors.manage_authenticator.remove_only_method_error'))
 
       user.reload
       expect(user.piv_cac_configurations.first.x509_dn_uuid).to_not be_nil

@@ -1,0 +1,101 @@
+@use '../../../variables/ads' as ads;
+
+html,
+body {
+  margin: 0;
+}
+
+$ads-layout-breakpoint-m: 768px;
+
+.ads-auth-page {
+  --ads-page-main-align: center;
+  --ads-page-main-block-start: #{ads.space(48)};
+  --ads-page-main-block-end: #{ads.space(96)};
+  --ads-page-main-inline: var(--ads-screen-inline-padding, #{ads.space(24)});
+  --ads-page-main-justify: flex-start;
+  --ads-page-main-gap: #{ads.space(32)};
+  --ads-page-background: #{ads.$white};
+
+  background: var(--ads-page-background);
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+
+  @media (width >= #{$ads-layout-breakpoint-m}) {
+    --ads-page-main-block-start: #{ads.space(96)};
+    --ads-page-main-justify: center;
+  }
+}
+
+.ads-auth-page--align-start,
+.ads-auth-page--align-stretch {
+  --ads-layout-align: stretch;
+  --ads-page-main-align: stretch;
+}
+
+.ads-auth-page--align-start {
+  --ads-layout-text-align: left;
+}
+
+.ads-auth-page--density-spacious {
+  --ads-page-main-gap: #{ads.space(48)};
+}
+
+.ads-auth-page--density-fullscreen {
+  --ads-page-main-block-start: 0;
+  --ads-page-main-block-end: 0;
+  --ads-page-main-inline: 0;
+  --ads-page-main-justify: stretch;
+}
+
+.ads-auth-page--surface-overlay {
+  --ads-page-background: #{ads.alpha(ads.$white, 95%)};
+}
+
+.ads-auth-page--width-form {
+  --ads-page-content-width: #{ads.$form-width};
+}
+
+.ads-auth-page--width-wide {
+  --ads-page-content-width: 64rem;
+}
+
+.ads-auth-page__main {
+  @include ads.stack(
+    $align: var(--ads-page-main-align),
+    $gap: var(--ads-page-main-gap),
+    $max-width: 100%,
+    $reset-flow: true,
+    $width: 100%
+  );
+
+  box-sizing: border-box;
+  flex: 1;
+  justify-content: var(--ads-page-main-justify);
+  margin-inline: auto;
+  min-height: 0;
+  padding: var(--ads-page-main-block-start) var(--ads-page-main-inline)
+    var(--ads-page-main-block-end);
+}
+
+.ads-auth-page__main > * {
+  box-sizing: border-box;
+  margin-inline: auto;
+  max-width: var(--ads-page-content-width, #{ads.$form-width});
+  min-width: 0;
+  width: 100%;
+}
+
+@media (width < #{$ads-layout-breakpoint-m}) {
+  .ads-auth-page--align-mobile-start {
+    --ads-layout-align: stretch;
+    --ads-layout-text-align: left;
+    --ads-page-main-align: stretch;
+  }
+
+  .ads-auth-page--density-mobile-compact {
+    --ads-page-main-block-start: #{ads.space(32)};
+    --ads-page-main-block-end: #{ads.space(32)};
+    --ads-page-main-gap: #{ads.space(32)};
+  }
+}

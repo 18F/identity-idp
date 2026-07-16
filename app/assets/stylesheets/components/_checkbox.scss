@@ -1,0 +1,263 @@
+@use '../variables/ads' as ads;
+
+// Checkbox control — Figma ADS 1724:742
+$checkbox-size: ads.space(20);
+$checkbox-border-width: 1px;
+$checkbox-border-width-strong: 2px;
+$checkbox-checkmark-size: ads.space(16);
+$checkbox-label-gap: ads.space(12);
+$checkbox-label-margin-top: ads.space(12);
+$checkbox-checkmark: url('/correct8.svg');
+
+@mixin checkbox-control-default {
+  background-color: ads.$white;
+  box-shadow: 0 0 0 $checkbox-border-width ads.alpha(ads.$off-black, 45%);
+}
+
+@mixin checkbox-control-hover {
+  background-color: ads.$white;
+  box-shadow: 0 0 0 $checkbox-border-width-strong ads.alpha(ads.$off-black, 85%);
+}
+
+@mixin checkbox-control-checked {
+  background-color: ads.$off-black;
+  background-image: $checkbox-checkmark;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: $checkbox-checkmark-size;
+  box-shadow: 0 0 0 $checkbox-border-width-strong ads.alpha(ads.$off-black, 85%);
+}
+
+@mixin checkbox-control-error {
+  background-color: ads.$white;
+  background-image: none;
+  box-shadow: 0 0 0 $checkbox-border-width ads.$red-600;
+}
+
+@mixin checkbox-control-disabled {
+  background-color: ads.alpha(ads.$off-black, 5%);
+  background-image: none;
+  box-shadow: 0 0 0 $checkbox-border-width ads.alpha(ads.$off-black, 45%);
+}
+
+@mixin checkbox-control-disabled-checked {
+  background-color: ads.alpha(ads.$off-black, 25%);
+  background-image: $checkbox-checkmark;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: $checkbox-checkmark-size;
+  box-shadow: 0 0 0 $checkbox-border-width ads.alpha(ads.$off-black, 45%);
+}
+
+@mixin checkbox-format-input {
+  & + .ads-checkbox__label::before {
+    @content;
+  }
+}
+
+@mixin checkbox-format-label {
+  & + .ads-checkbox__label {
+    @content;
+  }
+}
+
+@mixin checkbox-sr-only {
+  border: 0;
+  clip: rect(0, 0, 0, 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  width: 1px;
+}
+
+// Standalone acknowledgment checkboxes (remember browser, save codes, consent)
+// sit as a compact unit centered in the auth/form column. The label stays
+// left-aligned within itself (checkbox control on the left of its text).
+.ads-checkbox {
+  position: relative;
+  text-align: center;
+
+  // Inline validated-field errors should share the same horizontal centering.
+  .ads-input__error-inner {
+    justify-content: center;
+  }
+}
+
+// Full-bleed selection patterns keep left alignment.
+.ads-checkbox:has(.usa-checkbox__input),
+.ads-checkbox-group .ads-checkbox {
+  text-align: left;
+
+  .ads-input__error-inner {
+    justify-content: flex-start;
+  }
+}
+
+.ads-checkbox-group {
+  @include ads.stack($gap: ads.space(12), $reset-flow: true, $width: 100%);
+}
+
+.ads-checkbox__input {
+  @include checkbox-sr-only;
+
+  &:focus {
+    @include checkbox-format-input {
+      outline: 0;
+    }
+  }
+
+  &:checked {
+    @include checkbox-format-input {
+      @include checkbox-control-checked;
+
+      @media print {
+        background-color: ads.$white;
+        background-image: none;
+        content: '\2714';
+        text-align: center;
+      }
+
+      @media (forced-colors: active) {
+        background-color: SelectedItem;
+      }
+    }
+  }
+
+  &:not(:disabled, [aria-disabled='true']) {
+    &:hover {
+      @include checkbox-format-input {
+        @include checkbox-control-hover;
+      }
+    }
+
+    &:checked:hover {
+      @include checkbox-format-input {
+        @include checkbox-control-checked;
+      }
+    }
+  }
+
+  &:not(:disabled, [aria-disabled='true']) + .ads-checkbox__label:hover::before {
+    @include checkbox-control-hover;
+  }
+
+  &:checked:not(:disabled, [aria-disabled='true']) + .ads-checkbox__label:hover::before {
+    @include checkbox-control-checked;
+  }
+
+  &:focus-visible,
+  &.usa-focus {
+    @include checkbox-format-input {
+      @include ads.focus-ring;
+    }
+
+    &:checked {
+      @include checkbox-format-input {
+        @include ads.focus-ring;
+        background-color: ads.$off-black;
+        background-image: $checkbox-checkmark;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: $checkbox-checkmark-size;
+      }
+    }
+  }
+
+  &.usa-input--error,
+  &[aria-invalid='true'] {
+    @include checkbox-format-input {
+      @include checkbox-control-error;
+    }
+
+    &:checked {
+      @include checkbox-format-input {
+        @include checkbox-control-checked;
+      }
+    }
+  }
+
+  &:disabled,
+  &[aria-disabled='true'] {
+    @include checkbox-format-label {
+      color: ads.alpha(ads.$off-black, 25%);
+      cursor: not-allowed;
+
+      @media (forced-colors: active) {
+        color: GrayText;
+      }
+    }
+
+    @include checkbox-format-input {
+      @include checkbox-control-disabled;
+    }
+
+    &:checked {
+      @include checkbox-format-input {
+        @include checkbox-control-disabled-checked;
+      }
+    }
+  }
+}
+
+.ads-checkbox__label {
+  color: ads.$off-black;
+  cursor: pointer;
+  display: inline-block;
+  font-family: ads.$font-family;
+  font-size: ads.$text-label-m;
+  font-weight: ads.$font-semibold;
+  letter-spacing: ads.$text-letter-spacing-label;
+  line-height: 1.5;
+  margin-top: $checkbox-label-margin-top;
+  padding-left: calc(#{$checkbox-label-gap} + #{$checkbox-size});
+  position: relative;
+
+  &::before {
+    @include checkbox-control-default;
+    border-radius: ads.radius(8);
+    box-sizing: border-box;
+    content: ' ';
+    display: block;
+    height: $checkbox-size;
+    left: 0;
+    margin-top: 2px;
+    position: absolute;
+    transition: ads.$transition;
+    width: $checkbox-size;
+  }
+}
+
+.ads-checkbox__label--regular {
+  font-weight: 400;
+}
+
+.ads-checkbox__label-description {
+  color: ads.alpha(ads.$off-black, 65%);
+  display: block;
+  font-size: ads.$text-body-s;
+  font-weight: 400;
+  margin-top: ads.space(8);
+}
+
+.ads-checkbox__label-text {
+  display: block;
+  min-width: 0;
+}
+
+.ads-checkbox__label-heading {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: ads.space(8);
+  min-width: 0;
+}
+
+.ads-checkbox__error {
+  color: ads.$red-600;
+  font-family: ads.$font-family;
+  font-size: ads.$text-body-s;
+  line-height: 1.5;
+  margin: ads.space(8) 0 0;
+}

@@ -1,3 +1,10 @@
-<% alerts.each do |type, message| %>
-  <%= render AlertComponent.new(type:, message: message.html_safe, class: 'margin-bottom-4') %>
+<% toasts.each do |message| %>
+  <%= render ToastComponent.new(message: message.html_safe) %>
+<% end %>
+<% if alerts.any? %>
+  <div class="ads-flash">
+    <% alerts.each do |type, message| %>
+      <%= render AlertComponent.new(type:, message: message.html_safe) %>
+    <% end %>
+  </div>
 <% end %>

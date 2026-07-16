@@ -1,0 +1,23 @@
+<section class="ads-auth-methods__section" aria-labelledby="webauthn-platform-heading">
+  <h2 id="webauthn-platform-heading" class="ads-auth-methods__heading">
+    <%= t('account.dashboard.auth_methods.face_touch_unlock.title') %>
+  </h2>
+
+  <div class="ads-auth-methods__panel">
+    <%= render 'accounts/two_factor_authentication/authenticator_rows',
+               configurations: mfa_context.webauthn_platform_configurations,
+               edit_path_helper: :edit_webauthn_path,
+               manage_accessible_label:
+                 t('two_factor_authentication.webauthn_platform.manage_accessible_label') %>
+
+    <% if mfa_context.webauthn_platform_configurations.any? %>
+      <div class="ads-auth-methods__rule"></div>
+    <% end %>
+
+    <%= render ButtonComponent.new(
+          url: webauthn_setup_path(platform: true),
+          variant: :secondary,
+          size: :md,
+    ).with_content(t('account.index.webauthn_platform_add')) %>
+  </div>
+</section>

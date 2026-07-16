@@ -45,13 +45,12 @@ module DocumentCaptureStepHelper
   def choose_id_type(id_type)
     case id_type
     when :passport
-      choose(t('doc_auth.forms.id_type_preference.passport'))
+      click_on t('doc_auth.forms.id_type_preference.passport')
     when :state_id
-      choose(t('doc_auth.forms.id_type_preference.drivers_license'))
+      click_on t('doc_auth.forms.id_type_preference.drivers_license')
     else
       raise "choose_id_type: unsupported id type: #{id_type}"
     end
-    click_continue
   end
 
   def document_capture_form

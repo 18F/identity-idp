@@ -13,7 +13,7 @@ RSpec.describe 'Remembering a TOTP device' do
       fill_in :code, with: generate_totp_code(user.auth_app_configurations.first.otp_secret_key)
       check t('forms.messages.remember_device')
       click_submit_default
-      first(:button, t('links.sign_out')).click
+      first(:button, t('links.sign_out'), visible: :all).click
       user
     end
 
@@ -29,10 +29,10 @@ RSpec.describe 'Remembering a TOTP device' do
       fill_in_totp_name
       fill_in :code, with: totp_secret_from_page
       check t('forms.messages.remember_device')
-      click_submit_default
+      click_button t('forms.buttons.continue')
       skip_second_mfa_prompt
 
-      first(:button, t('links.sign_out')).click
+      first(:button, t('links.sign_out'), visible: :all).click
       user
     end
 
@@ -45,7 +45,7 @@ RSpec.describe 'Remembering a TOTP device' do
       name = auth_app_config.name
 
       sign_in_and_2fa_user(user)
-      visit account_two_factor_authentication_path
+      visit account_security_path
 
       click_link(
         format(
@@ -55,16 +55,18 @@ RSpec.describe 'Remembering a TOTP device' do
         ),
       )
 
+      click_link t('two_factor_authentication.auth_app.delete')
       click_button t('two_factor_authentication.auth_app.delete')
 
       travel_to(10.seconds.from_now) # Travel past the revoked at date from disabling the device
+      visit account_security_path
       click_link t('account.index.auth_app_add'), href: authenticator_setup_url
       fill_in_totp_name
       fill_in :code, with: totp_secret_from_page
       check t('forms.messages.remember_device')
-      click_submit_default
-      expect(page).to have_current_path(account_path)
-      first(:button, t('links.sign_out')).click
+      click_button t('forms.buttons.continue')
+      expect(page).to have_current_path(account_security_path)
+      first(:button, t('links.sign_out'), visible: :all).click
       user
     end
 

@@ -1,30 +1,30 @@
 <% self.title = t('account_reset.delete_account.title') %>
 
-<%= render PageHeadingComponent.new.with_content(t('account_reset.delete_account.title')) %>
+<%= render ADS::FormPageComponent.new(title: t('account_reset.delete_account.title')) do |page| %>
+  <% page.with_body do %>
+    <div class="ads-copy">
+      <p><%= t('account_reset.delete_account.info', app_name: APP_NAME) %></p>
+    </div>
+  <% end %>
 
-<p>
-  <%= t('account_reset.delete_account.info', app_name: APP_NAME) %>
-</p>
+  <% page.with_actions do %>
+    <%= render ButtonComponent.new(
+          url: account_reset_delete_account_path,
+          method: :delete,
+          variant: :destructive,
+        ).with_content(t('account_reset.request.yes_continue')) %>
 
-<p class="margin-y-4">
-  <strong><%= t('account_reset.delete_account.are_you_sure') %></strong>
-</p>
-<% if IdentityConfig.store.update_cancel_account_reset_path %>
-
-  <%= button_to(
-        account_reset_delete_account_cancel_path,
-        method: :post,
-        class: 'usa-button usa-button--big usa-button--wide margin-bottom-2',
-      ) { t('account_reset.request.no_cancel') } %>
-<% else %>
-  <%= button_to(
-        root_url,
-        method: :get,
-        class: 'usa-button usa-button--big usa-button--wide margin-bottom-2',
-      ) { t('account_reset.request.no_cancel') } %>
+    <% if IdentityConfig.store.update_cancel_account_reset_path %>
+      <%= render ButtonComponent.new(
+            url: account_reset_delete_account_cancel_path,
+            method: :post,
+            variant: :quaternary,
+          ).with_content(t('account_reset.request.no_cancel2')) %>
+    <% else %>
+      <%= render ButtonComponent.new(
+            url: root_url,
+            variant: :quaternary,
+          ).with_content(t('account_reset.request.no_cancel2')) %>
+    <% end %>
+  <% end %>
 <% end %>
-<%= button_to(
-      account_reset_delete_account_path,
-      method: :delete,
-      class: 'usa-button usa-button--unstyled',
-    ) { t('account_reset.request.yes_continue') } %>

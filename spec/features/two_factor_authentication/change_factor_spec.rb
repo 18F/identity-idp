@@ -31,7 +31,7 @@ RSpec.feature 'Changing authentication factor' do
         expire_reauthn_window
         visit manage_phone_path(id: phone_configuration)
         complete_2fa_confirmation_without_entering_otp
-        click_link t('links.two_factor_authentication.send_another_code')
+        click_link t('links.resend')
 
         expect(Telephony).to have_received(:send_authentication_otp).with(
           otp: user.reload.direct_otp,
@@ -55,22 +55,16 @@ RSpec.feature 'Changing authentication factor' do
     end
 
     context 'changing authentication methods' do
-      it 'returns user to account page if they choose to cancel' do
+      it 'returns user to account security page if they choose to cancel' do
         sign_in_and_2fa_user
         expire_reauthn_window
         visit manage_password_path
         complete_2fa_confirmation_without_entering_otp
 
-        # Canceling from MFA prompt
-        click_on t('links.cancel')
-        expect(page).to have_current_path account_path
-
-        # Canceling from MFA selection
-        visit manage_password_path
-        complete_2fa_confirmation_without_entering_otp
+        # The MFA prompt offers no cancel; the user bails via the MFA selection page
         click_on t('two_factor_authentication.login_options_link_text')
         click_on t('links.cancel')
-        expect(page).to have_current_path account_path
+        expect(page).to have_current_path account_security_path
       end
     end
   end
@@ -87,8 +81,7 @@ RSpec.feature 'Changing authentication factor' do
       visit phone_setup_path
       expect(page).to have_current_path login_two_factor_options_path
 
-      find("label[for='two_factor_options_form_selection_sms']").click
-      click_on t('forms.buttons.continue')
+      select_2fa_option('sms')
       fill_in_code_with_last_phone_otp
       click_submit_default
       expect(page).to have_current_path phone_setup_path
@@ -107,8 +100,7 @@ RSpec.feature 'Changing authentication factor' do
   def complete_2fa_confirmation_without_entering_otp
     expect(page).to have_current_path login_two_factor_options_path
 
-    find("label[for='two_factor_options_form_selection_sms']").click
-    click_on t('forms.buttons.continue')
+    select_2fa_option('sms')
 
     expect(page).to have_current_path login_two_factor_path(
       otp_delivery_preference: user.otp_delivery_preference,

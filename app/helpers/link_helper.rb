@@ -1,6 +1,20 @@
 # frozen_string_literal: true
 
 module LinkHelper
+  def mailer_html(key, **options)
+    t(key, **options).html_safe
+  end
+
+  def mailer_link_to(name = nil, options = nil, html_options = nil, &block)
+    html_options, options, name = options, name, capture(&block) if block
+
+    html_options ||= {}
+    html_options[:target] ||= '_blank'
+    html_options[:rel] ||= 'noopener'
+
+    link_to(name, options, html_options)
+  end
+
   def new_tab_link_to(name = nil, options = nil, html_options = nil, &block)
     html_options, options, name = options, name, capture(&block) if block
 

@@ -1,45 +1,74 @@
 # frozen_string_literal: true
 
 class AlertComponent < BaseComponent
-  attr_reader :type, :message, :tag_options, :text_tag
+  TYPES = {
+    neutral: 'ads-alert--neutral',
+    success: 'ads-alert--success',
+    warning: 'ads-alert--warning',
+    error: 'ads-alert--error',
+  }.freeze
 
-  validates_inclusion_of :type, in: [nil, :info, :success, :warning, :error, :emergency]
+  attr_reader :type, :title, :message, :dismissible, :action, :text_tag, :tag_options
 
-  def initialize(type: nil, text_tag: 'p', message: nil, **tag_options)
-    @type = type
+  validates_inclusion_of :type, in: TYPES.keys
+  validate :validate_action
+
+  def initialize(
+    type: :neutral,
+    title: nil,
+    message: nil,
+    dismissible: true,
+    action: nil,
+    text_tag: :p,
+    **tag_options
+  )
+    @type = type.to_sym
+    @title = title
     @message = message
-    @tag_options = tag_options
+    @dismissible = dismissible
+    @action = action&.to_h&.symbolize_keys
     @text_tag = text_tag
-  end
-
-  def role
-    if type == :error
-      'alert'
-    else
-      'status'
-    end
-  end
-
-  def css_class
-    ['usa-alert', modifier_css_class, *tag_options[:class]]
-  end
-
-  def modifier_css_class
-    case type
-    when :info
-      'usa-alert--info'
-    when :success
-      'usa-alert--success'
-    when :error
-      'usa-alert--error'
-    when :warning
-      'usa-alert--warning'
-    when :emergency
-      'usa-alert--emergency'
-    end
+    @tag_options = tag_options
   end
 
   def content
     @message || super
+  end
+
+  def action?
+    action.present?
+  end
+
+  def action_label
+    action[:label]
+  end
+
+  def action_url
+    action[:url]
+  end
+
+  def role
+    type == :error ? 'alert' : 'status'
+  end
+
+  def css_class
+    classes = ['ads-alert', TYPES.fetch(type)]
+    classes << 'ads-alert--with-action' if action?
+    classes.concat(Array(tag_options[:class]))
+    classes
+  end
+
+  private
+
+  def validate_action
+    return if action.nil?
+    return if action_label.present? && action_url.present?
+
+    errors.add(
+      :action,
+      :incomplete,
+      message: 'must include both label and url',
+      type: :incomplete,
+    )
   end
 end

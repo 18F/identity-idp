@@ -68,7 +68,7 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
 
         expect(page).to have_current_path(idv_verify_info_path)
 
-        expect(page).to have_text('9**-**-***9')
+        expect(page).to have_text('9••-••-•••9')
         check t('forms.ssn.show')
         expect(page).to have_text('900-45-6789')
       end
@@ -282,7 +282,7 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
 
         complete_verify_step
         expect(page).to have_current_path(idv_session_errors_failure_path)
-        expect(page).not_to have_css('.step-indicator__step--current', text: text, wait: 5)
+        expect(page).not_to have_css('ads-progress [aria-current="step"]', wait: 5)
         expect(fake_analytics).to have_logged_event(
           'Rate Limit Reached',
           limiter_type: :idv_resolution,
@@ -302,11 +302,6 @@ RSpec.feature 'verify_info step and verify_info_concern', :js do
           expect(page).to have_current_path(idv_phone_path)
           expect(RateLimiter.new(user: user, rate_limit_type: :idv_resolution)).to_not be_limited
         end
-      end
-
-      it 'allows user to cancel identify verification' do
-        click_link t('links.cancel')
-        expect(page).to have_current_path(idv_cancel_path(step: 'verify'))
       end
     end
 

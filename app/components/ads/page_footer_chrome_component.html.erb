@@ -1,0 +1,89 @@
+<lg-ads-page-footer>
+  <footer class="ads-page-footer">
+    <%= link_to gsa_url, class: 'ads-page-footer__agency' do %>
+      <%= image_tag(
+            asset_url('ads/gsa-logo.svg'),
+            size: 20,
+            alt: '',
+            aria: { hidden: true },
+          ) %>
+      <span class="ads-page-footer__agency-name"><%= agency_name %></span>
+    <% end %>
+
+    <div class="ads-page-footer__actions">
+      <div class="ads-page-footer__control">
+        <%= tag.label(
+              t('i18n.language'),
+              for: "ads-footer-language-#{unique_id}",
+              class: 'ads-page-footer__select-label',
+            ) %>
+        <div class="ads-page-footer__select-face" aria-hidden="true">
+          <%= render ButtonComponent.new(
+                variant: :quaternary,
+                size: :sm,
+                icon: :chevron_down,
+                icon_position: :right,
+                tabindex: -1,
+                type: :button,
+              ).with_content(selected_language_label) %>
+        </div>
+        <%= content_tag(
+              :select,
+              id: "ads-footer-language-#{unique_id}",
+              name: 'locale',
+              class: 'ads-page-footer__select',
+              data: { ads_footer_navigation: true },
+            ) do %>
+          <% language_options.each do |option| %>
+            <%= tag.option(
+                  option[:label],
+                  value: option[:value],
+                  lang: option[:lang],
+                  selected: option[:selected],
+                ) %>
+          <% end %>
+        <% end %>
+      </div>
+
+      <%= render ButtonComponent.new(
+            url: resolved_help_url,
+            variant: :quaternary,
+            size: :sm,
+            class: 'ads-page-footer__help',
+          ).with_content(t('links.help')) %>
+
+      <div class="ads-page-footer__control">
+        <%= tag.label(
+              more_label,
+              for: "ads-footer-destination-#{unique_id}",
+              class: 'ads-page-footer__select-label',
+            ) %>
+        <div class="ads-page-footer__select-face" aria-hidden="true">
+          <%= render ButtonComponent.new(
+                variant: :quaternary,
+                size: :sm,
+                icon: :chevron_down,
+                icon_position: :right,
+                tabindex: -1,
+                type: :button,
+              ).with_content(more_label) %>
+        </div>
+        <%= content_tag(
+              :select,
+              id: "ads-footer-destination-#{unique_id}",
+              name: 'footer_destination',
+              class: 'ads-page-footer__select',
+              data: {
+                ads_footer_navigation: true,
+                ads_footer_navigation_reset: true,
+              },
+            ) do %>
+          <%= tag.option(more_label, value: '', selected: true, disabled: true) %>
+          <% destination_options.each do |option| %>
+            <%= tag.option(option[:label], value: option[:value]) %>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+  </footer>
+</lg-ads-page-footer>

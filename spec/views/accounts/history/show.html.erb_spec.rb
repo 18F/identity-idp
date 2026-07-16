@@ -21,7 +21,23 @@ RSpec.describe 'accounts/history/show.html.erb' do
   it 'contains account history' do
     render
 
-    expect(rendered).to have_content t('account.navigation.history')
+    expect(rendered).to have_content t('account.dashboard.history.title')
     expect(rendered).to have_content t('headings.account.activity')
+  end
+
+  context 'with a recent event' do
+    before do
+      create(:event, event_type: :sign_in_after_2fa, user: user)
+    end
+
+    it 'renders the activity row title as an h3 under the section heading' do
+      render
+
+      expect(rendered).to have_css('h2', text: t('headings.account.activity'))
+      expect(rendered).to have_css(
+        'h3.ads-history__row-title',
+        text: t('event_types.sign_in_after_2fa', app_name: APP_NAME),
+      )
+    end
   end
 end

@@ -4,58 +4,29 @@
       title: t('titles.failure.phone_verification'),
       heading: t('idv.failure.phone.warning.heading'),
       current_step: :verify_phone,
+      action: {
+        text: t('idv.failure.phone.warning.try_again_button'),
+        url: idv_phone_path,
+      },
+      secondary_action: @gpo_letter_available && {
+        text: t('idv.failure.phone.warning.gpo.button'),
+        url: idv_request_letter_path,
+      },
+      secondary_action_text: @gpo_letter_available && safe_join(
+        [
+          t('idv.failure.phone.warning.gpo.explanation'),
+          ' ',
+          t('idv.failure.phone.warning.gpo.how_long_it_takes_html'),
+        ],
+      ),
     ) do %>
+  <% if @phone %>
+    <p>
+      <%= t('idv.failure.phone.warning.you_entered_html', formatted_phone: @formatted_phone) %>
+    </p>
+  <% end %>
 
-      <% if @phone %>
-        <p>
-          <%= t('idv.failure.phone.warning.you_entered_html', formatted_phone: @formatted_phone) %>
-        </p>
-      <% end %>
-
-      <p>
-        <%= t('idv.failure.phone.warning.next_steps_html') %>
-        <%= new_tab_link_to(
-              t('idv.failure.phone.warning.learn_more_link'),
-              help_center_redirect_path(
-                category: 'verify-your-identity',
-                article: 'phone-number',
-                flow: :idv,
-                step: :phone,
-                location: 'learn_more',
-              ),
-            ) %>
-      </p>
-
-      <p>
-        <%= t('idv.failure.warning.attempts_html', count: @remaining_submit_attempts) %>
-      </p>
-
-      <div class="margin-y-5">
-        <%= render ButtonComponent.new(
-              url: idv_phone_path,
-              big: true,
-              wide: true,
-            ).with_content(t('idv.failure.phone.warning.try_again_button')) %>
-      </div>
-
-      <% if @gpo_letter_available %>
-        <hr>
-
-        <h2><%= t('idv.failure.phone.warning.gpo.heading') %></h2>
-
-        <p>
-          <%= t('idv.failure.phone.warning.gpo.explanation') %>
-          <%= t('idv.failure.phone.warning.gpo.how_long_it_takes_html') %>
-        </p>
-
-        <div class="margin-y-5">
-          <%= render ButtonComponent.new(
-                url: idv_request_letter_path,
-                big: true,
-                wide: true,
-                outline: true,
-              ).with_content(t('idv.failure.phone.warning.gpo.button')) %>
-        </div>
-      <% end %>
+  <p>
+    <%= t('idv.failure.warning.attempts_html', count: @remaining_submit_attempts) %>
+  </p>
 <% end %>
-<%= render('idv/doc_auth/cancel', step: 'phone') %>

@@ -12,25 +12,25 @@ describe('state-guidance', () => {
           <div>
             <select class="address-state-selector">Select Dropdown</select>
           </div>
-          <div class="puerto-rico-extras display-none"></div>
+          <div class="puerto-rico-extras" hidden></div>
         </div>
       `;
     });
 
-    it('includes class display-none if state is not PR', () => {
+    it('hides extras if state is not PR', () => {
       const forStateCode = 'NY';
       showOrHidePuertoRicoExtras(forStateCode);
-      const prExtrasElemClassList = document.querySelector('.puerto-rico-extras')?.classList;
+      const prExtras = document.querySelector('.puerto-rico-extras');
 
-      expect(prExtrasElemClassList).to.contain(['puerto-rico-extras', 'display-none']);
+      expect(prExtras.hidden).to.eq(true);
     });
 
-    it('does not include class display-none if state is PR', () => {
+    it('shows extras if state is PR', () => {
       const forStateCode = 'PR';
       showOrHidePuertoRicoExtras(forStateCode);
-      const prExtrasElemClassList = document.querySelector('.puerto-rico-extras')?.classList;
+      const prExtras = document.querySelector('.puerto-rico-extras');
 
-      expect(prExtrasElemClassList).to.contain(['puerto-rico-extras']);
+      expect(prExtras.hidden).to.eq(false);
     });
   });
 
@@ -43,8 +43,8 @@ describe('state-guidance', () => {
           </div>
           <div class="jurisdiction-extras">
             <span data-state="default">Default help text</span>
-            <span data-state="CA" class="display-none">CA help text</span>
-            <span data-state="TX" class="display-none">TX help text</span>
+            <span data-state="CA" hidden>CA help text</span>
+            <span data-state="TX" hidden>TX help text</span>
           </div>
         </div>
       `;
@@ -56,14 +56,12 @@ describe('state-guidance', () => {
 
       const allHintTexts = document.querySelectorAll('.jurisdiction-extras [data-state]');
       const texasText = document.querySelectorAll('.jurisdiction-extras [data-state=TX]');
-      const nonTexasText = document.querySelectorAll(
-        '.jurisdiction-extras [data-state].display-none',
-      );
+      const hiddenText = [...allHintTexts].filter((text) => text.hidden);
 
       expect(texasText.length).to.eq(1);
-      expect(texasText[0].classList.contains('display-none')).to.eq(false);
+      expect(texasText[0].hidden).to.eq(false);
 
-      expect(nonTexasText.length + texasText.length).to.eq(allHintTexts.length);
+      expect(hiddenText.length + texasText.length).to.eq(allHintTexts.length);
     });
 
     it('includes default hint text when no state is selected', () => {
@@ -72,14 +70,12 @@ describe('state-guidance', () => {
 
       const allHintTexts = document.querySelectorAll('.jurisdiction-extras [data-state]');
       const defaultText = document.querySelectorAll('.jurisdiction-extras [data-state=default]');
-      const nonDefaultText = document.querySelectorAll(
-        '.jurisdiction-extras [data-state].display-none',
-      );
+      const hiddenText = [...allHintTexts].filter((text) => text.hidden);
 
       expect(defaultText.length).to.eq(1);
-      expect(defaultText[0].classList.contains('display-none')).to.eq(false);
+      expect(defaultText[0].hidden).to.eq(false);
 
-      expect(nonDefaultText.length + defaultText.length).to.eq(allHintTexts.length);
+      expect(hiddenText.length + defaultText.length).to.eq(allHintTexts.length);
     });
 
     it('includes default hint text when a state without a state specific hint is selected', () => {
@@ -88,14 +84,12 @@ describe('state-guidance', () => {
 
       const allHintTexts = document.querySelectorAll('.jurisdiction-extras [data-state]');
       const defaultText = document.querySelectorAll('.jurisdiction-extras [data-state=default]');
-      const nonDefaultText = document.querySelectorAll(
-        '.jurisdiction-extras [data-state].display-none',
-      );
+      const hiddenText = [...allHintTexts].filter((text) => text.hidden);
 
       expect(defaultText.length).to.eq(1);
-      expect(defaultText[0].classList.contains('display-none')).to.eq(false);
+      expect(defaultText[0].hidden).to.eq(false);
 
-      expect(nonDefaultText.length + defaultText.length).to.eq(allHintTexts.length);
+      expect(hiddenText.length + defaultText.length).to.eq(allHintTexts.length);
     });
   });
 });

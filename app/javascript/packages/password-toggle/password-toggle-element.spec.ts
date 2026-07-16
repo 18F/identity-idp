@@ -19,7 +19,7 @@ describe('PasswordToggleElement', () => {
           class="password-toggle__toggle"
           aria-controls="input-${idSuffix}"
         >
-        <label for="toggle-${idSuffix}" class="usa-checkbox__label password-toggle__toggle-label">
+        <label for="toggle-${idSuffix}" class="ads-checkbox__label password-toggle__toggle-label">
           Show password
         </label>
       </div>`;

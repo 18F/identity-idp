@@ -4,9 +4,8 @@ require 'csv'
 require 'caxlsx'
 
 class ReportMailer < ActionMailer::Base
+  helper ::LinkHelper
   include Mailable
-
-  before_action :attach_images, except: [:tables_report]
 
   layout 'tables_report', only: [:tables_report]
 

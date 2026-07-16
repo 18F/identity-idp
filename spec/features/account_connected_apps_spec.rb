@@ -1,8 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe 'Account connected applications' do
-  include NavigationHelper
-
   let(:user) do
     create(
       :user,
@@ -41,7 +39,7 @@ RSpec.describe 'Account connected applications' do
   before do
     sign_in_and_2fa_user(user)
     build_account_connected_apps
-    within_sidenav { click_on t('account.navigation.connected_services') }
+    visit account_path
   end
 
   scenario 'viewing account connected applications' do
@@ -49,7 +47,7 @@ RSpec.describe 'Account connected applications' do
 
     expect(identity_without_link_timestamp).to appear_before(identity_timestamp)
 
-    within_sidenav { click_on t('account.navigation.history') }
+    within('.ads-account-nav') { click_on t('account.navigation.history') }
     expect(page).to have_content(
       t('event_types.authenticated_at', service_provider: identity_without_link.display_name),
     )
@@ -68,18 +66,18 @@ RSpec.describe 'Account connected applications' do
 
   scenario 'revoking consent from an SP' do
     within('li', text: identity.display_name) do
-      click_link(t('account.revoke_consent.link_title'))
+      click_link(t('account.revoke_consent.link_title'), visible: :all)
     end
 
     expect(page).to have_content(identity.display_name)
 
-    # Canceling should return to the Connected Accounts page
+    # Canceling should return to the account homepage
     click_on t('links.cancel')
-    expect(page).to have_current_path(account_connected_services_path)
+    expect(page).to have_current_path(account_path)
 
     # Revoke again and confirm revocation
     within('li', text: identity.display_name) do
-      click_link(t('account.revoke_consent.link_title'))
+      click_link(t('account.revoke_consent.link_title'), visible: :all)
     end
     click_on t('forms.buttons.continue')
 
@@ -90,25 +88,25 @@ RSpec.describe 'Account connected applications' do
   scenario 'changing email shared with SP' do
     within('li', text: identity.display_name) do
       expect(page).to have_content(t('account.connected_apps.email_not_selected'))
-      click_link(t('help_text.requested_attributes.change_email_link'))
+      click_link(t('help_text.requested_attributes.change_email_link'), visible: :all)
     end
 
     expect(page).to have_field(user.email) { |field| field[:checked] }
 
     choose user.email_addresses.last.email
-    click_on t('help_text.requested_attributes.select_email_link')
+    click_on t('account.dashboard.modals.select_email.primary')
 
     within('li', text: identity.display_name) do
       expect(page).not_to have_content(t('account.connected_apps.email_not_selected'))
       expect(page).to have_content(user.email_addresses.last.email)
-      click_link(t('help_text.requested_attributes.change_email_link'))
+      click_link(t('help_text.requested_attributes.change_email_link'), visible: :all)
     end
 
     expect(page).to have_field(user.email_addresses.last.email) { |field| field[:checked] }
 
     choose user.email
 
-    click_on(t('help_text.requested_attributes.select_email_link'))
+    click_on(t('account.dashboard.modals.select_email.primary'))
 
     within('li', text: identity.display_name) do
       expect(page).to have_content(user.email)
@@ -125,7 +123,7 @@ RSpec.describe 'Account connected applications' do
 
     within('li', text: identity.display_name) do
       expect(page).to have_content(t('account.connected_apps.email_not_selected'))
-      click_link(t('help_text.requested_attributes.change_email_link'))
+      click_link(t('help_text.requested_attributes.change_email_link'), visible: :all)
     end
 
     expect(page).to have_field(user.email_addresses.last.email) { |field| field[:checked] }

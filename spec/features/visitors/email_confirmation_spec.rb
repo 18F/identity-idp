@@ -35,8 +35,8 @@ RSpec.feature 'Email confirmation during sign up' do
     visit_in_email(t('user_mailer.email_confirmation_instructions.link_text'))
 
     expect(page).to have_content t('devise.confirmations.confirmed_but_must_set_password')
-    expect(page).to have_title t('titles.confirmations.show')
-    expect(page).to have_content t('forms.confirmation.show_hdr')
+    expect(page).to have_title t('titles.sign_up.create_password')
+    expect(page).to have_content t('titles.sign_up.create_password')
 
     # Regression: Previously, this event had been logged multiple times per confirmation.
     expect(@analytics).to have_logged_event('User Registration: Email Confirmation').once

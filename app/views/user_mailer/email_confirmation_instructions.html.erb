@@ -1,49 +1,21 @@
-<p class="lead">
-  <%= t('user_mailer.email_confirmation_instructions.header', intro: @first_sentence) %>
+<% if @first_sentence.present? %>
+  <p class="mailer-text mailer-text--spaced">
+    <%= @first_sentence %>
+  </p>
+<% end %>
+
+<p class="mailer-text mailer-text--spaced">
+  <%= t('user_mailer.email_confirmation_instructions.body') %>
+</p>
+
+<p class="mailer-text mailer-text--spaced">
   <%= t('user_mailer.email_confirmation_instructions.footer', confirmation_period: @confirmation_period) %>
 </p>
 
-<table class="button expanded large radius">
-  <tbody>
-    <tr>
-      <td>
-        <table>
-          <tbody>
-            <tr>
-              <td style="text-align: center; padding: 10px 20px; box-sizing: border-box;">
-                <%= link_to t('user_mailer.email_confirmation_instructions.link_text'),
-                            sign_up_create_email_confirmation_url(
-                              _request_id: @request_id,
-                              confirmation_token: @token,
-                              locale: @locale,
-                            ),
-                            target: '_blank',
-                            class: 'float-center',
-                            rel: 'noopener',
-                            style: 'padding: 0; width: 100%;' %>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </td>
-      <td class="expander"></td>
-    </tr>
-  </tbody>
-</table>
-
-<p>
-  <%= link_to(
-        sign_up_create_email_confirmation_url(
-          _request_id: @request_id,
-          confirmation_token: @token,
-          locale: @locale,
-        ),
-        sign_up_create_email_confirmation_url(
-          _request_id: @request_id,
-          confirmation_token: @token,
-          locale: @locale,
-        ),
-        target: '_blank',
-        rel: 'noopener',
-      ) %>
+<p class="mailer-text">
+  <%= t('user_mailer.email_confirmation_instructions.link_ignore') %>
 </p>
+
+<%= render 'shared/email/button',
+           url: @confirmation_url,
+           text: t('user_mailer.email_confirmation_instructions.link_text') %>

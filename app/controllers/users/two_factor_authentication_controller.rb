@@ -213,6 +213,9 @@ module Users
         otp_delivery_selection_result: otp_delivery_selection_result,
       )
       if @telephony_result.success?
+        if otp_delivery_selection_result.extra[:resend]
+          flash[:success] = t('idv.otp_verification.resend_success')
+        end
         redirect_to login_two_factor_url(
           otp_delivery_preference: method,
           otp_make_default_number: default,

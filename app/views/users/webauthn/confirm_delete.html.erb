@@ -1,0 +1,6 @@
+<%= render 'users/confirm_delete_authenticator',
+           heading: @presenter.confirm_delete_heading,
+           caution: @presenter.caution_delete,
+           delete_url: webauthn_path(id: @form.configuration.id),
+           delete_label: @presenter.delete_button_label,
+           cancel_url: edit_webauthn_path(id: @form.configuration.id) %>

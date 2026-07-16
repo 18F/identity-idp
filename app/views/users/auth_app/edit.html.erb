@@ -1,33 +1,39 @@
 <% self.title = t('two_factor_authentication.auth_app.edit_heading') %>
 
-<%= render PageHeadingComponent.new.with_content(t('two_factor_authentication.auth_app.edit_heading')) %>
+<%= render ADS::FormPageComponent.new(title: t('two_factor_authentication.auth_app.edit_heading')) do |page| %>
+  <% page.with_body do %>
+    <%= form_with(
+          model: @form,
+          scope: :form,
+          method: :put,
+          url: auth_app_path(id: @form.configuration.id),
+          local: true,
+          class: 'ads-form',
+        ) do |f| %>
+      <%= render ADS::StackComponent.new(kind: :form, gap: 16, align: :stretch) do %>
+        <%= render InputComponent.new(
+              form: f,
+              attribute: :name,
+              label: t('two_factor_authentication.auth_app.nickname'),
+              error_message: @form.errors.full_messages_for(:name).first,
+            ) %>
 
-<%= simple_form_for(
-      @form,
-      as: :form,
-      method: :put,
-      url: auth_app_path(id: @form.configuration.id),
-    ) do |f| %>
-  <%= render ValidatedFieldComponent.new(
-        form: f,
-        name: :name,
-        label: t('two_factor_authentication.auth_app.nickname'),
-      ) %>
+        <%= render ButtonComponent.new(
+              type: :submit,
+            ).with_content(t('two_factor_authentication.auth_app.change_nickname')) %>
+      <% end %>
+    <% end %>
+  <% end %>
 
-  <%= f.submit(
-        t('two_factor_authentication.auth_app.change_nickname'),
-        class: 'display-block margin-top-5',
-      ) %>
+  <% page.with_actions do %>
+    <%= render ButtonComponent.new(
+          url: confirm_delete_auth_app_path(id: @form.configuration.id),
+          variant: :destructive,
+        ).with_content(t('two_factor_authentication.auth_app.delete')) %>
+
+    <%= render ButtonComponent.new(
+          url: account_security_path,
+          variant: :secondary,
+        ).with_content(t('links.cancel')) %>
+  <% end %>
 <% end %>
-
-<%= render ButtonComponent.new(
-      url: auth_app_path(id: @form.configuration.id),
-      method: :delete,
-      form: { aria: { label: t('two_factor_authentication.auth_app.delete') } },
-      big: true,
-      wide: true,
-      danger: true,
-      class: 'display-block margin-top-2',
-    ).with_content(t('two_factor_authentication.auth_app.delete')) %>
-
-<%= render 'shared/cancel', link: account_path %>

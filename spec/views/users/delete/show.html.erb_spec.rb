@@ -45,6 +45,6 @@ RSpec.describe 'users/delete/show.html.erb' do
   it 'contains link to cancel delete account link' do
     render
 
-    expect(rendered).to have_link(t('users.delete.actions.cancel'), href: account_path)
+    expect(rendered).to have_link(t('users.delete.actions.cancel'), href: account_settings_path)
   end
 end

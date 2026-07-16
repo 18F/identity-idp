@@ -1,0 +1,34 @@
+<section class="ads-account__section" aria-labelledby="account-phone-heading">
+  <h2 id="account-phone-heading" class="ads-account__heading">
+    <%= t('account.dashboard.account.phone.title') %>
+  </h2>
+
+  <div class="ads-account__panel">
+    <% if flash[:phone_error] %>
+      <%= render AlertComponent.new(type: :error, id: 'phones', message: flash[:phone_error]) %>
+    <% end %>
+
+    <% if mfa_context.phone_configurations.any? %>
+      <ul class="ads-account__rows">
+        <% mfa_context.phone_configurations.each do |phone_configuration| %>
+          <%= render 'accounts/account/phone_row',
+                     phone_configuration:,
+                     mfa_context: %>
+        <% end %>
+      </ul>
+    <% end %>
+
+    <% if current_user.phone_configurations.count < IdentityConfig.store.max_phone_numbers_per_account %>
+      <% if mfa_context.phone_configurations.any? %>
+        <div class="ads-account__rule"></div>
+      <% end %>
+      <div class="ads-account__panel-action">
+        <%= render ButtonComponent.new(
+              url: phone_setup_path,
+              variant: :secondary,
+              size: :md
+            ).with_content(t('account.navigation.add_phone_number')) %>
+      </div>
+    <% end %>
+  </div>
+</section>

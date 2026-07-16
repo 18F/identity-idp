@@ -300,17 +300,15 @@ describe('document-capture/components/document-capture', () => {
   });
 
   describe('step indicator', () => {
-    it('renders the step indicator', () => {
-      const { getByText } = render(<DocumentCapture />);
+    it('does not render the step indicator', () => {
+      const { queryByText, queryByLabelText } = render(<DocumentCapture />);
 
-      const step = getByText('step_indicator.flows.idv.verify_id');
-
-      expect(step).to.be.ok();
-      expect(step.closest('.step-indicator__step--current')).to.exist();
+      expect(queryByText('step_indicator.flows.idv.verify_id')).not.to.exist();
+      expect(queryByLabelText('step_indicator.accessible_label')).not.to.exist();
     });
 
     context('in person steps', () => {
-      it('renders the step indicator', async () => {
+      it('navigates to in-person prepare without showing the step indicator', async () => {
         const callback = sandbox.spy();
         const endpoint = '/upload';
         const { getByLabelText, getByText, queryByText, findByText } = render(
@@ -361,10 +359,8 @@ describe('document-capture/components/document-capture', () => {
           /React will try to recreate this component tree from scratch using the error boundary you provided/,
         );
 
-        const step = await findByText('step_indicator.flows.idv.find_a_post_office');
-
-        expect(step).to.be.ok();
-        expect(step.closest('.step-indicator__step--current')).to.exist();
+        expect(await findByText('in_person_proofing.headings.prepare')).to.be.ok();
+        expect(queryByText('step_indicator.flows.idv.find_a_post_office')).not.to.exist();
         expect(callback).to.have.been.calledOnce();
       });
     });

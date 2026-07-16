@@ -25,9 +25,10 @@ RSpec.describe 'idv/how_to_verify/show.html.erb' do
 
     it 'renders a step indicator with Getting started as the current step' do
       render
-      expect(view.content_for(:pre_flash_content)).to have_css(
-        '.step-indicator__step--current',
-        text: t('step_indicator.flows.idv.getting_started'),
+      progress = view.instance_variable_get(:@ads_progress_component)
+      expect(progress).to be_a(ProgressComponent)
+      expect(progress.steps[progress.current_step]).to eq(
+        t('step_indicator.flows.idv.getting_started'),
       )
     end
 
@@ -54,16 +55,11 @@ RSpec.describe 'idv/how_to_verify/show.html.erb' do
       expect(rendered).to have_link(t('doc_auth.info.verify_at_post_office_link_text'))
     end
 
-    it 'renders a cancel link' do
-      render
-      expect(rendered).to have_link(t('links.cancel'))
-    end
-
     it 'renders non-selfie specific content' do
       render
       expect(rendered).to have_content(t('doc_auth.headings.verify_online'))
       expect(rendered).to have_content(t('doc_auth.info.verify_online_instruction'))
-      expect(rendered).to have_content(t('doc_auth.info.verify_online_description'))
+      expect(rendered).to have_content(t('doc_auth.info.verify_online_description_passport'))
       expect(rendered).to have_content(t('doc_auth.info.verify_at_post_office_instruction'))
       expect(rendered).to have_content(
         strip_tags(t('doc_auth.info.verify_at_post_office_description_passport_html')),
@@ -75,7 +71,7 @@ RSpec.describe 'idv/how_to_verify/show.html.erb' do
         render
         expect(rendered).to have_content(t('doc_auth.info.verify_online_instruction'))
         expect(rendered).to have_content(
-          t('doc_auth.info.verify_online_description'),
+          t('doc_auth.info.verify_online_description_passport'),
         ).once
         expect(rendered).to have_content(
           strip_tags(t('doc_auth.info.verify_at_post_office_description_passport_html')),
@@ -93,7 +89,7 @@ RSpec.describe 'idv/how_to_verify/show.html.erb' do
 
         expect(rendered).to have_content(t('doc_auth.info.verify_online_instruction'))
         expect(rendered).to have_content(
-          t('doc_auth.info.verify_online_description'),
+          t('doc_auth.info.verify_online_description_passport'),
         ).twice
         expect(rendered).not_to have_content(
           strip_tags(t('doc_auth.info.verify_at_post_office_description_passport_html')),
@@ -111,7 +107,7 @@ RSpec.describe 'idv/how_to_verify/show.html.erb' do
             t('doc_auth.info.verify_online_instruction'),
           )
           expect(rendered).to have_content(
-            t('doc_auth.info.verify_online_description'),
+            t('doc_auth.info.verify_online_description_passport'),
           ).once
           expect(rendered).to have_content(
             strip_tags(t('doc_auth.info.verify_at_post_office_description_passport_html')),
@@ -130,7 +126,7 @@ RSpec.describe 'idv/how_to_verify/show.html.erb' do
             t('doc_auth.info.verify_online_instruction'),
           )
           expect(rendered).to have_content(
-            t('doc_auth.info.verify_online_description'),
+            t('doc_auth.info.verify_online_description_passport'),
           ).twice
           expect(rendered).not_to have_content(
             strip_tags(t('doc_auth.info.verify_at_post_office_description_passport_html')),
@@ -145,7 +141,7 @@ RSpec.describe 'idv/how_to_verify/show.html.erb' do
       it 'renders selfie specific content' do
         render
         expect(rendered).to have_content(t('doc_auth.info.verify_online_instruction_selfie'))
-        expect(rendered).to have_content(t('doc_auth.info.verify_online_description'))
+        expect(rendered).to have_content(t('doc_auth.info.verify_online_description_passport'))
         expect(rendered).to have_content(t('doc_auth.info.verify_at_post_office_instruction'))
         expect(rendered).to have_content(
           strip_tags(t('doc_auth.info.verify_at_post_office_description_passport_html')),
@@ -160,7 +156,7 @@ RSpec.describe 'idv/how_to_verify/show.html.erb' do
             render
             expect(rendered).to have_content(t('doc_auth.info.verify_online_instruction_selfie'))
             expect(rendered).to have_content(
-              t('doc_auth.info.verify_online_description'),
+              t('doc_auth.info.verify_online_description_passport'),
             ).once
             expect(rendered).to have_content(
               strip_tags(t('doc_auth.info.verify_at_post_office_description_passport_html')),
@@ -176,7 +172,7 @@ RSpec.describe 'idv/how_to_verify/show.html.erb' do
             render
             expect(rendered).to have_content(t('doc_auth.info.verify_online_instruction_selfie'))
             expect(rendered).to have_content(
-              t('doc_auth.info.verify_online_description'),
+              t('doc_auth.info.verify_online_description_passport'),
             ).twice
             expect(rendered).not_to have_content(
               strip_tags(t('doc_auth.info.verify_at_post_office_description_passport_html')),

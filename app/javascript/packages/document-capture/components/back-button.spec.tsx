@@ -6,11 +6,11 @@ import { act } from 'react-dom/test-utils';
 import BackButton from './back-button';
 
 const getButtonHtml = () =>
-  `<button type="button" class="usa-button usa-button--unstyled"><span aria-hidden="true">\u2039</span> ${t(
+  `<button type="button" class="ads-button ads-button--quaternary ads-button--md"><span aria-hidden="true">\u2039</span> ${t(
     'forms.buttons.back',
   )}</button>`;
 const getBorderedButtonHtml = () =>
-  `<div class="margin-top-5 padding-top-2 border-top border-primary-light"><button type="button" class="usa-button usa-button--unstyled"><span aria-hidden="true">\u2039</span> ${t(
+  `<div class="margin-top-5 padding-top-2 border-top border-primary-light"><button type="button" class="ads-button ads-button--quaternary ads-button--md"><span aria-hidden="true">\u2039</span> ${t(
     'forms.buttons.back',
   )}</button></div>`;
 

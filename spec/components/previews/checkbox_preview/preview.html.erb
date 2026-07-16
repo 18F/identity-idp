@@ -1,0 +1,45 @@
+<%#
+  ADS checkbox states from Figma 1724:742
+  Default · Selected · Error · Disabled
+%>
+<div style="display: flex; flex-direction: column; gap: 32px; max-width: 20rem;">
+  <div>
+    <p style="margin: 0 0 12px; font: 600 12px/1 system-ui;">Default</p>
+    <div class="ads-checkbox">
+      <input class="ads-checkbox__input" id="cb-default" type="checkbox">
+      <label class="ads-checkbox__label" for="cb-default">Unchecked</label>
+    </div>
+  </div>
+
+  <div>
+    <p style="margin: 0 0 12px; font: 600 12px/1 system-ui;">Selected</p>
+    <div class="ads-checkbox">
+      <input class="ads-checkbox__input" id="cb-selected" type="checkbox" checked>
+      <label class="ads-checkbox__label" for="cb-selected">Checked</label>
+    </div>
+  </div>
+
+  <div>
+    <p style="margin: 0 0 12px; font: 600 12px/1 system-ui;">Error</p>
+    <div class="ads-checkbox">
+      <input class="ads-checkbox__input usa-input--error" id="cb-error" type="checkbox" aria-invalid="true">
+      <label class="ads-checkbox__label" for="cb-error">Invalid</label>
+    </div>
+  </div>
+
+  <div>
+    <p style="margin: 0 0 12px; font: 600 12px/1 system-ui;">Disabled</p>
+    <div class="ads-checkbox">
+      <input class="ads-checkbox__input" id="cb-disabled" type="checkbox" disabled>
+      <label class="ads-checkbox__label" for="cb-disabled">Disabled</label>
+    </div>
+  </div>
+
+  <div>
+    <p style="margin: 0 0 12px; font: 600 12px/1 system-ui;">Disabled selected</p>
+    <div class="ads-checkbox">
+      <input class="ads-checkbox__input" id="cb-disabled-checked" type="checkbox" checked disabled>
+      <label class="ads-checkbox__label" for="cb-disabled-checked">Disabled checked</label>
+    </div>
+  </div>
+</div>

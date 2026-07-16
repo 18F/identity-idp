@@ -24,7 +24,7 @@ describe('PasswordConfirmationElement', () => {
           class="password-confirmation__toggle"
           aria-controls="input-${idSuffix}"
         >
-        <label for="toggle-${idSuffix}" class="usa-checkbox__label password-confirmation__toggle-label">
+        <label for="toggle-${idSuffix}" class="ads-checkbox__label password-confirmation__toggle-label">
           Show password
         </label>
       </div>`;

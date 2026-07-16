@@ -53,10 +53,10 @@ RSpec.describe TwoFactorAuthentication::SetUpWebauthnPlatformSelectionPresenter 
     context 'when user has configured this authenticator' do
       let(:user) { create(:user, :with_webauthn_platform) }
 
-      it 'returns text with number of added authenticators' do
+      it 'returns text indicating the authenticator is enabled' do
         expect(mfa_configuration_description).to eq(
           t(
-            'two_factor_authentication.two_factor_choice_options.no_count_configuration_added',
+            'two_factor_authentication.two_factor_choice_options.no_count_configuration_enabled',
             count: 1,
           ),
         )

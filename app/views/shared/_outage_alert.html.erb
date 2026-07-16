@@ -1,9 +1,15 @@
-<div class="margin-bottom-2">
-  <strong><%= t('idv.failure.exceptions.in_person_outage_error_message.ready_to_verify.title', date: date) %></strong>
-</div>
-<div class="margin-bottom-1">
-  <%= t('idv.failure.exceptions.in_person_outage_error_message.ready_to_verify.body') %>
-</div>
-<div class="margin-bottom-1">
-  <%= t('idv.failure.exceptions.in_person_outage_error_message.ready_to_verify.contact_html', app_name: APP_NAME, help_url: MarketingSite.contact_url, date: email_date) %>
-</div>
+<strong>
+  <%= t(
+        'idv.failure.exceptions.in_person_outage_error_message.ready_to_verify.title',
+        date:,
+      ) %>
+</strong>
+<br>
+<%= t('idv.failure.exceptions.in_person_outage_error_message.ready_to_verify.body') %>
+<br>
+<%= t(
+      'idv.failure.exceptions.in_person_outage_error_message.ready_to_verify.contact_html',
+      app_name: APP_NAME,
+      help_url: MarketingSite.contact_url,
+      date: email_date,
+    ) %>

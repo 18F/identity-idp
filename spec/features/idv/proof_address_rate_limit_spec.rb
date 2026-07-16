@@ -62,7 +62,7 @@ RSpec.feature 'address proofing rate limit' do
       fill_out_phone_form_ok
       click_idv_send_security_code
       fill_in_code_with_last_phone_otp
-      click_submit_default
+      click_button t('forms.buttons.continue')
 
       expect(page).to have_content(t('idv.titles.session.enter_password', app_name: APP_NAME))
       expect(page).to have_current_path(idv_enter_password_path)

@@ -1,41 +1,47 @@
 <% self.title = t('titles.cancel_exit_login', app_name: APP_NAME) %>
 
-<%= render StatusPageComponent.new(status: :warning) do |c| %>
-  <% c.with_header { t('headings.cancellations.login_cancel_prompt', app_name: APP_NAME) } %>
+<%= render ADS::FormPageComponent.new(
+      title: t('headings.cancellations.login_cancel_prompt', app_name: APP_NAME),
+      subtitle: t('login_cancel.header', app_name: APP_NAME),
+    ) do |page| %>
+  <% page.with_body do %>
+    <% account_link_html = capture do %>
+      <%= render ADS::LinkComponent.new(url: account_path) do %>
+        <%= t('login_cancel.account_page') %>
+      <% end %>
+    <% end %>
 
-  <p>
-    <%= t('login_cancel.header', app_name: APP_NAME) %>
-  </p>
+    <%= render ADS::StackComponent.new do %>
+      <%= render CardComponent.new(padding: :compact) do %>
+        <p class="ads-card__value">
+          <%= t(
+                'login_cancel.bullet1_html',
+                app_name: APP_NAME,
+                sp_name: decorated_sp_session.sp_name,
+              ) %>
+        </p>
+      <% end %>
 
-  <ul class="usa-list">
-    <li><%= t('login_cancel.bullet1_html', app_name: APP_NAME, sp_name: decorated_sp_session.sp_name) %></li>
-    <li>
-      <%= t(
-            'login_cancel.bullet2_html', app_name: APP_NAME,
-                                         link_html: link_to(
-                                           t('login_cancel.account_page'),
-                                           account_path,
-                                         )
-          ) %>
-    </li>
-  </ul>
+      <%= render CardComponent.new(padding: :compact) do %>
+        <p class="ads-card__value">
+          <%= t(
+                'login_cancel.bullet2_html',
+                app_name: APP_NAME,
+                link_html: account_link_html,
+              ) %>
+        </p>
+      <% end %>
+    <% end %>
+  <% end %>
 
-  <div class="grid-row">
-    <div class="grid-col-6">
-      <%= render ButtonComponent.new(
-            url: sign_up_completed_path,
-            big: true,
-            wide: true,
-            class: 'margin-bottom-2 margin-top-3',
-          ).with_content(t('login_cancel.keep_going')) %>
+  <% page.with_actions do %>
+    <%= render ButtonComponent.new(
+          url: sign_up_completed_path,
+        ).with_content(t('login_cancel.keep_going')) %>
 
-      <%= render ButtonComponent.new(
-            url: return_to_sp_cancel_path(step: :sign_up),
-            big: true,
-            wide: true,
-            outline: true,
-          ).with_content(t('login_cancel.exit', app_name: APP_NAME)) %>
-    </div>
-  </div>
- 
+    <%= render ButtonComponent.new(
+          url: return_to_sp_cancel_path(step: :sign_up),
+          variant: :destructive,
+        ).with_content(t('login_cancel.exit', app_name: APP_NAME)) %>
+  <% end %>
 <% end %>

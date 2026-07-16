@@ -3,11 +3,16 @@ require 'rails_helper'
 RSpec.describe 'idv/hybrid_handoff/show.html.erb' do
   before do
     allow(view).to receive(:current_user).and_return(@user)
+    allow(view).to receive(:sp_session).and_return(request_id: 'request-id')
+    allow(controller).to receive(:idv_session).and_return(
+      instance_double(Idv::Session, document_capture_session_uuid: SecureRandom.uuid),
+    )
     @idv_form = Idv::PhoneForm.new(user: build_stubbed(:user), previous_params: nil)
     @idv_how_to_verify_form = Idv::HowToVerifyForm.new
     @presenter = Idv::HowToVerifyPresenter.new(
       selfie_check_required: true,
     )
+    @upload_enabled = true
   end
 
   subject(:rendered) do
@@ -24,43 +29,64 @@ RSpec.describe 'idv/hybrid_handoff/show.html.erb' do
     before do
       @selfie_required = false
     end
-    it 'has a form for starting mobile doc auth with an aria label tag' do
-      expect(rendered).to have_selector(
-        :xpath,
-        "//form[@aria-label=\"#{t('forms.buttons.send_link')}\"]",
+
+    it 'renders a QR code for starting mobile doc auth' do
+      expect(rendered).to have_css(
+        'img.ads-handoff__qr-image[src^="data:image/png;base64,"]',
       )
     end
 
-    it 'displays the expected headings from the "a" case' do
-      expect(rendered).to have_selector('h1', text: t('doc_auth.headings.how_to_verify'))
-      expect(rendered).to have_selector('h2', text: t('doc_auth.headings.upload_from_phone'))
+    it 'displays QR-first handoff content' do
+      expect(rendered).to have_selector('h1', text: t('headings.continue_on_phone.title'))
+      expect(rendered).to have_content(t('headings.continue_on_phone.qr_description_lead'))
+      expect(rendered).to have_button(t('headings.continue_on_phone.text_link'))
+      expect(rendered).to have_content(t('headings.continue_on_phone.qr_description_tail').strip)
     end
 
-    it 'does not display IPP related content' do
-      expect(rendered).to_not have_content(strip_tags(t('doc_auth.headings.verify_at_post_office')))
+    it 'opens the SMS modal from the text message link' do
+      expect(rendered).to have_css(
+        "button.ads-link[data-ads-modal-open][aria-controls='hybrid-handoff-sms-modal']",
+        text: t('headings.continue_on_phone.text_link'),
+      )
+      expect(rendered).to have_css('#hybrid-handoff-sms-modal', visible: :hidden)
+      expect(rendered).to have_css(
+        '#form-to-submit-photos-through-mobile',
+        text: t('forms.buttons.send_link'),
+        visible: :hidden,
+      )
     end
   end
+
   context 'when selfie is required' do
     before do
       @selfie_required = true
       @post_office_enabled = true
     end
-    it 'has a form for starting mobile doc auth with an aria label tag' do
-      expect(rendered).to have_selector(
-        :xpath,
-        "//form[@aria-label=\"#{t('forms.buttons.send_link')}\"]",
+
+    it 'renders a QR code for starting mobile doc auth' do
+      expect(rendered).to have_css(
+        'img.ads-handoff__qr-image[src^="data:image/png;base64,"]',
       )
     end
-    it 'displays the expected headings from the "a" case' do
-      expect(rendered).to have_selector('h1', text: t('doc_auth.headings.how_to_verify'))
+
+    it 'displays the expected page heading' do
+      expect(rendered).to have_selector('h1', text: t('headings.continue_on_phone.title'))
     end
 
     describe 'when ipp is enabled' do
       before do
         @post_office_enabled = true
       end
-      it 'displays content and link for choose ipp' do
-        expect(rendered).to have_content(t('doc_auth.headings.verify_at_post_office'))
+
+      it 'renders verify in person and desktop actions' do
+        expect(rendered).to have_css(
+          'button.ads-button--secondary',
+          text: t('forms.buttons.verify_in_person'),
+        )
+        expect(rendered).to have_css(
+          'button.ads-button--quaternary',
+          text: t('forms.buttons.continue_on_desktop'),
+        )
       end
     end
 
@@ -68,12 +94,9 @@ RSpec.describe 'idv/hybrid_handoff/show.html.erb' do
       before do
         @post_office_enabled = false
       end
-      it 'displays content and link for choose ipp' do
-        expect(rendered).to_not have_content(t('doc_auth.headings.verify_at_post_office'))
-        expect(rendered).to_not have_link(
-          t('in_person_proofing.headings.prepare'),
-          href: idv_document_capture_path(step: :hybrid_handoff),
-        )
+
+      it 'does not render verify in person' do
+        expect(rendered).to_not have_button(t('forms.buttons.verify_in_person'))
       end
     end
   end

@@ -1,13 +1,10 @@
-<table class="spacer">
-  <tbody>
-    <tr>
-      <td class="s10" height="10px">
-        &nbsp;
-      </td>
-    </tr>
-  </tbody>
-</table>
-
-<p>
-  <%= t('user_mailer.suspension_confirmed.remain_locked', app_name: APP_NAME) %>
+<p class="mailer-text mailer-text--spaced">
+  <%= t(
+        'user_mailer.suspension_confirmed.contact_us_html',
+        contact_us_link_html: mailer_link_to(
+          t('user_mailer.contact_link_text'),
+          MarketingSite.contact_url,
+          class: 'mailer-inline-link',
+        ),
+      ) %>
 </p>

@@ -23,6 +23,10 @@ RSpec.describe 'users/webauthn_setup_mismatch/show.html.erb' do
     expect(rendered).to have_css('p', text: presenter.description)
   end
 
+  it 'does not render webauthn mismatch images' do
+    expect(rendered).not_to include('webauthn-mismatch')
+  end
+
   it 'renders buttons to continue or undo' do
     expect(rendered).to have_button(t('forms.buttons.continue'))
     expect(rendered).to have_button(t('webauthn_setup_mismatch.undo'))

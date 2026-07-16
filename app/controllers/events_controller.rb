@@ -3,7 +3,7 @@
 class EventsController < ApplicationController
   include RememberDeviceConcern
   before_action :confirm_two_factor_authenticated
-  layout 'no_card'
+  layout 'account_side_nav'
 
   EVENTS_PAGE_SIZE = 25
 
@@ -17,6 +17,10 @@ class EventsController < ApplicationController
       user: current_user,
       locked_for_session: pii_locked_for_session?(current_user),
     )
+    # The device drill-in lives under History in the account side nav, so highlight
+    # that item even though its path (/account/devices/:id/events) sits outside
+    # the /account/history tree.
+    @account_nav_current_path = account_history_path
     device_and_events
   rescue ActiveRecord::RecordNotFound, ActiveModel::RangeError
     render_not_found

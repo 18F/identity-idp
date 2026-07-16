@@ -36,9 +36,9 @@ RSpec.describe TwoFactorAuthCode::PhoneDeliveryPresenter do
       expect(presenter.cancel_link).to eq sign_out_path
     end
 
-    it 'returns the account path during reauthn' do
+    it 'returns the account security path during reauthn' do
       data[:reauthn] = true
-      expect(presenter.cancel_link).to eq account_path
+      expect(presenter.cancel_link).to eq account_security_path
     end
 
     it 'returns the account path during phone change confirmation' do
@@ -120,11 +120,12 @@ RSpec.describe TwoFactorAuthCode::PhoneDeliveryPresenter do
         phone_setup_path: link_to(
           presenter.phone_call_text,
           phone_setup_path(otp_delivery_preference: 'voice'),
+          class: 'ads-link',
         ),
       )
     end
 
-    it 'returns translated landline warning html' do
+    it 'returns translated landline warning html with an inline link' do
       expect(presenter.landline_warning).to eq landline_html
     end
   end

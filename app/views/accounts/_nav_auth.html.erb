@@ -1,33 +1,40 @@
-<div class="usa-overlay"></div>
-<div class="usa-header">
-  <%= render 'accounts/mobile_nav' %>
-</div>
+<%= render ADS::OfficialBannerComponent.new %>
 
-<div class="grid-container padding-x-0 tablet:padding-x-4">
-  <div class="grid-row flex-justify tablet:padding-y-4">
-    <div class="grid-col-auto display-flex flex-align-center padding-x-2 tablet:padding-x-0">
-      <%= link_to(
-            image_tag(
-              asset_url('logo.svg'),
-              alt: APP_NAME,
-              class: 'text-bottom',
-              width: 155,
-              height: 21,
-            ),
-            root_path,
-          ) %>
-    </div>
-    <div class="grid-col-auto display-flex flex-align-center">
-      <span class="display-none tablet:display-inline padding-right-1 margin-right-1 border-right border-base-darker">
-        <%= t('account.welcome') %> <strong><%= greeting %></strong>
-      </span>
+<header class="ads-account-header">
+  <%= link_to root_path, class: 'ads-account-header__logo-link', aria: { label: APP_NAME } do %>
+    <%= image_tag(
+          asset_url('logo.svg'),
+          alt: '',
+          class: 'ads-account-header__logo',
+          aria: { hidden: true },
+          width: 155,
+          height: 21,
+        ) %>
+  <% end %>
 
-      <%= button_to t('links.sign_out'), logout_path, method: :delete, class: 'usa-button usa-button--unstyled' %>
+  <div class="ads-account-header__actions">
+    <details class="ads-account-header__menu" data-dismissable-menu>
+      <summary class="ads-account-header__menu-button">
+        <span class="ads-sr-only"><%= t('account.navigation.account_menu') %></span>
+        <span class="ads-account-header__menu-email"><%= greeting %></span>
+        <%= render IconComponent.new(
+              icon: :chevron_down,
+              size: 16,
+              class: 'ads-account-header__menu-chevron',
+            ) %>
+      </summary>
 
-      <button class="usa-menu-btn margin-left-2"><%= t('account.navigation.menu') %></button>
-    </div>
+      <div class="ads-account-header__menu-panel">
+        <%= button_to t('links.sign_out'),
+                      logout_path,
+                      method: :delete,
+                      form_class: 'ads-account-header__menu-form',
+                      class: 'ads-account-header__menu-item' %>
+      </div>
+    </details>
+
+    <%= render 'accounts/mobile_nav' %>
   </div>
-</div>
+</header>
 
-<%= stylesheet_tag_once('navigation') %>
-<%= javascript_packs_tag_once('navigation') %>
+<%= javascript_packs_tag_once('account-menu', preload_links_header: false) %>

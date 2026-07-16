@@ -35,8 +35,14 @@ RSpec.describe 'accounts/show.html.erb' do
   context 'when current user has a verified account' do
     let(:user) { build(:user, :proofed) }
 
-    it 'renders idv partial' do
-      expect(render).to render_template(partial: 'accounts/_identity_verification')
+    # The redesigned settings page has no identity-verification section (IdV
+    # status has no home in the new IA). Pin that a verified user still gets the
+    # account settings sections and no IdV partial.
+    it 'renders the account settings sections without an identity verification section' do
+      render
+
+      expect(view).to render_template(partial: 'accounts/account/_email_preferences')
+      expect(view).to_not render_template(partial: 'accounts/_identity_verification')
     end
   end
 
@@ -78,34 +84,46 @@ RSpec.describe 'accounts/show.html.erb' do
   context 'when current user has gpo pending profile' do
     let(:user) { create(:user, :with_pending_gpo_profile) }
 
-    it 'renders idv partial' do
-      expect(render).to render_template(partial: 'accounts/_identity_verification')
+    it 'renders the account settings sections without an identity verification section' do
+      render
+
+      expect(view).to render_template(partial: 'accounts/account/_email_preferences')
+      expect(view).to_not render_template(partial: 'accounts/_identity_verification')
     end
   end
 
   context 'when current user has gpo pending profile deactivated for password reset' do
     let(:user) { create(:user, :with_pending_gpo_profile) }
 
-    it 'does not render idv partial' do
+    it 'renders the account settings sections without an identity verification section' do
       user.profiles.first.update!(deactivation_reason: :password_reset)
-      expect(render).to_not render_template(partial: 'accounts/_identity_verification')
+      render
+
+      expect(view).to render_template(partial: 'accounts/account/_email_preferences')
+      expect(view).to_not render_template(partial: 'accounts/_identity_verification')
     end
   end
 
   context 'when current user has ipp pending profile' do
     let(:user) { create(:user, :with_pending_in_person_enrollment) }
 
-    it 'renders idv partial' do
-      expect(render).to render_template(partial: 'accounts/_identity_verification')
+    it 'renders the account settings sections without an identity verification section' do
+      render
+
+      expect(view).to render_template(partial: 'accounts/account/_email_preferences')
+      expect(view).to_not render_template(partial: 'accounts/_identity_verification')
     end
   end
 
   context 'when current user has ipp pending profile deactivated for password reset' do
     let(:user) { create(:user, :with_pending_in_person_enrollment) }
 
-    it 'does not render idv partial' do
+    it 'renders the account settings sections without an identity verification section' do
       user.profiles.first.update!(deactivation_reason: :password_reset)
-      expect(render).to_not render_template(partial: 'accounts/_identity_verification')
+      render
+
+      expect(view).to render_template(partial: 'accounts/account/_email_preferences')
+      expect(view).to_not render_template(partial: 'accounts/_identity_verification')
     end
   end
 
@@ -174,10 +192,14 @@ RSpec.describe 'accounts/show.html.erb' do
         record
       end
 
-      it 'does not render phone' do
+      it 'renders the phone section with an add-phone action and no phone number' do
         render
 
-        expect(view).to_not render_template(partial: '_phone')
+        expect(view).to render_template(partial: 'accounts/account/_phone')
+        expect(rendered).to have_link(
+          t('account.navigation.add_phone_number'), href: phone_setup_path
+        )
+        expect(rendered).to_not have_link(t('forms.buttons.manage'))
       end
     end
 
@@ -194,29 +216,7 @@ RSpec.describe 'accounts/show.html.erb' do
           phone_configuration.save
         end
         render
-        expect(rendered).to have_selector('.grid-col-fill', text: '+1 888-867-5309')
-      end
-    end
-  end
-
-  context 'PIV/CAC listing and adding' do
-    context 'user has no piv/cac' do
-      let(:user) { create(:user, :fully_registered, :with_authentication_app) }
-
-      it 'does not render piv/cac' do
-        render
-
-        expect(view).to_not render_template(partial: '_piv_cac')
-      end
-    end
-
-    context 'user has a piv/cac' do
-      let(:user) { create(:user, :fully_registered, :with_piv_or_cac) }
-
-      it 'renders the piv/cac section' do
-        render
-
-        expect(view).to render_template(partial: '_piv_cac')
+        expect(rendered).to have_selector('.ads-account__row-value', text: '+1 888-867-5309')
       end
     end
   end
@@ -230,14 +230,14 @@ RSpec.describe 'accounts/show.html.erb' do
     it 'renders the email section' do
       render
 
-      expect(view).to render_template(partial: '_emails')
+      expect(view).to render_template(partial: 'accounts/account/_email_preferences')
     end
 
     it 'shows one email if the user has only one email' do
       expect(user.email_addresses.size).to eq(1)
     end
 
-    it 'shows one email if the user has only one email' do
+    it 'shows all emails when the user has multiple emails' do
       create_list(:email_address, 4, user: user)
       user.reload
       expect(user.email_addresses.size).to eq(5)
@@ -260,9 +260,15 @@ RSpec.describe 'accounts/show.html.erb' do
       )
     end
 
-    it 'renders the link to continue to the SP' do
+    it 'renders a continue prompt and action to the SP' do
       render
 
+      expect(rendered).to have_content(
+        t(
+          'account.index.continue_to_service_provider_prompt',
+          service_provider: sp.friendly_name,
+        ),
+      )
       expect(rendered).to have_link(
         t('account.index.continue_to_service_provider', service_provider: sp.friendly_name),
         href: sp.return_to_sp_url,

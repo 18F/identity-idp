@@ -1,0 +1,24 @@
+<section class="ads-auth-methods__section" aria-labelledby="piv-cac-heading">
+  <h2 id="piv-cac-heading" class="ads-auth-methods__heading">
+    <%= t('account.dashboard.auth_methods.government_employee_id.title') %>
+  </h2>
+
+  <div class="ads-auth-methods__panel">
+    <%= render 'accounts/two_factor_authentication/authenticator_rows',
+               configurations: mfa_context.piv_cac_configurations,
+               edit_path_helper: :edit_piv_cac_path,
+               manage_accessible_label:
+                 t('two_factor_authentication.piv_cac.manage_accessible_label') %>
+
+    <% if current_user.piv_cac_configurations.count < IdentityConfig.store.max_piv_cac_per_account %>
+      <% if mfa_context.piv_cac_configurations.any? %>
+        <div class="ads-auth-methods__rule"></div>
+      <% end %>
+
+      <%= render ButtonComponent.new(
+            url: setup_piv_cac_url,
+            variant: :secondary,
+          ).with_content(t('account.index.piv_cac_add')) %>
+    <% end %>
+  </div>
+</section>

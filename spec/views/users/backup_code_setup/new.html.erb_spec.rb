@@ -34,7 +34,7 @@ RSpec.describe 'users/backup_code_setup/new.html.erb' do
   end
 
   context 'with account redirect path session value' do
-    let(:account_redirect_path) { account_two_factor_authentication_path }
+    let(:account_redirect_path) { account_security_path }
 
     before do
       session[:account_redirect_path] = account_redirect_path

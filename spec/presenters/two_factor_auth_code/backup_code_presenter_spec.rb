@@ -18,7 +18,7 @@ RSpec.describe TwoFactorAuthCode::BackupCodePresenter do
     it 'returns a different link for cancellation if reauthn is true' do
       allow(presenter).to receive(:reauthn).and_return(true)
       expect(presenter.cancel_link).to eq \
-        '/account'
+        '/account/security'
     end
   end
 end

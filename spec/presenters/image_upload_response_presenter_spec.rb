@@ -45,40 +45,6 @@ RSpec.describe ImageUploadResponsePresenter do
       end
     end
 
-    context 'with a single DocPiiForm-style i18n key message' do
-      let(:form_response) do
-        FormResponse.new(
-          success: false,
-          errors: { dob_min_age: 'doc_auth.errors.pii.birth_date_min_age' },
-          extra: {},
-        )
-      end
-
-      it 'translates the i18n key to its rendered string and adds front/back hints' do
-        expect(presenter.errors).to include(
-          { field: :dob_min_age, message: t('doc_auth.errors.pii.birth_date_min_age') },
-          { field: :front, message: t('doc_auth.errors.general.multiple_front_id_failures') },
-          { field: :back, message: t('doc_auth.errors.general.multiple_back_id_failures') },
-        )
-      end
-    end
-
-    context 'with a pre-rendered upstream string message' do
-      let(:form_response) do
-        FormResponse.new(
-          success: false,
-          errors: { front: t('doc_auth.errors.not_a_file') },
-          extra: {},
-        )
-      end
-
-      it 'passes the pre-rendered message through unchanged' do
-        expect(presenter.errors).to eq [
-          { field: :front, message: t('doc_auth.errors.not_a_file') },
-        ]
-      end
-    end
-
     context 'success' do
       it 'returns empty array' do
         expect(presenter.errors).to eq []

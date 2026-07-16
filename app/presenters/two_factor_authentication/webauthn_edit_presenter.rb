@@ -44,6 +44,22 @@ module TwoFactorAuthentication
       end
     end
 
+    def confirm_delete_heading
+      if platform_authenticator?
+        t('two_factor_authentication.webauthn_platform.confirm_delete')
+      else
+        t('two_factor_authentication.webauthn_roaming.confirm_delete')
+      end
+    end
+
+    def caution_delete
+      if platform_authenticator?
+        t('two_factor_authentication.webauthn_platform.caution_delete')
+      else
+        t('two_factor_authentication.webauthn_roaming.caution_delete')
+      end
+    end
+
     def rename_success_alert_text
       if platform_authenticator?
         t('two_factor_authentication.webauthn_platform.renamed')

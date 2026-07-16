@@ -1,0 +1,30 @@
+<% if configurations.any? %>
+  <div class="ads-auth-methods__rows" role="list">
+    <% configurations.each do |configuration| %>
+      <div class="ads-auth-methods__row" role="listitem">
+        <p class="ads-auth-methods__row-text">
+          <%= configuration.name %>
+          &middot;
+          <%= t(
+                'account.dashboard.auth_methods.created_on',
+                date: l(configuration.created_at, format: :event_date),
+              ) %>
+        </p>
+
+        <div class="ads-auth-methods__row-actions">
+          <%= render ButtonComponent.new(
+                url: public_send(edit_path_helper, id: configuration.id),
+                variant: :quaternary,
+                size: :md,
+              ) do %>
+            <span aria-hidden="true"><%= t('forms.buttons.manage') %></span>
+            <span class="ads-sr-only">
+              <%= manage_accessible_label %>:
+              <%= configuration.name %>
+            </span>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+<% end %>

@@ -4,11 +4,10 @@ class Idv::HowToVerifyPresenter
   include ActionView::Helpers::TagHelper
   include ActionView::Helpers::TranslationHelper
 
-  attr_reader :selfie_required, :mdl_enabled
+  attr_reader :selfie_required
 
-  def initialize(selfie_check_required:, mdl_enabled: false)
+  def initialize(selfie_check_required:)
     @selfie_required = selfie_check_required
-    @mdl_enabled = mdl_enabled
   end
 
   def how_to_verify_info
@@ -46,9 +45,7 @@ class Idv::HowToVerifyPresenter
   end
 
   def verify_online_description
-    return t('doc_auth.info.verify_online_description_mdl') if mdl_enabled
-
-    t('doc_auth.info.verify_online_description')
+    t('doc_auth.info.verify_online_description_passport')
   end
 
   def online_submit
@@ -77,7 +74,7 @@ class Idv::HowToVerifyPresenter
 
   def post_office_description
     IdentityConfig.store.in_person_passports_enabled ?
-      t('doc_auth.info.verify_online_description') :
+      t('doc_auth.info.verify_online_description_passport') :
       t('doc_auth.info.verify_at_post_office_description_passport_html')
   end
 

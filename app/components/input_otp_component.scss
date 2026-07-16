@@ -1,0 +1,195 @@
+@use 'variables/ads' as ads;
+
+lg-ads-input-otp {
+  display: block;
+}
+
+.ads-input-otp__label {
+  border: 0;
+  clip: rect(0, 0, 0, 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
+}
+
+.ads-input-otp__shell {
+  position: relative;
+}
+
+.ads-input-otp__slots {
+  display: none;
+}
+
+.ads-input-otp__group {
+  display: flex;
+  flex: var(--ads-input-otp-group-size, 1) 1 0;
+  gap: ads.space(12);
+  min-width: 0;
+}
+
+.ads-input-otp__slot {
+  align-items: center;
+  background: ads.$white;
+  border: 1px solid ads.alpha(ads.$off-black, 45%);
+  border-radius: ads.radius(16);
+  box-sizing: border-box;
+  color: ads.$off-black;
+  display: inline-flex;
+  flex: 1 1 0;
+  font-family: ads.$font-family;
+  font-size: ads.$text-heading-m-mobile;
+  font-weight: ads.$font-semibold;
+  height: ads.space(80);
+  justify-content: center;
+  letter-spacing: ads.$text-letter-spacing-label;
+  line-height: 1.15;
+  min-width: 0;
+  padding: ads.space(12) ads.space(16);
+  position: relative;
+  transition:
+    border-color ads.$tr-duration-md ads.$tr-easing-cubic,
+    box-shadow ads.$tr-duration-md ads.$tr-easing-cubic,
+    color ads.$tr-duration-md ads.$tr-easing-cubic;
+}
+
+.ads-input-otp__separator {
+  background: ads.alpha(ads.$off-black, 45%);
+  border-radius: ads.radius(pill);
+  display: inline-block;
+  flex: 0 0 ads.space(12);
+  height: ads.space(4);
+  width: ads.space(12);
+}
+
+.ads-input-otp__separator--text {
+  background: transparent;
+  border-radius: 0;
+  color: ads.$off-black;
+  flex: 0 0 auto;
+  font-size: ads.$text-heading-m-mobile;
+  font-weight: ads.$font-semibold;
+  height: auto;
+  letter-spacing: ads.$text-letter-spacing-label;
+  line-height: 1.15;
+  width: auto;
+}
+
+.ads-input-otp__slot--active {
+  border-color: ads.$black;
+  box-shadow: 0 0 0 1px ads.$black;
+  outline: 0;
+}
+
+.ads-input-otp__slot--caret::after {
+  animation: ads-input-otp-caret 1s step-end infinite;
+  background: ads.$off-black;
+  border-radius: ads.radius(pill);
+  content: '';
+  height: ads.space(24);
+  width: 1px;
+}
+
+.ads-input-otp:has(.ads-input-otp__input[aria-invalid='true']) .ads-input-otp__slot {
+  border-color: ads.$red-600;
+}
+
+.ads-input-otp:has(.ads-input-otp__input[aria-invalid='true']) .ads-input-otp__slot--active {
+  box-shadow: 0 0 0 1px ads.$red-600;
+}
+
+.ads-input-otp:has(.ads-input-otp__input:disabled) .ads-input-otp__slot,
+.ads-input-otp:has(.ads-input-otp__input[readonly]) .ads-input-otp__slot {
+  background: ads.alpha(ads.$off-black, 5%);
+  color: ads.alpha(ads.$off-black, 65%);
+}
+
+.ads-input-otp__hint {
+  color: ads.alpha(ads.$off-black, 65%);
+  font-family: ads.$font-family;
+  font-size: ads.$text-body-s;
+  line-height: 1.35;
+  margin: ads.space(8) 0 0;
+}
+
+lg-ads-input-otp[data-enhanced='true'] {
+  .ads-input-otp__shell {
+    display: block;
+    max-width: 100%;
+    width: ads.$form-width;
+  }
+
+  .ads-input-otp__input {
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+    caret-color: transparent;
+    color: transparent;
+    height: 100%;
+    inset: 0;
+    letter-spacing: 0;
+    outline: 0;
+    padding: 0;
+    position: absolute;
+    -webkit-text-fill-color: transparent;
+    z-index: 1;
+
+    &::selection {
+      background: transparent;
+      color: transparent;
+    }
+
+    &.ads-input__control:is(
+        :focus,
+        :focus-visible,
+        :active,
+        :invalid,
+        :user-invalid,
+        [aria-invalid='true']
+      ) {
+      border: 0;
+      box-shadow: none;
+      outline: 0;
+      outline-offset: 0;
+    }
+  }
+
+  &[data-push-password-manager-strategy='increase_width'] .ads-input-otp__input {
+    width: calc(100% + ads.space(56));
+  }
+
+  .ads-input-otp__slots {
+    align-items: center;
+    display: flex;
+    gap: ads.space(12);
+    max-width: 100%;
+    width: 100%;
+  }
+}
+
+@media (width <= calc(ads.$form-width + ads.space(56))) {
+  lg-ads-input-otp[data-enhanced='true'][data-push-password-manager-strategy='increase_width']
+    .ads-input-otp__input {
+    width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ads-input-otp__slot--caret::after {
+    animation: none;
+  }
+}
+
+@keyframes ads-input-otp-caret {
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0;
+  }
+}

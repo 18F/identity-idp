@@ -2,15 +2,10 @@
 - @message: text to put in the beginning of the email
 - @reports: an array of EmailableReport
 %>
-<header class="usa-header">
-  <%= image_tag(
-        asset_url('email/logo.png'),
-        alt: APP_NAME,
-        width: 155,
-        height: 21,
-      ) %>
+<header class="report-header">
+  <%= APP_NAME %>
 </header>
-<hr class="height-05 margin-bottom-4 border-transparent bg-secondary">
+<hr class="report-rule">
 <% [*@message].each do |message| %>
   <p><%= message %></p>
 <% end %>
@@ -24,7 +19,7 @@
     <h3 class="report-subtitle"><%= report.subtitle %></h3>
   <% end %>
 
-  <table class="usa-table">
+  <table class="report-table">
     <thead>
       <tr>
         <% header.each do |head| %>
@@ -49,4 +44,4 @@
     </tbody>
   </table>
 <% end %>
-<hr class="height-05 margin-top-4 border-transparent bg-secondary">
+<hr class="report-rule">

@@ -1,27 +1,61 @@
 # frozen_string_literal: true
 
 class ModalComponent < BaseComponent
-  attr_reader :tag_options
+  renders_one :trigger
+  renders_one :media
+  renders_one :title
+  renders_one :description
+  renders_one :footer
 
-  def initialize(**tag_options)
+  attr_reader :dismissible, :wide, :tag_options
+
+  validate :validate_title
+
+  def initialize(dismissible: true, wide: false, **tag_options)
+    @dismissible = dismissible
+    @wide = wide
     @tag_options = tag_options
   end
 
-  def label_id
-    "modal-label-#{unique_id}"
+  def dialog_id
+    tag_options[:id].presence || "modal-#{unique_id}"
+  end
+
+  def title_id
+    "#{dialog_id}-title"
   end
 
   def description_id
-    "modal-description-#{unique_id}"
+    "#{dialog_id}-description"
   end
 
-  def dismiss_button(**button_options, &block)
-    render(
-      ButtonComponent.new(
-        **button_options,
-        data: button_options[:data].to_h.merge(dismiss: ''),
-      ),
-      &block
+  def css_class
+    ['ads-modal', ('ads-modal--wide' if wide), *tag_options[:class]].compact
+  end
+
+  def body_css_class
+    ['ads-modal__body', ('ads-modal__body--media' if media?)].compact
+  end
+
+  def dialog_aria
+    {
+      labelledby: title_id,
+      describedby: (description_id if description?),
+    }.compact
+  end
+
+  def dialog_data
+    tag_options[:data].to_h.merge(
+      ads_modal: true,
+      ads_modal_dismissible: dismissible,
     )
+  end
+
+  private
+
+  def validate_title
+    return if title?
+
+    errors.add(:title, 'is required', type: :blank)
   end
 end

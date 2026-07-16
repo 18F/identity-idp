@@ -20,19 +20,15 @@ RSpec.feature 'welcome step' do
       complete_doc_auth_steps_before_welcome_step
     end
 
-    it 'logs "intro_paragraph" learn more link click' do
-      click_on t('doc_auth.info.getting_started_learn_more')
-
-      expect(fake_analytics).to have_logged_event(
-        'External Redirect',
-        step: 'welcome',
-        location: 'intro_paragraph',
-        flow: 'idv',
-        redirect_url: MarketingSite.help_center_article_url(
-          category: 'verify-your-identity',
-          article: 'overview',
-        ),
+    it 'renders the redesigned welcome content' do
+      expect(page).to have_content(
+        t('headings.identity_verification_intro.title', sp: sp_name),
       )
+      expect(page).to have_content(
+        t('headings.identity_verification_intro.what_youll_need'),
+      )
+      expect(page).to have_button(t('doc_auth.buttons.continue'))
+      expect(page).to have_link(t('idv.buttons.phone.no_us_phone_number'))
     end
   end
 
@@ -63,11 +59,7 @@ RSpec.feature 'welcome step' do
         )
 
         expect(page).to have_content(
-          t('doc_auth.info.getting_started_html', sp_name: sp_name, link_html: ''),
-        )
-
-        expect(page).not_to have_content(
-          t('doc_auth.info.stepping_up_html', link_html: ''),
+          t('headings.identity_verification_intro.intro', sp: sp_name),
         )
       end
     end
@@ -107,7 +99,9 @@ RSpec.feature 'welcome step' do
       end
 
       it 'displays passport and state ID instructions to the user' do
-        expect(page).to have_content t('doc_auth.instructions.bullet1')
+        expect(page).to have_content(
+          t('headings.identity_verification_intro.requirement_id_title'),
+        )
       end
     end
 
@@ -121,8 +115,10 @@ RSpec.feature 'welcome step' do
         complete_doc_auth_steps_before_welcome_step
       end
 
-      it 'displays only State ID instructions to the user' do
-        expect(page).to have_content t('doc_auth.instructions.bullet1')
+      it 'displays ID instructions to the user' do
+        expect(page).to have_content(
+          t('headings.identity_verification_intro.requirement_id_title'),
+        )
       end
     end
   end

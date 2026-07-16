@@ -1,0 +1,241 @@
+@use 'sass:color';
+@use 'variables/ads' as ads;
+@use 'variables/email' as *;
+@use 'mixins' as mailer;
+
+.mailer-template__title {
+  @include mailer.mailer-heading-s;
+
+  margin: 0 0 $mailer-section-gap;
+  text-align: left;
+}
+
+.mailer-template__title--ipp {
+  margin-bottom: ads.space(32);
+}
+
+.mailer-lead {
+  @include mailer.mailer-text-body-emphasized;
+
+  color: $black;
+  margin: 0 0 $mailer-section-gap;
+  text-align: left;
+}
+
+.mailer-template__content p,
+.mailer-text {
+  @include mailer.mailer-text-body;
+
+  color: $mailer-muted-text;
+  letter-spacing: 0;
+  line-height: 1.5;
+  text-align: left;
+}
+
+.mailer-template__content a,
+.mailer-inline-link {
+  color: $black;
+  text-decoration: underline;
+}
+
+.mailer-info-card {
+  margin: $mailer-section-gap 0;
+}
+
+.mailer-barcode-card {
+  margin: $mailer-section-gap 0 ads.space(40);
+}
+
+.mailer-barcode-card__code {
+  padding: ads.space(40) ads.space(24) ads.space(20);
+  text-align: center;
+}
+
+.mailer-barcode-card__image {
+  display: block;
+  height: 100px;
+  margin: 0 auto;
+  width: auto;
+}
+
+.mailer-template__content .mailer-barcode-card__enrollment-code,
+.mailer-barcode-card__enrollment-code {
+  @include mailer.mailer-text-body;
+
+  color: ads.alpha($black, 60%);
+  letter-spacing: 0;
+  line-height: 1.5;
+  margin: ads.space(32) 0 0;
+  text-align: center;
+}
+
+.mailer-barcode-card__footer {
+  background-color: color.mix(ads.$off-black, ads.$white, 5%);
+  padding: ads.space(20);
+  text-align: center;
+}
+
+.mailer-template__content .mailer-barcode-card__deadline,
+.mailer-barcode-card__deadline {
+  @include mailer.mailer-text-body-emphasized;
+
+  color: ads.alpha($black, 80%);
+  letter-spacing: 0;
+  line-height: 1.5;
+  margin: 0;
+  text-align: left;
+}
+
+.mailer-section {
+  padding: 0;
+}
+
+.mailer-section + .mailer-section {
+  margin-top: ads.space(40);
+}
+
+.mailer-section--flush-bottom {
+  padding-bottom: 0;
+}
+
+.mailer-template__content .mailer-section__title,
+.mailer-section__title {
+  @include mailer.mailer-text-body-emphasized;
+
+  color: $black;
+  font-size: ads.$text-heading-s;
+  letter-spacing: ads.$text-letter-spacing-heading;
+  line-height: 1.2;
+  margin: 0 0 ads.space(16);
+}
+
+.mailer-template__content p.mailer-section__intro,
+.mailer-section__intro {
+  margin: 0 0 ads.space(24);
+}
+
+.mailer-template__content .mailer-section__list + .mailer-text,
+.mailer-section__list + .mailer-text {
+  margin-top: ads.space(16);
+}
+
+.mailer-section__copy {
+  margin: 0;
+}
+
+.mailer-section__list {
+  @include mailer.mailer-text-body;
+
+  color: ads.alpha($black, 80%);
+  letter-spacing: 0;
+  line-height: 1.5;
+  list-style-position: outside;
+  list-style-type: decimal;
+  margin: ads.space(16) 0 0;
+  padding-left: ads.space(24);
+}
+
+.mailer-location-card {
+  border: 1px solid $mailer-border-color;
+  border-collapse: separate;
+  border-radius: ads.radius(24);
+  margin: 0;
+  width: 100%;
+}
+
+.mailer-location-card__cell {
+  padding: ads.space(24);
+}
+
+.mailer-template__content .mailer-location-card__name,
+.mailer-location-card__name {
+  @include mailer.mailer-text-body-emphasized;
+
+  color: $black;
+  letter-spacing: 0;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.mailer-template__content .mailer-location-card__address,
+.mailer-location-card__address {
+  @include mailer.mailer-text-body;
+
+  color: $mailer-muted-text;
+  letter-spacing: 0;
+  line-height: 1.5;
+  margin: ads.space(8) 0 0;
+}
+
+.mailer-template__content .mailer-location-card__hours,
+.mailer-location-card__hours {
+  @include mailer.mailer-text-body;
+
+  color: $mailer-muted-text;
+  letter-spacing: 0;
+  line-height: 1.5;
+  margin: ads.space(16) 0 0;
+}
+
+.mailer-template__content .mailer-location-card__hours-label,
+.mailer-location-card__hours-label {
+  color: $black;
+  font-weight: ads.$font-semibold;
+}
+
+.mailer-section__list li {
+  margin-bottom: ads.space(8);
+}
+
+.mailer-section__list li:last-child {
+  margin-bottom: 0;
+}
+
+.mailer-template__footer {
+  padding-top: ads.space(48);
+}
+
+.mailer-template__agency-row {
+  margin: 0 auto ads.space(48);
+}
+
+.mailer-template__agency-logo {
+  display: block;
+}
+
+.mailer-template__agency-logo--solo {
+  margin: 0 auto ads.space(48);
+}
+
+.mailer-template__agency-gap {
+  font-size: 0;
+  line-height: 0;
+}
+
+.mailer-template__footer-text {
+  @include mailer.mailer-label-m;
+
+  color: $mailer-muted-text;
+  letter-spacing: 0;
+  line-height: 1.5;
+  margin: 0;
+  text-align: center;
+}
+
+.mailer-template__footer-text--help {
+  margin-top: ads.space(16);
+}
+
+.mailer-template__footer-link {
+  color: $black;
+  text-decoration: underline;
+}
+
+.mailer-brand-logo {
+  color: $dark-gray;
+  font-size: $mailer-brand-logo-size;
+  font-weight: 700;
+  letter-spacing: $mailer-brand-logo-letter-spacing;
+  line-height: $mailer-brand-logo-line-height;
+  text-transform: uppercase;
+}

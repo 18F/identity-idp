@@ -1,23 +1,35 @@
-<%= render(
-      'idv/shared/error',
-      type: :warning,
-      heading: t('idv.failure.sessions.exception'),
-      action: {
-        text: t('idv.failure.button.warning'),
-        url: @try_again_path,
-      },
-      options: [
-        {
-          url: contact_redirect_url,
-          text: t('idv.troubleshooting.options.contact_support', app_name: APP_NAME),
-          new_tab: true,
-        },
-      ],
-    ) do %>
-      <p>
-        <%= t(
-              'idv.failure.exceptions.text_html',
-              link_html: link_to(t('idv.failure.exceptions.link'), contact_redirect_url),
-            ) %>
-      </p>
+<% self.title = t('idv.failure.sessions.exception') %>
+
+<%= render ADS::FormPageComponent.new(title: t('idv.failure.sessions.exception')) do |page| %>
+  <% page.with_body do %>
+    <% contact_link_html = capture do %>
+      <%= render ADS::LinkComponent.new(url: contact_redirect_url) do %>
+        <%= t('idv.failure.exceptions.link') %>
+      <% end %>
     <% end %>
+
+    <div class="ads-copy ads-copy--centered">
+      <p>
+        <%= t('idv.failure.exceptions.text_html', link_html: contact_link_html) %>
+      </p>
+    </div>
+  <% end %>
+
+  <% page.with_actions do %>
+    <%= render ADS::StackComponent.new(kind: :actions, gap: 8, align: :stretch) do %>
+      <%= render ButtonComponent.new(url: @try_again_path).with_content(
+            t('idv.failure.button.warning'),
+          ) %>
+
+      <%= render ButtonComponent.new(
+            url: contact_redirect_url,
+            variant: :quaternary,
+            target: '_blank',
+            rel: 'noopener noreferrer',
+          ) do %>
+        <%= t('idv.troubleshooting.options.contact_support', app_name: APP_NAME) %>
+        <span class="ads-sr-only"><%= t('links.new_tab') %></span>
+      <% end %>
+    <% end %>
+  <% end %>
+<% end %>

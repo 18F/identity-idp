@@ -14,4 +14,12 @@ class PasswordStrengthComponent < BaseComponent
     @forbidden_passwords = forbidden_passwords
     @tag_options = tag_options
   end
+
+  def css_class
+    ['ads-password-strength', *tag_options[:class]]
+  end
+
+  def feedback_id
+    "#{input_id}-password-strength"
+  end
 end

@@ -13,12 +13,14 @@ describe('Button', () => {
     expect(button.nodeName).to.equal('BUTTON');
     expect(button.type).to.equal('button');
     expect(button.hasAttribute('href')).to.be.false();
-    expect(button.classList.contains('usa-button')).to.be.true();
-    expect(button.classList.contains('usa-button--big')).to.be.false();
-    expect(button.classList.contains('usa-button--flexible-width')).to.be.false();
-    expect(button.classList.contains('usa-button--wide')).to.be.false();
-    expect(button.classList.contains('usa-button--outline')).to.be.false();
-    expect(button.classList.contains('usa-button--unstyled')).to.be.false();
+    expect(button.classList.contains('ads-button')).to.be.true();
+    expect(button.classList.contains('ads-button--primary')).to.be.true();
+    expect(button.classList.contains('ads-button--md')).to.be.true();
+    expect(button.classList.contains('ads-button--lg')).to.be.false();
+    expect(button.classList.contains('ads-button--flexible-width')).to.be.false();
+    expect(button.classList.contains('ads-button--wide')).to.be.false();
+    expect(button.classList.contains('ads-button--secondary')).to.be.false();
+    expect(button.classList.contains('ads-button--quaternary')).to.be.false();
   });
 
   it('renders styled as a link', () => {
@@ -47,7 +49,7 @@ describe('Button', () => {
 
     const button = getByText('Click me');
 
-    expect(button.classList.contains('usa-button--big')).to.be.true();
+    expect(button.classList.contains('ads-button--lg')).to.be.true();
   });
 
   it('renders as flexible width', () => {
@@ -55,7 +57,7 @@ describe('Button', () => {
 
     const button = getByText('Click me');
 
-    expect(button.classList.contains('usa-button--flexible-width')).to.be.true();
+    expect(button.classList.contains('ads-button--flexible-width')).to.be.true();
   });
 
   it('renders as wide', () => {
@@ -63,9 +65,9 @@ describe('Button', () => {
 
     const button = getByText('Click me');
 
-    expect(button.classList.contains('usa-button--wide')).to.be.true();
-    expect(button.classList.contains('usa-button--outline')).to.be.false();
-    expect(button.classList.contains('usa-button--unstyled')).to.be.false();
+    expect(button.classList.contains('ads-button--wide')).to.be.true();
+    expect(button.classList.contains('ads-button--secondary')).to.be.false();
+    expect(button.classList.contains('ads-button--quaternary')).to.be.false();
   });
 
   it('renders as outline', () => {
@@ -73,10 +75,9 @@ describe('Button', () => {
 
     const button = getByText('Click me');
 
-    expect(button.classList.contains('usa-button--wide')).to.be.false();
-    expect(button.classList.contains('usa-button--outline')).to.be.true();
-    expect(button.classList.contains('usa-button usa-button--wide')).to.be.false();
-    expect(button.classList.contains('usa-button--unstyled')).to.be.false();
+    expect(button.classList.contains('ads-button--wide')).to.be.false();
+    expect(button.classList.contains('ads-button--secondary')).to.be.true();
+    expect(button.classList.contains('ads-button--quaternary')).to.be.false();
   });
 
   it('renders as unstyled', () => {
@@ -84,9 +85,9 @@ describe('Button', () => {
 
     const button = getByText('Click me');
 
-    expect(button.classList.contains('usa-button--wide')).to.be.false();
-    expect(button.classList.contains('usa-button--outline')).to.be.false();
-    expect(button.classList.contains('usa-button--unstyled')).to.be.true();
+    expect(button.classList.contains('ads-button--wide')).to.be.false();
+    expect(button.classList.contains('ads-button--secondary')).to.be.false();
+    expect(button.classList.contains('ads-button--quaternary')).to.be.true();
   });
 
   it('renders as disabled', async () => {

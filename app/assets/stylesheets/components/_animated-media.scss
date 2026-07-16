@@ -1,0 +1,78 @@
+@use '../variables/ads' as ads;
+
+.ads-animated-media {
+  display: block;
+  position: relative;
+}
+
+.ads-animated-media__image,
+.ads-animated-media__frame {
+  display: block;
+  height: auto;
+  max-width: 100%;
+  width: 100%;
+}
+
+.ads-animated-media__image[hidden],
+.ads-animated-media__frame[hidden] {
+  display: none;
+}
+
+.ads-animated-media__toggle {
+  align-items: center;
+  appearance: none;
+  backdrop-filter: blur(25px);
+  background: ads.alpha(ads.$off-white, 92%);
+  border: 0;
+  border-radius: ads.radius(pill);
+  box-shadow: ads.$shadow-compact;
+  color: ads.$off-black;
+  cursor: pointer;
+  display: inline-flex;
+  height: ads.space(32);
+  inset-block-end: ads.space(8);
+  inset-inline-end: ads.space(8);
+  justify-content: center;
+  margin: 0;
+  padding: 0;
+  position: absolute;
+  width: ads.space(32);
+
+  &:hover,
+  &:active {
+    background: ads.$off-white;
+  }
+
+  &:focus {
+    outline: 0;
+  }
+
+  &:focus-visible {
+    @include ads.focus-ring;
+  }
+}
+
+.ads-animated-media__icon {
+  align-items: center;
+  display: inline-flex;
+  justify-content: center;
+}
+
+.ads-animated-media[data-playing='true'] .ads-animated-media__icon--play,
+.ads-animated-media[data-playing='false'] .ads-animated-media__icon--pause {
+  display: none;
+}
+
+.ads-animated-media.ads-animated-media--mobile {
+  display: none;
+}
+
+@media (width < 768px) {
+  .ads-animated-media.ads-animated-media--desktop {
+    display: none;
+  }
+
+  .ads-animated-media.ads-animated-media--mobile {
+    display: block;
+  }
+}

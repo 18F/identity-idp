@@ -9,28 +9,39 @@
     <%= csrf_meta_tags %>
     <%= stylesheet_link_tag 'application', nopush: false %>
     <%= render_stylesheet_once_tags %>
-    <%= stylesheet_link_tag 'utilities', nopush: false %>
   </head>
-  <body>
-    <div class="grid-container tablet:padding-y-6 no-js">
-      <div class="grid-row">
-        <div class="tablet:grid-col-6 tablet:grid-offset-3">
-          <%= render PageHeadingComponent.new.with_content(t('.heading')) %>
+  <body class="ads-protocol-redirect-page">
+    <main id="main-content" class="ads-protocol-redirect">
+      <%= render ADS::FormPageComponent.new(
+            title: t('.heading'),
+            class_name: 'ads-protocol-redirect__content',
+          ) do |page| %>
+        <% page.with_body do %>
+          <div class="ads-copy ads-copy--centered">
+            <p>
+              <%= t('.no_js') %>
+            </p>
+          </div>
+        <% end %>
 
-          <p>
-            <%= t('.no_js') %>
-          </p>
-
-          <%= simple_form_for('', url: action_url) do |f| %>
+        <% page.with_actions do %>
+          <%= simple_form_for(
+                '',
+                url: action_url,
+                html: { class: 'ads-form ads-form--align-stretch' },
+              ) do %>
             <%= hidden_field_tag(type, message) %>
             <% if params.key?(:RelayState) %>
               <%= hidden_field_tag('RelayState', params[:RelayState]) %>
             <% end %>
-            <%= f.submit t('forms.buttons.submit.default'), data: { click_immediate: '' } %>
+            <%= render ButtonComponent.new(
+                  type: :submit,
+                  data: { click_immediate: '' },
+                ).with_content(t('forms.buttons.submit.default')) %>
           <% end %>
-        </div>
-      </div>
-    </div>
+        <% end %>
+      <% end %>
+    </main>
     <%= render_javascript_pack_once_tags 'click-immediate' %>
   </body>
 </html>

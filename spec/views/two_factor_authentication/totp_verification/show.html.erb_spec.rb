@@ -56,17 +56,12 @@ RSpec.describe 'two_factor_authentication/totp_verification/show.html.erb' do
       render
     end
 
-    it 'provides a cancel link to return to profile' do
-      expect(rendered).to have_link(
-        t('links.cancel'),
-        href: account_path,
-      )
+    it 'does not provide a cancel link' do
+      expect(rendered).not_to have_link(t('links.cancel'))
     end
 
-    it 'renders the reauthn partial' do
-      expect(view).to render_template(
-        partial: 'two_factor_authentication/totp_verification/_reauthn',
-      )
+    it 'includes a hidden reauthn field' do
+      expect(rendered).to have_field('reauthn', type: 'hidden', with: 'true')
     end
   end
 end

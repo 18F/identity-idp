@@ -59,7 +59,7 @@ RSpec.describe Users::PasswordsController do
           user_id: subject.current_user.uuid,
           required_password_change: false,
         )
-        expect(response).to redirect_to account_url
+        expect(response).to redirect_to account_settings_url
         expect(flash[:info]).to eq t('notices.password_changed')
         expect(controller.user_session[:personal_key]).to be_nil
       end

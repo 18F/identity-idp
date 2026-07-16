@@ -156,7 +156,7 @@ describe('document-capture/components/file-input', () => {
 
     expect(input).to.be.ok();
     expect(preview.getAttribute('src')).to.match(/^data:image\/jpeg;base64,/);
-    expect(container.querySelector('.usa-file-input__preview-heading').textContent).to.equal(
+    expect(container.querySelector('.ads-file-input__preview-heading').textContent).to.equal(
       'doc_auth.forms.change_file',
     );
   });
@@ -171,7 +171,7 @@ describe('document-capture/components/file-input', () => {
 
     expect(input).to.be.ok();
     expect(preview.getAttribute('src')).to.match(/^data:image\/jpeg;base64,/);
-    expect(container.querySelector('.usa-file-input__preview-heading').textContent).to.equal(
+    expect(container.querySelector('.ads-file-input__preview-heading').textContent).to.equal(
       'doc_auth.forms.selected_file: id-front.jpg doc_auth.forms.change_file',
     );
   });
@@ -189,7 +189,7 @@ describe('document-capture/components/file-input', () => {
 
     expect(input).to.be.ok();
     expect(preview.getAttribute('src')).to.match(/^data:image\/png;base64,/);
-    expect(container.querySelector('.usa-file-input__preview-heading').textContent).to.equal(
+    expect(container.querySelector('.ads-file-input__preview-heading').textContent).to.equal(
       'doc_auth.forms.change_file',
     );
   });
@@ -199,7 +199,7 @@ describe('document-capture/components/file-input', () => {
       <FileInput label="File" value={new window.File([], 'demo.txt', { type: 'text/plain' })} />,
     );
 
-    expect(container.querySelector('.usa-file-input__preview')).to.not.be.ok();
+    expect(container.querySelector('.ads-file-input__preview')).to.not.be.ok();
   });
 
   it('limits to accepted file mime types', () => {
@@ -229,7 +229,7 @@ describe('document-capture/components/file-input', () => {
   it('has aria-describedby set to hintId when hint shown and neither success or error shown', () => {
     const { getByLabelText, container } = render(<FileInput label="File" hint="Must be small" />);
 
-    const labelElement = container.querySelector('.usa-hint');
+    const labelElement = container.querySelector('.ads-hint');
     const hintId = labelElement.getAttribute('id');
     const input = getByLabelText('File');
     expect(input.getAttribute('aria-describedby')).to.be.equal(hintId);
@@ -240,7 +240,7 @@ describe('document-capture/components/file-input', () => {
     const { getByLabelText, container } = render(<FileInput {...props} />);
 
     // Extract the id of the error message
-    const errorMessageElement = container.querySelector('.usa-error-message');
+    const errorMessageElement = container.querySelector('.ads-error-message');
     const errorId = errorMessageElement.getAttribute('id');
 
     // Now check that the aria-describedby is what we expect
@@ -262,7 +262,7 @@ describe('document-capture/components/file-input', () => {
     expect(getByText('File updated')).to.be.ok();
 
     // Extract the id of the success message
-    const successMessageElement = container.querySelector('.usa-success-message');
+    const successMessageElement = container.querySelector('.ads-success-message');
     const successId = successMessageElement.getAttribute('id');
 
     // Now check that the aria-describedby is what we expect
@@ -280,9 +280,9 @@ describe('document-capture/components/file-input', () => {
     const { getByLabelText, container } = render(<FileInput {...props} />);
 
     // Extract the ids of the hint and error message
-    const labelElement = container.querySelector('.usa-hint');
+    const labelElement = container.querySelector('.ads-hint');
     const hintId = labelElement.getAttribute('id');
-    const errorMessageElement = container.querySelector('.usa-error-message');
+    const errorMessageElement = container.querySelector('.ads-error-message');
     const errorId = errorMessageElement.getAttribute('id');
 
     // Now check that the aria-describedby is what we expect
@@ -304,9 +304,9 @@ describe('document-capture/components/file-input', () => {
     expect(getByText('File updated')).to.be.ok();
 
     // Extract the ids of the hint and success message
-    const labelElement = container.querySelector('.usa-hint');
+    const labelElement = container.querySelector('.ads-hint');
     const hintId = labelElement.getAttribute('id');
-    const successMessageElement = container.querySelector('.usa-success-message');
+    const successMessageElement = container.querySelector('.ads-success-message');
     const successId = successMessageElement.getAttribute('id');
 
     // Now check that the aria-describedby is what we expect
@@ -387,26 +387,26 @@ describe('document-capture/components/file-input', () => {
     );
 
     await findByRole('img', { hidden: true });
-    expect(container.querySelector('.usa-file-input__preview-heading')).to.not.be.ok();
+    expect(container.querySelector('.ads-file-input__preview-heading')).to.not.be.ok();
   });
 
   it('adds drag effects', () => {
     const { getByLabelText } = render(<FileInput label="File" />);
 
     const input = getByLabelText('File');
-    const container = input.closest('.usa-file-input');
+    const container = input.closest('.ads-file-input');
 
     fireEvent.dragOver(input);
-    expect(container.classList.contains('usa-file-input--drag')).to.be.true();
+    expect(container.classList.contains('ads-file-input--drag')).to.be.true();
 
     fireEvent.dragLeave(input);
-    expect(container.classList.contains('usa-file-input--drag')).to.be.false();
+    expect(container.classList.contains('ads-file-input--drag')).to.be.false();
 
     fireEvent.dragOver(input);
-    expect(container.classList.contains('usa-file-input--drag')).to.be.true();
+    expect(container.classList.contains('ads-file-input--drag')).to.be.true();
 
     fireEvent.drop(input);
-    expect(container.classList.contains('usa-file-input--drag')).to.be.false();
+    expect(container.classList.contains('ads-file-input--drag')).to.be.false();
   });
 
   it('shows an error state', async () => {
@@ -519,11 +519,11 @@ describe('document-capture/components/file-input', () => {
     );
     const input = getByLabelText('File');
 
-    expect(container.querySelector('.usa-file-input--value-pending')).to.exist();
-    expect(container.querySelector('.usa-file-input--has-value')).not.to.exist();
-    expect(container.querySelector('.usa-file-input__preview-heading')).not.to.exist();
+    expect(container.querySelector('.ads-file-input--value-pending')).to.exist();
+    expect(container.querySelector('.ads-file-input--has-value')).not.to.exist();
+    expect(container.querySelector('.ads-file-input__preview-heading')).not.to.exist();
     expect(queryByRole('img', { hidden: true })).not.to.exist();
-    expect(queryByText('File loading').classList.contains('usa-sr-only')).to.be.true();
+    expect(queryByText('File loading').classList.contains('ads-sr-only')).to.be.true();
     expect(container.querySelector('.spinner-dots')).to.exist();
     expect(queryByText('Banner')).not.to.exist();
     expect(input.getAttribute('aria-busy')).to.equal('true');
@@ -536,7 +536,7 @@ describe('document-capture/components/file-input', () => {
 
     rerender(<FileInput fileLoadedText="File loaded" value={file} />);
 
-    expect(getByText('File loaded').classList.contains('usa-sr-only')).to.be.true();
+    expect(getByText('File loaded').classList.contains('ads-sr-only')).to.be.true();
   });
 
   it('shows the file name on mobile for a yaml file', async () => {
@@ -546,7 +546,7 @@ describe('document-capture/components/file-input', () => {
         <FileInput label="File" value={ymlFile} />
       </DeviceContext.Provider>,
     );
-    expect(container.querySelector('.usa-file-input__preview-heading')).to.be.ok();
+    expect(container.querySelector('.ads-file-input__preview-heading')).to.be.ok();
   });
 
   it('doesnt show the file name on mobile for an image file', () => {
@@ -555,7 +555,7 @@ describe('document-capture/components/file-input', () => {
         <FileInput label="File" value={file} />
       </DeviceContext.Provider>,
     );
-    expect(container.querySelector('.usa-file-input__preview-heading')).to.not.be.ok();
+    expect(container.querySelector('.ads-file-input__preview-heading')).to.not.be.ok();
   });
 
   it('sets capture attribute to environment when capture prop is environment', () => {

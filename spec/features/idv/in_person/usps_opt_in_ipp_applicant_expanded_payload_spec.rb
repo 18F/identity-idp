@@ -48,7 +48,7 @@ RSpec.describe 'In Person Proofing: opt in ipp applicant expanded payload', js: 
       fill_out_phone_form_ok(MfaContext.new(user).phone_configurations.first.phone)
       click_idv_send_security_code
       fill_in_code_with_last_phone_otp
-      click_submit_default
+      click_button t('forms.buttons.continue')
       complete_enter_password_step(user)
       acknowledge_and_confirm_personal_key
       expect(page).to have_current_path(idv_in_person_ready_to_verify_path)
@@ -63,9 +63,7 @@ RSpec.describe 'In Person Proofing: opt in ipp applicant expanded payload', js: 
               'uniqueID' => InPersonEnrollment.first.unique_id,
               'firstName' => InPersonHelper::GOOD_FIRST_NAME,
               'lastName' => InPersonHelper::GOOD_LAST_NAME,
-              'streetAddress' =>
-                "#{InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS1} " \
-                "#{InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS2}",
+              'streetAddress' => InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS1,
               'city' => InPersonHelper::GOOD_IDENTITY_DOC_CITY,
               'state' => InPersonHelper::GOOD_STATE_ABBR,
               'zipCode' => InPersonHelper::GOOD_IDENTITY_DOC_ZIPCODE,
@@ -106,7 +104,7 @@ RSpec.describe 'In Person Proofing: opt in ipp applicant expanded payload', js: 
       fill_out_phone_form_ok(MfaContext.new(user).phone_configurations.first.phone)
       click_idv_send_security_code
       fill_in_code_with_last_phone_otp
-      click_submit_default
+      click_button t('forms.buttons.continue')
       complete_enter_password_step(user)
       acknowledge_and_confirm_personal_key
       expect(page).to have_current_path(idv_in_person_ready_to_verify_path)
@@ -118,9 +116,7 @@ RSpec.describe 'In Person Proofing: opt in ipp applicant expanded payload', js: 
               'uniqueID' => InPersonEnrollment.first.unique_id,
               'firstName' => InPersonHelper::GOOD_FIRST_NAME,
               'lastName' => InPersonHelper::GOOD_LAST_NAME,
-              'streetAddress' =>
-                "#{InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS1} " \
-                "#{InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS2}",
+              'streetAddress' => InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS1,
               'city' => InPersonHelper::GOOD_IDENTITY_DOC_CITY,
               'state' => InPersonHelper::GOOD_STATE_ABBR,
               'zipCode' => InPersonHelper::GOOD_IDENTITY_DOC_ZIPCODE,

@@ -1,0 +1,82 @@
+<div style="display: flex; flex-direction: column; gap: 24px; max-width: 434px;">
+  <div>
+    <p style="margin: 0 0 8px; font: 600 12px/1.4 system-ui;">Authentication option (clickable)</p>
+    <%= render CardComponent.new(url: '#') do |card| %>
+      <% card.with_trailing do %>
+        <%= render IconComponent.new(icon: :chevron_right, size: 20) %>
+      <% end %>
+      <%= render IconComponent.new(icon: :qr, size: 24) %>
+      <div class="ads-card__stack">
+        <p class="ads-card__title">Authentication app</p>
+        <p class="ads-card__description">Get a one-time code from an app on your device</p>
+      </div>
+    <% end %>
+  </div>
+
+  <div>
+    <p style="margin: 0 0 8px; font: 600 12px/1.4 system-ui;">Single field</p>
+    <%= render CardComponent.new(padding: :compact) do %>
+      <div class="ads-card__stack">
+        <p class="ads-card__label">Email address</p>
+        <p class="ads-card__value">john@email.com</p>
+      </div>
+    <% end %>
+  </div>
+
+  <div>
+    <p style="margin: 0 0 8px; font: 600 12px/1.4 system-ui;">Profile summary</p>
+    <%= render CardComponent.new do %>
+      <div class="ads-card__stack ads-card__stack--divided">
+        <div class="ads-card__stack">
+          <p class="ads-card__label">Email address</p>
+          <p class="ads-card__value">john@email.com</p>
+        </div>
+        <hr class="ads-card__divider" />
+        <div class="ads-card__stack">
+          <p class="ads-card__label">Full name</p>
+          <p class="ads-card__value">John McDonald</p>
+        </div>
+        <hr class="ads-card__divider" />
+        <div class="ads-card__stack">
+          <p class="ads-card__label">Address</p>
+          <p class="ads-card__value">
+            2737 E Camelback Road<br />
+            Unit 284<br />
+            Phoenix, AZ 85017
+          </p>
+        </div>
+        <hr class="ads-card__divider" />
+        <div class="ads-card__stack">
+          <p class="ads-card__label">Phone number</p>
+          <p class="ads-card__value">+1 (602) 471-8399</p>
+        </div>
+        <hr class="ads-card__divider" />
+        <div class="ads-card__stack">
+          <p class="ads-card__label">Date of birth</p>
+          <p class="ads-card__value">December 27, 1963</p>
+        </div>
+        <hr class="ads-card__divider" />
+        <div class="ads-card__stack">
+          <p class="ads-card__label">Social Security number</p>
+          <p class="ads-card__value">1•• - •• - •••7</p>
+        </div>
+        <hr class="ads-card__divider" />
+        <p class="ads-card__meta">Something not accurate? Edit in your dashboard.</p>
+      </div>
+    <% end %>
+  </div>
+
+  <div>
+    <p style="margin: 0 0 8px; font: 600 12px/1.4 system-ui;">Button action</p>
+    <%= render CardComponent.new(button: true, type: :button) do |card| %>
+      <% card.with_trailing do %>
+        <%= render IconComponent.new(icon: :chevron_right, size: 20) %>
+      <% end %>
+      <%= render IconComponent.new(icon: :chat, size: 24) %>
+      <div class="ads-card__stack">
+        <p class="ads-card__title">Text or voice message</p>
+        <p class="ads-card__description">Get a one-time code by phone</p>
+      </div>
+    <% end %>
+  </div>
+</div>

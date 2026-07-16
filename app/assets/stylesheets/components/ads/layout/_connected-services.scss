@@ -1,0 +1,174 @@
+@use '../../../variables/ads' as ads;
+@use 'popover-menu' as popover;
+@use 'service-list' as service;
+
+$ads-connected-services-breakpoint-m: 768px;
+
+.ads-connected-services {
+  @include ads.stack(
+    $gap: ads.space(32),
+    $margin: 0 auto,
+    $max-width: ads.$dashboard-width,
+    $reset-flow: true,
+    $width: 100%
+  );
+
+  color: ads.$off-black;
+  font-family: ads.$font-family;
+  text-align: left;
+}
+
+.ads-connected-services__header {
+  @include service.section-header;
+}
+
+.ads-connected-services__heading,
+.ads-connected-services__description {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.ads-connected-services__heading {
+  @include service.section-heading;
+}
+
+.ads-connected-services__description {
+  @include service.section-description;
+}
+
+.ads-connected-services__list {
+  @include service.panel;
+}
+
+.ads-connected-services__rows {
+  @include service.rows;
+}
+
+.ads-connected-services__rows > li + li {
+  @include service.rows-divider;
+}
+
+.ads-connected-service {
+  @include ads.stack($gap: ads.space(16), $reset-flow: true, $width: 100%);
+}
+
+.ads-connected-service__row {
+  @include service.row;
+}
+
+.ads-connected-service__mark {
+  @include service.mark;
+
+  position: relative;
+}
+
+.ads-connected-service__logo {
+  @include service.logo;
+}
+
+.ads-connected-service__indicator {
+  background: ads.$green-500;
+  border: ads.space(4) solid ads.$white;
+  border-radius: ads.radius(pill);
+  bottom: 0;
+  height: ads.space(16);
+  position: absolute;
+  right: 0;
+  transform: translate(25%, 25%);
+  width: ads.space(16);
+}
+
+.ads-connected-service__content {
+  @include service.content;
+}
+
+.ads-connected-service__title,
+.ads-connected-service__meta,
+.ads-connected-service__email {
+  @include service.text;
+}
+
+.ads-connected-service__title {
+  @include service.title;
+}
+
+.ads-connected-service__meta,
+.ads-connected-service__email {
+  @include service.muted;
+}
+
+.ads-connected-service__actions {
+  @include service.actions;
+
+  flex-wrap: wrap;
+  gap: ads.space(4);
+}
+
+.ads-connected-service__menu {
+  position: relative;
+}
+
+.ads-connected-service__menu-button {
+  align-items: center;
+  border-radius: ads.radius(pill);
+  color: ads.$off-black;
+  cursor: pointer;
+  display: flex;
+  height: ads.space(40);
+  justify-content: center;
+  list-style: none;
+  transition: ads.$transition;
+  width: ads.space(40);
+
+  &::-webkit-details-marker {
+    display: none;
+  }
+
+  &:hover,
+  &:active {
+    background: ads.alpha(ads.$off-black, 5%);
+  }
+
+  &:focus {
+    outline: 0;
+  }
+
+  &:focus-visible {
+    @include ads.focus-ring;
+    background: ads.alpha(ads.$off-black, 5%);
+  }
+}
+
+.ads-connected-service__menu-panel {
+  @include popover.panel($z-index: 2);
+}
+
+.ads-connected-service__menu-item {
+  @include popover.item;
+}
+
+.ads-connected-service__menu-item--danger {
+  &,
+  &:is(:link, :visited) {
+    color: ads.$red-600;
+  }
+
+  &:hover,
+  &:active {
+    color: ads.$red-600;
+  }
+}
+
+@media (width < #{$ads-connected-services-breakpoint-m}) {
+  .ads-connected-services__list {
+    @include service.panel-mobile;
+  }
+
+  .ads-connected-service__row {
+    @include service.row-mobile;
+  }
+
+  .ads-connected-service__actions {
+    @include service.actions-mobile;
+  }
+}

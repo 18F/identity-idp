@@ -1,38 +1,36 @@
 <% self.title = t('titles.piv_cac_setup.upsell') %>
 
-<%= render AlertIconComponent.new(icon_name: :info_question, class: 'margin-bottom-4') %>
+<%= render ADS::FormPageComponent.new(
+      title: t('titles.piv_cac_setup.upsell'),
+      subtitle: t('two_factor_authentication.piv_cac_upsell.recommendation'),
+    ) do |page| %>
+  <% page.with_body do %>
+    <%= render AlertComponent.new(
+          type: :neutral,
+          message: t('two_factor_authentication.piv_cac_upsell.explain'),
+          dismissible: false,
+        ) %>
 
-<%= render PageHeadingComponent.new.with_content(t('titles.piv_cac_setup.upsell')) %>
+    <% if FeatureManagement.account_creation_device_profiling_collecting_enabled? %>
+      <%= render partial: 'shared/threat_metrix_profiling',
+                 locals: {
+                   threatmetrix_session_id:,
+                   threatmetrix_javascript_urls:,
+                   threatmetrix_iframe_url:,
+                 } %>
+    <% end %>
+  <% end %>
 
-<p>
-  <%= I18n.t('two_factor_authentication.piv_cac_upsell.recommendation') %>
-</p>
+  <% page.with_actions do %>
+    <%= render ButtonComponent.new(
+          url: login_piv_cac_recommended_add_path,
+          method: :post,
+        ).with_content(t('two_factor_authentication.piv_cac_upsell.add_piv')) %>
 
-<p class='margin-bottom-0'>
-  <%= I18n.t('two_factor_authentication.piv_cac_upsell.explain') %>
-</p>
-
-<%= render ButtonComponent.new(
-      url: login_piv_cac_recommended_add_path,
-      method: :post,
-      big: true,
-      class: 'margin-top-5 margin-bottom-2',
-    ).with_content(t('two_factor_authentication.piv_cac_upsell.add_piv')) %>
-
-<%= render ButtonComponent.new(
-      url: login_piv_cac_recommended_skip_path,
-      method: :post,
-      unstyled: true,
-    ).with_content(@recommended_presenter.skip_text) %>
-
-<% if FeatureManagement.account_creation_device_profiling_collecting_enabled? %>
-  <div class="margin-bottom-2">
-    <%= render partial: 'shared/threat_metrix_profiling',
-               locals: {
-                 threatmetrix_session_id:,
-                 threatmetrix_javascript_urls:,
-                 threatmetrix_iframe_url:,
-               } %>
-  </div>
+    <%= render ButtonComponent.new(
+          url: login_piv_cac_recommended_skip_path,
+          method: :post,
+          variant: :tertiary,
+        ).with_content(@recommended_presenter.skip_text) %>
+  <% end %>
 <% end %>
-

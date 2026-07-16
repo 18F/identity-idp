@@ -17,18 +17,19 @@ RSpec.describe 'idv/phone/new.html.erb' do
   context 'gpo letter available' do
     let(:gpo_letter_available) { true }
 
-    it 'renders troubleshooting options' do
-      expect(rendered).to have_link(t('idv.troubleshooting.options.learn_more_verify_by_phone'))
-      expect(rendered).to have_link(t('idv.troubleshooting.options.verify_by_mail'))
+    it 'renders no US phone number option' do
+      expect(rendered).to have_link(
+        t('idv.buttons.phone.no_us_phone_number'),
+        href: idv_request_letter_path,
+      )
     end
   end
 
   context 'gpo letter not available' do
     let(:gpo_letter_available) { false }
 
-    it 'renders troubleshooting options' do
-      expect(rendered).to have_link(t('idv.troubleshooting.options.learn_more_verify_by_phone'))
-      expect(rendered).not_to have_link(t('idv.troubleshooting.options.verify_by_mail'))
+    it 'does not render no US phone number option' do
+      expect(rendered).not_to have_link(t('idv.buttons.phone.no_us_phone_number'))
     end
   end
 end

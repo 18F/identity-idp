@@ -1,0 +1,10 @@
+@use 'spacing' as *;
+
+$grid-columns-desktop: 12;
+$grid-margin-desktop: space(48);
+$grid-gutter-desktop: space(24);
+$grid-columns-mobile: 4;
+$grid-margin-mobile: space(24);
+$grid-gutter-mobile: space(12);
+$form-width: 27rem;
+$dashboard-width: 41.25rem;

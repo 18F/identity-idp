@@ -12,10 +12,9 @@ RSpec.describe 'idv/please_call/show.html.erb' do
   end
 
   it 'shows step indicator with pending status on secure account' do
-    expect(view.content_for(:pre_flash_content)).to have_css(
-      '.step-indicator__step--current',
-      text: t('step_indicator.flows.idv.re_enter_password'),
-    )
+    progress = view.instance_variable_get(:@ads_progress_component)
+    expect(progress).to be_a(ProgressComponent)
+    expect(progress.steps[progress.current_step]).to eq(t('step_indicator.flows.idv.re_enter_password'))
   end
 
   it 'includes a message instructing them to fill out a contact form' do
@@ -35,10 +34,7 @@ RSpec.describe 'idv/please_call/show.html.erb' do
     let(:in_person) { true }
 
     it 'does not show step indicator secure account' do
-      expect(view.content_for(:pre_flash_content)).not_to have_css(
-        '.step-indicator__step--current',
-        text: t('step_indicator.flows.idv.secure_account'),
-      )
+      expect(view.instance_variable_get(:@ads_progress_component)).to be_nil
     end
   end
 end

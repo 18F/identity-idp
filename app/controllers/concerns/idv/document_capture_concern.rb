@@ -63,7 +63,6 @@ module Idv
 
     def selfie_requirement_met?
       !resolved_authn_context_result.facial_match? ||
-        mdl_received? ||
         stored_result.selfie_check_performed?
     end
 
@@ -75,12 +74,8 @@ module Idv
     end
 
     def aamva_requirement_met?
+      return true if document_type_received == 'passport'
       return true unless IdentityConfig.store.idv_aamva_at_doc_auth_enabled
-
-      if [*Idp::Constants::DocumentTypes::PASSPORT_TYPES, Idp::Constants::DocumentTypes::MDL]
-          .include?(document_type_received)
-        return true
-      end
 
       stored_result.aamva_status == :passed
     end
@@ -159,26 +154,21 @@ module Idv
     private
 
     def validation_requirements_met?
-      document_type_match? && selfie_requirement_met? &&
-        mrz_requirement_met? && aamva_requirement_met?
+      return false if document_type_mismatch?
+
+      selfie_requirement_met? && mrz_requirement_met? && aamva_requirement_met?
     end
 
-    def document_type_match?
-      case document_capture_session.document_type_requested
-      when Idp::Constants::DocumentTypes::STATE_ID_CARD
-        Idp::Constants::DocumentTypes::SUPPORTED_STATE_ID_TYPES
-          .include?(document_type_received)
-      when Idp::Constants::DocumentTypes::PASSPORT
-        document_type_received == Idp::Constants::DocumentTypes::PASSPORT
-      when Idp::Constants::DocumentTypes::MDL
-        mdl_received?
-      else
-        false
-      end
-    end
+    def document_type_mismatch?
+      # Reject when user requested passport flow but submitted a different document type
+      return true if document_capture_session.passport_requested? &&
+                     document_type_received != Idp::Constants::DocumentTypes::PASSPORT
 
-    def mdl_received?
-      document_type_received == Idp::Constants::DocumentTypes::MDL
+      # Reject when user didn't request passport flow but submitted a passport
+      return true if !document_capture_session.passport_requested? &&
+                     document_type_received == Idp::Constants::DocumentTypes::PASSPORT
+
+      false
     end
 
     def document_type_received

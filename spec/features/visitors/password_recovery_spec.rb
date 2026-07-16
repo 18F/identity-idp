@@ -72,7 +72,7 @@ RSpec.feature 'Password Recovery' do
     end
 
     it 'shows the password form' do
-      expect(page).to have_content t('forms.confirmation.show_hdr')
+      expect(page).to have_content t('titles.sign_up.create_password')
     end
   end
 

@@ -1,40 +1,53 @@
 <% self.title = t('titles.confirmations.delete') %>
 
-<%= render PageHeadingComponent.new.with_content(t('users.delete.heading')) %>
+<%= render ADS::FormPageComponent.new(
+      title: t('users.delete.heading'),
+      subtitle: t('users.delete.subheading'),
+    ) do |page| %>
+  <% page.with_body do %>
+    <ul class="ads-list">
+      <li><%= t('users.delete.bullet_1', app_name: APP_NAME) %></li>
+      <li><%= current_user.delete_account_bullet_key %></li>
+      <li><%= t('users.delete.bullet_3', app_name: APP_NAME) %></li>
+      <li><%= t('users.delete.bullet_4', app_name: APP_NAME) %></li>
+    </ul>
 
-<p class="margin-bottom-1">
-  <%= t('users.delete.subheading') %>
-</p>
+    <%= simple_form_for(
+          current_user,
+          url: account_delete_path,
+          method: :post,
+          html: { class: 'ads-form ads-form--gap-32 ads-form--align-stretch' },
+        ) do |f| %>
+      <div class="ads-copy">
+        <p><%= t('users.delete.instructions') %></p>
+      </div>
 
-<ul>
-  <li class="margin-bottom-1"><%= t('users.delete.bullet_1', app_name: APP_NAME) %></li>
-  <li class="margin-bottom-1"><%= current_user.delete_account_bullet_key %></li>
-  <li class="margin-bottom-1"><%= t('users.delete.bullet_3', app_name: APP_NAME) %></li>
-  <li class="margin-bottom-1"><%= t('users.delete.bullet_4', app_name: APP_NAME) %></li>
-</ul>
+      <%= render ADS::StackComponent.new(gap: 32, align: :stretch) do %>
+        <%= render InputComponent.new(
+              form: f,
+              attribute: :password,
+              label: t('forms.password'),
+              type: :password,
+              required: true,
+              autocomplete: 'current-password',
+              error_messages: {
+                valueMissing: t('components.input.errors.password_current'),
+              },
+            ) %>
 
-<%= simple_form_for(current_user, url: account_delete_path, method: :post) do |f| %>
-  <p class="margin-bottom-4">
-    <%= t('users.delete.instructions') %>
-  </p>
+        <%= render ADS::StackComponent.new(kind: :actions, gap: 8, align: :stretch) do %>
+          <%= render ButtonComponent.new(
+                type: :submit,
+                variant: :destructive,
+              ).with_content(t('users.delete.actions.delete')) %>
 
-  <%= render PasswordToggleComponent.new(
-        form: f,
-        field_options: {
-          name: :password,
-          label: t('idv.form.password'),
-          required: true,
-          input_html: {
-            autocomplete: 'current-password',
-          },
-        },
-      ) %>
-
-  <%= f.submit t('users.delete.actions.delete'), danger: true, class: 'margin-top-5 margin-bottom-2' %>
+          <%= render ButtonComponent.new(
+                url: account_settings_path,
+                size: :lg,
+                variant: :secondary,
+              ).with_content(t('users.delete.actions.cancel')) %>
+        <% end %>
+      <% end %>
+    <% end %>
+  <% end %>
 <% end %>
-
-<%= link_to(
-      t('users.delete.actions.cancel'),
-      account_path,
-      class: 'usa-button usa-button--big usa-button--wide usa-button--outline',
-    ) %>

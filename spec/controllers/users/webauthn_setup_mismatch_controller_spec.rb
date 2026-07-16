@@ -50,7 +50,7 @@ RSpec.describe Users::WebauthnSetupMismatchController do
       let(:webauthn_mismatch_id) { nil }
 
       it 'redirects to next setup path' do
-        expect(response).to redirect_to(account_url)
+        expect(response).to redirect_to(account_url(anchor: 'welcome'))
       end
     end
 
@@ -58,7 +58,7 @@ RSpec.describe Users::WebauthnSetupMismatchController do
       let(:webauthn_mismatch_id) { 1 }
 
       it 'redirects to next setup path' do
-        expect(response).to redirect_to(account_url)
+        expect(response).to redirect_to(account_url(anchor: 'welcome'))
       end
     end
   end
@@ -124,7 +124,7 @@ RSpec.describe Users::WebauthnSetupMismatchController do
     end
 
     it 'redirects to next setup path' do
-      expect(response).to redirect_to(account_url)
+      expect(response).to redirect_to(account_url(anchor: 'welcome'))
     end
 
     context 'with platform authenticator' do

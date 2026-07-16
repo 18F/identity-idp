@@ -16,14 +16,13 @@ RSpec.describe 'idv/session_errors/rate_limited.html.erb' do
   end
 
   context 'without an SP' do
-    it 'renders a list of troubleshooting options' do
-      expect(rendered).to have_link(
-        t('idv.troubleshooting.options.contact_support', app_name: APP_NAME),
-        href: contact_redirect_url,
-      )
+    it 'renders exit without SP' do
       expect(rendered).to have_link(
         t('idv.failure.exit.without_sp', app_name: APP_NAME),
         href: return_to_sp_failure_to_proof_path(step: 'verify_id', location: 'rate_limited'),
+      )
+      expect(rendered).not_to have_link(
+        t('idv.troubleshooting.options.contact_support', app_name: APP_NAME),
       )
     end
   end
@@ -32,14 +31,13 @@ RSpec.describe 'idv/session_errors/rate_limited.html.erb' do
     let(:sp_name) { 'Example SP' }
     let(:sp_issuer) { 'example-issuer' }
 
-    it 'renders a list of troubleshooting options' do
-      expect(rendered).to have_link(
-        t('idv.troubleshooting.options.contact_support', app_name: APP_NAME),
-        href: contact_redirect_url,
-      )
+    it 'renders exit with SP' do
       expect(rendered).to have_link(
         t('idv.failure.exit.with_sp', app_name: APP_NAME, sp_name: sp_name),
         href: return_to_sp_failure_to_proof_path(step: 'verify_id', location: 'rate_limited'),
+      )
+      expect(rendered).not_to have_link(
+        t('idv.troubleshooting.options.contact_support', app_name: APP_NAME),
       )
     end
   end

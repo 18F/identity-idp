@@ -78,7 +78,7 @@ module TwoFactorAuthCode
 
     def cancel_link
       if reauthn
-        account_path
+        account_security_path
       else
         sign_out_path
       end

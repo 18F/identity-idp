@@ -1,16 +1,25 @@
 <% self.title = t('service_providers.errors.inactive.heading', sp_name: @sp_name, app_name: APP_NAME) %>
 
-<%= render StatusPageComponent.new(status: :error) do |c| %>
-  <% c.with_header { t('service_providers.errors.inactive.heading', sp_name: @sp_name, app_name: APP_NAME) } %>
+<%= render ADS::FormPageComponent.new(
+      title: t('service_providers.errors.inactive.heading', sp_name: @sp_name, app_name: APP_NAME),
+    ) do |page| %>
+  <% page.with_body do %>
+    <%= render ADS::StackComponent.new do %>
+      <%= render AlertComponent.new(type: :error, dismissible: false) do %>
+        <%= t('service_providers.errors.inactive.instructions', sp_name: @sp_name, app_name: APP_NAME) %>
+      <% end %>
 
-  <p>
-    <%= t('service_providers.errors.inactive.instructions', sp_name: @sp_name, app_name: APP_NAME) %>
-  </p>
+      <%= render CardComponent.new(padding: :compact) do %>
+        <p class="ads-card__value">
+          <%= t('service_providers.errors.inactive.instructions2') %>
+        </p>
+      <% end %>
+    <% end %>
+  <% end %>
 
-  <p>
-    <%= t('service_providers.errors.inactive.instructions2') %>
-  </p>
-
-  <% c.with_action_button(url: root_path)
-       .with_content(t('service_providers.errors.inactive.button_text', app_name: APP_NAME)) %>
+  <% page.with_actions do %>
+    <%= render ButtonComponent.new(url: root_path, size: :lg) do %>
+      <%= t('service_providers.errors.inactive.button_text', app_name: APP_NAME) %>
+    <% end %>
+  <% end %>
 <% end %>

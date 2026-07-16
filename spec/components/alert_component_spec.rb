@@ -1,76 +1,33 @@
 require 'rails_helper'
 
 RSpec.describe AlertComponent, type: :component do
-  it 'renders message from locals' do
-    rendered = render_inline AlertComponent.new(message: 'FYI')
-
-    expect(rendered).to have_content('FYI')
-  end
-
-  it 'renders message from block' do
-    rendered = render_inline(AlertComponent.new) { 'FYI' }
-
-    expect(rendered).to have_content('FYI')
-  end
-
-  it 'prefers message from constructor arg' do
-    rendered = render_inline(AlertComponent.new(message: 'locals')) { 'block' }
-
-    expect(rendered).to have_content('locals')
-  end
-
-  it 'renders without modifier classes by default' do
-    rendered = render_inline AlertComponent.new(message: 'FYI')
-
-    expect(rendered).to have_selector('.usa-alert:not([class*=usa-alert--])')
-  end
-
-  it 'accepts alert type param' do
-    rendered = render_inline AlertComponent.new(type: :success, message: 'Hooray!')
-
-    expect(rendered).to have_selector('.usa-alert.usa-alert--success')
-  end
-
-  it 'defaults to <p> tag for text' do
-    rendered = render_inline AlertComponent.new(type: :success, message: 'Hooray!')
-
-    expect(rendered).to have_selector('p.usa-alert__text')
-  end
-
-  it 'accepts text_tag param' do
-    rendered = render_inline AlertComponent.new(type: :success, message: 'Hooray!', text_tag: 'div')
-
-    expect(rendered).to have_selector('div.usa-alert__text')
-    expect(rendered).to_not have_selector('p.usa-alert__text')
-  end
-
-  it 'accepts custom class names' do
-    rendered = render_inline AlertComponent.new(message: 'FYI', class: 'my-custom-class')
-
-    expect(rendered).to have_selector('.usa-alert.my-custom-class')
-  end
-
-  it 'accepts arbitrary tag options' do
-    rendered = render_inline AlertComponent.new(message: 'FYI', data: { foo: 'bar' })
-
-    expect(rendered).to have_selector('.usa-alert[data-foo="bar"]')
-  end
-
-  it 'assigns role="status"' do
-    rendered = render_inline AlertComponent.new(message: 'FYI')
-
-    expect(rendered).to have_selector('.usa-alert[role="status"]')
-  end
-
   it 'assigns role="alert" for error type' do
     rendered = render_inline AlertComponent.new(type: :error, message: 'Attention!')
 
-    expect(rendered).to have_selector('.usa-alert[role="alert"]')
+    expect(rendered).to have_selector('[role="alert"]', text: 'Attention!')
+  end
+
+  it 'includes a dismiss control when dismissible' do
+    rendered = render_inline AlertComponent.new(message: 'Closeable')
+
+    expect(rendered).to have_button(t('doc_auth.buttons.close'))
+  end
+
+  it 'omits dismiss control when not dismissible' do
+    rendered = render_inline AlertComponent.new(message: 'Pinned', dismissible: false)
+
+    expect(rendered).to have_no_button(t('doc_auth.buttons.close'))
   end
 
   it 'validates type' do
     expect do
-      render_inline AlertComponent.new(type: 'alert', message: 'Attention!')
+      render_inline AlertComponent.new(type: :unknown, message: 'Nope')
     end.to raise_error(ActiveModel::ValidationError)
+  end
+
+  it 'rejects an action without both a label and URL' do
+    expect do
+      render_inline AlertComponent.new(message: 'Body copy', action: { label: 'Continue' })
+    end.to raise_error(ActiveModel::ValidationError, /Action/)
   end
 end

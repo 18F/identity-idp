@@ -57,9 +57,9 @@ class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresent
     return if show_all_options?
 
     if piv_cac_required?
-      t('two_factor_authentication.aal2_request.piv_cac_only_html', sp_name:)
+      t('two_factor_authentication.aal2_request.piv_cac_only', sp_name:)
     elsif phishing_resistant_required?
-      t('two_factor_authentication.aal2_request.phishing_resistant_html', sp_name:)
+      t('two_factor_authentication.aal2_request.phishing_resistant', sp_name:)
     end
   end
 
@@ -96,7 +96,7 @@ class TwoFactorLoginOptionsPresenter < TwoFactorAuthCode::GenericDeliveryPresent
 
   def cancel_link
     if reauthentication_context?
-      account_path
+      account_security_path
     else
       sign_out_path
     end

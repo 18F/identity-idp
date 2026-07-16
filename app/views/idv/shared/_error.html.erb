@@ -6,78 +6,88 @@ locals:
 * title: Optional custom page title, defaulting to the heading.
 * action: Optional hash of `text`, `url`, optional `method` of a primary action link.
 * secondary_action: Optional hash of `text`, `url`, optional `method` of a secondary action link.
-* current_step: Optionally identify the current step of the IdV flow. If provided, the step indicator will be rendered.
-* options: Array of troubleshooting options.
+* options: Array of troubleshooting options (warning only; ignored for error).
 %>
-<% if local_assigns.fetch(:type, :error) == :error
-     icon_name = :error
-   else
-     icon_name = :warning
-   end
-
-   troubleshooting_heading = local_assigns.fetch(:troubleshooting_heading) do
-     if local_assigns.fetch(:type, :error) == :error
-       troubleshooting_heading = t('idv.troubleshooting.headings.need_assistance')
-     else
-       troubleshooting_heading = t('components.troubleshooting_options.default_heading')
-     end
-   end
+<% alert_type = local_assigns[:type].presence || :error
+   secondary_text = local_assigns[:secondary_action_text]
+   alert_content = capture { yield }.presence
+   options = alert_type == :warning ? local_assigns.fetch(:options, []) : []
+   troubleshooting_heading = local_assigns.fetch(
+     :troubleshooting_heading,
+     t('components.troubleshooting_options.default_heading'),
+   )
+   secondary_section = local_assigns[:secondary_action].present? && secondary_text.present?
  %>
 
 <% self.title = local_assigns.fetch(:title, heading) %>
 
-<% if local_assigns[:current_step] and defined?(step_indicator_steps) %>
-  <% content_for(:pre_flash_content) do %>
-    <%= render StepIndicatorComponent.new(
-          steps: step_indicator_steps,
-          current_step: local_assigns[:current_step],
-          locale_scope: 'idv',
-          class: 'margin-x-neg-2 margin-top-neg-4 tablet:margin-x-neg-6 tablet:margin-top-neg-4',
-        ) %>
-  <% end %>
+<% if local_assigns[:current_step].present? %>
+  <%= render 'idv/shared/step_indicator',
+             current_step: local_assigns[:current_step],
+             **{ steps: local_assigns[:step_indicator_steps] }.compact %>
 <% end %>
 
-<%= render AlertIconComponent.new(icon_name: icon_name, class: 'display-block margin-bottom-4') %>
-
-<%= render PageHeadingComponent.new.with_content(heading) %>
-
-<%= yield %>
-
-<% if local_assigns[:action] %>
-  <div class="margin-top-5">
-    <%= button_or_link_to(
-          action[:text],
-          action[:url],
-          class: 'usa-button usa-button--big usa-button--wide',
-          method: action[:method],
-        ) %>
-  </div>
-
-  <% if local_assigns[:secondary_action] %>
-    <hr class="margin-top-5" />
-
-    <% if local_assigns[:secondary_action_heading] %>
-      <h1><%= local_assigns[:secondary_action_heading] %></h1>
+<%= render ADS::FormPageComponent.new(
+      title: heading,
+      class_name: class_names('ads-idv-support', "ads-idv-support--#{alert_type}"),
+    ) do |page| %>
+  <% if alert_content %>
+    <% page.with_alert do %>
+      <%= render AlertComponent.new(type: alert_type, dismissible: true, text_tag: :div) do %>
+        <%= alert_content %>
+      <% end %>
     <% end %>
-  
-    <% if local_assigns[:secondary_action_text] %>
-      <p><%= local_assigns[:secondary_action_text] %></p>
-    <% end %>
+  <% end %>
 
-    <div class="margin-top-2">
-      <%= button_or_link_to(
-            secondary_action[:text],
-            secondary_action[:url],
-            class: 'usa-button usa-button--big usa-button--wide usa-button--outline',
-            method: secondary_action[:method],
-          ) %>
-    </div>
+  <% if secondary_section %>
+    <% page.with_body do %>
+      <section class="ads-copy ads-copy--centered ads-idv-support__secondary-action">
+        <p><%= secondary_text %></p>
+      </section>
+    <% end %>
+  <% end %>
+
+  <% if local_assigns[:action] || local_assigns[:secondary_action].present? || options.present? %>
+    <% page.with_actions do %>
+      <% if local_assigns[:action] %>
+        <%= render ButtonComponent.new(
+              url: action[:url],
+              method: action[:method],
+            ) do %>
+          <%= action[:text] %>
+        <% end %>
+      <% end %>
+
+      <% if local_assigns[:secondary_action].present? %>
+        <%= render ButtonComponent.new(
+              url: secondary_action[:url],
+              method: secondary_action[:method],
+              variant: :secondary,
+            ) do %>
+          <%= secondary_action[:text] %>
+        <% end %>
+      <% end %>
+
+      <% if options.present? %>
+        <section class="ads-copy ads-idv-support__troubleshooting">
+          <p><%= troubleshooting_heading %></p>
+          <ul class="ads-list">
+            <% options.each do |option| %>
+              <li>
+                <%= link_to(
+                      option[:text],
+                      option[:url],
+                      target: option[:new_tab] ? '_blank' : nil,
+                      rel: option[:new_tab] ? 'noopener noreferrer' : nil,
+                    ) %>
+                <% if option[:new_tab] %>
+                  <span class="ads-sr-only"><%= t('links.new_tab') %></span>
+                <% end %>
+              </li>
+            <% end %>
+          </ul>
+        </section>
+      <% end %>
+    <% end %>
   <% end %>
 <% end %>
-
-<%= render(
-      'shared/troubleshooting_options',
-      heading: troubleshooting_heading,
-      options: local_assigns.fetch(:options, []),
-      class: 'margin-top-5',
-    ) %>

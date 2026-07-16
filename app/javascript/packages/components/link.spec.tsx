@@ -35,7 +35,7 @@ describe('Link', () => {
 
     expect(link.getAttribute('href')).to.equal('/');
     expect(link.target).to.equal('');
-    expect([...link.classList.values()]).to.have.all.members(['usa-link']);
+    expect([...link.classList.values()]).to.have.all.members(['ads-link']);
   });
 
   it('forwards extra props to underlying anchor element', () => {
@@ -62,7 +62,7 @@ describe('Link', () => {
 
       const link = getByRole('link') as HTMLAnchorElement;
 
-      expect([...link.classList.values()]).to.have.all.members(['usa-link', 'usa-link--external']);
+      expect([...link.classList.values()]).to.have.all.members(['ads-link', 'ads-link--external']);
     });
 
     it('renders link which opens in new tab', () => {

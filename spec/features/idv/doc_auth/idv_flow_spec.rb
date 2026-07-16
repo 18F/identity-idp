@@ -198,11 +198,11 @@ RSpec.describe 'Completing all IDV steps', :js, :allow_browser_log do
         complete_choose_id_type_step
         visit idv_socure_document_capture_path
         expect(page).to have_current_path(idv_socure_document_capture_path)
-        expect(find('.step-indicator__step--current')).to have_text('Verify your ID')
+        expect(find('ads-progress [aria-current="step"]')).to have_text('Verify your ID')
         socure_docv_upload_documents(docv_transaction_token: @docv_transaction_token)
         visit idv_socure_document_capture_update_path
         complete_ssn_step
-        expect(find('.step-indicator__step--current')).to have_text('Verify your information')
+        expect(find('ads-progress [aria-current="step"]')).to have_text('Verify your information')
       end
     end
 

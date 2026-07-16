@@ -8,7 +8,7 @@ module Accounts
     layout 'account_side_nav'
 
     def show
-      session[:account_redirect_path] = account_two_factor_authentication_path
+      session[:account_redirect_path] = account_security_path
       @presenter = AccountShowPresenter.new(
         decrypted_pii: nil,
         sp_session_request_url: sp_session_request_url_with_updated_params,

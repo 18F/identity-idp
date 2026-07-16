@@ -91,7 +91,7 @@ RSpec.feature 'idv enter letter code step' do
     continue_as(user.email, user.password)
     uncheck(t('forms.messages.remember_device'))
     fill_in_code_with_last_phone_otp
-    click_submit_default
+    click_button t('forms.buttons.continue')
 
     expect(page).to have_current_path idv_verify_by_mail_enter_code_path
     expect(page).to have_css('h1', text: t('idv.gpo.title'))
@@ -113,7 +113,7 @@ RSpec.feature 'idv enter letter code step' do
       continue_as(user.email, user.password)
       uncheck(t('forms.messages.remember_device'))
       fill_in_code_with_last_phone_otp
-      click_submit_default
+      click_button t('forms.buttons.continue')
 
       expect(page).to have_current_path(idv_verify_by_mail_enter_code_path, ignore_query: true)
       expect(page).to have_css('h1', text: t('idv.gpo.did_not_receive_letter.title'))
@@ -201,7 +201,7 @@ RSpec.feature 'idv enter letter code step' do
     end
   end
 
-  it 'allows a user to cancel and start over in the accordion' do
+  it 'allows a user to cancel and start over from the address section' do
     another_gpo_confirmation_code = create(
       :gpo_confirmation_code,
       profile: profile,
@@ -245,7 +245,6 @@ RSpec.feature 'idv enter letter code step' do
 
       sign_in_live_with_2fa(user)
 
-      click_on t('idv.gpo.address_accordion.title')
       click_on t('idv.gpo.address_accordion.cta_link')
       expect(page).to have_current_path idv_confirm_start_over_path
       click_idv_continue

@@ -2,7 +2,6 @@ import { useState, useMemo, useContext, useEffect } from 'react';
 import { Alert } from '@18f/identity-components';
 import { useI18n } from '@18f/identity-react-i18n';
 import { FormSteps, PromptOnNavigate } from '@18f/identity-form-steps';
-import { VerifyFlowStepIndicator, VerifyFlowPath } from '@18f/identity-verify-flow';
 import { useDidUpdateEffect } from '@18f/identity-react-hooks';
 import type { FormStep } from '@18f/identity-form-steps';
 import { getConfigValue } from '@18f/identity-config';
@@ -156,17 +155,9 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
   } else if (submissionError) {
     steps = [reviewFormStep, ...inPersonSteps];
   }
-  // If the user got here by opting-in to in-person proofing, when skipDocAuthFromHowToVerify === true
-  // or opting-in ipp from handoff page, and selfie is required, when skipDocAuthFromHandoff === true,
-  // or opting-in ipp from socure hybrid, when skipDocAuthFromSocure === true,
-  // then set stepIndicatorPath to VerifyFlowPath.IN_PERSON
-  const stepIndicatorPath =
-    (stepName && ['location', 'prepare', 'switch_back'].includes(stepName)) || isInPersonStepEnabled
-      ? VerifyFlowPath.IN_PERSON
-      : VerifyFlowPath.DEFAULT;
+  // Header progress is owned by ERB chrome (idv/shared/step_indicator), not React.
   return (
     <>
-      <VerifyFlowStepIndicator currentStep="document_capture" path={stepIndicatorPath} />
       {submissionFormValues &&
       (!submissionError || submissionError instanceof RetrySubmissionError) ? (
         <>
@@ -186,9 +177,7 @@ function DocumentCapture({ onStepChange = () => {} }: DocumentCaptureProps) {
       ) : (
         <>
           {submissionError && !(submissionError instanceof UploadFormEntriesError) && (
-            <Alert type="error" className="margin-bottom-4">
-              {t('doc_auth.errors.general.network_error')}
-            </Alert>
+            <Alert type="error">{t('doc_auth.errors.general.network_error')}</Alert>
           )}
           <FormSteps
             steps={steps}

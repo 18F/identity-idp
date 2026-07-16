@@ -44,6 +44,8 @@ RSpec.describe 'default phone selection' do
         submit_prefilled_otp_code(user, 'sms')
 
         expect(page).to have_current_path(account_path)
+
+        visit account_security_path
         expect(page).to have_content t('account.index.default')
 
         set_new_browser_session
@@ -78,12 +80,11 @@ RSpec.describe 'default phone selection' do
         click_button t('forms.buttons.submit.confirm_change')
         user.reload
 
-        expect(page).to have_current_path(account_path)
+        expect(page).to have_current_path(account_security_path)
 
-        node = page.first('.grid-row > .grid-col-fill', text: new_phone)
-        expect(node).to have_content '202-555-3111'
-        parent = node.first(:xpath, './/..')
-        expect(parent).to have_content t('account.index.default')
+        row = page.first('.ads-auth-methods__row-text', text: new_phone)
+        expect(row).to have_content '202-555-3111'
+        expect(row).to have_content t('account.index.default')
 
         set_new_browser_session
         sign_in_before_2fa(user)
@@ -115,6 +116,8 @@ RSpec.describe 'default phone selection' do
         submit_prefilled_otp_code(user, 'voice')
 
         expect(page).to have_current_path(account_path)
+
+        visit account_security_path
         expect(page).to have_content t('account.index.default')
 
         set_new_browser_session
@@ -134,7 +137,7 @@ RSpec.describe 'default phone selection' do
       ignore_query: true,
     )
     fill_in('code', with: user.reload.direct_otp)
-    click_button t('forms.buttons.submit.default')
+    click_submit_default
   end
 
   def enter_phone_number(phone)

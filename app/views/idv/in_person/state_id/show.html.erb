@@ -1,248 +1,352 @@
-<% content_for(:pre_flash_content) do %>
-  <%= render StepIndicatorComponent.new(
-        steps: Idv::StepIndicatorConcern::STEP_INDICATOR_STEPS_IPP,
-        current_step: :verify_info,
-        locale_scope: 'idv',
-        class: 'margin-x-neg-2 margin-top-neg-4 tablet:margin-x-neg-6 tablet:margin-top-neg-4',
-      ) %>
-<% end %>
-<% if updating_state_id %>
-  <% self.title = t('in_person_proofing.headings.update_state_id') %>
-  <%= render PageHeadingComponent.new.with_content(t('in_person_proofing.headings.update_state_id')) %>
-<% else %>
-  <% self.title = t('in_person_proofing.headings.state_id_milestone_2') %>
-  <%= render PageHeadingComponent.new.with_content(t('in_person_proofing.headings.state_id_milestone_2')) %>
-<% end %>
+<%= render 'idv/shared/step_indicator',
+           current_step: :verify_info,
+           steps: Idv::StepIndicatorConcern::STEP_INDICATOR_STEPS_IPP %>
 
-<p>
-  <%= t('in_person_proofing.body.state_id.info_html') %>
-</p>
+<% page_title = updating_state_id ?
+     t('in_person_proofing.headings.update_state_id') :
+     t('in_person_proofing.headings.state_id_milestone_2') %>
+<% self.title = page_title %>
 
-<%= render AlertComponent.new(
-      type: :info,
-      class: 'margin-bottom-4',
-      text_tag: 'div',
-    ) do %>
-  <strong><%= t('in_person_proofing.body.state_id.alert_message') %></strong>
-  <br/>
-  <%= t('in_person_proofing.body.state_id.alert_text') %>
-<% end %>
-<%= simple_form_for form,
-                    as: 'identity_doc', # Renaming form as a workaround for aggressive browser autofill assumptions
-                    url: url_for,
-                    method: 'put',
-                    html: { class: 'margin-y-5' } do |f| %>
+<% jurisdiction = pii[:state_id_jurisdiction].presence %>
+<% identity_doc_state = pii[:identity_doc_address_state].presence %>
+<% dob_iso = parsed_dob&.iso8601 %>
+<% expiration_iso = parsed_expiration&.iso8601 %>
+<% dob_year, dob_month, dob_day = dob_iso.to_s.split('-') %>
+<% exp_year, exp_month, exp_day = expiration_iso.to_s.split('-') %>
 
-  <div class="margin-bottom-4">
-    <%= render ValidatedFieldComponent.new(
-          name: :first_name,
-          form: f,
-          input_html: { value: pii[:first_name] },
-          label: t('in_person_proofing.form.state_id.first_name'),
-          label_html: { class: 'usa-label' },
-          maxlength: 255,
-          required: true,
-        ) %>
-  </div>
+<%= render ADS::FormPageComponent.new(
+      title: page_title,
+      subtitle: t('in_person_proofing.body.state_id.info_ads'),
+      alert_position: :below,
+    ) do |page| %>
 
-  <div class="margin-bottom-4">
-    <%= render ValidatedFieldComponent.new(
-          name: :last_name,
-          form: f,
-          input_html: { value: pii[:last_name] },
-          label: t('in_person_proofing.form.state_id.last_name'),
-          label_html: { class: 'usa-label' },
-          maxlength: 255,
-          required: true,
-        ) %>
-  </div>
-
-  <div class="margin-bottom-4">
-  <%= render MemorableDateComponent.new(
-        content_tag: 'memorable-date',
-        name: :dob,
-        day: parsed_dob&.day,
-        month: parsed_dob&.month,
-        year: parsed_dob&.year,
-        required: true,
-        min: '1900-01-01',
-        max: Time.zone.today,
-        hint: t('in_person_proofing.form.state_id.dob_hint'),
-        label: t('in_person_proofing.form.state_id.dob'),
-        form: f,
-        error_messages: {
-          missing_month_day_year: t('in_person_proofing.form.state_id.memorable_date.errors.date_of_birth.missing_month_day_year'),
-          range_overflow: t('in_person_proofing.form.state_id.memorable_date.errors.date_of_birth.range_overflow'),
-        },
-        range_errors: [
-          {
-            max: Time.zone.today - 13.years,
-            message: t(
-              'in_person_proofing.form.state_id.memorable_date.errors.date_of_birth.range_min_age',
-              app_name: APP_NAME,
-            ),
-          },
-        ],
-      )
-      %>
-  </div>
-
-  <div class="margin-bottom-4">
-    <%= render ValidatedFieldComponent.new(
-          name: :state_id_jurisdiction,
-          collection: @presenter.usps_states_territories,
-          form: f,
-          hint: t('in_person_proofing.form.state_id.state_id_jurisdiction_hint'),
-          input_html: { class: 'jurisdiction-state-selector' },
-          label: t('in_person_proofing.form.state_id.state_id_jurisdiction'),
-          label_html: { class: 'usa-label' },
-          prompt: t('in_person_proofing.form.state_id.state_id_jurisdiction_prompt'),
-          required: true,
-          selected: pii[:state_id_jurisdiction],
-        ) %>
-  </div>
-  <div class="margin-bottom-5">
-    <% state_id_number_hint_default = capture do %>
-      <%= t('in_person_proofing.form.state_id.state_id_number_hint') %>
-      <% [
-           [t('in_person_proofing.form.state_id.state_id_number_hint_spaces'), ' '],
-           [t('in_person_proofing.form.state_id.state_id_number_hint_forward_slashes'), '/'],
-           [t('in_person_proofing.form.state_id.state_id_number_hint_asterisks'), '*'],
-           [t('in_person_proofing.form.state_id.state_id_number_hint_dashes'), '-', true],
-         ].each do |text, symbol, last| %>
-         <span class="usa-sr-only"><%= text %><%= ',' if !last %></span>
-         <span aria-hidden="true"><%= symbol %></span>
-      <% end %>
+  <% page.with_alert do %>
+    <%= render AlertComponent.new(
+          type: :neutral,
+          dismissible: false,
+          title: t('in_person_proofing.body.state_id.alert_message'),
+        ) do %>
+      <%= t('in_person_proofing.body.state_id.alert_text') %>
     <% end %>
-    <% state_id_number_hint = capture do %>
-      <% [
-           [:default, state_id_number_hint_default],
-           ['FL', t('in_person_proofing.form.state_id.state_id_number_florida_hint_html')],
-           ['TX', t('in_person_proofing.form.state_id.state_id_number_texas_hint')],
-         ].each do |state, hint| %>
-        <%= content_tag(
-              :span,
-              hint,
-              class: state == :default ? nil : 'display-none',
-              data: { state: },
-            ) %>
+  <% end %>
+
+  <% page.with_body do %>
+    <%= simple_form_for(
+          form,
+          as: 'identity_doc',
+          url: url_for,
+          method: :put,
+          html: { class: 'ads-form ads-form--align-stretch' },
+        ) do |f| %>
+      <%= render ADS::StackComponent.new(gap: 32) do %>
+        <%= render ADS::StackComponent.new(gap: 12) do %>
+          <%= render InputComponent.new(
+                form: f,
+                attribute: :first_name,
+                label: t('in_person_proofing.form.state_id.first_name'),
+                required: true,
+                maxlength: 255,
+                autocomplete: 'given-name',
+                value: pii[:first_name],
+                error_message: form.errors.full_messages_for(:first_name).first,
+                error_messages: {
+                  valueMissing: t('components.input.errors.first_name'),
+                },
+              ) %>
+
+          <%= render InputComponent.new(
+                form: f,
+                attribute: :last_name,
+                label: t('in_person_proofing.form.state_id.last_name'),
+                required: true,
+                maxlength: 255,
+                autocomplete: 'family-name',
+                value: pii[:last_name],
+                error_message: form.errors.full_messages_for(:last_name).first,
+                error_messages: {
+                  valueMissing: t('components.input.errors.last_name'),
+                },
+              ) %>
+
+          <%= render InputComponent.new(
+                form: f,
+                attribute: :dob,
+                label: t('in_person_proofing.form.state_id.dob'),
+                type: :date,
+                required: true,
+                value: dob_iso,
+                autocomplete: 'bday',
+                name: 'dob_date',
+                error_message: form.errors.full_messages_for(:dob).first,
+                error_messages: {
+                  valueMissing: t('components.input.errors.dob'),
+                  typeMismatch: t('components.input.errors.dob'),
+                  badInput: t('components.input.errors.dob'),
+                },
+              ) %>
+          <%= hidden_field_tag 'identity_doc[dob][year]', dob_year, id: 'identity_doc_dob_year' %>
+          <%= hidden_field_tag 'identity_doc[dob][month]', dob_month, id: 'identity_doc_dob_month' %>
+          <%= hidden_field_tag 'identity_doc[dob][day]', dob_day, id: 'identity_doc_dob_day' %>
+
+          <%= content_tag :div,
+                          class: 'ads-input',
+                          data: {
+                            ads_validation_messages: {
+                              valueMissing: t('components.input.errors.issuing_state'),
+                            },
+                          } do %>
+            <% jurisdiction_error = form.errors.full_messages_for(:state_id_jurisdiction).first %>
+            <%= f.label(
+                  :state_id_jurisdiction,
+                  t('in_person_proofing.form.state_id.state_id_jurisdiction'),
+                  class: 'ads-input__label',
+                ) %>
+            <div class="ads-input__shell">
+              <%= f.select(
+                    :state_id_jurisdiction,
+                    @presenter.usps_states_territories,
+                    { include_blank: true, selected: jurisdiction },
+                    class: 'ads-input__control ads-input__control--floating jurisdiction-state-selector',
+                    required: true,
+                    autocomplete: 'address-level1',
+                    aria: {
+                      describedby: 'identity_doc_state_id_jurisdiction_ads_error',
+                      invalid: jurisdiction_error.present? || nil,
+                    }.compact,
+                  ) %>
+              <span class="ads-input__floating-label" aria-hidden="true">
+                <%= t('in_person_proofing.form.state_id.state_id_jurisdiction') %>
+              </span>
+            </div>
+            <p
+              class="ads-input__error<%= ' ads-input__error--visible' if jurisdiction_error.present? %>"
+              data-ads-error
+              id="identity_doc_state_id_jurisdiction_ads_error"
+              aria-live="polite"
+            ><span class="ads-input__error-inner"><%= jurisdiction_error %></span></p>
+          <% end %>
+
+          <%= render InputComponent.new(
+                form: f,
+                attribute: :id_number,
+                label: t('in_person_proofing.form.state_id.state_id_number'),
+                type: :password,
+                required: true,
+                maxlength: 255,
+                autocomplete: 'off',
+                value: pii[:state_id_number],
+                password_toggle_label: t('forms.state_id.show'),
+                password_toggle_hide_label: t('forms.state_id.hide'),
+                error_message: form.errors.full_messages_for(:state_id_number).first,
+                error_messages: {
+                  valueMissing: t('components.input.errors.id_number'),
+                },
+              ) %>
+
+          <%= render InputComponent.new(
+                form: f,
+                attribute: :id_expiration,
+                label: t('in_person_proofing.form.state_id.expiration_date'),
+                type: :date,
+                required: true,
+                value: expiration_iso,
+                name: 'id_expiration_date',
+                error_message: form.errors.full_messages_for(:id_expiration).first,
+                error_messages: {
+                  valueMissing: t('components.input.errors.expiration_date'),
+                  typeMismatch: t('components.input.errors.expiration_date'),
+                  badInput: t('components.input.errors.expiration_date'),
+                },
+              ) %>
+          <%= hidden_field_tag 'identity_doc[id_expiration][year]', exp_year,
+                               id: 'identity_doc_id_expiration_year' %>
+          <%= hidden_field_tag 'identity_doc[id_expiration][month]', exp_month,
+                               id: 'identity_doc_id_expiration_month' %>
+          <%= hidden_field_tag 'identity_doc[id_expiration][day]', exp_day,
+                               id: 'identity_doc_id_expiration_day' %>
+        <% end %>
+
+        <%= render ADS::StackComponent.new(gap: 24) do %>
+          <h2 class="ads-heading-s"><%= t('in_person_proofing.headings.id_address') %></h2>
+
+          <%= render ADS::StackComponent.new(gap: 12) do %>
+            <%= render InputComponent.new(
+                  form: f,
+                  attribute: :identity_doc_address1,
+                  label: t('in_person_proofing.form.state_id.address1'),
+                  required: true,
+                  maxlength: 255,
+                  autocomplete: 'address-line1',
+                  value: pii[:identity_doc_address1],
+                  error_message: form.errors.full_messages_for(:identity_doc_address1).first,
+                  error_messages: {
+                    valueMissing: t('components.input.errors.address'),
+                  },
+                ) %>
+
+            <%= render InputComponent.new(
+                  form: f,
+                  attribute: :identity_doc_address2,
+                  label: t('in_person_proofing.form.state_id.address2'),
+                  required: false,
+                  maxlength: 255,
+                  autocomplete: 'address-line2',
+                  value: pii[:identity_doc_address2],
+                  error_message: form.errors.full_messages_for(:identity_doc_address2).first,
+                ) %>
+
+            <%= render InputComponent.new(
+                  form: f,
+                  attribute: :identity_doc_city,
+                  label: t('in_person_proofing.form.state_id.city'),
+                  required: true,
+                  maxlength: 255,
+                  autocomplete: 'address-level2',
+                  value: pii[:identity_doc_city],
+                  error_message: form.errors.full_messages_for(:identity_doc_city).first,
+                  error_messages: {
+                    valueMissing: t('components.input.errors.city'),
+                  },
+                ) %>
+
+            <%= content_tag :div,
+                            class: 'ads-input',
+                            data: {
+                              ads_validation_messages: {
+                                valueMissing: t('components.input.errors.state'),
+                              },
+                            } do %>
+              <% address_state_error =
+                   form.errors.full_messages_for(:identity_doc_address_state).first %>
+              <%= f.label(
+                    :identity_doc_address_state,
+                    t('in_person_proofing.form.state_id.identity_doc_address_state'),
+                    class: 'ads-input__label',
+                  ) %>
+              <div class="ads-input__shell">
+                <%= f.select(
+                      :identity_doc_address_state,
+                      @presenter.usps_states_territories,
+                      { include_blank: true, selected: identity_doc_state },
+                      class: 'ads-input__control ads-input__control--floating address-state-selector',
+                      required: true,
+                      autocomplete: 'address-level1',
+                      aria: {
+                        describedby: 'identity_doc_identity_doc_address_state_ads_error',
+                        invalid: address_state_error.present? || nil,
+                      }.compact,
+                    ) %>
+                <span class="ads-input__floating-label" aria-hidden="true">
+                  <%= t('in_person_proofing.form.state_id.identity_doc_address_state') %>
+                </span>
+              </div>
+              <p
+                class="ads-input__error<%= ' ads-input__error--visible' if address_state_error.present? %>"
+                data-ads-error
+                id="identity_doc_identity_doc_address_state_ads_error"
+                aria-live="polite"
+              ><span class="ads-input__error-inner"><%= address_state_error %></span></p>
+            <% end %>
+
+            <%= render InputComponent.new(
+                  form: f,
+                  attribute: :identity_doc_zipcode,
+                  label: t('in_person_proofing.form.state_id.zipcode'),
+                  type: :tel,
+                  required: true,
+                  pattern: '\d{5}([\-]\d{4})?',
+                  autocomplete: 'postal-code',
+                  inputmode: :numeric,
+                  class: 'zipcode',
+                  value: pii[:identity_doc_zipcode],
+                  error_message: form.errors.full_messages_for(:identity_doc_zipcode).first,
+                  error_messages: {
+                    valueMissing: t('components.input.errors.zipcode'),
+                    typeMismatch: t('components.input.errors.zipcode'),
+                    patternMismatch: t('idv.errors.pattern_mismatch.zipcode'),
+                    badInput: t('components.input.errors.zipcode'),
+                  },
+                ) %>
+          <% end %>
+        <% end %>
+
+        <fieldset class="ads-fieldset">
+          <legend class="ads-sr-only">
+            <%= t('in_person_proofing.form.state_id.same_address_as_id') %>
+          </legend>
+          <div class="ads-radio-group">
+            <% [
+                 [t('in_person_proofing.form.state_id.same_address_as_id_yes'), true],
+                 [t('in_person_proofing.form.state_id.same_address_as_id_no'), false],
+               ].each do |label, value| %>
+              <div class="ads-radio">
+                <%= f.radio_button(
+                      :same_address_as_id,
+                      value,
+                      class: 'ads-radio__input ads-sr-only',
+                      checked: pii[:same_address_as_id].to_s == value.to_s,
+                      required: true,
+                    ) %>
+                <%= f.label(
+                      :"same_address_as_id_#{value}",
+                      label,
+                      class: 'ads-radio__label',
+                    ) %>
+              </div>
+            <% end %>
+          </div>
+        </fieldset>
+
+        <%= render ADS::StackComponent.new(kind: :actions, gap: 8, align: :stretch) do %>
+          <%= render ButtonComponent.new(
+                type: :submit,
+              ).with_content(
+                updating_state_id ? t('forms.buttons.submit.update') : t('forms.buttons.continue'),
+              ) %>
+
+          <% if updating_state_id %>
+            <%= render ButtonComponent.new(
+                  url: idv_in_person_verify_info_path,
+                  variant: :quaternary,
+                ).with_content(t('forms.buttons.back')) %>
+          <% end %>
+        <% end %>
       <% end %>
-    <% end %>
-    <%= render ValidatedFieldComponent.new(
-          name: :id_number, # Renaming field as a workaround for aggressive browser autofill assumptions
-          form: f,
-          hint: state_id_number_hint,
-          hint_html: { class: ['tablet:grid-col-10', 'jurisdiction-extras'] },
-          input_html: { value: pii[:state_id_number] },
-          label: t('in_person_proofing.form.state_id.state_id_number'),
-          label_html: { class: 'usa-label' },
-          maxlength: 255,
-          required: true,
-        ) %>
-  </div>
-
-  <div class="margin-bottom-4">
-    <%= render MemorableDateComponent.new(
-          content_tag: 'memorable-date',
-          name: :id_expiration,
-          day: parsed_expiration&.day,
-          month: parsed_expiration&.month,
-          year: parsed_expiration&.year,
-          required: true,
-          min: Time.zone.today + 1.day,
-          hint: t('in_person_proofing.form.state_id.expiration_date_hint'),
-          label: t('in_person_proofing.form.state_id.expiration_date'),
-          form: f,
-          error_messages: {
-            missing_month_day_year: t('simple_form.required.text'),
-            range_underflow: t('in_person_proofing.form.state_id.memorable_date.errors.expiration_date.expired'),
-          },
-        )
-    %>
-  </div>
-
-  <h2> <%= t('in_person_proofing.headings.id_address') %> </h2>
-    <%= render ValidatedFieldComponent.new(
-          name: :identity_doc_address_state,
-          collection: @presenter.usps_states_territories,
-          form: f,
-          input_html: { class: 'address-state-selector' },
-          label: t('in_person_proofing.form.state_id.identity_doc_address_state'),
-          label_html: { class: 'usa-label' },
-          prompt: t('in_person_proofing.form.state_id.identity_doc_address_state_prompt'),
-          required: true,
-          selected: pii[:identity_doc_address_state],
-        ) %>
-    <%= render ValidatedFieldComponent.new(
-          name: :identity_doc_address1,
-          form: f,
-          hint_html: { class: ['display-none', 'puerto-rico-extras'] },
-          hint: t('in_person_proofing.form.state_id.address1_hint'),
-          input_html: { value: pii[:identity_doc_address1] },
-          label: t('in_person_proofing.form.state_id.address1'),
-          label_html: { class: 'usa-label' },
-          maxlength: 255,
-          required: true,
-        ) %>
-    <%= render ValidatedFieldComponent.new(
-          name: :identity_doc_address2,
-          form: f,
-          hint: t('in_person_proofing.form.state_id.address2_hint'),
-          hint_html: { class: ['display-none', 'puerto-rico-extras'] },
-          input_html: { value: pii[:identity_doc_address2] },
-          label: t('in_person_proofing.form.state_id.address2'),
-          label_html: { class: 'usa-label' },
-          maxlength: 255,
-          required: false,
-        ) %>
-    <%= render ValidatedFieldComponent.new(
-          name: :identity_doc_city,
-          form: f,
-          input_html: { value: pii[:identity_doc_city] },
-          label: t('in_person_proofing.form.state_id.city'),
-          label_html: { class: 'usa-label' },
-          maxlength: 255,
-          required: true,
-        ) %>
-  <div class="tablet:grid-col-8 margin-bottom-5">
-    <%# using :tel for mobile numeric keypad %>
-    <%= render ValidatedFieldComponent.new(
-          as: :tel,
-          error_messages: { patternMismatch: t('idv.errors.pattern_mismatch.zipcode') },
-          form: f,
-          input_html: { value: pii[:identity_doc_zipcode], class: 'zipcode' },
-          label: t('in_person_proofing.form.state_id.zipcode'),
-          label_html: { class: 'usa-label' },
-          name: :identity_doc_zipcode,
-          pattern: '\d{5}([\-]\d{4})?',
-          required: true,
-        ) %>
-  </div>
-  <%= render ValidatedFieldComponent.new(
-        as: :radio_buttons,
-        checked: pii[:same_address_as_id],
-        collection: [
-          [t('in_person_proofing.form.state_id.same_address_as_id_yes'), true],
-          [t('in_person_proofing.form.state_id.same_address_as_id_no'), false],
-        ],
-        form: f,
-        label: t('in_person_proofing.form.state_id.same_address_as_id'),
-        legend_html: { class: 'h2' },
-        name: :same_address_as_id,
-        required: true,
-        wrapper: :uswds_radio_buttons,
-      ) %>
-  <%= f.submit do %>
-    <% if updating_state_id %>
-      <%= t('forms.buttons.submit.update') %>
-    <% else %>
-      <%= t('forms.buttons.continue') %>
     <% end %>
   <% end %>
 <% end %>
-<% if updating_state_id %>
-  <%= render 'idv/shared/back', fallback_path: idv_in_person_verify_info_path %>
-<% else %>
-  <%= render 'idv/doc_auth/cancel', step: 'state_id' %>
+
+<%= javascript_tag(nonce: true) do %>
+  (function () {
+    function bridge(dateId, yearId, monthId, dayId) {
+      var dateInput = document.getElementById(dateId);
+      if (!dateInput) return;
+      var year = document.getElementById(yearId);
+      var month = document.getElementById(monthId);
+      var day = document.getElementById(dayId);
+      function sync() {
+        var parts = (dateInput.value || '').split('-');
+        year.value = parts[0] || '';
+        month.value = parts[1] || '';
+        day.value = parts[2] || '';
+      }
+      dateInput.addEventListener('input', sync);
+      dateInput.addEventListener('change', sync);
+      if (dateInput.form) dateInput.form.addEventListener('submit', sync);
+      sync();
+    }
+    bridge(
+      'identity_doc_dob',
+      'identity_doc_dob_year',
+      'identity_doc_dob_month',
+      'identity_doc_dob_day'
+    );
+    bridge(
+      'identity_doc_id_expiration',
+      'identity_doc_id_expiration_year',
+      'identity_doc_id_expiration_month',
+      'identity_doc_id_expiration_day'
+    );
+  })();
 <% end %>
-<%= javascript_packs_tag_once('formatted-fields', 'state-guidance') %>
+<%= javascript_packs_tag_once('formatted-fields') %>

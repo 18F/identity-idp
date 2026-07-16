@@ -39,30 +39,47 @@ export function SelfieCaptureStep({
     : t('doc_auth.headings.document_capture_subheader_selfie');
   return (
     <>
-      {isReviewStep ? <h2>{pageHeading}</h2> : <h1>{pageHeading}</h1>}
-      <p>{t('doc_auth.info.selfie_capture_content')}</p>
-      <TipList
-        title={t('doc_auth.tips.document_capture_selfie_selfie_text')}
-        titleClassName="margin-bottom-0 text-bold"
-        items={[
-          t('doc_auth.tips.document_capture_selfie_text1'),
-          t('doc_auth.tips.document_capture_selfie_text2'),
-          t('doc_auth.tips.document_capture_selfie_text3'),
-          t('doc_auth.tips.document_capture_selfie_text4'),
-        ]}
-      />
-
-      {showHelp && <AcuantSelfieInstructions />}
-      {!showHelp && (
-        <DocumentSideAcuantCapture
-          {...defaultSideProps}
-          key="selfie"
-          side="selfie"
-          value={selfieValue}
-          isReviewStep={isReviewStep}
-          showSelfieHelp={showSelfieHelp}
-        />
+      {!isReviewStep && (
+        <div className="ads-auth__header">
+          <div className="ads-auth__intro">
+            <h1>{pageHeading}</h1>
+            <p className="ads-auth__intro-description">
+              {t('doc_auth.info.selfie_capture_content')}
+            </p>
+          </div>
+        </div>
       )}
+      {isReviewStep && (
+        <>
+          <h2>{pageHeading}</h2>
+          <p>{t('doc_auth.info.selfie_capture_content')}</p>
+        </>
+      )}
+      <div className="ads-auth__form-page-body">
+        <div className="ads-stack ads-stack--gap-24 ads-stack--align-stretch">
+          <TipList
+            title={t('doc_auth.tips.document_capture_selfie_selfie_text')}
+            items={[
+              t('doc_auth.tips.document_capture_selfie_text1'),
+              t('doc_auth.tips.document_capture_selfie_text2'),
+              t('doc_auth.tips.document_capture_selfie_text3'),
+              t('doc_auth.tips.document_capture_selfie_text4'),
+            ]}
+          />
+
+          {showHelp && <AcuantSelfieInstructions />}
+          {!showHelp && (
+            <DocumentSideAcuantCapture
+              {...defaultSideProps}
+              key="selfie"
+              side="selfie"
+              value={selfieValue}
+              isReviewStep={isReviewStep}
+              showSelfieHelp={showSelfieHelp}
+            />
+          )}
+        </div>
+      </div>
     </>
   );
 }
@@ -86,7 +103,7 @@ export default function SelfieStep({
 
   function TakeSelfieButton() {
     return (
-      <div className="margin-y-5 ">
+      <div className="ads-actions ads-actions--align-stretch">
         <SpinnerButton
           spinOnClick={false}
           onClick={() => {
@@ -110,7 +127,7 @@ export default function SelfieStep({
   };
   return (
     <>
-      {flowPath === 'hybrid' && <HybridDocCaptureWarning className="margin-bottom-4" />}
+      {flowPath === 'hybrid' && <HybridDocCaptureWarning />}
       <SelfieCaptureStep
         defaultSideProps={defaultSideProps}
         selfieValue={value.selfie}
@@ -119,9 +136,12 @@ export default function SelfieStep({
         showSelfieHelp={showSelfieHelp}
       />
       {showHelp && <TakeSelfieButton />}
-      {!showHelp && isLastStep && <FormStepsButton.Submit />}
-      {!showHelp && !isLastStep && <FormStepsButton.Continue />}
-      <Cancel />
+      {!showHelp && (
+        <div className="ads-actions ads-actions--gap-8 ads-actions--align-stretch">
+          {isLastStep ? <FormStepsButton.Submit /> : <FormStepsButton.Continue />}
+          <Cancel />
+        </div>
+      )}
     </>
   );
 }

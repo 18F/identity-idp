@@ -1,0 +1,10 @@
+<% variants = %i[primary secondary tertiary success error warning] %>
+
+<div style="display: flex; flex-direction: column; gap: 12px;">
+  <% variants.each do |variant| %>
+    <div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center;">
+      <%= render BadgeComponent.new(variant:).with_content('Label') %>
+      <%= render BadgeComponent.new(variant:, icon: :plus) %>
+    </div>
+  <% end %>
+</div>

@@ -1,20 +1,28 @@
-@use 'uswds-core' as *;
-@forward 'usa-tooltip';
+@use 'variables/ads' as ads;
 
-// Workaround for tooltip styles affecting icon button appearance.
-// See: https://github.com/uswds/uswds/pull/5263
-.usa-tooltip__trigger > svg {
-  display: inline;
+$copied-blur: ads.space(4);
+$copied-scale: 1.02;
+
+@keyframes ads-clipboard-copied {
+  from {
+    filter: blur($copied-blur);
+    opacity: 0;
+    transform: scale($copied-scale);
+  }
+
+  to {
+    filter: blur(0);
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
-// Workaround for tooltip issue preventing buttons from showing as full width at small screen sizes.
-// See: https://github.com/uswds/uswds/issues/5273
-.usa-tooltip {
-  @include at-media-max('mobile-lg') {
-    display: block;
+lg-clipboard-button[data-copied] .ads-button {
+  animation: ads-clipboard-copied ads.$tr-duration-md ads.$tr-easing-cubic;
+}
 
-    .clipboard-button--unstyled & {
-      display: inline;
-    }
+@media (prefers-reduced-motion: reduce) {
+  lg-clipboard-button[data-copied] .ads-button {
+    animation: none;
   }
 }

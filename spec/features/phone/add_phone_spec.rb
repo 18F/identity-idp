@@ -28,79 +28,48 @@ RSpec.describe 'Add a new phone number' do
       click_on t('account.navigation.add_phone_number')
     end
 
-    hidden_select = page.find('[name="new_phone_form[international_code]"]', visible: :hidden)
-
-    # Required field should prompt as required on submit
+    phone_input = page.find_field(t('two_factor_authentication.phone_label'))
+    country_select = page.find_field(t('components.phone_input.country_code_label'), visible: :all)
     click_send_one_time_code
-    focused_input = page.find(':focus')
-    expect(focused_input).to match_css('.phone-input__number.usa-input--error')
-    expect(hidden_select.value).to eq('US')
+    expect(page.find(':focus')[:id]).to eq(phone_input[:id])
+    expect(phone_input[:'aria-invalid']).to eq('true')
+    expect(page).to have_css(
+      '.ads-input__error--visible',
+      text: t('components.input.errors.tel'),
+    )
+    expect(country_select.value).to eq('US')
 
-    error_message_id = focused_input[:'aria-describedby']&.split(' ')&.find do |id|
-      page.has_css?(".usa-error-message##{id}")
-    end
-    expect(error_message_id).to_not be_empty
-
-    error_message = page.find_by_id(error_message_id)
-    expect(error_message).to have_content(t('errors.messages.phone_required'))
-
-    # Invalid number should prompt as invalid on submit
     fill_in :new_phone_form_phone, with: 'abcd1234'
     click_send_one_time_code
-    focused_input = page.find(':focus')
-    expect(focused_input).to match_css('.phone-input__number.usa-input--error')
-    expect(hidden_select.value).to eq('US')
+    expect(page).to have_content(t('errors.messages.invalid_phone_number.us'))
 
-    error_message_id = focused_input[:'aria-describedby']&.split(' ')&.find do |id|
-      page.has_css?(".usa-error-message##{id}")
-    end
-    expect(error_message_id).to_not be_empty
-
-    error_message = page.find_by_id(error_message_id)
-    expect(error_message).to have_content(t('errors.messages.invalid_phone_number.us'))
-
-    # Unsupported country should prompt as invalid and hide delivery options immediately
-    click_on t('components.phone_input.country_code_label')
-    within(page.find('.iti__country-container', visible: :all)) do
-      find('span', text: 'Sri Lanka').click
-    end
-    focused_input = page.find('.phone-input__number:focus')
-
-    error_message_id = focused_input[:'aria-describedby']&.split(' ')&.find do |id|
-      page.has_css?(".usa-error-message##{id}")
-    end
-    expect(error_message_id).to_not be_empty
-
-    error_message = page.find_by_id(error_message_id)
-    expect(error_message).to have_content(
+    country_select = page.find_field(
+      t('components.phone_input.country_code_label'),
+      visible: :all,
+    )
+    country_select.select('Sri Lanka (+94)')
+    expect(page).to have_content(
       t(
         'two_factor_authentication.otp_delivery_preference.no_supported_options',
         location: 'Sri Lanka',
       ),
     )
 
-    expect(page).to_not have_content(t('two_factor_authentication.otp_delivery_preference.title'))
-    expect(hidden_select.value).to eq('LK')
-    fill_in :new_phone_form_phone, with: '+94 071 234 5678'
-    click_send_one_time_code
-    expect(page.find(':focus')).to match_css('.phone-input__number')
+    expect(page).to_not have_field(
+      t('two_factor_authentication.otp_delivery_preference.sms'),
+      disabled: :all,
+    )
+    expect(country_select.value).to eq('LK')
 
-    # Switching to supported country should re-show delivery options, but prompt as invalid number
-    click_on t('components.phone_input.country_code_label')
-    within(page.find('.iti__country-container', visible: :all)) do
-      find('span', text: 'United States').click
-    end
-    expect(page).to have_content(t('two_factor_authentication.otp_delivery_preference.title'))
-    expect(page).to have_css('.usa-error-message', text: '', visible: false)
-    expect(hidden_select.value).to eq('US')
-    click_send_one_time_code
-    expect(page.find(':focus')).to match_css('.phone-input__number')
-    expect(page).to have_content(t('errors.messages.invalid_phone_number.us'))
+    country_select.select('United States (+1)')
+    expect(page).to have_field(
+      t('two_factor_authentication.otp_delivery_preference.sms'),
+      disabled: false,
+    )
+    expect(country_select.value).to eq('US')
 
-    # Entering valid number should allow submission
-    input = fill_in :new_phone_form_phone, with: '+81543543643'
-    expect(input.value).to eq('+81 543543643')
-    expect(hidden_select.value).to eq('JP')
+    country_select.select('Japan (+81)')
+    fill_in :new_phone_form_phone, with: '+81543543643'
     click_send_one_time_code
     expect(page).to have_content(t('components.one_time_code_input.label'))
   end
@@ -140,9 +109,6 @@ RSpec.describe 'Add a new phone number' do
       click_send_one_time_code
 
       expect(page).to have_content(I18n.t('errors.messages.phone_duplicate'))
-
-      # Ensure that phone input initializes with the country flag maintained
-      expect(page).to have_css('.iti__selected-country [class^="iti__flag iti__"]', visible: :all)
     end
   end
 
@@ -173,10 +139,9 @@ RSpec.describe 'Add a new phone number' do
     expect(page.find_field('Text message (SMS)', disabled: false, visible: :all)).to be_present
     expect(page.find_field('Phone call', disabled: false, visible: :all)).to be_present
 
-    click_on t('components.phone_input.country_code_label')
-    within(page.find('.iti__country-container', visible: :all)) do
-      find('span', text: 'Australia').click # a country where SMS is disabled currently
-    end
+    page
+      .find_field(t('components.phone_input.country_code_label'), visible: :all)
+      .select('Australia (+61)')
 
     expect(page.find_field('Text message (SMS)', disabled: false, visible: :all)).to be_present
     expect(page.find_field('Phone call', disabled: true, visible: :all)).to be_present
@@ -195,6 +160,9 @@ RSpec.describe 'Add a new phone number' do
     within('.sidenav') { click_on t('account.navigation.add_phone_number') }
 
     # Failing international should display error message
+    page
+      .find_field(t('components.phone_input.country_code_label'), visible: :all)
+      .select('Australia (+61)')
     fill_in t('two_factor_authentication.phone_label'), with: '+61 0491 570 006'
     fill_in t('components.captcha_submit_button.mock_score_label'), with: '0.5'
     click_send_one_time_code
@@ -240,7 +208,7 @@ RSpec.describe 'Add a new phone number' do
   end
 
   context 'when the user does not have a phone' do
-    scenario 'cancelling add phone otp confirmation redirect to account' do
+    scenario 'abandoning add phone otp confirmation leaves phone unconfirmed' do
       user = create(:user, :with_authentication_app)
       phone = '+1 (225) 278-1234'
       sign_in_and_2fa_user(user)
@@ -249,7 +217,7 @@ RSpec.describe 'Add a new phone number' do
       end
       fill_in :new_phone_form_phone, with: phone
       click_send_one_time_code
-      click_link t('links.cancel')
+      visit account_path
 
       expect(page).to have_current_path(account_path)
       expect(user.reload.phone_configurations.count).to eq(0)

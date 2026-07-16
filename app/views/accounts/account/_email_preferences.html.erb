@@ -1,0 +1,52 @@
+<% last_used_email = @presenter.user.last_sign_in_email_address.email %>
+
+<section class="ads-account__section" aria-labelledby="account-email-preferences-heading">
+  <h2 id="account-email-preferences-heading" class="ads-account__heading">
+    <%= t('account.index.email_preferences') %>
+  </h2>
+
+  <div class="ads-account__panel">
+    <% if flash[:email_error] %>
+      <%= render AlertComponent.new(type: :error, id: 'emails', message: flash[:email_error]) %>
+    <% end %>
+
+    <ul class="ads-account__rows">
+      <% @presenter.user.visible_email_addresses.each do |email| %>
+        <%= render 'accounts/account/email_row',
+                   email:,
+                   last_used_email:,
+                   email_policy: %>
+      <% end %>
+    </ul>
+
+    <% if email_policy.can_add_email? %>
+      <div class="ads-account__rule"></div>
+      <div class="ads-account__panel-action">
+        <%= render ButtonComponent.new(
+              url: add_email_path,
+              variant: :secondary,
+            ).with_content(t('account.navigation.add_email')) %>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="ads-account__panel">
+    <div class="ads-account__row">
+      <p
+        class="ads-account__row-text"
+        lang="<%= @presenter.user.email_language || I18n.default_locale %>"
+      >
+        <%= @presenter.user.email_language_preference_description %>
+      </p>
+
+      <div class="ads-account__row-actions">
+        <%= render ButtonComponent.new(
+              url: account_email_language_path,
+              variant: :quaternary,
+              size: :md,
+              'aria-label': "#{t('account.dashboard.account.change')}: #{t('account.dashboard.account.language.title')}",
+            ).with_content(t('account.dashboard.account.change')) %>
+      </div>
+    </div>
+  </div>
+</section>

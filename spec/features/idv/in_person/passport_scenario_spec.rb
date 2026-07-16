@@ -39,15 +39,18 @@ RSpec.describe 'In Person Proofing Passports', js: true do
         sign_in_live_with_2fa(user)
 
         expect(page).to have_current_path(idv_welcome_path)
-        expect(page).to have_content t('doc_auth.headings.welcome', sp_name: service_provider_name)
-        expect(page).to have_content t('doc_auth.instructions.bullet1')
+        expect(page).to have_content t(
+          'headings.identity_verification_intro.title',
+          sp: service_provider_name,
+        )
+        expect(page).to have_content t('headings.identity_verification_intro.requirement_id_title')
 
         complete_welcome_step
 
         expect(page).to have_current_path(idv_agreement_path)
         complete_agreement_step
 
-        expect(page).to have_content t('doc_auth.info.verify_online_description')
+        expect(page).to have_content t('doc_auth.info.verify_online_description_passport')
 
         click_on t('forms.buttons.continue_ipp')
 
@@ -72,17 +75,19 @@ RSpec.describe 'In Person Proofing Passports', js: true do
 
           expect(page).to have_current_path(idv_welcome_path)
           expect(page).to have_content t(
-            'doc_auth.headings.welcome',
-            sp_name: service_provider_name,
+            'headings.identity_verification_intro.title',
+            sp: service_provider_name,
           )
-          expect(page).to have_content t('doc_auth.instructions.bullet1')
+          expect(page).to have_content t(
+            'headings.identity_verification_intro.requirement_id_title',
+          )
 
           complete_welcome_step
 
           expect(page).to have_current_path(idv_agreement_path)
           complete_agreement_step
 
-          expect(page).to have_content t('doc_auth.info.verify_online_description')
+          expect(page).to have_content t('doc_auth.info.verify_online_description_passport')
 
           click_on t('forms.buttons.continue_ipp')
 
@@ -113,17 +118,19 @@ RSpec.describe 'In Person Proofing Passports', js: true do
 
           expect(page).to have_current_path(idv_welcome_path)
           expect(page).to have_content t(
-            'doc_auth.headings.welcome',
-            sp_name: service_provider_name,
+            'headings.identity_verification_intro.title',
+            sp: service_provider_name,
           )
-          expect(page).to have_content t('doc_auth.instructions.bullet1')
+          expect(page).to have_content t(
+            'headings.identity_verification_intro.requirement_id_title',
+          )
 
           complete_welcome_step
 
           expect(page).to have_current_path(idv_agreement_path)
           complete_agreement_step
 
-          expect(page).to have_content t('doc_auth.info.verify_online_description')
+          expect(page).to have_content t('doc_auth.info.verify_online_description_passport')
 
           click_on t('forms.buttons.continue_ipp')
 
@@ -182,17 +189,19 @@ RSpec.describe 'In Person Proofing Passports', js: true do
 
           expect(page).to have_current_path(idv_welcome_path)
           expect(page).to have_content t(
-            'doc_auth.headings.welcome',
-            sp_name: service_provider_name,
+            'headings.identity_verification_intro.title',
+            sp: service_provider_name,
           )
-          expect(page).to have_content t('doc_auth.instructions.bullet1')
+          expect(page).to have_content t(
+            'headings.identity_verification_intro.requirement_id_title',
+          )
 
           complete_welcome_step
 
           expect(page).to have_current_path(idv_agreement_path)
           complete_agreement_step
 
-          expect(page).to have_content t('doc_auth.info.verify_online_description')
+          expect(page).to have_content t('doc_auth.info.verify_online_description_passport')
 
           click_on t('forms.buttons.continue_ipp')
 
@@ -205,8 +214,7 @@ RSpec.describe 'In Person Proofing Passports', js: true do
 
           expect(page).to have_current_path(idv_in_person_choose_id_type_path)
 
-          choose(t('doc_auth.forms.id_type_preference.passport'))
-          click_on t('forms.buttons.continue')
+          click_on t('doc_auth.forms.id_type_preference.passport')
           expect(page).to have_current_path(idv_in_person_choose_id_type_path(passports: false))
 
           expect(page).to have_content strip_nbsp(
@@ -215,11 +223,7 @@ RSpec.describe 'In Person Proofing Passports', js: true do
           expect(page).to have_content strip_nbsp(
             t('doc_auth.info.dos_passport_api_down_message'),
           )
-          expect(page).to have_field(
-            'doc_auth_choose_id_type_preference_passport',
-            visible: :all,
-            disabled: true,
-          )
+          expect(page).to have_button('doc_auth_choose_id_type_preference_passport', disabled: true)
           expect(page).to have_content strip_nbsp(
             t('doc_auth.forms.id_type_preference.passport'),
           )
@@ -238,8 +242,11 @@ RSpec.describe 'In Person Proofing Passports', js: true do
         sign_in_live_with_2fa(user)
 
         expect(page).to have_current_path(idv_welcome_path)
-        expect(page).to have_content t('doc_auth.headings.welcome', sp_name: service_provider_name)
-        expect(page).to have_content t('doc_auth.instructions.bullet1')
+        expect(page).to have_content t(
+          'headings.identity_verification_intro.title',
+          sp: service_provider_name,
+        )
+        expect(page).to have_content t('headings.identity_verification_intro.requirement_id_title')
 
         complete_welcome_step
 
@@ -273,15 +280,18 @@ RSpec.describe 'In Person Proofing Passports', js: true do
       sign_in_live_with_2fa(user)
 
       expect(page).to have_current_path(idv_welcome_path)
-      expect(page).to have_content t('doc_auth.headings.welcome', sp_name: service_provider_name)
-      expect(page).to have_content t('doc_auth.instructions.bullet1')
+      expect(page).to have_content t(
+        'headings.identity_verification_intro.title',
+        sp: service_provider_name,
+      )
+      expect(page).to have_content t('headings.identity_verification_intro.requirement_id_title')
 
       complete_welcome_step
 
       expect(page).to have_current_path(idv_agreement_path)
       complete_agreement_step
 
-      expect(page).not_to have_content t('doc_auth.info.verify_online_description')
+      expect(page).not_to have_content t('doc_auth.info.verify_online_description_passport')
       expect(page).to have_content strip_tags(
         t('doc_auth.info.verify_at_post_office_description_passport_html'),
       )
@@ -302,58 +312,35 @@ RSpec.describe 'In Person Proofing Passports', js: true do
             with: InPersonHelper::GOOD_LAST_NAME
     fill_in t('in_person_proofing.form.passport.first_name'),
             with: InPersonHelper::GOOD_FIRST_NAME
-
-    fill_in_memorable_date(
-      'in_person_passport[passport_dob]',
-      InPersonHelper::GOOD_DOB,
-    )
-
+    fill_in t('in_person_proofing.form.passport.dob'),
+            with: InPersonHelper::GOOD_DOB
     fill_in t('in_person_proofing.form.passport.passport_number'),
             with: InPersonHelper::GOOD_PASSPORT_NUMBER
-
-    fill_in_memorable_date(
-      'in_person_passport[passport_expiration]',
-      InPersonHelper::GOOD_PASSPORT_EXPIRATION_DATE,
-    )
+    fill_in t('in_person_proofing.form.passport.expiration_date'),
+            with: InPersonHelper::GOOD_PASSPORT_EXPIRATION_DATE
   end
 
   def check_passport_verify_info_page_content
-    expect(page).to have_content t('in_person_proofing.form.verify_info.passport')
-
-    # Surname
     expect(page).to have_content t('in_person_proofing.form.passport.surname')
     expect(page).to have_content InPersonHelper::GOOD_LAST_NAME
-    # First name
     expect(page).to have_content t('in_person_proofing.form.passport.first_name')
     expect(page).to have_content InPersonHelper::GOOD_FIRST_NAME
-    # Date of Birth
     expect(page).to have_content t('in_person_proofing.form.passport.dob')
     expect(page).to have_content(
       I18n.l(Date.parse(InPersonHelper::GOOD_DOB), format: t('time.formats.event_date')),
     )
 
-    expect(page).to have_content(t('headings.residential_address'))
-    # address 1
-    expect(page).to have_content(t('idv.form.address1'))
+    expect(page).to have_content(t('idv.form.address'))
     expect(page).to have_content InPersonHelper::GOOD_ADDRESS1
-    # address 2
-    expect(page).to have_content(t('idv.form.address2'))
     expect(page).to have_content InPersonHelper::GOOD_ADDRESS2
-    # address city
-    expect(page).to have_content(t('idv.form.city'))
     expect(page).to have_content InPersonHelper::GOOD_CITY
-    # address state
-    expect(page).to have_content(t('idv.form.state'))
     expect(page).to have_content InPersonHelper::GOOD_STATE_ABBR
-    # address zipcode
-    expect(page).to have_content(t('idv.form.zipcode'))
     expect(page).to have_content InPersonHelper::GOOD_ZIPCODE
 
-    expect(page).to have_content(t('headings.ssn'))
     expect(page).to have_content(t('idv.form.ssn'))
-    expect(page).to have_content SsnFormatter.format_masked(InPersonHelper::GOOD_SSN)
+    expect(page).to have_content SsnFormatter.format_masked(InPersonHelper::GOOD_SSN).tr('*', '•')
 
-    expect(page).to_not have_content(t('headings.state_id'))
+    expect(page).to_not have_content(t('idv.form.issuing_state'))
     expect(page).to_not have_content(t('idv.form.id_number'))
   end
 end

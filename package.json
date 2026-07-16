@@ -28,7 +28,6 @@
     "build:openapi": "redocly bundle ./docs/attempts-api/openapi.yml -o ./docs/attempts-api/compiled-api --ext yml -d"
   },
   "dependencies": {
-    "@18f/identity-design-system": "^9.4.0",
     "@babel/core": "^7.20.7",
     "@babel/preset-env": "^7.15.6",
     "@babel/preset-react": "^7.14.5",
@@ -42,6 +41,7 @@
     "core-js": "^3.21.1",
     "foundation-emails": "^2.3.1",
     "intl-tel-input": "^24.5.0",
+    "libphonenumber-js": "^1.13.8",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "source-map-loader": "^4.0.0",
@@ -115,7 +115,7 @@
     "fast-uri": "3.1.2",
     "fast-xml-builder": "1.1.9",
     "form-data": "4.0.6",
-    "js-yaml": "4.2.0",
+    "js-yaml": "4.1.1",
     "serialize-javascript": ">=7.0.3",
     "styled-components": "6.4.1",
     "diff": "^8.0.3"

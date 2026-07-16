@@ -13,6 +13,8 @@ module Users
 
     def edit; end
 
+    def confirm_delete; end
+
     def update
       result = form.submit(name: params.dig(:form, :name))
 
@@ -20,7 +22,7 @@ module Users
 
       if result.success?
         flash[:success] = presenter.rename_success_alert_text
-        redirect_to account_path
+        redirect_to account_security_path
       else
         flash.now[:error] = result.first_error_message
         render :edit
@@ -35,7 +37,7 @@ module Users
       if result.success?
         flash[:success] = presenter.delete_success_alert_text
         handle_successful_mfa_deletion(event_type: form.event_type)
-        redirect_to account_path
+        redirect_to account_security_path
       else
         flash[:error] = result.first_error_message
         redirect_to edit_webauthn_path(id: params[:id])
@@ -60,7 +62,7 @@ module Users
 
     def form_class
       case action_name
-      when 'edit', 'update'
+      when 'edit', 'update', 'confirm_delete'
         TwoFactorAuthentication::WebauthnUpdateForm
       when 'destroy'
         TwoFactorAuthentication::WebauthnDeleteForm

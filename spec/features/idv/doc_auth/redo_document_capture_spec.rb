@@ -295,8 +295,7 @@ RSpec.feature 'document capture step', :js do
       expect(page).to have_content(t('doc_auth.headings.upload_from_computer'))
       click_on t('forms.buttons.upload_photos')
       expect(page).to have_current_path(idv_choose_id_type_url)
-      choose(t('doc_auth.forms.id_type_preference.passport'))
-      click_on t('forms.buttons.continue')
+      click_on t('doc_auth.forms.id_type_preference.passport')
       expect(page).to have_current_path(idv_document_capture_url)
       # Attach fail images and then continue to retry
       attach_passport_image(

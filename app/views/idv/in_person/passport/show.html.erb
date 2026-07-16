@@ -1,129 +1,163 @@
-<% content_for(:pre_flash_content) do %>
-  <%= render StepIndicatorComponent.new(
-        steps: Idv::StepIndicatorConcern::STEP_INDICATOR_STEPS_IPP,
-        current_step: :verify_info,
-        locale_scope: 'idv',
-        class: 'margin-x-neg-2 margin-top-neg-4 tablet:margin-x-neg-6 tablet:margin-top-neg-4',
-      ) %>
-<% end %>
+<%= render 'idv/shared/step_indicator',
+           current_step: :verify_info,
+           steps: Idv::StepIndicatorConcern::STEP_INDICATOR_STEPS_IPP %>
 
 <% self.title = t('in_person_proofing.headings.passport') %>
-<%= render PageHeadingComponent.new.with_content(t('in_person_proofing.headings.passport')) %>
 
-<p>
-  <%= t('in_person_proofing.body.passport.info') %>
-</p>
+<% dob_iso = parsed_dob&.iso8601 %>
+<% expiration_iso = parsed_expiration&.iso8601 %>
+<% dob_year, dob_month, dob_day = dob_iso.to_s.split('-') %>
+<% exp_year, exp_month, exp_day = expiration_iso.to_s.split('-') %>
 
-<%= simple_form_for(
-      form,
-      data: {},
-      html: { class: 'margin-y-4' },
-      method: 'put',
-      url: idv_in_person_passport_url,
-    ) do |f| %>
-
-  <div class="margin-bottom-5">
-    <%= render ValidatedFieldComponent.new(
-          form: f,
-          input_html: { value: pii[:passport_surname] },
-          label_html: { class: 'usa-label' },
-          label: t('in_person_proofing.form.passport.surname'),
-          name: :passport_surname,
-          maxlength: 255,
-          required: true,
-        ) %>
-
-    <%= render ValidatedFieldComponent.new(
-          form: f,
-          hint: t('in_person_proofing.form.passport.first_name_hint'),
-          input_html: { value: pii[:passport_first_name] },
-          label_html: { lass: 'usa-label' },
-          label: t('in_person_proofing.form.passport.first_name'),
-          name: :passport_first_name,
-          maxlength: 255,
-          required: true,
-        ) %>
-
-    <div class="margin-bottom-4">
-      <%= render MemorableDateComponent.new(
-            content_tag: 'memorable-date',
+<%= render ADS::FormPageComponent.new(
+      title: t('in_person_proofing.headings.passport'),
+      subtitle: t('in_person_proofing.body.passport.info'),
+    ) do |page| %>
+  <% page.with_body do %>
+    <%= simple_form_for(
+          form,
+          method: :put,
+          url: idv_in_person_passport_url,
+          html: { class: 'ads-form ads-form--gap-16 ads-form--align-stretch' },
+        ) do |f| %>
+      <%= render InputComponent.new(
             form: f,
-            hint: t('in_person_proofing.form.passport.dob_hint'),
-            label: t('in_person_proofing.form.passport.dob'),
-            name: :passport_dob,
-            day: parsed_dob&.day,
-            month: parsed_dob&.month,
-            year: parsed_dob&.year,
+            attribute: :passport_surname,
+            label: t('in_person_proofing.form.passport.surname'),
             required: true,
-            min: '1900-01-01',
-            max: Time.zone.today,
+            maxlength: 255,
+            autocomplete: 'family-name',
+            value: pii[:passport_surname],
+            error_message: form.errors.full_messages_for(:passport_surname).first,
             error_messages: {
-              missing_month_day_year: t('in_person_proofing.form.state_id.memorable_date.errors.date_of_birth.missing_month_day_year'),
-              range_overflow: t('in_person_proofing.form.state_id.memorable_date.errors.date_of_birth.range_overflow'),
+              valueMissing: t('components.input.errors.surname'),
             },
-            range_errors: [
-              {
-                max: Time.zone.today - 13.years,
-                message: t(
-                  'in_person_proofing.form.state_id.memorable_date.errors.date_of_birth.range_min_age',
-                  app_name: APP_NAME,
-                ),
-              },
-            ],
           ) %>
-    </div>
 
-    <%= render ValidatedFieldComponent.new(
-          form: f,
-          hint: t('in_person_proofing.form.passport.passport_number_hint'),
-          input_html: { value: pii[:passport_number] },
-          label_html: { class: 'usa-label' },
-          label: t('in_person_proofing.form.passport.passport_number'),
-          name: :passport_number,
-          maxlength: 9,
-          required: true,
-          pattern: '[0-9A-Za-z]{9}',
-          error_messages: {
-            patternMismatch: t(
-              'in_person_proofing.form.passport.errors.passport_number.pattern_mismatch',
-            ),
-          },
-        ) %>
-
-    <%= render MemorableDateComponent.new(
-          content_tag: 'memorable-date',
-          form: f,
-          hint: t('in_person_proofing.form.passport.expiration_date_hint'),
-          label: t('in_person_proofing.form.passport.expiration_date'),
-          name: :passport_expiration,
-          day: parsed_expiration&.day,
-          month: parsed_expiration&.month,
-          year: parsed_expiration&.year,
-          required: true,
-          error_messages: {
-            missing_month_day_year: t('simple_form.required.text'),
-          },
-          range_errors: [
-            {
-              min: Time.zone.today,
-              message: t('in_person_proofing.form.passport.memorable_date.errors.expiration_date.expired'),
+      <%= render InputComponent.new(
+            form: f,
+            attribute: :passport_first_name,
+            label: t('in_person_proofing.form.passport.first_name'),
+            required: true,
+            maxlength: 255,
+            autocomplete: 'given-name',
+            value: pii[:passport_first_name],
+            error_message: form.errors.full_messages_for(:passport_first_name).first,
+            error_messages: {
+              valueMissing: t('components.input.errors.first_name'),
             },
-          ],
-        ) %>
-  </div>
+          ) %>
 
-  <%= f.submit do %>
-      <%= t('forms.buttons.submit.default') %>
+      <%= render InputComponent.new(
+            form: f,
+            attribute: :passport_dob,
+            label: t('in_person_proofing.form.passport.dob'),
+            type: :date,
+            required: true,
+            value: dob_iso,
+            autocomplete: 'bday',
+            name: 'passport_dob_date',
+            error_message: form.errors.full_messages_for(:passport_dob).first,
+            error_messages: {
+              valueMissing: t('components.input.errors.dob'),
+              typeMismatch: t('components.input.errors.dob'),
+              badInput: t('components.input.errors.dob'),
+            },
+          ) %>
+      <%= hidden_field_tag 'in_person_passport[passport_dob][year]', dob_year,
+                           id: 'in_person_passport_passport_dob_year' %>
+      <%= hidden_field_tag 'in_person_passport[passport_dob][month]', dob_month,
+                           id: 'in_person_passport_passport_dob_month' %>
+      <%= hidden_field_tag 'in_person_passport[passport_dob][day]', dob_day,
+                           id: 'in_person_passport_passport_dob_day' %>
+
+      <%= render InputComponent.new(
+            form: f,
+            attribute: :passport_number,
+            label: t('in_person_proofing.form.passport.passport_number'),
+            type: :password,
+            required: true,
+            maxlength: 9,
+            pattern: '[0-9A-Za-z]{9}',
+            autocomplete: 'off',
+            value: pii[:passport_number],
+            password_toggle_label: t('forms.passport.show'),
+            password_toggle_hide_label: t('forms.passport.hide'),
+            error_message: form.errors.full_messages_for(:passport_number).first,
+            error_messages: {
+              valueMissing: t('components.input.errors.passport_number'),
+              patternMismatch: t(
+                'in_person_proofing.form.passport.errors.passport_number.pattern_mismatch',
+              ),
+            },
+          ) %>
+
+      <%= render InputComponent.new(
+            form: f,
+            attribute: :passport_expiration,
+            label: t('in_person_proofing.form.passport.expiration_date'),
+            type: :date,
+            required: true,
+            value: expiration_iso,
+            name: 'passport_expiration_date',
+            error_message: form.errors.full_messages_for(:passport_expiration).first,
+            error_messages: {
+              valueMissing: t('components.input.errors.expiration_date'),
+              typeMismatch: t('components.input.errors.expiration_date'),
+              badInput: t('components.input.errors.expiration_date'),
+            },
+          ) %>
+      <%= hidden_field_tag 'in_person_passport[passport_expiration][year]', exp_year,
+                           id: 'in_person_passport_passport_expiration_year' %>
+      <%= hidden_field_tag 'in_person_passport[passport_expiration][month]', exp_month,
+                           id: 'in_person_passport_passport_expiration_month' %>
+      <%= hidden_field_tag 'in_person_passport[passport_expiration][day]', exp_day,
+                           id: 'in_person_passport_passport_expiration_day' %>
+
+      <%= render ADS::StackComponent.new(kind: :actions, gap: 8, align: :stretch) do %>
+        <%= render ButtonComponent.new(
+              type: :submit,
+            ).with_content(t('forms.buttons.submit.default')) %>
+
+        <%= render ButtonComponent.new(
+              url: idv_in_person_choose_id_type_url,
+              variant: :quaternary,
+            ).with_content(t('in_person_proofing.form.passport.choose_another_id_type')) %>
+      <% end %>
+    <% end %>
   <% end %>
 <% end %>
 
-<%= render TroubleshootingOptionsComponent.new do |c| %>
-  <% c.with_header { t('components.troubleshooting_options.default_heading') } %>
-    <% c.with_option(
-         url: idv_in_person_choose_id_type_url,
-         new_tab: false,
-       ).with_content(t('idv.troubleshooting.options.use_another_id_type')) %>
+<%= javascript_tag(nonce: true) do %>
+  (function () {
+    function bridge(dateId, yearId, monthId, dayId) {
+      var dateInput = document.getElementById(dateId);
+      if (!dateInput) return;
+      var year = document.getElementById(yearId);
+      var month = document.getElementById(monthId);
+      var day = document.getElementById(dayId);
+      function sync() {
+        var parts = (dateInput.value || '').split('-');
+        year.value = parts[0] || '';
+        month.value = parts[1] || '';
+        day.value = parts[2] || '';
+      }
+      dateInput.addEventListener('input', sync);
+      dateInput.addEventListener('change', sync);
+      if (dateInput.form) dateInput.form.addEventListener('submit', sync);
+      sync();
+    }
+    bridge(
+      'in_person_passport_passport_dob',
+      'in_person_passport_passport_dob_year',
+      'in_person_passport_passport_dob_month',
+      'in_person_passport_passport_dob_day'
+    );
+    bridge(
+      'in_person_passport_passport_expiration',
+      'in_person_passport_passport_expiration_year',
+      'in_person_passport_passport_expiration_month',
+      'in_person_passport_passport_expiration_day'
+    );
+  })();
 <% end %>
-
-<%= render 'idv/doc_auth/cancel', step: 'passport' %>
-<%= javascript_packs_tag_once('formatted-fields', 'state-guidance') %>

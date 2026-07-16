@@ -1,15 +1,15 @@
 import Cleave from 'cleave.js';
 
-const inputs = document.querySelectorAll<HTMLInputElement>('input.ssn-toggle[type="password"]');
+const inputs = document.querySelectorAll<HTMLInputElement>('input.ssn-toggle');
 inputs.forEach((input) => {
-  const toggle = document.querySelector<HTMLInputElement>(`[aria-controls="${input.id}"]`)!;
+  const toggle = document.querySelector<HTMLElement>(`[aria-controls="${input.id}"]`)!;
 
   let cleave: Cleave | undefined;
 
   function sync() {
     const { value } = input;
     cleave?.destroy();
-    if (toggle.checked) {
+    if (input.type === 'text') {
       cleave = new Cleave(input, {
         numericOnly: true,
         blocks: [3, 2, 4],
@@ -28,7 +28,7 @@ inputs.forEach((input) => {
   }
 
   sync();
-  toggle.addEventListener('change', sync);
+  toggle.addEventListener('click', () => setTimeout(sync));
 
   function limitLength(this: HTMLInputElement) {
     const maxLength = 9 + (this.value.match(/-/g) || []).length;

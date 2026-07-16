@@ -62,6 +62,7 @@ module I18n
         { key: 'i18n.locale.es', locales: %i[es fr zh] },
         { key: 'i18n.locale.fr', locales: %i[es fr zh] },
         { key: 'i18n.locale.zh', locales: %i[es fr zh] },
+        { key: 'account.dashboard.account.password.masked', locales: %i[es fr zh] }, # Bullet placeholder for the hidden password; identical in every locale
         { key: 'account.email_language.name.en', locales: %i[es fr zh] },
         { key: 'account.email_language.name.es', locales: %i[es fr zh] },
         { key: 'account.email_language.name.fr', locales: %i[es fr zh] },
@@ -84,9 +85,7 @@ module I18n
         { key: 'in_person_proofing.form.passport.dob' }, # Translations will be updated for In-Person Proofing Passport Epic, see LG-15972
         { key: 'in_person_proofing.form.passport.errors.passport_number.pattern_mismatch' }, # Translations will be updated for In-Person Proofing Passport Epic, see LG-15972
         { key: 'in_person_proofing.form.passport.first_name' }, # Translations will be updated for In-Person Proofing Passport Epic, see LG-15972
-        { key: 'in_person_proofing.form.passport.first_name_hint' }, # Translations will be updated for In-Person Proofing Passport Epic, see LG-15972
         { key: 'in_person_proofing.form.passport.passport_number' }, # Translations will be updated for In-Person Proofing Passport Epic, see LG-15972
-        { key: 'in_person_proofing.form.passport.passport_number_hint' }, # Translations will be updated for In-Person Proofing Passport Epic, see LG-15972
         { key: 'in_person_proofing.form.passport.surname' }, # Translations will be updated for In-Person Proofing Passport Epic, see LG-15972
         { key: 'in_person_proofing.form.verify_info.passport' }, # Translations will be updated for In-Person Proofing Passport Epic, see LG-15972
         { key: 'in_person_proofing.form.verify_info.passport_intro_text' }, # Translations will be updated for In-Person Proofing Passport Epic, see LG-15972

@@ -555,7 +555,6 @@ RSpec.describe DocumentCaptureSession do
 
       expect(record.passport_requested?).to eq(false)
       expect(record.state_id_requested?).to eq(false)
-      expect(record.mdl_requested?).to eq(false)
     end
   end
 
@@ -602,29 +601,6 @@ RSpec.describe DocumentCaptureSession do
 
       expect(record.passport_requested?).to eq(true)
       expect(record.state_id_requested?).to eq(false)
-      expect(record.mdl_requested?).to eq(false)
-    end
-
-    context 'when passport was requested before' do
-      it 'clears the socure attributes' do
-        record = build(
-          :document_capture_session,
-          document_type_requested: Idp::Constants::DocumentTypes::PASSPORT,
-          doc_auth_vendor: 'a vendor',
-          socure_docv_capture_app_url: 'some-url',
-          socure_docv_transaction_token: '12345',
-        )
-
-        record.request_passport!
-
-        expect(record).to have_attributes(
-          passport_status: nil,
-          document_type_requested: Idp::Constants::DocumentTypes::PASSPORT,
-          doc_auth_vendor: 'a vendor',
-          socure_docv_capture_app_url: 'some-url',
-          socure_docv_transaction_token: '12345',
-        )
-      end
     end
 
     context 'when state_id was requested before' do
@@ -632,7 +608,7 @@ RSpec.describe DocumentCaptureSession do
         record = build(
           :document_capture_session,
           document_type_requested: Idp::Constants::DocumentTypes::STATE_ID_CARD,
-          doc_auth_vendor: 'a vendor',
+          doc_auth_vendor: nil,
           socure_docv_capture_app_url: 'some-url',
           socure_docv_transaction_token: '12345',
         )
@@ -651,7 +627,7 @@ RSpec.describe DocumentCaptureSession do
   end
 
   describe '#request_state_id!' do
-    context 'state_id was not requested before' do
+    context 'passport was not requested before' do
       it 'sets the correct attributes for a not requested passport' do
         record = build(
           :document_capture_session,
@@ -671,33 +647,6 @@ RSpec.describe DocumentCaptureSession do
 
         expect(record.passport_requested?).to eq(false)
         expect(record.state_id_requested?).to eq(true)
-        expect(record.mdl_requested?).to eq(false)
-      end
-    end
-
-    context 'state_id was requested before' do
-      it 'sets the socure attributes to nil' do
-        record = build(
-          :document_capture_session,
-          document_type_requested: Idp::Constants::DocumentTypes::STATE_ID_CARD,
-          doc_auth_vendor: 'a vendor',
-          socure_docv_capture_app_url: 'some-url',
-          socure_docv_transaction_token: '12345',
-        )
-
-        record.request_state_id!
-
-        expect(record).to have_attributes(
-          passport_status: nil,
-          document_type_requested: Idp::Constants::DocumentTypes::STATE_ID_CARD,
-          doc_auth_vendor: 'a vendor',
-          socure_docv_capture_app_url: 'some-url',
-          socure_docv_transaction_token: '12345',
-        )
-
-        expect(record.passport_requested?).to eq(false)
-        expect(record.state_id_requested?).to eq(true)
-        expect(record.mdl_requested?).to eq(false)
       end
     end
 
@@ -723,85 +672,6 @@ RSpec.describe DocumentCaptureSession do
 
         expect(record.passport_requested?).to eq(false)
         expect(record.state_id_requested?).to eq(true)
-        expect(record.mdl_requested?).to eq(false)
-      end
-    end
-  end
-
-  describe '#request_mdl!' do
-    context 'mdl was not requested before' do
-      it 'sets the correct attributes for a not requested mdl' do
-        record = build(
-          :document_capture_session,
-          socure_docv_capture_app_url: 'hello',
-          socure_docv_transaction_token: 'world',
-        )
-
-        record.request_mdl!
-
-        expect(record).to have_attributes(
-          passport_status: nil,
-          document_type_requested: Idp::Constants::DocumentTypes::MDL,
-          doc_auth_vendor: nil,
-          socure_docv_capture_app_url: nil,
-          socure_docv_transaction_token: nil,
-        )
-
-        expect(record.passport_requested?).to eq(false)
-        expect(record.state_id_requested?).to eq(false)
-        expect(record.mdl_requested?).to eq(true)
-      end
-    end
-
-    context 'mdl was requested before' do
-      it 'sets the socure attributes to nil' do
-        record = build(
-          :document_capture_session,
-          document_type_requested: Idp::Constants::DocumentTypes::MDL,
-          doc_auth_vendor: 'a vendor',
-          socure_docv_capture_app_url: 'some-url',
-          socure_docv_transaction_token: '12345',
-        )
-
-        record.request_mdl!
-
-        expect(record).to have_attributes(
-          passport_status: nil,
-          document_type_requested: Idp::Constants::DocumentTypes::MDL,
-          doc_auth_vendor: 'a vendor',
-          socure_docv_capture_app_url: 'some-url',
-          socure_docv_transaction_token: '12345',
-        )
-
-        expect(record.mdl_requested?).to eq(true)
-        expect(record.passport_requested?).to eq(false)
-        expect(record.state_id_requested?).to eq(false)
-      end
-    end
-
-    context 'passport was requested before' do
-      it 'sets the socure attributes to nil' do
-        record = build(
-          :document_capture_session,
-          document_type_requested: Idp::Constants::DocumentTypes::PASSPORT,
-          doc_auth_vendor: 'a vendor',
-          socure_docv_capture_app_url: 'some-url',
-          socure_docv_transaction_token: '12345',
-        )
-
-        record.request_mdl!
-
-        expect(record).to have_attributes(
-          passport_status: nil,
-          document_type_requested: Idp::Constants::DocumentTypes::MDL,
-          doc_auth_vendor: nil,
-          socure_docv_capture_app_url: nil,
-          socure_docv_transaction_token: nil,
-        )
-
-        expect(record.passport_requested?).to eq(false)
-        expect(record.state_id_requested?).to eq(false)
-        expect(record.mdl_requested?).to eq(true)
       end
     end
   end

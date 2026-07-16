@@ -24,10 +24,10 @@ RSpec.describe TwoFactorAuthentication::SetUpAuthAppSelectionPresenter do
     context 'when user has configured this authenticator' do
       let(:user) { create(:user, :with_authentication_app) }
 
-      it 'returns text with number of added authenticators' do
+      it 'returns text with number of enabled authenticators' do
         expect(mfa_configuration_description).to eq(
           t(
-            'two_factor_authentication.two_factor_choice_options.configurations_added',
+            'two_factor_authentication.two_factor_choice_options.configurations_enabled',
             count: 1,
           ),
         )

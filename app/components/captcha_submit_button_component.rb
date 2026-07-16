@@ -14,7 +14,9 @@ class CaptchaSubmitButtonComponent < BaseComponent
   end
 
   def show_mock_score_field?
-    IdentityConfig.store.recaptcha_mock_validator
+    # Dev-only score override UI temporarily disabled.
+    # Re-enable with: IdentityConfig.store.recaptcha_mock_validator
+    false
   end
 
   def recaptcha_script_src

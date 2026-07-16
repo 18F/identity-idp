@@ -1,58 +1,18 @@
-<p class="lead">
-  <%= t('user_mailer.account_reset_granted.intro_html', waiting_period: @account_reset_deletion_period_interval, app_name: link_to(APP_NAME, IdentityConfig.store.mailer_domain_name, class: 'gray')) %>
+<p class="mailer-text mailer-text--spaced">
+  <%= t('user_mailer.account_reset_granted.intro_html', waiting_period: @account_reset_deletion_period_interval, app_name: APP_NAME) %>
 </p>
 
-<table class="button expanded large">
-  <tbody>
-      <tr>
-        <td>
-          <table>
-            <tbody>
-              <tr>
-                <td class="btn-warn-bkg">
-                  <%= link_to t('user_mailer.account_reset_granted.button'), account_reset_delete_account_url(token: @granted_token),
-                              target: '_blank', class: 'btn-warn', rel: 'noopener' %>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </td>
-      </tr>
-  </tbody>
-</table>
-
-<p>
-  <%= link_to account_reset_delete_account_url(token: @granted_token),
-              account_reset_delete_account_url(token: @granted_token), target: '_blank', rel: 'noopener' %>
-</p>
-
-<table class="spacer">
-  <tbody>
-    <tr>
-      <td class="s10" height="10px">
-        &nbsp;
-      </td>
-    </tr>
-  </tbody>
-</table>
-
-<table class="hr">
-  <tr>
-    <th>
-      &nbsp;
-    </th>
-  </tr>
-</table>
-
-<p>
-  <%= t('user_mailer.email_confirmation_instructions.footer', confirmation_period: @account_reset_token_valid_period) %>
-</p>
-<p>
+<p class="mailer-text">
   <%= t(
         'user_mailer.account_reset_granted.help_html',
-        cancel_account_reset_html: link_to(
+        cancel_account_reset_html: mailer_link_to(
           t('user_mailer.account_reset_granted.cancel_link_text'),
           account_reset_cancel_url(token: @token),
+          class: 'mailer-inline-link',
         ),
       ) %>
 </p>
+
+<%= render 'shared/email/button',
+           url: account_reset_delete_account_url(token: @granted_token),
+           text: t('user_mailer.account_reset_granted.button') %>

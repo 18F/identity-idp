@@ -1,0 +1,22 @@
+---
+description: ADS reskin route checklist — user approval required to check off
+alwaysApply: true
+---
+
+# Route checklist (`/Users/aldous/Desktop/todo.txt`)
+
+Tracks ADS page reskin progress. One line per route; `[x]` = done, `[ ]` = not done.
+
+## When to update
+
+- **User approves a page** (e.g. "done", "approved", "looks good") → change that route's line to `[x]` in `todo.txt`.
+- Do this in the same session when possible; keep the checklist current after explicit approval.
+
+## Never do this
+
+- Do **not** check routes off because implementation finished, tests passed, or you judge the page complete.
+- Do **not** batch-check multiple routes unless the user explicitly approved each one.
+
+## Matching routes
+
+Find the line by path (e.g. `/bounced`, `/sign_up/cancel/`). Locale prefixes (`/es`, `/fr`) are optional — match the path segment in the checklist.

@@ -1,0 +1,151 @@
+@use '../../../variables/ads' as ads;
+
+$ads-history-breakpoint-m: 768px;
+
+.ads-history {
+  @include ads.stack(
+    $gap: ads.space(64),
+    $margin: 0 auto,
+    $max-width: ads.$dashboard-width,
+    $reset-flow: true,
+    $width: 100%
+  );
+
+  color: ads.$off-black;
+  font-family: ads.$font-family;
+  text-align: left;
+}
+
+.ads-history__section {
+  @include ads.stack($gap: ads.space(24), $reset-flow: true, $width: 100%);
+}
+
+.ads-history__header {
+  align-items: center;
+  display: flex;
+  gap: ads.space(12);
+  min-width: 0;
+  width: 100%;
+}
+
+.ads-history__back {
+  flex: 0 0 auto;
+}
+
+.ads-history__heading {
+  color: ads.$off-black;
+  font-size: ads.$text-heading-section;
+  font-weight: ads.$font-semibold;
+  letter-spacing: ads.$text-letter-spacing-heading-section;
+  line-height: 1.2;
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+// Inset the section headings ('Devices'/'Activity') to line up with the row
+// text inside the panel (which is inset by the panel's 24px padding). The
+// drill-in header heading sits next to the back button, so it is left alone.
+.ads-history__section > .ads-history__heading {
+  padding-inline: ads.space(24);
+}
+
+.ads-history__panel {
+  background: ads.$white;
+  border: 1px solid ads.alpha(ads.$off-black, 10%);
+  border-radius: ads.radius(24);
+  box-sizing: border-box;
+  padding: ads.space(24);
+  width: 100%;
+}
+
+.ads-history__rows {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.ads-history__rows > li + li {
+  border-top: 1px solid ads.alpha(ads.$off-black, 10%);
+  margin-top: ads.space(12);
+  padding-top: ads.space(12);
+}
+
+.ads-history__row {
+  align-items: center;
+  display: flex;
+  gap: ads.space(20);
+  min-width: 0;
+  width: 100%;
+}
+
+.ads-history__row-content {
+  @include ads.stack($gap: 0, $reset-flow: true);
+
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.ads-history__row-title,
+.ads-history__row-meta,
+.ads-history__row-description,
+.ads-history__empty {
+  font-size: ads.$text-body-m;
+  letter-spacing: ads.$text-letter-spacing-label;
+  line-height: 1.5;
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.ads-history__row-title {
+  color: ads.$off-black;
+  font-weight: ads.$font-semibold;
+}
+
+.ads-history__row-title a {
+  color: ads.$off-black;
+  text-decoration-line: underline;
+  text-decoration-thickness: from-font;
+
+  &:is(:link, :visited) {
+    color: ads.$off-black;
+  }
+
+  &:hover {
+    color: ads.$blue-600;
+  }
+
+  &:focus-visible {
+    @include ads.focus-ring;
+  }
+}
+
+.ads-history__row-meta,
+.ads-history__row-description,
+.ads-history__empty {
+  color: ads.alpha(ads.$off-black, 65%);
+  font-weight: 400;
+}
+
+.ads-history__row-actions {
+  flex: 0 0 auto;
+}
+
+@media (width < #{$ads-history-breakpoint-m}) {
+  .ads-history {
+    gap: ads.space(48);
+  }
+
+  .ads-history__panel {
+    padding: ads.space(20);
+  }
+
+  .ads-history__section > .ads-history__heading {
+    padding-inline: ads.space(20);
+  }
+
+  .ads-history__row {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: ads.space(12);
+  }
+}

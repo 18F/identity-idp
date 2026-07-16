@@ -1,44 +1,49 @@
 <% self.title = t('titles.verify_email') %>
 
 <% if @resend_confirmation %>
-  <%= render AlertComponent.new(
-        type: :success,
-        class: 'margin-bottom-4',
-        message: t('notices.resend_confirmation_email.success'),
-      ) %>
+  <%= render ToastComponent.new(message: t('notices.resend_confirmation_email.success')) %>
 <% end %>
 
-<%= render PageHeadingComponent.new.with_content(t('headings.verify_email')) %>
+<%= render ADS::FormPageComponent.new(
+      title: t('sign_up.verify_email.heading'),
+      subtitle: safe_join(
+        [
+          t('notices.signed_up_but_unconfirmed.first_paragraph_start'),
+          tag.strong(email),
+          t('notices.signed_up_but_unconfirmed.first_paragraph_end'),
+        ],
+        ' ',
+      ),
+    ) do |page| %>
+  <% page.with_actions do %>
+    <%= form_with(
+          model: @resend_email_confirmation_form,
+          url: sign_up_register_path,
+          local: true,
+          class: 'ads-form',
+        ) do |f| %>
+      <%= f.hidden_field :email %>
+      <%= f.hidden_field :resend %>
+      <%= f.hidden_field :terms_accepted %>
+      <%= render ButtonComponent.new(
+            size: :lg,
+            type: :submit,
+          ).with_content(t('notices.signed_up_but_unconfirmed.resend_confirmation_email')) %>
+    <% end %>
 
-<p><%= t('notices.signed_up_but_unconfirmed.first_paragraph_start') %>
-   <strong><%= email %></strong>
-   <%= t('notices.signed_up_but_unconfirmed.first_paragraph_end') %>
-</p>
+    <%= render ButtonComponent.new(
+          size: :lg,
+          url: sign_up_email_path,
+          variant: :quaternary,
+        ).with_content(t('sign_up.verify_email.use_different_email')) %>
 
-<p><%= t('devise.registrations.close_window') %></p>
-
-<%= render TroubleshootingOptionsComponent.new do |c| %>
-  <% c.with_header { t('components.troubleshooting_options.default_heading') } %>
-  <% c.with_option(component: FormLinkComponent) do %>
-    <%= t('notices.signed_up_but_unconfirmed.resend_confirmation_email') %>
-    <%= simple_form_for @resend_email_confirmation_form,
-                        html: { class: 'display-none' },
-                        url: sign_up_register_path do |f| %>
-      <%= f.input :email, as: :hidden %>
-      <%= f.input :resend, as: :hidden %>
-      <%= f.input :terms_accepted, as: :hidden %>
-      <%= f.button :button, t('notices.signed_up_but_unconfirmed.resend_confirmation_email') %>
+    <% if FeatureManagement.enable_load_testing_mode? && EmailAddress.find_with_email(email) %>
+      <%= render ADS::LinkComponent.new(
+            url: sign_up_create_email_confirmation_url(
+              confirmation_token: EmailAddress.find_with_email(email).confirmation_token,
+            ),
+            id: 'confirm-now',
+          ).with_content('CONFIRM NOW') %>
     <% end %>
   <% end %>
-  <% c.with_option(
-       url: sign_up_email_path,
-     ).with_content(t('notices.use_diff_email.link').upcase_first) %>
-<% end %>
-
-<% if FeatureManagement.enable_load_testing_mode? && EmailAddress.find_with_email(email) %>
-  <%= link_to(
-        'CONFIRM NOW',
-        sign_up_create_email_confirmation_url(confirmation_token: EmailAddress.find_with_email(email).confirmation_token),
-        id: 'confirm-now',
-      ) %>
 <% end %>

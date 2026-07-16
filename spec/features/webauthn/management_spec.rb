@@ -10,13 +10,13 @@ RSpec.describe 'webauthn management' do
 
   def visit_webauthn_setup
     sign_in_and_2fa_user(user)
-    visit account_two_factor_authentication_path
+    visit account_security_path
     first(:link, t('account.index.webauthn_add'), href: webauthn_setup_path).click
   end
 
   def expect_webauthn_setup_success
     expect(page).to have_content(t('notices.webauthn_configured'))
-    expect(page).to have_current_path(account_two_factor_authentication_path)
+    expect(page).to have_current_path(account_security_path)
   end
 
   def expect_webauthn_setup_error
@@ -29,7 +29,7 @@ RSpec.describe 'webauthn management' do
 
   def visit_webauthn_platform_setup
     sign_in_and_2fa_user(user)
-    visit account_two_factor_authentication_path
+    visit account_security_path
     first(
       :link,
       t('account.index.webauthn_platform_add'),
@@ -53,7 +53,7 @@ RSpec.describe 'webauthn management' do
       webauthn_config2 = create(:webauthn_configuration, user:)
 
       sign_in_and_2fa_user(user)
-      visit account_two_factor_authentication_path
+      visit account_security_path
 
       expect(page).to have_content webauthn_config1.name
       expect(page).to have_content webauthn_config2.name
@@ -80,7 +80,7 @@ RSpec.describe 'webauthn management' do
       name = webauthn_config.name
 
       sign_in_and_2fa_user(user)
-      visit account_two_factor_authentication_path
+      visit account_security_path
 
       expect(page).to have_content(name)
 
@@ -93,9 +93,12 @@ RSpec.describe 'webauthn management' do
 
       expect(page).to have_current_path(edit_webauthn_path(id: webauthn_config.id))
 
+      click_link t('two_factor_authentication.webauthn_roaming.delete')
+
+      expect(page).to have_current_path(confirm_delete_webauthn_path(id: webauthn_config.id))
+
       click_button t('two_factor_authentication.webauthn_roaming.delete')
 
-      expect(page).to_not have_content(name)
       expect(page).to have_content(t('two_factor_authentication.webauthn_roaming.deleted'))
       expect(user.reload.webauthn_configurations.empty?).to eq(true)
     end
@@ -105,7 +108,7 @@ RSpec.describe 'webauthn management' do
       name = webauthn_config.name
 
       sign_in_and_2fa_user(user)
-      visit account_two_factor_authentication_path
+      visit account_security_path
 
       expect(page).to have_content(name)
 
@@ -126,8 +129,10 @@ RSpec.describe 'webauthn management' do
 
       click_button t('two_factor_authentication.webauthn_roaming.change_nickname')
 
-      expect(page).to have_content('new name')
       expect(page).to have_content(t('two_factor_authentication.webauthn_roaming.renamed'))
+
+      visit account_security_path
+      expect(page).to have_content('new name')
     end
 
     it 'allows the user to cancel deletion of the roaming authenticator' do
@@ -135,7 +140,7 @@ RSpec.describe 'webauthn management' do
       name = webauthn_config.name
 
       sign_in_and_2fa_user(user)
-      visit account_two_factor_authentication_path
+      visit account_security_path
 
       expect(page).to have_content(name)
 
@@ -148,9 +153,14 @@ RSpec.describe 'webauthn management' do
 
       expect(page).to have_current_path(edit_webauthn_path(id: webauthn_config.id))
 
+      click_link t('two_factor_authentication.webauthn_roaming.delete')
+
+      expect(page).to have_current_path(confirm_delete_webauthn_path(id: webauthn_config.id))
+
       click_link t('links.cancel')
 
-      expect(page).to have_content(name)
+      expect(page).to have_current_path(edit_webauthn_path(id: webauthn_config.id))
+      expect(user.reload.webauthn_configurations).to_not be_empty
     end
 
     it 'prevents a user from deleting the last roaming authenticator' do
@@ -161,6 +171,7 @@ RSpec.describe 'webauthn management' do
       PhoneConfiguration.first.update(mfa_enabled: false)
       user.backup_code_configurations.destroy_all
 
+      visit account_security_path
       expect(page).to have_content(name)
 
       click_link(
@@ -171,6 +182,10 @@ RSpec.describe 'webauthn management' do
       )
 
       expect(page).to have_current_path(edit_webauthn_path(id: webauthn_config.id))
+
+      click_link t('two_factor_authentication.webauthn_roaming.delete')
+
+      expect(page).to have_current_path(confirm_delete_webauthn_path(id: webauthn_config.id))
 
       click_button t('two_factor_authentication.webauthn_roaming.delete')
 
@@ -185,6 +200,7 @@ RSpec.describe 'webauthn management' do
       name = webauthn_config.name
 
       sign_in_and_2fa_user(user)
+      visit account_security_path
 
       expect(page).to have_content(name)
 
@@ -211,7 +227,7 @@ RSpec.describe 'webauthn management' do
         with: 'existing',
       )
       expect(page).to have_content(t('errors.manage_authenticator.unique_name_error'))
-      expect(page).to have_css('.usa-input--error')
+      expect(page).to have_css('[aria-invalid="true"]')
     end
 
     it 'gives an error if name is taken and stays on the configuration screen' do
@@ -220,8 +236,8 @@ RSpec.describe 'webauthn management' do
       mock_webauthn_setup_challenge
       sign_in_and_2fa_user(user)
 
-      visit account_two_factor_authentication_path
-      expect(page).to have_current_path account_two_factor_authentication_path
+      visit account_security_path
+      expect(page).to have_current_path account_security_path
 
       first(:link, t('account.index.webauthn_add'), href: webauthn_setup_path).click
       expect(page).to have_current_path webauthn_setup_path
@@ -232,120 +248,6 @@ RSpec.describe 'webauthn management' do
       expect(page).to have_current_path webauthn_setup_path
       expect(page).to have_content t('errors.webauthn_setup.unique_name')
     end
-
-    context 'with javascript enabled', :js do
-      it 'allows user to delete a roaming authenticator when another 2FA option is set up' do
-        webauthn_config = create(:webauthn_configuration, user:)
-        name = webauthn_config.name
-
-        sign_in_and_2fa_user(user)
-        visit account_two_factor_authentication_path
-
-        expect(page).to have_content(name)
-
-        click_button(
-          [
-            t('two_factor_authentication.webauthn_roaming.manage_accessible_label'),
-            name,
-          ].join(': '),
-        )
-
-        # Verify user can cancel deletion. There's an implied assertion here that the button becomes
-        # clickable again, since the following confirmation occurs upon successive button click.
-        dismiss_confirm(wait: 5) { click_button t('components.manageable_authenticator.delete') }
-
-        # Verify user confirms deletion
-        accept_confirm(wait: 5) { click_button t('components.manageable_authenticator.delete') }
-
-        expect(page).to have_content(
-          t('two_factor_authentication.webauthn_roaming.deleted'),
-          wait: 5,
-        )
-        expect(page).to_not have_content(name)
-        expect(user.reload.webauthn_configurations.empty?).to eq(true)
-      end
-
-      it 'allows user to rename a roaming authenticator' do
-        webauthn_config = create(:webauthn_configuration, user:)
-        name = webauthn_config.name
-
-        sign_in_and_2fa_user(user)
-        visit account_two_factor_authentication_path
-
-        expect(page).to have_content(name)
-
-        click_button(
-          [
-            t('two_factor_authentication.webauthn_roaming.manage_accessible_label'),
-            name,
-          ].join(': '),
-        )
-        click_button t('components.manageable_authenticator.rename')
-
-        expect(page).to have_field(t('components.manageable_authenticator.nickname'), with: name)
-
-        fill_in t('components.manageable_authenticator.nickname'), with: 'new name'
-
-        click_button t('components.manageable_authenticator.save')
-
-        expect(page).to have_content(
-          t('two_factor_authentication.webauthn_roaming.renamed'),
-          wait: 5,
-        )
-        expect(page).to have_content('new name')
-      end
-
-      it 'prevents a user from deleting the last roaming authenticator', allow_browser_log: true do
-        webauthn_config = create(:webauthn_configuration, user:)
-        name = webauthn_config.name
-
-        sign_in_and_2fa_user(user)
-        PhoneConfiguration.first.update(mfa_enabled: false)
-        user.backup_code_configurations.destroy_all
-
-        expect(page).to have_content(name)
-
-        click_button(
-          [
-            t('two_factor_authentication.webauthn_roaming.manage_accessible_label'),
-            name,
-          ].join(': '),
-        )
-        accept_confirm(wait: 5) { click_button t('components.manageable_authenticator.delete') }
-
-        expect(page).to have_content(
-          t('errors.manage_authenticator.remove_only_method_error'),
-          wait: 5,
-        )
-        expect(user.reload.webauthn_configurations.empty?).to eq(false)
-      end
-
-      it 'requires a user to use a unique name when renaming', allow_browser_log: true do
-        webauthn_config = create(:webauthn_configuration, user:)
-        create(:webauthn_configuration, user:, name: 'existing')
-        name = webauthn_config.name
-
-        sign_in_and_2fa_user(user)
-
-        expect(page).to have_content(name)
-
-        click_button(
-          [
-            t('two_factor_authentication.webauthn_roaming.manage_accessible_label'),
-            name,
-          ].join(': '),
-        )
-        click_button t('components.manageable_authenticator.rename')
-
-        expect(page).to have_field(t('components.manageable_authenticator.nickname'), with: name)
-
-        fill_in t('components.manageable_authenticator.nickname'), with: 'existing'
-
-        click_button t('components.manageable_authenticator.save')
-
-        expect(page).to have_content(t('errors.manage_authenticator.unique_name_error'), wait: 5)
-      end
-    end
   end
 
   context 'with webauthn platform associations' do
@@ -354,7 +256,7 @@ RSpec.describe 'webauthn management' do
       webauthn_config2 = create(:webauthn_configuration, :platform_authenticator, user:)
 
       sign_in_and_2fa_user(user)
-      visit account_two_factor_authentication_path
+      visit account_security_path
 
       expect(page).to have_content webauthn_config1.name
       expect(page).to have_content webauthn_config2.name
@@ -390,7 +292,7 @@ RSpec.describe 'webauthn management' do
       name = webauthn_config.name
 
       sign_in_and_2fa_user(user)
-      visit account_two_factor_authentication_path
+      visit account_security_path
 
       expect(page).to have_content(name)
 
@@ -403,9 +305,12 @@ RSpec.describe 'webauthn management' do
 
       expect(page).to have_current_path(edit_webauthn_path(id: webauthn_config.id))
 
+      click_link t('two_factor_authentication.webauthn_platform.delete')
+
+      expect(page).to have_current_path(confirm_delete_webauthn_path(id: webauthn_config.id))
+
       click_button t('two_factor_authentication.webauthn_platform.delete')
 
-      expect(page).to_not have_content(name)
       expect(page).to have_content(t('two_factor_authentication.webauthn_platform.deleted'))
       expect(user.reload.webauthn_configurations.empty?).to eq(true)
     end
@@ -415,7 +320,7 @@ RSpec.describe 'webauthn management' do
       name = webauthn_config.name
 
       sign_in_and_2fa_user(user)
-      visit account_two_factor_authentication_path
+      visit account_security_path
 
       expect(page).to have_content(name)
 
@@ -436,8 +341,10 @@ RSpec.describe 'webauthn management' do
 
       click_button t('two_factor_authentication.webauthn_platform.change_nickname')
 
-      expect(page).to have_content('new name')
       expect(page).to have_content(t('two_factor_authentication.webauthn_platform.renamed'))
+
+      visit account_security_path
+      expect(page).to have_content('new name')
     end
 
     it 'allows the user to cancel deletion of the platform authenticator' do
@@ -445,7 +352,7 @@ RSpec.describe 'webauthn management' do
       name = webauthn_config.name
 
       sign_in_and_2fa_user(user)
-      visit account_two_factor_authentication_path
+      visit account_security_path
 
       expect(page).to have_content(name)
 
@@ -458,9 +365,14 @@ RSpec.describe 'webauthn management' do
 
       expect(page).to have_current_path(edit_webauthn_path(id: webauthn_config.id))
 
+      click_link t('two_factor_authentication.webauthn_platform.delete')
+
+      expect(page).to have_current_path(confirm_delete_webauthn_path(id: webauthn_config.id))
+
       click_link t('links.cancel')
 
-      expect(page).to have_content(name)
+      expect(page).to have_current_path(edit_webauthn_path(id: webauthn_config.id))
+      expect(user.reload.webauthn_configurations).to_not be_empty
     end
 
     it 'prevents a user from deleting the last platform authenticator' do
@@ -471,6 +383,7 @@ RSpec.describe 'webauthn management' do
       PhoneConfiguration.first.update(mfa_enabled: false)
       user.backup_code_configurations.destroy_all
 
+      visit account_security_path
       expect(page).to have_content(name)
 
       click_link(
@@ -481,6 +394,10 @@ RSpec.describe 'webauthn management' do
       )
 
       expect(page).to have_current_path(edit_webauthn_path(id: webauthn_config.id))
+
+      click_link t('two_factor_authentication.webauthn_platform.delete')
+
+      expect(page).to have_current_path(confirm_delete_webauthn_path(id: webauthn_config.id))
 
       click_button t('two_factor_authentication.webauthn_platform.delete')
 
@@ -495,6 +412,7 @@ RSpec.describe 'webauthn management' do
       name = webauthn_config.name
 
       sign_in_and_2fa_user(user)
+      visit account_security_path
 
       expect(page).to have_content(name)
 
@@ -521,7 +439,7 @@ RSpec.describe 'webauthn management' do
         with: 'existing',
       )
       expect(page).to have_content(t('errors.manage_authenticator.unique_name_error'))
-      expect(page).to have_css('.usa-input--error')
+      expect(page).to have_css('[aria-invalid="true"]')
     end
 
     it 'gives an error if name is taken and stays on the configuration screen' do
@@ -530,8 +448,8 @@ RSpec.describe 'webauthn management' do
       mock_webauthn_setup_challenge
       sign_in_and_2fa_user(user)
 
-      visit account_two_factor_authentication_path
-      expect(page).to have_current_path account_two_factor_authentication_path
+      visit account_security_path
+      expect(page).to have_current_path account_security_path
 
       first(:link, t('account.index.webauthn_add'), href: webauthn_setup_path).click
       expect(page).to have_current_path webauthn_setup_path
@@ -541,120 +459,6 @@ RSpec.describe 'webauthn management' do
 
       expect(page).to have_current_path webauthn_setup_path
       expect(page).to have_content t('errors.webauthn_setup.unique_name')
-    end
-
-    context 'with javascript enabled', :js do
-      it 'allows user to delete a platform authenticator when another 2FA option is set up' do
-        webauthn_config = create(:webauthn_configuration, :platform_authenticator, user:)
-        name = webauthn_config.name
-
-        sign_in_and_2fa_user(user)
-        visit account_two_factor_authentication_path
-
-        expect(page).to have_content(name)
-
-        click_button(
-          [
-            t('two_factor_authentication.webauthn_platform.manage_accessible_label'),
-            name,
-          ].join(': '),
-        )
-
-        # Verify user can cancel deletion. There's an implied assertion here that the button becomes
-        # clickable again, since the following confirmation occurs upon successive button click.
-        dismiss_confirm(wait: 5) { click_button t('components.manageable_authenticator.delete') }
-
-        # Verify user confirms deletion
-        accept_confirm(wait: 5) { click_button t('components.manageable_authenticator.delete') }
-
-        expect(page).to have_content(
-          t('two_factor_authentication.webauthn_platform.deleted'),
-          wait: 5,
-        )
-        expect(page).to_not have_content(name)
-        expect(user.reload.webauthn_configurations.empty?).to eq(true)
-      end
-
-      it 'allows user to rename a platform authenticator' do
-        webauthn_config = create(:webauthn_configuration, :platform_authenticator, user:)
-        name = webauthn_config.name
-
-        sign_in_and_2fa_user(user)
-        visit account_two_factor_authentication_path
-
-        expect(page).to have_content(name)
-
-        click_button(
-          [
-            t('two_factor_authentication.webauthn_platform.manage_accessible_label'),
-            name,
-          ].join(': '),
-        )
-        click_button t('components.manageable_authenticator.rename')
-
-        expect(page).to have_field(t('components.manageable_authenticator.nickname'), with: name)
-
-        fill_in t('components.manageable_authenticator.nickname'), with: 'new name'
-
-        click_button t('components.manageable_authenticator.save')
-
-        expect(page).to have_content(
-          t('two_factor_authentication.webauthn_platform.renamed'),
-          wait: 5,
-        )
-        expect(page).to have_content('new name')
-      end
-
-      it 'prevents a user from deleting the last platform authenticator', allow_browser_log: true do
-        webauthn_config = create(:webauthn_configuration, :platform_authenticator, user:)
-        name = webauthn_config.name
-
-        sign_in_and_2fa_user(user)
-        PhoneConfiguration.first.update(mfa_enabled: false)
-        user.backup_code_configurations.destroy_all
-
-        expect(page).to have_content(name)
-
-        click_button(
-          [
-            t('two_factor_authentication.webauthn_platform.manage_accessible_label'),
-            name,
-          ].join(': '),
-        )
-        accept_confirm(wait: 5) { click_button t('components.manageable_authenticator.delete') }
-
-        expect(page).to have_content(
-          t('errors.manage_authenticator.remove_only_method_error'),
-          wait: 5,
-        )
-        expect(user.reload.webauthn_configurations.empty?).to eq(false)
-      end
-
-      it 'requires a user to use a unique name when renaming', allow_browser_log: true do
-        webauthn_config = create(:webauthn_configuration, :platform_authenticator, user:)
-        create(:webauthn_configuration, :platform_authenticator, user:, name: 'existing')
-        name = webauthn_config.name
-
-        sign_in_and_2fa_user(user)
-
-        expect(page).to have_content(name)
-
-        click_button(
-          [
-            t('two_factor_authentication.webauthn_platform.manage_accessible_label'),
-            name,
-          ].join(': '),
-        )
-        click_button t('components.manageable_authenticator.rename')
-
-        expect(page).to have_field(t('components.manageable_authenticator.nickname'), with: name)
-
-        fill_in t('components.manageable_authenticator.nickname'), with: 'existing'
-
-        click_button t('components.manageable_authenticator.save')
-
-        expect(page).to have_content(t('errors.manage_authenticator.unique_name_error'), wait: 5)
-      end
     end
   end
 end

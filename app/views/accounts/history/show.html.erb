@@ -1,29 +1,23 @@
 <% self.title = t('account.navigation.history') %>
+<% recent_devices = @presenter.recent_devices.to_a %>
+<% recent_events = @presenter.recent_events.to_a %>
 
-<%= render PageHeadingComponent.new.with_content(t('account.navigation.history')) %>
+<div class="ads-history">
+  <h1 class="ads-sr-only"><%= t('account.dashboard.history.title') %></h1>
 
-<div class="card">
-  <div class="margin-top-0 border-bottom border-primary-light">
-    <h2 class="margin-top-0 margin-bottom-2">
-      <%= t('headings.account.devices') %>
-    </h2>
-    <% @presenter.recent_devices.each do |device| %>
-      <%= render 'accounts/device_item', device: device %>
-    <% end %>
-  </div>
-</div>
+  <%= render 'accounts/history/section',
+             heading_id: 'account-history-devices-heading',
+             heading: t('headings.account.devices'),
+             rows: recent_devices,
+             row_partial: 'accounts/history/device_row',
+             row_as: :device,
+             empty_message: t('account.history.no_devices') %>
 
-<div class="card">
-  <div class="margin-top-0 border-bottom border-primary-light">
-    <h2 class="margin-top-0 margin-bottom-2">
-      <%= t('headings.account.activity') %>
-    </h2>
-    <% @presenter.recent_events.each do |event| %>
-      <% if event.is_a?(ServiceProviderIdentity) %>
-        <%= render 'accounts/identity_item', event: event %>
-      <% else %>
-        <%= render 'accounts/event_item', event: event %>
-      <% end %>
-    <% end %>
-  </div>
+  <%= render 'accounts/history/section',
+             heading_id: 'account-history-activity-heading',
+             heading: t('headings.account.activity'),
+             rows: recent_events,
+             row_partial: 'accounts/history/event_row',
+             row_as: :event,
+             empty_message: t('account.history.no_activity') %>
 </div>

@@ -1,76 +1,47 @@
 <% self.title = t('titles.two_factor_setup') %>
-
-<%= render(VendorOutageAlertComponent.new(vendors: [:sms, :voice], context: :voice, only_if_all: true)) %>
-
-<% if @presenter.icon %>
-  <%= image_tag(
-        asset_url(@presenter.icon),
-        class: 'margin-bottom-3',
-        alt: @presenter.icon_alt_text,
-      ) %>
-<% end %>
-
-<%= render PageHeadingComponent.new.with_content(@presenter.heading) %>
-
-<p><%= @presenter.intro %></p>
-
-<p><%= t('mfa.recommendation') %></p>
-
-<% if @presenter.two_factor_enabled? %>
-  <h2 class="margin-top-2 margin-bottom-1">
-    <%= t('headings.account.two_factor') %>
-  </h2>
-
-  <%= render IconListComponent.new(icon: :check_circle, color: :success) do |c| %>
-    <% @presenter.all_options_sorted.each do |option| %>
-      <% if option.mfa_configuration_count > 0 %>
-        <% c.with_item do %>
-          <%= option.label %> <%= option.mfa_added_label %>
-        <% end %>
-      <% end %>
-    <% end %>
-  <% end %>
-<% end %>
+<% option_order = %i[webauthn_platform auth_app phone webauthn backup_code piv_cac] %>
+<% options = @presenter.options.sort_by { |o|
+     [o.disabled? ? 0 : 1, option_order.index(o.type) || 99]
+   } %>
 
 <%= simple_form_for @two_factor_options_form,
                     method: :patch,
-                    url: authentication_methods_setup_path do |f| %>
-  <div class="margin-bottom-4">
-    <fieldset class="margin-0 padding-0 border-0">
-      <legend class="margin-bottom-2 usa-sr-only">
-        <%= t('two_factor_authentication.form_legend') %>
-      </legend>
-      <% @presenter.options.each do |option| %>
-        <%= render(option) do %>
-          <%= render partial: 'partials/multi_factor_authentication/mfa_selection',
-                     locals: { option: option } %>
+                    url: authentication_methods_setup_path do %>
+  <%= render ADS::FormPageComponent.new(
+        title: @presenter.heading,
+        subtitle: @presenter.intro,
+      ) do |page| %>
+    <% page.with_body do %>
+      <%= render ADS::StackComponent.new(kind: :form, gap: 24, align: :stretch) do %>
+        <%= render(
+              VendorOutageAlertComponent.new(
+                vendors: [:sms, :voice],
+                context: :voice,
+                only_if_all: true,
+              ),
+            ) %>
+
+        <%= render ADS::StackComponent.new(gap: 12, align: :stretch) do %>
+          <% options.each do |option| %>
+            <%= render(option) do %>
+              <%= render partial: 'partials/multi_factor_authentication/mfa_selection',
+                         locals: { option: option } %>
+            <% end %>
+          <% end %>
+        <% end %>
+
+        <%= hidden_field_tag :platform_authenticator_available,
+                             id: 'platform_authenticator_available' %>
+        <% javascript_packs_tag_once('platform-authenticator-available') %>
+        <% if FeatureManagement.account_creation_device_profiling_collecting_enabled? %>
+          <%= render partial: 'shared/threat_metrix_profiling',
+                     locals: {
+                       threatmetrix_session_id:,
+                       threatmetrix_javascript_urls:,
+                       threatmetrix_iframe_url:,
+                     } %>
         <% end %>
       <% end %>
-    </fieldset>
-  </div>
-
-  <%= hidden_field_tag :platform_authenticator_available, id: 'platform_authenticator_available' %>
-  <% javascript_packs_tag_once('platform-authenticator-available') %>
-  <% if FeatureManagement.account_creation_device_profiling_collecting_enabled? %>
-    <div class="margin-bottom-2">
-      <%= render partial: 'shared/threat_metrix_profiling',
-                 locals: {
-                   threatmetrix_session_id:,
-                   threatmetrix_javascript_urls:,
-                   threatmetrix_iframe_url:,
-                 } %>
-    </div>
-  <% end %>
-
-  <%= f.submit t('forms.buttons.continue'), class: 'margin-bottom-1' %>
-<% end %>
-
-<% if @presenter.skip_path || !@presenter.two_factor_enabled? %>
-  <%= render PageFooterComponent.new do %>
-    <% if @presenter.skip_path %>
-      <%= link_to @presenter.skip_label, @presenter.skip_path %>
-    <% elsif !@presenter.two_factor_enabled? %>
-      <%= link_to t('links.cancel_account_creation'), sign_up_cancel_path %>
     <% end %>
   <% end %>
 <% end %>

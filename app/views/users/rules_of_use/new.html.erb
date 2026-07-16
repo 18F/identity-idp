@@ -1,31 +1,67 @@
-<% self.title = t('titles.registrations.new') %>
+<% self.title = t('titles.rules_of_use') %>
 
-<%= render PageHeadingComponent.new.with_content(t('titles.rules_of_use')) %>
-
-<p>
-<%= t(
-      'users.rules_of_use.overview_html',
-      link_html: new_tab_link_to(
-        t('titles.rules_of_use'),
-        MarketingSite.rules_of_use_url,
-      ),
-    ) %>
-</p>
-
-<%= t('users.rules_of_use.details_html', app_name: APP_NAME) %>
-<%= simple_form_for(@rules_of_use_form, url: rules_of_use_path) do |f| %>
-  <%= render ValidatedFieldComponent.new(
-        form: f,
-        name: :terms_accepted,
-        as: :boolean,
-        label: capture do %>
-          <%= t('users.rules_of_use.check_box_to_accept', app_name: APP_NAME) %>
-          <%= new_tab_link_to(t('titles.rules_of_use'), MarketingSite.rules_of_use_url) %>
-        <% end,
-        required: true,
-      ) %>
-
-    <%= f.submit t('forms.buttons.continue'), class: 'margin-y-5' %>
+<% rules_link_html = capture do %>
+  <%= render ADS::LinkComponent.new(
+        url: MarketingSite.rules_of_use_url,
+        target: '_blank',
+        rel: 'noopener noreferrer',
+        aria: { label: "#{t('titles.rules_of_use')} #{t('links.new_tab')}" },
+      ) do %>
+    <%= t('titles.rules_of_use') %>
+  <% end %>
 <% end %>
 
-<%= render 'shared/cancel', link: decorated_sp_session.cancel_link_url %>
+<%= render ADS::FormPageComponent.new(
+      title: t('titles.rules_of_use'),
+      subtitle: t('users.rules_of_use.overview_html', link_html: rules_link_html),
+    ) do |page| %>
+  <% page.with_body do %>
+    <%= render CardComponent.new do %>
+      <div class="ads-card__value">
+        <%= t('users.rules_of_use.details_html', app_name: APP_NAME) %>
+      </div>
+    <% end %>
+
+    <%= form_with(
+          model: @rules_of_use_form,
+          url: rules_of_use_path,
+          local: true,
+          class: 'ads-form',
+        ) do |f| %>
+      <% terms_error = @rules_of_use_form.errors.full_messages_for(:terms_accepted).first %>
+      <% terms_error_id = "#{f.object_name}_terms_accepted_ads_error" %>
+      <div class="ads-checkbox">
+        <%= f.check_box(
+              :terms_accepted,
+              {
+                class: 'ads-checkbox__input',
+                required: true,
+                aria: {
+                  invalid: terms_error.present? || nil,
+                  describedby: terms_error.present? ? terms_error_id : nil,
+                }.compact,
+              },
+              '1',
+              '0',
+            ) %>
+        <%= f.label :terms_accepted, class: 'ads-checkbox__label' do %>
+          <%= t('users.rules_of_use.check_box_to_accept', app_name: APP_NAME) %>
+          <%= rules_link_html %>
+        <% end %>
+      </div>
+      <% if terms_error.present? %>
+        <p class="ads-checkbox__error" id="<%= terms_error_id %>"><%= terms_error %></p>
+      <% end %>
+
+      <%= render ButtonComponent.new(
+            type: :submit,
+          ).with_content(t('forms.buttons.continue')) %>
+    <% end %>
+  <% end %>
+
+  <% page.with_actions do %>
+    <%= render ADS::LinkComponent.new(url: decorated_sp_session.cancel_link_url) do %>
+      <%= t('links.cancel') %>
+    <% end %>
+  <% end %>
+<% end %>

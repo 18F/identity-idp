@@ -37,10 +37,10 @@ RSpec.describe 'users/piv_cac/edit.html.erb' do
     )
   end
 
-  it 'has labelled form with button to delete configuration' do
-    expect(rendered).to have_button_to_with_accessibility(
+  it 'has a link to confirm deleting the configuration' do
+    expect(rendered).to have_link(
       t('two_factor_authentication.piv_cac.delete'),
-      piv_cac_path(id: configuration.id),
+      href: confirm_delete_piv_cac_path(id: configuration.id),
     )
   end
 end

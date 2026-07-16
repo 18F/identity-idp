@@ -36,7 +36,7 @@ RSpec.feature 'Visitor signs up with email address' do
     # NOTE: If JS is disabled, the browser's built-in frontend validation for the `required`
     # attribute will prevent the form from being submitted, and the user will see the browser's
     # default validation error message.
-    expect(page).to have_content t('simple_form.required.text')
+    expect(page).to have_content t('components.input.errors.email')
   end
 
   context 'user signs up and sets password, tries to sign up again' do

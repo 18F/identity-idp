@@ -29,8 +29,8 @@ RSpec.describe TwoFactorAuthCode::PivCacAuthenticationPresenter do
     context 'reauthn' do
       let(:reauthn) { true }
 
-      it 'returns the account path' do
-        expect(presenter.cancel_link).to eq account_path(locale: locale)
+      it 'returns the account security path' do
+        expect(presenter.cancel_link).to eq account_security_path(locale: locale)
       end
     end
 

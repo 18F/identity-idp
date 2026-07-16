@@ -1,0 +1,23 @@
+@use 'variables/ads' as ads;
+@use 'variables/email' as *;
+
+/* stylelint-disable declaration-no-important -- Email clients require !important for reliable responsive behavior */
+@media only screen and (max-width: #{$global-breakpoint}) {
+  .mailer-frame-cell {
+    padding-left: ads.space(24) !important;
+    padding-right: ads.space(24) !important;
+  }
+
+  .mailer-template__content {
+    padding: ads.space(40) 0;
+  }
+
+  .mailer-template__footer {
+    padding-top: ads.space(40);
+  }
+
+  .mailer-template__agency-row,
+  .mailer-template__agency-logo--solo {
+    margin-bottom: ads.space(40);
+  }
+}

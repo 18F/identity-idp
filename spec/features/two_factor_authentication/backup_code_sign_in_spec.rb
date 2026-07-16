@@ -3,7 +3,6 @@ require 'rails_helper'
 RSpec.feature 'sign in with backup code' do
   include SamlAuthHelper
   include InteractionHelper
-  include NavigationHelper
 
   let(:user) { create(:user) }
   let!(:codes) { BackupCodeGenerator.new(user).delete_and_regenerate }
@@ -99,7 +98,7 @@ RSpec.feature 'sign in with backup code' do
         check t('forms.messages.remember_device')
         click_submit_default
         click_on t('forms.backup_code_reminder.have_codes')
-        click_on t('links.sign_out')
+        click_on t('links.sign_out'), visible: :all
       end
 
       it 'does not prompt again the next sign in' do
@@ -115,7 +114,7 @@ RSpec.feature 'sign in with backup code' do
         uncheck t('forms.messages.remember_device')
         click_submit_default
         click_on t('forms.backup_code_reminder.have_codes')
-        click_on t('links.sign_out')
+        click_on t('links.sign_out'), visible: :all
       end
 
       it 'does not prompt again the next sign in' do

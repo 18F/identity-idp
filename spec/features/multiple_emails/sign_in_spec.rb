@@ -13,7 +13,7 @@ RSpec.feature 'sign in with any email address' do
 
     expect(page).to have_current_path(account_path)
 
-    first(:button, t('links.sign_out')).click
+    first(:button, t('links.sign_out'), visible: :all).click
 
     signin(email2, user.password)
     fill_in_code_with_last_phone_otp
@@ -48,7 +48,7 @@ RSpec.feature 'sign in with any email address' do
     fill_in_code_with_last_phone_otp
     click_submit_default
 
-    expect(page).to have_content([t('account.welcome'), email1].join(', '))
+    expect(page).to have_css('.ads-account-header__menu-email', text: email1)
 
     Capybara.reset_session!
 
@@ -56,6 +56,6 @@ RSpec.feature 'sign in with any email address' do
     fill_in_code_with_last_phone_otp
     click_submit_default
 
-    expect(page).to have_content([t('account.welcome'), email2].join(', '))
+    expect(page).to have_css('.ads-account-header__menu-email', text: email2)
   end
 end

@@ -57,7 +57,7 @@ describe('Alert', () => {
     const { getByText } = render(<Alert>This is a test</Alert>);
     const element = getByText('This is a test');
 
-    expect(element.classList.contains('usa-alert__text'));
+    expect(element.classList.contains('ads-alert__text'));
     expect(element.tagName).to.equal('P');
   });
 
@@ -70,7 +70,7 @@ describe('Alert', () => {
     const containingEl = getByText('This is a test');
     const parentEl = containingEl.parentElement as HTMLElement;
 
-    expect(parentEl.classList.contains('usa-alert__text'));
+    expect(parentEl.classList.contains('ads-alert__text'));
     expect(parentEl.tagName).to.equal('DIV');
   });
 });

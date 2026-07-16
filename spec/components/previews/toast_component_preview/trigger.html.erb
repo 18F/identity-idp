@@ -1,0 +1,28 @@
+<div style="min-height: 50vh; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px;">
+  <%= render ButtonComponent.new(
+        type: :button,
+        variant: :primary,
+        id: 'toast-preview-trigger',
+      ).with_content('Show toast') %>
+  <p style="margin: 0; color: #0c0c0c; text-align: center; max-width: 28rem;">
+    Click to show a success toast. It waits 500ms, animates in from the top on
+    desktop (bottom on mobile), and dismisses on click or after 3 seconds.
+  </p>
+</div>
+
+<template id="toast-preview-template">
+  <%= render ToastComponent.new(message: 'Toast message') %>
+</template>
+
+<script>
+  (() => {
+    const button = document.getElementById('toast-preview-trigger');
+    const template = document.getElementById('toast-preview-template');
+    if (!button || !template) return;
+
+    button.addEventListener('click', () => {
+      const toast = template.content.firstElementChild.cloneNode(true);
+      document.body.appendChild(toast);
+    });
+  })();
+</script>

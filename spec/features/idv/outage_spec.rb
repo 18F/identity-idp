@@ -9,7 +9,7 @@ def sign_in_with_idv_required(user:, sms_or_totp: :sms)
   when :totp
     fill_in_code_with_last_totp(user)
   end
-  click_submit_default
+  click_button t('forms.buttons.continue')
 end
 
 RSpec.feature 'IdV Outage Spec' do
@@ -70,7 +70,7 @@ RSpec.feature 'IdV Outage Spec' do
 
       expect(page).to have_current_path idv_mail_only_warning_path
 
-      click_idv_continue
+      click_on t('vendor_outage.alerts.pinpoint.idv.verify_by_mail')
 
       expect(page).to have_current_path idv_welcome_path
 
@@ -114,7 +114,7 @@ RSpec.feature 'IdV Outage Spec' do
 
       expect(page).to have_current_path idv_mail_only_warning_path
 
-      click_idv_continue
+      click_on t('vendor_outage.alerts.pinpoint.idv.verify_by_mail')
 
       expect(page).to have_current_path idv_welcome_path
     end
@@ -143,7 +143,7 @@ RSpec.feature 'IdV Outage Spec' do
 
           expect(page).to have_current_path idv_mail_only_warning_path
 
-          click_idv_continue
+          click_on t('vendor_outage.alerts.pinpoint.idv.verify_by_mail')
 
           expect(page).to have_current_path idv_welcome_path
         end
@@ -158,7 +158,7 @@ RSpec.feature 'IdV Outage Spec' do
 
         it 'skips the hybrid handoff screen and proceeds to doc capture' do
           sign_in_with_idv_required(user: user, sms_or_totp: :totp)
-          click_idv_continue
+          click_on t('vendor_outage.alerts.pinpoint.idv.verify_by_mail')
           click_idv_continue
           complete_agreement_step
 
@@ -177,14 +177,14 @@ RSpec.feature 'IdV Outage Spec' do
 
       expect(page).to have_current_path idv_mail_only_warning_path
 
-      click_idv_continue
+      click_on t('vendor_outage.alerts.pinpoint.idv.verify_by_mail')
 
       expect(page).to have_current_path idv_welcome_path
     end
 
     it 'still allows the hybrid handoff screen' do
       sign_in_with_idv_required(user: user, sms_or_totp: :sms)
-      click_idv_continue
+      click_on t('vendor_outage.alerts.pinpoint.idv.verify_by_mail')
       click_idv_continue
       complete_agreement_step
 
@@ -251,7 +251,7 @@ RSpec.feature 'IdV Outage Spec' do
         visit new_user_session_path
         signin(user.email, new_password)
         fill_in_code_with_last_phone_otp
-        click_submit_default
+        click_button t('forms.buttons.continue')
 
         click_link t('account.index.reactivation.link')
         click_on t('links.account.reactivate.without_key')

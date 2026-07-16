@@ -22,13 +22,8 @@ RSpec.describe 'shared/_personal_key.html.erb' do
     end
   end
 
-  it 'has link to help center' do
-    expect(rendered).to have_link(
-      t('forms.personal_key_partial.acknowledgement.help_link_text'),
-      href: help_center_redirect_url(
-        category: 'manage-your-account',
-        article: 'personal-key',
-      ),
-    )
+  it 'shows the save description and warning' do
+    expect(rendered).to have_content(t('forms.personal_key.description_ads'))
+    expect(rendered).to have_content(t('forms.personal_key.warning'))
   end
 end

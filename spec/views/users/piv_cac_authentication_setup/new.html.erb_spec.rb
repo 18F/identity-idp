@@ -23,7 +23,7 @@ RSpec.describe 'users/piv_cac_authentication_setup/new.html.erb' do
     let(:user) { create(:user, :fully_registered) }
 
     it 'renders a link to cancel and go back to the account page' do
-      expect(rendered).to have_link(t('links.cancel'), href: account_path)
+      expect(rendered).to have_link(t('links.cancel'), href: account_security_path)
     end
 
     context 'user is in the process of setting up multiple MFAs' do

@@ -1,0 +1,122 @@
+@use '../variables/ads' as *;
+
+// Tooltip-local tokens (component-specific; shared primitives live in variables/_ads.scss)
+$tooltip-font-family: inherit;
+$tooltip-font-size: 16px;
+$tooltip-font-weight: 400;
+$tooltip-letter-spacing: -0.16px;
+$tooltip-line-height: 1.5;
+$tooltip-border-radius: 12px;
+$tooltip-max-width: 16rem;
+$tooltip-gap: 8px;
+$tooltip-padding-y: 4px;
+$tooltip-padding-x: 8px;
+$tooltip-background: alpha($off-black, 85%);
+$tooltip-text: $off-white;
+$tooltip-shadow: $shadow-compact;
+$tooltip-z-index: 100000;
+$tooltip-mobile-breakpoint: 30em;
+
+@mixin tooltip-ads-typography {
+  font-family: $tooltip-font-family;
+  font-size: $tooltip-font-size;
+  font-weight: $tooltip-font-weight;
+  letter-spacing: $tooltip-letter-spacing;
+  line-height: $tooltip-line-height;
+}
+
+@mixin tooltip-spacer($direction) {
+  &::before {
+    #{$direction}: 100%;
+    content: '';
+    display: block;
+    position: absolute;
+
+    @if $direction == 'left' or $direction == 'right' {
+      bottom: 0;
+      top: 0;
+      width: $tooltip-gap;
+    } @else {
+      height: $tooltip-gap;
+      left: 0;
+      right: 0;
+    }
+  }
+}
+
+.usa-tooltip {
+  display: inline-block;
+  position: relative;
+
+  @media (max-width: #{$tooltip-mobile-breakpoint - 0.01em}) {
+    display: block;
+
+    .clipboard-button--unstyled & {
+      display: inline;
+    }
+  }
+}
+
+.usa-tooltip__trigger {
+  cursor: pointer;
+
+  // inline for ClipboardButtonComponent; pointer-events none for icon-only triggers
+  > svg {
+    display: inline;
+    pointer-events: none;
+  }
+}
+
+.usa-tooltip__body,
+.usa-tooltip__body--top {
+  @include tooltip-ads-typography;
+  background-color: $tooltip-background;
+  border-radius: $tooltip-border-radius;
+  box-shadow: $tooltip-shadow;
+  color: $tooltip-text;
+  display: none;
+  max-width: $tooltip-max-width;
+  opacity: 0;
+  padding: $tooltip-padding-y $tooltip-padding-x;
+  position: absolute;
+  transition: opacity 0.08s ease-in-out;
+  white-space: nowrap;
+  width: max-content;
+  z-index: $tooltip-z-index;
+}
+
+.usa-tooltip__body--wrap {
+  max-width: $tooltip-max-width;
+  text-align: center;
+  white-space: normal;
+  width: 100%;
+}
+
+.usa-tooltip__body.is-set {
+  display: block;
+}
+
+.usa-tooltip__body.is-visible {
+  opacity: 1;
+}
+
+.usa-tooltip__body--top {
+  @include tooltip-spacer('top');
+}
+
+.usa-tooltip__body--bottom {
+  @include tooltip-spacer('bottom');
+}
+
+.usa-tooltip__body--right {
+  @include tooltip-spacer('right');
+}
+
+.usa-tooltip__body--left {
+  @include tooltip-spacer('left');
+}
+
+// idp: TooltipComponent wraps content in <lg-tooltip>
+lg-tooltip .usa-icon {
+  pointer-events: none;
+}

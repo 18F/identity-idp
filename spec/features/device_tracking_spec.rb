@@ -15,7 +15,7 @@ RSpec.describe 'Device tracking' do
       visit account_history_path
       expect(page).to have_content(t('event_types.account_created'))
 
-      click_link t('headings.account.events')
+      click_link t('account.dashboard.history.details')
       expect(page).to have_current_path(account_events_path(id: device.id))
 
       expect(page).to have_content(t('event_types.account_created'))

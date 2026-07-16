@@ -13,9 +13,9 @@ describe('ValidatedFieldElement', () => {
     element.setAttribute('error-id', errorMessageId);
     const errorHtml =
       hasInitialError || !errorInsideField
-        ? `<div class="usa-error-message display-none" id="${errorMessageId}">${
-            hasInitialError ? 'Invalid value' : ''
-          }</div>`
+        ? `<div class="ads-input__error${
+            hasInitialError ? ' ads-input__error--visible' : ' display-none'
+          }" id="${errorMessageId}">${hasInitialError ? 'Invalid value' : ''}</div>`
         : '';
     element.innerHTML = `
       <script type="application/json" class="validated-field__error-strings">
@@ -30,7 +30,7 @@ describe('ValidatedFieldElement', () => {
           aria-invalid="${hasInitialError}"
           aria-describedby="validated-field-hint${hasInitialError ? ` ${errorMessageId}` : ''}"
           required="required"
-          class="validated-field__input${hasInitialError ? ' usa-input--error' : ''}"
+          class="validated-field__input"
         />
         ${errorHtml && errorInsideField ? errorHtml : ''}
       </div>
@@ -51,7 +51,7 @@ describe('ValidatedFieldElement', () => {
   it('does not have an error message by default', () => {
     const element = createAndConnectElement();
 
-    expect(element.querySelector('.usa-error-message')).to.not.exist();
+    expect(element.querySelector('.ads-input__error')).to.not.exist();
   });
 
   it('does not have an error message while the value is valid', async () => {
@@ -62,7 +62,7 @@ describe('ValidatedFieldElement', () => {
 
     input.closest('form')!.checkValidity();
 
-    expect(element.querySelector('.usa-error-message')).to.not.exist();
+    expect(element.querySelector('.ads-input__error')).to.not.exist();
   });
 
   it('does not needlessly update DOM state when validity does not change', async () => {
@@ -83,10 +83,9 @@ describe('ValidatedFieldElement', () => {
     const form = element.parentNode as HTMLFormElement;
     form.checkValidity();
 
-    expect(input.classList.contains('usa-input--error')).to.be.true();
     expect(input.getAttribute('aria-invalid')).to.equal('true');
     expect(document.activeElement).to.equal(input);
-    expect(form.querySelector('.usa-error-message:not(.display-none)')).to.exist();
+    expect(form.querySelector('.ads-input__error.ads-input__error--visible')).to.exist();
     expect(computeAccessibleDescription(document.activeElement!)).to.equal(
       'Required Field This field is required',
     );
@@ -115,9 +114,8 @@ describe('ValidatedFieldElement', () => {
 
     await userEvent.type(input, '5');
 
-    expect(input.classList.contains('usa-input--error')).to.be.false();
     expect(input.getAttribute('aria-invalid')).to.equal('false');
-    expect(form.querySelector('.usa-error-message:not(.display-none)')).not.to.exist();
+    expect(form.querySelector('.ads-input__error.ads-input__error--visible')).not.to.exist();
     expect(computeAccessibleDescription(document.activeElement!)).to.equal('Required Field');
   });
 
@@ -145,10 +143,9 @@ describe('ValidatedFieldElement', () => {
 
       await userEvent.type(input, '5');
 
-      expect(input.classList.contains('usa-input--error')).to.be.false();
       expect(input.getAttribute('aria-invalid')).to.equal('false');
       expect(() => getByText(element, 'Invalid value')).to.throw();
-      expect(form.querySelector('.usa-error-message:not(.display-none)')).not.to.exist();
+      expect(form.querySelector('.ads-input__error.ads-input__error--visible')).not.to.exist();
     });
   });
 
@@ -164,7 +161,7 @@ describe('ValidatedFieldElement', () => {
 
       expect(computeAccessibleDescription(input)).to.equal('Required Field This field is required');
       expect(() => getByText(element, 'Invalid value')).to.throw();
-      expect(form.querySelector('.usa-error-message:not(.display-none)')).to.exist();
+      expect(form.querySelector('.ads-input__error.ads-input__error--visible')).to.exist();
     });
 
     it('reuses the error message element from outside the tag', () => {
@@ -178,7 +175,7 @@ describe('ValidatedFieldElement', () => {
 
       expect(computeAccessibleDescription(input)).to.equal('Required Field This field is required');
       expect(() => getByText(form, 'Invalid value')).to.throw();
-      expect(form.querySelector('.usa-error-message:not(.display-none)')).to.exist();
+      expect(form.querySelector('.ads-input__error.ads-input__error--visible')).to.exist();
     });
 
     it('links input to external error message element when input is invalid', () => {
@@ -189,7 +186,7 @@ describe('ValidatedFieldElement', () => {
 
       const input = getByRole(element, 'textbox');
       expect(computeAccessibleDescription(input)).to.equal('Required Field This field is required');
-      expect(form.querySelector('.usa-error-message:not(.display-none)')).to.exist();
+      expect(form.querySelector('.ads-input__error.ads-input__error--visible')).to.exist();
     });
 
     it('clears error message when field becomes valid', async () => {
@@ -198,8 +195,29 @@ describe('ValidatedFieldElement', () => {
       await userEvent.type(input, '5');
 
       expect(computeAccessibleDescription(input)).to.equal('Required Field');
-      expect(element.querySelector('.usa-error-message:not(.display-none)')).not.to.exist();
+      expect(element.querySelector('.ads-input__error.ads-input__error--visible')).not.to.exist();
     });
+  });
+
+  it('shows error state on blur without native validation UI', () => {
+    const element = createAndConnectElement();
+    const input = getByRole(element, 'textbox') as HTMLInputElement;
+
+    input.dispatchEvent(new FocusEvent('blur'));
+
+    expect(input.getAttribute('aria-invalid')).to.equal('true');
+    expect(getByText(element, 'This field is required')).to.exist();
+  });
+
+  it('cancels the native invalid event', () => {
+    const element = createAndConnectElement();
+    const input = getByRole(element, 'textbox') as HTMLInputElement;
+
+    const event = new Event('invalid', { cancelable: true });
+    const defaultWasNotPrevented = input.dispatchEvent(event);
+
+    expect(defaultWasNotPrevented).to.equal(false);
+    expect(input.getAttribute('aria-invalid')).to.equal('true');
   });
 
   describe('#isValid', () => {

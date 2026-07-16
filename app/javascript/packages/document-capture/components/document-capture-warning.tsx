@@ -175,7 +175,11 @@ function DocumentCaptureWarning({
           />
         </p>
       </Warning>
-      {nonIppOrFailedResult && <Cancel />}
+      {nonIppOrFailedResult && (
+        <div className="ads-actions ads-actions--gap-8 ads-actions--align-stretch">
+          <Cancel />
+        </div>
+      )}
     </>
   );
 }

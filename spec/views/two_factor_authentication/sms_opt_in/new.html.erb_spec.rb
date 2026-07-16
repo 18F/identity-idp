@@ -21,21 +21,12 @@ RSpec.describe 'two_factor_authentication/sms_opt_in/new.html.erb' do
     expect(rendered).to have_content('(***) ***-5309')
   end
 
-  it 'renders troubleshooting options' do
+  it 'renders a link to choose another authentication method' do
     render
 
     expect(rendered).to have_link(
       t('two_factor_authentication.login_options_link_text'),
       href: login_two_factor_options_path,
-    )
-    expect(rendered).to have_link(
-      t('two_factor_authentication.learn_more'),
-      href: help_center_redirect_path(
-        category: 'get-started',
-        article: 'authentication-methods',
-        flow: :two_factor_authentication,
-        step: :sms_opt_in,
-      ),
     )
   end
 end

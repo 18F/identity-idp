@@ -73,6 +73,7 @@ Vagrantfile
 /test
 /tmp/*
 /.tmp/
+/.tmp-icons/
 /.vscode/
 /vendor/bundle
 .yardoc

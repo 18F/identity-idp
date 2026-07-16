@@ -1,15 +1,18 @@
 <% self.title = t('titles.forget_all_browsers') %>
 
-<%= render PageHeadingComponent.new.with_content(t('titles.forget_all_browsers')) %>
+<%= render ADS::FormPageComponent.new(
+      title: t('titles.forget_all_browsers'),
+      subtitle: t('account.forget_all_browsers.longer_description'),
+    ) do |page| %>
+  <% page.with_actions do %>
+    <%= render ButtonComponent.new(
+          url: forget_all_browsers_path,
+          method: :delete,
+          variant: :destructive,
+        ).with_content(t('forms.buttons.confirm')) %>
 
-<p>
-  <%= t('account.forget_all_browsers.longer_description') %>
-</p>
-
-<%= button_to(forget_all_browsers_path, method: 'delete', class: 'usa-button usa-button--wide usa-button--big margin-top-4') { t('forms.buttons.confirm') } %>
-
-<div class="margin-top-4 border-top border-primary-light">
-  <div class="margin-top-1">
-    <%= link_to(t('links.cancel'), account_path) %>
-  </div>
-</div>
+    <%= render ADS::LinkComponent.new(url: account_path) do %>
+      <%= t('links.cancel') %>
+    <% end %>
+  <% end %>
+<% end %>

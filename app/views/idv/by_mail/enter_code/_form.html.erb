@@ -1,15 +1,24 @@
-<%= simple_form_for(@gpo_verify_form, url: idv_verify_by_mail_enter_code_path) do |f| %>
-  <div class="margin-top-neg-2 margin-bottom-5">
-    <%= render ValidatedFieldComponent.new(
-          form: f,
-          name: :otp,
-          maxlength: 10,
-          required: true,
-          autofocus: true,
-          label: t('idv.gpo.form.otp_label'),
-          input_html: { class: 'usa-input--wide' },
-        ) %>
-    <%= hidden_field_tag :did_not_receive_letter, @user_did_not_receive_letter ? '1' : nil %>
-    <%= f.submit t('idv.gpo.form.submit'), class: 'display-block margin-top-5' %>
-  </div>
+<%= simple_form_for(
+      @gpo_verify_form,
+      url: idv_verify_by_mail_enter_code_path,
+      html: { class: 'ads-form ads-form--gap-12 ads-form--align-stretch' },
+    ) do |f| %>
+  <%= render InputComponent.new(
+        form: f,
+        attribute: :otp,
+        label: t('idv.gpo.form.otp_label'),
+        required: true,
+        autofocus: true,
+        maxlength: 10,
+        inputmode: :numeric,
+        autocomplete: 'one-time-code',
+        error_message: @gpo_verify_form.errors.full_messages_for(:otp).first,
+        error_messages: {
+          valueMissing: t('components.input.errors.verification_code'),
+        },
+      ) %>
+  <%= hidden_field_tag :did_not_receive_letter, @user_did_not_receive_letter ? '1' : nil %>
+  <%= render ButtonComponent.new(
+        type: :submit,
+      ).with_content(t('idv.gpo.form.submit')) %>
 <% end %>

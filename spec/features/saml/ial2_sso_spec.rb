@@ -48,7 +48,7 @@ RSpec.feature 'IAL2 Single Sign On' do
   end
 
   def sign_out_user
-    first(:button, t('links.sign_out')).click
+    first(:button, t('links.sign_out'), visible: :all).click
   end
 
   context 'First time registration' do

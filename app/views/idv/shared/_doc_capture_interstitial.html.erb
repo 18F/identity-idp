@@ -1,75 +1,56 @@
 <% self.title = t('titles.doc_auth.verify') %>
-<% content_for(:pre_flash_content) do %>
-  <%= render StepIndicatorComponent.new(
-        steps: Idv::StepIndicatorConcern::STEP_INDICATOR_STEPS,
-        current_step: :verify_id,
-        locale_scope: 'idv',
-        class: 'margin-x-neg-2 margin-top-neg-4 tablet:margin-x-neg-6 tablet:margin-top-neg-4',
-      ) %>
-<% end %>
+<%= render 'idv/shared/step_indicator',
+           current_step: :verify_id,
+           steps: Idv::StepIndicatorConcern::STEP_INDICATOR_STEPS %>
 
-<div class="text-center margin-bottom-4">
-  <%= image_tag asset_url('idv/interstitial_icons.svg'), width: 207, height: 88, alt: '', class: 'display-block margin-x-auto' %>
-</div>
+<% heading = if @passport_requested
+               t('doc_auth.headings.passport_capture')
+             else
+               t('doc_auth.headings.document_capture')
+             end %>
 
-<%= render PageHeadingComponent.new do %>
-  <% if @passport_requested %>
-    <%= t('doc_auth.headings.passport_capture') %>
-  <% elsif @mdl_requested %>
-    <%= t('doc_auth.headings.mdl_capture') %>
-  <% else %>
-    <%= t('doc_auth.headings.document_capture') %>
+<%= render ADS::FormPageComponent.new(
+      title: heading,
+      class_name: 'ads-idv-support ads-idv-support--document-capture',
+    ) do |page| %>
+  <% page.with_body do %>
+    <div class="ads-copy">
+      <% if @passport_requested %>
+        <% if @selfie_check_required %>
+          <p>
+            <%= t('doc_auth.info.socure_passport_ial2', app_name: APP_NAME) %>
+          </p>
+        <% else %>
+          <p>
+            <%= t('doc_auth.info.socure_passport', app_name: APP_NAME) %>
+          </p>
+        <% end %>
+      <% else %>
+        <p>
+          <%= t('doc_auth.info.socure_basic_idv', app_name: APP_NAME) %>
+        </p>
+      <% end %>
+
+      <p>
+        <% if @passport_requested %>
+          <%= t('doc_auth.info.socure_ial2_idv_finish_passport', app_name: APP_NAME) %>
+        <% else %>
+          <%= t('doc_auth.info.socure_ial2_idv_finish', app_name: APP_NAME) %>
+        <% end %>
+      </p>
+    </div>
+  <% end %>
+
+  <% page.with_actions do %>
+    <%= render ButtonComponent.new(url: @url, size: :lg) do %>
+      <%= t('forms.buttons.continue') %>
+    <% end %>
+
+    <%= render ButtonComponent.new(
+          url: idv_cancel_path(step: 'verify_id'),
+          variant: :quaternary,
+        ) do %>
+      <%= cancel_link_text %>
+    <% end %>
   <% end %>
 <% end %>
-
-<% if @passport_requested %>
-  <% if @selfie_check_required %>
-    <p>
-      <%= t('doc_auth.info.socure_passport_ial2', app_name: APP_NAME) %>
-    </p>
-  <% else %>
-    <p>
-      <%= t('doc_auth.info.socure_passport', app_name: APP_NAME) %>
-    </p>
-  <% end %>
-<% elsif @mdl_requested %>
-  <p class="margin-bottom-0"><%= t('idv.mdl.subtitle', app_name: APP_NAME) %></p>
-  <p class="margin-bottom-4">
-    <%= new_tab_link_to(
-          t('idv.mdl.learn_more'),
-          help_center_redirect_url(
-            category: 'verify-your-identity',
-            article: 'accepted-identification-documents',
-          ),
-        ) %>
-  </p>
-  <h2 class="margin-bottom-2"><%= t('idv.mdl.steps_heading') %></h2>
-
-  <ol class="usa-process-list">
-    <li class="usa-process-list__item">
-      <p class="usa-process-list__heading font-body-md text-normal"><%= t('idv.mdl.steps.device.title') %></p>
-    </li>
-    <li class="usa-process-list__item">
-      <p class="usa-process-list__heading font-body-md text-normal"><%= t('idv.mdl.steps.have_mdl.title') %></p>
-    </li>
-  </ol>
-<% else %>
-  <p>
-    <%= t('doc_auth.info.socure_basic_idv', app_name: APP_NAME) %>
-  </p>
-<% end %>
-
-<p>
-<% if @passport_requested %>
-  <%= t('doc_auth.info.socure_ial2_idv_finish_passport', app_name: APP_NAME) %>
-<% elsif @mdl_requested %>
-  <%= render AlertComponent.new(type: :info, class: 'margin-top-5') do %>
-    <%= t('idv.mdl.alert_html') %>
-  <% end %>
-<% else %>
-  <%= t('doc_auth.info.socure_ial2_idv_finish', app_name: APP_NAME) %>
-<% end %>
-</p>
-
-<%= link_to (@mdl_requested ? t('idv.mdl.button') : t('forms.buttons.continue')), @url, class: 'usa-button usa-button--big usa-button--wide margin-top-4 margin-bottom-4' %>
-<%= render 'idv/doc_auth/cancel', step: 'verify_id' %>

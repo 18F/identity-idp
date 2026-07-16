@@ -1,6 +1,11 @@
-<% if content %>
-  <%= render(AlertComponent.new(type: :error, class: 'margin-bottom-4')) do %>
-    <%= content %>
-    <%= new_tab_link_to t('vendor_outage.get_updates'), StatusPage.base_url %>
-  <% end %>
+<% if content.present? %>
+  <%= render AlertComponent.new(
+        type: :error,
+        message: content,
+        dismissible: false,
+        action: {
+          label: t('vendor_outage.get_updates'),
+          url: StatusPage.base_url,
+        },
+      ) %>
 <% end %>

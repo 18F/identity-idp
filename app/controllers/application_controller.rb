@@ -324,8 +324,18 @@ class ApplicationController < ActionController::Base
     elsif user_needs_to_reactivate_account?
       reactivate_account_url
     else
-      session[:account_redirect_path] || after_sign_in_path_for(current_user)
+      session[:account_redirect_path] || post_mfa_setup_default_path
     end
+  end
+
+  # When a completed sign-up lands on the dashboard (no stored SP location), append the
+  # `#welcome` fragment so the front-end opens the post-signup welcome modal once. SP-initiated
+  # sign-ups resolve to a stored location and intentionally skip the fragment.
+  def post_mfa_setup_default_path
+    path = after_sign_in_path_for(current_user)
+    return path unless path == account_path
+
+    account_path(anchor: 'welcome')
   end
 
   def user_needs_to_reactivate_account?

@@ -1,0 +1,160 @@
+@use 'variables/ads' as ads;
+
+$ads-footer-breakpoint-m: 768px;
+$ads-footer-border: ads.alpha(ads.$black, 10%);
+$ads-footer-text-tertiary: ads.alpha(ads.$off-black, 45%);
+$ads-footer-text-secondary: ads.alpha(ads.$off-black, 65%);
+
+lg-ads-page-footer {
+  display: block;
+  width: 100%;
+}
+
+.ads-page-footer {
+  align-items: center;
+  backdrop-filter: blur(25px);
+  background: ads.alpha(ads.$white, 20%);
+  border-top: 1px solid $ads-footer-border;
+  box-sizing: border-box;
+  display: flex;
+  font-family: ads.$font-family;
+  font-feature-settings:
+    'cv10' 1,
+    'cv01' 1,
+    'ss07' 1,
+    'ss08' 1,
+    'case' 1;
+  justify-content: space-between;
+  min-height: ads.space(56);
+  padding: ads.space(8) ads.space(24);
+  width: 100%;
+}
+
+.ads-page-footer__agency {
+  align-items: center;
+  border-radius: ads.radius(pill);
+  box-sizing: border-box;
+  color: $ads-footer-text-tertiary;
+  display: inline-flex;
+  flex: 0 1 auto;
+  gap: ads.space(8);
+  min-height: ads.space(40);
+  min-width: 0;
+  padding-inline: ads.space(8);
+  text-decoration: none;
+
+  &:link,
+  &:visited,
+  &:hover,
+  &:active {
+    color: $ads-footer-text-tertiary;
+  }
+
+  &:focus-visible {
+    @include ads.focus-ring;
+  }
+
+  img {
+    display: block;
+    flex: 0 0 ads.space(20);
+    height: ads.space(20);
+    width: ads.space(20);
+  }
+}
+
+.ads-page-footer__agency-name {
+  font-size: ads.$text-label-s;
+  font-weight: ads.$font-semibold;
+  line-height: ads.$text-line-height-none;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 336px;
+}
+
+.ads-page-footer__actions {
+  align-items: center;
+  display: flex;
+  flex: 0 0 auto;
+  gap: ads.space(8);
+}
+
+.ads-page-footer__actions .ads-button {
+  color: $ads-footer-text-secondary;
+  font-weight: 400;
+  overflow: visible;
+
+  &:is(:link, :visited) {
+    color: $ads-footer-text-secondary;
+  }
+
+  &:hover,
+  &:active,
+  &:focus-visible {
+    color: $ads-footer-text-secondary;
+  }
+}
+
+.ads-page-footer__control {
+  position: relative;
+}
+
+.ads-page-footer__select-face {
+  pointer-events: none;
+}
+
+.ads-page-footer__select {
+  cursor: pointer;
+  height: 100%;
+  inset: 0;
+  opacity: 0;
+  position: absolute;
+  width: 100%;
+
+  &:focus {
+    outline: 0;
+  }
+}
+
+.ads-page-footer__control:hover .ads-button {
+  background: ads.alpha(ads.$off-black, 5%);
+}
+
+.ads-page-footer__control:has(.ads-page-footer__select:focus-visible) .ads-button {
+  @include ads.focus-ring;
+  background: ads.alpha(ads.$off-black, 5%);
+}
+
+.ads-page-footer__select-label {
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  height: 1px;
+  overflow: hidden;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
+}
+
+@media (width < #{$ads-footer-breakpoint-m}) {
+  .ads-page-footer {
+    flex-direction: column;
+    gap: ads.space(8);
+    justify-content: center;
+    min-height: 108px;
+    padding: ads.space(12) ads.space(24);
+  }
+
+  .ads-page-footer__actions {
+    order: -1;
+  }
+
+  .ads-page-footer__agency {
+    flex: 0 1 auto;
+    justify-content: center;
+    max-width: 100%;
+  }
+
+  .ads-page-footer__agency-name {
+    width: auto;
+  }
+}

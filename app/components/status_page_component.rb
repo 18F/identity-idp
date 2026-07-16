@@ -8,12 +8,12 @@ class StatusPageComponent < BaseComponent
     delete: [nil],
   }.freeze
 
-  renders_one :header, ::PageHeadingComponent
+  renders_one :header
   renders_many :action_buttons, ->(**button_options) do
     ButtonComponent.new(**button_options, big: true, wide: true)
   end
   renders_one :troubleshooting_options, TroubleshootingOptionsComponent
-  renders_one :footer, PageFooterComponent
+  renders_one :footer
 
   attr_reader :status, :icon
 

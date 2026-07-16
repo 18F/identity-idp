@@ -69,6 +69,38 @@ RSpec.describe TwoFactorAuthentication::WebauthnEditPresenter do
     end
   end
 
+  describe '#confirm_delete_heading' do
+    subject(:heading) { presenter.confirm_delete_heading }
+
+    context 'with roaming authenticator' do
+      let(:configuration) { build(:webauthn_configuration) }
+
+      it { expect(heading).to eq(t('two_factor_authentication.webauthn_roaming.confirm_delete')) }
+    end
+
+    context 'with platform authenticator' do
+      let(:configuration) { build(:webauthn_configuration, :platform_authenticator) }
+
+      it { expect(heading).to eq(t('two_factor_authentication.webauthn_platform.confirm_delete')) }
+    end
+  end
+
+  describe '#caution_delete' do
+    subject(:caution) { presenter.caution_delete }
+
+    context 'with roaming authenticator' do
+      let(:configuration) { build(:webauthn_configuration) }
+
+      it { expect(caution).to eq(t('two_factor_authentication.webauthn_roaming.caution_delete')) }
+    end
+
+    context 'with platform authenticator' do
+      let(:configuration) { build(:webauthn_configuration, :platform_authenticator) }
+
+      it { expect(caution).to eq(t('two_factor_authentication.webauthn_platform.caution_delete')) }
+    end
+  end
+
   describe '#rename_success_alert_text' do
     subject(:heading) { presenter.rename_success_alert_text }
 

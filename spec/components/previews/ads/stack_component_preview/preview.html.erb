@@ -1,0 +1,25 @@
+<div style="max-width: 27rem; margin: 0 auto;">
+  <p style="margin: 0 0 24px; font: 600 12px/1.4 system-ui;">kind: stack / flow / form / actions / links</p>
+
+  <%= render ADS::StackComponent.new(kind: :flow, gap: 32, align: :stretch) do %>
+    <%= render ADS::StackComponent.new(kind: :stack, gap: 12, align: :stretch) do %>
+      <div style="padding: 12px; background: #f7f7f7; border-radius: 8px;">Intro block</div>
+      <div style="padding: 12px; background: #f7f7f7; border-radius: 8px;">Supporting copy</div>
+    <% end %>
+
+    <%= render ADS::StackComponent.new(kind: :form, gap: 16, align: :stretch) do %>
+      <div style="padding: 12px; background: #eee; border-radius: 8px;">Field one</div>
+      <div style="padding: 12px; background: #eee; border-radius: 8px;">Field two</div>
+    <% end %>
+
+    <%= render ADS::StackComponent.new(kind: :actions, gap: 12, align: :stretch) do %>
+      <%= render ButtonComponent.new(variant: :primary).with_content('Continue') %>
+      <%= render ButtonComponent.new(variant: :secondary).with_content('Cancel') %>
+    <% end %>
+
+    <%= render ADS::StackComponent.new(kind: :links, align: :center) do %>
+      <%= render ADS::LinkComponent.new(url: '#').with_content('Create an account') %>
+      <%= render ADS::LinkComponent.new(url: '#').with_content('Forgot password?') %>
+    <% end %>
+  <% end %>
+</div>

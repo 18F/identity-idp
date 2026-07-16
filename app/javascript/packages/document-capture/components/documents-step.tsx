@@ -33,7 +33,7 @@ export function DocumentsCaptureStep({
     idIsPassport && isReviewStep ? ['passport'] : ['front', 'back'];
 
   return (
-    <>
+    <div className="ads-stack ads-stack--gap-24 ads-stack--align-stretch">
       {documentsSides.map((side) => (
         <DocumentSideAcuantCapture
           {...defaultSideProps}
@@ -44,7 +44,7 @@ export function DocumentsCaptureStep({
           showSelfieHelp={() => undefined}
         />
       ))}
-    </>
+    </div>
   );
 }
 
@@ -79,24 +79,33 @@ export default function DocumentsStep({
   };
   return (
     <>
-      {flowPath === 'hybrid' && <HybridDocCaptureWarning className="margin-bottom-4" />}
-      <DocumentCaptureHeader />
-      <TipList
-        titleClassName="margin-bottom-0 text-bold"
-        title={t('doc_auth.tips.document_capture_selfie_id_header_text')}
-        items={[
-          t('doc_auth.tips.document_capture_id_text1'),
-          t('doc_auth.tips.document_capture_id_text2'),
-          t('doc_auth.tips.document_capture_id_text3'),
-        ].concat(!isMobile ? [t('doc_auth.tips.document_capture_id_text4')] : [])}
-      />
-      <DocumentsCaptureStep
-        defaultSideProps={defaultSideProps}
-        value={value}
-        isReviewStep={false}
-      />
-      {isLastStep ? <FormStepsButton.Submit /> : <FormStepsButton.Continue />}
-      <Cancel />
+      {flowPath === 'hybrid' && <HybridDocCaptureWarning />}
+      <div className="ads-auth__header">
+        <div className="ads-auth__intro">
+          <DocumentCaptureHeader />
+        </div>
+      </div>
+      <div className="ads-auth__form-page-body">
+        <div className="ads-stack ads-stack--gap-24 ads-stack--align-stretch">
+          <TipList
+            title={t('doc_auth.tips.document_capture_selfie_id_header_text')}
+            items={[
+              t('doc_auth.tips.document_capture_id_text1'),
+              t('doc_auth.tips.document_capture_id_text2'),
+              t('doc_auth.tips.document_capture_id_text3'),
+            ].concat(!isMobile ? [t('doc_auth.tips.document_capture_id_text4')] : [])}
+          />
+          <DocumentsCaptureStep
+            defaultSideProps={defaultSideProps}
+            value={value}
+            isReviewStep={false}
+          />
+        </div>
+      </div>
+      <div className="ads-actions ads-actions--gap-8 ads-actions--align-stretch">
+        {isLastStep ? <FormStepsButton.Submit /> : <FormStepsButton.Continue />}
+        <Cancel />
+      </div>
     </>
   );
 }

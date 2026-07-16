@@ -73,7 +73,7 @@ module Users
       if in_multi_mfa_selection_flow?
         redirect_to authentication_methods_setup_path
       else
-        redirect_to account_two_factor_authentication_path
+        redirect_to account_security_path
       end
     end
 
@@ -136,7 +136,7 @@ module Users
     def authorize_backup_code_disable
       return if MfaPolicy.new(current_user).multiple_factors_enabled? ||
                 in_multi_mfa_selection_flow?
-      redirect_to account_two_factor_authentication_path
+      redirect_to account_security_path
     end
 
     def analytics_properties

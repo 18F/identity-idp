@@ -1,42 +1,44 @@
-<%= check_box_tag(
-      'two_factor_options_form[selection][]',
-      option.type,
-      false,
-      disabled: option.disabled?,
-      checked: option.disabled?,
-      class: 'usa-checkbox__input usa-checkbox__input--tile',
+<% icons = {
+     webauthn_platform: :fingerprint,
+     auth_app: :qr,
+     phone: :chat,
+     webauthn: :key,
+     backup_code: :download_backup,
+     piv_cac: :id,
+   } %>
+<% description = option.mfa_configuration_description %>
+<% show_recommended = option.type == :webauthn_platform && !option.disabled? %>
+<% title = if option.type == :webauthn_platform
+             t('two_factor_authentication.two_factor_choice_options.webauthn_platform_setup')
+           else
+             option.label
+           end %>
+
+<%= render CardComponent.new(
+      button: true,
+      type: :submit,
+      name: 'two_factor_options_form[selection][]',
+      value: option.type,
       id: "two_factor_options_form_selection_#{option.type}",
-      aria: {
-        describedby: [
-          "two_factor_options_form_selection_description_#{option.type}",
-          "two_factor_options_form_selection_info_#{option.type}",
-        ],
-      },
-    ) %>
-<%= label_tag(
-      "two_factor_options_form_selection_#{option.type}",
-      class: 'usa-checkbox__label usa-checkbox__label--illustrated',
-    ) do %>
-  <%= image_tag(asset_url("mfa-options/#{option.type}.svg"), alt: '', class: 'usa-checkbox__image', aria: { hidden: true }) %>
-  <div class="usa-checkbox__label--text">
-    <span class="margin-right-2"><%= option.label %></span>
-    <%= content_tag(
-          :span,
-          id: "two_factor_options_form_selection_description_#{option.type}",
-          class: option.mfa_configuration_description.presence && 'usa-tag bg-success',
-          aria: { hidden: true },
-        ) do %>
-      <%= option.mfa_configuration_description %>
+      disabled: option.disabled?,
+      'aria-disabled': option.disabled?,
+    ) do |card| %>
+  <% unless option.disabled? %>
+    <% card.with_trailing do %>
+      <%= render IconComponent.new(icon: :chevron_right, size: 20) %>
     <% end %>
-    <span id="two_factor_options_form_selection_info_<%= option.type %>" aria-hidden="true" class="usa-checkbox__label-description">
-      <%= option.info %>
-      <% if option.recommended? %>
-        <br />
-        <%= render TagComponent.new(
-              informative: true,
-              class: 'margin-top-1',
-            ).with_content(t('two_factor_authentication.recommended')) %>
-      <% end %>
-    </span>
+  <% end %>
+  <% if show_recommended %>
+    <span class="ads-card__badge"><%= t('two_factor_authentication.recommended') %></span>
+  <% end %>
+  <% if description.present? %>
+    <span class="ads-card__badge ads-card__badge--success"><%= description %></span>
+  <% end %>
+  <%= render IconComponent.new(icon: icons.fetch(option.type), size: 24) %>
+  <div class="ads-card__stack">
+    <p class="ads-card__title"><%= title %></p>
+    <% unless option.disabled? %>
+      <p class="ads-card__description"><%= option.info %></p>
+    <% end %>
   </div>
 <% end %>

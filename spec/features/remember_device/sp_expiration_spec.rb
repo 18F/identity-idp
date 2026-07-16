@@ -104,7 +104,7 @@ RSpec.feature 'remember device sp expiration' do
     click_submit_default
     skip_second_mfa_prompt
 
-    first(:button, t('links.sign_out')).click
+    first(:button, t('links.sign_out'), visible: :all).click
     user_record
   end
 

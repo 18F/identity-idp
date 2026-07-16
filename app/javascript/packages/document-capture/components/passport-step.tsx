@@ -53,7 +53,7 @@ export function PassportCaptureSubheaderOne() {
 
 export function PassportCaptureInfo() {
   const { t } = useI18n();
-  return <p>{t('doc_auth.info.passport_capture')}</p>;
+  return <p className="ads-auth__intro-description">{t('doc_auth.info.passport_capture')}</p>;
 }
 
 export default function PassportStep({
@@ -79,7 +79,7 @@ export default function PassportStep({
 
   function TakePassportButton() {
     return (
-      <div className="margin-y-5 ">
+      <div className="ads-actions ads-actions--align-stretch">
         <SpinnerButton
           spinOnClick={false}
           onClick={() => {
@@ -97,40 +97,50 @@ export default function PassportStep({
 
   return (
     <>
-      {flowPath === 'hybrid' && <HybridDocCaptureWarning className="margin-bottom-4" />}
-      <PassportCaptureSubheaderOne />
-      <PassportCaptureInfo />
-      {isMobile && (
-        <TipList
-          titleClassName="margin-bottom-0 text-bold"
-          title={t('doc_auth.tips.document_capture_passport_header')}
-          items={[
-            t('doc_auth.tips.document_capture_passport_tip1'),
-            t('doc_auth.tips.document_capture_passport_tip2'),
-          ]}
-        />
-      )}
-      {!isMobile && (
-        <TipList
-          titleClassName="margin-bottom-0 text-bold"
-          title={t('doc_auth.tips.document_capture_selfie_id_header_text')}
-          items={[
-            t('doc_auth.tips.document_capture_id_text1'),
-            t('doc_auth.tips.document_capture_id_text2'),
-            t('doc_auth.tips.document_capture_id_text3'),
-            t('doc_auth.tips.document_capture_id_text4'),
-          ]}
-        />
-      )}
-      <PassportCaptureStep
-        defaultSideProps={defaultSideProps}
-        passportValue={value.passport}
-        showHelp={showHelp}
-        isReviewStep={false}
-      />
+      {flowPath === 'hybrid' && <HybridDocCaptureWarning />}
+      <div className="ads-auth__header">
+        <div className="ads-auth__intro">
+          <PassportCaptureSubheaderOne />
+          <PassportCaptureInfo />
+        </div>
+      </div>
+      <div className="ads-auth__form-page-body">
+        <div className="ads-stack ads-stack--gap-24 ads-stack--align-stretch">
+          {isMobile && (
+            <TipList
+              title={t('doc_auth.tips.document_capture_passport_header')}
+              items={[
+                t('doc_auth.tips.document_capture_passport_tip1'),
+                t('doc_auth.tips.document_capture_passport_tip2'),
+              ]}
+            />
+          )}
+          {!isMobile && (
+            <TipList
+              title={t('doc_auth.tips.document_capture_selfie_id_header_text')}
+              items={[
+                t('doc_auth.tips.document_capture_id_text1'),
+                t('doc_auth.tips.document_capture_id_text2'),
+                t('doc_auth.tips.document_capture_id_text3'),
+                t('doc_auth.tips.document_capture_id_text4'),
+              ]}
+            />
+          )}
+          <PassportCaptureStep
+            defaultSideProps={defaultSideProps}
+            passportValue={value.passport}
+            showHelp={showHelp}
+            isReviewStep={false}
+          />
+        </div>
+      </div>
       {showHelp && <TakePassportButton />}
-      {!showHelp && (isLastStep ? <FormStepsButton.Submit /> : <FormStepsButton.Continue />)}
-      <Cancel />
+      {!showHelp && (
+        <div className="ads-actions ads-actions--gap-8 ads-actions--align-stretch">
+          {isLastStep ? <FormStepsButton.Submit /> : <FormStepsButton.Continue />}
+          <Cancel />
+        </div>
+      )}
     </>
   );
 }

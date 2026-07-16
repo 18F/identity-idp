@@ -1,13 +1,55 @@
 <% self.title = t('titles.edit_info.email_language') %>
 
-<%= render PageHeadingComponent.new.with_content(t('account.email_language.edit_title')) %>
+<%= render ADS::FormPageComponent.new(
+      title: t('account.email_language.edit_title'),
+      subtitle: t('account.email_language.languages_list', app_name: APP_NAME),
+    ) do |page| %>
+  <% page.with_body do %>
+    <%= form_with(
+          model: current_user,
+          url: account_email_language_path,
+          method: :patch,
+          local: true,
+          class: 'ads-form ads-form--gap-16 ads-form--align-stretch',
+        ) do |f| %>
+      <fieldset class="ads-fieldset">
+        <legend class="ads-fieldset__legend">
+          <%= t('forms.registration.labels.email_language') %>
+        </legend>
 
-<p>
-  <%= t('account.email_language.languages_list', app_name: APP_NAME) %>
-</p>
+        <div class="ads-radio-group">
+          <% I18n.available_locales.each do |locale| %>
+            <% label = if locale == I18n.locale
+                         t('account.email_language.default', language: t("i18n.locale.#{locale}"))
+                       else
+                         t("i18n.locale.#{locale}")
+                       end %>
+            <% checked = current_user.email_language.present? ?
+              current_user.email_language.to_s == locale.to_s :
+              I18n.locale.to_s == locale.to_s %>
+            <% field_id = "user_email_language_#{locale}" %>
 
-<%= simple_form_for(current_user, url: account_email_language_path, method: 'PATCH') do |f| %>
-  <%= render partial: 'shared/email_languages',
-             locals: { f: f, hint: false, selection: current_user.email_language } %>
-  <%= f.submit t('forms.buttons.submit.default'), class: 'grid-col-8 tablet:grid-col-6' %>
+            <div class="ads-radio">
+              <%= f.radio_button(
+                    :email_language,
+                    locale,
+                    id: field_id,
+                    checked:,
+                    class: 'ads-radio__input ads-sr-only',
+                    lang: locale,
+                    aria: { label: label },
+                  ) %>
+              <%= label_tag(field_id, class: 'ads-radio__label') do %>
+                <span lang="<%= locale %>" aria-hidden="true"><%= label %></span>
+              <% end %>
+            </div>
+          <% end %>
+        </div>
+      </fieldset>
+
+      <%= render ButtonComponent.new(size: :lg, type: :submit) do %>
+        <%= t('forms.buttons.submit.default') %>
+      <% end %>
+    <% end %>
+  <% end %>
 <% end %>

@@ -1,0 +1,23 @@
+<section class="ads-account__section" aria-labelledby="account-delete-heading">
+  <h2 id="account-delete-heading" class="ads-account__heading">
+    <%= t('account.dashboard.account.delete_account.title') %>
+  </h2>
+
+  <div class="ads-account__panel">
+    <div class="ads-account__row">
+      <p class="ads-account__row-text">
+        <%= t('account.dashboard.account.delete_account.description_short') %>
+      </p>
+
+      <div class="ads-account__row-actions">
+        <%= render ButtonComponent.new(
+              url: account_delete_path,
+              variant: :quaternary,
+              size: :md,
+              class: 'ads-account__danger-action',
+              'aria-label': t('account.dashboard.account.delete_account.title'),
+            ).with_content(t('account.links.delete_account')) %>
+      </div>
+    </div>
+  </div>
+</section>

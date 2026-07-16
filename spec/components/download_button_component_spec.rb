@@ -22,10 +22,10 @@ RSpec.describe DownloadButtonComponent, type: :component do
   end
 
   context 'with tag options' do
-    let(:tag_options) { { outline: true, data: { foo: 'bar' } } }
+    let(:tag_options) { { variant: :quaternary, size: :sm, data: { foo: 'bar' } } }
 
-    it 'renders button given the tag options' do
-      expect(rendered).to have_css('.usa-button.usa-button--outline[data-foo="bar"]')
+    it 'passes options through to the button' do
+      expect(rendered).to have_css('a[data-foo="bar"]')
     end
   end
 

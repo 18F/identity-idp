@@ -26,7 +26,7 @@ describe('SubmitButtonElement', () => {
     await userEvent.click(button);
 
     expect(button.ariaDisabled).to.equal('true');
-    expect(button.classList.contains('usa-button--active')).to.be.true();
+    expect(button.classList.contains('ads-button--active')).to.be.true();
   });
 
   it('prevents duplicate submissions', async () => {
@@ -64,6 +64,6 @@ describe('SubmitButtonElement', () => {
     await userEvent.click(button);
 
     expect(button.disabled).to.be.false();
-    expect(button.classList.contains('usa-button--active')).to.be.false();
+    expect(button.classList.contains('ads-button--active')).to.be.false();
   });
 });

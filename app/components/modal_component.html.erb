@@ -1,11 +1,56 @@
-<%= content_tag(:'lg-modal', **tag_options) do %>
-  <%= content_tag(
-        :dialog,
-        content,
-        aria: {
-          describedby: description_id,
-          labelledby: label_id,
-        },
-        class: 'modal__content',
-      ) %>
+<% if trigger? %>
+  <%= render ButtonComponent.new(
+        type: :button,
+        data: { ads_modal_open: true },
+        aria: { controls: dialog_id, haspopup: 'dialog', expanded: false },
+      ).with_content(trigger) %>
+<% end %>
+
+<%= tag.dialog(
+      **tag_options.except(:class, :data, :id),
+      id: dialog_id,
+      class: css_class,
+      data: dialog_data,
+      aria: dialog_aria,
+    ) do %>
+  <button
+    type="button"
+    class="ads-modal__close"
+    aria-label="<%= t('doc_auth.buttons.close') %>"
+    data-ads-modal-close
+  >
+    <%= render IconComponent.new(icon: :close, size: 20) %>
+  </button>
+
+  <div class="<%= class_names(body_css_class) %>">
+    <% if media? %>
+      <div class="ads-modal__media"><%= media %></div>
+      <div class="ads-modal__body-inner">
+    <% end %>
+
+    <div class="ads-modal__heading">
+      <h2 id="<%= title_id %>" class="ads-modal__title"><%= title %></h2>
+      <% if description? %>
+        <div id="<%= description_id %>" class="ads-modal__description">
+          <%= description %>
+        </div>
+      <% end %>
+    </div>
+
+    <% if (body = content).present? %>
+      <div class="ads-modal__content">
+        <%= body %>
+      </div>
+    <% end %>
+
+    <% if footer? %>
+      <div class="ads-modal__actions">
+        <%= footer %>
+      </div>
+    <% end %>
+
+    <% if media? %>
+      </div>
+    <% end %>
+  </div>
 <% end %>

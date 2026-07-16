@@ -57,13 +57,43 @@ RSpec.describe Users::WebauthnController do
     end
   end
 
+  describe '#confirm_delete' do
+    let(:params) { { id: configuration.id } }
+    let(:response) { get :confirm_delete, params: params }
+
+    it 'assigns the form and presenter and renders the confirm delete page' do
+      expect(response).to render_template(:confirm_delete)
+      expect(assigns(:form)).to be_kind_of(TwoFactorAuthentication::WebauthnUpdateForm)
+      expect(assigns(:form).configuration).to eq(configuration)
+      expect(assigns(:presenter)).to be_kind_of(TwoFactorAuthentication::WebauthnEditPresenter)
+    end
+
+    context 'not recently authenticated' do
+      before do
+        allow(controller).to receive(:recently_authenticated_2fa?).and_return(false)
+      end
+
+      it 'redirects to reauthenticate' do
+        expect(response).to redirect_to(login_two_factor_options_path)
+      end
+    end
+
+    context 'confirming deletion of a configuration that does not exist' do
+      let(:params) { { id: 0 } }
+
+      it 'renders not found' do
+        expect(response).to be_not_found
+      end
+    end
+  end
+
   describe '#update' do
     let(:name) { 'example' }
     let(:params) { { id: configuration.id, form: { name: } } }
     let(:response) { put :update, params: params }
 
     it 'redirects to account page with success message' do
-      expect(response).to redirect_to(account_path)
+      expect(response).to redirect_to(account_security_path)
       expect(flash[:success]).to eq(t('two_factor_authentication.webauthn_roaming.renamed'))
     end
 
@@ -155,7 +185,7 @@ RSpec.describe Users::WebauthnController do
     let(:response) { delete :destroy, params: params }
 
     it 'responds with successful result' do
-      expect(response).to redirect_to(account_path)
+      expect(response).to redirect_to(account_security_path)
       expect(flash[:success]).to eq(t('two_factor_authentication.webauthn_roaming.deleted'))
     end
 

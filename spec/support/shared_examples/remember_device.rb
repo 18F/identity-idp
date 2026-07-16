@@ -33,7 +33,7 @@ RSpec.shared_examples 'remember device' do
     click_submit_default
 
     # Sign out second user
-    first(:button, t('links.sign_out')).click
+    first(:button, t('links.sign_out'), visible: :all).click
 
     # Sign in as first user again and expect otp confirmation
     sign_in_user(first_user)
@@ -80,7 +80,7 @@ RSpec.shared_examples 'remember device' do
                     end
 
     expect(page).to have_current_path(expected_path)
-    visit account_two_factor_authentication_path
+    visit account_security_path
     expect(page).to have_current_path(expected_path)
   end
 end

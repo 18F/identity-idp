@@ -1,33 +1,63 @@
 <% self.title = t('security_check_failed.title') %>
 
-<%= render StatusPageComponent.new(status: :warning) do |c| %>
-  <% c.with_header { t('security_check_failed.title') } %>
-  <p>
-    <%= t('security_check_failed.details') %>
-    <%= new_tab_link_to(
-          t('security_check_failed.learn_more', app_name: APP_NAME),
-          help_center_redirect_path(
-            category: 'trouble-signing-in',
-            article: 'security-check-failed',
-          ),
-        ) %>
-  </p>
+<%= render ADS::FormPageComponent.new(
+      title: t('security_check_failed.title'),
+    ) do |page| %>
+  <% page.with_body do %>
+    <% piv_cac_link_html = capture do %>
+      <%= render ADS::LinkComponent.new(url: login_piv_cac_url) do %>
+        <%= t('security_check_failed.info_p2_link') %>
+      <% end %>
+    <% end %>
 
-  <ul class="usa-list">
-    <li><%= t('security_check_failed.info_p1', app_name: APP_NAME) %></li>
-    <li><%= t('security_check_failed.info_p2_html', piv_cac_url: login_piv_cac_url) %></li> 
-    <li><%= t('security_check_failed.info_p3') %></li> 
-  </ul>
+    <%= render ADS::StackComponent.new do %>
+      <%= render AlertComponent.new(type: :warning, dismissible: false) do %>
+        <%= t('security_check_failed.details') %>
+        <%= render ADS::LinkComponent.new(
+              url: help_center_redirect_path(
+                category: 'trouble-signing-in',
+                article: 'security-check-failed',
+              ),
+              target: '_blank',
+              rel: 'noopener',
+            ) do %>
+          <%= t('security_check_failed.learn_more', app_name: APP_NAME) %>
+        <% end %>
+      <% end %>
 
-  <% c.with_troubleshooting_options do |tc| %>
-    <% tc.with_header { t('components.troubleshooting_options.default_heading') } %>
-    <% tc.with_option(
-         url: contact_redirect_url,
-         new_tab: true,
-       ).with_content(t('security_check_failed.contact', app_name: APP_NAME)) %>
+      <%= render CardComponent.new(padding: :compact) do %>
+        <p class="ads-card__value">
+          <%= t('security_check_failed.info_p1', app_name: APP_NAME) %>
+        </p>
+      <% end %>
+
+      <%= render CardComponent.new(padding: :compact) do %>
+        <p class="ads-card__value">
+          <%= t('security_check_failed.info_p2_html', link_html: piv_cac_link_html) %>
+        </p>
+      <% end %>
+
+      <%= render CardComponent.new(padding: :compact) do %>
+        <p class="ads-card__value">
+          <%= t('security_check_failed.info_p3') %>
+        </p>
+      <% end %>
+    <% end %>
   <% end %>
-<% end %>
 
-<%= render PageFooterComponent.new do %>
-  <%= link_to t('forms.buttons.back'), root_url %>
+  <% page.with_actions do %>
+    <%= render ADS::StackComponent.new(kind: :links, align: :center) do %>
+      <%= render ADS::LinkComponent.new(
+            url: contact_redirect_url,
+            target: '_blank',
+            rel: 'noopener',
+          ) do %>
+        <%= t('security_check_failed.contact', app_name: APP_NAME) %>
+      <% end %>
+
+      <%= render ADS::LinkComponent.new(url: root_url) do %>
+        <%= t('forms.buttons.back') %>
+      <% end %>
+    <% end %>
+  <% end %>
 <% end %>

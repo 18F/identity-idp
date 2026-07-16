@@ -42,9 +42,9 @@ function AcuantCaptureCanvas() {
           className="acuant-capture-canvas__spinner"
         />
       )}
-      <h2 className="usa-sr-only">{t('doc_auth.accessible_labels.camera_video_capture_label')}</h2>
+      <h2 className="ads-sr-only">{t('doc_auth.accessible_labels.camera_video_capture_label')}</h2>
       {acuantCaptureMode !== 'TAP' && (
-        <p className="usa-sr-only">
+        <p className="ads-sr-only">
           {t('doc_auth.accessible_labels.camera_video_capture_instructions')}
         </p>
       )}
@@ -53,7 +53,7 @@ function AcuantCaptureCanvas() {
         type="button"
         onClick={clickCanvas}
         disabled={acuantCaptureMode !== 'TAP'}
-        className="usa-sr-only"
+        className="ads-sr-only"
       >
         {t('doc_auth.buttons.take_picture')}
       </button>

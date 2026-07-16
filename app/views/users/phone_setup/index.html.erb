@@ -1,76 +1,141 @@
 <% self.title = t('titles.add_info.phone') %>
 
-<%= render(VendorOutageAlertComponent.new(vendors: [:sms, :voice])) %>
-
-<%= render PageHeadingComponent.new.with_content(t('headings.add_info.phone')) %>
-
-<p>
-  <%= t('two_factor_authentication.phone_info') %>
-</p>
-
-<p>
-  <%= t('two_factor_authentication.phone_fee_disclosure') %>
-  <%= t('two_factor_authentication.two_factor_choice_options.phone_info_no_voip') %>
-</p>
-
 <%= simple_form_for(@new_phone_form, url: phone_setup_path) do |f| %>
-  <%= render PhoneInputComponent.new(
-        form: f,
-        confirmed_phone: false,
-        required: true,
-        class: 'margin-bottom-4',
-      ) %>
+  <%= render ADS::FormPageComponent.new(
+        title: t('headings.add_info.phone'),
+        subtitle: t('two_factor_authentication.phone_info'),
+      ) do |page| %>
+    <% unless @webauthn_platform_configured %>
+      <% page.with_alert do %>
+        <% common_scams_link_html = capture do %>
+          <%= render ADS::LinkComponent.new(
+                url: MarketingSite.help_center_article_url(
+                  category: 'fraud-concerns',
+                  article: 'common-scams',
+                ),
+                target: '_blank',
+                rel: 'noopener noreferrer',
+              ) do %>
+            <%= t('links.scams') %>
+            <span class="ads-sr-only"><%= t('links.new_tab') %></span>
+          <% end %>
+        <% end %>
 
-  <%= render 'users/shared/otp_delivery_preference_selection',
-             form_obj: @new_phone_form %>
+        <% ft_unlock_setup_link_html = capture do %>
+          <%= render ADS::LinkComponent.new(url: webauthn_setup_url(platform: true)) do %>
+            <%= t('links.setup_ft_unlock') %>
+          <% end %>
+        <% end %>
 
-  <% if TwoFactorAuthentication::PhonePolicy.new(current_user).enabled? %>
-    <%= render 'users/shared/otp_make_default_number',
-               form_obj: @new_phone_form %>
+        <%= render AlertComponent.new(type: :neutral) do %>
+          <%= t(
+                'notices.phishing_warning_html',
+                common_scams_link_html:,
+                ft_unlock_setup_link_html:,
+              ) %>
+        <% end %>
+      <% end %>
+    <% end %>
+
+    <% page.with_body do %>
+      <%= render ADS::StackComponent.new(gap: 24) do %>
+        <%= render(VendorOutageAlertComponent.new(vendors: [:sms, :voice])) %>
+
+        <%= render ADS::StackComponent.new(kind: :form, gap: 32, align: :stretch) do %>
+          <%= render InputComponent.new(
+                form: f,
+                attribute: :phone,
+                label: t('two_factor_authentication.phone_label'),
+                type: :tel,
+                country_selector: true,
+                confirmed_phone: false,
+                error_message: @new_phone_form.errors[:phone].first,
+                required: true,
+              ) %>
+
+          <%= render 'users/shared/otp_delivery_preference_selection',
+                     form_obj: @new_phone_form %>
+
+          <% if TwoFactorAuthentication::PhonePolicy.new(current_user).enabled? %>
+            <%= render ADS::StackComponent.new(align: :center) do %>
+              <%= render 'users/shared/otp_make_default_number',
+                         form_obj: @new_phone_form %>
+            <% end %>
+          <% end %>
+
+          <% if FeatureManagement.phone_recaptcha_enabled? %>
+            <% google_policy_link_html = capture do %>
+              <%= render ADS::LinkComponent.new(
+                    url: GooglePolicySite.privacy_url,
+                    target: '_blank',
+                    rel: 'noopener noreferrer',
+                  ) do %>
+                <%= t('two_factor_authentication.recaptcha.google_policy_link') %>
+                <span class="ads-sr-only"><%= t('links.new_tab') %></span>
+              <% end %>
+            <% end %>
+
+            <% google_tos_link_html = capture do %>
+              <%= render ADS::LinkComponent.new(
+                    url: GooglePolicySite.terms_url,
+                    target: '_blank',
+                    rel: 'noopener noreferrer',
+                  ) do %>
+                <%= t('two_factor_authentication.recaptcha.google_tos_link') %>
+                <span class="ads-sr-only"><%= t('links.new_tab') %></span>
+              <% end %>
+            <% end %>
+
+            <% login_tos_link_html = capture do %>
+              <%= render ADS::LinkComponent.new(
+                    url: MarketingSite.rules_of_use_url,
+                    target: '_blank',
+                    rel: 'noopener noreferrer',
+                  ) do %>
+                <%= t('two_factor_authentication.recaptcha.login_tos_link') %>
+                <span class="ads-sr-only"><%= t('links.new_tab') %></span>
+              <% end %>
+            <% end %>
+
+            <div class="ads-copy ads-copy--muted">
+              <p>
+                <%= t(
+                      'two_factor_authentication.recaptcha.disclosure_statement_html',
+                      app_name: APP_NAME,
+                      google_policy_link_html:,
+                      google_tos_link_html:,
+                      login_tos_link_html:,
+                    ) %>
+              </p>
+            </div>
+          <% else %>
+            <%= render ADS::LinkComponent.new(url: MarketingSite.messaging_practices_url) do %>
+              <%= t('two_factor_authentication.mobile_terms_of_service') %>
+            <% end %>
+          <% end %>
+
+          <%= render ADS::StackComponent.new(kind: :actions, gap: 12, align: :stretch) do %>
+            <%= render CaptchaSubmitButtonComponent.new(
+                  form: f,
+                  action: PhoneRecaptchaForm::RECAPTCHA_ACTION,
+                ).with_content(t('forms.buttons.send_one_time_code')) %>
+
+            <% if MfaPolicy.new(current_user).two_factor_enabled? && !in_multi_mfa_selection_flow? %>
+              <%= render ButtonComponent.new(
+                    url: account_path,
+                    variant: :quaternary,
+                    size: :lg,
+                  ).with_content(t('links.cancel')) %>
+            <% else %>
+              <%= render ButtonComponent.new(
+                    url: authentication_methods_setup_path,
+                    variant: :quaternary,
+                    size: :lg,
+                  ).with_content(t('two_factor_authentication.choose_another_option')) %>
+            <% end %>
+          <% end %>
+        <% end %>
+      <% end %>
+    <% end %>
   <% end %>
-
-  <%= render CaptchaSubmitButtonComponent.new(
-        form: f,
-        action: PhoneRecaptchaForm::RECAPTCHA_ACTION,
-      ).with_content(t('forms.buttons.send_one_time_code')) %>
 <% end %>
-
-<% if !@webauthn_platform_configured %>
-  <%= render(AlertComponent.new(type: :info, class: 'margin-top-4')) do %>
-    <%= t(
-          'notices.phishing_warning_html',
-          common_scams_link_html:
-          new_tab_link_to(
-            t('links.scams'),
-            MarketingSite.help_center_article_url(
-              category: 'fraud-concerns',
-              article: 'common-scams',
-            ),
-          ),
-          ft_unlock_setup_link_html: link_to(
-            t('links.setup_ft_unlock'),
-            webauthn_setup_url(platform: true),
-          ),
-        ) %>
-  <% end %>
-<% end %>
-
-<% if FeatureManagement.phone_recaptcha_enabled? %>
-  <p class="margin-top-4">
-    <%= t(
-          'two_factor_authentication.recaptcha.disclosure_statement_html',
-          app_name: APP_NAME,
-          google_policy_link_html: new_tab_link_to(t('two_factor_authentication.recaptcha.google_policy_link'), GooglePolicySite.privacy_url),
-          google_tos_link_html: new_tab_link_to(t('two_factor_authentication.recaptcha.google_tos_link'), GooglePolicySite.terms_url),
-          login_tos_link_html: new_tab_link_to(t('two_factor_authentication.recaptcha.login_tos_link'), MarketingSite.rules_of_use_url),
-        ) %>
-  </p>
-<% end %>
-
-<% unless FeatureManagement.phone_recaptcha_enabled? %>
-  <%= link_to t('two_factor_authentication.mobile_terms_of_service'),
-              MarketingSite.messaging_practices_url,
-              class: 'display-block margin-top-4' %>
-<% end %>
-
-<%= render 'shared/cancel_or_back_to_options' %>

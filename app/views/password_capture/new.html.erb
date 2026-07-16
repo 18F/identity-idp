@@ -1,24 +1,35 @@
 <% self.title = t('titles.visitors.index') %>
 
-<%= render PageHeadingComponent.new.with_content(password_header) %>
+<%= render ADS::FormPageComponent.new(title: password_header) do |page| %>
+  <% page.with_body do %>
+    <%= form_with(
+          model: current_user,
+          scope: :user,
+          url: capture_password_url,
+          method: :post,
+          local: true,
+          class: 'ads-form',
+        ) do |f| %>
+      <%= render InputComponent.new(
+            form: f,
+            attribute: :password,
+            type: :password,
+            label: t('account.index.password'),
+            required: true,
+            autocomplete: 'current-password',
+            error_messages: {
+              valueMissing: t('components.input.errors.password_current'),
+            },
+          ) %>
+      <%= render ButtonComponent.new(
+            type: :submit,
+          ).with_content(t('forms.buttons.continue')) %>
+    <% end %>
+  <% end %>
 
-<%= simple_form_for(
-      current_user,
-      as: :user,
-      url: capture_password_url,
-      method: :post,
-      html: { class: 'margin-top-4' },
-    ) do |f| %>
-  <%= render PasswordToggleComponent.new(
-        form: f,
-        field_options: {
-          label: t('account.index.password'),
-          required: true,
-        },
-      ) %>
-  <%= f.submit t('forms.buttons.submit.default'), class: 'display-block margin-y-5' %>
-<% end %>
-
-<%= render PageFooterComponent.new do %>
-  <%= link_to t('links.passwords.forgot'), new_user_password_url %>
+  <% page.with_actions do %>
+    <%= render ADS::LinkComponent.new(url: new_user_password_url) do %>
+      <%= t('links.passwords.forgot') %>
+    <% end %>
+  <% end %>
 <% end %>

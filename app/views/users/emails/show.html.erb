@@ -1,37 +1,70 @@
 <% self.title = t('titles.add_email') %>
 
-<%= render PageHeadingComponent.new.with_content(t('headings.add_email')) %>
+<%= render ADS::FormPageComponent.new(title: t('headings.add_email')) do |page| %>
+  <% page.with_body do %>
+    <%= form_with(
+          model: @add_user_email_form,
+          url: add_email_path,
+          local: true,
+          class: 'ads-form',
+        ) do |f| %>
+      <%= render ADS::StackComponent.new(kind: :form, gap: 32, align: :stretch) do %>
+        <%= render InputComponent.new(
+              form: f,
+              attribute: :email,
+              label: t('account.index.email_short'),
+              type: :email,
+              required: true,
+              autocorrect: 'off',
+              autocomplete: 'email',
+              error_message: @add_user_email_form.errors.full_messages_for(:email).first,
+            ) %>
 
-<div class="margin-bottom-6">
-  <%= simple_form_for(@add_user_email_form, url: add_email_path) do |f| %>
-    <%= render ValidatedFieldComponent.new(
-          form: f,
-          name: :email,
-          label: t('forms.registration.labels.email'),
-          required: true,
-        ) %>
-    <%= f.submit t('forms.buttons.submit.default') %>
-  <% end %>
-</div>
+        <%= render ADS::StackComponent.new(kind: :actions, gap: 8, align: :stretch) do %>
+          <%= render ButtonComponent.new(
+                size: :lg,
+                type: :submit,
+              ).with_content(t('account.dashboard.account.email.add')) %>
 
-<% if @pending_completions_consent %>
-  <%= render PageFooterComponent.new do %>
-    <%= link_to t('forms.buttons.back'), sign_up_completed_url %>
+          <% if @pending_completions_consent %>
+            <%= render ButtonComponent.new(
+                  size: :lg,
+                  url: sign_up_completed_path,
+                  variant: :quaternary,
+                ).with_content(t('forms.buttons.back')) %>
+          <% else %>
+            <%= render ButtonComponent.new(
+                  size: :lg,
+                  url: decorated_sp_session.cancel_link_url,
+                  variant: :quaternary,
+                ).with_content(cancel_link_text) %>
+          <% end %>
+        <% end %>
+      <% end %>
+    <% end %>
   <% end %>
-<% else %>
-  <%= render 'shared/cancel', link: decorated_sp_session.cancel_link_url %>
+
+  <% page.with_actions do %>
+    <%= render ADS::LinkComponent.new(
+          url: MarketingSite.security_and_privacy_practices_url,
+          target: '_blank',
+          rel: 'noopener noreferrer',
+          aria: {
+            label: "#{t('notices.privacy.security_and_privacy_practices')} #{t('links.new_tab')}",
+          },
+        ) do %>
+      <%= t('notices.privacy.security_and_privacy_practices') %>
+    <% end %>
+
+    <%= render ADS::LinkComponent.new(
+          url: MarketingSite.privacy_act_statement_url,
+          target: '_blank',
+          rel: 'noopener noreferrer',
+          aria: {
+            label: "#{t('notices.privacy.privacy_act_statement')} #{t('links.new_tab')}",
+          },
+        ) do %>
+      <%= t('notices.privacy.privacy_act_statement') %>
+    <% end %>
+  <% end %>
 <% end %>
-
-<p class="margin-top-2">
-  <%= new_tab_link_to(
-        t('notices.privacy.security_and_privacy_practices'),
-        MarketingSite.security_and_privacy_practices_url,
-      ) %>
-</p>
-
-<p>
-  <%= new_tab_link_to(
-        t('notices.privacy.privacy_act_statement'),
-        MarketingSite.privacy_act_statement_url,
-      ) %>
-</p>

@@ -30,12 +30,15 @@ RSpec.describe 'two_factor_authentication/webauthn_verification/show.html.erb' d
     expect(rendered).to have_field('platform', with: 'false', type: 'hidden')
   end
 
-  it 'includes troubleshooting link to use another authentication method' do
-    expect(rendered).to have_css('.troubleshooting-options li', count: 3)
+  it 'allows the user to choose another authentication method' do
     expect(rendered).to have_link(
       t('two_factor_authentication.login_options_link_text'),
       href: login_two_factor_options_path,
     )
+  end
+
+  it 'does not provide a cancel link' do
+    expect(rendered).not_to have_link(t('links.cancel'))
   end
 
   context 'when auto prompt is enabled' do
@@ -57,21 +60,8 @@ RSpec.describe 'two_factor_authentication/webauthn_verification/show.html.erb' d
       render
     end
 
-    it 'includes hidden platform form input with value false' do
+    it 'includes hidden platform form input with value true' do
       expect(rendered).to have_field('platform', with: 'true', type: 'hidden')
-    end
-
-    it 'includes troubleshooting link to learn more about face/touch unlock' do
-      expect(rendered).to have_css('.troubleshooting-options li', count: 3)
-      expect(rendered).to have_link(
-        t('instructions.mfa.webauthn_platform.issues_with_ft_unlock'),
-        href: help_center_redirect_path(
-          category: 'trouble-signing-in',
-          article: 'face-or-touch-unlock',
-          flow: :two_factor_authentication,
-          step: :webauthn_verification,
-        ),
-      )
     end
   end
 end

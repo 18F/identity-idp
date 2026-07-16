@@ -4,6 +4,20 @@
   <%= tag.meta name: 'acuant-sdk-initialization-creds', content: IdentityConfig.store.acuant_sdk_initialization_creds %>
   <%= stylesheet_link_tag 'document-capture' %>
 <% end %>
+<%# IPP prepare/location (skip doc auth flags) uses the IPP step list; otherwise remote verify_id. %>
+<% ipp_doc_capture = [
+     local_assigns[:skip_doc_auth_from_how_to_verify],
+     local_assigns[:skip_doc_auth_from_handoff],
+     local_assigns[:skip_doc_auth_from_socure],
+   ].any? %>
+<% if ipp_doc_capture %>
+  <%= render 'idv/shared/step_indicator',
+             current_step: :find_a_post_office,
+             steps: Idv::StepIndicatorConcern::STEP_INDICATOR_STEPS_IPP %>
+<% else %>
+  <%= render 'idv/shared/step_indicator', current_step: :verify_id %>
+<% end %>
+<div class="ads-auth ads-auth--form-page">
 <%= tag.div id: 'document-capture-form', data: {
       app_name: APP_NAME,
       liveness_required: nil,
@@ -63,4 +77,5 @@
         ) %>
   <% end %>
 
+</div>
 <%= javascript_packs_tag_once 'document-capture' %>

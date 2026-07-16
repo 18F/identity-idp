@@ -1,0 +1,28 @@
+@use '../../../variables/ads' as ads;
+
+.ads-idv-support {
+  --ads-action-gap: #{ads.space(8)};
+  --ads-flow-align: stretch;
+}
+
+.ads-idv-support__step-indicator {
+  width: 100%;
+}
+
+.ads-idv-support__troubleshooting {
+  padding-top: ads.space(16);
+}
+
+.ads-idv-support__secondary-action {
+  padding-top: ads.space(24);
+}
+
+.ads-idv-support__back {
+  border-top: 1px solid ads.alpha(ads.$off-black, 10%);
+  padding-top: ads.space(20);
+  width: 100%;
+}
+
+.ads-idv-support__back .ads-button {
+  width: 100%;
+}

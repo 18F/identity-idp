@@ -146,7 +146,7 @@ RSpec.describe TwoFactorAuthentication::PersonalKeyVerificationController do
         end
         it 'should redirect to account page' do
           post :create, params: payload
-          expect(response).to redirect_to(account_path)
+          expect(response).to redirect_to(account_path(anchor: 'welcome'))
         end
       end
 

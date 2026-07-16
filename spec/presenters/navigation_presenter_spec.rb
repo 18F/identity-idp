@@ -1,42 +1,31 @@
 require 'rails_helper'
 
 RSpec.describe NavigationPresenter do
-  let(:user) { build(:user) }
+  include Rails.application.routes.url_helpers
 
-  subject(:navigation) { NavigationPresenter.new(user: user, url_options: {}) }
+  subject(:navigation) { NavigationPresenter.new(url_options: {}) }
 
   describe '#navigation_items' do
-    describe 'personal key' do
-      context 'for a user with a personal key' do
-        let(:user) { build(:user, :proofed) }
+    it 'returns the four flat dashboard navigation items' do
+      items = navigation.navigation_items
 
-        it 'has a link to reset personal key' do
-          nav_item = navigation.navigation_items.first.children.last
-          expect(nav_item.title).to eq(I18n.t('account.navigation.reset_personal_key'))
-        end
-      end
-
-      context 'for a user that does not have a personal key' do
-        it 'does not link to reset personal key' do
-          has_reset_personal_key = navigation.navigation_items.first.children.any? do |item|
-            item.title == I18n.t('account.navigation.reset_personal_key')
-          end
-
-          expect(has_reset_personal_key).to eq(false)
-        end
-      end
-
-      context 'for a proofed user with deactivated profile due to password reset' do
-        let(:user) { build(:user, :deactivated_password_reset_profile) }
-
-        it 'does not have a link to reset personal key' do
-          has_reset_personal_key = navigation.navigation_items.first.children.any? do |item|
-            item.title == I18n.t('account.navigation.reset_personal_key')
-          end
-
-          expect(has_reset_personal_key).to eq(false)
-        end
-      end
+      expect(items.map(&:title)).to eq(
+        [
+          t('account.navigation.home'),
+          t('account.navigation.profile'),
+          t('account.navigation.security'),
+          t('account.navigation.history'),
+        ],
+      )
+      expect(items.map(&:href)).to eq(
+        [
+          account_path,
+          account_settings_path,
+          account_security_path,
+          account_history_path,
+        ],
+      )
+      expect(items.map(&:icon)).to eq(%i[house profile_circle lock clock])
     end
   end
 end

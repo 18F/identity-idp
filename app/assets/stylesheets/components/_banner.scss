@@ -1,0 +1,74 @@
+@use '../variables/ads' as ads;
+
+$ads-banner-mobile-max: 639px;
+
+.ads-official-banner {
+  align-items: center;
+  background: ads.$blue-900;
+  box-sizing: border-box;
+  color: ads.$off-white;
+  display: flex;
+  flex-wrap: wrap;
+  gap: ads.space(4) ads.space(16);
+  justify-content: flex-start;
+  min-height: 34px;
+  padding: ads.space(8) ads.space(16) ads.space(8) ads.space(48);
+  width: 100%;
+}
+
+.ads-official-banner__content {
+  align-items: center;
+  display: flex;
+  gap: ads.space(8);
+  min-width: 0;
+}
+
+.ads-official-banner__flag {
+  background: linear-gradient(
+    to bottom,
+    transparent 17.5%,
+    ads.$white 17.5% 82.5%,
+    transparent 82.5%
+  );
+  display: block;
+  flex: 0 0 auto;
+  height: ads.space(16);
+  width: ads.space(16);
+
+  .ads-icon {
+    display: block;
+    height: 100%;
+    width: 100%;
+  }
+}
+
+.ads-official-banner__text,
+.ads-official-banner__test-notice {
+  color: ads.$off-white;
+  font-family: ads.$font-family;
+  font-size: ads.$text-body-s;
+  font-weight: 400;
+  letter-spacing: -0.12px;
+  line-height: 1.5;
+  margin: 0;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.ads-official-banner__test-notice {
+  margin-inline-start: auto;
+  text-align: end;
+}
+
+@media (width <= #{$ads-banner-mobile-max}) {
+  .ads-official-banner {
+    justify-content: center;
+    padding-inline: ads.space(12);
+  }
+
+  .ads-official-banner__test-notice {
+    flex: 1 0 100%;
+    margin-inline-start: 0;
+    text-align: center;
+  }
+}

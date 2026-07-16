@@ -1,0 +1,17 @@
+<%#
+locals:
+  pii: (required)
+  url: (required)
+  divider: false
+  click_observer_event: nil
+%>
+<% address_value = capture do %>
+  <%= render 'shared/address', address: pii %>
+<% end %>
+<%= render 'idv/shared/verify_info/editable_field',
+           label: t('idv.form.address'),
+           value: address_value,
+           url: url,
+           aria_label: t('idv.buttons.change_address_label'),
+           divider: local_assigns[:divider],
+           click_observer_event: local_assigns[:click_observer_event] %>

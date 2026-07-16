@@ -16,7 +16,7 @@ RSpec.feature 'View personal key' do
         expect(Telephony).to receive(:send_personal_key_regeneration_notice)
           .with(to: user.phone_configurations.first.phone, country_code: 'US')
 
-        visit account_two_factor_authentication_path
+        visit account_security_path
         click_on(t('account.links.regenerate_personal_key'), match: :prefer_exact)
         click_continue
 
@@ -42,13 +42,12 @@ RSpec.feature 'View personal key' do
 
         expire_reauthn_window
 
-        visit account_two_factor_authentication_path
+        visit account_security_path
         click_on(t('account.links.regenerate_personal_key'), match: :prefer_exact)
 
         # reauthn
         expect(page).to have_current_path login_two_factor_options_path
-        find("label[for='two_factor_options_form_selection_sms']").click
-        click_on t('forms.buttons.continue')
+        select_2fa_option('sms')
         fill_in_code_with_last_phone_otp
         click_submit_default
 

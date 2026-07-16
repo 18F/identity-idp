@@ -1,13 +1,17 @@
 <% self.title = t('profiling_failed.title') %>
 
-<%= render AlertIconComponent.new(icon_name: :error, class: 'display-block margin-bottom-4') %>
-<%= render PageHeadingComponent.new.with_content(t('profiling_failed.title')) %>
-<p>
-  <%= t('profiling_failed.details_html') %>
-</p>
+<%= render ADS::FormPageComponent.new(
+      title: t('profiling_failed.title'),
+    ) do |page| %>
+  <% page.with_body do %>
+    <%= render AlertComponent.new(type: :error, dismissible: false) do %>
+      <%= t('profiling_failed.details_html') %>
+    <% end %>
+  <% end %>
 
-<%= link_to(
-      root_url,
-      class: 'usa-button usa-button--big usa-button--wide',
-    ) { t('links.exit_login', app_name: APP_NAME) } %>
-
+  <% page.with_actions do %>
+    <%= render ButtonComponent.new(url: root_url, size: :lg) do %>
+      <%= t('links.exit_login', app_name: APP_NAME) %>
+    <% end %>
+  <% end %>
+<% end %>

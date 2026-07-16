@@ -54,8 +54,7 @@ RSpec.feature 'choose id type step' do
         expect(page).to have_content(t('doc_auth.headings.upload_from_computer'))
         click_on t('forms.buttons.upload_photos')
         expect(page).to have_current_path(idv_choose_id_type_url)
-        choose(t('doc_auth.forms.id_type_preference.passport'))
-        click_on t('forms.buttons.continue')
+        click_on t('doc_auth.forms.id_type_preference.passport')
         expect(page).to have_current_path(idv_socure_document_capture_url)
         expect(fake_analytics).to have_logged_event(
           :passport_api_health_check,
@@ -65,12 +64,8 @@ RSpec.feature 'choose id type step' do
           errors: {},
         )
         visit idv_choose_id_type_url
-        expect(page).to have_checked_field(
-          'doc_auth_choose_id_type_preference_passport',
-          visible: :all,
-        )
-        choose(t('doc_auth.forms.id_type_preference.drivers_license'))
-        click_on t('forms.buttons.continue')
+        expect(page).to have_button('doc_auth_choose_id_type_preference_passport')
+        click_on t('doc_auth.forms.id_type_preference.drivers_license')
         expect(page).to have_current_path(idv_document_capture_url)
       end
 
@@ -78,19 +73,14 @@ RSpec.feature 'choose id type step' do
         expect(page).to have_content(t('doc_auth.headings.upload_from_computer'))
         click_on t('forms.buttons.upload_photos')
         expect(page).to have_current_path(idv_choose_id_type_url)
-        choose(t('doc_auth.forms.id_type_preference.drivers_license'))
-        click_on t('forms.buttons.continue')
+        click_on t('doc_auth.forms.id_type_preference.drivers_license')
         expect(page).to have_current_path(idv_document_capture_url)
         expect(fake_analytics).not_to have_logged_event(
           :passport_api_health_check,
         )
         visit idv_choose_id_type_url
-        expect(page).to have_checked_field(
-          'doc_auth_choose_id_type_preference_state_id_card',
-          visible: :all,
-        )
-        choose(t('doc_auth.forms.id_type_preference.passport'))
-        click_on t('forms.buttons.continue')
+        expect(page).to have_button('doc_auth_choose_id_type_preference_state_id_card')
+        click_on t('doc_auth.forms.id_type_preference.passport')
         expect(page).to have_current_path(idv_socure_document_capture_url)
         expect(fake_analytics).to have_logged_event(
           :passport_api_health_check,
@@ -116,8 +106,7 @@ RSpec.feature 'choose id type step' do
           expect(page).to have_current_path(idv_how_to_verify_url)
           click_button t('forms.buttons.continue_online')
           expect(page).to have_current_path(idv_choose_id_type_url)
-          choose(t('doc_auth.forms.id_type_preference.drivers_license'))
-          click_on t('forms.buttons.continue')
+          click_on t('doc_auth.forms.id_type_preference.drivers_license')
           expect(page).to have_current_path(idv_document_capture_url)
           expect(fake_analytics).not_to have_logged_event(
             :passport_api_health_check,
@@ -127,10 +116,7 @@ RSpec.feature 'choose id type step' do
             errors: {},
           )
           visit idv_choose_id_type_url
-          expect(page).to have_checked_field(
-            'doc_auth_choose_id_type_preference_state_id_card',
-            visible: :all,
-          )
+          expect(page).to have_button('doc_auth_choose_id_type_preference_state_id_card')
         end
       end
 
@@ -145,14 +131,10 @@ RSpec.feature 'choose id type step' do
 
         it 'shows choose id type screen and continues after state id card option' do
           expect(page).to have_current_path(idv_choose_id_type_url)
-          choose(t('doc_auth.forms.id_type_preference.drivers_license'))
-          click_on t('forms.buttons.continue')
+          click_on t('doc_auth.forms.id_type_preference.drivers_license')
           expect(page).to have_current_path(idv_document_capture_url)
           visit idv_choose_id_type_url
-          expect(page).to have_checked_field(
-            'doc_auth_choose_id_type_preference_state_id_card',
-            visible: :all,
-          )
+          expect(page).to have_button('doc_auth_choose_id_type_preference_state_id_card')
         end
       end
 
@@ -201,8 +183,7 @@ RSpec.feature 'choose id type step' do
         expect(page).to have_content(t('doc_auth.headings.upload_from_computer'))
         click_on t('forms.buttons.upload_photos')
         expect(page).to have_current_path(idv_choose_id_type_url)
-        choose(t('doc_auth.forms.id_type_preference.passport'))
-        click_on t('forms.buttons.continue')
+        click_on t('doc_auth.forms.id_type_preference.passport')
         expect(page).to have_current_path(idv_choose_id_type_url(passports: false))
         expect(fake_analytics).to have_logged_event(
           :passport_api_health_check,
@@ -211,13 +192,11 @@ RSpec.feature 'choose id type step' do
           body: { status: 'DOWN' },
           errors: {},
         )
-        # expect radio button field 'doc_auth_choose_id_type_preference_passport' to be disabled
-        expect(page).to have_field(
+        expect(page).to have_button(
           'doc_auth_choose_id_type_preference_passport',
-          visible: :all,
           disabled: true,
         )
-        click_on t('forms.buttons.continue')
+        click_on t('doc_auth.forms.id_type_preference.drivers_license')
         expect(page).to have_current_path(idv_document_capture_url)
       end
     end

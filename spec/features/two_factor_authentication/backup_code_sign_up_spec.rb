@@ -82,6 +82,6 @@ RSpec.feature 'sign up with backup code' do
   end
 
   def sign_out_user
-    first(:button, t('links.sign_out')).click
+    first(:button, t('links.sign_out'), visible: :all).click
   end
 end

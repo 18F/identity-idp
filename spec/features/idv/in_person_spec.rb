@@ -99,7 +99,7 @@ RSpec.describe 'In Person Proofing', js: true do
       t('step_indicator.flows.idv.verify_phone'),
     )
     fill_in_code_with_last_phone_otp
-    click_submit_default
+    click_button t('forms.buttons.continue')
 
     # password confirm page
     expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.re_enter_password'))
@@ -640,12 +640,12 @@ RSpec.describe 'In Person Proofing', js: true do
       expect(page).to have_content(t('in_person_proofing.headings.update_address'))
       # expect address page to have fields populated with address from state id
       expect(page).to have_field(
-        t('idv.form.address1'),
+        t('idv.form.address'),
         with: InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS1,
       )
 
       # change part of the address
-      fill_in t('idv.form.address1'), with: 'new address different from state address1'
+      fill_in t('idv.form.address'), with: 'new address different from state address1'
       # click update
       click_button t('forms.buttons.submit.update')
 
@@ -757,7 +757,7 @@ RSpec.describe 'In Person Proofing', js: true do
         t('step_indicator.flows.idv.verify_phone'),
       )
       fill_in_code_with_last_phone_otp
-      click_submit_default
+      click_button t('forms.buttons.continue')
 
       # password confirm page
       expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.re_enter_password'))
@@ -820,7 +820,7 @@ RSpec.describe 'In Person Proofing', js: true do
       fill_out_phone_form_ok(MfaContext.new(user).phone_configurations.first.phone)
       click_idv_send_security_code
       fill_in_code_with_last_phone_otp
-      click_submit_default
+      click_button t('forms.buttons.continue')
       complete_enter_password_step(user)
     end
 

@@ -1,1 +1,1 @@
-import '@18f/identity-modal/modal-element';
+import '@18f/identity-modal/modal';

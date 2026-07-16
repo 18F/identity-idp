@@ -1,0 +1,49 @@
+@use '../../../variables/ads' as ads;
+
+// Shared styling for the native <details>/<summary> dropdown menus (header account
+// menu, connected-service agency menu). Call sites layer their own extras (e.g. a
+// button reset) on top of these mixins so the panel/item look stays in one place.
+
+@mixin panel($z-index: 10) {
+  @include ads.stack($gap: ads.space(4), $reset-flow: true, $width: max-content);
+
+  background: ads.$white;
+  border: 1px solid ads.alpha(ads.$off-black, 10%);
+  border-radius: ads.radius(12);
+  box-shadow: ads.$shadow-compact;
+  min-width: ads.space(160);
+  padding: ads.space(8);
+  position: absolute;
+  right: 0;
+  top: calc(100% + #{ads.space(4)});
+  z-index: $z-index;
+}
+
+@mixin item {
+  border-radius: ads.radius(8);
+  color: ads.$off-black;
+  display: block;
+  font-family: ads.$font-family;
+  font-size: ads.$text-label-m;
+  font-weight: ads.$font-semibold;
+  letter-spacing: ads.$text-letter-spacing-label;
+  line-height: 1;
+  padding: ads.space(12);
+  text-decoration: none;
+  white-space: nowrap;
+
+  &:is(:link, :visited) {
+    color: ads.$off-black;
+  }
+
+  &:hover,
+  &:active {
+    background: ads.alpha(ads.$off-black, 5%);
+    color: ads.$off-black;
+    text-decoration: none;
+  }
+
+  &:focus-visible {
+    @include ads.focus-ring;
+  }
+}

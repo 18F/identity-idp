@@ -8,7 +8,7 @@ module Users
 
     before_action :confirm_two_factor_authenticated
     before_action :confirm_user_can_edit_phone
-    before_action :confirm_user_can_remove_phone, only: %i[destroy]
+    before_action :confirm_user_can_remove_phone, only: %i[confirm_delete destroy]
     before_action :confirm_recently_authenticated_2fa
 
     def edit
@@ -21,18 +21,21 @@ module Users
       result = @edit_phone_form.submit(edit_phone_params)
       analytics.phone_change_submitted(**result)
       if result.success?
-        redirect_to account_url
+        redirect_to account_security_url
       else
+        flash.now[:error] = result.first_error_message
         render :edit
       end
     end
+
+    def confirm_delete; end
 
     def destroy
       track_deletion_analytics_event
       phone_configuration.destroy!
       handle_successful_mfa_deletion(event_type: :phone_removed)
       flash[:success] = t('two_factor_authentication.phone.delete.success')
-      redirect_to account_url
+      redirect_to account_security_url
     end
 
     private
@@ -45,7 +48,7 @@ module Users
     def confirm_user_can_remove_phone
       return if MfaPolicy.new(current_user).multiple_factors_enabled?
       flash[:error] = t('two_factor_authentication.phone.delete.failure')
-      redirect_to account_url
+      redirect_to account_security_url
       false
     end
 

@@ -256,11 +256,13 @@ RSpec.describe '2FA options when signing in' do
       expect(page)
         .to_not have_content t('two_factor_authentication.login_options.piv_cac')
 
-      # Passing "visible: false" since the option would be hidden if JavaScript is disabled. Rather
-      # than use ChromeDriver, the purpose of this spec is to ensure that it is rendered as a single
-      # option by the server, so we're not as concerned about whether it's visible.
+      # The purpose of this spec is to ensure that it is rendered as a single option by the server.
       expect(page)
-        .to have_selector('#two_factor_options_form_selection_webauthn', count: 1, visible: false)
+        .to have_selector(
+          "button[name='two_factor_options_form[selection]'][value='webauthn']",
+          count: 1,
+          visible: :all,
+        )
     end
   end
 
@@ -275,22 +277,20 @@ RSpec.describe '2FA options when signing in' do
 
       click_link t('two_factor_authentication.login_options_link_text')
 
-      expect(page).to have_selector("#two_factor_options_form_selection_sms_#{first_id}", count: 1)
-      expect(page)
-        .to have_selector("#two_factor_options_form_selection_sms_#{second_id}", count: 1)
+      selection = "button[name='two_factor_options_form[selection]']"
+      expect(page).to have_selector("#{selection}[value='sms_#{first_id}']", count: 1)
+      expect(page).to have_selector("#{selection}[value='sms_#{second_id}']", count: 1)
       expect(page).to_not have_content('+1 202-555-1212')
       expect(page).to_not have_content('+1 202-555-1213')
       expect(page).to have_content('(***) ***-1212')
       expect(page).to have_content('(***) ***-1213')
-      expect(page)
-        .to have_selector("#two_factor_options_form_selection_voice_#{first_id}", count: 1)
-      expect(page)
-        .to have_selector("#two_factor_options_form_selection_voice_#{second_id}", count: 1)
-      expect(page).to have_selector('#two_factor_options_form_selection_personal_key', count: 0)
-      expect(page).to have_selector('#two_factor_options_form_selection_backup_code', count: 0)
-      expect(page).to have_selector('#two_factor_options_form_selection_auth_app', count: 0)
-      expect(page).to have_selector('#two_factor_options_form_selection_piv_cac', count: 0)
-      expect(page).to have_selector('#two_factor_options_form_selection_webauthn', count: 0)
+      expect(page).to have_selector("#{selection}[value='voice_#{first_id}']", count: 1)
+      expect(page).to have_selector("#{selection}[value='voice_#{second_id}']", count: 1)
+      expect(page).to have_selector("#{selection}[value='personal_key']", count: 0)
+      expect(page).to have_selector("#{selection}[value='backup_code']", count: 0)
+      expect(page).to have_selector("#{selection}[value='auth_app']", count: 0)
+      expect(page).to have_selector("#{selection}[value='piv_cac']", count: 0)
+      expect(page).to have_selector("#{selection}[value='webauthn']", count: 0)
     end
   end
 end

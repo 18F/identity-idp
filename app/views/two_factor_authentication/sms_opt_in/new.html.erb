@@ -1,27 +1,34 @@
 <% self.title = t('two_factor_authentication.opt_in.title') %>
 
-<%= render AlertIconComponent.new(icon_name: :warning, class: 'margin-bottom-2') %>
-
-<%= render PageHeadingComponent.new.with_content(t('two_factor_authentication.opt_in.title')) %>
-
-<p>
-  <%= t(
+<%= render ADS::FormPageComponent.new(
+      title: t('two_factor_authentication.opt_in.title'),
+      subtitle: t(
         'two_factor_authentication.opt_in.opted_out_html',
-        phone_number_html: content_tag(:strong, @phone_configuration.masked_phone),
-      ) %>
-</p>
+        phone_number_html: tag.span(@phone_configuration.masked_phone, class: 'ads-nowrap'),
+      ),
+    ) do |page| %>
+  <% page.with_body do %>
+    <%= render ADS::LinkComponent.new(
+          url: MarketingSite.messaging_practices_url,
+          target: '_blank',
+          rel: 'noopener noreferrer',
+          aria: {
+            label: "#{t('two_factor_authentication.mobile_terms_of_service')} #{t('links.new_tab')}",
+          },
+        ) do %>
+      <%= t('two_factor_authentication.mobile_terms_of_service') %>
+    <% end %>
+  <% end %>
 
-<%= link_to t('two_factor_authentication.mobile_terms_of_service'),
-            MarketingSite.messaging_practices_url,
-            class: 'margin-top-2' %>
+  <% page.with_actions do %>
+    <%= render ButtonComponent.new(
+          url: login_two_factor_sms_opt_in_path(opt_out_uuid: @phone_number_opt_out),
+          method: :post,
+        ).with_content(t('forms.buttons.send_one_time_code')) %>
 
-<%= button_to t('forms.buttons.send_one_time_code'),
-              login_two_factor_sms_opt_in_path(opt_out_uuid: @phone_number_opt_out),
-              class: 'usa-button usa-button--wide usa-button--big',
-              form_class: 'margin-y-5' %>
-
-<%= render 'two_factor_authentication/troubleshooting_options', presenter: @presenter %>
-
-<%= render PageFooterComponent.new do %>
-  <%= link_to cancel_link_text, @cancel_url %>
+    <%= render ButtonComponent.new(
+          url: login_two_factor_options_path,
+          variant: :quaternary,
+        ).with_content(t('two_factor_authentication.login_options_link_text')) %>
+  <% end %>
 <% end %>

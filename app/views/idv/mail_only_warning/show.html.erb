@@ -1,39 +1,47 @@
 <% self.title = t('vendor_outage.alerts.pinpoint.idv.header') %>
 
-<%= render StepIndicatorComponent.new(
-      steps: step_indicator_steps,
-      current_step: :getting_started,
-      locale_scope: 'idv',
-      class: 'margin-x-neg-2 margin-top-neg-4 tablet:margin-x-neg-6 tablet:margin-top-neg-4',
-    ) %>
+<%= render 'idv/shared/step_indicator', current_step: :getting_started %>
 
-<%= render StatusPageComponent.new(status: :warning) do |c| %>
-  <% c.with_header { t('vendor_outage.alerts.pinpoint.idv.header') } %>
-  <p>
-    <%= t('vendor_outage.alerts.pinpoint.idv.message_html', sp_name_html: content_tag(:strong, current_sp&.friendly_name || APP_NAME)) %>
-  </p>
-  <p>
-    <%= t('vendor_outage.alerts.pinpoint.idv.status_page_html', link_html: new_tab_link_to(t('vendor_outage.alerts.pinpoint.idv.status_page_link'), StatusPage.base_url)) %>
-  </p>
-  <span><%= t('vendor_outage.alerts.pinpoint.idv.options_prompt') %></span>
-  <ul class="margin-bottom-5">
-    <% t('vendor_outage.alerts.pinpoint.idv.options_html', app_name: APP_NAME).each do |option| %>
-      <li>
-        <%= option %>
-      </li>
+<%= render ADS::FormPageComponent.new(title: t('vendor_outage.alerts.pinpoint.idv.header')) do |page| %>
+  <% page.with_body do %>
+    <div class="ads-copy">
+      <p>
+        <%= t(
+              'vendor_outage.alerts.pinpoint.idv.message_html',
+              sp_name_html: current_sp&.friendly_name || APP_NAME,
+            ) %>
+      </p>
+
+      <% status_page_link_html = capture do %>
+        <%= render ADS::LinkComponent.new(
+              url: StatusPage.base_url,
+              target: '_blank',
+              rel: 'noopener noreferrer',
+            ) do %>
+          <%= t('vendor_outage.alerts.pinpoint.idv.status_page_link') %>
+          <span class="ads-sr-only"><%= t('links.new_tab') %></span>
+        <% end %>
+      <% end %>
+
+      <p>
+        <%= t(
+              'vendor_outage.alerts.pinpoint.idv.status_page_html',
+              link_html: status_page_link_html,
+            ) %>
+      </p>
+    </div>
+  <% end %>
+
+  <% page.with_actions do %>
+    <%= render ADS::StackComponent.new(kind: :actions, gap: 8, align: :stretch) do %>
+      <%= render ButtonComponent.new(url: idv_url).with_content(
+            t('vendor_outage.alerts.pinpoint.idv.verify_by_mail'),
+          ) %>
+
+      <%= render ButtonComponent.new(
+            url: exit_url,
+            variant: :quaternary,
+          ).with_content(t('links.exit_login', app_name: APP_NAME)) %>
     <% end %>
-  </ul>
-  <% c.with_action_button(
-       url: idv_url,
-       big: true,
-       wide: true,
-       class: 'usa-button',
-     ).with_content(t('doc_auth.buttons.continue')) %>
-  <% c.with_action_button(
-       url: exit_url,
-       big: true,
-       wide: true,
-       outline: true,
-       class: 'usa-button',
-     ).with_content(t('links.exit_login', app_name: APP_NAME)) %>
+  <% end %>
 <% end %>

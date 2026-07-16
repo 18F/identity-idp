@@ -75,13 +75,19 @@ function Button({
 }: ButtonProps &
   AnchorHTMLAttributes<HTMLAnchorElement> &
   ButtonHTMLAttributes<HTMLButtonElement>) {
+  let variant = 'ads-button--primary';
+  if (isUnstyled) {
+    variant = 'ads-button--quaternary';
+  } else if (isOutline) {
+    variant = 'ads-button--secondary';
+  }
+
   const classes = [
-    'usa-button',
-    isBig && 'usa-button--big',
-    isFlexibleWidth && 'usa-button--flexible-width',
-    isWide && 'usa-button--wide',
-    isOutline && 'usa-button--outline',
-    isUnstyled && 'usa-button--unstyled',
+    'ads-button',
+    variant,
+    isBig ? 'ads-button--lg' : 'ads-button--md',
+    isFlexibleWidth && 'ads-button--flexible-width',
+    isWide && 'ads-button--wide',
     className,
   ]
     .filter(Boolean)
