@@ -12,10 +12,15 @@ module Idv
       if date.instance_of?(String)
         Date.parse(date)
       elsif date.instance_of?(Hash)
+        return nil if blank_date?(date)
         Date.parse(MemorableDateComponent.extract_date_param(date))
       end
     rescue Date::Error
       # Catch date parsing errors
+    end
+
+    def blank_date?(date)
+      date[:month].blank? || date[:day].blank? || date[:year].blank?
     end
   end
 end

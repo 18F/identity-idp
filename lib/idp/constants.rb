@@ -105,6 +105,8 @@ module Idp
       VI
     ].to_set.freeze
 
+    NOT_APPLICABLE_STATE_CODE = 'N/A'
+
     DEFAULT_IAL = 1
     IAL_MAX = 0
     IAL1 = 1

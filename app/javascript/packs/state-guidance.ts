@@ -1,3 +1,18 @@
+export function showOrHideExpirationDateField(jurisdictionCode) {
+  const idExpirationDiv = document.querySelector('.id_expiration');
+  const skipStateIdExpiration = document.querySelector<HTMLSelectElement>(
+    '.skip-state-id-expiration',
+  )?.value;
+
+  if (idExpirationDiv && skipStateIdExpiration) {
+    if (skipStateIdExpiration.includes(jurisdictionCode)) {
+      idExpirationDiv.classList.add('display-none');
+    } else {
+      idExpirationDiv.classList.remove('display-none');
+    }
+  }
+}
+
 export function showOrHideJurisdictionExtras(jurisdictionCode) {
   const hasJurisdictionSpecificHint =
     jurisdictionCode &&
@@ -9,6 +24,7 @@ export function showOrHideJurisdictionExtras(jurisdictionCode) {
       (!hasJurisdictionSpecificHint && element.dataset.state === 'default');
     element.classList.toggle('display-none', !shouldShow);
   });
+  showOrHideExpirationDateField(jurisdictionCode);
 }
 
 export function showOrHidePuertoRicoExtras(forStateCode) {

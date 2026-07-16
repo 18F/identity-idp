@@ -13,7 +13,6 @@ module Idv
                 :identity_doc_city,
                 :state_id_jurisdiction,
                 :state_id_number,
-                :id_expiration,
                 :same_address_as_id,
                 presence: true
 
@@ -58,7 +57,8 @@ module Idv
                          'in_person_proofing.form.state_id.memorable_date.errors.expiration_date.expired',
                          app_name: APP_NAME,
                        )
-                     end
+                     end,
+                     allow_blank: true
       # rubocop:enable Layout/LineLength
     end
     # rubocop:enable Metrics/BlockLength

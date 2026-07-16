@@ -586,6 +586,8 @@ RSpec.describe 'In Person Proofing', js: true do
     let(:user) { user_with_2fa }
 
     before(:each) do
+      allow(IdentityConfig.store).to receive(:in_person_state_id_expiration_skip_state_codes)
+        .and_return(['TX'])
       sign_in_and_2fa_user(user)
       begin_in_person_proofing(user)
       complete_prepare_step(user)
@@ -603,6 +605,30 @@ RSpec.describe 'In Person Proofing', js: true do
 
       # Ensure the page submitted successfully
       expect(page).to have_content(t('idv.form.ssn_label'))
+    end
+
+    context 'when state jurisdiction is in the skip expiration list' do
+      it 'skips the expiration date field and is allowed to continue' do
+        expect(page).to have_current_path(idv_in_person_state_id_path, wait: 10)
+
+        fill_in t('in_person_proofing.form.state_id.first_name'), with: InPersonHelper::GOOD_FIRST_NAME
+        fill_in t('in_person_proofing.form.state_id.last_name'), with: InPersonHelper::GOOD_LAST_NAME
+        fill_in_memorable_date('identity_doc[dob]', InPersonHelper::GOOD_DOB)
+        select 'Texas', from: t('in_person_proofing.form.state_id.state_id_jurisdiction')
+        fill_in t('in_person_proofing.form.state_id.state_id_number'), with: InPersonHelper::GOOD_STATE_ID_NUMBER
+
+        expect(page).not_to have_content(t('in_person_proofing.form.state_id.expiration_date'))
+
+        fill_in t('in_person_proofing.form.state_id.address1'), with: InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS1
+        fill_in t('in_person_proofing.form.state_id.address2'), with: InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS2
+        fill_in t('in_person_proofing.form.state_id.city'), with: InPersonHelper::GOOD_IDENTITY_DOC_CITY
+        fill_in t('in_person_proofing.form.state_id.zipcode'), with: InPersonHelper::GOOD_IDENTITY_DOC_ZIPCODE
+        select 'Texas', from: t('in_person_proofing.form.state_id.identity_doc_address_state')
+        choose t('in_person_proofing.form.state_id.same_address_as_id_yes')
+        click_idv_continue
+
+        expect(page).to have_content(t('idv.form.ssn_label'))
+      end
     end
 
     it 'can update the address page form' do

@@ -11,7 +11,7 @@
 # The errors for this component are configurable via +error_messages+, and you may
 # include custom min/max validations via +range_errors+.
 class MemorableDateComponent < BaseComponent
-  attr_reader :name, :month, :day, :year, :required, :hint, :label, :form, :tag_options
+  attr_reader :name, :month, :day, :year, :required, :can_skip, :hint, :label, :form, :tag_options
 
   alias_method :f, :form
 
@@ -37,6 +37,7 @@ class MemorableDateComponent < BaseComponent
     day: nil,
     year: nil,
     required: false,
+    can_skip: false,
     min: nil,
     max: nil,
     error_messages: {},
@@ -48,6 +49,7 @@ class MemorableDateComponent < BaseComponent
     @day = day
     @year = year
     @required = required
+    @can_skip = can_skip
     @min = min
     @max = max
     @hint = hint
@@ -97,7 +99,7 @@ class MemorableDateComponent < BaseComponent
   # @option date [String] year
   # @return [String,nil] The formatted date, or nil if the param cannot be converted
   def self.extract_date_param(date)
-    if date.instance_of?(String) || date.empty?
+    if date.blank? || date.instance_of?(String) || date.empty?
       nil
     else
       formatted_date = [
@@ -135,6 +137,7 @@ class MemorableDateComponent < BaseComponent
   # Configure default generic error messages for component,
   # then integrate any overrides
   def generate_error_messages(label, min, max, override_error_messages)
+    return {} if !required && can_skip
     base_error_messages = {
       missing_month_day_year: t(
         'components.memorable_date.errors.missing_month_day_year',

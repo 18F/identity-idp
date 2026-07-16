@@ -20,6 +20,7 @@ RSpec.describe 'idv/in_person/state_id/show.html.erb' do
              pii: pii,
              parsed_dob: parsed_dob,
              parsed_expiration: parsed_expiration,
+             skip_state_id_expiration: [],
            }
   end
 

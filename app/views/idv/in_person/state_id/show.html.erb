@@ -57,6 +57,17 @@
         ) %>
   </div>
 
+  <div class="margin-bottom-4 display-none">
+    <%= render ValidatedFieldComponent.new(
+          name: :skip_state_id_expiration,
+          form: f,
+          input_html: { value: skip_state_id_expiration, class: 'skip-state-id-expiration' },
+          label_html: { class: 'usa-label' },
+          maxlength: 255,
+          required: true,
+        ) %>
+  </div>
+
   <div class="margin-bottom-4">
   <%= render MemorableDateComponent.new(
         content_tag: 'memorable-date',
@@ -141,24 +152,25 @@
         ) %>
   </div>
 
-  <div class="margin-bottom-4">
-    <%= render MemorableDateComponent.new(
-          content_tag: 'memorable-date',
-          name: :id_expiration,
-          day: parsed_expiration&.day,
-          month: parsed_expiration&.month,
-          year: parsed_expiration&.year,
-          required: true,
-          min: Time.zone.today + 1.day,
-          hint: t('in_person_proofing.form.state_id.expiration_date_hint'),
-          label: t('in_person_proofing.form.state_id.expiration_date'),
-          form: f,
-          error_messages: {
-            missing_month_day_year: t('simple_form.required.text'),
-            range_underflow: t('in_person_proofing.form.state_id.memorable_date.errors.expiration_date.expired'),
-          },
-        )
-    %>
+  <div class="margin-bottom-4 id_expiration">
+      <%= render MemorableDateComponent.new(
+            content_tag: 'memorable-date',
+            name: :id_expiration,
+            day: parsed_expiration&.day,
+            month: parsed_expiration&.month,
+            year: parsed_expiration&.year,
+            required: false,
+            can_skip: true,
+            min: Time.zone.today + 1.day,
+            hint: t('in_person_proofing.form.state_id.expiration_date_hint'),
+            label: t('in_person_proofing.form.state_id.expiration_date'),
+            form: f,
+            error_messages: {
+              missing_month_day_year: t('simple_form.required.text'),
+              range_underflow: t('in_person_proofing.form.state_id.memorable_date.errors.expiration_date.expired'),
+            },
+          )
+      %>
   </div>
 
   <h2> <%= t('in_person_proofing.headings.id_address') %> </h2>
