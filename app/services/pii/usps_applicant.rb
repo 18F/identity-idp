@@ -2,8 +2,21 @@
 
 module Pii
   UspsApplicant = RedactedStruct.new(
-    :first_name, :last_name, :address1, :address2, :city, :state, :zipcode,
-    :current_address_same_as_id, :id_number, :id_expiration, :document_type, keyword_init: true
+    :first_name,
+    :last_name,
+    :address1,
+    :address2,
+    :city,
+    :state,
+    :zipcode,
+    :current_address_same_as_id,
+    :id_number,
+    :id_expiration,
+    :document_type,
+    allowed_members: [
+      :document_type,
+    ],
+    keyword_init: true,
   ) do
     def self.from_idv_applicant(applicant)
       new(
