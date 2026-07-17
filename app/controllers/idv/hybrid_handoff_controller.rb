@@ -44,6 +44,8 @@ module Idv
         redirect_to idv_document_capture_url(step: :hybrid_handoff)
       elsif params[:type] == 'mobile'
         handle_phone_submission
+      elsif params[:type] == 'clear'
+        handle_clear_submission
       else
         update_vendor_if_test_mode_enabled
         bypass_send_link_steps
@@ -112,6 +114,28 @@ module Idv
       else
         redirect_to idv_hybrid_handoff_url
         idv_session.flow_path = nil
+      end
+
+      analytics.idv_doc_auth_hybrid_handoff_submitted(
+        **analytics_arguments.merge(telephony_form_response.to_h),
+      )
+    end
+
+    def handle_clear_submission
+      return rate_limited_failure if rate_limiter.limited?
+      rate_limiter.increment!
+      # idv_session.phone_for_mobile_flow = formatted_destination_phone
+      idv_session.flow_path = 'hybrid'
+      # telephony_result = send_link
+      # telephony_form_response = build_telephony_form_response(telephony_result)
+
+      clear_session = nil
+      if clear_session
+        redirect_to clear_session.url
+      else
+        idv_session.flow_path = nil
+        # redirect_to idv_hybrid_handoff_url
+        failure('unclear')
       end
 
       analytics.idv_doc_auth_hybrid_handoff_submitted(
