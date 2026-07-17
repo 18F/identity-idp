@@ -20,6 +20,12 @@ module Idv
                              )
       @selfie_required = idv_session.selfie_check_required
       @idv_how_to_verify_form = Idv::HowToVerifyForm.new
+      if (token = clear_session&.dig(:token))
+        @clear_url = UriService.add_params(
+          IdentityConfig.store.idv_clear_session_base_url,
+          { token: },
+        )
+      end
       set_how_to_verify_presenter
 
       Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).call(
@@ -44,8 +50,9 @@ module Idv
         redirect_to idv_document_capture_url(step: :hybrid_handoff)
       elsif params[:type] == 'mobile'
         handle_phone_submission
-      elsif params[:type] == 'clear'
-        handle_clear_submission
+      # elsif params[:type] == 'clear'
+      #   byebug
+      #   handle_clear_submission
       else
         update_vendor_if_test_mode_enabled
         bypass_send_link_steps
@@ -125,22 +132,23 @@ module Idv
       return rate_limited_failure if rate_limiter.limited?
       rate_limiter.increment!
       # idv_session.phone_for_mobile_flow = formatted_destination_phone
-      idv_session.flow_path = 'hybrid'
+      idv_session.flow_path = 'standard'
       # telephony_result = send_link
       # telephony_form_response = build_telephony_form_response(telephony_result)
 
-      clear_session = nil
-      if clear_session
-        redirect_to clear_session.url
+      if (token = clear_session&.dig(:token))
+        clear_url = UriService.add_params("https://verified.clearme.com/verify", { token: })
+        puts "\n\nclear_url:\t#{clear_url}"
+        redirect_to clear_url, allow_other_host: true
       else
         idv_session.flow_path = nil
         # redirect_to idv_hybrid_handoff_url
         failure('unclear')
       end
 
-      analytics.idv_doc_auth_hybrid_handoff_submitted(
-        **analytics_arguments.merge(telephony_form_response.to_h),
-      )
+      # analytics.idv_doc_auth_hybrid_handoff_submitted(
+      #   **analytics_arguments.merge(telephony_form_response.to_h),
+      # )
     end
 
     def send_link
@@ -285,6 +293,13 @@ module Idv
       if idv_session.desktop_test_mode_enabled? &&
          document_capture_session.doc_auth_vendor != Idp::Constants::Vendors::MOCK
         document_capture_session.update(doc_auth_vendor: Idp::Constants::Vendors::MOCK)
+      end
+    end
+
+    def clear_session
+      @clear_session ||= begin
+        clear_session_request = Proofing::Clear::Requests::SessionRequest.new
+        clear_session_request.fetch
       end
     end
   end

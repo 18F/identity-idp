@@ -40,6 +40,10 @@ RSpec.describe 'idv/hybrid_handoff/show.html.erb' do
       expect(rendered).to_not have_content(strip_tags(t('doc_auth.headings.verify_at_post_office')))
     end
   end
+  it 'renders the Clear action without Turbo so the redirect is followed by the browser' do
+    expect(rendered).to have_selector('a[href="/verify/hybrid_handoff?type=clear"][data-turbo="false"]', text: 'Clear')
+  end
+
   context 'when selfie is required' do
     before do
       @selfie_required = true

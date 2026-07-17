@@ -232,6 +232,7 @@ idv_clear_api_key: ''
 idv_clear_enabled_percent: 0
 idv_clear_project_id: ''
 idv_clear_redirect_url: ''
+idv_clear_session_base_url: ''
 idv_contact_phone_number: (844) 555-5555
 idv_doc_auth_mdl_enabled_percent: 0
 idv_gpo_verification_enabled: true
@@ -598,6 +599,7 @@ development:
   identity_pki_local_dev: true
   identity_verification_outcomes_report_emails: '["g@example.com", "h@example.com"]'
   identity_verification_outcomes_report_issuers: '["urn:gov:gsa:openidconnect.profiles:sp:sso:agency_name:app_name"]'
+  idv_clear_session_base_url: 'http://example.com/clear_session'
   idv_socure_phonerisk_name_correlation_score_threshold: 0.5
   idv_socure_phonerisk_score_threshold: 0.5
   in_person_enrollments_immediate_approval_enabled: true
