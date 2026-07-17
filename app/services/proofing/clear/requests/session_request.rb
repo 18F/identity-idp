@@ -15,8 +15,8 @@ module Proofing
         end
 
         def handle_http_response(response)
-          result = JSON.parse(response.body, symbolize_names: true)
-          puts result.inspect
+          JSON.parse(response.body, symbolize_names: true)
+          # puts result.inspect
           # extra = {}
           #   vendor_name: 'dos:passport',
           #   correlation_id_sent: correlation_id,
