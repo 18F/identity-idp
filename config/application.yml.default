@@ -232,7 +232,6 @@ idv_clear_api_key: ''
 idv_clear_enabled_percent: 0
 idv_clear_project_id: ''
 idv_clear_redirect_url: ''
-idv_clear_session_base_url: ''
 idv_contact_phone_number: (844) 555-5555
 idv_doc_auth_mdl_enabled_percent: 0
 idv_gpo_verification_enabled: true

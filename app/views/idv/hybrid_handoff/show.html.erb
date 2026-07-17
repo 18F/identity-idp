@@ -127,12 +127,18 @@
           ) %>
     </div>
     <div class="grid-col-12 tablet:grid-col-fill">
-      <%= link_to(
-            'Clear',
-            @clear_url,
-            class: 'usa-button usa-button--outline margin-bottom-4',
-            data: { turbo: false },
-          ) %>
+      <%= simple_form_for(
+            :doc_auth,
+            url: url_for(type: :clear),
+            method: 'PUT',
+            class: 'margin-bottom-4',
+            html: {
+              id: 'form-to-submit-through-clear',
+              aria: { label: 'Clear' },
+            },
+          ) do |f| %>
+        <%= f.submit 'Clear', outline: true %>
+      <% end %>
     </div>
   </div>
 <% end %>
