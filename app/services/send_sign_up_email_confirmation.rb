@@ -3,8 +3,9 @@
 class SendSignUpEmailConfirmation
   attr_reader :user
 
-  def initialize(user)
+  def initialize(user, email_address: nil)
     @user = user
+    @email_address = email_address
   end
 
   def call(request_id: nil)
@@ -29,10 +30,7 @@ class SendSignUpEmailConfirmation
   end
 
   def email_address
-    @email_address ||= begin
-      handle_multiple_email_address_error if user.email_addresses.count > 1
-      user.email_addresses.take
-    end
+    @email_address ||= user.email_addresses.order('confirmed_at ASC NULLS FIRST').take
   end
 
   def valid_confirmation_token_exists?
@@ -58,9 +56,5 @@ class SendSignUpEmailConfirmation
       user: user,
       email_address: email_address,
     ).suspended_create_account.deliver_now_or_later
-  end
-
-  def handle_multiple_email_address_error
-    raise 'sign up user has multiple email address records'
   end
 end

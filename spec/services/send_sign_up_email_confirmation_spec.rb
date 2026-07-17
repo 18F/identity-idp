@@ -40,6 +40,28 @@ RSpec.describe SendSignUpEmailConfirmation do
       expect(email_address.confirmed_at).to eq(nil)
     end
 
+    context 'when the user has multiple unconfirmed email address records' do
+      let!(:second_email_address) do
+        create(:email_address, user: user, confirmed_at: nil, email: 'second@example.com')
+      end
+
+      subject { described_class.new(user, email_address: second_email_address) }
+
+      it 'does not raise and confirms the passed-in email address record' do
+        expect { subject.call(request_id: request_id) }.to_not raise_error
+
+        expect(second_email_address.reload.confirmation_token).to eq(confirmation_token)
+        expect(second_email_address.confirmation_sent_at).to be_within(5.seconds).of(Time.zone.now)
+
+        expect_delivered_email_count(1)
+        expect_delivered_email(
+          to: [second_email_address.email],
+          subject: t('user_mailer.email_confirmation_instructions.subject'),
+          body: [request_id],
+        )
+      end
+    end
+
     context 'when the user already has a confirmation token' do
       let(:email_address) do
         invalid_confirmation_sent_at =
