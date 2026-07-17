@@ -20,12 +20,6 @@ module Idv
                              )
       @selfie_required = idv_session.selfie_check_required
       @idv_how_to_verify_form = Idv::HowToVerifyForm.new
-      if (token = clear_session&.dig(:token))
-        @clear_url = UriService.add_params(
-          IdentityConfig.store.idv_clear_session_base_url,
-          { token: },
-        )
-      end
       set_how_to_verify_presenter
 
       Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer]).call(
@@ -50,9 +44,8 @@ module Idv
         redirect_to idv_document_capture_url(step: :hybrid_handoff)
       elsif params[:type] == 'mobile'
         handle_phone_submission
-      # elsif params[:type] == 'clear'
-      #   byebug
-      #   handle_clear_submission
+      elsif params[:type] == 'clear'
+        handle_clear_submission
       else
         update_vendor_if_test_mode_enabled
         bypass_send_link_steps
@@ -136,15 +129,17 @@ module Idv
       # telephony_result = send_link
       # telephony_form_response = build_telephony_form_response(telephony_result)
 
-      if (token = clear_session&.dig(:token))
-        clear_url = UriService.add_params("https://verified.clearme.com/verify", { token: })
-        puts "\n\nclear_url:\t#{clear_url}"
-        redirect_to clear_url, allow_other_host: true
-      else
-        idv_session.flow_path = nil
-        # redirect_to idv_hybrid_handoff_url
-        failure('unclear')
-      end
+      # if (token = clear_session&.dig(:token))
+      #   clear_url = UriService.add_params("https://verified.clearme.com/verify", { token: })
+      #   puts "\n\nclear_url:\t#{clear_url}"
+      #   redirect_to clear_url, allow_other_host: true
+      # else
+      #   idv_session.flow_path = nil
+      #   # redirect_to idv_hybrid_handoff_url
+      #   failure('unclear')
+      # end
+
+      redirect_to idv_clear_document_capture_url
 
       # analytics.idv_doc_auth_hybrid_handoff_submitted(
       #   **analytics_arguments.merge(telephony_form_response.to_h),

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Idv
-  module Socure
+  module Clear
     class DocumentCaptureController < ApplicationController
       include Idv::AvailabilityConcern
       include IdvStepConcern
@@ -9,35 +9,43 @@ module Idv
       include RenderConditionConcern
       include DocAuthVendorConcern
 
-      check_or_render_not_found -> { IdentityConfig.store.socure_docv_enabled }
+      # check_or_render_not_found -> { IdentityConfig.store.socure_docv_enabled }
 
-      before_action :confirm_not_rate_limited, except: :update
-      before_action -> do
-        confirm_not_rate_limited(check_last_submission: true)
-      end, only: :update
+      # before_action :confirm_not_rate_limited, except: :update
+      # before_action -> do
+      #   confirm_not_rate_limited(check_last_submission: true)
+      # end, only: :update
 
-      before_action :confirm_step_allowed
-      before_action :update_doc_auth_vendor, only: :show
-      before_action -> do
-        redirect_to_correct_vendor(Idp::Constants::Vendors::CLEAR, in_hybrid_mobile: false)
-      end, only: :show
+      # before_action :confirm_step_allowed
+      # before_action :update_doc_auth_vendor, only: :show
+      # before_action -> do
+      #   redirect_to_correct_vendor(Idp::Constants::Vendors::CLEAR, in_hybrid_mobile: false)
+      # end, only: :show
 
       def show
+        timer = JobHelpers::Timer.new
+        clear_session = timer.time('vendor_request') do
+          clear_session_request = Proofing::Clear::Requests::SessionRequest.new
+          clear_session_request.fetch
+        end
 
-      
-      if token.present?
-        # idv_session.flow_path = 'standard'
-        @url = "https://verified.clearme.com/verify?token=#{token}"
+        if (token = clear_session&.dig(:token))
+          clear_endpoint = UriService.add_params(
+            [IdentityConfig.store.idv_clear_api_base_url, 'verify'].join('/'),
+            { token: },
+          )
+          puts "\n\nredirecting to:\t#{clear_endpoint}\n\n"
+          redirect_to(clear_endpoint, allow_other_host: true)
+        end
 
+        # analytics.idv_doc_auth_document_capture_visited(**analytics_arguments)
+        # idv_session.socure_docv_wait_polling_started_at = nil
 
-        analytics.idv_doc_auth_document_capture_visited(**analytics_arguments)
-        idv_session.socure_docv_wait_polling_started_at = nil
+        # Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer])
+        #   .call('socure_document_capture', :view, true)
 
-        Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer])
-          .call('socure_document_capture', :view, true)
-
-        @selfie_check_required = resolved_authn_context_result.facial_match?
-        @hybrid_flow = false
+        # @selfie_check_required = resolved_authn_context_result.facial_match?
+        # @hybrid_flow = false
         # @passport_requested = document_capture_session.passport_requested?
         # @mdl_requested = document_capture_session.mdl_requested?
         # @url = document_capture_session.socure_docv_capture_app_url
@@ -52,59 +60,56 @@ module Idv
         #   liveness_checking_required: resolved_authn_context_result.facial_match?,
         #   document_capture_session:,
         # )
-        timer = JobHelpers::Timer.new
-        clear_session_response = timer.time('vendor_request') do
-          clear_session_request = Proofing::Clear::Requests::SessionRequest.new
-          clear_session_request.fetch
-        end
+        
 
-        @url = document_response.dig(:data, :url)
+        # if clear_session_response
+        # @url = document_response.dig(:data, :url)
 
-        track_document_request_event(document_request:, document_response:, timer:)
-        socure_docv_transaction_token = document_response.dig(
-          :data,
-          :docvTransactionToken,
-        )
+        # track_document_request_event(document_request:, document_response:, timer:)
+        # socure_docv_transaction_token = document_response.dig(
+        #   :data,
+        #   :docvTransactionToken,
+        # )
 
-        # placeholder until we get an error page for url not being present
-        if @url.nil?
-          redirect_to idv_socure_document_capture_errors_url(
-            error_code: :url_not_found,
-            transaction_token: socure_docv_transaction_token,
-          )
-          return
-        end
+        # # placeholder until we get an error page for url not being present
+        # if @url.nil?
+        #   redirect_to idv_socure_document_capture_errors_url(
+        #     error_code: :url_not_found,
+        #     transaction_token: socure_docv_transaction_token,
+        #   )
+        #   return
+        # end
 
-        document_capture_session.socure_docv_transaction_token = socure_docv_transaction_token
-        document_capture_session.socure_docv_capture_app_url = document_response.dig(
-          :data,
-          :url,
-        )
-        document_capture_session.save
+        # document_capture_session.socure_docv_transaction_token = socure_docv_transaction_token
+        # document_capture_session.socure_docv_capture_app_url = document_response.dig(
+        #   :data,
+        #   :url,
+        # )
+        # document_capture_session.save
       end
 
       def update
-        return if wait_for_result?
+        # return if wait_for_result?
 
-        clear_future_steps!
-        idv_session.redo_document_capture = nil # done with this redo
-        # Not used in standard flow, here for data consistency with hybrid flow.
-        document_capture_session.confirm_ocr
+        # clear_future_steps!
+        # idv_session.redo_document_capture = nil # done with this redo
+        # # Not used in standard flow, here for data consistency with hybrid flow.
+        # document_capture_session.confirm_ocr
 
-        result = handle_stored_result
-        # TODO: new analytics event?
-        analytics.idv_doc_auth_document_capture_submitted(**result.to_h.merge(analytics_arguments))
+        # result = handle_stored_result
+        # # TODO: new analytics event?
+        # analytics.idv_doc_auth_document_capture_submitted(**result.to_h.merge(analytics_arguments))
 
-        Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer])
-          .call('socure_document_capture', :update, true)
+        # Funnel::DocAuth::RegisterStep.new(current_user.id, sp_session[:issuer])
+        #   .call('socure_document_capture', :update, true)
 
-        if result.success?
-          redirect_to idv_ssn_url
-        else
-          redirect_to idv_socure_document_capture_errors_url(
-            transaction_token: document_capture_session.socure_docv_transaction_token,
-          )
-        end
+        # if result.success?
+        #   redirect_to idv_ssn_url
+        # else
+        #   redirect_to idv_socure_document_capture_errors_url(
+        #     transaction_token: document_capture_session.socure_docv_transaction_token,
+        #   )
+        # end
       end
 
       def self.step_info
@@ -113,10 +118,11 @@ module Idv
           controller: self,
           next_steps: [:ssn, :ipp_ssn],
           preconditions: ->(idv_session:, user:) {
-            idv_session.flow_path == 'standard' && (
-                # mobile
-                idv_session.skip_hybrid_handoff ||
-                idv_session.desktop_test_mode_enabled?)
+            # idv_session.flow_path == 'standard' && (
+            #     # mobile
+            #     idv_session.skip_hybrid_handoff ||
+            #     idv_session.desktop_test_mode_enabled?)
+            true
           },
           undo_step: ->(idv_session:, user:) do
             idv_session.pii_from_doc = nil
@@ -191,6 +197,13 @@ module Idv
           selfie_check_required: resolved_authn_context_result.facial_match?,
           pii_like_keypaths: [[:pii]],
         }.merge(ab_test_analytics_buckets)
+      end
+
+      def clear_session
+        @clear_session ||= begin
+          clear_session_request = Proofing::Clear::Requests::SessionRequest.new
+          clear_session_request.fetch
+        end
       end
     end
   end
