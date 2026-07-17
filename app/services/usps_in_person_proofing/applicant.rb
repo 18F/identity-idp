@@ -47,7 +47,9 @@ module UspsInPersonProofing
         email: IdentityConfig.store.usps_ipp_enrollment_status_update_email_address.presence,
         document_number: applicant.id_number,
         document_expiration_date:,
-        document_type: USPS_DOCUMENT_TYPE_MAPPINGS[applicant.document_type],
+        document_type: USPS_DOCUMENT_TYPE_MAPPINGS[
+          applicant.document_type.presence || enrollment.document_type,
+        ],
       )
     end
 
