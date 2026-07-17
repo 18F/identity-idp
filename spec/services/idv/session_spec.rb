@@ -501,8 +501,20 @@ RSpec.describe Idv::Session do
     context 'when the document is a state ID' do
       let(:document_type_received) { 'drivers_license' }
 
-      it 'builds a Pii::StateId' do
+      it 'builds a Pii::StateId that does not require a residential address' do
         expect(subject.pii_from_doc).to be_a(Pii::StateId)
+        expect(subject.pii_from_doc.residential_address_required?).to be(false)
+      end
+    end
+
+    context 'when the document is a Puerto Rico state ID' do
+      before { subject.pii_from_doc = { document_type_received:, first_name: 'JANE', state: 'PR' } }
+
+      let(:document_type_received) { 'drivers_license' }
+
+      it 'builds a Pii::StateId that requires a residential address' do
+        expect(subject.pii_from_doc).to be_a(Pii::StateId)
+        expect(subject.pii_from_doc.residential_address_required?).to be(true)
       end
     end
   end

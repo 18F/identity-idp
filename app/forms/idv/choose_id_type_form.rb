@@ -7,8 +7,9 @@ module Idv
     validate :chosen_id_type_valid?
     attr_reader :chosen_id_type
 
-    def initialize(mdl_enabled: false)
+    def initialize(mdl_enabled: false, passport_cards_enabled: false)
       @mdl_enabled = mdl_enabled
+      @passport_cards_enabled = passport_cards_enabled
     end
 
     def submit(params)
@@ -34,8 +35,9 @@ module Idv
     private
 
     def allowed_types
-      types = Idp::Constants::DocumentTypes::PASSPORT_TYPES +
+      types = Idp::Constants::DocumentTypes::SUPPORTED_PASSPORT_TYPES +
               Idp::Constants::DocumentTypes::SUPPORTED_STATE_ID_TYPES
+      types += [Idp::Constants::DocumentTypes::PASSPORT_CARD] if @passport_cards_enabled
       types += [Idp::Constants::DocumentTypes::MDL] if @mdl_enabled
       types
     end
