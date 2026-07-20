@@ -204,6 +204,7 @@ RSpec.describe Idv::InPerson::StateIdController do
           step: 'state_id',
           birth_year: dob[:year],
           document_zip_code: identity_doc_zipcode&.slice(0, 5),
+          asserted_id_type:,
           opted_in_to_in_person_proofing: true,
         }
       end

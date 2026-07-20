@@ -38,7 +38,7 @@ RSpec.describe Idv::StateIdForm do
   let(:first_name) { Faker::Name.first_name }
   let(:dob) { valid_dob }
   let(:id_expiration) { valid_exp }
-  let(:asserted_id_type) { 'drivers_license' }
+  let(:asserted_id_type) { Idp::Constants::DocumentTypes::DRIVERS_LICENSE }
   let(:params) do
     {
       first_name:,
@@ -66,30 +66,32 @@ RSpec.describe Idv::StateIdForm do
   let(:expired_params) { params.merge(id_expiration: expired_exp) }
   let(:name_error_params) { params.merge(first_name: Faker::Name.first_name + invalid_char) }
   let(:pii) { nil }
+
   describe '#submit' do
     let(:result) { subject.submit(params) }
 
     context 'when the form is valid' do
-      let(:form_response) do
+      let(:expected_extra) do
+        {
+          birth_year: valid_dob[:year],
+          document_zip_code: params[:identity_doc_zipcode].slice(0, 5),
+          asserted_id_type:,
+        }
+      end
+      let(:expected_form_response) do
         FormResponse.new(
           success: true,
           errors: {},
-          extra: { birth_year: valid_dob[:year],
-                   document_zip_code: params[:identity_doc_zipcode].slice(0, 5) },
+          extra: expected_extra,
         )
       end
 
       it 'returns a successful form response' do
-        expect(result).to eq(form_response)
+        expect(result).to eq(expected_form_response)
       end
 
       it 'logs extra analytics attributes' do
-        expect(result.extra).to eq(
-          {
-            birth_year: valid_dob[:year],
-            document_zip_code: params[:identity_doc_zipcode].slice(0, 5),
-          },
-        )
+        expect(result.extra).to eq(expected_extra)
       end
     end
 
