@@ -62,3 +62,8 @@ en:
       sms: A new personal key has been issued for your %{app_name} account. If this wasn't you, reset your password.
     personal_key_sign_in_notice:
       sms: Your personal key was just used to sign into your %{app_name} account. If this wasn't you, reset your password.
+    proofing_completion_confirmation:
+      sms: |-
+        %{app_name} Identity verified on %{proof_date} for ${sp_or_app_name}.
+
+        Not you? Sign in, update your password and authentication methods, report fraud: @%{contact_url}

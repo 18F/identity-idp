@@ -59,3 +59,8 @@ zh:
       sms: 已给你的 %{app_name} 账户发放了一个新个人密钥。如果不是你，请重设你的密码。
     personal_key_sign_in_notice:
       sms: 你的个人密钥刚被用来登录你的 %{app_name} 账户。如果不是你，请重设你的密码。
+    proofing_completion_confirmation:
+      sms: |-
+        %{app_name} 已于 %{proof_date} 为 ${sp_or_app_name}.
+
+        不是您本人？请登录、更新密码及验证方式，或举报欺诈行为: @%{contact_url}
