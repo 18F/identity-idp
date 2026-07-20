@@ -216,6 +216,7 @@ module Idv
 
     def record_user_proofing_events
       return unless historical_events_enabled?
+      return unless idv_requested?
 
       current_user.active_profile.create_user_proofing_event(
         attempt_events:,
