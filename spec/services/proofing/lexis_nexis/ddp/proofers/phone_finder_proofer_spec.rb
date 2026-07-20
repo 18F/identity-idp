@@ -130,10 +130,17 @@ RSpec.describe Proofing::LexisNexis::Ddp::Proofers::PhoneFinderProofer do
             }.to_json
           end
 
-          it 'returns a nil result' do
+          it 'returns a result with nil metadata values' do
             result = proofer.proof(proofing_applicant)
 
-            expect(result.result).to be_nil
+            expect(result.result).to eq(
+              phone_type: nil,
+              account_telephone_type: nil,
+              risk_indicator_status: nil,
+              risk_count_high: nil,
+              risk_count_med: nil,
+              risk_count_low: nil,
+            )
           end
         end
       end

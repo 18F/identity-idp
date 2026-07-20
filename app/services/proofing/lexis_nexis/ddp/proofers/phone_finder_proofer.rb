@@ -55,8 +55,6 @@ module Proofing
           end
 
           def phone_metadata(response_body)
-            return unless response_body.is_a?(Hash)
-
             {
               phone_type: response_body['phonefinder.primary_phone.phone_type'],
               account_telephone_type: response_body['account_telephone_type'],
