@@ -232,6 +232,7 @@ RSpec.describe SignUp::CompletionsController do
           needs_completion_screen_reason: :new_sp,
           in_account_creation_flow: true,
         )
+        expect(@analytics).to_not have_logged_event(:historic_event_data_released)
       end
 
       it 'updates verified attributes' do
@@ -366,6 +367,7 @@ RSpec.describe SignUp::CompletionsController do
           in_person_proofing_status: 'passed',
           doc_auth_result: 'Passed',
         )
+        expect(@analytics).to_not have_logged_event(:historic_event_data_released)
       end
 
       it 'updates verified attributes' do
@@ -459,6 +461,12 @@ RSpec.describe SignUp::CompletionsController do
                   sp: current_sp,
                 )
                 expect(proofing_event.service_provider_ids_sent).to include(current_sp.id)
+              end
+
+              it 'tracks analytics' do
+                patch :update
+
+                expect(@analytics).to have_logged_event(:historic_event_data_released)
               end
             end
 

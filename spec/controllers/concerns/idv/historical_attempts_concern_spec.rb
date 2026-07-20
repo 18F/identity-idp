@@ -16,6 +16,7 @@ RSpec.describe Idv::HistoricalAttemptsConcern, type: :controller do
   let(:encrypted_existing_events) do
     pii_encryptor.encrypt(idv_attempts.to_json, user_uuid: user.uuid)
   end
+  let(:acr_values) { Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF }
 
   controller ApplicationController do
     include Idv::HistoricalAttemptsConcern
@@ -28,9 +29,7 @@ RSpec.describe Idv::HistoricalAttemptsConcern, type: :controller do
       current_sp: sp,
       current_user: user,
       sp_from_sp_session: sp,
-      sp_session: {
-        acr_values: Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF,
-      },
+      sp_session: { acr_values: },
       user_session: { 'idv/attempts' => idv_attempts },
     )
     allow(IdentityConfig.store).to receive_messages(
@@ -39,9 +38,11 @@ RSpec.describe Idv::HistoricalAttemptsConcern, type: :controller do
       historical_attempts_api_enabled: true,
     )
 
-    allow(user.active_profile).to receive(:decrypt_user_proofing_events).and_return(
-      idv_attempts.to_json,
-    )
+    if user.active_profile.present?
+      allow(user.active_profile).to receive(:decrypt_user_proofing_events).and_return(
+        idv_attempts.to_json,
+      )
+    end
   end
 
   describe '#cache_user_proofing_events' do
@@ -70,7 +71,7 @@ RSpec.describe Idv::HistoricalAttemptsConcern, type: :controller do
       context 'user does not have an active profile' do
         let(:user) { create(:user, :fully_registered, password:, profiles: []) }
         it 'does not attempt to decrypt events' do
-          expect(user.active_profile).to_not receive(:decrypt_user_proofing_events)
+          expect(AttemptsApi::Cacher).to_not receive(:save)
 
           controller.cache_user_proofing_events(password:)
         end
@@ -122,6 +123,43 @@ RSpec.describe Idv::HistoricalAttemptsConcern, type: :controller do
 
           it 'does not raise an error' do
             expect { controller.cache_user_proofing_events(password:) }.to_not raise_error
+          end
+        end
+      end
+    end
+  end
+
+  describe '#historical_events_need_to_be_sent' do
+    context 'the request is not an idv request' do
+      let(:acr_values) { Saml::Idp::Constants::IAL_AUTH_ONLY_ACR }
+      it 'returns false with a message' do
+        expect(controller.send_historic_events?).to eq([false, :idv_not_requested])
+      end
+    end
+
+    context 'when the request is an idv request' do
+      context 'when user proofing event does not exist' do
+        it 'returns false with a message' do
+          expect(controller.send_historic_events?).to eq([false, :no_user_proofing_event])
+        end
+      end
+
+      context 'when user proofing event exists' do
+        let(:service_provider_ids_sent) { [] }
+        before do
+          user.active_profile.build_user_proofing_event(service_provider_ids_sent:)
+        end
+
+        context 'when historic data have not been released to the service provider' do
+          it 'returns true with no message' do
+            expect(controller.send_historic_events?).to eq([true, nil])
+          end
+        end
+
+        context 'The events have already been released to the service provider' do
+          let(:service_provider_ids_sent) { [sp.id] }
+          it 'returns false with a message' do
+            expect(controller.send_historic_events?).to eq([false, :already_sent])
           end
         end
       end
