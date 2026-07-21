@@ -11,7 +11,9 @@ RSpec.describe 'In Person Proofing: opt in ipp applicant expanded payload', js: 
   let(:ipp_service_provider) { create(:service_provider, :active, :in_person_proofing_enabled) }
   let(:user) { user_with_2fa }
   let(:usps_expected_document_type) do
-    UspsInPersonProofing::USPS_DOCUMENT_TYPE_MAPPINGS[InPersonEnrollment::DOCUMENT_TYPE_STATE_ID]
+    UspsInPersonProofing::USPS_DOCUMENT_TYPE_MAPPINGS[
+      Idp::Constants::DocumentTypes::DRIVERS_LICENSE,
+    ]
   end
   let(:usps_expected_expiration_date) do
     Time.zone.parse(InPersonHelper::GOOD_STATE_ID_EXPIRATION).to_i

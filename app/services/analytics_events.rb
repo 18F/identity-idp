@@ -3472,6 +3472,7 @@ module AnalyticsEvents
   # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
   # @param [String] birth_year Birth year from document
   # @param [String] document_zip_code ZIP code from document
+  # @param [String] asserted_id_type Type of ID asserted by the user
   # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
   # User submitted state id
   def idv_in_person_proofing_state_id_submitted(
@@ -3481,6 +3482,7 @@ module AnalyticsEvents
     analytics_id:,
     birth_year:,
     document_zip_code:,
+    asserted_id_type:,
     skip_hybrid_handoff: nil,
     error_details: nil,
     opted_in_to_in_person_proofing: nil,
@@ -3495,6 +3497,7 @@ module AnalyticsEvents
       error_details:,
       birth_year:,
       document_zip_code:,
+      asserted_id_type:,
       skip_hybrid_handoff:,
       opted_in_to_in_person_proofing:,
       **extra,
