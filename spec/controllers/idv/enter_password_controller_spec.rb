@@ -1173,6 +1173,12 @@ RSpec.describe Idv::EnterPasswordController do
               expect(event.profile_id).to eq(user.profiles.last.id)
             end
 
+            it 'tracks an analytic event' do
+              put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+
+              expect(@analytics).to have_logged_event(:historic_event_data_saved)
+            end
+
             it 'caches user proofing events' do
               put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
               data = controller.user_session[:encrypted_proofing_events]
@@ -1197,6 +1203,8 @@ RSpec.describe Idv::EnterPasswordController do
 
           it 'does not create a UserProofingEvent for the profile' do
             put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+
+            expect(@analytics).to_not have_logged_event(:historic_event_data_saved)
             expect(UserProofingEvent.count).to eq(0)
           end
         end
@@ -1207,6 +1215,8 @@ RSpec.describe Idv::EnterPasswordController do
 
         it 'does not create a UserProofingEvent for the profile' do
           put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+
+          expect(@analytics).to_not have_logged_event(:historic_event_data_saved)
           expect(UserProofingEvent.count).to eq(0)
         end
       end

@@ -854,6 +854,18 @@ module AnalyticsEvents
     )
   end
 
+  # Historic Attempt data was saved when a user completed the IdV process
+  def historic_event_data_saved
+    track_event(:historic_event_data_saved)
+  end
+
+  # @param [Boolean] success Whether the historic attempt data was released
+  # @param [:idv_not_requested, :no_user_proofing_event, :already_sent, nil] exception
+  # Historic data was potentially sent when a user accessed an Attempts Api Consumer App
+  def historic_event_data_released(success:, exception: nil, **extra)
+    track_event(:historic_event_data_released, success:, exception:, **extra)
+  end
+
   # User visited sign-in URL from the "You've been successfully verified email" CTA button
   # @param issuer [String] the ServiceProvider.issuer
   # @param campaign_id [String] the email campaign ID

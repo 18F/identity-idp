@@ -25,7 +25,7 @@ module SignUp
       update_verified_attributes
       send_in_person_completion_survey
       notify_user_of_connected_sp
-      send_historical_events if historical_events_need_be_sent?
+      send_historical_events
       if selected_email_id_for_linked_identity.nil?
         user_session[:selected_email_id_for_linked_identity] = current_user
           .last_sign_in_email_address.id
@@ -142,11 +142,19 @@ module SignUp
     end
 
     def send_historical_events
-      historical_attempts = AttemptsApi::Cacher.new(current_user, user_session).fetch
+      return unless historical_events_enabled?
+      return unless current_sp&.attempts_api_enabled?
 
-      AttemptsApi::Tracker.write_existing_user_events(historical_attempts:, sp: current_sp)
+      send, msg = send_historic_events?
+      if send
+        historical_attempts = AttemptsApi::Cacher.new(current_user, user_session).fetch
 
-      existing_user_proofing_event.add_sp_sent(current_sp.id)
+        AttemptsApi::Tracker.write_existing_user_events(historical_attempts:, sp: current_sp)
+
+        existing_user_proofing_event.add_sp_sent(current_sp.id)
+      end
+
+      analytics.historic_event_data_released(success: send, exception: msg)
     end
 
     def pii
