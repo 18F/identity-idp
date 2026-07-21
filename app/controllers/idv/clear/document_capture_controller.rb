@@ -30,12 +30,10 @@ module Idv
         end
 
         if (token = clear_session&.dig(:token))
-          clear_endpoint = UriService.add_params(
+          @clear_endpoint = UriService.add_params(
             [IdentityConfig.store.idv_clear_api_base_url, 'verify'].join('/'),
             { token: },
           )
-          puts "\n\nredirecting to:\t#{clear_endpoint}\n\n"
-          redirect_to(clear_endpoint, allow_other_host: true)
         end
 
         # analytics.idv_doc_auth_document_capture_visited(**analytics_arguments)
