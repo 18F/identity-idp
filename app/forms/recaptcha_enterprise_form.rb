@@ -10,7 +10,9 @@ class RecaptchaEnterpriseForm
               :recaptcha_token,
               :score_threshold,
               :analytics,
-              :extra_analytics_properties
+              :extra_analytics_properties,
+              :user_agent,
+              :user_ip_address
 
   validate :validate_token_exists
   validate :validate_recaptcha_result
@@ -19,12 +21,16 @@ class RecaptchaEnterpriseForm
     recaptcha_action: nil,
     score_threshold: 0.0,
     analytics: nil,
-    extra_analytics_properties: {}
+    extra_analytics_properties: {},
+    user_agent: nil,
+    user_ip_address: nil
   )
     @score_threshold = score_threshold
     @analytics = analytics
     @recaptcha_action = recaptcha_action
     @extra_analytics_properties = extra_analytics_properties
+    @user_agent = user_agent
+    @user_ip_address = user_ip_address
   end
 
   def exempt?
@@ -54,7 +60,12 @@ class RecaptchaEnterpriseForm
   end
 
   def recaptcha_result
-    RecaptchaService.new.create_assessment(recaptcha_token:, recaptcha_action:)
+    RecaptchaService.new.create_assessment(
+      recaptcha_token:,
+      recaptcha_action:,
+      user_agent:,
+      user_ip_address:,
+    )
   end
 
   def faraday

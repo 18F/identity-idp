@@ -453,6 +453,7 @@ module IdentityConfig
     config.add(:raise_on_component_validation_error, type: :boolean)
     config.add(:raise_on_missing_title, type: :boolean)
     config.add(:reauthn_window, type: :integer)
+    config.add(:recaptcha_enterprise_additional_context_enabled, type: :boolean)
     config.add(:recaptcha_enterprise_api_key, type: :string)
     config.add(:recaptcha_enterprise_project_id, type: :string)
     config.add(:recaptcha_mock_validator, type: :boolean)

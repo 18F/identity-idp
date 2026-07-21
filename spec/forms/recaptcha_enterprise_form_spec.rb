@@ -5,6 +5,8 @@ RSpec.describe RecaptchaEnterpriseForm do
   let(:analytics) { FakeAnalytics.new }
   let(:extra_analytics_properties) { {} }
   let(:recaptcha_action) { 'example_action' }
+  let(:user_agent) { 'Example/1.0' }
+  let(:user_ip_address) { '127.0.0.1' }
 
   subject(:form) do
     described_class.new(
@@ -12,6 +14,8 @@ RSpec.describe RecaptchaEnterpriseForm do
       score_threshold:,
       analytics:,
       extra_analytics_properties:,
+      user_agent:,
+      user_ip_address:,
     )
   end
 
@@ -102,7 +106,7 @@ RSpec.describe RecaptchaEnterpriseForm do
       before do
         allow(RecaptchaService).to receive(:new).and_return(recaptcha_service)
         allow(recaptcha_service).to receive(:create_assessment)
-          .with(recaptcha_token: token, recaptcha_action:)
+          .with(recaptcha_token: token, recaptcha_action:, user_agent:, user_ip_address:)
           .and_return(RecaptchaService::RecaptchaResult.new(success: false, reasons: ['EXPIRED']))
       end
 
@@ -146,7 +150,7 @@ RSpec.describe RecaptchaEnterpriseForm do
       before do
         allow(RecaptchaService).to receive(:new).and_return(recaptcha_service)
         allow(recaptcha_service).to receive(:create_assessment)
-          .with(recaptcha_token: token, recaptcha_action:)
+          .with(recaptcha_token: token, recaptcha_action:, user_agent:, user_ip_address:)
           .and_return(RecaptchaService::RecaptchaResult.new(
             success: true,
             reasons: [risk_analysis_reason],
@@ -225,7 +229,7 @@ RSpec.describe RecaptchaEnterpriseForm do
       before do
         allow(RecaptchaService).to receive(:new).and_return(recaptcha_service)
         allow(recaptcha_service).to receive(:create_assessment)
-          .with(recaptcha_token: token, recaptcha_action:)
+          .with(recaptcha_token: token, recaptcha_action:, user_agent:, user_ip_address:)
           .and_return(RecaptchaService::RecaptchaResult.new(
             success: true,
             reasons: ['LOW_CONFIDENCE'],

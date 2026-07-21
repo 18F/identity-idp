@@ -6,8 +6,15 @@ RSpec.describe RecaptchaService do
   describe '#create_assessment' do
     let(:recaptcha_token) { 'TOKEN' }
     let(:recaptcha_action) { 'ACTION' }
+    let(:user_agent) { 'Example/1.0' }
+    let(:user_ip_address) { '127.0.0.1' }
     subject(:create_assessment) do
-      RecaptchaService.new.create_assessment(recaptcha_token:, recaptcha_action:)
+      RecaptchaService.new.create_assessment(
+        recaptcha_token:,
+        recaptcha_action:,
+        user_agent:,
+        user_ip_address:,
+      )
     end
     let(:recaptcha_client) { instance_double('Google::Cloud::RecaptchaEnterprise::RecaptchaEnterpriseService::Client') }
     let(:recaptcha_assessment) { instance_double('Google::Cloud::RecaptchaEnterprise::Assessment') }
@@ -78,6 +85,77 @@ RSpec.describe RecaptchaService do
           expect(result.assessment_id).to eq('ASSESSMENT_ID')
           expect(result.score).to eq(0.1)
           expect(result.reasons).to eq('AUTOMATION')
+        end
+
+        it 'includes the user agent and user ip address in the assessment event' do
+          allow(FeatureManagement).to receive(:recaptcha_enterprise_additional_context_enabled?)
+            .and_return(true)
+
+          expect(recaptcha_client).to receive(:create_assessment) do |request|
+            event = request[:assessment][:event]
+            expect(event[:user_agent]).to eq(user_agent)
+            expect(event[:user_ip_address]).to eq(user_ip_address)
+            recaptcha_assessment
+          end
+
+          create_assessment
+        end
+
+        context 'when additional context is enabled' do
+          before do
+            allow(FeatureManagement).to receive(:recaptcha_enterprise_additional_context_enabled?)
+              .and_return(true)
+          end
+
+          context 'when the user agent and user ip address are not provided' do
+            subject(:create_assessment) do
+              RecaptchaService.new.create_assessment(recaptcha_token:, recaptcha_action:)
+            end
+
+            it 'omits them from the assessment event' do
+              expect(recaptcha_client).to receive(:create_assessment) do |request|
+                event = request[:assessment][:event]
+                expect(event).not_to have_key(:user_agent)
+                expect(event).not_to have_key(:user_ip_address)
+                recaptcha_assessment
+              end
+
+              create_assessment
+            end
+          end
+
+          context 'when the user agent and user ip address are blank' do
+            let(:user_agent) { '' }
+            let(:user_ip_address) { '' }
+
+            it 'omits them from the assessment event' do
+              expect(recaptcha_client).to receive(:create_assessment) do |request|
+                event = request[:assessment][:event]
+                expect(event).not_to have_key(:user_agent)
+                expect(event).not_to have_key(:user_ip_address)
+                recaptcha_assessment
+              end
+
+              create_assessment
+            end
+          end
+        end
+
+        context 'when additional context is disabled' do
+          before do
+            allow(FeatureManagement).to receive(:recaptcha_enterprise_additional_context_enabled?)
+              .and_return(false)
+          end
+
+          it 'omits the user agent and user ip address from the assessment event' do
+            expect(recaptcha_client).to receive(:create_assessment) do |request|
+              event = request[:assessment][:event]
+              expect(event.keys).to contain_exactly(:site_key, :token)
+              recaptcha_assessment
+            end
+
+            create_assessment
+          end
         end
       end
     end
