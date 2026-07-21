@@ -30,13 +30,20 @@ class NewPhoneForm
 
   alias_method :setup_voice_preference?, :setup_voice_preference
 
-  def initialize(user:, analytics: nil, setup_voice_preference: false, request_ip: nil)
+  def initialize(
+    user:,
+    analytics: nil,
+    setup_voice_preference: false,
+    request_ip: nil,
+    request_user_agent: nil
+  )
     @user = user
     @analytics = analytics
     @otp_delivery_preference = user.otp_delivery_preference
     @otp_make_default_number = false
     @setup_voice_preference = setup_voice_preference
     @request_ip = request_ip
+    @request_user_agent = request_user_agent
   end
 
   def submit(params)
@@ -183,7 +190,7 @@ class NewPhoneForm
   end
 
   def recaptcha_form_args
-    args = { analytics: }
+    args = { analytics:, user_agent: @request_user_agent, user_ip_address: @request_ip }
     if IdentityConfig.store.recaptcha_mock_validator
       args.merge(form_class: RecaptchaMockForm, score: recaptcha_mock_score)
     else
