@@ -2,8 +2,21 @@
 
 module Pii
   UspsApplicant = RedactedStruct.new(
-    :first_name, :last_name, :address1, :address2, :city, :state, :zipcode,
-    :current_address_same_as_id, :id_number, :id_expiration, keyword_init: true
+    :first_name,
+    :last_name,
+    :address1,
+    :address2,
+    :city,
+    :state,
+    :zipcode,
+    :current_address_same_as_id,
+    :id_number,
+    :id_expiration,
+    :document_type,
+    allowed_members: [
+      :document_type,
+    ],
+    keyword_init: true,
   ) do
     def self.from_idv_applicant(applicant)
       new(
@@ -17,6 +30,7 @@ module Pii
         id_expiration: applicant['state_id_expiration'],
         id_number: applicant['state_id_number'],
         current_address_same_as_id: applicant['same_address_as_id'],
+        document_type: applicant['asserted_id_type'],
       )
     end
 

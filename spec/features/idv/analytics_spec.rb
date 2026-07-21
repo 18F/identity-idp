@@ -623,7 +623,7 @@ RSpec.feature 'Analytics Regression', :js do
         step: 'state_id', flow_path: 'standard', analytics_id: 'In Person Proofing', opted_in_to_in_person_proofing: boolean
       },
       'IdV: in person proofing state_id submitted' => {
-        success: true, flow_path: 'standard', step: 'state_id', analytics_id: 'In Person Proofing', birth_year: '1938', document_zip_code: '12345', proofing_components: { document_check: 'usps' }, opted_in_to_in_person_proofing: boolean
+        success: true, flow_path: 'standard', step: 'state_id', analytics_id: 'In Person Proofing', birth_year: '1938', document_zip_code: '12345', asserted_id_type: 'drivers_license', proofing_components: { document_check: 'usps' }, opted_in_to_in_person_proofing: boolean
       },
       'IdV: in person proofing address visited' => {
         step: 'address', flow_path: 'standard', analytics_id: 'In Person Proofing', proofing_components: { document_check: 'usps', source_check: 'StateIdMock' }, opted_in_to_in_person_proofing: boolean

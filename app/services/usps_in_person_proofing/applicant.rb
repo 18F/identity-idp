@@ -10,9 +10,23 @@ module UspsInPersonProofing
     InPersonEnrollment::DOCUMENT_TYPE_PASSPORT_BOOK => 4,
     Idp::Constants::DocumentTypes::PASSPORT_CARD => 8,
   }.freeze
+
   Applicant = RedactedStruct.new(
-    :unique_id, :first_name, :last_name, :address, :city, :state, :zip_code,
-    :email, :document_type, :document_number, :document_expiration_date, keyword_init: true
+    :unique_id,
+    :first_name,
+    :last_name,
+    :address,
+    :city,
+    :state,
+    :zip_code,
+    :email,
+    :document_type,
+    :document_number,
+    :document_expiration_date,
+    allowed_members: [
+      :document_type,
+    ],
+    keyword_init: true,
   ) do
     STREET_ADDRESS_MAX_LENGTH = 255
 
@@ -37,7 +51,9 @@ module UspsInPersonProofing
         email: IdentityConfig.store.usps_ipp_enrollment_status_update_email_address.presence,
         document_number: applicant.id_number,
         document_expiration_date:,
-        document_type: USPS_DOCUMENT_TYPE_MAPPINGS[enrollment.document_type],
+        document_type: USPS_DOCUMENT_TYPE_MAPPINGS[
+          applicant.document_type.presence || enrollment.document_type,
+        ],
       )
     end
 

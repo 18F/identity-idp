@@ -14,6 +14,7 @@ RSpec.describe Pii::UspsApplicant do
         'state_id_number' => Faker::Number.number(digits: 9),
         'state_id_expiration' => Faker::Date.in_date_period(year: 2030).strftime('%Y-%m-%d'),
         'same_address_as_id' => false,
+        'asserted_id_type' => Idp::Constants::DocumentTypes::DRIVERS_LICENSE,
       }
     end
 
@@ -29,6 +30,7 @@ RSpec.describe Pii::UspsApplicant do
         id_number: idv_applicant['state_id_number'],
         id_expiration: idv_applicant['state_id_expiration'],
         current_address_same_as_id: idv_applicant['same_address_as_id'],
+        document_type: idv_applicant['asserted_id_type'],
       )
     end
   end

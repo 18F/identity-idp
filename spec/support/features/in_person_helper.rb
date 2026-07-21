@@ -46,6 +46,7 @@ module InPersonHelper
     select GOOD_STATE_ID_JURISDICTION,
            from: t('in_person_proofing.form.state_id.state_id_jurisdiction')
     fill_in t('in_person_proofing.form.state_id.state_id_number'), with: GOOD_STATE_ID_NUMBER
+    choose t('in_person_proofing.form.state_id.id_type_drivers_license')
     fill_in_memorable_date('identity_doc[id_expiration]', GOOD_STATE_ID_EXPIRATION)
     fill_in t('in_person_proofing.form.state_id.address1'), with: GOOD_IDENTITY_DOC_ADDRESS1
     fill_in t('in_person_proofing.form.state_id.address2'), with: GOOD_IDENTITY_DOC_ADDRESS2

@@ -38,6 +38,7 @@ RSpec.describe Idv::StateIdForm do
   let(:first_name) { Faker::Name.first_name }
   let(:dob) { valid_dob }
   let(:id_expiration) { valid_exp }
+  let(:asserted_id_type) { Idp::Constants::DocumentTypes::DRIVERS_LICENSE }
   let(:params) do
     {
       first_name:,
@@ -52,6 +53,7 @@ RSpec.describe Idv::StateIdForm do
       state_id_jurisdiction: 'AL',
       state_id_number: Faker::IdNumber.valid,
       id_expiration:,
+      asserted_id_type:,
     }
   end
   let(:invalid_char) { '1' }
@@ -64,30 +66,32 @@ RSpec.describe Idv::StateIdForm do
   let(:expired_params) { params.merge(id_expiration: expired_exp) }
   let(:name_error_params) { params.merge(first_name: Faker::Name.first_name + invalid_char) }
   let(:pii) { nil }
+
   describe '#submit' do
     let(:result) { subject.submit(params) }
 
     context 'when the form is valid' do
-      let(:form_response) do
+      let(:expected_extra) do
+        {
+          birth_year: valid_dob[:year],
+          document_zip_code: params[:identity_doc_zipcode].slice(0, 5),
+          asserted_id_type:,
+        }
+      end
+      let(:expected_form_response) do
         FormResponse.new(
           success: true,
           errors: {},
-          extra: { birth_year: valid_dob[:year],
-                   document_zip_code: params[:identity_doc_zipcode].slice(0, 5) },
+          extra: expected_extra,
         )
       end
 
       it 'returns a successful form response' do
-        expect(result).to eq(form_response)
+        expect(result).to eq(expected_form_response)
       end
 
       it 'logs extra analytics attributes' do
-        expect(result.extra).to eq(
-          {
-            birth_year: valid_dob[:year],
-            document_zip_code: params[:identity_doc_zipcode].slice(0, 5),
-          },
-        )
+        expect(result.extra).to eq(expected_extra)
       end
     end
 
@@ -153,6 +157,18 @@ RSpec.describe Idv::StateIdForm do
         expect(result.success?).to eq(false)
         expect(subject.errors.empty?).to be(false)
         expect(subject.errors[:same_address_as_id]).to eq [
+          I18n.t('errors.messages.missing_field'),
+        ]
+      end
+    end
+
+    context 'when the asserted_id_type field is missing' do
+      let(:asserted_id_type) { nil }
+
+      it 'returns an error' do
+        expect(result.success?).to eq(false)
+        expect(subject.errors.empty?).to be(false)
+        expect(subject.errors[:asserted_id_type]).to eq [
           I18n.t('errors.messages.missing_field'),
         ]
       end
