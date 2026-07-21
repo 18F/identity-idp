@@ -193,15 +193,24 @@ module SamlIdpAuthConcern
   end
 
   def saml_response
-    encode_response(
-      current_user,
+    encode_response(current_user, saml_response_options)
+  end
+
+  def saml_response_options
+    {
       name_id_format: name_id_format,
       authn_context_classref: response_authn_context,
       reference_id: active_identity.session_uuid,
       encryption: encryption_opts,
       signature: saml_response_signature_options,
       signed_response_message: saml_request_service_provider&.signed_response_message_requested,
-    )
+    }.tap do |options|
+      options[:authn_instant] = saml_authn_instant if FeatureManagement.auth_time_attribute_enabled?
+    end
+  end
+
+  def saml_authn_instant
+    active_identity&.happened_at || Time.zone.now
   end
 
   def encryption_opts
