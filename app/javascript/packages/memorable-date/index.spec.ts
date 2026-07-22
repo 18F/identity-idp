@@ -579,5 +579,47 @@ describe('MemorableDateElement', () => {
         expect(formElement.reportValidity()).to.be.false();
       });
     });
+    describe('allow-placeholder-values is set on lg-memorable-date', () => {
+      beforeEach(() => {
+        memorableDateElement.setAttribute('allow-placeholder-values', 'true');
+        // Placeholder segments must satisfy the field patterns to reach the
+        // real-date check that the attribute bypasses.
+        monthInput.setAttribute('pattern', '(1[0-2])|(0?[1-9])|99|00');
+        dayInput.setAttribute('pattern', '(3[01])|([12][0-9])|(0?[1-9])|99|00');
+      });
+      afterEach(() => {
+        memorableDateElement.removeAttribute('allow-placeholder-values');
+      });
+
+      it('accepts the 99/99/9999 placeholder date', async () => {
+        await userEvent.type(monthInput, '99');
+        await userEvent.type(dayInput, '99');
+        await userEvent.type(yearInput, '9999');
+        expectErrorToEqual('');
+        await userEvent.click(submitButton);
+        expectErrorToEqual('');
+        expect(formElement.reportValidity()).to.be.true();
+      });
+
+      it('accepts the 00/00/0000 placeholder date', async () => {
+        await userEvent.type(monthInput, '00');
+        await userEvent.type(dayInput, '00');
+        await userEvent.type(yearInput, '0000');
+        expectErrorToEqual('');
+        await userEvent.click(submitButton);
+        expectErrorToEqual('');
+        expect(formElement.reportValidity()).to.be.true();
+      });
+
+      it('still rejects other invalid dates', async () => {
+        await userEvent.type(monthInput, '2');
+        await userEvent.type(dayInput, '30');
+        await userEvent.type(yearInput, '1972');
+        expectErrorToEqual('');
+        await userEvent.click(submitButton);
+        expectErrorToEqual('The entry is not a valid date');
+        expect(formElement.reportValidity()).to.be.false();
+      });
+    });
   });
 });

@@ -3,12 +3,23 @@
 module Idv
   class StateIdForm
     include ActiveModel::Model
-    include FormStateIdValidator
+
+    # Radio option indicating the user is entering a calendar expiration date.
+    EXPIRATION_OPTION_DATE = 'date'
+    # Sentinel values stored in state_id_expiration when the ID has no standard
+    # expiration date. These are also the radio option values for those choices.
+    EXPIRATION_MILITARY = 'military'
+    EXPIRATION_INDEFINITE = 'indefinite'
+    EXPIRATION_NONE = 'none'
+    EXPIRATION_SENTINELS = [EXPIRATION_MILITARY, EXPIRATION_INDEFINITE, EXPIRATION_NONE].freeze
+    EXPIRATION_OPTIONS = [EXPIRATION_OPTION_DATE, *EXPIRATION_SENTINELS].freeze
+    # Literal placeholder dates that appear on some IDs and are stored verbatim.
+    PLACEHOLDER_EXPIRATION_DATES = %w[9999-99-99 0000-00-00].freeze
 
     ATTRIBUTES = %i[first_name last_name dob identity_doc_address1 identity_doc_address2
                     identity_doc_city identity_doc_zipcode state_id_jurisdiction
                     identity_doc_address_state state_id_number ipp_current_address_matches_id
-                    id_expiration asserted_id_type].freeze
+                    id_expiration id_expiration_option asserted_id_type].freeze
 
     # Params arrive as strings from the state ID radio ("true"/"false"); cast this
     # attribute to a real boolean at the form boundary. `nil` is preserved (no `!!`)
@@ -23,8 +34,18 @@ module Idv
 
     attr_accessor(*ATTRIBUTES)
 
+    include FormStateIdValidator
+
     def self.model_name
       ActiveModel::Name.new(self, nil, 'StateId')
+    end
+
+    # True when the stored expiration is a non-date edge case — a Military/
+    # Indefinite/No-date sentinel or a literal placeholder like 9999-99-99 —
+    # rather than a real calendar date. Callers use this to detect values that
+    # must not be parsed or sent downstream as a date.
+    def self.edge_case_expiration?(value)
+      EXPIRATION_SENTINELS.include?(value) || PLACEHOLDER_EXPIRATION_DATES.include?(value)
     end
 
     def initialize(pii)
