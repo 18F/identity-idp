@@ -77,5 +77,56 @@ RSpec.describe UserAlerts::AlertUserAboutAccountVerified do
         )
       end
     end
+
+    context 'sending a proofing completed SMS message' do
+      let(:phone) { '+1 202-555-1234' }
+
+      before do
+        allow(Telephony).to receive(:send_proofing_completion_confirmation)
+      end
+
+      context 'when the profile is enhanced' do
+        let(:profile) do
+          create(
+            :profile,
+            :active,
+            idv_level: :unsupervised_with_selfie,
+            initiating_service_provider: service_provider,
+          )
+        end
+
+        it 'sends an SMS proofing completion confirmation to the given phone' do
+          described_class.call(profile: profile, phone: phone)
+
+          expect(Telephony).to have_received(:send_proofing_completion_confirmation).with(
+            to: phone,
+            country_code: Phonelib.parse(phone).country,
+            sp_or_app_name: service_provider.friendly_name,
+          )
+        end
+
+        context 'when no service provider initiated the proofing event' do
+          let(:service_provider) { nil }
+
+          it 'falls back to the app name' do
+            described_class.call(profile: profile, phone: phone)
+
+            expect(Telephony).to have_received(:send_proofing_completion_confirmation).with(
+              to: phone,
+              country_code: Phonelib.parse(phone).country,
+              sp_or_app_name: APP_NAME,
+            )
+          end
+        end
+      end
+
+      context 'when the profile is not enhanced' do
+        it 'does not send an SMS message' do
+          described_class.call(profile: profile, phone: phone)
+
+          expect(Telephony).to_not have_received(:send_proofing_completion_confirmation)
+        end
+      end
+    end
   end
 end
