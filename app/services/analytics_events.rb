@@ -8511,6 +8511,8 @@ module AnalyticsEvents
   # @param [String, nil] vtr
   # @param [String, nil] acr_values
   # @param [Integer] sign_in_duration_seconds
+  # TODO: For ease of validating attempt bundle information, can we pass the profile id
+  # in those events as well as this one?
   def sp_redirect_initiated(
     ial:,
     billed_ial:,

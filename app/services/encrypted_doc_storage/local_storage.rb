@@ -26,6 +26,12 @@ module EncryptedDocStorage
       File.read(full_path) if File.exist?(full_path)
     end
 
+    def delete_user_attempt_data(file_path:)
+      full_path = tmp_attempt_events_dir.join(file_path)
+
+      FileUtils.rm_rf(full_path) if Dir.exist?(full_path)
+    end
+
     private
 
     def tmp_document_storage_dir

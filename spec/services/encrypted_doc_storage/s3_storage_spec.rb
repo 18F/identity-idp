@@ -7,10 +7,12 @@ RSpec.describe EncryptedDocStorage::S3Storage do
   let(:encrypted_image) do
     Encryption::AesCipherV2.new.encrypt(image, SecureRandom.bytes(32))
   end
+  let(:stubbed_s3_client) { Aws::S3::Client.new(stub_responses: true) }
 
+  before do
+    allow(subject).to receive(:s3_client).and_return(stubbed_s3_client)
+  end
   describe '#write_image' do
-    let(:stubbed_s3_client) { Aws::S3::Client.new(stub_responses: true) }
-
     before do
       allow(subject).to receive(:s3_client).and_return(stubbed_s3_client)
       allow(stubbed_s3_client).to receive(:put_object)
@@ -30,8 +32,6 @@ RSpec.describe EncryptedDocStorage::S3Storage do
   end
 
   describe '#write_attempt_events' do
-    let(:stubbed_s3_client) { Aws::S3::Client.new(stub_responses: true) }
-
     before do
       allow(subject).to receive(:s3_client).and_return(stubbed_s3_client)
       allow(stubbed_s3_client).to receive(:put_object)
@@ -49,29 +49,39 @@ RSpec.describe EncryptedDocStorage::S3Storage do
         body: encrypted_attempt_events,
       )
     end
+  end
+  describe '#retrieve_attempt_object' do
+    let(:file_name) { SecureRandom.uuid }
+    let(:file_path) { 'attempt_events/123abc' }
+    let(:encrypted_data) { SecureRandom.bytes(32) }
 
-    describe '#retrieve_attempt_object' do
-      let(:stubbed_s3_client) { Aws::S3::Client.new(stub_responses: true) }
-      let(:file_name) { SecureRandom.uuid }
-      let(:file_path) { 'attempt_events/123abc' }
-      let(:encrypted_data) { SecureRandom.bytes(32) }
+    before do
+      allow(subject).to receive(:s3_client).and_return(stubbed_s3_client)
 
-      before do
-        allow(subject).to receive(:s3_client).and_return(stubbed_s3_client)
+      response = double(body: StringIO.new(encrypted_data))
+      allow(stubbed_s3_client).to receive(:get_object).and_return(response)
+    end
 
-        response = double(body: StringIO.new(encrypted_data))
-        allow(stubbed_s3_client).to receive(:get_object).and_return(response)
-      end
+    it 'retrieves the attempt events from S3' do
+      result = subject.retrieve_attempt_object(file_path:, file_name:)
 
-      it 'retrieves the attempt events from S3' do
-        result = subject.retrieve_attempt_object(file_path:, file_name:)
+      expect(stubbed_s3_client).to have_received(:get_object).with(
+        bucket: IdentityConfig.store.encrypted_document_storage_s3_bucket,
+        key: "#{file_path}/#{file_name}",
+      )
+      expect(result).to eq(encrypted_data)
+    end
+  end
 
-        expect(stubbed_s3_client).to have_received(:get_object).with(
-          bucket: IdentityConfig.store.encrypted_document_storage_s3_bucket,
-          key: "#{file_path}/#{file_name}",
-        )
-        expect(result).to eq(encrypted_data)
-      end
+  describe '#delete_user_attempt_data' do
+    let(:file_path) { 'attempt_events/user-uuid' }
+    it 'deletes the directory' do
+      expect(stubbed_s3_client).to receive(:delete_object).with(
+        bucket: IdentityConfig.store.encrypted_document_storage_s3_bucket,
+        key: file_path,
+      )
+
+      subject.delete_user_attempt_data(file_path:)
     end
   end
 end
