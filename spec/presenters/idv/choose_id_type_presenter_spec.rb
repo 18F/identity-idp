@@ -26,4 +26,10 @@ RSpec.describe Idv::ChooseIdTypePresenter do
       )
     end
   end
+
+  describe '#passport_card_available?' do
+    it 'returns true' do
+      expect(subject.passport_card_available?).to be(true)
+    end
+  end
 end

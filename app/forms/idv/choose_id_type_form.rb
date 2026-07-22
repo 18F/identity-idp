@@ -18,15 +18,17 @@ module Idv
     end
 
     def chosen_id_type_valid?
-      return true if Idp::Constants::DocumentTypes::SUPPORTED_ID_TYPES.include?(@chosen_id_type)
+      allowed_types = Idp::Constants::DocumentTypes::PASSPORT_TYPES +
+                      Idp::Constants::DocumentTypes::SUPPORTED_STATE_ID_TYPES
+      return true if allowed_types.include?(@chosen_id_type)
       return true if @mdl_enabled && chosen_id_type == Idp::Constants::DocumentTypes::MDL
 
       errors.add(
         :chosen_id_type,
         :invalid,
         message: "
-          `chosen_id_type` #{chosen_id_type} is invalid,
-          expected one of #{Idp::Constants::DocumentTypes::SUPPORTED_ID_TYPES}
+          `chosen_id_type` #{@chosen_id_type} is invalid,
+          expected one of #{allowed_types}
         ",
       )
       false

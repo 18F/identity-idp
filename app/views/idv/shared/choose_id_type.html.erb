@@ -62,6 +62,7 @@
             collection: [
               [t('doc_auth.forms.id_type_preference.drivers_license'), :state_id_card],
               [t('doc_auth.forms.id_type_preference.passport'), :passport, disabled: disable_passports],
+              ([t('doc_auth.forms.id_type_preference.passport_card'), :passport_card, disabled: disable_passports] if passport_cards_enabled),
               (mdl_enabled ? [t('doc_auth.forms.id_type_preference.mdl'), :mobile_drivers_license] : nil),
             ].compact,
             form: f,
