@@ -25,6 +25,7 @@ module Idv
       def update
         @choose_id_type_form = Idv::ChooseIdTypeForm.new(
           mdl_enabled: mdl_enabled?,
+          passport_cards_enabled: passport_cards_supported?,
         )
 
         result = @choose_id_type_form.submit(choose_id_type_form_params)

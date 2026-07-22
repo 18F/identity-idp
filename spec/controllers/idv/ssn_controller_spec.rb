@@ -245,6 +245,18 @@ RSpec.describe Idv::SsnController do
         end
       end
 
+      context 'with a Passport card document type and pii_from_doc in idv_session' do
+        it 'redirects to address controller after user enters their SSN' do
+          subject.idv_session.pii_from_doc = subject.idv_session.pii_from_doc.with(
+            document_type_received: 'passport_card',
+          )
+
+          put :update, params: params
+
+          expect(response).to redirect_to(idv_address_url)
+        end
+      end
+
       it 'invalidates future steps' do
         expect(subject).to receive(:clear_future_steps!)
 
