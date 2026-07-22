@@ -31,6 +31,15 @@ class MemorableDateComponent < BaseComponent
   # @option range_errors [Date,#to_date] :min Minimum value for range check
   # @option range_errors [Date,#to_date] :max Maximum value for range check
   # @option range_errors [String] :message Error message to display if range check fails
+  # Base input patterns restricting month to 1-12 and day to 1-31.
+  MONTH_PATTERN = '(1[0-2])|(0?[1-9])'
+  DAY_PATTERN = '(3[01])|([12][0-9])|(0?[1-9])'
+  # Literal placeholder segments that appear on some documents (e.g. 99/99/9999,
+  # 00/00/0000). Allowed for month/day only when +allow_placeholder_values+ is set.
+  PLACEHOLDER_SEGMENT_PATTERN = '99|00'
+
+  # @param [Boolean] allow_placeholder_values Permit literal 99/00 month and day
+  #   values (for documents that print placeholder expiration dates)
   def initialize(
     name:, hint:, label:, form:,
     month: nil,
@@ -41,6 +50,7 @@ class MemorableDateComponent < BaseComponent
     max: nil,
     error_messages: {},
     range_errors: [],
+    allow_placeholder_values: false,
     **tag_options
   )
     @name = name
@@ -56,6 +66,17 @@ class MemorableDateComponent < BaseComponent
     @tag_options = tag_options
     @error_messages = error_messages
     @range_errors = range_errors
+    @allow_placeholder_values = allow_placeholder_values
+  end
+
+  # HTML pattern for the month input, optionally allowing placeholder values.
+  def month_pattern
+    with_placeholder(MONTH_PATTERN)
+  end
+
+  # HTML pattern for the day input, optionally allowing placeholder values.
+  def day_pattern
+    with_placeholder(DAY_PATTERN)
   end
 
   def self.scripts
@@ -110,6 +131,14 @@ class MemorableDateComponent < BaseComponent
   end
 
   private
+
+  # Append the placeholder alternation to a base pattern when placeholder values
+  # are allowed; otherwise return the base pattern unchanged.
+  def with_placeholder(base_pattern)
+    return base_pattern unless @allow_placeholder_values
+
+    "#{base_pattern}|#{PLACEHOLDER_SEGMENT_PATTERN}"
+  end
 
   # Convert a Date or date-like value to a string like 1892-01-23
   def convert_date(date)

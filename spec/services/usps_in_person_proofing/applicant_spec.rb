@@ -155,6 +155,36 @@ RSpec.describe UspsInPersonProofing::Applicant do
       end
     end
 
+    context 'with a non-standard expiration value (LG-17733)' do
+      ['military', 'indefinite', 'none', '9999-99-99', '0000-00-00'].each do |value|
+        context "when id_expiration is #{value.inspect}" do
+          let(:applicant) { Pii::UspsApplicant.new(**applicant_pii.merge(id_expiration: value)) }
+
+          it 'does not set a document_expiration_date' do
+            expect(
+              described_class.from_usps_applicant_and_enrollment(
+                applicant,
+                enrollment,
+              ).document_expiration_date,
+            ).to be_nil
+          end
+        end
+      end
+
+      context 'when id_expiration is blank' do
+        let(:applicant) { Pii::UspsApplicant.new(**applicant_pii.merge(id_expiration: nil)) }
+
+        it 'does not set a document_expiration_date' do
+          expect(
+            described_class.from_usps_applicant_and_enrollment(
+              applicant,
+              enrollment,
+            ).document_expiration_date,
+          ).to be_nil
+        end
+      end
+    end
+
     context 'with an offset to the expiration time', timezone: 'UTC' do
       context 'with an offset of zero' do
         it 'shows the previous date if interpreted in US timezone' do

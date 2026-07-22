@@ -25,6 +25,12 @@
       <dt class="display-inline"> <%= t('idv.form.id_number') %>: </dt>
       <dd class="display-inline margin-left-0"> <%= pii[:state_id_number] %> </dd>
     </div>
+    <% if @presenter.show_state_id_expiration? %>
+      <div>
+        <dt class="display-inline"> <%= t('in_person_proofing.form.state_id.expiration_date') %>: </dt>
+        <dd class="display-inline margin-left-0"> <%= @presenter.formatted_state_id_expiration(pii) %> </dd>
+      </div>
+    <% end %>
     <div class="margin-top-105">
       <dt class="display-inline"> <%= t('idv.form.address1') %>: </dt>
       <dd class="display-inline margin-left-0"> <%= pii[:identity_doc_address1] %> </dd>

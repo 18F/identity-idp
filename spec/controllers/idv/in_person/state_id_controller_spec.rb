@@ -127,6 +127,27 @@ RSpec.describe Idv::InPerson::StateIdController do
         :address1,
       )
     end
+
+    context 'when the expiration edge cases feature is enabled (LG-17733)' do
+      render_views
+
+      before do
+        allow(IdentityConfig.store)
+          .to receive(:in_person_proofing_expiration_edge_cases_enabled).and_return(true)
+      end
+
+      it 'renders the expiration date radio options' do
+        get :show
+
+        expect(response).to have_http_status(:ok)
+        expect(response.body).to include(
+          I18n.t('in_person_proofing.form.state_id.expiration_date_options.military'),
+        )
+        expect(response.body).to include(
+          I18n.t('in_person_proofing.form.state_id.expiration_date_options.enter_date'),
+        )
+      end
+    end
   end
 
   describe '#update' do
@@ -291,6 +312,49 @@ RSpec.describe Idv::InPerson::StateIdController do
         put :update, params: params
 
         expect(enrollment.document_type).to eq(InPersonEnrollment::DOCUMENT_TYPE_STATE_ID)
+      end
+    end
+
+    context 'expiration edge cases (LG-17733)' do
+      let(:pii_from_user) { subject.user_session['idv/in_person'][:pii_from_user] }
+
+      before do
+        allow(IdentityConfig.store)
+          .to receive(:in_person_proofing_expiration_edge_cases_enabled).and_return(true)
+      end
+
+      context 'when a non-date option is selected' do
+        let(:params) { super().deep_merge(identity_doc: { id_expiration_option: 'none' }) }
+
+        it 'stores the sentinel and no date' do
+          put :update, params: params
+
+          expect(pii_from_user[:state_id_expiration]).to eq('none')
+          expect(pii_from_user).not_to have_key(:id_expiration)
+          expect(pii_from_user).not_to have_key(:id_expiration_option)
+          expect(response).to be_redirect
+        end
+      end
+
+      context 'when a non-date option supersedes an entered date' do
+        let(:params) { super().deep_merge(identity_doc: { id_expiration_option: 'military' }) }
+
+        it 'stores the sentinel instead of the entered date' do
+          put :update, params: params
+
+          expect(pii_from_user[:state_id_expiration]).to eq('military')
+        end
+      end
+
+      context 'when a literal placeholder date is entered' do
+        let(:id_expiration) { { month: '99', day: '99', year: '9999' } }
+        let(:params) { super().deep_merge(identity_doc: { id_expiration_option: 'date' }) }
+
+        it 'stores the placeholder verbatim' do
+          put :update, params: params
+
+          expect(pii_from_user[:state_id_expiration]).to eq('9999-99-99')
+        end
       end
     end
 

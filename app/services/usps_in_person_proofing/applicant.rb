@@ -17,7 +17,9 @@ module UspsInPersonProofing
     STREET_ADDRESS_MAX_LENGTH = 255
 
     def self.from_usps_applicant_and_enrollment(applicant, enrollment)
-      id_expiration = Time.zone.parse(applicant&.id_expiration || '')
+      # Non-standard expiration values (e.g. "military", "9999-99-99") are not
+      # real dates and must not be sent to USPS.
+      id_expiration = safe_parse_expiration(applicant&.id_expiration)
       document_expiration_date =
         if id_expiration.present?
           offset = IdentityConfig.store.in_person_expiration_time_offset_hours.hours
@@ -46,6 +48,16 @@ module UspsInPersonProofing
     end
 
     private
+
+    # Parse an expiration date, returning nil for blank or non-date values
+    # (sentinels / literal placeholders) instead of raising.
+    def self.safe_parse_expiration(value)
+      return nil if value.blank?
+
+      Time.zone.parse(value)
+    rescue ArgumentError, TypeError
+      nil
+    end
 
     def self.transliterate(value)
       transliterator = Transliterator.new

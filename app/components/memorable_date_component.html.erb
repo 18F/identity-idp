@@ -19,7 +19,7 @@
           <%= f.simple_fields_for name do |p| %>
             <%= p.input(
                   :month,
-                  pattern: '(1[0-2])|(0?[1-9])',
+                  pattern: month_pattern,
                   wrapper_html: {
                     aria: { labelledby: ["memorable-date-label-#{unique_id}"] },
                     class: 'usa-form-group usa-form-group--month margin-bottom-0',
@@ -56,7 +56,7 @@
           <%= f.simple_fields_for name do |p| %>
           <%= p.input(
                 :day,
-                pattern: '(3[01])|([12][0-9])|(0?[1-9])',
+                pattern: day_pattern,
                 wrapper_html: {
                   aria: { labelledby: ["memorable-date-label-#{unique_id}"] },
                   class: 'usa-form-group usa-form-group--day margin-bottom-0',

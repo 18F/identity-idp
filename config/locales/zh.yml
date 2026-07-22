@@ -1404,6 +1404,10 @@ in_person_proofing.form.state_id.dob_hint: 举例：4 28 1986
 in_person_proofing.form.state_id.errors.unsupported_chars: 我们的系统无法读取以下字符：%{char_list}.请使用你身份证件上的字符再试一次。
 in_person_proofing.form.state_id.expiration_date: 过期日期
 in_person_proofing.form.state_id.expiration_date_hint: 举例：4 28 2028
+in_person_proofing.form.state_id.expiration_date_options.enter_date: 输入日期
+in_person_proofing.form.state_id.expiration_date_options.indefinite: 不定 (INDEF)
+in_person_proofing.form.state_id.expiration_date_options.military: 军队 (MIL)
+in_person_proofing.form.state_id.expiration_date_options.other: 无日期/其他
 in_person_proofing.form.state_id.first_name: 名
 in_person_proofing.form.state_id.identity_doc_address_state: 州
 in_person_proofing.form.state_id.identity_doc_address_state_prompt: '- 选择 -'

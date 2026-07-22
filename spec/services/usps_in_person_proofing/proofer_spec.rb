@@ -491,6 +491,61 @@ RSpec.describe UspsInPersonProofing::Proofer do
           expect(response.response_message).to eq(JSON.parse(usps_mock_response)['responseMessage'])
         end
       end
+
+      context 'when the document has no standard expiration date (LG-17733)' do
+        let(:applicant) do
+          double(
+            'applicant',
+            address: Faker::Address.street_address,
+            city: Faker::Address.city,
+            state: Faker::Address.state_abbr,
+            zip_code: Faker::Address.zip_code,
+            first_name: Faker::Name.first_name,
+            last_name: Faker::Name.last_name,
+            email: Faker::Internet.email,
+            unique_id: Faker::Number.number(digits: 10),
+            document_type: 'state_id',
+            document_number: 'A*-/ 3d#9& ',
+            document_expiration_date: nil,
+          )
+        end
+
+        before do
+          allow(IdentityConfig.store).to receive(
+            :usps_opt_in_ipp_applicant_with_document_data,
+          ).and_return(true)
+          # The stubbed body omits docExpiration; if the real request included it,
+          # webmock would not match and the request would error.
+          stub_request(:post, %r{/ivs-ippaas-api/IPPRest/resources/rest/optInIPPApplicant})
+            .with(body: {
+              sponsorID: IdentityConfig.store.usps_ipp_sponsor_id.to_i,
+              uniqueID: applicant.unique_id,
+              firstName: applicant.first_name,
+              lastName: applicant.last_name,
+              streetAddress: applicant.address,
+              city: applicant.city,
+              state: applicant.state,
+              zipCode: applicant.zip_code,
+              emailAddress: applicant.email,
+              IPPAssuranceLevel: '1.5',
+              docInfo: [{
+                docType: applicant.document_type,
+                docNumber: 'A3d9',
+              }],
+            })
+            .to_return(
+              status: 200,
+              body: usps_mock_response,
+              headers: { 'content-type' => 'application/json' },
+            )
+        end
+
+        it 'omits docExpiration from the enroll request' do
+          response = subject.request_enroll(applicant, is_enhanced_ipp)
+          expect(response).to be_instance_of(UspsInPersonProofing::Response::RequestEnrollResponse)
+          expect(response.enrollment_code).to eq(JSON.parse(usps_mock_response)['enrollmentCode'])
+        end
+      end
     end
 
     context 'when the USPS API responds with a 4XX status' do

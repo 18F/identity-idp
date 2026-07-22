@@ -141,15 +141,16 @@
         ) %>
   </div>
 
-  <div class="margin-bottom-4">
+  <% expiration_date_field = capture do %>
     <%= render MemorableDateComponent.new(
           content_tag: 'memorable-date',
           name: :id_expiration,
           day: parsed_expiration&.day,
           month: parsed_expiration&.month,
           year: parsed_expiration&.year,
-          required: true,
+          required: !expiration_edge_cases_enabled,
           min: Time.zone.today + 1.day,
+          allow_placeholder_values: expiration_edge_cases_enabled,
           hint: t('in_person_proofing.form.state_id.expiration_date_hint'),
           label: t('in_person_proofing.form.state_id.expiration_date'),
           form: f,
@@ -159,7 +160,52 @@
           },
         )
     %>
-  </div>
+  <% end %>
+
+  <% if expiration_edge_cases_enabled %>
+    <fieldset class="usa-fieldset margin-bottom-4">
+      <legend class="usa-legend h4"><%= t('in_person_proofing.form.state_id.expiration_date') %></legend>
+      <div class="usa-radio">
+        <%= f.radio_button(
+              :id_expiration_option,
+              Idv::StateIdForm::EXPIRATION_OPTION_DATE,
+              class: 'usa-radio__input expiration-option-input',
+              checked: expiration_option == Idv::StateIdForm::EXPIRATION_OPTION_DATE,
+            ) %>
+        <%= f.label(
+              :id_expiration_option_date,
+              t('in_person_proofing.form.state_id.expiration_date_options.enter_date'),
+              class: 'usa-radio__label',
+            ) %>
+      </div>
+      <div class="expiration-date-inputs margin-left-4 margin-bottom-2 <%= 'display-none' unless expiration_option == Idv::StateIdForm::EXPIRATION_OPTION_DATE %>">
+        <%= expiration_date_field %>
+      </div>
+      <% [
+           [Idv::StateIdForm::EXPIRATION_MILITARY, 'military'],
+           [Idv::StateIdForm::EXPIRATION_INDEFINITE, 'indefinite'],
+           [Idv::StateIdForm::EXPIRATION_NONE, 'other'],
+         ].each do |value, i18n_key| %>
+        <div class="usa-radio">
+          <%= f.radio_button(
+                :id_expiration_option,
+                value,
+                class: 'usa-radio__input expiration-option-input',
+                checked: expiration_option == value,
+              ) %>
+          <%= f.label(
+                :"id_expiration_option_#{value}",
+                t("in_person_proofing.form.state_id.expiration_date_options.#{i18n_key}"),
+                class: 'usa-radio__label',
+              ) %>
+        </div>
+      <% end %>
+    </fieldset>
+  <% else %>
+    <div class="margin-bottom-4">
+      <%= expiration_date_field %>
+    </div>
+  <% end %>
 
   <h2> <%= t('in_person_proofing.headings.id_address') %> </h2>
     <%= render ValidatedFieldComponent.new(

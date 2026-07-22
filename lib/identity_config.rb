@@ -309,6 +309,7 @@ module IdentityConfig
     config.add(:in_person_passports_enabled, type: :boolean)
     config.add(:in_person_proofing_enabled, type: :boolean)
     config.add(:in_person_proofing_enforce_tmx, type: :boolean)
+    config.add(:in_person_proofing_expiration_edge_cases_enabled, type: :boolean)
     config.add(:in_person_proofing_opt_in_enabled, type: :boolean)
     config.add(:in_person_results_delay_in_hours, type: :integer)
     config.add(:in_person_send_proofing_notifications_enabled, type: :boolean)

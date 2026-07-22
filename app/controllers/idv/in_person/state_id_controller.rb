@@ -63,12 +63,18 @@ module Idv
         end
       end
 
+      # Represents month/day/year parts for a placeholder expiration date
+      # (e.g. 99/99/9999) that cannot be parsed into a real Date.
+      ExpirationDateParts = Struct.new(:month, :day, :year, keyword_init: true)
+
       def extra_view_variables
         {
           form:,
           pii:,
           parsed_dob:,
           parsed_expiration:,
+          expiration_option:,
+          expiration_edge_cases_enabled: expiration_edge_cases_enabled?,
           updating_state_id: updating_state_id?,
         }
       end
@@ -103,13 +109,7 @@ module Idv
         formatted_dob = MemorableDateComponent.extract_date_param flow_params&.[](:dob)
         pending[:dob] = formatted_dob if formatted_dob
 
-        formatted_exp = MemorableDateComponent.extract_date_param(
-          flow_params&.[](:id_expiration),
-        )
-        if formatted_exp
-          pending[:state_id_expiration] = formatted_exp
-          pending.delete(:id_expiration)
-        end
+        assign_state_id_expiration(pending)
 
         if pending[:same_address_as_id] == 'true'
           pending[:address1] = flow_params[:identity_doc_address1]
@@ -120,6 +120,27 @@ module Idv
         end
 
         pending
+      end
+
+      # Stores the state_id_expiration on the pending PII based on the selected
+      # expiration option. A non-date option (MIL/INDEF/No date) is stored as a
+      # sentinel string; otherwise the entered date (including literal
+      # placeholders like 9999-99-99) is stored.
+      def assign_state_id_expiration(pending)
+        option = flow_params[:id_expiration_option] if expiration_edge_cases_enabled?
+        pending.delete(:id_expiration_option)
+
+        if Idv::StateIdForm::EXPIRATION_SENTINELS.include?(option)
+          pending[:state_id_expiration] = option
+          pending.delete(:id_expiration)
+          return
+        end
+
+        formatted_exp = MemorableDateComponent.extract_date_param(flow_params&.[](:id_expiration))
+        if formatted_exp
+          pending[:state_id_expiration] = formatted_exp
+          pending.delete(:id_expiration)
+        end
       end
 
       def determine_redirect_url(pending_pii, initial_state_of_same_address_as_id)
@@ -161,7 +182,29 @@ module Idv
       end
 
       def parsed_expiration
-        parse_date(pii[:id_expiration])
+        raw = pii[:id_expiration]
+        if raw.is_a?(String) && Idv::StateIdForm::PLACEHOLDER_EXPIRATION_DATES.include?(raw)
+          year, month, day = raw.split('-')
+          ExpirationDateParts.new(month:, day:, year:)
+        else
+          parse_date(raw)
+        end
+      end
+
+      # The expiration radio option to preselect when (re)rendering the form.
+      def expiration_option
+        return pii[:id_expiration_option] if pii[:id_expiration_option].present?
+
+        raw = pii[:id_expiration]
+        if raw.is_a?(String) && Idv::StateIdForm::EXPIRATION_SENTINELS.include?(raw)
+          raw
+        else
+          Idv::StateIdForm::EXPIRATION_OPTION_DATE
+        end
+      end
+
+      def expiration_edge_cases_enabled?
+        IdentityConfig.store.in_person_proofing_expiration_edge_cases_enabled
       end
 
       def pii

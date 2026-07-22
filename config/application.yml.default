@@ -291,6 +291,7 @@ in_person_passports_enabled: false
 in_person_password_reset_expiration_days: 90
 in_person_proofing_enabled: false
 in_person_proofing_enforce_tmx: false
+in_person_proofing_expiration_edge_cases_enabled: false
 in_person_proofing_opt_in_enabled: true
 in_person_results_delay_in_hours: 1
 in_person_send_proofing_notifications_enabled: false
@@ -598,6 +599,7 @@ development:
   in_person_enrollments_immediate_approval_enabled: true
   in_person_proofing_enabled: true
   in_person_proofing_enforce_tmx: true
+  in_person_proofing_expiration_edge_cases_enabled: true
   in_person_send_proofing_notifications_enabled: true
   logins_per_ip_limit: 5
   logo_upload_enabled: true

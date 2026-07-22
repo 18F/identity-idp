@@ -1391,6 +1391,10 @@ in_person_proofing.form.state_id.dob_hint: 'Exemple : 4 28 1986'
 in_person_proofing.form.state_id.errors.unsupported_chars: 'Notre système ne parvient pas à lire les caractères suivants : %{char_list}. Veuillez réessayer en utilisant les caractères de votre pièce d’identité.'
 in_person_proofing.form.state_id.expiration_date: Date d’expiration
 in_person_proofing.form.state_id.expiration_date_hint: 'Exemple : 4 28 2028'
+in_person_proofing.form.state_id.expiration_date_options.enter_date: Saisir une date
+in_person_proofing.form.state_id.expiration_date_options.indefinite: Indéfinie (INDEF)
+in_person_proofing.form.state_id.expiration_date_options.military: Militaire (MIL)
+in_person_proofing.form.state_id.expiration_date_options.other: Pas de date/Autre
 in_person_proofing.form.state_id.first_name: Prénom
 in_person_proofing.form.state_id.identity_doc_address_state: État
 in_person_proofing.form.state_id.identity_doc_address_state_prompt: '- Sélectionnez -'
