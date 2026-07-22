@@ -167,13 +167,16 @@ module Identity
       config.middleware.delete Rack::Attack
     end
 
-    config.view_component.show_previews = Identity::Hostdata.config.component_previews_enabled
+    config.view_component.previews.enabled = Identity::Hostdata.config.component_previews_enabled
     if Identity::Hostdata.config.component_previews_enabled
       require 'lookbook'
 
-      config.view_component.preview_controller = 'ComponentPreviewController'
-      config.view_component.preview_paths = [Rails.root.join('spec', 'components', 'previews')]
-      config.view_component.default_preview_layout = 'component_preview'
+      config.view_component.previews.controller = 'ComponentPreviewController'
+      config.view_component.previews.paths = [Rails.root.join(
+        'spec', 'components',
+        'previews'
+      ).to_s]
+      config.view_component.previews.default_layout = 'component_preview'
       config.lookbook.auto_refresh = false
       config.lookbook.project_name = "#{APP_NAME} Component Previews"
       config.lookbook.ui_theme = 'blue'

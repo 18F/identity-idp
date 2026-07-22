@@ -171,6 +171,27 @@ RSpec.feature 'saml api' do
         expect(user.last_identity.last_authenticated_at).to be_present
       end
 
+      context 'when auth_time_attribute_enabled is enabled' do
+        before do
+          allow(FeatureManagement).to receive(:auth_time_attribute_enabled?).and_return(true)
+        end
+
+        it 'refreshes the identity last authenticated time during SAML login' do
+          stale_authn_at = 1.week.ago
+          now = Time.zone.parse('2026-07-08 12:34:56 UTC')
+          identity = user.identities.find_by(service_provider: sp.issuer)
+          identity.update!(last_authenticated_at: stale_authn_at)
+
+          travel_to(now) do
+            visit_saml_authn_request_url
+
+            identity.reload
+
+            expect(identity.last_authenticated_at).to be_within(1.second).of(now)
+          end
+        end
+      end
+
       it 'disables cache' do
         expect(page.response_headers['Pragma']).to eq 'no-cache'
       end

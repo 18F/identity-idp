@@ -142,6 +142,30 @@
   </div>
 
   <div class="margin-bottom-4">
+    <%= render ValidatedFieldComponent.new(
+          as: :radio_buttons,
+          checked: pii[:asserted_id_type],
+          collection: [
+            [
+              t('in_person_proofing.form.state_id.id_type_drivers_license'),
+              Idp::Constants::DocumentTypes::DRIVERS_LICENSE,
+            ],
+            [
+              t('in_person_proofing.form.state_id.id_type_state_id'),
+              Idp::Constants::DocumentTypes::STATE_ID_CARD,
+            ],
+          ],
+          form: f,
+          label: t('in_person_proofing.form.state_id.id_type'),
+          legend_html: { class: 'h2' },
+          name: :asserted_id_type,
+          required: true,
+          wrapper: :uswds_radio_buttons,
+        )
+    %>
+  </div>
+
+  <div class="margin-bottom-4">
     <%= render MemorableDateComponent.new(
           content_tag: 'memorable-date',
           name: :id_expiration,

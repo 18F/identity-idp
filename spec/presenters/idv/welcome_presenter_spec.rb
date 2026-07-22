@@ -118,6 +118,18 @@ RSpec.describe Idv::WelcomePresenter do
       )
     end
 
+    context 'when passport cards are supported' do
+      subject(:presenter) do
+        Idv::WelcomePresenter.new(decorated_sp_session:, passport_cards_supported: true)
+      end
+
+      it 'uses the passport card bullet point 1 header' do
+        expect(presenter.bullet_points[0].bullet).to eq(
+          t('doc_auth.instructions.bullet1_passport_card'),
+        )
+      end
+    end
+
     it 'uses the bullet point 1 text' do
       expect(presenter.bullet_points[0].text).to eq(
         t('doc_auth.instructions.text1'),

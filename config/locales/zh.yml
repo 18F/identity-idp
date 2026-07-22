@@ -725,15 +725,17 @@ doc_auth.info.verify_at_post_office_description_passport_html: <strong>你只能
 doc_auth.info.verify_at_post_office_instruction: 在网上输入你的信息，然后到一个参与本项目的邮局去亲身验证你的身份。
 doc_auth.info.verify_at_post_office_link_text: 对亲身验证获得更多了解
 doc_auth.info.verify_identity: 我们会要求获得你的身份识别、电话号码和其他个人信息并通过与公共记录核对来验证你的身份。
-doc_auth.info.verify_online_description: 您可以使用的证件包括：美国护照（护照本或护照卡）、美国驾驶执照或州身份证。
+doc_auth.info.verify_online_description: 你可以使用美国护照本、美国驾照或州身份证件。
 doc_auth.info.verify_online_description_mdl: 您可以使用美国护照、驾驶执照、移动驾驶执照或州身份证。
+doc_auth.info.verify_online_description_passport_card: 您可以使用的证件包括：美国护照（护照本或护照卡）、美国驾驶执照或州身份证。
 doc_auth.info.verify_online_instruction: 您需要拍摄身份证件照片，以便全程在线完成身份验证。
 doc_auth.info.verify_online_instruction_selfie: 拍一张自拍照，并拍摄你 ID的照片。
 doc_auth.info.verify_online_link_text: 对网上验证获得更多了解
 doc_auth.info.welcome_sp_reproof_alert: 为了您的安全，%{sp_name} 要求您再次验证您的身份。
 doc_auth.info.you_entered: 你输入了：
-doc_auth.instructions.bullet1: 持有美国护照（护照本或护照卡）、美国驾驶执照或州身份证
+doc_auth.instructions.bullet1: 拥有美国护照本、美国驾照或州身份证件
 doc_auth.instructions.bullet1_mdl: 持有美国护照本、驾驶执照、移动驾驶执照 （mDL） 或州身份证
+doc_auth.instructions.bullet1_passport_card: 持有美国护照（护照本或护照卡）、美国驾驶执照或州身份证
 doc_auth.instructions.bullet2: 输入你的社会保障号码
 doc_auth.instructions.bullet3: 与你电话号码匹配
 doc_auth.instructions.bullet4: 重新输入你 %{app_name} 密码
@@ -1411,6 +1413,9 @@ in_person_proofing.form.state_id.errors.unsupported_chars: 我们的系统无法
 in_person_proofing.form.state_id.expiration_date: 过期日期
 in_person_proofing.form.state_id.expiration_date_hint: 举例：4 28 2028
 in_person_proofing.form.state_id.first_name: 名
+in_person_proofing.form.state_id.id_type: 身份证类型
+in_person_proofing.form.state_id.id_type_drivers_license: 的驾照
+in_person_proofing.form.state_id.id_type_state_id: 州颁发的非驾照 ID 卡
 in_person_proofing.form.state_id.identity_doc_address_state: 州
 in_person_proofing.form.state_id.identity_doc_address_state_prompt: '- 选择 -'
 in_person_proofing.form.state_id.last_name: 姓

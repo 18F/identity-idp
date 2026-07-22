@@ -96,7 +96,7 @@ RSpec.describe DocAuth::Dos::Requests::MrzRequest do
   context "when the response is neither 'YES' nor 'NO'" do
     let(:mrz_result) { 'MAYBE' }
 
-    it 'fails with a message' do
+    it 'fails with a passport network error' do
       response = subject.fetch
       expect(response.success?).to be(false)
       expect(response.extra).to include(
@@ -104,7 +104,10 @@ RSpec.describe DocAuth::Dos::Requests::MrzRequest do
         correlation_id_sent: correlation_id,
         correlation_id_received: correlation_id,
       )
-      expect(response.errors).to include(message: "Unexpected response: #{mrz_result}")
+      expect(response.errors).to include(
+        passport: "Unexpected response: #{mrz_result}",
+        network: true,
+      )
     end
   end
 

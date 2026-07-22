@@ -2,6 +2,8 @@
 
 module Idv
   module ChooseIdTypeConcern
+    include Idv::PassportCardsConcern
+
     def chosen_id_type
       choose_id_type_form_params[:choose_id_type_preference]
     end
@@ -85,12 +87,6 @@ module Idv
 
     def passports_enabled?
       IdentityConfig.store.doc_auth_passports_enabled || passport_cards_supported?
-    end
-
-    def passport_cards_supported?
-      @passport_cards_supported ||=
-        FeatureManagement.doc_auth_passport_cards_enabled? &&
-        ab_test_bucket(:DOC_AUTH_PASSPORT_CARDS_ALLOWED) == :doc_auth_passport_cards_allowed
     end
 
     def mdl_enabled?
