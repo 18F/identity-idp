@@ -4,7 +4,10 @@ RSpec.describe Idv::ChooseIdTypeForm do
   let(:subject) { Idv::ChooseIdTypeForm.new }
 
   describe '#submit' do
-    Idp::Constants::DocumentTypes::SUPPORTED_ID_TYPES.each do |id_type|
+    allowed_id_types =
+      Idp::Constants::DocumentTypes::PASSPORT_TYPES +
+      Idp::Constants::DocumentTypes::SUPPORTED_STATE_ID_TYPES
+    allowed_id_types.each do |id_type|
       context "when the choose_id_type_preference is '#{id_type}'" do
         let(:params) { { choose_id_type_preference: id_type } }
 

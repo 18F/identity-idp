@@ -111,6 +111,33 @@ RSpec.describe Idv::HowToVerifyController do
       }
     end
 
+    context 'when passport cards are supported' do
+      before do
+        allow(IdentityConfig.store).to receive(:doc_auth_passport_cards_enabled).and_return(true)
+        ab_test = AbTests::DOC_AUTH_PASSPORT_CARDS_ALLOWED.dup
+        allow(ab_test).to receive(:bucket).and_return(:doc_auth_passport_cards_allowed)
+        stub_const('AbTests::DOC_AUTH_PASSPORT_CARDS_ALLOWED', ab_test)
+      end
+
+      it 'passes passport_cards_supported as true to the presenter' do
+        get :show
+
+        expect(assigns(:presenter).passport_cards_supported).to eq(true)
+      end
+    end
+
+    context 'when passport cards are not supported' do
+      before do
+        allow(IdentityConfig.store).to receive(:doc_auth_passport_cards_enabled).and_return(false)
+      end
+
+      it 'passes passport_cards_supported as false to the presenter' do
+        get :show
+
+        expect(assigns(:presenter).passport_cards_supported).to eq(false)
+      end
+    end
+
     it 'renders the show template' do
       get :show
 
