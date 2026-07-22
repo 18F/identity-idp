@@ -2114,6 +2114,25 @@ RSpec.describe SamlIdpController do
       end
     end
 
+    context 'password change is required' do
+      let(:user) { create(:user, :fully_registered) }
+      let(:acr_values) do
+        Saml::Idp::Constants::DEFAULT_AAL_AUTHN_CONTEXT_CLASSREF +
+          ' ' +
+          Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF
+      end
+
+      before do
+        sign_in(user)
+        session[:redirect_to_change_password] = true
+      end
+
+      it 'redirects to the manage password page' do
+        saml_get_auth(saml_settings)
+        expect(response).to redirect_to(manage_password_url)
+      end
+    end
+
     describe 'NameID format' do
       let(:user) { create(:user, :fully_registered) }
       let(:subject_element) { xmldoc.subject_nodeset[0] }
