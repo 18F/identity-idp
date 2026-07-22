@@ -6,6 +6,7 @@ module Idv
 
     def update_doc_auth_vendor(user: current_user)
       if document_capture_session.doc_auth_vendor.blank? ||
+         document_capture_session.doc_auth_vendor == Idp::Constants::Vendors::CLEAR ||
          (
            document_capture_session.mdl_requested? &&
            document_capture_session.doc_auth_vendor != Idp::Constants::Vendors::SOCURE

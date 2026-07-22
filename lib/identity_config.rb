@@ -243,6 +243,7 @@ module IdentityConfig
     config.add(:idv_available, type: :boolean)
     config.add(:idv_clear_api_base_url, type: :string)
     config.add(:idv_clear_api_key, type: :string)
+    config.add(:idv_clear_enabled, type: :boolean)
     config.add(:idv_clear_enabled_percent, type: :integer)
     config.add(:idv_clear_project_id, type: :string)
     config.add(:idv_contact_phone_number, type: :string)

@@ -229,6 +229,7 @@ idv_attempt_window_in_hours: 6
 idv_available: true
 idv_clear_api_base_url: ''
 idv_clear_api_key: ''
+idv_clear_enabled: false
 idv_clear_enabled_percent: 0
 idv_clear_project_id: ''
 idv_clear_redirect_url: ''

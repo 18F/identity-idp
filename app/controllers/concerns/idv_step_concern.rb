@@ -80,7 +80,9 @@ module IdvStepConcern
   end
 
   def clear_enabled?
-    idv_session.idv_clear_enabled ||= ab_test_bucket(:CLEAR_ALLOWED) == :idv_clear_allowed
+    return false unless IdentityConfig.store.idv_clear_enabled
+
+    idv_session.clear_enabled ||= ab_test_bucket(:CLEAR_ALLOWED) == :idv_clear_allowed
   end
 
   def in_person_proofing_route_enabled?

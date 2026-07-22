@@ -7,6 +7,7 @@ module Idv
   # @attr address_verification_mechanism [String, nil]
   # @attr agent_proofed [Boolean, nil]
   # @attr applicant [Struct, nil]
+  # @attr clear_enabled [Boolean, nil]
   # @attr doc_auth_vendor [String, nil]
   # @attr document_capture_session_uuid [String, nil]
   # @attr flow_path [String, nil]
@@ -16,7 +17,6 @@ module Idv
   # @attr had_barcode_attention_error [Boolean, nil]
   # @attr had_barcode_read_failure [Boolean, nil]
   # @attr hybrid_mobile_threatmetrix_review_status [String, nil]
-  # @attr idv_clear_enabled [String, nil]
   # @attr idv_consent_given [Boolean, nil]
   # @attr idv_consent_given_at [String, nil]
   # @attr idv_phone_step_document_capture_session_uuid [String, nil]
@@ -65,6 +65,7 @@ module Idv
       agent_proofed
       applicant
       bucketed_doc_auth_vendor
+      clear_enabled
       doc_auth_vendor
       document_capture_session_uuid
       flow_path
@@ -74,7 +75,6 @@ module Idv
       had_barcode_attention_error
       had_barcode_read_failure
       hybrid_mobile_threatmetrix_review_status
-      idv_clear_enabled
       idv_consent_given
       idv_consent_given_at
       idv_phone_step_document_capture_session_uuid
