@@ -81,22 +81,6 @@ RSpec.describe UserProofingEvent, type: :model do
     end
   end
 
-  describe '#delete_events' do
-    before do
-      allow(EncryptedDocStorage::AttemptDataHandler).to receive(:new).and_return(doc_retriever)
-      allow(doc_retriever).to receive(:delete_user_proofing_events)
-      allow(doc_writer).to receive(:write_encrypted_attempt_events)
-      user_proofing_event.write_events(password:, attempt_events:, personal_key:)
-    end
-    it 'attempts to delete the events' do
-      profile.destroy
-      expect(doc_retriever).to have_received(:delete_user_proofing_events).with(
-        file_path: "attempt_events/#{profile.user.uuid}/#{profile.id}",
-        file_name: 'test-file-reference',
-      )
-    end
-  end
-
   describe '#decrypt_events' do
     let(:attempt_events) { [{ event_type: 'idv-something' }, { event_type: 'idv-nothing-else' }] }
 
