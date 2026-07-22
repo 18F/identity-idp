@@ -4,6 +4,7 @@ class User < ApplicationRecord
   include NonNullUuid
 
   include ActionView::Helpers::DateHelper
+  after_commit :delete_attempt_events, on: :destroy
 
   devise(
     :database_authenticatable,
@@ -602,6 +603,20 @@ class User < ApplicationRecord
   end
 
   private
+
+  def delete_attempt_events
+    attempt_data_handler.delete_all_user_attempt_data(file_path: "attempt_events/#{uuid}")
+  end
+
+  def attempt_data_handler
+    @attempt_data_handler ||= EncryptedDocStorage::AttemptDataHandler.new(
+      s3_enabled: historical_attempts_s3_storage_enabled?,
+    )
+  end
+
+  def historical_attempts_s3_storage_enabled?
+    IdentityConfig.store.historical_attempts_s3_storage_enabled
+  end
 
   def find_password_reset_profile
     find_in_person_in_progress_or_active_profile

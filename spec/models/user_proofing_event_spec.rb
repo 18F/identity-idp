@@ -1,13 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe UserProofingEvent, type: :model do
-  let(:user_proofing_event) do
-    UserProofingEvent.new(
-      profile_id: profile.id,
-      service_provider_ids_sent: [],
-    )
-  end
-  let(:doc_retriever) { EncryptedDocStorage::AttemptDataRetriever.new(s3_enabled: false) }
+  let(:user_proofing_event) { create(:user_proofing_event, profile:) }
+  let(:doc_retriever) { EncryptedDocStorage::AttemptDataHandler.new(s3_enabled: false) }
   let(:doc_writer) { EncryptedDocStorage::DocWriter.new(s3_enabled: false) }
   let(:attempt_events) { [{ event_type: 'idv-something' }, { event_type: 'idv-nothing-else' }] }
   let(:password) { 'password' }
@@ -70,10 +65,6 @@ RSpec.describe UserProofingEvent, type: :model do
   end
 
   describe '#write_events' do
-    let(:password) { 'password' }
-    let(:profile) { create(:profile, encrypted_attempts_file_reference: 'test-file-reference') }
-    let(:user_proofing_event) { create(:user_proofing_event, profile:) }
-
     before do
       allow(EncryptedDocStorage::DocWriter).to receive(:new).and_return(doc_writer)
       allow(doc_writer).to receive(:write_encrypted_attempt_events)
@@ -86,27 +77,41 @@ RSpec.describe UserProofingEvent, type: :model do
         name: 'test-file-reference',
       )
 
-      user_proofing_event.write_events(password:, attempt_events:, personal_key: 'personal-key')
+      user_proofing_event.write_events(password:, attempt_events:, personal_key:)
+    end
+  end
+
+  describe '#delete_events' do
+    before do
+      allow(EncryptedDocStorage::AttemptDataHandler).to receive(:new).and_return(doc_retriever)
+      allow(doc_retriever).to receive(:delete_user_proofing_events)
+      allow(doc_writer).to receive(:write_encrypted_attempt_events)
+      user_proofing_event.write_events(password:, attempt_events:, personal_key:)
+    end
+    it 'attempts to delete the events' do
+      profile.destroy
+      expect(doc_retriever).to have_received(:delete_user_proofing_events).with(
+        file_path: "attempt_events/#{profile.user.uuid}/#{profile.id}",
+        file_name: 'test-file-reference',
+      )
     end
   end
 
   describe '#decrypt_events' do
-    let(:password) { 'password' }
     let(:attempt_events) { [{ event_type: 'idv-something' }, { event_type: 'idv-nothing-else' }] }
-    let(:user_proofing_event) { create(:user_proofing_event, profile:) }
 
     before do
-      allow(EncryptedDocStorage::AttemptDataRetriever).to receive(:new).and_return(doc_retriever)
+      allow(EncryptedDocStorage::AttemptDataHandler).to receive(:new).and_return(doc_retriever)
       allow(doc_retriever).to receive(:retrieve_user_proofing_events).and_return(stored_event_data)
     end
 
     it 'retrieves and decrypts the events from storage' do
-      expect(doc_retriever).to receive(:retrieve_user_proofing_events).with(
+      expect(user_proofing_event.decrypt_events(password:)).to eq(attempt_events.to_json)
+
+      expect(doc_retriever).to have_received(:retrieve_user_proofing_events).with(
         file_path: "attempt_events/#{profile.user.uuid}/#{profile.id}",
         file_name: 'test-file-reference',
-      ).and_return(stored_event_data)
-
-      expect(user_proofing_event.decrypt_events(password:)).to eq(attempt_events.to_json)
+      )
     end
 
     context 'when there is no data retrieved' do
@@ -116,6 +121,11 @@ RSpec.describe UserProofingEvent, type: :model do
 
       it 'returns an empty JSON object' do
         expect(user_proofing_event.decrypt_events(password:)).to be nil
+
+        expect(doc_retriever).to have_received(:retrieve_user_proofing_events).with(
+          file_path: "attempt_events/#{profile.user.uuid}/#{profile.id}",
+          file_name: 'test-file-reference',
+        )
       end
     end
   end
@@ -124,7 +134,7 @@ RSpec.describe UserProofingEvent, type: :model do
     let(:new_personal_key) { 'new-personal-key' }
 
     before do
-      allow(EncryptedDocStorage::AttemptDataRetriever).to receive(:new).and_return(doc_retriever)
+      allow(EncryptedDocStorage::AttemptDataHandler).to receive(:new).and_return(doc_retriever)
       allow(EncryptedDocStorage::DocWriter).to receive(:new).and_return(doc_writer)
 
       allow(doc_retriever).to receive(:retrieve_user_proofing_events).and_return(stored_event_data)

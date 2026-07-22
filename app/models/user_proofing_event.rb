@@ -77,7 +77,7 @@ class UserProofingEvent < ApplicationRecord
   end
 
   def retrieved_attempts_data
-    data = attempt_data_retriever.retrieve_user_proofing_events(
+    data = attempt_data_handler.retrieve_user_proofing_events(
       file_path: attempt_events_file_path,
       file_name: profile.encrypted_attempts_file_reference,
     )
@@ -104,8 +104,8 @@ class UserProofingEvent < ApplicationRecord
     )
   end
 
-  def attempt_data_retriever
-    @attempt_data_retriever ||= EncryptedDocStorage::AttemptDataRetriever.new(
+  def attempt_data_handler
+    @attempt_data_handler ||= EncryptedDocStorage::AttemptDataHandler.new(
       s3_enabled: historical_attempts_s3_storage_enabled?,
     )
   end
