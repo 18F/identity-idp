@@ -4,6 +4,7 @@ RSpec.describe ProofingAgent::ProofingResult do
   let(:proofing_agent_id) { SecureRandom.uuid }
   let(:proofing_location_id) { SecureRandom.uuid }
   let(:correlation_id) { SecureRandom.uuid }
+  let(:transaction_id) { SecureRandom.uuid }
   let(:pii) { nil }
   let(:service_provider_issuer) { 'test-service-provider' }
   let(:phone_precheck_passed) { true }
@@ -28,6 +29,7 @@ RSpec.describe ProofingAgent::ProofingResult do
       proofing_agent_id:,
       proofing_location_id:,
       correlation_id:,
+      transaction_id:,
       pii:,
       service_provider_issuer:,
       resolution_result:,
@@ -60,6 +62,7 @@ RSpec.describe ProofingAgent::ProofingResult do
             proofing_agent_id:,
             proofing_location_id:,
             correlation_id:,
+            transaction_id:,
             service_provider_issuer:,
             resolution: resolution_result,
             aamva: aamva_result,
@@ -88,6 +91,7 @@ RSpec.describe ProofingAgent::ProofingResult do
             proofing_agent_id:,
             proofing_location_id:,
             correlation_id:,
+            transaction_id:,
             service_provider_issuer:,
             resolution: resolution_result,
             mrz: mrz_result,
@@ -118,6 +122,50 @@ RSpec.describe ProofingAgent::ProofingResult do
         proofing_agent_id:,
         proofing_location_id:,
         correlation_id:,
+        transaction_id:,
+        service_provider_issuer:,
+        resolution: resolution_result,
+      )
+    end
+  end
+
+  context 'when residential address check fails' do
+    let(:resolution_result) do
+      {
+        success: false,
+        errors: [{ base: ['Residential address check failed'] }],
+        exception: nil,
+        phone_precheck_passed:,
+        context: {
+          stages: {
+            residential_address: {
+              success: false,
+              errors: {},
+              exception: nil,
+              timed_out: false,
+              transaction_id: '',
+              reference: '',
+              reason_codes: {},
+              can_pass_with_additional_verification: false,
+              attributes_requiring_additional_verification: [],
+              source_attribution: [],
+              vendor_name: 'ResidentialAddressNotRequired',
+              vendor_id: nil,
+              vendor_workflow: nil,
+              verified_attributes: nil,
+            },
+          },
+        },
+      }
+    end
+    it 'returns failure' do
+      expect(subject.combined_result).to eq(
+        success: false,
+        reason: 'profile_resolution_fail',
+        proofing_agent_id:,
+        proofing_location_id:,
+        correlation_id:,
+        transaction_id:,
         service_provider_issuer:,
         resolution: resolution_result,
       )
@@ -133,6 +181,7 @@ RSpec.describe ProofingAgent::ProofingResult do
         proofing_agent_id:,
         proofing_location_id:,
         correlation_id:,
+        transaction_id:,
         service_provider_issuer:,
         resolution: resolution_result,
       )
@@ -158,6 +207,7 @@ RSpec.describe ProofingAgent::ProofingResult do
         proofing_agent_id:,
         proofing_location_id:,
         correlation_id:,
+        transaction_id:,
         service_provider_issuer:,
         resolution: resolution_result,
       )
@@ -186,6 +236,7 @@ RSpec.describe ProofingAgent::ProofingResult do
         proofing_agent_id:,
         proofing_location_id:,
         correlation_id:,
+        transaction_id:,
         service_provider_issuer:,
         resolution: resolution_result,
         aamva: aamva_result,
@@ -214,9 +265,57 @@ RSpec.describe ProofingAgent::ProofingResult do
         proofing_agent_id:,
         proofing_location_id:,
         correlation_id:,
+        transaction_id:,
         service_provider_issuer:,
         resolution: resolution_result,
         mrz: mrz_result,
+      )
+    end
+  end
+
+  context 'when id validation fails and resolution is skipped' do
+    let(:resolution_result) { nil }
+    let(:aamva_result) { { success: false, vendor_name: 'TestVendor' } }
+    let(:mrz_result) { {} }
+
+    it 'does not raise and reports the id failure' do
+      expect { subject.combined_result }.not_to raise_error
+      expect(subject.combined_result[:success]).to be false
+      expect(subject.combined_result[:reason]).to eq('id_fail')
+    end
+  end
+
+  context 'when system_error is explicitly provided' do
+    subject do
+      described_class.new(
+        proofing_agent_id:,
+        proofing_location_id:,
+        correlation_id:,
+        transaction_id:,
+        pii:,
+        service_provider_issuer:,
+        resolution_result:,
+        system_error: 'database_unavailable',
+      )
+    end
+
+    it 'returns failure with system_error reason' do
+      expect(subject.combined_result).to include(
+        success: false,
+        reason: 'system_error',
+      )
+    end
+  end
+
+  context 'when all vendor results are missing' do
+    let(:resolution_result) { nil }
+    let(:aamva_result) { nil }
+    let(:mrz_result) { nil }
+
+    it 'returns failure with system_error reason' do
+      expect(subject.combined_result).to include(
+        success: false,
+        reason: 'system_error',
       )
     end
   end

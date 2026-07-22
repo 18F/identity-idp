@@ -61,6 +61,7 @@ class User < ApplicationRecord
           -> { where(status: :establishing).order(created_at: :desc) },
           class_name: 'InPersonEnrollment', foreign_key: :user_id, inverse_of: :user,
           dependent: :destroy
+  belongs_to :reset_password_email_address, class_name: 'EmailAddress', optional: true
 
   attr_accessor :asserted_attributes, :email
 
@@ -390,37 +391,34 @@ class User < ApplicationRecord
     active_profile.present? && active_profile.facial_match?
   end
 
-  def proofing_agent_pending?
-    document_capture_sessions.where.not(pending_agent_proofed_user_at: nil).exists?
+  def proofing_agent_user_awaiting_binding?
+    pending_agent_proofed_user.present? &&
+      !agent_proofing_expired?
   end
 
-  def pending_agent_proofed_session
-    document_capture_sessions.where.not(pending_agent_proofed_user_at: nil).first
+  def pending_agent_proofed_document_capture_session
+    @pending_agent_proofed_document_capture_session ||= document_capture_sessions
+      .where(doc_auth_vendor: Idp::Constants::Vendors::PROOFING_AGENT)
+      .where.not(pending_agent_proofed_user_at: nil)
+      .order(pending_agent_proofed_user_at: :desc).first
   end
 
   def pending_agent_proofed_user
-    pending_agent_proofed_session&.load_agent_proofed_user
-  end
-
-  def agent_proofing_document_capture_session
-    document_capture_sessions.where(
-      doc_auth_vendor: Idp::Constants::Vendors::PROOFING_AGENT,
-    ).order(requested_at: :desc).first
+    @pending_agent_proofed_user ||=
+      pending_agent_proofed_document_capture_session&.load_agent_proofed_user
   end
 
   def agent_proofing_expired?
-    return false if identity_verified?
-
-    session = agent_proofing_document_capture_session
+    session = pending_agent_proofed_document_capture_session
     return false unless session
 
     validity_hours = IdentityConfig.store.agent_proofed_user_time_validity_hours
-    if session.requested_at &&
-       (session.requested_at + validity_hours.hours) < Time.zone.now
+    if session.pending_agent_proofed_user_at &&
+       (session.pending_agent_proofed_user_at + validity_hours.hours) < Time.zone.now
       return true
     end
 
-    session.load_agent_proofed_user.nil?
+    pending_agent_proofed_user.nil?
   end
 
   # The users most recently activated or pending in person enrollment profile
@@ -587,6 +585,20 @@ class User < ApplicationRecord
 
   def has_recovery_code?
     encrypted_recovery_code_digest_multi_region.present? || encrypted_recovery_code_digest.present?
+  end
+
+  attr_writer :requesting_reset_email_address
+
+  def send_reset_password_instructions
+    token = set_reset_password_token
+    # We need to avoid running all model validations because it is possible that the user
+    # will not be able to meet other validations in its current state.  This is similar to
+    # how Devise internally uses `save(validate: false)` when setting reset_password_token.
+
+    # rubocop:disable Rails/SkipsModelValidations
+    update_column(:reset_password_email_address_id, @requesting_reset_email_address&.id)
+    # rubocop:enable Rails/SkipsModelValidations
+    token
   end
 
   private

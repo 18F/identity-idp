@@ -9,6 +9,7 @@ class AccountsController < ApplicationController
 
   def show
     analytics.account_visit
+    delete_session_timeout_flash_if_present
     session[:account_redirect_path] = account_path
     cacher = Pii::Cacher.new(current_user, user_session)
     @presenter = AccountShowPresenter.new(
@@ -23,7 +24,7 @@ class AccountsController < ApplicationController
     if session.delete(:from_select_email_flow)
       flash.now[:success] = t(
         'account.emails.confirmed_html',
-        url: account_connected_accounts_url,
+        url: account_connected_services_url,
       )
     end
   end
@@ -42,5 +43,9 @@ class AccountsController < ApplicationController
 
   def confirm_user_is_not_suspended
     redirect_to user_please_call_url if current_user.suspended?
+  end
+
+  def delete_session_timeout_flash_if_present
+    flash.delete(:session_timed_out)
   end
 end

@@ -6,12 +6,14 @@ RSpec.describe TwoFactorAuthCode::WebauthnAuthenticationPresenter do
   let(:view) { ActionController::Base.new.view_context }
   let(:reauthn) {}
   let(:credentials) { [] }
+  let(:auto_prompt) { false }
   subject(:presenter) do
     TwoFactorAuthCode::WebauthnAuthenticationPresenter.new(
       data: { reauthn:, credentials: },
       service_provider: nil,
       view: view,
       platform_authenticator: platform_authenticator,
+      auto_prompt: auto_prompt,
     )
   end
 
@@ -143,6 +145,16 @@ RSpec.describe TwoFactorAuthCode::WebauthnAuthenticationPresenter do
   describe '#credentials' do
     it 'returns credentials from initialized data' do
       expect(presenter.credentials).to eq credentials
+    end
+  end
+
+  describe '#auto_prompt?' do
+    context 'when auto prompt is enabled' do
+      let(:auto_prompt) { true }
+
+      it 'returns true' do
+        expect(presenter.auto_prompt?).to eq(true)
+      end
     end
   end
 

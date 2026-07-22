@@ -148,6 +148,8 @@ class Profile < ApplicationRecord
       activated_at:,
     )
 
+    remove_agent_proofed_pending_status_if_needed
+
     track_facial_match_reproof if is_facial_match_upgrade
     send_push_notifications if is_reproof
   end
@@ -214,6 +216,10 @@ class Profile < ApplicationRecord
         activate(reason_deactivated: :password_reset) if activated_at.present?
       end
     end
+  end
+
+  def remove_agent_proofed_pending_status_if_needed
+    user.pending_agent_proofed_document_capture_session&.update!(pending_agent_proofed_user_at: nil)
   end
 
   def deactivate(reason)
@@ -430,44 +436,41 @@ class Profile < ApplicationRecord
     FACIAL_MATCH_IDV_LEVELS.include?(idv_level)
   end
 
-  def create_user_proofing_event(password:, attempt_events:, sent_to_sp: false)
-    # TODO: refactor to use reencrypt_user_proofing_events
-    encryptor = Encryption::Encryptors::PiiEncryptor.new(password)
-    encrypted_events_json = encryptor.encrypt(attempt_events.to_json, user_uuid: user.uuid)
-
-    result = encrypted_doc_writer.write_encrypted_attempt_events(
-      file_path: attempt_events_file_path,
-      encrypted_attempt_events: encrypted_events_json,
+  def create_user_proofing_event(password:, personal_key:, attempt_events:, sent_to_sp: false)
+    build_user_proofing_event(service_provider_ids_sent: service_provider_ids_sent(sent_to_sp:))
+    result = user_proofing_event.write_events(
+      password:,
+      personal_key: personal_key_generator.normalize(personal_key),
+      attempt_events:,
     )
 
     update!(encrypted_attempts_file_reference: result.name)
 
-    new_user_proofing_event = build_user_proofing_event(
-      service_provider_ids_sent: service_provider_ids_sent(sent_to_sp:),
-    )
-
-    new_user_proofing_event.save
+    user_proofing_event.save
   end
 
   def decrypt_user_proofing_events(password:)
-    encryptor = Encryption::Encryptors::PiiEncryptor.new(password)
-
-    data = attempt_data_retriever.retrieve_user_proofing_events(
-      file_path: attempt_events_file_path,
-      file_name: encrypted_attempts_file_reference,
-    )
-
-    encryptor.decrypt(data, user_uuid: user.uuid)
+    user_proofing_event&.decrypt_events(password:)
   end
 
-  def reencrypt_user_proofing_events(password:, attempt_events:)
-    encryptor = Encryption::Encryptors::PiiEncryptor.new(password)
-    encrypted_events_json = encryptor.encrypt(attempt_events.to_json, user_uuid: user.uuid)
+  def reencrypt_user_proofing_events(password:, personal_key:, attempt_events:)
+    user_proofing_event&.write_events(
+      password:,
+      personal_key: personal_key_generator.normalize(personal_key),
+      attempt_events:,
+    )
+  end
 
-    encrypted_doc_writer.write_encrypted_attempt_events(
-      file_path: attempt_events_file_path,
-      encrypted_attempt_events: encrypted_events_json,
-      name: encrypted_attempts_file_reference,
+  def reencrypt_recovery_attempts_data(attempt_events:, personal_key:)
+    user_proofing_event&.reencrypt_recovery_attempts_data(
+      personal_key: personal_key_generator.normalize(personal_key),
+      attempt_events:,
+    )
+  end
+
+  def recover_attempt_events(personal_key:)
+    user_proofing_event&.recover_attempt_events(
+      personal_key: personal_key_generator.normalize(personal_key),
     )
   end
 
@@ -475,26 +478,6 @@ class Profile < ApplicationRecord
 
   def confirm_that_profile_can_be_activated!
     raise reason_not_to_activate if reason_not_to_activate
-  end
-
-  def encrypted_doc_writer
-    @encrypted_doc_writer ||= EncryptedDocStorage::DocWriter.new(
-      s3_enabled: historical_attempts_s3_storage_enabled?,
-    )
-  end
-
-  def attempt_data_retriever
-    @attempt_data_retriever ||= EncryptedDocStorage::AttemptDataRetriever.new(
-      s3_enabled: historical_attempts_s3_storage_enabled?,
-    )
-  end
-
-  def attempt_events_file_path
-    "attempt_events/#{user.uuid}/#{self.id}"
-  end
-
-  def historical_attempts_s3_storage_enabled?
-    IdentityConfig.store.historical_attempts_s3_storage_enabled
   end
 
   def personal_key_generator

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class FlashComponent < BaseComponent
-  VALID_FLASH_TYPES = %w[error info success warning other notice alert].freeze
+  VALID_FLASH_TYPES = %w[error info success warning other notice alert session_timed_out].freeze
 
   attr_reader :flash
 
@@ -20,6 +20,8 @@ class FlashComponent < BaseComponent
   def alert_type(flash_type)
     case flash_type
     when 'notice'
+      :info
+    when 'session_timed_out'
       :info
     when 'alert'
       :error

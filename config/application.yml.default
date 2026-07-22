@@ -43,6 +43,7 @@ agent_proofed_user_time_validity_hours: 1
 all_redirect_uris_cache_duration_minutes: 2
 allowed_attempts_providers: '[]'
 allowed_client_id_in_risc_service_providers: '[]'
+allowed_create_prompt_providers: '[]'
 allowed_ialmax_providers: '[]'
 allowed_verified_within_providers: '[]'
 api_transaction_count_report_config: '[]'
@@ -55,6 +56,7 @@ attempts_api_signing_enabled: false
 attempts_api_signing_key: ''
 attribute_encryption_key:
 attribute_encryption_key_queue: '[]'
+auth_time_attribute_enabled: false
 available_locales: 'en,es,fr,zh'
 aws_http_retry_limit: 2
 aws_http_retry_max_delay: 1
@@ -102,6 +104,7 @@ database_worker_jobs_sslmode: 'verify-full'
 database_worker_jobs_username: ''
 deleted_user_accounts_report_configs: '[]'
 deliver_mail_async: false
+demographics_metrics_s3_report_configs: '[]'
 development_mailer_deliver_method: letter_opener
 disable_email_sending: true
 disposable_email_services: '[]'
@@ -183,6 +186,7 @@ feature_account_creation_passkey_auto_prompt: false
 feature_idv_force_gpo_verification_enabled: false
 feature_idv_hybrid_flow_enabled: true
 feature_show_sp_reproof_banner_enabled: false
+feature_webauthn_verification_auto_prompt_enabled: false
 fraud_ops_event_ttl_seconds: 604800
 fraud_ops_public_key: ''
 fraud_ops_s3_bucket: ''
@@ -224,6 +228,7 @@ idv_address_vendor_socure_percent: 0
 idv_attempt_window_in_hours: 6
 idv_available: true
 idv_contact_phone_number: (844) 555-5555
+idv_doc_auth_mdl_enabled_percent: 0
 idv_gpo_verification_enabled: true
 idv_max_attempts: 5
 idv_min_age_years: 13
@@ -235,6 +240,7 @@ idv_phone_verification_dual_vendor_check_socure_percent: 0
 idv_phone_verification_dual_vendor_check_socure_reason_codes: '[]'
 idv_proofing_agent_config: '[]'
 idv_proofing_agent_enabled: false
+idv_proofing_agent_passport_enabled: false
 idv_proofing_agent_result_expiration_seconds: 10
 idv_rdp_version_default: rdp_v2
 idv_rdp_version_switching_enabled: false
@@ -255,6 +261,7 @@ idv_socure_phonerisk_name_correlation_score_threshold: 1.0
 idv_socure_phonerisk_score_threshold: 0
 idv_socure_phonerisk_shadow_mode: false
 idv_socure_reason_code_download_enabled: false
+idv_socure_reason_codes_docv_mdl: '[]'
 idv_socure_reason_codes_docv_selfie_fail: '[]'
 idv_socure_reason_codes_docv_selfie_not_processed: '[]'
 idv_socure_reason_codes_docv_selfie_pass: '[]'
@@ -375,13 +382,15 @@ outbound_connection_check_url: 'https://checkip.amazonaws.com'
 participate_in_dap: false
 password_max_attempts: 3
 password_pepper:
-personal_key_retired: true
+personal_key_as_mfa_active: true
 phone_carrier_registration_blocklist_array: '[]'
 phone_confirmation_max_attempt_window_in_minutes: 1_440
 phone_confirmation_max_attempts: 20
 phone_recaptcha_country_score_overrides: '{"AS":0.0,"GU":0.0,"MP":0.0,"PR":0.0,"US":0.0,"VI":0.0,"CA":0.0,"MX":0.0}'
 phone_recaptcha_score_threshold: 0.0
 phone_service_check: true
+phone_setup_blocked_ip_country_codes: '[]'
+phone_setup_country_mismatch_check_country_codes: '[]'
 phone_setups_per_ip_limit: 25
 phone_setups_per_ip_period: 300
 phone_setups_per_ip_track_only_mode: false
@@ -401,6 +410,7 @@ proof_address_max_attempts: 5
 proof_ssn_max_attempt_window_in_minutes: 60
 proof_ssn_max_attempts: 10
 proofer_mock_fallback: true
+proofing_agent_device_profiling: enabled
 proofing_device_hybrid_profiling: disabled
 proofing_device_profiling: enabled
 protocols_report_config: '[]'
@@ -488,7 +498,6 @@ sign_in_user_id_per_ip_attempt_window_in_minutes: 720
 sign_in_user_id_per_ip_attempt_window_max_minutes: 43_200
 sign_in_user_id_per_ip_max_attempts: 50
 skip_encryption_allowed_list: '["urn:gov:gsa:SAML:2.0.profiles:sp:sso:dev", "urn:gov:gsa:SAML:2.0.profiles:sp:sso:int"]'
-socure_doc_escrow_enabled: false
 socure_docv_document_request_endpoint: ''
 socure_docv_enabled: false
 socure_docv_images_request_endpoint: ''

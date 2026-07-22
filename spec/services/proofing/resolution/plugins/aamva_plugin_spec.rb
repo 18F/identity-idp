@@ -8,6 +8,11 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
   let(:current_sp) { build(:service_provider) }
   let(:state_id_address_resolution_result) { nil }
   let(:ipp_enrollment_in_progress) { false }
+  let(:analytics_arguments) { {} }
+  let(:proofing_agent_id) { 'test-agent-id' }
+  let(:proofing_location_id) { 'test-location-id' }
+  let(:correlation_id) { 'test-correlation-id' }
+  let(:transaction_id) { 'test-transaction-id' }
   let(:proofer) { instance_double(Proofing::Aamva::Proofer, proof: proofer_result) }
   let(:proofer_result) do
     Proofing::StateIdResult.new(
@@ -47,6 +52,7 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
         ipp_enrollment_in_progress:,
         timer: JobHelpers::Timer.new,
         already_proofed:,
+        analytics_arguments:,
       )
     end
 
@@ -395,6 +401,7 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
           timer: JobHelpers::Timer.new,
           analytics:,
           doc_auth_flow:,
+          analytics_arguments:,
         )
       end
 
@@ -859,6 +866,16 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
               )
             end
             let(:proofer_result_hash) { proofer_result.to_h }
+            let(:analytics_arguments) do
+              {
+                proofing_agent: {
+                  agent_id: proofing_agent_id,
+                  location_id: proofing_location_id,
+                  correlation_id: correlation_id,
+                  transaction_id: transaction_id,
+                },
+              }
+            end
 
             it 'returns a skipped result' do
               allow(IdentityConfig.store).to receive(:idv_aamva_bypass_exception_ids).and_return(
@@ -870,6 +887,7 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
                 expect(analytics).to have_logged_event(
                   :idv_state_id_validation, hash_including(
                     bypass_exception: true,
+                    proofing_agent: analytics_arguments[:proofing_agent],
                   )
                 )
               end
@@ -881,6 +899,16 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
       context 'when the state ID cannot proof' do
         let(:state) { 'NP' }
         let(:state_id_jurisdiction) { 'NP' }
+        let(:analytics_arguments) do
+          {
+            proofing_agent: {
+              agent_id: proofing_agent_id,
+              location_id: proofing_location_id,
+              correlation_id: correlation_id,
+              transaction_id: transaction_id,
+            },
+          }
+        end
 
         let(:applicant_pii) do
           Idp::Constants::MOCK_IPP_APPLICANT.merge(
@@ -926,6 +954,7 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
               state_id_number: '#' * applicant_pii[:state_id_number].length,
               user_id: user_uuid,
               aamva_checked: false,
+              proofing_agent: analytics_arguments[:proofing_agent],
             }
           )
         end
@@ -990,7 +1019,7 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
   end
 
   describe '#passport_applicant?' do
-    context 'with new field name (document_type_received)' do
+    context 'with a passport document_type_received' do
       let(:applicant_pii) do
         {
           document_type_received: 'passport',
@@ -1004,36 +1033,7 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
       end
     end
 
-    context 'with old field name (id_doc_type)' do
-      let(:applicant_pii) do
-        {
-          id_doc_type: 'passport',
-          first_name: 'Test',
-          last_name: 'User',
-        }
-      end
-
-      it 'correctly identifies passport applicant using old field name' do
-        expect(described_class.new.send(:passport_applicant?, applicant_pii)).to be true
-      end
-    end
-
-    context 'with both field names present (new takes precedence)' do
-      let(:applicant_pii) do
-        {
-          document_type_received: 'passport',
-          id_doc_type: 'drivers_license',
-          first_name: 'Test',
-          last_name: 'User',
-        }
-      end
-
-      it 'uses new field name when both are present' do
-        expect(described_class.new.send(:passport_applicant?, applicant_pii)).to be true
-      end
-    end
-
-    context 'with non-passport document using new field' do
+    context 'with a non-passport document_type_received' do
       let(:applicant_pii) do
         {
           document_type_received: 'drivers_license',
@@ -1047,21 +1047,7 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
       end
     end
 
-    context 'with non-passport document using old field' do
-      let(:applicant_pii) do
-        {
-          id_doc_type: 'drivers_license',
-          first_name: 'Test',
-          last_name: 'User',
-        }
-      end
-
-      it 'correctly identifies non-passport applicant using old field' do
-        expect(described_class.new.send(:passport_applicant?, applicant_pii)).to be false
-      end
-    end
-
-    context 'with neither field present' do
+    context 'with no document_type_received' do
       let(:applicant_pii) do
         {
           first_name: 'Test',

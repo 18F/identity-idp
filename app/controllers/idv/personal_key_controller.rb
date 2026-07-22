@@ -7,6 +7,7 @@ module Idv
     include StepIndicatorConcern
     include SecureHeadersConcern
     include OptInHelper
+    include Idv::ProofingAgentConcern
 
     before_action :apply_secure_headers_override
     before_action :confirm_step_allowed
@@ -24,6 +25,7 @@ module Idv
         in_person_verification_pending: idv_session.profile&.in_person_verification_pending?,
         encrypted_profiles_missing: pii_is_missing?,
         **opt_in_analytics_properties,
+        **proofing_agent_analytics,
       )
 
       if pii_is_missing?
@@ -40,6 +42,7 @@ module Idv
         in_person_verification_pending: idv_session.profile&.in_person_verification_pending?,
         fraud_review_pending: fraud_review_pending?,
         fraud_rejection: fraud_rejection?,
+        **proofing_agent_analytics,
       )
 
       idv_session.acknowledge_personal_key!

@@ -77,7 +77,7 @@ RSpec.describe Deploy::Activate do
     let(:s3_contents) do
       {
         'common/GeoIP2-City.mmdb' => geolite_content,
-        'common/pwned-passwords.txt' => pwned_passwords_content,
+        'common/pwned_passwords.txt' => pwned_passwords_content,
       }
     end
 
@@ -94,7 +94,7 @@ RSpec.describe Deploy::Activate do
       )
       expect(s3_client).to have_received(:get_object).with(
         bucket: kind_of(String),
-        key: 'common/pwned-passwords.txt',
+        key: 'common/pwned_passwords.txt',
         response_target: kind_of(String),
       )
 

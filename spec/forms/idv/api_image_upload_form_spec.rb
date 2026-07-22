@@ -395,8 +395,9 @@ RSpec.describe Idv::ApiImageUploadForm do
           end
 
           before do
-            allow(DocAuth::Dos::Requests::MrzRequest).to receive(:new).with(mrz: pii[:mrz])
-              .and_return(mrz_request)
+            allow(DocAuth::Dos::Requests::MrzRequest).to receive(:new).with(
+              mrz: pii[:mrz], id_type: pii[:document_type_received],
+            ).and_return(mrz_request)
             allow(mrz_request).to receive(:fetch).and_return(mrz_response)
             form.submit
           end
@@ -508,7 +509,6 @@ RSpec.describe Idv::ApiImageUploadForm do
               form.send(:images).each do |image|
                 # testing that the storage is happening
                 expect(writer).to receive(:write).with(
-                  issuer: service_provider.issuer,
                   image: image.bytes,
                 ).exactly(1).time
               end
@@ -734,7 +734,6 @@ RSpec.describe Idv::ApiImageUploadForm do
                 form.send(:images).each do |image|
                   # testing that the storage is happening
                   expect(writer).to receive(:write).with(
-                    issuer: service_provider.issuer,
                     image: image.bytes,
                   ).exactly(1).time
                 end
@@ -934,7 +933,6 @@ RSpec.describe Idv::ApiImageUploadForm do
             form.send(:images).each do |image|
               # testing that the storage is happening
               expect(writer).to receive(:write).with(
-                issuer: service_provider.issuer,
                 image: image.bytes,
               ).exactly(1).time.and_return(result)
             end
@@ -1017,7 +1015,6 @@ RSpec.describe Idv::ApiImageUploadForm do
             form.send(:images).each do |image|
               # testing that the storage is happening
               expect(writer).to receive(:write).with(
-                issuer: service_provider.issuer,
                 image: image.bytes,
               ).exactly(1).time
             end

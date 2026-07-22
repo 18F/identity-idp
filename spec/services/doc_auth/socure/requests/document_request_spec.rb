@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe DocAuth::Socure::Requests::DocumentRequest do
-  let(:document_capture_session_uuid) { 'fake uuid' }
+  let(:document_capture_session) { build(:document_capture_session) }
   let(:redirect_url) { 'https://idv.test' }
   let(:language) { :en }
   let(:idv_socure_docv_flow_id_only) { 'id_only_flow' }
@@ -14,6 +14,7 @@ RSpec.describe DocAuth::Socure::Requests::DocumentRequest do
       customer_user_id: customer_user_id,
       redirect_url: redirect_url,
       language:,
+      document_capture_session:,
     )
   end
 
@@ -141,6 +142,7 @@ RSpec.describe DocAuth::Socure::Requests::DocumentRequest do
           customer_user_id: customer_user_id,
           redirect_url: redirect_url,
           language:,
+          document_capture_session:,
           liveness_checking_required: true,
         )
       end

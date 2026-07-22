@@ -4,7 +4,7 @@ module Idv
   module Steps
     module ThreatMetrixStepHelper
       include ThreatMetrixHelper
-      def threatmetrix_view_variables(updating_ssn)
+      def threatmetrix_view_variables(updating_ssn = false)
         session_id = generate_threatmetrix_session_id(updating_ssn)
 
         {

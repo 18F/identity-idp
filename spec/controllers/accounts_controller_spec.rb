@@ -23,6 +23,16 @@ RSpec.describe AccountsController do
       end
     end
 
+    context 'when session_timed_out flash is present' do
+      it 'deletes the flash message' do
+        flash[:session_timed_out] = 'Your session has timed out'
+
+        get :show
+
+        expect(flash[:session_timed_out]).to be_nil
+      end
+    end
+
     describe 'pii fetching' do
       let(:pii_cacher) { Pii::Cacher.new(user, {}) }
       let(:active_profile) { create(:profile, :active) }
@@ -88,7 +98,7 @@ RSpec.describe AccountsController do
         it 'renders the proper flash message' do
           flash_message = t(
             'account.emails.confirmed_html',
-            url: account_connected_accounts_url,
+            url: account_connected_services_url,
           )
           user = create(:user, :fully_registered)
           sign_in user

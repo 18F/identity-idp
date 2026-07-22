@@ -124,7 +124,7 @@ class SocureDocvResultsJob < ApplicationJob
   )
     image_data = {}
 
-    if socure_doc_escrow_enabled? &&
+    if doc_escrow_enabled? &&
        docv_result_response.instance_of?(DocAuth::Socure::Responses::DocvResultResponse)
 
       job_data = {
@@ -291,24 +291,20 @@ class SocureDocvResultsJob < ApplicationJob
     @sp ||= ServiceProvider.find_by(issuer: document_capture_session.issuer)
   end
 
-  def socure_doc_escrow_enabled?
-    sp&.attempts_api_enabled? && IdentityConfig.store.socure_doc_escrow_enabled
+  def doc_escrow_enabled?
+    FeatureManagement.doc_escrow_enabled?(sp)
   end
 
   def doc_escrow_name
-    "#{sp.issuer}/#{SecureRandom.uuid}"
+    "encrypted_images/#{SecureRandom.uuid}"
   end
 
   def doc_escrow_key
     Base64.strict_encode64(SecureRandom.bytes(32))
   end
 
-  def passport_requested?
-    document_capture_session.passport_requested?
-  end
-
   def validate_aamva(doc_pii_response)
-    if aamva_enabled? && !passport_requested?
+    if aamva_enabled? && document_capture_session.state_id_requested?
       aamva_proofer.call(
         applicant_pii: to_aamva_applicant_pii(doc_pii_response.pii_from_doc.to_h),
         current_sp: sp,
@@ -322,15 +318,17 @@ class SocureDocvResultsJob < ApplicationJob
   end
 
   def validate_mrz(doc_pii_response)
-    id_type = doc_pii_response.extra[:document_type_received] ||
-              doc_pii_response.extra[:id_doc_type]
-    unless id_type == 'passport'
+    id_type = doc_pii_response.extra[:document_type_received]
+    unless document_capture_session.in_supported_passport_types?(id_type)
       return unless document_capture_session.passport_requested?
     end
 
     mrz_client = Rails.env.development? ?
                     DocAuth::Mock::DosPassportApiClient.new :
-                    DocAuth::Dos::Requests::MrzRequest.new(mrz: doc_pii_response.pii_from_doc[:mrz])
+                    DocAuth::Dos::Requests::MrzRequest.new(
+                      mrz: doc_pii_response.pii_from_doc[:mrz],
+                      id_type:,
+                    )
     response = mrz_client.fetch
 
     analytics.idv_dos_passport_verification(
@@ -350,8 +348,14 @@ class SocureDocvResultsJob < ApplicationJob
   end
 
   def document_type_requested
-    @document_type_requested ||= document_capture_session.passport_requested? \
-      ? DocAuth::Socure::DocumentTypes::PASSPORT : DocAuth::Socure::DocumentTypes::DRIVERS_LICENSE
+    case document_capture_session.document_type_requested
+    when Idp::Constants::DocumentTypes::PASSPORT
+      DocAuth::Socure::DocumentTypes::PASSPORT
+    when Idp::Constants::DocumentTypes::DRIVERS_LICENSE
+      DocAuth::Socure::DocumentTypes::DRIVERS_LICENSE
+    when Idp::Constants::DocumentTypes::MDL
+      DocAuth::Socure::DocumentTypes::DIGITAL_ID
+    end
   end
 
   def user_uuid

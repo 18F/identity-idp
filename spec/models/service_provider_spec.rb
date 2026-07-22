@@ -157,6 +157,26 @@ RSpec.describe ServiceProvider do
     end
   end
 
+  describe '#create_prompt_allowed?' do
+    context 'when the sp is not on the allowlist for the "create" prompt' do
+      it 'returns false' do
+        expect(service_provider.create_prompt_allowed?).to be(false)
+      end
+    end
+
+    context 'when the sp is on the allowlist for the "create" prompt' do
+      before do
+        allow(IdentityConfig.store).to receive(:allowed_create_prompt_providers).and_return(
+          ['an-issuer', service_provider.issuer],
+        )
+      end
+
+      it 'returns true' do
+        expect(service_provider.create_prompt_allowed?).to be(true)
+      end
+    end
+  end
+
   describe '#attempts_public_key' do
     context 'when the sp is configured to use the attempts api' do
       context 'when there is no public key set in the configuration' do

@@ -447,6 +447,12 @@ RSpec.describe Idv::EnterPasswordController do
         expect(events_count).to eq 1
       end
 
+      it 'does not attempt to clear agent proofed pending status' do
+        expect(controller).not_to receive(:remove_agent_proofed_profile_pending_status_if_needed)
+
+        put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+      end
+
       context 'user was flagged by ThreatMetrix' do
         let(:threatmetrix_result) { 'reject' }
 
@@ -1202,6 +1208,66 @@ RSpec.describe Idv::EnterPasswordController do
         it 'does not create a UserProofingEvent for the profile' do
           put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
           expect(UserProofingEvent.count).to eq(0)
+        end
+      end
+    end
+
+    context 'user is agent proofed' do
+      let(:document_capture_session) do
+        create(
+          :document_capture_session,
+          user:,
+          doc_auth_vendor: Idp::Constants::Vendors::PROOFING_AGENT,
+          issuer: sp.issuer,
+          pending_agent_proofed_user_at: Time.zone.now,
+        )
+      end
+
+      before do
+        document_capture_session.store_agent_proofed_user(
+          { pii: applicant, success: true, service_provider_issuer: sp.issuer },
+        )
+        subject.idv_session.agent_proofed = true
+        subject.idv_session.proofing_agent_match = true
+        subject.idv_session.vendor_phone_confirmation = true
+        subject.idv_session.user_phone_confirmation = true
+        session[:sp] = { issuer: sp.issuer }
+      end
+
+      it 'creates the profile with idv_level of proofing_agent' do
+        put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+
+        expect(user.profiles.last.idv_level).to eq('proofing_agent')
+      end
+
+      it 'saves the initiating_service_provider_issuer on the profile' do
+        put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+
+        expect(user.profiles.last.initiating_service_provider_issuer).to eq(sp.issuer)
+      end
+
+      it 'clears pending_agent_proofed_user_at on the document capture session' do
+        put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+
+        expect(document_capture_session.reload.pending_agent_proofed_user_at).to be_nil
+      end
+
+      context 'when proofing agent device profiling is collect_only' do
+        # collect_only collects the tmx result but never stores a
+        # DeviceProfilingResult, so this step has no row to read
+        let(:threatmetrix_result) { nil }
+
+        before do
+          allow(IdentityConfig.store).to receive(:proofing_agent_device_profiling)
+            .and_return(:collect_only)
+          allow(IdentityConfig.store).to receive(:proofing_device_profiling)
+            .and_return(:enabled)
+        end
+
+        it 'renders without a stored device profiling result' do
+          get :new
+
+          expect(response).to render_template :new
         end
       end
     end

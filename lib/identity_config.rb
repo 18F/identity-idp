@@ -59,6 +59,7 @@ module IdentityConfig
     config.add(:agent_proofed_user_time_validity_hours, type: :integer)
     config.add(:all_redirect_uris_cache_duration_minutes, type: :integer)
     config.add(:allowed_attempts_providers, type: :json)
+    config.add(:allowed_create_prompt_providers, type: :json)
     config.add(:allowed_client_id_in_risc_service_providers, type: :json)
     config.add(:allowed_ialmax_providers, type: :json)
     config.add(:allowed_verified_within_providers, type: :json)
@@ -72,6 +73,7 @@ module IdentityConfig
     config.add(:attempts_api_signing_enabled, type: :boolean)
     config.add(:attribute_encryption_key, type: :string)
     config.add(:attribute_encryption_key_queue, type: :json)
+    config.add(:auth_time_attribute_enabled, type: :boolean)
     config.add(:available_locales, type: :comma_separated_string_list)
     config.add(:aws_http_retry_limit, type: :integer)
     config.add(:aws_http_retry_max_delay, type: :integer)
@@ -119,6 +121,7 @@ module IdentityConfig
     config.add(:database_worker_jobs_username, type: :string)
     config.add(:deleted_user_accounts_report_configs, type: :json)
     config.add(:deliver_mail_async, type: :boolean)
+    config.add(:demographics_metrics_s3_report_configs, type: :json)
     config.add(:development_mailer_deliver_method, type: :symbol, enum: [:file, :letter_opener])
     config.add(:disable_email_sending, type: :boolean)
     config.add(:disposable_email_services, type: :json)
@@ -196,6 +199,7 @@ module IdentityConfig
     config.add(:facial_match_general_availability_enabled, type: :boolean)
     config.add(:facial_match_preferred_on_connected_accounts, type: :boolean)
     config.add(:feature_account_creation_passkey_auto_prompt, type: :boolean)
+    config.add(:feature_webauthn_verification_auto_prompt_enabled, type: :boolean)
     config.add(:feature_idv_force_gpo_verification_enabled, type: :boolean)
     config.add(:feature_idv_hybrid_flow_enabled, type: :boolean)
     config.add(:feature_show_sp_reproof_banner_enabled, type: :boolean)
@@ -238,6 +242,7 @@ module IdentityConfig
     config.add(:idv_attempt_window_in_hours, type: :integer)
     config.add(:idv_available, type: :boolean)
     config.add(:idv_contact_phone_number, type: :string)
+    config.add(:idv_doc_auth_mdl_enabled_percent, type: :integer)
     config.add(:idv_gpo_verification_enabled, type: :boolean)
     config.add(:idv_max_attempts, type: :integer)
     config.add(:idv_min_age_years, type: :integer)
@@ -249,6 +254,7 @@ module IdentityConfig
     config.add(:idv_phone_verification_dual_vendor_check_socure_reason_codes, type: :json)
     config.add(:idv_proofing_agent_config, type: :json)
     config.add(:idv_proofing_agent_enabled, type: :boolean)
+    config.add(:idv_proofing_agent_passport_enabled, type: :boolean)
     config.add(:idv_proofing_agent_result_expiration_seconds, type: :integer)
     config.add(:idv_rdp_version_default, type: :string)
     config.add(:idv_rdp_version_switching_enabled, type: :boolean)
@@ -273,6 +279,7 @@ module IdentityConfig
     config.add(:idv_socure_phonerisk_score_threshold, type: :float)
     config.add(:idv_socure_phonerisk_shadow_mode, type: :boolean)
     config.add(:idv_socure_reason_code_download_enabled, type: :boolean)
+    config.add(:idv_socure_reason_codes_docv_mdl, type: :json)
     config.add(:idv_socure_reason_codes_docv_selfie_fail, type: :json)
     config.add(:idv_socure_reason_codes_docv_selfie_not_processed, type: :json)
     config.add(:idv_socure_reason_codes_docv_selfie_pass, type: :json)
@@ -369,13 +376,13 @@ module IdentityConfig
     config.add(:new_device_alert_delay_in_minutes, type: :integer)
     config.add(:new_device_alert_window_start_in_minutes, type: :integer, allow_nil: true)
     config.add(:newrelic_license_key, type: :string)
+    config.add(:openid_connect_authorization_code_expiration_seconds, type: :integer)
+    config.add(:openid_connect_content_security_form_action_enabled, type: :boolean)
     config.add(
       :openid_connect_redirect,
       type: :string,
       enum: ['server_side', 'client_side_js'],
     )
-    config.add(:openid_connect_authorization_code_expiration_seconds, type: :integer)
-    config.add(:openid_connect_content_security_form_action_enabled, type: :boolean)
     config.add(:otp_delivery_blocklist_findtime, type: :integer)
     config.add(:otp_delivery_blocklist_maxretry, type: :integer)
     config.add(:otp_expiration_warning_seconds, type: :integer)
@@ -390,7 +397,7 @@ module IdentityConfig
     config.add(:participate_in_dap, type: :boolean)
     config.add(:password_max_attempts, type: :integer)
     config.add(:password_pepper, type: :string)
-    config.add(:personal_key_retired, type: :boolean)
+    config.add(:personal_key_as_mfa_active, type: :boolean)
     config.add(:phone_carrier_registration_blocklist_array, type: :json)
     config.add(:phone_confirmation_max_attempt_window_in_minutes, type: :integer)
     config.add(:phone_confirmation_max_attempts, type: :integer)
@@ -401,6 +408,8 @@ module IdentityConfig
     )
     config.add(:phone_recaptcha_score_threshold, type: :float)
     config.add(:phone_service_check, type: :boolean)
+    config.add(:phone_setup_blocked_ip_country_codes, type: :json)
+    config.add(:phone_setup_country_mismatch_check_country_codes, type: :json)
     config.add(:phone_setups_per_ip_limit, type: :integer)
     config.add(:phone_setups_per_ip_period, type: :integer)
     config.add(:phone_setups_per_ip_track_only_mode, type: :boolean)
@@ -420,6 +429,11 @@ module IdentityConfig
     config.add(:proof_ssn_max_attempt_window_in_minutes, type: :integer)
     config.add(:proof_ssn_max_attempts, type: :integer)
     config.add(:proofer_mock_fallback, type: :boolean)
+    config.add(
+      :proofing_agent_device_profiling,
+      type: :symbol,
+      enum: [:disabled, :collect_only, :enabled],
+    )
     config.add(
       :proofing_device_hybrid_profiling,
       type: :symbol,
@@ -515,7 +529,6 @@ module IdentityConfig
     config.add(:sign_in_recaptcha_score_threshold, type: :float)
     config.add(:sign_in_password_compromised_percent_tested, type: :integer)
     config.add(:skip_encryption_allowed_list, type: :json)
-    config.add(:socure_doc_escrow_enabled, type: :boolean)
     config.add(:socure_docv_document_request_endpoint, type: :string)
     config.add(:socure_docv_enabled, type: :boolean)
     config.add(:socure_docv_images_request_endpoint, type: :string)

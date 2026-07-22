@@ -5,30 +5,36 @@ module ProofingAgent
     attr_reader :proofing_agent_id,
                 :proofing_location_id,
                 :correlation_id,
+                :transaction_id,
                 :pii,
                 :resolution_result,
                 :aamva_result,
                 :mrz_result,
-                :service_provider_issuer
+                :service_provider_issuer,
+                :system_error
 
     def initialize(
       proofing_agent_id:,
       proofing_location_id:,
       correlation_id:,
+      transaction_id:,
       resolution_result:,
       service_provider_issuer:,
       pii:,
       aamva_result: nil,
-      mrz_result: nil
+      mrz_result: nil,
+      system_error: nil
     )
       @proofing_agent_id = proofing_agent_id
       @proofing_location_id = proofing_location_id
       @correlation_id = correlation_id
+      @transaction_id = transaction_id
       @pii = pii
       @resolution_result = resolution_result
       @aamva_result = aamva_result&.to_h
       @mrz_result = mrz_result&.to_h
       @service_provider_issuer = service_provider_issuer
+      @system_error = system_error
     end
 
     def combined_result
@@ -42,6 +48,7 @@ module ProofingAgent
         proofing_agent_id:,
         proofing_location_id:,
         correlation_id:,
+        transaction_id:,
       }
 
       result[:pii] = pii if pii.present?
@@ -52,9 +59,15 @@ module ProofingAgent
       result
     end
 
+    def phone_precheck_attempted?
+      resolution_result&.dig(:context, :stages, :phone_precheck).present?
+    end
+
     private
 
     def determine_failure_reason
+      return 'system_error' if system_error.present? || all_vendor_results_missing?
+
       if resolution_result.present? && resolution_result[:exception].present?
         return 'profile_resolution_exception'
       end
@@ -67,12 +80,12 @@ module ProofingAgent
       return 'phone_check_fail' if !phone_precheck_attempted? || !phone_precheck_passed?
     end
 
-    def phone_precheck_attempted?
-      resolution_result.dig(:context, :stages, :phone_precheck).present?
+    def all_vendor_results_missing?
+      resolution_result.blank? && aamva_result.blank? && mrz_result.blank?
     end
 
     def phone_precheck_passed?
-      resolution_result[:phone_precheck_passed]
+      resolution_result&.dig(:phone_precheck_passed)
     end
 
     def aamva_success?

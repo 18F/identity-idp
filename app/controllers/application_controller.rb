@@ -30,16 +30,16 @@ class ApplicationController < ActionController::Base
   helper_method :decorated_sp_session, :current_sp, :user_fully_authenticated?
 
   prepend_before_action :add_new_relic_trace_attributes
-  prepend_before_action :session_expires_at
+  prepend_before_action :set_session_start_value_if_nil
+  prepend_before_action :show_flash_with_redirect_if_session_timeout
   prepend_before_action :set_locale
   before_action :disable_caching
   before_action :cache_issuer_in_cookie
   after_action :store_web_locale_in_session
 
-  def session_expires_at
+  def set_session_start_value_if_nil
     return if @skip_session_expiration || @skip_session_load
     session[:session_started_at] = Time.zone.now if session[:session_started_at].nil?
-    redirect_with_flash_if_timeout
   end
 
   # for lograge
@@ -190,13 +190,12 @@ class ApplicationController < ActionController::Base
                           end
   end
 
-  def redirect_with_flash_if_timeout
+  def show_flash_with_redirect_if_session_timeout
     return unless params[:timeout]
 
     if params[:timeout] == 'session'
-      analytics.session_timed_out
-      attempts_api_tracker.session_timeout
-      flash[:info] = t(
+      log_session_timeout
+      flash[:session_timed_out] = t(
         'notices.session_timedout',
         app_name: APP_NAME,
         minutes: IdentityConfig.store.session_timeout_in_seconds.seconds.in_minutes.to_i,
@@ -213,6 +212,11 @@ class ApplicationController < ActionController::Base
     rescue ActionController::UrlGenerationError # Binary data in parameters throw on redirect
       head :bad_request
     end
+  end
+
+  def log_session_timeout
+    analytics.session_timed_out
+    attempts_api_tracker.session_timeout
   end
 
   def permitted_timeout_params
@@ -264,6 +268,15 @@ class ApplicationController < ActionController::Base
       cacher = Pii::Cacher.new(current_user, user_session)
       profile = current_user.active_profile
       user_session[:personal_key] = profile.encrypt_recovery_pii(cacher.fetch(profile.id))
+
+      attempt_events = AttemptsApi::Cacher.new(current_user, user_session).fetch
+      if attempt_events.present?
+        profile.reencrypt_recovery_attempts_data(
+          attempt_events:,
+          personal_key: user_session[:personal_key],
+        )
+      end
+
       profile.save!
 
       analytics.broken_personal_key_regenerated
@@ -297,7 +310,7 @@ class ApplicationController < ActionController::Base
 
   def signed_in_url
     return idv_proofing_agent_expired_path if current_user.agent_proofing_expired?
-    return idv_enter_dob_ssn_path if current_user.proofing_agent_pending?
+    return idv_enter_dob_ssn_path if current_user.proofing_agent_user_awaiting_binding?
     return idv_verify_by_mail_enter_code_url if current_user.gpo_verification_pending_profile?
     stored_location_for(current_user) ||
       account_path

@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Reports::SpActiveUsersReport do
-  subject { described_class.new }
+  subject { Reports::SpActiveUsersReport.new }
 
   let(:issuer) { 'foo' }
   let(:issuer2) { 'foo2' }

@@ -3,6 +3,7 @@
 class DuplicateProfilesDetectedController < ApplicationController
   before_action :confirm_two_factor_authenticated
   before_action :redirect_unless_user_has_active_duplicate_profile
+  rescue_from ActionView::Template::Error, with: :handle_template_error
 
   def show
     @dupe_profiles_detected_presenter = DuplicateProfilesDetectedPresenter.new(
@@ -52,5 +53,18 @@ class DuplicateProfilesDetectedController < ApplicationController
     end
 
     user_session[:dupe_profiles_notified] = true
+  end
+
+  def handle_template_error(exception)
+    global_detection_enabled = IdentityConfig.store.enable_one_account_global_detection.to_s
+    sp_name = decorated_sp_session.try(:sp_name)
+    Rails.logger.error(
+      "Template error in #{controller_path}##{action_name}-" \
+      "#{exception.message}-" \
+      "global_detection_enabled: #{global_detection_enabled}-" \
+      "sp_name: #{sp_name}",
+    )
+
+    redirect_to root_url
   end
 end

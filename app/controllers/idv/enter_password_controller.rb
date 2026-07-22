@@ -5,6 +5,7 @@ module Idv
     include Idv::AvailabilityConcern
     include IdvStepConcern
     include Idv::HistoricalAttemptsConcern
+    include Idv::ProofingAgentConcern
     include StepIndicatorConcern
     include VerifyByMailConcern
     include IppHelper
@@ -12,6 +13,7 @@ module Idv
     before_action :confirm_step_allowed
     before_action :confirm_no_profile_yet
     before_action :confirm_current_password, only: [:create]
+    before_action :save_proofing_agent_threatmetrix_status, only: [:new]
 
     helper_method :step_indicator_step
 
@@ -24,6 +26,7 @@ module Idv
       analytics.idv_enter_password_visited(
         address_verification_method: idv_session.address_verification_mechanism,
         **ab_test_analytics_buckets,
+        **proofing_agent_analytics,
       )
 
       @title = title
@@ -58,6 +61,7 @@ module Idv
         deactivation_reason: idv_session.profile.deactivation_reason,
         proofing_workflow_time_in_seconds: idv_session.proofing_workflow_time_in_seconds,
         **ab_test_analytics_buckets,
+        **proofing_agent_analytics,
       )
       Funnel::DocAuth::RegisterStep.new(current_user.id, current_sp&.issuer)
         .call(:verified, :view, true)
@@ -71,6 +75,7 @@ module Idv
         deactivation_reason: idv_session.profile.deactivation_reason,
         proofing_workflow_time_in_seconds: idv_session.proofing_workflow_time_in_seconds,
         **ab_test_analytics_buckets,
+        **proofing_agent_analytics,
       )
 
       return unless FeatureManagement.reveal_gpo_code?
@@ -123,6 +128,7 @@ module Idv
         fraud_rejection: fraud_rejection?,
         fraud_pending_reason: nil,
         **ab_test_analytics_buckets,
+        **proofing_agent_analytics,
       )
 
       flash[:error] = t('idv.errors.incorrect_password')
@@ -212,8 +218,9 @@ module Idv
       return unless historical_events_enabled?
 
       current_user.active_profile.create_user_proofing_event(
-        password:,
         attempt_events:,
+        password:,
+        personal_key: idv_session.personal_key,
         sent_to_sp: attempts_api_enabled_for_session?,
       )
 
@@ -224,6 +231,21 @@ module Idv
 
     def attempt_events
       user_session['idv/attempts'] || []
+    end
+
+    def save_proofing_agent_threatmetrix_status
+      # results are only stored when device profiling is :enabled, not :collect_only
+      return unless IdentityConfig.store.proofing_agent_device_profiling == :enabled
+      return if idv_session.threatmetrix_review_status.present?
+      return if idv_session.hybrid_mobile_threatmetrix_review_status.present?
+
+      device_profile = DeviceProfilingResult.for_user(
+        user_id: current_user.id,
+        type: DeviceProfilingResult::PROFILING_TYPES[:proofing_agent],
+      ).order(created_at: :desc).first
+      # collect_only collects the result but never stores a row, so there may
+      # not be one to read here
+      idv_session.threatmetrix_review_status = device_profile&.review_status
     end
   end
 end

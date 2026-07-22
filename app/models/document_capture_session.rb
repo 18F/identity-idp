@@ -16,6 +16,7 @@ class DocumentCaptureSession < ApplicationRecord
   enum :document_type_requested, {
     Idp::Constants::DocumentTypes::STATE_ID_CARD => 0,
     Idp::Constants::DocumentTypes::PASSPORT => 1,
+    Idp::Constants::DocumentTypes::MDL => 3,
   }
 
   def load_result
@@ -143,7 +144,7 @@ class DocumentCaptureSession < ApplicationRecord
       aamva: aamva_response,
       mrz: agent_proofing_result[:mrz],
     )
-    session_result.captured_at = Time.zone.now
+    session_result.verified_at = Time.zone.now.to_s # UTC
 
     EncryptedRedisStructStorage.store(
       session_result,
@@ -176,11 +177,23 @@ class DocumentCaptureSession < ApplicationRecord
     document_type_requested == Idp::Constants::DocumentTypes::PASSPORT
   end
 
-  def request_passport!
+  def passport_cards_supported?
+    !!passport_cards_supported
+  end
+
+  def in_supported_passport_types?(id_type)
+    return true if id_type == Idp::Constants::DocumentTypes::PASSPORT
+    return id_type == Idp::Constants::DocumentTypes::PASSPORT_CARD if passport_cards_supported?
+
+    false
+  end
+
+  def request_passport!(passport_cards_supported: false)
     attrs = {
       passport_status: nil,
       document_type_requested: Idp::Constants::DocumentTypes::PASSPORT,
       doc_auth_vendor: nil,
+      passport_cards_supported:,
     }.merge(clear_socure_attributes)
 
     update!(attrs) if !passport_requested?
@@ -198,6 +211,20 @@ class DocumentCaptureSession < ApplicationRecord
 
   def state_id_requested?
     document_type_requested == Idp::Constants::DocumentTypes::STATE_ID_CARD
+  end
+
+  def request_mdl!
+    attrs = {
+      passport_status: nil,
+      document_type_requested: Idp::Constants::DocumentTypes::MDL,
+      doc_auth_vendor: nil,
+    }.merge!(clear_socure_attributes)
+
+    update!(attrs) if !mdl_requested?
+  end
+
+  def mdl_requested?
+    document_type_requested == Idp::Constants::DocumentTypes::MDL
   end
 
   private

@@ -16,6 +16,9 @@ const timeoutURL = warningEl?.dataset.timeoutUrl!;
 let sessionExpiration = new Date(Date.now() + sessionTimeout);
 let redirectTimeout: ReturnType<typeof setTimeout>;
 
+/*
+This function handles session management when user is fully signed-in to account (i.e. password created and MFA method(s) added)
+*/
 function scheduleRedirect() {
   clearTimeout(redirectTimeout);
   redirectTimeout = setTimeout(() => forceRedirect(timeoutURL), sessionTimeout);

@@ -114,6 +114,10 @@ class FeatureManagement
     !Rails.env.test? && IdentityConfig.store.log_to_stdout
   end
 
+  def self.auth_time_attribute_enabled?
+    IdentityConfig.store.auth_time_attribute_enabled
+  end
+
   def self.phone_recaptcha_enabled?
     IdentityConfig.store.phone_recaptcha_score_threshold.positive? && recaptcha_enabled?
   end
@@ -135,6 +139,18 @@ class FeatureManagement
     when :disabled then false
     else
       raise 'Invalid value for account_creation_device_profiling'
+    end
+  end
+
+  # Whether we collect device profiling as part of the proofing_agent idv process
+  def self.proofing_agent_device_profiling_collecting_enabled?
+    return false unless proofing_device_profiling_decisioning_enabled?
+
+    case IdentityConfig.store.proofing_agent_device_profiling
+    when :enabled, :collect_only then true
+    when :disabled then false
+    else
+      raise 'Invalid value for proofing_agent_device_profiling'
     end
   end
 
@@ -184,11 +200,18 @@ class FeatureManagement
   end
 
   def self.doc_escrow_enabled?(service_provider)
-    IdentityConfig.store.doc_escrow_enabled && service_provider&.attempts_api_enabled?
+    IdentityConfig.store.doc_escrow_enabled && (
+      IdentityConfig.store.historical_attempts_api_enabled ||
+      !!service_provider&.attempts_api_enabled?
+    )
   end
 
   def self.idv_proofing_agent_enabled?
     IdentityConfig.store.idv_proofing_agent_enabled
+  end
+
+  def self.idv_proofing_agent_passport_enabled?
+    IdentityConfig.store.idv_proofing_agent_passport_enabled
   end
 
   # Whether to prompt new users to set up a passkey immediately after email/password creation.
@@ -200,5 +223,9 @@ class FeatureManagement
   # @returns [Boolean] Whether the phone verification dual vendor check is enabled
   def self.dual_vendor_check_enabled?
     IdentityConfig.store.idv_phone_verification_dual_vendor_check_enabled
+  end
+
+  def self.webauthn_verification_auto_prompt?
+    IdentityConfig.store.feature_webauthn_verification_auto_prompt_enabled
   end
 end

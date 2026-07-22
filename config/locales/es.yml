@@ -47,7 +47,7 @@ account_reset.request.no_cancel2: No, cancelar la eliminación de la cuenta
 account_reset.request.yes_continue: Sí, continuar con la eliminación
 account.connected_apps.associated_attributes_html: 'Conectado el %{timestamp_html} con:'
 account.connected_apps.associated_html: 'Conectado: %{timestamp_html}'
-account.connected_apps.description: Con su cuenta de %{app_name}, puede conectarse de manera segura a muchas cuentas del gobierno en línea. Esta es una lista de todas las cuentas que tiene conectadas actualmente.
+account.connected_apps.description: Con tu cuenta de %{app_name}, puedes conectarte de forma segura a múltiples servicios gubernamentales en línea. A continuación, encontrarás una lista de todos los servicios a los que estás conectado actualmente.
 account.connected_apps.email_not_selected: No se ha seleccionado aún una dirección de correo electrónico
 account.connected_apps.email_update_success_html: Se actualizó su correo electrónico para la <strong>%{sp_name}</strong>.
 account.email_language.default: '%{language} (predeterminado)'
@@ -58,7 +58,7 @@ account.email_language.name.es: Español
 account.email_language.name.fr: Français
 account.email_language.name.zh: 中文（简体）
 account.email_language.updated: Se actualizó su preferencia de idioma del correo electrónico.
-account.emails.confirmed_html: Usted confirmó su dirección de correo electrónico. Vaya a <a href="%{url}">Sus cuentas conectadas</a> para actualizar el correo electrónico que proporcionó a las agencias conectadas.
+account.emails.confirmed_html: Has confirmado tu dirección de correo electrónico. Ve a <a href="%{url}">tus servicios conectados</a> para actualizar el correo electrónico que compartes con las agencias conectadas.
 account.forget_all_browsers.longer_description: Una vez que elija “Olvidar todos los navegadores”, necesitaremos más información para saber que realmente es usted quien está iniciando sesión en su cuenta. Le pediremos un método de autenticación multifactor (como código de texto o de SMS, o una clave de seguridad) cada vez que desee acceder a su cuenta.
 account.index.auth_app_add: Agregar aplicación
 account.index.auth_app_disabled: no habilitada
@@ -124,7 +124,7 @@ account.navigation.add_phone_number: Agregar número de teléfono
 account.navigation.add_platform_authenticator: Agregar desbloqueo facial o táctil
 account.navigation.add_security_key: Agregar clave de seguridad
 account.navigation.close: Cerrar
-account.navigation.connected_accounts: Sus cuentas conectadas
+account.navigation.connected_services: Sus servicios conectados
 account.navigation.customer_support: Atención al cliente
 account.navigation.delete_account: Eliminar cuenta
 account.navigation.edit_password: Editar contraseña
@@ -609,6 +609,7 @@ doc_auth.forms.change_file: Cambiar archivo
 doc_auth.forms.choose_file_html: Arrastrar el archivo aquí o <lg-underline>seleccionarlo de la carpeta</lg-underline>
 doc_auth.forms.doc_success: Verificamos su información
 doc_auth.forms.id_type_preference.drivers_license: Licencia de conducir de los EE. UU. o identificación estatal
+doc_auth.forms.id_type_preference.mdl: Licencia de conducir móvil (mDL)
 doc_auth.forms.id_type_preference.passport: Pasaporte estadounidense
 doc_auth.forms.selected_file: Archivo seleccionado
 doc_auth.headers.expired_id: Su identificación puede estar vencida
@@ -636,9 +637,10 @@ doc_auth.headings.document_capture_subheader_selfie: Tómese una selfi
 doc_auth.headings.document_capture_subheader_selfie_review: Selfi
 doc_auth.headings.front: Frente de su licencia de conducir o identificación estatal
 doc_auth.headings.how_to_verify: Elija cómo desea verificar su identidad
-doc_auth.headings.interstitial: Estamos procesando sus imágenes
+doc_auth.headings.interstitial: Estamos procesando su información.
 doc_auth.headings.lets_go: Cómo funciona la verificación de su identidad
 doc_auth.headings.mailing_address: Ingrese su dirección postal
+doc_auth.headings.mdl_capture: Añada la información de su licencia de conducir móvil (mDL)
 doc_auth.headings.no_ssn: '¿No tiene un número de Seguro Social?'
 doc_auth.headings.passport: Su pasaporte
 doc_auth.headings.passport_capture: Agregue una foto de su pasaporte
@@ -722,13 +724,15 @@ doc_auth.info.verify_at_post_office_description_passport_html: <strong>Solo pued
 doc_auth.info.verify_at_post_office_instruction: Ingrese su información en línea, y verifique su identidad en persona en una oficina de correos participante.
 doc_auth.info.verify_at_post_office_link_text: Obtenga más información sobre la verificación en persona
 doc_auth.info.verify_identity: Le pediremos su identificación, número de teléfono y otros datos personales para verificar su identidad comparándola con los registros públicos.
-doc_auth.info.verify_online_description_passport: Puede usar un pasaporte estadounidense, una licencia de conducir de los EE. UU. o una identificación estatal.
+doc_auth.info.verify_online_description: Puede usar un pasaporte estadounidense, una licencia de conducir de los EE. UU. o una identificación estatal.
+doc_auth.info.verify_online_description_mdl: Puede utilizar un pasaporte, licencia de conducir, licencia de conducir móvil o tarjeta de identificación estatal de los EE. UU.
 doc_auth.info.verify_online_instruction: Tome fotos de su identificación.
 doc_auth.info.verify_online_instruction_selfie: Tómese una selfi y fotos de su identificación.
 doc_auth.info.verify_online_link_text: Obtenga más información sobre la verificación en línea
 doc_auth.info.welcome_sp_reproof_alert: Por su seguridad, %{sp_name} requiere que verifique su identidad nuevamente.
 doc_auth.info.you_entered: 'Usted ingresó:'
 doc_auth.instructions.bullet1: Tener un pasaporte estadounidense, una licencia de conducir de los EE. UU. o una identificación estatal
+doc_auth.instructions.bullet1_mdl: Tener un pasaporte, licencia de conducir, licencia de conducir móvil (mDL) o tarjeta de identificación estatal de los EE. UU.
 doc_auth.instructions.bullet2: Ingresar su número de Seguro Social
 doc_auth.instructions.bullet3: Hacer coincidir su número de teléfono
 doc_auth.instructions.bullet4: Volver a ingresar su contraseña de %{app_name}
@@ -775,7 +779,7 @@ duplicate_profiles_detected.intro_html: '%{sp_name} requiere que usted tenga só
 duplicate_profiles_detected.intro.link: las cuentas duplicativas
 duplicate_profiles_detected.last_sign_in_at_html: '<strong> Último inicio de sesión: </strong> %{timestamp_html}'
 duplicate_profiles_detected.never_logged_in: Nunca he iniciado sesión en
-duplicate_profiles_detected.select_an_account.details_html: 'Conserve la cuenta que esté vinculada a la mayor cantidad de servicios. Diríjase a la página %{link_html} para ver las agencias conectadas; para ello, seleccione «Sus cuentas conectadas» en el menú a la izquierda.'
+duplicate_profiles_detected.select_an_account.details_html: 'Conserva la cuenta que esté conectada a la mayor cantidad de servicios. Ve a la página %{link_html} para ver las agencias conectadas seleccionando “Tus servicios conectados” en el menú de la izquierda.'
 duplicate_profiles_detected.select_an_account.details.link: «Su cuenta»
 duplicate_profiles_detected.select_an_account.heading: Elija la cuenta que desea conservar.
 duplicate_profiles_detected.sign_back_in.details: Vuelva al sitio web de %{app_name} e inicie sesión usando la cuenta de %{app_name} que conservó.
@@ -1012,7 +1016,7 @@ forms.webauthn_setup.step_3: Configure su clave de seguridad
 forms.webauthn_setup.step_3a: Haga clic en “configurar clave de seguridad” más abajo y siga las instrucciones de su navegador.
 headings.account.activity: Actividad
 headings.account.authentication_apps: Aplicaciones de autenticación
-headings.account.connected_accounts: Sus cuentas conectadas
+headings.account.connected_services: Sus servicios conectados
 headings.account.devices: Dispositivos
 headings.account.events: Eventos
 headings.account.government_employee_id: Identificación de empleado gubernamental
@@ -1132,6 +1136,7 @@ idv.failure.attempts_html.one: Puede intentarlo <strong>una vez más.</strong> L
 idv.failure.attempts_html.other: Puede intentarlo <strong>%{count} veces más.</strong> Luego debe esperar 6 horas antes de volver a intentarlo.
 idv.failure.button.try_online: Vuelva a intentarlo en línea
 idv.failure.button.warning: Vuelva a intentarlo
+idv.failure.dob_ssn.warning: Revise la información que ingresó y vuelva a intentarlo.
 idv.failure.exceptions.in_person_outage_error_message.post_cta.body: Mientras tanto, todavía puede iniciar el proceso de verificación en persona en %{app_name} y luego acudir a una oficina de correos. Si necesita acceso urgente a los servicios, contacte directamente con su agencia.
 idv.failure.exceptions.in_person_outage_error_message.post_cta.title: Estamos resolviendo un problema técnico. Es posible que los resultados de su verificación de identidad no se le envíen por correo electrónico sino hasta el %{date}.
 idv.failure.exceptions.in_person_outage_error_message.ready_to_verify.body: Todavía puede acudir a una oficina de correos para completar el proceso de verificación de su identidad. Si necesita acceso urgente a los servicios, contacte directamente con su agencia.
@@ -1218,6 +1223,13 @@ idv.gpo.return_to_profile: Vuelva a su perfil
 idv.gpo.title: Introduzca su código de verificación
 idv.gpo.will_send_to: 'En un plazo de 5 a 10 días, recibirá por correo una carta de %{app_name} en la dirección que verificamos y asociamos con usted:'
 idv.images.come_back_later: Carta con una marca de verificación
+idv.mdl.alert_html: <strong>¿Aún no tiene una mDL?</strong> Solo está disponible en algunos estados y territorios de EE. UU. Comuníquese con el DMV de su estado para obtener más información.
+idv.mdl.button: Abrir cartera digital
+idv.mdl.learn_more: Más información sobre cómo usar su mDL
+idv.mdl.steps_heading: 'Necesitará:'
+idv.mdl.steps.device.title: Un dispositivo con una cartera digital
+idv.mdl.steps.have_mdl.title: Una licencia de conducir móvil (mDL) activa
+idv.mdl.subtitle: '%{app_name} verificará su licencia de conducir móvil (mDL) mediante un proveedor de servicios de confianza: Socure.'
 idv.messages.activated_html: Se verificó su identidad. Si necesita cambiar la información verificada, %{link_html}.
 idv.messages.activated_link: contáctenos
 idv.messages.come_back_later: Cuando reciba su carta, vuelva a iniciar sesión e ingrese el código de verificación.
@@ -1391,6 +1403,9 @@ in_person_proofing.form.state_id.errors.unsupported_chars: 'Nuestro sistema no p
 in_person_proofing.form.state_id.expiration_date: Fecha de vencimiento
 in_person_proofing.form.state_id.expiration_date_hint: 'Ejemplo: 4 28 2028'
 in_person_proofing.form.state_id.first_name: Nombre
+in_person_proofing.form.state_id.id_type: Tipo de identificación
+in_person_proofing.form.state_id.id_type_drivers_license: Licencia de conducir
+in_person_proofing.form.state_id.id_type_state_id: Tarjeta de identificación estatal
 in_person_proofing.form.state_id.identity_doc_address_state: Estado
 in_person_proofing.form.state_id.identity_doc_address_state_prompt: '- Seleccione -'
 in_person_proofing.form.state_id.last_name: Apellido
@@ -1960,7 +1975,7 @@ user_authorization_confirmation.continue: Continuar
 user_authorization_confirmation.currently_logged_in: 'Ya inició sesión con el siguiente correo electrónico:'
 user_authorization_confirmation.or: O
 user_authorization_confirmation.sign_in: Cambiar de correo electrónico
-user_mailer.account_connected_to_sp.intro_html: Para desconectar su cuenta de %{sp_name}, %{sign_in_link_html}, vaya a la sección “Sus servicios conectadas” en la barra lateral y haga clic en “Desconectar” debajo del servicio.
+user_mailer.account_connected_to_sp.intro_html: Para desconectar su cuenta de %{sp_name}, %{sign_in_link_html}, ve a “Sus servicios conectados” en la barra lateral y haz clic en “Desconectar” debajo del servicio.
 user_mailer.account_connected_to_sp.sign_in_link: inicie sesión en su cuenta
 user_mailer.account_connected_to_sp.subject: Usted conectó su cuenta a %{sp_name}
 user_mailer.account_disconnected_from_sp.intro: Visite %{sp_name} si desea volver a conectar su cuenta.
@@ -2010,6 +2025,18 @@ user_mailer.agent_proofing_failure.header: No pudimos verificar su identidad en 
 user_mailer.agent_proofing_failure.help_center_html: Por favor, visite nuestro %{help_center_link_html} para obtener más información.
 user_mailer.agent_proofing_failure.help_center_link: 'centro de ayuda de %{app_name}'
 user_mailer.agent_proofing_failure.subject: Completemos su verificación de identidad
+user_mailer.agent_proofing_succeeded.alert_lead: No lo retrase
+user_mailer.agent_proofing_succeeded.banner_html: '%{alert_lead_html}: confirme su cuenta antes del final del día %{deadline} para comenzar ha acceder a sus servicios gubernamentales.'
+user_mailer.agent_proofing_succeeded.body: 'Verificamos su identidad el %{verified_at}. Confirmar su cuenta le permite:'
+user_mailer.agent_proofing_succeeded.bullet1: Acceder a su cuenta de My Social Security y a otros servicios gubernamentales con una sola cuenta segura.
+user_mailer.agent_proofing_succeeded.bullet2: Proteger su información personal
+user_mailer.agent_proofing_succeeded.bullet3: Simplificar sus interacciones gubernamentales en línea
+user_mailer.agent_proofing_succeeded.change_password_link: cambiar su contraseña
+user_mailer.agent_proofing_succeeded.contact_link: contáctenos
+user_mailer.agent_proofing_succeeded.cta: Confirmar cuenta
+user_mailer.agent_proofing_succeeded.footer_html: Si usted no intentó verificar su identidad en persona, por favor %{contact_link_html} e inicie sesión para %{change_password_link_html}.
+user_mailer.agent_proofing_succeeded.header: Ha completado con éxito su verificación de identidad
+user_mailer.agent_proofing_succeeded.subject: 'Acción requerida: Confirme su cuenta verificada'
 user_mailer.contact_link_text: contáctenos
 user_mailer.dupe_profile.created.description: Alguien verificó otra cuenta de %{app_name} usando la información personal de usted. Por su seguridad, hemos restringido su acceso a todas las cuentas con información que coincide y a %{sp_or_app_name}.
 user_mailer.dupe_profile.created.description2_html: Si fue usted quien verificó otra cuenta, elimine la cuenta duplicada siguiendo %{steps_link_html}. Si no fue usted, contacte con %{help_center_link_html}.
@@ -2144,7 +2171,7 @@ user_mailer.please_reset_password.step_1: Visite el sitio web de %{app_name} y s
 user_mailer.please_reset_password.step_2: Seleccione “¿Olvidó su contraseña?” en la parte inferior de la página.
 user_mailer.please_reset_password.step_3: Siga las instrucciones para restablecer su contraseña.
 user_mailer.please_reset_password.subject: 'Actividad inusual: restablezca su contraseña de %{app_name}'
-user_mailer.reset_password_instructions.footer: Este vínculo vence en %{expires} horas.
+user_mailer.reset_password_instructions.footer: Este vínculo vence en %{expires} minutos.
 user_mailer.reset_password_instructions.gpo_letter_description: Si restablece su contraseña, el código de verificación que recibió en su carta ya no funcionará y tendrá que volver a verificar su identidad.
 user_mailer.reset_password_instructions.gpo_letter_header: Su carta está en camino
 user_mailer.reset_password_instructions.header_html: 'Si usted hizo esta solicitud, haga clic en “Restablecer su contraseña” para continuar.<br/><br/>Si no hizo esta solicitud, no cambie su contraseña. Reporte cualquier actividad sospechosa a nuestro centro de ayuda.<br/><br/>Nunca le pediremos que comparta su contraseña, códigos de seguridad u otra información sensible por correo electrónico, teléfono o mensaje de texto.'

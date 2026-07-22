@@ -88,13 +88,13 @@ post_to_s3() {
   if [[ $aws_prod == "false" ]]; then
     echo "Posting to the sandbox environment."
     aws-vault exec sandbox-power -- \
-      aws s3 cp "$pwned_file" "s3://${sandbox_bucket}/common/pwned-passwords.txt"
+      aws s3 cp "$pwned_file" "s3://${sandbox_bucket}/common/pwned_passwords.txt"
   fi
 
   if [[ $aws_prod == "true" ]]; then
     echo "Posting to the prod environment."
     aws-vault exec prod-power -- \
-      aws s3 cp "$pwned_file" "s3://${prod_bucket}/common/pwned-passwords.txt"
+      aws s3 cp "$pwned_file" "s3://${sandbox_bucket}/common/pwned_passwords.txt"
   fi
 }
 

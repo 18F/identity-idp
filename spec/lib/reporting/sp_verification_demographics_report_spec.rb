@@ -178,7 +178,7 @@ RSpec.describe Reporting::SpVerificationDemographicsReport do
   describe '#cloudwatch_client' do
     let(:opts) { {} }
     let(:subject) do
-      described_class.new(
+      Reporting::SpVerificationDemographicsReport.new(
         issuers: [issuer], agency_abbreviation: agency_abbreviation, time_range:,
         **opts
       )

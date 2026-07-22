@@ -47,7 +47,7 @@ account_reset.request.no_cancel2: No, cancel account deletion
 account_reset.request.yes_continue: Yes, continue account deletion
 account.connected_apps.associated_attributes_html: 'Connected %{timestamp_html} with:'
 account.connected_apps.associated_html: Connected %{timestamp_html}
-account.connected_apps.description: With your %{app_name} account, you can securely connect to multiple government accounts online. Below is a list of all the accounts you currently have connected.
+account.connected_apps.description: With your %{app_name} account, you can securely connect to multiple government services online. Below is a list of all the services you currently have connected.
 account.connected_apps.email_not_selected: Email not yet selected
 account.connected_apps.email_update_success_html: Your email for <strong>%{sp_name}</strong> was updated successfully.
 account.email_language.default: '%{language} (default)'
@@ -58,7 +58,7 @@ account.email_language.name.es: Español
 account.email_language.name.fr: Français
 account.email_language.name.zh: 中文（简体）
 account.email_language.updated: Your email language preference has been updated.
-account.emails.confirmed_html: You have confirmed your email address. Go to <a href="%{url}">your connected accounts</a> to update the email you share with connected agencies.
+account.emails.confirmed_html: You have confirmed your email address. Go to <a href="%{url}">your connected services</a> to update the email you share with connected agencies.
 account.forget_all_browsers.longer_description: Once you choose to ‘forget all browsers,’ we’ll need additional information to know that it’s actually you signing in to your account. We’ll ask for a multi-factor authentication method (such as text/SMS code or a security key) each time you want to access your account.
 account.index.auth_app_add: Add app
 account.index.auth_app_disabled: not enabled
@@ -124,7 +124,7 @@ account.navigation.add_phone_number: Add phone number
 account.navigation.add_platform_authenticator: Add face or touch unlock
 account.navigation.add_security_key: Add security key
 account.navigation.close: Close
-account.navigation.connected_accounts: Your connected accounts
+account.navigation.connected_services: Your connected services
 account.navigation.customer_support: Customer support
 account.navigation.delete_account: Delete account
 account.navigation.edit_password: Edit password
@@ -598,6 +598,7 @@ doc_auth.forms.change_file: Change file
 doc_auth.forms.choose_file_html: Drag file here or <lg-underline>choose from folder</lg-underline>
 doc_auth.forms.doc_success: We verified your information
 doc_auth.forms.id_type_preference.drivers_license: U.S. driver’s license or state ID
+doc_auth.forms.id_type_preference.mdl: Mobile driver’s license (mDL)
 doc_auth.forms.id_type_preference.passport: U.S. passport book
 doc_auth.forms.selected_file: Selected file
 doc_auth.headers.expired_id: Your ID may have expired
@@ -625,9 +626,10 @@ doc_auth.headings.document_capture_subheader_selfie: Take a selfie
 doc_auth.headings.document_capture_subheader_selfie_review: Selfie
 doc_auth.headings.front: Front of your driver’s license or state ID
 doc_auth.headings.how_to_verify: Choose how to verify your ID
-doc_auth.headings.interstitial: We are processing your images
+doc_auth.headings.interstitial: We are processing your information
 doc_auth.headings.lets_go: How verifying your identity works
 doc_auth.headings.mailing_address: Enter your mailing address
+doc_auth.headings.mdl_capture: Add your mobile driver’s license (mDL) information
 doc_auth.headings.no_ssn: Don’t have a Social Security number?
 doc_auth.headings.passport: Your passport
 doc_auth.headings.passport_capture: Add a photo of your passport
@@ -666,7 +668,7 @@ doc_auth.info.getting_started_html: '%{sp_name} needs to make sure you are you �
 doc_auth.info.getting_started_learn_more: Learn more about verifying your identity
 doc_auth.info.hybrid_handoff_no_selfie: Take photos of your ID, then switch back to this computer.
 doc_auth.info.hybrid_handoff_selfie: Take a selfie and photos of your ID, then switch back to this computer.
-doc_auth.info.id_types_learn_more: Learn more about which ID types you can use
+doc_auth.info.id_types_learn_more: Learn about which ID types you can use
 doc_auth.info.image_loaded: Image loaded
 doc_auth.info.image_loading: Image loading
 doc_auth.info.image_updated: Image updated
@@ -686,7 +688,7 @@ doc_auth.info.passport_capture_help_1: Line up the data page of your passport bo
 doc_auth.info.passport_capture_help_2: Hold still and wait for the tool to capture a photo.
 doc_auth.info.review_examples_of_photos: Review examples of how to take clear photos of your ID.
 doc_auth.info.review_passport: We couldn’t find records matching the information from your passport. Add a new photo of your ID in case your passport information was read incorrectly.
-doc_auth.info.secure_account: We’ll encrypt your account when you re-enter your password. Encryption means your data is protected and only you will be able to change your information.
+doc_auth.info.secure_account: We’ll encrypt your account when you re-enter your password. Encryption means your data is protected and only you will be able to access or change your information.
 doc_auth.info.selfie_capture_content: We’ll check that you are the person on your ID.
 doc_auth.info.selfie_capture_help_1: Line up your face with the green circle. Hold still and wait for the tool to capture a photo.
 doc_auth.info.selfie_capture_help_2: After your photo is automatically captured, tap the green checkmark to accept the photo.
@@ -711,13 +713,15 @@ doc_auth.info.verify_at_post_office_description_passport_html: <strong>You can o
 doc_auth.info.verify_at_post_office_instruction: Enter your information online, then verify your identity in person at a participating Post Office.
 doc_auth.info.verify_at_post_office_link_text: Learn more about verifying in person
 doc_auth.info.verify_identity: We’ll ask for your ID, phone number, and other personal information to verify your identity against public records.
-doc_auth.info.verify_online_description_passport: You can use a U.S. passport book, U.S. driver’s license or state ID.
-doc_auth.info.verify_online_instruction: Take photos of your ID.
-doc_auth.info.verify_online_instruction_selfie: Take a selfie and photos of your ID.
+doc_auth.info.verify_online_description: You can use a U.S. passport book, U.S. driver’s license or state ID.
+doc_auth.info.verify_online_description_mdl: You can use a U.S. passport book, U.S. driver’s license, mobile driver’s license (mDL) or state ID.
+doc_auth.info.verify_online_instruction: You’ll take photos of your ID to verify your identity fully online.
+doc_auth.info.verify_online_instruction_selfie: You’ll take a selfie and photos of your ID to verify your identity fully online.
 doc_auth.info.verify_online_link_text: Learn more about verifying online
 doc_auth.info.welcome_sp_reproof_alert: For your security, %{sp_name} requires you to verify your identity again.
 doc_auth.info.you_entered: 'You entered:'
 doc_auth.instructions.bullet1: Have a U.S. passport book, U.S. driver’s license or state ID
+doc_auth.instructions.bullet1_mdl: Have a U.S. passport book, U.S. driver’s license, mobile driver’s license (mDL) or state ID card
 doc_auth.instructions.bullet2: Enter your Social Security number
 doc_auth.instructions.bullet3: Match to your phone number
 doc_auth.instructions.bullet4: Re-enter your %{app_name} password
@@ -764,7 +768,7 @@ duplicate_profiles_detected.intro_html: 'The %{sp_name} requires that you only h
 duplicate_profiles_detected.intro.link: duplicate accounts
 duplicate_profiles_detected.last_sign_in_at_html: '<strong> Last login: </strong> %{timestamp_html}'
 duplicate_profiles_detected.never_logged_in: Never logged in to
-duplicate_profiles_detected.select_an_account.details_html: 'Keep the account that’s connected to the most services. Go to %{link_html} page to view connected agencies by selecting “Your connected accounts” in the left menu.'
+duplicate_profiles_detected.select_an_account.details_html: 'Keep the account that’s connected to the most services. Go to %{link_html} page to view connected agencies by selecting “Your connected services” in the left menu.'
 duplicate_profiles_detected.select_an_account.details.link: Your account
 duplicate_profiles_detected.select_an_account.heading: Choose an account to keep
 duplicate_profiles_detected.sign_back_in.details: Go back to the %{app_name} website and sign in using the one %{app_name} account you kept.
@@ -1001,7 +1005,7 @@ forms.webauthn_setup.step_3: Set up your security key
 forms.webauthn_setup.step_3a: Click “set up security key” below and follow your browser’s instructions.
 headings.account.activity: Activity
 headings.account.authentication_apps: Authentication apps
-headings.account.connected_accounts: Your connected services
+headings.account.connected_services: Your connected services
 headings.account.devices: Devices
 headings.account.events: Events
 headings.account.government_employee_id: Government employee ID
@@ -1121,6 +1125,7 @@ idv.failure.attempts_html.one: You can try <strong>1 more time.</strong> Then yo
 idv.failure.attempts_html.other: You can try <strong>%{count} more times.</strong> Then you must wait 6 hours before trying again.
 idv.failure.button.try_online: Try again online
 idv.failure.button.warning: Try again
+idv.failure.dob_ssn.warning: Please check the information you entered and try again.
 idv.failure.exceptions.in_person_outage_error_message.post_cta.body: In the meantime, you can still begin the in-person verification process on %{app_name} and then visit a Post Office. If you urgently need access to services, please contact your agency directly.
 idv.failure.exceptions.in_person_outage_error_message.post_cta.title: We’re working on a technical issue. Your identity verification results may not be emailed to you until %{date}.
 idv.failure.exceptions.in_person_outage_error_message.ready_to_verify.body: You can still visit a Post Office to complete verifying your identity. If you urgently need access to services, please contact your agency directly.
@@ -1207,6 +1212,13 @@ idv.gpo.return_to_profile: Return to your profile
 idv.gpo.title: Enter your verification code
 idv.gpo.will_send_to: 'You’ll get a letter in the mail from %{app_name} in 5 to 10 days at the address we verified and associated with you:'
 idv.images.come_back_later: Letter with a check mark
+idv.mdl.alert_html: <strong>Don’t have an mDL yet?</strong> It is available only for some U.S. states and territories. Please contact your state’s DMV for more information.
+idv.mdl.button: Open digital wallet
+idv.mdl.learn_more: Learn more about how to use mDL
+idv.mdl.steps_heading: 'You’ll need:'
+idv.mdl.steps.device.title: A device with a digital wallet
+idv.mdl.steps.have_mdl.title: An active mobile driver’s license
+idv.mdl.subtitle: '%{app_name} will verify your mobile driver’s license (mDL) using a trusted service provider, Socure.'
 idv.messages.activated_html: Your identity has been verified. If you need to change your verified information, please %{link_html}.
 idv.messages.activated_link: contact us
 idv.messages.come_back_later: Sign back in and enter the verification code when your letter arrives.
@@ -1380,6 +1392,9 @@ in_person_proofing.form.state_id.errors.unsupported_chars: 'Our system cannot re
 in_person_proofing.form.state_id.expiration_date: Expiration date
 in_person_proofing.form.state_id.expiration_date_hint: 'Example: 4 28 2028'
 in_person_proofing.form.state_id.first_name: First name
+in_person_proofing.form.state_id.id_type: ID type
+in_person_proofing.form.state_id.id_type_drivers_license: 'State Driver’s License'
+in_person_proofing.form.state_id.id_type_state_id: 'State Non-Driver’s Identification Card'
 in_person_proofing.form.state_id.identity_doc_address_state: State
 in_person_proofing.form.state_id.identity_doc_address_state_prompt: '- Select -'
 in_person_proofing.form.state_id.last_name: Last name
@@ -1948,7 +1963,7 @@ user_authorization_confirmation.continue: Continue
 user_authorization_confirmation.currently_logged_in: 'You are already signed in with the following email:'
 user_authorization_confirmation.or: Or
 user_authorization_confirmation.sign_in: Switch emails
-user_mailer.account_connected_to_sp.intro_html: To disconnect your account from %{sp_name}, %{sign_in_link_html}, go to “Your connected accounts” in the sidebar and click “Disconnect” underneath the service.
+user_mailer.account_connected_to_sp.intro_html: To disconnect your account from %{sp_name}, %{sign_in_link_html}, go to “Your connected services” in the sidebar and click “Disconnect” underneath the service.
 user_mailer.account_connected_to_sp.sign_in_link: sign in to your account
 user_mailer.account_connected_to_sp.subject: You connected your account to %{sp_name}
 user_mailer.account_disconnected_from_sp.intro: Visit %{sp_name} if you want to reconnect your account.
@@ -1998,6 +2013,18 @@ user_mailer.agent_proofing_failure.header: We were unable to verify your identit
 user_mailer.agent_proofing_failure.help_center_html: Please visit our %{help_center_link_html} to get step-by-step guidance.
 user_mailer.agent_proofing_failure.help_center_link: '%{app_name} Help Center'
 user_mailer.agent_proofing_failure.subject: 'Let’s complete your identity verification'
+user_mailer.agent_proofing_succeeded.alert_lead: Don’t delay
+user_mailer.agent_proofing_succeeded.banner_html: '%{alert_lead_html} - confirm your account by end of day %{deadline} to start accessing your government services'
+user_mailer.agent_proofing_succeeded.body: 'We verified your identity on %{verified_at}. Confirming your account allows you to,'
+user_mailer.agent_proofing_succeeded.bullet1: 'Access your “My Social Security” account and other government services with one secure account'
+user_mailer.agent_proofing_succeeded.bullet2: Protect your personal information
+user_mailer.agent_proofing_succeeded.bullet3: Simplify how you manage your online government experiences
+user_mailer.agent_proofing_succeeded.change_password_link: change your password
+user_mailer.agent_proofing_succeeded.contact_link: contact us
+user_mailer.agent_proofing_succeeded.cta: Confirm account
+user_mailer.agent_proofing_succeeded.footer_html: If you did not attempt to verify your identity in person, please %{contact_link_html} and sign in to %{change_password_link_html}.
+user_mailer.agent_proofing_succeeded.header: You have successfully completed identity verification
+user_mailer.agent_proofing_succeeded.subject: 'Action Required: Confirm Your Verified Account'
 user_mailer.contact_link_text: contact us
 user_mailer.dupe_profile.created.description: Someone has verified another %{app_name} account using your personal information. For your safety, we have restricted access on all accounts with matching information and access to %{sp_or_app_name}.
 user_mailer.dupe_profile.created.description2_html: If this was you verifying another account, delete the duplicate account by following the %{steps_link_html}. If this wasn’t you contact the %{help_center_link_html}.
@@ -2132,7 +2159,7 @@ user_mailer.please_reset_password.step_1: Visit the %{app_name} website and sele
 user_mailer.please_reset_password.step_2: Select “forgot your password?” at the bottom of the page
 user_mailer.please_reset_password.step_3: Follow the instructions to reset your password
 user_mailer.please_reset_password.subject: Unusual activity — reset your %{app_name} password
-user_mailer.reset_password_instructions.footer: This link expires in %{expires} hours.
+user_mailer.reset_password_instructions.footer: This link expires in %{expires} minutes.
 user_mailer.reset_password_instructions.gpo_letter_description: If you reset your password, the verification code in your letter will no longer work and you’ll have to verify your identity again.
 user_mailer.reset_password_instructions.gpo_letter_header: Your letter is on the way
 user_mailer.reset_password_instructions.header_html: 'If you made this request, click “Reset your password” to continue.<br/><br/>If you didn’t make this request, do not change your password. Report any suspicious activity to our help center.<br/><br/>We’ll never ask you to share your password, security codes, or other sensitive information by email, phone, or text.'

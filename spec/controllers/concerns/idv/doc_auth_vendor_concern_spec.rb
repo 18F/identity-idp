@@ -1,7 +1,10 @@
 require 'rails_helper'
 
 RSpec.describe Idv::DocAuthVendorConcern, :controller do
-  let(:document_capture_session) { create(:document_capture_session) }
+  let(:document_type_requested) { nil }
+  let(:document_capture_session) do
+    create(:document_capture_session, document_type_requested:)
+  end
   let(:user) { document_capture_session.user }
   let(:bucket) { :mock }
   let(:user_session) do
@@ -71,8 +74,8 @@ RSpec.describe Idv::DocAuthVendorConcern, :controller do
       end
 
       context 'passport requested' do
+        let(:document_type_requested) { Idp::Constants::DocumentTypes::PASSPORT }
         before do
-          document_capture_session.update!(document_type_requested: Idp::Constants::DocumentTypes::PASSPORT)
           allow(controller).to receive(:ab_test_bucket)
             .with(:DOC_AUTH_PASSPORT_VENDOR, user:)
             .and_return(bucket)
@@ -82,6 +85,20 @@ RSpec.describe Idv::DocAuthVendorConcern, :controller do
           let(:bucket) { :socure }
 
           it 'returns socure as the vendor' do
+            controller.update_doc_auth_vendor
+
+            expect(document_capture_session.doc_auth_vendor)
+              .to eq(Idp::Constants::Vendors::SOCURE)
+          end
+        end
+      end
+
+      context 'mDL requested' do
+        let(:document_type_requested) { Idp::Constants::DocumentTypes::MDL }
+        context 'bucket is Socure' do
+          it 'returns socure as the vendor' do
+            expect(controller).not_to receive(:ab_test_bucket)
+
             controller.update_doc_auth_vendor
 
             expect(document_capture_session.doc_auth_vendor)
@@ -127,8 +144,8 @@ RSpec.describe Idv::DocAuthVendorConcern, :controller do
       end
 
       context 'passport requested' do
+        let(:document_type_requested) { Idp::Constants::DocumentTypes::PASSPORT }
         before do
-          document_capture_session.update!(document_type_requested: Idp::Constants::DocumentTypes::PASSPORT)
           allow(controller).to receive(:ab_test_bucket)
             .with(:DOC_AUTH_PASSPORT_SELFIE_VENDOR, user:)
             .and_return(bucket)
@@ -139,6 +156,20 @@ RSpec.describe Idv::DocAuthVendorConcern, :controller do
 
           expect(document_capture_session.doc_auth_vendor)
             .to eq(Idp::Constants::Vendors::SOCURE)
+        end
+      end
+
+      context 'mDL requested' do
+        let(:document_type_requested) { Idp::Constants::DocumentTypes::MDL }
+        context 'bucket is Socure' do
+          it 'returns socure as the vendor' do
+            expect(controller).not_to receive(:ab_test_bucket)
+
+            controller.update_doc_auth_vendor
+
+            expect(document_capture_session.doc_auth_vendor)
+              .to eq(Idp::Constants::Vendors::SOCURE)
+          end
         end
       end
     end

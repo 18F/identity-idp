@@ -360,6 +360,123 @@ RSpec.describe Users::ResetPasswordsController, devise: true do
       end
     end
 
+    context 'user submits new password after the requesting email was removed from the account' do
+      let(:password) { 'a really long passw0rd' }
+
+      it 'redirects to page where user enters email for password reset token' do
+        user = create(:user, :fully_registered)
+        secondary_email_address = create(
+          :email_address,
+          user: user,
+          email: 'secondary@example.com',
+        )
+
+        user.requesting_reset_email_address = secondary_email_address
+        raw_reset_token = user.send_reset_password_instructions
+        user.reload
+
+        secondary_email_address.destroy
+
+        params = {
+          password: password,
+          password_confirmation: password,
+          reset_password_token: raw_reset_token,
+        }
+
+        expect(@attempts_api_tracker).to receive(:forgot_password_new_password_submitted).with(
+          success: false,
+          user_id: user.uuid,
+          failure_reason: { reset_password_token: [:invalid_token] },
+        )
+
+        get :edit, params: { reset_password_token: raw_reset_token }
+        put :update, params: { reset_password_form: params }
+
+        expect(@analytics).to have_logged_event(
+          'Password Reset: Password Submitted',
+          success: false,
+          error_details: { reset_password_token: { invalid_token: true } },
+          user_id: user.uuid,
+          profile_deactivated: false,
+          pending_profile_invalidated: false,
+          pending_profile_pending_reasons: '',
+        )
+        expect(response).to redirect_to new_user_password_path
+        expect(flash[:error]).to eq t('devise.passwords.invalid_token')
+      end
+
+      it 'does not change the password' do
+        user = create(:user, :fully_registered)
+        secondary_email_address = create(
+          :email_address,
+          user: user,
+          email: 'secondary@example.com',
+        )
+
+        user.requesting_reset_email_address = secondary_email_address
+        raw_reset_token = user.send_reset_password_instructions
+        user.reload
+        original_digest = user.encrypted_password_digest_multi_region
+
+        secondary_email_address.destroy
+
+        params = {
+          password: password,
+          password_confirmation: password,
+          reset_password_token: raw_reset_token,
+        }
+
+        get :edit, params: { reset_password_token: raw_reset_token }
+        put :update, params: { reset_password_form: params }
+
+        expect(user.reload.encrypted_password_digest_multi_region).to eq(original_digest)
+      end
+    end
+
+    context 'user submits new password after the requesting email was confirmed elsewhere' do
+      let(:password) { 'a really long passw0rd' }
+
+      it 'redirects to page where user enters email for password reset token' do
+        user = create(:user, :unconfirmed)
+
+        create(
+          :user,
+          email_addresses: [create(:email_address, email: user.email_addresses.first.email)],
+        )
+
+        user.requesting_reset_email_address = user.email_addresses.first
+        raw_reset_token = user.send_reset_password_instructions
+        user.reload
+
+        params = {
+          password: password,
+          password_confirmation: password,
+          reset_password_token: raw_reset_token,
+        }
+
+        expect(@attempts_api_tracker).to receive(:forgot_password_new_password_submitted).with(
+          success: false,
+          user_id: user.uuid,
+          failure_reason: { reset_password_token: [:invalid_token] },
+        )
+
+        get :edit, params: { reset_password_token: raw_reset_token }
+        put :update, params: { reset_password_form: params }
+
+        expect(@analytics).to have_logged_event(
+          'Password Reset: Password Submitted',
+          success: false,
+          error_details: { reset_password_token: { invalid_token: true } },
+          user_id: user.uuid,
+          profile_deactivated: false,
+          pending_profile_invalidated: false,
+          pending_profile_pending_reasons: '',
+        )
+        expect(response).to redirect_to new_user_password_path
+        expect(flash[:error]).to eq t('devise.passwords.invalid_token')
+      end
+    end
+
     context 'IAL1 user submits valid new password' do
       let(:password) { 'a really long passw0rd' }
 

@@ -14,6 +14,7 @@ module Api
       before_action :validate_required_headers
       before_action :validate_agent_id_and_location_id
       before_action :validate_transaction_id, only: [:result]
+      before_action :mock_system_error
       after_action :add_custom_headers_to_response
 
       def search_user
@@ -23,7 +24,8 @@ module Api
         response_body = {
           email_account_found: user.present?,
           ssn_profile_found: ssn_active_profiles.any?,
-          profiles: active_profiles,
+          profiles: active_profiles_info,
+          email_account_awaiting_binding: !!user&.proofing_agent_user_awaiting_binding?,
         }
 
         analytics.idv_proofing_agent_account_check_requested(
@@ -36,6 +38,7 @@ module Api
       def proof_user
         return render_user_not_found if user.blank?
         return render_already_proofed if user_has_enhanced_profile?
+        return render_user_awaiting_binding if user.proofing_agent_user_awaiting_binding?
 
         if proofing_rate_limiter.limited? || ssn_rate_limiter.limited?
           analytics.rate_limit_reached(limiter_type: :idv_resolution, step_name: 'proof_user')
@@ -69,7 +72,7 @@ module Api
           transaction_id:,
         }
 
-        analytics.idv_proofing_agent_request_received(
+        analytics.idv_proofing_agent_proof_user_requested(
           **analytics_arguments,
           response_body:,
           transaction_id:,
@@ -91,6 +94,8 @@ module Api
           trace_id: amzn_trace_id,
           transaction_id:,
           final_attempt:,
+          submit_attempts: proofing_rate_limiter.attempts,
+          remaining_attempts: proofing_rate_limiter.remaining_count,
         )
 
         render json: response_body, status: :accepted
@@ -115,7 +120,7 @@ module Api
           transaction_id: proofing_result.transaction_id,
         }
 
-        analytics.idv_proofing_agent_request_received(
+        analytics.idv_proofing_agent_result_requested(
           **analytics_arguments,
           response_body:,
           transaction_id:,
@@ -129,7 +134,7 @@ module Api
       def render_user_not_found
         response_body = { status: 'failed', reason: 'email_not_found' }
 
-        analytics.idv_proofing_agent_request_received(
+        analytics.idv_proofing_agent_proof_user_requested(
           **analytics_arguments,
           response_body:,
           transaction_id: nil,
@@ -141,7 +146,22 @@ module Api
       def render_already_proofed
         response_body = { status: 'failed', reason: 'already_proofed_enhanced' }
 
-        analytics.idv_proofing_agent_request_received(
+        analytics.idv_proofing_agent_proof_user_requested(
+          **analytics_arguments,
+          response_body:,
+          transaction_id: nil,
+        )
+
+        render json: response_body, status: :ok
+      end
+
+      def render_user_awaiting_binding
+        response_body = {
+          status: 'failed',
+          reason: 'already_proofed_awaiting_binding',
+        }
+
+        analytics.idv_proofing_agent_proof_user_requested(
           **analytics_arguments,
           response_body:,
           transaction_id: nil,
@@ -157,7 +177,7 @@ module Api
           transaction_id:,
         }
 
-        analytics.idv_proofing_agent_request_received(
+        analytics.idv_proofing_agent_result_requested(
           **analytics_arguments,
           response_body:,
           transaction_id:,
@@ -233,15 +253,16 @@ module Api
       end
 
       def active_profiles
-        @active_profiles ||= begin
-          profiles = ssn_active_profiles | [user_active_profile].compact
-          profiles.map do |profile|
-            {
-              email_match: profile.user_id == user&.id,
-              ssn_match: ssn_active_profiles.any? { |ssn_profile| ssn_profile.id == profile.id },
-              idv_level: Profile::PROOFING_AGENT_IDV_LEVELS[profile.idv_level],
-            }
-          end
+        @active_profiles ||= ssn_active_profiles | [user_active_profile].compact
+      end
+
+      def active_profiles_info
+        active_profiles.map do |profile|
+          {
+            email_match: profile.user_id == user&.id,
+            ssn_match: ssn_active_profiles.any? { |ssn_profile| ssn_profile.id == profile.id },
+            idv_level: Profile::PROOFING_AGENT_IDV_LEVELS[profile.idv_level],
+          }
         end
       end
 
@@ -269,7 +290,7 @@ module Api
       end
 
       def user_has_enhanced_profile?
-        [user_active_profile, *ssn_active_profiles].compact.any? do |profile|
+        active_profiles.any? do |profile|
           profile.enhanced?
         end
       end
@@ -320,6 +341,24 @@ module Api
         render json: errors, status: :bad_request
       end
 
+      def mock_system_error
+        return if Identity::Hostdata.in_datacenter? && Identity::Hostdata.env == 'prod'
+
+        m = /system_error\+?(\d{3})?@example.com/.match(email)
+        return unless m
+
+        render json: {
+          success: false,
+          reason: 'system_error',
+          transaction_id:,
+        }, status: system_error_status_code(m[1])
+      end
+
+      def system_error_status_code(code)
+        status = code&.to_i
+        status&.positive? ? status : 503
+      end
+
       def add_custom_headers_to_response
         response.set_header('X-Correlation-ID', correlation_id) if correlation_id.present?
       end
@@ -338,6 +377,7 @@ module Api
             agent_id:,
             location_id:,
             correlation_id:,
+            transaction_id:,
           },
           issuer:,
         }

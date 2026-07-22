@@ -3,19 +3,29 @@
 module ProofingAgent
   class WebhookCaller
     include Config
-    attr_reader :success, :reason, :transaction_id, :correlation_id
+    attr_reader :success, :reason, :transaction_id, :correlation_id, :analytics_attributes
 
-    def initialize(success:, reason:, transaction_id:, correlation_id:)
+    def initialize(success:, reason:, transaction_id:, correlation_id:,
+                   analytics_attributes:)
       @success = success
       @reason = reason
       @transaction_id = transaction_id
       @correlation_id = correlation_id
+      @analytics_attributes = analytics_attributes
     end
 
     def call
       return if webhook_url.blank?
 
-      send_http_post_request
+      response = send_http_post_request
+      analytics.idv_proofing_agent_webhook(
+        success: response.success?,
+        proofing_agent: analytics_attributes[:proofing_agent],
+        body_payload: payload,
+        issuer: service_provider_issuer,
+        response: response.to_hash,
+        proofing_components: analytics_attributes[:proofing_components],
+      )
     rescue => exception
       NewRelic::Agent.notice_error(
         exception,
@@ -24,6 +34,14 @@ module ProofingAgent
           webhook_url:,
           transaction_id:,
         },
+      )
+      analytics.idv_proofing_agent_webhook(
+        success: false,
+        proofing_agent: analytics_attributes[:proofing_agent],
+        body_payload: payload,
+        issuer: service_provider_issuer,
+        response: exception&.message,
+        proofing_components: analytics_attributes[:proofing_components],
       )
     end
 
@@ -50,7 +68,11 @@ module ProofingAgent
         interval: 0.05,
         interval_randomness: 0.5,
         backoff_factor: 2,
+        methods: %i[get],
         retry_statuses: [404, 500],
+        retry_if: lambda do |env, exception|
+          env[:method] == :post && !exception.is_a?(Faraday::RetriableResponse)
+        end,
         retry_block: lambda do |env:, options:, retry_count:, exception:, will_retry_in:|
           NewRelic::Agent.notice_error(exception, custom_params: { retry: retry_count })
         end,
@@ -79,6 +101,19 @@ module ProofingAgent
 
     def service_provider_issuer
       document_capture_session&.issuer
+    end
+
+    def user
+      @user ||= document_capture_session.user
+    end
+
+    def analytics
+      @analytics ||= Analytics.new(
+        user: user,
+        request: nil,
+        session: {},
+        sp: service_provider_issuer,
+      )
     end
   end
 end

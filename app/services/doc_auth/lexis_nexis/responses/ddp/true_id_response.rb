@@ -10,13 +10,15 @@ module DocAuth
           include DocAuth::LexisNexis::DocPiiReader
           include DocAuth::ClassificationConcern
 
-          attr_reader :config, :http_response, :passport_requested
+          attr_reader :config, :http_response, :passport_requested, :passport_cards_supported
 
           def initialize(http_response:, config:, passport_requested: false,
-                         liveness_checking_enabled: false, request_context: {}, request: nil)
+                         passport_cards_supported: false, liveness_checking_enabled: false,
+                         request_context: {}, request: nil)
             @config = config
             @http_response = http_response
             @passport_requested = passport_requested
+            @passport_cards_supported = passport_cards_supported
             @request_context = request_context
             @request = request
             @liveness_checking_enabled = liveness_checking_enabled
@@ -44,7 +46,7 @@ module DocAuth
           # vendor (document and selfie if requested)
           # Will be further implemented in future tickets
           def successful_result?
-            return false if passport_card_detected?
+            return false if passport_card_detected? && !passport_cards_supported
 
             doc_auth_success? &&
               (@liveness_checking_enabled ? selfie_passed? : true)
@@ -57,7 +59,7 @@ module DocAuth
           def error_messages
             return {} if successful_result?
 
-            if passport_card_detected?
+            if passport_card_detected? && !passport_cards_supported
               { passport_card: I18n.t('doc_auth.errors.doc.doc_type_check') }
             elsif id_type.present? && !expected_document_type_received?
               { unexpected_id_type: true, expected_id_type: expected_id_type }
@@ -128,23 +130,31 @@ module DocAuth
           end
 
           def raw_response
+            service_block = authentication_service_block
+            raw = service_block&.dig('tps_vendor_raw_response')
+            return raw if raw
+
+            raise_missing_raw_response_error(service_block)
+          end
+
+          def authentication_service_block
             parsed_response_body.dig(
               :integration_hub_results,
               "#{IdentityConfig.store.lexisnexis_threatmetrix_org_id}:#{policy}",
-              'Authentication', 'tps_vendor_raw_response'
-            )
+              'Authentication',
+            ) || {}
+          end
+
+          def raise_missing_raw_response_error(service_block)
+            if service_block.is_a?(Hash) && service_block['tps_was_timeout'].to_s == 'yes'
+              raise Proofing::TimeoutError, 'LexisNexis TrueID DDP timed out'
+            end
+
+            raise 'LexisNexis TrueID DDP returned no tps_vendor_raw_response'
           end
 
           def policy
             @policy ||= @request&.policy
-          end
-
-          def expected_document_type_received?
-            expected_id_types = passport_requested ?
-              Idp::Constants::DocumentTypes::SUPPORTED_PASSPORT_TYPES :
-              Idp::Constants::DocumentTypes::SUPPORTED_STATE_ID_TYPES
-
-            expected_id_types.include?(id_type)
           end
 
           def id_type

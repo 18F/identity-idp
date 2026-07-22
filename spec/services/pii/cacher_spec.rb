@@ -36,7 +36,11 @@ RSpec.describe Pii::Cacher do
     profile
   end
 
-  subject { described_class.new(user, user_session) }
+  subject { described_class.new(user, user_session, analytics: @analytics) }
+
+  before do
+    stub_analytics
+  end
 
   describe '#save' do
     it 'writes decrypted PII to user_session for multiple profiles' do
@@ -58,10 +62,6 @@ RSpec.describe Pii::Cacher do
     end
 
     context 'when the original signature was based on an unnormalized SSN' do
-      before do
-        stub_analytics
-      end
-
       let(:ssn) { '123-45-6789' }
 
       it 'updates the ssn_signature based on the normalized form' do
@@ -123,6 +123,38 @@ RSpec.describe Pii::Cacher do
       expect do
         subject.save('incorrect password', active_profile)
       end.to raise_error(Encryption::EncryptionError)
+    end
+
+    context 'when the source_check for a passport is incorrect' do
+      it 'corrects the source_check for a passport created before May 1, 2026' do
+        profile = active_profile
+        profile.proofing_components = {
+          'document_type' => 'passport',
+          'source_check' => 'incorrect:source',
+        }
+        profile.created_at = Time.zone.local(2026, 4, 30)
+        profile.save!
+
+        subject.save(password, profile)
+
+        expect(profile.reload.proofing_components['source_check']).to eq('dos:passport')
+        expect(@analytics).to have_logged_event(:idv_passport_source_check_corrected)
+      end
+
+      it 'does not correct the source_check for a passport created after May 1, 2026' do
+        profile = active_profile
+        profile.proofing_components = {
+          'document_type' => 'passport',
+          'source_check' => 'incorrect:source',
+        }
+        profile.created_at = Time.zone.local(2026, 5, 2)
+        profile.save!
+
+        subject.save(password, profile)
+
+        expect(profile.reload.proofing_components['source_check']).to eq('incorrect:source')
+        expect(@analytics).to_not have_logged_event(:idv_passport_source_check_corrected)
+      end
     end
   end
 

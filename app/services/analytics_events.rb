@@ -492,8 +492,8 @@ module AnalyticsEvents
   end
 
   # User visits the connected accounts page
-  def connected_accounts_page_visited
-    track_event(:connected_accounts_page_visited)
+  def connected_services_page_visited
+    track_event(:connected_services_page_visited)
   end
 
   # @param [String] redirect_url URL user was directed to
@@ -2312,7 +2312,17 @@ module AnalyticsEvents
   # @param step [String] Always "verify" (leftover from flow state machine days)
   # @param success [Boolean] Whether identity resolution succeeded overall
   # @param previous_ssn_edit_distance [Number] The edit distance to the previous submitted SSN
+  # @param proofing_agent [Hash, nil] proofing agent information including location id, agent id,
+  #   correlation id, and transaction id
   # @param exceptions [Hash, nil] The exceptions found in the proofing results.
+  # @param [Hash,nil] proofing_components User's current proofing components
+  # @option proofing_components [String,nil] 'document_check' Vendor that verified the user's ID
+  # @option proofing_components [String,nil] 'document_type_received' Type of ID detected by vendor
+  # @option proofing_components [String,nil] 'source_check' Source used to verify user's PII
+  # @option proofing_components [String,nil] 'resolution_check' Vendor for identity resolution check
+  # @option proofing_components [String,nil] 'address_check' Method used to verify user's address
+  # @option proofing_components [Boolean,nil] 'threatmetrix' Whether ThreatMetrix check was done
+  # @option proofing_components [String,nil] 'threatmetrix_review_status' TMX decision on the user
   def idv_doc_auth_verify_proofing_results(
     ab_tests: nil,
     acuant_sdk_upgrade_ab_test_bucket: nil,
@@ -2331,7 +2341,9 @@ module AnalyticsEvents
     step: nil,
     success: nil,
     previous_ssn_edit_distance: nil,
+    proofing_agent: nil,
     exceptions: nil,
+    proofing_components: nil,
     **extra
   )
     track_event(
@@ -2353,7 +2365,9 @@ module AnalyticsEvents
       step:,
       success:,
       previous_ssn_edit_distance:,
+      proofing_agent:,
       exceptions:,
+      proofing_components:,
       **extra,
     )
   end
@@ -2487,6 +2501,8 @@ module AnalyticsEvents
   # @param [String] error_message The error message if provided in a failed response
   # @param [String] error_reason The error reason if provided in a failed response
   # @param [String] errors The DocAuth response error for failure
+  # @param proofing_agent [Hash, nil] proofing agent information including location id, agent id,
+  #   correlation id, and transaction id
   def idv_dos_passport_verification(
     success:,
     submit_attempts:,
@@ -2500,6 +2516,7 @@ module AnalyticsEvents
     error_message: nil,
     error_reason: nil,
     errors: nil,
+    proofing_agent: nil,
     **extra
   )
     track_event(
@@ -2516,6 +2533,7 @@ module AnalyticsEvents
       error_reason:,
       errors:,
       exception:,
+      proofing_agent:,
       **extra,
     )
   end
@@ -2542,6 +2560,8 @@ module AnalyticsEvents
   # @param [String,nil] pending_profile_idv_level ID verification level of user's pending profile.
   # @param [Integer,nil] proofing_workflow_time_in_seconds The time since starting proofing
   # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
+  # @param [Hash,nil] proofing_agent hash about proofing agent information
+  # @param [String,nil] issuer The issuer of the user's ID document, if applicable
   # @identity.idp.previous_event_name  IdV: review info visited
   def idv_enter_password_submitted(
     success:,
@@ -2558,6 +2578,8 @@ module AnalyticsEvents
     active_profile_idv_level: nil,
     pending_profile_idv_level: nil,
     proofing_workflow_time_in_seconds: nil,
+    proofing_agent: nil,
+    issuer: nil,
     **extra
   )
     track_event(
@@ -2576,6 +2598,8 @@ module AnalyticsEvents
       active_profile_idv_level:,
       pending_profile_idv_level:,
       proofing_workflow_time_in_seconds:,
+      proofing_agent:,
+      issuer:,
       **extra,
     )
   end
@@ -2595,6 +2619,8 @@ module AnalyticsEvents
   # @param [String,nil] pending_profile_idv_level ID verification level of user's pending profile.
   #        used to verify the user's identity
   # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
+  # @param [Hash,nil] proofing_agent hash about proofing agent information
+  # @param [String,nil] issuer The issuer of the user's ID document, if applicable
   # User visited IDV password confirm page
   # @identity.idp.previous_event_name  IdV: review info visited
   def idv_enter_password_visited(
@@ -2605,6 +2631,8 @@ module AnalyticsEvents
     address_verification_method: nil,
     active_profile_idv_level: nil,
     pending_profile_idv_level: nil,
+    proofing_agent: nil,
+    issuer: nil,
     **extra
   )
     track_event(
@@ -2616,6 +2644,8 @@ module AnalyticsEvents
       proofing_components:,
       active_profile_idv_level:,
       pending_profile_idv_level:,
+      proofing_agent:,
+      issuer:,
       **extra,
     )
   end
@@ -2642,6 +2672,8 @@ module AnalyticsEvents
   # @param [Array,nil] profile_history Array of user's profiles (oldest to newest).
   # @param [Integer,nil] proofing_workflow_time_in_seconds The time since starting proofing
   # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
+  # @param [Hash,nil] proofing_agent hash about proofing agent information
+  # @param [String,nil] issuer The issuer of the user's ID document, if applicable
   # @see Reporting::IdentityVerificationReport#query This event is used by the identity verification
   #       report. Changes here should be reflected there.
   # Tracks the last step of IDV, indicates the user successfully proofed
@@ -2661,6 +2693,8 @@ module AnalyticsEvents
     pending_profile_idv_level: nil,
     profile_history: nil,
     proofing_workflow_time_in_seconds: nil,
+    proofing_agent: nil,
+    issuer: nil,
     **extra
   )
     track_event(
@@ -2680,6 +2714,8 @@ module AnalyticsEvents
       pending_profile_idv_level:,
       profile_history:,
       proofing_workflow_time_in_seconds:,
+      proofing_agent:,
+      issuer:,
       **extra,
     )
   end
@@ -3436,6 +3472,7 @@ module AnalyticsEvents
   # @param [Boolean] opted_in_to_in_person_proofing User opted into in person proofing
   # @param [String] birth_year Birth year from document
   # @param [String] document_zip_code ZIP code from document
+  # @param [String] asserted_id_type Type of ID asserted by the user
   # @param [Boolean] skip_hybrid_handoff Whether skipped hybrid handoff A/B test is active
   # User submitted state id
   def idv_in_person_proofing_state_id_submitted(
@@ -3445,6 +3482,7 @@ module AnalyticsEvents
     analytics_id:,
     birth_year:,
     document_zip_code:,
+    asserted_id_type:,
     skip_hybrid_handoff: nil,
     error_details: nil,
     opted_in_to_in_person_proofing: nil,
@@ -3459,6 +3497,7 @@ module AnalyticsEvents
       error_details:,
       birth_year:,
       document_zip_code:,
+      asserted_id_type:,
       skip_hybrid_handoff:,
       opted_in_to_in_person_proofing:,
       **extra,
@@ -4639,6 +4678,14 @@ module AnalyticsEvents
   end
   # rubocop:enable Naming/VariableName,Naming/MethodParameterName,IdentityIdp/AnalyticsEventNameLinter
 
+  # Tracks if a user's passport source_check was corrected
+  def idv_passport_source_check_corrected(**extra)
+    track_event(
+      :idv_passport_source_check_corrected,
+      **extra,
+    )
+  end
+
   # Tracks if a user clicks the 'acknowledge' checkbox during personal
   # key creation
   # @param [Hash,nil] proofing_components User's current proofing components
@@ -5126,6 +5173,8 @@ module AnalyticsEvents
   # @param [Hash] reason_codes socure internal reason codes for accept reject decision
   # @param [Hash] alternate_result Details for proofing attempt with primary vendor
   # @param [Boolean, nil] manual_review Phone was manually reviewed
+  # @param proofing_agent [Hash, nil] proofing agent information including location id, agent id,
+  #   correlation id, and transaction id
   # The vendor finished the process of confirming the users phone
   def idv_phone_confirmation_vendor_submitted(
     success:,
@@ -5145,6 +5194,7 @@ module AnalyticsEvents
     reason_codes: nil,
     customer_user_id: nil,
     alternate_result: nil,
+    proofing_agent: nil,
     **extra
   )
     track_event(
@@ -5166,6 +5216,7 @@ module AnalyticsEvents
       reason_codes:,
       customer_user_id:,
       alternate_result:,
+      proofing_agent:,
       **extra,
     )
   end
@@ -5365,6 +5416,57 @@ module AnalyticsEvents
     )
   end
 
+  # Logs when the agent-proofing profile confirmation email was sent to a user
+  # @param [String] user_id UUID of the user who was successfully agent-proofed
+  # @param [Hash] proofing_agent The proofing agent information
+  # @option proofing_agent [String] :correlation_id
+  # @option proofing_agent [String] :transaction_id
+  # @option proofing_agent [String] :agent_id
+  # @option proofing_agent [String] :location_id
+  # @param [Time] expiration_date When the user must confirm their account by
+  def idv_proofing_agent_profile_confirmation_email_sent(
+    user_id:,
+    proofing_agent:,
+    expiration_date:,
+    **extra
+  )
+    track_event(
+      :idv_proofing_agent_profile_confirmation_email_sent,
+      user_id:,
+      proofing_agent:,
+      expiration_date:,
+      **extra,
+    )
+  end
+
+  # Logs when a proofing agent begins proofing a user
+  # @param [Hash] response_body The body of the response from the proofing agent's proofing request
+  # @param [Hash] proofing_agent The proofing agent information
+  # @param [String] issuer The issuer associated with the proofing request
+  # @param [Integer, nil] remaining_attempts attempts remaining before rate limit is hit
+  # @param [String,nil] transaction_id The transaction ID associated with the proofing request
+  # @param [Boolean,nil] final_attempt Whether the request was marked as the final attempt
+  def idv_proofing_agent_proof_user_requested(
+    response_body:,
+    proofing_agent:,
+    issuer:,
+    remaining_attempts: nil,
+    transaction_id: nil,
+    final_attempt: nil,
+    **extra
+  )
+    track_event(
+      :idv_proofing_agent_proof_user_requested,
+      response_body:,
+      proofing_agent:,
+      issuer:,
+      remaining_attempts:,
+      transaction_id:,
+      final_attempt:,
+      **extra,
+    )
+  end
+
   # Tracks a proofing agent request that failed authorization or validation
   # @param [Boolean] success Whether request was successful
   # @param [String] issuer The issuer associated with the proofing request
@@ -5391,14 +5493,14 @@ module AnalyticsEvents
     )
   end
 
-  # Logs when a proofing agent begins proofing a user
+  # Logs when a proofing agent requests the result of proofing a user
   # @param [Hash] response_body The body of the response from the proofing agent's proofing request
   # @param [Hash] proofing_agent The proofing agent information
   # @param [String] issuer The issuer associated with the proofing request
   # @param [Integer, nil] remaining_attempts attempts remaining before rate limit is hit
   # @param [String,nil] transaction_id The transaction ID associated with the proofing request
   # @param [Boolean,nil] final_attempt Whether the request was marked as the final attempt
-  def idv_proofing_agent_request_received(
+  def idv_proofing_agent_result_requested(
     response_body:,
     proofing_agent:,
     issuer:,
@@ -5408,13 +5510,127 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      :idv_proofing_agent_request_received,
+      :idv_proofing_agent_result_requested,
       response_body:,
       proofing_agent:,
       issuer:,
       remaining_attempts:,
       transaction_id:,
       final_attempt:,
+      **extra,
+    )
+  end
+
+  # @param [Boolean] success Check whether threatmetrix succeeded properly.
+  # @param [String] transaction_id Vendor-specific transaction ID for the request.
+  # @param [String, nil] client Client user was directed from when creating account
+  # @param [array<String>, nil] errors error response from api call
+  # @param [String, nil] exception Error exception from api call
+  # @param [Boolean] timed_out set whether api call timed out
+  # @param [String] review_status TMX decision on the user
+  # @param [String] account_lex_id LexID associated with the response.
+  # @param [String] session_id Session ID associated with response
+  # @param [Hash] response_body total response body for api call
+  # Result when threatmetrix is completed for proofing agent and result
+  def idv_proofing_agent_tmx_result(
+    client:,
+    success:,
+    errors:,
+    exception:,
+    timed_out:,
+    transaction_id:,
+    review_status:,
+    account_lex_id:,
+    session_id:,
+    response_body:,
+    **extra
+  )
+    track_event(
+      :idv_proofing_agent_tmx_result,
+      client:,
+      success:,
+      errors:,
+      exception:,
+      timed_out:,
+      transaction_id:,
+      review_status:,
+      account_lex_id:,
+      session_id:,
+      response_body:,
+      **extra,
+    )
+  end
+
+  # @param [Boolean] success Whether the user confirmed the proofing agent results
+  # @param [Boolean] dob_match the user's date of birth matched the proofing agent's results
+  # @param [Boolean] ssn_match the user's SSN matched the proofing agent's results
+  # @param [Boolean] dob_and_ssn_match the user's dob and SSN matched the proofing agent's results
+  # @param [Hash] proofing_agent The proofing agent information
+  # @param [String] issuer The issuer associated with the proofing request
+  # User submits their confirmation of the proofing agent results
+  def idv_proofing_agent_user_confirmation_submitted(
+    success:,
+    dob_match:,
+    ssn_match:,
+    dob_and_ssn_match:,
+    proofing_agent:,
+    issuer:,
+    **extra
+  )
+    track_event(
+      :idv_proofing_agent_user_confirmation_submitted,
+      success:,
+      dob_match:,
+      ssn_match:,
+      dob_and_ssn_match:,
+      proofing_agent:,
+      issuer:,
+      **extra,
+    )
+  end
+
+  # @param [Hash] proofing_agent The proofing agent information
+  # @param [String] issuer The issuer associated with the proofing request
+  # User visits the page to confirm the proofing agent results
+  def idv_proofing_agent_user_confirmation_visited(
+    proofing_agent:,
+    issuer:,
+    **extra
+  )
+    track_event(
+      :idv_proofing_agent_user_confirmation_visited,
+      proofing_agent:,
+      issuer:,
+      **extra,
+    )
+  end
+
+  # @param [Boolean] success Whether webhook was sent successfully
+  # @param [Hash] response The response from the proofing agent's proofing request
+  # @param [Hash] proofing_agent The proofing agent information
+  # @param [String] issuer The issuer associated with the proofing request
+  # @param [Hash] body_payload The body of the webhook sent by the proofing agent
+  # @param [Hash] proofing_components User's current proofing components
+  # @param [String,nil] transaction_id The transaction ID associated with the proofing request
+  def idv_proofing_agent_webhook(
+    success:,
+    response:,
+    proofing_agent:,
+    issuer:,
+    body_payload:,
+    proofing_components:,
+    transaction_id: nil,
+    **extra
+  )
+    track_event(
+      :idv_proofing_agent_webhook,
+      success:,
+      response:,
+      proofing_agent:,
+      issuer:,
+      body_payload:,
+      transaction_id:,
+      proofing_components:,
       **extra,
     )
   end
@@ -6155,6 +6371,8 @@ module AnalyticsEvents
   # @param [Hash, nil] errors The errors encountered during proofing.
   # @param [String, nil] exception The exception message.
   # @param [Boolean, nil] mva_exception Whether an MVA exception occured.
+  # @param proofing_agent [Hash, nil] proofing agent information including location id, agent id,
+  #   correlation id, and transaction id
   def idv_state_id_validation(
     success:,
     vendor_name:,
@@ -6174,6 +6392,7 @@ module AnalyticsEvents
     errors: nil,
     exception: nil,
     mva_exception: nil,
+    proofing_agent: nil,
     **extra
   )
     track_event(
@@ -6196,6 +6415,7 @@ module AnalyticsEvents
       errors:,
       exception:,
       mva_exception:,
+      proofing_agent:,
       **extra,
     )
   end
@@ -6485,6 +6705,7 @@ module AnalyticsEvents
   # @param [Hash] recaptcha_annotation Details of reCAPTCHA annotation, if submitted
   # @param [Boolean] available_webauthn_platform_config shows user has a webauth_platform config
   # @param [Integer] webauthn_auth_duration the duration to complete webauthn auth in seconds
+  # @param [Boolean, nil] webauthn_verification_auto_prompted Whether passkey auth was auto-prompted
   # Multi-Factor Authentication
   def multi_factor_auth(
     success:,
@@ -6512,6 +6733,7 @@ module AnalyticsEvents
     recaptcha_annotation: nil,
     available_webauthn_platform_config: nil,
     webauthn_auth_duration: nil,
+    webauthn_verification_auto_prompted: nil,
     **extra
   )
     track_event(
@@ -6541,6 +6763,7 @@ module AnalyticsEvents
       recaptcha_annotation:,
       available_webauthn_platform_config:,
       webauthn_auth_duration:,
+      webauthn_verification_auto_prompted:,
       **extra,
     )
   end
@@ -6684,6 +6907,10 @@ module AnalyticsEvents
   # @param [Integer, nil] webauthn_configuration_id webauthn database ID
   # @param [String] multi_factor_auth_method_created_at When the authentication method was created
   # @param [Hash] recaptcha_annotation Details of reCAPTCHA annotation, if submitted
+  # @param [Boolean, nil] webauthn_verification_auto_prompted Whether this session has auto-prompted
+  # @param [Boolean, nil] webauthn_verification_auto_prompt_enabled Whether experiment is enabled
+  # @param [Boolean, nil] webauthn_verification_auto_prompt_triggered
+  #   Whether this visit auto-triggered
   # User visited the page to authenticate with webauthn (yubikey, face ID or touch ID)
   def multi_factor_auth_enter_webauthn_visit(
     context:,
@@ -6691,6 +6918,9 @@ module AnalyticsEvents
     webauthn_configuration_id:,
     multi_factor_auth_method_created_at:,
     recaptcha_annotation: nil,
+    webauthn_verification_auto_prompted: nil,
+    webauthn_verification_auto_prompt_enabled: nil,
+    webauthn_verification_auto_prompt_triggered: nil,
     **extra
   )
     track_event(
@@ -6700,6 +6930,9 @@ module AnalyticsEvents
       webauthn_configuration_id:,
       multi_factor_auth_method_created_at:,
       recaptcha_annotation:,
+      webauthn_verification_auto_prompted:,
+      webauthn_verification_auto_prompt_enabled:,
+      webauthn_verification_auto_prompt_triggered:,
       **extra,
     )
   end
@@ -6753,6 +6986,9 @@ module AnalyticsEvents
   # @param [String] country_code Abbreviated 2-letter country code associated with phone number
   # @param [String] phone_type Pinpoint phone classification type
   # @param [Array<String>] types Phonelib parsed phone types
+  # @param [String, nil] ip_country Two-letter country code geolocated from request remote IP
+  # @param [Boolean] ip_country_blocked
+  #   Whether the request was blocked due to IP/phone country mismatch
   def multi_factor_auth_phone_setup(
       success:,
       otp_delivery_preference:,
@@ -6761,6 +6997,8 @@ module AnalyticsEvents
       country_code:,
       phone_type:,
       types:,
+      ip_country: nil,
+      ip_country_blocked: false,
       error_details: nil,
       **extra
     )
@@ -6774,6 +7012,8 @@ module AnalyticsEvents
       country_code:,
       phone_type:,
       types:,
+      ip_country:,
+      ip_country_blocked:,
       **extra,
     )
   end
@@ -7148,8 +7388,9 @@ module AnalyticsEvents
   # Tracks when openid authorization request is made
   # @param [Boolean] success Whether form validations were succcessful
   # @param [Hash] error_details Details for errors that occurred in unsuccessful submission
-  # @param [String] prompt OIDC prompt parameter
+  # @param ['create','login','select_account'] prompt OIDC prompt parameter
   # @param [Boolean] allow_prompt_login Whether service provider is configured to allow prompt=login
+  # @param [Boolean] allow_prompt_create if service provider is configured to allow prompt=create
   # @param [Boolean] code_challenge_present Whether code challenge is present
   # @param [Boolean, nil] service_provider_pkce Whether service provider is configured with PKCE
   # @param [String, nil] referer Request referer
@@ -7163,6 +7404,7 @@ module AnalyticsEvents
     success:,
     prompt:,
     allow_prompt_login:,
+    allow_prompt_create:,
     code_challenge_present:,
     service_provider_pkce:,
     referer:,
@@ -7181,6 +7423,7 @@ module AnalyticsEvents
       error_details:,
       prompt:,
       allow_prompt_login:,
+      allow_prompt_create:,
       code_challenge_present:,
       service_provider_pkce:,
       referer:,
@@ -7749,6 +7992,8 @@ module AnalyticsEvents
   # @param [String] limiter_type Name of the rate limiter configuration exceeded
   # @param [String] country_code Abbreviated 2-letter country code associated with phone number
   # @param [String] phone_fingerprint HMAC fingerprint of the phone number formatted as E.164
+  # @param [Boolean,nil] country_mismatch
+  #   Whether rate limit was triggered by blocked IP/phone country mismatch
   # @param ["authentication", "reauthentication", "confirmation"] context User session context
   # @param ["sms", "voice"] otp_delivery_preference Channel used to send the message
   # @param [String,nil] step_name Name of step in user flow where rate limit occurred
@@ -7757,6 +8002,7 @@ module AnalyticsEvents
     limiter_type:,
     country_code: nil,
     phone_fingerprint: nil,
+    country_mismatch: nil,
     context: nil,
     otp_delivery_preference: nil,
     step_name: nil,
@@ -7767,6 +8013,7 @@ module AnalyticsEvents
       limiter_type:,
       country_code:,
       phone_fingerprint:,
+      country_mismatch:,
       context:,
       otp_delivery_preference:,
       step_name:,
@@ -8003,6 +8250,8 @@ module AnalyticsEvents
   # @param [Boolean] finish_profile
   # @param [String] requested_ial
   # @param [Boolean] request_signed
+  # @param [Boolean] allow_prompt_create If service provider is configured to allow prompt=create
+  # @param ['create', nil] prompt
   # @param [String] matching_cert_serial matches the request certificate in a successful, signed
   #   request
   # @param [Hash] cert_error_details Details for errors that occurred because of an invalid
@@ -8021,9 +8270,11 @@ module AnalyticsEvents
     requested_ial:,
     request_signed:,
     matching_cert_serial:,
+    allow_prompt_create:,
     error_details: nil,
     cert_error_details: nil,
     unknown_authn_contexts: nil,
+    prompt: nil,
     **extra
   )
     track_event(
@@ -8043,6 +8294,8 @@ module AnalyticsEvents
       matching_cert_serial:,
       cert_error_details:,
       unknown_authn_contexts:,
+      prompt:,
+      allow_prompt_create:,
       **extra,
     )
   end
@@ -8057,6 +8310,8 @@ module AnalyticsEvents
   # @param [String] matching_cert_serial
   # @param [String] unknown_authn_contexts space separated list of unknown contexts
   # @param [Boolean] user_fully_authenticated
+  # @param [Boolean] allow_prompt_create If service provider is configured to allow prompt=create
+  # @param ['create', nil] prompt
   # An external request for SAML Authentication was received
   def saml_auth_request(
     requested_ial:,
@@ -8069,6 +8324,8 @@ module AnalyticsEvents
     matching_cert_serial:,
     unknown_authn_contexts:,
     user_fully_authenticated:,
+    allow_prompt_create:,
+    prompt: nil,
     **extra
   )
     track_event(
@@ -8083,6 +8340,8 @@ module AnalyticsEvents
       matching_cert_serial:,
       unknown_authn_contexts:,
       user_fully_authenticated:,
+      prompt:,
+      allow_prompt_create:,
       **extra,
     )
   end

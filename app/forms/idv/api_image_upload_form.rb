@@ -206,6 +206,7 @@ module Idv
           liveness_checking_required: liveness_checking_required,
           document_type_requested: document_type_requested,
           passport_requested: document_capture_session.passport_requested?,
+          passport_cards_supported: document_capture_session.passport_cards_supported?,
         }
         post_images_args[:user_email] = user_email if ddp_client?
         doc_auth_client.post_images(**post_images_args)
@@ -214,8 +215,7 @@ module Idv
       response.extra.merge!(extra_attributes)
       pii_hash = response.pii_from_doc.to_h
       response.extra[:state] = pii_hash[:state]
-      response.extra[:document_type_received] = pii_hash[:document_type_received] ||
-                                                pii_hash[:id_doc_type]
+      response.extra[:document_type_received] = pii_hash[:document_type_received]
       response.extra[:country] = pii_hash[:issuing_country_code]
 
       update_analytics(
@@ -254,8 +254,7 @@ module Idv
       side_classification = doc_side_classification(client_response)
       response_with_classification =
         response.to_h.merge(side_classification)
-          .merge(document_type_received: client_response.pii_from_doc.document_type_received ||
-                 client_response.pii_from_doc.id_doc_type)
+          .merge(document_type_received: client_response.pii_from_doc.document_type_received)
 
       analytics.idv_doc_auth_submitted_pii_validation(**response_with_classification)
 
@@ -263,9 +262,8 @@ module Idv
     end
 
     def validate_mrz(client_response)
-      id_type = client_response.pii_from_doc.document_type_received ||
-                client_response.pii_from_doc.id_doc_type
-      unless id_type == 'passport'
+      id_type = client_response.pii_from_doc.document_type_received
+      unless document_capture_session.in_supported_passport_types?(id_type)
         return DocAuth::Response.new(
           success: false,
           errors: { passport: "Cannot validate MRZ for id type: #{id_type}" },
@@ -273,7 +271,10 @@ module Idv
       end
       mrz_client = IdentityConfig.store.doc_auth_mock_dos_api ?
                      DocAuth::Mock::DosPassportApiClient.new(client_response) :
-                     DocAuth::Dos::Requests::MrzRequest.new(mrz: client_response.pii_from_doc.mrz)
+                     DocAuth::Dos::Requests::MrzRequest.new(
+                       mrz: client_response.pii_from_doc.mrz,
+                       id_type:,
+                     )
       response = mrz_client.fetch
 
       analytics.idv_dos_passport_verification(
@@ -388,7 +389,7 @@ module Idv
       return {} unless doc_escrow_enabled?
 
       return @doc_escrow_images if defined?(@doc_escrow_images)
-      @doc_escrow_images = images_metadata.attempts_file_data(issuer: service_provider.issuer)
+      @doc_escrow_images = images_metadata.attempts_file_data
       @doc_escrow_images
     end
 
