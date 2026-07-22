@@ -29,6 +29,10 @@ module EncryptedDocStorage
       ).body.read
     end
 
+    def delete_user_attempt_data(file_path:)
+      s3_client.delete_object(bucket:, key: file_path)
+    end
+
     private
 
     def s3_client
