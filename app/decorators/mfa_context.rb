@@ -95,8 +95,7 @@ class MfaContext
       webauthn_configurations.to_a.count(&:mfa_enabled?) +
       (backup_code_configurations.any? ? 1 : 0) +
       piv_cac_configurations.to_a.count(&:mfa_enabled?) +
-      auth_app_configurations.to_a.count(&:mfa_enabled?) +
-      personal_key_method_count
+      auth_app_configurations.to_a.count(&:mfa_enabled?)
   end
 
   # returns a hash showing the count for each enabled 2FA configuration,
@@ -118,11 +117,6 @@ class MfaContext
   end
 
   private
-
-  def personal_key_method_count
-    return 0 if IdentityConfig.store.personal_key_retired
-    (personal_key_configuration.mfa_enabled? ? 1 : 0)
-  end
 
   def enabled_two_factor_configuration_names
     two_factor_configurations.select(&:mfa_enabled?).map(&:friendly_name)
