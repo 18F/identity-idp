@@ -172,6 +172,93 @@ RSpec.describe 'state id controller enabled', :js do
     end
   end
 
+  context 'expiration date edge cases' do
+    before do
+      allow(IdentityConfig.store)
+        .to receive(:in_person_proofing_expiration_edge_cases_enabled).and_return(true)
+    end
+
+    it 'renders the expiration options with a date entry as the default',
+       allow_browser_log: true do
+      complete_steps_before_state_id_controller
+
+      expect(page).to have_content(
+        t('in_person_proofing.form.state_id.expiration_date_options.enter_date'),
+      )
+      expect(page).to have_content(
+        t('in_person_proofing.form.state_id.expiration_date_options.military'),
+      )
+      expect(page).to have_content(
+        t('in_person_proofing.form.state_id.expiration_date_options.indefinite'),
+      )
+      expect(page).to have_content(
+        t('in_person_proofing.form.state_id.expiration_date_options.other'),
+      )
+
+      # The date inputs are visible because "Enter a date" is selected by default.
+      expect(page).to have_field('identity_doc[id_expiration][month]', visible: :visible)
+    end
+
+    it 'hides the date inputs when a non-date option is selected',
+       allow_browser_log: true do
+      complete_steps_before_state_id_controller
+
+      choose t('in_person_proofing.form.state_id.expiration_date_options.military')
+      # The inputs are hidden *and* disabled so they are neither submitted nor
+      # client-side validated, so match on disabled fields too.
+      expect(page).to have_field(
+        'identity_doc[id_expiration][month]', visible: :hidden, disabled: true
+      )
+
+      choose t('in_person_proofing.form.state_id.expiration_date_options.enter_date')
+      expect(page).to have_field('identity_doc[id_expiration][month]', visible: :visible)
+    end
+
+    # The client-side memorable-date validation would otherwise reject these as
+    # invalid calendar dates and block submission. See LG-17733.
+    {
+      '9999-99-99' => '99/99/9999',
+      '0000-00-00' => '00/00/0000',
+    }.each do |entered_date, displayed_value|
+      it "allows submitting the #{displayed_value} placeholder expiration date",
+         allow_browser_log: true do
+        complete_steps_before_state_id_controller
+        fill_out_state_id_form_ok(same_address_as_id: true)
+
+        choose t('in_person_proofing.form.state_id.expiration_date_options.enter_date')
+        fill_in_memorable_date('identity_doc[id_expiration]', entered_date)
+        click_idv_continue
+
+        expect(page).to have_current_path(idv_in_person_ssn_url, wait: 10)
+        complete_ssn_step
+
+        expect(page).to have_current_path(idv_in_person_verify_info_url)
+        expect(page).to have_text(displayed_value)
+      end
+    end
+
+    {
+      'military' => 'expiration_date_options.military',
+      'indefinite' => 'expiration_date_options.indefinite',
+      'none' => 'expiration_date_options.other',
+    }.each do |option, i18n_key|
+      it "allows submitting the '#{option}' expiration option",
+         allow_browser_log: true do
+        complete_steps_before_state_id_controller
+        fill_out_state_id_form_ok(same_address_as_id: true)
+
+        choose t("in_person_proofing.form.state_id.#{i18n_key}")
+        click_idv_continue
+
+        expect(page).to have_current_path(idv_in_person_ssn_url, wait: 10)
+        complete_ssn_step
+
+        expect(page).to have_current_path(idv_in_person_verify_info_url)
+        expect(page).to have_text(t("in_person_proofing.form.state_id.#{i18n_key}"))
+      end
+    end
+  end
+
   context 'transliterable validation' do
     it 'shows validation errors',
        allow_browser_log: true do

@@ -279,6 +279,29 @@ RSpec.describe MemorableDateComponent, type: :component do
     ).to be_nil
   end
 
+  describe 'placeholder values (LG-17733)' do
+    it 'uses the base month/day patterns by default' do
+      component = described_class.new(**options)
+      expect(component.month_pattern).to eq(MemorableDateComponent::MONTH_PATTERN)
+      expect(component.day_pattern).to eq(MemorableDateComponent::DAY_PATTERN)
+    end
+
+    context 'when allow_placeholder_values is true' do
+      let(:options) { super().merge(allow_placeholder_values: true) }
+
+      it 'appends the placeholder alternation to the month/day patterns' do
+        component = described_class.new(**options)
+        expect(component.month_pattern).to eq("#{MemorableDateComponent::MONTH_PATTERN}|99|00")
+        expect(component.day_pattern).to eq("#{MemorableDateComponent::DAY_PATTERN}|99|00")
+      end
+
+      it 'renders month and day inputs whose pattern permits 99 and 00' do
+        expect(rendered).to have_css('.memorable-date__month[pattern*="99|00"]')
+        expect(rendered).to have_css('.memorable-date__day[pattern*="99|00"]')
+      end
+    end
+  end
+
   context 'backend validation error message' do
     let(:backend_error) { 'backend error' }
     it 'renders a visible error message element' do
