@@ -111,7 +111,7 @@ class UserProofingEvent < ApplicationRecord
   end
 
   def attempt_events_file_path
-    "attempt_events/#{user.uuid}/#{profile.id}"
+    "#{user.uuid}/#{profile.id}"
   end
 
   def historical_attempts_s3_storage_enabled?
