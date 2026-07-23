@@ -8,7 +8,7 @@ module Idv
     ATTRIBUTES = %i[first_name last_name dob identity_doc_address1 identity_doc_address2
                     identity_doc_city identity_doc_zipcode state_id_jurisdiction
                     identity_doc_address_state state_id_number same_address_as_id
-                    id_expiration].freeze
+                    id_expiration asserted_id_type].freeze
 
     attr_accessor(*ATTRIBUTES)
 
@@ -51,8 +51,11 @@ module Idv
     end
 
     def extra_analytics_attributes(params)
-      { birth_year: params.dig(:dob, :year),
-        document_zip_code: params.dig(:identity_doc_zipcode)&.slice(0, 5) }
+      {
+        birth_year: params.dig(:dob, :year),
+        document_zip_code: params.dig(:identity_doc_zipcode)&.slice(0, 5),
+        asserted_id_type: params.dig(:asserted_id_type),
+      }
     end
   end
 end

@@ -83,6 +83,10 @@ module DocAuth
       false
     end
 
+    def selfie_check_passed?
+      false
+    end
+
     def doc_auth_success?
       # to be implemented by concrete subclass
       false

@@ -49,7 +49,7 @@ module Idv
         idv_session.doc_auth_vendor = document_capture_session.doc_auth_vendor
         idv_session.pii_from_doc = stored_result.pii_from_doc
         idv_session.aamva_verified_attributes = stored_result.aamva_verified_attributes
-        idv_session.selfie_check_performed = stored_result.selfie_check_performed?
+        idv_session.selfie_check_performed = stored_result.selfie_check_passed?
         idv_session.source_check_vendor = stored_result.source_check_vendor
       end
 
@@ -64,7 +64,7 @@ module Idv
     def selfie_requirement_met?
       !resolved_authn_context_result.facial_match? ||
         mdl_received? ||
-        stored_result.selfie_check_performed?
+        stored_result.selfie_check_passed?
     end
 
     def mrz_requirement_met?

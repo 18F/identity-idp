@@ -611,6 +611,7 @@ doc_auth.forms.doc_success: Verificamos su información
 doc_auth.forms.id_type_preference.drivers_license: Licencia de conducir de los EE. UU. o identificación estatal
 doc_auth.forms.id_type_preference.mdl: Licencia de conducir móvil (mDL)
 doc_auth.forms.id_type_preference.passport: Pasaporte estadounidense
+doc_auth.forms.id_type_preference.passport_card: Tarjeta de pasaporte de los EE. UU.
 doc_auth.forms.selected_file: Archivo seleccionado
 doc_auth.headers.expired_id: Su identificación puede estar vencida
 doc_auth.headers.general.network_error: Estamos teniendo problemas técnicos
@@ -726,13 +727,15 @@ doc_auth.info.verify_at_post_office_link_text: Obtenga más información sobre l
 doc_auth.info.verify_identity: Le pediremos su identificación, número de teléfono y otros datos personales para verificar su identidad comparándola con los registros públicos.
 doc_auth.info.verify_online_description: Puede usar un pasaporte estadounidense, una licencia de conducir de los EE. UU. o una identificación estatal.
 doc_auth.info.verify_online_description_mdl: Puede utilizar un pasaporte, licencia de conducir, licencia de conducir móvil o tarjeta de identificación estatal de los EE. UU.
-doc_auth.info.verify_online_instruction: Tome fotos de su identificación.
+doc_auth.info.verify_online_description_passport_card: Puede utilizar una libreta o tarjeta de pasaporte, licencia de conducir o una identificación estatal de los EE. UU.
+doc_auth.info.verify_online_instruction: Tomará fotos de su documento de identidad para verificar su identidad de forma totalmente en línea.
 doc_auth.info.verify_online_instruction_selfie: Tómese una selfi y fotos de su identificación.
 doc_auth.info.verify_online_link_text: Obtenga más información sobre la verificación en línea
 doc_auth.info.welcome_sp_reproof_alert: Por su seguridad, %{sp_name} requiere que verifique su identidad nuevamente.
 doc_auth.info.you_entered: 'Usted ingresó:'
 doc_auth.instructions.bullet1: Tener un pasaporte estadounidense, una licencia de conducir de los EE. UU. o una identificación estatal
 doc_auth.instructions.bullet1_mdl: Tener un pasaporte, licencia de conducir, licencia de conducir móvil (mDL) o tarjeta de identificación estatal de los EE. UU.
+doc_auth.instructions.bullet1_passport_card: Tener un libreta o tarjeta de pasaporte, licencia de conducir o una tarjeta de identificación estatal de los EE. UU.
 doc_auth.instructions.bullet2: Ingresar su número de Seguro Social
 doc_auth.instructions.bullet3: Hacer coincidir su número de teléfono
 doc_auth.instructions.bullet4: Volver a ingresar su contraseña de %{app_name}
@@ -1373,8 +1376,12 @@ in_person_proofing.body.prepare.verify_step_about: 'Siga los siguientes pasos pa
 in_person_proofing.body.prepare.verify_step_enter_phone: Ingrese su número de teléfono principal o el que use con más frecuencia.
 in_person_proofing.body.prepare.verify_step_enter_pii: Ingrese su nombre, fecha de nacimiento, número de identificación emitida por el estado, dirección y número de Seguro Social.
 in_person_proofing.body.prepare.verify_step_post_office: Busque una oficina de correos participantes cercana.
-in_person_proofing.body.state_id.alert_message: Necesita una licencia de conducir o una identificación estatal
-in_person_proofing.body.state_id.alert_text: No se aceptan los pasaportes para la verificación en persona. Su licencia de conducir o identificación estatal no deben estar vencidas.
+in_person_proofing.body.state_id.alert_message: Licencia de conducir, identificación estatal o pasaporte (libreta o tarjeta) de EE. UU.
+in_person_proofing.body.state_id.alert_text:
+  'Libretas y tarjetas de pasaporte de EE. UU. Los pasaportes aún no se aceptan para la verificación en persona. Si no ve la opción para verificar su identidad con un pasaporte, utilice una licencia de conducir o una identificación estatal, o intente verificar su identidad nuevamente más tarde.
+
+
+  Pasaportes de otros países'
 in_person_proofing.body.state_id.info_html: Ingrese la información <strong>exactamente como aparece en su identificación emitida por el estado.</strong> Usaremos esta información para confirmar que coincida con su identificación en persona.
 in_person_proofing.form.address.errors.unsupported_chars: 'Nuestro sistema no puede leer estos caracteres: %{char_list}. Inténtelo de nuevo usando caracteres sustitutos.'
 in_person_proofing.form.address.state_prompt: '- Seleccione -'
@@ -1403,6 +1410,9 @@ in_person_proofing.form.state_id.errors.unsupported_chars: 'Nuestro sistema no p
 in_person_proofing.form.state_id.expiration_date: Fecha de vencimiento
 in_person_proofing.form.state_id.expiration_date_hint: 'Ejemplo: 4 28 2028'
 in_person_proofing.form.state_id.first_name: Nombre
+in_person_proofing.form.state_id.id_type: Tipo de identificación
+in_person_proofing.form.state_id.id_type_drivers_license: Licencia de conducir
+in_person_proofing.form.state_id.id_type_state_id: Tarjeta de identificación estatal
 in_person_proofing.form.state_id.identity_doc_address_state: Estado
 in_person_proofing.form.state_id.identity_doc_address_state_prompt: '- Seleccione -'
 in_person_proofing.form.state_id.last_name: Apellido

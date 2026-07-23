@@ -15,6 +15,7 @@ module Idv
                 :state_id_number,
                 :id_expiration,
                 :same_address_as_id,
+                :asserted_id_type,
                 presence: true
 
       validates_with UspsInPersonProofing::TransliterableValidator,

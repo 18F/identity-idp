@@ -600,6 +600,7 @@ doc_auth.forms.doc_success: Nous avons vérifié vos informations
 doc_auth.forms.id_type_preference.drivers_license: Permis de conduire ou carte d’identité d’un État
 doc_auth.forms.id_type_preference.mdl: Permis de conduire mobile (mDL)
 doc_auth.forms.id_type_preference.passport: Passeport américain
+doc_auth.forms.id_type_preference.passport_card: Carte de passeport américain
 doc_auth.forms.selected_file: Fichier sélectionné
 doc_auth.headers.expired_id: Votre pièce d’identité est peut-être périmée
 doc_auth.headers.general.network_error: Nous rencontrons des difficultés techniques
@@ -715,13 +716,15 @@ doc_auth.info.verify_at_post_office_link_text: En savoir plus sur la vérificati
 doc_auth.info.verify_identity: Nous vous demanderons votre pièce d’identité, numéro de téléphone et d’autres renseignements personnels afin de confirmer votre identité par rapport aux registres publics.
 doc_auth.info.verify_online_description: Vous pouvez utiliser un passeport, un permis de conduire une carte d’identité d’un État des États-Unis.
 doc_auth.info.verify_online_description_mdl: Vous pouvez utiliser un passeport américain (livret), un permis de conduire, un permis de conduire mobile ou une carte d’identité délivrée par un État.
-doc_auth.info.verify_online_instruction: Prenez des photos de votre pièce d’identité.
+doc_auth.info.verify_online_description_passport_card: Vous pouvez utiliser un passeport américain (livret ou carte), un permis de conduire américain ou une carte d’identité délivrée par un État.
+doc_auth.info.verify_online_instruction: Vous prendrez des photos de votre pièce d’identité afin de vérifier votre identité entièrement en ligne.
 doc_auth.info.verify_online_instruction_selfie: Prenez un selfie et des photos de votre pièce d’identité.
 doc_auth.info.verify_online_link_text: En savoir plus sur la vérification en ligne
 doc_auth.info.welcome_sp_reproof_alert: Pour votre sécurité, %{sp_name} exige que vous vérifiiez à nouveau votre identité.
 doc_auth.info.you_entered: 'Vous avez saisi :'
 doc_auth.instructions.bullet1: Munissez-vous d’un passeport, d’un permis de conduire ou d’une carte d’identité d’un État des États-Unis
 doc_auth.instructions.bullet1_mdl: Posséder un passeport américain, un permis de conduire, un permis de conduire mobile ou une carte d’identité délivrée par un État.
+doc_auth.instructions.bullet1_passport_card: Posséder un passeport américain (livret ou carte), un permis de conduire américain ou une carte d’identité délivrée par un État.
 doc_auth.instructions.bullet2: Saisir votre numéro de sécurité sociale
 doc_auth.instructions.bullet3: Vérifier la correspondance avec votre numéro de téléphone
 doc_auth.instructions.bullet4: Saisir à nouveau votre mot de passe %{app_name}
@@ -1362,8 +1365,12 @@ in_person_proofing.body.prepare.verify_step_about: 'Suivez les étapes ci-dessou
 in_person_proofing.body.prepare.verify_step_enter_phone: Saisissez votre numéro de téléphone principal ou celui que vous utilisez le plus souvent.
 in_person_proofing.body.prepare.verify_step_enter_pii: Saisissez votre nom, votre date de naissance, le numéro de votre pièce d’identité délivrée par l’État, votre adresse et votre numéro de sécurité sociale.
 in_person_proofing.body.prepare.verify_step_post_office: Trouver un bureau de poste participant près de chez vous.
-in_person_proofing.body.state_id.alert_message: Vous avez besoin d’un permis de conduire ou d’une carte d’identité délivrée par un État.
-in_person_proofing.body.state_id.alert_text: Les passeports ne sont pas acceptés pour la vérification d’identité en personne. Votre permis de conduire ou carte d’identité délivrée par un État doit être en cours de validité.
+in_person_proofing.body.state_id.alert_message: Permis de conduire américain, carte d’identité delivrée par un État ou passeport américain (livret ou carte)
+in_person_proofing.body.state_id.alert_text:
+  'Passeports américains (livret ou carte). Les passeports ne sont pas encore acceptés pour la vérification en personne. Si l’option de vérifier votre identité à l’aide d’un passeport ne s’affiche pas, veuillez utiliser un permis de conduire ou une carte d’identité délivrée par un État, ou réessayez de vérifier votre identité ultérieurement.
+
+
+  Passeports non américains'
 in_person_proofing.body.state_id.info_html: Saisissez les informations <strong>exactement comme elles figurent sur votre pièce d’identité</strong>. Nous utiliserons ces informations pour confirmer qu’elles correspondent à votre pièce d’identité en personne.
 in_person_proofing.form.address.errors.unsupported_chars: 'Notre système ne parvient pas à lire les caractères suivants : %{char_list}. Veuillez réessayer en utilisant d’autres caractères.'
 in_person_proofing.form.address.state_prompt: '- Sélectionnez -'
@@ -1392,6 +1399,9 @@ in_person_proofing.form.state_id.errors.unsupported_chars: 'Notre système ne pa
 in_person_proofing.form.state_id.expiration_date: Date d’expiration
 in_person_proofing.form.state_id.expiration_date_hint: 'Exemple : 4 28 2028'
 in_person_proofing.form.state_id.first_name: Prénom
+in_person_proofing.form.state_id.id_type: 'Type d’identification'
+in_person_proofing.form.state_id.id_type_drivers_license: 'Permis de conduire'
+in_person_proofing.form.state_id.id_type_state_id: 'Carte d’identité d’un État'
 in_person_proofing.form.state_id.identity_doc_address_state: État
 in_person_proofing.form.state_id.identity_doc_address_state_prompt: '- Sélectionnez -'
 in_person_proofing.form.state_id.last_name: Nom de famille
