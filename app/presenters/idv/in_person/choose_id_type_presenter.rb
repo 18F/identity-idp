@@ -9,6 +9,10 @@ class Idv::InPerson::ChooseIdTypePresenter < Idv::ChooseIdTypePresenter
     :verify_info
   end
 
+  def passport_card_available?
+    false
+  end
+
   def step_indicator_steps
     Idv::StepIndicatorConcern::STEP_INDICATOR_STEPS_IPP
   end

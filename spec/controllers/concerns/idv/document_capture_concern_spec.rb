@@ -254,8 +254,8 @@ RSpec.describe Idv::DocumentCaptureConcern, :controller do
           context 'selfie check fail' do
             let(:selfie_status) { :fail }
 
-            it 'returns true' do
-              expect(controller.selfie_requirement_met?).to eq(true)
+            it 'returns false' do
+              expect(controller.selfie_requirement_met?).to eq(false)
             end
           end
         end

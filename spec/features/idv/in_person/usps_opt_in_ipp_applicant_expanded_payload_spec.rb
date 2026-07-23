@@ -11,7 +11,9 @@ RSpec.describe 'In Person Proofing: opt in ipp applicant expanded payload', js: 
   let(:ipp_service_provider) { create(:service_provider, :active, :in_person_proofing_enabled) }
   let(:user) { user_with_2fa }
   let(:usps_expected_document_type) do
-    UspsInPersonProofing::USPS_DOCUMENT_TYPE_MAPPINGS[InPersonEnrollment::DOCUMENT_TYPE_STATE_ID]
+    UspsInPersonProofing::USPS_DOCUMENT_TYPE_MAPPINGS[
+      Idp::Constants::DocumentTypes::DRIVERS_LICENSE,
+    ]
   end
   let(:usps_expected_expiration_date) do
     Time.zone.parse(InPersonHelper::GOOD_STATE_ID_EXPIRATION).to_i
@@ -63,7 +65,9 @@ RSpec.describe 'In Person Proofing: opt in ipp applicant expanded payload', js: 
               'uniqueID' => InPersonEnrollment.first.unique_id,
               'firstName' => InPersonHelper::GOOD_FIRST_NAME,
               'lastName' => InPersonHelper::GOOD_LAST_NAME,
-              'streetAddress' => InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS1,
+              'streetAddress' =>
+                "#{InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS1} " \
+                "#{InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS2}",
               'city' => InPersonHelper::GOOD_IDENTITY_DOC_CITY,
               'state' => InPersonHelper::GOOD_STATE_ABBR,
               'zipCode' => InPersonHelper::GOOD_IDENTITY_DOC_ZIPCODE,
@@ -116,7 +120,9 @@ RSpec.describe 'In Person Proofing: opt in ipp applicant expanded payload', js: 
               'uniqueID' => InPersonEnrollment.first.unique_id,
               'firstName' => InPersonHelper::GOOD_FIRST_NAME,
               'lastName' => InPersonHelper::GOOD_LAST_NAME,
-              'streetAddress' => InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS1,
+              'streetAddress' =>
+                "#{InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS1} " \
+                "#{InPersonHelper::GOOD_IDENTITY_DOC_ADDRESS2}",
               'city' => InPersonHelper::GOOD_IDENTITY_DOC_CITY,
               'state' => InPersonHelper::GOOD_STATE_ABBR,
               'zipCode' => InPersonHelper::GOOD_IDENTITY_DOC_ZIPCODE,

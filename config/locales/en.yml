@@ -600,6 +600,7 @@ doc_auth.forms.doc_success: We verified your information
 doc_auth.forms.id_type_preference.drivers_license: U.S. driver’s license or state ID
 doc_auth.forms.id_type_preference.mdl: Mobile driver’s license (mDL)
 doc_auth.forms.id_type_preference.passport: U.S. passport book
+doc_auth.forms.id_type_preference.passport_card: U.S. passport card
 doc_auth.forms.selected_file: Selected file
 doc_auth.headers.expired_id: Your ID may have expired
 doc_auth.headers.general.network_error: We are having technical difficulties
@@ -715,6 +716,7 @@ doc_auth.info.verify_at_post_office_link_text: Learn more about verifying in per
 doc_auth.info.verify_identity: We’ll ask for your ID, phone number, and other personal information to verify your identity against public records.
 doc_auth.info.verify_online_description: You can use a U.S. passport book, U.S. driver’s license or state ID.
 doc_auth.info.verify_online_description_mdl: You can use a U.S. passport book, U.S. driver’s license, mobile driver’s license (mDL) or state ID.
+doc_auth.info.verify_online_description_passport_card: You can use a U.S. passport book or card, U.S. driver’s license or state ID.
 doc_auth.info.verify_online_instruction: You’ll take photos of your ID to verify your identity fully online.
 doc_auth.info.verify_online_instruction_selfie: You’ll take a selfie and photos of your ID to verify your identity fully online.
 doc_auth.info.verify_online_link_text: Learn more about verifying online
@@ -722,6 +724,7 @@ doc_auth.info.welcome_sp_reproof_alert: For your security, %{sp_name} requires y
 doc_auth.info.you_entered: 'You entered:'
 doc_auth.instructions.bullet1: Have a U.S. passport book, U.S. driver’s license or state ID
 doc_auth.instructions.bullet1_mdl: Have a U.S. passport book, U.S. driver’s license, mobile driver’s license (mDL) or state ID card
+doc_auth.instructions.bullet1_passport_card: Have a U.S. passport book or card, U.S. driver’s license or state ID card
 doc_auth.instructions.bullet2: Enter your Social Security number
 doc_auth.instructions.bullet3: Match to your phone number
 doc_auth.instructions.bullet4: Re-enter your %{app_name} password
@@ -1362,8 +1365,12 @@ in_person_proofing.body.prepare.verify_step_about: 'Complete the steps below to 
 in_person_proofing.body.prepare.verify_step_enter_phone: Enter your primary phone number or the number that you use most often.
 in_person_proofing.body.prepare.verify_step_enter_pii: Enter your name, date of birth, state‑issued ID number, address and Social Security number.
 in_person_proofing.body.prepare.verify_step_post_office: Find a participating Post Office near you.
-in_person_proofing.body.state_id.alert_message: You need a driver’s license or state ID
-in_person_proofing.body.state_id.alert_text: Passports are not accepted in person. Your driver’s license or state ID must not be expired.
+in_person_proofing.body.state_id.alert_message: U.S. Driver’s license, state ID, or passport book/card
+in_person_proofing.body.state_id.alert_text:
+  'U.S. Passport book and cards. Passports are not yet accepted for verifying in person. If you don’t see the option to verify your identity with a passport, use a driver’s license or state ID, or try to verify your identity again later.
+
+
+  Non-U.S. passports'
 in_person_proofing.body.state_id.info_html: Enter information <strong>exactly as it appears on your state-issued ID.</strong> We will use this information to confirm it matches your ID in person.
 in_person_proofing.form.address.errors.unsupported_chars: 'Our system cannot read the following characters: %{char_list}. Please try again using substitutes for those characters.'
 in_person_proofing.form.address.state_prompt: '- Select -'
@@ -1395,6 +1402,9 @@ in_person_proofing.form.state_id.errors.unsupported_chars: 'Our system cannot re
 in_person_proofing.form.state_id.expiration_date: Expiration date
 in_person_proofing.form.state_id.expiration_date_hint: 'Example: 4 28 2028'
 in_person_proofing.form.state_id.first_name: First name
+in_person_proofing.form.state_id.id_type: ID type
+in_person_proofing.form.state_id.id_type_drivers_license: 'State Driver’s License'
+in_person_proofing.form.state_id.id_type_state_id: 'State Non-Driver’s Identification Card'
 in_person_proofing.form.state_id.identity_doc_address_state: State
 in_person_proofing.form.state_id.identity_doc_address_state_prompt: '- Select -'
 in_person_proofing.form.state_id.last_name: Last name
