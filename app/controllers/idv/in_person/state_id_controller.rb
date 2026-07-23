@@ -28,13 +28,14 @@ module Idv
       def update
         clear_future_steps_from!(controller: Idv::InPerson::SsnController)
 
-        initial_state_of_same_address_as_id = pii_from_user[:same_address_as_id]
+        initial_current_address_matches_id =
+          Pii::CurrentAddressMatchesId.read(pii_from_user)
 
         form_result = form.submit(flow_params)
 
         if form_result.success?
           pending_pii = build_pending_pii
-          redirect_url = determine_redirect_url(pending_pii, initial_state_of_same_address_as_id)
+          redirect_url = determine_redirect_url(pending_pii, initial_current_address_matches_id)
           idv_session.doc_auth_vendor = Idp::Constants::Vendors::USPS
 
           analytics.idv_in_person_proofing_state_id_submitted(
@@ -100,6 +101,11 @@ module Idv
           pending[attr] = flow_params[attr]
         end
 
+        # Dual-write during the same_address_as_id -> ipp_current_address_matches_id rename
+        # migration (LG-16085). Keep the legacy string field written for 50/50 compatibility.
+        pending[:ipp_current_address_matches_id] =
+          Pii::CurrentAddressMatchesId.coerce(pending[:same_address_as_id])
+
         formatted_dob = MemorableDateComponent.extract_date_param flow_params&.[](:dob)
         pending[:dob] = formatted_dob if formatted_dob
 
@@ -111,7 +117,7 @@ module Idv
           pending.delete(:id_expiration)
         end
 
-        if pending[:same_address_as_id] == 'true'
+        if Pii::CurrentAddressMatchesId.read(pending)
           pending[:address1] = flow_params[:identity_doc_address1]
           pending[:address2] = flow_params[:identity_doc_address2]
           pending[:city] = flow_params[:identity_doc_city]
@@ -122,9 +128,11 @@ module Idv
         pending
       end
 
-      def determine_redirect_url(pending_pii, initial_state_of_same_address_as_id)
-        if initial_state_of_same_address_as_id == 'true' &&
-           pending_pii[:same_address_as_id] == 'false'
+      def determine_redirect_url(pending_pii, initial_current_address_matches_id)
+        pending_current_address_matches_id = Pii::CurrentAddressMatchesId.read(pending_pii)
+
+        if initial_current_address_matches_id == true &&
+           pending_current_address_matches_id == false
           # Address changed from same to different, clear residential address
           pending_pii.delete(:address1)
           pending_pii.delete(:address2)
@@ -133,10 +141,10 @@ module Idv
           pending_pii.delete(:zipcode)
         end
 
-        if (idv_session.ssn && pending_pii[:same_address_as_id] == 'true') ||
-           initial_state_of_same_address_as_id == 'false'
+        if (idv_session.ssn && pending_current_address_matches_id == true) ||
+           initial_current_address_matches_id == false
           idv_in_person_verify_info_url
-        elsif pending_pii[:same_address_as_id] == 'false'
+        elsif pending_current_address_matches_id == false
           idv_in_person_address_url
         else
           idv_in_person_ssn_url

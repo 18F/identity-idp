@@ -336,7 +336,7 @@ RSpec.describe Idv::InPerson::VerifyInfoController do
             success: true,
             vendor_name: resolution_vendor_name,
           ),
-          same_address_as_id: true,
+          ipp_current_address_matches_id: true,
           applicant_pii: Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN,
           precheck_phone_number: subject.idv_session.precheck_phone&.dig(:phone),
         ).adjudicated_result.to_h

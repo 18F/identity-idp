@@ -212,7 +212,7 @@ RSpec.describe ProofingAgentJob, type: :job do
                 identity_doc_address_state: 'MT',
                 state_id_jurisdiction: 'ND',
                 state_id_number: '#############',
-                same_address_as_id: 'true',
+                ipp_current_address_matches_id: true,
                 phone:
                 { area_code: '202',
                   country_code: 'US',
