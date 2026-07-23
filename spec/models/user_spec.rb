@@ -2145,4 +2145,67 @@ RSpec.describe User do
       expect(user.reload.reset_password_token).to be_present
     end
   end
+
+  describe '#after_destroy_commit' do
+    describe 'deleting stored attempt event bundle' do
+      let(:user_proofing_event) { create(:user_proofing_event, profile:) }
+      let(:attempt_events) do
+        [{ event_type: 'idv-something' }, { event_type: 'idv-nothing-else' }]
+      end
+      let(:password) { 'password' }
+      let(:personal_key) { 'personal-key' }
+      let(:profile) { create(:profile, encrypted_attempts_file_reference: 'test-file-reference') }
+      let(:user) { profile.user }
+      let(:normalizer) { PersonalKeyGenerator.new(profile.user) }
+      after do
+        path = Rails.root.join(
+          'tmp',
+          'encrypted_attempt_events',
+          'attempt_events',
+          profile.user.uuid.to_s,
+        )
+        # cleanup
+        FileUtils.rm_rf(path) if Dir.exist?(path)
+      end
+
+      before do
+        user_proofing_event.write_events(
+          attempt_events:, password:,
+          personal_key: normalizer.normalize(personal_key)
+        )
+      end
+
+      it 'deletes the event bundle' do
+        expect(user_proofing_event.decrypt_events(password:)).to eq(attempt_events.to_json)
+        user.destroy
+
+        expect(user_proofing_event.decrypt_events(password:)).to be nil
+      end
+      describe 'when a user has multiple profiles with data' do
+        let(:profile1) do
+          create(:profile, :deactivated, user:, encrypted_attempts_file_reference: 'second-test')
+        end
+        let(:deactivated_user_proofing_event) { create(:user_proofing_event, profile: profile1) }
+
+        before do
+          deactivated_user_proofing_event.write_events(
+            attempt_events:, password:,
+            personal_key: normalizer.normalize(personal_key)
+          )
+        end
+
+        it 'deletes the event bundles for every profile' do
+          expect(user_proofing_event.decrypt_events(password:)).to eq(attempt_events.to_json)
+          expect(deactivated_user_proofing_event.decrypt_events(password:)).to eq(
+            attempt_events.to_json,
+          )
+
+          user.destroy
+
+          expect(user_proofing_event.decrypt_events(password:)).to be nil
+          expect(deactivated_user_proofing_event.decrypt_events(password:)).to be nil
+        end
+      end
+    end
+  end
 end

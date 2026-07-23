@@ -10,23 +10,33 @@ module EncryptedDocStorage
       )
     end
 
+    # @param [String] file_path "#{user_uuid}/#{profile.id}/#{file.uuid}"
+    # @param [String] encrypted_attempt_events a bundle of events that have been encrypted
     def write_attempt_events(path:, encrypted_attempt_events:)
-      # TODO: Make attempt_events/ directory in s3 escrow bucket
-      # TODO: Make directory readable from application
+      key = "attempt_events/#{path}"
+
       s3_client.put_object(
         bucket:,
         body: encrypted_attempt_events,
-        key: path,
+        key:,
       )
     end
 
+    # @param [String] file_path "#{user_uuid}/#{profile.id}"
+    # @param [String] file_name profile.encrypted_attempts_file_reference
     def retrieve_attempt_object(file_path:, file_name:)
-      full_path = "#{file_path}/#{file_name}"
+      key = "attempt_events/#{file_path}/#{file_name}"
 
       s3_client.get_object(
         bucket:,
-        key: full_path,
+        key:,
       ).body.read
+    end
+
+    def delete_user_attempt_data(user_uuid:)
+      key = "attempt_events/#{user_uuid}"
+
+      s3_client.delete_object(bucket:, key:)
     end
 
     private
