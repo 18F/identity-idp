@@ -423,6 +423,7 @@ rails_mailer_previews_enabled: false
 raise_on_component_validation_error: true
 raise_on_missing_title: false
 reauthn_window: 1200
+recaptcha_enterprise_additional_context_enabled: false
 recaptcha_enterprise_api_key: ''
 recaptcha_enterprise_project_id: ''
 recaptcha_mock_validator: true

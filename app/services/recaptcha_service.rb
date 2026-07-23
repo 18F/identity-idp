@@ -32,14 +32,20 @@ class RecaptchaService
     end
   end
 
-  def create_assessment(recaptcha_token:, recaptcha_action:)
+  def create_assessment(recaptcha_token:, recaptcha_action:, user_agent: nil, user_ip_address: nil)
+    event = {
+      site_key: IdentityConfig.store.recaptcha_site_key,
+      token: recaptcha_token,
+    }
+    if FeatureManagement.recaptcha_enterprise_additional_context_enabled?
+      event[:user_agent] = user_agent if user_agent.present?
+      event[:user_ip_address] = user_ip_address if user_ip_address.present?
+    end
+
     request = {
       parent: "projects/#{IdentityConfig.store.recaptcha_enterprise_project_id}",
       assessment: {
-        event: {
-          site_key: IdentityConfig.store.recaptcha_site_key,
-          token: recaptcha_token,
-        },
+        event:,
       },
     }
 
