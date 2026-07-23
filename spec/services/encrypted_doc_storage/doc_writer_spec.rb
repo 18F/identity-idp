@@ -105,10 +105,12 @@ RSpec.describe EncryptedDocStorage::DocWriter do
   end
 
   describe '#write_encrypted_attempt_events' do
+    # this first test is testing that the name is generated if it is not present
+    # For that reason, I am not using SecureRandom.uuid in the setup
     let(:file_path) { 'file_path' }
     let(:encrypted_attempt_events) { { events: 'encrypted_attempt_events' }.to_json }
     let(:uuid) { 'test-uuid' }
-    let(:full_path) { "attempt_events/#{file_path}/#{uuid}" }
+    let(:full_path) { "#{file_path}/#{uuid}" }
     before do
       allow(SecureRandom).to receive(:uuid).and_return(uuid)
     end
@@ -131,7 +133,7 @@ RSpec.describe EncryptedDocStorage::DocWriter do
 
     context 'when a file name is passed in' do
       let(:name) { 'test-name' }
-      let(:path) { "attempt_events/#{file_path}/#{name}" }
+      let(:path) { "#{file_path}/#{name}" }
       it 'writes the encrypted attempt events to storage with the provided name' do
         expect(SecureRandom).not_to receive(:uuid)
         expect_any_instance_of(EncryptedDocStorage::LocalStorage).to receive(
@@ -158,7 +160,7 @@ RSpec.describe EncryptedDocStorage::DocWriter do
       it 'uses S3' do
         expect_any_instance_of(EncryptedDocStorage::S3Storage).to receive(
           :write_attempt_events,
-        ).with(path: "attempt_events/#{path}", encrypted_attempt_events:)
+        ).with(path:, encrypted_attempt_events:)
 
         expect_any_instance_of(EncryptedDocStorage::LocalStorage).not_to receive(
           :write_attempt_events,
