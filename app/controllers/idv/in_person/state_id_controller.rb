@@ -117,7 +117,7 @@ module Idv
           pending.delete(:id_expiration)
         end
 
-        if Pii::CurrentAddressMatchesId.read(pending) == true
+        if Pii::CurrentAddressMatchesId.read(pending)
           pending[:address1] = flow_params[:identity_doc_address1]
           pending[:address2] = flow_params[:identity_doc_address2]
           pending[:city] = flow_params[:identity_doc_city]
