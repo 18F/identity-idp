@@ -185,6 +185,7 @@ module Idp
       state_id_number: '1111111111111',
       state_id_expiration: '2099-12-31',
       same_address_as_id: 'true',
+      ipp_current_address_matches_id: true,
     }.freeze
 
     MOCK_IPP_PASSPORT_APPLICANT = {
@@ -238,6 +239,7 @@ module Idp
 
     MOCK_IPP_APPLICANT_SAME_ADDRESS_AS_ID_FALSE = MOCK_IPP_APPLICANT.merge(
       same_address_as_id: 'false',
+      ipp_current_address_matches_id: false,
     ).freeze
 
     MOCK_IDV_APPLICANT_WITH_SSN = MOCK_IDV_APPLICANT.merge(
@@ -255,6 +257,7 @@ module Idp
       identity_doc_zipcode: '12345-4321',
       identity_doc_address_state: 'VA',
       same_address_as_id: 'false',
+      ipp_current_address_matches_id: false,
     ).freeze
     def self.mock_idv_applicant_state_id_address
       MOCK_IDV_APPLICANT_STATE_ID_ADDRESS.dup
@@ -268,6 +271,7 @@ module Idp
       identity_doc_zipcode: MOCK_IDV_APPLICANT_WITH_SSN[:zipcode],
       identity_doc_address_state: MOCK_IDV_APPLICANT_WITH_SSN[:state],
       same_address_as_id: 'true',
+      ipp_current_address_matches_id: true,
     ).freeze
 
     MOCK_IDV_APPLICANT_SAME_ADDRESS_AS_ID_WITH_NO_SSN = MOCK_IDV_APPLICANT.merge(
@@ -277,6 +281,7 @@ module Idp
       identity_doc_zipcode: MOCK_IDV_APPLICANT[:zipcode],
       identity_doc_address_state: MOCK_IDV_APPLICANT[:state],
       same_address_as_id: 'true',
+      ipp_current_address_matches_id: true,
     ).freeze
 
     MOCK_IDV_APPLICANT_WITH_PHONE = MOCK_IDV_APPLICANT_WITH_SSN.merge(phone: '12025551212').freeze

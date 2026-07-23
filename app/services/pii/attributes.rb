@@ -10,7 +10,12 @@ module Pii
   Attributes = RedactedStruct.new(
     :first_name, :middle_name, :last_name,
     # The user's residential address
-    :address1, :address2, :city, :state, :zipcode, :same_address_as_id,
+    :address1, :address2, :city, :state, :zipcode,
+    # Whether the user's current (residential) address matches the address on their ID.
+    # Set during the in-person proofing flows (IPP and proofing agent).
+    # `same_address_as_id` is the deprecated string ('true'/'false') predecessor of the boolean
+    # `ipp_current_address_matches_id`; both are retained during the rename migration (LG-16085).
+    :ipp_current_address_matches_id, :same_address_as_id,
     # The address on a user's state-issued ID, which may be different from their residential address
     :identity_doc_address1, :identity_doc_address2, :identity_doc_city, :identity_doc_zipcode,
     # the state that issued the id, which may be different than the state in the state id address

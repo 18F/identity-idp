@@ -27,6 +27,7 @@ module Idv
         extra: {
           pii_like_keypaths: [
             [:same_address_as_id],
+            [:ipp_current_address_matches_id],
             [:errors, :ssn],
             [:errors, :dob],
             [:error_details, :ssn],

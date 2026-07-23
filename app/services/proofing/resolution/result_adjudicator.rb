@@ -9,7 +9,7 @@ module Proofing
                   :ipp_enrollment_in_progress,
                   :residential_resolution_result,
                   :phone_result,
-                  :same_address_as_id,
+                  :ipp_current_address_matches_id,
                   :applicant_pii,
                   :precheck_phone_number
 
@@ -19,7 +19,7 @@ module Proofing
         phone_result:, # PhoneFinder PhoneRisk
         ipp_enrollment_in_progress:,
         device_profiling_result:, # ThreatMetrix
-        same_address_as_id:,
+        ipp_current_address_matches_id:,
         applicant_pii:,
         precheck_phone_number:,
         hybrid_mobile_device_profiling_result: nil # ThreatMetrix (Hybrid Mobile)
@@ -30,7 +30,7 @@ module Proofing
         @hybrid_mobile_device_profiling_result = hybrid_mobile_device_profiling_result
         @residential_resolution_result = residential_resolution_result
         @phone_result = phone_result
-        @same_address_as_id = same_address_as_id # this is a string, "true" or "false"
+        @ipp_current_address_matches_id = ipp_current_address_matches_id # boolean(nil outside IPP)
         @applicant_pii = applicant_pii
         @precheck_phone_number = precheck_phone_number
       end
@@ -138,8 +138,14 @@ module Proofing
       end
 
       def resolution_result_and_reason
+        # This branch is IPP-specific: only the in-person flow resolves a separate
+        # residential address (ResidentialAddressPlugin returns an automatic success
+        # when not in IPP). When the residential address differs from the ID address
+        # and its resolution fails, fail here rather than crediting the state-ID
+        # (document) address resolution. This does not apply to non-IPP flows because
+        # they never run a separate residential resolution.
         if ipp_enrollment_in_progress && !residential_resolution_result.success? &&
-           same_address_as_id == 'false'
+           ipp_current_address_matches_id == false
           [false, :fail_resolution_skip_state_id]
         elsif resolution_result.success?
           [true, :pass_resolution_and_state_id]
@@ -170,7 +176,7 @@ module Proofing
           identity_doc_address_state: applicant_pii[:identity_doc_address_state],
           state_id_jurisdiction: applicant_pii[:state_id_jurisdiction],
           state_id_number: redacted_state_id_number,
-          same_address_as_id: applicant_pii[:same_address_as_id],
+          ipp_current_address_matches_id: Pii::CurrentAddressMatchesId.read(applicant_pii),
         }.merge(phone_precheck_info, state_id_verified_attributes)
       end
 

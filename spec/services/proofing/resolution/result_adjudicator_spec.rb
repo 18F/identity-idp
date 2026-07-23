@@ -26,7 +26,7 @@ RSpec.describe Proofing::Resolution::ResultAdjudicator do
   end
 
   let(:ipp_enrollment_in_progress) { false }
-  let(:same_address_as_id) { 'false' }
+  let(:ipp_current_address_matches_id) { false }
 
   let(:device_profiling_success) { true }
   let(:device_profiling_exception) { nil }
@@ -61,7 +61,7 @@ RSpec.describe Proofing::Resolution::ResultAdjudicator do
       device_profiling_result: device_profiling_result,
       hybrid_mobile_device_profiling_result: hybrid_mobile_device_profiling_result,
       phone_result:,
-      same_address_as_id: same_address_as_id,
+      ipp_current_address_matches_id: ipp_current_address_matches_id,
       applicant_pii: applicant_pii,
       precheck_phone_number: phone_result.empty? ? nil : '202-555-5555',
     )
@@ -107,7 +107,7 @@ RSpec.describe Proofing::Resolution::ResultAdjudicator do
             identity_doc_address_state: nil,
             state_id_jurisdiction: 'ND',
             state_id_number: '#############',
-            same_address_as_id: nil,
+            ipp_current_address_matches_id: nil,
             phone: {
               area_code: '202',
               country_code: 'US',
@@ -134,7 +134,7 @@ RSpec.describe Proofing::Resolution::ResultAdjudicator do
             state_id_jurisdiction: 'ND',
             state_id_number: '#############',
             state_id_verified_attributes: %i[ssn dob],
-            same_address_as_id: 'true',
+            ipp_current_address_matches_id: true,
             phone: {
               area_code: '202',
               country_code: 'US',

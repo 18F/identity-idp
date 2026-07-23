@@ -29,7 +29,7 @@ module Proofing
           ipp_enrollment_in_progress:,
           timer:
         )
-          if same_address_as_id?(applicant_pii) && ipp_enrollment_in_progress
+          if ipp_current_address_matches_id?(applicant_pii) && ipp_enrollment_in_progress
             return residential_address_resolution_result
           end
 
@@ -59,8 +59,8 @@ module Proofing
           )
         end
 
-        def same_address_as_id?(applicant_pii)
-          applicant_pii[:same_address_as_id].to_s == 'true'
+        def ipp_current_address_matches_id?(applicant_pii)
+          Pii::CurrentAddressMatchesId.read(applicant_pii) == true
         end
 
         # Make a copy of pii with the user's state ID address overwriting the address keys

@@ -116,7 +116,7 @@ module Proofing
           resolution_result: state_id_address_resolution_result,
           residential_resolution_result: residential_address_resolution_result,
           phone_result:,
-          same_address_as_id: applicant_pii[:same_address_as_id],
+          ipp_current_address_matches_id: Pii::CurrentAddressMatchesId.read(applicant_pii),
           applicant_pii:,
           precheck_phone_number: phone_plugin.phone_number,
         )

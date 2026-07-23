@@ -130,8 +130,8 @@ module Proofing
             end
         end
 
-        def same_address_as_id?(applicant_pii)
-          applicant_pii[:same_address_as_id].to_s == 'true'
+        def ipp_current_address_matches_id?(applicant_pii)
+          Pii::CurrentAddressMatchesId.read(applicant_pii) == true
         end
 
         def should_proof_state_id?(
@@ -145,7 +145,7 @@ module Proofing
 
           # If the user is in in-person-proofing and they have changed their address then
           # they are not eligible to pass with additional verification
-          if !ipp_enrollment_in_progress || same_address_as_id?(applicant_pii)
+          if !ipp_enrollment_in_progress || ipp_current_address_matches_id?(applicant_pii)
             user_can_pass_after_state_id_check?(state_id_address_resolution_result:)
           else
             state_id_address_resolution_result.success?
