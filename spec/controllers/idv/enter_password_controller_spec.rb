@@ -423,14 +423,67 @@ RSpec.describe Idv::EnterPasswordController do
         expect(profile).to be_active
       end
 
-      it 'dispatches account verified alert' do
-        allow(UserAlerts::AlertUserAboutAccountVerified).to receive(:call)
+      context 'dispatches account verified alert' do
+        let(:user_phone_confirmation_session) do
+          Idv::PhoneConfirmationSession.new(
+            code: '123456',
+            phone: '+1 202-555-1212',
+            delivery_method: :sms,
+            user: user,
+            sent_at: Time.zone.now,
+          )
+        end
 
-        put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+        before do
+          subject.idv_session.user_phone_confirmation_session = user_phone_confirmation_session
+        end
 
-        expect(UserAlerts::AlertUserAboutAccountVerified).to have_received(:call).with(
-          profile: user.reload.active_profile,
-        )
+        it 'dispatches account verified alert with the phone confirmation session phone' do
+          allow(UserAlerts::AlertUserAboutAccountVerified).to receive(:call)
+
+          put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+
+          expect(UserAlerts::AlertUserAboutAccountVerified).to have_received(:call).with(
+            profile: user.reload.active_profile,
+            phone: user_phone_confirmation_session.phone,
+          )
+        end
+
+        context 'when the user completed verification via the hybrid/mobile flow' do
+          before do
+            subject.idv_session.address_verification_mechanism = nil
+            subject.idv_session.phone_for_mobile_flow = '+1 202-555-5555'
+          end
+
+          it 'dispatches account verified alert with the mobile flow phone' do
+            allow(UserAlerts::AlertUserAboutAccountVerified).to receive(:call)
+
+            put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+
+            expect(UserAlerts::AlertUserAboutAccountVerified).to have_received(:call).with(
+              profile: user.reload.active_profile,
+              phone: subject.idv_session.phone_for_mobile_flow,
+            )
+          end
+        end
+
+        context 'when there is no phone confirmation session or mobile flow phone' do
+          before do
+            subject.idv_session.address_verification_mechanism = nil
+            subject.idv_session.phone_for_mobile_flow = nil
+          end
+
+          it 'dispatches account verified alert with the default phone configuration phone' do
+            allow(UserAlerts::AlertUserAboutAccountVerified).to receive(:call)
+
+            put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+
+            expect(UserAlerts::AlertUserAboutAccountVerified).to have_received(:call).with(
+              profile: user.reload.active_profile,
+              phone: user.default_phone_configuration.formatted_phone,
+            )
+          end
+        end
       end
 
       it 'tracks the idv_enrollment_complete event' do
@@ -1223,6 +1276,16 @@ RSpec.describe Idv::EnterPasswordController do
         )
       end
 
+      let(:user_phone_confirmation_session) do
+        Idv::PhoneConfirmationSession.new(
+          code: '123456',
+          phone: '+1 202-555-1212',
+          delivery_method: :sms,
+          user: user,
+          sent_at: Time.zone.now,
+        )
+      end
+
       before do
         document_capture_session.store_agent_proofed_user(
           { pii: applicant, success: true, service_provider_issuer: sp.issuer },
@@ -1231,6 +1294,7 @@ RSpec.describe Idv::EnterPasswordController do
         subject.idv_session.proofing_agent_match = true
         subject.idv_session.vendor_phone_confirmation = true
         subject.idv_session.user_phone_confirmation = true
+        subject.idv_session.user_phone_confirmation_session = user_phone_confirmation_session
         session[:sp] = { issuer: sp.issuer }
       end
 
