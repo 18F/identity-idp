@@ -229,6 +229,7 @@ idv_attempt_window_in_hours: 6
 idv_available: true
 idv_contact_phone_number: (844) 555-5555
 idv_doc_auth_mdl_enabled_percent: 0
+idv_failure_to_proof_oidc_state_enabled: false
 idv_gpo_verification_enabled: true
 idv_max_attempts: 5
 idv_min_age_years: 13

@@ -93,6 +93,57 @@ RSpec.describe SpReturnUrlResolver do
       expect(failure_to_proof_url).to eq(configured_failure_to_proof_url)
     end
 
+    it 'does not add the OIDC state when the feature flag is disabled' do
+      configured_failure_to_proof_url = 'https://sp.gov/failure_to_proof'
+      state = '1234abcd'
+      sp = build(
+        :service_provider,
+        failure_to_proof_url: configured_failure_to_proof_url,
+      )
+      allow(FeatureManagement).to receive(:idv_failure_to_proof_oidc_state_enabled?)
+        .and_return(false)
+
+      resolver = described_class.new(service_provider: sp, oidc_state: state)
+      failure_to_proof_url = resolver.failure_to_proof_url
+
+      expect(failure_to_proof_url).to eq(configured_failure_to_proof_url)
+    end
+
+    it 'adds the OIDC state to a registered failure to proof url' do
+      configured_failure_to_proof_url = 'https://sp.gov/failure_to_proof'
+      state = '1234abcd'
+      sp = build(
+        :service_provider,
+        failure_to_proof_url: configured_failure_to_proof_url,
+      )
+      allow(FeatureManagement).to receive(:idv_failure_to_proof_oidc_state_enabled?)
+        .and_return(true)
+
+      resolver = described_class.new(service_provider: sp, oidc_state: state)
+      failure_to_proof_url = resolver.failure_to_proof_url
+
+      expect(failure_to_proof_url).to eq("#{configured_failure_to_proof_url}?state=#{state}")
+    end
+
+    it 'preserves existing params when adding OIDC state to a registered failure to proof url' do
+      configured_failure_to_proof_url = 'https://sp.gov/failure_to_proof?source=idv'
+      state = '1234abcd'
+      sp = build(
+        :service_provider,
+        failure_to_proof_url: configured_failure_to_proof_url,
+      )
+      allow(FeatureManagement).to receive(:idv_failure_to_proof_oidc_state_enabled?)
+        .and_return(true)
+
+      resolver = described_class.new(service_provider: sp, oidc_state: state)
+      failure_to_proof_url = resolver.failure_to_proof_url
+
+      expect(UriService.params(failure_to_proof_url)).to eq(
+        'source' => 'idv',
+        'state' => state,
+      )
+    end
+
     it 'returns the return to sp url if no failure to proof url is registered' do
       configured_return_to_sp_url = 'https://sp.gov/return_to_sp'
       sp = build(

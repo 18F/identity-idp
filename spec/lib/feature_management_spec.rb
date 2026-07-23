@@ -607,4 +607,29 @@ RSpec.describe 'FeatureManagement' do
       end
     end
   end
+
+  describe '#idv_failure_to_proof_oidc_state_enabled?' do
+    let(:enabled) { nil }
+
+    before do
+      allow(IdentityConfig.store).to receive(:idv_failure_to_proof_oidc_state_enabled)
+        .and_return(enabled)
+    end
+
+    context 'when idv_failure_to_proof_oidc_state_enabled is true' do
+      let(:enabled) { true }
+
+      it 'returns true' do
+        expect(FeatureManagement.idv_failure_to_proof_oidc_state_enabled?).to be(true)
+      end
+    end
+
+    context 'when idv_failure_to_proof_oidc_state_enabled is false' do
+      let(:enabled) { false }
+
+      it 'returns false' do
+        expect(FeatureManagement.idv_failure_to_proof_oidc_state_enabled?).to be(false)
+      end
+    end
+  end
 end

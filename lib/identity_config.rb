@@ -243,6 +243,7 @@ module IdentityConfig
     config.add(:idv_available, type: :boolean)
     config.add(:idv_contact_phone_number, type: :string)
     config.add(:idv_doc_auth_mdl_enabled_percent, type: :integer)
+    config.add(:idv_failure_to_proof_oidc_state_enabled, type: :boolean)
     config.add(:idv_gpo_verification_enabled, type: :boolean)
     config.add(:idv_max_attempts, type: :integer)
     config.add(:idv_min_age_years, type: :integer)
