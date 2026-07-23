@@ -29,9 +29,7 @@ module Pii
         zipcode: applicant['identity_doc_zipcode'],
         id_expiration: applicant['state_id_expiration'],
         id_number: applicant['state_id_number'],
-        current_address_same_as_id: Pii::CurrentAddressMatchesId.read(
-          applicant.symbolize_keys,
-        ),
+        current_address_same_as_id: applicant['ipp_current_address_matches_id'],
         document_type: applicant['asserted_id_type'],
       )
     end

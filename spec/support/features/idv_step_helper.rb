@@ -125,7 +125,7 @@ module IdvStepHelper
     # location page
     complete_location_step(user)
     # state ID page
-    fill_out_state_id_form_ok(same_address_as_id: false)
+    fill_out_state_id_form_ok(current_address_matches_id: false)
     click_idv_continue
   end
 
@@ -137,7 +137,7 @@ module IdvStepHelper
     # location page
     complete_location_step(user)
     # state ID page
-    fill_out_state_id_form_ok(same_address_as_id: true)
+    fill_out_state_id_form_ok(current_address_matches_id: true)
     click_idv_continue
   end
 

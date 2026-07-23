@@ -60,7 +60,7 @@ module Proofing
         end
 
         def ipp_current_address_matches_id?(applicant_pii)
-          Pii::CurrentAddressMatchesId.read(applicant_pii) == true
+          applicant_pii[:ipp_current_address_matches_id] == true
         end
 
         # Make a copy of pii with the user's state ID address overwriting the address keys

@@ -7,8 +7,13 @@ module Idv
 
     ATTRIBUTES = %i[first_name last_name dob identity_doc_address1 identity_doc_address2
                     identity_doc_city identity_doc_zipcode state_id_jurisdiction
-                    identity_doc_address_state state_id_number same_address_as_id
+                    identity_doc_address_state state_id_number ipp_current_address_matches_id
                     id_expiration asserted_id_type].freeze
+
+    # Params arrive as strings from the state ID radio ("true"/"false"); cast this
+    # attribute to a real boolean at the form boundary. `nil` is preserved (no `!!`)
+    # so the "unanswered" state remains distinct from an explicit `false`.
+    BOOLEAN_ATTRIBUTES = %i[ipp_current_address_matches_id].freeze
 
     attr_accessor(*ATTRIBUTES)
 
@@ -42,6 +47,8 @@ module Idv
     def consume_params(params)
       params.each do |key, value|
         raise_invalid_state_id_parameter_error(key) unless ATTRIBUTES.include?(key.to_sym)
+        value = ActiveModel::Type::Boolean.new.cast(value) if BOOLEAN_ATTRIBUTES
+          .include?(key.to_sym)
         send(:"#{key}=", value)
       end
     end

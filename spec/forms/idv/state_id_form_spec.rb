@@ -34,7 +34,7 @@ RSpec.describe Idv::StateIdForm do
       day: dob.mday,
     ).permit(:year, :month, :day)
   end
-  let(:same_address_as_id) { 'true' }
+  let(:ipp_current_address_matches_id) { 'true' }
   let(:first_name) { Faker::Name.first_name }
   let(:dob) { valid_dob }
   let(:id_expiration) { valid_exp }
@@ -49,7 +49,7 @@ RSpec.describe Idv::StateIdForm do
       identity_doc_city: Faker::Address.city,
       identity_doc_zipcode: Faker::Address.zip_code,
       identity_doc_address_state: Faker::Address.state_abbr,
-      same_address_as_id:,
+      ipp_current_address_matches_id:,
       state_id_jurisdiction: 'AL',
       state_id_number: Faker::IdNumber.valid,
       id_expiration:,
@@ -150,14 +150,14 @@ RSpec.describe Idv::StateIdForm do
       end
     end
 
-    context 'when the same_address_as_id field is missing' do
-      let(:same_address_as_id) { nil }
+    context 'when the ipp_current_address_matches_id field is missing' do
+      let(:ipp_current_address_matches_id) { nil }
 
       it 'returns an error' do
         expect(result.success?).to eq(false)
         expect(subject.errors.empty?).to be(false)
-        expect(subject.errors[:same_address_as_id]).to eq [
-          I18n.t('errors.messages.missing_field'),
+        expect(subject.errors[:ipp_current_address_matches_id]).to eq [
+          I18n.t('errors.messages.inclusion'),
         ]
       end
     end

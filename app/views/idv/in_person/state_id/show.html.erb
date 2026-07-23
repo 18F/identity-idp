@@ -244,7 +244,7 @@
   </div>
   <%= render ValidatedFieldComponent.new(
         as: :radio_buttons,
-        checked: pii[:same_address_as_id],
+        checked: pii[:ipp_current_address_matches_id],
         collection: [
           [t('in_person_proofing.form.state_id.current_address_matches_id_yes'), true],
           [t('in_person_proofing.form.state_id.current_address_matches_id_no'), false],
@@ -252,7 +252,7 @@
         form: f,
         label: t('in_person_proofing.form.state_id.current_address_matches_id'),
         legend_html: { class: 'h2' },
-        name: :same_address_as_id,
+        name: :ipp_current_address_matches_id,
         required: true,
         wrapper: :uswds_radio_buttons,
       ) %>
