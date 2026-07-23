@@ -199,6 +199,10 @@ class FeatureManagement
       outage_status.phone_finder_outage?
   end
 
+  def self.idv_failure_to_proof_oidc_state_enabled?
+    IdentityConfig.store.idv_failure_to_proof_oidc_state_enabled
+  end
+
   def self.doc_escrow_enabled?(service_provider)
     IdentityConfig.store.doc_escrow_enabled && (
       IdentityConfig.store.historical_attempts_api_enabled ||
