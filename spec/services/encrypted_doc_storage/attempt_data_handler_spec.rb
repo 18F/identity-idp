@@ -1,7 +1,7 @@
 require 'rails_helper'
 RSpec.describe EncryptedDocStorage::AttemptDataHandler do
   subject { EncryptedDocStorage::AttemptDataHandler.new }
-  let(:file_path) { 'attempts_events/file/path' }
+  let(:file_path) { 'file/path' }
   let(:file_name) { 'file_name' }
 
   describe '#retrieve_user_proofing_events' do
@@ -32,13 +32,14 @@ RSpec.describe EncryptedDocStorage::AttemptDataHandler do
 
   describe '#delete_all_user_attempt_data' do
     let(:local_storage) { double('LocalStorage') }
+    let(:user_uuid) { SecureRandom.uuid }
     before do
       allow(EncryptedDocStorage::LocalStorage).to receive(:new).and_return(local_storage)
     end
 
     it 'defaults to retrieving events from local storage' do
-      expect(local_storage).to receive(:delete_user_attempt_data).with(file_path:)
-      subject.delete_all_user_attempt_data(file_path:)
+      expect(local_storage).to receive(:delete_user_attempt_data).with(user_uuid:)
+      subject.delete_all_user_attempt_data(user_uuid:)
     end
 
     context 'when S3 is enabled' do
@@ -50,8 +51,8 @@ RSpec.describe EncryptedDocStorage::AttemptDataHandler do
       end
 
       it 'retrieves events from S3 storage' do
-        expect(s3_storage).to receive(:delete_user_attempt_data).with(file_path:)
-        subject.delete_all_user_attempt_data(file_path:)
+        expect(s3_storage).to receive(:delete_user_attempt_data).with(user_uuid:)
+        subject.delete_all_user_attempt_data(user_uuid:)
       end
     end
   end

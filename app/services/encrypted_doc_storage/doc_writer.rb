@@ -34,9 +34,12 @@ module EncryptedDocStorage
       )
     end
 
+    # @param [String] file_path "#{user_uuid}/#{profile.id}""
+    # @param [String] encrypted_attempt_events a bundle of events that have been encrypted
+    # @param [String] file_name profile.encrypted_attempts_file_reference
     def write_encrypted_attempt_events(file_path:, encrypted_attempt_events:, name:)
       name = name.presence || SecureRandom.uuid
-      path = "#{file_path}/#{name}"
+      path = "attempt_events/#{file_path}/#{name}"
 
       storage.write_attempt_events(path:, encrypted_attempt_events:)
 

@@ -52,7 +52,7 @@ RSpec.describe EncryptedDocStorage::S3Storage do
   end
   describe '#retrieve_attempt_object' do
     let(:file_name) { SecureRandom.uuid }
-    let(:file_path) { 'attempt_events/123abc' }
+    let(:file_path) { '123abc' }
     let(:encrypted_data) { SecureRandom.bytes(32) }
 
     before do
@@ -67,21 +67,22 @@ RSpec.describe EncryptedDocStorage::S3Storage do
 
       expect(stubbed_s3_client).to have_received(:get_object).with(
         bucket: IdentityConfig.store.encrypted_document_storage_s3_bucket,
-        key: "#{file_path}/#{file_name}",
+        key: "attempt_events/#{file_path}/#{file_name}",
       )
       expect(result).to eq(encrypted_data)
     end
   end
 
   describe '#delete_user_attempt_data' do
-    let(:file_path) { 'attempt_events/user-uuid' }
+    let(:user_uuid) { SecureRandom.uuid }
+    let(:file_path) { "attempt_events/#{user_uuid}" }
     it 'deletes the directory' do
       expect(stubbed_s3_client).to receive(:delete_object).with(
         bucket: IdentityConfig.store.encrypted_document_storage_s3_bucket,
         key: file_path,
       )
 
-      subject.delete_user_attempt_data(file_path:)
+      subject.delete_user_attempt_data(user_uuid:)
     end
   end
 end
