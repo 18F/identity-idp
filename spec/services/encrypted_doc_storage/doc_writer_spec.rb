@@ -108,7 +108,7 @@ RSpec.describe EncryptedDocStorage::DocWriter do
     let(:file_path) { 'file_path' }
     let(:encrypted_attempt_events) { { events: 'encrypted_attempt_events' }.to_json }
     let(:uuid) { 'test-uuid' }
-    let(:path) { "#{file_path}/#{uuid}" }
+    let(:full_path) { "attempt_events/#{file_path}/#{uuid}" }
     before do
       allow(SecureRandom).to receive(:uuid).and_return(uuid)
     end
@@ -118,7 +118,7 @@ RSpec.describe EncryptedDocStorage::DocWriter do
       expect_any_instance_of(EncryptedDocStorage::LocalStorage).to receive(
         :write_attempt_events,
       ).with(
-        path:,
+        path: full_path,
         encrypted_attempt_events:,
       )
 
@@ -131,7 +131,7 @@ RSpec.describe EncryptedDocStorage::DocWriter do
 
     context 'when a file name is passed in' do
       let(:name) { 'test-name' }
-      let(:path) { "#{file_path}/#{name}" }
+      let(:path) { "attempt_events/#{file_path}/#{name}" }
       it 'writes the encrypted attempt events to storage with the provided name' do
         expect(SecureRandom).not_to receive(:uuid)
         expect_any_instance_of(EncryptedDocStorage::LocalStorage).to receive(
@@ -150,6 +150,7 @@ RSpec.describe EncryptedDocStorage::DocWriter do
     end
 
     context 'when S3Storage is initalized' do
+      let(:path) { "#{file_path}/#{uuid}" }
       subject do
         EncryptedDocStorage::DocWriter.new(s3_enabled: true)
       end
@@ -157,10 +158,8 @@ RSpec.describe EncryptedDocStorage::DocWriter do
       it 'uses S3' do
         expect_any_instance_of(EncryptedDocStorage::S3Storage).to receive(
           :write_attempt_events,
-        ).with(
-          path:,
-          encrypted_attempt_events:,
-        )
+        ).with(path: "attempt_events/#{path}", encrypted_attempt_events:)
+
         expect_any_instance_of(EncryptedDocStorage::LocalStorage).not_to receive(
           :write_attempt_events,
         )

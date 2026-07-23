@@ -6,12 +6,15 @@ module EncryptedDocStorage
       @s3_enabled = s3_enabled
     end
 
+    # @param [String] file_path "#{user_uuid}/#{profile.id}""
+    # @param [String] file_name profile.encrypted_attempts_file_reference
     def retrieve_user_proofing_events(file_path:, file_name:)
       storage.retrieve_attempt_object(file_path:, file_name:)
     end
 
-    def delete_all_user_attempt_data(file_path:)
-      storage.delete_user_attempt_data(file_path:)
+    # @param [String] user_uuid
+    def delete_all_user_attempt_data(user_uuid:)
+      storage.delete_user_attempt_data(user_uuid:)
     end
 
     private

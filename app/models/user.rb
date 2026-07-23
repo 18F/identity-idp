@@ -605,7 +605,7 @@ class User < ApplicationRecord
   private
 
   def delete_attempt_events
-    attempt_data_handler.delete_all_user_attempt_data(file_path: "attempt_events/#{uuid}")
+    attempt_data_handler.delete_all_user_attempt_data(user_uuid: uuid)
   end
 
   def attempt_data_handler

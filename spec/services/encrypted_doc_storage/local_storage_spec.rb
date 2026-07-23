@@ -9,7 +9,11 @@ RSpec.describe EncryptedDocStorage::LocalStorage do
 
   let(:name) { SecureRandom.uuid }
   let(:local_img_path) { Rails.root.join('tmp', 'encrypted_doc_storage', name) }
-  let(:attempts_path) { Rails.root.join('tmp', 'encrypted_attempt_events', name) }
+
+  let(:user_uuid) { SecureRandom.uuid }
+  let(:attempts_path) do
+    Rails.root.join('tmp', 'encrypted_attempt_events', 'attempt_events', user_uuid)
+  end
   subject { EncryptedDocStorage::LocalStorage.new }
 
   describe '#write_image' do
@@ -31,7 +35,7 @@ RSpec.describe EncryptedDocStorage::LocalStorage do
     it 'writes the attempt events to the disk' do
       encrypted_attempt_events = SecureRandom.bytes(32)
 
-      subject.write_attempt_events(path: name, encrypted_attempt_events:)
+      subject.write_attempt_events(path: "attempt_events/#{user_uuid}", encrypted_attempt_events:)
 
       f = File.new(attempts_path, 'rb')
       result = f.read
@@ -45,14 +49,13 @@ RSpec.describe EncryptedDocStorage::LocalStorage do
   end
 
   describe '#retrieve' do
-    let(:path) { 'attempts' }
+    let(:path) { 'attempt_events' }
     let(:encrypted_attempt_events) { 'abcd1245' }
-    let(:attempts_path) { Rails.root.join('tmp', 'encrypted_attempt_events', path, name) }
     it 'retrieves the attempt events from the disk' do
       # Write the file first
-      subject.write_attempt_events(path: path + '/' + name, encrypted_attempt_events:)
+      subject.write_attempt_events(path: "#{path}/#{user_uuid}", encrypted_attempt_events:)
 
-      result = subject.retrieve_attempt_object(file_path: path, file_name: name)
+      result = subject.retrieve_attempt_object(file_path: path, file_name: user_uuid)
 
       # cleanup
       File.delete(attempts_path)
@@ -63,21 +66,21 @@ RSpec.describe EncryptedDocStorage::LocalStorage do
 
   describe '#delete' do
     let(:name) { SecureRandom.uuid }
-    let(:path) { 'user-uuid' }
+    let(:user_uuid) { 'user-uuid' }
     let(:encrypted_attempt_events) { 'abcd1245' }
-    let(:attempts_path) { Rails.root.join('tmp', 'encrypted_attempt_events', path) }
+    let(:path) { "attempt_events/#{user_uuid}" }
 
     before do
       allow(FileUtils).to receive(:rm_rf).and_call_original
     end
 
     it 'deletes the directory' do
-      subject.write_attempt_events(path: path + '/' + name, encrypted_attempt_events:)
+      subject.write_attempt_events(path: "#{path}/#{name}", encrypted_attempt_events:)
 
       expect(subject.retrieve_attempt_object(file_path: path, file_name: name))
         .to eq(encrypted_attempt_events)
 
-      subject.delete_user_attempt_data(file_path: path)
+      subject.delete_user_attempt_data(user_uuid:)
 
       expect(FileUtils).to have_received(:rm_rf).with(attempts_path)
       expect(subject.retrieve_attempt_object(file_path: path, file_name: name)).to be nil
@@ -85,7 +88,7 @@ RSpec.describe EncryptedDocStorage::LocalStorage do
 
     describe 'if there is no directory' do
       it 'does not attempt to delete' do
-        subject.delete_user_attempt_data(file_path: path)
+        subject.delete_user_attempt_data(user_uuid:)
 
         expect(FileUtils).to_not have_received(:rm_rf)
       end
