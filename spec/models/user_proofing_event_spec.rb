@@ -72,7 +72,7 @@ RSpec.describe UserProofingEvent, type: :model do
 
     it 'encrypts and writes the events to storage' do
       expect(doc_writer).to receive(:write_encrypted_attempt_events).with(
-        file_path: "attempt_events/#{profile.user.uuid}/#{profile.id}",
+        file_path: "#{profile.user.uuid}/#{profile.id}",
         encrypted_attempt_events: instance_of(String),
         name: 'test-file-reference',
       )
@@ -93,7 +93,7 @@ RSpec.describe UserProofingEvent, type: :model do
       expect(user_proofing_event.decrypt_events(password:)).to eq(attempt_events.to_json)
 
       expect(doc_retriever).to have_received(:retrieve_user_proofing_events).with(
-        file_path: "attempt_events/#{profile.user.uuid}/#{profile.id}",
+        file_path: "#{profile.user.uuid}/#{profile.id}",
         file_name: 'test-file-reference',
       )
     end
@@ -107,7 +107,7 @@ RSpec.describe UserProofingEvent, type: :model do
         expect(user_proofing_event.decrypt_events(password:)).to be nil
 
         expect(doc_retriever).to have_received(:retrieve_user_proofing_events).with(
-          file_path: "attempt_events/#{profile.user.uuid}/#{profile.id}",
+          file_path: "#{profile.user.uuid}/#{profile.id}",
           file_name: 'test-file-reference',
         )
       end
@@ -127,7 +127,7 @@ RSpec.describe UserProofingEvent, type: :model do
 
     it 'retrieves and decrypts the events from storage' do
       expect(doc_retriever).to receive(:retrieve_user_proofing_events).with(
-        file_path: "attempt_events/#{profile.user.uuid}/#{profile.id}",
+        file_path: "#{profile.user.uuid}/#{profile.id}",
         file_name: 'test-file-reference',
       ).and_return(stored_event_data)
 
@@ -135,7 +135,7 @@ RSpec.describe UserProofingEvent, type: :model do
       # the password_encrypted_events don't change while the personal_key_encrypted
       # events do
       expect(doc_writer).to receive(:write_encrypted_attempt_events).with(
-        file_path: "attempt_events/#{profile.user.uuid}/#{profile.id}",
+        file_path: "#{profile.user.uuid}/#{profile.id}",
         encrypted_attempt_events: satisfy do |arg|
           JSON.parse(arg)['password_encrypted_events'] == password_encrypted_events &&
           JSON.parse(arg)['personal_key_encrypted_events'] != personal_key_encrypted_events
