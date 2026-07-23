@@ -10,13 +10,15 @@ module EncryptedDocStorage
       )
     end
 
-    # @param [String] file_path "attempt_events/#{user_uuid}/#{profile.id}/#{file.uuid}"
+    # @param [String] file_path "#{user_uuid}/#{profile.id}/#{file.uuid}"
     # @param [String] encrypted_attempt_events a bundle of events that have been encrypted
     def write_attempt_events(path:, encrypted_attempt_events:)
+      key = "attempt_events/#{path}"
+
       s3_client.put_object(
         bucket:,
         body: encrypted_attempt_events,
-        key: path,
+        key:,
       )
     end
 
