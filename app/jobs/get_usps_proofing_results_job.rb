@@ -499,7 +499,7 @@ class GetUspsProofingResultsJob < ApplicationJob
       end
 
       # send SMS and email
-      send_account_verified_sms_notification(enrollment)
+      send_account_verified_sms_notification(enrollment: enrollment)
       send_verified_email(enrollment:, visited_location_name: response['proofingPostOffice'])
       analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_email_initiated(
         **email_analytics_attributes(enrollment),
@@ -688,7 +688,7 @@ class GetUspsProofingResultsJob < ApplicationJob
     end
   end
 
-  def send_account_verified_sms_notification(enrollment)
+  def send_account_verified_sms_notification(enrollment:)
     phone = MfaContext.new(enrollment.user).phone_configuration&.phone
     return if phone.blank?
 

@@ -10,7 +10,7 @@ module UserAlerts
         ).deliver_now_or_later
       end
 
-      if profile.enhanced?
+      if profile.enhanced? && phone.present?
         Telephony.send_proofing_completion_confirmation(
           to: phone,
           country_code: Phonelib.parse(phone).country,

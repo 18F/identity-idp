@@ -2106,6 +2106,41 @@ RSpec.describe GetUspsProofingResultsJob, freeze_time: true do
                     end
                   end
 
+                  context 'when proofing passed and the user has no phone configuration' do
+                    let(:enrollment) do
+                      create(
+                        :in_person_enrollment,
+                        :pending,
+                        :with_notification_phone_configuration,
+                        user: create(:user),
+                      )
+                    end
+
+                    before do
+                      stub_request_proofing_results(status_code: 200, body: response_body)
+                      allow(analytics).to receive(
+                        :idv_in_person_usps_proofing_results_job_enrollment_updated,
+                      )
+                      allow(analytics).to receive(
+                        :idv_in_person_usps_proofing_results_job_email_initiated,
+                      )
+                      allow(user_mailer).to receive(:in_person_verified).and_return(mail_deliverer)
+                      allow(attempts_api_tracker).to receive(:idv_enrollment_complete)
+                      allow(Telephony).to receive(:send_proofing_completion_confirmation)
+                      subject.perform(current_time)
+                    end
+
+                    it 'does not send an account verified sms notification' do
+                      expect(Telephony).not_to have_received(
+                        :send_proofing_completion_confirmation,
+                      )
+                    end
+
+                    it "still activates the enrollment's profile" do
+                      expect(enrollment.reload.profile).to have_attributes(active: true)
+                    end
+                  end
+
                   context 'when proofing passed with an unsupported id type' do
                     before do
                       response_body[:primaryIdType] = 'Unsupported'
@@ -2847,6 +2882,7 @@ RSpec.describe GetUspsProofingResultsJob, freeze_time: true do
                     :idv_in_person_usps_proofing_results_job_email_initiated,
                   )
                   allow(user_mailer).to receive(:in_person_verified).and_return(mail_deliverer)
+                  allow(Telephony).to receive(:send_proofing_completion_confirmation)
                   subject.perform(current_time)
                 end
 
@@ -2854,6 +2890,18 @@ RSpec.describe GetUspsProofingResultsJob, freeze_time: true do
                   expect(send_proofing_notification_job).not_to have_received(
                     :perform_later,
                   ).with(enrollment.id)
+                end
+
+                it 'still sends the account verified sms notification' do
+                  expect(Telephony).to have_received(
+                    :send_proofing_completion_confirmation,
+                  ).with(
+                    to: enrollment.user.default_phone_configuration.phone,
+                    country_code: Phonelib.parse(
+                      enrollment.user.default_phone_configuration.phone,
+                    ).country,
+                    sp_or_app_name: APP_NAME,
+                  )
                 end
               end
             end

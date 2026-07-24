@@ -118,6 +118,14 @@ RSpec.describe UserAlerts::AlertUserAboutAccountVerified do
             )
           end
         end
+
+        context 'when no phone is given' do
+          it 'does not send an SMS message' do
+            described_class.call(profile: profile)
+
+            expect(Telephony).to_not have_received(:send_proofing_completion_confirmation)
+          end
+        end
       end
 
       context 'when the profile is not enhanced' do
