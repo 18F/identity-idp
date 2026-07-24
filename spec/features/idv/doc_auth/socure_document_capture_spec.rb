@@ -720,29 +720,30 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
               expect(page).to have_current_path(idv_socure_document_capture_url)
               expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
 
-              # @mrz_stub = stub_request(:post, IdentityConfig.store.dos_passport_mrz_endpoint)
-              #   .to_return_json({ status: 200, body: { response: 'NO' } })
-              # click_idv_continue
-              # socure_docv_upload_documents(
-              #   docv_transaction_token: @docv_transaction_token,
-              # )
-              # visit idv_socure_document_capture_update_path
+              @mrz_stub = stub_request(:post, IdentityConfig.store.dos_passport_mrz_endpoint)
+                .with(body: hash_including(category: 'card'))
+                .to_return_json({ status: 200, body: { response: 'NO' } })
+              click_idv_continue
+              socure_docv_upload_documents(
+                docv_transaction_token: @docv_transaction_token,
+              )
+              visit idv_socure_document_capture_update_path
 
-              # expect(page).to have_current_path(
-              #   idv_socure_document_capture_errors_url(
-              #     transaction_token: @docv_transaction_token,
-              #   ),
-              # )
+              expect(page).to have_current_path(
+                idv_socure_document_capture_errors_url(
+                  transaction_token: @docv_transaction_token,
+                ),
+              )
 
-              # expect(page).to have_content(t('doc_auth.errors.rate_limited_heading'))
-              # expect(page).to have_content(t('doc_auth.info.review_passport'))
+              expect(page).to have_content(t('doc_auth.errors.rate_limited_heading'))
+              expect(page).to have_content(t('doc_auth.info.review_passport'))
 
-              # click_on t('idv.failure.button.warning')
+              click_on t('idv.failure.button.warning')
 
-              # remove_request_stub(@mrz_stub)
+              remove_request_stub(@mrz_stub)
 
-              # expect(page).to have_current_path(idv_socure_document_capture_url)
-              # expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
+              expect(page).to have_current_path(idv_socure_document_capture_url)
+              expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
 
               stub_request(:post, IdentityConfig.store.dos_passport_mrz_endpoint)
                 .with(body: hash_including(category: 'card'))
