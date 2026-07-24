@@ -400,6 +400,8 @@ RSpec.describe Idv::ApiImageUploadForm do
             ).and_return(mrz_request)
             allow(mrz_request).to receive(:fetch).and_return(mrz_response)
             form.submit
+            allow(mrz_request).to receieve(:category)
+              .and_return(pii[:document_type_received] == 'passport_card' ? :card : :book)
           end
 
           it 'stores a successful response in the document_capture_session' do
