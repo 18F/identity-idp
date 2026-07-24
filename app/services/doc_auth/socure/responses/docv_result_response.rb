@@ -143,7 +143,7 @@ module DocAuth
         end
 
         def read_pii
-          if document_type_received == Idp::Constants::DocumentTypes::PASSPORT
+          if Idp::Constants::DocumentTypes::PASSPORT_TYPES.include? document_type_received
             return Pii::Passport.new(
               first_name: get_data(DATA_PATHS[:first_name]),
               middle_name: get_data(DATA_PATHS[:middle_name]),
@@ -281,6 +281,8 @@ module DocAuth
           case document_type_received
           when Idp::Constants::DocumentTypes::PASSPORT
             document_capture_session.passport_requested?
+          when Idp::Constants::DocumentTypes::PASSPORT_CARD
+            document_capture_session.passport_card_requested?
           when Idp::Constants::DocumentTypes::MDL
             document_capture_session.mdl_requested?
           when Idp::Constants::DocumentTypes::STATE_ID_CARD, Idp::Constants::DocumentTypes::DRIVERS_LICENSE
