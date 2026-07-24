@@ -559,7 +559,7 @@ RSpec.describe DocumentCaptureSession do
     end
   end
 
-  describe '#.request_passport_book!' do
+  describe '#request_passport_book!' do
     it 'sets the correct attributes for a requested passport' do
       record = build(
         :document_capture_session,
