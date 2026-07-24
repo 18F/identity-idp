@@ -2004,6 +2004,7 @@ RSpec.describe GetUspsProofingResultsJob, freeze_time: true do
                       )
                       allow(user_mailer).to receive(:in_person_verified).and_return(mail_deliverer)
                       allow(attempts_api_tracker).to receive(:idv_enrollment_complete)
+                      allow(Telephony).to receive(:send_proofing_completion_confirmation)
                       subject.perform(current_time)
                     end
 
@@ -2056,10 +2057,16 @@ RSpec.describe GetUspsProofingResultsJob, freeze_time: true do
                       )
                     end
 
-                    it 'sends a proofing sms notification' do
-                      expect(send_proofing_notification_job).to have_received(
-                        :perform_later,
-                      ).with(enrollment.id)
+                    it 'sends an account verified sms notification' do
+                      expect(Telephony).to have_received(
+                        :send_proofing_completion_confirmation,
+                      ).with(
+                        to: enrollment.user.default_phone_configuration.phone,
+                        country_code: Phonelib.parse(
+                          enrollment.user.default_phone_configuration.phone,
+                        ).country,
+                        sp_or_app_name: APP_NAME,
+                      )
                     end
 
                     it 'sends the in person verified email with a delay' do
@@ -2232,6 +2239,7 @@ RSpec.describe GetUspsProofingResultsJob, freeze_time: true do
                       )
                       allow(user_mailer).to receive(:in_person_verified).and_return(mail_deliverer)
                       allow(attempts_api_tracker).to receive(:idv_enrollment_complete)
+                      allow(Telephony).to receive(:send_proofing_completion_confirmation)
                       subject.perform(current_time)
                     end
 
@@ -2284,10 +2292,16 @@ RSpec.describe GetUspsProofingResultsJob, freeze_time: true do
                       )
                     end
 
-                    it 'sends a proofing sms notification' do
-                      expect(send_proofing_notification_job).to have_received(
-                        :perform_later,
-                      ).with(enrollment.id)
+                    it 'sends an account verified sms notification' do
+                      expect(Telephony).to have_received(
+                        :send_proofing_completion_confirmation,
+                      ).with(
+                        to: enrollment.user.default_phone_configuration.phone,
+                        country_code: Phonelib.parse(
+                          enrollment.user.default_phone_configuration.phone,
+                        ).country,
+                        sp_or_app_name: APP_NAME,
+                      )
                     end
 
                     it 'sends the in person verified email with delay' do
@@ -2338,6 +2352,7 @@ RSpec.describe GetUspsProofingResultsJob, freeze_time: true do
                       )
                       allow(user_mailer).to receive(:in_person_verified).and_return(mail_deliverer)
                       allow(attempts_api_tracker).to receive(:idv_enrollment_complete)
+                      allow(Telephony).to receive(:send_proofing_completion_confirmation)
                       subject.perform(current_time)
                     end
 
@@ -2390,10 +2405,16 @@ RSpec.describe GetUspsProofingResultsJob, freeze_time: true do
                       )
                     end
 
-                    it 'sends a proofing sms notification' do
-                      expect(send_proofing_notification_job).to have_received(
-                        :perform_later,
-                      ).with(enrollment.id)
+                    it 'sends an account verified sms notification' do
+                      expect(Telephony).to have_received(
+                        :send_proofing_completion_confirmation,
+                      ).with(
+                        to: enrollment.user.default_phone_configuration.phone,
+                        country_code: Phonelib.parse(
+                          enrollment.user.default_phone_configuration.phone,
+                        ).country,
+                        sp_or_app_name: APP_NAME,
+                      )
                     end
 
                     it 'sends the in person verified email' do
@@ -2445,6 +2466,7 @@ RSpec.describe GetUspsProofingResultsJob, freeze_time: true do
                       )
                       allow(user_mailer).to receive(:in_person_verified).and_return(mail_deliverer)
                       allow(attempts_api_tracker).to receive(:idv_enrollment_complete)
+                      allow(Telephony).to receive(:send_proofing_completion_confirmation)
                       subject.perform(current_time)
                     end
 
@@ -2497,10 +2519,16 @@ RSpec.describe GetUspsProofingResultsJob, freeze_time: true do
                       )
                     end
 
-                    it 'sends a proofing sms notification' do
-                      expect(send_proofing_notification_job).to have_received(
-                        :perform_later,
-                      ).with(enrollment.id)
+                    it 'sends an account verified sms notification' do
+                      expect(Telephony).to have_received(
+                        :send_proofing_completion_confirmation,
+                      ).with(
+                        to: enrollment.user.default_phone_configuration.phone,
+                        country_code: Phonelib.parse(
+                          enrollment.user.default_phone_configuration.phone,
+                        ).country,
+                        sp_or_app_name: APP_NAME,
+                      )
                     end
 
                     it 'sends the in person verified email' do
