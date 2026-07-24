@@ -6019,7 +6019,7 @@ module AnalyticsEvents
   # @param [Boolean] liveness_checking_required Whether or not the selfie is required
   # @param [Boolean] liveness_enabled Whether or not the selfie result is included in response
   # @param [String] vendor which 2rd party we are using for doc auth
-  # @param [Hash] document_type_requested type of socument submitted (Drivers Licenese, etc.)
+  # @param [Hash] document_type document type requested  (Drivers Licenese, etc.)
   # @param [String] socure_status Socure's status value for internal errors on their side.
   # @param [String] socure_msg Socure's status message for interal errors on their side.
   # @param [String] use_case_key name of requested DocV flow
@@ -6043,7 +6043,7 @@ module AnalyticsEvents
     reference_id: nil,
     customer_user_id: nil,
     liveness_enabled: nil,
-    document_type_requested: nil,
+    document_type: nil,
     docv_transaction_token: nil,
     flow_path: nil,
     socure_status: nil,
