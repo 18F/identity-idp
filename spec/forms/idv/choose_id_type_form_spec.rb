@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe Idv::ChooseIdTypeForm do
   let(:passport_cards_enabled) { true }
-  let(:subject) { Idv::ChooseIdTypeForm.new(passport_cards_enabled: ) }
+  let(:subject) { Idv::ChooseIdTypeForm.new(passport_cards_enabled:) }
 
   describe '#submit' do
     allowed_id_types =

@@ -1019,8 +1019,10 @@ RSpec.describe SocureDocvResultsJob do
                           expect(document_capture_session_result.success).to eq(true)
                           expect(document_capture_session_result.pii[:mrz]).to eq(mrz)
                           expect(document_capture_session_result.doc_auth_success).to eq(true)
-                          expect(document_capture_session_result.selfie_status).to eq(:not_processed)
-                          expect(document_capture_session_result.attention_with_barcode).to eq(false)
+                          expect(document_capture_session_result.selfie_status)
+                            .to eq(:not_processed)
+                          expect(document_capture_session_result.attention_with_barcode)
+                            .to eq(false)
                           expect(document_capture_session_result.mrz_status).to eq(:pass)
                           expect(document_capture_session_result.aamva_status).to eq(:not_processed)
                         end
