@@ -14,12 +14,14 @@ module Idv
 
     def set_document_type_requested
       case chosen_id_type
-      when *Idp::Constants::DocumentTypes::PASSPORT_TYPES
-        unless document_capture_session.passport_requested? # needed?
-          document_capture_session.request_passport!(
-            passport_cards_supported: passport_cards_supported?,
-          )
-        end
+      when Idp::Constants::DocumentTypes::PASSPORT
+        document_capture_session.request_passport_book!(
+          passport_cards_supported: passport_cards_supported?, # why?
+        )
+      when Idp::Constants::DocumentTypes::PASSPORT_CARD
+        document_capture_session.request_passport_card!(
+          passport_cards_supported: passport_cards_supported?,
+        )
       when Idp::Constants::DocumentTypes::MDL
         document_capture_session.request_mdl!
       when *Idp::Constants::DocumentTypes::SUPPORTED_STATE_ID_TYPES
@@ -33,7 +35,7 @@ module Idv
 
     def selected_id_type
       return :state_id_card if document_capture_session.state_id_requested?
-      return :passport if document_capture_session.passport_requested?
+      return :passport if document_capture_session.passport_book_requested?
       return :mobile_drivers_license if document_capture_session.mdl_requested?
     end
 
@@ -65,6 +67,12 @@ module Idv
                             :state_id_card
                           else
                             :passport
+                          end
+                        when Idp::Constants::DocumentTypes::PASSPORT_CARD
+                          if disable_passports?
+                            :state_id_card
+                          else
+                            :passport_card
                           end
                         else
                           :state_id_card

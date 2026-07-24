@@ -35,11 +35,12 @@ module Idv
     private
 
     def allowed_types
-      types = Idp::Constants::DocumentTypes::SUPPORTED_PASSPORT_TYPES +
-              Idp::Constants::DocumentTypes::SUPPORTED_STATE_ID_TYPES
-      types += [Idp::Constants::DocumentTypes::PASSPORT_CARD] if @passport_cards_enabled
-      types += [Idp::Constants::DocumentTypes::MDL] if @mdl_enabled
-      types
+      @allowed_types ||= [
+        *Idp::Constants::DocumentTypes::SUPPORTED_STATE_ID_TYPES,
+        Idp::Constants::DocumentTypes::PASSPORT,
+        @passport_cards_enabled ? Idp::Constants::DocumentTypes::PASSPORT_CARD : nil,
+        @mdl_enabled ? Idp::Constants::DocumentTypes::MDL : nil,
+      ].compact
     end
   end
 end
