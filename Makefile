@@ -115,7 +115,7 @@ audit: ## Checks packages for vulnerabilities
 	@echo "--- bundler-audit ---"
 	bundle exec bundler-audit check --update
 	@echo "--- npm audit ---"
-	npm audit --audit-level=high
+	npm audit --audit-level=high --omit=dev
 
 lint_erb: ## Lints ERB files
 	bundle exec erb_lint app/views app/components
