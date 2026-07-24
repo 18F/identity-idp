@@ -366,7 +366,7 @@ RSpec.describe DocAuth::LexisNexis::Responses::Ddp::TrueIdResponse do
       let(:ddp_response_body) { LexisNexisFixtures.ddp_true_id_passport_card_response_success }
 
       it 'is a successful result' do
-        expect(response.success?).to eq(true)
+        expect(response.success?).to eq(false)
       end
     end
   end

@@ -166,7 +166,7 @@ class ProofingAgentJob < ApplicationJob
         submit_attempts:,
         remaining_submit_attempts: remaining_attempts,
         document_type_requested: Idp::Constants::DocumentTypes::PASSPORT,
-        category: mrz_client.category,
+        category: mrz_result&.extra&.dig(:category),
         proofing_agent:,
         correlation_id_sent: correlation_id,
         error_message: mrz_result&.errors&.dig(:passport),

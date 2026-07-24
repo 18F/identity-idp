@@ -3,7 +3,7 @@
 module DocAuth
   module Mock
     class DosPassportApiClient
-      def initialize(mock_client_response = nil)
+      def initialize(mock_client_response = nil, id_type: nil)
         @mock_client_response = mock_client_response
       end
 
@@ -23,6 +23,13 @@ module DocAuth
         else
           DocAuth::Response.new(success: true, extra:)
         end
+      end
+
+      def category
+        if id_type == Idp::Constants::DocumentTypes::PASSPORT_CARD
+          return :card
+        end
+        :book
       end
 
       private
