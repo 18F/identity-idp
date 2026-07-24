@@ -586,7 +586,7 @@ doc_auth.errors.sharpness.top_msg: Nous n’avons pas pu lire votre pièce d’i
 doc_auth.errors.sharpness.top_msg_plural: Nous n’avons pas pu lire votre pièce d’identité. Il se peut que vos photos soient trop floues ou trop sombres. Essayez de prendre de nouvelles photos dans un endroit bien éclairé.
 doc_auth.errors.state_id_verification: Les informations figurant sur votre pièce d’identité n’ont pas pu être vérifiées auprès de votre État. Vous devrez peut-être faire vérifier votre pièce d’identité en personne, ou vous pouvez réessayer avec une autre pièce d’identité.
 doc_auth.errors.unaccepted_id_type: Nous n’acceptons pas de passeports, de cartes d’identité militaires, de pièces d’identité papier ou provisoires. Vous pouvez uniquement utiliser un permis de conduire ou une pièce d’identité délivré par un État ou un territoire des États-Unis.
-doc_auth.errors.underage: Vous devez être âgé de 13 ans au moins pour utiliser %{app_name}. Si vous avez 13 ans ou plus, réessayez et assurez-vous que votre date de naissance est bien visible.
+doc_auth.errors.underage: Vous devez être âgé de %{min_age} ans au moins pour utiliser %{app_name}. Si vous avez %{min_age} ans ou plus, réessayez et assurez-vous que votre date de naissance est bien visible.
 doc_auth.errors.unreadable_id: Prenez vos photos dans un endroit bien éclairé sans ombre ou reflet. Veillez à ce que tous les renseignements figurant sur votre pièce d’identité soient nets et que l’ensemble de la pièce soit visible à l’intérieur du cadre.
 doc_auth.errors.upload_error: Désolé, il y a eu un problème de notre côté.
 doc_auth.errors.verify_drivers_license_heading: Nous n’avons pas pu vérifier votre permis de conduire ou carte d’identité d’un État
@@ -1406,7 +1406,7 @@ in_person_proofing.form.state_id.identity_doc_address_state: État
 in_person_proofing.form.state_id.identity_doc_address_state_prompt: '- Sélectionnez -'
 in_person_proofing.form.state_id.last_name: Nom de famille
 in_person_proofing.form.state_id.memorable_date.errors.date_of_birth.missing_month_day_year: Saisissez une date de naissance
-in_person_proofing.form.state_id.memorable_date.errors.date_of_birth.range_min_age: Vous devez avoir plus de 13 ans pour utiliser %{app_name}
+in_person_proofing.form.state_id.memorable_date.errors.date_of_birth.range_min_age: Vous devez avoir plus de %{min_age} ans pour utiliser %{app_name}
 in_person_proofing.form.state_id.memorable_date.errors.date_of_birth.range_overflow: Saisissez une date dans le passé
 in_person_proofing.form.state_id.memorable_date.errors.expiration_date.expired: Vous ne pouvez pas utiliser une pièce d’identité expirée.
 in_person_proofing.form.state_id.same_address_as_id: Vivez-vous actuellement à l’adresse indiquée sur votre pièce d’identité émise par l’État ?

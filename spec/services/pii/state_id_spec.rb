@@ -12,7 +12,10 @@ RSpec.describe Pii::StateId do
       city: Faker::Address.city,
       state: Faker::Address.state_abbr,
       zipcode: Faker::Address.zip_code,
-      dob: Faker::Date.between(from: 90.years.ago, to: 13.years.ago).strftime('%Y-%m-%d'),
+      dob: Faker::Date.between(
+        from: 90.years.ago,
+        to: IdentityConfig.store.idv_min_age_years.years.ago,
+      ).strftime('%Y-%m-%d'),
       sex: Faker::Gender.short_binary_type,
       height: 72,
       weight: nil,

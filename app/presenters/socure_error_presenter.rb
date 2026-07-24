@@ -175,7 +175,7 @@ class SocureErrorPresenter
       t('doc_auth.info.review_passport')
     else
       if remapped_error(error_code) == 'underage' # special handling because it says 'Login.gov'
-        I18n.t('doc_auth.errors.underage', app_name: APP_NAME)
+        I18n.t('doc_auth.errors.underage', app_name: APP_NAME, min_age: IdentityConfig.store.idv_min_age_years)
       else
         # i18n-tasks-use t('doc_auth.errors.unreadable_id')
         # i18n-tasks-use t('doc_auth.errors.unaccepted_id_type')

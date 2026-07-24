@@ -217,7 +217,7 @@ RSpec.describe SocureErrorPresenter do
 
       it 'returns the underage message with app name' do
         expect(presenter.body_text).to eq(
-          I18n.t('doc_auth.errors.underage', app_name: APP_NAME),
+          I18n.t('doc_auth.errors.underage', app_name: APP_NAME, min_age: IdentityConfig.store.idv_min_age_years),
         )
       end
     end

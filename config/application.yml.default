@@ -231,7 +231,7 @@ idv_contact_phone_number: (844) 555-5555
 idv_doc_auth_mdl_enabled_percent: 0
 idv_gpo_verification_enabled: true
 idv_max_attempts: 5
-idv_min_age_years: 13
+idv_min_age_years: 18
 idv_phone_confirmation_manual_review_validity_hours: 0
 idv_phone_precheck_percent: 0
 idv_phone_verification_dual_vendor_check_ddp_lexis_nexis_percent: 0
