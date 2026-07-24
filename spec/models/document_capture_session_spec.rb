@@ -559,7 +559,7 @@ RSpec.describe DocumentCaptureSession do
     end
   end
 
-  describe '#request_passport!' do
+  describe '#.request_passport_book!' do
     it 'sets the correct attributes for a requested passport' do
       record = build(
         :document_capture_session,
@@ -567,7 +567,7 @@ RSpec.describe DocumentCaptureSession do
         socure_docv_transaction_token: 'world',
       )
 
-      record.request_passport!
+      record.request_passport_book!
 
       expect(record).to have_attributes(
         passport_status: nil,
@@ -589,7 +589,7 @@ RSpec.describe DocumentCaptureSession do
         socure_docv_transaction_token: 'world',
       )
 
-      record.request_passport!(passport_cards_supported: true)
+      record.request_passport_book!(passport_cards_supported: true)
 
       expect(record).to have_attributes(
         passport_status: nil,
@@ -615,7 +615,7 @@ RSpec.describe DocumentCaptureSession do
           socure_docv_transaction_token: '12345',
         )
 
-        record.request_passport!
+        record.request_passport_book!
 
         expect(record).to have_attributes(
           passport_status: nil,
@@ -637,7 +637,7 @@ RSpec.describe DocumentCaptureSession do
           socure_docv_transaction_token: '12345',
         )
 
-        record.request_passport!
+        record.request_passport_book!
 
         expect(record).to have_attributes(
           passport_status: nil,

@@ -270,7 +270,7 @@ module Idv
         )
       end
       mrz_client = IdentityConfig.store.doc_auth_mock_dos_api ?
-                     DocAuth::Mock::DosPassportApiClient.new(client_response) :
+                     DocAuth::Mock::DosPassportApiClient.new(client_response, id_type:) :
                      DocAuth::Dos::Requests::MrzRequest.new(
                        mrz: client_response.pii_from_doc.mrz,
                        id_type:,
