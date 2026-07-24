@@ -15,13 +15,9 @@ module Idv
     def set_document_type_requested
       case chosen_id_type
       when Idp::Constants::DocumentTypes::PASSPORT
-        document_capture_session.request_passport_book!(
-          passport_cards_supported: passport_cards_supported?, # why?
-        )
+        document_capture_session.request_passport_book!
       when Idp::Constants::DocumentTypes::PASSPORT_CARD
-        document_capture_session.request_passport_card!(
-          passport_cards_supported: passport_cards_supported?,
-        )
+        document_capture_session.request_passport_card!
       when Idp::Constants::DocumentTypes::MDL
         document_capture_session.request_mdl!
       when *Idp::Constants::DocumentTypes::SUPPORTED_STATE_ID_TYPES
