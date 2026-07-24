@@ -16,7 +16,7 @@ module Idv
       case chosen_id_type
       when Idp::Constants::DocumentTypes::PASSPORT
         document_capture_session.request_passport_book!(
-          passport_cards_supported: passport_cards_supported?, # why?
+          passport_cards_supported: passport_cards_supported?,
         )
       when Idp::Constants::DocumentTypes::PASSPORT_CARD
         document_capture_session.request_passport_card!(
