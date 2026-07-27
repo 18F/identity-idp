@@ -187,10 +187,11 @@ module Idv
       stored_result.pii_from_doc&.dig(:document_type_received)
     end
 
-    # def document_type_requested
+    def document_type_requested
     #   document_capture_session.passport_requested? ? Idp::Constants::DocumentTypes::PASSPORT :
     #     Idp::Constants::DocumentTypes::STATE_ID_CARD
-    # end
+      document_capture_session.document_type_requested
+    end
 
     def track_document_issuing_state(user, state)
       return unless IdentityConfig.store.state_tracking_enabled && state
