@@ -7,7 +7,10 @@ RSpec.describe Pii::Passport do
       middle_name: Faker::Name.middle_name,
       last_name: Faker::Name.last_name,
       name_suffix: Faker::Name.suffix,
-      dob: Faker::Date.between(from: 90.years.ago, to: 13.years.ago).strftime('%Y-%m-%d'),
+      dob: Faker::Date.between(
+        from: 90.years.ago,
+        to: IdentityConfig.store.idv_min_age_years.years.ago,
+      ).strftime('%Y-%m-%d'),
       sex: Faker::Gender.short_binary_type,
       birth_place: Faker::Address.city,
       passport_expiration: Faker::Date.between(from: 1.day.after, to: 2.years.after)

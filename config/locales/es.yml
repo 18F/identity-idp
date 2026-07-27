@@ -597,7 +597,7 @@ doc_auth.errors.sharpness.top_msg: No pudimos leer su identificación. Es posibl
 doc_auth.errors.sharpness.top_msg_plural: No pudimos leer su identificación. Es posible que sus fotos estén demasiado borrosas u oscuras. Intente tomar nuevas fotos en un lugar iluminado.
 doc_auth.errors.state_id_verification: La información de su identificación no pudo ser verificada con su estado. Es posible que necesite verificar su identificación en persona, o puede volver a intentarlo con una identificación diferente.
 doc_auth.errors.unaccepted_id_type: No aceptamos pasaportes, identificaciones militares, ni identificaciones impresas o temporales. Solo puede usar una licencia de conducir o una identificación emitida por un estado o territorio de los EE. UU.
-doc_auth.errors.underage: Debe tener al menos 13 años para usar %{app_name}. Si tiene 13 años o más, vuelva a intentarlo y verifique que su fecha de nacimiento se vea nítida.
+doc_auth.errors.underage: Debe tener al menos %{min_age} años para usar %{app_name}. Si tiene %{min_age} años o más, vuelva a intentarlo y verifique que su fecha de nacimiento se vea nítida.
 doc_auth.errors.unreadable_id: Tome sus fotografías en un lugar bien iluminado sin sombras ni reflejos. Revise que la información en su identificación se vea nítida y que la tarjeta llene el marco.
 doc_auth.errors.upload_error: Lo sentimos, algo no funcionó bien.
 doc_auth.errors.verify_drivers_license_heading: No pudimos verificar su licencia de conducir o su identificación estatal
@@ -1420,7 +1420,7 @@ in_person_proofing.form.state_id.identity_doc_address_state: Estado
 in_person_proofing.form.state_id.identity_doc_address_state_prompt: '- Seleccione -'
 in_person_proofing.form.state_id.last_name: Apellido
 in_person_proofing.form.state_id.memorable_date.errors.date_of_birth.missing_month_day_year: Ingrese una fecha de nacimiento
-in_person_proofing.form.state_id.memorable_date.errors.date_of_birth.range_min_age: Debe ser mayor de 13 años para usar %{app_name}
+in_person_proofing.form.state_id.memorable_date.errors.date_of_birth.range_min_age: Debe ser mayor de %{min_age} años para usar %{app_name}
 in_person_proofing.form.state_id.memorable_date.errors.date_of_birth.range_overflow: Ingrese una fecha ya transcurrida
 in_person_proofing.form.state_id.memorable_date.errors.expiration_date.expired: No puede usar una identificación vencida.
 in_person_proofing.form.state_id.state_id_jurisdiction: Estado emisor

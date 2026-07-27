@@ -128,6 +128,7 @@ RSpec.describe Idv::StateIdForm do
             I18n.t(
               'in_person_proofing.form.state_id.memorable_date.errors.date_of_birth.range_min_age',
               app_name: APP_NAME,
+              min_age: IdentityConfig.store.idv_min_age_years,
             ),
           ]
         end

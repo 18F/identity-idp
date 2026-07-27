@@ -91,11 +91,13 @@ RSpec.describe 'state id controller enabled', :js do
 
       buffer_to_avoid_test_flakiness = 2.days
 
-      less_than_13_years_ago = Time.zone.now - (13.years - buffer_to_avoid_test_flakiness)
+      less_than_min_age_years_ago = Time.zone.now - (
+        IdentityConfig.store.idv_min_age_years.years - buffer_to_avoid_test_flakiness
+      )
       dob = [
-        less_than_13_years_ago.year,
-        less_than_13_years_ago.month,
-        less_than_13_years_ago.day,
+        less_than_min_age_years_ago.year,
+        less_than_min_age_years_ago.month,
+        less_than_min_age_years_ago.day,
       ].join('-')
 
       fill_in_memorable_date('identity_doc[dob]', dob)
@@ -105,14 +107,17 @@ RSpec.describe 'state id controller enabled', :js do
         t(
           'in_person_proofing.form.state_id.memorable_date.errors.date_of_birth.range_min_age',
           app_name: APP_NAME,
+          min_age: IdentityConfig.store.idv_min_age_years,
         ),
       )
 
-      thirteenish_years_ago = Time.zone.now - (13.years + buffer_to_avoid_test_flakiness)
+      older_than_min_age_years_ago = Time.zone.now - (
+        IdentityConfig.store.idv_min_age_years.years + buffer_to_avoid_test_flakiness
+      )
       dob = [
-        thirteenish_years_ago.year,
-        thirteenish_years_ago.month,
-        thirteenish_years_ago.day,
+        older_than_min_age_years_ago.year,
+        older_than_min_age_years_ago.month,
+        older_than_min_age_years_ago.day,
       ].join('-')
 
       fill_in_memorable_date('identity_doc[dob]', dob)
@@ -122,6 +127,7 @@ RSpec.describe 'state id controller enabled', :js do
         t(
           'in_person_proofing.form.state_id.memorable_date.errors.date_of_birth.range_min_age',
           app_name: APP_NAME,
+          min_age: IdentityConfig.store.idv_min_age_years,
         ),
       )
     end
