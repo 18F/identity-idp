@@ -14,7 +14,7 @@ class Idv::InPerson::ChooseIdTypeController < ApplicationController
            locals: locals_attrs(
              presenter: Idv::InPerson::ChooseIdTypePresenter.new,
              form_submit_url: idv_in_person_choose_id_type_url,
-           ),
+           ).merge(mdl_enabled: false),
            layout: true
   end
 
@@ -23,6 +23,7 @@ class Idv::InPerson::ChooseIdTypeController < ApplicationController
 
     form = Idv::ChooseIdTypeForm.new(
       mdl_enabled: false,
+      passport_cards_enabled: false,
     )
     result = form.submit(choose_id_type_form_params)
 
