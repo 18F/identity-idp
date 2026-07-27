@@ -2057,6 +2057,12 @@ RSpec.describe GetUspsProofingResultsJob, freeze_time: true do
                       )
                     end
 
+                    it 'sends a proofing sms notification for post office and ref' do
+                      expect(send_proofing_notification_job).to have_received(
+                        :perform_later,
+                      ).with(enrollment.id)
+                    end
+
                     it 'sends an account verified sms notification' do
                       expect(Telephony).to have_received(
                         :send_proofing_completion_confirmation,

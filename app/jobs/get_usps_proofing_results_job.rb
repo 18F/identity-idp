@@ -500,8 +500,9 @@ class GetUspsProofingResultsJob < ApplicationJob
       end
 
       # send SMS and email
-      send_account_verified_sms_notification(enrollment: enrollment)
+      send_enrollment_status_sms_notification(enrollment: enrollment)
       send_verified_email(enrollment:, visited_location_name: response['proofingPostOffice'])
+      send_account_verified_sms_notification(enrollment: enrollment)
       analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_email_initiated(
         **email_analytics_attributes(enrollment),
         email_type: 'Success',
