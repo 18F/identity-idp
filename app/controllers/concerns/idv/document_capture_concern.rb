@@ -187,7 +187,6 @@ module Idv
       stored_result.pii_from_doc&.dig(:document_type_received)
     end
 
-    # why not just pass value .... why binary?
     def document_type_requested
       document_capture_session.passport_requested? ? Idp::Constants::DocumentTypes::PASSPORT :
         Idp::Constants::DocumentTypes::STATE_ID_CARD
