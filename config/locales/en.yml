@@ -586,7 +586,7 @@ doc_auth.errors.sharpness.top_msg: We couldn’t read your ID. Your photo may be
 doc_auth.errors.sharpness.top_msg_plural: We couldn’t read your ID. Your photos may be too blurry or dark. Try taking new pictures in a bright area.
 doc_auth.errors.state_id_verification: The information on your ID could not be verified with your state. You may need to verify your ID in person, or you can try again with a different ID.
 doc_auth.errors.unaccepted_id_type: We do not accept passports, military IDs, paper IDs or temporary IDs. You may only use a driver’s license or an ID issued by a U.S. state or territory.
-doc_auth.errors.underage: You must be at least 13 years old to use %{app_name}. If you are 13 or older, try again and make sure your date of birth is in focus.
+doc_auth.errors.underage: You must be at least %{min_age} years old to use %{app_name}. If you are %{min_age} or older, try again and make sure your date of birth is in focus.
 doc_auth.errors.unreadable_id: Take your photos in a well-lit area without shadows or glare. Make sure that everything on your ID is in focus and that the card fills the frame.
 doc_auth.errors.upload_error: Sorry, something went wrong on our end.
 doc_auth.errors.verify_drivers_license_heading: We couldn’t verify your driver’s license or state ID
@@ -1409,7 +1409,7 @@ in_person_proofing.form.state_id.identity_doc_address_state: State
 in_person_proofing.form.state_id.identity_doc_address_state_prompt: '- Select -'
 in_person_proofing.form.state_id.last_name: Last name
 in_person_proofing.form.state_id.memorable_date.errors.date_of_birth.missing_month_day_year: Enter a date of birth
-in_person_proofing.form.state_id.memorable_date.errors.date_of_birth.range_min_age: You must be over 13 years of age to use %{app_name}
+in_person_proofing.form.state_id.memorable_date.errors.date_of_birth.range_min_age: You must be over %{min_age} years of age to use %{app_name}
 in_person_proofing.form.state_id.memorable_date.errors.date_of_birth.range_overflow: Enter a date that is in the past
 in_person_proofing.form.state_id.memorable_date.errors.expiration_date.expired: You cannot use an expired ID.
 in_person_proofing.form.state_id.state_id_jurisdiction: Issuing state
