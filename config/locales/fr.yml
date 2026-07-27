@@ -124,7 +124,7 @@ account.navigation.add_phone_number: Ajouter un numéro de téléphone
 account.navigation.add_platform_authenticator: Ajouter le déverrouillage facial ou tactile
 account.navigation.add_security_key: Ajouter une clé de sécurité
 account.navigation.close: Fermer
-account.navigation.connected_services: Vos comptes connectés
+account.navigation.connected_services: Vos services connectés
 account.navigation.customer_support: Service client
 account.navigation.delete_account: Supprimer le compte
 account.navigation.edit_password: Modifier le mot de passe
