@@ -2106,6 +2106,65 @@ RSpec.describe GetUspsProofingResultsJob, freeze_time: true do
                     end
                   end
 
+                  context 'sends a message that respects the user locale preference' do
+                    let(:phone_number) { enrollment.user.default_phone_configuration.phone }
+
+                    before do
+                      stub_request_proofing_results(status_code: 200, body: response_body)
+                      allow(analytics).to receive(
+                        :idv_in_person_usps_proofing_results_job_enrollment_updated,
+                      )
+                      allow(analytics).to receive(
+                        :idv_in_person_usps_proofing_results_job_email_initiated,
+                      )
+                      allow(user_mailer).to receive(:in_person_verified).and_return(mail_deliverer)
+                      allow(attempts_api_tracker).to receive(:idv_enrollment_complete)
+                    end
+
+                    it 'handles English language preference' do
+                      enrollment.user.update!(email_language: 'en')
+
+                      subject.perform(current_time)
+
+                      last_message = Telephony::Test::Message.messages.last
+                      expect(last_message.to).to eq(phone_number)
+                      expect(last_message.body).to eq(expected_sms_body('en'))
+                    end
+
+                    it 'handles French language preference' do
+                      enrollment.user.update!(email_language: 'fr')
+
+                      subject.perform(current_time)
+
+                      last_message = Telephony::Test::Message.messages.last
+                      expect(last_message.to).to eq(phone_number)
+                      expect(last_message.body).to eq(expected_sms_body('fr'))
+                    end
+
+                    it 'handles Spanish language preference' do
+                      enrollment.user.update!(email_language: 'es')
+
+                      subject.perform(current_time)
+
+                      last_message = Telephony::Test::Message.messages.last
+                      expect(last_message.to).to eq(phone_number)
+                      expect(last_message.body).to eq(expected_sms_body('es'))
+                    end
+
+                    def expected_sms_body(locale)
+                      I18n.with_locale(locale) do
+                        I18n.t(
+                          'telephony.proofing_completion_confirmation.sms',
+                          app_name: APP_NAME,
+                          proof_date: I18n.l(current_time, format: :sms_date, locale: locale),
+                          sp_or_app_name: APP_NAME,
+                          contact_url: MarketingSite.contact_url,
+                          locale: locale,
+                        )
+                      end
+                    end
+                  end
+
                   context 'when proofing passed and the user has no phone configuration' do
                     let(:enrollment) do
                       create(

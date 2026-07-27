@@ -22,6 +22,7 @@ class GetUspsProofingResultsJob < ApplicationJob
   queue_as :long_running
 
   include IppHelper
+  include LocaleHelper
 
   def perform(_now)
     return unless job_can_run?
@@ -692,12 +693,14 @@ class GetUspsProofingResultsJob < ApplicationJob
     phone = MfaContext.new(enrollment.user).phone_configuration&.phone
     return if phone.blank?
 
-    Telephony.send_proofing_completion_confirmation(
-      to: phone,
-      country_code: Phonelib.parse(phone).country,
-      sp_or_app_name: enrollment.profile&.initiating_service_provider&.friendly_name.presence ||
-        APP_NAME,
-    )
+    with_user_locale(enrollment.user) do
+      Telephony.send_proofing_completion_confirmation(
+        to: phone,
+        country_code: Phonelib.parse(phone).country,
+        sp_or_app_name: enrollment.profile&.initiating_service_provider&.friendly_name.presence ||
+          APP_NAME,
+      )
+    end
   end
 
   def notification_delivery_params(enrollment)
