@@ -2,7 +2,6 @@
 
 module Idv
   module ChooseIdTypeConcern
-
     def chosen_id_type
       choose_id_type_form_params[:choose_id_type_preference]
     end
