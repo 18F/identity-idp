@@ -2,7 +2,6 @@
 
 module Idv
   module ChooseIdTypeConcern
-    include Idv::PassportCardsConcern
 
     def chosen_id_type
       choose_id_type_form_params[:choose_id_type_preference]
@@ -15,13 +14,9 @@ module Idv
     def set_document_type_requested
       case chosen_id_type
       when Idp::Constants::DocumentTypes::PASSPORT
-        document_capture_session.request_passport_book!(
-          passport_cards_supported: passport_cards_supported?,
-        )
+        document_capture_session.request_passport_book!
       when Idp::Constants::DocumentTypes::PASSPORT_CARD
-        document_capture_session.request_passport_card!(
-          passport_cards_supported: passport_cards_supported?,
-        )
+        document_capture_session.request_passport_card!
       when Idp::Constants::DocumentTypes::MDL
         document_capture_session.request_mdl!
       when *Idp::Constants::DocumentTypes::SUPPORTED_STATE_ID_TYPES
@@ -83,7 +78,7 @@ module Idv
         form_submit_url:,
         disable_passports: disable_passports?,
         auto_check_value:,
-        passport_cards_enabled: passport_cards_supported? && presenter.passport_card_available?,
+        passport_cards_enabled: document_capture_session.passport_cards_supported?,
         mdl_enabled: mdl_enabled?,
       }
     end
@@ -94,7 +89,8 @@ module Idv
     end
 
     def passports_enabled?
-      IdentityConfig.store.doc_auth_passports_enabled || passport_cards_supported?
+      IdentityConfig.store.doc_auth_passports_enabled ||
+        document_capture_session.passport_cards_supported?
     end
 
     def mdl_enabled?
