@@ -193,23 +193,21 @@ class DocumentCaptureSession < ApplicationRecord
     false
   end
 
-  def request_passport_book!(passport_cards_supported: false)
+  def request_passport_book!
     attrs = {
       passport_status: nil,
       document_type_requested: Idp::Constants::DocumentTypes::PASSPORT,
       doc_auth_vendor: nil,
-      passport_cards_supported:,
     }.merge(clear_socure_attributes)
 
     update!(attrs) if !passport_book_requested?
   end
 
-  def request_passport_card!(passport_cards_supported: true)
+  def request_passport_card!
     attrs = {
       passport_status: nil,
       document_type_requested: Idp::Constants::DocumentTypes::PASSPORT_CARD,
       doc_auth_vendor: nil,
-      passport_cards_supported:,
     }.merge(clear_socure_attributes)
 
     update!(attrs) if !passport_card_requested?
