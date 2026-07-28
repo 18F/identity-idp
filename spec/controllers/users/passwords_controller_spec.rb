@@ -60,7 +60,7 @@ RSpec.describe Users::PasswordsController do
           required_password_change: false,
         )
         expect(response).to redirect_to account_url
-        expect(flash[:info]).to eq t('notices.password_changed')
+        expect(flash[:success]).to eq t('notices.password_changed')
         expect(controller.user_session[:personal_key]).to be_nil
       end
 
@@ -164,7 +164,30 @@ RSpec.describe Users::PasswordsController do
             required_password_change: true,
           )
           expect(response).to redirect_to account_url
-          expect(flash[:info]).to eq t('notices.password_changed')
+          expect(flash[:success]).to eq t('notices.password_changed')
+        end
+
+        it 'clears the redirect_to_change_password session flag' do
+          patch :update, params: { update_user_password_form: params }
+
+          expect(session[:redirect_to_change_password]).to be_nil
+        end
+
+        context 'and the user has a proofed profile' do
+          let(:user) { create(:user) }
+
+          before do
+            create(:profile, :active, :verified, user: user, pii: { first_name: 'Jane' })
+            Pii::Cacher.new(user, controller.user_session)
+              .save_decrypted_pii({ first_name: 'Jane' }, user.active_profile.id)
+          end
+
+          it 'redirects to the personal key page and clears the flag' do
+            patch :update, params: { update_user_password_form: params }
+
+            expect(response).to redirect_to manage_personal_key_url
+            expect(session[:redirect_to_change_password]).to be_nil
+          end
         end
 
         it 'sends email notifying user of password change' do

@@ -27,6 +27,7 @@ module OpenidConnect
     before_action :redirect_to_reauthenticate, only: :index, if: :remember_device_expired_for_sp?
     before_action :prompt_for_password_if_ial2_request_and_pii_locked, only: [:index]
     before_action :confirm_user_is_not_suspended, only: :index
+    before_action :confirm_password_change_not_required, only: :index
 
     def index
       if resolved_authn_context_result.identity_proofing?
