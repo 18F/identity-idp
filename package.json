@@ -112,7 +112,7 @@
   },
   "overrides": {
     "@babel/plugin-transform-modules-systemjs": "7.29.4",
-    "fast-uri": "3.1.2",
+    "fast-uri": "3.1.4",
     "fast-xml-builder": "1.1.9",
     "form-data": "4.0.6",
     "js-yaml": "4.3.0",

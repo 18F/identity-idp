@@ -658,7 +658,7 @@ RSpec.describe 'In Person Proofing', js: true do
 
       # check that the "No, I live at a different address" is checked
       expect(page).to have_checked_field(
-        t('in_person_proofing.form.state_id.same_address_as_id_no'),
+        t('in_person_proofing.form.state_id.current_address_matches_id_no'),
         visible: false,
       )
     end

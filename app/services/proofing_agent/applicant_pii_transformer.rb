@@ -12,6 +12,9 @@ module ProofingAgent
       flat.merge!(state_id_fields)
       flat.merge!(passport_fields)
       flat[:same_address_as_id] = same_address_as_id
+      # Dual-write during the same_address_as_id -> ipp_current_address_matches_id rename
+      # migration (LG-16085).
+      flat[:ipp_current_address_matches_id] = current_address_matches_id
       flat
     end
 
@@ -76,6 +79,10 @@ module ProofingAgent
 
     def same_address_as_id
       pii[:residential_address].present? ? 'false' : 'true'
+    end
+
+    def current_address_matches_id
+      pii[:residential_address].blank?
     end
   end
 end
