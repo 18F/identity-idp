@@ -179,6 +179,38 @@ RSpec.describe OpenidConnect::UserInfoController do
         expect(request.session.to_h).to eq(session_hash)
       end
 
+      context 'when auth_time is enabled' do
+        let(:authentication_event_at) { Time.zone.parse('2026-07-01 12:00:00 UTC') }
+        let(:remember_device_at) { Time.zone.parse('2026-07-01 12:30:00 UTC') }
+        let(:federation_at) { Time.zone.parse('2026-07-01 13:00:00 UTC') }
+
+        before do
+          allow(FeatureManagement).to receive(:auth_time_attribute_enabled?).and_return(true)
+          identity.update!(last_authenticated_at: federation_at)
+          write_out_of_band_user_session(
+            session_uuid: identity.rails_session_id,
+            user_session: {
+              auth_events: [
+                {
+                  auth_method: TwoFactorAuthenticatable::AuthMethod::SMS,
+                  at: authentication_event_at,
+                },
+                {
+                  auth_method: TwoFactorAuthenticatable::AuthMethod::REMEMBER_DEVICE,
+                  at: remember_device_at,
+                },
+              ],
+            },
+          )
+        end
+
+        it 'returns the latest IdP authentication event instead of the identity timestamp' do
+          action
+
+          expect(json_response[:auth_time]).to eq(authentication_event_at.to_i)
+        end
+      end
+
       context 'with session expiring after validation and before render' do
         before do
           allow_any_instance_of(AccessTokenVerifier).to receive(:submit).and_wrap_original do |impl|

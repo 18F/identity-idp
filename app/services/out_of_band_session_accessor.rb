@@ -49,6 +49,11 @@ class OutOfBandSessionAccessor
     X509::Attributes.new_from_json(session_data.dig('warden.user.user.session', :decrypted_x509))
   end
 
+  def authentication_event_at
+    user_session = session_data['warden.user.user.session'] || {}
+    AuthMethodsSession.new(user_session:).last_authentication_event_at
+  end
+
   def destroy
     session_store.send(
       :delete_session,
