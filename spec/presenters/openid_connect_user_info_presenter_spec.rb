@@ -14,6 +14,8 @@ RSpec.describe OpenidConnectUserInfoPresenter do
   let(:requested_aal_value) { nil }
   let(:acr_values) { Saml::Idp::Constants::IAL_VERIFIED_ACR }
   let(:last_authenticated_at) { Time.zone.parse('2026-05-29 12:00:00 UTC') }
+  let(:authentication_event_at) { Time.zone.parse('2026-05-30 12:00:00 UTC') }
+  let(:session_accessor) { OutOfBandSessionAccessor.new(rails_session_id) }
   let(:locale) { 'en' }
   let(:identity) do
     build(
@@ -37,7 +39,7 @@ RSpec.describe OpenidConnectUserInfoPresenter do
     stub_analytics
   end
 
-  subject(:presenter) { OpenidConnectUserInfoPresenter.new(identity) }
+  subject(:presenter) { OpenidConnectUserInfoPresenter.new(identity, session_accessor:) }
 
   describe '#user_info' do
     let(:pii) do
@@ -70,14 +72,16 @@ RSpec.describe OpenidConnectUserInfoPresenter do
     context 'when auth_time attribute is enabled' do
       before do
         allow(FeatureManagement).to receive(:auth_time_attribute_enabled?).and_return(true)
+        allow(session_accessor).to receive(:authentication_event_at)
+          .and_return(authentication_event_at)
       end
 
-      it 'includes auth_time from the identity authentication timestamp' do
-        expect(user_info[:auth_time]).to eq(last_authenticated_at.to_i)
+      it 'includes auth_time from the session authentication event timestamp' do
+        expect(user_info[:auth_time]).to eq(authentication_event_at.to_i)
       end
 
-      context 'without an identity authentication timestamp' do
-        let(:last_authenticated_at) { nil }
+      context 'without an authentication event timestamp' do
+        let(:authentication_event_at) { nil }
         let(:now) { Time.zone.parse('2026-06-01 12:00:00 UTC') }
 
         it 'falls back to the current time' do

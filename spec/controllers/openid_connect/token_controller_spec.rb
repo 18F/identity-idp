@@ -70,6 +70,58 @@ RSpec.describe OpenidConnect::TokenController do
 
         expect(@analytics).to_not have_logged_event(:sp_integration_errors_present)
       end
+
+      context 'when auth_time is enabled' do
+        let(:authentication_event_at) { Time.zone.parse('2026-07-01 12:00:00 UTC') }
+        let(:remember_device_at) { Time.zone.parse('2026-07-01 12:30:00 UTC') }
+        let(:federation_at) { Time.zone.parse('2026-07-01 13:00:00 UTC') }
+        let(:stale_identity_timestamp) { 1.week.before(authentication_event_at) }
+
+        before do
+          allow(FeatureManagement).to receive(:auth_time_attribute_enabled?).and_return(true)
+          identity.update!(last_authenticated_at: stale_identity_timestamp)
+
+          travel_to(federation_at) do
+            IdentityLinker.new(user, service_provider).link_identity(
+              acr_values: Saml::Idp::Constants::IAL_AUTH_ONLY_ACR,
+              ial: 1,
+              rails_session_id: identity.rails_session_id,
+            )
+          end
+          identity.reload
+
+          write_out_of_band_user_session(
+            session_uuid: identity.rails_session_id,
+            user_session: {
+              auth_events: [
+                {
+                  auth_method: TwoFactorAuthenticatable::AuthMethod::SMS,
+                  at: authentication_event_at,
+                },
+                {
+                  auth_method: TwoFactorAuthenticatable::AuthMethod::REMEMBER_DEVICE,
+                  at: remember_device_at,
+                },
+              ],
+            },
+          )
+        end
+
+        it 'returns the latest IdP authentication event instead of the federation time' do
+          travel_to(federation_at) { action }
+
+          json = JSON.parse(response.body).with_indifferent_access
+          payload = JWT.decode(
+            json[:id_token],
+            Rails.application.config.oidc_public_key,
+            true,
+            algorithm: 'RS256',
+          ).first.with_indifferent_access
+
+          expect(identity.last_authenticated_at.to_i).to eq(federation_at.to_i)
+          expect(payload[:auth_time]).to eq(authentication_event_at.to_i)
+        end
+      end
     end
 
     context 'with invalid params' do

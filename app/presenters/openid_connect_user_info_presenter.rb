@@ -182,7 +182,7 @@ class OpenidConnectUserInfoPresenter
   end
 
   def auth_time
-    (identity.happened_at || Time.zone.now).to_i
+    (out_of_band_session_accessor&.authentication_event_at || Time.zone.now).to_i
   end
 
   def out_of_band_session_accessor
