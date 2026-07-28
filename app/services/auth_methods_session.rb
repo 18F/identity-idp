@@ -30,6 +30,14 @@ class AuthMethodsSession
     end
   end
 
+  def last_authentication_event_at
+    auth_event = last_2fa_auth_event
+    return unless auth_event
+
+    timestamp = auth_event[:at]
+    timestamp.is_a?(String) ? Time.zone.parse(timestamp) : timestamp&.in_time_zone
+  end
+
   def reauthenticate_at
     last_2fa_auth_event_at = last_2fa_auth_event&.[](:at)
     if last_2fa_auth_event_at
