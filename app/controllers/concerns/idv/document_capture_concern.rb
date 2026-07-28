@@ -165,7 +165,7 @@ module Idv
     end
 
     def document_type_match?
-      case document_capture_session.document_type_requested
+      case document_type_requested
       when Idp::Constants::DocumentTypes::STATE_ID_CARD
         Idp::Constants::DocumentTypes::SUPPORTED_STATE_ID_TYPES
           .include?(document_type_received)
@@ -188,9 +188,7 @@ module Idv
     end
 
     def document_type_requested
-    #   document_capture_session.passport_requested? ? Idp::Constants::DocumentTypes::PASSPORT :
-    #     Idp::Constants::DocumentTypes::STATE_ID_CARD
-      document_capture_session.document_type_requested
+      document_capture_session&.document_type_requested
     end
 
     def track_document_issuing_state(user, state)
