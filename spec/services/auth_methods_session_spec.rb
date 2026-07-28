@@ -158,6 +158,69 @@ RSpec.describe AuthMethodsSession do
     end
   end
 
+  describe '#last_authentication_event_at' do
+    subject(:last_authentication_event_at) { auth_methods_session.last_authentication_event_at }
+
+    context 'no auth events' do
+      it { expect(last_authentication_event_at).to be_nil }
+    end
+
+    context 'with only a remember device auth event' do
+      let(:user_session) do
+        {
+          auth_events: [
+            {
+              auth_method: TwoFactorAuthenticatable::AuthMethod::REMEMBER_DEVICE,
+              at: Time.zone.now,
+            },
+          ],
+        }
+      end
+
+      it { expect(last_authentication_event_at).to be_nil }
+    end
+
+    context 'with a non-remember device auth event followed by a remember device auth event' do
+      let(:auth_event_at) { 3.minutes.ago }
+      let(:user_session) do
+        {
+          auth_events: [
+            {
+              auth_method: TwoFactorAuthenticatable::AuthMethod::SMS,
+              at: auth_event_at,
+            },
+            {
+              auth_method: TwoFactorAuthenticatable::AuthMethod::REMEMBER_DEVICE,
+              at: Time.zone.now,
+            },
+          ],
+        }
+      end
+
+      it 'returns the non-remember device auth event timestamp' do
+        expect(last_authentication_event_at).to eq(auth_event_at)
+      end
+    end
+
+    context 'with a serialized timestamp' do
+      let(:auth_event_at) { 3.minutes.ago }
+      let(:user_session) do
+        {
+          auth_events: [
+            {
+              auth_method: TwoFactorAuthenticatable::AuthMethod::SMS,
+              at: auth_event_at.iso8601,
+            },
+          ],
+        }
+      end
+
+      it 'returns the timestamp in the current time zone' do
+        expect(last_authentication_event_at).to eq(auth_event_at)
+      end
+    end
+  end
+
   describe '#reauthenticate_at' do
     subject(:reauthenticate_at) { auth_methods_session.reauthenticate_at }
 

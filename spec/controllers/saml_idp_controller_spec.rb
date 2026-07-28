@@ -2427,13 +2427,20 @@ RSpec.describe SamlIdpController do
       let(:status) { xmldoc.status[0] }
       let(:status_code) { xmldoc.status_code[0] }
       let(:user) { create(:user, :fully_registered) }
-      let(:authn_at) { nil }
+      let(:response_at) { nil }
+      let(:auth_events) { nil }
+      let(:auth_time_attribute_enabled) { false }
 
       before do
-        if authn_at
-          travel_to(authn_at) { generate_saml_response(user, saml_settings) }
+        allow(FeatureManagement).to receive(:auth_time_attribute_enabled?)
+          .and_return(auth_time_attribute_enabled)
+
+        if response_at
+          travel_to(response_at) do
+            generate_saml_response(user, saml_settings, auth_events: auth_events)
+          end
         else
-          generate_saml_response(user, saml_settings)
+          generate_saml_response(user, saml_settings, auth_events: auth_events)
         end
       end
 
@@ -2747,16 +2754,32 @@ RSpec.describe SamlIdpController do
         end
 
         context 'when authentication timestamp support is enabled' do
-          let(:authn_at) { Time.zone.parse('2026-07-08 12:34:56 UTC') }
-
-          before do
-            allow(FeatureManagement).to receive(:auth_time_attribute_enabled?).and_return(true)
+          let(:auth_time_attribute_enabled) { true }
+          let(:idp_authn_at) { Time.zone.parse('2026-07-08 12:04:56 UTC') }
+          let(:response_at) { Time.zone.parse('2026-07-08 12:34:56 UTC') }
+          let(:auth_events) do
+            [
+              {
+                auth_method: TwoFactorAuthenticatable::AuthMethod::SMS,
+                at: idp_authn_at,
+              },
+            ]
           end
 
-          it 'uses the identity authentication timestamp for AuthnInstant' do
+          it 'uses the IdP authentication timestamp for AuthnInstant' do
             authn_instant = Time.zone.parse(subject.attributes['AuthnInstant'].value)
 
-            expect(authn_instant).to be_within(1.second).of(authn_at)
+            expect(authn_instant).to be_within(1.second).of(idp_authn_at)
+          end
+
+          context 'when the IdP authentication timestamp is missing' do
+            let(:auth_events) { nil }
+
+            it 'falls back to the response time for AuthnInstant' do
+              authn_instant = Time.zone.parse(subject.attributes['AuthnInstant'].value)
+
+              expect(authn_instant).to be_within(1.second).of(response_at)
+            end
           end
         end
 
