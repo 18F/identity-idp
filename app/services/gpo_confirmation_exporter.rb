@@ -33,9 +33,10 @@ class GpoConfirmationExporter
 
   def make_entry_row(confirmation)
     now = current_date
-    due = confirmation.created_at + IdentityConfig.store.usps_confirmation_max_days.days
-
     entry = confirmation.entry
+    max_days = GpoConfirmationMaxDaysCalculator.max_days_for_state(entry[:state])
+    due = confirmation.created_at + max_days.days
+
     service_provider = ServiceProvider.find_by(issuer: entry[:issuer])
 
     [

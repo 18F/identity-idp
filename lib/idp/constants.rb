@@ -105,6 +105,58 @@ module Idp
       VI
     ].to_set.freeze
 
+    CONTIGUOUS_US_STATE_CODES = %w[
+      AL
+      AZ
+      AR
+      CA
+      CO
+      CT
+      DE
+      DC
+      FL
+      GA
+      ID
+      IL
+      IN
+      IA
+      KS
+      KY
+      LA
+      ME
+      MD
+      MA
+      MI
+      MN
+      MS
+      MO
+      MT
+      NE
+      NV
+      NH
+      NJ
+      NM
+      NY
+      NC
+      ND
+      OH
+      OK
+      OR
+      PA
+      RI
+      SC
+      SD
+      TN
+      TX
+      UT
+      VT
+      VA
+      WA
+      WV
+      WI
+      WY
+    ].to_set.freeze
+
     DEFAULT_IAL = 1
     IAL_MAX = 0
     IAL1 = 1

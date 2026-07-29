@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_07_10_150518) do
+ActiveRecord::Schema[8.0].define(version: 2026_07_28_193823) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pg_catalog.plpgsql"
@@ -704,6 +704,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_07_10_150518) do
     t.datetime "created_at", precision: nil, null: false, comment: "sensitive=false"
     t.datetime "updated_at", precision: nil, null: false, comment: "sensitive=false"
     t.datetime "reminder_sent_at", precision: nil, comment: "sensitive=false"
+    t.string "state", comment: "sensitive=false"
     t.index ["otp_fingerprint"], name: "index_usps_confirmation_codes_on_otp_fingerprint"
     t.index ["profile_id"], name: "index_usps_confirmation_codes_on_profile_id"
     t.index ["reminder_sent_at"], name: "index_usps_confirmation_codes_on_reminder_sent_at"

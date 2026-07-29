@@ -30,14 +30,25 @@ class GpoExpirationJob < ApplicationJob
   end
 
   def gpo_profiles_that_should_be_expired(as_of:, min_profile_age: nil)
-    Profile
+    possible_profile_ids = Profile
       .and(are_pending_gpo_verification)
       .and(user_cant_request_more_letters(as_of: as_of))
-      .and(most_recent_code_has_expired(as_of: as_of))
       .and(are_old_enough(as_of: as_of, min_profile_age: min_profile_age))
+      .pluck(:id)
+
+    Profile.where(id: profile_ids_with_expired_latest_code(possible_profile_ids, as_of: as_of))
   end
 
   private
+
+  def profile_ids_with_expired_latest_code(profile_ids, as_of:)
+    GpoConfirmationCode
+      .where(profile_id: profile_ids)
+      .select('DISTINCT ON (profile_id) *')
+      .order('profile_id, code_sent_at DESC')
+      .select { |gpo_confirmation_code| gpo_confirmation_code.expired?(as_of: as_of) }
+      .map(&:profile_id)
+  end
 
   def expire_profile(profile:)
     gpo_verification_pending_at = profile.gpo_verification_pending_at
@@ -76,19 +87,6 @@ class GpoExpirationJob < ApplicationJob
 
   def are_pending_gpo_verification
     Profile.where.not(gpo_verification_pending_at: nil)
-  end
-
-  def most_recent_code_has_expired(as_of:)
-    # Any Profile where the most recent code was sent *before*
-    # usps_confirmation_max_days days ago is now expired
-    max_code_sent_at = as_of - IdentityConfig.store.usps_confirmation_max_days.days
-
-    Profile.where(
-      id: GpoConfirmationCode
-        .select(:profile_id)
-        .group(:profile_id)
-        .having('max(code_sent_at) < ?', max_code_sent_at),
-    )
   end
 
   def user_cant_request_more_letters(as_of:)
