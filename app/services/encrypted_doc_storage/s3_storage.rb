@@ -34,9 +34,12 @@ module EncryptedDocStorage
     end
 
     def delete_user_attempt_data(user_uuid:)
-      key = "attempt_events/#{user_uuid}"
+      prefix = "attempt_events/#{user_uuid}"
 
-      s3_client.delete_object(bucket:, key:)
+      Aws::S3::Resource.new(client: s3_client)
+        .bucket(bucket)
+        .objects(prefix:)
+        .batch_delete!
     end
 
     private
