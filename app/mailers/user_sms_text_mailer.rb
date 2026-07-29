@@ -27,6 +27,12 @@ class UserSmsTextMailer < ActionMailer::Base
     mail_to
   end
 
+  def proofing_completion_confirmation
+    @proof_date = I18n.l(Time.current, format: :sms_date)
+    @sp_or_app_name = 'Sample SAML Sinatra SP'
+    mail_to
+  end
+
   def doc_auth_link
     @link = url_for(idv_hybrid_mobile_entry_url) + "?document-capture-session=#{SecureRandom.uuid}"
     @sp_or_app_name = 'Sample SAML Sinatra SP'
