@@ -58,3 +58,8 @@ es:
       sms: Se emitió una nueva clave personal para su cuenta de %{app_name}. Si no fue usted, restablezca su contraseña.
     personal_key_sign_in_notice:
       sms: Su clave personal acaba de se usada para iniciar sesión en su cuenta de %{app_name}. Si no fue usted, restablezca su contraseña.
+    proofing_completion_confirmation:
+      sms: |-
+        %{app_name} Identidad verificada el %{proof_date} para %{sp_or_app_name}.
+
+        ¿No es usted? Inicie sesión, actualice su contraseña y sus métodos de autenticación, y reporte cualquier fraude en: @%{contact_url}

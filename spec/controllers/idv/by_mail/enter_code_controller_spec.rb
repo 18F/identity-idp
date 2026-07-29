@@ -223,6 +223,7 @@ RSpec.describe Idv::ByMail::EnterCodeController do
 
         expect(UserAlerts::AlertUserAboutAccountVerified).to have_received(:call).with(
           profile: user.active_profile,
+          phone: nil,
         )
       end
 
