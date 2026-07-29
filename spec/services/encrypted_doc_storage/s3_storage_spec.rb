@@ -71,12 +71,28 @@ RSpec.describe EncryptedDocStorage::S3Storage do
   end
 
   describe '#delete_user_attempt_data' do
+    let(:s3_resource) { Aws::S3::Resource.new(client: stubbed_s3_client) } 
     let(:file_path) { "attempt_events/#{user_uuid}" }
+
+    let(:bucket_name) { IdentityConfig.store.encrypted_document_storage_s3_bucket }
+
+    let(:s3_bucket) { double("s3_bucket") }
+    let(:s3_objects) { double("s3_objects") }
+
     it 'deletes the directory' do
-      expect(stubbed_s3_client).to receive(:delete_object).with(
-        bucket: IdentityConfig.store.encrypted_document_storage_s3_bucket,
-        key: file_path,
-      )
+      expect(Aws::S3::Resource).to receive(:new)
+        .with(client: stubbed_s3_client)
+        .and_return(s3_resource)
+
+      expect(s3_resource).to receive(:bucket)
+        .with(bucket_name)
+        .and_return(s3_bucket)
+
+      expect(s3_bucket).to receive(:objects)
+        .with(prefix: file_path)
+        .and_return(s3_objects)
+
+      expect(s3_objects).to receive(:batch_delete!)
 
       subject.delete_user_attempt_data(user_uuid:)
     end
