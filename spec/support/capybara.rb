@@ -3,16 +3,14 @@ require 'rack_session_access/capybara'
 require 'selenium/webdriver'
 require 'extensions/capybara/node/simple'
 
-# temporary fix for local development feature tests
-# remove when we get a new working version of Chromedriver
-
-# When a chromedriver binary is already on PATH (e.g. provided by devenv/Nix),
-# point Selenium at it explicitly. Otherwise Selenium falls back to its bundled
-# `selenium-manager` helper to locate a driver. selenium-manager ships a macOS
-# universal binary (x86_64 + arm64) but only an x86_64 build for Linux, so on
-# aarch64-linux it cannot execute and raises `NoSuchDriverError`. On platforms
-# where chromedriver is not on PATH (typical macOS/CI), this returns nil and
-# Selenium behaves as before.
+# Resolve the chromedriver binary. When one is provided explicitly via
+# CHROMEDRIVER_PATH or is on PATH (e.g. from devenv/Nix or CI), point Selenium
+# at it. Otherwise this returns nil and Selenium falls back to its bundled
+# `selenium-manager` helper, which downloads a chromedriver matching the
+# installed Chrome (the typical path on local macOS). Note: selenium-manager
+# ships a macOS universal binary (x86_64 + arm64) but only an x86_64 build for
+# Linux, so on aarch64-linux it cannot execute. Those environments must provide
+# chromedriver on PATH or use devenv.
 def chromedriver_service
   path = ENV['CHROMEDRIVER_PATH'].presence || `command -v chromedriver 2>/dev/null`.strip.presence
   return nil if path.nil?
