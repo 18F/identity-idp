@@ -60,10 +60,30 @@ RSpec.describe GpoConfirmationCode do
 
         expect(confirmation_code.expired?).to eq(false)
       end
+
+      it 'expires if past the default max days' do
+        confirmation_code = build(
+          :gpo_confirmation_code,
+          state: nil,
+          code_sent_at: (IdentityConfig.store.usps_confirmation_max_days + 1).days.ago,
+        )
+
+        expect(confirmation_code.expired?).to eq(true)
+      end
+
+      it 'expires the code if it is past the expiration date' do
+        confirmation_code = build(
+          :gpo_confirmation_code,
+          state: nil,
+          code_sent_at: (IdentityConfig.store.usps_confirmation_max_days + 1).days.ago,
+        )
+
+        expect(confirmation_code.expired?).to eq(true)
+      end
     end
 
     context 'when the state is a contiguous US state' do
-      it 'expires after usps_confirmation_max_days_contiguous_states days' do
+      it 'does not expires before usps_confirmation_max_days_contiguous_states days' do
         confirmation_code = build(
           :gpo_confirmation_code,
           state: 'VA',
@@ -72,9 +92,16 @@ RSpec.describe GpoConfirmationCode do
         )
 
         expect(confirmation_code.expired?).to eq(false)
+      end
 
-        confirmation_code.code_sent_at =
-          (IdentityConfig.store.usps_confirmation_max_days_contiguous_states + 1).days.ago
+      it 'expires after usps_confirmation_max_days_contiguous_states days' do
+        confirmation_code = build(
+          :gpo_confirmation_code,
+          state: 'VA',
+          code_sent_at: (IdentityConfig.store.usps_confirmation_max_days_contiguous_states +
+            1).days.ago,
+        )
+
         expect(confirmation_code.expired?).to eq(true)
       end
     end
@@ -88,9 +115,14 @@ RSpec.describe GpoConfirmationCode do
         )
 
         expect(confirmation_code.expired?).to eq(false)
+      end
 
-        confirmation_code.code_sent_at =
-          (IdentityConfig.store.usps_confirmation_max_days + 1).days.ago
+      it 'expires after usps_confirmation_max_days days' do
+        confirmation_code = build(
+          :gpo_confirmation_code,
+          state: 'PR',
+          code_sent_at: (IdentityConfig.store.usps_confirmation_max_days + 1).days.ago,
+        )
         expect(confirmation_code.expired?).to eq(true)
       end
     end
