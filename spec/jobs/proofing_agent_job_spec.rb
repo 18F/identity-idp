@@ -489,6 +489,7 @@ RSpec.describe ProofingAgentJob, type: :job do
           remaining_submit_attempts: 2,
           document_type_requested: 'passport',
           correlation_id_sent: correlation_id,
+          category: :book,
           proofing_agent: {
             agent_id: proofing_agent_id,
             location_id: proofing_location_id,

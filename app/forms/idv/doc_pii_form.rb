@@ -160,7 +160,6 @@ module Idv
 
     def validate_passport
       validate_passport_expiration
-      validate_passport_is_book
 
       passport_form = Pii::PassportForm.new(passport: canonical_passport)
       passport_form.valid?
@@ -201,12 +200,6 @@ module Idv
       return unless DateParser.parse_legacy(exp).past?
 
       errors.add(:passport_expiration, GENERIC_ERROR_KEY, type: :passport_expiration)
-    end
-
-    def validate_passport_is_book
-      return if pii_from_doc[:document_type_received] == 'passport'
-
-      errors.add(:document_type_received, GENERIC_ERROR_KEY, type: :document_type_received)
     end
 
     def merge_translated_errors(sub_form_errors, allowed_fields:, key_map:)
