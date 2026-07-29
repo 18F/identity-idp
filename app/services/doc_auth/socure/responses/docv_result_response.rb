@@ -279,10 +279,8 @@ module DocAuth
 
         def id_type_expected?
           case document_type_received
-          when Idp::Constants::DocumentTypes::PASSPORT
+          when *Idp::Constants::DocumentTypes::SUPPORTED_PASSPORT_TYPES
             document_capture_session.passport_requested?
-          when Idp::Constants::DocumentTypes::PASSPORT_CARD
-            document_capture_session.passport_card_requested?
           when Idp::Constants::DocumentTypes::MDL
             document_capture_session.mdl_requested?
           when Idp::Constants::DocumentTypes::STATE_ID_CARD, Idp::Constants::DocumentTypes::DRIVERS_LICENSE

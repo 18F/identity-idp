@@ -13,7 +13,10 @@ RSpec.describe SocureDocvResultsJob do
   let(:socure_user_id) { 'socure_user_id' }
   let(:socure_reference_id) { SecureRandom.uuid }
   let(:document_type_requested) { Idp::Constants::DocumentTypes::STATE_ID_CARD }
-  let(:document_capture_session) { create(:document_capture_session, document_type_requested:) }
+  let(:passport_cards_supported) { false }
+  let(:document_capture_session) do
+    create(:document_capture_session, document_type_requested:, passport_cards_supported:)
+  end
   let(:user) { document_capture_session.user }
   let(:document_capture_session_uuid) { document_capture_session.uuid }
   let(:socure_idplus_base_url) { 'https://example.com' }
@@ -993,16 +996,14 @@ RSpec.describe SocureDocvResultsJob do
                   end
 
                   context 'when passport cards are supported' do
-                    before do
-                      document_capture_session.update(passport_cards_supported: true)
-                    end
+                    let(:passport_cards_supported) { true } 
 
                     it 'doc auth succeeds' do
                       perform
 
                       document_capture_session.reload
                       document_capture_session_result = document_capture_session.load_result
-                      expect(document_capture_session_result.success).to eq(false)
+                      expect(document_capture_session_result.success).to eq(true)
                     end
 
                     context 'when a passport card was requested' do
