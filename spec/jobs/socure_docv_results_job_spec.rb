@@ -996,7 +996,7 @@ RSpec.describe SocureDocvResultsJob do
                   end
 
                   context 'when passport cards are supported' do
-                    let(:passport_cards_supported) { true } 
+                    let(:passport_cards_supported) { true }
 
                     it 'doc auth succeeds' do
                       perform
