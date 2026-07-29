@@ -16,6 +16,8 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
   let(:socure_docv_webhook_repeat_endpoints) { [] }
   let(:idv_socure_reason_codes_docv_mdl) { ['mdl_code1', 'mdl_code2'] }
   let(:idv_doc_auth_mdl_enabled_percent) { 0 }
+  let(:doc_auth_passport_cards_enabled) { false }
+  let(:doc_auth_passport_cards_enabled_percent) { 0 }
 
   before do
     allow(IdentityConfig.store).to receive_messages(
@@ -39,6 +41,8 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
       socure_docv_webhook_repeat_endpoints:,
       socure_docv_webhook_secret_key:,
       idv_doc_auth_mdl_enabled_percent:,
+      doc_auth_passport_cards_enabled:,
+      doc_auth_passport_cards_enabled_percent:,
     )
     allow_any_instance_of(ServiceProviderSession).to receive(:sp_name).and_return('Test SP')
     socure_docv_webhook_repeat_endpoints.each { |endpoint| stub_request(:post, endpoint) }
@@ -615,6 +619,7 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
       end
 
       context 'when a passport is submitted' do
+        let(:docv_verifiction_document_type) { :passport }
         before do
           allow(IdentityConfig.store).to receive_messages(
             doc_auth_passports_enabled: true,
@@ -626,7 +631,7 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
           @docv_stub = stub_docv_verification_data_pass(
             docv_transaction_token: @docv_transaction_token,
             reason_codes: ['not_processed'],
-            document_type: :passport,
+            document_type: docv_verifiction_document_type,
             user:,
           )
           allow(IdentityConfig.store).to receive(:dos_passport_mrz_endpoint)
@@ -693,6 +698,77 @@ RSpec.feature 'document capture step', :js, driver: :headless_chrome_mobile do
 
             fill_out_ssn_form_ok
             click_idv_continue
+          end
+        end
+
+        context 'when passport card is submitted' do
+          let(:doc_auth_passport_cards_enabled) { true }
+          let(:doc_auth_passport_cards_enabled_percent) { 100 }
+          let(:docv_verifiction_document_type) { :passport_card }
+
+          it 'proceeds to the next page with valid info' do
+            perform_in_browser(:mobile) do
+              visit_idp_from_oidc_sp_with_ial2
+              sign_in_and_2fa_user(user)
+
+              complete_doc_auth_steps_before_hybrid_handoff_step
+
+              expect(page).to have_current_path(idv_choose_id_type_url)
+              choose(t('doc_auth.forms.id_type_preference.passport_card'))
+              click_on t('forms.buttons.continue')
+
+              expect(page).to have_current_path(idv_socure_document_capture_url)
+              expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
+
+              @mrz_stub = stub_request(:post, IdentityConfig.store.dos_passport_mrz_endpoint)
+                .with(body: hash_including(category: 'card'))
+                .to_return_json({ status: 200, body: { response: 'NO' } })
+              click_idv_continue
+              socure_docv_upload_documents(
+                docv_transaction_token: @docv_transaction_token,
+              )
+              visit idv_socure_document_capture_update_path
+
+              expect(page).to have_current_path(
+                idv_socure_document_capture_errors_url(
+                  transaction_token: @docv_transaction_token,
+                ),
+              )
+
+              expect(page).to have_content(t('doc_auth.errors.rate_limited_heading'))
+              expect(page).to have_content(t('doc_auth.info.review_passport'))
+
+              click_on t('idv.failure.button.warning')
+
+              remove_request_stub(@mrz_stub)
+
+              expect(page).to have_current_path(idv_socure_document_capture_url)
+              expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_id'))
+
+              stub_request(:post, IdentityConfig.store.dos_passport_mrz_endpoint)
+                .with(body: hash_including(category: 'card'))
+                .to_return_json({ status: 200, body: { response: 'YES' } })
+              click_idv_continue
+              socure_docv_upload_documents(
+                docv_transaction_token: @docv_transaction_token,
+              )
+              visit idv_socure_document_capture_update_path
+
+              expect(page).to have_current_path(idv_ssn_url)
+
+              expect(fake_analytics).to have_logged_event(
+                :idv_socure_document_request_submitted,
+              )
+              expect(fake_analytics).to have_logged_event(
+                :idv_socure_verification_data_requested,
+              )
+              expect(fake_analytics).to have_logged_event(
+                'IdV: doc auth image upload vendor pii validation',
+              )
+
+              fill_out_ssn_form_ok
+              click_idv_continue
+            end
           end
         end
 

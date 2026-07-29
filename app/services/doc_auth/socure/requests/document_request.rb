@@ -35,8 +35,8 @@ module DocAuth
 
           {
             config: {
-              documentType: document_type_requested,
-              redirect: redirect,
+              documentType: document_type,
+              redirect:,
               language: lang(language),
               useCaseKey: use_case_key,
             },
@@ -79,7 +79,7 @@ module DocAuth
           end
         end
 
-        def document_type_requested
+        def document_type
           return PASSPORT_DOCUMENT_TYPE if document_capture_session.passport_requested?
           return MDL_DOCUMENT_TYPE if document_capture_session.mdl_requested?
 

@@ -4,7 +4,14 @@ module SocureDocvFixtures
   class << self
     def pass_json(reason_codes: nil, document_type: :license)
       raw = read_fixture_file_at_path(
-        document_type == :passport ? 'passport_pass.json' : 'license_pass.json',
+        case document_type
+        when :passport
+          'passport_pass.json'
+        when :passport_card
+          'passport_card_pass.json'
+        else
+          'license_pass.json'
+        end,
       )
       body = JSON.parse(raw)
       if reason_codes

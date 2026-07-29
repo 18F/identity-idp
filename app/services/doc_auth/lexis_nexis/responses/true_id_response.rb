@@ -61,7 +61,7 @@ module DocAuth
         def error_messages
           return {} if successful_result?
 
-          if passport_card_detected? && !passport_cards_supported
+          if passport_card_detected? # && !passport_cards_supported
             { passport_card: I18n.t('doc_auth.errors.doc.doc_type_check') }
           elsif id_type.present? && !expected_document_type_received?
             { unexpected_id_type: true, expected_id_type: expected_id_type }

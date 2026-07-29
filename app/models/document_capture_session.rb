@@ -17,6 +17,7 @@ class DocumentCaptureSession < ApplicationRecord
     Idp::Constants::DocumentTypes::STATE_ID_CARD => 0,
     Idp::Constants::DocumentTypes::PASSPORT => 1,
     Idp::Constants::DocumentTypes::MDL => 3,
+    Idp::Constants::DocumentTypes::PASSPORT_CARD => 4,
   }
 
   def load_result
@@ -173,8 +174,12 @@ class DocumentCaptureSession < ApplicationRecord
     update!(ocr_confirmation_pending: false)
   end
 
-  def passport_requested?
+  def passport_book_requested?
     document_type_requested == Idp::Constants::DocumentTypes::PASSPORT
+  end
+
+  def passport_card_requested?
+    document_type_requested == Idp::Constants::DocumentTypes::PASSPORT_CARD
   end
 
   def passport_cards_supported?
@@ -188,15 +193,36 @@ class DocumentCaptureSession < ApplicationRecord
     false
   end
 
-  def request_passport!(passport_cards_supported: false)
+  def request_passport_book!
     attrs = {
-      passport_status: nil,
       document_type_requested: Idp::Constants::DocumentTypes::PASSPORT,
-      doc_auth_vendor: nil,
-      passport_cards_supported:,
-    }.merge(clear_socure_attributes)
+    }
 
-    update!(attrs) if !passport_requested?
+    unless passport_requested?
+      attrs.merge!(
+        doc_auth_vendor: nil,
+        passport_status: nil,
+        **clear_socure_attributes,
+      )
+    end
+
+    update!(attrs) if !passport_book_requested?
+  end
+
+  def request_passport_card!
+    attrs = {
+      document_type_requested: Idp::Constants::DocumentTypes::PASSPORT_CARD,
+    }
+
+    unless passport_requested?
+      attrs.merge!(
+        doc_auth_vendor: nil,
+        passport_status: nil,
+        **clear_socure_attributes,
+      )
+    end
+
+    update!(attrs) if !passport_card_requested?
   end
 
   def request_state_id!
@@ -221,6 +247,10 @@ class DocumentCaptureSession < ApplicationRecord
     }.merge!(clear_socure_attributes)
 
     update!(attrs) if !mdl_requested?
+  end
+
+  def passport_requested?
+    passport_book_requested? || passport_card_requested?
   end
 
   def mdl_requested?

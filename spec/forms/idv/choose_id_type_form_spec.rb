@@ -1,7 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe Idv::ChooseIdTypeForm do
-  let(:subject) { Idv::ChooseIdTypeForm.new }
+  let(:passport_cards_enabled) { true }
+  let(:subject) { Idv::ChooseIdTypeForm.new(passport_cards_enabled:) }
 
   describe '#submit' do
     allowed_id_types =
@@ -26,18 +27,8 @@ RSpec.describe Idv::ChooseIdTypeForm do
         { choose_id_type_preference: Idp::Constants::DocumentTypes::PASSPORT_CARD }
       end
 
-      context 'when passport cards are enabled' do
-        let(:subject) { Idv::ChooseIdTypeForm.new(passport_cards_enabled: true) }
-
-        it 'returns a successful form response' do
-          result = subject.submit(params)
-
-          expect(result.success?).to eq(true)
-          expect(result.errors).to be_empty
-        end
-      end
-
       context 'when passport cards are not enabled' do
+        let(:passport_cards_enabled) { false }
         it 'returns a failed form response' do
           result = subject.submit(params)
 

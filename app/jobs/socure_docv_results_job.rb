@@ -332,7 +332,8 @@ class SocureDocvResultsJob < ApplicationJob
     response = mrz_client.fetch
 
     analytics.idv_dos_passport_verification(
-      document_type_requested:,
+      document_type_requested: document_capture_session.document_type_requested,
+      category: mrz_client.category,
       remaining_submit_attempts:,
       submit_attempts:,
       user_id: user_uuid,
@@ -345,17 +346,6 @@ class SocureDocvResultsJob < ApplicationJob
     )
 
     response
-  end
-
-  def document_type_requested
-    case document_capture_session.document_type_requested
-    when Idp::Constants::DocumentTypes::PASSPORT
-      DocAuth::Socure::DocumentTypes::PASSPORT
-    when Idp::Constants::DocumentTypes::DRIVERS_LICENSE
-      DocAuth::Socure::DocumentTypes::DRIVERS_LICENSE
-    when Idp::Constants::DocumentTypes::MDL
-      DocAuth::Socure::DocumentTypes::DIGITAL_ID
-    end
   end
 
   def user_uuid

@@ -380,7 +380,12 @@ RSpec.describe Idv::ApiImageUploadForm do
             Idp::Constants::MOCK_IDV_APPLICANT_WITH_PASSPORT
           end
           let(:document_capture_session_result) { document_capture_session.reload.load_result }
-          let(:mrz_request) { instance_double(DocAuth::Dos::Requests::MrzRequest) }
+          let(:mrz_request) do
+            instance_double(
+              DocAuth::Dos::Requests::MrzRequest,
+              category: pii[:document_type_received] == 'passport_card' ? :card : :book,
+            )
+          end
           let(:mrz_response) do
             DocAuth::Response.new(
               success: true,
@@ -1418,6 +1423,7 @@ RSpec.describe Idv::ApiImageUploadForm do
             document_type_requested: document_type,
             correlation_id_received: 'something else',
             correlation_id_sent: 'something',
+            category: :book,
             errors: { passport: 'invalid MRZ' },
           )
         end
@@ -1451,6 +1457,7 @@ RSpec.describe Idv::ApiImageUploadForm do
               document_type_requested: document_type,
               correlation_id_received: 'something else',
               correlation_id_sent: 'something',
+              category: :book,
               error_code: 'ERR',
               error_message: 'issues @ State',
               error_reason: 'just because',
@@ -1528,6 +1535,7 @@ RSpec.describe Idv::ApiImageUploadForm do
             document_type_requested: document_type,
             correlation_id_received: 'something else',
             correlation_id_sent: 'something',
+            category: :book,
             errors: {},
           )
         end

@@ -15,10 +15,6 @@ class Idv::ChooseIdTypePresenter
     false
   end
 
-  def passport_card_available?
-    true
-  end
-
   def step_indicator_steps
     Idv::StepIndicatorConcern::STEP_INDICATOR_STEPS
   end

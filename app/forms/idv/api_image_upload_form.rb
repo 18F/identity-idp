@@ -201,10 +201,10 @@ module Idv
           image_source: image_source,
           # autocapture no longer crops the images
           images_cropped: false, # acuant_sdk_autocaptured_id?,
-          user_uuid: user_uuid,
-          uuid_prefix: uuid_prefix,
-          liveness_checking_required: liveness_checking_required,
-          document_type_requested: document_type_requested,
+          user_uuid:,
+          uuid_prefix:,
+          liveness_checking_required:,
+          document_type_requested:,
           passport_requested: document_capture_session.passport_requested?,
           passport_cards_supported: document_capture_session.passport_cards_supported?,
         }
@@ -270,7 +270,7 @@ module Idv
         )
       end
       mrz_client = IdentityConfig.store.doc_auth_mock_dos_api ?
-                     DocAuth::Mock::DosPassportApiClient.new(client_response) :
+                     DocAuth::Mock::DosPassportApiClient.new(client_response, id_type:) :
                      DocAuth::Dos::Requests::MrzRequest.new(
                        mrz: client_response.pii_from_doc.mrz,
                        id_type:,
@@ -279,6 +279,7 @@ module Idv
 
       analytics.idv_dos_passport_verification(
         document_type_requested:,
+        category: mrz_client.category,
         remaining_submit_attempts:,
         submit_attempts:,
         user_id: user_uuid,
