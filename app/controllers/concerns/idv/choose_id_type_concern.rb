@@ -88,8 +88,7 @@ module Idv
     end
 
     def passports_enabled?
-      IdentityConfig.store.doc_auth_passports_enabled ||
-        document_capture_session.passport_cards_supported?
+      IdentityConfig.store.doc_auth_passports_enabled
     end
 
     def mdl_enabled?

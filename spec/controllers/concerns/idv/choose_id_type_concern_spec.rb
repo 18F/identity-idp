@@ -333,7 +333,7 @@ RSpec.describe Idv::ChooseIdTypeConcern, :controller do
 
     context 'when passports are disabled but passport card is enabled' do
       let(:document_type_requested) { Idp::Constants::DocumentTypes::PASSPORT }
-      let(:passport_cards_suported) { true }
+      let(:passport_cards_supported) { true }
       before do
         allow(IdentityConfig.store).to receive(:doc_auth_passports_enabled)
           .and_return(false)
