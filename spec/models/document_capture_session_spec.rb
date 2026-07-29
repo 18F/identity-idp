@@ -607,6 +607,28 @@ RSpec.describe DocumentCaptureSession do
       end
     end
 
+    context 'when passport card was requested before' do
+      it 'clears the socure attributes' do
+        record = build(
+          :document_capture_session,
+          document_type_requested: Idp::Constants::DocumentTypes::PASSPORT_CARD,
+          doc_auth_vendor: 'a vendor',
+          socure_docv_capture_app_url: 'some-url',
+          socure_docv_transaction_token: '12345',
+        )
+
+        record.request_passport_book!
+
+        expect(record).to have_attributes(
+          passport_status: nil,
+          document_type_requested: Idp::Constants::DocumentTypes::PASSPORT,
+          doc_auth_vendor: 'a vendor',
+          socure_docv_capture_app_url: 'some-url',
+          socure_docv_transaction_token: '12345',
+        )
+      end
+    end
+
     context 'when state_id was requested before' do
       it 'clears the socure attributes' do
         record = build(
