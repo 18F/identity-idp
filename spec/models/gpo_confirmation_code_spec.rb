@@ -49,5 +49,59 @@ RSpec.describe GpoConfirmationCode do
 
       expect(confirmation_code.expired?).to eq(true)
     end
+
+    context 'when the state is nil (legacy record)' do
+      it 'falls back to the non-contiguous/default max days' do
+        confirmation_code = build(
+          :gpo_confirmation_code,
+          state: nil,
+          code_sent_at: (IdentityConfig.store.usps_confirmation_max_days - 1).days.ago,
+        )
+
+        expect(confirmation_code.expired?).to eq(false)
+      end
+    end
+
+    context 'when the state is a contiguous US state' do
+      it 'expires after usps_confirmation_max_days_contiguous_states days' do
+        confirmation_code = build(
+          :gpo_confirmation_code,
+          state: 'VA',
+          code_sent_at: (IdentityConfig.store.usps_confirmation_max_days_contiguous_states -
+            1).days.ago,
+        )
+
+        expect(confirmation_code.expired?).to eq(false)
+
+        confirmation_code.code_sent_at =
+          (IdentityConfig.store.usps_confirmation_max_days_contiguous_states + 1).days.ago
+        expect(confirmation_code.expired?).to eq(true)
+      end
+    end
+
+    context 'when the state is a non-contiguous state or territory' do
+      it 'expires after usps_confirmation_max_days days' do
+        confirmation_code = build(
+          :gpo_confirmation_code,
+          state: 'PR',
+          code_sent_at: (IdentityConfig.store.usps_confirmation_max_days - 1).days.ago,
+        )
+
+        expect(confirmation_code.expired?).to eq(false)
+
+        confirmation_code.code_sent_at =
+          (IdentityConfig.store.usps_confirmation_max_days + 1).days.ago
+        expect(confirmation_code.expired?).to eq(true)
+      end
+    end
+  end
+
+  describe '#max_days' do
+    it 'delegates to GpoConfirmationMaxDaysCalculator' do
+      confirmation_code = build(:gpo_confirmation_code, state: 'CA')
+
+      expect(GpoConfirmationMaxDaysCalculator).to receive(:max_days_for_state).with('CA')
+      confirmation_code.max_days
+    end
   end
 end
