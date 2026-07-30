@@ -1720,6 +1720,7 @@ sign_up.agree_and_continue: 同意并继续
 sign_up.cancel.success: 你的账户已被删除。我们没有存储你的信息。
 sign_up.cancel.warning_header: 如果你现在取消：
 sign_up.completed.smiling_image_alt: 面带笑容的一个人加上绿勾说明成功了
+sign_up.information_sharing_html: 如需了解 %{app_name} 如何共享您的信息，请查阅我们的《%{link_html}》。
 sign_up.terms: 我已阅读并接受 %{app_name}
 simple_form.error_notification.default_message: 请仔细阅读以下问题：
 simple_form.no: 不

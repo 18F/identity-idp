@@ -1706,6 +1706,7 @@ sign_up.agree_and_continue: Agree and continue
 sign_up.cancel.success: Your account has been deleted. We did not save your information.
 sign_up.cancel.warning_header: 'If you cancel now:'
 sign_up.completed.smiling_image_alt: A smiling person with a green checkmark indicating success
+sign_up.information_sharing_html: To learn how %{app_name} shares your information, review our %{link_html}.
 sign_up.terms: I read and accept the %{app_name}
 simple_form.error_notification.default_message: 'Please review the problems below:'
 simple_form.no: 'No'

@@ -1718,6 +1718,7 @@ sign_up.agree_and_continue: Aceptar y continuar
 sign_up.cancel.success: Su cuenta fue eliminada. No guardamos su información.
 sign_up.cancel.warning_header: 'Si cancela ahora:'
 sign_up.completed.smiling_image_alt: Una persona sonriente con una marca de verificación verde
+sign_up.information_sharing_html: Para saber cómo %{app_name} comparte su información, consulte nuestra %{link_html}.
 sign_up.terms: Leí y acepto %{app_name}
 simple_form.error_notification.default_message: 'Revise los siguientes problemas:'
 simple_form.no: 'No'
