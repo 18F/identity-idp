@@ -34,11 +34,14 @@ $ make test_serial
 ```
 
 ### Errors related to Capybara in feature tests
-You may need to install _chromedriver_ or your chromedriver may be the wrong version (`$ which chromedriver && chromedriver --version`).
+Feature specs drive a real browser via Selenium. You do **not** need to install chromedriver manually: Selenium 4's built-in [Selenium Manager](https://www.selenium.dev/documentation/selenium_manager/) automatically downloads a chromedriver that matches your installed version of Chrome the first time a JavaScript spec runs. This requires Chrome to be installed and network access on first run.
 
-chromedriver can be installed using [Homebrew](https://formulae.brew.sh/cask/chromedriver) or [direct download](https://chromedriver.chromium.org/downloads). The version of chromedriver should correspond to the version of Chrome you have installed `(Chrome > About Google Chrome)`; if installing via Homebrew, make sure the versions match up. After your system recieves an automatic Chrome browser update you may have to upgrade (or reinstall) chromedriver.
+If you prefer to use a specific chromedriver binary, point Selenium at it by setting `CHROMEDRIVER_PATH` or placing it on your `PATH`. On macOS a manually downloaded chromedriver may be blocked by Gatekeeper ("Apple could not verify..."); clear the quarantine attribute with `xattr -c /path/to/chromedriver` before use.
 
-If `chromedriver -v` does not work you may have to [allow it](https://stackoverflow.com/questions/60362018/macos-catalinav-10-15-3-error-chromedriver-cannot-be-opened-because-the-de) with `xattr`.
+If JavaScript feature specs fail intermittently on navigation-timing assertions (for example, `expected "/sign_up/enter_email" to equal "/sign_up/verify_email"`), it is likely because the default Capybara wait time is intentionally `0` locally (see [#8013](https://github.com/18F/identity-idp/pull/8013)). Run the specs with the same wait time CI uses:
+```
+$ CAPYBARA_WAIT_TIME_SECONDS=5 bundle exec rspec spec/features/...
+```
 
 ### Errors related to _too many open files_
 You may receive connection errors similar to the following:

@@ -2494,6 +2494,7 @@ module AnalyticsEvents
   # @param [Integer] remaining_submit_attempts  how many attempts the user has left before
   #                  we rate limit them.
   # @param [String] document_type_requested The document type requested by user
+  # @param [String] category The category of the request
   # @param [String] correlation_id_received The correlation ID received in the response
   # @param [String] correlation_id_sent The correlation ID sent in the request
   # @param [String] exception The exception message if an exception occurred
@@ -2508,6 +2509,7 @@ module AnalyticsEvents
     submit_attempts:,
     remaining_submit_attempts:,
     document_type_requested:,
+    category:,
     response: nil,
     correlation_id_received: nil,
     correlation_id_sent: nil,
@@ -2526,6 +2528,7 @@ module AnalyticsEvents
       submit_attempts:,
       remaining_submit_attempts:,
       document_type_requested:,
+      category:,
       correlation_id_sent:,
       correlation_id_received:,
       error_code:,

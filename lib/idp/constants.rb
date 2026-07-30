@@ -34,10 +34,10 @@ module Idp
       MDL = 'mobile_drivers_license'
 
       PASSPORT_CARD_RESPONSES = ['Passport Card', 'PassportCard'].freeze
-      SUPPORTED_PASSPORT_TYPES = [PASSPORT].freeze
+      SUPPORTED_PASSPORT_TYPES = [PASSPORT, PASSPORT_CARD].freeze
       SUPPORTED_STATE_ID_TYPES = [DRIVERS_LICENSE, STATE_ID_CARD, IDENTIFICATION_CARD].freeze
       SUPPORTED_ID_TYPES = [*SUPPORTED_PASSPORT_TYPES, *SUPPORTED_STATE_ID_TYPES].freeze
-      PASSPORT_TYPES = [*SUPPORTED_PASSPORT_TYPES, PASSPORT_CARD].freeze
+      PASSPORT_TYPES = SUPPORTED_PASSPORT_TYPES
     end
 
     SUPPORTED_PASSPORT_ISSUING_COUNTRY_CODES = %w[US USA].freeze
@@ -103,6 +103,58 @@ module Idp
       MP
       PR
       VI
+    ].to_set.freeze
+
+    CONTIGUOUS_US_STATE_CODES = %w[
+      AL
+      AZ
+      AR
+      CA
+      CO
+      CT
+      DE
+      DC
+      FL
+      GA
+      ID
+      IL
+      IN
+      IA
+      KS
+      KY
+      LA
+      ME
+      MD
+      MA
+      MI
+      MN
+      MS
+      MO
+      MT
+      NE
+      NV
+      NH
+      NJ
+      NM
+      NY
+      NC
+      ND
+      OH
+      OK
+      OR
+      PA
+      RI
+      SC
+      SD
+      TN
+      TX
+      UT
+      VT
+      VA
+      WA
+      WV
+      WI
+      WY
     ].to_set.freeze
 
     DEFAULT_IAL = 1

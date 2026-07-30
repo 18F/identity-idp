@@ -25,7 +25,6 @@ If not using macOS:
     - [PostgreSQL](http://www.postgresql.org/download/)
     - [Redis 7+](http://redis.io/)
     - [Node.js v22](https://nodejs.org)
-    - [chromedriver](https://formulae.brew.sh/cask/chromedriver)
 
 1. You will need to install openssl version 1.1:
 

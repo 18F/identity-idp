@@ -4,12 +4,11 @@ class GpoReminderSender
   LOCAL_DATABASE_TIMEOUT = 60_000
 
   def send_emails(for_letters_sent_before)
-    reminder_eligible_range =
-      IdentityConfig.store.usps_confirmation_max_days.days.ago..for_letters_sent_before
     profiles_due_for_reminder(for_letters_sent_before).each do |profile|
       next if profile.user.active_profile
       profile.gpo_confirmation_codes.find_each do |gpo_code|
         next if gpo_code.reminder_sent_at
+        reminder_eligible_range = gpo_code.max_days.days.ago..for_letters_sent_before
         next unless reminder_eligible_range.cover?(gpo_code.created_at)
 
         # Only email the user if we have an eligible code.

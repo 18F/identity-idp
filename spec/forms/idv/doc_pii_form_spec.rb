@@ -68,7 +68,7 @@ RSpec.describe Idv::DocPiiForm do
       document_type_received: 'passport',
       issuing_country_code: 'USA',
       nationality_code: 'USA',
-      mrz: mrz,
+      mrz:,
     }
   end
   let(:nil_birth_place_pii) { good_passport_pii.merge(birth_place: nil) }
@@ -540,10 +540,8 @@ RSpec.describe Idv::DocPiiForm do
         it 'returns an unsuccessful result' do
           result = subject.submit
 
-          expect(result.success?).to eq(false)
-          expect(result.errors[:no_document]).to eq(
-            ['doc_auth.errors.general.no_liveness'],
-          )
+          expect(result.success?).to eq(true)
+          expect(result.errors).to be_empty
           expect(result.extra).to eq(
             attention_with_barcode: false,
             document_type_received: 'passport_card',

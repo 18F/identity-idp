@@ -322,7 +322,10 @@ class ActionAccount
             fraud_ops_tracker(profile:).idv_enrollment_complete(reproof:)
             UserEventCreator.new(current_user: user)
               .create_out_of_band_user_event(:account_verified)
-            UserAlerts::AlertUserAboutAccountVerified.call(profile: profile)
+            UserAlerts::AlertUserAboutAccountVerified.call(
+              profile: profile,
+              phone: MfaContext.new(user).phone_configuration&.phone,
+            )
 
             log_texts << log_text[:profile_activated]
           else

@@ -22,6 +22,7 @@ class GetUspsProofingResultsJob < ApplicationJob
   queue_as :long_running
 
   include IppHelper
+  include LocaleHelper
 
   def perform(_now)
     return unless job_can_run?
@@ -501,6 +502,7 @@ class GetUspsProofingResultsJob < ApplicationJob
       # send SMS and email
       send_enrollment_status_sms_notification(enrollment: enrollment)
       send_verified_email(enrollment:, visited_location_name: response['proofingPostOffice'])
+      send_account_verified_sms_notification(enrollment: enrollment)
       analytics(user: enrollment.user).idv_in_person_usps_proofing_results_job_email_initiated(
         **email_analytics_attributes(enrollment),
         email_type: 'Success',
@@ -685,6 +687,20 @@ class GetUspsProofingResultsJob < ApplicationJob
       InPerson::SendProofingNotificationJob.set(
         **notification_delivery_params(enrollment),
       ).perform_later(enrollment.id)
+    end
+  end
+
+  def send_account_verified_sms_notification(enrollment:)
+    phone = MfaContext.new(enrollment.user).phone_configuration&.phone
+    return if phone.blank?
+
+    with_user_locale(enrollment.user) do
+      Telephony.send_proofing_completion_confirmation(
+        to: phone,
+        country_code: Phonelib.parse(phone).country,
+        sp_or_app_name: enrollment.profile&.initiating_service_provider&.friendly_name.presence ||
+          APP_NAME,
+      )
     end
   end
 

@@ -9,16 +9,16 @@ module DocAuth
           @id_type = id_type
         end
 
-        private
-
-        attr_reader :mrz, :id_type
-
         def category
           if id_type == Idp::Constants::DocumentTypes::PASSPORT_CARD
             return :card
           end
           :book
         end
+
+        private
+
+        attr_reader :mrz, :id_type
 
         def http_method
           :post
@@ -35,6 +35,7 @@ module DocAuth
             correlation_id_sent: correlation_id,
             correlation_id_received: response.headers['X-Correlation-ID'],
             response: result[:response],
+            category:,
           }.compact
           case result[:response]
           when 'YES'

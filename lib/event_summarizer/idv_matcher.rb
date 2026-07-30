@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'active_support'
+require 'active_support/core_ext/object/blank'
 require 'active_support/hash_with_indifferent_access'
 require 'active_support/time'
 
@@ -54,7 +55,17 @@ module EventSummarizer
         name: 'Instant Verify',
         evaluator_module: EventSummarizer::VendorResultEvaluators::InstantVerify,
       },
+      'lexisnexis:instant_verify_ddp' => {
+        id: :instant_verify,
+        name: 'Instant Verify',
+        evaluator_module: EventSummarizer::VendorResultEvaluators::InstantVerify,
+      },
       'lexisnexis:phone_finder' => {
+        id: :phone_finder,
+        name: 'Phone Finder',
+        evaluator_module: EventSummarizer::VendorResultEvaluators::PhoneFinder,
+      },
+      'lexisnexis:phone_finder_ddp' => {
         id: :phone_finder,
         name: 'Phone Finder',
         evaluator_module: EventSummarizer::VendorResultEvaluators::PhoneFinder,
@@ -63,6 +74,34 @@ module EventSummarizer
         id: :aamva,
         name: 'AAMVA',
         evaluator_module: EventSummarizer::VendorResultEvaluators::Aamva,
+      },
+    }.freeze
+
+    RESOLUTION_SENTINELS = {
+      # phone_plugin.rb: earlier resolution/address stage did not pass, so phone was not attempted.
+      'ResolutionCannotPass' => {
+        type: :resolution_cannot_pass_skipped,
+        description: 'Phone check was skipped because identity resolution could not pass',
+      },
+      # phone_plugin.rb: no phone number was available to check.
+      'NoPhoneNumberAvailable' => {
+        type: :no_phone_number_available_skipped,
+        description: 'Phone check was skipped because no phone number was available',
+      },
+      # residential_address_plugin.rb: residential address verification was not required.
+      'ResidentialAddressNotRequired' => {
+        type: :residential_address_not_required_skipped,
+        description: 'Residential address verification was not required',
+      },
+      # aamva_plugin.rb
+      'UnsupportedJurisdiction' => {
+        type: :unsupported_jurisdiction_skipped,
+        description: 'State ID check was skipped for an unsupported jurisdiction',
+      },
+      # aamva_plugin.rb
+      'AamvaCheckSkipped' => {
+        type: :aamva_check_skipped,
+        description: 'State ID (AAMVA) check was skipped',
       },
     }.freeze
 
@@ -609,14 +648,28 @@ module EventSummarizer
       return if result.blank? || result['success']
 
       vendor_name = result['vendor_name'] || result.dig('vendor', 'vendor_name')
+
+      sentinel = RESOLUTION_SENTINELS[vendor_name]
+      if sentinel
+        add_significant_event(**sentinel, timestamp:)
+        return
+      end
+
       vendor = VENDORS[vendor_name] || UNKNOWN_VENDOR
       evaluator = vendor[:evaluator_module]
 
       if !evaluator.present?
+        vendor_label =
+          if vendor.equal?(UNKNOWN_VENDOR) && vendor_name.present?
+            "an unrecognized vendor (#{vendor_name})"
+          else
+            vendor[:name]
+          end
+
         add_significant_event(
           type: :"#{vendor[:id]}_request_failed",
           timestamp:,
-          description: "Request to #{vendor[:name]} failed.",
+          description: "Request to #{vendor_label} failed.",
         )
         return
       end

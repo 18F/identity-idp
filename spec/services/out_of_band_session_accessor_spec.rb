@@ -62,6 +62,29 @@ RSpec.describe OutOfBandSessionAccessor do
     end
   end
 
+  describe '#authentication_event_at' do
+    it 'loads the latest non-remember-device authentication event from the session' do
+      authentication_event_at = Time.zone.parse('2026-07-01 12:00:00')
+      write_out_of_band_user_session(
+        session_uuid:,
+        user_session: {
+          auth_events: [
+            {
+              auth_method: TwoFactorAuthenticatable::AuthMethod::SMS,
+              at: authentication_event_at,
+            },
+            {
+              auth_method: TwoFactorAuthenticatable::AuthMethod::REMEMBER_DEVICE,
+              at: Time.zone.now,
+            },
+          ],
+        },
+      )
+
+      expect(store.authentication_event_at).to eq(authentication_event_at)
+    end
+  end
+
   describe '#destroy' do
     it 'destroys the session' do
       writer_instance.put_pii(

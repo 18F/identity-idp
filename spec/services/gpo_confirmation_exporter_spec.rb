@@ -26,7 +26,7 @@ RSpec.describe GpoConfirmationExporter do
           address1: '123 Añy St',
           address2: 'Sté 123',
           city: 'Sömewhere',
-          state: 'KS',
+          state: 'PR',
           zipcode: '66666-1234',
           otp: 'ABC123',
           issuer: '',
@@ -40,7 +40,9 @@ RSpec.describe GpoConfirmationExporter do
 
   describe '#run' do
     before do
-      allow(IdentityConfig.store).to receive(:usps_confirmation_max_days).and_return(10)
+      allow(IdentityConfig.store).to receive(:usps_confirmation_max_days_contiguous_states)
+        .and_return(10)
+      allow(IdentityConfig.store).to receive(:usps_confirmation_max_days).and_return(15)
       allow(subject).to receive(:current_date).and_return(Time.utc(2018, 7, 6))
     end
 
@@ -48,7 +50,7 @@ RSpec.describe GpoConfirmationExporter do
       result = <<~HEREDOC
         01|2\r
         02|John Johnson|123 Sesame St|""|Anytown|WA|98021|ZYX987|July 6, 2018|July 9, 2018|#{service_provider.friendly_name}|#{IdentityConfig.store.domain_name}\r
-        02|Söme Öne|123 Añy St|Sté 123|Sömewhere|KS|66666-1234|ABC123|July 6, 2018|July 14, 2018|Login.gov|#{IdentityConfig.store.domain_name}\r
+        02|Söme Öne|123 Añy St|Sté 123|Sömewhere|PR|66666-1234|ABC123|July 6, 2018|July 19, 2018|Login.gov|#{IdentityConfig.store.domain_name}\r
       HEREDOC
 
       psv_contents = subject.run

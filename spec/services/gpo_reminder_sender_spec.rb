@@ -215,5 +215,23 @@ RSpec.describe GpoReminderSender do
 
       include_examples 'sends emails', expected_number_of_emails: 1
     end
+
+    context 'when the letter was sent to a contiguous US state' do
+      before { gpo_confirmation_code.update(state: 'VA') }
+
+      context 'and the code expired under the shorter contiguous-state window' do
+        let(:code_sent_at) do
+          (IdentityConfig.store.usps_confirmation_max_days_contiguous_states + 1).days.ago
+        end
+
+        include_examples 'sends no emails'
+      end
+
+      context 'and the code is still within the contiguous-state window' do
+        let(:code_sent_at) { time_due_for_reminder }
+
+        include_examples 'sends emails', expected_number_of_emails: 1
+      end
+    end
   end
 end

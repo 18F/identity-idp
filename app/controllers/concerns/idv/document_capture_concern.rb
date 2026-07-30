@@ -69,7 +69,8 @@ module Idv
 
     def mrz_requirement_met?
       return true if !document_capture_session.passport_requested?
-      return false if document_type_received != 'passport'
+      return false unless Idp::Constants::DocumentTypes::SUPPORTED_PASSPORT_TYPES
+        .include? document_type_received
 
       stored_result.mrz_status == :pass
     end
@@ -126,7 +127,7 @@ module Idv
       )
     end
 
-    def track_document_request_event(document_request:, document_response:, timer:)
+    def track_socure_document_request_event(document_request:, document_response:, timer:)
       document_request_body = JSON.parse(document_request.body, symbolize_names: true)[:config]
       response_hash = document_response.to_h
       log_extras = {
@@ -168,8 +169,9 @@ module Idv
       when Idp::Constants::DocumentTypes::STATE_ID_CARD
         Idp::Constants::DocumentTypes::SUPPORTED_STATE_ID_TYPES
           .include?(document_type_received)
-      when Idp::Constants::DocumentTypes::PASSPORT
-        document_type_received == Idp::Constants::DocumentTypes::PASSPORT
+      when *Idp::Constants::DocumentTypes::SUPPORTED_PASSPORT_TYPES
+        Idp::Constants::DocumentTypes::SUPPORTED_PASSPORT_TYPES
+          .include?(document_type_received)
       when Idp::Constants::DocumentTypes::MDL
         mdl_received?
       else
