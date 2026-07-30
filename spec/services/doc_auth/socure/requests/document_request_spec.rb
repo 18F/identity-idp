@@ -1,7 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe DocAuth::Socure::Requests::DocumentRequest do
-  let(:document_capture_session) { build(:document_capture_session) }
+  let(:document_type_requested) { nil }
+  let(:document_capture_session) { build(:document_capture_session, document_type_requested:) }
   let(:redirect_url) { 'https://idv.test' }
   let(:language) { :en }
   let(:idv_socure_docv_flow_id_only) { 'id_only_flow' }
@@ -19,7 +20,7 @@ RSpec.describe DocAuth::Socure::Requests::DocumentRequest do
   end
 
   describe '#fetch' do
-    let(:document_type) { 'license' }
+    let(:document_type) { DocAuth::Socure::Requests::DocumentRequest::DRIVERS_LICENSE_DOCUMENT_TYPE }
     let(:fake_socure_endpoint) { 'https://fake-socure.test/' }
     let(:fake_socure_document_capture_app_url) { 'https://verify.socure.us/something' }
     let(:docv_transaction_token) { 'fake docv transaction token' }
@@ -73,6 +74,42 @@ RSpec.describe DocAuth::Socure::Requests::DocumentRequest do
 
       expect(WebMock).to have_requested(:post, fake_socure_endpoint)
         .with(body: JSON.generate(expected_request_body))
+    end
+
+    context 'when a passport is requested' do
+      let(:document_type_requested) { Idp::Constants::DocumentTypes::PASSPORT }
+      let(:document_type) { DocAuth::Socure::Requests::DocumentRequest::PASSPORT_DOCUMENT_TYPE }
+
+      it 'documentType is a passport' do
+        document_request.fetch
+
+        expect(WebMock).to have_requested(:post, fake_socure_endpoint)
+          .with(body: JSON.generate(expected_request_body))
+      end
+    end
+
+    context 'when an passport card is requested' do
+      let(:document_type_requested) { Idp::Constants::DocumentTypes::PASSPORT_CARD }
+      let(:document_type) { DocAuth::Socure::Requests::DocumentRequest::DRIVERS_LICENSE_DOCUMENT_TYPE }
+
+      it 'doucmentType is a passport' do
+        document_request.fetch
+
+        expect(WebMock).to have_requested(:post, fake_socure_endpoint)
+          .with(body: JSON.generate(expected_request_body))
+      end
+    end
+
+    context 'when a mobile drivers license is requested' do
+      let(:document_type_requested) { Idp::Constants::DocumentTypes::MDL }
+      let(:document_type) { DocAuth::Socure::Requests::DocumentRequest::MDL_DOCUMENT_TYPE }
+
+      it 'document type is digitalId' do
+        document_request.fetch
+
+        expect(WebMock).to have_requested(:post, fake_socure_endpoint)
+          .with(body: JSON.generate(expected_request_body))
+      end
     end
 
     it 'passes the response through' do
