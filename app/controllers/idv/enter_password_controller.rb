@@ -177,11 +177,9 @@ module Idv
 
     def proofing_completion_phone_number
       if idv_session.address_verification_mechanism == 'phone'
-        idv_session.user_phone_confirmation_session&.phone
-      elsif idv_session.phone_for_mobile_flow.present?
-        idv_session.phone_for_mobile_flow
-      else
-        current_user.default_phone_configuration&.formatted_phone
+        idv_session.user_phone_confirmation_session&.phone.presence ||
+          idv_session.phone_for_mobile_flow.presence ||
+          current_user.default_phone_configuration&.formatted_phone
       end
     end
 

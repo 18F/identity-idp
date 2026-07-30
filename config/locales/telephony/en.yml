@@ -66,4 +66,4 @@ en:
       sms: |-
         %{app_name}: Identity verified on %{proof_date} for %{sp_or_app_name}.
 
-        Not you? Sign in, update your password and authentication methods, report fraud: @%{contact_url}
+        Not you? Sign in, update your password and authentication methods, report fraud: %{contact_url}

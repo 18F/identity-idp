@@ -62,4 +62,4 @@ fr:
       sms: |-
         %{app_name}: Identité vérifiée le %{proof_date} pour %{sp_or_app_name}.
 
-        Ce n'est pas vous ? Connectez-vous, mettez à jour votre mot de passe et vos méthodes d'authentification, ou signalez une fraude: @%{contact_url}
+        Ce n'est pas vous ? Connectez-vous, mettez à jour votre mot de passe et vos méthodes d'authentification, ou signalez une fraude: %{contact_url}

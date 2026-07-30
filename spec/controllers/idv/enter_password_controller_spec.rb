@@ -449,9 +449,9 @@ RSpec.describe Idv::EnterPasswordController do
           )
         end
 
-        context 'when the user completed verification via the hybrid/mobile flow' do
+        context 'when there is no phone confirmation session' do
           before do
-            subject.idv_session.address_verification_mechanism = nil
+            subject.idv_session.user_phone_confirmation_session = nil
             subject.idv_session.phone_for_mobile_flow = '+1 202-555-5555'
           end
 
@@ -469,7 +469,7 @@ RSpec.describe Idv::EnterPasswordController do
 
         context 'when there is no phone confirmation session or mobile flow phone' do
           before do
-            subject.idv_session.address_verification_mechanism = nil
+            subject.idv_session.user_phone_confirmation_session = nil
             subject.idv_session.phone_for_mobile_flow = nil
           end
 

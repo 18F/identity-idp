@@ -63,4 +63,4 @@ zh:
       sms: |-
         %{app_name}: 已于 %{proof_date} 为 %{sp_or_app_name}.
 
-        不是您本人？请登录、更新密码及验证方式，或举报欺诈行为: @%{contact_url}
+        不是您本人？请登录、更新密码及验证方式，或举报欺诈行为: %{contact_url}
