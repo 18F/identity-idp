@@ -92,7 +92,7 @@ RSpec.describe DocAuth::Socure::Requests::DocumentRequest do
       let(:document_type_requested) { Idp::Constants::DocumentTypes::PASSPORT_CARD }
       let(:document_type) { DocAuth::Socure::Requests::DocumentRequest::DRIVERS_LICENSE_DOCUMENT_TYPE }
 
-      it 'doucmentType is a passport' do
+      it 'documentType is a passport' do
         document_request.fetch
 
         expect(WebMock).to have_requested(:post, fake_socure_endpoint)

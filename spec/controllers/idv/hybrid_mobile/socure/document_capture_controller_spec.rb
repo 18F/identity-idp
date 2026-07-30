@@ -9,14 +9,14 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
   let(:stored_result) { nil }
   let(:socure_docv_enabled) { true }
   let(:socure_docv_verification_data_test_mode) { false }
-
+  let(:document_type_requested) { Idp::Constants::DocumentTypes::STATE_ID_CARD }
   let(:document_capture_session) do
     create(
       :document_capture_session,
       user:,
       requested_at: Time.zone.now,
       doc_auth_vendor: idv_vendor,
-      document_type_requested: Idp::Constants::DocumentTypes::STATE_ID_CARD,
+      document_type_requested:,
     )
   end
   let(:document_capture_session_uuid) { document_capture_session&.uuid }
@@ -155,6 +155,75 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
         it 'sets DocumentCaptureSession socure_docv_capture_app_url value' do
           document_capture_session.reload
           expect(document_capture_session.socure_docv_capture_app_url).to eq(socure_capture_app_url)
+        end
+
+        context 'when document type requested is a passport' do
+          let(:document_type_requested) { 'passport' }
+          it 'requested documentType is passsport' do
+            expect(WebMock).to have_requested(:post, fake_socure_endpoint)
+              .with(
+                body: JSON.generate(
+                  {
+                    config: {
+                      documentType: 'passport',
+                      redirect: {
+                        method: 'GET',
+                        url: idv_hybrid_mobile_socure_document_capture_update_url,
+                      },
+                      language: expected_language,
+                      useCaseKey: IdentityConfig.store.idv_socure_docv_flow_id_only,
+                    },
+                    customerUserId: user.uuid,
+                  },
+                ),
+              )
+          end
+        end
+
+        context 'when document type requested is a passport card' do
+          let(:document_type_requested) { 'passport_card' }
+          it 'requested documentType is license' do
+            expect(WebMock).to have_requested(:post, fake_socure_endpoint)
+              .with(
+                body: JSON.generate(
+                  {
+                    config: {
+                      documentType: 'license',
+                      redirect: {
+                        method: 'GET',
+                        url: idv_hybrid_mobile_socure_document_capture_update_url,
+                      },
+                      language: expected_language,
+                      useCaseKey: IdentityConfig.store.idv_socure_docv_flow_id_only,
+                    },
+                    customerUserId: user.uuid,
+                  },
+                ),
+              )
+          end
+        end
+
+        context 'when document type requested is a mobile drivers license' do
+          let(:document_type_requested) { Idp::Constants::DocumentTypes::MDL }
+          it 'requested documentType is digital_id' do
+            expect(WebMock).to have_requested(:post, fake_socure_endpoint)
+              .with(
+                body: JSON.generate(
+                  {
+                    config: {
+                      documentType: 'digital_id',
+                      redirect: {
+                        method: 'GET',
+                        url: idv_hybrid_mobile_socure_document_capture_update_url,
+                      },
+                      language: expected_language,
+                      useCaseKey: IdentityConfig.store.idv_socure_docv_flow_id_only,
+                    },
+                    customerUserId: user.uuid,
+                  },
+                ),
+              )
+          end
         end
 
         context 'language is english' do
