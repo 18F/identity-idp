@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe 'sign_up/completions/show.html.erb' do
+  include LinkHelper
+
   let(:user) { create(:user, :proofed) }
   let(:service_provider) { create(:service_provider) }
   let(:selected_email_id) { user.email_addresses.first.id }
@@ -58,6 +60,20 @@ RSpec.describe 'sign_up/completions/show.html.erb' do
     expect(rendered).to have_link(
       t('links.cancel'),
       href: sign_up_completed_cancel_path,
+    )
+  end
+
+  it 'shows how the information will be shared with the sp' do
+    render
+    expect(rendered).to include(
+      t(
+        'sign_up.information_sharing_html',
+        app_name: APP_NAME,
+        link_html: new_tab_link_to(
+          t('notices.privacy.privacy_act_statement'),
+          MarketingSite.privacy_act_statement_url,
+        ),
+      ),
     )
   end
 

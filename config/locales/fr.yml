@@ -1703,6 +1703,7 @@ sign_up.agree_and_continue: Accepter et continuer
 sign_up.cancel.success: Votre compte a été supprimé. Nous n’avons pas sauvegardé vos informations.
 sign_up.cancel.warning_header: 'Si vous annulez maintenant :'
 sign_up.completed.smiling_image_alt: Une personne souriante avec une coche verte indiquant la réussite de la procédure
+sign_up.information_sharing_html: Pour savoir comment %{app_name} partage vos informations, consultez notre déclaration relative à la %{link_html}.
 sign_up.terms: J’ai lu et j’accepte les %{app_name}
 simple_form.error_notification.default_message: 'Veuillez examiner les problèmes ci-dessous :'
 simple_form.no: Non
@@ -1791,7 +1792,7 @@ titles.sign_in: Se connecter
 titles.sign_up.completion_consent_expired_auth_only: Cela fait un an que vous nous avez donné votre consentement pour partager vos informations
 titles.sign_up.completion_consent_expired_idv: Cela fait un an que vous nous avez donné votre consentement pour partager votre identité vérifiée
 titles.sign_up.completion_first_sign_in: Continuer vers %{sp}
-titles.sign_up.completion_idv: Connecter vos informations vérifiées à %{sp}
+titles.sign_up.completion_idv: Connecter vos informations à %{sp}
 titles.sign_up.completion_new_attributes: '%{sp} demande de nouvelles informations'
 titles.sign_up.completion_new_sp: Vous vous connectez pour la première fois
 titles.sign_up.completion_reverified_consent: Partager vos informations mises à jour avec %{sp}
