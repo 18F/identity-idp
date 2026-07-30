@@ -2169,41 +2169,57 @@ RSpec.describe User do
       end
 
       before do
+        allow(IdentityConfig.store).to receive(:historical_attempts_api_enabled) {
+          historical_attempts_api_enabled
+        }
         user_proofing_event.write_events(
           attempt_events:, password:,
           personal_key: normalizer.normalize(personal_key)
         )
       end
 
-      it 'deletes the event bundle' do
-        expect(user_proofing_event.decrypt_events(password:)).to eq(attempt_events.to_json)
-        user.destroy
+      describe 'historical_attempts_api_enabled is false' do
+        let(:historical_attempts_api_enabled) { false }
 
-        expect(user_proofing_event.decrypt_events(password:)).to be nil
+        it 'does not attempt to delete the event bundle' do
+          expect(EncryptedDocStorage::AttemptDataHandler).not_to receive(:new)
+          user.destroy
+        end
       end
-      describe 'when a user has multiple profiles with data' do
-        let(:profile1) do
-          create(:profile, :deactivated, user:, encrypted_attempts_file_reference: 'second-test')
-        end
-        let(:deactivated_user_proofing_event) { create(:user_proofing_event, profile: profile1) }
 
-        before do
-          deactivated_user_proofing_event.write_events(
-            attempt_events:, password:,
-            personal_key: normalizer.normalize(personal_key)
-          )
-        end
+      describe 'historical_attempts_api_enabled is true' do
+        let(:historical_attempts_api_enabled) { true }
 
-        it 'deletes the event bundles for every profile' do
+        it 'deletes the event bundle' do
           expect(user_proofing_event.decrypt_events(password:)).to eq(attempt_events.to_json)
-          expect(deactivated_user_proofing_event.decrypt_events(password:)).to eq(
-            attempt_events.to_json,
-          )
-
           user.destroy
 
           expect(user_proofing_event.decrypt_events(password:)).to be nil
-          expect(deactivated_user_proofing_event.decrypt_events(password:)).to be nil
+        end
+        describe 'when a user has multiple profiles with data' do
+          let(:profile1) do
+            create(:profile, :deactivated, user:, encrypted_attempts_file_reference: 'second-test')
+          end
+          let(:deactivated_user_proofing_event) { create(:user_proofing_event, profile: profile1) }
+
+          before do
+            deactivated_user_proofing_event.write_events(
+              attempt_events:, password:,
+              personal_key: normalizer.normalize(personal_key)
+            )
+          end
+
+          it 'deletes the event bundles for every profile' do
+            expect(user_proofing_event.decrypt_events(password:)).to eq(attempt_events.to_json)
+            expect(deactivated_user_proofing_event.decrypt_events(password:)).to eq(
+              attempt_events.to_json,
+            )
+
+            user.destroy
+
+            expect(user_proofing_event.decrypt_events(password:)).to be nil
+            expect(deactivated_user_proofing_event.decrypt_events(password:)).to be nil
+          end
         end
       end
     end
