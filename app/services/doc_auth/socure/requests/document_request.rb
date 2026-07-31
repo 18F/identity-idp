@@ -80,7 +80,7 @@ module DocAuth
         end
 
         def document_type
-          return PASSPORT_DOCUMENT_TYPE if document_capture_session.passport_requested?
+          return PASSPORT_DOCUMENT_TYPE if document_capture_session.passport_book_requested?
           return MDL_DOCUMENT_TYPE if document_capture_session.mdl_requested?
 
           DRIVERS_LICENSE_DOCUMENT_TYPE
