@@ -1569,9 +1569,7 @@ RSpec.describe Profile do
   end
 
   describe '#reencrypt_user_proofing_events' do
-    let(:dir_path) do
-      Rails.root.join('tmp', 'encrypted_attempt_events', 'attempt_events', profile.user.uuid)
-    end
+    let(:dir_path) { Rails.root.join('tmp', 'attempt_events', profile.user.uuid) }
     let(:personal_key) { 'personal-key' }
 
     after do
