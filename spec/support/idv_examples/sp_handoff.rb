@@ -21,7 +21,7 @@ RSpec.shared_examples 'sp handoff after identity verification' do |sp|
       acknowledge_and_confirm_personal_key
 
       expect(page).to have_content t(
-        'titles.sign_up.completion_ial2',
+        'titles.sign_up.completion_idv',
         sp: 'Test SP',
       )
       expect_csp_headers_to_be_present if sp == :oidc
@@ -51,7 +51,7 @@ RSpec.shared_examples 'sp handoff after identity verification' do |sp|
       acknowledge_and_confirm_personal_key
 
       expect(page).to have_content t(
-        'titles.sign_up.completion_ial2',
+        'titles.sign_up.completion_idv',
         sp: 'Test SP',
       )
       expect_csp_headers_to_be_present if sp == :oidc

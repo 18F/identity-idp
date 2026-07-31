@@ -37,7 +37,7 @@ RSpec.describe CompletionsPresenter do
       :verified_at
     ]
   end
-  let(:ial2_requested) { false }
+  let(:idv_requested) { false }
   let(:completion_context) { :new_sp }
 
   subject(:presenter) do
@@ -46,23 +46,23 @@ RSpec.describe CompletionsPresenter do
       current_sp:,
       decrypted_pii:,
       requested_attributes:,
-      ial2_requested:,
+      idv_requested:,
       completion_context:,
       selected_email_id:,
     )
   end
 
   describe '#heading' do
-    context 'ial2 sign in' do
-      let(:ial2_requested) { true }
+    context 'idv sign in' do
+      let(:idv_requested) { true }
 
-      it 'renders the ial2 message' do
+      it 'renders the idv message' do
         expect(presenter.heading).to eq(
-          I18n.t('titles.sign_up.completion_ial2', sp: current_sp.friendly_name),
+          I18n.t('titles.sign_up.completion_idv', sp: current_sp.friendly_name),
         )
       end
 
-      context 'renders the ial2 consent message if consent expired' do
+      context 'renders the idv consent message if consent expired' do
         let(:identities) do
           [
             build(
@@ -90,7 +90,7 @@ RSpec.describe CompletionsPresenter do
       end
     end
 
-    context 'consent has expired since the last sign in with ial1' do
+    context 'consent has expired since the last sign in with auth only' do
       let(:identities) do
         [
           build(
@@ -192,8 +192,8 @@ RSpec.describe CompletionsPresenter do
       end
     end
 
-    describe 'ial2' do
-      let(:ial2_requested) { true }
+    describe 'idv' do
+      let(:idv_requested) { true }
 
       context 'consent has expired since the last sign in' do
         let(:identities) do
@@ -238,7 +238,7 @@ RSpec.describe CompletionsPresenter do
         end
         let(:completion_context) { :reverified_after_consent }
 
-        it 'renders the reverified IAL2 consent intro message' do
+        it 'renders the reverified IDV consent intro message' do
           expect(presenter.intro).to eq(
             t(
               'help_text.requested_attributes.ial2_reverified_consent_info_html',
@@ -253,7 +253,7 @@ RSpec.describe CompletionsPresenter do
   describe '#pii' do
     subject(:pii) { presenter.pii }
 
-    context 'ial1' do
+    context 'auth only' do
       context 'with a subset of attributes requested' do
         let(:requested_attributes) { [:email] }
 
@@ -291,8 +291,8 @@ RSpec.describe CompletionsPresenter do
       end
     end
 
-    context 'ial2' do
-      let(:ial2_requested) { true }
+    context 'idv' do
+      let(:idv_requested) { true }
 
       context 'with a subset of attributes requested' do
         let(:requested_attributes) { [:email, :given_name, :phone] }

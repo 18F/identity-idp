@@ -1794,7 +1794,7 @@ titles.sign_in: Sign in
 titles.sign_up.completion_consent_expired_ial1: It’s been a year since you gave us consent to share your information
 titles.sign_up.completion_consent_expired_ial2: It’s been a year since you gave us consent to share your verified identity
 titles.sign_up.completion_first_sign_in: Continue to %{sp}
-titles.sign_up.completion_ial2: Connect your verified information to %{sp}
+titles.sign_up.completion_idv: Connect your verified information to %{sp}
 titles.sign_up.completion_new_attributes: '%{sp} is requesting new information'
 titles.sign_up.completion_new_sp: You are now signing in for the first time
 titles.sign_up.completion_reverified_consent: Share your updated information with %{sp}

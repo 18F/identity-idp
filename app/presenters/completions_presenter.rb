@@ -7,7 +7,7 @@ class CompletionsPresenter
   attr_reader :current_user, :current_sp, :decrypted_pii, :requested_attributes,
               :completion_context, :selected_email_id
 
-  SORTED_IAL2_ATTRIBUTE_MAPPING = [
+  SORTED_IDV_ATTRIBUTE_MAPPING = [
     [[:email], :email],
     [[:all_emails], :all_emails],
     [%i[given_name family_name], :full_name],
@@ -20,7 +20,7 @@ class CompletionsPresenter
     [[:verified_at], :verified_at],
   ].freeze
 
-  SORTED_IAL1_ATTRIBUTE_MAPPING = [
+  SORTED_AUTH_ONLY_ATTRIBUTE_MAPPING = [
     [[:email], :email],
     [[:all_emails], :all_emails],
     [[:x509_subject], :x509_subject],
@@ -33,7 +33,7 @@ class CompletionsPresenter
     current_sp:,
     decrypted_pii:,
     requested_attributes:,
-    ial2_requested:,
+    idv_requested:,
     completion_context:,
     selected_email_id:
   )
@@ -41,13 +41,13 @@ class CompletionsPresenter
     @current_sp = current_sp
     @decrypted_pii = decrypted_pii
     @requested_attributes = requested_attributes
-    @ial2_requested = ial2_requested
+    @idv_requested = idv_requested
     @completion_context = completion_context
     @selected_email_id = selected_email_id
   end
 
-  def ial2_requested?
-    @ial2_requested
+  def idv_requested?
+    @idv_requested
   end
 
   def sp_name
@@ -55,7 +55,7 @@ class CompletionsPresenter
   end
 
   def heading
-    if ial2_requested?
+    if idv_requested?
       if consent_has_expired?
         I18n.t('titles.sign_up.completion_consent_expired_ial2')
       elsif reverified_after_consent?
@@ -64,7 +64,7 @@ class CompletionsPresenter
           sp: sp_name,
         )
       else
-        I18n.t('titles.sign_up.completion_ial2', sp: sp_name)
+        I18n.t('titles.sign_up.completion_idv', sp: sp_name)
       end
     elsif first_time_signing_in?
       I18n.t('titles.sign_up.completion_first_sign_in', sp: sp_name)
@@ -89,7 +89,7 @@ class CompletionsPresenter
         ],
         ' ',
       )
-    elsif ial2_requested? && reverified_after_consent?
+    elsif idv_requested? && reverified_after_consent?
       t(
         'help_text.requested_attributes.ial2_reverified_consent_info_html',
         sp_html: content_tag(:strong, sp_name),
@@ -128,10 +128,10 @@ class CompletionsPresenter
   end
 
   def displayable_attribute_keys
-    sorted_attribute_mapping = if ial2_requested?
-                                 SORTED_IAL2_ATTRIBUTE_MAPPING
+    sorted_attribute_mapping = if idv_requested?
+                                 SORTED_IDV_ATTRIBUTE_MAPPING
                                else
-                                 SORTED_IAL1_ATTRIBUTE_MAPPING
+                                 SORTED_AUTH_ONLY_ATTRIBUTE_MAPPING
                                end
 
     sorted_attributes = sorted_attribute_mapping.map do |raw_attribute, display_attribute|
