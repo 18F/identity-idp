@@ -59,7 +59,9 @@ locals:
       </div>
       <div>
         <dt class="display-inline"> <%= t('idv.form.id_number') %>: </dt>
-        <dd class="display-inline margin-left-0"> <%= @pii[:state_id_number] %> </dd>
+        <dd class="display-inline margin-left-0">
+          <%= @pii[:state_id_number] || @pii[:document_number] %>
+        </dd>
       </div>
     </dl>
   </div>

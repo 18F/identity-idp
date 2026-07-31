@@ -358,6 +358,19 @@ RSpec.describe 'Hybrid Flow' do
           )
           fill_out_ssn_form_ok
           click_idv_continue
+
+          expect(page).to have_current_path(idv_address_path)
+
+          expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_info'))
+          expect(page).not_to have_content(t('forms.example'))
+          fill_in 'idv_form_address1', with: '123 Main St'
+          fill_in 'idv_form_city', with: 'Nowhere'
+          select 'Virginia', from: 'idv_form_state'
+          fill_in 'idv_form_zipcode', with: '66044'
+
+          click_idv_continue
+
+          expect(page).to have_current_path(idv_verify_info_path)
         end
       end
 
@@ -503,6 +516,19 @@ RSpec.describe 'Hybrid Flow' do
             )
             fill_out_ssn_form_ok
             click_idv_continue
+
+            expect(page).to have_current_path(idv_address_path)
+
+            expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_info'))
+            expect(page).not_to have_content(t('forms.example'))
+            fill_in 'idv_form_address1', with: '123 Main St'
+            fill_in 'idv_form_city', with: 'Nowhere'
+            select 'Virginia', from: 'idv_form_state'
+            fill_in 'idv_form_zipcode', with: '66044'
+
+            click_idv_continue
+
+            expect(page).to have_current_path(idv_verify_info_path)
           end
         end
 
@@ -708,6 +734,19 @@ RSpec.describe 'Hybrid Flow' do
           )
           fill_out_ssn_form_ok
           click_idv_continue
+
+          expect(page).to have_current_path(idv_address_path)
+
+          expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_info'))
+          expect(page).not_to have_content(t('forms.example'))
+          fill_in 'idv_form_address1', with: '123 Main St'
+          fill_in 'idv_form_city', with: 'Nowhere'
+          select 'Virginia', from: 'idv_form_state'
+          fill_in 'idv_form_zipcode', with: '66044'
+
+          click_idv_continue
+
+          expect(page).to have_current_path(idv_verify_info_path)
         end
       end
 
@@ -853,6 +892,19 @@ RSpec.describe 'Hybrid Flow' do
             )
             fill_out_ssn_form_ok
             click_idv_continue
+
+            expect(page).to have_current_path(idv_address_path)
+
+            expect_step_indicator_current_step(t('step_indicator.flows.idv.verify_info'))
+            expect(page).not_to have_content(t('forms.example'))
+            fill_in 'idv_form_address1', with: '123 Main St'
+            fill_in 'idv_form_city', with: 'Nowhere'
+            select 'Virginia', from: 'idv_form_state'
+            fill_in 'idv_form_zipcode', with: '66044'
+
+            click_idv_continue
+
+            expect(page).to have_current_path(idv_verify_info_path)
           end
         end
 
@@ -1313,7 +1365,7 @@ RSpec.describe 'Hybrid Flow' do
 
     context 'selfie is required' do
       let(:facial_match_required) { true }
-      context 'passport is submitted' do
+      context 'state id is submitted' do
         before do
           allow(IdentityConfig.store).to receive_messages(
             doc_auth_max_attempts: 6,
