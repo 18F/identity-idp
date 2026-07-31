@@ -305,6 +305,41 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
           end
         end
 
+        context 'passport card requested' do
+          let(:document_type_requested) { Idp::Constants::DocumentTypes::PASSPORT_CARD }
+
+          it 'creates a DocumentRequest' do
+            expect(request_class).to have_received(:new)
+              .with(
+                customer_user_id: user.uuid,
+                document_capture_session: subject.document_capture_session,
+                redirect_url: idv_socure_document_capture_update_url,
+                language: expected_language,
+                liveness_checking_required: false,
+              )
+          end
+
+          it 'creates a DocumentRequest for a license (card) requested' do
+            expect(WebMock).to have_requested(:post, fake_socure_endpoint)
+              .with(
+                body: JSON.generate(
+                  {
+                    config: {
+                      documentType: 'license',
+                      redirect: {
+                        method: 'GET',
+                        url: idv_socure_document_capture_update_url,
+                      },
+                      language: :en,
+                      useCaseKey: idv_socure_docv_flow_id_only,
+                    },
+                    customerUserId: user.uuid,
+                  },
+                ),
+              )
+          end
+        end
+
         context 'mdl requested' do
           let(:document_type_requested) { Idp::Constants::DocumentTypes::MDL }
 
