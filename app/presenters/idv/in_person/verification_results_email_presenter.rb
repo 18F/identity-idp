@@ -40,11 +40,17 @@ module Idv
       end
 
       def show_cta?
-        !service_provider || service_provider_homepage_url.present?
+        return true unless service_provider
+
+        service_provider_homepage_url.present? || service_provider_post_idv_follow_up_url.present?
       end
 
       def sign_in_url
-        service_provider_homepage_url || root_url
+        service_provider_post_idv_follow_up_url || service_provider_homepage_url || root_url
+      end
+
+      def service_provider_post_idv_follow_up_url
+        sp_return_url_resolver.post_idv_follow_up_url if service_provider
       end
 
       def service_provider_homepage_url

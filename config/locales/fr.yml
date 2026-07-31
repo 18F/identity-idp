@@ -2105,9 +2105,9 @@ user_mailer.in_person_ready_to_verify_reminder.subject.other: Vérifiez votre id
 user_mailer.in_person_ready_to_verify.subject: Vous êtes prêt à vérifier votre identité avec %{app_name} en personne
 user_mailer.in_person_verified.greeting: Bonjour,
 user_mailer.in_person_verified.intro: Vous avez réussi à vérifier votre identité au bureau de poste de %{location} le %{date}.
-user_mailer.in_person_verified.next_sign_in.with_sp.with_cta: Maintenant, cliquez sur le bouton ou copiez le lien ci-dessous pour accéder à %{sp_name} et vous connecter.
-user_mailer.in_person_verified.next_sign_in.with_sp.without_cta: Vous pouvez désormais vous connecter depuis le site Web de %{sp_name}.
-user_mailer.in_person_verified.next_sign_in.without_sp: Maintenant, cliquez sur le bouton ou copiez le lien ci-dessous pour vous connecter à %{app_name}.
+user_mailer.in_person_verified.next_sign_in.with_sp.with_cta: Connectez-vous et associez vos informations vérifiées à %{sp_name}.
+user_mailer.in_person_verified.next_sign_in.with_sp.without_cta: Connectez-vous depuis le site Web de %{sp_name} pour associer vos informations vérifiées.
+user_mailer.in_person_verified.next_sign_in.without_sp: Connectez-vous à %{app_name}.
 user_mailer.in_person_verified.sign_in: Se connecter
 user_mailer.in_person_verified.subject: Vous avez réussi à vérifier votre identité avec %{app_name}
 user_mailer.in_person_verified.warning_contact_us_html: Si vous n’avez pas essayé de confirmer votre identité en personne, veuillez vous connecter pour <a href="%{reset_password_url}">réinitialiser votre mot de passe</a>. Pour signaler ce problème, <a href="%{contact_us_url}">contactez l’assistance de %{app_name}</a>.
