@@ -72,29 +72,51 @@ RSpec.describe EncryptedDocStorage::S3Storage do
 
   describe '#delete_user_attempt_data' do
     let(:s3_resource) { Aws::S3::Resource.new(client: stubbed_s3_client) }
-    let(:file_path) { "attempt_events/#{user_uuid}" }
+    let(:prefix) { "attempt_events/#{user_uuid}" }
 
-    let(:bucket_name) { IdentityConfig.store.encrypted_document_storage_s3_bucket }
+    let(:bucket) { IdentityConfig.store.encrypted_document_storage_s3_bucket }
 
-    let(:s3_bucket) { double('s3_bucket') }
-    let(:s3_objects) { double('s3_objects') }
+    before do
+      stubbed_s3_client.stub_responses(
+        :list_objects_v2,
+        {
+          contents: [
+            { key: "#{prefix}/event-1.json" },
+            { key: "#{prefix}/nested/event-3.json" },
+          ],
+          is_truncated: false,
+        },
+      )
+
+      stubbed_s3_client.stub_responses(
+        :delete_objects,
+        {
+          deleted: [
+            { key: "#{prefix}/event-1.json" },
+            { key: "#{prefix}/nested/event-3.json" },
+          ],
+        },
+      )
+    end
 
     it 'deletes the directory' do
-      expect(Aws::S3::Resource).to receive(:new)
-        .with(client: stubbed_s3_client)
-        .and_return(s3_resource)
-
-      expect(s3_resource).to receive(:bucket)
-        .with(bucket_name)
-        .and_return(s3_bucket)
-
-      expect(s3_bucket).to receive(:objects)
-        .with(prefix: file_path)
-        .and_return(s3_objects)
-
-      expect(s3_objects).to receive(:batch_delete!)
-
       subject.delete_user_attempt_data(user_uuid:)
+      list_request = stubbed_s3_client.api_requests.find do |request|
+        request[:operation_name] == :list_objects_v2
+      end
+
+      expect(list_request[:params]).to include(bucket:, prefix:)
+
+      delete_request = stubbed_s3_client.api_requests.find do |request|
+        request[:operation_name] == :delete_objects
+      end
+
+      expect(delete_request[:params]).to include(bucket:)
+
+      expect(delete_request[:params][:delete][:objects]).to contain_exactly(
+        { key: "#{prefix}/event-1.json" },
+        { key: "#{prefix}/nested/event-3.json" },
+      )
     end
   end
 end
