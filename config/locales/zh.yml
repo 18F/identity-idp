@@ -767,7 +767,7 @@ doc_auth.tips.document_capture_selfie_text3: 保持中性表情
 doc_auth.tips.document_capture_selfie_text4: 确保您整个面孔都可以在绿色圆圈里看到
 duplicate_profiles_detected.accounts_list.heading: 以下账户具有相同的已验证信息
 duplicate_profiles_detected.cant_access: '我无法访问某个帐户'
-duplicate_profiles_detected.connected_acct_html: '<strong> 关联机构: </strong> %{count}'
+duplicate_profiles_detected.connected_acct_html: '<strong> 互联服务: </strong> %{count}'
 duplicate_profiles_detected.created_at_html: '<strong> 创建: </strong> %{timestamp_html}'
 duplicate_profiles_detected.delete_duplicates.details_html: 请登录您打算删除的账户：<a href="https://secure.login.gov">https://secure.login.gov/zh</a>。以下是%{link_html}。
 duplicate_profiles_detected.delete_duplicates.details2_html: 如果您愿意，可以在%{link_html}，将该电子邮件地址添加到您保留的账户中。
@@ -778,7 +778,7 @@ duplicate_profiles_detected.dont_recognize_account: 我不认识上边的一个�
 duplicate_profiles_detected.duplicate: 重复
 duplicate_profiles_detected.get_help: 获取帮助
 duplicate_profiles_detected.heading: 我们发现了其他可能属于你的帐户
-duplicate_profiles_detected.intro_html: '%{sp_name} 要求您仅持有一个已验证身份的 %{app_name} 账户。在登录 %{sp_name} 之前，您需要%{link_html}。具体操作如下：'
+duplicate_profiles_detected.intro_html: '某些服务要求您仅拥有一个已验证身份的 %{app_name} 账户。在登录 %{sp_name} 之前，您需要%{link_html}。具体操作如下：'
 duplicate_profiles_detected.intro.link: 删除重复账户
 duplicate_profiles_detected.last_sign_in_at_html: '<strong> 上次登录: </strong> %{timestamp_html}'
 duplicate_profiles_detected.never_logged_in: 从未登录过
