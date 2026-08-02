@@ -166,7 +166,8 @@ class RegisterUserEmailForm
         email_already_registered: false,
       )
     else
-      SendSignUpEmailConfirmation.new(existing_user).call(request_id: request_id)
+      SendSignUpEmailConfirmation.new(existing_user, email_address: email_address_record)
+        .call(request_id: request_id)
     end
   end
 

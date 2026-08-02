@@ -169,7 +169,7 @@ RSpec.describe RegisterUserEmailForm do
       it 'sends confirmation instructions to existing user' do
         expect(send_sign_up_email_confirmation).to receive(:call)
         expect(SendSignUpEmailConfirmation).to receive(:new)
-          .with(existing_user)
+          .with(existing_user, email_address: existing_user.email_addresses.take)
           .and_return(send_sign_up_email_confirmation)
 
         result = subject.submit(params).to_h
