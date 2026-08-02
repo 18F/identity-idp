@@ -74,7 +74,7 @@ class AuthnContextResolver
                      facial_match_is_required?(result)
 
     if IdentityConfig.store.facial_match_preferred_on_connected_accounts
-      return result unless user_has_account_with_sp?
+      return result unless user_has_verified_account_with_sp?
     end
 
     if user&.identity_verified?
@@ -94,9 +94,12 @@ class AuthnContextResolver
     end
   end
 
-  def user_has_account_with_sp?
+  def user_has_verified_account_with_sp?
     return false unless user && service_provider
-    user.connected_apps.exists?(service_provider: service_provider.issuer)
+    user.connected_apps
+      .where(service_provider: service_provider.issuer)
+      .where.not(verified_at: nil)
+      .exists?
   end
 
   def acr_aal_component_values

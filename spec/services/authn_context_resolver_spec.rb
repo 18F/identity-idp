@@ -345,21 +345,32 @@ RSpec.describe AuthnContextResolver do
               end
 
               context 'when the user has already connected with a service provider' do
+                let(:verified_at) { 1.day.ago }
+                let(:identity) do
+                  create(:service_provider_identity, service_provider_record:, verified_at:)
+                end
+
                 let(:user) do
                   build(
                     :user,
                     :proofed,
-                    identities: [
-                      create(
-                        :service_provider_identity,
-                        service_provider_record:,
-                      ),
-                    ],
+                    identities: [identity],
                   )
                 end
 
                 context 'when the connected sp is the requesting sp' do
                   let(:service_provider_record) { service_provider }
+
+                  context 'when the connected identity has not been verified' do
+                    let(:verified_at) { nil }
+
+                    it 'asserts facial match as true' do
+                      expect(result.identity_proofing?).to be true
+                      expect(result.facial_match?).to be true
+                      expect(result.two_pieces_of_fair_evidence?).to be true
+                      expect(result.aal2?).to be true
+                    end
+                  end
 
                   it 'falls back on proofing without facial match comparison' do
                     expect(result.identity_proofing?).to be true
@@ -707,17 +718,26 @@ RSpec.describe AuthnContextResolver do
               end
 
               context 'when the user has already connected with a service provider' do
-                let(:user) do
-                  create(
-                    :user, :proofed,
-                    identities: [
-                      create(:service_provider_identity, service_provider_record:),
-                    ]
-                  )
+                let(:verified_at) { 1.day.ago }
+                let(:identity) do
+                  create(:service_provider_identity, service_provider_record:, verified_at:)
                 end
+                let(:user) { create(:user, :proofed, identities: [identity]) }
 
                 context 'when the connected sp is the requesting sp' do
                   let(:service_provider_record) { service_provider }
+
+                  context 'when the connected identity has not been verified' do
+                    let(:verified_at) { nil }
+
+                    it 'asserts facial match as true' do
+                      expect(result.identity_proofing?).to be true
+                      expect(result.facial_match?).to be true
+                      expect(result.two_pieces_of_fair_evidence?).to be true
+                      expect(result.aal2?).to be true
+                    end
+                  end
+
                   it 'falls back on proofing without facial match comparison' do
                     expect(result.identity_proofing?).to be true
                     expect(result.facial_match?).to be false
