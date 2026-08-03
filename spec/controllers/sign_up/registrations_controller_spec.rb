@@ -89,9 +89,59 @@ RSpec.describe SignUp::RegistrationsController, devise: true do
           user_id: user.uuid,
           domain_name: 'example.com',
           email_language:,
+          identity_proofing: false,
         )
 
         expect(subject).to have_received(:create_user_event).with(:account_created, user)
+      end
+
+      context 'when the SP requests identity proofing (IAL2)' do
+        before do
+          subject.session[:sp] = {
+            issuer: create(:service_provider).issuer,
+            acr_values: Saml::Idp::Constants::IAL2_AUTHN_CONTEXT_CLASSREF,
+          }
+        end
+
+        it 'logs identity_proofing as true' do
+          post :create, params: params
+
+          expect(@analytics).to have_logged_event(
+            'User Registration: Email Submitted',
+            hash_including(identity_proofing: true),
+          )
+        end
+      end
+
+      context 'when the SP requests authentication only (IAL1)' do
+        before do
+          subject.session[:sp] = {
+            issuer: create(:service_provider).issuer,
+            acr_values: Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF,
+          }
+        end
+
+        it 'logs identity_proofing as false' do
+          post :create, params: params
+
+          expect(@analytics).to have_logged_event(
+            'User Registration: Email Submitted',
+            hash_including(identity_proofing: false),
+          )
+        end
+      end
+
+      context 'when there is no associated service provider request' do
+        it 'logs identity_proofing as false' do
+          expect(subject.session[:sp]).to be_blank
+
+          post :create, params: params
+
+          expect(@analytics).to have_logged_event(
+            'User Registration: Email Submitted',
+            hash_including(identity_proofing: false),
+          )
+        end
       end
 
       it 'sets the users preferred email locale and sends an email in that locale' do
@@ -145,6 +195,7 @@ RSpec.describe SignUp::RegistrationsController, devise: true do
           user_id: existing_user.uuid,
           domain_name: 'example.com',
           email_language:,
+          identity_proofing: false,
         )
       end
     end
@@ -170,6 +221,7 @@ RSpec.describe SignUp::RegistrationsController, devise: true do
           user_id: 'anonymous-uuid',
           domain_name: 'invalid',
           email_language:,
+          identity_proofing: false,
         )
       end
 

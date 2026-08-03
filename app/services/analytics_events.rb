@@ -8871,6 +8871,8 @@ module AnalyticsEvents
   # @param [Boolean] email_already_exists Whether an account with the email address already exists
   # @param [String] domain_name Domain name of email address submitted
   # @param [String] email_language Preferred language for email communication
+  # @param [Boolean] identity_proofing Whether the resolved authn context requires identity proofing (IdV),
+  # from ApplicationHelper#ial2_requested?.
   def user_registration_email(
     success:,
     rate_limited:,
@@ -8878,6 +8880,7 @@ module AnalyticsEvents
     email_already_exists:,
     domain_name:,
     email_language:,
+    identity_proofing:,
     error_details: nil,
     **extra
   )
@@ -8890,6 +8893,7 @@ module AnalyticsEvents
       email_already_exists:,
       domain_name:,
       email_language:,
+      identity_proofing:,
       **extra,
     )
   end
