@@ -124,7 +124,6 @@ module Users
 
       @recaptcha_form ||= SignInRecaptchaForm.new(
         existing_device: existing_device,
-        ab_test_bucket: ab_test_bucket(:RECAPTCHA_SIGN_IN, user: user_from_params),
         **recaptcha_form_args,
       )
     end
