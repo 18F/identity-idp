@@ -17,6 +17,8 @@ module Idv
                 :same_address_as_id,
                 presence: true
 
+      validates :state_id_jurisdiction, inclusion: { in: Idp::Constants::STATE_AND_TERRITORY_CODES }
+
       validates_with UspsInPersonProofing::TransliterableValidator,
                      fields: [:first_name, :last_name, :identity_doc_city],
                      reject_chars: /[^A-Za-z\-' ]/,
