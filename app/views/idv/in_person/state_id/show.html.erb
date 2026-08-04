@@ -24,8 +24,9 @@
       text_tag: 'div',
     ) do %>
   <strong><%= t('in_person_proofing.body.state_id.alert_message') %></strong>
-  <br/>
-  <%= t('in_person_proofing.body.state_id.alert_text') %>
+  <%# alert_text holds two separate strings separated by a blank line. Rendered bare, HTML %>
+  <%# collapses the break and the second one runs on to the end of the first. %>
+  <%= simple_format(t('in_person_proofing.body.state_id.alert_text'), {}, sanitize: true) %>
 <% end %>
 <%= simple_form_for form,
                     as: 'identity_doc', # Renaming form as a workaround for aggressive browser autofill assumptions
