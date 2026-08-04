@@ -22,7 +22,7 @@ ul {
 // basscss-utility-typography
 // ------------------------------------------------
 .break-word {
-  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 .display-list-item {
   display: list-item;
