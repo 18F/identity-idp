@@ -447,26 +447,72 @@ RSpec.describe SignUp::CompletionsController do
                 create(
                   :user_proofing_event,
                   :existing,
-                  profile_id: profile.id,
+                  profile_id: user.active_profile.id,
                 )
               end
 
-              it 'updates the associated user proofing event' do
-                expect(proofing_event.service_provider_ids_sent).to_not include(current_sp.id)
-                patch :update
+              context 'there is no user proofing event' do
+                it 'tracks analytics' do
+                  patch :update
 
-                proofing_event.reload
-                expect(AttemptsApi::Tracker).to have_received(:write_existing_user_events).with(
-                  historical_attempts: JSON.parse(idv_attempts),
-                  sp: current_sp,
-                )
-                expect(proofing_event.service_provider_ids_sent).to include(current_sp.id)
+                  expect(@analytics).to have_logged_event(
+                    :historic_event_data_released,
+                    success: false,
+                    exception: :no_user_proofing_event,
+                    profile_id: profile.id,
+                  )
+                end
               end
 
-              it 'tracks analytics' do
-                patch :update
+              context 'there is a user proofing event' do
+                let!(:proofing_event) do
+                  create(
+                    :user_proofing_event,
+                    :existing,
+                    profile_id: user.active_profile.id,
+                  )
+                end
 
-                expect(@analytics).to have_logged_event(:historic_event_data_released)
+                context 'the profile does not have an encrypted_attempts_file_reference' do
+                  it 'tracks analytics' do
+                    patch :update
+
+                    expect(@analytics).to have_logged_event(
+                      :historic_event_data_released,
+                      success: false,
+                      exception: :no_encryped_file_reference,
+                      profile_id: profile.id,
+                    )
+                  end
+                end
+
+                context 'the profile has an encrypted_attempts_file_reference' do
+                  before do
+                    user.active_profile.update(encrypted_attempts_file_reference: 'file-reference')
+                  end
+
+                  it 'updates the associated user proofing event' do
+                    expect(proofing_event.service_provider_ids_sent).to_not include(current_sp.id)
+                    patch :update
+
+                    proofing_event.reload
+                    expect(AttemptsApi::Tracker).to have_received(:write_existing_user_events).with(
+                      historical_attempts: JSON.parse(idv_attempts),
+                      sp: current_sp,
+                    )
+                    expect(proofing_event.service_provider_ids_sent).to include(current_sp.id)
+                  end
+
+                  it 'tracks analytics' do
+                    patch :update
+
+                    expect(@analytics).to have_logged_event(
+                      :historic_event_data_released,
+                      success: true,
+                      profile_id: profile.id,
+                    )
+                  end
+                end
               end
             end
 

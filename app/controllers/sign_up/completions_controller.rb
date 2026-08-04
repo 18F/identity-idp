@@ -154,7 +154,11 @@ module SignUp
         existing_user_proofing_event.add_sp_sent(current_sp.id)
       end
 
-      analytics.historic_event_data_released(success: send, exception: msg)
+      analytics.historic_event_data_released(
+        success: send,
+        exception: msg,
+        profile_id: current_user.active_profile&.id,
+      )
     end
 
     def pii

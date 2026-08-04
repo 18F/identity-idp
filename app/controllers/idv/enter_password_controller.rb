@@ -235,7 +235,8 @@ module Idv
         personal_key: idv_session.personal_key,
         sent_to_sp: attempts_api_enabled_for_session?,
       )
-      analytics.historic_event_data_saved
+
+      analytics.historic_event_data_saved(profile_id: current_user.active_profile.id)
 
       AttemptsApi::Cacher.new(current_user, user_session).save(password:)
 
