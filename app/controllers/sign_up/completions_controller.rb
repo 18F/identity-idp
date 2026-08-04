@@ -145,8 +145,8 @@ module SignUp
       return unless historical_events_enabled?
       return unless current_sp&.attempts_api_enabled?
 
-      send, msg = send_historic_events?
-      if send
+      will_send_events, msg = send_historic_events?
+      if will_send_events
         historical_attempts = AttemptsApi::Cacher.new(current_user, user_session).fetch
 
         AttemptsApi::Tracker.write_existing_user_events(historical_attempts:, sp: current_sp)
@@ -155,7 +155,7 @@ module SignUp
       end
 
       analytics.historic_event_data_released(
-        success: send,
+        success: will_send_events,
         exception: msg,
         profile_id: current_user.active_profile&.id,
       )

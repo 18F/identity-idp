@@ -860,12 +860,12 @@ module AnalyticsEvents
     track_event(:historic_event_data_destroyed)
   end
 
+  # Historic data was potentially sent when a user accessed an Attempts Api Consumer App
   # @param [Boolean] success Whether the historic attempt data was released
   # rubocop:disable Layout/LineLength
   # @param [:idv_not_requested, :no_user_proofing_event, :already_sent, :no_encrypted_file_reference nil] exception
   # rubocop:enable Layout/LineLength
   # @param [Integer,nil] profile_id ID of the active profile associated with attempts data
-  # Historic data was potentially sent when a user accessed an Attempts Api Consumer App
   def historic_event_data_released(success:, exception: nil, profile_id: nil, **extra)
     track_event(
       :historic_event_data_released,
