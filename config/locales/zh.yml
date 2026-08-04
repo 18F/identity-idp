@@ -1805,8 +1805,8 @@ titles.revoke_consent: 撤销同意
 titles.rules_of_use: 使用规则
 titles.select_email: 选择你想用的电邮
 titles.sign_in: 登录
-titles.sign_up.completion_consent_expired_ial1: 从你上次授权我们分享你的信息已经一年了。
-titles.sign_up.completion_consent_expired_ial2: 从你上次授权我们分享你验证过的身份已经一年了。
+titles.sign_up.completion_consent_expired_auth_only: 从你上次授权我们分享你的信息已经一年了。
+titles.sign_up.completion_consent_expired_idv: 从你上次授权我们分享你验证过的身份已经一年了。
 titles.sign_up.completion_first_sign_in: 继续到 %{sp}
 titles.sign_up.completion_idv: 连接你验证过的信息到 %{sp}
 titles.sign_up.completion_new_attributes: '%{sp} 在要求新信息'

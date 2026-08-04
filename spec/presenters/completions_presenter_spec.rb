@@ -76,7 +76,7 @@ RSpec.describe CompletionsPresenter do
 
         it 'renders the expired consent message' do
           expect(presenter.heading).to eq(
-            I18n.t('titles.sign_up.completion_consent_expired_ial2'),
+            I18n.t('titles.sign_up.completion_consent_expired_idv'),
           )
         end
       end
@@ -104,7 +104,7 @@ RSpec.describe CompletionsPresenter do
 
       it 'renders the expired consent message' do
         expect(presenter.heading).to eq(
-          I18n.t('titles.sign_up.completion_consent_expired_ial1'),
+          I18n.t('titles.sign_up.completion_consent_expired_auth_only'),
         )
       end
     end
