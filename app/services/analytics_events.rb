@@ -854,9 +854,10 @@ module AnalyticsEvents
     )
   end
 
-  # Historic Attempt data was saved when a user completed the IdV process
-  def historic_event_data_saved
-    track_event(:historic_event_data_saved)
+  # Historic Attempt data was destroyed when a user deleted their account
+  # It deletes ALL historic data, not just the most recent active profile
+  def historic_event_data_destroyed
+    track_event(:historic_event_data_destroyed)
   end
 
   # @param [Boolean] success Whether the historic attempt data was released
