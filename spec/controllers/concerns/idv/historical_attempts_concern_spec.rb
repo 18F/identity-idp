@@ -129,7 +129,7 @@ RSpec.describe Idv::HistoricalAttemptsConcern, type: :controller do
     end
   end
 
-  describe '#historical_events_need_to_be_sent' do
+  describe '#send_historic_events?' do
     context 'the request is not an idv request' do
       let(:acr_values) { Saml::Idp::Constants::IAL_AUTH_ONLY_ACR }
       it 'returns false with a message' do

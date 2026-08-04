@@ -480,7 +480,7 @@ RSpec.describe SignUp::CompletionsController do
                     expect(@analytics).to have_logged_event(
                       :historic_event_data_released,
                       success: false,
-                      exception: :no_encryped_file_reference,
+                      exception: :no_encrypted_file_reference,
                       profile_id: profile.id,
                     )
                   end
