@@ -77,21 +77,30 @@ RSpec.describe Idv::InPerson::VerificationResultsEmailPresenter do
     end
   end
 
-  describe '#service_provider_homepage_url' do
+  describe '#service_provider_post_idv_follow_up_url' do
     context 'without service provider' do
       let(:sp) { nil }
 
       it 'returns nil' do
-        expect(presenter.service_provider_homepage_url).to eq(nil)
+        expect(presenter.service_provider_post_idv_follow_up_url).to eq(nil)
       end
     end
 
     context 'with service provider' do
-      let(:sp_url) { 'https://service.provider.gov' }
-      let(:sp) { create(:service_provider, return_to_sp_url: sp_url) }
+      let(:follow_up_url) { 'https://service.provider.gov/follow_up' }
+      let(:sp) { create(:service_provider, post_idv_follow_up_url: follow_up_url) }
 
-      it 'returns SP homepage url' do
-        expect(presenter.service_provider_homepage_url).to eq(sp_url)
+      it 'returns SP post IdV follow-up url' do
+        expect(presenter.service_provider_post_idv_follow_up_url).to eq(follow_up_url)
+      end
+    end
+
+    context 'with service provider that only has a return_to_sp_url' do
+      let(:sp_url) { 'https://service.provider.gov' }
+      let(:sp) { create(:service_provider, return_to_sp_url: sp_url, post_idv_follow_up_url: nil) }
+
+      it 'falls back to the SP homepage url' do
+        expect(presenter.service_provider_post_idv_follow_up_url).to eq(sp_url)
       end
     end
   end
@@ -104,23 +113,35 @@ RSpec.describe Idv::InPerson::VerificationResultsEmailPresenter do
     end
 
     context 'with service provider' do
+      let(:post_idv_follow_up_url) { nil }
       let(:homepage_url) { nil }
       let(:sp) { create(:service_provider) }
 
       before do
         resolver = instance_double(SpReturnUrlResolver)
+        allow(resolver).to receive(:post_idv_follow_up_url).and_return(post_idv_follow_up_url)
         allow(resolver).to receive(:homepage_url).and_return(homepage_url)
         allow(presenter).to receive(:sp_return_url_resolver).and_return(resolver)
       end
 
-      context 'without homepage_url' do
-        let(:homepage_url) { nil }
+      context 'without post_idv_follow_up_url' do
+        let(:post_idv_follow_up_url) { nil }
 
-        it { expect(presenter.show_cta?).to eq(false) }
+        context 'without homepage_url' do
+          let(:homepage_url) { nil }
+
+          it { expect(presenter.show_cta?).to eq(false) }
+        end
+
+        context 'with homepage_url' do
+          let(:homepage_url) { 'https://example.com' }
+
+          it { expect(presenter.show_cta?).to eq(true) }
+        end
       end
 
-      context 'with homepage_url' do
-        let(:homepage_url) { 'https://example.com' }
+      context 'with post_idv_follow_up_url' do
+        let(:post_idv_follow_up_url) { 'https://example.com' }
 
         it { expect(presenter.show_cta?).to eq(true) }
       end
@@ -137,20 +158,30 @@ RSpec.describe Idv::InPerson::VerificationResultsEmailPresenter do
     end
 
     context 'with service provider' do
+      let(:post_idv_follow_up_url) { nil }
       let(:homepage_url) { nil }
       let(:sp) { create(:service_provider) }
 
       before do
         resolver = instance_double(SpReturnUrlResolver)
+        allow(resolver).to receive(:post_idv_follow_up_url).and_return(post_idv_follow_up_url)
         allow(resolver).to receive(:homepage_url).and_return(homepage_url)
         allow(SpReturnUrlResolver).to receive(:new).with(service_provider: sp).and_return(resolver)
       end
 
-      context 'without homepage_url' do
-        let(:homepage_url) { nil }
+      context 'without post_idv_follow_up_url' do
+        let(:post_idv_follow_up_url) { nil }
 
         it 'returns root url' do
           expect(presenter.sign_in_url).to eq(root_url)
+        end
+      end
+
+      context 'with post_idv_follow_up_url' do
+        let(:post_idv_follow_up_url) { 'https://example.com' }
+
+        it 'returns post IdV follow-up url' do
+          expect(presenter.sign_in_url).to eq(post_idv_follow_up_url)
         end
       end
 
@@ -186,7 +217,7 @@ RSpec.describe Idv::InPerson::VerificationResultsEmailPresenter do
       context 'without homepage_url' do
         let(:homepage_url) { nil }
 
-        it 'returns root url' do
+        it 'returns nil' do
           expect(presenter.service_provider_homepage_url).to be_nil
         end
       end
