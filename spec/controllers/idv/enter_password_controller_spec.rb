@@ -1229,7 +1229,10 @@ RSpec.describe Idv::EnterPasswordController do
             it 'tracks an analytic event' do
               put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
 
-              expect(@analytics).to have_logged_event(:historic_event_data_saved)
+              expect(@analytics).to have_logged_event(
+                :historic_event_data_saved,
+                profile_id: user.profiles.last.id,
+              )
             end
 
             it 'caches user proofing events' do
