@@ -89,13 +89,13 @@ RSpec.describe SignUp::RegistrationsController, devise: true do
           user_id: user.uuid,
           domain_name: 'example.com',
           email_language:,
-          identity_proofing: false,
+          idv_requested: false,
         )
 
         expect(subject).to have_received(:create_user_event).with(:account_created, user)
       end
 
-      context 'when the SP requests identity proofing (IAL2)' do
+      context 'when the SP requests IDV' do
         before do
           subject.session[:sp] = {
             issuer: create(:service_provider).issuer,
@@ -103,17 +103,17 @@ RSpec.describe SignUp::RegistrationsController, devise: true do
           }
         end
 
-        it 'logs identity_proofing as true' do
+        it 'logs idv_requested as true' do
           post :create, params: params
 
           expect(@analytics).to have_logged_event(
             'User Registration: Email Submitted',
-            hash_including(identity_proofing: true),
+            hash_including(idv_requested: true),
           )
         end
       end
 
-      context 'when the SP requests authentication only (IAL1)' do
+      context 'when the SP requests authentication only' do
         before do
           subject.session[:sp] = {
             issuer: create(:service_provider).issuer,
@@ -121,25 +121,25 @@ RSpec.describe SignUp::RegistrationsController, devise: true do
           }
         end
 
-        it 'logs identity_proofing as false' do
+        it 'logs idv_requested as false' do
           post :create, params: params
 
           expect(@analytics).to have_logged_event(
             'User Registration: Email Submitted',
-            hash_including(identity_proofing: false),
+            hash_including(idv_requested: false),
           )
         end
       end
 
       context 'when there is no associated service provider request' do
-        it 'logs identity_proofing as false' do
+        it 'logs idv_requested as false' do
           expect(subject.session[:sp]).to be_blank
 
           post :create, params: params
 
           expect(@analytics).to have_logged_event(
             'User Registration: Email Submitted',
-            hash_including(identity_proofing: false),
+            hash_including(idv_requested: false),
           )
         end
       end
@@ -195,7 +195,7 @@ RSpec.describe SignUp::RegistrationsController, devise: true do
           user_id: existing_user.uuid,
           domain_name: 'example.com',
           email_language:,
-          identity_proofing: false,
+          idv_requested: false,
         )
       end
     end
@@ -221,7 +221,7 @@ RSpec.describe SignUp::RegistrationsController, devise: true do
           user_id: 'anonymous-uuid',
           domain_name: 'invalid',
           email_language:,
-          identity_proofing: false,
+          idv_requested: false,
         )
       end
 

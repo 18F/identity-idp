@@ -24,7 +24,7 @@ module SignUp
 
       result = @register_user_email_form.submit(permitted_params.merge(request_id:))
 
-      analytics.user_registration_email(**result, identity_proofing: ial2_requested?)
+      analytics.user_registration_email(**result, idv_requested: idv_requested?)
       attempts_api_tracker.user_registration_email_submitted(
         email: permitted_params[:email].presence,
         success: result.success?,
