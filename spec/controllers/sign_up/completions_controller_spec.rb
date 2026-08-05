@@ -22,7 +22,7 @@ RSpec.describe SignUp::CompletionsController do
         expect(response).to redirect_to account_url
       end
 
-      context 'IAL1' do
+      context 'auth only' do
         let(:user) { create(:user, :fully_registered, email: temporary_email) }
 
         before do
@@ -50,12 +50,12 @@ RSpec.describe SignUp::CompletionsController do
           )
         end
 
-        it 'creates a presenter object that is not requesting ial2' do
-          expect(assigns(:presenter).ial2_requested?).to eq false
+        it 'creates a presenter object that is not requesting idv' do
+          expect(assigns(:presenter).idv_requested?).to eq false
         end
       end
 
-      context 'IAL2' do
+      context 'identity verification' do
         let(:user) do
           create(:user, :fully_registered, profiles: [create(:profile, :verified, :active)])
         end
@@ -87,8 +87,8 @@ RSpec.describe SignUp::CompletionsController do
           )
         end
 
-        it 'creates a presenter object that is requesting ial2' do
-          expect(assigns(:presenter).ial2_requested?).to eq true
+        it 'creates a presenter object that is requesting idv' do
+          expect(assigns(:presenter).idv_requested?).to eq true
         end
 
         context 'user is not identity verified' do
@@ -134,15 +134,15 @@ RSpec.describe SignUp::CompletionsController do
         end
 
         context 'verified user' do
-          it 'creates a presenter object that is requesting ial2' do
-            expect(assigns(:presenter).ial2_requested?).to eq true
+          it 'creates a presenter object that is requesting idv' do
+            expect(assigns(:presenter).idv_requested?).to eq true
           end
         end
 
         context 'unverified user' do
           let(:user) { create(:user) }
-          it 'creates a presenter object that is requesting ial2' do
-            expect(assigns(:presenter).ial2_requested?).to eq false
+          it 'creates a presenter object that is requesting idv' do
+            expect(assigns(:presenter).idv_requested?).to eq false
           end
         end
       end
@@ -210,7 +210,7 @@ RSpec.describe SignUp::CompletionsController do
       allow(IdentityLinker).to receive(:new).and_return(@linker)
     end
 
-    context 'IAL1' do
+    context 'auth only' do
       let(:user) { create(:user, :fully_registered) }
       it 'tracks analytics' do
         stub_sign_in(user)
@@ -332,7 +332,7 @@ RSpec.describe SignUp::CompletionsController do
       end
     end
 
-    context 'IAL2' do
+    context 'identity verification' do
       it 'tracks analytics' do
         DisposableEmailDomain.create(name: 'temporary.com')
         user = create(
