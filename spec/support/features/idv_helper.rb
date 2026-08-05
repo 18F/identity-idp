@@ -201,7 +201,7 @@ module IdvHelper
     expect(user.identity_verified?).to be(true)
     expect(page).to have_current_path sign_up_completed_path
     expect(page).to have_content t(
-      'titles.sign_up.completion_ial2',
+      'titles.sign_up.completion_idv',
       sp: 'Test SP',
     )
   end

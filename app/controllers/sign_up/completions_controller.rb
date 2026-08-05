@@ -61,7 +61,7 @@ module SignUp
         current_sp: current_sp,
         decrypted_pii: pii,
         requested_attributes: decorated_sp_session.requested_attributes.map(&:to_sym),
-        ial2_requested: ial2_requested?,
+        idv_requested: idv_requested?,
         completion_context: needs_completion_screen_reason,
         selected_email_id: selected_email_id_for_linked_identity,
       )
@@ -71,7 +71,7 @@ module SignUp
       resolved_authn_context_result.identity_proofing?
     end
 
-    def ial2_requested?
+    def idv_requested?
       resolved_authn_context_result.identity_proofing_or_ialmax? && current_user.identity_verified?
     end
 
