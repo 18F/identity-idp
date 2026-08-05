@@ -58,7 +58,7 @@ account.email_language.name.es: Español
 account.email_language.name.fr: Français
 account.email_language.name.zh: 中文（简体）
 account.email_language.updated: Se actualizó su preferencia de idioma del correo electrónico.
-account.emails.confirmed_html: Has confirmado tu dirección de correo electrónico. Ve a <a href="%{url}">tus servicios conectados</a> para actualizar el correo electrónico que compartes con las agencias conectadas.
+account.emails.confirmed_html: Has confirmado tu dirección de correo electrónico. Ve a <a href="%{url}">tus servicios conectados</a> para actualizar el correo electrónico que compartes con las servicios conectadas.
 account.forget_all_browsers.longer_description: Una vez que elija “Olvidar todos los navegadores”, necesitaremos más información para saber que realmente es usted quien está iniciando sesión en su cuenta. Le pediremos un método de autenticación multifactor (como código de texto o de SMS, o una clave de seguridad) cada vez que desee acceder a su cuenta.
 account.index.auth_app_add: Agregar aplicación
 account.index.auth_app_disabled: no habilitada
@@ -767,7 +767,7 @@ doc_auth.tips.document_capture_selfie_text3: Mantenga una expresión neutral
 doc_auth.tips.document_capture_selfie_text4: Revise que se vea su rostro completo dentro del círculo verde.
 duplicate_profiles_detected.accounts_list.heading: Cuentas con la misma información verificada
 duplicate_profiles_detected.cant_access: 'No puedo acceder a una cuenta'
-duplicate_profiles_detected.connected_acct_html: '<strong> Agencias conectadas: </strong> %{count}'
+duplicate_profiles_detected.connected_acct_html: '<strong> Servicios conectadas: </strong> %{count}'
 duplicate_profiles_detected.created_at_html: '<strong> Creado: </strong> %{timestamp_html}'
 duplicate_profiles_detected.delete_duplicates.details_html: Inicia sesión en la cuenta que va a eliminar en <a href="https://secure.login.gov">https://secure.login.gov</a>. Así es %{link_html}
 duplicate_profiles_detected.delete_duplicates.details2_html: Si lo desea, %{link_html} a la cuenta que conservará después de eliminar la cuenta duplicada.
@@ -778,11 +778,11 @@ duplicate_profiles_detected.dont_recognize_account: No reconozco una de estas cu
 duplicate_profiles_detected.duplicate: Duplicada
 duplicate_profiles_detected.get_help: Obtener ayuda
 duplicate_profiles_detected.heading: Encontramos otras cuentas que pueden ser suyas
-duplicate_profiles_detected.intro_html: '%{sp_name} requiere que usted tenga sólo una cuenta de %{app_name} con una identidad verificada. Debe eliminar %{link_html} antes de iniciar sesión en %{sp_name}. Esto es lo que debe hacer:'
+duplicate_profiles_detected.intro_html: 'Algunas servicios requieren que usted tenga únicamente una cuenta de %{app_name} con una identidad verificada. Debe eliminar %{link_html} antes de iniciar sesión en %{sp_name}. Esto es lo que debe hacer:'
 duplicate_profiles_detected.intro.link: las cuentas duplicativas
 duplicate_profiles_detected.last_sign_in_at_html: '<strong> Último inicio de sesión: </strong> %{timestamp_html}'
 duplicate_profiles_detected.never_logged_in: Nunca he iniciado sesión en
-duplicate_profiles_detected.select_an_account.details_html: 'Conserva la cuenta que esté conectada a la mayor cantidad de servicios. Ve a la página %{link_html} para ver las agencias conectadas seleccionando “Tus servicios conectados” en el menú de la izquierda.'
+duplicate_profiles_detected.select_an_account.details_html: 'Conserva la cuenta que esté conectada a la mayor cantidad de servicios. Ve a la página %{link_html} para ver las servicios conectadas seleccionando “Tus servicios conectados” en el menú de la izquierda.'
 duplicate_profiles_detected.select_an_account.details.link: «Su cuenta»
 duplicate_profiles_detected.select_an_account.heading: Elija la cuenta que desea conservar.
 duplicate_profiles_detected.sign_back_in.details: Vuelva al sitio web de %{app_name} e inicie sesión usando la cuenta de %{app_name} que conservó.
