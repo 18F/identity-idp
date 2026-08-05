@@ -362,6 +362,7 @@ mfa_report_config: '[]'
 min_password_score: 3
 minimum_wait_before_another_usps_letter_in_hours: 24
 mx_timeout: 3
+nds_look_and_feel_percent: 0
 new_device_alert_delay_in_minutes: 5
 new_device_alert_window_start_in_minutes: 480
 newrelic_license_key: ''
