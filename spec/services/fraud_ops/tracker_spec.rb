@@ -78,6 +78,60 @@ RSpec.describe FraudOps::Tracker do
     end
   end
 
+  describe 'agency_uuid' do
+    let(:redis_wrapper) { instance_double(FraudOps::RedisClient) }
+
+    before do
+      allow(FraudOps::RedisClient).to receive(:new).and_return(redis_wrapper)
+      allow(redis_wrapper).to receive(:write_event)
+    end
+
+    def tracked_agency_uuid
+      tracker.login_email_and_password_auth(email: user.email, success: true)
+
+      expect(redis_wrapper).to have_received(:write_event) do |**args|
+        payload = JSON.parse(JWE.decrypt(args[:jwe], fraud_ops_private_key))
+        return payload.dig('events').values.first['agency_uuid']
+      end
+    end
+
+    it 'does not create an AgencyIdentity when looking up the uuid' do
+      expect do
+        tracker.login_email_and_password_auth(email: user.email, success: true)
+      end.not_to change(AgencyIdentity, :count)
+    end
+
+    it 'includes the existing AgencyIdentity uuid in the event' do
+      agency_identity = AgencyIdentityLinker.for(
+        user: user, service_provider: sp, skip_create: false
+      )
+
+      expect(tracked_agency_uuid).to eq(agency_identity.uuid)
+    end
+
+    it 'retries the lookup once when the first lookup returns nil' do
+      agency_identity = AgencyIdentityLinker.for(
+        user: user, service_provider: sp, skip_create: false
+      )
+
+      first_lookup = true
+      allow(AgencyIdentityLinker).to receive(:for).and_wrap_original do |original, **kwargs|
+        next original.call(**kwargs) unless first_lookup
+
+        first_lookup = false
+        nil
+      end
+
+      expect(tracked_agency_uuid).to eq(agency_identity.uuid)
+    end
+
+    it 'sends a nil agency_uuid when both lookups return nil' do
+      allow(AgencyIdentityLinker).to receive(:for).and_return(nil)
+
+      expect(tracked_agency_uuid).to be_nil
+    end
+  end
+
   describe 'error handling' do
     it 'returns nil and logs a warning when an error occurs' do
       allow(IdentityConfig.store).to receive(:fraud_ops_public_key).and_return('')
