@@ -8126,7 +8126,7 @@ module AnalyticsEvents
     **extra
   )
     track_event(
-      'reCAPTCHA annotation result received',
+      :recaptcha_annotation_result_received,
       reason:,
       annotation:,
       success:,
