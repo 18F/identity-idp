@@ -64,7 +64,6 @@ module Idv
       address_verification_mechanism
       agent_proofed
       applicant
-      bucketed_doc_auth_vendor
       clear1_enabled
       doc_auth_vendor
       document_capture_session_uuid
