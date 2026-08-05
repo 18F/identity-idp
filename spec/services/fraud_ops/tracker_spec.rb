@@ -103,7 +103,7 @@ RSpec.describe FraudOps::Tracker do
 
     it 'includes the existing AgencyIdentity uuid in the event' do
       agency_identity = AgencyIdentityLinker.for(
-        user: user, service_provider: sp, skip_create: false
+        user: user, service_provider: sp, skip_create: false,
       )
 
       expect(tracked_agency_uuid).to eq(agency_identity.uuid)
@@ -111,7 +111,7 @@ RSpec.describe FraudOps::Tracker do
 
     it 'falls back to a lookup when creation races with a duplicate' do
       agency_identity = AgencyIdentityLinker.for(
-        user: user, service_provider: sp, skip_create: false
+        user: user, service_provider: sp, skip_create: false,
       )
 
       raised = false
@@ -127,10 +127,10 @@ RSpec.describe FraudOps::Tracker do
 
     it 'sends a nil agency_uuid when the fallback lookup returns nil' do
       allow(AgencyIdentityLinker).to receive(:for).with(
-        user: user, service_provider: sp, skip_create: false
+        user: user, service_provider: sp, skip_create: false,
       ).and_raise(ActiveRecord::RecordNotUnique)
       allow(AgencyIdentityLinker).to receive(:for).with(
-        user: user, service_provider: sp, skip_create: true
+        user: user, service_provider: sp, skip_create: true,
       ).and_return(nil)
 
       expect(tracked_agency_uuid).to be_nil
