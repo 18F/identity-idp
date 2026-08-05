@@ -453,7 +453,7 @@ requests_per_ip_path_prefixes_allowlist: ''
 requests_per_ip_period: 300
 requests_per_ip_track_only_mode: false
 reset_password_email_max_attempts: 20
-reset_password_email_window_in_minutes: 60
+reset_password_email_window_in_minutes: 30
 reset_password_on_auth_fraud_event: true
 risc_notifications_local_enabled: false
 risc_notifications_rate_limit_interval: 60
@@ -714,7 +714,7 @@ test:
   requests_per_ip_limit: 4
   requests_per_ip_period: 60
   reset_password_email_max_attempts: 5
-  reset_password_email_window_in_minutes: 80
+  reset_password_email_window_in_minutes: 30
   s3_data_warehouse_bucket_prefix: ''
   s3_report_bucket_prefix: ''
   s3_report_public_bucket_prefix: ''
