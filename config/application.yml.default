@@ -709,12 +709,10 @@ test:
   raise_on_missing_title: true
   reg_confirmed_email_max_attempts: 3
   reg_unconfirmed_email_max_attempts: 4
-  reg_unconfirmed_email_window_in_minutes: 70
   requests_per_ip_cidr_allowlist: '172.16.0.0/12'
   requests_per_ip_limit: 4
   requests_per_ip_period: 60
   reset_password_email_max_attempts: 5
-  reset_password_email_window_in_minutes: 80
   s3_data_warehouse_bucket_prefix: ''
   s3_report_bucket_prefix: ''
   s3_report_public_bucket_prefix: ''
