@@ -44,8 +44,8 @@ module Idv
         redirect_to idv_document_capture_url(step: :hybrid_handoff)
       elsif params[:type] == 'mobile'
         handle_phone_submission
-      elsif params[:type] == 'clear'
-        handle_clear_submission
+      elsif params[:type] == 'clear1'
+        handle_clear1_submission
       else
         update_vendor_if_test_mode_enabled
         bypass_send_link_steps
@@ -70,7 +70,7 @@ module Idv
         key: :hybrid_handoff,
         controller: self,
         next_steps: [
-          :choose_id_type, :link_sent, :document_capture, :socure_document_capture, :clear_session
+          :choose_id_type, :link_sent, :document_capture, :socure_document_capture, :clear1_session
         ],
         preconditions: ->(idv_session:, user:) do
           idv_session.idv_consent_given? &&
@@ -92,7 +92,7 @@ module Idv
       @presenter = Idv::HowToVerifyPresenter.new(
         selfie_check_required: @selfie_required,
         mdl_enabled: document_capture_session.mdl_enabled,
-        clear_enabled: clear_enabled?,
+        clear1_enabled: clear1_enabled?,
       )
     end
 
@@ -124,18 +124,18 @@ module Idv
       )
     end
 
-    def handle_clear_submission
+    def handle_clear1_submission
       return rate_limited_failure if rate_limiter.limited?
       rate_limiter.increment!
       idv_session.flow_path = 'standard'
 
       analytics.idv_doc_auth_hybrid_handoff_submitted(
         **analytics_arguments.merge(
-          form_response(destination: :clear_session).to_h,
+          form_response(destination: :clear1_session).to_h,
         ),
       )
 
-      redirect_to idv_clear_session_url
+      redirect_to idv_clear1_session_url
     end
 
     def send_link

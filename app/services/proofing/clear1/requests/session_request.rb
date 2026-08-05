@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 module Proofing
-  module Clear
+  module Clear1
     module Requests
-      class SessionRequest < Proofing::Clear::Request
+      class SessionRequest < Proofing::Clear1::Request
         private
 
         def http_method
@@ -11,7 +11,7 @@ module Proofing
         end
 
         def metric_name
-          'clear_session_request'
+          'clear1_session_request'
         end
 
         def handle_http_response(response)
@@ -33,7 +33,7 @@ module Proofing
 
         def endpoint
           [
-            IdentityConfig.store.idv_clear_api_base_url,
+            IdentityConfig.store.idv_clear1_api_base_url,
             'v1',
             'verification_sessions',
           ].join('/')
@@ -42,13 +42,13 @@ module Proofing
         def request_headers
           {
             'Content-Type': 'application/json',
-            Authorization: "Bearer #{IdentityConfig.store.idv_clear_api_key}",
+            Authorization: "Bearer #{IdentityConfig.store.idv_clear1_api_key}",
           }
         end
 
         def body
           {
-            project_id: IdentityConfig.store.idv_clear_project_id,
+            project_id: IdentityConfig.store.idv_clear1_project_id,
             redirect_url: '',
           }.to_json
         end

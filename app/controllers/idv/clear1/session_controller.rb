@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
 module Idv
-  module Clear
+  module Clear1
     class SessionController < ApplicationController
       include Idv::AvailabilityConcern
       include IdvStepConcern
       include RenderConditionConcern
 
-      # check_or_render_not_found -> { clear_enabled? }
+      # check_or_render_not_found -> { clear1_enabled? }
 
       # before_action :confirm_not_rate_limited, except: :update
       # before_action -> do
@@ -17,23 +17,23 @@ module Idv
       # before_action :confirm_step_allowed
       # before_action :update_doc_auth_vendor, only: :show
       # before_action -> do
-      #   redirect_to_correct_vendor(Idp::Constants::Vendors::CLEAR, in_hybrid_mobile: false)
+      #   redirect_to_correct_vendor(Idp::Constants::Vendors::CLEAR1, in_hybrid_mobile: false)
       # end, only: :show
 
       def show
         timer = JobHelpers::Timer.new
-        clear_session = timer.time('vendor_request') do
-          clear_session_request = Proofing::Clear::Requests::SessionRequest.new
-          clear_session_request.fetch
+        clear1_session = timer.time('vendor_request') do
+          clear1_session_request = Proofing::Clear1::Requests::SessionRequest.new
+          clear1_session_request.fetch
         end
 
-        if clear_session.success?
-          token = clear_session.extra[:token]
+        if clear1_session.success?
+          token = clear1_session.extra[:token]
 
-          document_capture_session.update!(doc_auth_vendor: Idp::Constants::Vendors::CLEAR)
+          document_capture_session.update!(doc_auth_vendor: Idp::Constants::Vendors::CLEAR1)
 
-          @clear_endpoint = UriService.add_params(
-            [IdentityConfig.store.idv_clear_api_base_url, 'verify'].join('/'),
+          @clear1_endpoint = UriService.add_params(
+            [IdentityConfig.store.idv_clear1_api_base_url, 'verify'].join('/'),
             { token: },
           )
         else
@@ -42,7 +42,7 @@ module Idv
       end
 
       def update
-        # todo: fetch clear status
+        # todo: fetch clear1 status
         # if successful, redirec to password page
         # idv_session.doc_auth_vendor = document_capture_session.doc_auth_vendor
         # if fail, redirect to hybrid handoff (temporary)
@@ -50,12 +50,12 @@ module Idv
 
       def self.step_info
         Idv::StepInfo.new(
-          key: :clear_session,
+          key: :clear1_session,
           controller: self,
           next_steps: [:enter_password],
           preconditions: ->(idv_session:, user:) {
             idv_session.flow_path == 'standard' &&
-            idv_session.clear_enabled
+            idv_session.clear1_enabled
           },
           undo_step: ->(idv_session:, user:) do
             idv_session.pii_from_doc = nil
@@ -119,16 +119,16 @@ module Idv
       def analytics_arguments
         {
           flow_path: flow_path,
-          step: 'clear_session',
+          step: 'clear1_session',
           skip_hybrid_handoff: idv_session.skip_hybrid_handoff,
           pii_like_keypaths: [[:pii]],
         }.merge(ab_test_analytics_buckets)
       end
 
-      def clear_session
-        @clear_session ||= begin
-          clear_session_request = Proofing::Clear::Requests::SessionRequest.new
-          clear_session_request.fetch
+      def clear1_session
+        @clear1_session ||= begin
+          clear1_session_request = Proofing::Clear1::Requests::SessionRequest.new
+          clear1_session_request.fetch
         end
       end
     end

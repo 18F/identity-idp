@@ -405,8 +405,8 @@ Rails.application.routes.draw do
       get '/document_capture' => 'document_capture#show'
       put '/document_capture' => 'document_capture#update'
       get '/in_person/direct' => 'document_capture#direct_in_person'
-      get '/clear/session' => 'clear/session#show'
-      get '/clear/session_update' => 'clear/session#update', as: :clear_session_update
+      get '/clear1/session' => 'clear1/session#show'
+      get '/clear1/session_update' => 'clear1/session#update', as: :clear1_session_update
       get '/socure/document_capture' => 'socure/document_capture#show'
       get '/socure/document_capture_update' => 'socure/document_capture#update', as: :socure_document_capture_update
       get '/socure/document_capture_errors' => 'socure/errors#show', as: :socure_document_capture_errors

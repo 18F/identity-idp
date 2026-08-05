@@ -1,12 +1,14 @@
 require 'rails_helper'
 
 RSpec.describe 'idv/hybrid_handoff/show.html.erb' do
+  let(:clear1_enabled) { false }
   before do
     allow(view).to receive(:current_user).and_return(@user)
     @idv_form = Idv::PhoneForm.new(user: build_stubbed(:user), previous_params: nil)
     @idv_how_to_verify_form = Idv::HowToVerifyForm.new
     @presenter = Idv::HowToVerifyPresenter.new(
       selfie_check_required: true,
+      clear1_enabled:,
     )
   end
 
@@ -40,8 +42,22 @@ RSpec.describe 'idv/hybrid_handoff/show.html.erb' do
       expect(rendered).to_not have_content(strip_tags(t('doc_auth.headings.verify_at_post_office')))
     end
   end
-  it 'renders the Clear action without Turbo so the redirect is followed by the browser' do
-    expect(rendered).to have_selector('a[href="/verify/hybrid_handoff?type=clear"][data-turbo="false"]', text: 'Clear')
+
+  it 'renders the Clear1 action' do
+    expect(rendered).not_to have_selector(
+      :xpath,
+      '//form[@aria-label="Clear1"]',
+    )
+  end
+
+  context 'when clear1 is enabled' do
+    let(:clear1_enabled) { true }
+    it 'renders the Clear1 action' do
+      expect(rendered).to have_selector(
+        :xpath,
+        '//form[@aria-label="Clear1"]',
+      )
+    end
   end
 
   context 'when selfie is required' do
