@@ -182,6 +182,7 @@ module AttemptsApi
     end
 
     def should_track?(event_type)
+      # Historical Attempts feature requires the Attempts API to be enabled globally
       return false unless IdentityConfig.store.attempts_api_enabled
 
       should_send_event? || should_log_history?(event_type)
