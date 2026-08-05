@@ -283,7 +283,7 @@ module Idp
       issuing_country_code: 'USA',
       passport_issued: (DateTime.new.utc - 1.year).to_s,
       nationality_code: 'USA',
-      document_number: nil,
+      document_number: '000000',
     ).freeze
     def self.mock_idv_applicant_with_passport
       MOCK_IDV_APPLICANT_WITH_PASSPORT.dup

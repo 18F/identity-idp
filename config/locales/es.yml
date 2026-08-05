@@ -2116,9 +2116,9 @@ user_mailer.in_person_ready_to_verify_reminder.subject.other: Verifique su ident
 user_mailer.in_person_ready_to_verify.subject: Está listo para verificar su identidad con %{app_name} en persona
 user_mailer.in_person_verified.greeting: 'Hola:'
 user_mailer.in_person_verified.intro: El %{date}, verificó correctamente su identidad en la oficina de correos de %{location}.
-user_mailer.in_person_verified.next_sign_in.with_sp.with_cta: A continuación, haga clic en el botón o copie el vínculo siguiente para acceder a %{sp_name} e iniciar sesión.
-user_mailer.in_person_verified.next_sign_in.with_sp.without_cta: Ya puede iniciar la sesión en el sitio web de %{sp_name}.
-user_mailer.in_person_verified.next_sign_in.without_sp: Luego, haga clic en el botón o copie el vínculo siguiente para iniciar sesión en %{app_name}.
+user_mailer.in_person_verified.next_sign_in.with_sp.with_cta: Inicie sesión y conecte su información verificada con %{sp_name}.
+user_mailer.in_person_verified.next_sign_in.with_sp.without_cta: Inicie sesión desde el sitio web de %{sp_name} para conectar su información verificada.
+user_mailer.in_person_verified.next_sign_in.without_sp: Inicie sesión en %{app_name}.
 user_mailer.in_person_verified.sign_in: Iniciar sesión
 user_mailer.in_person_verified.subject: Logró verificar su identidad con %{app_name}
 user_mailer.in_person_verified.warning_contact_us_html: Si usted no intentó verificar su identidad en persona, inicie sesión en <a href="%{reset_password_url}"> para restablecer su contraseña</a>. Para informar de esto, <a href="%{contact_us_url}">contacte con el servicio de asistencia de %{app_name}</a>.

@@ -854,6 +854,34 @@ module AnalyticsEvents
     )
   end
 
+  # Historic Attempt data was destroyed when a user deleted their account
+  # It deletes ALL historic data, not just the most recent active profile
+  def historic_event_data_destroyed
+    track_event(:historic_event_data_destroyed)
+  end
+
+  # Historic data was potentially sent when a user accessed an Attempts Api Consumer App
+  # @param [Boolean] success Whether the historic attempt data was released
+  # rubocop:disable Layout/LineLength
+  # @param [:idv_not_requested, :no_user_proofing_event, :already_sent, :no_encrypted_file_reference nil] exception
+  # rubocop:enable Layout/LineLength
+  # @param [Integer,nil] profile_id ID of the active profile associated with attempts data
+  def historic_event_data_released(success:, exception: nil, profile_id: nil, **extra)
+    track_event(
+      :historic_event_data_released,
+      success:,
+      exception:,
+      profile_id:,
+      **extra,
+    )
+  end
+
+  # @param [Integer] profile_id ID of the active profile associated with attempts data
+  # Historic Attempt data was saved when a user completed the IdV process
+  def historic_event_data_saved(profile_id:, **extra)
+    track_event(:historic_event_data_saved, profile_id:, **extra)
+  end
+
   # User visited sign-in URL from the "You've been successfully verified email" CTA button
   # @param issuer [String] the ServiceProvider.issuer
   # @param campaign_id [String] the email campaign ID
@@ -8542,6 +8570,8 @@ module AnalyticsEvents
   # @param [String, nil] vtr
   # @param [String, nil] acr_values
   # @param [Integer] sign_in_duration_seconds
+  # TODO: For ease of validating attempt bundle information, can we pass the profile id
+  # in those events as well as this one?
   def sp_redirect_initiated(
     ial:,
     billed_ial:,

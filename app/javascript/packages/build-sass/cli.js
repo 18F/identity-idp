@@ -46,10 +46,15 @@ const options = { outDir, loadPaths, sassCompiler, optimize: isProduction };
  * @param {() => void} callback Callback to invoke.
  */
 function watchOnce(paths, callback) {
-  const watcher = watch(paths).once('change', () => {
+  const watcher = watch(paths, { ignoreInitial: true });
+  const onEvent = () => {
+    watcher.off('change', onEvent);
+    watcher.off('add', onEvent);
+    watcher.off('unlink', onEvent);
     watcher.close();
     callback();
-  });
+  };
+  watcher.on('change', onEvent).on('add', onEvent).on('unlink', onEvent);
 }
 
 /**

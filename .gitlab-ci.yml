@@ -10,6 +10,7 @@ variables:
   ECR_REGISTRY: '${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com'
   SECURE_ANALYZERS_PREFIX: "$ECR_REGISTRY/gitlab/security-products"
   IDP_CI_SHA: 'sha256:787f58c3d7e0899d7a622202aa21a9ead24a3fc160d1b158160429bdcc33e4fe'
+  KUBECTL_CI_SHA: 'sha256:96a7d245a74d461925a56e3024d2f027c2a7a822b3e9e0117ec558db42de9c35'
   PKI_IMAGE_TAG: 'main'
   DASHBOARD_IMAGE_TAG: 'main'
   APPLICATION_MANIFEST: dockerfiles/application.yaml
@@ -480,7 +481,8 @@ trigger_devops:
 
 .deploy:
   image:
-    name: dtzar/helm-kubectl:latest
+    name: ${ECR_REGISTRY}/docker-hub/alpine/kubectl@${KUBECTL_CI_SHA}
+    entrypoint: ['']
   script:
     - kubectl config get-contexts
     - export CONTEXT=$(kubectl config get-contexts | grep reviewapp | awk '{print $1}' | head -1)
@@ -488,7 +490,6 @@ trigger_devops:
     - export SANITIZED_BRANCH_NAME=$(echo "$CI_COMMIT_REF_NAME" | tr '/' '-' | tr -c '[:alnum:]-_' '-' | sed 's/-*$//')
     - echo "${CI_COMMIT_REF_NAME}"
     - echo "${SANITIZED_BRANCH_NAME}"
-    #TODO put in kustomize based deploy
     # Dynamically populate review environment settings
     - sed -i "s|{{ENVIRONMENT}}|${CI_ENVIRONMENT_SLUG}|g" ${APPLICATION_MANIFEST}
     - sed -i "s|{{SANITIZED_BRANCH_NAME}}|${SANITIZED_BRANCH_NAME}|g" ${APPLICATION_MANIFEST}
@@ -538,7 +539,8 @@ stop-review-app:
     - kubectl delete application "$CI_ENVIRONMENT_SLUG-db" -n argocd
   stage: review
   image:
-    name: dtzar/helm-kubectl:latest
+    name: ${ECR_REGISTRY}/docker-hub/alpine/kubectl@${KUBECTL_CI_SHA}
+    entrypoint: ['']
   needs:
     - job: review-app
   environment:
