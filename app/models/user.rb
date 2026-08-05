@@ -608,6 +608,7 @@ class User < ApplicationRecord
     return unless IdentityConfig.store.historical_attempts_api_enabled
 
     attempt_data_handler.delete_all_user_attempt_data(user_uuid: uuid)
+    analytics.historic_event_data_destroyed
   end
 
   def attempt_data_handler
