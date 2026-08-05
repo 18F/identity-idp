@@ -20,7 +20,7 @@ module Proofing
           FormResponse.new(
             success: true,
             extra: response_body.slice(
-              :id, :object_name, :projet_id, :redirect_url, :expires_at, :created_at, :status, :token, 
+              :id, :object_name, :project_id, :redirect_url, :expires_at, :created_at, :status, :token,
             ),
           )
         rescue => exception
