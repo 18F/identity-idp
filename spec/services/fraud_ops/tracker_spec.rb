@@ -95,10 +95,10 @@ RSpec.describe FraudOps::Tracker do
       end
     end
 
-    it 'does not create an AgencyIdentity when looking up the uuid' do
+    it 'creates and includes the AgencyIdentity uuid in the event' do
       expect do
-        tracker.login_email_and_password_auth(email: user.email, success: true)
-      end.not_to change(AgencyIdentity, :count)
+        expect(tracked_agency_uuid).to be_present
+      end.to change(AgencyIdentity, :count).by(1)
     end
 
     it 'includes the existing AgencyIdentity uuid in the event' do
@@ -109,24 +109,29 @@ RSpec.describe FraudOps::Tracker do
       expect(tracked_agency_uuid).to eq(agency_identity.uuid)
     end
 
-    it 'retries the lookup once when the first lookup returns nil' do
+    it 'falls back to a lookup when creation races with a duplicate' do
       agency_identity = AgencyIdentityLinker.for(
         user: user, service_provider: sp, skip_create: false
       )
 
-      first_lookup = true
+      raised = false
       allow(AgencyIdentityLinker).to receive(:for).and_wrap_original do |original, **kwargs|
-        next original.call(**kwargs) unless first_lookup
+        next original.call(**kwargs) if raised || kwargs[:skip_create]
 
-        first_lookup = false
-        nil
+        raised = true
+        raise ActiveRecord::RecordNotUnique
       end
 
       expect(tracked_agency_uuid).to eq(agency_identity.uuid)
     end
 
-    it 'sends a nil agency_uuid when both lookups return nil' do
-      allow(AgencyIdentityLinker).to receive(:for).and_return(nil)
+    it 'sends a nil agency_uuid when the fallback lookup returns nil' do
+      allow(AgencyIdentityLinker).to receive(:for).with(
+        user: user, service_provider: sp, skip_create: false
+      ).and_raise(ActiveRecord::RecordNotUnique)
+      allow(AgencyIdentityLinker).to receive(:for).with(
+        user: user, service_provider: sp, skip_create: true
+      ).and_return(nil)
 
       expect(tracked_agency_uuid).to be_nil
     end

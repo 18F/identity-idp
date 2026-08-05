@@ -48,9 +48,8 @@ module FraudOps
     def agency_uuid(event_type: nil) # rubocop:disable Lint/UnusedMethodArgument
       return nil unless user&.id && sp
 
-      uuid = AgencyIdentityLinker.for(user: user, service_provider: sp, skip_create: true)&.uuid
-      return uuid if uuid
-
+      AgencyIdentityLinker.for(user: user, service_provider: sp, skip_create: false).uuid
+    rescue ActiveRecord::RecordNotUnique
       AgencyIdentityLinker.for(user: user, service_provider: sp, skip_create: true)&.uuid
     end
 
