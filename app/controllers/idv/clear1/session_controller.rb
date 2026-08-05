@@ -7,9 +7,9 @@ module Idv
       include IdvStepConcern
       include RenderConditionConcern
 
-      # check_or_render_not_found -> { clear1_enabled? }
+      check_or_render_not_found -> { clear1_enabled? }
 
-      # before_action :confirm_not_rate_limited, except: :update
+      before_action :confirm_not_rate_limited, except: :update
       # before_action -> do
       #   confirm_not_rate_limited(check_last_submission: true)
       # end, only: :update
@@ -118,9 +118,8 @@ module Idv
 
       def analytics_arguments
         {
-          flow_path: flow_path,
+          flow_path:,
           step: 'clear1_session',
-          skip_hybrid_handoff: idv_session.skip_hybrid_handoff,
           pii_like_keypaths: [[:pii]],
         }.merge(ab_test_analytics_buckets)
       end

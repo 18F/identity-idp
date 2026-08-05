@@ -125,8 +125,6 @@ module Idv
     end
 
     def handle_clear1_submission
-      return rate_limited_failure if rate_limiter.limited?
-      rate_limiter.increment!
       idv_session.flow_path = 'standard'
 
       analytics.idv_doc_auth_hybrid_handoff_submitted(
