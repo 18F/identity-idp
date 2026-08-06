@@ -1377,11 +1377,7 @@ in_person_proofing.body.prepare.verify_step_enter_phone: Ingrese su número de t
 in_person_proofing.body.prepare.verify_step_enter_pii: Ingrese su nombre, fecha de nacimiento, número de identificación emitida por el estado, dirección y número de Seguro Social.
 in_person_proofing.body.prepare.verify_step_post_office: Busque una oficina de correos participantes cercana.
 in_person_proofing.body.state_id.alert_message: Licencia de conducir, identificación estatal o pasaporte (libreta o tarjeta) de EE. UU.
-in_person_proofing.body.state_id.alert_text:
-  'Libretas y tarjetas de pasaporte de EE. UU. Los pasaportes aún no se aceptan para la verificación en persona. Si no ve la opción para verificar su identidad con un pasaporte, utilice una licencia de conducir o una identificación estatal, o intente verificar su identidad nuevamente más tarde.
-
-
-  Pasaportes de otros países'
+in_person_proofing.body.state_id.alert_text: 'Libretas y tarjetas de pasaporte de EE. UU. Los pasaportes aún no se aceptan para la verificación en persona. Si no ve la opción para verificar su identidad con un pasaporte, utilice una licencia de conducir o una identificación estatal, o intente verificar su identidad nuevamente más tarde.'
 in_person_proofing.body.state_id.info_html: Ingrese la información <strong>exactamente como aparece en su identificación emitida por el estado.</strong> Usaremos esta información para confirmar que coincida con su identificación en persona.
 in_person_proofing.form.address.errors.unsupported_chars: 'Nuestro sistema no puede leer estos caracteres: %{char_list}. Inténtelo de nuevo usando caracteres sustitutos.'
 in_person_proofing.form.address.state_prompt: '- Seleccione -'
