@@ -1411,6 +1411,23 @@ RSpec.describe OpenidConnect::AuthorizationController do
         end
       end
     end
+    context 'password change is required' do
+      let(:user) { create(:user, :fully_registered) }
+      let(:acr_values) { Saml::Idp::Constants::IAL1_AUTHN_CONTEXT_CLASSREF }
+      let(:sign_in_flow) { :sign_in }
+
+      before do
+        stub_sign_in user
+        session[:sign_in_flow] = sign_in_flow
+        session[:sign_in_page_visited_at] = Time.zone.now.to_s
+        session[:redirect_to_change_password] = true
+      end
+
+      it 'redirects to the manage password page' do
+        action
+        expect(response).to redirect_to(manage_password_url)
+      end
+    end
   end
 end
 # rubocop:enable Layout/LineLength
