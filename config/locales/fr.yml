@@ -1366,11 +1366,7 @@ in_person_proofing.body.prepare.verify_step_enter_phone: Saisissez votre numéro
 in_person_proofing.body.prepare.verify_step_enter_pii: Saisissez votre nom, votre date de naissance, le numéro de votre pièce d’identité délivrée par l’État, votre adresse et votre numéro de sécurité sociale.
 in_person_proofing.body.prepare.verify_step_post_office: Trouver un bureau de poste participant près de chez vous.
 in_person_proofing.body.state_id.alert_message: Permis de conduire américain, carte d’identité delivrée par un État ou passeport américain (livret ou carte)
-in_person_proofing.body.state_id.alert_text:
-  'Passeports américains (livret ou carte). Les passeports ne sont pas encore acceptés pour la vérification en personne. Si l’option de vérifier votre identité à l’aide d’un passeport ne s’affiche pas, veuillez utiliser un permis de conduire ou une carte d’identité délivrée par un État, ou réessayez de vérifier votre identité ultérieurement.
-
-
-  Passeports non américains'
+in_person_proofing.body.state_id.alert_text: 'Passeports américains (livret ou carte). Les passeports ne sont pas encore acceptés pour la vérification en personne. Si l’option de vérifier votre identité à l’aide d’un passeport ne s’affiche pas, veuillez utiliser un permis de conduire ou une carte d’identité délivrée par un État, ou réessayez de vérifier votre identité ultérieurement.'
 in_person_proofing.body.state_id.info_html: Saisissez les informations <strong>exactement comme elles figurent sur votre pièce d’identité</strong>. Nous utiliserons ces informations pour confirmer qu’elles correspondent à votre pièce d’identité en personne.
 in_person_proofing.form.address.errors.unsupported_chars: 'Notre système ne parvient pas à lire les caractères suivants : %{char_list}. Veuillez réessayer en utilisant d’autres caractères.'
 in_person_proofing.form.address.state_prompt: '- Sélectionnez -'
