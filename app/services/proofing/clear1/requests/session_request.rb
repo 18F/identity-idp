@@ -4,6 +4,12 @@ module Proofing
   module Clear1
     module Requests
       class SessionRequest < Proofing::Clear1::Request
+        attr_reader :redirect_url
+
+        def initialize(redirect_url:)
+          @redirect_url = redirect_url
+        end
+
         private
 
         def http_method
@@ -17,17 +23,29 @@ module Proofing
         def handle_http_response(response)
           response_body = JSON.parse(response.body, symbolize_names: true)
 
+          if success?(response_body)
+            success = true
+            errors = nil
+          else
+            success = false
+            errors = { clear1: true }
+          end
+
           FormResponse.new(
-            success: true,
-            extra: response_body.slice(
-              :id, :object_name, :project_id, :redirect_url, :expires_at, :created_at, :status, :token,
+            success:,
+            errors: errors,
+            extra: extra_attributes.merge(
+              **response_body.slice(
+                :id, :object_name, :project_id, :redirect_url, :expires_at, :created_at, :status, :token,
+              ),
             ),
           )
         rescue => exception
           NewRelic::Agent.notice_error(exception)
           FormResponse.new(
             success: false,
-            extra: { exception: e.inspect },
+            errors: { clear1: true },
+            extra: extra_attributes.merge(exception:),
           )
         end
 
@@ -49,8 +67,18 @@ module Proofing
         def body
           {
             project_id: IdentityConfig.store.idv_clear1_project_id,
-            redirect_url: '',
+            redirect_url:,
           }.to_json
+        end
+
+        def success?(response_body)
+          response_body[:token].present?
+        end
+
+        def extra_attributes
+          {
+            vendor_name: Idp::Constants::Vendors::CLEAR1,
+          }
         end
       end
     end
