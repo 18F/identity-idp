@@ -317,9 +317,12 @@ module Users
                 !ab_test_eligible? ||
                 compromised_password_check_current?
 
-      is_pwned = PwnedPasswords::LookupPassword.call(auth_params[:password])
-      track_pwned_password if is_pwned
-      update_user_password_compromised_checked_at
+      if PwnedPasswords::LookupPassword.call(auth_params[:password])
+        track_pwned_password
+        session[:redirect_to_change_password] = true
+      else
+        update_user_password_compromised_checked_at
+      end
     end
 
     def compromised_password_check_current?
