@@ -88,6 +88,10 @@ module Idv
         ssn: idv_session.ssn,
         consent_given_at: idv_session.idv_consent_given_at,
         aamva_verified_attributes: idv_session.aamva_verified_attributes,
+        # AAMVA ran against the document address at doc auth. Tell the adjudicator when the user
+        # has since changed their residential address, so a verified AAMVA address cannot cover an
+        # InstantVerify failure for an address AAMVA never saw.
+        address_edited: !!idv_session.address_edited,
         **idv_session.updated_user_address.to_h,
       ).with_indifferent_access
     end
