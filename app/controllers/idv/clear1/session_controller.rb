@@ -24,12 +24,13 @@ module Idv
         if clear1_session.success?
           token = clear1_session.extra[:token]
 
-          document_capture_session.update!(doc_auth_vendor: Idp::Constants::Vendors::CLEAR1)
-
           @clear1_endpoint = UriService.add_params(
             [IdentityConfig.store.idv_clear1_api_base_url, 'verify'].join('/'),
             { token: },
           )
+
+          idv_session.clear1_verification_token = token
+          document_capture_session.update!(doc_auth_vendor: Idp::Constants::Vendors::CLEAR1)
         else
           redirect_to idv_hybrid_handoff_path
         end
@@ -51,6 +52,7 @@ module Idv
             idv_session.pii_from_doc = nil
             idv_session.doc_auth_vendor = nil
             idv_session.source_check_vendor = nil
+            idv_session.clear1_verification_token = nil
           end,
         )
       end
