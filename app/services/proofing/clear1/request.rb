@@ -3,9 +3,16 @@
 module Proofing
   module Clear1
     class Request
+      class RequestError < StandardError
+        def initialize(message, error_code)
+          @error_code = error_code
+          super(message)
+        end
+      end
+
       attr_accessor :state_uuid
 
-      VENDOR_NAME = 'clear1'
+      VENDOR_NAME = Idp::Constants::Vendors::CLEAR1
 
       def fetch
         # return DocAuth::Response with DocAuth:Error if workflow invalid
@@ -61,7 +68,7 @@ module Proofing
           'Unexpected HTTP response',
           http_response.status,
         ].join(' ')
-        exception = DocAuth::RequestError.new(message, http_response.status)
+        exception = RequestError.new(message, http_response.status)
 
         begin
           http_response.body.present? ? JSON.parse(http_response.body) : {}
