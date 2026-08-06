@@ -15,6 +15,12 @@ module Idv
     # so the "unanswered" state remains distinct from an explicit `false`.
     BOOLEAN_ATTRIBUTES = %i[ipp_current_address_matches_id].freeze
 
+    # 50/50 deploy compatibility (LG-16085): a form rendered by an old instance
+    # submits the legacy `same_address_as_id` param. Accept it as an alias for
+    # `ipp_current_address_matches_id`. Remove once the deploy that renamed the
+    # form param is fully rolled out.
+    LEGACY_PARAM_ALIASES = { same_address_as_id: :ipp_current_address_matches_id }.freeze
+
     attr_accessor(*ATTRIBUTES)
 
     def self.model_name
@@ -46,6 +52,7 @@ module Idv
 
     def consume_params(params)
       params.each do |key, value|
+        key = LEGACY_PARAM_ALIASES.fetch(key.to_sym, key)
         raise_invalid_state_id_parameter_error(key) unless ATTRIBUTES.include?(key.to_sym)
         value = ActiveModel::Type::Boolean.new.cast(value) if BOOLEAN_ATTRIBUTES
           .include?(key.to_sym)

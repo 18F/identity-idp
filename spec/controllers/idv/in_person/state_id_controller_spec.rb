@@ -290,6 +290,40 @@ RSpec.describe Idv::InPerson::StateIdController do
         expect(subject.idv_session.doc_auth_vendor).to eq(Idp::Constants::Vendors::USPS)
       end
 
+      # LG-16085 50/50 deploy safety: a form rendered by an old instance submits the
+      # legacy `same_address_as_id` param instead of `ipp_current_address_matches_id`.
+      # The permit list + form must accept it and store the coerced boolean rather
+      # than reject the submission and bounce the user back to the State ID page.
+      context 'when the legacy same_address_as_id param is submitted (50/50 window)' do
+        let(:params) do
+          {
+            identity_doc: {
+              first_name:,
+              last_name:,
+              same_address_as_id: 'true',
+              identity_doc_address1:,
+              identity_doc_address2:,
+              identity_doc_city:,
+              state_id_jurisdiction:,
+              id_number:,
+              identity_doc_address_state:,
+              identity_doc_zipcode:,
+              dob:,
+              id_expiration:,
+              asserted_id_type:,
+            },
+          }
+        end
+
+        it 'accepts the submission and stores the coerced boolean in flow session' do
+          put :update, params: params
+
+          expect(response).to_not render_template :show
+          pii_from_user = subject.user_session['idv/in_person'][:pii_from_user]
+          expect(pii_from_user[:ipp_current_address_matches_id]).to eq(true)
+        end
+      end
+
       it 'sets the enrollment document type' do
         put :update, params: params
 

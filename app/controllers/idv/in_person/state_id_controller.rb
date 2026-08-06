@@ -101,8 +101,13 @@ module Idv
         end
 
         # `flow_params` holds the raw radio value ("true"/"false"); store a real boolean.
+        # 50/50 deploy compatibility (LG-16085): fall back to the legacy param name if
+        # the form was rendered by an old instance. Remove once fully rolled out.
+        raw_current_address_matches_id =
+          flow_params[:ipp_current_address_matches_id] ||
+          flow_params[:same_address_as_id]
         pending[:ipp_current_address_matches_id] =
-          ActiveModel::Type::Boolean.new.cast(pending[:ipp_current_address_matches_id])
+          ActiveModel::Type::Boolean.new.cast(raw_current_address_matches_id)
 
         formatted_dob = MemorableDateComponent.extract_date_param flow_params&.[](:dob)
         pending[:dob] = formatted_dob if formatted_dob
@@ -190,6 +195,9 @@ module Idv
 
         params.require(:state_id).permit(
           *Idv::StateIdForm::ATTRIBUTES,
+          # 50/50 deploy compatibility (LG-16085): accept the legacy param name from
+          # forms rendered by old instances. Remove once fully rolled out.
+          *Idv::StateIdForm::LEGACY_PARAM_ALIASES.keys,
           dob: [:month, :day, :year],
           id_expiration: [:month, :day, :year],
         )

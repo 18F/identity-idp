@@ -174,5 +174,63 @@ RSpec.describe Idv::StateIdForm do
         ]
       end
     end
+
+    # LG-16085 50/50 deploy safety: a form rendered by an old instance submits the
+    # legacy `same_address_as_id` param (string) instead of the new
+    # `ipp_current_address_matches_id`. The new form must accept it and coerce it
+    # to the boolean rather than reject the submission.
+    context 'when the legacy same_address_as_id param is submitted (50/50 window)' do
+      let(:params) do
+        {
+          first_name:,
+          last_name: Faker::Name.last_name,
+          dob:,
+          identity_doc_address1: Faker::Address.street_address,
+          identity_doc_address2: Faker::Address.secondary_address,
+          identity_doc_city: Faker::Address.city,
+          identity_doc_zipcode: Faker::Address.zip_code,
+          identity_doc_address_state: Faker::Address.state_abbr,
+          same_address_as_id: 'true',
+          state_id_jurisdiction: 'AL',
+          state_id_number: Faker::IdNumber.valid,
+          id_expiration:,
+          asserted_id_type:,
+        }
+      end
+
+      it 'accepts the submission without raising' do
+        expect { result }.to_not raise_error
+      end
+
+      it 'is valid and coerces the legacy value to the boolean attribute' do
+        expect(result.success?).to eq(true)
+        expect(subject.ipp_current_address_matches_id).to eq(true)
+      end
+
+      context "when the legacy value is 'false'" do
+        let(:params) do
+          {
+            first_name:,
+            last_name: Faker::Name.last_name,
+            dob:,
+            identity_doc_address1: Faker::Address.street_address,
+            identity_doc_address2: Faker::Address.secondary_address,
+            identity_doc_city: Faker::Address.city,
+            identity_doc_zipcode: Faker::Address.zip_code,
+            identity_doc_address_state: Faker::Address.state_abbr,
+            same_address_as_id: 'false',
+            state_id_jurisdiction: 'AL',
+            state_id_number: Faker::IdNumber.valid,
+            id_expiration:,
+            asserted_id_type:,
+          }
+        end
+
+        it 'coerces to false' do
+          expect(result.success?).to eq(true)
+          expect(subject.ipp_current_address_matches_id).to eq(false)
+        end
+      end
+    end
   end
 end
