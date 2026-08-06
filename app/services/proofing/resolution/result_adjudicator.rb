@@ -161,8 +161,17 @@ module Proofing
 
         failed_resolution_attributes =
           resolution_result.attributes_requiring_additional_verification
-        passed_state_id_attributes = applicant_pii[:aamva_verified_attributes].to_a.map(&:to_sym)
         (failed_resolution_attributes.to_a - passed_state_id_attributes).empty?
+      end
+
+      # AAMVA verifies the address printed on the identity document. If the user edited their
+      # address afterwards, resolution proofed a different address than the one AAMVA verified,
+      # so the AAMVA response can no longer cover an address failure.
+      def passed_state_id_attributes
+        attributes = applicant_pii[:aamva_verified_attributes].to_a.map(&:to_sym)
+        return attributes unless applicant_pii[:address_edited] == true
+
+        attributes - [:address]
       end
 
       def biographical_info
