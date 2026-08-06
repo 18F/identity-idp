@@ -59,7 +59,7 @@ RSpec.describe RecaptchaAnnotator do
         annotate
 
         expect(analytics).to have_logged_event(
-          'reCAPTCHA annotation result received',
+          :recaptcha_annotation_result_received,
           reason:,
           annotation:,
           success: true,
@@ -78,7 +78,7 @@ RSpec.describe RecaptchaAnnotator do
           expect { annotate }.to raise_error(error)
 
           expect(analytics).to have_logged_event(
-            'reCAPTCHA annotation result received',
+            :recaptcha_annotation_result_received,
             reason:,
             annotation:,
             success: false,
