@@ -58,7 +58,7 @@ account.email_language.name.es: Español
 account.email_language.name.fr: Français
 account.email_language.name.zh: 中文（简体）
 account.email_language.updated: Your email language preference has been updated.
-account.emails.confirmed_html: You have confirmed your email address. Go to <a href="%{url}">your connected services</a> to update the email you share with connected agencies.
+account.emails.confirmed_html: You have confirmed your email address. Go to <a href="%{url}">your connected services</a> to update the email you share with connected services.
 account.forget_all_browsers.longer_description: Once you choose to ‘forget all browsers,’ we’ll need additional information to know that it’s actually you signing in to your account. We’ll ask for a multi-factor authentication method (such as text/SMS code or a security key) each time you want to access your account.
 account.index.auth_app_add: Add app
 account.index.auth_app_disabled: not enabled
@@ -756,7 +756,7 @@ doc_auth.tips.document_capture_selfie_text3: Keep your expression neutral
 doc_auth.tips.document_capture_selfie_text4: Make sure your whole face is visible within the green circle
 duplicate_profiles_detected.accounts_list.heading: Accounts with the same verified information
 duplicate_profiles_detected.cant_access: 'I can’t access an account'
-duplicate_profiles_detected.connected_acct_html: '<strong> Connected agencies: </strong> %{count}'
+duplicate_profiles_detected.connected_acct_html: '<strong> Connected services: </strong> %{count}'
 duplicate_profiles_detected.created_at_html: '<strong> Created: </strong> %{timestamp_html}'
 duplicate_profiles_detected.delete_duplicates.details_html: Sign into the account you are going to delete at <a href="https://secure.login.gov">https://secure.login.gov</a>. Here’s %{link_html}
 duplicate_profiles_detected.delete_duplicates.details2_html: If you want, you may %{link_html} to the account you’re keeping after deleting the duplicate account.
@@ -767,11 +767,11 @@ duplicate_profiles_detected.dont_recognize_account: I don’t recognize an accou
 duplicate_profiles_detected.duplicate: Duplicate
 duplicate_profiles_detected.get_help: Get Help
 duplicate_profiles_detected.heading: We found other accounts that may be yours
-duplicate_profiles_detected.intro_html: 'The %{sp_name} requires that you only have one %{app_name} account with a verified identity. You need to delete %{link_html} before signing into %{sp_name}. Here’s what to do:'
+duplicate_profiles_detected.intro_html: 'Some services require that you only have one %{app_name} account with a verified identity. You need to delete %{link_html} before signing into %{sp_name}. Here’s what to do:'
 duplicate_profiles_detected.intro.link: duplicate accounts
 duplicate_profiles_detected.last_sign_in_at_html: '<strong> Last login: </strong> %{timestamp_html}'
 duplicate_profiles_detected.never_logged_in: Never logged in to
-duplicate_profiles_detected.select_an_account.details_html: 'Keep the account that’s connected to the most services. Go to %{link_html} page to view connected agencies by selecting “Your connected services” in the left menu.'
+duplicate_profiles_detected.select_an_account.details_html: 'Keep the account that’s connected to the most services. Go to %{link_html} page to view connected services by selecting “Your connected services” in the left menu.'
 duplicate_profiles_detected.select_an_account.details.link: Your account
 duplicate_profiles_detected.select_an_account.heading: Choose an account to keep
 duplicate_profiles_detected.sign_back_in.details: Go back to the %{app_name} website and sign in using the one %{app_name} account you kept.
@@ -1791,10 +1791,10 @@ titles.revoke_consent: Revoke Consent
 titles.rules_of_use: Rules of Use
 titles.select_email: Select your preferred email
 titles.sign_in: Sign in
-titles.sign_up.completion_consent_expired_ial1: It’s been a year since you gave us consent to share your information
-titles.sign_up.completion_consent_expired_ial2: It’s been a year since you gave us consent to share your verified identity
+titles.sign_up.completion_consent_expired_auth_only: It’s been a year since you gave us consent to share your information
+titles.sign_up.completion_consent_expired_idv: It’s been a year since you gave us consent to share your verified identity
 titles.sign_up.completion_first_sign_in: Continue to %{sp}
-titles.sign_up.completion_ial2: Connect your verified information to %{sp}
+titles.sign_up.completion_idv: Connect your verified information to %{sp}
 titles.sign_up.completion_new_attributes: '%{sp} is requesting new information'
 titles.sign_up.completion_new_sp: You are now signing in for the first time
 titles.sign_up.completion_reverified_consent: Share your updated information with %{sp}
@@ -2104,9 +2104,9 @@ user_mailer.in_person_ready_to_verify_reminder.subject.other: Verify your identi
 user_mailer.in_person_ready_to_verify.subject: You’re ready to verify your identity with %{app_name} in person
 user_mailer.in_person_verified.greeting: Hello,
 user_mailer.in_person_verified.intro: You successfully verified your identity at the %{location} Post Office on %{date}.
-user_mailer.in_person_verified.next_sign_in.with_sp.with_cta: Next, click the button or copy the link below to access %{sp_name} and sign in.
-user_mailer.in_person_verified.next_sign_in.with_sp.without_cta: You can now sign in from %{sp_name}’s website.
-user_mailer.in_person_verified.next_sign_in.without_sp: Next, click the button or copy the link below to sign in to %{app_name}.
+user_mailer.in_person_verified.next_sign_in.with_sp.with_cta: Sign in and connect your verified information with %{sp_name}.
+user_mailer.in_person_verified.next_sign_in.with_sp.without_cta: Sign in from %{sp_name}’s website to connect your verified information.
+user_mailer.in_person_verified.next_sign_in.without_sp: Sign in to %{app_name}.
 user_mailer.in_person_verified.sign_in: Sign in
 user_mailer.in_person_verified.subject: You successfully verified your identity with %{app_name}
 user_mailer.in_person_verified.warning_contact_us_html: If you did not attempt to verify your identity in person, please sign in to <a href="%{reset_password_url}">reset your password</a>. To report this, <a href="%{contact_us_url}">contact %{app_name} support</a>.

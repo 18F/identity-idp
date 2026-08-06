@@ -22,7 +22,7 @@ RSpec.describe SignUp::CompletionsController do
         expect(response).to redirect_to account_url
       end
 
-      context 'IAL1' do
+      context 'auth only' do
         let(:user) { create(:user, :fully_registered, email: temporary_email) }
 
         before do
@@ -50,12 +50,12 @@ RSpec.describe SignUp::CompletionsController do
           )
         end
 
-        it 'creates a presenter object that is not requesting ial2' do
-          expect(assigns(:presenter).ial2_requested?).to eq false
+        it 'creates a presenter object that is not requesting idv' do
+          expect(assigns(:presenter).idv_requested?).to eq false
         end
       end
 
-      context 'IAL2' do
+      context 'identity verification' do
         let(:user) do
           create(:user, :fully_registered, profiles: [create(:profile, :verified, :active)])
         end
@@ -87,8 +87,8 @@ RSpec.describe SignUp::CompletionsController do
           )
         end
 
-        it 'creates a presenter object that is requesting ial2' do
-          expect(assigns(:presenter).ial2_requested?).to eq true
+        it 'creates a presenter object that is requesting idv' do
+          expect(assigns(:presenter).idv_requested?).to eq true
         end
 
         context 'user is not identity verified' do
@@ -134,15 +134,15 @@ RSpec.describe SignUp::CompletionsController do
         end
 
         context 'verified user' do
-          it 'creates a presenter object that is requesting ial2' do
-            expect(assigns(:presenter).ial2_requested?).to eq true
+          it 'creates a presenter object that is requesting idv' do
+            expect(assigns(:presenter).idv_requested?).to eq true
           end
         end
 
         context 'unverified user' do
           let(:user) { create(:user) }
-          it 'creates a presenter object that is requesting ial2' do
-            expect(assigns(:presenter).ial2_requested?).to eq false
+          it 'creates a presenter object that is requesting idv' do
+            expect(assigns(:presenter).idv_requested?).to eq false
           end
         end
       end
@@ -210,7 +210,7 @@ RSpec.describe SignUp::CompletionsController do
       allow(IdentityLinker).to receive(:new).and_return(@linker)
     end
 
-    context 'IAL1' do
+    context 'auth only' do
       let(:user) { create(:user, :fully_registered) }
       it 'tracks analytics' do
         stub_sign_in(user)
@@ -232,6 +232,7 @@ RSpec.describe SignUp::CompletionsController do
           needs_completion_screen_reason: :new_sp,
           in_account_creation_flow: true,
         )
+        expect(@analytics).to_not have_logged_event(:historic_event_data_released)
       end
 
       it 'updates verified attributes' do
@@ -331,7 +332,7 @@ RSpec.describe SignUp::CompletionsController do
       end
     end
 
-    context 'IAL2' do
+    context 'identity verification' do
       it 'tracks analytics' do
         DisposableEmailDomain.create(name: 'temporary.com')
         user = create(
@@ -366,6 +367,7 @@ RSpec.describe SignUp::CompletionsController do
           in_person_proofing_status: 'passed',
           doc_auth_result: 'Passed',
         )
+        expect(@analytics).to_not have_logged_event(:historic_event_data_released)
       end
 
       it 'updates verified attributes' do
@@ -445,20 +447,72 @@ RSpec.describe SignUp::CompletionsController do
                 create(
                   :user_proofing_event,
                   :existing,
-                  profile_id: profile.id,
+                  profile_id: user.active_profile.id,
                 )
               end
 
-              it 'updates the associated user proofing event' do
-                expect(proofing_event.service_provider_ids_sent).to_not include(current_sp.id)
-                patch :update
+              context 'there is no user proofing event' do
+                it 'tracks analytics' do
+                  patch :update
 
-                proofing_event.reload
-                expect(AttemptsApi::Tracker).to have_received(:write_existing_user_events).with(
-                  historical_attempts: JSON.parse(idv_attempts),
-                  sp: current_sp,
-                )
-                expect(proofing_event.service_provider_ids_sent).to include(current_sp.id)
+                  expect(@analytics).to have_logged_event(
+                    :historic_event_data_released,
+                    success: false,
+                    exception: :no_user_proofing_event,
+                    profile_id: profile.id,
+                  )
+                end
+              end
+
+              context 'there is a user proofing event' do
+                let!(:proofing_event) do
+                  create(
+                    :user_proofing_event,
+                    :existing,
+                    profile_id: user.active_profile.id,
+                  )
+                end
+
+                context 'the profile does not have an encrypted_attempts_file_reference' do
+                  it 'tracks analytics' do
+                    patch :update
+
+                    expect(@analytics).to have_logged_event(
+                      :historic_event_data_released,
+                      success: false,
+                      exception: :no_encrypted_file_reference,
+                      profile_id: profile.id,
+                    )
+                  end
+                end
+
+                context 'the profile has an encrypted_attempts_file_reference' do
+                  before do
+                    user.active_profile.update(encrypted_attempts_file_reference: 'file-reference')
+                  end
+
+                  it 'updates the associated user proofing event' do
+                    expect(proofing_event.service_provider_ids_sent).to_not include(current_sp.id)
+                    patch :update
+
+                    proofing_event.reload
+                    expect(AttemptsApi::Tracker).to have_received(:write_existing_user_events).with(
+                      historical_attempts: JSON.parse(idv_attempts),
+                      sp: current_sp,
+                    )
+                    expect(proofing_event.service_provider_ids_sent).to include(current_sp.id)
+                  end
+
+                  it 'tracks analytics' do
+                    patch :update
+
+                    expect(@analytics).to have_logged_event(
+                      :historic_event_data_released,
+                      success: true,
+                      profile_id: profile.id,
+                    )
+                  end
+                end
               end
             end
 

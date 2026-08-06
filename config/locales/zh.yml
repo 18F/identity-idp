@@ -767,7 +767,7 @@ doc_auth.tips.document_capture_selfie_text3: 保持中性表情
 doc_auth.tips.document_capture_selfie_text4: 确保您整个面孔都可以在绿色圆圈里看到
 duplicate_profiles_detected.accounts_list.heading: 以下账户具有相同的已验证信息
 duplicate_profiles_detected.cant_access: '我无法访问某个帐户'
-duplicate_profiles_detected.connected_acct_html: '<strong> 关联机构: </strong> %{count}'
+duplicate_profiles_detected.connected_acct_html: '<strong> 互联服务: </strong> %{count}'
 duplicate_profiles_detected.created_at_html: '<strong> 创建: </strong> %{timestamp_html}'
 duplicate_profiles_detected.delete_duplicates.details_html: 请登录您打算删除的账户：<a href="https://secure.login.gov">https://secure.login.gov/zh</a>。以下是%{link_html}。
 duplicate_profiles_detected.delete_duplicates.details2_html: 如果您愿意，可以在%{link_html}，将该电子邮件地址添加到您保留的账户中。
@@ -778,7 +778,7 @@ duplicate_profiles_detected.dont_recognize_account: 我不认识上边的一个�
 duplicate_profiles_detected.duplicate: 重复
 duplicate_profiles_detected.get_help: 获取帮助
 duplicate_profiles_detected.heading: 我们发现了其他可能属于你的帐户
-duplicate_profiles_detected.intro_html: '%{sp_name} 要求您仅持有一个已验证身份的 %{app_name} 账户。在登录 %{sp_name} 之前，您需要%{link_html}。具体操作如下：'
+duplicate_profiles_detected.intro_html: '某些服务要求您仅拥有一个已验证身份的 %{app_name} 账户。在登录 %{sp_name} 之前，您需要%{link_html}。具体操作如下：'
 duplicate_profiles_detected.intro.link: 删除重复账户
 duplicate_profiles_detected.last_sign_in_at_html: '<strong> 上次登录: </strong> %{timestamp_html}'
 duplicate_profiles_detected.never_logged_in: 从未登录过
@@ -1805,10 +1805,10 @@ titles.revoke_consent: 撤销同意
 titles.rules_of_use: 使用规则
 titles.select_email: 选择你想用的电邮
 titles.sign_in: 登录
-titles.sign_up.completion_consent_expired_ial1: 从你上次授权我们分享你的信息已经一年了。
-titles.sign_up.completion_consent_expired_ial2: 从你上次授权我们分享你验证过的身份已经一年了。
+titles.sign_up.completion_consent_expired_auth_only: 从你上次授权我们分享你的信息已经一年了。
+titles.sign_up.completion_consent_expired_idv: 从你上次授权我们分享你验证过的身份已经一年了。
 titles.sign_up.completion_first_sign_in: 继续到 %{sp}
-titles.sign_up.completion_ial2: 连接你验证过的信息到 %{sp}
+titles.sign_up.completion_idv: 连接你验证过的信息到 %{sp}
 titles.sign_up.completion_new_attributes: '%{sp} 在要求新信息'
 titles.sign_up.completion_new_sp: 你现在正在首次登入
 titles.sign_up.completion_reverified_consent: 与 %{sp}分享你更新后的信息
@@ -2118,9 +2118,9 @@ user_mailer.in_person_ready_to_verify_reminder.subject.other: 过%{count} 天去
 user_mailer.in_person_ready_to_verify.subject: 你可以在 %{app_name} 亲身验证身份了
 user_mailer.in_person_verified.greeting: 你好，
 user_mailer.in_person_verified.intro: 你于 %{date}在 %{location} 邮局成功地验证了身份。
-user_mailer.in_person_verified.next_sign_in.with_sp.with_cta: 接下来请点击按钮或复制下面的连接来访问 %{sp_name} 并登录。
-user_mailer.in_person_verified.next_sign_in.with_sp.without_cta: 你现在可以从 %{sp_name} 的网站登录。
-user_mailer.in_person_verified.next_sign_in.without_sp: 接下来请点击按钮或复制下面的连接来登录 %{app_name}。
+user_mailer.in_person_verified.next_sign_in.with_sp.with_cta: 登录并将你的已验证信息与 %{sp_name} 关联。
+user_mailer.in_person_verified.next_sign_in.with_sp.without_cta: 从 %{sp_name} 的网站登录，以关联你的已验证信息。
+user_mailer.in_person_verified.next_sign_in.without_sp: 登录 %{app_name}。
 user_mailer.in_person_verified.sign_in: 登录
 user_mailer.in_person_verified.subject: 你在 %{app_name} 成功地验证了身份
 user_mailer.in_person_verified.warning_contact_us_html: 如果你没有试图亲身验证身份，请登入 <a href="%{reset_password_url}"> 重设密码</a>。要报告这件事，<a href="%{contact_us_url}">联系 %{app_name} 支持 %{app_name}</a>。

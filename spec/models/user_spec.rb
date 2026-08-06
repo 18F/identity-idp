@@ -2189,12 +2189,18 @@ RSpec.describe User do
 
       describe 'historical_attempts_api_enabled is true' do
         let(:historical_attempts_api_enabled) { true }
+        before { allow(user.analytics).to receive(:historic_event_data_destroyed) }
 
         it 'deletes the event bundle' do
           expect(user_proofing_event.decrypt_events(password:)).to eq(attempt_events.to_json)
           user.destroy
 
           expect(user_proofing_event.decrypt_events(password:)).to be nil
+        end
+
+        it 'tracks an analytics event' do
+          user.destroy
+          expect(user.analytics).to have_received(:historic_event_data_destroyed)
         end
         describe 'when a user has multiple profiles with data' do
           let(:profile1) do
@@ -2219,6 +2225,11 @@ RSpec.describe User do
 
             expect(user_proofing_event.decrypt_events(password:)).to be nil
             expect(deactivated_user_proofing_event.decrypt_events(password:)).to be nil
+          end
+
+          it 'only tracks one analytic event' do
+            user.destroy
+            expect(user.analytics).to have_received(:historic_event_data_destroyed).once
           end
         end
       end
