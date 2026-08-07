@@ -54,6 +54,30 @@ RSpec.feature 'clear1 inherited proofing step', :js, allow_browser_log: true do
       # expect(page).to have_current_path(idv_clear1_session_url)
       expect(page).to have_current_path(clear_app_url)
     end
+
+    context 'when clear1 session request fails' do
+      let(:status) { 500 }
+
+      it 'redirects to hybrid handoff page' do
+        visit_idp_from_oidc_sp_with_ial2
+        sign_in_and_2fa_user(user)
+        complete_doc_auth_steps_before_hybrid_handoff_step
+        click_button 'Clear1'
+        expect(page).to have_current_path(idv_hybrid_handoff_path)
+      end
+    end
+
+    context 'when clear1 session request fails to return a token' do
+      let(:token) { nil }
+
+      it 'redirects to hybrid handoff page' do
+        visit_idp_from_oidc_sp_with_ial2
+        sign_in_and_2fa_user(user)
+        complete_doc_auth_steps_before_hybrid_handoff_step
+        click_button 'Clear1'
+        expect(page).to have_current_path(idv_hybrid_handoff_path)
+      end
+    end
   end
 
   xcontext 'mobile flow', driver: :headless_chrome_mobile do
