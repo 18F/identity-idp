@@ -2,7 +2,7 @@ const sinon = require('sinon');
 const path = require('path');
 const { promises: fs } = require('fs');
 const webpack = require('webpack');
-const WebpackAssetsManifest = require('webpack-assets-manifest');
+const { WebpackAssetsManifest } = require('webpack-assets-manifest');
 const RailsI18nWebpackPlugin = require('./rails-i18n-webpack-plugin.js');
 
 const { compact } = RailsI18nWebpackPlugin;
