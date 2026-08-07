@@ -34,4 +34,53 @@ RSpec.describe Idv::InPerson::VerifyInfoPresenter do
       end
     end
   end
+
+  describe '#show_state_id_expiration?' do
+    [true, false].each do |flag|
+      context "when the feature flag is #{flag}" do
+        before do
+          allow(IdentityConfig.store)
+            .to receive(:in_person_proofing_expiration_edge_cases_enabled).and_return(flag)
+        end
+
+        it "returns #{flag}" do
+          expect(subject.show_state_id_expiration?).to eq(flag)
+        end
+      end
+    end
+  end
+
+  describe '#formatted_state_id_expiration' do
+    def formatted(value)
+      subject.formatted_state_id_expiration(state_id_expiration: value)
+    end
+
+    it 'returns nil when the value is blank' do
+      expect(formatted(nil)).to be_nil
+      expect(formatted('')).to be_nil
+    end
+
+    it 'returns the localized label for each sentinel' do
+      expect(formatted('military')).to eq(
+        I18n.t('in_person_proofing.form.state_id.expiration_date_options.military'),
+      )
+      expect(formatted('indefinite')).to eq(
+        I18n.t('in_person_proofing.form.state_id.expiration_date_options.indefinite'),
+      )
+      expect(formatted('none')).to eq(
+        I18n.t('in_person_proofing.form.state_id.expiration_date_options.other'),
+      )
+    end
+
+    it 'returns the literal placeholder dates verbatim' do
+      expect(formatted('9999-99-99')).to eq('99/99/9999')
+      expect(formatted('0000-00-00')).to eq('00/00/0000')
+    end
+
+    it 'returns a localized formatted date for a real date' do
+      expect(formatted('2030-05-01')).to eq(
+        I18n.l(Date.parse('2030-05-01'), format: I18n.t('time.formats.event_date')),
+      )
+    end
+  end
 end

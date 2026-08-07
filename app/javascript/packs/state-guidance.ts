@@ -55,8 +55,37 @@ function onIdentityDocJurisdictionSelection() {
   });
 }
 
+// Show the expiration date inputs only when the "Enter a date" option is
+// selected. Other options (Military / Indefinite / No date) hide and disable the
+// date inputs so they are neither submitted nor client-side validated.
+function onExpirationOptionChange() {
+  const wrapper = document.querySelector<HTMLElement>('.expiration-date-inputs');
+  if (!wrapper) {
+    return;
+  }
+
+  const selected = document.querySelector<HTMLInputElement>(
+    'input.expiration-option-input:checked',
+  );
+  const showDate = selected?.value === 'date';
+
+  wrapper.classList.toggle('display-none', !showDate);
+  wrapper.querySelectorAll<HTMLInputElement>('input').forEach((input) => {
+    input.disabled = !showDate;
+  });
+}
+
+function onExpirationOptionSelection() {
+  const options = document.querySelectorAll<HTMLInputElement>('input.expiration-option-input');
+  options.forEach((option) => option.addEventListener('change', onExpirationOptionChange));
+  if (options.length > 0) {
+    onExpirationOptionChange();
+  }
+}
+
 document.getElementById('idv_form_state')?.addEventListener('change', onStateSelectionChange);
 
 onStateSelectionChange();
 onIdentityDocStateSelection();
 onIdentityDocJurisdictionSelection();
+onExpirationOptionSelection();

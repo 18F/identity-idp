@@ -20,6 +20,8 @@ RSpec.describe 'idv/in_person/state_id/show.html.erb' do
              pii: pii,
              parsed_dob: parsed_dob,
              parsed_expiration: parsed_expiration,
+             expiration_option: nil,
+             expiration_edge_cases_enabled: false,
            }
   end
 
