@@ -148,6 +148,21 @@ module AbTests
     user.uuid
   end.freeze
 
+  PASSKEY_AUTH = AbTest.new(
+    experiment_name: 'Passkey Authentication',
+    should_log: [
+      'Email and Password Authentication',
+      :passkey_authentication_initiated,
+      'Multi-Factor Authentication',
+      'User marked authenticated',
+    ].to_set,
+    buckets: {
+      passkey_authentication: IdentityConfig.store.passkey_auth_ab_test_percentage,
+    },
+  ) do |user:, user_session:, **|
+    user.uuid
+  end.freeze
+
   PROOFING_VENDOR = AbTest.new(
     experiment_name: 'Proofing Vendor',
     should_log: /^idv/i,
