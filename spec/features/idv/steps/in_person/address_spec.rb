@@ -85,7 +85,7 @@ RSpec.describe 'doc auth In person proofing residential address step', :js do
        allow_browser_log: true do
       complete_idv_steps_before_address
 
-      fill_out_address_form_ok(same_address_as_id: false)
+      fill_out_address_form_ok(current_address_matches_id: false)
       fill_in t('idv.form.address1'), with: '#1 $treet'
       fill_in t('idv.form.address2'), with: 'Gr@nd Lañe^'
       fill_in t('idv.form.city'), with: 'N3w C!ty'
@@ -161,7 +161,7 @@ RSpec.describe 'doc auth In person proofing residential address step', :js do
       expect(page).to have_content(I18n.t('in_person_proofing.form.state_id.address2_hint'))
 
       # change selection
-      fill_out_address_form_ok(same_address_as_id: false)
+      fill_out_address_form_ok(current_address_matches_id: false)
       expect(page).not_to have_content(I18n.t('in_person_proofing.form.state_id.address1_hint'))
       expect(page).not_to have_content(I18n.t('in_person_proofing.form.state_id.address2_hint'))
 

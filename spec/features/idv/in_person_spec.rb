@@ -433,7 +433,7 @@ RSpec.describe 'In Person Proofing', js: true do
       end
     end
 
-    it 'resumes desktop session with in-person proofing when same_address_as_id is true',
+    it 'resumes desktop session with in-person proofing when current_address_matches_id is true',
        allow_browser_log: true do
       user = nil
 
@@ -452,7 +452,7 @@ RSpec.describe 'In Person Proofing', js: true do
       perform_desktop_hybrid_steps(user)
     end
 
-    it 'resumes desktop session with in-person proofing when same_address_as_id is false',
+    it 'resumes desktop session with in-person proofing when current_address_matches_id is false',
        allow_browser_log: true do
       user = nil
 
@@ -468,7 +468,7 @@ RSpec.describe 'In Person Proofing', js: true do
       expect(@sms_link).to be_present
 
       perform_mobile_hybrid_steps
-      perform_desktop_hybrid_steps(user, same_address_as_id: false)
+      perform_desktop_hybrid_steps(user, current_address_matches_id: false)
     end
 
     context 'when the user fails docauth remote in the hybrid flow and begins IPP' do
@@ -593,12 +593,12 @@ RSpec.describe 'In Person Proofing', js: true do
     end
 
     it 'shows the address page' do
-      complete_state_id_controller(user, same_address_as_id: false)
+      complete_state_id_controller(user, current_address_matches_id: false)
       expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.verify_info'))
       expect(page).to have_content(t('in_person_proofing.headings.address'))
 
       # arrive at address step
-      complete_address_step(user, same_address_as_id: false)
+      complete_address_step(user, current_address_matches_id: false)
       complete_ssn_step(user)
 
       # Ensure the page submitted successfully
@@ -606,13 +606,13 @@ RSpec.describe 'In Person Proofing', js: true do
     end
 
     it 'can update the address page form' do
-      complete_state_id_controller(user, same_address_as_id: false)
-      complete_address_step(user, same_address_as_id: false)
+      complete_state_id_controller(user, current_address_matches_id: false)
+      complete_address_step(user, current_address_matches_id: false)
       complete_ssn_step(user)
       # click update address link on the verify page
       click_link t('idv.buttons.change_address_label')
       expect(page).to have_content(t('in_person_proofing.headings.update_address'))
-      fill_out_address_form_ok(same_address_as_id: true)
+      fill_out_address_form_ok(current_address_matches_id: true)
       click_button t('forms.buttons.submit.update')
       expect(page).to have_content(t('headings.verify'))
       expect(page).to have_current_path(idv_in_person_verify_info_path)
@@ -631,7 +631,7 @@ RSpec.describe 'In Person Proofing', js: true do
     end
 
     it 'allows user to update their residential address as different from their state id' do
-      complete_state_id_controller(user, same_address_as_id: true)
+      complete_state_id_controller(user, current_address_matches_id: true)
       # skip address step b/c residential address is same as state id address
       complete_ssn_step(user)
 
@@ -713,10 +713,10 @@ RSpec.describe 'In Person Proofing', js: true do
       complete_location_step
 
       # state ID page
-      complete_state_id_controller(user, same_address_as_id: false)
+      complete_state_id_controller(user, current_address_matches_id: false)
 
       # address page
-      complete_address_step(user, same_address_as_id: false)
+      complete_address_step(user, current_address_matches_id: false)
 
       # ssn page
       complete_ssn_step(user, 'Reject')
@@ -848,7 +848,7 @@ RSpec.describe 'In Person Proofing', js: true do
 
         expect(page).to have_current_path(idv_in_person_state_id_path, wait: 10)
 
-        fill_out_state_id_form_ok(same_address_as_id: true)
+        fill_out_state_id_form_ok(current_address_matches_id: true)
         click_idv_continue
 
         expect(page).to have_current_path(idv_in_person_ssn_url, wait: 10)
@@ -864,7 +864,7 @@ RSpec.describe 'In Person Proofing', js: true do
         expect(page).to have_content(strip_nbsp(t('in_person_proofing.headings.barcode')))
       end
 
-      it 'handles same_address_as_id=false flow with AAMVA', allow_browser_log: true do
+      it 'handles current_address_matches_id=false flow with AAMVA', allow_browser_log: true do
         user = user_with_2fa
 
         sign_in_and_2fa_user(user)
@@ -872,13 +872,13 @@ RSpec.describe 'In Person Proofing', js: true do
         complete_prepare_step(user)
         complete_location_step(user)
 
-        fill_out_state_id_form_ok(same_address_as_id: false)
+        fill_out_state_id_form_ok(current_address_matches_id: false)
         click_idv_continue
 
         expect(page).to have_current_path(idv_in_person_address_path, wait: 10)
         expect(page).to have_content(t('in_person_proofing.headings.address'))
 
-        complete_address_step(user, same_address_as_id: false)
+        complete_address_step(user, current_address_matches_id: false)
         complete_ssn_step(user)
         complete_verify_step(user)
         complete_phone_step(user)
@@ -902,7 +902,7 @@ RSpec.describe 'In Person Proofing', js: true do
         complete_prepare_step(user)
         complete_location_step(user)
 
-        fill_out_state_id_form_ok(same_address_as_id: true)
+        fill_out_state_id_form_ok(current_address_matches_id: true)
         click_idv_continue
 
         expect(page).to have_current_path(idv_in_person_ssn_url, wait: 10)
@@ -928,7 +928,7 @@ RSpec.describe 'In Person Proofing', js: true do
         begin_in_person_proofing_with_opt_in_ipp_enabled_and_opting_in
         complete_prepare_step(user)
         complete_location_step(user)
-        fill_out_state_id_form_ok(same_address_as_id: true)
+        fill_out_state_id_form_ok(current_address_matches_id: true)
         click_idv_continue
         complete_ssn_step(user)
       end

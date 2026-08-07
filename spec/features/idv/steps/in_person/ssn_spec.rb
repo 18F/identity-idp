@@ -100,7 +100,7 @@ RSpec.describe 'doc auth IPP ssn step', :js do
     end
   end
 
-  context 'when same_address_as_id is false, ssn step is accessible from' do
+  context 'when current_address_matches_id is false, ssn step is accessible from' do
     it 'address step', allow_browser_log: true do
       user = user_with_2fa
       sign_in_and_2fa_user(user)
@@ -110,9 +110,9 @@ RSpec.describe 'doc auth IPP ssn step', :js do
       # location page
       complete_location_step(user)
       # state ID page
-      fill_out_state_id_form_ok(same_address_as_id: false)
+      fill_out_state_id_form_ok(current_address_matches_id: false)
       click_idv_continue
-      fill_out_address_form_ok(same_address_as_id: false)
+      fill_out_address_form_ok(current_address_matches_id: false)
       click_idv_continue
       # ssn page
       expect(page).to have_content(t('doc_auth.headings.ssn'))
@@ -127,9 +127,9 @@ RSpec.describe 'doc auth IPP ssn step', :js do
       # location page
       complete_location_step(user)
       # state ID page
-      fill_out_state_id_form_ok(same_address_as_id: false)
+      fill_out_state_id_form_ok(current_address_matches_id: false)
       click_idv_continue
-      fill_out_address_form_ok(same_address_as_id: false)
+      fill_out_address_form_ok(current_address_matches_id: false)
       click_idv_continue
       # ssn page (first visit)
       complete_ssn_step(user)
