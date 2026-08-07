@@ -96,6 +96,66 @@ RSpec.describe Proofing::Resolution::ResultAdjudicator do
       end
     end
 
+    context 'InstantVerify fails on address and AAMVA verified the address' do
+      let(:resolution_success) { false }
+      let(:can_pass_with_additional_verification) { true }
+      let(:attributes_requiring_additional_verification) { [:address] }
+      let(:address_edited) { false }
+      let(:applicant_pii) do
+        Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN.merge(
+          aamva_verified_attributes: [:address],
+          address_edited: address_edited,
+        )
+      end
+
+      context 'the residential address is unchanged' do
+        it 'lets the verified AAMVA address override the InstantVerify failure' do
+          result = subject.adjudicated_result
+
+          expect(result.success?).to eq(true)
+          expect(result.extra[:context][:resolution_adjudication_reason])
+            .to eq(:state_id_covers_failed_resolution)
+        end
+      end
+
+      context 'the residential address has been updated' do
+        let(:address_edited) { true }
+
+        it 'does not let the verified AAMVA address override the InstantVerify failure' do
+          result = subject.adjudicated_result
+
+          expect(result.success?).to eq(false)
+          expect(result.extra[:context][:resolution_adjudication_reason])
+            .to eq(:fail_resolution_without_state_id_coverage)
+        end
+
+        it 'still reports the attributes AAMVA verified' do
+          result = subject.adjudicated_result
+
+          expect(result.extra[:biographical_info][:state_id_verified_attributes])
+            .to eq([:address])
+        end
+
+        context 'AAMVA also verified attributes unrelated to the address' do
+          let(:attributes_requiring_additional_verification) { [:dob] }
+          let(:applicant_pii) do
+            Idp::Constants::MOCK_IDV_APPLICANT_WITH_SSN.merge(
+              aamva_verified_attributes: [:address, :dob],
+              address_edited: address_edited,
+            )
+          end
+
+          it 'still allows those attributes to cover the InstantVerify failure' do
+            result = subject.adjudicated_result
+
+            expect(result.success?).to eq(true)
+            expect(result.extra[:context][:resolution_adjudication_reason])
+              .to eq(:state_id_covers_failed_resolution)
+          end
+        end
+      end
+    end
+
     describe 'biographical_info' do
       context 'the applicant PII contains one address' do
         it 'includes formatted PII' do
