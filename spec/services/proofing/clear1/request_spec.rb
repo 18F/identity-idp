@@ -55,10 +55,12 @@ RSpec.describe Proofing::Clear1::Request do
         result = request.fetch
         expect(result.success?).to eq false
         expect(result.errors).to eq({ network: true, clear1: true })
-        expect(result.extra).to eq({
-          vendor_name: Idp::Constants::Vendors::CLEAR1,
-          exception: Proofing::Clear1::Request::RequestError.new(exception_msg, status),
-        })
+        expect(result.extra).to eq(
+          {
+            vendor_name: Idp::Constants::Vendors::CLEAR1,
+            exception: Proofing::Clear1::Request::RequestError.new(exception_msg, status),
+          },
+        )
       end
     end
   end

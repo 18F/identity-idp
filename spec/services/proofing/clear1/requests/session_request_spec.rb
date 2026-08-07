@@ -67,8 +67,8 @@ RSpec.describe Proofing::Clear1::Requests::SessionRequest do
         expect(response.to_h).to include(
           success: false,
           errors: {
-            network: true, clear1: true,
-         },
+            network: true, clear1: true
+          },
           vendor_name: Idp::Constants::Vendors::CLEAR1,
           exception: an_instance_of(Proofing::Clear1::Request::RequestError),
         )
@@ -85,7 +85,7 @@ RSpec.describe Proofing::Clear1::Requests::SessionRequest do
         expect(response.to_h).to include(
           success: false,
           errors: {
-            network: true, clear1: true,
+            network: true, clear1: true
           },
           vendor_name: Idp::Constants::Vendors::CLEAR1,
           exception: an_instance_of(Faraday::ConnectionFailed),
