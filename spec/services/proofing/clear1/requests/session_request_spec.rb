@@ -5,9 +5,6 @@ RSpec.describe Proofing::Clear1::Requests::SessionRequest do
   let(:fake_analytics) { FakeAnalytics.new }
   let(:project_id) { 'my_project_id' }
   let(:idv_clear1_api_base_url) { 'https://fake-clear1.test' }
-  let(:clear_session_endpoint) do
-    "#{idv_clear1_api_base_url}/v1/verification_sessions"
-  end
   let(:status) { 200 }
   let(:token) { 'fake_token' }
   let(:redirect_url) { 'http://login.test/clear1/session/update' }
