@@ -1,7 +1,7 @@
 const path = require('path');
 const { promises: fs } = require('fs');
 const webpack = require('webpack');
-const WebpackAssetsManifest = require('webpack-assets-manifest');
+const { WebpackAssetsManifest } = require('webpack-assets-manifest');
 const AssetsWebpackPlugin = require('./webpack-plugin');
 
 const { getAssetPaths } = AssetsWebpackPlugin;
