@@ -23,6 +23,13 @@ module Idv
 
     attr_accessor(*ATTRIBUTES)
 
+    # 50/50 deploy compatibility (LG-16085): the rendered radio still uses the legacy
+    # param name `same_address_as_id`, so the form builder queries the form object for
+    # `same_address_as_id` when rendering `checked`. Alias it to the real attribute.
+    # Remove alongside LEGACY_PARAM_ALIASES once the form param rename is fully deployed.
+    alias_method :same_address_as_id, :ipp_current_address_matches_id
+    alias_method :same_address_as_id=, :ipp_current_address_matches_id=
+
     def self.model_name
       ActiveModel::Name.new(self, nil, 'StateId')
     end
