@@ -163,11 +163,28 @@ RSpec.describe 'state id controller enabled', :js do
       fill_in_memorable_date('identity_doc[id_expiration]', exp)
 
       click_idv_continue
+      expect(page).to have_content(
+        t('in_person_proofing.form.state_id.memorable_date.errors.expiration_date.expiring_soon'),
+      )
+
+      eight_days_from_today = Time.zone.now + 8.days
+      exp = [
+        eight_days_from_today.year,
+        eight_days_from_today.month,
+        eight_days_from_today.day,
+      ].join('-')
+
+      fill_in_memorable_date('identity_doc[id_expiration]', exp)
+
+      click_idv_continue
       expect(page).not_to have_content(
         t(
           'in_person_proofing.form.state_id.memorable_date.errors.expiration_date.expired',
           app_name: APP_NAME,
         ),
+      )
+      expect(page).not_to have_content(
+        t('in_person_proofing.form.state_id.memorable_date.errors.expiration_date.expiring_soon'),
       )
     end
   end

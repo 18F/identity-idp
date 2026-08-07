@@ -53,13 +53,19 @@ module Idv
       # rubocop:disable Layout/LineLength
       validates_with UspsInPersonProofing::DateValidator,
                      attributes: [:id_expiration], greater_than_or_equal_to: ->(_rec) {
-                       Time.zone.today + 2.days
+                       Time.zone.today + 7.days
                      },
-                     message: ->(_, _) do
-                       I18n.t(
-                         'in_person_proofing.form.state_id.memorable_date.errors.expiration_date.expired',
-                         app_name: APP_NAME,
-                       )
+                     message: ->(_, data) do
+                       if data[:value].is_a?(Date) && data[:value] > Time.zone.today
+                         I18n.t(
+                           'in_person_proofing.form.state_id.memorable_date.errors.expiration_date.expiring_soon',
+                         )
+                       else
+                         I18n.t(
+                           'in_person_proofing.form.state_id.memorable_date.errors.expiration_date.expired',
+                           app_name: APP_NAME,
+                         )
+                       end
                      end
       # rubocop:enable Layout/LineLength
     end

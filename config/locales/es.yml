@@ -1423,6 +1423,7 @@ in_person_proofing.form.state_id.memorable_date.errors.date_of_birth.missing_mon
 in_person_proofing.form.state_id.memorable_date.errors.date_of_birth.range_min_age: Debe ser mayor de %{min_age} años para usar %{app_name}
 in_person_proofing.form.state_id.memorable_date.errors.date_of_birth.range_overflow: Ingrese una fecha ya transcurrida
 in_person_proofing.form.state_id.memorable_date.errors.expiration_date.expired: No puede usar una identificación vencida.
+in_person_proofing.form.state_id.memorable_date.errors.expiration_date.expiring_soon: No puede usar una ID que caduque en los próximos 7 días.
 in_person_proofing.form.state_id.state_id_jurisdiction: Estado emisor
 in_person_proofing.form.state_id.state_id_jurisdiction_hint: Este es el estado que emitió su identificación
 in_person_proofing.form.state_id.state_id_jurisdiction_prompt: '- Seleccione -'
