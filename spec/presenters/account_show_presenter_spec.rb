@@ -195,6 +195,22 @@ RSpec.describe AccountShowPresenter do
         expect(account_show.pending_ipp?).to be(false)
       end
     end
+
+    context 'when profile has ipp enrollment but the in_person_verification is not pending' do
+      let(:user) { create(:user, :fully_registered) }
+      let!(:enrollment) { create(:in_person_enrollment, :establishing, user: user) }
+
+      before do
+        create(
+          :profile,
+          :in_person_verification_pending,
+          user: user,
+          in_person_enrollment: enrollment,
+        )
+      end
+
+      it { is_expected.to eq(false) }
+    end
   end
 
   context '#pending_gpo?' do
@@ -271,6 +287,24 @@ RSpec.describe AccountShowPresenter do
 
     it 'formats a date string' do
       expect { Date.parse(formatted_ipp_due_date) }.not_to raise_error
+    end
+
+    context 'when profile has ipp enrollment but the in_person_verification is not pending' do
+      let(:user) { create(:user, :fully_registered) }
+      let!(:enrollment) { create(:in_person_enrollment, :establishing, user: user) }
+
+      before do
+        create(
+          :profile,
+          :in_person_verification_pending,
+          user: user,
+          in_person_enrollment: enrollment,
+        )
+      end
+
+      it 'returns nil without raising' do
+        expect(formatted_ipp_due_date).to be_nil
+      end
     end
   end
 

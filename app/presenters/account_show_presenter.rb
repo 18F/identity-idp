@@ -65,7 +65,8 @@ class AccountShowPresenter
   end
 
   def pending_ipp?
-    !!user.pending_profile&.in_person_verification_pending?
+    !!user.pending_profile&.in_person_verification_pending? &&
+      user.pending_in_person_enrollment.present?
   end
 
   def pending_gpo?
@@ -77,7 +78,10 @@ class AccountShowPresenter
   end
 
   def formatted_ipp_due_date
-    I18n.l(user.pending_in_person_enrollment.due_date, format: :event_date)
+    due_date = user.pending_in_person_enrollment&.due_date
+    return nil if due_date.blank?
+
+    I18n.l(due_date, format: :event_date)
   end
 
   def formatted_legacy_idv_date
