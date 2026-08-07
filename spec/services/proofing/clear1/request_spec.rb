@@ -27,7 +27,7 @@ RSpec.describe Proofing::Clear1::Request do
     end
 
     context 'with a valid response' do
-      let(:response) { JSON.generate({ 'url' => 'https://localhost' }) }
+      let(:response) { { token: 'valid_token' }.to_json }
       let(:response_status) { 200 }
 
       # Because we have not implemented
@@ -40,13 +40,7 @@ RSpec.describe Proofing::Clear1::Request do
     context 'with no body in the response' do
       let(:status) { 'timeout' }
       let(:msg) { 'error message' }
-      let(:response) do
-        {
-          status:,
-          msg:,
-          referenceId: reference_id,
-        }.to_json
-      end
+      let(:response) { nil }
       let(:response_status) { 403 }
 
       let(:exception_msg) do
