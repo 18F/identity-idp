@@ -25,7 +25,7 @@ RSpec.describe Idv::InPerson::AddressForm do
     let(:subject) { described_class.new }
 
     it 'submit success with good params' do
-      good_params[:same_address_as_id] = true
+      good_params[:ipp_current_address_matches_id] = true
       result = subject.submit(good_params)
       expect(subject.errors.empty?).to be(true)
       expect(result).to be_kind_of(FormResponse)
@@ -33,7 +33,7 @@ RSpec.describe Idv::InPerson::AddressForm do
     end
 
     it 'submit failure with bad params' do
-      bad_params[:same_address_as_id] = false
+      bad_params[:ipp_current_address_matches_id] = false
       result = subject.submit(bad_params)
       expect(subject.errors.empty?).to be(false)
       expect(subject.errors.to_hash).to include(:address1, :address2, :city)
@@ -42,8 +42,8 @@ RSpec.describe Idv::InPerson::AddressForm do
       expect(result.errors.empty?).to be(true)
     end
 
-    it 'submit with missing same_address_as_id should be successful' do
-      missing_required_params = good_params.except(:same_address_as_id)
+    it 'submit with missing ipp_current_address_matches_id should be successful' do
+      missing_required_params = good_params.except(:ipp_current_address_matches_id)
       result = subject.submit(missing_required_params)
       expect(subject.errors).to be_empty
       expect(result).to be_kind_of(FormResponse)
