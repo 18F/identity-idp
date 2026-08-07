@@ -598,7 +598,6 @@ development:
   identity_pki_local_dev: true
   identity_verification_outcomes_report_emails: '["g@example.com", "h@example.com"]'
   identity_verification_outcomes_report_issuers: '["urn:gov:gsa:openidconnect.profiles:sp:sso:agency_name:app_name"]'
-  idv_clear1_session_base_url: 'http://example.com/clear1_session'
   idv_socure_phonerisk_name_correlation_score_threshold: 0.5
   idv_socure_phonerisk_score_threshold: 0.5
   in_person_enrollments_immediate_approval_enabled: true
@@ -690,6 +689,9 @@ test:
   identity_pki_disabled: true
   identity_verification_outcomes_report_emails: '["g@example.com", "h@example.com"]'
   identity_verification_outcomes_report_issuers: '["urn:gov:gsa:openidconnect.profiles:sp:sso:agency_name:app_name"]'
+  idv_clear1_api_base_url: 'http://example.test/clear1_session'
+  idv_clear1_api_key: 'test-api-key'
+  idv_clear1_project_id: 'test-project-id'
   idv_socure_phonerisk_name_correlation_score_threshold: 0.5
   idv_socure_phonerisk_score_threshold: 0.5
   lexisnexis_trueid_account_id: 'test_account'
