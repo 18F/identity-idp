@@ -32,9 +32,20 @@ class SignInRecaptchaForm
   end
 
   def exempt?
-    IdentityConfig.store.sign_in_recaptcha_score_threshold.zero? ||
-      ab_test_bucket != :sign_in_recaptcha ||
-      @existing_device
+    exempt_reason.present?
+  end
+
+  # Returns the reason a user is exempt from a reCAPTCHA assessment, or nil if
+  # they are not exempt (i.e. an assessment is performed).
+  # @return [Symbol, nil]
+  def exempt_reason
+    if IdentityConfig.store.sign_in_recaptcha_score_threshold.zero?
+      :recaptcha_disabled
+    elsif ab_test_bucket != :sign_in_recaptcha
+      :not_in_ab_test
+    elsif @existing_device
+      :existing_device
+    end
   end
 
   private
@@ -44,17 +55,9 @@ class SignInRecaptchaForm
     errors.merge!(recaptcha_form) if !recaptcha_response.success?
   end
 
-  def score_threshold
-    if exempt?
-      0.0
-    else
-      IdentityConfig.store.sign_in_recaptcha_score_threshold
-    end
-  end
-
   def recaptcha_form
     @recaptcha_form ||= form_class.new(
-      score_threshold:,
+      score_threshold: exempt? ? 0.0 : IdentityConfig.store.sign_in_recaptcha_score_threshold,
       recaptcha_action: RECAPTCHA_ACTION,
       **form_args,
     )

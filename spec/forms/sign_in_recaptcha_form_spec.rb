@@ -93,6 +93,40 @@ RSpec.describe SignInRecaptchaForm do
     end
   end
 
+  describe '#exempt_reason' do
+    subject(:exempt_reason) { form.exempt_reason }
+
+    it { is_expected.to be_nil }
+
+    context 'score threshold configured at zero' do
+      let(:score_threshold_config) { 0.0 }
+
+      it { is_expected.to eq(:recaptcha_disabled) }
+    end
+
+    context 'when not part of a/b test' do
+      let(:ab_test_bucket) { nil }
+
+      it { is_expected.to eq(:not_in_ab_test) }
+    end
+
+    context 'existing device for user' do
+      let(:existing_device) { true }
+
+      it { is_expected.to eq(:existing_device) }
+    end
+
+    context 'when multiple exemption conditions are true' do
+      let(:score_threshold_config) { 0.0 }
+      let(:ab_test_bucket) { nil }
+      let(:existing_device) { true }
+
+      it 'returns the highest-precedence reason' do
+        expect(exempt_reason).to eq(:recaptcha_disabled)
+      end
+    end
+  end
+
   describe '#submit' do
     let(:recaptcha_form_success) { false }
     subject(:response) { form.submit(recaptcha_token:) }
