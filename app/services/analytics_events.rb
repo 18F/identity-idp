@@ -8080,6 +8080,31 @@ module AnalyticsEvents
     track_event('Reactivate Account Visited')
   end
 
+  # The result of a reCAPTCHA annotation request was received
+  # @param [String, nil] reason Reason submitted with the assessment annotation
+  # @param [String, nil] annotation Annotation submitted with the assessment
+  # @param [Boolean] success Whether the annotation request succeeded
+  # @param [String, nil] exception_class Class name of exception, if error occurred
+  # @param [Integer] duration_ms Duration of the reCAPTCHA annotation request in milliseconds
+  def recaptcha_annotation_result_received(
+    reason:,
+    annotation:,
+    success:,
+    exception_class:,
+    duration_ms:,
+    **extra
+  )
+    track_event(
+      :recaptcha_annotation_result_received,
+      reason:,
+      annotation:,
+      success:,
+      exception_class:,
+      duration_ms:,
+      **extra,
+    )
+  end
+
   # The result of a reCAPTCHA verification request was received
   # @param [Hash] recaptcha_result Full reCAPTCHA response body
   # @param [Float] score_threshold Minimum value for considering passing result

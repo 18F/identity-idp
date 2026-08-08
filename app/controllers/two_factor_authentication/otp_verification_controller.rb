@@ -97,6 +97,7 @@ module TwoFactorAuthentication
         recaptcha_annotation: RecaptchaAnnotator.annotate(
           assessment_id: user_session.delete(:phone_recaptcha_assessment_id),
           reason: RecaptchaAnnotator::AnnotationReasons::PASSED_TWO_FACTOR,
+          analytics:,
         ),
       )
       send_mfa_added_email(event_type: :phone_added)

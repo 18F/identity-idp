@@ -462,7 +462,7 @@ RSpec.describe Users::TwoFactorAuthenticationController do
             reason: RecaptchaAnnotator::AnnotationReasons::INITIATED_TWO_FACTOR,
           }
           expect(RecaptchaAnnotator).to receive(:annotate).once
-            .with(**recaptcha_annotation)
+            .with(**recaptcha_annotation, analytics: @analytics)
             .and_return(recaptcha_annotation)
 
           response
