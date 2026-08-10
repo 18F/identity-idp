@@ -9,6 +9,7 @@ RSpec.describe Idv::Clear1::SessionController do
   let(:clear1_success) { true }
   let(:clear1_enabled) { true }
   let(:token) { 'crystal_clear1_token' }
+  let(:state) { SecureRandom.uuid }
   let(:idv_clear1_api_base_url) { 'https://fake-clear1.test' }
   let(:clear_session_endpoint) do
     "#{idv_clear1_api_base_url}/v1/verification_sessions"
@@ -21,6 +22,7 @@ RSpec.describe Idv::Clear1::SessionController do
       requested_at: Time.zone.now,
     )
   end
+  let(:uuid_pattern) { /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i }
 
   before do
     allow(IdentityConfig.store).to receive_messages(
@@ -100,6 +102,12 @@ RSpec.describe Idv::Clear1::SessionController do
         expect(subject.idv_session.clear1_verification_token).to eq(token)
       end
 
+      it 'sets clear state in idv session' do
+        get(:show)
+
+        expect(subject.idv_session.clear1_verification_state).to match(uuid_pattern)
+      end
+
       context 'when the request class is called' do
         let(:request_class) { Proofing::Clear1::Requests::SessionRequest }
         before do
@@ -174,6 +182,7 @@ RSpec.describe Idv::Clear1::SessionController do
     before do
       stub_sign_in(user)
       subject.idv_session.clear1_verification_token = token
+      subject.idv_session.clear1_verification_state = SecureRandom.uuid
     end
 
     context 'when clear1 is disabled' do

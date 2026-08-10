@@ -4,7 +4,7 @@ module Proofing
   module Clear1
     module Requests
       class SessionRequest < Proofing::Clear1::Request
-        attr_reader :user_uuid, :redirect_url
+        attr_reader :user_uuid
 
         def initialize(user_uuid:, redirect_url:)
           @user_uuid = user_uuid
@@ -81,7 +81,16 @@ module Proofing
         def extra_attributes
           {
             vendor_name: Idp::Constants::Vendors::CLEAR1,
+            state:,
           }
+        end
+
+        def state
+          @state ||= SecureRandom.uuid
+        end
+
+        def redirect_url
+          @redirect_url + "?state=#{state}"
         end
       end
     end

@@ -25,14 +25,15 @@ RSpec.describe Proofing::Clear1::Requests::SessionRequest do
 
   describe '#fetch' do
     let(:response)  { session_request.fetch }
-
+    let(:uuid_pattern) { /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i }
     before do
       stub_request(:post, clear_session_endpoint)
-        .with(body: {
-          project_id:,
-          redirect_url:,
-          custom_fields: { user_uuid: user.uuid },
-        })
+        .with(body:
+          hash_including(
+            project_id:,
+            redirect_url: /#{redirect_url}\?state=#{uuid_pattern}/,
+            custom_fields: { user_uuid: user.uuid },
+          ))
         .to_return(
           status:,
           body: {

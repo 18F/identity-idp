@@ -31,6 +31,7 @@ module Idv
           )
 
           idv_session.clear1_verification_token = token
+          idv_session.clear1_verification_state = clear1_session.extra[:state]
           document_capture_session.update!(doc_auth_vendor: Idp::Constants::Vendors::CLEAR1)
         else
           redirect_to idv_hybrid_handoff_path
