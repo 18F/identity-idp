@@ -8,6 +8,7 @@ RSpec.describe Idv::Clear1::SessionController do
   let(:user) { create(:user) }
   let(:clear1_success) { true }
   let(:clear1_enabled) { true }
+  let(:idv_clear1_project_id) { 'fav-proj-id' }
   let(:token) { 'crystal_clear1_token' }
   let(:state) { SecureRandom.uuid }
   let(:idv_clear1_api_base_url) { 'https://fake-clear1.test' }
@@ -27,6 +28,7 @@ RSpec.describe Idv::Clear1::SessionController do
   before do
     allow(IdentityConfig.store).to receive_messages(
       idv_clear1_api_base_url:,
+      idv_clear1_project_id:,
     )
 
     user_session = {}
@@ -85,10 +87,16 @@ RSpec.describe Idv::Clear1::SessionController do
     let(:response_body) { { token: }.compact }
 
     before do
-      stub_request(:post, clear_session_endpoint).to_return(
-        status: clear1_status,
-        body: JSON.generate(response_body),
-      )
+      stub_request(:post, clear_session_endpoint)
+        .with(body: hash_including(
+          project_id: idv_clear1_project_id,
+          redirect_url: /#{idv_clear1_session_update_url}\?state=#{uuid_pattern}/,
+          custom_fields: { user_uuid: user.uuid },
+        ))
+        .to_return(
+          status: clear1_status,
+          body: JSON.generate(response_body),
+        )
 
       stub_sign_in(user)
     end
