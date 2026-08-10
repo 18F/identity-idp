@@ -1,3 +1,5 @@
+@use 'sass:color';
+
 //  Foundation for Emails Settings
 //  ------------------------------
 //
@@ -91,7 +93,7 @@ $hr-margin: 10px auto;
 $anchor-text-decoration: none;
 $anchor-color: $primary-color;
 $anchor-color-visited: $anchor-color;
-$anchor-color-hover: darken($primary-color, 10%);
+$anchor-color-hover: color.adjust($primary-color, $lightness: -10%);
 $anchor-color-active: $anchor-color-hover;
 $stat-font-size: 40px;
 
@@ -126,11 +128,11 @@ $callout-background: $white;
 $callout-background-fade: 85%;
 $callout-padding: 10px;
 $callout-margin-bottom: $global-margin;
-$callout-border: 1px solid darken($callout-background, 20%);
-$callout-border-secondary: 1px solid darken($secondary-color, 20%);
-$callout-border-success: 1px solid darken($success-color, 20%);
-$callout-border-warning: 1px solid darken($warning-color, 20%);
-$callout-border-alert: 1px solid darken($alert-color, 20%);
+$callout-border: 1px solid color.adjust($callout-background, $lightness: -20%);
+$callout-border-secondary: 1px solid color.adjust($secondary-color, $lightness: -20%);
+$callout-border-success: 1px solid color.adjust($success-color, $lightness: -20%);
+$callout-border-warning: 1px solid color.adjust($warning-color, $lightness: -20%);
+$callout-border-alert: 1px solid color.adjust($alert-color, $lightness: -20%);
 
 // 7. Menu
 // -------
