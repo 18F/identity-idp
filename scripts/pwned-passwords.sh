@@ -94,7 +94,7 @@ post_to_s3() {
   if [[ $aws_prod == "true" ]]; then
     echo "Posting to the prod environment."
     aws-vault exec prod-power -- \
-      aws s3 cp "$pwned_file" "s3://${sandbox_bucket}/common/pwned_passwords.txt"
+      aws s3 cp "$pwned_file" "s3://${prod_bucket}/common/pwned_passwords.txt"
   fi
 }
 
