@@ -4,9 +4,10 @@ module Proofing
   module Clear1
     module Requests
       class SessionRequest < Proofing::Clear1::Request
-        attr_reader :redirect_url
+        attr_reader :user_uuid, :redirect_url
 
-        def initialize(redirect_url:)
+        def initialize(user_uuid:, redirect_url:)
+          @user_uuid = user_uuid
           @redirect_url = redirect_url
         end
 
@@ -69,6 +70,7 @@ module Proofing
           {
             project_id: IdentityConfig.store.idv_clear1_project_id,
             redirect_url:,
+            custom_fields: { user_uuid: },
           }.to_json
         end
 

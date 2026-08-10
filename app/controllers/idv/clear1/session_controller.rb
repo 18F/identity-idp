@@ -16,6 +16,7 @@ module Idv
         timer = JobHelpers::Timer.new
         clear1_session = timer.time('vendor_request') do
           clear1_session_request = Proofing::Clear1::Requests::SessionRequest.new(
+            user_uuid: current_user.uuid,
             redirect_url: idv_clear1_session_update_url,
           )
           clear1_session_request.fetch
