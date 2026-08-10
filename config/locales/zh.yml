@@ -1379,7 +1379,7 @@ in_person_proofing.body.prepare.verify_step_enter_phone: 输入你的主要电�
 in_person_proofing.body.prepare.verify_step_enter_pii: 输入你的姓名、生日、州政府颁发的身份证件号、地址以及社会保障号码。
 in_person_proofing.body.prepare.verify_step_post_office: 找到你附件的参与邮局。
 in_person_proofing.body.state_id.alert_message: 美国驾驶执照、州身份证，或护照本/卡
-in_person_proofing.body.state_id.alert_text: '美国护照本及护照卡。目前暂不接受使用护照进行现场身份验证。如果您未看到使用护照验证身份的选项，请改用驾驶执照或州身份证，或者稍后重试身份验证。'
+in_person_proofing.body.state_id.alert_text: '目前暂不接受使用护照进行现场身份验证。如果您未看到使用护照验证身份的选项，请改用驾驶执照或州身份证，或者稍后重试身份验证。'
 in_person_proofing.body.state_id.info_html: 输入 <strong> 与州政府颁发的身份证件上完全一致的信息</strong>我们将使用该信息来确认与你亲身出现所持身份证件上信息的一致性。
 in_person_proofing.form.address.errors.unsupported_chars: 我们的系统无法读取以下字符： %{char_list}. 请替换那些字符后再试一次。
 in_person_proofing.form.address.state_prompt: '- 选择 -'
