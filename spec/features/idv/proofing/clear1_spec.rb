@@ -31,8 +31,6 @@ RSpec.feature 'clear1 inherited proofing step', :js, allow_browser_log: true do
     allow_any_instance_of(ServiceProviderSession).to receive(:sp_name).and_return('Test SP')
     allow_any_instance_of(ApplicationController).to receive(:analytics).and_return(fake_analytics)
     reload_ab_tests
-
-    # @clear1_stub = clear1_stub(status:, token:)
   end
 
   context 'desktop flow', driver: :headless_chrome do
@@ -41,17 +39,17 @@ RSpec.feature 'clear1 inherited proofing step', :js, allow_browser_log: true do
       sign_in_and_2fa_user(user)
       complete_doc_auth_steps_before_hybrid_handoff_step
 
-      @stub = clear1_stub(status: 500)
+      @stub = clear1_session_stub(status: 500)
       click_button 'Clear1'
       expect(page).to have_current_path(idv_hybrid_handoff_path)
 
       remove_request_stub(@stub)
-      @stub = clear1_stub(status: 500)
+      @stub = clear1_session_stub(status: 500)
       click_button 'Clear1'
       expect(page).to have_current_path(idv_hybrid_handoff_path)
 
       remove_request_stub(@stub)
-      @stub = clear1_stub
+      @stub = clear1_session_stub
       click_button 'Clear1'
       # expect(page).to have_current_path(idv_clear1_session_url)
       expect(page).to have_current_path(clear_app_url)
@@ -61,13 +59,14 @@ RSpec.feature 'clear1 inherited proofing step', :js, allow_browser_log: true do
   xcontext 'mobile flow', driver: :headless_chrome_mobile do
   end
 
-  def clear1_stub(status: 200, token: 'fake_token')
+  def clear1_session_stub(status: 200, token: 'fake_token')
+    uuid_pattern = /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i
     stub_request(:post, clear_session_endpoint)
-      .with(body: {
+      .with(body: hash_including(
         project_id: idv_clear1_project_id,
-        redirect_url: idv_clear1_session_update_url,
+        redirect_url: /#{idv_clear1_session_update_url}\?state=#{uuid_pattern}/,
         custom_fields: { user_uuid: user.uuid },
-      })
+      ))
       .to_return(
         status:,
         body: {
