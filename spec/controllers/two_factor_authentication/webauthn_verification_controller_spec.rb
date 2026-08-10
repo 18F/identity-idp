@@ -61,8 +61,7 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
             allow(FeatureManagement)
               .to receive(:webauthn_verification_auto_prompt?)
               .and_return(true)
-            allow_any_instance_of(TwoFactorAuthentication::WebauthnVerificationController)
-              .to receive(:ab_test_bucket)
+            allow(controller).to receive(:ab_test_bucket)
               .with(:PASSKEY_AUTH)
               .and_return(:passkey_authentication)
           end
