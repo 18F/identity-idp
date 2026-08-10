@@ -2,7 +2,12 @@ RSpec.shared_examples 'a mailer preview' do
   let(:mailer_class) { described_class.class_name.gsub(/Preview$/, '').constantize }
 
   it 'has a preview method for each mailer method' do
-    mailer_methods = mailer_class.instance_methods(false)
+    # Rails 8.1 compiles callback runners (e.g. `_run_process_action_callbacks`)
+    # directly onto the mailer class, so they show up in `instance_methods(false)`.
+    # These are framework internals, not mailer actions, so exclude them.
+    mailer_methods = mailer_class.instance_methods(false).reject do |method|
+      method.start_with?('_')
+    end
     preview_methods = described_class.instance_methods(false)
     expect(mailer_methods - preview_methods).to eql([])
   end
