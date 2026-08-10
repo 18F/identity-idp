@@ -604,7 +604,6 @@ development:
   in_person_send_proofing_notifications_enabled: true
   logins_per_ip_limit: 5
   logo_upload_enabled: true
-  passkey_auth_ab_test_percentage: 0
   password_pepper: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
   phone_recaptcha_score_threshold: 0.5
   piv_cac_verify_token_secret: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
@@ -654,7 +653,6 @@ production:
   openid_connect_content_security_form_action_enabled: true
   openid_connect_redirect: server_side
   participate_in_dap: true
-  passkey_auth_ab_test_percentage: 0
   raise_on_component_validation_error: false
   recaptcha_mock_validator: false
   redis_throttle_url: redis://redis.login.gov.internal:6379/1
@@ -702,7 +700,6 @@ test:
   otps_per_ip_limit: 3
   otps_per_ip_period: 10
   otps_per_ip_track_only_mode: false
-  passkey_auth_ab_test_percentage: 0
   password_pepper: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
   phone_confirmation_max_attempt_window_in_minutes: 10
   phone_confirmation_max_attempts: 5
