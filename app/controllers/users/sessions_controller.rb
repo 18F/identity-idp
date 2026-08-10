@@ -209,7 +209,6 @@ module Users
         user_id: current_user.id,
         email: auth_params[:email],
       )
-      user_session[:captcha_validation_performed_at_sign_in] = captcha_validation_performed?
       user_session[:platform_authenticator_available] =
         params[:platform_authenticator_available] == 'true'
       check_password_compromised
