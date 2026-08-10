@@ -32,7 +32,7 @@ RSpec.describe TwoFactorAuthentication::BackupCodeVerificationController do
         controller.session[:sign_in_recaptcha_assessment_id] = assessment_id
 
         expect(RecaptchaAnnotator).to receive(:annotate)
-          .with(**recaptcha_annotation)
+          .with(**recaptcha_annotation, analytics: kind_of(FakeAnalytics))
           .and_return(recaptcha_annotation)
 
         stub_sign_in_before_2fa(user)

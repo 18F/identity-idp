@@ -240,6 +240,7 @@ module Users
         recaptcha_annotation: RecaptchaAnnotator.annotate(
           assessment_id: user_session[:phone_recaptcha_assessment_id],
           reason: RecaptchaAnnotator::AnnotationReasons::INITIATED_TWO_FACTOR,
+          analytics:,
         ),
       )
 
