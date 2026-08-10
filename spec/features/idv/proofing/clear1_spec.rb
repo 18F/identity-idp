@@ -66,6 +66,7 @@ RSpec.feature 'clear1 inherited proofing step', :js, allow_browser_log: true do
       .with(body: {
         project_id: idv_clear1_project_id,
         redirect_url: idv_clear1_session_update_url,
+        custom_fields: { user_uuid: user.uuid },
       })
       .to_return(
         status:,

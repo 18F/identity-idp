@@ -13,7 +13,7 @@ RSpec.describe Proofing::Clear1::Requests::SessionRequest do
   let(:redirect_url) { 'http://login.test/clear1/session/update' }
 
   subject(:session_request) do
-    described_class.new(redirect_url:)
+    described_class.new(user_uuid: user.uuid, redirect_url:)
   end
 
   before do
@@ -31,6 +31,7 @@ RSpec.describe Proofing::Clear1::Requests::SessionRequest do
         .with(body: {
           project_id:,
           redirect_url:,
+          custom_fields: { user_uuid: user.uuid },
         })
         .to_return(
           status:,
