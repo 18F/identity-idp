@@ -59,13 +59,6 @@ module Proofing
           ].join('/')
         end
 
-        def request_headers
-          {
-            'Content-Type': 'application/json',
-            Authorization: "Bearer #{IdentityConfig.store.idv_clear1_api_key}",
-          }
-        end
-
         def body
           {
             project_id: IdentityConfig.store.idv_clear1_project_id,

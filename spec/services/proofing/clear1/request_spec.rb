@@ -3,6 +3,12 @@ require 'rails_helper'
 RSpec.describe Proofing::Clear1::Request do
   subject(:request) { described_class.new }
 
+  let(:idv_clear1_api_key) { 'a-valid-api-key' }
+
+  before do
+    allow(IdentityConfig.store).to receive(:idv_clear1_api_key).and_return(idv_clear1_api_key)
+  end
+
   describe 'a new request' do
     it 'exists' do
       expect(request).to be
@@ -12,18 +18,20 @@ RSpec.describe Proofing::Clear1::Request do
   describe '#fetch' do
     let(:fake_clear1_endpoint) { 'https://clear1.test/' }
     let(:fake_metric_name) { 'fake metric' }
-    let(:request_headers) { { 'Content-Type': 'application/json' } }
 
     before do
       allow(request).to receive(:endpoint).and_return(fake_clear1_endpoint)
       allow(request).to receive(:metric_name).and_return(fake_metric_name)
-      allow(request).to receive(:request_headers).and_return(request_headers)
 
-      stub_request(:get, fake_clear1_endpoint).to_return(
-        status: response_status,
-        body: response,
-        headers: request_headers,
-      )
+      stub_request(:get, fake_clear1_endpoint)
+        .with(headers: {
+          'Content-Type': 'application/json',
+          Authorization: "Bearer #{idv_clear1_api_key}",
+        })
+        .to_return(
+          status: response_status,
+          body: response,
+        )
     end
 
     context 'with a valid response' do

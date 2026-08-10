@@ -44,7 +44,10 @@ module Proofing
       end
 
       def request_headers
-        raise NotImplementedError
+        {
+          'Content-Type': 'application/json',
+          Authorization: "Bearer #{IdentityConfig.store.idv_clear1_api_key}",
+        }
       end
 
       def body
