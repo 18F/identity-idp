@@ -108,6 +108,7 @@ RSpec.describe Idv::Clear1::SessionController do
         it 'sets clear token in idv session' do
           expect(request_class).to receive(:new)
             .with(
+              user_uuid: user.uuid,
               redirect_url: idv_clear1_session_update_url,
             )
           get(:show)
