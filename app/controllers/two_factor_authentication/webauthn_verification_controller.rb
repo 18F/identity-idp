@@ -163,7 +163,7 @@ module TwoFactorAuthentication
     def eligible_for_auto_prompt?
       FeatureManagement.webauthn_verification_auto_prompt? &&
         ab_test_bucket(:PASSKEY_AUTH)
-        !user_session[:webauthn_verification_auto_prompted] &&
+      !user_session[:webauthn_verification_auto_prompted] &&
         webauthn_configurations.any? { |config| config.platform_authenticator? }
     end
 
