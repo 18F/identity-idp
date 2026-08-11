@@ -601,6 +601,19 @@ RSpec.describe NewPhoneForm do
         allow(form).to receive(:recaptcha_form).and_return(recaptcha_form)
       end
 
+      context 'with request context' do
+        let(:request_ip) { '203.0.113.10' }
+        let(:request_user_agent) { 'Example/1.0' }
+        subject(:form) { NewPhoneForm.new(user:, request_ip:, request_user_agent:) }
+
+        it 'forwards the user agent and ip to the recaptcha form args' do
+          expect(form.send(:recaptcha_form_args)).to include(
+            user_agent: request_user_agent,
+            user_ip_address: request_ip,
+          )
+        end
+      end
+
       context 'with valid recaptcha result' do
         let(:recaptcha_form_response) { FormResponse.new(success: true) }
 

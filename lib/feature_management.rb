@@ -132,6 +132,10 @@ class FeatureManagement
       IdentityConfig.store.recaptcha_enterprise_project_id.present?
   end
 
+  def self.recaptcha_enterprise_additional_context_enabled?
+    IdentityConfig.store.recaptcha_enterprise_additional_context_enabled
+  end
+
   # Whether we collect device profiling as part of the account creation process
   def self.account_creation_device_profiling_collecting_enabled?
     case IdentityConfig.store.account_creation_device_profiling
