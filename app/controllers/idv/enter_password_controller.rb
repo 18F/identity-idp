@@ -177,12 +177,20 @@ module Idv
 
     def proofing_completion_phone_number
       if idv_session.address_verification_mechanism == 'phone'
-        idv_session.user_phone_confirmation_session&.phone
+        # A successful phone precheck completes the phone step without an OTP, so there is no
+        # phone confirmation session to read the number from.
+        idv_session.user_phone_confirmation_session&.phone || precheck_phone_number
       elsif idv_session.phone_for_mobile_flow.present?
         idv_session.phone_for_mobile_flow
       else
         current_user.default_phone_configuration&.formatted_phone
       end
+    end
+
+    def precheck_phone_number
+      return unless idv_session.phone_precheck_successful
+
+      idv_session.precheck_phone&.dig(:phone)
     end
 
     def confirm_no_profile_yet
