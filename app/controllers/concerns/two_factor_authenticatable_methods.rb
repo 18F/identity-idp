@@ -46,7 +46,11 @@ module TwoFactorAuthenticatableMethods
 
   def annotate_recaptcha(reason)
     if sign_in_recaptcha_annotation_enabled?
-      RecaptchaAnnotator.annotate(assessment_id: session[:sign_in_recaptcha_assessment_id], reason:)
+      RecaptchaAnnotator.annotate(
+        assessment_id: session[:sign_in_recaptcha_assessment_id],
+        reason:,
+        analytics:,
+      )
     end
   end
 

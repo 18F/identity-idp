@@ -422,7 +422,7 @@ RSpec.describe Proofing::Resolution::Plugins::AamvaPlugin do
               first_name: applicant_pii[:first_name],
               last_name: applicant_pii[:last_name],
               dob: applicant_pii[:dob],
-              same_address_as_id: applicant_pii[:same_address_as_id],
+              ipp_current_address_matches_id: applicant_pii[:ipp_current_address_matches_id],
               state_id_expiration: applicant_pii[:state_id_expiration],
               state_id_jurisdiction: applicant_pii[:state_id_jurisdiction],
               state_id_number: applicant_pii[:state_id_number],

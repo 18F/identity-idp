@@ -1366,11 +1366,7 @@ in_person_proofing.body.prepare.verify_step_enter_phone: Enter your primary phon
 in_person_proofing.body.prepare.verify_step_enter_pii: Enter your name, date of birth, state‑issued ID number, address and Social Security number.
 in_person_proofing.body.prepare.verify_step_post_office: Find a participating Post Office near you.
 in_person_proofing.body.state_id.alert_message: U.S. Driver’s license, state ID, or passport book/card
-in_person_proofing.body.state_id.alert_text:
-  'U.S. Passport book and cards. Passports are not yet accepted for verifying in person. If you don’t see the option to verify your identity with a passport, use a driver’s license or state ID, or try to verify your identity again later.
-
-
-  Non-U.S. passports'
+in_person_proofing.body.state_id.alert_text: 'Passports are not yet accepted for verifying in person. If you don’t see the option to verify your identity with a passport, use a driver’s license or state ID, or try to verify your identity again later.'
 in_person_proofing.body.state_id.info_html: Enter information <strong>exactly as it appears on your state-issued ID.</strong> We will use this information to confirm it matches your ID in person.
 in_person_proofing.form.address.errors.unsupported_chars: 'Our system cannot read the following characters: %{char_list}. Please try again using substitutes for those characters.'
 in_person_proofing.form.address.state_prompt: '- Select -'

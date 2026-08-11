@@ -176,7 +176,7 @@ module Proofing
           identity_doc_address_state: applicant_pii[:identity_doc_address_state],
           state_id_jurisdiction: applicant_pii[:state_id_jurisdiction],
           state_id_number: redacted_state_id_number,
-          ipp_current_address_matches_id: Pii::CurrentAddressMatchesId.read(applicant_pii),
+          ipp_current_address_matches_id: applicant_pii[:ipp_current_address_matches_id],
         }.merge(phone_precheck_info, state_id_verified_attributes)
       end
 
