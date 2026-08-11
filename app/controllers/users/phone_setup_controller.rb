@@ -36,6 +36,7 @@ module Users
         user: current_user,
         analytics: analytics,
         request_ip: request.remote_ip,
+        request_user_agent: request.user_agent,
       )
       result = @new_phone_form.submit(new_phone_form_params)
       analytics.multi_factor_auth_phone_setup(**result)
