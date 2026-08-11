@@ -3,17 +3,18 @@
     {
       "warning_type": "Dangerous Eval",
       "warning_code": 13,
-      "fingerprint": "63137429799c0fa5c7b64b3915e29ad30d676efce0f9579b55d2d1710b68015f",
+      "fingerprint": "0da758f5227b9aeddd9d058b71fd25f4e0af381473330540823adbb7632ab36d",
       "check_name": "Evaluation",
       "message": "Dynamic string evaluated as code",
       "file": "app/models/concerns/encryptable_attribute.rb",
-      "line": 16,
+      "line": 24,
       "link": "https://brakemanscanner.org/docs/warning_types/dangerous_eval/",
-      "code": null,
+      "code": "class_eval(\"        def stale_encrypted_#{name}?\\n          return false unless self.public_send(:\\\"#{name}\\\").present?\\n          encrypted_attributes[:\\\"#{name}\\\"].stale?\\n        end\\n\", \"app/models/concerns/encryptable_attribute.rb\", 25)",
+      "render_path": null,
       "location": {
         "type": "method",
         "class": "EncryptableAttribute::ClassMethods",
-        "method": "encrypted_attribute_getter"
+        "method": "encrypted_attribute_stale_predicate"
       },
       "user_input": null,
       "confidence": "Weak",
@@ -24,19 +25,39 @@
       "note": "controlled metaprogramming for encrypted attribute accessors"
     },
     {
+      "warning_type": "Unmaintained Dependency",
+      "warning_code": 122,
+      "fingerprint": "21ab0fe00fdd5899ffc405cff75aadb91b805ee996a614f7e27b08a287e9062d",
+      "check_name": "EOLRails",
+      "message": "Support for Rails 8.0.5.1 ends on 2026-10-07",
+      "file": "Gemfile.lock",
+      "line": 682,
+      "link": "https://brakemanscanner.org/docs/warning_types/unmaintained_dependency/",
+      "code": null,
+      "render_path": null,
+      "location": null,
+      "user_input": null,
+      "confidence": "Weak",
+      "cwe_id": [
+        1104
+      ],
+      "note": ""
+    },
+    {
       "warning_type": "Dangerous Eval",
       "warning_code": 13,
-      "fingerprint": "0da758f5227b9aeddd9d058b71fd25f4e0af381473330540823adbb7632ab36d",
+      "fingerprint": "63137429799c0fa5c7b64b3915e29ad30d676efce0f9579b55d2d1710b68015f",
       "check_name": "Evaluation",
       "message": "Dynamic string evaluated as code",
       "file": "app/models/concerns/encryptable_attribute.rb",
-      "line": 24,
+      "line": 16,
       "link": "https://brakemanscanner.org/docs/warning_types/dangerous_eval/",
-      "code": null,
+      "code": "class_eval(\"        def #{name}\\n          get_encrypted_attribute(name: :\\\"#{name}\\\")\\n        end\\n\", \"app/models/concerns/encryptable_attribute.rb\", 17)",
+      "render_path": null,
       "location": {
         "type": "method",
         "class": "EncryptableAttribute::ClassMethods",
-        "method": "encrypted_attribute_stale_predicate"
+        "method": "encrypted_attribute_getter"
       },
       "user_input": null,
       "confidence": "Weak",
@@ -55,7 +76,8 @@
       "file": "app/models/concerns/encryptable_attribute.rb",
       "line": 33,
       "link": "https://brakemanscanner.org/docs/warning_types/dangerous_eval/",
-      "code": null,
+      "code": "class_eval(\"        def #{name}=(attribute)\\n          set_encrypted_attribute(name: :\\\"#{name}\\\", value: attribute)\\n        end\\n\", \"app/models/concerns/encryptable_attribute.rb\", 34)",
+      "render_path": null,
       "location": {
         "type": "method",
         "class": "EncryptableAttribute::ClassMethods",
@@ -70,6 +92,5 @@
       "note": "controlled metaprogramming for encrypted attribute accessors"
     }
   ],
-  "updated": "2026-03-06 10:54:18 -0500",
   "brakeman_version": "8.0.4"
 }
