@@ -152,6 +152,7 @@ module AbTests
     experiment_name: 'Passkey Authentication',
     should_log: [
       'Email and Password Authentication',
+      'Multi-Factor Authentication: enter webAuthn authentication visited',
       :passkey_authentication_initiated,
       'Multi-Factor Authentication',
       'User marked authenticated',
