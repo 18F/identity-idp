@@ -371,8 +371,6 @@ RSpec.describe Users::SessionsController, devise: true do
         allow(FeatureManagement).to receive(:sign_in_recaptcha_enabled?).and_return(true)
         allow(IdentityConfig.store).to receive(:recaptcha_mock_validator).and_return(true)
         allow(IdentityConfig.store).to receive(:sign_in_recaptcha_score_threshold).and_return(0.2)
-        allow(controller).to receive(:ab_test_bucket).with(:RECAPTCHA_SIGN_IN, kind_of(Hash))
-          .and_return(:sign_in_recaptcha)
       end
 
       it 'stores the reCAPTCHA assessment id in the session' do
