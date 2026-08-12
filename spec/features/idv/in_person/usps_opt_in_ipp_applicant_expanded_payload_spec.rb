@@ -16,7 +16,7 @@ RSpec.describe 'In Person Proofing: opt in ipp applicant expanded payload', js: 
     ]
   end
   let(:usps_expected_expiration_date) do
-    Time.zone.parse(InPersonHelper::GOOD_STATE_ID_EXPIRATION).to_i
+    Time.zone.parse(InPersonHelper::GOOD_STATE_ID_EXPIRATION).end_of_day.to_i
   end
 
   before do
