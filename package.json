@@ -111,6 +111,7 @@
     "sass-embedded-linux-x64": "^1.88.0"
   },
   "overrides": {
+    "glob": "^13.0.6",
     "@babel/plugin-transform-modules-systemjs": "7.29.4",
     "fast-uri": "3.1.5",
     "fast-xml-builder": "1.1.9",
