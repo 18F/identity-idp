@@ -134,6 +134,7 @@ RSpec.describe 'state id controller enabled', :js do
 
     it 'shows error for an expired ID', allow_browser_log: true do
       complete_steps_before_state_id_controller
+      fill_out_state_id_form_ok(current_address_matches_id: true)
 
       yesterday = Time.zone.now - 1.day
       exp = [
@@ -163,11 +164,28 @@ RSpec.describe 'state id controller enabled', :js do
       fill_in_memorable_date('identity_doc[id_expiration]', exp)
 
       click_idv_continue
+      expect(page).to have_content(
+        t('in_person_proofing.form.state_id.memorable_date.errors.expiration_date.expiring_soon'),
+      )
+
+      eight_days_from_today = Time.zone.now + 8.days
+      exp = [
+        eight_days_from_today.year,
+        eight_days_from_today.month,
+        eight_days_from_today.day,
+      ].join('-')
+
+      fill_in_memorable_date('identity_doc[id_expiration]', exp)
+
+      click_idv_continue
       expect(page).not_to have_content(
         t(
           'in_person_proofing.form.state_id.memorable_date.errors.expiration_date.expired',
           app_name: APP_NAME,
         ),
+      )
+      expect(page).not_to have_content(
+        t('in_person_proofing.form.state_id.memorable_date.errors.expiration_date.expiring_soon'),
       )
     end
   end

@@ -19,7 +19,7 @@ RSpec.describe Idv::StateIdForm do
     ).permit(:year, :month, :day)
   end
   let(:valid_exp) do
-    valid_d = Time.zone.today + 2.days
+    valid_d = Time.zone.today + 7.days
     ActionController::Parameters.new(
       year: valid_d.year,
       month: valid_d.month,
@@ -35,6 +35,14 @@ RSpec.describe Idv::StateIdForm do
     ).permit(:year, :month, :day)
   end
   let(:ipp_current_address_matches_id) { 'true' }
+  let(:expiring_soon_exp) do
+    exp_d = Time.zone.today + 2.days
+    ActionController::Parameters.new(
+      year: exp_d.year,
+      month: exp_d.month,
+      day: exp_d.mday,
+    ).permit(:year, :month, :day)
+  end
   let(:first_name) { Faker::Name.first_name }
   let(:dob) { valid_dob }
   let(:id_expiration) { valid_exp }
@@ -146,6 +154,21 @@ RSpec.describe Idv::StateIdForm do
           I18n.t(
             'in_person_proofing.form.state_id.memorable_date.errors.expiration_date.expired',
             app_name: APP_NAME,
+          ),
+        ]
+      end
+    end
+
+    context 'when the ID expires within 7 days' do
+      let(:id_expiration) { expiring_soon_exp }
+
+      it 'returns the expiring soon error' do
+        expect(result).to be_kind_of(FormResponse)
+        expect(result.success?).to eq(false)
+        expect(subject.errors.empty?).to be(false)
+        expect(subject.errors[:id_expiration]).to eq [
+          I18n.t(
+            'in_person_proofing.form.state_id.memorable_date.errors.expiration_date.expiring_soon',
           ),
         ]
       end

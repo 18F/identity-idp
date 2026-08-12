@@ -1408,6 +1408,7 @@ in_person_proofing.form.state_id.memorable_date.errors.date_of_birth.missing_mon
 in_person_proofing.form.state_id.memorable_date.errors.date_of_birth.range_min_age: Vous devez avoir plus de %{min_age} ans pour utiliser %{app_name}
 in_person_proofing.form.state_id.memorable_date.errors.date_of_birth.range_overflow: Saisissez une date dans le passé
 in_person_proofing.form.state_id.memorable_date.errors.expiration_date.expired: Vous ne pouvez pas utiliser une pièce d’identité expirée.
+in_person_proofing.form.state_id.memorable_date.errors.expiration_date.expiring_soon: Vous ne pouvez pas utiliser une ID qui expire dans les 7 jours.
 in_person_proofing.form.state_id.state_id_jurisdiction: État d’émission
 in_person_proofing.form.state_id.state_id_jurisdiction_hint: Il s’agit de l’État qui a émis votre pièce d’identité
 in_person_proofing.form.state_id.state_id_jurisdiction_prompt: '- Sélectionnez -'
