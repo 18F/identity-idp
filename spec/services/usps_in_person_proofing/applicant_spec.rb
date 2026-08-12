@@ -2,9 +2,8 @@ require 'rails_helper'
 
 RSpec.describe UspsInPersonProofing::Applicant do
   let(:document_expiration_date) { Faker::Date.in_date_period(year: 2030).strftime('%Y-%m-%d') }
-  let(:expiration_time_offset_hours) { 0 }
   let(:document_expiration_date_in_epoch) do
-    Time.zone.parse(document_expiration_date).to_i
+    Time.zone.parse(document_expiration_date).end_of_day.to_i
   end
   let(:enrollment_document_type) { InPersonEnrollment::DOCUMENT_TYPE_STATE_ID }
   let(:applicant_document_type) { Idp::Constants::DocumentTypes::DRIVERS_LICENSE }
@@ -31,8 +30,6 @@ RSpec.describe UspsInPersonProofing::Applicant do
   before do
     allow(IdentityConfig.store).to receive(:usps_ipp_enrollment_status_update_email_address)
       .and_return(email)
-    allow(IdentityConfig.store).to receive(:in_person_expiration_time_offset_hours)
-      .and_return(expiration_time_offset_hours)
   end
 
   describe '.from_usps_applicant_and_enrollment' do
@@ -156,40 +153,6 @@ RSpec.describe UspsInPersonProofing::Applicant do
 
         expect(address.length).to eq(255)
         expect(address).to eq(('A' * 200) + ' ' + ('B' * 54))
-      end
-    end
-
-    context 'with an offset to the expiration time', timezone: 'UTC' do
-      context 'with an offset of zero' do
-        it 'shows the previous date if interpreted in US timezone' do
-          exp_date = described_class.from_usps_applicant_and_enrollment(
-            applicant,
-            enrollment,
-          ).document_expiration_date
-          expect(
-            Time.at(
-              exp_date,
-              in: '-07:00',
-            ).strftime('%Y-%m-%d'),
-          ).not_to eq document_expiration_date
-        end
-      end
-
-      context 'with an offset of 23 hrs' do
-        let(:expiration_time_offset_hours) { 23 }
-
-        it 'shows the correct date if interpreted in US timezone' do
-          exp_date = described_class.from_usps_applicant_and_enrollment(
-            applicant,
-            enrollment,
-          ).document_expiration_date
-          expect(
-            Time.at(
-              exp_date,
-              in: '-07:00',
-            ).strftime('%Y-%m-%d'),
-          ).to eq document_expiration_date
-        end
       end
     end
   end
