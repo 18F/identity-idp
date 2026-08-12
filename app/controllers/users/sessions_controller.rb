@@ -124,7 +124,6 @@ module Users
 
       @recaptcha_form ||= SignInRecaptchaForm.new(
         existing_device: existing_device,
-        ab_test_bucket: ab_test_bucket(:RECAPTCHA_SIGN_IN, user: user_from_params),
         **recaptcha_form_args,
       )
     end
@@ -144,7 +143,7 @@ module Users
     end
 
     def recaptcha_form_args
-      args = { analytics: }
+      args = { analytics:, user_agent: request.user_agent, user_ip_address: request.remote_ip }
       if IdentityConfig.store.recaptcha_mock_validator
         args.merge(
           form_class: RecaptchaMockForm,
@@ -210,7 +209,6 @@ module Users
         user_id: current_user.id,
         email: auth_params[:email],
       )
-      user_session[:captcha_validation_performed_at_sign_in] = captcha_validation_performed?
       user_session[:platform_authenticator_available] =
         params[:platform_authenticator_available] == 'true'
       check_password_compromised
