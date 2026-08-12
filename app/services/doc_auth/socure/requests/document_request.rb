@@ -76,7 +76,6 @@ module DocAuth
           return IdentityConfig.store.idv_socure_docv_flow_id_w_selfie if liveness_checking_required
 
           IdentityConfig.store.idv_socure_docv_flow_id_only
-          end
         end
 
         def document_type
