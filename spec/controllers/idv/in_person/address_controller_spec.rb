@@ -288,27 +288,35 @@ RSpec.describe Idv::InPerson::AddressController do
 
         context 'user previously selected that the residential address matched state ID' do
           before do
-            subject.user_session['idv/in_person'][:pii_from_user][:same_address_as_id] = 'true'
+            subject.user_session['idv/in_person'][:pii_from_user][:ipp_current_address_matches_id] =
+              true
           end
 
-          it 'infers and sets the "same_address_as_id" in the flow session to false' do
+          it 'infers and sets the "ipp_current_address_matches_id" in the flow session to false' do
             put :update, params: params
 
-            expect(subject.user_session['idv/in_person'][:pii_from_user][:same_address_as_id])
-              .to eq('false')
+            expect(
+              subject.user_session.dig(
+                'idv/in_person', :pii_from_user, :ipp_current_address_matches_id
+              ),
+            ).to eq(false)
           end
         end
 
         context 'user previously selected that the residential address did not match state ID' do
           before do
-            subject.user_session['idv/in_person'][:pii_from_user][:same_address_as_id] = 'false'
+            subject.user_session['idv/in_person'][:pii_from_user][:ipp_current_address_matches_id] =
+              false
           end
 
-          it 'leaves the "same_address_as_id" in the flow session as false' do
+          it 'leaves the "ipp_current_address_matches_id" in the flow session as false' do
             put :update, params: params
 
-            expect(subject.user_session['idv/in_person'][:pii_from_user][:same_address_as_id])
-              .to eq('false')
+            expect(
+              subject.user_session.dig(
+                'idv/in_person', :pii_from_user, :ipp_current_address_matches_id
+              ),
+            ).to eq(false)
           end
         end
       end

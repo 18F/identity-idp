@@ -858,6 +858,34 @@ module AnalyticsEvents
     )
   end
 
+  # Historic Attempt data was destroyed when a user deleted their account
+  # It deletes ALL historic data, not just the most recent active profile
+  def historic_event_data_destroyed
+    track_event(:historic_event_data_destroyed)
+  end
+
+  # Historic data was potentially sent when a user accessed an Attempts Api Consumer App
+  # @param [Boolean] success Whether the historic attempt data was released
+  # rubocop:disable Layout/LineLength
+  # @param [:idv_not_requested, :no_user_proofing_event, :already_sent, :no_encrypted_file_reference nil] exception
+  # rubocop:enable Layout/LineLength
+  # @param [Integer,nil] profile_id ID of the active profile associated with attempts data
+  def historic_event_data_released(success:, exception: nil, profile_id: nil, **extra)
+    track_event(
+      :historic_event_data_released,
+      success:,
+      exception:,
+      profile_id:,
+      **extra,
+    )
+  end
+
+  # @param [Integer] profile_id ID of the active profile associated with attempts data
+  # Historic Attempt data was saved when a user completed the IdV process
+  def historic_event_data_saved(profile_id:, **extra)
+    track_event(:historic_event_data_saved, profile_id:, **extra)
+  end
+
   # User visited sign-in URL from the "You've been successfully verified email" CTA button
   # @param issuer [String] the ServiceProvider.issuer
   # @param campaign_id [String] the email campaign ID
@@ -8054,6 +8082,31 @@ module AnalyticsEvents
   # Account profile reactivation page visited
   def reactivate_account_visit
     track_event('Reactivate Account Visited')
+  end
+
+  # The result of a reCAPTCHA annotation request was received
+  # @param [String, nil] reason Reason submitted with the assessment annotation
+  # @param [String, nil] annotation Annotation submitted with the assessment
+  # @param [Boolean] success Whether the annotation request succeeded
+  # @param [String, nil] exception_class Class name of exception, if error occurred
+  # @param [Integer] duration_ms Duration of the reCAPTCHA annotation request in milliseconds
+  def recaptcha_annotation_result_received(
+    reason:,
+    annotation:,
+    success:,
+    exception_class:,
+    duration_ms:,
+    **extra
+  )
+    track_event(
+      :recaptcha_annotation_result_received,
+      reason:,
+      annotation:,
+      success:,
+      exception_class:,
+      duration_ms:,
+      **extra,
+    )
   end
 
   # The result of a reCAPTCHA verification request was received

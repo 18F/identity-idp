@@ -6,13 +6,11 @@ RSpec.describe SignInRecaptchaForm do
   let(:score_threshold_config) { 0.2 }
   let(:analytics) { FakeAnalytics.new }
   let(:existing_device) { false }
-  let(:ab_test_bucket) { :sign_in_recaptcha }
   let(:recaptcha_token) { 'token' }
   let(:score) { 1.0 }
   subject(:form) do
     described_class.new(
       existing_device:,
-      ab_test_bucket:,
       form_class: RecaptchaMockForm,
       analytics:,
       score:,
@@ -44,7 +42,6 @@ RSpec.describe SignInRecaptchaForm do
     subject(:form) do
       described_class.new(
         existing_device:,
-        ab_test_bucket:,
         analytics:,
         form_class: RecaptchaEnterpriseForm,
       )
@@ -66,12 +63,6 @@ RSpec.describe SignInRecaptchaForm do
     subject(:exempt?) { form.exempt? }
 
     it { is_expected.to eq(false) }
-
-    context 'when not part of a/b test' do
-      let(:ab_test_bucket) { nil }
-
-      it { is_expected.to eq(true) }
-    end
 
     context 'score threshold configured at zero' do
       let(:score_threshold_config) { 0.0 }
@@ -104,12 +95,6 @@ RSpec.describe SignInRecaptchaForm do
       it { is_expected.to eq(:recaptcha_disabled) }
     end
 
-    context 'when not part of a/b test' do
-      let(:ab_test_bucket) { nil }
-
-      it { is_expected.to eq(:not_in_ab_test) }
-    end
-
     context 'existing device for user' do
       let(:existing_device) { true }
 
@@ -118,7 +103,6 @@ RSpec.describe SignInRecaptchaForm do
 
     context 'when multiple exemption conditions are true' do
       let(:score_threshold_config) { 0.0 }
-      let(:ab_test_bucket) { nil }
       let(:existing_device) { true }
 
       it 'returns the highest-precedence reason' do
@@ -136,14 +120,6 @@ RSpec.describe SignInRecaptchaForm do
 
       context 'existing device for user' do
         let(:existing_device) { true }
-
-        it 'is successful' do
-          expect(response.to_h).to eq(success: true)
-        end
-      end
-
-      context 'when not part of a/b test' do
-        let(:ab_test_bucket) { nil }
 
         it 'is successful' do
           expect(response.to_h).to eq(success: true)

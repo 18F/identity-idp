@@ -78,6 +78,65 @@ RSpec.describe FraudOps::Tracker do
     end
   end
 
+  describe 'agency_uuid' do
+    let(:redis_wrapper) { instance_double(FraudOps::RedisClient) }
+
+    before do
+      allow(FraudOps::RedisClient).to receive(:new).and_return(redis_wrapper)
+      allow(redis_wrapper).to receive(:write_event)
+    end
+
+    def tracked_agency_uuid
+      tracker.login_email_and_password_auth(email: user.email, success: true)
+
+      expect(redis_wrapper).to have_received(:write_event) do |**args|
+        payload = JSON.parse(JWE.decrypt(args[:jwe], fraud_ops_private_key))
+        return payload.dig('events').values.first['agency_uuid']
+      end
+    end
+
+    it 'creates and includes the AgencyIdentity uuid in the event' do
+      expect do
+        expect(tracked_agency_uuid).to be_present
+      end.to change(AgencyIdentity, :count).by(1)
+    end
+
+    it 'includes the existing AgencyIdentity uuid in the event' do
+      agency_identity = AgencyIdentityLinker.for(
+        user: user, service_provider: sp, skip_create: false,
+      )
+
+      expect(tracked_agency_uuid).to eq(agency_identity.uuid)
+    end
+
+    it 'falls back to a lookup when creation races with a duplicate' do
+      agency_identity = AgencyIdentityLinker.for(
+        user: user, service_provider: sp, skip_create: false,
+      )
+
+      raised = false
+      allow(AgencyIdentityLinker).to receive(:for).and_wrap_original do |original, **kwargs|
+        next original.call(**kwargs) if raised || kwargs[:skip_create]
+
+        raised = true
+        raise ActiveRecord::RecordNotUnique
+      end
+
+      expect(tracked_agency_uuid).to eq(agency_identity.uuid)
+    end
+
+    it 'sends a nil agency_uuid when the fallback lookup returns nil' do
+      allow(AgencyIdentityLinker).to receive(:for).with(
+        user: user, service_provider: sp, skip_create: false,
+      ).and_raise(ActiveRecord::RecordNotUnique)
+      allow(AgencyIdentityLinker).to receive(:for).with(
+        user: user, service_provider: sp, skip_create: true,
+      ).and_return(nil)
+
+      expect(tracked_agency_uuid).to be_nil
+    end
+  end
+
   describe 'error handling' do
     it 'returns nil and logs a warning when an error occurs' do
       allow(IdentityConfig.store).to receive(:fraud_ops_public_key).and_return('')

@@ -767,7 +767,7 @@ doc_auth.tips.document_capture_selfie_text3: 保持中性表情
 doc_auth.tips.document_capture_selfie_text4: 确保您整个面孔都可以在绿色圆圈里看到
 duplicate_profiles_detected.accounts_list.heading: 以下账户具有相同的已验证信息
 duplicate_profiles_detected.cant_access: '我无法访问某个帐户'
-duplicate_profiles_detected.connected_acct_html: '<strong> 关联机构: </strong> %{count}'
+duplicate_profiles_detected.connected_acct_html: '<strong> 互联服务: </strong> %{count}'
 duplicate_profiles_detected.created_at_html: '<strong> 创建: </strong> %{timestamp_html}'
 duplicate_profiles_detected.delete_duplicates.details_html: 请登录您打算删除的账户：<a href="https://secure.login.gov">https://secure.login.gov/zh</a>。以下是%{link_html}。
 duplicate_profiles_detected.delete_duplicates.details2_html: 如果您愿意，可以在%{link_html}，将该电子邮件地址添加到您保留的账户中。
@@ -778,7 +778,7 @@ duplicate_profiles_detected.dont_recognize_account: 我不认识上边的一个�
 duplicate_profiles_detected.duplicate: 重复
 duplicate_profiles_detected.get_help: 获取帮助
 duplicate_profiles_detected.heading: 我们发现了其他可能属于你的帐户
-duplicate_profiles_detected.intro_html: '%{sp_name} 要求您仅持有一个已验证身份的 %{app_name} 账户。在登录 %{sp_name} 之前，您需要%{link_html}。具体操作如下：'
+duplicate_profiles_detected.intro_html: '某些服务要求您仅拥有一个已验证身份的 %{app_name} 账户。在登录 %{sp_name} 之前，您需要%{link_html}。具体操作如下：'
 duplicate_profiles_detected.intro.link: 删除重复账户
 duplicate_profiles_detected.last_sign_in_at_html: '<strong> 上次登录: </strong> %{timestamp_html}'
 duplicate_profiles_detected.never_logged_in: 从未登录过
@@ -1379,12 +1379,7 @@ in_person_proofing.body.prepare.verify_step_enter_phone: 输入你的主要电�
 in_person_proofing.body.prepare.verify_step_enter_pii: 输入你的姓名、生日、州政府颁发的身份证件号、地址以及社会保障号码。
 in_person_proofing.body.prepare.verify_step_post_office: 找到你附件的参与邮局。
 in_person_proofing.body.state_id.alert_message: 美国驾驶执照、州身份证，或护照本/卡
-in_person_proofing.body.state_id.alert_text:
-  "美国护照本及护照卡。目前暂不接受使用护照进行现场身份验证。如果您未\
-  看到使用护照验证身份的选项，请改用驾驶执照或州身份证，或者稍后重试身份验证。
-
-
-  非美国护照"
+in_person_proofing.body.state_id.alert_text: '目前暂不接受使用护照进行现场身份验证。如果您未看到使用护照验证身份的选项，请改用驾驶执照或州身份证，或者稍后重试身份验证。'
 in_person_proofing.body.state_id.info_html: 输入 <strong> 与州政府颁发的身份证件上完全一致的信息</strong>我们将使用该信息来确认与你亲身出现所持身份证件上信息的一致性。
 in_person_proofing.form.address.errors.unsupported_chars: 我们的系统无法读取以下字符： %{char_list}. 请替换那些字符后再试一次。
 in_person_proofing.form.address.state_prompt: '- 选择 -'
@@ -1805,10 +1800,10 @@ titles.revoke_consent: 撤销同意
 titles.rules_of_use: 使用规则
 titles.select_email: 选择你想用的电邮
 titles.sign_in: 登录
-titles.sign_up.completion_consent_expired_ial1: 从你上次授权我们分享你的信息已经一年了。
-titles.sign_up.completion_consent_expired_ial2: 从你上次授权我们分享你验证过的身份已经一年了。
+titles.sign_up.completion_consent_expired_auth_only: 从你上次授权我们分享你的信息已经一年了。
+titles.sign_up.completion_consent_expired_idv: 从你上次授权我们分享你验证过的身份已经一年了。
 titles.sign_up.completion_first_sign_in: 继续到 %{sp}
-titles.sign_up.completion_ial2: 连接你验证过的信息到 %{sp}
+titles.sign_up.completion_idv: 连接你验证过的信息到 %{sp}
 titles.sign_up.completion_new_attributes: '%{sp} 在要求新信息'
 titles.sign_up.completion_new_sp: 你现在正在首次登入
 titles.sign_up.completion_reverified_consent: 与 %{sp}分享你更新后的信息

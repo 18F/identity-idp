@@ -5,8 +5,7 @@ class SignInRecaptchaForm
 
   RECAPTCHA_ACTION = 'sign_in'
 
-  attr_reader :form_class, :form_args, :recaptcha_token, :ab_test_bucket,
-              :assessment_id
+  attr_reader :form_class, :form_args, :recaptcha_token, :assessment_id
 
   attr_writer :existing_device
 
@@ -14,12 +13,10 @@ class SignInRecaptchaForm
 
   def initialize(
     existing_device:,
-    ab_test_bucket:,
     form_class:,
     **form_args
   )
     @existing_device = existing_device
-    @ab_test_bucket = ab_test_bucket
     @form_class = form_class
     @form_args = form_args
   end
@@ -41,8 +38,6 @@ class SignInRecaptchaForm
   def exempt_reason
     if IdentityConfig.store.sign_in_recaptcha_score_threshold.zero?
       :recaptcha_disabled
-    elsif ab_test_bucket != :sign_in_recaptcha
-      :not_in_ab_test
     elsif @existing_device
       :existing_device
     end

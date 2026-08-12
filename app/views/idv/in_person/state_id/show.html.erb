@@ -246,7 +246,7 @@
   </div>
   <%= render ValidatedFieldComponent.new(
         as: :radio_buttons,
-        checked: pii[:same_address_as_id],
+        checked: pii[:ipp_current_address_matches_id],
         collection: [
           [t('in_person_proofing.form.state_id.current_address_matches_id_yes'), true],
           [t('in_person_proofing.form.state_id.current_address_matches_id_no'), false],
@@ -254,6 +254,10 @@
         form: f,
         label: t('in_person_proofing.form.state_id.current_address_matches_id'),
         legend_html: { class: 'h2' },
+        # 50/50 deploy compatibility (LG-16085): keep submitting the legacy param name
+        # so forms rendered by the new deploy are still accepted by old instances
+        # during the rollout. The server accepts both names. Rename to
+        # :ipp_current_address_matches_id in a follow-up once fully deployed.
         name: :same_address_as_id,
         required: true,
         wrapper: :uswds_radio_buttons,

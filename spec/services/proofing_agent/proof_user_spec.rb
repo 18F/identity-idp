@@ -118,10 +118,10 @@ RSpec.describe ProofingAgent::ProofUser do
           call_service
         end
 
-        it 'sets same_address_as_id to true when no residential_address is given' do
+        it 'sets ipp_current_address_matches_id to true when no residential_address is given' do
           expect(ProofingAgentJob).to receive(:perform_later) do |args|
             parsed = decrypt_applicant_pii(args)
-            expect(parsed[:applicant_pii][:same_address_as_id]).to eq('true')
+            expect(parsed[:applicant_pii][:ipp_current_address_matches_id]).to eq(true)
           end
           call_service
         end
@@ -159,10 +159,10 @@ RSpec.describe ProofingAgent::ProofUser do
           call_service(applicant: passport_applicant)
         end
 
-        it 'sets same_address_as_id to false when residential_address is given' do
+        it 'sets ipp_current_address_matches_id to false when residential_address is given' do
           expect(ProofingAgentJob).to receive(:perform_later) do |args|
             parsed = decrypt_applicant_pii(args)
-            expect(parsed[:applicant_pii][:same_address_as_id]).to eq('false')
+            expect(parsed[:applicant_pii][:ipp_current_address_matches_id]).to eq(false)
           end
           call_service(applicant: passport_applicant)
         end

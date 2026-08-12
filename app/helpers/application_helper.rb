@@ -40,7 +40,7 @@ module ApplicationHelper
     )
   end
 
-  def ial2_requested?
+  def idv_requested?
     resolved_authn_context_result.identity_proofing?
   end
 

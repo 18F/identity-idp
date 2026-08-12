@@ -6,7 +6,7 @@ RSpec.describe 'sign_up/completions/show.html.erb' do
   let(:selected_email_id) { user.email_addresses.first.id }
   let(:decrypted_pii) { {} }
   let(:requested_attributes) { [:email] }
-  let(:ial2_requested) { false }
+  let(:idv_requested) { false }
   let(:completion_context) { :new_sp }
 
   let(:view_context) { ActionController::Base.new.view_context }
@@ -25,7 +25,7 @@ RSpec.describe 'sign_up/completions/show.html.erb' do
       current_sp: service_provider,
       decrypted_pii:,
       requested_attributes:,
-      ial2_requested:,
+      idv_requested:,
       completion_context:,
       selected_email_id:,
     )
@@ -86,8 +86,8 @@ RSpec.describe 'sign_up/completions/show.html.erb' do
     end
   end
 
-  context 'ial2' do
-    let(:ial2_requested) { true }
+  context 'idv' do
+    let(:idv_requested) { true }
     let(:requested_attributes) { [:email, :social_security_number, :verified_at] }
     let(:decrypted_pii) do
       {

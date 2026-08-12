@@ -58,7 +58,7 @@ account.email_language.name.es: Español
 account.email_language.name.fr: Français
 account.email_language.name.zh: 中文（简体）
 account.email_language.updated: Se actualizó su preferencia de idioma del correo electrónico.
-account.emails.confirmed_html: Has confirmado tu dirección de correo electrónico. Ve a <a href="%{url}">tus servicios conectados</a> para actualizar el correo electrónico que compartes con las agencias conectadas.
+account.emails.confirmed_html: Has confirmado tu dirección de correo electrónico. Ve a <a href="%{url}">tus servicios conectados</a> para actualizar el correo electrónico que compartes con las servicios conectadas.
 account.forget_all_browsers.longer_description: Una vez que elija “Olvidar todos los navegadores”, necesitaremos más información para saber que realmente es usted quien está iniciando sesión en su cuenta. Le pediremos un método de autenticación multifactor (como código de texto o de SMS, o una clave de seguridad) cada vez que desee acceder a su cuenta.
 account.index.auth_app_add: Agregar aplicación
 account.index.auth_app_disabled: no habilitada
@@ -767,7 +767,7 @@ doc_auth.tips.document_capture_selfie_text3: Mantenga una expresión neutral
 doc_auth.tips.document_capture_selfie_text4: Revise que se vea su rostro completo dentro del círculo verde.
 duplicate_profiles_detected.accounts_list.heading: Cuentas con la misma información verificada
 duplicate_profiles_detected.cant_access: 'No puedo acceder a una cuenta'
-duplicate_profiles_detected.connected_acct_html: '<strong> Agencias conectadas: </strong> %{count}'
+duplicate_profiles_detected.connected_acct_html: '<strong> Servicios conectadas: </strong> %{count}'
 duplicate_profiles_detected.created_at_html: '<strong> Creado: </strong> %{timestamp_html}'
 duplicate_profiles_detected.delete_duplicates.details_html: Inicia sesión en la cuenta que va a eliminar en <a href="https://secure.login.gov">https://secure.login.gov</a>. Así es %{link_html}
 duplicate_profiles_detected.delete_duplicates.details2_html: Si lo desea, %{link_html} a la cuenta que conservará después de eliminar la cuenta duplicada.
@@ -778,11 +778,11 @@ duplicate_profiles_detected.dont_recognize_account: No reconozco una de estas cu
 duplicate_profiles_detected.duplicate: Duplicada
 duplicate_profiles_detected.get_help: Obtener ayuda
 duplicate_profiles_detected.heading: Encontramos otras cuentas que pueden ser suyas
-duplicate_profiles_detected.intro_html: '%{sp_name} requiere que usted tenga sólo una cuenta de %{app_name} con una identidad verificada. Debe eliminar %{link_html} antes de iniciar sesión en %{sp_name}. Esto es lo que debe hacer:'
+duplicate_profiles_detected.intro_html: 'Algunas servicios requieren que usted tenga únicamente una cuenta de %{app_name} con una identidad verificada. Debe eliminar %{link_html} antes de iniciar sesión en %{sp_name}. Esto es lo que debe hacer:'
 duplicate_profiles_detected.intro.link: las cuentas duplicativas
 duplicate_profiles_detected.last_sign_in_at_html: '<strong> Último inicio de sesión: </strong> %{timestamp_html}'
 duplicate_profiles_detected.never_logged_in: Nunca he iniciado sesión en
-duplicate_profiles_detected.select_an_account.details_html: 'Conserva la cuenta que esté conectada a la mayor cantidad de servicios. Ve a la página %{link_html} para ver las agencias conectadas seleccionando “Tus servicios conectados” en el menú de la izquierda.'
+duplicate_profiles_detected.select_an_account.details_html: 'Conserva la cuenta que esté conectada a la mayor cantidad de servicios. Ve a la página %{link_html} para ver las servicios conectadas seleccionando “Tus servicios conectados” en el menú de la izquierda.'
 duplicate_profiles_detected.select_an_account.details.link: «Su cuenta»
 duplicate_profiles_detected.select_an_account.heading: Elija la cuenta que desea conservar.
 duplicate_profiles_detected.sign_back_in.details: Vuelva al sitio web de %{app_name} e inicie sesión usando la cuenta de %{app_name} que conservó.
@@ -1377,11 +1377,7 @@ in_person_proofing.body.prepare.verify_step_enter_phone: Ingrese su número de t
 in_person_proofing.body.prepare.verify_step_enter_pii: Ingrese su nombre, fecha de nacimiento, número de identificación emitida por el estado, dirección y número de Seguro Social.
 in_person_proofing.body.prepare.verify_step_post_office: Busque una oficina de correos participantes cercana.
 in_person_proofing.body.state_id.alert_message: Licencia de conducir, identificación estatal o pasaporte (libreta o tarjeta) de EE. UU.
-in_person_proofing.body.state_id.alert_text:
-  'Libretas y tarjetas de pasaporte de EE. UU. Los pasaportes aún no se aceptan para la verificación en persona. Si no ve la opción para verificar su identidad con un pasaporte, utilice una licencia de conducir o una identificación estatal, o intente verificar su identidad nuevamente más tarde.
-
-
-  Pasaportes de otros países'
+in_person_proofing.body.state_id.alert_text: 'Los pasaportes aún no se aceptan para la verificación en persona. Si no ve la opción para verificar su identidad con un pasaporte, utilice una licencia de conducir o una identificación estatal, o intente verificar su identidad nuevamente más tarde.'
 in_person_proofing.body.state_id.info_html: Ingrese la información <strong>exactamente como aparece en su identificación emitida por el estado.</strong> Usaremos esta información para confirmar que coincida con su identificación en persona.
 in_person_proofing.form.address.errors.unsupported_chars: 'Nuestro sistema no puede leer estos caracteres: %{char_list}. Inténtelo de nuevo usando caracteres sustitutos.'
 in_person_proofing.form.address.state_prompt: '- Seleccione -'
@@ -1803,10 +1799,10 @@ titles.revoke_consent: Revocar consentimiento
 titles.rules_of_use: Reglas de uso
 titles.select_email: Seleccione el correo electrónico que prefiera
 titles.sign_in: Iniciar sesión
-titles.sign_up.completion_consent_expired_ial1: Hace un año que nos dio su consentimiento para divulgar su información
-titles.sign_up.completion_consent_expired_ial2: Hace un año que nos dio su consentimiento para divulgar su identidad verificada
+titles.sign_up.completion_consent_expired_auth_only: Hace un año que nos dio su consentimiento para divulgar su información
+titles.sign_up.completion_consent_expired_idv: Hace un año que nos dio su consentimiento para divulgar su identidad verificada
 titles.sign_up.completion_first_sign_in: Continuar con %{sp}
-titles.sign_up.completion_ial2: Conecte su información verificada a %{sp}
+titles.sign_up.completion_idv: Conecte su información verificada a %{sp}
 titles.sign_up.completion_new_attributes: '%{sp} está solicitando nueva información'
 titles.sign_up.completion_new_sp: Está iniciando sesión por primera vez
 titles.sign_up.completion_reverified_consent: Comunique su información actualizada a %{sp}

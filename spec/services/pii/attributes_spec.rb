@@ -75,6 +75,22 @@ RSpec.describe Pii::Attributes do
       pii = described_class.new_from_hash(dob: Date.new(2000, 1, 2))
       expect(pii.dob).to eql(Date.new(2000, 1, 2))
     end
+
+    # LG-16085: `same_address_as_id` is a deprecated PII attribute retained as a
+    # struct member so PII persisted in prod before the rename (to the boolean
+    # `ipp_current_address_matches_id`) still deserializes without silently
+    # dropping the key.
+    it 'retains the deprecated same_address_as_id attribute when rehydrating legacy PII' do
+      pii = described_class.new_from_hash(
+        first_name: 'Jane',
+        same_address_as_id: 'false',
+        ipp_current_address_matches_id: false,
+      )
+
+      expect(pii.first_name).to eq('Jane')
+      expect(pii.same_address_as_id).to eq('false')
+      expect(pii.ipp_current_address_matches_id).to eq(false)
+    end
   end
 
   describe '#new_from_json' do
@@ -88,6 +104,15 @@ RSpec.describe Pii::Attributes do
     it 'returns all-nil object when passed blank JSON' do
       expect(described_class.new_from_json(nil)).to be_a Pii::Attributes
       expect(described_class.new_from_json('')).to be_a Pii::Attributes
+    end
+
+    # LG-16085: a profile encrypted before the deploy carries the legacy
+    # `same_address_as_id` string; it must round-trip through JSON deserialization.
+    it 'retains the deprecated same_address_as_id attribute from legacy JSON' do
+      pii_json = { first_name: 'Jane', same_address_as_id: 'true' }.to_json
+      pii_attrs = described_class.new_from_json(pii_json)
+
+      expect(pii_attrs.same_address_as_id).to eq('true')
     end
   end
 

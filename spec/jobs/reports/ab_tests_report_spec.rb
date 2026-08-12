@@ -21,11 +21,11 @@ RSpec.describe Reports::AbTestsReport do
   end
   let(:ab_tests) do
     {
-      RECAPTCHA_SIGN_IN: AbTest.new(
-        experiment_name: 'reCAPTCHA at Sign-In',
+      REPORTED_EXPERIMENT: AbTest.new(
+        experiment_name: 'Account Creation Threat Metrix Processed',
         persist: true,
         max_participants: 10_000,
-        buckets: { sign_in_recaptcha: tested_percent },
+        buckets: { account_creation_tmx_processed: tested_percent },
         report: { email:, queries: },
       ),
       UNREPORTED_EXPERIMENT: AbTest.new(
@@ -63,7 +63,7 @@ RSpec.describe Reports::AbTestsReport do
 
     before do
       allow(Reporting::AbTestsReport).to receive(:new).with(
-        ab_test: ab_tests[:RECAPTCHA_SIGN_IN],
+        ab_test: ab_tests[:REPORTED_EXPERIMENT],
         time_range: report_date.yesterday..report_date,
       ).and_return(report)
 
@@ -73,9 +73,9 @@ RSpec.describe Reports::AbTestsReport do
     it 'emails the table report with csv' do
       expect(ReportMailer).to receive(:tables_report).with(
         to: email,
-        subject: "A/B Tests Report - reCAPTCHA at Sign-In - #{report_date}",
+        subject: "A/B Tests Report - Account Creation Threat Metrix Processed - #{report_date}",
         message: [
-          "A/B Tests Report - reCAPTCHA at Sign-In - #{report_date}",
+          "A/B Tests Report - Account Creation Threat Metrix Processed - #{report_date}",
           'Total participants: 0 (of 10,000 maximum)',
         ],
         reports: emailable_reports,

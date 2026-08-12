@@ -32,6 +32,7 @@ class SamlIdpController < ApplicationController
   before_action :redirect_to_reauthenticate, only: :auth, if: :remember_device_expired_for_sp?
   before_action :prompt_for_password_if_ial2_request_and_pii_locked, only: :auth
   before_action :confirm_user_is_not_suspended, only: :auth
+  before_action :confirm_password_change_not_required, only: :auth
 
   def auth
     capture_analytics

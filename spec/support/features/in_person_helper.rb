@@ -39,7 +39,7 @@ module InPersonHelper
   GOOD_PASSPORT_EXPIRATION_DATE =
     Idp::Constants::MOCK_IPP_PASSPORT_APPLICANT[:passport_expiration_date].freeze
 
-  def fill_out_state_id_form_ok(same_address_as_id: false, first_name: GOOD_FIRST_NAME)
+  def fill_out_state_id_form_ok(current_address_matches_id: false, first_name: GOOD_FIRST_NAME)
     fill_in t('in_person_proofing.form.state_id.first_name'), with: first_name
     fill_in t('in_person_proofing.form.state_id.last_name'), with: GOOD_LAST_NAME
     fill_in_memorable_date('identity_doc[dob]', GOOD_DOB)
@@ -54,22 +54,23 @@ module InPersonHelper
     fill_in t('in_person_proofing.form.state_id.zipcode'), with: GOOD_IDENTITY_DOC_ZIPCODE
     select GOOD_STATE,
            from: t('in_person_proofing.form.state_id.identity_doc_address_state')
-    if same_address_as_id
+    if current_address_matches_id
       choose t('in_person_proofing.form.state_id.current_address_matches_id_yes')
     else
       choose t('in_person_proofing.form.state_id.current_address_matches_id_no')
     end
   end
 
-  def fill_out_address_form_ok(same_address_as_id: false)
+  def fill_out_address_form_ok(current_address_matches_id: false)
     fill_in t('idv.form.address1'),
-            with: same_address_as_id ? GOOD_IDENTITY_DOC_ADDRESS1 : GOOD_ADDRESS1
+            with: current_address_matches_id ? GOOD_IDENTITY_DOC_ADDRESS1 : GOOD_ADDRESS1
     fill_in t('idv.form.address2'),
-            with: same_address_as_id ? GOOD_IDENTITY_DOC_ADDRESS2 : GOOD_ADDRESS2
-    fill_in t('idv.form.city'), with: same_address_as_id ? GOOD_IDENTITY_DOC_CITY : GOOD_CITY
+            with: current_address_matches_id ? GOOD_IDENTITY_DOC_ADDRESS2 : GOOD_ADDRESS2
+    fill_in t('idv.form.city'),
+            with: current_address_matches_id ? GOOD_IDENTITY_DOC_CITY : GOOD_CITY
     fill_in t('idv.form.zipcode'),
-            with: same_address_as_id ? GOOD_IDENTITY_DOC_ZIPCODE : GOOD_ZIPCODE
-    if same_address_as_id
+            with: current_address_matches_id ? GOOD_IDENTITY_DOC_ZIPCODE : GOOD_ZIPCODE
+    if current_address_matches_id
       select GOOD_STATE_ID_JURISDICTION, from: t('idv.form.state')
     else
       select GOOD_STATE, from: t('idv.form.state')
@@ -136,20 +137,20 @@ module InPersonHelper
     click_on t('forms.buttons.continue')
   end
 
-  def complete_state_id_controller(_user = nil, same_address_as_id: true,
+  def complete_state_id_controller(_user = nil, current_address_matches_id: true,
                                    first_name: GOOD_FIRST_NAME)
     # Wait for page to load before attempting to fill out form
     expect(page).to have_current_path(idv_in_person_state_id_path, wait: 10)
-    fill_out_state_id_form_ok(same_address_as_id: same_address_as_id, first_name:)
+    fill_out_state_id_form_ok(current_address_matches_id:, first_name:)
     click_idv_continue
-    unless same_address_as_id
+    unless current_address_matches_id
       expect(page).to have_current_path(idv_in_person_address_path, wait: 10)
       expect_in_person_step_indicator_current_step(t('step_indicator.flows.idv.verify_info'))
     end
   end
 
-  def complete_address_step(_user = nil, same_address_as_id: true)
-    fill_out_address_form_ok(same_address_as_id: same_address_as_id)
+  def complete_address_step(_user = nil, current_address_matches_id: true)
+    fill_out_address_form_ok(current_address_matches_id:)
     click_idv_continue
   end
 
@@ -181,19 +182,20 @@ module InPersonHelper
   end
 
   def complete_all_in_person_proofing_steps(user = user_with_2fa, tmx_status = nil,
-                                            same_address_as_id: true)
+                                            current_address_matches_id: true)
     complete_prepare_step(user)
     complete_location_step(user)
-    complete_state_id_controller(user, same_address_as_id: same_address_as_id)
-    complete_address_step(user, same_address_as_id: same_address_as_id) unless same_address_as_id
+    complete_state_id_controller(user, current_address_matches_id:)
+    complete_address_step(user, current_address_matches_id:) unless current_address_matches_id
     complete_ssn_step(user, tmx_status)
     complete_verify_step(user)
   end
 
-  def complete_entire_ipp_flow(user = user_with_2fa, tmx_status = nil, same_address_as_id: true)
+  def complete_entire_ipp_flow(user = user_with_2fa, tmx_status = nil,
+                               current_address_matches_id: true)
     sign_in_and_2fa_user(user)
     begin_in_person_proofing(user)
-    complete_all_in_person_proofing_steps(user, tmx_status, same_address_as_id: same_address_as_id)
+    complete_all_in_person_proofing_steps(user, tmx_status, current_address_matches_id:)
     click_idv_send_security_code
     fill_in_code_with_last_phone_otp
     click_submit_default
@@ -212,16 +214,14 @@ module InPersonHelper
     expect_step_indicator_current_step(text)
   end
 
-  def build_pii_before_state_id_update(same_address_as_id: 'true')
-    pii_from_user[:same_address_as_id] = same_address_as_id
-    pii_from_user[:ipp_current_address_matches_id] =
-      Pii::CurrentAddressMatchesId.coerce(same_address_as_id)
+  def build_pii_before_state_id_update(current_address_matches_id: true)
+    pii_from_user[:ipp_current_address_matches_id] = current_address_matches_id
     pii_from_user[:identity_doc_address1] = identity_doc_address1
     pii_from_user[:identity_doc_address2] = identity_doc_address2
     pii_from_user[:identity_doc_city] = identity_doc_city
     pii_from_user[:identity_doc_address_state] = identity_doc_address_state
     pii_from_user[:identity_doc_zipcode] = identity_doc_zipcode
-    if same_address_as_id == 'true'
+    if current_address_matches_id
       pii_from_user[:address1] = identity_doc_address1
       pii_from_user[:address2] = identity_doc_address2
       pii_from_user[:city] = identity_doc_city
@@ -266,12 +266,12 @@ module InPersonHelper
     end
   end
 
-  def perform_desktop_hybrid_steps(user = user_with_2fa, same_address_as_id: true)
+  def perform_desktop_hybrid_steps(user = user_with_2fa, current_address_matches_id: true)
     perform_in_browser(:desktop) do
       expect(page).to have_current_path(idv_in_person_state_id_path, wait: 10)
 
-      complete_state_id_controller(user, same_address_as_id: same_address_as_id)
-      complete_address_step(user, same_address_as_id: same_address_as_id) unless same_address_as_id
+      complete_state_id_controller(user, current_address_matches_id:)
+      complete_address_step(user, current_address_matches_id:) unless current_address_matches_id
       complete_ssn_step(user)
       complete_verify_step(user)
       complete_phone_step(user)

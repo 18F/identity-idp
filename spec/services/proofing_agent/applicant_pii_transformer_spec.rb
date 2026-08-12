@@ -76,7 +76,7 @@ RSpec.describe ProofingAgent::ApplicantPiiTransformer do
             state_id_jurisdiction: 'CA',
             state_id_expiration: '2030-01-01',
             state_id_issued: '2015-01-01',
-            same_address_as_id: 'true',
+            ipp_current_address_matches_id: true,
           )
         end
       end
@@ -115,7 +115,7 @@ RSpec.describe ProofingAgent::ApplicantPiiTransformer do
             state_id_jurisdiction: 'CA',
             state_id_expiration: '2030-01-01',
             state_id_issued: '2015-01-01',
-            same_address_as_id: 'false',
+            ipp_current_address_matches_id: false,
           )
         end
       end
@@ -152,7 +152,7 @@ RSpec.describe ProofingAgent::ApplicantPiiTransformer do
           passport_issued: '2015-01-01',
           mrz: Idp::Constants::MOCK_IDV_APPLICANT_WITH_PASSPORT[:mrz],
           issuing_country_code: 'USA',
-          same_address_as_id: 'false',
+          ipp_current_address_matches_id: false,
         )
       end
     end
