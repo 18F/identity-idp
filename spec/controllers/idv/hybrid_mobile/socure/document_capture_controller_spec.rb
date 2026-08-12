@@ -342,6 +342,29 @@ RSpec.describe Idv::HybridMobile::Socure::DocumentCaptureController do
               ),
             )
         end
+
+        context 'when document type requested is a mobile drivers license' do
+          let(:document_type_requested) { Idp::Constants::DocumentTypes::MDL }
+          it 'requested documentType is digital_id' do
+            expect(WebMock).to have_requested(:post, fake_socure_endpoint)
+              .with(
+                body: JSON.generate(
+                  {
+                    config: {
+                      documentType: 'digital_id',
+                      redirect: {
+                        method: 'GET',
+                        url: idv_hybrid_mobile_socure_document_capture_update_url,
+                      },
+                      language: expected_language,
+                      useCaseKey: IdentityConfig.store.idv_socure_docv_flow_id_only,
+                    },
+                    customerUserId: user.uuid,
+                  },
+                ),
+              )
+          end
+        end
       end
     end
 

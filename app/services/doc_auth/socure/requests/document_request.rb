@@ -72,10 +72,13 @@ module DocAuth
         end
 
         def use_case_key
-          return IdentityConfig.store.idv_socure_docv_flow_id_only if document_capture_session.mdl_requested?
-          return IdentityConfig.store.idv_socure_docv_flow_id_w_selfie if liveness_checking_required
-
-          IdentityConfig.store.idv_socure_docv_flow_id_only
+          if document_capture_session.mdl_requested?
+            IdentityConfig.store.idv_socure_docv_flow_id_only
+          elsif liveness_checking_required
+            IdentityConfig.store.idv_socure_docv_flow_id_w_selfie
+          else
+            IdentityConfig.store.idv_socure_docv_flow_id_only
+          end
         end
 
         def document_type
