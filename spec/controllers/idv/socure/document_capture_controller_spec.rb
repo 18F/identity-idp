@@ -461,7 +461,7 @@ RSpec.describe Idv::Socure::DocumentCaptureController do
                 document_capture_session: subject.document_capture_session,
                 redirect_url: idv_socure_document_capture_update_url,
                 language: expected_language,
-                liveness_checking_required: false,
+                liveness_checking_required: true,
               )
           end
 
