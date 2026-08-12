@@ -363,7 +363,7 @@ RSpec.describe TwoFactorAuthentication::TotpVerificationController do
           controller.session[:sign_in_recaptcha_assessment_id] = assessment_id
 
           expect(RecaptchaAnnotator).to receive(:annotate)
-            .with(**recaptcha_annotation, analytics: kind_of(FakeAnalytics))
+            .with(**recaptcha_annotation)
             .and_return(recaptcha_annotation)
 
           get :show

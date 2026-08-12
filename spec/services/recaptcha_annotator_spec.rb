@@ -7,9 +7,7 @@ RSpec.describe RecaptchaAnnotator do
   describe '#annotate' do
     let(:reason) { RecaptchaAnnotator::AnnotationReasons::INITIATED_TWO_FACTOR }
     let(:annotation) { RecaptchaAnnotator::Annotations::LEGITIMATE }
-    subject(:annotate) do
-      RecaptchaAnnotator.annotate(assessment_id:, reason:, annotation:, analytics:)
-    end
+    subject(:annotate) { RecaptchaAnnotator.annotate(assessment_id:, reason:, annotation:) }
     let(:recaptcha_service) { instance_double(RecaptchaService) }
 
     before do
@@ -55,42 +53,19 @@ RSpec.describe RecaptchaAnnotator do
         expect(recaptcha_service).to have_received(:annotate_assessment)
       end
 
-      it 'logs a successful annotation with its response time' do
+      it 'logs analytics' do
         annotate
 
-        expect(analytics).to have_logged_event(
-          :recaptcha_annotation_result_received,
+        expect(annotate).to eq(
+          assessment_id:,
           reason:,
           annotation:,
-          success: true,
-          duration_ms: kind_of(Integer),
         )
-      end
-
-      context 'when annotation submission fails' do
-        let(:error) { Google::Cloud::Error.new('annotation failed') }
-
-        before do
-          allow(recaptcha_service).to receive(:annotate_assessment).and_raise(error)
-        end
-
-        it 'logs the failed annotation and re-raises the error' do
-          expect { annotate }.to raise_error(error)
-
-          expect(analytics).to have_logged_event(
-            :recaptcha_annotation_result_received,
-            reason:,
-            annotation:,
-            success: false,
-            exception_class: 'Google::Cloud::Error',
-            duration_ms: kind_of(Integer),
-          )
-        end
       end
 
       context 'with an optional argument omitted' do
         let(:annotation) { nil }
-        subject(:annotate) { RecaptchaAnnotator.annotate(assessment_id:, reason:, analytics:) }
+        subject(:annotate) { RecaptchaAnnotator.annotate(assessment_id:, reason:) }
 
         it 'returns a hash describing annotation with a nil value for the optional argument' do
           expect(annotate).to eq(

@@ -131,7 +131,7 @@ module Proofing
         end
 
         def ipp_current_address_matches_id?(applicant_pii)
-          applicant_pii[:ipp_current_address_matches_id] == true
+          Pii::CurrentAddressMatchesId.read(applicant_pii) == true
         end
 
         def should_proof_state_id?(

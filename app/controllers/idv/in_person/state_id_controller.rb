@@ -28,7 +28,8 @@ module Idv
       def update
         clear_future_steps_from!(controller: Idv::InPerson::SsnController)
 
-        initial_current_address_matches_id = pii_from_user[:ipp_current_address_matches_id]
+        initial_current_address_matches_id =
+          Pii::CurrentAddressMatchesId.read(pii_from_user)
 
         form_result = form.submit(flow_params)
 
@@ -100,14 +101,10 @@ module Idv
           pending[attr] = flow_params[attr]
         end
 
-        # `flow_params` holds the raw radio value ("true"/"false"); store a real boolean.
-        # 50/50 deploy compatibility (LG-16085): fall back to the legacy param name if
-        # the form was rendered by an old instance. Remove once fully rolled out.
-        raw_current_address_matches_id =
-          flow_params[:ipp_current_address_matches_id] ||
-          flow_params[:same_address_as_id]
+        # Dual-write during the same_address_as_id -> ipp_current_address_matches_id rename
+        # migration (LG-16085). Keep the legacy string field written for 50/50 compatibility.
         pending[:ipp_current_address_matches_id] =
-          ActiveModel::Type::Boolean.new.cast(raw_current_address_matches_id)
+          Pii::CurrentAddressMatchesId.coerce(pending[:same_address_as_id])
 
         formatted_dob = MemorableDateComponent.extract_date_param flow_params&.[](:dob)
         pending[:dob] = formatted_dob if formatted_dob
@@ -120,7 +117,7 @@ module Idv
           pending.delete(:id_expiration)
         end
 
-        if pending[:ipp_current_address_matches_id] == true
+        if Pii::CurrentAddressMatchesId.read(pending)
           pending[:address1] = flow_params[:identity_doc_address1]
           pending[:address2] = flow_params[:identity_doc_address2]
           pending[:city] = flow_params[:identity_doc_city]
@@ -132,7 +129,7 @@ module Idv
       end
 
       def determine_redirect_url(pending_pii, initial_current_address_matches_id)
-        pending_current_address_matches_id = pending_pii[:ipp_current_address_matches_id]
+        pending_current_address_matches_id = Pii::CurrentAddressMatchesId.read(pending_pii)
 
         if initial_current_address_matches_id == true &&
            pending_current_address_matches_id == false
@@ -195,9 +192,6 @@ module Idv
 
         params.require(:state_id).permit(
           *Idv::StateIdForm::ATTRIBUTES,
-          # 50/50 deploy compatibility (LG-16085): accept the legacy param name from
-          # forms rendered by old instances. Remove once fully rolled out.
-          *Idv::StateIdForm::LEGACY_PARAM_ALIASES.keys,
           dob: [:month, :day, :year],
           id_expiration: [:month, :day, :year],
         )

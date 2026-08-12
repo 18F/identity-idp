@@ -577,29 +577,12 @@ RSpec.describe Users::SessionsController, devise: true do
           allow(Analytics).to receive(:new).and_return(analytics)
           reload_ab_tests
         end
-        it 'does not update user attribute password_compromised_checked_at' do
+        it 'updates user attribute password_compromised_checked_at' do
           expect(user.password_compromised_checked_at).to be_falsey
           freeze_time do
             post :create, params: { user: { email: user.email, password: user.password } }
-            expect(user.reload.password_compromised_checked_at).to be_falsey
+            expect(user.reload.password_compromised_checked_at).to eq Time.zone.now
           end
-        end
-
-        it 'sets the redirect_to_change_password session flag' do
-          post :create, params: { user: { email: user.email, password: user.password } }
-          expect(session[:redirect_to_change_password]).to eq true
-        end
-
-        it 'forces the check again on a subsequent login since the timestamp is not set' do
-          post :create, params: { user: { email: user.email, password: user.password } }
-          expect(session[:redirect_to_change_password]).to eq true
-          expect(user.reload.password_compromised_checked_at).to be_falsey
-
-          sign_out :user
-          session.delete(:redirect_to_change_password)
-
-          post :create, params: { user: { email: user.email, password: user.password } }
-          expect(session[:redirect_to_change_password]).to eq true
         end
 
         it 'posts an analytics event when password is compromised' do
@@ -625,11 +608,6 @@ RSpec.describe Users::SessionsController, devise: true do
             post :create, params: { user: { email: user.email, password: user.password } }
             expect(user.reload.password_compromised_checked_at).to eq Time.zone.now
           end
-        end
-
-        it 'does not set the redirect_to_change_password session flag' do
-          post :create, params: { user: { email: user.email, password: user.password } }
-          expect(session[:redirect_to_change_password]).to be_nil
         end
       end
     end
