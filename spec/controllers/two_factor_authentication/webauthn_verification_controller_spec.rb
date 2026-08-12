@@ -29,6 +29,9 @@ RSpec.describe TwoFactorAuthentication::WebauthnVerificationController do
       stub_attempts_tracker
       sign_in_before_2fa(user)
       allow(FeatureManagement).to receive(:webauthn_verification_auto_prompt?).and_return(false)
+      allow(controller).to receive(:ab_test_bucket)
+        .with(:PASSKEY_AUTH)
+        .and_return(:default)
     end
 
     describe 'GET show' do
