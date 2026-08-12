@@ -28,7 +28,7 @@ RSpec.describe DataWarehouse::DailySensitiveColumnJob do
       insensitive: [
         {
           "object-locator": {
-            "column-name": 'user_id',
+            "column-name": 'created_at',
             "table-name": 'auth_app_configurations',
           },
         },
@@ -40,13 +40,13 @@ RSpec.describe DataWarehouse::DailySensitiveColumnJob do
         },
         {
           "object-locator": {
-            "column-name": 'created_at',
+            "column-name": 'updated_at',
             "table-name": 'auth_app_configurations',
           },
         },
         {
           "object-locator": {
-            "column-name": 'updated_at',
+            "column-name": 'user_id',
             "table-name": 'auth_app_configurations',
           },
         },
