@@ -31,7 +31,7 @@ module UspsInPersonProofing
     STREET_ADDRESS_MAX_LENGTH = 255
 
     def self.from_usps_applicant_and_enrollment(applicant, enrollment)
-      id_expiration = Time.zone.parse(applicant&.id_expiration || '')
+      id_expiration = Time.zone.parse(applicant&.id_expiration || '').end_of_day
       document_expiration_date =
         if id_expiration.present?
           offset = IdentityConfig.store.in_person_expiration_time_offset_hours.hours
