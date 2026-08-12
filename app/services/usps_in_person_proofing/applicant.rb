@@ -31,7 +31,7 @@ module UspsInPersonProofing
     STREET_ADDRESS_MAX_LENGTH = 255
 
     def self.from_usps_applicant_and_enrollment(applicant, enrollment)
-      document_expiration_date = Time.zone.parse(applicant&.id_expiration || '')&.end_of_day&.to_i
+      document_expiration_date = Time.zone.parse(applicant&.id_expiration || '')&.end_of_day.to_i
 
       street_address = [applicant.address1, applicant.address2].select(&:present?).join(' ')
 
